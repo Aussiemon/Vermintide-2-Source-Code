@@ -1,0 +1,80 @@
+require("scripts/entity_system/systems/behaviour/nodes/bt_node")
+
+BTMountUnitAction = class(BTMountUnitAction, BTNode)
+local PLAYER_POSITIONS = PLAYER_POSITIONS
+local PLAYER_UNITS = PLAYER_UNITS
+BTMountUnitAction.init = function (self, ...)
+	BTMountUnitAction.super.init(self, ...)
+
+	return 
+end
+BTMountUnitAction.name = "BTMountUnitAction"
+BTMountUnitAction.enter = function (self, unit, blackboard, t)
+	local network_manager = Managers.state.network
+	local action = self._tree_node.action_data
+	blackboard.action = action
+	local animation = action.animation or "idle"
+	local optional_spawn_data = blackboard.optional_spawn_data
+
+	blackboard.navigation_extension:set_enabled(false)
+	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
+	network_manager.anim_event(network_manager, unit, animation)
+
+	local mounted_data = blackboard.mounted_data
+
+	if mounted_data then
+		local mount_unit = mounted_data.mount_unit
+
+		if AiUtils.unit_alive(mount_unit) then
+			local mount_position = POSITION_LOOKUP[mount_unit]
+			local mount_rotation = Unit.local_rotation(mount_unit, 0)
+
+			Unit.set_local_position(unit, 0, mount_position)
+			Unit.set_local_rotation(unit, 0, mount_rotation)
+		end
+	end
+
+	return 
+end
+BTMountUnitAction.leave = function (self, unit, blackboard, t, reason, destroy)
+	blackboard.navigation_extension:set_enabled(true)
+
+	blackboard.mounting_finished = nil
+	blackboard.should_mount_unit = nil
+	blackboard.goal_destination = nil
+	local mounted_data = blackboard.mounted_data
+
+	if mounted_data then
+		mounted_data.knocked_off_mounted_timer = nil
+	end
+
+	return 
+end
+local Unit_alive = Unit.alive
+BTMountUnitAction.run = function (self, unit, blackboard, t, dt)
+	local mounting_finished = blackboard.mounting_finished
+	local action = blackboard.action
+
+	if mounting_finished then
+		local mounted_data = blackboard.mounted_data
+
+		if mounted_data then
+			local mount_unit = mounted_data.mount_unit
+
+			if AiUtils.unit_alive(mount_unit) then
+				local mount_blackboard = BLACKBOARDS[mount_unit]
+				mount_blackboard.mounting_finished = true
+				mount_blackboard.linked_unit = unit
+				blackboard.hp_at_knocked_off = nil
+			end
+		end
+
+		return "done"
+	else
+		return "running"
+	end
+
+	return 
+end
+
+return 

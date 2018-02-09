@@ -1,0 +1,31 @@
+ERROR_CODES = {}
+BACKEND_LUA_ERRORS = {}
+BACKEND_PLAYFAB_ERRORS = {}
+
+if rawget(_G, "Backend") then
+	ERROR_CODES[Backend.ERR_OK] = "backend_err_ok"
+	ERROR_CODES[Backend.ERR_UNKNOWN] = "backend_err_unknown"
+	ERROR_CODES[Backend.ERR_AUTH] = "backend_err_auth"
+	ERROR_CODES[Backend.ERR_LOADING_PROFILE] = "backend_err_loading_profile"
+	ERROR_CODES[Backend.ERR_TITLE_ID_DISABLED] = "backend_err_title_id_disabled"
+	ERROR_CODES[Backend.ERR_COMMIT] = "backend_err_commit"
+	ERROR_CODES[Backend.ERR_LOAD_ENTITIES] = "backend_err_load_entities"
+	ERROR_CODES[Backend.ERR_SESSION_GENERIC] = "backend_err_session_generic"
+	ERROR_CODES[Backend.ERR_SESSION_JOIN] = "backend_err_session_join"
+	ERROR_CODES[Backend.ERR_SESSION_LEAVE] = "backend_err_session_leave"
+end
+
+BACKEND_LUA_ERRORS.ERR_DISCONNECTED = #ERROR_CODES + 1
+ERROR_CODES[BACKEND_LUA_ERRORS.ERR_DISCONNECTED] = "backend_err_disconnected"
+BACKEND_LUA_ERRORS.ERR_SIGNIN_TIMEOUT = #ERROR_CODES + 1
+ERROR_CODES[BACKEND_LUA_ERRORS.ERR_SIGNIN_TIMEOUT] = "backend_err_signin_timeout"
+BACKEND_LUA_ERRORS.ERR_LOADING_PLUGIN = 255
+ERROR_CODES[BACKEND_LUA_ERRORS.ERR_LOADING_PLUGIN] = "backend_err_loading_plugin"
+BACKEND_LUA_ERRORS.ERR_USE_LOCAL_BACKEND_NOT_ALLOWED = 256
+ERROR_CODES[BACKEND_LUA_ERRORS.ERR_USE_LOCAL_BACKEND_NOT_ALLOWED] = "backend_err_use_local_backend_not_allowed"
+BACKEND_LUA_ERRORS.ERR_PLATFORM_SPECIFIC_INTERFACE_MISSING = 257
+ERROR_CODES[BACKEND_LUA_ERRORS.ERR_PLATFORM_SPECIFIC_INTERFACE_MISSING] = "backend_err_platform_specific_interface_missing"
+BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR = 510
+ERROR_CODES[BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR] = "backend_err_playfab"
+
+return 

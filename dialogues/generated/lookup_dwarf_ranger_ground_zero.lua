@@ -1,0 +1,44 @@
+assert(DialogueLookup[DialogueLookup_n + 1] == nil)
+assert(DialogueLookup[DialogueLookup_n + 2] == nil)
+assert(DialogueLookup[DialogueLookup_n + 3] == nil)
+assert(DialogueLookup[DialogueLookup_n + 4] == nil)
+assert(DialogueLookup[DialogueLookup_n + 5] == nil)
+assert(DialogueLookup[DialogueLookup_n + 6] == nil)
+assert(DialogueLookup[DialogueLookup_n + 7] == nil)
+assert(DialogueLookup[DialogueLookup_n + 8] == nil)
+assert(DialogueLookup[DialogueLookup_n + 9] == nil)
+assert(DialogueLookup[DialogueLookup_n + 10] == nil)
+assert(DialogueLookup[DialogueLookup_n + 11] == nil)
+assert(DialogueLookup[DialogueLookup_n + 12] == nil)
+assert(DialogueLookup[DialogueLookup_n + 13] == nil)
+assert(DialogueLookup[DialogueLookup_n + 14] == nil)
+assert(DialogueLookup[DialogueLookup_n + 15] == nil)
+assert(DialogueLookup[DialogueLookup_n + 16] == nil)
+assert(DialogueLookup[DialogueLookup_n + 17] == nil)
+assert(DialogueLookup[DialogueLookup_n + 18] == nil)
+assert(DialogueLookup[DialogueLookup_n + 19] == nil)
+assert(DialogueLookup[DialogueLookup_n + 20] == nil)
+
+DialogueLookup[DialogueLookup_n + 1] = "pdr_level_ground_zero_canals"
+DialogueLookup[DialogueLookup_n + 2] = "pdr_level_ground_zero_canals_crossing"
+DialogueLookup[DialogueLookup_n + 3] = "pdr_level_ground_zero_cargo_elevator"
+DialogueLookup[DialogueLookup_n + 4] = "pdr_level_ground_zero_corruption_everywhere"
+DialogueLookup[DialogueLookup_n + 5] = "pdr_level_ground_zero_crumbling"
+DialogueLookup[DialogueLookup_n + 6] = "pdr_level_ground_zero_looking_for_elevator"
+DialogueLookup[DialogueLookup_n + 7] = "pdr_level_ground_zero_smell"
+DialogueLookup[DialogueLookup_n + 8] = "pdr_level_ground_zero_the_hole"
+DialogueLookup[DialogueLookup_n + 9] = "pdr_level_ground_zero_town"
+DialogueLookup[DialogueLookup_n + 10] = "pdr_level_ground_zero_welcoming_committee"
+DialogueLookup[DialogueLookup_n + 11] = "pdr_level_ground_zero_precarious"
+DialogueLookup[DialogueLookup_n + 12] = "pdr_level_ground_zero_draw_bridge"
+DialogueLookup[DialogueLookup_n + 13] = "pdr_level_ground_zero_landslide"
+DialogueLookup[DialogueLookup_n + 14] = "pdr_level_ground_zero_the_hole_second_view"
+DialogueLookup[DialogueLookup_n + 15] = "pdr_level_ground_zero_boss_near"
+DialogueLookup[DialogueLookup_n + 16] = "pdr_level_ground_zero_boss_spotted"
+DialogueLookup[DialogueLookup_n + 17] = "pdr_level_ground_zero_portal"
+DialogueLookup[DialogueLookup_n + 18] = "pdr_ground_zero_intro_a"
+DialogueLookup[DialogueLookup_n + 19] = "pdr_ground_zero_intro_b"
+DialogueLookup[DialogueLookup_n + 20] = "pdr_ground_zero_intro_c"
+DialogueLookup_n = DialogueLookup_n + 20
+
+return 

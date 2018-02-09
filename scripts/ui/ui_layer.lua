@@ -1,0 +1,32 @@
+UILayer = {
+	options_menu = 700,
+	item_display_popup = 770,
+	popup = 950,
+	end_screen = 600,
+	menu_gradient = 399,
+	default = 500,
+	controller_description = 740,
+	tooltip = 950,
+	matchmaking = 750,
+	ingame_player_list = 160,
+	chat = 880,
+	tutorial = 75,
+	end_screen_reward = 620,
+	gdc_intro = 720,
+	background = 200,
+	credits_menu = 450,
+	hud_inventory = 115,
+	end_screen_banner = 800,
+	main_menu = 400,
+	ingame_voting = 600,
+	hud = 50,
+	transition = 850,
+	rcon = 870,
+	debug_screen = 800,
+	cutscene = 700,
+	credits_gradient = 449,
+	interaction = 100,
+	unit_frames = 55
+}
+
+return 

@@ -1,0 +1,308 @@
+require("scripts/settings/mood_settings")
+
+MoodHandler = class(MoodHandler)
+MoodHandler.init = function (self, world)
+	self.world = world
+	self.playing_particles = {}
+	self.current_mood = "default"
+	self.mood_blends = nil
+	self.mood_weights = {}
+	local environment = require("scripts/settings/lua_environments/moods")
+	local env_vars, type_map = self.parse_environment_settings(self, environment)
+	self.environment_variables = env_vars
+	self.environment_variables_type_map = type_map
+	self.environment_variables_to_set = {}
+	self.environment_weight_remainder = 1
+
+	return 
+end
+MoodHandler.destroy = function (self)
+	local world = self.world
+	local playing_particles = self.playing_particles
+
+	for _, particle_id in pairs(playing_particles) do
+		if World.are_particles_playing(world, particle_id) then
+			World.destroy_particles(world, particle_id)
+		end
+	end
+
+	self.playing_particles = nil
+	self.world = nil
+	self.environment_variables = nil
+	self.mood_blends = nil
+	self.environment_variables_to_set = nil
+	self.mood_weights = nil
+
+	return 
+end
+MoodHandler.parse_environment_settings = function (self, environment)
+	local environment_settings = environment.settings
+	local variables = {}
+	local type_map = {}
+
+	for env_setting_name, env_setting in pairs(environment_settings) do
+		if env_setting_name ~= "default" then
+			variables[env_setting_name] = {}
+			local var_n = 1
+
+			for var_name, var_value in pairs(env_setting.variables) do
+				local weight = env_setting.variable_weights[var_name]
+
+				if weight == 1 then
+					local var_type = nil
+
+					if type(var_value) == "string" then
+						var_type = "texture"
+					elseif type(var_value) == "number" then
+						var_type = "scalar"
+					elseif type(var_value) == "table" then
+						if #var_value == 2 then
+							var_type = "vector2"
+							var_value = Vector3Box(var_value[1], var_value[2], 0)
+						elseif #var_value == 3 then
+							var_type = "vector3"
+							var_value = Vector3Box(var_value[1], var_value[2], var_value[3])
+						end
+					end
+
+					if var_type then
+						variables[env_setting_name][var_n] = {
+							name = var_name,
+							value = var_value
+						}
+						type_map[var_name] = type_map[var_name] or var_type
+						var_n = var_n + 1
+					end
+				end
+			end
+		end
+	end
+
+	return variables, type_map
+end
+MoodHandler.set_mood = function (self, next_mood)
+	if Development.parameter("screen_space_player_camera_reactions") == false then
+		return 
+	end
+
+	fassert(next_mood and (next_mood == "default" or MoodSettings[next_mood]), "Mood %q not defined in MoodSettings.lua", next_mood)
+
+	local current_mood = self.current_mood
+
+	if next_mood == current_mood then
+		return 
+	end
+
+	self.add_mood_blend(self, current_mood, next_mood)
+	self.handle_particles(self, current_mood, next_mood)
+
+	self.current_mood = next_mood
+
+	return 
+end
+MoodHandler.add_mood_blend = function (self, current_mood, next_mood)
+	if Development.parameter("screen_space_player_camera_reactions") == false then
+		return 
+	end
+
+	local blend_time = nil
+
+	if next_mood == "default" then
+		blend_time = MoodSettings[current_mood].blend_out_time
+	else
+		blend_time = MoodSettings[next_mood].blend_in_time
+	end
+
+	if blend_time == 0 then
+		self.mood_blends = nil
+	else
+		self.mood_blends = {
+			value = 0,
+			mood = current_mood,
+			speed = blend_time/1,
+			blends = self.mood_blends
+		}
+	end
+
+	return 
+end
+MoodHandler.handle_particles = function (self, current_mood, next_mood)
+	local playing_particles = self.playing_particles
+	local world = self.world
+
+	for _, particle_id in pairs(playing_particles) do
+		if World.are_particles_playing(world, particle_id) then
+			World.stop_spawning_particles(world, particle_id)
+		end
+	end
+
+	table.clear(playing_particles)
+
+	if current_mood ~= "default" then
+		local on_exit_particles = MoodSettings[current_mood].particle_effects_on_exit
+
+		if on_exit_particles then
+			for _, particle_name in pairs(on_exit_particles) do
+				playing_particles[#playing_particles + 1] = World.create_particles(world, particle_name, Vector3.zero())
+			end
+		end
+	end
+
+	if next_mood ~= "default" then
+		local next_mood_settings = MoodSettings[next_mood]
+		local no_particles_on_enter_from = next_mood_settings.no_particles_on_enter_from
+		local play_particles = not no_particles_on_enter_from or not table.find(no_particles_on_enter_from, current_mood)
+
+		if play_particles then
+			local on_enter_particles = next_mood_settings.particle_effects_on_enter
+
+			if on_enter_particles then
+				local playing_particles = self.playing_particles
+				local world = self.world
+
+				for _, particle_name in pairs(on_enter_particles) do
+					playing_particles[#playing_particles + 1] = World.create_particles(world, particle_name, Vector3.zero())
+				end
+			end
+		end
+	end
+
+	return 
+end
+MoodHandler.update = function (self, dt)
+	Profiler.start("MoodHandler: Update")
+	self.update_mood_blends(self, dt)
+	self.update_environment_variables(self)
+	Profiler.stop("MoodHandler: Update")
+
+	return 
+end
+MoodHandler.update_mood_blends = function (self, dt)
+	local mood_weights = self.mood_weights
+
+	table.clear(mood_weights)
+
+	mood_weights[1] = self.current_mood
+
+	self.set_mood_weights(self, dt, self.mood_blends, mood_weights, 1)
+
+	return 
+end
+MoodHandler.set_mood_weights = function (self, dt, blend, mood_weights, weight)
+	if blend then
+		blend.value = blend.value + blend.speed*dt
+
+		if 1 <= blend.value then
+			blend.blends = nil
+			mood_weights[#mood_weights + 1] = weight
+		else
+			mood_weights[#mood_weights + 1] = blend.value*weight
+			mood_weights[#mood_weights + 1] = blend.mood
+
+			return self.set_mood_weights(self, dt, blend.blends, mood_weights, weight*(blend.value - 1))
+		end
+	else
+		mood_weights[#mood_weights + 1] = weight
+	end
+
+	return 
+end
+MoodHandler.update_environment_variables = function (self)
+	local variables_to_set = self.environment_variables_to_set
+
+	table.clear(variables_to_set)
+
+	local mood_weights = self.mood_weights
+	local environment_vars = self.environment_variables
+	local type_map = self.environment_variables_type_map
+	local weight_remainder = 1
+
+	for i = 1, #mood_weights, 2 do
+		local mood_name = mood_weights[i]
+
+		if mood_name ~= "default" then
+			local env_setting = MoodSettings[mood_name].environment_setting
+			local variables = environment_vars[env_setting]
+			local mood_weight = mood_weights[i + 1]
+
+			for i = 1, #variables, 1 do
+				local var = variables[i]
+				local var_name = var.name
+				local var_value = var.value
+				local var_type = type_map[var_name]
+				local value_to_set = variables_to_set[var_name]
+
+				if var_type == "texture" then
+					value_to_set = value_to_set or var_value
+				elseif var_type == "scalar" then
+					value_to_set = value_to_set or 0
+					value_to_set = value_to_set + var_value*mood_weight
+				elseif var_type == "vector2" or var_type == "vector3" then
+					value_to_set = value_to_set or Vector3(0, 0, 0)
+					value_to_set = value_to_set + var_value.unbox(var_value)*mood_weight
+				end
+
+				variables_to_set[var_name] = value_to_set
+			end
+
+			weight_remainder = weight_remainder - mood_weight
+		end
+	end
+
+	for var_name, var_value in pairs(variables_to_set) do
+		local var_type = type_map[var_name]
+
+		if var_type == "vector2" or var_type == "vector3" then
+			variables_to_set[var_name] = Vector3Box(var_value)
+		end
+	end
+
+	self.environment_weight_remainder = math.max(weight_remainder, 0)
+
+	return 
+end
+MoodHandler.apply_environment_variables = function (self, shading_environment)
+	Profiler.start("MoodHandler: Apply Environment Variables")
+
+	local type_map = self.environment_variables_type_map
+	local weight_remainder = self.environment_weight_remainder
+
+	for var_name, var_value in pairs(self.environment_variables_to_set) do
+		local var_type = type_map[var_name]
+
+		if weight_remainder == 0 then
+			if var_type == "texture" then
+				ShadingEnvironment.set_texture(shading_environment, var_name, var_value)
+			elseif var_type == "scalar" then
+				ShadingEnvironment.set_scalar(shading_environment, var_name, var_value)
+			elseif var_type == "vector2" then
+				ShadingEnvironment.set_vector2(shading_environment, var_name, var_value.unbox(var_value))
+			elseif var_type == "vector3" then
+				ShadingEnvironment.set_vector3(shading_environment, var_name, var_value.unbox(var_value))
+			end
+		elseif var_type == "texture" then
+			ShadingEnvironment.set_texture(shading_environment, var_name, var_value)
+		elseif var_type == "scalar" then
+			local default_value = ShadingEnvironment.scalar(shading_environment, var_name)*weight_remainder
+			local set_value = var_value + default_value
+
+			ShadingEnvironment.set_scalar(shading_environment, var_name, set_value)
+		elseif var_type == "vector2" then
+			local default_value = ShadingEnvironment.vector2(shading_environment, var_name)*weight_remainder
+			local set_value = var_value.unbox(var_value) + default_value
+
+			ShadingEnvironment.set_vector2(shading_environment, var_name, set_value)
+		elseif var_type == "vector3" then
+			local default_value = ShadingEnvironment.vector3(shading_environment, var_name)*weight_remainder
+			local set_value = var_value.unbox(var_value) + default_value
+
+			ShadingEnvironment.set_vector3(shading_environment, var_name, set_value)
+		end
+	end
+
+	Profiler.stop("MoodHandler: Apply Environment Variables")
+
+	return 
+end
+
+return 

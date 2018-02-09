@@ -1,0 +1,726 @@
+LiquidAreaDamageTemplates = {
+	templates = {
+		bile_troll_vomit = {
+			sfx_name_start = "Play_enemy_troll_puke_loop",
+			sfx_name_stop = "Stop_enemy_troll_puke_loop",
+			cell_size = 1,
+			liquid_spread_function = "default_spread",
+			starting_pressure = 20,
+			apply_buff_to_player = true,
+			do_direct_damage_player = false,
+			buff_template_name = "bile_troll_vomit_ground_base",
+			linearized_flow = false,
+			damage_type = "vomit_ground",
+			do_direct_damage_ai = true,
+			init_function = "bile_troll_vomit_init",
+			end_pressure = 3,
+			fx_name_filled = "fx/wpnfx_troll_vomit_impact_01",
+			apply_buff_to_ai = false,
+			time_of_life = 10,
+			max_liquid = 30,
+			update_function = "bile_troll_vomit_update",
+			use_nav_cost_map_volumes = true,
+			nav_cost_map_cost_type = "troll_bile",
+			buff_condition_function = "bile_troll_vomit_ground_base_condition",
+			immune_breeds = {
+				chaos_troll = true,
+				chaos_dummy_troll = true,
+				chaos_spawn = true,
+				skaven_rat_ogre = true,
+				skaven_stormfiend = true
+			},
+			difficulty_direct_damage = {
+				easy = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				normal = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				hard = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_hard = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				harder = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_harder = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				hardest = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_hardest = {
+					1,
+					1,
+					0,
+					0,
+					1
+				}
+			}
+		},
+		nurgle_liquid = {
+			sfx_name_start = "Play_enemy_troll_puke_loop",
+			sfx_name_stop = "Stop_enemy_troll_puke_loop",
+			cell_size = 0.6,
+			liquid_spread_function = "pour_spread",
+			starting_pressure = 10,
+			apply_buff_to_player = true,
+			do_direct_damage_player = false,
+			buff_template_name = "bile_troll_vomit_ground_base",
+			linearized_flow = false,
+			damage_type = "vomit_ground",
+			do_direct_damage_ai = true,
+			init_function = "bile_troll_vomit_init",
+			end_pressure = 3,
+			fx_name_filled = "fx/nurgle_liquid_blob_ground_01",
+			apply_buff_to_ai = false,
+			time_of_life = 10,
+			max_liquid = 12,
+			update_function = "bile_troll_vomit_update",
+			use_nav_cost_map_volumes = true,
+			nav_cost_map_cost_type = "troll_bile",
+			buff_condition_function = "bile_troll_vomit_ground_base_condition",
+			immune_breeds = {
+				chaos_troll = true,
+				chaos_dummy_troll = true,
+				chaos_spawn = true,
+				skaven_rat_ogre = true,
+				skaven_stormfiend = true
+			},
+			difficulty_direct_damage = {
+				easy = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				normal = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				hard = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_hard = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				harder = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_harder = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				hardest = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_hardest = {
+					1,
+					1,
+					0,
+					0,
+					1
+				}
+			}
+		},
+		stormfiend_firewall = {
+			do_direct_damage_ai = true,
+			sfx_name_stop = "Stop_enemy_stormfiend_fire_ground_loop",
+			cell_size = 1,
+			liquid_spread_function = "forward_spread",
+			starting_pressure = 30,
+			apply_buff_to_player = true,
+			do_direct_damage_player = false,
+			buff_template_name = "stormfiend_warpfire_ground_base",
+			linearized_flow = true,
+			fx_name_rim = "fx/wpnfx_warp_fire_remains_rim",
+			damage_type = "warpfire_ground",
+			sfx_name_start = "Play_enemy_stormfiend_fire_ground_loop",
+			end_pressure = 2,
+			fx_name_filled = "fx/wpnfx_warp_fire_remains",
+			apply_buff_to_ai = false,
+			time_of_life = 6,
+			max_liquid = 20,
+			use_nav_cost_map_volumes = true,
+			nav_cost_map_cost_type = "stormfiend_warpfire",
+			buff_condition_function = "stormfiend_warpfire_ground_base_condition",
+			immune_breeds = {
+				chaos_troll = true,
+				chaos_dummy_troll = true,
+				skaven_grey_seer = true,
+				chaos_spawn = true,
+				skaven_warpfire_thrower = true,
+				skaven_rat_ogre = true,
+				skaven_stormfiend = true
+			},
+			difficulty_direct_damage = {
+				easy = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				normal = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				hard = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_hard = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				harder = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_harder = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				hardest = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_hardest = {
+					1,
+					1,
+					0,
+					0,
+					1
+				}
+			}
+		},
+		lamp_oil_fire = {
+			do_direct_damage_ai = true,
+			sfx_name_stop = "Stop_props_lamp_oil_fire",
+			cell_size = 1,
+			liquid_spread_function = "pour_spread",
+			starting_pressure = 15,
+			do_direct_damage_player = true,
+			linearized_flow = false,
+			fx_name_rim = "fx/wpnfx_lamp_oil_remains_rim",
+			damage_type = "burninating",
+			sfx_name_start = "Play_props_lamp_oil_fire",
+			end_pressure = 2,
+			fx_name_filled = "fx/wpnfx_lamp_oil_remains",
+			time_of_life = 10,
+			max_liquid = 50,
+			use_nav_cost_map_volumes = true,
+			nav_cost_map_cost_type = "lamp_oil_fire",
+			immune_breeds = {},
+			difficulty_direct_damage = {
+				easy = {
+					10,
+					10,
+					10,
+					2,
+					10
+				},
+				normal = {
+					10,
+					10,
+					10,
+					5,
+					10
+				},
+				hard = {
+					10,
+					10,
+					10,
+					6,
+					10
+				},
+				survival_hard = {
+					10,
+					10,
+					10,
+					6,
+					10
+				},
+				harder = {
+					10,
+					10,
+					10,
+					7,
+					10
+				},
+				survival_harder = {
+					10,
+					10,
+					10,
+					7,
+					10
+				},
+				hardest = {
+					10,
+					10,
+					10,
+					8,
+					10
+				},
+				survival_hardest = {
+					10,
+					10,
+					10,
+					8,
+					10
+				}
+			}
+		},
+		warpfire_death_fire = {
+			do_direct_damage_ai = true,
+			sfx_name_stop = "Stop_enemy_stormfiend_fire_ground_loop",
+			cell_size = 0.75,
+			liquid_spread_function = "pour_spread",
+			starting_pressure = 15,
+			do_direct_damage_player = true,
+			linearized_flow = false,
+			fx_name_rim = "fx/wpnfx_warp_fire_remains_rim",
+			damage_type = "warpfire_ground",
+			sfx_name_start = "Play_enemy_stormfiend_fire_ground_loop",
+			end_pressure = 2,
+			fx_name_filled = "fx/chr_warp_fire_flamethrower_remains_01",
+			time_of_life = 5,
+			max_liquid = 20,
+			use_nav_cost_map_volumes = true,
+			nav_cost_map_cost_type = "warpfire_thrower_warpfire",
+			immune_breeds = {},
+			difficulty_direct_damage = {
+				easy = {
+					10,
+					10,
+					10,
+					2,
+					10
+				},
+				normal = {
+					10,
+					10,
+					10,
+					5,
+					10
+				},
+				hard = {
+					10,
+					10,
+					10,
+					6,
+					10
+				},
+				survival_hard = {
+					10,
+					10,
+					10,
+					6,
+					10
+				},
+				harder = {
+					10,
+					10,
+					10,
+					7,
+					10
+				},
+				survival_harder = {
+					10,
+					10,
+					10,
+					7,
+					10
+				},
+				hardest = {
+					10,
+					10,
+					10,
+					8,
+					10
+				},
+				survival_hardest = {
+					10,
+					10,
+					10,
+					8,
+					10
+				}
+			}
+		},
+		flamethrower_patch = {
+			do_direct_damage_ai = true,
+			sfx_name_stop = "Stop_enemy_stormfiend_fire_ground_loop",
+			cell_size = 1,
+			liquid_spread_function = "default_spread",
+			starting_pressure = 30,
+			apply_buff_to_player = false,
+			do_direct_damage_player = false,
+			buff_template_name = "stormfiend_warpfire_ground_base",
+			linearized_flow = false,
+			fx_name_rim = "fx/wpnfx_flamethrower_ground_rim_01",
+			damage_type = "warpfire_ground",
+			sfx_name_start = "Play_enemy_stormfiend_fire_ground_loop",
+			end_pressure = 5,
+			fx_name_filled = "fx/wpnfx_flamethrower_ground_01",
+			apply_buff_to_ai = true,
+			time_of_life = 2,
+			max_liquid = 35,
+			use_nav_cost_map_volumes = false,
+			nav_cost_map_cost_type = "stormfiend_warpfire",
+			buff_condition_function = "stormfiend_warpfire_ground_base_condition",
+			immune_breeds = {},
+			difficulty_direct_damage = {
+				easy = {
+					3,
+					3,
+					3,
+					0,
+					3
+				},
+				normal = {
+					3,
+					3,
+					3,
+					0,
+					3
+				},
+				hard = {
+					3,
+					3,
+					3,
+					0,
+					3
+				},
+				survival_hard = {
+					3,
+					3,
+					3,
+					0,
+					3
+				},
+				harder = {
+					3,
+					3,
+					3,
+					0,
+					3
+				},
+				survival_harder = {
+					3,
+					3,
+					3,
+					0,
+					3
+				},
+				hardest = {
+					3,
+					3,
+					3,
+					0,
+					3
+				},
+				survival_hardest = {
+					3,
+					3,
+					3,
+					0,
+					3
+				}
+			}
+		},
+		sienna_unchained_ability_patch = {
+			do_direct_damage_ai = true,
+			sfx_name_stop = "Stop_props_lamp_oil_fire",
+			cell_size = 1,
+			liquid_spread_function = "pour_spread",
+			starting_pressure = 15,
+			damage_buff_template_name = "burning_1W_dot",
+			do_direct_damage_player = false,
+			linearized_flow = false,
+			fx_name_rim = "fx/wpnfx_lamp_oil_remains_rim",
+			damage_type = "burninating",
+			sfx_name_start = "Play_props_lamp_oil_fire",
+			end_pressure = 2,
+			fx_name_filled = "fx/wpnfx_lamp_oil_remains",
+			time_of_life = 3,
+			max_liquid = 10,
+			use_nav_cost_map_volumes = true,
+			nav_cost_map_cost_type = "lamp_oil_fire",
+			immune_breeds = {},
+			difficulty_direct_damage = {
+				easy = {
+					0,
+					0,
+					0,
+					0,
+					0
+				},
+				normal = {
+					0,
+					0,
+					0,
+					0,
+					0
+				},
+				hard = {
+					0,
+					0,
+					0,
+					0,
+					0
+				},
+				survival_hard = {
+					0,
+					0,
+					0,
+					0,
+					0
+				},
+				harder = {
+					0,
+					0,
+					0,
+					0,
+					0
+				},
+				survival_harder = {
+					0,
+					0,
+					0,
+					0,
+					0
+				},
+				hardest = {
+					0,
+					0,
+					0,
+					0,
+					0
+				},
+				survival_hardest = {
+					0,
+					0,
+					0,
+					0,
+					0
+				}
+			}
+		},
+		sienna_unchained_ability_patch_increased_damage = {
+			do_direct_damage_ai = true,
+			sfx_name_stop = "Stop_props_lamp_oil_fire",
+			cell_size = 1,
+			liquid_spread_function = "pour_spread",
+			starting_pressure = 15,
+			damage_buff_template_name = "burning_1W_dot",
+			do_direct_damage_player = false,
+			linearized_flow = false,
+			fx_name_rim = "fx/wpnfx_lamp_oil_remains_rim",
+			damage_type = "burninating",
+			sfx_name_start = "Play_props_lamp_oil_fire",
+			end_pressure = 2,
+			fx_name_filled = "fx/wpnfx_lamp_oil_remains",
+			time_of_life = 3,
+			max_liquid = 10,
+			use_nav_cost_map_volumes = true,
+			nav_cost_map_cost_type = "lamp_oil_fire",
+			immune_breeds = {},
+			difficulty_direct_damage = {
+				easy = {
+					10,
+					10,
+					10,
+					0,
+					10
+				},
+				normal = {
+					10,
+					10,
+					10,
+					0,
+					10
+				},
+				hard = {
+					10,
+					10,
+					10,
+					0,
+					10
+				},
+				survival_hard = {
+					10,
+					10,
+					10,
+					0,
+					10
+				},
+				harder = {
+					10,
+					10,
+					10,
+					0,
+					10
+				},
+				survival_harder = {
+					10,
+					10,
+					10,
+					0,
+					10
+				},
+				hardest = {
+					10,
+					10,
+					10,
+					0,
+					10
+				},
+				survival_hardest = {
+					10,
+					10,
+					10,
+					0,
+					10
+				}
+			}
+		}
+	},
+	pour_spread = function (angle)
+		return 1
+	end,
+	default_spread = function (angle)
+		return math.max((angle/math.pi - 1)^2 - 0.45, 0)
+	end,
+	forward_spread = function (angle)
+		return math.max(angle/(math.pi*0.25) - 1, 0)
+	end,
+	flamethrower_spread = function (angle)
+		return math.max((angle/math.pi - 1)^2, 0)
+	end,
+	bile_troll_vomit_init = function (self, t)
+		local troll_unit = self._source_unit
+
+		if AiUtils.unit_alive(troll_unit) then
+			local world = self._world
+			local tongue_node = Unit.node(troll_unit, "j_tongue_01")
+			local tongue_pos = Unit.world_position(troll_unit, tongue_node)
+			local vomit_unit_name = "units/weapons/enemy/wpn_troll_vomit/wpn_troll_vomit"
+			local unit_spawner = Managers.state.unit_spawner
+			local vomit_unit = unit_spawner.spawn_local_unit(unit_spawner, vomit_unit_name, tongue_pos, nil, nil)
+
+			World.link_unit(world, vomit_unit, troll_unit, tongue_node)
+			Unit.flow_event(vomit_unit, "fade_in")
+
+			self._vomit_unit = vomit_unit
+			local action = BreedActions.chaos_troll.vomit
+			local firing_time = action.firing_time
+			self._firing_time_deadline = t + firing_time
+		end
+
+		return 
+	end,
+	bile_troll_vomit_update = function (self, t, dt)
+		local vomit_unit = self._vomit_unit
+		local troll_unit = self._source_unit
+		local source_unit_is_alive = AiUtils.unit_alive(troll_unit)
+		local firing_time_deadline = self._firing_time_deadline
+
+		if source_unit_is_alive and vomit_unit ~= nil and t < firing_time_deadline then
+			return true
+		else
+			if vomit_unit ~= nil then
+				Unit.flow_event(vomit_unit, "fade_out")
+
+				self._vomit_unit = nil
+			end
+
+			return false
+		end
+
+		return 
+	end,
+	bile_troll_vomit_ground_base_condition = function (unit)
+		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+		return not buff_extension.has_buff_type(buff_extension, "troll_bile_face")
+	end,
+	stormfiend_warpfire_ground_base_condition = function (unit)
+		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+		return not buff_extension.has_buff_type(buff_extension, "stormfiend_warpfire_face")
+	end
+}
+
+return 
