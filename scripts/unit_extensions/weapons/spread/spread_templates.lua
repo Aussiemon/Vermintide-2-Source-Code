@@ -784,20 +784,20 @@ SpreadTemplates = {
 	brace_of_pistols = {
 		continuous = {
 			still = {
-				max_yaw = 1,
-				max_pitch = 1
+				max_yaw = 0.65,
+				max_pitch = 0.65
 			},
 			moving = {
-				max_yaw = 1,
-				max_pitch = 1
+				max_yaw = 0.8,
+				max_pitch = 0.8
 			},
 			crouch_still = {
-				max_yaw = 1,
-				max_pitch = 1
+				max_yaw = 0.6,
+				max_pitch = 0.6
 			},
 			crouch_moving = {
-				max_yaw = 2,
-				max_pitch = 2
+				max_yaw = 1,
+				max_pitch = 1
 			},
 			zoomed_still = {
 				max_yaw = 0,

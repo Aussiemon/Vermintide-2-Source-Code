@@ -24,7 +24,7 @@ BTVictimGrabbedThrowAwayAction.enter = function (self, unit, blackboard, t)
 	blackboard.navigation_extension:set_enabled(false)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
 
-	if blackboard.victim_grabbed then
+	if Unit.alive(blackboard.victim_grabbed) then
 		StatusUtils.set_grabbed_by_chaos_spawn_status_network(blackboard.victim_grabbed, "thrown_away")
 	end
 
@@ -35,7 +35,7 @@ BTVictimGrabbedThrowAwayAction.enter = function (self, unit, blackboard, t)
 	local ray_length = 3.5
 	local can_go = nil
 
-	if blackboard.target_unit then
+	if Unit.alive(blackboard.target_unit) then
 		local nav_world = blackboard.nav_world
 		local pos = POSITION_LOOKUP[unit]
 		local target_pos = POSITION_LOOKUP[blackboard.target_unit]
@@ -90,7 +90,7 @@ BTVictimGrabbedThrowAwayAction.leave = function (self, unit, blackboard, t, reas
 
 	blackboard.anim_cb_throw = false
 
-	if reason == "aborted" or (blackboard.drop_grabbed_player and blackboard.victim_grabbed) then
+	if Unit.alive(blackboard.victim_grabbed) and (reason == "aborted" or (blackboard.drop_grabbed_player and blackboard.victim_grabbed)) then
 		StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
 	end
 
@@ -135,7 +135,7 @@ BTVictimGrabbedThrowAwayAction.catapult_player = function (self, unit, blackboar
 end
 local Unit_alive = Unit.alive
 BTVictimGrabbedThrowAwayAction.run = function (self, unit, blackboard, t, dt)
-	local should_exit = blackboard.attack_finished or not blackboard.victim_grabbed or blackboard.drop_grabbed_player
+	local should_exit = blackboard.attack_finished or not Unit.alive(blackboard.victim_grabbed) or blackboard.drop_grabbed_player
 
 	if should_exit then
 		return "done"

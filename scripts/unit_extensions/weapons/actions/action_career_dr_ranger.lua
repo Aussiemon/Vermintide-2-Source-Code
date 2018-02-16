@@ -111,7 +111,7 @@ ActionCareerDRRanger._stagger_explosion = function (self)
 	local position = POSITION_LOOKUP[owner_unit]
 	local rotation = Quaternion.identity()
 
-	DamageUtils.create_explosion(world, owner_unit, position, rotation, explosion_template.explosion, scale, damage_source, is_server, is_husk, owner_unit)
+	DamageUtils.create_explosion(world, owner_unit, position, rotation, explosion_template, scale, damage_source, is_server, is_husk, owner_unit)
 
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]

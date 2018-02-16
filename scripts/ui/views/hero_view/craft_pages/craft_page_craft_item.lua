@@ -59,6 +59,8 @@ CraftPageCraftItem.setup_recipe_requirements = function (self)
 	local item_interface = Managers.backend:get_interface("items")
 	local item_data = added_backend_id and item_interface.get_item_masterlist_data(item_interface, added_backend_id)
 	local added_item_slot_type = item_data and item_data.slot_type
+	local rarity = added_backend_id and item_interface.get_item_rarity(item_interface, added_backend_id)
+	local can_use_added_item = not added_backend_id or rarity == "default"
 
 	if added_backend_id then
 		if added_item_slot_type == "ranged" or added_item_slot_type == "melee" then
@@ -66,10 +68,6 @@ CraftPageCraftItem.setup_recipe_requirements = function (self)
 		elseif added_item_slot_type == "trinket" or added_item_slot_type == "ring" or added_item_slot_type == "necklace" then
 			recipe_name = "craft_jewellery"
 		end
-	end
-
-	if recipe_name == self._recipe_name then
-		return 
 	end
 
 	self._recipe_name = recipe_name
@@ -134,9 +132,9 @@ CraftPageCraftItem.setup_recipe_requirements = function (self)
 		end
 	end
 
-	self._has_all_requirements = has_all_requirements
+	self._has_all_requirements = has_all_requirements and can_use_added_item
 
-	self._set_craft_button_disabled(self, not has_all_requirements)
+	self._set_craft_button_disabled(self, not self._has_all_requirements)
 
 	return 
 end

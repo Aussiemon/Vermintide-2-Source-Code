@@ -166,6 +166,8 @@ assert(DialogueLookup[DialogueLookup_n + 165] == nil)
 assert(DialogueLookup[DialogueLookup_n + 166] == nil)
 assert(DialogueLookup[DialogueLookup_n + 167] == nil)
 assert(DialogueLookup[DialogueLookup_n + 168] == nil)
+assert(DialogueLookup[DialogueLookup_n + 169] == nil)
+assert(DialogueLookup[DialogueLookup_n + 170] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_gameplay_seeing_a_stormvermin"
 DialogueLookup[DialogueLookup_n + 2] = "pdr_gameplay_seeing_a_gutter_runner"
@@ -332,9 +334,11 @@ DialogueLookup[DialogueLookup_n + 162] = "pdr_gameplay_tips_wizard_wind"
 DialogueLookup[DialogueLookup_n + 163] = "pdr_gameplay_tips_wizard_plague"
 DialogueLookup[DialogueLookup_n + 164] = "pdr_gameplay_parry_witch_hunter"
 DialogueLookup[DialogueLookup_n + 165] = "pdr_gameplay_parry_wood_elf"
-DialogueLookup[DialogueLookup_n + 166] = "pdr_curse"
-DialogueLookup[DialogueLookup_n + 167] = "pdr_gameplay_overcharge"
-DialogueLookup[DialogueLookup_n + 168] = "pdr_targeted_by_ratling"
-DialogueLookup_n = DialogueLookup_n + 168
+DialogueLookup[DialogueLookup_n + 166] = "pdr_gameplay_parry_bright_wizard"
+DialogueLookup[DialogueLookup_n + 167] = "pdr_gameplay_parry_empire_soldier"
+DialogueLookup[DialogueLookup_n + 168] = "pdr_curse"
+DialogueLookup[DialogueLookup_n + 169] = "pdr_gameplay_overcharge"
+DialogueLookup[DialogueLookup_n + 170] = "pdr_targeted_by_ratling"
+DialogueLookup_n = DialogueLookup_n + 170
 
 return 

@@ -13,6 +13,9 @@ BuffUI.init = function (self, ingame_ui_context)
 	self.player_manager = ingame_ui_context.player_manager
 	self.ui_animations = {}
 	self.is_in_inn = ingame_ui_context.is_in_inn
+	self.render_settings = {
+		alpha_multiplier = 1
+	}
 
 	self._create_ui_elements(self)
 	rawset(_G, "buff_ui", self)
@@ -398,7 +401,7 @@ BuffUI.draw = function (self, dt)
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("ingame_menu")
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
 	for _, data in ipairs(self._active_buffs) do
 		local widget = data.widget
@@ -523,6 +526,21 @@ BuffUI.on_gamepad_activated = function (self)
 end
 BuffUI.on_gamepad_deactivated = function (self)
 	self._align_widgets(self)
+
+	return 
+end
+BuffUI.set_panel_alpha = function (self, alpha)
+	if self.render_settings.alpha_multiplier ~= alpha then
+		self.render_settings.alpha_multiplier = alpha
+
+		self.set_dirty(self)
+
+		for index, data in ipairs(self._active_buffs) do
+			local widget = data.widget
+
+			self._set_widget_dirty(self, widget)
+		end
+	end
 
 	return 
 end

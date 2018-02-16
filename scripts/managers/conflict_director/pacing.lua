@@ -5,6 +5,8 @@ Pacing.init = function (self, world, level_pacing_settings)
 	self.world = world
 	self.pacing_state = "pacing_build_up"
 	self._threat_population = 1
+	self._specials_population = 1
+	self._horde_population = 1
 	self._state_start_time = 0
 	self.total_intensity = 0
 	self.player_intensity = {}
@@ -16,12 +18,16 @@ Pacing.init = function (self, world, level_pacing_settings)
 end
 Pacing.disable = function (self)
 	self._threat_population = 1
+	self._specials_population = 0
+	self._horde_population = 0
 	self.pacing_state = "pacing_frozen"
 
 	return 
 end
 Pacing.enable = function (self)
 	self._threat_population = 1
+	self._specials_population = 1
+	self._horde_population = 1
 	self.pacing_state = "pacing_build_up"
 
 	return 
@@ -64,10 +70,22 @@ Pacing.pacing_relax = function (self, t)
 	return 
 end
 Pacing.get_pacing_data = function (self)
-	return self.pacing_state, self._state_start_time, self._threat_population, self._end_pacing_time
+	return self.pacing_state, self._state_start_time, self._threat_population, self._specials_population, self._horde_population, self._end_pacing_time
+end
+Pacing.ignore_intensity_decay_delay = function (self)
+	return self.pacing_state == "pacing_relax"
+end
+Pacing.get_state = function (self)
+	return self.pacing_state
 end
 Pacing.threat_population = function (self)
 	return self._threat_population
+end
+Pacing.horde_population = function (self)
+	return self._horde_population
+end
+Pacing.specials_population = function (self)
+	return self._specials_population
 end
 Pacing.enemy_killed = function (self, killed_unit, player_units)
 	for i = 1, #player_units, 1 do
@@ -98,18 +116,27 @@ Pacing.advance_pacing = function (self, t, reason)
 		next_pacing = "pacing_sustain_peak"
 		self._end_pacing_time = t + ConflictUtils.random_interval(self.settings.sustain_peak_duration)
 		self._threat_population = 1
+		self._specials_population = 1
+		self._horde_population = 1
 	elseif pacing == "pacing_sustain_peak" then
 		next_pacing = "pacing_peak_fade"
 		self._threat_population = 0
+		self._specials_population = 0
+		self._horde_population = 0
 	elseif pacing == "pacing_peak_fade" then
 		next_pacing = "pacing_relax"
 		self._end_pacing_time = t + ConflictUtils.random_interval(self.settings.relax_duration)
-		self._threat_population = 0
+		self._threat_population = 1
+		self._specials_population = 0
+		self._horde_population = 0
 
+		Managers.state.conflict:going_to_relax_state()
 		Managers.state.conflict:init_rush_check(t)
 	elseif pacing == "pacing_relax" then
 		next_pacing = "pacing_build_up"
 		self._threat_population = 1
+		self._specials_population = 1
+		self._horde_population = 1
 
 		Managers.state.conflict:stop_rush_check()
 	end

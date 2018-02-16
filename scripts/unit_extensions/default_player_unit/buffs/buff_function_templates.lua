@@ -1889,47 +1889,52 @@ BuffFunctionTemplates.functions = {
 		local ammo_amount = buff.bonus
 		local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 		local slot_data = inventory_extension.get_slot_data(inventory_extension, weapon_slot)
-		local right_unit_1p = slot_data.right_unit_1p
-		local left_unit_1p = slot_data.left_unit_1p
-		local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
-		local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
-		local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
-		local adding_buff = nil
 
-		if ammo_extension then
-			adding_buff = ammo_extension.total_ammo_fraction(ammo_extension) == 0
-		end
+		if slot_data then
+			local right_unit_1p = slot_data.right_unit_1p
+			local left_unit_1p = slot_data.left_unit_1p
+			local right_hand_ammo_extension = ScriptUnit.has_extension(right_unit_1p, "ammo_system")
+			local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
+			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
+			local adding_buff = nil
 
-		local buff_system = Managers.state.entity:system("buff_system")
-		local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-		local removed_buff = nil
-
-		if not adding_buff and buff then
-			if local_player then
-				buff_extension.remove_buff(buff_extension, buff.id)
-
-				removed_buff = true
-			else
-				local server_id = buff.server_id
-
-				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
-
-				removed_buff = true
+			if ammo_extension then
+				adding_buff = ammo_extension.total_ammo_fraction(ammo_extension) == 0
 			end
-		elseif adding_buff and not buff then
-			if local_player then
-				buff_extension.add_buff(buff_extension, buff_to_add)
-			else
-				local buff_id = buff_system.add_buff(buff_system, owner_unit, buff_to_add, owner_unit, true)
-				local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
 
-				if buff then
-					buff.server_id = buff_id
+			local buff_system = Managers.state.entity:system("buff_system")
+			local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
+			local removed_buff = nil
+
+			if not adding_buff and buff then
+				if local_player then
+					buff_extension.remove_buff(buff_extension, buff.id)
+
+					removed_buff = true
+				else
+					local server_id = buff.server_id
+
+					buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
+
+					removed_buff = true
+				end
+			elseif adding_buff and not buff then
+				if local_player then
+					buff_extension.add_buff(buff_extension, buff_to_add)
+				else
+					local buff_id = buff_system.add_buff(buff_system, owner_unit, buff_to_add, owner_unit, true)
+					local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
+
+					if buff then
+						buff.server_id = buff_id
+					end
 				end
 			end
+
+			return removed_buff
 		end
 
-		return removed_buff
+		return false
 	end,
 	activate_buff_on_grimoire_picked_up = function (unit, buff, params)
 		local template = buff.template
@@ -2461,8 +2466,8 @@ BuffFunctionTemplates.functions = {
 
 			if status_extension.is_invisible(status_extension) then
 				status_extension.set_invisible(status_extension, false)
-				first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_kerillian_shade_exit", nil, true)
-				first_person_extension.play_hud_sound_event(first_person_extension, "Stop_career_ability_kerillian_shade_loop")
+				first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_markus_huntsman_exit", nil, true)
+				first_person_extension.play_hud_sound_event(first_person_extension, "Stop_career_ability_markus_huntsman_loop")
 
 				MOOD_BLACKBOARD.skill_huntsman_stealth = false
 			else

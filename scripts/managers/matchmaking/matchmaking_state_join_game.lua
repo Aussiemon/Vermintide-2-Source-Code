@@ -65,8 +65,13 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 
 		if popup_result then
 			self._selected_hero_at_t = t
+			local cancel_matchmaking = self._handle_popup_result(self, popup_result, t)
 
-			self._handle_popup_result(self, popup_result, t)
+			if cancel_matchmaking then
+				self._matchmaking_manager:cancel_matchmaking()
+
+				return nil
+			end
 		end
 
 		self._update_lobby_data(self, dt, t)
@@ -76,6 +81,8 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 		mm_printf_force("Timed out from server")
 		self._matchmaking_manager:send_system_chat_message("matchmaking_status_handshaker_time_out")
 		self._matchmaking_manager:cancel_matchmaking()
+
+		return nil
 	end
 
 	if self._exit_to_search_game then
@@ -188,11 +195,7 @@ MatchmakingStateJoinGame._handle_popup_result = function (self, result, t)
 
 	self._remove_join_popup(self)
 
-	if cancel then
-		self._matchmaking_manager:cancel_matchmaking()
-	end
-
-	return 
+	return cancel
 end
 MatchmakingStateJoinGame.rpc_matchmaking_update_profiles_data = function (self, sender, client_cookie, host_cookie, profile_array, player_id_array)
 	if not self._handshaker_client:validate_cookies(client_cookie, host_cookie) then

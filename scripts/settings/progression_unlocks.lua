@@ -7,115 +7,130 @@ for key, level_requirement in pairs(TalentUnlockLevels) do
 
 	progression_unlocks[key] = {
 		value = "options_button_icon_talents_glow",
+		description = "reward_talent_point",
 		unlock_type = "icon",
-		level_requirement = level_requirement,
-		description = key .. "_description"
+		level_requirement = level_requirement
 	}
 end
 
 progression_unlocks.es_mercenary = {
-	description = "n/a",
-	value = "es_mercenary",
+	description = "end_screen_career_unlocked",
 	profile = "empire_soldier",
+	value = "es_mercenary",
+	title = "es_mercenary",
 	level_requirement = 0,
 	unlock_type = "career"
 }
 progression_unlocks.es_huntsman = {
-	description = "reward_career_es_huntsman",
-	value = "es_huntsman",
+	description = "end_screen_career_unlocked",
 	profile = "empire_soldier",
-	level_requirement = 99,
+	value = "es_huntsman",
+	title = "es_huntsman",
+	level_requirement = 7,
 	unlock_type = "career"
 }
 progression_unlocks.es_knight = {
-	description = "reward_career_es_knight",
-	value = "es_knight",
+	description = "end_screen_career_unlocked",
 	profile = "empire_soldier",
-	level_requirement = 99,
+	value = "es_knight",
+	title = "es_knight",
+	level_requirement = 12,
 	unlock_type = "career"
 }
 progression_unlocks.dr_ranger = {
 	description = "n/a",
-	value = "dr_ranger",
 	profile = "dwarf_ranger",
+	value = "dr_ranger",
+	title = "dr_ranger",
 	level_requirement = 0,
 	unlock_type = "career"
 }
 progression_unlocks.dr_ironbreaker = {
-	description = "reward_career_dr_ironbreaker",
-	value = "dr_ironbreaker",
+	description = "end_screen_career_unlocked",
 	profile = "dwarf_ranger",
-	level_requirement = 99,
+	value = "dr_ironbreaker",
+	title = "dr_ironbreaker",
+	level_requirement = 7,
 	unlock_type = "career"
 }
 progression_unlocks.dr_slayer = {
-	description = "reward_career_dr_slayer",
-	value = "dr_slayer",
+	description = "end_screen_career_unlocked",
 	profile = "dwarf_ranger",
-	level_requirement = 99,
+	value = "dr_slayer",
+	title = "dr_slayer",
+	level_requirement = 12,
 	unlock_type = "career"
 }
 progression_unlocks.wh_captain = {
-	description = "n/a",
-	value = "wh_captain",
+	description = "end_screen_career_unlocked",
 	profile = "witch_hunter",
+	value = "wh_captain",
+	title = "wh_captain",
 	level_requirement = 0,
 	unlock_type = "career"
 }
 progression_unlocks.wh_bountyhunter = {
-	description = "reward_career_wh_bountyhunter",
-	value = "wh_bountyhunter",
+	description = "end_screen_career_unlocked",
 	profile = "witch_hunter",
-	level_requirement = 99,
+	value = "wh_bountyhunter",
+	title = "wh_bountyhunter",
+	level_requirement = 7,
 	unlock_type = "career"
 }
 progression_unlocks.wh_zealot = {
-	description = "reward_career_wh_zealot",
-	value = "wh_zealot",
+	description = "end_screen_career_unlocked",
 	profile = "witch_hunter",
-	level_requirement = 99,
+	value = "wh_zealot",
+	title = "wh_zealot",
+	level_requirement = 12,
 	unlock_type = "career"
 }
 progression_unlocks.we_waywatcher = {
-	description = "career_unlocked",
-	value = "we_waywatcher",
+	description = "end_screen_career_unlocked",
 	profile = "wood_elf",
+	value = "we_waywatcher",
+	title = "we_waywatcher",
 	level_requirement = 0,
 	unlock_type = "career"
 }
 progression_unlocks.we_maidenguard = {
-	description = "reward_career_we_maidenguard",
-	value = "we_maidenguard",
+	description = "end_screen_career_unlocked",
 	profile = "wood_elf",
-	level_requirement = 99,
+	value = "we_maidenguard",
+	title = "we_maidenguard",
+	level_requirement = 7,
 	unlock_type = "career"
 }
 progression_unlocks.we_shade = {
-	description = "reward_career_we_shade",
-	value = "we_shade",
+	description = "end_screen_career_unlocked",
 	profile = "wood_elf",
-	level_requirement = 99,
+	value = "we_shade",
+	title = "we_shade",
+	level_requirement = 12,
 	unlock_type = "career"
 }
 progression_unlocks.bw_adept = {
-	description = "n/a",
-	value = "bw_adept",
+	description = "end_screen_career_unlocked",
 	profile = "bright_wizard",
+	value = "bw_adept",
+	title = "bw_adept",
 	level_requirement = 0,
 	unlock_type = "career"
 }
 progression_unlocks.bw_scholar = {
-	description = "reward_career_bw_scholar",
-	value = "bw_scholar",
+	description = "end_screen_career_unlocked",
 	profile = "bright_wizard",
-	level_requirement = 99,
+	value = "bw_scholar",
+	title = "bw_scholar",
+	level_requirement = 7,
 	unlock_type = "career"
 }
 progression_unlocks.bw_unchained = {
-	description = "reward_career_bw_unchained",
-	value = "bw_unchained",
+	description = "end_screen_career_unlocked",
 	profile = "bright_wizard",
-	level_requirement = 99,
+	value = "bw_unchained",
+	title = "bw_unchained",
+	level_requirement = 12,
 	unlock_type = "career"
 }
 

@@ -26,7 +26,7 @@ StateTitleScreenInitNetwork._init_network = function (self)
 
 	Development.set_parameter("auto_join", nil)
 
-	local development_port = Development.parameter("server_port") or GameSettingsDevelopment.network_port
+	local development_port = script_data.server_port or GameSettingsDevelopment.network_port
 	development_port = development_port + StateTitleScreenInitNetwork.lobby_port_increment
 	StateTitleScreenInitNetwork.lobby_port_increment = StateTitleScreenInitNetwork.lobby_port_increment + 1
 	local lobby_port = (LEVEL_EDITOR_TEST and GameSettingsDevelopment.editor_lobby_port) or development_port

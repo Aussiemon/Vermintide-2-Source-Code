@@ -3166,6 +3166,106 @@ ItemMasterList.bw_1h_mace_3001 = {
 		"bw_unchained"
 	}
 }
+ItemMasterList.bw_dagger_0001 = {
+	description = "description_plentiful_bright_wizard_bw_dagger",
+	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_brw_dagger_01/wpn_brw_dagger_01",
+	hud_icon = "weapon_generic_icon_sword",
+	skin_combination_table = "bw_dagger_skins",
+	slot_type = "melee",
+	inventory_icon = "icon_wpn_brw_dagger_01",
+	display_name = "display_name_plentiful_bright_wizard_bw_dagger",
+	has_power_level = true,
+	template = "one_handed_daggers_template_1",
+	property_table_name = "melee",
+	item_type = "bw_1h_dagger",
+	trait_table_name = "melee",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.bw_dagger_0101 = {
+	description = "description_common_bright_wizard_bw_dagger",
+	rarity = "common",
+	right_hand_unit = "units/weapons/player/wpn_brw_dagger_02/wpn_brw_dagger_02",
+	hud_icon = "weapon_generic_icon_sword",
+	skin_combination_table = "bw_dagger_skins",
+	slot_type = "melee",
+	inventory_icon = "icon_wpn_brw_dagger_01",
+	display_name = "display_name_common_bright_wizard_bw_dagger",
+	has_power_level = true,
+	template = "one_handed_daggers_template_1",
+	property_table_name = "melee",
+	item_type = "bw_1h_dagger",
+	trait_table_name = "melee",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.bw_dagger_1001 = {
+	description = "description_rare_bright_wizard_bw_dagger",
+	rarity = "rare",
+	right_hand_unit = "units/weapons/player/wpn_brw_dagger_03/wpn_brw_dagger_03",
+	hud_icon = "weapon_generic_icon_sword",
+	skin_combination_table = "bw_dagger_skins",
+	slot_type = "melee",
+	inventory_icon = "icon_wpn_brw_dagger_01",
+	display_name = "display_name_rare_bright_wizard_bw_dagger",
+	has_power_level = true,
+	template = "one_handed_daggers_template_1",
+	property_table_name = "melee",
+	item_type = "bw_1h_dagger",
+	trait_table_name = "melee",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.bw_dagger_2001 = {
+	description = "description_exotic_bright_wizard_bw_dagger",
+	rarity = "exotic",
+	right_hand_unit = "units/weapons/player/wpn_brw_dagger_04/wpn_brw_dagger_04",
+	hud_icon = "weapon_generic_icon_sword",
+	skin_combination_table = "bw_dagger_skins",
+	slot_type = "melee",
+	inventory_icon = "icon_wpn_brw_dagger_01",
+	display_name = "display_name_exotic_bright_wizard_bw_dagger",
+	has_power_level = true,
+	template = "one_handed_daggers_template_1",
+	property_table_name = "melee",
+	item_type = "bw_1h_dagger",
+	trait_table_name = "melee",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.bw_dagger_3001 = {
+	description = "description_unique_bright_wizard_bw_dagger",
+	rarity = "unique",
+	right_hand_unit = "units/weapons/player/wpn_brw_dagger_05/wpn_brw_dagger_05",
+	hud_icon = "weapon_generic_icon_sword",
+	skin_combination_table = "bw_dagger_skins",
+	slot_type = "melee",
+	inventory_icon = "icon_wpn_brw_dagger_01",
+	display_name = "display_name_unique_bright_wizard_bw_dagger",
+	has_power_level = true,
+	template = "one_handed_daggers_template_1",
+	property_table_name = "melee",
+	item_type = "bw_1h_dagger",
+	trait_table_name = "melee",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
 ItemMasterList.bw_flame_sword_0000 = {
 	description = "description_plentiful_bright_wizard_bw_flame_sword",
 	rarity = "default",

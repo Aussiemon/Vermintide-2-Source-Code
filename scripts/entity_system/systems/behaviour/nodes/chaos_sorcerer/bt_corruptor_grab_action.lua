@@ -62,13 +62,13 @@ BTCorruptorGrabAction.leave = function (self, unit, blackboard, t, reason, destr
 	if Unit.alive(blackboard.grabbed_unit) then
 		StatusUtils.set_grabbed_by_corruptor_network("chaos_corruptor_released", blackboard.target_unit, false, unit)
 		self.set_beam_state(self, unit, blackboard, "stop_beam")
-		Managers.state.entity:system("ai_bot_group_system"):ranged_attack_ended(unit, blackboard.grabbed_unit, "corruptor_grabbed")
-
-		blackboard.grabbed_unit = nil
 	else
 		self.set_beam_state(self, unit, blackboard, "stop_beam")
 	end
 
+	Managers.state.entity:system("ai_bot_group_system"):ranged_attack_ended(unit, blackboard.grabbed_unit, "corruptor_grabbed")
+
+	blackboard.grabbed_unit = nil
 	blackboard.vanish_countdown = t
 
 	return 
@@ -252,7 +252,7 @@ BTCorruptorGrabAction.play_grabbed_2d_sound = function (self, unit, blackboard, 
 	local player_unit = blackboard.target_unit
 	local player = Managers.player:unit_owner(player_unit)
 
-	if not player.bot_player then
+	if player and not player.bot_player then
 		local audio_system_extension = Managers.state.entity:system("audio_system")
 		local sound_event_id = NetworkLookup.sound_events[sound_event]
 		local unit_id = NetworkUnit.game_object_id(player_unit)

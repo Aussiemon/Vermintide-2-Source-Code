@@ -2,15 +2,9 @@ if rawget(_G, "EAC") then
 	require("scripts/managers/eac/script_eac_token")
 end
 
-script_data.disable_eac = script_data.disable_eac or Development.parameter("disable_eac")
 EACManager = class(EACManager)
 EACManager.init = function (self)
 	self._enabled = rawget(_G, "EAC") ~= nil
-
-	if script_data.disable_eac then
-		self._enabled = false
-	end
-
 	self._request_ids = 0
 
 	return 
@@ -19,7 +13,7 @@ EACManager.destroy = function (self)
 	return 
 end
 EACManager.enabled = function (self)
-	return self._enabled
+	return self.authorized(self)
 end
 EACManager.authorized = function (self)
 	if not self._enabled then

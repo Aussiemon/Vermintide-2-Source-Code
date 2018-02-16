@@ -13,6 +13,8 @@ ActionCareerBWScholar.client_owner_start_action = function (self, new_action, t,
 
 	local talent_extension = self.talent_extension
 	local owner_unit = self.owner_unit
+	local player = Managers.player:owner(owner_unit)
+	local local_player = player and not player.remote
 
 	if talent_extension.has_talent(talent_extension, "sienna_scholar_activated_ability_dump_overcharge", "bright_wizard", true) and local_player then
 		local overcharge_extension = self.overcharge_extension

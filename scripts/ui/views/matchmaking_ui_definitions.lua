@@ -254,11 +254,11 @@ local scenegraph_definition = {
 		parent = "timer_bg",
 		horizontal_alignment = "left",
 		size = {
-			400,
+			392,
 			16
 		},
 		position = {
-			5,
+			4,
 			0,
 			3
 		}
@@ -275,6 +275,90 @@ local scenegraph_definition = {
 			22,
 			0,
 			3
+		}
+	},
+	cancel_text_field = {
+		vertical_alignment = "bottom",
+		parent = "detailed_info_box",
+		horizontal_alignment = "center",
+		size = {
+			400,
+			50
+		},
+		position = {
+			0,
+			-50,
+			3
+		}
+	},
+	cancel_input_backround = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			411,
+			61
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	cancel_text_input = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			400,
+			50
+		},
+		position = {
+			200,
+			0,
+			2
+		}
+	},
+	cancel_text_prefix = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			400,
+			50
+		},
+		position = {
+			200,
+			0,
+			2
+		}
+	},
+	cancel_text_suffix = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			400,
+			50
+		},
+		position = {
+			200,
+			0,
+			2
+		}
+	},
+	cancel_icon = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			36,
+			26
+		},
+		position = {
+			0,
+			0,
+			2
 		}
 	},
 	debug_box = {
@@ -653,6 +737,16 @@ matchmaking_status_text_style.horizontal_alignment = "center"
 matchmaking_status_text_style.font_size = 32
 matchmaking_status_text_style.dynamic_font_size = true
 matchmaking_status_text_style.offset[2] = 2
+local cancel_input_text_style = table.clone(default_text_style)
+cancel_input_text_style.vertical_alignment = "center"
+cancel_input_text_style.horizontal_alignment = "left"
+cancel_input_text_style.use_shadow = true
+cancel_input_text_style.font_size = 28
+cancel_input_text_style.dynamic_font_size = true
+cancel_input_text_style.offset[2] = 2
+cancel_input_text_style.text_color = Colors.get_color_table_with_alpha("font_title", 255)
+local cancel_text_style = table.clone(cancel_input_text_style)
+cancel_text_style.text_color = Colors.get_color_table_with_alpha("white", 255)
 
 local function create_status_widget(texture, scenegraph_id)
 	return {
@@ -745,7 +839,12 @@ local widget_detail_definitions = {
 			1
 		}
 	}, "timer_fg"),
-	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow")
+	timer_glow = UIWidgets.create_simple_texture("timer_detail", "timer_glow"),
+	cancel_text_input = UIWidgets.create_simple_text(Localize("matchmaking_surfix_cancel"), "cancel_text_input", nil, nil, cancel_input_text_style),
+	cancel_text_suffix = UIWidgets.create_simple_text(Localize("matchmaking_surfix_cancel"), "cancel_text_suffix", nil, nil, cancel_text_style),
+	cancel_text_prefix = UIWidgets.create_simple_text(Localize("matchmaking_surfix_cancel"), "cancel_text_prefix", nil, nil, cancel_text_style),
+	cancel_icon = UIWidgets.create_simple_texture("xbone_button_icon_a", "cancel_icon"),
+	cancel_input_backround = UIWidgets.create_simple_texture("tab_menu_bg_02", "cancel_input_backround")
 }
 local debug_widget_definitions = {
 	debug_box = {

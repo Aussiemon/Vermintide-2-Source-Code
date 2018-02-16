@@ -18,7 +18,8 @@ GameActsOrder = {
 MapPresentationActs = {
 	"act_1",
 	"act_2",
-	"act_3"
+	"act_3",
+	"act_4"
 }
 GameActsDisplayNames = {
 	act_1 = "act_1_display_name",
@@ -280,6 +281,19 @@ LevelUnlockUtils.level_unlocked = function (statistics_db, player_stats_id, leve
 			if not level_completed then
 				return false
 			end
+		end
+	end
+
+	return true
+end
+LevelUnlockUtils.all_levels_completed = function (statistics_db, player_stats_id)
+	local level_keys = UnlockableLevelsByGameMode.adventure
+
+	for _, level_key in ipairs(level_keys) do
+		local times_completed = statistics_db.get_persistent_stat(statistics_db, player_stats_id, "completed_levels", level_key)
+
+		if times_completed == 0 then
+			return false
 		end
 	end
 

@@ -5,6 +5,7 @@ local widget_definitions = definitions.widgets
 local map_size = definitions.map_size
 local act_widget_definitions = definitions.act_widgets
 local node_widget_definitions = definitions.node_widgets
+local end_act_widget_definition = definitions.end_act_widget
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 
@@ -82,6 +83,7 @@ StartGameWindowMissionSelection.create_ui_elements = function (self, params, off
 
 	self._act_widgets = act_widgets
 	self._act_widgets_by_name = act_widgets_by_name
+	self.end_act_widget = UIWidget.init(end_act_widget_definition)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
@@ -149,8 +151,8 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 	local stats_id = self._stats_id
 	local assigned_widgets = {}
 	local act_widgets = {}
-	local level_width_spacing = 250
-	local level_height_spacing = 256
+	local level_width_spacing = 214
+	local level_height_spacing = 250
 	local max_act_number = 3
 
 	for act_key, levels in pairs(levels_by_act) do
@@ -160,8 +162,17 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 			local act_settings = ActSettings[act_key]
 			local act_sorting = act_settings.sorting
 			local act_index = (act_sorting - 1)%max_act_number + 1
-			local act_position_y = -level_height_spacing + (max_act_number - act_index)*level_height_spacing
-			local act_widget = self._act_widgets[act_index]
+			local is_end_act = max_act_number < act_sorting
+			local act_position_y = 0
+			local act_widget = nil
+
+			if not is_end_act then
+				act_position_y = -level_height_spacing + (max_act_number - act_index)*level_height_spacing
+				act_widget = self._act_widgets[act_index]
+			else
+				act_widget = self.end_act_widget
+			end
+
 			act_widgets[#act_widgets + 1] = act_widget
 			act_widget.offset[2] = act_position_y
 			local act_banner_texture = act_settings.banner_texture
@@ -169,13 +180,26 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 			act_widget.content.background = act_settings.banner_texture
 			act_widget.content.text = Localize(act_display_name)
 			local num_levels_in_act = #levels
-			local level_position_x = -((num_levels_in_act - 1)*level_width_spacing)*0.5
+			local level_position_x = 0
+			local level_position_y = 0
 
-			for _, level_data in ipairs(levels) do
+			for level_index, level_data in ipairs(levels) do
+				if is_end_act then
+					level_position_x = level_width_spacing*4
+				elseif act_index == 1 and not is_end_act then
+					if level_index == 1 then
+						if not (level_position_x + level_width_spacing/2) then
+						end
+					end
+				elseif act_index ~= 2 and level_index == 1 and not (level_position_x + level_width_spacing/2) then
+				end
+
 				local index = #assigned_widgets + 1
 				local widget = node_widgets[index]
 				local content = widget.content
+				local style = widget.style
 				local level_key = level_data.level_id
+				local boss_level = level_data.boss_level
 				local level_display_name = level_data.display_name
 				content.text = Localize(level_display_name)
 				local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key)
@@ -183,6 +207,8 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 				local selection_frame_texture = self._get_selection_frame_by_difficulty_index(self, completed_difficulty_index)
 				content.frame = selection_frame_texture
 				content.locked = not level_unlocked
+				content.act_key = act_key
+				content.level_key = level_key
 				local level_image = level_data.level_image
 
 				if level_image then
@@ -192,9 +218,21 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 				end
 
 				content.level_data = level_data
+				content.boss_level = boss_level
 				local offset = widget.offset
 				offset[1] = level_position_x
-				offset[2] = act_position_y
+				offset[2] = act_position_y + level_position_y
+				local required_acts = level_data.required_acts
+
+				if level_index < num_levels_in_act then
+					local next_level_key = levels[level_index + 1].level_id
+					local next_level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, stats_id, next_level_key)
+					content.draw_path = true
+					content.draw_path_fill = next_level_unlocked
+					style.path.texture_size[1] = level_width_spacing
+					style.path_glow.texture_size[1] = level_width_spacing
+				end
+
 				assigned_widgets[index] = widget
 				level_position_x = level_position_x + level_width_spacing
 			end
@@ -204,7 +242,71 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 	self._active_node_widgets = assigned_widgets
 	self._active_act_widgets = act_widgets
 
+	self._setup_required_act_connections(self)
+
 	return 
+end
+StartGameWindowMissionSelection._setup_required_act_connections = function (self)
+	local ui_scenegraph = self.ui_scenegraph
+	local assigned_widgets = self._active_node_widgets
+
+	for _, widget in ipairs(assigned_widgets) do
+		local level_settings = LevelSettings[widget.content.level_key]
+		local required_acts = level_settings.required_acts
+		local scenegraph_id = widget.scenegraph_id
+		local position = ui_scenegraph[scenegraph_id].world_position
+		local offset = widget.offset
+		local pos_x = position[1] + offset[1]
+		local pos_y = position[2] + offset[2]
+
+		if required_acts then
+			for _, required_act in ipairs(required_acts) do
+				local required_level_key = self._get_last_level_in_act(self, required_act)
+
+				for i, level_widget in ipairs(assigned_widgets) do
+					if level_widget.content.level_key == required_level_key then
+						local level_scenegraph_id = level_widget.scenegraph_id
+						local level_position = ui_scenegraph[level_scenegraph_id].world_position
+						local path_style = level_widget.style.path
+						local path_glow_style = level_widget.style.path_glow
+						local level_offset = level_widget.offset
+						local level_pos_x = level_position[1] + level_offset[1]
+						local level_pos_y = level_position[2] + level_offset[2]
+						local distance = math.distance_2d(level_pos_x, level_pos_y, pos_x, pos_y)
+						local angle = math.angle(level_pos_x, level_pos_y, pos_x, pos_y)
+						angle = (pos_y < level_pos_y and math.abs(angle)) or -angle
+						path_style.angle = angle
+						path_style.texture_size[1] = distance
+						path_glow_style.texture_size[1] = distance
+						path_glow_style.angle = angle
+						level_widget.content.draw_path = true
+						level_widget.content.draw_path_fill = true
+					end
+				end
+			end
+
+			return 
+		end
+	end
+
+	return 
+end
+StartGameWindowMissionSelection._get_last_level_in_act = function (self, act_key)
+	local act_levels = GameActs[act_key]
+	local best_level_id = nil
+	local best_sort_order = 0
+
+	for i, level_id in ipairs(act_levels) do
+		local level_settings = LevelSettings[level_id]
+		local sort_order = level_settings.act_presentation_order
+
+		if best_sort_order < sort_order then
+			best_sort_order = sort_order
+			best_level_id = level_id
+		end
+	end
+
+	return best_level_id, best_sort_order
 end
 StartGameWindowMissionSelection._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
 	local completed_frame_texture = "map_frame_00"
@@ -245,26 +347,32 @@ StartGameWindowMissionSelection._set_presentation_info = function (self, level_i
 	local description_text = ""
 	local frame_texture = "map_frame_00"
 	local draw_info = false
+	local selected_level_widget = widgets_by_name.selected_level
+	local content = selected_level_widget.content
 
 	if level_id then
 		local statistics_db = self.statistics_db
 		local stats_id = self._stats_id
 		local level_settings = LevelSettings[level_id]
 		local level_image = level_settings.level_image
+		local boss_level = level_settings.boss_level
 		local display_name = level_settings.display_name
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
 		frame_texture = self._get_selection_frame_by_difficulty_index(self, completed_difficulty_index)
-		widgets_by_name.level_texture.content.texture_id = level_image
+		content.icon = level_image
+		content.boss_level = boss_level
 		level_text = Localize(display_name)
 		draw_info = true
 	end
 
-	widgets_by_name.level_texture_lock.content.visible = not draw_info
+	content.frame = frame_texture
+	content.locked = not draw_info
+	content.visible = draw_info
+	content.button_hotspot.disable_button = true
 	widgets_by_name.helper_text.content.visible = not draw_info
 	widgets_by_name.level_title_divider.content.visible = draw_info
 	widgets_by_name.level_title.content.text = level_text
 	widgets_by_name.description_text.content.text = description_text
-	widgets_by_name.level_texture_frame.content.texture_id = frame_texture
 
 	return 
 end

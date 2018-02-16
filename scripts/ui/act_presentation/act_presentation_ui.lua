@@ -65,8 +65,7 @@ ActPresentationUI.start = function (self, level_key, previous_completed_difficul
 
 	self._set_presentation_info(self, act_key, level_key)
 
-	previous_completed_difficulty_index = math.max(previous_completed_difficulty_index - 1, 0)
-	local first_time_completed, difficulty_index_completed = self._setup_level(self, level_key, level_key, previous_completed_difficulty_index)
+	local first_time_completed, difficulty_index_completed = self._setup_level(self, act_key, level_key, previous_completed_difficulty_index)
 	local animation_params = {
 		wwise_world = self.wwise_world,
 		level_key = level_key,
@@ -106,9 +105,8 @@ ActPresentationUI._setup_level = function (self, act_key, played_level_key, prev
 	local stats_id = self.stats_id
 	local level_stat = statistics_db.get_persistent_stat(statistics_db, stats_id, "completed_levels", played_level_key) or 0
 	local level_completed = level_stat ~= 0
-	local first_time_completed = level_completed and level_stat == 1
 	local difficulty_complete_index = (level_completed and LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, played_level_key)) or 0
-	difficulty_complete_index = math.max(difficulty_complete_index - 1, 0)
+	local first_time_completed = previous_difficulty_index_completed < difficulty_complete_index
 	local widget_name = "level"
 	local widget = widgets_by_name[widget_name]
 	local content = widget.content

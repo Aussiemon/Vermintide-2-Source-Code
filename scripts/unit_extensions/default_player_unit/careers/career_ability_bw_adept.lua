@@ -83,7 +83,7 @@ CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
 	elseif self.is_priming then
 		local end_position = self._update_priming(self, dt, t)
 
-		if input_service.get(input_service, "action_two") then
+		if input_service.get(input_service, "action_two") or input_service.get(input_service, "jump") or input_service.get(input_service, "jump_only") then
 			self._stop_priming(self)
 
 			return 

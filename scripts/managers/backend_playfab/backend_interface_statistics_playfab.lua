@@ -14,21 +14,22 @@ local function convert_to_script_stats(stats)
 	return script_stats
 end
 
-BackendInterfaceStatisticsPlayFab.init = function (self, backend_mirror)
-	self._statistics = {}
+BackendInterfaceStatisticsPlayFab.init = function (self, mirror)
+	self._mirror = mirror
 
 	local function callback(result)
 		if result.Error then
 			table.dump(result, "PlayFabError", math.huge)
 			fassert(false, "Error loading player statistics!")
-
-			self._initialized = true
 		else
 			print("Player statistics loaded!")
 
-			self._statistics = convert_to_script_stats(result.Statistics)
-			self._initialized = true
+			local stats = convert_to_script_stats(result.Statistics)
+
+			self._mirror:set_stats(stats)
 		end
+
+		self._ready = true
 
 		return 
 	end
@@ -38,10 +39,10 @@ BackendInterfaceStatisticsPlayFab.init = function (self, backend_mirror)
 	return 
 end
 BackendInterfaceStatisticsPlayFab.ready = function (self)
-	return self._initialized
+	return self._ready
 end
 BackendInterfaceStatisticsPlayFab.get_stats = function (self)
-	return self._statistics
+	return self._mirror:get_stats()
 end
 
 local function flatten_stats(stats)
@@ -106,6 +107,8 @@ BackendInterfaceStatisticsPlayFab.save = function (self, save_callback)
 	local player_stats_id = player.stats_id(player)
 	local player_stats = Managers.player:statistics_db():get_all_stats(player_stats_id)
 	local stats_to_save = filter_stats(flatten_stats(player_stats))
+
+	self._mirror:set_stats(player_stats)
 
 	if table.is_empty(stats_to_save) then
 		print("No modified player statistics to save...")

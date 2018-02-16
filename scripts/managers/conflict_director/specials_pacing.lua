@@ -291,7 +291,7 @@ SpecialsPacing.enable = function (self, state)
 
 	return 
 end
-SpecialsPacing.update = function (self, t, alive_specials, threat_population, player_positions)
+SpecialsPacing.update = function (self, t, alive_specials, specials_population, player_positions)
 	local specials_settings = CurrentSpecialsSettings
 
 	if specials_settings.disabled then
@@ -306,7 +306,7 @@ SpecialsPacing.update = function (self, t, alive_specials, threat_population, pl
 		return 
 	end
 
-	if threat_population < 1 then
+	if specials_population < 1 then
 		return 
 	end
 
@@ -341,7 +341,7 @@ SpecialsPacing.update = function (self, t, alive_specials, threat_population, pl
 		end
 	end
 
-	self.debug(self, t, alive_specials, threat_population, self._specials_slots)
+	self.debug(self, t, alive_specials, specials_population, self._specials_slots)
 
 	return 
 end
@@ -614,7 +614,7 @@ SpecialsPacing.get_relative_main_path_pos = function (self, main_paths, player_i
 
 	return epicenter, failed
 end
-SpecialsPacing.debug = function (self, t, alive_specials, threat_population, slots)
+SpecialsPacing.debug = function (self, t, alive_specials, specials_population, slots)
 	if script_data.debug_ai_pacing then
 		local s = ""
 

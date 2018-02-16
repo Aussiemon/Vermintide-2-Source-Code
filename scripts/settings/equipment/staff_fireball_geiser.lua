@@ -325,6 +325,14 @@ weapon_template.crosshair_style = "arrows"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "FIRE_STAFF"
 weapon_template.fire_at_gaze_setting = "tobii_fire_at_gaze_geiser"
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 weapon_template.wwise_dep_right_hand = {
 	"wwise/staff"
 }

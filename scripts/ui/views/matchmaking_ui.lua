@@ -52,6 +52,11 @@ MatchmakingUI.init = function (self, ingame_ui_context)
 	self.portrait_index_table = {}
 	self._cached_matchmaking_info = {}
 
+	if self.is_server then
+		self._enable_cancel_matchmaking(self)
+		self._update_button_prompts(self)
+	end
+
 	return 
 end
 MatchmakingUI.create_ui_elements = function (self)
@@ -82,8 +87,34 @@ MatchmakingUI.create_ui_elements = function (self)
 	self.debug_lobbies_widget = UIWidget.init(debug_widget_definitions.debug_lobbies)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.scenegraph_definition = scenegraph_definition
+	self._input_to_widget_mapping = {
+		cancel_matchmaking = {
+			text_widget = detail_widgets_by_name.cancel_text_input,
+			text_widget_prefix = detail_widgets_by_name.cancel_text_prefix,
+			text_widget_suffix = detail_widgets_by_name.cancel_text_suffix,
+			input_icon_widget = detail_widgets_by_name.cancel_icon,
+			background = detail_widgets_by_name.cancel_input_backround
+		}
+	}
+
+	for _, widgets in pairs(self._input_to_widget_mapping) do
+		for _, widget in pairs(widgets) do
+			widget.content.visible = false
+		end
+	end
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
+
+	return 
+end
+MatchmakingUI._enable_cancel_matchmaking = function (self)
+	self._allow_cancel_matchmaking = true
+
+	for _, widgets in pairs(self._input_to_widget_mapping) do
+		for _, widget in pairs(widgets) do
+			widget.content.visible = true
+		end
+	end
 
 	return 
 end
@@ -143,10 +174,32 @@ MatchmakingUI.update = function (self, dt, t, show_detailed_matchmaking_info)
 		if is_matchmaking then
 			self._update_matchmaking_info(self)
 			self._sync_players_ready_state(self, dt)
+
+			if self._allow_cancel_matchmaking and not has_mission_vote then
+				local cancel_matchmaking = input_service.get(input_service, "cancel_matchmaking")
+
+				if cancel_matchmaking then
+					self.matchmaking_manager:cancel_matchmaking()
+				end
+			end
 		elseif has_mission_vote then
 			self._update_mission_vote_status(self)
 			self._update_mission_vote_player_status(self)
 			self._update_mission_timer(self)
+		end
+
+		local gamepad_active = self.input_manager:is_device_active("gamepad")
+
+		if gamepad_active then
+			if not self.gamepad_active_last_frame then
+				self.gamepad_active_last_frame = true
+
+				self._update_button_prompts(self)
+			end
+		elseif self.gamepad_active_last_frame then
+			self.gamepad_active_last_frame = false
+
+			self._update_button_prompts(self)
 		end
 
 		self._draw(self, ui_top_renderer, input_service, is_matchmaking, dt)
@@ -241,7 +294,7 @@ MatchmakingUI._update_matchmaking_info = function (self)
 		if quick_game then
 			text = "mission_vote_quick_play"
 		else
-			local level_settings = level_key and LevelSettings[level_key]
+			local level_settings = level_key and level_key ~= "n/a" and LevelSettings[level_key]
 			local level_display_name = (level_settings and level_settings.display_name) or "level_display_name_unavailable"
 			text = level_display_name
 		end
@@ -474,7 +527,11 @@ MatchmakingUI.get_input_texture_data = function (self, input_action)
 
 	return nil, ""
 end
-MatchmakingUI.update_button_prompts = function (self)
+MatchmakingUI._update_button_prompts = function (self)
+	if not self._allow_cancel_matchmaking then
+		return 
+	end
+
 	local ui_scenegraph = self.ui_scenegraph
 
 	for input_action, widgets in pairs(self._input_to_widget_mapping) do
@@ -482,39 +539,56 @@ MatchmakingUI.update_button_prompts = function (self)
 		local text_widget_prefix = widgets.text_widget_prefix
 		local text_widget_suffix = widgets.text_widget_suffix
 		local input_icon_widget = widgets.input_icon_widget
-		local input_icon_widget_bar = widgets.input_icon_widget_bar
-		local input_icon_bar_width = widgets.input_icon_bar_width
+		local input_icon_bar_width = 0
 		local texture_data, input_text, prefix_text = self.get_input_texture_data(self, input_action)
 		text_widget_prefix.content.text = (prefix_text and Localize(prefix_text)) or ""
 
 		if not texture_data then
-			text_widget.content.text = input_text
+			text_widget.content.text = "[" .. input_text .. "] "
 			input_icon_widget.content.texture_id = nil
+			input_icon_widget.content.visible = false
 		elseif texture_data.texture then
 			text_widget.content.text = ""
 			input_icon_widget.content.texture_id = texture_data.texture
+			input_icon_widget.content.visible = true
 		end
 
 		local text_input = text_widget.content.text
 		local text_prefix = text_widget_prefix.content.text
-		local text_suffix = Localize(text_widget_suffix.content.text)
+		local text_suffix = text_widget_suffix.content.text
 		local font_input, scaled_font_input_size = UIFontByResolution(text_widget.style.text)
 		local font_prefix, scaled_font_size_prefix = UIFontByResolution(text_widget_prefix.style.text)
 		local font_suffix, scaled_font_size_suffix = UIFontByResolution(text_widget_suffix.style.text)
 		local text_width_input = UIRenderer.text_size(self.ui_renderer, text_input, font_input[1], scaled_font_input_size)
 		local text_width_prefix = UIRenderer.text_size(self.ui_renderer, text_prefix, font_prefix[1], scaled_font_size_prefix)
 		local text_width_suffix = UIRenderer.text_size(self.ui_renderer, text_suffix, font_suffix[1], scaled_font_size_suffix)
-		local offset = -text_width_suffix*0.5 + text_width_prefix*0.5
+
+		if texture_data then
+			local icon_size = texture_data.size
+			local input_icon_scenegraph_id = input_icon_widget.scenegraph_id
+			local input_icon_scenegraph = ui_scenegraph[input_icon_scenegraph_id]
+			text_width_input = icon_size[1]
+			input_icon_scenegraph.local_position[1] = text_width_input*0.5
+			input_icon_scenegraph.size[1] = text_width_input
+			input_icon_scenegraph.size[2] = icon_size[2]
+		end
+
+		local total_length = text_width_input + text_width_prefix + text_width_suffix
+		local offset = -(total_length*0.5)
 
 		if not texture_data then
-			text_widget.style.text.offset[1] = offset
-			text_widget_prefix.style.text.offset[1] = -text_width_prefix*0.5 - text_width_input*0.5 + offset
-			text_widget_suffix.style.text.offset[1] = text_width_suffix*0.5 + text_width_input*0.5 + offset
+			text_widget_prefix.style.text.offset[1] = offset
+			text_widget_prefix.style.text_shadow.offset[1] = offset + 2
+			text_widget.style.text.offset[1] = offset + text_width_prefix
+			text_widget.style.text_shadow.offset[1] = offset + text_width_prefix + 2
+			text_widget_suffix.style.text.offset[1] = offset + text_width_prefix + text_width_input
+			text_widget_suffix.style.text_shadow.offset[1] = offset + text_width_prefix + text_width_input + 2
 		else
-			input_icon_widget.style.texture_id.offset[1] = offset
-			input_icon_widget_bar.style.texture_id.offset[1] = offset
-			text_widget_prefix.style.text.offset[1] = -text_width_prefix*0.5 - input_icon_bar_width*0.5 + offset
-			text_widget_suffix.style.text.offset[1] = text_width_suffix*0.5 + input_icon_bar_width*0.5 + offset
+			input_icon_widget.style.texture_id.offset[1] = offset + text_width_prefix
+			text_widget_prefix.style.text.offset[1] = offset
+			text_widget_prefix.style.text_shadow.offset[1] = offset + 2
+			text_widget_suffix.style.text.offset[1] = offset + text_width_prefix + text_width_input
+			text_widget_suffix.style.text_shadow.offset[1] = offset + text_width_prefix + text_width_input + 2
 		end
 	end
 

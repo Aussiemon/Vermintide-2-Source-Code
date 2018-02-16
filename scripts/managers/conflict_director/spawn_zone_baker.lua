@@ -2,6 +2,7 @@ SpawnZoneBaker = class(SpawnZoneBaker)
 local InterestPointUnits = InterestPointUnits
 local PackSpawningSettings = PackSpawningSettings
 local DOOR_SEARCH_RADIUS = 1.5
+local debug_zone_baker = false
 SpawnZoneBaker.init = function (self, world, nav_world, level_analyzer)
 	self.world = world
 	self.nav_world = nav_world
@@ -482,24 +483,32 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 				local roaming_set = pack_spawning_setting.roaming_set
 				pack_type = roaming_set.breed_packs
 
-				print("Island zone", i, "has parent zone:", parent_zone_index)
+				if debug_zone_baker then
+					print("Island zone", i, "has parent zone:", parent_zone_index)
+				end
 			end
-		else
+		elseif debug_zone_baker then
 			print("Island zone", i, " is missing a parent zone")
 		end
 
-		local sub_zones = zone.sub
-		local sub_areas = zone.sub_areas
+		local ok_to_spawn = not zone.on_roof or BreedPacks[pack_type].roof_spawning_allowed
 
-		for j = 1, #sub_zones, 1 do
-			local nodes = sub_zones[j]
-			local area = sub_areas[j]
-			local density = math.random()
-			local num_wanted_rats = math.floor(area*density*area_density_coefficient)
+		if ok_to_spawn then
+			local sub_zones = zone.sub
+			local sub_areas = zone.sub_areas
 
-			if 0 < num_wanted_rats then
-				self.spawn_amount_rats(self, spawns, pack_sizes, pack_rotations, pack_types, zone_data_list, nodes, num_wanted_rats, pack_type, area, parent_zone)
+			for j = 1, #sub_zones, 1 do
+				local nodes = sub_zones[j]
+				local area = sub_areas[j]
+				local density = math.random()
+				local num_wanted_rats = math.floor(area*density*area_density_coefficient)
+
+				if 0 < num_wanted_rats then
+					self.spawn_amount_rats(self, spawns, pack_sizes, pack_rotations, pack_types, zone_data_list, nodes, num_wanted_rats, pack_type, area, parent_zone)
+				end
 			end
+		elseif debug_zone_baker then
+			print("Zone " .. i .. " is tagged as roof, so no '" .. pack_type .. "' will spawn there.")
 		end
 
 		if calculate_nearby_islands then
@@ -544,7 +553,9 @@ SpawnZoneBaker.inject_special_packs = function (self, total_peaks, cycle_zones)
 		return 
 	end
 
-	print("Overriding " .. picked_peaks .. " peaks, override chance: " .. tostring(percent_overridden))
+	if debug_zone_baker then
+		print("Overriding " .. picked_peaks .. " peaks, override chance: " .. tostring(percent_overridden))
+	end
 
 	local random_peaks = table.get_random_array_indices(total_peaks, picked_peaks)
 	local lookup = {}
@@ -988,7 +999,10 @@ SpawnZoneBaker.draw_pack_density_graph = function (self)
 		local event_name = rare[2]
 		local color = rare[4].debug_color
 
-		print("PATH DIST:", path_dist)
+		if debug_zone_baker then
+			print("PATH DIST:", path_dist)
+		end
+
 		self.graph:add_annotation({
 			live = true,
 			x = path_dist,

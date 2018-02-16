@@ -477,12 +477,12 @@ EndViewStateSummary._set_current_experience = function (self, current_experience
 	style.experience_bar.size[1] = default_size[1]*progress
 	style.experience_bar_end.offset[1] = default_size[1]*progress
 
-	if initialize then
+	if initialize or progress < 1 then
 		widgets_by_name.current_level_text.content.text = tostring(level)
 		widgets_by_name.next_level_text.content.text = tostring(next_level)
 	else
-		widgets_by_name.current_level_text.content.next_text = tostring(level)
-		widgets_by_name.next_level_text.content.next_text = tostring(next_level)
+		widgets_by_name.current_level_text.content.text = tostring(level - 1)
+		widgets_by_name.next_level_text.content.text = tostring(next_level - 1)
 	end
 
 	WwiseWorld.set_global_parameter(self.wwise_world, "summary_meter_progress", progress)

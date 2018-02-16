@@ -844,7 +844,7 @@ first_time_video = {
 	sound_stop = "Stop_vermintide_2_prologue_intro"
 }
 
-local function get_slider_value(min, max, value)
+local function get_slider_progress(min, max, value)
 	local range = max - min
 	local norm_value = math.clamp(value, min, max) - min
 
@@ -858,10 +858,10 @@ local gamma_value_settings = {
 	max = 5
 }
 local panning_value_settings = {
-	min = 0,
+	min = 1,
 	num_decimals = 0,
-	start_value = 0,
-	max = 1,
+	start_value = 1,
+	max = 2,
 	options = {
 		{
 			value = "speakers",
@@ -878,28 +878,28 @@ local panning_value_settings = {
 	}
 }
 local dynamic_range_value_settings = {
-	min = 0,
+	min = 1,
 	num_decimals = 0,
-	start_value = 0,
-	max = 2,
+	start_value = 3,
+	max = 3,
 	options = {
 		{
-			value = "high",
-			text = Localize("menu_settings_high")
+			value = "low",
+			text = Localize("menu_settings_low")
 		},
 		{
 			value = "medium",
 			text = Localize("menu_settings_medium")
 		},
 		{
-			value = "low",
-			text = Localize("menu_settings_low")
+			value = "high",
+			text = Localize("menu_settings_high")
 		}
 	},
 	option_index_by_key = {
-		high = 1,
+		high = 3,
 		medium = 2,
-		low = 3
+		low = 1
 	}
 }
 TitleLoadingUI = class(TitleLoadingUI)
@@ -1017,7 +1017,7 @@ TitleLoadingUI.setup_gamma_menu = function (self)
 	local value = Application.user_setting("render_settings", "gamma") or start_value
 	gamma_stepper.content.setting_text = ""
 	gamma_stepper.content.value = value
-	local internal_value = get_slider_value(min, max, value)
+	local internal_value = get_slider_progress(min, max, value)
 	gamma_stepper.content.internal_value = internal_value
 	local gamma_adjuster_content = gamma_adjuster.content
 	gamma_adjuster_content.value_text = string.format("%.1f", value)
@@ -1033,12 +1033,11 @@ TitleLoadingUI.setup_sound_panning_menu = function (self)
 	local option_index_by_key = panning_value_settings.option_index_by_key
 	local default_value = DefaultUserSettings.get("user_settings", "sound_panning_rule")
 	local sound_panning_rule = Application.user_setting("sound_panning_rule") or default_value
-	local start_value = option_index_by_key[sound_panning_rule] - 1
 	stepper.content.setting_text = ""
 	stepper.content.value = sound_panning_rule
 	stepper.content.internal_value = start_value
 
-	self._change_sound_panning_display_by_value(self, start_value + 1)
+	self._change_sound_panning_display_by_value(self, start_value)
 
 	return 
 end
@@ -1051,12 +1050,11 @@ TitleLoadingUI.setup_sound_dynamic_range_menu = function (self)
 	local option_index_by_key = dynamic_range_value_settings.option_index_by_key
 	local default_value = DefaultUserSettings.get("user_settings", "dynamic_range_sound")
 	local dynamic_range_sound = Application.user_setting("dynamic_range_sound") or default_value
-	local start_value = option_index_by_key[dynamic_range_sound] - 1
 	stepper.content.setting_text = ""
 	stepper.content.value = dynamic_range_sound
 	stepper.content.internal_value = start_value
 
-	self._change_sound_dynamic_range_display_by_value(self, start_value + 1)
+	self._change_sound_dynamic_range_display_by_value(self, start_value)
 
 	return 
 end
@@ -1092,13 +1090,16 @@ TitleLoadingUI.update = function (self, dt)
 			local change_made = self._handle_stepper_input(self, stepper, panning_value_settings, gamepad_active, dt)
 
 			if change_made then
+				local min = panning_value_settings.min
+				local max = panning_value_settings.max
+				local num_decimals = panning_value_settings.num_decimals
 				local internal_value = stepper.content.internal_value
-				local actual_value = internal_value + 1
+				local index = math.round_with_precision(min + (max - min)*internal_value, num_decimals or 0)
 				local options = panning_value_settings.options
-				local option = options[actual_value]
+				local option = options[index]
 				stepper.content.value = option.value
 
-				self._change_sound_panning_display_by_value(self, actual_value)
+				self._change_sound_panning_display_by_value(self, index)
 			else
 				for i = 1, 2, 1 do
 					local widget_name = "sound_option_button_" .. i
@@ -1119,13 +1120,16 @@ TitleLoadingUI.update = function (self, dt)
 			local change_made = self._handle_stepper_input(self, stepper, dynamic_range_value_settings, gamepad_active, dt)
 
 			if change_made then
+				local min = dynamic_range_value_settings.min
+				local max = dynamic_range_value_settings.max
+				local num_decimals = dynamic_range_value_settings.num_decimals
 				local internal_value = stepper.content.internal_value
-				local actual_value = internal_value + 1
+				local index = math.round_with_precision(min + (max - min)*internal_value, num_decimals or 0)
 				local options = dynamic_range_value_settings.options
-				local option = options[actual_value]
+				local option = options[index]
 				stepper.content.value = option.value
 
-				self._change_sound_dynamic_range_display_by_value(self, actual_value)
+				self._change_sound_dynamic_range_display_by_value(self, index)
 			end
 		end
 
@@ -1140,10 +1144,16 @@ TitleLoadingUI.update = function (self, dt)
 	return 
 end
 TitleLoadingUI._change_sound_panning_display_by_value = function (self, value)
+	local min = panning_value_settings.min
+	local max = panning_value_settings.max
+	local internal_value = get_slider_progress(min, max, value)
 	local options = panning_value_settings.options
 	local option = options[value]
 	local option_value = option.value
 	local panning_widgets_by_name = self._panning_widgets_by_name
+	local stepper = panning_widgets_by_name.stepper
+	stepper.content.value = option_value
+	stepper.content.internal_value = internal_value
 
 	for i = 1, 2, 1 do
 		local widget_name = "sound_option_" .. i
@@ -1161,6 +1171,9 @@ TitleLoadingUI._change_sound_panning_display_by_value = function (self, value)
 	return 
 end
 TitleLoadingUI._change_sound_dynamic_range_display_by_value = function (self, value)
+	local min = dynamic_range_value_settings.min
+	local max = dynamic_range_value_settings.max
+	local internal_value = get_slider_progress(min, max, value)
 	local options = dynamic_range_value_settings.options
 	local option = options[value]
 	local option_value = option.value
@@ -1168,6 +1181,8 @@ TitleLoadingUI._change_sound_dynamic_range_display_by_value = function (self, va
 	local dynamic_range_widgets_by_name = self._dynamic_range_widgets_by_name
 	local stepper = dynamic_range_widgets_by_name.stepper
 	stepper.content.setting_text = option_text
+	stepper.content.value = option_value
+	stepper.content.internal_value = internal_value
 	dynamic_range_widgets_by_name.sound_presentation_image.content.texture_id = "sound_setting_icon_0" .. value + 4
 
 	return 
@@ -1325,7 +1340,7 @@ TitleLoadingUI._handle_stepper_input = function (self, widget, stepper_settings,
 	local max = stepper_settings.max
 	local diff = max - min
 	local total_step = diff*10^num_decimals
-	local step = 1
+	local step = total_step/1
 	local move = gamepad_active and input_service.get(input_service, "analog_input")
 	local analog_speed = 0.01
 	local current_time = Managers.time:time("main")
@@ -1333,17 +1348,17 @@ TitleLoadingUI._handle_stepper_input = function (self, widget, stepper_settings,
 
 	if left_hotspot.is_clicked == 0 or (gamepad_active and input_service.get(input_service, "move_left_hold")) then
 		if not input_cooldown then
-			internal_value = math.clamp(internal_value - step, min, max)
+			internal_value = math.clamp(internal_value - step, 0, 1)
 			input_been_made = true
 		end
 	elseif right_hotspot.is_clicked == 0 or (gamepad_active and input_service.get(input_service, "move_right_hold")) then
 		if not input_cooldown then
-			internal_value = math.clamp(internal_value + step, min, max)
+			internal_value = math.clamp(internal_value + step, 0, 1)
 			input_been_made = true
 		end
 	elseif move and 0 < math.abs(move.x) and not input_cooldown then
 		local step_change = math.max(math.abs(math.pow(move.x, 2)*total_step*dt*analog_speed), step)
-		internal_value = math.clamp(internal_value + step_change*math.sign(move.x), min, max)
+		internal_value = math.clamp(internal_value + step_change*math.sign(move.x), 0, 1)
 		input_been_made = true
 	end
 

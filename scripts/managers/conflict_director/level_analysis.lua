@@ -1842,5 +1842,52 @@ LevelAnalysis.process_unreachable = function (work_data)
 
 	return 
 end
+LevelAnalysis.check_splines_integrity = function (self)
+	print("----> Checking splines integrity START:")
+
+	local roaming_waypoints = self.patrol_waypoints
+	local Vector3_distance = Vector3.distance
+	local ai_group_system = Managers.state.entity:system("ai_group_system")
+	local formation = PatrolFormationSettings.storm_vermin_two_column.normal
+
+	for i = 1, #roaming_waypoints, 1 do
+		local route_data = roaming_waypoints[i]
+		local astar_points = route_data.astar_points
+		local spline_name = route_data.id
+		local faulty = false
+		local pA, pB = astar_points[1]:unbox()
+
+		for i = 2, #astar_points, 1 do
+			pB = astar_points[i]:unbox()
+			local dist = Vector3.distance_squared(pA, pB)
+
+			if 0.01 < dist then
+				pA = pB
+			else
+				pA = pB
+				faulty = true
+
+				print("SPLINE HAS FAULTY POINTS:", i, spline_name, pA, pB, Vector3.distance(pA, pB))
+			end
+		end
+
+		if faulty then
+			print("Faulty spline - ", spline_name, ", points:")
+
+			for i = 1, #astar_points, 1 do
+				print(i, astar_points[i]:unbox())
+			end
+
+			print("")
+		end
+
+		local start_position = ai_group_system.spline_start_position(ai_group_system, spline_name)
+		slot16 = ai_group_system.create_formation_data(ai_group_system, start_position, formation, spline_name)
+	end
+
+	print("----> Checking splines integrity ENDS.")
+
+	return 
+end
 
 return 

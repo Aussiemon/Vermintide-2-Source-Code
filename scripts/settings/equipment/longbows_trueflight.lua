@@ -480,9 +480,15 @@ weapon_template.no_ammo_reload_event = "reload"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "LONGBOW_TRUEFLIGHT"
 weapon_template.default_projectile_action = weapon_template.actions.action_one.default
-weapon_template.dodge_distance = 1
-weapon_template.dodge_speed = 1
 weapon_template.dodge_count = 3
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 weapon_template.wwise_dep_left_hand = {
 	"wwise/bow"
 }

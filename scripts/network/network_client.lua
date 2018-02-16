@@ -100,6 +100,12 @@ NetworkClient.rpc_connection_failed = function (self, sender, reason)
 end
 NetworkClient.rpc_notify_connected = function (self, sender)
 	if not self._notification_sent then
+		if self.lobby_client:is_dedicated_server() then
+			local cropped_string = UTF8Utils.sub_string(LobbyInternal.user_name(), 1, 16)
+
+			RPC.rpc_set_player_name(self.server_peer_id, cropped_string)
+		end
+
 		RPC.rpc_notify_lobby_joined(self.server_peer_id, self.wanted_profile_index, Application.user_setting("clan_tag") or "0")
 
 		self._notification_sent = true

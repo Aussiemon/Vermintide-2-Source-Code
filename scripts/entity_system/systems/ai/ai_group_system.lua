@@ -777,17 +777,13 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 	local spline_curve = nil
 
 	if spline.spline_points then
-		local spline_points = {}
-
-		for i, spline_point_boxed in ipairs(spline.spline_points) do
-			local position = spline_point_boxed.unbox(spline_point_boxed)
-			spline_points[i] = position
-		end
-
+		local source_spline_points = spline.spline_points
+		local spline_points = AiUtils.remove_bad_boxed_spline_points(source_spline_points, spline_name)
 		spline_curve = SplineCurve:new(spline_points, "Hermite", "SplineMovementHermiteInterpolatedMetered", spline_name, 3)
 	else
 		local level = self._level
-		local spline_points = Level.spline(level, spline_name)
+		local source_spline_points = Level.spline(level, spline_name)
+		local spline_points = AiUtils.remove_bad_spline_points(source_spline_points, spline_name)
 		spline_curve = SplineCurve:new(spline_points, "Bezier", "SplineMovementHermiteInterpolatedMetered", spline_name, 10)
 	end
 
@@ -856,6 +852,8 @@ AIGroupSystem._get_position_on_spline_by_distance = function (self, distance, sp
 		movement.set_current_spline_index(movement, start_spline_index)
 	end
 
+	fassert(movement._t == movement._t, "Nan in spline: %s", spline_curve._name)
+
 	local start_position = movement.current_position(movement)
 	local previous_position = start_position
 	local dt = 0.1
@@ -867,6 +865,8 @@ AIGroupSystem._get_position_on_spline_by_distance = function (self, distance, sp
 		if status == "end" then
 			return nil
 		end
+
+		fassert(movement._t == movement._t, "Nan in spline: %s", spline_curve._name)
 
 		local current_position = movement.current_position(movement)
 		local current_distance = Vector3.distance(current_position, previous_position)

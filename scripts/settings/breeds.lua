@@ -9,6 +9,7 @@ require("scripts/settings/nav_tag_volume_settings")
 require("foundation/scripts/util/table")
 require("foundation/scripts/util/error")
 require("scripts/unit_extensions/human/ai_player_unit/ai_breed_snippets")
+require("scripts/settings/dlc_settings")
 
 Breeds = Breeds or {}
 BreedActions = BreedActions or {}
@@ -21,7 +22,6 @@ dofile("scripts/settings/breeds/breed_skaven_slave")
 dofile("scripts/settings/breeds/breed_skaven_dummy_slave")
 dofile("scripts/settings/breeds/breed_skaven_storm_vermin")
 dofile("scripts/settings/breeds/breed_skaven_storm_vermin_champion")
-dofile("scripts/settings/breeds/breed_skaven_storm_vermin_warlord")
 dofile("scripts/settings/breeds/breed_skaven_storm_vermin_with_shield")
 dofile("scripts/settings/breeds/breed_skaven_loot_rat")
 dofile("scripts/settings/breeds/breed_skaven_gutter_runner")
@@ -32,36 +32,39 @@ dofile("scripts/settings/breeds/breed_skaven_ratling_gunner")
 dofile("scripts/settings/breeds/breed_skaven_warpfire_thrower")
 dofile("scripts/settings/breeds/breed_skaven_rat_ogre")
 dofile("scripts/settings/breeds/breed_skaven_stormfiend")
-dofile("scripts/settings/breeds/breed_skaven_stormfiend_boss")
-dofile("scripts/settings/breeds/breed_skaven_grey_seer")
 dofile("scripts/settings/breeds/breed_skaven_stormfiend_demo")
-dofile("scripts/settings/breeds/breed_chaos_exalted_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_marauder")
 dofile("scripts/settings/breeds/breed_chaos_fanatic")
 dofile("scripts/settings/breeds/breed_chaos_marauder_with_shield")
 dofile("scripts/settings/breeds/breed_chaos_berzerker")
 dofile("scripts/settings/breeds/breed_chaos_raider")
 dofile("scripts/settings/breeds/breed_chaos_warrior")
-dofile("scripts/settings/breeds/breed_chaos_exalted_champion")
 dofile("scripts/settings/breeds/breed_chaos_troll")
 dofile("scripts/settings/breeds/breed_chaos_dummy_troll")
-dofile("scripts/settings/breeds/breed_chaos_exalted_sorcerer")
-dofile("scripts/settings/breeds/breed_chaos_tentacle_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_tentacle")
+dofile("scripts/settings/breeds/breed_chaos_tentacle_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_vortex_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_vortex")
 dofile("scripts/settings/breeds/breed_chaos_plague_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_corruptor_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_plague_wave_spawner")
 dofile("scripts/settings/breeds/breed_chaos_spawn")
-dofile("scripts/settings/breeds/breed_chaos_zombie")
 dofile("scripts/settings/breeds/breed_chaos_dummy_sorcerer")
 dofile("scripts/settings/breeds/breed_critters")
 dofile("scripts/settings/breeds/breed_pets")
 
+for _, dlc in pairs(DLCSettings) do
+	local breeds = dlc.breeds
+
+	for _, breed in ipairs(breeds) do
+		dofile(breed)
+	end
+end
+
 CHAOS = {}
 SKAVEN = {}
 CRITTER = {}
+ELITES = {}
 local DEFAULT_NAVTAG_LAYERS = {
 	end_zone = 0,
 	ledges = 1.5,
@@ -235,6 +238,10 @@ for name, breed in pairs(Breeds) do
 		error("Bad race type '" .. breed.race .. "' specified in breed .. '" .. breed.name .. "'.")
 	else
 		error("Missing 'race' type in breed .. '" .. breed.name .. "'.")
+	end
+
+	if breed.elite then
+		ELITES[breed.name] = true
 	end
 end
 

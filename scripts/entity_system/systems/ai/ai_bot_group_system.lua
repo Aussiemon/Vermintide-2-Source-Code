@@ -1748,9 +1748,9 @@ AIBotGroupSystem._update_proximity_bot_breakables = function (self, t)
 					local smart_objects = nav_graph_system.get_smart_objects(nav_graph_system, smart_object_id)
 					local smart_object_data = smart_objects[1]
 					local entrance_position = Vector3Aux.unbox(smart_object_data.pos1)
-					local entrance_position_on_mesh = LocomotionUtils.pos_on_mesh(nav_world, entrance_position, 1.5, 1.5)
+					local entrance_position_on_mesh = LocomotionUtils.pos_on_mesh(nav_world, entrance_position, 1.5, 3)
 					local exit_position = Vector3Aux.unbox(smart_object_data.pos2)
-					local exit_position_on_mesh = LocomotionUtils.pos_on_mesh(nav_world, exit_position, 1.5, 1.5)
+					local exit_position_on_mesh = LocomotionUtils.pos_on_mesh(nav_world, exit_position, 1.5, 3)
 					local smart_object_type = smart_object_data.smart_object_type
 
 					if entrance_position_on_mesh and exit_position_on_mesh then

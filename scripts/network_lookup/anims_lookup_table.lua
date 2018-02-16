@@ -196,6 +196,7 @@ NetworkLookup.anims = {
 	"attack_heal",
 	"to_zoom",
 	"to_unzoom",
+	"zoom_finished",
 	"attack_slam",
 	"attack_slam_2",
 	"attack_slam_3",
@@ -729,7 +730,11 @@ NetworkLookup.anims = {
 	"attack_shoot_missile",
 	"intro_idle",
 	"intro_frenzy",
-	"idle_eat_warpstone"
+	"idle_eat_warpstone",
+	"stagger_heavy_fwd",
+	"stagger_heavy_bwd",
+	"stagger_heavy_right",
+	"stagger_heavy_left"
 }
 
 return 

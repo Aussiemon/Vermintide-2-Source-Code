@@ -42,6 +42,9 @@ TutorialUI.init = function (self, ingame_ui_context)
 		press = Localize("interaction_prefix_press"),
 		to = Localize("interaction_to")
 	}
+	self.render_settings = {
+		snap_pixel_positions = false
+	}
 	self.tooltip_animations = {}
 	self.info_slate_entries = {}
 	self.unused_info_slate_entry_scenegraphs = {}
@@ -288,7 +291,7 @@ TutorialUI.pre_render_update = function (self, dt, t)
 
 		local first_person_extension = self.get_player_first_person_extension(self)
 
-		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
+		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
 		if first_person_extension.first_person_mode then
 			Profiler.start("objective_tooltip_widgets")
@@ -695,6 +698,11 @@ TutorialUI.update_objective_tooltip_widget = function (self, widget_holder, play
 		widget.style.texture_id.offset[2] = new_icon_size*(new_icon_scale - 1)
 		local font_size = math.lerp(widget_holder.current_font_size or 30, new_icon_scale*30, 0.2)
 		widget.style.text.font_size = font_size
+
+		if widget.style.text_shadow then
+			widget.style.text_shadow.font_size = font_size
+		end
+
 		ui_scenegraph[widget_holder.scenegraph_icon].size[1] = new_icon_size
 		widget_holder.current_font_size = font_size
 		local overlap = self._floating_icon_overlap(self, widget_holder, x, y, new_icon_scale)
@@ -712,6 +720,11 @@ TutorialUI.update_objective_tooltip_widget = function (self, widget_holder, play
 		widget.style.texture_id.size[2] = original_size
 		widget.style.texture_id.offset[2] = 0
 		widget.style.text.font_size = 30
+
+		if widget.style.text_shadow then
+			widget.style.text_shadow.font_size = 30
+		end
+
 		ui_scenegraph[widget_holder.scenegraph_icon].size[1] = original_size
 	end
 
@@ -792,6 +805,7 @@ end
 TutorialUI.floating_icon_animations = function (self, widget, animation_container, is_behind, is_clamped, tooltip_settings)
 	local icon_style = widget.style.texture_id
 	local text_style = widget.style.text
+	local text_shadow_style = widget.style.text_shadow
 
 	if is_clamped or is_behind then
 		local alpha_fade_out_value = tooltip_settings.alpha_fade_out_value
@@ -800,9 +814,11 @@ TutorialUI.floating_icon_animations = function (self, widget, animation_containe
 		if not animation_container.out_of_view and icon_style.color[1] ~= alpha_fade_out_value then
 			animation_container.in_of_view = nil
 			animation_container.in_of_view_text = nil
+			animation_container.in_of_view_text_shadow = nil
 			local fade_out_time = tooltip_settings.fade_out_time
 			animation_container.out_of_view = UIAnimation.init(UIAnimation.function_by_time, icon_style.color, 1, icon_style.color[1], alpha_fade_out_value, fade_out_time, math.easeInCubic)
 			text_style.text_color[1] = 0
+			text_shadow_style.text_color[1] = 0
 		end
 	else
 		widget.style.arrow.color[1] = 0
@@ -816,6 +832,7 @@ TutorialUI.floating_icon_animations = function (self, widget, animation_containe
 		if not animation_container.in_of_view_text and text_style.text_color[1] ~= 255 then
 			local fade_in_time = tooltip_settings.fade_in_time
 			animation_container.in_of_view_text = UIAnimation.init(UIAnimation.function_by_time, text_style.text_color, 1, text_style.text_color[1], 255, fade_in_time, math.easeInCubic)
+			animation_container.in_of_view_text_shadow = UIAnimation.init(UIAnimation.function_by_time, text_shadow_style.text_color, 1, text_shadow_style.text_color[1], 255, fade_in_time, math.easeInCubic)
 		end
 	end
 
@@ -908,6 +925,10 @@ TutorialUI.animate_in_mission_tooltip = function (self, time, render_text, dt, w
 	icon_style.color[1] = math.min(progress*4, 1)*255
 	local text_alpha = (render_text and text_progress*255) or 0
 	widget.style.text.text_color[1] = text_alpha
+
+	if widget.style.text_shadow then
+		widget.style.text_shadow.text_color[1] = text_alpha
+	end
 
 	return (progress < 1 and time) or nil
 end
@@ -1437,8 +1458,8 @@ TutorialUI.update_health_bars = function (self, dt, player_unit)
 				local x_pos, y_pos = self.convert_world_to_screen_position(self, camera, world_position)
 				local scenegraph_definition = health_bar.scenegraph_definition
 				local ui_local_position = scenegraph_definition.local_position
-				ui_local_position[1] = math.round(x_pos*inverse_scale)
-				ui_local_position[2] = math.round(y_pos*inverse_scale)
+				ui_local_position[1] = x_pos*inverse_scale
+				ui_local_position[2] = y_pos*inverse_scale
 				local size = scenegraph_definition.size
 				local style = health_bar.widget.style
 				style.texture_fg.size[1] = size[1]*health_percent_current

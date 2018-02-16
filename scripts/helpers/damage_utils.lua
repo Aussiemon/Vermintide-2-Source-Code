@@ -24,7 +24,7 @@ DamageUtils.get_unit_armor = function (target_unit, hit_zone_name)
 	local target_unit_armor, target_unit_primary_armor = nil
 
 	if breed then
-		local target_unit_armor_attack, target_unit_armor_impact, target_unit_primary_armor_attack, target_unit_primary_armor_impact = ActionUtils.get_target_armor(breed, hit_zone_name, target_unit)
+		local target_unit_armor_attack, _, target_unit_primary_armor_attack, _ = ActionUtils.get_target_armor(breed, hit_zone_name, target_unit)
 		target_unit_armor = target_unit_armor_attack
 		target_unit_primary_armor = target_unit_primary_armor_attack
 	elseif target_unit then
@@ -301,7 +301,7 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 	elseif stagger_table and not breed.stagger_immune then
 		local stagger_settings = stagger_table[target_unit_armor]
 		local stagger_range = stagger_settings.max - stagger_settings.min
-		local _, impact_power = ActionUtils.get_power_level_for_target(original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, target_unit, hit_zone_name)
+		local _, impact_power = ActionUtils.get_power_level_for_target(original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, target_unit, hit_zone_name, target_unit_armor)
 		local percentage = DamageUtils.get_power_level_percentage(impact_power, false)
 		stagger_strength = stagger_range*percentage
 
@@ -445,6 +445,85 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 	duration = duration*stagger_duration_table*stagger_duration_modifier
 	distance = distance*stagger_distance_modifier
 	duration = math.max((duration + math.random()*1) - 0.5, 0)
+
+	return stagger, duration, distance, stagger_value
+end
+DamageUtils.calculate_stagger_dummy = function (stagger_table, target_unit, attacker_unit, hit_zone_name, original_power_level, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, blocked)
+	local target_unit_armor = Unit.get_data(target_unit, "armor")
+	local stagger = 0
+	local stagger_strength = 0
+	local duration = 1
+	local distance = 0
+	local attacker_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
+	local boost_curve = BoostCurves[target_settings.boost_curve_type]
+	local attack_template_name = target_settings.attack_template
+	local attack_template = AttackTemplates[attack_template_name]
+
+	if stagger_table then
+		local stagger_settings = stagger_table[target_unit_armor]
+		local stagger_range = stagger_settings.max - stagger_settings.min
+		local _, impact_power = ActionUtils.get_power_level_for_target(original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, target_unit, hit_zone_name)
+		local percentage = DamageUtils.get_power_level_percentage(impact_power, false)
+		stagger_strength = stagger_range*percentage
+
+		if is_critical_strike then
+			local boost_amount = attacker_buff_extension.apply_buffs_to_value(attacker_buff_extension, 0.5, StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS)
+			local boost_multiplier = DamageUtils.get_boost_curve_multiplier(boost_curve, boost_amount)
+			stagger_strength = stagger_strength + stagger_strength*boost_multiplier
+		end
+
+		stagger_strength = stagger_settings.min + stagger_strength
+		local has_damage_boost = false
+
+		if attacker_unit and Unit.alive(attacker_unit) and attacker_buff_extension then
+			has_damage_boost = attacker_buff_extension.has_buff_type(attacker_buff_extension, "armor penetration")
+
+			if has_damage_boost then
+				stagger_strength = stagger_strength*2
+			end
+		end
+
+		local stagger_resistance = 1.5
+		local stagger_threshold_light = 0
+		local stagger_threshold_medium = stagger_resistance
+		local stagger_threshold_heavy = stagger_resistance*2
+		local stagger_threshold_explosion = stagger_resistance*10
+		local excessive_force, scale = nil
+		local impact_modifier = 1
+
+		if stagger_strength < stagger_threshold_light then
+			stagger = 0
+		elseif stagger_strength < stagger_threshold_medium then
+			stagger = 1
+			excessive_force = stagger_strength
+			scale = (0 < excessive_force and excessive_force/stagger_resistance) or 0
+			impact_modifier = math.clamp(scale, 0, 1)*0.25 + 0.75
+		elseif stagger_strength < stagger_threshold_heavy then
+			stagger = 2
+			excessive_force = stagger_strength - stagger_threshold_medium
+			scale = (0 < excessive_force and excessive_force/stagger_resistance) or 0
+			impact_modifier = math.clamp(scale, 0, 1)*0.25 + 0.75
+		elseif stagger_strength < stagger_threshold_explosion then
+			stagger = 3
+			excessive_force = stagger_strength - stagger_threshold_heavy
+			scale = (0 < excessive_force and stagger_resistance/excessive_force) or 0
+			impact_modifier = math.clamp(scale, 0, 1)*0.25 + 0.75
+		elseif damage_profile.is_explosion then
+			stagger = 6
+		else
+			stagger = 3
+		end
+	end
+
+	if attack_template.ranged_stagger then
+		if stagger == 1 then
+			stagger = 4
+		elseif stagger == 2 then
+			stagger = 5
+		end
+	end
+
 	local stagger_value = (attack_template and attack_template.stagger_value) or 1
 
 	return stagger, duration, distance, stagger_value
@@ -575,8 +654,10 @@ DamageUtils.calculate_aoe_size = function (target_unit, breed)
 end
 local units = {}
 DamageUtils.create_explosion = function (world, attacker_unit, position, rotation, explosion_template, scale, damage_source, is_server, is_husk, damaging_unit, attacker_power_level)
-	if explosion_template.camera_effect then
-		local effect_settings = explosion_template.camera_effect
+	local explosion_data = explosion_template.explosion
+
+	if explosion_data.camera_effect then
+		local effect_settings = explosion_data.camera_effect
 		local shake_name = effect_settings.shake_name
 		local near_distance = effect_settings.near_distance
 		local far_distance = effect_settings.far_distance
@@ -587,77 +668,77 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 		DamageUtils.camera_shake_by_distance(shake_name, t, nil, damaging_unit, near_distance, far_distance, near_scale, far_scale)
 	end
 
-	if explosion_template.effect_name then
-		World.create_particles(world, explosion_template.effect_name, position, rotation)
+	if explosion_data.effect_name then
+		World.create_particles(world, explosion_data.effect_name, position, rotation)
 	end
 
 	local attacker_unit_alive = Unit.alive(attacker_unit)
 
-	if explosion_template.sound_event_name then
+	if explosion_data.sound_event_name then
 		local wwise_source_id, wwise_world = WwiseUtils.make_position_auto_source(world, position)
 		local husk = (is_husk and "true") or "false"
 
 		WwiseWorld.set_switch(wwise_world, "husk", husk, wwise_source_id)
-		WwiseWorld.trigger_event(wwise_world, explosion_template.sound_event_name, wwise_source_id)
+		WwiseWorld.trigger_event(wwise_world, explosion_data.sound_event_name, wwise_source_id)
 	end
 
 	if is_server and attacker_unit_alive then
-		if explosion_template.alert_enemies then
-			Managers.state.entity:system("ai_system"):alert_enemies_within_range(attacker_unit, position, explosion_template.alert_enemies_radius)
+		if explosion_data.alert_enemies then
+			Managers.state.entity:system("ai_system"):alert_enemies_within_range(attacker_unit, position, explosion_data.alert_enemies_radius)
 		end
 
 		local weapon_system = Managers.state.entity:system("weapon_system")
 		local network_manager = Managers.state.network
-		local push_speed = explosion_template.player_push_speed
-		local radius = explosion_template.radius
-		local max_damage_radius = explosion_template.max_damage_radius or 0
-		local radius_min = explosion_template.radius_min
-		local radius_max = explosion_template.radius_max
+		local push_speed = explosion_data.player_push_speed
+		local radius = explosion_data.radius
+		local max_damage_radius = explosion_data.max_damage_radius or 0
+		local radius_min = explosion_data.radius_min
+		local radius_max = explosion_data.radius_max
 
 		if radius_min and radius_max then
 			radius = math.lerp(radius_min, radius_max, scale)
 
-			if explosion_template.max_damage_radius_min then
-				local max_damage_radius_min = explosion_template.max_damage_radius_min
-				local max_damage_radius_max = explosion_template.max_damage_radius_max
+			if explosion_data.max_damage_radius_min then
+				local max_damage_radius_min = explosion_data.max_damage_radius_min
+				local max_damage_radius_max = explosion_data.max_damage_radius_max
 				max_damage_radius = math.lerp(max_damage_radius_min, max_damage_radius_max, scale)
 			end
 		end
 
-		fassert(radius, "Explosion with attack template %q has no radius or radius_min & radius_max set", explosion_template.attack_template or "")
+		fassert(radius, "Explosion template [%s] has no radius, or radius_min & radius_max, set", explosion_template.name)
 
-		local attack_template_name = explosion_template.attack_template
+		local is_grenade = explosion_template.is_grenade
 
-		if ScriptUnit.has_extension(attacker_unit, "buff_system") and (attack_template_name == "grenade" or attack_template_name == "fire_grenade_explosion") then
+		if ScriptUnit.has_extension(attacker_unit, "buff_system") and is_grenade then
 			local buff_extension = ScriptUnit.extension(attacker_unit, "buff_system")
 			radius = buff_extension.apply_buffs_to_value(buff_extension, radius, StatBuffIndex.GRENADE_RADIUS)
 			max_damage_radius = buff_extension.apply_buffs_to_value(buff_extension, max_damage_radius, StatBuffIndex.GRENADE_RADIUS)
 		end
 
 		local difficulty_rank = Managers.state.difficulty:get_difficulty()
-		local difficulty_power_level = explosion_template.difficulty_power_level and explosion_template.difficulty_power_level[difficulty_rank]
-		local power_level_settings = difficulty_power_level or explosion_template
+		local difficulty_power_level = explosion_data.difficulty_power_level and explosion_data.difficulty_power_level[difficulty_rank]
+		local power_level_settings = difficulty_power_level or explosion_data
 		local power_level = power_level_settings.power_level
 		local power_level_min = power_level_settings.power_level_min
 		local power_level_max = power_level_settings.power_level_max
 
-		if explosion_template.use_attacker_power_level then
+		if explosion_data.use_attacker_power_level then
 			assert(attacker_power_level, "No attacker power level argument sent for explosion requiring it!")
 
 			power_level = attacker_power_level
 			power_level_max = attacker_power_level
-			power_level_min = power_level_max*(explosion_template.attacker_power_level_offset or DefaultAttackerPowerLevelOffset)
+			power_level_min = power_level_max*(explosion_data.attacker_power_level_offset or DefaultAttackerPowerLevelOffset)
 		end
 
 		local power_level_glance = power_level_settings.power_level_glance
 		local do_damage = power_level or (power_level_min and power_level_max) or false
-		local ignore_attacker_unit = explosion_template.ignore_attacker_unit
+		local ignore_attacker_unit = explosion_data.ignore_attacker_unit
 		local collision_filter = "filter_explosion_overlap_no_player"
 		local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 		local attacker_player = Managers.player:owner(attacker_unit)
 		local attacker_is_player = attacker_player ~= nil
 
-		if (attacker_is_player and DamageUtils.allow_friendly_fire_ranged(difficulty_settings, attacker_player)) or explosion_template.always_hurt_players then
+		if (attacker_is_player and DamageUtils.allow_friendly_fire_ranged(difficulty_settings, attacker_player)) or explosion_data.always_hurt_players then
 			collision_filter = "filter_explosion_overlap"
 		end
 
@@ -688,7 +769,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 						units[hit_unit] = true
 						num_hits = num_hits + 1
 						local breed = unit_get_data(hit_unit, "breed")
-						local is_immune = breed and explosion_template.immune_breeds and explosion_template.immune_breeds[breed.name]
+						local is_immune = breed and explosion_data.immune_breeds and explosion_data.immune_breeds[breed.name]
 						local target_radius, target_height = DamageUtils.calculate_aoe_size(hit_unit, breed)
 						local unit_position = POSITION_LOOKUP[hit_unit] or Unit.local_position(hit_unit, 0)
 						local unit_top_position = unit_position + Vector3(0, 0, math.max(target_height - target_radius*0.5, target_height*0.5))
@@ -771,7 +852,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 								scaled_power_level = scaled_power_level*distance_factor
 							end
 
-							local damage_profile_name = (glancing_hit and explosion_template.damage_profile_glance) or explosion_template.damage_profile or "default"
+							local damage_profile_name = (glancing_hit and explosion_data.damage_profile_glance) or explosion_data.damage_profile or "default"
 
 							if not do_damage or is_immune then
 								damage_profile_name = damage_profile_name .. "_no_damage"
@@ -821,7 +902,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 			end
 		end
 
-		if explosion_template.attack_template == "grenade" then
+		if is_grenade then
 			SurroundingAwareSystem.add_event(attacker_unit, "grenade_exp", DialogueSettings.grabbed_broadcast_range, "hit", num_hits, "grenade_owner", ScriptUnit.extension(attacker_unit, "dialogue_system").context.player_profile)
 		end
 	end
@@ -829,8 +910,9 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 	return 
 end
 local BROADPHASE_TEMP = {}
-DamageUtils.create_taunt = function (world, owner_unit, projectile_unit, position, taunt_config)
-	local num_targets = AiUtils.broadphase_query(position, taunt_config.target_selection_range, BROADPHASE_TEMP)
+DamageUtils.create_taunt = function (world, owner_unit, projectile_unit, position, aoe_data)
+	local taunt_data = aoe_data.taunt
+	local num_targets = AiUtils.broadphase_query(position, taunt_data.target_selection_range, BROADPHASE_TEMP)
 	local best_health = -math.huge
 	local best_target = nil
 
@@ -850,7 +932,7 @@ DamageUtils.create_taunt = function (world, owner_unit, projectile_unit, positio
 	local extension_init_data = {
 		health_system = {
 			attached_unit = best_target,
-			duration = taunt_config.duration
+			duration = taunt_data.duration
 		},
 		death_system = {
 			death_reaction_template = "lure_unit"
@@ -863,8 +945,8 @@ DamageUtils.create_taunt = function (world, owner_unit, projectile_unit, positio
 		World.link_unit(world, unit, best_target)
 	end
 
-	local taunt_end_time = Managers.time:time("game") + taunt_config.duration
-	local num_taunted_units = AiUtils.broadphase_query(position, taunt_config.range, BROADPHASE_TEMP)
+	local taunt_end_time = Managers.time:time("game") + taunt_data.duration
+	local num_taunted_units = AiUtils.broadphase_query(position, taunt_data.range, BROADPHASE_TEMP)
 
 	for i = 1, num_taunted_units, 1 do
 		local ai_unit = BROADPHASE_TEMP[i]
@@ -887,8 +969,9 @@ end
 DamageUtils.create_aoe = function (world, attacker_unit, position, damage_source, explosion_template)
 	local aoe_data = explosion_template.aoe
 	local radius = aoe_data.radius
+	local is_grenade = explosion_template.is_grenade
 
-	if ScriptUnit.has_extension(attacker_unit, "buff_system") and (explosion_template.name == "fire_grenade" or explosion_template.name == "smoke_grenade") then
+	if ScriptUnit.has_extension(attacker_unit, "buff_system") and is_grenade then
 		local buff_extension = ScriptUnit.extension(attacker_unit, "buff_system")
 		radius = buff_extension.apply_buffs_to_value(buff_extension, radius, StatBuffIndex.GRENADE_RADIUS)
 	end
@@ -1191,7 +1274,14 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 		end
 
 		damage = buff_extension.apply_buffs_to_value(buff_extension, damage, StatBuffIndex.DAMAGE_TAKEN)
-		local status_extension = attacked_player and ScriptUnit.extension(attacked_unit, "status_system")
+
+		if ELITES[damage_source] then
+			local damage_before = damage
+			damage = buff_extension.apply_buffs_to_value(buff_extension, damage, StatBuffIndex.DAMAGE_TAKEN_ELITES)
+			slot14 = damage
+		end
+
+		status_extension = attacked_player and ScriptUnit.extension(attacked_unit, "status_system")
 		local is_knocked_down = status_extension and status_extension.is_knocked_down(status_extension)
 
 		if is_knocked_down then
@@ -1221,8 +1311,8 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 
 		local damage_cap = buff_extension.apply_buffs_to_value(buff_extension, 0, StatBuffIndex.MAX_DAMAGE_TAKEN)
 
-		if 0 < damage_cap then
-			damage = math.min(damage, damage_cap)
+		if 0 < damage_cap and damage_cap <= damage then
+			damage = math.max(damage*0.5, damage_cap)
 		end
 
 		if buff_extension.has_buff_type(buff_extension, "shared_health_pool") and not ignored_shared_damage_types[damage_source] then
@@ -1673,7 +1763,7 @@ DamageUtils.damage_level_unit = function (hit_unit, attacker_unit, hit_zone_name
 	return 
 end
 local dummy_units = {}
-DamageUtils.damage_dummy_unit = function (hit_unit, attacker_unit, hit_zone_name, power_level, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, hit_normal, damage_source, hit_actor)
+DamageUtils.damage_dummy_unit = function (hit_unit, attacker_unit, hit_zone_name, power_level, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, attack_direction, damage_source)
 	local target_settings = damage_profile[target_index] or damage_profile.default_target
 
 	if target_settings then
@@ -1687,9 +1777,8 @@ DamageUtils.damage_dummy_unit = function (hit_unit, attacker_unit, hit_zone_name
 		local color_modifier_red = math.min(final_damage_amount*4 + 120, 255)
 		local color_modifier_green = math.max(final_damage_amount*4 - 200, 0)
 		local color1 = Vector3(color_modifier_red, color_modifier_green, 0)
-		local debug_text_manager = Managers.state.debug_text
 		local random_x = math.random(-30, 30)*0.01
-		local text_size = final_damage_amount*0.005 + 0.18
+		local text_size = final_damage_amount*0.75 + 40
 		local duration = 2.2
 
 		if is_critical_strike then
@@ -1698,9 +1787,64 @@ DamageUtils.damage_dummy_unit = function (hit_unit, attacker_unit, hit_zone_name
 			text_size = text_size + 0.05
 		end
 
-		debug_text_manager.output_unit_text(debug_text_manager, "" .. final_damage_amount, text_size, hit_unit, 0, Vector3(random_x, 0, 2.1), duration, "dummy_damage", color1, "player_1", true, true)
+		Managers.state.event:trigger("add_damage_number", final_damage_amount, text_size, hit_unit, duration, color1, is_critical_strike)
 		DamageUtils.handle_hit_indication(attacker_unit, hit_unit, final_damage_amount, hit_zone_name, added_dot)
-		DamageUtils.add_damage_network(hit_unit, attacker_unit, 0, hit_zone_name or "full", damage_type, hit_normal, damage_source, hit_ragdoll_actor, damaging_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot)
+		DamageUtils.add_damage_network(hit_unit, attacker_unit, 0, hit_zone_name or "full", damage_type, attack_direction, damage_source, hit_ragdoll_actor, damaging_unit, buff_attack_type, hit_react_type, is_critical_strike, added_dot)
+		table.clear(dummy_units)
+
+		local hit_anim = nil
+		local stagger_type, stagger_duration, stagger_length, stagger_value = DamageUtils.calculate_stagger_dummy(ImpactTypeOutput, hit_unit, attacker_unit, hit_zone_name, power_level, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, false)
+		local target_settings = damage_profile.targets[target_index] or damage_profile.default_target
+		local dot_template_name = target_settings.dot_template_name
+		local attack_template_name = target_settings.attack_template
+		local attack_template = AttackTemplates[attack_template_name]
+		local stagger_angle = attack_template.stagger_angle
+		local target_unit_position = POSITION_LOOKUP[hit_unit] or Unit.world_position(hit_unit, 0)
+		local attacker_position = POSITION_LOOKUP[attacker_unit] or Unit.world_position(attacker_unit, 0)
+
+		if stagger_angle == "down" or stagger_angle == "smiter" then
+			attack_direction = Vector3.normalize(target_unit_position - attacker_position)
+			attack_direction.z = -1
+		elseif stagger_angle == "stab" or stagger_angle == "smiter" then
+			attack_direction = Vector3.normalize(target_unit_position - attacker_position)
+		end
+
+		if attack_template.ranged_stagger then
+			if stagger_type == 1 then
+				stagger_type = 4
+			elseif stagger_type == 2 then
+				stagger_type = 5
+			end
+		end
+
+		local hit_unit_dir = Quaternion.forward(Unit.local_rotation(hit_unit, 0))
+		local angle_difference = Vector3.flat_angle(hit_unit_dir, attack_direction)
+
+		if angle_difference < -math.pi*0.75 or math.pi*0.75 < angle_difference then
+			if stagger_type == 3 then
+				hit_anim = "stagger_heavy_fwd"
+			else
+				hit_anim = "stagger_light_fwd"
+			end
+		elseif angle_difference < -math.pi*0.25 then
+			if stagger_type == 3 then
+				hit_anim = "stagger_heavy_right"
+			else
+				hit_anim = "stagger_light_right"
+			end
+		elseif angle_difference < math.pi*0.25 then
+			if stagger_type == 3 then
+				hit_anim = "stagger_heavy_bwd"
+			else
+				hit_anim = "stagger_light_bwd"
+			end
+		elseif stagger_type == 3 then
+			hit_anim = "stagger_heavy_left"
+		else
+			hit_anim = "stagger_light_left"
+		end
+
+		Managers.state.network:anim_event(hit_unit, hit_anim)
 	end
 
 	return 

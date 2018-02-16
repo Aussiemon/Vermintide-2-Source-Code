@@ -7,6 +7,7 @@ require("scripts/managers/backend_playfab/backend_interface_loot_playfab")
 require("scripts/managers/backend_playfab/backend_interface_talents_playfab")
 require("scripts/managers/backend_playfab/backend_interface_hero_attributes_playfab")
 require("scripts/managers/backend_playfab/backend_interface_statistics_playfab")
+require("scripts/managers/backend_playfab/backend_interface_keep_decorations_playfab")
 require("scripts/managers/backend/script_backend")
 require("scripts/managers/backend_playfab/script_backend_playfab")
 require("scripts/managers/backend_playfab/script_backend_playfab_dedicated")
@@ -143,6 +144,7 @@ BackendManagerPlayFab._create_interfaces = function (self, force_local)
 	self._create_common_interface(self, settings, force_local)
 	self._create_hero_attributes_interface(self, settings, force_local)
 	self._create_statistics_interface(self, settings, force_local)
+	self._create_keep_decorations_interface(self, settings, force_local)
 
 	return 
 end
@@ -795,6 +797,15 @@ BackendManagerPlayFab._create_statistics_interface = function (self, settings, f
 		self._interfaces.statistics = BackendInterfaceStatisticsLocal:new(self._save_data)
 	else
 		self._interfaces.statistics = BackendInterfaceStatisticsPlayFab:new(self._backend_mirror)
+	end
+
+	return 
+end
+BackendManagerPlayFab._create_keep_decorations_interface = function (self, settings, force_local)
+	if force_local then
+		self._interfaces.keep_decorations = BackendInterfaceKeepDecorationsLocal:new(self._save_data)
+	else
+		self._interfaces.keep_decorations = BackendInterfaceKeepDecorationsPlayFab:new(self._backend_mirror)
 	end
 
 	return 

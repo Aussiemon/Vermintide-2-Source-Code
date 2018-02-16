@@ -30,6 +30,7 @@ require("scripts/ui/hud_ui/loot_objective_ui")
 require("scripts/ui/hud_ui/boss_health_ui")
 require("scripts/ui/hud_ui/twitch_vote_ui")
 require("scripts/ui/hud_ui/floating_icon_ui")
+require("scripts/ui/hud_ui/damage_numbers_ui")
 require("scripts/ui/gift_popup/gift_popup_ui")
 require("scripts/ui/ui_cleanui")
 
@@ -97,7 +98,14 @@ IngameHud.init = function (self, ingame_ui_context)
 		self.contract_log_ui = ContractLogUI:new(ingame_ui_context)
 	end
 
-	self.game_timer_ui = GameTimerUI:new(ingame_ui_context)
+	if not self.is_in_inn then
+		self.game_timer_ui = GameTimerUI:new(ingame_ui_context)
+	end
+
+	if self.is_in_inn then
+		self.damage_numbers_ui = DamageNumbersUI:new(ingame_ui_context)
+	end
+
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
 
 	if game_mode_key == "survival" then
@@ -156,6 +164,10 @@ IngameHud.destroy = function (self)
 
 	if self.contract_log_ui then
 		self.contract_log_ui:destroy()
+	end
+
+	if self.damage_numbers_ui then
+		self.damage_numbers_ui:destroy()
 	end
 
 	self.subtitle_gui:destroy()
@@ -445,12 +457,17 @@ IngameHud._update_always = function (self, dt, t, player, context)
 	end
 
 	Profiler.stop("gdc")
+	Profiler.start("damage_numbers_ui")
+
+	if self.is_in_inn and self.damage_numbers_ui then
+		self.damage_numbers_ui:update(dt)
+	end
+
+	Profiler.stop("damage_numbers_ui")
 
 	return 
 end
 IngameHud._update_while_alive = function (self, dt, t, player, context)
-	self._update_survival_ui(self, dt, t)
-
 	local game_mode = Managers.state.game_mode:game_mode()
 	local game_mode_disable_hud = game_mode.game_mode_hud_disabled and game_mode.game_mode_hud_disabled(game_mode)
 
@@ -470,6 +487,12 @@ IngameHud._update_while_alive = function (self, dt, t, player, context)
 			self.player_inventory_ui:update(dt, t, player)
 			Profiler.stop("Player Inventory")
 		end
+	end
+
+	if self.game_timer_ui then
+		Profiler.start("game timer")
+		self.game_timer_ui:update(dt)
+		Profiler.stop("game timer")
 	end
 
 	Profiler.start("Interaction")
@@ -588,6 +611,12 @@ IngameHud._update_while_dead = function (self, dt, t, player, context)
 		end
 
 		Profiler.stop("Unit Frames")
+	end
+
+	if self.game_timer_ui then
+		Profiler.start("game timer")
+		self.game_timer_ui:update(dt)
+		Profiler.stop("game timer")
 	end
 
 	Profiler.start("mission_objective")

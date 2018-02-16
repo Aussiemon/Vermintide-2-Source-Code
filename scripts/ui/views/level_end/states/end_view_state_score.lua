@@ -1,9 +1,11 @@
 local definitions = local_require("scripts/ui/views/level_end/states/definitions/end_view_state_score_definitions")
 local widget_definitions = definitions.widgets
+local player_score_size = definitions.player_score_size
 local hero_widget_definitions = definitions.hero_widgets
 local score_widget_definitions = definitions.score_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+local PLAYER_NAME_MAX_LENGTH = 16
 local DO_RELOAD = false
 local fake_input_service = {
 	get = function ()
@@ -240,6 +242,24 @@ EndViewStateScore._handle_input = function (self, dt, t)
 
 	return 
 end
+EndViewStateScore._is_button_pressed = function (self, widget)
+	local content = widget.content
+	local hotspot = content.button_hotspot
+
+	if hotspot.on_release then
+		hotspot.on_release = false
+
+		return true
+	end
+
+	return 
+end
+EndViewStateScore._is_button_hover_enter = function (self, widget)
+	local content = widget.content
+	local hotspot = content.button_hotspot
+
+	return hotspot.on_hover_enter
+end
 EndViewStateScore.draw = function (self, input_service, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -456,7 +476,8 @@ EndViewStateScore._setup_score_panel = function (self, score_panel_scores, playe
 				local score_text_name = "score_text" .. line_suffix
 				local row_name = "row_bg" .. line_suffix
 				local row_content = content[row_name]
-				row_content[score_text_name] = player_name
+				local name = (PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(player_name) and UIRenderer.crop_text_width(self.ui_renderer, player_name, player_score_size[1] - 40, style[score_text_name])) or player_name
+				row_content[score_text_name] = name
 			end
 
 			total_row_index = total_row_index + 1

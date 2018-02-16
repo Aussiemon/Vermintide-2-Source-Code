@@ -63,7 +63,7 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	self.damage_profile = damage_profile
 	local cleave_distribution = damage_profile.cleave_distribution or DefaultCleaveDistribution
 	local cleave_range = Cleave.max - Cleave.min
-	local cleave_power_level = self.power_level*(cleave_distribution.attack + cleave_distribution.impact)
+	local cleave_power_level = ActionUtils.scale_powerlevels(self.power_level, "cleave")
 	local attack_cleave_power_level = cleave_power_level*cleave_distribution.attack
 	local attack_percentage = DamageUtils.get_power_level_percentage(attack_cleave_power_level, true)
 	local max_targets_attack = cleave_range*attack_percentage
@@ -275,7 +275,7 @@ ActionSweep._calculate_hit_mass = function (self, difficulty_rank, target_health
 		if self.ignore_mass_and_armour then
 			hit_mass_total = 1
 		elseif action_mass_override and action_mass_override[breed.name] then
-			local mass_cost_multiplier = current_action.hit_mass_count[breed.name]
+			local mass_cost_multiplier = action_mass_override[breed.name]
 			hit_mass_total = hit_mass_total*(mass_cost_multiplier or 1)
 		end
 
@@ -283,10 +283,12 @@ ActionSweep._calculate_hit_mass = function (self, difficulty_rank, target_health
 		local hit_unit_action_id = GameSession.game_object_field(game, hit_unit_id, "bt_action_name")
 		local hit_unit_action_name = NetworkLookup.bt_action_names[hit_unit_action_id]
 
-		if hit_unit_action_name == "stagger" or buff_extension.has_buff_perk(buff_extension, "hit_mass_override") then
-			hit_mass_total = 1
-		elseif buff_extension.has_buff_perk(buff_extension, "hit_mass_override") and 1 < hit_mass_total then
-			hit_mass_total = hit_mass_total - 1
+		if hit_unit_action_name == "stagger" then
+			hit_mass_total = hit_mass_total*0.75
+		end
+
+		if buff_extension.has_buff_perk(buff_extension, "hit_mass_override") then
+			hit_mass_total = hit_mass_total*0.75
 		end
 
 		self.amount_of_mass_hit = self.amount_of_mass_hit + hit_mass_total
@@ -523,6 +525,8 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 					end
 
 					local abort_attack = self.max_targets <= self.number_of_hit_enemies or (self.max_targets <= self.amount_of_mass_hit and not self.ignore_mass_and_armour) or (hit_armor and not current_action.ignore_armour_hit and not self.ignore_mass_and_armour)
+
+					weapon_printf("checking for abort %s %s %s", tostring(abort_attack), tostring(self.amount_of_mass_hit), tostring(self.max_targets))
 
 					if shield_blocked then
 						abort_attack = self.max_targets <= self.amount_of_mass_hit + 3 or (hit_armor and not current_action.ignore_armour_hit and not self.ignore_mass_and_armour)

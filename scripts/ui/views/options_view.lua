@@ -552,29 +552,6 @@ OptionsView.cleanup_popups = function (self)
 
 	return 
 end
-OptionsView.suspend = function (self)
-	self.suspended = true
-
-	self.input_manager:device_unblock_all_services("keyboard", 1)
-	self.input_manager:device_unblock_all_services("mouse", 1)
-	self.input_manager:device_unblock_all_services("gamepad", 1)
-	self.cleanup_popups(self)
-
-	return 
-end
-OptionsView.unsuspend = function (self)
-	if Managers.chat:chat_is_focused() then
-		Managers.chat.chat_gui:block_input()
-	else
-		self.input_manager:block_device_except_service("options_menu", "keyboard", 1)
-		self.input_manager:block_device_except_service("options_menu", "mouse", 1)
-		self.input_manager:block_device_except_service("options_menu", "gamepad", 1)
-	end
-
-	self.suspended = nil
-
-	return 
-end
 OptionsView.destroy = function (self)
 	self.cleanup_popups(self)
 	self.menu_input_description:destroy()
@@ -636,7 +613,7 @@ OptionsView.create_ui_elements = function (self)
 				tobii_settings_definition = {
 					{
 						text = "settings_view_header_eyetracker_not_found",
-						url = "http://tobiigaming.com/warhammer2?utm_campaign=Warhammer%20Vermintide%202&utm_source=ingame&utm_medium=referral",
+						url = "http://tobiigaming.com/",
 						widget_type = "text_link"
 					}
 				}
@@ -2148,14 +2125,10 @@ OptionsView.handle_apply_popup_results = function (self, result)
 		if needs_restart then
 			local text = Localize("changes_need_restart_popup_text")
 			self.apply_popup_id = Managers.popup:queue_popup(text, Localize("popup_needs_restart_topic"), "continue", Localize("popup_choice_continue"), "restart", Localize("popup_choice_restart_now"))
-		else
-			self.unsuspend(self)
+		elseif self.delayed_title_change then
+			self.select_settings_title(self, self.delayed_title_change)
 
-			if self.delayed_title_change then
-				self.select_settings_title(self, self.delayed_title_change)
-
-				self.delayed_title_change = nil
-			end
+			self.delayed_title_change = nil
 		end
 
 		self.set_original_settings(self)
@@ -2167,8 +2140,6 @@ OptionsView.handle_apply_popup_results = function (self, result)
 			self.apply_changes(self, self.original_user_settings, self.original_render_settings)
 		end
 
-		self.unsuspend(self)
-
 		if self.delayed_title_change then
 			self.select_settings_title(self, self.delayed_title_change)
 
@@ -2179,11 +2150,8 @@ OptionsView.handle_apply_popup_results = function (self, result)
 			self.set_widget_values(self, self.selected_settings_list)
 		end
 	elseif result == "restart" then
-		self.unsuspend(self)
 		self.restart(self)
 	elseif result == "continue" then
-		self.unsuspend(self)
-
 		if self.delayed_title_change then
 			self.select_settings_title(self, self.delayed_title_change)
 
@@ -2209,7 +2177,6 @@ OptionsView.handle_title_buttons_popup_results = function (self, result)
 			self.apply_changes(self, self.original_user_settings, self.original_render_settings)
 		end
 
-		self.unsuspend(self)
 		self.reset_changed_settings(self)
 
 		if self.delayed_title_change then
@@ -2221,7 +2188,6 @@ OptionsView.handle_title_buttons_popup_results = function (self, result)
 			self.set_widget_values(self, self.selected_settings_list)
 		end
 	elseif result == "apply_changes" then
-		self.unsuspend(self)
 		self.handle_apply_changes(self)
 	else
 		print(result)
@@ -2241,7 +2207,6 @@ OptionsView.handle_exit_button_popup_results = function (self, result)
 		self.reset_changed_settings(self)
 		self.exit(self)
 	elseif result == "cancel" then
-		self.unsuspend(self)
 	else
 		print(result)
 	end

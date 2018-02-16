@@ -15,6 +15,10 @@ BTChewAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = action
 	blackboard.active_node = self
 
+	if not Unit.alive(blackboard.victim_grabbed) then
+		return 
+	end
+
 	if blackboard.grabbed_state ~= "chew" then
 		local animation = "attack_grabbed_eat_start"
 

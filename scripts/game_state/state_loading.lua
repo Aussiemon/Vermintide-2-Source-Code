@@ -779,7 +779,7 @@ StateLoading._update_lobby_join = function (self, dt, t)
 		self._wanted_state = StateTitleScreen
 	end
 
-	if not found and self._lobby_finder_refresh_timer < t then
+	if self._lobby_finder and not found and self._lobby_finder_refresh_timer < t then
 		self._lobby_finder:refresh()
 
 		self._lobby_finder_refresh_timer = t + StateLoading.join_lobby_refresh_interval
@@ -1420,19 +1420,19 @@ StateLoading.set_matchmaking = function (self, matchmaking)
 end
 StateLoading.setup_network_options = function (self)
 	if not self._network_options then
-		self._unique_server_name = Development.parameter("unique_server_name")
-		local development_port = Development.parameter("server_port") or script_data.settings.server_port or GameSettingsDevelopment.network_port
+		local development_port = script_data.server_port or script_data.settings.server_port or GameSettingsDevelopment.network_port
 		development_port = development_port + LOBBY_PORT_INCREMENT
 		local lobby_port = (LEVEL_EDITOR_TEST and GameSettingsDevelopment.editor_lobby_port) or development_port
 		local network_options = {
-			max_members = 4,
+			map = "game",
 			project_hash = "bulldozer",
+			max_members = 4,
 			config_file_name = "global",
 			lobby_port = lobby_port,
-			server_port = Development.parameter("server_port") or script_data.settings.server_port,
-			query_port = Development.parameter("query_port") or script_data.settings.query_port,
-			authentication_port = Development.parameter("authentication_port") or script_data.settings.authentication_port,
-			ip_address = Development.parameter("ip_address") or script_data.settings.ip_address
+			server_port = script_data.server_port or script_data.settings.server_port,
+			query_port = script_data.query_port or script_data.settings.query_port,
+			steam_port = script_data.steam_port or script_data.settings.steam_port,
+			ip_address = script_data.ip_address or script_data.settings.ip_address
 		}
 		self._network_options = network_options
 	end

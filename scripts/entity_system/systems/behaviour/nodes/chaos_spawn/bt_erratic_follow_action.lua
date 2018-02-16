@@ -397,7 +397,7 @@ BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, un
 
 		blackboard.current_jump_data = jump_data
 
-		locomotion_extension.set_movement_type(locomotion_extension, "script_driven")
+		locomotion_extension.set_movement_type(locomotion_extension, "snap_to_navmesh")
 		locomotion_extension.set_animation_driven(locomotion_extension, true, false, false)
 		LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
 		locomotion_extension.use_lerp_rotation(locomotion_extension, false)

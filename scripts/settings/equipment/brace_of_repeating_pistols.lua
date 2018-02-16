@@ -167,9 +167,15 @@ weapon_template.crosshair_style = "default"
 weapon_template.gui_texture = "hud_weapon_icon_repeating_handgun"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "BRACE_OF_PISTOLS"
-weapon_template.dodge_distance = 1.3
-weapon_template.dodge_speed = 1.3
 weapon_template.dodge_count = 1
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1.3
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1.3
+	}
+}
 weapon_template.wwise_dep_right_hand = {
 	"wwise/handgun_rifle"
 }

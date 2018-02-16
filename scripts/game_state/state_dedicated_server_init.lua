@@ -1,3 +1,4 @@
+require("scripts/managers/network/ban_list_manager")
 require("scripts/network/network_server")
 
 StateDedicatedServerInit = class(StateDedicatedServerInit)
@@ -25,7 +26,7 @@ StateDedicatedServerInit._init_network = function (self)
 	end
 
 	local network_options = self.parent:network_options()
-	local game_server_name = Development.parameter("unique_server_name") or script_data.settings.server_name
+	local game_server_name = script_data.server_name or script_data.settings.server_name
 
 	cprint("Network Options:")
 	cprint("----------------------------------------")
@@ -47,6 +48,8 @@ StateDedicatedServerInit._init_network = function (self)
 	if not Managers.eac then
 		Managers.eac = EACManager:new()
 	end
+
+	Managers.ban_list = Managers.ban_list or BanListManager:new()
 
 	return 
 end

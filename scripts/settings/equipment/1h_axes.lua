@@ -1,5 +1,5 @@
 local push_radius = 2
-local time_mod = 0.85
+local time_mod = 0.9
 local light_smiter_stagger = 3
 local heavy_smiter_stagger = 3
 local crit_strike_mod = 0
@@ -919,14 +919,20 @@ weapon_template.wield_anim = "to_1h_axe"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "AXE_1H"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_distance = 1.2
-weapon_template.dodge_speed = 1.2
 weapon_template.dodge_count = 3
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.sound_event_block_within_arc = "weapon_foley_blunt_1h_block_wood"
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1.2
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1.2
+	}
+}
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		penetrating = true,

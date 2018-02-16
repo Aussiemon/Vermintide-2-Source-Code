@@ -742,6 +742,11 @@ end
 AnimationCallbackTemplates.server.anim_cb_chew_attack = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
 	local active_node = blackboard.active_node
+	local victim_unit = blackboard.victim_grabbed
+
+	if not victim_unit or not Unit.alive(victim_unit) then
+		return 
+	end
 
 	if active_node then
 		local anim_cb = active_node.anim_cb_chew_attack

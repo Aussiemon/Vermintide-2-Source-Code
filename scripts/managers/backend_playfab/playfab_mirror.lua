@@ -188,6 +188,18 @@ PlayFabMirror._add_data = function (self, item, backend_id)
 		if rarity then
 			item.rarity = rarity
 		end
+
+		local level_key = custom_data.level_key
+
+		if level_key then
+			item.level_key = level_key
+		end
+
+		local difficulty = custom_data.difficulty
+
+		if difficulty then
+			item.difficulty = difficulty
+		end
 	end
 
 	local item_key = item.ItemId
@@ -291,9 +303,11 @@ PlayFabMirror.get_all_inventory_items = function (self)
 	return self._inventory_items
 end
 PlayFabMirror.get_stats = function (self)
-	return {}
+	return self._stats
 end
-PlayFabMirror.set_stats = function (self, nice_stats)
+PlayFabMirror.set_stats = function (self, stats)
+	self._stats = stats
+
 	return 
 end
 PlayFabMirror.check_for_errors = function (self)
@@ -471,6 +485,14 @@ PlayFabMirror._commit_internal = function (self, queue_id)
 		commit.wait_for_stats = true
 	end
 
+	local save_keep_decorations_cb = callback(self, "save_keep_decorations_cb", commit_id)
+	request_sent = Managers.backend:get_interface("keep_decorations"):save(save_keep_decorations_cb)
+
+	if request_sent then
+		commit.status = "waiting"
+		commit.wait_for_keep_decorations = true
+	end
+
 	self._commits[commit_id] = commit
 
 	return commit_id
@@ -500,7 +522,7 @@ PlayFabMirror.update_character_data_request_cb = function (self, result)
 
 		commit.num_updates = commit.num_updates + 1
 
-		if commit.num_updates == commit.updates_to_make and commit.wait_for_stats == false then
+		if commit.num_updates == commit.updates_to_make and not commit.wait_for_stats and not commit.wait_for_keep_decorations then
 			commit.status = "success"
 		end
 	end
@@ -513,7 +535,19 @@ PlayFabMirror.save_statistics_cb = function (self, commit_id, result)
 
 	if result == false then
 		commit.status = "commit_error"
-	elseif result and commit.num_updates == commit.updates_to_make then
+	elseif result and commit.num_updates == commit.updates_to_make and not commit.wait_for_keep_decorations then
+		commit.status = "success"
+	end
+
+	return 
+end
+PlayFabMirror.save_keep_decorations_cb = function (self, commit_id, result)
+	local commit = self._commits[commit_id]
+	commit.wait_for_keep_decorations = false
+
+	if result == false then
+		commit.status = "commit_error"
+	elseif result and commit.num_updates == commit.updates_to_make and not commit.wait_for_stats then
 		commit.status = "success"
 	end
 

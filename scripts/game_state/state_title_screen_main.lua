@@ -35,10 +35,6 @@ StateTitleScreenMain.on_enter = function (self, params)
 		Managers.account:reset()
 	end
 
-	if Managers.backend then
-		Managers.backend:reset()
-	end
-
 	if Managers.matchmaking then
 		Managers.matchmaking:destroy()
 

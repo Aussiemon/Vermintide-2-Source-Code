@@ -2655,7 +2655,6 @@ UITooltipPasses = {
 			local frame_settings = UIFrameSettings[frame_name]
 			local frame_edge_height = frame_settings.texture_sizes.horizontal[2]
 			text_content.title = Localize(display_name)
-			text_content.description = level_key or "description"
 			position[1] = position[1] + frame_margin
 			position[2] = (draw_downwards and position[2] - total_height) or position[2] + frame_edge_height
 			position[3] = start_layer + 5

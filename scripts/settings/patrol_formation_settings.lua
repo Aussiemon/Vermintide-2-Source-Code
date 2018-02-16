@@ -45,25 +45,25 @@ PatrolFormationSettings.chaos_warrior_default = {
 			"chaos_marauder_with_shield"
 		},
 		{
+			"chaos_raider"
+		},
+		{
+			"chaos_raider"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
+			"chaos_marauder",
+			"chaos_marauder"
+		},
+		{
 			"chaos_warrior"
 		},
 		{
-			"chaos_marauder_with_shield",
-			"chaos_marauder_with_shield"
-		},
-		{
-			"chaos_warrior"
-		},
-		{
-			"chaos_marauder_with_shield",
-			"chaos_marauder_with_shield"
-		},
-		{
-			"chaos_warrior"
-		},
-		{
-			"chaos_marauder_with_shield",
-			"chaos_marauder_with_shield"
+			"chaos_marauder",
+			"chaos_marauder"
 		}
 	},
 	hard = {
@@ -75,16 +75,16 @@ PatrolFormationSettings.chaos_warrior_default = {
 			"chaos_warrior"
 		},
 		{
-			"chaos_marauder_with_shield",
-			"chaos_marauder_with_shield"
+			"chaos_marauder",
+			"chaos_marauder"
 		},
 		{
-			"chaos_warrior",
-			"chaos_warrior"
+			"chaos_raider",
+			"chaos_raider"
 		},
 		{
-			"chaos_marauder_with_shield",
-			"chaos_marauder_with_shield"
+			"chaos_marauder",
+			"chaos_marauder"
 		},
 		{
 			"chaos_warrior"
@@ -100,8 +100,8 @@ PatrolFormationSettings.chaos_warrior_default = {
 			"chaos_marauder_with_shield"
 		},
 		{
-			"chaos_warrior",
-			"chaos_warrior"
+			"chaos_raider",
+			"chaos_raider"
 		},
 		{
 			"chaos_marauder_with_shield",

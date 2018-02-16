@@ -66,12 +66,10 @@ HeroView.init = function (self, ingame_ui_context)
 	input_manager.map_device_to_service(input_manager, "hero_view", "mouse")
 	input_manager.map_device_to_service(input_manager, "hero_view", "gamepad")
 
-	self.world_previewer = MenuWorldPreviewer:new(ingame_ui_context)
 	local state_machine_params = {
 		wwise_world = self.wwise_world,
 		ingame_ui_context = ingame_ui_context,
 		parent = self,
-		world_previewer = self.world_previewer,
 		settings_by_screen = settings_by_screen,
 		input_service = fake_input_service
 	}
@@ -142,56 +140,6 @@ HeroView.create_ui_elements = function (self)
 
 	return 
 end
-HeroView.get_background_world = function (self)
-	local previewer_pass_data = self.viewport_widget.element.pass_data[1]
-	local viewport = previewer_pass_data.viewport
-	local world = previewer_pass_data.world
-
-	return world, viewport
-end
-HeroView.show_hero_world = function (self)
-	if not self._draw_menu_world then
-		self._draw_menu_world = true
-		local viewport_name = "player_1"
-		local world = Managers.world:world("level_world")
-		local viewport = ScriptWorld.viewport(world, viewport_name)
-
-		ScriptWorld.deactivate_viewport(world, viewport)
-	end
-
-	return 
-end
-HeroView._setup_viewport_camera = function (self)
-	local world, viewport = self.get_background_world(self)
-	local level_camera_unit = World.unit_by_name(world, "camera")
-	local camera_rotation = Unit.world_rotation(level_camera_unit, 0)
-	local camera_position = Unit.world_position(level_camera_unit, 0)
-	local level_camera_look = Quaternion.forward(camera_rotation)
-	camera_position = camera_position - level_camera_look*3
-	local time = 0.01
-
-	if camera_position then
-		self.world_previewer:set_camera_axis_offset("x", camera_position[1], time, math.easeOutCubic)
-		self.world_previewer:set_camera_axis_offset("y", camera_position[2], time, math.easeOutCubic)
-		self.world_previewer:set_camera_axis_offset("z", camera_position[3], time, math.easeOutCubic)
-	end
-
-	self.world_previewer:set_camera_rotation_axis_offset("x", 1.5, time, math.easeOutCubic)
-
-	return 
-end
-HeroView.hide_hero_world = function (self)
-	if self._draw_menu_world then
-		self._draw_menu_world = false
-		local viewport_name = "player_1"
-		local world = Managers.world:world("level_world")
-		local viewport = ScriptWorld.viewport(world, viewport_name)
-
-		ScriptWorld.activate_viewport(world, viewport)
-	end
-
-	return 
-end
 HeroView.draw = function (self, dt, input_service)
 	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
@@ -211,10 +159,6 @@ HeroView.draw = function (self, dt, input_service)
 
 	UIRenderer.draw_widget(ui_renderer, self._console_cursor_widget)
 
-	if self.viewport_widget and self._draw_menu_world then
-		UIRenderer.draw_widget(ui_renderer, self.viewport_widget)
-	end
-
 	if self._draw_loading then
 		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt)
 
@@ -231,7 +175,6 @@ HeroView.draw = function (self, dt, input_service)
 end
 HeroView.post_update = function (self, dt, t)
 	self._machine:post_update(dt, t)
-	self.world_previewer:post_update(dt, t)
 
 	return 
 end
@@ -264,7 +207,6 @@ HeroView.update = function (self, dt, t)
 	local transitioning = self.transitioning(self)
 
 	self.ui_animator:update(dt)
-	self.world_previewer:update(dt, t)
 
 	for name, ui_animation in pairs(self.ui_animations) do
 		UIAnimation.update(ui_animation, dt)
@@ -431,12 +373,6 @@ HeroView._change_screen_by_name = function (self, screen_name, sub_screen_name)
 		self._setup_state_machine(self, self._state_machine_params, state, sub_screen_name)
 	end
 
-	if settings.draw_background_world then
-		self.show_hero_world(self)
-	else
-		self.hide_hero_world(self)
-	end
-
 	return 
 end
 HeroView._change_screen_by_index = function (self, index)
@@ -448,13 +384,7 @@ HeroView._change_screen_by_index = function (self, index)
 	return 
 end
 HeroView.post_update_on_enter = function (self)
-	assert(self.viewport_widget == nil)
-
-	self.viewport_widget = UIWidget.init(widget_definitions.viewport)
 	self.waiting_for_post_update_enter = nil
-
-	self.world_previewer:on_enter(self.viewport_widget, self._hero_name)
-
 	local on_enter_transition = self._on_enter_transition
 
 	if on_enter_transition and on_enter_transition.menu_state_name then
@@ -468,19 +398,10 @@ HeroView.post_update_on_enter = function (self)
 	return 
 end
 HeroView.post_update_on_exit = function (self)
-	self.world_previewer:prepare_exit()
-	self.world_previewer:on_exit()
-
 	if self._machine then
 		self._machine:destroy()
 
 		self._machine = nil
-	end
-
-	if self.viewport_widget then
-		UIWidget.destroy(self.ui_renderer, self.viewport_widget)
-
-		self.viewport_widget = nil
 	end
 
 	Managers.backend:commit()
@@ -495,7 +416,6 @@ HeroView.on_exit = function (self)
 
 	self.exiting = nil
 
-	self.hide_hero_world(self)
 	self.play_sound(self, "hud_in_inventory_state_off")
 
 	self._draw_loading = false
@@ -535,17 +455,6 @@ HeroView.suspend = function (self)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
 
 	self.suspended = true
-	local viewport_name = "player_1"
-	local world = Managers.world:world("level_world")
-	local viewport = ScriptWorld.viewport(world, viewport_name)
-
-	ScriptWorld.activate_viewport(world, viewport)
-
-	local previewer_pass_data = self.viewport_widget.element.pass_data[1]
-	local viewport = previewer_pass_data.viewport
-	local world = previewer_pass_data.world
-
-	ScriptWorld.deactivate_viewport(world, viewport)
 
 	return 
 end
@@ -555,20 +464,6 @@ HeroView.unsuspend = function (self)
 	self.input_manager:block_device_except_service("hero_view", "gamepad", 1)
 
 	self.suspended = nil
-
-	if self.viewport_widget then
-		local viewport_name = "player_1"
-		local world = Managers.world:world("level_world")
-		local viewport = ScriptWorld.viewport(world, viewport_name)
-
-		ScriptWorld.deactivate_viewport(world, viewport)
-
-		local previewer_pass_data = self.viewport_widget.element.pass_data[1]
-		local viewport = previewer_pass_data.viewport
-		local world = previewer_pass_data.world
-
-		ScriptWorld.activate_viewport(world, viewport)
-	end
 
 	return 
 end
@@ -580,19 +475,8 @@ HeroView.close_menu = function (self, return_to_main_screen)
 	return 
 end
 HeroView.destroy = function (self)
-	if self.viewport_widget then
-		UIWidget.destroy(self.ui_renderer, self.viewport_widget)
-
-		self.viewport_widget = nil
-	end
-
 	self.ingame_ui_context = nil
 	self.ui_animator = nil
-	local viewport_name = "player_1"
-	local world = Managers.world:world("level_world")
-	local viewport = ScriptWorld.viewport(world, viewport_name)
-
-	ScriptWorld.activate_viewport(world, viewport)
 
 	if self._machine then
 		self._machine:destroy()

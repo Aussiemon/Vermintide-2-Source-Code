@@ -36,20 +36,22 @@ PlayerCharacterStateDodging.on_enter = function (self, unit, input, dt, context,
 	local input_extension = self.input_extension
 	local first_person_extension = self.first_person_extension
 	local status_extension = self.status_extension
+	local inventory_extension = self.inventory_extension
+	local health_extension = self.health_extension
 
 	self.dodge_direction:store(params.dodge_direction)
 
 	params.dodge_direction = nil
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 
-	self.status_extension:set_dodge_jump_override_t(t, movement_settings_table.dodging.dodge_jump_override_timer)
+	status_extension.set_dodge_jump_override_t(status_extension, t, movement_settings_table.dodging.dodge_jump_override_timer)
 	self.start_dodge(self, unit, t)
-	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, self.inventory_extension)
-	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, self.inventory_extension, self.health_extension)
+	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, inventory_extension)
+	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, health_extension)
 	self.on_enter_animation(self, unit)
 	self.locomotion_extension:enable_rotation_towards_velocity(false)
 
-	local forward_direction = Quaternion.forward(self.first_person_extension:current_rotation())
+	local forward_direction = Quaternion.forward(first_person_extension.current_rotation(first_person_extension))
 
 	Vector3.set_z(forward_direction, 0)
 

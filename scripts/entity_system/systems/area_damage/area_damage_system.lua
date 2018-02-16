@@ -86,7 +86,7 @@ AreaDamageSystem.create_explosion = function (self, attacker_unit, position, rot
 	local explosion_template = ExplosionTemplates[explosion_template_name]
 	local is_husk = false
 
-	DamageUtils.create_explosion(self.world, attacker_unit, position, rotation, explosion_template.explosion, scale, damage_source, self.is_server, is_husk, attacker_unit, attacker_power_level)
+	DamageUtils.create_explosion(self.world, attacker_unit, position, rotation, explosion_template, scale, damage_source, self.is_server, is_husk, attacker_unit, attacker_power_level)
 
 	local network_manager = Managers.state.network
 	local attacker_unit_id, attacker_is_level_unit = network_manager.game_object_or_level_id(network_manager, attacker_unit)
@@ -162,7 +162,7 @@ AreaDamageSystem.rpc_create_explosion = function (self, sender, attacker_unit_id
 	local damage_source = NetworkLookup.damage_sources[damage_source_id]
 	local is_husk = true
 
-	DamageUtils.create_explosion(self.world, attacker_unit, position, rotation, explosion_template.explosion, scale, damage_source, self.is_server, is_husk, attacker_unit, attacker_power_level)
+	DamageUtils.create_explosion(self.world, attacker_unit, position, rotation, explosion_template, scale, damage_source, self.is_server, is_husk, attacker_unit, attacker_power_level)
 
 	return 
 end

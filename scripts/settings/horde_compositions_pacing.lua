@@ -99,10 +99,26 @@ HordeCompositions.chaos_medium = {
 		name = "plain",
 		weight = 7,
 		breeds = {
+			"chaos_fanatic",
+			{
+				25,
+				25
+			}
+		}
+	},
+	{
+		name = "plain",
+		weight = 7,
+		breeds = {
 			"chaos_marauder",
 			{
-				10,
-				12
+				3,
+				4
+			},
+			"chaos_fanatic",
+			{
+				20,
+				25
 			}
 		}
 	},

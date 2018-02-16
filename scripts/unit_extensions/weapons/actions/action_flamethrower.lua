@@ -101,7 +101,11 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 			self.network_transmit:send_rpc_server("rpc_start_flamethrower", go_id, flamethrower_effect_id, flamethrower_impact_effect_id, flamethrower_range)
 		end
 
-		self.source_id = WwiseWorld.make_auto_source(self.wwise_world, self.weapon_unit)
+		if self.source_id then
+			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, self.source_id)
+		else
+			self.source_id = WwiseWorld.make_auto_source(self.wwise_world, self.weapon_unit)
+		end
 
 		WwiseWorld.trigger_event(self.wwise_world, current_action.fire_sound_event, self.source_id)
 	end
@@ -257,7 +261,13 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 			self.network_transmit:send_rpc_server("rpc_end_flamethrower", go_id)
 		end
 
-		WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, self.source_id)
+		local source_id = self.source_id
+
+		if source_id then
+			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, source_id)
+
+			self.source_id = nil
+		end
 
 		local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
 
@@ -294,7 +304,13 @@ ActionFlamethrower.finish = function (self, reason)
 			self.network_transmit:send_rpc_server("rpc_end_flamethrower", go_id)
 		end
 
-		WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, self.source_id)
+		local source_id = self.source_id
+
+		if source_id then
+			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, source_id)
+
+			self.source_id = nil
+		end
 
 		local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
 

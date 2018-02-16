@@ -894,6 +894,9 @@ local viewport_widget = {
 				Application.DISABLE_ESRAM,
 				Application.ENABLE_VOLUMETRICS
 			},
+			object_sets = {
+				"flow_victory"
+			},
 			layer = UILayer.default,
 			camera_position = {
 				0,

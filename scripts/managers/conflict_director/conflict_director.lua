@@ -717,7 +717,7 @@ end
 ConflictDirector.update_horde_pacing = function (self, t, dt)
 	local pacing = self.pacing
 
-	if pacing.threat_population(pacing) < 1 or pacing.pacing_state == "pacing_frozen" then
+	if pacing.horde_population(pacing) < 1 or pacing.pacing_state == "pacing_frozen" then
 		self._next_horde_time = nil
 
 		return 
@@ -753,21 +753,90 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 			return 
 		end
 
-		print("Time for new HOOORDE!")
-		self.horde_spawner:horde()
+		local wave = nil
 
 		if script_data.ai_pacing_disabled then
 			self._next_horde_time = math.huge
+			self._multiple_horde_count = nil
+			wave = "unknown"
 		else
+			local set_standard_horde = nil
 			local pacing_setting = pacing.settings
-			self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.horde_frequency)
+
+			if pacing_setting.multiple_hordes then
+				if self._multiple_horde_count then
+					self._multiple_horde_count = self._multiple_horde_count - 1
+
+					if self._multiple_horde_count <= 0 then
+						print("HORDE: last wave, reset to standard horde delay")
+
+						self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.max_delay_until_next_horde)
+						self._multiple_horde_count = nil
+						wave = "multi last wave"
+					else
+						local time_delay = ConflictUtils.random_interval(pacing_setting.multiple_horde_frequency)
+
+						print("HORDE: next wave, multiple_horde_frequency -> Time delay", time_delay)
+
+						self._next_horde_time = t + time_delay
+						wave = "multi consecutive wave"
+					end
+				else
+					self._multiple_horde_count = pacing_setting.multiple_hordes - 1
+					self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.multiple_horde_frequency)
+					wave = "multi first wave"
+				end
+			else
+				self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.max_delay_until_next_horde)
+				wave = "single wave"
+			end
 		end
+
+		print("Time for new HOOORDE!")
+
+		local multi_horde_type = self._multiple_horde_count
+		local extra_data = {
+			multiple_horde_count = self._multiple_horde_count,
+			horde_wave = wave
+		}
+
+		self.horde_spawner:horde(nil, extra_data)
 	end
 
 	return 
 end
+ConflictDirector.horde_killed = function (self, wave)
+	local count = self._multiple_horde_count
+
+	if not count then
+		local pacing_setting = self.pacing.settings
+		local t = Managers.time:time("game")
+		self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.horde_frequency)
+
+		print("Horde killed: ", wave)
+	else
+		self._next_horde_time = 0
+
+		print("Horde killed: ", wave)
+	end
+
+	return 
+end
+ConflictDirector.going_to_relax_state = function (self)
+	self._multiple_horde_count = nil
+
+	return 
+end
 ConflictDirector.get_horde_data = function (self)
-	return self._next_horde_time, self.horde_spawner.hordes
+	return self._next_horde_time, self.horde_spawner.hordes, self._multiple_horde_count
+end
+ConflictDirector.is_running_multiple_horde = function (self)
+	local pacing = self.pacing
+	local pacing_setting = pacing.settings
+	local multiple_hordes_count = pacing_setting.multiple_hordes
+	local is_first_multiple_horde = multiple_hordes_count and self._multiple_horde_count == multiple_hordes_count
+
+	return self._multiple_horde_count ~= nil, is_first_multiple_horde
 end
 ConflictDirector.start_terror_event = function (self, event_name)
 	TerrorEventMixer.add_to_start_event_list(event_name)
@@ -822,7 +891,10 @@ ConflictDirector.handle_alone_player = function (self, t)
 				if rush_intervention.loneliness_value_for_ambush_horde < loneliness_value and Math.random() < rush_intervention.chance_of_ambush_horde then
 					print("rush intervention - ambush horde!")
 					self.pacing:annotate_graph("Rush intervention - horde", "red")
-					self.horde_spawner:execute_ambush_horde(false, position_lookup[ahead_unit])
+
+					local extra_data = nil
+
+					self.horde_spawner:execute_ambush_horde(extra_data, false, position_lookup[ahead_unit])
 
 					add_time = add_time + 10
 					success = true
@@ -1012,7 +1084,7 @@ ConflictDirector.update = function (self, dt, t)
 			pacing.update(pacing, t, dt, player_and_bot_units)
 
 			self._next_pacing_update = t + 1
-			local pacing_state = pacing.get_pacing_data(pacing)
+			local pacing_state = pacing.get_state(pacing)
 
 			if pacing_state == "pacing_relax" then
 				local rushing = self.are_players_rushing(self, t)
@@ -1045,8 +1117,6 @@ ConflictDirector.update = function (self, dt, t)
 		Profiler.stop("player rush")
 	end
 
-	local threat_population = pacing.threat_population(pacing)
-
 	if self.in_safe_zone then
 		local game_mode_manager = Managers.state.game_mode
 		local round_started = game_mode_manager.is_round_started(game_mode_manager)
@@ -1078,7 +1148,10 @@ ConflictDirector.update = function (self, dt, t)
 
 			if self.specials_pacing and not script_data.ai_specials_spawning_disabled then
 				Profiler.start("specials pacing")
-				self.specials_pacing:update(t, self._alive_specials, threat_population, player_and_bot_positions)
+
+				local specials_population = pacing.specials_population(pacing)
+
+				self.specials_pacing:update(t, self._alive_specials, specials_population, player_and_bot_positions)
 				Profiler.stop("specials pacing")
 			end
 		end
@@ -1133,6 +1206,7 @@ ConflictDirector.update = function (self, dt, t)
 	local recycler_positions = player_positions
 
 	if self.enemy_recycler and not script_data.ai_roaming_spawning_disabled and not conflict_settings.roaming.disabled then
+		local threat_population = pacing.threat_population(pacing)
 		local available_to_spawn = RecycleSettings.max_grunts - #self._spawned
 
 		if available_to_spawn <= 0 then
@@ -2562,9 +2636,6 @@ ConflictDirector.level_flow_event = function (self, event_name)
 
 	return 
 end
-ConflictDirector.get_horde_data = function (self)
-	return 0, {}
-end
 ConflictDirector.update_server_debug = function (self, t, dt)
 	Profiler.start("Conflict Server Debug")
 	ConflictDirectorTests.update(self, t, dt)
@@ -2816,11 +2887,11 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 
 	if script_data.debug_ai_pacing then
 		if DebugKeyHandler.key_pressed("numpad_plus", "Increase intensity +25", "Pacing & Intensity") then
-			pacing:debug_add_intensity(player_and_bot_units, 25)
+			self.pacing:debug_add_intensity(player_and_bot_units, 25)
 		end
 
 		if DebugKeyHandler.key_pressed("numpad_minus", "Decrease intensity -25", "Pacing & Intensity") then
-			pacing:debug_add_intensity(player_and_bot_units, -25)
+			self.pacing:debug_add_intensity(player_and_bot_units, -25)
 		end
 
 		Debug.text("Total enemies alive: " .. tostring(#self._spawned))

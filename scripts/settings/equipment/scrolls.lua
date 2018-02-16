@@ -46,9 +46,15 @@ weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.one_ha
 weapon_template.wield_anim = "to_first_aid"
 weapon_template.gui_texture = "hud_consumable_icon_potion"
 weapon_template.max_fatigue_points = 1
-weapon_template.dodge_distance = 1.15
-weapon_template.dodge_speed = 1.15
 weapon_template.dodge_count = 3
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1.15
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1.15
+	}
+}
 local aoe_damage_scroll_action = aoe_damage_scroll_action or {}
 aoe_damage_scroll_action = {
 	effect_name = "fx/scroll_magic_darts",

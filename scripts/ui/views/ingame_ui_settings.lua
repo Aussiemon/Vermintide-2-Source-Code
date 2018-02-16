@@ -439,15 +439,29 @@ view_settings = {
 	end,
 	hotkey_mapping = {
 		hotkey_hero = {
+			disable_when_matchmaking = true,
+			in_transition = "character_selection_force",
+			error_message = "matchmaking_ready_interaction_message_profile_view",
 			view = "character_selection",
 			transition_state = "character",
-			in_transition = "character_selection_force",
+			disable_when_matchmaking_ready = true,
 			in_transition_menu = "character_selection_view"
 		},
+		hotkey_map = {
+			disable_when_matchmaking = true,
+			in_transition = "start_game_view_force",
+			error_message = "matchmaking_ready_interaction_message_map",
+			view = "start_game_view",
+			transition_state = "play",
+			disable_when_matchmaking_ready = true,
+			in_transition_menu = "start_game_view"
+		},
 		hotkey_inventory = {
+			in_transition = "hero_view_force",
+			error_message = "matchmaking_ready_interaction_message_inventory",
 			view = "hero_view",
 			transition_state = "overview",
-			in_transition = "hero_view_force",
+			disable_when_matchmaking_ready = true,
 			in_transition_menu = "hero_view"
 		}
 	},

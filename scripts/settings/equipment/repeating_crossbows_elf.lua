@@ -276,6 +276,14 @@ weapon_template.crosshair_style = "projectile"
 weapon_template.reload_event = "reload"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "REPEATING_CROSSBOW"
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 weapon_template.wwise_dep_left_hand = {
 	"wwise/repeating_crossbow"
 }

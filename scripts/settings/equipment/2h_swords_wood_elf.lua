@@ -48,6 +48,12 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_career_skill",
+					input = "action_career_skill"
+				},
+				{
 					start_time = 0.6,
 					blocker = true,
 					end_time = 1.5,
@@ -101,6 +107,12 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_career_skill",
+					input = "action_career_skill"
 				},
 				{
 					start_time = 0.6,
@@ -158,6 +170,12 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_career_skill",
+					input = "action_career_skill"
+				},
+				{
 					start_time = 0.6,
 					blocker = true,
 					end_time = 1.5,
@@ -181,8 +199,8 @@ weapon_template.actions = {
 			use_target = false,
 			additional_critical_strike_chance = 0,
 			hit_shield_stop_anim = "attack_hit_shield",
-			damage_profile = "medium_slashing_linesman",
 			hit_effect = "melee_hit_sword_2h",
+			damage_profile = "medium_slashing_linesman",
 			damage_window_end = 0.51,
 			impact_sound_event = "slashing_hit",
 			anim_end_event = "attack_finished",
@@ -241,8 +259,15 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_career_skill",
+					input = "action_career_skill"
 				}
-			}
+			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_left_upward = {
 			damage_window_start = 0.4,
@@ -251,10 +276,10 @@ weapon_template.actions = {
 			range_mod = 1.35,
 			sweep_z_offset = -0.05,
 			use_target = false,
-			additional_critical_strike_chance = 0,
 			hit_shield_stop_anim = "attack_hit_shield",
-			no_damage_impact_sound_event = "slashing_hit_armour",
+			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_sword_2h",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			damage_profile = "medium_slashing_linesman",
 			damage_window_end = 0.5,
 			impact_sound_event = "slashing_hit",
@@ -314,11 +339,18 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_career_skill",
+					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
-			end
+			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		heavy_attack_down_first = {
 			damage_window_start = 0.35,
@@ -381,6 +413,12 @@ weapon_template.actions = {
 					start_time = 0.6,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_career_skill",
+					input = "action_career_skill"
 				}
 			}
 		},
@@ -445,6 +483,12 @@ weapon_template.actions = {
 					start_time = 0.6,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_career_skill",
+					input = "action_career_skill"
 				}
 			},
 			hit_mass_count = LINESMAN_HIT_MASS_COUNT
@@ -654,12 +698,19 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_career_skill",
+					input = "action_career_skill"
 				}
 			}
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
+	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -674,8 +725,6 @@ weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_h
 weapon_template.display_unit = "units/weapons/weapon_display/display_2h_weapon"
 weapon_template.wield_anim = "to_2h_sword_we"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_distance = 1
-weapon_template.dodge_speed = 1
 weapon_template.dodge_count = 6
 weapon_template.buff_type = "MELEE_2H"
 weapon_template.weapon_type = "SWORD_2H"
@@ -683,14 +732,22 @@ weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 weapon_template.attack_meta_data = {
 	tap_attack = {
-		penetrating = true,
-		arc = 0
-	},
-	hold_attack = {
 		penetrating = false,
 		arc = 1
+	},
+	hold_attack = {
+		penetrating = true,
+		arc = 0
 	}
 }
 weapon_template.tooltip_keywords = {

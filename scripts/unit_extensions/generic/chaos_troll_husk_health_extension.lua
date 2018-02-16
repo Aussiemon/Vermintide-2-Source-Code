@@ -3,10 +3,10 @@ local set_material_property = AiUtils.set_material_property
 ChaosTrollHuskHealthExtension.init = function (self, extension_init_context, unit, ...)
 	ChaosTrollHuskHealthExtension.super.init(self, extension_init_context, unit, ...)
 
-	self.state = "unhurt"
 	local t = Managers.time:time("game")
 	self._regen_time = t + 1
 	self.pulse_time = 0
+	self.state = "unhurt"
 	local breed = Breeds.chaos_troll
 	local action = BreedActions.chaos_troll.downed
 	self.go_down_health = self.health*action.become_downed_hp_percent
@@ -15,8 +15,12 @@ ChaosTrollHuskHealthExtension.init = function (self, extension_init_context, uni
 	self.regen_pulse_intensity = breed.regen_pulse_intensity
 	self.downed_pulse_intensity = breed.downed_pulse_intensity
 	self.action = action
+	self.original_health = self.health
 
 	return 
+end
+ChaosTrollHuskHealthExtension.current_max_health_percent = function (self)
+	return self.health/self.original_health
 end
 ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
 	if self.state == "dead" then
@@ -42,7 +46,7 @@ ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
 	end
 
 	if script_data.show_ai_health then
-		Debug.text("TROLL HEALTH %.1f dmg: %.1f %s", self.current_health(self), self.damage, self.state)
+		Debug.text("TROLL HEALTH [%s] hp=%.1f dmg=%.1f", self.state, self.current_health(self), self.damage)
 	end
 
 	return 
@@ -70,14 +74,14 @@ ChaosTrollHuskHealthExtension.add_heal = function (self, healer_unit, heal_amoun
 
 	return 
 end
-ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, amount, set_max_health, state)
+ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_max_health, state)
 	if set_max_health then
-		self.set_max_health(self, amount)
+		self.set_max_health(self, damage)
 
 		return 
 	end
 
-	self.damage = amount
+	self.damage = damage
 
 	if self.state ~= state then
 		if state == "down" then

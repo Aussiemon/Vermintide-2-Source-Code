@@ -1702,7 +1702,6 @@ HitEffectsSkavenClanRat = {
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"shot_carbine",
 				"shot_machinegun"
 			}
 		},
@@ -1752,6 +1751,55 @@ HitEffectsSkavenClanRat = {
 			"death_decapitate_4",
 			"death_decapitate_5",
 			"death_decapitate_6"
+		}
+	},
+	shot_carbine_death = {
+		inherits = "shot_default",
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"shot_carbine"
+			}
+		},
+		animations = {
+			"ragdoll",
+			"ragdoll",
+			"ragdoll",
+			"death_shot_body_bwd"
+		},
+		push = {
+			distal_force = 80,
+			vertical_force = 25,
+			lateral_force = 0
+		}
+	},
+	shot_carbine_death_torso_crater_front = {
+		inherits = "shot_carbine_death",
+		flow_event = "wound_crater_torso_back",
+		extra_conditions = {
+			hit_zone = "torso",
+			hit_direction = "front"
+		}
+	},
+	shot_carbine_death_torso_crater_back = {
+		inherits = "shot_carbine_death",
+		flow_event = "wound_crater_torso_front",
+		extra_conditions = {
+			hit_zone = "torso",
+			hit_direction = "back"
+		}
+	},
+	shot_carbine_death_head = {
+		inherits = "shot_carbine_death",
+		flow_event = "explode_head",
+		extra_conditions = {
+			hit_zone = {
+				"head",
+				"neck"
+			}
+		},
+		animations = {
+			"ragdoll"
 		}
 	},
 	shot_sniper_handgun_death = {
@@ -2359,8 +2407,8 @@ HitEffectsSkavenClanRat = {
 			"ragdoll"
 		},
 		push = {
-			distal_force = 60,
-			vertical_force = 10,
+			distal_force = 80,
+			vertical_force = 20,
 			lateral_force = 0
 		}
 	},
@@ -2373,6 +2421,13 @@ HitEffectsSkavenClanRat = {
 			}
 		},
 		animations = {
+			"ragdoll",
+			"ragdoll",
+			"ragdoll",
+			"ragdoll",
+			"ragdoll",
+			"ragdoll",
+			"ragdoll",
 			"death_shot_head_front",
 			"death_decapitate",
 			"death_decapitate_2",
@@ -2799,7 +2854,8 @@ HitEffectsSkavenClanRat = {
 		flow_event = "warpfire_burn",
 		extra_conditions = {
 			damage_type = {
-				"warpfire_ground"
+				"warpfire_ground",
+				"warpfire_face"
 			}
 		}
 	},
@@ -2809,7 +2865,8 @@ HitEffectsSkavenClanRat = {
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"warpfire_ground"
+				"warpfire_ground",
+				"warpfire_face"
 			}
 		},
 		animations = {

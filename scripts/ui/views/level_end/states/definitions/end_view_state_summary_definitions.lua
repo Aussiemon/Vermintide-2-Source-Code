@@ -714,7 +714,6 @@ local animation_definitions = {
 				local new_font_size = start_font_size + (target_font_size - start_font_size)*anim_progress
 				text_style.font_size = new_font_size
 				text_shadow_style.font_size = new_font_size
-				content.text = content.next_text
 
 				return 
 			end,
@@ -742,7 +741,6 @@ local animation_definitions = {
 				local new_font_size = start_font_size + (target_font_size - start_font_size)*anim_progress
 				text_style.font_size = new_font_size
 				text_shadow_style.font_size = new_font_size
-				content.text = content.next_text
 
 				return 
 			end,

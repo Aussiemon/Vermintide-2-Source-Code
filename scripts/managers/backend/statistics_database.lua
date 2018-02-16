@@ -85,7 +85,7 @@ StatisticsDatabase.destroy = function (self)
 	return 
 end
 local RPCS = {
-	"rpc_hot_join_sync_statistics_number",
+	"rpc_sync_statistics_number",
 	"rpc_increment_stat",
 	"rpc_set_local_player_stat"
 }
@@ -191,13 +191,36 @@ local function sync_stat(peer_id, stat_peer_id, stat_local_player_id, path, path
 
 			local networkified_path = networkified_path(path)
 
-			RPC.rpc_hot_join_sync_statistics_number(peer_id, stat_peer_id, stat_local_player_id, networkified_path, stat.value, stat.persistent_value or 0)
+			RPC.rpc_sync_statistics_number(peer_id, stat_peer_id, stat_local_player_id, networkified_path, stat.value, stat.persistent_value or 0)
 		end
 	else
 		for stat_name, stat_definition in pairs(stat) do
 			path[path_step] = stat_name
 
 			sync_stat(peer_id, stat_peer_id, stat_local_player_id, path, path_step + 1, stat_definition)
+		end
+	end
+
+	path[path_step] = nil
+
+	return 
+end
+
+local function sync_stat_to_server(network_transmit, stat_peer_id, stat_local_player_id, path, path_step, stat)
+	if stat.value then
+		if stat.sync_to_server then
+			fassert(type(stat.persistent_value) == "number", "Not supporting hot join syncing of value %q", type(stat.persistent_value))
+			fassert(path_step <= NetworkConstants.statistics_path_max_size, "statistics path is longer than max size, increase in global.networks_config")
+
+			local networkified_path = networkified_path(path)
+
+			network_transmit.send_rpc_server(network_transmit, "rpc_sync_statistics_number", stat_peer_id, stat_local_player_id, networkified_path, stat.value, stat.persistent_value)
+		end
+	else
+		for stat_name, stat_definition in pairs(stat) do
+			path[path_step] = stat_name
+
+			sync_stat_to_server(network_transmit, stat_peer_id, stat_local_player_id, path, path_step + 1, stat_definition)
 		end
 	end
 
@@ -451,6 +474,13 @@ StatisticsDatabase.get_persistent_stat = function (self, id, ...)
 
 	return 
 end
+StatisticsDatabase.sync_stats_to_server = function (self, stat_id, peer_id, local_player_id, network_transmit)
+	local stats = self.statistics[stat_id]
+
+	sync_stat_to_server(network_transmit, peer_id, local_player_id, {}, 1, stats)
+
+	return 
+end
 
 local function debug_draw_stat(name, stat, indent_level)
 	local stat_type = type(stat)
@@ -518,7 +548,7 @@ StatisticsDatabase.rpc_set_local_player_stat = function (self, sender, stat_id, 
 
 	return 
 end
-StatisticsDatabase.rpc_hot_join_sync_statistics_number = function (self, sender, peer_id, local_player_id, statistics_path_names, value, persistent_value)
+StatisticsDatabase.rpc_sync_statistics_number = function (self, sender, peer_id, local_player_id, statistics_path_names, value, persistent_value)
 	local player = Managers.player:player(peer_id, local_player_id)
 	local stats_id = player.stats_id(player)
 	local path = unnetworkified_path(statistics_path_names)
@@ -537,6 +567,10 @@ StatisticsDatabase.rpc_hot_join_sync_statistics_number = function (self, sender,
 	else
 		fassert(persistent_value == 0, "Got non-zero persistent_value for stat %q that didn't have database_name", stat.name)
 		dbprintf("StatisticsDatabase: Synced peer %q stat %30q to %d, persistent_value not present", peer_id, stat.name, value)
+	end
+
+	if Managers.state.network.is_server then
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_sync_statistics_number", sender, peer_id, local_player_id, statistics_path_names, value, persistent_value)
 	end
 
 	return 

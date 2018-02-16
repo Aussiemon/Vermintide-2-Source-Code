@@ -62,13 +62,7 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 	end
 
 	if quick_game then
-		local leader_peer = Managers.party:leader()
-		local leader_players = Managers.player:players_at_peer(leader_peer)
-
-		assert(#leader_players == 1)
-
-		local local_player_id, player = next(leader_players)
-		level_key = self._matchmaking_manager:get_random_unlocked_level(difficulty, self._statistics_db, player.stats_id(player))
+		level_key = self._matchmaking_manager:get_weighed_random_unlocked_level()
 	end
 
 	local level_settings = LevelSettings[level_key]
@@ -99,6 +93,26 @@ MatchmakingStateStartGame.get_transition = function (self)
 	return 
 end
 MatchmakingStateStartGame._start_game = function (self)
+	self._capture_telemetry(self)
+	self._handshaker_host:send_rpc_to_clients("rpc_matchmaking_join_game")
+
+	local game_server_lobby_client = self.state_context.game_server_lobby_client
+
+	if game_server_lobby_client then
+		self.next_transition_state = "start_lobby"
+		self.start_lobby_data = {
+			lobby_client = game_server_lobby_client
+		}
+		local ip_address = game_server_lobby_client.ip_address(game_server_lobby_client)
+
+		self._handshaker_host:send_rpc_to_clients("rpc_matchmaking_broadcast_game_server_ip_address", ip_address)
+	else
+		Managers.state.game_mode:complete_level()
+	end
+
+	return 
+end
+MatchmakingStateStartGame._capture_telemetry = function (self)
 	local lobby_members = self._lobby:members()
 	local members = lobby_members.get_members(lobby_members)
 	local nr_friends = 0
@@ -116,21 +130,12 @@ MatchmakingStateStartGame._start_game = function (self)
 	local player = Managers.player:local_player(1)
 
 	Managers.telemetry.events:matchmaking_starting_game(player, nr_friends)
-	self._handshaker_host:send_rpc_to_clients("rpc_matchmaking_join_game")
 
-	local game_server_lobby_client = self.state_context.game_server_lobby_client
+	local connection_state = "started_game"
+	local time_taken = Managers.time:time("main") - self.state_context.started_matchmaking_t
+	local is_first_time_searcher = self.state_context.is_first_time_searcher
 
-	if game_server_lobby_client then
-		self.next_transition_state = "start_lobby"
-		self.start_lobby_data = {
-			lobby_client = game_server_lobby_client
-		}
-		local ip_address = game_server_lobby_client.ip_address(game_server_lobby_client)
-
-		self._handshaker_host:send_rpc_to_clients("rpc_matchmaking_broadcast_game_server_ip_address", ip_address)
-	else
-		Managers.state.game_mode:complete_level()
-	end
+	Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, is_first_time_searcher)
 
 	return 
 end

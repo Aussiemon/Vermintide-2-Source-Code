@@ -411,18 +411,19 @@ weapon_template.actions = {
 		light_attack_left = {
 			damage_window_start = 0.38,
 			total_time = 1.6,
-			anim_end_event = "attack_finished",
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			use_target = false,
 			additional_critical_strike_chance = 0,
 			damage_profile = "light_slashing_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.52,
 			impact_sound_event = "slashing_hit",
-			no_damage_impact_sound_event = "slashing_hit_armour",
+			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_left_diagonal",
+			hit_stop_anim = "attack_hit",
 			range_mod = 1.15,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -437,12 +438,6 @@ weapon_template.actions = {
 				}
 			},
 			allowed_chain_actions = {
-				{
-					sub_action = "assassinate",
-					start_time = 0.4,
-					action = "action_one",
-					input = "action_one"
-				},
 				{
 					sub_action = "default_right",
 					start_time = 0.5,
@@ -480,18 +475,19 @@ weapon_template.actions = {
 		light_attack_right = {
 			damage_window_start = 0.38,
 			total_time = 1.6,
-			anim_end_event = "attack_finished",
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			use_target = false,
 			additional_critical_strike_chance = 0,
 			damage_profile = "light_slashing_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.52,
 			impact_sound_event = "slashing_hit",
-			no_damage_impact_sound_event = "slashing_hit_armour",
+			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_right_diagonal",
+			hit_stop_anim = "attack_hit",
 			range_mod = 1.15,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -506,12 +502,6 @@ weapon_template.actions = {
 				}
 			},
 			allowed_chain_actions = {
-				{
-					sub_action = "assassinate",
-					start_time = 0.5,
-					action = "action_one",
-					input = "action_one"
-				},
 				{
 					sub_action = "default_left",
 					start_time = 0.5,
@@ -565,6 +555,7 @@ weapon_template.actions = {
 			dedicated_target_range = 2.5,
 			aim_assist_ramp_multiplier = 0.6,
 			anim_event = "attack_swing_stab",
+			hit_stop_anim = "attack_hit",
 			range_mot = 1.15,
 			total_time = 1.6,
 			anim_end_event_condition_func = function (unit, end_reason)
@@ -586,12 +577,6 @@ weapon_template.actions = {
 				}
 			},
 			allowed_chain_actions = {
-				{
-					sub_action = "assassinate",
-					start_time = 0.65,
-					action = "action_one",
-					input = "action_one"
-				},
 				{
 					sub_action = "default",
 					start_time = 0.65,
@@ -853,13 +838,19 @@ weapon_template.wield_anim = "to_1h_sword"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "SWORD_1H"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_distance = 1.25
-weapon_template.dodge_speed = 1.25
 weapon_template.dodge_count = 100
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 1.5
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1.25
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1.25
+	}
+}
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		penetrating = false,

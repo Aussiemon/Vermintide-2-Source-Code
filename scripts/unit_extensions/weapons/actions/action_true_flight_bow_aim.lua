@@ -61,6 +61,12 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 		ActionUtils.play_husk_sound_event(charge_sound_husk_name, owner_unit)
 	end
 
+	if self.current_action.aim_sound_event then
+		local position = POSITION_LOOKUP[self.owner_unit]
+
+		WwiseUtils.trigger_position_event(self.world, self.current_action.aim_sound_event, position)
+	end
+
 	local spread_template_override = new_action.spread_template_override
 
 	if spread_template_override then
@@ -173,7 +179,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 				if ScriptUnit.has_extension(hit_unit, "outline_system") and not is_bot then
 					local outline_extension = ScriptUnit.extension(hit_unit, "outline_system")
 
-					outline_extension.set_method("always")
+					outline_extension.set_method("ai_alive")
 				end
 
 				if Unit.alive(current_target) and not is_bot and ScriptUnit.has_extension(current_target, "outline_system") then
@@ -284,8 +290,6 @@ ActionTrueFlightBowAim.finish = function (self, reason, data)
 		chain_action_data.target = self.target
 	end
 
-	self.targets = nil
-	self.target = nil
 	local charging_sound_id = self.charging_sound_id
 
 	if charging_sound_id then
@@ -301,12 +305,16 @@ ActionTrueFlightBowAim.finish = function (self, reason, data)
 		ActionUtils.play_husk_sound_event(charge_sound_husk_stop_event, owner_unit)
 	end
 
-	if (not data or (data.new_action ~= "action_career_release" and data.new_action ~= "action_career_hold") or data.new_sub_action ~= "default") and ScriptUnit.has_extension(self.target, "outline_system") then
-		local outline_extension = ScriptUnit.extension(self.target, "outline_system")
+	if data and data.new_action == "action_two" and (not data or (data.new_action ~= "action_career_release" and data.new_action ~= "action_career_hold") or data.new_sub_action ~= "default") then
+		local outline_extension = ScriptUnit.has_extension(self.target, "outline_system")
 
-		outline_extension.set_method("never")
+		if outline_extension then
+			outline_extension.set_method("never")
+		end
 	end
 
+	self.targets = nil
+	self.target = nil
 	local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 
 	inventory_extension.set_loaded_projectile_override(inventory_extension, nil)

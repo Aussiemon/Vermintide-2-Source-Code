@@ -179,12 +179,19 @@ PlayerCharacterStateLeaping._update_movement = function (self, unit, dt, t)
 	return leap_done or colliding_down
 end
 PlayerCharacterStateLeaping._land = function (self, unit, t)
-	local wwise_world = self._wwise_world
+	local world = self.world
 	local locomotion_extension = self.locomotion_extension
 	local first_person_extension = self.first_person_extension
 
 	first_person_extension.play_camera_effect_sequence(first_person_extension, "landed_hard", t)
-	WwiseWorld.trigger_event(wwise_world, self._leap_data.sfx_event_jump)
+
+	local land_sound_event = self._leap_data.sfx_event_land
+
+	if land_sound_event then
+		local position = first_person_extension.current_position(first_person_extension)
+
+		WwiseUtils.trigger_position_event(world, land_sound_event, position)
+	end
 
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration
@@ -192,13 +199,21 @@ PlayerCharacterStateLeaping._land = function (self, unit, t)
 	return 
 end
 PlayerCharacterStateLeaping._start_leap = function (self, unit, velocity, t)
-	local wwise_world = self._wwise_world
+	local world = self.world
 	local locomotion_extension = self.locomotion_extension
 	local first_person_extension = self.first_person_extension
 
 	CharacterStateHelper.play_animation_event(unit, self._leap_data.anim_start_event)
 	first_person_extension.play_camera_effect_sequence(first_person_extension, "jump", t)
-	WwiseWorld.trigger_event(wwise_world, self._leap_data.sfx_event_jump)
+
+	local jump_sound_event = self._leap_data.sfx_event_jump
+
+	if jump_sound_event then
+		local position = first_person_extension.current_position(first_person_extension)
+
+		WwiseUtils.trigger_position_event(world, jump_sound_event, position)
+	end
+
 	locomotion_extension.set_maximum_upwards_velocity(locomotion_extension, velocity.z)
 	locomotion_extension.set_forced_velocity(locomotion_extension, velocity)
 	locomotion_extension.set_wanted_velocity(locomotion_extension, velocity)

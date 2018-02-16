@@ -80,7 +80,6 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_empire_soldier_skaven_tunnels",
 	"dialogues/generated/lookup_empire_soldier_wizard_tower",
 	"dialogues/generated/lookup_enemies",
-	"dialogues/generated/lookup_npcs",
 	"dialogues/generated/lookup_player_conversations_honduras",
 	"dialogues/generated/lookup_special_occasions_honduras",
 	"dialogues/generated/lookup_witch_hunter_bridge",
@@ -172,7 +171,8 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_dwarf_ranger_skittergate",
 	"dialogues/generated/lookup_witch_hunter_skittergate",
 	"dialogues/generated/lookup_wood_elf_skittergate",
-	"dialogues/generated/lookup_empire_soldier_skittergate"
+	"dialogues/generated/lookup_empire_soldier_skittergate",
+	"dialogues/generated/lookup_hub_conversations"
 }
 
 for _, dialogue_lookup_table in ipairs(dialogue_lookup_tables) do
@@ -351,6 +351,8 @@ table.append(damage_sources, NetworkLookup.breeds)
 NetworkLookup.damage_sources = damage_sources
 NetworkLookup.breeds[#NetworkLookup.breeds + 1] = "n/a"
 NetworkLookup.husks = {
+	"units/decals/decal_vortex_circle_inner",
+	"units/decals/decal_nurgle_pentagram_base_unit",
 	"units/beings/player/witch_hunter/third_person_base/chr_third_person_husk_base",
 	"units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_husk_base",
 	"units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_husk_base",
@@ -385,6 +387,7 @@ NetworkLookup.husks = {
 	"units/beings/enemies/skaven_ratlinggunner/chr_skaven_ratlinggunner",
 	"units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin",
 	"units/beings/enemies/skaven_stormvermin_champion/chr_skaven_stormvermin_champion",
+	"units/beings/enemies/skaven_stormvermin_champion/chr_skaven_stormvermin_warlord",
 	"units/beings/enemies/skaven_wind_globadier/chr_skaven_wind_globadier",
 	"units/beings/enemies/skaven_gutter_runner/chr_skaven_gutter_runner",
 	"units/beings/enemies/skaven_rat_ogre/chr_skaven_rat_ogre",
@@ -560,7 +563,8 @@ NetworkLookup.go_types = {
 	"payload",
 	"twitch_vote",
 	"lure_unit",
-	"pickup_training_dummy_unit"
+	"pickup_training_dummy_unit",
+	"keep_decoration_painting"
 }
 NetworkLookup.spawn_health_state = {
 	"alive",
@@ -1008,7 +1012,7 @@ NetworkLookup.buff_templates = {
 	"victor_zealot_passive_attack_speed_aura_buff",
 	"victor_witchhunter_activated_ability",
 	"victor_witchhunter_activated_ability_crit_buff",
-	"victor_witchhunter_activated_ability_invulnerability",
+	"victor_witchhunter_activated_ability_duration",
 	"victor_witchhunter_damage_on_grimoire_picked_up",
 	"victor_witchhunter_passive_debuff",
 	"markus_knight_defence_buff",
@@ -1035,7 +1039,7 @@ NetworkLookup.buff_templates = {
 	"sienna_unchained_activated_ability_duration",
 	"sienna_unchained_increased_defence_on_low_health",
 	"sienna_unchained_defence_buff",
-	"sienna_scholar_increased_defence_on_disabled",
+	"sienna_scholar_defence_on_disabled",
 	"sienna_scholar_vent_damage_on_last_standing",
 	"sienna_adept_activated_ability",
 	"sienna_adept_defence_on_last_standing",
@@ -1046,7 +1050,7 @@ NetworkLookup.buff_templates = {
 	"kerillian_shade_damage_on_grimoire_picked_up",
 	"kerillian_maidenguard_activated_ability",
 	"kerillian_maidenguard_activated_ability_invis_duration",
-	"kerillian_maidenguard_defence_on_disabled",
+	"kerillian_maidenguard_defence_on_last_standing",
 	"kerillian_maidenguard_passive_stamina_regen_buff",
 	"kerillian_waywatcher_crit_hit_damage_on_high_health",
 	"passive_career_bw_1_1",
@@ -1295,8 +1299,10 @@ NetworkLookup.sound_events = {
 	"weapon_staff_spark_spear_charged",
 	"weapon_staff_spark_spear",
 	"Play_career_ability_kerillian_shade_enter",
+	"Play_career_ability_kerillian_shade_loop",
 	"Play_career_ability_kerillian_shade_exit",
 	"Play_career_ability_markus_huntsman_enter",
+	"Play_career_ability_markus_huntsman_loop",
 	"Play_career_ability_markus_huntsman_exit",
 	"Play_career_ability_bardin_ranger_enter",
 	"Play_career_ability_bardin_ranger_exit",

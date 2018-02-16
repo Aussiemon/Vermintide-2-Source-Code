@@ -263,6 +263,23 @@ local widgets = {
 local animations = {
 	enter = {
 		{
+			name = "frame_change",
+			start_progress = 0,
+			end_progress = 0,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return 
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local difficulty_index = params.difficulty_index
+				widgets.level.content.frame = "map_frame_0" .. difficulty_index
+
+				return 
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return 
+			end
+		},
+		{
 			name = "entry",
 			start_progress = 2,
 			end_progress = 2.5,

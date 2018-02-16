@@ -91,11 +91,19 @@ DamageWaveHuskExtension.set_running_wave = function (self, unit)
 	World.link_particles(world, fx_id, unit, 0, Matrix4x4.identity(), self.particle_arrived_stop_mode)
 
 	self.running_wave_fx_id = fx_id
+	local launch_wave_sound = self.launch_wave_sound
 
-	WwiseUtils.trigger_position_event(world, self.launch_wave_sound, position)
+	if launch_wave_sound then
+		WwiseUtils.trigger_position_event(world, launch_wave_sound, position)
+	end
 
-	local id, source = WwiseUtils.trigger_unit_event(world, self.running_wave_sound, unit)
-	self.running_source_id = source
+	local id, source = nil
+	local running_wave_sound = self.running_wave_sound
+
+	if running_wave_sound then
+		local id, source = WwiseUtils.trigger_unit_event(world, running_wave_sound, unit)
+		self.running_source_id = source
+	end
 
 	return 
 end
@@ -111,16 +119,20 @@ DamageWaveHuskExtension.set_wave_arrived = function (self, unit)
 	self.hide_wave(self, unit)
 
 	local world = self.world
-	local running_source_id = self.running_source_id
 	local wwise_world = Managers.world:wwise_world(world)
+	local running_source_id = self.running_source_id
+	local stop_running_wave_sound = self.stop_running_wave_sound
 
-	if WwiseWorld.has_source(wwise_world, running_source_id) then
-		WwiseWorld.trigger_event(wwise_world, self.stop_running_wave_sound, running_source_id)
+	if WwiseWorld.has_source(wwise_world, running_source_id) and stop_running_wave_sound then
+		WwiseWorld.trigger_event(wwise_world, stop_running_wave_sound, running_source_id)
 	end
 
 	self.running_source_id = nil
+	local impact_wave_sound = self.impact_wave_sound
 
-	WwiseUtils.trigger_unit_event(world, self.impact_wave_sound, unit)
+	if impact_wave_sound then
+		WwiseUtils.trigger_unit_event(world, impact_wave_sound, unit)
+	end
 
 	local rotation = Unit.local_rotation(unit, 0)
 
@@ -134,7 +146,12 @@ DamageWaveHuskExtension.on_wavefront_impact = function (self, unit)
 	local normal_rotation = Quaternion.look(Vector3.forward(), Vector3.up())
 
 	World.create_particles(world, self.fx_name_impact, position_lookup[unit], normal_rotation)
-	WwiseUtils.trigger_unit_event(world, self.impact_wave_sound, unit)
+
+	local impact_wave_sound = self.impact_wave_sound
+
+	if impact_wave_sound then
+		WwiseUtils.trigger_unit_event(world, impact_wave_sound, unit)
+	end
 
 	return 
 end

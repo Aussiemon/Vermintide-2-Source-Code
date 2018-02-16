@@ -73,8 +73,8 @@ ScriptBackendPlayFabDedicated.get_signin_result = function (self)
 end
 ScriptBackendPlayFabDedicated.generate_unique_id = function ()
 	local machine_id = Application.machine_id()
-	local ip_address = Development.parameter("ip_address")
-	local server_port = Development.parameter("server_port")
+	local ip_address = script_data.ip_address or script_data.settings.ip_address
+	local server_port = script_data.server_port or script_data.settings.server_port
 
 	if machine_id == nil then
 		machine_id = Application.guid()

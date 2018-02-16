@@ -407,16 +407,16 @@ local scenegraph_definition = {
 		}
 	},
 	timer_bg = {
-		vertical_alignment = "top",
-		parent = "ready_button",
-		horizontal_alignment = "center",
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "left",
 		size = {
-			334,
+			400,
 			60
 		},
 		position = {
-			30,
-			65,
+			90,
+			85,
 			1
 		}
 	},
@@ -429,7 +429,7 @@ local scenegraph_definition = {
 			60
 		},
 		position = {
-			0,
+			50,
 			0,
 			1
 		}
@@ -492,11 +492,12 @@ local scenegraph_definition = {
 	}
 }
 local timer_text_style = {
-	vertical_alignment = "center",
+	word_wrap = true,
 	font_size = 52,
 	localize = false,
+	use_shadow = true,
 	horizontal_alignment = "left",
-	word_wrap = true,
+	vertical_alignment = "center",
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
@@ -522,7 +523,7 @@ local player_title_style = {
 local leave_party_text = (PLATFORM == "xb1" and "leave_party_xb1") or "leave_party"
 local masked = true
 local widgets_definitions = {
-	timer_text = UIWidgets.create_simple_text("n/a", "timer_text", nil, nil, timer_text_style),
+	timer_text = UIWidgets.create_simple_text(Localize("timer_prefix_time_left"), "timer_text", nil, nil, timer_text_style),
 	timer_bg = UIWidgets.create_simple_texture("tab_menu_bg_03", "timer_bg"),
 	retry_button = UIWidgets.create_default_button("retry_button", scenegraph_definition.retry_button.size, nil, nil, Localize("button_retry"), 32),
 	ready_button = UIWidgets.create_default_button("ready_button", scenegraph_definition.ready_button.size, nil, nil, Localize("return_to_inn"), 32),

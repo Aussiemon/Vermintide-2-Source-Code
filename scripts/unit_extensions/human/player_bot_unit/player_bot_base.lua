@@ -14,8 +14,8 @@ local FOLLOW_TIMER_UPPER_BOUND = 1.5
 local ENEMY_PATH_FAILED_REPATH_THRESHOLD = 9
 local ENEMY_PATH_FAILED_REPATH_VERTICAL_THRESHOLD = 0.8
 local ALLY_PATH_FAILED_REPATH_THRESHOLD = 0.25
-local FLAT_MOVE_TO_EPSILON = 0.05
-local Z_MOVE_TO_EPSILON = 0.3
+local FLAT_MOVE_TO_EPSILON = BotConstants.default.FLAT_MOVE_TO_EPSILON
+local Z_MOVE_TO_EPSILON = BotConstants.default.Z_MOVE_TO_EPSILON
 local HOLD_POSITION_MAX_ALLOWED_Z = 0.5
 local WANTS_TO_HEAL_THRESHOLD = 0.25
 local WANTS_TO_GIVE_HEAL_TO_OTHER = 0.5
@@ -69,9 +69,9 @@ PlayerBotBase.init = function (self, extension_init_context, unit, extension_ini
 	override_box.value_stored = false
 	self.is_bot = true
 	self._blackboard = {
-		is_passive = true,
 		target_ally_needs_aid = false,
 		using_navigation_destination_override = false,
+		is_passive = true,
 		re_evaluate_detection = Math.random()*0.5,
 		world = world,
 		unit = unit,
@@ -86,6 +86,7 @@ PlayerBotBase.init = function (self, extension_init_context, unit, extension_ini
 			follow_timer = math.lerp(FOLLOW_TIMER_LOWER_BOUND, FOLLOW_TIMER_UPPER_BOUND, Math.random()),
 			target_position = Vector3Box(POSITION_LOOKUP[unit])
 		},
+		target_ally_aid_destination = Vector3Box(),
 		navigation_destination_override = override_box,
 		navigation_liquid_escape_destination_override = Vector3Box(),
 		navigation_vortex_escape_destination_override = Vector3Box(),
@@ -278,8 +279,10 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 	local locomotion_extension = self._locomotion_extension
 	local is_alive = health_extension.is_alive(health_extension)
 	local is_ready_for_assisted_respawn = status_extension.is_ready_for_assisted_respawn(status_extension)
+	local moving_platform = locomotion_extension.get_moving_platform(locomotion_extension)
+	local is_linked_movement = locomotion_extension.is_linked_movement(locomotion_extension)
 
-	if is_alive and not is_ready_for_assisted_respawn and not locomotion_extension.get_moving_platform(locomotion_extension) and not locomotion_extension.is_linked_movement(locomotion_extension) then
+	if is_alive and not is_ready_for_assisted_respawn and moving_platform == nil and not is_linked_movement then
 		SELF_UNIT = unit
 
 		Profiler.start("update blackboard")
@@ -316,6 +319,10 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 			self._update_movement_target(self, dt, t)
 			Profiler.stop("update movement target")
 		end
+
+		Profiler.start("update_attack_request")
+		self._update_attack_request(self, t)
+		Profiler.stop("update_attack_request")
 	end
 
 	if script_data.ai_bots_debug then
@@ -622,7 +629,7 @@ PlayerBotBase._alter_target_position = function (self, nav_world, self_position,
 		local rotation = Unit.local_rotation(target_unit, 0)
 		local forward_vector_flat = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 		wanted_position = target_position - forward_vector_flat*0.5
-	elseif reason == "in_need_of_heal" or reason == "can_accept_grenade" or reason == "can_accept_potion" then
+	elseif reason == "in_need_of_heal" or reason == "can_accept_grenade" or reason == "can_accept_potion" or reason == "can_accept_heal_item" then
 		local target_locomotion_extension = ScriptUnit.extension(target_unit, "locomotion_system")
 		local target_average_velocity = target_locomotion_extension.average_velocity(target_locomotion_extension)
 
@@ -638,7 +645,7 @@ PlayerBotBase._alter_target_position = function (self, nav_world, self_position,
 	end
 
 	local above = 0.5
-	local below = 0.5
+	local below = 3
 	local success, z = GwNavQueries.triangle_from_position(nav_world, wanted_position, above, below)
 
 	if success then
@@ -646,7 +653,7 @@ PlayerBotBase._alter_target_position = function (self, nav_world, self_position,
 
 		return wanted_position
 	else
-		local horizontal = 1.9
+		local horizontal = 2
 		local pos = GwNavQueries.inside_position_from_outside_position(nav_world, target_position, above, below, horizontal, 0.1)
 
 		if pos then
@@ -1021,6 +1028,19 @@ PlayerBotBase._update_vortex_escape = function (self)
 
 	return 
 end
+PlayerBotBase._update_attack_request = function (self, t)
+	local blackboard = self._blackboard
+	local inventory_extension = blackboard.inventory_extension
+	local _, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
+	local _, current_action_extension, _ = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
+	local weapon_extension = current_action_extension or right_hand_weapon_extension or left_hand_weapon_extension
+
+	if weapon_extension then
+		weapon_extension.update_bot_attack_request(weapon_extension, t)
+	end
+
+	return 
+end
 PlayerBotBase._update_pickups = function (self, dt, t)
 	local unit = self._unit
 	local blackboard = self._blackboard
@@ -1359,6 +1379,9 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 			if blackboard.revive_with_urgent_target and blackboard.target_ally_needs_aid then
 				target_position = self._alter_target_position(self, nav_world, self_pos, target_ally_unit, POSITION_LOOKUP[target_ally_unit], blackboard.target_ally_need_type)
 				blackboard.interaction_unit = target_ally_unit
+
+				blackboard.target_ally_aid_destination:store(target_position)
+
 				path_callback = callback(self, "cb_ally_path_result", target_ally_unit)
 
 				dprint("path to ally")
@@ -1375,6 +1398,9 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 			elseif blackboard.target_ally_needs_aid then
 				target_position = self._alter_target_position(self, nav_world, self_pos, target_ally_unit, POSITION_LOOKUP[target_ally_unit], blackboard.target_ally_need_type)
 				blackboard.interaction_unit = target_ally_unit
+
+				blackboard.target_ally_aid_destination:store(target_position)
+
 				path_callback = callback(self, "cb_ally_path_result", target_ally_unit)
 
 				dprint("path to ally")

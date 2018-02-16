@@ -8,7 +8,7 @@ local breed_data = {
 	patrol_detection_radius = 10,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
 	radius = 2,
-	hit_mass_count_block = 5,
+	hit_mass_count_block = 3,
 	run_speed = 4.75,
 	target_selection = "pick_closest_target_with_spillover",
 	has_running_attack = true,
@@ -277,14 +277,14 @@ local breed_data = {
 		1.25,
 		1.75,
 		2.5,
-		4
+		3.75
 	},
 	hit_mass_counts_block = {
-		5,
-		5,
+		3,
+		3,
+		4.5,
 		6,
-		7,
-		10
+		9
 	},
 	num_push_anims = {
 		push_backward = 2

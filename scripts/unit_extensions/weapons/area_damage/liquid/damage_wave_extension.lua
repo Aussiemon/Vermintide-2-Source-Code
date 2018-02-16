@@ -132,10 +132,17 @@ DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_p
 	self.effect_id = World.create_particles(self.world, self.fx_name_running, position + Vector3.up()*5, effect_rotation)
 
 	World.link_particles(self.world, self.effect_id, self.unit, 0, Matrix4x4.identity(), template.particle_arrived_stop_mode)
-	WwiseUtils.trigger_position_event(self.world, self.launch_wave_sound, position)
 
-	if self.running_wave_sound then
-		local id, source = WwiseUtils.trigger_unit_event(self.world, self.running_wave_sound, self.unit)
+	local launch_wave_sound = self.launch_wave_sound
+
+	if launch_wave_sound then
+		WwiseUtils.trigger_position_event(self.world, launch_wave_sound, position)
+	end
+
+	local running_wave_sound = self.running_wave_sound
+
+	if running_wave_sound then
+		local id, source = WwiseUtils.trigger_unit_event(self.world, running_wave_sound, self.unit)
 		self.running_source_id = source
 	end
 
@@ -310,7 +317,9 @@ DamageWaveExtension.on_hit_by_wave = function (hit_unit, unit, parent)
 
 	local impact_wave_sound = parent.impact_wave_sound
 
-	WwiseUtils.trigger_unit_event(world, impact_wave_sound, unit)
+	if impact_wave_sound then
+		WwiseUtils.trigger_unit_event(world, impact_wave_sound, unit)
+	end
 
 	local unit_hit_is_player = DamageUtils.is_player_unit(hit_unit)
 
@@ -350,15 +359,18 @@ DamageWaveExtension.wave_arrived = function (self, t, unit)
 
 	local world = self.world
 	local wwise_world = Managers.world:wwise_world(world)
+	local running_source_id = self.running_source_id
+	local stop_running_wave_sound = self.stop_running_wave_sound
 
-	if WwiseWorld.has_source(wwise_world, self.running_source_id) and self.stop_running_wave_sound then
-		WwiseWorld.trigger_event(wwise_world, self.stop_running_wave_sound, self.running_source_id)
+	if WwiseWorld.has_source(wwise_world, running_source_id) and stop_running_wave_sound then
+		WwiseWorld.trigger_event(wwise_world, stop_running_wave_sound, running_source_id)
 	end
 
 	self.running_source_id = nil
+	local impact_wave_sound = self.impact_wave_sound
 
-	if self.impact_wave_sound then
-		WwiseUtils.trigger_unit_event(world, self.impact_wave_sound, unit)
+	if impact_wave_sound then
+		WwiseUtils.trigger_unit_event(world, impact_wave_sound, unit)
 	end
 
 	World.stop_spawning_particles(world, self.effect_id)

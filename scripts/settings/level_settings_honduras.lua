@@ -38,8 +38,11 @@ LevelSettings.combat = {
 		}
 	},
 	locations = {},
-	darkness_volumes = {
-		"environment_darkness"
+	darkness_settings = {
+		player_light_intensity = 0.1,
+		volumes = {
+			"environment_darkness"
+		}
 	},
 	map_settings = {
 		area = "helmgart",
@@ -299,22 +302,25 @@ LevelSettings.mines = {
 	player_aux_bus_name = "environment_reverb_outside",
 	package_name = "resource_packages/levels/honduras/mines",
 	act = "act_1",
-	loading_ui_package_name = "loading_screen_2",
+	use_mini_patrols = false,
 	unlockable = true,
 	level_image = "level_icon_02",
-	use_mini_patrols = false,
-	disable_darkness_screen_fx = true,
 	boss_spawning_method = "hand_placed",
 	act_presentation_order = 3,
+	loading_ui_package_name = "loading_screen_2",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/mines/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
 	camera_backlight = COLD_CAMERA_BACKLIGHT,
-	darkness_volumes = {
-		"environment_darkness_01",
-		default_surface_material = "stone"
+	darkness_settings = {
+		disable_screen_fx = true,
+		player_light_intensity = 0.15,
+		volumes = {
+			"environment_darkness_01",
+			default_surface_material = "stone"
+		}
 	},
 	pickup_settings = {
 		{
@@ -369,6 +375,7 @@ LevelSettings.ground_zero = {
 	ambient_sound_event = "silent_default_world_sound",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
+	boss_level = true,
 	act = "act_1",
 	package_name = "resource_packages/levels/honduras/ground_zero",
 	unlockable = true,
@@ -652,6 +659,7 @@ LevelSettings.skaven_stronghold = {
 	ambient_sound_event = "silent_default_world_sound",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
+	boss_level = true,
 	act = "act_2",
 	package_name = "resource_packages/levels/honduras/skaven_stronghold",
 	unlockable = true,
@@ -816,14 +824,15 @@ LevelSettings.skittergate = {
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
-	package_name = "resource_packages/levels/honduras/skittergate",
+	boss_level = true,
 	act = "act_4",
 	use_mini_patrols = false,
 	unlockable = true,
+	package_name = "resource_packages/levels/honduras/skittergate",
 	level_image = "level_icon_01",
 	boss_spawning_method = "hand_placed",
 	act_presentation_order = 1,
-	loading_ui_package_name = "loading_screen_11",
+	loading_ui_package_name = "loading_screen_14",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/skittergate/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
@@ -949,8 +958,8 @@ LevelSettings.nurgle = {
 	player_aux_bus_name = "environment_reverb_outside",
 	package_name = "resource_packages/levels/honduras/nurgle",
 	act = "act_3",
-	unlockable = true,
 	use_mini_patrols = false,
+	unlockable = true,
 	level_image = "level_icon_11",
 	boss_spawning_method = "hand_placed",
 	act_presentation_order = 3,
@@ -1000,8 +1009,11 @@ LevelSettings.nurgle = {
 		"location_nurgle_swamp",
 		"location_nurgle_end_event"
 	},
-	darkness_volumes = {
-		"environment_darkness"
+	darkness_settings = {
+		player_light_intensity = 0.1,
+		volumes = {
+			"environment_darkness"
+		}
 	},
 	map_settings = {
 		icon = "map_icon_nurgle",
@@ -1018,11 +1030,12 @@ LevelSettings.warcamp = {
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
-	package_name = "resource_packages/levels/honduras/warcamp",
+	boss_level = true,
 	act = "act_3",
 	boss_spawning_method = "hand_placed",
 	unlockable = true,
 	default_surface_material = "dirt",
+	package_name = "resource_packages/levels/honduras/warcamp",
 	level_image = "level_icon_12",
 	use_mini_patrols = false,
 	act_presentation_order = 4,

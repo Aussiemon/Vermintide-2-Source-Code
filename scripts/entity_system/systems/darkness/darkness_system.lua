@@ -5,6 +5,7 @@ local extensions = {
 	"LightSourceExtension",
 	"PlayerUnitDarknessExtension"
 }
+local PLAYER_UNITS = PLAYER_UNITS
 DarknessSystem.DARKNESS_THRESHOLD = 0.025
 DarknessSystem.TOTAL_DARKNESS_TRESHOLD = 0.0125
 DarknessSystem.init = function (self, entity_system_creation_context, system_name)
@@ -12,16 +13,42 @@ DarknessSystem.init = function (self, entity_system_creation_context, system_nam
 
 	self._light_source_data = {}
 	self._player_unit_darkness_data = {}
-	local level_settings = LevelHelper:current_level_settings()
-	local volumes = level_settings.darkness_volumes
-	self._darkness_volumes = volumes
-	self._num_volumes = volumes and #volumes
-	self._in_darkness = false
 	self._screen_fx_name = "fx/screenspace_darkness_flash"
+	local level_settings = LevelHelper:current_level_settings()
+	local darkness_settings = level_settings.darkness_settings
 
-	if level_settings.disable_darkness_screen_fx then
-		self._screen_fx_name = nil
+	if darkness_settings then
+		local volumes = darkness_settings.volumes
+
+		fassert(volumes, "Missing volumes table in darkness settings.")
+
+		self._darkness_volumes = volumes
+		self._num_volumes = #volumes
+		local player_light_intensity = darkness_settings.player_light_intensity
+
+		if player_light_intensity then
+			self.set_player_light_intensity(self, player_light_intensity)
+		end
+
+		if darkness_settings.disable_screen_fx then
+			self._screen_fx_name = nil
+		end
+	else
+		self._num_volumes = 0
 	end
+
+	self._in_darkness = false
+	self._global_darkness = false
+
+	return 
+end
+DarknessSystem.set_global_darkness = function (self, set)
+	self._global_darkness = set
+
+	return 
+end
+DarknessSystem.set_player_light_intensity = function (self, intensity)
+	self._player_light_intensity = intensity
 
 	return 
 end
@@ -210,6 +237,10 @@ DarknessSystem._update_darkness_fx = function (self, dt, t)
 	return 
 end
 DarknessSystem.is_in_darkness_volume = function (self, position)
+	if self._global_darkness then
+		return true
+	end
+
 	local volumes = self._darkness_volumes
 
 	if volumes then
@@ -235,6 +266,24 @@ DarknessSystem.calculate_light_value = function (self, position)
 		local dist_sq = math.max(Vector3.distance_squared(position, pos), 1)
 		local intensity = data.intensity
 		light_value = light_value + intensity*dist_sq/1
+	end
+
+	local player_light_intensity = self._player_light_intensity
+
+	if self._player_light_intensity then
+		local closest_distance_sq = math.huge
+
+		for i = 1, #PLAYER_UNITS, 1 do
+			local player_unit = PLAYER_UNITS[i]
+			local player_position = POSITION_LOOKUP[player_unit]
+			local distance_sq = math.max(Vector3.distance_squared(player_position, position), 1)
+
+			if distance_sq < closest_distance_sq then
+				closest_distance_sq = distance_sq
+			end
+		end
+
+		light_value = light_value + player_light_intensity*closest_distance_sq/1
 	end
 
 	return light_value

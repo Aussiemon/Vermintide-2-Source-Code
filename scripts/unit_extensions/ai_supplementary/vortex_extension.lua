@@ -192,13 +192,13 @@ VortexExtension.destroy = function (self)
 	local unit_spawner = Managers.state.unit_spawner
 	local inner_decal_unit = self._inner_decal_unit
 
-	if inner_decal_unit then
+	if unit_alive(inner_decal_unit) then
 		unit_spawner.mark_for_deletion(unit_spawner, inner_decal_unit)
 	end
 
 	local outer_decal_unit = self._outer_decal_unit
 
-	if outer_decal_unit then
+	if unit_alive(outer_decal_unit) then
 		unit_spawner.mark_for_deletion(unit_spawner, outer_decal_unit)
 	end
 

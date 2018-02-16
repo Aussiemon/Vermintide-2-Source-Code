@@ -63,9 +63,15 @@ weapon_template.wield_anim = "to_first_aid"
 weapon_template.gui_texture = "icons_placeholder_melee_01"
 weapon_template.is_grimoire = true
 weapon_template.max_fatigue_points = 1
-weapon_template.dodge_distance = 1.2
-weapon_template.dodge_speed = 1.2
 weapon_template.dodge_count = 3
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1.2
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1.2
+	}
+}
 Weapons = Weapons or {}
 Weapons.wpn_grimoire_01 = weapon_template
 Weapons.wpn_side_objective_tome_01 = table.clone(weapon_template)

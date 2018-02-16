@@ -126,6 +126,7 @@ PlayerUnitLocomotionExtension.set_on_moving_platform = function (self, platform_
 	local go_id = Managers.state.unit_storage:go_id(self.unit)
 
 	GameSession.set_game_object_field(game, go_id, "moving_platform", level_unit_id)
+	self.sync_network_position(self, game, go_id)
 
 	return 
 end

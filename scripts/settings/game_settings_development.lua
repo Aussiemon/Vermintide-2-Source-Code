@@ -96,7 +96,7 @@ elseif BUILD == "dev" or BUILD == "debug" then
 	GameSettingsDevelopment.network_mode = (LEVEL_EDITOR_TEST and "lan") or (Development.parameter("force_steam") and "steam") or "lan"
 	GameSettingsDevelopment.show_fps = Development.parameter("show_fps") == nil or Development.parameter("show_fps")
 	script_data.unlock_all_levels = Development.parameter("unlock-all-levels")
-elseif not Development.parameter("honduras_demo") and not Development.parameter("attract_mode") then
+elseif not Development.parameter("honduras_demo") and not Development.parameter("attract_mode") and not DEDICATED_SERVER then
 	print("Running release game without content revision, quitting.")
 	Application.quit()
 end

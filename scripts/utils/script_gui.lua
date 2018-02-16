@@ -21,6 +21,15 @@ ScriptGUI.itext = function (gui, resx, resy, text, font_mtrl, font_size, font, x
 
 	return 
 end
+ScriptGUI.itext_next_xy = function (gui, resx, resy, text, font_mtrl, font_size, font, x1, y1, layer, color)
+	Gui.text(gui, text, font_mtrl, font_size, font, Vector3(x1*resx, (y1 - 1)*resy, layer), color)
+
+	local min, max = Gui.text_extents(gui, text, font_mtrl, font_size)
+	local x = (max.x - min.x)/resx + x1
+	local y = (max.y - min.y)/resy + y1
+
+	return x, y
+end
 ScriptGUI.icrect = function (gui, resx, resy, x1, y1, x2, y2, layer, color)
 	local bottom_left = Vector3(x1, resy - y2, layer)
 	local size = Vector3(x2 - x1, y2 - y1, layer)

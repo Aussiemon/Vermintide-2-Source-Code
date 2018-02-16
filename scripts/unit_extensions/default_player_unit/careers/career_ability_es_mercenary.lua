@@ -157,10 +157,14 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension.animation_event(first_person_extension, "ability_shout")
+
+		local position = POSITION_LOOKUP[owner_unit]
+
+		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_mercenary_shout_out", position)
 	end
 
 	local explosion_template_name = "kruber_mercenary_activated_ability_stagger"
-	local explosion_template = ExplosionTemplates[explosion_template_name].explosion
+	local explosion_template = ExplosionTemplates[explosion_template_name]
 	local scale = 1
 	local damage_source = "career_ability"
 	local is_husk = false

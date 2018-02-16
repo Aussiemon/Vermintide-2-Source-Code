@@ -26,10 +26,16 @@ weapon_template.wield_anim = "ranger_stealth_ability"
 weapon_template.gui_texture = "hud_consumable_icon_grenade"
 weapon_template.crosshair_style = "default"
 weapon_template.max_fatigue_points = 4
-weapon_template.dodge_distance = 1
-weapon_template.dodge_speed = 1
 weapon_template.dodge_count = 3
 weapon_template.can_give_other = true
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 Weapons = Weapons or {}
 Weapons.markus_huntsman_career_skill_weapon = table.create_copy(Weapons.markus_huntsman_career_skill_weapon, weapon_template)
 

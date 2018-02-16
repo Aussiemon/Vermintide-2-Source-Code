@@ -107,8 +107,13 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 	local is_server = self._is_server
 	local local_player = self._local_player
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	local buff_system = Managers.state.entity:system("buff_system")
 	local buff_to_add = "victor_witchhunter_activated_ability_crit_buff"
+
+	if talent_extension.has_talent(talent_extension, "victor_witchhunter_activated_ability_radius", "witch_hunter", true) then
+		buff_to_add = "victor_witchhunter_activated_ability_duration"
+	end
 
 	if self._effect_id then
 		World.destroy_particles(world, self._effect_id)
@@ -122,14 +127,13 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 	local player_manager = Managers.player
 	local status_extension = self._status_extension
 	local career_extension = self._career_extension
-	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
 	CharacterStateHelper.play_animation_event(owner_unit, "witch_hunter_active_ability")
 
-	local radius = 15
+	local radius = 10
 
 	if talent_extension.has_talent(talent_extension, "victor_witchhunter_activated_ability_radius", "witch_hunter", true) then
-		radius = 18
+		radius = 15
 	end
 
 	local nearby_player_units = FrameTable.alloc_table()
@@ -159,7 +163,7 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 	end
 
 	local explosion_template_name = "victor_captain_activated_ability_stagger"
-	local explosion_template = ExplosionTemplates[explosion_template_name].explosion
+	local explosion_template = ExplosionTemplates[explosion_template_name]
 	local scale = 1
 	local damage_source = "career_ability"
 	local is_husk = false
@@ -182,6 +186,7 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension.animation_event(first_person_extension, "ability_shout")
+		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_captain_shout_out", position)
 	end
 
 	self._play_vo(self)

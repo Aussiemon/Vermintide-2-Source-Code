@@ -264,6 +264,7 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 	self._previous_spline_index = current_spline_index
 
 	Unit.set_simple_animation_speed(self._unit, new_speed/ANIM_SPEED, "wheels")
+	fassert(movement._t == movement._t, "Nan in spline: %s", self._spline_curve._name)
 	Unit.set_local_position(unit, 0, movement.current_position(movement))
 
 	local dir = movement.current_tangent_direction(movement)
@@ -363,7 +364,8 @@ local gizmo_point_map = {}
 PayloadExtension._init_movement_spline = function (self, world, unit, payload_gizmos)
 	local spline_name = Unit.get_data(unit, "spline_name")
 	local level = LevelHelper:current_level(world)
-	local spline_points = Level.spline(level, spline_name)
+	local source_spline_points = Level.spline(level, spline_name)
+	local spline_points = AiUtils.remove_bad_spline_points(source_spline_points, spline_name)
 
 	fassert(0 < #spline_points, "Could not find spline called %s for Payload unit in level, wrong name? or payload unit is used as a prop unintentionally", spline_name)
 

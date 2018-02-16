@@ -43,6 +43,7 @@ StatBuffs = {
 	"MOVEMENT_SPEED",
 	"DAMAGE_TAKEN",
 	"DAMAGE_TAKEN_TO_OVERCHARGE",
+	"DAMAGE_TAKEN_ELITES",
 	"INCREASED_WEAPON_DAMAGE",
 	"INCREASED_WEAPON_DAMAGE_MELEE",
 	"INCREASED_WEAPON_DAMAGE_MELEE_2H",
@@ -131,6 +132,7 @@ StatBuffApplicationMethods = {
 	[StatBuffIndex.MOVEMENT_SPEED] = "stacking_multiplier",
 	[StatBuffIndex.DAMAGE_TAKEN] = "stacking_multiplier",
 	[StatBuffIndex.DAMAGE_TAKEN_TO_OVERCHARGE] = "stacking_multiplier",
+	[StatBuffIndex.DAMAGE_TAKEN_ELITES] = "stacking_multiplier",
 	[StatBuffIndex.INCREASED_WEAPON_DAMAGE] = "stacking_multiplier",
 	[StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE] = "stacking_multiplier",
 	[StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE_2H] = "stacking_multiplier",
@@ -391,7 +393,10 @@ ProcFunctions = {
 		local player_unit = player.player_unit
 
 		if Unit.alive(player_unit) then
-			DamageUtils.heal_network(player_unit, player_unit, 0, "career_skill")
+			local health_extension = ScriptUnit.extension(player_unit, "health_system")
+			local heal_amount = health_extension.current_temporary_health(health_extension)
+
+			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "bandage")
 		end
 
 		return 
@@ -918,8 +923,8 @@ ProcFunctions = {
 			local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
 			status_extension.set_invisible(status_extension, false)
-			first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_kerillian_shade_exit", nil, true)
-			first_person_extension.play_hud_sound_event(first_person_extension, "Stop_career_ability_kerillian_shade_loop")
+			first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_markus_huntsman_exit", nil, true)
+			first_person_extension.play_hud_sound_event(first_person_extension, "Stop_career_ability_markus_huntsman_loop")
 
 			MOOD_BLACKBOARD.skill_huntsman_stealth = false
 			MOOD_BLACKBOARD.skill_huntsman_surge = true
@@ -1301,13 +1306,12 @@ ProcFunctions = {
 	end,
 	victor_bountyhunter_activate_passive_on_melee_kill = function (player, buff, params)
 		local player_unit = player.player_unit
-		local damage_source_name = params[1][6]
-		local item_masterlist_data = ItemMasterList[damage_source_name]
 
-		if item_masterlist_data then
-			local slot_type = item_masterlist_data.slot_type
+		if Unit.alive(player_unit) then
+			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+			local wielded_slot_name = inventory_extension.get_wielded_slot_name(inventory_extension)
 
-			if Unit.alive(player_unit) and slot_type == "melee" then
+			if wielded_slot_name == "slot_melee" then
 				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 				local cooldown_buff = buff_extension.get_non_stacking_buff(buff_extension, "victor_bountyhunter_passive_crit_cooldown")
 
@@ -1578,13 +1582,13 @@ BuffTemplates = {
 			}
 		}
 	},
-	damage_boost_potion_increased = {
+	damage_boost_potion_reduced = {
 		activation_effect = "fx/screenspace_potion_01",
 		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_smiter_activate",
 		buffs = {
 			{
-				duration = 15,
+				duration = 5,
 				name = "armor penetration",
 				refresh_durations = true,
 				max_stacks = 1,
@@ -2066,7 +2070,7 @@ BuffTemplates = {
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				time_between_dot_damages = 0.6,
-				damage_profile = "poison",
+				damage_profile = "poison_direct",
 				update_func = "apply_dot_damage",
 				reapply_buff_func = "reapply_dot_damage"
 			}
@@ -2076,14 +2080,14 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 3,
-				name = "arrow poison dot",
+				name = "aoe poison dot",
 				start_flow_event = "poisoned",
 				end_flow_event = "poisoned_end",
 				death_flow_event = "poisoned_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				time_between_dot_damages = 0.75,
-				damage_profile = "poison_aoe",
+				damage_profile = "poison",
 				update_func = "apply_dot_damage",
 				reapply_buff_func = "reapply_dot_damage"
 			}
@@ -2208,18 +2212,6 @@ BuffTemplates = {
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage"
-			}
-		}
-	},
-	mutator_player_dot = {
-		buffs = {
-			{
-				update_func = "apply_dot_damage",
-				name = "mutator player dot",
-				time_between_dot_damages = 10,
-				damage_profile = "mutator_player_dot",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage"
 			}
 		}
 	},
@@ -2701,7 +2693,7 @@ BuffTemplates = {
 			}
 		}
 	},
-	conquerer = {
+	conqueror = {
 		buffs = {
 			{
 				name = "bloodlust",
@@ -2760,6 +2752,27 @@ BuffTemplates = {
 				name = "damage_taken_from_proc",
 				refresh_durations = true,
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
+			}
+		}
+	},
+	mutator_player_dot = {
+		buffs = {
+			{
+				update_func = "apply_dot_damage",
+				name = "mutator player dot",
+				time_between_dot_damages = 10,
+				damage_profile = "mutator_player_dot",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage"
+			}
+		}
+	},
+	damage_taken_powerful_elites = {
+		buffs = {
+			{
+				multiplier = 2,
+				name = "damage_taken_from_powerful_elites",
+				stat_buff = StatBuffIndex.DAMAGE_TAKEN_ELITES
 			}
 		}
 	},
@@ -4593,8 +4606,8 @@ BuffTemplates = {
 			},
 			{
 				name = "decrease_jump_speed",
-				multiplier = 0.7,
-				duration = 2,
+				multiplier = 0.8,
+				duration = 1,
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
@@ -4604,8 +4617,8 @@ BuffTemplates = {
 			},
 			{
 				name = "decrease_dodge_speed",
-				multiplier = 0.7,
-				duration = 2,
+				multiplier = 0.8,
+				duration = 1,
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
@@ -4615,8 +4628,8 @@ BuffTemplates = {
 			},
 			{
 				name = "decrease_dodge_distance",
-				multiplier = 0.7,
-				duration = 2,
+				multiplier = 0.8,
+				duration = 1,
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
@@ -4630,7 +4643,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				update_func = "update_action_lerp_movement_buff",
-				multiplier = 0.7,
+				multiplier = 0.9,
 				name = "decrease_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
@@ -4645,7 +4658,7 @@ BuffTemplates = {
 			},
 			{
 				update_func = "update_charging_action_lerp_movement_buff",
-				multiplier = 0.7,
+				multiplier = 0.9,
 				name = "decrease_crouch_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
@@ -4660,7 +4673,7 @@ BuffTemplates = {
 			},
 			{
 				update_func = "update_charging_action_lerp_movement_buff",
-				multiplier = 0.7,
+				multiplier = 0.9,
 				name = "decrease_walk_speed",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",

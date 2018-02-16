@@ -570,7 +570,6 @@ local background_widget_definitions = {
 			}
 		}
 	},
-	logo = UIWidgets.create_simple_texture("hero_view_home_logo", "logo"),
 	dead_space_filler = {
 		scenegraph_id = "dead_space_filler",
 		element = UIElements.SimpleTexture,

@@ -114,14 +114,14 @@ local breed_data = {
 		4,
 		6,
 		8,
-		10
+		12
 	},
 	hit_mass_counts_block = {
 		6,
 		6,
-		8,
-		10,
-		12
+		9,
+		12,
+		18
 	},
 	wwise_voices = {
 		"marauder_andreas",
@@ -625,19 +625,11 @@ local action_data = {
 
 			local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 			local stagger_anims, idle_event = nil
-
-			if blackboard.stagger_type == 3 then
-				blackboard.stagger_immune_time = t + 2.25
-				blackboard.heavy_stagger_immune_time = t + 1.5
-			elseif blackboard.stagger_type == 6 then
-				blackboard.stagger_immune_time = t + 3.5
-				blackboard.heavy_stagger_immune_time = t + 3
-			end
-
+			local blocked_stagger = false
 			local using_shield = not ai_shield_extension.shield_broken
 
 			if using_shield and not blackboard.stagger_immune_time then
-				local is_blocking = blackboard.stagger <= 1
+				local is_blocking = blackboard.stagger <= 2
 
 				ai_shield_extension.set_is_blocking(ai_shield_extension, is_blocking)
 
@@ -645,10 +637,12 @@ local action_data = {
 					blackboard.stagger_time = blackboard.stagger_time + math.clamp(blackboard.stagger*0.2, 0, 0.6)
 				end
 
-				if not blackboard.blocked and blackboard.stagger < 2 and action.shield_block_anims then
+				if not blackboard.blocked and blackboard.stagger < 3 and action.shield_block_anims then
+					blocked_stagger = true
 					stagger_anims = action.shield_block_anims[blackboard.stagger_type]
 					idle_event = "idle"
-				elseif not blackboard.blocked and blackboard.stagger < 3 and action.shield_stagger_anims then
+				elseif not blackboard.blocked and blackboard.stagger < 4 and action.shield_stagger_anims then
+					blocked_stagger = true
 					stagger_anims = action.shield_stagger_anims[blackboard.stagger_type]
 					idle_event = blackboard.breed.shield_opening_event or "idle"
 				else
@@ -660,6 +654,16 @@ local action_data = {
 
 				stagger_anims = action.stagger_anims[blackboard.stagger_type]
 				idle_event = "idle"
+			end
+
+			if not blocked_stagger then
+				if blackboard.stagger_type == 3 then
+					blackboard.stagger_immune_time = t + 2.25
+					blackboard.heavy_stagger_immune_time = t + 1.5
+				elseif blackboard.stagger_type == 6 then
+					blackboard.stagger_immune_time = t + 3.5
+					blackboard.heavy_stagger_immune_time = t + 3
+				end
 			end
 
 			return stagger_anims, idle_event

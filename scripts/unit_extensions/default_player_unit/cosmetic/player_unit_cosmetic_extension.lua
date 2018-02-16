@@ -22,6 +22,12 @@ PlayerUnitCosmeticExtension.init = function (self, extension_init_context, unit,
 
 		for slot_name, material_name in pairs(third_person_changes) do
 			Unit.set_material(unit, slot_name, material_name)
+
+			local flow_unit_attachments = Unit.get_data(unit, "flow_unit_attachments") or {}
+
+			for _, unit in pairs(flow_unit_attachments) do
+				Unit.set_material(unit, slot_name, material_name)
+			end
 		end
 	end
 

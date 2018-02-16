@@ -642,6 +642,12 @@ StateInGameRunning.check_for_new_quests_or_contracts = function (self, dt)
 	return 
 end
 StateInGameRunning.disable_ui = function (self)
+	local ingame_ui = self.ingame_ui
+
+	if ingame_ui then
+		ingame_ui.suspend_active_view(ingame_ui)
+	end
+
 	self._disable_ui = true
 
 	return 
@@ -761,6 +767,8 @@ StateInGameRunning.on_exit = function (self)
 	self.parent = nil
 	self.free_flight_manager = nil
 	self.input_manager = nil
+
+	CLEAR_ALL_PLAYER_LISTS()
 
 	if self._benchmark_handler then
 		self._benchmark_handler:destroy()

@@ -319,9 +319,15 @@ weapon_template.wield_anim = "to_drakegun"
 weapon_template.crosshair_style = "circle"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "DRAKEFIRE"
-weapon_template.dodge_distance = 0.85
-weapon_template.dodge_speed = 0.85
 weapon_template.dodge_count = 1
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 0.85
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 0.85
+	}
+}
 weapon_template.wwise_dep_right_hand = {
 	"wwise/drakegun",
 	"wwise/flamethrower"

@@ -195,6 +195,14 @@ local widget_definitions = {
 					content_check_function = function (content)
 						return content.text
 					end
+				},
+				{
+					style_id = "text_shadow",
+					pass_type = "text",
+					text_id = "text",
+					content_check_function = function (content)
+						return content.text
+					end
 				}
 			}
 		},
@@ -217,6 +225,21 @@ local widget_definitions = {
 					0,
 					0,
 					1
+				}
+			},
+			text_shadow = {
+				font_size = 30,
+				scenegraph_id = "tooltip_mission_text",
+				pixel_perfect = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					2,
+					-2,
+					0
 				}
 			},
 			texture_id = {
@@ -959,6 +982,14 @@ local function create_objective_tooltip_definitions(num_objective_tooltips)
 						content_check_function = function (content)
 							return content.text
 						end
+					},
+					{
+						style_id = "text_shadow",
+						pass_type = "text",
+						text_id = "text",
+						content_check_function = function (content)
+							return content.text
+						end
 					}
 				}
 			},
@@ -981,6 +1012,22 @@ local function create_objective_tooltip_definitions(num_objective_tooltips)
 						0,
 						0,
 						1
+					},
+					scenegraph_id = scenegraph_text
+				},
+				text_shadow = {
+					font_size = 30,
+					pixel_perfect = false,
+					horizontal_alignment = "left",
+					vertical_alignment = "center",
+					dynamic_font = false,
+					allow_fractions = true,
+					font_type = "hell_shark",
+					text_color = Colors.get_color_table_with_alpha("black", 255),
+					offset = {
+						2,
+						-2,
+						0
 					},
 					scenegraph_id = scenegraph_text
 				},

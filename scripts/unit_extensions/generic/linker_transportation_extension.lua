@@ -72,6 +72,7 @@ LinkerTransportationExtension.init = function (self, extension_init_context, uni
 	self._transporting = false
 	self._movement_delta = Vector3Box(0, 0, 0)
 	self._old_position = Vector3Box(Unit.local_position(unit, 0))
+	self._unlink_after_update = false
 
 	return 
 end
@@ -165,15 +166,10 @@ LinkerTransportationExtension.rpc_hot_join_sync_linker_transport_state = functio
 	return 
 end
 LinkerTransportationExtension._link_all_transported_units = function (self, interactor_unit)
-	print("===============================")
-
 	local story_teller = self.story_teller
 	local story_id = self.story_id
 	local story_length = story_teller.length(story_teller, story_id)
 
-	print("Linking all transported units", self.current_story_time, story_length)
-	print(Script.callstack())
-	print("===============================")
 	assert(not self._transporting, "Trying to link units before unlinking.")
 
 	self._transporting = true
@@ -363,7 +359,8 @@ LinkerTransportationExtension.update = function (self, unit, input, dt, context,
 
 			if self.auto_exit then
 				self.update_nav_obstacles(self)
-				self._unlink_all_transported_units(self)
+
+				self._unlink_after_update = true
 			end
 
 			Unit.flow_event(self.unit, "lua_transportation_story_stopped")
@@ -389,6 +386,9 @@ LinkerTransportationExtension.update = function (self, unit, input, dt, context,
 		end
 	end
 
+	local old_pos = Unit.world_position(unit, 0)
+
+	self._old_position:store(old_pos)
 	story_teller.set_time(story_teller, story_id, new_time)
 
 	self.current_story_time = new_time
@@ -401,11 +401,26 @@ LinkerTransportationExtension.update = function (self, unit, input, dt, context,
 		self.oobb_next_update = t + update_interval
 	end
 
-	local new_pos = Unit.local_position(unit, 0)
-	local old_pos_box = self._old_position
+	return 
+end
+LinkerTransportationExtension.post_update = function (self, unit, input, dt, context, t)
+	local new_pos = Unit.world_position(unit, 0)
+	local old_pos = self._old_position:unbox()
+	local delta = new_pos - old_pos
 
-	self._movement_delta:store(new_pos - old_pos_box.unbox(old_pos_box))
-	old_pos_box.store(old_pos_box, new_pos)
+	self._movement_delta:store(delta)
+
+	if self._unlink_after_update then
+		self._unlink_after_update = false
+		self._unlink_after_update2 = true
+	elseif self._unlink_after_update2 then
+		self._unlink_after_update2 = false
+		self._unlink_after_update3 = true
+	elseif self._unlink_after_update3 then
+		self._unlink_after_update3 = false
+
+		self._unlink_all_transported_units(self)
+	end
 
 	return 
 end
@@ -499,15 +514,10 @@ LinkerTransportationExtension.destroy = function (self)
 	return 
 end
 LinkerTransportationExtension._unlink_all_transported_units = function (self)
-	print("===============================")
-
 	local story_teller = self.story_teller
 	local story_id = self.story_id
 	local story_length = story_teller.length(story_teller, story_id)
 
-	print("Unlinking all transported units", self.current_story_time, story_length)
-	print(Script.callstack())
-	print("===============================")
 	assert(self._transporting, "Trying to unlink units before linking.")
 
 	self._transporting = false

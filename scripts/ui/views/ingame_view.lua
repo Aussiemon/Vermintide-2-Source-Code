@@ -13,9 +13,19 @@ local generic_input_actions = {
 		description_text = "input_description_close"
 	}
 }
+local tobii_contest_url = "http://tobiigaming.com/warhammer2?utm_campaign=Warhammer%20Vermintide%202&utm_source=ingame&utm_medium=referral"
 local leave_party_button_text = (PLATFORM == "xb1" and "leave_party_menu_button_name_xb1") or "leave_party_menu_button_name"
 local disband_party_button_text = (PLATFORM == "xb1" and "disband_party_menu_button_name_xb1") or "disband_party_menu_button_name"
 local menu_layouts = {}
+
+local function player_stuck_cb()
+	local level_key = Managers.state.game_mode:level_key()
+	local player = Managers.player:local_player()
+
+	Managers.telemetry.events:player_stuck(player, level_key)
+
+	return 
+end
 
 if PLATFORM == "ps4" then
 	menu_layouts = {
@@ -28,20 +38,17 @@ if PLATFORM == "ps4" then
 				},
 				{
 					display_name = "profile_menu_button_name",
+					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -57,20 +64,17 @@ if PLATFORM == "ps4" then
 				},
 				{
 					display_name = "profile_menu_button_name",
+					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -91,20 +95,17 @@ if PLATFORM == "ps4" then
 				},
 				{
 					display_name = "profile_menu_button_name",
+					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -144,14 +145,10 @@ if PLATFORM == "ps4" then
 					display_name = "return_to_game_button_name"
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -171,14 +168,10 @@ if PLATFORM == "ps4" then
 					display_name = "return_to_game_button_name"
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -198,14 +191,10 @@ if PLATFORM == "ps4" then
 					display_name = "return_to_game_button_name"
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -263,20 +252,17 @@ elseif PLATFORM == "xb1" then
 				},
 				{
 					display_name = "profile_menu_button_name",
+					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -297,20 +283,17 @@ elseif PLATFORM == "xb1" then
 				},
 				{
 					display_name = "profile_menu_button_name",
+					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -331,20 +314,17 @@ elseif PLATFORM == "xb1" then
 				},
 				{
 					display_name = "profile_menu_button_name",
+					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -384,14 +364,10 @@ elseif PLATFORM == "xb1" then
 					display_name = "return_to_game_button_name"
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -411,14 +387,10 @@ elseif PLATFORM == "xb1" then
 					display_name = "return_to_game_button_name"
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -438,14 +410,10 @@ elseif PLATFORM == "xb1" then
 					display_name = "return_to_game_button_name"
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -502,21 +470,24 @@ else
 					display_name = "return_to_game_button_name"
 				},
 				{
+					fade = false,
+					transition = "exit_menu",
+					display_name = "i_am_stuck",
+					callback = player_stuck_cb
+				},
+				{
 					display_name = "profile_menu_button_name",
+					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -536,21 +507,24 @@ else
 					display_name = "return_to_game_button_name"
 				},
 				{
+					fade = false,
+					transition = "exit_menu",
+					display_name = "i_am_stuck",
+					callback = player_stuck_cb
+				},
+				{
 					display_name = "profile_menu_button_name",
+					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -570,21 +544,24 @@ else
 					display_name = "return_to_game_button_name"
 				},
 				{
+					fade = false,
+					transition = "exit_menu",
+					display_name = "i_am_stuck",
+					callback = player_stuck_cb
+				},
+				{
 					display_name = "profile_menu_button_name",
+					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
 				},
 				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
-				},
-				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -625,13 +602,15 @@ else
 				},
 				{
 					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
+					transition = "exit_menu",
+					display_name = "i_am_stuck",
+					callback = player_stuck_cb
 				},
 				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -652,13 +631,15 @@ else
 				},
 				{
 					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
+					transition = "exit_menu",
+					display_name = "i_am_stuck",
+					callback = player_stuck_cb
 				},
 				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -679,13 +660,15 @@ else
 				},
 				{
 					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
+					transition = "exit_menu",
+					display_name = "i_am_stuck",
+					callback = player_stuck_cb
 				},
 				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -702,6 +685,12 @@ else
 				{
 					transition = "exit_menu",
 					display_name = "return_to_game_button_name"
+				},
+				{
+					fade = false,
+					transition = "exit_menu",
+					display_name = "i_am_stuck",
+					callback = player_stuck_cb
 				},
 				{
 					transition = "options_menu",
@@ -897,36 +886,36 @@ IngameView.update_menu_options = function (self)
 				},
 				{
 					display_name = "profile_menu_button_name",
+					requires_player_unit = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection",
-					disable_when_matchmaking = true
+					disable_when_matchmaking = false
 				},
 				{
+					display_name = "inventory_menu_button_name",
+					requires_player_unit = true,
 					fade = true,
 					transition_state = "overview",
-					transition = "hero_view",
-					display_name = "inventory_menu_button_name"
+					transition = "hero_view"
 				},
 				{
 					fade = false,
 					transition = "keep_decoration_view",
-					display_name = "keep_decoration_view"
-				},
-				{
-					fade = false,
-					transition = "friends_view",
-					display_name = "friends_menu_button_name"
+					display_name = "keep_decoration_view",
+					requires_player_unit = true
 				},
 				{
 					fade = false,
 					transition = "start_menu_view",
-					display_name = "start_menu_view"
+					display_name = "start_menu_view",
+					requires_player_unit = true
 				},
 				{
 					fade = true,
 					transition = "options_menu",
-					display_name = "options_menu_button_name"
+					display_name = "options_menu_button_name",
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -977,20 +966,24 @@ IngameView.update_menu_options_enabled_states = function (self)
 		local player_ready_for_game = self.ingame_ui:is_local_player_ready_for_game()
 		local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
 		local is_server = self.is_server
+		local player_manager = Managers.player
+		local local_player = player_manager.local_player(player_manager)
+		local has_player = local_player and local_player.player_unit ~= nil
 
 		for index, menu_option in ipairs(active_button_data) do
 			local transition = menu_option.transition
 			local disable_when_matchmaking = menu_option.disable_when_matchmaking
 			local disable_when_matchmaking_ready = menu_option.disable_when_matchmaking_ready
-			local transition_not_allowed = (player_ready_for_game and disable_when_matchmaking_ready) or (is_game_matchmaking and disable_when_matchmaking)
+			local requires_player_unit = menu_option.requires_player_unit
+			local transition_not_allowed = (player_ready_for_game and disable_when_matchmaking_ready) or (is_game_matchmaking and disable_when_matchmaking) or (requires_player_unit and not has_player)
 			local widget = menu_option.widget
 			local widget_button_hotspot = widget.content.button_hotspot
 
-			if transition_not_allowed and not widget_button_hotspot.disabled then
-				widget_button_hotspot.disabled = true
+			if transition_not_allowed and not widget_button_hotspot.disable_button then
+				widget_button_hotspot.disable_button = true
 				widget_button_hotspot.on_release = nil
-			elseif not transition_not_allowed and widget_button_hotspot.disabled then
-				widget_button_hotspot.disabled = false
+			elseif not transition_not_allowed and widget_button_hotspot.disable_button then
+				widget_button_hotspot.disable_button = false
 			end
 		end
 	end
@@ -1012,20 +1005,26 @@ IngameView.setup_button_layout = function (self, layout_data)
 	for index, data in ipairs(layout_data) do
 		local button_widget = stored_buttons[index]
 		local display_name = data.display_name
+		local url = data.url
+		local callback = data.callback
 		local transition = data.transition
 		local transition_state = data.transition_state
 		local transition_sub_state = data.transition_sub_state
 		local disable_when_matchmaking = data.disable_when_matchmaking
 		local disable_when_matchmaking_ready = data.disable_when_matchmaking_ready
+		local requires_player_unit = data.requires_player_unit
 		local fade = data.fade
 		button_widget.content.title_text = display_name
 		active_button_data[index] = {
 			widget = button_widget,
+			url = url,
+			callback = callback,
 			transition = transition,
 			transition_state = transition_state,
 			transition_sub_state = transition_sub_state,
 			disable_when_matchmaking = disable_when_matchmaking,
 			disable_when_matchmaking_ready = disable_when_matchmaking_ready,
+			requires_player_unit = requires_player_unit,
 			fade = fade
 		}
 	end
@@ -1118,17 +1117,30 @@ IngameView.update = function (self, dt)
 
 				if mouse_input_approved or gamepad_input_approved then
 					widget.content.button_hotspot.on_release = nil
-					local transition = data.transition
-					local transition_state = data.transition_state
-					local transition_sub_state = data.transition_sub_state
-					local fade = data.fade
 
 					self.play_sound(self, "Play_hud_select")
 
-					if fade then
-						ingame_ui.transition_with_fade(ingame_ui, transition, transition_state, transition_sub_state)
+					local url = data.url
+
+					if url then
+						Application.open_url_in_browser(url)
 					else
-						ingame_ui.handle_transition(ingame_ui, transition, transition_state, transition_sub_state)
+						local callback = data.callback
+
+						if callback then
+							callback()
+						end
+
+						local transition = data.transition
+						local transition_state = data.transition_state
+						local transition_sub_state = data.transition_sub_state
+						local fade = data.fade
+
+						if fade then
+							ingame_ui.transition_with_fade(ingame_ui, transition, transition_state, transition_sub_state)
+						else
+							ingame_ui.handle_transition(ingame_ui, transition, transition_state, transition_sub_state)
+						end
 					end
 
 					self._reinit_menu_input_description_next_update = true
@@ -1160,7 +1172,7 @@ IngameView.controller_select_button_index = function (self, index, ignore_sound)
 	local active_button_data = self.active_button_data
 	local new_selection_data = active_button_data[index]
 
-	if not new_selection_data or new_selection_data.widget.content.button_hotspot.disabled then
+	if not new_selection_data or new_selection_data.widget.content.button_hotspot.disable_button then
 		return selection_accepted
 	end
 

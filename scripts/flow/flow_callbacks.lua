@@ -3028,6 +3028,27 @@ function flow_callback_set_player_in_hanging_cage(params)
 	return 
 end
 
+function flow_callback_set_player_fall_height(params)
+	local unit = params.unit
+	local status_ext = ScriptUnit.has_extension(unit, "status_system")
+
+	if status_ext then
+		local is_husk = status_ext.is_husk
+
+		if is_husk then
+			if BUILD == "release" then
+				ScriptApplication.send_to_crashify("flow_callbacks", "Trying to set falling height on unit not owned")
+			else
+				assert(false, "Trying to set falling height on unit not owned")
+			end
+		else
+			status_ext.set_falling_height(status_ext, true)
+		end
+	end
+
+	return 
+end
+
 function flow_callback_store_parent(params)
 	local parentunit = params.parent_unit
 	local childunit = params.child_unit

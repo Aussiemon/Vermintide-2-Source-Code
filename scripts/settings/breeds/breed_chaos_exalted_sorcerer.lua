@@ -723,6 +723,7 @@ local action_data = {
 		}
 	},
 	spawn_allies = {
+		stinger_name = "enemy_horde_chaos_stinger",
 		stay_still = true,
 		terror_event_id = "sorcerer_boss_minion",
 		duration = 5,

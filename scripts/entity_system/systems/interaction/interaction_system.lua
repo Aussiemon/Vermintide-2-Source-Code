@@ -102,8 +102,10 @@ InteractionSystem.rpc_interaction_abort = function (self, sender, interactor_go_
 
 		local interactable_unit = interactor_extension.interactable_unit(interactor_extension)
 
-		InteractionHelper:complete_interaction(interactor_unit, interactable_unit, InteractionResult.USER_ENDED)
-		interactor_extension.interaction_completed(interactor_extension, InteractionResult.USER_ENDED)
+		if Unit.alive(interactable_unit) then
+			InteractionHelper:complete_interaction(interactor_unit, interactable_unit, InteractionResult.USER_ENDED)
+			interactor_extension.interaction_completed(interactor_extension, InteractionResult.USER_ENDED)
+		end
 	end
 
 	return 

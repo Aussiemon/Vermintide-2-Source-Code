@@ -349,6 +349,12 @@ return function ()
 			},
 			{
 				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_pack_master"
+			},
+			{
+				"query_context",
 				"source_name",
 				OP.EQ,
 				"wood_elf"
@@ -393,6 +399,12 @@ return function ()
 			},
 			{
 				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_pack_master"
+			},
+			{
+				"query_context",
 				"source_name",
 				OP.EQ,
 				"wood_elf"
@@ -434,6 +446,12 @@ return function ()
 				"concept",
 				OP.EQ,
 				"grabbed"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_pack_master"
 			},
 			{
 				"query_context",

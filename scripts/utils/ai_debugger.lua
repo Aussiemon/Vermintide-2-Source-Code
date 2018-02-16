@@ -3,6 +3,7 @@ require("scripts/utils/draw_ai_behavior")
 
 script_data.ai_debugger_freeflight_only = script_data.ai_debugger_freeflight_only or Development.parameter("ai_debugger_freeflight_only")
 local font_size = 26
+local font_size_medium = 22
 local font_size_blackboard = 16
 local font = "gw_arial_32"
 local font_mtrl = "materials/fonts/" .. font
@@ -68,7 +69,13 @@ AIDebugger.update = function (self, t, dt)
 		local breed = ai_extension and ai_extension._breed
 
 		if breed then
-			Debug.text("script_data.debug_unit = %s", breed.name)
+			local blackboard = BLACKBOARDS[unit]
+
+			if blackboard.mode then
+				Debug.text("debug_unit = %s, mode=%s, phase=%s", breed.name, tostring(blackboard.mode), tostring(blackboard.phase))
+			else
+				Debug.text("script_data.debug_unit = %s", breed.name)
+			end
 		else
 			Debug.text("script_data.debug_unit = %s", tostring(unit))
 		end
@@ -715,7 +722,8 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 	local win_x = (bar_width + wedge) - 1
 	local win_y = 0.15
 	local row = win_y
-	local pacing = Managers.state.conflict.pacing
+	local conflict_director = Managers.state.conflict
+	local pacing = conflict_director.pacing
 	local sum_intensity, player_intensity = pacing.get_intensity(pacing)
 
 	for k = 1, #player_intensity, 1 do
@@ -735,9 +743,33 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 
 	row = row + bar_height*1
 
+	ScriptGUI.itext(gui, res_x, res_y, "[Total Intensity]", font_mtrl, font_size, font, win_x, row + bar_height*0.75, 3, Color(255, 237, 237, 152))
+
+	row = row + bar_height*1
+
 	ScriptGUI.irect(gui, res_x, res_y, win_x, row + bar_height, win_x + bar_width, row, 1, Color(100, 90, 10, 10))
 	ScriptGUI.irect(gui, res_x, res_y, win_x, row + bar_height, win_x + bar_width*sum_intensity*0.01, row, 2, Color(200, 130, 10, 10))
-	ScriptGUI.itext(gui, res_x, res_y, "[Total Intensity]", font_mtrl, font_size, font, win_x, row + bar_height*0.75, 3, Color(255, 237, 237, 152))
+
+	local decay_text = ""
+	local frozen = conflict_director.intensity_decay_frozen(conflict_director)
+
+	if frozen then
+		decay_text = string.format("decay delay frozen: %.1f", math.clamp(conflict_director.frozen_intensity_decay_until - t, 0, 100))
+	elseif pacing.ignore_intensity_decay_delay(pacing) then
+		decay_text = "decay delay: ignored"
+	else
+		local player = Managers.player:local_player(1)
+		local status_extension = ScriptUnit.has_extension(player.player_unit, "status_system")
+
+		if status_extension then
+			decay_text = "decay delay: " .. string.format("[%.1f] ", math.clamp(status_extension.intensity_decay_delay, 0, 100))
+		end
+	end
+
+	row = row + bar_height*1.5
+	local small_font_size = 22
+
+	ScriptGUI.itext(gui, res_x, res_y, decay_text, font_mtrl, small_font_size, font, win_x, row + bar_height*0.75, 3, Color(255, 200, 200, 32))
 
 	return 
 end
@@ -752,22 +784,32 @@ AIDebugger.debug_pacing = function (self, t, dt)
 	local win_x = 0.45
 	local win_y = 0.01
 	local row = win_y
-	local info = "Pacing settings: " .. (script_data.current_pacing_setting or "default") .. ", Conflict setting: " .. tostring(cm.current_conflict_settings)
-
-	ScriptGUI.itext(gui, res_x, res_y, info, font_mtrl, font_size, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
-
+	local info = script_data.current_pacing_setting or "default"
+	local nx = ScriptGUI.itext_next_xy(gui, res_x, res_y, "Pacing: ", font_mtrl, font_size, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
+	nx = ScriptGUI.itext_next_xy(gui, res_x, res_y, info, font_mtrl, font_size, font, nx, row + text_height, 3, Color(255, 137, 237, 137))
+	nx = ScriptGUI.itext_next_xy(gui, res_x, res_y, "Conflict setting: ", font_mtrl, font_size, font, nx, row + text_height, 3, Color(255, 237, 237, 152))
+	nx = ScriptGUI.itext_next_xy(gui, res_x, res_y, tostring(cm.current_conflict_settings), font_mtrl, font_size, font, nx, row + text_height, 3, Color(255, 137, 237, 137))
 	row = row + 0.03
-	local text = nil
-	local state_name, state_start_time, threat_population, end_time = cm.pacing:get_pacing_data()
+	local text, spawning_text = nil
+	local state_name, state_start_time, threat_population, specials_population, horde_population, end_time = cm.pacing:get_pacing_data()
+	local roamers = (0 < threat_population and "[Roamers]") or "[NO Roamers]"
+	local specials = (0 < horde_population and "[Specials]") or "[NO Specials]"
+	local horde = (0 < horde_population and "[Hordes]") or "[NO Hordes]"
 
 	if end_time then
 		local count_down = math.clamp(end_time - t, 0, 999999)
-		text = string.format("State: %s time left: %.1f threat: %d", state_name, count_down, threat_population*100)
+		text = string.format("State: %s time left: %.1f", state_name, count_down)
+		spawning_text = string.format("%s%s%s", roamers, specials, horde)
 	else
-		text = string.format("State: %s runtime: %.1f threat: %d", state_name, t - state_start_time, threat_population*100)
+		text = string.format("State: %s runtime: %.1f", state_name, t - state_start_time)
+		spawning_text = string.format("%s%s%s", roamers, specials, horde)
 	end
 
-	ScriptGUI.itext(gui, res_x, res_y, text, font_mtrl, font_size, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
+	ScriptGUI.itext(gui, res_x, res_y, text, font_mtrl, font_size_medium, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
+
+	row = row + 0.03
+
+	ScriptGUI.itext(gui, res_x, res_y, spawning_text, font_mtrl, font_size_medium, font, win_x + wedge, row + text_height, 3, Color(255, 137, 237, 152))
 
 	row = row + 0.03
 	local s1 = nil
@@ -775,11 +817,11 @@ AIDebugger.debug_pacing = function (self, t, dt)
 	if script_data.ai_horde_spawning_disabled then
 		s1 = string.format("Horde spawning is disabled")
 	else
-		local next_horde_time, hordes = cm.get_horde_data(cm)
+		local next_horde_time, hordes, multiple_horde_count = cm.get_horde_data(cm)
 
 		if 0 < #hordes then
 			s1 = string.format("Number of hordes active: %d  horde size:%d", #hordes, cm.horde_size(cm))
-		elseif 0 < threat_population then
+		elseif 0 < horde_population then
 			if next_horde_time then
 				s1 = string.format("Next horde in: %.1fs horde size:%d", next_horde_time - t, cm.horde_size(cm))
 			else
@@ -788,9 +830,17 @@ AIDebugger.debug_pacing = function (self, t, dt)
 		else
 			s1 = string.format("No horde will spawn during this state")
 		end
+
+		if multiple_horde_count then
+			local textmc = string.format("Horde waves left: %d", multiple_horde_count)
+
+			ScriptGUI.itext(gui, res_x, res_y, textmc, font_mtrl, font_size_medium, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
+
+			row = row + 0.03
+		end
 	end
 
-	ScriptGUI.itext(gui, res_x, res_y, s1, font_mtrl, font_size, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
+	ScriptGUI.itext(gui, res_x, res_y, s1, font_mtrl, font_size_medium, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
 
 	row = row + 0.03
 
@@ -798,7 +848,7 @@ AIDebugger.debug_pacing = function (self, t, dt)
 		local max_dist = CurrentPacing.relax_rushing_distance
 		local s = string.format("Players rushing dist: %d / %d", cm.players_speeding_dist, max_dist)
 
-		ScriptGUI.itext(gui, res_x, res_y, s, font_mtrl, font_size, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
+		ScriptGUI.itext(gui, res_x, res_y, s, font_mtrl, font_size_medium, font, win_x + wedge, row + text_height, 3, Color(255, 237, 237, 152))
 
 		row = row + 0.03
 	end

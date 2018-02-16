@@ -208,10 +208,6 @@ PlayerCharacterStateGrabbedByChaosSpawn.update = function (self, unit, input, dt
 	if not status_extension.grabbed_by_chaos_spawn or not AiUtils.unit_alive(chaos_spawn_unit) then
 		if CharacterStateHelper.is_waiting_for_assisted_respawn(status_extension) then
 			csm.change_state(csm, "waiting_for_assisted_respawn")
-		elseif CharacterStateHelper.is_knocked_down(status_extension) then
-			csm.change_state(csm, "knocked_down")
-		elseif CharacterStateHelper.is_dead(status_extension) then
-			csm.change_state(csm, "dead")
 		else
 			csm.change_state(csm, "standing")
 		end
@@ -235,6 +231,16 @@ PlayerCharacterStateGrabbedByChaosSpawn.update = function (self, unit, input, dt
 
 		self.grabbed_by_chaos_spawn_status = grabbed_by_chaos_spawn_status
 		self.status_count = status_count
+	end
+
+	if CharacterStateHelper.is_knocked_down(status_extension) then
+		csm.change_state(csm, "knocked_down")
+
+		return 
+	elseif CharacterStateHelper.is_dead(status_extension) then
+		csm.change_state(csm, "dead")
+
+		return 
 	end
 
 	states[grabbed_by_chaos_spawn_status].run(self, unit, t, dt)

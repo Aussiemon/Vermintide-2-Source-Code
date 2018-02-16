@@ -347,7 +347,7 @@ local function create_dynamic_potrait_widget()
 					content_change_function = function (content, style)
 						local hp_bar_content = content.hp_bar
 						local internal_bar_value = hp_bar_content.internal_bar_value
-						local actual_active_percentage = hp_bar_content.actual_active_percentage or 1
+						local actual_active_percentage = content.actual_active_percentage or 1
 						local grim_progress = math.max(internal_bar_value, actual_active_percentage)
 						local offset = style.offset
 						offset[1] = health_bar_offset[1] + health_bar_size[1]*grim_progress
@@ -373,6 +373,28 @@ local function create_dynamic_potrait_widget()
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
 						return content.draw_health_bar
+					end
+				},
+				{
+					style_id = "grimoire_bar",
+					pass_type = "texture_uv",
+					content_id = "grimoire_bar",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_change_function = function (content, style)
+						local parent_content = content.parent
+						local hp_bar_content = parent_content.hp_bar
+						local internal_bar_value = hp_bar_content.internal_bar_value
+						local actual_active_percentage = parent_content.actual_active_percentage or 1
+						local grim_progress = math.max(internal_bar_value, actual_active_percentage)
+						local size = style.size
+						local uvs = content.uvs
+						local offset = style.offset
+						local bar_length = health_bar_size[1]
+						uvs[1][1] = grim_progress
+						size[1] = bar_length*(grim_progress - 1)
+						offset[1] = health_bar_offset[1] + 2 + bar_length*grim_progress
+
+						return 
 					end
 				},
 				{
@@ -453,6 +475,19 @@ local function create_dynamic_potrait_widget()
 			ammo_bar = {
 				bar_value = 1,
 				texture_id = "hud_teammate_ammo_bar_fill",
+				uvs = {
+					{
+						0,
+						0
+					},
+					{
+						1,
+						1
+					}
+				}
+			},
+			grimoire_bar = {
+				texture_id = "hud_panel_hp_bar_bg_grimoire",
 				uvs = {
 					{
 						0,
@@ -556,6 +591,23 @@ local function create_dynamic_potrait_widget()
 					health_bar_offset[1],
 					health_bar_offset[2],
 					health_bar_offset[3] + 18
+				}
+			},
+			grimoire_bar = {
+				size = {
+					health_bar_size[1],
+					health_bar_size[2]
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					health_bar_offset[1],
+					health_bar_offset[2],
+					health_bar_offset[3] + 16
 				}
 			},
 			ammo_bar = {

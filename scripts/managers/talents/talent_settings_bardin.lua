@@ -1,6 +1,6 @@
 local buff_tweak_data = {
 	bardin_ironbreaker_ability_cooldown_on_hit = {
-		bonus = 0.5
+		bonus = 0.25
 	},
 	bardin_ironbreaker_ability_cooldown_on_damage_taken = {
 		bonus = 0.5
@@ -62,7 +62,7 @@ local buff_tweak_data = {
 		range = 15
 	},
 	bardin_slayer_ability_cooldown_on_hit = {
-		bonus = 1
+		bonus = 0.5
 	},
 	bardin_slayer_ability_cooldown_on_damage_taken = {
 		bonus = 0.1
@@ -85,28 +85,28 @@ local buff_tweak_data = {
 		multiplier = 0.25
 	},
 	bardin_slayer_dodge_range = {
-		multiplier = 1.3
+		multiplier = 1.1
 	},
 	bardin_slayer_damage_taken_capped = {
 		bonus = 25
 	},
 	bardin_slayer_movement_speed = {
-		multiplier = 1.1
+		multiplier = 1.05
 	},
 	bardin_slayer_heal_on_kill = {
 		bonus = 2
 	},
 	bardin_slayer_slower_hits = {
-		multiplier = -0.1
+		multiplier = -0.05
 	},
 	bardin_slayer_heavy_hits = {
-		multiplier = 0.2
+		multiplier = 0.1
 	},
 	bardin_slayer_activated_ability_movement = {
 		multiplier = 1.25
 	},
 	bardin_ranger_ability_cooldown_on_hit = {
-		bonus = 0.6
+		bonus = 0.3
 	},
 	bardin_ranger_ability_cooldown_on_damage_taken = {
 		bonus = 0.3
@@ -124,10 +124,10 @@ local buff_tweak_data = {
 		duration = 10
 	},
 	bardin_ranger_reduced_spread = {
-		multiplier = -0.5
+		multiplier = -0.25
 	},
 	bardin_ranger_attack_speed = {
-		multiplier = 0.1
+		multiplier = 0.05
 	},
 	bardin_ranger_healing_received = {
 		multiplier = 0.3
@@ -136,7 +136,7 @@ local buff_tweak_data = {
 		multiplier = 0.15
 	},
 	bardin_ranger_movement_speed = {
-		multiplier = 1.1
+		multiplier = 1.05
 	},
 	bardin_ranger_defence_on_disabled = {
 		multiplier = -0.5
@@ -769,7 +769,7 @@ TalentTrees.dwarf_ranger = {
 		{
 			"bardin_regrowth",
 			"bardin_bloodlust",
-			"bardin_conquerer"
+			"bardin_conqueror"
 		},
 		{
 			"bardin_ironbreaker_activated_ability_duration",
@@ -796,7 +796,7 @@ TalentTrees.dwarf_ranger = {
 		{
 			"bardin_regrowth",
 			"bardin_bloodlust",
-			"bardin_conquerer"
+			"bardin_conqueror"
 		},
 		{
 			"bardin_slayer_activated_ability_impact_damage",
@@ -823,7 +823,7 @@ TalentTrees.dwarf_ranger = {
 		{
 			"bardin_regrowth",
 			"bardin_bloodlust",
-			"bardin_conquerer"
+			"bardin_conqueror"
 		},
 		{
 			"bardin_ranger_activated_ability_duration",
@@ -991,11 +991,11 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_regrowth",
+		description = "regrowth_desc",
 		name = "bardin_regrowth",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "markus_mercenary_attack_speed_on_critical_hit",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1004,11 +1004,11 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_bloodlust",
+		description = "bloodlust_desc",
 		name = "bardin_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "markus_mercenary_crit_chance",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1017,15 +1017,15 @@ Talents.dwarf_ranger = {
 		buff_data = {}
 	},
 	{
-		description = "bardin_conquerer",
-		name = "bardin_conquerer",
+		description = "conqueror_desc",
+		name = "bardin_conqueror",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "kerillian_waywatcher_crit_hit_damage_on_high_health",
 		description_values = {},
 		requirements = {},
 		buffs = {
-			"conquerer"
+			"conqueror"
 		},
 		buff_data = {}
 	},

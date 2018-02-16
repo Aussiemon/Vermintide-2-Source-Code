@@ -287,8 +287,10 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 	local backend_id = item_data.backend_id
 	local buffs = self._get_property_and_trait_buffs(self, backend_id)
 
-	if item_template.buff then
-		buffs.client[item_template.buff] = 1
+	if item_template.buffs then
+		for buff_name, buff_data in pairs(item_template.buffs) do
+			buffs.client[buff_name] = buff_data
+		end
 	end
 
 	self.apply_buffs(self, buffs, "wield", item_data.name, slot_name)
@@ -379,13 +381,16 @@ SimpleInventoryExtension.apply_buffs = function (self, buffs_by_buffer, reason, 
 
 	for buffer, buffs in pairs(buffs_by_buffer) do
 		if self.is_server or buffer == "client" or buffer == "both" then
-			for buff_name, value in pairs(buffs) do
+			for buff_name, variable_data in pairs(buffs) do
 				local buff_data = BuffTemplates[buff_name]
 
 				fassert(buff_data, "buff name %s does not exist on item %s, typo?", buff_name, item_name)
 				table.clear(params)
 
-				params.variable_value = value
+				for data_type, data_value in pairs(variable_data) do
+					params[data_type] = data_value
+				end
+
 				current_item_buffs[index] = buff_extension.add_buff(buff_extension, buff_name, params)
 				index = index + 1
 			end

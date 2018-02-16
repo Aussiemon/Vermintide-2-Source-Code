@@ -3988,6 +3988,12 @@ return function ()
 			},
 			{
 				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_pack_master"
+			},
+			{
+				"query_context",
 				"source_name",
 				OP.EQ,
 				"witch_hunter"
@@ -4029,6 +4035,12 @@ return function ()
 				"concept",
 				OP.EQ,
 				"grabbed"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_pack_master"
 			},
 			{
 				"query_context",
@@ -4076,6 +4088,12 @@ return function ()
 			},
 			{
 				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_pack_master"
+			},
+			{
+				"query_context",
 				"source_name",
 				OP.EQ,
 				"witch_hunter"
@@ -4117,6 +4135,12 @@ return function ()
 				"concept",
 				OP.EQ,
 				"grabbed"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_pack_master"
 			},
 			{
 				"query_context",

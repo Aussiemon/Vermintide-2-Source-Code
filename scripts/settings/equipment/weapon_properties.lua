@@ -17,8 +17,8 @@ local buff_tweak_data = {
 	},
 	properties_attack_speed = {
 		variable_multiplier = {
-			0.05,
-			0.2
+			0.02,
+			0.1
 		}
 	},
 	properties_stamina = {
@@ -69,37 +69,37 @@ local buff_tweak_data = {
 	properties_power_vs_skaven = {
 		variable_multiplier = {
 			0.05,
-			0.1
+			0.2
 		}
 	},
 	properties_power_vs_chaos = {
 		variable_multiplier = {
 			0.05,
-			0.1
+			0.2
 		}
 	},
 	properties_power_vs_unarmoured = {
 		variable_multiplier = {
 			0.05,
-			0.1
+			0.2
 		}
 	},
 	properties_power_vs_armoured = {
 		variable_multiplier = {
 			0.05,
-			0.1
+			0.2
 		}
 	},
 	properties_power_vs_large = {
 		variable_multiplier = {
 			0.05,
-			0.1
+			0.2
 		}
 	},
 	properties_power_vs_frenzy = {
 		variable_multiplier = {
 			0.05,
-			0.1
+			0.2
 		}
 	},
 	properties_block_cost = {
@@ -133,7 +133,7 @@ local buff_tweak_data = {
 		}
 	},
 	properties_movespeed = {
-		multiplier = 1.1,
+		multiplier = 1.05,
 		displayed_multiplier = {
 			0.05,
 			0.1

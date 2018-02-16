@@ -508,16 +508,73 @@ LootChestData.rarity_weights_tables = {
 	}
 }
 LootChestData.rarity_weights_tables_new = {
+	level_up = {
+		{
+			name = "plentiful",
+			weight_constraints = {
+				10,
+				0
+			},
+			level_constraints = {
+				1,
+				10
+			}
+		},
+		{
+			name = "common",
+			weight_constraints = {
+				2.5,
+				3
+			},
+			level_constraints = {
+				3,
+				10
+			}
+		},
+		{
+			name = "rare",
+			weight_constraints = {
+				0.05,
+				5
+			},
+			level_constraints = {
+				7,
+				15
+			}
+		},
+		{
+			name = "exotic",
+			weight_constraints = {
+				0,
+				2
+			},
+			level_constraints = {
+				10,
+				20
+			}
+		},
+		{
+			name = "unique",
+			weight_constraints = {
+				0,
+				0
+			},
+			level_constraints = {
+				30,
+				30
+			}
+		}
+	},
 	tier_1 = {
 		{
 			name = "plentiful",
 			weight_constraints = {
 				20,
-				15
+				5
 			},
 			level_constraints = {
 				1,
-				5
+				8
 			}
 		},
 		{
@@ -538,7 +595,7 @@ LootChestData.rarity_weights_tables_new = {
 				1
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -560,7 +617,7 @@ LootChestData.rarity_weights_tables_new = {
 				0
 			},
 			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -570,11 +627,11 @@ LootChestData.rarity_weights_tables_new = {
 			name = "plentiful",
 			weight_constraints = {
 				10,
-				8
+				3
 			},
 			level_constraints = {
 				1,
-				5
+				8
 			}
 		},
 		{
@@ -595,7 +652,7 @@ LootChestData.rarity_weights_tables_new = {
 				1
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -617,7 +674,7 @@ LootChestData.rarity_weights_tables_new = {
 				0
 			},
 			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -631,7 +688,7 @@ LootChestData.rarity_weights_tables_new = {
 			},
 			level_constraints = {
 				1,
-				5
+				8
 			}
 		},
 		{
@@ -652,7 +709,7 @@ LootChestData.rarity_weights_tables_new = {
 				1.5
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -674,7 +731,7 @@ LootChestData.rarity_weights_tables_new = {
 				0
 			},
 			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -688,14 +745,14 @@ LootChestData.rarity_weights_tables_new = {
 			},
 			level_constraints = {
 				1,
-				5
+				8
 			}
 		},
 		{
 			name = "common",
 			weight_constraints = {
 				3.5,
-				7
+				5
 			},
 			level_constraints = {
 				3,
@@ -709,7 +766,7 @@ LootChestData.rarity_weights_tables_new = {
 				4
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -717,7 +774,7 @@ LootChestData.rarity_weights_tables_new = {
 			name = "exotic",
 			weight_constraints = {
 				0.1,
-				1.5
+				1
 			},
 			level_constraints = {
 				10,
@@ -731,7 +788,7 @@ LootChestData.rarity_weights_tables_new = {
 				0
 			},
 			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -745,7 +802,121 @@ LootChestData.rarity_weights_tables_new = {
 			},
 			level_constraints = {
 				1,
-				5
+				8
+			}
+		},
+		{
+			name = "common",
+			weight_constraints = {
+				4,
+				1.5
+			},
+			level_constraints = {
+				3,
+				10
+			}
+		},
+		{
+			name = "rare",
+			weight_constraints = {
+				1,
+				4
+			},
+			level_constraints = {
+				7,
+				15
+			}
+		},
+		{
+			name = "exotic",
+			weight_constraints = {
+				0.1,
+				0.5
+			},
+			level_constraints = {
+				10,
+				20
+			}
+		},
+		{
+			name = "unique",
+			weight_constraints = {
+				0,
+				0
+			},
+			level_constraints = {
+				25,
+				30
+			}
+		}
+	},
+	tier_6 = {
+		{
+			name = "plentiful",
+			weight_constraints = {
+				10,
+				0
+			},
+			level_constraints = {
+				1,
+				8
+			}
+		},
+		{
+			name = "common",
+			weight_constraints = {
+				6,
+				1
+			},
+			level_constraints = {
+				3,
+				10
+			}
+		},
+		{
+			name = "rare",
+			weight_constraints = {
+				1,
+				4
+			},
+			level_constraints = {
+				7,
+				15
+			}
+		},
+		{
+			name = "exotic",
+			weight_constraints = {
+				0.1,
+				0.6
+			},
+			level_constraints = {
+				10,
+				20
+			}
+		},
+		{
+			name = "unique",
+			weight_constraints = {
+				0,
+				0
+			},
+			level_constraints = {
+				25,
+				30
+			}
+		}
+	},
+	tier_5_nightmare = {
+		{
+			name = "plentiful",
+			weight_constraints = {
+				10,
+				0
+			},
+			level_constraints = {
+				1,
+				8
 			}
 		},
 		{
@@ -763,67 +934,10 @@ LootChestData.rarity_weights_tables_new = {
 			name = "rare",
 			weight_constraints = {
 				1,
-				3
-			},
-			level_constraints = {
-				8,
-				15
-			}
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				1
-			},
-			level_constraints = {
-				10,
-				20
-			}
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0,
-				0
-			},
-			level_constraints = {
-				20,
-				30
-			}
-		}
-	},
-	tier_6 = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0
-			},
-			level_constraints = {
-				1,
-				5
-			}
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				5,
-				1
-			},
-			level_constraints = {
-				3,
-				10
-			}
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
 				4
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -831,7 +945,7 @@ LootChestData.rarity_weights_tables_new = {
 			name = "exotic",
 			weight_constraints = {
 				0.1,
-				2
+				1
 			},
 			level_constraints = {
 				10,
@@ -842,67 +956,10 @@ LootChestData.rarity_weights_tables_new = {
 			name = "unique",
 			weight_constraints = {
 				0,
-				0
+				0.1
 			},
 			level_constraints = {
-				20,
-				30
-			}
-		}
-	},
-	tier_5_nightmare = {
-		{
-			name = "plentiful",
-			weight_constraints = {
-				10,
-				0
-			},
-			level_constraints = {
-				1,
-				5
-			}
-		},
-		{
-			name = "common",
-			weight_constraints = {
-				5,
-				1
-			},
-			level_constraints = {
-				3,
-				10
-			}
-		},
-		{
-			name = "rare",
-			weight_constraints = {
-				1,
-				3
-			},
-			level_constraints = {
-				8,
-				15
-			}
-		},
-		{
-			name = "exotic",
-			weight_constraints = {
-				0.1,
-				1
-			},
-			level_constraints = {
-				10,
-				20
-			}
-		},
-		{
-			name = "unique",
-			weight_constraints = {
-				0.05,
-				0.075
-			},
-			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -916,7 +973,7 @@ LootChestData.rarity_weights_tables_new = {
 			},
 			level_constraints = {
 				1,
-				5
+				8
 			}
 		},
 		{
@@ -937,7 +994,7 @@ LootChestData.rarity_weights_tables_new = {
 				2
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -955,11 +1012,11 @@ LootChestData.rarity_weights_tables_new = {
 		{
 			name = "unique",
 			weight_constraints = {
-				0.05,
-				0.075
+				0,
+				0.15
 			},
 			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -973,14 +1030,14 @@ LootChestData.rarity_weights_tables_new = {
 			},
 			level_constraints = {
 				1,
-				5
+				8
 			}
 		},
 		{
 			name = "common",
 			weight_constraints = {
 				6,
-				0
+				1
 			},
 			level_constraints = {
 				3,
@@ -994,7 +1051,7 @@ LootChestData.rarity_weights_tables_new = {
 				5
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -1016,7 +1073,7 @@ LootChestData.rarity_weights_tables_new = {
 				0.25
 			},
 			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -1030,14 +1087,14 @@ LootChestData.rarity_weights_tables_new = {
 			},
 			level_constraints = {
 				1,
-				5
+				8
 			}
 		},
 		{
 			name = "common",
 			weight_constraints = {
 				5,
-				0
+				0.5
 			},
 			level_constraints = {
 				3,
@@ -1051,7 +1108,7 @@ LootChestData.rarity_weights_tables_new = {
 				4
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -1073,7 +1130,7 @@ LootChestData.rarity_weights_tables_new = {
 				0.25
 			},
 			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -1087,7 +1144,7 @@ LootChestData.rarity_weights_tables_new = {
 			},
 			level_constraints = {
 				1,
-				5
+				8
 			}
 		},
 		{
@@ -1105,10 +1162,10 @@ LootChestData.rarity_weights_tables_new = {
 			name = "rare",
 			weight_constraints = {
 				1,
-				3
+				2
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -1130,7 +1187,7 @@ LootChestData.rarity_weights_tables_new = {
 				0.25
 			},
 			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -1144,7 +1201,7 @@ LootChestData.rarity_weights_tables_new = {
 			},
 			level_constraints = {
 				1,
-				5
+				8
 			}
 		},
 		{
@@ -1162,10 +1219,10 @@ LootChestData.rarity_weights_tables_new = {
 			name = "rare",
 			weight_constraints = {
 				1,
-				2
+				1
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -1184,10 +1241,10 @@ LootChestData.rarity_weights_tables_new = {
 			name = "unique",
 			weight_constraints = {
 				0.1,
-				0.25
+				0.2
 			},
 			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -1201,7 +1258,7 @@ LootChestData.rarity_weights_tables_new = {
 			},
 			level_constraints = {
 				1,
-				5
+				8
 			}
 		},
 		{
@@ -1219,10 +1276,10 @@ LootChestData.rarity_weights_tables_new = {
 			name = "rare",
 			weight_constraints = {
 				1,
-				0
+				1
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -1241,10 +1298,10 @@ LootChestData.rarity_weights_tables_new = {
 			name = "unique",
 			weight_constraints = {
 				0.25,
-				0.5
+				0.45
 			},
 			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -1258,7 +1315,7 @@ LootChestData.rarity_weights_tables_new = {
 			},
 			level_constraints = {
 				1,
-				5
+				8
 			}
 		},
 		{
@@ -1276,10 +1333,10 @@ LootChestData.rarity_weights_tables_new = {
 			name = "rare",
 			weight_constraints = {
 				1,
-				0
+				0.5
 			},
 			level_constraints = {
-				8,
+				7,
 				15
 			}
 		},
@@ -1301,7 +1358,7 @@ LootChestData.rarity_weights_tables_new = {
 				0.5
 			},
 			level_constraints = {
-				20,
+				25,
 				30
 			}
 		}
@@ -3110,6 +3167,10 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "bw_sword"
+				},
+				{
+					weight = 1,
+					key = "bw_dagger"
 				}
 			},
 			ranged = {

@@ -152,7 +152,7 @@ StartGameWindowMutatorList.create_ui_elements = function (self, params, offset)
 end
 StartGameWindowMutatorList._has_deed_items = function (self)
 	local item_interface = Managers.backend:get_interface("items")
-	local item_filter = "slot_type == melee"
+	local item_filter = "item_type == deed"
 	local items = item_interface.get_filtered_items(item_interface, item_filter)
 
 	return items and 0 < #items
@@ -362,10 +362,13 @@ StartGameWindowMutatorList._add_mutator_rewards = function (self, rewards)
 			local inventory_icon = item_data.inventory_icon
 			local rarity = item_data.rarity
 			local slot_type = item_data.slot_type
+			local item = {
+				data = item_data
+			}
 			content.item_icon = inventory_icon
 			content.item_frame = "item_frame"
 			content.rarity_texture = UISettings.item_rarity_textures[rarity]
-			content.item = item_data
+			content.item = item
 			widget.offset[1] = start_offset
 			start_offset = start_offset + 80 + spacing
 		end

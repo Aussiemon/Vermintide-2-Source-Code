@@ -51,6 +51,8 @@ IngameUI.init = function (self, ingame_ui_context)
 	self.ui_renderer = self.create_ui_renderer(self, world)
 	self.ui_top_renderer = self.create_ui_renderer(self, top_world)
 	self.blocked_transitions = view_settings.blocked_transitions
+	self.fps = 0
+	self._fps_cooldown = 0
 
 	UISetupFontHeights(self.ui_renderer.gui)
 
@@ -111,6 +113,7 @@ IngameUI.init = function (self, ingame_ui_context)
 	self._friends_component_ui = FriendsUIComponent:new(ingame_ui_context)
 
 	Managers.matchmaking:set_ingame_ui(self)
+	rawset(_G, "ingame_ui", self)
 
 	return 
 end
@@ -151,11 +154,14 @@ IngameUI.setup_specific_view = function (self, key, class_name)
 end
 IngameUI.is_local_player_ready_for_game = function (self)
 	if self.is_in_inn then
-		local own_peer_id = self.peer_id
-		local mm_ready_peers = Managers.matchmaking.ready_peers
+		local player_manager = Managers.player
+		local local_player = player_manager.local_player(player_manager)
+		local player_unit = local_player and local_player.player_unit
 
-		if mm_ready_peers then
-			return mm_ready_peers[own_peer_id]
+		if player_unit then
+			local status_ext = ScriptUnit.extension(player_unit, "status_system")
+
+			return status_ext.is_in_end_zone(status_ext)
 		end
 	end
 
@@ -264,6 +270,7 @@ IngameUI.destroy = function (self)
 	end
 
 	printf("[IngameUI] destroy")
+	rawset(_G, "ingame_ui", nil)
 
 	return 
 end
@@ -275,7 +282,16 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 	local views = self.views
 	local current_view = self.current_view
 	local hotkey_mapping = self.hotkey_mapping
+	local player_manager = Managers.player
+	local local_player = player_manager.local_player(player_manager)
+	local has_player = local_player and local_player.player_unit ~= nil
+
+	if not has_player then
+		return 
+	end
+
 	local player_ready_for_game = self.is_local_player_ready_for_game(self)
+	local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
 
 	for input, mapping_data in pairs(hotkey_mapping) do
 		if not current_view or current_view == mapping_data.view then
@@ -296,9 +312,12 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 					end
 				end
 			else
+				local disable_when_matchmaking = mapping_data.disable_when_matchmaking
+				local disable_when_matchmaking_ready = mapping_data.disable_when_matchmaking_ready
+				local transition_not_allowed = (player_ready_for_game and disable_when_matchmaking_ready) or (is_game_matchmaking and disable_when_matchmaking)
 				local new_view = views[mapping_data.view]
 				local can_interact_flag = mapping_data.can_interact_flag
-				local can_interact_func = mapping_data.can_interact_funcl
+				local can_interact_func = mapping_data.can_interact_func
 
 				if input_service.get(input_service, input) then
 					local can_interact = true
@@ -312,23 +331,23 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 					end
 
 					if can_interact then
-						if not player_ready_for_game then
-							if menu_active then
-								self.transition_with_fade(self, mapping_data.in_transition_menu, mapping_data.transition_state, mapping_data.transition_sub_state)
+						if transition_not_allowed then
+							local error_message = mapping_data.error_message
 
-								break
+							if error_message then
+								self.add_local_system_message(self, error_message)
 							end
-
-							self.transition_with_fade(self, mapping_data.in_transition, mapping_data.transition_state, mapping_data.transition_sub_state)
 
 							break
 						end
 
-						local error_message = mapping_data.error_message
+						if menu_active then
+							self.transition_with_fade(self, mapping_data.in_transition_menu, mapping_data.transition_state, mapping_data.transition_sub_state)
 
-						if error_message then
-							self.add_local_system_message(self, error_message)
+							break
 						end
+
+						self.transition_with_fade(self, mapping_data.in_transition, mapping_data.transition_state, mapping_data.transition_sub_state)
 
 						break
 					end
@@ -511,8 +530,6 @@ IngameUI._update_hud_visibility = function (self, disable_ingame_ui, in_score_sc
 	local hud_visible = self.hud_visible
 
 	if draw_hud ~= hud_visible then
-		print("draw_hud")
-
 		self.hud_visible = draw_hud
 
 		self.ingame_hud:set_visible(draw_hud)
@@ -977,12 +994,18 @@ IngameUI._render_version_info = function (self)
 end
 IngameUI._render_fps = function (self, dt)
 	local ui_top_renderer = self.ui_top_renderer
-	local fps = nil
+	local fps = self.fps
+	self._fps_cooldown = self._fps_cooldown + dt
 
-	if dt < 1e-07 then
-		fps = 0
-	else
-		fps = dt/1
+	if 1 < self._fps_cooldown then
+		if dt < 1e-07 then
+			fps = 0
+		else
+			fps = dt/1
+		end
+
+		self.fps = fps
+		self._fps_cooldown = 0
 	end
 
 	local text = string.format("%i FPS", fps)

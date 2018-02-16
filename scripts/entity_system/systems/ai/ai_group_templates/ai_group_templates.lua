@@ -33,11 +33,15 @@ AIGroupTemplates.horde = {
 		return 
 	end,
 	update = function (world, nav_world, group, t)
-		Debug.text(string.format("Horde size: %d/%d", group.members_n, group.size))
+		if group and group.group_data then
+			Debug.text(string.format("Horde size: %d/%d %s", group.members_n, group.size, group.group_data.horde_wave))
+		end
 
 		return 
 	end,
 	destroy = function (world, nav_world, group)
+		Managers.state.conflict:horde_killed((group.group_data and group.group_data.horde_wave) or "?")
+
 		return 
 	end
 }

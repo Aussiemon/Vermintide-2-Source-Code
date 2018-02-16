@@ -8,6 +8,7 @@ MatchmakingStateSearchGame.init = function (self, params)
 	self._matchmaking_manager = params.matchmaking_manager
 	self._level_transition_handler = params.level_transition_handler
 	self._network_server = params.network_server
+	self._statistics_db = params.statistics_db
 	Managers.matchmaking.countdown_has_finished = false
 
 	return 
@@ -102,6 +103,13 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 
 	self._matchmaking_manager:send_system_chat_message(difficulty_display_name)
 
+	local player = Managers.player:local_player()
+	local connection_state = "started_search"
+	local time_taken = Managers.time:time("main") - self.state_context.started_matchmaking_t
+	local is_first_time_searcher = self.state_context.is_first_time_searcher
+
+	Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, is_first_time_searcher)
+
 	return 
 end
 MatchmakingStateSearchGame.on_exit = function (self)
@@ -167,8 +175,9 @@ MatchmakingStateSearchGame.update = function (self, dt, t)
 		local started_matchmaking_t = self.state_context.started_matchmaking_t
 		local main_t = Managers.time:time("main")
 		local time_taken = main_t - started_matchmaking_t
+		local is_first_time_searcher = self.state_context.is_first_time_searcher
 
-		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken)
+		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, is_first_time_searcher)
 
 		return MatchmakingStateHostGame, self.state_context
 	end
@@ -203,19 +212,75 @@ end
 MatchmakingStateSearchGame._get_servers = function (self)
 	return self._game_server_finder:servers()
 end
+MatchmakingStateSearchGame._times_party_completed_level = function (self, level_key)
+	local times_completed = 0
+	local statistics_db = self._statistics_db
+	local players = Managers.player:human_players()
+
+	for _, player in pairs(players) do
+		times_completed = times_completed + statistics_db.get_persistent_stat(statistics_db, player.stats_id(player), "completed_levels", level_key)
+	end
+
+	return times_completed
+end
+MatchmakingStateSearchGame._compare_first_prio_lobbies = function (self, current_lobby, new_lobby)
+	if current_lobby == nil then
+		return new_lobby
+	end
+
+	local search_config = self.search_config
+	local quick_game = search_config.quick_game
+
+	if quick_game and current_lobby.selected_level_key and new_lobby.selected_level_key then
+		local current_level_key = current_lobby.selected_level_key
+		local current_times_completed = self._times_party_completed_level(self, current_level_key)
+		local new_level_key = current_lobby.selected_level_key
+		local new_times_completed = self._times_party_completed_level(self, new_level_key)
+
+		if new_times_completed < current_times_completed then
+			return new_lobby
+		end
+	end
+
+	return current_lobby
+end
+MatchmakingStateSearchGame._compare_secondary_prio_lobbies = function (self, current_lobby, new_lobby)
+	if current_lobby == nil then
+		return new_lobby
+	end
+
+	local search_config = self.search_config
+	local quick_game = search_config.quick_game
+
+	if quick_game and current_lobby.selected_level_key and new_lobby.selected_level_key then
+		local current_level_key = current_lobby.selected_level_key
+		local current_times_completed = self._times_party_completed_level(self, current_level_key)
+		local new_level_key = current_lobby.selected_level_key
+		local new_times_completed = self._times_party_completed_level(self, new_level_key)
+
+		if new_times_completed < current_times_completed then
+			return new_lobby
+		end
+	end
+
+	return current_lobby
+end
 MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, search_config, wanted_profile_id)
 	local level_key = search_config.level_key
 	local difficulty = search_config.difficulty
 	local game_mode = search_config.game_mode
 	local act_key = search_config.act_key
-	local allow_lobby_with_occupied_hero = true
-	local secondary_option_lobby_data = nil
+	local is_first_time_searcher = self.state_context.is_first_time_searcher
+	local current_first_prio_lobby, current_secondary_prio_lobby, secondary_option_lobby_data = nil
 	local matchmaking_manager = self._matchmaking_manager
 
 	for _, lobby_data in ipairs(lobbies) do
 		local lobby_match = matchmaking_manager.lobby_match(matchmaking_manager, lobby_data, act_key, level_key, difficulty, game_mode, self._peer_id)
 
 		if lobby_match then
+			local discard = false
+			local secondary_option = false
+
 			if not matchmaking_manager.hero_available_in_lobby_data(matchmaking_manager, wanted_profile_id, lobby_data) then
 				local any_allowed_hero_available = false
 
@@ -231,20 +296,32 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 					end
 				end
 
-				if allow_lobby_with_occupied_hero and any_allowed_hero_available then
-					secondary_option_lobby_data = lobby_data
+				if any_allowed_hero_available then
+					secondary_option = true
+				else
+					discard = true
 				end
 			elseif lobby_data.level_key ~= "inn_level" then
-				secondary_option_lobby_data = lobby_data
+				secondary_option = true
 			elseif lobby_data.host_afk == "true" then
-				secondary_option_lobby_data = lobby_data
-			else
-				return lobby_data
+				secondary_option = true
+			end
+
+			if is_first_time_searcher and secondary_option then
+				discard = true
+			end
+
+			if not discard then
+				if not secondary_option then
+					current_first_prio_lobby = self._compare_first_prio_lobbies(self, current_first_prio_lobby, lobby_data)
+				else
+					current_secondary_prio_lobby = self._compare_secondary_prio_lobbies(self, current_secondary_prio_lobby, lobby_data)
+				end
 			end
 		end
 	end
 
-	return secondary_option_lobby_data
+	return current_first_prio_lobby or current_secondary_prio_lobby
 end
 
 return 

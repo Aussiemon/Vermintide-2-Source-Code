@@ -566,6 +566,8 @@ StateIngame.on_enter = function (self)
 		end
 	end
 
+	Managers.state.event:trigger("start_game_time", Managers.state.network:network_time())
+
 	return 
 end
 StateIngame.peer_type = function (self)
@@ -1828,7 +1830,7 @@ StateIngame._check_and_add_end_game_telemetry = function (self, application_shut
 		end
 	end
 
-	local eye_tracking = Bulldozer.rift
+	eye_tracking = rawget(_G, "Tobii") and Tobii.get_is_connected() and Application.user_setting("tobii_eyetracking")
 
 	Managers.telemetry.events:game_ended(player, self.peer_type(self), level_key, difficulty, reason, eye_tracking)
 
@@ -2027,10 +2029,24 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 
 	return 
 end
-StateIngame.rpc_kick_peer = function (self)
-	if not self.is_server and not Managers.party:is_leader(self.peer_id) then
-		self.kicked_by_server = true
+StateIngame.rpc_kick_peer = function (self, sender)
+	if self.network_client == nil then
+		return 
 	end
+
+	if self.network_client.server_peer_id ~= sender then
+		return 
+	end
+
+	if self.is_server then
+		return 
+	end
+
+	if Managers.party:is_leader(self.peer_id) then
+		return 
+	end
+
+	self.kicked_by_server = true
 
 	return 
 end

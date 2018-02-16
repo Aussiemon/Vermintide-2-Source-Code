@@ -316,7 +316,7 @@ local video_settings_definition = {
 		setup = "cb_light_shafts_setup",
 		saved_value = "cb_light_shafts_saved_value",
 		callback = "cb_light_shafts",
-		tooltip_text = "tooltip_light_shaft",
+		tooltip_text = "tooltip_light_shafts",
 		widget_type = "stepper"
 	},
 	{
@@ -963,22 +963,6 @@ local keybind_settings_definition = {
 		}
 	},
 	{
-		keybind_description = "hotkey_forge",
-		keymappings_key = "IngameMenuKeymaps",
-		widget_type = "keybind",
-		actions = {
-			"hotkey_forge"
-		}
-	},
-	{
-		keybind_description = "hotkey_lobby_browser",
-		keymappings_key = "IngameMenuKeymaps",
-		widget_type = "keybind",
-		actions = {
-			"hotkey_lobby_browser"
-		}
-	},
-	{
 		size_y = 30,
 		widget_type = "empty"
 	},
@@ -1015,30 +999,6 @@ local keybind_settings_definition = {
 		widget_type = "keybind",
 		actions = {
 			"ingame_vote_no"
-		}
-	},
-	{
-		keybind_description = "matchmaking_ready",
-		keymappings_key = "IngameMenuKeymaps",
-		widget_type = "keybind",
-		actions = {
-			"matchmaking_ready"
-		}
-	},
-	{
-		keybind_description = "matchmaking_start",
-		keymappings_key = "IngameMenuKeymaps",
-		widget_type = "keybind",
-		actions = {
-			"matchmaking_start"
-		}
-	},
-	{
-		keybind_description = "cancel_matchmaking",
-		keymappings_key = "IngameMenuKeymaps",
-		widget_type = "keybind",
-		actions = {
-			"cancel_matchmaking"
 		}
 	},
 	{

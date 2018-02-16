@@ -240,7 +240,7 @@ local function create_dynamic_potrait_widget()
 					content_check_function = function (content)
 						local hp_bar_content = content.hp_bar
 						local internal_bar_value = hp_bar_content.internal_bar_value
-						local actual_active_percentage = hp_bar_content.actual_active_percentage or 1
+						local actual_active_percentage = content.actual_active_percentage or 1
 						local grim_progress = math.max(internal_bar_value, actual_active_percentage)
 
 						return grim_progress < 1
@@ -248,7 +248,7 @@ local function create_dynamic_potrait_widget()
 					content_change_function = function (content, style)
 						local hp_bar_content = content.hp_bar
 						local internal_bar_value = hp_bar_content.internal_bar_value
-						local actual_active_percentage = hp_bar_content.actual_active_percentage or 1
+						local actual_active_percentage = content.actual_active_percentage or 1
 						local grim_progress = math.max(internal_bar_value, actual_active_percentage)
 						local offset = style.offset
 						offset[1] = settings.hp_bar.x - 7 + grim_progress*464
@@ -282,9 +282,10 @@ local function create_dynamic_potrait_widget()
 					content_id = "grimoire_bar",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_change_function = function (content, style)
-						local hp_bar_content = content.parent.hp_bar
+						local parent_content = content.parent
+						local hp_bar_content = parent_content.hp_bar
 						local internal_bar_value = hp_bar_content.internal_bar_value
-						local actual_active_percentage = hp_bar_content.actual_active_percentage or 1
+						local actual_active_percentage = parent_content.actual_active_percentage or 1
 						local grim_progress = math.max(internal_bar_value, actual_active_percentage)
 						local size = style.size
 						local uvs = content.uvs
@@ -514,7 +515,7 @@ local function create_dynamic_potrait_widget()
 				offset = {
 					settings.hp_bar.x + 10,
 					settings.hp_bar.y - 8,
-					4
+					settings.hp_bar.z + 20
 				}
 			},
 			hp_bar_highlight = {

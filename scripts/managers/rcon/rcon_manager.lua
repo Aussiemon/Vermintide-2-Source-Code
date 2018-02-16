@@ -38,6 +38,8 @@ RconManager.init = function (self)
 	self._enabled = false
 	self._connected = false
 	self._connection_id = nil
+	self._server_id = nil
+	self._intercept_ids = {}
 
 	if PLATFORM == "win32" then
 		self._create_rcon_ui(self)
@@ -67,6 +69,24 @@ RconManager.set_input_manager = function (self, input_manager)
 
 	return 
 end
+RconManager.authenticated_server = function (self)
+	return self._server_id
+end
+RconManager.authenticated_with_playing_server = function (self)
+	local network_manager = Managers.state.network
+
+	if network_manager == nil then
+		return false
+	end
+
+	local lobby = network_manager.lobby(network_manager)
+
+	if lobby == nil then
+		return false
+	end
+
+	return lobby.lobby_host(lobby) == self._server_id
+end
 RconManager.send_command = function (self, command)
 	command = command.match(command, "^%s*(.-)%s*$")
 
@@ -83,6 +103,8 @@ RconManager.rcon_accepted = function (self, id)
 	self._rcon_ui:set_header(tr("rcon_connection_status_connected"))
 
 	self._connected = true
+	local command_id = RConClient.command(self._connection_id, "id")
+	self._intercept_ids[command_id] = RconManager._id_reply
 
 	return 
 end
@@ -92,6 +114,7 @@ RconManager.rcon_denied = function (self, id)
 
 	self._connection_id = nil
 	self._connected = false
+	self._server_id = nil
 
 	return 
 end
@@ -101,27 +124,29 @@ RconManager.rcon_disconnect = function (self, connection_id)
 
 	self._connection_id = nil
 	self._connected = false
+	self._server_id = nil
 
 	return 
 end
 RconManager.rcon_reply = function (self, connection_id, command_id, message)
 	if connection_id == self._connection_id then
+		local intercept_method = self._intercept_ids[command_id]
+
+		if intercept_method ~= nil then
+			self._intercept_ids[connection_id] = nil
+
+			intercept_method(self, message)
+
+			return 
+		end
+
 		self._rcon_ui:add_output(message, RconUI.OUTPUT_MSG)
 	end
 
 	return 
 end
-RconManager._split_command = function (command_string)
-	local result = {}
-
-	for arg in string.gmatch(command_string, "%S+") do
-		result[#result + 1] = arg
-	end
-
-	return result
-end
 RconManager._meta_command = function (self, command_string)
-	local args = RconManager._split_command(command_string)
+	local args = split_string(command_string)
 
 	if #args == 0 then
 		return 
@@ -193,6 +218,11 @@ RconManager._create_rcon_ui = function (self)
 	self._enabled = true
 
 	self._rcon_ui:add_output(tr("rcon_introduction"), RconUI.META_MSG)
+
+	return 
+end
+RconManager._id_reply = function (self, id_string)
+	self._server_id = id_string.match(id_string, "^%s*(.-)%s*$")
 
 	return 
 end

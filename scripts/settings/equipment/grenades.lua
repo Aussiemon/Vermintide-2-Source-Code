@@ -693,6 +693,14 @@ weapon_template_fire_dot.gui_texture = "hud_consumable_icon_grenade"
 weapon_template_fire_dot.crosshair_style = "default"
 weapon_template_fire_dot.max_fatigue_points = 4
 weapon_template_fire_dot.can_give_other = true
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 Weapons = Weapons or {}
 Weapons.grenade = weapon_template
 Weapons.frag_grenade_t1 = table.create_copy(Weapons.frag_grenade_t1, weapon_template)

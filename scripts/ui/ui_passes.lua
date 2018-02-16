@@ -2132,10 +2132,11 @@ UIPasses.viewport = {
 		Viewport.set_rect(viewport, 1, 1, 1, 1)
 
 		local level_name = style.level_name
+		local object_sets = style.object_sets
 		local level = nil
 
 		if level_name then
-			level = ScriptWorld.load_level(world, level_name, nil, nil, nil, nil)
+			level = ScriptWorld.load_level(world, level_name, object_sets, nil, nil, nil)
 
 			Level.spawn_background(level)
 		end
@@ -2747,8 +2748,9 @@ UIPasses.item_tooltip = {
 
 		items[1] = preview_item
 		local preview_item_backend_id = preview_item.backend_id
+		local preview_item_data = preview_item.data
 		local equipped_item = nil
-		local slot_type = preview_item.slot_type
+		local slot_type = preview_item_data.slot_type
 
 		if slot_type then
 			local slot_names = InventorySettings.slot_names_by_type[slot_type]
@@ -2886,7 +2888,7 @@ UIPasses.item_tooltip = {
 
 			if end_pass then
 				local data = end_pass.data
-				slot44 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+				slot45 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			end
 
 			position[1] = start_position_x

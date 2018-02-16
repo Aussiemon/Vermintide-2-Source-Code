@@ -134,6 +134,17 @@ local dr_helmets = {
 	buffs = {}
 }
 Attachments.dr_helmets = table.clone(dr_helmets)
+local dr_helmets_skinned_long = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_show_ears",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_long,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.dr_helmets = table.clone(dr_helmets)
 local dr_helmets_no_ear = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",

@@ -311,15 +311,13 @@ TutorialSystem.pre_render_update = function (self, dt, t)
 	return 
 end
 TutorialSystem.iterate_tooltips = function (self, t, unit, extension, raycast_unit, world)
-	return 
-
 	local tooltip_templates = TutorialTooltipTemplates
 	local tooltip_templates_n = TutorialTooltipTemplates_n
 	local in_play_go = Managers.state.entity:system("play_go_tutorial_system"):active()
-
-	if not in_play_go and not Application.user_setting("tutorials_enabled") then
-		return 
-	end
+	local level_transition_handler = Managers.state.game_mode.level_transition_handler
+	local level_key = level_transition_handler.get_current_level_keys(level_transition_handler)
+	local is_in_inn = level_key == "inn_level"
+	local is_in_tutorial = level_key == "tutorial"
 
 	for i = 1, tooltip_templates_n, 1 do
 

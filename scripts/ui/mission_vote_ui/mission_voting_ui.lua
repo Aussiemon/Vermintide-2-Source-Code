@@ -310,6 +310,12 @@ MissionVotingUI.on_vote_ended = function (self)
 		end
 	end
 
+	local ingame_ui = self.ingame_ui
+
+	if ingame_ui.is_local_player_ready_for_game(ingame_ui) then
+		ingame_ui.suspend_active_view(ingame_ui)
+	end
+
 	self.has_voted = nil
 	self.vote_started = nil
 
@@ -395,10 +401,13 @@ MissionVotingUI._add_mutator_rewards = function (self, rewards)
 			local inventory_icon = item_data.inventory_icon
 			local rarity = item_data.rarity
 			local slot_type = item_data.slot_type
+			local item = {
+				data = item_data
+			}
 			content.item_icon = inventory_icon
 			content.item_frame = "item_frame"
 			content.rarity_texture = UISettings.item_rarity_textures[rarity]
-			content.item = item_data
+			content.item = item
 			widget.offset[1] = start_offset
 			start_offset = start_offset + 80 + spacing
 		end

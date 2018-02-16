@@ -107,8 +107,8 @@ CareerAbilityESHuntsman._run_ability = function (self)
 	if local_player then
 		local first_person_extension = self.first_person_extension
 
-		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_kerillian_shade_enter", nil, true)
-		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_kerillian_shade_loop")
+		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_markus_huntsman_enter", nil, true)
+		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_markus_huntsman_loop")
 		first_person_extension.animation_event(first_person_extension, "shade_stealth_ability")
 
 		MOOD_BLACKBOARD.skill_huntsman_stealth = true

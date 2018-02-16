@@ -97,7 +97,6 @@ HeroWindowCharacterPreview.update = function (self, dt, t)
 	end
 
 	if self.world_previewer and self.hero_unit_spawned then
-		self._update_loadout_sync(self)
 		self._handle_input(self, dt, t)
 	end
 
@@ -130,6 +129,7 @@ HeroWindowCharacterPreview.post_update = function (self, dt, t)
 	end
 
 	if self.world_previewer and self.hero_unit_spawned then
+		self._update_loadout_sync(self)
 		self._update_wielded_slot(self)
 		self.world_previewer:post_update(dt, t)
 	end

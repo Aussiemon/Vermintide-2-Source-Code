@@ -53,6 +53,7 @@ LevelEndView.init = function (self, context)
 	self._lobby = context.lobby
 	self.is_server = context.is_server
 	self.level_up_rewards = self._get_level_up_rewards(self)
+	self.deed_rewards = self._get_deed_rewards(self)
 	local world = context.world
 	self.wwise_world = Managers.world:wwise_world(world)
 	context.wwise_world = self.wwise_world
@@ -242,11 +243,23 @@ LevelEndView._get_level_up_rewards = function (self)
 
 	return items_by_level
 end
+LevelEndView._get_deed_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local deed_rewards = {}
+
+	for reward_name, item in pairs(end_of_level_rewards) do
+		if string.find(reward_name, "deed_reward") == 1 then
+			deed_rewards[#deed_rewards + 1] = item
+		end
+	end
+
+	return deed_rewards
+end
 LevelEndView._set_end_timer = function (self, time)
 	local widget = self._dynamic_widgets.timer_text
 	time = math.ceil(time)
 	local time_text = string.format("%02d:%02d", math.floor(time/60), time%60)
-	widget.content.text = string.format(Localize("timer_prefix_time_left") .. " %s", time_text)
+	widget.content.text = string.format(Localize("timer_prefix_time_left") .. ": %s", time_text)
 
 	return 
 end
@@ -1025,9 +1038,23 @@ LevelEndView.present_level_up = function (self, hero_name, hero_level)
 	if has_level_up_unlocks then
 		for index, template in ipairs(level_unlocks) do
 			local entry = {}
+			local title = template.title
 			local description = template.description
 
-			if description then
+			if title and description then
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = {
+						Localize(title),
+						Localize(description)
+					}
+				}
+			elseif title then
+				entry[#entry + 1] = {
+					widget_type = "title",
+					value = Localize(title)
+				}
+			elseif description then
 				entry[#entry + 1] = {
 					widget_type = "title",
 					value = Localize(description)
@@ -1043,12 +1070,35 @@ LevelEndView.present_level_up = function (self, hero_name, hero_level)
 	end
 
 	if has_level_up_rewards then
+		local item_interface = Managers.backend:get_interface("items")
+
 		for index, item in ipairs(level_up_rewards) do
-			local entry = {
-				[#entry + 1] = {
-					widget_type = "item",
-					value = item
+			local entry = {}
+			local backend_id = item.backend_id
+			local reward_item = item_interface.get_item_from_id(item_interface, backend_id)
+			local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
+			local item_type = item_data.item_type
+			local description = {}
+			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+
+			if item_type == "loot_chest" then
+				description[1] = Localize(display_name)
+				description[2] = Localize("end_screen_chest_received")
+			else
+				description[1] = Localize(item_type)
+				description[2] = Localize("reward_weapon")
+			end
+
+			if description then
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
 				}
+			end
+
+			entry[#entry + 1] = {
+				widget_type = "item",
+				value = item
 			}
 			presentation_data[#presentation_data + 1] = entry
 		end
@@ -1061,22 +1111,75 @@ LevelEndView.present_level_up = function (self, hero_name, hero_level)
 	return 
 end
 LevelEndView.present_additional_rewards = function (self)
-	return 
-end
-LevelEndView.present_chest_rewards = function (self)
-	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
-	local chest = end_of_level_rewards.chest
+	local deed_rewards = self.deed_rewards
+	local num_deed_rewards = #deed_rewards
+	local item_interface = Managers.backend:get_interface("items")
 
-	if chest then
-		local backend_id = chest.backend_id
-		local item_interface = Managers.backend:get_interface("items")
-		local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
-		local item_name = item_data.name
+	if 0 < num_deed_rewards then
 		local presentation_data = {
 			{
 				{
 					widget_type = "title",
-					value = Localize("end_screen_chest_received")
+					value = Localize("deed_completed_title")
+				}
+			}
+		}
+
+		for _, item in ipairs(deed_rewards) do
+			local entry = {}
+			local backend_id = item.backend_id
+			local reward_item = item_interface.get_item_from_id(item_interface, backend_id)
+			local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
+			local item_type = item_data.item_type
+			local description = {}
+			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+
+			if item_type == "loot_chest" then
+				description[1] = Localize(display_name)
+				description[2] = Localize("end_screen_chest_received")
+			else
+				description[1] = Localize(item_type)
+				description[2] = Localize("reward_weapon")
+			end
+
+			if description then
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
+				}
+			end
+
+			entry[#entry + 1] = {
+				widget_type = "item",
+				value = item
+			}
+			presentation_data[#presentation_data + 1] = entry
+		end
+
+		self._present_reward(self, presentation_data)
+	end
+
+	return 
+end
+LevelEndView.present_chest_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local item_interface = Managers.backend:get_interface("items")
+	local chest = end_of_level_rewards.chest
+
+	if chest then
+		local backend_id = chest.backend_id
+		local reward_item = item_interface.get_item_from_id(item_interface, backend_id)
+		local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
+		local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+		local item_name = item_data.name
+		local presentation_data = {
+			{
+				{
+					widget_type = "description",
+					value = {
+						Localize(display_name),
+						Localize("end_screen_chest_received")
+					}
 				},
 				{
 					widget_type = "loot_chest",
@@ -1092,7 +1195,6 @@ LevelEndView.present_chest_rewards = function (self)
 
 	if bonus_chest then
 		local backend_id = bonus_chest.backend_id
-		local item_interface = Managers.backend:get_interface("items")
 		local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
 		local item_name = item_data.name
 		local presentation_data = {

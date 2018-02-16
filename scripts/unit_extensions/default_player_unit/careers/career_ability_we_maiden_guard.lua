@@ -133,6 +133,10 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 
 		first_person_extension.animation_event(first_person_extension, "shade_stealth_ability")
 		career_extension.set_state(career_extension, "kerillian_activate_maiden_guard")
+
+		local position = POSITION_LOOKUP[owner_unit]
+
+		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_maiden_guard_charge", position)
 	end
 
 	status_extension.set_noclip(status_extension, true)

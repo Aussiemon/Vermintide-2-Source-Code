@@ -379,9 +379,9 @@ CharacterStateHelper.move_in_air = function (first_person_extension, input_exten
 	local new_move_velocity = prev_move_velocity + move_velocity*speed
 	local new_move_speed = Vector3.length(new_move_velocity)
 	new_move_speed = math.clamp(new_move_speed, 0, move_cap*movement_settings_table.player_speed_scale)
-	new_move_velocity = Vector3.normalize(new_move_velocity)
+	local new_move_direction = Vector3.normalize(new_move_velocity)
 
-	locomotion_extension.set_wanted_velocity(locomotion_extension, new_move_velocity*new_move_speed)
+	locomotion_extension.set_wanted_velocity(locomotion_extension, new_move_direction*new_move_speed)
 
 	return 
 end
@@ -706,7 +706,7 @@ CharacterStateHelper.wield_input = function (input_extension, inventory_extensio
 	return slot_to_wield, scroll_value
 end
 local empty_table = {}
-CharacterStateHelper._get_item_data_and_weapon_extensions = function (inventory_extension)
+CharacterStateHelper.get_item_data_and_weapon_extensions = function (inventory_extension)
 	local equipment = inventory_extension.equipment(inventory_extension)
 	local item_data = equipment.wielded
 
@@ -732,7 +732,7 @@ CharacterStateHelper._get_item_data_and_weapon_extensions = function (inventory_
 
 	return item_data, right_hand_weapon_extension, left_hand_weapon_extension
 end
-CharacterStateHelper._get_current_action_data = function (left_hand_weapon_extension, right_hand_weapon_extension)
+CharacterStateHelper.get_current_action_data = function (left_hand_weapon_extension, right_hand_weapon_extension)
 	local current_action_settings, current_action_extension, current_action_hand = nil
 
 	if left_hand_weapon_extension then
@@ -938,7 +938,7 @@ local interupting_action_data = {}
 CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension, inventory_extension, health_extension)
 	Profiler.start("weapon_action")
 
-	local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper._get_item_data_and_weapon_extensions(inventory_extension)
+	local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
 
 	table.clear(interupting_action_data)
 
@@ -949,7 +949,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 	end
 
 	local new_action, new_sub_action, current_action_settings, current_action_extension, current_action_hand = nil
-	current_action_settings, current_action_extension, current_action_hand = CharacterStateHelper._get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
+	current_action_settings, current_action_extension, current_action_hand = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
 	local item_template = BackendUtils.get_item_template(item_data)
 	local recent_damage_type, recent_hit_react_type = health_extension.recently_damaged(health_extension)
 	local status_extension = ScriptUnit.extension(unit, "status_system")
@@ -1205,8 +1205,8 @@ CharacterStateHelper.reload = function (input_extension, inventory_extension, st
 		return false
 	end
 
-	local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper._get_item_data_and_weapon_extensions(inventory_extension)
-	local current_action_settings, current_action_extension, current_action_hand = CharacterStateHelper._get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
+	local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
+	local current_action_settings, current_action_extension, current_action_hand = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
 
 	if current_action_settings and current_action_settings.active_reload_time then
 		return false

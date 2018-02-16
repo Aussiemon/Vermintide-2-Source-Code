@@ -189,8 +189,8 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 	end
 
 	if input_extension.get(input_extension, "character_inspecting") then
-		local _, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper._get_item_data_and_weapon_extensions(self.inventory_extension)
-		local current_action_settings = CharacterStateHelper._get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
+		local _, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(self.inventory_extension)
+		local current_action_settings = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
 
 		if not current_action_settings then
 			if Managers.input:is_device_active("gamepad") then

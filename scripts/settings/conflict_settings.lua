@@ -32,32 +32,66 @@ HordeSettingsBasics = {
 }
 HordeSettings = {
 	default = {
-		chance_of_vector_blob = 0.5,
-		vector_composition = "large",
-		chance_of_vector = 0.75,
-		ambush_composition = "large",
+		vector_composition = "medium",
+		chance_of_vector = 0.5,
+		ambush_composition = "medium",
 		mini_patrol_composition = "mini_patrol",
-		vector_blob_composition = "large",
+		chance_of_vector_blob = 0.5,
+		vector_blob_composition = "medium",
 		disabled = false,
 		mix_paced_hordes = true,
 		compositions = HordeCompositions,
 		ambush = HordeSettingsBasics.ambush,
 		vector = HordeSettingsBasics.vector,
-		vector_blob = HordeSettingsBasics.vector_blob
+		vector_blob = HordeSettingsBasics.vector_blob,
+		difficulty_overrides = {
+			hard = {
+				vector_blob_composition = "large",
+				ambush_composition = "large",
+				vector_composition = "large"
+			},
+			harder = {
+				vector_blob_composition = "large",
+				ambush_composition = "large",
+				vector_composition = "large"
+			},
+			hardest = {
+				vector_blob_composition = "large",
+				ambush_composition = "large",
+				vector_composition = "large"
+			}
+		}
 	},
 	chaos = {
-		chance_of_vector_blob = 1,
-		vector_composition = "chaos_large",
+		vector_composition = "chaos_medium",
 		chance_of_vector = 1,
-		ambush_composition = "chaos_large",
+		ambush_composition = "chaos_medium",
 		mini_patrol_composition = "chaos_mini_patrol",
-		vector_blob_composition = "chaos_large",
+		chance_of_vector_blob = 0.75,
+		vector_blob_composition = "chaos_medium",
 		disabled = false,
 		mix_paced_hordes = true,
 		compositions = HordeCompositions,
 		ambush = HordeSettingsBasics.ambush,
 		vector = HordeSettingsBasics.vector,
-		vector_blob = HordeSettingsBasics.vector_blob
+		vector_blob = HordeSettingsBasics.vector_blob,
+		difficulty_overrides = {
+			hard = {
+				vector_blob_composition = "chaos_large",
+				ambush_composition = "chaos_large",
+				vector_composition = "chaos_large"
+			},
+			harder = {
+				vector_blob_composition = "chaos_large",
+				ambush_composition = "chaos_large",
+				vector_composition = "chaos_large"
+			},
+			hardest = {
+				vector_blob_composition = "chaos_large",
+				ambush_composition = "chaos_large",
+				vector_composition = "chaos_large"
+			}
+		}
 	},
 	chaos_light = {
 		chance_of_vector_blob = 1,
@@ -456,13 +490,14 @@ SpecialsSettings = {
 		},
 		rush_intervention = {
 			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 30,
+			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
 			loneliness_value_for_special = 15,
 			distance_until_next_intervention = 30,
 			breeds = {
 				"skaven_pack_master",
-				"skaven_gutter_runner"
+				"skaven_gutter_runner",
+				"skaven_ratling_gunner"
 			}
 		},
 		difficulty_overrides = SpecialDifficultyOverrides
@@ -506,13 +541,14 @@ SpecialsSettings = {
 		},
 		rush_intervention = {
 			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 30,
+			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
 			loneliness_value_for_special = 15,
 			distance_until_next_intervention = 30,
 			breeds = {
 				"skaven_pack_master",
-				"skaven_gutter_runner"
+				"skaven_gutter_runner",
+				"skaven_ratling_gunner"
 			}
 		},
 		difficulty_overrides = SpecialDifficultyOverrides_skaven
@@ -747,7 +783,7 @@ SpecialsSettings = {
 		},
 		rush_intervention = {
 			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 30,
+			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
 			loneliness_value_for_special = 15,
 			distance_until_next_intervention = 30,
@@ -817,7 +853,7 @@ SpecialsSettings = {
 		},
 		rush_intervention = {
 			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 30,
+			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
 			loneliness_value_for_special = 15,
 			distance_until_next_intervention = 30,
@@ -1170,7 +1206,7 @@ IntensitySettings = {
 		intensity_add_knockdown = 50,
 		intensity_add_pounced_down = 10,
 		max_intensity = 100,
-		intensity_add_nearby_kill = 2,
+		intensity_add_nearby_kill = 1,
 		disabled = false,
 		difficulty_overrides = {}
 	},
@@ -1193,13 +1229,14 @@ end
 
 PacingSettings = {
 	default = {
-		relax_rushing_distance = 70,
-		leave_relax_if_zero_intensity = true,
-		peak_fade_threshold = 32.5,
 		horde_in_relax_if_rushing = false,
-		peak_intensity_threshold = 35,
-		leave_relax_if_rushing = true,
+		relax_rushing_distance = 70,
 		disabled = false,
+		peak_fade_threshold = 32.5,
+		multiple_hordes = 3,
+		peak_intensity_threshold = 45,
+		leave_relax_if_rushing = true,
+		leave_relax_if_zero_intensity = true,
 		sustain_peak_duration = {
 			3,
 			5
@@ -1209,8 +1246,16 @@ PacingSettings = {
 			45
 		},
 		horde_frequency = {
-			100,
-			200
+			50,
+			100
+		},
+		multiple_horde_frequency = {
+			10,
+			15
+		},
+		max_delay_until_next_horde = {
+			180,
+			210
 		},
 		horde_startup_time = {
 			60,
@@ -1245,13 +1290,14 @@ PacingSettings = {
 		difficulty_overrides = {}
 	},
 	chaos = {
-		relax_rushing_distance = 70,
-		leave_relax_if_zero_intensity = true,
-		peak_fade_threshold = 32.5,
 		horde_in_relax_if_rushing = false,
-		peak_intensity_threshold = 35,
-		leave_relax_if_rushing = true,
+		relax_rushing_distance = 70,
 		disabled = false,
+		peak_fade_threshold = 32.5,
+		multiple_hordes = 3,
+		peak_intensity_threshold = 45,
+		leave_relax_if_rushing = true,
+		leave_relax_if_zero_intensity = true,
 		sustain_peak_duration = {
 			3,
 			5
@@ -1261,12 +1307,20 @@ PacingSettings = {
 			45
 		},
 		horde_frequency = {
-			160,
-			250
+			70,
+			150
 		},
 		horde_startup_time = {
 			60,
 			120
+		},
+		multiple_horde_frequency = {
+			10,
+			15
+		},
+		max_delay_until_next_horde = {
+			180,
+			210
 		},
 		horde = HordeSettings.chaos,
 		horde_delay = {
@@ -1776,7 +1830,7 @@ end
 RecycleSettings = {
 	destroy_stuck_distance_squared = 625,
 	destroy_los_distance_squared = 8100,
-	push_horde_in_time = false,
+	push_horde_in_time = true,
 	destroy_no_path_only_behind = true,
 	ai_stuck_check_start_time = 10,
 	push_horde_if_num_alive_grunts_above = 60,

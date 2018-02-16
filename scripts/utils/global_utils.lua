@@ -253,4 +253,27 @@ function REMOVE_AGGRO_UNITS(aggro_unit)
 	return 
 end
 
+function CLEAR_ALL_PLAYER_LISTS()
+	print("Clearing all global lookup lists")
+	table.clear(PLAYER_UNITS)
+	assert(next(PLAYER_UNITS) == nil)
+	table.clear(PLAYER_POSITIONS)
+	assert(next(PLAYER_POSITIONS) == nil)
+	table.clear(PLAYER_AND_BOT_UNITS)
+	assert(next(PLAYER_AND_BOT_UNITS) == nil)
+	table.clear(PLAYER_AND_BOT_POSITIONS)
+	assert(next(PLAYER_AND_BOT_POSITIONS) == nil)
+	table.clear(VALID_PLAYERS_AND_BOTS)
+	assert(next(VALID_PLAYERS_AND_BOTS) == nil)
+	table.clear(VALID_TARGETS_PLAYERS_AND_BOTS)
+	assert(next(VALID_TARGETS_PLAYERS_AND_BOTS) == nil)
+	table.clear(AI_TARGET_UNITS)
+	assert(next(AI_TARGET_UNITS) == nil)
+	table.clear(BLACKBOARDS)
+	assert(next(BLACKBOARDS) == nil)
+	CLEAR_POSITION_LOOKUP()
+
+	return 
+end
+
 return 

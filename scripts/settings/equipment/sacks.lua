@@ -97,10 +97,18 @@ weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.sack
 weapon_template.wield_anim = "to_sack"
 weapon_template.block_wielding = true
 weapon_template.max_fatigue_points = 3
-weapon_template.buff = "sack_decrease_movement"
-weapon_template.dodge_distance = 0.45
-weapon_template.dodge_speed = 0.65
 weapon_template.dodge_count = 1
+weapon_template.buffs = {
+	sack_decrease_movement = {
+		variable_value = 1
+	},
+	change_dodge_distance = {
+		external_optional_multiplier = 0.65
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 0.45
+	}
+}
 Weapons = Weapons or {}
 Weapons.sack = table.create_copy(Weapons.sack, weapon_template)
 Weapons.sack.actions.action_one.default.projectile_info.projectile_unit_name = "units/weapons/player/pup_sacks/pup_sacks_01"

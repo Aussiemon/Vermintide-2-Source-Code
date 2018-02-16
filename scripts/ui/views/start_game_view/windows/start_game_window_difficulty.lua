@@ -4,7 +4,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local STARTING_DIFFICULTY_INDEX = 1
-local DEBUG_NUM_VISIBLE_DIFFICULTIES = 1
+local DEBUG_NUM_VISIBLE_DIFFICULTIES = 3
 StartGameWindowDifficulty = class(StartGameWindowDifficulty)
 StartGameWindowDifficulty.NAME = "StartGameWindowDifficulty"
 StartGameWindowDifficulty.on_enter = function (self, params, offset)
@@ -300,14 +300,23 @@ StartGameWindowDifficulty._set_blocking_peers = function (self, players_below_po
 
 		if peer then
 			local player_name = "player_name_unknown"
+			local local_user = false
 			local player = Managers.player:player_from_peer_id(peer)
 
 			if player then
 				player_name = player.name(player)
+				local_user = player.local_player
 			end
 
 			local power_level = Managers.matchmaking:get_peer_power_level(peer)
-			local text = string.format("%s (%s)", string.format(Localize("difficulty_blocked_by_peer"), player_name), tostring(power_level))
+			local text = nil
+
+			if local_user then
+				text = Localize("difficulty_blocked_by_me")
+			else
+				text = string.format("%s", string.format(Localize("difficulty_blocked_by_peer"), player_name))
+			end
+
 			widget.content.text = text
 		else
 			widget.content.text = ""

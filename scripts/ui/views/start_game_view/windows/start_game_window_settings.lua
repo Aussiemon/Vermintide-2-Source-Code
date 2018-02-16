@@ -433,7 +433,7 @@ StartGameWindowSettings._set_selected_level = function (self, level_id)
 		texture_size[1] = icon_texture_settings.size[1]
 		texture_size[2] = icon_texture_settings.size[2]
 		widget.content.icon = level_image
-		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self.statistics_db, self._stats_id, level_id)
+		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self.statistics_db, self._stats_id, level_id) or 0
 		local level_frame = self._get_selection_frame_by_difficulty_index(self, completed_difficulty_index)
 		widget.content.icon_frame = level_frame
 	end
@@ -443,10 +443,14 @@ StartGameWindowSettings._set_selected_level = function (self, level_id)
 	return 
 end
 StartGameWindowSettings._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local difficulty_key = DefaultDifficulties[difficulty_index + 1]
-	local difficulty_manager = Managers.state.difficulty
-	local settings = DifficultySettings[difficulty_key]
-	local completed_frame_texture = settings.completed_frame_texture
+	local completed_frame_texture = "map_frame_00"
+
+	if 0 < difficulty_index then
+		local difficulty_key = DefaultDifficulties[difficulty_index]
+		local difficulty_manager = Managers.state.difficulty
+		local settings = DifficultySettings[difficulty_key]
+		completed_frame_texture = settings.completed_frame_texture
+	end
 
 	return completed_frame_texture
 end

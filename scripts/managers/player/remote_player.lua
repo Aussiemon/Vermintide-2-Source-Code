@@ -130,8 +130,15 @@ RemotePlayer.name = function (self)
 
 		name = Managers.state.network:lobby():user_name(self.network_id(self)) or "Remote #" .. tostring(self.peer_id:sub(1, 3))
 		self._cached_name = name
+	elseif Managers.game_server then
+		if self._cached_name then
+			return self._cached_name
+		end
+
+		name = Managers.game_server:peer_name(self.network_id(self)) or "Remote #" .. tostring(self.peer_id:sub(-3, -1))
+		self._cached_name = name
 	else
-		name = "Remote #" .. tostring(self.peer_id:sub(1, 3))
+		name = "Remote #" .. tostring(self.peer_id:sub(-3, -1))
 	end
 
 	return name

@@ -273,8 +273,8 @@ HordeCompositions = {
 			breeds = {
 				"chaos_berzerker",
 				{
-					6,
-					7
+					3,
+					4
 				}
 			}
 		},
@@ -289,8 +289,8 @@ HordeCompositions = {
 				},
 				"chaos_berzerker",
 				{
-					4,
-					6
+					2,
+					3
 				}
 			}
 		}
@@ -2590,6 +2590,24 @@ HordeCompositions = {
 				{
 					4,
 					5
+				}
+			}
+		}
+	},
+	event_few_plague_monks = {
+		{
+			name = "mines_plague_monks",
+			weight = 1,
+			breeds = {
+				"skaven_plague_monk",
+				{
+					3,
+					3
+				},
+				"skaven_clan_rat",
+				{
+					4,
+					6
 				}
 			}
 		}

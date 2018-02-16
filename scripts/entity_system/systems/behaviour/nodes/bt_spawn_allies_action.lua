@@ -76,6 +76,17 @@ BTSpawnAllies.enter = function (self, unit, blackboard, t)
 		self._activate_ward(self, unit, blackboard)
 	end
 
+	local stinger_name = action.stinger_name
+
+	if stinger_name and not blackboard.played_stinger then
+		local wwise_world = Managers.world:wwise_world(blackboard.world)
+		local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, stinger_name)
+
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_server_audio_event", NetworkLookup.sound_events[stinger_name])
+
+		blackboard.played_stinger = true
+	end
+
 	return 
 end
 BTSpawnAllies.leave = function (self, unit, blackboard, t, reason)
@@ -323,6 +334,8 @@ BTSpawnAllies.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if data.end_time < t then
+		blackboard.played_stinger = nil
+
 		return "done"
 	else
 		local action = blackboard.action

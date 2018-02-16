@@ -550,19 +550,11 @@ function difficulty_is_locked(lobby_data)
 		return false
 	end
 
-	local unlocked_level_difficulty_index = LevelUnlockUtils.unlocked_level_difficulty_index(statistics_db, player_stats_id, level_key)
+	local profile_name = player.profile_display_name(player)
+	local career_name = player.career_name(player)
+	local has_required_power_level = Managers.matchmaking:has_required_power_level(lobby_data, profile_name, career_name)
 
-	if not unlocked_level_difficulty_index then
-		return true
-	end
-
-	local difficulty_manager = Managers.state.difficulty
-	local level_difficulties = difficulty_manager.get_level_difficulties(difficulty_manager, level_key)
-	local unlocked_difficulty_key = level_difficulties[unlocked_level_difficulty_index]
-	local unlocked_difficulty_settings = DifficultySettings[unlocked_difficulty_key]
-	local difficulty_setting = DifficultySettings[difficulty]
-
-	if unlocked_difficulty_settings.rank < difficulty_setting.rank then
+	if not has_required_power_level then
 		return true
 	end
 
@@ -589,7 +581,7 @@ local entry_frame_settings = UIFrameSettings.menu_frame_12
 local function create_lobby_list_entry_content(lobby_data)
 	local my_peer_id = Network:peer_id()
 	local host = lobby_data.host
-	local title_text = lobby_data.server_name or lobby_data.name or lobby_data.unique_server_name or lobby_data.host
+	local title_text = lobby_data.server_name or lobby_data.unique_server_name or lobby_data.name or lobby_data.host
 
 	if host == my_peer_id or not title_text then
 		return 

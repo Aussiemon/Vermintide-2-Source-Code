@@ -1187,14 +1187,20 @@ weapon_template.wield_anim = "to_1h_sword_shield"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "SWORD_1H_SHIELD"
 weapon_template.max_fatigue_points = 10
-weapon_template.dodge_distance = 0.85
-weapon_template.dodge_speed = 0.85
 weapon_template.dodge_count = 1
 weapon_template.can_block_ranged_attacks = true
 weapon_template.block_angle = 120
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.25
 weapon_template.outer_block_fatigue_point_multiplier = 2
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 0.85
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 0.85
+	}
+}
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		penetrating = false,

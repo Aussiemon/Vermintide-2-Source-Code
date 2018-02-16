@@ -279,7 +279,7 @@ HeroWindowOptions._calculate_power_level = function (self)
 	local profile = SPProfiles[profile_index]
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
-	local total_power_level = BackendUtils.get_total_power_level(hero_name, career_name)
+	local total_power_level = BackendUtils.get_total_power_level(hero_name, career_name) - PowerLevelFromLevelSettings.starting_power_level
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.power_text.content.text = tostring(math.floor(total_power_level))
 

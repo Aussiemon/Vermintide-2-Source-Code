@@ -184,13 +184,9 @@ TerrorEventMixer.init_functions = {
 		return 
 	end,
 	enable_kick = function (event, element, t)
-		Managers.state.voting:set_vote_kick_enabled(true)
-
 		return 
 	end,
 	disable_kick = function (event, element, t)
-		Managers.state.voting:set_vote_kick_enabled(false)
-
 		return 
 	end,
 	set_freeze_condition = function (event, element, t)

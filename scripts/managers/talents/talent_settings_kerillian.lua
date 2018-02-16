@@ -1,6 +1,6 @@
 local buff_tweak_data = {
 	kerillian_shade_ability_cooldown_on_hit = {
-		bonus = 1
+		bonus = 0.5
 	},
 	kerillian_shade_ability_cooldown_on_damage_taken = {
 		bonus = 0.2
@@ -15,29 +15,29 @@ local buff_tweak_data = {
 		duration = 10
 	},
 	kerillian_shade_attack_speed = {
-		multiplier = 0.1
+		multiplier = 0.05
 	},
 	kerillian_shade_stamina_regen = {
 		multiplier = 0.3
 	},
 	kerillian_shade_dodge_range = {
-		multiplier = 1.3
+		multiplier = 1.1
 	},
 	kerillian_shade_dodge_speed = {
-		multiplier = 1.3
+		multiplier = 1.1
 	},
 	kerillian_shade_movement_speed = {
-		multiplier = 1.06
+		multiplier = 1.05
 	},
 	kerillian_shade_defence_debuff = {
-		multiplier = 0.5,
+		multiplier = 0.25,
 		duration = 5
 	},
 	kerillian_shade_damage_on_grimoire_picked_up = {
 		multiplier = 0.25
 	},
 	kerillian_shade_passive_improved = {
-		multiplier = 0.5
+		multiplier = 0.25
 	},
 	kerillian_shade_backstabs_replenishes_ammunition = {
 		bonus = 1
@@ -52,22 +52,22 @@ local buff_tweak_data = {
 		multiplier = -0.3
 	},
 	kerillian_maidenguard_ability_cooldown_on_hit = {
-		bonus = 0.5
+		bonus = 0.25
 	},
 	kerillian_maidenguard_ability_cooldown_on_damage_taken = {
 		bonus = 0.5
 	},
 	kerillian_maidenguard_passive_dodge = {
-		multiplier = 1.3
+		multiplier = 1.125
 	},
 	kerillian_maidenguard_passive_dodge_speed = {
-		multiplier = 1.3
+		multiplier = 1.125
 	},
 	kerillian_maidenguard_passive_increased_stamina = {
 		bonus = 0.3
 	},
 	kerillian_maidenguard_passive_damage_reduction = {
-		multiplier = 0.3
+		multiplier = 0.2
 	},
 	kerillian_maidenguard_passive_stamina_regen_aura = {
 		range = 5
@@ -88,7 +88,7 @@ local buff_tweak_data = {
 		multiplier = 0.4
 	},
 	kerillian_maidenguard_slower_hits = {
-		multiplier = -0.2
+		multiplier = -0.05
 	},
 	kerillian_maidenguard_heavy_hits = {
 		multiplier = 0.1
@@ -97,16 +97,16 @@ local buff_tweak_data = {
 		multiplier = -0.5
 	},
 	kerillian_maidenguard_movement_speed = {
-		multiplier = 1.1
+		multiplier = 1.05
 	},
 	kerillian_maidenguard_improved_stamina_regen = {
 		multiplier = 0.3
 	},
 	kerillian_maidenguard_improved_dodge = {
-		multiplier = 1.3
+		multiplier = 1.05
 	},
 	kerillian_maidenguard_improved_dodge_speed = {
-		multiplier = 1.3
+		multiplier = 1.05
 	},
 	kerillian_maidenguard_increased_damage_on_enemy_proximity = {
 		chunk_size = 1,
@@ -120,7 +120,7 @@ local buff_tweak_data = {
 		bonus = 2
 	},
 	kerillian_maidenguard_attack_speed_on_critical_hit = {
-		inherited_multiplier = 0.3,
+		inherited_multiplier = 0.1,
 		inherited_duration = 3
 	},
 	kerillian_maidenguard_activated_ability_damage = {
@@ -133,7 +133,7 @@ local buff_tweak_data = {
 		duration = 3
 	},
 	kerillian_waywatcher_ability_cooldown_on_hit = {
-		bonus = 0.7
+		bonus = 0.35
 	},
 	kerillian_waywatcher_ability_cooldown_on_damage_taken = {
 		bonus = 0.3
@@ -152,13 +152,13 @@ local buff_tweak_data = {
 		multiplier = 0.3
 	},
 	kerillian_waywatcher_attack_speed = {
-		multiplier = 0.1
+		multiplier = 0.05
 	},
 	kerillian_waywatcher_gain_ammo_on_boss_death = {
 		ammo_bonus_fraction = 0.5
 	},
 	kerillian_waywatcher_increased_crit_hit_damage_on_high_health = {
-		activation_health = 0.5
+		activation_health = 0.25
 	},
 	kerillian_waywatcher_crit_hit_damage_on_high_health = {
 		multiplier = 0.3
@@ -176,7 +176,7 @@ local buff_tweak_data = {
 		bonus = 2
 	},
 	kerillian_waywatcher_movement_speed = {
-		multiplier = 1.1
+		multiplier = 1.05
 	},
 	kerillian_waywatcher_activated_ability_cooldown = {
 		multiplier = -0.3
@@ -789,7 +789,7 @@ TalentTrees.wood_elf = {
 		{
 			"kerillian_regrowth",
 			"kerillian_bloodlust",
-			"kerillian_conquerer"
+			"kerillian_conqueror"
 		},
 		{
 			"kerillian_shade_activated_ability_duration",
@@ -816,7 +816,7 @@ TalentTrees.wood_elf = {
 		{
 			"kerillian_regrowth",
 			"kerillian_bloodlust",
-			"kerillian_conquerer"
+			"kerillian_conqueror"
 		},
 		{
 			"kerillian_maidenguard_activated_ability_invis_duration",
@@ -843,7 +843,7 @@ TalentTrees.wood_elf = {
 		{
 			"kerillian_regrowth",
 			"kerillian_bloodlust",
-			"kerillian_conquerer"
+			"kerillian_conqueror"
 		},
 		{
 			"kerillian_waywatcher_activated_ability_cooldown",
@@ -1002,11 +1002,11 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "kerillian_regrowth",
+		description = "regrowth_desc",
 		name = "kerillian_regrowth",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "markus_mercenary_attack_speed_on_critical_hit",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1015,11 +1015,11 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "kerillian_bloodlust",
+		description = "bloodlust_desc",
 		name = "kerillian_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "markus_mercenary_crit_chance",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1028,15 +1028,15 @@ Talents.wood_elf = {
 		buff_data = {}
 	},
 	{
-		description = "kerillian_conquerer",
-		name = "kerillian_conquerer",
+		description = "conqueror_desc",
+		name = "kerillian_conqueror",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "kerillian_waywatcher_crit_hit_damage_on_high_health",
 		description_values = {},
 		requirements = {},
 		buffs = {
-			"conquerer"
+			"conqueror"
 		},
 		buff_data = {}
 	},

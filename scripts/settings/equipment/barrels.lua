@@ -84,6 +84,14 @@ weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.barrel
 weapon_template.wield_anim = "to_barrel"
 weapon_template.block_wielding = true
 weapon_template.max_fatigue_points = 3
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 Weapons = Weapons or {}
 Weapons.explosive_barrel = Weapons.explosive_barrel or table.clone(weapon_template)
 Weapons.explosive_barrel.left_hand_unit = "units/weapons/player/wpn_explosive_barrel/wpn_explosive_barrel_01"

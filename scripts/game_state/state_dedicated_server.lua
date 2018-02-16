@@ -184,16 +184,17 @@ StateDedicatedServer.update = function (self, dt, t)
 end
 StateDedicatedServer.setup_network_options = function (self)
 	if not self._network_options then
-		local server_port = Development.parameter("server_port") or GameSettingsDevelopment.network_port
-		local query_port = Development.parameter("query_port")
-		local authentication_port = Development.parameter("authentication_port")
-		local server_ip = Development.parameter("server_ip")
+		local server_port = script_data.server_port or script_data.settings.server_port or GameSettingsDevelopment.network_port
+		local query_port = script_data.query_port or script_data.settings.query_port
+		local steam_port = script_data.steam_port or script_data.settings.steam_port
+		local ip_address = script_data.ip_address or script_data.settings.ip_address
 		local network_options = {
+			map = "game",
 			max_members = 4,
 			config_file_name = "global",
 			project_hash = "bulldozer",
-			ip_address = server_ip,
-			authentication_port = authentication_port or 8766,
+			ip_address = ip_address,
+			steam_port = steam_port or 8766,
 			query_port = query_port or 27016,
 			server_port = server_port or 27015
 		}

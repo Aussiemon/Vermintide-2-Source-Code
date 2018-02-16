@@ -872,18 +872,22 @@ weapon_template.actions = {
 	action_three = {
 		default = {
 			total_time_secondary = 2,
-			ammo_usage = 1,
+			damage_profile = "shot_carbine",
 			cooldown = 0.25,
 			kind = "handgun",
-			aim_assist_max_ramp_multiplier = 1,
-			aim_assist_ramp_decay_delay = 0,
-			attack_template = "shot_carbine",
+			charge_value = "bullet_hit",
+			alert_sound_range_hit = 2,
+			apply_recoil = true,
+			ammo_usage = 1,
+			headshot_multiplier = 2,
+			aim_assist_max_ramp_multiplier = 0.3,
+			aim_assist_auto_hit_chance = 0.5,
 			hit_effect = "bullet_impact",
-			charge_value = "light_attack",
-			weapon_action_hand = "left",
+			aim_assist_ramp_decay_delay = 0.2,
+			alert_sound_range_fire = 12,
 			fire_time = 0.22,
 			anim_event_secondary = "reload",
-			aim_assist_ramp_multiplier = 1,
+			aim_assist_ramp_multiplier = 0.1,
 			anim_event = "attack_shoot",
 			reload_time = 0.5,
 			total_time = 0.8,
@@ -922,6 +926,14 @@ weapon_template.actions = {
 					action = "action_career_skill",
 					input = "action_career_skill"
 				}
+			},
+			recoil_settings = {
+				horizontal_climb = 0,
+				restore_duration = 0.25,
+				vertical_climb = 2,
+				climb_duration = 0.1,
+				climb_function = math.easeInCubic,
+				restore_function = math.ease_out_quad
 			}
 		}
 	},
@@ -1043,13 +1055,19 @@ weapon_template.reload_event = "reload"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "FENCING_SWORD_1H"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_distance = 1.2
-weapon_template.dodge_speed = 1.2
-weapon_template.dodge_count = 100
+weapon_template.dodge_count = 6
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.25
 weapon_template.outer_block_fatigue_point_multiplier = 2
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1.2
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1.2
+	}
+}
 weapon_template.wwise_dep_right_hand = {
 	"wwise/one_handed_swords"
 }

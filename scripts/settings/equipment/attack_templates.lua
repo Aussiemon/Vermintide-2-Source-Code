@@ -651,11 +651,9 @@ AttackTemplates = {
 		damage_type = "arrow_poison"
 	},
 	arrow_poison_aoe = {
-		dot_template_name = "aoe_poison_dot",
-		sound_type = "medium",
-		damage_type = "arrow_poison",
 		stagger_value = 2,
-		dot_type = "poison_dot"
+		sound_type = "medium",
+		damage_type = "arrow_poison"
 	},
 	arrow_poison_aoe_t2 = {
 		dot_template_name = "aoe_poison_dot",
@@ -936,19 +934,19 @@ AttackTemplates = {
 		dot_type = "burning_dot",
 		dot_template_name = "burning_1W_dot",
 		sound_type = "light",
-		damage_type = "burn_shotgun"
+		damage_type = "burn_carbine"
 	},
 	fireball_t2 = {
 		dot_type = "burning_dot",
 		dot_template_name = "burning_1W_dot",
 		sound_type = "light",
-		damage_type = "burn_shotgun"
+		damage_type = "burn_carbine"
 	},
 	fireball_t3 = {
 		dot_type = "burning_dot",
 		dot_template_name = "burning_1W_dot",
 		sound_type = "light",
-		damage_type = "burn_shotgun"
+		damage_type = "burn_carbine"
 	},
 	drakegun = {
 		dot_template_name = "burning_1W_dot",

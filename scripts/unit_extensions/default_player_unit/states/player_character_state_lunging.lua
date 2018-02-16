@@ -92,17 +92,19 @@ end
 PlayerCharacterStateLunging.on_exit = function (self, unit, input, dt, context, t, next_state)
 	local data = self._lunge_data
 	local hit = self._hit
-	local fp_anim_end_event = (hit and data.first_person_animation_end_event_hit) or data.first_person_animation_end_event
+	local fp_anim_end_event = data.first_person_animation_end_event
 
 	if fp_anim_end_event then
 		CharacterStateHelper.play_animation_event_first_person(self.first_person_extension, fp_anim_end_event)
 	end
 
-	if data.animation_end_event then
+	local anim_end_event = data.animation_end_event
+
+	if anim_end_event then
 		if data.animation_variable_name and data.animation_variable_value then
-			CharacterStateHelper.play_animation_event_with_variable_float(unit, data.animation_end_event, data.animation_variable_name, data.animation_variable_value)
+			CharacterStateHelper.play_animation_event_with_variable_float(unit, anim_end_event, data.animation_variable_name, data.animation_variable_value)
 		else
-			CharacterStateHelper.play_animation_event(unit, data.animation_end_event)
+			CharacterStateHelper.play_animation_event(unit, anim_end_event)
 		end
 	end
 
@@ -153,7 +155,6 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 		whereabouts_extension.set_is_onground(whereabouts_extension)
 	elseif not self._falling then
 		self._falling = true
-		stop = true
 
 		whereabouts_extension.set_fell(whereabouts_extension, self.name)
 	end
@@ -274,17 +275,26 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 	return 
 end
 PlayerCharacterStateLunging._update_movement = function (self, unit, dt, t, lunge_data)
+	if self._falling then
+		return self._move_in_air(self, unit, dt, t, lunge_data)
+	end
+
+	return self._move_on_ground(self, unit, dt, t, lunge_data)
+end
+PlayerCharacterStateLunging._move_on_ground = function (self, unit, dt, t, lunge_data)
+	local locomotion_extension = self.locomotion_extension
+	local first_person_extension = self.first_person_extension
+	local duration = lunge_data.duration
+	local lunge_time = t - self._start_time
 	local move_direction = nil
 
 	if lunge_data.allow_rotation then
-		local forward_direction = Quaternion.forward(self.first_person_extension:current_rotation())
+		local forward_direction = Quaternion.forward(first_person_extension.current_rotation(first_person_extension))
 		move_direction = Vector3.normalize(Vector3.flat(forward_direction))
 	else
 		move_direction = self._direction:unbox()
 	end
 
-	local duration = lunge_data.duration
-	local lunge_time = t - self._start_time
 	local speed_function = lunge_data.speed_function
 	local speed = nil
 
@@ -298,11 +308,45 @@ PlayerCharacterStateLunging._update_movement = function (self, unit, dt, t, lung
 	local base_speed = 1
 
 	if base_speed < speed then
-		self.locomotion_extension:set_wanted_velocity(move_direction*base_speed)
-		self.locomotion_extension:set_script_movement_time_scale(speed/base_speed)
+		locomotion_extension.set_wanted_velocity(locomotion_extension, move_direction*base_speed)
+		locomotion_extension.set_script_movement_time_scale(locomotion_extension, speed/base_speed)
 	else
-		self.locomotion_extension:set_wanted_velocity(move_direction*speed)
+		locomotion_extension.set_wanted_velocity(locomotion_extension, move_direction*speed)
 	end
+
+	return lunge_time < duration
+end
+PlayerCharacterStateLunging._move_in_air = function (self, unit, dt, t, lunge_data)
+	local locomotion_extension = self.locomotion_extension
+	local first_person_extension = self.first_person_extension
+	local duration = lunge_data.duration
+	local lunge_time = t - self._start_time
+	local move_direction = nil
+
+	if lunge_data.allow_rotation then
+		local forward_direction = Quaternion.forward(first_person_extension.current_rotation(first_person_extension))
+		move_direction = Vector3.normalize(Vector3.flat(forward_direction))
+	else
+		move_direction = self._direction:unbox()
+	end
+
+	local speed_function = lunge_data.speed_function
+	local speed = nil
+
+	if speed_function then
+		speed = speed_function(lunge_time, duration)
+	else
+		local max_speed = lunge_data.initial_speed
+		speed = math.lerp(lunge_data.initial_speed, lunge_data.falloff_to_speed, math.min(lunge_time/duration, 1))
+	end
+
+	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+	local prev_move_velocity = Vector3.flat(locomotion_extension.current_velocity(locomotion_extension))
+	local new_move_velocity = prev_move_velocity + move_direction*speed
+	local new_move_speed = Vector3.length(new_move_velocity)
+	local new_move_direction = Vector3.normalize(new_move_velocity)
+
+	locomotion_extension.set_wanted_velocity(locomotion_extension, new_move_direction*speed)
 
 	return lunge_time < duration
 end

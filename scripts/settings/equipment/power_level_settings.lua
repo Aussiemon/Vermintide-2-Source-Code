@@ -3,30 +3,30 @@ MAX_POWER_LEVEL = 1000
 BoostCurves = {
 	default = {
 		0,
-		0.4,
-		0.75,
-		0.85,
+		0.3,
+		0.6,
+		0.8,
 		1
 	},
 	linesman_curve = {
 		0,
-		0.4,
-		0.75,
-		0.85,
+		0.3,
+		0.6,
+		0.8,
 		1
 	},
 	smiter_curve = {
 		0,
+		0.2,
 		0.4,
-		0.75,
-		0.85,
+		0.7,
 		1
 	},
 	tank_curve = {
 		0,
-		0.4,
-		0.7,
-		0.8,
+		0.25,
+		0.5,
+		0.75,
 		1
 	},
 	ninja_curve = {
@@ -38,8 +38,8 @@ BoostCurves = {
 	}
 }
 Cleave = {
-	max = 100,
-	min = 1
+	max = 50,
+	min = 0
 }
 ImpactTypeOutput = {
 	{

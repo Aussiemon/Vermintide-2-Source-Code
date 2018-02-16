@@ -461,5 +461,14 @@ end
 math.random_seed = function ()
 	return Math.random(2147483647)
 end
+math.distance_2d = function (x1, y1, x2, y2)
+	return ((x2 - x1)^2 + (y2 - y1)^2)^0.5
+end
+math.diststance_3d = function (x1, y1, z1, x2, y2, z2)
+	return ((x2 - x1)^2 + (y2 - y1)^2 + (z2 - z1)^2)^0.5
+end
+math.angle = function (x1, y1, x2, y2)
+	return math.atan2(y2 - y1, x2 - x1)
+end
 
 return 

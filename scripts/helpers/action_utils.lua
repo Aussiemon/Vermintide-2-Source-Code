@@ -97,6 +97,19 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 
 	return armor_power_modifier
 end
+ActionUtils.scale_powerlevels = function (power_level, power_type)
+	local min_cap_powerlevel = 200
+	local powerlevel_diff_ratio = {
+		impact = 2,
+		attack = 3,
+		cleave = 3
+	}
+	local native_diff_ratio = 5
+	local scaled_powerlevel_section = (power_level - min_cap_powerlevel)*powerlevel_diff_ratio[power_type]/native_diff_ratio
+	local scaled_powerlevel = min_cap_powerlevel + scaled_powerlevel_section
+
+	return scaled_powerlevel
+end
 ActionUtils.get_power_level = function (power_type, power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar)
 
 	-- decompilation error in this vicinity
@@ -113,14 +126,7 @@ ActionUtils.get_power_level = function (power_type, power_level, damage_profile,
 		power_multiplier = power_distribution[power_type]
 	end
 
-	local min_cap_powerlevel = 200
-	local powerlevel_diff_ratio = {
-		attack = 3,
-		impact = 2
-	}
-	local native_diff_ratio = 5
-	local scaled_powerlevel_section = (power_level - min_cap_powerlevel)*powerlevel_diff_ratio[power_type]/native_diff_ratio
-	local scaled_powerlevel = min_cap_powerlevel + scaled_powerlevel_section
+	local scaled_powerlevel = ActionUtils.scale_powerlevels(power_level, power_type)
 
 	return scaled_powerlevel*power_multiplier
 end

@@ -394,18 +394,21 @@ weapon_template.crosshair_style = "projectile"
 weapon_template.no_ammo_reload_event = "reload"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "SHORTBOW"
-weapon_template.dodge_distance = 1.2
-weapon_template.dodge_speed = 1.2
-weapon_template.dodge_count = 100
+weapon_template.dodge_count = 6
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1.25
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1.25
+	}
+}
 local action = weapon_template.actions.action_one.default
 weapon_template.default_loaded_projectile_settings = {
 	drop_multiplier = 0.03,
 	speed = action.speed,
 	gravity = ProjectileGravitySettings[action.projectile_info.gravity_settings]
 }
-weapon_template.dodge_distance = 1.25
-weapon_template.dodge_speed = 1.25
-weapon_template.dodge_count = 4
 weapon_template.wwise_dep_left_hand = {
 	"wwise/bow"
 }

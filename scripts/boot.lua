@@ -3,6 +3,7 @@ jit.off()
 MODE = {}
 
 dofile("foundation/scripts/boot/boot")
+require("scripts/settings/dlc_settings")
 
 local BUILD = BUILD
 local PLATFORM = PLATFORM
@@ -246,6 +247,15 @@ Bulldozer.setup = function (self)
 	print("[Boot] Application build:", BUILD)
 	print("[Boot] Engine revision:", script_data.build_identifier)
 	print("[Boot] Content revision:", script_data.settings.content_revision)
+
+	for _, dlc in pairs(DLCSettings) do
+		local package_name = dlc.package_name
+
+		if package_name then
+			Managers.package:load(package_name, "boot")
+		end
+	end
+
 	self._require_scripts(self)
 
 	if Development.parameter("paste_revision_to_clipboard") then

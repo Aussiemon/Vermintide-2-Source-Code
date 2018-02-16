@@ -49,11 +49,11 @@ ScriptBackendPlayFab.update_signin = function (self)
 		}
 	end
 
-	local initial_inventory_result = self._initial_inventory_result_error
+	local initial_set_up_result = self._initial_set_up_result_error
 
-	if initial_inventory_result then
-		local error_code = initial_inventory_result.errorCode
-		local error_message = initial_inventory_result.errorMessage
+	if initial_set_up_result then
+		local error_code = initial_set_up_result.errorCode
+		local error_message = initial_set_up_result.errorMessage
 
 		return {
 			reason = error_code,
@@ -61,11 +61,11 @@ ScriptBackendPlayFab.update_signin = function (self)
 		}
 	end
 
-	local character_creation_result = self._character_creation_result_error
+	local initial_data_set_up_result = self._initial_data_set_up_result_error
 
-	if character_creation_result then
-		local error_code = character_creation_result.errorCode
-		local error_message = character_creation_result.errorMessage
+	if initial_data_set_up_result then
+		local error_code = initial_data_set_up_result.errorCode
+		local error_message = initial_data_set_up_result.errorMessage
 
 		return {
 			reason = error_code,
@@ -87,8 +87,10 @@ ScriptBackendPlayFab.login_request_cb = function (self, result)
 		local info_result_payload = result.InfoResultPayload
 		local read_only_data = info_result_payload.UserReadOnlyData
 
-		if result.NewlyCreated or not read_only_data.previously_created then
-			self._set_up_initial_data(self)
+		if result.NewlyCreated or not read_only_data.account_set_up then
+			self._set_up_initial_account(self)
+		elseif not read_only_data.account_data_set_up then
+			self._set_up_initial_account_data(self)
 		end
 
 		self._signed_in = true
@@ -96,78 +98,52 @@ ScriptBackendPlayFab.login_request_cb = function (self, result)
 
 	return 
 end
-ScriptBackendPlayFab._set_up_initial_data = function (self)
-	local initial_inventory_request = {
-		FunctionName = "generateInitialInventory"
+ScriptBackendPlayFab._set_up_initial_account = function (self)
+	local initial_account_set_up = {
+		FunctionName = "initialAccountSetUp"
 	}
-	local initial_inventory_request_cb = callback(self, "initial_inventory_request_cb")
+	local initial_setup_request_cb = callback(self, "initial_setup_request_cb")
 
-	PlayFabClientApi.ExecuteCloudScript(initial_inventory_request, initial_inventory_request_cb, initial_inventory_request_cb)
+	PlayFabClientApi.ExecuteCloudScript(initial_account_set_up, initial_setup_request_cb, initial_setup_request_cb)
 
-	local initial_user_data_request = {
-		FunctionName = "setInitialUserData"
+	self._setting_up_initial_account = true
+
+	return 
+end
+ScriptBackendPlayFab.initial_setup_request_cb = function (self, result)
+	if result.Error then
+		self._initial_set_up_result_error = result
+	else
+		self._set_up_initial_account_data(self)
+
+		self._setting_up_initial_account = false
+	end
+
+	return 
+end
+ScriptBackendPlayFab._set_up_initial_account_data = function (self)
+	local initial_account_data_set_up = {
+		FunctionName = "initialAccountDataSetUp"
 	}
-	local initial_user_data_request_cb = callback(self, "initial_user_data_request_cb")
+	local initial_data_setup_request_cb = callback(self, "initial_data_setup_request_cb")
 
-	PlayFabClientApi.ExecuteCloudScript(initial_user_data_request, initial_user_data_request_cb, initial_user_data_request_cb)
+	PlayFabClientApi.ExecuteCloudScript(initial_account_data_set_up, initial_data_setup_request_cb, initial_data_setup_request_cb)
 
-	self._first_time_setup_required = true
+	self._setting_up_initial_account_data = true
 
 	return 
 end
-ScriptBackendPlayFab.initial_inventory_request_cb = function (self, result)
+ScriptBackendPlayFab.initial_data_setup_request_cb = function (self, result)
 	if result.Error then
-		self._initial_inventory_result_error = result
+		self._initial_data_set_up_result_error = result
 	else
-		local character_creation_request = {
-			FunctionName = "createCharacter",
-			FunctionParameter = {}
-		}
-		self._total_characters = 0
-
-		for career_name, data in pairs(CareerSettings) do
-			local playfab_name = data.playfab_name
-
-			if playfab_name then
-				local params = character_creation_request.FunctionParameter
-				params.playfab_name = playfab_name
-				params.career_name = career_name
-				local character_creation_cb = callback(self, "character_creation_cb")
-
-				PlayFabClientApi.ExecuteCloudScript(character_creation_request, character_creation_cb, character_creation_cb)
-
-				self._total_characters = self._total_characters + 1
-			end
-		end
-
-		self._characters_created = 0
-		self._initial_inventory_set_up = true
-	end
-
-	return 
-end
-ScriptBackendPlayFab.initial_user_data_request_cb = function (self, result)
-	if result.Error then
-		self._initial_user_data_result_error = result
-	else
-		self._initial_user_data_set_up = true
-	end
-
-	return 
-end
-ScriptBackendPlayFab.character_creation_cb = function (self, result)
-	if result.Error and not self._character_creation_result_error then
-		self._character_creation_result_error = result
-	end
-
-	if not self._character_creation_result_error then
-		self._characters_created = self._characters_created + 1
+		self._setting_up_initial_account_data = false
 	end
 
 	return 
 end
 ScriptBackendPlayFab.authenticated = function (self)
-	if self._first_time_setup_required and (not self._initial_inventory_set_up or not self._initial_user_data_set_up or self._characters_created ~= self._total_characters) then
+	if self._setting_up_initial_account or self._setting_up_initial_account_data then
 		return false
 	end
 

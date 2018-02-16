@@ -544,19 +544,25 @@ end
 PlayerProjectileHuskExtension.do_aoe = function (self, aoe_data, position)
 	local world = self.world
 	local owner_unit = self.owner_unit
+	local unit = self.unit
+	local item_name = self.item_name
 
 	if aoe_data.explosion then
+		local rotation = Unit.local_rotation(unit, 0)
+		local scale = self.scale
+		local is_server = self.is_server
+		local power_level = self.power_level
 		local is_husk = true
 
-		DamageUtils.create_explosion(world, owner_unit, position, Unit.local_rotation(self.unit, 0), aoe_data.explosion, self.scale, self.item_name, self.is_server, is_husk, self.unit, self.power_level)
-	end
-
-	if aoe_data.taunt and self.is_server then
-		DamageUtils.create_taunt(world, owner_unit, self.unit, position, aoe_data.taunt)
+		DamageUtils.create_explosion(world, owner_unit, position, rotation, aoe_data, scale, item_name, is_server, is_husk, unit, power_level)
 	end
 
 	if aoe_data.aoe and self.is_server then
-		DamageUtils.create_aoe(world, owner_unit, position, self.item_name, aoe_data)
+		DamageUtils.create_aoe(world, owner_unit, position, item_name, aoe_data)
+	end
+
+	if aoe_data.taunt and self.is_server then
+		DamageUtils.create_taunt(world, owner_unit, unit, position, aoe_data)
 	end
 
 	return 

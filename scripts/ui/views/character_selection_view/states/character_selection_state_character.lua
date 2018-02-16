@@ -376,7 +376,7 @@ CharacterSelectionStateCharacter._spawn_hero_unit = function (self, hero_name)
 	local career_index = self.career_index
 	local callback = callback(self, "cb_hero_unit_spawned", hero_name)
 
-	world_previewer.spawn_hero_unit(world_previewer, hero_name, self.career_index, true, callback, nil, 0.5)
+	world_previewer.spawn_hero_unit(world_previewer, hero_name, career_index, true, callback, nil, 0.5)
 
 	return 
 end

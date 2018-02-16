@@ -617,13 +617,15 @@ InteractionUI._get_wielded_interaction_text = function (self, player_unit)
 	local title_text, action_text, interact_action = nil
 	local highest_prio = 0
 	local best_action_name, best_sub_action_name = nil
+	local interactor_extension = ScriptUnit.extension(player_unit, "interactor_system")
+	local is_interacting, interaction_type = interactor_extension.is_interacting(interactor_extension)
 	local item_template = BackendUtils.get_item_template(item_data)
 
 	for action_name, sub_actions in pairs(item_template.actions) do
 		for sub_action_name, action_settings in pairs(sub_actions) do
 			local interaction_priority = action_settings.interaction_priority or -1000
 
-			if action_settings.interaction_type ~= nil and highest_prio < interaction_priority and action_settings.condition_func(player_unit) then
+			if action_settings.interaction_type ~= nil and highest_prio < interaction_priority and (action_settings.condition_func(player_unit) or (is_interacting and action_settings.interaction_type == interaction_type)) then
 				local input_device_supports_action = self.button_texture_data_by_input_action(self, action_settings.hold_input or action_name)
 
 				if input_device_supports_action then
@@ -636,7 +638,6 @@ InteractionUI._get_wielded_interaction_text = function (self, player_unit)
 	end
 
 	if best_action_name then
-		local interactor_extension = ScriptUnit.extension(player_unit, "interactor_system")
 		local action_settings = item_template.actions[best_action_name][best_sub_action_name]
 		local interaction_type = action_settings.interaction_type
 		local interaction_template = InteractionDefinitions[interaction_type]

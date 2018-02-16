@@ -265,7 +265,7 @@ local filter_macros = {
 		local item_data = item.data
 		local slot_type = item_data.slot_type
 
-		if slot_type == "randged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
+		if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
 			local backend_items = Managers.backend:get_interface("items")
 			local rarity = backend_items.get_item_rarity(backend_items, backend_id)
 
@@ -280,7 +280,7 @@ local filter_macros = {
 		local item_data = item.data
 		local slot_type = item_data.slot_type
 
-		if slot_type == "randged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
+		if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
 			local backend_items = Managers.backend:get_interface("items")
 			local rarity = backend_items.get_item_rarity(backend_items, backend_id)
 

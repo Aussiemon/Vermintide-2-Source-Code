@@ -2,6 +2,7 @@ require("scripts/unit_extensions/human/ai_player_unit/ai_utils")
 
 PlayerBots = PlayerBots or {}
 BotActions = BotActions or {}
+BotConstants = BotConstants or {}
 BotActions.default = {
 	follow = {
 		action_weight = 1
@@ -105,6 +106,10 @@ PlayerBots.default = {
 	run_speed = 4,
 	perception = "regular",
 	blackboard_allocation_size = 128
+}
+BotConstants.default = {
+	Z_MOVE_TO_EPSILON = 0.3,
+	FLAT_MOVE_TO_EPSILON = 0.05
 }
 local PerceptionTypes = {
 	regular = true,

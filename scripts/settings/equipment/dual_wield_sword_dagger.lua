@@ -1028,13 +1028,19 @@ weapon_template.display_unit = "units/weapons/weapon_display/display_1h_weapon"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "DUAL_SWORD_DAGGER_1H"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_distance = 1.25
-weapon_template.dodge_speed = 1.25
-weapon_template.dodge_count = 100
+weapon_template.dodge_count = 6
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.75
 weapon_template.outer_block_fatigue_point_multiplier = 1.5
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1.25
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1.25
+	}
+}
 weapon_template.wield_anim = "to_dual_sword_dagger"
 weapon_template.attack_meta_data = {
 	tap_attack = {

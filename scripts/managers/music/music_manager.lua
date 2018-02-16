@@ -402,16 +402,41 @@ MusicManager.set_wwise_state = function (self, group_name, state_name)
 
 	return 
 end
-MusicManager.check_last_man_standing_music_state = function (self, player)
+MusicManager.check_last_man_standing_music_state = function (self)
 	local player_manager = Managers.player
-	local num_alive_players = player_manager.num_alive_allies(player_manager, player)
-	self.last_man_standing = num_alive_players == 0
+	local num_players = player_manager.num_players(player_manager)
 
-	if self.last_man_standing then
-		local player_unit = player.player_unit
-		local player_profile = ScriptUnit.extension(player_unit, "dialogue_system").context.player_profile
+	if num_players == 1 then
+		self.last_man_standing = false
 
-		SurroundingAwareSystem.add_event(player_unit, "last_hero_standing", DialogueSettings.discover_enemy_attack_distance)
+		return 
+	end
+
+	local local_player = player_manager.local_player(player_manager)
+	local player_unit = local_player and local_player.player_unit
+
+	if Unit.alive(player_unit) then
+		local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
+
+		if status_extension and not status_extension.is_disabled(status_extension) then
+			local num_alive_allies = player_manager.num_alive_allies(player_manager, local_player)
+			local last_man_standing = num_alive_allies == 0
+			self.last_man_standing = last_man_standing
+
+			if last_man_standing then
+				local dialogue_extension = ScriptUnit.has_extension(player_unit, "dialogue_system")
+
+				if dialogue_extension then
+					local player_profile = dialogue_extension.context.player_profile
+
+					SurroundingAwareSystem.add_event(player_unit, "last_hero_standing", DialogueSettings.discover_enemy_attack_distance)
+				end
+			end
+		else
+			self.last_man_standing = false
+		end
+	else
+		self.last_man_standing = false
 	end
 
 	return 

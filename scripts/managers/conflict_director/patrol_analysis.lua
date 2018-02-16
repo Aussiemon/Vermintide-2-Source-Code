@@ -354,6 +354,7 @@ PatrolAnalysis.create_navbot = function (self, nav_world, pos, navbot_kind)
 
 	return navbot
 end
+local NEAREST_POINT_DIST = 0.01
 PatrolAnalysis.inject_spline_path = function (self, spline, line_drawer)
 	local navbot = spline.navbot
 	local node_count = GwNavBot.get_path_nodes_count(navbot)
@@ -393,10 +394,12 @@ PatrolAnalysis.inject_spline_path = function (self, spline, line_drawer)
 		local point_1 = spline_points[i]:unbox()
 		local point_2 = spline_points[i - 1]:unbox()
 
-		if Vector3.equal(point_1, point_2) then
+		if Vector3.distance(point_1, point_2) < NEAREST_POINT_DIST then
 			table.remove(spline_points, i)
 
 			spline_points_index = spline_points_index - 1
+
+			print("PATROL ANALYSIS removed bad spline point - too close to each other:", Vector3.distance(point_1, point_2), spline.id)
 		end
 	end
 

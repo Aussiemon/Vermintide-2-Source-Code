@@ -356,6 +356,12 @@ end
 OutlineSystem.never = function (self, unit, extension)
 	return false
 end
+OutlineSystem.ai_alive = function (self, unit, extension)
+	local active_cutscene = self._is_cutscene_active(self)
+	local alive = AiUtils.unit_alive(unit)
+
+	return alive and not active_cutscene
+end
 OutlineSystem.always = function (self, unit, extension)
 	local active_cutscene = self._is_cutscene_active(self)
 

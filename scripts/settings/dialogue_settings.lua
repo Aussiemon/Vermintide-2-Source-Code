@@ -207,9 +207,13 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/bright_wizard_skittergate",
 		"dialogues/generated/dwarf_ranger_skittergate",
 		"dialogues/generated/witch_hunter_skittergate"
+	},
+	inn_level = {
+		"dialogues/generated/hub_conversations"
 	}
 }
 DialogueSettings.blocked_auto_load_files = {
+	inn_level = true,
 	prologue = true,
 	tutorial = true
 }

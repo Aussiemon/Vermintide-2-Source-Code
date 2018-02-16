@@ -159,6 +159,90 @@ local scenegraph_definition = {
 			-15,
 			10
 		}
+	},
+	tobii_window = {
+		vertical_alignment = "top",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			600,
+			200
+		},
+		position = {
+			0,
+			-30,
+			1
+		}
+	},
+	tobii_button = {
+		vertical_alignment = "bottom",
+		parent = "tobii_window",
+		horizontal_alignment = "center",
+		size = {
+			300,
+			70
+		},
+		position = {
+			0,
+			-33,
+			30
+		}
+	},
+	tobii_description = {
+		vertical_alignment = "bottom",
+		parent = "tobii_window",
+		horizontal_alignment = "center",
+		size = {
+			500,
+			50
+		},
+		position = {
+			0,
+			60,
+			10
+		}
+	},
+	tobii_title = {
+		vertical_alignment = "center",
+		parent = "tobii_window",
+		horizontal_alignment = "center",
+		size = {
+			580,
+			50
+		},
+		position = {
+			0,
+			60,
+			10
+		}
+	},
+	tobii_title_divider = {
+		vertical_alignment = "center",
+		parent = "tobii_title",
+		horizontal_alignment = "center",
+		size = {
+			264,
+			32
+		},
+		position = {
+			0,
+			-30,
+			-3
+		}
+	},
+	tobii_title_effect = {
+		vertical_alignment = "bottom",
+		parent = "tobii_title_divider",
+		horizontal_alignment = "center",
+		size = {
+			310,
+			120
+		},
+		position = {
+			0,
+			7,
+			-1
+		}
 	}
 }
 local summary_title_style = {
@@ -170,6 +254,38 @@ local summary_title_style = {
 	vertical_alignment = "center",
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local tobii_title_style = {
+	word_wrap = true,
+	upper_case = true,
+	localize = false,
+	use_shadow = true,
+	font_size = 28,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local tobii_description_style = {
+	word_wrap = true,
+	upper_case = true,
+	localize = false,
+	use_shadow = true,
+	font_size = 20,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		0,
@@ -282,6 +398,7 @@ return {
 	widgets = widgets,
 	hero_widgets = hero_widgets,
 	score_widgets = score_widgets,
+	player_score_size = player_score_size,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions
 }

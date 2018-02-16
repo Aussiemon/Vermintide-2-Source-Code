@@ -186,10 +186,10 @@ local scenegraph_definition = {
 	player_passive_icon = {
 		vertical_alignment = "top",
 		parent = "banner_top",
-		horizontal_alignment = "right",
+		horizontal_alignment = "left",
 		position = {
-			-1000,
-			-40,
+			600,
+			-20,
 			1
 		},
 		size = {
@@ -242,10 +242,10 @@ local scenegraph_definition = {
 	player_ability_icon = {
 		vertical_alignment = "top",
 		parent = "banner_top",
-		horizontal_alignment = "right",
+		horizontal_alignment = "left",
 		position = {
-			-500,
-			-40,
+			1100,
+			-20,
 			1
 		},
 		size = {
@@ -1711,9 +1711,10 @@ local function player_widget_definition(index)
 				}
 			},
 			name = {
+				font_size = 26,
 				horizontal_alignment = "center",
-				font_size = 32,
 				vertical_alignment = "bottom",
+				dynamic_font_size = true,
 				font_type = "hell_shark",
 				size = {
 					size[1] - 20,
@@ -1732,7 +1733,8 @@ local function player_widget_definition(index)
 				vertical_alignment = "bottom",
 				horizontal_alignment = "center",
 				font_type = "hell_shark",
-				font_size = 32,
+				dynamic_font_size = true,
+				font_size = 26,
 				size = {
 					size[1] - 20,
 					size[2]
@@ -1745,11 +1747,12 @@ local function player_widget_definition(index)
 				text_color = Colors.get_table("black")
 			},
 			hero = {
-				horizontal_alignment = "center",
 				upper_case = true,
 				localize = true,
 				font_size = 28,
+				horizontal_alignment = "center",
 				vertical_alignment = "top",
+				dynamic_font_size = true,
 				font_type = "hell_shark_header",
 				size = {
 					size[1] - 20,
@@ -1765,11 +1768,12 @@ local function player_widget_definition(index)
 				text_color = Colors.get_table("font_title")
 			},
 			hero_shadow = {
-				font_size = 28,
 				upper_case = true,
 				localize = true,
 				horizontal_alignment = "center",
+				font_size = 28,
 				vertical_alignment = "top",
+				dynamic_font_size = true,
 				font_type = "hell_shark_header",
 				size = {
 					size[1] - 20,

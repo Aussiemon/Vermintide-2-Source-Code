@@ -107,7 +107,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.1,
+					external_multiplier = 0.35,
 					buff_name = "planted_fast_decrease_movement"
 				}
 			},
@@ -177,7 +177,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.1,
+					external_multiplier = 0.35,
 					buff_name = "planted_fast_decrease_movement"
 				}
 			},
@@ -231,7 +231,7 @@ weapon_template.actions = {
 weapon_template.ammo_data = {
 	ammo_hand = "right",
 	ammo_immediately_available = true,
-	max_ammo = 28,
+	max_ammo = 20,
 	reload_time = 1.25,
 	single_clip = true
 }
@@ -240,6 +240,7 @@ weapon_template.attack_meta_data = {
 	can_charge_shot = false
 }
 weapon_template.default_spread_template = "brace_of_pistols"
+weapon_template.spread_lerp_speed = 5
 weapon_template.right_hand_unit = ""
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.pistol.right
 weapon_template.left_hand_unit = ""
@@ -250,9 +251,15 @@ weapon_template.crosshair_style = "default"
 weapon_template.gui_texture = "hud_weapon_icon_repeating_handgun"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "BRACE_OF_PISTOLS"
-weapon_template.dodge_distance = 1.1
-weapon_template.dodge_speed = 1.1
 weapon_template.dodge_count = 3
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1.1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1.1
+	}
+}
 weapon_template.aim_assist_settings = {
 	max_range = 22,
 	no_aim_input_multiplier = 0,

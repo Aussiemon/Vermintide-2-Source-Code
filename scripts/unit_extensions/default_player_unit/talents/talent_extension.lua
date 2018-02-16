@@ -142,7 +142,7 @@ TalentExtension._get_talent_ids = function (self)
 				talent_ids[i] = 0
 			else
 				local talent_name = talent_tree[i][column]
-				talent_ids[i] = TalentIDLookup[talent_name]
+				talent_ids[i] = TalentIDLookup[talent_name] or 0
 			end
 		end
 

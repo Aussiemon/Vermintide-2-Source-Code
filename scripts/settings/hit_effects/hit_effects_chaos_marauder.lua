@@ -663,7 +663,7 @@ HitEffectsChaosMarauder = {
 	},
 	burning_smiter_death = {
 		inherits = "default_death",
-		flow_event = "burn",
+		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -683,7 +683,7 @@ HitEffectsChaosMarauder = {
 	},
 	burning_smiter_death_head = {
 		inherits = "burning_smiter_death",
-		flow_event = "burn",
+		flow_event = "burn_death",
 		extra_conditions = {
 			hit_zone = {
 				"neck",
@@ -848,7 +848,7 @@ HitEffectsChaosMarauder = {
 	},
 	burning_stab_fencer_death = {
 		inherits = "default_death",
-		flow_event = "burn",
+		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1401,7 +1401,7 @@ HitEffectsChaosMarauder = {
 	burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = false,
-		flow_event = "burn",
+		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1436,7 +1436,7 @@ HitEffectsChaosMarauder = {
 	heavy_burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = true,
-		flow_event = "burn",
+		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1468,6 +1468,7 @@ HitEffectsChaosMarauder = {
 	},
 	light_burning_linesman_death = {
 		inherits = "default_death",
+		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1499,6 +1500,7 @@ HitEffectsChaosMarauder = {
 	},
 	burning_linesman_death = {
 		inherits = "default_death",
+		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -2036,11 +2038,13 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burn = {
+		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn"
 		}
 	},
 	burn_sniper = {
+		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_sniper"
 		},
@@ -2049,6 +2053,7 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burn_shotgun = {
+		flow_event = "burn",
 		extra_conditions = {
 			damage = true,
 			damage_type = "burn_shotgun"
@@ -2058,6 +2063,7 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burn_machinegun = {
+		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_machinegun"
 		},
@@ -2066,6 +2072,7 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burn_carbine = {
+		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burn_machinegun"
 		},
@@ -2074,6 +2081,7 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burninating = {
+		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "burninating"
 		}
@@ -2418,6 +2426,7 @@ HitEffectsChaosMarauder = {
 	},
 	drakegun = {
 		inherits = "default",
+		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun"
@@ -2442,6 +2451,7 @@ HitEffectsChaosMarauder = {
 	},
 	drakegun_glance = {
 		inherits = "default",
+		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun_glance"
 		}
@@ -2606,6 +2616,7 @@ HitEffectsChaosMarauder = {
 	},
 	default_burning = {
 		inherits = "default",
+		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",
@@ -2613,8 +2624,68 @@ HitEffectsChaosMarauder = {
 				"burning_stab_fencer"
 			}
 		}
+	},
+	burning_death = {
+		inherits = "default",
+		flow_event = "burn_death",
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"burning_1W_dot",
+				"burning_3W_dot",
+				"beam_burning_dot",
+				"burning_flamethrower_dot",
+				"burning_dot"
+			}
+		},
+		animations = {
+			"ragdoll",
+			"death_burn",
+			"death_burn_2"
+		}
+	},
+	warpfire_burning = {
+		inherits = "default",
+		flow_event = "warpfire_burn",
+		extra_conditions = {
+			damage_type = {
+				"warpfire_ground",
+				"warpfire_face"
+			}
+		}
+	},
+	warpfire_burning_death = {
+		inherits = "default",
+		flow_event = "warpfire_burn_death",
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"warpfire_ground",
+				"warpfire_face"
+			}
+		},
+		animations = {
+			"ragdoll",
+			"death_burn",
+			"death_burn_2"
+		}
 	}
 }
+
+for hit_effect_name, hit_effect_data in pairs(HitEffectsSkavenClanRat) do
+	if hit_effect_data.flow_event and hit_effect_data.flow_event == "burn_death" then
+		local new_hit_effect_name = hit_effect_name .. "_critical"
+		local new_hit_effect_data = {
+			flow_event = "burn_death_critical",
+			inherits = hit_effect_name,
+			extra_conditions = {
+				is_critical_strike = true
+			}
+		}
+		HitEffectsSkavenClanRat[new_hit_effect_name] = new_hit_effect_data
+	end
+end
+
 HitEffectsChaosMarauder = HitEffectsChaosMarauder or {}
 
 return 

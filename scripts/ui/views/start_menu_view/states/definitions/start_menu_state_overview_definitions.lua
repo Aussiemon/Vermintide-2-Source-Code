@@ -408,6 +408,7 @@ local hero_career_style = {
 	word_wrap = true,
 	upper_case = true,
 	localize = false,
+	use_shadow = true,
 	font_size = 36,
 	horizontal_alignment = "center",
 	vertical_alignment = "top",
@@ -420,11 +421,12 @@ local hero_career_style = {
 	}
 }
 local hero_name_style = {
-	vertical_alignment = "top",
+	word_wrap = true,
 	font_size = 24,
 	localize = false,
+	use_shadow = true,
 	horizontal_alignment = "center",
-	word_wrap = true,
+	vertical_alignment = "top",
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
@@ -434,11 +436,44 @@ local hero_name_style = {
 	}
 }
 local hero_level_style = {
-	vertical_alignment = "top",
+	word_wrap = true,
 	font_size = 20,
 	localize = false,
+	use_shadow = true,
 	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local tobii_title_style = {
 	word_wrap = true,
+	upper_case = true,
+	localize = false,
+	use_shadow = true,
+	font_size = 36,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local tobii_description_style = {
+	word_wrap = true,
+	upper_case = true,
+	localize = false,
+	use_shadow = true,
+	font_size = 20,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {

@@ -63,7 +63,7 @@ local function copy_array(a, b)
 	return 
 end
 
-HordeSpawner.horde = function (self, horde_type)
+HordeSpawner.horde = function (self, horde_type, extra_data)
 	Profiler.start("horde_spawner")
 
 	if not horde_type then
@@ -93,18 +93,18 @@ HordeSpawner.horde = function (self, horde_type)
 	print("horde requested: ", horde_type)
 
 	if horde_type == "vector" then
-		self.execute_vector_horde(self)
+		self.execute_vector_horde(self, extra_data)
 	elseif horde_type == "vector_blob" then
-		self.execute_vector_blob_horde(self)
+		self.execute_vector_blob_horde(self, extra_data)
 	else
-		self.execute_ambush_horde(self)
+		self.execute_ambush_horde(self, extra_data)
 	end
 
 	Profiler.stop("horde_spawner")
 
 	return 
 end
-HordeSpawner.execute_fallback = function (self, horde_type, fallback, reason)
+HordeSpawner.execute_fallback = function (self, horde_type, fallback, reason, extra_data)
 	if fallback then
 		if script_data.debug_player_intensity then
 			self.conflict_director.pacing:annotate_graph("Failed horde", "red")
@@ -118,9 +118,9 @@ HordeSpawner.execute_fallback = function (self, horde_type, fallback, reason)
 	print(reason)
 
 	if horde_type == "ambush" then
-		self.execute_vector_horde(self, "fallback")
+		self.execute_vector_horde(self, extra_data, "fallback")
 	elseif horde_type == "vector" then
-		self.execute_ambush_horde(self, "fallback")
+		self.execute_ambush_horde(self, extra_data, "fallback")
 	end
 
 	return 
@@ -283,7 +283,7 @@ HordeSpawner.pop_random_horde_breed_only = function (self)
 
 	return breed
 end
-HordeSpawner.execute_ambush_horde = function (self, fallback, override_epicenter_pos)
+HordeSpawner.execute_ambush_horde = function (self, extra_data, fallback, override_epicenter_pos)
 	print("setting up ambush-horde")
 
 	local settings = CurrentHordeSettings.ambush
@@ -362,7 +362,8 @@ HordeSpawner.execute_ambush_horde = function (self, fallback, override_epicenter
 	local group_template = {
 		template = "horde",
 		id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
-		size = num_to_spawn
+		size = num_to_spawn,
+		group_data = extra_data
 	}
 	local t = Managers.time:time("game")
 	local sound_settings = composition.sound_settings
@@ -625,7 +626,7 @@ HordeSpawner.find_good_vector_horde_pos = function (self, main_target_pos, dista
 
 	return success, horde_spawners, found_cover_points, epicenter_pos
 end
-HordeSpawner.execute_vector_horde = function (self, fallback)
+HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 	local settings = CurrentHordeSettings.vector
 	local max_spawners = settings.max_spawners
 	local start_delay = settings.start_delay
@@ -689,7 +690,8 @@ HordeSpawner.execute_vector_horde = function (self, fallback)
 		template = "horde",
 		id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
 		size = num_to_spawn,
-		sneaky = spawn_horde_ahead
+		sneaky = spawn_horde_ahead,
+		group_data = extra_data
 	}
 	local t = Managers.time:time("game")
 	local sound_settings = composition.sound_settings
@@ -812,16 +814,22 @@ HordeSpawner.execute_vector_horde = function (self, fallback)
 		last_spawn_counter = spawn_counter
 	end
 
+	local conflict_director = self.conflict_director
+
 	if script_data.debug_player_intensity then
-		self.conflict_director.pacing:annotate_graph("(V)Horde:" .. num_to_spawn, "lime")
+		conflict_director.pacing:annotate_graph("(V)Horde:" .. num_to_spawn, "lime")
 	end
 
 	local hordes = self.hordes
 	local id = #hordes + 1
 	hordes[id] = horde
-	local stinger_name = sound_settings.stinger_sound_event or "enemy_horde_stinger"
+	local is_running_multiple_horde, is_first_multiple_horde = conflict_director.is_running_multiple_horde(conflict_director)
 
-	self.play_sound(self, stinger_name, horde.epicenter_pos:unbox())
+	if not is_running_multiple_horde or is_first_multiple_horde then
+		local stinger_name = sound_settings.stinger_sound_event or "enemy_horde_stinger"
+
+		self.play_sound(self, stinger_name, horde.epicenter_pos:unbox())
+	end
 
 	self.last_paced_horde_type = "vector"
 	self.num_paced_hordes = self.num_paced_hordes + 1
@@ -852,7 +860,7 @@ HordeSpawner.get_pos_ahead_or_behind_players_on_mainpath = function (self, check
 
 	return false
 end
-HordeSpawner.execute_vector_blob_horde = function (self, fallback)
+HordeSpawner.execute_vector_blob_horde = function (self, extra_data, fallback)
 	local settings = CurrentHordeSettings.vector_blob
 	local roll = math.random()
 	local spawn_horde_ahead = roll <= settings.main_path_chance_spawning_ahead
@@ -883,7 +891,8 @@ HordeSpawner.execute_vector_blob_horde = function (self, fallback)
 		template = "horde",
 		id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
 		size = num_to_spawn,
-		sneaky = spawn_horde_ahead
+		sneaky = spawn_horde_ahead,
+		group_data = extra_data
 	}
 	local t = Managers.time:time("game")
 	local sound_settings = composition.sound_settings
@@ -935,9 +944,13 @@ HordeSpawner.execute_vector_blob_horde = function (self, fallback)
 
 	print("managed to spawn " .. tostring(group_size) .. "/" .. tostring(num_to_spawn) .. " horde enemies")
 
-	local stinger_name = sound_settings.stinger_sound_event or "enemy_horde_stinger"
+	local is_running_multiple_horde, is_first_multiple_horde = conflict_director.is_running_multiple_horde(conflict_director)
 
-	self.play_sound(self, stinger_name, blob_pos)
+	if not is_running_multiple_horde or is_first_multiple_horde then
+		local stinger_name = sound_settings.stinger_sound_event or "enemy_horde_stinger"
+
+		self.play_sound(self, stinger_name, blob_pos)
+	end
 
 	local hordes = self.hordes
 	local id = #hordes + 1

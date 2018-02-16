@@ -272,13 +272,6 @@ HeroViewStateLoot.on_enter = function (self, params, optional_ignore_item_popula
 
 	self._setup_camera(self)
 
-	local level_name = viewport_widget_definition.style.viewport.level_name
-	local previewer_pass_data = self.viewport_widget.element.pass_data[1]
-	local previewer_world = previewer_pass_data.world
-	local previewer_level = ScriptWorld.level(previewer_world, level_name)
-
-	Level.trigger_event(previewer_level, "flow_victory")
-
 	self._enter_animation_duration = 0
 
 	self.populate_items(self)
@@ -288,6 +281,31 @@ HeroViewStateLoot.on_enter = function (self, params, optional_ignore_item_popula
 	DEBUG_MODE = script_data.debug_loot_opening
 
 	self.play_sound(self, "play_gui_chestroom_start")
+	self.disable_player_world(self)
+
+	return 
+end
+HeroViewStateLoot.disable_player_world = function (self)
+	if not self._player_world_disabled then
+		self._player_world_disabled = true
+		local viewport_name = "player_1"
+		local world = Managers.world:world("level_world")
+		local viewport = ScriptWorld.viewport(world, viewport_name)
+
+		ScriptWorld.deactivate_viewport(world, viewport)
+	end
+
+	return 
+end
+HeroViewStateLoot.enable_player_world = function (self)
+	if self._player_world_disabled then
+		self._player_world_disabled = false
+		local viewport_name = "player_1"
+		local world = Managers.world:world("level_world")
+		local viewport = ScriptWorld.viewport(world, viewport_name)
+
+		ScriptWorld.activate_viewport(world, viewport)
+	end
 
 	return 
 end
@@ -555,10 +573,38 @@ HeroViewStateLoot.on_exit = function (self, params)
 		self.viewport_widget = nil
 	end
 
-	local preview_loot_widgets = self._preview_loot_widgets
+	local reward_options = self._reward_options
 
-	for _, widget in ipairs(preview_loot_widgets) do
-		UIWidget.destroy(loot_ui_renderer, widget)
+	if reward_options then
+		for _, data in ipairs(reward_options) do
+			local widget = data.widget
+			local preview_widget = data.preview_widget
+			local item_previewer = data.item_previewer
+
+			if item_previewer then
+				item_previewer.destroy(item_previewer)
+
+				data.item_previewer = nil
+			end
+
+			local world_previewer = data.world_previewer
+
+			if world_previewer then
+				world_previewer.prepare_exit(world_previewer)
+				world_previewer.on_exit(world_previewer)
+				world_previewer.destroy(world_previewer)
+
+				data.world_previewer = nil
+			end
+
+			UIWidget.destroy(loot_ui_renderer, preview_widget)
+		end
+	else
+		local preview_loot_widgets = self._preview_loot_widgets
+
+		for _, widget in ipairs(preview_loot_widgets) do
+			UIWidget.destroy(loot_ui_renderer, widget)
+		end
 	end
 
 	self._item_grid:destroy()
@@ -575,6 +621,8 @@ HeroViewStateLoot.on_exit = function (self, params)
 		self.loot_ui_world = nil
 		self.loot_ui_renderer = nil
 	end
+
+	self.enable_player_world(self)
 
 	return 
 end

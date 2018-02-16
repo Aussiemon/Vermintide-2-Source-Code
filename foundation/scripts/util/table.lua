@@ -124,6 +124,33 @@ table.find = function (t, element)
 
 	return false
 end
+table.sorted = function (t, order_func)
+	local keys = {}
+
+	for k, _ in pairs(t) do
+		keys[#keys + 1] = k
+	end
+
+	if order_func then
+		table.sort(keys, function (a, b)
+			return order_func(t, a, b)
+		end)
+	else
+		table.sort(keys)
+	end
+
+	local i = 0
+
+	return function ()
+		i = i + 1
+
+		if keys[i] then
+			return keys[i], t[keys[i]]
+		end
+
+		return 
+	end
+end
 table.reverse = function (t)
 	local size = #t
 

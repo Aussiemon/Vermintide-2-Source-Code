@@ -113,6 +113,14 @@ weapon_template.can_heal_self = true
 weapon_template.fast_heal = true
 weapon_template.can_give_other = true
 weapon_template.bot_heal_threshold = 0.5
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 Weapons.healing_draught = Weapons.healing_draught or table.clone(weapon_template)
 
 return 

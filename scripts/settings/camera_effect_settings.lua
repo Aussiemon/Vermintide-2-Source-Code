@@ -1211,6 +1211,38 @@ CameraEffectSettings = {
 			duration = 10,
 			fade_in = 0.5,
 			octaves = 4
+		},
+		military_ending = {
+			persistance = 0.8,
+			fade_out = 0.5,
+			amplitude = 1.2,
+			duration = 3,
+			fade_in = 0.5,
+			octaves = 4
+		},
+		military_ending_boom = {
+			persistance = 1,
+			fade_out = 0.5,
+			amplitude = 0.9,
+			duration = 1,
+			fade_in = 0.5,
+			octaves = 5
+		},
+		military_raise_statue_01 = {
+			persistance = 0.7,
+			fade_out = 4,
+			amplitude = 0.9,
+			duration = 15,
+			fade_in = 3,
+			octaves = 8
+		},
+		military_end_buildup_01 = {
+			persistance = 0.75,
+			fade_out = 1,
+			amplitude = 1,
+			duration = 4.5,
+			fade_in = 7,
+			octaves = 8
 		}
 	}
 }

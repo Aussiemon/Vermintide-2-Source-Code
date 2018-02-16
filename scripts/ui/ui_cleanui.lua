@@ -104,19 +104,22 @@ UICleanUI.update = function (self, dt, context)
 		{
 			equipment_background.ui_scenegraph.background_panel.world_position,
 			equipment_background.ui_scenegraph.background_panel.size
-		},
-		portrait_bbs[1]
+		}
 	}
 	local left_portrait_bbs = {
 		portrait_bbs[2],
 		portrait_bbs[3],
 		portrait_bbs[4]
 	}
+	local bottom_left_bbs = {
+		portrait_bbs[1]
+	}
 
 	if not self.clusters or RESOLUTION_LOOKUP.modified or self.dirty then
 		if self.clusters then
 			self.clusters.bottom.bb = pad_bb(get_world_bb(bottom_bbs), margin)
 			self.clusters.left.bb = pad_bb(get_world_bb(left_portrait_bbs), margin)
+			self.clusters.bottom_left.bb = pad_bb(get_world_bb(bottom_left_bbs), margin)
 		else
 			self.clusters = {
 				mission = {
@@ -138,10 +141,6 @@ UICleanUI.update = function (self, dt, context)
 						{
 							alpha = -1,
 							widget = self.hud.ability_ui
-						},
-						{
-							alpha = -1,
-							widget = self.hud.unit_frames_handler:get_unit_widget(1)
 						}
 					}
 				},
@@ -161,11 +160,22 @@ UICleanUI.update = function (self, dt, context)
 							widget = self.hud.unit_frames_handler:get_unit_widget(4)
 						}
 					}
+				},
+				bottom_left = {
+					bb = pad_bb(get_world_bb(left_portrait_bbs), margin),
+					widgets = {
+						{
+							alpha = -1,
+							widget = self.hud.unit_frames_handler:get_unit_widget(1)
+						},
+						{
+							alpha = -1,
+							widget = self.hud.buff_ui
+						}
+					}
 				}
 			}
 		end
-
-		self.dirty = false
 	end
 
 	local clocksEmpty = true
@@ -175,13 +185,15 @@ UICleanUI.update = function (self, dt, context)
 	end
 
 	for name, cluster in pairs(self.clusters) do
+		local cutscene_system = Managers.state.entity:system("cutscene_system")
+		local in_cutscene = cutscene_system and cutscene_system.active_camera
 		local visibility = point_in_bb(cluster.bb, {
 			gaze_gx,
 			gaze_gy
 		})
 		cluster.visible = visibility
 
-		if visibility or clocksEmpty or off_window_override then
+		if visibility or clocksEmpty or off_window_override or in_cutscene then
 			self.clocks[name] = fade_delay + fade_duration
 		else
 			self.clocks[name] = math.max(0, self.clocks[name] - dt)
@@ -196,7 +208,9 @@ UICleanUI.update = function (self, dt, context)
 				if box.alpha ~= 1 then
 					if box.widget.set_panel_alpha then
 						box.widget:set_panel_alpha(1)
-					else
+					end
+
+					if box.widget.set_alpha then
 						box.widget:set_alpha(1)
 					end
 
@@ -205,7 +219,9 @@ UICleanUI.update = function (self, dt, context)
 			elseif box.alpha ~= alpha then
 				if box.widget.set_panel_alpha then
 					box.widget:set_panel_alpha(alpha)
-				else
+				end
+
+				if box.widget.set_alpha then
 					box.widget:set_alpha(alpha)
 				end
 

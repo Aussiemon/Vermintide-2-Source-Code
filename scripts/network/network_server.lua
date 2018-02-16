@@ -306,6 +306,8 @@ end
 NetworkServer.kick_peer = function (self, peer_id)
 	self.network_transmit:send_rpc("rpc_kick_peer", peer_id)
 
+	self.kicked_peers_disconnect_timer[peer_id] = KICK_PEER_WAIT_TIMER
+
 	return 
 end
 NetworkServer.update_disconnect_kicked_peers_by_time = function (self, dt)
@@ -557,6 +559,7 @@ NetworkServer.update = function (self, dt)
 	end
 
 	self._update_reserve_slots(self, dt)
+	self.update_disconnect_kicked_peers_by_time(self, dt)
 
 	if self.lobby_host:is_joined() then
 		local lobby_members = self.lobby_host:members()

@@ -71,6 +71,10 @@ ActionThrow._throw = function (self)
 		proj_rotation = Quaternion.multiply(proj_rotation, statue_rotation_two)
 	end
 
+	if current_action.rotate_towards_owner_unit then
+		proj_rotation = Quaternion.look(Vector3.normalize(Vector3.flat(POSITION_LOOKUP[owner_unit]) - Vector3.flat(position)))
+	end
+
 	local raycast_vector = (first_person_unit_pos + forward*1.2) - first_person_unit_pos
 	local length = Vector3.length(raycast_vector)
 	local direction = Vector3.normalize(raycast_vector)

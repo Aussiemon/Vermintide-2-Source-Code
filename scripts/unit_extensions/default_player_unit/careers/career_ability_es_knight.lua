@@ -177,11 +177,10 @@ CareerAbilityESKnight._run_ability = function (self)
 	status_extension.do_lunge = {
 		animation_end_event = "foot_knight_ability_charge_hit",
 		allow_rotation = false,
-		falloff_to_speed = 5,
 		first_person_animation_end_event = "foot_knight_ability_charge_hit",
-		first_person_hit_animation_event = "charge_react",
+		falloff_to_speed = 5,
 		first_person_animation_event = "foot_knight_ability_charge_start",
-		first_person_animation_end_event_hit = "foot_knight_ability_charge_hit",
+		first_person_hit_animation_event = "charge_react",
 		damage_start_time = 0.3,
 		duration = 1.75,
 		initial_speed = 20,
@@ -215,33 +214,33 @@ CareerAbilityESKnight._run_ability = function (self)
 				local t_value = rush_time/rush_duration
 				local acceleration = math.min(rush_time/rush_duration/3, 1)
 				local interpolation_value = math.cos(t_value*math.pi*0.5)
-				local offset_bajs = nil
+				local offset = nil
 				local step_time = 0.25
 
 				if step_time*8 < rush_time then
-					offset_bajs = 0
+					offset = 0
 				elseif step_time*7 < rush_time then
-					offset_bajs = (rush_time - 1.4)/step_time
+					offset = (rush_time - 1.4)/step_time
 				elseif step_time*6 < rush_time then
-					offset_bajs = (rush_time - step_time*6)/step_time
+					offset = (rush_time - step_time*6)/step_time
 				elseif step_time*5 < rush_time then
-					offset_bajs = (rush_time - step_time*5)/step_time
+					offset = (rush_time - step_time*5)/step_time
 				elseif step_time*4 < rush_time then
-					offset_bajs = (rush_time - step_time*4)/step_time
+					offset = (rush_time - step_time*4)/step_time
 				elseif step_time*3 < rush_time then
-					offset_bajs = (rush_time - step_time*3)/step_time
+					offset = (rush_time - step_time*3)/step_time
 				elseif step_time*2 < rush_time then
-					offset_bajs = (rush_time - step_time*2)/step_time
+					offset = (rush_time - step_time*2)/step_time
 				elseif step_time < rush_time then
-					offset_bajs = (rush_time - step_time)/step_time
+					offset = (rush_time - step_time)/step_time
 				else
-					offset_bajs = rush_time/step_time
+					offset = rush_time/step_time
 				end
 
-				local offset_multiplier = offset_bajs*0.4 - 1
-				local bajs = offset_multiplier*acceleration*acceleration*math.lerp(end_speed, rush_speed, interpolation_value)
+				local offset_multiplier = offset*0.4 - 1
+				local speed = offset_multiplier*acceleration*acceleration*math.lerp(end_speed, rush_speed, interpolation_value)
 
-				return bajs
+				return speed
 			else
 				local t_value = (rush_time - rush_duration)/end_duration
 				local interpolation_value = math.cos((t_value + 1)*math.pi*0.5) + 1

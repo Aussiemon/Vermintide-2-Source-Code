@@ -509,6 +509,7 @@ local widgets = {
 		255,
 		255
 	}),
+	window_background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "actual_window", nil, nil, nil, 1),
 	page_button_next = UIWidgets.create_simple_window_button("page_button_next", scenegraph_definition.page_button_next.size, Localize("menu_next"), 16),
 	page_button_previous = UIWidgets.create_simple_window_button("page_button_previous", scenegraph_definition.page_button_previous.size, Localize("menu_previous"), 16),
 	page_button_divider = create_window_divider("page_button_divider", scenegraph_definition.page_button_divider.size),

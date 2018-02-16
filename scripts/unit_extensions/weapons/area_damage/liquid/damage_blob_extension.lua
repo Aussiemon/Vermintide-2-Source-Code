@@ -508,6 +508,8 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 
 		if blob[6] < t then
 			self._remove_blob(self, blob, blob_index, blobs)
+
+			num_blobs = num_blobs - 1
 		else
 			local num_ai_units = AiUtils.broadphase_query(blob_position, blob_radius, ai_units)
 
@@ -548,10 +550,10 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 			end
 
 			blob_index = blob_index + 1
+		end
 
-			if num_blobs < blob_index then
-				blob_index = 1
-			end
+		if num_blobs < blob_index then
+			blob_index = 1
 		end
 
 		amount = amount - 1

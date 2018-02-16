@@ -2667,7 +2667,8 @@ HitEffectsSkavenSlave = {
 		flow_event = "warpfire_burn",
 		extra_conditions = {
 			damage_type = {
-				"warpfire_ground"
+				"warpfire_ground",
+				"warpfire_face"
 			}
 		}
 	},
@@ -2677,7 +2678,8 @@ HitEffectsSkavenSlave = {
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"warpfire_ground"
+				"warpfire_ground",
+				"warpfire_face"
 			}
 		},
 		animations = {

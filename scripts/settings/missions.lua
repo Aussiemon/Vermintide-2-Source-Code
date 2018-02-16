@@ -1310,6 +1310,10 @@ Missions.military_enter_fort = {
 	mission_template_name = "goal",
 	text = "mission_military_enter_fort"
 }
+Missions.military_arena_survive = {
+	mission_template_name = "goal",
+	text = "mission_military_arena_survive"
+}
 Missions.military_ascend_wall = {
 	mission_template_name = "goal",
 	text = "mission_military_ascend_wall"
@@ -1656,6 +1660,10 @@ Missions.nurgle_destroy_cluster_03 = {
 Missions.nurgle_escape_through_the_portal = {
 	mission_template_name = "goal",
 	text = "mission_nurgle_escape"
+}
+Missions.keep_enter_portal = {
+	mission_template_name = "goal",
+	text = "mission_keep_enter_portal"
 }
 
 for name, data in pairs(Missions) do

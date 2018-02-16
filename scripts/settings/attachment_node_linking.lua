@@ -2633,6 +2633,38 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	hat_skinned_long = {
+		slot_hat = {
+			{
+				target = 0,
+				source = "a_hat"
+			},
+			{
+				target = "j_spine1",
+				source = "j_spine1"
+			},
+			{
+				target = "j_spine2",
+				source = "j_spine2"
+			},
+			{
+				target = "j_neck",
+				source = "j_neck"
+			},
+			{
+				target = "j_head",
+				source = "j_head"
+			},
+			{
+				target = "j_leftshoulder",
+				source = "j_leftshoulder"
+			},
+			{
+				target = "j_rightshoulder",
+				source = "j_rightshoulder"
+			}
+		}
+	},
 	ww_mask = {
 		slot_hat = {
 			{

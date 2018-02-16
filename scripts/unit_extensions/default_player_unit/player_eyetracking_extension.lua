@@ -88,6 +88,11 @@ PlayerEyeTrackingExtension.update_extended_view = function (self, dt)
 		self.extended_view.pitch = self.extended_view.pitch*0.15
 	end
 
+	if cutscene_system and cutscene_system.active_camera then
+		self.extended_view.yaw = 0
+		self.extended_view.pitch = 0
+	end
+
 	Managers.state.camera:set_tobii_extended_view(self.extended_view.yaw, self.extended_view.pitch)
 
 	return 

@@ -173,9 +173,15 @@ weapon_template.can_heal_self = true
 weapon_template.bot_heal_threshold = 0.2
 weapon_template.fast_heal = false
 weapon_template.max_fatigue_points = 1
-weapon_template.dodge_distance = 1.2
-weapon_template.dodge_speed = 1.2
 weapon_template.dodge_count = 3
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1.2
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1.2
+	}
+}
 Weapons = Weapons or {}
 Weapons.first_aid_kit = Weapons.first_aid_kit or table.clone(weapon_template)
 Weapons.first_aid_kit.left_hand_unit = "units/weapons/player/wpn_first_aid_kit/wpn_first_aid_kit"

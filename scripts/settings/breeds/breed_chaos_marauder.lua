@@ -111,7 +111,7 @@ local breed_data = {
 		4,
 		6,
 		8,
-		10
+		12
 	},
 	wwise_voices = {
 		"marauder_andreas",

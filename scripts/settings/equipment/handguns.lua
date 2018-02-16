@@ -254,7 +254,7 @@ weapon_template.attack_meta_data = {
 }
 weapon_template.default_spread_template = "handgun"
 weapon_template.spread_lerp_speed = 3
-weapon_template.spread_lerp_speed_zoom = 1.5
+weapon_template.spread_lerp_speed_zoom = 2.5
 weapon_template.right_hand_unit = ""
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.rifles
 weapon_template.display_unit = "units/weapons/weapon_display/display_rifle"
@@ -265,6 +265,14 @@ weapon_template.reload_event = "reload"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "HANDGUN"
 weapon_template.no_dodge = true
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 weapon_template.aim_assist_settings = {
 	max_range = 22,
 	no_aim_input_multiplier = 0,

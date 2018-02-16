@@ -100,6 +100,10 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	self.in_end_zone = false
 	self.is_husk = self.player.remote
 
+	if self.is_server then
+		self.conflict_director = Managers.state.conflict
+	end
+
 	return 
 end
 GenericStatusExtension.extensions_ready = function (self)
@@ -181,7 +185,9 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			end
 		end
 
-		if self.intensity_decay_delay <= 0 and not Managers.state.conflict:intensity_decay_frozen() then
+		local ignore_decay_delay = self.conflict_director.pacing:ignore_intensity_decay_delay()
+
+		if (self.intensity_decay_delay <= 0 or ignore_decay_delay) and not self.conflict_director:intensity_decay_frozen() then
 			self.intensity = math.clamp(self.intensity - CurrentIntensitySettings.decay_per_second*dt, 0, CurrentIntensitySettings.max_intensity)
 		end
 
@@ -1108,7 +1114,7 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 		end
 	end
 
-	Managers.music:check_last_man_standing_music_state(player)
+	Managers.music:check_last_man_standing_music_state()
 
 	return 
 end
@@ -1148,7 +1154,7 @@ GenericStatusExtension.set_respawned = function (self, respawned)
 
 	if respawned then
 		self.set_ready_for_assisted_respawn(self, false)
-		Managers.music:check_last_man_standing_music_state(self.player)
+		Managers.music:check_last_man_standing_music_state()
 	end
 
 	return 
@@ -1345,8 +1351,10 @@ GenericStatusExtension.set_grabbed_by_chaos_spawn = function (self, grabbed, cha
 	return 
 end
 GenericStatusExtension.set_grabbed_by_chaos_spawn_status = function (self, status)
-	self.grabbed_by_chaos_spawn_status = status
-	self.grabbed_by_chaos_spawn_status_count = self.grabbed_by_chaos_spawn_status_count + 1
+	if self.grabbed_by_chaos_spawn_status_count then
+		self.grabbed_by_chaos_spawn_status = status
+		self.grabbed_by_chaos_spawn_status_count = self.grabbed_by_chaos_spawn_status_count + 1
+	end
 
 	return 
 end
@@ -1968,6 +1976,8 @@ GenericStatusExtension.get_is_slowed = function (self)
 	return self.is_slowed
 end
 GenericStatusExtension.set_falling_height = function (self, override, override_height)
+	fassert(not self.is_husk, "Trying to set falling height on non-owned unit")
+
 	self.fall_height = override_height or (self.fall_height and not override and POSITION_LOOKUP[self.unit].z < self.fall_height and self.fall_height) or POSITION_LOOKUP[self.unit].z
 	self.update_funcs.falling = GenericStatusExtension.update_falling
 

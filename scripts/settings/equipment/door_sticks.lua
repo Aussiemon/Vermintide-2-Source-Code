@@ -85,6 +85,14 @@ weapon_template.wield_anim = "to_1h_sword"
 weapon_template.wield_anim_3p = "to_1h_sword"
 weapon_template.block_wielding = true
 weapon_template.third_person_extension_template = "prop_unit"
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 Weapons = Weapons or {}
 Weapons.door_stick = weapon_template
 Weapons.door_stick = Weapons.door_stick or table.clone(weapon_template)

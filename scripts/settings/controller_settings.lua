@@ -1,6 +1,6 @@
 require("scripts/utils/input_helper")
 
-local unbind_button = "left button **"
+local unbind_button = "unassigned_keymap"
 PlayerControllerKeymaps = {
 	win32 = InputUtils.keymaps_key_approved("win32") and {
 		toggle_input_helper = {
@@ -1836,9 +1836,6 @@ FreeFlightKeymaps = {
 		frustum_freeze_toggle = {
 			"keyboard",
 			"left shift",
-			"held",
-			"keyboard",
-			"f8",
 			"pressed"
 		},
 		set_drop_position = {
@@ -1940,6 +1937,56 @@ FreeFlightKeymaps = {
 			"keyboard",
 			"left",
 			"pressed"
+		},
+		reset_toggle_mod = {
+			"keyboard",
+			"left ctrl",
+			"held"
+		},
+		toggle_dof = {
+			"keyboard",
+			"f",
+			"pressed"
+		},
+		inc_dof_distance = {
+			"keyboard",
+			"g",
+			"held"
+		},
+		dec_dof_distance = {
+			"keyboard",
+			"b",
+			"held"
+		},
+		inc_dof_region = {
+			"keyboard",
+			"h",
+			"held"
+		},
+		dec_dof_region = {
+			"keyboard",
+			"n",
+			"held"
+		},
+		inc_dof_padding = {
+			"keyboard",
+			"j",
+			"held"
+		},
+		dec_dof_padding = {
+			"keyboard",
+			"m",
+			"held"
+		},
+		inc_dof_scale = {
+			"keyboard",
+			"k",
+			"held"
+		},
+		dec_dof_scale = {
+			"keyboard",
+			"oem_comma (< ,)",
+			"held"
 		},
 		look = {
 			"mouse",
@@ -2133,6 +2180,16 @@ FreeFlightKeymaps = {
 			"right_trigger",
 			"held"
 		},
+		right_trigger_held = {
+			"gamepad",
+			"right_trigger",
+			"held"
+		},
+		left_trigger_held = {
+			"gamepad",
+			"left_trigger",
+			"held"
+		},
 		look_raw_controller = {
 			"gamepad",
 			"right",
@@ -2167,6 +2224,46 @@ FreeFlightKeymaps = {
 			"mouse",
 			"right",
 			"pressed"
+		},
+		gamepad_x_held = {
+			"gamepad",
+			"x",
+			"held"
+		},
+		gamepad_y_held = {
+			"gamepad",
+			"y",
+			"held"
+		},
+		gamepad_b_held = {
+			"gamepad",
+			"b",
+			"held"
+		},
+		gamepad_a_held = {
+			"gamepad",
+			"a",
+			"held"
+		},
+		reset_toggle_mod = {
+			"keyboard",
+			"left ctrl",
+			"held"
+		},
+		toggle_dof = {
+			"gamepad",
+			"right_shoulder",
+			"pressed"
+		},
+		inc_dof_distance = {
+			"gamepad",
+			"right_trigger",
+			"held"
+		},
+		dec_dof_distance = {
+			"gamepad",
+			"left_trigger",
+			"held"
 		},
 		k = {
 			"keyboard",
@@ -2218,7 +2315,7 @@ FreeFlightKeymaps = {
 		frustum_freeze_toggle = {
 			"keyboard",
 			"left shift",
-			"held"
+			"pressed"
 		},
 		set_drop_position = {
 			"gamepad",
@@ -2360,6 +2457,36 @@ FreeFlightKeymaps = {
 			"right",
 			"pressed"
 		},
+		reset_toggle_mod = {
+			"keyboard",
+			"left ctrl",
+			"held"
+		},
+		toggle_dof = {
+			"keyboard",
+			"f",
+			"pressed"
+		},
+		inc_dof_distance = {
+			"keyboard",
+			"g",
+			"held"
+		},
+		dec_dof_distance = {
+			"keyboard",
+			"b",
+			"held"
+		},
+		inc_dof_region = {
+			"keyboard",
+			"h",
+			"held"
+		},
+		dec_dof_region = {
+			"keyboard",
+			"n",
+			"held"
+		},
 		k = {
 			"keyboard",
 			"k",
@@ -2410,6 +2537,13 @@ FreeFlightFilters = {
 				right = "move_right"
 			}
 		},
+		dof_reset = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "reset_toggle_mod",
+				button_2 = "toggle_dof"
+			}
+		},
 		step_frame = {
 			filter_type = "and",
 			input_mappings = {
@@ -2449,6 +2583,55 @@ FreeFlightFilters = {
 			accelerate_time_ref = 0.1,
 			multiplier_x = 600,
 			filter_type = "scale_vector3_xy_accelerated_x"
+		},
+		dof_reset = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "reset_toggle_mod",
+				button_2 = "toggle_dof"
+			}
+		},
+		inc_dof_region = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "right_trigger_held",
+				button_2 = "gamepad_y_held"
+			}
+		},
+		dec_dof_region = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "left_trigger_held",
+				button_2 = "gamepad_y_held"
+			}
+		},
+		inc_dof_padding = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "right_trigger_held",
+				button_2 = "gamepad_b_held"
+			}
+		},
+		dec_dof_padding = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "left_trigger_held",
+				button_2 = "gamepad_b_held"
+			}
+		},
+		inc_dof_scale = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "right_trigger_held",
+				button_2 = "gamepad_x_held"
+			}
+		},
+		dec_dof_scale = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "left_trigger_held",
+				button_2 = "gamepad_x_held"
+			}
 		},
 		free_flight_toggle = {
 			filter_type = "and",
@@ -2491,6 +2674,13 @@ FreeFlightFilters = {
 				back = "move_back",
 				left = "move_left",
 				right = "move_right"
+			}
+		},
+		dof_reset = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "reset_toggle_mod",
+				button_2 = "toggle_dof"
 			}
 		},
 		free_flight_toggle = {

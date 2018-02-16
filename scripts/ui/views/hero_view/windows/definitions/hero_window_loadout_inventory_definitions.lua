@@ -603,6 +603,7 @@ local widgets = {
 	item_grid_header_detail = UIWidgets.create_simple_texture("divider_01_top", "item_grid_header_detail"),
 	window_frame = UIWidgets.create_frame("window", scenegraph_definition.window.size, window_frame, 10),
 	window = UIWidgets.create_background("window", scenegraph_definition.window.size, "background_leather_02"),
+	window_background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window", nil, nil, nil, 1),
 	item_tabs = UIWidgets.create_default_icon_tabs("item_tabs", scenegraph_definition.item_tabs.size, num_tabs),
 	item_tabs_segments = UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_vertical", {
 		5,

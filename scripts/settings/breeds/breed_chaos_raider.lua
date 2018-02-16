@@ -1,17 +1,16 @@
 local breed_data = {
 	is_bot_threat = true,
-	wwise_voice_switch_group = "marauder_vce_variations",
-	walk_speed = 2.2,
 	patrol_detection_radius = 10,
-	poison_resistance = 100,
+	walk_speed = 2.2,
+	has_inventory = true,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
-	target_selection = "pick_closest_target_with_spillover",
+	run_speed = 4.8,
 	aim_template = "chaos_marauder",
 	disable_crowd_dispersion = true,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
 	aoe_radius = 0.4,
-	run_speed = 4.8,
 	scale_death_push = 0.35,
+	poison_resistance = 100,
 	detection_radius = 12,
 	attack_player_sound_event = "Play_enemy_marauder_attack_player_vce",
 	headshot_coop_stamina_fatigue_type = "headshot_special",
@@ -20,11 +19,13 @@ local breed_data = {
 	bone_lod_level = 1,
 	attack_general_sound_event = "Play_enemy_marauder_attack_husk_vce",
 	default_inventory_template = "raider_axe_2h",
+	stagger_resistance = 3,
 	dialogue_source_name = "chaos_marauder",
-	smart_object_template = "special",
 	flingable = true,
+	wwise_voice_switch_group = "marauder_vce_variations",
 	panic_close_detection_radius_sq = 9,
 	radius = 1,
+	smart_object_template = "special",
 	hit_mass_count = 8,
 	patrol_active_perception = "perception_regular",
 	perception_previous_attacker_stickyness_value = -4.5,
@@ -38,7 +39,7 @@ local breed_data = {
 	behavior = "raider",
 	stagger_armor_category = 2,
 	bots_should_flank = true,
-	has_inventory = true,
+	target_selection = "pick_closest_target_with_spillover",
 	no_stagger_duration = true,
 	exchange_order = 3,
 	stagger_multiplier = 0.4,
@@ -63,6 +64,7 @@ local breed_data = {
 	death_squad_detection_radius = 8,
 	base_unit = "units/beings/enemies/chaos_raider/chr_chaos_raider",
 	aoe_height = 1.7,
+	elite = true,
 	passive_in_patrol_start_anim = {
 		"move_fwd_4",
 		"move_fwd_5",
@@ -77,11 +79,11 @@ local breed_data = {
 		1.15
 	},
 	max_health = {
-		24,
-		24,
-		36,
-		48,
-		60
+		30,
+		30,
+		45,
+		60,
+		90
 	},
 	diff_stagger_resist = {
 		3,
@@ -89,13 +91,6 @@ local breed_data = {
 		4,
 		5,
 		6
-	},
-	stagger_resistance = {
-		1,
-		1,
-		1.3,
-		1.6,
-		2
 	},
 	stagger_duration = {
 		0.5,
@@ -117,8 +112,14 @@ local breed_data = {
 		}
 	},
 	hitzone_multiplier_types = {
-		head = "headshot",
-		neck = "headshot"
+		head = "headshot"
+	},
+	hit_mass_counts = {
+		8,
+		8,
+		12,
+		16,
+		24
 	},
 	wwise_voices = {
 		"marauder_andreas",

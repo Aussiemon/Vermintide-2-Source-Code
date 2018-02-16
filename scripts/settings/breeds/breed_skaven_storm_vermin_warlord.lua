@@ -91,7 +91,7 @@ local breed_data = {
 	weapon_reach = 2,
 	far_off_despawn_immunity = true,
 	override_mover_move_distance = 1.5,
-	base_unit = "units/beings/enemies/skaven_stormvermin_champion/chr_skaven_stormvermin_champion",
+	base_unit = "units/beings/enemies/skaven_stormvermin_champion/chr_skaven_stormvermin_warlord",
 	aoe_height = 1.7,
 	displace_players_data = pushed_data,
 	detection_radius = math.huge,
@@ -2038,6 +2038,7 @@ local action_data = {
 		}
 	},
 	spawn_allies = {
+		stinger_name = "enemy_horde_stinger",
 		optional_go_to_spawn = "warlord_go_to",
 		defensive_mode_duration = 10,
 		find_spawn_points = true,

@@ -206,6 +206,12 @@ function flow_query_leader_achievement_completed(params)
 
 	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Achievement Completed\" should only be called by the leader player")
 
+	if script_data.achievement_completed_flow_override ~= nil then
+		flow_return_table.value = script_data.achievement_completed_flow_override
+
+		return flow_return_table
+	end
+
 	local achievement_name = params.achievement_name
 	local achievement_template = AchievementTemplates[achievement_name]
 
@@ -305,6 +311,13 @@ function flow_query_leader_has_dlc(params)
 	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Has DLC\" should only be called by the leader player")
 
 	local dlc_name = params.dlc_name
+
+	if dlc_name == "pre_order" and script_data.has_dlc_pre_order_flow_override ~= nil then
+		flow_return_table.value = script_data.has_dlc_pre_order_flow_override
+
+		return flow_return_table
+	end
+
 	local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
 	flow_return_table.value = has_dlc
 

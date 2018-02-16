@@ -69,6 +69,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	window_background = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			large_window_size[1],
+			770
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
 	info_window = {
 		vertical_alignment = "center",
 		parent = "window",
@@ -83,29 +97,85 @@ local scenegraph_definition = {
 	act_root_node = {
 		vertical_alignment = "center",
 		parent = "window",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
 		size = {
-			large_window_size[1],
+			large_window_size[1] - 256,
 			256
 		},
 		position = {
 			0,
-			-24,
+			0,
+			1
+		}
+	},
+	end_act_root_node = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "right",
+		size = {
+			261,
+			768
+		},
+		position = {
+			0,
+			0,
 			1
 		}
 	},
 	level_root_node = {
 		vertical_alignment = "center",
 		parent = "window",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
 		size = {
 			0,
 			0
 		},
 		position = {
-			0,
-			-44,
+			106,
+			-24,
 			10
+		}
+	},
+	end_level_root_node = {
+		vertical_alignment = "center",
+		parent = "window",
+		horizontal_alignment = "left",
+		size = {
+			0,
+			0
+		},
+		position = {
+			106,
+			-24,
+			10
+		}
+	},
+	title_divider = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			large_window_size[1],
+			0
+		},
+		position = {
+			0,
+			768,
+			14
+		}
+	},
+	mission_selection_title = {
+		vertical_alignment = "bottom",
+		parent = "title_divider",
+		horizontal_alignment = "center",
+		size = {
+			large_window_size[1],
+			52
+		},
+		position = {
+			0,
+			0,
+			1
 		}
 	},
 	description_text = {
@@ -252,6 +322,22 @@ local level_text_style = {
 		2
 	}
 }
+local mission_selection_title_text_style = {
+	font_size = 36,
+	upper_case = true,
+	localize = false,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "center",
+	vertical_alignment = "center",
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
 local helper_text_style = {
 	font_size = 36,
 	upper_case = true,
@@ -268,44 +354,35 @@ local helper_text_style = {
 		2
 	}
 }
-local widgets = {
-	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "info_window"),
-	background_mask = UIWidgets.create_simple_texture("mask_rect", "info_window"),
-	info_window = UIWidgets.create_frame("info_window", window_size, window_frame, 10),
-	window = UIWidgets.create_frame("window", large_window_size, window_frame, 10),
-	level_title = UIWidgets.create_simple_text("level_title", "level_title", nil, nil, level_text_style),
-	level_texture = UIWidgets.create_simple_texture("level_icon_01", "level_texture"),
-	level_texture_lock = UIWidgets.create_simple_texture("map_frame_lock", "level_texture_lock"),
-	level_texture_frame = UIWidgets.create_simple_texture("map_frame_00", "level_texture_frame", nil, nil, nil, 1),
-	level_title_divider = UIWidgets.create_simple_texture("divider_01_top", "level_title_divider"),
-	description_text = UIWidgets.create_simple_text("", "description_text", nil, nil, description_text_style),
-	helper_text = UIWidgets.create_simple_text("Select a mission to play", "helper_text", nil, nil, helper_text_style),
-	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("menu_select"), 32)
-}
 
-local function create_level_widget(i)
-	local scenegraph_id = "level_root_" .. i
+local function create_level_widget(i, specific_scenegraph_id)
+	local scenegraph_id = specific_scenegraph_id
 	local size = {
 		180,
 		180
 	}
-	scenegraph_definition[scenegraph_id] = {
-		vertical_alignment = "center",
-		parent = "level_root_node",
-		horizontal_alignment = "center",
-		size = size,
-		position = {
-			0,
-			0,
-			1
+
+	if not scenegraph_id then
+		scenegraph_id = "level_root_" .. i
+		scenegraph_definition[scenegraph_id] = {
+			vertical_alignment = "center",
+			parent = "level_root_node",
+			horizontal_alignment = "center",
+			size = size,
+			position = {
+				0,
+				0,
+				1
+			}
 		}
-	}
+	end
+
 	local widget = {
 		element = {}
 	}
 	local passes = {
 		{
-			style_id = "button_hotspot",
+			style_id = "icon",
 			pass_type = "hotspot",
 			content_id = "button_hotspot",
 			content_check_function = function (content)
@@ -313,7 +390,7 @@ local function create_level_widget(i)
 			end
 		},
 		{
-			style_id = "tooltip",
+			style_id = "icon",
 			pass_type = "level_tooltip",
 			level_id = "level_data",
 			content_check_function = function (content)
@@ -369,43 +446,95 @@ local function create_level_widget(i)
 			pass_type = "texture",
 			style_id = "glass",
 			texture_id = "glass"
+		},
+		{
+			pass_type = "rotated_texture",
+			style_id = "path",
+			texture_id = "path",
+			content_check_function = function (content)
+				return content.draw_path
+			end
+		},
+		{
+			pass_type = "rotated_texture",
+			style_id = "path_glow",
+			texture_id = "path_glow",
+			content_check_function = function (content)
+				return content.draw_path and content.draw_path_fill and not content.locked
+			end
+		},
+		{
+			pass_type = "texture",
+			style_id = "boss_icon",
+			texture_id = "boss_icon",
+			content_check_function = function (content)
+				return content.boss_level
+			end
 		}
 	}
 	local content = {
-		glass = "act_presentation_fg_glass",
-		locked = true,
-		lock = "map_frame_lock",
-		icon_glow = "map_frame_glow",
 		frame = "map_frame_00",
-		icon = "level_icon_01",
+		locked = true,
+		path = "mission_select_screen_trail",
+		draw_path = false,
+		path_glow = "mission_select_screen_trail_fill",
+		draw_path_fill = false,
+		lock = "map_frame_lock",
+		boss_level = true,
+		glass = "act_presentation_fg_glass",
+		boss_icon = "boss_icon",
 		lock_fade = "map_frame_fade",
+		icon = "level_icon_01",
+		icon_glow = "map_frame_glow",
 		button_hotspot = {}
 	}
 	local style = {
-		tooltip = {
+		path = {
+			vertical_alignment = "center",
+			horizontal_alignment = "left",
+			angle = 0,
+			pivot = {
+				0,
+				6.5
+			},
+			texture_size = {
+				216,
+				13
+			},
 			offset = {
+				size[1]/2,
 				0,
-				0,
-				0
+				1
 			},
 			color = {
 				255,
 				255,
-				0,
-				0
+				255,
+				255
 			}
 		},
-		button_hotspot = {
+		path_glow = {
+			vertical_alignment = "center",
+			horizontal_alignment = "left",
+			angle = 0,
+			pivot = {
+				0,
+				21.5
+			},
+			texture_size = {
+				216,
+				43
+			},
 			offset = {
+				size[1]/2,
 				0,
-				0,
-				0
+				2
 			},
 			color = {
-				200,
 				255,
-				0,
-				0
+				255,
+				255,
+				255
 			}
 		},
 		glass = {
@@ -418,7 +547,7 @@ local function create_level_widget(i)
 			offset = {
 				0,
 				0,
-				5
+				7
 			},
 			color = {
 				255,
@@ -428,19 +557,6 @@ local function create_level_widget(i)
 			}
 		},
 		frame = {
-			offset = {
-				0,
-				0,
-				4
-			},
-			color = {
-				255,
-				255,
-				255,
-				255
-			}
-		},
-		lock = {
 			vertical_alignment = "center",
 			horizontal_alignment = "center",
 			texture_size = {
@@ -459,6 +575,25 @@ local function create_level_widget(i)
 				255
 			}
 		},
+		lock = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			texture_size = {
+				180,
+				180
+			},
+			offset = {
+				0,
+				0,
+				9
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
 		lock_fade = {
 			vertical_alignment = "center",
 			horizontal_alignment = "center",
@@ -469,7 +604,7 @@ local function create_level_widget(i)
 			offset = {
 				0,
 				0,
-				3
+				5
 			},
 			color = {
 				255,
@@ -494,7 +629,7 @@ local function create_level_widget(i)
 			offset = {
 				0,
 				0,
-				1
+				3
 			}
 		},
 		icon_locked = {
@@ -514,7 +649,7 @@ local function create_level_widget(i)
 			offset = {
 				0,
 				0,
-				1
+				3
 			}
 		},
 		icon_glow = {
@@ -528,6 +663,25 @@ local function create_level_widget(i)
 				0,
 				0,
 				0
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		boss_icon = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			texture_size = {
+				68,
+				68
+			},
+			offset = {
+				0,
+				90,
+				8
 			},
 			color = {
 				255,
@@ -550,60 +704,21 @@ local function create_level_widget(i)
 	return widget
 end
 
-local function create_act_widget(optional_texture_version)
+local function create_act_widget(index, optional_texture_version)
 	local texture_version = optional_texture_version or "09"
 	local scenegraph_id = "act_root_node"
 	local size = scenegraph_definition[scenegraph_id].size
+	local draw_divider = 1 < index
 	local widget = {
 		element = {}
 	}
-	local passes = {
-		{
-			style_id = "text",
-			pass_type = "text",
-			text_id = "text"
-		},
-		{
-			style_id = "text_shadow",
-			pass_type = "text",
-			text_id = "text"
-		},
-		{
-			pass_type = "texture",
-			style_id = "background",
-			texture_id = "background"
-		},
-		{
-			texture_id = "bottom_edge",
-			style_id = "bottom_edge",
-			pass_type = "tiled_texture"
-		},
-		{
-			texture_id = "edge_holder_left",
-			style_id = "edge_holder_left",
-			pass_type = "texture"
-		},
-		{
-			texture_id = "edge_holder_right",
-			style_id = "edge_holder_right",
-			pass_type = "texture"
-		},
-		{
-			pass_type = "texture",
-			style_id = "title_bg",
-			texture_id = "title_bg"
-		},
-		{
-			pass_type = "texture",
-			style_id = "title_edge",
-			texture_id = "title_edge"
-		}
-	}
+	local passes = {}
 	local content = {
 		text = "title_text",
 		title_edge = "game_option_divider",
 		background = "map_bg_image_03",
 		title_bg = "playername_bg_02",
+		draw_divider = draw_divider,
 		edge_holder_left = "menu_frame_" .. texture_version .. "_divider_left",
 		edge_holder_right = "menu_frame_" .. texture_version .. "_divider_right",
 		bottom_edge = "menu_frame_" .. texture_version .. "_divider"
@@ -644,7 +759,7 @@ local function create_act_widget(optional_texture_version)
 				0
 			},
 			color = {
-				255,
+				0,
 				100,
 				100,
 				100
@@ -652,7 +767,7 @@ local function create_act_widget(optional_texture_version)
 		},
 		bottom_edge = {
 			color = {
-				255,
+				0,
 				255,
 				255,
 				255
@@ -673,7 +788,7 @@ local function create_act_widget(optional_texture_version)
 		},
 		edge_holder_left = {
 			color = {
-				255,
+				0,
 				255,
 				255,
 				255
@@ -690,7 +805,7 @@ local function create_act_widget(optional_texture_version)
 		},
 		edge_holder_right = {
 			color = {
-				255,
+				0,
 				255,
 				255,
 				255
@@ -753,6 +868,372 @@ local function create_act_widget(optional_texture_version)
 	return widget
 end
 
+local function create_end_act_widget(optional_texture_version)
+	local texture_version = optional_texture_version or "09"
+	local scenegraph_id = "end_act_root_node"
+	local size = scenegraph_definition[scenegraph_id].size
+	local widget = {
+		element = {}
+	}
+	local passes = {}
+	local content = {
+		text = "title_text",
+		title_edge = "game_option_divider",
+		background = "map_bg_image_03",
+		title_bg = "playername_bg_02",
+		edge_holder_top = "menu_frame_" .. texture_version .. "_divider_top",
+		edge_holder_bottom = "menu_frame_" .. texture_version .. "_divider_bottom",
+		edge = "menu_frame_" .. texture_version .. "_divider_vertical"
+	}
+	local style = {
+		text = {
+			vertical_alignment = "top",
+			upper_case = true,
+			localize = false,
+			horizontal_alignment = "left",
+			font_size = 28,
+			font_type = "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("font_title", 255),
+			offset = {
+				16,
+				-5,
+				10
+			}
+		},
+		text_shadow = {
+			vertical_alignment = "top",
+			upper_case = true,
+			localize = false,
+			horizontal_alignment = "left",
+			font_size = 28,
+			font_type = "hell_shark_header",
+			text_color = Colors.get_color_table_with_alpha("black", 255),
+			offset = {
+				18,
+				-7,
+				9
+			}
+		},
+		background = {
+			offset = {
+				0,
+				0,
+				0
+			},
+			color = {
+				0,
+				100,
+				100,
+				100
+			}
+		},
+		edge = {
+			color = {
+				0,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				6,
+				6
+			},
+			size = {
+				5,
+				size[2] - 9
+			},
+			texture_tiling_size = {
+				5,
+				size[2] - 9
+			}
+		},
+		edge_holder_top = {
+			color = {
+				0,
+				255,
+				255,
+				255
+			},
+			offset = {
+				-6,
+				size[2] - 7,
+				20
+			},
+			size = {
+				17,
+				9
+			}
+		},
+		edge_holder_bottom = {
+			color = {
+				0,
+				255,
+				255,
+				255
+			},
+			offset = {
+				-6,
+				3,
+				10
+			},
+			size = {
+				17,
+				9
+			}
+		},
+		title_bg = {
+			size = {
+				size[1]/2,
+				40
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				size[2] - 40,
+				2
+			}
+		},
+		title_edge = {
+			size = {
+				size[1]/2,
+				5
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				size[2] - 40,
+				4
+			}
+		}
+	}
+	widget.element.passes = passes
+	widget.content = content
+	widget.style = style
+	widget.offset = {
+		0,
+		0,
+		0
+	}
+	widget.scenegraph_id = scenegraph_id
+
+	return widget
+end
+
+local function create_window_divider(scenegraph_id, size)
+	local widget = {
+		element = {
+			passes = {
+				{
+					texture_id = "bottom_edge",
+					style_id = "bottom_edge",
+					pass_type = "tiled_texture"
+				},
+				{
+					texture_id = "edge_holder_left",
+					style_id = "edge_holder_left",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "edge_holder_right",
+					style_id = "edge_holder_right",
+					pass_type = "texture"
+				}
+			}
+		},
+		content = {
+			edge_holder_right = "menu_frame_09_divider_right",
+			edge_holder_left = "menu_frame_09_divider_left",
+			bottom_edge = "menu_frame_09_divider"
+		},
+		style = {
+			bottom_edge = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					5,
+					0,
+					6
+				},
+				size = {
+					size[1] - 10,
+					5
+				},
+				texture_tiling_size = {
+					size[1] - 10,
+					5
+				}
+			},
+			edge_holder_left = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					3,
+					-6,
+					10
+				},
+				size = {
+					9,
+					17
+				}
+			},
+			edge_holder_right = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					size[1] - 12,
+					-6,
+					10
+				},
+				size = {
+					9,
+					17
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+
+	return widget
+end
+
+local function create_vertical_window_divider(scenegraph_id, size)
+	local widget = {
+		element = {
+			passes = {
+				{
+					texture_id = "edge",
+					style_id = "edge",
+					pass_type = "tiled_texture"
+				},
+				{
+					texture_id = "edge_holder_top",
+					style_id = "edge_holder_top",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "edge_holder_bottom",
+					style_id = "edge_holder_bottom",
+					pass_type = "texture"
+				}
+			}
+		},
+		content = {
+			edge = "menu_frame_09_divider_vertical",
+			edge_holder_top = "menu_frame_09_divider_top",
+			edge_holder_bottom = "menu_frame_09_divider_bottom"
+		},
+		style = {
+			edge = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					6,
+					6
+				},
+				size = {
+					5,
+					size[2] - 9
+				},
+				texture_tiling_size = {
+					5,
+					size[2] - 9
+				}
+			},
+			edge_holder_top = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-6,
+					size[2] - 7,
+					10
+				},
+				size = {
+					17,
+					9
+				}
+			},
+			edge_holder_bottom = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-6,
+					3,
+					10
+				},
+				size = {
+					17,
+					9
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+
+	return widget
+end
+
+local end_act_widget = create_end_act_widget()
+local widgets = {
+	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "info_window"),
+	background_mask = UIWidgets.create_simple_texture("mask_rect", "info_window"),
+	info_window = UIWidgets.create_frame("info_window", window_size, window_frame, 10),
+	window = UIWidgets.create_frame("window", large_window_size, window_frame, 10),
+	level_title = UIWidgets.create_simple_text("level_title", "level_title", nil, nil, level_text_style),
+	selected_level = create_level_widget(nil, "level_texture_frame"),
+	window_background = UIWidgets.create_simple_texture("mission_select_screen_bg", "window_background"),
+	level_title_divider = UIWidgets.create_simple_texture("divider_01_top", "level_title_divider"),
+	description_text = UIWidgets.create_simple_text("", "description_text", nil, nil, description_text_style),
+	helper_text = UIWidgets.create_simple_text(Localize("tutorial_map"), "helper_text", nil, nil, helper_text_style),
+	mission_selection_title = UIWidgets.create_simple_text(Localize("start_game_window_mission_selection_header"), "mission_selection_title", nil, nil, mission_selection_title_text_style),
+	title_divider = create_window_divider("title_divider", scenegraph_definition.title_divider.size),
+	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("menu_select"), 32)
+}
 local node_widgets = {}
 
 for i = 1, 20, 1 do
@@ -761,8 +1242,8 @@ end
 
 local act_widgets = {}
 
-for i = 1, 20, 1 do
-	act_widgets[i] = create_act_widget()
+for i = 1, 5, 1 do
+	act_widgets[i] = create_act_widget(i)
 end
 
 local animation_definitions = {
@@ -815,6 +1296,7 @@ return {
 	act_widgets = act_widgets,
 	node_widgets = node_widgets,
 	map_size = large_window_size,
+	end_act_widget = end_act_widget,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions
 }

@@ -14,7 +14,6 @@ local breed_data = {
 	stagger_threshold_light = 0.5,
 	weapon_reach = 15,
 	death_sound_event = "chaos_sorcerer_plague_death",
-	summon_sound_event = "chaos_corruptor_grabbing",
 	is_of_interest_func = "is_of_interest_to_corruptor",
 	perception_continuous = "SET_TO_NIL",
 	behavior = "chaos_corruptor_sorcerer",

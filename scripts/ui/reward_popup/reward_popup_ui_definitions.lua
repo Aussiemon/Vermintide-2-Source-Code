@@ -198,12 +198,12 @@ local scenegraph_definition = {
 }
 local title_text_style = {
 	word_wrap = true,
-	font_size = 52,
+	font_size = 46,
 	localize = false,
 	use_shadow = true,
 	horizontal_alignment = "center",
 	vertical_alignment = "center",
-	font_type = "hell_shark",
+	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
@@ -213,12 +213,12 @@ local title_text_style = {
 }
 local level_text_style = {
 	word_wrap = true,
-	font_size = 42,
+	font_size = 46,
 	localize = false,
 	use_shadow = true,
 	horizontal_alignment = "center",
 	vertical_alignment = "center",
-	font_type = "hell_shark",
+	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
@@ -268,12 +268,6 @@ local function create_icon_widget(texture, scenegraph_id)
 				}
 			},
 			frame = {
-				vertical_alignment = "center",
-				horizontal_alignment = "center",
-				texture_size = {
-					80,
-					80
-				},
 				color = {
 					255,
 					255,
@@ -350,12 +344,6 @@ local function create_item_widget(texture, scenegraph_id)
 				}
 			},
 			frame = {
-				vertical_alignment = "center",
-				horizontal_alignment = "center",
-				texture_size = {
-					80,
-					80
-				},
 				color = {
 					255,
 					255,
@@ -378,9 +366,108 @@ local function create_item_widget(texture, scenegraph_id)
 	}
 end
 
+local function create_description_text_widget(text, scenegraph_id)
+	local text_offset = {
+		0,
+		6,
+		2
+	}
+	local text_style = {
+		vertical_alignment = "bottom",
+		word_wrap = true,
+		horizontal_alignment = "center",
+		font_size = 28,
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("font_default", 255),
+		offset = text_offset
+	}
+	local text_shadow_style = table.clone(text_style)
+	text_shadow_style.text_color = {
+		255,
+		0,
+		0,
+		1
+	}
+	text_shadow_style.offset = {
+		text_offset[1] + 2,
+		text_offset[2] - 2,
+		text_offset[3] - 1
+	}
+	local title_text_offset = {
+		0,
+		0,
+		2
+	}
+	local title_text_style = {
+		vertical_alignment = "top",
+		word_wrap = true,
+		horizontal_alignment = "center",
+		font_size = 46,
+		font_type = "hell_shark_header",
+		text_color = Colors.get_color_table_with_alpha("font_title", 255),
+		offset = title_text_offset
+	}
+	local title_text_shadow_style = table.clone(title_text_style)
+	title_text_shadow_style.text_color = {
+		255,
+		0,
+		0,
+		1
+	}
+	title_text_shadow_style.offset = {
+		title_text_offset[1] + 2,
+		title_text_offset[2] - 2,
+		title_text_offset[3] - 1
+	}
+
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "title_text",
+					pass_type = "text",
+					text_id = "title_text"
+				},
+				{
+					style_id = "title_text_shadow",
+					pass_type = "text",
+					text_id = "title_text"
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text"
+				},
+				{
+					style_id = "text_shadow",
+					pass_type = "text",
+					text_id = "text"
+				}
+			}
+		},
+		content = {
+			text = text,
+			title_text = text
+		},
+		style = {
+			title_text = title_text_style,
+			title_text_shadow = title_text_shadow_style,
+			text = text_style,
+			text_shadow = text_shadow_style
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 local widget_definitions = {
 	title = UIWidgets.create_simple_text("n/a", "title_root", nil, nil, title_text_style),
 	level = UIWidgets.create_simple_text("n/a", "level_root", nil, nil, level_text_style),
+	description = create_description_text_widget("n/a", "title_root"),
 	texture = UIWidgets.create_simple_texture("icons_placeholder", "texture_root"),
 	item = create_item_widget("icons_placeholder", "item_root"),
 	loot_chest = create_item_widget("icons_placeholder", "item_root"),
@@ -478,8 +565,8 @@ local animations = {
 		},
 		{
 			name = "fade_out_title_text",
-			start_progress = 1.6,
-			end_progress = 1.8,
+			start_progress = 3.6,
+			end_progress = 3.8,
 			init = function (ui_scenegraph, scenegraph_definition, widget_type, params)
 				return 
 			end,

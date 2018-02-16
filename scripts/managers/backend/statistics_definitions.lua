@@ -128,6 +128,7 @@ for level_key, level in pairs(LevelSettings) do
 		player.completed_levels[level_key] = {
 			value = 0,
 			sync_on_hot_join = true,
+			sync_to_server = true,
 			database_name = level_key
 		}
 		local level_difficulty_name = level_key .. "_difficulty_completed"

@@ -560,6 +560,28 @@ end
 MatchmakingManager.get_peer_power_level = function (self, peer_id)
 	return self._power_levels[peer_id]
 end
+MatchmakingManager.has_required_power_level = function (self, lobby_data, profile_name, career_name)
+	local difficulty = lobby_data.difficulty
+
+	if not difficulty then
+		return false
+	end
+
+	local difficulty_settings = DifficultySettings[difficulty]
+
+	if not difficulty_settings then
+		return false
+	end
+
+	local power_level = BackendUtils.get_total_power_level(profile_name, career_name)
+	local required_power_level = difficulty_settings.required_power_level
+
+	if power_level < required_power_level then
+		return false
+	end
+
+	return true
+end
 local players_below_power_level = {}
 MatchmakingManager.players_below_power_level = function (self, power_level)
 	table.clear(players_below_power_level)
@@ -665,20 +687,69 @@ end
 MatchmakingManager.is_join_popup_visible = function (self)
 	return self.params.popup_join_lobby_handler and self.params.popup_join_lobby_handler.visible
 end
-MatchmakingManager.get_random_unlocked_level = function (self, difficulty, statistics_db, player_stats_id)
-	local random_level_list = {}
-	local levels = UnlockableLevelsByGameMode.adventure
-	local difficulty_rank = DifficultySettings[difficulty].rank
+MatchmakingManager.party_has_level_unlocked = function (self, level_key)
+	local players = Managers.player:human_players()
+	local statistics_db = self.statistics_db
 
-	for i = 1, #levels, 1 do
-		local level_key = levels[i]
+	for _, player in pairs(players) do
+		local stats_id = player.stats_id(player)
 
-		if LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level_key) then
-			random_level_list[#random_level_list + 1] = level_key
+		if not LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key) then
+			return false
 		end
 	end
 
-	return random_level_list[math.random(1, #random_level_list)]
+	return true
+end
+MatchmakingManager._get_unlocked_levels_by_party = function (self)
+	local unlocked_levels = {}
+	local players = Managers.player:human_players()
+	local statistics_db = self.statistics_db
+	local level_keys = UnlockableLevelsByGameMode.adventure
+
+	for _, level_key in ipairs(level_keys) do
+		if self.party_has_level_unlocked(self, level_key) then
+			unlocked_levels[#unlocked_levels + 1] = level_key
+		end
+	end
+
+	return unlocked_levels
+end
+MatchmakingManager._get_level_key_by_amount_played_by_party = function (self, level_keys)
+	local temp = {}
+	local players = Managers.player:human_players()
+	local statistics_db = self.statistics_db
+	local amount_of_completed_levels = 0
+
+	for _, player in pairs(players) do
+		local stats_id = player.stats_id(player)
+
+		for i, level_key in ipairs(level_keys) do
+			local times_completed = statistics_db.get_persistent_stat(statistics_db, stats_id, "completed_levels", level_key)
+			temp[i] = (temp[i] or 0) + times_completed
+			amount_of_completed_levels = amount_of_completed_levels + times_completed
+		end
+	end
+
+	for i, amount in ipairs(temp) do
+		temp[i] = amount_of_completed_levels - temp[i]
+	end
+
+	local p, a = LoadedDice.create(temp, false)
+	local result = LoadedDice.roll(p, a)
+
+	return level_keys[result]
+end
+MatchmakingManager.get_random_unlocked_level = function (self)
+	local level_keys = self._get_unlocked_levels_by_party(self)
+
+	return level_keys[math.random(1, #level_keys)]
+end
+MatchmakingManager.get_weighed_random_unlocked_level = function (self)
+	local level_keys = self._get_unlocked_levels_by_party(self)
+	local level_key = self._get_level_key_by_amount_played_by_party(self, level_keys)
+
+	return level_key
 end
 MatchmakingManager.set_matchmaking_data = function (self, next_level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized)
 	local level_transition_handler = self.level_transition_handler
@@ -711,13 +782,40 @@ end
 MatchmakingManager.on_dedicated_server = function (self)
 	return self.lobby:is_dedicated_server()
 end
+MatchmakingManager._is_first_time_searcher = function (self, search_config)
+	if DEDICATED_SERVER then
+		return false
+	end
+
+	local quick_game = search_config.quick_game
+	local local_player = Managers.player:local_player()
+
+	if quick_game then
+		if not LevelUnlockUtils.all_levels_completed(self.statistics_db, local_player.stats_id(local_player)) then
+			return true
+		end
+	else
+		local level_key = search_config.level_key
+
+		if level_key then
+			local times_completed = self.statistics_db:get_persistent_stat(local_player.stats_id(local_player), "completed_levels", level_key)
+
+			if times_completed == 0 then
+				return true
+			end
+		end
+	end
+
+	return 
+end
 MatchmakingManager.find_game = function (self, search_config)
 	if self.is_server then
 
 		-- decompilation error in this vicinity
 		self.state_context = {
 			search_config = table.clone(search_config),
-			started_matchmaking_t = Managers.time:time("main")
+			started_matchmaking_t = Managers.time:time("main"),
+			is_first_time_searcher = self._is_first_time_searcher(self, search_config)
 		}
 		local private_game = search_config.private_game
 
@@ -758,10 +856,11 @@ MatchmakingManager.cancel_matchmaking = function (self)
 	local started_matchmaking_t = self.state_context.started_matchmaking_t
 
 	if started_matchmaking_t ~= nil then
-		local t = Managers.time:time("game") or started_matchmaking_t
+		local t = Managers.time:time("main") or started_matchmaking_t
 		local time_taken = t - started_matchmaking_t
+		local is_first_time_searcher = self.state_context.is_first_time_searcher
 
-		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken)
+		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, is_first_time_searcher)
 	end
 
 	self.state_context = {}
@@ -1574,6 +1673,28 @@ MatchmakingManager._matchmaking_status = function (self)
 	end
 
 	return 
+end
+MatchmakingManager.are_all_players_spawned = function (self)
+	local lobby = self.lobby
+	local members = lobby.members(lobby):get_members()
+	local player_manager = Managers.player
+
+	for i = 1, #members, 1 do
+		local peer_id = members[i]
+		local player = player_manager.player_from_peer_id(player_manager, peer_id)
+
+		if not player then
+			return false
+		end
+
+		local player_unit = player.player_unit
+
+		if not Unit.alive(player_unit) then
+			return false
+		end
+	end
+
+	return true
 end
 local info = {}
 MatchmakingManager.search_info = function (self)

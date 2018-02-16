@@ -32,8 +32,10 @@ ChaosTrollHealthExtension.hot_join_sync = function (self, sender)
 	if go_id then
 		local health = self.health
 		local state = NetworkLookup.health_statuses[self.state]
+		local is_level_unit = false
+		local set_max_health = true
 
-		self.network_transmit:send_rpc("rpc_sync_damage_taken", sender, go_id, false, true, health, state)
+		self.network_transmit:send_rpc("rpc_sync_damage_taken", sender, go_id, is_level_unit, set_max_health, health, state)
 	end
 
 	ChaosTrollHealthExtension.super.hot_join_sync(self, sender)
@@ -180,8 +182,9 @@ ChaosTrollHealthExtension.sync_health_to_clients = function (self)
 	self._game_object_id = self._game_object_id or Managers.state.unit_storage:go_id(self.unit)
 	local state_id = NetworkLookup.health_statuses[self.state]
 	local is_level_unit = false
+	local set_max_health = false
 
-	self.network_transmit:send_rpc_clients("rpc_sync_damage_taken", self._game_object_id, is_level_unit, false, self.damage, state_id)
+	self.network_transmit:send_rpc_clients("rpc_sync_damage_taken", self._game_object_id, is_level_unit, set_max_health, self.damage, state_id)
 
 	return 
 end

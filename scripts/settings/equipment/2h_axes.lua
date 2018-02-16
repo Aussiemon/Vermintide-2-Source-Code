@@ -789,14 +789,20 @@ weapon_template.wield_anim = "to_2h_hammer"
 weapon_template.buff_type = "MELEE_2H"
 weapon_template.weapon_type = "AXE_2H"
 weapon_template.max_fatigue_points = 5
-weapon_template.dodge_distance = 0.95
-weapon_template.dodge_speed = 0.95
 weapon_template.dodge_count = 2
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
 weapon_template.sound_event_block_within_arc = "weapon_foley_blunt_2h_block_wood"
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 0.95
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 0.95
+	}
+}
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		penetrating = true,

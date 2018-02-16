@@ -137,13 +137,14 @@ TelemetryEvents.fatigue_gained = function (self, player, position, fatigue_type,
 
 	return 
 end
-TelemetryEvents.matchmaking_connection = function (self, player, connection_state, time_taken)
+TelemetryEvents.matchmaking_connection = function (self, player, connection_state, time_taken, first_time_searcher)
 	table.clear(params)
 
 	params.player_id = player.telemetry_id(player)
 	params.hero = player.profile_display_name(player)
 	params.connection_state = connection_state
 	params.time_taken = time_taken
+	params.first_time_searcher = first_time_searcher
 
 	self.manager:register_event("matchmaking_connection", params)
 
@@ -171,6 +172,17 @@ TelemetryEvents.matchmaking_starting_game = function (self, player, nr_friends)
 	params.nr_friends = nr_friends
 
 	self.manager:register_event("matchmaking_starting_game", params)
+
+	return 
+end
+TelemetryEvents.matchmaking_player_joined = function (self, player, time_taken_since_host_start, is_friend)
+	table.clear(params)
+
+	params.player_id = player.telemetry_id(player)
+	params.time_taken_since_host_start = time_taken_since_host_start
+	params.is_friend = is_friend
+
+	self.manager:register_event("matchmaking_player_joined", params)
 
 	return 
 end
@@ -462,6 +474,18 @@ TelemetryEvents.memory_statistics = function (self, memory_tree, memory_resource
 	params.tag = tag
 
 	self.manager:register_event("memory_statistics", params)
+
+	return 
+end
+TelemetryEvents.player_stuck = function (self, player, level_key)
+	table.clear(params)
+
+	params.player_id = player.telemetry_id(player)
+	params.position = Unit.local_position(player.player_unit, 0)
+	params.rotation = Unit.local_rotation(player.player_unit, 0)
+	params.level_key = level_key
+
+	self.manager:register_event("player_stuck", params)
 
 	return 
 end

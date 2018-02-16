@@ -84,6 +84,14 @@ weapon_template.display_unit = "units/weapons/weapon_display/display_1h_weapon"
 weapon_template.wield_anim = "to_1h_sword"
 weapon_template.block_wielding = true
 weapon_template.third_person_extension_template = "torch_unit_3p"
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 Weapons = Weapons or {}
 Weapons.torch = weapon_template
 Weapons.torch = Weapons.torch or table.clone(weapon_template)

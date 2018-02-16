@@ -1,7 +1,7 @@
 Development._hardcoded_dev_params = {
 	package_debug = true,
-	use_beta_overlay = false,
-	disable_eac = true,
+	use_beta_overlay = true,
+	force_debug_disabled = true,
 	network_debug = true,
 	matchmaking_debug = true,
 	network_debug_connections = true,
@@ -12,7 +12,6 @@ Development._hardcoded_dev_params = {
 	debug_voip = true,
 	use_telemetry = true,
 	use_local_backend = false,
-	force_debug_disabled = true,
 	network_log_messages = true,
 	disable_intro_trailer = false,
 	force_steam = true,

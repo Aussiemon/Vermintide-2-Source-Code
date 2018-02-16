@@ -125,6 +125,10 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 
 		overcharge_extension.reset(overcharge_extension)
 		career_extension.set_state(career_extension, "sienna_activate_unchained")
+
+		local position = POSITION_LOOKUP[owner_unit]
+
+		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_unchained_fire", position)
 	end
 
 	local dialogue_input = ScriptUnit.extension_input(owner_unit, "dialogue_system")

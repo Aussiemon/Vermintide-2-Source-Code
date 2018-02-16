@@ -94,6 +94,8 @@ BTBotMeleeAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		self._disengage(self, unit, t, blackboard)
 	end
 
+	self._clear_pending_attack(self, blackboard)
+
 	return 
 end
 BTBotMeleeAction.run = function (self, unit, blackboard, t, dt)
@@ -229,10 +231,17 @@ BTBotMeleeAction._choose_attack = function (self, blackboard, target_unit)
 
 	return best_attack_input, best_attack_meta_data
 end
-BTBotMeleeAction._is_in_melee_range = function (self, current_position, aim_position, melee_range)
+BTBotMeleeAction._is_in_melee_range = function (self, current_position, aim_position, melee_range, attack_input, t, blackboard, target_unit)
+	local target_locomotion_extension = ScriptUnit.has_extension(target_unit, "locomotion_system")
+	local target_velocity = (target_locomotion_extension and target_locomotion_extension.current_velocity(target_locomotion_extension)) or Vector3.zero()
+	local locomotion_extension = blackboard.locomotion_extension
+	local current_velocity = locomotion_extension.current_velocity(locomotion_extension)
+	local relative_velocity = current_velocity - target_velocity
+	local time_to_next_attack = math.max(self._time_to_next_attack(self, attack_input, blackboard, t) or 0, 0)
+	local check_position = current_position + relative_velocity*time_to_next_attack
 	local melee_range_sq = melee_range^2
 
-	return Vector3.distance_squared(aim_position, current_position) < melee_range_sq
+	return Vector3.distance_squared(aim_position, check_position) < melee_range_sq
 end
 BTBotMeleeAction._is_in_engage_range = function (self, self_unit, target_unit, nav_world, action_data, follow_pos)
 	local engage_range_sq = nil
@@ -457,9 +466,9 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 	local melee_bb = blackboard.melee
 	local already_engaged = melee_bb.engaging
 
-	if self._is_in_melee_range(self, current_position, aim_position, melee_range, blackboard) then
+	if self._is_in_melee_range(self, current_position, aim_position, melee_range, attack_input, t, blackboard, target_unit) then
 		if not self._defend(self, unit, blackboard, target_unit, input_ext, t, true) then
-			self._attack(self, input_ext, attack_input)
+			self._attack(self, attack_input, blackboard)
 
 			attack_performed = true
 		end
@@ -476,6 +485,12 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 
 		wants_engage = melee_bb.engaging and t - melee_bb.engage_change_time <= 0
 		eval_timer = 3
+	end
+
+	local is_starting_attack = self._is_starting_attack(self, blackboard)
+
+	if is_starting_attack then
+		eval_timer = math.huge
 	end
 
 	local engage = wants_engage and self._allow_engage(self, unit, target_unit, blackboard, action_data, already_engaged, aim_position, follow_pos)
@@ -495,7 +510,7 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 	end
 
 	if script_data.ai_bots_weapon_debug then
-		self._debug_draw_melee_range(self, unit, target_unit, blackboard, current_position, aim_position, attack_input, attack_meta_data, attack_performed)
+		self._debug_draw_melee_range(self, unit, target_unit, blackboard, current_position, aim_position, attack_input, attack_meta_data, attack_performed, t)
 	end
 
 	return false, self._evaluation_timer(self, blackboard, t, eval_timer)
@@ -505,6 +520,8 @@ local DEFAULT_DEFENSE_META_DATA = {
 }
 BTBotMeleeAction._defend = function (self, unit, blackboard, target_unit, input_ext, t, in_melee_range)
 	if self._is_attacking_me(self, unit, target_unit) then
+		self._clear_pending_attack(self, blackboard)
+
 		local defense_meta_data = blackboard.wielded_item_template.defense_meta_data or DEFAULT_DEFENSE_META_DATA
 		local num_enemies = #blackboard.proximite_enemies
 		local current_fatigue, max_fatigue = ScriptUnit.extension(unit, "status_system"):current_fatigue_points()
@@ -526,8 +543,52 @@ BTBotMeleeAction._defend = function (self, unit, blackboard, target_unit, input_
 
 	return 
 end
-BTBotMeleeAction._attack = function (self, input_ext, attack_input)
-	input_ext[attack_input](input_ext)
+BTBotMeleeAction._get_current_weapon_extension = function (self, blackboard)
+	local inventory_extension = blackboard.inventory_extension
+	local _, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
+	local _, current_action_extension, _ = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
+
+	return current_action_extension or right_hand_weapon_extension or left_hand_weapon_extension
+end
+BTBotMeleeAction._time_to_next_attack = function (self, attack_input, blackboard, t)
+	local weapon_extension = self._get_current_weapon_extension(self, blackboard)
+
+	if weapon_extension then
+		local wielded_item_template = blackboard.wielded_item_template
+
+		return weapon_extension.time_to_next_attack(weapon_extension, attack_input, wielded_item_template.actions, wielded_item_template.name, t)
+	end
+
+	return 
+end
+BTBotMeleeAction._attack = function (self, attack_input, blackboard)
+	local weapon_extension = self._get_current_weapon_extension(self, blackboard)
+
+	if weapon_extension then
+		local wielded_item_template = blackboard.wielded_item_template
+
+		weapon_extension.request_bot_attack_action(weapon_extension, attack_input, wielded_item_template.actions, wielded_item_template.name)
+	end
+
+	return 
+end
+BTBotMeleeAction._clear_pending_attack = function (self, blackboard)
+	local weapon_extension = self._get_current_weapon_extension(self, blackboard)
+
+	if weapon_extension then
+		weapon_extension.clear_bot_attack_request(weapon_extension)
+	end
+
+	return 
+end
+BTBotMeleeAction._is_starting_attack = function (self, blackboard)
+	local weapon_extension = self._get_current_weapon_extension(self, blackboard)
+
+	if weapon_extension then
+		return weapon_extension.is_starting_attack(weapon_extension)
+	else
+		return false
+	end
 
 	return 
 end
@@ -562,10 +623,10 @@ BTBotMeleeAction._engage = function (self, t, blackboard)
 
 	return 
 end
-BTBotMeleeAction._debug_draw_melee_range = function (self, unit, target_unit, blackboard, current_position, aim_position, attack_input, attack_meta_data, attack_performed)
+BTBotMeleeAction._debug_draw_melee_range = function (self, unit, target_unit, blackboard, current_position, aim_position, attack_input, attack_meta_data, attack_performed, t)
 	local attack_max_range = attack_meta_data.max_range
 	local melee_range = self._calculate_melee_range(self, target_unit, attack_meta_data)
-	local in_range = self._is_in_melee_range(self, current_position, aim_position, melee_range, blackboard)
+	local in_range = self._is_in_melee_range(self, current_position, aim_position, melee_range, attack_input, t, blackboard, target_unit)
 	local debug_color = (in_range and Colors.get("green")) or Colors.get("red")
 
 	QuickDrawer:sphere(current_position, attack_max_range, debug_color)

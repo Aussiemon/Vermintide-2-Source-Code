@@ -88,7 +88,7 @@ PowerLevelTemplates = {
 		attack_template = "basic_sweep_push",
 		power_distribution = {
 			attack = 0,
-			impact = 0.75
+			impact = 0.4
 		}
 	},
 	armor_modifier_push_Ability = {
@@ -204,7 +204,7 @@ PowerLevelTemplates = {
 		attack_template = "heavy_blunt_fencer",
 		power_distribution = {
 			attack = 0.15,
-			impact = 0.2
+			impact = 0.25
 		}
 	},
 	aoe_target_settings_slam_tank_M = {
@@ -252,7 +252,7 @@ PowerLevelTemplates = {
 		}
 	},
 	cleave_distribution_linesman_L = {
-		attack = 0.35,
+		attack = 0.3,
 		impact = 0.2
 	},
 	armor_modifier_linesman_L = {
@@ -387,7 +387,7 @@ PowerLevelTemplates = {
 		}
 	},
 	cleave_distribution_linesman_M = {
-		attack = 0.5,
+		attack = 0.4,
 		impact = 0.3
 	},
 	armor_modifier_linesman_M = {
@@ -872,14 +872,14 @@ PowerLevelTemplates = {
 	critical_strike_smiter_L = {
 		attack_armor_power_modifer = {
 			1,
-			0.75,
+			1,
 			2,
 			1,
 			1
 		},
 		impact_armor_power_modifer = {
 			1,
-			0.75,
+			1,
 			1,
 			1,
 			1
@@ -888,14 +888,14 @@ PowerLevelTemplates = {
 	armor_modifier_smiter_L = {
 		attack = {
 			1,
-			0.8,
+			0.75,
 			2,
 			1,
 			0.75
 		},
 		impact = {
 			0.75,
-			1,
+			0.75,
 			1,
 			1,
 			0.75
@@ -968,7 +968,7 @@ PowerLevelTemplates = {
 		},
 		impact = {
 			1,
-			1,
+			0.8,
 			1,
 			1,
 			0.75
@@ -1306,34 +1306,36 @@ PowerLevelTemplates = {
 	armor_modifier_fencer_stab_M = {
 		attack = {
 			1,
-			0.25,
+			0.4,
 			1.5,
 			1,
-			0.75
+			0.75,
+			0.25
 		},
 		impact = {
 			1,
 			0.25,
 			0.5,
 			1,
-			0.75
+			0.75,
+			0.25
 		}
 	},
 	default_target_fencer_stab_M = {
 		boost_curve_type = "smiter_curve",
-		boost_curve_coefficient_headshot = 2,
+		boost_curve_coefficient_headshot = 2.5,
 		attack_template = "stab_smiter",
 		power_distribution = {
-			attack = 0.15,
+			attack = 0.25,
 			impact = 0.075
 		}
 	},
 	default_target_fencer_stab_M_charged = {
 		boost_curve_type = "smiter_curve",
-		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_coefficient_headshot = 2.5,
 		attack_template = "stab_smiter",
 		power_distribution = {
-			attack = 0.3,
+			attack = 0.45,
 			impact = 0.125
 		}
 	},
@@ -1493,6 +1495,7 @@ PowerLevelTemplates = {
 	targets_tank_M = {
 		{
 			boost_curve_type = "tank_curve",
+			boost_curve_coefficient_headshot = 1,
 			attack_template = "blunt_tank",
 			power_distribution = {
 				attack = 0.2,

@@ -21,7 +21,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			15
+			10
 		},
 		size = {
 			624,
@@ -342,14 +342,14 @@ local function create_ability_widget()
 				offset = {
 					0,
 					22,
-					10
+					2
 				}
 			}
 		},
 		offset = {
 			0,
 			0,
-			20
+			0
 		}
 	}
 end

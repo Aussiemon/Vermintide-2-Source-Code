@@ -77,14 +77,18 @@ varargs.join = function (delimiter, ...)
 	return output .. tostring(select(num_args, ...))
 end
 
-function unpack_string(s)
+function split_string(s)
 	local parts = {}
 
 	for part in s.gmatch(s, "(%S+)") do
 		parts[#parts + 1] = part
 	end
 
-	return unpack(parts)
+	return parts
+end
+
+function unpack_string(s)
+	return unpack(split_string(s))
 end
 
 function ituple(t)

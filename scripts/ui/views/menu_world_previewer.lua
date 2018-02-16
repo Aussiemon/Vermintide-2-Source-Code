@@ -244,6 +244,21 @@ MenuWorldPreviewer._update_units_visibility = function (self, dt)
 		if self.character_unit_hidden and Unit.alive(self.character_unit) then
 			Unit.flow_event(self.character_unit, "lua_spawn_attachments")
 
+			local skin_data = self.character_unit_skin_data
+			local material_changes = skin_data.material_changes
+
+			if material_changes then
+				local third_person_changes = material_changes.third_person
+				local flow_unit_attachments = Unit.get_data(self.character_unit, "flow_unit_attachments") or {}
+
+				for slot_name, material_name in pairs(third_person_changes) do
+					for _, unit in pairs(flow_unit_attachments) do
+						Unit.set_material(unit, slot_name, material_name)
+					end
+				end
+			end
+
+			self.character_unit_skin_data = nil
 			self.character_unit_hidden = false
 		end
 
@@ -401,7 +416,6 @@ MenuWorldPreviewer.play_character_animation = function (self, animation_event)
 end
 MenuWorldPreviewer.spawn_hero_unit = function (self, profile_name, career_index, state_character, callback, optional_scale, camera_move_duration, optional_skin)
 	self.camera_xy_angle_target = DEFAULT_ANGLE
-	self._current_profile_name = profile_name
 	local ignore_camera_reset = true
 
 	self.clear_units(self, ignore_camera_reset)
@@ -427,6 +441,8 @@ MenuWorldPreviewer.spawn_hero_unit = function (self, profile_name, career_index,
 		skin_name = career.base_skin
 	end
 
+	self._current_career_name = career_name
+	self.character_unit_skin_data = nil
 	local package_names = {}
 	local skin_data = Cosmetics[skin_name]
 	local unit_name = skin_data.third_person
@@ -440,7 +456,7 @@ MenuWorldPreviewer.spawn_hero_unit = function (self, profile_name, career_index,
 
 	local data = {
 		num_loaded_packages = 0,
-		profile_name = profile_name,
+		career_name = career_name,
 		skin_data = skin_data,
 		optional_scale = optional_scale,
 		package_names = package_names,
@@ -479,6 +495,7 @@ MenuWorldPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale)
 	self._hidden_units[character_unit] = true
 	self.character_unit = character_unit
 	self.character_unit_hidden = true
+	self.character_unit_skin_data = skin_data
 	self.unit_visibility_frame_delay = 3
 
 	if Unit.has_lod_object(character_unit, "lod") then
@@ -690,9 +707,9 @@ MenuWorldPreviewer.on_hero_load_complete = function (self, package_name, data)
 		end
 	end
 
-	local profile_name = data.profile_name
+	local career_name = data.career_name
 
-	if profile_name == self._current_profile_name then
+	if career_name == self._current_career_name then
 		local skin_data = data.skin_data
 		local optional_scale = data.optional_scale
 

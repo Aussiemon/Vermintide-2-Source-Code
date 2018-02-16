@@ -2,29 +2,29 @@ local breed_data = {
 	is_bot_threat = true,
 	wwise_voice_switch_group = "stormvermin_vce",
 	walk_speed = 2.75,
-	threat_value = 4,
+	perception = "perception_regular",
 	poison_resistance = 100,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
-	no_stagger_duration = false,
 	has_running_attack = true,
 	target_selection = "pick_closest_target_with_spillover",
+	disable_crowd_dispersion = true,
 	animation_sync_rpc = "rpc_sync_anim_state_5",
 	aoe_radius = 0.4,
-	disable_crowd_dispersion = true,
 	aoe_height = 1.7,
-	run_speed = 4.8,
 	race = "skaven",
-	perception = "perception_regular",
+	no_stagger_duration = false,
+	run_speed = 4.8,
+	threat_value = 4,
 	detection_radius = 12,
-	smart_object_template = "special",
 	bone_lod_level = 1,
+	smart_object_template = "special",
 	default_inventory_template = "halberd",
 	stagger_resistance = 1,
 	patrol_detection_radius = 10,
 	flingable = true,
 	panic_close_detection_radius_sq = 9,
 	radius = 1,
-	hit_mass_count = 4,
+	hit_mass_count = 5,
 	patrol_active_perception = "perception_regular",
 	perception_previous_attacker_stickyness_value = -4.5,
 	death_reaction = "ai_default",
@@ -56,13 +56,14 @@ local breed_data = {
 	death_squad_detection_radius = 8,
 	base_unit = "units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin",
 	enter_walk_distance = 2.5,
+	elite = true,
 	perception_exceptions = {
 		poison_well = true,
 		wizard_destructible = true
 	},
 	size_variation_range = {
-		1.05,
-		1.15
+		1.1,
+		1.175
 	},
 	max_health = {
 		13,
@@ -89,11 +90,11 @@ local breed_data = {
 		1
 	},
 	hit_mass_counts = {
-		4,
-		4,
 		5,
-		6,
-		8
+		5,
+		7.5,
+		10,
+		15
 	},
 	wwise_voices = {
 		"low",

@@ -404,6 +404,10 @@ GameNetworkManager.game_object_created_player = function (self, go_id, owner_pee
 
 		player.set_game_object_id(player, go_id)
 		player.create_boon_handler(player, self._world)
+
+		local stats_id = player.stats_id(player)
+
+		self.statistics_db:sync_stats_to_server(stats_id, peer_id, local_player_id, self.network_transmit)
 		debug_print("PLAYER TYPE: %s", player.type(player))
 	else
 		debug_print("PLAYER ADDED go_id = %d, peer_id = %s, self.peer_id = %s", go_id, peer_id, self.peer_id)
@@ -439,6 +443,10 @@ GameNetworkManager.game_object_destroyed_player = function (self, go_id, owner_p
 end
 GameNetworkManager.game_object_created_player_unit_health = function (self, go_id, owner_peer_id)
 	local health_extension = self._health_extension(self, go_id)
+
+	if health_extension == nil then
+		return 
+	end
 
 	health_extension.set_health_game_object_id(health_extension, go_id)
 
@@ -500,6 +508,26 @@ GameNetworkManager.game_object_created_network_unit = function (self, game_objec
 end
 GameNetworkManager.game_object_created_music_states = function (self, game_object_id, owner_id, go_template)
 	Managers.music:game_object_created(game_object_id, owner_id, go_template)
+
+	return 
+end
+GameNetworkManager.game_object_created_keep_decoration = function (self, game_object_id, owner_id, go_template)
+	local unit_level_index = GameSession.game_object_field(self.game_session, game_object_id, "level_unit_index")
+	local level = LevelHelper:current_level(self._world)
+	local unit = Level.unit_by_index(level, unit_level_index)
+	local decoration_system = Managers.state.entity:system("keep_decoration_system")
+
+	decoration_system.on_game_object_created(decoration_system, unit, game_object_id)
+
+	return 
+end
+GameNetworkManager.game_object_destroyed_keep_decoration = function (self, game_object_id, owner_id, go_template)
+	local unit_level_index = GameSession.game_object_field(self.game_session, game_object_id, "level_unit_index")
+	local level = LevelHelper:current_level(self._world)
+	local unit = Level.unit_by_index(level, unit_level_index)
+	local decoration_system = Managers.state.entity:system("keep_decoration_system")
+
+	decoration_system.on_game_object_destroyed(decoration_system, unit)
 
 	return 
 end
@@ -627,6 +655,10 @@ GameNetworkManager.remove_peer = function (self, peer_id)
 		self._object_synchronizing_clients[peer_id] = nil
 
 		self.network_transmit:remove_peer_ignore(peer_id)
+	end
+
+	if Managers.game_server ~= nil then
+		Managers.game_server:remove_peer(peer_id)
 	end
 
 	self.player_manager:remove_all_players_from_peer(peer_id)
@@ -854,16 +886,20 @@ GameNetworkManager.rpc_assist = function (self, sender, savior_player_id, savior
 	local savior_unit = savior_player.player_unit
 	local saved_unit = saved_player.player_unit
 
-	if not saved_player.remote then
-		local buff_extension = ScriptUnit.extension(saved_unit, "buff_system")
+	if saved_unit and not saved_player.remote then
+		local buff_extension = ScriptUnit.has_extension(saved_unit, "buff_system")
 
-		buff_extension.trigger_procs(buff_extension, "on_assisted", savior_unit, enemy_unit)
+		if buff_extension then
+			buff_extension.trigger_procs(buff_extension, "on_assisted", savior_unit, enemy_unit)
+		end
 	end
 
-	if not savior_player.remote then
-		local savior_buff_extension = ScriptUnit.extension(savior_unit, "buff_system")
+	if savior_unit and not savior_player.remote then
+		local savior_buff_extension = ScriptUnit.has_extension(savior_unit, "buff_system")
 
-		savior_buff_extension.trigger_procs(savior_buff_extension, "on_assisted_ally", saved_unit, enemy_unit)
+		if savior_buff_extension then
+			savior_buff_extension.trigger_procs(savior_buff_extension, "on_assisted_ally", saved_unit, enemy_unit)
+		end
 	end
 
 	if predicate == "save" then

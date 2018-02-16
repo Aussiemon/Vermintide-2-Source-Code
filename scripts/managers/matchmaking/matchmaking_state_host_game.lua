@@ -22,6 +22,15 @@ MatchmakingStateHostGame.on_enter = function (self, state_context)
 
 	if not DEDICATED_SERVER then
 		self.set_debug_info(self)
+
+		local player = Managers.player:local_player()
+		local connection_state = "started_hosting"
+		local time_taken = Managers.time:time("main") - self.state_context.started_matchmaking_t
+		local is_first_time_searcher = self.state_context.is_first_time_searcher
+
+		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, is_first_time_searcher)
+
+		self.state_context.started_hosting_t = Managers.time:time("main")
 	end
 
 	return 

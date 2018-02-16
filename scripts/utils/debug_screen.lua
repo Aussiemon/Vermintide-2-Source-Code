@@ -345,7 +345,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 			local current_item = cs.title:lower()
 			current_item = string.gsub(current_item, "[_ ]", "")
 
-			if current_item.find(current_item, search_string) ~= nil then
+			if current_item.find(current_item, search_string, 1, true) ~= nil then
 				filtered_console_settings[#filtered_console_settings + 1] = cs
 			end
 		end
@@ -675,6 +675,13 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 					script_data[cs.title] = nil
 
 					Development.clear_param_cache(cs.title)
+				end
+
+				if cs.close_when_selected then
+					DebugScreen.active = false
+					opened_this_frame = true
+
+					input_manager.device_unblock_service(input_manager, "keyboard", 1, "Debug")
 				end
 
 				Application.save_user_settings()

@@ -306,13 +306,16 @@ PlayerUnitAttachmentExtension._apply_buffs = function (self, buffs_by_buffer, it
 
 	for buffer, buffs in pairs(buffs_by_buffer) do
 		if self._is_server or buffer == "client" or buffer == "both" then
-			for buff_name, value in pairs(buffs) do
+			for buff_name, variable_data in pairs(buffs) do
 				local buff_data = BuffTemplates[buff_name]
 
 				fassert(buff_data, "buff name %s does not exist on item %s, typo?", buff_name, item_name)
 				table.clear(params)
 
-				params.variable_value = value
+				for data_type, data_value in pairs(variable_data) do
+					params[data_type] = data_value
+				end
+
 				current_item_buffs[index] = buff_extension.add_buff(buff_extension, buff_name, params)
 				index = index + 1
 			end

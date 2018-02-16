@@ -2657,7 +2657,8 @@ HitEffectsSkavenClanRatShield = {
 		flow_event = "warpfire_burn",
 		extra_conditions = {
 			damage_type = {
-				"warpfire_ground"
+				"warpfire_ground",
+				"warpfire_face"
 			}
 		}
 	},
@@ -2667,7 +2668,8 @@ HitEffectsSkavenClanRatShield = {
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"warpfire_ground"
+				"warpfire_ground",
+				"warpfire_face"
 			}
 		},
 		animations = {

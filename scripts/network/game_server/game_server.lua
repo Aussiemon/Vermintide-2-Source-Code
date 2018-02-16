@@ -75,6 +75,11 @@ GameServer.update = function (self, dt, t)
 
 	return self._state
 end
+GameServer.remove_peer = function (self, peer_id)
+	self._game_server:remove_member(peer_id)
+
+	return 
+end
 GameServer.set_lobby_data = function (self, data)
 	print("Set lobby begin:")
 

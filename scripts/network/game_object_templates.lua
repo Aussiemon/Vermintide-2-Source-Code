@@ -366,6 +366,10 @@ local game_object_templates = {
 		syncs_rotation = false,
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false
+	},
+	keep_decoration_painting = {
+		game_object_created_func_name = "game_object_created_keep_decoration",
+		game_object_destroyed_func_name = "game_object_destroyed_keep_decoration"
 	}
 }
 

@@ -82,70 +82,7 @@ weapon_template.actions = {
 			},
 			timed_data = {
 				life_time = 1,
-				aoe = {
-					explosion = {
-						radius_min = 0.5,
-						boost_curve_coefficient = 1,
-						radius_max = 1,
-						damage_type_glance = "drakegun_glance",
-						max_damage_radius_min = 0.1,
-						attack_template = "drakegun",
-						damage_type = "drakegun",
-						attack_template_glance = "drakegun_glance",
-						max_damage_radius_max = 0.75,
-						boost_curve_type = "ninja_curve",
-						sound_event_name = "drakepistol_hit",
-						effect_name = "fx/wpnfx_drake_pistols_projectile_impact",
-						armour_modifier = {
-							attack = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							},
-							impact = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							}
-						},
-						cleave_distribution = {
-							attack = 0.2,
-							impact = 0.2
-						},
-						power_distribution = {
-							attack = 0.9,
-							impact = 0.3
-						},
-						armour_modifier = {
-							attack = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							},
-							impact = {
-								1,
-								0.8,
-								2.5,
-								1,
-								1.5
-							}
-						},
-						cleave_distribution = {
-							attack = 0.2,
-							impact = 0.2
-						},
-						power_distribution = {
-							attack = 0.9,
-							impact = 0.3
-						}
-					}
-				}
+				aoe = ExplosionTemplates.drake_pistol_aoe
 			},
 			recoil_settings = {
 				horizontal_climb = 0,
@@ -384,9 +321,9 @@ weapon_template.actions = {
 weapon_template.overcharge_data = {
 	overcharge_threshold = 10,
 	overcharge_warning_critical_sound_event = "drakegun_overcharge_warning_critical",
-	time_until_overcharge_decreases = 0.25,
+	time_until_overcharge_decreases = 0.5,
 	overcharge_warning_low_sound_event = "drakegun_overcharge_warning_low",
-	overcharge_value_decrease_rate = 1.3,
+	overcharge_value_decrease_rate = 1,
 	overcharge_warning_high_sound_event = "drakegun_overcharge_warning_high",
 	explosion_template = "overcharge_explosion_dwarf",
 	overcharge_warning_med_sound_event = "drakegun_overcharge_warning_med",
@@ -411,9 +348,15 @@ weapon_template.crosshair_style = "arrows"
 weapon_template.fire_at_gaze_setting = "tobii_fire_at_gaze_drake_pistols"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "DRAKEFIRE"
-weapon_template.dodge_distance = 0.85
-weapon_template.dodge_speed = 0.85
-weapon_template.dodge_count = 1
+weapon_template.dodge_count = 2
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 0.85
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 0.85
+	}
+}
 weapon_template.wwise_dep_right_hand = {
 	"wwise/drakegun"
 }

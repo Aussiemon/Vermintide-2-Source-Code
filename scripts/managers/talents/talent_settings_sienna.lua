@@ -1,6 +1,6 @@
 local buff_tweak_data = {
 	sienna_scholar_ability_cooldown_on_hit = {
-		bonus = 0.5
+		bonus = 0.25
 	},
 	sienna_scholar_ability_cooldown_on_damage_taken = {
 		bonus = 0.3
@@ -13,28 +13,28 @@ local buff_tweak_data = {
 		bonus = 0.06
 	},
 	sienna_scholar_passive_ranged_damage = {
-		multiplier = 0.3
+		multiplier = 0.1
 	},
 	sienna_scholar_reduced_overcharge = {
 		multiplier = -0.1
 	},
 	sienna_scholar_increased_attack_speed = {
-		multiplier = 0.1
+		multiplier = 0.05
 	},
 	sienna_scholar_reduced_spread = {
-		multiplier = -0.5
+		multiplier = -0.25
 	},
 	sienna_scholar_defence_on_disabled = {
 		multiplier = -0.5
 	},
 	sienna_scholar_overcharge_regen_on_grimoire_pickup_buff = {
-		multiplier = 2
+		multiplier = 1
 	},
 	sienna_scholar_increased_ranged_charge_speed_on_low_health = {
 		activation_health = 0.3
 	},
 	sienna_scholar_ranged_charge_speed_on_low_health = {
-		multiplier = -0.3
+		multiplier = -0.15
 	},
 	sienna_scholar_passive_reduced_block_cost_from_overcharge = {
 		chunk_size = 8
@@ -48,14 +48,14 @@ local buff_tweak_data = {
 	},
 	sienna_scholar_passive_reduced_overcharge = {
 		max_stacks = 5,
-		multiplier = -0.1
+		multiplier = -0.05
 	},
 	sienna_scholar_passive_increased_attack_speed_from_overcharge = {
 		chunk_size = 8
 	},
 	sienna_scholar_passive_increased_attack_speed = {
 		max_stacks = 5,
-		multiplier = 0.1
+		multiplier = 0.02
 	},
 	sienna_scholar_critical_hit_damage = {
 		multiplier = 0.3
@@ -64,7 +64,7 @@ local buff_tweak_data = {
 		bonus = 2
 	},
 	sienna_scholar_attack_speed = {
-		multiplier = 0.1
+		multiplier = 0.05
 	},
 	sienna_scholar_activated_ability_cooldown = {
 		multiplier = -0.3
@@ -73,7 +73,7 @@ local buff_tweak_data = {
 		bonus = 10
 	},
 	sienna_adept_ability_cooldown_on_hit = {
-		bonus = 0.3
+		bonus = 0.25
 	},
 	sienna_adept_ability_cooldown_on_damage_taken = {
 		bonus = 0.5
@@ -82,24 +82,24 @@ local buff_tweak_data = {
 		duration = 8
 	},
 	sienna_adept_passive_ranged_damage = {
-		multiplier = 0.3
+		multiplier = 0.1
 	},
 	sienna_adept_passive_overcharge_charge_speed_increased = {
-		max_multiplier = -0.5,
+		max_multiplier = -0.15,
 		chunk_size = 4,
-		min_multiplier = -0.05
+		min_multiplier = -0.02
 	},
 	tranquility = {
-		multiplier = 3
+		multiplier = 2
 	},
 	sienna_adept_activated_ability = {
 		duration = 0.4
 	},
 	sienna_adept_charge_speed_increase = {
-		multiplier = -0.3
+		multiplier = -0.15
 	},
 	sienna_adept_healing_received = {
-		multiplier = 0.3
+		multiplier = 0.2
 	},
 	sienna_adept_max_stamina = {
 		bonus = 2
@@ -125,13 +125,13 @@ local buff_tweak_data = {
 		multiplier = -0.4
 	},
 	sienna_adept_improved_tranquility = {
-		multiplier = 2
+		multiplier = 1
 	},
 	sienna_adept_passive_charge_speed_increased = {
-		multiplier = -0.7
+		multiplier = -0.4
 	},
 	sienna_adept_attack_speed_on_critical = {
-		multiplier = 0.3,
+		multiplier = 0.15,
 		duration = 3
 	},
 	sienna_adept_damage_taken_capped = {
@@ -144,7 +144,7 @@ local buff_tweak_data = {
 		duration = 10
 	},
 	sienna_unchained_ability_cooldown_on_hit = {
-		bonus = 0.3
+		bonus = 0.25
 	},
 	sienna_unchained_ability_cooldown_on_damage_taken = {
 		bonus = 0.5
@@ -169,7 +169,7 @@ local buff_tweak_data = {
 		multiplier = 0.2
 	},
 	sienna_unchained_max_overcharge = {
-		multiplier = 0.3
+		multiplier = 0.2
 	},
 	sienna_unchained_stamina_regen = {
 		duration = 2,
@@ -183,13 +183,13 @@ local buff_tweak_data = {
 		multiplier = -0.25
 	},
 	sienna_unchained_reduced_vent_damage = {
-		multiplier = -0.5
+		multiplier = -0.25
 	},
 	sienna_unchained_increased_vent_speed = {
-		multiplier = 0.5
+		multiplier = 0.25
 	},
 	sienna_unchained_reduced_overcharge = {
-		multiplier = -0.3
+		multiplier = -0.15
 	},
 	sienna_unchained_heal_on_boss_death = {
 		bonus = 50
@@ -293,7 +293,7 @@ TalentBuffTemplates.bright_wizard = {
 		buffs = {
 			{
 				buff_to_add = "sienna_scholar_overcharge_regen_on_grimoire_pickup_buff",
-				update_func = "activate_buff_on_last_standing"
+				update_func = "activate_buff_on_grimoire_picked_up"
 			}
 		}
 	},
@@ -320,6 +320,7 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				max_stacks = 1,
 				icon = "icons_placeholder",
+				priority_buff = true,
 				stat_buff = StatBuffIndex.REDUCED_RANGED_CHARGE_TIME
 			}
 		}
@@ -834,7 +835,7 @@ TalentTrees.bright_wizard = {
 		{
 			"sienna_regrowth",
 			"sienna_bloodlust",
-			"sienna_conquerer"
+			"sienna_conqueror"
 		},
 		{
 			"sienna_scholar_activated_ability_dump_overcharge",
@@ -861,7 +862,7 @@ TalentTrees.bright_wizard = {
 		{
 			"sienna_regrowth",
 			"sienna_bloodlust",
-			"sienna_conquerer"
+			"sienna_conqueror"
 		},
 		{
 			"sienna_adept_activated_ability_cooldown",
@@ -888,7 +889,7 @@ TalentTrees.bright_wizard = {
 		{
 			"sienna_regrowth",
 			"sienna_bloodlust",
-			"sienna_conquerer"
+			"sienna_conqueror"
 		},
 		{
 			"sienna_unchained_activated_ability_radius",
@@ -954,7 +955,6 @@ Talents.bright_wizard = {
 		description = "sienna_scholar_overcharge_regen_on_grimoire_pickup_desc",
 		name = "sienna_scholar_overcharge_regen_on_grimoire_pickup",
 		num_ranks = 1,
-		buffer = "server",
 		icon = "talent_ability_bw",
 		description_values = {
 			{
@@ -972,7 +972,6 @@ Talents.bright_wizard = {
 		description = "sienna_scholar_increased_ranged_charge_speed_on_low_health_desc",
 		name = "sienna_scholar_increased_ranged_charge_speed_on_low_health",
 		num_ranks = 1,
-		buffer = "server",
 		icon = "sienna_adept_ranged_charge_speed_on_low_health",
 		description_values = {
 			{
@@ -1326,11 +1325,11 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_regrowth",
+		description = "regrowth_desc",
 		name = "sienna_regrowth",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "markus_mercenary_attack_speed_on_critical_hit",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1339,11 +1338,11 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_bloodlust",
+		description = "bloodlust_desc",
 		name = "sienna_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "markus_mercenary_crit_chance",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1352,15 +1351,15 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_conquerer",
-		name = "sienna_conquerer",
+		description = "conqueror_desc",
+		name = "sienna_conqueror",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "kerillian_waywatcher_crit_hit_damage_on_high_health",
 		description_values = {},
 		requirements = {},
 		buffs = {
-			"conquerer"
+			"conqueror"
 		},
 		buff_data = {}
 	},

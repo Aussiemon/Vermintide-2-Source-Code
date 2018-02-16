@@ -61,9 +61,9 @@ local breed_data = {
 	hit_mass_counts = {
 		8,
 		8,
-		10,
 		12,
-		15
+		16,
+		24
 	},
 	debug_color = {
 		255,

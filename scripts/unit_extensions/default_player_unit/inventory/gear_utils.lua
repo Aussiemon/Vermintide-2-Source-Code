@@ -462,7 +462,9 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 			local buffer = property_data.buffer or "client"
 
 			if BuffTemplates[buff_name] then
-				buffs_table[buffer][buff_name] = property_value
+				buffs_table[buffer][buff_name] = {
+					variable_value = property_value
+				}
 			end
 		end
 	end
@@ -476,7 +478,9 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 			local buffer = trait_data.buffer or "client"
 
 			if BuffTemplates[buff_name] then
-				buffs_table[buffer][buff_name] = 1
+				buffs_table[buffer][buff_name] = {
+					variable_value = 1
+				}
 			end
 		end
 	end

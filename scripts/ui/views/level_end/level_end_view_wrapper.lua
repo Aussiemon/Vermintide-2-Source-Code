@@ -34,14 +34,14 @@ LevelEndViewWrapper._create_world = function (self)
 
 	World.set_data(world, "avoid_blend", true)
 
-	local level = ScriptWorld.load_level(world, level_name, nil, nil, nil, nil)
+	local game_won = self._level_end_view_context.game_won
+	local object_set = (game_won and "flow_victory") or "flow_defeat"
+	local object_sets = {
+		object_set
+	}
+	local level = ScriptWorld.load_level(world, level_name, object_sets, nil, nil, nil)
 
 	Level.spawn_background(level)
-
-	local game_won = self._level_end_view_context.game_won
-	local level_event = (game_won and "flow_victory") or "flow_defeat"
-
-	Level.trigger_event(level, level_event)
 
 	local viewport = ScriptWorld.create_viewport(world, viewport_name, viewport_type, layer)
 	local fov = 65

@@ -197,39 +197,6 @@ local hero_icons = {
 	"unit_frame_portrait_dead"
 }
 local widgets_definitions = {
-	viewport = {
-		scenegraph_id = "dead_space_filler",
-		element = {
-			passes = {
-				{
-					style_id = "viewport",
-					pass_type = "viewport",
-					content_id = "viewport"
-				}
-			}
-		},
-		style = {
-			viewport = {
-				level_name = "levels/ui_inventory_preview/world",
-				scenegraph_id = "dead_space_filler",
-				enable_sub_gui = false,
-				viewport_name = "inventory_preview_viewport",
-				world_name = "inventory_preview",
-				layer = UILayer.default,
-				camera_position = {
-					0,
-					0,
-					0
-				},
-				camera_lookat = {
-					1,
-					0,
-					0
-				}
-			}
-		},
-		content = {}
-	},
 	title_text = UIWidgets.create_simple_text("n/a", "title_text", nil, nil, title_text_style),
 	title_description_text = UIWidgets.create_simple_text("n/a", "title_description_text", nil, nil, title_description_text_style),
 	background = UIWidgets.create_simple_texture("large_frame_01", "dead_space_filler"),

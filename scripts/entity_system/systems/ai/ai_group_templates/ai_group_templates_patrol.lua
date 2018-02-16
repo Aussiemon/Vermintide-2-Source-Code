@@ -395,17 +395,6 @@ function change_path_direction(group, current_node_index)
 	return 
 end
 
-local function extract_spline_points_from_vectorbox(spline_points_boxed)
-	local spline_points = {}
-
-	for i, spline_point_boxed in ipairs(spline_points_boxed) do
-		local position = spline_point_boxed.unbox(spline_point_boxed)
-		spline_points[i] = position
-	end
-
-	return spline_points
-end
-
 local function find_patrol_spline(world, group)
 	local spline_name = group.spline_name
 	local level = LevelHelper:current_level(world)
@@ -413,9 +402,11 @@ local function find_patrol_spline(world, group)
 	local spline_points = nil
 
 	if use_way_points then
-		spline_points = extract_spline_points_from_vectorbox(group.spline_points)
+		local source_points = group.spline_points
+		spline_points = AiUtils.remove_bad_boxed_spline_points(source_points, spline_name)
 	else
-		spline_points = Level.spline(level, spline_name)
+		local source_points = Level.spline(level, spline_name)
+		spline_points = AiUtils.remove_bad_spline_points(source_points, spline_name)
 	end
 
 	local num_spline_points = #spline_points
@@ -1090,6 +1081,8 @@ function update_spline_anchor_points(nav_world, group, dt)
 				main_spline_status = status
 			end
 
+			fassert(movement._t == movement._t, "Nan in spline %s", spline._name)
+
 			local position = movement.current_position(movement)
 			local direction = position - previous_position
 
@@ -1362,7 +1355,10 @@ function check_for_players(nav_world, group, t, dt)
 			someone_is_climbing = true
 		end
 
-		if is_valid_target_unit(target_unit) then
+		local valid_players = valid_players_and_bots
+		local valid_player = valid_players[target_unit]
+
+		if valid_player then
 			group_targets[target_unit] = true
 			blackboard.target_unit = nil
 		elseif target_unit then

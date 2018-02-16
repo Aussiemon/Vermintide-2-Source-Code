@@ -12,7 +12,6 @@ local breed_data = {
 	run_speed = 4.8,
 	target_selection = "pick_closest_target_with_spillover",
 	wwise_voice_switch_group = "marauder_vce_variations",
-	dialogue_source_name = "chaos_marauder",
 	uses_attack_sfx_callback = true,
 	threat_value = 2.5,
 	bone_lod_level = 1,
@@ -75,11 +74,11 @@ local breed_data = {
 		1
 	},
 	max_health = {
-		7,
-		7,
-		10.5,
-		14,
-		21
+		6.5,
+		6.5,
+		9.75,
+		13,
+		19.25
 	},
 	diff_stagger_resist = {
 		1.75,
@@ -113,8 +112,7 @@ local breed_data = {
 		6
 	},
 	wwise_voices = {
-		"marauder_andreas",
-		"marauder_olof"
+		"fanatic"
 	},
 	debug_color = {
 		255,

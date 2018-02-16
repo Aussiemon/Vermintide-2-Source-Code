@@ -14,7 +14,7 @@ ActivatedAbilitySettings = {
 	dr_1 = {
 		description = "career_active_desc_dr_1",
 		display_name = "career_active_name_dr_1",
-		cooldown = 120,
+		cooldown = 180,
 		icon = "icons_placeholder",
 		ability_class = CareerAbilityDRIronbreaker
 	},
@@ -29,14 +29,14 @@ ActivatedAbilitySettings = {
 		description = "career_active_desc_dr_3",
 		weapon_name = "bardin_ranger_career_skill_weapon",
 		display_name = "career_active_name_dr_3",
-		cooldown = 90,
+		cooldown = 120,
 		icon = "bardin_ranger_activated_ability",
 		action_name = "action_career_dr_3"
 	},
 	es_1 = {
 		description = "career_active_desc_es_1",
 		display_name = "career_active_name_es_1",
-		cooldown = 90,
+		cooldown = 120,
 		icon = "icons_placeholder",
 		ability_class = CareerAbilityESHuntsman
 	},
@@ -50,22 +50,22 @@ ActivatedAbilitySettings = {
 	es_3 = {
 		description = "career_active_desc_markus_mercencary",
 		display_name = "career_active_name_markus_mercencary",
-		cooldown = 120,
+		cooldown = 180,
 		icon = "markus_mercenary_activated_ability",
 		ability_class = CareerAbilityESMercenary
 	},
 	we_1 = {
 		description = "career_active_desc_we_1",
 		display_name = "career_active_name_we_1",
-		cooldown = 90,
+		cooldown = 120,
 		icon = "activated_ability_kerillian_shade",
 		ability_class = CareerAbilityWEShade
 	},
 	we_2 = {
 		description = "career_active_desc_we_2",
 		display_name = "career_active_name_we_2",
-		cooldown = 30,
-		icon = "kerillian_waywatcher_group_regen",
+		cooldown = 40,
+		icon = "icons_placeholder",
 		ability_class = CareerAbilityWEMaidenGuard
 	},
 	we_3 = {
@@ -87,14 +87,14 @@ ActivatedAbilitySettings = {
 		description = "career_active_desc_wh_2",
 		weapon_name = "victor_bountyhunter_career_skill_weapon",
 		display_name = "career_active_name_wh_2",
-		cooldown = 60,
+		cooldown = 90,
 		icon = "icons_placeholder",
 		action_name = "action_career_wh_2"
 	},
 	wh_3 = {
 		description = "career_active_desc_victor_witchhunter",
 		display_name = "career_active_name_victor_witchhunter",
-		cooldown = 90,
+		cooldown = 180,
 		icon = "victor_witchhunter_activated_ability",
 		ability_class = CareerAbilityWHCaptain
 	},
@@ -109,14 +109,14 @@ ActivatedAbilitySettings = {
 	bw_2 = {
 		description = "career_active_desc_bw_2",
 		display_name = "career_active_name_bw_2",
-		cooldown = 60,
+		cooldown = 90,
 		icon = "sienna_adept_damage_taken_capped",
 		ability_class = CareerAbilityBWAdept
 	},
 	bw_3 = {
 		description = "career_active_desc_bw_3",
 		display_name = "career_active_name_bw_3",
-		cooldown = 90,
+		cooldown = 180,
 		icon = "icons_placeholder",
 		ability_class = CareerAbilityBWUnchained
 	}
@@ -143,11 +143,9 @@ PassiveAbilitySettings = {
 		display_name = "career_passive_name_dr_2",
 		buffs = {
 			"bardin_slayer_passive_attack_speed",
-			"bardin_slayer_passive_uninterruptible_heavy",
 			"bardin_slayer_passive_stacking_damage_buff_on_hit",
 			"bardin_slayer_ability_cooldown_on_damage_taken",
-			"bardin_slayer_ability_cooldown_on_hit",
-			"heavy_attack_shield_break"
+			"bardin_slayer_ability_cooldown_on_hit"
 		}
 	},
 	dr_3 = {
@@ -195,7 +193,6 @@ PassiveAbilitySettings = {
 			"markus_mercenary_passive",
 			"markus_mercenary_ability_cooldown_on_hit",
 			"markus_mercenary_ability_cooldown_on_damage_taken",
-			"markus_mercenary_passive_uninterruptible_heavy",
 			"markus_mercenary_passive_hit_mass_override",
 			"markus_mercenary_passive_crit_chance"
 		}
@@ -214,7 +211,7 @@ PassiveAbilitySettings = {
 	},
 	we_2 = {
 		description = "career_passive_desc_we_2",
-		icon = "icons_placeholder",
+		icon = "kerillian_waywatcher_group_regen",
 		display_name = "career_passive_name_we_2",
 		buffs = {
 			"kerillian_maidenguard_passive_dodge",
@@ -249,8 +246,7 @@ PassiveAbilitySettings = {
 			"victor_zealot_passive_uninterruptible_heavy",
 			"victor_zealot_invulnerability_cooldown",
 			"victor_zealot_ability_cooldown_on_hit",
-			"victor_zealot_ability_cooldown_on_damage_taken",
-			"heavy_attack_shield_break"
+			"victor_zealot_ability_cooldown_on_damage_taken"
 		}
 	},
 	wh_2 = {
@@ -273,8 +269,6 @@ PassiveAbilitySettings = {
 		display_name = "career_passive_name_wh_3",
 		buffs = {
 			"victor_witchhunter_passive",
-			"victor_witchhunter_passive_dodge_range",
-			"victor_witchhunter_passive_dodge_speed",
 			"victor_witchhunter_passive_block_cost_reduction",
 			"victor_witchhunter_headshot_crit_killing_blow",
 			"victor_witchhunter_headshot_multiplier_increase",

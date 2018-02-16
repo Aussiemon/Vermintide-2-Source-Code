@@ -168,6 +168,10 @@ CareerAbilityWHZealot._run_ability = function (self)
 		MOOD_BLACKBOARD.skill_zealot = true
 
 		career_extension.set_state(career_extension, "victor_activate_zealot")
+
+		local position = POSITION_LOOKUP[owner_unit]
+
+		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_zealot_charge", position)
 	end
 
 	status_extension.set_noclip(status_extension, true)

@@ -5760,10 +5760,22 @@ Features that make player mechanics nicer to work with.
 	},
 	{
 		description = "Win",
-		category = "Progression",
+		close_when_selected = true,
 		setting_name = "Complete current level",
+		category = "Progression",
 		func = function ()
 			Managers.state.game_mode:complete_level()
+
+			return 
+		end
+	},
+	{
+		description = "Lose",
+		close_when_selected = true,
+		setting_name = "Fail current level",
+		category = "Progression",
+		func = function ()
+			Managers.state.game_mode:fail_level()
 
 			return 
 		end
@@ -6073,6 +6085,18 @@ Features that make player mechanics nicer to work with.
 
 			return 
 		end
+	},
+	{
+		description = "Override the returned value to flow node \"Leader Achievement Completed\"",
+		is_boolean = true,
+		setting_name = "achievement_completed_flow_override",
+		category = "Progression"
+	},
+	{
+		description = "Override the returned value to flow node \"Leader Has DLC\" when checking for the Collectors Edition (Pre Order) DLC",
+		is_boolean = true,
+		setting_name = "has_dlc_pre_order_flow_override",
+		category = "Progression"
 	},
 	{
 		description = "",
@@ -6758,12 +6782,6 @@ Features that make player mechanics nicer to work with.
 
 			return 
 		end
-	},
-	{
-		description = "Disables the eac interface in lua. REQURES RESTART OF GAME TO TAKE EFFECT!",
-		is_boolean = true,
-		setting_name = "disable_eac",
-		category = "EAC"
 	}
 }
 local platform = PLATFORM

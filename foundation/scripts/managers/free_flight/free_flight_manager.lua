@@ -488,9 +488,16 @@ FreeFlightManager.register_player = function (self, local_player_id)
 	self.data[local_player_id] = {
 		mode = "paused",
 		current_translation_max_speed = 10,
+		dof_focal_distance = 10,
 		acceleration = 10,
+		dof_focal_region_end = 4,
+		dof_focal_near_scale = 1,
 		rotation_speed = 0.003,
+		dof_focal_far_scale = 1,
+		dof_focal_region_start = 4,
+		dof_enabled = 0,
 		active = false,
+		dof_focal_region = 8,
 		input_service = input_service,
 		rotation_accumulation = Vector3Box(),
 		current_translation_speed = Vector3Box()
@@ -656,6 +663,124 @@ FreeFlightManager._update_free_flight = function (self, dt, player, data)
 		local old_fov = Camera.vertical_fov(cam)
 
 		Camera.set_vertical_fov(cam, old_fov - math.pi/72)
+	end
+
+	local shading_env = World.get_data(world, "shading_environment")
+
+	if shading_env then
+		if input.get(input, "toggle_dof") and not input.get(input, "dof_reset") then
+			data.dof_enabled = data.dof_enabled - 1
+		end
+
+		if input.get(input, "inc_dof_distance") and not input.get(input, "inc_dof_region") and not input.get(input, "inc_dof_padding") and not input.get(input, "inc_dof_scale") then
+			data.dof_focal_distance = data.dof_focal_distance + 0.2
+
+			print("Dof Focal Distance: ", data.dof_focal_distance)
+		end
+
+		if input.get(input, "dec_dof_distance") and not input.get(input, "dec_dof_region") and not input.get(input, "dec_dof_padding") and not input.get(input, "dec_dof_scale") then
+			data.dof_focal_distance = data.dof_focal_distance - 0.2
+
+			if data.dof_focal_distance < 0 then
+				data.dof_focal_distance = 0
+			end
+
+			print("Dof Focal Distance: ", data.dof_focal_distance)
+		end
+
+		if input.get(input, "inc_dof_region") then
+			data.dof_focal_region = data.dof_focal_region + 0.2
+
+			print("Dof Focal Region: ", data.dof_focal_region)
+		end
+
+		if input.get(input, "dec_dof_region") then
+			data.dof_focal_region = data.dof_focal_region - 0.2
+
+			if data.dof_focal_region < 0 then
+				data.dof_focal_region = 0
+			end
+
+			print("Dof Focal Region: ", data.dof_focal_region)
+		end
+
+		if input.get(input, "inc_dof_padding") then
+			data.dof_focal_region_start = data.dof_focal_region_start + 0.1
+			data.dof_focal_region_end = data.dof_focal_region_end + 0.1
+
+			print("Dof Focal Padding: ", data.dof_focal_region_start)
+		end
+
+		if input.get(input, "dec_dof_padding") then
+			data.dof_focal_region_start = data.dof_focal_region_start - 0.1
+			data.dof_focal_region_end = data.dof_focal_region_end - 0.1
+
+			if data.dof_focal_region_start < 0 then
+				data.dof_focal_region_start = 0
+			end
+
+			if data.dof_focal_region_end < 0 then
+				data.dof_focal_region_end = 0
+			end
+
+			print("Dof Focal Padding: ", data.dof_focal_region_start)
+		end
+
+		if input.get(input, "inc_dof_scale") then
+			data.dof_focal_near_scale = data.dof_focal_near_scale + 0.02
+			data.dof_focal_far_scale = data.dof_focal_far_scale + 0.02
+
+			if 1 < data.dof_focal_near_scale then
+				data.dof_focal_near_scale = 1
+			end
+
+			if 1 < data.dof_focal_far_scale then
+				data.dof_focal_far_scale = 1
+			end
+
+			print("Dof Focal Scale: ", data.dof_focal_near_scale)
+		end
+
+		if input.get(input, "dec_dof_scale") then
+			data.dof_focal_near_scale = data.dof_focal_near_scale - 0.02
+			data.dof_focal_far_scale = data.dof_focal_far_scale - 0.02
+
+			if data.dof_focal_near_scale < 0 then
+				data.dof_focal_near_scale = 0
+			end
+
+			if data.dof_focal_far_scale < 0 then
+				data.dof_focal_far_scale = 0
+			end
+
+			print("Dof Focal Scale: ", data.dof_focal_near_scale)
+		end
+
+		if input.get(input, "dof_reset") then
+			data.dof_focal_distance = 10
+			data.dof_focal_region = 8
+			data.dof_focal_region_start = 3
+			data.dof_focal_region_end = 3
+			data.dof_focal_near_scale = 1
+			data.dof_focal_far_scale = 1
+
+			print("Dof Focal Distance: ", data.dof_focal_distance)
+			print("Dof Focal Region: ", data.dof_focal_region)
+			print("Dof Focal Padding: ", data.dof_focal_region_start)
+			print("Dof Focal Scale: ", data.dof_focal_near_scale)
+		end
+
+		ShadingEnvironment.set_scalar(shading_env, "dof_enabled", data.dof_enabled)
+		ShadingEnvironment.set_scalar(shading_env, "dof_focal_distance", data.dof_focal_distance)
+		ShadingEnvironment.set_scalar(shading_env, "dof_focal_region", data.dof_focal_region)
+		ShadingEnvironment.set_scalar(shading_env, "dof_focal_region_start", data.dof_focal_region_start)
+		ShadingEnvironment.set_scalar(shading_env, "dof_focal_region_end", data.dof_focal_region_end)
+		ShadingEnvironment.set_scalar(shading_env, "dof_focal_near_scale", data.dof_focal_near_scale)
+		ShadingEnvironment.set_scalar(shading_env, "dof_focal_far_scale", data.dof_focal_far_scale)
+
+		if ShadingEnvironment.scalar(shading_env, "dof_enabled") then
+			ShadingEnvironment.apply(shading_env)
+		end
 	end
 
 	return 

@@ -893,15 +893,99 @@ ItemMasterList.dr_helmet_0001 = {
 	}
 }
 ItemMasterList.ranger_hat_0000 = {
-	description = "description_dr_helmet_0002",
+	description = "description_dr_helmet_0000",
 	rarity = "default",
-	display_name = "display_name_dr_helmet_0002",
-	template = "dr_helmets_no_ear",
+	display_name = "display_name_dr_helmet_0000",
+	template = "dr_helmets",
 	inventory_icon = "icons_placeholder",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
-	unit = "units/beings/player/dwarf_ranger/headpiece/dr_helmet_12",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_01",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0001 = {
+	description = "description_dr_helmet_0001",
+	rarity = "default",
+	display_name = "display_name_dr_helmet_0001",
+	template = "dr_helmets",
+	inventory_icon = "icons_placeholder",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_02",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0002 = {
+	description = "description_dr_helmet_0002",
+	rarity = "default",
+	display_name = "display_name_dr_helmet_0002",
+	template = "dr_helmets",
+	inventory_icon = "icons_placeholder",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_03",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0003 = {
+	description = "description_dr_helmet_0003",
+	rarity = "default",
+	display_name = "display_name_dr_helmet_0003",
+	template = "dr_helmets",
+	inventory_icon = "icons_placeholder",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_04",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0004 = {
+	description = "description_dr_helmet_0004",
+	rarity = "default",
+	display_name = "display_name_dr_helmet_0004",
+	template = "dr_helmets",
+	inventory_icon = "icons_placeholder",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_05",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0005 = {
+	description = "description_dr_helmet_0005",
+	rarity = "default",
+	display_name = "display_name_dr_helmet_0005",
+	template = "dr_helmets",
+	inventory_icon = "icons_placeholder",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_06",
+	can_wield = {
+		"dr_ranger"
+	}
+}
+ItemMasterList.ranger_hat_0006 = {
+	description = "description_dr_helmet_0006",
+	rarity = "default",
+	display_name = "display_name_dr_helmet_0006",
+	template = "dr_helmets_skinned_long",
+	inventory_icon = "icons_placeholder",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/dwarf_ranger_upgraded/headpiece/dr_u_hat_07",
 	can_wield = {
 		"dr_ranger"
 	}
@@ -1329,16 +1413,84 @@ ItemMasterList.zealot_hat_0000 = {
 	description = "description_zealot_hat_0000",
 	rarity = "default",
 	display_name = "display_name_zealot_hat_0000",
-	template = "wh_hats_skinned",
+	template = "wh_hats",
 	inventory_icon = "icons_placeholder",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
-	unit = "units/beings/player/witch_hunter/headpiece/wh_hat_07",
+	unit = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_01",
 	can_wield = {
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain"
+		"wh_zealot"
+	}
+}
+ItemMasterList.zealot_hat_0001 = {
+	description = "description_zealot_hat_0001",
+	rarity = "default",
+	display_name = "display_name_zealot_hat_0001",
+	template = "wh_hats",
+	inventory_icon = "icons_placeholder",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_02",
+	can_wield = {
+		"wh_zealot"
+	}
+}
+ItemMasterList.zealot_hat_0002 = {
+	description = "description_zealot_hat_0002",
+	rarity = "default",
+	display_name = "display_name_zealot_hat_0002",
+	template = "wh_hats",
+	inventory_icon = "icons_placeholder",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_03",
+	can_wield = {
+		"wh_zealot"
+	}
+}
+ItemMasterList.zealot_hat_0003 = {
+	description = "description_zealot_hat_0003",
+	rarity = "default",
+	display_name = "display_name_zealot_hat_0003",
+	template = "wh_hats",
+	inventory_icon = "icons_placeholder",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_04",
+	can_wield = {
+		"wh_zealot"
+	}
+}
+ItemMasterList.zealot_hat_0004 = {
+	description = "description_zealot_hat_0004",
+	rarity = "default",
+	display_name = "display_name_zealot_hat_0004",
+	template = "wh_hats",
+	inventory_icon = "icons_placeholder",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_05",
+	can_wield = {
+		"wh_zealot"
+	}
+}
+ItemMasterList.zealot_hat_0005 = {
+	description = "description_zealot_hat_0005",
+	rarity = "default",
+	display_name = "display_name_zealot_hat_0005",
+	template = "wh_hats",
+	inventory_icon = "icons_placeholder",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_06",
+	can_wield = {
+		"wh_zealot"
 	}
 }
 ItemMasterList.wh_hat_0007 = {
@@ -1352,9 +1504,7 @@ ItemMasterList.wh_hat_0007 = {
 	item_type = "hat",
 	unit = "units/beings/player/witch_hunter/headpiece/wh_hat_07",
 	can_wield = {
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain"
+		"wh_zealot"
 	}
 }
 ItemMasterList.bountyhunter_hat_0000 = {
@@ -1784,9 +1934,7 @@ ItemMasterList.es_1h_flail = {
 	item_type = "es_flail",
 	trait_table_name = "melee",
 	can_wield = {
-		"wh_zealot",
-		"wh_bountyhunter",
-		"wh_captain"
+		"wh_zealot"
 	}
 }
 ItemMasterList.es_halberd = {
@@ -2157,9 +2305,7 @@ ItemMasterList.we_crossbow_repeater = {
 	item_type = "wh_repeating_crossbow",
 	trait_table_name = "ranged_ammo",
 	can_wield = {
-		"we_shade",
-		"we_maidenguard",
-		"we_waywatcher"
+		"we_shade"
 	}
 }
 ItemMasterList.bw_1h_mace = {
@@ -2215,6 +2361,26 @@ ItemMasterList.bw_sword = {
 	template = "one_handed_swords_template_1",
 	property_table_name = "melee",
 	item_type = "bw_1h_sword",
+	trait_table_name = "melee",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.bw_dagger = {
+	description = "description_plentiful_bright_wizard_bw_dagger",
+	rarity = "plentiful",
+	right_hand_unit = "units/weapons/player/wpn_brw_dagger_01/wpn_brw_dagger_01",
+	hud_icon = "weapon_generic_icon_sword",
+	skin_combination_table = "bw_dagger_skins",
+	slot_type = "melee",
+	inventory_icon = "icon_wpn_brw_dagger_01",
+	display_name = "display_name_plentiful_bright_wizard_bw_dagger",
+	has_power_level = true,
+	template = "one_handed_daggers_template_1",
+	property_table_name = "melee",
+	item_type = "bw_1h_dagger",
 	trait_table_name = "melee",
 	can_wield = {
 		"bw_scholar",
@@ -2832,10 +2998,10 @@ ItemMasterList.trinket = {
 	}
 }
 ItemMasterList.deed = {
-	description = "description_deed_0001",
+	description = "description_deed_generic",
 	rarity = "exotic",
-	display_name = "display_name_deed_0001",
-	inventory_icon = "deed_01",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
 	item_type = "deed",
@@ -2857,28 +3023,24 @@ ItemMasterList.deed = {
 		"es_mercenary"
 	},
 	mutators = {
-		"no_pickups"
+		"elite_run",
+		"player_dot"
 	},
 	rewards = {
-		"bw_gate_0001"
+		"loot_chest_01_03"
 	},
 	difficulties = {
-		"normal",
-		"hard",
-		"harder",
-		"hardest"
+		"normal"
 	}
 }
 ItemMasterList.deed_0001 = {
-	description = "description_deed_0001",
+	description = "description_deed_generic",
 	rarity = "promo",
-	display_name = "display_name_deed_0001",
-	inventory_icon = "deed_01",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
-	level_key = "fort",
 	item_type = "deed",
-	difficulty = "harder",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -2900,19 +3062,20 @@ ItemMasterList.deed_0001 = {
 		"no_pickups"
 	},
 	rewards = {
-		"bw_gate_0001"
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
 	}
 }
 ItemMasterList.deed_0002 = {
-	description = "description_deed_0002",
+	description = "description_deed_generic",
 	rarity = "promo",
-	display_name = "display_name_deed_0002",
-	inventory_icon = "deed_02",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
-	level_key = "catacombs",
 	item_type = "deed",
-	difficulty = "harder",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -2934,19 +3097,20 @@ ItemMasterList.deed_0002 = {
 		"no_ammo"
 	},
 	rewards = {
-		"bw_gate_0001"
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
 	}
 }
 ItemMasterList.deed_0003 = {
-	description = "display_name_deed_0003",
+	description = "description_deed_generic",
 	rarity = "promo",
-	display_name = "display_name_deed_0003",
-	inventory_icon = "deed_02",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
-	level_key = "catacombs",
 	item_type = "deed",
-	difficulty = "harder",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -2968,19 +3132,20 @@ ItemMasterList.deed_0003 = {
 		"player_dot"
 	},
 	rewards = {
-		"bw_gate_0001"
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
 	}
 }
 ItemMasterList.deed_0004 = {
-	description = "display_name_deed_0004",
+	description = "description_deed_generic",
 	rarity = "promo",
-	display_name = "display_name_deed_0004",
-	inventory_icon = "deed_02",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
-	level_key = "catacombs",
 	item_type = "deed",
-	difficulty = "harder",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -3002,19 +3167,20 @@ ItemMasterList.deed_0004 = {
 		"elite_run"
 	},
 	rewards = {
-		"bw_gate_0001"
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
 	}
 }
 ItemMasterList.deed_0005 = {
-	description = "display_name_deed_0005",
+	description = "description_deed_generic",
 	rarity = "promo",
-	display_name = "display_name_deed_0005",
-	inventory_icon = "deed_02",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
-	level_key = "catacombs",
 	item_type = "deed",
-	difficulty = "harder",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -3036,19 +3202,20 @@ ItemMasterList.deed_0005 = {
 		"no_respawn"
 	},
 	rewards = {
-		"bw_gate_0001"
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
 	}
 }
 ItemMasterList.deed_0006 = {
-	description = "display_name_deed_0006",
+	description = "description_deed_generic",
 	rarity = "promo",
-	display_name = "display_name_deed_0006",
-	inventory_icon = "deed_02",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
-	level_key = "catacombs",
 	item_type = "deed",
-	difficulty = "harder",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -3070,19 +3237,20 @@ ItemMasterList.deed_0006 = {
 		"instant_death"
 	},
 	rewards = {
-		"bw_gate_0001"
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
 	}
 }
 ItemMasterList.deed_0007 = {
-	description = "display_name_deed_0007",
+	description = "description_deed_generic",
 	rarity = "promo",
-	display_name = "display_name_deed_0007",
-	inventory_icon = "deed_02",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
-	level_key = "catacombs",
 	item_type = "deed",
-	difficulty = "harder",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -3104,19 +3272,20 @@ ItemMasterList.deed_0007 = {
 		"whiterun"
 	},
 	rewards = {
-		"bw_gate_0001"
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
 	}
 }
 ItemMasterList.deed_0008 = {
-	description = "display_name_deed_0008",
+	description = "description_deed_generic",
 	rarity = "promo",
-	display_name = "display_name_deed_0008",
-	inventory_icon = "deed_02",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
 	hud_icon = "wh_1h_falchions",
-	level_key = "catacombs",
 	item_type = "deed",
-	difficulty = "harder",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -3138,7 +3307,5516 @@ ItemMasterList.deed_0008 = {
 		"specials_frequency"
 	},
 	rewards = {
-		"bw_gate_0001"
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0009 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0010 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0011 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0012 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0013 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0014 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0015 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0016 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0017 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0018 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0019 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0020 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0021 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0022 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0023 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0024 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0025 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0026 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0027 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0028 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0029 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"specials_frequency"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0030 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0031 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0032 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0033 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0034 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0035 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"instant_death",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0036 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"player_dot",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0037 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"player_dot",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0038 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_respawn",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0039 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"no_pickups",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0040 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"instant_death",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_01_03"
+	},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_1001 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1002 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_ammo"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1003 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1004 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1005 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1006 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1007 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"whiterun"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1008 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1009 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1010 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1011 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1012 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1013 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1014 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1015 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1016 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1017 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1018 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1019 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1020 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1021 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1022 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1023 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1024 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1025 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1026 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1027 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1028 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1029 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"specials_frequency"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1030 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1031 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1032 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1033 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1034 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1035 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"instant_death",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1036 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"player_dot",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1037 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"player_dot",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1038 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_respawn",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1039 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"no_pickups",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_1040 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"instant_death",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_02_03"
+	},
+	difficulties = {
+		"hard"
+	}
+}
+ItemMasterList.deed_2001 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2002 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_ammo"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2003 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2004 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2005 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2006 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2007 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"whiterun"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2008 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2009 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2010 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2011 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2012 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2013 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2014 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2015 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2016 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2017 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2018 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2019 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2020 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2021 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2022 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2023 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2024 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2025 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2026 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2027 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2028 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2029 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"specials_frequency"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2030 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2031 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2032 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2033 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2034 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2035 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"instant_death",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2036 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"player_dot",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2037 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"player_dot",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2038 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_respawn",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2039 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"no_pickups",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_2040 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_nightmare_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"instant_death",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_03_03"
+	},
+	difficulties = {
+		"harder"
+	}
+}
+ItemMasterList.deed_3001 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_cataclysm_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3002 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_cataclysm_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_ammo"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3003 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_cataclysm_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3004 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_cataclysm_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3005 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_cataclysm_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3006 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_cataclysm_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3007 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_cataclysm_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"whiterun"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3008 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_cataclysm_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3009 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3010 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3011 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3012 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3013 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3014 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3015 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3016 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3017 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3018 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3019 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3020 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3021 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3022 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3023 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3024 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3025 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3026 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3027 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3028 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3029 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore",
+		"specials_frequency"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3030 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"no_pickups"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3031 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"player_dot"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3032 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"instant_death"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3033 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"no_respawn"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3034 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_02",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"powerful_elites",
+		"elite_run"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3035 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"elite_run",
+		"instant_death",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3036 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"player_dot",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3037 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"player_dot",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3038 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency",
+		"no_respawn",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3039 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"instant_death",
+		"no_pickups",
+		"powerful_elites"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.deed_3040 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_hard_03",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	item_type = "deed",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"no_respawn",
+		"instant_death",
+		"hordes_galore"
+	},
+	rewards = {
+		"loot_chest_04_03"
+	},
+	difficulties = {
+		"hardest"
+	}
+}
+ItemMasterList.level_chest = {
+	description = "level_chest_description_01",
+	rarity = "plentiful",
+	display_name = "display_name_loot_level_chest_01",
+	rarity_key = "level_up",
+	inventory_icon = "icon_loot_chest_d4_t6",
+	slot_type = "loot_chest",
+	power_level_key = "category_24",
+	temporary_template = "",
+	content_key = "standard_loot_chest",
+	can_stack = true,
+	display_unit = "chest_1",
+	item_type = "loot_chest",
+	chest_category = "hardest",
+	chest_sort_order = 1,
+	chest_tier = 6,
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.loot_chest_01_01 = {

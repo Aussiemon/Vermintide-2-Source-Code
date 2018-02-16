@@ -1,10 +1,52 @@
 local mutator_settings = require("scripts/settings/mutator_settings")
 
+local function modify_breed_health_start(context, data)
+	local template = data.template
+	local modify_health_breeds = template.modify_health_breeds
+
+	if modify_health_breeds then
+		local health_modifier = template.health_modifier
+		local vanilla_breed_health = {}
+
+		for _, breed_name in ipairs(modify_health_breeds) do
+			local breed = Breeds[breed_name]
+			local max_health = breed.max_health
+			vanilla_breed_health[breed_name] = table.clone(max_health)
+
+			mutator_dprint("Modified breeds(%s) health by (%s)", breed_name, health_modifier)
+
+			for i, health in ipairs(max_health) do
+				max_health[i] = health*health_modifier
+			end
+		end
+
+		data.vanilla_breed_health = vanilla_breed_health
+	end
+
+	return 
+end
+
+local function modify_breed_health_stop(context, data)
+	if data.vanilla_breed_health then
+		for breed_name, max_health in pairs(data.vanilla_breed_health) do
+			Breeds[breed_name].max_health = max_health
+
+			mutator_dprint("Resettings breeds(%s) health", breed_name)
+		end
+	end
+
+	return 
+end
+
 local function default_start_function_server(context, data)
+	modify_breed_health_start(context, data)
+
 	return 
 end
 
 local function default_stop_function_server(context, data)
+	modify_breed_health_stop(context, data)
+
 	return 
 end
 

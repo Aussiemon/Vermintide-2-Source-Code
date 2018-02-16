@@ -839,13 +839,19 @@ weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_h
 weapon_template.display_unit = "units/weapons/weapon_display/display_2h_weapon"
 weapon_template.wield_anim = "to_2h_sword"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_distance = 1
-weapon_template.dodge_speed = 1
 weapon_template.dodge_count = 2
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		penetrating = false,

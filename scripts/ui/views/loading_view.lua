@@ -12,31 +12,13 @@ local survival_tip_list = {
 	"dlc1_2_survival_tip_06"
 }
 local tip_type_prefix_list = {
-	npcs = "loading_screen_npcs",
-	kerillian = "loading_screen_kerillian",
-	lore = "loading_screen_lore",
-	khazalid = "loading_screen_khazalid",
-	rotbloods = "loading_screen_rotbloods",
-	okri = "loading_screen_okri",
 	tip = "loading_screen_tip"
 }
 local tip_type_max_range = {
-	npcs = 3,
-	kerillian = 11,
-	lore = 55,
-	khazalid = 47,
-	rotbloods = 9,
-	okri = 1,
 	tip = 46
 }
 local tip_type_list = {
-	"tip",
-	"lore",
-	"rotbloods",
-	"khazalid",
-	"npcs",
-	"kerillian",
-	"okri"
+	"tip"
 }
 LoadingView = class(LoadingView)
 local fake_input_service = {
@@ -260,14 +242,8 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode)
 			end
 
 			index_table[#index_table + 1] = 1
-			index_table[#index_table + 1] = 2
-			index_table[#index_table + 1] = 4
 		else
 			index_table[#index_table + 1] = 1
-			index_table[#index_table + 1] = 1
-			index_table[#index_table + 1] = 2
-			index_table[#index_table + 1] = 2
-			index_table[#index_table + 1] = 3
 		end
 
 		local read_index = math.random(1, #index_table)

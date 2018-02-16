@@ -63,6 +63,7 @@ require("scripts/entity_system/systems/fade/fade_system")
 require("scripts/entity_system/systems/payload/payload_system")
 require("scripts/entity_system/systems/target_override/target_override_system")
 require("scripts/entity_system/systems/position_lookup/position_lookup_system")
+require("scripts/entity_system/systems/keep_decoration/keep_decoration_system")
 require("scripts/unit_extensions/human/ai_player_unit/ai_anim_utils")
 require("scripts/unit_extensions/human/ai_player_unit/ai_husk_base_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_simple_extension")
@@ -287,10 +288,11 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self._add_system(self, "career_system", ExtensionSystemBase, entity_system_creation_context, {
 		"CareerExtension"
 	})
+	self._add_system(self, "keep_decoration_system", KeepDecorationSystem, entity_system_creation_context)
 	self._add_system(self, "aim_system", AimSystem, entity_system_creation_context, {
 		"GenericUnitAimExtension"
 	})
-	self._add_system(self, "transportation_system", TransportationSystem, entity_system_creation_context)
+	self._add_system(self, "transportation_system", TransportationSystem, entity_system_creation_context, nil, no_pre_update, has_post_update)
 	self._add_system(self, "locomotion_system", LocomotionSystem, entity_system_creation_context, nil, no_pre_update, has_post_update)
 	self._add_system(self, "animation_system", AnimationSystem, entity_system_creation_context)
 	self._add_system(self, "eyetracking_system", ExtensionSystemBase, entity_system_creation_context, {

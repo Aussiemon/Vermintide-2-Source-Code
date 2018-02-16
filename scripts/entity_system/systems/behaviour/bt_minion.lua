@@ -15,21 +15,14 @@ dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_ratling_gunn
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_shield_rat_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_storm_vermin_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_storm_vermin_champion_behavior")
-dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_storm_vermin_warlord_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_stormfiend_behavior")
-dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_stormfiend_boss_behavior")
-dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_grey_seer_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_stormfiend_demo_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_warpfire_thrower_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_berzerker_behavior")
-dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_exalted_champion_behavior")
-dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_exalted_sorcerer_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_marauder_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_raider_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_shield_marauder_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_spawn_behavior")
-dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_tentacle_behavior")
-dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_tentacle_sorcerer_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_troll_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_dummy_troll_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_dummy_sorcerer_behavior")
@@ -39,10 +32,17 @@ dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_vortex_sorcere
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_plague_sorcerer_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_corruptor_sorcerer_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_plague_wave_spawner_behavior")
-dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_zombie_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_pig_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_rat_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/pets/pet_pig_behavior")
+
+for _, dlc in pairs(DLCSettings) do
+	local behaviour_trees = dlc.behaviour_trees
+
+	for _, tree in ipairs(behaviour_trees) do
+		dofile(tree)
+	end
+end
 
 if USE_PRECOMPILED_ROOT_TABLES then
 	for bt_name, bt_node in pairs(BreedBehaviors) do

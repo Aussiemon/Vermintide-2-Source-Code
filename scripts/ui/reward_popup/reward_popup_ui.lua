@@ -226,6 +226,15 @@ RewardPopupUI._get_widget_by_type = function (self, widget_type, value)
 		local style = widget.style.text
 		widget_size[2] = self._get_text_height(self, self.ui_renderer, widget_scenegraph_size, style, value)
 		widget_height = widget_size[2]
+	elseif widget_type == "description" then
+		widget.content.title_text = value[1]
+		widget.content.text = value[2]
+		local text_style = widget.style.text
+		local title_text_style = widget.style.title_text
+		local text_height = self._get_text_height(self, self.ui_renderer, widget_scenegraph_size, text_style, value[1])
+		local title_text_height = self._get_text_height(self, self.ui_renderer, widget_scenegraph_size, title_text_style, value[2])
+		widget_size[2] = text_height + title_text_height
+		widget_height = widget_size[2]
 	elseif widget_type == "texture" or widget_type == "icon" then
 		widget.content.texture_id = value
 		local style = widget.style.texture_id
@@ -273,7 +282,7 @@ RewardPopupUI._setup_presentation = function (self, presentation_data)
 		entry_play_index = 1,
 		started = false,
 		animations_played = 0,
-		animation_wait_time = 1.2,
+		animation_wait_time = 4,
 		animation_time = 0,
 		animations_list = {
 			"present_entry"

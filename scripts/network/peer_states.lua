@@ -3,6 +3,17 @@ local time_between_resend_rpc_notify_connected = 2
 PeerStates.Connecting = {
 	on_enter = function (self, previous_state)
 		Network.write_dump_tag(string.format("%s connecting", self.peer_id))
+
+		local ban_list_manager = Managers.ban_list
+
+		if ban_list_manager ~= nil and ban_list_manager.is_banned(ban_list_manager, self.peer_id) then
+			printf("[PSM] Disconnecting banned player (%s)", self.peer_id)
+
+			self._banned = true
+
+			return 
+		end
+
 		self.server.network_transmit:send_rpc("rpc_notify_connected", self.peer_id)
 
 		self.loaded_level = nil
@@ -34,6 +45,10 @@ PeerStates.Connecting = {
 		return 
 	end,
 	update = function (self, dt)
+		if self._banned then
+			return PeerStates.Disconnecting
+		end
+
 		if not self.has_received_rpc_notify_lobby_joined then
 			self.resend_timer = self.resend_timer - dt
 			local resend_rpc_notify_connected = self.resend_timer < 0
@@ -102,7 +117,11 @@ PeerStates.VerifyEAC = {
 		printf("[PSM] Query EAC authorize for peer(%s)", self.peer_id)
 
 		if self.peer_id == Network.peer_id() then
+			printf("[PSM] Our own peer, fetch eac status from system")
+
 			self.authorized = Managers.eac:authorized()
+
+			fassert(self.authorized ~= nil, "Making sure we always get an answer here.")
 		else
 			self.eac_request_id = Managers.eac:query_authorized(self.peer_id, callback(self.server, "cb_eac_auth", self.peer_id))
 		end

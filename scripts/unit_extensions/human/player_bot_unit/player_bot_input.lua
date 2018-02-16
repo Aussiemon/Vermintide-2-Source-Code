@@ -29,6 +29,7 @@ PlayerBotInput.init = function (self, extension_init_context, unit, extension_in
 	self._interact_held = false
 	self._dodge = false
 	self._bot_in_attract_mode_focus = false
+	self._avoiding_aoe_threat = false
 	self.double_tap_dodge = false
 	self.minimum_dodge_input = 0
 	self._input = {}
@@ -486,6 +487,7 @@ PlayerBotInput._update_movement = function (self, dt, t)
 
 		self.dodge(self)
 
+		self._avoiding_aoe_threat = true
 		move.x = Vector3.dot(Quaternion.right(wanted_rotation), dir)
 		move.y = Vector3.dot(Quaternion.forward(wanted_rotation), dir)
 	elseif not current_goal then
@@ -507,6 +509,14 @@ PlayerBotInput._update_movement = function (self, dt, t)
 		local flat_forward = Vector3.flat(Quaternion.forward(wanted_rotation))
 		move.x = move_scale*Vector3.dot(flat_right, goal_direction)
 		move.y = move_scale*Vector3.dot(flat_forward, goal_direction)
+	end
+
+	if self._avoiding_aoe_threat and threat_data.expires <= t then
+		if player_bot_navigation.destination_reached(player_bot_navigation) then
+			player_bot_navigation.stop(player_bot_navigation)
+		end
+
+		self._avoiding_aoe_threat = false
 	end
 
 	return 

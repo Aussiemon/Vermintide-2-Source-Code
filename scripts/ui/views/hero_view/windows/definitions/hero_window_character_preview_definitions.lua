@@ -169,8 +169,7 @@ local viewport_widget = {
 			world_name = "character_preview",
 			world_flags = {
 				Application.DISABLE_SOUND,
-				Application.DISABLE_ESRAM,
-				Application.ENABLE_VOLUMETRICS
+				Application.DISABLE_ESRAM
 			},
 			camera_position = {
 				0,

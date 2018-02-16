@@ -230,6 +230,7 @@ BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, 
 	progress = progress or 0
 	local current_health_percent = self._current_progress or 1
 	local health_anim_progress = current_health_percent + math.sign(progress - current_health_percent)*dt*0.3
+	local instant = self._next_update_is_instant or instant
 
 	if instant then
 		health_anim_progress = progress
@@ -282,6 +283,7 @@ BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, 
 	self._current_progress = health_anim_progress
 	self._current_raw_progress = progress
 	self._current_max_health_fraction = max_health_anim_fraction
+	self._next_update_is_instant = nil
 
 	return 
 end

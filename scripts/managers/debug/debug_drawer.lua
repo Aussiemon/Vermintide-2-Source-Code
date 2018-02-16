@@ -28,7 +28,7 @@ DebugDrawer.sphere = function (self, center, radius, color, segments, parts)
 	return 
 end
 DebugDrawer.capsule_overlap = function (self, position, size, rotation, color)
-	assert(size.x == size.z, "Passing diffent x and y size doesn't do anything, capsules overlaps are always sphere swept, not spheroid shaped.")
+	fassert(size.x == size.z, "Passing diffent x and y size doesn't do anything, capsules overlaps are always sphere swept, not spheroid shaped.")
 
 	local radius = (size.x + size.z)*0.5
 	local forward = Quaternion.forward(rotation)

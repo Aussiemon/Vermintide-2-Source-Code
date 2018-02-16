@@ -111,6 +111,12 @@ ActionTrueFlightBow.client_owner_post_update = function (self, dt, t, world, can
 
 			first_person_extension.play_hud_sound_event(first_person_extension, fire_sound_event, nil, play_on_husk)
 		end
+
+		if self.current_action.extra_fire_sound_event then
+			local position = POSITION_LOOKUP[self.owner_unit]
+
+			WwiseUtils.trigger_position_event(self.world, self.current_action.extra_fire_sound_event, position)
+		end
 	end
 
 	return 

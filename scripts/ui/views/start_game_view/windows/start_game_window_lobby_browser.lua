@@ -478,7 +478,7 @@ StartGameWindowLobbyBrowser._setup_lobby_info_box = function (self, lobby_data)
 	is_dedicated_server = lobby_data.server_info ~= nil
 
 	if not is_dedicated_server then
-		local host = lobby_data.server_name or lobby_data.name or lobby_data.unique_server_name or lobby_data.host
+		local host = lobby_data.server_name or lobby_data.unique_server_name or lobby_data.name or lobby_data.host
 		info_box_widgets_lobbies.info_frame_host_text.content.text = host or Localize("lb_unknown")
 	else
 		local server_info = lobby_data.server_info
@@ -883,18 +883,11 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 			return false
 		end
 
-		local unlocked_level_difficulty_index = LevelUnlockUtils.unlocked_level_difficulty_index(statistics_db, player_stats_id, level_key)
+		local profile_name = player.profile_display_name(player)
+		local career_name = player.career_name(player)
+		local has_required_power_level = Managers.matchmaking:has_required_power_level(lobby_data, profile_name, career_name)
 
-		if not unlocked_level_difficulty_index then
-			return false
-		end
-
-		local level_difficulties = self.difficulty_manager:get_level_difficulties(level_key)
-		local unlocked_difficulty_key = level_difficulties[unlocked_level_difficulty_index]
-		local unlocked_difficulty_settings = DifficultySettings[unlocked_difficulty_key]
-		local difficulty_setting = DifficultySettings[difficulty]
-
-		if unlocked_difficulty_settings.rank < difficulty_setting.rank then
+		if not has_required_power_level then
 			return false
 		end
 	elseif is_server then
@@ -1013,9 +1006,16 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 	local player = player_manager.local_player(player_manager)
 	local statistics_db = player_manager.statistics_db(player_manager)
 	local player_stats_id = player.stats_id(player)
-	local game_mode_data = definitions.game_mode_data
-	local game_mode_index = self.selected_game_mode_index or 1
-	local game_mode = game_mode_data[game_mode_index].game_mode_key
+	local eac_authorized = "false"
+
+	if Managers.eac:enabled() then
+		if Managers.eac:authorized() then
+			eac_authorized = "true"
+		else
+			eac_authorized = "false"
+		end
+	end
+
 	local requirements = {
 		free_slots = free_slots,
 		distance_filter = platform ~= "ps4" and distance_filter,
@@ -1039,16 +1039,14 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 		end
 	end
 
-	if game_mode then
-		requirements.filters.game_mode = {
-			value = game_mode,
-			comparison = LobbyComparison.EQUAL
-		}
-	end
+	requirements.filters.eac_authorized = {
+		value = eac_authorized,
+		comparison = LobbyComparison.EQUAL
+	}
 
-	if only_show_valid_lobbies then
-		requirements.filters.network_hash = {
-			value = lobby_finder.network_hash(lobby_finder),
+	if difficulty_key ~= "any" then
+		requirements.filters.difficulty = {
+			value = difficulty_key,
 			comparison = LobbyComparison.EQUAL
 		}
 	end
@@ -1060,9 +1058,9 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 		}
 	end
 
-	if difficulty_key ~= "any" then
-		requirements.filters.difficulty = {
-			value = difficulty_key,
+	if only_show_valid_lobbies then
+		requirements.filters.network_hash = {
+			value = lobby_finder.network_hash(lobby_finder),
 			comparison = LobbyComparison.EQUAL
 		}
 	end

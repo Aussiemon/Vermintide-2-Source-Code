@@ -1,5 +1,3 @@
-require("scripts/settings/paintings")
-
 InteractionResult = {
 	"ONGOING",
 	"SUCCESS",
@@ -582,9 +580,10 @@ InteractionDefinitions.assisted_respawn = {
 	client = {
 		start = function (world, interactor_unit, interactable_unit, data, config, t)
 			data.start_time = t
-			local revive_time_variable = Unit.animation_find_variable(interactor_unit, "revive_time")
+			local duration = config.duration
+			local revive_time_variable = Unit.animation_find_variable(interactable_unit, "revive_time")
 
-			Unit.animation_set_variable(interactable_unit, revive_time_variable, config.duration)
+			Unit.animation_set_variable(interactable_unit, revive_time_variable, duration)
 			Unit.animation_event(interactable_unit, "revive_start")
 
 			local interaction_duration_variable = Unit.animation_find_variable(interactor_unit, "interaction_duration")
@@ -1178,10 +1177,10 @@ InteractionDefinitions.pickup_object = {
 			end
 
 			local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
-			local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper._get_item_data_and_weapon_extensions(inventory_extension)
+			local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
 
 			if return_value and item_data then
-				local current_action_settings, current_action_extension, current_action_hand = CharacterStateHelper._get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
+				local current_action_settings, current_action_extension, current_action_hand = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
 
 				if current_action_settings and current_action_settings.block_pickup then
 					return_value = false
@@ -1914,7 +1913,7 @@ InteractionDefinitions.cosmetics_access.client.stop = function (world, interacto
 	return 
 end
 InteractionDefinitions.cosmetics_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	return false
+	return true
 end
 InteractionDefinitions.cosmetics_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
 	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
@@ -2028,10 +2027,9 @@ InteractionDefinitions.map_access.client.hud_description = function (interactabl
 	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"
 end
 InteractionDefinitions.map_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	local active = Unit.get_data(interactable_unit, "interaction_data", "active")
-	local used = Unit.get_data(interactable_unit, "interaction_data", "used")
+	local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
 
-	return not used and active
+	return not is_game_matchmaking
 end
 InteractionDefinitions.unlock_key_access = InteractionDefinitions.unlock_key_access or table.clone(InteractionDefinitions.smartobject)
 InteractionDefinitions.unlock_key_access.config.swap_to_3p = false
@@ -2064,80 +2062,22 @@ end
 
 InteractionDefinitions.pictureframe = InteractionDefinitions.pictureframe or table.clone(InteractionDefinitions.smartobject)
 InteractionDefinitions.pictureframe.config.swap_to_3p = false
-InteractionDefinitions.pictureframe.client.on_load_complete = function (_, package_name, subpath, picure_name, interactable_unit)
-	local material_path = "units/gameplay/keep_paintings/materials/" .. subpath .. "/" .. subpath
-	local slot = "canvas"
-
-	Unit.set_material(interactable_unit, slot, material_path)
-	Unit.set_data(interactable_unit, "interaction_data", "picture", picure_name)
-
-	return 
-end
 InteractionDefinitions.pictureframe.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 	data.start_time = nil
 
-	if result == InteractionResult.SUCCESS then
-		local frame_orientation = Unit.get_data(interactable_unit, "interaction_data", "frame_orientation")
-		local frame_type = Unit.get_data(interactable_unit, "interaction_data", "frame_type")
-		local previous_picture = Unit.get_data(interactable_unit, "interaction_data", "picture")
+	if result == InteractionResult.SUCCESS and not data.is_husk then
+		local decoration_system = Managers.state.entity:system("keep_decoration_system")
 
-		if not data.is_husk then
-			local picure_name = nil
-			local filtered_pictures = {}
-
-			for orientaion, levels in pairs(Paintings) do
-				if frame_orientation == orientaion then
-					for level, pictures in pairs(levels) do
-						if frame_type == level then
-							for _, picture in pairs(pictures) do
-								table.insert(filtered_pictures, picture)
-							end
-						end
-					end
-				end
-			end
-
-			for index, picture in pairs(filtered_pictures) do
-				if picture == previous_picture then
-					local new_index = index + 1
-
-					if table.getn(filtered_pictures) < index + 1 then
-						new_index = 1
-					end
-
-					picure_name = filtered_pictures[new_index]
-				end
-			end
-
-			local subpath = "keep_painting_" .. picure_name
-			local package_name = "resource_packages/keep_paintings/" .. subpath
-			local reference_name = package_name
-
-			local function set_none(package_name, subpath, picure_name, interactable_unit)
-				local material_path = "units/gameplay/keep_paintings/materials/" .. subpath .. "/" .. subpath
-				local slot = "canvas"
-
-				Unit.set_material(interactable_unit, slot, material_path)
-				Unit.set_data(interactable_unit, "interaction_data", "picture", picure_name)
-
-				return 
-			end
-
-			if string.find(picure_name, "_none") ~= nil then
-				set_none(package_name, subpath, picure_name, interactable_unit)
-			else
-				local package_manager = Managers.package
-				local cb = callback(InteractionDefinitions.pictureframe.client, "on_load_complete", package_name, subpath, picure_name, interactable_unit)
-
-				package_manager.load(package_manager, package_name, reference_name, cb, true)
-			end
-		end
+		decoration_system.interacted_with(decoration_system, interactable_unit)
 	end
 
 	return 
 end
 InteractionDefinitions.pictureframe.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	return true
+	local decoration_system = Managers.state.entity:system("keep_decoration_system")
+	local can_interact = decoration_system.can_interact(decoration_system, interactable_unit)
+
+	return can_interact
 end
 InteractionDefinitions.pictureframe.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
 	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action")

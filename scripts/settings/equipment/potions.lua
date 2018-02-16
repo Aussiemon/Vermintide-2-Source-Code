@@ -74,6 +74,14 @@ weapon_template.wield_anim = "to_potion"
 weapon_template.gui_texture = "hud_consumable_icon_potion"
 weapon_template.max_fatigue_points = 4
 weapon_template.can_give_other = true
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 Weapons = Weapons or {}
 Weapons.damage_boost_potion = Weapons.damage_boost_potion or table.clone(weapon_template)
 Weapons.damage_boost_potion.left_hand_unit = "units/weapons/player/wpn_potion_buff/wpn_potion_buff"

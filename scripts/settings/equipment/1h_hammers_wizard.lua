@@ -275,7 +275,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.15,
+			anim_time_scale = time_mod*1.2,
 			buff_data = {
 				{
 					start_time = 0,
@@ -301,7 +301,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.4,
+					start_time = 0.55,
 					action = "action_two",
 					input = "action_two_hold"
 				},
@@ -1019,13 +1019,19 @@ weapon_template.wield_anim = "to_brw_hammer"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "MACE_1H"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_distance = 1.2
-weapon_template.dodge_speed = 1.2
 weapon_template.dodge_count = 3
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
 weapon_template.outer_block_fatigue_point_multiplier = 2
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1.2
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1.2
+	}
+}
 weapon_template.wwise_dep_right_hand = {
 	"wwise/one_handed_hammers"
 }

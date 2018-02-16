@@ -292,7 +292,7 @@ AiUtils.poison_explode_unit = function (unit, action, blackboard)
 end
 AiUtils.warpfire_explode_unit = function (unit, blackboard)
 	local world = blackboard.world
-	local explosion_template = ExplosionTemplates.warpfire_explosion.explosion
+	local explosion_template = ExplosionTemplates.warpfire_explosion
 	local damage_source = blackboard.breed.name
 	local node = Unit.node(unit, "j_backpack")
 	local explosion_position = Unit.world_position(unit, node)
@@ -345,7 +345,7 @@ AiUtils.chaos_zombie_explosion = function (unit, action, blackboard, delete_unit
 	local damage_source = blackboard.breed.name
 	local world = blackboard.world
 	local explosion_position = position + Vector3.up()
-	local explosion_template = ExplosionTemplates.chaos_zombie_explosion.explosion
+	local explosion_template = ExplosionTemplates.chaos_zombie_explosion
 
 	DamageUtils.create_explosion(world, unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit)
 	Managers.state.entity:system("ai_system"):alert_enemies_within_range(blackboard.target_unit, explosion_position, explosion_template.alert_enemies_radius)
@@ -371,9 +371,8 @@ AiUtils.ai_explosion = function (exploding_unit, owner_unit, blackboard, damage_
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 	local damage_source = blackboard.breed.name
 	local world = blackboard.world
-	local explosion_data = explosion_template.explosion
 
-	DamageUtils.create_explosion(world, exploding_unit, explosion_position, Quaternion.identity(), explosion_data, 1, damage_source, true, false, owner_unit)
+	DamageUtils.create_explosion(world, exploding_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit)
 
 	local attacker_unit_id = Managers.state.unit_storage:go_id(owner_unit)
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template.name]
@@ -1196,6 +1195,46 @@ AiUtils.unit_is_behind_player = function (enemy_unit, player_unit)
 	end
 
 	return false
+end
+local MIN_DIST_SQR = 0.0001
+AiUtils.remove_bad_boxed_spline_points = function (source_points, spline_name)
+	local points = {}
+	local pA, pB = source_points[1]:unbox()
+	points[1] = pA
+
+	for i = 2, #source_points, 1 do
+		pB = source_points[i]:unbox()
+		local dist = Vector3.distance_squared(pA, pB)
+
+		if MIN_DIST_SQR < dist then
+			points[#points + 1] = pB
+			pA = pB
+		else
+			print("SPLINE HAS FAULTY POINTS (create_formation_data):", spline_name, i)
+		end
+	end
+
+	return points
+end
+AiUtils.remove_bad_spline_points = function (source_points, spline_name)
+	local points = {}
+	local pA = source_points[1]
+	local pB = nil
+	points[1] = pA
+
+	for i = 2, #source_points, 1 do
+		pB = source_points[i]
+		local dist = Vector3.distance_squared(pA, pB)
+
+		if MIN_DIST_SQR < dist then
+			points[#points + 1] = pB
+			pA = pB
+		else
+			print("SPLINE HAS FAULTY POINTS (create_formation_data):", spline_name, i)
+		end
+	end
+
+	return points
 end
 
 return 

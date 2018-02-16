@@ -1,9 +1,12 @@
 require("scripts/managers/matchmaking/matchmaking_handshaker")
 
 GameServerManager = class(GameServerManager)
-local rpcs = {}
+local rpcs = {
+	"rpc_set_player_name"
+}
 GameServerManager.init = function (self, level_transition_handler)
 	self._level_transition_handler = level_transition_handler
+	self._player_names = {}
 
 	return 
 end
@@ -32,6 +35,16 @@ GameServerManager.update = function (self, dt, t)
 	end
 
 	self._update_game_server(self, dt, t)
+
+	return 
+end
+GameServerManager.peer_name = function (self, peer_id)
+	return self._player_names[peer_id]
+end
+GameServerManager.remove_peer = function (self, peer_id)
+	self._game_server:remove_peer(peer_id)
+
+	self._player_names[peer_id] = nil
 
 	return 
 end
@@ -155,6 +168,11 @@ GameServerManager.set_start_game_params = function (self, sender, level_key, gam
 		difficulty = difficulty,
 		private_game = private_game
 	}
+
+	return 
+end
+GameServerManager.rpc_set_player_name = function (self, sender, cropped_name)
+	self._player_names[sender] = cropped_name
 
 	return 
 end

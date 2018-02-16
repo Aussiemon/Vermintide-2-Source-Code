@@ -93,10 +93,18 @@ weapon_template.wield_anim_3p = "to_statue"
 weapon_template.wield_anim = "to_statue"
 weapon_template.block_wielding = true
 weapon_template.max_fatigue_points = 1
-weapon_template.buff = "statue_decrease_movement"
-weapon_template.dodge_distance = 0.45
-weapon_template.dodge_speed = 0.65
 weapon_template.dodge_count = 1
+weapon_template.buffs = {
+	statue_decrease_movement = {
+		variable_value = 1
+	},
+	change_dodge_distance = {
+		external_optional_multiplier = 0.45
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 0.65
+	}
+}
 Weapons = Weapons or {}
 Weapons.drachenfels_statue = table.create_copy(Weapons.drachenfels_statue, weapon_template)
 Weapons.drachenfels_statue.actions.action_one.default.projectile_info.projectile_unit_name = "units/weapons/player/pup_drachenfels_statue/pup_drachenfels_statue"
@@ -121,10 +129,13 @@ Weapons.training_dummy.actions.action_one.default.angular_velocity = {
 	0
 }
 Weapons.training_dummy.actions.action_one.default.throw_offset = {
-	0.39,
-	1.15,
-	0
+	0,
+	1,
+	-0.2
 }
+Weapons.training_dummy.actions.action_one.default.rotate_towards_owner_unit = true
+Weapons.training_dummy.wield_anim = "to_statue"
+Weapons.training_dummy.wield_anim_3p = "to_statue"
 Weapons.training_dummy.actions.action_one.default.projectile_info = {
 	projectile_unit_template_name = "pickup_training_dummy_unit",
 	pickup_name = "training_dummy",

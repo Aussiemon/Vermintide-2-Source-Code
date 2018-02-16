@@ -65,11 +65,10 @@ CorruptorBeamExtension.set_state = function (self, state, target_unit)
 		return 
 	end
 
-	local target_position = position_lookup[target_unit] + Vector3.up()
 	local self_pos = position_lookup[self.unit] + Vector3.up()
 	local world = self.world
 
-	if state == "projectile" then
+	if state == "projectile" and Unit.alive(target_unit) then
 		self.beam_effect = World.create_particles(world, self.beam_effect_name, self_pos)
 		self.beam_effect_variable_id = World.find_particles_variable(world, self.beam_effect_name, "trail_length")
 		local projectile_unit = World.spawn_unit(world, self.projectile_unit_name, self_pos, Quaternion.identity())
@@ -83,7 +82,7 @@ CorruptorBeamExtension.set_state = function (self, state, target_unit)
 		self.projectile_unit = projectile_unit
 
 		WwiseUtils.trigger_unit_event(world, self.projectile_sound, projectile_unit, 0)
-	elseif state == "start_beam" then
+	elseif state == "start_beam" and Unit.alive(target_unit) then
 		self.beam_effect_start = World.create_particles(world, self.beam_effect_name_start, self_pos)
 		self.beam_effect_end = World.create_particles(world, self.beam_effect_name_end, self_pos)
 		self.target_unit = target_unit
@@ -108,7 +107,7 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 	local target_unit = self.target_unit
 	local projectile_unit = self.projectile_unit
 
-	if target_unit then
+	if Unit.alive(target_unit) then
 		local world = self.world
 		local target_position = Unit.world_position(target_unit, Unit.node(target_unit, "j_neck"))
 		local self_pos = Unit.world_position(unit, Unit.node(unit, "a_voice"))

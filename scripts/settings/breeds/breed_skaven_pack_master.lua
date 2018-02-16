@@ -34,6 +34,7 @@ local breed_data = {
 	stagger_reduction = -2,
 	smart_object_template = "special",
 	race = "skaven",
+	dialogue_source_name = "skaven_pack_master",
 	proximity_system_check = true,
 	death_reaction = "ai_default",
 	perception = "perception_pack_master",

@@ -65,7 +65,7 @@ weapon_template.actions = {
 				damage_profile = "staff_fireball"
 			},
 			timed_data = {
-				life_time = 1,
+				life_time = 1.5,
 				aoe = ExplosionTemplates.fireball
 			},
 			recoil_settings = {
@@ -317,11 +317,17 @@ weapon_template.crosshair_style = "arrows"
 weapon_template.fire_at_gaze_setting = "tobii_fire_at_gaze_fireball"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "FIRE_STAFF"
+weapon_template.buffs = {
+	change_dodge_distance = {
+		external_optional_multiplier = 1
+	},
+	change_dodge_speed = {
+		external_optional_multiplier = 1
+	}
+}
 weapon_template.wwise_dep_right_hand = {
 	"wwise/staff"
 }
-weapon_template.dodge_distance = 1
-weapon_template.dodge_speed = 1
 weapon_template.aim_assist_settings = {
 	max_range = 50,
 	no_aim_input_multiplier = 0,

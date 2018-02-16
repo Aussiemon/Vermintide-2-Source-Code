@@ -20,6 +20,7 @@ EndZoneExtension.init = function (self, extension_init_context, unit)
 	end
 
 	self._disable_complete_level = Unit.get_data(self._unit, "disable_complete_level")
+	self._disable_check_joining_players = Unit.get_data(self._unit, "disable_check_joining_players")
 	local node = Unit.node(self._unit, "g_end_zone_01")
 
 	Unit.set_local_scale(self._unit, node, Vector3(0, 0, 0))
@@ -304,7 +305,7 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 				end
 			end
 
-			if inside then
+			if inside and self._check_joining_players(self) then
 				self._state_data.end_zone_timer = math.clamp(self.end_time_left(self) - dt, 0, self.end_time(self))
 
 				if self.end_time_left(self) <= 0 and not self._disable_complete_level then
@@ -332,7 +333,7 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 				end
 			end
 
-			if inside then
+			if inside and self._check_joining_players(self) then
 				self._state_data.end_zone_timer = math.clamp(self.end_time_left(self) - dt, 0, self.end_time(self))
 			else
 				self._state_data.end_zone_timer = self.end_time(self)
@@ -362,6 +363,19 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 	end
 
 	return 
+end
+EndZoneExtension._check_joining_players = function (self)
+	if self._disable_check_joining_players then
+		return true
+	end
+
+	local all_players_spawned = Managers.matchmaking:are_all_players_spawned()
+
+	if not all_players_spawned then
+		return false
+	end
+
+	return true
 end
 
 return 

@@ -1,8 +1,8 @@
 local SIZE_X = 1920
 local SIZE_Y = 1080
 local scenegraph_definition = {
-	root = {
-		is_root = true,
+	screen = {
+		scale = "fit",
 		position = {
 			0,
 			0,
@@ -11,6 +11,20 @@ local scenegraph_definition = {
 		size = {
 			SIZE_X,
 			SIZE_Y
+		}
+	},
+	timer_text_box = {
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "right",
+		position = {
+			0,
+			0,
+			3
+		},
+		size = {
+			SIZE_X,
+			100
 		}
 	},
 	timer_background = {
@@ -26,23 +40,8 @@ local scenegraph_definition = {
 			268,
 			49
 		}
-	},
-	timer_text_box = {
-		vertical_alignment = "top",
-		parent = "root",
-		horizontal_alignment = "center",
-		position = {
-			0,
-			0,
-			3
-		},
-		size = {
-			SIZE_X,
-			100
-		}
 	}
 }
-local color = Colors.get_color_table_with_alpha("white", 255)
 local widget_definitions = {
 	timer_background = {
 		scenegraph_id = "timer_background",
@@ -86,11 +85,11 @@ local widget_definitions = {
 		},
 		style = {
 			timer_text = {
-				vertical_alignment = "center",
+				vertical_alignment = "bottom",
 				font_type = "hell_shark",
-				font_size = 24,
-				horizontal_alignment = "center",
-				text_color = color,
+				font_size = 20,
+				horizontal_alignment = "right",
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					0,
 					0,

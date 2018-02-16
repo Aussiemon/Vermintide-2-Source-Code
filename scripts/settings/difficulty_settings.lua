@@ -32,7 +32,7 @@ DifficultySettings.easy = {
 		intensity_add_per_percent_dmg_taken = 3
 	},
 	pacing_overrides = {
-		peak_intensity_threshold = 35
+		peak_intensity_threshold = 45
 	}
 }
 DifficultySettings.normal = {
@@ -73,7 +73,7 @@ DifficultySettings.hard = {
 	display_image = "difficulty_option_3",
 	friendly_fire_ranged = false,
 	completed_frame_texture = "map_frame_02",
-	required_power_level = 0,
+	required_power_level = 300,
 	power_level_cap = 600,
 	wounds = 3,
 	description = "difficulty_hard_desc",
@@ -95,7 +95,7 @@ DifficultySettings.hard = {
 		intensity_add_per_percent_dmg_taken = 0.8
 	},
 	pacing_overrides = {
-		peak_intensity_threshold = 40
+		peak_intensity_threshold = 50
 	}
 }
 DifficultySettings.survival_hard = table.clone(DifficultySettings.hard)
@@ -109,7 +109,7 @@ DifficultySettings.harder = {
 	display_image = "difficulty_option_4",
 	friendly_fire_ranged = true,
 	completed_frame_texture = "map_frame_03",
-	required_power_level = 0,
+	required_power_level = 400,
 	power_level_cap = 800,
 	wounds = 2,
 	description = "difficulty_harder_desc",
@@ -131,7 +131,7 @@ DifficultySettings.harder = {
 		intensity_add_per_percent_dmg_taken = 0.7
 	},
 	pacing_overrides = {
-		peak_intensity_threshold = 50
+		peak_intensity_threshold = 55
 	}
 }
 DifficultySettings.survival_harder = table.clone(DifficultySettings.harder)
@@ -146,7 +146,7 @@ DifficultySettings.hardest = {
 	display_image = "difficulty_option_5",
 	friendly_fire_ranged = true,
 	completed_frame_texture = "map_frame_04",
-	required_power_level = 0,
+	required_power_level = 600,
 	power_level_cap = 1000,
 	wounds = 2,
 	description = "difficulty_hardest_desc",

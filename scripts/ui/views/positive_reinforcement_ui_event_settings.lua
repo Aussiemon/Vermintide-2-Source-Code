@@ -50,23 +50,7 @@ return {
 			return image_1, "reinforcement_assisted_respawn", image_2
 		end
 	},
-	aid = {
-		text_function = function (amount, player_1_name, player_2_name)
-			if 1 < amount then
-				return string.format(Localize("positive_reinforcement_player_aided_player_multiple"), player_1_name, player_2_name, amount)
-			else
-				return string.format(Localize("positive_reinforcement_player_aided_player"), player_1_name, player_2_name)
-			end
-
-			return 
-		end,
-		sound_function = function ()
-			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or (script_data.enable_reinforcement_ui_remote_sound and "hud_info")
-		end,
-		icon_function = function (image_1, image_2)
-			return image_1, "reinforcement_aid", image_2
-		end
-	},
+	aid = {},
 	killed_special = {
 		text_function = function (amount, player_name, breed_name)
 			if 1 < amount then

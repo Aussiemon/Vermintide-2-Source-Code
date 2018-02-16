@@ -322,12 +322,12 @@ BTConditions.has_target_and_ammo_greater_than = function (blackboard, args)
 	end
 
 	local inventory_extension = blackboard.inventory_extension
-	local overcharge_extension = blackboard.overcharge_extension
 	local current, max = inventory_extension.current_ammo_status(inventory_extension, "slot_ranged")
 	local ammo_ok = not current or args.ammo_percentage < current/max
+	local overcharge_extension = blackboard.overcharge_extension
 	local overcharge_limit_type = args.overcharge_limit_type
 	local current_oc, threshold_oc, max_oc = overcharge_extension.current_overcharge_status(overcharge_extension)
-	local overcharge_ok = not current_oc or (overcharge_limit_type == "threshold" and current_oc/threshold_oc < args.overcharge_limit) or (overcharge_limit_type == "maximum" and current_oc/max_oc < args.overcharge_limit)
+	local overcharge_ok = current_oc == 0 or (overcharge_limit_type == "threshold" and current_oc/threshold_oc < args.overcharge_limit) or (overcharge_limit_type == "maximum" and current_oc/max_oc < args.overcharge_limit)
 	local obstruction = blackboard.ranged_obstruction_by_static
 	local t = Managers.time:time("game")
 	local obstructed = obstruction and obstruction.unit == blackboard.target_unit and obstruction.timer + 3 < t
@@ -412,27 +412,50 @@ local function can_interact_with_ally(self_unit, target_ally_unit)
 	return can_interact_with_ally
 end
 
+local FLAT_MOVE_TO_EPSILON_SQ = BotConstants.default.FLAT_MOVE_TO_EPSILON^2
+local Z_MOVE_TO_EPSILON = BotConstants.default.Z_MOVE_TO_EPSILON
+
+local function has_reached_ally_aid_destination(self_position, blackboard)
+	local navigation_extension = blackboard.navigation_extension
+	local destination = navigation_extension.destination(navigation_extension)
+	local target_ally_aid_destination = blackboard.target_ally_aid_destination:unbox()
+	local has_target_ally_aid_destination = Vector3.equal(destination, target_ally_aid_destination)
+
+	if has_target_ally_aid_destination then
+		return navigation_extension.destination_reached(navigation_extension)
+	else
+		local offset = target_ally_aid_destination - self_position
+
+		return math.abs(offset.z) <= Z_MOVE_TO_EPSILON and Vector3.length_squared(Vector3.flat(offset)) <= FLAT_MOVE_TO_EPSILON_SQ
+	end
+
+	return 
+end
+
 BTConditions.can_revive = function (blackboard)
-	if blackboard.interaction_unit == blackboard.target_ally_unit and blackboard.target_ally_need_type == "knocked_down" then
-		local ally_distance = blackboard.ally_distance
+	local target_ally_unit = blackboard.target_ally_unit
 
-		if 2.25 < ally_distance then
-			return false
-		end
-
+	if blackboard.interaction_unit == target_ally_unit and blackboard.target_ally_need_type == "knocked_down" then
 		local self_unit = blackboard.unit
-		local target_ally_unit = blackboard.target_ally_unit
 		local health = ScriptUnit.extension(target_ally_unit, "health_system"):current_health_percent()
 
 		if 0.3 < health and is_there_threat_to_aid(self_unit, blackboard.proximite_enemies, blackboard.force_aid) then
 			return false
 		end
 
-		local destination_reached = blackboard.navigation_extension:destination_reached()
-		local can_interact_with_ally = can_interact_with_ally(self_unit, target_ally_unit)
-		local bot_stuck_threshold = 1
+		local ally_distance = blackboard.ally_distance
+		local interaction_extension = blackboard.interaction_extension
+		local is_interacting, interaction_type = interaction_extension.is_interacting(interaction_extension)
 
-		if can_interact_with_ally and (destination_reached or ally_distance < 1 or Vector3.length_squared(blackboard.locomotion_extension:current_velocity()) < bot_stuck_threshold^2) then
+		if is_interacting and interaction_type == "revive" and ally_distance < 1 then
+			return true
+		end
+
+		local self_position = POSITION_LOOKUP[self_unit]
+		local ally_destination_reached = has_reached_ally_aid_destination(self_position, blackboard)
+		local can_interact_with_ally = can_interact_with_ally(self_unit, target_ally_unit)
+
+		if can_interact_with_ally and ally_destination_reached then
 			return true
 		end
 	end
@@ -440,7 +463,9 @@ BTConditions.can_revive = function (blackboard)
 	return 
 end
 BTConditions.can_heal_player = function (blackboard)
-	if blackboard.interaction_unit == blackboard.target_ally_unit and blackboard.target_ally_need_type == "in_need_of_heal" then
+	local target_ally_unit = blackboard.target_ally_unit
+
+	if blackboard.interaction_unit == target_ally_unit and blackboard.target_ally_need_type == "in_need_of_heal" then
 		local interaction_extension = blackboard.interaction_extension
 		local is_interacting, interaction_type = interaction_extension.is_interacting(interaction_extension)
 
@@ -448,25 +473,20 @@ BTConditions.can_heal_player = function (blackboard)
 			return true
 		end
 
-		local ally_distance = blackboard.ally_distance
-
-		if 2.5 < ally_distance then
-			return false
-		end
-
 		if 0 < #blackboard.proximite_enemies then
 			return false
 		end
 
 		local self_unit = blackboard.unit
-		local target_ally_unit = blackboard.target_ally_unit
-		local destination_reached = blackboard.navigation_extension:destination_reached()
+		local self_position = POSITION_LOOKUP[self_unit]
+		local ally_destination_reached = has_reached_ally_aid_destination(self_position, blackboard)
 		local can_interact_with_ally = can_interact_with_ally(self_unit, target_ally_unit)
 		local ally_locomotion_extension = ScriptUnit.extension(target_ally_unit, "locomotion_system")
 		local ally_velocity = ally_locomotion_extension.current_velocity(ally_locomotion_extension)
 		local ally_speed_sq = Vector3.length_squared(ally_velocity)
+		local ally_distance = blackboard.ally_distance
 
-		if can_interact_with_ally and (destination_reached or (0.04000000000000001 < ally_speed_sq and ally_distance < 2)) then
+		if can_interact_with_ally and (ally_destination_reached or (0.04000000000000001 < ally_speed_sq and ally_distance < 2)) then
 			return true
 		end
 	end
@@ -475,23 +495,19 @@ BTConditions.can_heal_player = function (blackboard)
 end
 BTConditions.can_help_in_need_player = function (blackboard, args)
 	local need_type = args[1]
+	local target_ally_unit = blackboard.target_ally_unit
 
-	if blackboard.interaction_unit == blackboard.target_ally_unit and blackboard.target_ally_need_type == need_type then
-		local ally_distance = blackboard.ally_distance
-
-		if 2.5 < ally_distance then
-			return false
-		end
-
+	if blackboard.interaction_unit == target_ally_unit and blackboard.target_ally_need_type == need_type then
 		local self_unit = blackboard.unit
-		local target_ally_unit = blackboard.target_ally_unit
-		local destination_reached = blackboard.navigation_extension:destination_reached()
+		local self_position = POSITION_LOOKUP[self_unit]
+		local ally_destination_reached = has_reached_ally_aid_destination(self_position, blackboard)
 		local can_interact_with_ally = can_interact_with_ally(self_unit, target_ally_unit)
 		local ally_locomotion_extension = ScriptUnit.extension(target_ally_unit, "locomotion_system")
 		local ally_velocity = ally_locomotion_extension.current_velocity(ally_locomotion_extension)
 		local ally_speed_sq = Vector3.length_squared(ally_velocity)
+		local ally_distance = blackboard.ally_distance
 
-		if can_interact_with_ally and (destination_reached or (0.04000000000000001 < ally_speed_sq and ally_distance < 2)) then
+		if can_interact_with_ally and (ally_destination_reached or (0.04000000000000001 < ally_speed_sq and ally_distance < 2)) then
 			return true
 		end
 	end
@@ -499,24 +515,20 @@ BTConditions.can_help_in_need_player = function (blackboard, args)
 	return 
 end
 BTConditions.can_rescue_hanging_from_hook = function (blackboard)
-	if blackboard.target_ally_need_type == "hook" then
-		local ally_distance = blackboard.ally_distance
+	local target_ally_unit = blackboard.target_ally_unit
 
-		if 2.25 < ally_distance then
-			return false
-		end
-
+	if blackboard.interaction_unit == target_ally_unit and blackboard.target_ally_need_type == "hook" then
 		local self_unit = blackboard.unit
 
 		if is_there_threat_to_aid(self_unit, blackboard.proximite_enemies, blackboard.force_aid) then
 			return false
 		end
 
-		local target_ally_unit = blackboard.target_ally_unit
-		local destination_reached = blackboard.navigation_extension:destination_reached()
+		local self_position = POSITION_LOOKUP[self_unit]
 		local can_interact_with_ally = can_interact_with_ally(self_unit, target_ally_unit)
+		local ally_destination_reached = has_reached_ally_aid_destination(self_position, blackboard)
 
-		if can_interact_with_ally and (destination_reached or blackboard.current_interaction_unit == target_ally_unit) then
+		if can_interact_with_ally and ally_destination_reached then
 			return true
 		end
 	end
@@ -524,24 +536,20 @@ BTConditions.can_rescue_hanging_from_hook = function (blackboard)
 	return 
 end
 BTConditions.can_rescue_ledge_hanging = function (blackboard)
-	if blackboard.target_ally_need_type == "ledge" then
-		local ally_distance = blackboard.ally_distance
+	local target_ally_unit = blackboard.target_ally_unit
 
-		if 2.25 < ally_distance then
-			return false
-		end
-
+	if blackboard.interaction_unit == target_ally_unit and blackboard.target_ally_need_type == "ledge" then
 		local self_unit = blackboard.unit
 
 		if is_there_threat_to_aid(self_unit, blackboard.proximite_enemies, blackboard.force_aid) then
 			return false
 		end
 
-		local target_ally_unit = blackboard.target_ally_unit
-		local destination_reached = blackboard.navigation_extension:destination_reached()
+		local self_position = POSITION_LOOKUP[self_unit]
 		local can_interact_with_ally = can_interact_with_ally(self_unit, target_ally_unit)
+		local ally_destination_reached = has_reached_ally_aid_destination(self_position, blackboard)
 
-		if can_interact_with_ally and destination_reached then
+		if can_interact_with_ally and ally_destination_reached then
 			return true
 		end
 	end
