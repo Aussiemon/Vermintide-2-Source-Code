@@ -55,7 +55,7 @@ BTCorruptorGrabAction.leave = function (self, unit, blackboard, t, reason, destr
 	blackboard.drag_target_unit = nil
 	blackboard.projectile_position = nil
 
-	if reason == "aborted" and blackboard.stagger then
+	if reason == "aborted" and blackboard.stagger and blackboard.play_grabbed_loop then
 		blackboard.corruptor_grab_stagger = true
 	end
 
@@ -240,10 +240,8 @@ BTCorruptorGrabAction.set_beam_state = function (self, unit, blackboard, state)
 	local unit_id = network_manager.unit_game_object_id(network_manager, unit)
 	local target_unit_id = network_manager.unit_game_object_id(network_manager, blackboard.target_unit) or network_manager.unit_game_object_id(network_manager, blackboard.grabbed_unit)
 
-	if unit_id and target_unit_id then
+	if unit_id then
 		Managers.state.network.network_transmit:send_rpc_all("rpc_set_corruptor_beam_state", unit_id, state, target_unit_id)
-	else
-		print("Corruptor Sorcerer failed to set beam state ", state, ". Unit: ", unit, " Target Unit: ", blackboard.target_unit, " Grabbed Unit: ", blackboard.grabbed_unit)
 	end
 
 	return 

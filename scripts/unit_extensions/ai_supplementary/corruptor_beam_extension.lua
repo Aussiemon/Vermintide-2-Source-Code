@@ -26,12 +26,21 @@ CorruptorBeamExtension.destroy = function (self)
 
 	return 
 end
-CorruptorBeamExtension.remove_vfx_and_sfx = function (self)
+CorruptorBeamExtension.on_remove_extension = function (self, unit, extension_name)
+	self.remove_vfx_and_sfx(self, unit)
+
+	return 
+end
+CorruptorBeamExtension.remove_vfx_and_sfx = function (self, unit)
 	local world = self.world
 	local target_unit = self.target_unit
+	local self_unit = unit or self.unit
 
-	if target_unit then
-		WwiseUtils.trigger_unit_event(world, self.stop_beam_start_sound, self.unit, Unit.node(self.unit, "a_voice"))
+	if Unit.alive(self_unit) then
+		WwiseUtils.trigger_unit_event(world, self.stop_beam_start_sound, self_unit, Unit.node(self_unit, "a_voice"))
+	end
+
+	if Unit.alive(target_unit) then
 		WwiseUtils.trigger_unit_event(world, self.stop_beam_end_sound, target_unit, Unit.node(target_unit, "j_neck"))
 	end
 
@@ -61,6 +70,7 @@ end
 CorruptorBeamExtension.set_state = function (self, state, target_unit)
 	if not target_unit then
 		print("Corruptor beam tried to set state to nil target unit")
+		self.remove_vfx_and_sfx(self)
 
 		return 
 	end
@@ -117,7 +127,7 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 		local material_name = "beam"
 		local variable_name = "uv_dynamic_scaling"
 
-		if state == "projectile" then
+		if state == "projectile" and self.beam_effect then
 			local current_pos = Unit.local_position(projectile_unit, 0)
 			local wanted_position = current_pos + direction*self.projectile_speed*dt
 			local distance_to_particle = Vector3.distance(self_pos, wanted_position)
@@ -134,7 +144,7 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 					blackboard.projectile_position:store(wanted_position)
 				end
 			end
-		elseif state == "start_beam" then
+		elseif state == "start_beam" and self.beam_effect and self.beam_effect_start and self.beam_effect_end then
 			if projectile_unit then
 				World.destroy_unit(world, projectile_unit)
 

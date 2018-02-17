@@ -547,6 +547,8 @@ AIGroupSystem.update = function (self, context, t)
 	local nav_world = self.nav_world
 	local AIGroupTemplates = AIGroupTemplates
 
+	Profiler.start("initalizing groups")
+
 	for id, group in pairs(self.groups_to_initialize) do
 		if group.num_spawned_members == group.size then
 			if 0 < group.members_n then
@@ -563,12 +565,17 @@ AIGroupSystem.update = function (self, context, t)
 		end
 	end
 
+	Profiler.stop("initalizing groups")
+	Profiler.start("updating groups")
+
 	for id, group in pairs(self.groups_to_update) do
 		local template = group.template
 		local template_update = AIGroupTemplates[template].update
 
 		template_update(world, nav_world, group, t, context.dt)
 	end
+
+	Profiler.stop("updating groups")
 
 	if not script_data.ai_group_debug then
 		local drawer = Managers.state.debug:drawer(debug_drawer_info)
@@ -577,6 +584,7 @@ AIGroupSystem.update = function (self, context, t)
 	end
 
 	if self.patrol_analysis and self._computing_splines then
+		Profiler.start("computing splines")
 		self.patrol_analysis:run()
 
 		for spline_name, spline_type in pairs(self._computing_splines) do
@@ -619,12 +627,16 @@ AIGroupSystem.update = function (self, context, t)
 				self._computing_splines[spline_name] = nil
 			end
 		end
+
+		Profiler.stop("computing splines")
 	end
 
 	local conflict_director = Managers.state.conflict
 
 	if self._update_recycler then
+		Profiler.start("check recycler")
 		self.check_recycler_despawn(self, self._player_positions, self._player_areas, self._use_player_areas)
+		Profiler.stop("check recycler")
 	end
 
 	self._update_recycler = false

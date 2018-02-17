@@ -230,11 +230,11 @@ MatchmakingStateSearchGame._compare_first_prio_lobbies = function (self, current
 
 	local search_config = self.search_config
 	local quick_game = search_config.quick_game
+	local current_level_key = current_lobby.selected_level_key
+	local new_level_key = new_lobby.selected_level_key
 
-	if quick_game and current_lobby.selected_level_key and new_lobby.selected_level_key then
-		local current_level_key = current_lobby.selected_level_key
+	if quick_game and current_level_key and current_level_key ~= "inn_level" and new_level_key and new_level_key ~= "inn_level" then
 		local current_times_completed = self._times_party_completed_level(self, current_level_key)
-		local new_level_key = current_lobby.selected_level_key
 		local new_times_completed = self._times_party_completed_level(self, new_level_key)
 
 		if new_times_completed < current_times_completed then
@@ -251,8 +251,10 @@ MatchmakingStateSearchGame._compare_secondary_prio_lobbies = function (self, cur
 
 	local search_config = self.search_config
 	local quick_game = search_config.quick_game
+	local current_level_key = current_lobby.selected_level_key
+	local new_level_key = new_lobby.selected_level_key
 
-	if quick_game and current_lobby.selected_level_key and new_lobby.selected_level_key then
+	if quick_game and current_level_key and current_level_key ~= "inn_level" and new_level_key and new_level_key ~= "inn_level" then
 		local current_level_key = current_lobby.selected_level_key
 		local current_times_completed = self._times_party_completed_level(self, current_level_key)
 		local new_level_key = current_lobby.selected_level_key

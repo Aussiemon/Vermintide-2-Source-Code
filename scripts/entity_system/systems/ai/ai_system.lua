@@ -1266,7 +1266,7 @@ AISystem.rpc_set_corruptor_beam_state = function (self, peer_id, unit_id, state,
 	local target_unit = Managers.state.unit_storage:unit(target_unit_id)
 	local corruptor_beam_extension = ScriptUnit.has_extension(unit, "ai_beam_effect_system")
 
-	if corruptor_beam_extension then
+	if unit and corruptor_beam_extension then
 		corruptor_beam_extension.set_state(corruptor_beam_extension, state, target_unit)
 	end
 

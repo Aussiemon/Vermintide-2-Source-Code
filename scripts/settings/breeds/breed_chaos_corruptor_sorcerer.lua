@@ -73,22 +73,22 @@ local action_data = {
 		close_distance = 10,
 		far_away_from_target_sq = 400,
 		skulk_foreshadowing_sound_stop = "chaos_corruptor_spawning_stop",
-		max_wave_distance = 10.2,
-		third_wave_max_distance = 7,
+		max_wave_distance = 18,
+		third_wave_max_distance = 8,
 		vanish_timer = 2,
 		vanish_countdown = 3,
 		min_wave_distance = 8,
-		third_wave_min_distance = 1,
+		third_wave_min_distance = 3,
 		part_hp_lost_to_teleport = 0.1,
 		skulk_foreshadowing_sound = "chaos_corruptor_spawning",
 		preferred_distance = 20,
 		skulk_time = {
-			7,
-			10
+			11,
+			13
 		},
 		teleport_cooldown = {
-			7,
-			10
+			15,
+			15
 		}
 	},
 	grab_attack = {

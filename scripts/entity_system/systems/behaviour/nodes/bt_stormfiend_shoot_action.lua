@@ -637,7 +637,9 @@ BTStormfiendShootAction.anim_cb_attack_fire = function (self, unit, blackboard)
 	return 
 end
 BTStormfiendShootAction.anim_cb_attack_start = function (self, unit, blackboard)
-	if Managers.state.network:game() then
+	local data = blackboard.shoot_data
+
+	if Managers.state.network:game() and data and data.aim_constraint_animations then
 		local data = blackboard.shoot_data
 		local network_manager = Managers.state.network
 		local aim_constraint_animation = data.aim_constraint_animations.on
