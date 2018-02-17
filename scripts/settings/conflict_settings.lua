@@ -46,9 +46,9 @@ HordeSettings = {
 		vector_blob = HordeSettingsBasics.vector_blob,
 		difficulty_overrides = {
 			hard = {
-				vector_blob_composition = "large",
-				ambush_composition = "large",
-				vector_composition = "large"
+				vector_blob_composition = "medium",
+				ambush_composition = "medium",
+				vector_composition = "medium"
 			},
 			harder = {
 				vector_blob_composition = "large",
@@ -77,9 +77,9 @@ HordeSettings = {
 		vector_blob = HordeSettingsBasics.vector_blob,
 		difficulty_overrides = {
 			hard = {
-				vector_blob_composition = "chaos_large",
-				ambush_composition = "chaos_large",
-				vector_composition = "chaos_large"
+				vector_blob_composition = "medium",
+				ambush_composition = "medium",
+				vector_composition = "medium"
 			},
 			harder = {
 				vector_blob_composition = "chaos_large",
@@ -1267,14 +1267,20 @@ PacingSettings = {
 			0
 		},
 		delay_horde_threat_value = {
+			harder = 80,
+			hard = 60,
 			normal = 50,
 			easy = 50
 		},
 		delay_mini_patrol_threat_value = {
+			harder = 50,
+			hard = 40,
 			normal = 35,
 			easy = 35
 		},
 		delay_specials_threat_value = {
+			harder = 80,
+			hard = 60,
 			normal = 50,
 			easy = 50
 		},
@@ -1328,16 +1334,22 @@ PacingSettings = {
 			0
 		},
 		delay_horde_threat_value = {
+			harder = 80,
+			hard = 60,
 			normal = 50,
 			easy = 40
 		},
 		delay_mini_patrol_threat_value = {
+			harder = 50,
+			hard = 40,
 			normal = 35,
 			easy = 35
 		},
 		delay_specials_threat_value = {
-			normal = 120,
-			easy = 100
+			harder = 110,
+			hard = 90,
+			normal = 80,
+			easy = 70
 		},
 		mini_patrol = {
 			only_spawn_above_intensity = 1,
@@ -1550,6 +1562,39 @@ PackSpawningSettings = {
 			breed_packs = "marauders",
 			breed_packs_peeks_overide_chance = {
 				0.94,
+				1
+			},
+			breed_packs_override = {
+				{
+					"marauders",
+					1,
+					0.03
+				},
+				{
+					"marauders_shields",
+					2,
+					0.025
+				},
+				{
+					"marauders_elites",
+					2,
+					0.025
+				},
+				{
+					"marauders_berzerkers",
+					2,
+					0.03
+				}
+			}
+		}
+	},
+	code_test = {
+		area_density_coefficient = 0.03,
+		basics = PackSpawningDistribution.standard,
+		roaming_set = {
+			breed_packs = "code_test",
+			breed_packs_peeks_overide_chance = {
+				0,
 				1
 			},
 			breed_packs_override = {
@@ -1812,6 +1857,17 @@ ConflictDirectors = {
 		roaming = RoamingSettings.disabled,
 		pack_spawning = PackSpawningSettings.default,
 		horde = HordeSettings.disabled
+	},
+	code_test = {
+		debug_color = "maroon",
+		disabled = false,
+		intensity = IntensitySettings.default,
+		pacing = PacingSettings.default,
+		boss = BossSettings.default,
+		specials = SpecialsSettings.default,
+		roaming = RoamingSettings.default,
+		pack_spawning = PackSpawningSettings.code_test,
+		horde = HordeSettings.default
 	}
 }
 
@@ -1870,19 +1926,23 @@ if crash then
 end
 
 for id, setting in pairs(PackSpawningSettings) do
+	setting.name = id
+
 	if not setting.disabled then
 		roaming_set = setting.roaming_set
 		roaming_set.name = id
 		local weights = {}
 		local breed_packs_override = roaming_set.breed_packs_override
 
-		for i = 1, #breed_packs_override, 1 do
-			weights[i] = breed_packs_override[i][2]
-		end
+		if breed_packs_override then
+			for i = 1, #breed_packs_override, 1 do
+				weights[i] = breed_packs_override[i][2]
+			end
 
-		roaming_set.breed_packs_override_loaded_dice = {
-			LoadedDice.create(weights)
-		}
+			roaming_set.breed_packs_override_loaded_dice = {
+				LoadedDice.create(weights)
+			}
+		end
 	end
 end
 

@@ -283,6 +283,9 @@ end
 SpawnerSystem.spawn_horde_from_terror_event_id_composition = function (self, event_id, composition_type, limit_spawners, group_template, strictly_not_close_to_players)
 	local composition = CurrentHordeSettings.compositions[composition_type]
 	local index = LoadedDice.roll_easy(composition.loaded_probs)
+	local difficulty = Managers.state.difficulty.difficulty
+	local difficulty_breeds = variant.difficulty_breeds
+	local breed_list = (difficulty_breeds and difficulty_breeds[difficulty]) or variant.breeds
 	local variant = composition[index]
 
 	self.spawn_horde_from_terror_event_id(self, event_id, variant, limit_spawners, group_template, strictly_not_close_to_players, composition_type)
@@ -353,7 +356,9 @@ SpawnerSystem.spawn_horde_from_terror_event_id = function (self, event_id, varia
 		return 
 	end
 
-	local breed_list = variant.breeds
+	local difficulty = Managers.state.difficulty.difficulty
+	local difficulty_breeds = variant.difficulty_breeds
+	local breed_list = (difficulty_breeds and difficulty_breeds[difficulty]) or variant.breeds
 	local spawn_list = spawn_list
 
 	table.clear_array(spawn_list, #spawn_list)

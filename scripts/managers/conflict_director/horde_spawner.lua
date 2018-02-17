@@ -1005,7 +1005,9 @@ HordeSpawner.create_event_horde_no_horde_spawners = function (self, horde, varia
 				cover_point_unit = cover_point_unit,
 				spawn_list = spawn_list
 			}
-			local breed_list = variant.breeds
+			local difficulty = Managers.state.difficulty.difficulty
+			local difficulty_breeds = variant.difficulty_breeds
+			local breed_list = (difficulty_breeds and difficulty_breeds[difficulty]) or variant.breeds
 
 			for i = 1, #breed_list, 2 do
 				local breed_name = breed_list[i]

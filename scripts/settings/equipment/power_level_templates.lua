@@ -1231,14 +1231,14 @@ PowerLevelTemplates = {
 	critical_strikel_fencer_stab_L = {
 		attack_armor_power_modifer = {
 			1,
-			1,
+			0.5,
 			1.5,
 			1,
 			1
 		},
 		impact_armor_power_modifer = {
 			1,
-			1,
+			0.5,
 			0.5,
 			1,
 			1
@@ -1290,14 +1290,14 @@ PowerLevelTemplates = {
 	critical_fencer_stab_M = {
 		attack_armor_power_modifer = {
 			1,
-			1,
+			0.5,
 			1.5,
 			1,
 			1
 		},
 		impact_armor_power_modifer = {
 			1,
-			1,
+			0.5,
 			0.5,
 			1,
 			1
@@ -1552,8 +1552,8 @@ PowerLevelTemplates = {
 		}
 	},
 	cleave_distribution_tank_spiked_M = {
-		attack = 0.4,
-		impact = 0.5
+		attack = 0.6,
+		impact = 0.65
 	},
 	default_target_tank_spiked_M = {
 		boost_curve_type = "tank_curve",

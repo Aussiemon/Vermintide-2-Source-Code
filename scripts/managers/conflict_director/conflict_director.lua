@@ -695,9 +695,9 @@ ConflictDirector.set_updated_settings = function (self, conflict_settings_name)
 	CurrentPacing = self.patch_settings_with_difficulty(self, director.pacing)
 	CurrentBossSettings = self.patch_settings_with_difficulty(self, director.boss)
 	CurrentSpecialsSettings = self.patch_settings_with_difficulty(self, director.specials)
-	CurrentHordeSettings = director.horde
+	CurrentHordeSettings = self.patch_settings_with_difficulty(self, director.horde)
 	CurrentRoamingSettings = director.roaming
-	CurrentPackSpawningSettings = director.pack_spawning
+	CurrentPackSpawningSettings = self.patch_settings_with_difficulty(self, director.pack_spawning)
 	local S = director
 
 	print("Switching ConflictSettings: to: " .. tostring(S.name))
@@ -787,7 +787,7 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 					wave = "multi first wave"
 				end
 			else
-				self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.max_delay_until_next_horde)
+				self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.horde_frequency)
 				wave = "single wave"
 			end
 		end
@@ -806,6 +806,10 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 	return 
 end
 ConflictDirector.horde_killed = function (self, wave)
+	if not wave then
+		return 
+	end
+
 	local count = self._multiple_horde_count
 
 	if not count then
@@ -2688,6 +2692,10 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 
 	if DebugKeyHandler.key_pressed("t", "test terror", "ai", "left shift") then
 		print("Pressed t")
+		TerrorEventMixer.start_event("event_horde")
+
+		return 
+
 		print("Creating tentacle")
 
 		local start_pos = PLAYER_POSITIONS[1] + Vector3(1, 0, 0)
@@ -2701,30 +2709,6 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 		self.ik_tentacle = IkChain:new(joints, start_pos, target_pos, 0.01, 0.8)
 
 		self.ik_tentacle:solve(t, dt)
-
-		return 
-
-		local main_path_info = self.main_path_info
-		local ahead_unit = main_path_info.ahead_unit
-		local spawn_pos = self.aim_spawning(self, nil, true)
-
-		if not spawn_pos then
-			return 
-		end
-
-		local to_target = POSITION_LOOKUP[ahead_unit] - spawn_pos
-		local spawn_rot = Quaternion.look(to_target, Vector3.up())
-		local unit_name = "units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx"
-		local extension_init_data = {
-			area_damage_system = {
-				damage_wave_template_name = "plague_wave",
-				source_unit = ahead_unit
-			}
-		}
-		local damage_wave_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "damage_wave_unit", extension_init_data, spawn_pos, spawn_rot)
-		local wave_extension = ScriptUnit.extension(damage_wave_unit, "area_damage_system")
-
-		wave_extension.launch_wave(wave_extension, ahead_unit)
 
 		return 
 

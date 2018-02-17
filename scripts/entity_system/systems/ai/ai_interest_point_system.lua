@@ -1,6 +1,7 @@
 local broadphase_radius = 20
 local broadphase_num_objects = 128
 local script_data = script_data
+local debug_zone_baker = false
 AIInterestPointSystem = class(AIInterestPointSystem, ExtensionSystemBase)
 local extensions = {
 	"AIInterestPointExtension",
@@ -310,6 +311,23 @@ AIInterestPointSystem.update = function (self, context, t)
 
 	return 
 end
+AIInterestPointSystem.debug_draw_baker_data = function (self, hi_data, data, breed_name, point)
+	if data.max_amount < data.count then
+		local c = Colors.distinct_colors_lookup[hi_data.id] or Colors.distinct_colors_lookup[1]
+		local color = Color(c[1], c[2], c[3])
+
+		QuickDrawerStay:sphere(Vector3Aux.unbox(point.position), 0.5, color)
+		print(string.format("SPAWN SWITCH breed %s -> %s, hidata-id: %s count: %d/%d", breed_name, data.switch_breed.name, hi_data.id, data.switch_count, data.max_amount))
+	else
+		c = Colors.distinct_colors_lookup[hi_data.id] or Colors.distinct_colors_lookup[1]
+		local color = Color(c[1], c[2], c[3])
+
+		QuickDrawerStay:sphere(Vector3Aux.unbox(point.position), 0.1, color)
+		print(string.format("SPAWN NORMAL breed %s, hidata-id: %s count: %d/%d", breed_name, hi_data.id, data.switch_count, data.max_amount))
+	end
+
+	return 
+end
 local spawned_interest_points = {}
 local spawned_interest_points_n = 0
 AIInterestPointSystem.spawn_interest_points = function (self)
@@ -347,13 +365,21 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 
 				if hi_data then
 					local breed_count = hi_data.breed_count
-					local data = breed_count[breed.name]
 
-					if data then
-						data.count = data.count + 1
+					if breed_count then
+						local data = breed_count[breed.name]
 
-						if data.max_amount < data.count then
-							breed = data.switch_breed
+						if data then
+							data.count = data.count + 1
+
+							if debug_zone_baker then
+								self.debug_draw_baker_data(self, hi_data, data, breed.name, point)
+							end
+
+							if data.max_amount < data.count then
+								breed = data.switch_breed
+								data.switch_count = data.switch_count + 1
+							end
 						end
 					end
 				end

@@ -351,22 +351,22 @@ weapon_template.actions = {
 			width_mod = 25,
 			range_mod = 1.4,
 			no_damage_impact_sound_event = "flail_hit_armour",
-			use_target = false,
 			hit_effect = "melee_hit_hammers_1h",
+			use_target = false,
 			ignore_armour_hit = true,
-			damage_profile = "medium_blunt_tank_spiked",
 			additional_critical_strike_chance = 0,
 			impact_sound_event = "flail_hit",
-			aim_assist_ramp_multiplier = 0.4,
+			damage_profile = "medium_blunt_tank_spiked",
 			anim_end_event = "attack_finished",
+			aim_assist_ramp_multiplier = 0.4,
 			aim_assist_max_ramp_multiplier = 0.6,
 			aim_assist_ramp_decay_delay = 0.1,
-			reset_aim_on_attack = true,
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.15,
 			uninterruptible = true,
 			anim_event = "attack_swing_left",
 			hit_stop_anim = "attack_hit",
+			reset_aim_on_attack = true,
 			total_time = 1.2,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -422,7 +422,8 @@ weapon_template.actions = {
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
 			end,
-			critical_strike = {}
+			critical_strike = {},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		heavy_attack_left = {
 			damage_window_start = 0.37,
@@ -433,22 +434,22 @@ weapon_template.actions = {
 			width_mod = 25,
 			range_mod = 1.4,
 			no_damage_impact_sound_event = "flail_hit_armour",
-			use_target = false,
 			hit_effect = "melee_hit_hammers_1h",
+			use_target = false,
 			ignore_armour_hit = true,
-			damage_profile = "medium_blunt_tank_spiked",
 			additional_critical_strike_chance = 0,
 			impact_sound_event = "flail_hit",
-			aim_assist_ramp_multiplier = 0.4,
+			damage_profile = "medium_blunt_tank_spiked",
 			anim_end_event = "attack_finished",
+			aim_assist_ramp_multiplier = 0.4,
 			aim_assist_max_ramp_multiplier = 0.6,
 			aim_assist_ramp_decay_delay = 0.1,
-			reset_aim_on_attack = true,
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.15,
 			uninterruptible = true,
 			anim_event = "attack_swing_left_diagonal_last",
 			hit_stop_anim = "attack_hit",
+			reset_aim_on_attack = true,
 			total_time = 1.2,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -504,7 +505,8 @@ weapon_template.actions = {
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
 			end,
-			critical_strike = {}
+			critical_strike = {},
+			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_left = {
 			damage_window_start = 0.42,

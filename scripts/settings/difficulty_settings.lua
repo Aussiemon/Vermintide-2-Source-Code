@@ -81,7 +81,7 @@ DifficultySettings.hard = {
 	chance_of_shield_vermin_patrol = 0.7,
 	max_hp = 150,
 	amount_shield_vermin_patrol = 2,
-	attack_intensity_threshold = 5,
+	attack_intensity_threshold = 4,
 	respawn = {
 		ammo_melee = 0.5,
 		health_percentage = 0.5,
@@ -92,7 +92,7 @@ DifficultySettings.hard = {
 		token_amount = 8
 	},
 	intensity_overrides = {
-		intensity_add_per_percent_dmg_taken = 0.8
+		intensity_add_per_percent_dmg_taken = 1.5
 	},
 	pacing_overrides = {
 		peak_intensity_threshold = 50
@@ -117,7 +117,7 @@ DifficultySettings.harder = {
 	chance_of_shield_vermin_patrol = 1,
 	max_hp = 150,
 	amount_shield_vermin_patrol = 2,
-	attack_intensity_threshold = 8,
+	attack_intensity_threshold = 6,
 	respawn = {
 		ammo_melee = 0.5,
 		health_percentage = 0.5,
@@ -128,7 +128,7 @@ DifficultySettings.harder = {
 		token_amount = 8
 	},
 	intensity_overrides = {
-		intensity_add_per_percent_dmg_taken = 0.7
+		intensity_add_per_percent_dmg_taken = 1
 	},
 	pacing_overrides = {
 		peak_intensity_threshold = 55

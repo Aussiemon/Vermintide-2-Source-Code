@@ -188,14 +188,12 @@ InterestPointSettings = {
 BreedPacks = {
 	standard = {
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -203,7 +201,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.chaos_marauder,
@@ -211,15 +208,13 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 3.5,
 			members = {
-				Breeds.skaven_storm_vermin_commander,
+				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -228,8 +223,7 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
-			spawn_weight = 4,
+			spawn_weight = 2,
 			members = {
 				Breeds.chaos_raider,
 				Breeds.chaos_marauder,
@@ -237,8 +231,7 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
-			spawn_weight = 3.5,
+			spawn_weight = 2,
 			members = {
 				Breeds.skaven_storm_vermin_commander,
 				Breeds.skaven_clan_rat,
@@ -246,7 +239,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -255,7 +247,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -265,7 +256,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 4,
 			members = {
 				Breeds.chaos_raider,
@@ -275,17 +265,15 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 3.5,
 			members = {
-				Breeds.skaven_storm_vermin_commander,
+				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -297,7 +285,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 4,
 			members = {
 				Breeds.chaos_marauder,
@@ -307,7 +294,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 2.5,
 			members = {
 				Breeds.skaven_storm_vermin_commander,
@@ -319,7 +305,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -331,7 +316,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -345,7 +329,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 2,
 			members = {
 				Breeds.skaven_storm_vermin_commander,
@@ -359,8 +342,8 @@ BreedPacks = {
 			}
 		},
 		roof_spawning_allowed = true,
-		hi_zone_checks = {
-			clamp_breeds = {
+		zone_checks = {
+			clamp_breeds_hi = {
 				normal = {
 					{
 						1,
@@ -376,6 +359,44 @@ BreedPacks = {
 				hard = {
 					{
 						2,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat
+					},
+					{
+						1,
+						"chaos_raider",
+						Breeds.chaos_marauder
+					}
+				},
+				harder = {
+					{
+						2,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat
+					},
+					{
+						2,
+						"chaos_raider",
+						Breeds.chaos_marauder
+					}
+				}
+			},
+			clamp_breeds_low = {
+				normal = {
+					{
+						0,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat
+					},
+					{
+						0,
+						"chaos_raider",
+						Breeds.chaos_marauder
+					}
+				},
+				hard = {
+					{
+						1,
 						"skaven_storm_vermin_commander",
 						Breeds.skaven_clan_rat
 					},
@@ -405,14 +426,12 @@ BreedPacks = {
 	},
 	skaven = {
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -420,15 +439,13 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
-				Breeds.skaven_storm_vermin_commander,
+				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -437,16 +454,14 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
-				Breeds.skaven_storm_vermin_commander,
+				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -456,17 +471,15 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
-				Breeds.skaven_storm_vermin_commander,
+				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -478,10 +491,9 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
-				Breeds.skaven_storm_vermin_commander,
+				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat,
@@ -490,7 +502,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat,
@@ -504,10 +515,9 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
-				Breeds.skaven_storm_vermin_commander,
+				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat,
 				Breeds.skaven_clan_rat,
@@ -521,8 +531,8 @@ BreedPacks = {
 		patrol_overrides = {
 			patrol_chance = 1
 		},
-		hi_zone_checks = {
-			clamp_breeds = {
+		zone_checks = {
+			clamp_breeds_hi = {
 				normal = {
 					{
 						2,
@@ -548,21 +558,21 @@ BreedPacks = {
 			clamp_breeds_low = {
 				normal = {
 					{
-						2,
+						0,
 						"skaven_storm_vermin_commander",
 						Breeds.skaven_clan_rat
 					}
 				},
 				hard = {
 					{
-						3,
+						1,
 						"skaven_storm_vermin_commander",
 						Breeds.skaven_clan_rat
 					}
 				},
 				harder = {
 					{
-						5,
+						2,
 						"skaven_storm_vermin_commander",
 						Breeds.skaven_clan_rat
 					}
@@ -572,14 +582,12 @@ BreedPacks = {
 	},
 	shield_rats = {
 		{
-			pack_type = "basic",
 			spawn_weight = 1,
 			members = {
 				Breeds.skaven_storm_vermin_with_shield
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_storm_vermin_commander,
@@ -587,7 +595,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat_with_shield,
@@ -596,7 +603,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.skaven_clan_rat_with_shield,
@@ -605,7 +611,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat_with_shield,
@@ -615,7 +620,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.skaven_clan_rat_with_shield,
@@ -625,7 +629,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_storm_vermin_with_shield,
@@ -637,7 +640,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.skaven_storm_vermin_commander,
@@ -649,7 +651,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_clan_rat_with_shield,
@@ -663,7 +664,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.skaven_storm_vermin_commander,
@@ -680,8 +680,8 @@ BreedPacks = {
 		patrol_overrides = {
 			patrol_chance = 1
 		},
-		hi_zone_checks = {
-			clamp_breeds = {
+		zone_checks = {
+			clamp_breeds_hi = {
 				normal = {
 					{
 						6,
@@ -737,6 +737,40 @@ BreedPacks = {
 			clamp_breeds_low = {
 				normal = {
 					{
+						2,
+						"skaven_clan_rat_with_shield",
+						Breeds.skaven_clan_rat
+					},
+					{
+						0,
+						"skaven_storm_vermin_with_shield",
+						Breeds.skaven_clan_rat
+					},
+					{
+						0,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat
+					}
+				},
+				hard = {
+					{
+						4,
+						"skaven_clan_rat_with_shield",
+						Breeds.skaven_clan_rat
+					},
+					{
+						0,
+						"skaven_storm_vermin_with_shield",
+						Breeds.skaven_clan_rat
+					},
+					{
+						1,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_clan_rat
+					}
+				},
+				harder = {
+					{
 						6,
 						"skaven_clan_rat_with_shield",
 						Breeds.skaven_clan_rat
@@ -751,54 +785,18 @@ BreedPacks = {
 						"skaven_storm_vermin_commander",
 						Breeds.skaven_clan_rat
 					}
-				},
-				hard = {
-					{
-						10,
-						"skaven_clan_rat_with_shield",
-						Breeds.skaven_clan_rat
-					},
-					{
-						2,
-						"skaven_storm_vermin_with_shield",
-						Breeds.skaven_clan_rat
-					},
-					{
-						2,
-						"skaven_storm_vermin_commander",
-						Breeds.skaven_clan_rat
-					}
-				},
-				harder = {
-					{
-						12,
-						"skaven_clan_rat_with_shield",
-						Breeds.skaven_clan_rat
-					},
-					{
-						3,
-						"skaven_storm_vermin_with_shield",
-						Breeds.skaven_clan_rat
-					},
-					{
-						2,
-						"skaven_storm_vermin_commander",
-						Breeds.skaven_clan_rat
-					}
 				}
 			}
 		}
 	},
 	plague_monks = {
 		{
-			pack_type = "basic",
 			spawn_weight = 1,
 			members = {
 				Breeds.skaven_clan_rat
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.skaven_plague_monk,
@@ -806,7 +804,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.skaven_storm_vermin_commander,
@@ -814,7 +811,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_plague_monk,
@@ -823,7 +819,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.skaven_storm_vermin_commander,
@@ -832,7 +827,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.skaven_plague_monk,
@@ -842,7 +836,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.skaven_storm_vermin_commander,
@@ -852,7 +845,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.skaven_plague_monk,
@@ -864,7 +856,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.skaven_storm_vermin_commander,
@@ -876,7 +867,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 2,
 			members = {
 				Breeds.skaven_storm_vermin_commander,
@@ -890,7 +880,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 2,
 			members = {
 				Breeds.skaven_plague_monk,
@@ -907,8 +896,8 @@ BreedPacks = {
 		patrol_overrides = {
 			patrol_chance = 1
 		},
-		hi_zone_checks = {
-			clamp_breeds = {
+		zone_checks = {
+			clamp_breeds_hi = {
 				normal = {
 					{
 						3,
@@ -950,37 +939,32 @@ BreedPacks = {
 	},
 	marauders_and_warriors = {
 		{
-			pack_type = "basic",
 			spawn_weight = 2,
 			members = {
 				Breeds.chaos_warrior
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_marauder
 			}
 		},
 		{
-			pack_type = "basic",
-			spawn_weight = 4,
+			spawn_weight = 3,
 			members = {
 				Breeds.chaos_warrior,
 				Breeds.chaos_marauder
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
-				Breeds.chaos_warrior,
+				Breeds.chaos_marauder,
 				Breeds.chaos_marauder
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 2,
 			members = {
 				Breeds.chaos_warrior,
@@ -989,18 +973,25 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
-				Breeds.chaos_warrior,
+				Breeds.chaos_marauder,
 				Breeds.chaos_marauder,
 				Breeds.chaos_marauder
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 8,
 			members = {
+				Breeds.chaos_marauder,
+				Breeds.chaos_marauder,
+				Breeds.chaos_marauder,
+				Breeds.chaos_marauder
+			}
+		},
+		{
+			spawn_weight = 3,
+			members = {
 				Breeds.chaos_warrior,
 				Breeds.chaos_marauder,
 				Breeds.chaos_marauder,
@@ -1008,58 +999,44 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
+			spawn_weight = 3,
+			members = {
+				Breeds.chaos_warrior,
+				Breeds.chaos_marauder,
+				Breeds.chaos_marauder,
+				Breeds.chaos_marauder,
+				Breeds.chaos_marauder,
+				Breeds.chaos_marauder
+			}
+		},
+		{
 			spawn_weight = 5,
 			members = {
-				Breeds.chaos_warrior,
+				Breeds.chaos_marauder,
+				Breeds.chaos_marauder,
+				Breeds.chaos_marauder,
 				Breeds.chaos_marauder,
 				Breeds.chaos_marauder,
 				Breeds.chaos_marauder
 			}
 		},
 		{
-			pack_type = "basic",
-			spawn_weight = 4,
+			spawn_weight = 3,
 			members = {
 				Breeds.chaos_warrior,
 				Breeds.chaos_marauder,
 				Breeds.chaos_marauder,
 				Breeds.chaos_marauder,
 				Breeds.chaos_marauder,
+				Breeds.chaos_marauder,
+				Breeds.chaos_marauder,
 				Breeds.chaos_marauder
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
-				Breeds.chaos_warrior,
 				Breeds.chaos_marauder,
-				Breeds.chaos_marauder,
-				Breeds.chaos_marauder,
-				Breeds.chaos_marauder,
-				Breeds.chaos_marauder
-			}
-		},
-		{
-			pack_type = "basic",
-			spawn_weight = 4,
-			members = {
-				Breeds.chaos_warrior,
-				Breeds.chaos_marauder,
-				Breeds.chaos_marauder,
-				Breeds.chaos_marauder,
-				Breeds.chaos_marauder,
-				Breeds.chaos_marauder,
-				Breeds.chaos_marauder,
-				Breeds.chaos_marauder
-			}
-		},
-		{
-			pack_type = "basic",
-			spawn_weight = 5,
-			members = {
-				Breeds.chaos_warrior,
 				Breeds.chaos_marauder,
 				Breeds.chaos_marauder,
 				Breeds.chaos_marauder,
@@ -1073,8 +1050,8 @@ BreedPacks = {
 		patrol_overrides = {
 			patrol_chance = 1
 		},
-		hi_zone_checks = {
-			clamp_breeds = {
+		zone_checks = {
+			clamp_breeds_hi = {
 				normal = {
 					{
 						1,
@@ -1096,19 +1073,40 @@ BreedPacks = {
 						Breeds.chaos_marauder
 					}
 				}
+			},
+			clamp_breeds_low = {
+				normal = {
+					{
+						0,
+						"chaos_warrior",
+						Breeds.chaos_marauder
+					}
+				},
+				hard = {
+					{
+						0,
+						"chaos_warrior",
+						Breeds.chaos_marauder
+					}
+				},
+				harder = {
+					{
+						0,
+						"chaos_warrior",
+						Breeds.chaos_marauder
+					}
+				}
 			}
 		}
 	},
 	marauders = {
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.chaos_marauder
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 10,
 			members = {
 				Breeds.chaos_marauder,
@@ -1116,25 +1114,22 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
-			spawn_weight = 4,
+			spawn_weight = 2,
 			members = {
-				Breeds.chaos_marauder,
-				Breeds.chaos_raider
+				Breeds.chaos_warrior,
+				Breeds.chaos_marauder
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
-				Breeds.chaos_marauder,
+				Breeds.chaos_fanatic,
 				Breeds.chaos_fanatic,
 				Breeds.chaos_fanatic
 			}
 		},
 		{
-			pack_type = "basic",
-			spawn_weight = 4,
+			spawn_weight = 2,
 			members = {
 				Breeds.chaos_marauder,
 				Breeds.chaos_fanatic,
@@ -1142,7 +1137,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_marauder,
@@ -1152,17 +1146,15 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 4,
 			members = {
 				Breeds.chaos_marauder,
 				Breeds.chaos_fanatic,
 				Breeds.chaos_fanatic,
-				Breeds.chaos_raider
+				Breeds.chaos_marauder
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_marauder,
@@ -1174,7 +1166,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 4,
 			members = {
 				Breeds.chaos_marauder,
@@ -1182,11 +1173,10 @@ BreedPacks = {
 				Breeds.chaos_fanatic,
 				Breeds.chaos_fanatic,
 				Breeds.chaos_fanatic,
-				Breeds.chaos_raider
+				Breeds.chaos_marauder
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 4,
 			members = {
 				Breeds.chaos_marauder,
@@ -1203,8 +1193,8 @@ BreedPacks = {
 		patrol_overrides = {
 			patrol_chance = 1
 		},
-		hi_zone_checks = {
-			clamp_breeds = {
+		zone_checks = {
+			clamp_breeds_hi = {
 				normal = {
 					{
 						1,
@@ -1212,7 +1202,7 @@ BreedPacks = {
 						Breeds.chaos_marauder
 					},
 					{
-						3,
+						2,
 						"chaos_raider",
 						Breeds.chaos_marauder
 					}
@@ -1224,19 +1214,19 @@ BreedPacks = {
 						Breeds.chaos_marauder
 					},
 					{
-						4,
+						3,
 						"chaos_raider",
 						Breeds.chaos_marauder
 					}
 				},
 				harder = {
 					{
-						3,
+						2,
 						"chaos_warrior",
 						Breeds.chaos_marauder
 					},
 					{
-						4,
+						3,
 						"chaos_raider",
 						Breeds.chaos_marauder
 					}
@@ -1250,31 +1240,31 @@ BreedPacks = {
 						Breeds.chaos_marauder
 					},
 					{
-						1,
+						0,
 						"chaos_raider",
 						Breeds.chaos_marauder
 					}
 				},
 				hard = {
 					{
-						1,
+						0,
 						"chaos_warrior",
 						Breeds.chaos_marauder
 					},
 					{
-						2,
+						1,
 						"chaos_raider",
 						Breeds.chaos_marauder
 					}
 				},
 				harder = {
 					{
-						2,
+						1,
 						"chaos_warrior",
 						Breeds.chaos_marauder
 					},
 					{
-						3,
+						1,
 						"chaos_raider",
 						Breeds.chaos_marauder
 					}
@@ -1284,14 +1274,12 @@ BreedPacks = {
 	},
 	marauders_shields = {
 		{
-			pack_type = "basic",
 			spawn_weight = 1,
 			members = {
 				Breeds.chaos_marauder_with_shield
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_marauder_with_shield,
@@ -1299,7 +1287,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 4,
 			members = {
 				Breeds.chaos_marauder_with_shield,
@@ -1307,7 +1294,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_marauder_with_shield,
@@ -1316,7 +1302,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 4,
 			members = {
 				Breeds.chaos_marauder_with_shield,
@@ -1325,7 +1310,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_marauder_with_shield,
@@ -1335,7 +1319,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 4,
 			members = {
 				Breeds.chaos_marauder_with_shield,
@@ -1345,7 +1328,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_marauder_with_shield,
@@ -1357,7 +1339,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 4,
 			members = {
 				Breeds.chaos_marauder_with_shield,
@@ -1369,7 +1350,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_marauder_with_shield,
@@ -1386,8 +1366,8 @@ BreedPacks = {
 		patrol_overrides = {
 			patrol_chance = 1
 		},
-		hi_zone_checks = {
-			clamp_breeds = {
+		zone_checks = {
+			clamp_breeds_hi = {
 				normal = {
 					{
 						6,
@@ -1429,14 +1409,12 @@ BreedPacks = {
 	},
 	marauders_berzerkers = {
 		{
-			pack_type = "basic",
 			spawn_weight = 1,
 			members = {
 				Breeds.chaos_berzerker
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_fanatic,
@@ -1444,7 +1422,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 2,
 			members = {
 				Breeds.chaos_berzerker,
@@ -1453,7 +1430,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_raider,
@@ -1462,7 +1438,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_fanatic,
@@ -1472,7 +1447,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_berzerker,
@@ -1484,7 +1458,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 2,
 			members = {
 				Breeds.chaos_berzerker,
@@ -1501,8 +1474,8 @@ BreedPacks = {
 		patrol_overrides = {
 			patrol_chance = 1
 		},
-		hi_zone_checks = {
-			clamp_breeds = {
+		zone_checks = {
+			clamp_breeds_hi = {
 				normal = {
 					{
 						3,
@@ -1544,14 +1517,12 @@ BreedPacks = {
 	},
 	marauders_elites = {
 		{
-			pack_type = "basic",
 			spawn_weight = 1,
 			members = {
 				Breeds.chaos_marauder
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_fanatic,
@@ -1559,7 +1530,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_berzerker,
@@ -1568,7 +1538,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_raider,
@@ -1578,7 +1547,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 5,
 			members = {
 				Breeds.chaos_fanatic,
@@ -1590,7 +1558,6 @@ BreedPacks = {
 			}
 		},
 		{
-			pack_type = "basic",
 			spawn_weight = 2,
 			members = {
 				Breeds.chaos_raider,
@@ -1607,8 +1574,8 @@ BreedPacks = {
 		patrol_overrides = {
 			patrol_chance = 1
 		},
-		hi_zone_checks = {
-			clamp_breeds = {
+		zone_checks = {
+			clamp_breeds_hi = {
 				normal = {
 					{
 						3,
@@ -1647,6 +1614,85 @@ BreedPacks = {
 				}
 			}
 		}
+	},
+	code_test = {
+		{
+			spawn_weight = 1,
+			members = {
+				Breeds.skaven_storm_vermin_commander
+			}
+		},
+		{
+			spawn_weight = 100,
+			members = {
+				Breeds.skaven_storm_vermin_commander,
+				Breeds.skaven_storm_vermin_commander
+			}
+		},
+		{
+			spawn_weight = 1,
+			members = {
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat
+			}
+		},
+		{
+			spawn_weight = 1,
+			members = {
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat
+			}
+		},
+		{
+			spawn_weight = 1,
+			members = {
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_storm_vermin_commander
+			}
+		},
+		{
+			spawn_weight = 1,
+			members = {
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat,
+				Breeds.skaven_loot_rat
+			}
+		},
+		roof_spawning_allowed = true,
+		zone_checks = {
+			clamp_breeds_hi = {
+				hi = "HI ZONE",
+				normal = {
+					{
+						1,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_poison_wind_globadier
+					}
+				}
+			},
+			clamp_breeds_low = {
+				hi = "LOW ZONE",
+				normal = {
+					{
+						1,
+						"skaven_storm_vermin_commander",
+						Breeds.skaven_ratling_gunner
+					}
+				}
+			}
+		}
 	}
 }
 BackupBreedPack = {
@@ -1654,7 +1700,7 @@ BackupBreedPack = {
 	spawn_weight = 0,
 	members = {
 		{
-			breed = Breeds.skaven_clan_rat,
+			breed = Breeds.skaven_clan_ratskaven_clan_rat,
 			animation = {
 				"idle",
 				"idle_passive_sit"

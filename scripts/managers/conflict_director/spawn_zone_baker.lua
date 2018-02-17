@@ -206,6 +206,7 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 		self.graph:reset()
 	end
 
+	self._all_hi_data = {}
 	self.difficulty = Managers.state.difficulty:get_difficulty()
 	local great_cycles = {}
 	local zones = self.zones
@@ -216,6 +217,11 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 	local conflict_director = ConflictDirectors[conflict_director_name]
 	local pack_spawning_setting = conflict_director.pack_spawning
 	local initial_roaming_set = pack_spawning_setting.roaming_set
+
+	if debug_zone_baker then
+		print("Initial conflict_director:" .. conflict_director.name .. ", pack_spawning:", pack_spawning_setting.name, " initial_roaming_set=", initial_roaming_set.name)
+	end
+
 	local cycle_length = 0
 	local cycle_zones = {}
 
@@ -298,10 +304,11 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 		local num_cycle_zones = #cycle_zones
 		local sum_density = 0
 		local num_hi = 0
+		local zone = nil
 
 		if distribution == "random" then
 			for j = 1, num_cycle_zones, 1 do
-				local zone = cycle_zones[j]
+				zone = cycle_zones[j]
 				local density = Math.random()
 				zone.density = density
 				sum_density = sum_density + density
@@ -310,7 +317,10 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 			local len, density, period_end = nil
 			local hi = 0.5 < Math.random()
 			len, density, hi = self.periodical(self, hi, dist_data)
-			cycle_zones[1].period_length = len
+			zone = cycle_zones[1]
+			zone.period_length = len
+			zone.hi = hi
+			local hi_data = self.create_hi_data(self, zone, zone.pack_type)
 			period_end = len
 
 			if hi then
@@ -320,7 +330,8 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 			end
 
 			for j = 1, num_cycle_zones, 1 do
-				local zone = cycle_zones[j]
+				zone = cycle_zones[j]
+				zone.hi_data = hi_data
 
 				if period_end < j then
 					len, density, hi = self.periodical(self, hi, dist_data)
@@ -332,7 +343,9 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 					end
 
 					zone.period_length = len
+					zone.hi_data = hi_data
 					zone.hi = hi
+					hi_data = self.create_hi_data(self, zone, zone.pack_type)
 					num_hi = num_hi + ((hi and 1) or 0)
 				elseif dist_data.random_dist then
 					if hi then
@@ -355,7 +368,7 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 
 			repeat
 				for j = 1, num_cycle_zones, 1 do
-					local zone = cycle_zones[j]
+					zone = cycle_zones[j]
 					zone.density = density
 
 					if 0.8 < math.random() then
@@ -373,7 +386,7 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 			local z = num_cycle_zones/1
 
 			for j = 1, num_cycle_zones, 1 do
-				local zone = cycle_zones[j]
+				zone = cycle_zones[j]
 				zone.density = j*z
 				sum_density = sum_density + zone.density
 			end
@@ -425,6 +438,7 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 					local zone = outer[k]
 					local density = math.clamp(density*kept + (kept - 1)*(math.random()*2 - 1), 0, 1)
 					zone.density = density
+					zone.hi_data = center_zone.hi_data
 				end
 			end
 
@@ -603,15 +617,21 @@ SpawnZoneBaker.inject_special_packs = function (self, total_peaks, cycle_zones)
 
 	return 
 end
+local count_up = 0
 SpawnZoneBaker.create_hi_data = function (self, zone, pack_type_name)
 	local hi_data = nil
 	local breed_packs = BreedPacks[pack_type_name]
-	local hi_zone_checks = breed_packs.hi_zone_checks
+	local zone_checks = breed_packs.zone_checks
 
-	if hi_zone_checks then
-		hi_data = {}
+	if zone_checks then
+		count_up = count_up + 1
+		hi_data = {
+			id = count_up
+		}
 		zone.hi_data = hi_data
-		local clamp_breeds = hi_zone_checks.clamp_breeds
+		local clamp_breeds = (zone.hi and zone_checks.clamp_breeds_hi) or zone_checks.clamp_breeds_low
+
+		print("HIDATA:", zone.id, hi_data.id, zone.hi, clamp_breeds, clamp_breeds.hi)
 
 		if clamp_breeds then
 			local difficulty_overrides = clamp_breeds[self.difficulty]
@@ -625,15 +645,19 @@ SpawnZoneBaker.create_hi_data = function (self, zone, pack_type_name)
 					local check_breed_name = c[2]
 					local switch_breed = c[3]
 					breed_count[check_breed_name] = {
+						switch_count = 0,
 						count = 0,
 						max_amount = max_amount,
-						switch_breed = switch_breed
+						switch_breed = switch_breed,
+						hi = zone.hi
 					}
 				end
 
 				hi_data.breed_count = breed_count
 			end
 		end
+
+		self._all_hi_data[#self._all_hi_data + 1] = hi_data
 	end
 
 	return hi_data
@@ -905,6 +929,87 @@ SpawnZoneBaker.execute_debug = function (self)
 
 	return 
 end
+
+function PRINT_ZONE_DATA()
+	Managers.state.conflict.spawn_zone_baker:debug_print_zones()
+
+	return 
+end
+
+SpawnZoneBaker.debug_print_zones = function (self)
+	local great_cycles = self.great_cycles
+
+	for i = 1, #great_cycles, 1 do
+		local great_cycle = great_cycles[i]
+
+		print("Great Cycle", i, "-------------")
+
+		local cycle_zones = great_cycle.zones
+
+		for j = 1, #cycle_zones, 1 do
+			local zone = cycle_zones[j]
+			local area = math.clamp(zone.area*0.5, 0, 100)
+
+			print("Zone:", j, string.format("Density: %.1f, Area: %.1f", zone.density, area), "con:", zone.conflict_setting.name, "period_len:", zone.period_length or "--", "data:", (zone.hi_data and "Y") or "N", "pack_type:", zone.pack_type)
+		end
+	end
+
+	return 
+end
+
+function PRINT_HI_DATA()
+	Managers.state.conflict.spawn_zone_baker:debug_print_hi_data()
+
+	return 
+end
+
+SpawnZoneBaker.debug_print_hi_data = function (self)
+	local old_hi_data = nil
+	local great_cycles = self.great_cycles
+
+	for i = 1, #great_cycles, 1 do
+		local great_cycle = great_cycles[i]
+
+		print("Great Cycle", i, "-------------")
+
+		local cycle_zones = great_cycle.zones
+
+		for j = 1, #cycle_zones, 1 do
+			local zone = cycle_zones[j]
+			local hi_data = zone.hi_data
+
+			if hi_data ~= old_hi_data then
+				local period = (zone.hi and "Hi") or "Low"
+				local s = period .. "-data for zone:" .. tostring(j) .. " -> " .. (j + zone.period_length) - 1
+
+				if hi_data then
+					local breed_count = hi_data.breed_count
+
+					if breed_count then
+						table.dump(breed_count, s, 1)
+					end
+				end
+			end
+
+			old_hi_data = hi_data
+		end
+	end
+
+	for i = 1, #self._all_hi_data, 1 do
+		local hi_data = self._all_hi_data[i]
+		local breed_count = hi_data.breed_count
+
+		if breed_count then
+			for check_breed_name, data in pairs(breed_count) do
+				print("Hidata id:", hi_data.id, (data.hi and "HI") or "LOW", "count:", data.count, "switched:", data.switch_count, "max:", data.max_amount, "breed:", check_breed_name, "switched to:", data.switch_breed.name)
+			end
+		else
+			print("Hidata id:", hi_data.id, " (no breed_count)")
+		end
+	end
+
+	return 
+end
 SpawnZoneBaker.draw_pack_density_graph = function (self)
 	if not self.graph then
 		self.graph = Managers.state.debug.graph_drawer:create_graph("spawn density", {
@@ -927,6 +1032,10 @@ SpawnZoneBaker.draw_pack_density_graph = function (self)
 	local dist = 0
 	local great_cycles = self.great_cycles
 	local num_great_cycles = #great_cycles
+
+	if debug_zone_baker then
+		self.debug_print_zones(self)
+	end
 
 	g.set_plot_color(g, "density", "maroon", "crimson")
 
@@ -955,6 +1064,14 @@ SpawnZoneBaker.draw_pack_density_graph = function (self)
 			if current_pack_type ~= zone.pack_type then
 				self.graph:add_annotation({
 					text = "O",
+					live = true,
+					color = "lawn_green",
+					x = dist,
+					y = density*100
+				})
+			elseif zone.hi then
+				self.graph:add_annotation({
+					text = "H",
 					live = true,
 					color = "lawn_green",
 					x = dist,

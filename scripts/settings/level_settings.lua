@@ -181,15 +181,16 @@ LevelSettings.tunnels_artlevel = {
 	}
 }
 LevelSettings.whitebox_old = {
-	display_name = "level_whitebox",
 	level_image = "level_image_any",
+	display_name = "level_whitebox",
+	knocked_down_setting = "knocked_down",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
 	package_name = "resource_packages/levels/debug/whitebox",
 	ambient_sound_event = "silent_default_world_sound",
 	boss_spawning_method = "hand_placed",
 	loading_ui_package_name = "loading_screen_1",
-	knocked_down_setting = "knocked_down",
+	conflict_settings = "code_test",
 	level_name = "levels/debug/whitebox/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},

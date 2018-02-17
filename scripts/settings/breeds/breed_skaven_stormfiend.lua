@@ -1,6 +1,6 @@
 local breed_data = {
 	detection_radius = 9999999,
-	threat_value = 52,
+	threat_value = 32,
 	target_selection_angry = "pick_rat_ogre_target_with_weights",
 	race = "skaven",
 	bot_opportunity_target_melee_range_while_ranged = 5,
@@ -285,7 +285,7 @@ local action_data = {
 	shoot = {
 		environment_max_intensity = 100,
 		environment_intensity_increase_per_firewall = 10,
-		firing_time = 1.2,
+		firing_time = 1,
 		aim_start_offset = -1,
 		minimum_length = 2,
 		beam_sfx_start_event = "Play_stormfiend_torch_loop",
@@ -531,7 +531,7 @@ local action_data = {
 				player_push_speed = 16,
 				hit_multiple_targets = true,
 				player_push_speed_blocked = 9.6,
-				attack_time = 2.17,
+				attack_time = 1.67,
 				width = 0.4,
 				multi_attack_anims = {
 					bwd = "attack_melee_bwd",
@@ -970,7 +970,7 @@ local action_data = {
 		end
 	},
 	target_rage = {
-		rage_time = 1.75,
+		rage_time = 1.25,
 		start_anims_name = {
 			bwd = "change_target_bwd",
 			fwd = "change_target_fwd",

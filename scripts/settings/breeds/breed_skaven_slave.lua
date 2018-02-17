@@ -47,7 +47,7 @@ breed_data = {
 	behavior = "pack_rat",
 	base_unit = "units/beings/enemies/skaven_clan_rat/chr_skaven_slave",
 	aoe_height = 1.2,
-	threat_value = 1.5,
+	threat_value = 1,
 	size_variation_range = {
 		0.85,
 		0.95
