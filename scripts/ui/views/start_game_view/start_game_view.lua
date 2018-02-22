@@ -483,7 +483,7 @@ end
 StartGameView._has_active_level_vote = function (self)
 	local voting_manager = self.voting_manager
 	local active_vote_name = voting_manager.vote_in_progress(voting_manager)
-	local is_mission_vote = active_vote_name == "game_settings_vote"
+	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
 
 	return is_mission_vote
 end

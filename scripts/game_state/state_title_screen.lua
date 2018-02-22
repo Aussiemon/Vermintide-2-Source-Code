@@ -15,7 +15,7 @@ StateTitleScreen.on_enter = function (self, params)
 		Application.set_kinect_enabled(true)
 	end
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		Wwise.set_state("menu_mute_ingame_sounds", "true")
 	end
 
@@ -40,7 +40,7 @@ StateTitleScreen.on_enter = function (self, params)
 		Application.set_time_step_policy("throttle", 60)
 	end
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		self._demo_hack_state_managers(self)
 	end
 
@@ -174,7 +174,7 @@ end
 local DO_RELOAD = true
 StateTitleScreen._init_ui = function (self)
 	if not GameSettingsDevelopment.skip_start_screen then
-		if Development.parameter("honduras_demo") then
+		if script_data.honduras_demo then
 			self._title_start_ui = DemoTitleUI:new(self._world, self._viewport, self)
 		else
 			self._title_start_ui = TitleMainUI:new(self._world)
@@ -348,7 +348,7 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 	self._input_manager = nil
 	Managers.input = nil
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		Managers.state = self._old_state_manager
 
 		Wwise.set_state("menu_mute_ingame_sounds", "default")

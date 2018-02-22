@@ -174,7 +174,7 @@ Missions = {
 		is_side_mission = true,
 		evaluation_type = "amount",
 		mission_template_name = "collect_uncompletable",
-		experience_per_amount = 25,
+		experience_per_amount = 10,
 		evaluate_at_level_end = true,
 		collect_amount = 3,
 		dice_type = "gold",
@@ -185,7 +185,7 @@ Missions = {
 		is_side_mission = true,
 		evaluation_type = "amount",
 		mission_template_name = "collect_uncompletable",
-		experience_per_amount = 50,
+		experience_per_amount = 25,
 		evaluate_at_level_end = true,
 		collect_amount = 2,
 		dice_type = "warpstone",
@@ -751,6 +751,19 @@ Missions.tutorial_switch_weapon = {
 		}
 	}
 }
+Missions.tutorial_no_damage = {
+	text = "mission_objective_tutorial_no_damage",
+	mission_template_name = "simple",
+	dont_show_mission_end_tooltip = true,
+	tooltip_text = "tutorial_tooltip_no_damage",
+	tooltip_inputs = {
+		{
+			suffix = "",
+			prefix = "",
+			action = "wield_switch"
+		}
+	}
+}
 Missions.tutorial_ranged_normal_attack = {
 	text = "mission_objective_tutorial_ranged_normal_attack",
 	collect_amount = 5,
@@ -1206,6 +1219,10 @@ Missions.mines_ring_bell = {
 	mission_template_name = "goal",
 	text = "mission_mines_ring_bell"
 }
+Missions.mines_over_the_bridge = {
+	mission_template_name = "goal",
+	text = "mission_mines_over_the_bridge"
+}
 Missions.mines_escape_portal = {
 	mission_template_name = "goal",
 	text = "mission_mines_escape_portal"
@@ -1310,6 +1327,10 @@ Missions.military_enter_fort = {
 	mission_template_name = "goal",
 	text = "mission_military_enter_fort"
 }
+Missions.military_open_portcullis = {
+	mission_template_name = "goal",
+	text = "mission_military_open_portcullis"
+}
 Missions.military_arena_survive = {
 	mission_template_name = "goal",
 	text = "mission_military_arena_survive"
@@ -1405,7 +1426,7 @@ Missions.prologue_jumping = {
 		{
 			suffix = "",
 			prefix = "",
-			action = "dodge"
+			action = "jump_1"
 		}
 	}
 }
@@ -1443,14 +1464,24 @@ Missions.prologue_dodge = {
 	tooltip_text = "mission_objective_tutorial_dodge_left",
 	tooltip_inputs = {
 		{
-			suffix = "+",
-			prefix = "input_hold",
-			action = "move_left"
+			suffix = "",
+			prefix = "",
+			action = "move_left_pressed"
 		},
 		{
 			suffix = "",
 			prefix = "",
-			action = "dodge"
+			action = "move_back_pressed"
+		},
+		{
+			suffix = "",
+			prefix = "",
+			action = "move_right_pressed"
+		},
+		{
+			suffix = "",
+			prefix = "tutorial_tooltip_and",
+			action = "dodge_hold"
 		}
 	}
 }
@@ -1499,6 +1530,24 @@ Missions.prologue_ranged_normal_attack = {
 		}
 	}
 }
+Missions.prologue_ranged_alternative_attack = {
+	text = "mission_objective_prologue_ranged_alternative_attack",
+	mission_template_name = "simple",
+	is_tutorial_input = true,
+	tooltip_text = "tutorial_tooltip_alternative_attack",
+	tooltip_inputs = {
+		{
+			suffix = "tutorial_tooltip_and",
+			prefix = "input_hold",
+			action = "action_two_hold"
+		},
+		{
+			suffix = "",
+			prefix = "",
+			action = "action_one"
+		}
+	}
+}
 Missions.prologue_save_ally = {
 	text = "mission_objective_prologue_save_ally",
 	dont_show_mission_end_tooltip = true,
@@ -1509,8 +1558,8 @@ Missions.prologue_heal_ally = {
 	dont_show_mission_end_tooltip = true,
 	mission_template_name = "simple"
 }
-Missions.prologue_heal_ally_tooltip = {
-	text = "mission_objective_prologue_heal_ally",
+Missions.prologue_heal_equip_medical = {
+	text = "mission_objective_prologue_heal_equip_medical",
 	mission_template_name = "simple",
 	is_tutorial_input = true,
 	tooltip_text = "tutorial_tooltip_heal_ally",
@@ -1571,11 +1620,13 @@ Missions.prologue_switch_weapon = {
 		}
 	}
 }
-Missions.prologue_nodamage = {
-	text = "mission_objective_prologue_nodamage",
-	tooltip_text = "tutorial_tooltip_nodamage",
+Missions.prologue_no_damage = {
+	text = "mission_objective_prologue_no_damage",
+	sub_text = "mission_objective_prologue_no_damage",
 	mission_template_name = "simple",
-	dont_show_mission_end_tooltip = true
+	is_tutorial_input = true,
+	dont_show_mission_end_tooltip = true,
+	tooltip_text = "tutorial_tooltip_no_damage"
 }
 Missions.warcamp_progress_swamp = {
 	mission_template_name = "goal",

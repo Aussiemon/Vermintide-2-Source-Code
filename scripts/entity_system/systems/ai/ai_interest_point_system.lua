@@ -1,7 +1,6 @@
 local broadphase_radius = 20
 local broadphase_num_objects = 128
 local script_data = script_data
-local debug_zone_baker = false
 AIInterestPointSystem = class(AIInterestPointSystem, ExtensionSystemBase)
 local extensions = {
 	"AIInterestPointExtension",
@@ -372,7 +371,7 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 						if data then
 							data.count = data.count + 1
 
-							if debug_zone_baker then
+							if script_data.debug_zone_baker then
 								self.debug_draw_baker_data(self, hi_data, data, breed.name, point)
 							end
 

@@ -123,6 +123,11 @@ ItemGridUI.mark_locked_items = function (self, mark)
 
 	return 
 end
+ItemGridUI.disable_unwieldable_items = function (self, disable)
+	self._disable_unwieldable_items = disable
+
+	return 
+end
 ItemGridUI.disable_equipped_items = function (self, disable)
 	self._disable_equipped_items = disable
 
@@ -146,13 +151,19 @@ ItemGridUI.disable_item_drag = function (self)
 end
 ItemGridUI.update_items_status = function (self)
 	local hero_name = self._hero_name
+	local profile_index = FindProfileIndex(hero_name)
 	local career_index = self._career_index
+	local profile = SPProfiles[profile_index]
+	local careers = profile.careers
+	local career = careers[career_index]
+	local career_name = career.name
 	local locked_items = self._mark_locked_items and self._locked_items
 	local equipped_items = self._mark_equipped_items and self.get_equipped_items(self, hero_name, career_index)
 	local item_drag_disabled = self._item_drag_disabled
 	local hide_slots = self._hide_slots
 	local disable_locked_items = self._disable_locked_items
 	local disable_equipped_items = self._disable_equipped_items
+	local disable_unwieldable_items = self._disable_unwieldable_items
 	local widget = self._widget
 	local content = widget.content
 	local style = widget.style
@@ -167,9 +178,12 @@ ItemGridUI.update_items_status = function (self)
 			local item_content = content[hotspot_name]
 			local item_style = style[item_icon_name]
 			local item = content["item" .. name_sufix]
+			local item_data = item and item.data
 			local backend_id = item and item.backend_id
 			local is_equipped = backend_id and equipped_items and equipped_items[backend_id] ~= nil
 			local is_locked = backend_id and locked_items and locked_items[backend_id] ~= nil
+			local can_wield_table = item_data and item_data.can_wield
+			local can_wield = can_wield_table and table.contains(can_wield_table, career_name)
 
 			if equipped_items then
 				item_content.equipped = is_equipped
@@ -194,6 +208,13 @@ ItemGridUI.update_items_status = function (self)
 					drag_disabled = true
 					disable_button = true
 				end
+			end
+
+			if not can_wield and disable_unwieldable_items then
+				saturated = true
+				item_content.unwieldable = true
+			else
+				item_content.unwieldable = false
 			end
 
 			if equipped_items and is_equipped and disable_equipped_items then
@@ -228,6 +249,26 @@ ItemGridUI.set_item_selected = function (self, item)
 			local hotspot = content[hotspot_name]
 			local grid_item = content["item" .. name_sufix]
 			hotspot.is_selected = item and grid_item and item.backend_id == grid_item.backend_id
+		end
+	end
+
+	return 
+end
+ItemGridUI.get_item_in_slot = function (self, row_number, column_number)
+	local widget = self._widget
+	local content = widget.content
+	local rows = content.rows
+	local columns = content.columns
+
+	for i = 1, rows, 1 do
+		if i == row_number then
+			for k = 1, columns, 1 do
+				if k == column_number then
+					local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
+
+					return content["item" .. name_sufix]
+				end
+			end
 		end
 	end
 
@@ -478,40 +519,59 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 	local settings = self._category_settings[index]
 	local display_name = settings.display_name
 	local item_filter = settings.item_filter
-	local category_name = settings.name
 	local slot_type = settings.slot_type
+	local hero_specific_filter = settings.hero_specific_filter
+	local career_specific_filter = settings.career_specific_filter
 
-	if settings.hero_specific_filter then
-		item_filter = "can_wield_by_current_career and " .. item_filter
+	if hero_specific_filter then
+		item_filter = "can_wield_by_current_hero and " .. item_filter
 	end
 
-	local items = {}
-	items = self._get_items_by_filter(self, item_filter)
+	if settings.wield then
+		self.disable_unwieldable_items(self, true)
+	end
+
+	local current_page_index = self._selected_page_index or 1
+
+	self.change_item_filter(self, item_filter, not keep_page_index)
+
+	local items = self._items
 	local item_sort_func = self._item_sort_func
 
-	if item_sort_func then
+	if item_sort_func and 1 < #items then
 		table.sort(items, item_sort_func)
 	end
 
-	if settings.career_specific_filter then
-		local hero_attributes = Managers.backend:get_interface("hero_attributes")
-		local career_index = hero_attributes.get(hero_attributes, self._hero_name, "career") or 1
+	local widget = self._widget
+	local content = widget.content
+	local title_text = display_name
+	content.title_text = title_text
 
-		self._filter_career_specific_items(self, items, career_index, slot_type)
+	if keep_page_index then
+		local page_index = math.min(current_page_index, self._total_item_pages)
+
+		self.set_item_page(self, page_index)
 	end
 
+	return 
+end
+ItemGridUI.change_item_filter = function (self, item_filter, change_page)
+	self._item_filter = item_filter
+	local items = {}
+	items = self._get_items_by_filter(self, item_filter)
 	self._items = items
 	local widget = self._widget
 	local content = widget.content
+	local num_slots = content.slots
 	local num_items = #items
-	local total_pages = math.max(math.ceil(num_items/content.slots), 1)
+	local total_pages = math.max(math.ceil(num_items/num_slots), 1)
 	self._total_item_pages = total_pages
-	local title_text = settings.display_name
-	content.title_text = title_text
-	local current_page_index = self._selected_page_index or 1
-	local page_index = (keep_page_index and math.min(current_page_index, self._total_item_pages)) or 1
 
-	self.set_item_page(self, page_index)
+	if change_page then
+		local page_index = 1
+
+		self.set_item_page(self, page_index)
+	end
 
 	return 
 end
@@ -601,7 +661,7 @@ ItemGridUI.is_item_pressed = function (self, allow_single_press)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
 
-			if slot_hotspot.on_double_click or slot_hotspot.on_right_click or (allow_single_press and slot_hotspot.on_pressed) then
+			if not slot_hotspot.reserved and not slot_hotspot.unwieldable and (slot_hotspot.on_double_click or slot_hotspot.on_right_click or (allow_single_press and slot_hotspot.on_pressed)) then
 				local item = content["item" .. name_sufix]
 
 				return item

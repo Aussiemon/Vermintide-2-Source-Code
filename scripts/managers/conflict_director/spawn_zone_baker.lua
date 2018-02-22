@@ -2,7 +2,6 @@ SpawnZoneBaker = class(SpawnZoneBaker)
 local InterestPointUnits = InterestPointUnits
 local PackSpawningSettings = PackSpawningSettings
 local DOOR_SEARCH_RADIUS = 1.5
-local debug_zone_baker = false
 SpawnZoneBaker.init = function (self, world, nav_world, level_analyzer)
 	self.world = world
 	self.nav_world = nav_world
@@ -106,6 +105,15 @@ SpawnZoneBaker.init = function (self, world, nav_world, level_analyzer)
 
 	return 
 end
+
+local function debug_text(...)
+	if script_data.debug_zone_baker then
+		print(string.format(...))
+	end
+
+	return 
+end
+
 SpawnZoneBaker.reset = function (self)
 	if self.last_loaded_zone_package then
 		package.loaded[self.last_loaded_zone_package] = nil
@@ -218,8 +226,8 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 	local pack_spawning_setting = conflict_director.pack_spawning
 	local initial_roaming_set = pack_spawning_setting.roaming_set
 
-	if debug_zone_baker then
-		print("Initial conflict_director:" .. conflict_director.name .. ", pack_spawning:", pack_spawning_setting.name, " initial_roaming_set=", initial_roaming_set.name)
+	if script_data.debug_zone_baker then
+		print("Baker: Initial conflict_director:" .. conflict_director.name .. ", pack_spawning:", pack_spawning_setting.name, " initial_roaming_set=", initial_roaming_set.name)
 	end
 
 	local cycle_length = 0
@@ -234,6 +242,8 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 			local director = nil
 
 			if director_set then
+				debug_text("Baker: director_set OVERRIDE at unique_zone_id: '%d' with a director_set: '%s'", zone_layer.unique_zone_id, override_conflict_setting)
+
 				local pick_random = director_set.pick_random
 
 				if pick_random then
@@ -241,6 +251,8 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 					override_conflict_setting = pick_random[row*2 - 1]
 				end
 			end
+
+			debug_text("Baker: conflict_setting OVERRIDE at unique_zone_id: '%d' conflict_setting: '%s'", zone_layer.unique_zone_id, override_conflict_setting)
 
 			conflict_director = ConflictDirectors[override_conflict_setting]
 			local pack_spawning = conflict_director.pack_spawning
@@ -497,11 +509,11 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 				local roaming_set = pack_spawning_setting.roaming_set
 				pack_type = roaming_set.breed_packs
 
-				if debug_zone_baker then
+				if script_data.debug_zone_baker then
 					print("Island zone", i, "has parent zone:", parent_zone_index)
 				end
 			end
-		elseif debug_zone_baker then
+		elseif script_data.debug_zone_baker then
 			print("Island zone", i, " is missing a parent zone")
 		end
 
@@ -521,7 +533,7 @@ SpawnZoneBaker.generate_spawns = function (self, spawn_cycle_length, goal_densit
 					self.spawn_amount_rats(self, spawns, pack_sizes, pack_rotations, pack_types, zone_data_list, nodes, num_wanted_rats, pack_type, area, parent_zone)
 				end
 			end
-		elseif debug_zone_baker then
+		elseif script_data.debug_zone_baker then
 			print("Zone " .. i .. " is tagged as roof, so no '" .. pack_type .. "' will spawn there.")
 		end
 
@@ -567,7 +579,7 @@ SpawnZoneBaker.inject_special_packs = function (self, total_peaks, cycle_zones)
 		return 
 	end
 
-	if debug_zone_baker then
+	if script_data.debug_zone_baker then
 		print("Overriding " .. picked_peaks .. " peaks, override chance: " .. tostring(percent_overridden))
 	end
 
@@ -950,7 +962,7 @@ SpawnZoneBaker.debug_print_zones = function (self)
 			local zone = cycle_zones[j]
 			local area = math.clamp(zone.area*0.5, 0, 100)
 
-			print("Zone:", j, string.format("Density: %.1f, Area: %.1f", zone.density, area), "con:", zone.conflict_setting.name, "period_len:", zone.period_length or "--", "data:", (zone.hi_data and "Y") or "N", "pack_type:", zone.pack_type)
+			print("Zone:", j, string.format("Density: %.1f, Area: %.1f", zone.density, area), "con:", zone.conflict_setting.name, "period_len:", zone.period_length or "--", "data:", (zone.hi_data and "Y") or "N", string.format("Director / Packtype: %s / %s ", zone.conflict_setting.name, zone.pack_type))
 		end
 	end
 
@@ -1033,7 +1045,7 @@ SpawnZoneBaker.draw_pack_density_graph = function (self)
 	local great_cycles = self.great_cycles
 	local num_great_cycles = #great_cycles
 
-	if debug_zone_baker then
+	if script_data.debug_zone_baker then
 		self.debug_print_zones(self)
 	end
 
@@ -1116,7 +1128,7 @@ SpawnZoneBaker.draw_pack_density_graph = function (self)
 		local event_name = rare[2]
 		local color = rare[4].debug_color
 
-		if debug_zone_baker then
+		if script_data.debug_zone_baker then
 			print("PATH DIST:", path_dist)
 		end
 

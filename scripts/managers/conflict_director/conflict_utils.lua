@@ -755,11 +755,15 @@ ConflictUtils.get_teleporter_portals = function ()
 
 	for _, id in ipairs(unit_ind) do
 		local pos = LevelResource.unit_position(level_name, id)
+		local rot = LevelResource.unit_rotation(level_name, id)
 		local unit_data = LevelResource.unit_data(level_name, id)
 		local portal_id = DynamicData.get(unit_data, "id")
-		local boxed_rot = QuaternionBox(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))))
+		local boxed_rot = QuaternionBox(rot)
 		local boxed_pos = Vector3Box(pos)
-		portals[portal_id] = boxed_pos
+		portals[portal_id] = {
+			boxed_pos,
+			boxed_rot
+		}
 	end
 
 	return portals

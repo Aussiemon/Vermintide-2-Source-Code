@@ -13,6 +13,8 @@ UIUtils.get_talent_description = function (talent_data)
 
 			if value_type == "percent" then
 				values[#values + 1] = math.abs(value*100)
+			elseif value_type == "baked_percent" then
+				values[#values + 1] = math.abs((value - 1)*100)
 			else
 				values[#values + 1] = value
 			end
@@ -109,6 +111,12 @@ UIUtils.get_ui_information_from_item = function (item)
 		inventory_icon = skin_template.inventory_icon
 		display_name = skin_template.display_name
 		description = skin_template.description
+	elseif item.skin then
+		local skin = item.skin
+		local skin_template = WeaponSkins.skins[skin]
+		inventory_icon = skin_template.inventory_icon
+		display_name = item_data.display_name
+		description = item_data.description
 	else
 		inventory_icon = item_data.inventory_icon
 		display_name = item_data.display_name
@@ -116,6 +124,9 @@ UIUtils.get_ui_information_from_item = function (item)
 	end
 
 	return inventory_icon, display_name, description
+end
+UIUtils.presentable_hero_power_level = function (power_level)
+	return math.max(0, math.floor(power_level - PowerLevelFromLevelSettings.starting_power_level))
 end
 
 return 

@@ -378,7 +378,7 @@ local action_data = {
 				1
 			},
 			normal = {
-				3,
+				2.5,
 				2,
 				1
 			},
@@ -505,7 +505,7 @@ local action_data = {
 				1
 			},
 			normal = {
-				3,
+				2.5,
 				2,
 				1
 			},

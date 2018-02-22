@@ -30,11 +30,6 @@ BTBossFollowAction.enter = function (self, unit, blackboard, t)
 		network_manager.network_transmit:send_rpc_all("rpc_tutorial_message", template_id, message_id)
 	end
 
-	local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-	local target_unit_id = network_manager.unit_game_object_id(network_manager, blackboard.target_unit)
-
-	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id)
-
 	return 
 end
 BTBossFollowAction.leave = function (self, unit, blackboard, t, reason, destroy)

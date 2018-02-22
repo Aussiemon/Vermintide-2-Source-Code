@@ -30,9 +30,6 @@ MissionSystem.init = function (self, entity_system_creation_context, system_name
 	self.network_transmit = network_manager.network_transmit
 	self.is_server = entity_system_creation_context.is_server
 	self._percentage_completed = 0
-	local event_manager = Managers.state.event
-
-	event_manager.register(event_manager, self, "gm_event_end_conditions_met", "event_end_conditions_met")
 
 	return 
 end
@@ -429,7 +426,7 @@ end
 MissionSystem.get_level_end_mission_data = function (self, mission_template_name)
 	return self.level_end_missions[mission_template_name]
 end
-MissionSystem.event_end_conditions_met = function (self, end_reason, checkpoint_available, percentage_completed)
+MissionSystem.set_percentage_completed = function (self, percentage_completed)
 	self._percentage_completed = percentage_completed
 
 	return 

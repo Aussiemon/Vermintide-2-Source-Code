@@ -1,7 +1,7 @@
 require("scripts/ui/views/chat_gui")
 require("scripts/misc/script_retrieve_app_ticket_token")
 
-if PLATFORM ~= "win32" or Development.parameter("honduras_demo") or Development.parameter("attract_mode") then
+if PLATFORM ~= "win32" or script_data.honduras_demo or Development.parameter("attract_mode") then
 	ChatGuiNull = class(ChatGuiNull)
 
 	for name, func in pairs(ChatGui) do
@@ -296,7 +296,7 @@ ChatManager.create_chat_gui = function (self)
 		chat_manager = self
 	}
 
-	if PLATFORM ~= "win32" or Development.parameter("honduras_demo") then
+	if PLATFORM ~= "win32" or script_data.honduras_demo then
 		self.chat_gui = ChatGuiNull
 	else
 		self.chat_gui = ChatGui:new(context)

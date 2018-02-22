@@ -247,12 +247,15 @@ BuffSystem.rpc_add_buff = function (self, sender, unit_id, buff_template_name_id
 end
 BuffSystem.rpc_remove_server_controlled_buff = function (self, sender, unit_id, server_buff_id)
 	local unit = self.unit_storage:unit(unit_id)
-	local buff_extension = ScriptUnit.extension(unit, "buff_system")
-	local id = self.server_controlled_buffs[unit][server_buff_id].local_buff_id
 
-	buff_extension.remove_buff(buff_extension, id)
+	if Unit.alive(unit) then
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local id = self.server_controlled_buffs[unit][server_buff_id].local_buff_id
 
-	self.server_controlled_buffs[unit][server_buff_id] = nil
+		buff_extension.remove_buff(buff_extension, id)
+
+		self.server_controlled_buffs[unit][server_buff_id] = nil
+	end
 
 	return 
 end

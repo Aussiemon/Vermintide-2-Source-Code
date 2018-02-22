@@ -61,7 +61,7 @@ TimeManager.update = function (self, dt)
 		self._update_global_time_scale_lerp(self, dt)
 	end
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		self._update_demo_timer(self, dt)
 	end
 
@@ -71,7 +71,12 @@ TimeManager.update = function (self, dt)
 end
 TimeManager._update_demo_timer = function (self, dt)
 	self._demo_timer = (self._demo_timer or DemoSettings.demo_idle_timer) - dt
-	local device = Managers.input:get_most_recent_device()
+	local device = Managers.input and Managers.input:get_most_recent_device()
+
+	if not device then
+		return 
+	end
+
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local any_device_input_axis_moved = false
 

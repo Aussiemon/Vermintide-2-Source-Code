@@ -20,11 +20,6 @@ BTCorruptorGrabAction.enter = function (self, unit, blackboard, t)
 
 	network_manager.anim_event(network_manager, unit, "to_combat")
 
-	local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-	local target_unit_id = network_manager.unit_game_object_id(network_manager, blackboard.target_unit)
-
-	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id)
-
 	blackboard.target_unit_status_extension = ScriptUnit.has_extension(blackboard.target_unit, "status_system") or nil
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -241,7 +236,7 @@ BTCorruptorGrabAction.set_beam_state = function (self, unit, blackboard, state)
 	local target_unit_id = network_manager.unit_game_object_id(network_manager, blackboard.target_unit) or network_manager.unit_game_object_id(network_manager, blackboard.grabbed_unit)
 
 	if unit_id then
-		Managers.state.network.network_transmit:send_rpc_all("rpc_set_corruptor_beam_state", unit_id, state, target_unit_id)
+		Managers.state.network.network_transmit:send_rpc_all("rpc_set_corruptor_beam_state", unit_id, state, target_unit_id or unit_id)
 	end
 
 	return 

@@ -39,7 +39,7 @@ BTInVortexAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		local navigation_extension = blackboard.navigation_extension
 
 		navigation_extension.set_enabled(navigation_extension, true)
-		navigation_extension.reset_destination(navigation_extension)
+		navigation_extension.reset_destination(navigation_extension, POSITION_LOOKUP[unit] or Unit.local_position(unit, 0))
 	end
 
 	blackboard.in_vortex = false

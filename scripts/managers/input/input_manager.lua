@@ -807,7 +807,7 @@ InputManager.setup_keymaps = function (self, keymaps)
 			local input_type = keymap[j + 2]
 			local input_key_name = keymap[j + 1]
 
-			if input_key_name ~= "unassigned_keymap" then
+			if input_key_name ~= UNASSIGNED_KEY then
 				if self.platform == "ps4" or self.platform == "xb1" then
 					if input_type == "axis" then
 						key_index = input_device.axis_index(input_key_name)
@@ -829,7 +829,7 @@ InputManager.setup_keymaps = function (self, keymaps)
 				end
 			end
 
-			keymap[j + 1] = key_index
+			keymap[j + 1] = key_index or UNASSIGNED_KEY
 		end
 
 		default_data_types[name] = input_map_type
@@ -854,8 +854,7 @@ InputManager.clear_keybinding = function (self, keybinding_table_name, keybindin
 
 	assert(keymap, "No such keymap name %s", keymap_name)
 
-	keymap[1] = nil
-	keymap[2] = nil
+	keymap[2] = UNASSIGNED_KEY
 
 	return 
 end

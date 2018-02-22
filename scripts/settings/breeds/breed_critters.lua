@@ -42,6 +42,12 @@ local pig_data = {
 			prio = 1,
 			actors = {}
 		},
+		neck = {
+			prio = 1,
+			actors = {
+				"c_neck"
+			}
+		},
 		torso = {
 			prio = 1,
 			actors = {
@@ -118,6 +124,12 @@ local rat_data = {
 		full = {
 			prio = 1,
 			actors = {}
+		},
+		neck = {
+			prio = 1,
+			actors = {
+				"c_head"
+			}
 		},
 		torso = {
 			prio = 1,

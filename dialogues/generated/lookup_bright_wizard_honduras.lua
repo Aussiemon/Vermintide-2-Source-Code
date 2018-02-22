@@ -155,6 +155,8 @@ assert(DialogueLookup[DialogueLookup_n + 154] == nil)
 assert(DialogueLookup[DialogueLookup_n + 155] == nil)
 assert(DialogueLookup[DialogueLookup_n + 156] == nil)
 assert(DialogueLookup[DialogueLookup_n + 157] == nil)
+assert(DialogueLookup[DialogueLookup_n + 158] == nil)
+assert(DialogueLookup[DialogueLookup_n + 159] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pbw_gameplay_globadier_guck"
 DialogueLookup[DialogueLookup_n + 2] = "pbw_gameplay_hit_by_goo"
@@ -313,6 +315,8 @@ DialogueLookup[DialogueLookup_n + 154] = "pbw_gameplay_seeing_a_shield_stormverm
 DialogueLookup[DialogueLookup_n + 155] = "pbw_gameplay_seeing_a_Skaven_warpfire_thrower"
 DialogueLookup[DialogueLookup_n + 156] = "pbw_gameplay_seeing_a_stormfiend"
 DialogueLookup[DialogueLookup_n + 157] = "pbw_gameplay_seeing_a_troll"
-DialogueLookup_n = DialogueLookup_n + 157
+DialogueLookup[DialogueLookup_n + 158] = "pbw_gameplay_hearing_a_chaos_wizard_leech"
+DialogueLookup[DialogueLookup_n + 159] = "pbw_gameplay_killing_a_chaos_wizard_leech"
+DialogueLookup_n = DialogueLookup_n + 159
 
 return 

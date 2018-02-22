@@ -19,6 +19,7 @@ local Z_MOVE_TO_EPSILON = BotConstants.default.Z_MOVE_TO_EPSILON
 local HOLD_POSITION_MAX_ALLOWED_Z = 0.5
 local WANTS_TO_HEAL_THRESHOLD = 0.25
 local WANTS_TO_GIVE_HEAL_TO_OTHER = 0.5
+local INTERESTED_IN_BEING_HEALED_THRESHOLD = 0.8
 local VORTEX_ESCAPE_DISTANCE = 10
 local VORTEX_ESCAPE_STICKINESS_WEIGHT = 0.75
 local VORTEX_ESCAPE_RE_EVALUATE_DISTANCE_SQ = 1
@@ -161,6 +162,7 @@ PlayerBotBase.init = function (self, extension_init_context, unit, extension_ini
 	self._stay_near_player_range = math.huge
 	self._attempted_enemy_paths = {}
 	self._attempted_ally_paths = {}
+	self._seen_by_players = {}
 	self._last_health_pickup_attempt = {
 		blacklist = false,
 		distance = 0,
@@ -214,6 +216,17 @@ PlayerBotBase.set_stay_near_player = function (self, stay_near_player, max_range
 end
 PlayerBotBase.should_stay_near_player = function (self)
 	return self._stay_near_player, self._stay_near_player_range
+end
+PlayerBotBase.set_seen_by_player = function (self, seen, player_unit, t)
+	local seen_by_players = self._seen_by_players
+
+	if seen then
+		seen_by_players[player_unit] = t
+	else
+		seen_by_players[player_unit] = nil
+	end
+
+	return 
 end
 PlayerBotBase.extensions_ready = function (self, world, unit)
 	local blackboard = self._blackboard
@@ -623,7 +636,7 @@ PlayerBotBase._get_closest_target_in_slot = function (self, position, unit, curr
 	return best_target, target_dist
 end
 PlayerBotBase._alter_target_position = function (self, nav_world, self_position, target_unit, target_position, reason)
-	local wanted_position = nil
+	local wanted_position, should_stop = nil
 
 	if reason == "ledge" then
 		local rotation = Unit.local_rotation(target_unit, 0)
@@ -640,8 +653,15 @@ PlayerBotBase._alter_target_position = function (self, nav_world, self_position,
 		end
 	elseif reason == "knocked_down" and self._blackboard.aggressive_mode then
 		wanted_position = target_position + Vector3.normalize(self_position - target_position)
+	elseif reason == "in_need_of_attention_stop" then
+		wanted_position = Vector3(self_position.x, self_position.y, self_position.z)
+		should_stop = true
 	else
 		wanted_position = Vector3(target_position.x, target_position.y, target_position.z)
+	end
+
+	if should_stop then
+		return wanted_position, should_stop
 	end
 
 	local above = 0.5
@@ -691,13 +711,13 @@ PlayerBotBase._update_target_ally = function (self, dt, t)
 	local unit = self._unit
 	local blackboard = self._blackboard
 	local breed = self._bot_profile
-	local best_ally, ally_dist, in_need_type = nil
+	local best_ally, ally_dist, in_need_type, look_at_ally = nil
 
 	if blackboard.target_unit and blackboard.target_unit == blackboard.priority_target_enemy then
 		best_ally = blackboard.priority_target_disabled_ally
 		ally_dist = Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[best_ally])
 	else
-		best_ally, ally_dist, in_need_type = self._select_ally_by_utility(self, unit, blackboard, breed, t)
+		best_ally, ally_dist, in_need_type, look_at_ally = self._select_ally_by_utility(self, unit, blackboard, breed, t)
 	end
 
 	blackboard.target_ally_unit = best_ally or nil
@@ -709,6 +729,14 @@ PlayerBotBase._update_target_ally = function (self, dt, t)
 	elseif blackboard.target_ally_needs_aid then
 		blackboard.target_ally_needs_aid = false
 		blackboard.target_ally_need_type = nil
+	end
+
+	local input_extension = blackboard.input_extension
+
+	if look_at_ally then
+		input_extension.set_look_at_player(input_extension, best_ally, false)
+	else
+		input_extension.set_look_at_player(input_extension, nil)
 	end
 
 	local is_priority_aid_type = blackboard.target_ally_need_type == "knocked_down" or blackboard.target_ally_need_type == "ledge" or blackboard.target_ally_need_type == "hook"
@@ -723,36 +751,124 @@ PlayerBotBase._update_target_ally = function (self, dt, t)
 
 	return 
 end
+local MIN_HEADING_TOWARDS_US_DOT = math.degrees_to_radians(30)
+local ATTENTION_SAFE_TO_STOP_DISTANCE = 3.5
+PlayerBotBase._player_needs_attention = function (self, self_unit, player_unit, blackboard, player_inventory_extension, player_locomotion_extension, t)
+	local start_time = self._seen_by_players[player_unit]
+	local player_wielded_slot = player_inventory_extension.equipment(player_inventory_extension).wielded_slot
+	local player_slot_data = player_inventory_extension.get_slot_data(player_inventory_extension, player_wielded_slot)
+
+	if not start_time or blackboard.target_unit or player_slot_data == nil then
+		return false, 0
+	end
+
+	local status_extension = blackboard.status_extension
+	local is_wounded = status_extension.is_wounded(status_extension)
+	local health_extension = blackboard.health_extension
+	local health_percent = health_extension.current_permanent_health_percent(health_extension)
+	local item_template = player_inventory_extension.get_item_template(player_inventory_extension, player_slot_data)
+	local can_heal_other = item_template.can_heal_other
+	local can_give_other = item_template.can_give_other
+	local inventory_extension = blackboard.inventory_extension
+	local slot_is_empty = not inventory_extension.get_slot_data(inventory_extension, player_wielded_slot)
+	local can_receive_item = can_give_other and slot_is_empty
+	local interested_in_heal = can_heal_other and (is_wounded or health_percent < INTERESTED_IN_BEING_HEALED_THRESHOLD)
+	local self_position = POSITION_LOOKUP[self_unit]
+	local player_position = POSITION_LOOKUP[player_unit]
+	local player_to_self = self_position - player_position
+	local player_to_self_direction = Vector3.normalize(player_to_self)
+	local player_velocity = player_locomotion_extension.current_velocity(player_locomotion_extension)
+	local player_velocity_normalized = Vector3.normalize(player_velocity)
+	local player_speed_sq = Vector3.length_squared(player_velocity)
+	local locomotion_extension = blackboard.locomotion_extension
+	local velocity = locomotion_extension.current_velocity(locomotion_extension)
+	local velocity_normalized = Vector3.normalize(velocity)
+	local speed_sq = Vector3.length_squared(velocity)
+	local direction_dot = Vector3.dot(player_to_self_direction, player_velocity_normalized)
+	local is_heading_towards_us = MIN_HEADING_TOWARDS_US_DOT < direction_dot
+	local is_heading_towards_player = nil
+
+	if 0.01 < speed_sq then
+		local direction_dot = Vector3.dot(player_to_self_direction, velocity_normalized)
+		is_heading_towards_player = direction_dot <= MIN_HEADING_TOWARDS_US_DOT
+	else
+		is_heading_towards_player = false
+	end
+
+	local look_threshold, stop_threshold = nil
+	local safe_stop_distance = ATTENTION_SAFE_TO_STOP_DISTANCE
+
+	if is_heading_towards_us and player_wielded_slot == "slot_healthkit" and (interested_in_heal or can_receive_item) then
+		local health_term = (health_percent - 1)*0.2
+		stop_threshold = health_term - 0.5
+		look_threshold = 0.25
+		safe_stop_distance = safe_stop_distance + math.sqrt(player_speed_sq)
+	else
+		local smallest_speed_sq = math.min(speed_sq, player_speed_sq)
+
+		if 0.01 < smallest_speed_sq or is_heading_towards_player then
+			stop_threshold = math.huge
+			look_threshold = 0.5
+		elseif speed_sq <= 0.01 and player_speed_sq <= 0.01 then
+			stop_threshold = 0.3
+			look_threshold = 0.25
+		else
+			stop_threshold = 1.25
+			look_threshold = 0.5
+		end
+	end
+
+	local player_to_self_length_squared = Vector3.length_squared(player_to_self)
+
+	if safe_stop_distance^2 < player_to_self_length_squared or player_to_self_length_squared <= 0.25 then
+		stop_threshold = math.huge
+	end
+
+	local current_seen_time = t - start_time
+
+	if stop_threshold < current_seen_time then
+		local extra_utility = math.clamp(current_seen_time, 0, 2)
+
+		return "stop", extra_utility
+	elseif look_threshold < current_seen_time then
+		local extra_utility = math.clamp(current_seen_time, 0, 0.5)
+
+		return "look_at", extra_utility
+	end
+
+	return 
+end
 PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed, t)
 	local self_pos = POSITION_LOOKUP[unit]
 	local closest_ally = nil
 	local closest_dist = math.huge
 	local closest_real_dist = math.huge
 	local closest_in_need_type = nil
-	local inventory_ext = blackboard.inventory_extension
-	local health_slot_data = inventory_ext.get_slot_data(inventory_ext, "slot_healthkit")
+	local closest_ally_look_at = false
+	local inventory_extension = blackboard.inventory_extension
+	local health_slot_data = inventory_extension.get_slot_data(inventory_extension, "slot_healthkit")
 	local can_heal_other = false
 	local can_give_healing_to_other = false
 
 	if health_slot_data then
-		local template = inventory_ext.get_item_template(inventory_ext, health_slot_data)
+		local template = inventory_extension.get_item_template(inventory_extension, health_slot_data)
 		can_heal_other = template.can_heal_other
 		can_give_healing_to_other = template.can_give_other
 	end
 
 	local can_give_grenade_to_other = false
-	local grenade_slot_data = inventory_ext.get_slot_data(inventory_ext, "slot_grenade")
+	local grenade_slot_data = inventory_extension.get_slot_data(inventory_extension, "slot_grenade")
 
 	if grenade_slot_data then
-		local template = inventory_ext.get_item_template(inventory_ext, grenade_slot_data)
+		local template = inventory_extension.get_item_template(inventory_extension, grenade_slot_data)
 		can_give_grenade_to_other = template.can_give_other
 	end
 
 	local can_give_potion_to_other = false
-	local potion_slot_data = inventory_ext.get_slot_data(inventory_ext, "slot_potion")
+	local potion_slot_data = inventory_extension.get_slot_data(inventory_extension, "slot_potion")
 
 	if potion_slot_data then
-		local template = inventory_ext.get_item_template(inventory_ext, potion_slot_data)
+		local template = inventory_extension.get_item_template(inventory_extension, potion_slot_data)
 		can_give_potion_to_other = template.can_give_other
 	end
 
@@ -769,38 +885,49 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 		if AiUtils.unit_alive(player_unit) and player_unit ~= unit then
 			local status_ext = ScriptUnit.extension(player_unit, "status_system")
 			local utility = 0
+			local look_at_ally = false
 
-			if not status_ext.is_ready_for_assisted_respawn(status_ext) and not status_ext.near_vortex and (disable_bot_main_path_teleport_check or self_segment <= (conflict_director.get_player_unit_segment(conflict_director, unit) or 1)) then
+			if not status_ext.is_ready_for_assisted_respawn(status_ext) and not status_ext.near_vortex and (disable_bot_main_path_teleport_check or self_segment <= (conflict_director.get_player_unit_segment(conflict_director, player_unit) or 1)) then
 				local in_need_type = nil
 
 				if status_ext.is_knocked_down(status_ext) then
 					in_need_type = "knocked_down"
-					utility = 40
+					utility = 100
 				elseif status_ext.get_is_ledge_hanging(status_ext) and not status_ext.is_pulled_up(status_ext) then
 					in_need_type = "ledge"
-					utility = 40
+					utility = 100
 				elseif status_ext.is_hanging_from_hook(status_ext) then
 					in_need_type = "hook"
-					utility = 40
+					utility = 100
 				else
 					local health_percent = ScriptUnit.extension(player_unit, "health_system"):current_permanent_health_percent()
-					local inventory_ext = ScriptUnit.extension(player_unit, "inventory_system")
+					local player_inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+					local player_locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
 					local is_wounded = status_ext.is_wounded(status_ext)
+					local need_attention_type, extra_utility = self._player_needs_attention(self, unit, player_unit, blackboard, player_inventory_extension, player_locomotion_extension, t)
 
 					if can_heal_other and (health_percent < WANTS_TO_HEAL_THRESHOLD or is_wounded) then
 						in_need_type = "in_need_of_heal"
 						local health_utility = ((is_wounded and health_percent*0.33) or health_percent) - 1
-						utility = health_utility*15 + 10
-					elseif can_give_healing_to_other and (health_percent < WANTS_TO_GIVE_HEAL_TO_OTHER or is_wounded) and not inventory_ext.get_slot_data(inventory_ext, "slot_healthkit") then
+						utility = health_utility*15 + 70
+					elseif can_give_healing_to_other and (health_percent < WANTS_TO_GIVE_HEAL_TO_OTHER or is_wounded) and not player_inventory_extension.get_slot_data(player_inventory_extension, "slot_healthkit") then
 						in_need_type = "can_accept_heal_item"
 						local health_utility = ((is_wounded and health_percent - 0.5) or health_percent) - 1
-						utility = health_utility*10 + 10
-					elseif can_give_grenade_to_other and not inventory_ext.get_slot_data(inventory_ext, "slot_grenade") and not is_bot then
+						utility = health_utility*10 + 70
+					elseif can_give_grenade_to_other and not player_inventory_extension.get_slot_data(player_inventory_extension, "slot_grenade") and not is_bot then
 						in_need_type = "can_accept_grenade"
-						utility = 10
-					elseif can_give_potion_to_other and not inventory_ext.get_slot_data(inventory_ext, "slot_potion") and not is_bot then
+						utility = 70
+					elseif can_give_potion_to_other and not player_inventory_extension.get_slot_data(player_inventory_extension, "slot_potion") and not is_bot then
 						in_need_type = "can_accept_potion"
-						utility = 10
+						utility = 70
+					elseif need_attention_type == "stop" then
+						in_need_type = "in_need_of_attention_stop"
+						look_at_ally = true
+						utility = extra_utility + 5
+					elseif need_attention_type == "look_at" then
+						in_need_type = "in_need_of_attention_look"
+						look_at_ally = true
+						utility = extra_utility + 2
 					end
 				end
 
@@ -845,6 +972,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 								closest_real_dist = real_dist
 								closest_ally = player_unit
 								closest_in_need_type = in_need_type
+								closest_ally_look_at = look_at_ally
 							end
 						end
 					end
@@ -853,7 +981,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 		end
 	end
 
-	return closest_ally, closest_real_dist, closest_in_need_type
+	return closest_ally, closest_real_dist, closest_in_need_type, closest_ally_look_at
 end
 PlayerBotBase.within_aid_range = function (self, blackboard)
 	if blackboard.target_ally_needs_aid then
@@ -1364,20 +1492,21 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 		follow_bb.follow_timer = follow_bb.follow_timer - dt
 		local interaction_extension = blackboard.interaction_extension
 		local is_interacting = interaction_extension.is_interacting(interaction_extension)
+		local need_to_stop = blackboard.target_ally_need_type == "in_need_of_attention_stop"
 
-		if not follow_bb.needs_target_position_refresh and (follow_bb.follow_timer < 0 or (blackboard.target_ally_needs_aid and not is_interacting and navigation_extension.destination_reached(navigation_extension))) then
+		if not follow_bb.needs_target_position_refresh and (follow_bb.follow_timer < 0 or need_to_stop or (blackboard.target_ally_needs_aid and not is_interacting and navigation_extension.destination_reached(navigation_extension))) then
 			follow_bb.needs_target_position_refresh = true
 		end
 
 		if follow_bb.needs_target_position_refresh then
-			local target_position = nil
+			local target_position, should_stop = nil
 			local goal_selection_func_name = blackboard.follow.goal_selection_func
 			local path_callback = nil
 			local enemy_unit = blackboard.target_unit
 			local priority_target_enemy = blackboard.priority_target_enemy
 
-			if blackboard.revive_with_urgent_target and blackboard.target_ally_needs_aid then
-				target_position = self._alter_target_position(self, nav_world, self_pos, target_ally_unit, POSITION_LOOKUP[target_ally_unit], blackboard.target_ally_need_type)
+			if blackboard.revive_with_urgent_target and blackboard.target_ally_needs_aid and blackboard.target_ally_need_type ~= "in_need_of_attention_look" then
+				target_position, should_stop = self._alter_target_position(self, nav_world, self_pos, target_ally_unit, POSITION_LOOKUP[target_ally_unit], blackboard.target_ally_need_type)
 				blackboard.interaction_unit = target_ally_unit
 
 				blackboard.target_ally_aid_destination:store(target_position)
@@ -1395,8 +1524,8 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				path_callback = callback(self, "cb_enemy_path_result", enemy_unit)
 
 				dprint("path to enemy", enemy_unit, target_position)
-			elseif blackboard.target_ally_needs_aid then
-				target_position = self._alter_target_position(self, nav_world, self_pos, target_ally_unit, POSITION_LOOKUP[target_ally_unit], blackboard.target_ally_need_type)
+			elseif blackboard.target_ally_needs_aid and blackboard.target_ally_need_type ~= "in_need_of_attention_look" then
+				target_position, should_stop = self._alter_target_position(self, nav_world, self_pos, target_ally_unit, POSITION_LOOKUP[target_ally_unit], blackboard.target_ally_need_type)
 				blackboard.interaction_unit = target_ally_unit
 
 				blackboard.target_ally_aid_destination:store(target_position)
@@ -1458,7 +1587,9 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				moving_towards_follow_position = true
 			end
 
-			if target_position then
+			if should_stop then
+				navigation_extension.stop(navigation_extension)
+			elseif target_position then
 				blackboard.moving_toward_follow_position = moving_towards_follow_position
 				follow_bb.needs_target_position_refresh = false
 				follow_bb.follow_timer = math.lerp(FOLLOW_TIMER_LOWER_BOUND, FOLLOW_TIMER_UPPER_BOUND, Math.random())

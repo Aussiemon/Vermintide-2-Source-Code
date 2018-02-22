@@ -43,11 +43,6 @@ BTErraticFollowAction.enter = function (self, unit, blackboard, t)
 		}
 	end
 
-	local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-	local target_unit_id = network_manager.unit_game_object_id(network_manager, blackboard.target_unit)
-
-	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id)
-
 	blackboard.next_jump_time = t + 1
 
 	return 

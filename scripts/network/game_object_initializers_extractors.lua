@@ -46,6 +46,7 @@ go_type_table = {
 			local max_wounds = ScriptUnit.extension(unit, "status_system"):max_wounds_network_safe()
 			local data_table = {
 				ammo_percentage = 1,
+				ability_percentage = 0,
 				moving_platform = 0,
 				go_type = NetworkLookup.go_types.player_unit,
 				husk_unit = NetworkLookup.husks[husk_unit],
@@ -91,6 +92,7 @@ go_type_table = {
 			local rotation = Unit.local_rotation(unit, 0)
 			local data_table = {
 				ammo_percentage = 1,
+				ability_percentage = 0,
 				prestige_level = 0,
 				level = 0,
 				moving_platform = 0,
@@ -1285,6 +1287,7 @@ go_type_table = {
 			local profile_id = GameSession.game_object_field(game_session, go_id, "profile_id")
 			local career_id = GameSession.game_object_field(game_session, go_id, "career_id")
 			local skin_id = GameSession.game_object_field(game_session, go_id, "skin_name")
+			local initial_ability_percentage = GameSession.game_object_field(game_session, go_id, "ability_percentage")
 			local profile = SPProfiles[profile_id]
 
 			assert(profile, "No such profile with index %s", tostring(profile_id))
@@ -1299,7 +1302,7 @@ go_type_table = {
 			if career_voice_parameter then
 				local career_voice_parameter_value = profile.career_voice_parameter_values[career_id]
 
-				if career_voice_parameter_value then
+				if career_voice_parameter_value and GameSettingsDevelopment.use_career_voice_pitch then
 					local world = gameobject_functor_context.world
 					local wwise_world = Wwise.wwise_world(world)
 
@@ -1377,7 +1380,8 @@ go_type_table = {
 				career_system = {
 					player = player,
 					profile_index = profile_id,
-					career_index = career_id
+					career_index = career_id,
+					initial_ability_percentage = initial_ability_percentage
 				}
 			}
 
@@ -1399,6 +1403,7 @@ go_type_table = {
 			local profile_id = GameSession.game_object_field(game_session, go_id, "profile_id")
 			local career_id = GameSession.game_object_field(game_session, go_id, "career_id")
 			local skin_id = GameSession.game_object_field(game_session, go_id, "skin_name")
+			local initial_ability_percentage = GameSession.game_object_field(game_session, go_id, "ability_percentage")
 			local profile = SPProfiles[profile_id]
 
 			assert(profile, "No such profile with index %s", tostring(profile_id))
@@ -1412,7 +1417,7 @@ go_type_table = {
 			if career_voice_parameter then
 				local career_voice_parameter_value = profile.career_voice_parameter_values[career_id]
 
-				if career_voice_parameter_value then
+				if career_voice_parameter_value and GameSettingsDevelopment.use_career_voice_pitch then
 					local world = gameobject_functor_context.world
 					local wwise_world = Wwise.wwise_world(world)
 
@@ -1486,7 +1491,8 @@ go_type_table = {
 				career_system = {
 					player = player,
 					profile_index = profile_id,
-					career_index = career_id
+					career_index = career_id,
+					initial_ability_percentage = initial_ability_percentage
 				}
 			}
 
@@ -1833,22 +1839,17 @@ go_type_table = {
 
 			return unit_template_name, extension_init_data
 		end,
-		ai_unit_with_inventory_and_target = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
-			local breed_name_id = GameSession.game_object_field(game_session, go_id, "breed_name")
-			local breed_name = NetworkLookup.breeds[breed_name_id]
-			local breed = Breeds[breed_name]
-
-			Unit.set_data(unit, "breed", breed)
-
-			local inventory_configuration_name = NetworkLookup.ai_inventory[GameSession.game_object_field(game_session, go_id, "inventory_configuration")]
-			local health = GameSession.game_object_field(game_session, go_id, "health")
+		ai_unit_with_inventory_and_target = function (game_session, game_object_id, owner_id, unit, gameobject_functor_context)
+			local breed, breed_name = enemy_unit_common_extractor(unit, game_session, game_object_id)
+			local inventory_configuration_name = NetworkLookup.ai_inventory[GameSession.game_object_field(game_session, game_object_id, "inventory_configuration")]
+			local health = GameSession.game_object_field(game_session, game_object_id, "health")
 			local extension_init_data = {
 				ai_system = {
-					go_id = go_id,
+					go_id = game_object_id,
 					game = game_session
 				},
 				locomotion_system = {
-					go_id = go_id,
+					go_id = game_object_id,
 					breed = breed,
 					game = game_session
 				},

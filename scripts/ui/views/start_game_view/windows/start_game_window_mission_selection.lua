@@ -105,17 +105,19 @@ StartGameWindowMissionSelection._setup_level_acts = function (self)
 	local num_levels_added = 0
 
 	for _, level_key in pairs(UnlockableLevels) do
-		local level_settings = LevelSettings[level_key]
-		local act = level_settings.act
+		if not table.find(NoneActLevels, level_key) then
+			local level_settings = LevelSettings[level_key]
+			local act = level_settings.act
 
-		if not levels_by_act[act] then
-			levels_by_act[act] = {}
+			if not levels_by_act[act] then
+				levels_by_act[act] = {}
+			end
+
+			local act_levels = levels_by_act[act]
+			local index = #act_levels + 1
+			act_levels[index] = level_settings
+			num_levels_added = num_levels_added + 1
 		end
-
-		local act_levels = levels_by_act[act]
-		local index = #act_levels + 1
-		act_levels[index] = level_settings
-		num_levels_added = num_levels_added + 1
 	end
 
 	for _, levels in pairs(levels_by_act) do
@@ -247,6 +249,8 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 	return 
 end
 StartGameWindowMissionSelection._setup_required_act_connections = function (self)
+	local statistics_db = self.statistics_db
+	local stats_id = self._stats_id
 	local ui_scenegraph = self.ui_scenegraph
 	local assigned_widgets = self._active_node_widgets
 
@@ -265,6 +269,8 @@ StartGameWindowMissionSelection._setup_required_act_connections = function (self
 
 				for i, level_widget in ipairs(assigned_widgets) do
 					if level_widget.content.level_key == required_level_key then
+						local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, required_level_key)
+						local level_completed = completed_difficulty_index and 0 < completed_difficulty_index
 						local level_scenegraph_id = level_widget.scenegraph_id
 						local level_position = ui_scenegraph[level_scenegraph_id].world_position
 						local path_style = level_widget.style.path
@@ -280,7 +286,7 @@ StartGameWindowMissionSelection._setup_required_act_connections = function (self
 						path_glow_style.texture_size[1] = distance
 						path_glow_style.angle = angle
 						level_widget.content.draw_path = true
-						level_widget.content.draw_path_fill = true
+						level_widget.content.draw_path_fill = level_completed
 					end
 				end
 			end

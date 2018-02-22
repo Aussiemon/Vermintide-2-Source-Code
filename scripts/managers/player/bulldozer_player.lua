@@ -20,6 +20,10 @@ BulldozerPlayer.init = function (self, network_manager, input_source, viewport_n
 	Managers.music:register_active_player(local_player_id)
 	Managers.free_flight:register_player(local_player_id)
 
+	self._best_aquired_power_level = 0
+
+	self.fetch_best_aquired_power_level(self)
+
 	self._cached_name = nil
 
 	return 
@@ -262,7 +266,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	if career_voice_parameter then
 		local career_voice_parameter_value = profile.career_voice_parameter_values[career_index]
 
-		if career_voice_parameter_value then
+		if career_voice_parameter_value and GameSettingsDevelopment.use_career_voice_pitch then
 			local wwise_world = Wwise.wwise_world(world)
 
 			WwiseWorld.set_global_parameter(wwise_world, career_voice_parameter, career_voice_parameter_value)
@@ -273,10 +277,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 
 	player_manager.assign_unit_ownership(player_manager, unit, self, is_player_unit)
 	Managers.state.event:trigger("level_start_local_player_spawned", is_initial_spawn)
-
-	local peer_type = (self.is_server and "host") or "client"
-
-	Managers.telemetry.events:player_spawned(self, peer_type)
+	Managers.telemetry.events:player_spawned(self)
 
 	if self.is_server then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
@@ -341,6 +342,15 @@ BulldozerPlayer.create_game_object = function (self)
 	local game_object_id = self.network_manager:create_player_game_object("player", game_object_data_table, callback)
 	self.game_object_id = game_object_id
 
+	self.create_sync_data(self)
+
+	return 
+end
+BulldozerPlayer.create_sync_data = function (self)
+	assert(self._player_sync_data == nil)
+
+	self._player_sync_data = PlayerSyncData:new(self, self.network_manager)
+
 	return 
 end
 BulldozerPlayer.cb_game_session_disconnect = function (self)
@@ -349,6 +359,8 @@ BulldozerPlayer.cb_game_session_disconnect = function (self)
 	if self.boon_handler then
 		self.boon_handler = nil
 	end
+
+	self._player_sync_data = nil
 
 	return 
 end
@@ -380,6 +392,17 @@ BulldozerPlayer.set_game_object_id = function (self, id)
 	self.game_object_id = id
 
 	return 
+end
+BulldozerPlayer.sync_data_active = function (self)
+	return self._player_sync_data and self._player_sync_data:active()
+end
+BulldozerPlayer.set_data = function (self, key, value)
+	self._player_sync_data:set_data(key, value)
+
+	return 
+end
+BulldozerPlayer.get_data = function (self, key)
+	return self._player_sync_data:get_data(key)
 end
 BulldozerPlayer.name = function (self)
 	if rawget(_G, "Steam") then
@@ -414,6 +437,10 @@ BulldozerPlayer.name = function (self)
 	return 
 end
 BulldozerPlayer.destroy = function (self)
+	if self._player_sync_data then
+		self._player_sync_data:destroy()
+	end
+
 	if self.is_server and self.game_object_id then
 		self.network_manager:destroy_game_object(self.game_object_id)
 	end
@@ -422,6 +449,23 @@ BulldozerPlayer.destroy = function (self)
 	Managers.music:unregister_active_player(self._local_player_id)
 
 	return 
+end
+BulldozerPlayer.cb_sum_best_power_level = function (self, sum)
+	local level = ExperienceSettings.get_highest_character_level()
+	local character_power_level = PowerLevelFromLevelSettings.starting_power_level + PowerLevelFromLevelSettings.power_level_per_level*level
+	self._best_aquired_power_level = character_power_level + sum/5
+
+	return 
+end
+BulldozerPlayer.fetch_best_aquired_power_level = function (self)
+	local callback = callback(self, "cb_sum_best_power_level")
+
+	Managers.backend:get_interface("items"):sum_best_power_levels(callback)
+
+	return 
+end
+BulldozerPlayer.best_aquired_power_level = function (self)
+	return self._best_aquired_power_level
 end
 
 return 

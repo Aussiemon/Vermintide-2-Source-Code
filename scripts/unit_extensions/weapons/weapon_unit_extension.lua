@@ -257,14 +257,16 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 				new_action, new_sub_action = nil
 			end
 		elseif ammo_count < ammo_requirement then
-			if ammo_extension.total_remaining_ammo(ammo_extension) == 0 then
+			if ammo_extension.total_remaining_ammo(ammo_extension) == 0 and (not self.reload_failed_timer or self.reload_failed_timer < t) and (not action.interaction_type or action.interaction_type ~= "heal") then
 				local dialogue_input = ScriptUnit.extension_input(self.owner_unit, "dialogue_system")
 				local event_data = FrameTable.alloc_table()
 				event_data.fail_reason = "out_of_ammo"
-				event_data.item_name = self.item_name or "UNKNOWN WEAPON"
+				event_data.item_name = "ranged_weapon"
 				local event_name = "reload_failed"
 
-				dialogue_input.trigger_dialogue_event(dialogue_input, event_name, event_data)
+				dialogue_input.trigger_networked_dialogue_event(dialogue_input, event_name, event_data)
+
+				self.reload_failed_timer = t + 5
 			end
 
 			new_action, new_sub_action = nil

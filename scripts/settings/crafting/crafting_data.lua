@@ -25,6 +25,13 @@ CraftingData = {
 	weapon_skin_slot_types = {
 		"weapon_skin"
 	},
+	equipment_slot_types = {
+		"ranged",
+		"melee",
+		"ring",
+		"necklace",
+		"trinket"
+	},
 	salvage_data = {
 		materials_from_rarity = {
 			plentiful = {
@@ -77,35 +84,35 @@ CraftingData = {
 		materials_from_slot_type = {
 			ring = {
 				{
-					chance = 0.5,
+					chance = 0.2,
 					name = "crafting_material_jewellery",
 					amount = 1
 				}
 			},
 			necklace = {
 				{
-					chance = 0.5,
+					chance = 0.2,
 					name = "crafting_material_jewellery",
 					amount = 1
 				}
 			},
 			trinket = {
 				{
-					chance = 0.5,
+					chance = 0.2,
 					name = "crafting_material_jewellery",
 					amount = 1
 				}
 			},
 			ranged = {
 				{
-					chance = 0.5,
+					chance = 0.2,
 					name = "crafting_material_weapon",
 					amount = 1
 				}
 			},
 			melee = {
 				{
-					chance = 0.5,
+					chance = 0.2,
 					name = "crafting_material_weapon",
 					amount = 1
 				}

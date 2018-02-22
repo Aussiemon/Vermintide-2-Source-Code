@@ -164,14 +164,17 @@ BTPrepareForCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 	return "running"
 end
 BTPrepareForCrazyJumpAction.start_crawling = function (unit, blackboard, t, data)
+	local action = blackboard.action
+
 	blackboard.navigation_extension:set_max_speed(blackboard.breed.walk_speed)
 
 	local network_manager = Managers.state.network
 
 	network_manager.anim_event(network_manager, unit, "to_crouch")
 
+	local prepare_jump_time = action.difficulty_prepare_jump_time[Managers.state.difficulty:get_difficulty_rank()]
 	data.crouching = true
-	data.ready_crouch_time = t + 0.2
+	data.ready_crouch_time = t + (prepare_jump_time or 0.5)
 
 	return 
 end

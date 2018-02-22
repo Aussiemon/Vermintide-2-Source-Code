@@ -348,7 +348,6 @@ AiUtils.chaos_zombie_explosion = function (unit, action, blackboard, delete_unit
 	local explosion_template = ExplosionTemplates.chaos_zombie_explosion
 
 	DamageUtils.create_explosion(world, unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit)
-	Managers.state.entity:system("ai_system"):alert_enemies_within_range(blackboard.target_unit, explosion_position, explosion_template.alert_enemies_radius)
 
 	local attacker_unit_id = Managers.state.unit_storage:go_id(unit)
 	local explosion_template_id = NetworkLookup.explosion_templates.chaos_zombie_explosion

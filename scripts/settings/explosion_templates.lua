@@ -414,26 +414,24 @@ ExplosionTemplates = {
 			sound_event_name = "player_combat_weapon_staff_overcharge_explosion",
 			damage_profile = "overcharge_explosion_ability",
 			ignore_attacker_unit = true,
-			effect_name = "fx/wpnfx_staff_geiser_fire_large"
+			effect_name = "fx/chr_unchained_living_bomb_3p"
 		}
 	},
 	explosion_bw_unchained_ability_increased_radius = {
 		explosion = {
 			use_attacker_power_level = true,
-			radius = 8,
-			dot_template_name = "burning_1W_dot",
-			max_damage_radius = 3,
-			damage_type_glance = "player_overcharge_explosion_brw",
-			attacker_power_level_offset = 0.1,
+			radius = 7.5,
 			alert_enemies = true,
-			attack_template = "drakegun",
+			max_damage_radius = 4.5,
 			alert_enemies_radius = 15,
-			damage_profile_glance = "overcharge_explosion_glance_ability",
+			attacker_power_level_offset = 0.25,
 			always_hurt_players = false,
-			damage_type = "grenade",
+			attack_template = "drakegun",
+			damage_profile_glance = "overcharge_explosion_glance_ability",
+			sound_event_name = "player_combat_weapon_staff_overcharge_explosion",
 			damage_profile = "overcharge_explosion_ability",
 			ignore_attacker_unit = true,
-			effect_name = "fx/wpnfx_staff_geiser_fire_large"
+			effect_name = "fx/chr_unchained_living_bomb_3p"
 		}
 	},
 	smoke_grenade = {
@@ -524,15 +522,15 @@ ExplosionTemplates = {
 	},
 	conflag_t1 = {
 		aoe = {
+			use_attacker_power_level = true,
 			radius = 4,
 			dot_template_name = "burning_1W_dot",
-			duration = 4,
 			attack_template = "wizard_staff_geiser",
 			create_nav_tag_volume = true,
 			nav_tag_volume_layer = "fire_grenade",
 			sound_event_name = "player_combat_weapon_fire_grenade_explosion",
 			damage_interval = 1,
-			power_level = 500,
+			duration = 2,
 			area_damage_template = "explosion_template_aoe",
 			armour_modifier = {
 				attack = {
@@ -699,9 +697,9 @@ ExplosionTemplates = {
 			max_damage_radius = 200,
 			level_unit_damage = true,
 			player_push_speed = 5,
-			damage_profile_glance = "elven_ruins_finish_glance",
+			damage_profile_glance = "frag_grenade_glance",
 			alert_enemies = false,
-			damage_profile = "elven_ruins_finish",
+			damage_profile = "frag_grenade",
 			power_level = 1000,
 			effect_name = "fx/wpnfx_poison_arrow_impact_carbine"
 		}

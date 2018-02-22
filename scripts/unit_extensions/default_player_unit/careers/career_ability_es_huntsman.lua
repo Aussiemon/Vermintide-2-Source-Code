@@ -19,6 +19,7 @@ CareerAbilityESHuntsman.extensions_ready = function (self, world, unit)
 	self.career_extension = ScriptUnit.extension(unit, "career_system")
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self.inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+	self._input_extension = ScriptUnit.has_extension(unit, "input_system")
 
 	if self.first_person_extension then
 		self.first_person_unit = self.first_person_extension:get_first_person_unit()
@@ -34,9 +35,13 @@ CareerAbilityESHuntsman.update = function (self, unit, input, dt, context, t)
 		return 
 	end
 
-	local input_service = self.input_manager:get_service("Player")
+	local input_extension = self._input_extension
 
-	if input_service.get(input_service, "function_career") then
+	if not input_extension then
+		return 
+	end
+
+	if input_extension.get(input_extension, "function_career") then
 		self._run_ability(self)
 	end
 

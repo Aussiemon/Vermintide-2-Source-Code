@@ -15,7 +15,7 @@ local tip_type_prefix_list = {
 	tip = "loading_screen_tip"
 }
 local tip_type_max_range = {
-	tip = 46
+	tip = 77
 }
 local tip_type_list = {
 	"tip"
@@ -116,7 +116,7 @@ LoadingView.create_ui_elements = function (self)
 	self.game_difficulty_widget = UIWidget.init(definitions.game_difficulty_widget)
 	self.game_difficulty_bg_widget = UIWidget.init(definitions.game_difficulty_bg_widget)
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		self._press_to_continue_widget = UIWidget.init(definitions.press_to_continue_widget)
 	end
 
@@ -128,7 +128,7 @@ LoadingView.create_ui_elements = function (self)
 		UIWidget.init(definitions.dead_space_filler)
 	}
 
-	if not Development.parameter("honduras_demo") then
+	if not script_data.honduras_demo then
 		self.widgets[#self.widgets + 1] = self.tip_text_prefix_widget
 		self.widgets[#self.widgets + 1] = self.tip_text_suffix_widget
 		self.widgets[#self.widgets + 1] = self.second_row_tip_text_prefix_widget

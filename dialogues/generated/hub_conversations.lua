@@ -308,36 +308,6 @@ return function ()
 				"item_tag",
 				OP.EQ,
 				"nik_hub_long_waiting"
-			},
-			{
-				"global_context",
-				"level_time",
-				OP.EQ,
-				120
-			}
-		}
-	})
-	define_rule({
-		response = "nik_hub_long_waiting_02",
-		name = "nik_hub_long_waiting_02",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nik_hub_long_waiting"
-			},
-			{
-				"global_context",
-				"level_time",
-				OP.EQ,
-				240
 			}
 		}
 	})
@@ -446,12 +416,6 @@ return function ()
 				"item_tag",
 				OP.EQ,
 				"nfl_debrief_helmgart_military_01"
-			},
-			{
-				"global_context",
-				"completed_times_military",
-				OP.EQ,
-				1
 			}
 		}
 	})
@@ -793,7 +757,7 @@ return function ()
 			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nfl_debrief_helmgart_military_01"
+				[1.0] = "nfl_survival_ruins_intro_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -802,7 +766,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nfl_debrief_helmgart_military_01"
+				[1.0] = "nfl_survival_ruins_intro_01"
 			}
 		},
 		nik_greeting = {
@@ -998,7 +962,7 @@ return function ()
 			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nik_greeting_sunny"
+				[1.0] = "nik_hub_welcome_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -1007,7 +971,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_greeting_sunny"
+				[1.0] = "nik_hub_welcome_01"
 			}
 		},
 		nfl_debrief_fort_01 = {
@@ -1152,39 +1116,6 @@ return function ()
 			localization_strings = {
 				[1.0] = "nfl_debrief_war_camp_01"
 			}
-		},
-		nik_hub_long_waiting_02 = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"nik_hub_idle_long_waiting_01",
-				"nik_hub_idle_long_waiting_02",
-				"nik_hub_idle_long_waiting_05",
-				"nik_hub_greeting_long_waiting_19"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"nik_hub_idle_long_waiting_01",
-				"nik_hub_idle_long_waiting_02",
-				"nik_hub_idle_long_waiting_05",
-				"nik_hub_greeting_long_waiting_19"
-			},
-			randomize_indexes = {}
 		},
 		nfl_debrief_farmland_01 = {
 			sound_events_n = 1,
@@ -1361,7 +1292,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
+			category = "npc_talk_interrupt",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "nik_hub_the_plan_01"
@@ -1399,7 +1330,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "nik_greeting_night"
@@ -1418,7 +1349,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "nik_greeting_sunny"
@@ -1499,7 +1430,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "nik_greeting_rainy"
@@ -1593,7 +1524,7 @@ return function ()
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 1,
 			sound_events = {
 				[1.0] = "nik_backstory_interacting"

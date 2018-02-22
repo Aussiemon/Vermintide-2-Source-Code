@@ -561,6 +561,14 @@ end
 HeroViewStateOverview.get_selected_craft_page = function (self)
 	return self._selected_craft_page_name
 end
+HeroViewStateOverview.set_craft_optional_item_filter = function (self, item_filter)
+	self._craft_optional_item_filter = item_filter
+
+	return 
+end
+HeroViewStateOverview.get_craft_optional_item_filter = function (self)
+	return self._craft_optional_item_filter
+end
 HeroViewStateOverview.set_selected_loadout_slot_index = function (self, index)
 	self._selected_loadout_slot_index = index
 

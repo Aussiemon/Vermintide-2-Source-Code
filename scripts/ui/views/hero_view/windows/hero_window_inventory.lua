@@ -214,16 +214,20 @@ HeroWindowInventory._update_inventory_items = function (self)
 	local parent = self.parent
 	local inventory_sync_id = parent.inventory_sync_id
 	local selected_craft_page_name = parent.get_selected_craft_page(parent)
+	local optional_craft_item_filter = parent.get_craft_optional_item_filter(parent)
 
-	if inventory_sync_id ~= self._inventory_sync_id or selected_craft_page_name ~= self._selected_craft_page_name then
+	if inventory_sync_id ~= self._inventory_sync_id or selected_craft_page_name ~= self._selected_craft_page_name or self._optional_craft_item_filter ~= optional_craft_item_filter then
 		if selected_craft_page_name ~= self._selected_craft_page_name then
 			self._change_category_by_name(self, selected_craft_page_name)
+		elseif optional_craft_item_filter then
+			self.change_item_filter(self, optional_craft_item_filter, true)
 		else
 			self._change_category_by_index(self, nil, true)
 		end
 
 		self._inventory_sync_id = inventory_sync_id
 		self._selected_craft_page_name = selected_craft_page_name
+		self._optional_craft_item_filter = optional_craft_item_filter
 	end
 
 	return 
@@ -299,10 +303,22 @@ HeroWindowInventory._change_category_by_index = function (self, index, force_upd
 	self._current_category_index = index
 	local recipe_setting = crafting_recipes[index]
 	local recipe_name = recipe_setting.name
+	local item_sort_func = recipe_setting.item_sort_func
 
-	self._item_grid:change_category(recipe_name)
+	if item_sort_func then
+		self._item_grid:apply_item_sorting_function(item_sort_func)
+	end
+
+	self._item_grid:change_category(recipe_name, force_update)
 
 	return true
+end
+HeroWindowInventory.change_item_filter = function (self, item_filter, change_page)
+	change_page = change_page or change_page == nil
+
+	self._item_grid:change_item_filter(item_filter, change_page)
+
+	return 
 end
 
 return 

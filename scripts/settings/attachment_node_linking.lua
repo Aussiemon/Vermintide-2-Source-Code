@@ -561,7 +561,7 @@ AttachmentNodeLinking = {
 				unwielded = {
 					{
 						target = 0,
-						source = "j_hips"
+						source = "a_unwielded_1h_right"
 					}
 				}
 			}
@@ -597,8 +597,44 @@ AttachmentNodeLinking = {
 				unwielded = {
 					{
 						target = 0,
-						source = "j_hips"
+						source = "a_unwielded_1h_left"
 					}
+				}
+			}
+		}
+	},
+	shield = {
+		first_person = {
+			wielded = {
+				{
+					target = 0,
+					source = "j_leftweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "j_hips"
+				}
+			}
+		},
+		third_person = {
+			display = {
+				{
+					target = 0,
+					source = "j_leftweaponattach"
+				}
+			},
+			wielded = {
+				{
+					target = 0,
+					source = "j_leftweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "a_unwielded_shield"
 				}
 			}
 		}
@@ -650,7 +686,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_leftweaponattach"
+					source = "a_unwielded_staff"
 				}
 			}
 		}
@@ -762,7 +798,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_leftweaponattach"
+					source = "a_unwielded_1h_right"
 				}
 			}
 		}
@@ -1096,7 +1132,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_hips"
+					source = "a_unwielded_bow"
 				}
 			}
 		}
@@ -1352,7 +1388,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_hips"
+					source = "a_unwielded_bow"
 				}
 			}
 		}
@@ -1620,7 +1656,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_hips"
+					source = "a_unwielded_crossbow"
 				}
 			}
 		}
@@ -1720,7 +1756,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_hips"
+					source = "a_unwielded_crossbow"
 				}
 			}
 		}
@@ -1904,7 +1940,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_hips"
+					source = "a_unwielded_crossbow"
 				}
 			}
 		}
@@ -2084,7 +2120,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_hips"
+					source = "a_unwielded_ability_pistol"
 				}
 			}
 		}
@@ -2121,7 +2157,7 @@ AttachmentNodeLinking = {
 				unwielded = {
 					{
 						target = 0,
-						source = "j_hips"
+						source = "a_unwielded_pistol_right"
 					}
 				}
 			}
@@ -2157,56 +2193,8 @@ AttachmentNodeLinking = {
 				unwielded = {
 					{
 						target = 0,
-						source = "j_hips"
+						source = "a_unwielded_pistol_left"
 					}
-				}
-			}
-		}
-	},
-	repeater_pistol = {
-		first_person = {
-			wielded = {
-				{
-					target = 0,
-					source = "j_rightweaponattach"
-				},
-				{
-					target = "lock_hammer",
-					source = "j_rightweaponcomponent1"
-				},
-				{
-					target = "rotator",
-					source = "j_rightweaponcomponent2"
-				},
-				{
-					target = "trigger_t1",
-					source = "j_rightweaponcomponent3"
-				}
-			},
-			unwielded = {
-				{
-					target = 0,
-					source = "j_hips"
-				}
-			}
-		},
-		third_person = {
-			display = {
-				{
-					target = 0,
-					source = "j_rightweaponattach"
-				}
-			},
-			wielded = {
-				{
-					target = 0,
-					source = "j_rightweaponattach"
-				}
-			},
-			unwielded = {
-				{
-					target = 0,
-					source = "j_hips"
 				}
 			}
 		}
@@ -2254,7 +2242,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_hips"
+					source = "a_unwielded_rifle"
 				}
 			}
 		}
@@ -2306,7 +2294,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_hips"
+					source = "a_unwielded_rifle"
 				}
 			}
 		}
@@ -2316,7 +2304,7 @@ AttachmentNodeLinking = {
 			wielded = {
 				{
 					target = 0,
-					source = "j_rightweaponattach"
+					source = "j_leftweaponattach"
 				}
 			},
 			unwielded = {
@@ -2330,13 +2318,13 @@ AttachmentNodeLinking = {
 			display = {
 				{
 					target = 0,
-					source = "j_rightweaponattach"
+					source = "j_leftweaponattach"
 				}
 			},
 			wielded = {
 				{
 					target = 0,
-					source = "j_rightweaponattach"
+					source = "j_leftweaponattach"
 				}
 			},
 			unwielded = {
@@ -2414,7 +2402,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_hips"
+					source = "a_unwielded_drakegun"
 				}
 			}
 		}
@@ -2466,7 +2454,7 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_hips"
+					source = "a_unwielded_rifle"
 				}
 			}
 		}
@@ -2509,12 +2497,24 @@ AttachmentNodeLinking = {
 				{
 					target = 0,
 					source = "j_rightweaponattach"
+				},
+				{
+					target = "lock_hammer",
+					source = "j_rightweaponcomponent1"
+				},
+				{
+					target = "rotator",
+					source = "j_rightweaponcomponent2"
+				},
+				{
+					target = "trigger_t1",
+					source = "j_rightweaponcomponent3"
 				}
 			},
 			unwielded = {
 				{
 					target = 0,
-					source = "j_hips"
+					source = "a_unwielded_rifle"
 				}
 			}
 		}

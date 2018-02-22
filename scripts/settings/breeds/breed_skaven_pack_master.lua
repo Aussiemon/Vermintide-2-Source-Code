@@ -14,7 +14,7 @@ local breed_data = {
 	armor_category = 3,
 	wield_inventory_on_spawn = true,
 	stagger_threshold_explosion = 100,
-	stagger_threshold_light = 10,
+	stagger_threshold_light = 2,
 	walk_speed = 2.4,
 	poison_resistance = 100,
 	hit_reaction = "ai_default",
@@ -49,11 +49,11 @@ local breed_data = {
 	base_unit = "units/beings/enemies/skaven_pack_master/chr_skaven_pack_master",
 	threat_value = 8,
 	max_health = {
-		30,
-		30,
-		45,
-		60,
-		90
+		25,
+		25,
+		37.5,
+		50,
+		75
 	},
 	diff_stagger_resist = {
 		4,

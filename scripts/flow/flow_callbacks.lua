@@ -1391,6 +1391,12 @@ function flow_callback_cutscene_fx_text_popup(params)
 	return 
 end
 
+function flow_callback_start_tutorial_intro_text(params)
+	Managers.state.event:trigger("event_start_tutorial_intro_text")
+
+	return 
+end
+
 function flow_callback_start_mission(params)
 	local mission_name = params.mission_name
 
@@ -1990,6 +1996,33 @@ function flow_callback_trigger_cutscene_subtitles(params)
 	local hangtime = params.end_delay
 
 	DialogueSystem:TriggerCutsceneSubtitles(event_name, speaker, hangtime)
+
+	return 
+end
+
+function flow_callback_override_start_dialogue_system()
+	local local_player = Managers.player:local_player()
+	local player_unit = local_player.player_unit
+	local dialogue_extension = ScriptUnit.extension(player_unit, "dialogue_system")
+	dialogue_extension.local_player_has_moved = true
+
+	return 
+end
+
+function flow_callback_override_stop_dialogue_system()
+	local local_player = Managers.player:local_player()
+	local player_unit = local_player.player_unit
+	local dialogue_extension = ScriptUnit.extension(player_unit, "dialogue_system")
+	dialogue_extension.local_player_has_moved = false
+
+	return 
+end
+
+function flow_callback_override_start_delay()
+	local local_player = Managers.player:local_player()
+	local player_unit = local_player.player_unit
+	local dialogue_extension = ScriptUnit.extension(player_unit, "dialogue_system")
+	DialogueSettings.dialogue_level_start_delay = 10
 
 	return 
 end
@@ -2914,6 +2947,138 @@ function flow_callbacks_add_tutorial_equipment(params)
 	return 
 end
 
+local function enabled_inputs(player_input, inputs_table, enabled)
+	if enabled then
+		local disallowed_input = player_input.disallowed_input_table(player_input)
+
+		for action, _ in pairs(inputs_table) do
+			disallowed_input[action] = nil
+		end
+
+		player_input.set_disallowed_inputs(player_input, disallowed_input)
+		player_input.set_allowed_inputs(player_input, inputs_table)
+	else
+		local disallowed_input = player_input.disallowed_input_table(player_input)
+
+		table.merge(disallowed_input, inputs_table)
+		player_input.set_disallowed_inputs(player_input, disallowed_input)
+	end
+
+	return 
+end
+
+function flow_callbacks_tutorial_inputs_enabled(params)
+	local player_manager = Managers.player
+	local local_player = player_manager.local_player(player_manager)
+
+	fassert(local_player, "[flow_callbacks_tutorial_inputs_enabled] The local player is not available")
+
+	local local_player_unit = local_player.player_unit
+
+	fassert(Unit.alive(local_player_unit), "[flow_callbacks_tutorial_inputs_enabled] The local player unit hasn't spawned yet or has been removed")
+
+	local move_enabled = params.move
+	local jump_dodge_enabled = params.jump_dodge
+	local attack_enabled = params.attack
+	local block_enabled = params.block
+	local ability_enabled = params.career_ability
+	local switch_enabled = params.weapon_switch
+	local move_actions = {
+		move_back_pressed = true,
+		move_forward_pressed = true,
+		move_right = true,
+		move_controller = true,
+		move_right_pressed = true,
+		move_left = true,
+		move_forward = true,
+		move_back = true,
+		move_left_pressed = true
+	}
+	local jump_dodge_actions = {
+		jump_only = true,
+		dodge = true,
+		jump_1 = true,
+		dodge_hold = true,
+		jump_2 = true
+	}
+	local attack_actions = {
+		action_one_softbutton_gamepad = true,
+		action_one_mouse = true,
+		action_one_hold = true,
+		action_one_release = true,
+		action_one = true
+	}
+	local block_actions = {
+		action_two_hold = true,
+		action_two = true
+	}
+	local ability_actions = {
+		action_career_wh_3_release = true,
+		action_career_wh_2_release = true,
+		action_career_we_3 = true,
+		action_career_es_3_release = true,
+		action_career_release = true,
+		action_career = true,
+		action_career_dr_3_release = true,
+		action_career_dr_2_release = true,
+		action_career_bw_3_release = true,
+		action_career_bw_2_release = true,
+		action_career_es_3 = true,
+		action_career_es_1_release = true,
+		action_career_wh_3 = true,
+		action_career_es_2_release = true,
+		action_career_wh_2 = true,
+		action_career_bw_2 = true,
+		action_career_wh_1_release = true,
+		action_career_es_2 = true,
+		function_career_release = true,
+		action_career_bw_1_release = true,
+		action_career_wh_1 = true,
+		action_career_we_1_release = true,
+		action_career_we_2_release = true,
+		action_career_dr_3 = true,
+		action_career_we_3_release = true,
+		action_career_dr_2 = true,
+		action_career_bw_3 = true,
+		function_career = true,
+		action_career_es_1 = true,
+		action_career_we_2 = true,
+		action_career_dr_1 = true,
+		action_career_bw_1 = true,
+		action_career_dr_1_release = true,
+		action_career_we_1 = true,
+		action_career_hold = true
+	}
+	local switch_actions = {
+		wield_switch = true,
+		wield_2 = true,
+		wield_next = true,
+		wield_5 = true,
+		wield_prev = true,
+		wield_0 = true,
+		wield_8 = true,
+		wield_3 = true,
+		wield_switch_2 = true,
+		wield_6 = true,
+		wield_switch_1 = true,
+		wield_1 = true,
+		wield_9 = true,
+		wield_4 = true,
+		wield_scroll = true,
+		wield_7 = true
+	}
+	local player_input = ScriptUnit.extension(local_player_unit, "input_system")
+
+	enabled_inputs(player_input, move_actions, move_enabled)
+	enabled_inputs(player_input, jump_dodge_actions, jump_dodge_enabled)
+	enabled_inputs(player_input, attack_actions, attack_enabled)
+	enabled_inputs(player_input, block_actions, block_enabled)
+	enabled_inputs(player_input, ability_actions, ability_enabled)
+	enabled_inputs(player_input, switch_actions, switch_enabled)
+
+	return 
+end
+
 function flow_callbacks_tutorial_enable_weapon_switching(params)
 	local enable = params.enable
 	local player_manager = Managers.player
@@ -2956,6 +3121,23 @@ function flow_callbacks_tutorial_enable_weapon_switching(params)
 
 		table.merge(disallowed_input, switch_actions)
 		player_input.set_disallowed_inputs(player_input, disallowed_input)
+	end
+
+	return 
+end
+
+function flow_callbacks_tutorial_enable_career_skill(params)
+	local enable = params.enable
+	local player_manager = Managers.player
+	local local_player = player_manager.local_player(player_manager)
+	local unit = local_player.player_unit
+	local career_extension = ScriptUnit.extension(unit, "career_system")
+
+	if not enable then
+		career_extension.start_activated_ability_cooldown(career_extension, 0)
+		career_extension.set_activated_ability_cooldown_paused(career_extension)
+	else
+		career_extension.start_activated_ability_cooldown(career_extension, 1)
 	end
 
 	return 

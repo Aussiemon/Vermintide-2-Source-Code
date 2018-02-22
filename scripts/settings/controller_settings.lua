@@ -1,6 +1,6 @@
 require("scripts/utils/input_helper")
 
-local unbind_button = "unassigned_keymap"
+UNASSIGNED_KEY = "unassigned_keymap"
 PlayerControllerKeymaps = {
 	win32 = InputUtils.keymaps_key_approved("win32") and {
 		toggle_input_helper = {
@@ -363,7 +363,7 @@ PlayerControllerKeymaps = {
 		jump_2 = {},
 		jump_only = {
 			"keyboard",
-			unbind_button,
+			UNASSIGNED_KEY,
 			"pressed"
 		},
 		dodge_hold = {
@@ -373,7 +373,7 @@ PlayerControllerKeymaps = {
 		},
 		dodge = {
 			"keyboard",
-			unbind_button,
+			UNASSIGNED_KEY,
 			"pressed"
 		},
 		crouch = {

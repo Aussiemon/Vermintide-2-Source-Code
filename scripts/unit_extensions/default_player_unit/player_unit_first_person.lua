@@ -547,8 +547,10 @@ PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override)
 
 		if active then
 			self.unhide_weapons(self, "third_person_mode")
+			Unit.flow_event(self.unit, "lua_exit_third_person_camera")
 		else
 			self.hide_weapons(self, "third_person_mode", true)
+			Unit.flow_event(self.unit, "lua_enter_third_person_camera")
 		end
 
 		self.inventory_extension:show_third_person_inventory(not active)
@@ -871,13 +873,6 @@ PlayerUnitFirstPerson.update_rig_movement = function (self, look_delta)
 end
 PlayerUnitFirstPerson.change_state = function (self, state)
 	self._state = state
-
-	return 
-end
-PlayerUnitFirstPerson.play_camera_effect_sequence = function (self, event_name, t)
-	if not script_data.disable_aim_lead_rig_motion then
-		Managers.state.camera:camera_effect_sequence_event(event_name, t)
-	end
 
 	return 
 end

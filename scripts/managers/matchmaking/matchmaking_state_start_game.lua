@@ -20,17 +20,6 @@ MatchmakingStateStartGame.on_enter = function (self, state_context)
 
 	self._setup_lobby_data(self)
 	self._network_server:enter_post_game()
-
-	if self.state_context.game_server_lobby_client then
-		local game_parameters = self._game_parameters
-		local level_key_id = NetworkLookup.level_keys[game_parameters.level_key]
-		local game_mode_id = NetworkLookup.game_modes[game_parameters.game_mode]
-		local difficulty_id = NetworkLookup.difficulties[game_parameters.difficulty]
-		local private_game = game_parameters.private_game
-
-		self._handshaker_client:send_rpc_to_host("rpc_matchmaking_game_server_start_game", level_key_id, game_mode_id, difficulty_id, private_game)
-	end
-
 	self._start_game(self)
 
 	return 

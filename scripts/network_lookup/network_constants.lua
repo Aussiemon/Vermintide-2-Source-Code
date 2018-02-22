@@ -57,6 +57,11 @@ NetworkConstants.damage_source_id = Network.type_info("damage_source_id")
 assert(num_damage_sources <= NetworkConstants.damage_source_id.max, "Too many damage sources, global.network_config value damage_source_id needs to be raised.")
 assert(num_items <= num_damage_sources, "weapon_id lookup is set higher than damage_source_id lookup despite all weapons being damage sources.")
 
+local num_weapon_skins = #NetworkLookup.weapon_skins
+NetworkConstants.lookup = Network.type_info("lookup")
+
+fassert(num_weapon_skins <= NetworkConstants.lookup.max, "Too many weapon skins for network typ lookup, make a new type specific for weapon skins and change this check to use that.")
+
 local num_actions = #NetworkLookup.actions
 NetworkConstants.action = Network.type_info("action")
 

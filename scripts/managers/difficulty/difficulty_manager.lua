@@ -95,5 +95,19 @@ DifficultyManager.rpc_set_difficulty = function (self, sender, difficulty_id, ho
 
 	return 
 end
+local players_below_power_level = {}
+DifficultyManager.players_below_required_power_level = function (difficulty_key, players)
+	table.clear(players_below_power_level)
+
+	local required_power_level = DifficultySettings[difficulty_key].required_power_level
+
+	for unique_id, player in pairs(players) do
+		if player.sync_data_active(player) and player.get_data(player, "best_aquired_power_level") < required_power_level then
+			players_below_power_level[#players_below_power_level + 1] = player
+		end
+	end
+
+	return players_below_power_level
+end
 
 return 

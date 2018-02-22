@@ -173,6 +173,26 @@ local filter_macros = {
 
 		return table.contains(item_can_wield, career_name)
 	end,
+	can_wield_by_current_hero = function (item, backend_id)
+		local item_data = item.data
+		local profile_synchronizer = Managers.state.network.profile_synchronizer
+		local player = Managers.player:local_player()
+		local profile_index = player.profile_index(player)
+		local career_index = player.career_index(player)
+		local hero_data = SPProfiles[profile_index]
+		local careers = hero_data.careers
+		local item_can_wield = item_data.can_wield
+
+		for career_index, career in ipairs(careers) do
+			local career_name = career.name
+
+			if table.contains(item_can_wield, career_name) then
+				return true
+			end
+		end
+
+		return false
+	end,
 	can_wield_bright_wizard = function (item, backend_id)
 		local item_data = item.data
 		local hero_name = "bright_wizard"
@@ -225,11 +245,11 @@ local filter_macros = {
 		local item_data = item.data
 		local item_type = item_data.item_type
 
-		if item_type ~= "crafting_material" and item_type ~= "loot_chest" then
+		if item_type ~= "crafting_material" and item_type ~= "loot_chest" and item_type ~= "deed" and item_type ~= "weapon_skin" then
 			local backend_items = Managers.backend:get_interface("items")
 			local rarity = backend_items.get_item_rarity(backend_items, backend_id)
 
-			if rarity ~= "default" and rarity ~= "promo" then
+			if rarity ~= "default" then
 				local career_name = backend_items.equipped_by(backend_items, backend_id)
 
 				if not career_name then
@@ -255,8 +275,27 @@ local filter_macros = {
 		return false
 	end,
 	has_applied_skin = function (item, backend_id)
-		if item.skin then
+		local item_data = item.data
+		local slot_type = item_data.slot_type
+
+		if item.skin and slot_type ~= "weapon_skin" then
 			return true
+		end
+
+		return false
+	end,
+	can_apply_skin = function (item, backend_id)
+		local item_data = item.data
+		local slot_type = item_data.slot_type
+
+		if (slot_type == "ranged" or slot_type == "melee") and not item.skin then
+			local backend_items = Managers.backend:get_interface("items")
+
+			if not backend_items.equipped_by(backend_items, backend_id) then
+				local weapon_skin_name = item_data.key .. "_skin"
+
+				return backend_items.has_item(backend_items, weapon_skin_name)
+			end
 		end
 
 		return false

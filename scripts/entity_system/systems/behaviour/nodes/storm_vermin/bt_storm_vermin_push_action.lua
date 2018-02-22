@@ -26,11 +26,6 @@ BTStormVerminPushAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_aborted = false
 	blackboard.has_engaged = true
 	local network_manager = Managers.state.network
-	local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-	local target_unit_id = network_manager.unit_game_object_id(network_manager, blackboard.target_unit)
-
-	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id)
-
 	local navigation_extension = blackboard.navigation_extension
 
 	blackboard.navigation_extension:set_enabled(false)

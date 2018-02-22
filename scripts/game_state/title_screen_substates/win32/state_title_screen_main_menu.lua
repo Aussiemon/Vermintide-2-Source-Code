@@ -2,7 +2,7 @@ StateTitleScreenMainMenu = class(StateTitleScreenMainMenu)
 StateTitleScreenMainMenu.NAME = "StateTitleScreenMainMenu"
 local menu_functions = nil
 
-if Development.parameter("honduras_demo") then
+if script_data.honduras_demo then
 	menu_functions = {
 		function (this)
 			this._input_disabled = true
@@ -88,7 +88,7 @@ StateTitleScreenMainMenu.on_enter = function (self, params)
 	self._title_start_ui = params.ui
 	self._auto_start = params.auto_start
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		Wwise.set_state("menu_mute_ingame_sounds", "false")
 	end
 
@@ -130,7 +130,7 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 		world_manager = Managers.world
 	}
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		self._title_start_ui:animate_to_camera(DemoSettings.camera_end_position, nil, callback(self, "cb_camera_animation_complete"))
 
 		self._views = {}
@@ -178,7 +178,7 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 			menu_functions[current_menu_index](self)
 		end
 
-		if Development.parameter("honduras_demo") and self._title_start_ui:should_start() and not self._input_disabled then
+		if script_data.honduras_demo and self._title_start_ui:should_start() and not self._input_disabled then
 			local profile_name, career_index = self._title_start_ui:selected_profile()
 			self._input_disabled = true
 
@@ -190,7 +190,7 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 		if input_service.get(input_service, "back") or Managers.time:get_demo_transition() then
 			self.parent:show_menu(false)
 
-			if Development.parameter("honduras_demo") and not self._title_start_ui:in_transition() then
+			if script_data.honduras_demo and not self._title_start_ui:in_transition() then
 				self._title_start_ui:animate_to_camera(DemoSettings.starting_camera_name, nil, callback(self, "cb_camera_animation_complete_back"))
 				self._title_start_ui:activate_career_ui(false)
 			end
@@ -221,7 +221,7 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self, level_key, profile_na
 		Managers.backend:make_tutorial()
 
 		self.parent.parent.loading_context.wanted_profile_index = 4
-	elseif Development.parameter("honduras_demo") then
+	elseif script_data.honduras_demo then
 		self.parent.parent.loading_context.wanted_profile_index = (profile_name and FindProfileIndex(profile_name)) or DemoSettings.wanted_profile_index
 		GameSettingsDevelopment.disable_free_flight = DemoSettings.disable_free_flight
 		GameSettingsDevelopment.disable_intro_trailer = DemoSettings.disable_intro_trailer

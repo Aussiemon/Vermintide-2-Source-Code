@@ -2532,7 +2532,7 @@ TerrorEventBlueprints = {
 		{
 			"spawn_at_raw",
 			spawner_id = "wall_guard_01",
-			breed_name = "skaven_storm_vermin_commander"
+			breed_name = "chaos_warrior"
 		},
 		{
 			"spawn_at_raw",
@@ -2547,7 +2547,7 @@ TerrorEventBlueprints = {
 		{
 			"spawn_at_raw",
 			spawner_id = "windmill_guard",
-			breed_name = "skaven_storm_vermin_commander"
+			breed_name = "chaos_warrior"
 		}
 	},
 	farmlands_prisoner_event_01 = {
@@ -2577,7 +2577,7 @@ TerrorEventBlueprints = {
 		{
 			"event_horde",
 			spawner_id = "square_front",
-			composition_type = "event_small"
+			composition_type = "event_smaller"
 		},
 		{
 			"delay",
@@ -2585,8 +2585,17 @@ TerrorEventBlueprints = {
 		},
 		{
 			"event_horde",
+			spawner_id = "hay_barn_bridge_invis",
+			composition_type = "event_small_chaos"
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"event_horde",
 			spawner_id = "square_center",
-			composition_type = "event_small"
+			composition_type = "event_smaller"
 		},
 		{
 			"delay",
@@ -2596,13 +2605,13 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
+				return count_event_breed("chaos_marauder") < 3
 			end
 		},
 		{
 			"event_horde",
-			spawner_id = "sawmill_front",
-			composition_type = "event_small"
+			spawner_id = "sawmill_yard_invis",
+			composition_type = "event_small_chaos"
 		},
 		{
 			"delay",
@@ -2632,10 +2641,10 @@ TerrorEventBlueprints = {
 			end
 		}
 	},
-	farmlands_hay_barn_guards = {
+	farmlands_hay_barn_bridge_guards = {
 		{
 			"spawn_at_raw",
-			spawner_id = "hay_barn_guards",
+			spawner_id = "hay_barn_bridge_guards",
 			breed_name = "chaos_warrior"
 		}
 	},
@@ -2661,13 +2670,32 @@ TerrorEventBlueprints = {
 			stinger_name = "enemy_horde_stinger"
 		},
 		{
+			"spawn_at_raw",
+			spawner_id = "hay_barn_guards",
+			breed_name = "chaos_warrior"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "hay_barn_manual_spawns",
+			breed_name = "chaos_marauder"
+		},
+		{
 			"event_horde",
-			spawner_id = "hay_barn_interior",
-			composition_type = "event_small"
+			spawner_id = "hay_barn_cellar_invis",
+			composition_type = "event_small_chaos"
 		},
 		{
 			"delay",
-			duration = 3
+			duration = 10
+		},
+		{
+			"event_horde",
+			spawner_id = "hay_barn_front_invis",
+			composition_type = "event_small_chaos"
+		},
+		{
+			"delay",
+			duration = 10
 		},
 		{
 			"event_horde",
@@ -2694,7 +2722,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
+				return count_event_breed("chaos_marauder") < 5
 			end
 		},
 		{
@@ -2729,17 +2757,59 @@ TerrorEventBlueprints = {
 			end
 		},
 		{
+			"event_horde",
+			composition_type = "event_small"
+		},
+		{
 			"delay",
-			duration = 5
+			duration = 10
+		},
+		{
+			"continue_when",
+			duration = 80,
+			condition = function (t)
+				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
+			end
 		},
 		{
 			"event_horde",
-			limit_spawners = 2,
-			composition_type = "event_smaller"
+			composition_type = "event_small"
 		},
 		{
 			"delay",
-			duration = 5
+			duration = 10
+		},
+		{
+			"continue_when",
+			duration = 80,
+			condition = function (t)
+				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
+			end
+		}
+	},
+	farmlands_prisoner_event_upper_square = {
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"disable_kick"
+		},
+		{
+			"control_pacing",
+			enable = false
+		},
+		{
+			"control_specials",
+			enable = false
+		},
+		{
+			"set_master_event_running",
+			name = "farmlands_prisoner_event_upper_square"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
 		},
 		{
 			"event_horde",
@@ -2748,18 +2818,37 @@ TerrorEventBlueprints = {
 		},
 		{
 			"delay",
+			duration = 5
+		},
+		{
+			"event_horde",
+			spawner_id = "sawmill_yard_invis",
+			composition_type = "event_small_chaos"
+		},
+		{
+			"delay",
+			duration = 10
+		},
+		{
+			"event_horde",
+			spawner_id = "sawmill_yard",
+			composition_type = "event_smaller"
+		},
+		{
+			"delay",
 			duration = 10
 		},
 		{
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
+				return count_event_breed("chaos_marauder") < 3
 			end
 		},
 		{
 			"event_horde",
-			composition_type = "event_small"
+			spawner_id = "sawmill_yard_invis",
+			composition_type = "event_small_chaos"
 		},
 		{
 			"delay",
@@ -2774,11 +2863,12 @@ TerrorEventBlueprints = {
 		},
 		{
 			"event_horde",
+			spawner_id = "sawmill_creek",
 			composition_type = "event_small"
 		},
 		{
 			"delay",
-			duration = 10
+			duration = 5
 		},
 		{
 			"continue_when",
@@ -2818,7 +2908,7 @@ TerrorEventBlueprints = {
 		},
 		{
 			"event_horde",
-			spawner_id = "sawmill_back",
+			spawner_id = "sawmill_interior",
 			composition_type = "event_medium"
 		},
 		{
@@ -2827,25 +2917,8 @@ TerrorEventBlueprints = {
 		},
 		{
 			"event_horde",
-			limit_spawners = 4,
-			spawner_id = "sawmill_back",
-			composition_type = "event_small"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 2,
-			composition_type = "event_small"
+			spawner_id = "sawmill_interior_invis",
+			composition_type = "event_small_chaos"
 		},
 		{
 			"delay",
@@ -2888,7 +2961,7 @@ TerrorEventBlueprints = {
 		},
 		{
 			"event_horde",
-			spawner_id = "square_back",
+			spawner_id = "sawmill_yard",
 			composition_type = "event_small"
 		},
 		{
@@ -2950,7 +3023,7 @@ TerrorEventBlueprints = {
 		},
 		{
 			"event_horde",
-			spawner_id = "farmlands_gate_open",
+			spawner_id = "sawmill_yard",
 			composition_type = "event_medium"
 		},
 		{
@@ -4863,6 +4936,10 @@ TerrorEventBlueprints = {
 		},
 		{
 			"disable_bots_in_carry_event"
+		},
+		{
+			"control_specials",
+			enable = true
 		}
 	},
 	mines_end_event_intro_trolls = {
@@ -4925,6 +5002,13 @@ TerrorEventBlueprints = {
 		{
 			"flow_event",
 			flow_event_name = "mines_end_event_trolls_done"
+		}
+	},
+	mines_troll_boss = {
+		{
+			"spawn_at_raw",
+			spawner_id = "troll_boss",
+			breed_name = "chaos_troll"
 		}
 	},
 	mines_enable_specials = {
@@ -6788,10 +6872,13 @@ TerrorEventBlueprints = {
 	},
 	prologue_melee_pickup = {
 		{
-			"event_horde",
-			limit_spawners = 1,
+			"set_master_event_running",
+			name = "prologue_melee_pickup_roamer"
+		},
+		{
+			"spawn_at_raw",
 			spawner_id = "prologue_melee_pickup",
-			composition_type = "event_prologue_melee_pickup"
+			breed_name = "skaven_clan_rat_tutorial"
 		}
 	},
 	prologue_ranged_roamers = {
@@ -6820,7 +6907,6 @@ TerrorEventBlueprints = {
 		},
 		{
 			"continue_when",
-			duration = 80,
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat_tutorial") < 3
 			end
@@ -6860,19 +6946,20 @@ TerrorEventBlueprints = {
 	prologue_nodamage_event = {
 		{
 			"spawn_at_raw",
-			spawner_id = "nodamage_stormvermin",
-			breed_name = "skaven_storm_vermin_commander"
+			spawner_id = "nodamage_spawn",
+			breed_name = "chaos_warrior"
+		}
+	},
+	prologue_nodamage_scaffold_event = {
+		{
+			"set_master_event_running",
+			name = "prologue_nodamage_scaffold"
 		},
 		{
-			"continue_when",
-			duration = 30,
-			condition = function (t)
-				return count_event_breed("skaven_storm_vermin_commander") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "prologue_nodamage_event_done"
+			"event_horde",
+			limit_spawners = 1,
+			spawner_id = "prologue_nodamage_scaffold",
+			composition_type = "event_prologue_ranged"
 		}
 	},
 	prologue_push_event = {
@@ -6900,7 +6987,7 @@ TerrorEventBlueprints = {
 		{
 			"continue_when",
 			condition = function (t)
-				return count_event_breed("chaos_marauder") < 1
+				return count_event_breed("chaos_marauder_tutorial") < 1
 			end
 		},
 		{
@@ -6926,7 +7013,7 @@ TerrorEventBlueprints = {
 		{
 			"continue_when",
 			condition = function (t)
-				return count_event_breed("chaos_raider") < 1
+				return count_event_breed("chaos_raider_tutorial") < 1
 			end
 		},
 		{
@@ -7258,25 +7345,28 @@ TerrorEventBlueprints = {
 			end
 		},
 		{
+			"flow_event",
+			flow_event_name = "prologue_horde_event_done"
+		}
+	},
+	prologue_horde_event_2 = {
+		{
+			"set_master_event_running",
+			name = "prologue_horde_2"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
 			"event_horde",
 			limit_spawners = 8,
 			spawner_id = "prologue_horde",
 			composition_type = "event_prologue_horde"
-		},
-		{
-			"delay",
-			duration = 10
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 1 and count_event_breed("skaven_slave") < 1
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "prologue_horde_event_done"
 		}
 	},
 	prologue_patrol = {
@@ -7301,24 +7391,28 @@ TerrorEventBlueprints = {
 			stinger_name = "enemy_horde_stinger"
 		},
 		{
-			"event_horde",
-			limit_spawners = 1,
-			spawner_id = "prologue_elevator_01",
-			composition_type = "event_smaller"
+			"spawn_at_raw",
+			spawner_id = "prologue_elevator_start",
+			breed_name = "skaven_dummy_slave"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "prologue_elevator_start",
+			breed_name = "skaven_dummy_slave"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "prologue_elevator_start_2",
+			breed_name = "skaven_dummy_slave"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "prologue_elevator_start_2",
+			breed_name = "skaven_dummy_slave"
 		},
 		{
 			"delay",
-			duration = 10
-		},
-		{
-			"event_horde",
-			limit_spawners = 1,
-			spawner_id = "prologue_elevator_02",
-			composition_type = "event_smaller"
-		},
-		{
-			"delay",
-			duration = 3
+			duration = 4
 		},
 		{
 			"event_horde",
@@ -8061,7 +8155,7 @@ TerrorEventBlueprints = {
 	nurgle_end_event01 = {
 		{
 			"set_master_event_running",
-			name = "nurgle_end_event01"
+			name = "nurgle_end_event"
 		},
 		{
 			"set_freeze_condition",
@@ -8264,7 +8358,7 @@ TerrorEventBlueprints = {
 		},
 		{
 			"set_master_event_running",
-			name = "nurgle_end_escape"
+			name = "nurgle_end_event"
 		},
 		{
 			"set_freeze_condition",
@@ -8298,7 +8392,7 @@ TerrorEventBlueprints = {
 		},
 		{
 			"set_master_event_running",
-			name = "nurgle_end_escape"
+			name = "nurgle_end_event"
 		},
 		{
 			"set_freeze_condition",
@@ -8361,7 +8455,7 @@ TerrorEventBlueprints = {
 	nurgle_end_event_specials_01 = {
 		{
 			"set_master_event_running",
-			name = "nurgle_end_event_specials"
+			name = "nurgle_end_event"
 		},
 		{
 			"spawn",
@@ -8390,7 +8484,7 @@ TerrorEventBlueprints = {
 	nurgle_end_event_specials_02 = {
 		{
 			"set_master_event_running",
-			name = "nurgle_end_event_specials"
+			name = "nurgle_end_event"
 		},
 		{
 			"spawn",
@@ -8421,7 +8515,7 @@ TerrorEventBlueprints = {
 	nurgle_end_event_specials_03 = {
 		{
 			"set_master_event_running",
-			name = "nurgle_end_event_specials"
+			name = "nurgle_end_event"
 		},
 		{
 			"spawn",
@@ -8794,6 +8888,28 @@ TerrorEventBlueprints = {
 		}
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	if dlc.terror_event_blueprints_filename then
+		events = dofile(dlc.terror_event_blueprints_filename)
+
+		for blue_print_name, event in pairs(events) do
+			TerrorEventBlueprints[blue_print_name] = event
+		end
+	else
+		local events = dlc.terror_event_blueprints
+
+		for blue_print_name, event in pairs(events) do
+			TerrorEventBlueprints[blue_print_name] = event
+		end
+	end
+
+	local events = dlc.weighted_random_terror_events
+
+	for event_name, event in pairs(events) do
+		WeightedRandomTerrorEvents[event_name] = event
+	end
+end
 
 for chunk_name, chunk in pairs(WeightedRandomTerrorEvents) do
 	for i = 1, #chunk, 2 do

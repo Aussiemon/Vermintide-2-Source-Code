@@ -32,11 +32,6 @@ BTChampionAttackAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 
 	network_manager.anim_event(network_manager, unit, "to_combat")
-
-	local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-	local target_unit_id = network_manager.unit_game_object_id(network_manager, target_unit)
-
-	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id)
 	blackboard.navigation_extension:set_enabled(false)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
 

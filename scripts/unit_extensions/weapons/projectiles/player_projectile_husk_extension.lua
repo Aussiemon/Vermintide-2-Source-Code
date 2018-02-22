@@ -62,7 +62,7 @@ PlayerProjectileHuskExtension.initialize_projectile = function (self, projectile
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
 		local cleave_distribution = damage_profile.cleave_distribution or DefaultCleaveDistribution
 		local cleave_range = Cleave.max - Cleave.min
-		local cleave_power_level = self.power_level*(cleave_distribution.attack + cleave_distribution.impact)
+		local cleave_power_level = ActionUtils.scale_powerlevels(self.power_level, "cleave")
 		local attack_cleave_power_level = cleave_power_level*cleave_distribution.attack
 		local attack_percentage = DamageUtils.get_power_level_percentage(attack_cleave_power_level, true)
 		local max_mass_attack = cleave_range*attack_percentage
@@ -250,16 +250,17 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 	local trueflight_blocking = target_settings.trueflight_blocking
 	local shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit, trueflight_blocking, hit_direction)
 	local action_mass_override = action.hit_mass_count
+	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+	local hit_mass_total = (shield_blocked and ((breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank]) or breed.hit_mass_count_block)) or (breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank]) or breed.hit_mass_count or 1
 
-	if action_mass_override and action_mass_override[breed.name] then
-		local mass_cost = action.hit_mass_count[breed.name]
-		self.amount_of_mass_hit = self.amount_of_mass_hit + (mass_cost or 1)
-	else
-		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		local hit_mass_multiplier = action.hit_mass_multiplier or 1
-		self.amount_of_mass_hit = self.amount_of_mass_hit + ((shield_blocked and ((breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank]) or breed.hit_mass_count_block)) or breed.hit_mass_count or 1)*hit_mass_multiplier
+	if self.ignore_mass_and_armour then
+		hit_mass_total = 1
+	elseif action_mass_override and action_mass_override[breed.name] then
+		local mass_cost_multiplier = action_mass_override[breed.name]
+		hit_mass_total = hit_mass_total*(mass_cost_multiplier or 1)
 	end
 
+	self.amount_of_mass_hit = self.amount_of_mass_hit + hit_mass_total
 	local actual_target_index = math.ceil(self.amount_of_mass_hit)
 	local hit_effect = action.hit_effect
 	local is_husk = not owner.local_player
@@ -366,9 +367,9 @@ PlayerProjectileHuskExtension.hit_level_unit = function (self, impact_data, hit_
 	local has_health_extension = ScriptUnit.has_extension(hit_unit, "health_system")
 	local damage_profile_name = impact_data.damage_profile_prop or impact_data.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
-	local allow_ranged_damage = not Unit.get_data(hit_unit, "ignore_damage", "ranged")
+	local allow_ranged_damage = Unit.get_data(hit_unit, "allow_ranged_damage")
 
-	if damage_profile and (GameSettingsDevelopment.allow_ranged_attacks_to_damage_props or allow_ranged_damage or Unit.get_data(hit_unit, "allow_ranged_damage")) then
+	if damage_profile and (GameSettingsDevelopment.allow_ranged_attacks_to_damage_props or allow_ranged_damage) then
 		if has_health_extension and hit_units[hit_unit] == nil then
 			self.hit_damagable_prop(self, damage_profile, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, hit_units, level_index, ranged_boost_curve_multiplier)
 		elseif hit_unit and Unit.alive(hit_unit) and hit_actor then

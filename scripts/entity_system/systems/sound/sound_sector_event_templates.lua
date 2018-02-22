@@ -103,9 +103,9 @@ SoundSectorEventTemplates.distant_horde_marauder = {
 		if unit then
 			local ai_base_extension = ScriptUnit.extension(unit, "ai_system")
 			local breed = ai_base_extension.breed(ai_base_extension)
-			local is_slave = breed.behavior == "marauder"
+			local is_marauder = breed.behavior == "marauder"
 
-			if is_slave and entities[unit].has_target and not death_extension.has_death_started(death_extension) then
+			if is_marauder and entities[unit].has_target and not death_extension.has_death_started(death_extension) then
 				local contains_this_unit = horde_units_marauder[unit]
 
 				if not contains_this_unit then

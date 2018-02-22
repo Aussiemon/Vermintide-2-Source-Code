@@ -11,7 +11,7 @@ CareerAbilityBWUnchained.init = function (self, extension_init_context, unit, ex
 	self._network_manager = Managers.state.network
 	self._input_manager = Managers.input
 	self._priming_fx_id = nil
-	self._priming_fx_name = "fx/chr_ironbreaker_aoe_decal"
+	self._priming_fx_name = "fx/chr_unchained_aoe_decal"
 
 	return 
 end
@@ -20,6 +20,7 @@ CareerAbilityBWUnchained.extensions_ready = function (self, world, unit)
 	self._status_extension = ScriptUnit.extension(unit, "status_system")
 	self._career_extension = ScriptUnit.extension(unit, "career_system")
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
+	self._input_extension = ScriptUnit.has_extension(unit, "input_system")
 
 	if self._first_person_extension then
 		self._first_person_unit = self._first_person_extension:get_first_person_unit()
@@ -35,22 +36,26 @@ CareerAbilityBWUnchained.update = function (self, unit, input, dt, context, t)
 		return 
 	end
 
-	local input_service = self._input_manager:get_service("Player")
+	local input_extension = self._input_extension
+
+	if not input_extension then
+		return 
+	end
 
 	if not self._is_priming then
-		if input_service.get(input_service, "function_career") then
+		if input_extension.get(input_extension, "function_career") then
 			self._start_priming(self)
 		end
 	elseif self._is_priming then
 		self._update_priming(self, dt)
 
-		if input_service.get(input_service, "action_two") then
+		if input_extension.get(input_extension, "action_two") then
 			self._stop_priming(self)
 
 			return 
 		end
 
-		if input_service.get(input_service, "function_career_release") then
+		if input_extension.get(input_extension, "function_career_release") then
 			self._run_ability(self)
 		end
 	end
@@ -67,6 +72,12 @@ end
 CareerAbilityBWUnchained._start_priming = function (self)
 	local world = self._world
 	local effect_name = self._priming_fx_name
+	local talent_extension = ScriptUnit.extension(self._owner_unit, "talent_system")
+
+	if talent_extension.has_talent(talent_extension, "sienna_unchained_activated_ability_radius", "bright_wizard", true) then
+		effect_name = "fx/chr_unchained_aoe_decal_large"
+	end
+
 	self._priming_fx_id = World.create_particles(world, effect_name, Vector3.zero())
 	self._is_priming = true
 
@@ -146,6 +157,11 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	end
 
 	local career_power_level = career_extension.get_career_power_level(career_extension)
+
+	if talent_extension.has_talent(talent_extension, "sienna_unchained_activated_ability_damage", "bright_wizard", true) then
+		career_power_level = career_power_level*1.5
+	end
+
 	local area_damage_system = Managers.state.entity:system("area_damage_system")
 
 	area_damage_system.create_explosion(area_damage_system, owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level)

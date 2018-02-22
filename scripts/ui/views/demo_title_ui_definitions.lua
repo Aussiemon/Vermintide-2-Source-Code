@@ -153,6 +153,62 @@ local scenegraph_definition = {
 			99
 		}
 	},
+	information_text = {
+		vertical_alignment = "bottom",
+		parent = "background",
+		horizontal_alignment = "center",
+		size = {
+			600,
+			62
+		},
+		position = {
+			0,
+			50,
+			2
+		}
+	},
+	change_profile_input_icon = {
+		vertical_alignment = "bottom",
+		parent = "dead_space_filler",
+		horizontal_alignment = "left",
+		size = {
+			26,
+			26
+		},
+		position = {
+			35,
+			15,
+			30
+		}
+	},
+	change_profile_input_text = {
+		vertical_alignment = "center",
+		parent = "change_profile_input_icon",
+		horizontal_alignment = "left",
+		size = {
+			1200,
+			1
+		},
+		position = {
+			30,
+			-5,
+			1
+		}
+	},
+	user_gamertag = {
+		vertical_alignment = "bottom",
+		parent = "change_profile_input_icon",
+		horizontal_alignment = "left",
+		size = {
+			1200,
+			50
+		},
+		position = {
+			0,
+			35,
+			1
+		}
+	},
 	splash_video = {
 		parent = "background",
 		size = {
@@ -754,5 +810,5 @@ return {
 	start_game_button_widget = UIWidgets.create_default_button("start_game_button", scenegraph_definition.start_game_button.size, nil, nil, Localize("LOC_BTN_LAUNCH")),
 	back_button_widget = UIWidgets.create_default_button("back_button", scenegraph_definition.start_game_button.size, nil, nil, Localize("back_menu_button_name")),
 	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor"),
-	press_start_widget = create_simple_pulsating_text("press_any_key_to_continue", "press_start", nil, nil, press_start_style)
+	press_start_widget = create_simple_pulsating_text((PLATFORM == "win32" and "press_any_key_to_continue") or "press_any_button_to_continue", "press_start", nil, nil, press_start_style)
 }

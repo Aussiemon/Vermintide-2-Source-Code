@@ -630,7 +630,7 @@ end
 PickupSystem.hot_join_sync = function (self, sender)
 	return 
 end
-PickupSystem.debug_spawn_pickup = function (self, pickup_name, optional_pos)
+PickupSystem.debug_spawn_pickup = function (self, pickup_name, optional_pos, raycast_down)
 	local pickup_settings = AllPickups[pickup_name]
 	local player_manager = Managers.player
 	local player = player_manager.local_player(player_manager)
@@ -639,6 +639,17 @@ PickupSystem.debug_spawn_pickup = function (self, pickup_name, optional_pos)
 
 	if not position then
 		return 
+	end
+
+	if position and raycast_down then
+		local physics_world = World.physics_world(self.world)
+		local direction = Vector3.down()
+		local length = 15
+		local result, new_position, _, _ = PhysicsWorld.immediate_raycast(physics_world, position, direction, length, "closest", "collision_filter", "filter_dropped_weapon")
+
+		if result then
+			position = new_position
+		end
 	end
 
 	local rotation = Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360)))
@@ -711,10 +722,6 @@ PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, posit
 
 	local unit_name = pickup_settings.unit_name
 	local pickup_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
-
-	if Unit.get_data(pickup_unit, "is_dummy") then
-		print("IS A DUMMY")
-	end
 
 	if self.is_server then
 		self._spawned_pickups[#self._spawned_pickups + 1] = pickup_unit

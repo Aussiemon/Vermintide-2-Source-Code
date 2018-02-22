@@ -1,50 +1,8 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_mutator_summary_definitions")
 local widget_definitions = definitions.widgets
-local mutator_widget_definitions = definitions.mutator_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
-
-local function get_text_height(ui_renderer, size, ui_style, ui_content, text, ui_style_global)
-	local widget_scale = nil
-
-	if ui_style_global then
-		widget_scale = ui_style_global.scale
-	end
-
-	local font_material, font_size, font_name = nil
-
-	if ui_style.font_type then
-		local font, size_of_font = UIFontByResolution(ui_style, widget_scale)
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-		font_size = size_of_font
-	else
-		local font = ui_style.font
-		font_name = font[3]
-		font_size = font[2]
-		font_material = font[1]
-
-		if not ui_style.font_size then
-		end
-	end
-
-	if ui_style.localize then
-		text = Localize(text)
-	end
-
-	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
-	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
-	local text_start_index = ui_content.text_start_index or 1
-	local max_texts = ui_content.max_texts or #texts
-	local num_texts = math.min(#texts - text_start_index - 1, max_texts)
-	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min))*inv_scale*num_texts
-
-	return full_font_height
-end
-
 StartGameWindowMutatorSummary = class(StartGameWindowMutatorSummary)
 StartGameWindowMutatorSummary.NAME = "StartGameWindowMutatorSummary"
 StartGameWindowMutatorSummary.on_enter = function (self, params, offset)
@@ -67,7 +25,6 @@ StartGameWindowMutatorSummary.on_enter = function (self, params, offset)
 
 	self.create_ui_elements(self, params, offset)
 
-	self._active_mutator_widgets = {}
 	self.previous_selected_backend_id = self.parent:get_selected_heroic_deed_backend_id()
 
 	return 
@@ -85,17 +42,6 @@ StartGameWindowMutatorSummary.create_ui_elements = function (self, params, offse
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
-	local mutator_widgets = {}
-	local mutator_widgets_by_name = {}
-
-	for name, widget_definition in pairs(mutator_widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		mutator_widgets[#mutator_widgets + 1] = widget
-		mutator_widgets_by_name[name] = widget
-	end
-
-	self._mutator_widgets = mutator_widgets
-	self._mutator_widgets_by_name = mutator_widgets_by_name
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
@@ -109,7 +55,8 @@ StartGameWindowMutatorSummary.create_ui_elements = function (self, params, offse
 	end
 
 	widgets_by_name.confirm_button.content.button_hotspot.disable_button = true
-	widgets_by_name.game_option_1.content.visible = false
+	widgets_by_name.item_presentation_frame.content.visible = false
+	widgets_by_name.item_presentation_bg.content.visible = false
 	widgets_by_name.game_option_placeholder.content.visible = true
 
 	return 
@@ -206,103 +153,13 @@ StartGameWindowMutatorSummary._present_item_by_backend_id = function (self, back
 	end
 
 	local widgets_by_name = self._widgets_by_name
-	local widget = widgets_by_name.game_option_1
-	widget.content.visible = true
+	widgets_by_name.item_presentation_frame.content.visible = true
+	widgets_by_name.item_presentation_bg.content.visible = true
 	widgets_by_name.game_option_placeholder.content.visible = false
 	local item_interface = Managers.backend:get_interface("items")
 	local item = item_interface.get_item_from_id(item_interface, backend_id)
-	local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
-	local display_name = item_data.display_name
-	widget.content.deed_title = Localize(display_name)
-	local level_key = item.level_key
-	local level_settings = LevelSettings[level_key]
-	local level_display_name = level_settings.display_name
-	widget.content.option_text_1 = Localize(level_display_name)
-	local difficulty_key = item.difficulty
-	local difficulty_settings = DifficultySettings[difficulty_key]
-	local difficulty_display_name = difficulty_settings.display_name
-	widget.content.option_text_2 = Localize(difficulty_display_name)
-	local mutators = item_data.mutators
-
-	self._add_mutator_entries(self, mutators)
-
-	local rewards = item_data.rewards
-
-	self._add_mutator_rewards(self, rewards)
-
+	widgets_by_name.item_presentation.content.item = item
 	widgets_by_name.confirm_button.content.button_hotspot.disable_button = false
-
-	return 
-end
-StartGameWindowMutatorSummary._add_mutator_rewards = function (self, rewards)
-	local widgets_by_name = self._widgets_by_name
-	local num_rewards = #rewards
-	local spacing = 20
-	local start_offset = -(num_rewards - 1)*(spacing*0.5 + 40)
-
-	for i = 1, 2, 1 do
-		local widget_name = "reward_item_" .. i
-		local widget = widgets_by_name[widget_name]
-		local content = widget.content
-		local item_key = rewards[i]
-		content.visible = item_key ~= nil
-
-		if item_key then
-			local hotspot_content = content.button_hotspot
-			local style = widget.style
-			local item_data = ItemMasterList[item_key]
-			local inventory_icon = item_data.inventory_icon
-			local rarity = item_data.rarity
-			local slot_type = item_data.slot_type
-			local item = {
-				data = item_data
-			}
-			content.item_icon = inventory_icon
-			content.item_frame = "item_frame"
-			content.rarity_texture = UISettings.item_rarity_textures[rarity]
-			content.item = item
-			widget.offset[1] = start_offset
-			start_offset = start_offset + 80 + spacing
-		end
-	end
-
-	return 
-end
-StartGameWindowMutatorSummary._add_mutator_entries = function (self, entries)
-	local active_mutator_widgets = self._active_mutator_widgets
-
-	table.clear(active_mutator_widgets)
-
-	local ui_renderer = self.ui_renderer
-	local ui_scenegraph = self.ui_scenegraph
-	local mutator_widgets = self._mutator_widgets
-	local entry_spacing = 10
-	local total_length = 0
-
-	for index, name in ipairs(entries) do
-		local widget = mutator_widgets[index]
-		local scenegraph_id = widget.scenegraph_id
-		local content = widget.content
-		local offset = widget.offset
-		local style = widget.style
-		local text_style = style.text
-		local text_size = ui_scenegraph[scenegraph_id].size
-		text_size[2] = 0
-		local mutator_template = MutatorTemplates[name]
-		local display_name = mutator_template.display_name
-		local description = mutator_template.description
-		local icon = mutator_template.icon
-		local title_text = (display_name and Localize(display_name)) or "n/a"
-		local description_text = (description and Localize(description)) or "n/a"
-		local text = title_text
-		content.text = text
-		content.icon = icon or "icons_placeholder"
-		local text_height = get_text_height(ui_renderer, text_size, text_style, content, text)
-		text_size[2] = math.max(text_height, 30)
-		offset[2] = -total_length
-		total_length = total_length + text_size[2] + entry_spacing
-		active_mutator_widgets[index] = widget
-	end
 
 	return 
 end
@@ -321,18 +178,6 @@ StartGameWindowMutatorSummary.draw = function (self, dt)
 
 	for _, widget in ipairs(self._widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)
-	end
-
-	for _, widget in ipairs(self._active_mutator_widgets) do
-		UIRenderer.draw_widget(ui_renderer, widget)
-	end
-
-	local active_node_widgets = self._active_node_widgets
-
-	if active_node_widgets then
-		for _, widget in ipairs(active_node_widgets) do
-			UIRenderer.draw_widget(ui_renderer, widget)
-		end
 	end
 
 	UIRenderer.end_pass(ui_renderer)

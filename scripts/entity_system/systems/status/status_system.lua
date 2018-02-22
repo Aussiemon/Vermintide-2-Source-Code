@@ -64,7 +64,9 @@ StatusSystem.rpc_status_change_bool = function (self, sender, status_id, status_
 	local level = LevelHelper:current_level(self.world)
 
 	if status == "pushed" then
-		status_ext.set_pushed(status_ext, status_bool)
+		local t = Managers.time:time("game")
+
+		status_ext.set_pushed(status_ext, status_bool, t)
 	elseif status == "pounced_down" then
 		status_ext.set_pounced_down(status_ext, status_bool, other_unit)
 	elseif status == "dead" then

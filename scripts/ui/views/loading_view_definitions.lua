@@ -32,7 +32,7 @@ local scenegraph_definition = {
 	},
 	press_to_continue = {
 		vertical_alignment = "bottom",
-		parent = "root",
+		parent = "dead_space_filler",
 		horizontal_alignment = "right",
 		position = {
 			-100,
@@ -343,7 +343,7 @@ local press_to_continue_widget = {
 		}
 	},
 	content = {
-		text = "press_any_key_to_continue",
+		text = (PLATFORM == "win32" and "press_any_key_to_continue") or "press_any_button_to_continue",
 		color = Colors.get_color_table_with_alpha("white", 255)
 	}
 }
@@ -361,7 +361,7 @@ if not text_style then
 		offset = {
 			-200,
 			0,
-			2
+			20
 		}
 	}
 end

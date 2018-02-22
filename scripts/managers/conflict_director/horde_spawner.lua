@@ -63,7 +63,7 @@ local function copy_array(a, b)
 	return 
 end
 
-HordeSpawner.horde = function (self, horde_type, extra_data)
+HordeSpawner.horde = function (self, horde_type, extra_data, no_fallback)
 	Profiler.start("horde_spawner")
 
 	if not horde_type then
@@ -88,16 +88,18 @@ HordeSpawner.horde = function (self, horde_type, extra_data)
 		if horde_type == "vector" and math.random() <= CurrentHordeSettings.chance_of_vector_blob then
 			horde_type = "vector_blob"
 		end
+	elseif horde_type == "multi_followup" then
+		horde_type = self.last_paced_horde_type
 	end
 
 	print("horde requested: ", horde_type)
 
 	if horde_type == "vector" then
-		self.execute_vector_horde(self, extra_data)
+		self.execute_vector_horde(self, extra_data, no_fallback)
 	elseif horde_type == "vector_blob" then
-		self.execute_vector_blob_horde(self, extra_data)
+		self.execute_vector_blob_horde(self, extra_data, no_fallback)
 	else
-		self.execute_ambush_horde(self, extra_data)
+		self.execute_ambush_horde(self, extra_data, no_fallback)
 	end
 
 	Profiler.stop("horde_spawner")
@@ -107,7 +109,7 @@ end
 HordeSpawner.execute_fallback = function (self, horde_type, fallback, reason, extra_data)
 	if fallback then
 		if script_data.debug_player_intensity then
-			self.conflict_director.pacing:annotate_graph("Failed horde", "red")
+			self.conflict_director.pacing:annotate_graph("Failed horde fb", "red")
 		end
 
 		print("Failed to start horde, all fallbacks failed at this place")
@@ -823,9 +825,9 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 	local hordes = self.hordes
 	local id = #hordes + 1
 	hordes[id] = horde
-	local is_running_multiple_horde, is_first_multiple_horde = conflict_director.is_running_multiple_horde(conflict_director)
+	local horde_wave = extra_data and extra_data.horde_wave
 
-	if not is_running_multiple_horde or is_first_multiple_horde then
+	if horde_wave == "multi_first_wave" or horde_wave == "single" then
 		local stinger_name = sound_settings.stinger_sound_event or "enemy_horde_stinger"
 
 		self.play_sound(self, stinger_name, horde.epicenter_pos:unbox())
@@ -924,7 +926,7 @@ HordeSpawner.execute_vector_blob_horde = function (self, extra_data, fallback)
 				offset = Vector3(math.random()*4 - 2, math.random()*4 - 2, 0)
 			end
 
-			spawn_pos = LocomotionUtils.pos_on_mesh(nav_world, blob_pos + offset)
+			spawn_pos = LocomotionUtils.pos_on_mesh(nav_world, blob_pos + offset*2)
 
 			if spawn_pos then
 				local breed = Breeds[spawn_list[i]]
@@ -944,12 +946,18 @@ HordeSpawner.execute_vector_blob_horde = function (self, extra_data, fallback)
 
 	print("managed to spawn " .. tostring(group_size) .. "/" .. tostring(num_to_spawn) .. " horde enemies")
 
-	local is_running_multiple_horde, is_first_multiple_horde = conflict_director.is_running_multiple_horde(conflict_director)
+	local conflict_director = self.conflict_director
 
-	if not is_running_multiple_horde or is_first_multiple_horde then
+	if script_data.debug_player_intensity then
+		conflict_director.pacing:annotate_graph("(B)Horde:" .. group_size .. "/" .. num_to_spawn, "lime")
+	end
+
+	local horde_wave = extra_data and extra_data.horde_wave
+
+	if horde_wave == "multi_first_wave" or horde_wave == "single" then
 		local stinger_name = sound_settings.stinger_sound_event or "enemy_horde_stinger"
 
-		self.play_sound(self, stinger_name, blob_pos)
+		self.play_sound(self, stinger_name, horde.epicenter_pos:unbox())
 	end
 
 	local hordes = self.hordes

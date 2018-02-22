@@ -13,11 +13,29 @@ KeepDecorationSystem.init = function (self, entity_system_creation_context, syst
 	self._used_backend_keys = {}
 	self._update_index = 0
 
+	self._get_owned_paintings(self)
+
+	return 
+end
+KeepDecorationSystem._get_owned_paintings = function (self)
+	local item_interface = Managers.backend:get_interface("items")
+	local painting_items = item_interface.get_filtered_items(item_interface, "item_type == keep_decoration_painting")
+	local owned_paintings = {}
+
+	for _, item in pairs(painting_items) do
+		local item_data = item.data
+		local name = item_data.material_name
+		owned_paintings[name] = true
+	end
+
+	self._owned_paintings = owned_paintings
+
 	return 
 end
 KeepDecorationSystem.destroy = function (self)
 	self._extensions = nil
 	self._unit_extensions = nil
+	self._owned_paintings = nil
 
 	return 
 end
@@ -38,7 +56,9 @@ KeepDecorationSystem.on_add_extension = function (self, world, unit, extension_n
 
 	local extension = KeepDecorationSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data, ...)
 
-	extension.setup(extension, settings)
+	if extension_name == "KeepDecorationPaintingExtension" then
+		extension.setup(extension, settings, self._owned_paintings)
+	end
 
 	self._extensions[#self._extensions + 1] = extension
 	self._unit_extensions[unit] = extension

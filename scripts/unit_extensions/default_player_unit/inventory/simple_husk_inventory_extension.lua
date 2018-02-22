@@ -57,7 +57,7 @@ end
 SimpleHuskInventoryExtension.equipment = function (self)
 	return self._equipment
 end
-SimpleHuskInventoryExtension.add_equipment = function (self, slot_name, item_name)
+SimpleHuskInventoryExtension.add_equipment = function (self, slot_name, item_name, skin_name)
 	local item_data = ItemMasterList[item_name]
 	local slot_buffs = self._slot_buffs[slot_name]
 
@@ -67,7 +67,8 @@ SimpleHuskInventoryExtension.add_equipment = function (self, slot_name, item_nam
 
 	self._equipment.slots[slot_name] = {
 		item_data = item_data,
-		id = slot_name
+		id = slot_name,
+		skin = skin_name
 	}
 
 	return 
@@ -185,23 +186,31 @@ SimpleHuskInventoryExtension._spawn_attached_units = function (self, attached_un
 
 	return 
 end
-SimpleHuskInventoryExtension.add_buffs_to_slot = function (self, slot_name, buff_name_1, value_1, buff_name_2, value_2, buff_name_3, value_3, buff_name_4, value_4)
+SimpleHuskInventoryExtension.add_buffs_to_slot = function (self, slot_name, buff_name_1, buff_data_type_1, value_1, buff_name_2, buff_data_type_2, value_2, buff_name_3, buff_data_type_3, value_3, buff_name_4, buff_data_type_4, value_4)
 	local slot_buffs = self._slot_buffs[slot_name]
 
 	if buff_name_1 ~= "n/a" then
-		slot_buffs[buff_name_1] = value_1
+		slot_buffs[buff_name_1] = {
+			[buff_data_type_1] = value_1
+		}
 	end
 
 	if buff_name_2 ~= "n/a" then
-		slot_buffs[buff_name_2] = value_2
+		slot_buffs[buff_name_2] = {
+			[buff_data_type_2] = value_2
+		}
 	end
 
 	if buff_name_3 ~= "n/a" then
-		slot_buffs[buff_name_3] = value_3
+		slot_buffs[buff_name_3] = {
+			[buff_data_type_3] = value_3
+		}
 	end
 
 	if buff_name_4 ~= "n/a" then
-		slot_buffs[buff_name_4] = value_4
+		slot_buffs[buff_name_4] = {
+			[buff_data_type_4] = value_4
+		}
 	end
 
 	return 
@@ -221,10 +230,13 @@ SimpleHuskInventoryExtension._apply_buffs = function (self, buffs)
 
 	local index = 1
 
-	for buff_name, value in pairs(buffs) do
+	for buff_name, variable_data in pairs(buffs) do
 		table.clear(params)
 
-		params.variable_value = value
+		for data_type, data_value in pairs(variable_data) do
+			params[data_type] = data_value
+		end
+
 		current_item_buffs[index] = buff_extension.add_buff(buff_extension, buff_name, params)
 		index = index + 1
 	end
@@ -369,7 +381,7 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 	GearUtils.destroy_equipment(world, equipment)
 
 	local item_template = BackendUtils.get_item_template(item_data)
-	local item_units = BackendUtils.get_item_units(item_data)
+	local item_units = BackendUtils.get_item_units(item_data, nil, slot.skin)
 	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p = nil
 
 	if item_units.right_hand_unit then

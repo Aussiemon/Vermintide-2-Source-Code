@@ -41,7 +41,7 @@ StateSplashScreen.on_enter = function (self)
 		VisualAssertLog.setup(nil)
 	end
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		table.insert(StateSplashScreen.packages_to_load, 1, DemoSettings.level_resource_package)
 		table.insert(StateSplashScreen.packages_to_load, 1, DemoSettings.inventory_resource_package)
 		table.insert(StateSplashScreen.packages_to_load, 1, "resource_packages/ingame_sounds_one")

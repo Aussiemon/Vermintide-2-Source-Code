@@ -23,6 +23,9 @@ assert(DialogueLookup[DialogueLookup_n + 22] == nil)
 assert(DialogueLookup[DialogueLookup_n + 23] == nil)
 assert(DialogueLookup[DialogueLookup_n + 24] == nil)
 assert(DialogueLookup[DialogueLookup_n + 25] == nil)
+assert(DialogueLookup[DialogueLookup_n + 26] == nil)
+assert(DialogueLookup[DialogueLookup_n + 27] == nil)
+assert(DialogueLookup[DialogueLookup_n + 28] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pbw_level_helmgart_military_empty_town"
 DialogueLookup[DialogueLookup_n + 2] = "pbw_level_helmgart_military_fort_help"
@@ -49,6 +52,9 @@ DialogueLookup[DialogueLookup_n + 22] = "pbw_level_helmgart_military_spooky_temp
 DialogueLookup[DialogueLookup_n + 23] = "pbw_level_helmgart_military_door_opens"
 DialogueLookup[DialogueLookup_n + 24] = "pbw_level_helmgart_military_time_to_leave"
 DialogueLookup[DialogueLookup_n + 25] = "pbw_level_helmgart_military_spotting_portal"
-DialogueLookup_n = DialogueLookup_n + 25
+DialogueLookup[DialogueLookup_n + 26] = "pbw_helmgart_military_a"
+DialogueLookup[DialogueLookup_n + 27] = "pbw_helmgart_military_b"
+DialogueLookup[DialogueLookup_n + 28] = "pbw_helmgart_military_c"
+DialogueLookup_n = DialogueLookup_n + 28
 
 return 

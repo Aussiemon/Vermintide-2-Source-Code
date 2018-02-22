@@ -17,6 +17,7 @@ TelemetryEvents.header = function (self, engine_revision, content_revision)
 	params.version = TelemetrySettings.version
 	params.created_at = timestamp()
 	params.platform = PLATFORM
+	params.build = BUILD
 	params.engine_revision = engine_revision
 	params.content_revision = content_revision
 
@@ -24,12 +25,14 @@ TelemetryEvents.header = function (self, engine_revision, content_revision)
 
 	return 
 end
-TelemetryEvents.game_started = function (self, peer_type, level_key, difficulty)
+TelemetryEvents.game_started = function (self, player_id, peer_type, level_key, difficulty, eye_tracking)
 	table.clear(params)
 
+	params.player_id = player_id
 	params.peer_type = peer_type
 	params.level_key = level_key
 	params.difficulty = difficulty
+	params.eye_tracking = eye_tracking
 
 	self.manager:register_event("game_started", params)
 
@@ -41,27 +44,10 @@ TelemetryEvents.round_started = function (self)
 
 	return 
 end
-TelemetryEvents.game_ended = function (self, player, peer_type, level_key, difficulty, reason, eye_tracking)
+TelemetryEvents.game_ended = function (self, end_reason)
 	table.clear(params)
 
-	if peer_type ~= "dedicated-server" then
-		params.player_id = player.telemetry_id(player)
-		params.hero = player.profile_display_name(player)
-		params.career = player.career_name(player)
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
-			params.power_level = ScriptUnit.extension(player.player_unit, "career_system"):get_career_power_level()
-			params.talents = ScriptUnit.extension(player.player_unit, "talent_system"):get_talent_names()
-			params.equipment = ScriptUnit.extension(player.player_unit, "inventory_system"):get_equipped_item_names()
-		end
-	end
-
-	params.eye_tracking = eye_tracking
-	params.peer_type = peer_type
-	params.level_key = level_key
-	params.difficulty = difficulty
-	params.end_reason = reason
+	params.end_reason = end_reason
 
 	self.manager:register_event("game_ended", params)
 
@@ -183,17 +169,6 @@ TelemetryEvents.matchmaking_player_joined = function (self, player, time_taken_s
 	params.is_friend = is_friend
 
 	self.manager:register_event("matchmaking_player_joined", params)
-
-	return 
-end
-TelemetryEvents.next_level_vote = function (self, player, vote)
-	table.clear(params)
-
-	params.player_id = player.telemetry_id(player)
-	params.hero = player.profile_display_name(player)
-	params.vote = vote
-
-	self.manager:register_event("next_level_vote", params)
 
 	return 
 end
@@ -360,12 +335,14 @@ TelemetryEvents.player_revived = function (self, reviver, revivee, position)
 
 	return 
 end
-TelemetryEvents.player_spawned = function (self, player, peer_type)
+TelemetryEvents.player_spawned = function (self, player)
 	table.clear(params)
 
 	params.player_id = player.telemetry_id(player)
 	params.hero = player.profile_display_name(player)
-	params.peer_type = peer_type
+	params.career = player.career_name(player)
+	params.power_level = ScriptUnit.extension(player.player_unit, "career_system"):get_career_power_level()
+	params.talents = ScriptUnit.extension(player.player_unit, "talent_system"):get_talent_names()
 
 	self.manager:register_event("player_spawned", params)
 

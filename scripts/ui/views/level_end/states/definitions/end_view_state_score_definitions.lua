@@ -159,90 +159,6 @@ local scenegraph_definition = {
 			-15,
 			10
 		}
-	},
-	tobii_window = {
-		vertical_alignment = "top",
-		parent = "screen",
-		horizontal_alignment = "center",
-		size = {
-			600,
-			200
-		},
-		position = {
-			0,
-			-30,
-			1
-		}
-	},
-	tobii_button = {
-		vertical_alignment = "bottom",
-		parent = "tobii_window",
-		horizontal_alignment = "center",
-		size = {
-			300,
-			70
-		},
-		position = {
-			0,
-			-33,
-			30
-		}
-	},
-	tobii_description = {
-		vertical_alignment = "bottom",
-		parent = "tobii_window",
-		horizontal_alignment = "center",
-		size = {
-			500,
-			50
-		},
-		position = {
-			0,
-			60,
-			10
-		}
-	},
-	tobii_title = {
-		vertical_alignment = "center",
-		parent = "tobii_window",
-		horizontal_alignment = "center",
-		size = {
-			580,
-			50
-		},
-		position = {
-			0,
-			60,
-			10
-		}
-	},
-	tobii_title_divider = {
-		vertical_alignment = "center",
-		parent = "tobii_title",
-		horizontal_alignment = "center",
-		size = {
-			264,
-			32
-		},
-		position = {
-			0,
-			-30,
-			-3
-		}
-	},
-	tobii_title_effect = {
-		vertical_alignment = "bottom",
-		parent = "tobii_title_divider",
-		horizontal_alignment = "center",
-		size = {
-			310,
-			120
-		},
-		position = {
-			0,
-			7,
-			-1
-		}
 	}
 }
 local summary_title_style = {
@@ -297,6 +213,107 @@ local widgets = {
 	title_bg = UIWidgets.create_simple_texture("tab_menu_bg_03", "title_bg"),
 	scores_topics = UIWidgets.create_score_topics("scores_topics", scenegraph_definition.scores_topics.size, topics_hover_length, MAX_SCORE_PANEL_ROWS)
 }
+
+if Development.parameter("tobii_button") then
+	scenegraph_definition.tobii_window = {
+		vertical_alignment = "top",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			600,
+			200
+		},
+		position = {
+			0,
+			-30,
+			1
+		}
+	}
+	scenegraph_definition.tobii_button = {
+		vertical_alignment = "bottom",
+		parent = "tobii_window",
+		horizontal_alignment = "center",
+		size = {
+			300,
+			70
+		},
+		position = {
+			0,
+			-33,
+			30
+		}
+	}
+	scenegraph_definition.tobii_description = {
+		vertical_alignment = "bottom",
+		parent = "tobii_window",
+		horizontal_alignment = "center",
+		size = {
+			500,
+			50
+		},
+		position = {
+			0,
+			60,
+			10
+		}
+	}
+	scenegraph_definition.tobii_title = {
+		vertical_alignment = "center",
+		parent = "tobii_window",
+		horizontal_alignment = "center",
+		size = {
+			580,
+			50
+		},
+		position = {
+			0,
+			60,
+			10
+		}
+	}
+	scenegraph_definition.tobii_title_divider = {
+		vertical_alignment = "center",
+		parent = "tobii_title",
+		horizontal_alignment = "center",
+		size = {
+			264,
+			32
+		},
+		position = {
+			0,
+			-30,
+			-3
+		}
+	}
+	scenegraph_definition.tobii_title_effect = {
+		vertical_alignment = "bottom",
+		parent = "tobii_title_divider",
+		horizontal_alignment = "center",
+		size = {
+			310,
+			120
+		},
+		position = {
+			0,
+			7,
+			-1
+		}
+	}
+	scenegraph_definition.scores_topics.position[2] = -50
+	scenegraph_definition.player_panel_1.position[2] = -50
+	scenegraph_definition.player_panel_2.position[2] = -50
+	scenegraph_definition.player_panel_3.position[2] = -50
+	scenegraph_definition.player_panel_4.position[2] = -50
+	widgets.tobii_description = UIWidgets.create_simple_text("did you beat the beta challenge leader with your time?", "tobii_description", nil, nil, tobii_description_style)
+	widgets.tobii_title = UIWidgets.create_simple_text("check out your score and if you won!", "tobii_title", nil, nil, tobii_title_style)
+	widgets.tobii_title_effect = UIWidgets.create_simple_texture("play_button_frame_glow", "tobii_title_effect")
+	widgets.tobii_title_divider = UIWidgets.create_simple_texture("divider_01_top", "tobii_title_divider")
+	widgets.tobii_button = UIWidgets.create_default_button("tobii_button", scenegraph_definition.tobii_button.size, nil, nil, "Read More", 24)
+	widgets.tobii_window_frame = UIWidgets.create_frame("tobii_window", scenegraph_definition.tobii_window.size, "menu_frame_12", 10)
+	widgets.tobii_window = UIWidgets.create_background("tobii_window", scenegraph_definition.tobii_window.size, "map_bg_image_02")
+	widgets.tobii_window_background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "tobii_window", nil, nil, nil, 1)
+end
+
 local score_widgets = {
 	player_score_1 = UIWidgets.create_score_entry("player_panel_1", scenegraph_definition.player_panel_1.size, MAX_SCORE_PANEL_ROWS, "left"),
 	player_score_2 = UIWidgets.create_score_entry("player_panel_2", scenegraph_definition.player_panel_2.size, MAX_SCORE_PANEL_ROWS),

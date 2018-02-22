@@ -35,6 +35,23 @@ PlayFabMirror.sign_in_reward_request_cb = function (self, result)
 		table.dump(result, nil, 6)
 		fassert(false, "sign_in_reward_request_cb: it failed!")
 	else
+		local function_result = result.FunctionResult
+		local rewards = function_result.rewards
+
+		for reward_id, reward_data in pairs(rewards) do
+			local grants = reward_data.ItemGrantResults
+
+			for _, grant in ipairs(grants) do
+				local grant_result = grant.Result
+
+				if grant_result == true then
+					local item_id = grant.ItemInstanceId
+
+					ItemHelper.mark_sign_in_reward_as_new(reward_id, item_id)
+				end
+			end
+		end
+
 		self._request_all_users_characters(self)
 		self._request_user_inventory(self)
 	end
@@ -152,7 +169,7 @@ PlayFabMirror.inventory_request_cb = function (self, result)
 			if not item.BundleContents then
 				local backend_id = item.ItemInstanceId
 
-				self._add_data(self, item, backend_id)
+				self._update_data(self, item, backend_id)
 
 				self._inventory_items[backend_id] = item
 			end
@@ -161,7 +178,7 @@ PlayFabMirror.inventory_request_cb = function (self, result)
 
 	return 
 end
-PlayFabMirror._add_data = function (self, item, backend_id)
+PlayFabMirror._update_data = function (self, item, backend_id)
 	local custom_data = item.CustomData
 
 	if custom_data then
@@ -187,6 +204,12 @@ PlayFabMirror._add_data = function (self, item, backend_id)
 
 		if rarity then
 			item.rarity = rarity
+		end
+
+		local skin = custom_data.skin
+
+		if skin then
+			item.skin = skin
 		end
 
 		local level_key = custom_data.level_key
@@ -316,9 +339,11 @@ end
 PlayFabMirror.add_item = function (self, backend_id, item)
 	local inventory_items = self._inventory_items
 
-	self._add_data(self, item, backend_id)
+	self._update_data(self, item, backend_id)
 
 	inventory_items[backend_id] = item
+
+	ItemHelper.mark_backend_id_as_new(backend_id)
 
 	return 
 end
@@ -328,13 +353,25 @@ PlayFabMirror.remove_item = function (self, backend_id)
 
 	return 
 end
-PlayFabMirror.update_item = function (self, backend_id, field, value)
+PlayFabMirror.update_item_field = function (self, backend_id, field, value)
 	local inventory_items = self._inventory_items
 	local item = inventory_items[backend_id]
 
 	fassert(item[field], "Trying to update a field on an item in playfab_mirror.lua that does not exist on the item")
 
 	item[field] = value
+
+	return 
+end
+PlayFabMirror.update_item = function (self, backend_id, new_item)
+	local inventory_items = self._inventory_items
+
+	fassert(inventory_items[backend_id], "Trying to update an item that does not exist with backend ID %s", backend_id)
+
+	inventory_items[backend_id] = new_item
+	local item = inventory_items[backend_id]
+
+	self._update_data(self, item, backend_id)
 
 	return 
 end

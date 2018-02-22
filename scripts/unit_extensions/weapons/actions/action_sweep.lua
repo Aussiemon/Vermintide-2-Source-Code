@@ -5,6 +5,7 @@ local function calculate_attack_direction(action, weapon_rotation)
 	return (action.invert_attack_direction and -attack_direction) or attack_direction
 end
 
+local unit_get_data = Unit.get_data
 ActionSweep = class(ActionSweep)
 ActionSweep.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.world = world
@@ -148,7 +149,7 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 			local result = results[i]
 			local actor = result[4]
 			local hit_unit = Actor.unit(actor)
-			local breed = Unit.get_data(hit_unit, "breed")
+			local breed = unit_get_data(hit_unit, "breed")
 
 			if breed and not breed.allied then
 				local node = Actor.node(actor)
@@ -308,7 +309,7 @@ ActionSweep._calculate_hit_mass_level_object = function (self, unit, target_heal
 	if target_health_extension.is_alive(target_health_extension) then
 		can_damage = self.amount_of_mass_hit <= self.max_targets_attack
 		can_stagger = self.amount_of_mass_hit <= self.max_targets_impact
-		local hit_mass_total = Unit.get_data(unit, "hit_mass")
+		local hit_mass_total = unit_get_data(unit, "hit_mass")
 		local action_mass_override = current_action.hit_mass_count
 
 		if self.ignore_mass_and_armour then
@@ -472,7 +473,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 			assert(hit_unit, "hit_unit is nil.")
 
 			hit_unit, hit_actor = DamageUtils.redirect_shield_hit(hit_unit, hit_actor)
-			local breed = Unit.get_data(hit_unit, "breed")
+			local breed = unit_get_data(hit_unit, "breed")
 			local is_dodging = false
 			local is_server = self.is_server
 			local in_view = first_person_extension.is_within_default_view(first_person_extension, hit_position)
@@ -672,11 +673,11 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 					end
 				elseif hit_units[hit_unit] == nil and ScriptUnit.has_extension(hit_unit, "health_system") then
 					local level_index, is_level_unit = Managers.state.network:game_object_or_level_id(hit_unit)
-					local is_dummy_unit = Unit.get_data(hit_unit, "is_dummy")
+					local is_dummy_unit = unit_get_data(hit_unit, "is_dummy")
 
 					if is_dummy_unit then
 						local target_health_extension = ScriptUnit.extension(hit_unit, "health_system")
-						local hit_unit_armor = Unit.get_data(hit_unit, "armor") or 1
+						local hit_unit_armor = unit_get_data(hit_unit, "armor") or 1
 
 						self._calculate_hit_mass_level_object(self, hit_unit, target_health_extension, 1, current_action)
 						self.hit_level_object(self, hit_units, hit_unit, owner_unit, current_action, attack_direction, level_index, true, hit_actor)
@@ -721,7 +722,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 						weapon_system.send_rpc_attack_hit(weapon_system, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike)
 
-						local abort_attack = not Unit.get_data(hit_unit, "weapon_hit_through")
+						local abort_attack = not unit_get_data(hit_unit, "weapon_hit_through")
 
 						self._play_hit_animations(self, owner_unit, current_action, abort_attack)
 
@@ -992,10 +993,9 @@ end
 ActionSweep.hit_level_object = function (self, hit_units, hit_unit, owner_unit, current_action, attack_direction, level_index, is_dummy_unit, hit_actor)
 	hit_units[hit_unit] = true
 	self.has_hit_environment = true
-	local allow_damage_from_players = not Unit.get_data(hit_unit, "no_damage_from_players")
-	local allow_melee_damage = not Unit.get_data(hit_unit, "ignore_damage", "melee")
+	local no_player_damage = unit_get_data(hit_unit, "no_damage_from_players")
 
-	if allow_damage_from_players or allow_melee_damage then
+	if not no_player_damage then
 		local hit_zone_name = "full"
 
 		if not is_dummy_unit then
@@ -1070,7 +1070,7 @@ ActionSweep.finish = function (self, reason, data)
 	weapon_printf("FINISHING OFF MISSED TARGET")
 
 	local network_manager = Managers.state.network
-	local breed = Unit.get_data(target_breed_unit, "breed")
+	local breed = unit_get_data(target_breed_unit, "breed")
 	local hit_zone_name, _ = next(breed.hit_zones)
 	local attack_direction = Vector3.normalize(POSITION_LOOKUP[target_breed_unit] - POSITION_LOOKUP[owner_unit])
 	local hit_unit_id = network_manager.unit_game_object_id(network_manager, target_breed_unit)

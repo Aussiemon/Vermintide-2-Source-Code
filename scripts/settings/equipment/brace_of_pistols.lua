@@ -276,6 +276,9 @@ weapon_template.aim_assist_settings = {
 weapon_template.wwise_dep_right_hand = {
 	"wwise/handgun_rifle"
 }
+weapon_template.wwise_dep_left_hand = {
+	"wwise/handgun_rifle"
+}
 weapon_template.third_person_attached_units = {
 	{
 		unit = "units/weapons/player/wpn_empire_pistol_brace/wpn_empire_pistol_brace_3p",

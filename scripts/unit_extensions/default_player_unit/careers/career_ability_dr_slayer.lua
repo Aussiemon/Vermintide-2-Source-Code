@@ -47,6 +47,7 @@ CareerAbilityDRSlayer.extensions_ready = function (self, world, unit)
 	self._career_extension = ScriptUnit.extension(unit, "career_system")
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self._locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+	self._input_extension = ScriptUnit.has_extension(unit, "input_system")
 
 	if self._first_person_extension then
 		self._first_person_unit = self._first_person_extension:get_first_person_unit()
@@ -58,20 +59,24 @@ CareerAbilityDRSlayer.destroy = function (self)
 	return 
 end
 CareerAbilityDRSlayer.update = function (self, unit, input, dt, context, t)
-	local input_service = self._input_manager:get_service("Player")
+	local input_extension = self._input_extension
+
+	if not input_extension then
+		return 
+	end
 
 	if not self._is_priming then
 		if not self._ability_available(self) then
 			return 
 		end
 
-		if input_service.get(input_service, "function_career") then
+		if input_extension.get(input_extension, "function_career") then
 			self._start_priming(self)
 		end
 	elseif self._is_priming then
 		local landing_position = self._update_priming(self)
 
-		if input_service.get(input_service, "action_two") or input_service.get(input_service, "jump") or input_service.get(input_service, "jump_only") then
+		if input_extension.get(input_extension, "action_two") or input_extension.get(input_extension, "jump") or input_extension.get(input_extension, "jump_only") then
 			self._stop_priming(self)
 
 			return 
@@ -81,7 +86,7 @@ CareerAbilityDRSlayer.update = function (self, unit, input, dt, context, t)
 			self._last_valid_landing_position = Vector3Box(landing_position)
 		end
 
-		if input_service.get(input_service, "function_career_release") then
+		if input_extension.get(input_extension, "function_career_release") then
 			self._run_ability(self)
 		end
 	end
@@ -167,6 +172,10 @@ CareerAbilityDRSlayer._stop_priming = function (self)
 end
 CareerAbilityDRSlayer._run_ability = function (self)
 	self._stop_priming(self)
+
+	if not self._locomotion_extension:is_on_ground() then
+		return 
+	end
 
 	local world = self._world
 	local owner_unit = self._owner_unit

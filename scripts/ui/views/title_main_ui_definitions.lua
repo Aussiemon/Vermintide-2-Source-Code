@@ -1276,7 +1276,7 @@ local menu_item_index_lookup = {
 local menu_button_font_size = 24
 local menu_button_definitions = nil
 
-if Development.parameter("honduras_demo") then
+if script_data.honduras_demo then
 	menu_button_definitions = {
 		UIWidgets.create_text_button("start_game_button", "start_demo_menu_button_name", menu_button_font_size)
 	}

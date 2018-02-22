@@ -63,10 +63,66 @@ ItemHelper.get_slot_type = function (slot)
 
 	return 
 end
+ItemHelper.mark_sign_in_reward_as_new = function (reward_id, item_backend_id)
+	local new_sign_in_rewards = PlayerData.new_sign_in_rewards or {}
+	local reward_items = new_sign_in_rewards[reward_id]
+
+	if not reward_items then
+		reward_items = {}
+		new_sign_in_rewards[reward_id] = reward_items
+	end
+
+	reward_items[#reward_items + 1] = item_backend_id
+	PlayerData.new_sign_in_rewards = new_sign_in_rewards
+
+	Managers.save:auto_save(SaveFileName, SaveData, nil)
+
+	return 
+end
+ItemHelper.unmark_sign_in_reward_as_new = function (reward_id)
+	local new_sign_in_rewards = PlayerData.new_sign_in_rewards
+
+	fassert(new_sign_in_rewards, "Tried to unmark sign-in reward as new but the save data wasn't found")
+
+	local reward_items = new_sign_in_rewards[reward_id]
+
+	for _, item_backend_id in ipairs(reward_items) do
+		ItemHelper.mark_backend_id_as_new(item_backend_id)
+	end
+
+	new_sign_in_rewards[reward_id] = nil
+
+	Managers.save:auto_save(SaveFileName, SaveData, nil)
+
+	return 
+end
+ItemHelper.has_new_sign_in_reward = function (reward_id)
+	local new_sign_in_rewards = PlayerData.new_sign_in_rewards
+	local reward_items = new_sign_in_rewards[reward_id]
+
+	return (reward_items and true) or false
+end
 ItemHelper.mark_backend_id_as_new = function (backend_id)
+	local item_interface = Managers.backend:get_interface("items")
+	local item = item_interface.get_item_from_id(item_interface, backend_id)
+	local item_data = item.data
+	local slot_type = item_data.slot_type
+	local can_wield = item_data.can_wield
 	local new_item_ids = PlayerData.new_item_ids or {}
 	new_item_ids[backend_id] = true
+	local career_settings = CareerSettings
+	local new_item_ids_by_career = PlayerData.new_item_ids_by_career or {}
+
+	for _, career_name in ipairs(can_wield) do
+		local item_ids_by_career = new_item_ids_by_career[career_name] or {}
+		local item_ids_by_slot_type = item_ids_by_career[slot_type] or {}
+		item_ids_by_slot_type[backend_id] = true
+		item_ids_by_career[slot_type] = item_ids_by_slot_type
+		new_item_ids_by_career[career_name] = item_ids_by_career
+	end
+
 	PlayerData.new_item_ids = new_item_ids
+	PlayerData.new_item_ids_by_career = new_item_ids_by_career
 
 	Managers.save:auto_save(SaveFileName, SaveData, nil)
 
@@ -74,12 +130,23 @@ ItemHelper.mark_backend_id_as_new = function (backend_id)
 end
 ItemHelper.unmark_backend_id_as_new = function (backend_id)
 	local new_item_ids = PlayerData.new_item_ids
+	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
 
 	assert(new_item_ids, "Requested to unmark item backend id %d without any save data.", backend_id)
 
 	new_item_ids[backend_id] = nil
 
-	Managers.save:auto_save(SaveFileName, SaveData, nil)
+	for career_name, item_ids_by_slot_type in pairs(new_item_ids_by_career) do
+		for slot_type, backend_ids in pairs(item_ids_by_slot_type) do
+			for item_backend_id, _ in pairs(backend_ids) do
+				if item_backend_id == backend_id then
+					backend_ids[backend_id] = nil
+
+					break
+				end
+			end
+		end
+	end
 
 	return 
 end
@@ -90,6 +157,59 @@ ItemHelper.is_new_backend_id = function (backend_id)
 	local new_item_ids = PlayerData.new_item_ids
 
 	return new_item_ids and new_item_ids[backend_id]
+end
+ItemHelper.has_new_backend_ids_by_career_name_and_slot_type = function (career_name, slot_type_name)
+	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
+
+	for career, item_ids_by_slot_type in pairs(new_item_ids_by_career) do
+		if career_name == career then
+			for slot_type, backend_ids in pairs(item_ids_by_slot_type) do
+				if slot_type_name == slot_type then
+					for item_backend_id, value in pairs(backend_ids) do
+						if value then
+							return true
+						end
+					end
+				end
+			end
+		end
+	end
+
+	return false
+end
+ItemHelper.has_new_backend_ids_by_slot_type = function (slot_type_name)
+	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
+
+	for career_name, item_ids_by_slot_type in pairs(new_item_ids_by_career) do
+		for slot_type, backend_ids in pairs(item_ids_by_slot_type) do
+			if slot_type_name == slot_type then
+				for item_backend_id, value in pairs(backend_ids) do
+					if value then
+						return true
+					end
+				end
+			end
+		end
+	end
+
+	return false
+end
+ItemHelper.has_new_backend_ids_by_career_name = function (career_name)
+	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
+
+	for career, item_ids_by_slot_type in pairs(new_item_ids_by_career) do
+		if career_name == career then
+			for slot_type, backend_ids in pairs(item_ids_by_slot_type) do
+				for item_backend_id, value in pairs(backend_ids) do
+					if value then
+						return true
+					end
+				end
+			end
+		end
+	end
+
+	return false
 end
 ItemHelper.retrieve_weapon_item_statistics = function (item_data, backend_id)
 	local stats_data = {}

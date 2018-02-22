@@ -120,18 +120,6 @@ end
 IngameUI.create_ui_renderer = function (self, world)
 	return view_settings.ui_renderer_function(world)
 end
-IngameUI.get_ingame_menu_keymap = function (self)
-	local loaded_menu_controls = PlayerData.controls and PlayerData.controls.ingame_menu
-	local ingame_menu_keymap = table.clone(IngameMenuKeymaps)
-
-	if loaded_menu_controls and loaded_menu_controls.keymap then
-		local platform = PLATFORM
-
-		table.merge_recursive(ingame_menu_keymap[platform], loaded_menu_controls.keymap)
-	end
-
-	return ingame_menu_keymap
-end
 IngameUI.setup_views = function (self, ingame_ui_context)
 	self.views = view_settings.views_function(ingame_ui_context)
 	self.hotkey_mapping = view_settings.hotkey_mapping
@@ -1073,13 +1061,13 @@ IngameUI._render_fps = function (self, dt)
 
 	return 
 end
-IngameUI.show_unavailable_hero_popup = function (self, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser)
+IngameUI.show_unavailable_hero_popup = function (self, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser, difficulty)
 	fassert(self.popup_join_lobby_handler == nil, "trying to show PopupJoinLobbyHandler when its already visible")
 
 	local ingame_ui_context = self.ingame_ui_context
 	local popup_join_lobby_handler = PopupJoinLobbyHandler:new(ingame_ui_context)
 
-	popup_join_lobby_handler.show(popup_join_lobby_handler, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser)
+	popup_join_lobby_handler.show(popup_join_lobby_handler, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser, difficulty)
 
 	self.popup_join_lobby_handler = popup_join_lobby_handler
 

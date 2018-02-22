@@ -225,18 +225,6 @@ StartGameWindowLobbyBrowser.on_exit = function (self, params)
 
 	self.ui_animator = nil
 
-	if self.status_join_lobby_popup_id then
-		Managers.popup:cancel_popup(self.status_join_lobby_popup_id)
-
-		self.status_join_lobby_popup_id = nil
-	end
-
-	if self.cancel_join_lobby_popup_id then
-		Managers.popup:cancel_popup(self.cancel_join_lobby_popup_id)
-
-		self.cancel_join_lobby_popup_id = nil
-	end
-
 	Managers.matchmaking:set_active_lobby_browser(nil)
 	self.lobby_finder:destroy()
 
@@ -377,30 +365,6 @@ StartGameWindowLobbyBrowser.update = function (self, dt, t)
 			self._search(self)
 
 			self.search_timer = nil
-		end
-	end
-
-	if self.cancel_join_lobby_popup_id then
-		local popup_result = Managers.popup:query_result(self.cancel_join_lobby_popup_id)
-
-		if popup_result then
-			Managers.popup:cancel_popup(self.cancel_join_lobby_popup_id)
-
-			self.cancel_join_lobby_popup_id = nil
-		end
-	end
-
-	if self.status_join_lobby_popup_id then
-		local popup_result = Managers.popup:query_result(self.status_join_lobby_popup_id)
-
-		if popup_result then
-			Managers.popup:cancel_popup(self.status_join_lobby_popup_id)
-
-			self.status_join_lobby_popup_id = nil
-			self._current_status_message = nil
-
-			Managers.matchmaking:cancel_matchmaking()
-			Managers.matchmaking:cancel_join_lobby()
 		end
 	end
 
@@ -768,19 +732,7 @@ StartGameWindowLobbyBrowser._play_sound = function (self, event)
 	return 
 end
 StartGameWindowLobbyBrowser.cancel_join_lobby = function (self, status_message)
-	if self.active then
-		if self.status_join_lobby_popup_id then
-			Managers.popup:cancel_popup(self.status_join_lobby_popup_id)
-
-			self.status_join_lobby_popup_id = nil
-		end
-
-		if status_message and not self.cancel_join_lobby_popup_id then
-			self.cancel_join_lobby_popup_id = Managers.popup:queue_popup(Localize(status_message), Localize("popup_message_topic"), "ok", Localize("popup_choice_ok"))
-		end
-
-		self.join_lobby_data_id = nil
-	end
+	self.join_lobby_data_id = nil
 
 	return 
 end
@@ -903,18 +855,6 @@ StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
 	return true
 end
 StartGameWindowLobbyBrowser.set_status_message = function (self, status_message)
-	if self._current_status_message ~= status_message then
-		self._current_status_message = status_message
-
-		if self.status_join_lobby_popup_id then
-			Managers.popup:cancel_popup(self.status_join_lobby_popup_id)
-
-			self.status_join_lobby_popup_id = nil
-		end
-
-		self.status_join_lobby_popup_id = Managers.popup:queue_popup(Localize(status_message), Localize("popup_message_topic"), "cancel", Localize("popup_choice_cancel"))
-	end
-
 	return 
 end
 StartGameWindowLobbyBrowser._input_service = function (self)

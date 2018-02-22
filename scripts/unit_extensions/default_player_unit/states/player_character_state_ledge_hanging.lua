@@ -221,7 +221,7 @@ PlayerCharacterStateLedgeHanging.calculate_offset_rotation = function (self)
 			local cross_dir = Vector3.cross(right_dir, to_goal_position)
 			local new_rotation = Quaternion.look(cross_dir)
 			rotation = new_rotation
-		else
+		elseif script_data.debug_hang_ledges then
 			local debug_text_manager = Managers.state.debug_text
 
 			QuickDrawerStay:sphere(ledge_position, 0.1, Colors.get("yellow"))

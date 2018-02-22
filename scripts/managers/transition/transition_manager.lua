@@ -4,7 +4,7 @@ if PLATFORM == "win32" then
 	require("scripts/ui/views/twitch_icon_view")
 end
 
-if Development.parameter("honduras_demo") then
+if script_data.honduras_demo then
 	require("scripts/ui/views/water_mark_view")
 	require("scripts/ui/views/transition_video")
 end
@@ -20,7 +20,7 @@ TransitionManager.init = function (self)
 		self._twitch_icon_view = TwitchIconView:new(self._world)
 	end
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		self._watermark = WaterMarkView:new(self._world)
 		self._transition_video = TransitionVideo:new(self._world)
 	end
@@ -234,7 +234,7 @@ TransitionManager.force_render = function (self, dt)
 		self._loading_icon_view:update(dt)
 	end
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		if not Development.parameter("disable_water_mark") then
 			self._watermark:update(dt)
 		end
@@ -257,7 +257,7 @@ TransitionManager.update = function (self, dt)
 		self._twitch_icon_view:update(dt)
 	end
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		if not Development.parameter("disable_water_mark") then
 			self._watermark:update(dt)
 		end

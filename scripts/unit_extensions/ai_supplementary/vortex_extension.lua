@@ -174,18 +174,21 @@ VortexExtension.destroy = function (self)
 		if unit_alive(ai_unit) then
 			local velocity = Vector3(0, 0, -6)
 			local target_blackboard = BLACKBOARDS[ai_unit]
-			local locomotion_extension = target_blackboard.locomotion_extension
 
-			locomotion_extension.set_wanted_velocity(locomotion_extension, velocity)
-			locomotion_extension.set_affected_by_gravity(locomotion_extension, true)
-			locomotion_extension.set_movement_type(locomotion_extension, "constrained_by_mover")
+			if target_blackboard then
+				local locomotion_extension = target_blackboard.locomotion_extension
 
-			local ejected_from_vortex = target_blackboard.ejected_from_vortex or Vector3Box()
+				locomotion_extension.set_wanted_velocity(locomotion_extension, velocity)
+				locomotion_extension.set_affected_by_gravity(locomotion_extension, true)
+				locomotion_extension.set_movement_type(locomotion_extension, "constrained_by_mover")
 
-			ejected_from_vortex.store(ejected_from_vortex, velocity)
+				local ejected_from_vortex = target_blackboard.ejected_from_vortex or Vector3Box()
 
-			target_blackboard.ejected_from_vortex = ejected_from_vortex
-			target_blackboard.in_vortex_state = "ejected_from_vortex"
+				ejected_from_vortex.store(ejected_from_vortex, velocity)
+
+				target_blackboard.ejected_from_vortex = ejected_from_vortex
+				target_blackboard.in_vortex_state = "ejected_from_vortex"
+			end
 		end
 	end
 

@@ -9,6 +9,9 @@ local game_option_size = {
 	window_size[1] - 20,
 	700
 }
+local deed_frame_name = "menu_frame_08"
+local deed_frame_settings = UIFrameSettings[deed_frame_name]
+local deed_frame_width = deed_frame_settings.texture_sizes.corner[1]
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -84,7 +87,7 @@ local scenegraph_definition = {
 		position = {
 			195,
 			0,
-			1
+			3
 		}
 	},
 	game_options_left_chain = {
@@ -98,7 +101,7 @@ local scenegraph_definition = {
 		position = {
 			-195,
 			0,
-			1
+			3
 		}
 	},
 	game_option_1 = {
@@ -109,156 +112,24 @@ local scenegraph_definition = {
 		position = {
 			0,
 			-16,
-			2
+			4
 		}
 	},
-	mutator_entry_root = {
+	item_presentation = {
 		vertical_alignment = "top",
 		parent = "game_option_1",
 		horizontal_alignment = "center",
 		size = {
-			game_option_size[1] - 40,
-			30
+			game_option_size[1] - 10,
+			0
 		},
 		position = {
 			0,
-			-340,
-			10
-		}
-	},
-	reward_item_1 = {
-		vertical_alignment = "bottom",
-		parent = "game_option_1",
-		horizontal_alignment = "center",
-		size = {
-			80,
-			80
-		},
-		position = {
-			0,
-			35,
-			10
-		}
-	},
-	reward_item_2 = {
-		vertical_alignment = "bottom",
-		parent = "game_option_1",
-		horizontal_alignment = "center",
-		size = {
-			80,
-			80
-		},
-		position = {
-			0,
-			35,
-			10
-		}
-	},
-	reward_item_3 = {
-		vertical_alignment = "bottom",
-		parent = "game_option_1",
-		horizontal_alignment = "center",
-		size = {
-			80,
-			80
-		},
-		position = {
-			0,
-			35,
-			10
+			-deed_frame_width,
+			1
 		}
 	}
 }
-
-local function create_mutator_entry(scenegraph_id, size)
-	local background_texture = "matchmaking_window_03"
-	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_name = "menu_frame_09"
-	local frame_settings = UIFrameSettings[frame_name]
-	local widget = {
-		element = {}
-	}
-	local passes = {
-		{
-			style_id = "text",
-			pass_type = "text",
-			text_id = "text"
-		},
-		{
-			style_id = "text_shadow",
-			pass_type = "text",
-			text_id = "text"
-		},
-		{
-			pass_type = "texture",
-			style_id = "icon",
-			texture_id = "icon"
-		}
-	}
-	local content = {
-		text = "text",
-		icon = "icons_placeholder"
-	}
-	local style = {
-		icon = {
-			vertical_alignment = "top",
-			texture_size = {
-				30,
-				30
-			},
-			color = {
-				255,
-				255,
-				255,
-				255
-			},
-			offset = {
-				0,
-				-5,
-				0
-			}
-		},
-		text = {
-			vertical_alignment = "top",
-			font_size = 28,
-			localize = false,
-			horizontal_alignment = "left",
-			word_wrap = true,
-			font_type = "hell_shark_header",
-			text_color = Colors.get_color_table_with_alpha("font_default", 255),
-			offset = {
-				40,
-				-5,
-				1
-			}
-		},
-		text_shadow = {
-			vertical_alignment = "top",
-			font_size = 28,
-			localize = false,
-			horizontal_alignment = "left",
-			word_wrap = true,
-			font_type = "hell_shark_header",
-			text_color = Colors.get_color_table_with_alpha("black", 255),
-			offset = {
-				42,
-				-7,
-				0
-			}
-		}
-	}
-	widget.element.passes = passes
-	widget.content = content
-	widget.style = style
-	widget.offset = {
-		0,
-		0,
-		0
-	}
-	widget.scenegraph_id = scenegraph_id
-
-	return widget
-end
 
 local function create_settings_option(scenegraph_id, size)
 	local background_texture = "game_options_bg_04"
@@ -1091,7 +962,7 @@ local function create_overlay_button(scenegraph_id, size)
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button
+						return not button_hotspot.disable_button and not content.has_item
 					end
 				},
 				{
@@ -1138,7 +1009,7 @@ local function create_overlay_button(scenegraph_id, size)
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button
+						return not button_hotspot.disable_button and not content.has_item
 					end
 				},
 				{
@@ -1148,7 +1019,7 @@ local function create_overlay_button(scenegraph_id, size)
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button
+						return not button_hotspot.disable_button and not content.has_item
 					end
 				},
 				{
@@ -1158,7 +1029,7 @@ local function create_overlay_button(scenegraph_id, size)
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return button_hotspot.disable_button
+						return button_hotspot.disable_button and not content.has_item
 					end
 				},
 				{
@@ -1168,7 +1039,7 @@ local function create_overlay_button(scenegraph_id, size)
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return button_hotspot.disable_button
+						return button_hotspot.disable_button and not content.has_item
 					end
 				}
 			}
@@ -1420,16 +1291,9 @@ local function create_overlay_button(scenegraph_id, size)
 	return widget
 end
 
-local summary_widgets = {
-	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size),
-	reward_item_1 = UIWidgets.create_simple_inventory_item("reward_item_1", scenegraph_definition.reward_item_1.size),
-	reward_item_2 = UIWidgets.create_simple_inventory_item("reward_item_2", scenegraph_definition.reward_item_2.size),
-	reward_item_3 = UIWidgets.create_simple_inventory_item("reward_item_3", scenegraph_definition.reward_item_3.size)
-}
-local overlay_widgets = {
-	overlay_button = create_overlay_button("game_option_1", scenegraph_definition.game_option_1.size)
-}
 local widgets = {
+	item_presentation = UIWidgets.create_simple_item_presentation("item_presentation"),
+	overlay_button = create_overlay_button("game_option_1", scenegraph_definition.game_option_1.size),
 	game_options_left_chain = UIWidgets.create_tiled_texture("game_options_left_chain", "chain_link_01", {
 		16,
 		19
@@ -1442,12 +1306,6 @@ local widgets = {
 	window = UIWidgets.create_frame("window", window_size, window_frame, 20),
 	play_button = UIWidgets.create_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34)
 }
-local mutator_widgets = {}
-
-for i = 1, 10, 1 do
-	mutator_widgets[i] = create_mutator_entry("mutator_entry_root", scenegraph_definition.mutator_entry_root.size)
-end
-
 local animation_definitions = {
 	on_enter = {
 		{
@@ -1495,10 +1353,6 @@ local animation_definitions = {
 
 return {
 	widgets = widgets,
-	overlay_widgets = overlay_widgets,
-	summary_widgets = summary_widgets,
-	mutator_widgets = mutator_widgets,
-	node_widgets = node_widgets,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions
 }

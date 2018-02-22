@@ -305,7 +305,7 @@ StateTitleScreenLoadSave.cb_load_done = function (self, data)
 		if input_service.get(input_service, "show_support_info") then
 			self._show_support_info(self)
 		else
-			self._state = "signin_to_xsts"
+			self._state = "signin_to_backend"
 		end
 	end
 
@@ -365,7 +365,7 @@ StateTitleScreenLoadSave._check_popup = function (self)
 	elseif result == "verified_guest" then
 		self._state = "enumerate_dlc"
 	elseif result == "support_info_done" then
-		self._state = "signin_to_xsts"
+		self._state = "signin_to_backend"
 	elseif result then
 		fassert(false, "[StateTitleScreenLoadSave] The popup result doesn't exist (%s)", result)
 	end
@@ -399,7 +399,7 @@ StateTitleScreenLoadSave.cb_save_done = function (self, data)
 	else
 		populate_save_data(SaveData)
 
-		self._state = "signin_to_xsts"
+		self._state = "signin_to_backend"
 	end
 
 	return 
@@ -437,6 +437,10 @@ StateTitleScreenLoadSave._close_menu = function (self)
 end
 StateTitleScreenLoadSave._next_state = function (self)
 	if not Managers.popup:has_popup() and not self._popup_id then
+		if script_data.honduras_demo and not self._title_start_ui:is_ready() then
+			return 
+		end
+
 		if Managers.backend and Managers.backend:is_disconnected() then
 			self._close_menu(self)
 			Managers.account:close_storage()
@@ -454,6 +458,8 @@ StateTitleScreenLoadSave._next_state = function (self)
 	return 
 end
 StateTitleScreenLoadSave.on_exit = function (self)
+	self._title_start_ui:set_information_text("")
+
 	self._popup_id = nil
 
 	return 

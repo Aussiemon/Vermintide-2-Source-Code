@@ -4,11 +4,11 @@ local breed_data = {
 	walk_speed = 2.2,
 	dont_wield_weapon_on_patrol = true,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
-	run_speed = 4.8,
 	aim_template = "chaos_marauder",
-	disable_crowd_dispersion = true,
+	run_speed = 4.8,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
 	aoe_radius = 0.4,
+	disable_crowd_dispersion = true,
 	scale_death_push = 0.35,
 	has_inventory = true,
 	detection_radius = 12,
@@ -21,14 +21,14 @@ local breed_data = {
 	default_inventory_template = "raider_axe_2h",
 	stagger_resistance = 3,
 	patrol_detection_radius = 10,
-	bone_lod_level = 1,
 	flingable = true,
 	wwise_voice_switch_group = "marauder_vce_variations",
 	panic_close_detection_radius_sq = 9,
-	radius = 1,
-	smart_object_template = "special",
+	radius = 2,
+	bone_lod_level = 1,
 	hit_mass_count = 8,
 	patrol_active_perception = "perception_regular",
+	smart_object_template = "special",
 	perception_previous_attacker_stickyness_value = -4.5,
 	race = "chaos",
 	death_reaction = "ai_default",
@@ -43,8 +43,9 @@ local breed_data = {
 	target_selection = "pick_closest_target_with_spillover",
 	no_stagger_duration = true,
 	exchange_order = 3,
+	stagger_threshold_heavy = 4,
 	stagger_multiplier = 0.4,
-	stagger_threshold_light = 0.5,
+	stagger_threshold_light = 0.25,
 	hit_reaction = "ai_default",
 	patrol_passive_target_selection = "patrol_passive_target_selection",
 	smart_targeting_outer_width = 1,
@@ -57,7 +58,7 @@ local breed_data = {
 	has_running_attack = true,
 	perception = "perception_regular",
 	player_locomotion_constrain_radius = 0.7,
-	weapon_reach = 2.5,
+	weapon_reach = 2.25,
 	horde_target_selection = "horde_pick_closest_target_with_spillover",
 	use_backstab_vo = true,
 	patrol_passive_perception = "perception_regular",
@@ -313,6 +314,10 @@ local breed_data = {
 	}
 }
 Breeds.chaos_raider = table.create_copy(Breeds.chaos_raider, breed_data)
+Breeds.chaos_raider_tutorial = table.create_copy(Breeds.chaos_raider_tutorial, breed_data)
+Breeds.chaos_raider_tutorial.behavior = "raider_tutorial"
+Breeds.chaos_raider_tutorial.horde_behavior = "raider_tutorial"
+Breeds.chaos_raider_tutorial.debug_spawn_category = "Misc"
 local action_data = {
 	alerted = {
 		action_weight = 1,
@@ -572,12 +577,12 @@ local action_data = {
 		},
 		difficulty_damage = {
 			easy = {
-				15,
+				10,
 				10,
 				5
 			},
 			normal = {
-				15,
+				10,
 				10,
 				5
 			},
@@ -667,6 +672,84 @@ local action_data = {
 		blocked_anims = {
 			"blocked",
 			"blocked_2"
+		}
+	},
+	special_attack_cleave_tutorial = {
+		height = 2,
+		offset_forward = 0,
+		hit_react_type = "heavy",
+		rotation_time_step = 2.1,
+		cooldown = 1,
+		rotation_time = 1,
+		fatigue_type = "complete",
+		bot_threat_start_time = 0.7,
+		no_block_stagger = true,
+		damage_type = "cutting",
+		offset_up = 0,
+		range = 3.1,
+		bot_threat_duration = 0.7,
+		action_weight = 1,
+		bot_threat_start_time_step = 1.6,
+		move_anim = "move_fwd",
+		width = 0.4,
+		considerations = UtilityConsiderations.chaos_raider_special_attack,
+		attack_anim = {
+			"attack_cleave_02"
+		},
+		damage = {
+			30,
+			25,
+			20
+		},
+		difficulty_damage = {
+			easy = {
+				20,
+				20,
+				15
+			},
+			normal = {
+				30,
+				25,
+				20
+			},
+			hard = {
+				40,
+				35,
+				30
+			},
+			survival_hard = {
+				40,
+				35,
+				30
+			},
+			harder = {
+				50,
+				40,
+				30
+			},
+			survival_harder = {
+				50,
+				40,
+				30
+			},
+			hardest = {
+				100,
+				50,
+				30
+			},
+			survival_hardest = {
+				150,
+				75,
+				45
+			}
+		},
+		ignore_staggers = {
+			true,
+			false,
+			false,
+			false,
+			false,
+			false
 		}
 	},
 	stagger = {

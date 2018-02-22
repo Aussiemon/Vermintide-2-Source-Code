@@ -335,10 +335,18 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 	local muzzle_node = Unit.node(warpfire_unit, node_name)
 	local muzzle_pos = Unit.world_position(warpfire_unit, muzzle_node)
 	local target_pos = POSITION_LOOKUP[blackboard.target_unit]
+	local to_target = Vector3.flat(target_pos - muzzle_pos)
+	local distance = Vector3.length(to_target)
+	local warpfire_unit = attack_pattern_data.warpfire_gun_unit
+	local forward = Vector3.flat(Quaternion.forward(Unit.world_rotation(warpfire_unit, muzzle_node)))
+	local forward_normalized = Vector3.normalize(forward)
+	local aim_pos = muzzle_pos + forward_normalized*action.close_attack_range
+	muzzle_pos = muzzle_pos - forward_normalized*0.5
 	local physics_world = blackboard.physics_world
-	local radius = 0.4
+	local radius = action.hit_radius
 	local max_hits = 10
-	local result = PhysicsWorld.linear_sphere_sweep(physics_world, muzzle_pos, target_pos, radius, max_hits, "collision_filter", "filter_character_trigger", "report_initial_overlap")
+	local result = PhysicsWorld.linear_sphere_sweep(physics_world, muzzle_pos, aim_pos, radius, max_hits, "collision_filter", "filter_character_trigger", "report_initial_overlap")
+	local buff_system = Managers.state.entity:system("buff_system")
 
 	if result then
 		local num_hits = #result
@@ -350,7 +358,8 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 
 			if hit_unit ~= unit then
 				local is_ai_unit = DamageUtils.is_enemy(hit_unit)
-				local unit_is_character = is_ai_unit or DamageUtils.is_player_unit(hit_unit)
+				local is_player_unit = DamageUtils.is_player_unit(hit_unit)
+				local unit_is_character = is_ai_unit or is_player_unit
 
 				if unit_is_character then
 					local buff_extension = ScriptUnit.has_extension(hit_unit, "buff_system")
@@ -375,9 +384,19 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 							hit_ai_units[hit_unit] = true
 						end
 
-						local buff_system = Managers.state.entity:system("buff_system")
+						if is_player_unit then
+							local target_status_extension = ScriptUnit.has_extension(blackboard.target_unit, "status_system")
+							local is_valid_player_status = target_status_extension and not target_status_extension.is_invisible(target_status_extension)
+							local to_target_normalized = Vector3.normalize(to_target)
+							local dot = Vector3.dot(to_target_normalized, forward_normalized)
+							local is_valid_target = (0.99 < dot or (distance < action.aim_rotation_override_distance and 0.55 < dot)) and is_valid_player_status
 
-						buff_system.add_buff(buff_system, hit_unit, buff_name, unit)
+							if is_valid_target then
+								buff_system.add_buff(buff_system, hit_unit, buff_name, unit)
+							end
+						else
+							buff_system.add_buff(buff_system, hit_unit, buff_name, unit)
+						end
 					end
 				end
 			end
@@ -390,12 +409,20 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 end
 BTWarpfireThrowerShootAction._aim_at_target = function (self, unit, target_unit, attack_pattern_data, blackboard, action, t, dt)
 	local aim_pos, wanted_rotation, _, target_position = self._calculate_wanted_target_position(self, unit, target_unit)
+	local target_status_extension = ScriptUnit.has_extension(blackboard.target_unit, "status_system")
+	local target_is_dodging = target_status_extension and target_status_extension.get_is_dodging(target_status_extension)
+	local aim_rotation_override_distance = action.aim_rotation_override_distance
+	local aim_rotation_override_speed_multiplier = action.aim_rotation_override_speed_multiplier
+	local aim_rotation_dodge_multipler = action.aim_rotation_dodge_multipler
 	local self_pos = POSITION_LOOKUP[unit]
 	local pivot = self_pos + Vector3(0, 0, AIM_PIVOT_HEIGHT)
 	local wanted_aim_position_offset = aim_pos - pivot
 	local wanted_aim_rotation = Quaternion.look(wanted_aim_position_offset, Vector3.up())
 	local current_aim_rotation = attack_pattern_data.current_aim_rotation:unbox()
-	local lerped_rotation = self._rotate_from_to(self, current_aim_rotation, wanted_aim_rotation, action.radial_speed_upper_body_shooting, dt)
+	local distance_to_target = Vector3.distance(self_pos, target_position)
+	local aim_rotation_modifier = (distance_to_target < aim_rotation_override_distance and aim_rotation_override_speed_multiplier) or (target_is_dodging and aim_rotation_dodge_multipler) or math.max(distance_to_target/action.close_attack_range - 1, 0.1)
+	local upper_body_rotation_speed = action.radial_speed_upper_body_shooting*math.min(aim_rotation_modifier, aim_rotation_override_speed_multiplier)
+	local lerped_rotation = self._rotate_from_to(self, current_aim_rotation, wanted_aim_rotation, upper_body_rotation_speed, dt)
 	local aim_position = pivot + Quaternion.forward(lerped_rotation)*Vector3.length(wanted_aim_position_offset)
 
 	attack_pattern_data.current_aim_rotation:store(lerped_rotation)

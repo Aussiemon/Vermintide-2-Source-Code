@@ -99,6 +99,9 @@ end
 RemotePlayer.create_boon_handler = function (self, world)
 	return 
 end
+RemotePlayer.get_data = function (self, key)
+	return self._player_sync_data:get_data(key)
+end
 RemotePlayer.name = function (self)
 	local name = nil
 
@@ -144,6 +147,10 @@ RemotePlayer.name = function (self)
 	return name
 end
 RemotePlayer.destroy = function (self)
+	if self._player_sync_data then
+		self._player_sync_data:destroy()
+	end
+
 	if self.is_server and self.game_object_id then
 		self.network_manager:destroy_game_object(self.game_object_id)
 	end
@@ -184,6 +191,8 @@ RemotePlayer.create_game_object = function (self)
 	local callback = callback(self, "cb_game_session_disconnect")
 	self.game_object_id = self.network_manager:create_player_game_object("player", game_object_data_table, callback)
 
+	self.create_sync_data(self)
+
 	if script_data.network_debug then
 		print("RemotePlayer:create_game_object( )", self.game_object_id)
 	end
@@ -203,6 +212,21 @@ RemotePlayer.set_game_object_id = function (self, id)
 	self.game_object_id = id
 
 	return 
+end
+RemotePlayer.create_sync_data = function (self)
+	assert(self._player_sync_data == nil)
+
+	self._player_sync_data = PlayerSyncData:new(self, self.network_manager)
+
+	return 
+end
+RemotePlayer.set_sync_data_game_object_id = function (self, id)
+	self._player_sync_data:set_game_object_id(id)
+
+	return 
+end
+RemotePlayer.sync_data_active = function (self)
+	return self._player_sync_data and self._player_sync_data:active()
 end
 
 return 

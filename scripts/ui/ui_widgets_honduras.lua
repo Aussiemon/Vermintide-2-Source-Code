@@ -320,6 +320,50 @@ UIWidgets.create_talent_slot = function (scenegraph_id, offset)
 		scenegraph_id = scenegraph_id
 	}
 end
+UIWidgets.create_simple_item_presentation = function (scenegraph_id)
+	return {
+		element = {
+			passes = {
+				{
+					item_id = "item",
+					style_id = "item",
+					pass_type = "item_presentation",
+					text_id = "item",
+					content_check_function = function (content)
+						return content.item
+					end
+				}
+			}
+		},
+		content = {},
+		style = {
+			item = {
+				font_size = 18,
+				max_width = 500,
+				localize = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				line_colors = {
+					Colors.get_color_table_with_alpha("font_title", 255),
+					Colors.get_color_table_with_alpha("white", 255)
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
 UIWidgets.create_reward_slot = function (texture, scenegraph_id, size, masked, retained)
 	return {
 		element = {
@@ -1340,7 +1384,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 				content_id = hotspot_name,
 				style_id = disabled_name,
 				content_check_function = function (content)
-					return content[item_icon_name] and content.reserved
+					return content[item_icon_name] and (content.reserved or content.unwieldable)
 				end
 			}
 			style[disabled_name] = {
@@ -1357,6 +1401,34 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					3
 				}
 			}
+			local unwieldable_name = "unwieldable_icon" .. name_suffix
+			passes[#passes + 1] = {
+				pass_type = "texture",
+				texture_id = unwieldable_name,
+				content_id = hotspot_name,
+				style_id = unwieldable_name,
+				content_check_function = function (content)
+					return content[item_icon_name] and content.unwieldable
+				end
+			}
+			style[unwieldable_name] = {
+				size = {
+					40,
+					40
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					(offset[1] + icon_size[1]/2) - 20,
+					(offset[2] + icon_size[2]/2) - 20,
+					4
+				}
+			}
+			content[hotspot_name][unwieldable_name] = "tab_menu_icon_03"
 			passes[#passes + 1] = {
 				pass_type = "drag",
 				content_id = hotspot_name,
@@ -1366,9 +1438,11 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					return content[item_icon_name]
 				end
 			}
+			local new_frame_settings = UIFrameSettings.frame_outer_glow_01
+			local new_frame_width = new_frame_settings.texture_sizes.corner[1]
 			local new_icon_name = "new_icon" .. name_suffix
 			passes[#passes + 1] = {
-				pass_type = "texture",
+				pass_type = "texture_frame",
 				texture_id = new_icon_name,
 				style_id = new_icon_name,
 				content_check_function = function (content)
@@ -1376,14 +1450,17 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 
 					return content[new_icon_name] and item and ItemHelper.is_new_backend_id(item.backend_id)
 				end,
-				content_change_function = function (content)
+				content_change_function = function (content, style)
 					local item = content["item" .. name_suffix]
+					local backend_id = item and item.backend_id
 
-					if item then
+					if item and ItemHelper.is_new_backend_id(backend_id) then
+						local progress = math.sin(Application.time_since_launch()*5)*0.5 + 0.5
+						style.color[1] = progress*200 + 55
 						local hotspot = content[hotspot_name]
 
-						if hotspot.on_hover_exit and ItemHelper.is_new_backend_id(item.backend_id) then
-							ItemHelper.unmark_backend_id_as_new(item.backend_id)
+						if hotspot.on_hover_enter and ItemHelper.is_new_backend_id(backend_id) then
+							ItemHelper.unmark_backend_id_as_new(backend_id)
 						end
 					end
 
@@ -1392,17 +1469,19 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 			}
 			style[new_icon_name] = {
 				size = {
-					126,
-					51
+					icon_size[1] + new_frame_width*2,
+					icon_size[2] + new_frame_width*2
 				},
 				color = default_color,
+				texture_size = new_frame_settings.texture_size,
+				texture_sizes = new_frame_settings.texture_sizes,
 				offset = {
-					offset[1] + slot_size[1] - 126 + 5,
-					(offset[2] + slot_size[2]) - 50,
-					2
+					offset[1] - new_frame_width,
+					offset[2] - new_frame_width,
+					10
 				}
 			}
-			content[new_icon_name] = "list_item_tag_new"
+			content[new_icon_name] = new_frame_settings.texture
 		end
 	end
 
@@ -6986,6 +7065,14 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 					style_id = "background_icon",
 					pass_type = "texture_uv",
 					content_id = "background_icon"
+				},
+				{
+					texture_id = "new_texture",
+					style_id = "new_texture",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.new
+					end
 				}
 			}
 		},
@@ -6993,6 +7080,7 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 			hover_glow = "button_state_default",
 			glass = "button_glass_02",
 			background_fade = "button_bg_fade",
+			new_texture = "list_item_tag_new",
 			side_detail = {
 				uvs = {
 					{
@@ -7122,6 +7210,23 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 					0,
 					0,
 					2
+				}
+			},
+			new_texture = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					size[1] - 126,
+					size[2]/2 - 25.5,
+					7
+				},
+				size = {
+					126,
+					51
 				}
 			},
 			title_text = {
@@ -8071,6 +8176,9 @@ UIWidgets.create_window_category_button = function (scenegraph_id, size, button_
 	local frame_name = "menu_frame_08"
 	local frame_settings = UIFrameSettings[frame_name]
 	local frame_width = frame_settings.texture_sizes.corner[1]
+	local new_frame_name = "frame_outer_glow_01"
+	local new_frame_settings = UIFrameSettings[new_frame_name]
+	local new_frame_width = new_frame_settings.texture_sizes.corner[1]
 	local widget = {
 		element = {
 			passes = {
@@ -8109,6 +8217,14 @@ UIWidgets.create_window_category_button = function (scenegraph_id, size, button_
 					texture_id = "frame",
 					style_id = "frame",
 					pass_type = "texture_frame"
+				},
+				{
+					texture_id = "new_texture",
+					style_id = "new_texture",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.new
+					end
 				},
 				{
 					texture_id = "icon",
@@ -8224,6 +8340,7 @@ UIWidgets.create_window_category_button = function (scenegraph_id, size, button_
 			glass = "button_glass_02",
 			background_fade = "button_bg_fade",
 			icon_bg_glow = "menu_options_button_glow_01",
+			new_texture = "list_item_tag_new",
 			background_icon = background_icon,
 			icon = icon_name,
 			icon_selected = icon_glow_name,
@@ -8471,6 +8588,23 @@ UIWidgets.create_window_category_button = function (scenegraph_id, size, button_
 				size = size,
 				texture_size = frame_settings.texture_size,
 				texture_sizes = frame_settings.texture_sizes
+			},
+			new_texture = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					size[1] - 126,
+					size[2] - 56,
+					6
+				},
+				size = {
+					126,
+					51
+				}
 			},
 			icon_frame = {
 				color = {
@@ -10429,7 +10563,10 @@ UIWidgets.create_console_cursor = function (scenegraph_id)
 		{
 			pass_type = "gamepad_cursor",
 			style_id = "cursor",
-			texture_id = "cursor"
+			texture_id = "cursor",
+			content_check_function = function (content, style)
+				return not Managers.popup:has_popup()
+			end
 		}
 	}
 	local content = {
@@ -11669,7 +11806,9 @@ UIWidgets.create_score_entry = function (scenegraph_id, size, num_rows, side)
 		size = size,
 		offset = offset
 	}
-	content[hotspot_name] = {}
+	content[hotspot_name] = {
+		allow_multi_hover = true
+	}
 	local hotspot_content = content[hotspot_name]
 	local background_name = "background"
 	passes[#passes + 1] = {
@@ -12096,7 +12235,9 @@ UIWidgets.create_score_topics = function (scenegraph_id, size, hover_hotspot_len
 		size = size,
 		offset = offset
 	}
-	content[hotspot_name] = {}
+	content[hotspot_name] = {
+		allow_multi_hover = true
+	}
 	local hotspot_content = content[hotspot_name]
 	local background_name = "background"
 	passes[#passes + 1] = {
@@ -12266,7 +12407,9 @@ UIWidgets.create_score_topics = function (scenegraph_id, size, hover_hotspot_len
 				content_id = row_hotspot_name,
 				style_id = row_hotspot_name
 			}
-			content[row_hotspot_name] = {}
+			content[row_hotspot_name] = {
+				allow_multi_hover = true
+			}
 			style[row_hotspot_name] = {
 				size = {
 					hover_hotspot_length,

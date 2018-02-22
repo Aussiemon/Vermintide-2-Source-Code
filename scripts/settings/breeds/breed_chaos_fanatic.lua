@@ -74,11 +74,11 @@ local breed_data = {
 		1
 	},
 	max_health = {
-		6.5,
-		6.5,
-		9.75,
-		13,
-		19.25
+		6,
+		6,
+		9,
+		12,
+		18
 	},
 	diff_stagger_resist = {
 		1.75,
@@ -105,11 +105,11 @@ local breed_data = {
 		easy = 1
 	},
 	hit_mass_counts = {
+		1.25,
+		1.25,
 		2,
-		2,
-		3,
-		4,
-		6
+		2.5,
+		3.75
 	},
 	wwise_voices = {
 		"fanatic"
@@ -998,7 +998,7 @@ local action_data = {
 				1
 			},
 			normal = {
-				3,
+				2.5,
 				2,
 				1
 			},
@@ -1152,7 +1152,7 @@ local action_data = {
 				1
 			},
 			normal = {
-				3,
+				2.5,
 				2,
 				1
 			},

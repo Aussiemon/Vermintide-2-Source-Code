@@ -18,6 +18,11 @@ assert(DialogueLookup[DialogueLookup_n + 17] == nil)
 assert(DialogueLookup[DialogueLookup_n + 18] == nil)
 assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 assert(DialogueLookup[DialogueLookup_n + 20] == nil)
+assert(DialogueLookup[DialogueLookup_n + 21] == nil)
+assert(DialogueLookup[DialogueLookup_n + 22] == nil)
+assert(DialogueLookup[DialogueLookup_n + 23] == nil)
+assert(DialogueLookup[DialogueLookup_n + 24] == nil)
+assert(DialogueLookup[DialogueLookup_n + 25] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_level_ground_zero_canals"
 DialogueLookup[DialogueLookup_n + 2] = "pdr_level_ground_zero_canals_crossing"
@@ -39,6 +44,11 @@ DialogueLookup[DialogueLookup_n + 17] = "pdr_level_ground_zero_portal"
 DialogueLookup[DialogueLookup_n + 18] = "pdr_ground_zero_intro_a"
 DialogueLookup[DialogueLookup_n + 19] = "pdr_ground_zero_intro_b"
 DialogueLookup[DialogueLookup_n + 20] = "pdr_ground_zero_intro_c"
-DialogueLookup_n = DialogueLookup_n + 20
+DialogueLookup[DialogueLookup_n + 21] = "ebh_level_ground_zero_lord_intro"
+DialogueLookup[DialogueLookup_n + 22] = "ebh_level_ground_zero_lord_spawn_enemies"
+DialogueLookup[DialogueLookup_n + 23] = "ebh_level_ground_zero_lord_banter"
+DialogueLookup[DialogueLookup_n + 24] = "ebh_level_ground_zero_lord_insect_spell"
+DialogueLookup[DialogueLookup_n + 25] = "ebh_level_ground_zero_lord_retaliation_missile"
+DialogueLookup_n = DialogueLookup_n + 25
 
 return 

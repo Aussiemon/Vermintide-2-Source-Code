@@ -133,6 +133,8 @@ BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboa
 		BTSpawnAllies._spawn(self, unit, final_phase_data, blackboard, t)
 
 		final_phase_data.spawn_allies_timer = t + action.spawn_allies_cooldown
+
+		Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "egs_summon", DialogueSettings.default_hear_distance)
 	end
 
 	ready_to_summon = self.update_regular_spells(self, unit, blackboard, t)
@@ -142,6 +144,7 @@ end
 BTGreySeerGroundCombatAction.update_regular_spells = function (self, unit, blackboard, t)
 	local spell_data = blackboard.spell_data
 	local ready_to_summon = nil
+	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local warp_lightning_timer = spell_data.warp_lightning_spell_timer
 	local vemintide_timer = spell_data.vermintide_spell_timer
 	local teleport_timer = spell_data.teleport_spell_timer
@@ -151,14 +154,23 @@ BTGreySeerGroundCombatAction.update_regular_spells = function (self, unit, black
 		blackboard.current_spell_name = "warp_lightning"
 		ready_to_summon = true
 		spell_data.warp_lightning_spell_timer = t + spell_data.warp_lightning_spell_cooldown
+		local event_data = FrameTable.alloc_table()
+
+		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_cast_lightning", event_data)
 	elseif vemintide_timer < t then
 		blackboard.current_spell_name = "vermintide"
 		ready_to_summon = true
 		spell_data.vermintide_spell_timer = t + spell_data.vermintide_spell_cooldown
+		local event_data = FrameTable.alloc_table()
+
+		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_cast_vermintide", event_data)
 	elseif teleport_timer < t and blackboard.quick_teleport and current_phase < 4 then
 		blackboard.current_spell_name = "teleport"
 		ready_to_summon = true
 		spell_data.teleport_spell_timer = t + spell_data.teleport_spell_cooldown
+		local event_data = FrameTable.alloc_table()
+
+		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_teleport_away", event_data)
 	end
 
 	return ready_to_summon

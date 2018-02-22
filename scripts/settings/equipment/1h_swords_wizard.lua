@@ -273,6 +273,7 @@ weapon_template.actions = {
 			use_target = false,
 			additional_critical_strike_chance = 0,
 			headshot_multiplier = 2,
+			damage_profile = "medium_burning_tank",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.27,
 			impact_sound_event = "fire_hit",
@@ -339,60 +340,7 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
-			end,
-			critical_strike = {},
-			armour_modifier = {
-				attack = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
-				},
-				impact = {
-					1,
-					1,
-					2.5,
-					1,
-					1.5
-				}
-			},
-			cleave_distribution = {
-				attack = 0.2,
-				impact = 0.5
-			},
-			default_target = {
-				dot_template_name = "burning_1W_dot",
-				boost_curve_type = "tank_curve",
-				boost_curve_coefficient = 0.3,
-				attack_template = "burning_tank",
-				power_distribution = {
-					attack = 0.3,
-					impact = 0.25
-				}
-			},
-			targets = {
-				{
-					dot_template_name = "burning_1W_dot",
-					boost_curve_type = "tank_curve",
-					boost_curve_coefficient = 0.3,
-					attack_template = "burning_tank",
-					power_distribution = {
-						attack = 0.5,
-						impact = 0.25
-					}
-				},
-				{
-					dot_template_name = "burning_1W_dot",
-					boost_curve_type = "tank_curve",
-					boost_curve_coefficient = 0.3,
-					attack_template = "burning_tank",
-					power_distribution = {
-						attack = 0.5,
-						impact = 0.25
-					}
-				}
-			}
+			end
 		},
 		heavy_attack_right = {
 			damage_window_start = 0.15,
@@ -403,6 +351,7 @@ weapon_template.actions = {
 			use_target = false,
 			additional_critical_strike_chance = 0,
 			headshot_multiplier = 2,
+			damage_profile = "medium_burning_tank",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.27,
 			impact_sound_event = "fire_hit",
@@ -469,85 +418,30 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
-			end,
-			critical_strike = {},
-			armour_modifier = {
-				attack = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
-				},
-				impact = {
-					1,
-					1,
-					2.5,
-					1,
-					1.5
-				}
-			},
-			cleave_distribution = {
-				attack = 0.2,
-				impact = 0.5
-			},
-			default_target = {
-				dot_template_name = "burning_1W_dot",
-				boost_curve_type = "tank_curve",
-				boost_curve_coefficient = 0.3,
-				attack_template = "burning_tank",
-				power_distribution = {
-					attack = 0.3,
-					impact = 0.25
-				}
-			},
-			targets = {
-				{
-					dot_template_name = "burning_1W_dot",
-					boost_curve_type = "tank_curve",
-					boost_curve_coefficient = 0.3,
-					attack_template = "burning_tank",
-					power_distribution = {
-						attack = 0.5,
-						impact = 0.25
-					}
-				},
-				{
-					dot_template_name = "burning_1W_dot",
-					boost_curve_type = "tank_curve",
-					boost_curve_coefficient = 0.3,
-					attack_template = "burning_tank",
-					power_distribution = {
-						attack = 0.5,
-						impact = 0.25
-					}
-				}
-			}
+			end
 		},
 		heavy_attack_spell = {
-			forward_offset = 1.5,
-			push_template = "shield_slam",
-			no_damage_impact_sound_event = "fire_hit_armour",
-			kind = "shield_slam",
-			boost_curve_type = "tank_curve",
 			push_radius = 2.5,
+			forward_offset = 1.5,
+			kind = "shield_slam",
+			no_damage_impact_sound_event = "fire_hit_armour",
+			damage_profile = "dagger_burning_slam",
+			armor_impact_sound_event = "fire_hit_armour",
+			hit_time = 0.35,
+			aim_assist_ramp_multiplier = 0.2,
+			hit_effect = "fireball_impact",
+			aim_assist_max_ramp_multiplier = 0.4,
 			aim_assist_ramp_decay_delay = 0.1,
 			additional_critical_strike_chance = 0,
-			push_attack_template = "shield_slam",
-			anim_end_event = "attack_finished",
-			aim_assist_max_ramp_multiplier = 0.4,
-			aoe_damage = true,
-			aim_assist_ramp_multiplier = 0.2,
-			anim_event = "attack_swing_right_spell",
-			attack_template = "flame_blast",
-			armor_impact_sound_event = "fire_hit_armour",
-			hit_effect = "melee_hit_hammers_2h",
-			hit_time = 0.35,
 			impact_sound_event = "fire_hit",
 			charge_value = "heavy_attack",
-			boost_curve_coefficient = 0.3,
+			anim_end_event = "attack_finished",
+			damage_profile_aoe = "dagger_burning_slam_aoe",
+			impact_particle_effect = "fx/wpnfx_staff_spear_impact",
 			dedicated_target_range = 2,
+			aoe_damage = true,
 			uninterruptible = false,
+			anim_event = "attack_swing_right_spell",
 			total_time = 1.5,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -621,31 +515,6 @@ weapon_template.actions = {
 					2.5,
 					1,
 					1.5
-				}
-			},
-			cleave_distribution = {
-				attack = 0.01,
-				impact = 0.79
-			},
-			target_settings = {
-				dot_template_name = "burning_1W_dot",
-				boost_curve_type = "tank_curve",
-				boost_curve_coefficient = 0.3,
-				attack_template = "flame_blast",
-				power_distribution = {
-					attack = 0.5,
-					impact = 0.5
-				}
-			},
-			aoe_target_settings = {
-				dot_template_name = "burning_1W_dot",
-				dead_attack_template = "flame_blast",
-				boost_curve_type = "tank_curve",
-				boost_curve_coefficient = 0.3,
-				attack_template = "flame_blast",
-				power_distribution = {
-					attack = 0.25,
-					impact = 0.4
 				}
 			}
 		},

@@ -1,68 +1,89 @@
 StateTitleScreenMainMenu = class(StateTitleScreenMainMenu)
 StateTitleScreenMainMenu.NAME = "StateTitleScreenMainMenu"
-local menu_functions = {
-	function (this)
-		this._input_disabled = true
+local menu_functions = nil
 
-		Managers.transition:show_loading_icon(false)
-		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done"))
-		Managers.music:trigger_event("hud_menu_start_game")
+if script_data.honduras_demo then
+	menu_functions = {
+		function (this)
+			this._input_disabled = true
 
-		return 
-	end,
-	function (this)
-		this._input_disabled = true
+			Managers.transition:show_loading_icon(false)
+			Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", DemoSettings.demo_level))
+			Managers.music:trigger_event("hud_menu_start_game")
 
-		Managers.transition:show_loading_icon(false)
-		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "tutorial"))
-		Managers.music:trigger_event("hud_menu_start_game")
+			return 
+		end
+	}
+else
+	menu_functions = {
+		function (this)
+			this._input_disabled = true
 
-		return 
-	end,
-	function (this)
-		local input_manager = Managers.input
+			Managers.transition:show_loading_icon(false)
+			Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done"))
+			Managers.music:trigger_event("hud_menu_start_game")
 
-		input_manager.block_device_except_service(input_manager, "options_menu", "gamepad")
-		this.activate_view(this, "options_view")
+			return 
+		end,
+		function (this)
+			this._input_disabled = true
 
-		return 
-	end,
-	function (this)
-		this.activate_view(this, "credits_view")
+			Managers.transition:show_loading_icon(false)
+			Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "tutorial"))
+			Managers.music:trigger_event("hud_menu_start_game")
 
-		return 
-	end,
-	function (this)
-		this._input_disabled = true
+			return 
+		end,
+		function (this)
+			local input_manager = Managers.input
 
-		Managers.transition:show_loading_icon(false)
-		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "ai_benchmark"))
+			input_manager.block_device_except_service(input_manager, "options_menu", "gamepad")
+			this.activate_view(this, "options_view")
 
-		return 
-	end,
-	function (this)
-		this._input_disabled = true
+			return 
+		end,
+		function (this)
+			this.activate_view(this, "credits_view")
 
-		Managers.transition:show_loading_icon(false)
-		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "ai_benchmark_cycle"))
+			return 
+		end,
+		function (this)
+			this._input_disabled = true
 
-		return 
-	end,
-	function (this)
-		this._input_disabled = true
+			Managers.transition:show_loading_icon(false)
+			Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "ai_benchmark"))
 
-		Managers.transition:show_loading_icon(false)
-		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "whitebox_combat"))
+			return 
+		end,
+		function (this)
+			this._input_disabled = true
 
-		return 
-	end
-}
+			Managers.transition:show_loading_icon(false)
+			Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "ai_benchmark_cycle"))
+
+			return 
+		end,
+		function (this)
+			this._input_disabled = true
+
+			Managers.transition:show_loading_icon(false)
+			Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(this, "cb_fade_in_done", "whitebox_combat"))
+
+			return 
+		end
+	}
+end
+
 StateTitleScreenMainMenu.on_enter = function (self, params)
 	self._params = params
 	self._world = params.world
 	self._viewport = params.viewport
 	self._title_start_ui = params.ui
 	self._auto_start = params.auto_start
+
+	if script_data.honduras_demo then
+		Wwise.set_state("menu_mute_ingame_sounds", "false")
+	end
 
 	self._setup_sound()
 	self._setup_input(self)
@@ -106,6 +127,17 @@ StateTitleScreenMainMenu._setup_sound = function (self)
 
 	return 
 end
+StateTitleScreenMainMenu.cb_camera_animation_complete = function (self)
+	ShowCursorStack.push()
+	self._title_start_ui:activate_career_ui(true)
+
+	return 
+end
+StateTitleScreenMainMenu.cb_camera_animation_complete_back = function (self)
+	self._new_state = StateTitleScreenMain
+
+	return 
+end
 StateTitleScreenMainMenu._setup_input = function (self)
 	local input_manager = Managers.input
 	self.input_manager = input_manager
@@ -119,10 +151,17 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 		input_manager = Managers.input,
 		world_manager = Managers.world
 	}
-	self._views = {
-		credits_view = CreditsView:new(view_context),
-		options_view = OptionsView:new(view_context)
-	}
+
+	if script_data.honduras_demo then
+		self._title_start_ui:animate_to_camera(DemoSettings.camera_end_position, nil, callback(self, "cb_camera_animation_complete"))
+
+		self._views = {}
+	else
+		self._views = {
+			credits_view = CreditsView:new(view_context),
+			options_view = OptionsView:new(view_context)
+		}
+	end
 
 	for name, view in pairs(self._views) do
 		view.exit = function ()
@@ -179,45 +218,12 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 		Profiler.stop(active_view)
 		title_start_ui.update(title_start_ui, dt, t, BACKGROUND_ONLY)
 	else
-		local input_service = self.input_manager:get_service("main_menu")
-
 		title_start_ui.update(title_start_ui, dt, t)
 
-		local current_menu_index = title_start_ui.current_menu_index(title_start_ui)
-		local active_menu_selection = title_start_ui.active_menu_selection(title_start_ui)
-		local active_controller = Managers.account:active_controller()
-
-		if active_menu_selection and not self._input_disabled and not has_popup and not user_detached and not self._popup_id then
-			if current_menu_index and input_service.get(input_service, "start") then
-				menu_functions[current_menu_index](self)
-			elseif active_controller.pressed(active_controller.button_index("b")) then
-				self.parent:show_menu(false)
-
-				self._new_state = StateTitleScreenMain
-			elseif active_controller.pressed(active_controller.button_index("x")) then
-				local controller_id = tonumber(string.gsub(active_controller._name, "Pad", ""), 10)
-
-				XboxLive.show_account_picker(controller_id)
-
-				local error, device_id, user_id_from, user_id_to = XboxLive.show_account_picker_result()
-
-				while error do
-					XboxLive.show_account_picker(controller_id)
-
-					error, device_id, user_id_from, user_id_to = XboxLive.show_account_picker_result()
-				end
-
-				if user_id_to == user_id_from and not user_id_to ~= AccountManager.SIGNED_OUT then
-					return 
-				elseif user_id_to ~= AccountManager.SIGNED_OUT then
-					self._params.switch_user_auto_sign_in = true
-				end
-
-				self.parent:show_menu(false)
-				self._title_start_ui:set_start_pressed(false)
-
-				self._new_state = StateTitleScreenMain
-			end
+		if script_data.honduras_demo then
+			self._update_demo_input(self, dt, t)
+		else
+			self._update_input(self, dt, t)
 		end
 	end
 
@@ -246,6 +252,113 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 
 	return self._new_state
 end
+StateTitleScreenMainMenu._update_input = function (self, dt, t)
+	local input_service = self.input_manager:get_service("main_menu")
+	local current_menu_index = self._title_start_ui:current_menu_index()
+	local active_menu_selection = self._title_start_ui:active_menu_selection()
+	local has_popup = Managers.popup:has_popup()
+	local user_detached = Managers.account:user_detached()
+	local active_controller = Managers.account:active_controller()
+
+	if active_menu_selection and not self._input_disabled and not has_popup and not user_detached and not self._popup_id then
+		if current_menu_index and input_service.get(input_service, "start") then
+			menu_functions[current_menu_index](self)
+		elseif input_service.get(input_service, "back") then
+			self.parent:show_menu(false)
+
+			self._new_state = StateTitleScreenMain
+		elseif active_controller.pressed(active_controller.button_index("x")) then
+			local controller_id = tonumber(string.gsub(active_controller._name, "Pad", ""), 10)
+
+			XboxLive.show_account_picker(controller_id)
+
+			local error, device_id, user_id_from, user_id_to = XboxLive.show_account_picker_result()
+
+			while error do
+				XboxLive.show_account_picker(controller_id)
+
+				error, device_id, user_id_from, user_id_to = XboxLive.show_account_picker_result()
+			end
+
+			if user_id_to == user_id_from and not user_id_to ~= AccountManager.SIGNED_OUT then
+				return 
+			elseif user_id_to ~= AccountManager.SIGNED_OUT then
+				self._params.switch_user_auto_sign_in = true
+			end
+
+			self.parent:show_menu(false)
+			self._title_start_ui:set_start_pressed(false)
+
+			self._new_state = StateTitleScreenMain
+		end
+	end
+
+	return 
+end
+StateTitleScreenMainMenu._update_demo_input = function (self, dt, t)
+	local demo_ui = self._title_start_ui
+	local input_service = self.input_manager:get_service("main_menu")
+	local has_popup = Managers.popup:has_popup()
+	local user_detached = Managers.account:user_detached()
+	local active_controller = Managers.account:active_controller()
+
+	if demo_ui.should_start(demo_ui) and not self._input_disabled then
+		local profile_name, career_index = demo_ui.selected_profile(demo_ui)
+		self._input_disabled = true
+
+		Managers.transition:show_loading_icon(false)
+		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(self, "cb_fade_in_done", DemoSettings.demo_level, nil, profile_name))
+		Managers.music:trigger_event("hud_menu_start_game")
+
+		return 
+	end
+
+	if Managers.time:get_demo_transition() and not demo_ui.in_transition(demo_ui) then
+		demo_ui.animate_to_camera(demo_ui, DemoSettings.starting_camera_name, nil, callback(self, "cb_camera_animation_complete_back"))
+		demo_ui.activate_career_ui(demo_ui, false)
+		self.parent:show_menu(false)
+	end
+
+	if not self._input_disabled and not has_popup and not user_detached and not self._popup_id then
+		if input_service.get(input_service, "back") then
+			if not demo_ui.in_transition(demo_ui) then
+				demo_ui.animate_to_camera(demo_ui, DemoSettings.starting_camera_name, nil, callback(self, "cb_camera_animation_complete_back"))
+				demo_ui.activate_career_ui(demo_ui, false)
+				self.parent:show_menu(false)
+
+				self._new_state = StateTitleScreenMain
+			end
+		elseif active_controller.pressed(active_controller.button_index("x")) and not demo_ui.in_transition(demo_ui) then
+			local controller_id = tonumber(string.gsub(active_controller._name, "Pad", ""), 10)
+
+			XboxLive.show_account_picker(controller_id)
+
+			local error, device_id, user_id_from, user_id_to = XboxLive.show_account_picker_result()
+
+			while error do
+				XboxLive.show_account_picker(controller_id)
+
+				error, device_id, user_id_from, user_id_to = XboxLive.show_account_picker_result()
+			end
+
+			if user_id_to == user_id_from and not user_id_to ~= AccountManager.SIGNED_OUT then
+				return 
+			elseif user_id_to ~= AccountManager.SIGNED_OUT then
+				self._params.switch_user_auto_sign_in = true
+			end
+
+			self.parent:show_menu(false)
+			demo_ui.set_start_pressed(demo_ui, false)
+
+			self._new_state = StateTitleScreenMain
+
+			demo_ui.animate_to_camera(demo_ui, DemoSettings.starting_camera_name, nil, callback(self, "cb_camera_animation_complete_back"))
+			demo_ui.activate_career_ui(demo_ui, false)
+		end
+	end
+
+	return 
+end
 StateTitleScreenMainMenu._update_play_go = function (self, dt, t)
 	if self._is_installed then
 		return 
@@ -272,7 +385,7 @@ StateTitleScreenMainMenu.on_exit = function (self)
 
 	return 
 end
-StateTitleScreenMainMenu.cb_fade_in_done = function (self, level_key, disable_trailer)
+StateTitleScreenMainMenu.cb_fade_in_done = function (self, level_key, disable_trailer, profile_name)
 	self.parent.state = StateLoading
 	local loading_context = self.parent.parent.loading_context
 	loading_context.restart_network = true
@@ -288,6 +401,10 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self, level_key, disable_tr
 		loading_context.wanted_profile_index = 4
 		loading_context.gamma_correct = not SaveData.gamma_corrected
 		loading_context.play_trailer = false
+	elseif script_data.honduras_demo then
+		self.parent.parent.loading_context.wanted_profile_index = (profile_name and FindProfileIndex(profile_name)) or DemoSettings.wanted_profile_index
+		GameSettingsDevelopment.disable_free_flight = DemoSettings.disable_free_flight
+		GameSettingsDevelopment.disable_intro_trailer = DemoSettings.disable_intro_trailer
 	elseif not level_key then
 		loading_context.gamma_correct = not SaveData.gamma_corrected
 

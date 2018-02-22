@@ -21,9 +21,11 @@ require("scripts/settings/survival_settings")
 require("scripts/settings/twitch_settings")
 require("scripts/settings/equipment/power_level_templates")
 require("scripts/settings/equipment/damage_profile_templates")
+require("scripts/settings/paintings")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_blob_templates")
 require("scripts/unit_extensions/weapons/area_damage/liquid/damage_wave_templates")
 require("scripts/unit_extensions/weapons/area_damage/liquid/liquid_area_damage_templates")
+require("scripts/settings/equipment/weapon_skins")
 
 DialogueLookup = DialogueLookup or {}
 
@@ -172,6 +174,11 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_witch_hunter_skittergate",
 	"dialogues/generated/lookup_wood_elf_skittergate",
 	"dialogues/generated/lookup_empire_soldier_skittergate",
+	"dialogues/generated/lookup_bright_wizard_bell",
+	"dialogues/generated/lookup_dwarf_ranger_bell",
+	"dialogues/generated/lookup_witch_hunter_bell",
+	"dialogues/generated/lookup_wood_elf_bell",
+	"dialogues/generated/lookup_empire_soldier_bell",
 	"dialogues/generated/lookup_hub_conversations"
 }
 
@@ -290,6 +297,8 @@ NetworkLookup.breeds = {
 	"debug_ai_profile",
 	"skaven_ai_profile",
 	"chaos_marauder",
+	"chaos_marauder_tutorial",
+	"chaos_raider_tutorial",
 	"chaos_fanatic",
 	"chaos_marauder_with_shield",
 	"chaos_berzerker",
@@ -511,6 +520,7 @@ NetworkLookup.husks = {
 NetworkLookup.go_types = {
 	"player",
 	"ai_player",
+	"player_sync_data",
 	"team",
 	"player_unit",
 	"player_bot_unit",
@@ -999,6 +1009,10 @@ NetworkLookup.buff_templates = {
 	"bardin_slayer_activated_ability_movement",
 	"bardin_slayer_attack_speed_on_last_standing_buff",
 	"bardin_slayer_debuff_defence_on_crit",
+	"bardin_slayer_passive_stacking_damage_buff",
+	"bardin_slayer_passive_stacking_defence_buff",
+	"bardin_slayer_passive_stacking_damage_buff_increased_duration",
+	"bardin_slayer_passive_cooldown_reduction_on_max_stacks",
 	"bardin_ranger_activated_ability",
 	"bardin_ranger_crit_hit_damage_on_high_health",
 	"bardin_ranger_defence_on_disabled",
@@ -1008,7 +1022,10 @@ NetworkLookup.buff_templates = {
 	"victor_zealot_activated_ability",
 	"victor_zealot_activated_ability_heal",
 	"victor_zealot_activated_ability_duration",
-	"victor_zealot_defence_on_disabled",
+	"victor_zealot_defence_on_low_health",
+	"victor_zealot_gain_invulnerability_on_lethal_damage_taken",
+	"victor_zealot_invulnerability_cooldown",
+	"victor_zealot_invulnerability_on_lethal_damage_taken",
 	"victor_zealot_passive_attack_speed_aura_buff",
 	"victor_witchhunter_activated_ability",
 	"victor_witchhunter_activated_ability_crit_buff",
@@ -1078,6 +1095,11 @@ NetworkLookup.buff_templates = {
 	"trait_trinket_grenade_damage_taken",
 	"traits_melee_increase_damage_on_block",
 	"properties_curse_resistance"
+}
+NetworkLookup.buff_data_types = {
+	"n/a",
+	"variable_value",
+	"external_optional_multiplier"
 }
 NetworkLookup.group_buff_templates = {
 	"grimoire"
@@ -1534,7 +1556,9 @@ NetworkLookup.dialogue_events = {
 	"falling",
 	"landing",
 	"activate_ability",
-	"flanking"
+	"activate_ability_taunt",
+	"flanking",
+	"reload_failed"
 }
 NetworkLookup.dialogue_event_data_names = {
 	"num_units",
@@ -1575,7 +1599,12 @@ NetworkLookup.dialogue_event_data_names = {
 	"horde",
 	"horde_type",
 	"ambush",
-	"vector"
+	"vector",
+	"item_name",
+	"healthkit_first_aid_kit_01",
+	"ranged_weapon",
+	"fail_reason",
+	"out_of_ammo"
 }
 NetworkLookup.hero_names = {
 	"dwarf_ranger",
@@ -1615,6 +1644,7 @@ NetworkLookup.music_group_states = {
 	"pre_ambush",
 	"horde",
 	"horde_chaos",
+	"pre_ambush_chaos",
 	"no_boss",
 	"rat_ogre",
 	"chaos_spawn",
@@ -1751,6 +1781,9 @@ NetworkLookup.boost_curves = create_lookup({}, BoostCurves)
 NetworkLookup.boons = create_lookup({
 	"n/a"
 }, BoonTemplates)
+NetworkLookup.weapon_skins = create_lookup({
+	"n/a"
+}, WeaponSkins.skins)
 
 local function statistics_path_names(path_names, stat)
 	if not stat.value then
@@ -1790,6 +1823,17 @@ end
 
 NetworkLookup.terror_flow_events = create_lookup({}, flow_events)
 NetworkLookup.inventory_packages = dofile("scripts/network_lookup/inventory_package_list")
+local paintings = {}
+
+for _, orientations in pairs(Paintings) do
+	for _, levels in pairs(orientations) do
+		for _, name in pairs(levels) do
+			paintings[name] = true
+		end
+	end
+end
+
+NetworkLookup.keep_decoration_paintings = create_lookup({}, paintings)
 
 local function init(self, name)
 	for index, str in ipairs(self) do

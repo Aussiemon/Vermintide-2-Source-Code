@@ -810,7 +810,7 @@ BuffFunctionTemplates.functions = {
 				local heal_amount = buff_template.heal_amount
 
 				if health_extension.is_alive(health_extension) then
-					DamageUtils.heal_network(unit, unit, heal_amount, "buff")
+					DamageUtils.heal_network(unit, unit, heal_amount, "career_passive")
 				end
 			end
 
@@ -870,7 +870,7 @@ BuffFunctionTemplates.functions = {
 						local player_and_bot_units = PLAYER_AND_BOT_UNITS
 
 						for i = 1, #player_and_bot_units, 1 do
-							DamageUtils.heal_network(player_and_bot_units[i], unit, heal_amount, "heal_from_proc")
+							DamageUtils.heal_network(player_and_bot_units[i], unit, heal_amount, "career_passive")
 						end
 					else
 						DamageUtils.heal_network(unit, unit, heal_amount, "career_passive")
@@ -940,10 +940,10 @@ BuffFunctionTemplates.functions = {
 			pushed_direction = Vector3.backward()
 		end
 
-		if not breed then
+		if not breed and first_person_extension then
 			local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 			local push_speed = buff_template.push_speed
-			local pushed_velocity = pushed_direction*(push_speed - distance)
+			local pushed_velocity = pushed_direction*math.max(0, push_speed - distance)
 
 			locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
 		end
@@ -1025,11 +1025,13 @@ BuffFunctionTemplates.functions = {
 			pushed_direction = Vector3.backward()
 		end
 
-		local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
-		local push_speed = buff_template.push_speed
-		local pushed_velocity = pushed_direction*push_speed
+		if first_person_extension then
+			local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+			local push_speed = buff_template.push_speed
+			local pushed_velocity = pushed_direction*push_speed
 
-		locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
+			locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
+		end
 
 		buff.warpfire_next_t = params.t
 
@@ -1284,6 +1286,7 @@ BuffFunctionTemplates.functions = {
 				local buff_id = table.remove(stack_ids, 1)
 
 				buff_extension.remove_buff(buff_extension, buff_id)
+				print("removed buff -", buff_to_add)
 
 				amount_removed = amount_removed + 1
 				removed_buff = true
@@ -1326,6 +1329,7 @@ BuffFunctionTemplates.functions = {
 					local buff_id = table.remove(stack_ids, 1)
 
 					buff_extension.remove_buff(buff_extension, buff_id)
+					print("removed buff -", buff_to_add)
 
 					amount_removed = amount_removed + 1
 					removed_buff = true
@@ -1371,6 +1375,7 @@ BuffFunctionTemplates.functions = {
 				local buff_id = table.remove(stack_ids, 1)
 
 				buff_extension.remove_buff(buff_extension, buff_id)
+				print("removed buff -", buff_to_add)
 
 				amount_removed = amount_removed + 1
 				removed_buff = true
@@ -1612,6 +1617,7 @@ BuffFunctionTemplates.functions = {
 			end
 		elseif applied_buff then
 			buff_extension.remove_buff(buff_extension, applied_buff.id)
+			print("removed buff -", buff_to_add)
 
 			removed_buff = true
 		end
@@ -1768,6 +1774,7 @@ BuffFunctionTemplates.functions = {
 				local server_id = buff.server_id
 
 				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
+				print("removed buff -", buff_to_add)
 
 				removed_buff = true
 			end
@@ -1816,6 +1823,7 @@ BuffFunctionTemplates.functions = {
 				local server_id = buff.server_id
 
 				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
+				print("removed buff -", buff_to_add)
 
 				removed_buff = true
 			end
@@ -1861,6 +1869,7 @@ BuffFunctionTemplates.functions = {
 				local server_id = buff.server_id
 
 				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
+				print("removed buff -", buff_to_add)
 
 				removed_buff = true
 			end
@@ -1915,6 +1924,7 @@ BuffFunctionTemplates.functions = {
 					local server_id = buff.server_id
 
 					buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
+					print("removed buff -", buff_to_add)
 
 					removed_buff = true
 				end
@@ -1963,6 +1973,7 @@ BuffFunctionTemplates.functions = {
 				local server_id = buff.server_id
 
 				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
+				print("removed buff -", buff_to_add)
 
 				removed_buff = true
 			end
@@ -2349,7 +2360,6 @@ BuffFunctionTemplates.functions = {
 			local go_id = Managers.state.unit_storage:go_id(unit)
 			local network_manager = Managers.state.network
 			local game = network_manager.game(network_manager)
-			local talent_extension = ScriptUnit.extension(unit, "talent_system")
 
 			if not go_id then
 				return 
@@ -2362,11 +2372,6 @@ BuffFunctionTemplates.functions = {
 
 			if projected_start_pos then
 				local liquid_template_name = "sienna_unchained_ability_patch"
-
-				if talent_extension.has_talent(talent_extension, "sienna_unchained_ability_patch_increased_damage", "bright_wizard", true) then
-					liquid_template_name = "sienna_unchained_ability_patch_increased_damage"
-				end
-
 				local liquid_template_id = NetworkLookup.liquid_area_damage_templates[liquid_template_name]
 				local network_manager = Managers.state.network
 				local invalid_game_object_id = NetworkConstants.invalid_game_object_id
@@ -2507,6 +2512,33 @@ BuffFunctionTemplates.functions = {
 			career_extension.set_state(career_extension, "default")
 
 			MOOD_BLACKBOARD.skill_zealot = false
+		end
+
+		return 
+	end,
+	update_bardin_ironbreaker_activated_ability = function (unit, buff, params)
+		local time_between_vo = 3
+
+		if is_local(unit) then
+			if not params.next_vo_time then
+				params.next_vo_time = params.t + time_between_vo
+			elseif params.next_vo_time <= params.t then
+				params.next_vo_time = params.t + time_between_vo
+				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+				local event_data = FrameTable.alloc_table()
+
+				dialogue_input.trigger_networked_dialogue_event(dialogue_input, "activate_ability_taunt", event_data)
+			end
+		end
+
+		return 
+	end,
+	end_bardin_ironbreaker_activated_ability = function (unit, buff, params)
+		if is_local(unit) then
+			params.next_vo_time = nil
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+
+			career_extension.start_activated_ability_cooldown(career_extension)
 		end
 
 		return 

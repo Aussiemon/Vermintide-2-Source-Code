@@ -1,9 +1,12 @@
 PlayerData = PlayerData or {
 	mission_selection_version = 2,
-	controls_version = 12,
-	new_item_data_version = 1,
+	controls_version = 13,
+	new_item_data_version = 4,
+	new_sign_in_rewards_data_version = 1,
 	mission_selection = {},
 	new_item_ids = {},
+	new_item_ids_by_career = {},
+	new_sign_in_rewards = {},
 	controls = {},
 	recent_irc_channels = {}
 }
@@ -57,7 +60,15 @@ function populate_player_data_from_save(save_data, id, version_match)
 			print("Wrong new_item_data_version for save file, saved: ", player_save_data.new_item_data_version, " current: ", PlayerData.new_item_data_version)
 
 			player_save_data.new_item_ids = {}
+			player_save_data.new_item_ids_by_career = {}
 			player_save_data.new_item_data_version = PlayerData.new_item_data_version
+		end
+
+		if PlayerData.new_sign_in_rewards_data_version ~= player_save_data.new_sign_in_rewards_data_version then
+			print("Wrong new_sign_in_rewards_data_version for save file, saved: ", player_save_data.new_sign_in_rewards_data_version, " current: ", PlayerData.new_sign_in_rewards_data_version)
+
+			player_save_data.new_sign_in_rewards = {}
+			player_save_data.new_sign_in_rewards_data_version = PlayerData.new_sign_in_rewards_data_version
 		end
 	end
 

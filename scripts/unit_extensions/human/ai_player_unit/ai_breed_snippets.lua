@@ -1374,7 +1374,7 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 	blackboard.hit_reaction_extension:set_hit_effect_template_id("HitEffectsSkavenGreySeerMounted")
 
 	blackboard.current_phase = 1
-	blackboard.intro_timer = t + 7.5
+	blackboard.intro_timer = t + 15
 	blackboard.current_hit_reaction_type = "mounted"
 	local conflict_director = Managers.state.conflict
 
@@ -1394,6 +1394,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 	local game = network_manager.game(network_manager)
 	local go_id = Managers.state.unit_storage:go_id(unit)
 	local network_transmit = network_manager.network_transmit
+	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 
 	if blackboard.intro_timer then
 		return 
@@ -1407,9 +1408,12 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		blackboard.current_phase = 2
 	end
 
-	if not AiUtils.unit_alive(mounted_data.mount_unit) then
+	if not AiUtils.unit_alive(mounted_data.mount_unit) and blackboard.current_phase ~= 4 then
 		blackboard.current_phase = 4
 		blackboard.knocked_off_mount = true
+		local event_data = FrameTable.alloc_table()
+
+		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_stormfiend_dead", event_data)
 	end
 
 	if blackboard.unlink_unit then
@@ -1456,6 +1460,9 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		if mounted_timer_finished and not mount_blackboard.goal_position and not mount_blackboard.anim_cb_move then
 			mount_blackboard.goal_destination = Vector3Box(position)
 			mount_blackboard.anim_cb_move = true
+			local event_data = FrameTable.alloc_table()
+
+			dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_calls_mount_battle", event_data)
 		elseif mounted_timer_finished then
 			blackboard.about_to_mount = true
 			local mount_unit_position = POSITION_LOOKUP[mount_unit]

@@ -2,6 +2,7 @@ require("scripts/ui/views/menu_world_previewer")
 require("scripts/ui/views/hero_view/item_grid_ui")
 require("scripts/ui/views/hero_view/states/hero_view_state_overview")
 require("scripts/ui/views/hero_view/states/hero_view_state_loot")
+require("scripts/settings/news_feed_templates")
 
 local definitions = local_require("scripts/ui/views/hero_view/hero_view_definitions")
 local widget_definitions = definitions.widgets_definitions
@@ -500,7 +501,7 @@ end
 HeroView._has_active_level_vote = function (self)
 	local voting_manager = self.voting_manager
 	local active_vote_name = voting_manager.vote_in_progress(voting_manager)
-	local is_mission_vote = active_vote_name == "vote_for_level"
+	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
 
 	return is_mission_vote
 end

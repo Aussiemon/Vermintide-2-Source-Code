@@ -558,6 +558,15 @@ StartGameStateSettingsOverview.is_private_option_enabled = function (self)
 	return self._is_game_private
 end
 StartGameStateSettingsOverview.set_difficulty_option = function (self, difficulty_key)
+	if difficulty_key ~= nil then
+		local human_players = Managers.player:human_players()
+		local players_below_difficulty = DifficultyManager.players_below_required_power_level(difficulty_key, human_players)
+
+		if 0 < #players_below_difficulty then
+			difficulty_key = nil
+		end
+	end
+
 	if self._layout_save_settings then
 		self._layout_save_settings.difficulty_key = difficulty_key
 	end

@@ -20,6 +20,7 @@ CareerAbilityESMercenary.extensions_ready = function (self, world, unit)
 	self._status_extension = ScriptUnit.extension(unit, "status_system")
 	self._career_extension = ScriptUnit.extension(unit, "career_system")
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
+	self._input_extension = ScriptUnit.has_extension(unit, "input_system")
 
 	if self._first_person_extension then
 		self._first_person_unit = self._first_person_extension:get_first_person_unit()
@@ -35,22 +36,26 @@ CareerAbilityESMercenary.update = function (self, unit, input, dt, context, t)
 		return 
 	end
 
-	local input_service = self._input_manager:get_service("Player")
+	local input_extension = self._input_extension
+
+	if not input_extension then
+		return 
+	end
 
 	if not self._is_priming then
-		if input_service.get(input_service, "function_career") then
+		if input_extension.get(input_extension, "function_career") then
 			self._start_priming(self)
 		end
 	elseif self._is_priming then
 		self._update_priming(self, dt)
 
-		if input_service.get(input_service, "action_two") then
+		if input_extension.get(input_extension, "action_two") then
 			self._stop_priming(self)
 
 			return 
 		end
 
-		if input_service.get(input_service, "function_career_release") then
+		if input_extension.get(input_extension, "function_career_release") then
 			self._run_ability(self)
 		end
 	end
@@ -145,11 +150,18 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 		end
 	end
 
+	if talent_extension.has_talent(talent_extension, "markus_mercenary_activated_ability_improved_healing") then
+		heal_amount = 40
+	end
+
 	for _, player_unit in pairs(nearby_player_units) do
 		local unit_go_id = network_manager.unit_game_object_id(network_manager, player_unit)
 
 		if unit_go_id then
 			network_transmit.send_rpc_server(network_transmit, "rpc_request_heal", unit_go_id, heal_amount, heal_type_id)
+			print(heal_amount)
+			print(heal_amount)
+			print(heal_amount)
 		end
 	end
 

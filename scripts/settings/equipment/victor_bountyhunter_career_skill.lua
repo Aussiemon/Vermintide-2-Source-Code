@@ -8,7 +8,7 @@ weapon_template.actions = {
 			weapon_action_hand = "left",
 			uninterruptible = true,
 			anim_event = "bounty_hunter_ability_draw",
-			minimum_hold_time = 0.3,
+			minimum_hold_time = 0.37,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -28,7 +28,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.37,
 					action = "action_career_hold",
 					input = "action_career_hold",
 					end_time = math.huge
@@ -87,7 +87,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.3,
+					start_time = 0.35,
 					action = "action_career_release",
 					auto_chain = true
 				}
@@ -126,7 +126,7 @@ weapon_template.actions = {
 			charge_value = "projectile",
 			damage_profile_aoe = "shield_slam_aoe",
 			uninterruptible = true,
-			total_time = 0.63,
+			total_time = 0.66,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,

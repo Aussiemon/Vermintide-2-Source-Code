@@ -21,9 +21,9 @@ local breed_data = {
 	max_health = {
 		30,
 		30,
-		40,
-		50,
-		60
+		45,
+		60,
+		90
 	},
 	stagger_duration = {
 		1,

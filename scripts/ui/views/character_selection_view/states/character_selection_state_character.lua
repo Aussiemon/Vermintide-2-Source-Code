@@ -760,6 +760,12 @@ CharacterSelectionStateCharacter._start_transition_animation = function (self, k
 	return 
 end
 CharacterSelectionStateCharacter._change_profile = function (self, profile_index, career_index)
+	local profile_synchronizer = self.profile_synchronizer
+
+	if profile_synchronizer.has_pending_request(profile_synchronizer) then
+		return 
+	end
+
 	local peer_id = self.peer_id
 	local player = self.player_manager:player_from_peer_id(peer_id)
 
@@ -768,7 +774,7 @@ CharacterSelectionStateCharacter._change_profile = function (self, profile_index
 
 		player.despawn(player)
 	else
-		self.profile_synchronizer:request_select_profile(profile_index, self.local_player_id)
+		profile_synchronizer.request_select_profile(profile_synchronizer, profile_index, self.local_player_id)
 	end
 
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")

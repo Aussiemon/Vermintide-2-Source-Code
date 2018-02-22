@@ -41,8 +41,8 @@ CraftPageExtractSkin.on_enter = function (self, params, settings)
 
 	self._craft_items = {}
 	self._material_items = {}
-	self._item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid)
-	self._recipe_grid = ItemGridUI:new(category_settings, self._widgets_by_name.recipe_grid)
+	self._item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
+	self._recipe_grid = ItemGridUI:new(category_settings, self._widgets_by_name.recipe_grid, self.hero_name, self.career_index)
 
 	self._item_grid:disable_locked_items(true)
 	self._item_grid:mark_locked_items(true)

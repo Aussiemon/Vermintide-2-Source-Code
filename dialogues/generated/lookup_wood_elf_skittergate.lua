@@ -31,6 +31,11 @@ assert(DialogueLookup[DialogueLookup_n + 30] == nil)
 assert(DialogueLookup[DialogueLookup_n + 31] == nil)
 assert(DialogueLookup[DialogueLookup_n + 32] == nil)
 assert(DialogueLookup[DialogueLookup_n + 33] == nil)
+assert(DialogueLookup[DialogueLookup_n + 34] == nil)
+assert(DialogueLookup[DialogueLookup_n + 35] == nil)
+assert(DialogueLookup[DialogueLookup_n + 36] == nil)
+assert(DialogueLookup[DialogueLookup_n + 37] == nil)
+assert(DialogueLookup[DialogueLookup_n + 38] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pwe_level_skittergate_elevator_01"
 DialogueLookup[DialogueLookup_n + 2] = "pwe_level_skittergate_crater_01"
@@ -65,6 +70,11 @@ DialogueLookup[DialogueLookup_n + 30] = "pwe_level_skittergate_tunnel_collapses_
 DialogueLookup[DialogueLookup_n + 31] = "pwe_skittergate_intro_a"
 DialogueLookup[DialogueLookup_n + 32] = "pwe_skittergate_intro_b"
 DialogueLookup[DialogueLookup_n + 33] = "pwe_skittergate_intro_c"
-DialogueLookup_n = DialogueLookup_n + 33
+DialogueLookup[DialogueLookup_n + 34] = "pwe_level_skittergate_rasknitt_gate_reply"
+DialogueLookup[DialogueLookup_n + 35] = "pwe_level_skittergate_rasknitt_dismounted_one"
+DialogueLookup[DialogueLookup_n + 36] = "pwe_level_skittergate_rasknitt_death_rattler_invulnerable"
+DialogueLookup[DialogueLookup_n + 37] = "pwe_level_skittergate_rasknitt_interrupt_and_focus"
+DialogueLookup[DialogueLookup_n + 38] = "pwe_level_skittergate_rasknitt_stormfiend_dead"
+DialogueLookup_n = DialogueLookup_n + 38
 
 return 

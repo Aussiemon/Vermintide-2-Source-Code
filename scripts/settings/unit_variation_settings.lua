@@ -1729,6 +1729,7 @@ UnitVariationSettings.chaos_raider = {
 		}
 	}
 }
+UnitVariationSettings.chaos_raider_tutorial = table.create_copy(UnitVariationSettings.chaos_raider_tutorial, UnitVariationSettings.chaos_raider)
 UnitVariationSettings.chaos_zombie = {
 	enabled_from_start = {
 		"gut",

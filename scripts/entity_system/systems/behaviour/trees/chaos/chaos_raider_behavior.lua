@@ -138,5 +138,69 @@ BreedBehaviors.raider = {
 	},
 	name = "horde"
 }
+BreedBehaviors.raider_tutorial = {
+	"BTSelector",
+	{
+		"BTSpawningAction",
+		condition = "spawn",
+		name = "spawn"
+	},
+	{
+		"BTFallAction",
+		condition = "is_falling",
+		name = "falling"
+	},
+	{
+		"BTStaggerAction",
+		name = "stagger",
+		condition = "stagger",
+		action_data = ACTIONS.stagger
+	},
+	{
+		"BTBlockedAction",
+		name = "blocked",
+		condition = "blocked",
+		action_data = ACTIONS.blocked
+	},
+	CHAOS_RAIDER_SMART_OBJECT,
+	{
+		"BTUtilityNode",
+		{
+			"BTClanRatFollowAction",
+			name = "follow",
+			action_data = ACTIONS.follow
+		},
+		{
+			"BTStormVerminAttackAction",
+			name = "special_attack_cleave_tutorial",
+			weight = 1,
+			action_data = ACTIONS.special_attack_cleave_tutorial
+		},
+		condition = "confirmed_player_sighting",
+		name = "in_combat"
+	},
+	{
+		"BTAlertedAction",
+		name = "alerted",
+		condition = "player_spotted",
+		action_data = ACTIONS.alerted
+	},
+	{
+		"BTMoveToGoalAction",
+		name = "move_to_goal",
+		condition = "has_goal_destination",
+		action_data = ACTIONS.follow
+	},
+	{
+		"BTIdleAction",
+		condition = "no_target",
+		name = "idle"
+	},
+	{
+		"BTFallbackIdleAction",
+		name = "fallback_idle"
+	},
+	name = "horde"
+}
 
 return 

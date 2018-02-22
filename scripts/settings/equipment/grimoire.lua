@@ -2,6 +2,32 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		default = {
+			kind = "melee_start",
+			weapon_action_hand = "left",
+			total_time = math.huge,
+			allowed_chain_actions = {
+				{
+					sub_action = "dummy_action",
+					start_time = 0,
+					action = "action_one",
+					end_time = 0.4,
+					input = "action_one_release"
+				},
+				{
+					sub_action = "action_throw",
+					start_time = 0.5,
+					action = "action_one",
+					auto_chain = true
+				}
+			}
+		},
+		dummy_action = {
+			kind = "dummy",
+			weapon_action_hand = "left",
+			total_time = 0,
+			allowed_chain_actions = {}
+		},
+		action_throw = {
 			kind = "throw_grimoire",
 			ammo_usage = 1,
 			anim_end_event = "attack_finished",

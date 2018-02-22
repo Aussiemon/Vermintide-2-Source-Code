@@ -265,13 +265,21 @@ local action_data = {
 		}
 	},
 	jump = {
-		ignore_staggers = {
-			true,
-			true,
-			true,
-			true,
-			true,
-			true
+		difficulty_jump_delay_time = {
+			0.3,
+			0.3,
+			0.25,
+			0.2,
+			0.15
+		}
+	},
+	prepare_crazy_jump = {
+		difficulty_prepare_jump_time = {
+			0.45,
+			0.45,
+			0.4,
+			0.35,
+			0.25
 		}
 	},
 	ninja_vanish = {

@@ -49,9 +49,11 @@ local buff_tweak_data = {
 	victor_zealot_damage_taken_capped = {
 		bonus = 25
 	},
-	victor_zealot_defence_on_low_health = {
-		activation_multiplier = -0.25,
+	victor_zealot_increased_defence_low_health = {
 		activation_health = 0.3
+	},
+	victor_zealot_defence_on_low_health = {
+		multiplier = -0.25
 	},
 	victor_zealot_increased_block_arc_from_passive = {
 		chunk_size = 25
@@ -110,7 +112,7 @@ local buff_tweak_data = {
 		duration = 10
 	},
 	victor_bountyhunter_passive_increased_ammunition = {
-		multiplier = 1.5
+		multiplier = 1
 	},
 	victor_bountyhunter_reduced_spread = {
 		multiplier = -0.25
@@ -124,9 +126,6 @@ local buff_tweak_data = {
 	victor_bountyhunter_revive_speed = {
 		multiplier = 0.3
 	},
-	victor_bountyhunter_melee_damage_on_no_ammo = {
-		activation_health = 0.5
-	},
 	victor_bountyhunter_melee_damage_on_no_ammo_buff = {
 		multiplier = 0.1
 	},
@@ -137,13 +136,13 @@ local buff_tweak_data = {
 		duration = 7
 	},
 	victor_bountyhunter_heal_on_critical_hit = {
-		bonus = 10
+		bonus = 2
 	},
 	victor_bountyhunter_attack_speed = {
 		multiplier = 0.05
 	},
 	victor_bountyhunter_heal_on_ranged_headshot = {
-		bonus = 2
+		bonus = 5
 	},
 	victor_bountyhunter_activated_ability_cooldown = {
 		multiplier = -0.3
@@ -187,7 +186,7 @@ local buff_tweak_data = {
 		multiplier = 0.25
 	},
 	victor_witchhunter_headshot_damage_increase = {
-		multiplier = 1.25
+		multiplier = 0.25
 	},
 	victor_witchhunter_defence_buff_on_disabled = {
 		multiplier = -0.5
@@ -550,7 +549,7 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				max_stacks = 1,
-				icon = "trait_icon_targeteer",
+				icon = "victor_bountyhunter_passive",
 				dormant = true,
 				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE_RANGED
 			}
@@ -581,7 +580,7 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				refresh_durations = true,
 				is_cooldown = true,
-				icon = "trait_icon_targeteer",
+				icon = "victor_bountyhunter_passive",
 				dormant = true,
 				delayed_buff_name = "victor_bountyhunter_passive_crit_buff"
 			}
@@ -641,7 +640,7 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				max_stacks = 1,
-				icon = "icons_placeholder",
+				icon = "victor_bountyhunter_melee_damage_on_no_ammo",
 				stat_buff = StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE
 			}
 		}
@@ -660,7 +659,7 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				refresh_durations = true,
 				is_cooldown = true,
-				icon = "trait_icon_targeteer",
+				icon = "victor_bountyhunter_passive",
 				dormant = true,
 				delayed_buff_name = "victor_bountyhunter_passive_crit_buff"
 			}
@@ -689,7 +688,7 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				max_stacks = 1,
-				icon = "icons_placeholder"
+				icon = "victor_bountyhunter_passive_infinite_ammo"
 			}
 		}
 	},
@@ -1092,7 +1091,7 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_zealot_damage_on_enemy_proximity_desc",
+		description = "victor_zealot_increased_damage_on_enemy_proximity_desc",
 		name = "victor_zealot_increased_damage_on_enemy_proximity",
 		num_ranks = 1,
 		icon = "icons_placeholder",
@@ -1137,11 +1136,11 @@ Talents.witch_hunter = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.victor_zealot_defence_on_low_health.activation_health
+				value = buff_tweak_data.victor_zealot_defence_on_low_health.multiplier
 			},
 			{
 				value_type = "percent",
-				value = buff_tweak_data.victor_zealot_defence_on_low_health.activation_multiplier
+				value = buff_tweak_data.victor_zealot_increased_defence_low_health.activation_health
 			}
 		},
 		requirements = {},
@@ -1344,7 +1343,7 @@ Talents.witch_hunter = {
 		description = "victor_bountyhunter_reduced_spread_desc",
 		name = "victor_bountyhunter_reduced_spread",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_reduced_spread",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1361,7 +1360,7 @@ Talents.witch_hunter = {
 		description = "victor_bountyhunter_reload_speed_desc",
 		name = "victor_bountyhunter_reload_speed",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_reload_speed",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1378,7 +1377,7 @@ Talents.witch_hunter = {
 		description = "victor_bountyhunter_increased_attack_speed_desc",
 		name = "victor_bountyhunter_increased_attack_speed",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_attack_speed",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1395,7 +1394,7 @@ Talents.witch_hunter = {
 		description = "victor_bountyhunter_revive_speed_desc",
 		name = "victor_bountyhunter_revive_speed",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_revive_speed",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1413,7 +1412,7 @@ Talents.witch_hunter = {
 		name = "victor_bountyhunter_melee_damage_on_no_ammo",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_melee_damage_on_no_ammo",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1431,7 +1430,7 @@ Talents.witch_hunter = {
 		name = "victor_bountyhunter_critical_hit_damage",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_critical_hit_damage_increase",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1449,7 +1448,7 @@ Talents.witch_hunter = {
 		name = "victor_bountyhunter_heal_on_critical_hit",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_heal_on_critical_hit",
 		description_values = {
 			{
 				value = buff_tweak_data.victor_bountyhunter_heal_on_critical_hit.bonus
@@ -1465,7 +1464,7 @@ Talents.witch_hunter = {
 		description = "victor_bountyhunter_passive_reduced_cooldown_desc",
 		name = "victor_bountyhunter_passive_reduced_cooldown",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_passive_reduced_cooldown",
 		description_values = {
 			{
 				value = buff_tweak_data.victor_bountyhunter_passive_reduced_cooldown.duration
@@ -1479,7 +1478,7 @@ Talents.witch_hunter = {
 		description = "victor_bountyhunter_passive_infinite_ammo_desc",
 		name = "victor_bountyhunter_passive_infinite_ammo",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_passive_infinite_ammo",
 		requirements = {},
 		buffs = {
 			"victor_bountyhunter_passive_infinite_ammo"
@@ -1490,7 +1489,7 @@ Talents.witch_hunter = {
 		description = "victor_bountyhunter_attack_speed_desc",
 		name = "victor_bountyhunter_attack_speed",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_attack_speed",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1508,7 +1507,7 @@ Talents.witch_hunter = {
 		name = "victor_bountyhunter_heal_on_ranged_headshot",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_heal_on_critical_hit",
 		description_values = {
 			{
 				value = buff_tweak_data.victor_bountyhunter_heal_on_ranged_headshot.bonus
@@ -1524,7 +1523,7 @@ Talents.witch_hunter = {
 		description = "victor_bountyhunter_activated_ability_cooldown_desc",
 		name = "victor_bountyhunter_activated_ability_cooldown",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_activated_ability_cooldown",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1542,7 +1541,7 @@ Talents.witch_hunter = {
 		name = "victor_bountyhunter_activated_ability_railgun",
 		buffer = "server",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_activated_ability_railgun",
 		requirements = {},
 		buffs = {},
 		buff_data = {}
@@ -1551,7 +1550,7 @@ Talents.witch_hunter = {
 		description = "victor_bountyhunter_activated_ability_shotgun_desc",
 		name = "victor_bountyhunter_activated_ability_shotgun",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_activated_ability_shotgun",
 		description_values = {
 			{
 				value = buff_tweak_data.victor_bountyhunter_activated_ability_shotgun.bonus
@@ -1568,7 +1567,7 @@ Talents.witch_hunter = {
 		icon = "victor_witchhunter_dodge_range",
 		description_values = {
 			{
-				value_type = "percent",
+				value_type = "baked_percent",
 				value = buff_tweak_data.victor_witchhunter_dodge_range.multiplier
 			}
 		},

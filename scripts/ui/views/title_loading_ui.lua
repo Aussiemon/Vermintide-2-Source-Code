@@ -1466,8 +1466,9 @@ TitleLoadingUI._get_input_texture_data = function (self, input_action)
 		local device_type = keymap_binding[1]
 		local key_index = keymap_binding[2]
 		local key_action_type = keymap_binding[3]
+		local is_button_unassigned = key_index == UNASSIGNED_KEY
 
-		return nil, Keyboard.button_locale_name(key_index)
+		return nil, (is_button_unassigned and "") or Keyboard.button_locale_name(key_index)
 	elseif Managers.input:is_device_active("gamepad") then
 		return UISettings.get_gamepad_input_texture_data(input_service, input_action, true)
 	end

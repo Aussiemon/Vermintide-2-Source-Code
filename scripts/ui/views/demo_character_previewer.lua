@@ -189,6 +189,10 @@ DemoCharacterPreviewer._update_hover = function (self)
 
 	if not cursor then
 		return 
+	else
+		local scale = RESOLUTION_LOOKUP.scale
+		cursor.x = cursor.x*scale
+		cursor.y = cursor.y*scale
 	end
 
 	if not Unit.alive(self._character_unit) then

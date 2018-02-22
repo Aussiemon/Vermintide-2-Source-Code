@@ -35,11 +35,13 @@ weapon_template.actions = {
 				{
 					start_time = 0,
 					external_multiplier = 0.5,
+					end_time = 0.25,
 					buff_name = "planted_fast_decrease_movement"
 				},
 				{
-					start_time = 0.3,
-					buff_name = "planted_fast_decrease_movement"
+					start_time = 0.25,
+					external_multiplier = 1,
+					buff_name = "planted_charging_decrease_movement"
 				}
 			},
 			allowed_chain_actions = {
@@ -97,7 +99,7 @@ weapon_template.actions = {
 			stop_fire_event = "Stop_player_combat_weapon_drakegun_flamethrower_shoot",
 			minimum_hold_time = 0.75,
 			damage_window_end = 0,
-			overcharge_type = "flamethrower",
+			overcharge_type = "drakegun_charging",
 			charge_value = "light_attack",
 			fire_time = 0.3,
 			fire_sound_on_husk = true,
@@ -167,7 +169,7 @@ weapon_template.actions = {
 			overcharge_interval = 0.3,
 			charge_effect_material_name = "Fire",
 			minimum_hold_time = 0.2,
-			overcharge_type = "drakegun_charging",
+			overcharge_type = "flamethrower",
 			charge_sound_switch = "projectile_charge_sound",
 			charge_time = 2,
 			hold_input = "action_two_hold",
@@ -288,11 +290,12 @@ weapon_template.actions = {
 	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
 }
 weapon_template.overcharge_data = {
-	overcharge_threshold = 10,
+	overcharge_value_decrease_rate = 1,
 	overcharge_warning_critical_sound_event = "drakegun_overcharge_warning_critical",
+	max_value = 30,
 	time_until_overcharge_decreases = 0.5,
 	overcharge_warning_low_sound_event = "drakegun_overcharge_warning_low",
-	overcharge_value_decrease_rate = 1,
+	overcharge_threshold = 10,
 	overcharge_warning_high_sound_event = "drakegun_overcharge_warning_high",
 	explosion_template = "overcharge_explosion_dwarf",
 	overcharge_warning_med_sound_event = "drakegun_overcharge_warning_med",

@@ -19,99 +19,18 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/enemies",
 		"dialogues/generated/marker_events"
 	},
-	tutorial = {
-		"dialogues/generated/enemies"
-	},
-	bridge = {
-		"dialogues/generated/bright_wizard_bridge",
-		"dialogues/generated/dwarf_ranger_bridge",
-		"dialogues/generated/witch_hunter_bridge",
-		"dialogues/generated/wood_elf_bridge",
-		"dialogues/generated/dwarf_ranger_bridge"
-	},
-	cemetery = {
-		"dialogues/generated/bright_wizard_cemetery",
-		"dialogues/generated/dwarf_ranger_cemetery",
-		"dialogues/generated/witch_hunter_cemetery",
-		"dialogues/generated/wood_elf_cemetery",
-		"dialogues/generated/dwarf_ranger_cemetery"
-	},
-	city_wall = {
-		"dialogues/generated/bright_wizard_city_wall",
-		"dialogues/generated/dwarf_ranger_city_wall",
-		"dialogues/generated/witch_hunter_city_wall",
-		"dialogues/generated/wood_elf_city_wall",
-		"dialogues/generated/dwarf_ranger_city_wall"
-	},
-	courtyard = {
-		"dialogues/generated/bright_wizard_courtyard",
-		"dialogues/generated/dwarf_ranger_courtyard",
-		"dialogues/generated/witch_hunter_courtyard",
-		"dialogues/generated/wood_elf_courtyard",
-		"dialogues/generated/dwarf_ranger_courtyard"
-	},
-	docks = {
-		"dialogues/generated/bright_wizard_docks",
-		"dialogues/generated/dwarf_ranger_docks",
-		"dialogues/generated/witch_hunter_docks",
-		"dialogues/generated/wood_elf_docks",
-		"dialogues/generated/dwarf_ranger_docks"
-	},
-	end_boss = {
-		"dialogues/generated/bright_wizard_end_boss",
-		"dialogues/generated/dwarf_ranger_end_boss",
-		"dialogues/generated/witch_hunter_end_boss",
-		"dialogues/generated/wood_elf_end_boss",
-		"dialogues/generated/dwarf_ranger_end_boss"
-	},
-	farm = {
-		"dialogues/generated/bright_wizard_farm",
-		"dialogues/generated/dwarf_ranger_farm",
-		"dialogues/generated/witch_hunter_farm",
-		"dialogues/generated/wood_elf_farm",
-		"dialogues/generated/dwarf_ranger_farm"
-	},
-	forest_ambush = {
-		"dialogues/generated/bright_wizard_forest_ambush",
-		"dialogues/generated/dwarf_ranger_forest_ambush",
-		"dialogues/generated/witch_hunter_forest_ambush",
-		"dialogues/generated/wood_elf_forest_ambush",
-		"dialogues/generated/dwarf_ranger_forest_ambush"
-	},
-	magnus = {
-		"dialogues/generated/bright_wizard_magnus_tower",
-		"dialogues/generated/dwarf_ranger_magnus_tower",
-		"dialogues/generated/witch_hunter_magnus_tower",
-		"dialogues/generated/wood_elf_magnus_tower",
-		"dialogues/generated/dwarf_ranger_magnus_tower"
-	},
-	merchant = {
-		"dialogues/generated/bright_wizard_merchant",
-		"dialogues/generated/dwarf_ranger_merchant",
-		"dialogues/generated/witch_hunter_merchant",
-		"dialogues/generated/wood_elf_merchant",
-		"dialogues/generated/dwarf_ranger_merchant"
-	},
-	sewers = {
-		"dialogues/generated/bright_wizard_sewers",
-		"dialogues/generated/dwarf_ranger_sewers",
-		"dialogues/generated/witch_hunter_sewers",
-		"dialogues/generated/wood_elf_sewers",
-		"dialogues/generated/dwarf_ranger_sewers"
-	},
-	skaven_tunnels = {
-		"dialogues/generated/bright_wizard_skaven_tunnels",
-		"dialogues/generated/dwarf_ranger_skaven_tunnels",
-		"dialogues/generated/witch_hunter_skaven_tunnels",
-		"dialogues/generated/wood_elf_skaven_tunnels",
-		"dialogues/generated/dwarf_ranger_skaven_tunnels"
-	},
-	wizard = {
-		"dialogues/generated/bright_wizard_wizard_tower",
-		"dialogues/generated/dwarf_ranger_wizard_tower",
-		"dialogues/generated/witch_hunter_wizard_tower",
-		"dialogues/generated/wood_elf_wizard_tower",
-		"dialogues/generated/dwarf_ranger_wizard_tower"
+	whitebox_bosses = {
+		"dialogues/generated/dwarf_ranger_ground_zero",
+		"dialogues/generated/wood_elf_warcamp",
+		"dialogues/generated/empire_soldier_warcamp",
+		"dialogues/generated/bright_wizard_warcamp",
+		"dialogues/generated/dwarf_ranger_warcamp",
+		"dialogues/generated/witch_hunter_warcamp",
+		"dialogues/generated/wood_elf_skittergate",
+		"dialogues/generated/empire_soldier_skittergate",
+		"dialogues/generated/bright_wizard_skittergate",
+		"dialogues/generated/dwarf_ranger_skittergate",
+		"dialogues/generated/witch_hunter_skittergate"
 	},
 	elven_ruins = {
 		"dialogues/generated/empire_soldier_elven_ruins",
@@ -194,13 +113,6 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/dwarf_ranger_farmland",
 		"dialogues/generated/witch_hunter_farmland"
 	},
-	farmlands = {
-		"dialogues/generated/wood_elf_farmland",
-		"dialogues/generated/empire_soldier_farmland",
-		"dialogues/generated/bright_wizard_farmland",
-		"dialogues/generated/dwarf_ranger_farmland",
-		"dialogues/generated/witch_hunter_farmland"
-	},
 	skittergate = {
 		"dialogues/generated/wood_elf_skittergate",
 		"dialogues/generated/empire_soldier_skittergate",
@@ -210,6 +122,13 @@ DialogueSettings.level_specific_load_files = {
 	},
 	inn_level = {
 		"dialogues/generated/hub_conversations"
+	},
+	bell = {
+		"dialogues/generated/wood_elf_bell",
+		"dialogues/generated/empire_soldier_bell",
+		"dialogues/generated/bright_wizard_bell",
+		"dialogues/generated/dwarf_ranger_bell",
+		"dialogues/generated/witch_hunter_bell"
 	}
 }
 DialogueSettings.blocked_auto_load_files = {
@@ -225,6 +144,7 @@ DialogueSettings.discover_enemy_attack_distance = 25
 DialogueSettings.see_vortex_distance = 30
 DialogueSettings.view_event_trigger_interval = 1
 DialogueSettings.seen_recently_threshold = 15
+DialogueSettings.observer_view_distance = 8
 DialogueSettings.friends_close_distance = 20
 DialogueSettings.friends_distant_distance = 50
 DialogueSettings.enemies_close_distance = 10
@@ -251,6 +171,122 @@ DialogueSettings.dialogue_category_config = {
 			npc_talk_interrupt_special = true
 		},
 		playable_during_category = {}
+	},
+	cut_scene = {
+		interrupted_by = {
+			cut_scene_interrupt = true
+		},
+		playable_during_category = {
+			enemy_alerts = true,
+			npc_talk = true,
+			enemy_basic_prio = true,
+			player_feedback = true,
+			guidance = true,
+			level_talk_tutorial = true,
+			boss_talk = true,
+			casual_talk = true,
+			default = true,
+			story_talk = true,
+			level_talk = true,
+			boss_reaction_talk = true,
+			activate_ability = true,
+			knocked_down_override = true,
+			enemy_alerts_boss = true,
+			enemy_high_prio = true,
+			help_talk = true,
+			seen_items = true,
+			npc_talk_interrupt = true,
+			player_alerts = true,
+			player_alerts_boss = true
+		}
+	},
+	cut_scene_interrupt = {
+		interrupted_by = {
+			cut_scene_interrupt_two = true
+		},
+		playable_during_category = {
+			enemy_alerts = true,
+			npc_talk = true,
+			enemy_basic_prio = true,
+			player_feedback = true,
+			guidance = true,
+			level_talk_tutorial = true,
+			boss_talk = true,
+			casual_talk = true,
+			default = true,
+			story_talk = true,
+			level_talk = true,
+			boss_reaction_talk = true,
+			activate_ability = true,
+			knocked_down_override = true,
+			enemy_alerts_boss = true,
+			enemy_high_prio = true,
+			help_talk = true,
+			cut_scene = true,
+			seen_items = true,
+			npc_talk_interrupt = true,
+			player_alerts = true,
+			player_alerts_boss = true
+		}
+	},
+	cut_scene_interrupt_two = {
+		interrupted_by = {
+			cut_scene_interrupt_three = true
+		},
+		playable_during_category = {
+			enemy_alerts = true,
+			npc_talk = true,
+			enemy_basic_prio = true,
+			player_feedback = true,
+			guidance = true,
+			level_talk_tutorial = true,
+			boss_talk = true,
+			casual_talk = true,
+			default = true,
+			story_talk = true,
+			level_talk = true,
+			boss_reaction_talk = true,
+			activate_ability = true,
+			knocked_down_override = true,
+			enemy_alerts_boss = true,
+			cut_scene_interrupt = true,
+			enemy_high_prio = true,
+			help_talk = true,
+			cut_scene = true,
+			seen_items = true,
+			npc_talk_interrupt = true,
+			player_alerts = true,
+			player_alerts_boss = true
+		}
+	},
+	cut_scene_interrupt_three = {
+		interrupted_by = {},
+		playable_during_category = {
+			enemy_alerts = true,
+			npc_talk = true,
+			enemy_basic_prio = true,
+			player_feedback = true,
+			guidance = true,
+			level_talk_tutorial = true,
+			boss_talk = true,
+			casual_talk = true,
+			default = true,
+			story_talk = true,
+			level_talk = true,
+			boss_reaction_talk = true,
+			activate_ability = true,
+			knocked_down_override = true,
+			enemy_alerts_boss = true,
+			cut_scene_interrupt = true,
+			enemy_high_prio = true,
+			help_talk = true,
+			cut_scene = true,
+			seen_items = true,
+			npc_talk_interrupt = true,
+			cut_scene_interrupt_two = true,
+			player_alerts = true,
+			player_alerts_boss = true
+		}
 	},
 	champion_opening = {
 		interrupted_by = {},
@@ -333,21 +369,26 @@ DialogueSettings.dialogue_category_config = {
 			enemy_alerts_boss = true
 		},
 		playable_during_category = {
-			default = true,
-			enemy_high_prio = true,
-			guidance = true,
-			player_feedback = true,
 			enemy_alerts = true,
-			story_talk = true,
-			seen_items = true,
-			casual_talk = true,
-			help_talk = true,
-			player_alerts = true,
 			npc_talk = true,
+			help_talk = true,
+			player_feedback = true,
+			guidance = true,
+			level_talk_tutorial = true,
+			cut_scene_interrupt = true,
+			casual_talk = true,
+			default = true,
+			story_talk = true,
+			level_talk = true,
 			enemy_basic_prio = true,
-			npc_talk_interrupt_special = true,
 			knocked_down_override = true,
-			level_talk = true
+			cut_scene_interrupt_three = true,
+			enemy_high_prio = true,
+			npc_talk_interrupt_special = true,
+			cut_scene = true,
+			seen_items = true,
+			cut_scene_interrupt_two = true,
+			player_alerts = true
 		}
 	},
 	player_alerts_boss = {
@@ -368,7 +409,8 @@ DialogueSettings.dialogue_category_config = {
 			level_talk = true,
 			enemy_basic_prio = true,
 			help_talk = true,
-			boss_talk = true
+			boss_talk = true,
+			boss_talk_interrupt = true
 		}
 	},
 	player_alerts = {
@@ -660,7 +702,8 @@ DialogueSettings.dialogue_category_config = {
 	boss_talk = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			champion_opening = true
+			champion_opening = true,
+			boss_talk_interrupt = true
 		},
 		playable_during_category = {
 			enemy_alerts = true,
@@ -679,6 +722,31 @@ DialogueSettings.dialogue_category_config = {
 			knocked_down_override = true,
 			enemy_high_prio = true,
 			activate_ability = true
+		}
+	},
+	boss_talk_interrupt = {
+		mutually_exclusive = true,
+		interrupted_by = {
+			champion_opening = true
+		},
+		playable_during_category = {
+			activate_ability = true,
+			boss_reaction_talk = true,
+			story_talk = true,
+			default = true,
+			help_talk = true,
+			enemy_alerts_boss = true,
+			boss_talk = true,
+			casual_talk = true,
+			enemy_alerts = true,
+			player_feedback = true,
+			level_talk = true,
+			enemy_basic_prio = true,
+			knocked_down_override = true,
+			enemy_high_prio = true,
+			guidance = true,
+			seen_items = true,
+			player_alerts = true
 		}
 	},
 	boss_reaction_talk = {

@@ -16,6 +16,11 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	self._profile_name = profile.display_name
 	self._cooldown = 0
 	self._career_data = career_data
+	local initial_ability_percentage = extension_init_data.initial_ability_percentage or 0
+	local max_cooldown = career_data.activated_ability.cooldown
+	local initial_cooldown_percentage = initial_ability_percentage - 1
+	initial_cooldown_percentage = math.clamp(initial_cooldown_percentage, 0, 1)
+	self._initial_cooldown = max_cooldown*initial_cooldown_percentage
 
 	if career_data.activated_ability.ability_class then
 		self._activated_ability = career_data.activated_ability.ability_class:new(extension_init_context, unit, extension_init_data)
@@ -61,6 +66,10 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
+	if self._cooldown_paused then
+		return 
+	end
+
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local cooldown_speed_multiplier = buff_extension.apply_buffs_to_value(buff_extension, 1, StatBuffIndex.COOLDOWN_REGEN)
 	self._cooldown = math.max(self._cooldown - dt*cooldown_speed_multiplier, 0)
@@ -79,6 +88,29 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 			first_person_extension.play_hud_sound_event(first_person_extension, "Play_hud_ability_ready")
 		end
 	end
+
+	self._update_game_object_field(self, unit)
+
+	return 
+end
+CareerExtension._update_game_object_field = function (self, unit)
+	if not self.player.local_player then
+		return 
+	end
+
+	local ability_cooldown, max_cooldown = self.current_ability_cooldown(self)
+	local ability_percentage = 1
+
+	if ability_cooldown then
+		ability_percentage = ability_cooldown/max_cooldown
+	end
+
+	local network_manager = Managers.state.network
+	local game = network_manager.game(network_manager)
+	local go_id = Managers.state.unit_storage:go_id(unit)
+	ability_percentage = math.min(1, ability_percentage)
+
+	GameSession.set_game_object_field(game, go_id, "ability_percentage", ability_percentage)
 
 	return 
 end
@@ -105,11 +137,19 @@ CareerExtension.start_activated_ability_cooldown = function (self, refund_percen
 
 	self._cooldown = cooldown*((refund_percent or 0) - 1)
 	self._cooldown_paused = false
-	local first_person_extension = self._first_person_extension
+
+	if self._initial_cooldown then
+		self._cooldown = self._initial_cooldown
+		self._initial_cooldown = nil
+	end
 
 	return 
 end
 CareerExtension.reduce_activated_ability_cooldown = function (self, amount)
+	if self._cooldown_paused then
+		return 
+	end
+
 	self._cooldown = self._cooldown - amount
 
 	return 
@@ -178,7 +218,18 @@ CareerExtension.has_ranged_boost = function (self)
 	return has_buff, multiplier
 end
 CareerExtension.get_career_power_level = function (self)
-	return BackendUtils.get_total_power_level(self._profile_name, self._career_name)
+	local player = self.player
+	local career_name = self._career_name
+	local profile_name = self._profile_name
+
+	if player.bot_player then
+		local player_manager = Managers.player
+		local local_player = player_manager.local_player(player_manager)
+		profile_name = local_player.profile_display_name(local_player)
+		career_name = local_player.career_name(local_player)
+	end
+
+	return BackendUtils.get_total_power_level(profile_name, career_name)
 end
 CareerExtension.set_state = function (self, state)
 	self._state = state

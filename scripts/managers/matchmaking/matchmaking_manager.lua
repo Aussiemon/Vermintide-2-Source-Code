@@ -10,7 +10,6 @@ require("scripts/managers/matchmaking/matchmaking_state_join_game")
 require("scripts/managers/matchmaking/matchmaking_state_idle")
 require("scripts/managers/matchmaking/matchmaking_state_ingame")
 require("scripts/managers/matchmaking/matchmaking_state_friend_client")
-require("scripts/managers/matchmaking/matchmaking_state_dedicated_server")
 require("scripts/managers/matchmaking/matchmaking_state_wait_for_countdown")
 require("scripts/managers/matchmaking/matchmaking_handshaker")
 
@@ -96,16 +95,9 @@ local RPCS = {
 	"rpc_matchmaking_request_status_message",
 	"rpc_matchmaking_status_message",
 	"rpc_set_client_game_privacy",
-	"rpc_matchmaking_request_power_level",
-	"rpc_matchmaking_notify_power_level_server",
-	"rpc_matchmaking_notify_power_level_client",
-	"rpc_matchmaking_game_server_start_game",
 	"rpc_game_server_reserve_slots",
 	"rpc_game_server_set_group_leader",
 	"rpc_matchmaking_broadcast_game_server_ip_address",
-	"rpc_matchmaking_game_server_request_ownership",
-	"rpc_matchmaking_game_server_ownership_denied",
-	"rpc_matchmaking_game_server_ownership_allowed",
 	"rpc_set_quick_game",
 	"rpc_start_game_countdown_finished"
 }
@@ -158,8 +150,6 @@ MatchmakingManager.init = function (self, params)
 	if not self.is_server then
 		self.handshaker_client:start_handshake(self.lobby:lobby_host())
 		self._change_state(self, MatchmakingStateIdle, self.params, {})
-	elseif DEDICATED_SERVER then
-		self._change_state(self, MatchmakingStateDedicatedServer, self.params, {})
 	else
 		self._change_state(self, MatchmakingStateIdle, self.params, {})
 	end
@@ -171,7 +161,6 @@ MatchmakingManager.init = function (self, params)
 	self.lobby_finder_timer = 0
 	self.profile_update_time = 0
 	self._leader_peer_id = nil
-	self._power_levels = {}
 	self.countdown_has_finished = false
 
 	return 
@@ -408,10 +397,6 @@ MatchmakingManager.update = function (self, dt, t)
 				self.peers_to_sync[peer_id] = nil
 
 				self.handshaker_host:send_rpc_to_client("rpc_set_matchmaking", peer_id, is_matchmaking, private_game)
-
-				for power_level_peer_id, power_level in pairs(self._power_levels) do
-					self.handshaker_host:send_rpc_to_client("rpc_matchmaking_notify_power_level_client", peer_id, power_level_peer_id, power_level)
-				end
 			end
 		end
 
@@ -483,82 +468,48 @@ MatchmakingManager._update_power_level = function (self, dt, t)
 	local local_player = Managers.player:local_player()
 
 	if local_player then
+		local sync_data_active = local_player.sync_data_active(local_player)
 		local hero_name = local_player.profile_display_name(local_player)
 		local career_name = local_player.career_name(local_player)
 
-		if hero_name and career_name then
+		if sync_data_active and hero_name and career_name then
 			local power_level = BackendUtils.get_total_power_level(hero_name, career_name)
 
-			if power_level ~= self._power_level then
-				self._power_level = power_level
+			if power_level ~= local_player.get_data(local_player, "power_level") then
+				local_player.set_data(local_player, "power_level", power_level)
+			end
 
-				self._set_peer_power_level(self, own_peer_id, power_level)
+			local best_aquired_power_level = local_player.best_aquired_power_level(local_player)
 
-				if is_server then
-					self.handshaker_host:send_rpc_to_clients("rpc_matchmaking_notify_power_level_client", own_peer_id, power_level)
-				else
-					self.handshaker_client:send_rpc_to_host("rpc_matchmaking_notify_power_level_server", power_level)
-				end
+			if best_aquired_power_level ~= local_player.get_data(local_player, "best_aquired_power_level") then
+				local_player.set_data(local_player, "best_aquired_power_level", best_aquired_power_level)
 			end
 		end
 	end
 
 	if is_server then
-		table.clear(remove_peer_power_level_table)
-
-		local power_levels = self._power_levels
-
-		for peer_id, _ in pairs(power_levels) do
-			remove_peer_power_level_table[peer_id] = true
-		end
-
-		local lobby_members = self.lobby:members():get_members()
-		local num_members = #lobby_members
-		local handshaker_host = self.handshaker_host
-
-		for i = 1, num_members, 1 do
-			local peer_id = lobby_members[i]
-
-			if peer_id == own_peer_id or handshaker_host.handshake_done(handshaker_host, peer_id) then
-				remove_peer_power_level_table[peer_id] = nil
-
-				if not power_levels[peer_id] and peer_id ~= own_peer_id then
-					power_levels[peer_id] = 0
-
-					handshaker_host.send_rpc_to_client(handshaker_host, "rpc_matchmaking_request_power_level", peer_id)
-				end
-			end
-		end
-
-		for peer_id, _ in pairs(remove_peer_power_level_table) do
-			power_levels[peer_id] = nil
-		end
-
 		self._set_power_level(self)
 	end
 
 	return 
 end
 MatchmakingManager.get_average_power_level = function (self)
-	local power_levels = self._power_levels
 	local total_power_level = 0
 	local num_players = 0
+	local human_players = Managers.player:human_players()
 
-	for peer_id, power_level in pairs(power_levels) do
-		if 0 < power_level then
-			total_power_level = total_power_level + power_level
-			num_players = num_players + 1
+	for unique_id, player in pairs(human_players) do
+		if player.sync_data_active(player) then
+			local power_level = player.get_data(player, "power_level")
+
+			if power_level then
+				total_power_level = total_power_level + power_level
+				num_players = num_players + 1
+			end
 		end
 	end
 
-	if num_players == 0 then
-		return 0
-	end
-
 	return math.floor(total_power_level/num_players)
-end
-MatchmakingManager.get_peer_power_level = function (self, peer_id)
-	return self._power_levels[peer_id]
 end
 MatchmakingManager.has_required_power_level = function (self, lobby_data, profile_name, career_name)
 	local difficulty = lobby_data.difficulty
@@ -581,23 +532,6 @@ MatchmakingManager.has_required_power_level = function (self, lobby_data, profil
 	end
 
 	return true
-end
-local players_below_power_level = {}
-MatchmakingManager.players_below_power_level = function (self, power_level)
-	table.clear(players_below_power_level)
-
-	for peer_id, peer_power_level in pairs(self._power_levels) do
-		if peer_power_level < power_level then
-			players_below_power_level[#players_below_power_level + 1] = peer_id
-		end
-	end
-
-	return players_below_power_level
-end
-MatchmakingManager._set_peer_power_level = function (self, peer, power_level)
-	self._power_levels[peer] = math.floor(power_level)
-
-	return 
 end
 MatchmakingManager._set_power_level = function (self)
 	fassert(self.is_server, "You need to be the server.")
@@ -969,7 +903,7 @@ MatchmakingManager.rpc_matchmaking_request_join_lobby = function (self, sender, 
 	end
 
 	local is_game_mode_ended = (Managers.state.game_mode and Managers.state.game_mode:is_game_mode_ended()) or false
-	local is_searching_for_players = self._state.NAME == "MatchmakingStateHostGame" or self._state.NAME == "MatchmakingStateIngame" or self._state.NAME == "MatchmakingStateDedicatedServer" or self._state.NAME == "MatchmakingStateWaitForCountdown"
+	local is_searching_for_players = self._state.NAME == "MatchmakingStateHostGame" or self._state.NAME == "MatchmakingStateIngame" or self._state.NAME == "MatchmakingStateWaitForCountdown"
 	local handshaker_host = self.handshaker_host
 	local valid_cookies = (handshaker_host and handshaker_host.validate_cookies(handshaker_host, sender, client_cookie, host_cookie)) or false
 	local is_friend = false
@@ -1017,46 +951,6 @@ MatchmakingManager.rpc_matchmaking_request_profile = function (self, sender, cli
 	end
 
 	self.network_transmit:send_rpc("rpc_matchmaking_request_profile_reply", sender, client_cookie, host_cookie, profile, reply)
-
-	return 
-end
-MatchmakingManager.rpc_matchmaking_request_power_level = function (self, sender, client_cookie, host_cookie)
-	if not self.handshaker_client:validate_cookies(client_cookie, host_cookie) then
-		return 
-	end
-
-	local local_player = Managers.player:local_player()
-
-	if local_player then
-		local hero_name = local_player.profile_display_name(local_player)
-		local career_name = local_player.career_name(local_player)
-
-		if hero_name and career_name then
-			local power_level = BackendUtils.get_total_power_level(hero_name, career_name)
-
-			self.handshaker_client:send_rpc_to_host("rpc_matchmaking_notify_power_level_server", power_level)
-		end
-	end
-
-	return 
-end
-MatchmakingManager.rpc_matchmaking_notify_power_level_server = function (self, sender, client_cookie, host_cookie, power_level)
-	if not self.handshaker_host:validate_cookies(sender, client_cookie, host_cookie) then
-		return 
-	end
-
-	self._set_peer_power_level(self, sender, power_level)
-	self._set_power_level(self)
-	self.handshaker_host:send_rpc_to_clients_except("rpc_matchmaking_notify_power_level_client", sender, sender, power_level)
-
-	return 
-end
-MatchmakingManager.rpc_matchmaking_notify_power_level_client = function (self, sender, client_cookie, host_cookie, peer, power_level)
-	if not self.handshaker_client:validate_cookies(client_cookie, host_cookie) then
-		return 
-	end
-
-	self._set_peer_power_level(self, peer, power_level)
 
 	return 
 end
@@ -1343,58 +1237,6 @@ MatchmakingManager.rpc_matchmaking_status_message = function (self, sender, clie
 
 	return 
 end
-MatchmakingManager.rpc_matchmaking_game_server_ownership_denied = function (self, sender, client_cookie, host_cookie)
-	if self._state and self._state.NAME == "MatchmakingStateRequestGameServerOwnership" then
-		if not self.handshaker_client:validate_cookies(client_cookie, host_cookie) then
-			return 
-		end
-
-		self._state:rpc_matchmaking_game_server_ownership_denied(sender, client_cookie, host_cookie)
-	else
-		local state_name = (self._state and self._state.NAME) or "none"
-
-		mm_printf_force("rpc_matchmaking_request_status_message, got this in wrong state current_state:%s", state_name)
-	end
-
-	return 
-end
-MatchmakingManager.rpc_matchmaking_game_server_ownership_allowed = function (self, sender, client_cookie, host_cookie)
-	if self._state and self._state.NAME == "MatchmakingStateRequestGameServerOwnership" then
-		if not self.handshaker_client:validate_cookies(client_cookie, host_cookie) then
-			return 
-		end
-
-		self._state:rpc_matchmaking_game_server_ownership_allowed(sender, client_cookie, host_cookie)
-	else
-		local state_name = (self._state and self._state.NAME) or "none"
-
-		mm_printf_force("rpc_matchmaking_request_status_message, got this in wrong state current_state:%s", state_name)
-	end
-
-	return 
-end
-MatchmakingManager.rpc_matchmaking_game_server_request_ownership = function (self, sender, client_cookie, host_cookie)
-	if self._state and self._state.NAME == "MatchmakingStateDedicatedServer" then
-		self._state:rpc_matchmaking_game_server_request_ownership(sender, client_cookie, host_cookie)
-	else
-		local state_name = (self._state and self._state.NAME) or "none"
-
-		mm_printf_force("rpc_matchmaking_game_server_request_ownership, got this in wrong state current_state:%s", state_name)
-	end
-
-	return 
-end
-MatchmakingManager.rpc_matchmaking_game_server_start_game = function (self, sender, client_cookie, host_cookie, level_key_id, game_mode_id, difficulty_id, private_game)
-	if self._state and self._state.NAME == "MatchmakingStateDedicatedServer" then
-		self._state:rpc_matchmaking_game_server_start_game(sender, client_cookie, host_cookie, level_key_id, game_mode_id, difficulty_id, private_game)
-	else
-		local state_name = (self._state and self._state.NAME) or "none"
-
-		mm_printf_force("rpc_matchmaking_game_server_start_game, got this in wrong state current_state:%s", state_name)
-	end
-
-	return 
-end
 MatchmakingManager.rpc_game_server_set_group_leader = function (self, sender, peer_id)
 	Managers.party:set_leader(peer_id)
 
@@ -1553,9 +1395,9 @@ MatchmakingManager.cancel_join_lobby = function (self, reason)
 
 	if self._lobby_browser then
 		self._lobby_browser:cancel_join_lobby(reason)
-	else
-		Managers.simple_popup:queue_popup(Localize(reason), Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
 	end
+
+	Managers.simple_popup:queue_popup(Localize(reason), Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
 
 	return 
 end

@@ -280,11 +280,11 @@ local breed_data = {
 		1
 	},
 	hit_mass_counts = {
-		1.25,
-		1.25,
-		1.75,
-		2.5,
-		4
+		1.5,
+		1.5,
+		2.25,
+		3,
+		4.5
 	},
 	num_push_anims = {
 		push_backward = 2
@@ -955,7 +955,7 @@ local action_data = {
 				1
 			},
 			normal = {
-				3,
+				2.5,
 				2,
 				1
 			},
@@ -1089,7 +1089,7 @@ local action_data = {
 				1
 			},
 			normal = {
-				3,
+				2.5,
 				2,
 				1
 			},

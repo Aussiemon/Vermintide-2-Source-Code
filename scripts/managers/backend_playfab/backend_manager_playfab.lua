@@ -36,8 +36,8 @@ BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_qu
 	self._button_disconnected = "button_disconnected"
 
 	if settings.allow_local then
-		local local_backend_data = (Development.parameter("honduras_demo") and DefaultDemoLocalBackendData) or DefaultLocalBackendData
-		local local_backend_save_version = (Development.parameter("honduras_demo") and DemoBackendSaveDataVersion) or BackendSaveDataVersion
+		local local_backend_data = (script_data.honduras_demo and DefaultDemoLocalBackendData) or DefaultLocalBackendData
+		local local_backend_save_version = (script_data.honduras_demo and DemoBackendSaveDataVersion) or BackendSaveDataVersion
 
 		fassert(self._verify_data(self, local_backend_data), "Mismatch between (local) default equipment and ItemMasterList")
 
@@ -631,7 +631,7 @@ BackendManagerPlayFab._load_save_data = function (self, local_backend_data, loca
 
 		Managers.save:auto_load(self._local_backend_file_name, load_callback)
 	elseif platform == "xb1" or platform == "ps4" then
-		if not SaveData.local_backend_save then
+		if not SaveData.local_backend_save or script_data.honduras_demo then
 			SaveData.local_backend_save = table.clone(local_backend_data)
 		end
 

@@ -1,4 +1,5 @@
 ActionPotion = class(ActionPotion)
+local PLAYER_AND_BOT_UNITS = PLAYER_AND_BOT_UNITS
 ActionPotion.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.owner_unit = owner_unit
 	self.weapon_unit = weapon_unit
@@ -29,29 +30,30 @@ ActionPotion.finish = function (self, reason)
 	local owner_unit = self.owner_unit
 	local buff_template = current_action.buff_template
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-	local potion_spread = buff_extension.has_buff_type(buff_extension, "trait_trinket_potion_spread")
-	local targets = {}
+	local potion_spread = buff_extension.has_buff_type(buff_extension, "trait_ring_potion_spread")
+	local targets = {
+		owner_unit
+	}
 
 	if potion_spread then
-		local num_player_units = 2
+		local num_other_players_to_spread_to = 1
+		local owner_player_position = POSITION_LOOKUP[owner_unit]
 
-		for i = 1, num_player_units, 1 do
-			local player_unit = player_and_bot_units[i]
-			local other_player_position = POSITION_LOOKUP[player_unit]
-			local local_player_position = POSITION_LOOKUP[owner_unit]
+		for i = 1, num_other_players_to_spread_to, 1 do
+			local other_player_unit = PLAYER_AND_BOT_UNITS[i]
 
-			if Vector3.distance(local_player_position, other_player_position) < TrinketSpreadDistance then
-				targets[#targets + 1] = player_unit
+			if other_player_unit and other_player_unit ~= owner_unit then
+				local other_player_position = POSITION_LOOKUP[other_player_unit]
+
+				if Vector3.distance(owner_player_position, other_player_position) < TrinketSpreadDistance then
+					targets[#targets + 1] = other_player_unit
+				end
 			end
 		end
-	else
-		targets[#targets + 1] = owner_unit
 	end
 
 	if buff_extension.has_buff_perk(buff_extension, "potion_duration") then
 		buff_template = buff_template .. "_increased"
-
-		print("derp")
 	end
 
 	local num_targets = #targets

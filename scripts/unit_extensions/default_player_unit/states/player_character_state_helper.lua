@@ -1010,10 +1010,10 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 			if not Development.parameter("attract_mode") then
 				if recent_damage_type == "cutting_berserker" then
 					status_extension.set_hit_react_type(status_extension, recent_hit_react_type)
-					status_extension.set_pushed_no_cooldown(status_extension, true)
+					status_extension.set_pushed_no_cooldown(status_extension, true, t)
 				else
 					status_extension.set_hit_react_type(status_extension, recent_hit_react_type)
-					status_extension.set_pushed(status_extension, true)
+					status_extension.set_pushed(status_extension, true, t)
 				end
 			end
 

@@ -100,12 +100,16 @@ local transitions = {
 		end
 
 		local input_service = Managers.input:get_service("Player")
-		local platform_key = "win32"
-		local input_filters = input_service.get_active_filters(input_service, platform_key)
-		local look_filter = input_filters.look
-		local function_data = look_filter.function_data
-		function_data.filter_type = (button_name == "menu_invert_controls" and "scale_vector3") or "scale_vector3_invert_y"
-		local platform_key = "xb1"
+
+		if PLATFORM == "win32" then
+			local platform_key = "win32"
+			local input_filters = input_service.get_active_filters(input_service, platform_key)
+			local look_filter = input_filters.look
+			local function_data = look_filter.function_data
+			function_data.filter_type = (button_name == "menu_invert_controls" and "scale_vector3") or "scale_vector3_invert_y"
+		end
+
+		platform_key = (PLATFORM == "ps4" and "ps4") or "xb1"
 		local input_filters = input_service.get_active_filters(input_service, platform_key)
 		local look_filter = input_filters.look_controller
 		local function_data = look_filter.function_data

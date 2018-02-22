@@ -48,6 +48,8 @@ PlayerCharacterStateLeaping.on_enter = function (self, unit, input, dt, context,
 
 	status_extension.set_falling_height(status_extension, start_jump_height)
 
+	self._played_landing_event = nil
+
 	return 
 end
 PlayerCharacterStateLeaping.on_exit = function (self, unit, input, dt, context, t, next_state)
@@ -122,7 +124,7 @@ PlayerCharacterStateLeaping.update = function (self, unit, input, dt, context, t
 	end
 
 	if self._update_movement(self, unit, dt, t) then
-		self._land(self, unit, t)
+		self._finish(self, unit, t)
 
 		if locomotion_extension.is_on_ground(locomotion_extension) then
 			csm.change_state(csm, "walking", self.temp_params)
@@ -132,6 +134,7 @@ PlayerCharacterStateLeaping.update = function (self, unit, input, dt, context, t
 		end
 
 		if not self.csm.state_next and locomotion_extension.current_velocity(locomotion_extension).z <= 0 then
+			self._finish(self, unit, t, false)
 			csm.change_state(csm, "falling", self.temp_params)
 			first_person_extension.change_state(first_person_extension, "falling")
 
@@ -178,7 +181,7 @@ PlayerCharacterStateLeaping._update_movement = function (self, unit, dt, t)
 
 	return leap_done or colliding_down
 end
-PlayerCharacterStateLeaping._land = function (self, unit, t)
+PlayerCharacterStateLeaping._finish = function (self, unit, t)
 	local world = self.world
 	local locomotion_extension = self.locomotion_extension
 	local first_person_extension = self.first_person_extension
@@ -187,10 +190,12 @@ PlayerCharacterStateLeaping._land = function (self, unit, t)
 
 	local land_sound_event = self._leap_data.sfx_event_land
 
-	if land_sound_event then
+	if land_sound_event and not self._played_landing_event then
 		local position = first_person_extension.current_position(first_person_extension)
 
 		WwiseUtils.trigger_position_event(world, land_sound_event, position)
+
+		self._played_landing_event = true
 	end
 
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)

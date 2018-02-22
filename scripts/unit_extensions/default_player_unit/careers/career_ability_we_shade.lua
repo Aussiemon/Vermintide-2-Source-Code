@@ -19,6 +19,7 @@ CareerAbilityWEShade.extensions_ready = function (self, world, unit)
 	self._status_extension = ScriptUnit.extension(unit, "status_system")
 	self._career_extension = ScriptUnit.extension(unit, "career_system")
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
+	self._input_extension = ScriptUnit.has_extension(unit, "input_system")
 
 	if self._first_person_extension then
 		self._first_person_unit = self._first_person_extension:get_first_person_unit()
@@ -34,9 +35,13 @@ CareerAbilityWEShade.update = function (self, unit, input, dt, context, t)
 		return 
 	end
 
-	local input_service = self._input_manager:get_service("Player")
+	local input_extension = self._input_extension
 
-	if input_service.get(input_service, "function_career") then
+	if not input_extension then
+		return 
+	end
+
+	if input_extension.get(input_extension, "function_career") then
 		self._run_ability(self)
 	end
 

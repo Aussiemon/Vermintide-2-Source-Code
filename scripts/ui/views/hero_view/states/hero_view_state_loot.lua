@@ -345,7 +345,7 @@ HeroViewStateLoot.populate_items = function (self)
 
 	local items = {}
 	local grid_widget = widgets_by_name.item_grid
-	local item_grid = ItemGridUI:new(settings_by_screen, grid_widget, hero_name, career_index)
+	local item_grid = ItemGridUI:new(settings_by_screen, grid_widget, hero_name, career_index, self.hero_name, self.career_index)
 	local placeholder_items = {}
 
 	item_grid.disable_locked_items(item_grid, true)
@@ -559,6 +559,8 @@ HeroViewStateLoot._position_camera = function (self, optional_pose)
 	return 
 end
 HeroViewStateLoot.on_exit = function (self, params)
+	print("[HeroViewState] Exit Substate HeroViewStateLoot")
+
 	if self.menu_input_description then
 		self.menu_input_description:destroy()
 
@@ -1241,17 +1243,16 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 			local previewer_pass_data = preview_widget.element.pass_data[1]
 			local viewport = previewer_pass_data.viewport
 			local world = previewer_pass_data.world
-			local preview_rewards = {
-				item_data
+			local reward = {
+				data = item_data,
+				backend_id = backend_id
 			}
-			local preview_positions = {
-				{
-					0,
-					0,
-					0
-				}
+			local preview_position = {
+				0,
+				0,
+				0
 			}
-			local item_previewer = LootItemUnitPreviewer:new(preview_rewards, preview_positions, world, viewport, index)
+			local item_previewer = LootItemUnitPreviewer:new(reward, preview_position, world, viewport, index)
 			data.item_previewer = item_previewer
 
 			if slot_type == "weapon_skin" then
@@ -1471,6 +1472,8 @@ HeroViewStateLoot._open_chest = function (self, selected_item)
 	local chest_category = selected_item_data.chest_category
 	local chest_tier = selected_item_data.chest_tier
 	local chests_by_difficulty = LootChestData.chests_by_difficulty
+	self._chest_presentation_active = true
+	self._rewards_presented = false
 	local unit_name = nil
 
 	for key, chests_data in pairs(chests_by_difficulty) do
@@ -1501,6 +1504,12 @@ HeroViewStateLoot.open_chest_callback = function (self, selected_item, loot)
 		LevelHelper:flow_event(world, "local_player_opened_all_loot_chests")
 	end
 
+	local player = self.player
+
+	if player then
+		player.fetch_best_aquired_power_level(player)
+	end
+
 	self._start_reward_presentation(self, loot)
 
 	return 
@@ -1516,20 +1525,12 @@ HeroViewStateLoot._start_reward_presentation = function (self, loot)
 	ui_scenegraph.loot_option_1.size[2] = 0
 	ui_scenegraph.loot_option_2.size[2] = 0
 	ui_scenegraph.loot_option_3.size[2] = 0
-	local player_unit = self.player.player_unit
-	local career_extension = ScriptUnit.extension(player_unit, "career_system")
-	local career_name = career_extension.career_name(career_extension)
-	local test_item_1 = BackendUtils.get_loadout_item(career_name, "slot_melee")
-	local test_item_2 = BackendUtils.get_loadout_item(career_name, "slot_skin")
-	local test_item_3 = BackendUtils.get_loadout_item(career_name, "slot_frame")
 	self._chest_loot = loot
 
 	self._setup_rewards(self, self._chest_loot)
 
-	self._chest_presentation_active = true
-	self._selected_item = nil
 	self._num_rewards_opened = 0
-	self._rewards_presented = false
+	self._selected_item = nil
 
 	self.set_reward_options_height_progress(self, 0)
 
@@ -1846,7 +1847,6 @@ HeroViewStateLoot._update_camera_shake_chest_spawn_time = function (self, dt, t)
 		self._camera_shake_chest_spawn_duration = nil
 
 		self.add_camera_shake(self, camera_entry_shake_settings, t, 1)
-		print("shake", t)
 	else
 		self._camera_shake_chest_spawn_duration = camera_shake_chest_spawn_duration
 	end

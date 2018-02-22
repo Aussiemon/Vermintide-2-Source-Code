@@ -33,8 +33,11 @@ PlayerBotInput.init = function (self, extension_init_context, unit, extension_in
 	self.double_tap_dodge = false
 	self.minimum_dodge_input = 0
 	self._input = {}
+	self._look_at_player = nil
+	self._look_at_player_rotation_allowed = false
 	self._world = extension_init_context.world
 	self._nav_world = Managers.state.entity:system("ai_system"):nav_world()
+	self._game = Managers.state.network:game()
 
 	return 
 end
@@ -44,6 +47,7 @@ PlayerBotInput.extensions_ready = function (self, world, unit)
 	self._status_extension = ext(unit, "status_system")
 	self._first_person_extension = ext(unit, "first_person_system")
 	self._ai_bot_group_extension = ext(unit, "ai_bot_group_system")
+	self._locomotion_extension = ext(unit, "locomotion_system")
 
 	return 
 end
@@ -221,6 +225,12 @@ PlayerBotInput.set_aiming = function (self, aiming, soft, use_rotation)
 
 	return 
 end
+PlayerBotInput.set_look_at_player = function (self, player_unit, rotation_allowed)
+	self._look_at_player = player_unit
+	self._look_at_player_rotation_allowed = not not rotation_allowed
+
+	return 
+end
 PlayerBotInput.defend = function (self)
 	self._defend = true
 
@@ -364,6 +374,25 @@ PlayerBotInput._update_movement = function (self, dt, t)
 		wanted_rotation = Quaternion.lerp(rotation, Quaternion_look(direction, up), math.min(dt*5, 1))
 	elseif self._aiming then
 		wanted_rotation = Quaternion_look(self._aim_target:unbox() - camera_position, up)
+	elseif self._look_at_player and self._game then
+		local player_unit = self._look_at_player
+		local unit_id = Managers.state.network:unit_game_object_id(player_unit)
+		local player_camera_position = GameSession.game_object_field(self._game, unit_id, "aim_position")
+		local direction = player_camera_position - camera_position
+		local look_rotation = Quaternion_look(direction, up)
+
+		if not self._look_at_player_rotation_allowed then
+			local unit_rotation = Unit.local_rotation(unit, 0)
+			local delta_rotation = Quaternion.multiply(Quaternion.inverse(unit_rotation), look_rotation)
+			local max_yaw = math.half_pi - 0.001
+			local yaw = math.clamp(Quaternion.yaw(delta_rotation), -max_yaw, max_yaw)
+			local pitch = Quaternion.pitch(delta_rotation)
+			local yaw_rotation = Quaternion(Vector3.up(), yaw)
+			local pitch_rotation = Quaternion(Vector3.right(), pitch)
+			look_rotation = Quaternion.multiply(unit_rotation, Quaternion.multiply(yaw_rotation, pitch_rotation))
+		end
+
+		wanted_rotation = Quaternion.lerp(rotation, look_rotation, math.min(dt*5, 1))
 	elseif current_goal then
 		local dir = current_goal - position_on_navmesh
 
@@ -402,7 +431,7 @@ PlayerBotInput._update_movement = function (self, dt, t)
 		if 0 < Vector3.length_squared(goal_direction) and not on_ladder then
 			local physics_world = World.get_data(self._world, "physics_world")
 			local collision_filter = "filter_ai_line_of_sight_check"
-			local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+			local locomotion_extension = self._locomotion_extension
 			local current_velocity = locomotion_extension.current_velocity(locomotion_extension)
 			local current_speed_sq = Vector3.length_squared(current_velocity)
 			local forward_offset = 0.25

@@ -22,14 +22,14 @@ if not Demosettings then
 		characters = {
 			{
 				profile_name = "wood_elf",
-				career_index = 1,
+				career_index = 3,
 				zoom_offset = Vector3Box(0, -1, -0.1),
 				position_offset = Vector3Box(0.9, 2.3, 0),
 				rotation = QuaternionBox(Quaternion.axis_angle(Vector3(0, 0, 1), math.degrees_to_radians(-15)))
 			},
 			{
 				profile_name = "empire_soldier",
-				career_index = 2,
+				career_index = 3,
 				zoom_offset = Vector3Box(-0, -1, -0.1),
 				position_offset = Vector3Box(-0.9, 2.3, 0),
 				rotation = QuaternionBox(Quaternion.axis_angle(Vector3(0, 0, 1), math.degrees_to_radians(65)))
@@ -610,12 +610,12 @@ DEFAULT_DEMO_ATTRIBUTES = {
 	},
 	hero_attributes_wood_elf = {
 		hero_attribute_experience = "0",
-		hero_attribute_career = "1",
+		hero_attribute_career = "3",
 		hero_attribute_prestige = "0"
 	},
 	hero_attributes_empire_soldier = {
 		hero_attribute_experience = "0",
-		hero_attribute_career = "2",
+		hero_attribute_career = "3",
 		hero_attribute_prestige = "0"
 	},
 	hero_attributes_empire_soldier_tutorial = {

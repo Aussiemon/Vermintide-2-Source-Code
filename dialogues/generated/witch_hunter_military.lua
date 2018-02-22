@@ -1153,6 +1153,126 @@ return function ()
 			}
 		}
 	})
+	define_rule({
+		name = "pwh_helmgart_military_a",
+		response = "pwh_helmgart_military_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"helmgart_military_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"faction_memory",
+				"helmgart_military_a",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"helmgart_military_a",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_helmgart_military_b",
+		response = "pwh_helmgart_military_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"helmgart_military_a"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"faction_memory",
+				"helmgart_military_b",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"helmgart_military_b",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_helmgart_military_c",
+		response = "pwh_helmgart_military_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"helmgart_military_c"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"faction_memory",
+				"helmgart_military_c",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"helmgart_military_c",
+				OP.TIMESET
+			}
+		}
+	})
 	add_dialogues({
 		pwh_level_helmgart_military_axebite_pass_vista = {
 			sound_events_n = 4,
@@ -1250,6 +1370,97 @@ return function ()
 				"pwh_level_helmgart_military_armoury_02",
 				"pwh_level_helmgart_military_armoury_03",
 				"pwh_level_helmgart_military_armoury_04"
+			},
+			randomize_indexes = {}
+		},
+		pwh_helmgart_military_c = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "witch_hunter_military",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwh_helmgart_military_c_01",
+				[2.0] = "pwh_helmgart_military_c_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_helmgart_military_c_01",
+				[2.0] = "pwh_helmgart_military_c_02"
+			},
+			randomize_indexes = {}
+		},
+		pwh_level_helmgart_military_they_are_coming = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "witch_hunter_military",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pwh_level_helmgart_military_they_are_coming_01",
+				"pwh_level_helmgart_military_they_are_coming_02",
+				"pwh_level_helmgart_military_they_are_coming_03",
+				"pwh_level_helmgart_military_they_are_coming_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			localization_strings = {
+				"pwh_level_helmgart_military_they_are_coming_01",
+				"pwh_level_helmgart_military_they_are_coming_02",
+				"pwh_level_helmgart_military_they_are_coming_03",
+				"pwh_level_helmgart_military_they_are_coming_04"
+			},
+			randomize_indexes = {}
+		},
+		pwh_level_helmgart_military_arriving_temple = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "witch_hunter_military",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pwh_level_helmgart_military_arriving_temple_01",
+				"pwh_level_helmgart_military_arriving_temple_02",
+				"pwh_level_helmgart_military_arriving_temple_03",
+				"pwh_level_helmgart_military_arriving_temple_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			localization_strings = {
+				"pwh_level_helmgart_military_arriving_temple_01",
+				"pwh_level_helmgart_military_arriving_temple_02",
+				"pwh_level_helmgart_military_arriving_temple_03",
+				"pwh_level_helmgart_military_arriving_temple_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1451,36 +1662,28 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_level_helmgart_military_they_are_coming = {
-			sound_events_n = 4,
+		pwh_helmgart_military_b = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 2,
 			database = "witch_hunter_military",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pwh_level_helmgart_military_they_are_coming_01",
-				"pwh_level_helmgart_military_they_are_coming_02",
-				"pwh_level_helmgart_military_they_are_coming_03",
-				"pwh_level_helmgart_military_they_are_coming_04"
+				[1.0] = "pwh_helmgart_military_b_01",
+				[2.0] = "pwh_helmgart_military_b_02"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pwh_level_helmgart_military_they_are_coming_01",
-				"pwh_level_helmgart_military_they_are_coming_02",
-				"pwh_level_helmgart_military_they_are_coming_03",
-				"pwh_level_helmgart_military_they_are_coming_04"
+				[1.0] = "pwh_helmgart_military_b_01",
+				[2.0] = "pwh_helmgart_military_b_02"
 			},
 			randomize_indexes = {}
 		},
@@ -1814,36 +2017,28 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_level_helmgart_military_arriving_temple = {
-			sound_events_n = 4,
+		pwh_helmgart_military_a = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 2,
 			database = "witch_hunter_military",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pwh_level_helmgart_military_arriving_temple_01",
-				"pwh_level_helmgart_military_arriving_temple_02",
-				"pwh_level_helmgart_military_arriving_temple_03",
-				"pwh_level_helmgart_military_arriving_temple_04"
+				[1.0] = "pwh_helmgart_military_a_01",
+				[2.0] = "pwh_helmgart_military_a_02"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pwh_level_helmgart_military_arriving_temple_01",
-				"pwh_level_helmgart_military_arriving_temple_02",
-				"pwh_level_helmgart_military_arriving_temple_03",
-				"pwh_level_helmgart_military_arriving_temple_04"
+				[1.0] = "pwh_helmgart_military_a_01",
+				[2.0] = "pwh_helmgart_military_a_02"
 			},
 			randomize_indexes = {}
 		},

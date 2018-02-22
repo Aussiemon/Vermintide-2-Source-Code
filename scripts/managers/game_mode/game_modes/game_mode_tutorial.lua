@@ -24,6 +24,9 @@ GameModeTutorial.evaluate_end_conditions = function (self, round_started, dt, t)
 end
 GameModeTutorial.complete_level = function (self)
 	self._transition = "finish_tutorial"
+	SaveData.has_completed_tutorial = true
+
+	Managers.save:auto_save(SaveFileName, SaveData)
 
 	return 
 end

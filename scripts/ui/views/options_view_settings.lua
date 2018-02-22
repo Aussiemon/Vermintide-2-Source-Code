@@ -580,6 +580,13 @@ local gameplay_settings_definition = {
 		widget_type = "stepper"
 	},
 	{
+		setup = "cb_enabled_crosshairs_setup",
+		saved_value = "cb_enabled_crosshairs_saved_value",
+		callback = "cb_enabled_crosshairs",
+		tooltip_text = "tooltip_enabled_crosshairs",
+		widget_type = "stepper"
+	},
+	{
 		setup = "cb_overcharge_opacity_setup",
 		saved_value = "cb_overcharge_opacity_saved_value",
 		callback = "cb_overcharge_opacity",

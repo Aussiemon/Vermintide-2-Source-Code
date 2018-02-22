@@ -20,6 +20,7 @@ CareerAbilityWEMaidenGuard.extensions_ready = function (self, world, unit)
 	self._status_extension = ScriptUnit.extension(unit, "status_system")
 	self._career_extension = ScriptUnit.extension(unit, "career_system")
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
+	self._input_extension = ScriptUnit.has_extension(unit, "input_system")
 
 	if self._first_person_extension then
 		self._first_person_unit = self._first_person_extension:get_first_person_unit()
@@ -35,22 +36,26 @@ CareerAbilityWEMaidenGuard.update = function (self, unit, input, dt, context, t)
 		return 
 	end
 
-	local input_service = self._input_manager:get_service("Player")
+	local input_extension = self._input_extension
+
+	if not input_extension then
+		return 
+	end
 
 	if not self._is_priming then
-		if input_service.get(input_service, "function_career") then
+		if input_extension.get(input_extension, "function_career") then
 			self._start_priming(self)
 		end
 	elseif self._is_priming then
 		self._update_priming(self)
 
-		if input_service.get(input_service, "action_two") then
+		if input_extension.get(input_extension, "action_two") then
 			self._stop_priming(self)
 
 			return 
 		end
 
-		if input_service.get(input_service, "function_career_release") then
+		if input_extension.get(input_extension, "function_career_release") then
 			self._run_ability(self)
 		end
 	end
@@ -149,11 +154,11 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 	status_extension.do_lunge = {
 		animation_end_event = "maiden_guard_active_ability_charge_hit",
 		allow_rotation = false,
-		first_person_animation_end_event = "maiden_guard_active_ability_charge_hit",
+		first_person_animation_end_event = "dodge_bwd",
 		first_person_hit_animation_event = "charge_react",
 		falloff_to_speed = 5,
-		first_person_animation_event = "maiden_guard_active_ability_charge_start",
-		first_person_animation_end_event_hit = "maiden_guard_active_ability_charge_hit",
+		first_person_animation_event = "shade_stealth_ability",
+		first_person_animation_end_event_hit = "dodge_bwd",
 		duration = 0.65,
 		initial_speed = 25,
 		animation_event = "maiden_guard_active_ability_charge_start",

@@ -193,10 +193,12 @@ InventorySystem.rpc_give_equipment = function (self, sender, interactor_game_obj
 				inventory.add_equipment(inventory, slot_name, item_data)
 
 				if not LEVEL_EDITOR_TEST then
+					local weapon_skin_id = NetworkLookup.weapon_skins["n/a"]
+
 					if self.is_server then
-						self.network_transmit:send_rpc_clients("rpc_add_equipment", game_object_id, slot_id, item_name_id)
+						self.network_transmit:send_rpc_clients("rpc_add_equipment", game_object_id, slot_id, item_name_id, weapon_skin_id)
 					else
-						self.network_transmit:send_rpc_server("rpc_add_equipment", game_object_id, slot_id, item_name_id)
+						self.network_transmit:send_rpc_server("rpc_add_equipment", game_object_id, slot_id, item_name_id, weapon_skin_id)
 					end
 				end
 
@@ -240,21 +242,27 @@ InventorySystem.rpc_give_equipment = function (self, sender, interactor_game_obj
 
 	return 
 end
-InventorySystem.rpc_add_equipment = function (self, sender, go_id, slot_id, item_name_id)
+InventorySystem.rpc_add_equipment = function (self, sender, go_id, slot_id, item_name_id, weapon_skin_id)
 	if self.is_server then
-		self.network_transmit:send_rpc_clients_except("rpc_add_equipment", sender, go_id, slot_id, item_name_id)
+		self.network_transmit:send_rpc_clients_except("rpc_add_equipment", sender, go_id, slot_id, item_name_id, weapon_skin_id)
 	end
 
 	local unit = self.unit_storage:unit(go_id)
 	local slot_name = NetworkLookup.equipment_slots[slot_id]
 	local item_name = NetworkLookup.item_names[item_name_id]
+	local skin_name = NetworkLookup.weapon_skins[weapon_skin_id]
+
+	if skin_name == "n/a" then
+		skin_name = nil
+	end
+
 	local inventory = ScriptUnit.extension(unit, "inventory_system")
 
-	inventory.add_equipment(inventory, slot_name, item_name)
+	inventory.add_equipment(inventory, slot_name, item_name, skin_name)
 
 	return 
 end
-InventorySystem.rpc_add_equipment_buffs = function (self, sender, go_id, slot_id, buff_1_id, value_1, buff_2_id, value_2, buff_3_id, value_3, buff_4_id, value_4)
+InventorySystem.rpc_add_equipment_buffs = function (self, sender, go_id, slot_id, buff_1_id, buff_data_type_1_id, value_1, buff_2_id, buff_data_type_2_id, value_2, buff_3_id, buff_data_type_3_id, value_3, buff_4_id, buff_data_type_4_id, value_4)
 	fassert(self.is_server, "attempting to add buffs as a client VIA rpc_add_equipment_buffs")
 
 	local unit = self.unit_storage:unit(go_id)
@@ -263,9 +271,13 @@ InventorySystem.rpc_add_equipment_buffs = function (self, sender, go_id, slot_id
 	local buff_name_2 = NetworkLookup.buff_templates[buff_2_id]
 	local buff_name_3 = NetworkLookup.buff_templates[buff_3_id]
 	local buff_name_4 = NetworkLookup.buff_templates[buff_4_id]
+	local buff_data_type_1 = NetworkLookup.buff_data_types[buff_data_type_1_id]
+	local buff_data_type_2 = NetworkLookup.buff_data_types[buff_data_type_2_id]
+	local buff_data_type_3 = NetworkLookup.buff_data_types[buff_data_type_3_id]
+	local buff_data_type_4 = NetworkLookup.buff_data_types[buff_data_type_4_id]
 	local inventory = ScriptUnit.extension(unit, "inventory_system")
 
-	inventory.add_buffs_to_slot(inventory, slot_name, buff_name_1, value_1, buff_name_2, value_2, buff_name_3, value_3, buff_name_4, value_4)
+	inventory.add_buffs_to_slot(inventory, slot_name, buff_name_1, buff_data_type_1, value_1, buff_name_2, buff_data_type_2, value_2, buff_name_3, buff_data_type_3, value_3, buff_name_4, buff_data_type_4, value_4)
 
 	return 
 end

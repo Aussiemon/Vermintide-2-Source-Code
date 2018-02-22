@@ -267,6 +267,9 @@ InputFilters.gamepad_cursor = {
 	init = function (filter_data)
 		local internal_filter_data = table.clone(filter_data)
 		local res_x, res_y = UIResolution()
+		local inv_scale = RESOLUTION_LOOKUP.inv_scale
+		res_x = res_x*inv_scale
+		res_y = res_y*inv_scale
 		internal_filter_data.pos_x = res_x*0.5
 		internal_filter_data.pos_y = res_y*0.5
 		internal_filter_data.frame_index = GLOBAL_FRAME_INDEX
@@ -317,6 +320,9 @@ InputFilters.gamepad_cursor = {
 			end
 
 			local res_x, res_y = UIResolution()
+			local inv_scale = RESOLUTION_LOOKUP.inv_scale
+			res_x = res_x*inv_scale
+			res_y = res_y*inv_scale
 			local dt = 0.03333333333333333
 			local new_x = filter_data.pos_x + x*dt*filter_data.multiplier
 			local new_y = filter_data.pos_y + y*dt*filter_data.multiplier

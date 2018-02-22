@@ -9,6 +9,7 @@ local num_reward_entries = definitions.num_reward_entries
 local num_experience_entries = definitions.num_experience_entries
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations
+local console_cursor_definition = definitions.console_cursor_definition
 
 local function dprint(...)
 	print("[LevelEndView]", ...)
@@ -361,6 +362,7 @@ LevelEndView.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+	self._console_cursor = UIWidget.init(console_cursor_definition)
 	self.active = true
 
 	if self.game_won then
@@ -617,6 +619,12 @@ LevelEndView.draw = function (self, dt, input_service)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
+
+	if gamepad_active and not Managers.popup:has_popup() then
+		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
+		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor)
+		UIRenderer.end_pass(ui_top_renderer)
+	end
 
 	return 
 end

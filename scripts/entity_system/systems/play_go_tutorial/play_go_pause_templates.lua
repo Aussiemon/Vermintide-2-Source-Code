@@ -57,6 +57,10 @@ DefaultAnimationFunctions = {
 
 				Managers.time:set_global_time_scale(0.01)
 
+				local play_sound_event = this.play_sound_event or "Play_tutorial_indicator"
+
+				Managers.music:trigger_event(play_sound_event)
+
 				local level = LevelHelper:current_level(this.world)
 
 				Level.trigger_event(level, "lua_" .. this.name .. "_triggered")
@@ -128,6 +132,10 @@ DefaultAnimationFunctions = {
 	on_exit = function (this)
 		Managers.time:set_global_time_scale(1)
 
+		local stop_sound_event = this.stop_sound_event or "Stop_tutorial_indicator"
+
+		Managers.music:trigger_event(stop_sound_event)
+
 		local player = Managers.player:local_player()
 		local player_unit = player.player_unit
 		local player_input = ScriptUnit.extension(player_unit, "input_system")
@@ -190,10 +198,14 @@ PauseEvents = {
 			animation_delay = 0.75,
 			input_mappings = {
 				{
+					"function_career"
+				},
+				{
 					"function_career_release"
 				}
 			},
 			allowed_input = {
+				"function_career",
 				"function_career_release"
 			},
 			on_enter = DefaultAnimationFunctions.on_enter,
@@ -236,12 +248,10 @@ PauseEvents = {
 			stop_delay = 0.07,
 			mission_name = "prologue_dodge",
 			animation_delay = 0.4,
-			breed = "chaos_raider",
+			breed = "chaos_raider_tutorial",
 			name = "dodge_chaos_raider",
 			animations = {
-				"attack_pounce",
-				"attack_special",
-				"attack_cleave"
+				"attack_cleave_02"
 			},
 			input_mappings = {
 				{
@@ -271,20 +281,10 @@ PauseEvents = {
 			stop_delay = 0.05,
 			mission_name = "prologue_blocking",
 			animation_delay = 0.4,
-			breed = "chaos_marauder",
+			breed = "chaos_marauder_tutorial",
 			name = "block_chaos_marauder",
 			animations = {
-				"attack_move",
-				"attack_move_2",
-				"attack_move_3",
-				"attack_move_4",
-				"attack_pounce",
-				"attack_pounce_2",
-				"attack_pounce_3",
-				"attack_pounce_4",
-				"attack_pounce_5",
-				"attack_pounce_6",
-				"attack_pounce_7"
+				"attack_pounce"
 			},
 			input_mappings = {
 				{

@@ -49,30 +49,44 @@ BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, callback_func
 		local function_result = result.FunctionResult
 		local items = function_result.items
 		local consumed_items = function_result.consumed_items
+		local modified_items = function_result.modified_items
 		local result = {}
 
-		for i = 1, #items, 1 do
-			local item = items[i]
-			local backend_id = item.ItemInstanceId
-			local amount = item.UsesIncrementedBy or 1
+		if items then
+			for i = 1, #items, 1 do
+				local item = items[i]
+				local backend_id = item.ItemInstanceId
+				local amount = item.UsesIncrementedBy or 1
 
-			backend_mirror.add_item(backend_mirror, backend_id, item)
+				backend_mirror.add_item(backend_mirror, backend_id, item)
 
-			result[i] = {
-				backend_id,
-				[3] = amount
-			}
+				result[i] = {
+					backend_id,
+					[3] = amount
+				}
+			end
 		end
 
-		for i = 1, #consumed_items, 1 do
-			local data = consumed_items[i]
-			local backend_id = data.ItemInstanceId
-			local remaining_uses = data.RemainingUses
+		if consumed_items then
+			for i = 1, #consumed_items, 1 do
+				local item = consumed_items[i]
+				local backend_id = item.ItemInstanceId
+				local remaining_uses = item.RemainingUses
 
-			if 0 < remaining_uses then
-				backend_mirror.update_item(backend_mirror, backend_id, "RemainingUses", remaining_uses)
-			else
-				backend_mirror.remove_item(backend_mirror, backend_id)
+				if 0 < remaining_uses then
+					backend_mirror.update_item_field(backend_mirror, backend_id, "RemainingUses", remaining_uses)
+				else
+					backend_mirror.remove_item(backend_mirror, backend_id)
+				end
+			end
+		end
+
+		if modified_items then
+			for i = 1, #modified_items, 1 do
+				local item = modified_items[i]
+				local backend_id = item.ItemInstanceId
+
+				backend_mirror.update_item(backend_mirror, backend_id, item)
 			end
 		end
 

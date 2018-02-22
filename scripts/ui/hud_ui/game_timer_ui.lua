@@ -11,6 +11,8 @@ GameTimerUI.init = function (self, ingame_ui_context)
 
 	event_manager.register(event_manager, self, "start_game_time", "event_start_game_time")
 
+	self._disabled = Development.parameter("disable_ingame_timer")
+
 	return 
 end
 GameTimerUI.create_ui_elements = function (self)
@@ -39,11 +41,8 @@ GameTimerUI.set_visible = function (self, visible)
 	return 
 end
 GameTimerUI.update = function (self, dt)
-	local resolution_modified = RESOLUTION_LOOKUP.modified
-	local is_dirty = false
-
-	if resolution_modified then
-		is_dirty = true
+	if self._disabled then
+		return 
 	end
 
 	local start_time = self._start_time

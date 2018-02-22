@@ -2,6 +2,8 @@
 --   Code may be incomplete or incorrect.
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
 LevelAnalysis = class(LevelAnalysis)
 
 require("scripts/utils/util")
@@ -357,7 +359,8 @@ LevelAnalysis.start_main_path_generation = function (self, num_main_paths)
 		self.main_paths[i] = {
 			path_length = 0,
 			nodes = {},
-			astar_paths = {}
+			astar_paths = {},
+			path_markers = {}
 		}
 	end
 
@@ -642,6 +645,38 @@ LevelAnalysis.pick_boss_spline = function (self, map_section, padding, last_trav
 	end
 
 	return false
+end
+LevelAnalysis.spawn_all_boss_spline_patrols = function (self, optional_id)
+	local boss_waypoints = self.boss_waypoints
+
+	if not boss_waypoints then
+		return false
+	end
+
+	print("SPAWN BOSS SPLINES")
+
+	for i = 1, #boss_waypoints, 1 do
+		local section_waypoints = boss_waypoints[i]
+
+		for j = 1, #section_waypoints, 1 do
+			local waypoints_table = section_waypoints[j]
+
+			if not optional_id or waypoints_table.id == optional_id then
+				local spline_waypoints = self.boxify_waypoint_table(self, waypoints_table.waypoints)
+				local event_data = {
+					spline_type = "patrol",
+					event_kind = "event_spline_patrol",
+					spline_id = waypoints_table.id,
+					spline_way_points = spline_waypoints
+				}
+
+				self.enemy_recycler:add_terror_event_in_area(spline_waypoints[1], "boss_event_spline_patrol", event_data)
+				print("INJECTING BOSS SPLINE ID", waypoints_table.id)
+			end
+		end
+	end
+
+	return 
 end
 LevelAnalysis.give_events = function (self, main_paths, terror_spawners, num_sections, generated_event_list, terror_event_list, event_settings, level_overrides)
 	local spawn_distance = 0
@@ -1127,17 +1162,56 @@ LevelAnalysis._make_waypoint_lookup = function (self)
 
 	return 
 end
+LevelAnalysis._remove_short_routes = function (self, routes, patrol_type)
+	if not routes then
+		return 
+	end
+
+	local Vector3_distance = Vector3.distance
+
+	for j = #routes, 1, -1 do
+		local data = routes[j]
+		local waypoints = data.waypoints
+		local length = 0
+		local p = waypoints[1]
+		local p1 = Vector3(p[1], p[2], p[3])
+		local p2 = nil
+
+		for i = 2, #waypoints, 1 do
+			local p = waypoints[i]
+			p2 = Vector3(p[1], p[2], p[3])
+			length = length + Vector3_distance(p1, p2)
+
+			if 15 < length then
+				break
+			end
+
+			p1 = p2
+		end
+
+		if length <= 15 then
+			print("Removing patrol of type: '" .. patrol_type .. "', called: '" .. data.id .. "' because it is too short: " .. tostring(data.travel_dist) .. "m, which is less then 10m.")
+			table.remove(routes, j)
+		end
+	end
+
+	return 
+end
 LevelAnalysis.store_patrol_waypoints = function (self, boss_waypoints, patrol_waypoints, event_waypoints)
+
+	-- decompilation error in this vicinity
+	if boss_waypoints then
+		for i = 1, #boss_waypoints, 1 do
+			self._remove_short_routes(self, boss_waypoints[i], "boss")
+		end
+	end
+
+	self._remove_short_routes(self, patrol_waypoints, "roaming")
+	self._remove_short_routes(self, event_waypoints, "event")
+
 	self.used_roaming_waypoints = {}
 	self.boss_waypoints = boss_waypoints
 	self.patrol_waypoints = patrol_waypoints
-
-	if event_waypoints then
-		self.event_waypoints = event_waypoints
-
-		self._make_waypoint_lookup(self)
-	end
-
 	local ai_group_system = Managers.state.entity:system("ai_group_system")
 
 	ai_group_system.add_ready_splines(ai_group_system, self.patrol_waypoints, "roaming")

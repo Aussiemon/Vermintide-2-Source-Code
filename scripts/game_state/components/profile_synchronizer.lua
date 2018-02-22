@@ -542,6 +542,9 @@ ProfileSynchronizer.rpc_server_request_mark_profile_result = function (self, sen
 
 	return 
 end
+ProfileSynchronizer.has_pending_request = function (self)
+	return self._has_pending_request
+end
 ProfileSynchronizer.profile_request_result = function (self)
 	return self._request_result, self._request_local_player_id
 end

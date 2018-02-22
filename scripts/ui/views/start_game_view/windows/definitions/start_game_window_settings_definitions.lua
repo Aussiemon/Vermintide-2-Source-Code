@@ -294,24 +294,8 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					style_id = "icon_frame",
 					pass_type = "texture",
 					texture_id = "icon_frame",
-					content_change_function = function (content, style)
-						if content.button_hotspot.disable_button then
-							style.saturated = true
-						else
-							style.saturated = false
-						end
-
-						return 
-					end
-				},
-				{
-					style_id = "icon_lock",
-					pass_type = "texture",
-					texture_id = "icon_lock",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
-						return button_hotspot.disable_button or content.option_text == ""
+					content_check_function = function (content, style)
+						return content.icon
 					end,
 					content_change_function = function (content, style)
 						if content.button_hotspot.disable_button then
@@ -326,7 +310,10 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 				{
 					texture_id = "icon_glow",
 					style_id = "icon_glow",
-					pass_type = "texture"
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return content.icon
+					end
 				},
 				{
 					texture_id = "glow",
@@ -337,6 +324,9 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					style_id = "icon",
 					pass_type = "texture",
 					texture_id = "icon",
+					content_check_function = function (content, style)
+						return content.icon
+					end,
 					content_change_function = function (content, style)
 						if content.button_hotspot.disable_button then
 							style.saturated = true
@@ -348,13 +338,43 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					end
 				},
 				{
+					style_id = "button_text",
+					pass_type = "text",
+					text_id = "button_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button and not content.icon
+					end
+				},
+				{
+					style_id = "button_text_disabled",
+					pass_type = "text",
+					text_id = "button_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button and not content.icon
+					end
+				},
+				{
+					style_id = "button_text_shadow",
+					pass_type = "text",
+					text_id = "button_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button and not content.icon
+					end
+				},
+				{
 					style_id = "option_text",
 					pass_type = "text",
 					text_id = "option_text",
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button
+						return not button_hotspot.disable_button and content.icon
 					end
 				},
 				{
@@ -364,7 +384,7 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button
+						return not button_hotspot.disable_button and content.icon
 					end
 				},
 				{
@@ -374,13 +394,18 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button
+						return not button_hotspot.disable_button and content.icon
 					end
 				},
 				{
 					style_id = "title_text_shadow",
 					pass_type = "text",
-					text_id = "title_text"
+					text_id = "title_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button and content.icon
+					end
 				},
 				{
 					style_id = "title_text_disabled",
@@ -389,24 +414,29 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return button_hotspot.disable_button
+						return button_hotspot.disable_button and content.icon
 					end
 				},
 				{
 					pass_type = "texture",
 					style_id = "title_bg",
-					texture_id = "title_bg"
+					texture_id = "title_bg",
+					content_check_function = function (content)
+						return content.icon
+					end
 				},
 				{
 					pass_type = "texture",
 					style_id = "title_edge",
-					texture_id = "title_edge"
+					texture_id = "title_edge",
+					content_check_function = function (content)
+						return content.icon
+					end
 				}
 			}
 		},
 		content = {
 			option_text = "",
-			icon_lock = "map_frame_lock",
 			icon_frame = "map_frame_00",
 			glass = "game_options_fg",
 			title_edge = "game_option_divider",
@@ -416,8 +446,8 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 			button_hotspot = {},
 			frame = frame_settings.texture,
 			glow_frame = glow_frame_settings.texture,
+			button_text = button_text,
 			title_text = title_text or "n/a",
-			icon = icon_texture,
 			background = {
 				uvs = {
 					{
@@ -702,6 +732,69 @@ local function create_settings_option(scenegraph_id, size, title_text, button_te
 					9
 				}
 			},
+			button_text = {
+				font_size = 38,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				default_text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					frame_width,
+					frame_width,
+					10
+				},
+				size = {
+					size[1] - frame_width*2,
+					size[2] - frame_width*2
+				}
+			},
+			button_text_disabled = {
+				font_size = 38,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("gray", 255),
+				default_text_color = Colors.get_color_table_with_alpha("gray", 255),
+				offset = {
+					frame_width,
+					frame_width,
+					10
+				},
+				size = {
+					size[1] - frame_width*2,
+					size[2] - frame_width*2
+				}
+			},
+			button_text_shadow = {
+				font_size = 38,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 2,
+					frame_width - 2,
+					9
+				},
+				size = {
+					size[1] - frame_width*2,
+					size[2] - frame_width*2
+				}
+			},
 			button_hover_rect = {
 				color = {
 					30,
@@ -848,7 +941,9 @@ local function create_additional_settings_option(scenegraph_id, size, title_text
 		content = {
 			title_edge = "game_option_divider",
 			title_bg = "playername_bg_02",
-			button_hotspot = {},
+			button_hotspot = {
+				allow_multi_hover = true
+			},
 			frame = frame_settings.texture,
 			title_text = title_text or "n/a",
 			background = {

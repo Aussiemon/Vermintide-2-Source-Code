@@ -1,7 +1,8 @@
 Pacing = class(Pacing)
 script_data.debug_ai_pacing = script_data.debug_ai_pacing or Development.parameter("debug_ai_pacing")
 script_data.debug_player_intensity = script_data.debug_player_intensity or Development.parameter("debug_player_intensity")
-Pacing.init = function (self, world, level_pacing_settings)
+local CurrentPacing = CurrentPacing or nil
+Pacing.init = function (self, world)
 	self.world = world
 	self.pacing_state = "pacing_build_up"
 	self._threat_population = 1
@@ -10,9 +11,7 @@ Pacing.init = function (self, world, level_pacing_settings)
 	self._state_start_time = 0
 	self.total_intensity = 0
 	self.player_intensity = {}
-	script_data.current_pacing_setting = script_data.current_pacing_setting or nil
-	script_data.old_pacing_setting = script_data.current_pacing_setting
-	self.settings = PacingSettings[script_data.current_pacing_setting] or level_pacing_settings
+	CurrentPacing = _G.CurrentPacing
 
 	return 
 end
@@ -36,7 +35,7 @@ Pacing.pacing_frozen = function (self, t)
 	return 
 end
 Pacing.pacing_build_up = function (self, t)
-	if self.settings.peak_intensity_threshold < self.total_intensity then
+	if CurrentPacing.peak_intensity_threshold < self.total_intensity then
 		self.advance_pacing(self, t)
 	end
 
@@ -50,14 +49,14 @@ Pacing.pacing_sustain_peak = function (self, t)
 	return 
 end
 Pacing.pacing_peak_fade = function (self, t)
-	if self.total_intensity < self.settings.peak_fade_threshold then
+	if self.total_intensity < CurrentPacing.peak_fade_threshold then
 		self.advance_pacing(self, t)
 	end
 
 	return 
 end
 Pacing.pacing_relax = function (self, t)
-	if self.settings.leave_relax_if_zero_intensity and self.total_intensity <= 0 then
+	if CurrentPacing.leave_relax_if_zero_intensity and self.total_intensity <= 0 then
 		self.advance_pacing(self, t)
 
 		return 
@@ -114,7 +113,7 @@ Pacing.advance_pacing = function (self, t, reason)
 
 	if pacing == "pacing_build_up" then
 		next_pacing = "pacing_sustain_peak"
-		self._end_pacing_time = t + ConflictUtils.random_interval(self.settings.sustain_peak_duration)
+		self._end_pacing_time = t + ConflictUtils.random_interval(CurrentPacing.sustain_peak_duration)
 		self._threat_population = 1
 		self._specials_population = 1
 		self._horde_population = 1
@@ -125,7 +124,7 @@ Pacing.advance_pacing = function (self, t, reason)
 		self._horde_population = 0
 	elseif pacing == "pacing_peak_fade" then
 		next_pacing = "pacing_relax"
-		self._end_pacing_time = t + ConflictUtils.random_interval(self.settings.relax_duration)
+		self._end_pacing_time = t + ConflictUtils.random_interval(CurrentPacing.relax_duration)
 		self._threat_population = 1
 		self._specials_population = 0
 		self._horde_population = 0
@@ -184,27 +183,6 @@ Pacing.update = function (self, t, dt, alive_player_units)
 	self.total_intensity = sum_intensity/num_alive_player_units
 
 	self.intensity_graphs(self, t, dt, alive_player_units)
-
-	if script_data.old_pacing_setting ~= script_data.current_pacing_setting then
-		if not script_data.current_pacing_setting then
-			script_data.current_pacing_setting = "default"
-		end
-
-		self.settings = PacingSettings[script_data.current_pacing_setting]
-		script_data.old_pacing_setting = script_data.current_pacing_setting
-		CurrentHordeSettings = self.settings.horde
-	end
-
-	return 
-end
-Pacing.set_settings = function (self)
-	if not script_data.current_pacing_setting then
-		script_data.current_pacing_setting = "default"
-	end
-
-	self.settings = PacingSettings[script_data.current_pacing_setting]
-	script_data.old_pacing_setting = script_data.current_pacing_setting
-	CurrentHordeSettings = self.settings.horde
 
 	return 
 end

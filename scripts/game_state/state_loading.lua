@@ -69,14 +69,9 @@ StateLoading.on_enter = function (self, param_block)
 
 	local level_transition_handler = self._level_transition_handler
 	local next_level_key = level_transition_handler.get_next_level_key(level_transition_handler)
-	local previous_level_key = level_transition_handler.get_current_level_keys(level_transition_handler)
 
 	if next_level_key == "prologue" then
 		Managers.backend:start_tutorial()
-	end
-
-	if previous_level_key == "prologue" then
-		Managers.backend:stop_tutorial()
 	end
 
 	if self._lobby_client ~= nil and not self._lobby_client:is_dedicated_server() then
@@ -126,21 +121,6 @@ StateLoading._setup_input = function (self)
 	self._input_manager:initialize_device("keyboard", 1)
 	self._input_manager:initialize_device("mouse", 1)
 	self._input_manager:initialize_device("gamepad", 1)
-
-	local platform = PLATFORM
-	local loaded_player_controls = PlayerData.controls and PlayerData.controls.Player
-	local player_control_keymap = table.clone(PlayerControllerKeymaps)
-
-	if loaded_player_controls and loaded_player_controls.keymap then
-		table.merge_recursive(player_control_keymap[platform], loaded_player_controls.keymap)
-	end
-
-	local player_control_filters = table.clone(PlayerControllerFilters)
-
-	if loaded_player_controls and loaded_player_controls.filters then
-		table.merge_recursive(player_control_filters[platform], loaded_player_controls.filters)
-	end
-
 	self._input_manager:create_input_service("Player", "PlayerControllerKeymaps", "PlayerControllerFilters")
 	self._input_manager:map_device_to_service("Player", "keyboard")
 	self._input_manager:map_device_to_service("Player", "mouse")
@@ -903,7 +883,7 @@ StateLoading._try_next_state = function (self)
 		Managers.popup:cancel_popup(self._in_post_game_popup_id)
 	end
 
-	if Development.parameter("honduras_demo") and Managers.time:get_demo_transition() then
+	if script_data.honduras_demo and Managers.time:get_demo_transition() then
 		self._teardown_network = true
 		self._join_popup_id = nil
 		self._permission_to_go_to_next_state = true
@@ -973,7 +953,7 @@ StateLoading._try_next_state = function (self)
 			if ready_to_go_to_next_state or backend_is_disconnected then
 				local allowed_to_continue = nil
 
-				if Development.parameter("honduras_demo") then
+				if script_data.honduras_demo then
 					allowed_to_continue = false
 
 					if not self._loading_view:showing_press_to_continue() and not self._press_to_continue_shown then

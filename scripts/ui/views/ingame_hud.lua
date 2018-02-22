@@ -2,6 +2,7 @@ require("scripts/ui/views/subtitle_gui")
 require("scripts/ui/views/damage_indicator_gui")
 require("scripts/ui/views/tutorial_ui")
 require("scripts/ui/views/tutorial_input_ui")
+require("scripts/ui/views/tutorial_intro_ui")
 require("scripts/ui/views/interaction_ui")
 require("scripts/ui/views/area_indicator_ui")
 require("scripts/ui/views/mission_objective_ui")
@@ -31,6 +32,7 @@ require("scripts/ui/hud_ui/boss_health_ui")
 require("scripts/ui/hud_ui/twitch_vote_ui")
 require("scripts/ui/hud_ui/floating_icon_ui")
 require("scripts/ui/hud_ui/damage_numbers_ui")
+require("scripts/ui/hud_ui/news_feed_ui")
 require("scripts/ui/gift_popup/gift_popup_ui")
 require("scripts/ui/ui_cleanui")
 
@@ -41,8 +43,9 @@ IngameHud.init = function (self, ingame_ui_context)
 	local cutscene_system = Managers.state.entity:system("cutscene_system")
 	self.cutscene_system = cutscene_system
 	self.gdc_build = Development.parameter("gdc")
+	local has_tobii = rawget(_G, "Tobii")
 
-	if rawget(_G, "Tobii") then
+	if has_tobii then
 		ingame_ui_context.cleanui = UICleanUI.create()
 		self.cleanui = ingame_ui_context.cleanui
 		self.cleanui.hud = self
@@ -98,12 +101,16 @@ IngameHud.init = function (self, ingame_ui_context)
 		self.contract_log_ui = ContractLogUI:new(ingame_ui_context)
 	end
 
-	if not self.is_in_inn then
+	if not self.is_in_inn and not Development.parameter("disable_ingame_timer") then
 		self.game_timer_ui = GameTimerUI:new(ingame_ui_context)
 	end
 
-	if self.is_in_inn then
+	if self.is_in_inn or script_data.debug_show_damage_numbers then
 		self.damage_numbers_ui = DamageNumbersUI:new(ingame_ui_context)
+	end
+
+	if self.is_in_inn then
+		self.news_feed_ui = NewsFeedUI:new(ingame_ui_context)
 	end
 
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
@@ -113,6 +120,7 @@ IngameHud.init = function (self, ingame_ui_context)
 		self.difficulty_unlock_ui = DifficultyUnlockUI:new(ingame_ui_context)
 	elseif game_mode_key == "tutorial" then
 		self.tutorial_input_ui = TutorialInputUI:new(ingame_ui_context)
+		self.tutorial_intro_ui = TutorialIntroUI:new(ingame_ui_context)
 	end
 
 	if self.gdc_build then
@@ -142,6 +150,10 @@ IngameHud.destroy = function (self)
 		self.tutorial_input_ui:destroy()
 	end
 
+	if self.tutorial_intro_ui then
+		self.tutorial_intro_ui:destroy()
+	end
+
 	if self.buff_ui then
 		self.buff_ui:destroy()
 	end
@@ -168,6 +180,10 @@ IngameHud.destroy = function (self)
 
 	if self.damage_numbers_ui then
 		self.damage_numbers_ui:destroy()
+	end
+
+	if self.news_feed_ui then
+		self.news_feed_ui:destroy()
 	end
 
 	self.subtitle_gui:destroy()
@@ -270,6 +286,10 @@ IngameHud.set_visible = function (self, visible, draw_playerlist)
 		self.buff_ui:set_visible(visible)
 	end
 
+	if self.news_feed_ui then
+		self.news_feed_ui:set_visible(visible)
+	end
+
 	if self.twitch_vote_ui then
 		self.twitch_vote_ui:set_visible(visible)
 	end
@@ -351,10 +371,29 @@ IngameHud.is_cutscene_active = function (self)
 	return cutscene_system.active_camera and not cutscene_system.ingame_hud_enabled
 end
 IngameHud._update_clean_ui = function (self, dt, t, player, context)
-	if self.cleanui then
-		UICleanUI.update(self.cleanui, dt, context)
+	local has_tobii = rawget(_G, "Tobii") and Tobii.get_is_connected()
+
+	if not has_tobii then
+		return 
 	end
 
+	local use_clean_ui = Application.user_setting("tobii_eyetracking") and Application.user_setting("tobii_clean_ui")
+
+	if not use_clean_ui then
+		return 
+	end
+
+	local cleanui = self.cleanui
+
+	if not self.cleanui then
+		return 
+	end
+
+	UICleanUI.update(self.cleanui, dt, context)
+
+	return 
+end
+IngameHud._update_crosshair_ui = function (self, dt, t, player, context)
 	local player_unit = player.player_unit
 	local crosshair_position_x, crosshair_position_y = self._update_crosshair_position(self, player_unit, dt)
 
@@ -428,6 +467,9 @@ IngameHud._update_always = function (self, dt, t, player, context)
 	Profiler.start("Tobii")
 	self._update_clean_ui(self, dt, t, player, context)
 	Profiler.stop("Tobii")
+	Profiler.start("Crosshair UI")
+	self._update_crosshair_ui(self, dt, t, player, context)
+	Profiler.stop("Crosshair UI")
 
 	local active_cutscene = self.is_cutscene_active(self)
 
@@ -459,11 +501,17 @@ IngameHud._update_always = function (self, dt, t, player, context)
 	Profiler.stop("gdc")
 	Profiler.start("damage_numbers_ui")
 
-	if self.is_in_inn and self.damage_numbers_ui then
+	if self.damage_numbers_ui then
 		self.damage_numbers_ui:update(dt)
 	end
 
 	Profiler.stop("damage_numbers_ui")
+
+	if self.tutorial_intro_ui then
+		Profiler.start("Tutorial Intro UI")
+		self.tutorial_intro_ui:update(dt, t)
+		Profiler.stop("Tutorial Intro UI")
+	end
 
 	return 
 end
@@ -501,13 +549,12 @@ IngameHud._update_while_alive = function (self, dt, t, player, context)
 	Profiler.start("Crosshair")
 	self.crosshair:update(dt)
 	Profiler.stop("Crosshair")
-	Profiler.start("Tutorial Tooltip UI")
 
 	if self.tutorial_input_ui then
+		Profiler.start("Tutorial Tooltip UI")
 		self.tutorial_input_ui:update(dt, t)
+		Profiler.stop("Tutorial Tooltip UI")
 	end
-
-	Profiler.stop("Tutorial Tooltip UI")
 
 	if not game_mode_disable_hud then
 		Profiler.start("Item Received Feedback Messages")
@@ -529,6 +576,13 @@ IngameHud._update_while_alive = function (self, dt, t, player, context)
 		end
 
 		Profiler.stop("Buff UI")
+		Profiler.start("News Feed UI")
+
+		if self.news_feed_ui then
+			self.news_feed_ui:update(dt, t)
+		end
+
+		Profiler.stop("News Feed UI")
 		Profiler.start("Buff Presentation UI")
 
 		if self.buff_presentation_ui then
@@ -665,26 +719,24 @@ IngameHud._update_crosshair_position = function (self, player_unit, dt)
 		return position_x, position_y
 	end
 
-	if Application.user_setting("tobii_eyetracking") and ScriptUnit.has_extension(player_unit, "eyetracking_system") then
-		local eyetracking_extension = ScriptUnit.extension(player_unit, "eyetracking_system")
+	local eyetracking_extension = ScriptUnit.has_extension(player_unit, "eyetracking_system")
 
-		if eyetracking_extension.get_is_feature_enabled(eyetracking_extension, "tobii_extended_view") then
-			local world_pos = eyetracking_extension.get_forward_rayhit(eyetracking_extension)
+	if eyetracking_extension and eyetracking_extension.get_is_feature_enabled(eyetracking_extension, "tobii_extended_view") then
+		local world_pos = eyetracking_extension.get_forward_rayhit(eyetracking_extension)
 
-			if world_pos then
-				local player = Managers.player:owner(player_unit)
-				local viewport_name = player.viewport_name
-				local world_name = player.viewport_world_name
-				local world = Managers.world:world(world_name)
-				local viewport = ScriptWorld.viewport(world, viewport_name)
-				local camera = ScriptViewport.camera(viewport)
-				local position_in_screen = Camera.world_to_screen(camera, world_pos)
-				position_in_screen.z = 1
-				position_in_screen.x = position_in_screen.x*inv_res_scale
-				position_in_screen.y = position_in_screen.y*inv_res_scale
+		if world_pos then
+			local player = Managers.player:owner(player_unit)
+			local viewport_name = player.viewport_name
+			local world_name = player.viewport_world_name
+			local world = Managers.world:world(world_name)
+			local viewport = ScriptWorld.viewport(world, viewport_name)
+			local camera = ScriptViewport.camera(viewport)
+			local position_in_screen = Camera.world_to_screen(camera, world_pos)
+			position_in_screen.z = 1
+			position_in_screen.x = position_in_screen.x*inv_res_scale
+			position_in_screen.y = position_in_screen.y*inv_res_scale
 
-				return position_in_screen.x, position_in_screen.y
-			end
+			return position_in_screen.x, position_in_screen.y
 		end
 	end
 

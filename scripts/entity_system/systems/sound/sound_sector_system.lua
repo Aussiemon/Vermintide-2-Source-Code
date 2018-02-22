@@ -257,18 +257,26 @@ SoundSectorSystem.local_player_created = function (self, player)
 
 	return 
 end
-SoundSectorSystem.rpc_enemy_has_target = function (self, sender, unit_id, target_unit_id)
+SoundSectorSystem.rpc_enemy_has_target = function (self, sender, unit_id, target_unit_id, target_is_level_unit)
 	local unit = self.unit_storage:unit(unit_id)
 
 	if unit == nil then
 		return 
 	end
 
+	local target_unit = nil
+
+	if target_is_level_unit then
+		target_unit = LevelHelper:unit_by_index(self.world, target_unit_id)
+	else
+		target_unit = self.unit_storage:unit(target_unit_id)
+	end
+
 	local sound_sector_extension = ScriptUnit.has_extension(unit, "sound_sector_system")
 
-	if sound_sector_extension and target_unit_id then
+	if sound_sector_extension and target_unit then
 		sound_sector_extension.has_target = true
-		sound_sector_extension.target_unit_id = target_unit_id
+		sound_sector_extension.target_unit = target_unit
 	end
 
 	return 

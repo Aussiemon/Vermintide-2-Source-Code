@@ -333,6 +333,10 @@ local game_object_templates = {
 		game_object_created_func_name = "game_object_created_player",
 		game_object_destroyed_func_name = "game_object_destroyed_player"
 	},
+	player_sync_data = {
+		game_object_created_func_name = "game_object_created_player_sync_data",
+		game_object_destroyed_func_name = "game_object_destroyed_player_sync_data"
+	},
 	player_unit_health = {
 		game_object_created_func_name = "game_object_created_player_unit_health",
 		game_object_destroyed_func_name = "game_object_destroyed_player_unit_health"

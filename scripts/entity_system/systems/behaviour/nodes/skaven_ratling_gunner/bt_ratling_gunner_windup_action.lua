@@ -62,11 +62,6 @@ BTRatlingGunnerWindUpAction.enter = function (self, unit, blackboard, t)
 
 	ai_navigation.set_max_speed(ai_navigation, blackboard.breed.walk_speed)
 
-	local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-	local target_unit_id = network_manager.unit_game_object_id(network_manager, target_unit)
-
-	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id)
-
 	return 
 end
 BTRatlingGunnerWindUpAction._update_target = function (self, unit, blackboard, data, t)

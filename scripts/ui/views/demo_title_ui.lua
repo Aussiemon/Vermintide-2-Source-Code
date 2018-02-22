@@ -11,6 +11,7 @@ local start_game_button_widget = definitions.start_game_button_widget
 local back_button_widget = definitions.back_button_widget
 local console_cursor_definition = definitions.console_cursor_definition
 local press_start_widget = definitions.press_start_widget
+local single_widget_definitions = definitions.single_widget_definitions
 DemoTitleUI = class(DemoTitleUI)
 local WORLD_GUI_RESOLUTION = 1920
 local CAMERA_TRANSITION_TIME = 2
@@ -20,6 +21,8 @@ DemoTitleUI.init = function (self, world, viewport, parent)
 	self._parent = parent
 	self._attract_mode_active = false
 	self._character_previewers = {}
+	self._fps = 0
+	self._fps_cooldown = 0
 
 	self._setup_gui(self)
 	self._setup_level(self)
@@ -164,6 +167,28 @@ DemoTitleUI._create_ui_elements = function (self)
 
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
+	local text_style = {
+		vertical_alignment = "center",
+		word_wrap = true,
+		horizontal_alignment = "center",
+		font_size = 18,
+		font_type = "hell_shark",
+		text_color = {
+			255,
+			255,
+			255,
+			255
+		},
+		offset = {
+			0,
+			0,
+			2
+		}
+	}
+	self._information_text = UIWidget.init(UIWidgets.create_simple_text("n/a", "information_text", nil, nil, text_style))
+	self._user_gamertag_widget = UIWidget.init(UIWidgets.create_simple_rect_text("user_gamertag", "Gamertag not assigned"))
+	self._change_profile_input_icon_widget = UIWidget.init(UIWidgets.create_simple_texture("xbone_button_icon_x", "change_profile_input_icon"))
+	self._change_profile_input_text_widget = UIWidget.init(UIWidgets.create_simple_rect_text("change_profile_input_text", Localize("xb1_switch_profile"), 20))
 	self._ui_animations = {}
 	self._ui_animation_cb = {}
 	self._ui_animations.reset = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.right_side_root.local_position, 1, self._ui_scenegraph.right_side_root.local_position[1], 450, 0, math.easeOutCubic)
@@ -339,6 +364,7 @@ DemoTitleUI.update = function (self, dt, t)
 	self._update_back(self, dt, t)
 	self._draw_3d_logo(self, dt, t)
 	self._draw(self, dt, t)
+	self._draw_fps(self, dt, t)
 	self._update_character_previewers(self, dt, t)
 
 	return 
@@ -615,6 +641,19 @@ DemoTitleUI._draw = function (self, dt, t)
 				Managers.music:trigger_event(attract_mode_video.sound_stop)
 			end
 		end
+	else
+		if self._draw_information_text then
+			UIRenderer.draw_widget(ui_renderer, self._information_text)
+		end
+
+		if self._draw_gamertag then
+			UIRenderer.draw_widget(ui_renderer, self._user_gamertag_widget)
+
+			if not self._switch_profile_blocked then
+				UIRenderer.draw_widget(ui_renderer, self._change_profile_input_icon_widget)
+				UIRenderer.draw_widget(ui_renderer, self._change_profile_input_text_widget)
+			end
+		end
 	end
 
 	if self._ui_activated then
@@ -630,9 +669,11 @@ DemoTitleUI._draw = function (self, dt, t)
 			UIRenderer.draw_widget(ui_renderer, widget)
 		end
 
+		UIWidgetUtils.animate_default_button(self._start_game_button_widget, dt)
+		UIWidgetUtils.animate_default_button(self._back_button_widget, dt)
 		UIRenderer.draw_widget(ui_renderer, self._start_game_button_widget)
 		UIRenderer.draw_widget(ui_renderer, self._back_button_widget)
-	elseif not self._entering then
+	elseif not self._entering and not self.in_transition(self) then
 		UIRenderer.draw_widget(ui_renderer, self._press_start_widget)
 	end
 
@@ -649,6 +690,76 @@ DemoTitleUI._draw = function (self, dt, t)
 
 		UIRenderer.end_pass(career_video_ui_renderer)
 	end
+
+	return 
+end
+local debug_font = "gw_arial_32"
+local debug_font_mtrl = "materials/fonts/" .. debug_font
+local debug_font_size = 32
+local position = {}
+local white_color = Colors.color_definitions.white
+local black_color = Colors.color_definitions.black
+local red_color = Colors.color_definitions.red
+local test_fps = 0
+local test_fps_n = 0
+DemoTitleUI._draw_fps = function (self, dt, t)
+	if BUILD == "release" then
+		return 
+	end
+
+	self._old_fps = self._old_fps or 0
+	self._fps = self._fps or 0
+	self._fps_cooldown = self._fps_cooldown or 0
+	local ui_top_renderer = self._ui_renderer
+	local fps = self._old_fps
+	self._fps_cooldown = self._fps_cooldown + dt
+	test_fps = test_fps + dt/1
+	test_fps_n = test_fps_n + 1
+
+	if 1 < self._fps_cooldown then
+		self._old_fps = self._fps
+		self._fps = test_fps/test_fps_n
+		test_fps = 0
+		test_fps_n = 0
+		self._fps_cooldown = 0
+	end
+
+	self._old_fps = math.lerp(self._old_fps, self._fps, dt*0.2)
+	local text = string.format("%.2f FPS", fps)
+	local color = nil
+	local red_cap = 30
+	local platform = PLATFORM
+
+	if platform == "ps4" or platform == "xb1" then
+		red_cap = 28
+	end
+
+	if fps < red_cap then
+		color = red_color
+	else
+		color = white_color
+	end
+
+	local inv_scale = RESOLUTION_LOOKUP.inv_scale
+	local res_width = RESOLUTION_LOOKUP.res_w
+	local res_height = RESOLUTION_LOOKUP.res_h
+	res_width = res_width*inv_scale
+	res_height = res_height*inv_scale
+	local text_size = debug_font_size
+	local width, height = UIRenderer.text_size(ui_top_renderer, text, debug_font_mtrl, text_size)
+	local x = res_width - width - debug_font_size - 16
+	local y = height + 16
+	position[1] = x
+	position[2] = y
+	position[3] = 899
+
+	UIRenderer.draw_text(ui_top_renderer, text, debug_font_mtrl, text_size, debug_font, Vector3(unpack(position)), color)
+
+	position[1] = x + 2
+	position[2] = y - 2
+	position[3] = 898
+
+	UIRenderer.draw_text(ui_top_renderer, text, debug_font_mtrl, text_size, debug_font, Vector3(unpack(position)), black_color)
 
 	return 
 end
@@ -734,6 +845,9 @@ end
 DemoTitleUI.active_menu_selection = function (self)
 	return 
 end
+DemoTitleUI.set_menu_item_enable_state_by_index = function (self)
+	return 
+end
 DemoTitleUI.destroy = function (self)
 	for profile_name, character_previewer in pairs(self._character_previewers) do
 		character_previewer.destroy(character_previewer)
@@ -746,6 +860,36 @@ DemoTitleUI.destroy = function (self)
 	UIRenderer.destroy(self._ui_renderer, self._world)
 	UIRenderer.destroy(self._career_video_ui_renderer, self._world)
 	World.destroy_gui(self._world, self._world_gui)
+
+	return 
+end
+DemoTitleUI.set_information_text = function (self, optinal_text)
+	self._draw_information_text = true
+	local widget = self._information_text
+	local widget_content = widget.content
+	local widget_style = widget.style
+
+	if not optinal_text then
+		widget_content.text = Localize("state_info")
+	else
+		widget_content.text = optinal_text
+	end
+
+	return 
+end
+DemoTitleUI.set_user_name = function (self, username)
+	self._draw_gamertag = true
+	self._user_gamertag_widget.content.text = username
+
+	if PLATFORM == "ps4" then
+		self._switch_profile_blocked = true
+	end
+
+	return 
+end
+DemoTitleUI.clear_user_name = function (self)
+	self._draw_gamertag = nil
+	self._switch_profile_blocked = nil
 
 	return 
 end

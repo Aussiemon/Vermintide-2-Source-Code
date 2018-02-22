@@ -234,10 +234,6 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	Unit.create_actor(unit, "bot_collision", false)
 	Unit.flow_event(unit, "lua_spawn_attachments")
 
-	if self.is_server then
-		Managers.telemetry.events:player_spawned(self, "host")
-	end
-
 	local level_settings = LevelHelper:current_level_settings()
 	local climate_type = level_settings.climate_type or "default"
 

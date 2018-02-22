@@ -2,9 +2,6 @@
 --   Code may be incomplete or incorrect.
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_mutator_list_definitions")
 local widget_definitions = definitions.widgets
-local summary_widget_definitions = definitions.summary_widgets
-local mutator_widget_definitions = definitions.mutator_widgets
-local overlay_widget_definitions = definitions.overlay_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
@@ -91,39 +88,6 @@ StartGameWindowMutatorList.create_ui_elements = function (self, params, offset)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
-	local summary_widgets = {}
-	local summary_widgets_by_name = {}
-
-	for name, widget_definition in pairs(summary_widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		summary_widgets[#summary_widgets + 1] = widget
-		summary_widgets_by_name[name] = widget
-	end
-
-	self._summary_widgets = summary_widgets
-	self._summary_widgets_by_name = summary_widgets_by_name
-	local mutator_widgets = {}
-	local mutator_widgets_by_name = {}
-
-	for name, widget_definition in pairs(mutator_widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		mutator_widgets[#mutator_widgets + 1] = widget
-		mutator_widgets_by_name[name] = widget
-	end
-
-	self._mutator_widgets = mutator_widgets
-	self._mutator_widgets_by_name = mutator_widgets_by_name
-	local overlay_widgets = {}
-	local overlay_widgets_by_name = {}
-
-	for name, widget_definition in pairs(overlay_widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		overlay_widgets[#overlay_widgets + 1] = widget
-		overlay_widgets_by_name[name] = widget
-	end
-
-	self._overlay_widgets = overlay_widgets
-	self._overlay_widgets_by_name = overlay_widgets_by_name
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
@@ -137,7 +101,7 @@ StartGameWindowMutatorList.create_ui_elements = function (self, params, offset)
 	end
 
 	widgets_by_name.play_button.content.button_hotspot.disable_button = true
-	local overlay_button = overlay_widgets_by_name.overlay_button
+	local overlay_button = widgets_by_name.overlay_button
 	local anim = self._animate_pulse(self, overlay_button.style.glow_frame.color, 1, 255, 100, 2)
 
 	UIWidget.animate(overlay_button, anim)
@@ -240,10 +204,8 @@ StartGameWindowMutatorList._is_button_selected = function (self, widget)
 end
 StartGameWindowMutatorList._handle_input = function (self, dt, t)
 	local widgets_by_name = self._widgets_by_name
-	local summary_widgets_by_name = self._summary_widgets_by_name
-	local overlay_widgets_by_name = self._overlay_widgets_by_name
 
-	if self._is_button_pressed(self, summary_widgets_by_name.game_option_1) or self._is_button_pressed(self, overlay_widgets_by_name.overlay_button) then
+	if self._is_button_pressed(self, widgets_by_name.overlay_button) then
 		self.parent:set_layout(7)
 	elseif self._is_button_pressed(self, widgets_by_name.play_button) and self._selected_backend_id then
 		self.parent:play(t)
@@ -267,30 +229,12 @@ StartGameWindowMutatorList._present_item_by_backend_id = function (self, backend
 		return 
 	end
 
-	local summary_widgets_by_name = self._summary_widgets_by_name
-	local widget = summary_widgets_by_name.game_option_1
 	local item_interface = Managers.backend:get_interface("items")
 	local item = item_interface.get_item_from_id(item_interface, backend_id)
-	local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
-	local display_name = item_data.display_name
-	widget.content.deed_title = Localize(display_name)
-	local level_key = item.level_key
-	local level_settings = LevelSettings[level_key]
-	local level_display_name = level_settings.display_name
-	widget.content.option_text_1 = Localize(level_display_name)
-	local difficulty_key = item.difficulty
-	local difficulty_settings = DifficultySettings[difficulty_key]
-	local difficulty_display_name = difficulty_settings.display_name
-	widget.content.option_text_2 = Localize(difficulty_display_name)
-	local mutators = item_data.mutators
-
-	self._add_mutator_entries(self, mutators)
-
-	local rewards = item_data.rewards
-
-	self._add_mutator_rewards(self, rewards)
-
-	self._widgets_by_name.play_button.content.button_hotspot.disable_button = false
+	local widgets_by_name = self._widgets_by_name
+	widgets_by_name.item_presentation.content.item = item
+	widgets_by_name.play_button.content.button_hotspot.disable_button = false
+	widgets_by_name.overlay_button.content.has_item = true
 
 	return 
 end
@@ -311,28 +255,6 @@ StartGameWindowMutatorList.draw = function (self, dt)
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
-	if self._selected_backend_id then
-		for _, widget in ipairs(self._summary_widgets) do
-			UIRenderer.draw_widget(ui_renderer, widget)
-		end
-
-		for _, widget in ipairs(self._active_mutator_widgets) do
-			UIRenderer.draw_widget(ui_renderer, widget)
-		end
-	else
-		for _, widget in ipairs(self._overlay_widgets) do
-			UIRenderer.draw_widget(ui_renderer, widget)
-		end
-	end
-
-	local active_node_widgets = self._active_node_widgets
-
-	if active_node_widgets then
-		for _, widget in ipairs(active_node_widgets) do
-			UIRenderer.draw_widget(ui_renderer, widget)
-		end
-	end
-
 	UIRenderer.end_pass(ui_renderer)
 
 	return 
@@ -342,91 +264,9 @@ StartGameWindowMutatorList._play_sound = function (self, event)
 
 	return 
 end
-StartGameWindowMutatorList._add_mutator_rewards = function (self, rewards)
-	local summary_widgets_by_name = self._summary_widgets_by_name
-	local num_rewards = #rewards
-	local spacing = 20
-	local start_offset = -(num_rewards - 1)*(spacing*0.5 + 40)
-
-	for i = 1, 2, 1 do
-		local widget_name = "reward_item_" .. i
-		local widget = summary_widgets_by_name[widget_name]
-		local content = widget.content
-		local item_key = rewards[i]
-		content.visible = item_key ~= nil
-
-		if item_key then
-			local hotspot_content = content.button_hotspot
-			local style = widget.style
-			local item_data = ItemMasterList[item_key]
-			local inventory_icon = item_data.inventory_icon
-			local rarity = item_data.rarity
-			local slot_type = item_data.slot_type
-			local item = {
-				data = item_data
-			}
-			content.item_icon = inventory_icon
-			content.item_frame = "item_frame"
-			content.rarity_texture = UISettings.item_rarity_textures[rarity]
-			content.item = item
-			widget.offset[1] = start_offset
-			start_offset = start_offset + 80 + spacing
-		end
-	end
-
-	return 
-end
-StartGameWindowMutatorList._add_mutator_entries = function (self, entries)
-	local active_mutator_widgets = self._active_mutator_widgets
-
-	table.clear(active_mutator_widgets)
-
-	local ui_renderer = self.ui_renderer
-	local ui_scenegraph = self.ui_scenegraph
-	local mutator_widgets = self._mutator_widgets
-	local entry_spacing = 10
-	local total_length = 0
-
-	for index, name in ipairs(entries) do
-		local widget = mutator_widgets[index]
-		local scenegraph_id = widget.scenegraph_id
-		local content = widget.content
-		local offset = widget.offset
-		local style = widget.style
-		local text_style = style.text
-		local text_size = ui_scenegraph[scenegraph_id].size
-		text_size[2] = 0
-		local mutator_template = MutatorTemplates[name]
-		local display_name = mutator_template.display_name
-		local description = mutator_template.description
-		local icon = mutator_template.icon
-		local title_text = (display_name and Localize(display_name)) or "n/a"
-		local description_text = (description and Localize(description)) or "n/a"
-		local text = title_text
-		content.text = text
-		content.icon = icon or "icons_placeholder"
-		local text_height = get_text_height(ui_renderer, text_size, text_style, content, text)
-		text_size[2] = math.max(text_height, 30)
-		offset[2] = -total_length
-		total_length = total_length + text_size[2] + entry_spacing
-		active_mutator_widgets[index] = widget
-	end
-
-	return 
-end
 StartGameWindowMutatorList._update_game_options_hover_effect = function (self)
 	local widgets_by_name = self._widgets_by_name
-	local summary_widgets_by_name = self._summary_widgets_by_name
-	local overlay_widgets_by_name = self._overlay_widgets_by_name
-	local game_option_1_widget = summary_widgets_by_name.game_option_1
-
-	if self._is_button_hover_enter(self, game_option_1_widget) then
-		self._on_option_button_hover_enter(self, game_option_1_widget, 1)
-	elseif self._is_button_hover_exit(self, game_option_1_widget) then
-		self._on_option_button_hover_exit(self, game_option_1_widget, 1)
-	end
-
-	local overlay_button_widget = overlay_widgets_by_name.overlay_button
+	local overlay_button_widget = widgets_by_name.overlay_button
 
 	if self._is_button_hover_enter(self, overlay_button_widget) then
 		self._on_option_button_hover_enter(self, overlay_button_widget, 2)

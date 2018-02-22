@@ -182,6 +182,14 @@ DamageProfileTemplates.light_blunt_tank_spiked = {
 	default_target = PowerLevelTemplates.default_target_tank_spiked_L,
 	targets = PowerLevelTemplates.targets_tank_spiked_L
 }
+DamageProfileTemplates.medium_burning_tank = {
+	charge_value = "heavy_attack",
+	critical_strike = PowerLevelTemplates.critical_strike_burning_tank_M,
+	cleave_distribution = PowerLevelTemplates.cleave_distribution_burning_tank_M,
+	armor_modifier = PowerLevelTemplates.armor_modifier_burning_tank_M,
+	default_target = PowerLevelTemplates.default_target_burning_tank_M,
+	targets = PowerLevelTemplates.targets_burning_tank_M
+}
 DamageProfileTemplates.medium_blunt_tank = {
 	charge_value = "light_attack",
 	critical_strike = PowerLevelTemplates.critical_strike_tank_M,
@@ -352,7 +360,7 @@ DamageProfileTemplates.heavy_slashing_smiter = {
 
 new_template("heavy_slashing_smiter", nil, "heavy_slashing_smiter_executioner")
 
-DamageProfileTemplates.heavy_slashing_smiter.default_target = PowerLevelTemplates.default_target_smiter_executioner_H
+DamageProfileTemplates.heavy_slashing_smiter_executioner.default_target = PowerLevelTemplates.default_target_smiter_executioner_H
 
 new_template("heavy_slashing_smiter", nil, "heavy_blunt_smiter", nil, "heavy_blunt_smiter")
 new_template("heavy_blunt_smiter", "_charged", nil, nil, "heavy_blunt_smiter")
@@ -448,10 +456,11 @@ local flamethrower_dropoff_ranges = {
 }
 DamageProfileTemplates.crossbow_bolt = {
 	charge_value = "projectile",
+	shield_break = true,
 	armor_modifier_near = {
 		attack = {
 			1,
-			0.6,
+			0.8,
 			1.5,
 			1,
 			0.5,
@@ -469,7 +478,7 @@ DamageProfileTemplates.crossbow_bolt = {
 	armor_modifier_far = {
 		attack = {
 			1,
-			0.6,
+			0.8,
 			1.5,
 			1,
 			0.5,
@@ -485,17 +494,17 @@ DamageProfileTemplates.crossbow_bolt = {
 		}
 	},
 	cleave_distribution = {
-		attack = 0.325,
-		impact = 0.325
+		attack = 0.4,
+		impact = 0.4
 	},
 	default_target = {
-		boost_curve_coefficient_headshot = 2,
+		boost_curve_coefficient_headshot = 2.5,
 		boost_curve_type = "smiter_curve",
 		boost_curve_coefficient = 0.75,
 		attack_template = "bolt_sniper",
 		power_distribution_near = {
 			attack = 0.5,
-			impact = 0.4
+			impact = 0.5
 		},
 		power_distribution_far = {
 			attack = 0.35,
@@ -552,7 +561,7 @@ DamageProfileTemplates.crossbow_bolt_repeating = {
 		boost_curve_coefficient = 0.75,
 		attack_template = "bolt_carbine",
 		power_distribution_near = {
-			attack = 0.35,
+			attack = 0.375,
 			impact = 0.25
 		},
 		power_distribution_far = {
@@ -569,7 +578,7 @@ DamageProfileTemplates.shot_shotgun = {
 		attack = {
 			1,
 			0.5,
-			0.8,
+			0.5,
 			1,
 			1,
 			0
@@ -1211,11 +1220,11 @@ DamageProfileTemplates.arrow_carbine = {
 		boost_curve_coefficient = 0.75,
 		attack_template = "arrow_carbine",
 		power_distribution_near = {
-			attack = 0.3,
+			attack = 0.4,
 			impact = 0.15
 		},
 		power_distribution_far = {
-			attack = 0.15,
+			attack = 0.3,
 			impact = 0.1
 		},
 		range_dropoff_settings = carbine_dropoff_ranges
@@ -1427,11 +1436,12 @@ DamageProfileTemplates.staff_fireball = {
 		impact = 0.1
 	},
 	default_target = {
+		boost_curve_coefficient_headshot = 1,
 		boost_curve_type = "linesman_curve",
 		boost_curve_coefficient = 1,
 		attack_template = "fireball",
 		power_distribution_near = {
-			attack = 0.2,
+			attack = 0.25,
 			impact = 0.3
 		},
 		power_distribution_far = {
@@ -1493,7 +1503,7 @@ DamageProfileTemplates.fire_spark = {
 		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_spark",
 		power_distribution_near = {
-			attack = 0.1,
+			attack = 0.125,
 			impact = 0.075
 		},
 		power_distribution_far = {
@@ -1551,7 +1561,7 @@ DamageProfileTemplates.fire_spear = {
 		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_spear",
 		power_distribution_near = {
-			attack = 0.25,
+			attack = 0.3,
 			impact = 0.25
 		},
 		power_distribution_far = {
@@ -1624,7 +1634,7 @@ DamageProfileTemplates.fire_spear_trueflight = {
 	armor_modifier_near = {
 		attack = {
 			1,
-			2,
+			1.5,
 			3.5,
 			0.25,
 			1,
@@ -1642,7 +1652,7 @@ DamageProfileTemplates.fire_spear_trueflight = {
 	armor_modifier_far = {
 		attack = {
 			1,
-			2,
+			1.5,
 			3.5,
 			0.25,
 			1,
@@ -1667,11 +1677,11 @@ DamageProfileTemplates.fire_spear_trueflight = {
 		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_spear",
 		power_distribution_near = {
-			attack = 0.5,
+			attack = 0.75,
 			impact = 1
 		},
 		power_distribution_far = {
-			attack = 0.5,
+			attack = 0.75,
 			impact = 1
 		},
 		range_dropoff_settings = sniper_dropoff_ranges
@@ -1720,7 +1730,7 @@ DamageProfileTemplates.fire_spear_3 = {
 		impact = 0.5
 	},
 	default_target = {
-		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_coefficient_headshot = 2,
 		boost_curve_type = "smiter_curve",
 		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_spear",
@@ -1809,7 +1819,7 @@ DamageProfileTemplates.flamethrower_spray = {
 		boost_curve_coefficient = 0.2,
 		attack_template = "wizard_staff_beam",
 		power_distribution_near = {
-			attack = 0.05,
+			attack = 0.075,
 			impact = 0.175
 		},
 		power_distribution_far = {
@@ -1825,9 +1835,9 @@ DamageProfileTemplates.flamethrower = {
 		attack = {
 			1,
 			0.25,
-			3,
+			2,
 			1,
-			1,
+			0.5,
 			0.25
 		},
 		impact = {
@@ -1835,13 +1845,13 @@ DamageProfileTemplates.flamethrower = {
 			0.5,
 			1,
 			1,
-			1,
+			0.5,
 			0
 		}
 	},
 	cleave_distribution = {
-		attack = 0.1,
-		impact = 0.1
+		attack = 0.01,
+		impact = 0.01
 	},
 	default_target = {
 		dot_template_name = "burning_flamethrower_dot",
@@ -1850,11 +1860,11 @@ DamageProfileTemplates.flamethrower = {
 		boost_curve_coefficient = 0.2,
 		attack_template = "wizard_staff_beam",
 		power_distribution_near = {
-			attack = 0.1,
+			attack = 0.05,
 			impact = 0.1
 		},
 		power_distribution_far = {
-			attack = 0.075,
+			attack = 0,
 			impact = 0.075
 		},
 		range_dropoff_settings = flamethrower_dropoff_ranges
@@ -1866,9 +1876,9 @@ DamageProfileTemplates.flamethrower_initial = {
 		attack = {
 			0.5,
 			0,
-			1.5,
-			0,
-			0,
+			1,
+			0.25,
+			0.25,
 			0
 		},
 		impact = {
@@ -1876,13 +1886,13 @@ DamageProfileTemplates.flamethrower_initial = {
 			0.25,
 			1,
 			1,
-			1,
+			0.25,
 			0
 		}
 	},
 	cleave_distribution = {
-		attack = 0.1,
-		impact = 0.1
+		attack = 0.01,
+		impact = 0.01
 	},
 	default_target = {
 		dot_template_name = "burning_flamethrower_dot",
@@ -2123,8 +2133,8 @@ DamageProfileTemplates.geiser = {
 		boost_curve_coefficient = 1,
 		attack_template = "wizard_staff_geiser",
 		power_distribution = {
-			attack = 0.025,
-			impact = 0.1
+			attack = 0,
+			impact = 0.175
 		}
 	},
 	targets = {
@@ -2133,8 +2143,8 @@ DamageProfileTemplates.geiser = {
 			boost_curve_coefficient = 1,
 			attack_template = "wizard_staff_geiser",
 			power_distribution = {
-				attack = 0.15,
-				impact = 0.3
+				attack = 0.25,
+				impact = 0.5
 			}
 		},
 		{
@@ -2142,8 +2152,8 @@ DamageProfileTemplates.geiser = {
 			boost_curve_coefficient = 1,
 			attack_template = "wizard_staff_geiser",
 			power_distribution = {
-				attack = 0.075,
-				impact = 0.15
+				attack = 0.05,
+				impact = 0.3
 			}
 		}
 	}
@@ -2513,7 +2523,7 @@ DamageProfileTemplates.flamethrower_burning_dot.default_target.armor_modifier = 
 	attack = {
 		1,
 		0.25,
-		4,
+		3,
 		1,
 		1
 	},

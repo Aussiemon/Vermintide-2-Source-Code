@@ -159,6 +159,8 @@ function project_setup()
 end
 
 Bulldozer.setup = function (self)
+	script_data.honduras_demo = script_data.honduras_demo or script_data["honduras-demo"]
+
 	self._patch_demo_functions(self)
 	self._init_localizer(self)
 
@@ -564,7 +566,7 @@ Bulldozer._load_user_settings = function (self)
 	return 
 end
 Bulldozer._patch_demo_functions = function (self)
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		Application.save_user_settings = function ()
 			return 
 		end
@@ -619,6 +621,10 @@ Bulldozer._init_localization_manager = function (self)
 		for j = 1, key.n, 3 do
 			local device_type = key[j]
 			local button_index = key[j + 1]
+
+			if button_index == UNASSIGNED_KEY then
+				button_index = nil
+			end
 
 			if Managers.input:is_device_active("keyboard") or Managers.input:is_device_active("mouse") then
 				if device_type == "keyboard" then
@@ -739,7 +745,7 @@ Bulldozer.entrypoint = function (self)
 
 		GlobalResources[#GlobalResources + 1] = breed_package
 
-		if Development.parameter("honduras_demo") then
+		if script_data.honduras_demo then
 			local key_combinations_allowed = DemoSettings.key_combinations_allowed
 
 			for key, enabled in pairs(key_combinations_allowed) do

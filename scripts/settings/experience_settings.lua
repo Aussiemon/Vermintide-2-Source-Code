@@ -1,7 +1,7 @@
 local experience_levels_main = {
 	0,
 	200,
-	550,
+	400,
 	600,
 	650,
 	700,
@@ -122,6 +122,22 @@ ExperienceSettings.get_total_experience_required_for_level = function (level)
 	end
 
 	return experience
+end
+ExperienceSettings.get_highest_character_level = function ()
+	local highest_level = 0
+
+	for _, profile_index in ipairs(ProfilePriority) do
+		local profile = SPProfiles[profile_index]
+		local display_name = profile.display_name
+		local experience = ExperienceSettings.get_experience(display_name)
+		local level = ExperienceSettings.get_level(experience)
+
+		if highest_level < level then
+			highest_level = level
+		end
+	end
+
+	return highest_level
 end
 ExperienceSettings.max_experience = total_experience_for_main_levels
 ExperienceSettings.max_level = #experience_levels_main

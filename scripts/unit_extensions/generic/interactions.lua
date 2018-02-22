@@ -62,12 +62,16 @@ InteractionDefinitions.player_generic = {
 			if interactable_unit and Unit.alive(interactable_unit) then
 				local player_manager = Managers.player
 				local profile_synchronizer = Managers.state.network.profile_synchronizer
+				local display_name = ""
 				local player = player_manager.owner(player_manager, interactable_unit)
-				local network_id = player.network_id(player)
-				local local_player_id = player.local_player_id(player)
-				local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
-				local profile_settings = SPProfiles[profile_index]
-				local display_name = profile_settings.ingame_display_name
+
+				if player then
+					local network_id = player.network_id(player)
+					local local_player_id = player.local_player_id(player)
+					local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
+					local profile_settings = SPProfiles[profile_index]
+					display_name = profile_settings.ingame_display_name
+				end
 
 				return display_name, interaction_action_description
 			end
@@ -298,12 +302,17 @@ InteractionDefinitions.revive = {
 			if interactable_unit and Unit.alive(interactable_unit) then
 				local player_manager = Managers.player
 				local profile_synchronizer = Managers.state.network.profile_synchronizer
+				local display_name = ""
 				local player = player_manager.owner(player_manager, interactable_unit)
-				local network_id = player.network_id(player)
-				local local_player_id = player.local_player_id(player)
-				local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
-				local profile_settings = SPProfiles[profile_index]
-				local display_name = profile_settings.ingame_display_name
+
+				if player then
+					local network_id = player.network_id(player)
+					local local_player_id = player.local_player_id(player)
+					local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
+					local profile_settings = SPProfiles[profile_index]
+					display_name = profile_settings.ingame_display_name
+				end
+
 				local t = Managers.time:time("game")
 				local interaction_progress = (not config.duration or data.start_time ~= nil or 0) and math.min(1, (t - data.start_time)/config.duration)
 				local is_interacting = interaction_progress and 0 < interaction_progress
@@ -432,12 +441,16 @@ InteractionDefinitions.pull_up = {
 			if interactable_unit and Unit.alive(interactable_unit) then
 				local player_manager = Managers.player
 				local profile_synchronizer = Managers.state.network.profile_synchronizer
+				local display_name = ""
 				local player = player_manager.owner(player_manager, interactable_unit)
-				local network_id = player.network_id(player)
-				local local_player_id = player.local_player_id(player)
-				local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
-				local profile_settings = SPProfiles[profile_index]
-				local display_name = profile_settings.ingame_display_name
+
+				if player then
+					local network_id = player.network_id(player)
+					local local_player_id = player.local_player_id(player)
+					local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
+					local profile_settings = SPProfiles[profile_index]
+					display_name = profile_settings.ingame_display_name
+				end
 
 				return display_name, "interaction_action_pull_up"
 			end
@@ -528,12 +541,16 @@ InteractionDefinitions.release_from_hook = {
 			if interactable_unit and Unit.alive(interactable_unit) then
 				local player_manager = Managers.player
 				local profile_synchronizer = Managers.state.network.profile_synchronizer
+				local display_name = ""
 				local player = player_manager.owner(player_manager, interactable_unit)
-				local network_id = player.network_id(player)
-				local local_player_id = player.local_player_id(player)
-				local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
-				local profile_settings = SPProfiles[profile_index]
-				local display_name = profile_settings.ingame_display_name
+
+				if player then
+					local network_id = player.network_id(player)
+					local local_player_id = player.local_player_id(player)
+					local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
+					local profile_settings = SPProfiles[profile_index]
+					display_name = profile_settings.ingame_display_name
+				end
 
 				return display_name, "interact_release_from_hook"
 			end
@@ -627,12 +644,16 @@ InteractionDefinitions.assisted_respawn = {
 			if interactable_unit and Unit.alive(interactable_unit) then
 				local player_manager = Managers.player
 				local profile_synchronizer = Managers.state.network.profile_synchronizer
+				local display_name = ""
 				local player = player_manager.owner(player_manager, interactable_unit)
-				local network_id = player.network_id(player)
-				local local_player_id = player.local_player_id(player)
-				local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
-				local profile_settings = SPProfiles[profile_index]
-				local display_name = profile_settings.ingame_display_name
+
+				if player then
+					local network_id = player.network_id(player)
+					local local_player_id = player.local_player_id(player)
+					local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
+					local profile_settings = SPProfiles[profile_index]
+					display_name = profile_settings.ingame_display_name
+				end
 
 				return display_name, "interaction_action_assisted_respawn"
 			end
@@ -966,6 +987,7 @@ InteractionDefinitions.pickup_object = {
 							local unit_object_id = Managers.state.unit_storage:go_id(interactor_unit)
 							local slot_id = NetworkLookup.equipment_slots[slot_name]
 							local item_id = NetworkLookup.item_names[item_name]
+							local weapon_skin_id = NetworkLookup.weapon_skins["n/a"]
 
 							if is_limited_item then
 								local limited_item_extension = ScriptUnit.extension(interactable_unit, "limited_item_track_system")
@@ -979,9 +1001,9 @@ InteractionDefinitions.pickup_object = {
 									network_manager.network_transmit:send_rpc_server("rpc_add_equipment_limited_item", unit_object_id, slot_id, item_id, spawner_unit_id, id)
 								end
 							elseif data.is_server then
-								network_manager.network_transmit:send_rpc_clients("rpc_add_equipment", unit_object_id, slot_id, item_id)
+								network_manager.network_transmit:send_rpc_clients("rpc_add_equipment", unit_object_id, slot_id, item_id, weapon_skin_id)
 							else
-								network_manager.network_transmit:send_rpc_server("rpc_add_equipment", unit_object_id, slot_id, item_id)
+								network_manager.network_transmit:send_rpc_server("rpc_add_equipment", unit_object_id, slot_id, item_id, weapon_skin_id)
 							end
 
 							if slot_data then
@@ -1083,6 +1105,7 @@ InteractionDefinitions.pickup_object = {
 							local unit_object_id = Managers.state.unit_storage:go_id(interactor_unit)
 							local slot_id = NetworkLookup.equipment_slots[slot_name]
 							local item_id = NetworkLookup.item_names[item_name]
+							local weapon_skin_id = NetworkLookup.weapon_skins["n/a"]
 
 							if data.is_server then
 								if is_limited_item then
@@ -1093,7 +1116,7 @@ InteractionDefinitions.pickup_object = {
 
 									network_manager.network_transmit:send_rpc_clients("rpc_add_equipment_limited_item", unit_object_id, slot_id, item_id, spawner_unit_id, id)
 								else
-									network_manager.network_transmit:send_rpc_clients("rpc_add_equipment", unit_object_id, slot_id, item_id)
+									network_manager.network_transmit:send_rpc_clients("rpc_add_equipment", unit_object_id, slot_id, item_id, weapon_skin_id)
 								end
 							elseif is_limited_item then
 								local limited_item_extension = ScriptUnit.extension(interactable_unit, "limited_item_track_system")
@@ -1103,7 +1126,7 @@ InteractionDefinitions.pickup_object = {
 
 								network_manager.network_transmit:send_rpc_server("rpc_add_equipment_limited_item", unit_object_id, slot_id, item_id, spawner_unit_id, id)
 							else
-								network_manager.network_transmit:send_rpc_server("rpc_add_equipment", unit_object_id, slot_id, item_id)
+								network_manager.network_transmit:send_rpc_server("rpc_add_equipment", unit_object_id, slot_id, item_id, weapon_skin_id)
 							end
 						end
 
@@ -1405,12 +1428,16 @@ InteractionDefinitions.give_item = {
 			if interactable_unit and Unit.alive(interactable_unit) then
 				local player_manager = Managers.player
 				local profile_synchronizer = Managers.state.network.profile_synchronizer
+				local display_name = ""
 				local player = player_manager.owner(player_manager, interactable_unit)
-				local network_id = player.network_id(player)
-				local local_player_id = player.local_player_id(player)
-				local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
-				local profile_settings = SPProfiles[profile_index]
-				local display_name = profile_settings.ingame_display_name
+
+				if player then
+					local network_id = player.network_id(player)
+					local local_player_id = player.local_player_id(player)
+					local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
+					local profile_settings = SPProfiles[profile_index]
+					display_name = profile_settings.ingame_display_name
+				end
 
 				return display_name, "interaction_action_give"
 			end
@@ -1612,12 +1639,17 @@ InteractionDefinitions.heal = {
 			if interactable_unit and Unit.alive(interactable_unit) then
 				local player_manager = Managers.player
 				local profile_synchronizer = Managers.state.network.profile_synchronizer
+				local display_name = ""
 				local player = player_manager.owner(player_manager, interactable_unit)
-				local network_id = player.network_id(player)
-				local local_player_id = player.local_player_id(player)
-				local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
-				local profile_settings = SPProfiles[profile_index]
-				local display_name = profile_settings.ingame_display_name
+
+				if player then
+					local network_id = player.network_id(player)
+					local local_player_id = player.local_player_id(player)
+					local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, network_id, local_player_id)
+					local profile_settings = SPProfiles[profile_index]
+					display_name = profile_settings.ingame_display_name
+				end
+
 				local t = Managers.time:time("game")
 				local interaction_progress = (not config.duration or data.start_time ~= nil or 0) and math.min(1, (t - data.start_time)/config.duration)
 				local is_interacting = interaction_progress and 0 < interaction_progress

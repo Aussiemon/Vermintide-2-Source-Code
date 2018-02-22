@@ -63,7 +63,7 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 
 	self.set_updated_settings(self, conflict_settings)
 
-	self.pacing = Pacing:new(world, CurrentConflictSettings.pacing)
+	self.pacing = Pacing:new(world)
 	self.enemy_recycler = nil
 	self.specials_pacing = nil
 	self.navigation_group_manager = NavigationGroupManager:new()
@@ -724,8 +724,7 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 	end
 
 	if not self._next_horde_time then
-		local pacing_setting = pacing.settings
-		self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.horde_frequency)
+		self._next_horde_time = t + ConflictUtils.random_interval(CurrentPacing.horde_frequency)
 	end
 
 	if self._next_horde_time < t and not self.delay_horde then
@@ -734,7 +733,7 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 		horde_failed = RecycleSettings.push_horde_if_num_alive_grunts_above < num_spawned
 
 		if horde_failed then
-			local pacing_setting = pacing.settings
+			local pacing_setting = CurrentPacing
 
 			if RecycleSettings.push_horde_in_time then
 				print("Pushing horde in time; too many units out")
@@ -753,15 +752,16 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 			return 
 		end
 
-		local wave = nil
+		local wave, horde_type, no_fallback = nil
 
 		if script_data.ai_pacing_disabled then
 			self._next_horde_time = math.huge
 			self._multiple_horde_count = nil
 			wave = "unknown"
+			self._wave = wave
 		else
 			local set_standard_horde = nil
-			local pacing_setting = pacing.settings
+			local pacing_setting = CurrentPacing
 
 			if pacing_setting.multiple_hordes then
 				if self._multiple_horde_count then
@@ -772,24 +772,29 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 
 						self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.max_delay_until_next_horde)
 						self._multiple_horde_count = nil
-						wave = "multi last wave"
+						wave = "multi_last_wave"
 					else
 						local time_delay = ConflictUtils.random_interval(pacing_setting.multiple_horde_frequency)
 
 						print("HORDE: next wave, multiple_horde_frequency -> Time delay", time_delay)
 
 						self._next_horde_time = t + time_delay
-						wave = "multi consecutive wave"
+						wave = "multi_consecutive_wave"
 					end
+
+					horde_type = "multi_followup"
+					no_fallback = true
 				else
 					self._multiple_horde_count = pacing_setting.multiple_hordes - 1
 					self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.multiple_horde_frequency)
-					wave = "multi first wave"
+					wave = "multi_first_wave"
 				end
 			else
 				self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.horde_frequency)
-				wave = "single wave"
+				wave = "single_wave"
 			end
+
+			self._wave = wave
 		end
 
 		print("Time for new HOOORDE!")
@@ -800,7 +805,7 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 			horde_wave = wave
 		}
 
-		self.horde_spawner:horde(nil, extra_data)
+		self.horde_spawner:horde(horde_type, extra_data, no_fallback)
 	end
 
 	return 
@@ -813,7 +818,7 @@ ConflictDirector.horde_killed = function (self, wave)
 	local count = self._multiple_horde_count
 
 	if not count then
-		local pacing_setting = self.pacing.settings
+		local pacing_setting = CurrentPacing
 		local t = Managers.time:time("game")
 		self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.horde_frequency)
 
@@ -833,14 +838,6 @@ ConflictDirector.going_to_relax_state = function (self)
 end
 ConflictDirector.get_horde_data = function (self)
 	return self._next_horde_time, self.horde_spawner.hordes, self._multiple_horde_count
-end
-ConflictDirector.is_running_multiple_horde = function (self)
-	local pacing = self.pacing
-	local pacing_setting = pacing.settings
-	local multiple_hordes_count = pacing_setting.multiple_hordes
-	local is_first_multiple_horde = multiple_hordes_count and self._multiple_horde_count == multiple_hordes_count
-
-	return self._multiple_horde_count ~= nil, is_first_multiple_horde
 end
 ConflictDirector.start_terror_event = function (self, event_name)
 	TerrorEventMixer.add_to_start_event_list(event_name)
@@ -988,7 +985,7 @@ ConflictDirector.create_debug_list = function (self)
 end
 ConflictDirector.update_mini_patrol = function (self, t, dt)
 	local pacing = self.pacing
-	local settings = pacing.settings.mini_patrol
+	local settings = CurrentPacing.mini_patrol
 	local timer = self._next_mini_patrol_timer
 
 	if self._mini_patrol_state == "spawning" then
@@ -1134,7 +1131,7 @@ ConflictDirector.update = function (self, dt, t)
 				self.specials_pacing:start(t)
 
 				if not script_data.ai_pacing_disabled then
-					local pacing_setting = pacing.settings
+					local pacing_setting = CurrentPacing
 					self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.horde_startup_time)
 				end
 			end
@@ -1165,7 +1162,7 @@ ConflictDirector.update = function (self, dt, t)
 			self.update_horde_pacing(self, t, dt)
 			Profiler.stop("horde pacing")
 		else
-			local pacing_setting = pacing.settings
+			local pacing_setting = CurrentPacing
 			self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.horde_frequency)
 		end
 
@@ -1264,9 +1261,13 @@ ConflictDirector.update = function (self, dt, t)
 			local spline_ready = ai_group_system.spline_ready(ai_group_system, spline_name)
 
 			if spline_ready then
-				self._spawn_spline_group(self, group_data)
+				if spline_ready == "failed" then
+					self._spline_groups_to_spawn[spline_name] = nil
+				else
+					self._spawn_spline_group(self, group_data)
 
-				self._spline_groups_to_spawn[spline_name] = nil
+					self._spline_groups_to_spawn[spline_name] = nil
+				end
 			end
 		end
 	end
@@ -1923,6 +1924,12 @@ ConflictDirector.debug_spawn_group = function (self, t)
 		print("no breed selected, can't spawn a group")
 
 		return 
+	else
+		local id = self.debug_breed_picker:current_item_name()
+		local formation = PatrolFormationSettings[id]
+
+		if formation then
+		end
 	end
 
 	print("Spawning group: " .. breed.name)
@@ -2239,7 +2246,7 @@ ConflictDirector.aim_spawning_group = function (self, breed, on_navmesh, formati
 		self.spawn_group(self, "storm_vermin_formation_patrol", position, data)
 	else
 		local ai_group_system = Managers.state.entity:system("ai_group_system")
-		local spline_type = ai_group_system.get_available_spline_type(ai_group_system)
+		local spline_type = "patrol"
 
 		if spline_type then
 			local difficulty = Managers.state.difficulty:get_difficulty()
@@ -2248,7 +2255,7 @@ ConflictDirector.aim_spawning_group = function (self, breed, on_navmesh, formati
 			local spline_name, spline_data, start_pos, waypoints = nil
 
 			if spline_type == "event" then
-				spline_name, spline_data, start_pos = self.level_analysis:get_closest_event_spline(position)
+				spline_name = ai_group_system.get_best_spline(ai_group_system, position, spline_type)
 
 				if not spline_name then
 					print("no event spline found")
@@ -2259,10 +2266,17 @@ ConflictDirector.aim_spawning_group = function (self, breed, on_navmesh, formati
 				waypoints = self.level_analysis:boxify_waypoint_table(spline_data.waypoints)
 			else
 				spline_name = ai_group_system.get_best_spline(ai_group_system, position, spline_type)
-				waypoints = {
-					Vector3Box(110, 0, 0),
-					Vector3Box(1, -220, 0)
-				}
+
+				if spline_name then
+					waypoints = {
+						Vector3Box(110, 0, 0),
+						Vector3Box(1, -220, 0)
+					}
+				else
+					print("Could not find a spline of type", spline_type)
+
+					return 
+				end
 			end
 
 			local data = {

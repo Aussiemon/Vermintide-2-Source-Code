@@ -8,6 +8,7 @@ HordeCompositionsSoundSettings = {
 	chaos = {
 		stinger_sound_event = "enemy_horde_chaos_stinger",
 		music_states = {
+			pre_ambush = "pre_ambush_chaos",
 			horde = "horde_chaos"
 		}
 	}

@@ -302,8 +302,12 @@ DamageBlobExtension.update = function (self, unit, input, dt, context, t)
 		Managers.state.unit_spawner:mark_for_deletion(unit)
 	end
 
+	Profiler.start("update_blob_fx")
 	self.update_blobs_fx_and_sfx(self, t, dt)
+	Profiler.stop("update_blob_fx")
+	Profiler.start("update_blob_overlaps")
 	self.update_blob_overlaps(self, t)
+	Profiler.stop("update_blob_overlaps")
 
 	local blob_update_function = self._blob_update_function
 
@@ -421,25 +425,30 @@ DamageBlobExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 	local fx_max_height = self.fx_max_height
 	local fx_list = self.fx_list
 
-	for i = 1, #fx_list, 1 do
-		local fx_entry = fx_list[i]
-		local fx_id = fx_entry.id
-		local fx_size = fx_entry.size
+	if 1 <= #fx_list then
+		local index = next(self.fx_list, self.current_fx_index) or 1
+		local fx_entry = fx_list[index]
 
-		if fx_size then
-			local particle_size = fx_size.unbox(fx_size)
-			particle_size[1] = math.min(particle_size[1] + dt*1.5, fx_max_radius)
-			particle_size[2] = math.min(particle_size[2] + dt*2, fx_max_height)
-			local effect_variable_id = World.find_particles_variable(world, fx_name_filled, fx_size_variable)
+		if fx_entry then
+			self.current_fx_index = index
+			local fx_id = fx_entry.id
+			local fx_size = fx_entry.size
 
-			World.set_particles_variable(world, fx_id, effect_variable_id, particle_size)
-			fx_size.store(fx_size, particle_size)
-		end
+			if fx_size then
+				local particle_size = fx_size.unbox(fx_size)
+				particle_size[1] = math.min(particle_size[1] + dt*1.5, fx_max_radius)
+				particle_size[2] = math.min(particle_size[2] + dt*2, fx_max_height)
+				local effect_variable_id = World.find_particles_variable(world, fx_name_filled, fx_size_variable)
 
-		local fx_time = fx_entry.time
+				World.set_particles_variable(world, fx_id, effect_variable_id, particle_size)
+				fx_size.store(fx_size, particle_size)
+			end
 
-		if fx_time < t then
-			World.stop_spawning_particles(world, fx_id)
+			local fx_time = fx_entry.time
+
+			if fx_time < t then
+				World.stop_spawning_particles(world, fx_id)
+			end
 		end
 	end
 
@@ -451,10 +460,13 @@ DamageBlobExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 		local sfx_entry = sfx_list[i]
 		local sfx_source = sfx_entry.source
 		local sfx_time = sfx_entry.time
-		local has_source = WwiseWorld.has_source(wwise_world, sfx_source)
 
-		if sfx_time < t and has_source then
-			WwiseWorld.trigger_event(wwise_world, sfx_name_stop_remains, sfx_source)
+		if sfx_time < t then
+			local has_source = WwiseWorld.has_source(wwise_world, sfx_source)
+
+			if has_source then
+				WwiseWorld.trigger_event(wwise_world, sfx_name_stop_remains, sfx_source)
+			end
 		end
 	end
 
@@ -477,12 +489,17 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 
 	if self.apply_buff_to_player then
 		local blob_radius = self.blob_radius
+		local blob_index = next(self.blobs, self.current_blob_index) or 1
+		local blob = blobs[blob_index]
+		self.current_blob_index = blob_index
 
-		for i = 1, #player_and_bot_units, 1 do
-			local target_unit = player_and_bot_units[i]
+		for j = 1, #player_and_bot_units, 1 do
+			local target_unit = player_and_bot_units[j]
 
-			self.check_overlap(self, unit, target_unit, blob_radius, first_blob_position, last_blob_position, buff_system, num_blobs)
+			self.check_overlap(self, unit, target_unit, blob_radius, blob, buff_system, num_blobs)
 		end
+
+		self.current_blob_index = blob_index
 	end
 
 	if not self.apply_buff_to_ai then
@@ -563,18 +580,20 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 
 	return 
 end
-DamageBlobExtension.check_overlap = function (self, unit, target_unit, blob_radius, p1, p2, buff_system, num_blobs)
+DamageBlobExtension.check_overlap = function (self, unit, target_unit, blob_radius, blob, buff_system, num_blobs)
 	local player_units_inside = self.player_units_inside
 	local test_pos = position_lookup[target_unit]
-	local pos_projected_on_wave_line = Geometry.closest_point_on_line(test_pos, p1, p2)
-	local to_line_flat = Vector3.flat(test_pos - pos_projected_on_wave_line)
-	local dist_sq = Vector3.length_squared(to_line_flat)
+	local blob_position = Vector3(blob[1], blob[2], blob[3])
+	local to_target_flat = Vector3.flat(test_pos - blob_position)
+	local dist_sq = Vector3.length_squared(to_target_flat)
 	local blob_radius_sq = blob_radius^2
 	local inside_id = player_units_inside[target_unit]
 	local status_extension = ScriptUnit.extension(target_unit, "status_system")
+	local buff_extension = ScriptUnit.extension(target_unit, "buff_system")
+	local buff_template_type = self.buff_template_type
 
 	if inside_id then
-		if blob_radius_sq < dist_sq then
+		if blob_radius_sq < dist_sq and not buff_extension.has_buff_type(buff_extension, buff_template_type) then
 			if status_extension.in_liquid_unit == unit then
 				StatusUtils.set_in_liquid_network(target_unit, false)
 			end
@@ -584,14 +603,8 @@ DamageBlobExtension.check_overlap = function (self, unit, target_unit, blob_radi
 			player_units_inside[target_unit] = nil
 		end
 	elseif dist_sq < blob_radius_sq then
-		local line_dist = Vector3.distance(p1, pos_projected_on_wave_line)
-		local blob_index = math.floor(line_dist*num_blobs + 0.5) + 1
-		blob_index = math.clamp(blob_index, 1, num_blobs)
-		local blob = self.blobs[blob_index]
 		local z = blob[3]
 		local buff_template_name = self.buff_template_name
-		local buff_template_type = self.buff_template_type
-		local buff_extension = ScriptUnit.extension(target_unit, "buff_system")
 
 		if math.abs(test_pos.z - z) < blob_radius and not buff_extension.has_buff_type(buff_extension, buff_template_type) then
 			if status_extension.in_liquid_unit ~= unit then

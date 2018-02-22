@@ -1,10 +1,25 @@
 ItemMasterList = ItemMasterList or {}
+ItemMasterList.skin_dr_default = {
+	description = "skin_dr_ranger_description",
+	temporary_template = "skin_dr_default",
+	display_name = "Ranger",
+	name = "skin_dr_ranger",
+	inventory_icon = "icon_skin_ranger_01",
+	slot_type = "skin",
+	skin_type = "unit",
+	hud_icon = "career_dwarf_ranger",
+	rarity = "plentiful",
+	item_type = "skin",
+	can_wield = {
+		"dr_ranger"
+	}
+}
 ItemMasterList.skin_dr_ranger = {
-	description = "skin_dr_slayer_description",
+	description = "skin_dr_ranger_description",
 	temporary_template = "skin_dr_ranger",
 	display_name = "Ranger",
 	name = "skin_dr_ranger",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_ranger_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "career_dwarf_ranger",
@@ -19,7 +34,7 @@ ItemMasterList.skin_dr_slayer = {
 	temporary_template = "skin_dr_slayer",
 	display_name = "Slayer",
 	name = "skin_dr_slayer",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_slayer_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "career_dwarf_slayer",
@@ -34,7 +49,7 @@ ItemMasterList.skin_dr_ironbreaker = {
 	temporary_template = "skin_dr_ironbreaker",
 	display_name = "Ironbreaker",
 	name = "skin_dr_ironbreaker",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_ironbreaker_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "career_dwarf_ironbreaker",
@@ -49,15 +64,13 @@ ItemMasterList.skin_es_default = {
 	temporary_template = "skin_es_default",
 	display_name = "Default",
 	name = "skin_es_default",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_mercenary_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_empire_soldier",
 	rarity = "plentiful",
 	item_type = "skin",
 	can_wield = {
-		"es_huntsman",
-		"es_knight",
 		"es_mercenary"
 	}
 }
@@ -66,7 +79,7 @@ ItemMasterList.skin_es_knight = {
 	temporary_template = "skin_es_knight",
 	display_name = "Knight",
 	name = "skin_es_knight",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_knight_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_empire_soldier",
@@ -81,7 +94,7 @@ ItemMasterList.skin_es_mercenary = {
 	temporary_template = "skin_es_mercenary",
 	display_name = "Mercenary",
 	name = "skin_es_mercenary",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_mercenary_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_empire_soldier",
@@ -96,7 +109,7 @@ ItemMasterList.skin_es_huntsman = {
 	temporary_template = "skin_es_huntsman",
 	display_name = "Huntsman",
 	name = "skin_es_huntsman",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_huntsman_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_empire_soldier",
@@ -111,15 +124,13 @@ ItemMasterList.skin_ww_default = {
 	temporary_template = "skin_ww_default",
 	display_name = "Default",
 	name = "skin_ww_default",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_waywatcher_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_way_watcher",
 	rarity = "plentiful",
 	item_type = "skin",
 	can_wield = {
-		"we_shade",
-		"we_maidenguard",
 		"we_waywatcher"
 	}
 }
@@ -128,7 +139,7 @@ ItemMasterList.skin_ww_shade = {
 	temporary_template = "skin_ww_shade",
 	display_name = "Shade",
 	name = "skin_ww_shade",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_shade_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_way_watcher",
@@ -143,7 +154,7 @@ ItemMasterList.skin_ww_maidenguard = {
 	temporary_template = "skin_ww_maidenguard",
 	display_name = "MaidenGuard",
 	name = "skin_ww_maidenguard",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_maidenguard_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_way_watcher",
@@ -158,7 +169,7 @@ ItemMasterList.skin_ww_waywatcher = {
 	temporary_template = "skin_ww_waywatcher",
 	display_name = "Waywatcher",
 	name = "skin_ww_waywatcher",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_waywatcher_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_way_watcher",
@@ -173,15 +184,13 @@ ItemMasterList.skin_wh_default = {
 	temporary_template = "skin_wh_default",
 	display_name = "Default",
 	name = "skin_wh_default",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_captain_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_witch_hunter",
 	rarity = "plentiful",
 	item_type = "skin",
 	can_wield = {
-		"wh_zealot",
-		"wh_bountyhunter",
 		"wh_captain"
 	}
 }
@@ -190,7 +199,7 @@ ItemMasterList.skin_wh_bountyhunter = {
 	temporary_template = "skin_wh_bountyhunter",
 	display_name = "BountyHunter",
 	name = "skin_wh_bountyhunter",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_bountyhunter_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_witch_hunter",
@@ -205,7 +214,7 @@ ItemMasterList.skin_wh_captain = {
 	temporary_template = "skin_wh_captain",
 	display_name = "Captain",
 	name = "skin_wh_captain",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_captain_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_witch_hunter",
@@ -220,7 +229,7 @@ ItemMasterList.skin_wh_zealot = {
 	temporary_template = "skin_wh_zealot",
 	display_name = "Zealot",
 	name = "skin_wh_zealot",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_zealot_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_witch_hunter",
@@ -235,16 +244,14 @@ ItemMasterList.skin_bw_default = {
 	temporary_template = "skin_bw_default",
 	display_name = "Default",
 	name = "skin_bw_default",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_battlewizard_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_bright_wizard",
 	rarity = "plentiful",
 	item_type = "skin",
 	can_wield = {
-		"bw_scholar",
-		"bw_adept",
-		"bw_unchained"
+		"bw_adept"
 	}
 }
 ItemMasterList.skin_bw_unchained = {
@@ -252,7 +259,7 @@ ItemMasterList.skin_bw_unchained = {
 	temporary_template = "skin_bw_unchained",
 	display_name = "Unchained",
 	name = "skin_bw_unchained",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_unchained_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_bright_wizard",
@@ -267,7 +274,7 @@ ItemMasterList.skin_bw_scholar = {
 	temporary_template = "skin_bw_scholar",
 	display_name = "Scholar",
 	name = "skin_bw_scholar",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_pyromancer_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_bright_wizard",
@@ -282,7 +289,7 @@ ItemMasterList.skin_bw_adept = {
 	temporary_template = "skin_bw_adept",
 	display_name = "Adept",
 	name = "skin_bw_adept",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_skin_battlewizard_01",
 	slot_type = "skin",
 	skin_type = "unit",
 	hud_icon = "unit_frame_portrait_bright_wizard",
@@ -297,7 +304,7 @@ ItemMasterList.frame_0001 = {
 	temporary_template = "frame_0001",
 	display_name = "Prestige_1",
 	hud_icon = "unit_frame_02",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_portrait_frame_01",
 	slot_type = "frame",
 	rarity = "common",
 	item_type = "frame",
@@ -324,7 +331,7 @@ ItemMasterList.frame_0002 = {
 	temporary_template = "frame_0002",
 	display_name = "Prestige_2",
 	hud_icon = "unit_frame_03",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_portrait_frame_01",
 	slot_type = "frame",
 	rarity = "common",
 	item_type = "frame",
@@ -351,7 +358,7 @@ ItemMasterList.frame_0003 = {
 	temporary_template = "frame_0003",
 	display_name = "Prestige_3",
 	hud_icon = "unit_frame_04",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_portrait_frame_01",
 	slot_type = "frame",
 	rarity = "common",
 	item_type = "frame",
@@ -378,7 +385,7 @@ ItemMasterList.frame_0004 = {
 	temporary_template = "frame_0004",
 	display_name = "Prestige_4",
 	hud_icon = "unit_frame_05",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_portrait_frame_01",
 	slot_type = "frame",
 	rarity = "rare",
 	item_type = "frame",
@@ -405,7 +412,7 @@ ItemMasterList.frame_0005 = {
 	temporary_template = "frame_0005",
 	display_name = "Prestige_5",
 	hud_icon = "unit_frame_06",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_portrait_frame_01",
 	slot_type = "frame",
 	rarity = "rare",
 	item_type = "frame",
@@ -432,7 +439,7 @@ ItemMasterList.frame_0006 = {
 	temporary_template = "frame_0006",
 	display_name = "Prestige_6",
 	hud_icon = "unit_frame_07",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_portrait_frame_01",
 	slot_type = "frame",
 	rarity = "exotic",
 	item_type = "frame",
@@ -453,6 +460,294 @@ ItemMasterList.frame_0006 = {
 		"es_knight",
 		"es_mercenary"
 	}
+}
+ItemMasterList.painting_horizontal_0001 = {
+	description = "description_painting_kemri01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_kemri01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_kemri01",
+	level = "wood"
+}
+ItemMasterList.painting_horizontal_0002 = {
+	description = "description_painting_nurgle01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_nurgle01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_nurgle01",
+	level = "wood"
+}
+ItemMasterList.painting_horizontal_0003 = {
+	description = "description_painting_priest01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_priest01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_priest01",
+	level = "wood"
+}
+ItemMasterList.painting_horizontal_0004 = {
+	description = "description_painting_stormofchaos01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_stormofchaos01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_stormofchaos01",
+	level = "wood"
+}
+ItemMasterList.painting_horizontal_0005 = {
+	description = "description_painting_waronline01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_waronline01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_waronline01",
+	level = "wood"
+}
+ItemMasterList.painting_horizontal_1001 = {
+	description = "description_painting_kemri01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_kemri01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_kemri01",
+	level = "gold"
+}
+ItemMasterList.painting_horizontal_1002 = {
+	description = "description_painting_nurgle01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_nurgle01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_nurgle01",
+	level = "gold"
+}
+ItemMasterList.painting_horizontal_1003 = {
+	description = "description_painting_priest01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_priest01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_priest01",
+	level = "gold"
+}
+ItemMasterList.painting_horizontal_1004 = {
+	description = "description_painting_stormofchaos01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_stormofchaos01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_stormofchaos01",
+	level = "gold"
+}
+ItemMasterList.painting_horizontal_1005 = {
+	description = "description_painting_waronline01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_waronline01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_waronline01",
+	level = "gold"
+}
+ItemMasterList.painting_horizontal_2001 = {
+	description = "description_painting_kemri01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_kemri01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_kemri01",
+	level = "paint"
+}
+ItemMasterList.painting_horizontal_2002 = {
+	description = "description_painting_nurgle01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_nurgle01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_nurgle01",
+	level = "paint"
+}
+ItemMasterList.painting_horizontal_2003 = {
+	description = "description_painting_priest01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_priest01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_priest01",
+	level = "paint"
+}
+ItemMasterList.painting_horizontal_2004 = {
+	description = "description_painting_stormofchaos01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_stormofchaos01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_stormofchaos01",
+	level = "paint"
+}
+ItemMasterList.painting_horizontal_2005 = {
+	description = "description_painting_waronline01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_waronline01",
+	inventory_icon = "icons_placeholder",
+	material_name = "hor_waronline01",
+	level = "paint"
+}
+ItemMasterList.painting_vertical_0001 = {
+	description = "description_painting_bw01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_bw01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_bw01",
+	level = "wood"
+}
+ItemMasterList.painting_vertical_0002 = {
+	description = "description_painting_city01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_city01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_city01",
+	level = "wood"
+}
+ItemMasterList.painting_vertical_0003 = {
+	description = "description_painting_mordheim01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_mordheim01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_mordheim01",
+	level = "wood"
+}
+ItemMasterList.painting_vertical_0004 = {
+	description = "description_painting_undead01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_undead01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_undead01",
+	level = "wood"
+}
+ItemMasterList.painting_vertical_0005 = {
+	description = "description_painting_victor01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_victor01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_victor01",
+	level = "wood"
+}
+ItemMasterList.painting_vertical_0006 = {
+	description = "description_painting_wearelegion01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_wearelegion01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_wearelegion01",
+	level = "wood"
+}
+ItemMasterList.painting_vertical_0007 = {
+	description = "description_painting_zombiedragon01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_zombiedragon01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_zombiedragon01",
+	level = "wood"
+}
+ItemMasterList.painting_vertical_1001 = {
+	description = "description_painting_bw01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_bw01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_bw01",
+	level = "gold"
+}
+ItemMasterList.painting_vertical_1002 = {
+	description = "description_painting_city01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_city01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_city01",
+	level = "gold"
+}
+ItemMasterList.painting_vertical_1003 = {
+	description = "description_painting_mordheim01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_mordheim01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_mordheim01",
+	level = "gold"
+}
+ItemMasterList.painting_vertical_1004 = {
+	description = "description_painting_undead01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_undead01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_undead01",
+	level = "gold"
+}
+ItemMasterList.painting_vertical_1005 = {
+	description = "description_painting_victor01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_victor01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_victor01",
+	level = "gold"
+}
+ItemMasterList.painting_vertical_1006 = {
+	description = "description_painting_wearelegion01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_wearelegion01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_wearelegion01",
+	level = "gold"
+}
+ItemMasterList.painting_vertical_1007 = {
+	description = "description_painting_zombiedragon01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_zombiedragon01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_zombiedragon01",
+	level = "gold"
+}
+ItemMasterList.painting_vertical_2001 = {
+	description = "description_painting_bw01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_bw01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_bw01",
+	level = "paint"
+}
+ItemMasterList.painting_vertical_2002 = {
+	description = "description_painting_city01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_city01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_city01",
+	level = "paint"
+}
+ItemMasterList.painting_vertical_2003 = {
+	description = "description_painting_mordheim01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_mordheim01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_mordheim01",
+	level = "paint"
+}
+ItemMasterList.painting_vertical_2004 = {
+	description = "description_painting_undead01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_undead01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_undead01",
+	level = "paint"
+}
+ItemMasterList.painting_vertical_2005 = {
+	description = "description_painting_victor01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_victor01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_victor01",
+	level = "paint"
+}
+ItemMasterList.painting_vertical_2006 = {
+	description = "description_painting_wearelegion01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_wearelegion01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_wearelegion01",
+	level = "paint"
+}
+ItemMasterList.painting_vertical_2007 = {
+	description = "description_painting_zombiedragon01",
+	item_type = "keep_decoration_painting",
+	display_name = "painting_zombiedragon01",
+	inventory_icon = "icons_placeholder",
+	material_name = "ver_zombiedragon01",
+	level = "paint"
 }
 ItemMasterList.crafting_material_scrap = {
 	description = "crafting_material_scrap_description",
@@ -739,7 +1034,7 @@ ItemMasterList.bw_gate_0000 = {
 	rarity = "default",
 	display_name = "display_name_bw_gate_0001",
 	template = "bw_gates",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -755,7 +1050,7 @@ ItemMasterList.bw_gate_0001 = {
 	rarity = "promo",
 	display_name = "display_name_bw_gate_0001",
 	template = "bw_gates",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -771,7 +1066,7 @@ ItemMasterList.unchained_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_bw_gate_0006",
 	template = "bw_gates_facemask",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -787,7 +1082,7 @@ ItemMasterList.bw_gate_0006 = {
 	rarity = "promo",
 	display_name = "display_name_bw_gate_0006",
 	template = "bw_gates_facemask",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -803,7 +1098,7 @@ ItemMasterList.adept_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_bw_gate_0007",
 	template = "bw_gates_facemask",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -819,7 +1114,7 @@ ItemMasterList.bw_gate_0007 = {
 	rarity = "promo",
 	display_name = "display_name_bw_gate_0007",
 	template = "bw_gates_facemask",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -835,7 +1130,7 @@ ItemMasterList.scholar_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_bw_gate_0008",
 	template = "bw_gates",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -851,7 +1146,7 @@ ItemMasterList.bw_gate_0008 = {
 	rarity = "promo",
 	display_name = "display_name_bw_gate_0008",
 	template = "bw_gates",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -867,7 +1162,7 @@ ItemMasterList.dr_helmet_0000 = {
 	rarity = "default",
 	display_name = "display_name_dr_helmet_0001",
 	template = "dr_helmets_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -882,7 +1177,7 @@ ItemMasterList.dr_helmet_0001 = {
 	rarity = "promo",
 	display_name = "display_name_dr_helmet_0001",
 	template = "dr_helmets_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -897,7 +1192,7 @@ ItemMasterList.ranger_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_dr_helmet_0000",
 	template = "dr_helmets",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -911,7 +1206,7 @@ ItemMasterList.ranger_hat_0001 = {
 	rarity = "default",
 	display_name = "display_name_dr_helmet_0001",
 	template = "dr_helmets",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -925,7 +1220,7 @@ ItemMasterList.ranger_hat_0002 = {
 	rarity = "default",
 	display_name = "display_name_dr_helmet_0002",
 	template = "dr_helmets",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -939,7 +1234,7 @@ ItemMasterList.ranger_hat_0003 = {
 	rarity = "default",
 	display_name = "display_name_dr_helmet_0003",
 	template = "dr_helmets",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -953,7 +1248,7 @@ ItemMasterList.ranger_hat_0004 = {
 	rarity = "default",
 	display_name = "display_name_dr_helmet_0004",
 	template = "dr_helmets",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -967,7 +1262,7 @@ ItemMasterList.ranger_hat_0005 = {
 	rarity = "default",
 	display_name = "display_name_dr_helmet_0005",
 	template = "dr_helmets",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -981,7 +1276,7 @@ ItemMasterList.ranger_hat_0006 = {
 	rarity = "default",
 	display_name = "display_name_dr_helmet_0006",
 	template = "dr_helmets_skinned_long",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -995,7 +1290,7 @@ ItemMasterList.dr_helmet_0002 = {
 	rarity = "promo",
 	display_name = "display_name_dr_helmet_0002",
 	template = "dr_helmets_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1010,7 +1305,7 @@ ItemMasterList.dr_helmet_0003 = {
 	rarity = "promo",
 	display_name = "display_name_dr_helmet_0003",
 	template = "dr_helmets_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1025,7 +1320,7 @@ ItemMasterList.ironbreaker_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_dr_helmet_0005",
 	template = "dr_helmets_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1039,7 +1334,7 @@ ItemMasterList.dr_helmet_0005 = {
 	rarity = "promo",
 	display_name = "display_name_dr_helmet_0005",
 	template = "dr_helmets_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1054,7 +1349,7 @@ ItemMasterList.dr_helmet_0008 = {
 	rarity = "promo",
 	display_name = "display_name_dr_helmet_0008",
 	template = "dr_helmets_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1069,7 +1364,7 @@ ItemMasterList.dr_helmet_0011 = {
 	rarity = "promo",
 	display_name = "display_name_dr_helmet_0011",
 	template = "dr_helmets_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1084,7 +1379,7 @@ ItemMasterList.slayer_hat_0000 = {
 	rarity = "default",
 	display_name = "dr_slayer_hair_0001",
 	template = "dr_helmets",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1098,7 +1393,7 @@ ItemMasterList.dr_slayer_hair_0001 = {
 	rarity = "promo",
 	display_name = "dr_slayer_hair_0001",
 	template = "dr_helmets",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1112,7 +1407,7 @@ ItemMasterList.dr_slayer_hair_0002 = {
 	rarity = "promo",
 	display_name = "dr_slayer_hair_0002",
 	template = "dr_helmets",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1126,7 +1421,7 @@ ItemMasterList.es_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_es_hat_0001",
 	template = "es_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1142,7 +1437,7 @@ ItemMasterList.es_hat_0001 = {
 	rarity = "promo",
 	display_name = "display_name_es_hat_0001",
 	template = "es_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1158,7 +1453,7 @@ ItemMasterList.huntsman_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_es_hat_0002",
 	template = "es_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1174,7 +1469,7 @@ ItemMasterList.es_hat_0002 = {
 	rarity = "promo",
 	display_name = "display_name_es_hat_0002",
 	template = "es_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1190,7 +1485,7 @@ ItemMasterList.mercenary_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_es_hat_0003",
 	template = "es_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1206,7 +1501,7 @@ ItemMasterList.es_hat_0003 = {
 	rarity = "promo",
 	display_name = "display_name_es_hat_0003",
 	template = "es_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1222,7 +1517,7 @@ ItemMasterList.knight_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_knight_hat_0000",
 	template = "es_hats_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1236,7 +1531,7 @@ ItemMasterList.knight_hat_0001 = {
 	rarity = "default",
 	display_name = "display_name_knight_hat_0001",
 	template = "es_hats_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1250,7 +1545,7 @@ ItemMasterList.knight_hat_0002 = {
 	rarity = "default",
 	display_name = "display_name_knight_hat_0002",
 	template = "es_hats_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1264,7 +1559,7 @@ ItemMasterList.knight_hat_0003 = {
 	rarity = "default",
 	display_name = "display_name_knight_hat_0003",
 	template = "es_hats_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1278,7 +1573,7 @@ ItemMasterList.knight_hat_0004 = {
 	rarity = "default",
 	display_name = "display_name_knight_hat_0004",
 	template = "es_hats_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1292,7 +1587,7 @@ ItemMasterList.knight_hat_0005 = {
 	rarity = "default",
 	display_name = "display_name_knight_hat_0005",
 	template = "es_hats_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1306,7 +1601,7 @@ ItemMasterList.knight_hat_0006 = {
 	rarity = "default",
 	display_name = "display_name_knight_hat_0006",
 	template = "es_hats_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1320,7 +1615,7 @@ ItemMasterList.knight_hat_0007 = {
 	rarity = "default",
 	display_name = "display_name_knight_hat_0007",
 	template = "es_hats_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1334,7 +1629,7 @@ ItemMasterList.es_helmet_0003 = {
 	rarity = "promo",
 	display_name = "display_name_es_helmet_0003",
 	template = "es_hats_no_ear",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1350,7 +1645,7 @@ ItemMasterList.wh_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_wh_hat_0001",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1366,7 +1661,7 @@ ItemMasterList.wh_hat_0001 = {
 	rarity = "promo",
 	display_name = "display_name_wh_hat_0001",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1382,14 +1677,96 @@ ItemMasterList.witchhunter_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_witchhunter_hat_0000",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
-	unit = "units/beings/player/witch_hunter/headpiece/wh_hat_03",
+	unit = "units/beings/player/witch_hunter_captain/headpiece/wh_c_hat_06",
 	can_wield = {
-		"wh_zealot",
-		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.witchhunter_hat_0001 = {
+	description = "description_witchhunter_hat_0001",
+	rarity = "default",
+	display_name = "display_name_witchhunter_hat_0001",
+	template = "wh_hats",
+	inventory_icon = "icon_hat_witchhunter_01",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_captain/headpiece/wh_c_hat_02",
+	can_wield = {
+		"wh_captain"
+	}
+}
+ItemMasterList.witchhunter_hat_0002 = {
+	description = "description_witchhunter_hat_0002",
+	rarity = "default",
+	display_name = "display_name_witchhunter_hat_0002",
+	template = "wh_hats",
+	inventory_icon = "icon_hat_witchhunter_01",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_captain/headpiece/wh_c_hat_03",
+	can_wield = {
+		"wh_captain"
+	}
+}
+ItemMasterList.witchhunter_hat_0003 = {
+	description = "description_witchhunter_hat_0003",
+	rarity = "default",
+	display_name = "display_name_witchhunter_hat_0003",
+	template = "wh_hats",
+	inventory_icon = "icon_hat_witchhunter_01",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_captain/headpiece/wh_c_hat_04",
+	can_wield = {
+		"wh_captain"
+	}
+}
+ItemMasterList.witchhunter_hat_0004 = {
+	description = "description_witchhunter_hat_0004",
+	rarity = "default",
+	display_name = "display_name_witchhunter_hat_0004",
+	template = "wh_hats",
+	inventory_icon = "icon_hat_witchhunter_01",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_captain/headpiece/wh_c_hat_05",
+	can_wield = {
+		"wh_captain"
+	}
+}
+ItemMasterList.witchhunter_hat_0005 = {
+	description = "description_witchhunter_hat_0005",
+	rarity = "default",
+	display_name = "display_name_witchhunter_hat_0005",
+	template = "wh_hats",
+	inventory_icon = "icon_hat_witchhunter_01",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_captain/headpiece/wh_c_hat_01",
+	can_wield = {
+		"wh_captain"
+	}
+}
+ItemMasterList.witchhunter_hat_0006 = {
+	description = "description_witchhunter_hat_0006",
+	rarity = "default",
+	display_name = "display_name_witchhunter_hat_0006",
+	template = "wh_hats",
+	inventory_icon = "icon_hat_witchhunter_01",
+	slot_type = "hat",
+	hud_icon = "hud_icon_default",
+	item_type = "hat",
+	unit = "units/beings/player/witch_hunter_captain/headpiece/wh_c_hat_07",
+	can_wield = {
 		"wh_captain"
 	}
 }
@@ -1398,7 +1775,7 @@ ItemMasterList.wh_hat_0003 = {
 	rarity = "promo",
 	display_name = "display_name_wh_hat_0003",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1414,7 +1791,7 @@ ItemMasterList.zealot_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_zealot_hat_0000",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1428,7 +1805,7 @@ ItemMasterList.zealot_hat_0001 = {
 	rarity = "default",
 	display_name = "display_name_zealot_hat_0001",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1442,7 +1819,7 @@ ItemMasterList.zealot_hat_0002 = {
 	rarity = "default",
 	display_name = "display_name_zealot_hat_0002",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1456,7 +1833,7 @@ ItemMasterList.zealot_hat_0003 = {
 	rarity = "default",
 	display_name = "display_name_zealot_hat_0003",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1470,7 +1847,7 @@ ItemMasterList.zealot_hat_0004 = {
 	rarity = "default",
 	display_name = "display_name_zealot_hat_0004",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1484,7 +1861,7 @@ ItemMasterList.zealot_hat_0005 = {
 	rarity = "default",
 	display_name = "display_name_zealot_hat_0005",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1498,7 +1875,7 @@ ItemMasterList.wh_hat_0007 = {
 	rarity = "promo",
 	display_name = "display_name_wh_hat_0007",
 	template = "wh_hats_skinned",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1512,7 +1889,7 @@ ItemMasterList.bountyhunter_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_bountyhunter_hat_0000",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1526,7 +1903,7 @@ ItemMasterList.bountyhunter_hat_0001 = {
 	rarity = "default",
 	display_name = "display_name_bountyhunter_hat_0001",
 	template = "wh_hats_skinned",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1540,7 +1917,7 @@ ItemMasterList.bountyhunter_hat_0002 = {
 	rarity = "default",
 	display_name = "display_name_bountyhunter_hat_0002",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1554,7 +1931,7 @@ ItemMasterList.bountyhunter_hat_0003 = {
 	rarity = "default",
 	display_name = "display_name_bountyhunter_hat_0003",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1568,7 +1945,7 @@ ItemMasterList.bountyhunter_hat_0004 = {
 	rarity = "default",
 	display_name = "display_name_bountyhunter_hat_0004",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1582,7 +1959,7 @@ ItemMasterList.bountyhunter_hat_0005 = {
 	rarity = "default",
 	display_name = "display_name_bountyhunter_hat_0005",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1596,7 +1973,7 @@ ItemMasterList.bountyhunter_hat_0006 = {
 	rarity = "default",
 	display_name = "display_name_bountyhunter_hat_0006",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1610,7 +1987,7 @@ ItemMasterList.bountyhunter_hat_0007 = {
 	rarity = "default",
 	display_name = "display_name_bountyhunter_hat_0007",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1624,7 +2001,7 @@ ItemMasterList.bountyhunter_hat_0008 = {
 	rarity = "default",
 	display_name = "display_name_bountyhunter_hat_0008",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1638,7 +2015,7 @@ ItemMasterList.bountyhunter_hat_0009 = {
 	rarity = "default",
 	display_name = "display_name_bountyhunter_hat_0009",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1652,7 +2029,7 @@ ItemMasterList.wh_hat_0008 = {
 	rarity = "promo",
 	display_name = "display_name_wh_hat_0008",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1666,7 +2043,7 @@ ItemMasterList.wh_hat_0009 = {
 	rarity = "promo",
 	display_name = "display_name_wh_hat_0008",
 	template = "wh_hats",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1680,7 +2057,7 @@ ItemMasterList.ww_hood_0000 = {
 	rarity = "default",
 	display_name = "display_name_ww_hood_0001",
 	template = "ww_hoods",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1695,7 +2072,7 @@ ItemMasterList.waywatcher_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_waywatcher_hat_0000",
 	template = "ww_hoods",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1709,7 +2086,7 @@ ItemMasterList.ww_hood_0001 = {
 	rarity = "promo",
 	display_name = "display_name_ww_hood_0001",
 	template = "ww_hoods",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1724,11 +2101,11 @@ ItemMasterList.shade_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_shade_hat_0000",
 	template = "ww_masks",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
-	unit = "units/beings/player/way_watcher_shade/headpiece/chr_way_watcher_shade_mask_01",
+	unit = "units/beings/player/way_watcher_shade/headpiece/ww_s_hat_01",
 	can_wield = {
 		"we_shade"
 	}
@@ -1738,7 +2115,7 @@ ItemMasterList.ww_hood_0002 = {
 	rarity = "promo",
 	display_name = "display_name_ww_hood_0002",
 	template = "ww_hoods",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1753,7 +2130,7 @@ ItemMasterList.maidenguard_hat_0000 = {
 	rarity = "default",
 	display_name = "display_name_maidenguard_hat_0000",
 	template = "ww_hoods",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1767,7 +2144,7 @@ ItemMasterList.ww_hood_0004 = {
 	rarity = "promo",
 	display_name = "display_name_ww_hood_0004",
 	template = "ww_hoods",
-	inventory_icon = "icons_placeholder",
+	inventory_icon = "icon_hat_witchhunter_01",
 	slot_type = "hat",
 	hud_icon = "hud_icon_default",
 	item_type = "hat",
@@ -1934,7 +2311,9 @@ ItemMasterList.es_1h_flail = {
 	item_type = "es_flail",
 	trait_table_name = "melee",
 	can_wield = {
-		"wh_zealot"
+		"wh_zealot",
+		"wh_captain",
+		"wh_bountyhunter"
 	}
 }
 ItemMasterList.es_halberd = {
@@ -1961,11 +2340,10 @@ ItemMasterList.es_longbow_tutorial = {
 	description = "description_plentiful_empire_soldier_es_longbow",
 	rarity = "plentiful",
 	display_name = "display_name_plentiful_empire_soldier_es_longbow",
-	hud_icon = "weapon_generic_icon_bow",
-	skin_combination_table = "es_longbow_skins",
-	left_hand_unit = "units/weapons/player/wpn_empire_bow_tutorial/wpn_empire_bow_tutorial",
 	inventory_icon = "icon_wpn_empire_bow_tutorial",
 	slot_type = "ranged",
+	hud_icon = "weapon_generic_icon_bow",
+	left_hand_unit = "units/weapons/player/wpn_empire_bow_tutorial/wpn_empire_bow_tutorial",
 	has_power_level = true,
 	template = "longbow_empire_tutorial_template",
 	property_table_name = "ranged",
@@ -1980,9 +2358,8 @@ ItemMasterList.es_2h_hammer_tutorial = {
 	rarity = "plentiful",
 	right_hand_unit = "units/weapons/player/wpn_empire_2h_hammer_tutorial/wpn_empire_2h_hammer_tut_01",
 	hud_icon = "weapon_generic_icon_hammer2h",
-	skin_combination_table = "es_2h_hammer_skins",
-	slot_type = "melee",
 	inventory_icon = "icon_wpn_empire_2h_hammer_01_t1",
+	slot_type = "melee",
 	display_name = "display_name_plentiful_empire_soldier_es_2h_war_hammer",
 	has_power_level = true,
 	template = "two_handed_hammers_template_1",
@@ -2238,11 +2615,10 @@ ItemMasterList.we_longbow_trueflight = {
 	description = "description_plentiful_wood_elf_ww_trueflight",
 	rarity = "plentiful",
 	display_name = "display_name_plentiful_wood_elf_ww_trueflight",
-	hud_icon = "weapon_generic_icon_bow",
-	skin_combination_table = "we_longbow_skins",
-	left_hand_unit = "units/weapons/player/wpn_we_bow_03_t1/wpn_we_bow_03_t1",
 	inventory_icon = "icon_wpn_we_bow_01_t1",
 	slot_type = "ranged",
+	hud_icon = "weapon_generic_icon_bow",
+	left_hand_unit = "units/weapons/player/wpn_we_bow_03_t1/wpn_we_bow_03_t1",
 	has_power_level = true,
 	template = "longbow_trueflight_template_1",
 	property_table_name = "ranged",
@@ -2525,7 +2901,7 @@ ItemMasterList.dr_dual_wield_axes = {
 	has_power_level = true,
 	template = "dual_wield_axes_template_1",
 	property_table_name = "melee",
-	item_type = "dr_1h_axes",
+	item_type = "dr_dual_axes",
 	left_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
 	trait_table_name = "melee",
 	can_wield = {
@@ -3033,9 +3409,114 @@ ItemMasterList.deed = {
 		"normal"
 	}
 }
-ItemMasterList.deed_0001 = {
+ItemMasterList.collectors_deed_0001 = {
 	description = "description_deed_generic",
 	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	level_key = "farmlands",
+	item_type = "deed",
+	permanent = true,
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"hordes_galore"
+	},
+	rewards = {},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.collectors_deed_0002 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	level_key = "elven_ruins",
+	item_type = "deed",
+	permanent = true,
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"specials_frequency"
+	},
+	rewards = {},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.collectors_deed_0003 = {
+	description = "description_deed_generic",
+	rarity = "promo",
+	display_name = "display_name_deed_generic",
+	inventory_icon = "icon_deed_normal_01",
+	slot_type = "deed",
+	hud_icon = "wh_1h_falchions",
+	level_key = "military",
+	item_type = "deed",
+	permanent = true,
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	},
+	mutators = {
+		"player_dot"
+	},
+	rewards = {},
+	difficulties = {
+		"normal"
+	}
+}
+ItemMasterList.deed_0001 = {
+	description = "description_deed_generic",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
@@ -3070,7 +3551,7 @@ ItemMasterList.deed_0001 = {
 }
 ItemMasterList.deed_0002 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3105,7 +3586,7 @@ ItemMasterList.deed_0002 = {
 }
 ItemMasterList.deed_0003 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
@@ -3140,7 +3621,7 @@ ItemMasterList.deed_0003 = {
 }
 ItemMasterList.deed_0004 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
@@ -3175,7 +3656,7 @@ ItemMasterList.deed_0004 = {
 }
 ItemMasterList.deed_0005 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
@@ -3210,7 +3691,7 @@ ItemMasterList.deed_0005 = {
 }
 ItemMasterList.deed_0006 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
@@ -3245,7 +3726,7 @@ ItemMasterList.deed_0006 = {
 }
 ItemMasterList.deed_0007 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
@@ -3280,7 +3761,7 @@ ItemMasterList.deed_0007 = {
 }
 ItemMasterList.deed_0008 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_01",
 	slot_type = "deed",
@@ -3315,7 +3796,7 @@ ItemMasterList.deed_0008 = {
 }
 ItemMasterList.deed_0009 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3343,7 +3824,7 @@ ItemMasterList.deed_0009 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_04"
 	},
 	difficulties = {
 		"normal"
@@ -3351,7 +3832,7 @@ ItemMasterList.deed_0009 = {
 }
 ItemMasterList.deed_0010 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3379,7 +3860,7 @@ ItemMasterList.deed_0010 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -3415,7 +3896,7 @@ ItemMasterList.deed_0011 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_04"
 	},
 	difficulties = {
 		"normal"
@@ -3423,7 +3904,7 @@ ItemMasterList.deed_0011 = {
 }
 ItemMasterList.deed_0012 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3451,7 +3932,7 @@ ItemMasterList.deed_0012 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -3459,7 +3940,7 @@ ItemMasterList.deed_0012 = {
 }
 ItemMasterList.deed_0013 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3487,7 +3968,7 @@ ItemMasterList.deed_0013 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -3495,7 +3976,7 @@ ItemMasterList.deed_0013 = {
 }
 ItemMasterList.deed_0014 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3523,7 +4004,7 @@ ItemMasterList.deed_0014 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -3531,7 +4012,7 @@ ItemMasterList.deed_0014 = {
 }
 ItemMasterList.deed_0015 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3559,7 +4040,7 @@ ItemMasterList.deed_0015 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -3567,7 +4048,7 @@ ItemMasterList.deed_0015 = {
 }
 ItemMasterList.deed_0016 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3595,7 +4076,7 @@ ItemMasterList.deed_0016 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -3603,7 +4084,7 @@ ItemMasterList.deed_0016 = {
 }
 ItemMasterList.deed_0017 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3631,7 +4112,7 @@ ItemMasterList.deed_0017 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -3639,7 +4120,7 @@ ItemMasterList.deed_0017 = {
 }
 ItemMasterList.deed_0018 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3667,7 +4148,7 @@ ItemMasterList.deed_0018 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -3675,7 +4156,7 @@ ItemMasterList.deed_0018 = {
 }
 ItemMasterList.deed_0019 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3703,7 +4184,7 @@ ItemMasterList.deed_0019 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -3711,7 +4192,7 @@ ItemMasterList.deed_0019 = {
 }
 ItemMasterList.deed_0020 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3739,7 +4220,7 @@ ItemMasterList.deed_0020 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -3747,7 +4228,7 @@ ItemMasterList.deed_0020 = {
 }
 ItemMasterList.deed_0021 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3775,7 +4256,7 @@ ItemMasterList.deed_0021 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_04"
 	},
 	difficulties = {
 		"normal"
@@ -3783,7 +4264,7 @@ ItemMasterList.deed_0021 = {
 }
 ItemMasterList.deed_0022 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3811,7 +4292,7 @@ ItemMasterList.deed_0022 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -3819,7 +4300,7 @@ ItemMasterList.deed_0022 = {
 }
 ItemMasterList.deed_0023 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3847,7 +4328,7 @@ ItemMasterList.deed_0023 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_04"
 	},
 	difficulties = {
 		"normal"
@@ -3855,7 +4336,7 @@ ItemMasterList.deed_0023 = {
 }
 ItemMasterList.deed_0024 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3883,7 +4364,7 @@ ItemMasterList.deed_0024 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_04"
 	},
 	difficulties = {
 		"normal"
@@ -3891,7 +4372,7 @@ ItemMasterList.deed_0024 = {
 }
 ItemMasterList.deed_0025 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3927,7 +4408,7 @@ ItemMasterList.deed_0025 = {
 }
 ItemMasterList.deed_0026 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3955,7 +4436,7 @@ ItemMasterList.deed_0026 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_04"
 	},
 	difficulties = {
 		"normal"
@@ -3963,7 +4444,7 @@ ItemMasterList.deed_0026 = {
 }
 ItemMasterList.deed_0027 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -3991,7 +4472,7 @@ ItemMasterList.deed_0027 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_04"
 	},
 	difficulties = {
 		"normal"
@@ -3999,7 +4480,7 @@ ItemMasterList.deed_0027 = {
 }
 ItemMasterList.deed_0028 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -4027,7 +4508,7 @@ ItemMasterList.deed_0028 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -4035,7 +4516,7 @@ ItemMasterList.deed_0028 = {
 }
 ItemMasterList.deed_0029 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -4063,7 +4544,7 @@ ItemMasterList.deed_0029 = {
 		"specials_frequency"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -4071,7 +4552,7 @@ ItemMasterList.deed_0029 = {
 }
 ItemMasterList.deed_0030 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -4099,7 +4580,7 @@ ItemMasterList.deed_0030 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -4107,7 +4588,7 @@ ItemMasterList.deed_0030 = {
 }
 ItemMasterList.deed_0031 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -4135,7 +4616,7 @@ ItemMasterList.deed_0031 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -4143,7 +4624,7 @@ ItemMasterList.deed_0031 = {
 }
 ItemMasterList.deed_0032 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -4171,7 +4652,7 @@ ItemMasterList.deed_0032 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -4179,7 +4660,7 @@ ItemMasterList.deed_0032 = {
 }
 ItemMasterList.deed_0033 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -4207,7 +4688,7 @@ ItemMasterList.deed_0033 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_05"
 	},
 	difficulties = {
 		"normal"
@@ -4215,7 +4696,7 @@ ItemMasterList.deed_0033 = {
 }
 ItemMasterList.deed_0034 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_02",
 	slot_type = "deed",
@@ -4243,7 +4724,7 @@ ItemMasterList.deed_0034 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -4251,7 +4732,7 @@ ItemMasterList.deed_0034 = {
 }
 ItemMasterList.deed_0035 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_03",
 	slot_type = "deed",
@@ -4280,7 +4761,8 @@ ItemMasterList.deed_0035 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06",
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -4288,7 +4770,7 @@ ItemMasterList.deed_0035 = {
 }
 ItemMasterList.deed_0036 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_03",
 	slot_type = "deed",
@@ -4317,7 +4799,8 @@ ItemMasterList.deed_0036 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06",
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -4325,7 +4808,7 @@ ItemMasterList.deed_0036 = {
 }
 ItemMasterList.deed_0037 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_03",
 	slot_type = "deed",
@@ -4354,7 +4837,7 @@ ItemMasterList.deed_0037 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -4362,7 +4845,7 @@ ItemMasterList.deed_0037 = {
 }
 ItemMasterList.deed_0038 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_03",
 	slot_type = "deed",
@@ -4391,7 +4874,7 @@ ItemMasterList.deed_0038 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -4399,7 +4882,7 @@ ItemMasterList.deed_0038 = {
 }
 ItemMasterList.deed_0039 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_03",
 	slot_type = "deed",
@@ -4428,7 +4911,7 @@ ItemMasterList.deed_0039 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -4436,7 +4919,7 @@ ItemMasterList.deed_0039 = {
 }
 ItemMasterList.deed_0040 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_normal_03",
 	slot_type = "deed",
@@ -4465,7 +4948,7 @@ ItemMasterList.deed_0040 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_01_03"
+		"loot_chest_01_06"
 	},
 	difficulties = {
 		"normal"
@@ -4473,7 +4956,7 @@ ItemMasterList.deed_0040 = {
 }
 ItemMasterList.deed_1001 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_01",
 	slot_type = "deed",
@@ -4508,7 +4991,7 @@ ItemMasterList.deed_1001 = {
 }
 ItemMasterList.deed_1002 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -4543,7 +5026,7 @@ ItemMasterList.deed_1002 = {
 }
 ItemMasterList.deed_1003 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_01",
 	slot_type = "deed",
@@ -4578,7 +5061,7 @@ ItemMasterList.deed_1003 = {
 }
 ItemMasterList.deed_1004 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_01",
 	slot_type = "deed",
@@ -4613,7 +5096,7 @@ ItemMasterList.deed_1004 = {
 }
 ItemMasterList.deed_1005 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_01",
 	slot_type = "deed",
@@ -4648,7 +5131,7 @@ ItemMasterList.deed_1005 = {
 }
 ItemMasterList.deed_1006 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_01",
 	slot_type = "deed",
@@ -4683,7 +5166,7 @@ ItemMasterList.deed_1006 = {
 }
 ItemMasterList.deed_1007 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_01",
 	slot_type = "deed",
@@ -4718,7 +5201,7 @@ ItemMasterList.deed_1007 = {
 }
 ItemMasterList.deed_1008 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_01",
 	slot_type = "deed",
@@ -4753,7 +5236,7 @@ ItemMasterList.deed_1008 = {
 }
 ItemMasterList.deed_1009 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -4781,7 +5264,7 @@ ItemMasterList.deed_1009 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_04"
 	},
 	difficulties = {
 		"hard"
@@ -4789,7 +5272,7 @@ ItemMasterList.deed_1009 = {
 }
 ItemMasterList.deed_1010 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -4817,7 +5300,7 @@ ItemMasterList.deed_1010 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -4825,7 +5308,7 @@ ItemMasterList.deed_1010 = {
 }
 ItemMasterList.deed_1011 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -4853,7 +5336,7 @@ ItemMasterList.deed_1011 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_04"
 	},
 	difficulties = {
 		"hard"
@@ -4861,7 +5344,7 @@ ItemMasterList.deed_1011 = {
 }
 ItemMasterList.deed_1012 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -4889,7 +5372,7 @@ ItemMasterList.deed_1012 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -4897,7 +5380,7 @@ ItemMasterList.deed_1012 = {
 }
 ItemMasterList.deed_1013 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -4925,7 +5408,7 @@ ItemMasterList.deed_1013 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -4933,7 +5416,7 @@ ItemMasterList.deed_1013 = {
 }
 ItemMasterList.deed_1014 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -4961,7 +5444,7 @@ ItemMasterList.deed_1014 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -4969,7 +5452,7 @@ ItemMasterList.deed_1014 = {
 }
 ItemMasterList.deed_1015 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -4997,7 +5480,7 @@ ItemMasterList.deed_1015 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -5005,7 +5488,7 @@ ItemMasterList.deed_1015 = {
 }
 ItemMasterList.deed_1016 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5033,7 +5516,7 @@ ItemMasterList.deed_1016 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -5041,7 +5524,7 @@ ItemMasterList.deed_1016 = {
 }
 ItemMasterList.deed_1017 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5069,7 +5552,7 @@ ItemMasterList.deed_1017 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -5077,7 +5560,7 @@ ItemMasterList.deed_1017 = {
 }
 ItemMasterList.deed_1018 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5105,7 +5588,7 @@ ItemMasterList.deed_1018 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -5113,7 +5596,7 @@ ItemMasterList.deed_1018 = {
 }
 ItemMasterList.deed_1019 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5141,7 +5624,7 @@ ItemMasterList.deed_1019 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -5149,7 +5632,7 @@ ItemMasterList.deed_1019 = {
 }
 ItemMasterList.deed_1020 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5177,7 +5660,7 @@ ItemMasterList.deed_1020 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -5185,7 +5668,7 @@ ItemMasterList.deed_1020 = {
 }
 ItemMasterList.deed_1021 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5213,7 +5696,7 @@ ItemMasterList.deed_1021 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_04"
 	},
 	difficulties = {
 		"hard"
@@ -5221,7 +5704,7 @@ ItemMasterList.deed_1021 = {
 }
 ItemMasterList.deed_1022 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5249,7 +5732,7 @@ ItemMasterList.deed_1022 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -5257,7 +5740,7 @@ ItemMasterList.deed_1022 = {
 }
 ItemMasterList.deed_1023 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5285,7 +5768,7 @@ ItemMasterList.deed_1023 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_04"
 	},
 	difficulties = {
 		"hard"
@@ -5293,7 +5776,7 @@ ItemMasterList.deed_1023 = {
 }
 ItemMasterList.deed_1024 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5321,7 +5804,7 @@ ItemMasterList.deed_1024 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_04"
 	},
 	difficulties = {
 		"hard"
@@ -5329,7 +5812,7 @@ ItemMasterList.deed_1024 = {
 }
 ItemMasterList.deed_1025 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5365,7 +5848,7 @@ ItemMasterList.deed_1025 = {
 }
 ItemMasterList.deed_1026 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5393,7 +5876,7 @@ ItemMasterList.deed_1026 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_04"
 	},
 	difficulties = {
 		"hard"
@@ -5401,7 +5884,7 @@ ItemMasterList.deed_1026 = {
 }
 ItemMasterList.deed_1027 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5429,7 +5912,7 @@ ItemMasterList.deed_1027 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_04"
 	},
 	difficulties = {
 		"hard"
@@ -5437,7 +5920,7 @@ ItemMasterList.deed_1027 = {
 }
 ItemMasterList.deed_1028 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5465,7 +5948,7 @@ ItemMasterList.deed_1028 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -5473,7 +5956,7 @@ ItemMasterList.deed_1028 = {
 }
 ItemMasterList.deed_1029 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5501,7 +5984,7 @@ ItemMasterList.deed_1029 = {
 		"specials_frequency"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -5509,7 +5992,7 @@ ItemMasterList.deed_1029 = {
 }
 ItemMasterList.deed_1030 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5537,7 +6020,7 @@ ItemMasterList.deed_1030 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -5545,7 +6028,7 @@ ItemMasterList.deed_1030 = {
 }
 ItemMasterList.deed_1031 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5573,7 +6056,7 @@ ItemMasterList.deed_1031 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -5581,7 +6064,7 @@ ItemMasterList.deed_1031 = {
 }
 ItemMasterList.deed_1032 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5609,7 +6092,7 @@ ItemMasterList.deed_1032 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -5617,7 +6100,7 @@ ItemMasterList.deed_1032 = {
 }
 ItemMasterList.deed_1033 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5645,7 +6128,7 @@ ItemMasterList.deed_1033 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_05"
 	},
 	difficulties = {
 		"hard"
@@ -5653,7 +6136,7 @@ ItemMasterList.deed_1033 = {
 }
 ItemMasterList.deed_1034 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -5681,7 +6164,7 @@ ItemMasterList.deed_1034 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -5689,7 +6172,7 @@ ItemMasterList.deed_1034 = {
 }
 ItemMasterList.deed_1035 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -5718,7 +6201,8 @@ ItemMasterList.deed_1035 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06",
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -5726,7 +6210,7 @@ ItemMasterList.deed_1035 = {
 }
 ItemMasterList.deed_1036 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -5755,7 +6239,8 @@ ItemMasterList.deed_1036 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06",
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -5763,7 +6248,7 @@ ItemMasterList.deed_1036 = {
 }
 ItemMasterList.deed_1037 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -5792,7 +6277,7 @@ ItemMasterList.deed_1037 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -5800,7 +6285,7 @@ ItemMasterList.deed_1037 = {
 }
 ItemMasterList.deed_1038 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -5829,7 +6314,7 @@ ItemMasterList.deed_1038 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -5837,7 +6322,7 @@ ItemMasterList.deed_1038 = {
 }
 ItemMasterList.deed_1039 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -5866,7 +6351,7 @@ ItemMasterList.deed_1039 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -5874,7 +6359,7 @@ ItemMasterList.deed_1039 = {
 }
 ItemMasterList.deed_1040 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -5903,7 +6388,7 @@ ItemMasterList.deed_1040 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_02_03"
+		"loot_chest_02_06"
 	},
 	difficulties = {
 		"hard"
@@ -5911,7 +6396,7 @@ ItemMasterList.deed_1040 = {
 }
 ItemMasterList.deed_2001 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_01",
 	slot_type = "deed",
@@ -5946,7 +6431,7 @@ ItemMasterList.deed_2001 = {
 }
 ItemMasterList.deed_2002 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_01",
 	slot_type = "deed",
@@ -5981,7 +6466,7 @@ ItemMasterList.deed_2002 = {
 }
 ItemMasterList.deed_2003 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_01",
 	slot_type = "deed",
@@ -6016,7 +6501,7 @@ ItemMasterList.deed_2003 = {
 }
 ItemMasterList.deed_2004 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_01",
 	slot_type = "deed",
@@ -6043,7 +6528,7 @@ ItemMasterList.deed_2004 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_04"
 	},
 	difficulties = {
 		"harder"
@@ -6051,7 +6536,7 @@ ItemMasterList.deed_2004 = {
 }
 ItemMasterList.deed_2005 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_01",
 	slot_type = "deed",
@@ -6086,7 +6571,7 @@ ItemMasterList.deed_2005 = {
 }
 ItemMasterList.deed_2006 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_01",
 	slot_type = "deed",
@@ -6121,7 +6606,7 @@ ItemMasterList.deed_2006 = {
 }
 ItemMasterList.deed_2007 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_01",
 	slot_type = "deed",
@@ -6156,7 +6641,7 @@ ItemMasterList.deed_2007 = {
 }
 ItemMasterList.deed_2008 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_01",
 	slot_type = "deed",
@@ -6191,7 +6676,7 @@ ItemMasterList.deed_2008 = {
 }
 ItemMasterList.deed_2009 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6219,7 +6704,7 @@ ItemMasterList.deed_2009 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_04"
 	},
 	difficulties = {
 		"harder"
@@ -6227,7 +6712,7 @@ ItemMasterList.deed_2009 = {
 }
 ItemMasterList.deed_2010 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6255,7 +6740,7 @@ ItemMasterList.deed_2010 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -6263,7 +6748,7 @@ ItemMasterList.deed_2010 = {
 }
 ItemMasterList.deed_2011 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6291,7 +6776,7 @@ ItemMasterList.deed_2011 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_04"
 	},
 	difficulties = {
 		"harder"
@@ -6299,7 +6784,7 @@ ItemMasterList.deed_2011 = {
 }
 ItemMasterList.deed_2012 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6327,7 +6812,7 @@ ItemMasterList.deed_2012 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -6335,7 +6820,7 @@ ItemMasterList.deed_2012 = {
 }
 ItemMasterList.deed_2013 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6363,7 +6848,7 @@ ItemMasterList.deed_2013 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -6371,7 +6856,7 @@ ItemMasterList.deed_2013 = {
 }
 ItemMasterList.deed_2014 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6399,7 +6884,7 @@ ItemMasterList.deed_2014 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -6407,7 +6892,7 @@ ItemMasterList.deed_2014 = {
 }
 ItemMasterList.deed_2015 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6435,7 +6920,7 @@ ItemMasterList.deed_2015 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -6443,7 +6928,7 @@ ItemMasterList.deed_2015 = {
 }
 ItemMasterList.deed_2016 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6471,7 +6956,7 @@ ItemMasterList.deed_2016 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -6479,7 +6964,7 @@ ItemMasterList.deed_2016 = {
 }
 ItemMasterList.deed_2017 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6507,7 +6992,7 @@ ItemMasterList.deed_2017 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -6515,7 +7000,7 @@ ItemMasterList.deed_2017 = {
 }
 ItemMasterList.deed_2018 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6543,7 +7028,7 @@ ItemMasterList.deed_2018 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -6551,7 +7036,7 @@ ItemMasterList.deed_2018 = {
 }
 ItemMasterList.deed_2019 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6579,7 +7064,7 @@ ItemMasterList.deed_2019 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -6587,7 +7072,7 @@ ItemMasterList.deed_2019 = {
 }
 ItemMasterList.deed_2020 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6615,7 +7100,7 @@ ItemMasterList.deed_2020 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -6623,7 +7108,7 @@ ItemMasterList.deed_2020 = {
 }
 ItemMasterList.deed_2021 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6651,7 +7136,7 @@ ItemMasterList.deed_2021 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_04"
 	},
 	difficulties = {
 		"harder"
@@ -6659,7 +7144,7 @@ ItemMasterList.deed_2021 = {
 }
 ItemMasterList.deed_2022 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6687,7 +7172,7 @@ ItemMasterList.deed_2022 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -6695,7 +7180,7 @@ ItemMasterList.deed_2022 = {
 }
 ItemMasterList.deed_2023 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6723,7 +7208,7 @@ ItemMasterList.deed_2023 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_04"
 	},
 	difficulties = {
 		"harder"
@@ -6731,7 +7216,7 @@ ItemMasterList.deed_2023 = {
 }
 ItemMasterList.deed_2024 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6759,7 +7244,7 @@ ItemMasterList.deed_2024 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_04"
 	},
 	difficulties = {
 		"harder"
@@ -6767,7 +7252,7 @@ ItemMasterList.deed_2024 = {
 }
 ItemMasterList.deed_2025 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6795,7 +7280,7 @@ ItemMasterList.deed_2025 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_04"
 	},
 	difficulties = {
 		"harder"
@@ -6803,7 +7288,7 @@ ItemMasterList.deed_2025 = {
 }
 ItemMasterList.deed_2026 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6831,7 +7316,7 @@ ItemMasterList.deed_2026 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_04"
 	},
 	difficulties = {
 		"harder"
@@ -6839,7 +7324,7 @@ ItemMasterList.deed_2026 = {
 }
 ItemMasterList.deed_2027 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6867,7 +7352,7 @@ ItemMasterList.deed_2027 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_04"
 	},
 	difficulties = {
 		"harder"
@@ -6875,7 +7360,7 @@ ItemMasterList.deed_2027 = {
 }
 ItemMasterList.deed_2028 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6903,7 +7388,7 @@ ItemMasterList.deed_2028 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -6911,7 +7396,7 @@ ItemMasterList.deed_2028 = {
 }
 ItemMasterList.deed_2029 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6939,7 +7424,7 @@ ItemMasterList.deed_2029 = {
 		"specials_frequency"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -6947,7 +7432,7 @@ ItemMasterList.deed_2029 = {
 }
 ItemMasterList.deed_2030 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -6975,7 +7460,7 @@ ItemMasterList.deed_2030 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -6983,7 +7468,7 @@ ItemMasterList.deed_2030 = {
 }
 ItemMasterList.deed_2031 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -7011,7 +7496,7 @@ ItemMasterList.deed_2031 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -7019,7 +7504,7 @@ ItemMasterList.deed_2031 = {
 }
 ItemMasterList.deed_2032 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -7047,7 +7532,7 @@ ItemMasterList.deed_2032 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -7055,7 +7540,7 @@ ItemMasterList.deed_2032 = {
 }
 ItemMasterList.deed_2033 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -7083,7 +7568,7 @@ ItemMasterList.deed_2033 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_05"
 	},
 	difficulties = {
 		"harder"
@@ -7091,7 +7576,7 @@ ItemMasterList.deed_2033 = {
 }
 ItemMasterList.deed_2034 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_02",
 	slot_type = "deed",
@@ -7119,7 +7604,7 @@ ItemMasterList.deed_2034 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -7127,7 +7612,7 @@ ItemMasterList.deed_2034 = {
 }
 ItemMasterList.deed_2035 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_03",
 	slot_type = "deed",
@@ -7156,7 +7641,8 @@ ItemMasterList.deed_2035 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06",
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -7164,7 +7650,7 @@ ItemMasterList.deed_2035 = {
 }
 ItemMasterList.deed_2036 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_03",
 	slot_type = "deed",
@@ -7193,7 +7679,8 @@ ItemMasterList.deed_2036 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06",
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -7201,7 +7688,7 @@ ItemMasterList.deed_2036 = {
 }
 ItemMasterList.deed_2037 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_03",
 	slot_type = "deed",
@@ -7230,7 +7717,7 @@ ItemMasterList.deed_2037 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -7238,7 +7725,7 @@ ItemMasterList.deed_2037 = {
 }
 ItemMasterList.deed_2038 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_03",
 	slot_type = "deed",
@@ -7267,7 +7754,7 @@ ItemMasterList.deed_2038 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -7275,7 +7762,7 @@ ItemMasterList.deed_2038 = {
 }
 ItemMasterList.deed_2039 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_03",
 	slot_type = "deed",
@@ -7304,7 +7791,7 @@ ItemMasterList.deed_2039 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -7312,7 +7799,7 @@ ItemMasterList.deed_2039 = {
 }
 ItemMasterList.deed_2040 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_nightmare_03",
 	slot_type = "deed",
@@ -7341,7 +7828,7 @@ ItemMasterList.deed_2040 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_03_03"
+		"loot_chest_03_06"
 	},
 	difficulties = {
 		"harder"
@@ -7349,7 +7836,7 @@ ItemMasterList.deed_2040 = {
 }
 ItemMasterList.deed_3001 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_cataclysm_01",
 	slot_type = "deed",
@@ -7384,7 +7871,7 @@ ItemMasterList.deed_3001 = {
 }
 ItemMasterList.deed_3002 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_cataclysm_02",
 	slot_type = "deed",
@@ -7419,7 +7906,7 @@ ItemMasterList.deed_3002 = {
 }
 ItemMasterList.deed_3003 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_cataclysm_01",
 	slot_type = "deed",
@@ -7454,7 +7941,7 @@ ItemMasterList.deed_3003 = {
 }
 ItemMasterList.deed_3004 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_cataclysm_01",
 	slot_type = "deed",
@@ -7489,7 +7976,7 @@ ItemMasterList.deed_3004 = {
 }
 ItemMasterList.deed_3005 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_cataclysm_01",
 	slot_type = "deed",
@@ -7524,7 +8011,7 @@ ItemMasterList.deed_3005 = {
 }
 ItemMasterList.deed_3006 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_cataclysm_01",
 	slot_type = "deed",
@@ -7559,7 +8046,7 @@ ItemMasterList.deed_3006 = {
 }
 ItemMasterList.deed_3007 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_cataclysm_01",
 	slot_type = "deed",
@@ -7594,7 +8081,7 @@ ItemMasterList.deed_3007 = {
 }
 ItemMasterList.deed_3008 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "common",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_cataclysm_01",
 	slot_type = "deed",
@@ -7629,7 +8116,7 @@ ItemMasterList.deed_3008 = {
 }
 ItemMasterList.deed_3009 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -7657,7 +8144,7 @@ ItemMasterList.deed_3009 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_04"
 	},
 	difficulties = {
 		"hardest"
@@ -7665,7 +8152,7 @@ ItemMasterList.deed_3009 = {
 }
 ItemMasterList.deed_3010 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -7693,7 +8180,7 @@ ItemMasterList.deed_3010 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -7701,7 +8188,7 @@ ItemMasterList.deed_3010 = {
 }
 ItemMasterList.deed_3011 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -7729,7 +8216,7 @@ ItemMasterList.deed_3011 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_04"
 	},
 	difficulties = {
 		"hardest"
@@ -7737,7 +8224,7 @@ ItemMasterList.deed_3011 = {
 }
 ItemMasterList.deed_3012 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -7765,7 +8252,7 @@ ItemMasterList.deed_3012 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -7773,7 +8260,7 @@ ItemMasterList.deed_3012 = {
 }
 ItemMasterList.deed_3013 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -7801,7 +8288,7 @@ ItemMasterList.deed_3013 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -7809,7 +8296,7 @@ ItemMasterList.deed_3013 = {
 }
 ItemMasterList.deed_3014 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -7837,7 +8324,7 @@ ItemMasterList.deed_3014 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -7845,7 +8332,7 @@ ItemMasterList.deed_3014 = {
 }
 ItemMasterList.deed_3015 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -7873,7 +8360,7 @@ ItemMasterList.deed_3015 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -7881,7 +8368,7 @@ ItemMasterList.deed_3015 = {
 }
 ItemMasterList.deed_3016 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -7909,7 +8396,7 @@ ItemMasterList.deed_3016 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -7917,7 +8404,7 @@ ItemMasterList.deed_3016 = {
 }
 ItemMasterList.deed_3017 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -7945,7 +8432,7 @@ ItemMasterList.deed_3017 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -7953,7 +8440,7 @@ ItemMasterList.deed_3017 = {
 }
 ItemMasterList.deed_3018 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -7981,7 +8468,7 @@ ItemMasterList.deed_3018 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -7989,7 +8476,7 @@ ItemMasterList.deed_3018 = {
 }
 ItemMasterList.deed_3019 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8017,7 +8504,7 @@ ItemMasterList.deed_3019 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -8025,7 +8512,7 @@ ItemMasterList.deed_3019 = {
 }
 ItemMasterList.deed_3020 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8053,7 +8540,7 @@ ItemMasterList.deed_3020 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -8061,7 +8548,7 @@ ItemMasterList.deed_3020 = {
 }
 ItemMasterList.deed_3021 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8089,7 +8576,7 @@ ItemMasterList.deed_3021 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_04"
 	},
 	difficulties = {
 		"hardest"
@@ -8097,7 +8584,7 @@ ItemMasterList.deed_3021 = {
 }
 ItemMasterList.deed_3022 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8125,7 +8612,7 @@ ItemMasterList.deed_3022 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -8133,7 +8620,7 @@ ItemMasterList.deed_3022 = {
 }
 ItemMasterList.deed_3023 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8161,7 +8648,7 @@ ItemMasterList.deed_3023 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_04"
 	},
 	difficulties = {
 		"hardest"
@@ -8169,7 +8656,7 @@ ItemMasterList.deed_3023 = {
 }
 ItemMasterList.deed_3024 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8197,7 +8684,7 @@ ItemMasterList.deed_3024 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_04"
 	},
 	difficulties = {
 		"hardest"
@@ -8205,7 +8692,7 @@ ItemMasterList.deed_3024 = {
 }
 ItemMasterList.deed_3025 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8241,7 +8728,7 @@ ItemMasterList.deed_3025 = {
 }
 ItemMasterList.deed_3026 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8269,7 +8756,7 @@ ItemMasterList.deed_3026 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_04"
 	},
 	difficulties = {
 		"hardest"
@@ -8277,7 +8764,7 @@ ItemMasterList.deed_3026 = {
 }
 ItemMasterList.deed_3027 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8305,7 +8792,7 @@ ItemMasterList.deed_3027 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_04"
 	},
 	difficulties = {
 		"hardest"
@@ -8313,7 +8800,7 @@ ItemMasterList.deed_3027 = {
 }
 ItemMasterList.deed_3028 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8341,7 +8828,7 @@ ItemMasterList.deed_3028 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -8349,7 +8836,7 @@ ItemMasterList.deed_3028 = {
 }
 ItemMasterList.deed_3029 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8377,7 +8864,7 @@ ItemMasterList.deed_3029 = {
 		"specials_frequency"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -8385,7 +8872,7 @@ ItemMasterList.deed_3029 = {
 }
 ItemMasterList.deed_3030 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8413,7 +8900,7 @@ ItemMasterList.deed_3030 = {
 		"no_pickups"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -8421,7 +8908,7 @@ ItemMasterList.deed_3030 = {
 }
 ItemMasterList.deed_3031 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8449,7 +8936,7 @@ ItemMasterList.deed_3031 = {
 		"player_dot"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -8457,7 +8944,7 @@ ItemMasterList.deed_3031 = {
 }
 ItemMasterList.deed_3032 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8485,7 +8972,7 @@ ItemMasterList.deed_3032 = {
 		"instant_death"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -8493,7 +8980,7 @@ ItemMasterList.deed_3032 = {
 }
 ItemMasterList.deed_3033 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8521,7 +9008,7 @@ ItemMasterList.deed_3033 = {
 		"no_respawn"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_05"
 	},
 	difficulties = {
 		"hardest"
@@ -8529,7 +9016,7 @@ ItemMasterList.deed_3033 = {
 }
 ItemMasterList.deed_3034 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "rare",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_02",
 	slot_type = "deed",
@@ -8557,7 +9044,7 @@ ItemMasterList.deed_3034 = {
 		"elite_run"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -8565,7 +9052,7 @@ ItemMasterList.deed_3034 = {
 }
 ItemMasterList.deed_3035 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -8594,7 +9081,8 @@ ItemMasterList.deed_3035 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06",
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -8602,7 +9090,7 @@ ItemMasterList.deed_3035 = {
 }
 ItemMasterList.deed_3036 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -8631,7 +9119,8 @@ ItemMasterList.deed_3036 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06",
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -8639,7 +9128,7 @@ ItemMasterList.deed_3036 = {
 }
 ItemMasterList.deed_3037 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -8668,7 +9157,7 @@ ItemMasterList.deed_3037 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -8676,7 +9165,7 @@ ItemMasterList.deed_3037 = {
 }
 ItemMasterList.deed_3038 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -8705,7 +9194,7 @@ ItemMasterList.deed_3038 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -8713,7 +9202,7 @@ ItemMasterList.deed_3038 = {
 }
 ItemMasterList.deed_3039 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -8742,7 +9231,7 @@ ItemMasterList.deed_3039 = {
 		"powerful_elites"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -8750,7 +9239,7 @@ ItemMasterList.deed_3039 = {
 }
 ItemMasterList.deed_3040 = {
 	description = "description_deed_generic",
-	rarity = "promo",
+	rarity = "exotic",
 	display_name = "display_name_deed_generic",
 	inventory_icon = "icon_deed_hard_03",
 	slot_type = "deed",
@@ -8779,7 +9268,7 @@ ItemMasterList.deed_3040 = {
 		"hordes_galore"
 	},
 	rewards = {
-		"loot_chest_04_03"
+		"loot_chest_04_06"
 	},
 	difficulties = {
 		"hardest"
@@ -8820,21 +9309,22 @@ ItemMasterList.level_chest = {
 	}
 }
 ItemMasterList.loot_chest_01_01 = {
-	description = "normal_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_normal_01",
 	rarity_key = "tier_1",
-	inventory_icon = "icon_loot_chest_d1_t1",
-	slot_type = "loot_chest",
 	power_level_key = "category_1",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "normal_deeds",
 	chest_category = "normal",
-	chest_sort_order = 1,
+	can_stack = true,
 	chest_tier = 1,
+	description = "normal_chest_description",
+	temporary_template = "",
+	chest_sort_order = 1,
+	inventory_icon = "icon_loot_chest_d1_t1",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -8854,21 +9344,22 @@ ItemMasterList.loot_chest_01_01 = {
 	}
 }
 ItemMasterList.loot_chest_01_02 = {
-	description = "normal_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_normal_02",
 	rarity_key = "tier_2",
-	inventory_icon = "icon_loot_chest_d1_t2",
-	slot_type = "loot_chest",
 	power_level_key = "category_2",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "normal_deeds",
 	chest_category = "normal",
-	chest_sort_order = 1,
+	can_stack = true,
 	chest_tier = 2,
+	description = "normal_chest_description",
+	temporary_template = "",
+	chest_sort_order = 1,
+	inventory_icon = "icon_loot_chest_d1_t2",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -8888,21 +9379,22 @@ ItemMasterList.loot_chest_01_02 = {
 	}
 }
 ItemMasterList.loot_chest_01_03 = {
-	description = "normal_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_normal_03",
 	rarity_key = "tier_3",
-	inventory_icon = "icon_loot_chest_d1_t3",
-	slot_type = "loot_chest",
 	power_level_key = "category_3",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "normal_deeds",
 	chest_category = "normal",
-	chest_sort_order = 1,
+	can_stack = true,
 	chest_tier = 3,
+	description = "normal_chest_description",
+	temporary_template = "",
+	chest_sort_order = 1,
+	inventory_icon = "icon_loot_chest_d1_t3",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -8922,21 +9414,22 @@ ItemMasterList.loot_chest_01_03 = {
 	}
 }
 ItemMasterList.loot_chest_01_04 = {
-	description = "normal_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_normal_04",
 	rarity_key = "tier_4",
-	inventory_icon = "icon_loot_chest_d1_t4",
-	slot_type = "loot_chest",
 	power_level_key = "category_4",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "normal_deeds",
 	chest_category = "normal",
-	chest_sort_order = 1,
+	can_stack = true,
 	chest_tier = 4,
+	description = "normal_chest_description",
+	temporary_template = "",
+	chest_sort_order = 1,
+	inventory_icon = "icon_loot_chest_d1_t4",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -8956,21 +9449,22 @@ ItemMasterList.loot_chest_01_04 = {
 	}
 }
 ItemMasterList.loot_chest_01_05 = {
-	description = "normal_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_normal_05",
 	rarity_key = "tier_5",
-	inventory_icon = "icon_loot_chest_d1_t5",
-	slot_type = "loot_chest",
 	power_level_key = "category_5",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "normal_deeds",
 	chest_category = "normal",
-	chest_sort_order = 1,
+	can_stack = true,
 	chest_tier = 5,
+	description = "normal_chest_description",
+	temporary_template = "",
+	chest_sort_order = 1,
+	inventory_icon = "icon_loot_chest_d1_t5",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -8990,21 +9484,22 @@ ItemMasterList.loot_chest_01_05 = {
 	}
 }
 ItemMasterList.loot_chest_01_06 = {
-	description = "normal_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_normal_06",
 	rarity_key = "tier_6",
-	inventory_icon = "icon_loot_chest_d1_t6",
-	slot_type = "loot_chest",
 	power_level_key = "category_6",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "normal_deeds",
 	chest_category = "normal",
-	chest_sort_order = 1,
+	can_stack = true,
 	chest_tier = 6,
+	description = "normal_chest_description",
+	temporary_template = "",
+	chest_sort_order = 1,
+	inventory_icon = "icon_loot_chest_d1_t6",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9024,21 +9519,22 @@ ItemMasterList.loot_chest_01_06 = {
 	}
 }
 ItemMasterList.loot_chest_02_01 = {
-	description = "hard_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_hard_01",
 	rarity_key = "tier_1",
-	inventory_icon = "icon_loot_chest_d2_t1",
-	slot_type = "loot_chest",
 	power_level_key = "category_7",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "hard_deeds",
 	chest_category = "hard",
-	chest_sort_order = 2,
+	can_stack = true,
 	chest_tier = 1,
+	description = "hard_chest_description",
+	temporary_template = "",
+	chest_sort_order = 2,
+	inventory_icon = "icon_loot_chest_d2_t1",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9058,21 +9554,22 @@ ItemMasterList.loot_chest_02_01 = {
 	}
 }
 ItemMasterList.loot_chest_02_02 = {
-	description = "hard_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_hard_02",
 	rarity_key = "tier_2",
-	inventory_icon = "icon_loot_chest_d2_t2",
-	slot_type = "loot_chest",
 	power_level_key = "category_8",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "hard_deeds",
 	chest_category = "hard",
-	chest_sort_order = 2,
+	can_stack = true,
 	chest_tier = 2,
+	description = "hard_chest_description",
+	temporary_template = "",
+	chest_sort_order = 2,
+	inventory_icon = "icon_loot_chest_d2_t2",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9092,21 +9589,22 @@ ItemMasterList.loot_chest_02_02 = {
 	}
 }
 ItemMasterList.loot_chest_02_03 = {
-	description = "hard_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_hard_03",
 	rarity_key = "tier_3",
-	inventory_icon = "icon_loot_chest_d2_t3",
-	slot_type = "loot_chest",
 	power_level_key = "category_9",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "hard_deeds",
 	chest_category = "hard",
-	chest_sort_order = 2,
+	can_stack = true,
 	chest_tier = 3,
+	description = "hard_chest_description",
+	temporary_template = "",
+	chest_sort_order = 2,
+	inventory_icon = "icon_loot_chest_d2_t3",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9126,21 +9624,22 @@ ItemMasterList.loot_chest_02_03 = {
 	}
 }
 ItemMasterList.loot_chest_02_04 = {
-	description = "hard_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_hard_04",
 	rarity_key = "tier_4",
-	inventory_icon = "icon_loot_chest_d2_t4",
-	slot_type = "loot_chest",
 	power_level_key = "category_10",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "hard_deeds",
 	chest_category = "hard",
-	chest_sort_order = 2,
+	can_stack = true,
 	chest_tier = 4,
+	description = "hard_chest_description",
+	temporary_template = "",
+	chest_sort_order = 2,
+	inventory_icon = "icon_loot_chest_d2_t4",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9160,21 +9659,22 @@ ItemMasterList.loot_chest_02_04 = {
 	}
 }
 ItemMasterList.loot_chest_02_05 = {
-	description = "hard_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_hard_05",
 	rarity_key = "tier_5",
-	inventory_icon = "icon_loot_chest_d2_t5",
-	slot_type = "loot_chest",
 	power_level_key = "category_11",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "hard_deeds",
 	chest_category = "hard",
-	chest_sort_order = 2,
+	can_stack = true,
 	chest_tier = 5,
+	description = "hard_chest_description",
+	temporary_template = "",
+	chest_sort_order = 2,
+	inventory_icon = "icon_loot_chest_d2_t5",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9194,21 +9694,22 @@ ItemMasterList.loot_chest_02_05 = {
 	}
 }
 ItemMasterList.loot_chest_02_06 = {
-	description = "hard_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_hard_06",
 	rarity_key = "tier_6",
-	inventory_icon = "icon_loot_chest_d2_t6",
-	slot_type = "loot_chest",
 	power_level_key = "category_12",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "hard_deeds",
 	chest_category = "hard",
-	chest_sort_order = 2,
+	can_stack = true,
 	chest_tier = 6,
+	description = "hard_chest_description",
+	temporary_template = "",
+	chest_sort_order = 2,
+	inventory_icon = "icon_loot_chest_d2_t6",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9228,21 +9729,22 @@ ItemMasterList.loot_chest_02_06 = {
 	}
 }
 ItemMasterList.loot_chest_03_01 = {
-	description = "nightmare_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_nightmare_01",
 	rarity_key = "tier_1",
-	inventory_icon = "icon_loot_chest_d3_t1",
-	slot_type = "loot_chest",
 	power_level_key = "category_13",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "nightmare_deeds",
 	chest_category = "harder",
-	chest_sort_order = 3,
+	can_stack = true,
 	chest_tier = 1,
+	description = "nightmare_chest_description",
+	temporary_template = "",
+	chest_sort_order = 3,
+	inventory_icon = "icon_loot_chest_d3_t1",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9262,21 +9764,22 @@ ItemMasterList.loot_chest_03_01 = {
 	}
 }
 ItemMasterList.loot_chest_03_02 = {
-	description = "nightmare_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_nightmare_02",
 	rarity_key = "tier_2",
-	inventory_icon = "icon_loot_chest_d3_t2",
-	slot_type = "loot_chest",
 	power_level_key = "category_14",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "nightmare_deeds",
 	chest_category = "harder",
-	chest_sort_order = 3,
+	can_stack = true,
 	chest_tier = 2,
+	description = "nightmare_chest_description",
+	temporary_template = "",
+	chest_sort_order = 3,
+	inventory_icon = "icon_loot_chest_d3_t2",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9296,21 +9799,22 @@ ItemMasterList.loot_chest_03_02 = {
 	}
 }
 ItemMasterList.loot_chest_03_03 = {
-	description = "nightmare_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_nightmare_03",
 	rarity_key = "tier_3",
-	inventory_icon = "icon_loot_chest_d3_t3",
-	slot_type = "loot_chest",
 	power_level_key = "category_15",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "nightmare_deeds",
 	chest_category = "harder",
-	chest_sort_order = 3,
+	can_stack = true,
 	chest_tier = 3,
+	description = "nightmare_chest_description",
+	temporary_template = "",
+	chest_sort_order = 3,
+	inventory_icon = "icon_loot_chest_d3_t3",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9330,21 +9834,22 @@ ItemMasterList.loot_chest_03_03 = {
 	}
 }
 ItemMasterList.loot_chest_03_04 = {
-	description = "nightmare_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_nightmare_04",
 	rarity_key = "tier_4",
-	inventory_icon = "icon_loot_chest_d3_t4",
-	slot_type = "loot_chest",
 	power_level_key = "category_16",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "nightmare_deeds",
 	chest_category = "harder",
-	chest_sort_order = 3,
+	can_stack = true,
 	chest_tier = 4,
+	description = "nightmare_chest_description",
+	temporary_template = "",
+	chest_sort_order = 3,
+	inventory_icon = "icon_loot_chest_d3_t4",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9364,21 +9869,22 @@ ItemMasterList.loot_chest_03_04 = {
 	}
 }
 ItemMasterList.loot_chest_03_05 = {
-	description = "nightmare_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_nightmare_05",
 	rarity_key = "tier_5_nightmare",
-	inventory_icon = "icon_loot_chest_d3_t5",
-	slot_type = "loot_chest",
 	power_level_key = "category_17",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "nightmare_deeds",
 	chest_category = "harder",
-	chest_sort_order = 3,
+	can_stack = true,
 	chest_tier = 5,
+	description = "nightmare_chest_description",
+	temporary_template = "",
+	chest_sort_order = 3,
+	inventory_icon = "icon_loot_chest_d3_t5",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9398,21 +9904,22 @@ ItemMasterList.loot_chest_03_05 = {
 	}
 }
 ItemMasterList.loot_chest_03_06 = {
-	description = "nightmare_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_nightmare_06",
 	rarity_key = "tier_6_nightmare",
-	inventory_icon = "icon_loot_chest_d3_t6",
-	slot_type = "loot_chest",
 	power_level_key = "category_18",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "nightmare_deeds",
 	chest_category = "harder",
-	chest_sort_order = 3,
+	can_stack = true,
 	chest_tier = 6,
+	description = "nightmare_chest_description",
+	temporary_template = "",
+	chest_sort_order = 3,
+	inventory_icon = "icon_loot_chest_d3_t6",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9432,21 +9939,22 @@ ItemMasterList.loot_chest_03_06 = {
 	}
 }
 ItemMasterList.loot_chest_04_01 = {
-	description = "cataclysm_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_cataclysm_01",
 	rarity_key = "tier_1_cata",
-	inventory_icon = "icon_loot_chest_d4_t1",
-	slot_type = "loot_chest",
 	power_level_key = "category_19",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "cataclysm_deeds",
 	chest_category = "hardest",
-	chest_sort_order = 4,
+	can_stack = true,
 	chest_tier = 1,
+	description = "cataclysm_chest_description",
+	temporary_template = "",
+	chest_sort_order = 4,
+	inventory_icon = "icon_loot_chest_d4_t1",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9466,21 +9974,22 @@ ItemMasterList.loot_chest_04_01 = {
 	}
 }
 ItemMasterList.loot_chest_04_02 = {
-	description = "cataclysm_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_cataclysm_02",
 	rarity_key = "tier_2_cata",
-	inventory_icon = "icon_loot_chest_d4_t2",
-	slot_type = "loot_chest",
 	power_level_key = "category_20",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "cataclysm_deeds",
 	chest_category = "hardest",
-	chest_sort_order = 4,
+	can_stack = true,
 	chest_tier = 2,
+	description = "cataclysm_chest_description",
+	temporary_template = "",
+	chest_sort_order = 4,
+	inventory_icon = "icon_loot_chest_d4_t2",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9500,21 +10009,22 @@ ItemMasterList.loot_chest_04_02 = {
 	}
 }
 ItemMasterList.loot_chest_04_03 = {
-	description = "cataclysm_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_cataclysm_03",
 	rarity_key = "tier_3_cata",
-	inventory_icon = "icon_loot_chest_d4_t3",
-	slot_type = "loot_chest",
 	power_level_key = "category_21",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "cataclysm_deeds",
 	chest_category = "hardest",
-	chest_sort_order = 4,
+	can_stack = true,
 	chest_tier = 3,
+	description = "cataclysm_chest_description",
+	temporary_template = "",
+	chest_sort_order = 4,
+	inventory_icon = "icon_loot_chest_d4_t3",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9534,21 +10044,22 @@ ItemMasterList.loot_chest_04_03 = {
 	}
 }
 ItemMasterList.loot_chest_04_04 = {
-	description = "cataclysm_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_cataclysm_04",
 	rarity_key = "tier_4_cata",
-	inventory_icon = "icon_loot_chest_d4_t4",
-	slot_type = "loot_chest",
 	power_level_key = "category_22",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "cataclysm_deeds",
 	chest_category = "hardest",
-	chest_sort_order = 4,
+	can_stack = true,
 	chest_tier = 4,
+	description = "cataclysm_chest_description",
+	temporary_template = "",
+	chest_sort_order = 4,
+	inventory_icon = "icon_loot_chest_d4_t4",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9568,21 +10079,22 @@ ItemMasterList.loot_chest_04_04 = {
 	}
 }
 ItemMasterList.loot_chest_04_05 = {
-	description = "cataclysm_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_cataclysm_05",
 	rarity_key = "tier_5_cata",
-	inventory_icon = "icon_loot_chest_d4_t5",
-	slot_type = "loot_chest",
 	power_level_key = "category_23",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "cataclysm_deeds",
 	chest_category = "hardest",
-	chest_sort_order = 4,
+	can_stack = true,
 	chest_tier = 5,
+	description = "cataclysm_chest_description",
+	temporary_template = "",
+	chest_sort_order = 4,
+	inventory_icon = "icon_loot_chest_d4_t5",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9602,21 +10114,22 @@ ItemMasterList.loot_chest_04_05 = {
 	}
 }
 ItemMasterList.loot_chest_04_06 = {
-	description = "cataclysm_chest_description",
-	rarity = "plentiful",
+	item_type = "loot_chest",
+	content_key = "standard_loot_chest",
 	display_name = "display_name_loot_chest_cataclysm_06",
 	rarity_key = "tier_6_cata",
-	inventory_icon = "icon_loot_chest_d4_t6",
-	slot_type = "loot_chest",
 	power_level_key = "category_24",
-	temporary_template = "",
-	content_key = "standard_loot_chest",
-	can_stack = true,
-	display_unit = "chest_1",
-	item_type = "loot_chest",
+	slot_type = "loot_chest",
+	rarity = "plentiful",
+	deed_key = "cataclysm_deeds",
 	chest_category = "hardest",
-	chest_sort_order = 4,
+	can_stack = true,
 	chest_tier = 6,
+	description = "cataclysm_chest_description",
+	temporary_template = "",
+	chest_sort_order = 4,
+	inventory_icon = "icon_loot_chest_d4_t6",
+	display_unit = "chest_1",
 	can_wield = {
 		"bw_scholar",
 		"bw_adept",
@@ -9689,7 +10202,7 @@ ItemMasterList.wh_crossbow_skin = {
 		"wh_captain"
 	}
 }
-ItemMasterList.wh_1h_flail_skin = {
+ItemMasterList.es_1h_flail_skin = {
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	rarity = "plentiful",
@@ -9721,7 +10234,7 @@ ItemMasterList.wh_1h_falchion_skin = {
 		"wh_captain"
 	}
 }
-ItemMasterList.wh_2h_swords_skin = {
+ItemMasterList.wh_2h_sword_skin = {
 	right_hand_unit = "units/weapons/player/wpn_empire_2h_sword_02_t1/wpn_empire_2h_sword_02_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9732,7 +10245,7 @@ ItemMasterList.wh_2h_swords_skin = {
 		"wh_captain"
 	}
 }
-ItemMasterList.wh_repeating_pistol_skin = {
+ItemMasterList.wh_repeating_pistols_skin = {
 	right_hand_unit = "units/weapons/player/wpn_empire_pistol_repeater/wpn_empire_pistol_repeater_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9754,7 +10267,7 @@ ItemMasterList.wh_fencing_sword_skin = {
 		"wh_captain"
 	}
 }
-ItemMasterList.wh_repeating_crossbow_skin = {
+ItemMasterList.wh_crossbow_repeater_skin = {
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	rarity = "plentiful",
@@ -9775,8 +10288,52 @@ ItemMasterList.bw_dagger_skin = {
 		"bw_scholar"
 	}
 }
-ItemMasterList.bw_flamethrower_staff_skin = {
+ItemMasterList.bw_skullstaff_flamethrower_skin = {
 	right_hand_unit = "units/weapons/player/wpn_brw_flame_staff_01/wpn_brw_flame_staff_01",
+	rarity = "plentiful",
+	item_type = "weapon_skin",
+	slot_type = "weapon_skin",
+	can_wield = {
+		"bw_unchained",
+		"bw_adept",
+		"bw_scholar"
+	}
+}
+ItemMasterList.bw_skullstaff_spear_skin = {
+	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
+	rarity = "plentiful",
+	item_type = "weapon_skin",
+	slot_type = "weapon_skin",
+	can_wield = {
+		"bw_unchained",
+		"bw_adept",
+		"bw_scholar"
+	}
+}
+ItemMasterList.bw_skullstaff_beam_skin = {
+	right_hand_unit = "units/weapons/player/wpn_brw_beam_staff_01/wpn_brw_beam_staff_01",
+	rarity = "plentiful",
+	item_type = "weapon_skin",
+	slot_type = "weapon_skin",
+	can_wield = {
+		"bw_unchained",
+		"bw_adept",
+		"bw_scholar"
+	}
+}
+ItemMasterList.bw_skullstaff_geiser_skin = {
+	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
+	rarity = "plentiful",
+	item_type = "weapon_skin",
+	slot_type = "weapon_skin",
+	can_wield = {
+		"bw_unchained",
+		"bw_adept",
+		"bw_scholar"
+	}
+}
+ItemMasterList.bw_skullstaff_fireball_skin = {
+	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
@@ -9797,18 +10354,7 @@ ItemMasterList.bw_1h_mace_skin = {
 		"bw_scholar"
 	}
 }
-ItemMasterList.bw_spear_staff_skin = {
-	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_01/wpn_brw_spear_staff_01",
-	rarity = "plentiful",
-	item_type = "weapon_skin",
-	slot_type = "weapon_skin",
-	can_wield = {
-		"bw_unchained",
-		"bw_adept",
-		"bw_scholar"
-	}
-}
-ItemMasterList.bw_1h_sword_skin = {
+ItemMasterList.bw_sword_skin = {
 	right_hand_unit = "units/weapons/player/wpn_brw_sword_01_t1/wpn_brw_sword_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9819,7 +10365,7 @@ ItemMasterList.bw_1h_sword_skin = {
 		"bw_scholar"
 	}
 }
-ItemMasterList.bw_1h_flaming_sword_skin = {
+ItemMasterList.bw_flame_sword_skin = {
 	right_hand_unit = "units/weapons/player/wpn_brw_sword_01_t1/wpn_brw_flaming_sword_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9830,7 +10376,7 @@ ItemMasterList.bw_1h_flaming_sword_skin = {
 		"bw_scholar"
 	}
 }
-ItemMasterList.dw_2h_axe_skin = {
+ItemMasterList.dr_2h_axe_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_2h_axe_01_t1/wpn_dw_2h_axe_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9841,7 +10387,7 @@ ItemMasterList.dw_2h_axe_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_2h_hammer_skin = {
+ItemMasterList.dr_2h_hammer_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_2h_hammer_01_t1/wpn_dw_2h_hammer_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9852,7 +10398,7 @@ ItemMasterList.dw_2h_hammer_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_1h_axe_skin = {
+ItemMasterList.dr_1h_axe_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9863,7 +10409,7 @@ ItemMasterList.dw_1h_axe_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_dual_axe_skin = {
+ItemMasterList.dr_dual_wield_axes_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9874,7 +10420,7 @@ ItemMasterList.dw_dual_axe_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_1h_axe_shield_skin = {
+ItemMasterList.dr_shield_axe_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_axe_01_t1/wpn_dw_axe_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9885,7 +10431,7 @@ ItemMasterList.dw_1h_axe_shield_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_drake_pistol_skin = {
+ItemMasterList.dr_drake_pistol_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_drake_pistol_01_t1/wpn_dw_drake_pistol_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9896,7 +10442,7 @@ ItemMasterList.dw_drake_pistol_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_1h_hammer_skin = {
+ItemMasterList.dr_1h_hammer_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_hammer_01_t1/wpn_dw_hammer_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9907,7 +10453,7 @@ ItemMasterList.dw_1h_hammer_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_1h_hammer_shield_skin = {
+ItemMasterList.dr_shield_hammer_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_hammer_01_t1/wpn_dw_hammer_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9918,7 +10464,7 @@ ItemMasterList.dw_1h_hammer_shield_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_handgun_skin = {
+ItemMasterList.dr_handgun_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_handgun_01_t1/wpn_dw_handgun_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9929,7 +10475,7 @@ ItemMasterList.dw_handgun_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_drakegun_skin = {
+ItemMasterList.dr_drakegun_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_iron_drake_01/wpn_dw_iron_drake_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9940,7 +10486,7 @@ ItemMasterList.dw_drakegun_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_2h_pick_skin = {
+ItemMasterList.dr_2h_pick_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_pick_01_t1/wpn_dw_pick_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9951,7 +10497,7 @@ ItemMasterList.dw_2h_pick_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_grudge_raker_skin = {
+ItemMasterList.dr_rakegun_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_rakegun_t1/wpn_dw_rakegun_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9962,7 +10508,7 @@ ItemMasterList.dw_grudge_raker_skin = {
 		"dr_ranger"
 	}
 }
-ItemMasterList.dw_crossbow_skin = {
+ItemMasterList.dr_crossbow_skin = {
 	right_hand_unit = "units/weapons/player/wpn_dw_xbox_01_t1/wpn_dw_xbox_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -9995,7 +10541,7 @@ ItemMasterList.es_1h_mace_skin = {
 		"es_huntsman"
 	}
 }
-ItemMasterList.es_1h_mace_shield_skin = {
+ItemMasterList.es_mace_shield_skin = {
 	right_hand_unit = "units/weapons/player/wpn_emp_mace_02_t1/wpn_emp_mace_02_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -10017,7 +10563,7 @@ ItemMasterList.es_1h_sword_skin = {
 		"es_huntsman"
 	}
 }
-ItemMasterList.es_1h_sword_shield_skin = {
+ItemMasterList.es_sword_shield_skin = {
 	right_hand_unit = "units/weapons/player/wpn_emp_sword_02_t1/wpn_emp_sword_02_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -10028,7 +10574,7 @@ ItemMasterList.es_1h_sword_shield_skin = {
 		"es_huntsman"
 	}
 }
-ItemMasterList.es_2h_sword_exe_skin = {
+ItemMasterList.es_2h_sword_executioner_skin = {
 	right_hand_unit = "units/weapons/player/wpn_emp_sword_exe_01_t1/wpn_emp_sword_exe_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -10127,7 +10673,7 @@ ItemMasterList.we_2h_sword_skin = {
 		"we_shade"
 	}
 }
-ItemMasterList.we_crossbow_skin = {
+ItemMasterList.we_crossbow_repeater_skin = {
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	rarity = "plentiful",
@@ -10157,7 +10703,7 @@ ItemMasterList.we_shortbow_skin = {
 		"we_shade"
 	}
 }
-ItemMasterList.we_hagbane_skin = {
+ItemMasterList.we_shortbow_hagbane_skin = {
 	item_type = "weapon_skin",
 	slot_type = "weapon_skin",
 	rarity = "plentiful",
@@ -10167,7 +10713,7 @@ ItemMasterList.we_hagbane_skin = {
 		"we_shade"
 	}
 }
-ItemMasterList.we_dual_dagger_skin = {
+ItemMasterList.we_dual_wield_daggers_skin = {
 	right_hand_unit = "units/weapons/player/wpn_we_dagger_01_t1/wpn_we_dagger_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -10178,7 +10724,7 @@ ItemMasterList.we_dual_dagger_skin = {
 		"we_shade"
 	}
 }
-ItemMasterList.we_dual_sword_skin = {
+ItemMasterList.we_dual_wield_swords_skin = {
 	right_hand_unit = "units/weapons/player/wpn_we_sword_01_t1/wpn_we_sword_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -10189,7 +10735,7 @@ ItemMasterList.we_dual_sword_skin = {
 		"we_shade"
 	}
 }
-ItemMasterList.we_sword_skin = {
+ItemMasterList.we_1h_sword_skin = {
 	right_hand_unit = "units/weapons/player/wpn_we_sword_01_t1/wpn_we_sword_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",
@@ -10200,7 +10746,7 @@ ItemMasterList.we_sword_skin = {
 		"we_shade"
 	}
 }
-ItemMasterList.we_dual_sword_dagger_skin = {
+ItemMasterList.we_dual_wield_sword_dagger_skin = {
 	right_hand_unit = "units/weapons/player/wpn_we_dagger_01_t1/wpn_we_dagger_01_t1",
 	rarity = "plentiful",
 	item_type = "weapon_skin",

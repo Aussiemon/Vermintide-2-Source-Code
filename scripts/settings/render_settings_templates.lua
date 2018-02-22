@@ -62,8 +62,8 @@ AmbientLightQuality = {
 		reflection_probes_enabled = false
 	},
 	medium = {
-		radiance_probes_enabled = true,
-		reflection_probes_enabled = false
+		radiance_probes_enabled = false,
+		reflection_probes_enabled = true
 	},
 	high = {
 		radiance_probes_enabled = true,

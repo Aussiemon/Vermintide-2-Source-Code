@@ -9,6 +9,10 @@ XboxEventManager.init = function (self)
 	return 
 end
 XboxEventManager.write = function (self, event, event_data, debug_string, debug_print_func, prioritize, skip_wait_time)
+	Application.warning("[XboxEventManager:write] No Stats are implemented yet")
+
+	return 
+
 	Application.error(string.format("Adding%sEvent: %s", (prioritize and " prioritized ") or " ", event))
 
 	if skip_wait_time then
@@ -37,8 +41,6 @@ XboxEventManager.write = function (self, event, event_data, debug_string, debug_
 	return 
 end
 XboxEventManager.update = function (self, dt)
-	return 
-
 	local priority_event = self._priority_events_queue[1]
 
 	if not priority_event and 0 < self._timer then
@@ -108,6 +110,10 @@ XboxEventManager._handle_immediate_event = function (self)
 	return 
 end
 XboxEventManager.flush = function (self)
+	Application.warning("[XboxEventManager:flush] No Stats are implemented yet")
+
+	return 
+
 	for _, current_priority_event in pairs(self._priority_events_queue) do
 		Application.error(string.format("Writing Event: %s", current_priority_event.event))
 		Events.write(current_priority_event.event, current_priority_event.event_data)

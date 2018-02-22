@@ -56,7 +56,7 @@ InputService.get = function (self, input_data_name, consume)
 		local mapped_devices = self.mapped_devices
 		local input_devices_data = self.input_devices_data
 		local name = self.name
-		local action_value = false
+		local action_value = nil
 		local n = keymap_binding.n
 
 		if n then
@@ -64,34 +64,37 @@ InputService.get = function (self, input_data_name, consume)
 				local device_type = keymap_binding[j]
 				local key_index = keymap_binding[j + 1]
 				local key_action_type = keymap_binding[j + 2]
-				local device_list = mapped_devices[device_type]
 
-				if device_list and device_list.n then
+				if key_index ~= UNASSIGNED_KEY then
+					local device_list = mapped_devices[device_type]
 
-					-- decompilation error in this vicinity
-					for k = 1, device_list.n, 1 do
-						local input_device = device_list[k]
-						local input_device_data = input_devices_data[input_device]
+					if device_list and device_list.n then
 
-						if input_device.active(input_device) and not input_device_data.blocked_access[name] then
-							action_value = action_value or input_device_data[key_action_type][key_index]
+						-- decompilation error in this vicinity
+						for k = 1, device_list.n, 1 do
+							local input_device = device_list[k]
+							local input_device_data = input_devices_data[input_device]
 
-							if action_value == true then
-								if input_device_data.consumed_input[key_index] then
-									action_value = nil
-								elseif consume then
-									input_device_data.consumed_input[key_index] = true
+							if input_device.active(input_device) and not input_device_data.blocked_access[name] then
+								action_value = action_value or input_device_data[key_action_type][key_index]
+
+								if action_value == true then
+									if input_device_data.consumed_input[key_index] then
+										action_value = nil
+									elseif consume then
+										input_device_data.consumed_input[key_index] = true
+									end
 								end
-							end
-						elseif input_device.active(input_device) then
-							action_value = nil
+							elseif input_device.active(input_device) then
+								action_value = nil
 
+								break
+							end
+						end
+
+						if not action_value then
 							break
 						end
-					end
-
-					if not action_value then
-						break
 					end
 				end
 			end

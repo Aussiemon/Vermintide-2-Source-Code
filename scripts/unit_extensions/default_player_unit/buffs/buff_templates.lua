@@ -258,6 +258,17 @@ ProcFunctions = {
 
 		return 
 	end,
+	heal_permanent = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) and Managers.player.is_server then
+			local heal_amount = buff.bonus
+
+			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "bandage")
+		end
+
+		return 
+	end,
 	heal_party = function (player, buff, params)
 		local player_unit = player.player_unit
 
@@ -553,10 +564,15 @@ ProcFunctions = {
 		return 
 	end,
 	victor_zealot_gain_invulnerability = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return 
+		end
+
+		local buff_system = Managers.state.entity:system("buff_system")
 		local player_unit = player.player_unit
 		local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
-		if Unit.alive(player_unit) and not status_extension.is_knocked_down(status_extension) and Managers.player.is_server then
+		if Unit.alive(player_unit) and not status_extension.is_knocked_down(status_extension) then
 			local health_extension = ScriptUnit.extension(player_unit, "health_system")
 			local damage = params[2]
 			local current_health = health_extension.current_health(health_extension)
@@ -565,14 +581,8 @@ ProcFunctions = {
 			if killing_blow then
 				local heal_amount = (current_health - damage)*-1 + 1
 
-				print(current_health)
-				print(damage)
-				print(heal_amount)
-
-				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-
-				buff_extension.add_buff(buff_extension, "victor_zealot_invulnerability_on_lethal_damage_taken")
-				buff_extension.add_buff(buff_extension, "victor_zealot_invulnerability_cooldown")
+				buff_system.add_buff(buff_system, player_unit, "victor_zealot_invulnerability_on_lethal_damage_taken", player_unit, true)
+				buff_system.add_buff(buff_system, player_unit, "victor_zealot_invulnerability_cooldown", player_unit, true)
 				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
 
 				return true
@@ -724,28 +734,29 @@ ProcFunctions = {
 
 			if result < drop_chance*100 then
 				local enemy_pos = POSITION_LOOKUP[killed_unit]
+				local raycast_down = true
 				local pickup_system = Managers.state.entity:system("pickup_system")
 
 				if talent_extension.has_talent(talent_extension, "bardin_ranger_passive_spawn_healing_draught", "dwarf_ranger", true) then
 					if 1 < math.random(1, 4) then
-						pickup_system.debug_spawn_pickup(pickup_system, "ammo_ranger", enemy_pos)
+						pickup_system.debug_spawn_pickup(pickup_system, "ammo_ranger", enemy_pos, raycast_down)
 					else
-						pickup_system.debug_spawn_pickup(pickup_system, "healing_draught", enemy_pos)
+						pickup_system.debug_spawn_pickup(pickup_system, "healing_draught", enemy_pos, raycast_down)
 					end
 				elseif talent_extension.has_talent(talent_extension, "bardin_ranger_passive_spawn_potions", "dwarf_ranger", true) then
 					local drop_result = math.random(1, 6)
 
 					if drop_result == 1 then
-						pickup_system.debug_spawn_pickup(pickup_system, "damage_boost_potion", enemy_pos)
+						pickup_system.debug_spawn_pickup(pickup_system, "damage_boost_potion", enemy_pos, raycast_down)
 					elseif drop_result == 2 then
-						pickup_system.debug_spawn_pickup(pickup_system, "speed_boost_potion", enemy_pos)
+						pickup_system.debug_spawn_pickup(pickup_system, "speed_boost_potion", enemy_pos, raycast_down)
 					else
-						pickup_system.debug_spawn_pickup(pickup_system, "ammo_ranger", enemy_pos)
+						pickup_system.debug_spawn_pickup(pickup_system, "ammo_ranger", enemy_pos, raycast_down)
 					end
 				elseif talent_extension.has_talent(talent_extension, "bardin_ranger_passive_improved_ammo") then
-					pickup_system.debug_spawn_pickup(pickup_system, "ammo_ranger_improved", enemy_pos)
+					pickup_system.debug_spawn_pickup(pickup_system, "ammo_ranger_improved", enemy_pos, raycast_down)
 				else
-					pickup_system.debug_spawn_pickup(pickup_system, "ammo_ranger", enemy_pos)
+					pickup_system.debug_spawn_pickup(pickup_system, "ammo_ranger", enemy_pos, raycast_down)
 				end
 			end
 		end
@@ -820,6 +831,41 @@ ProcFunctions = {
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
 			buff_extension.add_buff(buff_extension, buff_name)
+		end
+
+		return 
+	end,
+	add_bardin_slayer_passive_buff = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return 
+		end
+
+		local player_unit = player.player_unit
+		local buff_system = Managers.state.entity:system("buff_system")
+
+		if Unit.alive(player_unit) then
+			local buff_name = "bardin_slayer_passive_stacking_damage_buff"
+			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
+
+			if talent_extension.has_talent(talent_extension, "bardin_slayer_passive_stacking_damage_buff_increased_duration", "dwarf_ranger", true) then
+				buff_name = "bardin_slayer_passive_stacking_damage_buff_increased_duration"
+			end
+
+			if talent_extension.has_talent(talent_extension, "bardin_slayer_passive_stacking_damage_buff_grants_defence", "dwarf_ranger", true) then
+				buff_system.add_buff(buff_system, player_unit, "bardin_slayer_passive_stacking_defence_buff", player_unit, false)
+			end
+
+			buff_system.add_buff(buff_system, player_unit, buff_name, player_unit, false)
+
+			if talent_extension.has_talent(talent_extension, "bardin_slayer_passive_cooldown_reduction_on_max_stacks", "dwarf_ranger", true) then
+				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local num_stacks = buff_extension.num_buff_type(buff_extension, buff_name)
+				local max_stacks = buff.template.max_stacks
+
+				if num_stacks == max_stacks then
+					buff_system.add_buff(buff_system, player_unit, "bardin_slayer_passive_cooldown_reduction_on_max_stacks", player_unit, false)
+				end
+			end
 		end
 
 		return 
@@ -2677,7 +2723,7 @@ BuffTemplates = {
 				name = "regrowth",
 				event_buff = true,
 				event = "on_critical_hit",
-				bonus = 1,
+				bonus = 2,
 				buff_func = ProcFunctions.heal
 			}
 		}
@@ -2688,7 +2734,7 @@ BuffTemplates = {
 				name = "bloodlust",
 				event_buff = true,
 				event = "on_kill",
-				bonus = 1,
+				bonus = 4,
 				buff_func = ProcFunctions.heal
 			}
 		}
@@ -2696,11 +2742,11 @@ BuffTemplates = {
 	conqueror = {
 		buffs = {
 			{
-				name = "bloodlust",
+				name = "conqueror",
 				event_buff = true,
 				event = "on_boss_killed",
 				bonus = 30,
-				buff_func = ProcFunctions.heal
+				buff_func = ProcFunctions.heal_permanent
 			}
 		}
 	},
@@ -3647,6 +3693,7 @@ BuffTemplates = {
 			{
 				refresh_durations = true,
 				name = "stormfiend_warpfire_ground",
+				duration = 1,
 				remove_buff_func = "remove_moving_through_warpfire",
 				apply_buff_func = "apply_moving_through_warpfire",
 				time_between_dot_damages = 0.75,

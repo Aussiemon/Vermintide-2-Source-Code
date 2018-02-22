@@ -1243,6 +1243,14 @@ CameraEffectSettings = {
 			duration = 4.5,
 			fade_in = 7,
 			octaves = 8
+		},
+		catacombs_ball_blast = {
+			persistance = 1,
+			fade_out = 0.5,
+			amplitude = 0.9,
+			duration = 1,
+			fade_in = 0.5,
+			octaves = 5
 		}
 	}
 }

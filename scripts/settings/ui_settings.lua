@@ -252,7 +252,7 @@ UISettings = {
 		skaven_gutter_runner = "unit_frame_portrait_enemy_gutter_runner",
 		skaven_poison_wind_globadier = "unit_frame_portrait_enemy_poison_wind",
 		skaven_clan_rat_with_shield = "unit_frame_portrait_enemy_clanrat",
-		chaos_fanatic = "unit_frame_portrait_enemy_chaos_marauder",
+		chaos_fanatic = "unit_frame_portrait_enemy_fanatic",
 		skaven_slave = "unit_frame_portrait_enemy_clanrat",
 		skaven_ratling_gunner = "unit_frame_portrait_enemy_ratling_gunner",
 		chaos_vortex = "unit_frame_portrait_enemy_sorcerer_vortex",
@@ -265,17 +265,17 @@ UISettings = {
 		skaven_rat_ogre = "unit_frame_portrait_enemy_rat_ogre",
 		chaos_troll = "unit_frame_portrait_enemy_chaos_troll",
 		chaos_spawn = "unit_frame_portrait_enemy_chaos_spawn",
-		chaos_corruptor_sorcerer = "unit_frame_portrait_enemy_chaos_sorcerer",
+		chaos_corruptor_sorcerer = "unit_frame_portrait_enemy_sorcerer_corruptor",
 		chaos_vortex_sorcerer = "unit_frame_portrait_enemy_sorcerer_vortex",
 		skaven_storm_vermin = "unit_frame_portrait_enemy_stormvermin",
 		chaos_marauder = "unit_frame_portrait_enemy_chaos_marauder",
-		chaos_berzerker = "unit_frame_portrait_enemy_berserker",
+		chaos_berzerker = "unit_frame_portrait_enemy_savage",
 		skaven_warpfire_thrower = "unit_frame_portrait_enemy_warpfire",
 		chaos_marauder_with_shield = "unit_frame_portrait_enemy_chaos_marauder",
 		chaos_tentacle = "unit_frame_portrait_enemy_chaos_sorcerer",
 		skaven_loot_rat = "unit_frame_portrait_enemy_lootrat",
 		skaven_pack_master = "unit_frame_portrait_enemy_packmaster",
-		skaven_grey_seer = "unit_frame_portrait_enemy_clanrat",
+		skaven_grey_seer = "unit_frame_portrait_enemy_rasknitt",
 		chaos_warrior = "unit_frame_portrait_enemy_chaos_warrior",
 		skaven_storm_vermin_commander = "unit_frame_portrait_enemy_stormvermin",
 		skaven_storm_vermin_champion = "unit_frame_portrait_enemy_stormvermin"
@@ -360,6 +360,15 @@ UISettings = {
 		plentiful = "rarity_color_white",
 		rare = "rarity_color_blue",
 		unique = "rarity_color_red"
+	},
+	item_rarity_order = {
+		common = 5,
+		promo = 1,
+		exotic = 3,
+		default = 7,
+		plentiful = 6,
+		rare = 4,
+		unique = 2
 	}
 }
 local button_mapping = {
@@ -916,12 +925,14 @@ UISettings.get_gamepad_input_texture_data = function (input_service, input_actio
 	local key_index = keymap_binding[2]
 	local key_action_type = keymap_binding[3]
 
-	if device_type == "keyboard" then
-		button_name = Keyboard.button_locale_name(key_index)
-	elseif device_type == "mouse" then
-		button_name = Mouse.button_name(key_index)
-	elseif device_type == "gamepad" then
-		button_name = Pad1.button_name(key_index)
+	if key_index ~= UNASSIGNED_KEY then
+		if device_type == "keyboard" then
+			button_name = Keyboard.button_locale_name(key_index)
+		elseif device_type == "mouse" then
+			button_name = Mouse.button_name(key_index)
+		elseif device_type == "gamepad" then
+			button_name = Pad1.button_name(key_index)
+		end
 	end
 
 	button_texture_data = ButtonTextureByName(button_name, platform)

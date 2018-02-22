@@ -52,6 +52,7 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 		id = slot_name,
 		item_data = item_data,
 		item_template = item_template,
+		skin = item_units.skin,
 		right_unit_3p = right_hand_weapon_unit_3p,
 		right_ammo_unit_3p = right_hand_ammo_unit_3p,
 		right_unit_1p = right_hand_weapon_unit_1p,
@@ -364,8 +365,9 @@ GearUtils.hot_join_sync = function (sender, unit, equipment)
 			local slot_id = NetworkLookup.equipment_slots[slot_name]
 			local item_data = slot_data.item_data
 			local item_id = NetworkLookup.item_names[item_data.name]
+			local weapon_skin_id = NetworkLookup.weapon_skins[slot_data.skin or "n/a"]
 
-			RPC.rpc_add_equipment(sender, unit_object_id, slot_id, item_id)
+			RPC.rpc_add_equipment(sender, unit_object_id, slot_id, item_id, weapon_skin_id)
 		end
 	end
 

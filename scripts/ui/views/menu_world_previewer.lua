@@ -38,7 +38,7 @@ MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_cha
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.character_unit = nil
 	self._character_camera_positions = optional_camera_character_positions or camera_position_by_character
-	self.item_names = {}
+	self.item_info_by_slot = {}
 	self.equipment_units = {}
 	self._hidden_units = {}
 	local player_manager = Managers.player
@@ -537,21 +537,32 @@ MenuWorldPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale)
 end
 MenuWorldPreviewer.wield_weapon_slot = function (self, slot_type)
 	self._wielded_slot_type = slot_type
+	local melee_slot_info = self.item_info_by_slot.melee
 
-	if self.item_names.melee then
-		self.equip_item(self, self.item_names.melee, InventorySettings.slots_by_name.slot_melee)
+	if melee_slot_info then
+		local item_name = melee_slot_info.name
+		local backend_id = melee_slot_info.backend_id
+
+		self.equip_item(self, item_name, InventorySettings.slots_by_name.slot_melee, backend_id)
 	elseif slot_type == "melee" then
 	end
 
-	if self.item_names.ranged then
-		self.equip_item(self, self.item_names.ranged, InventorySettings.slots_by_name.slot_ranged)
+	local ranged_slot_info = self.item_info_by_slot.ranged
+
+	if ranged_slot_info then
+		local item_name = ranged_slot_info.name
+		local backend_id = ranged_slot_info.backend_id
+
+		self.equip_item(self, item_name, InventorySettings.slots_by_name.slot_ranged, backend_id)
 	elseif slot_type == "ranged" then
 	end
 
 	return 
 end
 MenuWorldPreviewer.item_name_by_slot_type = function (self, item_slot_type)
-	return self.item_names[item_slot_type]
+	local item_info = self.item_info_by_slot[item_slot_type]
+
+	return item_info and item_info.name
 end
 MenuWorldPreviewer.wielded_slot_type = function (self)
 	return self._wielded_slot_type
@@ -585,16 +596,16 @@ MenuWorldPreviewer.unequip_item_in_slot = function (self, item_slot_type, slot_i
 		end
 	end
 
-	self.item_names[item_slot_type] = nil
+	self.item_info_by_slot[item_slot_type] = nil
 
 	return 
 end
-MenuWorldPreviewer.equip_item = function (self, item_name, slot)
+MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
 	self.items_loaded = nil
 	local item_slot_type = slot.type
 	local slot_index = slot.slot_index
 	local item_data = ItemMasterList[item_name]
-	local item_units = BackendUtils.get_item_units(item_data)
+	local item_units = BackendUtils.get_item_units(item_data, backend_id)
 	local item_template = ItemHelper.get_template_by_item_name(item_name)
 	local units_to_spawn_data = {}
 	local package_names = {}
@@ -655,7 +666,10 @@ MenuWorldPreviewer.equip_item = function (self, item_name, slot)
 
 	if 0 < #package_names then
 		self.item_spawn_data[item_name] = units_to_spawn_data
-		self.item_names[item_slot_type] = item_name
+		self.item_info_by_slot[item_slot_type] = {
+			name = item_name,
+			backend_id = backend_id
+		}
 
 		self.load_item_packages(self, package_names, item_name)
 	end
@@ -753,13 +767,14 @@ MenuWorldPreviewer.on_item_load_complete = function (self, package_name, item_na
 	local loaded_packages = self.loaded_packages
 	loaded_packages[package_name] = true
 	self.packages_to_load[package_name] = nil
-	local item_names = self.item_names
+	local item_info_by_slot = self.item_info_by_slot
 	local spawn_data = self.item_spawn_data[item_name]
 
 	for _, unit_spawn_data in ipairs(spawn_data) do
 		local item_slot_type = unit_spawn_data.item_slot_type
+		local item_info = item_info_by_slot[item_slot_type]
 
-		if item_names[item_slot_type] ~= item_name then
+		if not item_info or item_info.name ~= item_name then
 			return 
 		end
 
@@ -915,7 +930,7 @@ MenuWorldPreviewer.clear_units = function (self, ignore_camera_reset)
 		end
 	end
 
-	table.clear(self.item_names)
+	table.clear(self.item_info_by_slot)
 
 	if self.character_unit ~= nil then
 		World.destroy_unit(world, self.character_unit)

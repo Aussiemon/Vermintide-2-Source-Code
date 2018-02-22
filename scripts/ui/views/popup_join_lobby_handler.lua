@@ -377,6 +377,9 @@ PopupJoinLobbyHandler.init = function (self, ingame_ui_context)
 	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, #generic_input_actions, gui_layer, generic_input_actions)
 
 	self.menu_input_description:set_input_description(nil)
+
+	self._difficulty = nil
+
 	rawset(_G, "GLOBAL_MM_JL_UI", self)
 	self.create_ui_elements(self)
 
@@ -454,11 +457,12 @@ PopupJoinLobbyHandler.update = function (self, dt, t)
 
 	return 
 end
-PopupJoinLobbyHandler.show = function (self, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser)
+PopupJoinLobbyHandler.show = function (self, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser, difficulty)
 	self.join_lobby_result = nil
 	self._selected_hero_disabled = nil
 	self._selected_career_locked = nil
 	self._disable_select_button = nil
+	self._difficulty = difficulty
 	local transition = (join_by_lobby_browser and "exit_menu") or "close_active"
 
 	self.ingame_ui:handle_transition(transition)
@@ -863,6 +867,7 @@ PopupJoinLobbyHandler._assign_career_data_by_hero = function (self, hero_name)
 	local selection_texture = "portrait_glow"
 	local selection_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(selection_texture)
 	local selection_texture_size = selection_texture_settings.size
+	local difficulty = self._difficulty
 
 	for i = 1, amount, 1 do
 		local name_sufix = "_" .. tostring(i)
@@ -871,8 +876,8 @@ PopupJoinLobbyHandler._assign_career_data_by_hero = function (self, hero_name)
 		local career_settings = careers[i]
 		local is_career_unlocked = career_settings.is_unlocked_function(hero_name, hero_level)
 		hotspot_content.locked = not is_career_unlocked
-		local portrait_image = career_settings.portrait_image
 		local display_name = career_settings.display_name
+		local portrait_image = career_settings.portrait_image
 		local title_text_name = "title_text" .. name_sufix
 		hotspot_content[title_text_name] = display_name
 		local image_name = "icon" .. name_sufix
@@ -969,6 +974,11 @@ PopupJoinLobbyHandler.set_unavailable_heroes = function (self, occupied_heroes)
 
 		self.enable_career_selection(self)
 	end
+
+	return 
+end
+PopupJoinLobbyHandler.set_difficulty = function (self, difficulty)
+	self._difficulty = difficulty
 
 	return 
 end

@@ -109,7 +109,7 @@ PlayerWhereaboutsExtension._check_bot_nav_transition = function (self, nav_world
 		fassert(not self._falling and not self._jumping, "Tried to jump or fall while falling without aborting landing")
 
 		self._jumping = true
-		local perform_distance_check = input.player_state == nil or input.player_state ~= "lunging"
+		local perform_distance_check = input.player_state == nil or input.player_state ~= "lunging" or input.player_state ~= "leaping"
 		local pos = self._find_start_position(self, current_position, perform_distance_check)
 
 		if pos then
@@ -120,7 +120,7 @@ PlayerWhereaboutsExtension._check_bot_nav_transition = function (self, nav_world
 		fassert(not self._jumping and not self._falling, "Tried to fall or jump while jumping without aborting landing")
 
 		self._falling = true
-		local perform_distance_check = input.player_state == nil or input.player_state ~= "lunging"
+		local perform_distance_check = input.player_state == nil or input.player_state ~= "lunging" or input.player_state ~= "leaping"
 		local pos = self._find_start_position(self, current_position, perform_distance_check)
 
 		if pos then

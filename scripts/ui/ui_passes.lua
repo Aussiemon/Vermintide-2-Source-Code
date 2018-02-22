@@ -2685,6 +2685,26 @@ UIPasses.item_tooltip = {
 				draw = UITooltipPasses.item_titles.draw
 			},
 			{
+				data = UITooltipPasses.skin_applied.setup_data(),
+				draw = UITooltipPasses.skin_applied.draw
+			},
+			{
+				data = UITooltipPasses.deed_mission.setup_data(),
+				draw = UITooltipPasses.deed_mission.draw
+			},
+			{
+				data = UITooltipPasses.deed_difficulty.setup_data(),
+				draw = UITooltipPasses.deed_difficulty.draw
+			},
+			{
+				data = UITooltipPasses.mutators.setup_data(),
+				draw = UITooltipPasses.mutators.draw
+			},
+			{
+				data = UITooltipPasses.deed_rewards.setup_data(),
+				draw = UITooltipPasses.deed_rewards.draw
+			},
+			{
 				data = UITooltipPasses.ammunition.setup_data(),
 				draw = UITooltipPasses.ammunition.draw
 			},
@@ -2703,6 +2723,10 @@ UIPasses.item_tooltip = {
 			{
 				data = UITooltipPasses.traits.setup_data(),
 				draw = UITooltipPasses.traits.draw
+			},
+			{
+				data = UITooltipPasses.unwieldable.setup_data(),
+				draw = UITooltipPasses.unwieldable.draw
 			},
 			{
 				data = UITooltipPasses.item_description.setup_data(),
@@ -3216,7 +3240,10 @@ UIPasses.rect_text = {
 
 				UIRenderer.draw_text(ui_renderer, text, font_material, font_size, font_name, position + alignment_offset, ui_style.text_color, nil, line_color_override)
 
-				position = position + text_offset
+				if i < num_texts then
+					position = position + text_offset
+				end
+
 				line_start_index = line_start_index + text_length + 1
 			end
 
@@ -3228,14 +3255,16 @@ UIPasses.rect_text = {
 
 				UIRenderer.draw_text(ui_renderer, text_line, font_material, font_size, font_name, position, color)
 
-				position = position + text_offset
+				if i < num_texts then
+					position = position + text_offset
+				end
 			end
 		end
 
 		local padding_x = 4
 		local padding_y = 2
 		position[3] = position[3] - 1
-		position[2] = (position[2] + full_font_height + font_min) - padding_y
+		position[2] = position[2] + font_min*RESOLUTION_LOOKUP.inv_scale
 		position[1] = position[1] - 2 - padding_x
 		rect_text_size[1] = rect_text_size[1] + padding_x*2
 		rect_text_size[2] = rect_text_size[2] + padding_y*2
@@ -3249,6 +3278,7 @@ UIPasses.rect_text = {
 		return 
 	end
 }
+local test_timer = nil
 local double_click_threshold = UISettings.double_click_threshold
 local cursor_value_type_name = "Vector3"
 UIPasses.hotspot = {
@@ -3278,6 +3308,9 @@ UIPasses.hotspot = {
 			if is_already_hovering and not ui_content.allow_multi_hover then
 				is_hover = false
 			else
+				local scale = RESOLUTION_LOOKUP.scale
+				cursor_position[1] = cursor_position[1]*scale
+				cursor_position[2] = cursor_position[2]*scale
 				local cursor_size = Vector2(GAMEPAD_CURSOR_SIZE*0.5, GAMEPAD_CURSOR_SIZE*0.5)
 				is_hover = math.box_overlap_box(cursor_position - cursor_size*0.5, cursor_size, pixel_pos, pixel_size)
 			end
@@ -3650,6 +3683,22 @@ UIPasses.item_presentation = {
 			{
 				data = UITooltipPasses.item_titles.setup_data(),
 				draw = UITooltipPasses.item_titles.draw
+			},
+			{
+				data = UITooltipPasses.deed_mission.setup_data(),
+				draw = UITooltipPasses.deed_mission.draw
+			},
+			{
+				data = UITooltipPasses.deed_difficulty.setup_data(),
+				draw = UITooltipPasses.deed_difficulty.draw
+			},
+			{
+				data = UITooltipPasses.mutators.setup_data(),
+				draw = UITooltipPasses.mutators.draw
+			},
+			{
+				data = UITooltipPasses.deed_rewards.setup_data(),
+				draw = UITooltipPasses.deed_rewards.draw
 			},
 			{
 				data = UITooltipPasses.ammunition.setup_data(),

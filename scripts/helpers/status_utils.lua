@@ -142,9 +142,10 @@ StatusUtils = {
 	set_pushed_network = function (pushed_unit, pushed)
 		fassert(Managers.player.is_server or LEVEL_EDITOR_TEST)
 
+		local t = Managers.time:time("game")
 		local status_extension = ScriptUnit.extension(pushed_unit, "status_system")
 
-		status_extension.set_pushed(status_extension, pushed)
+		status_extension.set_pushed(status_extension, pushed, t)
 
 		if not LEVEL_EDITOR_TEST then
 			local network_manager = Managers.state.network

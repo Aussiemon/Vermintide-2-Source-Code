@@ -49,7 +49,6 @@ RconUI.set_input_manager = function (self, input_manager)
 	if input_manager then
 		local block_reasons = {
 			twitch = true,
-			keybind = true,
 			debug_screen = true,
 			free_flight = true
 		}
@@ -117,10 +116,16 @@ end
 RconUI._update_input = function (self, dt, input_service)
 	local activate_menu_was_pressed = input_service.get(input_service, "activate_menu")
 
-	if not self._visible and activate_menu_was_pressed then
-		self._block_input(self)
+	if activate_menu_was_pressed then
+		if self._visible then
+			self._unblock_input(self)
 
-		self._visible = true
+			self._visible = false
+		else
+			self._block_input(self)
+
+			self._visible = true
+		end
 	end
 
 	if self._visible then
@@ -178,7 +183,7 @@ end
 RconUI._block_input = function (self)
 	local input_manager = self._input_manager
 
-	input_manager.block_device_except_service(input_manager, "rcon_input", "keyboard")
+	input_manager.block_device_except_service(input_manager, "rcon_input", "keyboard", nil, "rcon")
 	input_manager.block_device_except_service(input_manager, "rcon_input", "mouse")
 	input_manager.block_device_except_service(input_manager, "rcon_input", "gamepad")
 	Window.set_show_cursor(true)

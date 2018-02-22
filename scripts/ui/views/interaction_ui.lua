@@ -234,7 +234,7 @@ local widget_definitions = {
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				default_text_color = Colors.get_color_table_with_alpha("white", 255),
-				disabled_text_color = Colors.get_color_table_with_alpha("cheeseburger", 255),
+				disabled_text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					0,
 					0,
@@ -266,7 +266,7 @@ local widget_definitions = {
 				vertical_alignment = "center",
 				dynamic_font = true,
 				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("cheeseburger", 255),
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					0,
 					0,

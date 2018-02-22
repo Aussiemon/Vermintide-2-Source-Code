@@ -2925,7 +2925,7 @@ UtilityConsiderations = {
 	},
 	chaos_exalted_defensive_aoe = {
 		time_since_last = {
-			max_value = 5,
+			max_value = 12,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,

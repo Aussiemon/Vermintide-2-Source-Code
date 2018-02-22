@@ -97,20 +97,20 @@ LevelSettings.whitebox = {
 LevelSettings.farmlands = {
 	act_unlock_order = 0,
 	display_name = "level_name_farmlands",
+	default_surface_material = "dirt",
 	ambient_sound_event = "silent_default_world_sound",
-	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
-	package_name = "resource_packages/levels/honduras/farmlands",
+	environment_state = "exterior",
 	act = "act_3",
 	boss_spawning_method = "hand_placed",
 	unlockable = true,
-	default_surface_material = "dirt",
+	act_presentation_order = 1,
+	level_name = "levels/honduras/farmlands/world",
 	level_image = "level_icon_09",
 	use_mini_patrols = false,
-	act_presentation_order = 1,
 	loading_ui_package_name = "loading_screen_7",
 	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/farmlands/world",
+	package_name = "resource_packages/levels/honduras/farmlands",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -119,7 +119,7 @@ LevelSettings.farmlands = {
 			primary = {
 				ammo = 8,
 				potions = 4,
-				grenades = 4,
+				grenades = 5,
 				healing = {
 					first_aid_kit = 5,
 					healing_draught = 5
@@ -130,12 +130,16 @@ LevelSettings.farmlands = {
 				}
 			},
 			secondary = {
-				ammo = 16,
+				ammo = 18,
 				grenades = 10,
-				healing = 12,
-				potions = 8
+				healing = 14,
+				potions = 10
 			}
 		}
+	},
+	loading_screen_wwise_events = {
+		"nik_loading_screen_farmland_01",
+		"nik_loading_screen_farmland_02"
 	},
 	locations = {
 		"location_farmlands_farmlands",
@@ -157,20 +161,20 @@ LevelSettings.farmlands = {
 LevelSettings.catacombs = {
 	act_unlock_order = 1,
 	display_name = "level_name_catacombs",
-	default_surface_material = "stone",
+	level_name = "levels/honduras/catacombs/world",
 	ambient_sound_event = "silent_default_world_sound",
 	player_aux_bus_name = "environment_reverb_outside",
 	environment_state = "exterior",
 	act = "act_1",
 	use_mini_patrols = false,
 	unlockable = true,
-	package_name = "resource_packages/levels/honduras/catacombs",
+	loading_ui_package_name = "loading_screen_4",
+	act_presentation_order = 2,
 	level_image = "level_icon_03",
 	boss_spawning_method = "hand_placed",
-	act_presentation_order = 2,
-	loading_ui_package_name = "loading_screen_4",
+	default_surface_material = "stone",
 	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/catacombs/world",
+	package_name = "resource_packages/levels/honduras/catacombs",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -196,6 +200,10 @@ LevelSettings.catacombs = {
 			healing = 2,
 			potions = 2
 		}
+	},
+	loading_screen_wwise_events = {
+		"nik_loading_screen_catacombs_01",
+		"nik_loading_screen_catacombs_02"
 	},
 	locations = {
 		"location_catacombs_temple",
@@ -287,10 +295,6 @@ LevelSettings.elven_ruins = {
 		map_location = {
 			762,
 			787
-		},
-		wwise_events = {
-			"nik_map_brief_elven_ruins_01",
-			"nik_map_brief_elven_ruins_02"
 		}
 	}
 }
@@ -300,16 +304,16 @@ LevelSettings.mines = {
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
-	package_name = "resource_packages/levels/honduras/mines",
+	level_image = "level_icon_02",
 	act = "act_1",
 	use_mini_patrols = false,
 	unlockable = true,
-	level_image = "level_icon_02",
-	boss_spawning_method = "hand_placed",
 	act_presentation_order = 3,
+	level_name = "levels/honduras/mines/world",
+	boss_spawning_method = "hand_placed",
 	loading_ui_package_name = "loading_screen_2",
 	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/mines/world",
+	package_name = "resource_packages/levels/honduras/mines",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -345,6 +349,10 @@ LevelSettings.mines = {
 			potions = 2
 		}
 	},
+	loading_screen_wwise_events = {
+		"nik_loading_screen_mines_01",
+		"nik_loading_screen_mines_02"
+	},
 	locations = {
 		"location_mines_mine",
 		"location_mines_tilted_room",
@@ -377,15 +385,15 @@ LevelSettings.ground_zero = {
 	environment_state = "exterior",
 	boss_level = true,
 	act = "act_1",
-	package_name = "resource_packages/levels/honduras/ground_zero",
+	loading_ui_package_name = "loading_screen_10",
 	unlockable = true,
-	default_surface_material = "stone",
+	act_presentation_order = 4,
+	level_name = "levels/honduras/ground_zero/world",
 	level_image = "level_icon_04",
 	boss_spawning_method = "hand_placed",
-	act_presentation_order = 4,
-	loading_ui_package_name = "loading_screen_10",
+	default_surface_material = "stone",
 	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/ground_zero/world",
+	package_name = "resource_packages/levels/honduras/ground_zero",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -412,6 +420,10 @@ LevelSettings.ground_zero = {
 				potions = 5
 			}
 		}
+	},
+	loading_screen_wwise_events = {
+		"nik_loading_screen_ground_zero_01",
+		"nik_loading_screen_ground_zero_02"
 	},
 	locations = {
 		"location_ground_zero_upper_terrace",
@@ -441,10 +453,10 @@ LevelSettings.fort = {
 	act = "act_2",
 	package_name = "resource_packages/levels/honduras/fort",
 	unlockable = true,
+	act_presentation_order = 3,
 	loading_ui_package_name = "loading_screen_8",
 	level_image = "level_icon_06",
 	boss_spawning_method = "hand_placed",
-	act_presentation_order = 3,
 	default_surface_material = "dirt",
 	knocked_down_setting = "knocked_down",
 	level_name = "levels/honduras/fort/world",
@@ -485,6 +497,10 @@ LevelSettings.fort = {
 				potions = 4
 			}
 		}
+	},
+	loading_screen_wwise_events = {
+		"nik_loading_screen_fort_01",
+		"nik_loading_screen_fort_02"
 	},
 	map_settings = {
 		icon = "map_icon_fort",
@@ -661,15 +677,15 @@ LevelSettings.skaven_stronghold = {
 	environment_state = "exterior",
 	boss_level = true,
 	act = "act_2",
-	package_name = "resource_packages/levels/honduras/skaven_stronghold",
+	loading_ui_package_name = "loading_screen_3",
 	unlockable = true,
-	default_surface_material = "stone",
+	act_presentation_order = 4,
+	level_name = "levels/honduras/skaven_stronghold/world",
 	level_image = "level_icon_08",
 	boss_spawning_method = "hand_placed",
-	act_presentation_order = 4,
-	loading_ui_package_name = "loading_screen_3",
+	default_surface_material = "stone",
 	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/skaven_stronghold/world",
+	package_name = "resource_packages/levels/honduras/skaven_stronghold",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -707,6 +723,10 @@ LevelSettings.skaven_stronghold = {
 				potions = 4
 			}
 		}
+	},
+	loading_screen_wwise_events = {
+		"nik_loading_screen_skaven_stronghold_01",
+		"nik_loading_screen_skaven_stronghold_02"
 	},
 	map_settings = {
 		icon = "map_icon_skaven_stronghold",
@@ -765,7 +785,10 @@ LevelSettings.military = {
 		"nik_loading_screen_helmgart_military_02"
 	},
 	locations = {
-		"location_military_streets",
+		"location_military_streets_01",
+		"location_military_streets_02",
+		"location_military_streets_03",
+		"location_military_streets_04",
 		"location_military_fort",
 		"location_military_tower",
 		"location_military_interior",
@@ -782,10 +805,6 @@ LevelSettings.military = {
 		map_location = {
 			510,
 			230
-		},
-		wwise_events = {
-			"nik_map_brief_helmgart_military_01",
-			"nik_map_brief_helmgart_military_02"
 		}
 	}
 }
@@ -826,15 +845,15 @@ LevelSettings.skittergate = {
 	player_aux_bus_name = "environment_reverb_outside",
 	boss_level = true,
 	act = "act_4",
-	use_mini_patrols = false,
-	unlockable = true,
-	package_name = "resource_packages/levels/honduras/skittergate",
-	level_image = "level_icon_01",
 	boss_spawning_method = "hand_placed",
+	unlockable = true,
 	act_presentation_order = 1,
+	level_name = "levels/honduras/skittergate/world",
+	level_image = "level_icon_01",
+	use_mini_patrols = false,
 	loading_ui_package_name = "loading_screen_14",
 	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/skittergate/world",
+	package_name = "resource_packages/levels/honduras/skittergate",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -860,6 +879,10 @@ LevelSettings.skittergate = {
 				potions = 2
 			}
 		}
+	},
+	loading_screen_wwise_events = {
+		"nik_loading_screen_skittergate_01",
+		"nik_loading_screen_skittergate_02"
 	},
 	locations = {
 		"location_skittergate_helmgart",
@@ -891,16 +914,16 @@ LevelSettings.bell = {
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
-	package_name = "resource_packages/levels/honduras/bell",
 	act = "act_2",
-	use_mini_patrols = false,
-	unlockable = true,
-	level_image = "level_icon_07",
 	boss_spawning_method = "hand_placed",
+	unlockable = true,
 	act_presentation_order = 2,
+	level_name = "levels/honduras/bell/world",
+	level_image = "level_icon_07",
+	use_mini_patrols = false,
 	loading_ui_package_name = "loading_screen_1",
 	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/bell/world",
+	package_name = "resource_packages/levels/honduras/bell",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -926,6 +949,10 @@ LevelSettings.bell = {
 				potions = 5
 			}
 		}
+	},
+	loading_screen_wwise_events = {
+		"nik_loading_screen_bell_01",
+		"nik_loading_screen_bell_02"
 	},
 	locations = {
 		"location_bell_winery",
@@ -956,16 +983,16 @@ LevelSettings.nurgle = {
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
-	package_name = "resource_packages/levels/honduras/nurgle",
 	act = "act_3",
-	use_mini_patrols = false,
-	unlockable = true,
-	level_image = "level_icon_11",
 	boss_spawning_method = "hand_placed",
+	unlockable = true,
 	act_presentation_order = 3,
+	level_name = "levels/honduras/nurgle/world",
+	level_image = "level_icon_11",
+	use_mini_patrols = false,
 	loading_ui_package_name = "loading_screen_5",
 	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/nurgle/world",
+	package_name = "resource_packages/levels/honduras/nurgle",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -991,6 +1018,10 @@ LevelSettings.nurgle = {
 			healing = 3,
 			potions = 2
 		}
+	},
+	loading_screen_wwise_events = {
+		"nik_loading_screen_nurgle_01_short",
+		"nik_loading_screen_nurgle_02_short"
 	},
 	locations = {
 		"location_nurgle_start_area",
@@ -1027,21 +1058,21 @@ LevelSettings.nurgle = {
 LevelSettings.warcamp = {
 	act_unlock_order = 3,
 	display_name = "level_name_warcamp",
+	default_surface_material = "dirt",
 	ambient_sound_event = "silent_default_world_sound",
-	environment_state = "exterior",
 	player_aux_bus_name = "environment_reverb_outside",
+	environment_state = "exterior",
 	boss_level = true,
 	act = "act_3",
 	boss_spawning_method = "hand_placed",
 	unlockable = true,
-	default_surface_material = "dirt",
-	package_name = "resource_packages/levels/honduras/warcamp",
+	act_presentation_order = 4,
+	level_name = "levels/honduras/warcamp/world",
 	level_image = "level_icon_12",
 	use_mini_patrols = false,
-	act_presentation_order = 4,
 	loading_ui_package_name = "loading_screen_12",
 	knocked_down_setting = "knocked_down",
-	level_name = "levels/honduras/warcamp/world",
+	package_name = "resource_packages/levels/honduras/warcamp",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	level_particle_effects = {},
 	level_screen_effects = {},
@@ -1067,6 +1098,10 @@ LevelSettings.warcamp = {
 				potions = 2
 			}
 		}
+	},
+	loading_screen_wwise_events = {
+		"nik_loading_screen_chaos_war_camp_01",
+		"nik_loading_screen_chaos_war_camp_02"
 	},
 	locations = {},
 	locations = {

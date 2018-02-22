@@ -148,7 +148,7 @@ EnemyRecycler.draw_roaming_splines = function (self)
 end
 local SizeOfInterestPoint = SizeOfInterestPoint
 local min_roaming_patrol_size = 3
-EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, zone, pack_type, pack_size_ip_unit_name)
+EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, pack_type, pack_size_ip_unit_name)
 	local amount = SizeOfInterestPoint[pack_size_ip_unit_name]
 
 	if amount < min_roaming_patrol_size then
@@ -171,6 +171,7 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, z
 			start_pos = self.patrol_analysis:get_path_point(spline.spline_points, nil, math.random()*0.9)
 		end
 
+		local zone = self.group_manager:get_group_from_position(start_pos)
 		local pack_data = BreedPacksBySize[pack_type][amount]
 		local prob = pack_data.prob
 		local alias = pack_data.alias
@@ -241,7 +242,7 @@ EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack
 			elseif NavTagVolumeUtils.inside_level_volume_layer(level, nav_tag_volume_handler, pos, "NO_SPAWN") then
 				spawn = false
 			elseif roaming_patrols_allowed then
-				local area = self.inject_roaming_patrol(self, area_position, area_rot, zone, pack_type, pack_size)
+				local area = self.inject_roaming_patrol(self, area_position, area_rot, pack_type, pack_size)
 
 				if area then
 					areas[k] = area
@@ -433,7 +434,6 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 				}
 			end
 
-			print("Started area event in enemy recycler")
 			TerrorEventMixer.start_event(event_name, data)
 
 			return true
@@ -835,6 +835,7 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 	local outside_color = Color(255, 255, 40, 100)
 	local shutdown_color = Color(128, 30, 40, 230)
 	local yellow = Color(255, 255, 200, 0)
+	local roaming_color = Color(255, 0, 200, 100)
 	local cone_height = Vector3(0, 0, 12)
 	local cone_height2 = Vector3(0, 0, 9.5)
 	local cone_height3 = Vector3(0, 0, 8.5)
@@ -870,9 +871,15 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 		local seen = area[3]
 
 		if area[7] == "event" then
-			drawer.sphere(drawer, pos + cone_height, 2, yellow)
-			drawer.sphere(drawer, pos + cone_height2, 1, yellow)
-			drawer.sphere(drawer, pos + cone_height3, 0.5, yellow)
+			if area[5] == "roaming_patrol" then
+				drawer.sphere(drawer, pos + cone_height, 0.7, roaming_color)
+				drawer.sphere(drawer, pos + cone_height2, 0.7, roaming_color)
+				drawer.sphere(drawer, pos + cone_height3, 0.7, roaming_color)
+			else
+				drawer.sphere(drawer, pos + cone_height, 2, yellow)
+				drawer.sphere(drawer, pos + cone_height2, 1, yellow)
+				drawer.sphere(drawer, pos + cone_height3, 0.5, yellow)
+			end
 		end
 
 		if 0 < seen then

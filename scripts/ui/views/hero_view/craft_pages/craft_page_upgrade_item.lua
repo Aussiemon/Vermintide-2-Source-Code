@@ -41,8 +41,8 @@ CraftPageUpgradeItem.on_enter = function (self, params, settings)
 
 	self._craft_items = {}
 	self._material_items = {}
-	self._item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid)
-	self._recipe_grid = ItemGridUI:new(category_settings, self._widgets_by_name.recipe_grid)
+	self._item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
+	self._recipe_grid = ItemGridUI:new(category_settings, self._widgets_by_name.recipe_grid, self.hero_name, self.career_index)
 
 	self._item_grid:disable_locked_items(true)
 	self._item_grid:mark_locked_items(true)
@@ -58,6 +58,26 @@ CraftPageUpgradeItem.setup_recipe_requirements = function (self)
 	local recipe_grid = self._recipe_grid
 	local settings = self.settings
 	local recipe_name = settings.name
+	local added_backend_id = self._craft_items[1]
+
+	if added_backend_id then
+		local item_interface = Managers.backend:get_interface("items")
+		local rarity = item_interface.get_item_rarity(item_interface, added_backend_id)
+
+		if rarity == "plentiful" then
+			recipe_name = "upgrade_item_rarity_common"
+		elseif rarity == "common" then
+			recipe_name = "upgrade_item_rarity_rare"
+		elseif rarity == "rare" then
+			recipe_name = "upgrade_item_rarity_exotic"
+		end
+	end
+
+	if recipe_name == self._recipe_name then
+		return 
+	end
+
+	self._recipe_name = recipe_name
 	local recipe = crafting_recipes_by_name[recipe_name]
 	local ingredients = recipe.ingredients
 	local material_items = self._material_items
@@ -362,10 +382,12 @@ CraftPageUpgradeItem._update_craft_items = function (self)
 
 				if slot_index then
 					self._add_craft_item(self, pressed_backend_id, slot_index)
+					self.setup_recipe_requirements(self)
 				end
 			end
 		else
 			self._add_craft_item(self, pressed_backend_id)
+			self.setup_recipe_requirements(self)
 		end
 	end
 
@@ -408,6 +430,7 @@ CraftPageUpgradeItem._remove_craft_item = function (self, backend_id, slot_index
 		end
 
 		self._play_sound(self, "play_gui_craft_item_drag")
+		self.setup_recipe_requirements(self)
 	end
 
 	return 

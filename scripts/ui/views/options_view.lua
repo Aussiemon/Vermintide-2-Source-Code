@@ -319,8 +319,6 @@ OptionsView.init = function (self, ingame_ui_context)
 						content.input_cooldown = math.ease_in_exp(input_cooldown_multiplier)*0.2
 						content.input_cooldown_multiplier = input_cooldown_multiplier
 					end
-
-					WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
 				elseif callback_on_release and (left_hotspot.on_release or right_hotspot.on_release) then
 					content.internal_value = internal_value
 					content.changed = true
@@ -1513,12 +1511,6 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 		end
 	end
 
-	local enabled_crosshairs = user_settings.enabled_crosshairs
-
-	if enabled_crosshairs and self.ingame_ui and self.ingame_ui.ingame_hud and self.ingame_ui.ingame_hud.crosshair then
-		self.ingame_ui.ingame_hud.crosshair:set_enabled_crosshair_styles(enabled_crosshairs)
-	end
-
 	local player_input_service = self.input_manager:get_service("Player")
 	local mouse_look_sensitivity = user_settings.mouse_look_sensitivity
 
@@ -2417,7 +2409,7 @@ OptionsView.handle_reset_to_default_button = function (self, input_service, allo
 end
 OptionsView.draw_widgets = function (self, dt, disable_all_input)
 	local ui_renderer = self.ui_renderer
-	local ui_top_renderer = self.ui_top_renderer
+	local ui_top_renderer = self.ui_top_renderer or self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_manager = self.input_manager
 	local input_service = input_manager.get_service(input_manager, "options_menu")
@@ -4472,7 +4464,8 @@ end
 OptionsView.cb_sharpen = function (self, content, called_from_graphics_quality)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
-	self.changed_render_settings.sharpen_enabled = options_values[current_selection]
+	local value = options_values[current_selection]
+	self.changed_render_settings.sharpen_enabled = value
 
 	if not called_from_graphics_quality then
 		self.force_set_widget_value(self, "graphics_quality_settings", "custom")
@@ -7173,7 +7166,7 @@ AddSliderSetting("tobii_extended_view_sensitivity", 1, 100, 0, tobii_custom_call
 local function get_button_locale_name(controller_type, button_name)
 	local button_locale_name = nil
 
-	if button_name == "unassigned_keymap" then
+	if button_name == UNASSIGNED_KEY then
 		button_locale_name = Localize(button_name)
 	elseif controller_type == "keyboard" then
 		local button_index = Keyboard.button_index(button_name)
@@ -7258,7 +7251,7 @@ OptionsView.cleanup_duplicates = function (self, new_key, device)
 			local mapped_key = actions_info[1].keybind[2]
 
 			if mapped_key == new_key and mapped_device == device then
-				content.callback("unassigned_keymap", device, content)
+				content.callback(UNASSIGNED_KEY, device, content)
 			end
 		end
 	end
@@ -7276,7 +7269,7 @@ OptionsView.cb_keybind_changed = function (self, new_key, device, content)
 	local keymappings_key = content.keymappings_key
 	local keymappings_table_key = content.keymappings_table_key
 
-	if new_key ~= "unassigned_keymap" then
+	if new_key ~= UNASSIGNED_KEY then
 		self.cleanup_duplicates(self, new_key, device)
 	end
 

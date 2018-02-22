@@ -24,10 +24,28 @@ HeroWindowOptions.on_enter = function (self, params, offset)
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
+	local hero_name = self.hero_name
+	local career_index = self.career_index
+	local profile_index = FindProfileIndex(hero_name)
+	local profile = SPProfiles[profile_index]
+	local career_data = profile.careers[career_index]
+	local career_name = career_data.name
 	self._animations = {}
 	self._ui_animations = {}
 
 	self.create_ui_elements(self, params, offset)
+
+	self.conditions_params = {
+		hero_name = self.hero_name,
+		career_name = career_name
+	}
+	local widgets_by_name = self._widgets_by_name
+	self.button_widgets_by_news_template = {
+		equipment = widgets_by_name.game_option_1,
+		talent = widgets_by_name.game_option_2,
+		cosmetics = widgets_by_name.game_option_4,
+		loot_chest = widgets_by_name.game_option_5
+	}
 
 	return 
 end
@@ -74,6 +92,7 @@ HeroWindowOptions.update = function (self, dt, t)
 		self.create_ui_elements(self)
 	end
 
+	self._sync_news(self, dt, t)
 	self._update_selected_option(self)
 	self._update_loadout_sync(self)
 	self._update_animations(self, dt)
@@ -279,9 +298,10 @@ HeroWindowOptions._calculate_power_level = function (self)
 	local profile = SPProfiles[profile_index]
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
-	local total_power_level = BackendUtils.get_total_power_level(hero_name, career_name) - PowerLevelFromLevelSettings.starting_power_level
+	local total_power_level = BackendUtils.get_total_power_level(hero_name, career_name)
+	local presentable_hero_power_level = UIUtils.presentable_hero_power_level(total_power_level)
 	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.power_text.content.text = tostring(math.floor(total_power_level))
+	widgets_by_name.power_text.content.text = tostring(presentable_hero_power_level)
 
 	return 
 end
@@ -527,6 +547,40 @@ HeroWindowOptions._animate_option_button = function (self, widget, dt)
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress
+
+	return 
+end
+HeroWindowOptions._sync_news = function (self, dt, t)
+	local sync_delay = self._sync_delay
+
+	if sync_delay then
+		sync_delay = math.max(0, sync_delay - dt)
+
+		if sync_delay == 0 then
+			self._sync_delay = nil
+		else
+			self._sync_delay = sync_delay
+		end
+
+		return 
+	end
+
+	local player = Managers.player:local_player(1)
+	local player_unit = player.player_unit
+	local news_templates = NewsFeedTemplates
+	local conditions_params = self.conditions_params
+	local button_widgets_by_news_template = self.button_widgets_by_news_template
+
+	if player_unit then
+		for template_name, widget in pairs(button_widgets_by_news_template) do
+			local template_index = FindNewsTemplateIndex(template_name)
+			local template = news_templates[template_index]
+			local condition_func = template.condition_func
+			widget.content.new = condition_func(conditions_params)
+		end
+	end
+
+	self._sync_delay = 4
 
 	return 
 end

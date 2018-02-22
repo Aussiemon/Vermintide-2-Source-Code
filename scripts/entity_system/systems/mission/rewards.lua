@@ -13,6 +13,7 @@ local token_textures = {
 	gold_tokens = "token_icon_04"
 }
 Rewards = class(Rewards)
+local EXPERIENCE_REWARD = 300
 Rewards.init = function (self, level_key, game_mode_key, quickplay_bonus)
 	self._level_key = level_key
 	self._game_mode_key = game_mode_key
@@ -68,16 +69,15 @@ Rewards._mission_results = function (self, game_won)
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty = difficulty_manager.get_difficulty(difficulty_manager)
 	local difficulty_rank = difficulty_manager.get_difficulty_rank(difficulty_manager)
-	local level_length_modifier = ExperienceSettings.level_length_experience_multiplier.long
 
 	if game_mode_key == "survival" then
 		self._add_missions_from_mission_system(self, mission_results, 1, 1)
 	elseif game_won then
-		self._add_missions_from_mission_system(self, mission_results, difficulty_rank, level_length_modifier)
+		self._add_missions_from_mission_system(self, mission_results, difficulty_rank)
 
 		local mission_complete_reward = {
 			text = "mission_completed_" .. difficulty,
-			experience = (difficulty_rank - 1)*200*level_length_modifier*self._multiplier
+			experience = EXPERIENCE_REWARD*self.difficulty_experience_multiplier(self)
 		}
 
 		table.insert(mission_results, 1, mission_complete_reward)
@@ -86,7 +86,7 @@ Rewards._mission_results = function (self, game_won)
 		local completed_distance = mission_system.percentage_completed(mission_system) or 0
 		local mission_failed_reward = {
 			text = "mission_failed_" .. difficulty,
-			experience = difficulty_rank*100*level_length_modifier*completed_distance*self._multiplier
+			experience = EXPERIENCE_REWARD*self.difficulty_experience_multiplier(self)*math.clamp(completed_distance, 0.25, math.huge)
 		}
 
 		table.insert(mission_results, 1, mission_failed_reward)
@@ -94,7 +94,7 @@ Rewards._mission_results = function (self, game_won)
 
 	return mission_results
 end
-Rewards._add_missions_from_mission_system = function (self, mission_rewards, difficulty_rank, level_length_modifier)
+Rewards._add_missions_from_mission_system = function (self, mission_rewards, difficulty_rank)
 	local mission_rewards_n = 0
 	local mission_system = Managers.state.entity:system("mission_system")
 	local active_missions, completed_missions = mission_system.get_missions(mission_system)
@@ -111,7 +111,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 				mission_rewards_n = mission_rewards_n + 1
 				mission_rewards[mission_rewards_n] = {
 					text = data.mission_data.text,
-					experience = experience*difficulty_rank*level_length_modifier*self._multiplier
+					experience = experience
 				}
 			end
 		end
@@ -144,7 +144,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 					mission_rewards_n = mission_rewards_n + 1
 					mission_rewards[mission_rewards_n] = {
 						text = data.mission_data.text,
-						experience = experience*difficulty_rank*level_length_modifier*self._multiplier
+						experience = experience
 					}
 				end
 			elseif data.evaluation_type == "amount" then
@@ -160,7 +160,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 					mission_rewards_n = mission_rewards_n + 1
 					mission_rewards[mission_rewards_n] = {
 						text = data.mission_data.text,
-						experience = experience*difficulty_rank*level_length_modifier*self._multiplier
+						experience = experience
 					}
 				end
 			end
@@ -253,6 +253,13 @@ Rewards.get_level_end = function (self)
 	local experience = math.min(start_experience + gained_xp, ExperienceSettings.max_experience)
 
 	return ExperienceSettings.get_level(experience), experience
+end
+Rewards.difficulty_experience_multiplier = function (self)
+	local difficulty_manager = Managers.state.difficulty
+	local difficulty_settings = difficulty_manager.get_difficulty_settings(difficulty_manager)
+	local xp_multiplier = difficulty_settings.xp_multiplier or 1
+
+	return xp_multiplier
 end
 
 return 

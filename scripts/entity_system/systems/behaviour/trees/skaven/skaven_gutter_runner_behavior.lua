@@ -82,7 +82,8 @@ BreedBehaviors.gutter_runner = {
 		},
 		{
 			"BTPrepareForCrazyJumpAction",
-			name = "prepare_crazy_jump"
+			name = "prepare_crazy_jump",
+			action_data = ACTIONS.prepare_crazy_jump
 		},
 		{
 			"BTCrazyJumpAction",

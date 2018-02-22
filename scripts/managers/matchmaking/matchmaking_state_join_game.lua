@@ -150,6 +150,10 @@ MatchmakingStateJoinGame._update_lobby_data = function (self, dt, t)
 
 		if lobby_data.difficulty ~= difficulty then
 			lobby_data.difficulty = difficulty
+
+			if self._popup_join_lobby_handler then
+				self._popup_join_lobby_handler:set_difficulty(difficulty)
+			end
 		end
 	end
 
@@ -236,7 +240,8 @@ MatchmakingStateJoinGame._spawn_join_popup = function (self)
 	local career_index = player.career_index(player)
 	local auto_cancel_time = MatchmakingSettings.JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL
 	local join_by_lobby_browser = self.state_context.join_by_lobby_browser
-	self._popup_join_lobby_handler = self._ingame_ui:show_unavailable_hero_popup(profile_index, career_index, auto_cancel_time, join_by_lobby_browser)
+	local difficulty = self.lobby_client:lobby_data("difficulty")
+	self._popup_join_lobby_handler = self._ingame_ui:show_unavailable_hero_popup(profile_index, career_index, auto_cancel_time, join_by_lobby_browser, difficulty)
 
 	self._set_unavailable_heroes(self, self._lobby_data)
 

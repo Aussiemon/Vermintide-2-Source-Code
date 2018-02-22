@@ -15,14 +15,14 @@ ActivatedAbilitySettings = {
 		description = "career_active_desc_dr_1",
 		display_name = "career_active_name_dr_1",
 		cooldown = 180,
-		icon = "icons_placeholder",
+		icon = "bardin_ironbreaker_activated_ability",
 		ability_class = CareerAbilityDRIronbreaker
 	},
 	dr_2 = {
 		description = "career_active_desc_dr_2",
 		display_name = "career_active_name_dr_2",
-		cooldown = 60,
-		icon = "icons_placeholder",
+		cooldown = 30,
+		icon = "bardin_slayer_activated_ability",
 		ability_class = CareerAbilityDRSlayer
 	},
 	dr_3 = {
@@ -43,8 +43,8 @@ ActivatedAbilitySettings = {
 	es_2 = {
 		description = "career_active_desc_es_2",
 		display_name = "career_active_name_es_2",
-		cooldown = 60,
-		icon = "activated_ability_markus_knight",
+		cooldown = 30,
+		icon = "markus_knight_activated_ability",
 		ability_class = CareerAbilityESKnight
 	},
 	es_3 = {
@@ -58,13 +58,13 @@ ActivatedAbilitySettings = {
 		description = "career_active_desc_we_1",
 		display_name = "career_active_name_we_1",
 		cooldown = 120,
-		icon = "activated_ability_kerillian_shade",
+		icon = "kerillian_shade_activated_ability",
 		ability_class = CareerAbilityWEShade
 	},
 	we_2 = {
 		description = "career_active_desc_we_2",
 		display_name = "career_active_name_we_2",
-		cooldown = 40,
+		cooldown = 25,
 		icon = "icons_placeholder",
 		ability_class = CareerAbilityWEMaidenGuard
 	},
@@ -79,7 +79,7 @@ ActivatedAbilitySettings = {
 	wh_1 = {
 		description = "career_active_desc_wh_1",
 		display_name = "career_active_name_wh_1",
-		cooldown = 60,
+		cooldown = 40,
 		icon = "icons_placeholder",
 		ability_class = CareerAbilityWHZealot
 	},
@@ -88,7 +88,7 @@ ActivatedAbilitySettings = {
 		weapon_name = "victor_bountyhunter_career_skill_weapon",
 		display_name = "career_active_name_wh_2",
 		cooldown = 90,
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_activated_ability",
 		action_name = "action_career_wh_2"
 	},
 	wh_3 = {
@@ -102,29 +102,29 @@ ActivatedAbilitySettings = {
 		description = "career_active_desc_bw_1",
 		weapon_name = "sienna_scholar_career_skill_weapon",
 		display_name = "career_active_name_bw_1",
-		cooldown = 90,
-		icon = "icons_placeholder",
+		cooldown = 40,
+		icon = "sienna_scholar_activated_ability",
 		action_name = "action_career_bw_1"
 	},
 	bw_2 = {
 		description = "career_active_desc_bw_2",
 		display_name = "career_active_name_bw_2",
 		cooldown = 90,
-		icon = "sienna_adept_damage_taken_capped",
+		icon = "sienna_adept_activated_ability",
 		ability_class = CareerAbilityBWAdept
 	},
 	bw_3 = {
 		description = "career_active_desc_bw_3",
 		display_name = "career_active_name_bw_3",
 		cooldown = 180,
-		icon = "icons_placeholder",
+		icon = "sienna_unchained_activated_ability",
 		ability_class = CareerAbilityBWUnchained
 	}
 }
 PassiveAbilitySettings = {
 	dr_1 = {
 		description = "career_passive_desc_dr_1",
-		icon = "icons_placeholder",
+		icon = "bardin_ironbreaker_gromril_armour",
 		display_name = "career_passive_name_dr_1",
 		buffs = {
 			"bardin_ironbreaker_gromril_armour",
@@ -139,7 +139,7 @@ PassiveAbilitySettings = {
 	},
 	dr_2 = {
 		description = "career_passive_desc_dr_2",
-		icon = "icons_placeholder",
+		icon = "bardin_slayer_passive",
 		display_name = "career_passive_name_dr_2",
 		buffs = {
 			"bardin_slayer_passive_attack_speed",
@@ -175,7 +175,7 @@ PassiveAbilitySettings = {
 	},
 	es_2 = {
 		description = "career_passive_desc_es_2",
-		icon = "passive_bonus_markus_knight",
+		icon = "markus_knight_passive",
 		display_name = "career_passive_name_es_2",
 		buffs = {
 			"markus_knight_passive",
@@ -199,7 +199,7 @@ PassiveAbilitySettings = {
 	},
 	we_1 = {
 		description = "career_passive_desc_we_1",
-		icon = "passive_bonus_kerillian_shade",
+		icon = "kerillian_shade_passive_improved",
 		display_name = "career_passive_name_we_1",
 		buffs = {
 			"kerillian_shade_passive",
@@ -251,7 +251,7 @@ PassiveAbilitySettings = {
 	},
 	wh_2 = {
 		description = "career_passive_desc_wh_2",
-		icon = "icons_placeholder",
+		icon = "victor_bountyhunter_passive",
 		display_name = "career_passive_name_wh_2",
 		buffs = {
 			"victor_bountyhunter_passive_crit_buff",
@@ -278,7 +278,7 @@ PassiveAbilitySettings = {
 	},
 	bw_1 = {
 		description = "career_passive_desc_bw_1",
-		icon = "icons_placeholder",
+		icon = "sienna_scholar_passive",
 		display_name = "career_passive_name_bw_1",
 		buffs = {
 			"sienna_scholar_passive",
@@ -303,7 +303,7 @@ PassiveAbilitySettings = {
 	},
 	bw_3 = {
 		description = "career_passive_desc_bw_3",
-		icon = "icons_placeholder",
+		icon = "sienna_unchained_passive",
 		display_name = "career_passive_name_bw_3",
 		buffs = {
 			"sienna_unchained_passive",

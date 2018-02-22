@@ -2,7 +2,7 @@ WeaponTraits = WeaponTraits or {}
 local buff_tweak_data = {
 	traits_melee_attack_speed_on_crit_proc = {
 		duration = 5,
-		multiplier = 0.3
+		multiplier = 0.2
 	},
 	traits_melee_timed_block_cost = {
 		multiplier = -1
@@ -398,7 +398,7 @@ WeaponTraits.buff_templates = {
 	trait_necklace_damage_taken_reduction_buff = {
 		buffs = {
 			{
-				icon = "trinket_medpack_spread_area_tier3",
+				icon = "necklace_damage_taken_reduction_on_heal",
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
 			}
 		}
@@ -439,8 +439,9 @@ WeaponTraits.buff_templates = {
 }
 WeaponTraits.traits = {
 	melee_attack_speed_on_crit = {
-		advanced_description = "description_traits_melee_attack_speed_on_crit",
 		display_name = "traits_melee_attack_speed_on_crit",
+		advanced_description = "description_traits_melee_attack_speed_on_crit",
+		icon = "melee_attack_speed_on_crit",
 		buff_name = "traits_melee_attack_speed_on_crit",
 		description_values = {
 			{
@@ -453,8 +454,9 @@ WeaponTraits.traits = {
 		}
 	},
 	melee_timed_block_cost = {
-		advanced_description = "description_traits_melee_timed_block_cost",
 		display_name = "traits_melee_timed_block_cost",
+		advanced_description = "description_traits_melee_timed_block_cost",
+		icon = "melee_timed_block_cost",
 		buff_name = "traits_melee_timed_block_cost",
 		description_values = {
 			{
@@ -464,8 +466,9 @@ WeaponTraits.traits = {
 		}
 	},
 	melee_counter_push_power = {
-		advanced_description = "description_traits_melee_counter_push_power",
 		display_name = "traits_melee_counter_push_power",
+		advanced_description = "description_traits_melee_counter_push_power",
+		icon = "melee_counter_push_power",
 		buff_name = "traits_melee_counter_push_power",
 		description_values = {
 			{
@@ -475,8 +478,9 @@ WeaponTraits.traits = {
 		}
 	},
 	melee_reduce_cooldown_on_crit = {
-		advanced_description = "description_traits_melee_reduce_cooldown_on_crit",
 		display_name = "traits_melee_reduce_cooldown_on_crit",
+		advanced_description = "description_traits_melee_reduce_cooldown_on_crit",
+		icon = "melee_reduce_cooldown_on_crit",
 		buff_name = "traits_reduce_cooldown_on_crit",
 		description_values = {
 			{
@@ -489,6 +493,7 @@ WeaponTraits.traits = {
 		display_name = "traits_melee_increase_damage_on_block",
 		buffer = "server",
 		advanced_description = "description_traits_melee_increase_damage_on_block",
+		icon = "melee_increase_damage_on_block",
 		buff_name = "traits_melee_increase_damage_on_block",
 		description_values = {
 			{
@@ -505,6 +510,7 @@ WeaponTraits.traits = {
 		display_name = "traits_melee_heal_on_crit",
 		buffer = "server",
 		advanced_description = "description_traits_melee_heal_on_crit",
+		icon = "melee_heal_on_crit",
 		buff_name = "traits_heal_on_crit",
 		description_values = {
 			{
@@ -517,6 +523,7 @@ WeaponTraits.traits = {
 		display_name = "traits_melee_shield_on_assist",
 		buffer = "server",
 		advanced_description = "description_traits_melee_shield_on_assist",
+		icon = "melee_shield_on_assist",
 		buff_name = "traits_melee_shield_on_assist",
 		description_values = {
 			{
@@ -526,8 +533,9 @@ WeaponTraits.traits = {
 		}
 	},
 	ranged_replenish_ammo_headshot = {
-		advanced_description = "description_traits_ranged_replenish_ammo_headshot",
 		display_name = "traits_ranged_replenish_ammo_headshot",
+		advanced_description = "description_traits_ranged_replenish_ammo_headshot",
+		icon = "ranged_replenish_ammo_headshot",
 		buff_name = "traits_ranged_replenish_ammo_headshot",
 		description_values = {
 			{
@@ -538,12 +546,14 @@ WeaponTraits.traits = {
 	},
 	ranged_restore_stamina_headshot = {
 		advanced_description = "description_traits_ranged_restore_stamina_headshot",
+		icon = "ranged_restore_stamina_headshot",
 		display_name = "traits_ranged_restore_stamina_headshot",
 		buff_name = "traits_ranged_restore_stamina_headshot"
 	},
 	ranged_reduced_overcharge = {
-		advanced_description = "description_traits_ranged_reduced_overcharge",
 		display_name = "traits_ranged_reduced_overcharge",
+		advanced_description = "description_traits_ranged_reduced_overcharge",
+		icon = "ranged_reduced_overcharge",
 		buff_name = "traits_ranged_reduced_overcharge",
 		description_values = {
 			{
@@ -553,8 +563,9 @@ WeaponTraits.traits = {
 		}
 	},
 	ranged_reduce_cooldown_on_crit = {
-		advanced_description = "description_traits_ranged_reduce_cooldown_on_crit",
 		display_name = "traits_ranged_reduce_cooldown_on_crit",
+		advanced_description = "description_traits_ranged_reduce_cooldown_on_crit",
+		icon = "ranged_reduce_cooldown_on_crit",
 		buff_name = "traits_reduce_cooldown_on_crit",
 		description_values = {
 			{
@@ -564,8 +575,9 @@ WeaponTraits.traits = {
 		}
 	},
 	ranged_replenish_ammo_on_crit = {
-		advanced_description = "description_traits_ranged_replenish_ammo_on_crit",
 		display_name = "traits_ranged_replenish_ammo_on_crit",
+		advanced_description = "description_traits_ranged_replenish_ammo_on_crit",
+		icon = "ranged_replenish_ammo_on_crit",
 		buff_name = "traits_ranged_replenish_ammo_on_crit",
 		description_values = {
 			{
@@ -575,8 +587,9 @@ WeaponTraits.traits = {
 		}
 	},
 	ranged_remove_overcharge_on_crit = {
-		advanced_description = "description_traits_ranged_remove_overcharge_on_crit",
 		display_name = "traits_ranged_remove_overcharge_on_crit",
+		advanced_description = "description_traits_ranged_remove_overcharge_on_crit",
+		icon = "ranged_remove_overcharge_on_crit",
 		buff_name = "traits_ranged_remove_overcharge_on_crit",
 		description_values = {
 			{
@@ -586,8 +599,9 @@ WeaponTraits.traits = {
 		}
 	},
 	ranged_increase_power_level_vs_armour_crit = {
-		advanced_description = "description_traits_ranged_increase_power_level_vs_armour_crit",
 		display_name = "traits_ranged_increase_power_level_vs_armour_crit",
+		advanced_description = "description_traits_ranged_increase_power_level_vs_armour_crit",
+		icon = "ranged_increase_power_level_vs_armour_crit",
 		buff_name = "traits_ranged_increase_power_level_vs_armour_crit",
 		description_values = {
 			{
@@ -597,8 +611,9 @@ WeaponTraits.traits = {
 		}
 	},
 	ranged_consecutive_hits_increase_power = {
-		advanced_description = "description_traits_ranged_consecutive_hits_increase_power",
 		display_name = "traits_ranged_consecutive_hits_increase_power",
+		advanced_description = "description_traits_ranged_consecutive_hits_increase_power",
+		icon = "ranged_consecutive_hits_increase_power",
 		buff_name = "traits_ranged_consecutive_hits_increase_power",
 		description_values = {
 			{
@@ -612,8 +627,9 @@ WeaponTraits.traits = {
 		}
 	},
 	ranged_movespeed_on_damage_taken = {
-		advanced_description = "description_traits_ranged_movespeed_on_damage_taken",
 		display_name = "traits_ranged_movespeed_on_damage_taken",
+		advanced_description = "description_traits_ranged_movespeed_on_damage_taken",
+		icon = "ranged_movespeed_on_damage_taken",
 		buff_name = "traits_ranged_movespeed_on_damage_taken",
 		description_values = {
 			{
@@ -627,8 +643,9 @@ WeaponTraits.traits = {
 		}
 	},
 	ring_not_consume_potion = {
-		advanced_description = "description_trait_ring_not_consume_potion",
 		display_name = "trait_ring_not_consume_potion",
+		advanced_description = "description_trait_ring_not_consume_potion",
+		icon = "charm_not_consume_potion",
 		buff_name = "trait_ring_not_consume_potion",
 		description_values = {
 			{
@@ -639,17 +656,20 @@ WeaponTraits.traits = {
 	},
 	ring_potion_spread = {
 		advanced_description = "description_trait_ring_potion_spread",
+		icon = "charm_potion_spread",
 		display_name = "trait_ring_potion_spread",
 		buff_name = "trait_ring_potion_spread"
 	},
 	ring_not_consume_potion_damage = {
 		advanced_description = "description_trait_ring_not_consume_potion_damage",
+		icon = "charm_not_consume_potion_damage",
 		display_name = "trait_ring_not_consume_potion_damage",
 		buff_name = "trait_ring_not_consume_potion_damage"
 	},
 	ring_all_potions = {
-		advanced_description = "description_trait_ring_all_potions",
 		display_name = "trait_ring_all_potions",
+		advanced_description = "description_trait_ring_all_potions",
+		icon = "charm_all_potions",
 		buff_name = "trait_ring_all_potions",
 		description_values = {
 			{
@@ -659,8 +679,9 @@ WeaponTraits.traits = {
 		}
 	},
 	ring_potion_duration = {
-		advanced_description = "description_trait_ring_potion_duration",
 		display_name = "trait_ring_potion_duration",
+		advanced_description = "description_trait_ring_potion_duration",
+		icon = "charm_potion_duration_increased",
 		buff_name = "trait_ring_potion_duration",
 		description_values = {
 			{
@@ -670,8 +691,9 @@ WeaponTraits.traits = {
 		}
 	},
 	necklace_not_consume_healing = {
-		advanced_description = "description_trait_necklace_not_consume_healing",
 		display_name = "trait_necklace_not_consume_healing",
+		advanced_description = "description_trait_necklace_not_consume_healing",
+		icon = "necklace_not_consume_healing",
 		buff_name = "trait_necklace_not_consume_healing",
 		description_values = {
 			{
@@ -684,6 +706,7 @@ WeaponTraits.traits = {
 		display_name = "trait_necklace_heal_self_on_heal_other",
 		buffer = "server",
 		advanced_description = "description_trait_necklace_heal_self_on_heal_other",
+		icon = "necklace_heal_self_on_heal_other",
 		buff_name = "trait_necklace_heal_self_on_heal_other",
 		description_values = {
 			{
@@ -696,6 +719,7 @@ WeaponTraits.traits = {
 		display_name = "trait_necklace_increased_healing_received",
 		buffer = "server",
 		advanced_description = "description_trait_necklace_increased_healing_received",
+		icon = "necklace_increased_healing_received",
 		buff_name = "trait_necklace_increased_healing_received",
 		description_values = {
 			{
@@ -705,15 +729,17 @@ WeaponTraits.traits = {
 		}
 	},
 	necklace_no_healing_health_regen = {
-		advanced_description = "description_trait_necklace_no_healing_health_regen",
-		buffer = "server",
 		display_name = "trait_necklace_no_healing_health_regen",
+		buffer = "server",
+		advanced_description = "description_trait_necklace_no_healing_health_regen",
+		icon = "necklace_no_healing_health_regen",
 		buff_name = "trait_necklace_no_healing_health_regen"
 	},
 	necklace_damage_taken_reduction_on_heal = {
 		display_name = "trait_necklace_damage_taken_reduction_on_heal",
 		buffer = "server",
 		advanced_description = "description_trait_necklace_damage_taken_reduction_on_heal",
+		icon = "necklace_damage_taken_reduction_on_heal",
 		buff_name = "trait_necklace_damage_taken_reduction_on_heal",
 		description_values = {
 			{
@@ -727,8 +753,9 @@ WeaponTraits.traits = {
 		}
 	},
 	trinket_not_consume_grenade = {
-		advanced_description = "description_trait_trinket_not_consume_grenade",
 		display_name = "trait_trinket_not_consume_grenade",
+		advanced_description = "description_trait_trinket_not_consume_grenade",
+		icon = "trait_trinket_not_consume_grenade",
 		buff_name = "trait_trinket_not_consume_grenade",
 		description_values = {
 			{
@@ -738,8 +765,9 @@ WeaponTraits.traits = {
 		}
 	},
 	trinket_increase_grenade_radius = {
-		advanced_description = "description_trait_trinket_increase_grenade_radius",
 		display_name = "trait_trinket_increase_grenade_radius",
+		advanced_description = "description_trait_trinket_increase_grenade_radius",
+		icon = "trinket_increase_grenade_radius",
 		buff_name = "trait_trinket_increase_grenade_radius",
 		description_values = {
 			{
@@ -752,6 +780,7 @@ WeaponTraits.traits = {
 		display_name = "trait_trinket_grenade_damage_taken",
 		buffer = "server",
 		advanced_description = "description_trait_trinket_grenade_damage_taken",
+		icon = "trinket_reduce_radius_by_50_Increase_power_by_50",
 		buff_name = "trait_trinket_grenade_damage_taken",
 		description_values = {
 			{

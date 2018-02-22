@@ -20,19 +20,19 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.6,
+					start_time = 0.4,
 					action = "action_one",
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.6,
+					start_time = 0.4,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.6,
+					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
 				},
@@ -255,7 +255,7 @@ weapon_template.attack_meta_data = {
 	charge_when_obstructed = false,
 	ignore_enemies_for_obstruction = false
 }
-weapon_template.default_spread_template = "crossbow"
+weapon_template.default_spread_template = "brace_of_pistols"
 weapon_template.spread_lerp_speed = 2
 weapon_template.left_hand_unit = ""
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.repeating_crossbow

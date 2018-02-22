@@ -404,6 +404,94 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+if Development.parameter("tobii_button") then
+	scenegraph_definition.tobii_window = {
+		vertical_alignment = "bottom",
+		parent = "right_side_root",
+		horizontal_alignment = "right",
+		size = {
+			600,
+			200
+		},
+		position = {
+			-90,
+			80,
+			1
+		}
+	}
+	scenegraph_definition.tobii_button = {
+		vertical_alignment = "bottom",
+		parent = "tobii_window",
+		horizontal_alignment = "center",
+		size = {
+			300,
+			70
+		},
+		position = {
+			0,
+			-33,
+			30
+		}
+	}
+	scenegraph_definition.tobii_description = {
+		vertical_alignment = "bottom",
+		parent = "tobii_window",
+		horizontal_alignment = "center",
+		size = {
+			500,
+			50
+		},
+		position = {
+			0,
+			50,
+			10
+		}
+	}
+	scenegraph_definition.tobii_title = {
+		vertical_alignment = "center",
+		parent = "tobii_window",
+		horizontal_alignment = "center",
+		size = {
+			580,
+			50
+		},
+		position = {
+			0,
+			60,
+			10
+		}
+	}
+	scenegraph_definition.tobii_title_divider = {
+		vertical_alignment = "center",
+		parent = "tobii_title",
+		horizontal_alignment = "center",
+		size = {
+			264,
+			32
+		},
+		position = {
+			0,
+			-30,
+			-3
+		}
+	}
+	scenegraph_definition.tobii_title_effect = {
+		vertical_alignment = "bottom",
+		parent = "tobii_title_divider",
+		horizontal_alignment = "center",
+		size = {
+			310,
+			120
+		},
+		position = {
+			0,
+			7,
+			-1
+		}
+	}
+end
+
 local hero_career_style = {
 	word_wrap = true,
 	upper_case = true,
@@ -518,6 +606,18 @@ local widgets = {
 	info_hero_name = UIWidgets.create_simple_text("n/a", "info_hero_name", nil, nil, hero_name_style),
 	info_hero_level = UIWidgets.create_simple_text("n/a", "info_hero_level", nil, nil, hero_level_style)
 }
+
+if Development.parameter("tobii_button") then
+	widgets.tobii_description = UIWidgets.create_simple_text("Rush into the chance to win exclusive prizes", "tobii_description", nil, nil, tobii_description_style)
+	widgets.tobii_title = UIWidgets.create_simple_text("JOIN AN EPIC CHALLENGE", "tobii_title", nil, nil, tobii_title_style)
+	widgets.tobii_title_effect = UIWidgets.create_simple_texture("play_button_frame_glow", "tobii_title_effect")
+	widgets.tobii_title_divider = UIWidgets.create_simple_texture("divider_01_top", "tobii_title_divider")
+	widgets.tobii_button = UIWidgets.create_default_button("tobii_button", scenegraph_definition.tobii_button.size, nil, nil, "Read More", 24)
+	widgets.tobii_window_frame = UIWidgets.create_frame("tobii_window", scenegraph_definition.tobii_window.size, "menu_frame_12", 10)
+	widgets.tobii_window = UIWidgets.create_background("tobii_window", scenegraph_definition.tobii_window.size, "map_bg_image_02")
+	widgets.tobii_window_background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "tobii_window", nil, nil, nil, 1)
+end
+
 local generic_input_actions = {
 	default = {
 		{

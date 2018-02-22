@@ -3,10 +3,11 @@ require("scripts/settings/profiles/career_settings")
 ActionTemplates = ActionTemplates or {}
 ActionTemplates.wield = {
 	default = {
-		weapon_action_hand = "either",
 		wield_cooldown = 0.35,
+		weapon_action_hand = "either",
 		kind = "wield",
 		keep_buffer = true,
+		uninterruptible = true,
 		total_time = 0,
 		condition_func = function (action_user, input_extension)
 			local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")

@@ -367,6 +367,12 @@ return function ()
 			},
 			{
 				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_pack_master"
+			},
+			{
+				"query_context",
 				"source_name",
 				OP.EQ,
 				"bright_wizard"
@@ -408,6 +414,12 @@ return function ()
 				"concept",
 				OP.EQ,
 				"grabbed"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_pack_master"
 			},
 			{
 				"query_context",
@@ -2084,7 +2096,7 @@ return function ()
 				"time_since_overcharge",
 				OP.TIMEDIFF,
 				OP.GT,
-				5
+				300
 			}
 		},
 		on_done = {
@@ -7927,6 +7939,124 @@ return function ()
 			}
 		}
 	})
+	define_rule({
+		name = "pbw_gameplay_hearing_a_chaos_wizard_leech",
+		response = "pbw_gameplay_hearing_a_chaos_wizard_leech",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_corruptor_sorcerer"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"faction_memory",
+				"last_heard_leech",
+				OP.TIMEDIFF,
+				OP.GT,
+				60
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"last_heard_leech",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pbw_gameplay_killing_a_chaos_wizard_leech",
+		response = "pbw_gameplay_killing_a_chaos_wizard_leech",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"enemy_kill"
+			},
+			{
+				"query_context",
+				"killed_type",
+				OP.EQ,
+				"chaos_corruptor_sorcerer"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_memory",
+				"time_since_chaos_wizard_leech",
+				OP.TIMEDIFF,
+				OP.GT,
+				3
+			}
+		},
+		on_done = {
+			{
+				"user_memory",
+				"time_since_chaos_wizard_leech",
+				OP.TIMESET
+			},
+			{
+				"faction_memory",
+				"bright_wizard_special_kills_in_row",
+				OP.ADD,
+				1
+			},
+			{
+				"faction_memory",
+				"empire_soldier_special_kills_in_row",
+				OP.NUMSET,
+				0
+			},
+			{
+				"faction_memory",
+				"witch_hunter_special_kills_in_row",
+				OP.NUMSET,
+				0
+			},
+			{
+				"faction_memory",
+				"dwarf_ranger_special_kills_in_row",
+				OP.NUMSET,
+				0
+			},
+			{
+				"faction_memory",
+				"wood_elf_special_kills_in_row",
+				OP.NUMSET,
+				0
+			}
+		}
+	})
 	add_dialogues({
 		pbw_targeted_by_ratling = {
 			sound_events_n = 7,
@@ -11979,6 +12109,39 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_gameplay_killing_a_chaos_wizard_leech = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "bright_wizard_honduras",
+			category = "enemy_alerts",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_gameplay_killing_a_chaos_wizard_leech_01",
+				"pbw_gameplay_killing_a_chaos_wizard_leech_02",
+				"pbw_gameplay_killing_a_chaos_wizard_leech_03",
+				"pbw_gameplay_killing_a_chaos_wizard_leech_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_gameplay_killing_a_chaos_wizard_leech_01",
+				"pbw_gameplay_killing_a_chaos_wizard_leech_02",
+				"pbw_gameplay_killing_a_chaos_wizard_leech_03",
+				"pbw_gameplay_killing_a_chaos_wizard_leech_04"
+			},
+			randomize_indexes = {}
+		},
 		pbw_gameplay_spots_potion = {
 			sound_events_n = 15,
 			randomize_indexes_n = 0,
@@ -12086,6 +12249,51 @@ return function ()
 				"pbw_gameplay_parry_witch_hunter_02",
 				"pbw_gameplay_parry_witch_hunter_03",
 				"pbw_gameplay_parry_witch_hunter_04"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_seeing_a_skaven_rat_ogre = {
+			sound_events_n = 7,
+			randomize_indexes_n = 0,
+			face_animations_n = 7,
+			database = "bright_wizard_honduras",
+			category = "enemy_alerts_boss",
+			dialogue_animations_n = 7,
+			sound_events = {
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_01",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_04",
+				"pbw_gameplay_seeing_a_Skaven_rat_ogre_07",
+				"pbw_gameplay_seeing_a_Skaven_rat_ogre_08",
+				"pbw_gameplay_seeing_a_Skaven_rat_ogre_09",
+				"pbw_gameplay_seeing_a_Skaven_rat_ogre_10",
+				"pbw_gameplay_seeing_a_Skaven_rat_ogre_12"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_01",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_04",
+				"pbw_gameplay_seeing_a_Skaven_rat_ogre_07",
+				"pbw_gameplay_seeing_a_Skaven_rat_ogre_08",
+				"pbw_gameplay_seeing_a_Skaven_rat_ogre_09",
+				"pbw_gameplay_seeing_a_Skaven_rat_ogre_10",
+				"pbw_gameplay_seeing_a_Skaven_rat_ogre_12"
 			},
 			randomize_indexes = {}
 		},
@@ -13432,23 +13640,27 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_gameplay_seeing_a_skaven_rat_ogre = {
-			sound_events_n = 7,
+		pbw_gameplay_hearing_a_chaos_wizard_leech = {
+			sound_events_n = 9,
 			randomize_indexes_n = 0,
-			face_animations_n = 7,
+			face_animations_n = 9,
 			database = "bright_wizard_honduras",
-			category = "enemy_alerts_boss",
-			dialogue_animations_n = 7,
+			category = "enemy_alerts",
+			dialogue_animations_n = 9,
 			sound_events = {
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_01",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_04",
-				"pbw_gameplay_seeing_a_Skaven_rat_ogre_07",
-				"pbw_gameplay_seeing_a_Skaven_rat_ogre_08",
-				"pbw_gameplay_seeing_a_Skaven_rat_ogre_09",
-				"pbw_gameplay_seeing_a_Skaven_rat_ogre_10",
-				"pbw_gameplay_seeing_a_Skaven_rat_ogre_12"
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_01",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_02",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_04",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_05",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_06",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_07",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_08",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_09",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_10"
 			},
 			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -13464,16 +13676,20 @@ return function ()
 				"face_fear",
 				"face_fear",
 				"face_fear",
+				"face_fear",
+				"face_fear",
 				"face_fear"
 			},
 			localization_strings = {
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_01",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_04",
-				"pbw_gameplay_seeing_a_Skaven_rat_ogre_07",
-				"pbw_gameplay_seeing_a_Skaven_rat_ogre_08",
-				"pbw_gameplay_seeing_a_Skaven_rat_ogre_09",
-				"pbw_gameplay_seeing_a_Skaven_rat_ogre_10",
-				"pbw_gameplay_seeing_a_Skaven_rat_ogre_12"
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_01",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_02",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_04",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_05",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_06",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_07",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_08",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_09",
+				"pbw_gameplay_seeing_a_chaos_wizard_leech_10"
 			},
 			randomize_indexes = {}
 		},

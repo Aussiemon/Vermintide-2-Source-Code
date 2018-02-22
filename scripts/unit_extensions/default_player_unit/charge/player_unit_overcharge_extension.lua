@@ -168,7 +168,7 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 
 	local buff_extension = self.buff_extension
 
-	if 0 < self.overcharge_value or buff_extension.has_buff_type(buff_extension, "passive_career_bw_1_2_automatic_overheat") or buff_extension.has_buff_type(buff_extension, "sienna_unchained_activated_ability") then
+	if 0 < self.overcharge_value or buff_extension.has_buff_type(buff_extension, "sienna_unchained_activated_ability") then
 		if self.update_overcharge_flow_timer < t and not self.venting_overcharge then
 			self.set_flow_values(self, self.overcharge_value, self.overcharge_threshold, self.max_value)
 

@@ -16,6 +16,35 @@ local grid_settings = {
 		icon = UISettings.slot_icons.melee
 	}
 }
+
+local function item_sort_func(item_1, item_2)
+	local item_data_1 = item_1.data
+	local item_data_2 = item_2.data
+	local item_1_rarity = item_1.rarity or item_data_1.rarity
+	local item_2_rarity = item_2.rarity or item_data_2.rarity
+	local item_rarity_order = UISettings.item_rarity_order
+	local item_1_rarity_order = item_rarity_order[item_1_rarity]
+	local item_2_rarity_order = item_rarity_order[item_2_rarity]
+
+	if item_1_rarity_order == item_2_rarity_order then
+		local item_type_1 = Localize(item_data_1.item_type)
+		local item_type_2 = Localize(item_data_2.item_type)
+
+		if item_type_1 == item_type_2 then
+			local item_name_1 = Localize(item_data_1.display_name)
+			local item_name_2 = Localize(item_data_2.display_name)
+
+			return item_name_1 < item_name_2
+		else
+			return item_type_1 < item_type_2
+		end
+	else
+		return item_1_rarity_order < item_2_rarity_order
+	end
+
+	return 
+end
+
 StartGameWindowMutatorGrid = class(StartGameWindowMutatorGrid)
 StartGameWindowMutatorGrid.NAME = "StartGameWindowMutatorGrid"
 StartGameWindowMutatorGrid.on_enter = function (self, params, offset)
@@ -44,6 +73,7 @@ StartGameWindowMutatorGrid.on_enter = function (self, params, offset)
 
 	item_grid.change_category(item_grid, "heroic_deeds")
 	item_grid.disable_item_drag(item_grid)
+	item_grid.apply_item_sorting_function(item_grid, item_sort_func)
 
 	self._item_grid = item_grid
 
@@ -195,6 +225,12 @@ StartGameWindowMutatorGrid._update_selected_item_backend_id = function (self)
 		self._selected_backend_id = backend_id
 
 		self._item_grid:set_backend_id_selected(backend_id)
+	elseif not backend_id then
+		local first_item = self._item_grid:get_item_in_slot(1, 1)
+
+		if first_item then
+			self.parent:set_selected_heroic_deed_backend_id(first_item.backend_id)
+		end
 	end
 
 	return 

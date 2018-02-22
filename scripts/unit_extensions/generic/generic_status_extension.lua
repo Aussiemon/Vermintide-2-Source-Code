@@ -49,7 +49,9 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	self.max_fatigue_points = 100
 	self.next_hanging_damage_time = 0
 	self.block_broken = false
+	self.block_broken_at_t = -math.huge
 	self.pushed = false
+	self.pushed_at_t = -math.huge
 	self.push_cooldown = false
 	self.push_cooldown_timer = false
 	self.timed_block = nil
@@ -406,6 +408,14 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		self._debug_draw_push_arcs(self, unit)
 	end
 
+	local in_end_zone = self.is_in_end_zone(self)
+
+	if self._current_end_zone_state ~= in_end_zone then
+		Wwise.set_state("inside_waystone", (in_end_zone and "true") or "false")
+
+		self._current_end_zone_state = in_end_zone
+	end
+
 	return 
 end
 GenericStatusExtension._debug_draw_block_arcs = function (self, unit)
@@ -714,23 +724,36 @@ GenericStatusExtension.set_shielded = function (self, shielded)
 
 	return 
 end
+local no_sfx_heal_reasons = {
+	career_passive = true,
+	heal_from_proc = true,
+	career_skill = true
+}
+local vfx_heal_reasons = {
+	bandage = true,
+	bandage_trinket = true,
+	buff_shared_medpack = true,
+	healing_draught = true
+}
 GenericStatusExtension.healed = function (self, reason)
 	local unit = self.unit
 	local player = self.player
 	local t = Managers.time:time("game")
 
 	if player.local_player then
-		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-		local first_person_unit = first_person_extension.get_first_person_unit(first_person_extension)
+		if not no_sfx_heal_reasons[reason] then
+			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+			local first_person_unit = first_person_extension.get_first_person_unit(first_person_extension)
 
-		Unit.flow_event(first_person_unit, "sfx_heal")
+			Unit.flow_event(first_person_unit, "sfx_heal")
+		end
 
 		local mood = HealingMoods[reason]
 
 		if mood then
 			MOOD_BLACKBOARD[mood] = true
 		end
-	else
+	elseif vfx_heal_reasons[reason] then
 		ScriptWorld.create_particles_linked(self.world, "fx/chr_player_fak_healed", unit, 0, "destroy")
 	end
 
@@ -791,7 +814,7 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	local block_breaking = false
 
 	if self._block_breaking_fatigue_gain(self, fatigue_type, max_fatigue) then
-		self.set_block_broken(self, true)
+		self.set_block_broken(self, true, t)
 
 		block_breaking = true
 	end
@@ -881,20 +904,25 @@ GenericStatusExtension.current_fatigue_points = function (self)
 
 	return (max_fatigue_points ~= 0 or 0) and math.ceil(self.fatigue/max_fatigue/max_fatigue_points), max_fatigue_points
 end
-GenericStatusExtension.set_pushed = function (self, pushed)
+GenericStatusExtension.set_pushed = function (self, pushed, t)
 	if pushed and self.push_cooldown then
 		return 
 	elseif pushed then
 		self.pushed = pushed
 		self.push_cooldown = true
+		self.pushed_at_t = t
 	else
 		self.pushed = pushed
 	end
 
 	return 
 end
-GenericStatusExtension.set_pushed_no_cooldown = function (self, pushed)
+GenericStatusExtension.set_pushed_no_cooldown = function (self, pushed, t)
 	self.pushed = pushed
+
+	if pushed then
+		self.pushed_at_t = t
+	end
 
 	return 
 end
@@ -932,11 +960,12 @@ end
 GenericStatusExtension.hit_react_type = function (self)
 	return self._hit_react_type or "light"
 end
-GenericStatusExtension.set_block_broken = function (self, block_broken)
+GenericStatusExtension.set_block_broken = function (self, block_broken, t)
 	self.block_broken = block_broken
 
 	if block_broken then
 		self.block_broken_degen_delay = 0
+		self.block_broken_at_t = t
 	end
 
 	return 
@@ -1362,6 +1391,8 @@ GenericStatusExtension.set_in_vortex = function (self, in_vortex, vortex_unit)
 	self.in_vortex = in_vortex
 	self.in_vortex_unit = (in_vortex and vortex_unit) or nil
 
+	self.set_outline_incapacitated(self, in_vortex or self.is_disabled(self))
+
 	return 
 end
 GenericStatusExtension.set_near_vortex = function (self, near_vortex, vortex_unit)
@@ -1691,9 +1722,6 @@ end
 GenericStatusExtension.is_knocked_down = function (self)
 	return self.knocked_down
 end
-GenericStatusExtension.is_grabbed_by_corruptor = function (self)
-	return self.grabbed_by_corruptor
-end
 GenericStatusExtension.set_knocked_down_bleed_buff = function (self, stop_bleed)
 	local buff_extension = self.buff_extension or ScriptUnit.extension(self.unit, "buff_system")
 
@@ -1749,7 +1777,7 @@ GenericStatusExtension.get_disabler_unit = function (self)
 	return 
 end
 GenericStatusExtension.is_disabled = function (self)
-	return self.is_dead(self) or self.is_pounced_down(self) or self.is_knocked_down(self) or self.is_grabbed_by_pack_master(self) or self.get_is_ledge_hanging(self) or self.is_hanging_from_hook(self) or self.is_ready_for_assisted_respawn(self) or self.is_grabbed_by_tentacle(self) or self.is_grabbed_by_chaos_spawn(self) or self.is_in_vortex(self) or self.grabbed_by_corruptor or self.is_overpowered(self)
+	return self.is_dead(self) or self.is_pounced_down(self) or self.is_knocked_down(self) or self.is_grabbed_by_pack_master(self) or self.get_is_ledge_hanging(self) or self.is_hanging_from_hook(self) or self.is_ready_for_assisted_respawn(self) or self.is_grabbed_by_tentacle(self) or self.is_grabbed_by_chaos_spawn(self) or self.is_in_vortex(self) or self.is_grabbed_by_corruptor(self) or self.is_overpowered(self)
 end
 GenericStatusExtension.is_valid_vortex_target = function (self)
 	return not self.is_dead(self) and not self.is_pounced_down(self) and not self.is_knocked_down(self) and not self.is_grabbed_by_pack_master(self) and not self.get_is_ledge_hanging(self) and not self.is_hanging_from_hook(self) and not self.is_ready_for_assisted_respawn(self) and not self.is_grabbed_by_tentacle(self) and not self.is_grabbed_by_chaos_spawn(self) and not self.is_in_end_zone(self)
@@ -1765,6 +1793,9 @@ GenericStatusExtension.is_available_for_career_revive = function (self)
 end
 GenericStatusExtension.is_grabbed_by_tentacle = function (self)
 	return self.grabbed_by_tentacle
+end
+GenericStatusExtension.is_grabbed_by_corruptor = function (self)
+	return self.grabbed_by_corruptor
 end
 GenericStatusExtension.is_grabbed_by_chaos_spawn = function (self)
 	return self.grabbed_by_chaos_spawn

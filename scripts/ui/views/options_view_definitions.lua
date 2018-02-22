@@ -991,9 +991,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 						return 
 					end,
 					release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						if ui_content.callback_on_release then
-							ui_content.callback(ui_content)
-						end
+						ui_content.callback(ui_content)
 
 						return 
 					end

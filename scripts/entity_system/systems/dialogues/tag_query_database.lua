@@ -404,6 +404,11 @@ local context_indexes = table.mirror_array_inplace({
 })
 TagQueryDatabase.define_rule = function (self, rule_definition)
 	local dialogue_name = rule_definition.name
+
+	if dialogue_name == "egs_level_skittergate_rasknitt_appears" then
+		print("uheuhe")
+	end
+
 	local criterias = rule_definition.criterias
 	local real_criterias = table.clone(criterias)
 	rule_definition.real_criterias = real_criterias

@@ -16,6 +16,15 @@ COLD_CAMERA_BACKLIGHT = {
 }
 
 dofile("scripts/settings/level_settings_honduras")
+dofile("scripts/settings/dlc_settings")
+
+for _, dlc in pairs(DLCSettings) do
+	local level_settings = dlc.level_settings
+
+	if level_settings then
+		dofile(level_settings)
+	end
+end
 
 local DEFAULT_TIP_LIST = {
 	"tip_1",

@@ -328,6 +328,10 @@ local breed_data = {
 	}
 }
 Breeds.chaos_marauder = table.create_copy(Breeds.chaos_marauder, breed_data)
+Breeds.chaos_marauder_tutorial = table.create_copy(Breeds.chaos_marauder_tutorial, breed_data)
+Breeds.chaos_marauder_tutorial.behavior = "marauder_tutorial"
+Breeds.chaos_marauder_tutorial.horde_behavior = "marauder_tutorial"
+Breeds.chaos_marauder_tutorial.debug_spawn_category = "Misc"
 BreedActionDimishingDamageDifficulty = {
 	easy = {
 		{
@@ -1226,6 +1230,80 @@ local action_data = {
 			attack_reach_down_3 = "left",
 			attack_pounce_4 = "right",
 			attack_pounce_3 = "left",
+			attack_pounce = "left"
+		}
+	},
+	tutorial_attack = {
+		moving_attack_intensity = 0.75,
+		weapon_reach = 2.5,
+		fatigue_type = "blocked_attack",
+		player_push_speed = 5,
+		dodge_window_start = 0.25,
+		action_weight = 1,
+		hit_react_type = "medium",
+		damage_type = "cutting",
+		attack_intensity = 0.5,
+		dodge_rotation_time = 1.2,
+		considerations = UtilityConsiderations.marauder_attack,
+		default_attack = {
+			anims = {
+				"attack_pounce"
+			},
+			damage_box_range = {
+				flat = 2.25,
+				up = 1.7,
+				down = -0.75
+			}
+		},
+		damage = {
+			3,
+			2,
+			1
+		},
+		difficulty_damage = {
+			easy = {
+				4,
+				2,
+				1
+			},
+			normal = {
+				4,
+				2,
+				1
+			},
+			hard = {
+				7,
+				4,
+				2
+			},
+			survival_hard = {
+				7,
+				4,
+				2
+			},
+			harder = {
+				12,
+				6,
+				3
+			},
+			survival_harder = {
+				12,
+				6,
+				3
+			},
+			hardest = {
+				20,
+				8,
+				4
+			},
+			survival_hardest = {
+				22.5,
+				12,
+				6
+			}
+		},
+		dimishing_damage = {},
+		attack_directions = {
 			attack_pounce = "left"
 		}
 	},

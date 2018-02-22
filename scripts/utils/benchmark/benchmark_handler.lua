@@ -72,7 +72,8 @@ end
 BenchmarkHandler.story_teleport_party = function (self, element, t)
 	local portals = ConflictUtils.get_teleporter_portals()
 	local portal_id = element.portal_id
-	local pos = portals[portal_id]:unbox()
+	local pos = portals[portal_id][1]:unbox()
+	local rot = portals[portal_id][2]:unbox()
 	local local_player = Managers.player:local_player()
 
 	if local_player then
@@ -83,7 +84,7 @@ BenchmarkHandler.story_teleport_party = function (self, element, t)
 			local world = Managers.world:world("level_world")
 
 			LevelHelper:flow_event(world, "teleport_" .. portal_id)
-			locomotion.teleport_to(locomotion, pos)
+			locomotion.teleport_to(locomotion, pos, rot)
 		end
 	end
 

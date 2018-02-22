@@ -1153,6 +1153,126 @@ return function ()
 			}
 		}
 	})
+	define_rule({
+		name = "pdr_helmgart_military_a",
+		response = "pdr_helmgart_military_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"helmgart_military_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"helmgart_military_a",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"helmgart_military_a",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_helmgart_military_b",
+		response = "pdr_helmgart_military_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"helmgart_military_a"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"helmgart_military_b",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"helmgart_military_b",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_helmgart_military_c",
+		response = "pdr_helmgart_military_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"helmgart_military_c"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"helmgart_military_c",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"helmgart_military_c",
+				OP.TIMESET
+			}
+		}
+	})
 	add_dialogues({
 		pdr_level_helmgart_military_halfway_through_horde = {
 			sound_events_n = 4,
@@ -1220,36 +1340,53 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_level_helmgart_military_turn_cannon = {
-			sound_events_n = 4,
+		pdr_helmgart_military_c = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 2,
 			database = "dwarf_ranger_military",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pdr_level_helmgart_military_turn_cannon_01",
-				"pdr_level_helmgart_military_turn_cannon_02",
-				"pdr_level_helmgart_military_turn_cannon_03",
-				"pdr_level_helmgart_military_turn_cannon_04"
+				[1.0] = "pdr_helmgart_military_c_01",
+				[2.0] = "pdr_helmgart_military_c_02"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pdr_level_helmgart_military_turn_cannon_01",
-				"pdr_level_helmgart_military_turn_cannon_02",
-				"pdr_level_helmgart_military_turn_cannon_03",
-				"pdr_level_helmgart_military_turn_cannon_04"
+				[1.0] = "pdr_helmgart_military_c_01",
+				[2.0] = "pdr_helmgart_military_c_02"
+			},
+			randomize_indexes = {}
+		},
+		pdr_helmgart_military_b = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "dwarf_ranger_military",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pdr_helmgart_military_b_01",
+				[2.0] = "pdr_helmgart_military_b_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_helmgart_military_b_01",
+				[2.0] = "pdr_helmgart_military_b_02"
 			},
 			randomize_indexes = {}
 		},
@@ -1283,6 +1420,64 @@ return function ()
 				"pdr_level_helmgart_military_oops_02",
 				"pdr_level_helmgart_military_oops_03",
 				"pdr_level_helmgart_military_oops_04"
+			},
+			randomize_indexes = {}
+		},
+		pdr_level_helmgart_military_turn_cannon = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_military",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pdr_level_helmgart_military_turn_cannon_01",
+				"pdr_level_helmgart_military_turn_cannon_02",
+				"pdr_level_helmgart_military_turn_cannon_03",
+				"pdr_level_helmgart_military_turn_cannon_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			localization_strings = {
+				"pdr_level_helmgart_military_turn_cannon_01",
+				"pdr_level_helmgart_military_turn_cannon_02",
+				"pdr_level_helmgart_military_turn_cannon_03",
+				"pdr_level_helmgart_military_turn_cannon_04"
+			},
+			randomize_indexes = {}
+		},
+		pdr_helmgart_military_a = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "dwarf_ranger_military",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pdr_helmgart_military_a_01",
+				[2.0] = "pdr_helmgart_military_a_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_helmgart_military_a_01",
+				[2.0] = "pdr_helmgart_military_a_02"
 			},
 			randomize_indexes = {}
 		},

@@ -102,7 +102,7 @@ StateLoadingRunning.update = function (self, dt)
 		self._level_transition_handler:load_next_level()
 	end
 
-	if Development.parameter("honduras_demo") and not self.parent:loading_view_setup_done() then
+	if script_data.honduras_demo and not self.parent:loading_view_setup_done() then
 		local level_key = self.parent:get_next_level_key()
 
 		self.parent:setup_loading_view(level_key)

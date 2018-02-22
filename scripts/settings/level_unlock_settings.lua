@@ -29,6 +29,14 @@ GameActsDisplayNames = {
 	act_2 = "act_2_display_name"
 }
 
+for _, dlc in pairs(DLCSettings) do
+	local unlock_settings = dlc.level_unlock_settings
+
+	if unlock_settings then
+		dofile(unlock_settings)
+	end
+end
+
 require("scripts/settings/packaged_levels")
 
 local function is_level_available_on_disk(level_data)

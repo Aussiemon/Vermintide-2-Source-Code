@@ -701,25 +701,21 @@ local action_data = {
 			local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 			local shield_user = not ai_shield_extension.shield_broken
 			local is_blocking = ai_shield_extension.is_blocking
+			local block_count = 4
 
 			if current_health <= 0.5 then
+				block_count = 2
 				health_threshold = true
 			end
 
 			local stagger_anims, idle_event = nil
 
 			if shield_user and stagger then
-				if health_threshold and not is_blocking then
-					blackboard.stagger_time = blackboard.stagger_time
-					stagger_anims = action.shield_block_anims[stagger_type]
-					idle_event = "idle_shield_up"
-
-					ai_shield_extension.set_is_blocking(ai_shield_extension, true)
-				elseif not blocked and stagger < 2 and action.shield_block_anims then
+				if not blocked and stagger < block_count - 1 and action.shield_block_anims then
 					blackboard.stagger_time = blackboard.stagger_time + stagger*breed.shield_stagger_mod
 					stagger_anims = action.shield_block_anims[stagger_type]
 					idle_event = "idle_shield_up"
-				elseif not blocked and stagger < 3 and action.shield_stagger_anims then
+				elseif not blocked and stagger < block_count and action.shield_stagger_anims then
 					blackboard.stagger_time = blackboard.stagger_time + stagger*breed.shield_stagger_mod_2
 					idle_event = "idle_shield_down"
 

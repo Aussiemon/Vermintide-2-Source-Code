@@ -38,18 +38,6 @@ StateInGameRunning.on_enter = function (self, params)
 	self.is_in_inn = params.is_in_inn
 	self.is_in_tutorial = params.is_in_tutorial
 	self.end_conditions_met = false
-	local loaded_player_controls = PlayerData.controls and PlayerData.controls.Player
-	local platform = PLATFORM
-	local player_control_keymap = table.clone(PlayerControllerKeymaps)
-	local player_control_filters = table.clone(PlayerControllerFilters)
-
-	if loaded_player_controls and loaded_player_controls.keymap then
-		table.merge_recursive(player_control_keymap[platform], loaded_player_controls.keymap)
-	end
-
-	if loaded_player_controls and loaded_player_controls.filters then
-		table.merge_recursive(player_control_filters[platform], loaded_player_controls.filters)
-	end
 
 	input_manager.create_input_service(input_manager, "Player", "PlayerControllerKeymaps", "PlayerControllerFilters")
 	input_manager.map_device_to_service(input_manager, "Player", "keyboard")
@@ -427,7 +415,7 @@ StateInGameRunning.on_end_screen_ui_complete = function (self)
 
 	return 
 end
-StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpoint_available)
+StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentage_completed)
 	if not self._spawn_initialized then
 		Managers.transition:hide_loading_icon()
 		Managers.transition:fade_out(GameSettings.transition_fade_in_speed)
@@ -448,6 +436,10 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	ingame_ui.handle_transition(ingame_ui, "close_active")
 	LoreBookHelper.save_new_pages()
 
+	local mission_system = Managers.state.entity:system("mission_system")
+
+	mission_system.set_percentage_completed(mission_system, percentage_completed)
+
 	if Managers.twitch then
 		Managers.twitch:deactivate_twitch_game_mode()
 	end
@@ -455,9 +447,6 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	if game_mode_key == "survival" then
 		if game_won then
 			print("Game won")
-
-			local mission_system = Managers.state.entity:system("mission_system")
-
 			mission_system.evaluate_level_end_missions(mission_system)
 			StatisticsUtil.register_complete_survival_level(statistics_db)
 			Managers.player:set_stats_backend(player)

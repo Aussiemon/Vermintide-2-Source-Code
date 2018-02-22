@@ -62,7 +62,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, resu
 		end
 
 		if 0 < remaining_uses then
-			backend_mirror.update_item(backend_mirror, chest_backend_id, "RemainingUses", remaining_uses)
+			backend_mirror.update_item_field(backend_mirror, chest_backend_id, "RemainingUses", remaining_uses)
 		else
 			backend_mirror.remove_item(backend_mirror, chest_backend_id)
 		end

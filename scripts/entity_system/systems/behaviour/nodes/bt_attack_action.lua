@@ -58,7 +58,6 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 
 	local network_manager = Managers.state.network
 	local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-	local target_unit_id = network_manager.unit_game_object_id(network_manager, target_unit)
 
 	if not blackboard.breed.uses_attack_sfx_callback then
 		self.trigger_attack_sound(self, action, unit, target_unit, blackboard, target_unit_status_extension)
@@ -67,7 +66,10 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.target_unit_status_extension = target_unit_status_extension
 
 	network_manager.anim_event(network_manager, unit, "to_combat")
-	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id)
+
+	local target_unit_id, is_level_unit = network_manager.game_object_or_level_id(network_manager, target_unit)
+
+	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id, is_level_unit)
 
 	blackboard.attack_setup_delayed = true
 	blackboard.attacking_target = target_unit

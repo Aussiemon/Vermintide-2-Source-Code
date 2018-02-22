@@ -37,11 +37,11 @@ local breed_data = {
 	threat_value = 8,
 	detection_radius = math.huge,
 	max_health = {
-		16,
-		16,
-		24,
-		32,
-		48
+		20,
+		20,
+		30,
+		40,
+		60
 	},
 	stagger_duration = {
 		0.5,

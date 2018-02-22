@@ -943,7 +943,7 @@ IngameView.update_menu_options = function (self)
 			local new_menu_layout = nil
 			local level_key = Managers.state.game_mode:level_key()
 
-			if Development.parameter("honduras_demo") then
+			if script_data.honduras_demo then
 				new_menu_layout = layout_list.demo
 			elseif level_key == "tutorial" then
 				new_menu_layout = layout_list.tutorial

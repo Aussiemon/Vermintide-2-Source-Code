@@ -256,6 +256,8 @@ PackageManager.can_unload = function (self, package_name)
 end
 PackageManager.destroy = function (self)
 	debug_print("Destroy()")
+	table.clear(self._queue_order)
+	table.clear(self._queued_async_packages)
 
 	for package_name, _ in pairs(self._packages) do
 		for reference_name, _ in pairs(self._references[package_name]) do
@@ -268,9 +270,6 @@ PackageManager.destroy = function (self)
 			self.unload(self, package_name, reference_name)
 		end
 	end
-
-	table.clear(self._queue_order)
-	table.clear(self._queued_async_packages)
 
 	return 
 end

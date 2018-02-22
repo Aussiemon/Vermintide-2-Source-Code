@@ -577,7 +577,7 @@ CareerSettings = {
 		},
 		preview_items = {
 			"wh_fencing_sword",
-			"wh_hat_0003"
+			"witchhunter_hat_0000"
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -778,7 +778,7 @@ CareerSettings = {
 	}
 }
 
-if Development.parameter("honduras_demo") then
+if script_data.honduras_demo then
 	CareerSettings.we_shade.preview_items = {
 		"we_spear",
 		"shade_hat_0000"

@@ -15,6 +15,7 @@ GameSettingsDevelopment.skip_start_screen = true
 GameSettingsDevelopment.disable_shadow_lights_system = true
 GameSettingsDevelopment.use_baked_enemy_meshes = false
 GameSettingsDevelopment.help_screen_enabled = false
+GameSettingsDevelopment.use_career_voice_pitch = false
 GameSettingsDevelopment.lobby_browser_enabled = true
 GameSettingsDevelopment.disabled_interactions = {}
 GameSettingsDevelopment.use_global_chat = (table.find(argv, "-use-global-chat") and true) or false
@@ -52,7 +53,9 @@ if Development.parameter("attract_mode") then
 	end
 end
 
-if Development.parameter("honduras_demo") then
+script_data.disable_tutorial_at_start = script_data.disable_tutorial_at_start or Development.parameter("disable_tutorial_at_start")
+
+if script_data.honduras_demo then
 	GameSettingsDevelopment.use_backend = false
 	GameSettingsDevelopment.use_local_backend = true
 	GameSettingsDevelopment.skip_start_screen = false
@@ -70,10 +73,16 @@ end
 local settings = script_data.settings
 
 if settings.steam or Development.parameter("force_steam") then
-	if rawget(_G, "Steam") then
-		local app_id = Steam.app_id()
+	if rawget(_G, "Steam") or DEDICATED_SERVER then
+		local app_id = nil
 
-		if not Steam.owns_app(app_id) then
+		if DEDICATED_SERVER then
+			app_id = SteamGameServer.app_id()
+		else
+			app_id = Steam.app_id()
+		end
+
+		if not DEDICATED_SERVER and not Steam.owns_app(app_id) then
 			Application.quit_with_message("Vermintide 2. You need to own game to play it.")
 		end
 
@@ -96,7 +105,7 @@ elseif BUILD == "dev" or BUILD == "debug" then
 	GameSettingsDevelopment.network_mode = (LEVEL_EDITOR_TEST and "lan") or (Development.parameter("force_steam") and "steam") or "lan"
 	GameSettingsDevelopment.show_fps = Development.parameter("show_fps") == nil or Development.parameter("show_fps")
 	script_data.unlock_all_levels = Development.parameter("unlock-all-levels")
-elseif not Development.parameter("honduras_demo") and not Development.parameter("attract_mode") and not DEDICATED_SERVER then
+elseif not script_data.honduras_demo and not Development.parameter("attract_mode") and not DEDICATED_SERVER then
 	print("Running release game without content revision, quitting.")
 	Application.quit()
 end
@@ -106,7 +115,12 @@ if Development.parameter("give-all-lan-backend-items") then
 end
 
 GameSettingsDevelopment.disable_crafting = Development.parameter("disable-crafting")
-GameSettingsDevelopment.disable_free_flight = Development.parameter("disable-free-flight") or BUILD == "release"
+
+if BUILD == "dev" or BUILD == "debug" then
+	GameSettingsDevelopment.disable_free_flight = Development.parameter("disable-free-flight")
+else
+	GameSettingsDevelopment.disable_free_flight = Development.parameter("disable-free-flight") == nil or Development.parameter("disable-free-flight")
+end
 
 if Development.parameter("quests_enabled") ~= nil then
 	GameSettingsDevelopment.backend_settings.quests_enabled = Development.parameter("quests_enabled")

@@ -251,7 +251,7 @@ weapon_template.actions = {
 			}
 		},
 		heavy_attack = {
-			damage_window_start = 0.35,
+			damage_window_start = 0.2,
 			range_mod = 1.2,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
@@ -263,13 +263,13 @@ weapon_template.actions = {
 			hit_effect = "melee_hit_hammers_1h",
 			aim_assist_max_ramp_multiplier = 0.6,
 			aim_assist_ramp_decay_delay = 0.1,
-			damage_window_end = 0.45,
+			damage_window_end = 0.28,
 			impact_sound_event = "blunt_hit",
 			reset_aim_on_attack = true,
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 3,
 			uninterruptible = true,
-			anim_event = "attack_swing_down",
+			anim_event = "attack_swing_heavy_down",
 			hit_stop_anim = "attack_hit",
 			total_time = 1.2,
 			anim_end_event_condition_func = function (unit, end_reason)

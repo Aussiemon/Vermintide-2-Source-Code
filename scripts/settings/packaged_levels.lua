@@ -1,5 +1,6 @@
 PACKAGED_LEVEL_PACKAGE_NAMES = {
 	["resource_packages/levels/honduras/elven_ruins"] = true,
+	["resource_packages/levels/honduras/farmlands"] = true,
 	["resource_packages/levels/honduras/military"] = true,
 	["resource_packages/levels/honduras_levels"] = true,
 	["resource_packages/levels/inn"] = true,

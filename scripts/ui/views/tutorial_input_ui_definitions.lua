@@ -1,8 +1,8 @@
 local RETAINED_MODE_ENABLED = false
-local NUMBER_OF_TOOLTIP_INPUT_WIDGETS = 4
+local NUMBER_OF_TOOLTIP_INPUT_WIDGETS = 5
 local scenegraph_definition = {
-	root = {
-		is_root = true,
+	screen = {
+		scale = "fit",
 		size = {
 			1920,
 			1080
@@ -15,7 +15,7 @@ local scenegraph_definition = {
 	},
 	center_root = {
 		vertical_alignment = "center",
-		parent = "root",
+		parent = "screen",
 		horizontal_alignment = "center",
 		size = {
 			1920,
@@ -27,21 +27,9 @@ local scenegraph_definition = {
 			0
 		}
 	},
-	screen_fit = {
-		scale = "fit",
-		position = {
-			0,
-			0,
-			UILayer.tutorial
-		},
-		size = {
-			1920,
-			1080
-		}
-	},
 	tutorial_tooltip_root = {
 		vertical_alignment = "center",
-		parent = "root",
+		parent = "screen",
 		horizontal_alignment = "center",
 		position = {
 			0,
@@ -59,25 +47,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		position = {
 			0,
-			-330,
+			-270,
 			10
 		},
 		size = {
 			0,
-			0
-		}
-	},
-	tutorial_tooltip_description = {
-		vertical_alignment = "bottom",
-		parent = "tutorial_tooltip",
-		horizontal_alignment = "center",
-		position = {
-			0,
-			25,
-			1
-		},
-		size = {
-			400,
 			0
 		}
 	},
@@ -91,13 +65,41 @@ local scenegraph_definition = {
 			0
 		},
 		size = {
-			482,
-			80
+			680,
+			160
+		}
+	},
+	tutorial_tooltip_description = {
+		vertical_alignment = "top",
+		parent = "tutorial_tooltip_background",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			-46,
+			1
+		},
+		size = {
+			400,
+			0
+		}
+	},
+	tutorial_tooltip_sub_description = {
+		vertical_alignment = "center",
+		parent = "tutorial_tooltip_background",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			-32,
+			1
+		},
+		size = {
+			400,
+			0
 		}
 	},
 	tutorial_tooltip_input_field = {
-		vertical_alignment = "top",
-		parent = "tutorial_tooltip",
+		vertical_alignment = "center",
+		parent = "tutorial_tooltip_background",
 		horizontal_alignment = "center",
 		position = {
 			0,
@@ -105,11 +107,12 @@ local scenegraph_definition = {
 			1
 		},
 		size = {
-			1920,
+			0,
 			0
 		}
 	}
 }
+local alpha = 0
 
 local function create_tutorial_tooltip_input_description_definitions(amount)
 	local input_description_widgets = {}
@@ -131,7 +134,7 @@ local function create_tutorial_tooltip_input_description_definitions(amount)
 			},
 			position = {
 				0,
-				0,
+				-20,
 				1
 			}
 		}
@@ -218,6 +221,15 @@ local function create_tutorial_tooltip_input_description_definitions(amount)
 						end
 					},
 					{
+						style_id = "prefix_text_shadow",
+						pass_type = "text",
+						text_id = "prefix_text",
+						retained_mode = RETAINED_MODE_ENABLED,
+						content_check_function = function (content)
+							return content.prefix_text ~= ""
+						end
+					},
+					{
 						style_id = "suffix_text",
 						pass_type = "text",
 						text_id = "suffix_text",
@@ -227,7 +239,25 @@ local function create_tutorial_tooltip_input_description_definitions(amount)
 						end
 					},
 					{
+						style_id = "suffix_text_shadow",
+						pass_type = "text",
+						text_id = "suffix_text",
+						retained_mode = RETAINED_MODE_ENABLED,
+						content_check_function = function (content)
+							return content.suffix_text ~= ""
+						end
+					},
+					{
 						style_id = "button_text",
+						pass_type = "text",
+						text_id = "button_text",
+						retained_mode = RETAINED_MODE_ENABLED,
+						content_check_function = function (content)
+							return content.button_text ~= ""
+						end
+					},
+					{
+						style_id = "button_text_shadow",
 						pass_type = "text",
 						text_id = "button_text",
 						retained_mode = RETAINED_MODE_ENABLED,
@@ -250,25 +280,39 @@ local function create_tutorial_tooltip_input_description_definitions(amount)
 			content = {
 				prefix_text = "",
 				suffix_text = "",
-				button_text = "",
-				icon = {
-					"pc_button_icon_left"
-				}
+				button_text = ""
 			},
 			style = {
 				prefix_text = {
 					word_wrap = false,
 					localize = false,
-					font_size = 24,
+					font_size = 42,
 					pixel_perfect = true,
 					horizontal_alignment = "right",
 					vertical_alignment = "center",
 					dynamic_font = true,
 					font_type = "hell_shark",
-					text_color = Colors.get_color_table_with_alpha("white", 255),
+					text_color = Colors.get_color_table_with_alpha("white", alpha),
 					offset = {
 						0,
 						0,
+						2
+					},
+					scenegraph_id = scenegraph_prefix_text_id
+				},
+				prefix_text_shadow = {
+					word_wrap = false,
+					localize = false,
+					font_size = 42,
+					pixel_perfect = true,
+					horizontal_alignment = "right",
+					vertical_alignment = "center",
+					dynamic_font = true,
+					font_type = "hell_shark",
+					text_color = Colors.get_color_table_with_alpha("black", alpha),
+					offset = {
+						2,
+						-2,
 						1
 					},
 					scenegraph_id = scenegraph_prefix_text_id
@@ -276,16 +320,33 @@ local function create_tutorial_tooltip_input_description_definitions(amount)
 				suffix_text = {
 					word_wrap = false,
 					localize = false,
-					font_size = 24,
+					font_size = 42,
 					pixel_perfect = true,
 					horizontal_alignment = "left",
 					vertical_alignment = "center",
 					dynamic_font = true,
 					font_type = "hell_shark",
-					text_color = Colors.get_color_table_with_alpha("white", 255),
+					text_color = Colors.get_color_table_with_alpha("white", alpha),
 					offset = {
 						0,
 						0,
+						2
+					},
+					scenegraph_id = scenegraph_suffix_text_id
+				},
+				suffix_text_shadow = {
+					word_wrap = false,
+					localize = false,
+					font_size = 42,
+					pixel_perfect = true,
+					horizontal_alignment = "left",
+					vertical_alignment = "center",
+					dynamic_font = true,
+					font_type = "hell_shark",
+					text_color = Colors.get_color_table_with_alpha("black", alpha),
+					offset = {
+						2,
+						-2,
 						1
 					},
 					scenegraph_id = scenegraph_suffix_text_id
@@ -293,16 +354,33 @@ local function create_tutorial_tooltip_input_description_definitions(amount)
 				button_text = {
 					word_wrap = false,
 					localize = false,
-					font_size = 24,
+					font_size = 42,
 					pixel_perfect = true,
 					horizontal_alignment = "center",
 					vertical_alignment = "center",
 					dynamic_font = true,
 					font_type = "hell_shark",
-					text_color = Colors.get_color_table_with_alpha("white", 255),
+					text_color = Colors.get_color_table_with_alpha("font_title", alpha),
 					offset = {
 						0,
 						0,
+						2
+					},
+					scenegraph_id = scenegraph_button_text_id
+				},
+				button_text_shadow = {
+					word_wrap = false,
+					localize = false,
+					font_size = 42,
+					pixel_perfect = true,
+					horizontal_alignment = "center",
+					vertical_alignment = "center",
+					dynamic_font = true,
+					font_type = "hell_shark",
+					text_color = Colors.get_color_table_with_alpha("black", alpha),
+					offset = {
+						2,
+						-2,
 						1
 					},
 					scenegraph_id = scenegraph_button_text_id
@@ -319,12 +397,7 @@ local function create_tutorial_tooltip_input_description_definitions(amount)
 						0,
 						1
 					},
-					color = {
-						255,
-						255,
-						255,
-						255
-					},
+					color = Colors.get_color_table_with_alpha("white", alpha),
 					scenegraph_id = scenegraph_icon_id
 				}
 			},
@@ -344,20 +417,58 @@ local widget_definitions = {
 				{
 					texture_id = "background",
 					style_id = "background",
-					pass_type = "rotated_texture",
-					retained_mode = RETAINED_MODE_ENABLED
+					pass_type = "texture"
+				},
+				{
+					texture_id = "divider",
+					style_id = "divider",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "completed_texture",
+					style_id = "completed_texture",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.completed
+					end
+				},
+				{
+					texture_id = "completed_texture",
+					style_id = "completed_texture_shadow",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.completed
+					end
 				},
 				{
 					style_id = "description",
 					pass_type = "text",
-					text_id = "description",
-					retained_mode = RETAINED_MODE_ENABLED
+					text_id = "description"
+				},
+				{
+					style_id = "description_shadow",
+					pass_type = "text",
+					text_id = "description"
+				},
+				{
+					style_id = "sub_description",
+					pass_type = "text",
+					text_id = "sub_description"
+				},
+				{
+					style_id = "sub_description_shadow",
+					pass_type = "text",
+					text_id = "sub_description"
 				}
 			}
 		},
 		content = {
-			background = "hud_difficulty_unlocked_bg",
-			description = "tutorial_tooltip_advanced_enemy_armor"
+			completed_texture = "tutorial_input_completed",
+			description = "tutorial_tooltip_advanced_enemy_armor",
+			background = "tab_menu_bg_02",
+			completed = false,
+			sub_description = "",
+			divider = "divider_01_top"
 		},
 		style = {
 			background = {
@@ -365,19 +476,64 @@ local widget_definitions = {
 				offset = {
 					0,
 					0,
-					1
+					0
 				},
-				pivot = {
-					241,
-					40
-				},
-				angle = math.pi,
 				color = {
-					255,
+					alpha,
 					255,
 					255,
 					255
 				}
+			},
+			divider = {
+				vertical_alignment = "center",
+				scenegraph_id = "tutorial_tooltip_background",
+				horizontal_alignment = "center",
+				offset = {
+					0,
+					0,
+					2
+				},
+				texture_size = {
+					264,
+					32
+				},
+				color = {
+					alpha,
+					255,
+					255,
+					255
+				}
+			},
+			completed_texture = {
+				vertical_alignment = "center",
+				scenegraph_id = "tutorial_tooltip_background",
+				horizontal_alignment = "center",
+				offset = {
+					0,
+					0,
+					21
+				},
+				texture_size = {
+					408,
+					179
+				},
+				color = Colors.get_color_table_with_alpha("font_title", alpha)
+			},
+			completed_texture_shadow = {
+				vertical_alignment = "center",
+				scenegraph_id = "tutorial_tooltip_background",
+				horizontal_alignment = "center",
+				offset = {
+					2,
+					-2,
+					20
+				},
+				texture_size = {
+					408,
+					179
+				},
+				color = Colors.get_color_table_with_alpha("black", alpha)
 			},
 			description = {
 				scenegraph_id = "tutorial_tooltip_description",
@@ -385,14 +541,65 @@ local widget_definitions = {
 				horizontal_alignment = "center",
 				word_wrap = false,
 				pixel_perfect = true,
-				font_size = 24,
+				font_size = 52,
 				vertical_alignment = "center",
 				dynamic_font = true,
-				font_type = "hell_shark",
-				text_color = Colors.get_color_table_with_alpha("white", 255),
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("white", alpha),
 				offset = {
 					0,
 					0,
+					2
+				}
+			},
+			description_shadow = {
+				scenegraph_id = "tutorial_tooltip_description",
+				localize = true,
+				horizontal_alignment = "center",
+				word_wrap = false,
+				pixel_perfect = true,
+				font_size = 52,
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", alpha),
+				offset = {
+					2,
+					-2,
+					1
+				}
+			},
+			sub_description = {
+				scenegraph_id = "tutorial_tooltip_sub_description",
+				localize = false,
+				horizontal_alignment = "center",
+				word_wrap = false,
+				pixel_perfect = true,
+				font_size = 36,
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("font_default", alpha),
+				offset = {
+					0,
+					0,
+					2
+				}
+			},
+			sub_description_shadow = {
+				scenegraph_id = "tutorial_tooltip_sub_description",
+				localize = false,
+				horizontal_alignment = "center",
+				word_wrap = false,
+				pixel_perfect = true,
+				font_size = 36,
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", alpha),
+				offset = {
+					2,
+					-2,
 					1
 				}
 			}

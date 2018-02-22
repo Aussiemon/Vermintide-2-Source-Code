@@ -99,13 +99,28 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 end
 ActionUtils.scale_powerlevels = function (power_level, power_type)
 	local min_cap_powerlevel = 200
+
+	if power_level < min_cap_powerlevel then
+		return power_level
+	end
+
+	local starting_powerlevel_bonus = 50
+	local starting_bonus_range = 100
 	local powerlevel_diff_ratio = {
 		impact = 2,
 		attack = 3,
 		cleave = 3
 	}
 	local native_diff_ratio = 5
-	local scaled_powerlevel_section = (power_level - min_cap_powerlevel)*powerlevel_diff_ratio[power_type]/native_diff_ratio
+	local scaled_powerlevel_section = nil
+
+	if min_cap_powerlevel + starting_bonus_range <= power_level then
+		scaled_powerlevel_section = (power_level - min_cap_powerlevel)*(powerlevel_diff_ratio[power_type] - 1)/(native_diff_ratio - 1)
+	else
+		local starting_bonus = starting_powerlevel_bonus*((power_level - 200)/starting_bonus_range - 1)
+		scaled_powerlevel_section = ((power_level + starting_bonus) - min_cap_powerlevel)*(powerlevel_diff_ratio[power_type] - 1)/(native_diff_ratio - 1)
+	end
+
 	local scaled_powerlevel = min_cap_powerlevel + scaled_powerlevel_section
 
 	return scaled_powerlevel

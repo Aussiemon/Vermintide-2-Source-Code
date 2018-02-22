@@ -1,7 +1,6 @@
 local definitions = local_require("scripts/ui/mission_vote_ui/mission_voting_ui_definitions")
 local widget_definitions = definitions.widgets
 local deed_game_widget_definitions = definitions.deed_game_widgets
-local mutator_widget_definitions = definitions.mutator_widgets
 local custom_game_widget_definitions = definitions.custom_game_widgets
 local adventure_game_widget_definitions = definitions.adventure_game_widgets
 
@@ -62,7 +61,6 @@ MissionVotingUI.init = function (self, ingame_ui_context)
 	self.create_ui_elements(self)
 	rawset(_G, "ingame_voting_ui", self)
 
-	self._active_mutator_widgets = {}
 	self.unblocked_services = {}
 	self.unblocked_services_n = 0
 	local input_manager = self.input_manager
@@ -101,19 +99,6 @@ MissionVotingUI.create_ui_elements = function (self)
 
 	self._deed_widgets = deed_widgets
 	self._deed_widgets_by_name = deed_widgets_by_name
-	local mutator_widgets = {}
-	local mutator_widgets_by_name = {}
-
-	for name, widget_definition in pairs(mutator_widget_definitions) do
-		if widget_definition then
-			local widget = UIWidget.init(widget_definition)
-			mutator_widgets[#mutator_widgets + 1] = widget
-			mutator_widgets_by_name[name] = widget
-		end
-	end
-
-	self._mutator_widgets = mutator_widgets
-	self._mutator_widgets_by_name = mutator_widgets_by_name
 	local custom_game_widgets = {}
 	local custom_game_widgets_by_name = {}
 
@@ -362,94 +347,14 @@ MissionVotingUI._set_deed_presentation = function (self, item_key, level_key, di
 	local difficulty_display_name = difficulty_settings.display_name
 	local difficulty_display_image = difficulty_settings.display_image
 	local deed_widgets_by_name = self._deed_widgets_by_name
-	local mutator_widgets_by_name = self._mutator_widgets_by_name
-	local deed_options = deed_widgets_by_name.deed_options
-	local content = deed_options.content
-	content.option_text_1 = Localize(level_display_name)
-	content.option_text_2 = Localize(difficulty_display_name)
-	local display_name = item_data.display_name
-	content.deed_title = Localize(display_name)
-	local mutators = item_data.mutators
-
-	self._add_mutator_entries(self, mutators)
-
-	local rewards = item_data.rewards
-
-	self._add_mutator_rewards(self, rewards)
-
+	local item = {
+		data = item_data,
+		difficulty = difficulty,
+		level_key = level_key
+	}
+	local item_presentation = deed_widgets_by_name.item_presentation
+	item_presentation.content.item = item
 	self._presentation_type = "deed"
-
-	return 
-end
-MissionVotingUI._add_mutator_rewards = function (self, rewards)
-	local deed_widgets_by_name = self._deed_widgets_by_name
-	local num_rewards = #rewards
-	local spacing = 20
-	local start_offset = -(num_rewards - 1)*(spacing*0.5 + 40)
-
-	for i = 1, 2, 1 do
-		local widget_name = "reward_item_" .. i
-		local widget = deed_widgets_by_name[widget_name]
-		local content = widget.content
-		local item_key = rewards[i]
-		content.visible = item_key ~= nil
-
-		if item_key then
-			local hotspot_content = content.button_hotspot
-			local style = widget.style
-			local item_data = ItemMasterList[item_key]
-			local inventory_icon = item_data.inventory_icon
-			local rarity = item_data.rarity
-			local slot_type = item_data.slot_type
-			local item = {
-				data = item_data
-			}
-			content.item_icon = inventory_icon
-			content.item_frame = "item_frame"
-			content.rarity_texture = UISettings.item_rarity_textures[rarity]
-			content.item = item
-			widget.offset[1] = start_offset
-			start_offset = start_offset + 80 + spacing
-		end
-	end
-
-	return 
-end
-MissionVotingUI._add_mutator_entries = function (self, entries)
-	local active_mutator_widgets = self._active_mutator_widgets
-
-	table.clear(active_mutator_widgets)
-
-	local ui_top_renderer = self.ui_top_renderer
-	local ui_scenegraph = self.ui_scenegraph
-	local mutator_widgets = self._mutator_widgets
-	local entry_spacing = 10
-	local total_length = 0
-
-	for index, name in ipairs(entries) do
-		local widget = mutator_widgets[index]
-		local scenegraph_id = widget.scenegraph_id
-		local content = widget.content
-		local offset = widget.offset
-		local style = widget.style
-		local text_style = style.text
-		local text_size = ui_scenegraph[scenegraph_id].size
-		text_size[2] = 0
-		local mutator_template = MutatorTemplates[name]
-		local display_name = mutator_template.display_name
-		local description = mutator_template.description
-		local icon = mutator_template.icon
-		local title_text = (display_name and Localize(display_name)) or "n/a"
-		local description_text = (description and Localize(description)) or "n/a"
-		local text = title_text
-		content.text = text
-		content.icon = icon or "icons_placeholder"
-		local text_height = get_text_height(ui_top_renderer, text_size, text_style, content, text)
-		text_size[2] = math.max(text_height, 30)
-		offset[2] = -total_length
-		total_length = total_length + text_size[2] + entry_spacing
-		active_mutator_widgets[index] = widget
-	end
 
 	return 
 end
@@ -641,20 +546,6 @@ MissionVotingUI.draw = function (self, dt)
 				UIRenderer.draw_widget(ui_top_renderer, widget)
 
 				render_settings.snap_pixel_positions = snap_pixel_positions
-			end
-
-			local active_mutator_widgets = self._active_mutator_widgets
-
-			if active_mutator_widgets then
-				for _, widget in ipairs(active_mutator_widgets) do
-					if widget.snap_pixel_positions ~= nil then
-						render_settings.snap_pixel_positions = widget.snap_pixel_positions
-					end
-
-					UIRenderer.draw_widget(ui_top_renderer, widget)
-
-					render_settings.snap_pixel_positions = snap_pixel_positions
-				end
 			end
 		end
 	end

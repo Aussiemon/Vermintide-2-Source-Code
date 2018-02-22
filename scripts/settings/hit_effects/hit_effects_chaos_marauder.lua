@@ -536,7 +536,6 @@ HitEffectsChaosMarauder = {
 	},
 	heavy_slashing_smiter_death = {
 		inherits = "default_death",
-		do_dismember = true,
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -554,6 +553,7 @@ HitEffectsChaosMarauder = {
 	},
 	heavy_slashing_smiter_death_right_arm = {
 		inherits = "heavy_slashing_smiter_death",
+		do_dismember = true,
 		extra_conditions = {
 			hit_zone = "right_arm"
 		},
@@ -564,12 +564,33 @@ HitEffectsChaosMarauder = {
 	},
 	heavy_slashing_smiter_death_left_arm = {
 		inherits = "heavy_slashing_smiter_death",
+		do_dismember = true,
 		extra_conditions = {
 			hit_zone = "left_arm"
 		},
 		animations = {
 			"ragdoll",
 			"death_arm_left"
+		}
+	},
+	heavy_slashing_smiter_death_right_leg = {
+		inherits = "heavy_slashing_smiter_death",
+		do_dismember = true,
+		extra_conditions = {
+			hit_zone = "right_leg"
+		},
+		animations = {
+			"ragdoll"
+		}
+	},
+	heavy_slashing_smiter_death_left_leg = {
+		inherits = "heavy_slashing_smiter_death",
+		do_dismember = true,
+		extra_conditions = {
+			hit_zone = "left_leg"
+		},
+		animations = {
+			"ragdoll"
 		}
 	},
 	heavy_slashing_smiter_death_torso = {
@@ -583,6 +604,7 @@ HitEffectsChaosMarauder = {
 	},
 	heavy_slashing_smiter_death_head = {
 		inherits = "heavy_slashing_smiter_death",
+		do_dismember = true,
 		extra_conditions = {
 			hit_zone = {
 				"neck",

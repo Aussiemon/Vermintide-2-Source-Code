@@ -360,7 +360,7 @@ BTConditions.bot_should_heal = function (blackboard)
 	local hurt = current_health_percent <= template.bot_heal_threshold
 	local target_unit = blackboard.target_unit
 	local is_safe = not target_unit or ((template.fast_heal or blackboard.is_healing_self) and #blackboard.proximite_enemies == 0) or (target_unit ~= blackboard.priority_target_enemy and target_unit ~= blackboard.urgent_target_enemy and target_unit ~= blackboard.proximity_target_enemy and target_unit ~= blackboard.slot_target_enemy)
-	local wounded = blackboard.status_extension.wounded
+	local wounded = blackboard.status_extension:is_wounded()
 
 	return is_safe and (hurt or blackboard.force_use_health_pickup or wounded)
 end
@@ -383,6 +383,31 @@ BTConditions.is_slot_not_wielded = function (blackboard, args)
 	local wanted_slot = args[1]
 
 	return wielded_slot ~= wanted_slot
+end
+local PUSHED_COOLDOWN = 2
+local BLOCK_BROKEN_COOLDOWN = 4
+
+local function is_safe_to_block_interact(status_extension, interaction_extension, wanted_interaction_type)
+	local t = Managers.time:time("game")
+	local pushed_t = status_extension.pushed_at_t
+	local block_broken_t = status_extension.block_broken_at_t
+	local enough_fatigue = true
+	local is_interacting, interaction_type = interaction_extension.is_interacting(interaction_extension)
+
+	if not is_interacting or interaction_type ~= wanted_interaction_type then
+		local current_fatigue, max_fatigue = status_extension.current_fatigue_points(status_extension)
+		local stamina_left = max_fatigue - current_fatigue
+		local blocked_attack_cost = PlayerUnitStatusSettings.fatigue_point_costs.blocked_attack
+		enough_fatigue = current_fatigue == 0 or blocked_attack_cost < stamina_left
+	end
+
+	if enough_fatigue and pushed_t + PUSHED_COOLDOWN < t and block_broken_t + BLOCK_BROKEN_COOLDOWN < t then
+		return true
+	else
+		return false
+	end
+
+	return 
 end
 
 local function is_there_threat_to_aid(self_unit, proximite_enemies, force_aid)
@@ -436,6 +461,12 @@ BTConditions.can_revive = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 
 	if blackboard.interaction_unit == target_ally_unit and blackboard.target_ally_need_type == "knocked_down" then
+		local interaction_extension = blackboard.interaction_extension
+
+		if not is_safe_to_block_interact(blackboard.status_extension, interaction_extension, "revive") then
+			return false
+		end
+
 		local self_unit = blackboard.unit
 		local health = ScriptUnit.extension(target_ally_unit, "health_system"):current_health_percent()
 
@@ -444,7 +475,6 @@ BTConditions.can_revive = function (blackboard)
 		end
 
 		local ally_distance = blackboard.ally_distance
-		local interaction_extension = blackboard.interaction_extension
 		local is_interacting, interaction_type = interaction_extension.is_interacting(interaction_extension)
 
 		if is_interacting and interaction_type == "revive" and ally_distance < 1 then
@@ -518,6 +548,10 @@ BTConditions.can_rescue_hanging_from_hook = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 
 	if blackboard.interaction_unit == target_ally_unit and blackboard.target_ally_need_type == "hook" then
+		if not is_safe_to_block_interact(blackboard.status_extension, blacboard.interaction_extension, "release_from_hook") then
+			return false
+		end
+
 		local self_unit = blackboard.unit
 
 		if is_there_threat_to_aid(self_unit, blackboard.proximite_enemies, blackboard.force_aid) then
@@ -539,6 +573,10 @@ BTConditions.can_rescue_ledge_hanging = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 
 	if blackboard.interaction_unit == target_ally_unit and blackboard.target_ally_need_type == "ledge" then
+		if not is_safe_to_block_interact(blackboard.status_extension, blackboard.interaction_extension, "pull_up") then
+			return false
+		end
+
 		local self_unit = blackboard.unit
 
 		if is_there_threat_to_aid(self_unit, blackboard.proximite_enemies, blackboard.force_aid) then

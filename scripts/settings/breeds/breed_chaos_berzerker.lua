@@ -58,7 +58,7 @@ local breed_data = {
 	scale_death_push = 0.65,
 	aim_template = "chaos_marauder",
 	stagger_threshold_heavy = 3,
-	stagger_threshold_light = 1,
+	stagger_threshold_light = 0.75,
 	hit_reaction = "ai_default",
 	patrol_passive_target_selection = "patrol_passive_target_selection",
 	hit_effect_template = "HitEffectsChaosBerzerker",
@@ -1698,12 +1698,12 @@ local frenzy_attack = {
 	},
 	difficulty_damage = {
 		easy = {
-			4,
+			3,
 			4,
 			2
 		},
 		normal = {
-			4,
+			3,
 			4,
 			2
 		},

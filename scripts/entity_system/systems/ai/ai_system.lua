@@ -124,6 +124,14 @@ AISystem.init = function (self, context, name)
 
 	self._hot_join_sync_units = {}
 
+	for layer_name, _ in pairs(NAV_TAG_VOLUME_LAYER_COST_AI) do
+		NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = 1
+	end
+
+	for layer_name, _ in pairs(NAV_TAG_VOLUME_LAYER_COST_BOTS) do
+		NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = 1
+	end
+
 	return 
 end
 AISystem.get_nav_cost_maps_data = function (self)
@@ -1267,7 +1275,7 @@ AISystem.rpc_set_corruptor_beam_state = function (self, peer_id, unit_id, state,
 	local corruptor_beam_extension = ScriptUnit.has_extension(unit, "ai_beam_effect_system")
 
 	if unit and corruptor_beam_extension then
-		corruptor_beam_extension.set_state(corruptor_beam_extension, state, target_unit)
+		corruptor_beam_extension.set_state(corruptor_beam_extension, state, Managers.player:is_player_unit(target_unit) and target_unit)
 	end
 
 	return 

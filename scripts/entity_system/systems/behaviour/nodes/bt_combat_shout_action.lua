@@ -17,9 +17,9 @@ BTCombatShoutAction.enter = function (self, unit, blackboard, t)
 	network_manager.anim_event(network_manager, unit, action.shout_anim)
 
 	local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-	local target_unit_id = network_manager.unit_game_object_id(network_manager, blackboard.target_unit)
+	local target_unit_id, is_level_unit = network_manager.game_object_or_level_id(network_manager, blackboard.target_unit)
 
-	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id)
+	network_manager.network_transmit:send_rpc_all("rpc_enemy_has_target", unit_id, target_unit_id, is_level_unit)
 
 	local navigation_extension = blackboard.navigation_extension
 

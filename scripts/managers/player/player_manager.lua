@@ -2,6 +2,7 @@ require("scripts/settings/player_unit_damage_settings")
 require("scripts/managers/player/bulldozer_player")
 require("scripts/managers/player/remote_player")
 require("scripts/managers/player/player_bot")
+require("scripts/managers/player/player_sync_data")
 
 PlayerManager = class(PlayerManager)
 PlayerManager.MAX_PLAYERS = 4

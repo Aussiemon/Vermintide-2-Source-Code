@@ -351,7 +351,7 @@ weapon_template.actions = {
 			end
 		},
 		heavy_attack_right = {
-			damage_window_start = 0.4,
+			damage_window_start = 0.35,
 			range_mod = 1.4,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
@@ -361,7 +361,7 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0,
 			damage_profile = "heavy_slashing_smiter_executioner",
 			hit_effect = "melee_hit_sword_2h",
-			damage_window_end = 0.48,
+			damage_window_end = 0.43,
 			impact_sound_event = "slashing_hit",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.5,

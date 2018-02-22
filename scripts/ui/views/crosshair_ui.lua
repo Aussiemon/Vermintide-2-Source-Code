@@ -1,7 +1,7 @@
 local definitions = local_require("scripts/ui/views/crosshair_ui_definitions")
 local MAX_SIZE = definitions.MAX_SIZE
 CrosshairUI = class(CrosshairUI)
-local CROSSHAIR_STYLE_FUNC_LOOKUP = {
+local CROSSHAIR_STYLE_FUNCTIONS = {
 	default = "draw_default_style_crosshair",
 	circle = "draw_circle_style_crosshair",
 	shotgun = "draw_shotgun_style_crosshair",
@@ -9,10 +9,15 @@ local CROSSHAIR_STYLE_FUNC_LOOKUP = {
 	arrows = "draw_arrows_style_crosshair",
 	projectile = "draw_projectile_style_crosshair"
 }
-local CROSSHAIR_ENABLED_STYLES_LOOKUP = {
+local MELEE_CROSSHAIR_STYLES = {
+	dot = true
+}
+local RANGED_CROSSHAIR_STYLES = {
 	default = true,
 	circle = true,
-	dot = true
+	shotgun = true,
+	arrows = true,
+	projectile = true
 }
 CrosshairUI.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -24,15 +29,8 @@ CrosshairUI.init = function (self, ingame_ui_context)
 	self.local_player = Managers.player:local_player()
 
 	self.create_ui_elements(self)
-	self.set_enabled_crosshair_styles(self, Application.user_setting("enabled_crosshairs"))
+	self.update_enabled_crosshair_styles(self)
 	rawset(_G, "crosshair_ui", self)
-
-	self.t = 0
-	self.tobii_crosshair_position = {
-		0,
-		0
-	}
-	self.tobii_time_since_teleport = 0
 
 	return 
 end
@@ -70,41 +68,40 @@ CrosshairUI.update = function (self, dt)
 	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 	local equipment = inventory_extension.equipment(inventory_extension)
 
+	self.update_enabled_crosshair_styles(self)
 	self.update_crosshair_style(self, equipment)
 	self.update_hit_markers(self, dt)
 	self.update_spread(self, dt, equipment)
 
 	return 
 end
-CrosshairUI.set_enabled_crosshair_styles = function (self, enabled_style)
-	if enabled_style == "melee" then
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.dot = true
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.default = false
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.circle = false
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.projectile = false
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.shotgun = false
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.arrows = false
-	elseif enabled_style == "ranged" then
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.dot = false
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.default = true
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.circle = true
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.projectile = true
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.shotgun = true
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.arrows = true
-	elseif enabled_style == "none" then
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.dot = false
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.default = false
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.circle = false
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.projectile = false
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.shotgun = false
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.arrows = false
-	else
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.dot = true
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.default = true
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.circle = true
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.projectile = true
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.shotgun = true
-		CROSSHAIR_ENABLED_STYLES_LOOKUP.arrows = true
+local crosshairs = {}
+CrosshairUI.update_enabled_crosshair_styles = function (self)
+	local enabled_style = Application.user_setting("enabled_crosshairs")
+
+	if self._enabled_style ~= enabled_style then
+		table.clear(crosshairs)
+
+		if enabled_style == "melee" then
+			for style, value in pairs(MELEE_CROSSHAIR_STYLES) do
+				crosshairs[style] = value
+			end
+		elseif enabled_style == "ranged" then
+			for style, value in pairs(RANGED_CROSSHAIR_STYLES) do
+				crosshairs[style] = value
+			end
+		elseif enabled_style == "all" then
+			for style, value in pairs(MELEE_CROSSHAIR_STYLES) do
+				crosshairs[style] = value
+			end
+
+			for style, value in pairs(RANGED_CROSSHAIR_STYLES) do
+				crosshairs[style] = value
+			end
+		end
+
+		self._enabled_style = enabled_style
+		self._enabled_crosshair_styles = crosshairs
 	end
 
 	return 
@@ -131,7 +128,7 @@ CrosshairUI.update_crosshair_style = function (self, equipment)
 				crosshair_style = action_settings.crosshair_style
 			end
 
-			if action_settings.fire_at_gaze_setting ~= nil then
+			if action_settings.fire_at_gaze_setting then
 				fire_at_gaze_setting = action_settings.fire_at_gaze_setting
 			end
 		end
@@ -312,8 +309,8 @@ CrosshairUI.draw = function (self, dt, pitch_percentage, yaw_percentage)
 
 	local crosshair_style = self.crosshair_style
 
-	if CROSSHAIR_ENABLED_STYLES_LOOKUP[crosshair_style] then
-		local draw_func_name = CROSSHAIR_STYLE_FUNC_LOOKUP[crosshair_style]
+	if self._enabled_crosshair_styles[crosshair_style] then
+		local draw_func_name = CROSSHAIR_STYLE_FUNCTIONS[crosshair_style]
 
 		self[draw_func_name](self, ui_renderer, pitch_percentage, yaw_percentage)
 	end

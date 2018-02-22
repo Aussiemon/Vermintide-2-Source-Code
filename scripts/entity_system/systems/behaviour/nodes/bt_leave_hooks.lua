@@ -95,6 +95,10 @@ BTLeaveHooks.on_grey_seer_intro_leave = function (unit, blackboard, t)
 			mount_blackboard.goal_destination = Vector3Box(POSITION_LOOKUP[unit])
 			mount_blackboard.anim_cb_move = true
 			mount_blackboard.intro_rage = true
+			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+			local event_data = FrameTable.alloc_table()
+
+			dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_calls_mount_battle", event_data)
 		else
 			print("Found no generic AI node (grey_seer_intro_stormfiend_spawn) for grey_seer_intro_leave")
 		end

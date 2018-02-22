@@ -1,12 +1,12 @@
 require("scripts/ui/views/title_main_ui")
 
-if Development.parameter("honduras_demo") then
+if script_data.honduras_demo then
 	require("scripts/ui/views/demo_title_ui")
 end
 
 StateTitleScreenMain = class(StateTitleScreenMain)
 StateTitleScreenMain.NAME = "StateTitleScreenMain"
-ATTRACT_MODE_TIMER = (Development.parameter("honduras_demo") and DemoSettings.attract_timer) or 45
+ATTRACT_MODE_TIMER = (script_data.honduras_demo and DemoSettings.attract_timer) or 45
 StateTitleScreenMain.on_enter = function (self, params)
 	print("[Gamestate] Enter Substate StateTitleScreenMain")
 
@@ -30,6 +30,10 @@ StateTitleScreenMain.on_enter = function (self, params)
 	if PLATFORM == "xb1" then
 		if not Managers.account:should_teardown_xboxlive() then
 			Managers.account:reset()
+		end
+
+		if script_data.honduras_demo then
+			self._update_ui_settings(self)
 		end
 	else
 		Managers.account:reset()
@@ -57,7 +61,7 @@ StateTitleScreenMain.on_enter = function (self, params)
 		end
 	}
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		Wwise.set_state("menu_mute_ingame_sounds", "true")
 	end
 
@@ -66,6 +70,27 @@ StateTitleScreenMain.on_enter = function (self, params)
 
 		self._params.menu_screen_music_playing = true
 	end
+
+	return 
+end
+StateTitleScreenMain._update_ui_settings = function (self)
+	local ui_scale = 150
+	local console_type = XboxOne.console_type()
+
+	if console_type ~= XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT and console_type ~= XboxOne.CONSOLE_TYPE_XBOX_ONE_X then
+		ui_scale = math.clamp(ui_scale, 0, 100)
+		UserSettings.ui_scale = ui_scale
+	end
+
+	UISettings.ui_scale = ui_scale
+	UISettings.use_hud_screen_fit = Application.user_setting("use_hud_screen_fit") or false
+	UISettings.root_scale = {
+		Application.user_setting("root_scale_x") or 1,
+		Application.user_setting("root_scale_y") or 1
+	}
+	local force_update = true
+
+	UPDATE_RESOLUTION_LOOKUP(force_update)
 
 	return 
 end
@@ -173,14 +198,21 @@ StateTitleScreenMain._exit_attract_mode = function (self)
 end
 StateTitleScreenMain._handle_continue_input = function (self, dt, t)
 	local input_service = self.input_manager:get_service("main_menu")
+	local start_allowed = true
 
-	if input_service.get(input_service, "start", true) then
-		self._start_pressed = true
-	elseif Development.parameter("honduras_demo") then
-		local current_device = Managers.input:get_most_recent_device()
+	if script_data.honduras_demo then
+		start_allowed = not self._title_start_ui:in_transition()
+	end
 
-		if current_device.any_pressed(current_device) then
+	if start_allowed then
+		if input_service.get(input_service, "start", true) then
 			self._start_pressed = true
+		elseif script_data.honduras_demo then
+			local current_device = Managers.input:get_most_recent_device()
+
+			if current_device.any_pressed(current_device) then
+				self._start_pressed = true
+			end
 		end
 	end
 

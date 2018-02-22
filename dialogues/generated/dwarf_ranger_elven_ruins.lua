@@ -1,7 +1,7 @@
 return function ()
 	define_rule({
-		name = "pdr_level_elven_ruins_untouched",
 		response = "pdr_level_elven_ruins_untouched",
+		name = "pdr_level_elven_ruins_untouched",
 		criterias = {
 			{
 				"query_context",
@@ -28,18 +28,10 @@ return function ()
 				"dwarf_ranger"
 			},
 			{
-				"faction_memory",
-				"time_since_elven_ruins_untouched",
+				"user_context",
+				"enemies_close",
 				OP.EQ,
 				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_elven_ruins_untouched",
-				OP.ADD,
-				1
 			}
 		}
 	})
@@ -72,6 +64,12 @@ return function ()
 				"dwarf_ranger"
 			},
 			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
 				"faction_memory",
 				"time_since_elven_ruins_ravine_approach",
 				OP.EQ,
@@ -88,8 +86,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pdr_level_elven_ruins_great_glade",
 		response = "pdr_level_elven_ruins_great_glade",
+		name = "pdr_level_elven_ruins_great_glade",
 		criterias = {
 			{
 				"query_context",
@@ -116,18 +114,10 @@ return function ()
 				"dwarf_ranger"
 			},
 			{
-				"faction_memory",
-				"time_since_elven_ruins_great_glade",
+				"user_context",
+				"enemies_close",
 				OP.EQ,
 				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_elven_ruins_great_glade",
-				OP.ADD,
-				1
 			}
 		}
 	})
@@ -158,6 +148,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
 			},
 			{
 				"faction_memory",
@@ -204,6 +200,12 @@ return function ()
 				"dwarf_ranger"
 			},
 			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
 				"faction_memory",
 				"time_since_elven_ruins_maze_approach",
 				OP.EQ,
@@ -220,8 +222,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pdr_level_elven_ruins_maze_interior",
 		response = "pdr_level_elven_ruins_maze_interior",
+		name = "pdr_level_elven_ruins_maze_interior",
 		criterias = {
 			{
 				"query_context",
@@ -248,18 +250,10 @@ return function ()
 				"dwarf_ranger"
 			},
 			{
-				"faction_memory",
-				"time_since_elven_ruins_maze_approach",
+				"user_context",
+				"enemies_close",
 				OP.EQ,
 				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_elven_ruins_maze_approach",
-				OP.ADD,
-				1
 			}
 		}
 	})
@@ -292,6 +286,12 @@ return function ()
 				"dwarf_ranger"
 			},
 			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
 				"faction_memory",
 				"time_since_elven_ruins_broken_waystone",
 				OP.EQ,
@@ -308,8 +308,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pdr_level_elven_ruins_cliff_edge",
 		response = "pdr_level_elven_ruins_cliff_edge",
+		name = "pdr_level_elven_ruins_cliff_edge",
 		criterias = {
 			{
 				"query_context",
@@ -336,18 +336,10 @@ return function ()
 				"dwarf_ranger"
 			},
 			{
-				"faction_memory",
-				"time_since_elven_ruins_cliff_edge",
+				"user_context",
+				"enemies_close",
 				OP.EQ,
 				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_elven_ruins_cliff_edge",
-				OP.ADD,
-				1
 			}
 		}
 	})
@@ -468,6 +460,12 @@ return function ()
 				"dwarf_ranger"
 			},
 			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
 				"faction_memory",
 				"time_since_elven_ruins_big_tree",
 				OP.EQ,
@@ -522,50 +520,6 @@ return function ()
 			{
 				"faction_memory",
 				"time_since_elven_ruins_shattered_temple",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pdr_level_elven_ruins_temple_proper",
-		response = "pdr_level_elven_ruins_temple_proper",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"elven_ruins_temple_proper"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"time_since_elven_ruins_temple_proper",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_elven_ruins_temple_proper",
 				OP.ADD,
 				1
 			}
@@ -820,6 +774,12 @@ return function ()
 				"dwarf_ranger"
 			},
 			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
 				"faction_memory",
 				"time_since_elven_ruins_task_complete",
 				OP.EQ,
@@ -832,6 +792,214 @@ return function ()
 				"time_since_elven_ruins_task_complete",
 				OP.ADD,
 				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_elven_ruins_ruins_proper",
+		response = "pdr_level_elven_ruins_ruins_proper",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"elven_ruins_ruins_proper"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"elven_ruins_ruins_proper",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"elven_ruins_ruins_proper",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_elven_ruins_exit",
+		response = "pdr_level_elven_ruins_exit",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"elven_ruins_exit"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"elven_ruins_exit",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"elven_ruins_exit",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_elven_ruins_intro_a",
+		response = "pdr_elven_ruins_intro_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"elven_ruins_intro_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"elven_ruins_intro_a",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"elven_ruins_intro_a",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_elven_ruins_intro_b",
+		response = "pdr_elven_ruins_intro_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"elven_ruins_intro_a"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"elven_ruins_intro_b",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"elven_ruins_intro_b",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_elven_ruins_intro_c",
+		response = "pdr_elven_ruins_intro_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"elven_ruins_intro_c"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"elven_ruins_intro_c",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"elven_ruins_intro_c",
+				OP.TIMESET
 			}
 		}
 	})
@@ -1001,7 +1169,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_level_elven_ruins_temple_proper = {
+		pdr_level_elven_ruins_exit = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1009,10 +1177,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pdr_level_elven_ruins_temple_proper_01",
-				"pdr_level_elven_ruins_temple_proper_02",
-				"pdr_level_elven_ruins_temple_proper_03",
-				"pdr_level_elven_ruins_temple_proper_04"
+				"pdr_level_elven_ruins_exit_01",
+				"pdr_level_elven_ruins_exit_02",
+				"pdr_level_elven_ruins_exit_03",
+				"pdr_level_elven_ruins_exit_04"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
@@ -1027,10 +1195,10 @@ return function ()
 				"face_neutral"
 			},
 			localization_strings = {
-				"pdr_level_elven_ruins_temple_proper_01",
-				"pdr_level_elven_ruins_temple_proper_02",
-				"pdr_level_elven_ruins_temple_proper_03",
-				"pdr_level_elven_ruins_temple_proper_04"
+				"pdr_level_elven_ruins_exit_01",
+				"pdr_level_elven_ruins_exit_02",
+				"pdr_level_elven_ruins_exit_03",
+				"pdr_level_elven_ruins_exit_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1067,6 +1235,31 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pdr_elven_ruins_intro_a = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "dwarf_ranger_elven_ruins",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pdr_elven_ruins_intro_a_01",
+				[2.0] = "pdr_elven_ruins_intro_a_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_elven_ruins_intro_a_01",
+				[2.0] = "pdr_elven_ruins_intro_a_02"
+			},
+			randomize_indexes = {}
+		},
 		pdr_level_elven_ruins_maze_approach = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -1097,6 +1290,64 @@ return function ()
 				"pdr_level_elven_ruins_maze_approach_02",
 				"pdr_level_elven_ruins_maze_approach_03",
 				"pdr_level_elven_ruins_maze_approach_04"
+			},
+			randomize_indexes = {}
+		},
+		pdr_elven_ruins_intro_c = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "dwarf_ranger_elven_ruins",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pdr_elven_ruins_intro_c_01",
+				[2.0] = "pdr_elven_ruins_intro_c_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_elven_ruins_intro_c_01",
+				[2.0] = "pdr_elven_ruins_intro_c_02"
+			},
+			randomize_indexes = {}
+		},
+		pdr_level_elven_ruins_great_glade = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_elven_ruins",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pdr_level_elven_ruins_great_glade_01",
+				"pdr_level_elven_ruins_great_glade_02",
+				"pdr_level_elven_ruins_great_glade_03",
+				"pdr_level_elven_ruins_great_glade_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			localization_strings = {
+				"pdr_level_elven_ruins_great_glade_01",
+				"pdr_level_elven_ruins_great_glade_02",
+				"pdr_level_elven_ruins_great_glade_03",
+				"pdr_level_elven_ruins_great_glade_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1163,6 +1414,39 @@ return function ()
 				"pdr_level_elven_ruins_clearing_02",
 				"pdr_level_elven_ruins_clearing_03",
 				"pdr_level_elven_ruins_clearing_04"
+			},
+			randomize_indexes = {}
+		},
+		pdr_level_elven_ruins_ruins_proper = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_elven_ruins",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pdr_level_elven_ruins_ruins_proper_01",
+				"pdr_level_elven_ruins_ruins_proper_02",
+				"pdr_level_elven_ruins_ruins_proper_03",
+				"pdr_level_elven_ruins_ruins_proper_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pdr_level_elven_ruins_ruins_proper_01",
+				"pdr_level_elven_ruins_ruins_proper_02",
+				"pdr_level_elven_ruins_ruins_proper_03",
+				"pdr_level_elven_ruins_ruins_proper_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1397,36 +1681,28 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_level_elven_ruins_great_glade = {
-			sound_events_n = 4,
+		pdr_elven_ruins_intro_b = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 2,
 			database = "dwarf_ranger_elven_ruins",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pdr_level_elven_ruins_great_glade_01",
-				"pdr_level_elven_ruins_great_glade_02",
-				"pdr_level_elven_ruins_great_glade_03",
-				"pdr_level_elven_ruins_great_glade_04"
+				[1.0] = "pdr_elven_ruins_intro_b_01",
+				[2.0] = "pdr_elven_ruins_intro_b_02"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pdr_level_elven_ruins_great_glade_01",
-				"pdr_level_elven_ruins_great_glade_02",
-				"pdr_level_elven_ruins_great_glade_03",
-				"pdr_level_elven_ruins_great_glade_04"
+				[1.0] = "pdr_elven_ruins_intro_b_01",
+				[2.0] = "pdr_elven_ruins_intro_b_02"
 			},
 			randomize_indexes = {}
 		},

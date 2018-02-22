@@ -63,7 +63,7 @@ AttachmentSystem.rpc_remove_attachment = function (self, sender, unit_go_id, slo
 
 	return 
 end
-AttachmentSystem.rpc_add_attachment_buffs = function (self, sender, go_id, slot_id, buff_1_id, value_1, buff_2_id, value_2, buff_3_id, value_3, buff_4_id, value_4)
+AttachmentSystem.rpc_add_attachment_buffs = function (self, sender, go_id, slot_id, buff_1_id, buff_data_type_1_id, value_1, buff_2_id, buff_data_type_2_id, value_2, buff_3_id, buff_data_type_3_id, value_3, buff_4_id, buff_data_type_4_id, value_4)
 	fassert(self.is_server, "attempting to add buffs as a client VIA rpc_add_attachment_buffs")
 
 	local unit = self.unit_storage:unit(go_id)
@@ -72,9 +72,13 @@ AttachmentSystem.rpc_add_attachment_buffs = function (self, sender, go_id, slot_
 	local buff_name_2 = NetworkLookup.buff_templates[buff_2_id]
 	local buff_name_3 = NetworkLookup.buff_templates[buff_3_id]
 	local buff_name_4 = NetworkLookup.buff_templates[buff_4_id]
+	local buff_data_type_1 = NetworkLookup.buff_data_types[buff_data_type_1_id]
+	local buff_data_type_2 = NetworkLookup.buff_data_types[buff_data_type_2_id]
+	local buff_data_type_3 = NetworkLookup.buff_data_types[buff_data_type_3_id]
+	local buff_data_type_4 = NetworkLookup.buff_data_types[buff_data_type_4_id]
 	local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
 
-	attachment_extension.add_buffs_to_slot(attachment_extension, slot_name, buff_name_1, value_1, buff_name_2, value_2, buff_name_3, value_3, buff_name_4, value_4)
+	attachment_extension.add_buffs_to_slot(attachment_extension, slot_name, buff_name_1, buff_data_type_1, value_1, buff_name_2, buff_data_type_2, value_2, buff_name_3, buff_data_type_3, value_3, buff_name_4, buff_data_type_4, value_4)
 
 	return 
 end

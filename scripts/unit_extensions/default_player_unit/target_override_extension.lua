@@ -5,11 +5,11 @@ TargetOverrideExtension.init = function (self, extension_init_context, unit, ext
 	self._unit = unit
 	self._result_table = {}
 	self._stagger_impact = {
-		1,
+		2,
 		1,
 		0,
 		0,
-		1
+		2
 	}
 
 	return 

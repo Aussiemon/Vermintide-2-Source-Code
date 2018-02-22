@@ -1,10 +1,9 @@
-script_data.dialogue_debug_lookat = script_data.dialogue_debug_lookat or Development.parameter("dialogue_debug_lookat")
+local RPCS = {}
 local extensions = {
 	"LookatTargetExtension",
 	"SurroundingObserverExtension",
 	"SurroundingObserverHuskExtension"
 }
-local RPCS = {}
 SurroundingAwareSystem = class(SurroundingAwareSystem, ExtensionSystemBase)
 SurroundingAwareSystem.init = function (self, entity_system_creation_context, system_name)
 	local entity_manager = entity_system_creation_context.entity_manager
@@ -15,12 +14,15 @@ SurroundingAwareSystem.init = function (self, entity_system_creation_context, sy
 	self.world = entity_system_creation_context.world
 	self.physics_world = World.get_data(self.world, "physics_world")
 	self.unit_storage = entity_system_creation_context.unit_storage
+	self.game = Managers.state.network:game()
+	self.is_server = entity_system_creation_context.is_server
 	self.unit_input_data = {}
 	self.unit_extension_data = {}
 	self.observers = {}
 	self.broadphase = Broadphase(math.max(DialogueSettings.max_view_distance, DialogueSettings.max_hear_distance, DialogueSettings.discover_enemy_attack_distance), 256)
 	self.event_array = pdArray.new()
 	self.seen_recently = {}
+	self.seen_observers = {}
 	self.current_observer_unit = nil
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
 	self.network_event_delegate = network_event_delegate
@@ -47,9 +49,9 @@ SurroundingAwareSystem.add_event = function (unit, event_name, distance, ...)
 	local num_args = select("#", ...)
 	local array_data, event_array_size = pdArray.data(event_array)
 
-	assert(type(event_name) == "string", "First argument to add_event must be an event-name.")
-	assert(type(distance) == "number", "Second argument to add_event must be distance.")
-	assert(num_args%2 == 0, "Arguments must be set by key, value-pairs. Thus num args must be an even number.")
+	fassert(type(event_name) == "string", "First argument to add_event must be an event-name.")
+	fassert(type(distance) == "number", "Second argument to add_event must be distance.")
+	fassert(num_args%2 == 0, "Arguments must be set by key, value-pairs. Thus num args must be an even number.")
 	pack_index[num_args + 4](array_data, event_array_size + 1, num_args, unit, event_name, distance, ...)
 
 	local new_size = event_array_size + num_args + 4
@@ -64,9 +66,9 @@ SurroundingAwareSystem.add_system_event = function (self, unit, event_name, dist
 	local num_args = select("#", ...)
 	local array_data, event_array_size = pdArray.data(event_array)
 
-	assert(type(event_name) == "string", "First argument to add_event must be an event-name.")
-	assert(type(distance) == "number", "Second argument to add_event must be distance.")
-	assert(num_args%2 == 0, "Arguments must be set by key, value-pairs. Thus num args must be an even number.")
+	fassert(type(event_name) == "string", "First argument to add_event must be an event-name.")
+	fassert(type(distance) == "number", "Second argument to add_event must be distance.")
+	fassert(num_args%2 == 0, "Arguments must be set by key, value-pairs. Thus num args must be an even number.")
 	pack_index[num_args + 4](array_data, event_array_size + 1, num_args, unit, event_name, distance, ...)
 
 	local new_size = event_array_size + num_args + 4
@@ -91,25 +93,27 @@ SurroundingAwareSystem.on_add_extension = function (self, world, unit, extension
 
 	if extension_name == "SurroundingObserverExtension" or extension_name == "SurroundingObserverHuskExtension" then
 		extension.view_angle = 11.25
+		extension.view_angle_rad = math.degrees_to_radians(extension.view_angle)
 		extension.last_lookat_trigger = 0
+		extension.view_distance = DialogueSettings.observer_view_distance
+		extension.view_distance_sq = extension.view_distance^2
 		self.observers[unit] = extension
 	else
 		extension.has_been_seen = false
 		extension.is_lookat_object = true
 		extension.view_distance = Unit.get_data(unit, "view_distance") or DialogueSettings.default_view_distance
-		extension.view_distance_sq = extension.view_distance*extension.view_distance
+		extension.view_distance_sq = extension.view_distance^2
 	end
 
 	return extension
 end
 SurroundingAwareSystem.extensions_ready = function (self, world, unit, extension_name)
-	if extension_name == "SurroundingObserverExtension" or extension_name == "SurroundingObserverHuskExtension" then
-		local extension = ScriptUnit.extension(unit, "surrounding_aware_system")
-		local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
-		extension.locomotion_extension = locomotion_extension
-	elseif ScriptUnit.has_extension(unit, "pickup_system") then
-		local extension = ScriptUnit.extension(unit, "surrounding_aware_system")
-		extension.collision_filter = "filter_lookat_pickup_object_ray"
+	if extension_name ~= "SurroundingObserverExtension" then
+		if extension_name == "SurroundingObserverHuskExtension" then
+		elseif ScriptUnit.has_extension(unit, "pickup_system") then
+			local extension = ScriptUnit.extension(unit, "surrounding_aware_system")
+			extension.collision_filter = "filter_lookat_pickup_object_ray"
+		end
 	end
 
 	return 
@@ -122,6 +126,21 @@ SurroundingAwareSystem.on_remove_extension = function (self, unit, extension_nam
 
 	if extension_name == "SurroundingObserverExtension" or extension_name == "SurroundingObserverHuskExtension" then
 		self.observers[unit] = nil
+		local seen_observers = self.seen_observers
+		local previous_seen_observer = seen_observers[unit]
+		local previous_bot_extension = previous_seen_observer and ScriptUnit.has_extension(previous_seen_observer, "ai_system")
+
+		if previous_bot_extension then
+			previous_bot_extension.set_seen_by_player(previous_bot_extension, false, unit)
+		end
+
+		seen_observers[unit] = nil
+
+		for player_unit, observer_unit in pairs(seen_observers) do
+			if observer_unit == unit then
+				seen_observers[player_unit] = nil
+			end
+		end
 	end
 
 	ScriptUnit.remove_extension(unit, "surrounding_aware_system")
@@ -145,16 +164,14 @@ SurroundingAwareSystem.update = function (self, context, t)
 	return 
 end
 
-local function check_raycast_center(physics_world, unit, target, collision_filter)
-	local ray_position = Unit.world_position(unit, Unit.node(unit, "camera_attach"))
-	local unit_center_matrix, _ = Unit.box(target)
-	local ray_target = Matrix4x4.translation(unit_center_matrix)
-	local ray_direction = Vector3.normalize(ray_target - ray_position)
-	local ray_length = Vector3.length(ray_target - ray_position)
+local function check_raycast_center(physics_world, unit, target, ray_position, ray_direction, ray_length, collision_filter)
 	local hits = PhysicsWorld.immediate_raycast(physics_world, ray_position, ray_direction, ray_length, "all", "types", "both", "collision_filter", collision_filter or "filter_lookat_object_ray")
 
 	if hits then
-		for i, hit_data in ipairs(hits) do
+		local num_hits = #hits
+
+		for i = 1, num_hits, 1 do
+			local hit_data = hits[i]
 			local hit_unit = Actor.unit(hit_data[4])
 
 			if hit_unit ~= unit and hit_unit ~= target then
@@ -166,70 +183,127 @@ local function check_raycast_center(physics_world, unit, target, collision_filte
 	return true
 end
 
+local function is_in_range(observer_position, target_position, observer_forward, view_distance_sq, view_angle_rad)
+	local observer_to_target_vector = target_position - observer_position
+	local observer_target_direction = Vector3.normalize(observer_to_target_vector)
+	local distance_squared = math.max(0.1, Vector3.length_squared(observer_to_target_vector))
+
+	if view_distance_sq < distance_squared then
+		return false, observer_to_target_vector, observer_target_direction, nil, nil
+	end
+
+	local distance_det = view_distance_sq/(distance_squared*2)
+	local forward_dot = Vector3.dot(observer_forward, observer_target_direction)
+	local angle = math.acos(forward_dot)
+	local max_angle = view_angle_rad*distance_det
+
+	if max_angle <= angle then
+		return false, observer_to_target_vector, observer_target_direction, angle, max_angle
+	end
+
+	return true, observer_to_target_vector, observer_target_direction, angle, max_angle
+end
+
+local BASE_ANGLE_MULTIPLIER = 10
+local STICKINESS_MODIFIER = -1
+local VIEW_ANGLE_STICKINESS = 1.5
 local found_units = {}
 SurroundingAwareSystem.update_lookat = function (self, context, t)
-	local POSITION_LOOKUP = POSITION_LOOKUP
-	local Broadphase = Broadphase
-	local Unit = Unit
-	local Vector3 = Vector3
-	local math = math
-	local seen_recently = self.seen_recently
-	local broadphase = self.broadphase
-	local physics_world = self.physics_world
-	local darkness_system = Managers.state.entity:system("darkness_system")
+	local observers = self.observers
 
-	if self.observers[self.current_observer_unit] == nil then
+	if observers[self.current_observer_unit] == nil then
 		self.current_observer_unit = nil
 	end
 
-	self.current_observer_unit = next(self.observers, self.current_observer_unit)
+	self.current_observer_unit = next(observers, self.current_observer_unit)
+	local game = self.game
 	local unit = self.current_observer_unit
 
-	if unit then
-		local extension = self.observers[unit]
-		local observer_wp = POSITION_LOOKUP[unit]
+	if game == nil or unit == nil then
+		return 
+	end
 
-		Broadphase.move(broadphase, extension.broadphase_id, observer_wp)
+	local POSITION_LOOKUP = POSITION_LOOKUP
+	local Broadphase = Broadphase
+	local broadphase = self.broadphase
+	local extension = observers[unit]
+	local observer_wp = POSITION_LOOKUP[unit]
 
-		local time_since_last = t - extension.last_lookat_trigger
+	Broadphase.move(broadphase, extension.broadphase_id, observer_wp)
 
-		if DialogueSettings.view_event_trigger_interval < time_since_last then
-			local observer_forward = Quaternion.forward(extension.locomotion_extension:current_rotation())
-			local observe_position = observer_wp + observer_forward*DialogueSettings.max_view_distance*0.5
-			local num_nearby = Broadphase.query(broadphase, observer_wp, DialogueSettings.max_view_distance*0.5, found_units)
+	local time_since_last = t - extension.last_lookat_trigger
 
-			for i = 1, num_nearby, 1 do
-				local target = found_units[i]
-				found_units[i] = nil
-				local saw_unit_recently = seen_recently[target]
+	if time_since_last <= DialogueSettings.view_event_trigger_interval then
+		return 
+	end
 
-				if target ~= unit and not saw_unit_recently then
-					local lookat_target_ext = ScriptUnit.extension(target, "surrounding_aware_system")
+	local Unit = Unit
+	local Vector3 = Vector3
+	local math = math
+	local Matrix4x4 = Matrix4x4
+	local seen_recently = self.seen_recently
+	local physics_world = self.physics_world
+	local darkness_system = Managers.state.entity:system("darkness_system")
+	local is_server = self.is_server
+	local seen_observers = self.seen_observers
+	local unit_storage = self.unit_storage
+	local unit_id = unit_storage.go_id(unit_storage, unit)
+	local observer_fpp = GameSession.game_object_field(game, unit_id, "aim_position")
+	local observer_forward = GameSession.game_object_field(game, unit_id, "aim_direction")
+	local dialogue_extension = ScriptUnit.extension_input(unit, "dialogue_system")
+	local broadphase_size = DialogueSettings.max_view_distance*0.5
+	local broadphase_position = observer_fpp + observer_forward*broadphase_size
+	local num_nearby = Broadphase.query(broadphase, broadphase_position, broadphase_size, found_units)
+	local previous_seen_observer = seen_observers[unit]
+	local closest_observer_utility = math.huge
+	local closest_observer_unit = nil
 
-					if lookat_target_ext.is_lookat_object then
-						local target_wp = Unit.world_position(target, 0)
-						local observer_to_target_vector = target_wp - observer_wp
-						local observer_target_direction = Vector3.normalize(observer_to_target_vector)
-						local distance_squared = math.max(0.1, Vector3.length_squared(observer_to_target_vector))
-						local view_distance = lookat_target_ext.view_distance
-						local distance_det = (view_distance*view_distance)/2/distance_squared
-						local rotation_diff = math.radians_to_degrees(Vector3.dot(observer_forward, observer_target_direction) - 1)
+	for i = 1, num_nearby, 1 do
+		local target = found_units[i]
+		found_units[i] = nil
+		local saw_unit_recently = seen_recently[target]
 
-						if distance_squared <= lookat_target_ext.view_distance_sq and rotation_diff < extension.view_angle*distance_det then
-							local is_in_view = not darkness_system.is_in_darkness(darkness_system, POSITION_LOOKUP[target] or Unit.world_position(target, 0)) and check_raycast_center(physics_world, unit, target, lookat_target_ext.collision_filter)
+		if target ~= unit and not saw_unit_recently then
+			local lookat_target_ext = ScriptUnit.extension(target, "surrounding_aware_system")
+			local is_lookat_object = lookat_target_ext.is_lookat_object
 
-							if is_in_view then
-								lookat_target_ext.has_been_seen = true
-								extension.last_lookat_trigger = t
-								local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-								local event_data = FrameTable.alloc_table()
-								event_data.item_tag = Unit.get_data(target, "lookat_tag") or Unit.debug_name(target)
-								event_data.distance = math.sqrt(distance_squared)
+			if is_lookat_object or (is_server and observers[target]) then
+				local target_center = nil
 
-								dialogue_input.trigger_dialogue_event(dialogue_input, "seen_item", event_data)
+				if Unit.has_node(target, "j_spine") then
+					local spine_node = Unit.node(target, "j_spine")
+					target_center = Unit.world_position(target, spine_node)
+				else
+					local target_center_matrix = Unit.box(target)
+					target_center = Matrix4x4.translation(target_center_matrix)
+				end
 
-								seen_recently[target] = t
-							end
+				local view_distance_sq = lookat_target_ext.view_distance_sq
+				local view_angle_rad = extension.view_angle_rad*((target == previous_seen_observer and VIEW_ANGLE_STICKINESS) or 1)
+				local in_range, observer_to_target_vector, observer_target_direction, angle, max_angle = is_in_range(observer_fpp, target_center, observer_forward, view_distance_sq, view_angle_rad)
+
+				if in_range and not darkness_system.is_in_darkness(darkness_system, target_center) then
+					local observer_to_target_length = Vector3.length(observer_to_target_vector)
+					local collision_filter = lookat_target_ext.collision_filter
+					local is_in_view = check_raycast_center(physics_world, unit, target, observer_fpp, observer_target_direction, observer_to_target_length, collision_filter)
+
+					if is_lookat_object and is_in_view then
+						lookat_target_ext.has_been_seen = true
+						extension.last_lookat_trigger = t
+						local event_data = FrameTable.alloc_table()
+						event_data.item_tag = Unit.get_data(target, "lookat_tag") or Unit.debug_name(target)
+						event_data.distance = observer_to_target_length
+
+						dialogue_extension.trigger_dialogue_event(dialogue_extension, "seen_item", event_data)
+
+						seen_recently[target] = t
+					elseif is_in_view then
+						local angle_multiplier = BASE_ANGLE_MULTIPLIER + ((target == previous_seen_observer and STICKINESS_MODIFIER) or 0)
+						local utility = angle*angle_multiplier + observer_to_target_length
+
+						if utility < closest_observer_utility then
+							closest_observer_unit = target
+							closest_observer_utility = utility
 						end
 					end
 				end
@@ -237,51 +311,108 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 		end
 	end
 
+	if is_server and closest_observer_unit ~= previous_seen_observer then
+		local player_manager = Managers.player
+		local player = player_manager.unit_owner(player_manager, unit)
+		local is_human = not player.bot_player
+
+		if previous_seen_observer then
+			local previous_bot_extension = ScriptUnit.has_extension(previous_seen_observer, "ai_system")
+
+			if is_human and previous_bot_extension then
+				previous_bot_extension.set_seen_by_player(previous_bot_extension, false, unit)
+			end
+		end
+
+		if closest_observer_unit then
+			local current_bot_extension = ScriptUnit.has_extension(closest_observer_unit, "ai_system")
+
+			if is_human and current_bot_extension then
+				current_bot_extension.set_seen_by_player(current_bot_extension, true, unit, t)
+			end
+		end
+
+		seen_observers[unit] = closest_observer_unit
+	end
+
 	return 
 end
+local debug_drawer_info = {
+	mode = "immediate",
+	name = "surrounding_aware"
+}
 SurroundingAwareSystem.update_debug = function (self, context, t)
 	if not script_data.dialogue_debug_lookat then
 		return 
 	end
 
-	local broadphase = self.broadphase
-	local physics_world = self.physics_world
-	local debug_draw_units = {}
-	local player = Managers.player:player_from_peer_id(Network.peer_id())
+	local game = self.game
+	local player = Managers.player:local_player()
 
-	if not player or not player.player_unit then
+	if not player or not player.player_unit or not game then
 		return 
 	end
 
-	local unit = player.player_unit
-	local extension = self.unit_extension_data[unit]
-	local observer_wp = Unit.world_position(unit, 0)
-	local observer_forward = Quaternion.forward(Unit.local_rotation(unit, 0))
-	local num_nearby = Broadphase.query(broadphase, observer_wp, DialogueSettings.max_view_distance, found_units)
 	local outside_color = Color(255, 255, 0, 0)
-	local blue_color = Color(255, 0, 0, 255)
 	local inside_color = Color(255, 0, 255, 0)
 	local obscured_color = Color(255, 0, 255, 255)
+	local debug_draw_units = FrameTable.alloc_table()
+	local drawer = Managers.state.debug:drawer(debug_drawer_info)
+	local broadphase = self.broadphase
+	local physics_world = self.physics_world
+	local darkness_system = Managers.state.entity:system("darkness_system")
+	local player_unit = player.player_unit
+	local extension = self.unit_extension_data[player_unit]
+	local observers = self.observers
+	local is_server = self.is_server
+	local seen_observers = self.seen_observers
+	local previous_seen_observer = seen_observers[player_unit]
+	local unit_storage = self.unit_storage
+	local unit_id = unit_storage.go_id(unit_storage, player_unit)
+	local observer_fpp = GameSession.game_object_field(game, unit_id, "aim_position")
+	local observer_forward = GameSession.game_object_field(game, unit_id, "aim_direction")
+	local broadphase_size = DialogueSettings.max_view_distance*0.5
+	local observe_position = observer_fpp + observer_forward*broadphase_size
+	local num_nearby = Broadphase.query(broadphase, observe_position, broadphase_size, found_units)
 
-	if 0 < num_nearby then
-		for i = 1, num_nearby, 1 do
-			local target = found_units[i]
-			found_units[i] = nil
+	drawer.sphere(drawer, observe_position, broadphase_size, Colors.get("light_blue"))
+	drawer.vector(drawer, observer_fpp, observer_forward)
 
-			if target ~= unit then
-				local color = Color(255, 0, 0, 255)
-				local target_wp = Unit.world_position(target, 0)
-				local observer_target_direction = Vector3.normalize(target_wp - observer_wp)
-				local distance = math.max(0.1, Vector3.distance_squared(target_wp, observer_wp))
+	for i = 1, num_nearby, 1 do
+		local target = found_units[i]
+		found_units[i] = nil
 
-				Debug.text("SAS: %q:%f", Unit.debug_name(target), distance)
+		if target ~= player_unit then
+			local color = Color(255, 0, 0, 255)
+			local debug_text = string.format("SAS: %q | ", Unit.debug_name(target))
+			local lookat_target_ext = ScriptUnit.extension(target, "surrounding_aware_system")
+			local is_lookat_object = lookat_target_ext.is_lookat_object
 
-				local distance_det = (DialogueSettings.max_view_distance*DialogueSettings.max_view_distance)/2/distance
-				local rotation_diff = math.radians_to_degrees(Vector3.dot(observer_forward, observer_target_direction) - 1)
-				local lookat_target_ext = ScriptUnit.extension(target, "surrounding_aware_system")
+			if lookat_target_ext.is_lookat_object or (is_server and observers[target]) then
+				local target_center = nil
 
-				if lookat_target_ext.is_lookat_object and lookat_target_ext and distance <= lookat_target_ext.view_distance_sq and rotation_diff < extension.view_angle*distance_det then
-					local is_in_view = check_raycast_center(physics_world, unit, target)
+				if Unit.has_node(target, "j_spine") then
+					local spine_node = Unit.node(target, "j_spine")
+					target_center = Unit.world_position(target, spine_node)
+				else
+					local target_center_matrix = Unit.box(target)
+					target_center = Matrix4x4.translation(target_center_matrix)
+				end
+
+				local view_distance_sq = lookat_target_ext.view_distance_sq
+				local view_angle_rad = extension.view_angle_rad*((target == previous_seen_observer and VIEW_ANGLE_STICKINESS) or 1)
+				local in_range, observer_to_target_vector, observer_target_direction, angle, max_angle = is_in_range(observer_fpp, target_center, observer_forward, view_distance_sq, view_angle_rad)
+				local observer_to_target_length = Vector3.length(observer_to_target_vector)
+				debug_text = string.format(debug_text .. "DISTANCE: %.2f/%.2f", observer_to_target_length, lookat_target_ext.view_distance)
+
+				if angle then
+					debug_text = string.format(debug_text .. "| ANGLE: %.2f/%.2f", math.radians_to_degrees(angle), math.radians_to_degrees(max_angle))
+				end
+
+				if in_range and not darkness_system.is_in_darkness(darkness_system, target_center) then
+					local observer_to_target_length = Vector3.length(observer_to_target_vector)
+					local collision_filter = lookat_target_ext.collision_filter
+					local is_in_view = check_raycast_center(physics_world, player_unit, target, observer_fpp, observer_target_direction, observer_to_target_length, collision_filter)
 
 					if is_in_view then
 						color = inside_color
@@ -293,20 +424,32 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 				end
 
 				debug_draw_units[target] = color
+
+				drawer.vector(drawer, observer_fpp, observer_target_direction, color)
 			end
+
+			Debug.text(debug_text)
 		end
 	end
 
-	local drawer = Debug.drawer("surrounding_aware")
-
-	drawer.reset(drawer)
-
 	for unit, extension in pairs(self.unit_extension_data) do
-		if unit ~= player.player_unit then
+		if unit ~= player_unit then
 			local color = debug_draw_units[unit]
 			color = color or outside_color
 
 			drawer.unit(drawer, unit, color)
+		end
+	end
+
+	if is_server then
+		local observer_unit = seen_observers[player_unit]
+
+		if observer_unit then
+			local spine_node = Unit.node(observer_unit, "j_spine")
+			local target_center = Unit.world_position(observer_unit, spine_node)
+			local observer_is_bot = ScriptUnit.has_extension(observer_unit, "ai_system")
+
+			drawer.sphere(drawer, target_center, 0.25, (observer_is_bot and Colors.get("blue")) or Colors.get("light_blue"))
 		end
 	end
 

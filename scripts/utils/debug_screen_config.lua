@@ -62,12 +62,13 @@ local settings = {
 				if Unit.alive(player_unit) then
 					local portals = ConflictUtils.get_teleporter_portals()
 					local portal_id = options[index]
-					local pos = portals[portal_id]:unbox()
+					local pos = portals[portal_id][1]:unbox()
+					local rot = portals[portal_id][2]:unbox()
 					local locomotion = ScriptUnit.extension(player_unit, "locomotion_system")
 					local world = Managers.world:world("level_world")
 
 					LevelHelper:flow_event(world, "teleport_" .. options[index])
-					locomotion.teleport_to(locomotion, pos)
+					locomotion.teleport_to(locomotion, pos, rot)
 				end
 			end
 
@@ -80,6 +81,12 @@ local settings = {
 		description = "Will change the network pong timeout from 15 seconds to 10000 seconds.",
 		is_boolean = true,
 		setting_name = "network_timeout_really_long",
+		category = "Allround useful stuff!"
+	},
+	{
+		description = "Disables the auto-start of tutorial if it's not completed.",
+		is_boolean = true,
+		setting_name = "disable_tutorial_at_start",
 		category = "Allround useful stuff!"
 	},
 	{
@@ -569,7 +576,7 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics"
 	},
 	{
-		description = "Show damage numbers above enemies heads.",
+		description = "Show damage numbers above enemies heads. - Requires restart of level",
 		is_boolean = true,
 		setting_name = "debug_show_damage_numbers",
 		category = "Player mechanics"
@@ -1022,6 +1029,12 @@ Features that make player mechanics nicer to work with.
 		description = "Displays current threat value from aggroed enemies, and what systems will delay their spawning.",
 		is_boolean = true,
 		setting_name = "debug_current_threat_value",
+		category = "Conflict & Pacing"
+	},
+	{
+		description = "Dump lots of debug in the console when constructing the zones & packs. Will draw 1m spheres around units that gets replaced via BreedPacks zone_checks. Each hi/low segment will have the same colored spheres. Units that are not replaced, but counted will have small spheres.",
+		is_boolean = true,
+		setting_name = "debug_zone_baker",
 		category = "Conflict & Pacing"
 	},
 	{
@@ -4902,6 +4915,39 @@ Features that make player mechanics nicer to work with.
 		category = "Dialogue"
 	},
 	{
+		setting_name = "debug_dialogue_files",
+		description = "Used to debug dialog files, facial expressions and missing vo/subtitles. To skip use: DebugVo_jump_to('line_number/line_id')",
+		category = "Dialogue",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			local dialogue_files = DialogueSettings.auto_load_files
+
+			if dialogue_files ~= nil then
+				for key, file in pairs(dialogue_files) do
+					options[#options + 1] = string.match(file, "^.+/(.+)$")
+				end
+			end
+
+			local level_key = Managers.state.game_mode:level_key()
+			local level_dialogue_files = DialogueSettings.level_specific_load_files[level_key]
+
+			if level_dialogue_files ~= nil then
+				for key, file in pairs(level_dialogue_files) do
+					options[#options + 1] = string.match(file, "^.+/(.+)$")
+				end
+			end
+
+			return 
+		end,
+		func = function (options, index)
+			DebugVoByFile(options[index], false)
+
+			return 
+		end
+	},
+	{
 		description = "Missing vo sound event triggers an error sound",
 		is_boolean = true,
 		setting_name = "dialogue_debug_missing_vo_trigger_error_sound",
@@ -4996,6 +5042,12 @@ Features that make player mechanics nicer to work with.
 		category = "UI"
 	},
 	{
+		description = "Disable Game Timer UI Rendering.",
+		is_boolean = true,
+		setting_name = "disable_ingame_timer",
+		category = "UI"
+	},
+	{
 		description = "Disables the loading icon.",
 		is_boolean = true,
 		setting_name = "disable_loading_icon",
@@ -5083,6 +5135,12 @@ Features that make player mechanics nicer to work with.
 		description = "Disables position lookup validation. Can turn this on for extra performance.",
 		is_boolean = true,
 		setting_name = "disable_debug_position_lookup",
+		category = "Misc"
+	},
+	{
+		description = "Tracks which units and how many units are currently of out world bounds.",
+		is_boolean = true,
+		setting_name = "debug_out_of_world_units",
 		category = "Misc"
 	},
 	{
@@ -6782,6 +6840,12 @@ Features that make player mechanics nicer to work with.
 
 			return 
 		end
+	},
+	{
+		description = "Show all paintings etc. You have to reload the inn for the setting to take effect.",
+		is_boolean = true,
+		setting_name = "debug_keep_decorations",
+		category = "Keep Decorations"
 	}
 }
 local platform = PLATFORM

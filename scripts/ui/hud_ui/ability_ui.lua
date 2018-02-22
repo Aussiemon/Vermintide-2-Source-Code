@@ -300,12 +300,32 @@ AbilityUI._get_input_texture_data = function (self, input_action)
 		prefix_text = "matchmaking_prefix_hold"
 	end
 
+	local is_button_unassigned = key_index == UNASSIGNED_KEY
+	local button_name = ""
+
 	if device_type == "keyboard" then
-		return nil, Keyboard.button_locale_name(key_index), prefix_text
+		if is_button_unassigned then
+			button_name = ""
+		else
+			button_name = Keyboard.button_locale_name(key_index)
+		end
+
+		return nil, button_name, prefix_text
 	elseif device_type == "mouse" then
-		return nil, Mouse.button_name(key_index), prefix_text
+		if is_button_unassigned then
+			button_name = ""
+		else
+			button_name = Mouse.button_name(key_index)
+		end
+
+		return nil, button_name, prefix_text
 	elseif device_type == "gamepad" then
-		local button_name = Pad1.button_name(key_index)
+		if is_button_unassigned then
+			button_name = ""
+		else
+			button_name = Pad1.button_name(key_index)
+		end
+
 		local button_texture_data = ButtonTextureByName(button_name, platform)
 
 		return button_texture_data, button_name, prefix_text

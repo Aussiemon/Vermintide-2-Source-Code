@@ -7,6 +7,7 @@ StateTitleScreenInitNetwork.on_enter = function (self, params)
 
 	self._params = params
 	self._title_start_ui = params.ui
+	self._save_data_loaded = false
 	local loading_context = self.parent.parent.loading_context
 	local loading_view = loading_context.loading_view
 
@@ -16,7 +17,27 @@ StateTitleScreenInitNetwork.on_enter = function (self, params)
 		loading_context.loading_view = nil
 	end
 
+	self._load_save_data(self)
 	Managers.transition:show_loading_icon(false)
+
+	return 
+end
+StateTitleScreenInitNetwork._load_save_data = function (self)
+	print("[StateTitleScreenInitNetwork] SaveFileName", SaveFileName)
+	Managers.save:auto_load(SaveFileName, callback(self, "cb_save_data_loaded"))
+
+	return 
+end
+StateTitleScreenInitNetwork.cb_save_data_loaded = function (self, info)
+	if info.error then
+		Application.warning("Load error %q", info.error)
+	else
+		populate_save_data(info.data)
+	end
+
+	self._save_data_loaded = true
+	GameSettingsDevelopment.trunk_path = Development.parameter("trunk_path")
+	self.parent.parent.loading_context.restart_network = true
 
 	return 
 end
@@ -46,7 +67,7 @@ StateTitleScreenInitNetwork.update = function (self, dt, t)
 	local backend_signin_initated = self.backend_signin_initated
 	local backend_manager = Managers.backend
 
-	if not backend_signin_initated and not backend_manager.signed_in(backend_manager) then
+	if not backend_signin_initated and not backend_manager.signed_in(backend_manager) and self._save_data_loaded then
 		backend_manager.signin(backend_manager)
 
 		self.backend_signin_initated = true
@@ -72,7 +93,7 @@ StateTitleScreenInitNetwork._next_state = function (self)
 		if GameSettingsDevelopment.skip_start_screen then
 			return StateTitleScreenLoadSave
 		else
-			if Development.parameter("honduras_demo") and not self._title_start_ui:is_ready() then
+			if script_data.honduras_demo and not self._title_start_ui:is_ready() then
 				return 
 			end
 

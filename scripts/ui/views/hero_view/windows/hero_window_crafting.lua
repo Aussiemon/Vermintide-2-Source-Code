@@ -37,6 +37,24 @@ local page_settings = {
 		name = "reroll_weapon_traits",
 		class_name = "CraftPageRollTrait",
 		sound_event_exit = "play_gui_equipment_close"
+	},
+	{
+		sound_event_enter = "play_gui_equipment_button",
+		name = "upgrade_item_rarity_common",
+		class_name = "CraftPageUpgradeItem",
+		sound_event_exit = "play_gui_equipment_close"
+	},
+	{
+		sound_event_enter = "play_gui_equipment_button",
+		name = "extract_weapon_skin",
+		class_name = "CraftPageExtractSkin",
+		sound_event_exit = "play_gui_equipment_close"
+	},
+	{
+		sound_event_enter = "play_gui_equipment_button",
+		name = "apply_weapon_skin",
+		class_name = "CraftPageApplySkin",
+		sound_event_exit = "play_gui_equipment_close"
 	}
 }
 HeroWindowCrafting = class(HeroWindowCrafting)

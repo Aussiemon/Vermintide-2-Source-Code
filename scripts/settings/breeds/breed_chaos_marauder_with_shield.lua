@@ -388,37 +388,37 @@ local action_data = {
 		},
 		difficulty_damage = {
 			easy = {
-				2,
+				4,
 				2,
 				1
 			},
 			normal = {
-				3,
+				4,
 				2,
 				1
 			},
 			hard = {
-				6,
+				7,
 				4,
 				2
 			},
 			survival_hard = {
-				6,
+				7,
 				4,
 				2
 			},
 			harder = {
-				10,
+				12,
 				6,
 				3
 			},
 			survival_harder = {
-				10,
+				12,
 				6,
 				3
 			},
 			hardest = {
-				15,
+				20,
 				8,
 				4
 			},
@@ -523,44 +523,44 @@ local action_data = {
 		},
 		difficulty_damage = {
 			easy = {
-				2,
+				4,
 				2,
 				1
 			},
 			normal = {
-				3,
+				4,
 				2,
 				1
 			},
 			hard = {
-				6,
+				7,
 				4,
 				2
 			},
 			survival_hard = {
-				6,
+				7,
 				4,
 				2
 			},
 			harder = {
-				10,
+				12,
 				6,
 				3
 			},
 			survival_harder = {
-				10,
+				12,
 				6,
 				3
 			},
 			hardest = {
-				15,
+				20,
 				8,
 				4
 			},
 			survival_hardest = {
-				15,
-				8,
-				4
+				22.5,
+				12,
+				6
 			}
 		},
 		target_type_exceptions = {

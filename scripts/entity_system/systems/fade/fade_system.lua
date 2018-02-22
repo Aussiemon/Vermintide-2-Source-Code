@@ -169,12 +169,18 @@ local unit_world_position = Unit.world_position
 local unit_node = Unit.node
 local vector3_flat = Vector3.flat
 local vector3_length = Vector3.length
+local vector3_is_valid = Vector3.is_valid
 local MAX_FADE_DISTANCE = 0.7
 local MIN_FADE_DISTANCE = 0.5
 local CHANGE_DISTANCE = MAX_FADE_DISTANCE - MIN_FADE_DISTANCE
 local MAX_HEIGHT_DIFFERENCE = 1
 FadeSystem.calculate_and_set_jitter_alpha = function (self, camera_position_flat, camera_height, unit, cached_value, min_value)
 	local fade_unit_position = unit_world_position(unit, unit_node(unit, "j_spine"))
+
+	if not vector3_is_valid(fade_unit_position) then
+		return 0
+	end
+
 	local fade_unit_position_height = fade_unit_position.z
 	local fade_unit_position_flat = vector3_flat(fade_unit_position)
 	local to_vec = fade_unit_position_flat - camera_position_flat

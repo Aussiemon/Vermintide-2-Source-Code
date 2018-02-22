@@ -37,13 +37,13 @@ local scenegraph_definition = {
 			1
 		},
 		size = {
-			150,
+			300,
 			150
 		}
 	}
 }
 local default_text_style = {
-	word_wrap = true,
+	word_wrap = false,
 	font_size = 40,
 	localize = false,
 	use_shadow = true,
@@ -92,7 +92,7 @@ DamageNumbersUI.event_add_damage_number = function (self, damage, size, unit, ti
 	local size = size or 1
 	local color = color or Vector3(255, 255, 255)
 	local new_text = {
-		floating_speed = 220,
+		floating_speed = 150,
 		alpha = 255,
 		size = size,
 		text = damage*100,
@@ -105,6 +105,7 @@ DamageNumbersUI.event_add_damage_number = function (self, damage, size, unit, ti
 		time = self._time + (time or self._unit_text_time),
 		starting_time = self._time,
 		random_x_offset = math.random(-40, 40),
+		random_y_offset = math.random(-40, 40),
 		is_critical_strike = is_critical_strike
 	}
 	self._unit_texts[unit] = self._unit_texts[unit] or {}
@@ -137,6 +138,8 @@ DamageNumbersUI.create_ui_elements = function (self)
 	return 
 end
 DamageNumbersUI.draw = function (self, dt)
+	Profiler.start("Damage numbers begin_pass")
+
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("ingame_menu")
@@ -151,7 +154,10 @@ DamageNumbersUI.draw = function (self, dt)
 	local z_offset_dps = 0.4
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 	local World_position = Unit.world_position
+	local easeOutCubic = math.easeOutCubic
 	local camera = self.camera
+
+	Profiler.stop("Damage numbers begin_pass")
 
 	for unit, unit_texts in pairs(self._unit_texts) do
 		if Unit.alive(unit) then
@@ -170,11 +176,11 @@ DamageNumbersUI.draw = function (self, dt)
 					local total_time = unit_text.time - unit_text.starting_time
 					local inv_progress = time_left/total_time
 					local progress = inv_progress - 1
-					local ease_out_proggress = math.easeOutCubic(progress)
+					local ease_out_proggress = easeOutCubic(progress)
 					local x = world_to_screen_position.x*inverse_scale
 					local y = world_to_screen_position.z*inverse_scale
 					damage_text_offset[1] = x + unit_text.random_x_offset
-					damage_text_offset[2] = y + ease_out_proggress*unit_text.floating_speed
+					damage_text_offset[2] = y + unit_text.random_y_offset + ease_out_proggress*unit_text.floating_speed
 					local alpha = (ease_out_proggress - 1)*255
 					damage_text_content.text = text
 					damage_text_widget.style.text.text_color = unit_text.color
@@ -183,7 +189,7 @@ DamageNumbersUI.draw = function (self, dt)
 					local font_size = unit_text.size
 
 					if is_critical_strike then
-						local size_progress = math.easeOutCubic(math.min(progress*10, 1))
+						local size_progress = easeOutCubic(math.min(progress*10, 1))
 						font_size = font_size + math.ease_pulse(size_progress)*30
 					end
 

@@ -107,8 +107,10 @@ end
 BackendInterfaceItemPlayfab.socket_rune = function (self, backend_id, rune_to_insert, rune_index)
 	return 
 end
-BackendInterfaceItemPlayfab.get_skin = function (self)
-	return nil
+BackendInterfaceItemPlayfab.get_skin = function (self, backend_id)
+	local item = self.get_item_from_id(self, backend_id)
+
+	return item.skin
 end
 BackendInterfaceItemPlayfab.get_item_masterlist_data = function (self, backend_id)
 	local item = self.get_item_from_id(self, backend_id)

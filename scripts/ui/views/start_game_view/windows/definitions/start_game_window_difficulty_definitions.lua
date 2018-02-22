@@ -172,7 +172,7 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	blocking_peers_1 = {
+	difficulty_lock_text = {
 		vertical_alignment = "top",
 		parent = "description_text",
 		horizontal_alignment = "center",
@@ -182,13 +182,13 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-110,
+			-140,
 			0
 		}
 	},
-	blocking_peers_2 = {
+	difficulty_is_locked_text = {
 		vertical_alignment = "top",
-		parent = "blocking_peers_1",
+		parent = "difficulty_lock_text",
 		horizontal_alignment = "center",
 		size = {
 			window_text_width,
@@ -196,13 +196,13 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-20,
+			-28,
 			0
 		}
 	},
-	blocking_peers_3 = {
+	blocking_peers = {
 		vertical_alignment = "top",
-		parent = "blocking_peers_2",
+		parent = "difficulty_is_locked_text",
 		horizontal_alignment = "center",
 		size = {
 			window_text_width,
@@ -210,21 +210,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-20,
-			0
-		}
-	},
-	blocking_peers_4 = {
-		vertical_alignment = "top",
-		parent = "blocking_peers_3",
-		horizontal_alignment = "center",
-		size = {
-			window_text_width,
-			20
-		},
-		position = {
-			0,
-			-20,
+			-60,
 			0
 		}
 	},
@@ -289,15 +275,47 @@ local difficulty_text_style = {
 		2
 	}
 }
-local blocking_peers_text_style = {
-	font_size = 18,
+local difficulty_lock_text_style = {
+	font_size = 24,
 	upper_case = false,
 	localize = false,
 	use_shadow = true,
 	word_wrap = true,
 	horizontal_alignment = "center",
 	vertical_alignment = "top",
-	font_type = "hell_shark_header",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("white", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local difficulty_is_locked_text_style = {
+	font_size = 22,
+	upper_case = false,
+	localize = false,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("red", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local blocking_peers_text_style = {
+	font_size = 22,
+	upper_case = false,
+	localize = false,
+	use_shadow = true,
+	word_wrap = false,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("red", 255),
 	offset = {
 		0,
@@ -901,10 +919,9 @@ local widgets = {
 	difficulty_texture = UIWidgets.create_simple_texture("difficulty_option_1", "difficulty_texture"),
 	difficulty_title_divider = UIWidgets.create_simple_texture("divider_01_top", "difficulty_title_divider"),
 	description_text = UIWidgets.create_simple_text(Localize("start_game_window_adventure_desc"), "description_text", nil, nil, description_text_style),
-	blocking_peers_1 = UIWidgets.create_simple_text("blocking_peers_1", "blocking_peers_1", nil, nil, blocking_peers_text_style),
-	blocking_peers_2 = UIWidgets.create_simple_text("blocking_peers_2", "blocking_peers_2", nil, nil, blocking_peers_text_style),
-	blocking_peers_3 = UIWidgets.create_simple_text("blocking_peers_3", "blocking_peers_3", nil, nil, blocking_peers_text_style),
-	blocking_peers_4 = UIWidgets.create_simple_text("blocking_peers_4", "blocking_peers_4", nil, nil, blocking_peers_text_style),
+	difficulty_lock_text = UIWidgets.create_simple_text("difficulty_lock_text", "difficulty_lock_text", nil, nil, difficulty_lock_text_style),
+	difficulty_is_locked_text = UIWidgets.create_simple_text("Some people in your party do not meet the required Hero Power.", "difficulty_is_locked_text", nil, nil, difficulty_is_locked_text_style),
+	blocking_peers = UIWidgets.create_simple_text("blocking_peers", "blocking_peers", nil, nil, blocking_peers_text_style),
 	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("confirm_menu_button_name"), 32)
 }
 local animation_definitions = {

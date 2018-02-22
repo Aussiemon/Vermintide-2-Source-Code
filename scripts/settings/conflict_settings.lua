@@ -77,9 +77,9 @@ HordeSettings = {
 		vector_blob = HordeSettingsBasics.vector_blob,
 		difficulty_overrides = {
 			hard = {
-				vector_blob_composition = "medium",
-				ambush_composition = "medium",
-				vector_composition = "medium"
+				vector_blob_composition = "chaos_medium",
+				ambush_composition = "chaos_medium",
+				vector_composition = "chaos_medium"
 			},
 			harder = {
 				vector_blob_composition = "chaos_large",
@@ -1246,16 +1246,16 @@ PacingSettings = {
 			45
 		},
 		horde_frequency = {
-			50,
-			100
+			70,
+			120
 		},
 		multiple_horde_frequency = {
 			10,
 			15
 		},
 		max_delay_until_next_horde = {
-			180,
-			210
+			120,
+			150
 		},
 		horde_startup_time = {
 			60,
@@ -1293,14 +1293,43 @@ PacingSettings = {
 				20
 			}
 		},
-		difficulty_overrides = {}
+		difficulty_overrides = {
+			hard = {
+				multiple_hordes = 3,
+				horde_frequency = {
+					60,
+					110
+				},
+				multiple_horde_frequency = {
+					8,
+					13
+				}
+			},
+			harder = {
+				multiple_hordes = 3,
+				horde_frequency = {
+					50,
+					100
+				},
+				multiple_horde_frequency = {
+					8,
+					12
+				}
+			},
+			hardest = {
+				horde_frequency = {
+					50,
+					100
+				}
+			}
+		}
 	},
 	chaos = {
 		horde_in_relax_if_rushing = false,
 		relax_rushing_distance = 70,
 		disabled = false,
 		peak_fade_threshold = 32.5,
-		multiple_hordes = 3,
+		multiple_hordes = 2,
 		peak_intensity_threshold = 45,
 		leave_relax_if_rushing = true,
 		leave_relax_if_zero_intensity = true,
@@ -1360,7 +1389,36 @@ PacingSettings = {
 				20
 			}
 		},
-		difficulty_overrides = {}
+		difficulty_overrides = {
+			hard = {
+				multiple_hordes = 3,
+				horde_frequency = {
+					60,
+					110
+				},
+				multiple_horde_frequency = {
+					8,
+					13
+				}
+			},
+			harder = {
+				multiple_hordes = 3,
+				horde_frequency = {
+					50,
+					100
+				},
+				multiple_horde_frequency = {
+					8,
+					12
+				}
+			},
+			hardest = {
+				horde_frequency = {
+					50,
+					100
+				}
+			}
+		}
 	},
 	intense = {
 		peak_intensity_threshold = 80,
@@ -1695,7 +1753,7 @@ ConflictDirectors = {
 		debug_color = "purple",
 		disabled = false,
 		intensity = IntensitySettings.default,
-		pacing = PacingSettings.default,
+		pacing = PacingSettings.chaos,
 		boss = BossSettings.chaos,
 		specials = SpecialsSettings.chaos,
 		roaming = RoamingSettings.default,
@@ -1706,7 +1764,7 @@ ConflictDirectors = {
 		debug_color = "purple",
 		disabled = false,
 		intensity = IntensitySettings.default,
-		pacing = PacingSettings.default,
+		pacing = PacingSettings.chaos,
 		boss = BossSettings.chaos_light,
 		specials = SpecialsSettings.chaos_light,
 		roaming = RoamingSettings.default,
@@ -1717,9 +1775,9 @@ ConflictDirectors = {
 		debug_color = "purple",
 		disabled = false,
 		intensity = IntensitySettings.default,
-		pacing = PacingSettings.default,
-		boss = BossSettings.default,
-		specials = SpecialsSettings.default,
+		pacing = PacingSettings.chaos,
+		boss = BossSettings.chaos,
+		specials = SpecialsSettings.chaos,
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.chaos,
 		horde = HordeSettings.chaos

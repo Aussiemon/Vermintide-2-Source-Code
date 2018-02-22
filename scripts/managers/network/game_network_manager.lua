@@ -404,6 +404,7 @@ GameNetworkManager.game_object_created_player = function (self, go_id, owner_pee
 
 		player.set_game_object_id(player, go_id)
 		player.create_boon_handler(player, self._world)
+		player.create_sync_data(player)
 
 		local stats_id = player.stats_id(player)
 
@@ -420,6 +421,7 @@ GameNetworkManager.game_object_created_player = function (self, go_id, owner_pee
 
 		player.set_game_object_id(player, go_id)
 		player.create_boon_handler(player, self._world)
+		player.create_sync_data(player)
 	end
 
 	return 
@@ -460,6 +462,29 @@ GameNetworkManager.game_object_destroyed_player_unit_health = function (self, go
 	end
 
 	health_extension.set_health_game_object_id(health_extension, nil)
+
+	return 
+end
+GameNetworkManager.game_object_created_player_sync_data = function (self, go_id, owner_peer_id)
+	local peer_id = GameSession.game_object_field(self.game_session, go_id, "network_id")
+	local local_player_id = GameSession.game_object_field(self.game_session, go_id, "local_player_id")
+
+	printf("Adding player sync data to peer=%s local_player_id=%s", peer_id, local_player_id)
+
+	local player = self.player_manager:player(peer_id, local_player_id)
+
+	player.set_sync_data_game_object_id(player, go_id)
+
+	return 
+end
+GameNetworkManager.game_object_destroyed_player_sync_data = function (self, go_id, owner_peer_id)
+	local peer_id = GameSession.game_object_field(self.game_session, go_id, "network_id")
+	local local_player_id = GameSession.game_object_field(self.game_session, go_id, "local_player_id")
+	local player = self.player_manager:player(peer_id, local_player_id)
+
+	if player then
+		player.set_sync_data_game_object_id(player, nil)
+	end
 
 	return 
 end

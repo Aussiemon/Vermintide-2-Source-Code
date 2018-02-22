@@ -272,16 +272,22 @@ StartGameWindowDifficulty._update_difficulty_lock = function (self)
 	local widgets_by_name = self._widgets_by_name
 
 	if self._selected_difficulty_key then
-		local difficulty_settings = DifficultySettings[self._selected_difficulty_key]
-		local required_power_level = difficulty_settings.required_power_level
-		local players_below_power_level = Managers.matchmaking:players_below_power_level(required_power_level)
+		local human_players = Managers.player:human_players()
+		local players_below_power_level = DifficultyManager.players_below_required_power_level(self._selected_difficulty_key, human_players)
 
 		if 0 < #players_below_power_level then
 			local select_button = widgets_by_name.select_button
 			select_button.content.button_hotspot.disable_button = true
+			local difficulty_settings = DifficultySettings[self._selected_difficulty_key]
+			local required_power_level = difficulty_settings.required_power_level
+			local difficulty_lock_text = Localize("required_power_level")
+			widgets_by_name.difficulty_lock_text.content.text = string.format("%s: %s", difficulty_lock_text, tostring(UIUtils.presentable_hero_power_level(required_power_level)))
+			widgets_by_name.difficulty_is_locked_text.content.text = Localize("required_power_level_not_met_in_party")
 		else
 			local select_button = widgets_by_name.select_button
 			select_button.content.button_hotspot.disable_button = false
+			widgets_by_name.difficulty_lock_text.content.text = ""
+			widgets_by_name.difficulty_is_locked_text.content.text = ""
 		end
 
 		self._set_blocking_peers(self, players_below_power_level)
@@ -290,38 +296,31 @@ StartGameWindowDifficulty._update_difficulty_lock = function (self)
 	return 
 end
 StartGameWindowDifficulty._set_blocking_peers = function (self, players_below_power_level)
-	local widgets_by_name = self._widgets_by_name
-	local widget_prefix = "blocking_peers_"
+	local ui_renderer = self.ui_renderer
+	local blocking_peers = self._widgets_by_name.blocking_peers
+	local blocking_peers_style = blocking_peers.style
+	local num_players_below_power_level = #players_below_power_level
+	local width = definitions.scenegraph_definition.blocking_peers.size[1]
+	local text_width = width/num_players_below_power_level
+	local text = "(%s"
 
-	for i = 1, 4, 1 do
-		local widget_name = widget_prefix .. tostring(i)
-		local widget = widgets_by_name[widget_name]
-		local peer = players_below_power_level[i]
+	for i = 1, num_players_below_power_level, 1 do
+		local player = players_below_power_level[i]
+		local player_name = UIRenderer.crop_text_width(ui_renderer, player.name(player), text_width, blocking_peers_style.text)
+		text = string.format(text, player_name)
 
-		if peer then
-			local player_name = "player_name_unknown"
-			local local_user = false
-			local player = Managers.player:player_from_peer_id(peer)
-
-			if player then
-				player_name = player.name(player)
-				local_user = player.local_player
-			end
-
-			local power_level = Managers.matchmaking:get_peer_power_level(peer)
-			local text = nil
-
-			if local_user then
-				text = Localize("difficulty_blocked_by_me")
-			else
-				text = string.format("%s", string.format(Localize("difficulty_blocked_by_peer"), player_name))
-			end
-
-			widget.content.text = text
+		if players_below_power_level[i + 1] == nil then
+			text = string.format("%s)", text)
 		else
-			widget.content.text = ""
+			text = text .. ", %s"
 		end
 	end
+
+	if num_players_below_power_level == 0 then
+		text = ""
+	end
+
+	blocking_peers.content.text = text
 
 	return 
 end

@@ -256,18 +256,24 @@ PlayerUnitAttachmentExtension._send_rpc_add_attachment_buffs = function (self, u
 	local server_buffs = {}
 	server_buffs = table.merge(server_buffs, buffs.server)
 	server_buffs = table.merge(server_buffs, buffs.both)
-	local buff_name_1, value_1, buff_name_2, value_2, buff_name_3, value_3, buff_name_4, value_4 = nil
-	local network_manager = Managers.state.network
-	buff_name_1, value_1 = next(server_buffs)
+	local buff_name_1, buff_variable_data_1, buff_data_type_1, buff_value_1, buff_name_2, buff_variable_data_2, buff_data_type_2, buff_value_2, buff_name_3, buff_variable_data_3, buff_data_type_3, buff_value_3, buff_name_4, buff_variable_data_4, buff_data_type_4, buff_value_4 = nil
+	buff_name_1, buff_variable_data_1 = next(server_buffs)
 
 	if buff_name_1 then
-		buff_name_2, value_2 = next(server_buffs, buff_name_1)
+		buff_data_type_1, buff_value_1 = next(buff_variable_data_1)
+		buff_name_2, buff_variable_data_2 = next(server_buffs, buff_name_1)
 
 		if buff_name_2 then
-			buff_name_3, value_3 = next(server_buffs, buff_name_2)
+			buff_data_type_2, buff_value_2 = next(buff_variable_data_2)
+			buff_name_3, buff_variable_data_3 = next(server_buffs, buff_name_2)
 
 			if buff_name_3 then
-				buff_name_4, value_4 = next(server_buffs, buff_name_3)
+				buff_data_type_3, buff_value_3 = next(buff_variable_data_3)
+				buff_name_4, buff_variable_data_4 = next(server_buffs, buff_name_3)
+
+				if buff_name_4 then
+					buff_data_type_4, buff_value_4 = next(buff_variable_data_4)
+				end
 			end
 		end
 	end
@@ -277,9 +283,17 @@ PlayerUnitAttachmentExtension._send_rpc_add_attachment_buffs = function (self, u
 	local buff_2_id = (buff_name_2 and NetworkLookup.buff_templates[buff_name_2]) or default_buff_id
 	local buff_3_id = (buff_name_3 and NetworkLookup.buff_templates[buff_name_3]) or default_buff_id
 	local buff_4_id = (buff_name_4 and NetworkLookup.buff_templates[buff_name_4]) or default_buff_id
+	local default_buff_data_type_id = NetworkLookup.buff_data_types["n/a"]
+	local buff_data_type_1_id = (buff_name_1 and NetworkLookup.buff_data_types[buff_data_type_1]) or default_buff_data_type_id
+	local buff_data_type_2_id = (buff_name_2 and NetworkLookup.buff_data_types[buff_data_type_2]) or default_buff_data_type_id
+	local buff_data_type_3_id = (buff_name_3 and NetworkLookup.buff_data_types[buff_data_type_3]) or default_buff_data_type_id
+	local buff_data_type_4_id = (buff_name_4 and NetworkLookup.buff_data_types[buff_data_type_4]) or default_buff_data_type_id
 
 	if buff_name_1 then
-		network_manager.network_transmit:send_rpc_server("rpc_add_attachment_buffs", unit_go_id, slot_id, buff_1_id, value_1 or 1, buff_2_id, value_2 or 1, buff_3_id, value_3 or 1, buff_4_id, value_4 or 1)
+		local network_manager = Managers.state.network
+		local network_transmit = network_manager.network_transmit
+
+		network_transmit.send_rpc_server(network_transmit, "rpc_add_attachment_buffs", unit_go_id, slot_id, buff_1_id, buff_data_type_1_id, buff_value_1 or 1, buff_2_id, buff_data_type_2_id, buff_value_2 or 1, buff_3_id, buff_data_type_3_id, buff_value_3 or 1, buff_4_id, buff_data_type_4_id, buff_value_4 or 1)
 	end
 
 	return 

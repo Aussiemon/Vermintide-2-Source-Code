@@ -4,6 +4,35 @@ local category_settings = definitions.category_settings
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
+
+local function item_sort_func(item_1, item_2)
+	local item_data_1 = item_1.data
+	local item_data_2 = item_2.data
+	local item_1_rarity = item_1.rarity or item_data_1.rarity
+	local item_2_rarity = item_2.rarity or item_data_2.rarity
+	local item_rarity_order = UISettings.item_rarity_order
+	local item_1_rarity_order = item_rarity_order[item_1_rarity]
+	local item_2_rarity_order = item_rarity_order[item_2_rarity]
+
+	if item_1_rarity_order == item_2_rarity_order then
+		local item_type_1 = Localize(item_data_1.item_type)
+		local item_type_2 = Localize(item_data_2.item_type)
+
+		if item_type_1 == item_type_2 then
+			local item_name_1 = Localize(item_data_1.display_name)
+			local item_name_2 = Localize(item_data_2.display_name)
+
+			return item_name_1 < item_name_2
+		else
+			return item_type_1 < item_type_2
+		end
+	else
+		return item_1_rarity_order < item_2_rarity_order
+	end
+
+	return 
+end
+
 HeroWindowCosmeticsInventory = class(HeroWindowCosmeticsInventory)
 HeroWindowCosmeticsInventory.NAME = "HeroWindowCosmeticsInventory"
 HeroWindowCosmeticsInventory.on_enter = function (self, params, offset)
@@ -37,6 +66,7 @@ HeroWindowCosmeticsInventory.on_enter = function (self, params, offset)
 	item_grid.mark_locked_items(item_grid, true)
 	item_grid.disable_locked_items(item_grid, true)
 	item_grid.disable_item_drag(item_grid)
+	item_grid.apply_item_sorting_function(item_grid, item_sort_func)
 
 	return 
 end

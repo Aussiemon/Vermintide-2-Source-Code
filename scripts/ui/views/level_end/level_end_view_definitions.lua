@@ -14,6 +14,20 @@ local scenegraph_definition = {
 			UILayer.end_screen
 		}
 	},
+	console_cursor = {
+		vertical_alignment = "center",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			10
+		}
+	},
 	page_background = {
 		vertical_alignment = "center",
 		parent = "screen",
@@ -566,5 +580,6 @@ return {
 	num_experience_entries = num_experience_entries,
 	scenegraph_definition = scenegraph_definition,
 	widgets_definitions = widgets_definitions,
-	animations = animations
+	animations = animations,
+	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor")
 }

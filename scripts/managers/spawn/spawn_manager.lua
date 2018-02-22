@@ -429,7 +429,7 @@ SpawnManager._update_player_status = function (self, dt, t)
 						status.health_state = "respawn"
 					elseif status_extension.is_knocked_down(status_extension) then
 						status.health_state = "knocked_down"
-					elseif status_extension.is_disabled(status_extension) and not status_extension.is_in_vortex(status_extension) and not status_extension.is_overpowered(status_extension) then
+					elseif status_extension.is_disabled(status_extension) and not status_extension.is_in_vortex(status_extension) and not status_extension.is_grabbed_by_corruptor(status_extension) and not status_extension.is_grabbed_by_chaos_spawn(status_extension) and not status_extension.is_overpowered(status_extension) then
 						status.health_state = "disabled"
 					else
 						status.health_state = "alive"
@@ -962,12 +962,14 @@ SpawnManager._spawn_player = function (self, status)
 	local teleport_on_spawn = Development.parameter("teleport_on_spawn")
 
 	if teleport_on_spawn then
-		local boxed_pos = ConflictUtils.get_teleporter_portals()[teleport_on_spawn]
+		local boxed_pos = ConflictUtils.get_teleporter_portals()[teleport_on_spawn][1]
+		local boxed_rot = ConflictUtils.get_teleporter_portals()[teleport_on_spawn][2]
 
-		if boxed_pos then
+		if boxed_pos and boxed_rot then
 			print("teleport_on_spawn -> teleporting the player to:", teleport_on_spawn)
 
 			position = boxed_pos.unbox(boxed_pos)
+			rotation = boxed_rot.unbox(boxed_rot)
 		end
 	end
 

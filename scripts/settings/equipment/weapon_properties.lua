@@ -136,7 +136,7 @@ local buff_tweak_data = {
 		multiplier = 1.05,
 		displayed_multiplier = {
 			0.05,
-			0.1
+			0.05
 		}
 	}
 }
@@ -539,7 +539,7 @@ WeaponProperties.properties = {
 		buff_name = "properties_movespeed",
 		description_values = {
 			{
-				value_type = "percent",
+				value_type = "baked_percent",
 				value = buff_tweak_data.properties_movespeed.displayed_multiplier
 			}
 		}

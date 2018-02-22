@@ -2551,7 +2551,7 @@ HordeCompositions = {
 			name = "plain",
 			weight = 1,
 			breeds = {
-				"chaos_marauder",
+				"chaos_marauder_tutorial",
 				1
 			}
 		},
@@ -2562,7 +2562,7 @@ HordeCompositions = {
 			name = "plain",
 			weight = 1,
 			breeds = {
-				"chaos_raider",
+				"chaos_raider_tutorial",
 				1
 			}
 		},

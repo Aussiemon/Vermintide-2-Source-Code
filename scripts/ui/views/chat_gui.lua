@@ -44,6 +44,7 @@ ChatGui.set_input_manager = function (self, input_manager)
 			keybind = true,
 			irc_chat = true,
 			debug_screen = true,
+			rcon = true,
 			twitch = true,
 			free_flight = true
 		}

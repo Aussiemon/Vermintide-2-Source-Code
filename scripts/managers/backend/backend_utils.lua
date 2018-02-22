@@ -22,15 +22,14 @@ BackendUtils.get_item_from_masterlist = function (backend_id)
 
 	return item_data
 end
-BackendUtils.get_total_power_level = function (profile_name, career_name)
-	if script_data.power_level_override then
-		return script_data.power_level_override
-	end
-
+BackendUtils.get_hero_power_level = function (profile_name)
 	local settings = PowerLevelFromLevelSettings
 	local experience = ExperienceSettings.get_experience(profile_name)
 	local level = ExperienceSettings.get_level(experience)
-	local hero_power_level = settings.power_level_per_level*level + settings.starting_power_level
+
+	return settings.power_level_per_level*level + settings.starting_power_level
+end
+BackendUtils.get_average_item_power_level = function (career_name)
 	local backend_items = Managers.backend:get_interface("items")
 	local slots = InventorySettings.slots_by_slot_index
 	local num_slots = 5
@@ -50,7 +49,15 @@ BackendUtils.get_total_power_level = function (profile_name, career_name)
 		end
 	end
 
-	local average_item_power_level = total_item_power_level/num_slots
+	return total_item_power_level/num_slots
+end
+BackendUtils.get_total_power_level = function (profile_name, career_name)
+	if script_data.power_level_override then
+		return script_data.power_level_override
+	end
+
+	local hero_power_level = BackendUtils.get_hero_power_level(profile_name)
+	local average_item_power_level = BackendUtils.get_average_item_power_level(career_name)
 
 	return hero_power_level + average_item_power_level
 end
@@ -61,23 +68,27 @@ BackendUtils.get_item_template = function (item_data, backend_id)
 
 	return template
 end
-BackendUtils.get_item_units = function (item_data, backend_id)
+BackendUtils.get_item_units = function (item_data, backend_id, skin)
 	local left_hand_unit = item_data.left_hand_unit
 	local right_hand_unit = item_data.right_hand_unit
 	local unit = item_data.unit
 	local material = item_data.material
 	local icon = item_data.hud_icon
 	local backend_id = item_data.backend_id or backend_id
+	local skin_name = nil
 
-	if backend_id then
-		local backend_items = Managers.backend:get_interface("items")
-		local skin = backend_items.get_skin(backend_items, backend_id)
+	if backend_id or skin then
+		if not skin then
+			local backend_items = Managers.backend:get_interface("items")
+			skin = backend_items.get_skin(backend_items, backend_id)
+		end
 
 		if skin then
 			local skin_template = WeaponSkins.skins[skin]
 			left_hand_unit = skin_template.left_hand_unit
 			right_hand_unit = skin_template.right_hand_unit
 			icon = skin_template.hud_icon
+			skin_name = skin
 		end
 	end
 
@@ -87,7 +98,8 @@ BackendUtils.get_item_units = function (item_data, backend_id)
 			right_hand_unit = right_hand_unit,
 			unit = unit,
 			material = material,
-			icon = icon
+			icon = icon,
+			skin = skin_name
 		}
 
 		return units

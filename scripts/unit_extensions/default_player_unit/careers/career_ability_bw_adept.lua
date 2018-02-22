@@ -59,6 +59,7 @@ CareerAbilityBWAdept.extensions_ready = function (self, world, unit)
 	self.career_extension = ScriptUnit.extension(unit, "career_system")
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self.locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+	self._input_extension = ScriptUnit.has_extension(unit, "input_system")
 
 	if self.first_person_extension then
 		self.first_person_unit = self.first_person_extension:get_first_person_unit()
@@ -74,22 +75,26 @@ CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
 		return 
 	end
 
-	local input_service = self.input_manager:get_service("Player")
+	local input_extension = self._input_extension
+
+	if not input_extension then
+		return 
+	end
 
 	if not self.is_priming then
-		if input_service.get(input_service, "function_career") then
+		if input_extension.get(input_extension, "function_career") then
 			self._start_priming(self)
 		end
 	elseif self.is_priming then
 		local end_position = self._update_priming(self, dt, t)
 
-		if input_service.get(input_service, "action_two") or input_service.get(input_service, "jump") or input_service.get(input_service, "jump_only") then
+		if input_extension.get(input_extension, "action_two") or input_extension.get(input_extension, "jump") or input_extension.get(input_extension, "jump_only") then
 			self._stop_priming(self)
 
 			return 
 		end
 
-		if input_service.get(input_service, "function_career_release") then
+		if input_extension.get(input_extension, "function_career_release") then
 			self._run_ability(self, end_position)
 		end
 	end

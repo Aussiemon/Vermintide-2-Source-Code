@@ -98,11 +98,12 @@ SimpleInventoryExtension.game_object_initialized = function (self, unit, unit_go
 		local item_data = slot_data.item_data
 		local slot_id = NetworkLookup.equipment_slots[slot_name]
 		local item_id = NetworkLookup.item_names[item_data.name]
+		local weapon_skin_id = NetworkLookup.weapon_skins[slot_data.skin or "n/a"]
 
 		if is_server then
-			network_manager.network_transmit:send_rpc_clients("rpc_add_equipment", unit_go_id, slot_id, item_id)
+			network_manager.network_transmit:send_rpc_clients("rpc_add_equipment", unit_go_id, slot_id, item_id, weapon_skin_id)
 		else
-			network_manager.network_transmit:send_rpc_server("rpc_add_equipment", unit_go_id, slot_id, item_id)
+			network_manager.network_transmit:send_rpc_server("rpc_add_equipment", unit_go_id, slot_id, item_id, weapon_skin_id)
 
 			if slot_name == "slot_ranged" or slot_name == "slot_melee" then
 				local backend_id = item_data.backend_id
@@ -128,18 +129,24 @@ SimpleInventoryExtension._send_rpc_add_equipment_buffs = function (self, unit_go
 	local server_buffs = {}
 	server_buffs = table.merge(server_buffs, buffs.server)
 	server_buffs = table.merge(server_buffs, buffs.both)
-	local buff_name_1, value_1, buff_name_2, value_2, buff_name_3, value_3, buff_name_4, value_4 = nil
-	local network_manager = Managers.state.network
-	buff_name_1, value_1 = next(server_buffs)
+	local buff_name_1, buff_variable_data_1, buff_data_type_1, buff_value_1, buff_name_2, buff_variable_data_2, buff_data_type_2, buff_value_2, buff_name_3, buff_variable_data_3, buff_data_type_3, buff_value_3, buff_name_4, buff_variable_data_4, buff_data_type_4, buff_value_4 = nil
+	buff_name_1, buff_variable_data_1 = next(server_buffs)
 
 	if buff_name_1 then
-		buff_name_2, value_2 = next(server_buffs, buff_name_1)
+		buff_data_type_1, buff_value_1 = next(buff_variable_data_1)
+		buff_name_2, buff_variable_data_2 = next(server_buffs, buff_name_1)
 
 		if buff_name_2 then
-			buff_name_3, value_3 = next(server_buffs, buff_name_2)
+			buff_data_type_2, buff_value_2 = next(buff_variable_data_2)
+			buff_name_3, buff_variable_data_3 = next(server_buffs, buff_name_2)
 
 			if buff_name_3 then
-				buff_name_4, value_4 = next(server_buffs, buff_name_3)
+				buff_data_type_3, buff_value_3 = next(buff_variable_data_3)
+				buff_name_4, buff_variable_data_4 = next(server_buffs, buff_name_3)
+
+				if buff_name_4 then
+					buff_data_type_4, buff_value_4 = next(buff_variable_data_4)
+				end
 			end
 		end
 	end
@@ -149,9 +156,17 @@ SimpleInventoryExtension._send_rpc_add_equipment_buffs = function (self, unit_go
 	local buff_2_id = (buff_name_2 and NetworkLookup.buff_templates[buff_name_2]) or default_buff_id
 	local buff_3_id = (buff_name_3 and NetworkLookup.buff_templates[buff_name_3]) or default_buff_id
 	local buff_4_id = (buff_name_4 and NetworkLookup.buff_templates[buff_name_4]) or default_buff_id
+	local default_buff_data_type_id = NetworkLookup.buff_data_types["n/a"]
+	local buff_data_type_1_id = (buff_name_1 and NetworkLookup.buff_data_types[buff_data_type_1]) or default_buff_data_type_id
+	local buff_data_type_2_id = (buff_name_2 and NetworkLookup.buff_data_types[buff_data_type_2]) or default_buff_data_type_id
+	local buff_data_type_3_id = (buff_name_3 and NetworkLookup.buff_data_types[buff_data_type_3]) or default_buff_data_type_id
+	local buff_data_type_4_id = (buff_name_4 and NetworkLookup.buff_data_types[buff_data_type_4]) or default_buff_data_type_id
 
 	if buff_name_1 then
-		network_manager.network_transmit:send_rpc_server("rpc_add_equipment_buffs", unit_go_id, slot_id, buff_1_id, value_1 or 1, buff_2_id, value_2 or 1, buff_3_id, value_3 or 1, buff_4_id, value_4 or 1)
+		local network_manager = Managers.state.network
+		local network_transmit = network_manager.network_transmit
+
+		network_transmit.send_rpc_server(network_transmit, "rpc_add_equipment_buffs", unit_go_id, slot_id, buff_1_id, buff_data_type_1_id, buff_value_1 or 1, buff_2_id, buff_data_type_2_id, buff_value_2 or 1, buff_3_id, buff_data_type_3_id, buff_value_3 or 1, buff_4_id, buff_data_type_4_id, buff_value_4 or 1)
 	end
 
 	return 
@@ -226,7 +241,7 @@ SimpleInventoryExtension._update_resync_loadout = function (self)
 	local resync_id = self.resync_id
 
 	if resync_id and self.all_clients_loaded_resource(self, resync_id) then
-		self.spawn_resynced_loadout(self, equipment_to_spawn)
+		self._spawn_resynced_loadout(self, equipment_to_spawn)
 
 		self._item_to_spawn = nil
 		self.resync_id = nil
@@ -802,9 +817,9 @@ SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, bac
 	local item_data = BackendUtils.get_item_from_masterlist(backend_id)
 	local slot_data = self._equipment.slots[slot_id]
 	local item_template = slot_data.item_template or BackendUtils.get_item_template(item_data)
-	local item_units = BackendUtils.get_item_units(item_data)
 	local weapon_already_equiped = slot_data.item_data == item_data
 	local item_name = item_data.name
+	local item_units = BackendUtils.get_item_units(item_data)
 
 	if weapon_already_equiped then
 		return 
@@ -814,25 +829,27 @@ SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, bac
 
 	self._item_to_spawn = {
 		slot_id = slot_id,
-		item_data = item_data
+		item_data = item_data,
+		skin = item_units.skin
 	}
 	self.resync_loadout_needed = true
 
 	return 
 end
-SimpleInventoryExtension.spawn_resynced_loadout = function (self, equipment_to_spawn)
+SimpleInventoryExtension._spawn_resynced_loadout = function (self, equipment_to_spawn)
 	local item_data = equipment_to_spawn.item_data
 	local slot_name = equipment_to_spawn.slot_id
 	local network_manager = Managers.state.network
 	local unit_go_id = Managers.state.unit_storage:go_id(self._unit)
 	local slot_id = NetworkLookup.equipment_slots[slot_name]
 	local item_id = NetworkLookup.item_names[item_data.name]
+	local weapon_skin_id = NetworkLookup.weapon_skins[equipment_to_spawn.skin or "n/a"]
 	local is_server = self.is_server
 
 	if is_server then
-		network_manager.network_transmit:send_rpc_clients("rpc_add_equipment", unit_go_id, slot_id, item_id)
+		network_manager.network_transmit:send_rpc_clients("rpc_add_equipment", unit_go_id, slot_id, item_id, weapon_skin_id)
 	else
-		network_manager.network_transmit:send_rpc_server("rpc_add_equipment", unit_go_id, slot_id, item_id)
+		network_manager.network_transmit:send_rpc_server("rpc_add_equipment", unit_go_id, slot_id, item_id, weapon_skin_id)
 
 		if slot_name == "slot_ranged" or slot_name == "slot_melee" then
 			local backend_id = item_data.backend_id

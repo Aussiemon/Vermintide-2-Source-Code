@@ -5,7 +5,7 @@ require("scripts/settings/equipment/attachments")
 require("scripts/settings/profiles/unit_wwise_profiles")
 require("scripts/settings/equipment/cosmetics")
 
-if Development.parameter("honduras_demo") then
+if script_data.honduras_demo then
 	ProfilePriority = {
 		3,
 		5,

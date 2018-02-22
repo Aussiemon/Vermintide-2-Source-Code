@@ -274,9 +274,11 @@ StateIngame.on_enter = function (self)
 
 	Managers.telemetry.events:header(engine_revision, content_revision)
 
+	local player_id = PLATFORM == "win32" and rawget(_G, "Steam") and Steam.user_id()
 	local difficulty = Managers.state.difficulty:get_difficulty()
+	local eye_tracking = (rawget(_G, "Tobii") and Tobii.get_is_connected() and Application.user_setting("tobii_eyetracking")) or false
 
-	Managers.telemetry.events:game_started(self.peer_type(self), level_key, difficulty)
+	Managers.telemetry.events:game_started(player_id, self.peer_type(self), level_key, difficulty, eye_tracking)
 
 	if is_server then
 		local session_id = Managers.state.network:session_id()
@@ -378,27 +380,6 @@ StateIngame.on_enter = function (self)
 
 	if checkpoint_data then
 		Managers.state.entity:system("mission_system"):load_checkpoint_data(checkpoint_data.mission)
-	end
-
-	if Managers.game_server then
-		local stored_lobby_data = self._lobby_host:get_stored_lobby_data()
-		local level_key = stored_lobby_data.level_key
-		local difficulty = stored_lobby_data.difficulty
-		local act_key = stored_lobby_data.act_key
-		local private_game = (stored_lobby_data.is_private == "true" and true) or false
-		local quick_game = (stored_lobby_data.quick_game == "true" and true) or false
-		local game_mode = stored_lobby_data.game_mode
-		local eac_authorized = false
-
-		if Managers.eac:enabled() then
-			eac_authorized = Managers.eac:authorized()
-		end
-
-		Managers.matchmaking:set_matchmaking_data(level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized)
-
-		stored_lobby_data.matchmaking = (private_game and "false") or "true"
-
-		self._lobby_host:set_lobby_data(stored_lobby_data)
 	end
 
 	local wwise_world = Managers.world:wwise_world(world)
@@ -1040,7 +1021,7 @@ StateIngame._check_exit = function (self, t)
 			transition = Managers.game_server:get_transition()
 		end
 
-		if not transition and Development.parameter("honduras_demo") then
+		if not transition and script_data.honduras_demo then
 			transition = Managers.time:get_demo_transition()
 		end
 
@@ -1202,6 +1183,10 @@ StateIngame._check_exit = function (self, t)
 				self.network_server:set_current_level(level_to_transition_to)
 				network_manager.network_transmit:send_rpc_clients("rpc_load_level", NetworkLookup.level_keys[level_to_transition_to], self.level_transition_handler.level_seed)
 				network_manager.leave_game(network_manager)
+
+				if level_to_transition_to == "prologue" then
+					self.parent.loading_context.play_trailer = true
+				end
 			else
 				self.network_client:set_wait_for_state_loading(true)
 			end
@@ -1345,7 +1330,7 @@ StateIngame._check_exit = function (self, t)
 
 	local SESSION_LEAVE_TIMEOUT = 4
 
-	if Development.parameter("honduras_demo") then
+	if script_data.honduras_demo then
 		local transition_manager = Managers.transition
 
 		if transition_manager.is_video_active(transition_manager) and not transition_manager.is_video_done(transition_manager) then
@@ -1402,8 +1387,9 @@ StateIngame._check_exit = function (self, t)
 			return StateDemoEnd
 		elseif exit_type == "finished_tutorial" then
 			local loading_context = self.parent.loading_context
-			loading_context.play_trailer = true
 			loading_context.finished_tutorial = true
+
+			Managers.backend:stop_tutorial()
 
 			if Managers.play_go:installed() then
 				loading_context.restart_network = true
@@ -1830,9 +1816,7 @@ StateIngame._check_and_add_end_game_telemetry = function (self, application_shut
 		end
 	end
 
-	eye_tracking = rawget(_G, "Tobii") and Tobii.get_is_connected() and Application.user_setting("tobii_eyetracking")
-
-	Managers.telemetry.events:game_ended(player, self.peer_type(self), level_key, difficulty, reason, eye_tracking)
+	Managers.telemetry.events:game_ended(reason)
 
 	return 
 end
@@ -2073,7 +2057,7 @@ StateIngame.event_play_particle_effect = function (self, effect_name, unit, node
 
 	return 
 end
-StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_available)
+StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_available, percentage_completed)
 	LevelHelper:flow_event(self.world, "gm_event_end_conditions_met")
 
 	if self.is_server then
@@ -2117,7 +2101,7 @@ StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_ava
 	end
 
 	for _, machine in pairs(self.machines) do
-		machine.state(machine):gm_event_end_conditions_met(reason, checkpoint_available)
+		machine.state(machine):gm_event_end_conditions_met(reason, checkpoint_available, percentage_completed)
 	end
 
 	return 

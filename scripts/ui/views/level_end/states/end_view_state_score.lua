@@ -238,7 +238,29 @@ EndViewStateScore._set_entry_hover_index = function (self, hover_index)
 	return 
 end
 EndViewStateScore._handle_input = function (self, dt, t)
+	if Development.parameter("tobii_button") then
+		self._handle_tobii_button(self, dt)
+	end
+
+	return 
+end
+EndViewStateScore._handle_tobii_button = function (self, dt)
 	local widgets_by_name = self._widgets_by_name
+	local tobii_button = widgets_by_name.tobii_button
+
+	UIWidgetUtils.animate_default_button(tobii_button, dt)
+
+	if self._is_button_hover_enter(self, tobii_button) then
+		self._play_sound(self, "play_gui_start_menu_button_hover")
+	end
+
+	if self._is_button_pressed(self, tobii_button) then
+		self._play_sound(self, "play_gui_start_menu_button_click")
+
+		local tobii_contest_url = "https://vermintide2beta.com/?utm_medium=referral&utm_campaign=vermintide2beta&utm_source=ingame#challenge"
+
+		Application.open_url_in_browser(tobii_contest_url)
+	end
 
 	return 
 end

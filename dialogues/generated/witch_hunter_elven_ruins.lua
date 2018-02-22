@@ -28,6 +28,12 @@ return function ()
 				"witch_hunter"
 			},
 			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
 				"faction_memory",
 				"time_since_elven_ruins_untouched",
 				OP.EQ,
@@ -72,6 +78,12 @@ return function ()
 				"witch_hunter"
 			},
 			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
 				"faction_memory",
 				"time_since_elven_ruins_ravine_approach",
 				OP.EQ,
@@ -114,6 +126,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
 			},
 			{
 				"faction_memory",
@@ -204,6 +222,12 @@ return function ()
 				"witch_hunter"
 			},
 			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
 				"faction_memory",
 				"time_since_elven_ruins_maze_approach",
 				OP.EQ,
@@ -246,6 +270,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
 			},
 			{
 				"faction_memory",
@@ -292,6 +322,12 @@ return function ()
 				"witch_hunter"
 			},
 			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
 				"faction_memory",
 				"time_since_elven_ruins_broken_waystone",
 				OP.EQ,
@@ -334,6 +370,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
 			},
 			{
 				"faction_memory",
@@ -468,6 +510,12 @@ return function ()
 				"witch_hunter"
 			},
 			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
 				"faction_memory",
 				"time_since_elven_ruins_big_tree",
 				OP.EQ,
@@ -528,8 +576,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_level_elven_ruins_temple_proper",
-		response = "pwh_level_elven_ruins_temple_proper",
+		name = "pwh_level_elven_ruins_ruins_proper",
+		response = "pwh_level_elven_ruins_ruins_proper",
 		criterias = {
 			{
 				"query_context",
@@ -554,6 +602,12 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"witch_hunter"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
 			},
 			{
 				"faction_memory",
@@ -820,6 +874,12 @@ return function ()
 				"witch_hunter"
 			},
 			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
 				"faction_memory",
 				"time_since_elven_ruins_task_complete",
 				OP.EQ,
@@ -832,6 +892,170 @@ return function ()
 				"time_since_elven_ruins_task_complete",
 				OP.ADD,
 				1
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_level_elven_ruins_exit",
+		response = "pwh_level_elven_ruins_exit",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"elven_ruins_exit"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"faction_memory",
+				"elven_ruins_exit",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"elven_ruins_exit",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_elven_ruins_intro_a",
+		response = "pwh_elven_ruins_intro_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"elven_ruins_intro_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"faction_memory",
+				"elven_ruins_intro_a",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"elven_ruins_intro_a",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_elven_ruins_intro_b",
+		response = "pwh_elven_ruins_intro_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"elven_ruins_intro_a"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"faction_memory",
+				"elven_ruins_intro_b",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"elven_ruins_intro_b",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_elven_ruins_intro_c",
+		response = "pwh_elven_ruins_intro_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"elven_ruins_intro_c"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"faction_memory",
+				"elven_ruins_intro_c",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"elven_ruins_intro_c",
+				OP.TIMESET
 			}
 		}
 	})
@@ -932,6 +1156,31 @@ return function ()
 				"pwh_level_elven_ruins_cliff_edge_02",
 				"pwh_level_elven_ruins_cliff_edge_03",
 				"pwh_level_elven_ruins_cliff_edge_04"
+			},
+			randomize_indexes = {}
+		},
+		pwh_elven_ruins_intro_c = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "witch_hunter_elven_ruins",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwh_elven_ruins_intro_c_01",
+				[2.0] = "pwh_elven_ruins_intro_c_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_elven_ruins_intro_c_01",
+				[2.0] = "pwh_elven_ruins_intro_c_02"
 			},
 			randomize_indexes = {}
 		},
@@ -1298,6 +1547,89 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pwh_elven_ruins_intro_b = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "witch_hunter_elven_ruins",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwh_elven_ruins_intro_b_01",
+				[2.0] = "pwh_elven_ruins_intro_b_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_elven_ruins_intro_b_01",
+				[2.0] = "pwh_elven_ruins_intro_b_02"
+			},
+			randomize_indexes = {}
+		},
+		pwh_level_elven_ruins_exit = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "witch_hunter_elven_ruins",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pwh_level_elven_ruins_exit_01",
+				"pwh_level_elven_ruins_exit_02",
+				"pwh_level_elven_ruins_exit_03",
+				"pwh_level_elven_ruins_exit_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pwh_level_elven_ruins_exit_01",
+				"pwh_level_elven_ruins_exit_02",
+				"pwh_level_elven_ruins_exit_03",
+				"pwh_level_elven_ruins_exit_04"
+			},
+			randomize_indexes = {}
+		},
+		pwh_elven_ruins_intro_a = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "witch_hunter_elven_ruins",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwh_elven_ruins_intro_a_01",
+				[2.0] = "pwh_elven_ruins_intro_a_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_elven_ruins_intro_a_01",
+				[2.0] = "pwh_elven_ruins_intro_a_02"
+			},
+			randomize_indexes = {}
+		},
 		pwh_level_elven_ruins_first_aligned_pleasant_feeling = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -1364,7 +1696,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_level_elven_ruins_temple_proper = {
+		pwh_level_elven_ruins_entering_ruins = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1372,14 +1704,14 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pwh_level_elven_ruins_temple_proper_01",
-				"pwh_level_elven_ruins_temple_proper_02",
-				"pwh_level_elven_ruins_temple_proper_03",
-				"pwh_level_elven_ruins_temple_proper_04"
+				"pwh_level_elven_ruins_entering_ruins_01",
+				"pwh_level_elven_ruins_entering_ruins_02",
+				"pwh_level_elven_ruins_entering_ruins_03",
+				"pwh_level_elven_ruins_entering_ruins_04"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
+				"dialogue_shout",
+				"dialogue_shout",
 				"dialogue_talk",
 				"dialogue_talk"
 			},
@@ -1390,10 +1722,10 @@ return function ()
 				"face_neutral"
 			},
 			localization_strings = {
-				"pwh_level_elven_ruins_temple_proper_01",
-				"pwh_level_elven_ruins_temple_proper_02",
-				"pwh_level_elven_ruins_temple_proper_03",
-				"pwh_level_elven_ruins_temple_proper_04"
+				"pwh_level_elven_ruins_entering_ruins_01",
+				"pwh_level_elven_ruins_entering_ruins_02",
+				"pwh_level_elven_ruins_entering_ruins_03",
+				"pwh_level_elven_ruins_entering_ruins_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1430,7 +1762,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_level_elven_ruins_entering_ruins = {
+		pwh_level_elven_ruins_ruins_proper = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1438,14 +1770,14 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pwh_level_elven_ruins_entering_ruins_01",
-				"pwh_level_elven_ruins_entering_ruins_02",
-				"pwh_level_elven_ruins_entering_ruins_03",
-				"pwh_level_elven_ruins_entering_ruins_04"
+				"pwh_level_elven_ruins_ruins_proper_01",
+				"pwh_level_elven_ruins_ruins_proper_02",
+				"pwh_level_elven_ruins_ruins_proper_03",
+				"pwh_level_elven_ruins_ruins_proper_04"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
+				"dialogue_talk",
+				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
 			},
@@ -1456,10 +1788,10 @@ return function ()
 				"face_neutral"
 			},
 			localization_strings = {
-				"pwh_level_elven_ruins_entering_ruins_01",
-				"pwh_level_elven_ruins_entering_ruins_02",
-				"pwh_level_elven_ruins_entering_ruins_03",
-				"pwh_level_elven_ruins_entering_ruins_04"
+				"pwh_level_elven_ruins_ruins_proper_01",
+				"pwh_level_elven_ruins_ruins_proper_02",
+				"pwh_level_elven_ruins_ruins_proper_03",
+				"pwh_level_elven_ruins_ruins_proper_04"
 			},
 			randomize_indexes = {}
 		}
