@@ -1945,7 +1945,7 @@ InteractionDefinitions.cosmetics_access.client.stop = function (world, interacto
 	return 
 end
 InteractionDefinitions.cosmetics_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	return true
+	return false
 end
 InteractionDefinitions.cosmetics_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
 	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), "interaction_action_open"

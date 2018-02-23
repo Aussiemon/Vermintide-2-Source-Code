@@ -1,7 +1,7 @@
 PlayerData = PlayerData or {
 	mission_selection_version = 2,
 	controls_version = 13,
-	new_item_data_version = 4,
+	new_item_data_version = 5,
 	new_sign_in_rewards_data_version = 1,
 	mission_selection = {},
 	new_item_ids = {},

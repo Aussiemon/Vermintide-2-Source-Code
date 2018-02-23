@@ -194,12 +194,12 @@ local function create_static_widget()
 		style = {
 			character_portrait = {
 				size = {
-					portrait_scale*96,
-					portrait_scale*112
+					portrait_scale*86,
+					portrait_scale*108
 				},
 				offset = {
-					portrait_scale*-48,
-					portrait_scale*-56 + portrait_scale*55,
+					portrait_scale*-43,
+					portrait_scale*-54 + portrait_scale*55,
 					0
 				},
 				color = {

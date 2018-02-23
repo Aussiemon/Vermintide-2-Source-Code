@@ -141,8 +141,8 @@ local function create_static_widget()
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
 				texture_size = {
-					96,
-					112
+					86,
+					108
 				},
 				offset = {
 					0,

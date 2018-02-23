@@ -70,8 +70,8 @@ UICleanUI.update = function (self, dt, context)
 	local ability_ui = self.hud.ability_ui
 	local equipment_background = self.hud.equipment_ui
 	local portrait_size = {
-		96,
-		112
+		86,
+		108
 	}
 	local on_window = 0 <= gaze_x and gaze_x <= 1 and 0 <= gaze_y and gaze_y <= 1
 	local off_window_override = false

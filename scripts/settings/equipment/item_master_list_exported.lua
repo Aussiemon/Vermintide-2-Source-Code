@@ -299,6 +299,33 @@ ItemMasterList.skin_bw_adept = {
 		"bw_adept"
 	}
 }
+ItemMasterList.frame_0000 = {
+	description = "frame_0001_description",
+	temporary_template = "frame_0000",
+	display_name = "Prestige_1",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_01",
+	slot_type = "frame",
+	rarity = "common",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.frame_0001 = {
 	description = "frame_0001_description",
 	temporary_template = "frame_0001",
@@ -437,6 +464,249 @@ ItemMasterList.frame_0005 = {
 ItemMasterList.frame_0006 = {
 	description = "frame_0006_description",
 	temporary_template = "frame_0006",
+	display_name = "Prestige_6",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_01",
+	slot_type = "frame",
+	rarity = "exotic",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0007 = {
+	description = "frame_0007_description",
+	temporary_template = "frame_0007",
+	display_name = "Prestige_6",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_01",
+	slot_type = "frame",
+	rarity = "exotic",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0008 = {
+	description = "frame_0008_description",
+	temporary_template = "frame_0008",
+	display_name = "Prestige_6",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_01",
+	slot_type = "frame",
+	rarity = "exotic",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0009 = {
+	description = "frame_0009_description",
+	temporary_template = "frame_0009",
+	display_name = "Prestige_6",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_01",
+	slot_type = "frame",
+	rarity = "exotic",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0010 = {
+	description = "frame_0010_description",
+	temporary_template = "frame_0010",
+	display_name = "Prestige_6",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_01",
+	slot_type = "frame",
+	rarity = "exotic",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0011 = {
+	description = "frame_0011_description",
+	temporary_template = "frame_0011",
+	display_name = "Prestige_6",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_01",
+	slot_type = "frame",
+	rarity = "exotic",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0012 = {
+	description = "frame_0012_description",
+	temporary_template = "frame_0012",
+	display_name = "Prestige_6",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_01",
+	slot_type = "frame",
+	rarity = "exotic",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0013 = {
+	description = "frame_0013_description",
+	temporary_template = "frame_0013",
+	display_name = "Prestige_6",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_01",
+	slot_type = "frame",
+	rarity = "exotic",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0014 = {
+	description = "frame_0014_description",
+	temporary_template = "frame_0014",
+	display_name = "Prestige_6",
+	hud_icon = "unit_frame_07",
+	inventory_icon = "icon_portrait_frame_01",
+	slot_type = "frame",
+	rarity = "exotic",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_0015 = {
+	description = "frame_0015_description",
+	temporary_template = "frame_0015",
 	display_name = "Prestige_6",
 	hud_icon = "unit_frame_07",
 	inventory_icon = "icon_portrait_frame_01",

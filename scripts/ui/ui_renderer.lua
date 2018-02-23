@@ -66,9 +66,8 @@ UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_po
 	end
 
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	local texture_settings, optional_point_sample_material = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
+	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
 	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
-	local offscreen_target = render_settings and render_settings.offscreen_target
 
 	if texture_settings then
 		local uv00_table = texture_settings.uv00
@@ -78,21 +77,13 @@ UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_po
 		local material_name = nil
 
 		if masked then
-			if offscreen_target then
-				material_name = texture_settings.masked_offscreen_material_name
-			elseif saturated then
+			if saturated then
 				material_name = texture_settings.masked_saturated_material_name
 			else
 				material_name = texture_settings.masked_material_name
 			end
 		elseif saturated then
-			if offscreen_target then
-				material_name = texture_settings.saturated_offscreen_material_name
-			else
-				material_name = texture_settings.saturated_material_name
-			end
-		elseif offscreen_target then
-			material_name = texture_settings.offscreen_material_name
+			material_name = texture_settings.saturated_material_name
 		else
 			material_name = texture_settings.material_name
 		end
@@ -103,15 +94,15 @@ UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_po
 			return Gui_bitmap_uv(gui, material_name, uv00, uv11, gui_position, gui_size, color)
 		end
 	elseif retained_id then
-		Gui_update_bitmap(gui, retained_id, optional_point_sample_material or material, gui_position, gui_size, color)
+		Gui_update_bitmap(gui, retained_id, material, gui_position, gui_size, color)
 	else
-		return Gui_bitmap(gui, optional_point_sample_material or material, gui_position, gui_size, color)
+		return Gui_bitmap(gui, material, gui_position, gui_size, color)
 	end
 
 	return 
 end
 UIRenderer.script_draw_bitmap_uv = function (gui, render_settings, material, uvs, gui_position, gui_size, color, masked, saturated, retained_id)
-	local texture_settings, optional_point_sample_material = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
+	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
 	local snap_pixel_positions = render_settings and render_settings.snap_pixel_positions
 
 	if snap_pixel_positions == nil then
@@ -124,7 +115,6 @@ UIRenderer.script_draw_bitmap_uv = function (gui, render_settings, material, uvs
 
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
 	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
-	local offscreen_target = render_settings and render_settings.offscreen_target
 
 	if texture_settings then
 		local new_uvs = get_relative_uvs(texture_settings.uv00, texture_settings.uv11, uvs)
@@ -135,19 +125,9 @@ UIRenderer.script_draw_bitmap_uv = function (gui, render_settings, material, uvs
 		local material_name = nil
 
 		if masked then
-			if offscreen_target then
-				material_name = texture_settings.masked_offscreen_material_name
-			else
-				material_name = texture_settings.masked_material_name
-			end
+			material_name = texture_settings.masked_material_name
 		elseif saturated then
-			if offscreen_target then
-				material_name = texture_settings.saturated_offscreen_material_name
-			else
-				material_name = texture_settings.saturated_material_name
-			end
-		elseif offscreen_target then
-			material_name = texture_settings.offscreen_material_name
+			material_name = texture_settings.saturated_material_name
 		else
 			material_name = texture_settings.material_name
 		end
@@ -162,9 +142,9 @@ UIRenderer.script_draw_bitmap_uv = function (gui, render_settings, material, uvs
 		local uv11 = uvs[2]
 
 		if retained_id then
-			Gui_update_bitmap_uv(gui, retained_id, optional_point_sample_material or material, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), gui_position, gui_size, color)
+			Gui_update_bitmap_uv(gui, retained_id, material, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), gui_position, gui_size, color)
 		else
-			return Gui_bitmap_uv(gui, optional_point_sample_material or material, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), gui_position, gui_size, color)
+			return Gui_bitmap_uv(gui, material, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), gui_position, gui_size, color)
 		end
 	end
 
@@ -175,22 +155,15 @@ local Gui_bitmap_3d_uv = Gui.bitmap_3d_uv
 local Gui_update_bitmap_3d = Gui.update_bitmap_3d
 local Gui_bitmap_3d = Gui.bitmap_3d
 UIRenderer.script_draw_bitmap_3d = function (gui, render_settings, material, tm, gui_layer, gui_size, color, masked, retained_id)
-	local texture_settings, optional_point_sample_material = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
+	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
 	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
-	local offscreen_target = render_settings and render_settings.offscreen_target
 
 	if texture_settings then
 		local material_name = nil
 
 		if masked then
-			if offscreen_target then
-				material_name = texture_settings.masked_offscreen_material_name
-			else
-				material_name = texture_settings.masked_material_name
-			end
-		elseif offscreen_target then
-			material_name = texture_settings.offscreen_material_name
+			material_name = texture_settings.masked_material_name
 		else
 			material_name = texture_settings.material_name
 		end
@@ -204,9 +177,9 @@ UIRenderer.script_draw_bitmap_3d = function (gui, render_settings, material, tm,
 			return Gui_bitmap_3d_uv(gui, material_name, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), tm, Vector3.zero(), gui_layer, gui_size, color)
 		end
 	elseif retained_id then
-		return Gui_update_bitmap_3d(gui, retained_id, optional_point_sample_material or material, tm, Vector3.zero(), gui_layer, gui_size, color)
+		return Gui_update_bitmap_3d(gui, retained_id, material, tm, Vector3.zero(), gui_layer, gui_size, color)
 	else
-		return Gui_bitmap_3d(gui, optional_point_sample_material or material, tm, Vector3.zero(), gui_layer, gui_size, color)
+		return Gui_bitmap_3d(gui, material, tm, Vector3.zero(), gui_layer, gui_size, color)
 	end
 
 	return 

@@ -10801,7 +10801,7 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 	}
 	local default_offset = {
 		0,
-		0,
+		-60,
 		0
 	}
 	local widget = {
@@ -10827,7 +10827,7 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 		size[2] = size[2]*scale
 		local offset = table.clone(data.offset or default_offset)
 		offset[1] = -(size[1]/2) + offset[1]*scale
-		offset[2] = -(size[2]/2) + offset[2]*scale
+		offset[2] = offset[2]*scale
 		offset[3] = data.layer or 0
 		passes[#passes + 1] = {
 			pass_type = "texture",
@@ -10848,10 +10848,11 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 			portrait_size[1]*scale,
 			portrait_size[2]*scale
 		}
-		local portrait_offset = table.clone(default_offset)
-		portrait_offset[1] = -(portrait_size[1]/2) + portrait_offset[1]*scale
-		portrait_offset[2] = -(portrait_size[2]/2) + portrait_offset[2]*scale
-		portrait_offset[3] = 1
+		local portrait_offset = {
+			-(portrait_size[1]/2) + portrait_offset[1]*scale,
+			-(portrait_size[2]/2) + portrait_offset[2]*scale,
+			1
+		}
 		local portrait_name = "portrait"
 		passes[#passes + 1] = {
 			pass_type = "texture",
@@ -10875,11 +10876,12 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 		22,
 		15
 	}
-	local level_offset = table.clone(default_offset)
-	level_offset[1] = level_offset[1]*scale - level_size[1]/2
-	level_offset[2] = (-(portrait_size[2]/2) + level_offset[2]*scale) - 1
-	level_offset[3] = 15
-	local level_name = "levet"
+	local level_offset = {
+		level_offset[1]*scale - level_size[1]/2 - 1,
+		(-(portrait_size[2]/2) + level_offset[2]*scale) - 4,
+		15
+	}
+	local level_name = "level"
 	passes[#passes + 1] = {
 		pass_type = "text",
 		text_id = level_name,

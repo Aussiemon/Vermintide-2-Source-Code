@@ -243,9 +243,9 @@ local filter_macros = {
 	end,
 	can_salvage = function (item, backend_id)
 		local item_data = item.data
-		local item_type = item_data.item_type
+		local slot_type = item_data.slot_type
 
-		if item_type ~= "crafting_material" and item_type ~= "loot_chest" and item_type ~= "deed" and item_type ~= "weapon_skin" then
+		if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
 			local backend_items = Managers.backend:get_interface("items")
 			local rarity = backend_items.get_item_rarity(backend_items, backend_id)
 

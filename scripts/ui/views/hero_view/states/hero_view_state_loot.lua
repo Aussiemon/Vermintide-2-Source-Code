@@ -1011,6 +1011,7 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 		if self._rewards_presented and (self._is_button_pressed(self, continue_button) or input_service.get(input_service, "toggle_menu")) then
 			self.play_sound(self, "play_gui_chest_opening_return")
 
+			self._opening_chest = nil
 			self._chest_presentation_active = nil
 			self._present_reward_options = nil
 			self._chest_zoom_out_duration = 0
@@ -1053,7 +1054,7 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 
 			self.populate_items(self)
 		end
-	else
+	elseif not self._opening_chest then
 		local page_button_next = widgets_by_name.page_button_next
 		local page_button_previous = widgets_by_name.page_button_previous
 
@@ -1472,7 +1473,7 @@ HeroViewStateLoot._open_chest = function (self, selected_item)
 	local chest_category = selected_item_data.chest_category
 	local chest_tier = selected_item_data.chest_tier
 	local chests_by_difficulty = LootChestData.chests_by_difficulty
-	self._chest_presentation_active = true
+	self._opening_chest = true
 	self._rewards_presented = false
 	local unit_name = nil
 
@@ -1529,6 +1530,7 @@ HeroViewStateLoot._start_reward_presentation = function (self, loot)
 
 	self._setup_rewards(self, self._chest_loot)
 
+	self._chest_presentation_active = true
 	self._num_rewards_opened = 0
 	self._selected_item = nil
 
