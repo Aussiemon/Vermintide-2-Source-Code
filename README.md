@@ -11,3 +11,4 @@ Date      |  Patch  | Notes
 2-16-18   |  Closed-Test  | Beta Phase 3.2
 2-22-18   |  Closed-Test  | Beta Phase 4
 2-22-18   |  Closed-Test  | Beta Phase 4.1
+2-23-18   |  Closed-Test  | Beta Phase 4.2

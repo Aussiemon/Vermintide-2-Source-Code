@@ -2783,10 +2783,9 @@ BuffTemplates = {
 	increased_melee_damage_from_proc = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "increased_melee_damage_from_proc",
 				max_stacks = 1,
-				icon = "trait_icons_improvedpommel",
+				name = "increased_melee_damage_from_proc",
+				refresh_durations = true,
 				stat_buff = StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE
 			}
 		}

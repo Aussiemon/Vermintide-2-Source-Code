@@ -623,10 +623,8 @@ Bulldozer._init_localization_manager = function (self)
 			local button_index = key[j + 1]
 
 			if button_index == UNASSIGNED_KEY then
-				button_index = nil
-			end
-
-			if Managers.input:is_device_active("keyboard") or Managers.input:is_device_active("mouse") then
+				key_locale_name = "n/a"
+			elseif Managers.input:is_device_active("keyboard") or Managers.input:is_device_active("mouse") then
 				if device_type == "keyboard" then
 					key_locale_name = Keyboard.button_locale_name(button_index) or Keyboard.button_name(button_index)
 				elseif device_type == "mouse" then

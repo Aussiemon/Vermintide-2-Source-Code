@@ -408,12 +408,14 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		self._debug_draw_push_arcs(self, unit)
 	end
 
-	local in_end_zone = self.is_in_end_zone(self)
+	if self.player.local_player then
+		local in_end_zone = self.is_in_end_zone(self)
 
-	if self._current_end_zone_state ~= in_end_zone then
-		Wwise.set_state("inside_waystone", (in_end_zone and "true") or "false")
+		if self._current_end_zone_state ~= in_end_zone then
+			Wwise.set_state("inside_waystone", (in_end_zone and "true") or "false")
 
-		self._current_end_zone_state = in_end_zone
+			self._current_end_zone_state = in_end_zone
+		end
 	end
 
 	return 

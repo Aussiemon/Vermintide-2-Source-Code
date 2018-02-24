@@ -548,7 +548,7 @@ BTConditions.can_rescue_hanging_from_hook = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 
 	if blackboard.interaction_unit == target_ally_unit and blackboard.target_ally_need_type == "hook" then
-		if not is_safe_to_block_interact(blackboard.status_extension, blacboard.interaction_extension, "release_from_hook") then
+		if not is_safe_to_block_interact(blackboard.status_extension, blackboard.interaction_extension, "release_from_hook") then
 			return false
 		end
 

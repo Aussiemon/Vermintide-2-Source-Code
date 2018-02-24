@@ -70,7 +70,7 @@ OldTalentBuffTemplates = {
 	increased_movement_speed_from_proc = {
 		buffs = {
 			{
-				icon = "trinket_increased_movement_speed_tier1",
+				icon = "ranged_movespeed_on_damage_taken",
 				name = "movement",
 				remove_buff_func = "remove_movement_buff",
 				max_stacks = 1,

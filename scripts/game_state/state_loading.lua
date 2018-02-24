@@ -50,6 +50,8 @@ StateLoading.on_enter = function (self, param_block)
 		Application.set_time_step_policy("throttle", 60)
 	end
 
+	Wwise.set_state("inside_waystone", "false")
+
 	self._registered_rpcs = false
 	self._loading_view_setup_is_done = false
 
