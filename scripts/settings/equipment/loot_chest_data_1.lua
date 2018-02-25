@@ -1,11 +1,11 @@
 LootChestData = LootChestData or {}
 LootChestData.scores = {
 	loot_dice = 5,
-	tome = 5,
+	tome = 10,
 	game_won = 10,
-	quickplay = 15,
-	max_random_score = 60,
-	grimoire = 10
+	quickplay = 10,
+	max_random_score = 30,
+	grimoire = 15
 }
 LootChestData.score_per_chest = 20
 LootChestData.score_thresholds = {

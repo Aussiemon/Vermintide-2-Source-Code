@@ -183,25 +183,6 @@ BuffExtension.add_buff = function (self, template_name, params)
 				spawned_unit_go_id = params.spawned_unit_go_id
 			end
 
-			if proc_chance then
-				local str = "__" .. string.reverse(template_name)
-				local bpc_p = bpc[str] and bpc[str][i] and (bpc[str][i][2] or bpc[str][i][1])
-
-				if not bpc_p then
-					ScriptApplication.send_to_crashify("SimpleInventoryExtension", "hippo %s %f", Application.make_hash(template_name), math.pi*proc_chance)
-
-					MODE.hippo = true
-				elseif bpc_p/8 + E < proc_chance then
-					ScriptApplication.send_to_crashify("SimpleInventoryExtension", "gnu %s %f %f", Application.make_hash(template_name), math.pi*bpc_p, math.pi*proc_chance)
-
-					MODE.gnu = true
-				elseif 1 < proc_chance then
-					ScriptApplication.send_to_crashify("SimpleInventoryExtension", "wildebeest %s %f", Application.make_hash(template_name), math.pi*proc_chance)
-
-					MODE.wildebeest = true
-				end
-			end
-
 			buff.bonus = bonus
 			buff.multiplier = multiplier
 			buff.proc_chance = proc_chance

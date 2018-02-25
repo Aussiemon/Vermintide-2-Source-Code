@@ -328,6 +328,16 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 
 	return 
 end
+StatisticsUtil.register_complete_tutorial = function (statistics_db)
+	local level_settings = LevelHelper:current_level_settings()
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player.stats_id(local_player)
+	local level_id = level_settings.level_id
+
+	statistics_db.increment_stat(statistics_db, stats_id, "completed_levels", level_id)
+
+	return 
+end
 StatisticsUtil.get_game_progress = function (statistics_db)
 	local local_player = Managers.player:local_player()
 	local stats_id = local_player.stats_id(local_player)

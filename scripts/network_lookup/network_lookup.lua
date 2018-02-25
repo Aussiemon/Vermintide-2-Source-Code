@@ -1,7 +1,6 @@
 require("scripts/settings/environmental_hazards")
 require("scripts/settings/level_settings")
 require("scripts/settings/level_unlock_settings")
-require("scripts/settings/level_settings_campaign")
 require("scripts/settings/game_mode_settings")
 require("scripts/settings/player_data")
 require("scripts/settings/equipment/attachments")

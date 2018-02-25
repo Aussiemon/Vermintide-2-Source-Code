@@ -201,7 +201,7 @@ AchievementManager.init = function (self, world, statistics_db)
 		self.platform = "debug_platform"
 	end
 
-	self._enabled = true
+	self._enabled = false
 
 	Managers.state.event:register(self, "event_enable_achievements", "event_enable_achievements")
 
@@ -235,7 +235,7 @@ end
 local ACHIEVEMENTS_PER_FRAME = 1
 local AchievementTemplates = AchievementTemplates
 local AchievementTemplates_n = AchievementTemplates_n
-AchievementManager.update = function (self, dt, t)
+AchievementManager.update = function (self, dt)
 	if self.error_timeout then
 		self.error_timeout = self.error_timeout - dt
 

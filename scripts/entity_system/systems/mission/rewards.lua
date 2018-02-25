@@ -13,7 +13,7 @@ local token_textures = {
 	gold_tokens = "token_icon_04"
 }
 Rewards = class(Rewards)
-local EXPERIENCE_REWARD = 300
+local EXPERIENCE_REWARD = 400
 Rewards.init = function (self, level_key, game_mode_key, quickplay_bonus)
 	self._level_key = level_key
 	self._game_mode_key = game_mode_key

@@ -27,6 +27,8 @@ GameModeTutorial.complete_level = function (self)
 	SaveData.has_completed_tutorial = true
 
 	Managers.save:auto_save(SaveFileName, SaveData)
+	StatisticsUtil.register_complete_tutorial(Managers.state.game_mode.statistics_db)
+	Managers.backend:commit()
 
 	return 
 end
