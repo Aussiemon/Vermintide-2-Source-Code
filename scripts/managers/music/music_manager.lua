@@ -104,8 +104,6 @@ MusicManager.on_enter_level = function (self, network_event_delegate, is_server)
 
 	self._network_event_delegate = network_event_delegate
 
-	network_event_delegate.register(network_event_delegate, self, "rpc_change_music_state")
-
 	if is_server then
 		local go_type = NetworkLookup.go_types.music_states
 		local intensity_state_id = NetworkLookup.music_group_states.low_battle
@@ -188,13 +186,6 @@ MusicManager._update_flags = function (self)
 
 		self.set_flag(self, flag, value)
 	end
-
-	return 
-end
-MusicManager.rpc_change_music_state = function (self, peer, music_state, enabled)
-	local flag = NetworkLookup.music_states[music_state]
-
-	self.set_flag(self, flag, enabled)
 
 	return 
 end
@@ -466,9 +457,9 @@ MusicManager._update_game_state = function (self, dt, t, conflict_director)
 		local won = game_mode_manager.game_won(game_mode_manager)
 		local old_state = self._game_state
 		local is_survival = game_mode_manager.game_mode_key(game_mode_manager) == "survival"
-		local horde_size = conflict_director.horde_size(conflict_director)
+		local horde_size, horde_ends_at = conflict_director.horde_size(conflict_director)
 		local is_pre_horde = old_state == "pre_horde" or old_state == "pre_ambush"
-		local is_horde_alive = (is_survival and 1 <= horde_size) or 7 <= horde_size or horde_type
+		local is_horde_alive = (is_survival and 1 <= horde_size) or ((7 <= horde_size or horde_type) and t < horde_ends_at)
 
 		if lost then
 			if is_survival then

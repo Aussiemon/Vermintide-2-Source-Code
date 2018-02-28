@@ -214,8 +214,10 @@ StartGameWindowAdventureSettings._set_difficulty_option = function (self, diffic
 	local difficulty_settings = DifficultySettings[difficulty_key]
 	local display_name = difficulty_settings.display_name
 	local display_image = difficulty_settings.display_image
+	local completed_frame_texture = difficulty_settings.completed_frame_texture or "map_frame_00"
 	widgets_by_name.game_option_1.content.option_text = Localize(display_name)
 	widgets_by_name.game_option_1.content.icon = display_image
+	widgets_by_name.game_option_1.content.icon_frame = completed_frame_texture
 
 	return 
 end

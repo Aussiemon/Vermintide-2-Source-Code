@@ -181,7 +181,7 @@ end
 BTPrepareForCrazyJumpAction.ready_to_jump = function (unit, blackboard, data, set_data)
 	local enemy_spine_node = Unit.node(blackboard.target_unit, "j_neck")
 	local p1 = position_lookup[unit]
-	local p2 = Unit.world_position(blackboard.target_unit, enemy_spine_node) - Vector3(0, 0, 1)
+	local p2 = Unit.world_position(blackboard.target_unit, 0) + Vector3(0, 0, 0.2)
 	local move_forward = Vector3.normalize(p2 - p1)*0.3
 	p1 = p1 + move_forward
 	local total_distance = Vector3.distance(p1, p2)
@@ -202,10 +202,10 @@ BTPrepareForCrazyJumpAction.ready_to_jump = function (unit, blackboard, data, se
 	end
 
 	if in_los and set_data then
-		data.enemy_spine_node = enemy_spine_node
 		data.jump_target_pos = Vector3Box(p2)
 		data.jump_velocity_boxed = Vector3Box(velocity)
 		data.total_distance = total_distance
+		data.enemy_spine_node = enemy_spine_node
 	end
 
 	return in_los, velocity, time_of_flight

@@ -51,12 +51,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.5,
 					blocker = true,
 					end_time = 1,
@@ -114,12 +108,6 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				},
 				{
 					start_time = 0.5,
@@ -181,12 +169,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.5,
 					blocker = true,
 					end_time = 1,
@@ -246,12 +228,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.5,
 					blocker = true,
 					end_time = 1,
@@ -309,12 +285,6 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				},
 				{
 					start_time = 0.5,
@@ -392,12 +362,6 @@ weapon_template.actions = {
 					start_time = 0.3,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -410,16 +374,15 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "attack_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
-			width_mod = 15,
 			use_target = true,
 			damage_profile = "medium_slashing_smiter",
 			aim_assist_ramp_multiplier = 0.4,
-			hit_effect = "melee_hit_axes_1h",
 			aim_assist_max_ramp_multiplier = 0.6,
+			hit_effect = "melee_hit_axes_1h",
 			aim_assist_ramp_decay_delay = 0.1,
+			reset_aim_on_attack = true,
 			damage_window_end = 0.36,
 			impact_sound_event = "axe_1h_hit",
-			reset_aim_on_attack = true,
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2,
 			uninterruptible = true,
@@ -463,12 +426,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -481,18 +438,17 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "attack_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
-			width_mod = 15,
-			headshot_multiplier = 2,
 			use_target = true,
+			headshot_multiplier = 2,
 			damage_profile = "medium_slashing_smiter_flat",
-			hit_effect = "melee_hit_axes_1h",
 			aim_assist_ramp_multiplier = 0.4,
+			hit_effect = "melee_hit_axes_1h",
 			aim_assist_max_ramp_multiplier = 0.6,
+			aim_assist_ramp_decay_delay = 0.1,
 			damage_window_end = 0.26,
 			impact_sound_event = "axe_1h_hit",
 			charge_value = "heavy_attack",
 			anim_end_event = "attack_finished",
-			aim_assist_ramp_decay_delay = 0.1,
 			reset_aim_on_attack = true,
 			dedicated_target_range = 2,
 			uninterruptible = true,
@@ -536,12 +492,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -608,12 +558,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		},
@@ -677,12 +621,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		},
@@ -739,12 +677,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		},
@@ -803,12 +735,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				},
 				release_required = "action_two_hold"
 			},
@@ -885,12 +811,6 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			push_radius = push_radius,
@@ -948,19 +868,12 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -1018,9 +931,9 @@ weapon_template.aim_assist_settings = {
 	}
 }
 weapon_template.tooltip_keywords = {
-	"keyword_1",
-	"keyword_2",
-	"keyword_3"
+	"weapon_keyword_high_damage",
+	"weapon_keyword_armour_piercing",
+	"weapon_keyword_powerful_blocks"
 }
 weapon_template.compare_statistics = {
 	attacks = {

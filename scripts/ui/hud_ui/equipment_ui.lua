@@ -692,6 +692,8 @@ EquipmentUI._add_item = function (self, slot_data, data)
 	end
 
 	local slot_name = slot_data.id
+	local master_item = slot_data.master_item
+	local slot_type = master_item.slot_type
 	local slots_by_name = InventorySettings.slots_by_name
 	local slot_settings = slots_by_name[slot_name]
 	local hud_index = slot_settings.hud_index
@@ -718,9 +720,9 @@ EquipmentUI._add_item = function (self, slot_data, data)
 	local item_name = item_data.name
 	local hud_icon = item_data.hud_icon
 
-	if slot_name == "slot_melee" then
+	if slot_type == "melee" then
 		hud_icon = "hud_inventory_icon_melee"
-	elseif slot_name == "slot_ranged" then
+	elseif slot_type == "ranged" then
 		hud_icon = "hud_inventory_icon_ranged"
 	end
 
@@ -805,6 +807,12 @@ EquipmentUI.destroy = function (self)
 end
 EquipmentUI.set_visible = function (self, visible)
 	self._is_visible = visible
+
+	self._set_elements_visible(self, visible)
+
+	return 
+end
+EquipmentUI._set_elements_visible = function (self, visible)
 	local ui_renderer = self.ui_renderer
 
 	for _, widget in ipairs(self._widgets) do
@@ -819,29 +827,14 @@ EquipmentUI.set_visible = function (self, visible)
 		UIRenderer.set_element_visible(ui_renderer, widget.element, visible)
 	end
 
+	self._retained_elements_visible = visible
+
 	self.set_dirty(self)
 
 	return 
 end
 EquipmentUI.update = function (self, dt, t)
 	local dirty = false
-	local gamepad_active = self.input_manager:is_device_active("gamepad")
-
-	if gamepad_active then
-		if not self.gamepad_active_last_frame then
-			self.gamepad_active_last_frame = true
-
-			self.on_gamepad_activated(self)
-
-			dirty = true
-		end
-	elseif self.gamepad_active_last_frame then
-		self.gamepad_active_last_frame = false
-
-		self.on_gamepad_deactivated(self)
-
-		dirty = true
-	end
 
 	if self._update_animations(self, dt) then
 		dirty = true
@@ -881,12 +874,34 @@ EquipmentUI._on_resolution_modified = function (self)
 
 	return 
 end
+EquipmentUI._handle_gamepad = function (self)
+	local should_render = true
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if gamepad_active then
+		if self._retained_elements_visible then
+			self._set_elements_visible(self, false)
+		end
+
+		return false
+	else
+		if not self._retained_elements_visible then
+			self._set_elements_visible(self, true)
+		end
+
+		return true
+	end
+
+	return 
+end
 EquipmentUI.draw = function (self, dt)
 	if not self._is_visible then
 		return 
 	end
 
-	if not self._dirty then
+	local should_render = self._handle_gamepad(self)
+
+	if not should_render then
 		return 
 	end
 

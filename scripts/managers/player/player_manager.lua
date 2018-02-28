@@ -341,6 +341,25 @@ PlayerManager.server_player = function (self)
 
 	return self.player_from_peer_id(self, game_owner_peer_id, 1)
 end
+PlayerManager.party_leader_player = function (self)
+	if not Managers.party or not Managers.party.leader then
+		Application.warning("[PlayerManager:party_leader_player] Could not get the party leader -> using local player")
+
+		return Managers.player:local_player()
+	else
+		local leader_peer_id = Managers.party:leader()
+
+		if not leader_peer_id then
+			Application.warning("[PlayerManager:party_leader_player] Could not get the party leader -> using local player")
+
+			return Managers.player:local_player()
+		end
+
+		return self.player_from_peer_id(self, leader_peer_id, 1)
+	end
+
+	return 
+end
 PlayerManager.next_available_local_player_id = function (self, peer_id)
 	local i = 2
 	local player_table = self._players_by_peer[peer_id]

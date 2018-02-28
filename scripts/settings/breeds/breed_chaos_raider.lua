@@ -54,11 +54,10 @@ local breed_data = {
 	uses_attack_sfx_callback = true,
 	horde_behavior = "raider",
 	unit_template = "ai_unit_chaos_warrior",
-	stagger_reduction = 1,
 	has_running_attack = true,
 	perception = "perception_regular",
 	player_locomotion_constrain_radius = 0.7,
-	weapon_reach = 2.25,
+	weapon_reach = 2.1,
 	horde_target_selection = "horde_pick_closest_target_with_spillover",
 	use_backstab_vo = true,
 	patrol_passive_perception = "perception_regular",
@@ -93,6 +92,13 @@ local breed_data = {
 		4,
 		5,
 		6
+	},
+	stagger_reduction = {
+		1,
+		1,
+		1.25,
+		1.5,
+		2
 	},
 	stagger_duration = {
 		0.5,

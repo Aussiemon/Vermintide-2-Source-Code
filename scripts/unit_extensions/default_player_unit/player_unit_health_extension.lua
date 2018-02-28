@@ -233,6 +233,7 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 
 	return 
 end
+local FORCED_PERMANENT_DAMAGE_TYPES = {}
 PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
 	if DamageUtils.is_in_inn then
 		return 
@@ -296,10 +297,20 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		local game_object_id = self.health_game_object_id
 
 		if game and game_object_id then
+			local force_permanent_damage = FORCED_PERMANENT_DAMAGE_TYPES[damage_type]
 			local current_health = GameSession.game_object_field(game, game_object_id, "current_health")
 			local current_temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
-			local permanent_damage_amount = (current_temporary_health < damage_amount and damage_amount - current_temporary_health) or 0
-			local temporary_damage_amount = (current_temporary_health < damage_amount and current_temporary_health) or damage_amount
+			local permanent_damage_amount = 0
+			local temporary_damage_amount = 0
+
+			if force_permanent_damage then
+				permanent_damage_amount = (current_health < damage_amount and current_health) or damage_amount
+				temporary_damage_amount = (current_health < damage_amount and damage_amount - current_health) or 0
+			else
+				permanent_damage_amount = (current_temporary_health < damage_amount and damage_amount - current_temporary_health) or 0
+				temporary_damage_amount = (current_temporary_health < damage_amount and current_temporary_health) or damage_amount
+			end
+
 			local new_health = (current_health >= permanent_damage_amount or 0) and current_health - permanent_damage_amount
 
 			GameSession.set_game_object_field(game, game_object_id, "current_health", new_health)

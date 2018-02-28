@@ -51,12 +51,6 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -107,12 +101,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			recoil_settings = {
@@ -172,12 +160,6 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			zoom_condition_function = function ()
@@ -194,7 +176,6 @@ weapon_template.actions = {
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -250,9 +231,9 @@ weapon_template.wwise_dep_right_hand = {
 	"wwise/repeating_handgun_pistol"
 }
 weapon_template.tooltip_keywords = {
-	"keyword_1",
-	"keyword_2",
-	"keyword_3"
+	"weapon_keyword_rapid_fire",
+	"weapon_keyword_close_range",
+	"weapon_keyword_high_damage"
 }
 weapon_template.compare_statistics = {
 	attacks = {

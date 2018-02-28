@@ -23,6 +23,15 @@ function flow_callback_get_current_inn_level_progression(params)
 	return flow_return_table
 end
 
+function flow_callback_get_last_level_played(params)
+	local last_played_level = SaveData.last_played_level or "N/A"
+	local last_played_level_won = SaveData.last_played_level_result == "won"
+	flow_return_table.level_key = last_played_level
+	flow_return_table.won = last_played_level_won
+
+	return flow_return_table
+end
+
 function flow_callback_get_completed_game_difficulty(params)
 	local player_manager = Managers.player
 	local statistics_db = player_manager.statistics_db(player_manager)
@@ -285,14 +294,18 @@ function flow_callback_leader_sum_best_power_levels(params)
 
 	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Sum of Best Power Levels\" should only be called by the leader player")
 
-	local result_event = params.result_event
-	local result_parameter = params.result_parameter
-
 	local function on_complete(value)
-		local world = Managers.world:world("level_world")
+		local world_manager = Managers.world
+		local world_name = "level_world"
 
-		LevelHelper:set_flow_parameter(world, result_parameter, value)
-		LevelHelper:flow_event(world, result_event)
+		if world_manager.has_world(world_manager, world_name) then
+			local world = world_manager.world(world_manager, world_name)
+			local result_event = params.result_event
+			local result_parameter = params.result_parameter
+
+			LevelHelper:set_flow_parameter(world, result_parameter, value)
+			LevelHelper:flow_event(world, result_event)
+		end
 
 		return 
 	end
@@ -320,6 +333,23 @@ function flow_query_leader_has_dlc(params)
 
 	local has_dlc = Managers.unlock:is_dlc_unlocked(dlc_name)
 	flow_return_table.value = has_dlc
+
+	return flow_return_table
+end
+
+function flow_query_leader_owns_vt1(params)
+	local leader_peer_id = Managers.party:leader()
+	local local_peer_id = Network.peer_id()
+
+	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Owns VT1\" should only be called by the leader player")
+
+	local owns_vt1 = false
+
+	if PLATFORM == "win32" and rawget(_G, "Steam") then
+		owns_vt1 = Steam.owns_app(235540)
+	end
+
+	flow_return_table.value = owns_vt1
 
 	return flow_return_table
 end

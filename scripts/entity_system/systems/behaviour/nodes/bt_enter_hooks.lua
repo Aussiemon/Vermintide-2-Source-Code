@@ -5,10 +5,16 @@ local ScriptUnit = ScriptUnit
 BTEnterHooks.crouch_on_enter = function (unit, blackboard, t)
 	Managers.state.network:anim_event(unit, "to_crouch")
 
+	blackboard.is_upright = false
+
 	return 
 end
 BTEnterHooks.upright_on_enter = function (unit, blackboard, t)
-	Managers.state.network:anim_event(unit, "to_upright")
+	if not blackboard.is_upright then
+		Managers.state.network:anim_event(unit, "to_upright")
+
+		blackboard.is_upright = true
+	end
 
 	return 
 end

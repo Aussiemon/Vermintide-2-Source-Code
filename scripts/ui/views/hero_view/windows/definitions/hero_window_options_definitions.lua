@@ -324,6 +324,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	power_text_bg = {
+		vertical_alignment = "center",
+		parent = "power_text",
+		horizontal_alignment = "left",
+		size = {
+			100,
+			60
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
 	level_text = {
 		vertical_alignment = "center",
 		parent = "experience_bar_fg",
@@ -1092,6 +1106,27 @@ local function create_button(scenegraph_id, size, button_text, font_size, use_bo
 end
 
 local widgets = {
+	hero_power_tooltip = {
+		scenegraph_id = "power_text_bg",
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					pass_type = "hero_power_tooltip",
+					content_check_function = function (content)
+						return content.button_hotspot.is_hover
+					end
+				}
+			}
+		},
+		content = {
+			button_hotspot = {}
+		},
+		style = {}
+	},
 	hero_info_divider = create_window_divider("hero_info_divider", scenegraph_definition.hero_info_divider.size),
 	hero_info_detail = UIWidgets.create_simple_texture("divider_01_top", "hero_info_detail"),
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),

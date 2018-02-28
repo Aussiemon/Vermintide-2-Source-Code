@@ -149,7 +149,7 @@ end
 CraftPageSalvage._handle_input = function (self, dt, t)
 	local parent = self.parent
 
-	if parent.waiting_for_callback(parent) or self._craft_result then
+	if parent.waiting_for_craft(parent) or self._craft_result then
 		return 
 	end
 
@@ -253,9 +253,9 @@ CraftPageSalvage.on_craft_completed = function (self)
 		local amount = data[3]
 
 		if num_reward_items == 1 then
-			self._add_craft_item(self, backend_id, 5, ignore_sound)
+			self._add_craft_item(self, backend_id, 5, ignore_sound, amount)
 		else
-			self._add_craft_item(self, backend_id, index, ignore_sound)
+			self._add_craft_item(self, backend_id, index, ignore_sound, amount)
 		end
 	end
 
@@ -338,7 +338,7 @@ CraftPageSalvage._remove_craft_item = function (self, backend_id, slot_index)
 
 	return 
 end
-CraftPageSalvage._add_craft_item = function (self, backend_id, slot_index, ignore_sound)
+CraftPageSalvage._add_craft_item = function (self, backend_id, slot_index, ignore_sound, specific_amount)
 	if self._num_craft_items == 0 then
 		self._item_grid:clear_item_grid()
 		table.clear(self._craft_items)
@@ -361,7 +361,7 @@ CraftPageSalvage._add_craft_item = function (self, backend_id, slot_index, ignor
 		local item_interface = Managers.backend:get_interface("items")
 		local item = backend_id and item_interface.get_item_from_id(item_interface, backend_id)
 
-		self._item_grid:add_item_to_slot_index(slot_index, item)
+		self._item_grid:add_item_to_slot_index(slot_index, item, specific_amount)
 		self.super_parent:set_disabled_backend_id(backend_id, true)
 
 		self._num_craft_items = math.min((self._num_craft_items or 0) + 1, 9)

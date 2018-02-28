@@ -2,51 +2,51 @@ local definitions = local_require("scripts/ui/views/tutorial_intro_ui_definition
 local template_settings = {
 	template_1 = {
 		{
-			fade_out_duration = 0.2,
-			font_upper_case = false,
-			localize = false,
+			fade_out_duration = 0.4,
+			font_upper_case = true,
+			localize = true,
 			delay = 0,
-			font_size = 40,
+			font_size = 70,
 			sound_event = "hud_area_indicator",
-			text = "cash",
-			fade_in_duration = 0.2,
-			duration = 2,
+			text = "tutorial_intro_fatshark_games",
+			fade_in_duration = 0.5,
+			duration = 3,
 			font_type = "hell_shark_header",
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
-				200,
+				0,
 				0,
 				0
 			}
 		},
 		{
-			fade_out_duration = 0.3,
-			font_upper_case = false,
-			localize = false,
-			delay = 1,
+			fade_out_duration = 0.4,
+			font_upper_case = true,
+			localize = true,
+			delay = 5,
+			font_size = 70,
+			sound_event = "hud_area_indicator",
+			text = "tutorial_intro_games_workshop",
+			fade_in_duration = 0.5,
+			duration = 3,
+			font_type = "hell_shark_header",
+			color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				0,
+				0,
+				0
+			}
+		},
+		{
+			fade_out_duration = 0.4,
+			font_upper_case = true,
+			localize = true,
+			delay = 5,
 			font_size = 60,
 			sound_event = "hud_area_indicator",
-			text = "me",
-			fade_in_duration = 0.2,
-			duration = 2,
-			font_type = "hell_shark",
-			color = Colors.get_color_table_with_alpha("white", 255),
-			offset = {
-				0,
-				-200,
-				0
-			}
-		},
-		{
-			fade_out_duration = 0.3,
-			font_upper_case = true,
-			localize = false,
-			delay = 1,
-			font_size = 80,
-			sound_event = "hud_area_indicator",
-			text = "ousside",
-			fade_in_duration = 0.1,
-			duration = 4,
+			text = "tutorial_intro_end_times_adventure",
+			fade_in_duration = 0.5,
+			duration = 3,
 			font_type = "hell_shark_header",
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
@@ -56,34 +56,16 @@ local template_settings = {
 			}
 		},
 		{
-			fade_out_duration = 0.5,
+			fade_out_duration = 0.51,
 			image = "hero_view_home_logo",
-			delay = 3,
+			delay = 7,
 			sound_event = "hud_area_indicator",
-			fade_in_duration = 0.5,
-			duration = 2,
+			fade_in_duration = 1,
+			duration = 3,
 			image_size = {
 				280,
 				200
 			},
-			offset = {
-				0,
-				0,
-				0
-			}
-		},
-		{
-			fade_out_duration = 1.5,
-			font_upper_case = true,
-			localize = false,
-			delay = 0,
-			font_size = 180,
-			sound_event = "hud_area_indicator",
-			text = "howbow_dah",
-			fade_in_duration = 0.2,
-			duration = 3,
-			font_type = "hell_shark_header",
-			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				0,
 				0,
@@ -93,97 +75,62 @@ local template_settings = {
 	},
 	template_2 = {
 		{
-			fade_out_duration = 0.2,
+			fade_out_duration = 0.4,
 			font_upper_case = false,
-			localize = false,
+			localize = true,
 			delay = 0,
-			font_size = 40,
+			font_size = 30,
 			sound_event = "hud_area_indicator",
-			text = "cash",
-			fade_in_duration = 0.2,
-			duration = 2,
-			font_type = "hell_shark_header",
-			color = Colors.get_color_table_with_alpha("white", 255),
-			offset = {
-				0,
-				0,
-				0
-			}
-		},
-		{
-			fade_out_duration = 0.3,
-			font_upper_case = false,
-			localize = false,
-			delay = 1,
-			font_size = 60,
-			sound_event = "hud_area_indicator",
-			text = "me",
-			fade_in_duration = 0.2,
-			duration = 2,
+			text = "tutorial_intro_presents",
+			fade_in_duration = 0.5,
+			duration = 3,
 			font_type = "hell_shark",
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				0,
-				0,
+				-50,
 				0
 			}
 		},
 		{
-			fade_out_duration = 0.3,
-			font_upper_case = true,
-			localize = false,
-			delay = 1,
-			font_size = 80,
+			fade_out_duration = 0.4,
+			font_upper_case = false,
+			localize = true,
+			delay = 5,
+			font_size = 28,
 			sound_event = "hud_area_indicator",
-			text = "ousside",
-			fade_in_duration = 0.1,
-			duration = 4,
-			font_type = "hell_shark_header",
-			color = Colors.get_color_table_with_alpha("white", 255),
-			offset = {
-				0,
-				0,
-				0
-			}
-		},
-		{
-			fade_out_duration = 0.5,
-			image = "hero_view_home_logo",
-			delay = 3,
-			sound_event = "hud_area_indicator",
+			text = "tutorial_intro_in_association_with",
 			fade_in_duration = 0.5,
-			duration = 2,
-			image_size = {
-				280,
-				200
-			},
+			duration = 3,
+			font_type = "hell_shark",
+			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				0,
-				0,
+				50,
 				0
 			}
 		},
 		{
-			fade_out_duration = 1.5,
-			font_upper_case = true,
-			localize = false,
-			delay = 0,
-			font_size = 180,
+			fade_out_duration = 0.4,
+			font_upper_case = false,
+			localize = true,
+			delay = 5,
+			font_size = 30,
 			sound_event = "hud_area_indicator",
-			text = "howbow_dah",
-			fade_in_duration = 0.2,
+			text = "tutorial_intro_an",
+			fade_in_duration = 0.4,
 			duration = 3,
-			font_type = "hell_shark_header",
+			font_type = "hell_shark",
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				0,
-				0,
+				50,
 				0
 			}
 		}
 	}
 }
-local DO_RELOAD = false
+local DO_RELOAD = true
 TutorialIntroUI = class(TutorialIntroUI)
 TutorialIntroUI.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer

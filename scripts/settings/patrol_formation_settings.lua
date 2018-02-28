@@ -184,7 +184,6 @@ PatrolFormationSettings.storm_vermin_two_column = {
 	},
 	normal = {
 		{
-			"skaven_storm_vermin_with_shield",
 			"skaven_storm_vermin_with_shield"
 		},
 		{
@@ -196,8 +195,16 @@ PatrolFormationSettings.storm_vermin_two_column = {
 			"skaven_storm_vermin"
 		},
 		{
-			"skaven_storm_vermin",
-			"skaven_storm_vermin"
+			"skaven_clan_rat",
+			"skaven_clan_rat"
+		},
+		{
+			"skaven_clan_rat",
+			"skaven_clan_rat"
+		},
+		{
+			"skaven_clan_rat",
+			"skaven_clan_rat"
 		}
 	},
 	hard = {
@@ -305,8 +312,8 @@ PatrolFormationSettings.storm_vermin_shields_infront = {
 			"skaven_storm_vermin_with_shield"
 		},
 		{
-			"skaven_storm_vermin_with_shield",
-			"skaven_storm_vermin_with_shield"
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
 		},
 		{
 			"skaven_storm_vermin",
@@ -314,10 +321,10 @@ PatrolFormationSettings.storm_vermin_shields_infront = {
 			"skaven_storm_vermin"
 		},
 		{
-			"",
-			"skaven_storm_vermin",
-			"skaven_storm_vermin",
-			""
+			"skaven_clan_rat",
+			"skaven_clan_rat",
+			"skaven_clan_rat",
+			"skaven_clan_rat"
 		}
 	},
 	hard = {
@@ -329,9 +336,9 @@ PatrolFormationSettings.storm_vermin_shields_infront = {
 			"skaven_storm_vermin_with_shield"
 		},
 		{
-			"skaven_storm_vermin_with_shield",
 			"skaven_storm_vermin",
-			"skaven_storm_vermin_with_shield"
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
 		},
 		{
 			"skaven_storm_vermin",
@@ -380,10 +387,10 @@ PatrolFormationSettings.storm_vermin_shields_infront = {
 			"skaven_storm_vermin_with_shield"
 		},
 		{
-			"skaven_storm_vermin_with_shield",
 			"skaven_storm_vermin",
 			"skaven_storm_vermin",
-			"skaven_storm_vermin_with_shield"
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
 		},
 		{
 			"skaven_storm_vermin",

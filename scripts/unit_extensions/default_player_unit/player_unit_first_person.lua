@@ -1,5 +1,5 @@
 PlayerUnitFirstPerson = class(PlayerUnitFirstPerson)
-script_data.disable_aim_lead_rig_motion = script_data.disable_aim_lead_rig_motion or Development.parameter("disable_aim_lead_rig_motion")
+script_data.disable_aim_lead_rig_motion = script_data.disable_aim_lead_rig_motion or Development.parameter("disable_aim_lead_rig_motion") or true
 PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.unit = unit

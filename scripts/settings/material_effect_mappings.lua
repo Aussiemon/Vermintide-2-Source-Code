@@ -4936,35 +4936,6 @@ MaterialEffectMappings.flamethrower = MaterialEffectMappings.flamethrower or {
 			}
 		}
 	},
-	particles = {
-		shield = "fx/hit_enemy_shield",
-		dirt = "fx/wpnfx_drake_pistols_projectile_impact",
-		glass = "fx/wpnfx_drake_pistols_projectile_impact",
-		stone = "fx/wpnfx_drake_pistols_projectile_impact",
-		cloth = "fx/wpnfx_drake_pistols_projectile_impact",
-		shield_metal = "fx/hit_enemy_shield_metal",
-		ward = "fx/chr_stormvermin_champion_shield_dot",
-		water = "fx/hit_water_with_fire_projectile",
-		fruit = "fx/wpnfx_drake_pistols_projectile_impact",
-		sand = "fx/wpnfx_drake_pistols_projectile_impact",
-		armored = "fx/hit_armored_with_fire",
-		flesh = "fx/wpnfx_drake_pistols_projectile_impact",
-		stone_dirt = "fx/wpnfx_drake_pistols_projectile_impact",
-		plaster = "fx/wpnfx_drake_pistols_projectile_impact",
-		snow = "fx/wpnfx_drake_pistols_projectile_impact",
-		ice = "fx/wpnfx_drake_pistols_projectile_impact",
-		water_deep = "fx/hit_water_with_fire_projectile",
-		forest_grass = "fx/wpnfx_drake_pistols_projectile_impact",
-		wood_bridge = "fx/wpnfx_drake_pistols_projectile_impact",
-		grass = "fx/wpnfx_drake_pistols_projectile_impact",
-		hay = "fx/wpnfx_drake_pistols_projectile_impact",
-		wood_hollow = "fx/wpnfx_drake_pistols_projectile_impact",
-		stone_wet = "fx/wpnfx_drake_pistols_projectile_impact",
-		mud = "fx/wpnfx_drake_pistols_projectile_impact",
-		wood_solid = "fx/wpnfx_drake_pistols_projectile_impact",
-		metal_solid = "fx/wpnfx_drake_pistols_projectile_impact",
-		metal_hollow = "fx/wpnfx_drake_pistols_projectile_impact"
-	},
 	world_interaction = {
 		water = {}
 	},
@@ -5777,6 +5748,277 @@ MaterialEffectMappings.poison_arrow_impact = MaterialEffectMappings.poison_arrow
 		wood_solid = "fx/wpnfx_poison_arrow_impact",
 		metal_solid = "fx/wpnfx_poison_arrow_impact",
 		metal_hollow = "fx/wpnfx_poison_arrow_impact"
+	},
+	flow_event = {
+		ward = "ward_impact"
+	},
+	world_interaction = {
+		water = {}
+	}
+}
+MaterialEffectMappings.poison_arrow_impact_small = MaterialEffectMappings.poison_arrow_impact_small or {
+	decal = {
+		material_drawer_mapping = {
+			fruit = "units/projection_decals/hit_fruit_pierce_1",
+			dirt = "units/projection_decals/hit_dirt_pierce_1",
+			stone = "units/projection_decals/hit_stone_pierce_1",
+			water = "units/projection_decals/empty",
+			water_deep = "units/projection_decals/empty",
+			glass = "units/projection_decals/hit_glass_pierce_1",
+			sand = "units/projection_decals/hit_sand_pierce_1",
+			armored = "units/projection_decals/hit_metal_hollow_pierce_1",
+			flesh = "units/projection_decals/hit_flesh_pierce_1",
+			stone_dirt = "units/projection_decals/hit_stone_pierce_1",
+			snow = "units/projection_decals/hit_snow_pierce_1",
+			ice = "units/projection_decals/hit_ice_pierce_1",
+			forest_grass = "units/projection_decals/hit_grass_pierce_1",
+			grass = "units/projection_decals/hit_grass_pierce_1",
+			hay = "units/projection_decals/empty",
+			stone_wet = "units/projection_decals/hit_stone_pierce_1",
+			mud = "units/projection_decals/hit_dirt_pierce_1",
+			metal_solid = "units/projection_decals/hit_metal_solid_pierce_1",
+			metal_hollow = "units/projection_decals/hit_metal_hollow_pierce_1",
+			cloth = {
+				"units/projection_decals/hit_cloth_pierce_1",
+				"units/projection_decals/hit_cloth_pierce_2"
+			},
+			plaster = {
+				"units/projection_decals/hit_plaster_pierce_1",
+				"units/projection_decals/hit_plaster_pierce_2"
+			},
+			wood_bridge = {
+				"units/projection_decals/hit_wood_pierce_1",
+				"units/projection_decals/hit_wood_pierce_2",
+				"units/projection_decals/hit_wood_pierce_3"
+			},
+			wood_solid = {
+				"units/projection_decals/hit_wood_pierce_1",
+				"units/projection_decals/hit_wood_pierce_2",
+				"units/projection_decals/hit_wood_pierce_3"
+			},
+			wood_hollow = {
+				"units/projection_decals/hit_wood_pierce_1",
+				"units/projection_decals/hit_wood_pierce_2",
+				"units/projection_decals/hit_wood_pierce_3"
+			}
+		},
+		settings = {
+			depth = 0.8,
+			height = 0.6,
+			width = 0.6,
+			depth_offset = 0.5
+		}
+	},
+	sound = {
+		cloth = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "cloth",
+				damage_type = "piercing"
+			}
+		},
+		dirt = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "dirt",
+				damage_type = "piercing"
+			}
+		},
+		flesh = {
+			no_damage_event = "arrow_hit_armour",
+			event = "poison_arrow_impact",
+			parameters = {}
+		},
+		fruit = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "fruit",
+				damage_type = "piercing"
+			}
+		},
+		forest_grass = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "forest_grass",
+				damage_type = "piercing"
+			}
+		},
+		glass = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "glass",
+				damage_type = "piercing"
+			}
+		},
+		grass = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "grass",
+				damage_type = "piercing"
+			}
+		},
+		hay = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "hay",
+				damage_type = "piercing"
+			}
+		},
+		ice = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "ice",
+				damage_type = "piercing"
+			}
+		},
+		metal_hollow = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "metal_hollow",
+				damage_type = "piercing"
+			}
+		},
+		armored = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "metal_hollow",
+				damage_type = "piercing"
+			}
+		},
+		shield = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "metal_hollow",
+				damage_type = "piercing"
+			}
+		},
+		shield_metal = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "metal_hollow",
+				damage_type = "piercing"
+			}
+		},
+		metal_solid = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "metal_solid",
+				damage_type = "piercing"
+			}
+		},
+		mud = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "mud",
+				damage_type = "piercing"
+			}
+		},
+		plaster = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "plaster",
+				damage_type = "piercing"
+			}
+		},
+		sand = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "grass",
+				damage_type = "piercing"
+			}
+		},
+		stone = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "stone",
+				damage_type = "piercing"
+			}
+		},
+		stone_dirt = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "stone_dirt",
+				damage_type = "piercing"
+			}
+		},
+		stone_wet = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "stone_wet",
+				damage_type = "piercing"
+			}
+		},
+		snow = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "snow",
+				damage_type = "piercing"
+			}
+		},
+		water = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "water",
+				damage_type = "piercing"
+			}
+		},
+		water_deep = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "water_deep",
+				damage_type = "piercing"
+			}
+		},
+		wood_bridge = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "wood_bridge",
+				damage_type = "piercing"
+			}
+		},
+		wood_hollow = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "wood_hollow",
+				damage_type = "piercing"
+			}
+		},
+		wood_solid = {
+			event = "poison_arrow_impact",
+			parameters = {
+				material = "wood_solid",
+				damage_type = "piercing"
+			}
+		}
+	},
+	particles = {
+		shield = "fx/hit_enemy_shield",
+		hay = "fx/hit_hay_pierce",
+		fruit = "fx/wpnfx_poison_arrow_impact_machinegun",
+		stone = "fx/wpnfx_poison_arrow_impact_machinegun",
+		cloth = "fx/wpnfx_poison_arrow_impact_machinegun",
+		shield_metal = "fx/hit_enemy_shield_metal",
+		ward = "fx/chr_stormvermin_champion_shield_dot",
+		water = "fx/wpnfx_poison_arrow_impact_machinegun",
+		glass = "fx/wpnfx_poison_arrow_impact_machinegun",
+		sand = "fx/wpnfx_poison_arrow_impact_machinegun",
+		armored = "fx/wpnfx_poison_arrow_impact_machinegun",
+		flesh = "fx/wpnfx_poison_arrow_impact_machinegun",
+		stone_dirt = "fx/wpnfx_poison_arrow_impact_machinegun",
+		plaster = "fx/wpnfx_poison_arrow_impact_machinegun",
+		snow = "fx/wpnfx_poison_arrow_impact_machinegun",
+		ice = "fx/hit_ice_pierce",
+		water_deep = "fx/wpnfx_poison_arrow_impact_machinegun",
+		forest_grass = "fx/wpnfx_poison_arrow_impact_machinegun",
+		wood_bridge = "fx/wpnfx_poison_arrow_impact_machinegun",
+		grass = "fx/wpnfx_poison_arrow_impact_machinegun",
+		dirt = "fx/wpnfx_poison_arrow_impact_machinegun",
+		wood_hollow = "fx/wpnfx_poison_arrow_impact_machinegun",
+		stone_wet = "fx/wpnfx_poison_arrow_impact_machinegun",
+		mud = "fx/wpnfx_poison_arrow_impact_machinegun",
+		wood_solid = "fx/wpnfx_poison_arrow_impact_machinegun",
+		metal_solid = "fx/wpnfx_poison_arrow_impact_machinegun",
+		metal_hollow = "fx/wpnfx_poison_arrow_impact_machinegun"
 	},
 	flow_event = {
 		ward = "ward_impact"

@@ -435,17 +435,8 @@ BTChaosSorcererSummoningAction.init_summon_plague_wave = function (self, unit, b
 	return 
 end
 BTChaosSorcererSummoningAction.init_summon_vermintide = function (self, unit, blackboard, t)
-	local unit_name = "units/hub_elements/empty"
-	local extension_init_data = {
-		area_damage_system = {
-			damage_wave_template_name = "vermintide",
-			source_unit = unit
-		}
-	}
-	local pos = POSITION_LOOKUP[unit]
-	local rot = Unit.local_rotation(unit, 0)
-	local damage_wave_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "damage_wave_unit", extension_init_data, pos, rot)
-	blackboard.damage_wave_extension = ScriptUnit.extension(damage_wave_unit, "area_damage_system")
+	blackboard.summon_plague_wave_timer = t + 0.1
+	blackboard.damage_wave_template_name = "vermintide"
 
 	return 
 end
@@ -455,7 +446,7 @@ BTChaosSorcererSummoningAction.update_summon_plague_wave = function (self, unit,
 			local unit_name = "units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx"
 			local extension_init_data = {
 				area_damage_system = {
-					damage_wave_template_name = "plague_wave",
+					damage_wave_template_name = blackboard.damage_wave_template_name or "plague_wave",
 					source_unit = unit
 				}
 			}

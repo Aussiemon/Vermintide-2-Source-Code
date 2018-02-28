@@ -928,7 +928,7 @@ local function create_loot_preview_widget(scenegraph_id, size)
 	local style = {
 		viewport = {
 			layer = 990,
-			shading_environment = "environment/blank_offscreen_chest",
+			shading_environment = "environment/blank_offscreen_chest_item",
 			viewport_type = "default_forward",
 			enable_sub_gui = false,
 			fov = 65,
@@ -979,6 +979,13 @@ local function create_loot_widget(index, size)
 			end
 		},
 		{
+			pass_type = "hotspot",
+			content_id = "item_hotspot_2",
+			content_check_function = function (content)
+				return content.parent.presentation_complete
+			end
+		},
+		{
 			style_id = "item_name",
 			pass_type = "text",
 			text_id = "item_name"
@@ -1003,7 +1010,9 @@ local function create_loot_widget(index, size)
 			style_id = "item_tooltip",
 			pass_type = "item_tooltip",
 			content_check_function = function (content)
-				return content.item_hotspot.is_hover and content.item
+				local is_hover = content.item_hotspot.is_hover or content.item_hotspot_2.is_hover
+
+				return is_hover and content.item
 			end
 		},
 		{
@@ -1115,27 +1124,28 @@ local function create_loot_widget(index, size)
 		}
 	}
 	local content = {
-		lock_bottom = "loot_presentation_fg_02",
+		item_type = "n/a",
+		lock_glow = "loot_presentation_circle_glow_plentiful",
 		lock_glow_1 = "loot_presentation_glow_04",
 		final_glow_2 = "loot_presentation_glow_05",
 		draw_frame = false,
-		lock_bottom_glow_2 = "loot_presentation_glow_01",
+		lock_bottom_shadow = "loot_presentation_fg_02_fade",
 		lock_top = "loot_presentation_fg_01",
 		lock_top_shadow = "loot_presentation_fg_01_fade",
-		item_icon_rarity = "rarity_color_white",
-		item_icon_frame = "item_frame",
-		item_type = "n/a",
+		lock_bottom_glow_2 = "loot_presentation_glow_01",
+		item_icon_rarity = "icon_bg_plentiful",
+		lock_bottom = "loot_presentation_fg_02",
 		item_icon = "icons_placeholder",
-		lock_bottom_shadow = "loot_presentation_fg_02_fade",
+		item_icon_frame = "item_frame",
 		amount_text = "",
 		final_glow_1 = "loot_presentation_glow_06",
 		lock_bottom_glow = "loot_presentation_glow_02",
 		final_glow = "loot_presentation_circle_glow_plentiful_large",
 		item_name = "n/a",
 		lock_glow_2 = "loot_presentation_glow_03",
-		lock_glow = "loot_presentation_circle_glow_plentiful",
 		frame = frame_settings.texture,
 		item_hotspot = {},
+		item_hotspot_2 = {},
 		button_hotspot = {
 			hover_type = "circle"
 		}
@@ -1544,7 +1554,7 @@ local function create_loot_widget(index, size)
 			offset = {
 				0,
 				40,
-				16
+				13
 			},
 			color = {
 				255,
@@ -2165,5 +2175,11 @@ return {
 	settings_by_screen = settings_by_screen,
 	generic_input_actions = generic_input_actions,
 	scenegraph_definition = scenegraph_definition,
-	animation_definitions = animation_definitions
+	animation_definitions = animation_definitions,
+	background_fade_definition = UIWidgets.create_simple_rect("dead_space_filler", {
+		0,
+		5,
+		5,
+		5
+	})
 }

@@ -43,7 +43,7 @@ CareerAbilityBWUnchained.update = function (self, unit, input, dt, context, t)
 	end
 
 	if not self._is_priming then
-		if input_extension.get(input_extension, "function_career") then
+		if input_extension.get(input_extension, "action_career") then
 			self._start_priming(self)
 		end
 	elseif self._is_priming then
@@ -55,7 +55,7 @@ CareerAbilityBWUnchained.update = function (self, unit, input, dt, context, t)
 			return 
 		end
 
-		if input_extension.get(input_extension, "function_career_release") then
+		if input_extension.get(input_extension, "action_career_release") then
 			self._run_ability(self)
 		end
 	end
@@ -65,20 +65,22 @@ end
 CareerAbilityBWUnchained._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
-	local activated_ability_data = career_extension.get_activated_ability_data(career_extension)
 
-	return self._local_player and not self._bot_player and career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
+	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityBWUnchained._start_priming = function (self)
-	local world = self._world
-	local effect_name = self._priming_fx_name
-	local talent_extension = ScriptUnit.extension(self._owner_unit, "talent_system")
+	if self._local_player then
+		local world = self._world
+		local effect_name = self._priming_fx_name
+		local talent_extension = ScriptUnit.extension(self._owner_unit, "talent_system")
 
-	if talent_extension.has_talent(talent_extension, "sienna_unchained_activated_ability_radius", "bright_wizard", true) then
-		effect_name = "fx/chr_unchained_aoe_decal_large"
+		if talent_extension.has_talent(talent_extension, "sienna_unchained_activated_ability_radius", "bright_wizard", true) then
+			effect_name = "fx/chr_unchained_aoe_decal_large"
+		end
+
+		self._priming_fx_id = World.create_particles(world, effect_name, Vector3.zero())
 	end
 
-	self._priming_fx_id = World.create_particles(world, effect_name, Vector3.zero())
 	self._is_priming = true
 
 	return 
@@ -113,41 +115,27 @@ end
 CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	self._stop_priming(self)
 
-	local world = self._world
 	local owner_unit = self._owner_unit
 	local is_server = self._is_server
 	local local_player = self._local_player
-	local network_manager = self._network_manager
-	local network_transmit = network_manager.network_transmit
-	local status_extension = self._status_extension
+	local bot_player = self._bot_player
+	local position = POSITION_LOOKUP[owner_unit]
 	local career_extension = self._career_extension
 	local buff_extension = self._buff_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	local buff_name = "sienna_unchained_activated_ability"
-	local unit_object_id = network_manager.unit_game_object_id(network_manager, owner_unit)
-	local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
 	buff_extension.add_buff(buff_extension, buff_name, {
 		attacker_unit = owner_unit
 	})
 
-	if local_player then
+	if (is_server and bot_player) or local_player then
 		local overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 
 		overcharge_extension.reset(overcharge_extension)
 		career_extension.set_state(career_extension, "sienna_activate_unchained")
-
-		local position = POSITION_LOOKUP[owner_unit]
-
-		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_unchained_fire", position)
 	end
 
-	local dialogue_input = ScriptUnit.extension_input(owner_unit, "dialogue_system")
-	local event_data = FrameTable.alloc_table()
-
-	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "activate_ability", event_data)
-
-	local position = POSITION_LOOKUP[owner_unit]
 	local rotation = Unit.local_rotation(owner_unit, 0)
 	local explosion_template = "explosion_bw_unchained_ability"
 	local scale = 1
@@ -172,6 +160,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension.animation_event(first_person_extension, "unchained_ability_explosion")
+		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_unchained_fire", position)
 	end
 
 	self._play_vo(self)

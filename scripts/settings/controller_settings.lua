@@ -68,16 +68,6 @@ PlayerControllerKeymaps = {
 			"z",
 			"released"
 		},
-		function_career = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		function_career_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
 		action_career = {
 			"keyboard",
 			"f",
@@ -89,156 +79,6 @@ PlayerControllerKeymaps = {
 			"held"
 		},
 		action_career_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_bw_1 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_bw_2 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_bw_3 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_dr_1 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_dr_2 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_dr_3 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_es_1 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_es_2 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_es_3 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_wh_1 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_wh_2 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_wh_3 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_we_1 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_we_2 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_we_3 = {
-			"keyboard",
-			"f",
-			"pressed"
-		},
-		action_career_bw_1_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_bw_2_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_bw_3_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_dr_1_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_dr_2_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_dr_3_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_es_1_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_es_2_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_es_3_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_wh_1_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_wh_2_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_wh_3_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_we_1_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_we_2_release = {
-			"keyboard",
-			"f",
-			"released"
-		},
-		action_career_we_3_release = {
 			"keyboard",
 			"f",
 			"released"
@@ -524,22 +364,32 @@ PlayerControllerKeymaps = {
 			"right_thumb",
 			"released"
 		},
-		active_ability_left = {
+		active_ability_left_pressed = {
+			"gamepad",
+			"left_shoulder",
+			"pressed"
+		},
+		active_ability_right_pressed = {
+			"gamepad",
+			"right_shoulder",
+			"pressed"
+		},
+		active_ability_left_held = {
 			"gamepad",
 			"left_shoulder",
 			"held"
 		},
-		active_ability_right = {
+		active_ability_right_held = {
 			"gamepad",
 			"right_shoulder",
 			"held"
 		},
-		active_ability_left_relase = {
+		active_ability_left_release = {
 			"gamepad",
 			"left_shoulder",
 			"released"
 		},
-		active_ability_right_relase = {
+		active_ability_right_release = {
 			"gamepad",
 			"right_shoulder",
 			"released"
@@ -554,12 +404,12 @@ PlayerControllerKeymaps = {
 			"left",
 			"pressed"
 		},
-		weapon_reload = {
+		weapon_reload_input = {
 			"gamepad",
 			"left_shoulder",
 			"pressed"
 		},
-		weapon_reload_hold = {
+		weapon_reload_hold_input = {
 			"gamepad",
 			"left_shoulder",
 			"held"
@@ -626,12 +476,11 @@ PlayerControllerKeymaps = {
 		},
 		jump_2 = {},
 		jump_only = {},
-		dodge_hold_1 = {
+		dodge_hold = {
 			"gamepad",
 			"a",
 			"held"
 		},
-		dodge_hold_2 = {},
 		dodge = {},
 		crouch = {
 			"gamepad",
@@ -754,22 +603,32 @@ PlayerControllerKeymaps = {
 			"r3",
 			"released"
 		},
-		active_ability_left = {
+		active_ability_left_pressed = {
+			"gamepad",
+			"l1",
+			"pressed"
+		},
+		active_ability_right_pressed = {
+			"gamepad",
+			"r1",
+			"pressed"
+		},
+		active_ability_left_held = {
 			"gamepad",
 			"l1",
 			"held"
 		},
-		active_ability_right = {
+		active_ability_right_held = {
 			"gamepad",
 			"r1",
 			"held"
 		},
-		active_ability_left_relase = {
+		active_ability_left_release = {
 			"gamepad",
 			"l1",
 			"released"
 		},
-		active_ability_right_relase = {
+		active_ability_right_release = {
 			"gamepad",
 			"r1",
 			"released"
@@ -784,12 +643,12 @@ PlayerControllerKeymaps = {
 			"left",
 			"pressed"
 		},
-		weapon_reload = {
+		weapon_reload_input = {
 			"gamepad",
 			"l1",
 			"pressed"
 		},
-		weapon_reload_hold = {
+		weapon_reload_hold_input = {
 			"gamepad",
 			"l1",
 			"held"
@@ -856,12 +715,11 @@ PlayerControllerKeymaps = {
 		},
 		jump_2 = {},
 		jump_only = {},
-		dodge_hold_1 = {
+		dodge_hold = {
 			"gamepad",
 			"cross",
 			"held"
 		},
-		dodge_hold_2 = {},
 		dodge_1 = {},
 		dodge_2 = {},
 		crouch = {
@@ -1072,6 +930,46 @@ PlayerControllerFilters = {
 			power_of = 1.5,
 			multiplier_x = 1.5
 		},
+		move_controller_up = {
+			filter_type = "axis_check",
+			axis_requirement = 0.7,
+			input_mapping = "move_controller",
+			axis = {
+				0,
+				1,
+				0
+			}
+		},
+		move_controller_down = {
+			filter_type = "axis_check",
+			axis_requirement = 0.7,
+			input_mapping = "move_controller",
+			axis = {
+				0,
+				-1,
+				0
+			}
+		},
+		move_controller_left = {
+			filter_type = "axis_check",
+			axis_requirement = 0.7,
+			input_mapping = "move_controller",
+			axis = {
+				-1,
+				0,
+				0
+			}
+		},
+		move_controller_right = {
+			filter_type = "axis_check",
+			axis_requirement = 0.7,
+			input_mapping = "move_controller",
+			axis = {
+				1,
+				0,
+				0
+			}
+		},
 		wield_switch = {
 			filter_type = "or",
 			input_mappings = {
@@ -1093,130 +991,52 @@ PlayerControllerFilters = {
 				button_2 = "dodge_2"
 			}
 		},
-		dodge_hold = {
+		action_career = {
+			max_delay = 0.05,
+			filter_type = "delayed_and",
+			input_mappings = {
+				button_1 = "active_ability_left_pressed",
+				button_2 = "active_ability_right_pressed"
+			},
+			held = {
+				button_1 = "active_ability_left_held",
+				button_2 = "active_ability_right_held"
+			}
+		},
+		action_career_hold = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "active_ability_left_held",
+				button_2 = "active_ability_right_held"
+			}
+		},
+		action_career_release = {
 			filter_type = "or",
-			input_mappings = {
-				button_1 = "dodge_hold_1",
-				button_2 = "dodge_hold_2"
-			}
-		},
-		function_career = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		function_career_release = {
-			filter_type = "and",
 			input_mappings = {
 				button_1 = "active_ability_left_release",
 				button_2 = "active_ability_right_release"
 			}
 		},
-		action_career_bw_1 = {
-			filter_type = "and",
+		weapon_reload_hold = {
+			filter_type = "exclusive_and",
 			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
+				button_1 = "weapon_reload_hold_input"
+			},
+			exclusive_input_mappings = {
+				button_2 = "action_career_hold",
+				button_3 = "action_career_release",
+				button_1 = "action_career"
 			}
 		},
-		action_career_bw_2 = {
-			filter_type = "and",
+		weapon_reload = {
+			filter_type = "exclusive_and",
 			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_bw_3 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_dr_1 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_dr_2 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_dr_3 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_es_1 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_es_2 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_es_3 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_wh_1 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_wh_2 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_wh_3 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_we_1 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_we_2 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_we_3 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
+				button_1 = "weapon_reload_input"
+			},
+			exclusive_input_mappings = {
+				button_2 = "action_career_hold",
+				button_3 = "action_career_release",
+				button_1 = "action_career"
 			}
 		}
 	},
@@ -1281,6 +1101,46 @@ PlayerControllerFilters = {
 			power_of = 1.5,
 			multiplier_x = 1.5
 		},
+		move_controller_up = {
+			filter_type = "axis_check",
+			axis_requirement = 0.7,
+			input_mapping = "move_controller",
+			axis = {
+				0,
+				1,
+				0
+			}
+		},
+		move_controller_down = {
+			filter_type = "axis_check",
+			axis_requirement = 0.7,
+			input_mapping = "move_controller",
+			axis = {
+				0,
+				-1,
+				0
+			}
+		},
+		move_controller_left = {
+			filter_type = "axis_check",
+			axis_requirement = 0.7,
+			input_mapping = "move_controller",
+			axis = {
+				-1,
+				0,
+				0
+			}
+		},
+		move_controller_right = {
+			filter_type = "axis_check",
+			axis_requirement = 0.7,
+			input_mapping = "move_controller",
+			axis = {
+				1,
+				0,
+				0
+			}
+		},
 		wield_switch = {
 			filter_type = "or",
 			input_mappings = {
@@ -1302,123 +1162,47 @@ PlayerControllerFilters = {
 				button_2 = "dodge_2"
 			}
 		},
-		function_career = {
+		action_career = {
 			filter_type = "and",
 			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
+				button_1 = "active_ability_left_pressed",
+				button_2 = "active_ability_right_pressed"
 			}
 		},
-		function_career_release = {
+		action_career_hold = {
 			filter_type = "and",
+			input_mappings = {
+				button_1 = "active_ability_left_held",
+				button_2 = "active_ability_right_held"
+			}
+		},
+		action_career_release = {
+			filter_type = "or",
 			input_mappings = {
 				button_1 = "active_ability_left_release",
 				button_2 = "active_ability_right_release"
 			}
 		},
-		action_career_bw_1 = {
-			filter_type = "and",
+		weapon_reload_hold = {
+			filter_type = "exclusive_and",
 			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
+				button_1 = "weapon_reload_hold_input"
+			},
+			exclusive_input_mappings = {
+				button_2 = "action_career_hold",
+				button_3 = "action_career_release",
+				button_1 = "action_career"
 			}
 		},
-		action_career_bw_2 = {
-			filter_type = "and",
+		weapon_reload = {
+			filter_type = "exclusive_and",
 			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_bw_3 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_dr_1 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_dr_2 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_dr_3 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_es_1 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_es_2 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_es_3 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_wh_1 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_wh_2 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_wh_3 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_we_1 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_we_2 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
-			}
-		},
-		action_career_we_3 = {
-			filter_type = "and",
-			input_mappings = {
-				button_1 = "active_ability_left",
-				button_2 = "active_ability_right"
+				button_1 = "weapon_reload_input"
+			},
+			exclusive_input_mappings = {
+				button_2 = "action_career_hold",
+				button_3 = "action_career_release",
+				button_1 = "action_career"
 			}
 		}
 	}

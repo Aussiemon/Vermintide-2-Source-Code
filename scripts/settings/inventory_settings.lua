@@ -79,6 +79,7 @@ InventorySettings = {
 			wield_input = "wield_3",
 			category = "weapon",
 			hud_index = 3,
+			console_hud_index = 2,
 			drop_reasons = {
 				death = true
 			}
@@ -88,6 +89,7 @@ InventorySettings = {
 			wield_input = "wield_4",
 			category = "weapon",
 			hud_index = 4,
+			console_hud_index = 4,
 			drop_reasons = {
 				death = true
 			}
@@ -97,6 +99,7 @@ InventorySettings = {
 			wield_input = "wield_5",
 			category = "weapon",
 			hud_index = 5,
+			console_hud_index = 3,
 			drop_reasons = {
 				death = true
 			}
@@ -202,6 +205,14 @@ InventorySettings.slots_by_slot_index = {}
 for index, slot in ipairs(InventorySettings.slots) do
 	if slot.slot_index then
 		InventorySettings.slots_by_slot_index[slot.slot_index] = slot
+	end
+end
+
+InventorySettings.slots_by_console_hud_index = {}
+
+for index, slot in ipairs(InventorySettings.slots) do
+	if slot.console_hud_index then
+		InventorySettings.slots_by_console_hud_index[slot.console_hud_index] = slot
 	end
 end
 

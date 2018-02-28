@@ -132,20 +132,20 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.calculate_end_position = function (s
 	local respawn_box_rotation = Unit.world_rotation(ledge_unit, node)
 	local respawn_box_right_vector = Quaternion.right(respawn_box_rotation)
 	local new_position = respawn_box_position + respawn_box_right_vector*position_offset_amount
-	local last_nav_mesh_pos = ScriptUnit.extension(unit, "whereabouts_system"):last_position_onground_on_navmesh()
-	local distance = Vector3.distance(new_position, last_nav_mesh_pos)
+	local nav_mesh_pos = ScriptUnit.extension(unit, "whereabouts_system"):get_hang_ledge_spawn_position()
+	local distance = Vector3.distance(new_position, nav_mesh_pos)
 	local is_close = distance < 4
 
 	if script_data.debug_hang_ledges then
 		QuickDrawerStay:sphere(new_position, 0.1, Color(255, 0, 0))
 	end
 
-	if last_nav_mesh_pos and is_close then
+	if nav_mesh_pos and is_close then
 		if script_data.debug_hang_ledges then
-			QuickDrawerStay:sphere(last_nav_mesh_pos, 0.1, Color(0, 255, 0))
+			QuickDrawerStay:sphere(nav_mesh_pos, 0.1, Color(0, 255, 0))
 		end
 
-		new_position = last_nav_mesh_pos
+		new_position = nav_mesh_pos
 	elseif script_data.debug_hang_ledges then
 		local debug_text_manager = Managers.state.debug_text
 

@@ -276,6 +276,90 @@ local scenegraph_definition = {
 			0
 		}
 	},
+	private_button = {
+		vertical_alignment = "bottom",
+		parent = "additional_option",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			40
+		},
+		position = {
+			0,
+			12,
+			10
+		}
+	},
+	private_button_frame = {
+		vertical_alignment = "bottom",
+		parent = "private_button",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			45
+		},
+		position = {
+			0,
+			0,
+			10
+		}
+	},
+	host_button = {
+		vertical_alignment = "top",
+		parent = "private_button",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			40
+		},
+		position = {
+			0,
+			45,
+			10
+		}
+	},
+	host_button_frame = {
+		vertical_alignment = "bottom",
+		parent = "host_button",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			45
+		},
+		position = {
+			0,
+			0,
+			10
+		}
+	},
+	strict_matchmaking_button = {
+		vertical_alignment = "top",
+		parent = "host_button",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			40
+		},
+		position = {
+			0,
+			45,
+			10
+		}
+	},
+	strict_matchmaking_button_frame = {
+		vertical_alignment = "bottom",
+		parent = "strict_matchmaking_button",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			45
+		},
+		position = {
+			0,
+			0,
+			10
+		}
+	},
 	reward_presentation = {
 		vertical_alignment = "bottom",
 		parent = "game_option_1",
@@ -340,13 +424,8 @@ local function create_settings_option(scenegraph_id, size, title_text, icon_text
 	icon_texture = icon_texture or "map_frame_fade"
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
 	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
-		200,
-		200
-	}
-	local icon_scale = math.min(size[2]/icon_texture_size[2], 1) - 1
-	local icon_size = {
-		icon_texture_size[1],
-		icon_texture_size[2]
+		150,
+		150
 	}
 	background_texture = background_texture or "play_screen_bg"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
@@ -468,21 +547,25 @@ local function create_settings_option(scenegraph_id, size, title_text, icon_text
 				}
 			},
 			icon = {
-				size = icon_size,
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
 				color = {
 					255,
 					255,
 					255,
 					255
 				},
+				texture_size = icon_texture_size,
 				offset = {
-					size[1] - icon_size[1] - frame_width,
-					size[2]/2 - icon_size[2]/2,
+					size[1]/2 - 120,
+					0,
 					5
 				}
 			},
 			icon_frame = {
-				size = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
 					180,
 					180
 				},
@@ -493,8 +576,8 @@ local function create_settings_option(scenegraph_id, size, title_text, icon_text
 					255
 				},
 				offset = {
-					size[1] - icon_size[1] - frame_width + icon_size[1]/2 - 90,
-					size[2]/2 - icon_size[2]/2 + icon_size[2]/2 - 90,
+					size[1]/2 - 120,
+					0,
 					6
 				}
 			},
@@ -1128,7 +1211,22 @@ local adventure_game_widgets = {
 local custom_game_widgets = {
 	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_mission"), nil, "game_options_bg_01"),
 	game_option_2 = create_settings_option("game_option_2", scenegraph_definition.game_option_2.size, Localize("start_game_window_difficulty"), "difficulty_option_1", "game_options_bg_02"),
-	additional_option = create_additional_settings_option("additional_option", scenegraph_definition.additional_option.size, Localize("start_game_window_other_options_title"), "game_options_bg_03")
+	additional_option = create_additional_settings_option("additional_option", scenegraph_definition.additional_option.size, Localize("start_game_window_other_options_title"), "game_options_bg_03"),
+	private_frame = UIWidgets.create_frame("private_button_frame", scenegraph_definition.private_button_frame.size, window_frame, 1),
+	private_button = UIWidgets.create_default_checkbox_button("private_button", scenegraph_definition.private_button.size, Localize("start_game_window_other_options_private"), 24, {
+		title = Localize("start_game_window_other_options_private"),
+		description = Localize("start_game_window_other_options_private_description")
+	}),
+	host_frame = UIWidgets.create_frame("host_button_frame", scenegraph_definition.host_button_frame.size, window_frame, 1),
+	host_button = UIWidgets.create_default_checkbox_button("host_button", scenegraph_definition.host_button.size, Localize("start_game_window_other_options_always_host"), 24, {
+		title = Localize("start_game_window_other_options_always_host"),
+		description = Localize("start_game_window_other_options_always_host_description")
+	}),
+	strict_matchmaking_frame = UIWidgets.create_frame("strict_matchmaking_button_frame", scenegraph_definition.strict_matchmaking_button_frame.size, window_frame, 1),
+	strict_matchmaking_button = UIWidgets.create_default_checkbox_button("strict_matchmaking_button", scenegraph_definition.strict_matchmaking_button.size, Localize("start_game_window_other_options_strict_matchmaking"), 24, {
+		title = Localize("start_game_window_other_options_strict_matchmaking"),
+		description = Localize("start_game_window_other_options_strict_matchmaking_description")
+	})
 }
 local deed_game_widgets = {
 	item_presentation_frame = UIWidgets.create_frame("deed_option_bg", scenegraph_definition.deed_option_bg.size, deed_frame_name, 20),

@@ -26,6 +26,11 @@ ScriptApplication.send_to_crashify = function (system, message, ...)
 
 	return 
 end
+ScriptApplication.set_crashify_tag = function (tag, data)
+	printf("[CrashifyCustomTag] %s, %s", tag, data)
+
+	return 
+end
 ScriptApplication.is_bundled = function ()
 	local args = {
 		Application.argv()

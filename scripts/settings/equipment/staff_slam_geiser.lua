@@ -40,12 +40,6 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			armour_modifier = {
@@ -119,12 +113,6 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		}
@@ -178,12 +166,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		}
@@ -222,19 +204,12 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,

@@ -75,8 +75,10 @@ DefaultAnimationFunctions = {
 			end
 
 			local input_service = Managers.input:get_service("Player")
+			local in_sequence = this.input_requirement == "sequence"
 
-			for _, inputs in ipairs(this.input_mappings) do
+			if in_sequence then
+				local inputs = this.input_mappings[1]
 				local success = true
 
 				for _, input in ipairs(inputs) do
@@ -94,7 +96,37 @@ DefaultAnimationFunctions = {
 				end
 
 				if success then
-					return true
+					table.remove(this.input_mappings, 1)
+
+					if table.is_empty(this.input_mappings) then
+						return true
+					end
+				end
+			else
+				for idx, inputs in ipairs(this.input_mappings) do
+					local success = true
+
+					for _, input in ipairs(inputs) do
+						local result = input_service.get(input_service, input)
+
+						if type(result) == "number" and result == 0 then
+							success = false
+
+							break
+						elseif type(result) == "boolean" and not result then
+							success = false
+
+							break
+						elseif result == nil then
+							success = false
+
+							break
+						end
+					end
+
+					if success then
+						return true
+					end
 				end
 			end
 		end
@@ -192,21 +224,22 @@ DefaultAnimationFunctions = {
 PauseEvents = {
 	pause_events = {
 		{
+			animation_delay = 0.75,
 			stop_delay = 0.1,
+			input_requirement = "sequence",
 			mission_name = "prologue_use_special_ability",
 			name = "special_ability",
-			animation_delay = 0.75,
 			input_mappings = {
 				{
-					"function_career"
+					"action_career"
 				},
 				{
-					"function_career_release"
+					"action_career_release"
 				}
 			},
 			allowed_input = {
-				"function_career",
-				"function_career_release"
+				"action_career",
+				"action_career_release"
 			},
 			on_enter = DefaultAnimationFunctions.on_enter,
 			update = DefaultAnimationFunctions.update_input,
@@ -260,6 +293,14 @@ PauseEvents = {
 				},
 				{
 					"move_right",
+					"dodge_hold"
+				},
+				{
+					"move_controller_left",
+					"dodge_hold"
+				},
+				{
+					"move_controller_right",
 					"dodge_hold"
 				}
 			},

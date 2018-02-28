@@ -1201,7 +1201,7 @@ local widgets = {
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),
 	window = UIWidgets.create_frame("window", window_size, window_frame, 20),
 	play_button = UIWidgets.create_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34),
-	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, "1. " .. Localize("start_game_window_difficulty"), Localize("start_game_window_change_difficulty"), "difficulty_option_1", "game_options_bg_02"),
+	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_difficulty"), Localize("start_game_window_change_difficulty"), "difficulty_option_1", "game_options_bg_02"),
 	game_option_reward = create_reward_presentation("game_option_2", scenegraph_definition.game_option_2.size),
 	game_options_left_chain = UIWidgets.create_tiled_texture("game_options_left_chain", "chain_link_01", {
 		16,

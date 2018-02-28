@@ -3,6 +3,7 @@ local breed_data = {
 	no_autoaim = true,
 	target_selection = "pick_no_targets",
 	boss = "SET_TO_NIL",
+	passive_in_patrol = false,
 	race = "chaos",
 	not_bot_target = true,
 	perception = "perception_no_seeing",

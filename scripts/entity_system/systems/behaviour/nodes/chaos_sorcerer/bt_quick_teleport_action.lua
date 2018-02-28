@@ -112,7 +112,7 @@ BTQuickTeleportAction.anim_cb_teleport_start_finished = function (self, unit, bl
 
 	local target_unit = blackboard.target_unit
 
-	if blackboard.face_player_when_teleporting and target_unit then
+	if blackboard.face_player_when_teleporting and Unit.alive(target_unit) then
 		local target_pos = POSITION_LOOKUP[target_unit]
 		local look_at_direction_flat = Vector3.flat(target_pos - teleport_position)
 		local unit_to_target_rot = Quaternion.look(look_at_direction_flat, Vector3.up())

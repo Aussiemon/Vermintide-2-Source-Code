@@ -1,7 +1,7 @@
 UISettings = {
-	tooltip_wait_duration = 0.2,
+	tooltip_wait_duration = 0.1,
 	start_drag_threshold = 0.15,
-	tooltip_fade_in_speed = 2,
+	tooltip_fade_in_speed = 4,
 	double_click_threshold = 0.1,
 	max_craft_material_presentation_amount = 999,
 	chest_upgrade_score_topics_min_duration = 0.5,
@@ -224,8 +224,8 @@ UISettings = {
 		scrollbar_background_alpha = 80,
 		scrollbar_stroke_alpha = 80,
 		scrollbar_background_stroke_alpha = 80,
-		tab_notification_alpha_2 = 255,
-		tab_notification_alpha_1 = 120,
+		tab_notification_alpha_2 = 120,
+		tab_notification_alpha_1 = 0,
 		window_background_alpha = 255,
 		chat_close_delay = 6,
 		scrollbar_alpha = 160,
@@ -312,6 +312,298 @@ UISettings = {
 			display_name = "end_screen_chest_view_random_bonus"
 		}
 	},
+	default_items = {
+		es_1h_sword = {
+			inventory_icon = "icon_wpn_emp_sword_02_t1",
+			description = "description_default_empire_soldier_es_1h_sword",
+			display_name = "display_name_default_empire_soldier_es_1h_sword"
+		},
+		es_1h_mace = {
+			inventory_icon = "icon_wpn_emp_mace_02_t1",
+			description = "description_default_empire_soldier_es_1h_mace",
+			display_name = "display_name_default_empire_soldier_es_1h_mace"
+		},
+		es_2h_sword_executioner = {
+			inventory_icon = "icon_wpn_emp_sword_exe_01_t1",
+			description = "description_default_empire_soldier_es_exe_sword",
+			display_name = "display_name_default_empire_soldier_es_exe_sword"
+		},
+		es_2h_sword = {
+			inventory_icon = "icon_wpn_empire_2h_sword_01_t1",
+			description = "description_default_empire_soldier_es_2h_sword",
+			display_name = "display_name_default_empire_soldier_es_2h_sword"
+		},
+		es_2h_hammer = {
+			inventory_icon = "icon_wpn_empire_2h_hammer_01_t1",
+			description = "description_default_empire_soldier_es_2h_war_hammer",
+			display_name = "display_name_default_empire_soldier_es_2h_war_hammer"
+		},
+		es_sword_shield = {
+			inventory_icon = "icon_wpn_empire_shield_01_t1_sword",
+			description = "description_default_empire_soldier_es_1h_sword_shield",
+			display_name = "display_name_default_empire_soldier_es_1h_sword_shield"
+		},
+		es_mace_shield = {
+			inventory_icon = "icon_wpn_empire_shield_01_t1_mace",
+			description = "description_default_empire_soldier_es_1h_mace_shield",
+			display_name = "display_name_default_empire_soldier_es_1h_mace_shield"
+		},
+		es_1h_flail = {
+			inventory_icon = "icon_wpn_emp_flail_01_t1",
+			description = "description_default_empire_soldier_es_flail",
+			display_name = "display_name_default_empire_soldier_es_flail"
+		},
+		es_halberd = {
+			inventory_icon = "icon_wpn_wh_halberd_01",
+			description = "description_default_empire_soldier_es_halberd",
+			display_name = "display_name_default_empire_soldier_es_halberd"
+		},
+		es_longbow = {
+			inventory_icon = "icon_wpn_empire_bow_tutorial",
+			description = "description_default_empire_soldier_es_longbow",
+			display_name = "display_name_default_empire_soldier_es_longbow"
+		},
+		es_blunderbuss = {
+			inventory_icon = "icon_wpn_empire_blunderbuss_02_t1",
+			description = "description_default_empire_soldier_es_blunderbuss",
+			display_name = "display_name_default_empire_soldier_es_blunderbuss"
+		},
+		es_handgun = {
+			inventory_icon = "icon_wpn_empire_handgun_02_t1",
+			description = "description_default_empire_soldier_es_handgun",
+			display_name = "display_name_default_empire_soldier_es_handgun"
+		},
+		es_repeating_handgun = {
+			inventory_icon = "icon_wpn_emp_handgun_repeater_t1",
+			description = "description_default_empire_soldier_es_repeating_handgun",
+			display_name = "display_name_default_empire_soldier_es_repeating_handgun"
+		},
+		we_spear = {
+			inventory_icon = "icon_wpn_we_spear_01",
+			description = "description_default_wood_elf_ww_spear",
+			display_name = "display_name_default_wood_elf_ww_spear"
+		},
+		we_dual_wield_daggers = {
+			inventory_icon = "icon_wpn_we_dagger_01_t1_dual",
+			description = "description_default_wood_elf_ww_dual_daggers",
+			display_name = "display_name_default_wood_elf_ww_dual_daggers"
+		},
+		we_dual_wield_swords = {
+			inventory_icon = "icon_wpn_we_sword_01_t1_dual",
+			description = "description_default_wood_elf_ww_dual_swords",
+			display_name = "display_name_default_wood_elf_ww_dual_swords"
+		},
+		we_1h_sword = {
+			inventory_icon = "icon_wpn_we_sword_01_t1",
+			description = "description_default_wood_elf_ww_1h_sword",
+			display_name = "display_name_default_wood_elf_ww_1h_sword"
+		},
+		we_dual_wield_sword_dagger = {
+			inventory_icon = "icon_wpn_we_sword_01_t1_dagger_dual",
+			description = "description_default_wood_elf_ww_sword_and_dagger",
+			display_name = "display_name_default_wood_elf_ww_sword_and_dagger"
+		},
+		we_shortbow = {
+			inventory_icon = "icon_wpn_we_bow_short_01",
+			description = "description_default_wood_elf_ww_shortbow",
+			display_name = "display_name_default_wood_elf_ww_shortbow"
+		},
+		we_shortbow_hagbane = {
+			inventory_icon = "icon_wpn_we_bow_short_01",
+			description = "description_default_wood_elf_ww_hagbane",
+			display_name = "display_name_default_wood_elf_ww_hagbane"
+		},
+		we_longbow = {
+			inventory_icon = "icon_wpn_we_bow_01_t1",
+			description = "description_default_wood_elf_ww_longbow",
+			display_name = "display_name_default_wood_elf_ww_longbow"
+		},
+		we_longbow_trueflight = {
+			inventory_icon = "icon_wpn_we_bow_01_t1",
+			description = "description_default_wood_elf_ww_trueflight",
+			display_name = "display_name_default_wood_elf_ww_trueflight"
+		},
+		we_2h_axe = {
+			inventory_icon = "icon_wpn_we_2h_axe_01_t1",
+			description = "description_default_wood_elf_ww_2h_axe",
+			display_name = "display_name_default_wood_elf_ww_2h_axe"
+		},
+		we_2h_sword = {
+			inventory_icon = "icon_wpn_we_2h_sword_01_t1",
+			description = "description_default_wood_elf_ww_2h_sword",
+			display_name = "display_name_default_wood_elf_ww_2h_sword"
+		},
+		we_crossbow_repeater = {
+			inventory_icon = "icon_wpn_we_repeater_crossbow_t1",
+			description = "description_default_wood_elf_repeating_crossbow",
+			display_name = "display_name_default_wood_elf_repeating_crossbow"
+		},
+		bw_1h_mace = {
+			inventory_icon = "icon_wpn_brw_mace_01",
+			description = "description_default_bright_wizard_bw_morningstar",
+			display_name = "display_name_default_bright_wizard_bw_morningstar"
+		},
+		bw_flame_sword = {
+			inventory_icon = "icon_wpn_brw_flaming_sword_01_t1",
+			description = "description_default_bright_wizard_bw_flame_sword",
+			display_name = "display_name_default_bright_wizard_bw_flame_sword"
+		},
+		bw_sword = {
+			inventory_icon = "icon_wpn_brw_sword_01_t1",
+			description = "description_default_bright_wizard_bw_1h_sword",
+			display_name = "display_name_default_bright_wizard_bw_1h_sword"
+		},
+		bw_dagger = {
+			inventory_icon = "icon_wpn_brw_dagger_01",
+			description = "description_default_bright_wizard_bw_dagger",
+			display_name = "display_name_default_bright_wizard_bw_dagger"
+		},
+		bw_skullstaff_fireball = {
+			inventory_icon = "icon_wpn_brw_staff_02",
+			description = "description_default_bright_wizard_bw_staff_firball",
+			display_name = "display_name_default_bright_wizard_bw_staff_firball"
+		},
+		bw_skullstaff_beam = {
+			inventory_icon = "icon_wpn_brw_beam_staff_01",
+			description = "description_default_bright_wizard_bw_staff_beam",
+			display_name = "display_name_default_bright_wizard_bw_staff_beam"
+		},
+		bw_skullstaff_geiser = {
+			inventory_icon = "icon_wpn_brw_staff_03",
+			description = "description_default_bright_wizard_bw_staff_geiser",
+			display_name = "display_name_default_bright_wizard_bw_staff_geiser"
+		},
+		bw_skullstaff_spear = {
+			inventory_icon = "icon_wpn_brw_spear_staff_01",
+			description = "description_default_bright_wizard_bw_staff_spear",
+			display_name = "display_name_default_bright_wizard_bw_staff_spear"
+		},
+		bw_skullstaff_flamethrower = {
+			inventory_icon = "icon_wpn_brw_flame_staff_01",
+			description = "description_default_bright_wizard_bw_staff_flamethrower",
+			display_name = "display_name_default_bright_wizard_bw_staff_flamethrower"
+		},
+		dr_1h_axe = {
+			inventory_icon = "icon_wpn_dw_axe_01_t1",
+			description = "description_default_dwarf_ranger_dr_1h_axes",
+			display_name = "display_name_default_dwarf_ranger_dr_1h_axes"
+		},
+		dr_dual_wield_axes = {
+			inventory_icon = "icon_wpn_dw_axe_01_t1_dual",
+			description = "description_default_dwarf_ranger_dr_dual_axes",
+			display_name = "display_name_default_dwarf_ranger_dr_dual_axes"
+		},
+		dr_2h_axe = {
+			inventory_icon = "icon_wpn_dw_2h_axe_01_t1",
+			description = "description_default_dwarf_ranger_dr_2h_axes",
+			display_name = "display_name_default_dwarf_ranger_dr_2h_axes"
+		},
+		dr_2h_hammer = {
+			inventory_icon = "icon_wpn_dw_2h_hammer_01_t1",
+			description = "description_default_dwarf_ranger_dr_2h_hammer",
+			display_name = "display_name_default_dwarf_ranger_dr_2h_hammer"
+		},
+		dr_1h_hammer = {
+			inventory_icon = "icon_wpn_dw_hammer_01_t1",
+			description = "description_default_dwarf_ranger_dr_1h_hammer",
+			display_name = "display_name_default_dwarf_ranger_dr_1h_hammer"
+		},
+		dr_shield_axe = {
+			inventory_icon = "icon_wpn_dw_shield_01_axe",
+			description = "description_default_dwarf_ranger_dr_1h_axe_shield",
+			display_name = "display_name_default_dwarf_ranger_dr_1h_axe_shield"
+		},
+		dr_shield_hammer = {
+			inventory_icon = "icon_wpn_dw_shield_01_hammer",
+			description = "description_default_dwarf_ranger_dr_1h_hammer_shield",
+			display_name = "display_name_default_dwarf_ranger_dr_1h_hammer_shield"
+		},
+		dr_crossbow = {
+			inventory_icon = "icon_wpn_dw_xbox_01_t1",
+			description = "description_default_dwarf_ranger_dr_crossbow",
+			display_name = "display_name_default_dwarf_ranger_dr_crossbow"
+		},
+		dr_rakegun = {
+			inventory_icon = "icon_wpn_dw_rakegun_t1",
+			description = "description_default_dwarf_ranger_dr_grudgeraker",
+			display_name = "display_name_default_dwarf_ranger_dr_grudgeraker"
+		},
+		dr_handgun = {
+			inventory_icon = "icon_wpn_dw_handgun_01_t1",
+			description = "description_default_dwarf_ranger_dr_handgun",
+			display_name = "display_name_default_dwarf_ranger_dr_handgun"
+		},
+		dr_drakegun = {
+			inventory_icon = "icon_wpn_dw_iron_drake_02",
+			description = "description_default_dwarf_ranger_dr_drakegun",
+			display_name = "display_name_default_dwarf_ranger_dr_drakegun"
+		},
+		dr_drake_pistol = {
+			inventory_icon = "icon_wpn_dw_drake_pistol_01_t1",
+			description = "description_default_dwarf_ranger_dr_drakefire_pistols",
+			display_name = "display_name_default_dwarf_ranger_dr_drakefire_pistols"
+		},
+		dr_2h_pick = {
+			inventory_icon = "icon_wpn_dw_pick_01_t1",
+			description = "description_default_dwarf_ranger_dr_2h_picks",
+			display_name = "display_name_default_dwarf_ranger_dr_2h_picks"
+		},
+		wh_1h_axe = {
+			inventory_icon = "icon_wpn_axe_02_t1",
+			description = "description_default_witch_hunter_wh_1h_axes",
+			display_name = "display_name_default_witch_hunter_wh_1h_axes"
+		},
+		wh_2h_sword = {
+			inventory_icon = "icon_wpn_empire_2h_sword_02_t1",
+			description = "description_default_witch_hunter_wh_2h_sword",
+			display_name = "display_name_default_witch_hunter_wh_2h_sword"
+		},
+		wh_fencing_sword = {
+			inventory_icon = "icon_wpn_fencingsword_01_t1",
+			description = "description_default_witch_hunter_wh_fencing_sword",
+			display_name = "display_name_default_witch_hunter_wh_fencing_sword"
+		},
+		wh_brace_of_pistols = {
+			inventory_icon = "icon_wpn_emp_pistol_01_t1",
+			description = "description_default_witch_hunter_wh_brace_of_pisols",
+			display_name = "display_name_default_witch_hunter_wh_brace_of_pisols"
+		},
+		wh_repeating_pistols = {
+			inventory_icon = "icon_wpn_empire_pistol_repeater_t1",
+			description = "description_default_witch_hunter_wh_repeating_pistol",
+			display_name = "display_name_default_witch_hunter_wh_repeating_pistol"
+		},
+		wh_crossbow = {
+			inventory_icon = "icon_wpn_emp_crossbow_02_t1",
+			description = "description_default_witch_hunter_wh_crossbow",
+			display_name = "display_name_default_witch_hunter_wh_crossbow"
+		},
+		wh_crossbow_repeater = {
+			inventory_icon = "icon_wpn_wh_repeater_crossbow_t1",
+			description = "description_default_witch_hunter_wh_repeating_crossbow",
+			display_name = "display_name_default_witch_hunter_wh_repeating_crossbow"
+		},
+		wh_1h_falchion = {
+			inventory_icon = "icon_wpn_emp_sword_04_t1",
+			description = "description_default_witch_hunter_wh_1h_falchions",
+			display_name = "display_name_default_witch_hunter_wh_1h_falchions"
+		},
+		ring = {
+			inventory_icon = "icon_charm_01",
+			description = "description_default_ring",
+			display_name = "display_name_default_ring"
+		},
+		necklace = {
+			inventory_icon = "icon_necklace_default_01",
+			description = "description_default_necklace",
+			display_name = "display_name_default_necklace"
+		},
+		trinket = {
+			inventory_icon = "icon_trinket_01",
+			description = "description_default_trinket",
+			display_name = "display_name_default_trinket"
+		}
+	},
 	hero_icons = {
 		small = {
 			witch_hunter = "tabs_class_icon_witch_hunter_normal",
@@ -353,13 +645,13 @@ UISettings = {
 		elite = "loot_container_icon_03"
 	},
 	item_rarity_textures = {
-		common = "rarity_color_green",
-		promo = "rarity_color_purple",
-		exotic = "rarity_color_orange",
-		default = "rarity_color_white",
-		plentiful = "rarity_color_white",
-		rare = "rarity_color_blue",
-		unique = "rarity_color_red"
+		common = "icon_bg_common",
+		promo = "icon_bg_promo",
+		exotic = "icon_bg_exotic",
+		default = "icon_bg_default",
+		plentiful = "icon_bg_plentiful",
+		rare = "icon_bg_rare",
+		unique = "icon_bg_unique"
 	},
 	item_rarity_order = {
 		common = 5,
@@ -538,6 +830,20 @@ local button_mapping = {
 			}
 		},
 		right_stick = {
+			texture = "xbone_button_icon_right_stick",
+			size = {
+				32,
+				33
+			}
+		},
+		left = {
+			texture = "xbone_button_icon_left_stick",
+			size = {
+				32,
+				33
+			}
+		},
+		right = {
 			texture = "xbone_button_icon_right_stick",
 			size = {
 				32,
@@ -877,6 +1183,20 @@ local button_mapping = {
 				33
 			}
 		},
+		left = {
+			texture = "ps4_button_icon_left_stick",
+			size = {
+				32,
+				33
+			}
+		},
+		right = {
+			texture = "ps4_button_icon_right_stick",
+			size = {
+				32,
+				33
+			}
+		},
 		start = {
 			texture = "ps4_button_icon_options",
 			size = {
@@ -925,14 +1245,22 @@ UISettings.get_gamepad_input_texture_data = function (input_service, input_actio
 	local key_index = keymap_binding[2]
 	local key_action_type = keymap_binding[3]
 
-	if key_index ~= UNASSIGNED_KEY then
+	if key_index and key_index ~= UNASSIGNED_KEY then
 		if device_type == "keyboard" then
 			button_name = Keyboard.button_locale_name(key_index)
 		elseif device_type == "mouse" then
 			button_name = Mouse.button_name(key_index)
 		elseif device_type == "gamepad" then
-			button_name = Pad1.button_name(key_index)
+			if key_action_type == "axis" then
+				button_name = Pad1.axis_name(key_index)
+			else
+				button_name = Pad1.button_name(key_index)
+			end
 		end
+	end
+
+	if not button_name then
+		error("UISettings - get_gamepad_input_texture_data: Button name is nil")
 	end
 
 	button_texture_data = ButtonTextureByName(button_name, platform)

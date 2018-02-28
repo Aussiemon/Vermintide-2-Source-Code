@@ -51,12 +51,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.3,
 					blocker = true,
 					end_time = 1,
@@ -115,12 +109,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.3,
 					blocker = true,
 					end_time = 1,
@@ -173,12 +161,6 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				},
 				{
 					start_time = 0.3,
@@ -253,12 +235,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -324,12 +300,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -395,12 +365,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -447,9 +411,17 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default_right",
+					start_time = 0.5,
+					action = "action_one",
+					release_required = "action_one_hold",
+					end_time = 1.2,
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
 					start_time = 0.55,
 					action = "action_one",
-					input = "action_one"
+					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
@@ -462,14 +434,11 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
+			enter_function = function (attacker_unit, input_extension)
+				return input_extension.reset_release_input(input_extension)
+			end,
 			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_right = {
@@ -513,6 +482,14 @@ weapon_template.actions = {
 					sub_action = "default_left",
 					start_time = 0.5,
 					action = "action_one",
+					release_required = "action_one_hold",
+					end_time = 1.2,
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.5,
+					action = "action_one",
 					input = "action_one"
 				},
 				{
@@ -526,14 +503,11 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
+			enter_function = function (attacker_unit, input_extension)
+				return input_extension.reset_release_input(input_extension)
+			end,
 			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_last = {
@@ -542,12 +516,12 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			additional_critical_strike_chance = 0,
-			use_target = false,
 			width_mod = 25,
+			use_target = false,
 			damage_profile = "light_slashing_smiter_stab",
 			aim_assist_max_ramp_multiplier = 0.8,
-			aim_assist_ramp_decay_delay = 0.1,
 			hit_effect = "melee_hit_sword_1h",
+			aim_assist_ramp_decay_delay = 0.1,
 			reset_aim_on_attack = true,
 			damage_window_end = 0.5,
 			impact_sound_event = "stab_hit",
@@ -588,6 +562,14 @@ weapon_template.actions = {
 					sub_action = "default",
 					start_time = 0.65,
 					action = "action_one",
+					release_required = "action_one_hold",
+					end_time = 1.2,
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.65,
+					action = "action_one",
 					input = "action_one"
 				},
 				{
@@ -601,14 +583,11 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
-			}
+			},
+			enter_function = function (attacker_unit, input_extension)
+				return input_extension.reset_release_input(input_extension)
+			end
 		},
 		light_attack_bopp = {
 			damage_window_start = 0.38,
@@ -665,14 +644,11 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
+			enter_function = function (attacker_unit, input_extension)
+				return input_extension.reset_release_input(input_extension)
+			end,
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
 			end,
@@ -747,12 +723,6 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			push_radius = push_radius,
@@ -809,19 +779,12 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -874,9 +837,9 @@ weapon_template.aim_assist_settings = {
 	}
 }
 weapon_template.tooltip_keywords = {
-	"keyword_1",
-	"keyword_2",
-	"keyword_3"
+	"weapon_keyword_fast_attacks",
+	"weapon_keyword_wide_sweeps",
+	"weapon_keyword_versatile"
 }
 weapon_template.compare_statistics = {
 	attacks = {

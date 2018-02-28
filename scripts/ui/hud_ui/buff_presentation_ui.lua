@@ -212,7 +212,6 @@ BuffPresentationUI._next_buff = function (self, dt)
 
 			self._set_buff_to_present(self, current_buff)
 			self._start_animation(self, "presentation", "presentation")
-			WwiseWorld.trigger_event(self.wwise_world, "hud_area_indicator")
 		end
 	end
 

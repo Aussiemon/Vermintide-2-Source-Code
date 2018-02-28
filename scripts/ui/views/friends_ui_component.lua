@@ -2,7 +2,7 @@ local definitions = local_require("scripts/ui/views/friends_ui_component_definit
 local DO_RELOAD = true
 FriendsUIComponent = class(FriendsUIComponent)
 FriendsUIComponent.init = function (self, ingame_ui_context)
-	self._ui_renderer = ingame_ui_context.ui_renderer
+	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._render_settings = {
 		snap_pixel_positions = true
 	}
@@ -33,19 +33,15 @@ FriendsUIComponent._create_ui_elements = function (self)
 
 	return 
 end
-FriendsUIComponent._toggle_active = function (self)
-	if self._active then
-		self.deactivate_friends_ui(self)
-	else
-		self.activate_friends_ui(self)
-	end
-
-	return 
+FriendsUIComponent.is_active = function (self)
+	return self._active
 end
 FriendsUIComponent.activate_friends_ui = function (self)
 	self._active = true
 
 	self._refresh_friends_list(self)
+
+	self._widgets_by_name.hotspot_area.content.disregard_exit = nil
 
 	return 
 end
@@ -55,15 +51,28 @@ FriendsUIComponent.deactivate_friends_ui = function (self)
 	return 
 end
 FriendsUIComponent._refresh_friends_list = function (self)
+	local empty_list = {}
+	local widgets_by_name = self._widgets_by_name
+
+	self._populate_tab(self, widgets_by_name.online_tab, empty_list)
+	self._populate_tab(self, widgets_by_name.offline_tab, empty_list)
+
 	local friend_list_limit = definitions.scenegraph_info.friend_list_limit
 
 	Managers.account:get_friends(friend_list_limit, callback(self, "cb_refresh_friends_done"))
 
 	return 
 end
+FriendsUIComponent.join_lobby_data = function (self)
+	local join_lobby_data = self._join_lobby_data
+	self._join_lobby_data = nil
+
+	return join_lobby_data
+end
 local EMPTY_TABLE = {}
 FriendsUIComponent.cb_refresh_friends_done = function (self, friend_list)
 	friend_list = friend_list or EMPTY_TABLE
+	local playing_friends = {}
 	local online_friends = {}
 	local offline_friends = {}
 
@@ -72,14 +81,29 @@ FriendsUIComponent.cb_refresh_friends_done = function (self, friend_list)
 
 		if friend.status == "offline" then
 			offline_friends[#offline_friends + 1] = friend
+		elseif friend.playing_this_game then
+			playing_friends[#playing_friends + 1] = friend
 		else
 			online_friends[#online_friends + 1] = friend
 		end
 	end
 
+	local function sort(a, b)
+		return a.name < b.name
+	end
+
+	table.sort(playing_friends, sort)
+	table.sort(online_friends, sort)
+	table.sort(offline_friends, sort)
+
+	for i = 1, #online_friends, 1 do
+		local friend = online_friends[i]
+		playing_friends[#playing_friends + 1] = friend
+	end
+
 	local widgets_by_name = self._widgets_by_name
 
-	self._populate_tab(self, widgets_by_name.online_tab, online_friends, true)
+	self._populate_tab(self, widgets_by_name.online_tab, playing_friends, true)
 	self._populate_tab(self, widgets_by_name.offline_tab, offline_friends, false)
 
 	return 
@@ -93,7 +117,7 @@ FriendsUIComponent._button_pressed = function (self, hotspot_content)
 
 	return false
 end
-FriendsUIComponent.update = function (self, input_service, dt)
+FriendsUIComponent.update = function (self, dt, input_service)
 	if DO_RELOAD then
 		DO_RELOAD = false
 
@@ -101,6 +125,7 @@ FriendsUIComponent.update = function (self, input_service, dt)
 	end
 
 	self._update_invite_cooldown(self, dt)
+	self._update_animations(self, dt)
 	self._handle_input(self, input_service, dt)
 	self._update_active_tab(self, input_service, dt)
 	self._draw(self, input_service, dt)
@@ -122,27 +147,78 @@ FriendsUIComponent._update_invite_cooldown = function (self, dt)
 
 	return 
 end
+FriendsUIComponent._update_animations = function (self, dt)
+	self._update_refresh_animations(self, dt)
+
+	return 
+end
+FriendsUIComponent._update_refresh_animations = function (self, dt)
+	local refresh_button = self._widgets_by_name.refresh_button
+	local content = refresh_button.content
+
+	if content.animate then
+		local start = 0
+		local target = math.pi
+		local speed = 20
+		local rotate_progress = content.rotate_progress or start
+		rotate_progress = math.min(rotate_progress + dt*speed, target)
+
+		if rotate_progress == target then
+			rotate_progress = start
+			content.animate = false
+		end
+
+		content.rotate_progress = rotate_progress
+		local style = refresh_button.style
+		style.button_texture.angle = rotate_progress
+		style.button_texture_hover.angle = rotate_progress
+	end
+
+	return 
+end
 FriendsUIComponent._handle_input = function (self, input_service, dt)
 	local widgets_by_name = self._widgets_by_name
+	local active = self._active
 
 	if self._button_pressed(self, self._friends_button_widget.content.button_hotspot) then
-		self._toggle_active(self)
+		if active then
+			self.deactivate_friends_ui(self)
+		else
+			self.activate_friends_ui(self)
+		end
 	end
 
-	if self._button_pressed(self, widgets_by_name.exit_button.content) then
-		self.deactivate_friends_ui(self)
-	end
+	if active then
+		local hotspot_area_content = widgets_by_name.hotspot_area.content
 
-	if self._button_pressed(self, widgets_by_name.refresh_button.content) then
-		self._refresh_friends_list(self)
-	end
+		if input_service.get(input_service, "left_press") and (hotspot_area_content.is_hover or self._friends_button_widget.content.button_hotspot.is_hover) then
+			hotspot_area_content.disregard_exit = true
+		end
 
-	if self._button_pressed(self, widgets_by_name.online_tab.content.button_hotspot) then
-		self._tab_pressed(self, widgets_by_name.online_tab)
-	end
+		if input_service.get(input_service, "left_release") then
+			if hotspot_area_content.disregard_exit or hotspot_area_content.is_hover or self._friends_button_widget.content.button_hotspot.is_hover then
+				hotspot_area_content.disregard_exit = nil
+			else
+				self.deactivate_friends_ui(self)
+			end
+		end
 
-	if self._button_pressed(self, widgets_by_name.offline_tab.content.button_hotspot) then
-		self._tab_pressed(self, widgets_by_name.offline_tab)
+		if self._button_pressed(self, widgets_by_name.exit_button.content) then
+			self.deactivate_friends_ui(self)
+		end
+
+		if self._button_pressed(self, widgets_by_name.refresh_button.content) then
+			self._animate_refresh_button(self, widgets_by_name.refresh_button)
+			self._refresh_friends_list(self)
+		end
+
+		if self._button_pressed(self, widgets_by_name.online_tab.content.button_hotspot) then
+			self._tab_pressed(self, widgets_by_name.online_tab)
+		end
+
+		if self._button_pressed(self, widgets_by_name.offline_tab.content.button_hotspot) then
+			self._tab_pressed(self, widgets_by_name.offline_tab)
+		end
 	end
 
 	return 
@@ -166,6 +242,11 @@ FriendsUIComponent._update_active_tab = function (self, input_service, dt)
 
 	self._update_list(self, active_tab)
 	self._handle_list_input(self, active_tab)
+
+	return 
+end
+FriendsUIComponent._animate_refresh_button = function (self, widget)
+	widget.content.animate = true
 
 	return 
 end
@@ -198,6 +279,7 @@ FriendsUIComponent._update_list = function (self, active_tab)
 		content.visible = visible
 		content.invite_button.visible = visible
 		content.profile_button.visible = visible
+		content.invite_button.visible = visible
 	end
 
 	return 
@@ -217,12 +299,16 @@ FriendsUIComponent._handle_list_input = function (self, active_tab)
 		if self._button_pressed(self, content.profile_button) then
 			self._open_player_profile(self, content)
 		end
+
+		if self._button_pressed(self, content.join_button) then
+			self._join_player(self, content)
+		end
 	end
 
 	return 
 end
 FriendsUIComponent._draw = function (self, input_service, dt)
-	local ui_renderer = self._ui_renderer
+	local ui_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self._render_settings)
@@ -264,7 +350,7 @@ FriendsUIComponent._activate_tab = function (self, widget)
 	widget.content.active = true
 	widget.content.list_content.active = true
 	local drop_down_arrow = widget.style.drop_down_arrow
-	drop_down_arrow.angle = 0
+	drop_down_arrow.angle = math.pi
 	local tabs_size = definitions.scenegraph_info.tabs_size
 	widget.style.hotspot.offset[2] = tabs_active_size[2] - tabs_size[2]
 
@@ -289,7 +375,7 @@ FriendsUIComponent._deactivate_active_tab = function (self)
 	widget.content.list_content.active = false
 	widget.content.scrollbar.active = false
 	local drop_down_arrow = widget.style.drop_down_arrow
-	drop_down_arrow.angle = math.pi*1.5
+	drop_down_arrow.angle = 0
 	widget.style.hotspot.offset[2] = 0
 
 	return 
@@ -299,21 +385,41 @@ FriendsUIComponent._populate_tab = function (self, widget, list, allow_invite)
 	local style = widget.style.list_style
 	local list_content = content.list_content
 	local item_styles = style.item_styles
-
-	local function sort(a, b)
-		return a.name < b.name
-	end
-
-	table.sort(list, sort)
-
+	local allowed_to_initiate_join_lobby = Managers.matchmaking:allowed_to_initiate_join_lobby()
 	local num_friends = #list
 
 	for i = 1, num_friends, 1 do
 		local friend = list[i]
 		local content = list_content[i]
-		content.name = UIRenderer.crop_text_width(self._ui_renderer, friend.name, 200, item_styles[i].name)
+		content.name = UIRenderer.crop_text_width(self._ui_top_renderer, friend.name, 200, item_styles[i].name)
 		content.id = friend.id
+		local can_join = false
+		local playing_this_game = friend.playing_this_game
+
+		if allowed_to_initiate_join_lobby and playing_this_game then
+			local playing_game = friend.playing_game
+
+			if playing_game.lobby then
+				can_join = true
+			end
+		end
+
 		content.invite_button.allow_invite = allow_invite
+		content.join_button.allow_join = can_join
+
+		if can_join then
+			content.playing_game_info = friend.playing_game
+		end
+
+		local style = item_styles[i]
+
+		if playing_this_game then
+			style.name.text_color = Colors.get_color_table_with_alpha("online_green", 255)
+		elseif friend.status ~= "offline" then
+			style.name.text_color = Colors.get_color_table_with_alpha("white", 255)
+		else
+			style.name.text_color = Colors.get_color_table_with_alpha("font_default", 255)
+		end
 	end
 
 	content.real_text = string.format("%s (%s)", content.text, tostring(num_friends))
@@ -391,6 +497,18 @@ FriendsUIComponent._open_player_profile = function (self, content)
 	local id = content.id
 
 	Managers.account:show_player_profile(id)
+
+	return 
+end
+FriendsUIComponent._join_player = function (self, content)
+	local playing_game_info = content.playing_game_info
+	local lobby_id = playing_game_info.lobby
+
+	if lobby_id then
+		local lobby_data = LobbyInternal.get_lobby_data_from_id(lobby_id)
+		lobby_data.id = lobby_id
+		self._join_lobby_data = lobby_data
+	end
 
 	return 
 end

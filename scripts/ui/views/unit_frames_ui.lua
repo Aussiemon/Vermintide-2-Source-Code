@@ -407,7 +407,7 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 
 				if player_unit then
 					local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-					local num_grimoires = buff_extension.num_buff_type(buff_extension, "grimoire_health_debuff")
+					local num_grimoires = buff_extension.num_buff_perk(buff_extension, "grimoire")
 					local multiplier = buff_extension.apply_buffs_to_value(buff_extension, PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
 					active_percentage = num_grimoires*multiplier + 1
 				end
@@ -626,7 +626,7 @@ UnitFramesUI.update_player_unit_frame = function (self, dt, t, ui_scenegraph, ui
 		needs_help = status_extension.is_pounced_down(status_extension) or status_extension.get_is_ledge_hanging(status_extension) or status_extension.is_grabbed_by_pack_master(status_extension) or is_ready_for_assisted_respawn or status_extension.is_hanging_from_hook(status_extension)
 		level = ExperienceSettings.get_player_level(my_player) or ""
 		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-		local num_grimoires = buff_extension.num_buff_type(buff_extension, "grimoire_health_debuff")
+		local num_grimoires = buff_extension.num_buff_perk(buff_extension, "grimoire")
 		local multiplier = buff_extension.apply_buffs_to_value(buff_extension, PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
 		active_percentage = num_grimoires*multiplier + 1
 	else

@@ -1002,6 +1002,10 @@ Missions.catacombs_disrupt_ritual = {
 	mission_template_name = "goal",
 	text = "mission_catacombs_disrupt_ritual"
 }
+Missions.catacombs_stay_inside_circle = {
+	mission_template_name = "goal",
+	text = "mission_catacombs_stay_inside_circle"
+}
 Missions.catacombs_escape = {
 	mission_template_name = "goal",
 	text = "mission_catacombs_escape"
@@ -1061,7 +1065,11 @@ Missions.fort_reach_fort = {
 }
 Missions.fort_reach_inner_courtyard = {
 	mission_template_name = "goal",
-	text = "mission_fort_reach_courtyard"
+	text = "mission_fort_reach_inner_courtyard"
+}
+Missions.fort_reach_outer_courtyard = {
+	mission_template_name = "goal",
+	text = "mission_fort_reach_outer_courtyard"
 }
 Missions.fort_reach_gate = {
 	mission_template_name = "goal",
@@ -1075,9 +1083,25 @@ Missions.fort_defend_the_gate = {
 	mission_template_name = "goal",
 	text = "mission_fort_defend_the_gate"
 }
-Missions.fort_destroy_catapult = {
+Missions.fort_use_cannon_01 = {
 	mission_template_name = "goal",
-	text = "mission_fort_destroy_catapult"
+	text = "mission_fort_use_cannon_01"
+}
+Missions.fort_use_cannon_02 = {
+	mission_template_name = "goal",
+	text = "mission_fort_use_cannon_02"
+}
+Missions.fort_use_cannon_03 = {
+	mission_template_name = "goal",
+	text = "mission_fort_use_cannon_03"
+}
+Missions.fort_use_cannon_04 = {
+	mission_template_name = "goal",
+	text = "mission_fort_use_cannon_04"
+}
+Missions.fort_load_cannon = {
+	mission_template_name = "goal",
+	text = "mission_fort_load_cannon"
 }
 Missions.fort_rescue_prisoners = {
 	mission_template_name = "goal",
@@ -1120,6 +1144,25 @@ Missions.farmlands_free_the_prisoners_and_clear_the_area = {
 	text = "mission_farmlands_free_the_prisoners_and_clear_the_area",
 	mission_template_name = "collect",
 	collect_amount = 3
+}
+Missions.farmlands_free_prisoners_01 = {
+	mission_template_name = "goal",
+	text = "mission_farmlands_free_prisoners_01"
+}
+Missions.farmlands_free_prisoners_02 = {
+	text = "mission_farmlands_free_prisoners_02",
+	mission_template_name = "collect",
+	collect_amount = 4
+}
+Missions.farmlands_free_prisoners_03 = {
+	text = "mission_farmlands_free_prisoners_03",
+	mission_template_name = "collect",
+	collect_amount = 2
+}
+Missions.farmlands_free_prisoners_04 = {
+	text = "mission_farmlands_free_prisoners_04",
+	mission_template_name = "collect",
+	collect_amount = 4
 }
 Missions.farmlands_escape = {
 	mission_template_name = "goal",
@@ -1307,9 +1350,10 @@ Missions.skittergate_turn_on_gate = {
 	mission_template_name = "goal",
 	text = "mission_skittergate_turn_on_gate"
 }
-Missions.skittergate_destroy_cooling = {
-	mission_template_name = "goal",
-	text = "mission_skittergate_destroy_cooling"
+Missions.skittergate_destroy_generators = {
+	text = "mission_skittergate_destroy_generators",
+	mission_template_name = "collect",
+	collect_amount = 3
 }
 Missions.skittergate_hurry_through_gate = {
 	mission_template_name = "goal",
@@ -1369,7 +1413,7 @@ Missions.bell_reach_bell = {
 }
 Missions.bell_destroy_bell = {
 	mission_template_name = "goal",
-	text = "mission_bell_destroy_bell"
+	text = "mission_bell_chop_down_bell"
 }
 Missions.bell_escape_to_portal = {
 	mission_template_name = "goal",
@@ -1412,7 +1456,7 @@ Missions.prologue_movement = {
 		{
 			suffix = "",
 			prefix = "",
-			action = "move_forward"
+			action = "move_controller"
 		}
 	}
 }
@@ -1480,7 +1524,19 @@ Missions.prologue_dodge = {
 		},
 		{
 			suffix = "",
-			prefix = "tutorial_tooltip_and",
+			prefix = "",
+			action = "dodge_hold"
+		}
+	},
+	tooltip_gamepad_inputs = {
+		{
+			suffix = "+",
+			prefix = "input_hold",
+			action = "move_controller"
+		},
+		{
+			suffix = "",
+			prefix = "",
 			action = "dodge_hold"
 		}
 	}
@@ -1492,6 +1548,13 @@ Missions.prologue_heavy_attack = {
 	dont_show_mission_end_tooltip = true,
 	tooltip_text = "tutorial_tooltip_heavy_attack",
 	tooltip_inputs = {
+		{
+			suffix = "",
+			prefix = "input_hold",
+			action = "action_one_hold"
+		}
+	},
+	tooltip_gamepad_inputs = {
 		{
 			suffix = "",
 			prefix = "input_hold",
@@ -1513,7 +1576,19 @@ Missions.prologue_use_special_ability = {
 		{
 			suffix = "",
 			prefix = "",
-			action = "function_career"
+			action = "action_career"
+		}
+	},
+	tooltip_gamepad_inputs = {
+		{
+			suffix = "+",
+			prefix = "",
+			action = "active_ability_left_pressed"
+		},
+		{
+			suffix = "",
+			prefix = "",
+			action = "active_ability_right_pressed"
 		}
 	}
 }
@@ -1528,6 +1603,13 @@ Missions.prologue_ranged_normal_attack = {
 			prefix = "",
 			action = "action_one"
 		}
+	},
+	tooltip_gamepad_inputs = {
+		{
+			suffix = "",
+			prefix = "",
+			action = "action_one"
+		}
 	}
 }
 Missions.prologue_ranged_alternative_attack = {
@@ -1537,7 +1619,19 @@ Missions.prologue_ranged_alternative_attack = {
 	tooltip_text = "tutorial_tooltip_alternative_attack",
 	tooltip_inputs = {
 		{
-			suffix = "tutorial_tooltip_and",
+			suffix = "",
+			prefix = "input_hold",
+			action = "action_two_hold"
+		},
+		{
+			suffix = "",
+			prefix = "",
+			action = "action_one"
+		}
+	},
+	tooltip_gamepad_inputs = {
+		{
+			suffix = "",
 			prefix = "input_hold",
 			action = "action_two_hold"
 		},
@@ -1595,7 +1689,19 @@ Missions.prologue_pushing = {
 	tooltip_text = "tutorial_tooltip_push",
 	tooltip_inputs = {
 		{
-			suffix = "+",
+			suffix = "",
+			prefix = "input_hold",
+			action = "action_two_hold"
+		},
+		{
+			suffix = "",
+			prefix = "",
+			action = "action_one"
+		}
+	},
+	tooltip_gamepad_inputs = {
+		{
+			suffix = "",
 			prefix = "input_hold",
 			action = "action_two_hold"
 		},
@@ -1618,11 +1724,18 @@ Missions.prologue_switch_weapon = {
 			prefix = "",
 			action = "wield_switch"
 		}
+	},
+	tooltip_gamepad_inputs = {
+		{
+			suffix = "",
+			prefix = "",
+			action = "wield_switch_1"
+		}
 	}
 }
 Missions.prologue_no_damage = {
 	text = "mission_objective_prologue_no_damage",
-	sub_text = "mission_objective_prologue_no_damage",
+	sub_text = "mission_objective_prologue_no_damage_subtext",
 	mission_template_name = "simple",
 	is_tutorial_input = true,
 	dont_show_mission_end_tooltip = true,
@@ -1716,6 +1829,16 @@ Missions.keep_enter_portal = {
 	mission_template_name = "goal",
 	text = "mission_keep_enter_portal"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local missions = dlc.missions
+
+	if missions then
+		for name, data in pairs(missions) do
+			Missions[name] = data
+		end
+	end
+end
 
 for name, data in pairs(Missions) do
 	assert(data.mission_template_name, "mission_template_name not specified")

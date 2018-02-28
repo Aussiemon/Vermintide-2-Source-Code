@@ -5,6 +5,10 @@ local window_size = window_default_settings.size
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local window_text_width = window_size[1] - window_frame_width*2
+local game_option_size = {
+	window_size[1] - 20,
+	233
+}
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -55,242 +59,40 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	disabled_rect = {
-		vertical_alignment = "center",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1] - window_frame_width*2,
-			window_size[2] - window_frame_height*2
-		},
-		position = {
-			0,
-			0,
-			100
-		}
-	},
-	title_text_detail = {
+	game_option_1 = {
 		vertical_alignment = "top",
 		parent = "window",
 		horizontal_alignment = "center",
-		size = {
-			264,
-			32
-		},
+		size = game_option_size,
 		position = {
 			0,
-			21,
-			10
+			-16,
+			2
 		}
 	},
-	title_text_detail_glow = {
-		vertical_alignment = "top",
-		parent = "title_text_detail",
-		horizontal_alignment = "center",
-		size = {
-			544,
-			16
-		},
-		position = {
-			0,
-			5,
-			-1
-		}
-	},
-	title_text = {
-		vertical_alignment = "center",
-		parent = "title_text_detail",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1],
-			50
-		},
-		position = {
-			0,
-			25,
-			1
-		}
-	},
-	description_text = {
-		vertical_alignment = "center",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			window_text_width,
-			window_size[2]/2
-		},
-		position = {
-			0,
-			-40,
-			1
-		}
-	},
-	adventure_texture = {
-		vertical_alignment = "top",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			383,
-			383
-		},
-		position = {
-			0,
-			0,
-			1
-		}
-	},
-	map_texture = {
-		vertical_alignment = "top",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			187.5,
-			187.5
-		},
-		position = {
-			0,
-			-20,
-			1
-		}
-	},
-	mission_title_divider = {
+	game_option_2 = {
 		vertical_alignment = "bottom",
-		parent = "adventure_texture",
+		parent = "game_option_1",
 		horizontal_alignment = "center",
-		size = {
-			264,
-			32
-		},
+		size = game_option_size,
 		position = {
 			0,
-			120,
-			1
+			-249,
+			0
 		}
 	},
-	mission_title = {
+	additional_option = {
 		vertical_alignment = "bottom",
-		parent = "mission_title_divider",
+		parent = "game_option_2",
 		horizontal_alignment = "center",
 		size = {
-			window_text_width,
-			50
+			game_option_size[1],
+			200
 		},
 		position = {
 			0,
-			20,
-			1
-		}
-	},
-	change_button = {
-		vertical_alignment = "center",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			300,
-			42
-		},
-		position = {
-			0,
-			120,
-			1
-		}
-	},
-	difficulty_texture = {
-		vertical_alignment = "top",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			187.5,
-			187.5
-		},
-		position = {
-			0,
-			-340,
-			1
-		}
-	},
-	difficulty_title_divider = {
-		vertical_alignment = "bottom",
-		parent = "difficulty_texture",
-		horizontal_alignment = "center",
-		size = {
-			264,
-			32
-		},
-		position = {
-			0,
-			-50,
-			1
-		}
-	},
-	difficulty_title = {
-		vertical_alignment = "bottom",
-		parent = "difficulty_title_divider",
-		horizontal_alignment = "center",
-		size = {
-			window_text_width,
-			50
-		},
-		position = {
-			0,
-			20,
-			1
-		}
-	},
-	difficulty_button = {
-		vertical_alignment = "bottom",
-		parent = "difficulty_title_divider",
-		horizontal_alignment = "center",
-		size = {
-			250,
-			42
-		},
-		position = {
-			0,
-			-45,
-			1
-		}
-	},
-	multiplayer_title_divider = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			264,
-			32
-		},
-		position = {
-			0,
-			120,
-			1
-		}
-	},
-	multiplayer_title = {
-		vertical_alignment = "bottom",
-		parent = "multiplayer_title_divider",
-		horizontal_alignment = "center",
-		size = {
-			window_text_width,
-			50
-		},
-		position = {
-			0,
-			20,
-			1
-		}
-	},
-	private_option = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "left",
-		size = {
-			250,
-			40
-		},
-		position = {
-			140,
-			80,
-			1
+			-216,
+			0
 		}
 	},
 	play_button = {
@@ -298,203 +100,186 @@ local scenegraph_definition = {
 		parent = "window",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1],
-			70
+			game_option_size[1],
+			72
+		},
+		position = {
+			0,
+			18,
+			20
+		}
+	},
+	game_options_right_chain = {
+		vertical_alignment = "top",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			16,
+			window_size[2]
+		},
+		position = {
+			195,
+			0,
+			1
+		}
+	},
+	game_options_left_chain = {
+		vertical_alignment = "top",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			16,
+			window_size[2]
+		},
+		position = {
+			-195,
+			0,
+			1
+		}
+	},
+	private_button = {
+		vertical_alignment = "bottom",
+		parent = "additional_option",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			40
+		},
+		position = {
+			0,
+			12,
+			10
+		}
+	},
+	private_button_frame = {
+		vertical_alignment = "bottom",
+		parent = "private_button",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			45
 		},
 		position = {
 			0,
 			0,
-			1
+			10
+		}
+	},
+	host_button = {
+		vertical_alignment = "top",
+		parent = "private_button",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			40
+		},
+		position = {
+			0,
+			45,
+			10
+		}
+	},
+	host_button_frame = {
+		vertical_alignment = "bottom",
+		parent = "host_button",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			45
+		},
+		position = {
+			0,
+			0,
+			10
+		}
+	},
+	strict_matchmaking_button = {
+		vertical_alignment = "top",
+		parent = "host_button",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			40
+		},
+		position = {
+			0,
+			45,
+			10
+		}
+	},
+	strict_matchmaking_button_frame = {
+		vertical_alignment = "bottom",
+		parent = "strict_matchmaking_button",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			45
+		},
+		position = {
+			0,
+			0,
+			10
 		}
 	}
 }
 
-function create_simple_rect(scenegraph_id, color)
-	return {
-		element = {
-			passes = {
-				{
-					style_id = "rect",
-					pass_type = "rect",
-					content_check_function = function (content)
-						return not Managers.twitch:is_connected()
-					end
-				}
-			}
-		},
-		content = {},
-		style = {
-			rect = {
-				color = color or {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					0,
-					0
-				}
-			}
-		},
-		offset = {
-			0,
-			0,
-			0
-		},
-		scenegraph_id = scenegraph_id
+local function create_settings_option(scenegraph_id, size, title_text, button_text, icon_texture, background_texture)
+	icon_texture = icon_texture or "level_icon_01"
+	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
+	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
+		150,
+		150
 	}
-end
-
-local title_text_style = {
-	vertical_alignment = "bottom",
-	upper_case = true,
-	localize = false,
-	horizontal_alignment = "center",
-	font_size = 42,
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
-local description_text_style = {
-	vertical_alignment = "top",
-	font_size = 18,
-	localize = false,
-	horizontal_alignment = "center",
-	word_wrap = true,
-	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
-local mission_text_style = {
-	word_wrap = true,
-	upper_case = true,
-	localize = false,
-	font_size = 36,
-	horizontal_alignment = "center",
-	vertical_alignment = "bottom",
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
-local multiplayer_title_text_style = {
-	word_wrap = true,
-	upper_case = true,
-	localize = false,
-	font_size = 32,
-	horizontal_alignment = "center",
-	vertical_alignment = "bottom",
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
-local difficulty_text_style = {
-	word_wrap = true,
-	upper_case = true,
-	localize = false,
-	font_size = 32,
-	horizontal_alignment = "center",
-	vertical_alignment = "bottom",
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
-
-local function create_window_button(scenegraph_id, size, button_text, font_size, use_bottom_edge, optional_color_name)
-	local button_color_name = nil
-
-	if optional_color_name then
-		button_color_name = "button_" .. optional_color_name
-	else
-		button_color_name = "button_normal"
-	end
-
-	local background_color = Colors.get_color_table_with_alpha(button_color_name, 255)
-	local button_background_texture = "button_bg_01"
-	local button_background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(button_background_texture)
+	background_texture = background_texture or "play_screen_bg"
+	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
+	local frame_name = "menu_frame_08"
+	local frame_settings = UIFrameSettings[frame_name]
+	local frame_width = frame_settings.texture_sizes.corner[1]
+	local glow_frame_name = "frame_outer_glow_01"
+	local glow_frame_settings = UIFrameSettings[glow_frame_name]
+	local glow_frame_width = glow_frame_settings.texture_sizes.corner[1]
 	local widget = {
 		element = {
 			passes = {
 				{
-					style_id = "button_background",
+					style_id = "background",
+					pass_type = "texture_uv",
+					content_id = "background",
+					content_change_function = function (content, style)
+						local parent = content.parent
+
+						if parent.button_hotspot.disable_button then
+							style.saturated = true
+						else
+							style.saturated = false
+						end
+
+						return 
+					end
+				},
+				{
+					texture_id = "frame",
+					style_id = "frame",
+					pass_type = "texture_frame"
+				},
+				{
+					texture_id = "glow_frame",
+					style_id = "glow_frame",
+					pass_type = "texture_frame",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button and content.option_text == ""
+					end
+				},
+				{
 					pass_type = "hotspot",
 					content_id = "button_hotspot"
 				},
 				{
-					style_id = "button_background",
-					pass_type = "texture_uv",
-					content_id = "button_background"
-				},
-				{
-					texture_id = "bottom_edge",
-					style_id = "button_edge",
-					pass_type = "tiled_texture"
-				},
-				{
-					texture_id = "glass_top",
-					style_id = "glass_top",
+					texture_id = "glass",
+					style_id = "glass",
 					pass_type = "texture"
-				},
-				{
-					texture_id = "glow",
-					style_id = "glow",
-					pass_type = "texture"
-				},
-				{
-					texture_id = "hover_glow",
-					style_id = "hover_glow",
-					pass_type = "texture",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
-						return not button_hotspot.disable_button and (button_hotspot.is_selected or button_hotspot.is_hover)
-					end
-				},
-				{
-					style_id = "button_text",
-					pass_type = "text",
-					text_id = "button_text",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
-						return not button_hotspot.disable_button
-					end
-				},
-				{
-					style_id = "button_text_disabled",
-					pass_type = "text",
-					text_id = "button_text",
-					content_check_function = function (content)
-						local button_hotspot = content.button_hotspot
-
-						return button_hotspot.disable_button
-					end
-				},
-				{
-					style_id = "button_text_shadow",
-					pass_type = "text",
-					text_id = "button_text"
 				},
 				{
 					style_id = "button_clicked_rect",
@@ -507,6 +292,10 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 					end
 				},
 				{
+					pass_type = "rect",
+					style_id = "button_hover_rect"
+				},
+				{
 					style_id = "button_disabled_rect",
 					pass_type = "rect",
 					content_check_function = function (content)
@@ -516,138 +305,283 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 					end
 				},
 				{
-					texture_id = "bottom_edge",
-					style_id = "bottom_edge",
-					pass_type = "tiled_texture",
-					content_check_function = function (content)
-						return content.use_bottom_edge
+					style_id = "icon_frame",
+					pass_type = "texture",
+					texture_id = "icon_frame",
+					content_check_function = function (content, style)
+						return content.icon
+					end,
+					content_change_function = function (content, style)
+						if content.button_hotspot.disable_button then
+							style.saturated = true
+						else
+							style.saturated = false
+						end
+
+						return 
 					end
 				},
 				{
-					texture_id = "edge_holder_left",
-					style_id = "edge_holder_left",
+					texture_id = "icon_glow",
+					style_id = "icon_glow",
 					pass_type = "texture",
-					content_check_function = function (content)
-						return content.use_bottom_edge
+					content_check_function = function (content, style)
+						return content.icon
 					end
 				},
 				{
-					texture_id = "edge_holder_right",
-					style_id = "edge_holder_right",
+					texture_id = "glow",
+					style_id = "glow",
+					pass_type = "texture"
+				},
+				{
+					style_id = "icon",
 					pass_type = "texture",
+					texture_id = "icon",
+					content_check_function = function (content, style)
+						return content.icon
+					end,
+					content_change_function = function (content, style)
+						if content.button_hotspot.disable_button then
+							style.saturated = true
+						else
+							style.saturated = false
+						end
+
+						return 
+					end
+				},
+				{
+					style_id = "button_text",
+					pass_type = "text",
+					text_id = "button_text",
 					content_check_function = function (content)
-						return content.use_bottom_edge
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button and not content.icon
+					end
+				},
+				{
+					style_id = "button_text_disabled",
+					pass_type = "text",
+					text_id = "button_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button and not content.icon
+					end
+				},
+				{
+					style_id = "button_text_shadow",
+					pass_type = "text",
+					text_id = "button_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button and not content.icon
+					end
+				},
+				{
+					style_id = "option_text",
+					pass_type = "text",
+					text_id = "option_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button and content.icon
+					end
+				},
+				{
+					style_id = "option_text_shadow",
+					pass_type = "text",
+					text_id = "option_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button and content.icon
+					end
+				},
+				{
+					style_id = "title_text",
+					pass_type = "text",
+					text_id = "title_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button and content.icon
+					end
+				},
+				{
+					style_id = "title_text_shadow",
+					pass_type = "text",
+					text_id = "title_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button and content.icon
+					end
+				},
+				{
+					style_id = "title_text_disabled",
+					pass_type = "text",
+					text_id = "title_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button and content.icon
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "title_bg",
+					texture_id = "title_bg",
+					content_check_function = function (content)
+						return content.icon
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "title_edge",
+					texture_id = "title_edge",
+					content_check_function = function (content)
+						return content.icon
 					end
 				}
 			}
 		},
 		content = {
-			edge_holder_left = "menu_frame_09_divider_left",
-			edge_holder_right = "menu_frame_09_divider_right",
-			glass_top = "button_glass_01",
-			bottom_edge = "menu_frame_09_divider",
-			use_bottom_edge = use_bottom_edge,
+			option_text = "",
+			icon_frame = "map_frame_00",
+			glass = "game_options_fg",
+			title_edge = "game_option_divider",
+			glow = "game_options_glow_01",
+			title_bg = "playername_bg_02",
+			icon_glow = "map_frame_glow",
 			button_hotspot = {},
-			button_text = button_text or "n/a",
-			hover_glow = (optional_color_name and "button_state_hover_" .. optional_color_name) or "button_state_hover",
-			glow = (optional_color_name and "button_state_normal_" .. optional_color_name) or "button_state_normal",
-			button_background = {
+			frame = frame_settings.texture,
+			glow_frame = glow_frame_settings.texture,
+			button_text = button_text,
+			title_text = title_text or "n/a",
+			background = {
 				uvs = {
 					{
 						0,
-						math.min(size[2]/button_background_texture_settings.size[2], 1) - 1
+						math.min(size[2]/background_texture_settings.size[2], 1) - 1
 					},
 					{
-						math.min(size[1]/button_background_texture_settings.size[1], 1),
+						math.min(size[1]/background_texture_settings.size[1], 1),
 						1
 					}
 				},
-				texture_id = button_background_texture
+				texture_id = background_texture
 			}
 		},
 		style = {
-			button_background = {
-				color = background_color,
+			frame = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
 				offset = {
 					0,
 					0,
-					2
+					10
+				},
+				size = size,
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes
+			},
+			glow_frame = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					-2
+				},
+				size = size,
+				texture_size = glow_frame_settings.texture_size,
+				texture_sizes = glow_frame_settings.texture_sizes,
+				frame_margins = {
+					-(glow_frame_width - 1),
+					-(glow_frame_width - 1)
+				}
+			},
+			background = {
+				saturated = true,
+				texture_tiling_size = {
+					400,
+					150
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			glass = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					8
 				},
 				size = size
-			},
-			button_edge = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					size[2],
-					3
-				},
-				size = {
-					size[1],
-					5
-				},
-				texture_tiling_size = {
-					1,
-					5
-				}
-			},
-			glass_top = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					size[2] - 4,
-					3
-				},
-				size = {
-					size[1],
-					5
-				}
 			},
 			glow = {
 				color = {
-					255,
+					0,
 					255,
 					255,
 					255
 				},
 				offset = {
 					0,
-					5,
-					3
-				},
-				size = {
-					size[1],
-					size[2] - 5
-				}
-			},
-			hover_glow = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
 					0,
-					5,
 					2
-				},
-				size = {
-					size[1],
-					size[2] - 5
 				}
 			},
-			bottom_edge = {
+			icon = {
+				vertical_alignment = "center",
+				saturated = true,
+				horizontal_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				texture_size = icon_texture_size,
+				offset = {
+					size[1]/2 - 120,
+					0,
+					5
+				}
+			},
+			icon_frame = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					180,
+					180
+				},
 				color = {
 					255,
 					255,
@@ -655,20 +589,18 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 					255
 				},
 				offset = {
-					5,
+					size[1]/2 - 120,
 					0,
 					6
-				},
-				size = {
-					size[1] - 10,
-					5
-				},
-				texture_tiling_size = {
-					1,
-					5
 				}
 			},
-			edge_holder_left = {
+			icon_lock = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					146,
+					146
+				},
 				color = {
 					255,
 					255,
@@ -676,16 +608,35 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 					255
 				},
 				offset = {
-					3,
-					-6,
-					10
-				},
-				size = {
-					9,
-					17
+					size[1]/2 - 120,
+					0,
+					7
 				}
 			},
-			edge_holder_right = {
+			icon_glow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					318,
+					318
+				},
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					size[1]/2 - 120,
+					0,
+					4
+				}
+			},
+			title_bg = {
+				size = {
+					size[1],
+					40
+				},
 				color = {
 					255,
 					255,
@@ -693,59 +644,187 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 					255
 				},
 				offset = {
-					size[1] - 12,
-					-6,
-					10
-				},
+					0,
+					size[2] - 38 - frame_width,
+					2
+				}
+			},
+			title_edge = {
 				size = {
-					9,
-					17
+					size[1],
+					5
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					size[2] - 38 - frame_width,
+					4
+				}
+			},
+			title_text = {
+				font_size = 32,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					frame_width + 5,
+					-frame_width,
+					10
+				}
+			},
+			title_text_shadow = {
+				font_size = 32,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2,
+					-(frame_width + 2),
+					9
+				}
+			},
+			title_text_disabled = {
+				font_size = 32,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("gray", 255),
+				default_text_color = Colors.get_color_table_with_alpha("gray", 255),
+				offset = {
+					frame_width + 5,
+					-frame_width,
+					10
+				}
+			},
+			option_text = {
+				font_size = 28,
+				upper_case = false,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					frame_width + 5,
+					-55,
+					10
+				}
+			},
+			option_text_shadow = {
+				font_size = 28,
+				upper_case = false,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2,
+					-57,
+					9
 				}
 			},
 			button_text = {
+				font_size = 38,
 				upper_case = true,
+				localize = false,
 				word_wrap = true,
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
-				font_type = "hell_shark",
-				font_size = font_size or 24,
-				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				dynamic_font = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				default_text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
-					0,
-					5,
-					4
+					frame_width,
+					frame_width,
+					10
 				},
-				size = size
+				size = {
+					size[1] - frame_width*2,
+					size[2] - frame_width*2
+				}
 			},
 			button_text_disabled = {
+				font_size = 38,
 				upper_case = true,
+				localize = false,
 				word_wrap = true,
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
-				font_type = "hell_shark",
-				font_size = font_size or 24,
+				dynamic_font = true,
+				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("gray", 255),
+				default_text_color = Colors.get_color_table_with_alpha("gray", 255),
 				offset = {
-					0,
-					5,
-					4
+					frame_width,
+					frame_width,
+					10
 				},
-				size = size
+				size = {
+					size[1] - frame_width*2,
+					size[2] - frame_width*2
+				}
 			},
 			button_text_shadow = {
+				font_size = 38,
 				upper_case = true,
+				localize = false,
 				word_wrap = true,
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
-				font_type = "hell_shark",
-				font_size = font_size or 24,
+				dynamic_font = true,
+				font_type = "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
-					2,
-					3,
-					3
+					frame_width + 2,
+					frame_width - 2,
+					9
 				},
-				size = size
+				size = {
+					size[1] - frame_width*2,
+					size[2] - frame_width*2
+				}
+			},
+			button_hover_rect = {
+				color = {
+					30,
+					0,
+					0,
+					0
+				},
+				offset = {
+					frame_width,
+					frame_width,
+					1
+				},
+				size = {
+					size[1] - frame_width*2,
+					size[2] - frame_width*2
+				}
 			},
 			button_clicked_rect = {
 				color = {
@@ -755,13 +834,269 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 					0
 				},
 				offset = {
-					5,
-					0,
-					5
+					frame_width,
+					frame_width,
+					15
 				},
 				size = {
-					size[1] - 10,
-					size[2]
+					size[1] - frame_width*2,
+					size[2] - frame_width*2
+				}
+			},
+			button_disabled_rect = {
+				color = {
+					150,
+					5,
+					5,
+					5
+				},
+				offset = {
+					frame_width,
+					frame_width,
+					15
+				},
+				size = {
+					size[1] - frame_width*2,
+					size[2] - frame_width*2
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+
+	return widget
+end
+
+local function create_additional_settings_option(scenegraph_id, size, title_text, background_texture)
+	background_texture = background_texture or "play_screen_bg"
+	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
+	local frame_name = "menu_frame_08"
+	local frame_settings = UIFrameSettings[frame_name]
+	local frame_width = frame_settings.texture_sizes.corner[1]
+	local widget = {
+		element = {
+			passes = {
+				{
+					style_id = "background",
+					pass_type = "texture_uv",
+					content_id = "background",
+					content_change_function = function (content, style)
+						local parent = content.parent
+
+						if parent.button_hotspot.disable_button then
+							style.saturated = true
+						else
+							style.saturated = false
+						end
+
+						return 
+					end
+				},
+				{
+					texture_id = "frame",
+					style_id = "frame",
+					pass_type = "texture_frame"
+				},
+				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					style_id = "button_disabled_rect",
+					pass_type = "rect",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button
+					end
+				},
+				{
+					style_id = "title_text",
+					pass_type = "text",
+					text_id = "title_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button
+					end
+				},
+				{
+					style_id = "title_text_shadow",
+					pass_type = "text",
+					text_id = "title_text"
+				},
+				{
+					style_id = "title_text_disabled",
+					pass_type = "text",
+					text_id = "title_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "title_bg",
+					texture_id = "title_bg"
+				},
+				{
+					pass_type = "texture",
+					style_id = "title_edge",
+					texture_id = "title_edge"
+				}
+			}
+		},
+		content = {
+			title_edge = "game_option_divider",
+			title_bg = "playername_bg_02",
+			button_hotspot = {},
+			frame = frame_settings.texture,
+			title_text = title_text or "n/a",
+			background = {
+				uvs = {
+					{
+						0,
+						math.min(size[2]/background_texture_settings.size[2], 1) - 1
+					},
+					{
+						math.min(size[1]/background_texture_settings.size[1], 1),
+						1
+					}
+				},
+				texture_id = background_texture
+			}
+		},
+		style = {
+			frame = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					10
+				},
+				size = size,
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes
+			},
+			background = {
+				saturated = true,
+				texture_tiling_size = {
+					400,
+					150
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			title_bg = {
+				size = {
+					size[1],
+					40
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					size[2] - 38 - frame_width,
+					2
+				}
+			},
+			title_edge = {
+				size = {
+					size[1],
+					5
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					size[2] - 38 - frame_width,
+					4
+				}
+			},
+			title_text = {
+				font_size = 32,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					frame_width + 5,
+					-frame_width,
+					10
+				}
+			},
+			title_text_shadow = {
+				font_size = 32,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					frame_width + 5 + 2,
+					-(frame_width + 2),
+					9
+				}
+			},
+			title_text_disabled = {
+				font_size = 32,
+				upper_case = true,
+				localize = false,
+				word_wrap = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark_header",
+				text_color = {
+					255,
+					108,
+					108,
+					108
+				},
+				default_text_color = {
+					255,
+					108,
+					108,
+					108
+				},
+				offset = {
+					frame_width + 5,
+					-frame_width,
+					10
 				}
 			},
 			button_disabled_rect = {
@@ -774,7 +1109,7 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 				offset = {
 					5,
 					0,
-					5
+					15
 				},
 				size = {
 					size[1] - 10,
@@ -795,28 +1130,35 @@ end
 
 local private_checkbox_offset = 0
 local widgets = {
-	title_text = UIWidgets.create_simple_text(Localize("start_game_window_settings_header"), "title_text", nil, nil, title_text_style),
-	title_text_detail = UIWidgets.create_simple_texture("divider_01_top", "title_text_detail"),
-	title_text_detail_glow = UIWidgets.create_simple_texture("mission_objective_glow_01", "title_text_detail_glow"),
-	window = UIWidgets.create_background_with_frame("window", window_size, window_background, window_frame),
-	disabled_background = create_simple_rect("disabled_rect", {
-		128,
-		0,
-		0,
-		0
+	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),
+	window = UIWidgets.create_frame("window", window_size, window_frame, 20),
+	play_button = UIWidgets.create_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34),
+	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, "1. " .. Localize("start_game_window_mission"), Localize("start_game_window_change_mission"), nil, "game_options_bg_01"),
+	game_option_2 = create_settings_option("game_option_2", scenegraph_definition.game_option_2.size, "2. " .. Localize("start_game_window_difficulty"), Localize("start_game_window_change_difficulty"), "difficulty_option_1", "game_options_bg_02"),
+	additional_option = create_additional_settings_option("additional_option", scenegraph_definition.additional_option.size, "3. " .. Localize("start_game_window_other_options_title"), "game_options_bg_03"),
+	game_options_left_chain = UIWidgets.create_tiled_texture("game_options_left_chain", "chain_link_01", {
+		16,
+		19
 	}),
-	mission_title = UIWidgets.create_simple_text("n/a", "mission_title", nil, nil, mission_text_style),
-	map_texture = UIWidgets.create_simple_texture("map_icon", "map_texture"),
-	mission_title_divider = UIWidgets.create_simple_texture("divider_01_top", "mission_title_divider"),
-	change_button = UIWidgets.create_default_button("change_button", scenegraph_definition.change_button.size, nil, nil, Localize("start_game_window_select_mission"), 20, nil, "button_detail_03"),
-	difficulty_title = UIWidgets.create_simple_text("difficulty_title", "difficulty_title", nil, nil, difficulty_text_style),
-	difficulty_texture = UIWidgets.create_simple_texture("difficulty_option_1", "difficulty_texture"),
-	difficulty_title_divider = UIWidgets.create_simple_texture("divider_01_top", "difficulty_title_divider"),
-	difficulty_button = UIWidgets.create_default_button("difficulty_button", scenegraph_definition.difficulty_button.size, nil, nil, Localize("start_game_window_change"), 20, nil, "button_detail_03"),
-	private_option = UIWidgets.create_checkbox_widget("start_game_window_private_game", "", "private_option", private_checkbox_offset, nil, "Privacy_option_disabled_when_using_twitch"),
-	multiplayer_title_divider = UIWidgets.create_simple_texture("divider_01_top", "multiplayer_title_divider"),
-	multiplayer_title = UIWidgets.create_simple_text(Localize("start_game_window_multiplayer_title"), "multiplayer_title", nil, nil, multiplayer_title_text_style),
-	play_button = create_window_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34, false, "green")
+	game_options_right_chain = UIWidgets.create_tiled_texture("game_options_right_chain", "chain_link_01", {
+		16,
+		19
+	}),
+	private_frame = UIWidgets.create_frame("private_button_frame", scenegraph_definition.private_button_frame.size, window_frame, 1),
+	private_button = UIWidgets.create_default_checkbox_button("private_button", scenegraph_definition.private_button.size, Localize("start_game_window_other_options_private"), 24, {
+		title = Localize("start_game_window_other_options_private"),
+		description = Localize("start_game_window_other_options_private_description")
+	}),
+	host_frame = UIWidgets.create_frame("host_button_frame", scenegraph_definition.host_button_frame.size, window_frame, 1),
+	host_button = UIWidgets.create_default_checkbox_button("host_button", scenegraph_definition.host_button.size, Localize("start_game_window_other_options_always_host"), 24, {
+		title = Localize("start_game_window_other_options_always_host"),
+		description = Localize("start_game_window_other_options_always_host_description")
+	}),
+	strict_matchmaking_frame = UIWidgets.create_frame("strict_matchmaking_button_frame", scenegraph_definition.strict_matchmaking_button_frame.size, window_frame, 1),
+	strict_matchmaking_button = UIWidgets.create_default_checkbox_button("strict_matchmaking_button", scenegraph_definition.strict_matchmaking_button.size, Localize("start_game_window_other_options_strict_matchmaking"), 24, {
+		title = Localize("start_game_window_other_options_strict_matchmaking"),
+		description = Localize("start_game_window_other_options_strict_matchmaking_description")
+	})
 }
 local animation_definitions = {
 	on_enter = {

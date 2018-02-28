@@ -75,6 +75,8 @@ MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_cha
 	return 
 end
 MenuWorldPreviewer.destroy = function (self)
+	self._session_id = self._session_id + 1
+
 	GarbageLeakDetector.register_object(self, "MenuWorldPreviewer")
 
 	return 
@@ -105,6 +107,7 @@ MenuWorldPreviewer.on_enter = function (self, viewport_widget, hero_name)
 
 	self.camera_xy_angle_current = DEFAULT_ANGLE
 	self.camera_xy_angle_target = DEFAULT_ANGLE
+	self._session_id = self._session_id or 0
 
 	return 
 end
@@ -143,6 +146,7 @@ MenuWorldPreviewer.on_exit = function (self)
 	end
 
 	self.items_loaded = nil
+	self._session_id = self._session_id + 1
 
 	return 
 end
@@ -694,14 +698,18 @@ MenuWorldPreviewer.load_hero_packages = function (self, package_names, data)
 
 	for index, package_name in ipairs(package_names_to_load) do
 		local package_manager = Managers.package
-		local cb = callback(self, "on_hero_load_complete", package_name, data)
+		local cb = callback(self, "on_hero_load_complete", package_name, data, self._session_id)
 
 		package_manager.load(package_manager, package_name, reference_name, cb, true)
 	end
 
 	return 
 end
-MenuWorldPreviewer.on_hero_load_complete = function (self, package_name, data)
+MenuWorldPreviewer.on_hero_load_complete = function (self, package_name, data, session_id)
+	if session_id ~= self._session_id then
+		return 
+	end
+
 	local loaded_packages = self.loaded_packages
 	loaded_packages[package_name] = true
 	self.packages_to_load[package_name] = nil

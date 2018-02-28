@@ -26,6 +26,14 @@ assert(DialogueLookup[DialogueLookup_n + 25] == nil)
 assert(DialogueLookup[DialogueLookup_n + 26] == nil)
 assert(DialogueLookup[DialogueLookup_n + 27] == nil)
 assert(DialogueLookup[DialogueLookup_n + 28] == nil)
+assert(DialogueLookup[DialogueLookup_n + 29] == nil)
+assert(DialogueLookup[DialogueLookup_n + 30] == nil)
+assert(DialogueLookup[DialogueLookup_n + 31] == nil)
+assert(DialogueLookup[DialogueLookup_n + 32] == nil)
+assert(DialogueLookup[DialogueLookup_n + 33] == nil)
+assert(DialogueLookup[DialogueLookup_n + 34] == nil)
+assert(DialogueLookup[DialogueLookup_n + 35] == nil)
+assert(DialogueLookup[DialogueLookup_n + 36] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_level_chaos_war_camp_ravine"
 DialogueLookup[DialogueLookup_n + 2] = "pdr_level_chaos_war_camp_live_in_swamp"
@@ -55,6 +63,14 @@ DialogueLookup[DialogueLookup_n + 25] = "ecc_chaos_war_camp_taunt_payback"
 DialogueLookup[DialogueLookup_n + 26] = "ecc_chaos_war_camp_throw_axe"
 DialogueLookup[DialogueLookup_n + 27] = "ecc_chaos_war_camp_charge"
 DialogueLookup[DialogueLookup_n + 28] = "ecc_chaos_war_camp_ground_pound"
-DialogueLookup_n = DialogueLookup_n + 28
+DialogueLookup[DialogueLookup_n + 29] = "pdr_gameplay_chaos_champion_throwing_axe"
+DialogueLookup[DialogueLookup_n + 30] = "pdr_gameplay_chaos_champion_charge_reply"
+DialogueLookup[DialogueLookup_n + 31] = "pdr_gameplay_chaos_champion_summon_reply"
+DialogueLookup[DialogueLookup_n + 32] = "pdr_chaos_war_camp_challenge_reply_slayer"
+DialogueLookup[DialogueLookup_n + 33] = "pdr_chaos_war_camp_challenge_reply_ranger"
+DialogueLookup[DialogueLookup_n + 34] = "pdr_chaos_war_camp_challenge_reply_ironbreaker"
+DialogueLookup[DialogueLookup_n + 35] = "pdr_chaos_war_camp_taunt_payback_reply"
+DialogueLookup[DialogueLookup_n + 36] = "pdr_level_chaos_war_camp_dead_champion"
+DialogueLookup_n = DialogueLookup_n + 36
 
 return 

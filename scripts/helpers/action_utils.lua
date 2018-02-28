@@ -82,15 +82,18 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 	local armor_modifier = target_settings.armor_modifier or damage_profile.armor_modifier or DefaultArmorPowerModifier
 	local armor_modifier_near = target_settings.armor_modifier_near or damage_profile.armor_modifier_near
 	local armor_modifier_far = target_settings.armor_modifier_far or damage_profile.armor_modifier_far
-	local armor_power_modifier = nil
+	local armor_power_modifier, critical_armor_power_modifier = nil
 
 	if critical_strike_settings then
-		local critical_armor_power_modifier = critical_strike_settings[power_type .. "_armor_power_modifer"] or DefaultCriticalArmorPowerModifier
-		armor_power_modifier = critical_armor_power_modifier[target_unit_armor] or 1
+		critical_armor_power_modifier = critical_strike_settings[power_type .. "_armor_power_modifer"]
+	end
+
+	if critical_armor_power_modifier and critical_armor_power_modifier[target_unit_armor] then
+		armor_power_modifier = critical_armor_power_modifier[target_unit_armor]
 	else
 
 		-- decompilation error in this vicinity
-		armor_power_modifier_near = (target_unit_primary_armor and armor_modifier_near[power_type][target_unit_primary_armor]) or armor_modifier_near[power_type][target_unit_armor] or 1
+		local armor_power_modifier_near = (target_unit_primary_armor and armor_modifier_near[power_type][target_unit_primary_armor]) or armor_modifier_near[power_type][target_unit_armor] or 1
 		local armor_power_modifier_far = (target_unit_primary_armor and armor_modifier_far[power_type][target_unit_primary_armor]) or armor_modifier_far[power_type][target_unit_armor] or 1
 		armor_power_modifier = math.lerp(armor_power_modifier_near, armor_power_modifier_far, dropoff_scalar) and ((target_unit_primary_armor and armor_modifier[power_type][target_unit_primary_armor]) or armor_modifier[power_type][target_unit_armor] or 1)
 	end
@@ -98,10 +101,19 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 	return armor_power_modifier
 end
 ActionUtils.scale_powerlevels = function (power_level, power_type)
+	local cap_to_difficulty = true
+	local actual_power_level = power_level
+
+	if cap_to_difficulty then
+		local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
+		local difficulty_power_level_cap = difficulty_settings.power_level_cap
+		actual_power_level = math.min(power_level, difficulty_power_level_cap)
+	end
+
 	local min_cap_powerlevel = 200
 
-	if power_level < min_cap_powerlevel then
-		return power_level
+	if actual_power_level < min_cap_powerlevel then
+		return actual_power_level
 	end
 
 	local starting_powerlevel_bonus = 50
@@ -114,11 +126,11 @@ ActionUtils.scale_powerlevels = function (power_level, power_type)
 	local native_diff_ratio = 5
 	local scaled_powerlevel_section = nil
 
-	if min_cap_powerlevel + starting_bonus_range <= power_level then
-		scaled_powerlevel_section = (power_level - min_cap_powerlevel)*(powerlevel_diff_ratio[power_type] - 1)/(native_diff_ratio - 1)
+	if min_cap_powerlevel + starting_bonus_range <= actual_power_level then
+		scaled_powerlevel_section = (actual_power_level - min_cap_powerlevel)*(powerlevel_diff_ratio[power_type] - 1)/(native_diff_ratio - 1)
 	else
-		local starting_bonus = starting_powerlevel_bonus*((power_level - 200)/starting_bonus_range - 1)
-		scaled_powerlevel_section = ((power_level + starting_bonus) - min_cap_powerlevel)*(powerlevel_diff_ratio[power_type] - 1)/(native_diff_ratio - 1)
+		local starting_bonus = starting_powerlevel_bonus*((actual_power_level - 200)/starting_bonus_range - 1)
+		scaled_powerlevel_section = ((actual_power_level + starting_bonus) - min_cap_powerlevel)*(powerlevel_diff_ratio[power_type] - 1)/(native_diff_ratio - 1)
 	end
 
 	local scaled_powerlevel = min_cap_powerlevel + scaled_powerlevel_section
@@ -167,6 +179,12 @@ ActionUtils.get_power_level_for_target = function (original_power_level, damage_
 
 		attack_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, target_unit_primary_armor_attack, critical_strike_settings, dropoff_scalar)
 		impact_armor_power_modifer = ActionUtils.get_armor_power_modifier("impact", damage_profile, target_settings, target_unit_armor_impact, target_unit_primary_armor_impact, critical_strike_settings, dropoff_scalar)
+
+		if target_breed and target_breed.lord_armor and target_unit_primary_armor_attack == 6 and attack_armor_power_modifer == 0 then
+			local new_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, nil, critical_strike_settings, dropoff_scalar)
+			attack_armor_power_modifer = attack_armor_power_modifer + new_armor_power_modifer*target_breed.lord_armor
+		end
+
 		power_level = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, power_level, target_breed, target_unit)
 	end
 

@@ -397,6 +397,9 @@ AiBreedSnippets.on_chaos_dummy_troll_update = function (unit, blackboard)
 		audio_system.play_audio_unit_event(audio_system, "Play_enemy_troll_vce_alert", unit)
 
 		blackboard.play_alert = nil
+		local network_manager = Managers.state.network
+
+		network_manager.anim_event(network_manager, unit, "to_combat")
 	end
 
 	if idle_sound_timer and idle_sound_timer < t then
@@ -1072,6 +1075,16 @@ AiBreedSnippets.on_chaos_exalted_champion_spawn = function (unit, blackboard)
 	blackboard.cheer_timer = t + math.random(15, 30)
 	blackboard.walla_sync_timer = t + 2
 	blackboard.ray_can_go_update_time = t + 0.5
+	local level_analysis = Managers.state.conflict.level_analysis
+	local node_units = level_analysis.generic_ai_node_units.chaos_exalted_defensive_move_to
+
+	if node_units then
+		local node_unit = node_units[1]
+		local pos = Unit.local_position(node_unit, 0)
+		blackboard.override_spawn_allies_call_position = Vector3Box(pos)
+
+		print("Found defensive pos")
+	end
 
 	return 
 end
@@ -1251,6 +1264,8 @@ AiBreedSnippets.on_chaos_exalted_champion_death = function (unit, blackboard)
 
 	WwiseWorld.set_global_parameter(wwise_world, "champion_crowd_voices", 0)
 	WwiseWorld.set_global_parameter(wwise_world, "champion_crowd_voices", 1)
+
+	blackboard.override_spawn_allies_call_position = nil
 
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)

@@ -90,6 +90,17 @@ local ww_masks = {
 	buffs = {}
 }
 Attachments.ww_masks = table.clone(ww_masks)
+local ww_masks_front_face = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_front_face",
+	attachment_node_linking = AttachmentNodeLinking.ww_mask,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.ww_masks_front_face = table.clone(ww_masks_front_face)
 local es_hats = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -156,6 +167,17 @@ local dr_helmets_no_ear = {
 	buffs = {}
 }
 Attachments.dr_helmets_no_ear = table.clone(dr_helmets_no_ear)
+local dr_helmets_beard_ears = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_beard_ears",
+	attachment_node_linking = AttachmentNodeLinking.dr_beard,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.dr_helmets_beard_ears = table.clone(dr_helmets_beard_ears)
 local bw_gates = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -167,6 +189,16 @@ local bw_gates = {
 	buffs = {}
 }
 Attachments.bw_gates = table.clone(bw_gates)
+local bw_hat = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	attachment_node_linking = AttachmentNodeLinking.hat,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.bw_hat = table.clone(bw_hat)
 local bw_gates_facemask = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",

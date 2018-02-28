@@ -445,6 +445,10 @@ BTStormVerminAttackAction.catapult_enemies = function (unit, blackboard)
 	return 
 end
 BTStormVerminAttackAction.catapult_enemy = function (unit, blackboard, action, target_unit, blocked)
+	if not action.catapult then
+		return 
+	end
+
 	if blocked then
 	else
 		AiUtils.damage_target(target_unit, unit, action, action.damage)

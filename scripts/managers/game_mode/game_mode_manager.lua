@@ -445,6 +445,9 @@ GameModeManager.server_update = function (self, dt, t)
 			self.trigger_event(self, "end_conditions_met", reason, checkpoint_available, percentage_completed)
 
 			self._gm_event_end_conditions_met = true
+
+			self._save_last_level_completed(self, reason)
+
 			self._ready_for_transition = {}
 			local human_players = Managers.player:human_players()
 
@@ -491,6 +494,15 @@ GameModeManager.server_update = function (self, dt, t)
 			self.update_timebased_level_start(self, dt)
 		end
 	end
+
+	return 
+end
+GameModeManager._save_last_level_completed = function (self, reason)
+	local level_key = self.level_key(self)
+	SaveData.last_played_level = level_key
+	SaveData.last_played_level_result = reason
+
+	Managers.save:auto_save(SaveFileName, SaveData, nil)
 
 	return 
 end

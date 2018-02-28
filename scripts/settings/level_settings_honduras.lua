@@ -861,11 +861,11 @@ LevelSettings.skittergate = {
 		{
 			primary = {
 				ammo = 16,
-				potions = 5,
-				grenades = 5,
+				potions = 7,
+				grenades = 7,
 				healing = {
-					first_aid_kit = 5,
-					healing_draught = 5
+					first_aid_kit = 8,
+					healing_draught = 8
 				},
 				level_events = {
 					explosive_barrel = 4,
@@ -874,9 +874,9 @@ LevelSettings.skittergate = {
 			},
 			secondary = {
 				ammo = 4,
-				grenades = 2,
-				healing = 2,
-				potions = 2
+				grenades = 4,
+				healing = 5,
+				potions = 4
 			}
 		}
 	},
@@ -962,6 +962,7 @@ LevelSettings.bell = {
 		"location_bell_market_alley",
 		"location_bell_market",
 		"location_bell_hill_street",
+		"location_bell_hill_street_junction",
 		"location_bell_hill_park",
 		"location_bell_serpentine",
 		"location_bell_mountain",

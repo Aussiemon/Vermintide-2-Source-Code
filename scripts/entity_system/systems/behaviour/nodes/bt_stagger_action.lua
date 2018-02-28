@@ -103,6 +103,11 @@ BTStaggerAction.enter = function (self, unit, blackboard, t)
 		LocomotionUtils.set_animation_driven_movement(unit, true, true, false)
 	end
 
+	if blackboard.stagger_type == 3 or blackboard.stagger_type == 6 then
+		local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+		hit_reaction_extension.force_ragdoll_on_death = true
+	end
+
 	locomotion_extension.set_rotation_speed(locomotion_extension, 100)
 	locomotion_extension.set_wanted_velocity(locomotion_extension, Vector3.zero())
 	locomotion_extension.use_lerp_rotation(locomotion_extension, false)
@@ -228,6 +233,9 @@ BTStaggerAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	if run_on_stagger_action_done then
 		run_on_stagger_action_done(unit, blackboard, t)
 	end
+
+	local hit_reaction_extension = ScriptUnit.has_extension(unit, "hit_reaction_system")
+	hit_reaction_extension.force_ragdoll_on_death = nil
 
 	return 
 end

@@ -41,20 +41,19 @@ end
 PlayerCharacterStateGrabbedByCorruptor.on_exit = function (self, unit, input, dt, context, t, next_state)
 	local first_person_extension = self.first_person_extension
 	local status_extension = self.status_extension
+	local locomotion_extension = self.locomotion_extension
 
 	if not status_extension.is_knocked_down(status_extension) and not status_extension.is_dead(status_extension) then
 		CharacterStateHelper.change_camera_state(self.player, "follow")
 		first_person_extension.toggle_visibility(first_person_extension, CameraTransitionSettings.perspective_transition_time)
-
-		local locomotion_extension = self.locomotion_extension
-
 		locomotion_extension.enable_script_driven_movement(locomotion_extension)
-		locomotion_extension.enable_rotation_towards_velocity(locomotion_extension, true)
 	end
+
+	locomotion_extension.enable_rotation_towards_velocity(locomotion_extension, true)
 
 	if self.ai_extension == nil then
 		local wwise_world = Managers.world:wwise_world(self.world)
-		slot10, slot11 = WwiseWorld.trigger_event(wwise_world, "stop_strangled_state", first_person_extension.get_first_person_unit(first_person_extension))
+		slot11, slot12 = WwiseWorld.trigger_event(wwise_world, "stop_strangled_state", first_person_extension.get_first_person_unit(first_person_extension))
 	end
 
 	local inventory_extension = self.inventory_extension
@@ -128,8 +127,6 @@ PlayerCharacterStateGrabbedByCorruptor.states = {
 	},
 	chaos_corruptor_released = {
 		run = function (parent, unit)
-			Debug.text("Corruptor status: Released")
-
 			return 
 		end,
 		enter = function (parent, unit)
@@ -137,6 +134,7 @@ PlayerCharacterStateGrabbedByCorruptor.states = {
 
 			local status_extension = parent.status_extension
 			local csm = parent.csm
+			local status_extension = parent.status_extension
 
 			if CharacterStateHelper.is_dead(status_extension) then
 				csm.change_state(csm, "dead")

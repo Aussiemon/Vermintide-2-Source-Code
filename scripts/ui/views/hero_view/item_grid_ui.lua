@@ -285,7 +285,7 @@ end
 ItemGridUI.selected_item = function (self)
 	return self._selected_item
 end
-ItemGridUI.add_item_to_slot_index = function (self, slot_index, item)
+ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_amount)
 	local widget = self._widget
 	local content = widget.content
 	local style = widget.style
@@ -322,7 +322,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item)
 
 		if backend_id then
 			local item_tooltip_name = "item_tooltip" .. name_sufix
-			amount = backend_items.get_item_amount(backend_items, backend_id)
+			amount = optional_amount or backend_items.get_item_amount(backend_items, backend_id)
 			local amount_color = style[item_amount_name].text_color
 			local amount_default_color = style[item_amount_name].default_color
 			amount_color[2] = amount_default_color[2]
@@ -535,19 +535,17 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 
 	self.change_item_filter(self, item_filter, not keep_page_index)
 
-	local items = self._items
-	local item_sort_func = self._item_sort_func
-
-	if item_sort_func and 1 < #items then
-		table.sort(items, item_sort_func)
-	end
-
 	local widget = self._widget
 	local content = widget.content
 	local title_text = display_name
 	content.title_text = title_text
 
 	if keep_page_index then
+		local items = self._items
+		local item_sort_func = self._item_sort_func
+
+		self._sort_items(self, items, item_sort_func)
+
 		local page_index = math.min(current_page_index, self._total_item_pages)
 
 		self.set_item_page(self, page_index)
@@ -568,9 +566,21 @@ ItemGridUI.change_item_filter = function (self, item_filter, change_page)
 	self._total_item_pages = total_pages
 
 	if change_page then
+		local items = self._items
+		local item_sort_func = self._item_sort_func
+
+		self._sort_items(self, items, item_sort_func)
+
 		local page_index = 1
 
 		self.set_item_page(self, page_index)
+	end
+
+	return 
+end
+ItemGridUI._sort_items = function (self, items, item_sort_func)
+	if item_sort_func and 1 < #items then
+		table.sort(items, item_sort_func)
 	end
 
 	return 
@@ -663,8 +673,9 @@ ItemGridUI.is_item_pressed = function (self, allow_single_press)
 
 			if not slot_hotspot.reserved and not slot_hotspot.unwieldable and (slot_hotspot.on_double_click or slot_hotspot.on_right_click or (allow_single_press and slot_hotspot.on_pressed)) then
 				local item = content["item" .. name_sufix]
+				local is_equipped = slot_hotspot.equipped
 
-				return item
+				return item, is_equipped
 			end
 		end
 	end

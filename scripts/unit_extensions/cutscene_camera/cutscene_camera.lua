@@ -83,7 +83,7 @@ end
 CutsceneCamera.update_cutscene_camera = function (self)
 	local source_camera = self.source_camera
 	local target_camera = self.target_camera
-	local pose, vertical_fov, near_range, far_range = nil
+	local pose, vertical_fov, near_range, far_range, dof_enabled, focal_distance, focal_region, focal_padding, focal_scale = nil
 
 	if target_camera then
 		local time = Managers.time:time("game")
@@ -99,6 +99,17 @@ CutsceneCamera.update_cutscene_camera = function (self)
 		far_range = source_camera.far_range(source_camera)
 	end
 
+	if Unit.has_data(self.unit, "dof_data") then
+		local dof_data = Unit.get_data(self.unit, "dof_data")
+		dof_enabled = dof_data.dof_enabled
+		focal_distance = dof_data.focal_distance
+		focal_region = dof_data.focal_region
+		focal_padding = dof_data.focal_padding
+		focal_scale = dof_data.focal_scale
+	else
+		dof_enabled = 0
+	end
+
 	if self.allow_controls then
 		self._handle_input(self, pose)
 	end
@@ -111,6 +122,15 @@ CutsceneCamera.update_cutscene_camera = function (self)
 	camera_manager.set_node_tree_root_vertical_fov(camera_manager, viewport, "cutscene", vertical_fov)
 	camera_manager.set_node_tree_root_near_range(camera_manager, viewport, "cutscene", near_range)
 	camera_manager.set_node_tree_root_far_range(camera_manager, viewport, "cutscene", far_range)
+	camera_manager.set_node_tree_root_dof_enabled(camera_manager, viewport, "cutscene", dof_enabled)
+
+	if 0 < dof_enabled then
+		camera_manager.set_node_tree_root_focal_distance(camera_manager, viewport, "cutscene", focal_distance)
+		camera_manager.set_node_tree_root_focal_region(camera_manager, viewport, "cutscene", focal_region)
+		camera_manager.set_node_tree_root_focal_padding(camera_manager, viewport, "cutscene", focal_padding)
+		camera_manager.set_node_tree_root_focal_scale(camera_manager, viewport, "cutscene", focal_scale)
+	end
+
 	camera_manager.set_camera_node(camera_manager, viewport, "cutscene", "root_node")
 
 	return 

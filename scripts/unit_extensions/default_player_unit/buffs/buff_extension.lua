@@ -502,6 +502,22 @@ BuffExtension.has_buff_perk = function (self, perk_name)
 
 	return false
 end
+BuffExtension.num_buff_perk = function (self, perk_name)
+	local buffs = self._buffs
+	local num_buffs = #buffs
+	local num_buff_perk = 0
+
+	for i = 1, num_buffs, 1 do
+		local buff = buffs[i]
+		local buff_template = buff.template
+
+		if buff_template.perk == perk_name then
+			num_buff_perk = num_buff_perk + 1
+		end
+	end
+
+	return num_buff_perk
+end
 BuffExtension.get_non_stacking_buff = function (self, buff_type)
 	local buffs = self._buffs
 	local num_buffs = #buffs

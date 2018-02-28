@@ -41,7 +41,7 @@ CareerAbilityESHuntsman.update = function (self, unit, input, dt, context, t)
 		return 
 	end
 
-	if input_extension.get(input_extension, "function_career") then
+	if input_extension.get(input_extension, "action_career") then
 		self._run_ability(self)
 	end
 
@@ -50,9 +50,8 @@ end
 CareerAbilityESHuntsman._ability_available = function (self)
 	local career_extension = self.career_extension
 	local status_extension = self.status_extension
-	local activated_ability_data = career_extension.get_activated_ability_data(career_extension)
 
-	return self.local_player and not self.bot_player and career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
+	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityESHuntsman._run_ability = function (self)
 	local world = self.world

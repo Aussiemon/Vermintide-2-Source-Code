@@ -193,16 +193,14 @@ PlayerUnitMovementSettings.slowing_damage_types = {
 }
 PlayerUnitMovementSettings.stun_settings = PlayerUnitMovementSettings.stun_settings or {}
 PlayerUnitMovementSettings.stun_settings.parry_broken = {
-	animation_driven = true,
+	duration = 1,
 	first_person_anim_name = "parry_break",
-	third_person_anim_name = "parry_break",
-	duration = 1
+	third_person_anim_name = "parry_break"
 }
 PlayerUnitMovementSettings.stun_settings.pushed = {
-	animation_driven = false,
+	duration = 0.2,
 	first_person_anim_name = "interrupt",
-	third_person_anim_name = "idle",
-	duration = 0.2
+	third_person_anim_name = "idle"
 }
 PlayerUnitMovementSettings.hit_react_settings = {
 	light_push = {

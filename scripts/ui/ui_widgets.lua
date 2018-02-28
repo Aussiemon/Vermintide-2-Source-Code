@@ -50,7 +50,7 @@ local function get_gamepad_layout_text_style(horizontal_alignment, offset)
 		word_wrap = false,
 		font_type = "hell_shark_masked",
 		horizontal_alignment = horizontal_alignment,
-		text_color = Colors.get_table("white"),
+		text_color = Colors.get_table("font_default"),
 		offset = offset
 	}
 end
@@ -1586,9 +1586,9 @@ UIWidgets.create_scrollbar = function (scenegraph_id, size)
 				corner_radius = 2,
 				color = {
 					255,
-					20,
-					20,
-					20
+					5,
+					5,
+					5
 				}
 			},
 			button_down = {
@@ -1624,12 +1624,7 @@ UIWidgets.create_scrollbar = function (scenegraph_id, size)
 					size[1],
 					size[2]
 				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
+				color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				start_offset = {
 					0,
 					0,
@@ -8551,14 +8546,14 @@ UIWidgets.create_text_button = function (scenegraph_id, text, font_size, optiona
 		},
 		style = {
 			text = {
-				word_wrap = true,
+				word_wrap = false,
 				upper_case = true,
 				localize = true,
 				vertical_alignment = "center",
 				font_type = "hell_shark",
 				font_size = font_size,
 				horizontal_alignment = optional_horizontal_alignment or "left",
-				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				offset = optional_offset or {
 					0,
 					0,
@@ -8566,14 +8561,14 @@ UIWidgets.create_text_button = function (scenegraph_id, text, font_size, optiona
 				}
 			},
 			text_hover = {
-				word_wrap = true,
+				word_wrap = false,
 				upper_case = true,
 				localize = true,
 				vertical_alignment = "center",
 				font_type = "hell_shark",
 				font_size = font_size,
 				horizontal_alignment = optional_horizontal_alignment or "left",
-				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = optional_offset or {
 					0,
 					0,
@@ -8581,14 +8576,14 @@ UIWidgets.create_text_button = function (scenegraph_id, text, font_size, optiona
 				}
 			},
 			text_disabled = {
-				word_wrap = true,
+				word_wrap = false,
 				upper_case = true,
 				localize = true,
 				vertical_alignment = "center",
 				font_type = "hell_shark",
 				font_size = font_size,
 				horizontal_alignment = optional_horizontal_alignment or "left",
-				text_color = Colors.get_color_table_with_alpha("font_default", 50),
+				text_color = Colors.get_color_table_with_alpha("gray", 50),
 				offset = optional_offset or {
 					0,
 					0,

@@ -43,7 +43,7 @@ CareerAbilityDRIronbreaker.update = function (self, unit, input, dt, context, t)
 	end
 
 	if not self._is_priming then
-		if input_extension.get(input_extension, "function_career") then
+		if input_extension.get(input_extension, "action_career") then
 			self._start_priming(self)
 		end
 	elseif self._is_priming then
@@ -55,7 +55,7 @@ CareerAbilityDRIronbreaker.update = function (self, unit, input, dt, context, t)
 			return 
 		end
 
-		if input_extension.get(input_extension, "function_career_release") then
+		if input_extension.get(input_extension, "action_career_release") then
 			self._run_ability(self)
 		end
 	end
@@ -65,14 +65,16 @@ end
 CareerAbilityDRIronbreaker._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
-	local activated_ability_data = career_extension.get_activated_ability_data(career_extension)
 
-	return self._local_player and not self._bot_player and career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
+	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityDRIronbreaker._start_priming = function (self)
-	local world = self._world
-	local effect_name = self._priming_fx_name
-	self._priming_fx_id = World.create_particles(world, effect_name, Vector3.zero())
+	if self._local_player then
+		local world = self._world
+		local effect_name = self._priming_fx_name
+		self._priming_fx_id = World.create_particles(world, effect_name, Vector3.zero())
+	end
+
 	self._is_priming = true
 
 	return 
@@ -91,10 +93,11 @@ CareerAbilityDRIronbreaker._update_priming = function (self, dt)
 	return 
 end
 CareerAbilityDRIronbreaker._stop_priming = function (self)
-	local world = self._world
 	local effect_id = self._priming_fx_id
 
 	if effect_id then
+		local world = self._world
+
 		World.destroy_particles(world, effect_id)
 
 		self._priming_fx_id = nil
@@ -107,13 +110,12 @@ end
 CareerAbilityDRIronbreaker._run_ability = function (self)
 	self._stop_priming(self)
 
-	local world = self._world
 	local owner_unit = self._owner_unit
 	local is_server = self._is_server
 	local local_player = self._local_player
 	local network_manager = self._network_manager
 	local network_transmit = network_manager.network_transmit
-	local status_extension = self._status_extension
+	local owner_unit_id = network_manager.unit_game_object_id(network_manager, owner_unit)
 	local career_extension = self._career_extension
 	local buff_extension = self._buff_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
@@ -129,9 +131,6 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 	end
 
 	local targets = FrameTable.alloc_table()
-	local player_and_bot_units = PLAYER_AND_BOT_UNITS
-	local num_player_units = #player_and_bot_units
-	local owner_unit_id = network_manager.unit_game_object_id(network_manager, owner_unit)
 	targets[1] = owner_unit
 	local range = 10
 	local duration = 10

@@ -125,5 +125,8 @@ end
 GameServer.id = function (self)
 	return (GameServerInternal.server_id and GameServerInternal.server_id(self._game_server)) or "no_id"
 end
+GameServer.eac_state = function (self, peer)
+	return self._game_server:eac_state(peer)
+end
 
 return 

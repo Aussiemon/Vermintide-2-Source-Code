@@ -137,7 +137,7 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	private_tabs = {
+	private_button = {
 		vertical_alignment = "bottom",
 		parent = "additional_option",
 		horizontal_alignment = "center",
@@ -147,13 +147,13 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			10,
+			12,
 			10
 		}
 	},
-	private_tabs_frame = {
+	private_button_frame = {
 		vertical_alignment = "bottom",
-		parent = "private_tabs",
+		parent = "private_button",
 		horizontal_alignment = "center",
 		size = {
 			game_option_size[1] - 20,
@@ -165,46 +165,60 @@ local scenegraph_definition = {
 			10
 		}
 	},
-	private_tabs_segments = {
-		vertical_alignment = "bottom",
-		parent = "private_tabs",
+	host_button = {
+		vertical_alignment = "top",
+		parent = "private_button",
 		horizontal_alignment = "center",
 		size = {
 			game_option_size[1] - 20,
-			0
+			40
 		},
 		position = {
 			0,
-			5,
+			45,
 			10
 		}
 	},
-	private_tabs_segments_top = {
-		vertical_alignment = "top",
-		parent = "private_tabs",
+	host_button_frame = {
+		vertical_alignment = "bottom",
+		parent = "host_button",
 		horizontal_alignment = "center",
 		size = {
 			game_option_size[1] - 20,
-			0
+			45
 		},
 		position = {
 			0,
-			-7,
-			13
+			0,
+			10
 		}
 	},
-	private_tabs_segments_bottom = {
-		vertical_alignment = "bottom",
-		parent = "private_tabs",
+	strict_matchmaking_button = {
+		vertical_alignment = "top",
+		parent = "host_button",
 		horizontal_alignment = "center",
 		size = {
 			game_option_size[1] - 20,
-			0
+			40
 		},
 		position = {
 			0,
-			3,
-			13
+			45,
+			10
+		}
+	},
+	strict_matchmaking_button_frame = {
+		vertical_alignment = "bottom",
+		parent = "strict_matchmaking_button",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1] - 20,
+			45
+		},
+		position = {
+			0,
+			0,
+			10
 		}
 	}
 }
@@ -1121,9 +1135,9 @@ local widgets = {
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),
 	window = UIWidgets.create_frame("window", window_size, window_frame, 20),
 	play_button = UIWidgets.create_play_button("play_button", scenegraph_definition.play_button.size, Localize("start_game_window_play"), 34),
-	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, "1. " .. Localize("start_game_window_mission"), Localize("start_game_window_change_mission"), nil, "game_options_bg_01"),
-	game_option_2 = create_settings_option("game_option_2", scenegraph_definition.game_option_2.size, "2. " .. Localize("start_game_window_difficulty"), Localize("start_game_window_change_difficulty"), "difficulty_option_1", "game_options_bg_02"),
-	additional_option = create_additional_settings_option("additional_option", scenegraph_definition.additional_option.size, "3. " .. Localize("start_game_window_other_options_title"), "game_options_bg_03"),
+	game_option_1 = create_settings_option("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_mission"), Localize("start_game_window_change_mission"), nil, "game_options_bg_01"),
+	game_option_2 = create_settings_option("game_option_2", scenegraph_definition.game_option_2.size, Localize("start_game_window_difficulty"), Localize("start_game_window_change_difficulty"), "difficulty_option_1", "game_options_bg_02"),
+	additional_option = create_additional_settings_option("additional_option", scenegraph_definition.additional_option.size, Localize("start_game_window_other_options_title"), "game_options_bg_03"),
 	game_options_left_chain = UIWidgets.create_tiled_texture("game_options_left_chain", "chain_link_01", {
 		16,
 		19
@@ -1132,20 +1146,21 @@ local widgets = {
 		16,
 		19
 	}),
-	private_frame = UIWidgets.create_frame("private_tabs_frame", scenegraph_definition.private_tabs_frame.size, window_frame, 1),
-	private_tabs = UIWidgets.create_default_text_tabs("private_tabs", scenegraph_definition.private_tabs.size, 2),
-	private_tabs_segments = UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_vertical", {
-		5,
-		35
-	}, "private_tabs_segments", 1),
-	private_tabs_segments_top = UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_top", {
-		17,
-		9
-	}, "private_tabs_segments_top", 1),
-	private_tabs_segments_bottom = UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_bottom", {
-		17,
-		9
-	}, "private_tabs_segments_bottom", 1)
+	private_frame = UIWidgets.create_frame("private_button_frame", scenegraph_definition.private_button_frame.size, window_frame, 1),
+	private_button = UIWidgets.create_default_checkbox_button("private_button", scenegraph_definition.private_button.size, Localize("start_game_window_other_options_private"), 24, {
+		title = Localize("start_game_window_other_options_private"),
+		description = Localize("start_game_window_other_options_private_description")
+	}),
+	host_frame = UIWidgets.create_frame("host_button_frame", scenegraph_definition.host_button_frame.size, window_frame, 1),
+	host_button = UIWidgets.create_default_checkbox_button("host_button", scenegraph_definition.host_button.size, Localize("start_game_window_other_options_always_host"), 24, {
+		title = Localize("start_game_window_other_options_always_host"),
+		description = Localize("start_game_window_other_options_always_host_description")
+	}),
+	strict_matchmaking_frame = UIWidgets.create_frame("strict_matchmaking_button_frame", scenegraph_definition.strict_matchmaking_button_frame.size, window_frame, 1),
+	strict_matchmaking_button = UIWidgets.create_default_checkbox_button("strict_matchmaking_button", scenegraph_definition.strict_matchmaking_button.size, Localize("start_game_window_other_options_strict_matchmaking"), 24, {
+		title = Localize("start_game_window_other_options_strict_matchmaking"),
+		description = Localize("start_game_window_other_options_strict_matchmaking_description")
+	})
 }
 local animation_definitions = {
 	on_enter = {

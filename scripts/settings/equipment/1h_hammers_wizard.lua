@@ -48,12 +48,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.5,
 					blocker = true,
 					end_time = 1.2,
@@ -107,12 +101,6 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				},
 				{
 					start_time = 0.5,
@@ -170,12 +158,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.5,
 					blocker = true,
 					end_time = 1.2,
@@ -231,12 +213,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.5,
 					blocker = true,
 					end_time = 1.2,
@@ -252,7 +228,7 @@ weapon_template.actions = {
 		},
 		heavy_attack = {
 			damage_window_start = 0.2,
-			range_mod = 1.2,
+			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -310,12 +286,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -324,7 +294,7 @@ weapon_template.actions = {
 		},
 		heavy_attack_left = {
 			damage_window_start = 0.45,
-			range_mod = 1.2,
+			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -382,12 +352,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -397,7 +361,7 @@ weapon_template.actions = {
 		},
 		heavy_attack_right_up = {
 			damage_window_start = 0.35,
-			range_mod = 1.2,
+			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -455,12 +419,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -470,17 +428,17 @@ weapon_template.actions = {
 		},
 		light_attack_left = {
 			damage_window_start = 0.33,
-			anim_end_event = "attack_finished",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			use_target = true,
+			no_damage_impact_sound_event = "blunt_hit_armour",
 			width_mod = 25,
+			use_target = true,
 			damage_profile = "light_blunt_tank",
 			hit_effect = "melee_hit_hammers_1h",
 			damage_window_end = 0.42,
 			impact_sound_event = "blunt_hit",
-			range_mode = 1.2,
+			anim_end_event = "attack_finished",
 			dedicated_target_range = 2,
 			anim_event = "attack_swing_left_diagonal",
 			hit_stop_anim = "attack_hit",
@@ -522,29 +480,23 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_right = {
 			damage_window_start = 0.34,
-			anim_end_event = "attack_finished",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			use_target = true,
+			no_damage_impact_sound_event = "blunt_hit_armour",
 			width_mod = 25,
+			use_target = true,
 			damage_profile = "light_blunt_tank",
 			hit_effect = "melee_hit_hammers_1h",
 			damage_window_end = 0.47,
 			impact_sound_event = "blunt_hit",
-			range_mode = 1.2,
+			anim_end_event = "attack_finished",
 			dedicated_target_range = 2,
 			anim_event = "attack_swing_right_diagonal",
 			hit_stop_anim = "attack_hit",
@@ -586,31 +538,25 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
 		light_attack_last = {
 			damage_window_start = 0.35,
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			use_target = true,
+			no_damage_impact_sound_event = "blunt_hit_armour",
 			sweep_z_offset = 0.05,
 			width_mod = 25,
+			use_target = true,
 			damage_profile = "light_blunt_smiter",
 			aim_assist_max_ramp_multiplier = 0.8,
-			aim_assist_ramp_decay_delay = 0.1,
 			hit_effect = "melee_hit_hammers_1h",
+			aim_assist_ramp_decay_delay = 0.1,
 			damage_window_end = 0.5,
 			impact_sound_event = "blunt_hit",
-			range_mode = 1.2,
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2,
 			aim_assist_ramp_multiplier = 0.6,
@@ -660,18 +606,12 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		},
 		light_attack_upper = {
 			damage_window_start = 0.38,
-			range_mod = 1.2,
+			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -728,28 +668,22 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		},
 		light_attack_bopp = {
-			damage_window_start = 0.34,
-			anim_end_event = "attack_finished",
-			no_damage_impact_sound_event = "blunt_hit_armour",
+			damage_window_start = 0.31,
+			range_mod = 1.25,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
-			use_target = true,
+			no_damage_impact_sound_event = "blunt_hit_armour",
 			width_mod = 25,
+			use_target = true,
 			damage_profile = "light_blunt_tank",
 			hit_effect = "melee_hit_hammers_1h",
 			damage_window_end = 0.47,
 			impact_sound_event = "blunt_hit",
-			range_mode = 1.2,
+			anim_end_event = "attack_finished",
 			dedicated_target_range = 2,
 			anim_event = "attack_swing_left",
 			hit_stop_anim = "attack_hit",
@@ -799,12 +733,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			hit_mass_count = TANK_HIT_MASS_COUNT
@@ -878,12 +806,6 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			push_radius = push_radius,
@@ -940,19 +862,12 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -963,9 +878,9 @@ weapon_template.actions = {
 	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
 }
 weapon_template.tooltip_keywords = {
-	"keyword_1",
-	"keyword_2",
-	"keyword_3"
+	"weapon_keyword_high_damage",
+	"weapon_keyword_damage_over_time",
+	"weapon_keyword_wide_sweeps"
 }
 weapon_template.compare_statistics = {
 	attacks = {

@@ -108,11 +108,15 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 				reload_amount = math.min(reload_amount, self.available_ammo)
 				self.current_ammo = self.current_ammo + reload_amount
 
-				if not buff_extension or (not buff_extension.has_buff_type(buff_extension, "no_ammo_consumed") and not buff_extension.has_buff_type(buff_extension, "markus_huntsman_activated_ability")) then
-					self.available_ammo = self.available_ammo - reload_amount
-				end
-
 				if buff_extension then
+					local no_ammo_consumed = buff_extension.has_buff_type(buff_extension, "no_ammo_consumed")
+					local markus_huntsman_ability = buff_extension.has_buff_type(buff_extension, "markus_huntsman_activated_ability")
+					local twitch_no_ammo_reloads = buff_extension.has_buff_type(buff_extension, "twitch_no_overcharge_no_ammo_reloads")
+
+					if not no_ammo_consumed and not markus_huntsman_ability and not twitch_no_ammo_reloads then
+						self.available_ammo = self.available_ammo - reload_amount
+					end
+
 					buff_extension.trigger_procs(buff_extension, "on_reload")
 				end
 
@@ -233,10 +237,6 @@ GenericAmmoUserExtension.add_ammo_to_reserve = function (self, amount)
 		self.current_ammo = math.min(self.max_ammo, self.current_ammo + amount)
 	else
 		self.available_ammo = math.min(self.max_ammo - self.current_ammo, self.available_ammo + amount)
-	end
-
-	if self.can_reload(self) then
-		self.start_reload(self, false)
 	end
 
 	return 

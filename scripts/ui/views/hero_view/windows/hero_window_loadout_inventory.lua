@@ -10,8 +10,12 @@ HeroWindowLoadoutInventory.NAME = "HeroWindowLoadoutInventory"
 local function item_sort_func(item_1, item_2)
 	local item_data_1 = item_1.data
 	local item_data_2 = item_2.data
+	local item_key_1 = item_data_1.key
+	local item_key_2 = item_data_2.key
+	local item_1_power_level = item_1.power_level or 0
+	local item_2_power_level = item_2.power_level or 0
 
-	if item_1.power_level == item_2.power_level then
+	if item_1_power_level == item_2_power_level then
 		local item_1_rarity = item_1.rarity or item_data_1.rarity
 		local item_2_rarity = item_2.rarity or item_data_2.rarity
 		local item_rarity_order = UISettings.item_rarity_order
@@ -23,8 +27,10 @@ local function item_sort_func(item_1, item_2)
 			local item_type_2 = Localize(item_data_2.item_type)
 
 			if item_type_1 == item_type_2 then
-				local item_name_1 = Localize(item_data_1.display_name)
-				local item_name_2 = Localize(item_data_2.display_name)
+				local _, item_1_display_name = UIUtils.get_ui_information_from_item(item_1)
+				local _, item_2_display_name = UIUtils.get_ui_information_from_item(item_2)
+				local item_name_1 = Localize(item_1_display_name)
+				local item_name_2 = Localize(item_2_display_name)
 
 				return item_name_1 < item_name_2
 			else
@@ -34,7 +40,7 @@ local function item_sort_func(item_1, item_2)
 			return item_1_rarity_order < item_2_rarity_order
 		end
 	else
-		return item_2.power_level < item_1.power_level
+		return item_2_power_level < item_1_power_level
 	end
 
 	return 
@@ -57,13 +63,13 @@ HeroWindowLoadoutInventory.on_enter = function (self, params, offset)
 	self._stats_id = local_player.stats_id(local_player)
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
+	self.hero_name = params.hero_name
+	self.career_index = params.career_index
+	self.profile_index = params.profile_index
 	self._animations = {}
 
 	self.create_ui_elements(self, params, offset)
 
-	self.hero_name = params.hero_name
-	self.career_index = params.career_index
-	self.profile_index = params.profile_index
 	local item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
 	self._item_grid = item_grid
 
@@ -100,23 +106,83 @@ HeroWindowLoadoutInventory.create_ui_elements = function (self, params, offset)
 		window_position[3] = window_position[3] + offset[3]
 	end
 
-	self._assign_tab_icons(self)
+	self._setup_tab_widget(self)
 
 	return 
 end
-HeroWindowLoadoutInventory._assign_tab_icons = function (self)
-	local widget = self._widgets_by_name.item_tabs
-	local widget_content = widget.content
-	local amount = widget_content.amount
+HeroWindowLoadoutInventory._setup_tab_widget = function (self)
+	local profile = SPProfiles[self.profile_index]
+	local careers = profile.careers
+	local career_index = self.career_index
+	local career = careers[career_index]
+	local loadout_equipment_slots = career.loadout_equipment_slots
+	local career_category_settings_index_lookup = {}
+	local unique_categories = {}
 
-	for i = 1, amount, 1 do
-		local name_suffix = "_" .. tostring(i)
+	for index, name in ipairs(loadout_equipment_slots) do
+		for category_index, category_setting in ipairs(category_settings) do
+			if name == category_setting.name then
+				unique_categories[category_index] = true
+				career_category_settings_index_lookup[index] = category_index
+
+				break
+			end
+		end
+	end
+
+	local num_unique_item_tabs = 0
+	local tabs_category_index_lookups = {}
+
+	for index, _ in pairs(unique_categories) do
+		num_unique_item_tabs = num_unique_item_tabs + 1
+		tabs_category_index_lookups[#tabs_category_index_lookups + 1] = index
+	end
+
+	local function sort_tabs_indices(a, b)
+		return a < b
+	end
+
+	table.sort(tabs_category_index_lookups, sort_tabs_indices)
+
+	self._tabs_category_index_lookups = tabs_category_index_lookups
+	self._career_category_settings_index_lookup = career_category_settings_index_lookup
+	local widgets = self._widgets
+	local widgets_by_name = self._widgets_by_name
+	local item_tabs_segments = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_vertical", {
+		5,
+		35
+	}, "item_tabs_segments", num_unique_item_tabs - 1))
+	local item_tabs_segments_top = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_top", {
+		17,
+		9
+	}, "item_tabs_segments_top", num_unique_item_tabs - 1))
+	local item_tabs_segments_bottom = UIWidget.init(UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_bottom", {
+		17,
+		9
+	}, "item_tabs_segments_bottom", num_unique_item_tabs - 1))
+	widgets_by_name.item_tabs_segments = item_tabs_segments
+	widgets_by_name.item_tabs_segments_top = item_tabs_segments_top
+	widgets_by_name.item_tabs_segments_bottom = item_tabs_segments_bottom
+	widgets[#widgets + 1] = item_tabs_segments
+	widgets[#widgets + 1] = item_tabs_segments_top
+	widgets[#widgets + 1] = item_tabs_segments_bottom
+	local scenegraph_id = "item_tabs"
+	local size = scenegraph_definition.item_tabs.size
+	local widget_definition = UIWidgets.create_default_icon_tabs(scenegraph_id, size, num_unique_item_tabs)
+	local widget = UIWidget.init(widget_definition)
+	widgets_by_name[scenegraph_id] = widget
+	widgets[#widgets + 1] = widget
+	local widget_content = widget.content
+
+	for index, category_index in ipairs(tabs_category_index_lookups) do
+		local name_suffix = "_" .. tostring(index)
 		local hotspot_name = "hotspot" .. name_suffix
 		local icon_name = "icon" .. name_suffix
 		local hotspot_content = widget_content[hotspot_name]
-		local category = category_settings[i]
+		local category = category_settings[category_index]
 		local icon = category.icon
 		hotspot_content[icon_name] = icon
+		hotspot_content.category_index = category_index
 	end
 
 	return 
@@ -220,7 +286,7 @@ HeroWindowLoadoutInventory._is_inventory_tab_pressed = function (self)
 		local hotspot_content = widget_content[hotspot_name]
 
 		if hotspot_content.on_release and not hotspot_content.is_selected then
-			return i
+			return hotspot_content.category_index
 		end
 	end
 
@@ -235,7 +301,8 @@ HeroWindowLoadoutInventory._select_tab_by_category_index = function (self, index
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
-		hotspot_content.is_selected = i == index
+		local category_index = hotspot_content.category_index
+		hotspot_content.is_selected = index == category_index
 	end
 
 	return 
@@ -245,13 +312,13 @@ HeroWindowLoadoutInventory._handle_input = function (self, dt, t)
 	local parent = self.parent
 	local item_grid = self._item_grid
 	local allow_single_press = false
-	local item = item_grid.is_item_pressed(item_grid, allow_single_press)
+	local item, is_equipped = item_grid.is_item_pressed(item_grid, allow_single_press)
 
 	if item_grid.is_item_hovered(item_grid) then
 		self._play_sound(self, "play_gui_inventory_item_hover")
 	end
 
-	if item then
+	if item and not is_equipped then
 		parent._set_loadout_item(parent, item, self._strict_slot_type)
 		self._play_sound(self, "play_gui_lobby_button_04_heroic_deed_inventory_click")
 	end
@@ -268,7 +335,7 @@ HeroWindowLoadoutInventory._handle_input = function (self, dt, t)
 
 	local tab_index_pressed = self._is_inventory_tab_pressed(self)
 
-	if tab_index_pressed and tab_index_pressed ~= self._selected_loadout_slot_index then
+	if tab_index_pressed and tab_index_pressed ~= self._internal_slot_index then
 		parent.set_selected_loadout_slot_index(parent, tab_index_pressed)
 		self._play_sound(self, "play_gui_inventory_tab_click")
 	end
@@ -314,13 +381,18 @@ HeroWindowLoadoutInventory._update_page_info = function (self)
 
 	return 
 end
+HeroWindowLoadoutInventory._get_actual_loadout_category_index = function (self, index)
+	return self._career_category_settings_index_lookup[index]
+end
 HeroWindowLoadoutInventory._update_selected_loadout_slot_index = function (self)
 	local index = self.parent:get_selected_loadout_slot_index()
+	local internal_slot_index = self._career_category_settings_index_lookup[index]
 
 	if index ~= self._selected_loadout_slot_index then
-		self._selected_loadout_slot_index = index
-
 		self._change_category_by_index(self, index)
+
+		self._selected_loadout_slot_index = index
+		self._internal_slot_index = internal_slot_index
 	end
 
 	return 
@@ -374,37 +446,28 @@ HeroWindowLoadoutInventory._play_sound = function (self, event)
 	return 
 end
 HeroWindowLoadoutInventory._change_category_by_index = function (self, index, force_update)
-	self._select_tab_by_category_index(self, index)
+	local internal_slot_index = self._career_category_settings_index_lookup[index]
+
+	self._select_tab_by_category_index(self, internal_slot_index)
 
 	if force_update then
-		index = self._current_category_index or 1
+		index = self._internal_slot_index or 1
 	end
 
-	if self._current_category_index == index then
+	local actual_category_setting = category_settings[index]
+	local actual_category_name = actual_category_setting.name
+	self._strict_slot_type = actual_category_name
+
+	if self._internal_slot_index == internal_slot_index then
 		return 
 	end
 
-	self._current_category_index = index
-	local category_setting = category_settings[index]
+	local category_setting = category_settings[internal_slot_index]
 	local category_name = category_setting.name
 	local display_name = category_setting.display_name
+	self._widgets_by_name.item_grid_header.content.text = display_name
 
 	self._item_grid:change_category(category_name)
-
-	local hero_name = self.hero_name
-	local career_index = self.career_index
-	local profile = SPProfiles[FindProfileIndex(hero_name)]
-	local career = profile.careers[career_index]
-	local career_name = career.name
-	local is_slayer = career_name == "dr_slayer"
-
-	if is_slayer and category_name == "ranged" then
-		self._strict_slot_type = "ranged"
-	else
-		self._strict_slot_type = nil
-	end
-
-	self._widgets_by_name.item_grid_header.content.text = display_name
 
 	return true
 end

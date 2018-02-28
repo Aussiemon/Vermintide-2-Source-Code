@@ -24,12 +24,6 @@ weapon_template.actions = {
 					start_time = 0.12,
 					action = "action_one",
 					auto_chain = true
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		},
@@ -69,12 +63,6 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			condition_func = function (unit, input_extension, ammo_extension)
@@ -88,7 +76,6 @@ weapon_template.actions = {
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -148,12 +135,6 @@ weapon_template.actions.action_one.default_three.allowed_chain_actions = {
 		start_time = 0.4,
 		action = "action_wield",
 		input = "action_wield"
-	},
-	{
-		sub_action = "default",
-		start_time = 0,
-		action = "action_career_skill",
-		input = "action_career_skill"
 	}
 }
 weapon_template.default_spread_template = "repeating pistol"

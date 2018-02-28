@@ -72,8 +72,10 @@ StateLoading.on_enter = function (self, param_block)
 	local level_transition_handler = self._level_transition_handler
 	local next_level_key = level_transition_handler.get_next_level_key(level_transition_handler)
 
-	if next_level_key == "prologue" then
+	if self._switch_to_tutorial_backend then
 		Managers.backend:start_tutorial()
+
+		self.parent.loading_context.switch_to_tutorial_backend = nil
 	end
 
 	if self._lobby_client ~= nil and not self._lobby_client:is_dedicated_server() then
@@ -141,6 +143,7 @@ StateLoading._parse_loading_context = function (self)
 		self._checkpoint_data = loading_context.checkpoint_data
 		self._quickplay_bonus = loading_context.quickplay_bonus
 		self._level_end_view_context = loading_context.level_end_view_context
+		self._switch_to_tutorial_backend = loading_context.switch_to_tutorial_backend
 	end
 
 	return 

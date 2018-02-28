@@ -277,6 +277,7 @@ StartMenuView.on_enter = function (self, menu_state_name, menu_sub_state_name)
 	self.play_sound(self, "hud_in_inventory_state_on")
 	self.play_sound(self, "play_gui_amb_start_screen_enter")
 	self.play_sound(self, "play_gui_amb_hero_screen_loop_begin")
+	self.play_sound(self, "Play_menu_screen_music")
 
 	return 
 end
@@ -456,6 +457,20 @@ StartMenuView.post_update_on_exit = function (self)
 		self.viewport_widget = nil
 	end
 
+	if self.initial_profile_view(self) then
+		local world_manager = Managers.world
+
+		if world_manager.has_world(world_manager, "level_world") then
+			local world = world_manager.world(world_manager, "level_world")
+			local level_name = "levels/inn/world"
+			local level = ScriptWorld.level(world, level_name)
+
+			if level then
+				Level.trigger_event(level, "play_keep_intro_cutscene")
+			end
+		end
+	end
+
 	return 
 end
 StartMenuView.on_exit = function (self)
@@ -475,11 +490,13 @@ StartMenuView.on_exit = function (self)
 	self.hide_hero_world(self)
 	self.play_sound(self, "hud_in_inventory_state_off")
 	self.play_sound(self, "play_gui_amb_hero_screen_loop_end")
+	self.play_sound(self, "Stop_menu_screen_music")
 
 	return 
 end
 StartMenuView.exit = function (self, return_to_game)
-	local exit_transition = (self.initial_profile_view(self) and "exit_initial_start_menu_view") or (return_to_game and "exit_menu") or "ingame_menu"
+	local initial_profile_view = self.initial_profile_view(self)
+	local exit_transition = (initial_profile_view and "exit_initial_start_menu_view") or (return_to_game and "exit_menu") or "ingame_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition)
 	self.play_sound(self, "Play_hud_button_close")

@@ -486,6 +486,7 @@ InputManager.update = function (self, dt, t)
 	InputAux.default_values_for_types.Vector3 = Vector3.zero()
 	self._hovering = self._frame_hovering
 	self._frame_hovering = false
+	self._showing_tooltip = false
 
 	Profiler.start("device_updates")
 	self.update_devices(self, dt, t)
@@ -727,6 +728,14 @@ InputManager.is_hovering = function (self)
 end
 InputManager.is_frame_hovering = function (self)
 	return self._frame_hovering
+end
+InputManager.set_showing_tooltip = function (self, showing_tooltip)
+	self._showing_tooltip = showing_tooltip
+
+	return 
+end
+InputManager.is_showing_tooltip = function (self)
+	return self._showing_tooltip
 end
 InputManager.add_keymaps_data = function (self, keymaps, name)
 	local stored_keymaps_data = self.stored_keymaps_data

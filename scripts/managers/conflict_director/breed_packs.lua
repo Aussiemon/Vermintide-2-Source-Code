@@ -900,7 +900,7 @@ BreedPacks = {
 			clamp_breeds_hi = {
 				normal = {
 					{
-						3,
+						2,
 						"skaven_plague_monk",
 						Breeds.skaven_clan_rat
 					},
@@ -1478,7 +1478,7 @@ BreedPacks = {
 			clamp_breeds_hi = {
 				normal = {
 					{
-						3,
+						2,
 						"chaos_berzerker",
 						Breeds.chaos_marauder
 					},
@@ -1578,7 +1578,7 @@ BreedPacks = {
 			clamp_breeds_hi = {
 				normal = {
 					{
-						3,
+						2,
 						"chaos_berzerker",
 						Breeds.chaos_marauder
 					},

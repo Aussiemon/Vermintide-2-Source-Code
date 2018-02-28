@@ -208,8 +208,6 @@ AchievementManager.init = function (self, world, statistics_db)
 	return 
 end
 AchievementManager.event_enable_achievements = function (self, enable)
-	self._enabled = enable
-
 	return 
 end
 AchievementManager._initialize_xbox_achivements = function (self)
@@ -233,14 +231,24 @@ AchievementManager.destroy = function (self)
 	return 
 end
 local ACHIEVEMENTS_PER_FRAME = 1
-local AchievementTemplates = AchievementTemplates
-local AchievementTemplates_n = AchievementTemplates_n
+local AchievementTemplates = (PLATFORM == "win32" and AchievementTemplates) or {}
+local AchievementTemplates_n = (PLATFORM == "win32" and AchievementTemplates_n) or 0
 AchievementManager.update = function (self, dt)
 	if self.error_timeout then
 		self.error_timeout = self.error_timeout - dt
 
 		if self.error_timeout < 0 then
 			self.error_timeout = nil
+		end
+
+		return 
+	end
+
+	if PLATFORM ~= "win32" then
+		if not self._sent_warning then
+			Application.warning("[AchievementManager] Achievements not yet implemented")
+
+			self._sent_warning = true
 		end
 
 		return 

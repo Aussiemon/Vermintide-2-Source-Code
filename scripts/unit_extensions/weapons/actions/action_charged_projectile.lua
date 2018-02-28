@@ -212,10 +212,16 @@ ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world,
 		local sub_action_name = lookup_data.sub_action_name
 		local charge_level = self.charge_level
 		local scale = math.round(math.max(charge_level, 0)*100)
+		local projectile_power_level = self.power_level
+
+		if current_action.scale_power_level then
+			projectile_power_level = math.max(current_action.scale_power_level, self.charge_level)*projectile_power_level
+		end
+
 		local item_data = ItemMasterList[item_name]
 		local item_template = BackendUtils.get_item_template(item_data)
 
-		ActionUtils.spawn_player_projectile(owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, self._is_critical_strike, self.power_level, gaze_settings)
+		ActionUtils.spawn_player_projectile(owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, self._is_critical_strike, projectile_power_level, gaze_settings)
 
 		local fire_sound_event = self.current_action.fire_sound_event
 

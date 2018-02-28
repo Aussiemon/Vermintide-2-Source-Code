@@ -20,6 +20,7 @@ assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 assert(DialogueLookup[DialogueLookup_n + 20] == nil)
 assert(DialogueLookup[DialogueLookup_n + 21] == nil)
 assert(DialogueLookup[DialogueLookup_n + 22] == nil)
+assert(DialogueLookup[DialogueLookup_n + 23] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pbw_level_chaos_war_camp_ravine"
 DialogueLookup[DialogueLookup_n + 2] = "pbw_level_chaos_war_camp_live_in_swamp"
@@ -39,10 +40,11 @@ DialogueLookup[DialogueLookup_n + 15] = "pbw_level_chaos_war_camp_arena_01"
 DialogueLookup[DialogueLookup_n + 16] = "pbw_level_chaos_war_camp_dead_champion_01"
 DialogueLookup[DialogueLookup_n + 17] = "pbw_level_chaos_war_camp_depart_01"
 DialogueLookup[DialogueLookup_n + 18] = "pbw_level_chaos_war_camp_success_01"
-DialogueLookup[DialogueLookup_n + 19] = "pbw_level_chaos_war_camp_portal_01"
-DialogueLookup[DialogueLookup_n + 20] = "pbw_chaos_war_camp_intro_a"
-DialogueLookup[DialogueLookup_n + 21] = "pbw_chaos_war_camp_intro_b"
-DialogueLookup[DialogueLookup_n + 22] = "pbw_chaos_war_camp_intro_c"
-DialogueLookup_n = DialogueLookup_n + 22
+DialogueLookup[DialogueLookup_n + 19] = "pbw_chaos_war_camp_intro_a"
+DialogueLookup[DialogueLookup_n + 20] = "pbw_chaos_war_camp_intro_b"
+DialogueLookup[DialogueLookup_n + 21] = "pbw_chaos_war_camp_intro_c"
+DialogueLookup[DialogueLookup_n + 22] = "pbw_chaos_war_camp_challenge_reply_a"
+DialogueLookup[DialogueLookup_n + 23] = "pbw_level_chaos_war_camp_dead_champion"
+DialogueLookup_n = DialogueLookup_n + 23
 
 return 

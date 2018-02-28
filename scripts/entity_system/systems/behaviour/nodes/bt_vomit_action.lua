@@ -22,6 +22,7 @@ BTVomitAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = action
 	blackboard.active_node = BTVomitAction
 	blackboard.physics_world = blackboard.physics_world or World.get_data(world, "physics_world")
+	blackboard.rotation_time = t + action.rotation_time
 
 	if self.init_attack(self, unit, blackboard, action, t) then
 		blackboard.anim_locked = t + action.attack_time
@@ -112,15 +113,16 @@ BTVomitAction.init_attack = function (self, unit, blackboard, action, t)
 	blackboard.navigation_extension:stop()
 
 	local down_dot = Vector3.dot(puke_direction, Vector3.down())
-	local is_below = 0.35 <= down_dot
+	local use_near_vomit = 0.35 <= down_dot and puke_distance_sq < action.near_vomit_distance
 
-	if is_below then
+	if use_near_vomit then
 		vomit_animation = attack_anims.near_vomit
+		blackboard.near_vomit = true
 	else
 		vomit_animation = attack_anims.ranged_vomit
 	end
 
-	debug_print("PUKE_DISTANCE SQ", puke_distance_sq, "ANIMATION:", vomit_animation, "DIR:", puke_direction, "IS BELOW:", is_below, "DOWN DOT:", down_dot)
+	debug_print("PUKE_DISTANCE SQ", puke_distance_sq, "ANIMATION:", vomit_animation, "DIR:", puke_direction, "USE NEAR VOMIT:", use_near_vomit, "DOWN DOT:", down_dot)
 	Managers.state.network:anim_event(unit, vomit_animation)
 
 	blackboard.attack_started_at_t = t
@@ -139,6 +141,9 @@ BTVomitAction.init_attack = function (self, unit, blackboard, action, t)
 
 	local to_vomit_rotation = LocomotionUtils.look_at_position_flat(unit, puke_position)
 	blackboard.attack_rotation = QuaternionBox(to_vomit_rotation)
+	local locomotion = blackboard.locomotion_extension
+
+	locomotion.set_wanted_rotation(locomotion, to_vomit_rotation)
 
 	return true
 end
@@ -154,6 +159,8 @@ BTVomitAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.create_bot_threat_at_t = nil
 	blackboard.current_bot_threat_index = nil
 	blackboard.bot_threats_data = nil
+	blackboard.attack_finished = nil
+	blackboard.near_vomit = nil
 
 	return 
 end
@@ -178,9 +185,24 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 		return "failed"
 	end
 
+	local target_unit = blackboard.target_unit
+	local target_unit_status_extension = (ScriptUnit.has_extension(target_unit, "status_system") and ScriptUnit.extension(target_unit, "status_system")) or nil
+
 	if t < blackboard.anim_locked then
 		if blackboard.is_puking then
 			self.player_vomit_hit_check(self, unit, blackboard)
+		elseif t < blackboard.rotation_time and not target_unit_status_extension.get_is_dodging(target_unit_status_extension) and not target_unit_status_extension.is_invisible(target_unit_status_extension) then
+			local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
+			local locomotion = blackboard.locomotion_extension
+
+			locomotion.set_wanted_rotation(locomotion, rotation)
+
+			local puke_position, puke_distance_sq, puke_direction = self._get_vomit_position(self, unit, blackboard)
+
+			if puke_position and puke_direction then
+				blackboard.puke_position:store(puke_position)
+				blackboard.puke_direction:store(puke_direction)
+			end
 		else
 			local puke_direction_box = blackboard.puke_direction
 			local puke_direction_flat = Vector3(puke_direction_box.x, puke_direction_box.y, 0)
@@ -264,8 +286,8 @@ BTVomitAction.create_aoe = function (self, unit, blackboard, action)
 	local dir = blackboard.puke_direction:unbox()
 	local extension_init_data = {
 		area_damage_system = {
-			liquid_template = "bile_troll_vomit",
 			flow_dir = dir,
+			liquid_template = (blackboard.near_vomit and "bile_troll_vomit_near") or "bile_troll_vomit",
 			source_unit = unit
 		}
 	}

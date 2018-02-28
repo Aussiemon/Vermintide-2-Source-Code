@@ -102,11 +102,19 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		end
 
 		if self.source_id then
+			local owner = self.owner_player
+			local is_husk = not owner.local_player
+
+			WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", self.source_id)
 			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, self.source_id)
 		else
 			self.source_id = WwiseWorld.make_auto_source(self.wwise_world, self.weapon_unit)
 		end
 
+		local owner = self.owner_player
+		local is_husk = not owner.local_player
+
+		WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", self.source_id)
 		WwiseWorld.trigger_event(self.wwise_world, current_action.fire_sound_event, self.source_id)
 	end
 
@@ -264,6 +272,10 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		local source_id = self.source_id
 
 		if source_id then
+			local owner = self.owner_player
+			local is_husk = not owner.local_player
+
+			WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", source_id)
 			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, source_id)
 
 			self.source_id = nil
@@ -307,6 +319,10 @@ ActionFlamethrower.finish = function (self, reason)
 		local source_id = self.source_id
 
 		if source_id then
+			local owner = self.owner_player
+			local is_husk = not owner.local_player
+
+			WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", source_id)
 			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, source_id)
 
 			self.source_id = nil

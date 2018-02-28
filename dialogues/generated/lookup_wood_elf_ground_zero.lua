@@ -7,38 +7,16 @@ assert(DialogueLookup[DialogueLookup_n + 6] == nil)
 assert(DialogueLookup[DialogueLookup_n + 7] == nil)
 assert(DialogueLookup[DialogueLookup_n + 8] == nil)
 assert(DialogueLookup[DialogueLookup_n + 9] == nil)
-assert(DialogueLookup[DialogueLookup_n + 10] == nil)
-assert(DialogueLookup[DialogueLookup_n + 11] == nil)
-assert(DialogueLookup[DialogueLookup_n + 12] == nil)
-assert(DialogueLookup[DialogueLookup_n + 13] == nil)
-assert(DialogueLookup[DialogueLookup_n + 14] == nil)
-assert(DialogueLookup[DialogueLookup_n + 15] == nil)
-assert(DialogueLookup[DialogueLookup_n + 16] == nil)
-assert(DialogueLookup[DialogueLookup_n + 17] == nil)
-assert(DialogueLookup[DialogueLookup_n + 18] == nil)
-assert(DialogueLookup[DialogueLookup_n + 19] == nil)
-assert(DialogueLookup[DialogueLookup_n + 20] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pwe_level_ground_zero_canals"
-DialogueLookup[DialogueLookup_n + 2] = "pwe_level_ground_zero_canals_crossing"
-DialogueLookup[DialogueLookup_n + 3] = "pwe_level_ground_zero_cargo_elevator"
-DialogueLookup[DialogueLookup_n + 4] = "pwe_level_ground_zero_corruption_everywhere"
-DialogueLookup[DialogueLookup_n + 5] = "pwe_level_ground_zero_crumbling"
-DialogueLookup[DialogueLookup_n + 6] = "pwe_level_ground_zero_looking_for_elevator"
-DialogueLookup[DialogueLookup_n + 7] = "pwe_level_ground_zero_smell"
-DialogueLookup[DialogueLookup_n + 8] = "pwe_level_ground_zero_the_hole"
-DialogueLookup[DialogueLookup_n + 9] = "pwe_level_ground_zero_town"
-DialogueLookup[DialogueLookup_n + 10] = "pwe_level_ground_zero_welcoming_committee"
-DialogueLookup[DialogueLookup_n + 11] = "pwe_level_ground_zero_precarious"
-DialogueLookup[DialogueLookup_n + 12] = "pwe_level_ground_zero_draw_bridge"
-DialogueLookup[DialogueLookup_n + 13] = "pwe_level_ground_zero_landslide"
-DialogueLookup[DialogueLookup_n + 14] = "pwe_level_ground_zero_the_hole_second_view"
-DialogueLookup[DialogueLookup_n + 15] = "pwe_level_ground_zero_boss_near"
-DialogueLookup[DialogueLookup_n + 16] = "pwe_level_ground_zero_boss_spotted"
-DialogueLookup[DialogueLookup_n + 17] = "pwe_level_ground_zero_portal"
-DialogueLookup[DialogueLookup_n + 18] = "pwe_ground_zero_intro_a"
-DialogueLookup[DialogueLookup_n + 19] = "pwe_ground_zero_intro_b"
-DialogueLookup[DialogueLookup_n + 20] = "pwe_ground_zero_intro_c"
-DialogueLookup_n = DialogueLookup_n + 20
+DialogueLookup[DialogueLookup_n + 2] = "pwe_level_ground_zero_looking_for_elevator"
+DialogueLookup[DialogueLookup_n + 3] = "pwe_level_ground_zero_welcoming_committee"
+DialogueLookup[DialogueLookup_n + 4] = "pwe_level_ground_zero_draw_bridge"
+DialogueLookup[DialogueLookup_n + 5] = "pwe_level_ground_zero_boss_spotted"
+DialogueLookup[DialogueLookup_n + 6] = "pwe_level_ground_zero_boss_taunt_reply"
+DialogueLookup[DialogueLookup_n + 7] = "pwe_level_ground_zero_complete"
+DialogueLookup[DialogueLookup_n + 8] = "pwe_level_ground_zero_cargo_elevator"
+DialogueLookup[DialogueLookup_n + 9] = "pwe_level_ground_zero_canal_crossing"
+DialogueLookup_n = DialogueLookup_n + 9
 
 return 

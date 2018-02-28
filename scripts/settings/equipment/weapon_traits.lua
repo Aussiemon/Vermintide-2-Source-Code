@@ -21,7 +21,7 @@ local buff_tweak_data = {
 		bonus = 1
 	},
 	traits_ranged_reduced_overcharge = {
-		multiplier = 0.2
+		multiplier = -0.2
 	},
 	traits_ranged_movespeed_on_damage_taken = {
 		inherited_multiplier = 1.5,
@@ -31,7 +31,7 @@ local buff_tweak_data = {
 		bonus = 1
 	},
 	traits_ranged_replenish_ammo_on_crit = {
-		bonus = 3
+		bonus = 2
 	},
 	traits_ranged_remove_overcharge_on_crit = {
 		bonus = 4
@@ -41,22 +41,22 @@ local buff_tweak_data = {
 		multiplier = 0.05
 	},
 	traits_reduce_cooldown_on_crit = {
-		bonus = 1
+		bonus = 5
 	},
 	traits_heal_on_crit = {
 		bonus = 5
 	},
 	ranged_power_vs_unarmored = {
-		bonus = 50
+		multiplier = 0.25
 	},
 	ranged_power_vs_armored = {
-		bonus = 50
+		multiplier = 0.25
 	},
 	ranged_power_vs_large = {
-		bonus = 50
+		multiplier = 0.25
 	},
 	ranged_power_vs_frenzy = {
-		bonus = 50
+		multiplier = 0.25
 	},
 	trait_ring_not_consume_potion = {
 		proc_chance = 0.25
@@ -173,6 +173,7 @@ WeaponTraits.buff_templates = {
 	traits_ranged_restore_stamina_headshot = {
 		buffs = {
 			{
+				max_stacks = 1,
 				dormant = true,
 				stat_buff = StatBuffIndex.COOP_STAMINA
 			}
@@ -191,6 +192,7 @@ WeaponTraits.buff_templates = {
 	traits_ranged_reduced_overcharge = {
 		buffs = {
 			{
+				max_stacks = 1,
 				dormant = true,
 				stat_buff = StatBuffIndex.REDUCED_OVERCHARGE
 			}
@@ -239,6 +241,7 @@ WeaponTraits.buff_templates = {
 	consecutive_shot_debuff = {
 		buffs = {
 			{
+				refresh_durations = true,
 				duration = 10
 			}
 		}
@@ -247,6 +250,8 @@ WeaponTraits.buff_templates = {
 		buffs = {
 			{
 				max_stacks = 10,
+				icon = "ranged_consecutive_hits_increase_power",
+				refresh_durations = true,
 				stat_buff = StatBuffIndex.POWER_LEVEL
 			}
 		}
@@ -264,28 +269,40 @@ WeaponTraits.buff_templates = {
 	ranged_power_vs_unarmored = {
 		buffs = {
 			{
-				buff_func = ProcFunctions.POWER_LEVEL_UNARMOURED
+				max_stacks = 1,
+				icon = "ranged_increase_power_level_vs_armour_crit",
+				duration = 10,
+				stat_buff = StatBuffIndex.POWER_LEVEL_UNARMOURED
 			}
 		}
 	},
 	ranged_power_vs_armored = {
 		buffs = {
 			{
-				buff_func = ProcFunctions.POWER_LEVEL_ARMOURED
+				max_stacks = 1,
+				icon = "ranged_increase_power_level_vs_armour_crit",
+				duration = 10,
+				stat_buff = StatBuffIndex.POWER_LEVEL_ARMOURED
 			}
 		}
 	},
 	ranged_power_vs_large = {
 		buffs = {
 			{
-				buff_func = ProcFunctions.POWER_LEVEL_LARGE
+				max_stacks = 1,
+				icon = "ranged_increase_power_level_vs_armour_crit",
+				duration = 10,
+				stat_buff = StatBuffIndex.POWER_LEVEL_LARGE
 			}
 		}
 	},
 	ranged_power_vs_frenzy = {
 		buffs = {
 			{
-				buff_func = ProcFunctions.POWER_LEVEL_FRENZY
+				max_stacks = 1,
+				icon = "ranged_increase_power_level_vs_armour_crit",
+				duration = 10,
+				stat_buff = StatBuffIndex.POWER_LEVEL_FRENZY
 			}
 		}
 	},
@@ -369,6 +386,7 @@ WeaponTraits.buff_templates = {
 	trait_necklace_increased_healing_received = {
 		buffs = {
 			{
+				max_stacks = 1,
 				dormant = true,
 				stat_buff = StatBuffIndex.HEALING_RECEIVED
 			}
@@ -398,6 +416,7 @@ WeaponTraits.buff_templates = {
 	trait_necklace_damage_taken_reduction_buff = {
 		buffs = {
 			{
+				max_stacks = 1,
 				icon = "necklace_damage_taken_reduction_on_heal",
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
 			}
@@ -432,6 +451,7 @@ WeaponTraits.buff_templates = {
 	trait_trinket_grenade_damage_taken_buff = {
 		buffs = {
 			{
+				max_stacks = 1,
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
 			}
 		}
@@ -467,6 +487,7 @@ WeaponTraits.traits = {
 	},
 	melee_counter_push_power = {
 		display_name = "traits_melee_counter_push_power",
+		buffer = "both",
 		advanced_description = "description_traits_melee_counter_push_power",
 		icon = "melee_counter_push_power",
 		buff_name = "traits_melee_counter_push_power",
@@ -545,9 +566,10 @@ WeaponTraits.traits = {
 		}
 	},
 	ranged_restore_stamina_headshot = {
+		display_name = "traits_ranged_restore_stamina_headshot",
+		buffer = "both",
 		advanced_description = "description_traits_ranged_restore_stamina_headshot",
 		icon = "ranged_restore_stamina_headshot",
-		display_name = "traits_ranged_restore_stamina_headshot",
 		buff_name = "traits_ranged_restore_stamina_headshot"
 	},
 	ranged_reduced_overcharge = {
@@ -588,6 +610,7 @@ WeaponTraits.traits = {
 	},
 	ranged_remove_overcharge_on_crit = {
 		display_name = "traits_ranged_remove_overcharge_on_crit",
+		buffer = "both",
 		advanced_description = "description_traits_ranged_remove_overcharge_on_crit",
 		icon = "ranged_remove_overcharge_on_crit",
 		buff_name = "traits_ranged_remove_overcharge_on_crit",
@@ -600,18 +623,20 @@ WeaponTraits.traits = {
 	},
 	ranged_increase_power_level_vs_armour_crit = {
 		display_name = "traits_ranged_increase_power_level_vs_armour_crit",
+		buffer = "both",
 		advanced_description = "description_traits_ranged_increase_power_level_vs_armour_crit",
 		icon = "ranged_increase_power_level_vs_armour_crit",
 		buff_name = "traits_ranged_increase_power_level_vs_armour_crit",
 		description_values = {
 			{
-				value_type = "bonus",
-				value = buff_tweak_data.ranged_power_vs_unarmored.bonus
+				value_type = "multiplier",
+				value = buff_tweak_data.ranged_power_vs_unarmored.multiplier
 			}
 		}
 	},
 	ranged_consecutive_hits_increase_power = {
 		display_name = "traits_ranged_consecutive_hits_increase_power",
+		buffer = "both",
 		advanced_description = "description_traits_ranged_consecutive_hits_increase_power",
 		icon = "ranged_consecutive_hits_increase_power",
 		buff_name = "traits_ranged_consecutive_hits_increase_power",
@@ -730,7 +755,7 @@ WeaponTraits.traits = {
 	},
 	necklace_no_healing_health_regen = {
 		display_name = "trait_necklace_no_healing_health_regen",
-		buffer = "server",
+		buffer = "both",
 		advanced_description = "description_trait_necklace_no_healing_health_regen",
 		icon = "necklace_no_healing_health_regen",
 		buff_name = "trait_necklace_no_healing_health_regen"

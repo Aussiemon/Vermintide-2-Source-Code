@@ -1315,14 +1315,17 @@ IngamePlayerListUI.kick_player = function (self, player)
 
 	return 
 end
+local temp_vote_data = {}
 IngamePlayerListUI.kick_player_available = function (self, player)
 	local peer_id = player.peer_id
 
-	if peer_id == Network.peer_id() then
+	if not peer_id or peer_id == Network.peer_id() then
 		return false
 	end
 
-	if not Managers.state.voting:can_start_vote("kick_player") then
+	temp_vote_data.kick_peer_id = peer_id
+
+	if not Managers.state.voting:can_start_vote("kick_player", temp_vote_data) then
 		return false
 	end
 

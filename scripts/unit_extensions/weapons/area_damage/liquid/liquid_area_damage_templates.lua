@@ -1,5 +1,93 @@
 LiquidAreaDamageTemplates = {
 	templates = {
+		bile_troll_vomit_near = {
+			sfx_name_start = "Play_enemy_troll_puke_loop",
+			sfx_name_stop = "Stop_enemy_troll_puke_loop",
+			cell_size = 1,
+			liquid_spread_function = "pour_spread",
+			starting_pressure = 20,
+			apply_buff_to_player = true,
+			do_direct_damage_player = false,
+			buff_template_name = "bile_troll_vomit_ground_base",
+			linearized_flow = false,
+			damage_type = "vomit_ground",
+			do_direct_damage_ai = true,
+			init_function = "bile_troll_vomit_init",
+			end_pressure = 3,
+			fx_name_filled = "fx/wpnfx_troll_vomit_impact_01",
+			apply_buff_to_ai = false,
+			time_of_life = 10,
+			max_liquid = 40,
+			update_function = "bile_troll_vomit_update",
+			use_nav_cost_map_volumes = true,
+			nav_cost_map_cost_type = "troll_bile",
+			buff_condition_function = "bile_troll_vomit_ground_base_condition",
+			immune_breeds = {
+				chaos_troll = true,
+				chaos_dummy_troll = true,
+				chaos_spawn = true,
+				skaven_rat_ogre = true,
+				skaven_stormfiend = true
+			},
+			difficulty_direct_damage = {
+				easy = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				normal = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				hard = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_hard = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				harder = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_harder = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				hardest = {
+					1,
+					1,
+					0,
+					0,
+					1
+				},
+				survival_hardest = {
+					1,
+					1,
+					0,
+					0,
+					1
+				}
+			}
+		},
 		bile_troll_vomit = {
 			sfx_name_start = "Play_enemy_troll_puke_loop",
 			sfx_name_stop = "Stop_enemy_troll_puke_loop",
@@ -420,8 +508,8 @@ LiquidAreaDamageTemplates = {
 			}
 		},
 		flamethrower_patch = {
-			do_direct_damage_ai = true,
-			sfx_name_stop = "Stop_enemy_stormfiend_fire_ground_loop",
+			sfx_name_start = "Play_enemy_stormfiend_fire_ground_loop",
+			fx_name_rim = "fx/wpnfx_flamethrower_ground_rim_01",
 			cell_size = 1,
 			liquid_spread_function = "default_spread",
 			starting_pressure = 30,
@@ -429,16 +517,14 @@ LiquidAreaDamageTemplates = {
 			do_direct_damage_player = false,
 			buff_template_name = "stormfiend_warpfire_ground_base",
 			linearized_flow = false,
-			fx_name_rim = "fx/wpnfx_flamethrower_ground_rim_01",
 			damage_type = "warpfire_ground",
-			sfx_name_start = "Play_enemy_stormfiend_fire_ground_loop",
+			do_direct_damage_ai = true,
 			end_pressure = 5,
 			fx_name_filled = "fx/wpnfx_flamethrower_ground_01",
 			apply_buff_to_ai = true,
 			time_of_life = 2,
 			max_liquid = 35,
-			use_nav_cost_map_volumes = false,
-			nav_cost_map_cost_type = "stormfiend_warpfire",
+			sfx_name_stop = "Stop_enemy_stormfiend_fire_ground_loop",
 			buff_condition_function = "stormfiend_warpfire_ground_base_condition",
 			immune_breeds = {},
 			difficulty_direct_damage = {
@@ -501,23 +587,21 @@ LiquidAreaDamageTemplates = {
 			}
 		},
 		sienna_unchained_ability_patch = {
-			do_direct_damage_ai = true,
-			sfx_name_stop = "Stop_props_lamp_oil_fire",
+			damage_buff_template_name = "burning_1W_dot",
+			fx_name_rim = "fx/chr_unchained_living_bomb_lingering",
 			cell_size = 1,
 			liquid_spread_function = "pour_spread",
 			starting_pressure = 15,
-			damage_buff_template_name = "burning_1W_dot",
+			do_direct_damage_ai = false,
 			do_direct_damage_player = false,
 			linearized_flow = false,
-			fx_name_rim = "fx/chr_unchained_living_bomb_lingering",
 			damage_type = "burninating",
 			sfx_name_start = "Play_props_lamp_oil_fire",
 			end_pressure = 2,
 			fx_name_filled = "fx/chr_unchained_living_bomb_lingering_rim",
 			time_of_life = 3,
 			max_liquid = 10,
-			use_nav_cost_map_volumes = true,
-			nav_cost_map_cost_type = "lamp_oil_fire",
+			sfx_name_stop = "Stop_props_lamp_oil_fire",
 			immune_breeds = {},
 			difficulty_direct_damage = {
 				easy = {
@@ -579,23 +663,21 @@ LiquidAreaDamageTemplates = {
 			}
 		},
 		sienna_unchained_ability_patch_increased_damage = {
-			do_direct_damage_ai = true,
-			sfx_name_stop = "Stop_props_lamp_oil_fire",
+			damage_buff_template_name = "burning_1W_dot",
+			fx_name_rim = "fx/wpnfx_lamp_oil_remains_rim",
 			cell_size = 1,
 			liquid_spread_function = "pour_spread",
 			starting_pressure = 15,
-			damage_buff_template_name = "burning_1W_dot",
+			do_direct_damage_ai = false,
 			do_direct_damage_player = false,
 			linearized_flow = false,
-			fx_name_rim = "fx/wpnfx_lamp_oil_remains_rim",
 			damage_type = "burninating",
 			sfx_name_start = "Play_props_lamp_oil_fire",
 			end_pressure = 2,
 			fx_name_filled = "fx/chr_unchained_living_bomb_lingering_rim",
 			time_of_life = 3,
 			max_liquid = 10,
-			use_nav_cost_map_volumes = true,
-			nav_cost_map_cost_type = "lamp_oil_fire",
+			sfx_name_stop = "Stop_props_lamp_oil_fire",
 			immune_breeds = {},
 			difficulty_direct_damage = {
 				easy = {

@@ -177,7 +177,7 @@ end
 CraftPageApplySkin._handle_input = function (self, dt, t)
 	local parent = self.parent
 
-	if parent.waiting_for_callback(parent) or self._craft_result then
+	if parent.waiting_for_craft(parent) or self._craft_result then
 		return 
 	end
 

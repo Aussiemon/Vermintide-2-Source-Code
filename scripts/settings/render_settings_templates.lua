@@ -96,22 +96,22 @@ SunShadowQuality = {
 	low = {
 		sun_shadow_map_filter_quality = "low",
 		sun_shadow_map_size = {
-			256,
-			256
+			1024,
+			1024
 		}
 	},
 	medium = {
 		sun_shadow_map_filter_quality = "medium",
 		sun_shadow_map_size = {
-			512,
-			512
+			1024,
+			1024
 		}
 	},
 	high = {
 		sun_shadow_map_filter_quality = "high",
 		sun_shadow_map_size = {
-			1024,
-			1024
+			2048,
+			2048
 		}
 	},
 	extreme = {

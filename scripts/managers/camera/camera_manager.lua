@@ -261,6 +261,31 @@ CameraManager.set_node_tree_root_far_range = function (self, viewport_name, tree
 
 	return 
 end
+CameraManager.set_node_tree_root_dof_enabled = function (self, viewport_name, tree_id, dof_enabled)
+	self._node_trees[viewport_name][tree_id].root_node:set_root_dof_enabled(dof_enabled)
+
+	return 
+end
+CameraManager.set_node_tree_root_focal_distance = function (self, viewport_name, tree_id, focal_distance)
+	self._node_trees[viewport_name][tree_id].root_node:set_root_focal_distance(focal_distance)
+
+	return 
+end
+CameraManager.set_node_tree_root_focal_region = function (self, viewport_name, tree_id, focal_region)
+	self._node_trees[viewport_name][tree_id].root_node:set_root_focal_region(focal_region)
+
+	return 
+end
+CameraManager.set_node_tree_root_focal_padding = function (self, viewport_name, tree_id, focal_padding)
+	self._node_trees[viewport_name][tree_id].root_node:set_root_focal_padding(focal_padding)
+
+	return 
+end
+CameraManager.set_node_tree_root_focal_scale = function (self, viewport_name, tree_id, focal_scale)
+	self._node_trees[viewport_name][tree_id].root_node:set_root_focal_scale(focal_scale)
+
+	return 
+end
 CameraManager.current_camera_node = function (self, viewport_name)
 	return self._camera_nodes[viewport_name][#self._camera_nodes[viewport_name]].node:name()
 end
@@ -274,24 +299,24 @@ CameraManager.shading_callback = function (self, world, shading_env, viewport)
 	if self._world == world then
 		local shading_env_settings = self._shading_environment[viewport] or self._shading_environment[Viewport.get_data(viewport, "overridden_viewport")] or EMPTY_TABLE
 
-		if shading_env_settings.dof_near_focus and shading_env_settings.dof_near_blur then
-			local nf = shading_env_settings.dof_near_focus
-			local nb = shading_env_settings.dof_near_blur
+		if shading_env_settings.dof_enabled then
+			local dof_enabled = shading_env_settings.dof_enabled
 
-			ShadingEnvironment.set_vector2(shading_env, "dof_near_setting", Vector3(nf, nf - nb, 0))
-		end
+			ShadingEnvironment.set_scalar(shading_env, "dof_enabled", dof_enabled)
 
-		if shading_env_settings.dof_far_focus and shading_env_settings.dof_far_blur then
-			local ff = shading_env_settings.dof_far_focus
-			local fb = shading_env_settings.dof_far_blur
+			if 0 < dof_enabled then
+				local focal_distance = shading_env_settings.focal_distance
+				local focal_region = shading_env_settings.focal_region
+				local focal_padding = shading_env_settings.focal_padding
+				local focal_scale = shading_env_settings.focal_scale
 
-			ShadingEnvironment.set_vector2(shading_env, "dof_far_setting", Vector3(ff, fb - ff, 0))
-		end
-
-		if shading_env_settings.dof_amount then
-			local amount = shading_env_settings.dof_amount
-
-			ShadingEnvironment.set_scalar(shading_env, "dof_amount", amount)
+				ShadingEnvironment.set_scalar(shading_env, "dof_focal_distance", focal_distance)
+				ShadingEnvironment.set_scalar(shading_env, "dof_focal_region", focal_region)
+				ShadingEnvironment.set_scalar(shading_env, "dof_focal_region_start", focal_padding)
+				ShadingEnvironment.set_scalar(shading_env, "dof_focal_region_end", focal_padding)
+				ShadingEnvironment.set_scalar(shading_env, "dof_focal_near_scale", focal_scale)
+				ShadingEnvironment.set_scalar(shading_env, "dof_focal_near_scale", focal_scale)
+			end
 		end
 
 		for name, settings in pairs(OutlineSettings.colors) do

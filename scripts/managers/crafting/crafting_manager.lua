@@ -24,7 +24,7 @@ end
 CraftingManager.destroy = function (self)
 	return 
 end
-CraftingManager.craft = function (self, items, callback_function)
+CraftingManager.craft = function (self, items)
 	local crafting_interface = self._crafting_interface
 	local item_backend_ids = {}
 
@@ -40,16 +40,16 @@ CraftingManager.craft = function (self, items, callback_function)
 	local career_index = player.career_index(player)
 	local career = careers[career_index]
 	local career_name = career.name
-	local recipe_available = crafting_interface.craft(crafting_interface, career_name, item_backend_ids, callback_function)
+	local craft_id = crafting_interface.craft(crafting_interface, career_name, item_backend_ids)
 
-	if recipe_available then
+	if craft_id then
 		local stats_id = player.stats_id(player)
 		local statistics_db = player_manager.statistics_db(player_manager)
 
 		statistics_db.increment_stat(statistics_db, stats_id, "crafted_items")
 	end
 
-	return recipe_available
+	return craft_id
 end
 CraftingManager.debug_set_crafted_items_stat = function (self, value)
 	local player_manager = Managers.player

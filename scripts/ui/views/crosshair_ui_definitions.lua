@@ -198,9 +198,13 @@ local scenegraph_definition = {
 		vertical_alignment = "center",
 		parent = "crosshair_root",
 		horizontal_alignment = "center",
+		size = {
+			0,
+			0
+		},
 		position = {
-			-0.5,
-			-24,
+			0,
+			-80,
 			1
 		}
 	}
@@ -429,18 +433,115 @@ local widget_definitions = {
 			}
 		}
 	},
-	crosshair_hit_armored = {
+	crosshair_hit_armored_no_damage = {
 		scenegraph_id = "crosshair_hit_armored",
-		element = UIElements.SimpleTexture,
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					texture_id = "texture_id"
+				}
+			}
+		},
 		content = {
-			texture_id = "fatigue_icon_full"
+			texture_id = "enemy_defense_indication_icon"
 		},
 		style = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
 			color = {
 				0,
 				255,
 				255,
 				255
+			},
+			texture_size = {
+				42,
+				46
+			}
+		}
+	},
+	crosshair_hit_armored_damage = {
+		scenegraph_id = "crosshair_hit_armored",
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					texture_id = "texture_id"
+				}
+			}
+		},
+		content = {
+			texture_id = "enemy_defense_indication_icon_partial"
+		},
+		style = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			color = {
+				0,
+				255,
+				255,
+				255
+			},
+			texture_size = {
+				42,
+				46
+			}
+		}
+	},
+	crosshair_hit_armored_break = {
+		scenegraph_id = "crosshair_hit_armored",
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					texture_id = "texture_id"
+				}
+			}
+		},
+		content = {
+			texture_id = "enemy_defense_indication_icon_broken"
+		},
+		style = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			color = {
+				0,
+				255,
+				255,
+				255
+			},
+			texture_size = {
+				58,
+				50
+			}
+		}
+	},
+	crosshair_hit_armored_open = {
+		scenegraph_id = "crosshair_hit_armored",
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					texture_id = "texture_id"
+				}
+			}
+		},
+		content = {
+			texture_id = "enemy_defense_indication_icon_open"
+		},
+		style = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			color = {
+				0,
+				255,
+				255,
+				255
+			},
+			texture_size = {
+				42,
+				46
 			}
 		}
 	},

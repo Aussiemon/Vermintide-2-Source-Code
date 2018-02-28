@@ -98,7 +98,7 @@ UnitFramesHandler._create_unit_frame_by_type = function (self, frame_type, frame
 	if frame_type == "team" then
 		definitions = local_require("scripts/ui/hud_ui/team_member_unit_frame_ui_definitions")
 	elseif frame_type == "player" then
-		local gamepad_active = false
+		local gamepad_active = self.input_manager:is_device_active("gamepad")
 		definitions = local_require("scripts/ui/hud_ui/player_unit_frame_ui_definitions")
 	else
 		definitions = local_require("scripts/ui/hud_ui/team_member_unit_frame_ui_definitions")
@@ -479,7 +479,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		is_knocked_down = (status_extension.is_knocked_down(status_extension) or status_extension.get_is_ledge_hanging(status_extension)) and 0 < total_health_percent
 		is_ready_for_assisted_respawn = status_extension.is_ready_for_assisted_respawn(status_extension)
 		needs_help = status_extension.is_grabbed_by_pack_master(status_extension) or status_extension.is_hanging_from_hook(status_extension) or status_extension.is_pounced_down(status_extension)
-		local num_grimoires = buff_extension.num_buff_type(buff_extension, "grimoire_health_debuff")
+		local num_grimoires = buff_extension.num_buff_perk(buff_extension, "grimoire")
 		local multiplier = buff_extension.apply_buffs_to_value(buff_extension, PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
 		active_percentage = num_grimoires*multiplier + 1
 		equipment = inventory_extension.equipment(inventory_extension)
@@ -813,6 +813,8 @@ UnitFramesHandler.set_visible = function (self, visible, ignore_own_player)
 			else
 				unit_frame.widget:set_visible(visible)
 			end
+		elseif not visible then
+			unit_frame.widget:set_visible(false)
 		end
 	end
 
@@ -853,18 +855,6 @@ UnitFramesHandler.update = function (self, dt, t, ignore_own_player)
 
 	local gamepad_active = self.input_manager:is_device_active("gamepad")
 
-	if gamepad_active then
-		if not self.gamepad_active_last_frame then
-			self.gamepad_active_last_frame = true
-
-			self.on_gamepad_activated(self)
-		end
-	elseif self.gamepad_active_last_frame then
-		self.gamepad_active_last_frame = false
-
-		self.on_gamepad_deactivated(self)
-	end
-
 	Profiler.start("handle_unit_frame_assigning")
 	self._handle_unit_frame_assigning(self)
 	Profiler.stop("handle_unit_frame_assigning")
@@ -901,6 +891,10 @@ UnitFramesHandler.update = function (self, dt, t, ignore_own_player)
 	return 
 end
 UnitFramesHandler._handle_resolution_modified = function (self)
+	if not self._is_visible then
+		return 
+	end
+
 	if RESOLUTION_LOOKUP.modified then
 		for index, unit_frame in ipairs(self._unit_frames) do
 			unit_frame.widget:on_resolution_modified()

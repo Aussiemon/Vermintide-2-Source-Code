@@ -26,9 +26,9 @@ MatchmakingStateHostGame.on_enter = function (self, state_context)
 		local player = Managers.player:local_player()
 		local connection_state = "started_hosting"
 		local time_taken = Managers.time:time("main") - self.state_context.started_matchmaking_t
-		local is_first_time_searcher = self.state_context.is_first_time_searcher
+		local using_strict_matchmaking = self.search_config.strict_matchmaking
 
-		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, is_first_time_searcher)
+		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, using_strict_matchmaking)
 
 		self.state_context.started_hosting_t = Managers.time:time("main")
 	end
@@ -71,8 +71,16 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	local quick_game = search_config.quick_game
 	local eac_authorized = false
 
-	if Managers.eac:enabled() then
-		eac_authorized = Managers.eac:authorized()
+	if PLATFORM == "win32" then
+		if DEDICATED_SERVER then
+			eac_authorized = false
+		else
+			local eac_state = EAC.state()
+
+			assert(eac_state ~= nil)
+
+			eac_authorized = eac_state == "trusted"
+		end
 	end
 
 	self._difficulty_manager:set_difficulty(difficulty)

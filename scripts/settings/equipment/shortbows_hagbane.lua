@@ -14,6 +14,7 @@ weapon_template.actions = {
 			aim_assist_ramp_multiplier = 0.2,
 			aim_assist_max_ramp_multiplier = 0.5,
 			aim_assist_ramp_decay_delay = 0.3,
+			hit_effect = "poison_arrow_impact_small",
 			anim_event_last_ammo = "attack_shoot_fast_last",
 			charge_value = "arrow_hit",
 			fire_sound_event = "player_combat_weapon_shortbow_fire_light_poison",
@@ -32,7 +33,7 @@ weapon_template.actions = {
 					sub_action = "default",
 					blocking_input = "action_two_hold",
 					action = "action_one",
-					start_time = 0.3,
+					start_time = 0.4,
 					release_required = "action_one_hold",
 					input = "action_one",
 					end_time = math.huge
@@ -49,12 +50,6 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -62,7 +57,6 @@ weapon_template.actions = {
 
 				return input_extension.reset_release_input(input_extension)
 			end,
-			hit_effect = ARROW_HIT_EFFECT,
 			cleave_distribution = {
 				attack = 0.15,
 				impact = 0.15
@@ -85,23 +79,24 @@ weapon_template.actions = {
 		},
 		shoot_charged = {
 			reset_aim_on_attack = true,
-			anim_event = "attack_shoot",
+			charge_value = "zoomed_arrow_hit",
 			kind = "bow",
 			weapon_action_hand = "left",
 			apply_recoil = true,
 			ammo_usage = 1,
 			anim_event_last_ammo = "attack_shoot_last",
-			charge_value = "zoomed_arrow_hit",
+			minimum_hold_time = 0.3,
 			fire_sound_event = "player_combat_weapon_shortbow_fire_heavy_poison",
 			keep_zoom = true,
 			speed = 8000,
 			hold_input = "action_two_hold",
+			anim_event = "attack_shoot",
 			allow_hold_toggle = true,
 			total_time = 0.66,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.6,
 					action = "action_two",
 					input = "action_two_hold",
 					end_time = math.huge
@@ -111,12 +106,6 @@ weapon_template.actions = {
 					start_time = 0.66,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			hit_effect = ARROW_HIT_EFFECT,
@@ -195,12 +184,6 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield",
 					end_time = math.huge
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			buffed_zoom_thresholds = {
@@ -225,7 +208,6 @@ weapon_template.actions = {
 	},
 	action_inspect = ActionTemplates.action_inspect_left,
 	action_wield = ActionTemplates.wield_left,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -299,9 +281,9 @@ weapon_template.wwise_dep_left_hand = {
 	"wwise/bow"
 }
 weapon_template.tooltip_keywords = {
-	"keyword_1",
-	"keyword_2",
-	"keyword_3"
+	"weapon_keyword_damage_over_time",
+	"weapon_keyword_rapid_fire",
+	"weapon_keyword_crowd_control"
 }
 weapon_template.compare_statistics = {
 	attacks = {

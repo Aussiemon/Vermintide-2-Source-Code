@@ -298,7 +298,7 @@ BTRatlingGunnerShootAction._start_shooting = function (self, blackboard, unit, d
 	end
 
 	local self_pos = POSITION_LOOKUP[unit]
-	local to_target = POSITION_LOOKUP[blackboard.target_unit] - self_pos
+	local to_target = POSITION_LOOKUP[data.target_unit] - self_pos
 	local distance = Vector3.length(to_target)
 	local obstacle_position, obstacle_rotation, obstacle_size = AiUtils.calculate_oobb(distance*2, self_pos, Quaternion.look(to_target))
 	local bot_threat_duration = 3

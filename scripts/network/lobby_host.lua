@@ -1,5 +1,15 @@
 require("scripts/network/lobby_aux")
 
+local DEBUG_LOBBY_HOST = true
+
+local function dprintf(text, ...)
+	if DEBUG_LOBBY_HOST then
+		printf(text, ...)
+	end
+
+	return 
+end
+
 LobbyHost = class(LobbyHost)
 LobbyHost.init = function (self, network_options, lobby)
 	local config_file_name = network_options.config_file_name
@@ -93,7 +103,7 @@ LobbyHost.update = function (self, dt)
 end
 LobbyHost.set_lobby_data = function (self, lobby_data_table)
 	fassert(lobby_data_table.Host == nil, "Tell Staffan about this!!")
-	print("Set lobby begin:")
+	dprintf("Set lobby begin:")
 
 	self.lobby_data_table = lobby_data_table
 
@@ -104,13 +114,13 @@ LobbyHost.set_lobby_data = function (self, lobby_data_table)
 			lobby.set_data_table(lobby, lobby_data_table)
 		else
 			for key, value in pairs(lobby_data_table) do
-				print(string.format("  Lobby data %s = %s", key, tostring(value)))
+				dprintf("\tLobby data %s = %s", key, tostring(value))
 				lobby.set_data(lobby, key, value)
 			end
 		end
 	end
 
-	print("Set lobby end.")
+	dprintf("Set lobby end.")
 
 	return 
 end
@@ -157,6 +167,15 @@ LobbyHost.set_lobby = function (self, lobby)
 	self.set_lobby_data(self, lobby_data_table)
 
 	self.lobby_members = LobbyMembers:new(lobby)
+
+	return 
+end
+LobbyHost.eac_state = function (self, peer)
+	if self.lobby.eac_state == nil then
+		return "untrusted"
+	else
+		return self.lobby:eac_state(peer)
+	end
 
 	return 
 end

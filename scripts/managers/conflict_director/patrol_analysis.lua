@@ -373,7 +373,7 @@ PatrolAnalysis.inject_spline_path = function (self, spline, line_drawer)
 			spline_points_index = spline_points_index + 1
 
 			if draw and line_drawer then
-				local color_index = (spline_points_index - 1)%num_debug_colors + 1
+				local color_index = (spline.index - 1)%num_debug_colors + 1
 				local ct = debug_colors_lookup[color_index]
 				local color = Color(ct[1], ct[2], ct[3], ct[4])
 

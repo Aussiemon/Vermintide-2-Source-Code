@@ -99,7 +99,6 @@ ExplosionTemplates = {
 		explosion = {
 			use_attacker_power_level = true,
 			radius = 2,
-			dot_template_name = "aoe_poison_dot",
 			sound_event_name = "arrow_hit_poison_cloud",
 			damage_profile = "poison_aoe",
 			effect_name = "fx/wpnfx_poison_arrow_impact_carbine"
@@ -112,7 +111,7 @@ ExplosionTemplates = {
 			attack_template = "drakegun",
 			max_damage_radius_min = 0.5,
 			damage_type_glance = "drakegun_glance",
-			radius_min = 1.25,
+			radius_min = 1.5,
 			alert_enemies_radius = 10,
 			damage_type = "drakegun",
 			sound_event_name = "drakegun_hit",
@@ -178,7 +177,7 @@ ExplosionTemplates = {
 	fireball_charged = {
 		explosion = {
 			use_attacker_power_level = true,
-			radius_min = 0.75,
+			radius_min = 1.25,
 			sound_event_name = "fireball_big_hit",
 			radius_max = 3,
 			attacker_power_level_offset = 0.25,
@@ -886,14 +885,14 @@ ExplosionTemplates = {
 	},
 	bardin_ranger_activated_ability_stagger = {
 		explosion = {
-			radius = 5,
-			damage_type = "grenade",
+			use_attacker_power_level = true,
+			radius = 7,
 			max_damage_radius = 2,
+			damage_type = "grenade",
 			alert_enemies = true,
-			alert_enemies_radius = 15,
 			attack_template = "drakegun",
+			alert_enemies_radius = 15,
 			sound_event_name = "Play_bardin_ranger_smoke_grenade_ability",
-			power_level = 100,
 			effect_name = "fx/wpnfx_smoke_grenade_impact",
 			armour_modifier = {
 				attack = {
@@ -906,7 +905,7 @@ ExplosionTemplates = {
 				impact = {
 					1,
 					0.5,
-					2.5,
+					100,
 					1,
 					1.5
 				}

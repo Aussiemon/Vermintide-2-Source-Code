@@ -300,9 +300,14 @@ PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, ch
 		return 
 	end
 
+	local buff_extension = self.buff_extension
+
+	if buff_extension.has_buff_type(buff_extension, "twitch_no_overcharge_no_ammo_reloads") then
+		return 
+	end
+
 	local threshold = self.overcharge_threshold
 	local current_overcharge_value = self.overcharge_value
-	local buff_extension = self.buff_extension
 
 	if charge_level then
 		overcharge_amount = overcharge_amount*0.4 + overcharge_amount*0.6*charge_level
@@ -534,11 +539,11 @@ PlayerUnitOverchargeExtension._set_weapon_flow_variable = function (self, variab
 		local left_hand_unit = wielded_slot_data.left_unit_1p
 		local right_hand_unit = wielded_slot_data.right_unit_1p
 
-		if left_hand_unit then
+		if left_hand_unit and Unit.alive(left_hand_unit) then
 			Unit.set_flow_variable(left_hand_unit, variable_name, value)
 		end
 
-		if right_hand_unit then
+		if right_hand_unit and Unit.alive(right_hand_unit) then
 			Unit.set_flow_variable(right_hand_unit, variable_name, value)
 		end
 	end

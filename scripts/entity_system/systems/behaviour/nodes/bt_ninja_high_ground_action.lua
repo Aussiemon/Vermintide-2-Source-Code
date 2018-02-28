@@ -118,8 +118,8 @@ BTNinjaHighGroundAction.try_jump = function (self, unit, blackboard, t, pos1, fo
 
 	local physics_world = World.get_data(blackboard.world, "physics_world")
 	local p1 = pos1 + Vector3(0, 0, 1)
-	local enemy_spine_node = Unit.node(target_unit, "j_neck")
-	local p2 = Unit.world_position(target_unit, enemy_spine_node) - Vector3(0, 0, 1)
+	local enemy_spine_node = Unit.node(blackboard.target_unit, "j_neck")
+	local p2 = Unit.world_position(target_unit, 0) + Vector3(0, 0, 0.2)
 	local ninja_rotation = Unit.local_rotation(unit, 0)
 	local ninja_forward = Quaternion.forward(ninja_rotation)
 	local to_target = p2 - POSITION_LOOKUP[unit]
@@ -135,10 +135,10 @@ BTNinjaHighGroundAction.try_jump = function (self, unit, blackboard, t, pos1, fo
 			blackboard.jump_data = {
 				delay_jump_start = true,
 				segment_list = segment_list,
-				enemy_spine_node = enemy_spine_node,
 				jump_target_pos = Vector3Box(p2),
 				jump_velocity_boxed = Vector3Box(velocity),
-				total_distance = Vector3.distance(p1, p2)
+				total_distance = Vector3.distance(p1, p2),
+				enemy_spine_node = enemy_spine_node
 			}
 			blackboard.skulk_pos = Vector3Box(pos1)
 

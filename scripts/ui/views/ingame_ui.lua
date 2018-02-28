@@ -110,7 +110,6 @@ IngameUI.init = function (self, ingame_ui_context)
 
 	self.telemetry_time_view_enter = 0
 	self.ingame_ui_context = ingame_ui_context
-	self._friends_component_ui = FriendsUIComponent:new(ingame_ui_context)
 
 	Managers.matchmaking:set_ingame_ui(self)
 	rawset(_G, "ingame_ui", self)
@@ -473,7 +472,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 
 	self._update_rcon_ui(self, dt, t, input_service)
 	self._update_chat_ui(self, dt, t, input_service, end_of_level_ui)
-	self._update_friends_ui(self, dt, t, input_service)
 	self._render_debug_ui(self, dt, t)
 	self._update_fade_transition(self)
 	Profiler.stop("IngameUI")
@@ -627,16 +625,6 @@ IngameUI._update_chat_ui = function (self, dt, t, input_service, end_of_level_ui
 end
 IngameUI._update_rcon_ui = function (self, dt, t, input_service)
 	Managers.rcon:update(dt, t)
-
-	return 
-end
-IngameUI._update_friends_ui = function (self, dt, t, input_service)
-	if self.current_view then
-		local active_view = self.views[self.current_view]
-		local view_input_service = active_view.input_service(active_view)
-
-		self._friends_component_ui:update(view_input_service, dt)
-	end
 
 	return 
 end

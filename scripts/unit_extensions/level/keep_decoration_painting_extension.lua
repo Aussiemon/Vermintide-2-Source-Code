@@ -77,10 +77,13 @@ KeepDecorationPaintingExtension.interacted_with = function (self)
 	local function on_material_loaded()
 		self:_set_selected_painting(next_painting)
 
-		local game = Managers.state.network:game()
 		local go_id = self._go_id
 
-		GameSession.set_game_object_field(game, go_id, "painting_index", self._paintings_lookup[next_painting])
+		if go_id then
+			local game = Managers.state.network:game()
+
+			GameSession.set_game_object_field(game, go_id, "painting_index", self._paintings_lookup[next_painting])
+		end
 
 		return 
 	end

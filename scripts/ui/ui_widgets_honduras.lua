@@ -754,7 +754,7 @@ UIWidgets.create_recipe_grid = function (scenegraph_id, size, rows, slots_per_ro
 				offset = {
 					offset[1],
 					offset[2],
-					0
+					1
 				}
 			}
 			local slot_background_frame_name = "item_frame" .. name_suffix
@@ -830,10 +830,10 @@ UIWidgets.create_recipe_grid = function (scenegraph_id, size, rows, slots_per_ro
 				offset = {
 					offset[1],
 					offset[2],
-					5
+					0
 				}
 			}
-			content[rarity_texture_name] = "rarity_color_white"
+			content[rarity_texture_name] = "icon_bg_default"
 			local item_tooltip_name = "item_tooltip" .. name_suffix
 			passes[#passes + 1] = {
 				pass_type = "item_tooltip",
@@ -1170,7 +1170,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 				offset = {
 					offset[1],
 					offset[2],
-					0
+					1
 				}
 			}
 			local slot_background_frame_name = "item_frame" .. name_suffix
@@ -1218,10 +1218,10 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 				offset = {
 					offset[1],
 					offset[2],
-					5
+					0
 				}
 			}
-			content[rarity_texture_name] = "rarity_color_white"
+			content[rarity_texture_name] = "icon_bg_default"
 			local item_tooltip_name = "item_tooltip" .. name_suffix
 			passes[#passes + 1] = {
 				pass_type = "item_tooltip",
@@ -1542,7 +1542,7 @@ UIWidgets.create_simple_inventory_item = function (scenegraph_id, size)
 		offset = {
 			0,
 			0,
-			3
+			1
 		}
 	}
 	local slot_background_frame_name = "item_frame"
@@ -1589,10 +1589,10 @@ UIWidgets.create_simple_inventory_item = function (scenegraph_id, size)
 		offset = {
 			0,
 			0,
-			5
+			0
 		}
 	}
-	content[rarity_texture_name] = "rarity_color_white"
+	content[rarity_texture_name] = "icon_bg_default"
 	local item_tooltip_name = "item_tooltip"
 	passes[#passes + 1] = {
 		item_id = "item",
@@ -1781,10 +1781,10 @@ UIWidgets.create_loadout_grid = function (scenegraph_id, size, rows, spacing, al
 				offset = {
 					offset[1],
 					offset[2],
-					5
+					0
 				}
 			}
-			content[rarity_texture_name] = "rarity_color_white"
+			content[rarity_texture_name] = "icon_bg_default"
 			local item_tooltip_name = "item_tooltip" .. name_suffix
 			passes[#passes + 1] = {
 				pass_type = "item_tooltip",
@@ -7617,6 +7617,415 @@ UIWidgets.create_default_icon_tabs = function (scenegraph_id, size, amount)
 
 	return widget
 end
+UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, font_size, tooltip_info)
+	local background_texture = "button_bg_01"
+	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
+	local widget = {
+		element = {}
+	}
+	local passes = {}
+	local content = {}
+	local style = {}
+	local offset = {
+		0,
+		0,
+		0
+	}
+	local hotspot_name = "button_hotspot"
+	passes[#passes + 1] = {
+		pass_type = "hotspot",
+		content_id = hotspot_name,
+		style_id = hotspot_name
+	}
+	style[hotspot_name] = {
+		size = size,
+		offset = offset
+	}
+	content[hotspot_name] = {}
+	local hotspot_content = content[hotspot_name]
+	local background_name = "background"
+	passes[#passes + 1] = {
+		pass_type = "texture_uv",
+		content_id = background_name,
+		style_id = background_name
+	}
+	style[background_name] = {
+		size = size,
+		color = {
+			255,
+			255,
+			255,
+			255
+		},
+		offset = {
+			offset[1],
+			offset[2],
+			0
+		}
+	}
+	content[background_name] = {
+		uvs = {
+			{
+				0,
+				math.min(size[2]/background_texture_settings.size[2], 1) - 1
+			},
+			{
+				math.min(size[1]/background_texture_settings.size[1], 1),
+				1
+			}
+		},
+		texture_id = background_texture
+	}
+	local background_fade_name = "background_fade"
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		content_id = hotspot_name,
+		texture_id = background_fade_name,
+		style_id = background_fade_name
+	}
+	style[background_fade_name] = {
+		size = {
+			size[1],
+			size[2]
+		},
+		color = {
+			255,
+			255,
+			255,
+			255
+		},
+		offset = {
+			offset[1],
+			offset[2],
+			1
+		}
+	}
+	hotspot_content[background_fade_name] = "button_bg_fade"
+	local hover_glow_name = "hover_glow"
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		content_id = hotspot_name,
+		texture_id = hover_glow_name,
+		style_id = hover_glow_name
+	}
+	style[hover_glow_name] = {
+		size = {
+			size[1],
+			math.min(size[2] - 5, 80)
+		},
+		color = {
+			255,
+			255,
+			255,
+			255
+		},
+		offset = {
+			offset[1],
+			offset[2] + 5,
+			2
+		}
+	}
+	hotspot_content[hover_glow_name] = "button_state_default"
+	local clicked_rect_name = "clicked_rect"
+	passes[#passes + 1] = {
+		pass_type = "rect",
+		content_id = hotspot_name,
+		style_id = clicked_rect_name
+	}
+	style[clicked_rect_name] = {
+		size = size,
+		color = {
+			100,
+			0,
+			0,
+			0
+		},
+		offset = {
+			offset[1],
+			offset[2],
+			6
+		}
+	}
+	local glass_top_name = "glass_top"
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		content_id = hotspot_name,
+		texture_id = glass_top_name,
+		style_id = glass_top_name
+	}
+	style[glass_top_name] = {
+		size = {
+			size[1],
+			11
+		},
+		color = {
+			255,
+			255,
+			255,
+			255
+		},
+		offset = {
+			offset[1],
+			(offset[2] + size[2]) - 11,
+			5
+		}
+	}
+	hotspot_content[glass_top_name] = "button_glass_02"
+	local glass_bottom_name = "glass_bottom"
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		content_id = hotspot_name,
+		texture_id = glass_bottom_name,
+		style_id = glass_bottom_name
+	}
+	style[glass_bottom_name] = {
+		size = {
+			size[1],
+			11
+		},
+		color = {
+			100,
+			255,
+			255,
+			255
+		},
+		offset = {
+			offset[1],
+			offset[2] - 3,
+			5
+		}
+	}
+	hotspot_content[glass_bottom_name] = "button_glass_02"
+
+	if tooltip_info then
+		local tooltip_name = "additional_option_info"
+		passes[#passes + 1] = {
+			pass_type = "additional_option_tooltip",
+			content_id = hotspot_name,
+			style_id = background_name,
+			additional_option_id = tooltip_name,
+			content_check_function = function (content)
+				return content.is_hover
+			end
+		}
+		hotspot_content[tooltip_name] = tooltip_info
+	end
+
+	local text_name = "text"
+	passes[#passes + 1] = {
+		pass_type = "text",
+		content_id = hotspot_name,
+		text_id = text_name,
+		style_id = text_name,
+		content_check_function = function (content)
+			return not content.disable_button
+		end
+	}
+	style[text_name] = {
+		upper_case = true,
+		word_wrap = true,
+		font_size = 24,
+		horizontal_alignment = "left",
+		vertical_alignment = "center",
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+		default_text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+		select_text_color = Colors.get_color_table_with_alpha("white", 255),
+		offset = {
+			offset[1] + 10,
+			offset[2] + 3,
+			4
+		},
+		size = size
+	}
+	hotspot_content[text_name] = text
+	local text_disabled_name = "text_disabled"
+	passes[#passes + 1] = {
+		pass_type = "text",
+		content_id = hotspot_name,
+		text_id = text_name,
+		style_id = text_disabled_name,
+		content_check_function = function (content)
+			return content.disable_button
+		end
+	}
+	style[text_disabled_name] = {
+		upper_case = true,
+		font_size = 24,
+		word_wrap = true,
+		horizontal_alignment = "left",
+		vertical_alignment = "center",
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("gray", 255),
+		default_text_color = Colors.get_color_table_with_alpha("gray", 255),
+		offset = {
+			offset[1] + 10,
+			offset[2] + 3,
+			4
+		},
+		size = size
+	}
+	local text_shadow_name = "text_shadow"
+	passes[#passes + 1] = {
+		pass_type = "text",
+		content_id = hotspot_name,
+		text_id = text_name,
+		style_id = text_shadow_name
+	}
+	style[text_shadow_name] = {
+		font_size = 24,
+		upper_case = true,
+		word_wrap = true,
+		horizontal_alignment = "left",
+		vertical_alignment = "center",
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("black", 255),
+		offset = {
+			offset[1] + 10 + 2,
+			offset[2] + 1,
+			3
+		},
+		size = size
+	}
+	local checkbox_background_name = "checkbox_background"
+	passes[#passes + 1] = {
+		pass_type = "rect",
+		style_id = checkbox_background_name
+	}
+	local checkbox_size = {
+		25,
+		25
+	}
+	local checkbox_offset = {
+		(size[1] - checkbox_size[1] + offset[1]) - 20,
+		(offset[2] + size[2]/2) - checkbox_size[2]/2 + 2,
+		3
+	}
+	style[checkbox_background_name] = {
+		size = {
+			checkbox_size[1],
+			checkbox_size[2]
+		},
+		offset = checkbox_offset,
+		color = {
+			255,
+			0,
+			0,
+			0
+		}
+	}
+	local checkbox_frame_name = "checkbox_frame"
+	passes[#passes + 1] = {
+		pass_type = "texture_frame",
+		content_id = hotspot_name,
+		texture_id = checkbox_frame_name,
+		style_id = checkbox_frame_name,
+		content_check_function = function (content)
+			return not content.is_disabled
+		end
+	}
+	local frame_settings = UIFrameSettings.menu_frame_06
+	hotspot_content[checkbox_frame_name] = frame_settings.texture
+	style[checkbox_frame_name] = {
+		size = {
+			checkbox_size[1],
+			checkbox_size[2]
+		},
+		texture_size = frame_settings.texture_size,
+		texture_sizes = frame_settings.texture_sizes,
+		offset = {
+			checkbox_offset[1],
+			checkbox_offset[2],
+			checkbox_offset[3] + 1
+		},
+		color = {
+			255,
+			255,
+			255,
+			255
+		}
+	}
+	local checkbox_frame_disabled_name = "checkbox_frame_disabled"
+	passes[#passes + 1] = {
+		pass_type = "texture_frame",
+		content_id = hotspot_name,
+		texture_id = checkbox_frame_name,
+		style_id = checkbox_frame_disabled_name,
+		content_check_function = function (content)
+			return not content.is_disabled
+		end
+	}
+	style[checkbox_frame_disabled_name] = {
+		size = {
+			checkbox_size[1],
+			checkbox_size[2]
+		},
+		texture_size = frame_settings.texture_size,
+		texture_sizes = frame_settings.texture_sizes,
+		offset = {
+			checkbox_offset[1],
+			checkbox_offset[2],
+			checkbox_offset[3] + 1
+		},
+		color = {
+			96,
+			255,
+			255,
+			255
+		}
+	}
+	local checkbox_marker_name = "checkbox_marker"
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		content_id = hotspot_name,
+		texture_id = checkbox_marker_name,
+		style_id = checkbox_marker_name,
+		content_check_function = function (content)
+			return content.is_selected and not content.disable_button
+		end
+	}
+	hotspot_content[checkbox_marker_name] = "matchmaking_checkbox"
+	local marker_size = {
+		22,
+		16
+	}
+	local marker_offset = {
+		checkbox_offset[1] + 4,
+		(checkbox_offset[2] + marker_size[2]/2) - 1,
+		checkbox_offset[3] + 2
+	}
+	style[checkbox_marker_name] = {
+		size = marker_size,
+		offset = marker_offset,
+		color = Colors.get_color_table_with_alpha("white", 255)
+	}
+	local checkbox_marker_disabled_name = "checkbox_marker_disabled"
+	passes[#passes + 1] = {
+		pass_type = "texture",
+		content_id = hotspot_name,
+		texture_id = checkbox_marker_name,
+		style_id = checkbox_marker_disabled_name,
+		content_check_function = function (content)
+			return content.is_selected and content.disable_button
+		end
+	}
+	style[checkbox_marker_disabled_name] = {
+		size = marker_size,
+		offset = marker_offset,
+		color = Colors.get_color_table_with_alpha("gray", 255)
+	}
+	widget.element.passes = passes
+	widget.content = content
+	widget.style = style
+	widget.offset = {
+		0,
+		0,
+		0
+	}
+	widget.scenegraph_id = scenegraph_id
+
+	return widget
+end
 UIWidgets.create_default_text_tabs = function (scenegraph_id, size, amount)
 	local background_texture = "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
@@ -9927,7 +10336,9 @@ UIWidgets.create_title_and_tooltip = function (scenegraph_id, size, text, toolti
 			}
 		},
 		content = {
-			tooltip_hotspot = {},
+			tooltip_hotspot = {
+				allow_multi_hover = true
+			},
 			tooltip_text = tooltip_text,
 			text = text
 		},

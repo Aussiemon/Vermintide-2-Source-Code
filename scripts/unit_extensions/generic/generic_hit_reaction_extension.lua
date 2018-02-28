@@ -24,7 +24,17 @@ local function get_damage_direction(unit, direction_vector)
 
 	if node then
 		local unit_rotation = Unit.world_rotation(unit, node)
+
+		if not Quaternion.is_valid(unit_rotation) then
+			return "front"
+		end
+
 		local unit_direction = Quaternion.forward(unit_rotation)
+
+		if not Vector3.is_valid(unit_direction) then
+			return "front"
+		end
+
 		unit_direction.z = 0
 		local flat_hit_direction = Vector3(direction_vector.x, direction_vector.y, 0)
 		local dot = Vector3.dot(Vector3.normalize(flat_hit_direction), Vector3.normalize(unit_direction))
@@ -293,6 +303,8 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 
 	local hit_effects, num_effects = self._resolve_effects(self, conditions, temp_effect_results)
 	local parameters = conditions
+	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+	parameters.force_dismember = buff_extension and buff_extension.has_buff_perk(buff_extension, "bloody_mess")
 
 	Profiler.start("executing effects")
 
@@ -438,7 +450,9 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		buff_system.add_buff(buff_system, self.unit, effect_template.buff, attacker_unit)
 	end
 
-	if effect_template.do_dismember and (not death_ext or not death_ext.is_wall_nailed(death_ext)) then
+	dismember = effect_template.do_dismember or (parameters.force_dismember and parameters.death)
+
+	if dismember and (not death_ext or not death_ext.is_wall_nailed(death_ext)) then
 		local event_table = Dismemberments[breed_data.name]
 		local dismember_event = event_table[hit_zone]
 

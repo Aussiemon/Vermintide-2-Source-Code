@@ -2557,6 +2557,128 @@ UIPasses.generic_tooltip = {
 		return 
 	end
 }
+UIPasses.additional_option_tooltip = {
+	init = function (pass_definition, ui_content, ui_style, style_global)
+		local passes = {
+			{
+				data = UITooltipPasses.additional_option_info.setup_data(),
+				draw = UITooltipPasses.additional_option_info.draw
+			}
+		}
+		pass_definition.end_pass = {
+			data = UITooltipPasses.background.setup_data(),
+			draw = UITooltipPasses.background.draw
+		}
+		pass_definition.passes = passes
+		pass_definition.size = {
+			400,
+			0
+		}
+		pass_definition.alpha_multiplier = 1
+
+		return nil
+	end,
+	update = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, input_service, dt, ui_style_global, visible)
+		if not visible then
+			pass_definition.alpha_progress = 0
+			pass_definition.alpha_wait_time = UISettings.tooltip_wait_duration
+		end
+
+		return 
+	end,
+	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, parent_size, input_service, dt, ui_style_global)
+		local additional_option_data = ui_content[pass_definition.additional_option_id]
+
+		if not additional_option_data then
+			return 
+		end
+
+		local gamepad_active = Managers.input:is_device_active("gamepad")
+
+		if gamepad_active then
+			Managers.input:set_showing_tooltip(true)
+		end
+
+		local alpha_wait_time = pass_definition.alpha_wait_time
+		local alpha_progress = pass_definition.alpha_progress
+
+		if alpha_wait_time then
+			alpha_wait_time = alpha_wait_time - dt
+
+			if alpha_wait_time <= 0 then
+				pass_definition.alpha_wait_time = nil
+			else
+				pass_definition.alpha_wait_time = alpha_wait_time
+			end
+
+			pass_definition.alpha_multiplier = 0
+		elseif alpha_progress then
+			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
+			local alpha_progress = math.min(alpha_progress + dt*tooltip_fade_in_speed, 1)
+			pass_definition.alpha_multiplier = math.easeOutCubic(alpha_progress)
+
+			if alpha_progress == 1 then
+				pass_definition.alpha_progress = nil
+			else
+				pass_definition.alpha_progress = alpha_progress
+			end
+		end
+
+		local size = pass_definition.size
+		size[2] = 0
+		local draw_downwards = true
+		local res_w = RESOLUTION_LOOKUP.res_w
+		local res_h = RESOLUTION_LOOKUP.res_h
+		position[1] = position[1] - size[1]
+		local tooltip_total_height = 0
+		local passes = pass_definition.passes
+		local draw = false
+		local end_pass = pass_definition.end_pass
+
+		if end_pass then
+			local data = end_pass.data
+			local pass_height = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			tooltip_total_height = tooltip_total_height + pass_height
+		end
+
+		frame_margin = end_pass.data.frame_margin or 0
+
+		for _, tooltip_pass in ipairs(passes) do
+			local data = tooltip_pass.data
+			data.frame_margin = frame_margin
+			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, additional_option_data, data, draw_downwards)
+			tooltip_total_height = tooltip_total_height + pass_height
+		end
+
+		local scale = UIResolutionScale()
+		local scale_inversed = UIInverseResolutionScale()
+		local actual_screen_y_position = position[2]*scale
+		position[2] = position[2] + tooltip_total_height
+		local position_x = position[1]
+		local position_y = position[2]
+		local position_z = position[3]
+		draw = true
+
+		for _, tooltip_pass in ipairs(passes) do
+			local data = tooltip_pass.data
+			data.frame_margin = frame_margin
+			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, additional_option_data, data, draw_downwards)
+			size[2] = size[2] + pass_height
+			position[2] = position[2] - pass_height
+		end
+
+		position[1] = position_x
+		position[2] = position_y
+		position[3] = position_z
+
+		if end_pass then
+			local data = end_pass.data
+			slot31 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+		end
+
+		return 
+	end
+}
 UIPasses.level_tooltip = {
 	init = function (pass_definition, ui_content, ui_style, style_global)
 		local passes = {
@@ -2673,6 +2795,243 @@ UIPasses.level_tooltip = {
 		return 
 	end
 }
+UIPasses.hero_power_tooltip = {
+	init = function (pass_definition, ui_content, ui_style, style_global)
+		local passes = {
+			{
+				data = UITooltipPasses.hero_power_title.setup_data(),
+				draw = UITooltipPasses.hero_power_title.draw
+			},
+			{
+				data = UITooltipPasses.hero_power_gained.setup_data(),
+				draw = UITooltipPasses.hero_power_gained.draw
+			},
+			{
+				data = UITooltipPasses.hero_power_perks.setup_data(),
+				draw = UITooltipPasses.hero_power_perks.draw
+			},
+			{
+				data = UITooltipPasses.hero_power_description.setup_data(),
+				draw = UITooltipPasses.hero_power_description.draw
+			}
+		}
+		pass_definition.end_pass = {
+			data = UITooltipPasses.background.setup_data(),
+			draw = UITooltipPasses.background.draw
+		}
+		pass_definition.passes = passes
+		pass_definition.size = {
+			400,
+			0
+		}
+		pass_definition.alpha_multiplier = 1
+
+		return nil
+	end,
+	update = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, input_service, dt, ui_style_global, visible)
+		if not visible then
+			pass_definition.alpha_progress = 0
+			pass_definition.alpha_wait_time = UISettings.tooltip_wait_duration
+		end
+
+		return 
+	end,
+	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, parent_size, input_service, dt, ui_style_global)
+		local alpha_wait_time = pass_definition.alpha_wait_time
+		local alpha_progress = pass_definition.alpha_progress
+
+		if alpha_wait_time then
+			alpha_wait_time = alpha_wait_time - dt
+
+			if alpha_wait_time <= 0 then
+				pass_definition.alpha_wait_time = nil
+			else
+				pass_definition.alpha_wait_time = alpha_wait_time
+			end
+
+			pass_definition.alpha_multiplier = 0
+		elseif alpha_progress then
+			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
+			local alpha_progress = math.min(alpha_progress + dt*tooltip_fade_in_speed, 1)
+			pass_definition.alpha_multiplier = math.easeOutCubic(alpha_progress)
+
+			if alpha_progress == 1 then
+				pass_definition.alpha_progress = nil
+			else
+				pass_definition.alpha_progress = alpha_progress
+			end
+		end
+
+		local size = pass_definition.size
+		size[2] = 0
+		local draw_downwards = true
+		local res_w = RESOLUTION_LOOKUP.res_w
+		local res_h = RESOLUTION_LOOKUP.res_h
+		position[1] = (position[1] + parent_size[1]/2) - size[1]/2
+		local tooltip_total_height = 0
+		local passes = pass_definition.passes
+		local draw = false
+		local end_pass = pass_definition.end_pass
+
+		if end_pass then
+			local data = end_pass.data
+			local pass_height = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			tooltip_total_height = tooltip_total_height + pass_height
+		end
+
+		frame_margin = end_pass.data.frame_margin or 0
+
+		for _, tooltip_pass in ipairs(passes) do
+			local data = tooltip_pass.data
+			data.frame_margin = frame_margin
+			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			tooltip_total_height = tooltip_total_height + pass_height
+		end
+
+		local scale = UIResolutionScale()
+		local scale_inversed = UIInverseResolutionScale()
+		local actual_screen_y_position = position[2]*scale
+		position[2] = position[2] + parent_size[2] + tooltip_total_height
+		local position_x = position[1]
+		local position_y = position[2]
+		local position_z = position[3]
+		draw = true
+
+		for _, tooltip_pass in ipairs(passes) do
+			local data = tooltip_pass.data
+			data.frame_margin = frame_margin
+			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			size[2] = size[2] + pass_height
+			position[2] = position[2] - pass_height
+		end
+
+		position[1] = position_x
+		position[2] = position_y
+		position[3] = position_z
+
+		if end_pass then
+			local data = end_pass.data
+			slot29 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+		end
+
+		return 
+	end
+}
+UIPasses.option_tooltip = {
+	init = function (pass_definition, ui_content, ui_style, style_global)
+		local passes = {
+			{
+				data = UITooltipPasses.generic_text.setup_data(),
+				draw = UITooltipPasses.generic_text.draw
+			}
+		}
+		pass_definition.end_pass = {
+			data = UITooltipPasses.background.setup_data(),
+			draw = UITooltipPasses.background.draw
+		}
+		pass_definition.passes = passes
+		pass_definition.size = {
+			600,
+			0
+		}
+		pass_definition.alpha_multiplier = 1
+
+		return nil
+	end,
+	update = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, input_service, dt, ui_style_global, visible)
+		if not visible then
+			pass_definition.alpha_progress = 0
+			pass_definition.alpha_wait_time = UISettings.tooltip_wait_duration
+		end
+
+		return 
+	end,
+	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, parent_size, input_service, dt, ui_style_global)
+		local gamepad_active = Managers.input:is_device_active("gamepad")
+
+		if gamepad_active then
+			Managers.input:set_showing_tooltip(true)
+		end
+
+		local alpha_wait_time = pass_definition.alpha_wait_time
+		local alpha_progress = pass_definition.alpha_progress
+
+		if alpha_wait_time then
+			alpha_wait_time = alpha_wait_time - dt
+
+			if alpha_wait_time <= 0 then
+				pass_definition.alpha_wait_time = nil
+			else
+				pass_definition.alpha_wait_time = alpha_wait_time
+			end
+
+			pass_definition.alpha_multiplier = 0
+		elseif alpha_progress then
+			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
+			local alpha_progress = math.min(alpha_progress + dt*tooltip_fade_in_speed, 1)
+			pass_definition.alpha_multiplier = math.easeOutCubic(alpha_progress)
+
+			if alpha_progress == 1 then
+				pass_definition.alpha_progress = nil
+			else
+				pass_definition.alpha_progress = alpha_progress
+			end
+		end
+
+		local size = pass_definition.size
+		size[2] = 0
+		local draw_downwards = true
+		local res_w = RESOLUTION_LOOKUP.res_w
+		local res_h = RESOLUTION_LOOKUP.res_h
+		local tooltip_total_height = 0
+		local passes = pass_definition.passes
+		local draw = false
+		local end_pass = pass_definition.end_pass
+
+		if end_pass then
+			local data = end_pass.data
+			local pass_height = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			tooltip_total_height = tooltip_total_height + pass_height
+		end
+
+		frame_margin = end_pass.data.frame_margin or 0
+
+		for _, tooltip_pass in ipairs(passes) do
+			local data = tooltip_pass.data
+			data.frame_margin = frame_margin
+			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			tooltip_total_height = tooltip_total_height + pass_height
+		end
+
+		local scale = UIResolutionScale()
+		local scale_inversed = UIInverseResolutionScale()
+		local actual_screen_y_position = position[2]*scale
+		position[2] = position[2] + parent_size[2] + tooltip_total_height
+		local position_x = position[1]
+		local position_y = position[2]
+		local position_z = position[3]
+		draw = true
+
+		for _, tooltip_pass in ipairs(passes) do
+			local data = tooltip_pass.data
+			data.frame_margin = frame_margin
+			local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+			size[2] = size[2] + pass_height
+			position[2] = position[2] - pass_height
+		end
+
+		position[1] = position_x
+		position[2] = position_y
+		position[3] = position_z
+
+		if end_pass then
+			local data = end_pass.data
+			slot30 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
+		end
+
+		return 
+	end
+}
 UIPasses.item_tooltip = {
 	init = function (pass_definition, ui_content, ui_style, style_global)
 		local passes = {
@@ -2725,8 +3084,32 @@ UIPasses.item_tooltip = {
 				draw = UITooltipPasses.traits.draw
 			},
 			{
+				data = UITooltipPasses.weapon_skin_title.setup_data(),
+				draw = UITooltipPasses.weapon_skin_title.draw
+			},
+			{
+				data = UITooltipPasses.item_information_text.setup_data(),
+				draw = UITooltipPasses.item_information_text.draw
+			},
+			{
+				data = UITooltipPasses.loot_chest_difficulty.setup_data(),
+				draw = UITooltipPasses.loot_chest_difficulty.draw
+			},
+			{
+				data = UITooltipPasses.loot_chest_power_range.setup_data(),
+				draw = UITooltipPasses.loot_chest_power_range.draw
+			},
+			{
+				data = UITooltipPasses.loot_chest_description.setup_data(),
+				draw = UITooltipPasses.loot_chest_description.draw
+			},
+			{
 				data = UITooltipPasses.unwieldable.setup_data(),
 				draw = UITooltipPasses.unwieldable.draw
+			},
+			{
+				data = UITooltipPasses.keywords.setup_data(),
+				draw = UITooltipPasses.keywords.draw
 			},
 			{
 				data = UITooltipPasses.item_description.setup_data(),
@@ -2748,13 +3131,37 @@ UIPasses.item_tooltip = {
 		}
 		pass_definition.alpha_multiplier = 1
 		pass_definition.items = {}
+		pass_definition.items_alpha_progress = {
+			0,
+			0,
+			0,
+			0
+		}
+		local tooltip_wait_duration = UISettings.tooltip_wait_duration
+		pass_definition.alpha_wait_times = {
+			tooltip_wait_duration,
+			tooltip_wait_duration*2,
+			tooltip_wait_duration*2,
+			tooltip_wait_duration*2
+		}
+		pass_definition.tooltip_sizes = {}
 
 		return {}
 	end,
 	update = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, input_service, dt, ui_style_global, visible)
 		if not visible then
+			local tooltip_wait_duration = UISettings.tooltip_wait_duration
 			pass_definition.alpha_progress = 0
-			pass_definition.alpha_wait_time = UISettings.tooltip_wait_duration
+			pass_definition.alpha_wait_time = tooltip_wait_duration
+			local alpha_wait_times = pass_definition.alpha_wait_times
+			local items_alpha_progress = pass_definition.items_alpha_progress
+
+			if alpha_wait_times then
+				for i = 1, 4, 1 do
+					alpha_wait_times[i] = tooltip_wait_duration*2
+					items_alpha_progress[i] = 0
+				end
+			end
 		end
 
 		return 
@@ -2773,7 +3180,6 @@ UIPasses.item_tooltip = {
 		items[1] = preview_item
 		local preview_item_backend_id = preview_item.backend_id
 		local preview_item_data = preview_item.data
-		local equipped_item = nil
 		local slot_type = preview_item_data.slot_type
 
 		if slot_type then
@@ -2784,74 +3190,49 @@ UIPasses.item_tooltip = {
 				local local_player = Managers.player:local_player()
 
 				if local_player then
-					local hero_name = local_player.profile_display_name(local_player)
 					local career_name = local_player.career_name(local_player)
-					local equipped_item = BackendUtils.get_loadout_item(career_name, slot_name)
+					local backend_items = Managers.backend:get_interface("items")
+					local item_filter = "equipped_by == " .. career_name .. " and slot_type == " .. slot_type
+					local equipped_items = backend_items.get_filtered_items(backend_items, item_filter)
 
-					if equipped_item and equipped_item.backend_id ~= preview_item_backend_id then
-						items[2] = equipped_item
+					for _, item in ipairs(equipped_items) do
+						if item.backend_id ~= preview_item_backend_id then
+							items[#items + 1] = item
+						end
 					end
 				end
 			end
 		end
 
-		local alpha_wait_time = pass_definition.alpha_wait_time
-		local alpha_progress = pass_definition.alpha_progress
+		local scale = UIResolutionScale()
+		local scale_inversed = UIInverseResolutionScale()
+		local wanted_max_height = nil
+		local size = pass_definition.size
+		local res_w = RESOLUTION_LOOKUP.res_w
+		local res_h = RESOLUTION_LOOKUP.res_h
+		local direction = nil
 
-		if alpha_wait_time then
-			alpha_wait_time = alpha_wait_time - dt
-
-			if alpha_wait_time <= 0 then
-				pass_definition.alpha_wait_time = nil
-			else
-				pass_definition.alpha_wait_time = alpha_wait_time
-			end
-
-			pass_definition.alpha_multiplier = 0
-		elseif alpha_progress then
-			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
-			local alpha_progress = math.min(alpha_progress + dt*tooltip_fade_in_speed, 1)
-			pass_definition.alpha_multiplier = math.easeOutCubic(alpha_progress)
-
-			if alpha_progress == 1 then
-				pass_definition.alpha_progress = nil
-			else
-				pass_definition.alpha_progress = alpha_progress
-			end
+		if res_w*0.5 < (position[1] + parent_size[1]*0.5)*scale then
+			position[1] = position[1] - size[1] - 5
+			direction = -1
+		else
+			position[1] = position[1] + parent_size[1] + 5
+			direction = 1
 		end
 
-		local wanted_max_height = nil
+		local start_position_x = position[1]
+		local start_position_y = position[2]
+		local start_position_z = position[3]
+		local tooltip_sizes = pass_definition.tooltip_sizes
 
-		for _, item in ipairs(items) do
-			local start_position_x = position[1]
-			local start_position_y = position[2]
-			local start_position_z = position[3]
-			local size = pass_definition.size
-			size[2] = 0
-			local draw_downwards = true
-			local res_w = RESOLUTION_LOOKUP.res_w
-			local res_h = RESOLUTION_LOOKUP.res_h
-
-			if res_w*0.5 < position[1] + parent_size[1]*0.5 then
-				position[1] = position[1] - size[1] - 5
-
-				if wanted_max_height then
-					position[1] = position[1] - size[1]
-				end
-			else
-				position[1] = position[1] + parent_size[1] + 5
-
-				if wanted_max_height then
-					position[1] = position[1] + size[1]
-				end
-			end
-
-			local loop_func = (draw_downwards and ipairs) or ripairs
-			local passes = pass_definition.passes
-			local draw = false
-			local tooltip_total_height = 0
+		for index, item in ipairs(items) do
 			local end_pass = pass_definition.end_pass
 			local frame_margin = end_pass.data.frame_margin or 0
+			local passes = pass_definition.passes
+			local draw = false
+			local draw_downwards = true
+			local loop_func = (draw_downwards and ipairs) or ripairs
+			local tooltip_total_height = 0
 
 			if end_pass then
 				local data = end_pass.data
@@ -2866,57 +3247,127 @@ UIPasses.item_tooltip = {
 				tooltip_total_height = tooltip_total_height + pass_height
 			end
 
-			if not wanted_max_height then
-				position[2] = (position[2] + tooltip_total_height) - frame_margin/2
-				wanted_max_height = position[2]
+			tooltip_sizes[index] = tooltip_total_height
+		end
+
+		local top_spacing = 40
+		local equipped_panel_height = 30
+		local num_items = #items
+		local alpha_wait_times = pass_definition.alpha_wait_times
+		local items_alpha_progress = pass_definition.items_alpha_progress
+
+		for index, item in ipairs(items) do
+			size[2] = 0
+			local draw_downwards = true
+			local loop_func = (draw_downwards and ipairs) or ripairs
+			local passes = pass_definition.passes
+			local draw = false
+			local end_pass = pass_definition.end_pass
+			local frame_margin = end_pass.data.frame_margin or 0
+			local tooltip_total_height = tooltip_sizes[index]
+			local has_dubble_compares = num_items == 3
+			local first_item = index == 1
+			local alpha_wait_time = alpha_wait_times[index]
+			local alpha_progress = pass_definition.alpha_progress
+
+			if alpha_wait_time then
+				if first_item or not alpha_wait_times[1] then
+					alpha_wait_time = alpha_wait_time - dt
+
+					if alpha_wait_time <= 0 then
+						alpha_wait_times[index] = nil
+					else
+						alpha_wait_times[index] = alpha_wait_time
+					end
+
+					pass_definition.alpha_multiplier = 0
+				end
 			else
-				position[2] = wanted_max_height
-				local scale = UIResolutionScale()
-				local scale_inversed = UIInverseResolutionScale()
-				local tooltip_bottom_y_position = position[2]*scale - tooltip_total_height
+				local alpha_progress = items_alpha_progress[index]
 
-				if tooltip_bottom_y_position < 0 then
-					position[2] = frame_margin/2
-				end
-			end
+				if alpha_progress then
+					local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
+					local alpha_progress = math.min(alpha_progress + dt*tooltip_fade_in_speed, 1)
+					pass_definition.alpha_multiplier = math.easeOutCubic(alpha_progress)
 
-			local scale = UIResolutionScale()
-			local scale_inversed = UIInverseResolutionScale()
-			local actual_screen_y_position = position[2]*scale
-
-			if res_h < actual_screen_y_position then
-				position[2] = position[2] - (actual_screen_y_position - res_h + 40)*scale_inversed
-			end
-
-			local position_x = position[1]
-			local position_y = position[2] + frame_margin/2
-			local position_z = position[3]
-			draw = true
-
-			for _, tooltip_pass in loop_func(passes) do
-				local data = tooltip_pass.data
-				data.frame_margin = frame_margin
-				local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-				size[2] = size[2] + pass_height
-
-				if draw_downwards then
-					position[2] = position[2] - pass_height
+					if alpha_progress == 1 then
+						items_alpha_progress[index] = nil
+					else
+						items_alpha_progress[index] = alpha_progress
+					end
 				else
-					position[2] = position[2] + pass_height
+					pass_definition.alpha_multiplier = 1
+				end
+
+				if first_item then
+					position[2] = (position[2] + tooltip_total_height) - frame_margin/2
+					local actual_screen_y_position = position[2]*scale + top_spacing
+
+					if res_h < actual_screen_y_position then
+						position[2] = position[2] - (actual_screen_y_position - res_h)*scale_inversed
+					end
+
+					wanted_max_height = position[2]
+				end
+
+				if not first_item then
+					if has_dubble_compares and tooltip_sizes[2] + tooltip_sizes[3] < res_h then
+						position[1] = start_position_x + size[1]*direction
+						local tooltip_bottom_y_position = wanted_max_height - (tooltip_sizes[2] + tooltip_sizes[3] + equipped_panel_height*2)
+
+						if tooltip_bottom_y_position < 0 then
+							local new_wanted_height = wanted_max_height + math.abs(tooltip_bottom_y_position)
+
+							if index == 2 then
+								position[2] = new_wanted_height + equipped_panel_height
+							else
+								position[2] = new_wanted_height - (tooltip_sizes[2] + equipped_panel_height)
+							end
+						elseif index == 2 then
+							position[2] = wanted_max_height
+						else
+							position[2] = wanted_max_height - (tooltip_sizes[2] + equipped_panel_height*2)
+						end
+					else
+						position[1] = position[1] + size[1]*direction
+						local tooltip_bottom_y_position = wanted_max_height - tooltip_total_height
+
+						if tooltip_bottom_y_position < 0 then
+							position[2] = wanted_max_height + math.abs(tooltip_bottom_y_position) + equipped_panel_height
+						else
+							position[2] = wanted_max_height
+						end
+					end
+				end
+
+				local position_x = position[1]
+				local position_y = position[2] + frame_margin/2*scale
+				local position_z = position[3]
+				draw = true
+
+				for _, tooltip_pass in loop_func(passes) do
+					local data = tooltip_pass.data
+					data.frame_margin = frame_margin
+					local pass_height = tooltip_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+					size[2] = size[2] + pass_height
+
+					if draw_downwards then
+						position[2] = position[2] - pass_height
+					else
+						position[2] = position[2] + pass_height
+					end
+				end
+
+				position[1] = position_x
+				position[2] = position_y
+				position[3] = position_z
+
+				if end_pass then
+					local data = end_pass.data
+					slot53 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 				end
 			end
 
-			position[1] = position_x
-			position[2] = position_y
-			position[3] = position_z
-
-			if end_pass then
-				local data = end_pass.data
-				slot45 = end_pass.draw(draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			end
-
-			position[1] = start_position_x
-			position[2] = start_position_y
 			position[3] = start_position_z
 		end
 
@@ -3326,10 +3777,6 @@ UIPasses.hotspot = {
 
 		if ui_content.disable_button then
 			is_hover = false
-		end
-
-		if not is_hover then
-			slot22 = 0
 		end
 
 		if gamepad_active and is_hover and not ui_content.allow_multi_hover then

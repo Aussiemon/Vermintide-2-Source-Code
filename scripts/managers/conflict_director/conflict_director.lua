@@ -72,6 +72,7 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	self._next_pacing_update = Math.random()
 	self._next_threat_update = self._next_pacing_update + 0.1
 	self._living_horde = 0
+	self._horde_ends_at = math.huge
 	self._num_spawned_during_event = 0
 	self._num_angry_bosses = 0
 	self._next_horde_time = math.huge
@@ -591,7 +592,7 @@ ConflictDirector.spawned_during_event = function (self)
 	return self._num_spawned_during_event
 end
 ConflictDirector.horde_size = function (self)
-	return self._living_horde
+	return self._living_horde, self._horde_ends_at
 end
 ConflictDirector.horde_size_total = function (self)
 	local spawner_system = Managers.state.entity:system("spawner_system")
@@ -797,9 +798,10 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 			self._wave = wave
 		end
 
-		print("Time for new HOOORDE!")
+		print("Time for new HOOORDE!", wave)
 
 		local multi_horde_type = self._multiple_horde_count
+		self._horde_ends_at = t + 120
 		local extra_data = {
 			multiple_horde_count = self._multiple_horde_count,
 			horde_wave = wave
@@ -2247,33 +2249,28 @@ ConflictDirector.aim_spawning_group = function (self, breed, on_navmesh, formati
 	else
 		local ai_group_system = Managers.state.entity:system("ai_group_system")
 		local spline_type = "patrol"
+		local despawn_at_end = false
 
 		if spline_type then
 			local difficulty = Managers.state.difficulty:get_difficulty()
 			local formation = PatrolFormationSettings[formation_name][difficulty]
 			formation.settings = PatrolFormationSettings[formation_name].settings
-			local spline_name, spline_data, start_pos, waypoints = nil
+			local spline_name, waypoints, route_data, start_pos = nil
+			spline_name = ai_group_system.get_best_spline(ai_group_system, position, spline_type)
 
-			if spline_type == "event" then
-				spline_name = ai_group_system.get_best_spline(ai_group_system, position, spline_type)
-
-				if not spline_name then
-					print("no event spline found")
-
-					return 
-				end
-
-				waypoints = self.level_analysis:boxify_waypoint_table(spline_data.waypoints)
+			if spline_name then
+				waypoints = {
+					Vector3Box(110, 0, 0),
+					Vector3Box(1, -220, 0)
+				}
 			else
-				spline_name = ai_group_system.get_best_spline(ai_group_system, position, spline_type)
+				spline_name, waypoints, start_pos = self.level_analysis:get_closest_waypoint_spline(position)
 
 				if spline_name then
-					waypoints = {
-						Vector3Box(110, 0, 0),
-						Vector3Box(1, -220, 0)
-					}
+					position = start_pos
+					despawn_at_end = true
 				else
-					print("Could not find a spline of type", spline_type)
+					print("No patrol spline found")
 
 					return 
 				end
@@ -2283,7 +2280,8 @@ ConflictDirector.aim_spawning_group = function (self, breed, on_navmesh, formati
 				group_type = "spline_patrol",
 				formation = formation,
 				spline_name = spline_name,
-				spline_way_points = waypoints
+				spline_way_points = waypoints,
+				despawn_at_end = despawn_at_end
 			}
 
 			self.spawn_spline_group(self, "spline_patrol", position, data)
@@ -2706,7 +2704,12 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 
 	if DebugKeyHandler.key_pressed("t", "test terror", "ai", "left shift") then
 		print("Pressed t")
-		TerrorEventMixer.start_event("event_horde")
+
+		return 
+
+		self._next_horde_time = 0
+
+		TerrorEventMixer.start_event("test_event_patrol")
 
 		return 
 

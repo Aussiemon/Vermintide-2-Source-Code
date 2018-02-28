@@ -41,12 +41,6 @@ weapon_template.actions = {
 					start_time = 1.1,
 					action = "action_one",
 					auto_chain = true
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		},
@@ -306,7 +300,6 @@ weapon_template.actions = {
 	action_instant_give_item = ActionTemplates.instant_give_item,
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_grenade_throw,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -381,12 +374,6 @@ weapon_template_smoke_dot.actions = {
 					start_time = 1.1,
 					action = "action_one",
 					auto_chain = true
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		},
@@ -559,12 +546,6 @@ weapon_template_fire_dot.actions = {
 					start_time = 1.1,
 					action = "action_one",
 					auto_chain = true
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		},

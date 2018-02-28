@@ -2665,6 +2665,18 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	dr_beard = {
+		slot_hat = {
+			{
+				target = 0,
+				source = "j_head"
+			},
+			{
+				target = "j_spine2",
+				source = "j_spine2"
+			}
+		}
+	},
 	ww_mask = {
 		slot_hat = {
 			{

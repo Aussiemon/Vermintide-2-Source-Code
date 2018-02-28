@@ -263,6 +263,45 @@ BuffFunctionTemplates.functions = {
 
 		return 
 	end,
+	health_degen_start = function (unit, buff, params)
+		buff.next_damage_time = params.t + buff.template.time_between_damage
+
+		return 
+	end,
+	health_degen_update = function (unit, buff, params)
+		if buff.next_damage_time < params.t then
+			local buff_template = buff.template
+			buff.next_damage_time = buff.next_damage_time + buff_template.time_between_damage
+			local damage = buff_template.damage
+			local damage_type = buff_template.damage_type
+
+			DamageUtils.add_damage_network(unit, unit, damage, "full", damage_type, Vector3(1, 0, 0), "health_degen")
+		end
+
+		return 
+	end,
+	health_regen_start = function (unit, buff, params)
+		if Managers.state.network.is_server then
+			buff.next_heal_time = params.t + buff.template.time_between_heal
+		end
+
+		return 
+	end,
+	health_regen_update = function (unit, buff, params)
+		if Managers.state.network.is_server and buff.next_heal_time < params.t then
+			local buff_template = buff.template
+			buff.next_heal_time = buff.next_heal_time + buff_template.time_between_heal
+			local heal_amount = buff_template.heal
+			local heal_type = buff_template.heal_type or "health_regen"
+			local player_and_bot_units = PLAYER_AND_BOT_UNITS
+
+			for i = 1, #player_and_bot_units, 1 do
+				DamageUtils.heal_network(player_and_bot_units[i], unit, heal_amount, heal_type)
+			end
+		end
+
+		return 
+	end,
 	start_dot_damage = function (unit, buff, params)
 		local random_mod_next_dot_time = buff.template.time_between_dot_damages*0.75 + math.random()*0.5*buff.template.time_between_dot_damages
 		buff.next_poison_damage_time = params.t + random_mod_next_dot_time
@@ -1245,10 +1284,8 @@ BuffFunctionTemplates.functions = {
 		local range = buff.range
 		local chunk_size = template.chunk_size
 		local buff_to_add = template.buff_to_add
+		local max_stacks = 5
 		local own_position = POSITION_LOOKUP[unit]
-
-		table.clear(broadphase_results)
-
 		local num_nearby_enemies = Broadphase.query(ai_broadphase, own_position, range, broadphase_results)
 		local num_alive_nearby_enemies = 0
 
@@ -1258,6 +1295,10 @@ BuffFunctionTemplates.functions = {
 
 			if alive then
 				num_alive_nearby_enemies = num_alive_nearby_enemies + 1
+
+				if math.floor(num_alive_nearby_enemies/chunk_size) == max_stacks then
+					break
+				end
 			end
 		end
 
@@ -1287,6 +1328,7 @@ BuffFunctionTemplates.functions = {
 
 				buff_extension.remove_buff(buff_extension, buff_id)
 				print("removed buff -", buff_to_add)
+				print("buff_id", buff_id)
 
 				amount_removed = amount_removed + 1
 				removed_buff = true
@@ -1303,12 +1345,13 @@ BuffFunctionTemplates.functions = {
 			local template = buff.template
 			local chunk_size = template.chunk_size
 			local buff_to_add = template.buff_to_add
+			local max_stacks = 5
 
 			if not buff.stack_ids then
 				buff.stack_ids = {}
 			end
 
-			local num_chunks = math.floor(overcharge/chunk_size)
+			local num_chunks = math.min(math.floor(overcharge/chunk_size), max_stacks)
 			local num_buff_stacks = buff_extension.num_buff_type(buff_extension, buff_to_add)
 			local amount_removed = 0
 			local removed_buff = false
@@ -1329,7 +1372,6 @@ BuffFunctionTemplates.functions = {
 					local buff_id = table.remove(stack_ids, 1)
 
 					buff_extension.remove_buff(buff_extension, buff_id)
-					print("removed buff -", buff_to_add)
 
 					amount_removed = amount_removed + 1
 					removed_buff = true
@@ -1347,14 +1389,16 @@ BuffFunctionTemplates.functions = {
 		local damage_taken = health_extension.get_damage_taken(health_extension)
 		local template = buff.template
 		local buff_to_add = template.buff_to_add
+		local max_stacks = 5
 		local chunk_size = template.chunk_size
-		local stat_buff_index = template.stat_buff
+		local current_health = health_extension.current_health(health_extension)
 
 		if not buff.stack_ids then
 			buff.stack_ids = {}
 		end
 
-		local num_chunks = math.floor(damage_taken/chunk_size)
+		local health_chunks = math.floor(current_health/chunk_size)
+		local num_chunks = math.max(0, max_stacks - health_chunks)
 		local num_buff_stacks = buff_extension.num_buff_type(buff_extension, buff_to_add)
 		local amount_removed = 0
 		local removed_buff = false
@@ -1375,7 +1419,6 @@ BuffFunctionTemplates.functions = {
 				local buff_id = table.remove(stack_ids, 1)
 
 				buff_extension.remove_buff(buff_extension, buff_id)
-				print("removed buff -", buff_to_add)
 
 				amount_removed = amount_removed + 1
 				removed_buff = true
@@ -1956,7 +1999,7 @@ BuffFunctionTemplates.functions = {
 		local is_disabled = status_extension.is_disabled(status_extension) or status_extension.is_in_vortex(status_extension)
 		local adding_buff = nil
 
-		if buff_extension.has_buff_type(buff_extension, "grimoire_health_debuff") then
+		if buff_extension.has_buff_perk(buff_extension, "grimoire") then
 			adding_buff = true
 		end
 
@@ -2293,7 +2336,7 @@ BuffFunctionTemplates.functions = {
 		local previous_multiplier = buff.previous_multiplier or 0
 		local multiplier = 0
 
-		if buff_extension.has_buff_type(buff_extension, "grimoire_health_debuff") then
+		if buff_extension.has_buff_perk(buff_extension, "grimoire") then
 			multiplier = activation_multiplier
 		end
 
@@ -2317,7 +2360,7 @@ BuffFunctionTemplates.functions = {
 		local previous_bonus = buff.previous_bonus or 0
 		local bonus = 0
 
-		if buff_extension.has_buff_type(buff_extension, "grimoire_health_debuff") then
+		if buff_extension.has_buff_perk(buff_extension, "grimoire") then
 			bonus = activation_bonus
 		end
 

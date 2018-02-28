@@ -144,7 +144,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 					mission_rewards_n = mission_rewards_n + 1
 					mission_rewards[mission_rewards_n] = {
 						text = data.mission_data.text,
-						experience = experience
+						experience = experience*self.difficulty_experience_multiplier(self)
 					}
 				end
 			elseif data.evaluation_type == "amount" then
@@ -160,7 +160,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 					mission_rewards_n = mission_rewards_n + 1
 					mission_rewards[mission_rewards_n] = {
 						text = data.mission_data.text,
-						experience = experience
+						experience = experience*self.difficulty_experience_multiplier(self)
 					}
 				end
 			end

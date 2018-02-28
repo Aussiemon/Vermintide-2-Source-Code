@@ -662,6 +662,7 @@ InteractionDefinitions.assisted_respawn = {
 		end
 	}
 }
+local movement_threshold_sq = 1
 InteractionDefinitions.smartobject = {
 	config = {
 		show_weapons = true,
@@ -677,6 +678,10 @@ InteractionDefinitions.smartobject = {
 
 			data.done_time = t + duration
 			data.duration = duration
+			local interactor_position = Unit.world_position(interactor_unit, 0)
+			local interactable_position = Unit.world_position(interactable_unit, 0)
+			local start_offset = interactor_position - interactable_position
+			data.start_offset = Vector3Box(start_offset)
 
 			return 
 		end,
@@ -685,6 +690,16 @@ InteractionDefinitions.smartobject = {
 			local status_extension = ScriptUnit.extension(interactor_unit, "status_system")
 
 			if status_extension.is_knocked_down(status_extension) or not health_extension.is_alive(health_extension) then
+				return InteractionResult.FAILURE
+			end
+
+			local interactor_position = Unit.world_position(interactor_unit, 0)
+			local interactable_position = Unit.world_position(interactable_unit, 0)
+			local current_offset = interactor_position - interactable_position
+			local start_offset = data.start_offset:unbox()
+			local movement_sq = Vector3.distance_squared(start_offset, current_offset)
+
+			if movement_threshold_sq < movement_sq then
 				return InteractionResult.FAILURE
 			end
 
@@ -1064,12 +1079,13 @@ InteractionDefinitions.pickup_object = {
 								ignored_damage_types = {
 									temporary_health_degen = true,
 									kinetic = true,
-									wounded_dot = true,
-									buff = true,
-									heal = true,
-									vomit_ground = true,
 									damage_over_time = true,
-									vomit_face = true
+									buff = true,
+									vomit_face = true,
+									health_degen = true,
+									vomit_ground = true,
+									wounded_dot = true,
+									heal = true
 								},
 								health = health_extension.health,
 								damage = health_extension.damage,
@@ -2113,6 +2129,16 @@ InteractionDefinitions.pictureframe.client.can_interact = function (interactor_u
 end
 InteractionDefinitions.pictureframe.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
 	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action")
+end
+InteractionDefinitions.no_interaction_hud_only = InteractionDefinitions.no_interaction_hud_only or table.clone(InteractionDefinitions.smartobject)
+InteractionDefinitions.no_interaction_hud_only.client.hud_description = function (interactable_unit, data, config, key_tail)
+	local hud_text_line_1 = Unit.get_data(interactable_unit, "interaction_data", "hud_text_line_1")
+	local hud_text_line_2 = Unit.get_data(interactable_unit, "interaction_data", "hud_text_line_2")
+
+	return hud_text_line_1, hud_text_line_2
+end
+InteractionDefinitions.no_interaction_hud_only.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	return false, ""
 end
 
 return 

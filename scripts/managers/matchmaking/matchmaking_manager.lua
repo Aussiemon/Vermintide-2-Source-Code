@@ -1,8 +1,5 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/managers/matchmaking/matchmaking_state_search_game")
 require("scripts/managers/matchmaking/matchmaking_state_request_join_game")
-require("scripts/managers/matchmaking/matchmaking_state_request_join_game_verify_host_eac")
 require("scripts/managers/matchmaking/matchmaking_state_request_profiles")
 require("scripts/managers/matchmaking/matchmaking_state_start_game")
 require("scripts/managers/matchmaking/matchmaking_state_host_game")
@@ -509,6 +506,10 @@ MatchmakingManager.get_average_power_level = function (self)
 		end
 	end
 
+	if num_players == 0 then
+		return 0
+	end
+
 	return math.floor(total_power_level/num_players)
 end
 MatchmakingManager.has_required_power_level = function (self, lobby_data, profile_name, career_name)
@@ -716,40 +717,11 @@ end
 MatchmakingManager.on_dedicated_server = function (self)
 	return self.lobby:is_dedicated_server()
 end
-MatchmakingManager._is_first_time_searcher = function (self, search_config)
-	if DEDICATED_SERVER then
-		return false
-	end
-
-	local quick_game = search_config.quick_game
-	local local_player = Managers.player:local_player()
-
-	if quick_game then
-		if not LevelUnlockUtils.all_levels_completed(self.statistics_db, local_player.stats_id(local_player)) then
-			return true
-		end
-	else
-		local level_key = search_config.level_key
-
-		if level_key then
-			local times_completed = self.statistics_db:get_persistent_stat(local_player.stats_id(local_player), "completed_levels", level_key)
-
-			if times_completed == 0 then
-				return true
-			end
-		end
-	end
-
-	return 
-end
 MatchmakingManager.find_game = function (self, search_config)
 	if self.is_server then
-
-		-- decompilation error in this vicinity
 		self.state_context = {
 			search_config = table.clone(search_config),
-			started_matchmaking_t = Managers.time:time("main"),
-			is_first_time_searcher = self._is_first_time_searcher(self, search_config)
+			started_matchmaking_t = Managers.time:time("main")
 		}
 		local private_game = search_config.private_game
 
@@ -761,6 +733,20 @@ MatchmakingManager.find_game = function (self, search_config)
 		self.set_quick_game(self, quick_game)
 
 		local next_state = nil
+
+		if Development.parameter("auto_host_dedicated") then
+			next_state = MatchmakingStateSearchGameServer
+		else
+			local num_active_peers = self.network_server:num_active_peers()
+			local people_in_local_hosted_party = 1 < num_active_peers
+			local always_host = search_config.always_host
+
+			if private_game or people_in_local_hosted_party or always_host or ALWAYS_HOST_GAME then
+				next_state = MatchmakingStateHostGame
+			else
+				next_state = MatchmakingStateSearchGame
+			end
+		end
 
 		self.handshaker_host:send_rpc_to_clients("rpc_set_matchmaking", true, private_game)
 		self._change_state(self, next_state, self.params, self.state_context)
@@ -792,9 +778,9 @@ MatchmakingManager.cancel_matchmaking = function (self)
 	if started_matchmaking_t ~= nil then
 		local t = Managers.time:time("main") or started_matchmaking_t
 		local time_taken = t - started_matchmaking_t
-		local is_first_time_searcher = self.state_context.is_first_time_searcher
+		local using_strict_matchmaking = self.state_context.search_config.strict_matchmaking
 
-		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, is_first_time_searcher)
+		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, using_strict_matchmaking)
 	end
 
 	self.state_context = {}
@@ -1017,52 +1003,52 @@ MatchmakingManager.lobby_match = function (self, lobby_data, act_key, level_key,
 	local broken_lobby = self.lobby_listed_as_broken(self, lobby_id)
 
 	if broken_lobby then
-		return false
+		return false, "lobby listed as broken"
 	end
 
 	if lobby_data.host == player_peer_id then
-		return false
+		return false, "players own lobby"
 	end
 
 	local valid_lobby = lobby_data.matchmaking ~= "false" and lobby_data.valid
 
 	if not valid_lobby then
-		return false
+		return false, "lobby is not valid"
 	end
 
 	if level_key then
 		local correct_level = lobby_data.level_key == level_key or (lobby_data.selected_level_key and lobby_data.selected_level_key == level_key)
 
 		if not correct_level then
-			return false
+			return false, "wrong level"
 		end
 	end
 
 	if act_key and lobby_data.act_key ~= act_key then
-		return false
+		return false, "wrong act"
 	end
 
 	if game_mode and game_mode ~= lobby_data.game_mode then
-		return false
+		return false, "wrong game mode"
 	end
 
 	local correct_difficulty = lobby_data.difficulty == difficulty
 
 	if not correct_difficulty then
-		return false
+		return false, "wrong difficulty"
 	end
 
 	local num_players = lobby_data.num_players and tonumber(lobby_data.num_players)
 	local has_empty_slot = num_players and num_players < MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
 
 	if not has_empty_slot then
-		return false
+		return false, "no empty slot"
 	end
 
 	if script_data.unique_server_name and lobby_data.unique_server_name ~= script_data.unique_server_name then
 		Debug.text("Ignoring lobby due to mismatching unique_server_name")
 
-		return false
+		return false, "mismatching unique_server_name"
 	end
 
 	return true
@@ -1401,6 +1387,11 @@ MatchmakingManager.cancel_join_lobby = function (self, reason)
 
 	return 
 end
+MatchmakingManager.allowed_to_initiate_join_lobby = function (self)
+	local matchmaking_status = self._matchmaking_status(self)
+
+	return matchmaking_status == "idle"
+end
 MatchmakingManager.send_system_chat_message = function (self, message, localization_param)
 	local channel_id = 1
 	local localization_param = ""
@@ -1502,7 +1493,7 @@ MatchmakingManager._matchmaking_status = function (self)
 
 	if state_name == "MatchmakingStateIdle" then
 		return "idle"
-	elseif state_name == "MatchmakingStateSearchGame" or state_name == "MatchmakingStateRequestJoinGameVerifyHostEAC" then
+	elseif state_name == "MatchmakingStateSearchGame" then
 		return "searching_for_game"
 	elseif state_name == "MatchmakingStateHostGame" or state_name == "MatchmakingStateWaitForCountdown" or state_name == "MatchmakingStateStartGame" or state_name == "MatchmakingStateSearchGameServer" or state_name == "MatchmakingStateRequestGameServerOwnership" then
 		return "hosting_game"

@@ -447,5 +447,101 @@ InputFilters.sub = {
 		return value
 	end
 }
+InputFilters.delayed_and = {
+	init = function (filter_data)
+		local internal_filter_data = table.clone(filter_data)
+		internal_filter_data.timer = 0
+		internal_filter_data.pressed = {}
+
+		return internal_filter_data
+	end,
+	update = function (filter_data, input_service)
+		local value, any_pressed = nil
+
+		for _, input_mapping in pairs(filter_data.input_mappings) do
+			if not input_service.get(input_service, input_mapping) then
+				value = false
+			elseif value == nil then
+				value = true
+				filter_data.pressed[input_mapping] = true
+				any_pressed = true
+			else
+				filter_data.pressed[input_mapping] = true
+				any_pressed = true
+			end
+		end
+
+		if value then
+			return value
+		end
+
+		local time = Application.time_since_launch()
+
+		if any_pressed then
+			filter_data.timer = time + filter_data.max_delay
+		end
+
+		if time < filter_data.timer then
+			value = nil
+
+			for _, input_mapping in pairs(filter_data.input_mappings) do
+				if not filter_data.pressed[input_mapping] then
+					value = false
+				elseif value == nil then
+					value = true
+				end
+			end
+		else
+			table.clear(filter_data.pressed)
+		end
+
+		return value
+	end
+}
+InputFilters.exclusive_and = {
+	init = function (filter_data)
+		return table.clone(filter_data)
+	end,
+	update = function (filter_data, input_service)
+		local value = nil
+
+		for _, input_mapping in pairs(filter_data.input_mappings) do
+			if not input_service.get(input_service, input_mapping) then
+				value = false
+			elseif value == nil then
+				value = true
+			end
+		end
+
+		for _, input_mapping in pairs(filter_data.exclusive_input_mappings) do
+			if input_service.get(input_service, input_mapping) then
+				value = false
+
+				break
+			end
+		end
+
+		return value
+	end
+}
+InputFilters.axis_check = {
+	init = function (filter_data)
+		local my_filter_data = table.clone(filter_data)
+		local axis = my_filter_data.axis
+		my_filter_data.axis = Vector3Box(Vector3(axis[1], axis[2], axis[3]))
+
+		return my_filter_data
+	end,
+	update = function (filter_data, input_service)
+		local axis_requirement = filter_data.axis_requirement
+		local input = input_service.get(input_service, filter_data.input_mapping)
+
+		if not input then
+			return false
+		end
+
+		return axis_requirement <= Vector3.dot(filter_data.axis:unbox(), input)
+	end
+}
 
 return 

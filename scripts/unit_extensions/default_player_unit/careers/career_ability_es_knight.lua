@@ -44,7 +44,7 @@ CareerAbilityESKnight.update = function (self, unit, input, dt, context, t)
 	end
 
 	if not self._is_priming then
-		if input_extension.get(input_extension, "function_career") then
+		if input_extension.get(input_extension, "action_career") then
 			self._start_priming(self)
 		end
 	elseif self._is_priming then
@@ -56,7 +56,7 @@ CareerAbilityESKnight.update = function (self, unit, input, dt, context, t)
 			return 
 		end
 
-		if input_extension.get(input_extension, "function_career_release") then
+		if input_extension.get(input_extension, "action_career_release") then
 			self._run_ability(self)
 		end
 	end
@@ -66,9 +66,8 @@ end
 CareerAbilityESKnight._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
-	local activated_ability_data = career_extension.get_activated_ability_data(career_extension)
 
-	return self._local_player and not self._bot_player and career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
+	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityESKnight._start_priming = function (self)
 	local decal_unit_name = self._decal_unit_name
@@ -187,7 +186,7 @@ CareerAbilityESKnight._run_ability = function (self)
 		first_person_animation_event = "foot_knight_ability_charge_start",
 		first_person_hit_animation_event = "charge_react",
 		damage_start_time = 0.3,
-		duration = 1.75,
+		duration = 1.5,
 		initial_speed = 20,
 		animation_event = "foot_knight_ability_charge_start",
 		flow_events = {

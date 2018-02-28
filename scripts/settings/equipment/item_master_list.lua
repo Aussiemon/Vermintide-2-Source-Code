@@ -5,6 +5,7 @@ dofile("scripts/settings/equipment/weapons")
 dofile("scripts/unit_extensions/default_player_unit/buffs/buff_templates")
 dofile("scripts/settings/equipment/attachments")
 dofile("scripts/settings/equipment/cosmetics")
+dofile("scripts/settings/equipment/player_wwise_dependencies")
 
 all_item_types = {}
 local all_loot = {}
@@ -37,7 +38,7 @@ function parse_item_master_list()
 		if item.display_name then
 			item.localized_name = Localize(item.display_name)
 		else
-			item.display_name = string.format("No display_name for item %q", tostring(key))
+			item.display_name = string.format("No_display_name_for_item_%q", tostring(key))
 			item.localized_name = "<" .. item.display_name .. ">"
 		end
 

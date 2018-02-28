@@ -37,7 +37,7 @@ ActivatedAbilitySettings = {
 		description = "career_active_desc_es_1",
 		display_name = "career_active_name_es_1",
 		cooldown = 120,
-		icon = "icons_placeholder",
+		icon = "markus_huntsman_activated_ability",
 		ability_class = CareerAbilityESHuntsman
 	},
 	es_2 = {
@@ -65,7 +65,7 @@ ActivatedAbilitySettings = {
 		description = "career_active_desc_we_2",
 		display_name = "career_active_name_we_2",
 		cooldown = 25,
-		icon = "icons_placeholder",
+		icon = "kerillian_maidenguard_activated_ability",
 		ability_class = CareerAbilityWEMaidenGuard
 	},
 	we_3 = {
@@ -80,7 +80,7 @@ ActivatedAbilitySettings = {
 		description = "career_active_desc_wh_1",
 		display_name = "career_active_name_wh_1",
 		cooldown = 40,
-		icon = "icons_placeholder",
+		icon = "victor_zealot_activated_ability",
 		ability_class = CareerAbilityWHZealot
 	},
 	wh_2 = {
@@ -162,7 +162,7 @@ PassiveAbilitySettings = {
 	},
 	es_1 = {
 		description = "career_passive_desc_es_1",
-		icon = "icons_placeholder",
+		icon = "markus_huntsman_passive",
 		display_name = "career_passive_name_es_1",
 		buffs = {
 			"markus_huntsman_passive",
@@ -199,7 +199,7 @@ PassiveAbilitySettings = {
 	},
 	we_1 = {
 		description = "career_passive_desc_we_1",
-		icon = "kerillian_shade_passive_improved",
+		icon = "kerillian_shade_passive",
 		display_name = "career_passive_name_we_1",
 		buffs = {
 			"kerillian_shade_passive",
@@ -211,7 +211,7 @@ PassiveAbilitySettings = {
 	},
 	we_2 = {
 		description = "career_passive_desc_we_2",
-		icon = "kerillian_waywatcher_group_regen",
+		icon = "kerillian_maidenguard_passive",
 		display_name = "career_passive_name_we_2",
 		buffs = {
 			"kerillian_maidenguard_passive_dodge",
@@ -239,7 +239,7 @@ PassiveAbilitySettings = {
 	},
 	wh_1 = {
 		description = "career_passive_desc_wh_1",
-		icon = "icons_placeholder",
+		icon = "victor_zealot_passive",
 		display_name = "career_passive_name_wh_1",
 		buffs = {
 			"victor_zealot_passive_increased_damage",

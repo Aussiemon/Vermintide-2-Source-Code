@@ -68,12 +68,6 @@ weapon_template.actions = {
 					start_time = 0.9,
 					action = "weapon_reload",
 					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -137,12 +131,6 @@ weapon_template.actions = {
 					start_time = 0.3,
 					action = "weapon_reload",
 					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -154,23 +142,21 @@ weapon_template.actions = {
 	},
 	action_two = {
 		default = {
-			charge_sound_stop_event = "stop_player_combat_weapon_staff_fire_beam",
+			charge_sound_stop_event = "player_combat_weapon_staff_charge_down",
 			anim_end_event = "attack_finished",
-			particle_effect_trail_3p = "fx/wpnfx_staff_beam_trail_3p",
-			charge_sound_husk_name = "player_combat_weapon_staff_fire_beam_husk",
+			charge_sound_name = "player_combat_weapon_staff_charge",
+			remove_overcharge_on_interrupt = true,
 			kind = "charge",
-			charge_sound_husk_stop_event = "stop_player_combat_weapon_staff_fire_beam_husk",
 			overcharge_interval = 0.3,
-			particle_effect_trail = "fx/wpnfx_staff_beam_trail",
+			charge_sound_husk_name = "player_combat_weapon_staff_charge_husk",
 			minimum_hold_time = 0.2,
 			overcharge_type = "flamethrower",
 			charge_sound_switch = "projectile_charge_sound",
 			charge_time = 3,
-			particle_effect_target = "fx/wpnfx_staff_beam_target",
 			hold_input = "action_two_hold",
 			anim_event = "flamethrower_charge_start",
 			fx_node = "fx_01",
-			charge_sound_name = "player_combat_weapon_staff_fire_beam",
+			charge_sound_husk_stop_event = "stop_player_combat_weapon_staff_charge_husk",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -212,12 +198,6 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "weapon_reload",
 					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		}
@@ -263,12 +243,6 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			condition_func = function (action_user, input_extension)
@@ -285,7 +259,6 @@ weapon_template.actions = {
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -342,9 +315,9 @@ weapon_template.wwise_dep_right_hand = {
 	"wwise/flamethrower"
 }
 weapon_template.tooltip_keywords = {
-	"keyword_1",
-	"keyword_2",
-	"keyword_3"
+	"weapon_keyword_damage_over_time",
+	"weapon_keyword_charged_attack",
+	"weapon_keyword_close_range"
 }
 weapon_template.compare_statistics = {
 	attacks = {

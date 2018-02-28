@@ -360,7 +360,6 @@ UIFrameSettings = {
 	},
 	frame_inner_glow_01 = {
 		texture = "frame_inner_glow_01",
-		outer_frame = true,
 		texture_size = {
 			88,
 			88

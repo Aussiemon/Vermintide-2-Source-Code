@@ -19,8 +19,10 @@ local function item_sort_func(item_1, item_2)
 		local item_type_2 = Localize(item_data_2.item_type)
 
 		if item_type_1 == item_type_2 then
-			local item_name_1 = Localize(item_data_1.display_name)
-			local item_name_2 = Localize(item_data_2.display_name)
+			local _, item_1_display_name = UIUtils.get_ui_information_from_item(item_1)
+			local _, item_2_display_name = UIUtils.get_ui_information_from_item(item_2)
+			local item_name_1 = Localize(item_1_display_name)
+			local item_name_2 = Localize(item_2_display_name)
 
 			return item_name_1 < item_name_2
 		else

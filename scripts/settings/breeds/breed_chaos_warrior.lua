@@ -85,7 +85,6 @@ local breed_data = {
 	smart_targeting_height_multiplier = 3,
 	horde_behavior = "chaos_warrior",
 	unit_template = "ai_unit_chaos_warrior",
-	stagger_reduction = 1.5,
 	has_running_attack = true,
 	perception = "perception_regular_update_aggro",
 	player_locomotion_constrain_radius = 0.7,
@@ -127,12 +126,19 @@ local breed_data = {
 		80,
 		120
 	},
+	stagger_reduction = {
+		2,
+		2,
+		2.5,
+		3,
+		6
+	},
 	diff_stagger_resist = {
-		4,
-		4,
-		6,
-		8,
-		12
+		5,
+		5,
+		7.5,
+		10,
+		15
 	},
 	stagger_duration = {
 		0.1,
@@ -157,6 +163,21 @@ local breed_data = {
 	},
 	run_on_spawn = AiBreedSnippets.on_chaos_warrior_spawn,
 	run_on_update = AiBreedSnippets.on_chaos_warrior_update,
+	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
+		if blackboard.stagger_type == 3 then
+			if stagger == 3 and blackboard.heavy_stagger_immune_time then
+				stagger = 0
+				duration = 0
+				length = 0
+			elseif stagger ~= 3 and blackboard.stagger_immune_time then
+				stagger = 0
+				duration = 0
+				length = 0
+			end
+		end
+
+		return stagger, duration, length
+	end,
 	hitzone_multiplier_types = {
 		head = "headshot",
 		neck = "headshot"
@@ -855,6 +876,19 @@ local action_data = {
 		}
 	},
 	stagger = {
+		custom_enter_function = function (unit, blackboard, t, action)
+			if blackboard.stagger_type == 3 then
+				blackboard.stagger_immune_time = t + 2.25
+				blackboard.heavy_stagger_immune_time = t + 1.5
+			elseif blackboard.stagger_type == 6 then
+				blackboard.stagger_immune_time = t + 4.5
+				blackboard.heavy_stagger_immune_time = t + 4
+			end
+
+			local stagger_anims = action.stagger_anims[blackboard.stagger_type]
+
+			return stagger_anims, "idle"
+		end,
 		stagger_anims = {
 			{
 				fwd = {

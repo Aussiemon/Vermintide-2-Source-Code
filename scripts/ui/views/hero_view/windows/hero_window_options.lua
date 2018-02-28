@@ -46,6 +46,7 @@ HeroWindowOptions.on_enter = function (self, params, offset)
 		cosmetics = widgets_by_name.game_option_4,
 		loot_chest = widgets_by_name.game_option_5
 	}
+	widgets_by_name.game_option_4.content.button_hotspot.disable_button = true
 
 	return 
 end
@@ -73,8 +74,6 @@ HeroWindowOptions.create_ui_elements = function (self, params, offset)
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
-
-	widgets_by_name.game_option_4.content.button_hotspot.disable_button = true
 
 	return 
 end

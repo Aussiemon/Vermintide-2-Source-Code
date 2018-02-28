@@ -70,7 +70,7 @@ CareerAbilityDRSlayer.update = function (self, unit, input, dt, context, t)
 			return 
 		end
 
-		if input_extension.get(input_extension, "function_career") then
+		if input_extension.get(input_extension, "action_career") then
 			self._start_priming(self)
 		end
 	elseif self._is_priming then
@@ -86,7 +86,7 @@ CareerAbilityDRSlayer.update = function (self, unit, input, dt, context, t)
 			self._last_valid_landing_position = Vector3Box(landing_position)
 		end
 
-		if input_extension.get(input_extension, "function_career_release") then
+		if input_extension.get(input_extension, "action_career_release") then
 			self._run_ability(self)
 		end
 	end
@@ -97,14 +97,16 @@ CareerAbilityDRSlayer._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
 	local locomotion_extension = self._locomotion_extension
-	local activated_ability_data = career_extension.get_activated_ability_data(career_extension)
 
-	return self._local_player and not self._bot_player and career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension) and locomotion_extension.is_on_ground(locomotion_extension)
+	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension) and locomotion_extension.is_on_ground(locomotion_extension)
 end
 CareerAbilityDRSlayer._start_priming = function (self)
-	local world = self._world
-	local effect_name = self._effect_name
-	self._effect_id = World.create_particles(world, effect_name, Vector3.zero())
+	if self._local_player then
+		local world = self._world
+		local effect_name = self._effect_name
+		self._effect_id = World.create_particles(world, effect_name, Vector3.zero())
+	end
+
 	self._is_priming = true
 
 	return 
@@ -153,7 +155,7 @@ CareerAbilityDRSlayer._update_priming = function (self)
 		end
 	end
 
-	if landing_position then
+	if effect_id and landing_position then
 		World.move_particles(world, effect_id, landing_position)
 	end
 
@@ -246,15 +248,14 @@ CareerAbilityDRSlayer._run_ability = function (self)
 	local physics_world = World.get_data(world, "physics_world")
 	local velocity, time_of_flight, hit_pos = get_leap_data(physics_world, POSITION_LOOKUP[owner_unit], landing_position)
 	status_extension.do_leap = {
-		sfx_event_jump = "Play_career_ability_bardin_slayer_jump",
 		anim_start_event = "jump_fwd",
-		sfx_event_land = "Play_career_ability_bardin_slayer_impact",
 		initial_velocity = Vector3Box(velocity),
 		time_of_flight = time_of_flight,
 		projected_hit_pos = Vector3Box(hit_pos),
-		leap_finish = function (owner_unit)
-			local position = POSITION_LOOKUP[owner_unit]
-			local rotation = Unit.local_rotation(owner_unit, 0)
+		sfx_event_jump = local_player and "Play_career_ability_bardin_slayer_jump",
+		sfx_event_land = local_player and "Play_career_ability_bardin_slayer_impact",
+		leap_finish = function (owner_unit, position)
+			local rotation = Quaternion.identity()
 			local explosion_template = "bardin_slayer_activated_ability_landing_stagger"
 			local scale = 1
 			local career_power_level = career_extension:get_career_power_level()

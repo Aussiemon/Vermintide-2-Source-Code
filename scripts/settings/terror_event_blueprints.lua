@@ -240,6 +240,19 @@ TerrorEventBlueprints = {
 			}
 		}
 	},
+	prologue_intro_patrol = {
+		{
+			"spawn_patrol",
+			spline_type = "event",
+			patrol_template = "spline_patrol",
+			formations = {
+				"chaos_warrior_wide"
+			},
+			splines = {
+				"event_1"
+			}
+		}
+	},
 	test_patrol = {
 		{
 			"spawn_patrol",
@@ -598,6 +611,18 @@ TerrorEventBlueprints = {
 		{
 			"control_specials",
 			enable = true
+		}
+	},
+	test_event_patrol = {
+		{
+			"spawn_patrol",
+			patrol_template = "spline_patrol",
+			formations = {
+				"escorted_troll"
+			},
+			splines = {
+				"event_1"
+			}
 		}
 	},
 	whitebox_dummy_troll_test = {
@@ -2885,6 +2910,40 @@ TerrorEventBlueprints = {
 			breed_name = "skaven_ratling_gunner"
 		}
 	},
+	farmlands_prisoner_event_sawmill_door = {
+		{
+			"set_freeze_condition",
+			max_active_enemies = 100
+		},
+		{
+			"control_pacing",
+			enable = false
+		},
+		{
+			"control_specials",
+			enable = false
+		},
+		{
+			"set_master_event_running",
+			name = "farmlands_prisoner_event_sawmill_door"
+		},
+		{
+			"play_stinger",
+			stinger_name = "enemy_horde_stinger"
+		},
+		{
+			"event_horde",
+			spawner_id = "sawmill_interior",
+			composition_type = "event_medium"
+		},
+		{
+			"continue_when",
+			duration = 80,
+			condition = function (t)
+				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
+			end
+		}
+	},
 	farmlands_prisoner_event_sawmill = {
 		{
 			"set_freeze_condition",
@@ -2909,7 +2968,7 @@ TerrorEventBlueprints = {
 		{
 			"event_horde",
 			spawner_id = "sawmill_interior",
-			composition_type = "event_medium"
+			composition_type = "event_small"
 		},
 		{
 			"delay",
@@ -3962,12 +4021,29 @@ TerrorEventBlueprints = {
 		{
 			"continue_when",
 			condition = function (t)
-				return count_event_breed("chaos_exalted_champion_norsca") < 1 and count_event_breed("chaos_spawn") < 1
+				return count_event_breed("chaos_exalted_champion_norsca") < 1
 			end
 		},
 		{
 			"flow_event",
 			flow_event_name = "skittergate_chaos_boss_killed"
+		}
+	},
+	skittergate_gatekeeper_marauders = {
+		{
+			"spawn_at_raw",
+			spawner_id = "skittergate_gatekeeper_marauder_01",
+			breed_name = "chaos_marauder"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "skittergate_gatekeeper_marauder_02",
+			breed_name = "chaos_marauder"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "skittergate_gatekeeper_marauder_03",
+			breed_name = "chaos_marauder_with_shield"
 		}
 	},
 	skittergate_terror_event_02 = {
@@ -3982,7 +4058,16 @@ TerrorEventBlueprints = {
 		{
 			"event_horde",
 			spawner_id = "terror_event_02",
-			composition_type = "event_smaller"
+			composition_type = "event_small_chaos"
+		},
+		{
+			"delay",
+			duration = 5
+		},
+		{
+			"event_horde",
+			spawner_id = "terror_event_02",
+			composition_type = "event_small"
 		},
 		{
 			"delay",
@@ -3994,8 +4079,9 @@ TerrorEventBlueprints = {
 		},
 		{
 			"continue_when",
+			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_slave") < 2
+				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 5
 			end
 		},
 		{
@@ -4035,9 +4121,8 @@ TerrorEventBlueprints = {
 		},
 		{
 			"event_horde",
-			limit_spawners = 1,
 			spawner_id = "skittergate_crumble_escape_01",
-			composition_type = "event_prologue_well"
+			composition_type = "event_small"
 		},
 		{
 			"delay",
@@ -4935,9 +5020,6 @@ TerrorEventBlueprints = {
 			stop_event_name = "mines_end_event_loop_02"
 		},
 		{
-			"disable_bots_in_carry_event"
-		},
-		{
 			"control_specials",
 			enable = true
 		}
@@ -5009,6 +5091,17 @@ TerrorEventBlueprints = {
 			"spawn_at_raw",
 			spawner_id = "troll_boss",
 			breed_name = "chaos_troll"
+		},
+		{
+			"continue_when",
+			duration = 10000,
+			condition = function (t)
+				return count_event_breed("chaos_troll") < 1
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "mines_troll_boss_done"
 		}
 	},
 	mines_enable_specials = {
@@ -7412,7 +7505,7 @@ TerrorEventBlueprints = {
 		},
 		{
 			"delay",
-			duration = 4
+			duration = 5.5
 		},
 		{
 			"event_horde",
@@ -7422,7 +7515,7 @@ TerrorEventBlueprints = {
 		},
 		{
 			"delay",
-			duration = 6
+			duration = 5
 		},
 		{
 			"event_horde",

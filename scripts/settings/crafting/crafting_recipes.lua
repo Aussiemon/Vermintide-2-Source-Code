@@ -278,8 +278,10 @@ local crafting_recipes = {
 		item_sort_func = function (item_1, item_2)
 			local item_data_1 = item_1.data
 			local item_data_2 = item_2.data
+			local item_1_power_level = item_1.power_level or 0
+			local item_2_power_level = item_2.power_level or 0
 
-			if item_1.power_level == item_2.power_level then
+			if item_1_power_level == item_2_power_level then
 				local item_1_rarity = item_1.rarity or item_data_1.rarity
 				local item_2_rarity = item_2.rarity or item_data_2.rarity
 				local item_rarity_order = UISettings.item_rarity_order
@@ -302,7 +304,7 @@ local crafting_recipes = {
 					return item_1_rarity_order < item_2_rarity_order
 				end
 			else
-				return item_2.power_level < item_1.power_level
+				return item_2_power_level < item_1_power_level
 			end
 
 			return 
@@ -578,7 +580,7 @@ local crafting_recipes = {
 		result_function = "upgrade_item_rarity_result_func",
 		ingredients = {
 			{
-				amount = 10,
+				amount = 20,
 				name = "crafting_material_scrap"
 			},
 			{
@@ -635,7 +637,7 @@ local crafting_recipes = {
 		result_function = "upgrade_item_rarity_result_func",
 		ingredients = {
 			{
-				amount = 20,
+				amount = 30,
 				name = "crafting_material_scrap"
 			},
 			{
@@ -692,7 +694,7 @@ local crafting_recipes = {
 		result_function = "upgrade_item_rarity_result_func",
 		ingredients = {
 			{
-				amount = 30,
+				amount = 50,
 				name = "crafting_material_scrap"
 			},
 			{

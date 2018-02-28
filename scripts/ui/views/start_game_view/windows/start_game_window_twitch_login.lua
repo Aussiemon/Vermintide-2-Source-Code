@@ -172,10 +172,12 @@ StartGameWindowTwitchLogin._update_game_options = function (self, dt, t)
 		self.parent:enable_widget(1, "game_option_1", false)
 		self.parent:enable_widget(1, "game_option_2", false)
 		self.parent:enable_widget(1, "game_option_3", false)
+		self.parent:enable_widget(1, "game_option_5", false)
 	elseif not is_connecting and not is_connected then
 		self.parent:enable_widget(1, "game_option_1", true)
 		self.parent:enable_widget(1, "game_option_2", true)
 		self.parent:enable_widget(1, "game_option_3", true)
+		self.parent:enable_widget(1, "game_option_5", true)
 	end
 
 	return 

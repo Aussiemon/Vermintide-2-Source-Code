@@ -321,24 +321,18 @@ end
 LevelUnlockUtils.act_unlocked = function (statistics_db, player_stats_id, act_key)
 	assert(GameActs[act_key] ~= nil, "Act %s does not exist.", act_key)
 
-	for _, key in ipairs(GameActsOrder) do
-		if key == act_key then
-			return true
-		end
+	local act_levels = GameActs[act_key]
 
-		local act_levels = GameActs[key]
+	for _, level_key in ipairs(act_levels) do
+		local level_stat = statistics_db.get_persistent_stat(statistics_db, player_stats_id, "completed_levels", level_key)
+		local level_completed = level_stat and level_stat ~= 0
 
-		for _, level_key in ipairs(act_levels) do
-			local level_stat = statistics_db.get_persistent_stat(statistics_db, player_stats_id, "completed_levels", level_key)
-			local level_completed = level_stat and level_stat ~= 0
-
-			if not level_completed then
-				return false
-			end
+		if not level_completed then
+			return false
 		end
 	end
 
-	return false
+	return true
 end
 LevelUnlockUtils.act_completed = function (statistics_db, player_stats_id, act_key)
 	assert(GameActs[act_key] ~= nil, "Act %s does not exist.", act_key)

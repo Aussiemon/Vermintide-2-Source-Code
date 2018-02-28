@@ -1,5 +1,5 @@
 ScriptBackend = class(ScriptBackend)
-BackendSaveDataVersion = 27
+BackendSaveDataVersion = 28
 local CONNECTION_STATE_NAMES = {}
 local STATE_CHANGES = {}
 local RESULT_NAMES = {}

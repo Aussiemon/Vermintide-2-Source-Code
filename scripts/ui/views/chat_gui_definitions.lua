@@ -105,8 +105,8 @@ local scenegraph_definition = {
 			1
 		},
 		size = {
-			40,
-			40
+			60,
+			60
 		}
 	},
 	chat_scrollbar_root = {
@@ -689,18 +689,40 @@ local chat_scrollbar_widget = {
 		}
 	}
 }
-local chat_tab_widget = {
-	scenegraph_id = "chat_tab_root",
-	element = {
+
+local function create_chat_button(scenegraph_id, size)
+	local frame_settings = UIFrameSettings.menu_frame_12
+	local element = {
 		passes = {
 			{
+				style_id = "button",
 				pass_type = "hotspot",
 				content_id = "button_hotspot"
 			},
 			{
+				pass_type = "rect",
+				style_id = "button"
+			},
+			{
+				pass_type = "texture_frame",
+				style_id = "frame",
+				texture_id = "frame"
+			},
+			{
 				pass_type = "texture",
-				style_id = "button_notification",
-				texture_id = "button_notification"
+				style_id = "icon",
+				texture_id = "icon",
+				content_check_function = function (content)
+					return not content.button_hotspot.is_hover
+				end
+			},
+			{
+				pass_type = "texture",
+				style_id = "icon_hover",
+				texture_id = "icon",
+				content_check_function = function (content)
+					return content.button_hotspot.is_hover
+				end
 			},
 			{
 				pass_type = "texture",
@@ -712,59 +734,99 @@ local chat_tab_widget = {
 			},
 			{
 				pass_type = "texture",
-				style_id = "background",
-				texture_id = "background"
+				style_id = "button_notification",
+				texture_id = "button_notification"
 			}
 		}
-	},
-	content = {
-		background = "chat_icon_bg",
-		button_notification = "chat_icon",
-		hover = "chat_icon_glow",
-		button_hotspot = {}
-	},
-	style = {
-		button_notification = {
-			offset = {
-				0,
-				0,
-				2
-			},
-			color = {
-				255,
-				255,
-				255,
-				255
-			}
-		},
-		hover = {
-			offset = {
-				0,
-				0,
-				1
-			},
-			color = {
-				255,
-				255,
-				255,
-				255
-			}
-		},
-		background = {
+	}
+	local content = {
+		button_notification = "chat_icon_glow",
+		hover = "button_state_default_2",
+		icon = "chat_icon_01",
+		button_hotspot = {},
+		frame = frame_settings.texture
+	}
+	local style = {
+		button = {
+			color = Colors.get_color_table_with_alpha("black", 200),
 			offset = {
 				0,
 				0,
 				0
-			},
+			}
+		},
+		icon = {
+			color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+			offset = {
+				0,
+				0,
+				4
+			}
+		},
+		icon_hover = {
+			color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				0,
+				0,
+				4
+			}
+		},
+		frame = {
+			texture_size = frame_settings.texture_size,
+			texture_sizes = frame_settings.texture_sizes,
 			color = {
 				255,
 				255,
 				255,
 				255
+			},
+			offset = {
+				0,
+				0,
+				3
+			}
+		},
+		hover = {
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				0,
+				1
+			}
+		},
+		button_notification = {
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				0,
+				2
 			}
 		}
 	}
-}
+	local widget = {
+		element = element,
+		content = content,
+		style = style,
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+
+	return widget
+end
 
 return {
 	CHAT_WIDTH = CHAT_WIDTH,
@@ -774,5 +836,5 @@ return {
 	chat_output_widget = chat_output_widget,
 	chat_input_widget = chat_input_widget,
 	chat_scrollbar_widget = chat_scrollbar_widget,
-	chat_tab_widget = chat_tab_widget
+	chat_tab_widget = create_chat_button("chat_tab_root", scenegraph_definition.chat_tab_root.size)
 }

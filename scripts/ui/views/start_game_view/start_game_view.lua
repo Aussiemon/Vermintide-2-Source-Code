@@ -504,10 +504,10 @@ StartGameView.number_of_players = function (self)
 
 	return player_manager.num_human_players(player_manager)
 end
-StartGameView.start_game = function (self, level_key, difficulty_key, private_game, quick_game, t, deed_backend_id)
+StartGameView.start_game = function (self, level_key, difficulty_key, private_game, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
 	print("............................................................................................................")
 	print("............................................................................................................")
-	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Quick Game: %s", (level_key and level_key) or "Not specified", difficulty_key, (private_game and "yes") or "no", (quick_game and "yes") or "no")
+	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Always Host: %s | Strict Matchmaking: %s | Quick Game: %s", (level_key and level_key) or "Not specified", difficulty_key, (private_game and "yes") or "no", (always_host and "yes") or "no", (strict_matchmaking and "yes") or "no", (quick_game and "yes") or "no")
 	print("............................................................................................................")
 	print("............................................................................................................")
 
@@ -536,7 +536,9 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 			level_key = level_key,
 			difficulty = difficulty_key,
 			quick_game = quick_game,
-			private_game = private_game
+			private_game = private_game,
+			always_host = always_host,
+			strict_matchmaking = strict_matchmaking
 		}
 
 		Managers.state.voting:request_vote("game_settings_vote", vote_data, Network.peer_id())

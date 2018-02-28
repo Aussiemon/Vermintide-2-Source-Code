@@ -1720,6 +1720,10 @@ end
 TitleLoadingUI.destroy = function (self)
 	UIRenderer.destroy(self._ui_renderer, self._world)
 
+	if self._sound_started and first_time_video.sound_stop then
+		Managers.music:trigger_event(first_time_video.sound_stop)
+	end
+
 	if PLATFORM == "win32" then
 		local max_fps = Application.user_setting("max_fps")
 

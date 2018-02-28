@@ -264,50 +264,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_level_farmland_stick_to_the_road_01",
-		response = "pwh_level_farmland_stick_to_the_road_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"farmland_stick_to_the_road"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"faction_memory",
-				"farmland_stick_to_the_road",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"farmland_stick_to_the_road",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pwh_level_farmlands_ripe_with_heresy_01",
 		response = "pwh_level_farmlands_ripe_with_heresy_01",
 		criterias = {
@@ -390,94 +346,6 @@ return function ()
 			{
 				"faction_memory",
 				"farmlands_locked_gate",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_level_farmlands_key_found_01",
-		response = "pwh_level_farmlands_key_found_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"farmlands_key_found"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"faction_memory",
-				"farmlands_key_found",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"farmlands_key_found",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_level_farmlands_gate_unlocked_01",
-		response = "pwh_level_farmlands_gate_unlocked_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"farmlands_gate_unlocked"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"faction_memory",
-				"farmlands_gate_unlocked",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"farmlands_gate_unlocked",
 				OP.ADD,
 				1
 			}
@@ -1144,20 +1012,18 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwh_level_farmlands_deserted_01 = {
-			sound_events_n = 4,
+			sound_events_n = 3,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 3,
 			database = "witch_hunter_farmland",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 3,
 			sound_events = {
 				"pwh_level_farmlands_deserted_01",
-				"pwh_level_farmlands_deserted_02",
 				"pwh_level_farmlands_deserted_03",
 				"pwh_level_farmlands_deserted_04"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
@@ -1165,35 +1031,14 @@ return function ()
 			face_animations = {
 				"face_fear",
 				"face_fear",
-				"face_fear",
 				"face_fear"
 			},
 			localization_strings = {
 				"pwh_level_farmlands_deserted_01",
-				"pwh_level_farmlands_deserted_02",
 				"pwh_level_farmlands_deserted_03",
 				"pwh_level_farmlands_deserted_04"
 			},
 			randomize_indexes = {}
-		},
-		pwh_level_farmlands_gate_unlocked_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "witch_hunter_farmland",
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_gate_unlocked_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear"
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_gate_unlocked_01"
-			}
 		},
 		pwh_level_farmlands_move_on_01 = {
 			sound_events_n = 4,
@@ -1225,39 +1070,6 @@ return function ()
 				"pwh_level_farmlands_move_on_02",
 				"pwh_level_farmlands_move_on_03",
 				"pwh_level_farmlands_move_on_04"
-			},
-			randomize_indexes = {}
-		},
-		pwh_level_farmland_stick_to_the_road_01 = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "witch_hunter_farmland",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_farmland_stick_to_the_road_01",
-				"pwh_level_farmland_stick_to_the_road_02",
-				"pwh_level_farmland_stick_to_the_road_03",
-				"pwh_level_farmland_stick_to_the_road_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pwh_level_farmland_stick_to_the_road_01",
-				"pwh_level_farmland_stick_to_the_road_02",
-				"pwh_level_farmland_stick_to_the_road_03",
-				"pwh_level_farmland_stick_to_the_road_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1393,31 +1205,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_farmlands_intro_c = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "witch_hunter_farmland",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwh_farmlands_intro_c_01",
-				[2.0] = "pwh_farmlands_intro_c_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pwh_farmlands_intro_c_01",
-				[2.0] = "pwh_farmlands_intro_c_02"
-			},
-			randomize_indexes = {}
-		},
 		pwh_farmlands_intro_b = {
 			sound_events_n = 2,
 			randomize_indexes_n = 0,
@@ -1443,36 +1230,28 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_level_farmlands_cart_01 = {
-			sound_events_n = 4,
+		pwh_farmlands_intro_c = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 2,
 			database = "witch_hunter_farmland",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pwh_level_farmlands_cart_01",
-				"pwh_level_farmlands_cart_02",
-				"pwh_level_farmlands_cart_03",
-				"pwh_level_farmlands_cart_04"
+				[1.0] = "pwh_farmlands_intro_c_01",
+				[2.0] = "pwh_farmlands_intro_c_02"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pwh_level_farmlands_cart_01",
-				"pwh_level_farmlands_cart_02",
-				"pwh_level_farmlands_cart_03",
-				"pwh_level_farmlands_cart_04"
+				[1.0] = "pwh_farmlands_intro_c_01",
+				[2.0] = "pwh_farmlands_intro_c_02"
 			},
 			randomize_indexes = {}
 		},
@@ -1509,6 +1288,39 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pwh_level_farmlands_smoke_plume_01 = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "witch_hunter_farmland",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pwh_level_farmlands_smoke_plume_01",
+				"pwh_level_farmlands_smoke_plume_02",
+				"pwh_level_farmlands_smoke_plume_03",
+				"pwh_level_farmlands_smoke_plume_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pwh_level_farmlands_smoke_plume_01",
+				"pwh_level_farmlands_smoke_plume_02",
+				"pwh_level_farmlands_smoke_plume_03",
+				"pwh_level_farmlands_smoke_plume_04"
+			},
+			randomize_indexes = {}
+		},
 		pwh_level_farmlands_end_level_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -1542,26 +1354,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_level_farmlands_key_found_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "witch_hunter_farmland",
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_level_farmlands_key_found_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear"
-			},
-			localization_strings = {
-				[1.0] = "pwh_level_farmlands_key_found_01"
-			}
-		},
-		pwh_level_farmlands_smoke_plume_01 = {
+		pwh_level_farmlands_cart_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1569,28 +1362,28 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pwh_level_farmlands_smoke_plume_01",
-				"pwh_level_farmlands_smoke_plume_02",
-				"pwh_level_farmlands_smoke_plume_03",
-				"pwh_level_farmlands_smoke_plume_04"
+				"pwh_level_farmlands_cart_01",
+				"pwh_level_farmlands_cart_02",
+				"pwh_level_farmlands_cart_03",
+				"pwh_level_farmlands_cart_04"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
 			},
 			localization_strings = {
-				"pwh_level_farmlands_smoke_plume_01",
-				"pwh_level_farmlands_smoke_plume_02",
-				"pwh_level_farmlands_smoke_plume_03",
-				"pwh_level_farmlands_smoke_plume_04"
+				"pwh_level_farmlands_cart_01",
+				"pwh_level_farmlands_cart_02",
+				"pwh_level_farmlands_cart_03",
+				"pwh_level_farmlands_cart_04"
 			},
 			randomize_indexes = {}
 		},

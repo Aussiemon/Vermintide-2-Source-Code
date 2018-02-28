@@ -68,6 +68,7 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 	self._clear_buffs_from_talents(self)
 
 	local talent_buff_ids = self._talent_buff_ids
+	local is_server_bot = self.is_server and player.bot_player
 
 	for i = 1, #talent_ids, 1 do
 		local talent_id = talent_ids[i]
@@ -77,7 +78,7 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 			local buffs = talent_data.buffs
 			local buffer = talent_data.buffer
 
-			if (player.local_player and (not buffer or buffer == "client")) or (self.is_server and buffer == "server") or ((self.is_server or player.local_player) and buffer == "both") then
+			if ((player.local_player or is_server_bot) and (not buffer or buffer == "client")) or (self.is_server and buffer == "server") or ((self.is_server or player.local_player) and buffer == "both") then
 				local num_buffs = (buffs and #buffs) or 0
 
 				if 0 < num_buffs then

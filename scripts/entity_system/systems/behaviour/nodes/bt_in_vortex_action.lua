@@ -23,6 +23,8 @@ BTInVortexAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.in_vortex_state = "in_vortex"
 	blackboard.stagger_prohibited = true
+	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+	hit_reaction_extension.force_ragdoll_on_death = true
 
 	return 
 end
@@ -44,6 +46,8 @@ BTInVortexAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	blackboard.in_vortex = false
 	blackboard.stagger_prohibited = nil
+	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
+	hit_reaction_extension.force_ragdoll_on_death = nil
 
 	return 
 end

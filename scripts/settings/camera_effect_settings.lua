@@ -1159,7 +1159,7 @@ CameraEffectSettings = {
 		skittergate_escape = {
 			persistance = 0.5,
 			fade_out = 2,
-			amplitude = 0.5,
+			amplitude = 0.6,
 			duration = 5000,
 			fade_in = 2,
 			octaves = 6
@@ -1251,6 +1251,14 @@ CameraEffectSettings = {
 			duration = 1,
 			fade_in = 0.5,
 			octaves = 5
+		},
+		skittergate_block_fall_01 = {
+			persistance = 0.75,
+			fade_out = 1,
+			amplitude = 1,
+			duration = 8,
+			fade_in = 4,
+			octaves = 8
 		}
 	}
 }

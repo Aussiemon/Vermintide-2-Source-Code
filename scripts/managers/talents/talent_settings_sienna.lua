@@ -188,12 +188,6 @@ local buff_tweak_data = {
 	sienna_unchained_reduced_overcharge = {
 		multiplier = -0.15
 	},
-	sienna_unchained_heal_on_boss_death = {
-		bonus = 50
-	},
-	sienna_unchained_max_stamina = {
-		bonus = 4
-	},
 	sienna_unchained_activated_ability_cooldown = {
 		multiplier = -0.3
 	},
@@ -729,7 +723,7 @@ TalentBuffTemplates.bright_wizard = {
 				max_stacks = 1,
 				refresh_durations = true,
 				is_cooldown = true,
-				icon = "sienna_unchained_max_stamina",
+				icon = "sienna_unchained_regen_stamina_on_charged_attacks",
 				dormant = true,
 				stat_buff = StatBuffIndex.FATIGUE_REGEN
 			}
@@ -1074,57 +1068,6 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_scholar_critical_hit_damage_desc",
-		name = "sienna_scholar_critical_hit_damage",
-		num_ranks = 1,
-		icon = "icons_placeholder",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.sienna_scholar_critical_hit_damage.multiplier
-			}
-		},
-		requirements = {},
-		buffs = {
-			"sienna_scholar_critical_hit_damage"
-		},
-		buff_data = {}
-	},
-	{
-		description = "sienna_scholar_attack_speed_desc",
-		name = "sienna_scholar_attack_speed",
-		num_ranks = 1,
-		icon = "icons_placeholder",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.sienna_scholar_attack_speed.multiplier
-			}
-		},
-		requirements = {},
-		buffs = {
-			"sienna_scholar_attack_speed"
-		},
-		buff_data = {}
-	},
-	{
-		description = "sienna_scholar_heal_on_ranged_headshot_desc",
-		name = "sienna_scholar_heal_on_ranged_headshot",
-		num_ranks = 1,
-		buffer = "server",
-		icon = "icons_placeholder",
-		description_values = {
-			{
-				value = buff_tweak_data.sienna_scholar_heal_on_ranged_headshot.bonus
-			}
-		},
-		requirements = {},
-		buffs = {
-			"sienna_scholar_heal_on_ranged_headshot"
-		},
-		buff_data = {}
-	},
-	{
 		description = "sienna_scholar_activated_ability_cooldown_desc",
 		name = "sienna_scholar_activated_ability_cooldown",
 		num_ranks = 1,
@@ -1420,7 +1363,7 @@ Talents.bright_wizard = {
 		description = "sienna_unchained_max_health_desc",
 		name = "sienna_unchained_max_health",
 		num_ranks = 1,
-		icon = "sienna_unchained_03",
+		icon = "sienna_unchained_max_health",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1437,7 +1380,7 @@ Talents.bright_wizard = {
 		description = "sienna_unchained_max_overcharge_desc",
 		name = "sienna_unchained_max_overcharge",
 		num_ranks = 1,
-		icon = "sienna_unchained_02",
+		icon = "sienna_unchained_max_overcharge",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1475,7 +1418,7 @@ Talents.bright_wizard = {
 		description = "sienna_unchained_regen_stamina_on_charged_attacks_desc",
 		name = "sienna_unchained_regen_stamina_on_charged_attacks",
 		num_ranks = 1,
-		icon = "sienna_unchained_max_stamina",
+		icon = "sienna_unchained_regen_stamina_on_charged_attacks",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1496,7 +1439,7 @@ Talents.bright_wizard = {
 		name = "sienna_unchained_remove_wounded_on_boss_death",
 		buffer = "server",
 		num_ranks = 1,
-		icon = "sienna_unchained_heal_on_boss_death",
+		icon = "sienna_unchained_remove_wounded_on_boss_death",
 		requirements = {},
 		buffs = {
 			"sienna_unchained_remove_wounded_on_boss_death"
@@ -1508,7 +1451,7 @@ Talents.bright_wizard = {
 		name = "sienna_unchained_reduced_vent_damage",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "sienna_unchained_increased_defence_on_low_health",
+		icon = "sienna_unchained_reduced_vent_damage",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1556,43 +1499,10 @@ Talents.bright_wizard = {
 		buff_data = {}
 	},
 	{
-		description = "sienna_unchained_heal_on_boss_death_desc",
-		name = "sienna_unchained_heal_on_boss_death",
-		num_ranks = 1,
-		buffer = "server",
-		icon = "icons_placeholder",
-		description_values = {
-			{
-				value = buff_tweak_data.sienna_unchained_heal_on_boss_death.bonus
-			}
-		},
-		requirements = {},
-		buffs = {
-			"sienna_unchained_heal_on_boss_death"
-		},
-		buff_data = {}
-	},
-	{
-		description = "sienna_unchained_max_stamina_desc",
-		name = "sienna_unchained_max_stamina",
-		num_ranks = 1,
-		icon = "icons_placeholder",
-		description_values = {
-			{
-				value = buff_tweak_data.sienna_unchained_max_stamina.bonus
-			}
-		},
-		requirements = {},
-		buffs = {
-			"sienna_unchained_max_stamina"
-		},
-		buff_data = {}
-	},
-	{
 		description = "sienna_unchained_activated_ability_radius_desc",
 		name = "sienna_unchained_activated_ability_radius",
 		num_ranks = 1,
-		icon = "sienna_unchained_activated_ability",
+		icon = "sienna_unchained_activated_ability_radius",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1607,7 +1517,7 @@ Talents.bright_wizard = {
 		description = "sienna_unchained_activated_ability_damage_desc",
 		name = "sienna_unchained_activated_ability_damage",
 		num_ranks = 1,
-		icon = "sienna_unchained_activated_ability",
+		icon = "sienna_unchained_activated_ability_damage",
 		description_values = {},
 		requirements = {},
 		buffs = {},
@@ -1617,7 +1527,7 @@ Talents.bright_wizard = {
 		description = "sienna_unchained_activated_ability_cooldown_desc",
 		name = "sienna_unchained_activated_ability_cooldown",
 		num_ranks = 1,
-		icon = "sienna_unchained_activated_ability",
+		icon = "sienna_unchained_activated_ability_cooldown",
 		description_values = {
 			{
 				value_type = "percent",

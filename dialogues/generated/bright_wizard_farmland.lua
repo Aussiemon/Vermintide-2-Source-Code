@@ -748,50 +748,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pbw_level_farmlands_portal_01",
-		response = "pbw_level_farmlands_portal_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"farmlands_portal"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"faction_memory",
-				"farmlands_portal",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"farmlands_portal",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pbw_farmlands_intro_a",
 		response = "pbw_farmlands_intro_a",
 		criterias = {
@@ -1004,20 +960,18 @@ return function ()
 			randomize_indexes = {}
 		},
 		pbw_level_farmlands_fence_01 = {
-			sound_events_n = 4,
+			sound_events_n = 3,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 3,
 			database = "bright_wizard_farmland",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 3,
 			sound_events = {
 				"pbw_level_farmlands_fence_01",
 				"pbw_level_farmlands_fence_02",
-				"pbw_level_farmlands_fence_03",
-				"pbw_level_farmlands_fence_04"
+				"pbw_level_farmlands_fence_03"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
@@ -1025,14 +979,12 @@ return function ()
 			face_animations = {
 				"face_calm",
 				"face_calm",
-				"face_calm",
 				"face_calm"
 			},
 			localization_strings = {
 				"pbw_level_farmlands_fence_01",
 				"pbw_level_farmlands_fence_02",
-				"pbw_level_farmlands_fence_03",
-				"pbw_level_farmlands_fence_04"
+				"pbw_level_farmlands_fence_03"
 			},
 			randomize_indexes = {}
 		},
@@ -1347,39 +1299,6 @@ return function ()
 				"pbw_level_farmlands_no_prisoners_02",
 				"pbw_level_farmlands_no_prisoners_03",
 				"pbw_level_farmlands_no_prisoners_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_farmlands_portal_01 = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_farmland",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_farmlands_portal_01",
-				"pbw_level_farmlands_portal_02",
-				"pbw_level_farmlands_portal_03",
-				"pbw_level_farmlands_portal_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_level_farmlands_portal_01",
-				"pbw_level_farmlands_portal_02",
-				"pbw_level_farmlands_portal_03",
-				"pbw_level_farmlands_portal_04"
 			},
 			randomize_indexes = {}
 		},

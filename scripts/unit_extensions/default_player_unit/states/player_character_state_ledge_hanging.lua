@@ -167,6 +167,8 @@ PlayerCharacterStateLedgeHanging.calculate_start_position = function (self)
 	self.time_for_position_lerp = distance*movement_settings_table.ledge_hanging.attach_position_lerp_time_per_meter
 	self.position_lerp_timer = 0
 
+	ScriptUnit.extension(unit, "whereabouts_system"):set_new_hang_ledge_position(finger_box_position)
+
 	return 
 end
 PlayerCharacterStateLedgeHanging.calculate_and_start_rotation_to_ledge = function (self)

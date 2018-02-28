@@ -34,7 +34,7 @@ CareerExtension.extensions_ready = function (self, world, unit)
 	local buffs = passive_ability_data.buffs
 	local player = self.player
 
-	if buffs and (self.is_server or player.local_player) and not player.bot_player then
+	if buffs and (self.is_server or player.local_player) then
 		for i = 1, #buffs, 1 do
 			local buff = buffs[i]
 
@@ -54,13 +54,14 @@ CareerExtension.extensions_ready = function (self, world, unit)
 	return 
 end
 CareerExtension.update = function (self, unit, input, dt, context, t)
+	local player = self.player
 	local aoe_data = self._aoe_data
 
 	if aoe_data then
 		aoe_data.duration_left = math.max(aoe_data.duration_left - dt, 0)
 
 		if aoe_data.duration_left <= 0 or not self.is_in_aoe(self, POSITION_LOOKUP[unit]) then
-			ProcFunctions[aoe_data.end_function_name](self.player)
+			ProcFunctions[aoe_data.end_function_name](player)
 
 			self._aoe_data = nil
 		end
@@ -75,7 +76,7 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 	self._cooldown = math.max(self._cooldown - dt*cooldown_speed_multiplier, 0)
 
 	if self._is_ready then
-		if self._activated_ability and self.player.local_player and not self.player.bot_player then
+		if self._activated_ability and ((self.is_server and player.bot_player) or player.local_player) then
 			self._activated_ability:update(unit, input, dt, context, t)
 		end
 
@@ -94,7 +95,7 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 	return 
 end
 CareerExtension._update_game_object_field = function (self, unit)
-	if not self.player.local_player then
+	if (not self.is_server or not self.player.bot_player) and not self.player.local_player then
 		return 
 	end
 
@@ -130,17 +131,16 @@ CareerExtension.start_activated_ability_cooldown = function (self, refund_percen
 	self._max_cooldown = activated_ability_data.cooldown
 	local buff_extension = ScriptUnit.extension(self._unit, "buff_system")
 	local cooldown = buff_extension.apply_buffs_to_value(buff_extension, cooldown, StatBuffIndex.ACTIVATED_COOLDOWN)
-
-	if Development.parameter("short_ability_cooldowns") then
-		cooldown = 5
-	end
-
 	self._cooldown = cooldown*((refund_percent or 0) - 1)
 	self._cooldown_paused = false
 
 	if self._initial_cooldown then
-		self._cooldown = self._initial_cooldown
+		self._cooldown = (Development.parameter("short_ability_cooldowns") and cooldown) or self._initial_cooldown
 		self._initial_cooldown = nil
+	end
+
+	if Development.parameter("short_ability_cooldowns") then
+		self._cooldown = 5
 	end
 
 	return 
@@ -224,9 +224,18 @@ CareerExtension.get_career_power_level = function (self)
 
 	if player.bot_player then
 		local player_manager = Managers.player
-		local local_player = player_manager.local_player(player_manager)
-		profile_name = local_player.profile_display_name(local_player)
-		career_name = local_player.career_name(local_player)
+		local leader_player = player_manager.party_leader_player(player_manager)
+
+		if DEDICATED_SERVER then
+			local power_level = leader_player.get_data(leader_player, "power_level")
+
+			if power_level then
+				return power_level
+			end
+		else
+			profile_name = leader_player.profile_display_name(leader_player)
+			career_name = leader_player.career_name(leader_player)
+		end
 	end
 
 	return BackendUtils.get_total_power_level(profile_name, career_name)

@@ -49,60 +49,62 @@ BreedBehaviors.troll = {
 		"BTSelector",
 		{
 			"BTTargetRageAction",
+			enter_hook = "rage_on_enter",
 			name = "target_rage",
-			condition = "target_changed",
+			condition = "target_changed_and_distant",
 			action_data = ACTIONS.target_rage
 		},
 		{
-			"BTSelector",
+			"BTUtilityNode",
 			{
-				"BTUtilityNode",
-				{
-					"BTBossFollowAction",
-					name = "follow_crouching",
-					action_data = ACTIONS.follow_crouching
-				},
-				{
-					"BTMeleeOverlapAttackAction",
-					name = "attack_crouch_sweep",
-					action_data = ACTIONS.attack_crouch_sweep
-				},
-				{
-					"BTVomitAction",
-					name = "vomit",
-					action_data = ACTIONS.vomit
-				},
-				name = "in_combat_crouching",
-				condition = "needs_to_crouch",
-				enter_hook = "crouch_on_enter"
+				"BTBossFollowAction",
+				name = "follow_crouching",
+				action_data = ACTIONS.follow_crouching
 			},
 			{
-				"BTUtilityNode",
-				{
-					"BTBossFollowAction",
-					name = "follow",
-					action_data = ACTIONS.follow
-				},
-				{
-					"BTMeleeOverlapAttackAction",
-					name = "melee_shove",
-					action_data = ACTIONS.melee_shove
-				},
-				{
-					"BTVomitAction",
-					name = "vomit",
-					action_data = ACTIONS.vomit
-				},
-				{
-					"BTMeleeOverlapAttackAction",
-					name = "attack_cleave",
-					action_data = ACTIONS.attack_cleave
-				},
-				enter_hook = "upright_on_enter",
-				name = "in_combat"
+				"BTMeleeOverlapAttackAction",
+				name = "attack_crouch_sweep",
+				action_data = ACTIONS.attack_crouch_sweep
 			},
+			{
+				"BTVomitAction",
+				name = "vomit",
+				action_data = ACTIONS.vomit
+			},
+			name = "in_combat_crouching",
+			condition = "needs_to_crouch",
+			enter_hook = "crouch_on_enter"
+		},
+		{
+			"BTUtilityNode",
+			{
+				"BTBossFollowAction",
+				name = "follow",
+				action_data = ACTIONS.follow
+			},
+			{
+				"BTMeleeOverlapAttackAction",
+				name = "melee_shove",
+				action_data = ACTIONS.melee_shove
+			},
+			{
+				"BTMeleeOverlapAttackAction",
+				name = "melee_sweep",
+				action_data = ACTIONS.melee_sweep
+			},
+			{
+				"BTVomitAction",
+				name = "vomit",
+				action_data = ACTIONS.vomit
+			},
+			{
+				"BTMeleeOverlapAttackAction",
+				name = "attack_cleave",
+				action_data = ACTIONS.attack_cleave
+			},
+			name = "in_combat",
 			condition = "ratogre_target_reachable",
-			name = "target_reachable"
+			enter_hook = "upright_on_enter"
 		},
 		{
 			"BTTargetUnreachableAction",

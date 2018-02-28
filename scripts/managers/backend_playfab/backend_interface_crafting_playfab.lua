@@ -7,6 +7,8 @@ BackendInterfaceCraftingPlayfab.init = function (self, backend_mirror)
 
 	self.is_local = false
 	self._backend_mirror = backend_mirror
+	self._last_id = 0
+	self._craft_requests = {}
 
 	return 
 end
@@ -16,9 +18,15 @@ end
 BackendInterfaceCraftingPlayfab.update = function (self, dt)
 	return 
 end
-BackendInterfaceCraftingPlayfab.craft = function (self, career_name, item_backend_ids, callback_function)
+BackendInterfaceCraftingPlayfab._new_id = function (self)
+	self._last_id = self._last_id + 1
+
+	return self._last_id
+end
+BackendInterfaceCraftingPlayfab.craft = function (self, career_name, item_backend_ids)
 	local recipe, item_backend_ids_and_amounts = self._get_valid_recipe(self, item_backend_ids)
 	local hero_name = CareerSettings[career_name].profile_name
+	local id = self._new_id(self)
 
 	if recipe and recipe.result_function_playfab then
 		local result_function = recipe.result_function_playfab
@@ -29,16 +37,16 @@ BackendInterfaceCraftingPlayfab.craft = function (self, career_name, item_backen
 				hero_name = hero_name
 			}
 		}
-		local craft_request_cb = callback(self, "craft_request_cb", callback_function)
+		local craft_request_cb = callback(self, "craft_request_cb", id)
 
 		PlayFabClientApi.ExecuteCloudScript(craft_request, craft_request_cb, craft_request_cb)
 
-		return true
+		return id
 	end
 
-	return false
+	return nil
 end
-BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, callback_function, result)
+BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, id, result)
 	if result.Error then
 		table.dump(result, nil, 5)
 		fassert(false, "loot_chest_rewards_request_cb: it failed!")
@@ -91,10 +99,23 @@ BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, callback_func
 		end
 
 		backend_manager.dirtify_interfaces(backend_manager)
-		callback_function(result, nil, nil)
+
+		self._craft_requests[id] = result
 	end
 
 	return 
+end
+BackendInterfaceCraftingPlayfab.is_craft_complete = function (self, id)
+	local craft_request = self._craft_requests[id]
+
+	if craft_request then
+		return true
+	end
+
+	return false
+end
+BackendInterfaceCraftingPlayfab.get_craft_result = function (self, id)
+	return self._craft_requests[id]
 end
 
 return 

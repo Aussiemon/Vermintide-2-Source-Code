@@ -12,6 +12,10 @@ assert(DialogueLookup[DialogueLookup_n + 11] == nil)
 assert(DialogueLookup[DialogueLookup_n + 12] == nil)
 assert(DialogueLookup[DialogueLookup_n + 13] == nil)
 assert(DialogueLookup[DialogueLookup_n + 14] == nil)
+assert(DialogueLookup[DialogueLookup_n + 15] == nil)
+assert(DialogueLookup[DialogueLookup_n + 16] == nil)
+assert(DialogueLookup[DialogueLookup_n + 17] == nil)
+assert(DialogueLookup[DialogueLookup_n + 18] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pwh_level_bell_distance_01"
 DialogueLookup[DialogueLookup_n + 2] = "pwh_level_bell_rain_01"
@@ -27,6 +31,10 @@ DialogueLookup[DialogueLookup_n + 11] = "pwh_level_bell_exit_01"
 DialogueLookup[DialogueLookup_n + 12] = "pwh_bell_intro_a"
 DialogueLookup[DialogueLookup_n + 13] = "pwh_bell_intro_b"
 DialogueLookup[DialogueLookup_n + 14] = "pwh_bell_intro_c"
-DialogueLookup_n = DialogueLookup_n + 14
+DialogueLookup[DialogueLookup_n + 15] = "pwh_level_bell_chime_01"
+DialogueLookup[DialogueLookup_n + 16] = "pwh_level_bell_effect_01"
+DialogueLookup[DialogueLookup_n + 17] = "pwh_level_bell_falling_01"
+DialogueLookup[DialogueLookup_n + 18] = "pwh_level_bell_horde"
+DialogueLookup_n = DialogueLookup_n + 18
 
 return 

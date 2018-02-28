@@ -19,6 +19,19 @@ assert(DialogueLookup[DialogueLookup_n + 18] == nil)
 assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 assert(DialogueLookup[DialogueLookup_n + 20] == nil)
 assert(DialogueLookup[DialogueLookup_n + 21] == nil)
+assert(DialogueLookup[DialogueLookup_n + 22] == nil)
+assert(DialogueLookup[DialogueLookup_n + 23] == nil)
+assert(DialogueLookup[DialogueLookup_n + 24] == nil)
+assert(DialogueLookup[DialogueLookup_n + 25] == nil)
+assert(DialogueLookup[DialogueLookup_n + 26] == nil)
+assert(DialogueLookup[DialogueLookup_n + 27] == nil)
+assert(DialogueLookup[DialogueLookup_n + 28] == nil)
+assert(DialogueLookup[DialogueLookup_n + 29] == nil)
+assert(DialogueLookup[DialogueLookup_n + 30] == nil)
+assert(DialogueLookup[DialogueLookup_n + 31] == nil)
+assert(DialogueLookup[DialogueLookup_n + 32] == nil)
+assert(DialogueLookup[DialogueLookup_n + 33] == nil)
+assert(DialogueLookup[DialogueLookup_n + 34] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_level_skaven_stronghold_barrier"
 DialogueLookup[DialogueLookup_n + 2] = "pdr_level_skaven_stronghold_long_way_down"
@@ -41,6 +54,19 @@ DialogueLookup[DialogueLookup_n + 18] = "pdr_level_skaven_stronghold_exit"
 DialogueLookup[DialogueLookup_n + 19] = "pdr_skaven_stronghold_intro_a"
 DialogueLookup[DialogueLookup_n + 20] = "pdr_skaven_stronghold_intro_b"
 DialogueLookup[DialogueLookup_n + 21] = "pdr_skaven_stronghold_intro_c"
-DialogueLookup_n = DialogueLookup_n + 21
+DialogueLookup[DialogueLookup_n + 22] = "ect_opening_line"
+DialogueLookup[DialogueLookup_n + 23] = "ect_gameplay_banter"
+DialogueLookup[DialogueLookup_n + 24] = "ect_gameplay_witch_hunter_knocked_down"
+DialogueLookup[DialogueLookup_n + 25] = "ect_gameplay_bright_wizard_knocked_down"
+DialogueLookup[DialogueLookup_n + 26] = "ect_gameplay_dwarf_ranger_knocked_down"
+DialogueLookup[DialogueLookup_n + 27] = "ect_gameplay_wood_elf_knocked_down"
+DialogueLookup[DialogueLookup_n + 28] = "ect_gameplay_empire_soldier_knocked_down"
+DialogueLookup[DialogueLookup_n + 29] = "ect_gameplay_summoning_skaven"
+DialogueLookup[DialogueLookup_n + 30] = "pdr_gameplay_skaven_warlord_kill"
+DialogueLookup[DialogueLookup_n + 31] = "pdr_gameplay_skaven_warlord_banter_reply"
+DialogueLookup[DialogueLookup_n + 32] = "pdr_gameplay_skaven_warlord_summoning_reply"
+DialogueLookup[DialogueLookup_n + 33] = "pdr_gameplay_chieftain_tips_special_attack_cleave"
+DialogueLookup[DialogueLookup_n + 34] = "pdr_gameplay_chieftain_tips_special_lunge_attack_2"
+DialogueLookup_n = DialogueLookup_n + 34
 
 return 

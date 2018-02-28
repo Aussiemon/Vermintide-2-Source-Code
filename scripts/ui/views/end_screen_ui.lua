@@ -173,10 +173,6 @@ EndScreenUI.show_text_screen = function (self)
 		local level_key = self._level_key
 		local previous_completed_difficulty_index = self._previous_completed_difficulty_index
 
-		print(previous_completed_difficulty_index, "PREVIOUS DIFF")
-		print(previous_completed_difficulty_index, "PREVIOUS DIFF")
-		print(previous_completed_difficulty_index, "PREVIOUS DIFF")
-		print(previous_completed_difficulty_index, "PREVIOUS DIFF")
 		self.act_presentation_ui:start(level_key, previous_completed_difficulty_index)
 	else
 		self.banner_anim_id = self.ui_animator:start_animation("defeat", self._defeat_widgets_by_name, scenegraph_definition, params)

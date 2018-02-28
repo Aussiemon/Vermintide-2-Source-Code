@@ -22,6 +22,13 @@ BackendUtils.get_item_from_masterlist = function (backend_id)
 
 	return item_data
 end
+BackendUtils.get_hero_power_level_from_level = function (profile_name)
+	local settings = PowerLevelFromLevelSettings
+	local experience = ExperienceSettings.get_experience(profile_name)
+	local level = ExperienceSettings.get_level(experience)
+
+	return settings.power_level_per_level*level
+end
 BackendUtils.get_hero_power_level = function (profile_name)
 	local settings = PowerLevelFromLevelSettings
 	local experience = ExperienceSettings.get_experience(profile_name)

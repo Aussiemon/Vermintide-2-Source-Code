@@ -13,7 +13,7 @@ local generic_input_actions = {
 		description_text = "input_description_close"
 	}
 }
-local tobii_contest_url = "http://tobiigaming.com/warhammer2?utm_campaign=Warhammer%20Vermintide%202&utm_source=ingame&utm_medium=referral"
+local tobii_contest_url = "https://vermintide2beta.com/?utm_medium=referral&utm_campaign=vermintide2beta&utm_source=ingame#challenge"
 local leave_party_button_text = (PLATFORM == "xb1" and "leave_party_menu_button_name_xb1") or "leave_party_menu_button_name"
 local disband_party_button_text = (PLATFORM == "xb1" and "disband_party_menu_button_name_xb1") or "disband_party_menu_button_name"
 local menu_layouts = {}
@@ -472,12 +472,6 @@ else
 					display_name = "return_to_game_button_name"
 				},
 				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "i_am_stuck",
-					callback = player_stuck_cb
-				},
-				{
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
@@ -509,12 +503,6 @@ else
 					display_name = "return_to_game_button_name"
 				},
 				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "i_am_stuck",
-					callback = player_stuck_cb
-				},
-				{
 					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
 					fade = true,
@@ -544,12 +532,6 @@ else
 					fade = false,
 					transition = "exit_menu",
 					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "i_am_stuck",
-					callback = player_stuck_cb
 				},
 				{
 					display_name = "profile_menu_button_name",
@@ -603,12 +585,6 @@ else
 					display_name = "return_to_game_button_name"
 				},
 				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "i_am_stuck",
-					callback = player_stuck_cb
-				},
-				{
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
@@ -630,12 +606,6 @@ else
 					fade = false,
 					transition = "exit_menu",
 					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "i_am_stuck",
-					callback = player_stuck_cb
 				},
 				{
 					fade = true,
@@ -661,12 +631,6 @@ else
 					display_name = "return_to_game_button_name"
 				},
 				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "i_am_stuck",
-					callback = player_stuck_cb
-				},
-				{
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
@@ -687,12 +651,6 @@ else
 				{
 					transition = "exit_menu",
 					display_name = "return_to_game_button_name"
-				},
-				{
-					fade = false,
-					transition = "exit_menu",
-					display_name = "i_am_stuck",
-					callback = player_stuck_cb
 				},
 				{
 					transition = "options_menu",
@@ -786,6 +744,7 @@ IngameView.init = function (self, ingame_ui_context)
 	local number_of_actvie_descriptions = 3
 	local world = Managers.world:world("level_world")
 	self.wwise_world = Managers.world:wwise_world(world)
+	self._friends_component_ui = FriendsUIComponent:new(ingame_ui_context)
 	local gui_layer = self.menu_definition.scenegraph_definition.root.position[3]
 	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, number_of_actvie_descriptions, gui_layer, generic_input_actions)
 
@@ -821,6 +780,10 @@ IngameView.on_enter = function (self, menu_to_enter)
 	return 
 end
 IngameView.on_exit = function (self)
+	if self._friends_component_ui:is_active() then
+		self._friends_component_ui:deactivate_friends_ui()
+	end
+
 	ShowCursorStack.pop()
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
@@ -1079,6 +1042,9 @@ IngameView.update = function (self, dt)
 	local input_manager = self.input_manager
 	local input_service = input_manager.get_service(input_manager, "ingame_menu")
 	local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
+
+	self._friends_component_ui:update(dt, input_service)
+
 	local ui_animations = self.ui_animations
 
 	for name, ui_animation in pairs(ui_animations) do
@@ -1155,6 +1121,12 @@ IngameView.update = function (self, dt)
 	UIRenderer.end_pass(ui_top_renderer)
 
 	self.gamepad_active_last_frame = gamepad_active
+	local join_lobby_data = self._friends_component_ui:join_lobby_data()
+
+	if join_lobby_data and Managers.matchmaking:allowed_to_initiate_join_lobby() then
+		Managers.matchmaking:request_join_lobby(join_lobby_data)
+		ingame_ui.handle_transition(ingame_ui, "exit_menu")
+	end
 
 	if (input_service.get(input_service, "toggle_menu", true) or input_service.get(input_service, "back", true)) and not ingame_ui.pending_transition(ingame_ui) then
 		ingame_ui.handle_transition(ingame_ui, "exit_menu")

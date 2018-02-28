@@ -22,7 +22,6 @@ assert(DialogueLookup[DialogueLookup_n + 21] == nil)
 assert(DialogueLookup[DialogueLookup_n + 22] == nil)
 assert(DialogueLookup[DialogueLookup_n + 23] == nil)
 assert(DialogueLookup[DialogueLookup_n + 24] == nil)
-assert(DialogueLookup[DialogueLookup_n + 25] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pes_level_mine_ladder"
 DialogueLookup[DialogueLookup_n + 2] = "pes_level_mine_follow_tracks"
@@ -40,15 +39,14 @@ DialogueLookup[DialogueLookup_n + 13] = "pes_level_mine_troll_food_storage"
 DialogueLookup[DialogueLookup_n + 14] = "pes_level_mine_big_troll_cave"
 DialogueLookup[DialogueLookup_n + 15] = "pes_level_mine_impressive_cave"
 DialogueLookup[DialogueLookup_n + 16] = "pes_level_mine_found_cart_troll_cave"
-DialogueLookup[DialogueLookup_n + 17] = "pes_level_mine_cart_food"
-DialogueLookup[DialogueLookup_n + 18] = "pes_level_mine_bell_ringing"
-DialogueLookup[DialogueLookup_n + 19] = "pes_level_mine_release_cart_final"
-DialogueLookup[DialogueLookup_n + 20] = "pes_level_mine_portal"
-DialogueLookup[DialogueLookup_n + 21] = "pes_mine_intro_a"
-DialogueLookup[DialogueLookup_n + 22] = "pes_mine_intro_b"
-DialogueLookup[DialogueLookup_n + 23] = "pes_mine_intro_c"
-DialogueLookup[DialogueLookup_n + 24] = "pes_level_mine_gloat"
-DialogueLookup[DialogueLookup_n + 25] = "pes_level_mine_troll_doors"
-DialogueLookup_n = DialogueLookup_n + 25
+DialogueLookup[DialogueLookup_n + 17] = "pes_level_mine_bell_ringing"
+DialogueLookup[DialogueLookup_n + 18] = "pes_level_mine_portal"
+DialogueLookup[DialogueLookup_n + 19] = "pes_mine_intro_a"
+DialogueLookup[DialogueLookup_n + 20] = "pes_mine_intro_b"
+DialogueLookup[DialogueLookup_n + 21] = "pes_mine_intro_c"
+DialogueLookup[DialogueLookup_n + 22] = "pes_level_mine_gloat"
+DialogueLookup[DialogueLookup_n + 23] = "pes_level_mine_troll_doors"
+DialogueLookup[DialogueLookup_n + 24] = "pes_level_mine_bridge"
+DialogueLookup_n = DialogueLookup_n + 24
 
 return 

@@ -97,6 +97,10 @@ ItemHelper.unmark_sign_in_reward_as_new = function (reward_id)
 	return 
 end
 ItemHelper.has_new_sign_in_reward = function (reward_id)
+	if Managers.backend:is_local() then
+		return false
+	end
+
 	local new_sign_in_rewards = PlayerData.new_sign_in_rewards
 	local reward_items = new_sign_in_rewards[reward_id]
 

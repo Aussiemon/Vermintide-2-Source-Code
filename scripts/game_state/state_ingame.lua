@@ -113,7 +113,7 @@ StateIngame.on_enter = function (self)
 	local level_key = self.level_transition_handler:get_current_level_keys()
 	self.level_key = level_key
 	self.is_in_inn = level_key == "inn_level"
-	self.is_in_tutorial = level_key == "tutorial"
+	self.is_in_tutorial = level_key == "prologue"
 	DamageUtils.is_in_inn = self.is_in_inn
 
 	Managers.light_fx:set_lightfx_color_scheme((self.is_in_inn and "inn_level") or "ingame")
@@ -276,9 +276,11 @@ StateIngame.on_enter = function (self)
 
 	local player_id = PLATFORM == "win32" and rawget(_G, "Steam") and Steam.user_id()
 	local difficulty = Managers.state.difficulty:get_difficulty()
+	local _ = Managers.deed:has_deed() and Managers.deed:active_deed()
+	local deed_id = nil
 	local eye_tracking = (rawget(_G, "Tobii") and Tobii.get_is_connected() and Application.user_setting("tobii_eyetracking")) or false
 
-	Managers.telemetry.events:game_started(player_id, self.peer_type(self), level_key, difficulty, eye_tracking)
+	Managers.telemetry.events:game_started(player_id, self.peer_type(self), level_key, difficulty, deed_id or "-", eye_tracking)
 
 	if is_server then
 		local session_id = Managers.state.network:session_id()
@@ -1186,6 +1188,7 @@ StateIngame._check_exit = function (self, t)
 
 				if level_to_transition_to == "prologue" then
 					self.parent.loading_context.play_trailer = true
+					self.parent.loading_context.switch_to_tutorial_backend = true
 				end
 			else
 				self.network_client:set_wait_for_state_loading(true)
@@ -1352,6 +1355,10 @@ StateIngame._check_exit = function (self, t)
 			return 
 		end
 
+		if self.is_in_tutorial then
+			Managers.backend:stop_tutorial()
+		end
+
 		if exit_type == "join_lobby_failed" or exit_type == "left_game" or exit_type == "lobby_state_failed" or exit_type == "kicked_by_server" or exit_type == "afk_kick" then
 			printf("[StateIngame] Transition to StateLoadingRestartNetwork on %q", self.exit_type)
 			self.level_transition_handler:set_next_level(self.level_transition_handler:default_level_key())
@@ -1388,8 +1395,6 @@ StateIngame._check_exit = function (self, t)
 		elseif exit_type == "finished_tutorial" then
 			local loading_context = self.parent.loading_context
 			loading_context.finished_tutorial = true
-
-			Managers.backend:stop_tutorial()
 
 			if Managers.play_go:installed() then
 				loading_context.restart_network = true
@@ -1502,6 +1507,11 @@ StateIngame.wanted_profile_index = function (self)
 	local peer_id = Network.peer_id()
 	local player = Managers.player:player_from_peer_id(peer_id)
 	local current_profile_index = player and player.profile_index(player)
+
+	if self.is_in_tutorial then
+		current_profile_index = nil
+	end
+
 	local selected_profile_index = Managers.matchmaking.selected_profile_index
 	local saved_profile_index = SaveData.wanted_profile_index
 	local wanted_profile_index = selected_profile_index or current_profile_index or saved_profile_index or 0

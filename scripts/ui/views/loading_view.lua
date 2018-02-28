@@ -122,13 +122,13 @@ LoadingView.create_ui_elements = function (self)
 
 	self.widgets = {
 		self.bg_widget,
-		self.gamepad_input_icon,
-		self.second_row_gamepad_input_icon,
 		self.level_name_widget,
 		UIWidget.init(definitions.dead_space_filler)
 	}
 
 	if not script_data.honduras_demo then
+		self.widgets[#self.widgets + 1] = self.gamepad_input_icon
+		self.widgets[#self.widgets + 1] = self.second_row_gamepad_input_icon
 		self.widgets[#self.widgets + 1] = self.tip_text_prefix_widget
 		self.widgets[#self.widgets + 1] = self.tip_text_suffix_widget
 		self.widgets[#self.widgets + 1] = self.second_row_tip_text_prefix_widget

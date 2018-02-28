@@ -1077,6 +1077,90 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 
 	return wanted_enemy, wanted_dist
 end
+PerceptionUtils.pick_chaos_troll_target_with_weights = function (unit, blackboard, breed, t)
+	if blackboard.keep_target then
+		return 
+	end
+
+	local vector3_distance = Vector3.distance
+	local wanted_enemy = nil
+	local wanted_dist = math.huge
+	local is_valid_target_func = blackboard.valid_target_func or GenericStatusExtension.is_ogre_target
+	local num_enemies = #PLAYER_AND_BOT_UNITS
+	local best_score = -1000
+	local group_blackboard = blackboard.group_blackboard
+
+	for i = 1, num_enemies, 1 do
+		local enemy_unit = PLAYER_AND_BOT_UNITS[i]
+		local score = 0
+		local buff_extension = ScriptUnit.extension(enemy_unit, "buff_system")
+		local dist = math.huge
+		local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
+
+		if VALID_TARGETS_PLAYERS_AND_BOTS[enemy_unit] and is_valid_target_func(status_extension) then
+			local weights = breed.perception_weights
+
+			if blackboard.target_unit == enemy_unit then
+				local sticky_time = t - blackboard.target_unit_found_time
+
+				if sticky_time < weights.target_stickyness_duration_a then
+					score = score + weights.target_stickyness_bonus_a
+				elseif sticky_time < weights.target_stickyness_duration_b then
+					score = score + (sticky_time/weights.target_stickyness_duration_b - 1)*weights.target_stickyness_bonus_b
+				end
+			elseif group_blackboard.special_targets[enemy_unit] then
+				blackboard.secondary_target = enemy_unit
+				score = score + weights.targeted_by_other_special
+			end
+
+			local enemy_pos = POSITION_LOOKUP[enemy_unit]
+			local pos = POSITION_LOOKUP[unit]
+			dist = vector3_distance(pos, enemy_pos)
+			local distance_valid_target = dist < breed.detection_radius
+
+			if distance_valid_target then
+				local inv_radius = math.clamp(dist/weights.max_distance - 1, 0, 1)
+				score = score + inv_radius*inv_radius*weights.distance_weight
+			end
+
+			if not breed.ignore_targets_outside_detection_radius or blackboard.target_unit or distance_valid_target then
+				local aggro = blackboard.aggro_list[enemy_unit] or 0
+				local enemy_disabled = status_extension.is_ledge_hanging or status_extension.knocked_down
+
+				if enemy_disabled then
+					aggro = aggro*weights.target_disabled_aggro_mul
+					blackboard.aggro_list[enemy_unit] = aggro
+				end
+
+				score = score + aggro
+
+				if buff_extension.has_buff_type(buff_extension, "troll_bile_face") then
+					score = score*weights.target_is_in_vomit_multiplier
+				end
+
+				if enemy_disabled then
+					score = score*weights.target_disabled_mul
+				end
+
+				if t - status_extension.last_catapulted_time < 5 then
+					score = score*weights.target_catapulted_mul
+				end
+
+				if blackboard.target_outside_navmesh then
+					score = score*weights.target_outside_navmesh_mul
+				end
+
+				if best_score < score then
+					wanted_enemy = enemy_unit
+					wanted_dist = dist
+					best_score = score
+				end
+			end
+		end
+	end
+
+	return wanted_enemy, wanted_dist
+end
 PerceptionUtils.debug_ai_perception = function (unit, ai_ext, blackboard, t, gui, x1, y1)
 	local tiny_font_size = 16
 	local tiny_font = "gw_arial_16"
@@ -1216,6 +1300,10 @@ PerceptionUtils.pick_corruptor_target = function (unit, blackboard, breed)
 
 			if player_unit == blackboard.target_unit then
 				dist_sq = dist_sq*0.8
+			end
+
+			if blackboard.corruptor_target and blackboard.corruptor_target == player_unit then
+				return blackboard.corruptor_target, dist_sq
 			end
 
 			if dist_sq < closest_dist_sq then

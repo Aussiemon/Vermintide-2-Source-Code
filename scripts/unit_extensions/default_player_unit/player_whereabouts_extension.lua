@@ -75,6 +75,13 @@ PlayerWhereaboutsExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	self._check_bot_nav_transition(self, self.nav_world, input, pos)
+
+	if self.hang_ledge_position then
+		self._calculate_hang_ledge_spawn_position(self, self.hang_ledge_position:unbox())
+
+		self.hang_ledge_position = nil
+	end
+
 	table.clear(input)
 
 	return 
@@ -223,6 +230,28 @@ PlayerWhereaboutsExtension._get_closest_positions = function (self, pos, is_ongr
 end
 PlayerWhereaboutsExtension.closest_positions_when_outside_navmesh = function (self)
 	return self.closest_positions, self.player_on_nav_mesh
+end
+PlayerWhereaboutsExtension.set_new_hang_ledge_position = function (self, hang_ledge_position)
+	self.hang_ledge_position = Vector3Box(hang_ledge_position)
+
+	return 
+end
+PlayerWhereaboutsExtension._calculate_hang_ledge_spawn_position = function (self, hang_ledge_position)
+	local nav_world = self.nav_world
+	local p = GwNavQueries.inside_position_from_outside_position(nav_world, hang_ledge_position, 5, 5, 10, 0.5)
+
+	if p then
+		self.hang_ledge_spawn_position = Vector3Box(p)
+	else
+		print("Could not find spawn position for hang ledge.")
+
+		self.hang_ledge_spawn_position = Vector3Box(hang_ledge_position)
+	end
+
+	return 
+end
+PlayerWhereaboutsExtension.get_hang_ledge_spawn_position = function (self)
+	return self.hang_ledge_spawn_position:unbox()
 end
 PlayerWhereaboutsExtension._debug_draw = function (self, unit_position, point_list, t)
 	local last_onground_pos_on_nav_mesh = self._last_onground_pos_on_nav_mesh:unbox()

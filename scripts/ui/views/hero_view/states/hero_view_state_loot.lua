@@ -12,6 +12,7 @@ local settings_by_screen = definitions.settings_by_screen
 local generic_input_actions = definitions.generic_input_actions
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+local background_fade_definition = definitions.background_fade_definition
 local camera_entry_shake_settings = {
 	persistance = 0.9,
 	fade_out = 0.3,
@@ -33,7 +34,7 @@ local CAMERA_SHAKE_CHEST_SPAWN_TIME = 0.7
 local CHEST_PRESENTATION_OPEN_WAIT_TIME = 1.2
 local CHEST_PRESENTATION_ZOOM_IN_TIME = 0.8
 local CHEST_PRESENTATION_ZOOM_OUT_TIME = 0.8
-local CHEST_PRESENTATION_LOOK_UP_TIME = 0.7
+local CHEST_PRESENTATION_LOOK_UP_TIME = 0.9
 local CHEST_PRESENTATION_LOOK_DOWN_TIME = 1
 local CHEST_PRESENTATION_BONUS_WAIT_TIME = 1
 local CHEST_PRESENTATION_BONUS_TIME = 2
@@ -406,6 +407,7 @@ HeroViewStateLoot.create_ui_elements = function (self)
 
 	RELOAD_UI = false
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	self.background_fade_widget = UIWidget.init(background_fade_definition)
 	local debug_widgets = {}
 	local debug_widgets_by_name = {}
 
@@ -688,6 +690,20 @@ HeroViewStateLoot.post_update = function (self, dt, t)
 
 	local animations = self._animations
 	local ui_animator = self.ui_animator
+	local open_loot_chest_id = self._open_loot_chest_id
+
+	if open_loot_chest_id then
+		local backend_loot = Managers.backend:get_interface("loot")
+		local loot_chest_opened = backend_loot.is_loot_chest_opened(backend_loot, open_loot_chest_id)
+
+		if loot_chest_opened then
+			local loot = backend_loot.get_loot_chest_rewards(backend_loot, open_loot_chest_id)
+
+			self.loot_chest_opened(self, loot)
+
+			self._open_loot_chest_id = nil
+		end
+	end
 
 	for animation_name, animation_id in pairs(animations) do
 		if ui_animator.is_animation_completed(ui_animator, animation_id) then
@@ -821,6 +837,7 @@ HeroViewStateLoot.draw = function (self, dt)
 
 	if self.viewport_widget then
 		UIRenderer.draw_widget(loot_ui_renderer, self.viewport_widget)
+		UIRenderer.draw_widget(loot_ui_renderer, self.background_fade_widget)
 	end
 
 	UIRenderer.end_pass(loot_ui_renderer)
@@ -1284,8 +1301,12 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 				texture_name = "loot_image_weapon_part"
 			elseif item_key == "crafting_material_jewellery" then
 				texture_name = "loot_image_jewellery_part"
-			elseif slot_type == "trinket" or slot_type == "necklace" or slot_type == "ring" then
+			elseif slot_type == "trinket" then
+				texture_name = "loot_image_trinket"
+			elseif slot_type == "necklace" then
 				texture_name = "loot_image_jewellery"
+			elseif slot_type == "ring" then
+				texture_name = "loot_image_charm"
 			end
 
 			if slot_type == "crafting_material" then
@@ -1456,10 +1477,7 @@ HeroViewStateLoot._open_chest = function (self, selected_item)
 	local backend_loot = Managers.backend:get_interface("loot")
 	local hero_name = self.hero_name
 	local backend_id = selected_item.backend_id
-	local callback = callback(self, "open_chest_callback", selected_item)
-
-	backend_loot.open_loot_chest(backend_loot, hero_name, backend_id, callback)
-
+	self._open_loot_chest_id = backend_loot.open_loot_chest(backend_loot, hero_name, backend_id)
 	self._chest_zoom_in_duration = 0
 	self._chest_zoom_out_duration = nil
 
@@ -1495,7 +1513,8 @@ HeroViewStateLoot._open_chest = function (self, selected_item)
 
 	return 
 end
-HeroViewStateLoot.open_chest_callback = function (self, selected_item, loot)
+HeroViewStateLoot.loot_chest_opened = function (self, loot)
+	local selected_item = self._selected_item
 	local num_loot = loot and #loot
 	local has_chest = BackendUtils.has_loot_chest()
 
@@ -1724,6 +1743,8 @@ HeroViewStateLoot._update_camera_look_up_time = function (self, dt, t)
 
 	self.set_camera_rotation(self, new_rotation)
 
+	self.background_fade_widget.style.rect.color[1] = animation_progress*200
+
 	if progress == 1 then
 		if self._chest_unit then
 			Unit.set_unit_visibility(self._chest_unit, false)
@@ -1756,6 +1777,8 @@ HeroViewStateLoot._update_camera_look_down_time = function (self, dt, t)
 	local new_rotation = Quaternion.multiply(current_rotation, animation_rotation)
 
 	self.set_camera_rotation(self, new_rotation)
+
+	self.background_fade_widget.style.rect.color[1] = (animation_progress - 1)*200
 
 	if progress == 1 then
 		self._camera_look_down_duration = nil

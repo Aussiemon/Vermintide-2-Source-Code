@@ -26,6 +26,7 @@ require("scripts/ui/hud_ui/buff_presentation_ui")
 require("scripts/ui/hud_ui/contract_log_ui")
 require("scripts/ui/hud_ui/overcharge_bar_ui")
 require("scripts/ui/hud_ui/equipment_ui")
+require("scripts/ui/hud_ui/gamepad_equipment_ui")
 require("scripts/ui/hud_ui/ability_ui")
 require("scripts/ui/hud_ui/loot_objective_ui")
 require("scripts/ui/hud_ui/boss_health_ui")
@@ -94,15 +95,12 @@ IngameHud.init = function (self, ingame_ui_context)
 	self.buff_presentation_ui = BuffPresentationUI:new(ingame_ui_context)
 	self.twitch_vote_ui = TwitchVoteUI:new(ingame_ui_context)
 	self.equipment_ui = EquipmentUI:new(ingame_ui_context)
+	self.gamepad_equipment_ui = GamePadEquipmentUI:new(ingame_ui_context)
 	self.ability_ui = AbilityUI:new(ingame_ui_context)
 	local backend_settings = GameSettingsDevelopment.backend_settings
 
 	if not self.is_in_inn and backend_settings.quests_enabled then
 		self.contract_log_ui = ContractLogUI:new(ingame_ui_context)
-	end
-
-	if not self.is_in_inn and not Development.parameter("disable_ingame_timer") then
-		self.game_timer_ui = GameTimerUI:new(ingame_ui_context)
 	end
 
 	if self.is_in_inn or script_data.debug_show_damage_numbers then
@@ -168,6 +166,10 @@ IngameHud.destroy = function (self)
 
 	if self.equipment_ui then
 		self.equipment_ui:destroy()
+	end
+
+	if self.gamepad_equipment_ui then
+		self.gamepad_equipment_ui:destroy()
 	end
 
 	if self.ability_ui then
@@ -298,6 +300,10 @@ IngameHud.set_visible = function (self, visible, draw_playerlist)
 		self.equipment_ui:set_visible(visible)
 	end
 
+	if self.gamepad_equipment_ui then
+		self.gamepad_equipment_ui:set_visible(visible)
+	end
+
 	if self.ability_ui then
 		self.ability_ui:set_visible(visible)
 	end
@@ -400,6 +406,7 @@ IngameHud._update_crosshair_ui = function (self, dt, t, player, context)
 	if self._crosshair_position_x ~= crosshair_position_x or self._crosshair_position_y ~= crosshair_position_y then
 		self.crosshair:apply_crosshair_position(crosshair_position_x, crosshair_position_y)
 		self.equipment_ui:apply_crosshair_position(crosshair_position_x, crosshair_position_y)
+		self.gamepad_equipment_ui:apply_crosshair_position(crosshair_position_x, crosshair_position_y)
 		self.overcharge_bar_ui:apply_crosshair_position(crosshair_position_x, crosshair_position_y)
 
 		self._crosshair_position_x = crosshair_position_x
@@ -604,6 +611,13 @@ IngameHud._update_while_alive = function (self, dt, t, player, context)
 		end
 
 		Profiler.stop("Equipment UI")
+		Profiler.start("Gamepad Equipment UI")
+
+		if self.gamepad_equipment_ui then
+			self.gamepad_equipment_ui:update(dt, t)
+		end
+
+		Profiler.stop("Gamepad Equipment UI")
 		Profiler.start("Ability UI")
 
 		if self.ability_ui then

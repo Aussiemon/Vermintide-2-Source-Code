@@ -64,10 +64,10 @@ PlayerProjectileHuskExtension.initialize_projectile = function (self, projectile
 		local cleave_range = Cleave.max - Cleave.min
 		local cleave_power_level = ActionUtils.scale_powerlevels(self.power_level, "cleave")
 		local attack_cleave_power_level = cleave_power_level*cleave_distribution.attack
-		local attack_percentage = DamageUtils.get_power_level_percentage(attack_cleave_power_level, true)
+		local attack_percentage = DamageUtils.get_power_level_percentage(attack_cleave_power_level)
 		local max_mass_attack = cleave_range*attack_percentage
 		local impact_cleave_power_level = cleave_power_level*cleave_distribution.impact
-		local impact_percentage = DamageUtils.get_power_level_percentage(impact_cleave_power_level, false)
+		local impact_percentage = DamageUtils.get_power_level_percentage(impact_cleave_power_level)
 		local max_mass_impact = cleave_range*impact_percentage
 		self.max_mass_attack = max_mass_attack
 		self.max_mass_impact = max_mass_impact
@@ -367,7 +367,7 @@ PlayerProjectileHuskExtension.hit_level_unit = function (self, impact_data, hit_
 	local has_health_extension = ScriptUnit.has_extension(hit_unit, "health_system")
 	local damage_profile_name = impact_data.damage_profile_prop or impact_data.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
-	local allow_ranged_damage = Unit.get_data(hit_unit, "allow_ranged_damage")
+	local allow_ranged_damage = Unit.get_data(hit_unit, "allow_ranged_damage") ~= false
 
 	if damage_profile and (GameSettingsDevelopment.allow_ranged_attacks_to_damage_props or allow_ranged_damage) then
 		if has_health_extension and hit_units[hit_unit] == nil then
@@ -394,7 +394,7 @@ PlayerProjectileHuskExtension.hit_level_unit = function (self, impact_data, hit_
 		EffectHelper.play_surface_material_effects(hit_effect, world, hit_unit, hit_position, hit_rotation, hit_normal, nil, is_husk, nil, hit_actor)
 	end
 
-	local bounce = impact_data.bounce_on_level_units
+	bounce = impact_data.bounce_on_level_units and not Unit.get_data(hit_unit, "is_dummy")
 
 	if bounce then
 		local num_bounces = self.num_bounces

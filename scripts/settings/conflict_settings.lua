@@ -188,14 +188,10 @@ local SpecialDifficultyOverrides = {
 		max_specials = 3,
 		breeds = {
 			"skaven_gutter_runner",
-			"skaven_gutter_runner",
 			"skaven_pack_master",
-			"skaven_pack_master",
-			"skaven_ratling_gunner",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
-			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_warpfire_thrower"
 		},
@@ -209,8 +205,8 @@ local SpecialDifficultyOverrides = {
 					60
 				},
 				spawn_cooldown = {
-					50,
-					90
+					60,
+					100
 				}
 			}
 		}
@@ -219,14 +215,10 @@ local SpecialDifficultyOverrides = {
 		max_specials = 3,
 		breeds = {
 			"skaven_gutter_runner",
-			"skaven_gutter_runner",
 			"skaven_pack_master",
-			"skaven_pack_master",
-			"skaven_ratling_gunner",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
-			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_warpfire_thrower"
 		},
@@ -240,14 +232,14 @@ local SpecialDifficultyOverrides = {
 					60
 				},
 				spawn_cooldown = {
-					40,
+					50,
 					70
 				}
 			}
 		}
 	},
 	hardest = {
-		max_specials = 3,
+		max_specials = 4,
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_gutter_runner",
@@ -270,8 +262,8 @@ local SpecialDifficultyOverrides = {
 					60
 				},
 				spawn_cooldown = {
-					30,
-					50
+					50,
+					90
 				}
 			}
 		}
@@ -300,8 +292,8 @@ local SpecialDifficultyOverrides_skaven = {
 					60
 				},
 				spawn_cooldown = {
-					50,
-					90
+					60,
+					100
 				}
 			}
 		}
@@ -328,8 +320,8 @@ local SpecialDifficultyOverrides_skaven = {
 					60
 				},
 				spawn_cooldown = {
-					45,
-					80
+					50,
+					90
 				}
 			}
 		}
@@ -364,20 +356,20 @@ local SpecialDifficultyOverrides_skaven = {
 }
 local SpecialDifficultyOverrides_chaos = {
 	hard = {
-		max_specials = 3,
+		max_specials = 2,
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
+			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_vortex_sorcerer",
-			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_warpfire_thrower"
 		},
 		methods = {
 			specials_by_slots = {
-				max_of_same = 2,
+				max_of_same = 1,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -385,8 +377,8 @@ local SpecialDifficultyOverrides_chaos = {
 					60
 				},
 				spawn_cooldown = {
-					50,
-					90
+					40,
+					80
 				}
 			}
 		}
@@ -396,9 +388,9 @@ local SpecialDifficultyOverrides_chaos = {
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
+			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_vortex_sorcerer",
-			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_warpfire_thrower"
@@ -413,8 +405,8 @@ local SpecialDifficultyOverrides_chaos = {
 					60
 				},
 				spawn_cooldown = {
-					40,
-					70
+					50,
+					90
 				}
 			}
 		}
@@ -424,9 +416,9 @@ local SpecialDifficultyOverrides_chaos = {
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
+			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
 			"chaos_vortex_sorcerer",
-			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_warpfire_thrower"
@@ -441,8 +433,8 @@ local SpecialDifficultyOverrides_chaos = {
 					60
 				},
 				spawn_cooldown = {
-					30,
-					50
+					40,
+					70
 				}
 			}
 		}
@@ -472,7 +464,7 @@ SpecialsSettings = {
 					60
 				},
 				spawn_cooldown = {
-					50,
+					60,
 					90
 				}
 			}
@@ -730,19 +722,10 @@ SpecialsSettings = {
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
+			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
-			"chaos_vortex_sorcerer",
-			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_warpfire_thrower"
-		},
-		breeds = {
-			"skaven_gutter_runner",
-			"chaos_vortex_sorcerer",
-			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower",
-			"skaven_pack_master",
-			"skaven_pack_master"
 		},
 		methods = {
 			specials_by_time_window = {
@@ -757,7 +740,7 @@ SpecialsSettings = {
 				}
 			},
 			specials_by_slots = {
-				max_of_same = 2,
+				max_of_same = 1,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -800,19 +783,10 @@ SpecialsSettings = {
 		breeds = {
 			"skaven_gutter_runner",
 			"skaven_pack_master",
+			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
-			"chaos_vortex_sorcerer",
-			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_warpfire_thrower"
-		},
-		breeds = {
-			"skaven_gutter_runner",
-			"chaos_vortex_sorcerer",
-			"chaos_corruptor_sorcerer",
-			"skaven_warpfire_thrower",
-			"skaven_pack_master",
-			"skaven_pack_master"
 		},
 		methods = {
 			specials_by_time_window = {
@@ -827,7 +801,7 @@ SpecialsSettings = {
 				}
 			},
 			specials_by_slots = {
-				max_of_same = 2,
+				max_of_same = 1,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -1258,7 +1232,7 @@ PacingSettings = {
 			150
 		},
 		horde_startup_time = {
-			60,
+			40,
 			120
 		},
 		horde = HordeSettings.default,
@@ -1281,8 +1255,8 @@ PacingSettings = {
 		delay_specials_threat_value = {
 			harder = 80,
 			hard = 60,
-			normal = 50,
-			easy = 50
+			normal = 40,
+			easy = 40
 		},
 		mini_patrol = {
 			only_spawn_above_intensity = 1,
@@ -1346,7 +1320,7 @@ PacingSettings = {
 			150
 		},
 		horde_startup_time = {
-			60,
+			40,
 			120
 		},
 		multiple_horde_frequency = {
@@ -1366,7 +1340,7 @@ PacingSettings = {
 			harder = 80,
 			hard = 60,
 			normal = 50,
-			easy = 40
+			easy = 50
 		},
 		delay_mini_patrol_threat_value = {
 			harder = 50,
@@ -1375,10 +1349,10 @@ PacingSettings = {
 			easy = 35
 		},
 		delay_specials_threat_value = {
-			harder = 110,
-			hard = 90,
-			normal = 80,
-			easy = 70
+			harder = 80,
+			hard = 60,
+			normal = 40,
+			easy = 40
 		},
 		mini_patrol = {
 			only_spawn_above_intensity = 1,

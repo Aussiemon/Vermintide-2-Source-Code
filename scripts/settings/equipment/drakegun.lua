@@ -69,12 +69,6 @@ weapon_template.actions = {
 					start_time = 0.9,
 					action = "weapon_reload",
 					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -143,12 +137,6 @@ weapon_template.actions = {
 					start_time = 0.3,
 					action = "weapon_reload",
 					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -163,15 +151,16 @@ weapon_template.actions = {
 			charge_sound_stop_event = "player_combat_weapon_drakegun_charge_down",
 			anim_end_event = "attack_finished",
 			charge_ready_sound_event = "weapon_drakegun_charge_ready",
-			charge_effect_name = "fx/wpnfx_drake_gun_charge",
-			kind = "charge",
 			charge_effect_material_variable_name = "intensity",
+			kind = "charge",
+			charge_time = 3,
+			remove_overcharge_on_interrupt = true,
 			overcharge_interval = 0.3,
 			charge_effect_material_name = "Fire",
 			minimum_hold_time = 0.2,
 			overcharge_type = "flamethrower",
 			charge_sound_switch = "projectile_charge_sound",
-			charge_time = 2,
+			charge_effect_name = "fx/wpnfx_drake_gun_charge",
 			hold_input = "action_two_hold",
 			anim_event = "attack_charge",
 			charge_sound_name = "player_combat_weapon_drakegun_charge",
@@ -216,12 +205,6 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "weapon_reload",
 					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		}
@@ -257,12 +240,6 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			condition_func = function (action_user, input_extension)
@@ -279,7 +256,6 @@ weapon_template.actions = {
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -336,9 +312,9 @@ weapon_template.wwise_dep_right_hand = {
 	"wwise/flamethrower"
 }
 weapon_template.tooltip_keywords = {
-	"keyword_1",
-	"keyword_2",
-	"keyword_3"
+	"weapon_keyword_crowd_control",
+	"weapon_keyword_close_range",
+	"weapon_keyword_overheat"
 }
 weapon_template.compare_statistics = {
 	attacks = {

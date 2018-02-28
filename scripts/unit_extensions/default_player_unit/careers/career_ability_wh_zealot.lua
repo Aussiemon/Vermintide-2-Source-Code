@@ -44,7 +44,7 @@ CareerAbilityWHZealot.update = function (self, unit, input, dt, context, t)
 	end
 
 	if not self._is_priming then
-		if input_extension.get(input_extension, "function_career") then
+		if input_extension.get(input_extension, "action_career") then
 			self._start_priming(self)
 		end
 	elseif self._is_priming then
@@ -56,7 +56,7 @@ CareerAbilityWHZealot.update = function (self, unit, input, dt, context, t)
 			return 
 		end
 
-		if input_extension.get(input_extension, "function_career_release") then
+		if input_extension.get(input_extension, "action_career_release") then
 			self._run_ability(self)
 		end
 	end
@@ -66,9 +66,8 @@ end
 CareerAbilityWHZealot._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
-	local activated_ability_data = career_extension.get_activated_ability_data(career_extension)
 
-	return self._local_player and not self._bot_player and career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
+	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityWHZealot._start_priming = function (self)
 	local decal_unit_name = self._decal_unit_name
@@ -184,13 +183,13 @@ CareerAbilityWHZealot._run_ability = function (self)
 	status_extension.do_lunge = {
 		animation_end_event = "zealot_active_ability_charge_hit",
 		allow_rotation = false,
-		first_person_animation_end_event = "zealot_active_ability_charge_hit",
+		first_person_animation_end_event = "dodge_bwd",
 		first_person_hit_animation_event = "charge_react",
-		falloff_to_speed = 4,
-		first_person_animation_event = "zealot_active_ability_charge_start",
-		first_person_animation_end_event_hit = "zealot_active_ability_charge_hit",
+		falloff_to_speed = 8,
+		first_person_animation_event = "shade_stealth_ability",
+		first_person_animation_end_event_hit = "dodge_bwd",
 		duration = 0.75,
-		initial_speed = 20,
+		initial_speed = 25,
 		animation_event = "zealot_active_ability_charge_start",
 		damage = {
 			depth_padding = 0.4,

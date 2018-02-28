@@ -32,7 +32,7 @@ StateTitleScreenMain.on_enter = function (self, params)
 			Managers.account:reset()
 		end
 
-		if script_data.honduras_demo then
+		if script_data.honduras_demo or PLATFORM == "xb1" then
 			self._update_ui_settings(self)
 		end
 	else

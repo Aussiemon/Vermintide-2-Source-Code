@@ -44,11 +44,6 @@ StateDedicatedServerInit._init_network = function (self)
 	Managers.party:set_leader(nil)
 
 	self._state = "waiting_for_backend"
-
-	if not Managers.eac then
-		Managers.eac = EACManager:new()
-	end
-
 	Managers.ban_list = Managers.ban_list or BanListManager:new()
 
 	return 

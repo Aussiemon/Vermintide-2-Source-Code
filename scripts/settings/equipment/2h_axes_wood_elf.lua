@@ -50,12 +50,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.85,
 					blocker = true,
 					end_time = 1.5,
@@ -112,12 +106,6 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				},
 				{
 					start_time = 0.85,
@@ -178,12 +166,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.85,
 					blocker = true,
 					end_time = 1.5,
@@ -209,7 +191,7 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0,
 			hit_effect = "melee_hit_axes_2h",
 			use_target = true,
-			damage_profile = "medium_slashing_linesman_executioner",
+			damage_profile = "medium_slashing_axe_linesman",
 			damage_window_end = 0.55,
 			impact_sound_event = "axe_1h_hit",
 			anim_end_event = "attack_finished",
@@ -269,12 +251,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			hit_mass_count = LINESMAN_HIT_MASS_COUNT
@@ -293,7 +269,7 @@ weapon_template.actions = {
 			use_target = true,
 			damage_window_end = 0.45,
 			impact_sound_event = "axe_1h_hit",
-			damage_profile = "medium_slashing_linesman_executioner",
+			damage_profile = "medium_slashing_axe_linesman",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.15,
@@ -351,12 +327,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -378,7 +348,7 @@ weapon_template.actions = {
 			use_target = true,
 			damage_window_end = 0.45,
 			impact_sound_event = "axe_1h_hit",
-			damage_profile = "medium_slashing_linesman_executioner",
+			damage_profile = "medium_slashing_axe_linesman",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.15,
@@ -436,12 +406,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -514,6 +478,12 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
+					start_time = 1,
+					action = "action_one",
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
 					start_time = 0.6,
 					action = "action_two",
 					input = "action_two_hold"
@@ -523,12 +493,6 @@ weapon_template.actions = {
 					start_time = 0.6,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			hit_mass_count = LINESMAN_HIT_MASS_COUNT
@@ -600,12 +564,6 @@ weapon_template.actions = {
 					start_time = 0.6,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		},
@@ -623,7 +581,7 @@ weapon_template.actions = {
 			use_target = true,
 			damage_window_end = 0.45,
 			impact_sound_event = "axe_1h_hit",
-			damage_profile = "medium_slashing_linesman_executioner",
+			damage_profile = "medium_slashing_axe_linesman",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.15,
@@ -681,12 +639,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -763,12 +715,6 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			push_radius = push_radius,
@@ -825,19 +771,12 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -896,9 +835,9 @@ weapon_template.wwise_dep_right_hand = {
 	"wwise/two_handed_swords"
 }
 weapon_template.tooltip_keywords = {
-	"keyword_1",
-	"keyword_2",
-	"keyword_3"
+	"weapon_keyword_high_damage",
+	"weapon_keyword_armour_piercing",
+	"weapon_keyword_fast_attacks"
 }
 weapon_template.compare_statistics = {
 	attacks = {

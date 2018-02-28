@@ -144,6 +144,21 @@ HeroWindowCrafting.update = function (self, dt, t)
 		self.create_ui_elements(self)
 	end
 
+	local craft_id = self._current_craft_id
+
+	if craft_id then
+		local crafting_interface = Managers.backend:get_interface("crafting")
+		local craft_complete = crafting_interface.is_craft_complete(crafting_interface, craft_id)
+
+		if craft_complete then
+			local craft_result = crafting_interface.get_craft_result(crafting_interface, craft_id)
+
+			self.craft_complete(self, craft_result)
+
+			self._current_craft_id = nil
+		end
+	end
+
 	if self._active_page then
 		self._active_page:update(dt, t)
 	end
@@ -473,33 +488,33 @@ HeroWindowCrafting._update_craft_end_time = function (self, dt, t)
 	return 
 end
 HeroWindowCrafting.craft = function (self, items)
-	local recipe_available = self.crafting_manager:craft(items, callback(self, "cb_craft_result"))
+	local craft_id = self.crafting_manager:craft(items)
 
-	if recipe_available then
-		self._waiting_for_callback = true
+	if craft_id then
+		self._waiting_for_craft = true
 		self._craft_start_duration = 0
 
 		self.lock_input(self)
+
+		self._current_craft_id = craft_id
+
+		return true
 	end
 
-	return recipe_available
+	return false
 end
-HeroWindowCrafting.cb_craft_result = function (self, result, error, reset_slots)
-	if error then
-		print("[HeroWindowCrafting] - " .. error)
-	end
-
-	self._waiting_for_callback = false
+HeroWindowCrafting.craft_complete = function (self, result)
+	self._waiting_for_craft = false
 	self._craft_glow_out_duration = 0
 
 	if self._active_page then
-		self._active_page:craft_result(result, error, reset_slots)
+		self._active_page:craft_result(result)
 	end
 
 	return 
 end
-HeroWindowCrafting.waiting_for_callback = function (self)
-	return self._waiting_for_callback
+HeroWindowCrafting.waiting_for_craft = function (self)
+	return self._waiting_for_craft
 end
 HeroWindowCrafting.lock_input = function (self)
 	local input_manager = self.input_manager

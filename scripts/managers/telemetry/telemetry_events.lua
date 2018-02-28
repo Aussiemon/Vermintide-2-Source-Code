@@ -25,13 +25,14 @@ TelemetryEvents.header = function (self, engine_revision, content_revision)
 
 	return 
 end
-TelemetryEvents.game_started = function (self, player_id, peer_type, level_key, difficulty, eye_tracking)
+TelemetryEvents.game_started = function (self, player_id, peer_type, level_key, difficulty, deed, eye_tracking)
 	table.clear(params)
 
 	params.player_id = player_id
 	params.peer_type = peer_type
 	params.level_key = level_key
 	params.difficulty = difficulty
+	params.deed = deed
 	params.eye_tracking = eye_tracking
 
 	self.manager:register_event("game_started", params)
@@ -123,14 +124,14 @@ TelemetryEvents.fatigue_gained = function (self, player, position, fatigue_type,
 
 	return 
 end
-TelemetryEvents.matchmaking_connection = function (self, player, connection_state, time_taken, first_time_searcher)
+TelemetryEvents.matchmaking_connection = function (self, player, connection_state, time_taken, strict_matchmaking)
 	table.clear(params)
 
 	params.player_id = player.telemetry_id(player)
 	params.hero = player.profile_display_name(player)
 	params.connection_state = connection_state
 	params.time_taken = time_taken
-	params.first_time_searcher = first_time_searcher
+	params.strict_matchmaking = strict_matchmaking
 
 	self.manager:register_event("matchmaking_connection", params)
 
@@ -284,6 +285,7 @@ TelemetryEvents.player_killed_ai = function (self, player, player_position, vict
 
 	params.player_id = player.telemetry_id(player)
 	params.hero = player.profile_display_name(player)
+	params.career = player.career_name(player)
 	params.is_bot = player.bot_player == true
 	params.player_position = player_position
 	params.victim_position = victim_position
@@ -301,6 +303,7 @@ TelemetryEvents.player_knocked_down = function (self, player, damage_type, posit
 
 	params.player_id = player.telemetry_id(player)
 	params.hero = player.profile_display_name(player)
+	params.career = player.career_name(player)
 	params.is_bot = player.bot_player == true
 	params.damage_type = damage_type
 	params.position = position
@@ -314,6 +317,7 @@ TelemetryEvents.player_pickup = function (self, player, pickup_name, pickup_spaw
 
 	params.player_id = player.telemetry_id(player)
 	params.hero = player.profile_display_name(player)
+	params.career = player.career_name(player)
 	params.pickup_name = pickup_name
 	params.pickup_spawn_type = pickup_spawn_type
 	params.position = position
@@ -353,6 +357,7 @@ TelemetryEvents.player_used_item = function (self, player, item_name, position)
 
 	params.player_id = player.telemetry_id(player)
 	params.hero = player.profile_display_name(player)
+	params.career = player.career_name(player)
 	params.item_name = item_name
 	params.position = position
 

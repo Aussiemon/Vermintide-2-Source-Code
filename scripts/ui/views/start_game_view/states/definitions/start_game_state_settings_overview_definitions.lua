@@ -327,6 +327,22 @@ local window_layouts = {
 		windows = {
 			difficulty = 1
 		}
+	},
+	{
+		sound_event_enter = "play_gui_lobby_button_01_difficulty",
+		close_on_exit = false,
+		save_data_table = "twitch",
+		windows = {
+			difficulty = 1
+		}
+	},
+	{
+		sound_event_enter = "play_gui_lobby_button_02_mission_select",
+		close_on_exit = false,
+		save_data_table = "twitch",
+		windows = {
+			mission_selection = 1
+		}
 	}
 }
 local title_text_style = {

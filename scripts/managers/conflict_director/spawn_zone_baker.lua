@@ -21,8 +21,9 @@ SpawnZoneBaker.init = function (self, world, nav_world, level_analyzer)
 			local waypoints_data = require(patrol_waypoints_path)
 			local patrol_waypoints = waypoints_data.patrol_waypoints
 			local boss_waypoints = waypoints_data.boss_waypoints
+			local event_waypoints = waypoints_data.event_waypoints
 
-			self.level_analyzer:store_patrol_waypoints(boss_waypoints, patrol_waypoints)
+			self.level_analyzer:store_patrol_waypoints(boss_waypoints, patrol_waypoints, event_waypoints)
 		end
 
 		local spawn_zone_path = level_settings.level_name .. "_spawn_zones"

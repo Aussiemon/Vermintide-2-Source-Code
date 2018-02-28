@@ -39,20 +39,13 @@ BaseCamera.parse_parameters = function (self, camera_settings, parent_node)
 	self._tree_transitions = camera_settings.tree_transitions or parent_node.tree_transitions(parent_node)
 	self._node_transitions = camera_settings.node_transitions or parent_node.node_transitions(parent_node)
 
-	if camera_settings.dof_near_blur and camera_settings.dof_near_focus then
+	if camera_settings.dof_enabled then
 		self._environment_params = self._environment_params or {}
-		self._environment_params.dof_near_blur = camera_settings.dof_near_blur
-		self._environment_params.dof_near_focus = camera_settings.dof_near_focus
-	end
-
-	if camera_settings.dof_far_blur and camera_settings.dof_far_focus then
-		self._environment_params = self._environment_params or {}
-		self._environment_params.dof_far_blur = camera_settings.dof_far_blur
-		self._environment_params.dof_far_focus = camera_settings.dof_far_focus
-	end
-
-	if camera_settings.dof_amount then
-		self._environment_params.dof_amount = camera_settings.dof_amount
+		self._environment_params.dof_enabled = camera_settings.dof_enabled
+		self._environment_params.focal_distance = camera_settings.focal_distance
+		self._environment_params.focal_region = camera_settings.focal_region
+		self._environment_params.focal_padding = camera_settings.focal_padding
+		self._environment_params.focal_scale = camera_settings.focal_scale
 	end
 
 	self._yaw_origin = camera_settings.yaw_origin and (camera_settings.yaw_origin*math.pi)/180
@@ -125,6 +118,21 @@ BaseCamera.near_range = function (self)
 end
 BaseCamera.far_range = function (self)
 	return self._far_range
+end
+BaseCamera.dof_enabled = function (self)
+	return self._environment_params.dof_enabled
+end
+BaseCamera.focal_distance = function (self)
+	return self._environment_params.focal_distance
+end
+BaseCamera.focal_region = function (self)
+	return self._environment_params.focal_region
+end
+BaseCamera.focal_padding = function (self)
+	return self._environment_params.focal_padding
+end
+BaseCamera.focal_scale = function (self)
+	return self._environment_params.focal_scale
 end
 BaseCamera.parent_node = function (self)
 	return self._parent_node
@@ -236,6 +244,51 @@ BaseCamera.set_root_far_range = function (self, far_range)
 
 	for _, child in ipairs(self._children) do
 		child.set_root_far_range(child, far_range)
+	end
+
+	return 
+end
+BaseCamera.set_root_dof_enabled = function (self, dof_enabled)
+	self._environment_params.dof_enabled = dof_enabled
+
+	for _, child in ipairs(self._children) do
+		child.set_root_dof_enabled(child, dof_enabled)
+	end
+
+	return 
+end
+BaseCamera.set_root_focal_distance = function (self, focal_distance)
+	self._environment_params.focal_distance = focal_distance
+
+	for _, child in ipairs(self._children) do
+		child.set_root_focal_distance(child, focal_distance)
+	end
+
+	return 
+end
+BaseCamera.set_root_focal_region = function (self, focal_region)
+	self._environment_params.focal_region = focal_region
+
+	for _, child in ipairs(self._children) do
+		child.set_root_focal_region(child, focal_region)
+	end
+
+	return 
+end
+BaseCamera.set_root_focal_padding = function (self, focal_padding)
+	self._environment_params.focal_padding = focal_padding
+
+	for _, child in ipairs(self._children) do
+		child.set_root_focal_padding(child, focal_padding)
+	end
+
+	return 
+end
+BaseCamera.set_root_focal_scale = function (self, focal_scale)
+	self._environment_params.focal_scale = focal_scale
+
+	for _, child in ipairs(self._children) do
+		child.set_root_focal_scale(child, focal_scale)
 	end
 
 	return 

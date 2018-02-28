@@ -129,6 +129,13 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/bright_wizard_bell",
 		"dialogues/generated/dwarf_ranger_bell",
 		"dialogues/generated/witch_hunter_bell"
+	},
+	ground_zero = {
+		"dialogues/generated/wood_elf_ground_zero",
+		"dialogues/generated/empire_soldier_ground_zero",
+		"dialogues/generated/bright_wizard_ground_zero",
+		"dialogues/generated/dwarf_ranger_ground_zero",
+		"dialogues/generated/witch_hunter_ground_zero"
 	}
 }
 DialogueSettings.blocked_auto_load_files = {
@@ -194,6 +201,7 @@ DialogueSettings.dialogue_category_config = {
 			enemy_alerts_boss = true,
 			enemy_high_prio = true,
 			help_talk = true,
+			cut_scene = true,
 			seen_items = true,
 			npc_talk_interrupt = true,
 			player_alerts = true,
@@ -363,10 +371,12 @@ DialogueSettings.dialogue_category_config = {
 	},
 	level_talk_tutorial = {
 		interrupted_by = {
-			champion_opening = true,
-			player_alerts_boss = true,
 			activate_ability = true,
-			enemy_alerts_boss = true
+			enemy_alerts_boss = true,
+			cut_scene = true,
+			level_talk_tutorial_interrupt = true,
+			champion_opening = true,
+			player_alerts_boss = true
 		},
 		playable_during_category = {
 			enemy_alerts = true,
@@ -389,6 +399,38 @@ DialogueSettings.dialogue_category_config = {
 			seen_items = true,
 			cut_scene_interrupt_two = true,
 			player_alerts = true
+		}
+	},
+	level_talk_tutorial_interrupt = {
+		interrupted_by = {
+			activate_ability = true,
+			enemy_alerts_boss = true,
+			cut_scene = true,
+			champion_opening = true,
+			player_alerts_boss = true
+		},
+		playable_during_category = {
+			enemy_alerts = true,
+			npc_talk = true,
+			help_talk = true,
+			player_feedback = true,
+			guidance = true,
+			level_talk_tutorial = true,
+			cut_scene_interrupt = true,
+			casual_talk = true,
+			default = true,
+			story_talk = true,
+			level_talk = true,
+			enemy_basic_prio = true,
+			knocked_down_override = true,
+			cut_scene_interrupt_three = true,
+			enemy_high_prio = true,
+			npc_talk_interrupt_special = true,
+			cut_scene = true,
+			seen_items = true,
+			cut_scene_interrupt_two = true,
+			player_alerts = true,
+			level_talk_tutorial_interrupt = true
 		}
 	},
 	player_alerts_boss = {
@@ -416,9 +458,10 @@ DialogueSettings.dialogue_category_config = {
 	player_alerts = {
 		interrupted_by = {
 			activate_ability = true,
-			player_alerts_boss = true,
-			npc_talk_interrupt_special = true,
 			champion_opening = true,
+			npc_talk_interrupt_special = true,
+			player_alerts_boss = true,
+			level_talk_tutorial_interrupt = true,
 			level_talk_tutorial = true
 		},
 		playable_during_category = {
@@ -438,9 +481,10 @@ DialogueSettings.dialogue_category_config = {
 	player_feedback = {
 		interrupted_by = {
 			activate_ability = true,
-			player_alerts_boss = true,
-			npc_talk_interrupt_special = true,
 			champion_opening = true,
+			npc_talk_interrupt_special = true,
+			player_alerts_boss = true,
+			level_talk_tutorial_interrupt = true,
 			level_talk_tutorial = true
 		},
 		playable_during_category = {
@@ -460,8 +504,9 @@ DialogueSettings.dialogue_category_config = {
 	npc_talk_special = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			npc_talk_interrupt_special = true,
-			level_talk_tutorial = true
+			level_talk_tutorial_interrupt = true,
+			level_talk_tutorial = true,
+			npc_talk_interrupt_special = true
 		},
 		playable_during_category = {
 			default = true,
@@ -507,8 +552,9 @@ DialogueSettings.dialogue_category_config = {
 			enemy_alerts_boss = true,
 			npc_talk_interrupt_special = true,
 			player_alerts_boss = true,
-			champion_opening = true,
-			level_talk_tutorial = true
+			level_talk_tutorial_interrupt = true,
+			level_talk_tutorial = true,
+			champion_opening = true
 		},
 		playable_during_category = {
 			default = true,

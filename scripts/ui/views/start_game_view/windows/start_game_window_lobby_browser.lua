@@ -946,16 +946,6 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 	local player = player_manager.local_player(player_manager)
 	local statistics_db = player_manager.statistics_db(player_manager)
 	local player_stats_id = player.stats_id(player)
-	local eac_authorized = "false"
-
-	if Managers.eac:enabled() then
-		if Managers.eac:authorized() then
-			eac_authorized = "true"
-		else
-			eac_authorized = "false"
-		end
-	end
-
 	local requirements = {
 		free_slots = free_slots,
 		distance_filter = platform ~= "ps4" and distance_filter,
@@ -979,8 +969,10 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 		end
 	end
 
+	local eac_state = EAC.state()
+	local eac_authorized = eac_state == "trusted"
 	requirements.filters.eac_authorized = {
-		value = eac_authorized,
+		value = (eac_authorized and "true") or "false",
 		comparison = LobbyComparison.EQUAL
 	}
 

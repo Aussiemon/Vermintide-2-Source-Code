@@ -45,7 +45,7 @@ BTChewAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.action = nil
 	blackboard.attacks_done = 0
 
-	if reason == "aborted" then
+	if reason == "aborted" and Unit.alive(blackboard.victim_grabbed) then
 		StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
 
 		blackboard.has_grabbed_victim = nil

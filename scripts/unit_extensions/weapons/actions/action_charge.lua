@@ -43,6 +43,8 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 		self.venting_overcharge = true
 	end
 
+	self.total_overcharge_added = 0
+	self.remove_overcharge_on_interrupt = new_action.remove_overcharge_on_interrupt
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.charge_level = 0
 	self.charge_time = buff_extension.apply_buffs_to_value(buff_extension, new_action.charge_time, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
@@ -133,7 +135,13 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 			if overcharge_type then
 				local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
 
+				if self.remove_overcharge_on_interrupt and current_charge_time == 1 then
+					overcharge_amount = PlayerUnitStatusSettings.overcharge_values.drakegun_charging
+				end
+
 				self.overcharge_extension:add_charge(overcharge_amount)
+
+				self.total_overcharge_added = self.total_overcharge_added + overcharge_amount
 			end
 
 			self.overcharge_timer = 0
@@ -223,6 +231,14 @@ ActionCharge.finish = function (self, reason)
 
 	if current_action.vent_overcharge and overcharge_extension then
 		overcharge_extension.vent_overcharge_done(overcharge_extension)
+	end
+
+	if self.remove_overcharge_on_interrupt then
+		if reason == "interrupted" then
+			overcharge_extension.remove_charge(overcharge_extension, self.total_overcharge_added*0.75)
+		elseif reason == "hold_input_released" then
+			overcharge_extension.remove_charge(overcharge_extension, self.total_overcharge_added*0.5)
+		end
 	end
 
 	if reason == "hold_input_released" or reason == "weapon_wielded" then

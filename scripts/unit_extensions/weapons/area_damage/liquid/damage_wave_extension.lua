@@ -273,13 +273,13 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	local dist = Vector3.length(to_target)
 	local current_rotation = Unit.local_rotation(unit, 0)
 
-	if self.blob_separation_dist <= self.last_dist - dist then
+	if self.blob_separation_dist and self.blob_separation_dist <= self.last_dist - dist then
 		self.insert_blob(self, position, self.wave_width, current_rotation, nav_world)
 
 		self.last_dist = dist
 	end
 
-	if self.fx_separation_dist <= self.last_fx_dist - dist then
+	if self.fx_separation_dist <= self.last_fx_dist - dist and self.fx_name_filled then
 		local wave_rotation = Quaternion.look(wave_dir, Vector3(0, 0, 1))
 
 		self.insert_fx(self, position, wave_rotation, 2)

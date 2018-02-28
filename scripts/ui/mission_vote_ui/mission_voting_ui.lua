@@ -52,11 +52,15 @@ MissionVotingUI.init = function (self, ingame_ui_context)
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
 	self.voting_manager = ingame_ui_context.voting_manager
+	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
 		alpha_multiplier = 1,
 		snap_pixel_positions = true
 	}
 	self.platform = PLATFORM
+	local player_manager = Managers.player
+	local local_player = player_manager.local_player(player_manager)
+	self._stats_id = local_player.stats_id(local_player)
 
 	self.create_ui_elements(self)
 	rawset(_G, "ingame_voting_ui", self)
@@ -205,8 +209,10 @@ MissionVotingUI.start_vote = function (self, active_voting)
 			local level_key = vote_data.level_key
 			local difficulty = vote_data.difficulty
 			local private_game = vote_data.private_game
+			local always_host = vote_data.always_host
+			local strict_matchmaking = vote_data.strict_matchmaking
 
-			self._set_custom_game_presentation(self, difficulty, level_key, private_game)
+			self._set_custom_game_presentation(self, difficulty, level_key, private_game, always_host, strict_matchmaking)
 		end
 	end
 
@@ -306,34 +312,69 @@ MissionVotingUI.on_vote_ended = function (self)
 
 	return 
 end
+MissionVotingUI._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
+	local completed_frame_texture = "map_frame_00"
+
+	if 0 < difficulty_index then
+		local difficulty_key = DefaultDifficulties[difficulty_index]
+		local difficulty_manager = Managers.state.difficulty
+		local settings = DifficultySettings[difficulty_key]
+		completed_frame_texture = settings.completed_frame_texture
+	end
+
+	return completed_frame_texture
+end
 MissionVotingUI._set_adventure_presentation = function (self, difficulty)
 	local difficulty_settings = DifficultySettings[difficulty]
 	local difficulty_display_name = difficulty_settings.display_name
 	local difficulty_display_image = difficulty_settings.display_image
+	local difficulty_frame_texture = difficulty_settings.completed_frame_texture or "map_frame_00"
 	local adventure_game_widgets_by_name = self._adventure_game_widgets_by_name
 	local game_option_1 = adventure_game_widgets_by_name.game_option_1
 	game_option_1.content.option_text = Localize(difficulty_display_name)
 	game_option_1.content.icon = difficulty_display_image
+	game_option_1.content.icon_frame = difficulty_frame_texture
 	self._presentation_type = "adventure"
 
 	return 
 end
-MissionVotingUI._set_custom_game_presentation = function (self, difficulty, level_key, private_game)
+MissionVotingUI._set_custom_game_presentation = function (self, difficulty, level_key, private_game, always_host, strict_matchmaking)
 	local difficulty_settings = DifficultySettings[difficulty]
 	local difficulty_display_name = difficulty_settings.display_name
 	local difficulty_display_image = difficulty_settings.display_image
+	local difficulty_frame_texture = difficulty_settings.completed_frame_texture or "map_frame_00"
 	local level_settings = LevelSettings[level_key]
 	local level_display_name = level_settings.display_name
 	local level_image = level_settings.level_image
+	local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self.statistics_db, self._stats_id, level_key) or 0
+	local level_frame = self._get_selection_frame_by_difficulty_index(self, completed_difficulty_index)
 	local custom_game_widgets_by_name = self._custom_game_widgets_by_name
 	local game_option_1 = custom_game_widgets_by_name.game_option_1
 	game_option_1.content.option_text = Localize(level_display_name)
+	local level_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(level_image)
 	game_option_1.content.icon = level_image
+	game_option_1.content.icon_frame = level_frame
+	local level_texture_size = game_option_1.style.icon.texture_size
+	level_texture_size[1] = level_texture_settings.size[1]
+	level_texture_size[2] = level_texture_settings.size[2]
 	local game_option_2 = custom_game_widgets_by_name.game_option_2
 	game_option_2.content.option_text = Localize(difficulty_display_name)
 	game_option_2.content.icon = difficulty_display_image
+	game_option_2.content.icon_frame = difficulty_frame_texture
 	local additional_option = custom_game_widgets_by_name.additional_option
-	additional_option.content.option_text = (private_game and Localize("start_game_window_other_options_private")) or Localize("start_game_window_other_options_public")
+	additional_option.content.option_text = ""
+	local private_button = custom_game_widgets_by_name.private_button
+	private_button.content.button_hotspot.disable_button = true
+	private_button.content.button_hotspot.is_selected = private_game
+	private_button.style.hover_glow.color[1] = 0
+	local host_button = custom_game_widgets_by_name.host_button
+	host_button.content.button_hotspot.disable_button = true
+	host_button.content.button_hotspot.is_selected = always_host
+	host_button.style.hover_glow.color[1] = 0
+	local strict_matchmaking_button = custom_game_widgets_by_name.strict_matchmaking_button
+	strict_matchmaking_button.content.button_hotspot.disable_button = true
+	strict_matchmaking_button.content.button_hotspot.is_selected = strict_matchmaking
+	strict_matchmaking_button.style.hover_glow.color[1] = 0
 	self._presentation_type = "custom"
 
 	return 

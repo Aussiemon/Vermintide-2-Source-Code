@@ -633,7 +633,9 @@ local function create_empty_lobby_list_entry_content()
 		level_text = "",
 		status_text = "",
 		background_selected_hover = "lb_list_item_bg",
-		button_hotspot = {},
+		button_hotspot = {
+			allow_multi_hover = true
+		},
 		frame = entry_frame_settings.texture
 	}
 
@@ -968,7 +970,6 @@ LobbyItemsList.update = function (self, dt, loading)
 
 	if gamepad_active then
 		if 0 < number_of_items_in_list then
-			self.handle_gamepad_input(self, dt, number_of_items_in_list)
 			self.update_gamepad_list_scroll(self)
 		end
 	else

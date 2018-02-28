@@ -558,7 +558,7 @@ local category_settings = {
 		name = "necklace",
 		item_filter = "slot_type == necklace",
 		hero_specific_filter = true,
-		display_name = Localize("inventory_screen_trinket_title"),
+		display_name = Localize("inventory_screen_necklace_title"),
 		item_types = {
 			"necklace"
 		},
@@ -568,7 +568,7 @@ local category_settings = {
 		name = "ring",
 		item_filter = "slot_type == ring",
 		hero_specific_filter = true,
-		display_name = Localize("inventory_screen_trinket_title"),
+		display_name = Localize("inventory_screen_ring_title"),
 		item_types = {
 			"ring"
 		},
@@ -604,19 +604,6 @@ local widgets = {
 	window_frame = UIWidgets.create_frame("window", scenegraph_definition.window.size, window_frame, 10),
 	window = UIWidgets.create_background("window", scenegraph_definition.window.size, "background_leather_02"),
 	window_background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window", nil, nil, nil, 1),
-	item_tabs = UIWidgets.create_default_icon_tabs("item_tabs", scenegraph_definition.item_tabs.size, num_tabs),
-	item_tabs_segments = UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_vertical", {
-		5,
-		35
-	}, "item_tabs_segments", num_tabs - 1),
-	item_tabs_segments_top = UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_top", {
-		17,
-		9
-	}, "item_tabs_segments_top", num_tabs - 1),
-	item_tabs_segments_bottom = UIWidgets.create_simple_centered_texture_amount("menu_frame_09_divider_bottom", {
-		17,
-		9
-	}, "item_tabs_segments_bottom", num_tabs - 1),
 	page_button_next = UIWidgets.create_simple_window_button("page_button_next", scenegraph_definition.page_button_next.size, Localize("menu_next"), 16),
 	page_button_previous = UIWidgets.create_simple_window_button("page_button_previous", scenegraph_definition.page_button_previous.size, Localize("menu_previous"), 16),
 	page_button_divider = create_window_divider("page_button_divider", scenegraph_definition.page_button_divider.size),

@@ -411,7 +411,9 @@ StateInGameRunning.on_end_screen_ui_complete = function (self)
 	self.end_screen_ui_done = true
 	self.waiting_for_transition = true
 
-	Managers.state.network.network_transmit:send_rpc_server("rpc_is_ready_for_transition")
+	if Managers.state.network:game() then
+		Managers.state.network.network_transmit:send_rpc_server("rpc_is_ready_for_transition")
+	end
 
 	return 
 end
@@ -462,7 +464,12 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	end
 
 	if game_mode_key ~= "inn" then
-		local hero_name = player.profile_display_name(player)
+		local profile_synchronizer = self.profile_synchronizer
+		local peer_id = Network.peer_id()
+		local local_player_id = self.local_player_id
+		local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, peer_id, local_player_id)
+		local profile = SPProfiles[profile_index]
+		local hero_name = profile.display_name
 
 		self.rewards:award_end_of_level_rewards(game_won, hero_name)
 		ingame_ui.activate_end_screen_ui(ingame_ui, game_won, checkpoint_available, level_key, previous_completed_difficulty_index)

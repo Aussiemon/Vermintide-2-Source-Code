@@ -198,7 +198,8 @@ TutorialUI.update = function (self, dt, t)
 
 	if tutorial_extension then
 		local tooltip_tutorial = tutorial_extension.tooltip_tutorial
-		local active_template = tooltip_tutorial and TutorialTemplates[tooltip_tutorial.name]
+		local tooltip_tutorial_name = tooltip_tutorial and tooltip_tutorial.name
+		local active_template = tooltip_tutorial_name and TutorialTemplates[tooltip_tutorial_name]
 
 		if tooltip_tutorial.active then
 			if active_template.is_mission_tutorial then
@@ -213,7 +214,7 @@ TutorialUI.update = function (self, dt, t)
 				Profiler.stop("default_tooltip")
 			end
 		elseif self.active_tooltip_name or self.active_tooltip_widget then
-			if active_template.is_mission_tutorial then
+			if active_template and active_template.is_mission_tutorial then
 				UIRenderer.set_element_visible(ui_renderer, self.active_tooltip_widget.element, false)
 			else
 				self.tutorial_tooltip_ui:hide()

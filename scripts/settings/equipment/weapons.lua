@@ -205,59 +205,12 @@ for item_name, item in pairs(ItemMasterList) do
 				local template = Weapons[template_name]
 				local actions = template.actions
 
-				for action_name, sub_actions in pairs(actions) do
-					for sub_action_name, sub_action_data in pairs(sub_actions) do
-						local allowed_chain_actions = sub_action_data.allowed_chain_actions
-						local remove_index, released = nil
-
-						for j = 1, #allowed_chain_actions, 1 do
-							local chain_action_data = allowed_chain_actions[j]
-							local input = chain_action_data.input
-
-							if input == "action_career_skill" then
-								remove_index = j
-
-								break
-							elseif input == "action_career_skill_release" then
-								remove_index = j
-								released = true
-
-								break
-							end
-						end
-
-						if remove_index then
-							local chain_action_data = allowed_chain_actions[remove_index]
-
-							if i == #careers then
-								table.remove(allowed_chain_actions, remove_index)
-							end
-
-							local num_action_names = #action_names
-
-							for j = num_action_names, 1, -1 do
-								local action_name = action_names[j]
-								local new_chain_action_data = table.clone(chain_action_data)
-
-								if released then
-									action_name = action_name .. "_release"
-								end
-
-								new_chain_action_data.input = action_name
-								new_chain_action_data.action = action_name
-
-								table.insert(allowed_chain_actions, remove_index, new_chain_action_data)
-							end
-						end
-					end
+				for j = 1, #action_names, 1 do
+					local action_name = action_names[j]
+					actions[action_name] = ActionTemplates[action_name]
 				end
 
-				if actions.action_career_skill then
-					for j = 1, #action_names, 1 do
-						local action_name = action_names[j]
-						actions[action_name] = ActionTemplates[action_name]
-					end
-				end
+				actions.action_career_skill = nil
 			end
 		end
 	end

@@ -3,7 +3,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.75,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -122,7 +122,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.25,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -138,7 +138,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			0.75
 		},
@@ -171,7 +171,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -187,7 +187,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			0.75
 		},
@@ -239,7 +239,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -259,7 +259,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -303,7 +303,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -323,7 +323,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -339,7 +339,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.25,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -374,7 +374,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			0.75
 		},
@@ -394,7 +394,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -530,7 +530,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			0.75
 		},
@@ -550,7 +550,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.3,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -611,7 +611,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2,
+			1.5,
 			1,
 			1
 		},
@@ -631,7 +631,7 @@ PowerLevelTemplates = {
 		attack = {
 			0.9,
 			0,
-			2,
+			1.5,
 			1,
 			0.75
 		},
@@ -663,7 +663,7 @@ PowerLevelTemplates = {
 				attack = {
 					0.9,
 					0.5,
-					2,
+					1.5,
 					1,
 					0.75
 				},
@@ -697,7 +697,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2,
+			1.5,
 			1,
 			1
 		},
@@ -717,7 +717,7 @@ PowerLevelTemplates = {
 		attack = {
 			0.9,
 			0,
-			2,
+			1.5,
 			1,
 			0.75
 		},
@@ -731,6 +731,7 @@ PowerLevelTemplates = {
 	},
 	default_target_axe_linesman_M = {
 		boost_curve_type = "linesman_curve",
+		boost_curve_coefficient_headshot = 1.5,
 		attack_template = "light_slashing_linesman",
 		power_distribution = {
 			attack = 0.075,
@@ -749,7 +750,7 @@ PowerLevelTemplates = {
 				attack = {
 					0.9,
 					0.5,
-					2,
+					1.5,
 					1,
 					0.75
 				},
@@ -783,7 +784,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2,
+			1.5,
 			1,
 			1
 		},
@@ -803,7 +804,7 @@ PowerLevelTemplates = {
 		attack = {
 			0.9,
 			0,
-			2,
+			1.5,
 			1,
 			0.75
 		},
@@ -835,7 +836,7 @@ PowerLevelTemplates = {
 				attack = {
 					0.9,
 					0.5,
-					2,
+					1.5,
 					1,
 					0.75
 				},
@@ -873,7 +874,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2.5,
+			1.5,
 			1,
 			1
 		},
@@ -889,7 +890,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.75,
-			2,
+			1.5,
 			1,
 			0.75
 		},
@@ -905,7 +906,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.3,
-			2,
+			1.5,
 			1,
 			0.5
 		},
@@ -946,7 +947,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2,
+			1.5,
 			1,
 			1
 		},
@@ -962,7 +963,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.8,
-			2,
+			1.5,
 			1,
 			0.75
 		},
@@ -1023,7 +1024,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2,
+			1.5,
 			1,
 			1
 		},
@@ -1039,7 +1040,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.5,
-			2,
+			1.5,
 			1,
 			0.75
 		},
@@ -1083,7 +1084,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2,
+			1.5,
 			1,
 			1
 		},
@@ -1099,7 +1100,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.25,
-			2,
+			1.5,
 			1,
 			0.75
 		},
@@ -1125,7 +1126,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2,
+			1.5,
 			1,
 			1
 		},
@@ -1141,7 +1142,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			2,
+			1.5,
 			1,
 			0.75
 		},
@@ -1166,7 +1167,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.25,
-			2,
+			1.5,
 			1,
 			0.75
 		},
@@ -1192,7 +1193,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2,
+			1.5,
 			1,
 			1
 		},
@@ -1208,7 +1209,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.5,
-			2,
+			1.5,
 			1,
 			0.75
 		},
@@ -1234,7 +1235,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -1250,7 +1251,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			0.75
 		},
@@ -1266,7 +1267,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.1,
-			1.5,
+			1,
 			1,
 			0.75
 		},
@@ -1293,7 +1294,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -1309,7 +1310,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.4,
-			1.5,
+			1,
 			1,
 			0.75,
 			0.25
@@ -1346,7 +1347,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.25,
-			2,
+			1.5,
 			1,
 			1
 		},
@@ -1366,7 +1367,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -1409,7 +1410,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -1455,7 +1456,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.4,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -1471,7 +1472,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.2,
-			1.5,
+			1,
 			1,
 			0.75
 		},
@@ -1526,7 +1527,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.4,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -1542,14 +1543,14 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.5,
-			2.5,
+			1.5,
 			1,
 			1.5
 		},
 		impact = {
 			1,
 			1,
-			2.5,
+			1.5,
 			1,
 			1.5
 		}
@@ -1594,7 +1595,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.75,
-			1.5,
+			1,
 			1,
 			1
 		},
@@ -1610,7 +1611,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			0.75
 		},
@@ -1664,7 +1665,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.6,
-			2,
+			1.5,
 			1,
 			1
 		},
@@ -1680,7 +1681,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			2,
+			1.5,
 			1,
 			0.75
 		},
@@ -1714,7 +1715,7 @@ PowerLevelTemplates = {
 			impact = {
 				1,
 				1,
-				1.5,
+				1,
 				1,
 				0.75
 			}
@@ -1732,14 +1733,14 @@ PowerLevelTemplates = {
 				attack = {
 					1,
 					0.5,
-					1.5,
+					1,
 					1,
 					0.75
 				},
 				impact = {
 					1,
 					1,
-					1.5,
+					1,
 					1,
 					0.75
 				}

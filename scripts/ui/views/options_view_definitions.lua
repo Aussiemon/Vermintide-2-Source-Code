@@ -18,12 +18,13 @@ local DROP_DOWN_SIZE = {
 	INPUT_FIELD_WIDTH,
 	30
 }
-local WINDOW_WIDTH = 1000
+local WINDOW_WIDTH = 1400
+local WINDOW_HEIGHT = 900
 local BOTTOM_EDGE_THICKNESS = 2
 local BOTTOM_EDGE_COLOR = Colors.get_color_table_with_alpha("font_default", 50)
 local scenegraph_definition = {
 	root = {
-		is_root = true,
+		scale = "fit",
 		position = {
 			0,
 			0,
@@ -80,11 +81,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			WINDOW_WIDTH,
-			800
+			WINDOW_HEIGHT
 		},
 		position = {
 			0,
-			0,
+			40,
 			2
 		}
 	},
@@ -94,7 +95,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			WINDOW_WIDTH,
-			800
+			WINDOW_HEIGHT
 		},
 		position = {
 			0,
@@ -116,6 +117,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	background_top_panel_edge = {
+		vertical_alignment = "bottom",
+		parent = "background_top_panel",
+		horizontal_alignment = "center",
+		size = {
+			WINDOW_WIDTH,
+			0
+		},
+		position = {
+			0,
+			-5,
+			1
+		}
+	},
 	background_bottom_panel = {
 		vertical_alignment = "bottom",
 		parent = "background",
@@ -123,6 +138,20 @@ local scenegraph_definition = {
 		size = {
 			WINDOW_WIDTH,
 			50
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	background_bottom_panel_edge = {
+		vertical_alignment = "top",
+		parent = "background_bottom_panel",
+		horizontal_alignment = "center",
+		size = {
+			WINDOW_WIDTH,
+			0
 		},
 		position = {
 			0,
@@ -191,8 +220,8 @@ local scenegraph_definition = {
 		parent = "right_frame",
 		horizontal_alignment = "left",
 		position = {
-			18,
-			-30,
+			20,
+			-60,
 			3
 		},
 		size = {
@@ -225,7 +254,7 @@ local scenegraph_definition = {
 		},
 		size = {
 			WINDOW_WIDTH,
-			660
+			WINDOW_HEIGHT - 140
 		}
 	},
 	list_edge_fade_bottom = {
@@ -267,7 +296,7 @@ local scenegraph_definition = {
 		},
 		size = {
 			8,
-			680
+			WINDOW_HEIGHT - 120
 		}
 	},
 	exit_button = {
@@ -276,12 +305,12 @@ local scenegraph_definition = {
 		horizontal_alignment = "right",
 		position = {
 			-8,
-			5,
+			8,
 			1
 		},
 		size = {
-			40,
-			40
+			32,
+			32
 		}
 	},
 	apply_button = {
@@ -436,6 +465,195 @@ local scenegraph_definition = {
 		}
 	}
 }
+
+local function create_window_divider(scenegraph_id, size)
+	local widget = {
+		element = {
+			passes = {
+				{
+					texture_id = "bottom_edge",
+					style_id = "bottom_edge",
+					pass_type = "tiled_texture"
+				},
+				{
+					texture_id = "edge_holder_left",
+					style_id = "edge_holder_left",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "edge_holder_right",
+					style_id = "edge_holder_right",
+					pass_type = "texture"
+				}
+			}
+		},
+		content = {
+			edge_holder_right = "menu_frame_12_divider_right",
+			edge_holder_left = "menu_frame_12_divider_left",
+			bottom_edge = "menu_frame_12_divider"
+		},
+		style = {
+			bottom_edge = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					5,
+					0,
+					6
+				},
+				size = {
+					size[1] - 10,
+					5
+				},
+				texture_tiling_size = {
+					size[1] - 10,
+					5
+				}
+			},
+			edge_holder_left = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					3,
+					-6,
+					10
+				},
+				size = {
+					9,
+					17
+				}
+			},
+			edge_holder_right = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					size[1] - 12,
+					-6,
+					10
+				},
+				size = {
+					9,
+					17
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+
+	return widget
+end
+
+local function create_vertical_window_divider(scenegraph_id, size)
+	local widget = {
+		element = {
+			passes = {
+				{
+					texture_id = "edge",
+					style_id = "edge",
+					pass_type = "tiled_texture"
+				},
+				{
+					texture_id = "edge_holder_top",
+					style_id = "edge_holder_top",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "edge_holder_bottom",
+					style_id = "edge_holder_bottom",
+					pass_type = "texture"
+				}
+			}
+		},
+		content = {
+			edge = "menu_frame_12_divider_vertical",
+			edge_holder_top = "menu_frame_12_divider_top",
+			edge_holder_bottom = "menu_frame_12_divider_bottom"
+		},
+		style = {
+			edge = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					6,
+					6
+				},
+				size = {
+					5,
+					size[2] - 9
+				},
+				texture_tiling_size = {
+					5,
+					size[2] - 9
+				}
+			},
+			edge_holder_top = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-6,
+					size[2] - 7,
+					10
+				},
+				size = {
+					17,
+					9
+				}
+			},
+			edge_holder_bottom = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-6,
+					3,
+					10
+				},
+				size = {
+					17,
+					9
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+
+	return widget
+end
+
 local gamepad_tooltip_style = {
 	word_wrap = true,
 	font_size = 28,
@@ -457,8 +675,8 @@ local gamepad_frame_widget_definitions = {
 	gamepad_tooltip_text = UIWidgets.create_simple_text("", "gamepad_tooltip_text", nil, nil, gamepad_tooltip_style)
 }
 local background_widget_definitions = {
-	menu_symbol = UIWidgets.create_simple_texture("cogwheel_small", "menu_symbol"),
-	background_frame = UIWidgets.create_frame("background_frame", scenegraph_definition.background_frame.size, "menu_frame_06"),
+	menu_symbol = UIWidgets.create_simple_texture("cogwheel_small", "menu_symbol", nil, nil, Colors.get_color_table_with_alpha("font_title", 255)),
+	background_frame = UIWidgets.create_frame("background_frame", scenegraph_definition.background_frame.size, "menu_frame_12"),
 	background = UIWidgets.create_simple_rect("background", {
 		255,
 		15,
@@ -471,12 +689,14 @@ local background_widget_definitions = {
 		10,
 		10
 	}),
+	background_bottom_panel_edge = create_window_divider("background_bottom_panel_edge", scenegraph_definition.background_bottom_panel_edge.size),
 	background_top_panel = UIWidgets.create_simple_rect("background_top_panel", {
 		255,
 		10,
 		10,
 		10
 	}),
+	background_top_panel_edge = create_window_divider("background_top_panel_edge", scenegraph_definition.background_top_panel_edge.size),
 	right_frame = {
 		scenegraph_id = "right_frame",
 		element = {
@@ -630,8 +850,85 @@ local button_element_template = {
 		}
 	}
 }
+
+local function create_exit_button(scenegraph_id, texture)
+	local size = scenegraph_definition[scenegraph_id].size
+	local element = {
+		passes = {
+			{
+				pass_type = "hotspot",
+				content_id = "button_hotspot"
+			},
+			{
+				pass_type = "texture",
+				style_id = "button_texture",
+				texture_id = "button_texture",
+				content_check_function = function (content)
+					return not content.button_hotspot.is_hover
+				end
+			},
+			{
+				pass_type = "texture",
+				style_id = "button_texture_hover",
+				texture_id = "button_texture",
+				content_check_function = function (content)
+					return content.button_hotspot.is_hover
+				end
+			}
+		}
+	}
+	local content = {
+		button_texture = texture,
+		button_hotspot = {}
+	}
+	local style = {
+		size = {
+			size[1],
+			size[2]
+		},
+		color = {
+			255,
+			255,
+			255,
+			255
+		},
+		button_texture_hover = {
+			size = {
+				size[1],
+				size[2]
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		button_texture = {
+			size = {
+				size[1],
+				size[2]
+			},
+			color = Colors.get_color_table_with_alpha("font_button_normal", 255)
+		}
+	}
+	local widget = {
+		element = element,
+		content = content,
+		style = style,
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+
+	return widget
+end
+
 local button_definitions = {
-	exit_button = UIWidgets.create_simple_two_state_button("exit_button", "tabs_icon_close", "tabs_icon_close_glow"),
+	exit_button = create_exit_button("exit_button", "friends_icon_close"),
 	apply_button = UIWidgets.create_text_button("apply_button", "menu_settings_apply", 22, nil, "center"),
 	reset_to_default = UIWidgets.create_text_button("reset_to_default", "menu_settings_reset_to_default", 22, nil, "center")
 }
@@ -956,11 +1253,10 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 					end
 				},
 				{
-					style_id = "tooltip_text",
-					pass_type = "tooltip_text",
+					pass_type = "option_tooltip",
 					text_id = "tooltip_text",
-					content_check_function = function (ui_content)
-						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
+					content_check_function = function (content)
+						return content.tooltip_text and content.highlight_hotspot.is_hover and not Managers.input:is_showing_tooltip()
 					end
 				},
 				{
@@ -1123,29 +1419,53 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 						local right_hotspot = ui_content.right_hotspot
 
 						if left_hotspot.on_hover_enter then
-							ui_content.on_hover_enter_callback("left_arrow_hover")
+							local on_hover_enter_callback = ui_content.on_hover_enter_callback
+
+							if on_hover_enter_callback then
+								on_hover_enter_callback("left_arrow_hover")
+							end
 						end
 
 						if left_hotspot.on_hover_exit then
-							ui_content.on_hover_exit_callback("left_arrow_hover")
+							local on_hover_exit_callback = ui_content.on_hover_exit_callback
+
+							if on_hover_exit_callback then
+								on_hover_exit_callback("left_arrow_hover")
+							end
 						end
 
 						if left_hotspot.on_release then
-							ui_content.on_pressed_callback("left_arrow")
-							ui_content.on_pressed_callback("left_arrow_hover")
+							local on_pressed_callback = ui_content.on_pressed_callback
+
+							if on_pressed_callback then
+								on_pressed_callback("left_arrow")
+								on_pressed_callback("left_arrow_hover")
+							end
 						end
 
 						if right_hotspot.on_hover_enter then
-							ui_content.on_hover_enter_callback("right_arrow_hover")
+							local on_hover_enter_callback = ui_content.on_hover_enter_callback
+
+							if on_hover_enter_callback then
+								on_hover_enter_callback("right_arrow_hover")
+							end
 						end
 
 						if right_hotspot.on_hover_exit then
-							ui_content.on_hover_exit_callback("right_arrow_hover")
+							local on_hover_exit_callback = ui_content.on_hover_exit_callback
+
+							if on_hover_exit_callback then
+								on_hover_exit_callback("right_arrow_hover")
+							end
 						end
 
 						if right_hotspot.on_release then
-							ui_content.on_pressed_callback("right_arrow")
-							ui_content.on_pressed_callback("right_arrow_hover")
+							local on_pressed_callback = ui_content.on_pressed_callback
+
+							if on_pressed_callback then
+								on_pressed_callback("right_arrow")
+								on_pressed_callback("right_arrow_hover")
+							end
 						end
 
 						return 
@@ -1230,17 +1550,12 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				}
 			},
 			tooltip_text = {
-				font_type = "hell_shark",
-				localize = true,
 				font_size = 24,
+				width = 500,
+				localize = true,
 				horizontal_alignment = "left",
 				vertical_alignment = "top",
-				cursor_side = "left",
-				max_width = 600,
-				cursor_offset = {
-					-10,
-					-27
-				},
+				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				line_colors = {
 					Colors.get_color_table_with_alpha("font_title", 255)
@@ -1248,7 +1563,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				offset = {
 					0,
 					0,
-					base_offset[3] + 20
+					0
 				}
 			},
 			text = {
@@ -1276,9 +1591,9 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				},
 				color = {
 					255,
-					0,
-					0,
-					0
+					5,
+					5,
+					5
 				}
 			},
 			slider_box_hotspot = {
@@ -1601,11 +1916,10 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 					end
 				},
 				{
-					style_id = "tooltip_text",
-					pass_type = "tooltip_text",
+					pass_type = "option_tooltip",
 					text_id = "tooltip_text",
 					content_check_function = function (ui_content)
-						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
+						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_showing_tooltip()
 					end
 				},
 				{
@@ -2083,11 +2397,10 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 					end
 				},
 				{
-					style_id = "tooltip_text",
-					pass_type = "tooltip_text",
+					pass_type = "option_tooltip",
 					text_id = "tooltip_text",
 					content_check_function = function (ui_content)
-						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
+						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_showing_tooltip()
 					end
 				},
 				{
@@ -2097,29 +2410,53 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 						local right_hotspot = ui_content.right_hotspot
 
 						if left_hotspot.on_hover_enter then
-							ui_content.on_hover_enter_callback("left_arrow_hover")
+							local on_hover_enter_callback = ui_content.on_hover_enter_callback
+
+							if on_hover_enter_callback then
+								on_hover_enter_callback("left_arrow_hover")
+							end
 						end
 
 						if left_hotspot.on_hover_exit then
-							ui_content.on_hover_exit_callback("left_arrow_hover")
+							local on_hover_exit_callback = ui_content.on_hover_exit_callback
+
+							if on_hover_exit_callback then
+								on_hover_exit_callback("left_arrow_hover")
+							end
 						end
 
 						if left_hotspot.on_release then
-							ui_content.on_pressed_callback("left_arrow")
-							ui_content.on_pressed_callback("left_arrow_hover")
+							local on_pressed_callback = ui_content.on_pressed_callback
+
+							if on_pressed_callback then
+								on_pressed_callback("left_arrow")
+								on_pressed_callback("left_arrow_hover")
+							end
 						end
 
 						if right_hotspot.on_hover_enter then
-							ui_content.on_hover_enter_callback("right_arrow_hover")
+							local on_hover_enter_callback = ui_content.on_hover_enter_callback
+
+							if on_hover_enter_callback then
+								on_hover_enter_callback("right_arrow_hover")
+							end
 						end
 
 						if right_hotspot.on_hover_exit then
-							ui_content.on_hover_exit_callback("right_arrow_hover")
+							local on_hover_exit_callback = ui_content.on_hover_exit_callback
+
+							if on_hover_exit_callback then
+								on_hover_exit_callback("right_arrow_hover")
+							end
 						end
 
 						if right_hotspot.on_release then
-							ui_content.on_pressed_callback("right_arrow")
-							ui_content.on_pressed_callback("right_arrow_hover")
+							local on_pressed_callback = ui_content.on_pressed_callback
+
+							if on_pressed_callback then
+								on_pressed_callback("right_arrow")
+								on_pressed_callback("right_arrow_hover")
+							end
 						end
 
 						if left_hotspot.is_hover or right_hotspot.is_hover then
@@ -2808,11 +3145,10 @@ local function create_option_widget(ui_renderer, text, options, selected_option,
 		content_id = "highlight_hotspot"
 	}
 	passes[#passes + 1] = {
-		style_id = "tooltip_text",
-		pass_type = "tooltip_text",
+		pass_type = "option_tooltip",
 		text_id = "tooltip_text",
 		content_check_function = function (ui_content)
-			return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
+			return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_showing_tooltip()
 		end
 	}
 	passes[#passes + 1] = {
@@ -3425,17 +3761,6 @@ SettingsWidgetTypeTemplate = {
 
 			return content.active
 		end,
-		input_description = {
-			name = "drop_down",
-			gamepad_support = true,
-			actions = {
-				{
-					input_action = "confirm",
-					priority = 3,
-					description_text = "input_description_open"
-				}
-			}
-		},
 		active_input_description = {
 			ignore_generic_actions = true,
 			name = "drop_down",
@@ -3501,19 +3826,7 @@ SettingsWidgetTypeTemplate = {
 			end
 
 			return 
-		end,
-		input_description = {
-			name = "option",
-			gamepad_support = true,
-			actions = {
-				{
-					input_action = "d_horizontal",
-					priority = 2,
-					description_text = "input_description_change",
-					ignore_keybinding = true
-				}
-			}
-		}
+		end
 	},
 	keybind = {
 		input_function = function (widget, input_service)
@@ -3553,19 +3866,7 @@ SettingsWidgetTypeTemplate = {
 			end
 
 			return 
-		end,
-		input_description = {
-			name = "stepper",
-			gamepad_support = true,
-			actions = {
-				{
-					input_action = "d_horizontal",
-					priority = 2,
-					description_text = "input_description_change",
-					ignore_keybinding = true
-				}
-			}
-		}
+		end
 	},
 	slider = {
 		input_function = function (widget, input_service, dt)
@@ -3617,19 +3918,7 @@ SettingsWidgetTypeTemplate = {
 			end
 
 			return 
-		end,
-		input_description = {
-			name = "slider",
-			gamepad_support = true,
-			actions = {
-				{
-					input_action = "d_horizontal",
-					priority = 2,
-					description_text = "input_description_change",
-					ignore_keybinding = true
-				}
-			}
-		}
+		end
 	},
 	image = {
 		input_function = function ()

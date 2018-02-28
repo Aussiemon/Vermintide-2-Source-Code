@@ -3,6 +3,7 @@ require("scripts/managers/backend/data_server_queue")
 require("scripts/managers/backend_playfab/backend_interface_crafting_playfab")
 require("scripts/managers/backend_playfab/backend_interface_item_playfab")
 require("scripts/managers/backend_playfab/tutorial_backend/backend_interface_item_tutorial")
+require("scripts/managers/backend_playfab/tutorial_backend/backend_interface_hero_attributes_tutorial")
 require("scripts/managers/backend_playfab/backend_interface_loot_playfab")
 require("scripts/managers/backend_playfab/backend_interface_talents_playfab")
 require("scripts/managers/backend_playfab/backend_interface_hero_attributes_playfab")
@@ -205,17 +206,23 @@ BackendManagerPlayFab.disable = function (self)
 end
 BackendManagerPlayFab.start_tutorial = function (self)
 	fassert(self._script_backend_items_backup == nil, "Tutorial already started")
+	fassert(self._script_backend_hero_attributes_backup == nil, "Tutorial already started")
 
 	self._script_backend_items_backup = self._interfaces.items
 	self._interfaces.items = BackendInterfaceItemTutorial:new()
+	self._script_backend_hero_attributes_backup = self._interfaces.hero_attributes
+	self._interfaces.hero_attributes = BackendInterfaceHeroAttributesTutorial:new()
 
 	return 
 end
 BackendManagerPlayFab.stop_tutorial = function (self)
 	fassert(self._script_backend_items_backup ~= nil, "Stopping tutorial without starting it")
+	fassert(self._script_backend_hero_attributes_backup ~= nil, "Stopping tutorial without starting it")
 
 	self._interfaces.items = self._script_backend_items_backup
 	self._script_backend_items_backup = nil
+	self._interfaces.hero_attributes = self._script_backend_hero_attributes_backup
+	self._script_backend_hero_attributes_backup = nil
 
 	return 
 end
@@ -366,11 +373,37 @@ end
 BackendManagerPlayFab.playfab_api_error = function (self, result)
 	table.dump(result, nil, 10)
 
+	local error_code = self._get_playfab_error_code(self, result)
 	local error_data = {
-		reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR
+		reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR,
+		details = error_code
 	}
 
 	self._post_error(self, error_data)
+
+	return 
+end
+BackendManagerPlayFab._get_playfab_error_code = function (self, result)
+	if result.data and result.data.Error then
+		local logs = result.data.Logs
+
+		if logs then
+			for i = 1, #logs, 1 do
+				local log = logs[i]
+				local data = log.Data
+
+				if data then
+					local api_error = data.apiError
+
+					if api_error then
+						return api_error.errorCode
+					end
+				end
+			end
+		end
+	elseif result.errorCode then
+		return result.errorCode
+	end
 
 	return 
 end
@@ -413,7 +446,7 @@ BackendManagerPlayFab._post_error = function (self, error_data)
 
 	return 
 end
-BackendManagerPlayFab._format_error_message_console = function (self, reason, details_message)
+BackendManagerPlayFab._format_error_message_console = function (self, reason)
 	local button = {
 		id = self._button_retry,
 		text = Localize("button_ok")
@@ -437,7 +470,7 @@ BackendManagerPlayFab._format_error_message_console = function (self, reason, de
 
 	return 
 end
-BackendManagerPlayFab._format_error_message_windows = function (self, reason, details_message)
+BackendManagerPlayFab._format_error_message_windows = function (self, reason)
 	local error_text, button_1, button_2 = nil
 
 	if not self.profiles_loaded(self) then
@@ -489,12 +522,16 @@ BackendManagerPlayFab._show_error_dialog = function (self, reason, details_messa
 	local error_text, button_1, button_2 = nil
 
 	if PLATFORM == "xb1" or PLATFORM == "ps4" then
-		error_text, button_1 = self._format_error_message_console(self, reason, details_message)
+		error_text, button_1 = self._format_error_message_console(self, reason)
 	else
-		error_text, button_1, button_2 = self._format_error_message_windows(self, reason, details_message)
+		error_text, button_1, button_2 = self._format_error_message_windows(self, reason)
 	end
 
 	local localized_error_text = Localize(error_text)
+
+	if details_message then
+		localized_error_text = localized_error_text .. " : " .. details_message
+	end
 
 	if button_2 then
 		self._error_dialog = Managers.popup:queue_popup(localized_error_text, error_topic, button_1.id, button_1.text, button_2.id, button_2.text)

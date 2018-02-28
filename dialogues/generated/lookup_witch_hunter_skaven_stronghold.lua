@@ -19,6 +19,11 @@ assert(DialogueLookup[DialogueLookup_n + 18] == nil)
 assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 assert(DialogueLookup[DialogueLookup_n + 20] == nil)
 assert(DialogueLookup[DialogueLookup_n + 21] == nil)
+assert(DialogueLookup[DialogueLookup_n + 22] == nil)
+assert(DialogueLookup[DialogueLookup_n + 23] == nil)
+assert(DialogueLookup[DialogueLookup_n + 24] == nil)
+assert(DialogueLookup[DialogueLookup_n + 25] == nil)
+assert(DialogueLookup[DialogueLookup_n + 26] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pwh_level_skaven_stronghold_barrier"
 DialogueLookup[DialogueLookup_n + 2] = "pwh_level_skaven_stronghold_long_way_down"
@@ -41,6 +46,11 @@ DialogueLookup[DialogueLookup_n + 18] = "pwh_level_skaven_stronghold_exit"
 DialogueLookup[DialogueLookup_n + 19] = "pwh_skaven_stronghold_intro_a"
 DialogueLookup[DialogueLookup_n + 20] = "pwh_skaven_stronghold_intro_b"
 DialogueLookup[DialogueLookup_n + 21] = "pwh_skaven_stronghold_intro_c"
-DialogueLookup_n = DialogueLookup_n + 21
+DialogueLookup[DialogueLookup_n + 22] = "pwh_gameplay_skaven_warlord_kill"
+DialogueLookup[DialogueLookup_n + 23] = "pwh_gameplay_skaven_warlord_banter_reply"
+DialogueLookup[DialogueLookup_n + 24] = "pwh_gameplay_skaven_warlord_summoning_reply"
+DialogueLookup[DialogueLookup_n + 25] = "pwh_gameplay_chieftain_tips_special_attack_cleave"
+DialogueLookup[DialogueLookup_n + 26] = "pwh_gameplay_chieftain_tips_special_lunge_attack_2"
+DialogueLookup_n = DialogueLookup_n + 26
 
 return 

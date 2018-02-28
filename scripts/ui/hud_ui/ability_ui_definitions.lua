@@ -172,17 +172,60 @@ local function create_ability_widget()
 					style_id = "input_text",
 					pass_type = "text",
 					text_id = "input_text",
-					retained_mode = RETAINED_MODE_ENABLED
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad")
+					end
 				},
 				{
 					style_id = "input_text_shadow",
 					pass_type = "text",
 					text_id = "input_text",
-					retained_mode = RETAINED_MODE_ENABLED
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad")
+					end
+				},
+				{
+					style_id = "input_text_gamepad",
+					pass_type = "text",
+					text_id = "input_text_gamepad",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return Managers.input:is_device_active("gamepad") and not content.on_cooldown
+					end
+				},
+				{
+					style_id = "input_text_shadow_gamepad",
+					pass_type = "text",
+					text_id = "input_text_gamepad",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return Managers.input:is_device_active("gamepad") and not content.on_cooldown
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "input_texture_left_shoulder",
+					texture_id = "input_texture_left_shoulder",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return Managers.input:is_device_active("gamepad") and not content.on_cooldown
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "input_texture_right_shoulder",
+					texture_id = "input_texture_right_shoulder",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return Managers.input:is_device_active("gamepad") and not content.on_cooldown
+					end
 				}
 			}
 		},
 		content = {
+			input_text_gamepad = "+",
 			ability_bar_highlight = "hud_player_ability_bar_glow",
 			input_text = "",
 			on_cooldown = true,
@@ -211,7 +254,9 @@ local function create_ability_widget()
 						1
 					}
 				}
-			}
+			},
+			input_texture_left_shoulder = ButtonTextureByName("left_shoulder", "xb1").texture,
+			input_texture_right_shoulder = ButtonTextureByName("right_shoulder", "xb1").texture
 		},
 		style = {
 			input_text = {
@@ -249,6 +294,76 @@ local function create_ability_widget()
 					76,
 					1
 				}
+			},
+			input_text_gamepad = {
+				vertical_alignment = "center",
+				font_size = 32,
+				localize = false,
+				horizontal_alignment = "center",
+				word_wrap = false,
+				font_type = "hell_shark",
+				text_color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					85,
+					20
+				}
+			},
+			input_text_shadow_gamepad = {
+				vertical_alignment = "center",
+				font_size = 32,
+				localize = false,
+				horizontal_alignment = "center",
+				word_wrap = false,
+				font_type = "hell_shark",
+				text_color = {
+					0,
+					0,
+					0,
+					0
+				},
+				offset = {
+					0,
+					83,
+					19
+				}
+			},
+			input_texture_left_shoulder = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-40,
+					85,
+					20
+				},
+				texture_size = ButtonTextureByName("left_shoulder", "xb1").size
+			},
+			input_texture_right_shoulder = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					30,
+					85,
+					20
+				},
+				texture_size = ButtonTextureByName("right_shoulder", "xb1").size
 			},
 			ability_effect_right = {
 				vertical_alignment = "bottom",

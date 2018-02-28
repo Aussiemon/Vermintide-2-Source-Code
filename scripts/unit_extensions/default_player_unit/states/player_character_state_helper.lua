@@ -794,93 +794,126 @@ CharacterStateHelper._get_current_action_data_chain_action_end = function (left_
 
 	return current_action_settings, current_action_extension, current_action_hand
 end
-CharacterStateHelper._get_chain_action_data = function (item_template, current_action_extension, current_action_settings, input_extension, inventory_extension, unit, t, is_bot_player)
-	local chain_actions = current_action_settings.allowed_chain_actions or empty_table
-	local new_action, new_sub_action, wield_input, send_buffer, clear_buffer = nil
+CharacterStateHelper._check_chain_action = function (wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t)
+	local new_action, new_sub_action, send_buffer, clear_buffer = nil
+	local release_required = action_data.release_required
+	local input_extra_requirement = true
 
-	for i = 1, #chain_actions, 1 do
-		local action_data = chain_actions[i]
-		local release_required = action_data.release_required
-		local input_extra_requirement = true
+	if release_required then
+		input_extra_requirement = input_extension.released_input(input_extension, release_required)
+	end
 
-		if release_required then
-			input_extra_requirement = input_extension.released_input(input_extension, release_required)
-		end
+	local hold_required = action_data.hold_required
 
-		local hold_required = action_data.hold_required
+	if hold_required then
+		for index, hold_require in pairs(hold_required) do
+			if input_extension.released_input(input_extension, hold_require) then
+				input_extra_requirement = false
 
-		if hold_required then
-			for index, hold_require in pairs(hold_required) do
-				if input_extension.released_input(input_extension, hold_require) then
-					input_extra_requirement = false
-
-					break
-				end
+				break
 			end
 		end
+	end
 
-		local input_id = action_data.input
-		local softbutton_threshold = action_data.softbutton_threshold
-		local input = nil
-		local no_buffer = action_data.no_buffer
-		local doubleclick_window = action_data.doubleclick_window
-		local blocking_input = action_data.blocking_input
-		local blocked = false
+	local input_id = action_data.input
+	local softbutton_threshold = action_data.softbutton_threshold
+	local input = nil
+	local no_buffer = action_data.no_buffer
+	local doubleclick_window = action_data.doubleclick_window
+	local blocking_input = action_data.blocking_input
+	local blocked = false
 
-		if blocking_input then
-			blocked = input_extension.get(input_extension, blocking_input)
-		end
+	if blocking_input then
+		blocked = input_extension.get(input_extension, blocking_input)
+	end
 
-		if input_extra_requirement and not blocked then
-			input = CharacterStateHelper.get_buffered_input(input_id, input_extension, no_buffer, doubleclick_window, softbutton_threshold)
-		end
+	if input_extra_requirement and not blocked then
+		input = CharacterStateHelper.get_buffered_input(input_id, input_extension, no_buffer, doubleclick_window, softbutton_threshold)
+	end
 
-		if not input then
-			wield_input = CharacterStateHelper.wield_input(input_extension, inventory_extension, action_data.action)
-			input = wield_input
-		end
+	if not input then
+		wield_input = CharacterStateHelper.wield_input(input_extension, inventory_extension, action_data.action)
+		input = wield_input
+	end
 
-		if input or action_data.auto_chain then
-			local select_chance = action_data.select_chance or 1
-			local is_selected = math.random() <= select_chance
-			local chain_action_available = current_action_extension.is_chain_action_available(current_action_extension, action_data, t)
+	if input or action_data.auto_chain then
+		local select_chance = action_data.select_chance or 1
+		local is_selected = math.random() <= select_chance
+		local chain_action_available = current_action_extension.is_chain_action_available(current_action_extension, action_data, t)
 
-			if chain_action_available and is_selected then
-				local sub_action = action_data.sub_action
+		if chain_action_available and is_selected then
+			local sub_action = action_data.sub_action
 
-				if not sub_action and action_data.first_possible_sub_action then
-					local sub_actions = item_template.actions[action_data.action]
+			if not sub_action and action_data.first_possible_sub_action then
+				local sub_actions = item_template.actions[action_data.action]
 
-					for sub_action_name, data in pairs(sub_actions) do
-						local condition_func = data.chain_condition_func
+				for sub_action_name, data in pairs(sub_actions) do
+					local condition_func = data.chain_condition_func
 
-						if not condition_func or condition_func(unit) then
-							sub_action = sub_action_name
-
-							break
-						end
-					end
-				end
-
-				if action_data.blocker then
-					break
-				end
-
-				if sub_action then
-					new_action = action_data.action
-					new_sub_action = sub_action
-					local action_settings = item_template.actions[new_action] and item_template.actions[new_action][new_sub_action]
-					local condition_func = action_settings and action_settings.chain_condition_func
-
-					if not action_settings or (condition_func and not condition_func(unit, input_extension)) then
-						new_action, new_sub_action = nil
-					else
-						send_buffer = action_data.send_buffer
-						clear_buffer = action_data.clear_buffer
+					if not condition_func or condition_func(unit) then
+						sub_action = sub_action_name
 
 						break
 					end
 				end
+			end
+
+			if action_data.blocker then
+				return true, nil, nil, wield_input, nil, nil
+			end
+
+			if sub_action then
+				new_action = action_data.action
+				new_sub_action = sub_action
+				local action_settings = item_template.actions[new_action] and item_template.actions[new_action][new_sub_action]
+				local condition_func = action_settings and action_settings.chain_condition_func
+
+				if not action_settings or (condition_func and not condition_func(unit, input_extension)) then
+					new_action, new_sub_action = nil
+				else
+					send_buffer = action_data.send_buffer
+					clear_buffer = action_data.clear_buffer
+
+					return true, new_action, new_sub_action, wield_input, send_buffer, clear_buffer
+				end
+			end
+		end
+	end
+
+	return false
+end
+local career_chain_action = {
+	sub_action = "default",
+	start_time = 0,
+	action = "N/A",
+	input = "action_career"
+}
+CharacterStateHelper._get_chain_action_data = function (item_template, current_action_extension, current_action_settings, input_extension, inventory_extension, unit, t, is_bot_player)
+	local done, _, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = nil
+	local career_extension = ScriptUnit.has_extension(unit, "career_system")
+
+	if career_extension then
+		local lookup_data = current_action_settings.lookup_data
+		local current_action_name = lookup_data.action_name
+		local activated_ability_data = career_extension.get_activated_ability_data(career_extension)
+		local action_name = activated_ability_data.action_name
+
+		if action_name and action_name ~= current_action_name then
+			local action_data = career_chain_action
+			action_data.action = action_name
+			_, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = CharacterStateHelper._check_chain_action(wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t)
+		end
+	end
+
+	if not new_action then
+		local chain_actions = current_action_settings.allowed_chain_actions or empty_table
+
+		for i = 1, #chain_actions, 1 do
+			local action_data = chain_actions[i]
+			done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer = CharacterStateHelper._check_chain_action(wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t)
+
+			if done then
+				break
 			end
 		end
 	end
@@ -899,11 +932,12 @@ CharacterStateHelper._get_chain_action_data = function (item_template, current_a
 end
 
 local function validate_action(unit, action_name, sub_action_name, action_settings, input_extension, inventory_extension, only_check_condition, ammo_extension)
+	local input_id = action_settings.input_override or action_name
 	local skip_hold = action_settings.do_not_validate_with_hold
 	local hold_input = not skip_hold and action_settings.hold_input
-	local wield_input = CharacterStateHelper.wield_input(input_extension, inventory_extension, action_name)
-	local buffered_input = input_extension.get_buffer(input_extension, action_name)
-	local action_input = input_extension.get(input_extension, action_name)
+	local wield_input = CharacterStateHelper.wield_input(input_extension, inventory_extension, input_id)
+	local buffered_input = input_extension.get_buffer(input_extension, input_id)
+	local action_input = input_extension.get(input_extension, input_id)
 	local action_hold_input = hold_input and input_extension.get(input_extension, hold_input)
 	local allow_toggle = action_settings.allow_hold_toggle and input_extension.toggle_alternate_attack
 	local hold_or_toggle_input = (allow_toggle and action_input) or (not allow_toggle and (action_input or action_hold_input))

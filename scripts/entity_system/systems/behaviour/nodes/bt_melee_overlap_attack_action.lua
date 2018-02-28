@@ -81,11 +81,13 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, blackboard, acti
 		local target_locomotion_extension = ScriptUnit.extension(target_unit, "locomotion_system")
 		local target_velocity = target_locomotion_extension.current_velocity(target_locomotion_extension)
 		local velocity_threshold = action.target_running_velocity_threshold
+		local target_running_distance_threshold = action.target_running_distance_threshold
 		local to_target = POSITION_LOOKUP[target_unit] - POSITION_LOOKUP[unit]
+		local target_distance = Vector3.length(to_target)
 		local to_target_normalized = Vector3.normalize(to_target)
 		local dot = Vector3.dot(target_velocity, to_target_normalized)
 		local target_in_front = 0.5 < dot
-		local target_is_running = velocity_threshold < dot and target_in_front
+		local target_is_running = (target_running_distance_threshold and target_running_distance_threshold < target_distance) or (velocity_threshold < dot and target_in_front)
 		local self_running_speed_threshold = action.self_running_speed_threshold
 
 		if self_running_speed_threshold and not target_is_running then

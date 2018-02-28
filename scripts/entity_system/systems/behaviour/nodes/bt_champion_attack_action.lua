@@ -790,7 +790,9 @@ BTChampionAttackAction._deal_damage = function (self, unit, blackboard, action, 
 					AiUtils_damage_target(target_unit, unit, action, blocked_damage)
 				end
 
-				return 
+				if not action.ignore_abort_on_blocked_attack then
+					return 
+				end
 			else
 				AiUtils_damage_target(target_unit, unit, action, action.damage)
 			end

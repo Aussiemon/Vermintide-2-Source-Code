@@ -1427,18 +1427,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -1523,18 +1631,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -1619,18 +1835,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -1715,18 +2039,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -1811,18 +2243,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -1893,18 +2433,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -1973,18 +2621,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -2053,18 +2809,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -2133,18 +2997,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -2213,18 +3185,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -2307,18 +3387,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -2399,18 +3587,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -2491,18 +3787,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -2583,18 +3987,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -2675,18 +4187,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -2765,18 +4385,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -2853,18 +4581,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -2941,18 +4777,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -3029,18 +4973,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -3117,18 +5169,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -3199,18 +5359,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -3275,18 +5543,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -3351,18 +5727,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -3427,18 +5911,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -3503,18 +6095,126 @@ LootChestData.items = {
 				{
 					weight = 1,
 					key = "ring"
+				},
+				{
+					weight = 1,
+					key = "ring_02"
+				},
+				{
+					weight = 1,
+					key = "ring_03"
+				},
+				{
+					weight = 1,
+					key = "ring_04"
+				},
+				{
+					weight = 1,
+					key = "ring_05"
+				},
+				{
+					weight = 1,
+					key = "ring_06"
+				},
+				{
+					weight = 1,
+					key = "ring_07"
+				},
+				{
+					weight = 1,
+					key = "ring_08"
+				},
+				{
+					weight = 1,
+					key = "ring_09"
+				},
+				{
+					weight = 1,
+					key = "ring_10"
 				}
 			},
 			necklace = {
 				{
 					weight = 1,
 					key = "necklace"
+				},
+				{
+					weight = 1,
+					key = "necklace_02"
+				},
+				{
+					weight = 1,
+					key = "necklace_03"
+				},
+				{
+					weight = 1,
+					key = "necklace_04"
+				},
+				{
+					weight = 1,
+					key = "necklace_05"
+				},
+				{
+					weight = 1,
+					key = "necklace_06"
+				},
+				{
+					weight = 1,
+					key = "necklace_07"
+				},
+				{
+					weight = 1,
+					key = "necklace_08"
+				},
+				{
+					weight = 1,
+					key = "necklace_09"
+				},
+				{
+					weight = 1,
+					key = "necklace_10"
 				}
 			},
 			trinket = {
 				{
 					weight = 1,
 					key = "trinket"
+				},
+				{
+					weight = 1,
+					key = "trinket_02"
+				},
+				{
+					weight = 1,
+					key = "trinket_03"
+				},
+				{
+					weight = 1,
+					key = "trinket_04"
+				},
+				{
+					weight = 1,
+					key = "trinket_05"
+				},
+				{
+					weight = 1,
+					key = "trinket_06"
+				},
+				{
+					weight = 1,
+					key = "trinket_07"
+				},
+				{
+					weight = 1,
+					key = "trinket_08"
+				},
+				{
+					weight = 1,
+					key = "trinket_09"
+				},
+				{
+					weight = 1,
+					key = "trinket_10"
 				}
 			},
 			crafting_material = {
@@ -3602,18 +6302,126 @@ LootChestData.items_new = {
 			{
 				weight = 1,
 				key = "ring"
+			},
+			{
+				weight = 1,
+				key = "ring_02"
+			},
+			{
+				weight = 1,
+				key = "ring_03"
+			},
+			{
+				weight = 1,
+				key = "ring_04"
+			},
+			{
+				weight = 1,
+				key = "ring_05"
+			},
+			{
+				weight = 1,
+				key = "ring_06"
+			},
+			{
+				weight = 1,
+				key = "ring_07"
+			},
+			{
+				weight = 1,
+				key = "ring_08"
+			},
+			{
+				weight = 1,
+				key = "ring_09"
+			},
+			{
+				weight = 1,
+				key = "ring_10"
 			}
 		},
 		necklace = {
 			{
 				weight = 1,
 				key = "necklace"
+			},
+			{
+				weight = 1,
+				key = "necklace_02"
+			},
+			{
+				weight = 1,
+				key = "necklace_03"
+			},
+			{
+				weight = 1,
+				key = "necklace_04"
+			},
+			{
+				weight = 1,
+				key = "necklace_05"
+			},
+			{
+				weight = 1,
+				key = "necklace_06"
+			},
+			{
+				weight = 1,
+				key = "necklace_07"
+			},
+			{
+				weight = 1,
+				key = "necklace_08"
+			},
+			{
+				weight = 1,
+				key = "necklace_09"
+			},
+			{
+				weight = 1,
+				key = "necklace_10"
 			}
 		},
 		trinket = {
 			{
 				weight = 1,
 				key = "trinket"
+			},
+			{
+				weight = 1,
+				key = "trinket_02"
+			},
+			{
+				weight = 1,
+				key = "trinket_03"
+			},
+			{
+				weight = 1,
+				key = "trinket_04"
+			},
+			{
+				weight = 1,
+				key = "trinket_05"
+			},
+			{
+				weight = 1,
+				key = "trinket_06"
+			},
+			{
+				weight = 1,
+				key = "trinket_07"
+			},
+			{
+				weight = 1,
+				key = "trinket_08"
+			},
+			{
+				weight = 1,
+				key = "trinket_09"
+			},
+			{
+				weight = 1,
+				key = "trinket_10"
 			}
 		},
 		crafting_material = {
@@ -3678,18 +6486,126 @@ LootChestData.items_new = {
 			{
 				weight = 1,
 				key = "ring"
+			},
+			{
+				weight = 1,
+				key = "ring_02"
+			},
+			{
+				weight = 1,
+				key = "ring_03"
+			},
+			{
+				weight = 1,
+				key = "ring_04"
+			},
+			{
+				weight = 1,
+				key = "ring_05"
+			},
+			{
+				weight = 1,
+				key = "ring_06"
+			},
+			{
+				weight = 1,
+				key = "ring_07"
+			},
+			{
+				weight = 1,
+				key = "ring_08"
+			},
+			{
+				weight = 1,
+				key = "ring_09"
+			},
+			{
+				weight = 1,
+				key = "ring_10"
 			}
 		},
 		necklace = {
 			{
 				weight = 1,
 				key = "necklace"
+			},
+			{
+				weight = 1,
+				key = "necklace_02"
+			},
+			{
+				weight = 1,
+				key = "necklace_03"
+			},
+			{
+				weight = 1,
+				key = "necklace_04"
+			},
+			{
+				weight = 1,
+				key = "necklace_05"
+			},
+			{
+				weight = 1,
+				key = "necklace_06"
+			},
+			{
+				weight = 1,
+				key = "necklace_07"
+			},
+			{
+				weight = 1,
+				key = "necklace_08"
+			},
+			{
+				weight = 1,
+				key = "necklace_09"
+			},
+			{
+				weight = 1,
+				key = "necklace_10"
 			}
 		},
 		trinket = {
 			{
 				weight = 1,
 				key = "trinket"
+			},
+			{
+				weight = 1,
+				key = "trinket_02"
+			},
+			{
+				weight = 1,
+				key = "trinket_03"
+			},
+			{
+				weight = 1,
+				key = "trinket_04"
+			},
+			{
+				weight = 1,
+				key = "trinket_05"
+			},
+			{
+				weight = 1,
+				key = "trinket_06"
+			},
+			{
+				weight = 1,
+				key = "trinket_07"
+			},
+			{
+				weight = 1,
+				key = "trinket_08"
+			},
+			{
+				weight = 1,
+				key = "trinket_09"
+			},
+			{
+				weight = 1,
+				key = "trinket_10"
 			}
 		},
 		crafting_material = {
@@ -3766,18 +6682,126 @@ LootChestData.items_new = {
 			{
 				weight = 1,
 				key = "ring"
+			},
+			{
+				weight = 1,
+				key = "ring_02"
+			},
+			{
+				weight = 1,
+				key = "ring_03"
+			},
+			{
+				weight = 1,
+				key = "ring_04"
+			},
+			{
+				weight = 1,
+				key = "ring_05"
+			},
+			{
+				weight = 1,
+				key = "ring_06"
+			},
+			{
+				weight = 1,
+				key = "ring_07"
+			},
+			{
+				weight = 1,
+				key = "ring_08"
+			},
+			{
+				weight = 1,
+				key = "ring_09"
+			},
+			{
+				weight = 1,
+				key = "ring_10"
 			}
 		},
 		necklace = {
 			{
 				weight = 1,
 				key = "necklace"
+			},
+			{
+				weight = 1,
+				key = "necklace_02"
+			},
+			{
+				weight = 1,
+				key = "necklace_03"
+			},
+			{
+				weight = 1,
+				key = "necklace_04"
+			},
+			{
+				weight = 1,
+				key = "necklace_05"
+			},
+			{
+				weight = 1,
+				key = "necklace_06"
+			},
+			{
+				weight = 1,
+				key = "necklace_07"
+			},
+			{
+				weight = 1,
+				key = "necklace_08"
+			},
+			{
+				weight = 1,
+				key = "necklace_09"
+			},
+			{
+				weight = 1,
+				key = "necklace_10"
 			}
 		},
 		trinket = {
 			{
 				weight = 1,
 				key = "trinket"
+			},
+			{
+				weight = 1,
+				key = "trinket_02"
+			},
+			{
+				weight = 1,
+				key = "trinket_03"
+			},
+			{
+				weight = 1,
+				key = "trinket_04"
+			},
+			{
+				weight = 1,
+				key = "trinket_05"
+			},
+			{
+				weight = 1,
+				key = "trinket_06"
+			},
+			{
+				weight = 1,
+				key = "trinket_07"
+			},
+			{
+				weight = 1,
+				key = "trinket_08"
+			},
+			{
+				weight = 1,
+				key = "trinket_09"
+			},
+			{
+				weight = 1,
+				key = "trinket_10"
 			}
 		},
 		crafting_material = {
@@ -3850,18 +6874,126 @@ LootChestData.items_new = {
 			{
 				weight = 1,
 				key = "ring"
+			},
+			{
+				weight = 1,
+				key = "ring_02"
+			},
+			{
+				weight = 1,
+				key = "ring_03"
+			},
+			{
+				weight = 1,
+				key = "ring_04"
+			},
+			{
+				weight = 1,
+				key = "ring_05"
+			},
+			{
+				weight = 1,
+				key = "ring_06"
+			},
+			{
+				weight = 1,
+				key = "ring_07"
+			},
+			{
+				weight = 1,
+				key = "ring_08"
+			},
+			{
+				weight = 1,
+				key = "ring_09"
+			},
+			{
+				weight = 1,
+				key = "ring_10"
 			}
 		},
 		necklace = {
 			{
 				weight = 1,
 				key = "necklace"
+			},
+			{
+				weight = 1,
+				key = "necklace_02"
+			},
+			{
+				weight = 1,
+				key = "necklace_03"
+			},
+			{
+				weight = 1,
+				key = "necklace_04"
+			},
+			{
+				weight = 1,
+				key = "necklace_05"
+			},
+			{
+				weight = 1,
+				key = "necklace_06"
+			},
+			{
+				weight = 1,
+				key = "necklace_07"
+			},
+			{
+				weight = 1,
+				key = "necklace_08"
+			},
+			{
+				weight = 1,
+				key = "necklace_09"
+			},
+			{
+				weight = 1,
+				key = "necklace_10"
 			}
 		},
 		trinket = {
 			{
 				weight = 1,
 				key = "trinket"
+			},
+			{
+				weight = 1,
+				key = "trinket_02"
+			},
+			{
+				weight = 1,
+				key = "trinket_03"
+			},
+			{
+				weight = 1,
+				key = "trinket_04"
+			},
+			{
+				weight = 1,
+				key = "trinket_05"
+			},
+			{
+				weight = 1,
+				key = "trinket_06"
+			},
+			{
+				weight = 1,
+				key = "trinket_07"
+			},
+			{
+				weight = 1,
+				key = "trinket_08"
+			},
+			{
+				weight = 1,
+				key = "trinket_09"
+			},
+			{
+				weight = 1,
+				key = "trinket_10"
 			}
 		},
 		crafting_material = {
@@ -3922,18 +7054,126 @@ LootChestData.items_new = {
 			{
 				weight = 1,
 				key = "ring"
+			},
+			{
+				weight = 1,
+				key = "ring_02"
+			},
+			{
+				weight = 1,
+				key = "ring_03"
+			},
+			{
+				weight = 1,
+				key = "ring_04"
+			},
+			{
+				weight = 1,
+				key = "ring_05"
+			},
+			{
+				weight = 1,
+				key = "ring_06"
+			},
+			{
+				weight = 1,
+				key = "ring_07"
+			},
+			{
+				weight = 1,
+				key = "ring_08"
+			},
+			{
+				weight = 1,
+				key = "ring_09"
+			},
+			{
+				weight = 1,
+				key = "ring_10"
 			}
 		},
 		necklace = {
 			{
 				weight = 1,
 				key = "necklace"
+			},
+			{
+				weight = 1,
+				key = "necklace_02"
+			},
+			{
+				weight = 1,
+				key = "necklace_03"
+			},
+			{
+				weight = 1,
+				key = "necklace_04"
+			},
+			{
+				weight = 1,
+				key = "necklace_05"
+			},
+			{
+				weight = 1,
+				key = "necklace_06"
+			},
+			{
+				weight = 1,
+				key = "necklace_07"
+			},
+			{
+				weight = 1,
+				key = "necklace_08"
+			},
+			{
+				weight = 1,
+				key = "necklace_09"
+			},
+			{
+				weight = 1,
+				key = "necklace_10"
 			}
 		},
 		trinket = {
 			{
 				weight = 1,
 				key = "trinket"
+			},
+			{
+				weight = 1,
+				key = "trinket_02"
+			},
+			{
+				weight = 1,
+				key = "trinket_03"
+			},
+			{
+				weight = 1,
+				key = "trinket_04"
+			},
+			{
+				weight = 1,
+				key = "trinket_05"
+			},
+			{
+				weight = 1,
+				key = "trinket_06"
+			},
+			{
+				weight = 1,
+				key = "trinket_07"
+			},
+			{
+				weight = 1,
+				key = "trinket_08"
+			},
+			{
+				weight = 1,
+				key = "trinket_09"
+			},
+			{
+				weight = 1,
+				key = "trinket_10"
 			}
 		},
 		crafting_material = {

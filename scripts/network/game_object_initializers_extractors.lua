@@ -1488,6 +1488,10 @@ go_type_table = {
 				ai_slot_system = {
 					profile_index = profile_id
 				},
+				talent_system = {
+					player = player,
+					profile_index = profile_id
+				},
 				career_system = {
 					player = player,
 					profile_index = profile_id,

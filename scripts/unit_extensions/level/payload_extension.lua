@@ -26,6 +26,7 @@ PayloadExtension.init = function (self, extension_init_context, unit, extension_
 		subdivision_index = 1,
 		spline_t = 0
 	}
+	self._stop_command_given = false
 	self._activated = true
 
 	return 
@@ -35,8 +36,9 @@ PayloadExtension.activate = function (self)
 
 	return 
 end
-PayloadExtension.deactivate = function (self)
+PayloadExtension.deactivate = function (self, stop)
 	self._activated = false
+	self._stop_command_given = stop
 
 	return 
 end
@@ -190,7 +192,10 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 			local old_speed = movement.speed(movement)
 			local wanted_speed_change = target_speed - old_speed
 
-			if 0 < wanted_speed_change then
+			if self._stop_command_given then
+				self._stop_command_given = false
+				new_speed = 0
+			elseif 0 < wanted_speed_change then
 				new_speed = math.min(old_speed + acceleration*dt, target_speed)
 			elseif wanted_speed_change < 0 then
 				new_speed = math.max(old_speed - acceleration*dt, target_speed)
@@ -365,7 +370,7 @@ PayloadExtension._init_movement_spline = function (self, world, unit, payload_gi
 	local spline_name = Unit.get_data(unit, "spline_name")
 	local level = LevelHelper:current_level(world)
 	local source_spline_points = Level.spline(level, spline_name)
-	local spline_points = AiUtils.remove_bad_spline_points(source_spline_points, spline_name)
+	local spline_points = source_spline_points
 
 	fassert(0 < #spline_points, "Could not find spline called %s for Payload unit in level, wrong name? or payload unit is used as a prop unintentionally", spline_name)
 

@@ -259,6 +259,7 @@ RewardPopupUI._get_widget_by_type = function (self, widget_type, value)
 		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(inventory_icon)
 		local texture_size = texture_settings.size
 		widget.content.texture_id = inventory_icon
+		widget.content.rarity_texture = UISettings.item_rarity_textures[rarity]
 		widget_height = 0
 	elseif widget_type == "loot_chest" then
 		local item_template = ItemMasterList[value]

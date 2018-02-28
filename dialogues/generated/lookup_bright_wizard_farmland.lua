@@ -18,7 +18,6 @@ assert(DialogueLookup[DialogueLookup_n + 17] == nil)
 assert(DialogueLookup[DialogueLookup_n + 18] == nil)
 assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 assert(DialogueLookup[DialogueLookup_n + 20] == nil)
-assert(DialogueLookup[DialogueLookup_n + 21] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pbw_level_farmlands_fence_01"
 DialogueLookup[DialogueLookup_n + 2] = "pbw_level_farmlands_investigate_farm_01"
@@ -37,10 +36,9 @@ DialogueLookup[DialogueLookup_n + 14] = "pbw_level_farmlands_last_farm_01"
 DialogueLookup[DialogueLookup_n + 15] = "pbw_level_farmlands_smoke_plume_01"
 DialogueLookup[DialogueLookup_n + 16] = "pbw_level_farmlands_prisoners_01"
 DialogueLookup[DialogueLookup_n + 17] = "pbw_level_farmlands_end_level_01"
-DialogueLookup[DialogueLookup_n + 18] = "pbw_level_farmlands_portal_01"
-DialogueLookup[DialogueLookup_n + 19] = "pbw_farmlands_intro_a"
-DialogueLookup[DialogueLookup_n + 20] = "pbw_farmlands_intro_b"
-DialogueLookup[DialogueLookup_n + 21] = "pbw_farmlands_intro_c"
-DialogueLookup_n = DialogueLookup_n + 21
+DialogueLookup[DialogueLookup_n + 18] = "pbw_farmlands_intro_a"
+DialogueLookup[DialogueLookup_n + 19] = "pbw_farmlands_intro_b"
+DialogueLookup[DialogueLookup_n + 20] = "pbw_farmlands_intro_c"
+DialogueLookup_n = DialogueLookup_n + 20
 
 return 

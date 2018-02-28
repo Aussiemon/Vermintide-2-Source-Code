@@ -89,10 +89,6 @@ StateLoadingRestartNetwork._init_network = function (self)
 		LobbyInternal.init_client(self.parent:network_options())
 	end
 
-	if not Managers.eac then
-		Managers.eac = EACManager:new()
-	end
-
 	if script_data.done_initial_join then
 		lobby_to_join, host_to_join = nil
 	else

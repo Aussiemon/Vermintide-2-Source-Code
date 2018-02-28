@@ -69,7 +69,7 @@ PlayerCharacterStateLeaping.on_exit = function (self, unit, input, dt, context, 
 	end
 
 	if self._leap_data.leap_finish then
-		self._leap_data.leap_finish(unit)
+		self._leap_data.leap_finish(unit, self._leap_data.projected_hit_pos:unbox())
 	end
 
 	return 

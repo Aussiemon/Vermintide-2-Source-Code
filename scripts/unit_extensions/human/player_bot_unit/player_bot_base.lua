@@ -92,6 +92,7 @@ PlayerBotBase.init = function (self, extension_init_context, unit, extension_ini
 		navigation_liquid_escape_destination_override = Vector3Box(),
 		navigation_vortex_escape_destination_override = Vector3Box(),
 		navigation_vortex_escape_previous_evaluation_position = Vector3Box(),
+		hit_by_projectile = {},
 		proximity_target_distance = math.huge,
 		urgent_target_distance = math.huge,
 		opportunity_target_distance = math.huge,
@@ -199,6 +200,12 @@ PlayerBotBase.ranged_attack_ended = function (self, attacking_unit, victim_unit,
 		local targets = blackboard.taking_cover.threats
 		targets[attacking_unit] = nil
 	end
+
+	return 
+end
+PlayerBotBase.hit_by_projectile = function (self, attacking_unit)
+	local blackboard = self._blackboard
+	blackboard.hit_by_projectile[attacking_unit] = true
 
 	return 
 end

@@ -42,7 +42,12 @@ CrosshairUI.create_ui_elements = function (self)
 	self.crosshair_line = UIWidget.init(definitions.widget_definitions.crosshair_line)
 	self.crosshair_arrow = UIWidget.init(definitions.widget_definitions.crosshair_arrow)
 	self.crosshair_circle = UIWidget.init(definitions.widget_definitions.crosshair_circle)
-	self.hit_marker_armored = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored)
+	self._hit_armored_markers = {
+		damage = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored_damage),
+		no_damage = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored_no_damage),
+		armor_break = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored_break),
+		armor_open = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored_open)
+	}
 	local hit_markers = {}
 	local hit_markers_n = 4
 
@@ -192,6 +197,7 @@ CrosshairUI.set_hit_marker_animation = function (self, hit_markers, hit_markers_
 
 		if i == hit_markers_n and additional_hit_icon then
 			hit_marker_animations[5] = UIAnimation.init(UIAnimation.function_by_time, additional_hit_icon.style.color, 1, 255, 0, UISettings.crosshair.hit_marker_fade, math.easeInCubic)
+			self.hit_marker_armored = additional_hit_icon
 		end
 	end
 
@@ -206,10 +212,13 @@ CrosshairUI.configure_hit_marker_color_and_size = function (self, hit_marker, hi
 	local has_armor = hit_marker_data.has_armor
 	local hit_player = hit_marker_data.hit_player
 	local added_dot = hit_marker_data.added_dot
+	local shield_break = hit_marker_data.shield_break
+	local shield_open = hit_marker_data.shield_open
 	local is_critical = false
 	local is_armored = false
 	local friendly_fire = false
 	local additional_hit_icon = nil
+	local hit_armored_markers = self._hit_armored_markers
 	local hit_marker_config = definitions.hit_marker_configurations
 
 	if damage_amount <= 0 and has_armor and not added_dot then
@@ -222,6 +231,18 @@ CrosshairUI.configure_hit_marker_color_and_size = function (self, hit_marker, hi
 
 	local target_color, target_size = nil
 
+	if is_armored then
+		if shield_break then
+			additional_hit_icon = hit_armored_markers.armor_break
+		elseif shield_open then
+			additional_hit_icon = hit_armored_markers.armor_open
+		elseif 0 < damage_amount then
+			additional_hit_icon = hit_armored_markers.damage
+		else
+			additional_hit_icon = hit_armored_markers.no_damage
+		end
+	end
+
 	if is_critical then
 		target_color = hit_marker_config.critical.color
 		target_size = hit_marker_config.critical.size
@@ -231,7 +252,6 @@ CrosshairUI.configure_hit_marker_color_and_size = function (self, hit_marker, hi
 	elseif is_armored then
 		target_size = hit_marker_config.armored.size
 		target_color = hit_marker_config.armored.color
-		additional_hit_icon = self.hit_marker_armored
 	else
 		target_size = hit_marker_config.normal.size
 		target_color = hit_marker_config.normal.color

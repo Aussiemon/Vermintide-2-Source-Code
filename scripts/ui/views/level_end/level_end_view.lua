@@ -55,14 +55,12 @@ LevelEndView.init = function (self, context)
 	self.is_server = context.is_server
 	self.level_up_rewards = self._get_level_up_rewards(self)
 	self.deed_rewards = self._get_deed_rewards(self)
+	self.keep_decoration_rewards = self._get_keep_decoration_rewards(self)
 	local world = context.world
 	self.wwise_world = Managers.world:wwise_world(world)
 	context.wwise_world = self.wwise_world
 	local input_manager = context.input_manager
 	self.input_manager = input_manager
-
-	self.play_sound(self, "mute_all_world_sounds")
-
 	self._reward_presentation_queue = {}
 	self.reward_popup = RewardPopupUI:new(context)
 	local index_by_state_name, state_name_by_index = self._setup_pages(self, game_won)
@@ -210,6 +208,10 @@ LevelEndView.start = function (self)
 	self._setup_state_machine(self, nil, true)
 	self.play_sound(self, "play_gui_chestroom_start")
 
+	self._playing_music = nil
+	self._start_music_event = (self.game_won and "Play_won_music") or "Play_lost_music"
+	self._stop_music_event = (self.game_won and "Stop_won_music") or "Stop_lost_music"
+
 	return 
 end
 LevelEndView.on_enter = function (self)
@@ -255,6 +257,18 @@ LevelEndView._get_deed_rewards = function (self)
 	end
 
 	return deed_rewards
+end
+LevelEndView._get_keep_decoration_rewards = function (self)
+	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
+	local keep_decoration_rewards = {}
+
+	for reward_name, item in pairs(end_of_level_rewards) do
+		if string.find(reward_name, "keep_decoration") == 1 then
+			keep_decoration_rewards[#keep_decoration_rewards + 1] = item
+		end
+	end
+
+	return keep_decoration_rewards
 end
 LevelEndView._set_end_timer = function (self, time)
 	local widget = self._dynamic_widgets.timer_text
@@ -698,6 +712,12 @@ LevelEndView.update = function (self, dt, t)
 	UIWidgetUtils.animate_default_button(self._retry_button_widget, dt)
 	UIWidgetUtils.animate_default_button(self._ready_button_widget, dt)
 
+	if not self._playing_music then
+		self._playing_music = true
+
+		self.play_sound(self, self._start_music_event)
+	end
+
 	local button_pressed = false
 
 	if self._is_button_hover_enter(self, self._retry_button_widget) or self._is_button_hover_enter(self, self._ready_button_widget) then
@@ -712,6 +732,7 @@ LevelEndView.update = function (self, dt, t)
 
 	if self._is_button_pressed(self, self._ready_button_widget) and not button_pressed then
 		self.play_sound(self, "play_gui_mission_summary_button_return_to_keep_click")
+		self.play_sound(self, self._stop_music_event)
 
 		if self._left_lobby then
 			self._exit_to_game(self)
@@ -1148,6 +1169,44 @@ LevelEndView.present_additional_rewards = function (self)
 			else
 				description[1] = Localize(item_type)
 				description[2] = Localize("reward_weapon")
+			end
+
+			if description then
+				entry[#entry + 1] = {
+					widget_type = "description",
+					value = description
+				}
+			end
+
+			entry[#entry + 1] = {
+				widget_type = "item",
+				value = item
+			}
+			presentation_data[#presentation_data + 1] = entry
+		end
+
+		self._present_reward(self, presentation_data)
+	end
+
+	local keep_decoration_rewards = self.keep_decoration_rewards
+	local num_keep_decoration_rewards = #keep_decoration_rewards
+	local item_interface = Managers.backend:get_interface("items")
+
+	if 0 < num_keep_decoration_rewards then
+		local presentation_data = {}
+
+		for _, item in ipairs(keep_decoration_rewards) do
+			local entry = {}
+			local backend_id = item.backend_id
+			local reward_item = item_interface.get_item_from_id(item_interface, backend_id)
+			local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
+			local item_type = item_data.item_type
+			local description = {}
+			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
+
+			if item_type == "keep_decoration_painting" then
+				description[1] = Localize(display_name)
+				description[2] = Localize("keep_decoration_painting_recieved")
 			end
 
 			if description then

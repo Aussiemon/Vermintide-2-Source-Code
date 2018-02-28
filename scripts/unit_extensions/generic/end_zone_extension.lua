@@ -21,15 +21,14 @@ EndZoneExtension.init = function (self, extension_init_context, unit)
 
 	self._disable_complete_level = Unit.get_data(self._unit, "disable_complete_level")
 	self._disable_check_joining_players = Unit.get_data(self._unit, "disable_check_joining_players")
-	local node = Unit.node(self._unit, "g_end_zone_01")
+	local node = Unit.node(self._unit, "ap_dome_scaler")
 
 	Unit.set_local_scale(self._unit, node, Vector3(0, 0, 0))
 
-	local node = Unit.node(self._unit, "g_end_zone_inside_01")
+	if Unit.has_visibility_group(self._unit, "dome") then
+		Unit.set_visibility(self._unit, "dome", false)
+	end
 
-	Unit.set_local_scale(self._unit, node, Vector3(0, 0, 0))
-	Unit.set_mesh_visibility(self._unit, "g_end_zone_01", false)
-	Unit.set_mesh_visibility(self._unit, "g_end_zone_inside_01", false)
 	self._set_light_intensity(self, 0)
 
 	local network_event_delegate = Managers.state.network.network_transmit.network_event_delegate
@@ -202,8 +201,10 @@ EndZoneExtension._idle = function (self, dt, t)
 		self._state = "_open"
 
 		Unit.flow_event(self._unit, "opening_end_zone")
-		Unit.set_mesh_visibility(self._unit, "g_end_zone_01", true)
-		Unit.set_mesh_visibility(self._unit, "g_end_zone_inside_01", true)
+
+		if Unit.has_visibility_group(self._unit, "dome") then
+			Unit.set_visibility(self._unit, "dome", true)
+		end
 	end
 
 	if DEBUG then
@@ -223,11 +224,7 @@ EndZoneExtension._open = function (self, dt, t)
 		local animation_time = EndZoneSettings.animation_time or 0.5
 		self._state_data.timer = math.clamp(self._state_data.timer + dt, 0, animation_time)
 		local scale = math.smoothstep(self._state_data.timer/animation_time, 0, 1)
-		local node = Unit.node(self._unit, "g_end_zone_01")
-
-		Unit.set_local_scale(self._unit, node, Vector3(scale, scale, scale))
-
-		local node = Unit.node(self._unit, "g_end_zone_inside_01")
+		local node = Unit.node(self._unit, "ap_dome_scaler")
 
 		Unit.set_local_scale(self._unit, node, Vector3(scale, scale, scale))
 		self._set_light_intensity(self, scale*scale*scale)
@@ -253,11 +250,7 @@ EndZoneExtension._close = function (self, dt, t)
 		local animation_time = EndZoneSettings.animation_time or 0.5
 		self._state_data.timer = math.clamp(self._state_data.timer - dt, 0, animation_time)
 		local scale = math.smoothstep(self._state_data.timer/animation_time, 0, 1)
-		local node = Unit.node(self._unit, "g_end_zone_01")
-
-		Unit.set_local_scale(self._unit, node, Vector3(scale, scale, scale))
-
-		local node = Unit.node(self._unit, "g_end_zone_inside_01")
+		local node = Unit.node(self._unit, "ap_dome_scaler")
 
 		Unit.set_local_scale(self._unit, node, Vector3(scale, scale, scale))
 		self._set_light_intensity(self, scale*scale*scale)
@@ -265,8 +258,9 @@ EndZoneExtension._close = function (self, dt, t)
 		if scale == 0 then
 			self._state = "_idle"
 
-			Unit.set_mesh_visibility(self._unit, "g_end_zone_01", false)
-			Unit.set_mesh_visibility(self._unit, "g_end_zone_inside_01", false)
+			if Unit.has_visibility_group(self._unit, "dome") then
+				Unit.set_visibility(self._unit, "dome", false)
+			end
 		end
 	end
 

@@ -317,7 +317,6 @@ TutorialSystem.iterate_tooltips = function (self, t, unit, extension, raycast_un
 	local level_transition_handler = Managers.state.game_mode.level_transition_handler
 	local level_key = level_transition_handler.get_current_level_keys(level_transition_handler)
 	local is_in_inn = level_key == "inn_level"
-	local is_in_tutorial = level_key == "tutorial"
 
 	for i = 1, tooltip_templates_n, 1 do
 

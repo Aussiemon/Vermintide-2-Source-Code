@@ -4,7 +4,7 @@ BackendInterfaceLootPlayfab.init = function (self, backend_mirror)
 	self._backend_mirror = backend_mirror
 	self._last_id = 0
 	self._loot_requests = {}
-	self._loot_chest_opening_request_callbacks = {}
+	self._loot_chest_requests = {}
 
 	return 
 end
@@ -19,7 +19,7 @@ BackendInterfaceLootPlayfab._new_id = function (self)
 
 	return self._last_id
 end
-BackendInterfaceLootPlayfab.open_loot_chest = function (self, hero_name, backend_id, callback_function)
+BackendInterfaceLootPlayfab.open_loot_chest = function (self, hero_name, backend_id)
 	local id = self._new_id(self)
 	local generate_loot_chest_rewards_request = {
 		FunctionName = "generateLootChestRewards",
@@ -29,22 +29,19 @@ BackendInterfaceLootPlayfab.open_loot_chest = function (self, hero_name, backend
 			id = id
 		}
 	}
-	local loot_chest_rewards_request_cb = callback(self, "loot_chest_rewards_request_cb")
+	local loot_chest_rewards_request_cb = callback(self, "loot_chest_rewards_request_cb", id)
 
 	PlayFabClientApi.ExecuteCloudScript(generate_loot_chest_rewards_request, loot_chest_rewards_request_cb, loot_chest_rewards_request_cb)
 
-	self._loot_chest_opening_request_callbacks[id] = callback_function
-
-	return 
+	return id
 end
-BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, result)
+BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, id, result)
 	if result.Error then
 		table.dump(result, nil, 5)
 		fassert(false, "loot_chest_rewards_request_cb: it failed!")
 	else
 		local function_result = result.FunctionResult
 		local items = function_result.items
-		local id = function_result.id
 		local consume_data = function_result.consumed_chest
 		local chest_backend_id = consume_data.ItemInstanceId
 		local remaining_uses = consume_data.RemainingUses
@@ -67,12 +64,22 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, resu
 			backend_mirror.remove_item(backend_mirror, chest_backend_id)
 		end
 
-		local callback = self._loot_chest_opening_request_callbacks[id]
-
-		callback(loot)
+		self._loot_chest_requests[id] = loot
 	end
 
 	return 
+end
+BackendInterfaceLootPlayfab.is_loot_chest_opened = function (self, id)
+	local loot_chest_request = self._loot_chest_requests[id]
+
+	if loot_chest_request then
+		return true
+	end
+
+	return false
+end
+BackendInterfaceLootPlayfab.get_loot_chest_rewards = function (self, id)
+	return self._loot_chest_requests[id]
 end
 BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, hero_name, start_experience, end_experience, deed_item_name, deed_backend_id)
 	local id = self._new_id(self)
@@ -94,13 +101,13 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 			id = id
 		}
 	}
-	local end_of_level_loot_request_cb = callback(self, "end_of_level_loot_request_cb")
+	local end_of_level_loot_request_cb = callback(self, "end_of_level_loot_request_cb", id)
 
 	PlayFabClientApi.ExecuteCloudScript(generate_end_of_level_loot_request, end_of_level_loot_request_cb, end_of_level_loot_request_cb)
 
 	return id
 end
-BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, result)
+BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, id, result)
 	if result.Error then
 		table.dump(result, nil, 5)
 		fassert(false, "end_of_level_loot_request_cb: it failed!")
@@ -110,7 +117,6 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, resul
 		local items = function_result.Result
 		local random_value = function_result.RandomValue
 		local consumed_deed_result = function_result.ConsumedDeedResult
-		local id = function_result.Id
 		local num_items = #items
 		local loot_request = {}
 

@@ -5,6 +5,10 @@ local window_size = window_default_settings.size
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local window_text_width = window_size[1] - window_frame_width*2
+local login_text_area_size = {
+	window_text_width - 20 - 160,
+	50
+}
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -55,9 +59,37 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	logo = {
+	description_text = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			window_text_width,
+			window_size[2]/2
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	texture_frame = {
 		vertical_alignment = "top",
 		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			383,
+			383
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	twitch_texture = {
+		vertical_alignment = "center",
+		parent = "texture_frame",
 		horizontal_alignment = "center",
 		size = {
 			420,
@@ -65,50 +97,117 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-65,
+			0,
 			1
 		}
 	},
-	play_text = {
-		vertical_alignment = "top",
-		parent = "window",
+	twitch_title_divider = {
+		vertical_alignment = "bottom",
+		parent = "texture_frame",
 		horizontal_alignment = "center",
 		size = {
-			450,
-			260
+			264,
+			32
 		},
 		position = {
 			0,
-			90,
+			10,
 			2
 		}
 	},
-	window_text = {
-		vertical_alignment = "top",
-		parent = "logo",
+	login_text_area = {
+		vertical_alignment = "bottom",
+		parent = "twitch_title_divider",
 		horizontal_alignment = "center",
 		size = {
-			450,
-			260
+			window_text_width,
+			50
 		},
 		position = {
 			0,
-			-90,
-			2
+			35,
+			1
 		}
 	},
-	window_text_box = {
+	login_text_frame = {
 		vertical_alignment = "center",
-		parent = "window",
+		parent = "login_text_area",
+		horizontal_alignment = "left",
+		size = login_text_area_size,
+		position = {
+			10,
+			0,
+			1
+		}
+	},
+	login_text_box = {
+		vertical_alignment = "center",
+		parent = "login_text_frame",
 		horizontal_alignment = "center",
 		size = {
 			300,
 			42
 		},
 		position = {
-			-85,
-			-50,
+			0,
+			0,
 			1
+		}
+	},
+	connect_button = {
+		vertical_alignment = "center",
+		parent = "login_text_area",
+		horizontal_alignment = "right",
+		size = {
+			160,
+			50
+		},
+		position = {
+			-10,
+			0,
+			1
+		}
+	},
+	connect_button_frame = {
+		vertical_alignment = "center",
+		parent = "connect_button",
+		horizontal_alignment = "center",
+		size = {
+			160,
+			50
+		},
+		position = {
+			0,
+			0,
+			10
+		}
+	},
+	disconnect_button = {
+		vertical_alignment = "center",
+		parent = "login_text_area",
+		horizontal_alignment = "center",
+		size = {
+			window_size[1] - 20,
+			50
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	disconnect_button_frame = {
+		vertical_alignment = "center",
+		parent = "disconnect_button",
+		horizontal_alignment = "center",
+		size = {
+			window_size[1] - 20,
+			50
+		},
+		position = {
+			0,
+			0,
+			10
 		}
 	},
 	connecting = {
@@ -139,64 +238,50 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	twitch_connect_button = {
-		vertical_alignment = "center",
-		parent = "window_text_box",
-		horizontal_alignment = "left",
-		size = {
-			150,
-			42
-		},
-		position = {
-			320,
-			-0,
-			2
-		}
-	},
-	twitch_disconnect_button = {
-		vertical_alignment = "center",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			188,
-			42
-		},
-		position = {
-			0,
-			-10,
-			2
-		}
-	},
-	feed_area_edge = {
+	chat_feed_frame = {
 		vertical_alignment = "bottom",
 		parent = "window",
 		horizontal_alignment = "center",
 		size = {
-			390,
-			250
+			window_size[1] - 20,
+			window_size[2]/2
 		},
 		position = {
-			2,
-			50,
-			2
+			0,
+			10,
+			1
 		}
 	},
-	feed_area_top = {
+	chat_feed_area_mask = {
 		vertical_alignment = "center",
-		parent = "feed_area_edge",
+		parent = "chat_feed_frame",
 		horizontal_alignment = "center",
 		size = {
-			386,
-			246
+			window_size[1] - 40,
+			window_size[2]/2
 		}
 	},
-	feed_area = {
+	chat_feed_area = {
 		vertical_alignment = "center",
-		parent = "feed_area_top",
+		parent = "chat_feed_area_mask",
 		horizontal_alignment = "center",
 		size = {
-			380,
-			230
+			window_size[1] - 20,
+			window_size[2]/2
+		}
+	},
+	chat_text_box = {
+		vertical_alignment = "top",
+		parent = "chat_feed_area",
+		horizontal_alignment = "center",
+		size = {
+			window_size[1] - 40,
+			window_size[2]/2
+		},
+		position = {
+			0,
+			0,
+			1
 		}
 	}
 }
@@ -227,15 +312,8 @@ local function create_window(scenegraph_id, size)
 		},
 		{
 			pass_type = "texture",
-			style_id = "logo",
-			texture_id = "logo"
-		},
-		{
-			style_id = "inner_rect",
-			pass_type = "rect",
-			content_check_function = function (content, style)
-				return not Managers.twitch:is_connected() and not Managers.twitch:is_connecting()
-			end
+			style_id = "twitch_texture",
+			texture_id = "twitch_texture"
 		},
 		{
 			style_id = "inner_inner_rect",
@@ -243,28 +321,6 @@ local function create_window(scenegraph_id, size)
 			content_check_function = function (content, style)
 				return not Managers.twitch:is_connected() and not Managers.twitch:is_connecting()
 			end
-		},
-		{
-			style_id = "text",
-			pass_type = "text",
-			text_id = "text_field",
-			content_check_function = function (content, style)
-				local connected = Managers.twitch:is_connected()
-
-				if connected then
-					local user_name = Managers.twitch:user_name()
-					content.text_field = Localize("start_game_window_twitch_confirm_connection") .. user_name
-				else
-					content.text_field = Localize("start_game_window_twitch_connect_description")
-				end
-
-				return true
-			end
-		},
-		{
-			style_id = "play_text",
-			pass_type = "text",
-			text_id = "play_text_field"
 		},
 		{
 			style_id = "login_hint",
@@ -348,13 +404,13 @@ local function create_window(scenegraph_id, size)
 	}
 	local content = {
 		text_start_offset = 0,
-		logo = "twitch_logo",
-		twitch_name = "",
-		text_field_active = false,
-		text_index = 1,
-		caret_index = 1,
 		connecting_id = "Connecting",
+		text_field_active = false,
+		twitch_name = "",
 		error_id = " ",
+		caret_index = 1,
+		twitch_texture = "twitch_logo",
+		text_index = 1,
 		frame = frame_settings.texture,
 		background = {
 			uvs = {
@@ -369,8 +425,6 @@ local function create_window(scenegraph_id, size)
 			},
 			texture_id = background_texture
 		},
-		text_field = Localize("start_game_window_twitch_connect_with_twitch_to_activate"),
-		play_text_field = Localize("start_game_window_twitch_play_with"),
 		login_hint = Localize("start_game_window_twitch_login_hint"),
 		text_input_hotspot = {},
 		screen_hotspot = {},
@@ -405,36 +459,8 @@ local function create_window(scenegraph_id, size)
 				5
 			}
 		},
-		background_tint = {
-			scenegraph_id = "window",
-			offset = {
-				0,
-				0,
-				0
-			},
-			color = {
-				60,
-				0,
-				0,
-				0
-			}
-		},
-		inner_rect = {
-			scenegraph_id = "window_text_box",
-			color = {
-				255,
-				128,
-				128,
-				128
-			},
-			offset = {
-				0,
-				0,
-				1
-			}
-		},
 		inner_inner_rect = {
-			scenegraph_id = "window_text_box",
+			scenegraph_id = "login_text_frame",
 			color = {
 				255,
 				0,
@@ -442,18 +468,15 @@ local function create_window(scenegraph_id, size)
 				0
 			},
 			offset = {
-				2,
-				2,
-				2
+				0,
+				0,
+				-1
 			},
-			size = {
-				296,
-				38
-			}
+			size = login_text_area_size
 		},
-		logo = {
+		twitch_texture = {
 			vertical_alignment = "center",
-			scenegraph_id = "logo",
+			scenegraph_id = "twitch_texture",
 			horizontal_alignment = "center",
 			offset = {
 				0,
@@ -467,41 +490,9 @@ local function create_window(scenegraph_id, size)
 				255
 			}
 		},
-		text = {
-			word_wrap = true,
-			scenegraph_id = "window_text",
-			font_size = 28,
-			pixel_perfect = true,
-			horizontal_alignment = "center",
-			vertical_alignment = "center",
-			dynamic_font = true,
-			font_type = "hell_shark",
-			text_color = Colors.get_color_table_with_alpha("font_default", 255),
-			offset = {
-				0,
-				0,
-				2
-			}
-		},
-		play_text = {
-			word_wrap = true,
-			scenegraph_id = "play_text",
-			font_size = 60,
-			pixel_perfect = true,
-			horizontal_alignment = "center",
-			vertical_alignment = "center",
-			dynamic_font = true,
-			font_type = "hell_shark_header",
-			text_color = Colors.get_color_table_with_alpha("twitch", 255),
-			offset = {
-				0,
-				0,
-				2
-			}
-		},
 		login_hint = {
 			word_wrap = true,
-			scenegraph_id = "window_text_box",
+			scenegraph_id = "login_text_box",
 			font_size = 24,
 			pixel_perfect = true,
 			horizontal_alignment = "center",
@@ -564,7 +555,7 @@ local function create_window(scenegraph_id, size)
 		},
 		twitch_name = {
 			horizontal_scroll = true,
-			scenegraph_id = "window_text_box",
+			scenegraph_id = "login_text_box",
 			word_wrap = false,
 			pixel_perfect = true,
 			horizontal_alignment = "left",
@@ -604,7 +595,7 @@ local function create_window(scenegraph_id, size)
 end
 
 local chat_output_widget = {
-	scenegraph_id = "feed_area",
+	scenegraph_id = "chat_feed_area",
 	element = {
 		passes = {
 			{
@@ -616,21 +607,14 @@ local chat_output_widget = {
 				end
 			},
 			{
-				style_id = "edge",
-				pass_type = "rounded_background",
-				content_check_function = function (content)
-					return Managers.twitch:is_connected()
-				end
-			},
-			{
 				style_id = "background",
-				pass_type = "rounded_background",
+				pass_type = "rect",
 				content_check_function = function (content)
 					return Managers.twitch:is_connected()
 				end
 			},
 			{
-				style_id = "text",
+				style_id = "chat_text_box",
 				pass_type = "text_area_chat",
 				text_id = "text_field",
 				content_check_function = function (content)
@@ -647,47 +631,36 @@ local chat_output_widget = {
 	style = {
 		mask = {
 			corner_radius = 0,
-			scenegraph_id = "feed_area_top",
+			scenegraph_id = "chat_feed_area_mask",
 			offset = {
 				0,
 				0,
-				1
+				0
 			},
 			color = {
 				255,
-				255,
-				255,
-				255
-			}
-		},
-		edge = {
-			corner_radius = 0,
-			scenegraph_id = "feed_area_edge",
-			offset = {
-				0,
-				0,
-				1
-			},
-			color = {
-				60,
 				255,
 				255,
 				255
 			}
 		},
 		background = {
-			corner_radius = 0,
-			scenegraph_id = "feed_area_top",
+			scenegraph_id = "chat_feed_area",
 			offset = {
 				0,
 				0,
-				2
+				-1
 			},
-			color = Colors.get_table("black")
+			color = {
+				255,
+				0,
+				0,
+				0
+			}
 		},
-		text = {
+		chat_text_box = {
 			word_wrap = true,
-			scenegraph_id = "feed_area",
+			scenegraph_id = "chat_text_box",
 			spacing = 0,
 			pixel_perfect = false,
 			vertical_alignment = "top",
@@ -700,10 +673,25 @@ local chat_output_widget = {
 			name_color_system = Colors.get_table("white"),
 			offset = {
 				0,
-				2,
-				3
+				-10,
+				0
 			}
 		}
+	}
+}
+local description_text_style = {
+	word_wrap = true,
+	font_size = 18,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
 	}
 }
 local widgets = {
@@ -711,7 +699,20 @@ local widgets = {
 	background_mask = UIWidgets.create_simple_texture("mask_rect", "window"),
 	window = UIWidgets.create_frame("window", window_size, window_frame, 20),
 	frame_widget = create_window("window", scenegraph_definition.window.size),
-	chat_output_widget = chat_output_widget
+	login_text_frame = UIWidgets.create_frame("login_text_frame", {
+		window_text_width,
+		50
+	}, "menu_frame_09", 1),
+	chat_feed_frame = UIWidgets.create_frame("chat_feed_frame", {
+		window_text_width - 20,
+		250
+	}, "menu_frame_09", 1),
+	description_text = UIWidgets.create_simple_text(Localize("start_game_window_twitch_connect_description"), "description_text", nil, nil, description_text_style),
+	twitch_texture = UIWidgets.create_simple_texture("twitch_logo", "twitch_texture"),
+	twitch_title_divider = UIWidgets.create_simple_texture("divider_01_top", "twitch_title_divider"),
+	chat_output_widget = chat_output_widget,
+	connect_button_frame = UIWidgets.create_frame("connect_button_frame", scenegraph_definition.connect_button_frame.size, window_frame, 1),
+	disconnect_button_frame = UIWidgets.create_frame("connect_button_frame", scenegraph_definition.connect_button_frame.size, window_frame, 1)
 }
 local animation_definitions = {
 	on_enter = {
@@ -761,8 +762,8 @@ local animation_definitions = {
 return {
 	widgets = widgets,
 	node_widgets = node_widgets,
-	connect_button = UIWidgets.create_default_button("twitch_connect_button", scenegraph_definition.twitch_connect_button.size, nil, nil, Localize("start_game_window_twitch_connect"), 24, nil, "button_detail_03"),
-	disconnect_button = UIWidgets.create_default_button("twitch_disconnect_button", scenegraph_definition.twitch_disconnect_button.size, nil, nil, "disconnect", 24, nil, "button_detail_03"),
+	connect_button = UIWidgets.create_simple_window_button("connect_button", scenegraph_definition.connect_button.size, Localize("start_game_window_twitch_connect"), 24),
+	disconnect_button = UIWidgets.create_simple_window_button("disconnect_button", scenegraph_definition.disconnect_button.size, Localize("start_game_window_twitch_disconnect"), 24),
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions
 }

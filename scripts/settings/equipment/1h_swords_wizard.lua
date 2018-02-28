@@ -51,12 +51,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.3,
 					blocker = true,
 					end_time = 1.2,
@@ -114,12 +108,6 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				},
 				{
 					start_time = 0.3,
@@ -181,12 +169,6 @@ weapon_template.actions = {
 					input = "action_wield"
 				},
 				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
-				},
-				{
 					start_time = 0.3,
 					blocker = true,
 					end_time = 1.4,
@@ -243,12 +225,6 @@ weapon_template.actions = {
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				},
 				{
 					start_time = 0.3,
@@ -330,12 +306,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -408,12 +378,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -489,34 +453,12 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
 			end,
-			critical_strike = {},
-			armour_modifier = {
-				attack = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
-				},
-				impact = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
-				}
-			}
+			critical_strike = {}
 		},
 		light_attack_left = {
 			damage_window_start = 0.38,
@@ -572,12 +514,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			critical_strike = critical_strike_linesman_L,
@@ -592,12 +528,11 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "fire_hit_armour",
-			headshot_multiplier = 2,
 			additional_critical_strike_chance = 0,
+			damage_profile = "light_slashing_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.5,
 			impact_sound_event = "fire_hit",
-			charge_value = "light_attack",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_right_diagonal",
@@ -640,19 +575,8 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
-			},
-			critical_strike = critical_strike_linesman_L,
-			cleave_distribution = cleave_distribution_linesman_L,
-			armour_modifier = armour_modifie_linesman_Lr,
-			default_target = default_target_linesman_L,
-			targets = targets_linesman_L
+			}
 		},
 		light_attack_spell = {
 			damage_window_start = 0.38,
@@ -660,12 +584,11 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "fire_hit_armour",
-			headshot_multiplier = 2,
 			additional_critical_strike_chance = 0,
+			damage_profile = "light_slashing_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.47,
 			impact_sound_event = "fire_hit",
-			charge_value = "light_attack",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_spell_force",
@@ -708,46 +631,8 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
-			},
-			critical_strike = {},
-			cleave_distribution = {
-				attack = 0.15,
-				impact = 0.15
-			},
-			armour_modifier = {
-				attack = {
-					1,
-					0.8,
-					2.5,
-					1,
-					0.5
-				},
-				impact = {
-					1,
-					0.8,
-					2.5,
-					1,
-					0.5
-				}
-			},
-			default_target = {
-				dot_template_name = "burning_1W_dot",
-				boost_curve_type = "smiter_curve",
-				boost_curve_coefficient = 0.3,
-				attack_template = "burning_stab_fencer",
-				power_distribution = {
-					attack = 0.35,
-					impact = 0.15
-				}
-			},
-			targets = {}
+			}
 		},
 		light_attack_stab = {
 			damage_window_start = 0.25,
@@ -755,12 +640,11 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "fire_hit_armour",
-			headshot_multiplier = 2,
 			additional_critical_strike_chance = 0,
+			damage_profile = "light_slashing_smiter_stab",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.4,
 			impact_sound_event = "fire_hit",
-			charge_value = "light_attack",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_stab",
@@ -803,46 +687,8 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
-			},
-			critical_strike = {},
-			cleave_distribution = {
-				attack = 0.15,
-				impact = 0.15
-			},
-			armour_modifier = {
-				attack = {
-					1,
-					0.5,
-					2.5,
-					1,
-					0.5
-				},
-				impact = {
-					1,
-					0.5,
-					2.5,
-					1,
-					0.5
-				}
-			},
-			default_target = {
-				dot_template_name = "burning_1W_dot",
-				boost_curve_type = "smiter_curve",
-				boost_curve_coefficient = 0.3,
-				attack_template = "burning_stab_fencer",
-				power_distribution = {
-					attack = 0.25,
-					impact = 0.15
-				}
-			},
-			targets = {}
+			}
 		},
 		light_attack_bopp = {
 			damage_window_start = 0.38,
@@ -850,12 +696,11 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			headshot_multiplier = 2,
 			additional_critical_strike_chance = 0,
+			damage_profile = "light_slashing_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.5,
 			impact_sound_event = "slashing_hit",
-			charge_value = "light_attack",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.5,
 			anim_event = "attack_swing_left_diagonal",
@@ -893,75 +738,29 @@ weapon_template.actions = {
 					start_time = 0.6,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
-			end,
-			critical_strike = {},
-			cleave_distribution = {
-				attack = 0.35,
-				impact = 0.2
-			},
-			armour_modifier = {
-				attack = {
-					1,
-					0,
-					2.5,
-					1,
-					1.5
-				},
-				impact = {
-					1,
-					0,
-					2.5,
-					1,
-					1.5
-				}
-			},
-			default_target = {
-				boost_curve_type = "linesman_curve",
-				boost_curve_coefficient = 0.5,
-				attack_template = "light_slashing_linesman",
-				power_distribution = {
-					attack = 0.15,
-					impact = 0.15
-				}
-			},
-			targets = {
-				{
-					boost_curve_type = "linesman_curve",
-					boost_curve_coefficient = 0.5,
-					attack_template = "light_slashing_linesman",
-					power_distribution = {
-						attack = 0.25,
-						impact = 0.15
-					}
-				}
-			}
+			end
 		},
 		push = {
 			damage_window_start = 0.05,
 			anim_end_event = "attack_finished",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			attack_template = "basic_sweep_push",
 			hit_time = 0.1,
+			damage_profile_outer = "light_push",
+			weapon_action_hand = "right",
 			push_angle = 100,
 			hit_effect = "melee_hit_sword_1h",
-			weapon_action_hand = "right",
 			damage_window_end = 0.2,
 			impact_sound_event = "slashing_hit",
 			charge_value = "action_push",
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			dedicated_target_range = 2,
 			anim_event = "attack_push",
+			damage_profile_inner = "medium_push",
 			total_time = 0.8,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -1015,12 +814,6 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			push_radius = push_radius,
@@ -1028,43 +821,7 @@ weapon_template.actions = {
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
 				return not status_extension.fatigued(status_extension)
-			end,
-			armour_modifier = {
-				attack = {
-					1,
-					0.1,
-					2.5,
-					1,
-					1.5
-				},
-				impact = {
-					1,
-					0.1,
-					2.5,
-					1,
-					1.5
-				}
-			},
-			cleave_distribution = {
-				attack = 0,
-				impact = 0.7
-			},
-			inner_push = {
-				boost_curve_type = "default",
-				boost_curve_coefficient = 1,
-				power_distribution = {
-					attack = 0.3,
-					impact = 0.3
-				}
-			},
-			outer_push = {
-				boost_curve_type = "default",
-				boost_curve_coefficient = 1,
-				power_distribution = {
-					attack = 0.1,
-					impact = 0.1
-				}
-			}
+			end
 		}
 	},
 	action_two = {
@@ -1113,19 +870,12 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		}
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -1177,9 +927,9 @@ weapon_template.aim_assist_settings = {
 	}
 }
 weapon_template.tooltip_keywords = {
-	"keyword_1",
-	"keyword_2",
-	"keyword_3"
+	"weapon_keyword_wide_sweeps",
+	"weapon_keyword_crowd_control",
+	"weapon_keyword_damage_over_time"
 }
 weapon_template.compare_statistics = {
 	attacks = {

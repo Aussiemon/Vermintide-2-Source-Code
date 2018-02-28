@@ -46,6 +46,10 @@ BulldozerPlayer.profile_display_name = function (self)
 	return display_name
 end
 BulldozerPlayer.despawn = function (self)
+	for mood, _ in pairs(MoodSettings) do
+		MOOD_BLACKBOARD[mood] = false
+	end
+
 	local player_unit = self.player_unit
 
 	if Unit.alive(player_unit) then

@@ -272,13 +272,13 @@ local function create_window(scenegraph_id, size)
 		}
 	}
 	local content = {
-		timer_field = "n/a",
-		title_text = "n/a",
+		timer_field = "",
+		title_text = "",
 		text_start_offset = 0,
 		text_field = "",
 		background_fade = "options_window_fade_01",
 		background_tint = "gradient_dice_game_reward",
-		center_timer_field = "n/a",
+		center_timer_field = "",
 		frame = frame_settings.texture,
 		inner_frame = inner_frame_settings.texture,
 		background = {
@@ -485,7 +485,7 @@ local function create_window(scenegraph_id, size)
 			offset = {
 				0,
 				0,
-				5
+				6
 			}
 		},
 		center_timer_shadow = {
@@ -726,14 +726,18 @@ PopupHandler.update = function (self, dt, from_manager)
 				timer = current_popup.timer_format_func(timer)
 			end
 
-			local timer_field, timer_style = nil
+			local timer_field, timer_style, timer_shadow_style = nil
 
 			if current_popup.timer_alignment == "center" then
 				frame_widget.content.center_timer_field = timer
 				timer_style = frame_widget.style.center_timer
+				timer_shadow_style = frame_widget.style.center_timer_shadow
+				frame_widget.content.timer_field = ""
 			else
+				frame_widget.content.center_timer_field = ""
 				frame_widget.content.timer_field = timer
 				timer_style = frame_widget.style.timer
+				timer_shadow_style = frame_widget.style.timer_shadow
 			end
 
 			if current_popup.timer_font_size then
@@ -742,7 +746,6 @@ PopupHandler.update = function (self, dt, from_manager)
 			end
 
 			if current_popup.timer_blink then
-				timer_style.font_size = math.smoothstep(current_popup.timer%1, 0, 1)*20 + 40
 				timer_style.text_color = Colors.lerp_color_tables(Colors.get_color_table_with_alpha("white", 255), Colors.get_color_table_with_alpha("cheeseburger", 255), current_popup.timer%15%1)
 			end
 

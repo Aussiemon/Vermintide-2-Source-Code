@@ -5,6 +5,7 @@ require("scripts/settings/game_mode_settings")
 require("scripts/settings/player_data")
 require("scripts/settings/equipment/attachments")
 require("scripts/settings/equipment/cosmetics")
+require("scripts/settings/equipment/player_wwise_dependencies")
 require("scripts/settings/profiles/career_settings")
 require("scripts/settings/equipment/weapons")
 require("scripts/settings/equipment/pickups")
@@ -178,6 +179,11 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_witch_hunter_bell",
 	"dialogues/generated/lookup_wood_elf_bell",
 	"dialogues/generated/lookup_empire_soldier_bell",
+	"dialogues/generated/lookup_bright_wizard_ground_zero",
+	"dialogues/generated/lookup_dwarf_ranger_ground_zero",
+	"dialogues/generated/lookup_witch_hunter_ground_zero",
+	"dialogues/generated/lookup_wood_elf_ground_zero",
+	"dialogues/generated/lookup_empire_soldier_ground_zero",
 	"dialogues/generated/lookup_hub_conversations"
 }
 
@@ -341,6 +347,7 @@ local damage_sources = {
 	"ground_impact",
 	"suicide",
 	"wounded_degen",
+	"health_degen",
 	"temporary_health_degen",
 	"dot_debuff",
 	"overcharge",
@@ -623,9 +630,9 @@ NetworkLookup.heal_types = {
 	"shield_by_assist",
 	"debug",
 	"leech",
-	"twitch",
 	"career_skill",
-	"career_passive"
+	"career_passive",
+	"health_regen"
 }
 NetworkLookup.difficulties = create_lookup({}, DifficultySettings)
 NetworkLookup.linked_particle_policies = {
@@ -930,6 +937,7 @@ NetworkLookup.damage_types = {
 	"burning_smiter",
 	"damage_over_time",
 	"wounded_dot",
+	"health_degen",
 	"temporary_health_degen",
 	"arrow_poison_dot",
 	"aoe_poison_dot",
@@ -1002,6 +1010,7 @@ NetworkLookup.buff_templates = {
 	"bardin_ironbreaker_activated_ability_duration",
 	"bardin_ironbreaker_activated_ability_duration_block_cost",
 	"bardin_ironbreaker_activated_ability_heal",
+	"bardin_ironbreaker_max_health",
 	"bardin_slayer_activated_ability",
 	"bardin_slayer_activated_ability_uninterruptible",
 	"bardin_slayer_activated_ability_attackspeed",
@@ -1031,6 +1040,7 @@ NetworkLookup.buff_templates = {
 	"victor_witchhunter_activated_ability_duration",
 	"victor_witchhunter_damage_on_grimoire_picked_up",
 	"victor_witchhunter_passive_debuff",
+	"victor_witchhunter_headshot_damage_increase",
 	"markus_knight_defence_buff",
 	"markus_mercenary_activated_ability",
 	"markus_mercenary_attack_speed_on_last_standing",
@@ -1044,6 +1054,7 @@ NetworkLookup.buff_templates = {
 	"markus_knight_passive_stamina_aura",
 	"markus_knight_passive_movement_speed_aura",
 	"markus_knight_improved_passive_defence_aura",
+	"markus_knight_max_health",
 	"markus_knight_passive_defence_aura",
 	"markus_huntsman_activated_ability",
 	"markus_huntsman_activated_ability_damage_on_exit",
@@ -1093,7 +1104,29 @@ NetworkLookup.buff_templates = {
 	"trait_necklace_damage_taken_reduction_on_heal",
 	"trait_trinket_grenade_damage_taken",
 	"traits_melee_increase_damage_on_block",
-	"properties_curse_resistance"
+	"traits_melee_counter_push_power",
+	"traits_ranged_restore_stamina_headshot",
+	"traits_ranged_remove_overcharge_on_crit",
+	"traits_ranged_increase_power_level_vs_armour_crit",
+	"traits_ranged_consecutive_hits_increase_power",
+	"properties_curse_resistance",
+	"properties_protection_skaven",
+	"properties_protection_chaos",
+	"properties_protection_aoe",
+	"properties_crit_boost",
+	"properties_power_vs_skaven",
+	"properties_power_vs_chaos",
+	"properties_power_vs_unarmoured",
+	"properties_power_vs_armoured",
+	"properties_power_vs_large",
+	"properties_power_vs_frenzy",
+	"properties_health",
+	"properties_revive_speed",
+	"twitch_no_overcharge_no_ammo_reloads",
+	"twitch_health_regen",
+	"twitch_health_degen",
+	"twitch_grimoire_health_debuff",
+	"twitch_power_boost_dismember"
 }
 NetworkLookup.buff_data_types = {
 	"n/a",

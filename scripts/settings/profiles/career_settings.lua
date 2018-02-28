@@ -47,7 +47,7 @@ CareerSettings = {
 		},
 		preview_items = {
 			"dr_shield_hammer",
-			"dr_helmet_0005"
+			"ironbreaker_hat_0000"
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -64,7 +64,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("dr_ironbreaker", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	dr_slayer = {
 		profile_name = "dwarf_ranger",
@@ -96,7 +103,7 @@ CareerSettings = {
 		},
 		preview_items = {
 			"dr_dual_wield_axes",
-			"dr_slayer_hair_0001"
+			"slayer_hat_0000"
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -113,7 +120,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("dr_slayer", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"melee",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	dr_ranger = {
 		profile_name = "dwarf_ranger",
@@ -162,7 +176,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("dr_ranger", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	es_huntsman = {
 		profile_name = "empire_soldier",
@@ -193,7 +214,7 @@ CareerSettings = {
 		},
 		preview_items = {
 			"es_handgun",
-			"es_hat_0002"
+			"huntsman_hat_0000"
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -210,7 +231,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("es_huntsman", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	es_knight = {
 		profile_name = "empire_soldier",
@@ -258,7 +286,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("es_knight", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	es_mercenary = {
 		profile_name = "empire_soldier",
@@ -289,7 +324,7 @@ CareerSettings = {
 		},
 		preview_items = {
 			"es_halberd",
-			"es_hat_0003"
+			"mercenary_hat_0000"
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -306,7 +341,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("es_mercenary", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	we_shade = {
 		profile_name = "wood_elf",
@@ -354,7 +396,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("we_shade", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	we_maidenguard = {
 		profile_name = "wood_elf",
@@ -402,7 +451,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("we_maidenguard", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	we_waywatcher = {
 		profile_name = "wood_elf",
@@ -450,7 +506,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("we_waywatcher", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	wh_zealot = {
 		profile_name = "witch_hunter",
@@ -498,7 +561,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("wh_zealot", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	wh_bountyhunter = {
 		profile_name = "witch_hunter",
@@ -546,7 +616,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("wh_bountyhunter", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	wh_captain = {
 		profile_name = "witch_hunter",
@@ -594,7 +671,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("wh_captain", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	bw_scholar = {
 		profile_name = "bright_wizard",
@@ -625,7 +709,7 @@ CareerSettings = {
 		},
 		preview_items = {
 			"bw_skullstaff_spear",
-			"bw_gate_0008"
+			"scholar_hat_0000"
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -642,7 +726,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("bw_scholar", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	bw_adept = {
 		profile_name = "bright_wizard",
@@ -673,7 +764,7 @@ CareerSettings = {
 		},
 		preview_items = {
 			"bw_skullstaff_fireball",
-			"bw_gate_0007"
+			"adept_hat_0000"
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -690,7 +781,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("bw_adept", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	bw_unchained = {
 		profile_name = "bright_wizard",
@@ -721,7 +819,7 @@ CareerSettings = {
 		},
 		preview_items = {
 			"bw_flame_sword",
-			"bw_gate_0006"
+			"unchained_hat_0000"
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			if Development.parameter("unlock_all_careers") then
@@ -738,7 +836,14 @@ CareerSettings = {
 			local template = ProgressionUnlocks.get_profile_unlock("bw_unchained", hero_name)
 
 			return template.level_requirement
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	},
 	empire_soldier_tutorial = {
 		profile_name = "empire_soldier",
@@ -767,14 +872,21 @@ CareerSettings = {
 		},
 		preview_items = {
 			"es_sword_shield",
-			"es_helmet_0003"
+			"knight_hat_0000"
 		},
 		is_unlocked_function = function (hero_name, hero_level)
 			return true
 		end,
 		unlocked_at_level_function = function (hero_name)
 			return 1
-		end
+		end,
+		loadout_equipment_slots = {
+			"melee",
+			"ranged",
+			"necklace",
+			"ring",
+			"trinket"
+		}
 	}
 }
 

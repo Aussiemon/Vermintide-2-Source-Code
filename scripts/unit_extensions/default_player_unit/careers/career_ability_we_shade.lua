@@ -37,11 +37,7 @@ CareerAbilityWEShade.update = function (self, unit, input, dt, context, t)
 
 	local input_extension = self._input_extension
 
-	if not input_extension then
-		return 
-	end
-
-	if input_extension.get(input_extension, "function_career") then
+	if input_extension and input_extension.get(input_extension, "action_career") then
 		self._run_ability(self)
 	end
 
@@ -50,9 +46,8 @@ end
 CareerAbilityWEShade._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
-	local activated_ability_data = career_extension.get_activated_ability_data(career_extension)
 
-	return self._local_player and not self._bot_player and career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
+	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityWEShade._run_ability = function (self)
 	local world = self._world

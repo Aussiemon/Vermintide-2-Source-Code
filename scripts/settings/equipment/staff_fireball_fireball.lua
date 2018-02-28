@@ -18,7 +18,7 @@ weapon_template.actions = {
 			alert_sound_range_fire = 12,
 			fire_sound_event = "player_combat_weapon_staff_fireball_fire",
 			fire_sound_on_husk = true,
-			speed = 7000,
+			speed = 9000,
 			aim_assist_ramp_multiplier = 0.4,
 			anim_event = "attack_shoot_fireball",
 			total_time = 1,
@@ -47,12 +47,6 @@ weapon_template.actions = {
 					start_time = 0.3,
 					action = "weapon_reload",
 					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -85,15 +79,16 @@ weapon_template.actions = {
 			kind = "charged_projectile",
 			fire_sound_event_parameter = "drakegun_charge_fire",
 			is_spell = true,
+			scale_power_level = 0.5,
 			overcharge_type = "fireball_charged",
 			fire_sound_event = "player_combat_weapon_staff_fireball_fire",
 			hit_effect = "fireball_impact",
 			apply_recoil = true,
-			throw_up_this_much_in_target_direction = 0.15,
+			throw_up_this_much_in_target_direction = 0.1,
 			alert_sound_range_fire = 12,
 			fire_time = 0.3,
 			fire_sound_on_husk = true,
-			speed = 2000,
+			speed = 3000,
 			anim_event = "attack_shoot_fireball_charged",
 			total_time = 1,
 			allowed_chain_actions = {
@@ -122,12 +117,6 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "weapon_reload",
 					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -169,7 +158,7 @@ weapon_template.actions = {
 			minimum_hold_time = 0.3,
 			overcharge_type = "drakegun_charging",
 			charge_sound_switch = "projectile_charge_sound",
-			charge_time = 1,
+			charge_time = 2,
 			hold_input = "action_two_hold",
 			anim_event = "attack_charge_fireball",
 			charge_sound_name = "player_combat_weapon_staff_charge",
@@ -196,12 +185,6 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "weapon_reload",
 					input = "weapon_reload"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			}
 		}
@@ -247,12 +230,6 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			condition_func = function (action_user, input_extension)
@@ -269,7 +246,6 @@ weapon_template.actions = {
 	},
 	action_inspect = ActionTemplates.action_inspect,
 	action_wield = ActionTemplates.wield,
-	action_career_skill = ActionTemplates.career_skill_dummy,
 	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
 	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
 	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
@@ -342,9 +318,9 @@ weapon_template.aim_assist_settings = {
 	}
 }
 weapon_template.tooltip_keywords = {
-	"keyword_1",
-	"keyword_2",
-	"keyword_3"
+	"weapon_keyword_crowd_control",
+	"weapon_keyword_damage_over_time",
+	"weapon_keyword_overheat"
 }
 weapon_template.compare_statistics = {
 	attacks = {

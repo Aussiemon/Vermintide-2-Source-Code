@@ -293,8 +293,7 @@ local relative_positions = {
 	1.5
 }
 BTNinjaApproachAction.check_free_los = function (self, unit, blackboard, data)
-	local enemy_spine_node = Unit.node(blackboard.target_unit, "j_neck")
-	local p2 = Unit.world_position(blackboard.target_unit, enemy_spine_node) - Vector3(0, 0, 1)
+	local p2 = Unit.world_position(blackboard.target_unit, 0) + Vector3(0, 0, 0.2)
 	local enemy_pos = POSITION_LOOKUP[blackboard.target_unit]
 
 	if p2.z < enemy_pos.z then

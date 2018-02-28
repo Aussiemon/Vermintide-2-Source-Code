@@ -158,8 +158,6 @@ HeroView.draw = function (self, dt, input_service)
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
-	UIRenderer.draw_widget(ui_renderer, self._console_cursor_widget)
-
 	if self._draw_loading then
 		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt)
 
@@ -171,6 +169,12 @@ HeroView.draw = function (self, dt, input_service)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
+
+	if gamepad_active then
+		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt)
+		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor_widget)
+		UIRenderer.end_pass(ui_top_renderer)
+	end
 
 	return 
 end
@@ -443,11 +447,6 @@ HeroView.transitioning = function (self)
 	return 
 end
 HeroView._handle_exit = function (self, input_service)
-	if input_service.get(input_service, "toggle_menu") then
-		self.play_sound(self, "Play_hud_select")
-		self.close_menu(self, not self.exit_to_game)
-	end
-
 	return 
 end
 HeroView.suspend = function (self)

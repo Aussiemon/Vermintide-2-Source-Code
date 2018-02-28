@@ -9,7 +9,13 @@ PeerStates.Connecting = {
 		if ban_list_manager ~= nil and ban_list_manager.is_banned(ban_list_manager, self.peer_id) then
 			printf("[PSM] Disconnecting banned player (%s)", self.peer_id)
 
-			self._banned = true
+			self._disconnect_peer = true
+
+			return 
+		end
+
+		if self.server.level_key == "prologue" and self.peer_id ~= self.server.my_peer_id then
+			self._disconnect_peer = true
 
 			return 
 		end
@@ -45,7 +51,7 @@ PeerStates.Connecting = {
 		return 
 	end,
 	update = function (self, dt)
-		if self._banned then
+		if self._disconnect_peer then
 			return PeerStates.Disconnecting
 		end
 
@@ -84,7 +90,7 @@ PeerStates.Connecting = {
 						end
 					end
 
-					if Managers.eac:enabled() then
+					if PLATFORM == "win32" and rawget(_G, "EAC") then
 						return PeerStates.VerifyEAC
 					else
 						return PeerStates.Loading
@@ -114,43 +120,50 @@ PeerStates.Connecting = {
 }
 PeerStates.VerifyEAC = {
 	on_enter = function (self, previous_state)
-		printf("[PSM] Query EAC authorize for peer(%s)", self.peer_id)
+		self._server_id = Network.peer_id()
 
-		if self.peer_id == Network.peer_id() then
-			printf("[PSM] Our own peer, fetch eac status from system")
-
-			self.authorized = Managers.eac:authorized()
-
-			fassert(self.authorized ~= nil, "Making sure we always get an answer here.")
-		else
-			self.eac_request_id = Managers.eac:query_authorized(self.peer_id, callback(self.server, "cb_eac_auth", self.peer_id))
-		end
-
-		return 
-	end,
-	cb_eac_auth = function (self, info)
-		if self.eac_request_id ~= info.request_id then
-			printf("[PSM] VerifyEAC: Got the wrong request id (%s), wanted (%s)", info.request_id, self.eac_request_id)
-
-			return 
-		end
-
-		printf("[PSM] VerifyEAC: Authorized (%s)", tostring(info.authorized))
-
-		self.authorized = info.authorized
+		printf("[PSM] Wait for a determined EAC state for peer(%s)", self.peer_id)
 
 		return 
 	end,
 	update = function (self, dt)
-		if self.authorized ~= nil then
-			if self.authorized == Managers.eac:authorized() then
-				return PeerStates.Loading
-			else
-				printf("[PSM] Peer is not EAC authorized, disconnecting peer (%s)", self.peer_id)
-				self.server:disconnect_peer(self.peer_id, "eac_authorize_failed")
+		local server_state, peer_state = nil
 
-				return PeerStates.Disconnecting
+		if DEDICATED_SERVER then
+			local gs = Managers.game_server
+			server_state = "untrusted"
+			peer_state = gs.eac_state(gs, self.peer_id)
+		else
+			local host = self.server.lobby_host
+			server_state = EAC.state()
+
+			if self.peer_id == Network.peer_id() then
+				peer_state = server_state
+			else
+				peer_state = host.eac_state(host, self.peer_id)
 			end
+		end
+
+		if server_state == "undetermined" then
+			return 
+		end
+
+		if peer_state == "undetermined" then
+			return 
+		end
+
+		printf("[PSM] Host EAC state is %s, peer %s's state is %s", server_state, self.peer_id, peer_state)
+
+		local match = nil
+		match = ((server_state ~= "banned" and peer_state ~= "banned") or false) and server_state == peer_state
+
+		if match then
+			return PeerStates.Loading
+		else
+			printf("[PSM] Peer's EAC status doesn't match the server, disconnecting peer (%s)", self.peer_id)
+			self.server:disconnect_peer(self.peer_id, "eac_authorize_failed")
+
+			return PeerStates.Disconnecting
 		end
 
 		return 

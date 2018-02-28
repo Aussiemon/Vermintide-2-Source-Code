@@ -132,16 +132,18 @@ EnemyRecycler.draw_roaming_splines = function (self)
 	local roaming_splines = self.ai_group_system._roaming_splines
 
 	for spline_id, spline in pairs(roaming_splines) do
-		local is_roaming = spline.has_party
+		if spline.spline_points then
+			local is_roaming = spline.has_party
 
-		if is_roaming then
-			QuickDrawerStay:sphere(spline.has_party:unbox(), 1, Color(0, 255, 0))
-			print("FOUND ROAMING!")
+			if is_roaming then
+				QuickDrawerStay:sphere(spline.has_party:unbox(), 1, Color(0, 255, 0))
+				print("FOUND ROAMING!")
+			end
+
+			local color = (is_roaming and used_color) or not_used_color
+
+			self.ai_group_system:draw_spline(spline.spline_points, drawer, color)
 		end
-
-		local color = (is_roaming and used_color) or not_used_color
-
-		self.ai_group_system:draw_spline(spline.spline_points, drawer, color)
 	end
 
 	return 

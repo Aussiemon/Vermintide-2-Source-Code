@@ -673,7 +673,7 @@ BTConditions.troll_downed = function (blackboard)
 	return blackboard.can_get_downed and blackboard.downed_state
 end
 BTConditions.needs_to_crouch = function (blackboard)
-	return blackboard.needs_to_crouch
+	return blackboard.needs_to_crouch and BTConditions.ratogre_target_reachable(blackboard)
 end
 BTConditions.reset_utility = function (blackboard)
 	return not blackboard.reset_utility

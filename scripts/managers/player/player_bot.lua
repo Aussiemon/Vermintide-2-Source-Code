@@ -211,6 +211,10 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 		ai_slot_system = {
 			profile_index = profile_index
 		},
+		talent_system = {
+			player = self,
+			profile_index = profile_index
+		},
 		career_system = {
 			player = self,
 			profile_index = profile_index,

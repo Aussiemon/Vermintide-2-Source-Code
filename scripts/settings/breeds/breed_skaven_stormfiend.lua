@@ -86,9 +86,9 @@ local breed_data = {
 		0,
 		0,
 		0,
-		5,
+		3,
 		0,
-		1
+		0.75
 	},
 	debug_color = {
 		255,

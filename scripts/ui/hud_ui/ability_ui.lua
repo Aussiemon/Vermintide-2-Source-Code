@@ -135,6 +135,10 @@ AbilityUI._set_ability_cooldown_state = function (self, cooldown_fraction, initi
 		style.ability_effect_right.color[1] = 0
 		style.ability_effect_top_right.color[1] = 0
 		style.ability_bar_highlight.color[1] = 0
+		style.input_text_gamepad.text_color[1] = 0
+		style.input_text_shadow_gamepad.text_color[1] = 0
+		style.input_texture_left_shoulder.color[1] = 0
+		style.input_texture_right_shoulder.color[1] = 0
 	end
 
 	widget.content.on_cooldown = on_cooldown
@@ -252,7 +256,7 @@ end
 AbilityUI.event_input_changed = function (self)
 	local inventory_slots = InventorySettings.slots
 	local num_inventory_slots = #inventory_slots
-	local input_action = "action_career_bw_1"
+	local input_action = "action_career"
 	local widget = self._widgets_by_name.ability
 
 	self._set_input(self, widget, input_action)
@@ -348,6 +352,13 @@ AbilityUI._update_ability_animations = function (self, dt)
 	style.ability_effect_top_left.color[1] = effect_alpha
 	style.ability_effect_right.color[1] = effect_alpha
 	style.ability_effect_top_right.color[1] = effect_alpha
+	style.input_text_gamepad.text_color[1] = pulse_progress*155 + 100
+	style.input_text_shadow_gamepad.text_color[1] = pulse_progress*155 + 100
+	style.input_texture_left_shoulder.color[1] = pulse_progress*155 + 100
+	style.input_texture_right_shoulder.color[1] = pulse_progress*155 + 100
+	style.input_texture_right_shoulder.color[3] = math.lerp(255, 0, pulse_progress)
+	style.input_texture_left_shoulder.color[3] = math.lerp(255, 0, pulse_progress)
+	style.input_text_gamepad.text_color[3] = math.lerp(255, 0, pulse_progress)
 	style.ability_bar_highlight.color[1] = pulse_progress*155 + 100
 
 	self._set_widget_dirty(self, widget)

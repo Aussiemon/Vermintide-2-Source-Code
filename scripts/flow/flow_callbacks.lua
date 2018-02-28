@@ -2616,8 +2616,9 @@ end
 function flow_callback_deactivate_payload(params)
 	local unit = params.payload_unit
 	local extension = ScriptUnit.extension(unit, "payload_system")
+	local stop = params.force_stop
 
-	extension.deactivate(extension)
+	extension.deactivate(extension, stop)
 
 	return 
 end
@@ -3013,40 +3014,8 @@ function flow_callbacks_tutorial_inputs_enabled(params)
 		action_two = true
 	}
 	local ability_actions = {
-		action_career_wh_3_release = true,
-		action_career_wh_2_release = true,
-		action_career_we_3 = true,
-		action_career_es_3_release = true,
 		action_career_release = true,
 		action_career = true,
-		action_career_dr_3_release = true,
-		action_career_dr_2_release = true,
-		action_career_bw_3_release = true,
-		action_career_bw_2_release = true,
-		action_career_es_3 = true,
-		action_career_es_1_release = true,
-		action_career_wh_3 = true,
-		action_career_es_2_release = true,
-		action_career_wh_2 = true,
-		action_career_bw_2 = true,
-		action_career_wh_1_release = true,
-		action_career_es_2 = true,
-		function_career_release = true,
-		action_career_bw_1_release = true,
-		action_career_wh_1 = true,
-		action_career_we_1_release = true,
-		action_career_we_2_release = true,
-		action_career_dr_3 = true,
-		action_career_we_3_release = true,
-		action_career_dr_2 = true,
-		action_career_bw_3 = true,
-		function_career = true,
-		action_career_es_1 = true,
-		action_career_we_2 = true,
-		action_career_dr_1 = true,
-		action_career_bw_1 = true,
-		action_career_dr_1_release = true,
-		action_career_we_1 = true,
 		action_career_hold = true
 	}
 	local switch_actions = {

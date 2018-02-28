@@ -37,6 +37,14 @@ BTSpawnAllies.enter = function (self, unit, blackboard, t)
 		call_position = BTSpawnAllies.find_spawn_point(unit, blackboard, action, data)
 	end
 
+	if blackboard.override_spawn_allies_call_position then
+		call_position = blackboard.override_spawn_allies_call_position:unbox()
+
+		data.call_position:store(call_position)
+
+		stay_still = false
+	end
+
 	if stay_still then
 		Managers.state.network:anim_event(unit, randomize(action.animation))
 		blackboard.navigation_extension:set_enabled(false)

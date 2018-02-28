@@ -36,60 +36,6 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "nik_start_room",
-		name = "nik_start_room",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nik_start_room"
-			}
-		}
-	})
-	define_rule({
-		response = "nik_map_reminder",
-		name = "nik_map_reminder",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nik_map_reminder"
-			}
-		}
-	})
-	define_rule({
-		response = "nik_inventory_intro",
-		name = "nik_inventory_intro",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"nik_inventory_intro"
-			}
-		}
-	})
-	define_rule({
 		response = "nik_inventory_reminder",
 		name = "nik_inventory_reminder",
 		criterias = {
@@ -416,6 +362,12 @@ return function ()
 				"item_tag",
 				OP.EQ,
 				"nfl_debrief_helmgart_military_01"
+			},
+			{
+				"query_context",
+				"level_name",
+				OP.EQ,
+				"military"
 			}
 		}
 	})
@@ -436,10 +388,10 @@ return function ()
 				"nfl_debrief_catacombs_01"
 			},
 			{
-				"global_context",
-				"completed_times_catacombs",
+				"query_context",
+				"level_name",
 				OP.EQ,
-				1
+				"catacombs"
 			}
 		}
 	})
@@ -460,10 +412,10 @@ return function ()
 				"nfl_debrief_mines_01"
 			},
 			{
-				"global_context",
-				"completed_times_mines",
+				"query_context",
+				"level_name",
 				OP.EQ,
-				1
+				"mines"
 			}
 		}
 	})
@@ -508,10 +460,10 @@ return function ()
 				"nfl_debrief_elven_ruins_01"
 			},
 			{
-				"global_context",
-				"completed_times_elven_ruins",
+				"query_context",
+				"level_name",
 				OP.EQ,
-				1
+				"elven_ruins"
 			}
 		}
 	})
@@ -532,10 +484,10 @@ return function ()
 				"nfl_debrief_bell_01"
 			},
 			{
-				"global_context",
-				"completed_times_bell",
+				"query_context",
+				"level_name",
 				OP.EQ,
-				1
+				"bell"
 			}
 		}
 	})
@@ -556,10 +508,10 @@ return function ()
 				"nfl_debrief_fort_01"
 			},
 			{
-				"global_context",
-				"completed_times_fort",
+				"query_context",
+				"level_name",
 				OP.EQ,
-				1
+				"fort"
 			}
 		}
 	})
@@ -580,10 +532,10 @@ return function ()
 				"nfl_debrief_skaven_stronghold_01"
 			},
 			{
-				"global_context",
-				"completed_times_skaven_stronghold",
+				"query_context",
+				"level_name",
 				OP.EQ,
-				1
+				"skaven_stronghold"
 			}
 		}
 	})
@@ -604,10 +556,10 @@ return function ()
 				"nfl_debrief_farmland_01"
 			},
 			{
-				"global_context",
-				"completed_times_farmlands",
+				"query_context",
+				"level_name",
 				OP.EQ,
-				1
+				"farmlands"
 			}
 		}
 	})
@@ -628,10 +580,10 @@ return function ()
 				"nfl_debrief_ussingen_01"
 			},
 			{
-				"global_context",
-				"completed_times_ussingen",
+				"query_context",
+				"level_name",
 				OP.EQ,
-				1
+				"ussingen"
 			}
 		}
 	})
@@ -652,10 +604,10 @@ return function ()
 				"nfl_debrief_nurgle_01"
 			},
 			{
-				"global_context",
-				"completed_times_nurgle",
+				"query_context",
+				"level_name",
 				OP.EQ,
-				1
+				"nurgle"
 			}
 		}
 	})
@@ -676,10 +628,10 @@ return function ()
 				"nfl_debrief_war_camp_01"
 			},
 			{
-				"global_context",
-				"completed_times_warcamp",
+				"query_context",
+				"level_name",
 				OP.EQ,
-				1
+				"warcamp"
 			}
 		}
 	})
@@ -700,10 +652,10 @@ return function ()
 				"nfl_debrief_skittergate_01"
 			},
 			{
-				"global_context",
-				"completed_times_skittergate",
+				"query_context",
+				"level_name",
 				OP.EQ,
-				1
+				"skittergate"
 			}
 		}
 	})
@@ -757,7 +709,7 @@ return function ()
 			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nfl_survival_ruins_intro_01"
+				[1.0] = "nfl_debrief_helmgart_military_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -766,7 +718,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nfl_survival_ruins_intro_01"
+				[1.0] = "nfl_debrief_helmgart_military_01"
 			}
 		},
 		nik_greeting = {
@@ -848,30 +800,24 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		nik_intro_forge_reminder = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
+		nik_greeting_night = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 2,
+			category = "cut_scene",
+			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nik_intro_forge_reminder_01",
-				[2.0] = "nik_intro_forge_reminder_02"
+				[1.0] = "nik_greeting_night"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_intro_forge_reminder_01",
-				[2.0] = "nik_intro_forge_reminder_02"
-			},
-			randomize_indexes = {}
+				[1.0] = "nik_greeting_night"
+			}
 		},
 		nfl_debrief_catacombs_01 = {
 			sound_events_n = 1,
@@ -891,31 +837,6 @@ return function ()
 			localization_strings = {
 				[1.0] = "nfl_debrief_catacombs_01"
 			}
-		},
-		nik_start_room = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "nik_start_room_01",
-				[2.0] = "nik_start_room_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "nik_start_room_01",
-				[2.0] = "nik_start_room_02"
-			},
-			randomize_indexes = {}
 		},
 		nik_hub_welcome = {
 			sound_events_n = 1,
@@ -1136,62 +1057,42 @@ return function ()
 				[1.0] = "nfl_debrief_farmland_01"
 			}
 		},
-		nik_callout_unready_saltzpyre = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+		nik_hub_long_waiting_01 = {
+			sound_events_n = 5,
+			randomize_indexes_n = 0,
+			face_animations_n = 5,
 			database = "hub_conversations",
 			category = "npc_talk",
-			dialogue_animations_n = 1,
+			dialogue_animations_n = 5,
 			sound_events = {
-				[1.0] = "nik_callout_unready_saltzpyre"
+				"nik_hub_idle_long_waiting_01",
+				"nik_hub_idle_long_waiting_02",
+				"nik_hub_idle_long_waiting_05",
+				"nik_hub_greeting_long_waiting_19",
+				"nik_hub_greeting_long_waiting_08"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_callout_unready_saltzpyre"
-			}
-		},
-		nik_inventory_intro = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "nik_inventory_intro_01"
+				"nik_hub_idle_long_waiting_01",
+				"nik_hub_idle_long_waiting_02",
+				"nik_hub_idle_long_waiting_05",
+				"nik_hub_greeting_long_waiting_19",
+				"nik_hub_greeting_long_waiting_08"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "nik_inventory_intro_01"
-			}
-		},
-		nfl_hub_call_out = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "nfl_hub_call_out"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "nfl_hub_call_out"
-			}
+			randomize_indexes = {}
 		},
 		nfl_debrief_skaven_stronghold_01 = {
 			sound_events_n = 1,
@@ -1212,14 +1113,14 @@ return function ()
 				[1.0] = "nfl_debrief_skaven_stronghold_01"
 			}
 		},
-		nfl_hub_banter_kept_alive = {
+		nfl_hub_call_out = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nfl_hub_banter_kept_alive"
+				[1.0] = "nfl_hub_call_out"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -1228,7 +1129,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nfl_hub_banter_kept_alive"
+				[1.0] = "nfl_hub_call_out"
 			}
 		},
 		nfl_debrief_mines_01 = {
@@ -1269,14 +1170,14 @@ return function ()
 				[1.0] = "nik_map_intro_01"
 			}
 		},
-		nfl_debrief_skittergate_01 = {
+		nfl_hub_banter_kept_alive = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nfl_debrief_skittergate_01"
+				[1.0] = "nfl_hub_banter_kept_alive"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -1285,7 +1186,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nfl_debrief_skittergate_01"
+				[1.0] = "nfl_hub_banter_kept_alive"
 			}
 		},
 		nik_hub_the_plan = {
@@ -1307,14 +1208,14 @@ return function ()
 				[1.0] = "nik_hub_the_plan_01"
 			}
 		},
-		nfl_debrief_nurgle_01 = {
+		nfl_debrief_skittergate_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nfl_debrief_nurgle_01"
+				[1.0] = "nfl_debrief_skittergate_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -1323,26 +1224,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nfl_debrief_nurgle_01"
-			}
-		},
-		nik_greeting_night = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "cut_scene",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "nik_greeting_night"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "nik_greeting_night"
+				[1.0] = "nfl_debrief_skittergate_01"
 			}
 		},
 		nik_greeting_sunny = {
@@ -1364,36 +1246,47 @@ return function ()
 				[1.0] = "nik_greeting_sunny"
 			}
 		},
-		nik_map_reminder = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
+		nfl_debrief_nurgle_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "npc_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 1,
 			sound_events = {
-				"nik_map_reminder_01",
-				"nik_map_reminder_02",
-				"nik_map_reminder_03",
-				"nik_map_reminder_04"
+				[1.0] = "nfl_debrief_nurgle_01"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"nik_map_reminder_01",
-				"nik_map_reminder_02",
-				"nik_map_reminder_03",
-				"nik_map_reminder_04"
+				[1.0] = "nfl_debrief_nurgle_01"
+			}
+		},
+		nik_intro_forge_reminder = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "nik_intro_forge_reminder_01",
+				[2.0] = "nik_intro_forge_reminder_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nik_intro_forge_reminder_01",
+				[2.0] = "nik_intro_forge_reminder_02"
 			},
 			randomize_indexes = {}
 		},
@@ -1426,14 +1319,14 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		nik_greeting_rainy = {
+		nik_callout_unready_saltzpyre = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "cut_scene",
+			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nik_greeting_rainy"
+				[1.0] = "nik_callout_unready_saltzpyre"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -1442,7 +1335,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_greeting_rainy"
+				[1.0] = "nik_callout_unready_saltzpyre"
 			}
 		},
 		nik_callout_unready_kerillian = {
@@ -1464,42 +1357,24 @@ return function ()
 				[1.0] = "nik_callout_unready_kerillian"
 			}
 		},
-		nik_hub_long_waiting_01 = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
+		nik_greeting_rainy = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 5,
+			category = "cut_scene",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"nik_hub_idle_long_waiting_01",
-				"nik_hub_idle_long_waiting_02",
-				"nik_hub_idle_long_waiting_05",
-				"nik_hub_greeting_long_waiting_19",
-				"nik_hub_greeting_long_waiting_08"
+				[1.0] = "nik_greeting_rainy"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"nik_hub_idle_long_waiting_01",
-				"nik_hub_idle_long_waiting_02",
-				"nik_hub_idle_long_waiting_05",
-				"nik_hub_greeting_long_waiting_19",
-				"nik_hub_greeting_long_waiting_08"
-			},
-			randomize_indexes = {}
+				[1.0] = "nik_greeting_rainy"
+			}
 		},
 		nik_callout_unready_kruber = {
 			sound_events_n = 1,

@@ -124,10 +124,10 @@ local video_settings_definition = {
 		tooltip_text = "tooltip_gamma",
 		widget_type = "slider",
 		slider_image = {
-			slider_image = "settings_debug_gamma_correction",
+			slider_image = "gamma_settings_image_02",
 			size = {
-				500,
-				120
+				420,
+				50
 			}
 		}
 	},
@@ -807,44 +807,21 @@ local keybind_settings_definition = {
 		}
 	},
 	{
+		keybind_description = "action_three",
+		widget_type = "keybind",
+		actions = {
+			"action_three",
+			"action_three_hold",
+			"action_three_release"
+		}
+	},
+	{
 		keybind_description = "input_active_ability",
 		widget_type = "keybind",
 		actions = {
-			"function_career",
-			"function_career_release",
 			"action_career",
 			"action_career_hold",
-			"action_career_release",
-			"action_career_bw_1",
-			"action_career_bw_2",
-			"action_career_bw_3",
-			"action_career_dr_1",
-			"action_career_dr_2",
-			"action_career_dr_3",
-			"action_career_es_1",
-			"action_career_es_2",
-			"action_career_es_3",
-			"action_career_wh_1",
-			"action_career_wh_2",
-			"action_career_wh_3",
-			"action_career_we_1",
-			"action_career_we_2",
-			"action_career_we_3",
-			"action_career_bw_1_release",
-			"action_career_bw_2_release",
-			"action_career_bw_3_release",
-			"action_career_dr_1_release",
-			"action_career_dr_2_release",
-			"action_career_dr_3_release",
-			"action_career_es_1_release",
-			"action_career_es_2_release",
-			"action_career_es_3_release",
-			"action_career_wh_1_release",
-			"action_career_wh_2_release",
-			"action_career_wh_3_release",
-			"action_career_we_1_release",
-			"action_career_we_2_release",
-			"action_career_we_3_release"
+			"action_career_release"
 		}
 	},
 	{
@@ -970,6 +947,14 @@ local keybind_settings_definition = {
 		}
 	},
 	{
+		keybind_description = "hotkey_hero",
+		keymappings_key = "IngameMenuKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"hotkey_hero"
+		}
+	},
+	{
 		size_y = 30,
 		widget_type = "empty"
 	},
@@ -1041,32 +1026,21 @@ local ignore_keybind = {
 }
 local gamepad_settings_definition = {
 	{
+		size_y = 30,
+		widget_type = "empty"
+	},
+	{
 		bg_image2 = "controller_image_ps4",
 		bg_image = "controller_image_xb1",
 		widget_type = "gamepad_layout",
 		bg_image_size = {
-			907.1999999999999,
-			288
+			1260,
+			400
 		},
 		bg_image_size2 = {
 			1260,
 			440
 		}
-	},
-	{
-		setup = "cb_gamepad_left_handed_enabled_setup",
-		saved_value = "cb_gamepad_left_handed_enabled_saved_value",
-		callback = "cb_gamepad_left_handed_enabled",
-		tooltip_text = "tooltip_gamepad_left_handed_enabled",
-		widget_type = "stepper"
-	},
-	{
-		setup = "cb_gamepad_layout_setup",
-		name = "gamepad_layout",
-		saved_value = "cb_gamepad_layout_saved_value",
-		callback = "cb_gamepad_layout",
-		tooltip_text = "tooltip_gamepad_layout",
-		widget_type = "stepper"
 	},
 	{
 		setup = "cb_gamepad_look_invert_y_setup",

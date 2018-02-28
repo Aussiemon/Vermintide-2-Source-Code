@@ -2,8 +2,9 @@ require("scripts/settings/script_input_settings")
 require("scripts/settings/equipment/weapons")
 require("scripts/settings/profiles/room_profiles")
 require("scripts/settings/equipment/attachments")
-require("scripts/settings/profiles/unit_wwise_profiles")
+require("scripts/settings/profiles/base_units")
 require("scripts/settings/equipment/cosmetics")
+require("scripts/settings/equipment/player_wwise_dependencies")
 
 if script_data.honduras_demo then
 	ProfilePriority = {
@@ -61,7 +62,7 @@ SPProfiles = {
 			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
 		},
 		room_profile = RoomProfiles.witch_hunter,
-		base_units = UnitWwiseProfiles.base_units.witch_hunter,
+		base_units = BaseUnits.witch_hunter,
 		first_person_attachment = FirstPersonAttachments.witch_hunter,
 		first_person_heights = {
 			grabbed_by_tentacle = 1.9,
@@ -99,7 +100,7 @@ SPProfiles = {
 			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
 		},
 		room_profile = RoomProfiles.bright_wizard,
-		base_units = UnitWwiseProfiles.base_units.bright_wizard,
+		base_units = BaseUnits.bright_wizard,
 		first_person_attachment = FirstPersonAttachments.bright_wizard,
 		first_person_heights = {
 			grabbed_by_tentacle = 1.7,
@@ -137,7 +138,7 @@ SPProfiles = {
 			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
 		},
 		room_profile = RoomProfiles.dwarf_ranger,
-		base_units = UnitWwiseProfiles.base_units.dwarf_ranger,
+		base_units = BaseUnits.dwarf_ranger,
 		first_person_attachment = FirstPersonAttachments.dwarf_ranger,
 		first_person_heights = {
 			grabbed_by_tentacle = 1.7,
@@ -175,7 +176,7 @@ SPProfiles = {
 			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
 		},
 		room_profile = RoomProfiles.wood_elf,
-		base_units = UnitWwiseProfiles.base_units.wood_elf,
+		base_units = BaseUnits.wood_elf,
 		first_person_attachment = FirstPersonAttachments.wood_elf,
 		first_person_heights = {
 			grabbed_by_tentacle = 1.7,
@@ -213,7 +214,7 @@ SPProfiles = {
 			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
 		},
 		room_profile = RoomProfiles.empire_soldier,
-		base_units = UnitWwiseProfiles.base_units.empire_soldier,
+		base_units = BaseUnits.empire_soldier,
 		first_person_attachment = FirstPersonAttachments.empire_soldier,
 		first_person_heights = {
 			grabbed_by_tentacle = 1.9,
@@ -252,7 +253,7 @@ SPProfiles = {
 			slot_healthkit = ItemMasterList.healthkit_first_aid_kit_01
 		},
 		room_profile = RoomProfiles.empire_soldier,
-		base_units = UnitWwiseProfiles.base_units.empire_soldier,
+		base_units = BaseUnits.empire_soldier,
 		first_person_attachment = FirstPersonAttachments.empire_soldier,
 		first_person_heights = {
 			grabbed_by_tentacle = 1.9,

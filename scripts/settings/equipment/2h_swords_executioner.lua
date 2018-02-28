@@ -351,7 +351,7 @@ weapon_template.actions = {
 			end
 		},
 		heavy_attack_right = {
-			damage_window_start = 0.35,
+			damage_window_start = 0.32,
 			range_mod = 1.4,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
@@ -361,7 +361,7 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0,
 			damage_profile = "heavy_slashing_smiter_executioner",
 			hit_effect = "melee_hit_sword_2h",
-			damage_window_end = 0.43,
+			damage_window_end = 0.41,
 			impact_sound_event = "slashing_hit",
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.5,
@@ -757,12 +757,6 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_career_skill",
-					input = "action_career_skill"
 				}
 			},
 			push_radius = push_radius,
@@ -875,9 +869,9 @@ weapon_template.aim_assist_settings = {
 	}
 }
 weapon_template.tooltip_keywords = {
-	"keyword_1",
-	"keyword_2",
-	"keyword_3"
+	"weapon_keyword_headshotting",
+	"weapon_keyword_wide_sweeps",
+	"weapon_keyword_high_damage"
 }
 weapon_template.compare_statistics = {
 	attacks = {

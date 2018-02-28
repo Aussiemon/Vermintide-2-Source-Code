@@ -8,7 +8,7 @@ if not Demosettings then
 		starting_camera_name = "logo_position_camera",
 		wanted_profile_index = 4,
 		level_name = "levels/honduras/debug/ussingen_demo/world",
-		attract_timer = 45,
+		attract_timer = 90,
 		inventory_resource_package = "resource_packages/inventory",
 		demo_idle_timer = 90,
 		demo_level = "ussingen_demo",

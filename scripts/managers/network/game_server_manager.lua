@@ -176,5 +176,8 @@ GameServerManager.rpc_set_player_name = function (self, sender, cropped_name)
 
 	return 
 end
+GameServerManager.eac_state = function (self, peer)
+	return self._game_server:eac_state(peer)
+end
 
 return 

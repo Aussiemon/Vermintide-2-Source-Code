@@ -165,8 +165,9 @@ local intensity_ignored_damage_types = {
 	temporary_health_degen = true,
 	overcharge = true,
 	wounded_dot = true,
+	knockdown_bleed = true,
 	heal = true,
-	knockdown_bleed = true
+	health_degen = true
 }
 GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 	local health_extension = self.health_extension
@@ -728,6 +729,7 @@ GenericStatusExtension.set_shielded = function (self, shielded)
 end
 local no_sfx_heal_reasons = {
 	career_passive = true,
+	health_regen = true,
 	heal_from_proc = true,
 	career_skill = true
 }
@@ -790,15 +792,15 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 
 	if blocking_weapon_unit then
 		fatigue_cost = buff_extension.apply_buffs_to_value(buff_extension, fatigue_cost, StatBuffIndex.BLOCK_COST)
-	end
 
-	if buff_extension.has_buff_perk(buff_extension, "overcharged_block") then
-		local overcharge_extension = ScriptUnit.has_extension(self.unit, "overcharge_system")
+		if buff_extension.has_buff_perk(buff_extension, "overcharged_block") then
+			local overcharge_extension = ScriptUnit.has_extension(self.unit, "overcharge_system")
 
-		if overcharge_extension and overcharge_extension.above_overcharge_threshold(overcharge_extension) then
-			fatigue_cost = fatigue_cost*0.5
+			if overcharge_extension and overcharge_extension.above_overcharge_threshold(overcharge_extension) then
+				fatigue_cost = fatigue_cost*0.5
 
-			overcharge_extension.remove_charge(overcharge_extension, amount)
+				overcharge_extension.remove_charge(overcharge_extension, amount)
+			end
 		end
 	end
 
@@ -1818,7 +1820,7 @@ GenericStatusExtension.is_wounded = function (self)
 	return self.wounds < self.max_wounds
 end
 GenericStatusExtension.is_permanent_heal = function (self, heal_type)
-	return heal_type == "healing_draught" or heal_type == "bandage" or heal_type == "bandage_trinket" or heal_type == "buff_shared_medpack" or heal_type == "career_passive" or heal_type == "debug"
+	return heal_type == "healing_draught" or heal_type == "bandage" or heal_type == "bandage_trinket" or heal_type == "buff_shared_medpack" or heal_type == "career_passive" or heal_type == "health_regen" or heal_type == "debug"
 end
 GenericStatusExtension.heal_can_remove_wounded = function (self, heal_type)
 	return heal_type == "healing_draught" or heal_type == "bandage" or heal_type == "bandage_trinket" or heal_type == "buff_shared_medpack" or heal_type == "debug"

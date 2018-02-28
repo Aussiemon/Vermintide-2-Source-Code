@@ -56,7 +56,7 @@ local breed_data = {
 	regen_pulse_intensity = 0.1,
 	use_avoidance = false,
 	ignore_nav_propagation_box = true,
-	target_selection_angry = "pick_rat_ogre_target_with_weights",
+	target_selection_angry = "pick_chaos_troll_target_with_weights",
 	bot_opportunity_target_melee_range = 7,
 	wield_inventory_on_spawn = true,
 	default_inventory_template = "chaos_troll",
@@ -119,19 +119,20 @@ local breed_data = {
 	aoe_height = 2.4,
 	displace_players_data = pushed_data,
 	perception_weights = {
-		target_catapulted_mul = 0.5,
+		target_catapulted_mul = 2,
 		target_stickyness_bonus_b = 10,
 		targeted_by_other_special = -10,
-		target_stickyness_duration_a = 5,
-		target_stickyness_duration_b = 10,
-		aggro_decay_per_sec = 5,
+		target_stickyness_duration_a = 3,
+		target_stickyness_duration_b = 5,
+		aggro_decay_per_sec = 4,
 		target_outside_navmesh_mul = 0.5,
-		old_target_aggro_mul = 1,
+		old_target_aggro_mul = 0.5,
+		target_is_in_vomit_multiplier = 10,
 		target_disabled_aggro_mul = 0,
-		max_distance = 50,
-		target_stickyness_bonus_a = 50,
-		distance_weight = 100,
-		target_disabled_mul = 0.15
+		max_distance = 10,
+		target_stickyness_bonus_a = 1500,
+		distance_weight = 10,
+		target_disabled_mul = 0
 	},
 	max_health = {
 		700,
@@ -146,7 +147,7 @@ local breed_data = {
 		0,
 		0,
 		0,
-		5,
+		2.5,
 		0,
 		1
 	},
@@ -372,25 +373,26 @@ local action_data = {
 	},
 	attack_cleave = {
 		damage_type = "cutting",
-		target_running_velocity_threshold = 0.75,
+		target_running_velocity_threshold = 1,
 		fatigue_type = "complete",
 		action_weight = 1,
+		target_running_distance_threshold = 4.5,
 		considerations = UtilityConsiderations.troll_cleave,
 		attacks = {
 			{
 				height = 2.5,
 				offset_forward = 1.1,
 				ignores_dodging = false,
-				rotation_time = 1.6,
+				rotation_time = 1.7,
 				anim_driven = false,
 				offset_up = 0,
-				range = 2.5,
+				range = 2.75,
 				player_push_speed = 8,
 				damage_done_time = 1.5333333333333334,
 				hit_multiple_targets = true,
 				player_push_speed_blocked = 8,
-				attack_time = 2.5,
-				width = 1.5,
+				attack_time = 2.6666666666666665,
+				width = 1.75,
 				multi_attack_anims = {
 					fwd = "attack_cleave",
 					left = "attack_cleave_left",
@@ -421,19 +423,20 @@ local action_data = {
 		},
 		running_attacks = {
 			{
-				player_push_speed = 8,
-				range = 2.5,
 				height = 2.5,
-				width = 1.5,
-				ignores_dodging = false,
-				rotation_time = 2.3,
-				anim_driven = true,
 				offset_forward = 1,
+				rotation_speed = 20,
+				ignores_dodging = false,
+				rotation_time = 2.2,
+				anim_driven = true,
+				offset_up = 0,
+				range = 2.75,
+				player_push_speed = 8,
 				damage_done_time = 1.4333333333333333,
 				hit_multiple_targets = true,
 				player_push_speed_blocked = 8,
-				attack_time = 3,
-				offset_up = 0,
+				attack_time = 2.6666666666666665,
+				width = 1.75,
 				attack_anim = {
 					"attack_move_cleave"
 				},
@@ -609,7 +612,7 @@ local action_data = {
 						offset_right = 0,
 						offset_up = 0,
 						duration = 1.2,
-						start_time = 0.13333333333333333
+						start_time = 0.6
 					}
 				}
 			}
@@ -719,49 +722,46 @@ local action_data = {
 	},
 	melee_shove = {
 		damage_type = "cutting",
+		cooldown = -1,
 		target_running_velocity_threshold = 0.75,
 		fatigue_type = "ogre_shove",
 		action_weight = 1,
 		ignore_ai_damage = true,
+		self_running_speed_threshold = 2,
+		target_running_distance_threshold = 4,
 		considerations = UtilityConsiderations.troll_melee_shove,
 		attacks = {
 			{
-				anim_driven = false,
-				height = 2,
+				rotation_speed = 7,
+				height = 0.8,
 				hit_only_players = false,
-				ignore_targets_behind = true,
-				ignores_dodging = false,
-				rotation_time = 0.3,
-				freeze_intensity_decay_time = 15,
 				catapult_player = true,
-				offset_forward = 0,
+				ignores_dodging = false,
+				rotation_time = 0.6,
+				freeze_intensity_decay_time = 15,
+				range = 0.7,
+				anim_driven = false,
+				offset_forward = 1.2,
 				player_push_speed_blocked_z = 4,
-				offset_up = 0,
+				offset_up = 0.5,
 				player_push_speed_z = 4,
-				range = 2,
+				ignore_targets_behind = true,
 				player_push_speed = 16,
 				hit_multiple_targets = true,
 				player_push_speed_blocked = 12.8,
-				attack_time = 1.75,
-				width = 0.4,
+				attack_time = 1.6666666666666667,
+				width = 1,
 				attack_anim = {
-					"attack_sweep",
-					"attack_pounce"
+					"attack_shove"
 				},
 				damage_done_time = {
-					attack_pounce = 1.0333333333333334,
-					attack_sweep = 1
+					attack_shove = 0.9
 				},
 				continious_overlap = {
-					attack_sweep = {
-						base_node_name = "j_leftforearm",
-						tip_node_name = "j_lefthand",
-						start_time = 0.6
-					},
-					attack_pounce = {
+					attack_shove = {
 						base_node_name = "j_rightforearm",
 						tip_node_name = "j_righthand",
-						start_time = 0.6
+						start_time = 0.7
 					}
 				},
 				push_ai = {
@@ -788,39 +788,42 @@ local action_data = {
 						offset_right = 0,
 						offset_up = 0,
 						duration = 0.9333333333333333,
-						start_time = 0.16666666666666666
+						start_time = 0.6
 					}
 				}
 			}
 		},
 		running_attacks = {
 			{
-				anim_driven = true,
-				height = 2,
+				rotation_speed = 7,
+				height = 0.9,
 				hit_only_players = false,
-				ignore_targets_behind = true,
-				ignores_dodging = false,
-				rotation_time = 0.3,
-				freeze_intensity_decay_time = 15,
 				catapult_player = true,
-				offset_forward = 0,
+				ignores_dodging = false,
+				rotation_time = 1,
+				freeze_intensity_decay_time = 15,
+				range = 0.7,
+				anim_driven = true,
+				offset_forward = 1.2,
 				player_push_speed_blocked_z = 4,
-				offset_up = 0,
+				offset_up = 0.5,
 				player_push_speed_z = 4,
-				range = 2,
+				ignore_targets_behind = true,
 				player_push_speed = 16,
-				damage_done_time = 1,
 				hit_multiple_targets = true,
 				player_push_speed_blocked = 12.8,
-				attack_time = 1.75,
-				width = 0.4,
+				attack_time = 2,
+				width = 1.1,
 				attack_anim = {
-					"attack_move_sweep"
+					"attack_pounce"
+				},
+				damage_done_time = {
+					attack_pounce = 1.0333333333333334
 				},
 				continious_overlap = {
-					attack_move_sweep = {
-						base_node_name = "j_leftforearm",
-						tip_node_name = "j_lefthand",
+					attack_pounce = {
+						base_node_name = "j_rightforearm",
+						tip_node_name = "j_righthand",
 						start_time = 0.6
 					}
 				},
@@ -848,7 +851,238 @@ local action_data = {
 						offset_right = 0,
 						offset_up = 0,
 						duration = 0.9333333333333333,
-						start_time = 0.16666666666666666
+						start_time = 0.6
+					}
+				}
+			}
+		},
+		damage = {
+			8,
+			20,
+			20
+		},
+		difficulty_damage = {
+			easy = {
+				5,
+				20,
+				20
+			},
+			normal = {
+				8,
+				20,
+				20
+			},
+			hard = {
+				12,
+				25,
+				25
+			},
+			survival_hard = {
+				12,
+				25,
+				25
+			},
+			harder = {
+				20,
+				30,
+				30
+			},
+			survival_harder = {
+				20,
+				30,
+				30
+			},
+			hardest = {
+				40,
+				50,
+				50
+			},
+			survival_hardest = {
+				40,
+				75,
+				75
+			}
+		},
+		blocked_damage = {
+			2,
+			4,
+			2.5
+		},
+		blocked_difficulty_damage = {
+			easy = {
+				1,
+				4,
+				2.5
+			},
+			normal = {
+				2,
+				4,
+				2.5
+			},
+			hard = {
+				4,
+				5,
+				2.5
+			},
+			survival_hard = {
+				4,
+				5,
+				2.5
+			},
+			harder = {
+				6,
+				7.5,
+				5
+			},
+			survival_harder = {
+				6,
+				7.5,
+				5
+			},
+			hardest = {
+				10,
+				10,
+				7.5
+			},
+			survival_hardest = {
+				10,
+				10,
+				7.5
+			}
+		}
+	},
+	melee_sweep = {
+		damage_type = "cutting",
+		cooldown = -1,
+		target_running_velocity_threshold = 0.75,
+		fatigue_type = "ogre_shove",
+		action_weight = 1,
+		ignore_ai_damage = true,
+		self_running_speed_threshold = 2,
+		target_running_distance_threshold = 4,
+		considerations = UtilityConsiderations.troll_melee_sweep,
+		attacks = {
+			{
+				rotation_speed = 7,
+				height = 0.8,
+				hit_only_players = false,
+				catapult_player = true,
+				ignores_dodging = false,
+				rotation_time = 0.6,
+				freeze_intensity_decay_time = 15,
+				range = 0.8,
+				anim_driven = false,
+				offset_forward = 1,
+				player_push_speed_blocked_z = 4,
+				offset_up = 0.5,
+				player_push_speed_z = 4,
+				ignore_targets_behind = true,
+				player_push_speed = 16,
+				hit_multiple_targets = true,
+				player_push_speed_blocked = 12.8,
+				attack_time = 1.6666666666666667,
+				width = 1.1,
+				attack_anim = {
+					"attack_sweep"
+				},
+				damage_done_time = {
+					attack_sweep = 1
+				},
+				continious_overlap = {
+					attack_sweep = {
+						base_node_name = "j_leftforearm",
+						tip_node_name = "j_lefthand",
+						start_time = 0.6666666666666666
+					}
+				},
+				push_ai = {
+					stagger_distance = 3,
+					stagger_impact = {
+						6,
+						3,
+						0,
+						0
+					},
+					stagger_duration = {
+						4.5,
+						1,
+						0,
+						0
+					}
+				},
+				bot_threats = {
+					{
+						collision_type = "cylinder",
+						offset_forward = 0,
+						radius = 3,
+						height = 3.5,
+						offset_right = 0,
+						offset_up = 0,
+						duration = 0.9333333333333333,
+						start_time = 0.6
+					}
+				}
+			}
+		},
+		running_attacks = {
+			{
+				rotation_speed = 12,
+				height = 0.9,
+				hit_only_players = false,
+				catapult_player = true,
+				ignores_dodging = false,
+				rotation_time = 1,
+				freeze_intensity_decay_time = 15,
+				range = 1,
+				anim_driven = true,
+				offset_forward = 1.8,
+				player_push_speed_blocked_z = 4,
+				offset_up = 0.3,
+				player_push_speed_z = 4,
+				ignore_targets_behind = true,
+				player_push_speed = 16,
+				hit_multiple_targets = true,
+				player_push_speed_blocked = 12.8,
+				attack_time = 2,
+				width = 1.4,
+				attack_anim = {
+					"attack_move_sweep"
+				},
+				damage_done_time = {
+					attack_move_sweep = 1
+				},
+				continious_overlap = {
+					attack_move_sweep = {
+						base_node_name = "j_leftforearm",
+						tip_node_name = "j_lefthand",
+						start_time = 0.6666666666666666
+					}
+				},
+				push_ai = {
+					stagger_distance = 3,
+					stagger_impact = {
+						6,
+						3,
+						0,
+						0
+					},
+					stagger_duration = {
+						4.5,
+						1,
+						0,
+						0
+					}
+				},
+				bot_threats = {
+					{
+						collision_type = "cylinder",
+						offset_forward = 2,
+						radius = 3,
+						height = 3.7,
+						offset_right = 0,
+						offset_up = 0,
+						duration = 0.9333333333333333,
+						start_time = 0.6
 					}
 				}
 			}
@@ -950,12 +1184,14 @@ local action_data = {
 	},
 	vomit = {
 		firing_time = 0.67,
-		attack_time = 3,
+		rotation_time = 1.1,
+		near_vomit_distance = 25,
+		attack_time = 2.5,
 		action_weight = 1,
 		considerations = UtilityConsiderations.vomit,
 		attack_anims = {
 			ranged_vomit = "attack_vomit_high",
-			near_vomit = "attack_vomit_high"
+			near_vomit = "attack_vomit"
 		},
 		bot_threats = {
 			{
@@ -965,12 +1201,12 @@ local action_data = {
 				duration = 1,
 				offset_up = 0,
 				width = 2.5,
-				start_time = 0.7
+				start_time = 0.7333333333333333
 			}
 		}
 	},
 	target_rage = {
-		rage_time = 0.25,
+		rage_time = 0.75,
 		start_anims_name = {
 			bwd = "change_target_bwd",
 			fwd = "change_target_fwd",

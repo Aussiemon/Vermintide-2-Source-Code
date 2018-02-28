@@ -125,7 +125,7 @@ UtilityConsiderations = {
 	},
 	storm_vermin_warlord_dual_combo_attack = {
 		distance_to_target_flat_sq = {
-			max_value = 15,
+			max_value = 25,
 			blackboard_input = "target_dist_xy_sq",
 			spline = {
 				0,
@@ -136,8 +136,6 @@ UtilityConsiderations = {
 				1,
 				0.4392308,
 				1,
-				0.606528,
-				0,
 				0.8437957,
 				0,
 				1,
@@ -145,7 +143,7 @@ UtilityConsiderations = {
 			}
 		},
 		time_since_last = {
-			max_value = 12,
+			max_value = 10,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
@@ -605,7 +603,7 @@ UtilityConsiderations = {
 	},
 	troll_melee_shove = {
 		distance_to_target = {
-			max_value = 5,
+			max_value = 7,
 			blackboard_input = "target_dist",
 			spline = {
 				0,
@@ -616,6 +614,38 @@ UtilityConsiderations = {
 				0,
 				1,
 				0
+			}
+		},
+		target_is_not_downed = {
+			blackboard_input = "target_is_not_downed",
+			is_condition = true
+		}
+	},
+	troll_melee_sweep = {
+		distance_to_target = {
+			max_value = 7,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				1,
+				0.7533333333333332,
+				1,
+				0.9,
+				0,
+				1,
+				0
+			}
+		},
+		time_since_last = {
+			max_value = 2,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.95,
+				0,
+				1,
+				1
 			}
 		},
 		target_is_not_downed = {
@@ -866,7 +896,7 @@ UtilityConsiderations = {
 			spline = {
 				0,
 				0,
-				0.1,
+				0.15000000000000002,
 				0,
 				0.2,
 				1,
@@ -914,7 +944,7 @@ UtilityConsiderations = {
 			spline = {
 				0,
 				1,
-				0.7233333333333333,
+				0.5233333333333333,
 				1,
 				0.8,
 				0,
@@ -1151,14 +1181,14 @@ UtilityConsiderations = {
 	},
 	attack_crouch_sweep = {
 		distance_to_target = {
-			max_value = 5,
+			max_value = 7,
 			blackboard_input = "target_dist",
 			spline = {
 				0,
 				1,
 				0.52,
 				1,
-				0.6,
+				0.9,
 				0,
 				1,
 				0
@@ -1734,7 +1764,7 @@ UtilityConsiderations = {
 	},
 	troll_cleave = {
 		distance_to_target = {
-			max_value = 5,
+			max_value = 7,
 			blackboard_input = "target_dist",
 			spline = {
 				0,
@@ -1745,7 +1775,7 @@ UtilityConsiderations = {
 				1,
 				0.7,
 				1,
-				0.72,
+				0.92,
 				0,
 				1,
 				0
@@ -2479,7 +2509,7 @@ UtilityConsiderations = {
 	},
 	chaos_exalted_swing_attack = {
 		distance_to_target = {
-			max_value = 7,
+			max_value = 8,
 			blackboard_input = "target_dist",
 			spline = {
 				0,
@@ -2582,6 +2612,74 @@ UtilityConsiderations = {
 		},
 		time_since_last = {
 			max_value = 15,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.5,
+				0,
+				1,
+				1
+			}
+		},
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
+		}
+	},
+	chaos_exalted_kick_attack = {
+		distance_to_target = {
+			max_value = 5,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				1,
+				0.47333333333333333,
+				1,
+				0.6333333333333333,
+				1,
+				0.7866666666666666,
+				0,
+				1,
+				0
+			}
+		},
+		time_since_last = {
+			max_value = 15,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.5,
+				0,
+				1,
+				1
+			}
+		},
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
+		}
+	},
+	chaos_exalted_launch_attack_defensive = {
+		distance_to_target = {
+			max_value = 5,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				1,
+				0.47333333333333333,
+				1,
+				0.6333333333333333,
+				1,
+				0.7866666666666666,
+				0,
+				1,
+				0
+			}
+		},
+		time_since_last = {
+			max_value = 3,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
@@ -2798,7 +2896,7 @@ UtilityConsiderations = {
 				1,
 				0.3,
 				1,
-				0.4,
+				0.5,
 				0
 			}
 		},
@@ -2923,9 +3021,37 @@ UtilityConsiderations = {
 			}
 		}
 	},
+	chaos_exalted_aoe = {
+		time_since_last = {
+			max_value = 22,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.5,
+				0,
+				0.66,
+				0.2,
+				1,
+				1
+			}
+		},
+		surrounding_players = {
+			max_value = 4,
+			blackboard_input = "surrounding_players",
+			spline = {
+				0,
+				0,
+				0.5,
+				0,
+				1,
+				1
+			}
+		}
+	},
 	chaos_exalted_defensive_aoe = {
 		time_since_last = {
-			max_value = 12,
+			max_value = 10,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,

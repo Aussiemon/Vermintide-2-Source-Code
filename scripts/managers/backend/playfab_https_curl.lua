@@ -15,34 +15,49 @@ function curl_callback(success, code, headers, data, user_data)
 				request.onError(response)
 			elseif request.onError then
 				local error_data = {
-					status = "",
-					errorCode = 1123,
 					error = "ServiceUnavailable",
-					code = code,
-					errorMessage = "Could not deserialize response from server: " .. data
+					errorCode = 1123,
+					status = "",
+					code = code
 				}
+
+				if data then
+					error_data.errorMessage = "Could not deserialize response from server: " .. data
+				else
+					error_data.errorMessage = "Could not deserialize response from server: NO DATA"
+				end
 
 				request.onError(error_data)
 			end
 		elseif request.onError then
 			local error_data = {
-				status = "",
-				errorCode = 1123,
 				error = "ServiceUnavailable",
-				code = code,
-				errorMessage = "Could not deserialize response from server: " .. data
+				errorCode = 1123,
+				status = "",
+				code = code
 			}
+
+			if data then
+				error_data.errorMessage = "Could not deserialize response from server: " .. data
+			else
+				error_data.errorMessage = "Could not deserialize response from server: NO DATA"
+			end
 
 			request.onError(error_data)
 		end
 	else
 		local error_data = {
-			status = "",
-			errorCode = 1123,
 			error = "ServiceUnavailable",
-			code = code,
-			errorMessage = "Could not deserialize response from server: " .. data
+			errorCode = 1123,
+			status = "",
+			code = code
 		}
+
+		if data then
+			error_data.errorMessage = "Could not deserialize response from server: " .. data
+		else
+			error_data.errorMessage = "Could not deserialize response from server: NO DATA"
+		end
 
 		request.onError(error_data)
 	end

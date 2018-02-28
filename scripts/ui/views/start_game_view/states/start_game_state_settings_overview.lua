@@ -58,6 +58,7 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
+	self._network_lobby = ingame_ui_context.network_lobby
 	self.world_previewer = params.world_previewer
 	self.platform = PLATFORM
 	local player_manager = Managers.player
@@ -70,6 +71,8 @@ StartGameStateSettingsOverview.on_enter = function (self, params)
 	self._animations = {}
 	self._ui_animations = {}
 	self._is_game_private = false
+	self._always_host = false
+	self._use_strict_matchmaking = true
 
 	self.create_ui_elements(self, params)
 
@@ -196,6 +199,8 @@ StartGameStateSettingsOverview._set_new_save_data_table = function (self, table_
 		self._layout_save_settings = table
 
 		self.set_private_option_enabled(self, table.is_private)
+		self.set_always_host_option_enabled(self, table.always_host)
+		self.set_strict_matchmaking_option_enabled(self, table.use_strict_matchmaking)
 		self.set_selected_level_id(self, table.level_id)
 		self.set_difficulty_option(self, table.difficulty_key)
 	else
@@ -445,13 +450,19 @@ StartGameStateSettingsOverview.play = function (self, t)
 		end
 	end
 
+	local twitch_active = Managers.twitch and Managers.twitch:is_connected()
+	local network_lobby = self._network_lobby
+	local num_members = #network_lobby.members(network_lobby):get_members()
+	local is_alone = num_members == 1
 	local level_key = self.get_selected_level_id(self)
 	local difficulty = self._selected_difficulty_key
 	local quick_game = level_key == nil
-	local is_private = self.is_private_option_enabled(self)
+	local is_private = twitch_active or self.is_private_option_enabled(self)
+	local always_host = twitch_active or not is_alone or is_private or self.is_always_host_option_enabled(self)
+	local strict_matchmaking = not twitch_active and is_alone and not is_private and not always_host and self.is_strict_matchmaking_option_enabled(self)
 	local deed_backend_id = self.get_selected_heroic_deed_backend_id(self)
 
-	self.parent:start_game(level_key, difficulty, is_private, quick_game, t, deed_backend_id)
+	self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
 
 	return 
 end
@@ -556,6 +567,38 @@ StartGameStateSettingsOverview.set_private_option_enabled = function (self, is_p
 end
 StartGameStateSettingsOverview.is_private_option_enabled = function (self)
 	return self._is_game_private
+end
+StartGameStateSettingsOverview.set_always_host_option_enabled = function (self, always_host)
+	if always_host == nil then
+		always_host = false
+	end
+
+	if self._layout_save_settings then
+		self._layout_save_settings.always_host = always_host
+	end
+
+	self._always_host = always_host
+
+	return 
+end
+StartGameStateSettingsOverview.is_always_host_option_enabled = function (self)
+	return self._always_host
+end
+StartGameStateSettingsOverview.set_strict_matchmaking_option_enabled = function (self, use_strict_matchmaking)
+	if use_strict_matchmaking == nil then
+		use_strict_matchmaking = true
+	end
+
+	if self._layout_save_settings then
+		self._layout_save_settings.use_strict_matchmaking = use_strict_matchmaking
+	end
+
+	self._use_strict_matchmaking = use_strict_matchmaking
+
+	return 
+end
+StartGameStateSettingsOverview.is_strict_matchmaking_option_enabled = function (self)
+	return self._use_strict_matchmaking
 end
 StartGameStateSettingsOverview.set_difficulty_option = function (self, difficulty_key)
 	if difficulty_key ~= nil then

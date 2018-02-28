@@ -347,11 +347,15 @@ VoteTemplates = {
 				local difficulty = data.difficulty
 				local quick_game = data.quick_game
 				local private_game = data.private_game
+				local always_host = data.always_host
+				local strict_matchmaking = data.strict_matchmaking
 				local search_config = {
 					level_key = level_key,
 					difficulty = difficulty,
 					quick_game = quick_game,
-					private_game = private_game
+					private_game = private_game,
+					always_host = always_host,
+					strict_matchmaking = strict_matchmaking
 				}
 
 				Managers.matchmaking:find_game(search_config)
@@ -365,12 +369,16 @@ VoteTemplates = {
 			local difficulty = data.difficulty
 			local quick_game = data.quick_game
 			local private_game = data.private_game
+			local always_host = data.always_host
+			local strict_matchmaking = data.strict_matchmaking
 			local sync_data = {
 				NetworkLookup.level_keys[level_key],
 				NetworkLookup.act_keys[act_key],
 				NetworkLookup.difficulties[difficulty],
 				(quick_game and 1) or 2,
-				(private_game and 1) or 2
+				(private_game and 1) or 2,
+				(always_host and 1) or 2,
+				(strict_matchmaking and 1) or 2
 			}
 
 			return sync_data
@@ -381,12 +389,16 @@ VoteTemplates = {
 			local difficulty_id = sync_data[3]
 			local quick_game_id = sync_data[4]
 			local private_game_id = sync_data[5]
+			local always_host_id = sync_data[6]
+			local strict_matchmaking_id = sync_data[7]
 			local data = {
 				level_key = NetworkLookup.level_keys[level_key_id],
 				act_key = NetworkLookup.act_keys[act_key_id],
 				difficulty = NetworkLookup.difficulties[difficulty_id],
 				quick_game = (quick_game_id == 1 and true) or false,
-				private_game = (private_game_id == 1 and true) or false
+				private_game = (private_game_id == 1 and true) or false,
+				always_host = (always_host_id == 1 and true) or false,
+				strict_matchmaking = (strict_matchmaking_id == 1 and true) or false
 			}
 
 			return data

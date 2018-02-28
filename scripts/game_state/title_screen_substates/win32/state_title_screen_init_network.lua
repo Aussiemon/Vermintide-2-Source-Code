@@ -89,7 +89,24 @@ StateTitleScreenInitNetwork._connected_to_steam = function (self)
 	return connected_to_network
 end
 StateTitleScreenInitNetwork._next_state = function (self)
-	if Managers.backend:profiles_loaded() and not Managers.backend:is_waiting_for_user_input() then
+	local eac_initialized = true
+	local eac_init_error = false
+	local eac_error = ""
+
+	if rawget(_G, "EAC") then
+		eac_initialized = EAC.is_initialized()
+		eac_init_error, eac_error = EAC.initialization_error()
+	end
+
+	local ready_to_exit = Managers.backend:profiles_loaded() and not Managers.backend:is_waiting_for_user_input() and eac_initialized
+
+	if ready_to_exit then
+		if eac_init_error then
+			self._create_eac_error_popup(self, eac_error)
+
+			return 
+		end
+
 		if GameSettingsDevelopment.skip_start_screen then
 			return StateTitleScreenLoadSave
 		else
@@ -113,6 +130,15 @@ StateTitleScreenInitNetwork.create_popup = function (self, error)
 	local header = Localize("popup_steam_error_header")
 	local localized_error = Localize(error)
 	self._popup_id = Managers.popup:queue_popup(localized_error, header, "retry", Localize("button_retry"), "quit", Localize("menu_quit"))
+
+	return 
+end
+StateTitleScreenInitNetwork._create_eac_error_popup = function (self, localized_error)
+	assert(localized_error, "[StateTitleScreenInitNetwork] No error was passed to popup handler")
+	assert(self._popup_id == nil, "Tried to show popup even though we already had one.")
+
+	local header = Localize("popup_eac_error_header")
+	self._popup_id = Managers.popup:queue_popup(localized_error, header, "quit", Localize("menu_quit"))
 
 	return 
 end

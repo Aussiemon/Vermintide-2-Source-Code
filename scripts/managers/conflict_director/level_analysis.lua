@@ -2,8 +2,6 @@
 --   Code may be incomplete or incorrect.
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 LevelAnalysis = class(LevelAnalysis)
 
 require("scripts/utils/util")
@@ -390,6 +388,16 @@ LevelAnalysis.boxify_pos_array = function (array)
 	end
 
 	return 
+end
+LevelAnalysis.boxify_table_pos_array = function (source_array)
+	local array = {}
+
+	for i = 1, #source_array, 1 do
+		local d = source_array[i]
+		array[i] = Vector3Box(d[1], d[2], d[3])
+	end
+
+	return array
 end
 LevelAnalysis.inject_travel_dists = function (main_paths, overrride)
 	print("[LevelAnalysis] Injecting travel distances")
@@ -1198,8 +1206,8 @@ LevelAnalysis._remove_short_routes = function (self, routes, patrol_type)
 	return 
 end
 LevelAnalysis.store_patrol_waypoints = function (self, boss_waypoints, patrol_waypoints, event_waypoints)
+	local ai_group_system = Managers.state.entity:system("ai_group_system")
 
-	-- decompilation error in this vicinity
 	if boss_waypoints then
 		for i = 1, #boss_waypoints, 1 do
 			self._remove_short_routes(self, boss_waypoints[i], "boss")
@@ -1212,8 +1220,14 @@ LevelAnalysis.store_patrol_waypoints = function (self, boss_waypoints, patrol_wa
 	self.used_roaming_waypoints = {}
 	self.boss_waypoints = boss_waypoints
 	self.patrol_waypoints = patrol_waypoints
-	local ai_group_system = Managers.state.entity:system("ai_group_system")
 
+	if event_waypoints then
+		self.event_waypoints = event_waypoints
+
+		ai_group_system.add_ready_splines(ai_group_system, self.event_waypoints, "event")
+	end
+
+	self._make_waypoint_lookup(self)
 	ai_group_system.add_ready_splines(ai_group_system, self.patrol_waypoints, "roaming")
 
 	return 
@@ -1304,17 +1318,31 @@ LevelAnalysis.get_waypoint_spline = function (self, spline_id)
 
 	return 
 end
-LevelAnalysis.get_event_spline = function (self, event_spline_id)
-	local route_data = self.event_waypoints[spline_id]
+LevelAnalysis.get_closest_waypoint_spline = function (self, pos, spline_type)
+	local route_data = nil
+	local min_dist = math.huge
+	local best_id = nil
 
-	if route_data then
-		local wp = route_data.waypoints[1]
+	for id, route_data in pairs(self.waypoint_lookup_table) do
+		local waypoints = route_data.waypoints
+		local wp = waypoints[1]
 		local start_pos = Vector3(wp[1], wp[2], wp[3])
+		local dist = Vector3.distance(pos, start_pos)
 
-		return event_spline_id, route_data, start_pos
+		if dist < min_dist then
+			best_id = id
+			min_dist = dist
+		end
 	end
 
-	return 
+	if best_id then
+		local route_data = self.waypoint_lookup_table[best_id]
+		local waypoints = LevelAnalysis.boxify_table_pos_array(route_data.waypoints)
+
+		return best_id, waypoints, waypoints[1]:unbox()
+	end
+
+	return nil
 end
 local Vector3_to_elements = Vector3.to_elements
 local Vector3_set_xyz = Vector3.set_xyz

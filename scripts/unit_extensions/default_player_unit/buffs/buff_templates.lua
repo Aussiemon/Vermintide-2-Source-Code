@@ -652,7 +652,7 @@ ProcFunctions = {
 	end,
 	ranged_crits_increase_dmg_vs_armour_type = function (player, buff, params)
 		local player_unit = player.player_unit
-		local target_unit = params.hit_unit
+		local target_unit = params[1]
 		local armour_type = DamageUtils.get_unit_armor(target_unit)
 
 		if Unit.alive(player_unit) then
@@ -710,8 +710,9 @@ ProcFunctions = {
 	buff_defence_on_heal = function (player, buff, params)
 		local player_unit = player.player_unit
 		local healer_unit = params[1]
+		local heal_type = params[3]
 
-		if player_unit == healer_unit then
+		if player_unit == healer_unit and (heal_type == "healing_draught" or heal_type == "bandage") then
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
 			buff_extension.add_buff(buff_extension, "trait_necklace_damage_taken_reduction_buff")
@@ -1356,10 +1357,15 @@ ProcFunctions = {
 		if Unit.alive(player_unit) then
 			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 			local wielded_slot_name = inventory_extension.get_wielded_slot_name(inventory_extension)
+			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
 
 			if wielded_slot_name == "slot_melee" then
 				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 				local cooldown_buff = buff_extension.get_non_stacking_buff(buff_extension, "victor_bountyhunter_passive_crit_cooldown")
+
+				if talent_extension.has_talent(talent_extension, "victor_bountyhunter_passive_reduced_cooldown", "witch_hunter", true) then
+					cooldown_buff = buff_extension.get_non_stacking_buff(buff_extension, "victor_bountyhunter_passive_reduced_cooldown")
+				end
 
 				if cooldown_buff then
 					cooldown_buff.duration = 0
@@ -1455,6 +1461,67 @@ PotionSpreadTrinketTemplates = {
 }
 TrinketSpreadDistance = 10
 BuffTemplates = {
+	twitch_no_overcharge_no_ammo_reloads = {
+		activation_effect = "fx/screenspace_potion_01",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
+		activation_sound = "hud_gameplay_stance_smiter_activate",
+		buffs = {
+			{
+				max_stacks = 1,
+				name = "twitch_no_overcharge_no_ammo_reloads",
+				duration = 10
+			}
+		}
+	},
+	twitch_health_regen = {
+		buffs = {
+			{
+				heal = 2,
+				name = "twitch_health_regen",
+				heal_type = "health_regen",
+				duration = 10,
+				time_between_heal = 1,
+				update_func = "health_regen_update",
+				apply_buff_func = "health_regen_start"
+			}
+		}
+	},
+	twitch_health_degen = {
+		buffs = {
+			{
+				duration = 10,
+				name = "twitch_health_degen",
+				damage = 2,
+				damage_type = "health_degen",
+				update_func = "health_degen_update",
+				apply_buff_func = "health_degen_start",
+				time_between_damage = 1
+			}
+		}
+	},
+	twitch_grimoire_health_debuff = {
+		buffs = {
+			{
+				name = "twitch_grimoire_health_debuff",
+				debuff = true,
+				perk = "grimoire",
+				duration = 10,
+				stat_buff = StatBuffIndex.MAX_HEALTH,
+				multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
+			}
+		}
+	},
+	twitch_power_boost_dismember = {
+		buffs = {
+			{
+				perk = "bloody_mess",
+				multiplier = 0.25,
+				max_stacks = 1,
+				duration = 10,
+				stat_buff = StatBuffIndex.POWER_LEVEL
+			}
+		}
+	},
 	heavy_attack_shield_break = {
 		buffs = {
 			{
@@ -1705,6 +1772,7 @@ BuffTemplates = {
 			{
 				name = "grimoire_health_debuff",
 				debuff = true,
+				perk = "grimoire",
 				icon = "teammate_consumable_icon_grimoire",
 				dormant = true,
 				stat_buff = StatBuffIndex.MAX_HEALTH,
@@ -2723,7 +2791,7 @@ BuffTemplates = {
 				name = "regrowth",
 				event_buff = true,
 				event = "on_critical_hit",
-				bonus = 2,
+				bonus = 3,
 				buff_func = ProcFunctions.heal
 			}
 		}
@@ -2734,7 +2802,7 @@ BuffTemplates = {
 				name = "bloodlust",
 				event_buff = true,
 				event = "on_kill",
-				bonus = 4,
+				bonus = 2,
 				buff_func = ProcFunctions.heal
 			}
 		}
@@ -2745,7 +2813,7 @@ BuffTemplates = {
 				name = "conqueror",
 				event_buff = true,
 				event = "on_boss_killed",
-				bonus = 30,
+				bonus = 50,
 				buff_func = ProcFunctions.heal_permanent
 			}
 		}

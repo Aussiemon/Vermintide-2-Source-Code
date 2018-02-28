@@ -54,18 +54,15 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 		end
 	end
 
-	local eac_authorized = "false"
+	local eac_authorized = false
 
-	if Managers.eac:enabled() then
-		if Managers.eac:authorized() then
-			eac_authorized = "true"
-		else
-			eac_authorized = "false"
-		end
+	if PLATFORM == "win32" then
+		local eac_state = EAC.state()
+		eac_authorized = eac_state == "trusted"
 	end
 
 	current_filters.eac_authorized = {
-		value = eac_authorized,
+		value = (eac_authorized and "true") or "false",
 		comparison = LobbyComparison.EQUAL
 	}
 	self._current_filters = current_filters
@@ -106,9 +103,9 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 	local player = Managers.player:local_player()
 	local connection_state = "started_search"
 	local time_taken = Managers.time:time("main") - self.state_context.started_matchmaking_t
-	local is_first_time_searcher = self.state_context.is_first_time_searcher
+	local using_strict_matchmaking = self.search_config.strict_matchmaking
 
-	Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, is_first_time_searcher)
+	Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, using_strict_matchmaking)
 
 	return 
 end
@@ -127,7 +124,7 @@ MatchmakingStateSearchGame.update = function (self, dt, t)
 	if self.state_context.join_lobby_data then
 		self._matchmaking_manager:send_system_chat_message("matchmaking_status_found_game")
 
-		return MatchmakingStateRequestJoinGameVerifyHostEAC, self.state_context
+		return MatchmakingStateRequestJoinGame, self.state_context
 	end
 
 	self._lobby_finder:update(dt)
@@ -175,9 +172,9 @@ MatchmakingStateSearchGame.update = function (self, dt, t)
 		local started_matchmaking_t = self.state_context.started_matchmaking_t
 		local main_t = Managers.time:time("main")
 		local time_taken = main_t - started_matchmaking_t
-		local is_first_time_searcher = self.state_context.is_first_time_searcher
+		local using_strict_matchmaking = self.search_config.strict_matchmaking
 
-		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, is_first_time_searcher)
+		Managers.telemetry.events:matchmaking_connection(player, connection_state, time_taken, using_strict_matchmaking)
 
 		return MatchmakingStateHostGame, self.state_context
 	end
@@ -272,15 +269,18 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 	local difficulty = search_config.difficulty
 	local game_mode = search_config.game_mode
 	local act_key = search_config.act_key
-	local is_first_time_searcher = self.state_context.is_first_time_searcher
+	local using_strict_matchmaking = search_config.strict_matchmaking
+	local reached_max_distance = self._current_distance_filter == MatchmakingSettings.max_distance_filter
 	local current_first_prio_lobby, current_secondary_prio_lobby, secondary_option_lobby_data = nil
 	local matchmaking_manager = self._matchmaking_manager
 
 	for _, lobby_data in ipairs(lobbies) do
-		local lobby_match = matchmaking_manager.lobby_match(matchmaking_manager, lobby_data, act_key, level_key, difficulty, game_mode, self._peer_id)
+		local host_name = lobby_data.unique_server_name or lobby_data.host
+		local lobby_match, reason = matchmaking_manager.lobby_match(matchmaking_manager, lobby_data, act_key, level_key, difficulty, game_mode, self._peer_id)
 
 		if lobby_match then
 			local discard = false
+			local discard_reason = nil
 			local secondary_option = false
 
 			if not matchmaking_manager.hero_available_in_lobby_data(matchmaking_manager, wanted_profile_id, lobby_data) then
@@ -302,15 +302,22 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 					secondary_option = true
 				else
 					discard = true
+					discard_reason = "hero is unavailable"
 				end
 			elseif lobby_data.level_key ~= "inn_level" then
-				secondary_option = true
+				if using_strict_matchmaking then
+					discard = true
+					discard_reason = "strict matchmaking"
+				else
+					secondary_option = true
+				end
 			elseif lobby_data.host_afk == "true" then
 				secondary_option = true
 			end
 
-			if is_first_time_searcher and secondary_option then
+			if secondary_option and not reached_max_distance then
 				discard = true
+				discard_reason = "secondary lobby before reaching max distance"
 			end
 
 			if not discard then
@@ -319,7 +326,11 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 				else
 					current_secondary_prio_lobby = self._compare_secondary_prio_lobbies(self, current_secondary_prio_lobby, lobby_data)
 				end
+			else
+				mm_printf("Lobby hosted by %s discarded due to '%s'", host_name, discard_reason or "unknown")
 			end
+		else
+			mm_printf("Lobby hosted by %s failed lobby match due to '%s'", host_name, reason or "unknown")
 		end
 	end
 

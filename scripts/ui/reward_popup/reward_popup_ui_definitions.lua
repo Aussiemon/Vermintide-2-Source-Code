@@ -281,12 +281,6 @@ local function create_icon_widget(texture, scenegraph_id)
 				}
 			},
 			background = {
-				vertical_alignment = "center",
-				horizontal_alignment = "center",
-				texture_size = {
-					80,
-					80
-				},
 				color = {
 					255,
 					255,
@@ -322,11 +316,17 @@ local function create_item_widget(texture, scenegraph_id)
 					texture_id = "frame",
 					style_id = "frame",
 					pass_type = "texture"
+				},
+				{
+					texture_id = "rarity_texture",
+					style_id = "rarity_texture",
+					pass_type = "texture"
 				}
 			}
 		},
 		content = {
 			frame = "reward_pop_up_item_frame",
+			rarity_texture = "icon_bg_plentiful",
 			texture_id = texture
 		},
 		style = {
@@ -340,7 +340,7 @@ local function create_item_widget(texture, scenegraph_id)
 				offset = {
 					0,
 					0,
-					0
+					1
 				}
 			},
 			frame = {
@@ -354,6 +354,19 @@ local function create_item_widget(texture, scenegraph_id)
 					0,
 					0,
 					2
+				}
+			},
+			rarity_texture = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
 				}
 			}
 		},

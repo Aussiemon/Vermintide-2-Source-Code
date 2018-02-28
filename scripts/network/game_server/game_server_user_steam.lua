@@ -19,7 +19,8 @@ GameServerInternal.search_types_map = {
 }
 GameServerInternal.join_server = function (game_server_info, password)
 	local ip_address = game_server_info.ip_port
-	local game_server_lobby = Network.join_steam_server(ip_address, password)
+	local use_eac = true
+	local game_server_lobby = Network.join_steam_server(use_eac, ip_address, password)
 
 	SteamGameServerLobby.auto_update_data(game_server_lobby)
 

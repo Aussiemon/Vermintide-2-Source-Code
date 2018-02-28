@@ -115,8 +115,8 @@ UIUtils.get_ui_information_from_item = function (item)
 		local skin = item.skin
 		local skin_template = WeaponSkins.skins[skin]
 		inventory_icon = skin_template.inventory_icon
-		display_name = item_data.display_name
-		description = item_data.description
+		display_name = skin_template.display_name
+		description = skin_template.description
 	else
 		inventory_icon = item_data.inventory_icon
 		display_name = item_data.display_name

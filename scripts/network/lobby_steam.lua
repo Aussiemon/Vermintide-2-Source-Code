@@ -39,15 +39,18 @@ LobbyInternal.distance_filters = {
 }
 LobbyInternal.create_lobby = function (network_options)
 	local privacy = network_options.privacy or LobbyPrivacy.PUBLIC
+	local use_eac = true
 
-	return Network.create_steam_lobby(LobbyInternal.privacy_map[privacy], network_options.max_members)
+	return Network.create_steam_lobby(LobbyInternal.privacy_map[privacy], network_options.max_members, use_eac)
 end
 LobbyInternal.network_initialized = function ()
 	return not not LobbyInternal.client
 end
 LobbyInternal.leave_lobby = Network.leave_steam_lobby
 LobbyInternal.join_lobby = function (lobby_data)
-	return Network.join_steam_lobby(lobby_data.id)
+	local use_eac = true
+
+	return Network.join_steam_lobby(lobby_data.id, use_eac)
 end
 LobbyInternal.init_client = function (network_options)
 	Network.set_explicit_connections()

@@ -36,9 +36,15 @@ local generic_input_actions = {
 	main_menu = {
 		default = {
 			{
+				input_action = "l1_r1",
+				priority = 49,
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true
+			},
+			{
 				input_action = "confirm",
 				priority = 49,
-				description_text = "input_description_select"
+				description_text = "input_description_change"
 			},
 			{
 				input_action = "back",
@@ -48,14 +54,20 @@ local generic_input_actions = {
 		},
 		reset = {
 			{
-				input_action = "special_1",
-				priority = 48,
-				description_text = "input_description_reset"
+				input_action = "l1_r1",
+				priority = 47,
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true
 			},
 			{
 				input_action = "confirm",
+				priority = 48,
+				description_text = "input_description_change"
+			},
+			{
+				input_action = "special_1",
 				priority = 49,
-				description_text = "input_description_select"
+				description_text = "input_description_reset"
 			},
 			{
 				input_action = "back",
@@ -65,19 +77,25 @@ local generic_input_actions = {
 		},
 		reset_and_apply = {
 			{
-				input_action = "special_1",
+				input_action = "l1_r1",
+				priority = 46,
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true
+			},
+			{
+				input_action = "confirm",
 				priority = 47,
+				description_text = "input_description_change"
+			},
+			{
+				input_action = "special_1",
+				priority = 48,
 				description_text = "input_description_reset"
 			},
 			{
 				input_action = "refresh",
-				priority = 48,
-				description_text = "input_description_apply"
-			},
-			{
-				input_action = "confirm",
 				priority = 49,
-				description_text = "input_description_select"
+				description_text = "input_description_apply"
 			},
 			{
 				input_action = "back",
@@ -86,6 +104,17 @@ local generic_input_actions = {
 			}
 		},
 		apply = {
+			{
+				input_action = "l1_r1",
+				priority = 47,
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true
+			},
+			{
+				input_action = "confirm",
+				priority = 48,
+				description_text = "input_description_change"
+			},
 			{
 				input_action = "refresh",
 				priority = 49,
@@ -101,9 +130,15 @@ local generic_input_actions = {
 	sub_menu = {
 		default = {
 			{
-				input_action = "cycle_previous",
+				input_action = "l1_r1",
+				priority = 48,
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true
+			},
+			{
+				input_action = "confirm",
 				priority = 49,
-				description_text = "input_description_information"
+				description_text = "input_description_change"
 			},
 			{
 				input_action = "back",
@@ -113,57 +148,75 @@ local generic_input_actions = {
 		},
 		reset = {
 			{
-				input_action = "cycle_previous",
+				input_action = "l1_r1",
 				priority = 48,
-				description_text = "input_description_information"
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true
+			},
+			{
+				input_action = "confirm",
+				priority = 49,
+				description_text = "input_description_change"
 			},
 			{
 				input_action = "special_1",
-				priority = 49,
+				priority = 50,
 				description_text = "input_description_reset"
 			},
 			{
 				input_action = "back",
-				priority = 50,
+				priority = 51,
 				description_text = "input_description_back"
 			}
 		},
 		reset_and_apply = {
 			{
-				input_action = "cycle_previous",
+				input_action = "l1_r1",
 				priority = 47,
-				description_text = "input_description_information"
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true
+			},
+			{
+				input_action = "confirm",
+				priority = 48,
+				description_text = "input_description_change"
 			},
 			{
 				input_action = "special_1",
-				priority = 48,
+				priority = 49,
 				description_text = "input_description_reset"
 			},
 			{
 				input_action = "refresh",
-				priority = 49,
+				priority = 50,
 				description_text = "input_description_apply"
 			},
 			{
 				input_action = "back",
-				priority = 50,
+				priority = 51,
 				description_text = "input_description_back"
 			}
 		},
 		apply = {
 			{
-				input_action = "cycle_previous",
+				input_action = "l1_r1",
 				priority = 48,
-				description_text = "input_description_information"
+				description_text = "input_description_change_tab",
+				ignore_keybinding = true
+			},
+			{
+				input_action = "confirm",
+				priority = 49,
+				description_text = "input_description_change"
 			},
 			{
 				input_action = "refresh",
-				priority = 49,
+				priority = 50,
 				description_text = "input_description_apply"
 			},
 			{
 				input_action = "back",
-				priority = 50,
+				priority = 51,
 				description_text = "input_description_back"
 			}
 		}
@@ -903,7 +956,6 @@ OptionsView.build_stepper_widget = function (self, element, scenegraph_id, base_
 	content.saved_value_cb = saved_value_cb
 	content.on_hover_enter_callback = callback(self, "on_stepper_arrow_hover", widget)
 	content.on_hover_exit_callback = callback(self, "on_stepper_arrow_dehover", widget)
-	content.on_pressed_callback = callback(self, "on_stepper_arrow_pressed", widget)
 	content.default_value = default_value
 
 	return widget
@@ -961,7 +1013,6 @@ OptionsView.build_slider_widget = function (self, element, scenegraph_id, base_o
 	content.callback_on_release = callback_on_release
 	content.on_hover_enter_callback = callback(self, "on_stepper_arrow_hover", widget)
 	content.on_hover_exit_callback = callback(self, "on_stepper_arrow_dehover", widget)
-	content.on_pressed_callback = callback(self, "on_stepper_arrow_pressed", widget)
 	content.saved_value_cb = saved_value_cb
 	content.default_value = default_value
 
@@ -1213,6 +1264,11 @@ OptionsView.on_enter = function (self)
 	return 
 end
 OptionsView.on_exit = function (self)
+	if not self.exiting then
+		ScriptApplication.send_to_crashify("[OptionsView]", "triggering on_exit() without triggering exit()")
+	end
+
+	self.cleanup_popups(self)
 	ShowCursorStack.pop()
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
@@ -2255,7 +2311,7 @@ OptionsView._handle_apply_changes = function (self)
 		local text = Localize("keep_changes_popup_text")
 		self.apply_popup_id = Managers.popup:queue_popup(text, Localize("popup_keep_changes_topic"), "keep_changes", Localize("popup_choice_keep"), "revert_changes", Localize("popup_choice_revert"))
 
-		Managers.popup:activate_timer(self.apply_popup_id, 15, "revert_changes")
+		Managers.popup:activate_timer(self.apply_popup_id, 15, "revert_changes", "center")
 	else
 		self.handle_apply_popup_results(self, "keep_changes")
 
@@ -2909,10 +2965,29 @@ OptionsView.handle_controller_navigation_input = function (self, dt, input_servi
 		local in_settings_sub_menu = self.in_settings_sub_menu
 
 		if in_settings_sub_menu then
-			self.draw_gamepad_tooltip = self.gamepad_tooltip_available and input_service.get(input_service, "cycle_previous_hold")
+			local new_tab_index = nil
 
-			if self.draw_gamepad_tooltip then
-				return 
+			if input_service.get(input_service, "cycle_next") then
+				local selected_title = self.selected_title
+				local title_buttons_n = self.title_buttons_n
+				new_tab_index = math.min(selected_title + 1, title_buttons_n)
+				new_tab_index = (new_tab_index ~= selected_title and new_tab_index) or nil
+			elseif input_service.get(input_service, "cycle_previous") then
+				local selected_title = self.selected_title
+				new_tab_index = math.max(selected_title - 1, 1)
+				new_tab_index = (new_tab_index ~= selected_title and new_tab_index) or nil
+			end
+
+			if new_tab_index then
+				if self.changes_been_made(self) then
+					local text = Localize("unapplied_changes_popup_text")
+					self.title_popup_id = Managers.popup:queue_popup(text, Localize("popup_discard_changes_topic"), "apply_changes", Localize("menu_settings_apply"), "revert_changes", Localize("popup_choice_discard"))
+					self.delayed_title_change = new_tab_index
+				else
+					self.select_settings_title(self, new_tab_index)
+
+					self.in_settings_sub_menu = true
+				end
 			end
 		elseif input_service.get(input_service, "confirm") then
 			in_settings_sub_menu = true

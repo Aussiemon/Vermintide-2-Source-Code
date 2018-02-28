@@ -23,8 +23,9 @@ GameServerInternal.init_server = function (network_options, server_name)
 		server_name = server_name,
 		server_port = network_options.server_port
 	}
+	local use_eac = true
 
-	return Network.init_steam_server(config_file_name, settings)
+	return Network.init_steam_server(config_file_name, settings, use_eac)
 end
 GameServerInternal.shutdown_server = function (game_server)
 	Network.shutdown_steam_server(game_server)

@@ -351,8 +351,6 @@ AIGroupSystem.get_best_spline = function (self, position, spline_type)
 	elseif spline_type == "event" then
 		splines = self._event_splines
 		max_distance = math.huge
-
-		error("no such spline_type: " .. spline_type)
 	end
 
 	for spline_name, spline_data in pairs(splines) do

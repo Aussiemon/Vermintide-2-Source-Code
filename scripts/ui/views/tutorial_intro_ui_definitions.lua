@@ -45,13 +45,13 @@ local scenegraph_definition = {
 local text_style = {
 	word_wrap = false,
 	font_size = 52,
-	localize = true,
+	localize = false,
 	use_shadow = true,
 	horizontal_alignment = "center",
 	vertical_alignment = "center",
 	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("white", 255),
-	default_text_color = Colors.get_color_table_with_alpha("white", 255),
+	text_color = Colors.get_color_table_with_alpha("white", 0),
+	default_text_color = Colors.get_color_table_with_alpha("white", 0),
 	offset = {
 		0,
 		0,

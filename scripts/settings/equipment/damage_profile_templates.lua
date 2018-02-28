@@ -44,7 +44,7 @@ DamageProfileTemplates.default = {
 		attack = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			0.5,
 			0
@@ -52,7 +52,7 @@ DamageProfileTemplates.default = {
 		impact = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			0.5,
 			0
@@ -324,6 +324,7 @@ DamageProfileTemplates.heavy_slashing_smiter_stab = {
 }
 DamageProfileTemplates.light_fencer_stab = {
 	charge_value = "light_attack",
+	require_damage_for_dot = true,
 	critical_strike = PowerLevelTemplates.critical_strike_fencer_stab_L,
 	cleave_distribution = PowerLevelTemplates.cleave_distribution_smiter_default,
 	armor_modifier = PowerLevelTemplates.armor_modifier_fencer_stab_L_AP,
@@ -442,6 +443,10 @@ local machinegun_dropoff_ranges = {
 	dropoff_start = 10,
 	dropoff_end = 30
 }
+local bop_dropoff_ranges = {
+	dropoff_start = 10,
+	dropoff_end = 20
+}
 local carbine_dropoff_ranges = {
 	dropoff_start = 15,
 	dropoff_end = 30
@@ -457,11 +462,29 @@ local flamethrower_dropoff_ranges = {
 DamageProfileTemplates.crossbow_bolt = {
 	charge_value = "projectile",
 	shield_break = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.8,
+			1.5,
+			1,
+			0.5,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.8,
+			1,
+			1,
+			1,
+			0.5
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			0.8,
-			1.5,
+			1,
 			1,
 			0.5,
 			0
@@ -479,7 +502,7 @@ DamageProfileTemplates.crossbow_bolt = {
 		attack = {
 			1,
 			0.8,
-			1.5,
+			1,
 			1,
 			0.5,
 			0
@@ -515,6 +538,24 @@ DamageProfileTemplates.crossbow_bolt = {
 }
 DamageProfileTemplates.crossbow_bolt_repeating = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			1,
+			1,
+			0.5,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.5,
+			1,
+			1,
+			1,
+			0.5
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
@@ -574,12 +615,30 @@ DamageProfileTemplates.crossbow_bolt_repeating = {
 DamageProfileTemplates.shot_shotgun = {
 	charge_value = "instant_projectile",
 	shield_break = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			1,
+			1,
+			0.5,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+			0.5
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			0.5,
 			0.5,
-			1,
+			0.75,
 			1,
 			0
 		},
@@ -589,7 +648,7 @@ DamageProfileTemplates.shot_shotgun = {
 			1,
 			0,
 			1,
-			0.5
+			0.75
 		}
 	},
 	armor_modifier_far = {
@@ -597,7 +656,7 @@ DamageProfileTemplates.shot_shotgun = {
 			1,
 			0,
 			0.35,
-			1,
+			0.75,
 			1,
 			0
 		},
@@ -632,11 +691,29 @@ DamageProfileTemplates.shot_shotgun = {
 }
 DamageProfileTemplates.shot_machinegun = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.5,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -654,7 +731,7 @@ DamageProfileTemplates.shot_machinegun = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -690,11 +767,29 @@ DamageProfileTemplates.shot_machinegun = {
 }
 DamageProfileTemplates.shot_machinegun_shotgun = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			0.25,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -712,7 +807,7 @@ DamageProfileTemplates.shot_machinegun_shotgun = {
 		attack = {
 			1,
 			0.1,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -748,19 +843,37 @@ DamageProfileTemplates.shot_machinegun_shotgun = {
 }
 DamageProfileTemplates.shot_carbine = {
 	charge_value = "instant_projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1.5,
+			0.5,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.5,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1.5,
 			0.5,
-			1.5,
+			0.8,
 			1,
 			1,
 			0
 		},
 		impact = {
 			1,
-			0.25,
-			1,
+			0.5,
+			0.8,
 			1,
 			1,
 			0
@@ -770,7 +883,7 @@ DamageProfileTemplates.shot_carbine = {
 		attack = {
 			1,
 			0.25,
-			1.5,
+			0.75,
 			1,
 			1,
 			0
@@ -778,7 +891,7 @@ DamageProfileTemplates.shot_carbine = {
 		impact = {
 			1,
 			0.25,
-			1,
+			0.75,
 			1,
 			1,
 			0
@@ -789,7 +902,7 @@ DamageProfileTemplates.shot_carbine = {
 		impact = 0.15
 	},
 	default_target = {
-		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_coefficient_headshot = 1,
 		boost_curve_type = "linesman_curve",
 		boost_curve_coefficient = 0.75,
 		attack_template = "shot_carbine",
@@ -804,14 +917,108 @@ DamageProfileTemplates.shot_carbine = {
 		range_dropoff_settings = carbine_dropoff_ranges
 	}
 }
+DamageProfileTemplates.shot_carbine_rapier = {
+	charge_value = "instant_projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.5,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
+	armor_modifier_near = {
+		attack = {
+			1.5,
+			0.25,
+			1,
+			1,
+			1,
+			0
+		},
+		impact = {
+			1,
+			0.5,
+			1,
+			1,
+			1,
+			0
+		}
+	},
+	armor_modifier_far = {
+		attack = {
+			1,
+			0,
+			0.75,
+			1,
+			1,
+			0
+		},
+		impact = {
+			1,
+			0.25,
+			0.75,
+			1,
+			1,
+			0
+		}
+	},
+	cleave_distribution = {
+		attack = 0.01,
+		impact = 0.01
+	},
+	default_target = {
+		boost_curve_coefficient_headshot = 1,
+		boost_curve_type = "linesman_curve",
+		boost_curve_coefficient = 0.75,
+		attack_template = "shot_carbine",
+		power_distribution_near = {
+			attack = 0.35,
+			impact = 0.175
+		},
+		power_distribution_far = {
+			attack = 0.05,
+			impact = 0.1
+		},
+		range_dropoff_settings = flamethrower_dropoff_ranges
+	}
+}
 DamageProfileTemplates.shot_drakefire = {
 	charge_value = "projectile",
 	dot_template_name = "burning_1W_dot",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			0.25,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -829,7 +1036,7 @@ DamageProfileTemplates.shot_drakefire = {
 		attack = {
 			1,
 			0.25,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -866,11 +1073,29 @@ DamageProfileTemplates.shot_drakefire = {
 DamageProfileTemplates.shot_repeating = {
 	charge_value = "instant_projectile",
 	shield_break = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1.25,
+			0.4,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.4,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1.25,
 			0.4,
-			1.5,
+			1,
 			1,
 			0.5,
 			0
@@ -888,7 +1113,7 @@ DamageProfileTemplates.shot_repeating = {
 		attack = {
 			1,
 			0.25,
-			1.5,
+			1,
 			1,
 			0.5,
 			0
@@ -925,6 +1150,24 @@ DamageProfileTemplates.shot_repeating = {
 DamageProfileTemplates.shot_sniper = {
 	charge_value = "instant_projectile",
 	shield_break = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			1,
+			1.5,
+			1,
+			0.75,
+			0.2
+		},
+		impact_armor_power_modifer = {
+			1,
+			1.25,
+			1,
+			1,
+			1,
+			1
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
@@ -947,7 +1190,7 @@ DamageProfileTemplates.shot_sniper = {
 		attack = {
 			1,
 			0.5,
-			1.5,
+			1,
 			1,
 			0.75,
 			0
@@ -982,8 +1225,26 @@ DamageProfileTemplates.shot_sniper = {
 	}
 }
 DamageProfileTemplates.shot_sniper_ability = {
-	shield_break = true,
 	charge_value = "instant_projectile",
+	shield_break = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			1,
+			1.5,
+			1,
+			1,
+			0.65
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			0,
+			1,
+			1,
+			1
+		}
+	},
 	armor_modifier = {
 		attack = {
 			1,
@@ -996,7 +1257,7 @@ DamageProfileTemplates.shot_sniper_ability = {
 		impact = {
 			1,
 			1,
-			1,
+			0,
 			0.1,
 			1,
 			1
@@ -1019,8 +1280,26 @@ DamageProfileTemplates.shot_sniper_ability = {
 	}
 }
 DamageProfileTemplates.shot_shotgun_ability = {
-	shield_break = true,
 	charge_value = "instant_projectile",
+	shield_break = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.3,
+			0.5,
+			0.25,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.5,
+			0,
+			0.25,
+			1,
+			0.25
+		}
+	},
 	armor_modifier = {
 		attack = {
 			1,
@@ -1058,6 +1337,24 @@ DamageProfileTemplates.shot_shotgun_ability = {
 DamageProfileTemplates.arrow_sniper_kruber = {
 	charge_value = "projectile",
 	shield_break = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.75,
+			1.5,
+			1,
+			0.75,
+			0.5
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1,
+			0.75
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
@@ -1116,11 +1413,29 @@ DamageProfileTemplates.arrow_sniper_kruber = {
 }
 DamageProfileTemplates.arrow_machinegun = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -1138,7 +1453,7 @@ DamageProfileTemplates.arrow_machinegun = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -1174,11 +1489,29 @@ DamageProfileTemplates.arrow_machinegun = {
 }
 DamageProfileTemplates.arrow_carbine = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			0.25,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -1196,7 +1529,7 @@ DamageProfileTemplates.arrow_carbine = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -1232,6 +1565,24 @@ DamageProfileTemplates.arrow_carbine = {
 }
 DamageProfileTemplates.arrow_sniper = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.6,
+			1.5,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.8,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
@@ -1290,6 +1641,24 @@ DamageProfileTemplates.arrow_sniper = {
 }
 DamageProfileTemplates.arrow_sniper_trueflight = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			1,
+			2,
+			1,
+			1,
+			1
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			0,
+			1,
+			1,
+			1
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
@@ -1348,11 +1717,30 @@ DamageProfileTemplates.arrow_sniper_trueflight = {
 }
 DamageProfileTemplates.shortbow_hagbane = {
 	charge_value = "projectile",
+	require_damage_for_dot = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.3,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -1370,7 +1758,7 @@ DamageProfileTemplates.shortbow_hagbane = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -1409,10 +1797,30 @@ DamageProfileTemplates.shortbow_hagbane_charged.armor_modifier_near.attack = {
 	0.2,
 	1.5,
 	1,
-	1.5
+	1.5,
+	0
 }
 DamageProfileTemplates.staff_fireball = {
 	charge_value = "projectile",
+	require_damage_for_dot = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.35,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.6,
+			0,
+			0,
+			1,
+			0.25
+		}
+	},
 	armor_modifier = {
 		attack = {
 			1,
@@ -1457,13 +1865,31 @@ DamageProfileTemplates.staff_fireball = {
 }
 DamageProfileTemplates.fire_spark = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			0.25,
-			1.5,
 			1,
-			0.5,
+			1,
+			1,
 			0
 		},
 		impact = {
@@ -1479,9 +1905,9 @@ DamageProfileTemplates.fire_spark = {
 		attack = {
 			1,
 			0.25,
-			1.5,
 			1,
-			0.5,
+			1,
+			1,
 			0
 		},
 		impact = {
@@ -1515,11 +1941,29 @@ DamageProfileTemplates.fire_spark = {
 }
 DamageProfileTemplates.fire_spear = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			0.25,
-			1.5,
+			1,
 			1,
 			0.5,
 			0
@@ -1537,7 +1981,7 @@ DamageProfileTemplates.fire_spear = {
 		attack = {
 			1,
 			0.25,
-			1.5,
+			1,
 			1,
 			0.5,
 			0
@@ -1573,9 +2017,27 @@ DamageProfileTemplates.fire_spear = {
 }
 DamageProfileTemplates.fire_spear_2 = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.4,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.4,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
-			0.5,
+			1,
 			0.4,
 			1.5,
 			1,
@@ -1593,7 +2055,7 @@ DamageProfileTemplates.fire_spear_2 = {
 	},
 	armor_modifier_far = {
 		attack = {
-			0.5,
+			1,
 			0.2,
 			1.5,
 			1,
@@ -1619,7 +2081,7 @@ DamageProfileTemplates.fire_spear_2 = {
 		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_spear",
 		power_distribution_near = {
-			attack = 0.4,
+			attack = 0.45,
 			impact = 0.35
 		},
 		power_distribution_far = {
@@ -1631,11 +2093,29 @@ DamageProfileTemplates.fire_spear_2 = {
 }
 DamageProfileTemplates.fire_spear_trueflight = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			1.5,
+			2.5,
+			0.25,
+			1,
+			0.75
+		},
+		impact_armor_power_modifer = {
+			1,
+			1.5,
+			100,
+			0.25,
+			1,
+			0.75
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			1.5,
-			3.5,
+			2.5,
 			0.25,
 			1,
 			0.75
@@ -1653,7 +2133,7 @@ DamageProfileTemplates.fire_spear_trueflight = {
 		attack = {
 			1,
 			1.5,
-			3.5,
+			2.5,
 			0.25,
 			1,
 			0.75
@@ -1689,6 +2169,24 @@ DamageProfileTemplates.fire_spear_trueflight = {
 }
 DamageProfileTemplates.fire_spear_3 = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			1.5,
+			1,
+			1,
+			0.4
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.8,
+			1,
+			1,
+			1,
+			0.5
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
@@ -1704,7 +2202,7 @@ DamageProfileTemplates.fire_spear_3 = {
 			1,
 			1,
 			1,
-			0
+			0.4
 		}
 	},
 	armor_modifier_far = {
@@ -1722,7 +2220,7 @@ DamageProfileTemplates.fire_spear_3 = {
 			1,
 			1,
 			1,
-			0
+			0.2
 		}
 	},
 	cleave_distribution = {
@@ -1747,18 +2245,36 @@ DamageProfileTemplates.fire_spear_3 = {
 }
 DamageProfileTemplates.staff_fireball_charged = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			2,
+			5,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.8,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier = {
 		attack = {
 			1,
-			0.8,
-			1.5,
 			1,
+			4,
 			1,
+			0.1,
 			0
 		},
 		impact = {
 			1,
-			0.8,
+			0.5,
 			1,
 			1,
 			1,
@@ -1766,8 +2282,8 @@ DamageProfileTemplates.staff_fireball_charged = {
 		}
 	},
 	cleave_distribution = {
-		attack = 0.5,
-		impact = 0.5
+		attack = 1,
+		impact = 1
 	},
 	default_target = {
 		dot_template_name = "burning_1W_dot",
@@ -1775,12 +2291,12 @@ DamageProfileTemplates.staff_fireball_charged = {
 		boost_curve_coefficient = 1,
 		attack_template = "fireball",
 		power_distribution_near = {
-			attack = 0.05,
-			impact = 0.35
+			attack = 0.35,
+			impact = 0.75
 		},
 		power_distribution_far = {
-			attack = 0.025,
-			impact = 0.1
+			attack = 0.35,
+			impact = 0.25
 		},
 		range_dropoff_settings = {
 			dropoff_start = 10,
@@ -1791,11 +2307,29 @@ DamageProfileTemplates.staff_fireball_charged = {
 }
 DamageProfileTemplates.flamethrower_spray = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier = {
 		attack = {
 			1,
 			0.25,
-			2,
+			1.5,
 			1,
 			1,
 			0
@@ -1831,11 +2365,29 @@ DamageProfileTemplates.flamethrower_spray = {
 }
 DamageProfileTemplates.flamethrower = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier = {
 		attack = {
 			1,
 			0.25,
-			2,
+			1.5,
 			1,
 			0.5,
 			0.25
@@ -1872,6 +2424,24 @@ DamageProfileTemplates.flamethrower = {
 }
 DamageProfileTemplates.flamethrower_initial = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.25,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier = {
 		attack = {
 			0.5,
@@ -1913,13 +2483,33 @@ DamageProfileTemplates.flamethrower_initial = {
 }
 DamageProfileTemplates.beam = {
 	charge_value = "projectile",
+	ignore_stagger_reduction = true,
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.5,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.8,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier = {
 		attack = {
 			1,
 			0.5,
-			2,
+			1.5,
 			1,
-			1
+			1,
+			0
 		},
 		impact = {
 			1,
@@ -1953,13 +2543,50 @@ DamageProfileTemplates.beam = {
 }
 DamageProfileTemplates.beam_initial = {
 	charge_value = "projectile",
-	armor_modifier = {
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.1,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.2,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
+	armor_modifier_far = {
+		attack = {
+			1,
+			0.1,
+			1.5,
+			1,
+			1,
+			0
+		},
+		impact = {
+			1,
+			0.2,
+			1,
+			1,
+			1,
+			0
+		}
+	},
+	armor_modifier_near = {
 		attack = {
 			1,
 			0.5,
-			2,
+			1.5,
 			1,
-			1
+			1,
+			0
 		},
 		impact = {
 			1,
@@ -1987,17 +2614,35 @@ DamageProfileTemplates.beam_initial = {
 			attack = 0.025,
 			impact = 0.05
 		},
-		range_dropoff_settings = sniper_dropoff_ranges
+		range_dropoff_settings = carbine_dropoff_ranges
 	}
 }
 DamageProfileTemplates.blast = {
 	charge_value = "projectile",
 	dot_template_name = "burning_1W_dot",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.2,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.8,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier = {
 		attack = {
 			1,
 			0.2,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -2037,11 +2682,29 @@ DamageProfileTemplates.blast = {
 }
 DamageProfileTemplates.beam_shot = {
 	charge_value = "projectile",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.8,
+			1.5,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.3,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier_near = {
 		attack = {
 			1,
 			0.8,
-			2,
+			1.5,
 			1,
 			1,
 			0
@@ -2059,7 +2722,7 @@ DamageProfileTemplates.beam_shot = {
 		attack = {
 			1,
 			0,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -2099,14 +2762,32 @@ DamageProfileTemplates.beam_shot = {
 	}
 }
 DamageProfileTemplates.geiser = {
-	charge_value = "aoe",
 	dot_template_name = "burning_1W_dot",
+	charge_value = "aoe",
 	attack_template = "wizard_staff_geiser",
+	critical_strike = {
+		attack_armor_power_modifer = {
+			1,
+			0.8,
+			1,
+			1,
+			1,
+			0.25
+		},
+		impact_armor_power_modifer = {
+			1,
+			0.8,
+			1,
+			1,
+			1,
+			0.25
+		}
+	},
 	armor_modifier = {
 		attack = {
 			1,
 			0.8,
-			1.5,
+			1,
 			1,
 			1,
 			0
@@ -2158,6 +2839,22 @@ DamageProfileTemplates.geiser = {
 		}
 	}
 }
+
+new_template("arrow_carbine", nil, "tutorial_longbow")
+new_template("crossbow_bolt", nil, "tutorial_longbow_charged")
+
+DamageProfileTemplates.tutorial_longbow.no_headshot_boost = true
+DamageProfileTemplates.tutorial_longbow.no_crit_boost = true
+DamageProfileTemplates.tutorial_longbow_charged.no_headshot_boost = true
+DamageProfileTemplates.tutorial_longbow_charged.no_crit_boost = true
+DamageProfileTemplates.tutorial_longbow.armor_modifier_near.attack[2] = 0
+DamageProfileTemplates.tutorial_longbow.armor_modifier_far.attack[2] = 0
+DamageProfileTemplates.tutorial_longbow_charged.armor_modifier_near.attack[2] = 0
+DamageProfileTemplates.tutorial_longbow_charged.armor_modifier_far.attack[2] = 0
+DamageProfileTemplates.tutorial_longbow.armor_modifier_near.attack[6] = 0
+DamageProfileTemplates.tutorial_longbow.armor_modifier_far.attack[6] = 0
+DamageProfileTemplates.tutorial_longbow_charged.armor_modifier_near.attack[6] = 0
+DamageProfileTemplates.tutorial_longbow_charged.armor_modifier_far.attack[6] = 0
 DamageProfileTemplates.frag_grenade = {
 	charge_value = "grenade",
 	is_explosion = true,
@@ -2228,7 +2925,7 @@ DamageProfileTemplates.fireball_charged_explosion = {
 	armor_modifier = {
 		attack = {
 			1,
-			0.5,
+			0.25,
 			1.5,
 			1,
 			0.75,
@@ -2248,8 +2945,8 @@ DamageProfileTemplates.fireball_charged_explosion = {
 		dot_template_name = "burning_1W_dot",
 		damage_type = "drakegun",
 		power_distribution = {
-			attack = 0.15,
-			impact = 0.2
+			attack = 0.25,
+			impact = 0.4
 		}
 	}
 }
@@ -2380,7 +3077,7 @@ DamageProfileTemplates.poison = {
 			3,
 			1,
 			0.5,
-			0
+			0.2
 		},
 		impact = {
 			1,
@@ -2395,7 +3092,7 @@ DamageProfileTemplates.poison = {
 		attack_template = "arrow_poison_aoe",
 		damage_type = "arrow_poison_dot",
 		power_distribution = {
-			attack = 0.075,
+			attack = 0.05,
 			impact = 0
 		}
 	}
@@ -2414,7 +3111,7 @@ DamageProfileTemplates.poison_direct = {
 			3,
 			1,
 			0.5,
-			0
+			0.2
 		},
 		impact = {
 			1,
@@ -2436,11 +3133,12 @@ DamageProfileTemplates.poison_direct = {
 }
 DamageProfileTemplates.poison_aoe = {
 	no_friendly_fire = true,
+	require_damage_for_dot = true,
 	no_stagger = false,
 	armor_modifier = {
 		attack = {
 			1,
-			1,
+			0,
 			1.5,
 			1,
 			1,
@@ -2448,7 +3146,7 @@ DamageProfileTemplates.poison_aoe = {
 		},
 		impact = {
 			1,
-			0.5,
+			0.75,
 			1,
 			1,
 			0.5,
@@ -2461,7 +3159,7 @@ DamageProfileTemplates.poison_aoe = {
 		damage_type = "poison",
 		power_distribution = {
 			attack = 0.05,
-			impact = 0.35
+			impact = 0.5
 		}
 	}
 }
@@ -2477,7 +3175,8 @@ DamageProfileTemplates.burning_dot.default_target.armor_modifier = {
 		0.75,
 		4,
 		1,
-		1
+		1,
+		0
 	},
 	impact = {
 		1,
@@ -2501,7 +3200,8 @@ DamageProfileTemplates.beam_burning_dot.default_target.armor_modifier = {
 		0.75,
 		4,
 		1,
-		1
+		1,
+		0
 	},
 	impact = {
 		1,
@@ -2525,7 +3225,8 @@ DamageProfileTemplates.flamethrower_burning_dot.default_target.armor_modifier = 
 		0.25,
 		3,
 		1,
-		1
+		1,
+		0
 	},
 	impact = {
 		1,

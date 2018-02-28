@@ -64,7 +64,12 @@ GameModeSurvival.evaluate_end_conditions = function (self, round_started, dt, t)
 
 	if lost then
 		self.about_to_lose = true
-		self.lost_condition_timer = t + GameModeSettings.adventure.lose_condition_time
+
+		if humans_dead then
+			self.lost_condition_timer = t + GameModeSettings.survival.lose_condition_time_dead
+		else
+			self.lost_condition_timer = t + GameModeSettings.survival.lose_condition_time
+		end
 	elseif self._level_completed and not self.level_complete_timer then
 		self.level_complete_timer = t + 0.4
 

@@ -280,6 +280,7 @@ local unit_templates = {
 			"GenericCharacterStateMachineExtension",
 			"BuffExtension",
 			"CareerExtension",
+			"TalentExtension",
 			"SimpleInventoryExtension",
 			"GenericUnitInteractorExtension",
 			"GenericUnitInteractableExtension",

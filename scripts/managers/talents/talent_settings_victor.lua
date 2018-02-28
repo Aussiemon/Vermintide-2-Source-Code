@@ -258,25 +258,8 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_passive_damage = {
 		buffs = {
 			{
-				icon = "icons_placeholder",
+				icon = "victor_zealot_passive",
 				stat_buff = StatBuffIndex.POWER_LEVEL
-			}
-		}
-	},
-	victor_zealot_passive_attack_speed_aura = {
-		buffs = {
-			{
-				buff_to_add = "victor_zealot_passive_attack_speed_aura_buff",
-				update_func = "activate_buff_on_distance"
-			}
-		}
-	},
-	victor_zealot_passive_attack_speed_aura_buff = {
-		buffs = {
-			{
-				max_stacks = 1,
-				icon = "icons_placeholder",
-				stat_buff = StatBuffIndex.ATTACK_SPEED
 			}
 		}
 	},
@@ -294,7 +277,7 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				refresh_durations = true,
 				is_cooldown = true,
-				icon = "bardin_ranger_attack_speed",
+				icon = "victor_zealot_passive_invulnerability",
 				dormant = true,
 				delayed_buff_name = "victor_zealot_gain_invulnerability_on_lethal_damage_taken"
 			}
@@ -307,7 +290,7 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				event_buff = true,
 				remove_on_proc = true,
-				icon = "bardin_ranger_attack_speed",
+				icon = "victor_zealot_passive_invulnerability",
 				buff_func = ProcFunctions.victor_zealot_gain_invulnerability
 			}
 		}
@@ -320,7 +303,7 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				remove_buff_func = "add_victor_zealot_invulnerability_cooldown",
 				max_stacks = 1,
-				icon = "bardin_ranger_attack_speed",
+				icon = "victor_zealot_passive_invulnerability",
 				priority_buff = true,
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
 			}
@@ -329,7 +312,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_activated_ability = {
 		buffs = {
 			{
-				icon = "talent_max_health_human",
+				icon = "victor_zealot_activated_ability",
 				is_cooldown = true,
 				remove_buff_func = "end_zealot_activated_ability",
 				dormant = true,
@@ -381,9 +364,8 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_damage_on_enemy_proximity = {
 		buffs = {
 			{
-				max_stacks = 1,
-				icon = "icons_placeholder",
-				stat_buff = StatBuffIndex.ATTACK_SPEED
+				icon = "victor_zealot_increased_damage_on_enemy_proximity",
+				stat_buff = StatBuffIndex.POWER_LEVEL
 			}
 		}
 	},
@@ -407,7 +389,7 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				max_stacks = 1,
-				icon = "icons_placeholder",
+				icon = "victor_zealot_increased_defence_low_health",
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
 			}
 		}
@@ -423,7 +405,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_block_arc_from_passive = {
 		buffs = {
 			{
-				icon = "icons_placeholder",
+				icon = "victor_zealot_increased_block_arc_from_passive",
 				stat_buff = StatBuffIndex.BLOCK_ANGLE
 			}
 		}
@@ -439,7 +421,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_critical_hit_damage_from_passive = {
 		buffs = {
 			{
-				icon = "icons_placeholder",
+				icon = "victor_zealot_increased_critical_hit_damage_from_passive",
 				stat_buff = StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS
 			}
 		}
@@ -455,7 +437,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_stamina_from_passive = {
 		buffs = {
 			{
-				icon = "icons_placeholder",
+				icon = "victor_zealot_increased_stamina_from_passive",
 				stat_buff = StatBuffIndex.MAX_FATIGUE
 			}
 		}
@@ -852,7 +834,7 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				max_stacks = 1,
-				icon = "victor_witchhunter_damage_on_grimoire_picked_up",
+				icon = "victor_witchhunter_increased_damage_on_grimoire_picked_up",
 				priority_buff = true,
 				stat_buff = StatBuffIndex.POWER_LEVEL
 			}
@@ -877,6 +859,8 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				max_stacks = 1,
+				icon = "victor_witchhunter_damage_reduction_on_disabled",
+				priority_buff = true,
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
 			}
 		}
@@ -1043,7 +1027,7 @@ Talents.witch_hunter = {
 		name = "victor_zealot_stun_reduction",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "victor_zealot_stun_reduction",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1060,7 +1044,7 @@ Talents.witch_hunter = {
 		description = "victor_zealot_stamina_regen_desc",
 		name = "victor_zealot_stamina_regen",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_zealot_stamina_regen",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1077,7 +1061,7 @@ Talents.witch_hunter = {
 		description = "victor_zealot_crit_chance_desc",
 		name = "victor_zealot_crit_chance",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_zealot_crit_chance",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1094,7 +1078,7 @@ Talents.witch_hunter = {
 		description = "victor_zealot_increased_damage_on_enemy_proximity_desc",
 		name = "victor_zealot_increased_damage_on_enemy_proximity",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_zealot_increased_damage_on_enemy_proximity",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1115,7 +1099,7 @@ Talents.witch_hunter = {
 		name = "victor_zealot_damage_taken_capped",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "victor_zealot_damage_taken_capped",
 		description_values = {
 			{
 				value = buff_tweak_data.victor_zealot_damage_taken_capped.bonus
@@ -1132,7 +1116,7 @@ Talents.witch_hunter = {
 		name = "victor_zealot_increased_defence_low_health",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "icons_placeholder",
+		icon = "victor_zealot_increased_defence_low_health",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1153,7 +1137,7 @@ Talents.witch_hunter = {
 		description = "victor_zealot_increased_block_arc_from_passive_desc",
 		name = "victor_zealot_increased_block_arc_from_passive",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_zealot_increased_block_arc_from_passive",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1176,7 +1160,7 @@ Talents.witch_hunter = {
 		description = "victor_zealot_increased_critical_hit_damage_from_passive_desc",
 		name = "victor_zealot_increased_critical_hit_damage_from_passive",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_zealot_increased_critical_hit_damage_from_passive",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1199,11 +1183,8 @@ Talents.witch_hunter = {
 		description = "victor_zealot_increased_stamina_from_passive_desc",
 		name = "victor_zealot_increased_stamina_from_passive",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_zealot_increased_stamina_from_passive",
 		description_values = {
-			{
-				value = buff_tweak_data.victor_zealot_stamina_from_passive.bonus
-			},
 			{
 				value = buff_tweak_data.victor_zealot_increased_stamina_from_passive.chunk_size
 			},
@@ -1222,7 +1203,7 @@ Talents.witch_hunter = {
 		name = "victor_regrowth",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "markus_mercenary_attack_speed_on_critical_hit",
+		icon = "victor_zealot_regrowth",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1235,7 +1216,7 @@ Talents.witch_hunter = {
 		name = "victor_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "markus_mercenary_crit_chance",
+		icon = "victor_zealot_bloodlust",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1248,7 +1229,7 @@ Talents.witch_hunter = {
 		name = "victor_conqueror",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "kerillian_waywatcher_crit_hit_damage_on_high_health",
+		icon = "victor_zealot_conqueror",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1257,48 +1238,10 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_zealot_uninterruptible_on_block_broken_desc",
-		name = "victor_zealot_uninterruptible_on_block_broken",
-		num_ranks = 1,
-		icon = "icons_placeholder",
-		description_values = {
-			{
-				value = buff_tweak_data.victor_zealot_uninterruptible_on_block_broken_buff.duration
-			}
-		},
-		requirements = {},
-		buffs = {
-			"victor_zealot_uninterruptible_on_block_broken"
-		},
-		buff_data = {}
-	},
-	{
-		description = "victor_zealot_slower_heavy_hits_desc",
-		name = "victor_zealot_slower_heavy_hits",
-		num_ranks = 1,
-		icon = "icons_placeholder",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.victor_zealot_slower_hits.multiplier
-			},
-			{
-				value_type = "percent",
-				value = buff_tweak_data.victor_zealot_heavy_hits.multiplier
-			}
-		},
-		requirements = {},
-		buffs = {
-			"victor_zealot_heavy_hits",
-			"victor_zealot_slower_hits"
-		},
-		buff_data = {}
-	},
-	{
 		description = "victor_zealot_activated_ability_cooldown_desc",
 		name = "victor_zealot_activated_ability_cooldown",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_zealot_activated_ability_cooldown",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1315,7 +1258,7 @@ Talents.witch_hunter = {
 		description = "victor_zealot_activated_ability_heal_desc",
 		name = "victor_zealot_activated_ability_heal",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_zealot_activated_ability_heal",
 		description_values = {
 			{
 				value = buff_tweak_data.victor_zealot_activated_ability_heal.bonus
@@ -1329,7 +1272,7 @@ Talents.witch_hunter = {
 		description = "victor_zealot_activated_ability_duration_desc",
 		name = "victor_zealot_activated_ability_duration",
 		num_ranks = 1,
-		icon = "icons_placeholder",
+		icon = "victor_zealot_activated_ability_duration",
 		description_values = {
 			{
 				value = buff_tweak_data.victor_zealot_activated_ability_duration.duration
@@ -1377,7 +1320,7 @@ Talents.witch_hunter = {
 		description = "victor_bountyhunter_increased_attack_speed_desc",
 		name = "victor_bountyhunter_increased_attack_speed",
 		num_ranks = 1,
-		icon = "victor_bountyhunter_attack_speed",
+		icon = "victor_bountyhunter_increased_attack_speed",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1486,40 +1429,6 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_bountyhunter_attack_speed_desc",
-		name = "victor_bountyhunter_attack_speed",
-		num_ranks = 1,
-		icon = "victor_bountyhunter_attack_speed",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.victor_bountyhunter_attack_speed.multiplier
-			}
-		},
-		requirements = {},
-		buffs = {
-			"victor_bountyhunter_attack_speed"
-		},
-		buff_data = {}
-	},
-	{
-		description = "victor_bountyhunter_heal_on_ranged_headshot_desc",
-		name = "victor_bountyhunter_heal_on_ranged_headshot",
-		num_ranks = 1,
-		buffer = "server",
-		icon = "victor_bountyhunter_heal_on_critical_hit",
-		description_values = {
-			{
-				value = buff_tweak_data.victor_bountyhunter_heal_on_ranged_headshot.bonus
-			}
-		},
-		requirements = {},
-		buffs = {
-			"victor_bountyhunter_heal_on_ranged_headshot"
-		},
-		buff_data = {}
-	},
-	{
 		description = "victor_bountyhunter_activated_ability_cooldown_desc",
 		name = "victor_bountyhunter_activated_ability_cooldown",
 		num_ranks = 1,
@@ -1616,7 +1525,7 @@ Talents.witch_hunter = {
 		name = "victor_witchhunter_increased_damage_on_grimoire_picked_up",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "victor_witchhunter_crit_hit_damage_on_low_health",
+		icon = "victor_witchhunter_increased_damage_on_grimoire_picked_up",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1633,7 +1542,8 @@ Talents.witch_hunter = {
 		description = "victor_witchhunter_headshot_damage_increase_desc",
 		name = "victor_witchhunter_headshot_damage_increase",
 		num_ranks = 1,
-		icon = "victor_witchhunter_revive_speed_on_last_standing",
+		buffer = "server",
+		icon = "victor_witchhunter_headshot_damage_increase",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1650,7 +1560,7 @@ Talents.witch_hunter = {
 		description = "victor_witchhunter_damage_reduction_on_disabled_desc",
 		name = "victor_witchhunter_damage_reduction_on_disabled",
 		num_ranks = 1,
-		icon = "victor_witchhunter_movement_speed_on_taking_damage",
+		icon = "victor_witchhunter_damage_reduction_on_disabled",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1721,44 +1631,6 @@ Talents.witch_hunter = {
 		buff_data = {}
 	},
 	{
-		description = "victor_witchhunter_heal_on_melee_headshot_desc",
-		name = "victor_witchhunter_heal_on_melee_headshot",
-		num_ranks = 1,
-		buffer = "server",
-		icon = "victor_witchhunter_heal_on_melee_headshot",
-		description_values = {
-			{
-				value = buff_tweak_data.victor_witchhunter_heal_on_melee_headshot.bonus
-			}
-		},
-		requirements = {},
-		buffs = {
-			"victor_witchhunter_heal_on_melee_headshot"
-		},
-		buff_data = {}
-	},
-	{
-		description = "victor_witchhunter_debuff_defence_on_crit_desc",
-		name = "victor_witchhunter_debuff_defence_on_crit",
-		num_ranks = 1,
-		buffer = "server",
-		icon = "victor_witchhunter_debuff_defence_on_crit",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.victor_witchhunter_defence_debuff.multiplier
-			},
-			{
-				value = buff_tweak_data.victor_witchhunter_defence_debuff.duration
-			}
-		},
-		requirements = {},
-		buffs = {
-			"victor_witchhunter_debuff_defence_on_crit"
-		},
-		buff_data = {}
-	},
-	{
 		description = "victor_witchhunter_activated_ability_cooldown_desc",
 		name = "victor_witchhunter_activated_ability_cooldown",
 		num_ranks = 1,
@@ -1779,7 +1651,7 @@ Talents.witch_hunter = {
 		description = "victor_witchhunter_activated_ability_duration_desc",
 		name = "victor_witchhunter_activated_ability_duration",
 		num_ranks = 1,
-		icon = "victor_witchhunter_activated_ability",
+		icon = "victor_witchhunter_activated_ability_duration",
 		description_values = {
 			{
 				value = buff_tweak_data.victor_witchhunter_activated_ability_duration.duration
@@ -1793,7 +1665,7 @@ Talents.witch_hunter = {
 		description = "victor_witchhunter_activated_ability_radius_desc",
 		name = "victor_witchhunter_activated_ability_radius",
 		num_ranks = 1,
-		icon = "victor_witchhunter_activated_ability",
+		icon = "victor_witchhunter_activated_ability_radius",
 		description_values = {
 			{
 				value_type = "percent",

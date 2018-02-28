@@ -373,11 +373,13 @@ TalentBuffTemplates.dwarf_ranger = {
 		activation_sound = "hud_gameplay_stance_tank_activate",
 		buffs = {
 			{
-				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
-				name = "bardin_ironbreaker_activated_ability",
-				perk = "reduced_hit_react",
-				icon = "bardin_ironbreaker_activated_ability",
 				update_func = "update_bardin_ironbreaker_activated_ability",
+				perk = "reduced_hit_react",
+				name = "bardin_ironbreaker_activated_ability",
+				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
+				refresh_durations = true,
+				max_stacks = 1,
+				icon = "bardin_ironbreaker_activated_ability",
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN,
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_damage_taken
 			}
@@ -387,6 +389,8 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				name = "bardin_ironbreaker_ability_stamina",
+				refresh_durations = true,
+				max_stacks = 1,
 				stat_buff = StatBuffIndex.BLOCK_COST,
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_block_cost,
 				duration = buff_tweak_data.bardin_ironbreaker_activated_ability.duration
@@ -399,11 +403,13 @@ TalentBuffTemplates.dwarf_ranger = {
 		activation_sound = "hud_gameplay_stance_tank_activate",
 		buffs = {
 			{
-				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
-				name = "bardin_ironbreaker_activated_ability_duration",
-				perk = "reduced_hit_react",
-				icon = "bardin_ironbreaker_activated_ability",
 				update_func = "update_bardin_ironbreaker_activated_ability",
+				perk = "reduced_hit_react",
+				name = "bardin_ironbreaker_activated_ability_duration",
+				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
+				refresh_durations = true,
+				max_stacks = 1,
+				icon = "bardin_ironbreaker_activated_ability",
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN,
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_damage_taken
 			}
@@ -412,6 +418,8 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_activated_ability_duration_block_cost = {
 		buffs = {
 			{
+				refresh_durations = true,
+				max_stacks = 1,
 				stat_buff = StatBuffIndex.BLOCK_COST,
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_block_cost,
 				duration = buff_tweak_data.bardin_ironbreaker_activated_ability_duration.duration
@@ -472,7 +480,7 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_slayer_activated_ability = {
 		buffs = {
 			{
-				icon = "talent_melee_dwarf",
+				icon = "bardin_slayer_activated_ability",
 				name = "bardin_slayer_frenzy",
 				remove_buff_func = "end_slayer_activated_ability",
 				perk = "reduced_hit_react",
@@ -670,7 +678,8 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 1,
 				icon = "bardin_ranger_activated_ability",
-				remove_buff_func = "end_ranger_activated_ability"
+				remove_buff_func = "end_ranger_activated_ability",
+				refresh_durations = true
 			}
 		}
 	},
@@ -707,7 +716,7 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				max_stacks = 1,
-				icon = "bardin_ranger_attack_speed",
+				icon = "bardin_ranger_increased_melee_damage_on_no_ammo",
 				priority_buff = true,
 				stat_buff = StatBuffIndex.POWER_LEVEL
 			}
@@ -736,40 +745,8 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				max_stacks = 1,
-				icon = "icons_placeholder",
+				icon = "bardin_ranger_increased_defence_on_disabled",
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
-			}
-		}
-	},
-	bardin_ranger_increased_ammunition = {
-		buffs = {
-			{
-				stat_buff = StatBuffIndex.TOTAL_AMMO
-			}
-		}
-	},
-	bardin_ranger_increased_damage_on_enemy_proximity = {
-		buffs = {
-			{
-				buff_to_add = "bardin_ranger_damage_on_enemy_proximity",
-				update_func = "activate_buff_stacks_based_on_enemy_proximity"
-			}
-		}
-	},
-	bardin_ranger_damage_on_enemy_proximity = {
-		buffs = {
-			{
-				icon = "bardin_ranger_reload_speed",
-				stat_buff = StatBuffIndex.POWER_LEVEL
-			}
-		}
-	},
-	bardin_ranger_heal_on_ranged_headshot = {
-		buffs = {
-			{
-				event = "on_hit",
-				event_buff = true,
-				buff_func = ProcFunctions.heal_on_ranged_headshot
 			}
 		}
 	},
@@ -778,10 +755,11 @@ TalentBuffTemplates.dwarf_ranger = {
 		continuous_effect = "fx/screenspace_ranger_skill_01",
 		buffs = {
 			{
-				max_stacks = 1,
 				icon = "bardin_ranger_activated_ability",
-				remove_buff_func = "end_ranger_activated_ability",
-				name = "bardin_ranger_activated_ability"
+				name = "bardin_ranger_activated_ability",
+				refresh_durations = true,
+				max_stacks = 1,
+				remove_buff_func = "end_ranger_activated_ability"
 			}
 		}
 	},
@@ -900,6 +878,7 @@ Talents.dwarf_ranger = {
 		description = "bardin_ironbreaker_max_health_desc",
 		name = "bardin_ironbreaker_max_health",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "bardin_ironbreaker_max_health",
 		description_values = {
 			{
@@ -1040,7 +1019,7 @@ Talents.dwarf_ranger = {
 		name = "bardin_regrowth",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "markus_mercenary_attack_speed_on_critical_hit",
+		icon = "bardin_ironbreaker_regrowth",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1053,7 +1032,7 @@ Talents.dwarf_ranger = {
 		name = "bardin_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "markus_mercenary_crit_chance",
+		icon = "bardin_ironbreaker_bloodlust",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1066,7 +1045,7 @@ Talents.dwarf_ranger = {
 		name = "bardin_conqueror",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "kerillian_waywatcher_crit_hit_damage_on_high_health",
+		icon = "bardin_ironbreaker_conqueror",
 		description_values = {},
 		requirements = {},
 		buffs = {
@@ -1303,7 +1282,7 @@ Talents.dwarf_ranger = {
 		icon = "bardin_slayer_activated_ability_movement",
 		description_values = {
 			{
-				value_type = "percent",
+				value_type = "baked_percent",
 				value = buff_tweak_data.bardin_slayer_activated_ability_movement.multiplier
 			}
 		},
@@ -1341,7 +1320,7 @@ Talents.dwarf_ranger = {
 		description = "bardin_ranger_healing_received_desc",
 		name = "bardin_ranger_healing_received",
 		num_ranks = 1,
-		icon = "bardin_ranger_passive_spawn_healing_draught",
+		icon = "bardin_ranger_healing_received",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1375,7 +1354,7 @@ Talents.dwarf_ranger = {
 		description = "bardin_ranger_increased_melee_damage_on_no_ammo_desc",
 		name = "bardin_ranger_increased_melee_damage_on_no_ammo",
 		num_ranks = 1,
-		icon = "bardin_ranger_attack_speed",
+		icon = "bardin_ranger_increased_melee_damage_on_no_ammo",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1392,7 +1371,7 @@ Talents.dwarf_ranger = {
 		description = "bardin_ranger_movement_speed_desc",
 		name = "bardin_ranger_movement_speed",
 		num_ranks = 1,
-		icon = "bardin_ranger_crit_hit_damage_on_high_health",
+		icon = "bardin_ranger_movement_speed",
 		description_values = {
 			{
 				value_type = "baked_percent",
@@ -1410,7 +1389,7 @@ Talents.dwarf_ranger = {
 		name = "bardin_ranger_increased_defence_on_disabled",
 		num_ranks = 1,
 		buffer = "server",
-		icon = "bardin_ranger_critical_hit_damage",
+		icon = "bardin_ranger_increased_defence_on_disabled",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1445,71 +1424,17 @@ Talents.dwarf_ranger = {
 		description = "bardin_ranger_passive_improved_ammo_desc",
 		name = "bardin_ranger_passive_improved_ammo",
 		num_ranks = 1,
-		icon = "bardin_ranger_passive_improved_drop_chance",
+		icon = "bardin_ranger_passive_improved_ammo",
 		description_values = {},
 		requirements = {},
 		buffs = {},
 		buff_data = {}
 	},
 	{
-		description = "bardin_ranger_increased_damage_on_enemy_proximity_desc",
-		name = "bardin_ranger_increased_damage_on_enemy_proximity",
-		num_ranks = 1,
-		icon = "bardin_ranger_reload_speed",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.bardin_ranger_damage_on_enemy_proximity.multiplier
-			},
-			{
-				value = buff_tweak_data.bardin_ranger_damage_on_enemy_proximity.max_stacks
-			}
-		},
-		requirements = {},
-		buffs = {
-			"bardin_ranger_increased_damage_on_enemy_proximity"
-		},
-		buff_data = {}
-	},
-	{
-		description = "bardin_ranger_increased_ammunition_desc",
-		name = "bardin_ranger_increased_ammunition",
-		num_ranks = 1,
-		icon = "bardin_ranger_max_ammo",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.bardin_ranger_increased_ammunition.multiplier
-			}
-		},
-		requirements = {},
-		buffs = {
-			"bardin_ranger_increased_ammunition"
-		},
-		buff_data = {}
-	},
-	{
-		description = "bardin_ranger_heal_on_ranged_headshot_desc",
-		name = "bardin_ranger_heal_on_ranged_headshot",
-		num_ranks = 1,
-		buffer = "server",
-		icon = "bardin_ranger_heal_on_ranged_headshot",
-		description_values = {
-			{
-				value = buff_tweak_data.bardin_ranger_heal_on_ranged_headshot.bonus
-			}
-		},
-		requirements = {},
-		buffs = {
-			"bardin_ranger_heal_on_ranged_headshot"
-		},
-		buff_data = {}
-	},
-	{
 		description = "bardin_ranger_activated_ability_duration_desc",
 		name = "bardin_ranger_activated_ability_duration",
 		num_ranks = 1,
-		icon = "bardin_ranger_activated_ability",
+		icon = "bardin_ranger_activated_ability_duration",
 		description_values = {
 			{
 				value = buff_tweak_data.bardin_ranger_activated_ability_duration.duration
@@ -1523,7 +1448,7 @@ Talents.dwarf_ranger = {
 		description = "bardin_ranger_activated_ability_cooldown_desc",
 		name = "bardin_ranger_activated_ability_cooldown",
 		num_ranks = 1,
-		icon = "bardin_ranger_activated_ability",
+		icon = "bardin_ranger_activated_ability_cooldown",
 		description_values = {
 			{
 				value_type = "percent",
@@ -1540,7 +1465,7 @@ Talents.dwarf_ranger = {
 		description = "bardin_ranger_activated_ability_heal_desc",
 		name = "bardin_ranger_activated_ability_heal",
 		num_ranks = 1,
-		icon = "bardin_ranger_activated_ability",
+		icon = "bardin_ranger_activated_ability_heal",
 		description_values = {
 			{
 				value = buff_tweak_data.bardin_ranger_activated_ability_heal.bonus

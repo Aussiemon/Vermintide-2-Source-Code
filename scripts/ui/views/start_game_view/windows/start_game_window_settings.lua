@@ -26,6 +26,7 @@ StartGameWindowSettings.on_enter = function (self, params, offset)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
+	self._network_lobby = ingame_ui_context.network_lobby
 	local player_manager = Managers.player
 	local local_player = player_manager.local_player(player_manager)
 	self._stats_id = local_player.stats_id(local_player)
@@ -35,7 +36,6 @@ StartGameWindowSettings.on_enter = function (self, params, offset)
 	self._ui_animations = {}
 
 	self.create_ui_elements(self, params, offset)
-	self._setup_private_options(self)
 	self._update_difficulty_option(self)
 
 	return 
@@ -85,17 +85,12 @@ end
 StartGameWindowSettings._set_additional_options_enabled_state = function (self, enabled)
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.additional_option.content.button_hotspot.disable_button = not enabled
-	local private_tabs = widgets_by_name.private_tabs
-	local private_tabs_content = private_tabs.content
-	local private_tabs_amount = private_tabs_content.amount
-
-	for i = 1, private_tabs_amount, 1 do
-		local name_suffix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_suffix
-		local button_hotspot = private_tabs_content[hotspot_name]
-		button_hotspot.disable_button = true
-	end
-
+	local private_button = widgets_by_name.private_button
+	private_button.content.button_hotspot.disable_button = not enabled
+	local host_button = widgets_by_name.host_button
+	host_button.content.button_hotspot.disable_button = not enabled
+	local strict_matchmaking_button = widgets_by_name.strict_matchmaking_button
+	strict_matchmaking_button.content.button_hotspot.disable_button = not enabled
 	self._additional_option_enabled = enabled
 
 	return 
@@ -117,7 +112,7 @@ StartGameWindowSettings.update = function (self, dt, t)
 	self._update_mission_selection(self)
 
 	if self._additional_option_enabled then
-		self._update_private_option(self)
+		self._update_additional_options(self)
 	end
 
 	self._update_difficulty_option(self)
@@ -247,30 +242,54 @@ StartGameWindowSettings._is_button_selected = function (self, widget)
 
 	return hotspot.is_selected
 end
+StartGameWindowSettings._is_other_option_button_selected = function (self, widget, current_option)
+	if self._is_button_released(self, widget) then
+		local is_selected = not current_option
+
+		if is_selected then
+			self._play_sound(self, "play_gui_lobby_button_03_private")
+		else
+			self._play_sound(self, "play_gui_lobby_button_03_public")
+		end
+
+		return is_selected
+	end
+
+	return nil
+end
 StartGameWindowSettings._handle_input = function (self, dt, t)
 	local parent = self.parent
 	local widgets_by_name = self._widgets_by_name
 
 	if self._additional_option_enabled then
-		local private_tabs_widget = widgets_by_name.private_tabs
+		local private_button = widgets_by_name.private_button
 
-		UIWidgetUtils.animate_default_text_tabs(private_tabs_widget, dt)
+		UIWidgetUtils.animate_default_checkbox_button(private_button, dt)
 
-		local private_index_pressed = self._is_tab_pressed(self, private_tabs_widget)
+		local changed_selection = self._is_other_option_button_selected(self, private_button, self._private_enabled)
 
-		if private_index_pressed then
-			local setting = private_settings[private_index_pressed]
-			local value = setting.value
+		if changed_selection ~= nil then
+			parent.set_private_option_enabled(parent, changed_selection)
+		end
 
-			if value ~= self._private_enabled then
-				if value then
-					self._play_sound(self, "play_gui_lobby_button_03_private")
-				else
-					self._play_sound(self, "play_gui_lobby_button_03_public")
-				end
+		local host_button = widgets_by_name.host_button
 
-				parent.set_private_option_enabled(parent, value)
-			end
+		UIWidgetUtils.animate_default_checkbox_button(host_button, dt)
+
+		changed_selection = self._is_other_option_button_selected(self, host_button, self._always_host_enabled)
+
+		if changed_selection ~= nil then
+			parent.set_always_host_option_enabled(parent, changed_selection)
+		end
+
+		local strict_matchmaking_button = widgets_by_name.strict_matchmaking_button
+
+		UIWidgetUtils.animate_default_checkbox_button(strict_matchmaking_button, dt)
+
+		changed_selection = self._is_other_option_button_selected(self, strict_matchmaking_button, self._strict_matchmaking_enabled)
+
+		if changed_selection ~= nil then
+			parent.set_strict_matchmaking_option_enabled(parent, changed_selection)
 		end
 	end
 
@@ -330,50 +349,38 @@ StartGameWindowSettings._on_option_button_hover_exit = function (self, index, in
 
 	return 
 end
-StartGameWindowSettings._setup_private_options = function (self)
-	local widgets_by_name = self._widgets_by_name
-	local widget = widgets_by_name.private_tabs
-	local content = widget.content
-	local amount = content.amount
-
-	for i = 1, amount, 1 do
-		local setting = private_settings[i]
-		local display_name = setting.display_name
-		local name_suffix = "_" .. tostring(i)
-		local hotspot_name = "hotspot" .. name_suffix
-		local text_name = "text" .. name_suffix
-		local button_hotspot = content[hotspot_name]
-		button_hotspot[text_name] = display_name
-	end
-
-	return 
-end
-StartGameWindowSettings._update_private_option = function (self)
+StartGameWindowSettings._update_additional_options = function (self)
 	local parent = self.parent
 	local private_enabled = parent.is_private_option_enabled(parent)
+	local always_host_enabled = parent.is_always_host_option_enabled(parent)
+	local strict_matchmaking_enabled = parent.is_strict_matchmaking_option_enabled(parent)
 	local twitch_active = Managers.twitch and Managers.twitch:is_connected()
+	local lobby = self._network_lobby
+	local num_members = #lobby.members(lobby):get_members()
+	local is_alone = num_members == 1
 
-	if private_enabled ~= self._private_enabled or twitch_active ~= self._twitch_active then
+	if is_alone ~= self._is_alone or private_enabled ~= self._private_enabled or always_host_enabled ~= self._always_host_enabled or strict_matchmaking_enabled ~= self._strict_matchmaking_enabled or twitch_active ~= self._twitch_active then
 		local widgets_by_name = self._widgets_by_name
-		local widget = widgets_by_name.private_tabs
-		local content = widget.content
-		local amount = content.amount
-
-		for i = 1, amount, 1 do
-			local setting = private_settings[i]
-			local value = setting.value
-			local is_selected = value == private_enabled
-			local is_disabled = twitch_active
-			local name_suffix = "_" .. tostring(i)
-			local hotspot_name = "hotspot" .. name_suffix
-			local text_name = "text" .. name_suffix
-			local button_hotspot = content[hotspot_name]
-			button_hotspot.is_selected = is_selected
-			button_hotspot.disable_button = is_disabled
-		end
-
+		local private_is_selected = private_enabled
+		local private_is_disabled = twitch_active
+		local always_host_is_selected = private_enabled or not is_alone or always_host_enabled
+		local always_host_is_disabled = private_enabled or not is_alone or twitch_active
+		local strict_matchmaking_is_selected = not always_host_enabled and not private_enabled and is_alone and strict_matchmaking_enabled
+		local strict_matchmaking_is_disabled = private_enabled or always_host_enabled or not is_alone or twitch_active
+		local private_hotspot = widgets_by_name.private_button.content.button_hotspot
+		private_hotspot.disable_button = private_is_disabled
+		private_hotspot.is_selected = private_is_selected
+		local host_hotspot = widgets_by_name.host_button.content.button_hotspot
+		host_hotspot.disable_button = always_host_is_disabled
+		host_hotspot.is_selected = always_host_is_selected
+		local strict_matchmaking_hotspot = widgets_by_name.strict_matchmaking_button.content.button_hotspot
+		strict_matchmaking_hotspot.disable_button = strict_matchmaking_is_disabled
+		strict_matchmaking_hotspot.is_selected = strict_matchmaking_is_selected
 		self._private_enabled = private_enabled
+		self._always_host_enabled = always_host_enabled
+		self._strict_matchmaking_enabled = strict_matchmaking_enabled
 		self._twitch_active = twitch_active
+		self._is_alone = is_alone
 	end
 
 	return 
@@ -400,8 +407,10 @@ StartGameWindowSettings._set_difficulty_option = function (self, difficulty_key)
 	local difficulty_settings = DifficultySettings[difficulty_key]
 	local display_name = difficulty_settings.display_name
 	local display_image = difficulty_settings.display_image
+	local completed_frame_texture = difficulty_settings.completed_frame_texture or "map_frame_00"
 	widgets_by_name.game_option_2.content.option_text = Localize(display_name)
 	widgets_by_name.game_option_2.content.icon = display_image
+	widgets_by_name.game_option_2.content.icon_frame = completed_frame_texture
 
 	return 
 end

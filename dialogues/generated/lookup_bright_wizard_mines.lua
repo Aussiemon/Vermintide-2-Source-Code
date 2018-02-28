@@ -20,9 +20,6 @@ assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 assert(DialogueLookup[DialogueLookup_n + 20] == nil)
 assert(DialogueLookup[DialogueLookup_n + 21] == nil)
 assert(DialogueLookup[DialogueLookup_n + 22] == nil)
-assert(DialogueLookup[DialogueLookup_n + 23] == nil)
-assert(DialogueLookup[DialogueLookup_n + 24] == nil)
-assert(DialogueLookup[DialogueLookup_n + 25] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pbw_level_mine_ladder"
 DialogueLookup[DialogueLookup_n + 2] = "pbw_level_mine_follow_tracks"
@@ -36,19 +33,16 @@ DialogueLookup[DialogueLookup_n + 9] = "pbw_level_mine_find_explosives"
 DialogueLookup[DialogueLookup_n + 10] = "pbw_level_mine_darkness"
 DialogueLookup[DialogueLookup_n + 11] = "pbw_level_mine_mine_cart_drops_away"
 DialogueLookup[DialogueLookup_n + 12] = "pbw_level_mine_lost_cart"
-DialogueLookup[DialogueLookup_n + 13] = "pbw_level_mine_troll_food_storage"
-DialogueLookup[DialogueLookup_n + 14] = "pbw_level_mine_big_troll_cave"
-DialogueLookup[DialogueLookup_n + 15] = "pbw_level_mine_impressive_cave"
-DialogueLookup[DialogueLookup_n + 16] = "pbw_level_mine_found_cart_troll_cave"
-DialogueLookup[DialogueLookup_n + 17] = "pbw_level_mine_cart_food"
-DialogueLookup[DialogueLookup_n + 18] = "pbw_level_mine_bell_ringing"
-DialogueLookup[DialogueLookup_n + 19] = "pbw_level_mine_release_cart_final"
-DialogueLookup[DialogueLookup_n + 20] = "pbw_level_mine_portal"
-DialogueLookup[DialogueLookup_n + 21] = "pbw_mine_intro_a"
-DialogueLookup[DialogueLookup_n + 22] = "pbw_mine_intro_b"
-DialogueLookup[DialogueLookup_n + 23] = "pbw_mine_intro_c"
-DialogueLookup[DialogueLookup_n + 24] = "pbw_level_mine_gloat"
-DialogueLookup[DialogueLookup_n + 25] = "pbw_level_mine_troll_doors"
-DialogueLookup_n = DialogueLookup_n + 25
+DialogueLookup[DialogueLookup_n + 13] = "pbw_level_mine_big_troll_cave"
+DialogueLookup[DialogueLookup_n + 14] = "pbw_level_mine_impressive_cave"
+DialogueLookup[DialogueLookup_n + 15] = "pbw_level_mine_found_cart_troll_cave"
+DialogueLookup[DialogueLookup_n + 16] = "pbw_level_mine_bell_ringing"
+DialogueLookup[DialogueLookup_n + 17] = "pbw_level_mine_portal"
+DialogueLookup[DialogueLookup_n + 18] = "pbw_mine_intro_a"
+DialogueLookup[DialogueLookup_n + 19] = "pbw_mine_intro_b"
+DialogueLookup[DialogueLookup_n + 20] = "pbw_mine_intro_c"
+DialogueLookup[DialogueLookup_n + 21] = "pbw_level_mine_gloat"
+DialogueLookup[DialogueLookup_n + 22] = "pbw_level_mine_troll_doors"
+DialogueLookup_n = DialogueLookup_n + 22
 
 return 

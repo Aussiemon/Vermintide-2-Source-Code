@@ -34,6 +34,7 @@ StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 	level_transition_handler.set_next_level(level_transition_handler, "prologue")
 
 	self.parent.parent.loading_context.level_transition_handler = level_transition_handler
+	self.parent.parent.loading_context.switch_to_tutorial_backend = true
 	self.parent.parent.loading_context.first_time = true
 
 	return 

@@ -37,20 +37,16 @@ CorruptorBeamExtension.remove_vfx_and_sfx = function (self, unit)
 	local self_unit = unit or self.unit
 	local wwise_world = Managers.world:wwise_world(world)
 
-	if Unit.alive(self_unit) then
-		WwiseUtils.trigger_unit_event(world, self.stop_beam_start_sound, self_unit, Unit.node(self_unit, "a_voice"))
-	elseif self.beam_start_sound_source and WwiseWorld.has_source(wwise_world, self.beam_start_sound_source) then
-		WwiseWorld.stop_event(wwise_world, self.beam_start_sound_source)
+	if self.beam_start_sound_id and WwiseWorld.is_playing(wwise_world, self.beam_start_sound_id) then
+		WwiseWorld.stop_event(wwise_world, self.beam_start_sound_id)
 
-		self.beam_start_sound_source = nil
+		self.beam_start_sound_id = nil
 	end
 
-	if Unit.alive(target_unit) then
-		WwiseUtils.trigger_unit_event(world, self.stop_beam_end_sound, target_unit, Unit.node(target_unit, "j_neck"))
-	elseif self.beam_end_sound_source and WwiseWorld.has_source(wwise_world, self.beam_end_sound_source) then
-		WwiseWorld.stop_event(wwise_world, self.beam_end_sound_source)
+	if self.beam_end_sound_id and WwiseWorld.is_playing(wwise_world, self.beam_end_sound_id) then
+		WwiseWorld.stop_event(wwise_world, self.beam_end_sound_id)
 
-		self.beam_end_sound_source = nil
+		self.beam_end_sound_id = nil
 	end
 
 	if self.projectile_unit then
@@ -69,6 +65,9 @@ CorruptorBeamExtension.remove_vfx_and_sfx = function (self, unit)
 	if self.beam_effect_start then
 		World.stop_spawning_particles(world, self.beam_effect_start)
 		World.stop_spawning_particles(world, self.beam_effect_end)
+
+		self.beam_effect_start = nil
+		self.beam_effect_end = nil
 	end
 
 	self.state = nil
@@ -109,10 +108,10 @@ CorruptorBeamExtension.set_state = function (self, state, target_unit)
 		if self.projectile_unit then
 			WwiseUtils.trigger_unit_event(world, self.stop_projectile_sound, self.projectile_unit, 0)
 
-			local start_id, start_source = WwiseUtils.trigger_unit_event(world, self.beam_start_sound, self.unit, Unit.node(self.unit, "a_voice"))
-			self.beam_start_sound_source = start_source
-			local end_id, end_source = WwiseUtils.trigger_unit_event(world, self.beam_end_sound, target_unit, Unit.node(target_unit, "j_neck"))
-			self.beam_end_sound_source = end_source
+			local start_sound_id, start_source = WwiseUtils.trigger_unit_event(world, self.beam_start_sound, self.unit, Unit.node(self.unit, "a_voice"))
+			self.beam_start_sound_id = start_sound_id
+			local end_sound_id, end_source = WwiseUtils.trigger_unit_event(world, self.beam_end_sound, target_unit, Unit.node(target_unit, "j_neck"))
+			self.beam_end_sound_id = end_sound_id
 		end
 
 		self.state = state

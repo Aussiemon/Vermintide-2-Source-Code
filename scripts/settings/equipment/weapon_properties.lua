@@ -2,11 +2,11 @@ WeaponProperties = WeaponProperties or {}
 local buff_tweak_data = {
 	properties_crit_chance = {
 		variable_bonus = {
-			0.02,
+			0.03,
+			0.03,
 			0.04,
-			0.06,
-			0.08,
-			0.1
+			0.04,
+			0.05
 		}
 	},
 	properties_crit_boost = {
@@ -17,23 +17,23 @@ local buff_tweak_data = {
 	},
 	properties_attack_speed = {
 		variable_multiplier = {
-			0.02,
-			0.1
+			0.03,
+			0.05
 		}
 	},
 	properties_stamina = {
 		variable_bonus = {
-			0.5,
-			1,
-			1.5,
 			2,
-			2.5
+			2,
+			2,
+			4,
+			4
 		}
 	},
 	properties_health = {
 		variable_multiplier = {
 			0.1,
-			0.25
+			0.2
 		}
 	},
 	properties_ability_cooldown_reduction = {
@@ -69,37 +69,37 @@ local buff_tweak_data = {
 	properties_power_vs_skaven = {
 		variable_multiplier = {
 			0.05,
-			0.2
+			0.1
 		}
 	},
 	properties_power_vs_chaos = {
 		variable_multiplier = {
 			0.05,
-			0.2
+			0.1
 		}
 	},
 	properties_power_vs_unarmoured = {
 		variable_multiplier = {
 			0.05,
-			0.2
+			0.1
 		}
 	},
 	properties_power_vs_armoured = {
 		variable_multiplier = {
 			0.05,
-			0.2
+			0.1
 		}
 	},
 	properties_power_vs_large = {
 		variable_multiplier = {
 			0.05,
-			0.2
+			0.1
 		}
 	},
 	properties_power_vs_frenzy = {
 		variable_multiplier = {
 			0.05,
-			0.2
+			0.1
 		}
 	},
 	properties_block_cost = {
@@ -116,27 +116,27 @@ local buff_tweak_data = {
 	},
 	properties_protection_skaven = {
 		variable_multiplier = {
-			-0.1,
-			-0.3
+			-0.5,
+			-0.1
 		}
 	},
 	properties_protection_chaos = {
 		variable_multiplier = {
 			-0.1,
-			-0.3
+			-0.1
 		}
 	},
 	properties_protection_aoe = {
 		variable_multiplier = {
 			-0.1,
-			-0.3
+			-0.1
 		}
 	},
 	properties_movespeed = {
 		multiplier = 1.05,
 		displayed_multiplier = {
-			0.05,
-			0.05
+			1.05,
+			1.05
 		}
 	}
 }
@@ -313,8 +313,9 @@ WeaponProperties.properties = {
 		}
 	},
 	crit_boost = {
-		advanced_description = "description_properties_crit_boost",
 		display_name = "properties_crit_boost",
+		buffer = "server",
+		advanced_description = "description_properties_crit_boost",
 		buff_name = "properties_crit_boost",
 		description_values = {
 			{
@@ -324,8 +325,9 @@ WeaponProperties.properties = {
 		}
 	},
 	power_vs_skaven = {
-		advanced_description = "description_properties_power_vs_skaven",
 		display_name = "properties_power_vs_skaven",
+		buffer = "server",
+		advanced_description = "description_properties_power_vs_skaven",
 		buff_name = "properties_power_vs_skaven",
 		description_values = {
 			{
@@ -335,8 +337,9 @@ WeaponProperties.properties = {
 		}
 	},
 	power_vs_chaos = {
-		advanced_description = "description_properties_power_vs_chaos",
 		display_name = "properties_power_vs_chaos",
+		buffer = "server",
+		advanced_description = "description_properties_power_vs_chaos",
 		buff_name = "properties_power_vs_chaos",
 		description_values = {
 			{
@@ -346,8 +349,9 @@ WeaponProperties.properties = {
 		}
 	},
 	power_vs_unarmoured = {
-		advanced_description = "description_properties_power_vs_unarmoured",
 		display_name = "properties_power_vs_unarmoured",
+		buffer = "server",
+		advanced_description = "description_properties_power_vs_unarmoured",
 		buff_name = "properties_power_vs_unarmoured",
 		description_values = {
 			{
@@ -357,8 +361,9 @@ WeaponProperties.properties = {
 		}
 	},
 	power_vs_armoured = {
-		advanced_description = "description_properties_power_vs_armoured",
 		display_name = "properties_power_vs_armoured",
+		buffer = "server",
+		advanced_description = "description_properties_power_vs_armoured",
 		buff_name = "properties_power_vs_armoured",
 		description_values = {
 			{
@@ -368,8 +373,9 @@ WeaponProperties.properties = {
 		}
 	},
 	power_vs_large = {
-		advanced_description = "description_properties_power_vs_large",
 		display_name = "properties_power_vs_large",
+		buffer = "server",
+		advanced_description = "description_properties_power_vs_large",
 		buff_name = "properties_power_vs_large",
 		description_values = {
 			{
@@ -379,8 +385,9 @@ WeaponProperties.properties = {
 		}
 	},
 	power_vs_frenzy = {
-		advanced_description = "description_properties_power_vs_frenzy",
 		display_name = "properties_power_vs_frenzy",
+		buffer = "server",
+		advanced_description = "description_properties_power_vs_frenzy",
 		buff_name = "properties_power_vs_frenzy",
 		description_values = {
 			{
@@ -401,8 +408,9 @@ WeaponProperties.properties = {
 		}
 	},
 	health = {
-		advanced_description = "description_properties_health",
 		display_name = "properties_health",
+		buffer = "both",
+		advanced_description = "description_properties_health",
 		buff_name = "properties_health",
 		description_values = {
 			{
@@ -434,8 +442,9 @@ WeaponProperties.properties = {
 		}
 	},
 	protection_skaven = {
-		advanced_description = "description_properties_protection_skaven",
 		display_name = "properties_protection_skaven",
+		buffer = "server",
+		advanced_description = "description_properties_protection_skaven",
 		buff_name = "properties_protection_skaven",
 		description_values = {
 			{
@@ -445,8 +454,9 @@ WeaponProperties.properties = {
 		}
 	},
 	protection_chaos = {
-		advanced_description = "description_properties_protection_chaos",
 		display_name = "properties_protection_chaos",
+		buffer = "server",
+		advanced_description = "description_properties_protection_chaos",
 		buff_name = "properties_protection_chaos",
 		description_values = {
 			{
@@ -456,8 +466,9 @@ WeaponProperties.properties = {
 		}
 	},
 	protection_aoe = {
-		advanced_description = "description_properties_protection_aoe",
 		display_name = "properties_protection_aoe",
+		buffer = "server",
+		advanced_description = "description_properties_protection_aoe",
 		buff_name = "properties_protection_aoe",
 		description_values = {
 			{
@@ -512,8 +523,9 @@ WeaponProperties.properties = {
 		}
 	},
 	revive_speed = {
-		advanced_description = "description_properties_revive_speed",
 		display_name = "properties_revive_speed",
+		buffer = "both",
+		advanced_description = "description_properties_revive_speed",
 		buff_name = "properties_revive_speed",
 		description_values = {
 			{

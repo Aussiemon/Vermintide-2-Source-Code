@@ -329,7 +329,9 @@ end
 HealthSystem.rpc_damage_taken_overcharge = function (self, sender, unit_go_id, damage)
 	local unit = self.unit_storage:unit(unit_go_id)
 
-	DamageUtils.apply_damage_to_overcharge(unit, damage)
+	if unit then
+		DamageUtils.apply_damage_to_overcharge(unit, damage)
+	end
 
 	return 
 end

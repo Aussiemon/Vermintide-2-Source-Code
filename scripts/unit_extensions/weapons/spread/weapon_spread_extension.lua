@@ -36,13 +36,14 @@ WeaponSpreadExtension.destroy = function (self)
 	return 
 end
 local ignored_damage_types = {
-	globadier_gas_dot = true,
 	temporary_health_degen = true,
-	wounded_dot = true,
-	buff = true,
-	heal = true,
-	vomit_ground = true,
+	globadier_gas_dot = true,
 	buff_shared_medpack = true,
+	buff = true,
+	health_degen = true,
+	vomit_ground = true,
+	wounded_dot = true,
+	heal = true,
 	warpfire_ground = true
 }
 WeaponSpreadExtension.update = function (self, unit, input, dt, context, t)

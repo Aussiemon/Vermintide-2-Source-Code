@@ -1,8 +1,8 @@
-local font_size = 20
-local font = "gw_arial_16"
+local font_size = (RESOLUTION_LOOKUP.scale or 1)*20
+local font = "gw_arial_32"
 local font_mtrl = "materials/fonts/" .. font
 local fade_speed = 10
-local console_width = 800
+local console_width = (RESOLUTION_LOOKUP.scale or 1)*800
 local base_layer = UILayer.debug_screen
 
 local function ease_out_quad(t, b, c, d)

@@ -25,13 +25,6 @@ PlayerCharacterStateStunned.on_enter = function (self, unit, input, dt, context,
 
 	local input_extension = self.input_extension
 	local status_extension = self.status_extension
-	local animation_driven = params.animation_driven
-	self.animation_driven = animation_driven
-
-	if animation_driven then
-		self.locomotion_extension:enable_animation_driven_movement()
-	end
-
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local hit_react_type = params.hit_react_type or "light"
@@ -73,10 +66,6 @@ PlayerCharacterStateStunned.on_enter = function (self, unit, input, dt, context,
 	return 
 end
 PlayerCharacterStateStunned.on_exit = function (self, unit, input, dt, context, t, next_state)
-	if self.animation_driven then
-		self.locomotion_extension:enable_script_driven_movement()
-	end
-
 	local input_extension = self.input_extension
 
 	if input_extension.get(input_extension, "action_one_hold") then

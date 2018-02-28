@@ -6,8 +6,9 @@ local ignored_damage_types = {
 	wounded_dot = true,
 	buff = true,
 	heal = true,
-	buff_shared_medpack = true,
-	knockdown_bleed = true
+	knockdown_bleed = true,
+	health_degen = true,
+	buff_shared_medpack = true
 }
 
 local function trigger_player_friendly_fire_dialogue(player_unit, attacker_unit)

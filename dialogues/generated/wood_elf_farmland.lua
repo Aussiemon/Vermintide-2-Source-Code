@@ -792,50 +792,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwe_level_farmlands_portal_01",
-		response = "pwe_level_farmlands_portal_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"farmlands_portal"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"faction_memory",
-				"farmlands_portal",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"farmlands_portal",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pwe_farmlands_intro_a",
 		response = "pwe_farmlands_intro_a",
 		criterias = {
@@ -1138,39 +1094,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwe_level_farmlands_next_farm_01 = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "wood_elf_farmland",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwe_level_farmlands_next_farm_01",
-				"pwe_level_farmlands_next_farm_02",
-				"pwe_level_farmlands_next_farm_03",
-				"pwe_level_farmlands_next_farm_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pwe_level_farmlands_next_farm_01",
-				"pwe_level_farmlands_next_farm_02",
-				"pwe_level_farmlands_next_farm_03",
-				"pwe_level_farmlands_next_farm_04"
-			},
-			randomize_indexes = {}
-		},
 		pwe_level_farmlands_move_on_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -1394,7 +1317,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwe_level_farmlands_portal_01 = {
+		pwe_level_farmlands_next_farm_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1402,28 +1325,28 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pwe_level_farmlands_portal_01",
-				"pwe_level_farmlands_portal_02",
-				"pwe_level_farmlands_portal_03",
-				"pwe_level_farmlands_portal_04"
+				"pwe_level_farmlands_next_farm_01",
+				"pwe_level_farmlands_next_farm_02",
+				"pwe_level_farmlands_next_farm_03",
+				"pwe_level_farmlands_next_farm_04"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			},
 			localization_strings = {
-				"pwe_level_farmlands_portal_01",
-				"pwe_level_farmlands_portal_02",
-				"pwe_level_farmlands_portal_03",
-				"pwe_level_farmlands_portal_04"
+				"pwe_level_farmlands_next_farm_01",
+				"pwe_level_farmlands_next_farm_02",
+				"pwe_level_farmlands_next_farm_03",
+				"pwe_level_farmlands_next_farm_04"
 			},
 			randomize_indexes = {}
 		},
