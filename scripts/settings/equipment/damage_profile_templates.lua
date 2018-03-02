@@ -452,8 +452,8 @@ local carbine_dropoff_ranges = {
 	dropoff_end = 30
 }
 local sniper_dropoff_ranges = {
-	dropoff_start = 20,
-	dropoff_end = 30
+	dropoff_start = 30,
+	dropoff_end = 50
 }
 local flamethrower_dropoff_ranges = {
 	dropoff_start = 4,
@@ -2862,7 +2862,7 @@ DamageProfileTemplates.frag_grenade = {
 		attack = {
 			1,
 			0.5,
-			5,
+			3.5,
 			1,
 			1
 		},

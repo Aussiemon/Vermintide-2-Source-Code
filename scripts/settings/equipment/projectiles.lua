@@ -156,18 +156,20 @@ Projectiles.sniper_poison_arrow = table.clone(Projectiles.sniper_poison_arrow) o
 Projectiles.machinegun_poison_arrow = {
 	projectile_unit_template_name = "player_projectile_unit",
 	dummy_linker_unit_name = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1_3p",
-	impact_type = "raycast",
+	impact_type = "sphere_sweep",
 	gravity_settings = "arrows",
 	trajectory_template_name = "throw_trajectory",
+	radius = 0.1,
 	projectile_unit_name = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1_3ps"
 }
 Projectiles.machinegun_poison_arrow = table.clone(Projectiles.machinegun_poison_arrow) or table.clone(Projectiles.default)
 Projectiles.carbine_poison_arrow = {
 	projectile_unit_template_name = "player_projectile_unit",
 	dummy_linker_unit_name = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1_3p",
-	impact_type = "raycast",
+	impact_type = "sphere_sweep",
 	gravity_settings = "arrows",
 	trajectory_template_name = "throw_trajectory",
+	radius = 0.1,
 	projectile_unit_name = "units/weapons/player/wpn_we_quiver_t1/wpn_we_poison_arrow_t1_3ps"
 }
 Projectiles.carbine_poison_arrow = table.clone(Projectiles.carbine_poison_arrow) or table.clone(Projectiles.default)

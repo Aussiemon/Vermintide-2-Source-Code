@@ -288,8 +288,9 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 		end
 	end
 
+	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
+
 	if is_player_on_player_damage then
-		local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 		local friendly_fire_multiplier = difficulty_settings.friendly_fire_multiplier
 
 		if friendly_fire_multiplier then
@@ -297,7 +298,13 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 		end
 	end
 
-	return damage
+	local heavy_armour_damage = false
+
+	if difficulty_settings.always_damage_heavy and target_unit_primary_armor == 6 and damage == 0 then
+		heavy_armour_damage = true
+	end
+
+	return damage, heavy_armour_damage
 end
 local WEAKSPOT_STAGGER_CATEGORY = 8
 DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, attacker_unit, hit_zone_name, original_power_level, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, blocked)
@@ -366,7 +373,8 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 				local stagger_threshold_medium = (breed.stagger_threshold_medium and breed.stagger_threshold_medium*stagger_resistance) or stagger_resistance
 				local stagger_threshold_heavy = (breed.stagger_threshold_heavy and breed.stagger_threshold_heavy*stagger_resistance) or stagger_resistance*2
 				local stagger_threshold_explosion = (breed.stagger_threshold_explosion and breed.stagger_threshold_explosion*stagger_resistance) or stagger_resistance*10
-				local excessive_force, scale = nil
+				local excessive_force = 0
+				local scale = nil
 				local impact_modifier = 1
 
 				if stagger_strength < stagger_threshold_light then
@@ -398,7 +406,7 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 					duration = duration*breed_duration_modifier
 				end
 
-				local time_modifier = math.clamp(stagger_strength/stagger_resistance, 0, 2)*0.5 + 0.5
+				local time_modifier = math.clamp(excessive_force/stagger_resistance, 0, 2)*0.25 + 0.75
 				duration = duration*time_modifier
 				distance = math.clamp(distance*impact_modifier, 0.8, 1.2)
 			end
@@ -450,12 +458,6 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 
 	if breed.no_stagger_duration and not attack_template.always_stagger then
 		duration = duration*0.25
-	elseif breed.stagger_duration_mod then
-		duration = duration*breed.stagger_duration_mod
-	elseif blocked then
-		duration = math.lerp(duration, 1.25, breed.block_stagger_mod or 0.5)
-	elseif shield_user then
-		duration = duration*(breed.shield_stagger_mod or 0.6)
 	end
 
 	local stagger_duration_modifier = target_settings.stagger_duration_modifier or damage_profile.stagger_duration_modifier or DefaultStaggerDurationModifier
@@ -463,7 +465,10 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 	local stagger_duration_table = (breed.stagger_duration and breed.stagger_duration[stagger]) or DefaultStaggerDuration
 	duration = duration*stagger_duration_table*stagger_duration_modifier
 	distance = distance*stagger_distance_modifier
-	duration = math.max((duration + math.random()*1) - 0.5, 0)
+
+	if not breed.no_random_stagger_duration then
+		duration = math.max((duration + math.random()*1) - 0.5, 0)
+	end
 
 	return stagger, duration, distance, stagger_value
 end
@@ -1138,12 +1143,12 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 	local damage_type = target_settings.damage_type or damage_profile.damage_type or attack_template.damage_type
 	local charge_value = damage_profile.charge_value
 	local boost_curve = BoostCurves[target_settings.boost_curve_type]
-	local original_damage_amount = DamageUtils.calculate_damage(DamageOutput, hit_unit, attacker_unit, hit_zone_name, power_level, boost_curve, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, backstab_multiplier)
+	local original_damage_amount, heavy_armour_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, attacker_unit, hit_zone_name, power_level, boost_curve, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, backstab_multiplier)
 
 	table.clear(victim_units)
 
 	local buffed_damage_amount = DamageUtils.apply_buffs_to_damage(original_damage_amount, hit_unit, attacker_unit, damage_source, victim_units, damage_type, charge_value)
-	local damage_amount = DamageUtils.networkify_damage(buffed_damage_amount)
+	local damage_amount = (heavy_armour_damage and DamageUtils.networkify_damage(0.5)) or DamageUtils.networkify_damage(buffed_damage_amount)
 
 	if attacker_player and player_manager.is_server and script_data.debug_show_damage_numbers and not attacker_player.bot_player then
 		local is_alive = AiUtils.unit_alive(hit_unit)

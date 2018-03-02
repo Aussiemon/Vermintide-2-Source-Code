@@ -326,8 +326,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 		local action_kind = current_action_settings.kind
 		local action = self.actions[action_kind]
-		local total_time_override = current_action_settings.total_time_func and current_action_settings.total_time_func(chain_action_data)
-		local time_to_complete = total_time_override or current_action_settings.total_time
+		local time_to_complete = current_action_settings.total_time
 
 		if current_action_settings.scale_total_time_on_mastercrafted and buff_extension then
 			time_to_complete = buff_extension.apply_buffs_to_value(buff_extension, time_to_complete, StatBuffIndex.RELOAD_SPEED)

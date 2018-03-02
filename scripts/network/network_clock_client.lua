@@ -89,7 +89,7 @@ NetworkClockClient.update = function (self, dt)
 
 		local network_manager = Managers.state.network
 
-		if not network_manager.game(network_manager) then
+		if not network_manager.in_game_session(network_manager) then
 			return 
 		end
 
@@ -108,7 +108,7 @@ NetworkClockClient.update = function (self, dt)
 
 		local network_manager = Managers.state.network
 
-		if not network_manager.game(network_manager) then
+		if not network_manager.in_game_session(network_manager) then
 			return 
 		end
 

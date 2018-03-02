@@ -5274,6 +5274,37 @@ OptionsView.cb_max_upload_speed_saved_value = function (self, widget)
 
 	return 
 end
+OptionsView.cb_allow_occupied_hero_lobbies = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.allow_occupied_hero_lobbies = options_values[current_selection]
+
+	return 
+end
+OptionsView.cb_allow_occupied_hero_lobbies_setup = function (self)
+	local options = {
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		}
+	}
+	local default_value = DefaultUserSettings.get("user_settings", "allow_occupied_hero_lobbies")
+	local allow_occupied_hero_lobbies = Application.user_setting("allow_occupied_hero_lobbies")
+	local selection = (allow_occupied_hero_lobbies and 2) or 1
+	local default_option = (default_value and 2) or 1
+
+	return selection, options, "menu_settings_allow_occupied_hero_lobbies", default_option
+end
+OptionsView.cb_allow_occupied_hero_lobbies_saved_value = function (self, widget)
+	local allow_occupied_hero_lobbies = assigned(self.changed_user_settings.allow_occupied_hero_lobbies, Application.user_setting("allow_occupied_hero_lobbies")) or false
+	widget.content.current_selection = (allow_occupied_hero_lobbies and 2) or 1
+
+	return 
+end
 OptionsView.cb_mouse_look_invert_y_setup = function (self)
 	local options = {
 		{

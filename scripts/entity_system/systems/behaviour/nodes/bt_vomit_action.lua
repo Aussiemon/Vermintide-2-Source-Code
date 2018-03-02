@@ -23,6 +23,7 @@ BTVomitAction.enter = function (self, unit, blackboard, t)
 	blackboard.active_node = BTVomitAction
 	blackboard.physics_world = blackboard.physics_world or World.get_data(world, "physics_world")
 	blackboard.rotation_time = t + action.rotation_time
+	blackboard.check_puke_time = nil
 
 	if self.init_attack(self, unit, blackboard, action, t) then
 		blackboard.anim_locked = t + action.attack_time
@@ -35,6 +36,8 @@ BTVomitAction.enter = function (self, unit, blackboard, t)
 	else
 		blackboard.attack_aborted = true
 	end
+
+	blackboard.update_puke_pos_at_t = t + 0.2
 
 	return 
 end
@@ -161,6 +164,8 @@ BTVomitAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.bot_threats_data = nil
 	blackboard.attack_finished = nil
 	blackboard.near_vomit = nil
+	blackboard.update_puke_pos_at_t = nil
+	blackboard.check_puke_time = nil
 
 	return 
 end
@@ -190,18 +195,28 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 
 	if t < blackboard.anim_locked then
 		if blackboard.is_puking then
-			self.player_vomit_hit_check(self, unit, blackboard)
+			if not blackboard.check_puke_time then
+				blackboard.check_puke_time = t + 0.2
+			end
+
+			if blackboard.check_puke_time < t then
+				self.player_vomit_hit_check(self, unit, blackboard)
+			end
 		elseif t < blackboard.rotation_time and not target_unit_status_extension.get_is_dodging(target_unit_status_extension) and not target_unit_status_extension.is_invisible(target_unit_status_extension) then
 			local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 			local locomotion = blackboard.locomotion_extension
 
 			locomotion.set_wanted_rotation(locomotion, rotation)
 
-			local puke_position, puke_distance_sq, puke_direction = self._get_vomit_position(self, unit, blackboard)
+			if blackboard.update_puke_pos_at_t < t then
+				local puke_position, puke_distance_sq, puke_direction = self._get_vomit_position(self, unit, blackboard)
 
-			if puke_position and puke_direction then
-				blackboard.puke_position:store(puke_position)
-				blackboard.puke_direction:store(puke_direction)
+				if puke_position and puke_direction then
+					blackboard.puke_position:store(puke_position)
+					blackboard.puke_direction:store(puke_direction)
+				end
+
+				blackboard.update_puke_pos_at_t = t + 0.2
 			end
 		else
 			local puke_direction_box = blackboard.puke_direction
@@ -248,12 +263,12 @@ BTVomitAction.player_vomit_hit_check = function (self, unit, blackboard)
 	local troll_head_node = Unit.node(unit, "j_head")
 	local troll_head_pos = Unit.world_position(unit, troll_head_node)
 	local puke_pos = blackboard.puke_position:unbox()
-	local offset_dir = Vector3.normalize(puke_pos - POSITION_LOOKUP[unit])*2
+	local offset_dir = Vector3.normalize(puke_pos - POSITION_LOOKUP[unit])*2 + Vector3(0, 0, 1)
 	local to_puke = (puke_pos + offset_dir) - troll_head_pos
 	local puke_direction = Vector3.normalize(to_puke)
 	local puke_distance = Vector3.length(to_puke)
 	local physics_world = blackboard.physics_world
-	local result = PhysicsWorld.linear_sphere_sweep(physics_world, troll_head_pos, puke_pos, 0.4, 10, "collision_filter", "filter_enemy_ray_projectile", "report_initial_overlap")
+	local result = PhysicsWorld.linear_sphere_sweep(physics_world, troll_head_pos, puke_pos, 0.5, 10, "collision_filter", "filter_enemy_ray_projectile", "report_initial_overlap")
 
 	if result then
 		local num_hits = #result
@@ -283,19 +298,23 @@ BTVomitAction.player_vomit_hit_check = function (self, unit, blackboard)
 end
 BTVomitAction.create_aoe = function (self, unit, blackboard, action)
 	local puke_pos = blackboard.puke_position:unbox()
-	local dir = blackboard.puke_direction:unbox()
-	local extension_init_data = {
-		area_damage_system = {
-			flow_dir = dir,
-			liquid_template = (blackboard.near_vomit and "bile_troll_vomit_near") or "bile_troll_vomit",
-			source_unit = unit
-		}
-	}
-	local aoe_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
-	local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, puke_pos)
-	local liquid_area_damage_extension = ScriptUnit.extension(liquid_aoe_unit, "area_damage_system")
+	puke_pos = self._position_on_navmesh(self, puke_pos, blackboard)
 
-	liquid_area_damage_extension.ready(liquid_area_damage_extension)
+	if puke_pos then
+		local dir = blackboard.puke_direction:unbox()
+		local extension_init_data = {
+			area_damage_system = {
+				flow_dir = dir,
+				liquid_template = (blackboard.near_vomit and "bile_troll_vomit_near") or "bile_troll_vomit",
+				source_unit = unit
+			}
+		}
+		local aoe_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
+		local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, puke_pos)
+		local liquid_area_damage_extension = ScriptUnit.extension(liquid_aoe_unit, "area_damage_system")
+
+		liquid_area_damage_extension.ready(liquid_area_damage_extension)
+	end
 
 	return 
 end

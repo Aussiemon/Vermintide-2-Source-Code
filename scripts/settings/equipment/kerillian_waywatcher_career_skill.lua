@@ -38,7 +38,7 @@ weapon_template.actions = {
 					input = "action_two"
 				},
 				{
-					sub_action = "hold_charge",
+					sub_action = "default",
 					start_time = 0,
 					action = "action_career_release",
 					input = "action_career_release"

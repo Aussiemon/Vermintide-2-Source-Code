@@ -35,17 +35,10 @@ weapon_template.actions = {
 					input = "action_two"
 				},
 				{
-					sub_action = "hold_charge",
+					sub_action = "shoot_charged",
 					start_time = 0,
 					action = "action_career_release",
 					input = "action_career_release"
-				},
-				{
-					sub_action = "default",
-					start_time = 1,
-					action = "action_career_hold",
-					input = "action_career_hold",
-					end_time = math.huge
 				}
 			}
 		}
@@ -86,7 +79,7 @@ weapon_template.actions = {
 					input = "action_two"
 				},
 				{
-					sub_action = "default",
+					sub_action = "shoot_charged",
 					start_time = 0,
 					action = "action_career_release",
 					input = "action_career_release",
@@ -114,7 +107,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "shoot_charged",
-					start_time = 1,
+					start_time = 0.1,
 					action = "action_career_release",
 					auto_chain = true
 				}
@@ -134,8 +127,8 @@ weapon_template.actions = {
 			is_spell = true,
 			damage_window_end = 0,
 			anim_end_event = "ability_finished",
-			fire_time = 0.35,
-			speed = 1500,
+			fire_time = 0.2,
+			speed = 3500,
 			sphere_sweep_max_nr_of_results = 100,
 			anim_event = "scholar_burning_head_ability_shoot",
 			reload_time = 2.5,
@@ -197,7 +190,7 @@ weapon_template.actions = {
 			damage_window_end = 0,
 			anim_end_event = "ability_finished",
 			fire_time = 0.35,
-			speed = 1500,
+			speed = 3500,
 			sphere_sweep_max_nr_of_results = 100,
 			anim_event = "scholar_burning_head_ability_shoot",
 			reload_time = 2.5,
@@ -261,7 +254,7 @@ weapon_template.actions = {
 }
 weapon_template.ammo_data = {
 	ammo_immediately_available = true,
-	ammo_unit = "units/weapons/projectile/burning_head/burning_head",
+	ammo_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 	ammo_per_reload = 1,
 	ammo_per_clip = 1,
 	ammo_hand = "left",

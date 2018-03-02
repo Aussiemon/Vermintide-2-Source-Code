@@ -1123,8 +1123,23 @@ end
 
 local network_settings_definition = {
 	{
+		text = "settings_view_matchmaking_display",
+		widget_type = "title"
+	},
+	{
+		setup = "cb_allow_occupied_hero_lobbies_setup",
+		saved_value = "cb_allow_occupied_hero_lobbies_saved_value",
+		callback = "cb_allow_occupied_hero_lobbies",
+		tooltip_text = "tooltip_allow_occupied_hero_lobbies",
+		widget_type = "stepper"
+	},
+	{
 		size_y = 30,
 		widget_type = "empty"
+	},
+	{
+		text = "settings_view_header_other",
+		widget_type = "title"
 	},
 	{
 		setup = "cb_max_upload_speed_setup",

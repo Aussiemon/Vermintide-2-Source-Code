@@ -15,7 +15,7 @@ FatigueUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	local shields = {}
 
-	for i = 1, 10, 1 do
+	for i = 1, UISettings.max_fatigue_shields, 1 do
 		local shield = UIWidget.init(definitions.shield_definition)
 		shields[i] = shield
 	end

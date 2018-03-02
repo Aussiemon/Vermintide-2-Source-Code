@@ -610,7 +610,6 @@ WeaponTraits.traits = {
 	},
 	ranged_remove_overcharge_on_crit = {
 		display_name = "traits_ranged_remove_overcharge_on_crit",
-		buffer = "both",
 		advanced_description = "description_traits_ranged_remove_overcharge_on_crit",
 		icon = "ranged_remove_overcharge_on_crit",
 		buff_name = "traits_ranged_remove_overcharge_on_crit",

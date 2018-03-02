@@ -86,6 +86,14 @@ EndZoneExtension.activate = function (self, activate, always_activated)
 	elseif self._activated and not activate then
 		self._deactivate_volume(self)
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_activate_end_zone", false)
+
+		local player_distances = self._player_distances
+
+		for unit, _ in pairs(player_distances) do
+			local status_ext = ScriptUnit.extension(unit, "status_system")
+
+			status_ext.set_in_end_zone(status_ext, false)
+		end
 	end
 
 	self._activated = activate

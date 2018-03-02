@@ -23,11 +23,11 @@ local buff_tweak_data = {
 	},
 	properties_stamina = {
 		variable_bonus = {
+			1,
+			1,
+			1,
 			2,
-			2,
-			2,
-			4,
-			4
+			2
 		}
 	},
 	properties_health = {

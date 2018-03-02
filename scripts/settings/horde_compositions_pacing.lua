@@ -102,8 +102,8 @@ HordeCompositions.chaos_medium = {
 		breeds = {
 			"chaos_fanatic",
 			{
-				25,
-				25
+				20,
+				20
 			}
 		}
 	},
@@ -118,8 +118,8 @@ HordeCompositions.chaos_medium = {
 			},
 			"chaos_fanatic",
 			{
-				20,
-				25
+				15,
+				20
 			}
 		}
 	},
@@ -148,8 +148,8 @@ HordeCompositions.chaos_large = {
 		breeds = {
 			"chaos_fanatic",
 			{
-				30,
-				35
+				25,
+				30
 			}
 		}
 	},

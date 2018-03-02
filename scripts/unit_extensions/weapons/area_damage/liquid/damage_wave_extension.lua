@@ -288,7 +288,7 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	end
 
 	local height_percentage = nil
-	local p = dist/total_dist
+	local p = (0 < total_dist and dist/total_dist) or 0
 
 	if grow then
 		height_percentage = math.clamp(p, 0, 1)

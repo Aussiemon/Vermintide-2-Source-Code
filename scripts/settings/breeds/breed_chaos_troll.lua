@@ -53,7 +53,7 @@ local breed_data = {
 	patrol_detection_radius = 10,
 	boss = true,
 	chance_of_starting_sleepy = 0,
-	regen_pulse_intensity = 0.1,
+	regen_pulse_intensity = 0.05,
 	use_avoidance = false,
 	ignore_nav_propagation_box = true,
 	target_selection_angry = "pick_chaos_troll_target_with_weights",
@@ -152,11 +152,11 @@ local breed_data = {
 		1
 	},
 	health_regen_per_sec = {
-		2.5,
-		2.5,
-		3.75,
+		2,
+		2,
+		3,
 		5,
-		7.5
+		10
 	},
 	debug_color = {
 		255,
@@ -1183,7 +1183,7 @@ local action_data = {
 		}
 	},
 	vomit = {
-		firing_time = 0.67,
+		firing_time = 0.77,
 		rotation_time = 1.1,
 		near_vomit_distance = 25,
 		attack_time = 2.5,
@@ -1201,7 +1201,7 @@ local action_data = {
 				duration = 1,
 				offset_up = 0,
 				width = 2.5,
-				start_time = 0.7333333333333333
+				start_time = 1
 			}
 		}
 	},

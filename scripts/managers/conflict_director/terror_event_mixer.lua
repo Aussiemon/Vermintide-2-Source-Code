@@ -29,8 +29,16 @@ TerrorEventMixer.init_functions = {
 	spawn_at_raw = function (event, element, t)
 		if Managers.player.is_server then
 			local conflict_director = Managers.state.conflict
+			local breed_name = nil
+			local check_name = element.breed_name
 
-			conflict_director.spawn_at_raw_spawner(conflict_director, Breeds[element.breed_name], element.spawner_id, element.optional_data)
+			if type(check_name) == "table" then
+				breed_name = check_name[Math.random(1, #check_name)]
+			else
+				breed_name = check_name
+			end
+
+			conflict_director.spawn_at_raw_spawner(conflict_director, Breeds[breed_name], element.spawner_id, element.optional_data)
 		end
 
 		return 

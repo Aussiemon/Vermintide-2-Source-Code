@@ -36,6 +36,7 @@ local default_user_settings = {
 	tobii_extended_view_sensitivity = 50,
 	tobii_extended_view_use_head_tracking = false,
 	give_on_defend = true,
+	allow_occupied_hero_lobbies = false,
 	gamepad_look_sensitivity_y = 0,
 	gamepad_rumble_enabled = true,
 	sound_quality = "high",

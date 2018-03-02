@@ -141,7 +141,7 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 		local enabled = Unit.get_data(unit, "interest_point", "enabled")
 
 		if enabled then
-			local anim_lookup = NetworkLookup.anims
+			local anim_lookup = NetworkLookup.interest_point_anims
 			local anim_lookup_n = #anim_lookup
 			local nav_world = self.nav_world
 			local unit_position = Unit.local_position(unit, 0)
@@ -175,26 +175,15 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 				if is_position_on_navmesh then
 					z = altitude
 
-					if Unit.has_data(unit, "interest_point", "points", point_i, "animations") then
-						while Unit.has_data(unit, "interest_point", "points", point_i, "animations", anim_i) do
-							local anim_name = Unit.get_data(unit, "interest_point", "points", point_i, "animations", anim_i)
+					for i = 1, anim_lookup_n, 1 do
+						local anim_name = anim_lookup[i]
+						local anim_enabled = Unit.get_data(unit, "interest_point", "points", point_i, "animation_map", anim_name)
 
+						if anim_enabled then
 							assert(anim_name ~= nil, "No animation name in interest point unit %q for point %d", tostring(unit), point_i)
 
-							animations[anim_i + 1] = anim_name
 							anim_i = anim_i + 1
-						end
-					else
-						for i = 1, anim_lookup_n, 1 do
-							local anim_name = anim_lookup[i]
-							local anim_enabled = Unit.get_data(unit, "interest_point", "points", point_i, "animation_map", anim_name)
-
-							if anim_enabled then
-								assert(anim_name ~= nil, "No animation name in interest point unit %q for point %d", tostring(unit), point_i)
-
-								anim_i = anim_i + 1
-								animations[anim_i] = anim_name
-							end
+							animations[anim_i] = anim_name
 						end
 					end
 
@@ -227,8 +216,6 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 				print(string.format("Invalid placed interest-point '%s'. Is outside of nav-mesh. Found at pos: %s", tostring(unit), tostring(Unit.local_position(unit, 0))))
 
 				extension.points_n = 0
-			elseif not InterestPointUnits[num_valid_to_spawn] then
-				fassert(false, "Invalid placed interest-point '%s'. Is outside of nav-mesh. Found at pos: %s", tostring(unit), tostring(Unit.local_position(unit, 0)))
 			else
 				extension.points_n = point_i
 				extension.pack_type = extension_init_data.pack_type or "standard"
@@ -343,8 +330,8 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 		local pack_type_by_size = BreedPacksBySize[pack_type]
 		local zone_data = point_extension.zone_data
 		local hi_data = zone_data and zone_data.hi_data
-		local num_valid_to_spawn = point_extension.num_valid_to_spawn
-		local packs_by_size = pack_type_by_size[num_valid_to_spawn]
+		local points_n = point_extension.points_n
+		local packs_by_size = pack_type_by_size[points_n]
 		local prob = packs_by_size.prob
 		local alias = packs_by_size.alias
 		local pack_index = LoadedDice.roll(prob, alias)
@@ -352,7 +339,7 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 		local members = pack.members
 		local member_index = 0
 
-		for i = 1, point_extension.points_n, 1 do
+		for i = 1, points_n, 1 do
 			local point = point_extension.points[i]
 
 			if point.is_position_on_navmesh then

@@ -22,6 +22,7 @@ local DEFAULT_ATTRIBUTES = {
 }
 BackendInterfaceHeroAttributesPlayFab.init = function (self, backend_mirror)
 	self._attributes = {}
+	self._attributes_to_save = {}
 	self._backend_mirror = backend_mirror
 	local request = {
 		Keys = table.keys(DEFAULT_ATTRIBUTES)
@@ -66,27 +67,7 @@ BackendInterfaceHeroAttributesPlayFab.set = function (self, hero, attribute, val
 
 	local key = hero .. "_" .. attribute
 	self._attributes[key] = value
-	local request = {
-		FunctionName = "updateHeroAttributes",
-		FunctionParameter = {
-			hero_attributes = {
-				[key] = value
-			}
-		}
-	}
-
-	local function on_complete(result)
-		if result.Error then
-			Application.warning("Error saving hero attributes!")
-			table.dump(result, "PlayFabError", math.huge)
-		else
-			print("Hero attributes saved!")
-		end
-
-		return 
-	end
-
-	PlayFabClientApi.ExecuteCloudScript(request, on_complete)
+	self._attributes_to_save[key] = value
 
 	return 
 end
@@ -148,6 +129,38 @@ BackendInterfaceHeroAttributesPlayFab.prestige_request_cb = function (self, hero
 	end
 
 	return 
+end
+BackendInterfaceHeroAttributesPlayFab.save = function (self, save_callback)
+	if table.is_empty(self._attributes_to_save) then
+		print("No hero attributes to save...")
+
+		return false
+	end
+
+	local request = {
+		FunctionName = "updateHeroAttributes",
+		FunctionParameter = {
+			hero_attributes = self._attributes_to_save
+		}
+	}
+
+	local function request_callback(result)
+		if result.Error then
+			Application.warning("Error saving hero attributes!")
+			table.dump(result, "PlayFabError", math.huge)
+			save_callback(false)
+		else
+			table.clear(self._attributes_to_save)
+			print("Hero attributes saved!")
+			save_callback(true)
+		end
+
+		return 
+	end
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_callback, request_callback)
+
+	return true
 end
 
 return 

@@ -62,6 +62,37 @@ HordeSettings = {
 			}
 		}
 	},
+	default_light = {
+		vector_composition = "medium",
+		chance_of_vector = 0.5,
+		ambush_composition = "medium",
+		mini_patrol_composition = "mini_patrol",
+		chance_of_vector_blob = 0.5,
+		vector_blob_composition = "medium",
+		disabled = false,
+		mix_paced_hordes = true,
+		compositions = HordeCompositions,
+		ambush = HordeSettingsBasics.ambush,
+		vector = HordeSettingsBasics.vector,
+		vector_blob = HordeSettingsBasics.vector_blob,
+		difficulty_overrides = {
+			hard = {
+				vector_blob_composition = "medium",
+				ambush_composition = "medium",
+				vector_composition = "medium"
+			},
+			harder = {
+				vector_blob_composition = "large",
+				ambush_composition = "large",
+				vector_composition = "large"
+			},
+			hardest = {
+				vector_blob_composition = "large",
+				ambush_composition = "large",
+				vector_composition = "large"
+			}
+		}
+	},
 	chaos = {
 		vector_composition = "chaos_medium",
 		chance_of_vector = 1,
@@ -94,18 +125,34 @@ HordeSettings = {
 		}
 	},
 	chaos_light = {
-		chance_of_vector_blob = 1,
-		vector_composition = "chaos_large",
+		vector_composition = "chaos_medium",
 		chance_of_vector = 1,
-		ambush_composition = "chaos_large",
-		mini_patrol_composition = "chaos_mini_patrol",
-		vector_blob_composition = "chaos_large",
-		disabled = true,
+		ambush_composition = "chaos_medium",
+		chance_of_vector_blob = 0.75,
+		vector_blob_composition = "chaos_medium",
+		disabled = false,
 		mix_paced_hordes = true,
 		compositions = HordeCompositions,
 		ambush = HordeSettingsBasics.ambush,
 		vector = HordeSettingsBasics.vector,
-		vector_blob = HordeSettingsBasics.vector_blob
+		vector_blob = HordeSettingsBasics.vector_blob,
+		difficulty_overrides = {
+			hard = {
+				vector_blob_composition = "chaos_medium",
+				ambush_composition = "chaos_medium",
+				vector_composition = "chaos_medium"
+			},
+			harder = {
+				vector_blob_composition = "chaos_large",
+				ambush_composition = "chaos_large",
+				vector_composition = "chaos_large"
+			},
+			hardest = {
+				vector_blob_composition = "chaos_large",
+				ambush_composition = "chaos_large",
+				vector_composition = "chaos_large"
+			}
+		}
 	}
 }
 HordeSettings.disabled = table.clone(HordeSettings.default)
@@ -484,7 +531,60 @@ SpecialsSettings = {
 			loneliness_value_for_ambush_horde = 25,
 			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 15,
+			loneliness_value_for_special = 30,
+			distance_until_next_intervention = 30,
+			breeds = {
+				"skaven_pack_master",
+				"skaven_gutter_runner",
+				"skaven_ratling_gunner"
+			}
+		},
+		difficulty_overrides = SpecialDifficultyOverrides
+	},
+	default_light = {
+		spawn_method = "specials_by_slots",
+		disabled = false,
+		max_specials = 2,
+		breeds = {
+			"skaven_gutter_runner",
+			"skaven_pack_master",
+			"skaven_ratling_gunner",
+			"skaven_poison_wind_globadier",
+			"chaos_vortex_sorcerer",
+			"chaos_corruptor_sorcerer",
+			"skaven_warpfire_thrower"
+		},
+		methods = {
+			specials_by_slots = {
+				max_of_same = 1,
+				chance_of_coordinated_attack = 0,
+				select_next_breed = "get_random_breed",
+				after_safe_zone_delay = {
+					30,
+					60
+				},
+				spawn_cooldown = {
+					60,
+					90
+				}
+			}
+		},
+		outside_navmesh_intervention = {
+			delay_between_interventions = 10,
+			needed_ordinary_enemy_aggro = 5,
+			disabled = true,
+			needed_special_enemy_aggro = 1,
+			intervention_time = 5,
+			breeds = {
+				"skaven_ratling_gunner",
+				"skaven_poison_wind_globadier"
+			}
+		},
+		rush_intervention = {
+			loneliness_value_for_ambush_horde = 25,
+			delay_between_interventions = 20,
+			chance_of_ambush_horde = 0.25,
+			loneliness_value_for_special = 30,
 			distance_until_next_intervention = 30,
 			breeds = {
 				"skaven_pack_master",
@@ -535,7 +635,58 @@ SpecialsSettings = {
 			loneliness_value_for_ambush_horde = 25,
 			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 15,
+			loneliness_value_for_special = 30,
+			distance_until_next_intervention = 30,
+			breeds = {
+				"skaven_pack_master",
+				"skaven_gutter_runner",
+				"skaven_ratling_gunner"
+			}
+		},
+		difficulty_overrides = SpecialDifficultyOverrides_skaven
+	},
+	skaven_light = {
+		spawn_method = "specials_by_slots",
+		disabled = false,
+		max_specials = 2,
+		breeds = {
+			"skaven_gutter_runner",
+			"skaven_pack_master",
+			"skaven_ratling_gunner",
+			"skaven_poison_wind_globadier",
+			"skaven_warpfire_thrower"
+		},
+		methods = {
+			specials_by_slots = {
+				max_of_same = 1,
+				chance_of_coordinated_attack = 0,
+				select_next_breed = "get_random_breed",
+				after_safe_zone_delay = {
+					30,
+					60
+				},
+				spawn_cooldown = {
+					50,
+					90
+				}
+			}
+		},
+		outside_navmesh_intervention = {
+			delay_between_interventions = 10,
+			needed_ordinary_enemy_aggro = 5,
+			disabled = true,
+			needed_special_enemy_aggro = 1,
+			intervention_time = 5,
+			breeds = {
+				"skaven_ratling_gunner",
+				"skaven_poison_wind_globadier"
+			}
+		},
+		rush_intervention = {
+			loneliness_value_for_ambush_horde = 25,
+			delay_between_interventions = 20,
+			chance_of_ambush_horde = 0.25,
+			loneliness_value_for_special = 30,
 			distance_until_next_intervention = 30,
 			breeds = {
 				"skaven_pack_master",
@@ -596,7 +747,7 @@ SpecialsSettings = {
 			loneliness_value_for_ambush_horde = 25,
 			delay_between_interventions = 30,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 15,
+			loneliness_value_for_special = 30,
 			distance_until_next_intervention = 30,
 			breeds = {
 				"skaven_pack_master"
@@ -652,7 +803,7 @@ SpecialsSettings = {
 			loneliness_value_for_ambush_horde = 25,
 			delay_between_interventions = 30,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 15,
+			loneliness_value_for_special = 30,
 			distance_until_next_intervention = 30,
 			breeds = {
 				"skaven_pack_master"
@@ -708,7 +859,7 @@ SpecialsSettings = {
 			loneliness_value_for_ambush_horde = 25,
 			delay_between_interventions = 30,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 15,
+			loneliness_value_for_special = 30,
 			distance_until_next_intervention = 30,
 			breeds = {
 				"skaven_pack_master"
@@ -768,7 +919,7 @@ SpecialsSettings = {
 			loneliness_value_for_ambush_horde = 25,
 			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 15,
+			loneliness_value_for_special = 30,
 			distance_until_next_intervention = 30,
 			breeds = {
 				"chaos_corruptor_sorcerer"
@@ -829,13 +980,13 @@ SpecialsSettings = {
 			loneliness_value_for_ambush_horde = 25,
 			delay_between_interventions = 20,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 15,
+			loneliness_value_for_special = 30,
 			distance_until_next_intervention = 30,
 			breeds = {
 				"chaos_corruptor_sorcerer"
 			}
 		},
-		difficulty_overrides = SpecialDifficultyOverrides
+		difficulty_overrides = SpecialDifficultyOverrides_chaos
 	},
 	survival = {
 		spawn_method = "specials_by_slots",
@@ -888,7 +1039,7 @@ SpecialsSettings = {
 			loneliness_value_for_ambush_horde = 25,
 			delay_between_interventions = 30,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 15,
+			loneliness_value_for_special = 30,
 			distance_until_next_intervention = 30,
 			breeds = {
 				"skaven_pack_master",
@@ -934,7 +1085,7 @@ SpecialsSettings = {
 			loneliness_value_for_ambush_horde = 25,
 			delay_between_interventions = 30,
 			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 15,
+			loneliness_value_for_special = 30,
 			distance_until_next_intervention = 30,
 			breeds = {
 				"skaven_pack_master",
@@ -1001,7 +1152,107 @@ BossSettings = {
 			max_events_of_this_kind = {}
 		}
 	},
+	default_light = {
+		disabled = false,
+		boss_events = {
+			safe_dist = 150,
+			recurring_distance = 300,
+			name = "boss_events",
+			chance_of_encampment = 0,
+			terror_events_using_packs = false,
+			padding_dist = 100,
+			debug_color = "deep_sky_blue",
+			hand_placed_padding_dist = 10,
+			events = {
+				"event_boss",
+				"event_patrol",
+				"nothing"
+			},
+			event_lookup = {
+				event_boss = {
+					"boss_event_chaos_troll",
+					"boss_event_chaos_spawn",
+					"boss_event_storm_fiend",
+					"boss_event_rat_ogre"
+				},
+				event_patrol = {
+					"boss_event_storm_vermin_patrol"
+				}
+			},
+			spline_patrol_events = {
+				"boss_event_spline_patrol"
+			},
+			max_events_of_this_kind = {
+				event_boss = 2
+			}
+		},
+		rare_events = {
+			safe_dist = 50,
+			recurring_distance = 1500,
+			name = "rare_events",
+			debug_color = "deep_pink",
+			padding_dist = 100,
+			events = {
+				"event_boss"
+			},
+			event_lookup = {
+				event_boss = {
+					"rare_event_loot_rat"
+				}
+			},
+			max_events_of_this_kind = {}
+		}
+	},
 	skaven = {
+		disabled = false,
+		boss_events = {
+			safe_dist = 150,
+			recurring_distance = 300,
+			name = "boss_events",
+			chance_of_encampment = 0,
+			terror_events_using_packs = false,
+			padding_dist = 100,
+			debug_color = "deep_sky_blue",
+			hand_placed_padding_dist = 10,
+			events = {
+				"event_boss",
+				"event_patrol",
+				"nothing"
+			},
+			event_lookup = {
+				event_boss = {
+					"boss_event_storm_fiend",
+					"boss_event_rat_ogre"
+				},
+				event_patrol = {
+					"boss_event_storm_vermin_patrol"
+				}
+			},
+			spline_patrol_events = {
+				"boss_event_skaven_spline_patrol"
+			},
+			max_events_of_this_kind = {
+				event_boss = 2
+			}
+		},
+		rare_events = {
+			safe_dist = 50,
+			recurring_distance = 1500,
+			name = "rare_events",
+			debug_color = "deep_pink",
+			padding_dist = 100,
+			events = {
+				"event_boss"
+			},
+			event_lookup = {
+				event_boss = {
+					"rare_event_loot_rat"
+				}
+			},
+			max_events_of_this_kind = {}
+		}
+	},
+	skaven_light = {
 		disabled = false,
 		boss_events = {
 			safe_dist = 150,
@@ -1176,13 +1427,23 @@ IntensitySettings = {
 	default = {
 		intensity_add_per_percent_dmg_taken = 1,
 		decay_delay = 3,
-		decay_per_second = 3,
+		decay_per_second = 2,
 		intensity_add_knockdown = 50,
 		intensity_add_pounced_down = 10,
 		max_intensity = 100,
 		intensity_add_nearby_kill = 1,
 		disabled = false,
-		difficulty_overrides = {}
+		difficulty_overrides = {
+			hard = {
+				decay_per_second = 3
+			},
+			harder = {
+				decay_per_second = 3
+			},
+			hardest = {
+				decay_per_second = 5
+			}
+		}
 	},
 	disabled = {
 		intensity_add_per_percent_dmg_taken = 0,
@@ -1216,20 +1477,20 @@ PacingSettings = {
 			5
 		},
 		relax_duration = {
-			35,
-			45
+			50,
+			70
 		},
 		horde_frequency = {
 			70,
-			120
+			150
 		},
 		multiple_horde_frequency = {
 			10,
 			15
 		},
 		max_delay_until_next_horde = {
-			120,
-			150
+			160,
+			200
 		},
 		horde_startup_time = {
 			40,
@@ -1243,8 +1504,8 @@ PacingSettings = {
 		delay_horde_threat_value = {
 			harder = 80,
 			hard = 60,
-			normal = 50,
-			easy = 50
+			normal = 40,
+			easy = 40
 		},
 		delay_mini_patrol_threat_value = {
 			harder = 50,
@@ -1277,6 +1538,10 @@ PacingSettings = {
 				multiple_horde_frequency = {
 					8,
 					13
+				},
+				relax_duration = {
+					35,
+					45
 				}
 			},
 			harder = {
@@ -1288,12 +1553,20 @@ PacingSettings = {
 				multiple_horde_frequency = {
 					8,
 					12
+				},
+				relax_duration = {
+					35,
+					45
 				}
 			},
 			hardest = {
 				horde_frequency = {
 					50,
 					100
+				},
+				relax_duration = {
+					35,
+					45
 				}
 			}
 		}
@@ -1312,8 +1585,8 @@ PacingSettings = {
 			5
 		},
 		relax_duration = {
-			35,
-			45
+			50,
+			70
 		},
 		horde_frequency = {
 			70,
@@ -1339,8 +1612,8 @@ PacingSettings = {
 		delay_horde_threat_value = {
 			harder = 80,
 			hard = 60,
-			normal = 50,
-			easy = 50
+			normal = 40,
+			easy = 40
 		},
 		delay_mini_patrol_threat_value = {
 			harder = 50,
@@ -1373,6 +1646,10 @@ PacingSettings = {
 				multiple_horde_frequency = {
 					8,
 					13
+				},
+				relax_duration = {
+					35,
+					45
 				}
 			},
 			harder = {
@@ -1384,12 +1661,20 @@ PacingSettings = {
 				multiple_horde_frequency = {
 					8,
 					12
+				},
+				relax_duration = {
+					35,
+					45
 				}
 			},
 			hardest = {
 				horde_frequency = {
 					50,
 					100
+				},
+				relax_duration = {
+					35,
+					45
 				}
 			}
 		}
@@ -1509,10 +1794,38 @@ PackSpawningSettings = {
 			},
 			breed_packs_override = {
 				{
-					"shield_rats",
+					"shield_rats_no_elites",
 					2,
 					0.035
 				},
+				{
+					"plague_monks",
+					2,
+					0.035
+				},
+				{
+					"marauders",
+					2,
+					0.03
+				},
+				{
+					"marauders_elites",
+					2,
+					0.03
+				}
+			}
+		}
+	},
+	default_light = {
+		area_density_coefficient = 0.045,
+		basics = PackSpawningDistribution.standard,
+		roaming_set = {
+			breed_packs = "standard_no_elites",
+			breed_packs_peeks_overide_chance = {
+				0.5,
+				0.75
+			},
+			breed_packs_override = {
 				{
 					"plague_monks",
 					2,
@@ -1543,6 +1856,29 @@ PackSpawningSettings = {
 			breed_packs_override = {
 				{
 					"shield_rats",
+					2,
+					0.035
+				},
+				{
+					"plague_monks",
+					1,
+					0.03
+				}
+			}
+		}
+	},
+	skaven_light = {
+		area_density_coefficient = 0.045,
+		basics = PackSpawningDistribution.standard,
+		roaming_set = {
+			breed_packs = "skaven_no_elites",
+			breed_packs_peeks_overide_chance = {
+				0.5,
+				1
+			},
+			breed_packs_override = {
+				{
+					"shield_rats_no_elites",
 					2,
 					0.035
 				},
@@ -1712,6 +2048,17 @@ ConflictDirectors = {
 		pack_spawning = PackSpawningSettings.default,
 		horde = HordeSettings.default
 	},
+	default_light = {
+		debug_color = "maroon",
+		disabled = false,
+		intensity = IntensitySettings.default,
+		pacing = PacingSettings.default,
+		boss = BossSettings.default_light,
+		specials = SpecialsSettings.default_light,
+		roaming = RoamingSettings.default,
+		pack_spawning = PackSpawningSettings.default_light,
+		horde = HordeSettings.default_light
+	},
 	skaven = {
 		debug_color = "orange",
 		disabled = false,
@@ -1722,6 +2069,17 @@ ConflictDirectors = {
 		roaming = RoamingSettings.default,
 		pack_spawning = PackSpawningSettings.skaven,
 		horde = HordeSettings.default
+	},
+	skaven_light = {
+		debug_color = "orange",
+		disabled = false,
+		intensity = IntensitySettings.default,
+		pacing = PacingSettings.default,
+		boss = BossSettings.skaven_light,
+		specials = SpecialsSettings.skaven_light,
+		roaming = RoamingSettings.default,
+		pack_spawning = PackSpawningSettings.skaven_light,
+		horde = HordeSettings.default_light
 	},
 	chaos = {
 		debug_color = "purple",

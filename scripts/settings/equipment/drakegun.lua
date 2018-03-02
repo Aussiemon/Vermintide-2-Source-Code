@@ -80,38 +80,31 @@ weapon_template.actions = {
 		shoot_charged = {
 			damage_window_start = 0.1,
 			anim_end_event = "attack_finished",
-			damage_profile = "flamethrower",
-			kind = "flamethrower",
+			anim_event = "attack_shoot_charged",
 			initial_damage_profile = "flamethrower_initial",
+			kind = "flamethrower",
 			hit_effect = "flamethrower",
+			alert_sound_range_fire = 12,
 			charge_fuel_time_multiplier = 5,
 			overcharge_interval = 0.25,
-			alert_sound_range_fire = 12,
+			alert_sound_range_hit = 2,
 			particle_effect_flames_3p = "fx/wpnfx_flamethrower_01",
 			damage_interval = 0.25,
-			fire_sound_event = "Play_player_combat_weapon_drakegun_flamethrower_shoot_charged",
 			stop_fire_event = "Stop_player_combat_weapon_drakegun_flamethrower_shoot",
+			fire_sound_on_husk = true,
 			minimum_hold_time = 0.75,
 			damage_window_end = 0,
 			overcharge_type = "drakegun_charging",
 			charge_value = "light_attack",
 			fire_time = 0.3,
-			fire_sound_on_husk = true,
 			area_damage = true,
 			particle_effect_flames = "fx/wpnfx_flamethrower_1p_01",
-			alert_sound_range_hit = 2,
-			hold_input = "action_one_hold",
-			anim_event = "attack_shoot_charged",
-			fx_node = "fx_muzzle",
+			fire_sound_event = "Play_player_combat_weapon_drakegun_flamethrower_shoot_charged",
 			particle_effect_impact = "fx/wpnfx_flamethrower_hit_01",
+			hold_input = "action_one_hold",
+			damage_profile = "flamethrower",
+			fx_node = "fx_muzzle",
 			total_time = math.huge,
-			total_time_func = function (chain_action_data)
-				if chain_action_data and chain_action_data.charge_level then
-					return chain_action_data.charge_level*5
-				end
-
-				return false
-			end,
 			buff_data = {
 				{
 					start_time = 0,

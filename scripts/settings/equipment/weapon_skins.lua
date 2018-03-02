@@ -2178,7 +2178,7 @@ WeaponSkins.skins = {
 		hud_icon = "weapon_generic_icon_staff_3",
 		display_unit = "units/weapons/weapon_display/display_rifle",
 		inventory_icon = "icon_wpn_dw_xbox_01_t1",
-		left_hand_unit = "units/weapons/player/wpn_dw_xbox_01_t1/wpn_dw_xbox_01_t1",
+		left_hand_unit = "units/weapons/player/wpn_dw_xbow_01_t1/wpn_dw_xbow_01_t1",
 		display_name = "display_name_plentiful_dwarf_ranger_dr_crossbow",
 		template = "crossbow_template_1"
 	},
@@ -2188,7 +2188,7 @@ WeaponSkins.skins = {
 		hud_icon = "weapon_generic_icon_staff_3",
 		display_unit = "units/weapons/weapon_display/display_rifle",
 		inventory_icon = "icon_wpn_dw_xbox_01_t2",
-		left_hand_unit = "units/weapons/player/wpn_dw_xbox_01_t2/wpn_dw_xbow_01_t2",
+		left_hand_unit = "units/weapons/player/wpn_dw_xbow_01_t2/wpn_dw_xbow_01_t2",
 		display_name = "display_name_rare_dwarf_ranger_dr_crossbow",
 		template = "crossbow_template_1"
 	},

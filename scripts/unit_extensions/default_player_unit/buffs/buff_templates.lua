@@ -564,10 +564,6 @@ ProcFunctions = {
 		return 
 	end,
 	victor_zealot_gain_invulnerability = function (player, buff, params)
-		if not Managers.state.network.is_server then
-			return 
-		end
-
 		local buff_system = Managers.state.entity:system("buff_system")
 		local player_unit = player.player_unit
 		local status_extension = ScriptUnit.extension(player_unit, "status_system")
@@ -579,11 +575,12 @@ ProcFunctions = {
 			local killing_blow = current_health <= damage
 
 			if killing_blow then
-				local heal_amount = (current_health - damage)*-1 + 1
+				if Managers.state.network.is_server then
+					local heal_amount = (current_health - damage)*-1 + 1
 
-				buff_system.add_buff(buff_system, player_unit, "victor_zealot_invulnerability_on_lethal_damage_taken", player_unit, true)
-				buff_system.add_buff(buff_system, player_unit, "victor_zealot_invulnerability_cooldown", player_unit, true)
-				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+					buff_system.add_buff(buff_system, player_unit, "victor_zealot_invulnerability_on_lethal_damage_taken", player_unit, true)
+					DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+				end
 
 				return true
 			end
@@ -923,6 +920,10 @@ ProcFunctions = {
 	end,
 	remove_overcharge = function (player, buff, params)
 		local player_unit = player.player_unit
+
+		if not is_local(player_unit) then
+			return 
+		end
 
 		if Unit.alive(player_unit) then
 			local overcharge_amount = buff.bonus
@@ -4238,7 +4239,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				update_func = "update_action_lerp_movement_buff",
-				multiplier = 0.5,
+				multiplier = 0.75,
 				name = "decrease_speed_bile_troll",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
@@ -4253,7 +4254,7 @@ BuffTemplates = {
 			},
 			{
 				update_func = "update_charging_action_lerp_movement_buff",
-				multiplier = 0.5,
+				multiplier = 0.75,
 				name = "decrease_crouch_speed_bile_troll",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
@@ -4268,7 +4269,7 @@ BuffTemplates = {
 			},
 			{
 				update_func = "update_charging_action_lerp_movement_buff",
-				multiplier = 0.5,
+				multiplier = 0.75,
 				name = "decrease_walk_speed_bile_troll",
 				refresh_durations = true,
 				remove_buff_func = "remove_action_lerp_movement_buff",
@@ -4283,7 +4284,7 @@ BuffTemplates = {
 			},
 			{
 				name = "decrease_jump_speed_bile_troll",
-				multiplier = 0.6,
+				multiplier = 0.75,
 				duration = 1,
 				max_stacks = 1,
 				remove_buff_func = "remove_movement_buff",
@@ -4445,7 +4446,7 @@ BuffTemplates = {
 				apply_buff_func = "apply_vomit_in_face",
 				fatigue_type = "vomit_face",
 				time_between_dot_damages = 0.65,
-				duration = 7,
+				duration = 5,
 				debuff = true,
 				max_stacks = 1,
 				icon = "troll_vomit_debuff",

@@ -271,6 +271,7 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 	local act_key = search_config.act_key
 	local using_strict_matchmaking = search_config.strict_matchmaking
 	local reached_max_distance = self._current_distance_filter == MatchmakingSettings.max_distance_filter
+	local allow_occupied_hero_lobbies = Application.user_setting("allow_occupied_hero_lobbies")
 	local current_first_prio_lobby, current_secondary_prio_lobby, secondary_option_lobby_data = nil
 	local matchmaking_manager = self._matchmaking_manager
 
@@ -282,8 +283,14 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 			local discard = false
 			local discard_reason = nil
 			local secondary_option = false
+			local level_key = lobby_data.selected_level_key or lobby_data.level_key
 
-			if not matchmaking_manager.hero_available_in_lobby_data(matchmaking_manager, wanted_profile_id, lobby_data) then
+			if not discard and not matchmaking_manager.party_has_level_unlocked(matchmaking_manager, level_key) then
+				discard = true
+				discard_reason = string.format("level(%s) is not unlocked by party", level_key)
+			end
+
+			if not discard and not matchmaking_manager.hero_available_in_lobby_data(matchmaking_manager, wanted_profile_id, lobby_data) then
 				local any_allowed_hero_available = false
 
 				for i = 1, 5, 1 do
@@ -298,24 +305,28 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 					end
 				end
 
-				if any_allowed_hero_available then
+				if any_allowed_hero_available and allow_occupied_hero_lobbies then
 					secondary_option = true
 				else
 					discard = true
 					discard_reason = "hero is unavailable"
 				end
-			elseif lobby_data.level_key ~= "inn_level" then
+			end
+
+			if not discard and lobby_data.level_key ~= "inn_level" then
 				if using_strict_matchmaking then
 					discard = true
 					discard_reason = "strict matchmaking"
 				else
 					secondary_option = true
 				end
-			elseif lobby_data.host_afk == "true" then
+			end
+
+			if not discard and lobby_data.host_afk == "true" then
 				secondary_option = true
 			end
 
-			if secondary_option and not reached_max_distance then
+			if not discard and secondary_option and not reached_max_distance then
 				discard = true
 				discard_reason = "secondary lobby before reaching max distance"
 			end

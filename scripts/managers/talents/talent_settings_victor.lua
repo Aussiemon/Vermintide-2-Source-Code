@@ -278,7 +278,6 @@ TalentBuffTemplates.witch_hunter = {
 				refresh_durations = true,
 				is_cooldown = true,
 				icon = "victor_zealot_passive_invulnerability",
-				dormant = true,
 				delayed_buff_name = "victor_zealot_gain_invulnerability_on_lethal_damage_taken"
 			}
 		}
@@ -286,10 +285,10 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_gain_invulnerability_on_lethal_damage_taken = {
 		buffs = {
 			{
-				event = "on_damage_taken",
+				remove_on_proc = true,
 				max_stacks = 1,
 				event_buff = true,
-				remove_on_proc = true,
+				event = "on_damage_taken",
 				icon = "victor_zealot_passive_invulnerability",
 				buff_func = ProcFunctions.victor_zealot_gain_invulnerability
 			}

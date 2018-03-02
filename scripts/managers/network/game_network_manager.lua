@@ -135,14 +135,8 @@ GameNetworkManager.update_receive = function (self, dt)
 		return 
 	end
 
-	if not self._game_session_host then
-		if GameSession.in_session(game_session) then
-			self._game_session_host = GameSession.game_session_host(game_session)
-		else
-			Profiler.stop("GameNetworkManager:update_receive()")
-
-			return 
-		end
+	if not self._game_session_host and GameSession.in_session(game_session) then
+		self._game_session_host = GameSession.game_session_host(game_session)
 	end
 
 	if self._game_session_disconnect then

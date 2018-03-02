@@ -14,16 +14,6 @@ local function current_difficulty()
 	return Managers.state.difficulty.difficulty
 end
 
-local function randomize(event)
-	if type(event) == "table" then
-		return event[Math.random(1, #event)]
-	else
-		return event
-	end
-
-	return 
-end
-
 WeightedRandomTerrorEvents = {
 	roger_and_friends = {
 		"roger_mayhem",
@@ -2542,7 +2532,12 @@ TerrorEventBlueprints = {
 		{
 			"spawn_at_raw",
 			spawner_id = "farmlands_rat_ogre",
-			breed_name = "skaven_rat_ogre"
+			breed_name = {
+				"skaven_rat_ogre",
+				"skaven_stormfiend",
+				"chaos_troll",
+				"chaos_spawn"
+			}
 		}
 	},
 	farmlands_spawn_guards = {
@@ -2557,7 +2552,7 @@ TerrorEventBlueprints = {
 		{
 			"spawn_at_raw",
 			spawner_id = "wall_guard_01",
-			breed_name = "chaos_warrior"
+			breed_name = "chaos_raider"
 		},
 		{
 			"spawn_at_raw",
@@ -2697,7 +2692,7 @@ TerrorEventBlueprints = {
 		{
 			"spawn_at_raw",
 			spawner_id = "hay_barn_guards",
-			breed_name = "chaos_warrior"
+			breed_name = "chaos_raider"
 		},
 		{
 			"spawn_at_raw",
@@ -2907,7 +2902,10 @@ TerrorEventBlueprints = {
 		{
 			"spawn_at_raw",
 			spawner_id = "saw_mill_guards",
-			breed_name = "skaven_ratling_gunner"
+			breed_name = {
+				"skaven_ratling_gunner",
+				"skaven_warpfire_thrower"
+			}
 		}
 	},
 	farmlands_prisoner_event_sawmill_door = {
@@ -5504,18 +5502,18 @@ TerrorEventBlueprints = {
 		{
 			"spawn",
 			1,
-			breed_name = randomize({
+			breed_name = {
 				"chaos_corruptor_sorcerer",
 				"chaos_vortex_sorcerer"
-			})
+			}
 		},
 		{
 			"spawn",
 			1,
-			breed_name = randomize({
+			breed_name = {
 				"chaos_corruptor_sorcerer",
 				"chaos_vortex_sorcerer"
-			})
+			}
 		},
 		{
 			"delay",

@@ -1,45 +1,48 @@
 local breed_data = {
 	detection_radius = 12,
 	aoe_height = 1.7,
-	shield_stagger_mod_2 = 0.5,
-	using_combo = true,
+	walk_speed = 2,
+	unbreakable_shield = true,
 	attack_start_slow_fraction = 1,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
+	block_stagger_mod_2 = 0.75,
 	disable_crowd_dispersion = true,
-	unbreakable_shield = true,
-	walk_speed = 2,
+	using_combo = true,
 	animation_sync_rpc = "rpc_sync_anim_state_5",
 	aoe_radius = 0.4,
-	has_running_attack = true,
+	block_stagger_mod = 0.5,
 	target_selection = "pick_closest_target_with_spillover",
 	death_reaction = "ai_default",
-	scale_death_push = 0.8,
-	shield_blunt_block_sound = "blunt_hit_shield_metal",
-	attack_player_sound_event = "Play_clan_rat_attack_player_vce",
+	has_running_attack = true,
 	hit_mass_count_block = 10,
-	attack_general_sound_event = "Play_clan_rat_attack_vce",
+	shield_blunt_block_sound = "blunt_hit_shield_metal",
+	is_bot_threat = true,
+	attack_player_sound_event = "Play_clan_rat_attack_player_vce",
 	match_speed_distance = 2,
 	default_inventory_template = "stormvermin_sword_and_shield",
-	is_bot_threat = true,
+	stagger_resistance = 2.25,
 	patrol_detection_radius = 10,
-	shield_slashing_block_sound = "slashing_hit_shield_metal",
-	shield_stab_block_sound = "stab_hit_shield_metal",
+	attack_general_sound_event = "Play_clan_rat_attack_vce",
+	scale_death_push = 0.8,
 	wwise_voice_switch_group = "stormvermin_vce",
 	panic_close_detection_radius_sq = 9,
 	radius = 1,
-	headshot_coop_stamina_fatigue_type = "headshot_special",
-	threat_value = 8,
+	shield_slashing_block_sound = "slashing_hit_shield_metal",
+	shield_stab_block_sound = "stab_hit_shield_metal",
 	hit_mass_count = 5,
 	patrol_active_perception = "perception_regular",
+	headshot_coop_stamina_fatigue_type = "headshot_special",
 	perception_previous_attacker_stickyness_value = -4.5,
 	race = "skaven",
-	bone_lod_level = 1,
+	threat_value = 8,
+	awards_positive_reinforcement_message = true,
 	poison_resistance = 100,
 	armor_category = 2,
-	smart_object_template = "special",
+	bone_lod_level = 1,
 	backstab_player_sound_event = "Play_clan_rat_attack_player_back_vce",
 	death_sound_event = "Play_stormvermin_die_vce",
 	dodge_timer = 0.35,
+	smart_object_template = "special",
 	smart_targeting_width = 0.2,
 	block_stamina = 1,
 	is_bot_aid_threat = true,
@@ -49,9 +52,7 @@ local breed_data = {
 	has_inventory = true,
 	attack_start_slow_factor_time = 0.4,
 	run_speed = 4.8,
-	awards_positive_reinforcement_message = true,
 	exchange_order = 3,
-	shield_stagger_mod = 0.4,
 	hit_reaction = "ai_default",
 	patrol_passive_target_selection = "patrol_passive_target_selection",
 	smart_targeting_outer_width = 1,
@@ -61,6 +62,7 @@ local breed_data = {
 	shield_health = 3,
 	horde_behavior = "shield_vermin",
 	unit_template = "ai_unit_shield_vermin",
+	no_random_stagger_duration = true,
 	leave_walk_distance = 3.5,
 	perception = "perception_regular",
 	player_locomotion_constrain_radius = 0.7,
@@ -94,14 +96,21 @@ local breed_data = {
 		40
 	},
 	stagger_duration = {
+		0.5,
 		1,
-		1,
-		1,
-		1,
-		1,
-		1,
+		2,
+		0.4,
+		0.5,
+		3,
 		1,
 		1
+	},
+	diff_stagger_resist = {
+		2.25,
+		2.25,
+		3,
+		4,
+		6
 	},
 	hit_mass_counts = {
 		5,
@@ -482,11 +491,14 @@ local action_data = {
 		bot_threat_duration = 0.7,
 		bot_threat_start_time = 0.5,
 		damage_type = "cutting",
-		attack_anim = "attack_pounce",
 		range = 2.2,
 		knocked_down_attack_threshold = 0.6,
 		move_anim = "move_fwd",
 		width = 2,
+		attack_anim = {
+			"attack_pounce",
+			"attack_pounce_2"
+		},
 		knocked_down_attack_anim = {
 			"attack_downed",
 			"attack_downed_2"
@@ -701,7 +713,7 @@ local action_data = {
 			local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 			local shield_user = not ai_shield_extension.shield_broken
 			local is_blocking = ai_shield_extension.is_blocking
-			local block_count = 4
+			local block_count = 3
 
 			if current_health <= 0.5 then
 				block_count = 2
@@ -711,22 +723,44 @@ local action_data = {
 			local stagger_anims, idle_event = nil
 
 			if shield_user and stagger then
-				if not blocked and stagger < block_count - 1 and action.shield_block_anims then
-					blackboard.stagger_time = blackboard.stagger_time + stagger*breed.shield_stagger_mod
+				if not blocked and stagger <= block_count and action.shield_block_anims then
+					blackboard.stagger_time = blackboard.stagger_time + math.max(0.5, stagger/block_count)*breed.block_stagger_mod
 					stagger_anims = action.shield_block_anims[stagger_type]
+
+					ai_shield_extension.set_is_blocking(ai_shield_extension, true)
+
 					idle_event = "idle_shield_up"
-				elseif not blocked and stagger < block_count and action.shield_stagger_anims then
-					blackboard.stagger_time = blackboard.stagger_time + stagger*breed.shield_stagger_mod_2
-					idle_event = "idle_shield_down"
+				elseif not blocked and is_blocking and block_count < stagger and action.shield_stagger_anims then
+					blackboard.stagger_time = blackboard.stagger_time + stagger/block_count*breed.block_stagger_mod_2
+					local index = Math.random(1, 2)
+					local anim_table = {
+						"idle_shield_down",
+						"idle_shield_down_2"
+					}
+					idle_event = anim_table[index]
 
 					ai_shield_extension.set_is_blocking(ai_shield_extension, false)
 
 					blackboard.wake_up_push = math.huge
-					stagger_anims = action.shield_stagger_anims[stagger_type]
-				else
-					blackboard.stagger_time = 0
 					stagger_anims = action.stagger_anims[stagger_type]
+				elseif block_count + 3 < stagger and action.shield_block_anims then
+					blackboard.stagger_time = 0
+					blackboard.stagger = 0
+
+					ai_shield_extension.set_is_blocking(ai_shield_extension, true)
+
+					stagger_anims = action.stagger_anims[stagger_type]
+					blackboard.stagger_time = 0.2
 					idle_event = "idle_shield_up"
+				else
+					stagger_anims = action.stagger_anims[stagger_type]
+					blackboard.stagger_time = blackboard.stagger_time + stagger/block_count*breed.block_stagger_mod_2
+					local index = Math.random(1, 2)
+					local anim_table = {
+						"idle_shield_down",
+						"idle_shield_down_2"
+					}
+					idle_event = anim_table[index]
 
 					ai_shield_extension.set_is_blocking(ai_shield_extension, false)
 				end
@@ -735,7 +769,7 @@ local action_data = {
 				idle_event = "idle_shield_down"
 			end
 
-			return stagger_anims, idle_event
+			return stagger_anims, idle_event, idle_event
 		end,
 		custom_exit_function = function (unit, blackboard, t)
 			ai_shield_extension:set_is_blocking(true)
@@ -745,78 +779,78 @@ local action_data = {
 		stagger_anims = {
 			{
 				fwd = {
-					"stun_fwd_sword"
+					"stagger_bwd_open"
 				},
 				bwd = {
-					"stun_bwd_sword"
+					"stagger_bwd_open"
 				},
 				left = {
-					"stun_left_sword"
+					"stagger_bwd_open"
 				},
 				right = {
-					"stun_right_sword"
+					"stagger_bwd_open"
 				},
 				dwn = {
-					"stun_down"
+					"stagger_bwd_open"
 				}
 			},
 			{
 				fwd = {
-					"stagger_fwd"
+					"stagger_bwd_open"
 				},
 				bwd = {
-					"stagger_bwd"
+					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_left"
+					"stagger_bwd_open"
 				},
 				right = {
-					"stagger_right"
+					"stagger_bwd_open"
 				},
 				dwn = {
-					"stun_down"
+					"stagger_bwd_open"
 				}
 			},
 			{
 				fwd = {
-					"stagger_fwd"
+					"stagger_bwd_open"
 				},
 				bwd = {
-					"stagger_bwd"
+					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_left"
+					"stagger_bwd_open"
 				},
 				right = {
-					"stagger_right"
+					"stagger_bwd_open"
 				}
 			},
 			{
 				fwd = {
-					"stun_fwd_sword"
+					"stagger_bwd_open"
 				},
 				bwd = {
-					"stun_bwd_sword"
+					"stagger_bwd_open"
 				},
 				left = {
-					"stun_left_sword"
+					"stagger_bwd_open"
 				},
 				right = {
-					"stun_right_sword"
+					"stagger_bwd_open"
 				}
 			},
 			{
 				fwd = {
-					"stagger_fwd"
+					"stagger_bwd_open"
 				},
 				bwd = {
-					"stagger_bwd_stab"
+					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_left"
+					"stagger_bwd_open"
 				},
 				right = {
-					"stagger_right"
+					"stagger_bwd_open"
 				}
 			},
 			{
@@ -835,16 +869,16 @@ local action_data = {
 			},
 			{
 				fwd = {
-					"stagger_fwd"
+					"stagger_bwd_open"
 				},
 				bwd = {
-					"stagger_bwd"
+					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_left"
+					"stagger_bwd_open"
 				},
 				right = {
-					"stagger_right"
+					"stagger_bwd_open"
 				}
 			}
 		},

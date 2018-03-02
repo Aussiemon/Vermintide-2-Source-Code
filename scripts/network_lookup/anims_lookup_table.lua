@@ -740,5 +740,33 @@ NetworkLookup.anims = {
 	"stagger_heavy_right",
 	"stagger_heavy_left"
 }
+NetworkLookup.interest_point_anims = {
+	"idle_passive_sleep",
+	"idle_passive_sit",
+	"idle_passive_sit_2",
+	"idle_passive_sit_talk",
+	"idle_passive_sit_talk_2",
+	"idle_passive_play_dice",
+	"idle_passive_play_dice_2",
+	"idle_passive_play_dice_3",
+	"idle_passive_dig",
+	"idle_passive_eat",
+	"idle_passive_talk",
+	"idle_passive_talk_2",
+	"idle_passive_listen",
+	"idle_passive_talk_crowd",
+	"idle_passive_look_down",
+	"idle_passive_look_down_2",
+	"idle_passive_look_down_3",
+	"idle_passive_look_up",
+	"idle_passive_look_up_2",
+	"idle_passive_look_up_3",
+	"idle_passive_loot",
+	"idle_passive_sit_loot",
+	"idle_passive_sit_loot_2",
+	"idle_passive_bang_door",
+	"idle_passive_bang_door_2",
+	"idle_passive_guard"
+}
 
 return 

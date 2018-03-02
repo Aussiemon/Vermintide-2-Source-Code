@@ -457,9 +457,9 @@ StartGameStateSettingsOverview.play = function (self, t)
 	local level_key = self.get_selected_level_id(self)
 	local difficulty = self._selected_difficulty_key
 	local quick_game = level_key == nil
-	local is_private = twitch_active or self.is_private_option_enabled(self)
-	local always_host = twitch_active or not is_alone or is_private or self.is_always_host_option_enabled(self)
-	local strict_matchmaking = not twitch_active and is_alone and not is_private and not always_host and self.is_strict_matchmaking_option_enabled(self)
+	local is_private = not quick_game and (twitch_active or self.is_private_option_enabled(self))
+	local always_host = not quick_game and (twitch_active or not is_alone or is_private or self.is_always_host_option_enabled(self))
+	local strict_matchmaking = not quick_game and not twitch_active and is_alone and not is_private and not always_host and self.is_strict_matchmaking_option_enabled(self)
 	local deed_backend_id = self.get_selected_heroic_deed_backend_id(self)
 
 	self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, deed_backend_id)

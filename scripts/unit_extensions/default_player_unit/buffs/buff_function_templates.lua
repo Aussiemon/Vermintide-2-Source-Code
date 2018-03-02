@@ -2487,18 +2487,6 @@ BuffFunctionTemplates.functions = {
 			buff_extension.add_buff(buff_extension, "victor_zealot_invulnerability_cooldown")
 		end
 
-		local buff_to_remove = buff_extension.get_non_stacking_buff(buff_extension, "victor_zealot_gain_invulnerability_on_lethal_damage_taken")
-
-		if buff_to_remove then
-			local buff_id = buff_to_remove.server_id
-
-			if buff_id then
-				buff_system:remove_server_controlled_buff(player_unit, buff_id)
-
-				removed_buff = true
-			end
-		end
-
 		return 
 	end,
 	end_huntsman_activated_ability = function (unit, buff, params)

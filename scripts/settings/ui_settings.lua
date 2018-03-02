@@ -1,13 +1,14 @@
 UISettings = {
-	tooltip_wait_duration = 0.1,
 	start_drag_threshold = 0.15,
 	tooltip_fade_in_speed = 4,
 	double_click_threshold = 0.1,
 	max_craft_material_presentation_amount = 999,
-	chest_upgrade_score_topics_min_duration = 0.5,
+	tooltip_wait_duration = 0.1,
+	chest_upgrade_score_topics_max_duration = 7,
 	hero_panel_height = 120,
 	use_subtitles = true,
-	chest_upgrade_score_topics_max_duration = 7,
+	max_fatigue_shields = 20,
+	chest_upgrade_score_topics_min_duration = 0.5,
 	game_start_windows = {
 		frame = "menu_frame_09",
 		spacing = 25,
