@@ -50,6 +50,7 @@ dofile("scripts/settings/breeds/breed_chaos_corruptor_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_plague_wave_spawner")
 dofile("scripts/settings/breeds/breed_chaos_spawn")
 dofile("scripts/settings/breeds/breed_chaos_dummy_sorcerer")
+dofile("scripts/settings/breeds/breed_chaos_exalted_champion")
 dofile("scripts/settings/breeds/breed_critters")
 dofile("scripts/settings/breeds/breed_pets")
 

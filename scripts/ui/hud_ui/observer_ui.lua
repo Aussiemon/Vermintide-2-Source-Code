@@ -232,7 +232,7 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 		is_knocked_down = status_extension.is_knocked_down(status_extension) and 0 < health_percent
 		is_ready_for_assisted_respawn = status_extension.is_ready_for_assisted_respawn(status_extension)
 		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-		local num_grimoires = buff_extension.num_buff_perk(buff_extension, "grimoire")
+		local num_grimoires = buff_extension.num_buff_perk(buff_extension, "skaven_grimoire")
 		local multiplier = buff_extension.apply_buffs_to_value(buff_extension, PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
 		active_percentage = num_grimoires*multiplier + 1
 	else

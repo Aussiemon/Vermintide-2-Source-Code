@@ -239,12 +239,19 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 			local boost_coefficient_headshot = (target_settings and target_settings.boost_curve_coefficient_headshot) or DefaultBoostCurveCoefficient
 
 			if boost_curve_multiplier then
+				local breed = unit_get_data(target_unit, "breed")
+
+				if breed and breed.boost_curve_multiplier_override then
+					boost_curve_multiplier = math.clamp(boost_curve_multiplier, 0, breed.boost_curve_multiplier_override)
+				end
+
 				boost_coefficient = boost_coefficient*boost_curve_multiplier
 				boost_coefficient_headshot = boost_coefficient_headshot*boost_curve_multiplier
 			end
 
-			if boost_amount then
+			if 0 < boost_amount then
 				modified_boost_curve = DamageUtils.get_modified_boost_curve(boost_curve, boost_coefficient)
+				boost_amount = math.clamp(boost_amount, 0, 1)
 				local boost_multiplier = DamageUtils.get_boost_curve_multiplier(modified_boost_curve or boost_curve, boost_amount)
 				boost_damage = math.max(damage_boost_damage, 1)*boost_multiplier
 			end
@@ -253,7 +260,8 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 				local buff_extension = ScriptUnit.extension(attacker_unit, "buff_system")
 				head_shot_boost_amount = buff_extension.apply_buffs_to_value(buff_extension, head_shot_boost_amount, StatBuffIndex.HEADSHOT_MULTIPLIER)
 				modified_boost_curve_head_shot = DamageUtils.get_modified_boost_curve(boost_curve, boost_coefficient_headshot)
-				local head_shot_boost_multiplier = DamageUtils.get_boost_curve_multiplier(modified_boost_curve or boost_curve, head_shot_boost_amount)
+				head_shot_boost_amount = math.clamp(head_shot_boost_amount, 0, 1)
+				local head_shot_boost_multiplier = DamageUtils.get_boost_curve_multiplier(modified_boost_curve_head_shot or boost_curve, head_shot_boost_amount)
 				boost_damage = boost_damage + math.max(damage, 1)*head_shot_boost_multiplier
 			end
 
@@ -1046,6 +1054,14 @@ DamageUtils.networkify_damage = function (damage_amount)
 	local rounded_decimal = math.round(decimal*4)*0.25
 
 	return math.floor(damage_amount) + rounded_decimal
+end
+DamageUtils.networkify_health = function (health_amount)
+	local health = NetworkConstants.health
+	health_amount = math.clamp(health_amount, health.min, health.max)
+	local decimal = health_amount%1
+	local rounded_decimal = math.round(decimal*4)*0.25
+
+	return math.floor(health_amount) + rounded_decimal
 end
 DamageUtils.create_hit_zone_lookup = function (unit, breed)
 	local hit_zones = breed.hit_zones

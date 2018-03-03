@@ -205,17 +205,19 @@ CareerExtension.is_in_aoe = function (self, position)
 end
 CareerExtension.has_melee_boost = function (self)
 	local buff_extension = self._buff_extension
-	local has_buff = buff_extension.has_buff_type(buff_extension, "kerillian_shade_activated_ability") or buff_extension.has_buff_type(buff_extension, "kerillian_shade_activated_ability_duration") or buff_extension.has_buff_type(buff_extension, "markus_huntsman_activated_ability")
-	local multiplier = (has_buff and 5) or 1
+	local has_shade_buff = buff_extension.has_buff_type(buff_extension, "kerillian_shade_activated_ability") or buff_extension.has_buff_type(buff_extension, "kerillian_shade_activated_ability_duration")
+	local has_murder_hobo_buff = buff_extension.has_buff_type(buff_extension, "markus_huntsman_activated_ability")
+	local multiplier = (has_shade_buff and 5) or (has_murder_hobo_buff and 1.5) or 1
 
-	return has_buff, multiplier
+	return has_shade_buff or has_murder_hobo_buff, multiplier
 end
 CareerExtension.has_ranged_boost = function (self)
 	local buff_extension = self._buff_extension
-	local has_buff = buff_extension.has_buff_type(buff_extension, "markus_huntsman_activated_ability")
-	local multiplier = (has_buff and 5) or 1
+	local has_murder_hobo_buff = buff_extension.has_buff_type(buff_extension, "markus_huntsman_activated_ability")
+	local has_ranger_buff = buff_extension.has_buff_type(buff_extension, "bardin_ranger_activated_ability") or buff_extension.has_buff_type(buff_extension, "bardin_ranger_activated_ability_duration")
+	local multiplier = (has_murder_hobo_buff and 1.5) or (has_ranger_buff and 1.5) or 1
 
-	return has_buff, multiplier
+	return has_murder_hobo_buff or has_ranger_buff, multiplier
 end
 CareerExtension.get_career_power_level = function (self)
 	local player = self.player

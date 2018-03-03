@@ -260,8 +260,8 @@ HordeCompositions = {
 			breeds = {
 				"chaos_marauder_with_shield",
 				{
-					7,
-					8
+					3,
+					4
 				}
 			}
 		}
@@ -271,22 +271,6 @@ HordeCompositions = {
 			name = "plain",
 			weight = 7,
 			breeds = {
-				"chaos_berzerker",
-				{
-					3,
-					4
-				}
-			}
-		},
-		{
-			name = "mixed",
-			weight = 3,
-			breeds = {
-				"chaos_marauder_with_shield",
-				{
-					2,
-					3
-				},
 				"chaos_berzerker",
 				{
 					2,

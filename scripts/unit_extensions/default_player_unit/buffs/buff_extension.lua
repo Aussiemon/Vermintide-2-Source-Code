@@ -381,6 +381,7 @@ BuffExtension.remove_buff = function (self, id)
 	local buffs = self._buffs
 	local num_buffs = #buffs
 	local end_time = Managers.time:time("game")
+	local num_buffs_removed = 0
 	local i = 1
 
 	while i <= num_buffs do
@@ -396,12 +397,25 @@ BuffExtension.remove_buff = function (self, id)
 			self._remove_sub_buff(self, buff, i, buff_extension_function_params)
 
 			num_buffs = num_buffs - 1
+			num_buffs_removed = num_buffs_removed + 1
 		else
 			i = i + 1
 		end
 	end
 
-	return 
+	if 1 < num_buffs_removed then
+		print("### BuffExtension:remove_buff() removed more then one buff id: " .. id)
+	end
+
+	if num_buffs_removed == 0 then
+		if id then
+			print("### BuffExtension:remove_buff() couldnt find and remove buff id: " .. id)
+		else
+			print("### BuffExtension:remove_buff() couldnt find and remove buff because it had no id")
+		end
+	end
+
+	return num_buffs_removed
 end
 BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_function_params)
 	local world = self.world

@@ -236,11 +236,18 @@ TerrorEventBlueprints = {
 			spline_type = "event",
 			patrol_template = "spline_patrol",
 			formations = {
-				"chaos_warrior_wide"
+				"prologue_skittergate_patrol"
 			},
 			splines = {
 				"event_1"
 			}
+		}
+	},
+	benchmark_dummy_troll = {
+		{
+			"spawn_at_raw",
+			spawner_id = "dummy_troll_spawn",
+			breed_name = "chaos_dummy_troll"
 		}
 	},
 	test_patrol = {
@@ -8686,16 +8693,6 @@ TerrorEventBlueprints = {
 		},
 		{
 			"event_horde",
-			limit_spawners = 2,
-			spawner_id = "payload_event_r",
-			composition_type = "event_small_chaos"
-		},
-		{
-			"delay",
-			duration = 5
-		},
-		{
-			"event_horde",
 			limit_spawners = 1,
 			spawner_id = "payload_event_r",
 			composition_type = "chaos_berzerkers"
@@ -8708,7 +8705,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("chaos_berzerker") < 3 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2
+				return count_event_breed("chaos_berzerker") < 2 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2
 			end
 		},
 		{
@@ -8724,16 +8721,6 @@ TerrorEventBlueprints = {
 			limit_spawners = 2,
 			spawner_id = "payload_event_l",
 			composition_type = "event_small_chaos"
-		},
-		{
-			"delay",
-			duration = 5
-		},
-		{
-			"event_horde",
-			limit_spawners = 1,
-			spawner_id = "payload_event_r",
-			composition_type = "chaos_berzerkers"
 		},
 		{
 			"delay",
@@ -8801,7 +8788,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "payload_event_r",
-			composition_type = "event_medium_chaos"
+			composition_type = "event_small_chaos"
 		},
 		{
 			"delay",
@@ -8824,7 +8811,7 @@ TerrorEventBlueprints = {
 			"event_horde",
 			limit_spawners = 2,
 			spawner_id = "payload_event_r",
-			composition_type = "event_medium_chaos"
+			composition_type = "event_small_chaos"
 		},
 		{
 			"delay",

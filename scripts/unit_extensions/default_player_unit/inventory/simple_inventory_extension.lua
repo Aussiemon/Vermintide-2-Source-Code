@@ -1123,7 +1123,7 @@ SimpleInventoryExtension.get_item_slot_extension = function (self, slot_name, sy
 end
 SimpleInventoryExtension.get_num_grimoires = function (self)
 	local buff_extension = ScriptUnit.extension(self._unit, "buff_system")
-	local num_grimoires = buff_extension.num_buff_perk(buff_extension, "grimoire")
+	local num_grimoires = buff_extension.num_buff_perk(buff_extension, "skaven_grimoire")
 
 	return num_grimoires
 end

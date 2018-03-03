@@ -459,7 +459,7 @@ MusicManager._update_game_state = function (self, dt, t, conflict_director)
 		local is_survival = game_mode_manager.game_mode_key(game_mode_manager) == "survival"
 		local horde_size, horde_ends_at = conflict_director.horde_size(conflict_director)
 		local is_pre_horde = old_state == "pre_horde" or old_state == "pre_ambush"
-		local is_horde_alive = (is_survival and 1 <= horde_size) or ((7 <= horde_size or horde_type) and t < horde_ends_at)
+		local is_horde_alive = (is_survival and 1 <= horde_size) or (7 <= horde_size and t < horde_ends_at) or horde_type
 
 		if lost then
 			if is_survival then

@@ -98,7 +98,7 @@ ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_ma
 
 		self.state = state
 	elseif state == "unhurt" then
-		local percent_damage = self.damage/(self.health - self.go_down_health)
+		local percent_damage = self.damage/math.max(self.health - self.go_down_health, 0.01)
 
 		set_material_property(self.unit, "damage_value", "mtr_skin", percent_damage, true)
 	elseif state == "wounded" then

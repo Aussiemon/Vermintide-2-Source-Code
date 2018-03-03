@@ -45,5 +45,8 @@ end
 BackendInterfaceHeroAttributesTutorial.prestige_request_cb = function (self, hero_name, callback_function, result)
 	return 
 end
+BackendInterfaceHeroAttributesTutorial.save = function (self, save_hero_attributes_cb)
+	return false
+end
 
 return 

@@ -53,10 +53,10 @@ ActionFlamethrower.client_owner_start_action = function (self, new_action, t, ch
 	self.vfx_stopped = false
 	self.dot_check = new_action.dot_check or 0.95
 	self.spray_range = (new_action.spray_range and math.abs(POSITION_TWEAK) + new_action.spray_range) or SPRAY_RANGE
-	self.charge_value = (chain_action_data and chain_action_data.charge_value) or 1
+	self.charge_level = (chain_action_data and chain_action_data.charge_level) or 1
 
 	if not new_action.fire_stop_time or not (t + new_action.fire_stop_time) then
-		slot6 = t + self.charge_value*(new_action.charge_fuel_time_multiplier or 3)
+		slot6 = t + self.charge_level*(new_action.charge_fuel_time_multiplier or 3)
 	end
 
 	self.max_flame_time = slot6

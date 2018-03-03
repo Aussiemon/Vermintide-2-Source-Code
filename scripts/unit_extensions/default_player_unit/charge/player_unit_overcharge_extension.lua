@@ -135,7 +135,7 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 		self.overcharge_value = self.overcharge_value - vent_amount
 
 		if 20 <= self.vent_damage_pool and not self.no_damage and self.overcharge_threshold < self.overcharge_value then
-			local damage_amount = self.overcharge_value/8 + 2
+			local damage_amount = self.overcharge_value/12 + 2
 			damage_amount = buff_extension.apply_buffs_to_value(buff_extension, damage_amount, StatBuffIndex.VENT_DAMAGE)
 
 			DamageUtils.add_damage_network(wielder, wielder, damage_amount, "torso", "overcharge", Vector3(0, 1, 0), "overcharge")

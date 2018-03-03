@@ -15,3 +15,4 @@ Date      |  Patch  | Notes
 2-25-18   |  Closed-Test  | Beta Phase 4.3
 2-28-18   |  Preorder-Beta  | Initial launch
 3-01-18   |  Preorder-Beta  | Patch #2
+3-03-18   |  Preorder-Beta  | Patch #3

@@ -2377,8 +2377,8 @@ UIPasses.gamepad_cursor = {
 			0,
 			0
 		}
-		cursor_position_table[1] = ((cursor.x or 0) + offset[1])*UIInverseResolutionScale()
-		cursor_position_table[2] = ((cursor.y or 0) + offset[2])*UIInverseResolutionScale()
+		cursor_position_table[1] = (cursor.x or 0) + offset[1]
+		cursor_position_table[2] = (cursor.y or 0) + offset[2]
 		cursor_position_table[3] = 1000
 
 		if Managers.input:is_device_active("gamepad") then

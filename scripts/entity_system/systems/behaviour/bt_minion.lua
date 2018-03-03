@@ -32,6 +32,7 @@ dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_vortex_sorcere
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_plague_sorcerer_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_corruptor_sorcerer_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_plague_wave_spawner_behavior")
+dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_exalted_champion_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_pig_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_rat_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/pets/pet_pig_behavior")

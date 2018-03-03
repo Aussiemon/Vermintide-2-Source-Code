@@ -159,7 +159,13 @@ StartGameWindowMutatorSummary._present_item_by_backend_id = function (self, back
 	local item_interface = Managers.backend:get_interface("items")
 	local item = item_interface.get_item_from_id(item_interface, backend_id)
 	widgets_by_name.item_presentation.content.item = item
-	widgets_by_name.confirm_button.content.button_hotspot.disable_button = false
+	local level_key = item.level_key
+	local unlocked = Managers.matchmaking:party_has_level_unlocked(level_key)
+	local disable_confirm = not unlocked
+	local alpha = (disable_confirm and 255) or 0
+	widgets_by_name.confirm_button.content.button_hotspot.disable_button = disable_confirm
+	widgets_by_name.level_locked_text.style.text.text_color[1] = alpha
+	widgets_by_name.level_locked_text.style.text_shadow.text_color[1] = alpha
 
 	return 
 end

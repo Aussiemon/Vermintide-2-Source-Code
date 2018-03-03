@@ -1,7 +1,7 @@
 Development._hardcoded_dev_params = {
 	package_debug = true,
 	use_beta_overlay = true,
-	disable_tutorial_at_start = true,
+	force_debug_disabled = true,
 	disable_debug_draw = true,
 	matchmaking_debug = true,
 	network_debug_connections = true,
@@ -14,7 +14,6 @@ Development._hardcoded_dev_params = {
 	use_local_backend = false,
 	tobii_button = false,
 	disable_ingame_timer = true,
-	force_debug_disabled = true,
 	network_log_messages = true,
 	disable_intro_trailer = false,
 	force_steam = true,

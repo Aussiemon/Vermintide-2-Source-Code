@@ -1325,12 +1325,12 @@ BuffFunctionTemplates.functions = {
 			for i = 1, difference, 1 do
 				local stack_ids = buff.stack_ids
 				local buff_id = table.remove(stack_ids, 1)
+				local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id)
 
-				buff_extension.remove_buff(buff_extension, buff_id)
 				print("removed buff -", buff_to_add)
 				print("buff_id", buff_id)
 
-				amount_removed = amount_removed + 1
+				amount_removed = amount_removed + num_buffs_removed
 				removed_buff = true
 			end
 		end
@@ -1370,10 +1370,8 @@ BuffFunctionTemplates.functions = {
 				for i = 1, difference, 1 do
 					local stack_ids = buff.stack_ids
 					local buff_id = table.remove(stack_ids, 1)
-
-					buff_extension.remove_buff(buff_extension, buff_id)
-
-					amount_removed = amount_removed + 1
+					local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id)
+					amount_removed = amount_removed + num_buffs_removed
 					removed_buff = true
 				end
 			end
@@ -1417,10 +1415,8 @@ BuffFunctionTemplates.functions = {
 			for i = 1, difference, 1 do
 				local stack_ids = buff.stack_ids
 				local buff_id = table.remove(stack_ids, 1)
-
-				buff_extension.remove_buff(buff_extension, buff_id)
-
-				amount_removed = amount_removed + 1
+				local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id)
+				amount_removed = amount_removed + num_buffs_removed
 				removed_buff = true
 			end
 		end
@@ -1999,7 +1995,7 @@ BuffFunctionTemplates.functions = {
 		local is_disabled = status_extension.is_disabled(status_extension) or status_extension.is_in_vortex(status_extension)
 		local adding_buff = nil
 
-		if buff_extension.has_buff_perk(buff_extension, "grimoire") then
+		if buff_extension.has_buff_perk(buff_extension, "skaven_grimoire") then
 			adding_buff = true
 		end
 
@@ -2336,7 +2332,7 @@ BuffFunctionTemplates.functions = {
 		local previous_multiplier = buff.previous_multiplier or 0
 		local multiplier = 0
 
-		if buff_extension.has_buff_perk(buff_extension, "grimoire") then
+		if buff_extension.has_buff_perk(buff_extension, "skaven_grimoire") then
 			multiplier = activation_multiplier
 		end
 
@@ -2360,7 +2356,7 @@ BuffFunctionTemplates.functions = {
 		local previous_bonus = buff.previous_bonus or 0
 		local bonus = 0
 
-		if buff_extension.has_buff_perk(buff_extension, "grimoire") then
+		if buff_extension.has_buff_perk(buff_extension, "skaven_grimoire") then
 			bonus = activation_bonus
 		end
 

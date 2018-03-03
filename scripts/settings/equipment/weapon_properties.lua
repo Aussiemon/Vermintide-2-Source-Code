@@ -39,7 +39,7 @@ local buff_tweak_data = {
 	properties_ability_cooldown_reduction = {
 		variable_multiplier = {
 			-0.05,
-			-0.2
+			-0.1
 		}
 	},
 	properties_curse_resistance = {
@@ -116,19 +116,19 @@ local buff_tweak_data = {
 	},
 	properties_protection_skaven = {
 		variable_multiplier = {
-			-0.5,
+			-0.05,
 			-0.1
 		}
 	},
 	properties_protection_chaos = {
 		variable_multiplier = {
-			-0.1,
+			-0.05,
 			-0.1
 		}
 	},
 	properties_protection_aoe = {
 		variable_multiplier = {
-			-0.1,
+			-0.05,
 			-0.1
 		}
 	},
@@ -1965,6 +1965,30 @@ WeaponProperties.combinations = {
 			{
 				"fatigue_regen",
 				"ability_cooldown_reduction"
+			},
+			{
+				"movespeed",
+				"revive_speed"
+			},
+			{
+				"movespeed",
+				"respawn_speed"
+			},
+			{
+				"movespeed",
+				"curse_resistance"
+			},
+			{
+				"movespeed",
+				"crit_chance"
+			},
+			{
+				"movespeed",
+				"ability_cooldown_reduction"
+			},
+			{
+				"movespeed",
+				"fatigue_regen"
 			}
 		},
 		exotic = {
@@ -2027,6 +2051,30 @@ WeaponProperties.combinations = {
 			{
 				"fatigue_regen",
 				"ability_cooldown_reduction"
+			},
+			{
+				"movespeed",
+				"revive_speed"
+			},
+			{
+				"movespeed",
+				"respawn_speed"
+			},
+			{
+				"movespeed",
+				"curse_resistance"
+			},
+			{
+				"movespeed",
+				"crit_chance"
+			},
+			{
+				"movespeed",
+				"ability_cooldown_reduction"
+			},
+			{
+				"movespeed",
+				"fatigue_regen"
 			}
 		},
 		unique = {
@@ -2089,6 +2137,30 @@ WeaponProperties.combinations = {
 			{
 				"fatigue_regen",
 				"ability_cooldown_reduction"
+			},
+			{
+				"movespeed",
+				"revive_speed"
+			},
+			{
+				"movespeed",
+				"respawn_speed"
+			},
+			{
+				"movespeed",
+				"curse_resistance"
+			},
+			{
+				"movespeed",
+				"crit_chance"
+			},
+			{
+				"movespeed",
+				"ability_cooldown_reduction"
+			},
+			{
+				"movespeed",
+				"fatigue_regen"
 			}
 		}
 	}

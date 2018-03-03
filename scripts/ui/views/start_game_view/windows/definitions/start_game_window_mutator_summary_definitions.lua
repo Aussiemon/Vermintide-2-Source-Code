@@ -115,6 +115,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	level_locked_text = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			game_option_size[1],
+			40
+		},
+		position = {
+			0,
+			120,
+			10
+		}
+	},
 	confirm_button = {
 		vertical_alignment = "bottom",
 		parent = "window",
@@ -210,6 +224,20 @@ local function create_placeholder_option(scenegraph_id, size)
 	return widget
 end
 
+level_locked_text_style = {
+	vertical_alignment = "center",
+	font_size = 18,
+	horizontal_alignment = "center",
+	word_wrap = true,
+	font_type = "hell_shark",
+	use_shadow = true,
+	text_color = Colors.get_color_table_with_alpha("red", 255),
+	offset = {
+		0,
+		0,
+		0
+	}
+}
 local widgets = {
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),
 	window = UIWidgets.create_frame("window", window_size, window_frame, 20),
@@ -225,7 +253,8 @@ local widgets = {
 	game_option_placeholder = create_placeholder_option("game_option_1", scenegraph_definition.game_option_1.size),
 	item_presentation_frame = UIWidgets.create_frame("game_option_1", scenegraph_definition.game_option_1.size, deed_frame_name, 20),
 	item_presentation_bg = UIWidgets.create_simple_texture("game_options_bg_04", "game_option_1"),
-	item_presentation = UIWidgets.create_simple_item_presentation("item_presentation")
+	item_presentation = UIWidgets.create_simple_item_presentation("item_presentation"),
+	level_locked_text = UIWidgets.create_simple_text(Localize("start_game_level_locked"), "level_locked_text", scenegraph_definition.level_locked_text.size, nil, level_locked_text_style)
 }
 local animation_definitions = {
 	on_enter = {

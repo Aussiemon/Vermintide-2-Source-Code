@@ -65,6 +65,7 @@ StatBuffs = {
 	"REDUCED_SPREAD_HIT",
 	"REDUCED_SPREAD_SHOT",
 	"MAX_HEALTH",
+	"GRIMOIRE_MAX_HEALTH",
 	"MAX_HEALTH_ALIVE",
 	"MAX_HEALTH_KD",
 	"SHIELD_BREAK_PROC",
@@ -154,6 +155,7 @@ StatBuffApplicationMethods = {
 	[StatBuffIndex.REDUCED_SPREAD_HIT] = "stacking_multiplier",
 	[StatBuffIndex.REDUCED_SPREAD_SHOT] = "stacking_multiplier",
 	[StatBuffIndex.MAX_HEALTH] = "stacking_multiplier",
+	[StatBuffIndex.GRIMOIRE_MAX_HEALTH] = "stacking_multiplier",
 	[StatBuffIndex.MAX_HEALTH_ALIVE] = "stacking_multiplier",
 	[StatBuffIndex.MAX_HEALTH_KD] = "stacking_multiplier",
 	[StatBuffIndex.SHIELD_BREAK_PROC] = "proc",
@@ -1771,13 +1773,11 @@ BuffTemplates = {
 		activation_sound = "hud_info_state_grimoire_pickup",
 		buffs = {
 			{
+				perk = "skaven_grimoire",
 				name = "grimoire_health_debuff",
 				debuff = true,
-				perk = "grimoire",
 				icon = "teammate_consumable_icon_grimoire",
-				dormant = true,
-				stat_buff = StatBuffIndex.MAX_HEALTH,
-				multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
+				dormant = true
 			}
 		}
 	},

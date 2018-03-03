@@ -1567,6 +1567,11 @@ function flow_callback_teleport_unit(params)
 	local unit = params.unit
 	local position = params.position
 	local rotation = params.rotation
+
+	if not Unit.alive(unit) then
+		return 
+	end
+
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
 	if locomotion_extension.teleport_to then

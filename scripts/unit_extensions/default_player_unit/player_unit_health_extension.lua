@@ -117,6 +117,7 @@ PlayerUnitHealthExtension._calculate_max_health = function (self)
 	local health_state = self.state
 	local max_health_alive, max_health_kd = self._get_base_max_health(self)
 	local max_health = nil
+	local modifier = 1
 
 	if health_state == "alive" then
 		max_health = buff_extension.apply_buffs_to_value(buff_extension, max_health_alive, StatBuffIndex.MAX_HEALTH_ALIVE)
@@ -125,6 +126,15 @@ PlayerUnitHealthExtension._calculate_max_health = function (self)
 	end
 
 	max_health = buff_extension.apply_buffs_to_value(buff_extension, max_health, StatBuffIndex.MAX_HEALTH)
+	local num_grimoires = buff_extension.num_buff_perk(buff_extension, "skaven_grimoire")
+	local multiplier = buff_extension.apply_buffs_to_value(buff_extension, PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+
+	if 0 < num_grimoires then
+		modifier = num_grimoires*multiplier + 1
+	end
+
+	max_health = max_health*modifier
+	max_health = DamageUtils.networkify_health(max_health)
 
 	return max_health
 end
@@ -205,6 +215,9 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 			health = max_health*set_health_percentage
 			self.set_health_percentage = nil
 		end
+
+		health = DamageUtils.networkify_health(health)
+		temporary_health = DamageUtils.networkify_health(temporary_health)
 
 		GameSession.set_game_object_field(game, game_object_id, "current_health", health)
 		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", temporary_health)
