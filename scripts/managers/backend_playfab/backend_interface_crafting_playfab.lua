@@ -26,35 +26,88 @@ end
 BackendInterfaceCraftingPlayfab.craft = function (self, career_name, item_backend_ids)
 	local recipe, item_backend_ids_and_amounts = self._get_valid_recipe(self, item_backend_ids)
 	local hero_name = CareerSettings[career_name].profile_name
-	local id = self._new_id(self)
 
 	if recipe and recipe.result_function_playfab then
-		local result_function = recipe.result_function_playfab
-		local craft_request = {
-			FunctionName = result_function,
-			FunctionParameter = {
-				item_backend_ids_and_amounts = item_backend_ids_and_amounts,
-				hero_name = hero_name
-			}
+		local id = self._new_id(self)
+		local data = {
+			hero_name = hero_name,
+			item_backend_ids_and_amounts = item_backend_ids_and_amounts,
+			result_function_playfab = recipe.result_function_playfab,
+			id = id
 		}
-		local craft_request_cb = callback(self, "craft_request_cb", id)
+		local generate_challenge_request = {
+			FunctionName = "generateChallenge"
+		}
+		local craft_challenge_request_cb = callback(self, "craft_challenge_request_cb", data)
 
-		PlayFabClientApi.ExecuteCloudScript(craft_request, craft_request_cb, craft_request_cb)
+		PlayFabClientApi.ExecuteCloudScript(generate_challenge_request, craft_challenge_request_cb, craft_challenge_request_cb)
 
 		return id
 	end
 
 	return nil
 end
+BackendInterfaceCraftingPlayfab.craft_challenge_request_cb = function (self, data, result)
+	if result.Error then
+		table.dump(result, nil, 5)
+		fassert(false, "craft_challenge_request_cb: it failed!")
+	else
+		local function_result = result.FunctionResult
+		local challenge = function_result.challenge
+		local eac_response, response = nil
+
+		if challenge then
+			eac_response, response = self._get_eac_response(self, challenge)
+		end
+
+		if not challenge then
+			print("EAC disabled on backend")
+			self._craft(self, data)
+		elseif not eac_response then
+			print("EAC disabled on client")
+			Managers.backend:playfab_eac_error()
+		else
+			print("EAC Enabled!")
+			self._craft(self, data, response)
+		end
+	end
+
+	return 
+end
+BackendInterfaceCraftingPlayfab._craft = function (self, data, response)
+	local result_function = data.result_function_playfab
+	local craft_request = {
+		FunctionName = result_function,
+		FunctionParameter = {
+			item_backend_ids_and_amounts = data.item_backend_ids_and_amounts,
+			hero_name = data.hero_name,
+			response = response
+		}
+	}
+	local id = data.id
+	local craft_request_cb = callback(self, "craft_request_cb", id)
+
+	PlayFabClientApi.ExecuteCloudScript(craft_request, craft_request_cb, craft_request_cb)
+
+	return 
+end
 BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, id, result)
 	if result.Error then
 		table.dump(result, nil, 5)
-		fassert(false, "loot_chest_rewards_request_cb: it failed!")
+		fassert(false, "craft_request_cb: it failed!")
 	else
 		local backend_manager = Managers.backend
 		local item_interface = backend_manager.get_interface(backend_manager, "items")
 		local backend_mirror = self._backend_mirror
 		local function_result = result.FunctionResult
+		local eac_failed = function_result.eac_failed_verification
+
+		if eac_failed then
+			Managers.backend:playfab_eac_error()
+
+			return 
+		end
+
 		local items = function_result.items
 		local consumed_items = function_result.consumed_items
 		local modified_items = function_result.modified_items
@@ -116,6 +169,31 @@ BackendInterfaceCraftingPlayfab.is_craft_complete = function (self, id)
 end
 BackendInterfaceCraftingPlayfab.get_craft_result = function (self, id)
 	return self._craft_requests[id]
+end
+BackendInterfaceCraftingPlayfab._get_eac_response = function (self, challenge)
+	local i = 0
+	local str = ""
+
+	while challenge[tostring(i)] do
+		str = str .. string.char(challenge[tostring(i)])
+		i = i + 1
+	end
+
+	local eac_response = EAC.challenge_response(str)
+	local response = nil
+
+	if eac_response then
+		local index = 1
+		response = {}
+
+		while string.byte(eac_response, index, index) do
+			local byte_value = string.byte(eac_response, index, index)
+			response[tostring(index - 1)] = byte_value
+			index = index + 1
+		end
+	end
+
+	return eac_response, response
 end
 
 return 

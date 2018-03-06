@@ -46,9 +46,19 @@ NetworkClient.init = function (self, level_transition_handler, server_peer_id, l
 	self.voip = Voip:new(voip_params)
 	self.connecting_timeout = 0
 
+	if rawget(_G, "EAC") then
+		EAC.before_join()
+
+		self._using_eac = true
+	end
+
 	return 
 end
 NetworkClient.destroy = function (self)
+	if self._using_eac then
+		EAC.after_leave()
+	end
+
 	if self.network_message_router then
 		self.unregister_rpcs(self)
 	end
@@ -104,6 +114,12 @@ NetworkClient.rpc_notify_connected = function (self, sender)
 			local cropped_string = UTF8Utils.sub_string(LobbyInternal.user_name(), 1, 16)
 
 			RPC.rpc_set_player_name(self.server_peer_id, cropped_string)
+		end
+
+		if self._using_eac then
+			EAC.set_host(self.server_peer_id)
+
+			self._eac_has_set_host = true
 		end
 
 		RPC.rpc_notify_lobby_joined(self.server_peer_id, self.wanted_profile_index, Application.user_setting("clan_tag") or "0")
@@ -261,7 +277,46 @@ NetworkClient.update = function (self, dt)
 		end
 	end
 
+	local state = self.state
+	local bad_state = state == "lost_connection_to_host" or state == "denied_enter_game" or state == "eac_match_failed"
+
+	if self._using_eac and not bad_state then
+		self._update_eac_match(self, dt)
+	end
+
 	self.voip:update(dt)
+
+	return 
+end
+NetworkClient._update_eac_match = function (self, dt)
+	if not self._eac_has_set_host then
+		return 
+	end
+
+	self._next_eac_match_check = math.max(0, (self._next_eac_match_check or 0) - dt)
+
+	if self._next_eac_match_check == 0 then
+		local own_id = Network.peer_id()
+		local host_state = EAC.state(self.server_peer_id)
+		local own_state = EAC.state()
+
+		if host_state ~= "undetermined" and own_state ~= "undetermined" then
+			printf("Host (%s) EAC state is %s, own (%s) state is %s", self.server_peer_id, host_state, own_id, own_state)
+
+			local match = nil
+			match = ((host_state ~= "banned" and own_state ~= "banned") or false) and host_state == own_state
+
+			if match then
+				self._next_eac_match_check = 10
+			else
+				printf("eac missmatch leading to eac_authorize_failed")
+
+				self.fail_reason = "eac_authorize_failed"
+
+				self.set_state(self, "eac_match_failed")
+			end
+		end
+	end
 
 	return 
 end

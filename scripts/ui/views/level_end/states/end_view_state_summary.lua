@@ -53,17 +53,11 @@ EndViewStateSummary.on_enter = function (self, params)
 	local level_start = self._context.rewards.level_start
 	local current_player_level = level_start[1]
 	local current_experience = level_start[2]
-	current_player_level = math.clamp(current_player_level, 0, ExperienceSettings.max_level)
-	current_experience = math.clamp(current_experience, 0, ExperienceSettings.max_experience)
 	local experience_gained = self._get_experience_earned(self, self.game_won, self.game_mode_key)
-	experience_gained = math.clamp(current_experience + experience_gained, 0, ExperienceSettings.max_experience) - current_experience
-
-	if experience_gained == 0 then
-		self._is_max_level = true
-	end
-
 	self._progress_data = self._get_total_experience_progress_data(self, current_experience, experience_gained)
-	self._current_level = self._set_current_experience(self, current_experience, nil, true)
+	local current_level, extra_levels = self._set_current_experience(self, current_experience, true)
+	self._current_level = current_level
+	self._extra_levels = extra_levels
 	self._experience_presentation_completed = nil
 
 	self._play_sound(self, "play_gui_mission_summary_appear")
@@ -212,7 +206,7 @@ EndViewStateSummary._update_animations = function (self, dt)
 
 		self.level_up_anim_id = nil
 
-		self.parent:present_level_up(self._hero_name, self._current_level)
+		self.parent:present_level_up(self._hero_name, self._current_level + (self._extra_levels or 0))
 	end
 
 	return 
@@ -392,15 +386,15 @@ EndViewStateSummary._get_total_experience_progress_data = function (self, curren
 	local time_multiplier = UISettings.summary_screen.bar_progress_experience_time_multiplier
 	local time = math.min(math.max(time_multiplier*experience_gained, min_time), max_time)
 	local total_experience = current_experience + experience_gained
-	local current_level, start_progress = ExperienceSettings.get_level(current_experience)
-	local resulting_level, end_progress = ExperienceSettings.get_level(total_experience)
-	local progress_length = math.max(0, resulting_level - current_level - 1)
-	progress_length = (resulting_level - current_level + end_progress) - start_progress
+	local current_level, start_progress, _, extra_levels = ExperienceSettings.get_level(current_experience)
+	local resulting_level, end_progress, _, resulting_extra_levels = ExperienceSettings.get_level(total_experience)
+	local total_current_level = current_level + extra_levels
+	local total_resulting_level = resulting_level + resulting_extra_levels
+	local progress_length = (total_resulting_level - total_current_level + end_progress) - start_progress
 
 	return {
-		complete = false,
 		time = 0,
-		current_level = current_level,
+		complete = false,
 		current_experience = current_experience,
 		experience_to_add = experience_gained,
 		total_progress = progress_length,
@@ -411,7 +405,7 @@ end
 EndViewStateSummary._animate_experience_bar = function (self, dt, displaying_reward_presentation)
 	local progress_data = self._progress_data
 
-	if not progress_data or progress_data.complete or displaying_reward_presentation or self.level_up_anim_id or self._experience_presentation_completed or self._is_max_level then
+	if not progress_data or progress_data.complete or displaying_reward_presentation or self.level_up_anim_id or self._experience_presentation_completed then
 		return 
 	end
 
@@ -429,17 +423,13 @@ EndViewStateSummary._animate_experience_bar = function (self, dt, displaying_rew
 	progress_data.time = current_time
 	local current_experience = progress_data.current_experience
 	local experience_to_add = progress_data.experience_to_add
-	local current_experience_to_add = math.ceil(experience_to_add*smoothstep_progress)
-	local presentation_experience = math.ceil(current_experience + current_experience_to_add)
-	local level_reached = self._set_current_experience(self, presentation_experience, current_experience_to_add)
+	local current_experience_to_add = math.floor(experience_to_add*smoothstep_progress)
+	local presentation_experience = math.floor(current_experience + current_experience_to_add)
+	local level_reached, extra_levels = self._set_current_experience(self, presentation_experience)
 
-	if level_reached ~= self._current_level then
+	if level_reached ~= self._current_level or extra_levels ~= self._extra_levels then
 		self._current_level = level_reached
-		progress_data.current_level = level_reached
-
-		if self._current_level ~= ExperienceSettings.max_level then
-			self._experience_bar_started = false
-		end
+		self._extra_levels = extra_levels
 
 		self._play_sound(self, "play_gui_mission_summary_experience_bar_end")
 
@@ -461,11 +451,11 @@ EndViewStateSummary._animate_experience_bar = function (self, dt, displaying_rew
 
 	return 
 end
-EndViewStateSummary._set_current_experience = function (self, current_experience, gained_experience, initialize)
-	local level, progress, experience_into_level = ExperienceSettings.get_level(current_experience)
+EndViewStateSummary._set_current_experience = function (self, current_experience, initialize)
+	local level, progress, experience_into_level, extra_levels = ExperienceSettings.get_level(current_experience)
 	local next_level = math.clamp(level + 1, 0, ExperienceSettings.max_level)
 
-	if (self._current_level and self._current_level < level) or current_experience == ExperienceSettings.max_experience then
+	if (self._current_level and self._current_level < level) or (self._extra_levels and self._extra_levels < extra_levels) then
 		progress = 1
 	end
 
@@ -480,6 +470,9 @@ EndViewStateSummary._set_current_experience = function (self, current_experience
 	if initialize or progress < 1 then
 		widgets_by_name.current_level_text.content.text = tostring(level)
 		widgets_by_name.next_level_text.content.text = tostring(next_level)
+	elseif extra_levels and 0 < extra_levels then
+		widgets_by_name.current_level_text.content.text = tostring(level)
+		widgets_by_name.next_level_text.content.text = tostring(next_level)
 	else
 		widgets_by_name.current_level_text.content.text = tostring(level - 1)
 		widgets_by_name.next_level_text.content.text = tostring(next_level - 1)
@@ -487,16 +480,7 @@ EndViewStateSummary._set_current_experience = function (self, current_experience
 
 	WwiseWorld.set_global_parameter(self.wwise_world, "summary_meter_progress", progress)
 
-	return level
-end
-EndViewStateSummary.set_experience_by_progress = function (self, level, progress)
-	local next_level = math.clamp(level + 1, 0, ExperienceSettings.max_level)
-	local needed_experience = ExperienceSettings.get_experience_required_for_level(next_level)
-	local level_experience = progress*needed_experience
-
-	self._set_current_experience(self, needed_experience)
-
-	return 
+	return level, extra_levels
 end
 EndViewStateSummary.done = function (self)
 	return self._experience_presentation_completed and self._summary_entries.complete

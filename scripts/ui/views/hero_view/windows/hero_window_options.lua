@@ -273,21 +273,18 @@ end
 HeroWindowOptions._update_experience_presentation = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local experience = ExperienceSettings.get_experience(self.hero_name)
-	local level = ExperienceSettings.get_level(experience)
-	local max_level = ExperienceSettings.max_level
-	local bar_fraction = 1
-
-	if level < max_level then
-		local experience_required_for_current_level = ExperienceSettings.get_total_experience_required_for_level(level)
-		local current_level_experience = experience - experience_required_for_current_level
-		local experience_required_for_next_level = ExperienceSettings.get_experience_required_for_level(level + 1)
-		bar_fraction = current_level_experience/experience_required_for_next_level
-	end
-
+	local level, progress, _, extra_levels = ExperienceSettings.get_level(experience)
+	local is_max_level = level == ExperienceSettings.max_level
 	local experience_bar_default_size = scenegraph_definition.experience_bar.size
 	local experience_bar_size = self.ui_scenegraph.experience_bar.size
-	experience_bar_size[1] = math.ceil(experience_bar_default_size[1]*bar_fraction)
-	widgets_by_name.level_text.content.text = Localize("level") .. " " .. tostring(level)
+	experience_bar_size[1] = math.ceil(experience_bar_default_size[1]*progress)
+	local text = Localize("level") .. " " .. tostring(level)
+
+	if is_max_level and extra_levels and 0 < extra_levels then
+		text = text .. " (+" .. tostring(extra_levels) .. ")"
+	end
+
+	widgets_by_name.level_text.content.text = text
 	self._hero_level = level
 
 	return 

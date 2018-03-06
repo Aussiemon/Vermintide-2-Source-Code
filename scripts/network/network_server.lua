@@ -19,7 +19,7 @@ local function network_printf(format, ...)
 	return 
 end
 
-PeerState = PeerState or CreateStrictEnumTable("Broken", "Connecting", "VerifyEAC", "Connected", "Disconnected", "Loading", "LoadingLevelComplete", "WaitingForEnter", "WaitingForGameObjectSync", "WaitingForSpawnPlayer", "InGame", "InPostGame")
+PeerState = PeerState or CreateStrictEnumTable("Broken", "Connecting", "Connected", "Disconnected", "Loading", "LoadingLevelComplete", "WaitingForEnter", "WaitingForGameObjectSync", "WaitingForSpawnPlayer", "InGame", "InPostGame")
 NetworkServer = class(NetworkServer)
 NetworkServer.init = function (self, player_manager, lobby_host, initial_level, wanted_profile_index, level_transition_handler, game_server_manager)
 	self.peer_connections = {}
@@ -51,6 +51,24 @@ NetworkServer.init = function (self, player_manager, lobby_host, initial_level, 
 	self.voip = Voip:new(voip_params)
 	self._reserved_slots = {}
 	self.wanted_profile_index = wanted_profile_index
+
+	if rawget(_G, "EAC") then
+		local server_name = nil
+
+		if DEDICATED_SERVER then
+			server_name = self.lobby_host:server_name()
+		elseif rawget(_G, "Steam") then
+			server_name = Steam.user_name()
+		else
+			server_name = "lan"
+		end
+
+		self._eac_server = EACServer.create(server_name)
+		self._eac_peer_ids = {}
+		self._using_eac = true
+	end
+
+	rawset(_G, "server", self)
 
 	return 
 end
@@ -222,6 +240,12 @@ NetworkServer.rpc_client_respawn_player = function (self, sender)
 	return 
 end
 NetworkServer.destroy = function (self)
+	if self._using_eac then
+		EACServer.destroy(self._eac_server)
+
+		self._eac_server = nil
+	end
+
 	if self.network_event_delegate then
 		self.unregister_rpcs(self)
 	end
@@ -388,6 +412,10 @@ NetworkServer.rpc_notify_lobby_joined = function (self, sender, wanted_profile_i
 		RPC.rpc_connection_failed(sender, NetworkLookup.connection_fails.no_peer_data_on_join)
 	else
 		peer_state_machine.rpc_notify_lobby_joined(wanted_profile_index, clan_tag)
+
+		if self._using_eac and sender ~= self.my_peer_id then
+			self._add_peer_to_eac(self, sender)
+		end
 	end
 
 	return 
@@ -561,6 +589,11 @@ NetworkServer.update = function (self, dt)
 	self._update_reserve_slots(self, dt)
 	self.update_disconnect_kicked_peers_by_time(self, dt)
 
+	if self._using_eac then
+		EACServer.update(self._eac_server)
+		self._update_eac_match(self, dt)
+	end
+
 	if self.lobby_host:is_joined() then
 		local lobby_members = self.lobby_host:members()
 		local members = lobby_members.get_members(lobby_members)
@@ -577,12 +610,104 @@ NetworkServer.update = function (self, dt)
 		end
 	end
 
+	for peer_id, peer_state_machine in pairs(self.peer_state_machines) do
+		if peer_state_machine.current_state.state_name == "Disconnected" then
+			self.peer_state_machines[peer_id] = nil
+		end
+	end
+
 	if not LEVEL_EDITOR_TEST then
 		self.voip:update(dt)
 	end
 
 	if Development.parameter("network_draw_peer_states") then
 		self._draw_peer_states(self)
+	end
+
+	return 
+end
+NetworkServer._add_peer_to_eac = function (self, peer_id)
+	EACServer.add_peer(self._eac_server, peer_id)
+
+	self._eac_peer_ids[peer_id] = {
+		eac_match_timer = 0,
+		updated = false
+	}
+
+	return 
+end
+NetworkServer._remove_peer_from_eac = function (self, peer_id)
+	EACServer.remove_peer(self._eac_server, peer_id)
+
+	self._eac_peer_ids[peer_id] = nil
+
+	return 
+end
+NetworkServer._update_eac_match = function (self, dt)
+	local eac_peer_ids = self._eac_peer_ids
+
+	for peer_id, data in pairs(eac_peer_ids) do
+		data.update = false
+	end
+
+	local peer_state_machines = self.peer_state_machines
+
+	for peer_id, peer_state_machine in pairs(peer_state_machines) do
+		local state_name = peer_state_machine.current_state.state_name
+		local bad_state = state_name == "Disconnecting" or state_name == "Disconnected"
+		local data = eac_peer_ids[peer_id]
+
+		if data and not bad_state then
+			data.update = true
+			data.eac_match_timer = math.max(0, data.eac_match_timer - dt)
+
+			if data.eac_match_timer == 0 then
+				local server_state, peer_state = nil
+
+				if DEDICATED_SERVER then
+					local gs = Managers.game_server
+					server_state = "untrusted"
+					peer_state = EACServer.state(self._eac_server, peer_id)
+				else
+					local host = self.lobby_host
+					server_state = EAC.state()
+
+					if peer_id == self.my_peer_id then
+						peer_state = server_state
+					else
+						peer_state = EACServer.state(self._eac_server, peer_id)
+					end
+				end
+
+				if server_state == "undetermined" then
+					return 
+				end
+
+				if peer_state == "undetermined" then
+					return 
+				end
+
+				printf("[NetworkServer] Host EAC state is %s, peer %s's state is %s", server_state, peer_id, peer_state)
+
+				local match = nil
+				match = ((server_state ~= "banned" and peer_state ~= "banned") or false) and server_state == peer_state
+
+				if match then
+				else
+					printf("[NetworkServer] Peer's EAC status doesn't match the server, disconnecting peer (%s)", peer_id)
+					self.disconnect_peer(self, peer_id, "eac_authorize_failed")
+					peer_state_machine.state_data:change_state(PeerStates.Disconnecting)
+				end
+
+				data.eac_match_timer = 10
+			end
+		end
+	end
+
+	for peer_id, data in pairs(eac_peer_ids) do
+		if not data.update then
+			self._remove_peer_from_eac(self, peer_id)
+		end
 	end
 
 	return 
@@ -713,7 +838,7 @@ NetworkServer.player_is_joining = function (self, peer_id)
 		return false
 	end
 
-	local joining = peer_state_machine.current_state == PeerStates.Connecting or peer_state_machine.current_state == PeerStates.VerifyEAC or peer_state_machine.current_state == PeerStates.Loading or peer_state_machine.current_state == PeerStates.LoadingProfilePackages or peer_state_machine.current_state == PeerStates.WaitingForEnterGame or peer_state_machine.current_state == PeerStates.WaitingForGameObjectSync or peer_state_machine.current_state == PeerStates.SpawningPlayer
+	local joining = peer_state_machine.current_state == PeerStates.Connecting or peer_state_machine.current_state == PeerStates.Loading or peer_state_machine.current_state == PeerStates.LoadingProfilePackages or peer_state_machine.current_state == PeerStates.WaitingForEnterGame or peer_state_machine.current_state == PeerStates.WaitingForGameObjectSync or peer_state_machine.current_state == PeerStates.SpawningPlayer
 
 	return joining
 end

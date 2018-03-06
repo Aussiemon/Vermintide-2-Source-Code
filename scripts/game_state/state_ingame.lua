@@ -1091,6 +1091,17 @@ StateIngame._check_exit = function (self, t)
 
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
+		elseif self.network_client and self.network_client.state == "eac_match_failed" then
+			self.exit_type = "join_lobby_failed"
+
+			if network_manager.in_game_session(network_manager) then
+				local force_diconnect = true
+
+				network_manager.leave_game(network_manager, force_diconnect)
+			end
+
+			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
+			Managers.transition:show_loading_icon()
 		elseif (lobby and lobby.state == LobbyState.FAILED) or (self.network_client and self.network_client.state == "lost_connection_to_host") then
 			if self.network_client == nil or self.network_client.host_to_migrate_to == nil or platform == "xb1" then
 				self.exit_type = "lobby_state_failed"

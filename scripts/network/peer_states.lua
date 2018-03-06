@@ -90,11 +90,7 @@ PeerStates.Connecting = {
 						end
 					end
 
-					if PLATFORM == "win32" and rawget(_G, "EAC") then
-						return PeerStates.VerifyEAC
-					else
-						return PeerStates.Loading
-					end
+					return PeerStates.Loading
 				end
 			end
 		else
@@ -114,63 +110,6 @@ PeerStates.Connecting = {
 		self._has_been_notfied_of_post_game_state = nil
 		self.has_received_rpc_notify_lobby_joined = nil
 		self._in_post_game = nil
-
-		return 
-	end
-}
-PeerStates.VerifyEAC = {
-	on_enter = function (self, previous_state)
-		self._server_id = Network.peer_id()
-
-		printf("[PSM] Wait for a determined EAC state for peer(%s)", self.peer_id)
-
-		return 
-	end,
-	update = function (self, dt)
-		local server_state, peer_state = nil
-
-		if DEDICATED_SERVER then
-			local gs = Managers.game_server
-			server_state = "untrusted"
-			peer_state = gs.eac_state(gs, self.peer_id)
-		else
-			local host = self.server.lobby_host
-			server_state = EAC.state()
-
-			if self.peer_id == Network.peer_id() then
-				peer_state = server_state
-			else
-				peer_state = host.eac_state(host, self.peer_id)
-			end
-		end
-
-		if server_state == "undetermined" then
-			return 
-		end
-
-		if peer_state == "undetermined" then
-			return 
-		end
-
-		printf("[PSM] Host EAC state is %s, peer %s's state is %s", server_state, self.peer_id, peer_state)
-
-		local match = nil
-		match = ((server_state ~= "banned" and peer_state ~= "banned") or false) and server_state == peer_state
-
-		if match then
-			return PeerStates.Loading
-		else
-			printf("[PSM] Peer's EAC status doesn't match the server, disconnecting peer (%s)", self.peer_id)
-			self.server:disconnect_peer(self.peer_id, "eac_authorize_failed")
-
-			return PeerStates.Disconnecting
-		end
-
-		return 
-	end,
-	on_exit = function (self, new_state)
-		self.eac_request_id = nil
-		self.authorized = nil
 
 		return 
 	end

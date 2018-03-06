@@ -383,6 +383,15 @@ BackendManagerPlayFab.playfab_api_error = function (self, result)
 
 	return 
 end
+BackendManagerPlayFab.playfab_eac_error = function (self)
+	local error_data = {
+		reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR
+	}
+
+	self._post_error(self, error_data)
+
+	return 
+end
 BackendManagerPlayFab._get_playfab_error_code = function (self, result)
 	if result.data and result.data.Error then
 		local logs = result.data.Logs
@@ -496,6 +505,8 @@ BackendManagerPlayFab._format_error_message_windows = function (self, reason)
 			error_text = "backend_err_steam_not_running"
 		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR then
 			error_text = "backend_err_playfab"
+		elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR then
+			error_text = "backend_err_playfab_eac"
 		else
 			error_text = "backend_err_connecting"
 		end
@@ -505,6 +516,12 @@ BackendManagerPlayFab._format_error_message_windows = function (self, reason)
 			text = Localize("menu_quit")
 		}
 		error_text = "backend_err_playfab"
+	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR then
+		button_1 = {
+			id = self._button_quit,
+			text = Localize("menu_quit")
+		}
+		error_text = "backend_err_playfab_eac"
 	else
 		button_1 = {
 			id = self._button_disconnected,

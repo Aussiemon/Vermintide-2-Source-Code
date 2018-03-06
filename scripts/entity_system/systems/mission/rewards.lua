@@ -250,7 +250,7 @@ Rewards.get_level_end = function (self)
 	end
 
 	local start_experience = self._start_experience or 0
-	local experience = math.min(start_experience + gained_xp, ExperienceSettings.max_experience)
+	local experience = start_experience + gained_xp
 
 	return ExperienceSettings.get_level(experience), experience
 end

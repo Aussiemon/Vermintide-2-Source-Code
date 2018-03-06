@@ -23,6 +23,7 @@ GameServer.init = function (self, network_options, server_name)
 	self._max_members = network_options.max_members
 	self._game_server = GameServerInternal.init_server(network_options, server_name)
 	self._data_table = {}
+	self._server_name = server_name
 
 	return 
 end
@@ -124,6 +125,9 @@ GameServer.is_joined = function (self)
 end
 GameServer.id = function (self)
 	return (GameServerInternal.server_id and GameServerInternal.server_id(self._game_server)) or "no_id"
+end
+GameServer.server_name = function (self)
+	return self._server_name
 end
 GameServer.eac_state = function (self, peer)
 	return self._game_server:eac_state(peer)

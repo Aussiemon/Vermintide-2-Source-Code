@@ -196,4 +196,56 @@ if PLATFORM == "ps4" or PLATFORM == "xb1" then
 	end
 end
 
+if rawget(_G, "EAC") == nil then
+	rawset(_G, "EAC", {
+		challenge_response = function ()
+			return 
+		end,
+		is_initialized = function ()
+			return true
+		end,
+		initialization_error = function ()
+			return false, "No error"
+		end,
+		before_join = function ()
+			return 
+		end,
+		after_leave = function ()
+			return 
+		end,
+		state = function ()
+			return "untrusted", "No Steam"
+		end,
+		set_host = function ()
+			return 
+		end,
+		validate_host = function ()
+			return 
+		end
+	})
+end
+
+if rawget(_G, "EACServer") == nil then
+	rawset(_G, "EACServer", {
+		create = function ()
+			return 
+		end,
+		destroy = function ()
+			return 
+		end,
+		add_peer = function ()
+			return 
+		end,
+		remove_peer = function ()
+			return 
+		end,
+		update = function ()
+			return 
+		end,
+		state = function ()
+			return "untrusted", "No Steam"
+		end
+	})
+end
+
 return 

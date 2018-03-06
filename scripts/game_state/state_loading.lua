@@ -536,7 +536,7 @@ StateLoading._update_network = function (self, dt)
 			self._in_post_game_popup_id = nil
 		end
 
-		local bad_state = self._network_client.state == "denied_enter_game" or self._network_client.state == "lost_connection_to_host"
+		local bad_state = self._network_client.state == "denied_enter_game" or self._network_client.state == "lost_connection_to_host" or self._network_client.state == "eac_match_failed"
 
 		if bad_state and not self._popup_id and not self._permission_to_go_to_next_state then
 			self._wanted_state = StateTitleScreen
