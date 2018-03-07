@@ -17,3 +17,4 @@ Date      |  Patch  | Notes
 3-01-18   |  Preorder-Beta  | Patch #2
 3-03-18   |  Preorder-Beta  | Patch #3
 3-05-18   |  Preorder-Beta  | Patch #4
+3-07-18   |  Preorder-Beta  | Patch #5

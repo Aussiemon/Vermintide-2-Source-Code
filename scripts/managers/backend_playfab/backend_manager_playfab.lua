@@ -370,13 +370,13 @@ BackendManagerPlayFab.update = function (self, dt)
 
 	return 
 end
-BackendManagerPlayFab.playfab_api_error = function (self, result)
+BackendManagerPlayFab.playfab_api_error = function (self, result, error_override)
 	table.dump(result, nil, 10)
 
 	local error_code = self._get_playfab_error_code(self, result)
 	local error_data = {
 		reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR,
-		details = error_code
+		details = error_override or error_code
 	}
 
 	self._post_error(self, error_data)

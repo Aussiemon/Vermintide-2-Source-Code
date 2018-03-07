@@ -6,30 +6,15 @@ function curl_callback(success, code, headers, data, user_data)
 	local request = active_requests[user_data]
 
 	if success then
-		if code == 200 then
-			local _, response = pcall(json.decode, data)
+		local _, response = pcall(json.decode, data)
 
-			if response and response.code == 200 and response.data and request.onSuccess and not response.data.Error then
+		if response and type(response) == "table" then
+			if response.code == 200 and response.data and not response.data.Error then
 				request.onSuccess(response.data)
-			elseif response and request.onError then
+			else
 				request.onError(response)
-			elseif request.onError then
-				local error_data = {
-					error = "ServiceUnavailable",
-					errorCode = 1123,
-					status = "",
-					code = code
-				}
-
-				if data then
-					error_data.errorMessage = "Could not deserialize response from server: " .. data
-				else
-					error_data.errorMessage = "Could not deserialize response from server: NO DATA"
-				end
-
-				request.onError(error_data)
 			end
-		elseif request.onError then
+		else
 			local error_data = {
 				error = "ServiceUnavailable",
 				errorCode = 1123,
@@ -38,7 +23,7 @@ function curl_callback(success, code, headers, data, user_data)
 			}
 
 			if data then
-				error_data.errorMessage = "Could not deserialize response from server: " .. data
+				error_data.errorMessage = "Could not deserialize response from server: " .. tostring(data)
 			else
 				error_data.errorMessage = "Could not deserialize response from server: NO DATA"
 			end
@@ -54,12 +39,12 @@ function curl_callback(success, code, headers, data, user_data)
 		}
 
 		if data then
-			error_data.errorMessage = "Could not deserialize response from server: " .. data
+			error_data.errorMessage = "Could not deserialize response from server: " .. tostring(data)
 		else
 			error_data.errorMessage = "Could not deserialize response from server: NO DATA"
 		end
 
-		request.onError(error_data)
+		request.onError(error_data, tostring(data))
 	end
 
 	return 
@@ -79,10 +64,10 @@ local PlayFabHttpsCurl = {
 			headers[#headers + 1] = auth_key .. ": " .. auth_value
 		end
 
-		local function fail_callback(result)
+		local function fail_callback(result, error_override)
 			local backend_manager = Managers.backend
 
-			backend_manager.playfab_api_error(backend_manager, result)
+			backend_manager.playfab_api_error(backend_manager, result, error_override)
 
 			return 
 		end

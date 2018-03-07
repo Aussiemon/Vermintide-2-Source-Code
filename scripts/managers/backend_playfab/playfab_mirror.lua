@@ -8,16 +8,53 @@ PlayFabMirror.init = function (self, signin_result)
 	self._commit_current_id = nil
 	self._last_id = 0
 	self._queued_commit = {}
+	self._best_power_levels = nil
+	self.sum_best_power_levels = nil
 	local commit_limit_data = signin_result.InfoResultPayload.UserReadOnlyData.commit_limit_total
 	self._commit_limit_timer = REDUCTION_INTERVAL
 	self._commit_limit_total = (commit_limit_data and commit_limit_data.Value) or 1
 
-	self._request_signin_reward(self)
+	self._request_best_power_levels(self)
+
+	return 
+end
+PlayFabMirror._request_best_power_levels = function (self)
+	local request = {
+		FunctionName = "bestPowerLevels",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "best_power_levels_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+
+	return 
+end
+PlayFabMirror.best_power_levels_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	if result.Error then
+		table.dump(result, nil, 6)
+		fassert(false, "best_power_levels_request_cb: it failed!")
+	else
+		local function_result = result.FunctionResult
+		local best_power_levels = function_result.best_power_levels
+		self._best_power_levels = best_power_levels
+		local sum = 0
+
+		for _, value in pairs(best_power_levels) do
+			sum = sum + value
+		end
+
+		self.sum_best_power_levels = sum
+
+		self._request_signin_reward(self)
+	end
 
 	return 
 end
 PlayFabMirror._request_signin_reward = function (self)
-	self._num_items_to_load = self._num_items_to_load - 1
 	local request = {
 		FunctionName = "signInRewards",
 		FunctionParameter = {}
@@ -31,6 +68,8 @@ PlayFabMirror._request_signin_reward = function (self)
 	return 
 end
 PlayFabMirror.sign_in_reward_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	if result.Error then
 		table.dump(result, nil, 6)
 		fassert(false, "sign_in_reward_request_cb: it failed!")
@@ -52,7 +91,6 @@ PlayFabMirror.sign_in_reward_request_cb = function (self, result)
 			end
 		end
 
-		self._request_all_users_characters(self)
 		self._request_user_inventory(self)
 	end
 
@@ -123,9 +161,53 @@ PlayFabMirror.character_data_request_cb = function (self, characters, i, result)
 		fassert(false, "character_data_request_cb: it failed!")
 	else
 		local character_id = result.CharacterId
+		local character_name = self._career_lookup[character_id]
 		local character_data = result.Data
+		local broken_slots = self._set_career_data(self, character_id, character_data)
 
-		self._set_career_data(self, character_id, character_data)
+		if broken_slots then
+			self._num_items_to_load = self._num_items_to_load + 1
+
+			print("Broken item slots for career", character_name)
+			table.dump(broken_slots)
+
+			local request = {
+				FunctionName = "fixCareerData",
+				FunctionParameter = {
+					character_type = character_name,
+					character_id = character_id,
+					broken_slots = broken_slots
+				}
+			}
+			local fix_career_data_request_cb = callback(self, "fix_career_data_request_cb", characters, i)
+
+			PlayFabClientApi.ExecuteCloudScript(request, fix_career_data_request_cb, fix_career_data_request_cb)
+		elseif i < #characters then
+			print("Requesting character data for index", i + 1, #characters)
+			self._request_character_readonly_data(self, characters, i + 1)
+		end
+	end
+
+	return 
+end
+PlayFabMirror.fix_career_data_request_cb = function (self, characters, i, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	if result.Error then
+		table.dump(result, nil, 6)
+		fassert(false, "character_data_request_cb: it failed!")
+	else
+		local function_result = result.FunctionResult
+		local character_id = function_result.character_id
+		local career_name = self._career_lookup[character_id]
+		local career_data = self._career_data[career_name]
+		local career_data_mirror = self._career_data_mirror[career_name]
+		local updated_data = function_result.updated_data
+
+		for key, value in pairs(updated_data) do
+			career_data[key] = value
+			career_data_mirror[key] = value
+		end
 
 		if i < #characters then
 			print("Requesting character data for index", i + 1, #characters)
@@ -139,17 +221,37 @@ PlayFabMirror._set_career_data = function (self, character_id, character_data)
 	local career_name = self._career_lookup[character_id]
 	local career_data = self._career_data[career_name]
 	local career_data_mirror = self._career_data_mirror[career_name]
+	local broken_slots = nil
 
 	table.clear(career_data)
 	table.clear(career_data_mirror)
+
+	if not character_data.slot_melee or not character_data.slot_melee.Value then
+		broken_slots = broken_slots or {}
+		broken_slots.slot_melee = true
+	end
+
+	if not character_data.slot_ranged or not character_data.slot_ranged.Value then
+		broken_slots = broken_slots or {}
+		broken_slots.slot_ranged = true
+	end
 
 	for key, data in pairs(character_data) do
 		local value = data.Value
 		career_data[key] = value
 		career_data_mirror[key] = value
+
+		if key == "slot_ranged" or key == "slot_melee" then
+			local item = self._inventory_items[value]
+
+			if not item then
+				broken_slots = broken_slots or {}
+				broken_slots[key] = true
+			end
+		end
 	end
 
-	return 
+	return broken_slots
 end
 PlayFabMirror.inventory_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
@@ -177,6 +279,8 @@ PlayFabMirror.inventory_request_cb = function (self, result)
 				self._inventory_items[backend_id] = item
 			end
 		end
+
+		self._request_all_users_characters(self)
 	end
 
 	return 
@@ -343,6 +447,43 @@ end
 PlayFabMirror.check_for_errors = function (self)
 	return 
 end
+local slot_type_to_best_power_level_key = {
+	ranged = "best_ranged_pl",
+	ring = "best_ring_pl",
+	necklace = "best_necklace_pl",
+	trinket = "best_trinket_pl",
+	melee = "best_melee_pl"
+}
+PlayFabMirror._re_evaluate_best_power_level = function (self, item)
+	local item_power_level = item.power_level
+
+	if not item_power_level then
+		return 
+	end
+
+	local slot_type = item.data.slot_type
+	local power_level_key = slot_type_to_best_power_level_key[slot_type]
+
+	if not power_level_key then
+		return 
+	end
+
+	local best_power_levels = self._best_power_levels
+	local current_best = best_power_levels[power_level_key]
+
+	if current_best < item_power_level then
+		best_power_levels[power_level_key] = item_power_level
+		local sum = 0
+
+		for _, value in pairs(best_power_levels) do
+			sum = sum + value
+		end
+
+		self.sum_best_power_levels = sum
+	end
+
+	return 
+end
 PlayFabMirror.add_item = function (self, backend_id, item)
 	local inventory_items = self._inventory_items
 
@@ -351,6 +492,7 @@ PlayFabMirror.add_item = function (self, backend_id, item)
 	inventory_items[backend_id] = item
 
 	ItemHelper.mark_backend_id_as_new(backend_id)
+	self._re_evaluate_best_power_level(self, item)
 
 	return 
 end

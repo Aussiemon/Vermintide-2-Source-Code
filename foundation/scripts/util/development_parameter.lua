@@ -23,7 +23,28 @@ Development._hardcoded_dev_params = {
 	use_tech_telemetry = true,
 	hide_fps = true
 }
+Development._hardcoded_benchmark_mode_params = {
+	attract_benchmark = true,
+	use_local_backend = true,
+	disable_tutorial_at_start = true,
+	disable_gutter_runner = true,
+	use_lan_backend = true,
+	screen_space_player_camera_reactions = false,
+	show_fps = true,
+	hide_fps = false,
+	disable_pack_master = true,
+	disable_debug_draw = true,
+	infinite_ammo = true,
+	player_invincible = true,
+	attract_mode = true,
+	wanted_profile = "bright_wizard"
+}
 local hardcoded_dev_params = Development._hardcoded_dev_params
+
+if LAUNCH_MODE == "attract_benchmark" then
+	hardcoded_dev_params = Development._hardcoded_benchmark_mode_params
+end
+
 Development.parameter = function (param)
 	return hardcoded_dev_params[param]
 end

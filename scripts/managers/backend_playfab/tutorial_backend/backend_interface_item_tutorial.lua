@@ -394,10 +394,8 @@ BackendInterfaceItemTutorial.get_item_template = function (self, item_data, back
 
 	return 
 end
-BackendInterfaceItemTutorial.sum_best_power_levels = function (self, callback_function)
-	callback_function(10)
-
-	return 
+BackendInterfaceItemTutorial.sum_best_power_levels = function (self)
+	return 10
 end
 
 return 

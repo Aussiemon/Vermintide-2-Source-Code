@@ -20,10 +20,6 @@ BulldozerPlayer.init = function (self, network_manager, input_source, viewport_n
 	Managers.music:register_active_player(local_player_id)
 	Managers.free_flight:register_player(local_player_id)
 
-	self._best_aquired_power_level = 0
-
-	self.fetch_best_aquired_power_level(self)
-
 	self._cached_name = nil
 
 	return 
@@ -454,22 +450,13 @@ BulldozerPlayer.destroy = function (self)
 
 	return 
 end
-BulldozerPlayer.cb_sum_best_power_level = function (self, sum)
+BulldozerPlayer.best_aquired_power_level = function (self)
+	local sum = Managers.backend:get_interface("items"):sum_best_power_levels()
 	local level = ExperienceSettings.get_highest_character_level()
 	local character_power_level = PowerLevelFromLevelSettings.starting_power_level + PowerLevelFromLevelSettings.power_level_per_level*level
-	self._best_aquired_power_level = character_power_level + sum/5
+	local best_aquired_power_level = character_power_level + sum/5
 
-	return 
-end
-BulldozerPlayer.fetch_best_aquired_power_level = function (self)
-	local callback = callback(self, "cb_sum_best_power_level")
-
-	Managers.backend:get_interface("items"):sum_best_power_levels(callback)
-
-	return 
-end
-BulldozerPlayer.best_aquired_power_level = function (self)
-	return self._best_aquired_power_level
+	return best_aquired_power_level
 end
 
 return 

@@ -279,32 +279,13 @@ BackendInterfaceItemPlayfab.get_item_template = function (self, item_data, backe
 
 	return 
 end
-BackendInterfaceItemPlayfab.sum_best_power_levels = function (self, callback_function)
+BackendInterfaceItemPlayfab.sum_best_power_levels = function (self)
 	local debug_value = script_data.sum_of_best_power_levels_override
 
 	if debug_value then
-		callback_function(debug_value)
+		return debug_value
 	else
-		local request = {
-			FunctionName = "sumBestPowerLevels",
-			FunctionParameter = {}
-		}
-		local request_cb = callback(self, "sum_best_power_levels_request_cb", callback_function)
-
-		PlayFabClientApi.ExecuteCloudScript(request, request_cb, request_cb)
-	end
-
-	return 
-end
-BackendInterfaceItemPlayfab.sum_best_power_levels_request_cb = function (self, callback_function, result)
-	if result.Error then
-		Application.warning("Error fetching sum of best power levels!")
-		table.dump(result, "PlayFabError", math.huge)
-	else
-		local function_result = result.FunctionResult
-		local sum = function_result.sum
-
-		callback_function(sum)
+		return self._backend_mirror.sum_best_power_levels
 	end
 
 	return 

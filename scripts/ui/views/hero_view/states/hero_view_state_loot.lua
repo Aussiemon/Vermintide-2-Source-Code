@@ -1524,12 +1524,6 @@ HeroViewStateLoot.loot_chest_opened = function (self, loot)
 		LevelHelper:flow_event(world, "local_player_opened_all_loot_chests")
 	end
 
-	local player = self.player
-
-	if player then
-		player.fetch_best_aquired_power_level(player)
-	end
-
 	self._start_reward_presentation(self, loot)
 
 	return 

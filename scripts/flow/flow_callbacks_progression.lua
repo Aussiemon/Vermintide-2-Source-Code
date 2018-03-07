@@ -294,25 +294,19 @@ function flow_callback_leader_sum_best_power_levels(params)
 
 	fassert(leader_peer_id == local_peer_id, "Flow node \"Leader Sum of Best Power Levels\" should only be called by the leader player")
 
-	local function on_complete(value)
-		local world_manager = Managers.world
-		local world_name = "level_world"
+	local world_manager = Managers.world
+	local world_name = "level_world"
 
-		if world_manager.has_world(world_manager, world_name) then
-			local world = world_manager.world(world_manager, world_name)
-			local result_event = params.result_event
-			local result_parameter = params.result_parameter
+	if world_manager.has_world(world_manager, world_name) then
+		local world = world_manager.world(world_manager, world_name)
+		local result_event = params.result_event
+		local result_parameter = params.result_parameter
+		local item_interface = Managers.backend:get_interface("items")
+		local value = item_interface.sum_best_power_levels(item_interface)
 
-			LevelHelper:set_flow_parameter(world, result_parameter, value)
-			LevelHelper:flow_event(world, result_event)
-		end
-
-		return 
+		LevelHelper:set_flow_parameter(world, result_parameter, value)
+		LevelHelper:flow_event(world, result_event)
 	end
-
-	local item_interface = Managers.backend:get_interface("items")
-
-	item_interface.sum_best_power_levels(item_interface, on_complete)
 
 	return 
 end
