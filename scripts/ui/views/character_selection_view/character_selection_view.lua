@@ -114,7 +114,6 @@ CharacterSelectionView.play_sound = function (self, event)
 end
 CharacterSelectionView.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	local hero_panel_hero_bg = UIWidget.init(widget_definitions.hero_panel_hero_bg)
 	self._static_widgets = {}
 	self._title_widget = UIWidget.init(widget_definitions.title_text)
 	self._hero_name_text_widget = UIWidget.init(widget_definitions.hero_name_text)

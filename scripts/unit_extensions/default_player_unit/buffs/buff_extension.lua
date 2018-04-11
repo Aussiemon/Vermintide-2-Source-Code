@@ -558,20 +558,22 @@ BuffExtension.num_buff_type = function (self, buff_type)
 
 	return num_buff_type
 end
-local proc_data = {}
-local event_buffs_to_remove = {}
 BuffExtension.trigger_procs = function (self, event, ...)
 	local event_buffs = self._event_buffs[event]
 	local num_event_buffs = #event_buffs
+
+	if num_event_buffs == 0 then
+		return 
+	end
+
 	local player = Managers.player:owner(self._unit)
 	local num_args = select("#", ...)
-
-	table.clear(proc_data)
-	table.clear(event_buffs_to_remove)
+	local params = FrameTable.alloc_table()
+	local event_buffs_to_remove = FrameTable.alloc_table()
 
 	for i = 1, num_args, 1 do
 		local arg = select(i, ...)
-		proc_data[#proc_data + 1] = arg
+		params[#params + 1] = arg
 	end
 
 	for i = 1, num_event_buffs, 1 do
@@ -580,7 +582,7 @@ BuffExtension.trigger_procs = function (self, event, ...)
 
 		if math.random() <= proc_chance then
 			local buff_func = buff.buff_func
-			local success = buff_func(player, buff, proc_data)
+			local success = buff_func(player, buff, params)
 
 			if success and buff.template.remove_on_proc then
 				event_buffs_to_remove[#event_buffs_to_remove + 1] = buff

@@ -214,17 +214,6 @@ local transitions = {
 
 		return 
 	end,
-	friends_view = function (self)
-		self.current_view = "friends_view"
-
-		return 
-	end,
-	friends_view_force = function (self)
-		self.current_view = "friends_view"
-		self.views[self.current_view].exit_to_game = true
-
-		return 
-	end,
 	chat_view = function (self)
 		self.current_view = "chat_view"
 
@@ -465,7 +454,6 @@ view_settings = {
 			credits_view = CreditsView:new(ingame_ui_context),
 			telemetry_survey = TelemetrySurveyView:new(ingame_ui_context),
 			options_view = OptionsView:new(ingame_ui_context),
-			friends_view = FriendsView:new(ingame_ui_context),
 			hero_view = HeroView:new(ingame_ui_context),
 			keep_decoration_view = KeepDecorationView:new(ingame_ui_context),
 			character_selection = CharacterSelectionView:new(ingame_ui_context),

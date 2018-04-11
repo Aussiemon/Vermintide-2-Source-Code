@@ -619,39 +619,21 @@ ItemMasterList.bardin_ranger_career_skill_weapon = {
 	can_wield = {}
 }
 ItemMasterList.kerillian_waywatcher_career_skill_weapon = {
-	slot_to_use = "ranged",
-	rarity = "plentiful",
 	template = "kerillian_waywatcher_career_skill_weapon",
-	left_hand_unit = "units/weapons/player/wpn_we_bow_01_t1/wpn_we_bow_01_t1",
-	use_slot_unit = true,
+	slot_to_use = "slot_ranged",
+	rarity = "plentiful",
 	can_wield = {}
 }
 ItemMasterList.sienna_scholar_career_skill_weapon = {
-	slot_to_use = "ranged",
-	rarity = "plentiful",
 	template = "sienna_scholar_career_skill_weapon",
-	right_hand_unit = "units/weapons/player/wpn_brw_staff_05/wpn_brw_staff_05",
-	left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
-	use_slot_unit = true,
+	slot_to_use = "slot_ranged",
+	rarity = "plentiful",
 	can_wield = {}
 }
 ItemMasterList.victor_bountyhunter_career_skill_weapon = {
 	template = "victor_bountyhunter_career_skill_weapon",
 	left_hand_unit = "units/weapons/player/wpn_emp_shotgun/wpn_emp_shotgun",
 	rarity = "plentiful",
-	can_wield = {}
-}
-ItemMasterList.markus_huntsman_career_skill_weapon = {
-	rarity = "plentiful",
-	right_hand_unit = "units/weapons/player/wpn_emp_grenade_02_t2/wpn_emp_grenade_02_t2",
-	template = "markus_huntsman_career_skill_weapon",
-	can_wield = {}
-}
-ItemMasterList.sienna_adept_career_skill_weapon = {
-	rarity = "plentiful",
-	template = "sienna_adept_career_skill_weapon",
-	right_hand_unit = "units/weapons/player/wpn_emp_grenade_02_t1/wpn_emp_grenade_02_t1",
-	left_hand_unit = "units/weapons/player/wpn_emp_grenade_01_t1/wpn_emp_grenade_lighter_01_t1",
 	can_wield = {}
 }
 ItemMasterList.training_dummy = {

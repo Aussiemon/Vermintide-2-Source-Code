@@ -553,7 +553,7 @@ UISettings = {
 			display_name = "display_name_default_dwarf_ranger_dr_2h_picks"
 		},
 		wh_1h_axe = {
-			inventory_icon = "icon_wpn_axe_02_t1",
+			inventory_icon = "icon_wpn_axe_hatchet_t1",
 			description = "description_default_witch_hunter_wh_1h_axes",
 			display_name = "display_name_default_witch_hunter_wh_1h_axes"
 		},

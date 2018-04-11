@@ -330,8 +330,8 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			additional_critical_strike_chance = 0,
 			use_target = false,
+			additional_critical_strike_chance = 0,
 			damage_profile = "light_slashing_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.5,
@@ -379,7 +379,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_right = {
 			damage_window_start = 0.38,
@@ -387,8 +388,8 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			additional_critical_strike_chance = 0,
 			use_target = false,
+			additional_critical_strike_chance = 0,
 			damage_profile = "light_slashing_linesman_flat",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.5,
@@ -436,7 +437,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_last = {
 			damage_window_start = 0.38,
@@ -550,7 +552,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
-			end
+			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		push = {
 			damage_window_start = 0.05,

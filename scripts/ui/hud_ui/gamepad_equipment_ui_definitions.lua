@@ -71,7 +71,7 @@ local scenegraph_definition = {
 		},
 		size = {
 			624,
-			66
+			139
 		}
 	},
 	background_panel_bg = {
@@ -107,12 +107,12 @@ local scenegraph_definition = {
 		parent = "background_panel",
 		horizontal_alignment = "left",
 		position = {
-			80,
+			275,
 			40,
 			100
 		},
 		size = {
-			256,
+			240,
 			60
 		}
 	},
@@ -121,8 +121,8 @@ local scenegraph_definition = {
 		parent = "background_panel",
 		horizontal_alignment = "left",
 		position = {
-			300,
-			40,
+			15,
+			42,
 			100
 		},
 		size = slot_size
@@ -220,17 +220,6 @@ local function create_weapon_slot_widget(scenegraph_id)
 		element = {
 			passes = {
 				{
-					pass_type = "texture_frame",
-					style_id = "weapon_frame",
-					texture_id = "weapon_frame"
-				},
-				{
-					pass_type = "texture",
-					style_id = "background",
-					texture_id = "background_texture_id",
-					retained_mode = RETAINED_MODE_ENABLED
-				},
-				{
 					pass_type = "texture",
 					style_id = "melee_weapon_texture",
 					texture_id = "melee_weapon_texture_id",
@@ -309,7 +298,7 @@ local function create_weapon_slot_widget(scenegraph_id)
 					-33
 				},
 				size = {
-					300,
+					240,
 					60
 				}
 			},
@@ -427,19 +416,8 @@ local function create_slot_widget(index, total_amount)
 				},
 				{
 					pass_type = "texture",
-					style_id = "texture_frame",
-					texture_id = "texture_frame",
-					retained_mode = RETAINED_MODE_ENABLED
-				},
-				{
-					pass_type = "texture",
 					style_id = "texture_background",
 					texture_id = "texture_background",
-					retained_mode = RETAINED_MODE_ENABLED
-				},
-				{
-					style_id = "rect_background",
-					pass_type = "rect",
 					retained_mode = RETAINED_MODE_ENABLED
 				},
 				{
@@ -624,8 +602,8 @@ local function create_slot_widget(index, total_amount)
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
 				texture_size = {
-					20,
-					30
+					15,
+					40
 				},
 				color = {
 					0,
@@ -634,7 +612,7 @@ local function create_slot_widget(index, total_amount)
 					128
 				},
 				offset = {
-					-40,
+					-37,
 					0,
 					1
 				}
@@ -644,12 +622,12 @@ local function create_slot_widget(index, total_amount)
 				horizontal_alignment = "center",
 				angle = math.pi * 0.5,
 				pivot = {
-					10,
-					15
+					7.5,
+					20
 				},
 				texture_size = {
-					20,
-					30
+					15,
+					40
 				},
 				color = {
 					0,
@@ -659,7 +637,7 @@ local function create_slot_widget(index, total_amount)
 				},
 				offset = {
 					0,
-					40,
+					37,
 					1
 				}
 			},
@@ -668,12 +646,12 @@ local function create_slot_widget(index, total_amount)
 				horizontal_alignment = "center",
 				angle = math.pi,
 				pivot = {
-					10,
-					15
+					7.5,
+					20
 				},
 				texture_size = {
-					20,
-					30
+					15,
+					40
 				},
 				color = {
 					0,
@@ -682,7 +660,7 @@ local function create_slot_widget(index, total_amount)
 					128
 				},
 				offset = {
-					40,
+					37,
 					0,
 					1
 				}
@@ -691,8 +669,8 @@ local function create_slot_widget(index, total_amount)
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
 				texture_size = {
-					20,
-					30
+					15,
+					40
 				},
 				color = {
 					0,
@@ -701,7 +679,7 @@ local function create_slot_widget(index, total_amount)
 					255
 				},
 				offset = {
-					-40,
+					-37,
 					0,
 					2
 				}
@@ -711,12 +689,12 @@ local function create_slot_widget(index, total_amount)
 				horizontal_alignment = "center",
 				angle = math.pi * 0.5,
 				pivot = {
-					10,
-					15
+					7.5,
+					20
 				},
 				texture_size = {
-					20,
-					30
+					15,
+					40
 				},
 				color = {
 					0,
@@ -726,7 +704,7 @@ local function create_slot_widget(index, total_amount)
 				},
 				offset = {
 					0,
-					40,
+					37,
 					2
 				}
 			},
@@ -735,12 +713,12 @@ local function create_slot_widget(index, total_amount)
 				horizontal_alignment = "center",
 				angle = math.pi,
 				pivot = {
-					10,
-					15
+					7.5,
+					20
 				},
 				texture_size = {
-					20,
-					30
+					15,
+					40
 				},
 				color = {
 					0,
@@ -749,7 +727,7 @@ local function create_slot_widget(index, total_amount)
 					255
 				},
 				offset = {
-					40,
+					37,
 					0,
 					2
 				}
@@ -783,7 +761,7 @@ local function create_slot_widget(index, total_amount)
 				horizontal_alignment = "center",
 				offset = {
 					0,
-					4,
+					2,
 					4
 				},
 				texture_size = {
@@ -894,7 +872,7 @@ local ammo_text_center_style = {
 	}
 }
 local widget_definitions = {
-	background_panel = UIWidgets.create_simple_texture("hud_inventory_panel", "background_panel", nil, RETAINED_MODE_ENABLED),
+	background_panel = UIWidgets.create_simple_texture("hud_inventory_panel_gamepad", "background_panel", nil, RETAINED_MODE_ENABLED),
 	background_panel_bg = UIWidgets.create_simple_texture("hud_inventory_panel_bg", "background_panel_bg", nil, RETAINED_MODE_ENABLED),
 	weapon_slot = create_weapon_slot_widget("weapon_slot")
 }

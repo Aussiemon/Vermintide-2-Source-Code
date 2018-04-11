@@ -297,7 +297,7 @@ local function create_ability_widget()
 			},
 			input_text_gamepad = {
 				vertical_alignment = "center",
-				font_size = 32,
+				font_size = 24,
 				localize = false,
 				horizontal_alignment = "center",
 				word_wrap = false,
@@ -310,13 +310,13 @@ local function create_ability_widget()
 				},
 				offset = {
 					0,
-					85,
+					83,
 					20
 				}
 			},
 			input_text_shadow_gamepad = {
 				vertical_alignment = "center",
-				font_size = 32,
+				font_size = 24,
 				localize = false,
 				horizontal_alignment = "center",
 				word_wrap = false,
@@ -329,7 +329,7 @@ local function create_ability_widget()
 				},
 				offset = {
 					0,
-					83,
+					81,
 					19
 				}
 			},
@@ -343,11 +343,14 @@ local function create_ability_widget()
 					255
 				},
 				offset = {
-					-40,
-					85,
+					-35,
+					83,
 					20
 				},
-				texture_size = ButtonTextureByName("left_shoulder", "xb1").size
+				texture_size = {
+					ButtonTextureByName("left_shoulder", "xb1").size[1] * 0.85,
+					ButtonTextureByName("left_shoulder", "xb1").size[2] * 0.85
+				}
 			},
 			input_texture_right_shoulder = {
 				vertical_alignment = "center",
@@ -359,11 +362,14 @@ local function create_ability_widget()
 					255
 				},
 				offset = {
-					30,
-					85,
+					25,
+					83,
 					20
 				},
-				texture_size = ButtonTextureByName("right_shoulder", "xb1").size
+				texture_size = {
+					ButtonTextureByName("right_shoulder", "xb1").size[1] * 0.85,
+					ButtonTextureByName("right_shoulder", "xb1").size[2] * 0.85
+				}
 			},
 			ability_effect_right = {
 				vertical_alignment = "bottom",

@@ -34,6 +34,7 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 	self.damage_timer = 0
 	self.overcharge_timer = 0
 	self.ramping_interval = 1
+	self.consecutive_hits = 0
 	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
 	local world = self.world

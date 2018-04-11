@@ -155,8 +155,10 @@ WeaponTraits.buff_templates = {
 	traits_melee_shield_on_assist = {
 		buffs = {
 			{
+				event = "on_assisted_ally",
+				event_buff = true,
 				dormant = true,
-				stat_buff = StatBuffIndex.SHIELDING_PLAYER_BY_ASSIST
+				buff_func = ProcFunctions.heal_assisted_and_self_on_assist
 			}
 		}
 	},

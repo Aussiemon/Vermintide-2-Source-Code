@@ -177,27 +177,27 @@ PowerLevelThresholds = {
 		min = 10
 	},
 	{
-		max = 200,
+		max = 300,
 		min = 10
 	},
 	{
-		max = 200,
+		max = 300,
 		min = 10
 	},
 	{
-		max = 200,
+		max = 300,
 		min = 10
 	},
 	{
-		max = 200,
+		max = 300,
 		min = 10
 	},
 	{
-		max = 200,
+		max = 300,
 		min = 10
 	},
 	{
-		max = 200,
+		max = 300,
 		min = 10
 	},
 	{

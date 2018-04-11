@@ -526,10 +526,10 @@ UnitFrameUI.set_ammo_percentage = function (self, ammo_percent)
 	local widget = self._widget_by_feature(self, "ammo", "dynamic")
 	local widget_style = widget.style
 	local widget_content = widget.content
-	widget_content.actual_ammo_percent = ammo_percent
+	widget_content.ammo_percent = ammo_percent
 
-	self._on_player_ammo_changed(self, "ammo", widget, ammo_percent)
 	self._set_widget_dirty(self, widget)
+	self.set_dirty(self)
 
 	return 
 end

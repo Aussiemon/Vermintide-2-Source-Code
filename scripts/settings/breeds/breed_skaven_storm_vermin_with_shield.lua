@@ -93,7 +93,7 @@ local breed_data = {
 		13,
 		20,
 		26,
-		40
+		39
 	},
 	stagger_duration = {
 		0.5,
@@ -109,22 +109,22 @@ local breed_data = {
 		2.25,
 		2.25,
 		3,
-		4,
-		6
+		3.75,
+		3.75
 	},
 	hit_mass_counts = {
 		5,
 		5,
 		7.5,
 		10,
-		15
+		10
 	},
 	hit_mass_counts_block = {
 		10,
 		10,
 		15,
 		20,
-		30
+		20
 	},
 	wwise_voices = {
 		"low",

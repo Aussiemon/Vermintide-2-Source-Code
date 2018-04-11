@@ -137,15 +137,17 @@ GenericHealthExtension.set_max_health = function (self, health, update_unmodfied
 
 	return 
 end
-local my_temp_table = {}
 GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 	local damage_direction_table = (damage_direction and {
 		damage_direction.x,
 		damage_direction.y,
 		damage_direction.z
 	}) or nil
-	local damage_queue = self.damage_buffers[self.system_data.active_damage_buffer_index]
-	local temp_table = my_temp_table
+	local damage_buffers = self.damage_buffers
+	local system_data = self.system_data
+	local active_damage_buffer_index = system_data.active_damage_buffer_index
+	local damage_queue = damage_buffers[active_damage_buffer_index]
+	local temp_table = FrameTable.alloc_table()
 	temp_table[DamageDataIndex.DAMAGE_AMOUNT] = damage_amount
 	temp_table[DamageDataIndex.DAMAGE_TYPE] = damage_type
 	temp_table[DamageDataIndex.ATTACKER] = attacker_unit

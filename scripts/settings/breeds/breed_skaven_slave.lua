@@ -246,7 +246,7 @@ breed_data = {
 		1,
 		1.3,
 		1.6,
-		2
+		1.6
 	},
 	stagger_duration = {
 		1,
@@ -263,7 +263,7 @@ breed_data = {
 		1,
 		1.5,
 		2,
-		3
+		2
 	},
 	num_push_anims = {
 		push_backward = 4

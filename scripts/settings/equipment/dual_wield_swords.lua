@@ -232,11 +232,11 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			use_target = true,
+			use_target = false,
 			additional_critical_strike_chance = 0,
 			weapon_action_hand = "both",
-			damage_profile_left = "light_slashing_linesman_fencer_dual",
 			hit_effect = "melee_hit_dagger",
+			damage_profile_left = "light_slashing_linesman_fencer_dual",
 			damage_window_end = 0.4,
 			impact_sound_event = "slashing_hit",
 			anim_end_event = "attack_finished",
@@ -296,7 +296,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
-			end
+			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		heavy_attack_2 = {
 			damage_window_start = 0.15,
@@ -304,11 +305,11 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
-			use_target = true,
+			use_target = false,
 			additional_critical_strike_chance = 0,
 			weapon_action_hand = "both",
-			damage_profile_left = "light_slashing_linesman_fencer_dual",
 			hit_effect = "melee_hit_sword_1h",
+			damage_profile_left = "light_slashing_linesman_fencer_dual",
 			damage_window_end = 0.4,
 			impact_sound_event = "slashing_hit",
 			anim_end_event = "attack_finished",
@@ -354,7 +355,7 @@ weapon_template.actions = {
 					input = "action_one"
 				},
 				{
-					sub_action = "default_left",
+					sub_action = "default",
 					start_time = 0.4,
 					action = "action_two",
 					input = "action_two_hold"
@@ -368,7 +369,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
-			end
+			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_left = {
 			damage_window_start = 0.3,
@@ -377,9 +379,9 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			weapon_action_hand = "left",
-			use_target = true,
+			use_target = false,
 			additional_critical_strike_chance = 0.1,
-			damage_profile = "light_slashing_linesman",
+			damage_profile = "light_slashing_linesman_dual",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.42,
 			impact_sound_event = "slashing_hit",
@@ -433,7 +435,8 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
-			impact_axis = Vector3Box(0, 0, 1)
+			impact_axis = Vector3Box(0, 0, 1),
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_right = {
 			damage_window_start = 0.3,
@@ -442,8 +445,8 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			additional_critical_strike_chance = 0.1,
-			use_target = true,
-			damage_profile = "light_slashing_linesman",
+			use_target = false,
+			damage_profile = "light_slashing_linesman_dual",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.44,
 			impact_sound_event = "slashing_hit",
@@ -497,7 +500,8 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
-			impact_axis = Vector3Box(0, 0, 1)
+			impact_axis = Vector3Box(0, 0, 1),
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_up_left = {
 			damage_window_start = 0.34,
@@ -506,8 +510,8 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			additional_critical_strike_chance = 0.1,
-			use_target = true,
-			damage_profile = "light_slashing_linesman",
+			use_target = false,
+			damage_profile = "light_slashing_linesman_dual",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.42,
 			impact_sound_event = "slashing_hit",
@@ -562,7 +566,8 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
-			impact_axis = Vector3Box(0, 0, 1)
+			impact_axis = Vector3Box(0, 0, 1),
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_up_right = {
 			damage_window_start = 0.34,
@@ -571,9 +576,9 @@ weapon_template.actions = {
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			weapon_action_hand = "left",
-			use_target = true,
+			use_target = false,
 			additional_critical_strike_chance = 0.1,
-			damage_profile = "light_slashing_linesman",
+			damage_profile = "light_slashing_linesman_dual",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.43,
 			impact_sound_event = "slashing_hit",
@@ -603,7 +608,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.75,
+					start_time = 0.55,
 					action = "action_one",
 					end_time = 1,
 					input = "action_one"
@@ -627,7 +632,8 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
-			impact_axis = Vector3Box(0, 0, 1)
+			impact_axis = Vector3Box(0, 0, 1),
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		push_stab = {
 			damage_window_start = 0.26,

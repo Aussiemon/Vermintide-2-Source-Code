@@ -20,7 +20,6 @@ require("scripts/ui/views/credits_view")
 require("scripts/ui/views/options_view")
 require("scripts/ui/views/unlock_key_view")
 require("scripts/ui/views/telemetry_survey_view")
-require("scripts/ui/views/friends_view")
 require("scripts/ui/views/ingame_voting_ui")
 require("scripts/ui/views/hero_view/hero_view")
 require("scripts/ui/views/start_game_view/start_game_view")
@@ -79,10 +78,6 @@ IngameUI.init = function (self, ingame_ui_context)
 
 	InitVideo()
 	self.setup_views(self, ingame_ui_context)
-
-	if self.views.map_view then
-		self.views.map_view:set_friends_view(self.views.friends_view)
-	end
 
 	self.end_screen = EndScreenUI:new(ingame_ui_context)
 	self.voting_manager = ingame_ui_context.voting_manager

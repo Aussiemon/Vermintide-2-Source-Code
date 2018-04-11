@@ -86,16 +86,16 @@ local buff_tweak_data = {
 		multiplier = 0.25
 	},
 	bardin_slayer_dodge_range = {
-		multiplier = 1.1
+		multiplier = 1.2
 	},
 	bardin_slayer_damage_taken_capped = {
-		bonus = 15
+		bonus = 10
 	},
 	bardin_slayer_movement_speed = {
-		multiplier = 1.05
+		multiplier = 1.15
 	},
 	bardin_slayer_passive_stacking_damage_buff_increased_duration = {
-		duration = 3,
+		duration = 5,
 		multiplier = 0.1
 	},
 	bardin_slayer_passive_stacking_defence_buff = {
@@ -136,7 +136,7 @@ local buff_tweak_data = {
 		multiplier = 0.3
 	},
 	bardin_ranger_melee_damage_on_no_ammo = {
-		multiplier = 0.15
+		multiplier = 0.25
 	},
 	bardin_ranger_movement_speed = {
 		multiplier = 1.05

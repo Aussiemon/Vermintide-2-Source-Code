@@ -383,29 +383,8 @@ local widgets_definitions = {
 	hero_name_text = UIWidgets.create_simple_text("n/a", "hero_name_text", nil, nil, hero_name_text_style),
 	hero_level_text = UIWidgets.create_simple_text("n/a", "hero_level_text", nil, nil, hero_level_text_style),
 	hero_prestige_level_text = UIWidgets.create_simple_text("n/a", "hero_prestige_level_text", nil, nil, hero_level_text_style),
-	panel_center_edge = UIWidgets.create_tiled_texture("panel_center_edge", "top_menu_tile_part", {
-		81,
-		9
-	}),
-	panel_edge = UIWidgets.create_simple_texture("top_menu_fg", "panel_edge"),
-	hero_panel_hero_bg = UIWidgets.create_simple_texture("top_menu_player_bg", "hero_panel_hero_bg"),
-	hero_panel_party_bg = UIWidgets.create_simple_uv_texture("top_menu_player_bg", {
-		{
-			1,
-			0
-		},
-		{
-			0,
-			1
-		}
-	}, "hero_panel_party_bg"),
 	background = UIWidgets.create_simple_texture("large_frame_01", "dead_space_filler"),
-	screen_selector = UIWidgets.create_menu_selector("screen_selector", 5, 36),
 	exit_button = UIWidgets.create_default_button("exit_button", scenegraph_definition.exit_button.size, nil, nil, Localize("interaction_action_close")),
-	hero_panel = UIWidgets.create_tiled_texture("hero_panel", "top_menu_bg", {
-		1920,
-		120
-	}),
 	console_cursor = UIWidgets.create_console_cursor("console_cursor")
 }
 local animations = {}

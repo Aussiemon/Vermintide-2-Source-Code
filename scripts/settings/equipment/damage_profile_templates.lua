@@ -109,6 +109,14 @@ DamageProfileTemplates.light_slashing_linesman = {
 	default_target = PowerLevelTemplates.default_target_linesman_L,
 	targets = PowerLevelTemplates.targets_linesman_L
 }
+DamageProfileTemplates.light_slashing_linesman_dual = {
+	charge_value = "light_attack",
+	critical_strike = PowerLevelTemplates.critical_strike_linesman_dual_L,
+	cleave_distribution = PowerLevelTemplates.cleave_distribution_linesman_dual_L,
+	armor_modifier = PowerLevelTemplates.armor_modifier_linesman_dual_L,
+	default_target = PowerLevelTemplates.default_target_linesman_dual_L,
+	targets = PowerLevelTemplates.targets_linesman_dual_L
+}
 
 new_template("light_slashing_linesman", nil, "light_blunt_linesman", "blunt_linesman", "light_blunt_linesman")
 

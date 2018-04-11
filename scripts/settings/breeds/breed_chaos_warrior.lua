@@ -127,18 +127,18 @@ local breed_data = {
 		120
 	},
 	stagger_reduction = {
-		2,
-		2,
-		2.5,
+		1.8,
+		1.8,
+		2.4,
 		3,
-		6
+		3
 	},
 	diff_stagger_resist = {
-		5,
-		5,
-		7.5,
-		10,
-		15
+		4.8,
+		4.8,
+		6.4,
+		8,
+		8
 	},
 	stagger_duration = {
 		0.1,

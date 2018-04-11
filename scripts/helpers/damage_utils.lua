@@ -247,10 +247,6 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 		if is_critical_strike then
 			crit_boost = damage_profile.crit_boost or 0.5
 
-			if buff_extension then
-				crit_boost = buff_extension.apply_buffs_to_value(buff_extension, crit_boost, StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS)
-			end
-
 			if damage_profile.no_crit_boost then
 				crit_boost = 0
 			end
@@ -284,6 +280,10 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 				head_shot_boost_amount = math.clamp(head_shot_boost_amount + crit_boost, 0, 1)
 				local head_shot_boost_multiplier = DamageUtils.get_boost_curve_multiplier(modified_boost_curve_head_shot or boost_curve, head_shot_boost_amount)
 				headshot_boost_damage = math.max(math.max(power_boost_damage, damage), 1) * head_shot_boost_multiplier
+
+				if is_critical_strike and buff_extension then
+					headshot_boost_damage = headshot_boost_damage * buff_extension.apply_buffs_to_value(buff_extension, 1, StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS)
+				end
 			end
 		end
 
@@ -379,9 +379,19 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 		local percentage = DamageUtils.get_power_level_percentage(impact_power)
 		stagger_strength = stagger_range * percentage
 
-		if is_critical_strike then
-			local boost_amount = attacker_buff_extension.apply_buffs_to_value(attacker_buff_extension, 0.5, StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS)
+		if is_critical_strike or hit_zone_name == "head" then
+			local boost_amount = 0
+
+			if is_critical_strike then
+				boost_amount = boost_amount + 0.5
+			end
+
+			if hit_zone_name == "head" then
+				boost_amount = boost_amount + 0.5
+			end
+
 			local boost_multiplier = DamageUtils.get_boost_curve_multiplier(boost_curve, boost_amount)
+			boost_multiplier = boost_multiplier * attacker_buff_extension.apply_buffs_to_value(attacker_buff_extension, 1, StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS)
 			stagger_strength = stagger_strength + stagger_strength * boost_multiplier
 		end
 

@@ -273,18 +273,18 @@ local breed_data = {
 		52
 	},
 	diff_stagger_resist = {
-		2,
-		2,
-		2.6,
+		2.4,
+		2.4,
 		3.2,
+		4,
 		4
 	},
 	stagger_reduction = {
-		1.5,
-		1.5,
-		1.75,
+		1.35,
+		1.35,
+		1.8,
 		2.25,
-		3
+		2.25
 	},
 	stagger_duration = {
 		0.25,
@@ -306,9 +306,9 @@ local breed_data = {
 	hit_mass_counts = {
 		2.5,
 		2.5,
-		3.5,
+		3.75,
 		5,
-		8
+		5
 	},
 	num_push_anims = {
 		push_backward = 2

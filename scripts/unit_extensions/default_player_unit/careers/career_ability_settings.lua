@@ -36,7 +36,7 @@ ActivatedAbilitySettings = {
 	es_1 = {
 		description = "career_active_desc_es_1",
 		display_name = "career_active_name_es_1",
-		cooldown = 120,
+		cooldown = 90,
 		icon = "markus_huntsman_activated_ability",
 		ability_class = CareerAbilityESHuntsman
 	},
@@ -57,7 +57,7 @@ ActivatedAbilitySettings = {
 	we_1 = {
 		description = "career_active_desc_we_1",
 		display_name = "career_active_name_we_1",
-		cooldown = 120,
+		cooldown = 60,
 		icon = "kerillian_shade_activated_ability",
 		ability_class = CareerAbilityWEShade
 	},
@@ -109,7 +109,7 @@ ActivatedAbilitySettings = {
 	bw_2 = {
 		description = "career_active_desc_bw_2",
 		display_name = "career_active_name_bw_2",
-		cooldown = 90,
+		cooldown = 40,
 		icon = "sienna_adept_activated_ability",
 		ability_class = CareerAbilityBWAdept
 	},

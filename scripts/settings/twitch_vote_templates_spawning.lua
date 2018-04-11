@@ -122,7 +122,7 @@ TwitchVoteTemplates.twitch_spawn_corruptor_sorcerer = {
 TwitchVoteTemplates.twitch_spawn_vortex_sorcerer = {
 	text = "twitch_vote_spawn_vortex_sorcerer",
 	cost = 100,
-	texture_id = "unit_frame_portrait_enemy_chaos_sorcerer",
+	texture_id = "unit_frame_portrait_enemy_sorcerer_vortex",
 	texture_size = {
 		60,
 		70
@@ -179,7 +179,7 @@ TwitchVoteTemplates.twitch_spawn_pack_master = {
 		if is_server then
 			debug_print("[TWITCH VOTE] Spawning group of packmasters")
 
-			local amount = 2
+			local amount = 3
 
 			for i = 1, amount, 1 do
 				local breed = Breeds.skaven_pack_master
@@ -227,7 +227,7 @@ TwitchVoteTemplates.twitch_spawn_ratling_gunner = {
 		if is_server then
 			debug_print("[TWITCH VOTE] Spawning group of ratling gunners")
 
-			local amount = 3
+			local amount = 4
 
 			for i = 1, amount, 1 do
 				local breed = Breeds.skaven_ratling_gunner
@@ -251,7 +251,7 @@ TwitchVoteTemplates.twitch_spawn_warpfire_thrower = {
 		if is_server then
 			debug_print("[TWITCH VOTE] Spawning group of warpfire throwers")
 
-			local amount = 3
+			local amount = 4
 
 			for i = 1, amount, 1 do
 				local breed = Breeds.skaven_warpfire_thrower
@@ -276,8 +276,11 @@ TwitchVoteTemplates.twitch_spawn_horde_vector_blob = {
 			debug_print("[TWITCH VOTE] Spawning horde")
 
 			local horde_type = "vector_blob"
+			local amount = 1
 
-			Managers.state.conflict.horde_spawner:horde(horde_type)
+			for i = 1, amount, 1 do
+				Managers.state.conflict.horde_spawner:horde(horde_type)
+			end
 		end
 
 		return 

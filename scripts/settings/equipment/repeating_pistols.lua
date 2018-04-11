@@ -30,6 +30,12 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0.1,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.1,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
@@ -45,12 +51,6 @@ weapon_template.actions = {
 					start_time = 0.3,
 					action = "action_two",
 					input = "action_two"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -150,16 +150,16 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "bullet_spray",
-					start_time = 0.6,
-					action = "action_one",
-					input = "action_one"
-				},
-				{
 					sub_action = "default",
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "bullet_spray",
+					start_time = 0.6,
+					action = "action_one",
+					input = "action_one"
 				}
 			},
 			zoom_condition_function = function ()

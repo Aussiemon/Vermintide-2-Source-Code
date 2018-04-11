@@ -127,6 +127,7 @@ HordeSettings = {
 		vector_composition = "chaos_medium",
 		chance_of_vector = 1,
 		ambush_composition = "chaos_medium",
+		mini_patrol_composition = "chaos_mini_patrol",
 		chance_of_vector_blob = 0.75,
 		vector_blob_composition = "chaos_medium",
 		disabled = false,
@@ -1489,10 +1490,10 @@ PacingSettings = {
 			0
 		},
 		delay_horde_threat_value = {
-			harder = 65,
-			hard = 60,
+			harder = 60,
+			hard = 50,
 			normal = 40,
-			hardest = 80,
+			hardest = 60,
 			easy = 40
 		},
 		delay_mini_patrol_threat_value = {
@@ -1502,10 +1503,10 @@ PacingSettings = {
 			easy = 35
 		},
 		delay_specials_threat_value = {
-			harder = 65,
-			hard = 60,
+			harder = 60,
+			hard = 50,
 			normal = 40,
-			hardest = 80,
+			hardest = 60,
 			easy = 40
 		},
 		mini_patrol = {
@@ -1604,10 +1605,10 @@ PacingSettings = {
 			0
 		},
 		delay_horde_threat_value = {
-			harder = 65,
-			hard = 60,
+			harder = 60,
+			hard = 50,
 			normal = 40,
-			hardest = 80,
+			hardest = 60,
 			easy = 40
 		},
 		delay_mini_patrol_threat_value = {
@@ -1617,10 +1618,10 @@ PacingSettings = {
 			easy = 35
 		},
 		delay_specials_threat_value = {
-			harder = 65,
-			hard = 60,
+			harder = 60,
+			hard = 50,
 			normal = 40,
-			hardest = 80,
+			hardest = 60,
 			easy = 40
 		},
 		mini_patrol = {

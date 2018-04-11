@@ -64,10 +64,30 @@ PlayerUnitOverchargeExtension.set_screen_particle_opacity_modifier = function (s
 	return 
 end
 PlayerUnitOverchargeExtension.reset = function (self)
+	local buff_extension = self.buff_extension
+	local has_buff_extension = ScriptUnit.has_extension(self.unit, "buff_system")
+	local overcharged_critical_buff_id = self.overcharged_critical_buff_id
+	local overcharged_buff_id = self.overcharged_buff_id
+
+	if has_buff_extension and buff_extension.active_buffs(buff_extension) then
+		if overcharged_critical_buff_id then
+			buff_extension.remove_buff(buff_extension, overcharged_critical_buff_id)
+
+			self.overcharged_critical_buff_id = nil
+		end
+
+		if overcharged_buff_id and self.overcharge_value < self.overcharge_limit then
+			buff_extension.remove_buff(buff_extension, overcharged_buff_id)
+
+			self.overcharged_buff_id = nil
+		end
+	end
+
 	self.overcharge_value = 0
 	self.played_hit_overcharge_threshold = false
 	self.is_exploding = false
 
+	StatusUtils.set_overcharge_exploding(self.unit, false)
 	self.set_animation_variable(self)
 
 	return 

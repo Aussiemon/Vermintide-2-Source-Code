@@ -1,8 +1,8 @@
 GearUtils = {}
-GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent)
+GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units)
 	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p = nil
-	local item_template = BackendUtils.get_item_template(item_data)
-	local item_units = BackendUtils.get_item_units(item_data)
+	local item_template = override_item_template or BackendUtils.get_item_template(item_data)
+	local item_units = override_item_units or BackendUtils.get_item_units(item_data)
 
 	if item_units.right_hand_unit then
 		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template.third_person_extension_template, item_units.right_hand_unit, item_template.right_hand_attachment_node_linking, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent)
@@ -254,35 +254,35 @@ GearUtils.destroy_equipment = function (world, equipment)
 	local slots = equipment.slots
 	local unit_spawner = Managers.state.unit_spawner
 
-	if equipment.right_hand_wielded_unit_3p then
+	if equipment.right_hand_wielded_unit_3p and Unit.alive(equipment.right_hand_wielded_unit_3p) then
 		GearUtils.destroy_wielded(world, equipment.right_hand_wielded_unit_3p)
 	end
 
-	if equipment.right_hand_ammo_unit_3p then
+	if equipment.right_hand_ammo_unit_3p and Unit.alive(equipment.right_hand_ammo_unit_3p) then
 		unit_spawner.mark_for_deletion(unit_spawner, equipment.right_hand_ammo_unit_3p)
 	end
 
-	if equipment.right_hand_wielded_unit then
+	if equipment.right_hand_wielded_unit and Unit.alive(equipment.right_hand_wielded_unit) then
 		GearUtils.destroy_wielded(world, equipment.right_hand_wielded_unit)
 	end
 
-	if equipment.right_hand_ammo_unit_1p then
+	if equipment.right_hand_ammo_unit_1p and Unit.alive(equipment.right_hand_ammo_unit_1p) then
 		unit_spawner.mark_for_deletion(unit_spawner, equipment.right_hand_ammo_unit_1p)
 	end
 
-	if equipment.left_hand_wielded_unit_3p then
+	if equipment.left_hand_wielded_unit_3p and Unit.alive(equipment.left_hand_wielded_unit_3p) then
 		GearUtils.destroy_wielded(world, equipment.left_hand_wielded_unit_3p)
 	end
 
-	if equipment.left_hand_ammo_unit_3p then
+	if equipment.left_hand_ammo_unit_3p and Unit.alive(equipment.left_hand_ammo_unit_3p) then
 		unit_spawner.mark_for_deletion(unit_spawner, equipment.left_hand_ammo_unit_3p)
 	end
 
-	if equipment.left_hand_wielded_unit then
+	if equipment.left_hand_wielded_unit and Unit.alive(equipment.left_hand_wielded_unit) then
 		GearUtils.destroy_wielded(world, equipment.left_hand_wielded_unit)
 	end
 
-	if equipment.left_hand_ammo_unit_1p then
+	if equipment.left_hand_ammo_unit_1p and Unit.alive(equipment.left_hand_ammo_unit_1p) then
 		unit_spawner.mark_for_deletion(unit_spawner, equipment.left_hand_ammo_unit_1p)
 	end
 

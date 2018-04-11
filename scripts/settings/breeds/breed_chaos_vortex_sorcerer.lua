@@ -19,11 +19,11 @@ local breed_data = {
 	stagger_resistance = 3,
 	dialogue_source_name = "chaos_vortex_sorcerer",
 	max_health = {
+		20,
+		20,
 		30,
-		30,
-		45,
-		60,
-		90
+		40,
+		60
 	},
 	stagger_duration = {
 		1,
@@ -38,14 +38,17 @@ local breed_data = {
 	diff_stagger_resist = {
 		3,
 		3,
+		4,
 		5,
-		8,
-		12
+		5
 	},
 	run_on_spawn = AiBreedSnippets.on_chaos_vortex_sorcerer_spawn,
 	run_on_death = AiBreedSnippets.on_chaos_vortex_sorcerer_death,
 	run_on_despawn = AiBreedSnippets.on_chaos_vortex_sorcerer_despawn,
-	disabled = Development.setting("disable_vortex_sorcerer") or false
+	disabled = Development.setting("disable_vortex_sorcerer") or false,
+	hitzone_multiplier_types = {
+		head = "headshot"
+	}
 }
 
 for key, value in pairs(Breeds.chaos_tentacle_sorcerer) do

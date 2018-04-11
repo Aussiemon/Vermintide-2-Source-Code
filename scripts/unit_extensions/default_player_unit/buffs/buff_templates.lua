@@ -1370,23 +1370,43 @@ ProcFunctions = {
 	end,
 	victor_bountyhunter_activate_passive_on_melee_kill = function (player, buff, params)
 		local player_unit = player.player_unit
+		local killing_blow_data = params[1]
 
-		if Unit.alive(player_unit) then
-			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
-			local wielded_slot_name = inventory_extension.get_wielded_slot_name(inventory_extension)
+		if not killing_blow_data then
+			return 
+		end
+
+		local master_list_key = killing_blow_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
+
+		if not master_list_key then
+			return 
+		end
+
+		local master_list_data = ItemMasterList[master_list_key]
+
+		if not master_list_data then
+			return 
+		end
+
+		local slot_type = master_list_data.slot_type
+
+		if not slot_type then
+			return 
+		end
+
+		local melee_weapon = slot_type == "melee"
+
+		if melee_weapon and Unit.alive(player_unit) then
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local cooldown_buff = buff_extension.get_non_stacking_buff(buff_extension, "victor_bountyhunter_passive_crit_cooldown")
 			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
 
-			if wielded_slot_name == "slot_melee" then
-				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-				local cooldown_buff = buff_extension.get_non_stacking_buff(buff_extension, "victor_bountyhunter_passive_crit_cooldown")
+			if talent_extension.has_talent(talent_extension, "victor_bountyhunter_passive_reduced_cooldown", "witch_hunter", true) then
+				cooldown_buff = buff_extension.get_non_stacking_buff(buff_extension, "victor_bountyhunter_passive_reduced_cooldown")
+			end
 
-				if talent_extension.has_talent(talent_extension, "victor_bountyhunter_passive_reduced_cooldown", "witch_hunter", true) then
-					cooldown_buff = buff_extension.get_non_stacking_buff(buff_extension, "victor_bountyhunter_passive_reduced_cooldown")
-				end
-
-				if cooldown_buff then
-					cooldown_buff.duration = 0
-				end
+			if cooldown_buff then
+				cooldown_buff.duration = 0
 			end
 		end
 
@@ -1479,12 +1499,9 @@ PotionSpreadTrinketTemplates = {
 TrinketSpreadDistance = 10
 BuffTemplates = {
 	twitch_damage_boost = {
-		activation_effect = "fx/screenspace_potion_01",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
-		activation_sound = "hud_gameplay_stance_smiter_activate",
 		buffs = {
 			{
-				duration = 20,
+				duration = 60,
 				name = "armor penetration",
 				refresh_durations = true,
 				max_stacks = 1,
@@ -1493,42 +1510,36 @@ BuffTemplates = {
 		}
 	},
 	twitch_speed_boost = {
-		activation_effect = "fx/screenspace_potion_02",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
-		activation_sound = "hud_gameplay_stance_ninjafencer_activate",
 		buffs = {
 			{
 				apply_buff_func = "apply_movement_buff",
-				multiplier = 1.5,
+				multiplier = 1.25,
 				name = "movement",
 				icon = "potion_buff_02",
 				refresh_durations = true,
 				remove_buff_func = "remove_movement_buff",
 				max_stacks = 1,
-				duration = 20,
+				duration = 60,
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				}
 			},
 			{
-				multiplier = 0.5,
+				multiplier = 0.25,
 				name = "attack speed buff",
 				refresh_durations = true,
 				max_stacks = 1,
-				duration = 20,
+				duration = 60,
 				stat_buff = StatBuffIndex.ATTACK_SPEED
 			}
 		}
 	},
 	twitch_cooldown_reduction_boost = {
-		activation_effect = "fx/screenspace_potion_02",
-		deactivation_sound = "hud_gameplay_stance_deactivate",
-		activation_sound = "hud_gameplay_stance_ninjafencer_activate",
 		buffs = {
 			{
 				name = "cooldown reduction buff",
-				multiplier = 10,
-				duration = 10,
+				multiplier = 2.5,
+				duration = 60,
 				max_stacks = 1,
 				icon = "potion_buff_03",
 				refresh_durations = true,
@@ -1541,7 +1552,7 @@ BuffTemplates = {
 			{
 				max_stacks = 1,
 				icon = "victor_bountyhunter_passive_infinite_ammo",
-				duration = 30,
+				duration = 60,
 				name = "twitch_no_overcharge_no_ammo_reloads"
 			}
 		}
@@ -1549,37 +1560,40 @@ BuffTemplates = {
 	twitch_health_regen = {
 		buffs = {
 			{
-				icon = "bardin_ranger_activated_ability_heal",
-				name = "twitch_health_regen",
-				heal = 1,
-				heal_type = "health_regen",
-				time_between_heal = 1,
 				update_func = "health_regen_update",
+				heal_type = "health_regen",
+				name = "twitch_health_regen",
+				icon = "bardin_ranger_activated_ability_heal",
+				time_between_heal = 2,
+				max_stacks = 1,
 				apply_buff_func = "health_regen_start",
-				duration = 30
+				heal = 1,
+				duration = 60
 			}
 		}
 	},
 	twitch_health_degen = {
 		buffs = {
 			{
-				icon = "bardin_slayer_crit_chance",
+				duration = 60,
 				name = "twitch_health_degen",
 				damage = 1,
-				damage_type = "health_degen",
-				duration = 20,
-				update_func = "health_degen_update",
+				icon = "bardin_slayer_crit_chance",
 				apply_buff_func = "health_degen_start",
-				time_between_damage = 1
+				time_between_damage = 3,
+				damage_type = "health_degen",
+				max_stacks = 1,
+				update_func = "health_degen_update"
 			}
 		}
 	},
 	twitch_grimoire_health_debuff = {
 		buffs = {
 			{
-				duration = 30,
+				duration = 60,
 				name = "twitch_grimoire_health_debuff",
 				debuff = true,
+				max_stacks = 1,
 				icon = "buff_icon_grimoire_health_debuff",
 				perk = "twitch_grimoire",
 				stat_buff = StatBuffIndex.MAX_HEALTH,
@@ -1590,7 +1604,7 @@ BuffTemplates = {
 	twitch_power_boost_dismember = {
 		buffs = {
 			{
-				duration = 30,
+				duration = 60,
 				multiplier = 0.25,
 				perk = "bloody_mess",
 				max_stacks = 1,
@@ -1612,6 +1626,7 @@ BuffTemplates = {
 				name = "temporary health degen",
 				damage = 10,
 				damage_type = "temporary_health_degen",
+				max_stacks = 1,
 				update_func = "temporary_health_degen_update",
 				apply_buff_func = "temporary_health_degen_start",
 				time_between_damage = 3

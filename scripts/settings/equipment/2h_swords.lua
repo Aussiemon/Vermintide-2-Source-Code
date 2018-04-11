@@ -374,7 +374,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_right = {
 			damage_window_start = 0.5,
@@ -440,7 +441,8 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			}
+			},
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		light_attack_bopp = {
 			damage_window_start = 0.32,
@@ -451,8 +453,8 @@ weapon_template.actions = {
 			width_mod = 30,
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_target = false,
 			hit_effect = "melee_hit_sword_2h",
+			use_target = false,
 			damage_profile = "medium_slashing_linesman",
 			damage_window_end = 0.45,
 			impact_sound_event = "slashing_hit",
@@ -505,7 +507,8 @@ weapon_template.actions = {
 			},
 			enter_function = function (attacker_unit, input_extension)
 				return input_extension.reset_release_input(input_extension)
-			end
+			end,
+			hit_mass_count = LINESMAN_HIT_MASS_COUNT
 		},
 		push = {
 			damage_window_start = 0.05,

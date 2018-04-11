@@ -65,6 +65,13 @@ SimpleHuskInventoryExtension.add_equipment = function (self, slot_name, item_nam
 		table.clear(slot_buffs)
 	end
 
+	if item_data.slot_to_use then
+		local override_slot_data = self._equipment.slots[item_data.slot_to_use]
+		local override_item_data = override_slot_data.item_data
+		item_data.left_hand_unit = override_item_data.left_hand_unit
+		item_data.right_hand_unit = override_item_data.right_hand_unit
+	end
+
 	self._equipment.slots[slot_name] = {
 		item_data = item_data,
 		id = slot_name,
@@ -361,6 +368,25 @@ end
 SimpleHuskInventoryExtension.set_loaded_projectile_override = function (self)
 	return 
 end
+SimpleHuskInventoryExtension.override_career_skill_item_template = function (self, item_data)
+	local override_item_template = nil
+	local slot_to_use = item_data.slot_to_use
+
+	if slot_to_use then
+		local equipment = self._equipment
+		local slots = equipment.slots
+		local override_slot_data = slots[slot_to_use]
+		local override_item_template = self.get_item_template(self, override_slot_data)
+		local item_template = BackendUtils.get_item_template(item_data)
+		item_template.left_hand_attachment_node_linking = override_item_template.left_hand_attachment_node_linking
+		item_template.right_hand_attachment_node_linking = override_item_template.right_hand_attachment_node_linking
+		item_template.wield_anim = override_item_template.wield_anim
+		item_template.wield_anim_no_ammo = override_item_template.wield_anim_no_ammo
+		override_item_template = item_template
+	end
+
+	return override_item_template
+end
 SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slot_name, unit_1p, unit_3p)
 	local slot = equipment.slots[slot_name]
 
@@ -380,7 +406,8 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 
 	GearUtils.destroy_equipment(world, equipment)
 
-	local item_template = BackendUtils.get_item_template(item_data)
+	local override_item_template = self.override_career_skill_item_template(self, item_data)
+	local item_template = override_item_template or BackendUtils.get_item_template(item_data)
 	local item_units = BackendUtils.get_item_units(item_data, nil, slot.skin)
 	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p = nil
 

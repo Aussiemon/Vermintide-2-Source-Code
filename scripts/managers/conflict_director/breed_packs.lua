@@ -987,8 +987,8 @@ BreedPacks = {
 				hardest = {
 					{
 						{
-							14,
-							16
+							12,
+							14
 						},
 						"skaven_storm_vermin_commander",
 						Breeds.skaven_clan_rat
@@ -1468,16 +1468,16 @@ BreedPacks = {
 					},
 					{
 						{
-							5,
-							6
+							4,
+							5
 						},
 						"skaven_storm_vermin_with_shield",
 						Breeds.skaven_clan_rat
 					},
 					{
 						{
-							6,
-							8
+							5,
+							7
 						},
 						"skaven_storm_vermin_commander",
 						Breeds.skaven_clan_rat
@@ -1737,8 +1737,8 @@ BreedPacks = {
 				hardest_bajs = {
 					{
 						{
-							12,
-							15
+							10,
+							12
 						},
 						"skaven_plague_monk",
 						Breeds.skaven_clan_rat
@@ -1791,7 +1791,7 @@ BreedPacks = {
 					{
 						{
 							2,
-							4
+							3
 						},
 						"skaven_plague_monk",
 						Breeds.skaven_clan_rat
@@ -1808,8 +1808,8 @@ BreedPacks = {
 				hardest_bajs = {
 					{
 						{
-							6,
-							7
+							5,
+							6
 						},
 						"skaven_plague_monk",
 						Breeds.skaven_clan_rat
@@ -1992,8 +1992,8 @@ BreedPacks = {
 				hardest = {
 					{
 						{
-							3,
-							4
+							2,
+							3
 						},
 						"chaos_warrior",
 						Breeds.chaos_marauder
@@ -2057,8 +2057,8 @@ BreedPacks = {
 				hardest = {
 					{
 						{
-							2,
-							3
+							1,
+							2
 						},
 						"chaos_warrior",
 						Breeds.chaos_marauder
@@ -2237,16 +2237,16 @@ BreedPacks = {
 				hardest = {
 					{
 						{
-							3,
-							4
+							2,
+							3
 						},
 						"chaos_warrior",
 						Breeds.chaos_marauder
 					},
 					{
 						{
-							7,
-							10
+							6,
+							8
 						},
 						"chaos_raider",
 						Breeds.chaos_marauder
@@ -2310,8 +2310,8 @@ BreedPacks = {
 					},
 					{
 						{
-							5,
-							6
+							4,
+							5
 						},
 						"chaos_raider",
 						Breeds.chaos_marauder
@@ -2491,8 +2491,8 @@ BreedPacks = {
 					},
 					{
 						{
-							8,
-							10
+							7,
+							9
 						},
 						"chaos_raider",
 						Breeds.chaos_marauder
@@ -2562,8 +2562,8 @@ BreedPacks = {
 					},
 					{
 						{
-							4,
-							5
+							3,
+							4
 						},
 						"chaos_raider",
 						Breeds.chaos_marauder
@@ -2698,7 +2698,7 @@ BreedPacks = {
 					{
 						{
 							5,
-							8
+							7
 						},
 						"chaos_berzerker",
 						Breeds.chaos_marauder
@@ -2712,16 +2712,16 @@ BreedPacks = {
 				hardest = {
 					{
 						{
-							11,
-							13
+							10,
+							12
 						},
 						"chaos_berzerker",
 						Breeds.chaos_marauder
 					},
 					{
 						{
-							5,
-							6
+							4,
+							5
 						},
 						"chaos_raider",
 						Breeds.chaos_marauder
@@ -2768,8 +2768,8 @@ BreedPacks = {
 				harder = {
 					{
 						{
-							4,
-							5
+							5,
+							6
 						},
 						"chaos_berzerker",
 						Breeds.chaos_marauder
@@ -2786,8 +2786,8 @@ BreedPacks = {
 				hardest = {
 					{
 						{
-							7,
-							9
+							6,
+							7
 						},
 						"chaos_berzerker",
 						Breeds.chaos_marauder
@@ -2933,8 +2933,8 @@ BreedPacks = {
 				hard = {
 					{
 						{
-							2,
-							5
+							3,
+							4
 						},
 						"chaos_berzerker",
 						Breeds.chaos_fanatic
@@ -2959,7 +2959,7 @@ BreedPacks = {
 				harder = {
 					{
 						{
-							4,
+							5,
 							6
 						},
 						"chaos_berzerker",
@@ -2986,7 +2986,7 @@ BreedPacks = {
 					{
 						{
 							7,
-							9
+							8
 						},
 						"chaos_berzerker",
 						Breeds.chaos_fanatic
@@ -2994,7 +2994,7 @@ BreedPacks = {
 					{
 						{
 							4,
-							6
+							5
 						},
 						"chaos_raider",
 						Breeds.chaos_marauder
@@ -3091,16 +3091,16 @@ BreedPacks = {
 				hardest = {
 					{
 						{
-							5,
-							6
+							4,
+							5
 						},
 						"chaos_berzerker",
 						Breeds.chaos_fanatic
 					},
 					{
 						{
-							3,
-							4
+							2,
+							3
 						},
 						"chaos_raider",
 						Breeds.chaos_marauder

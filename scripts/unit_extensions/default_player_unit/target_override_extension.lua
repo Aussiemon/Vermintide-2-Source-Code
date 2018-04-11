@@ -7,7 +7,7 @@ TargetOverrideExtension.init = function (self, extension_init_context, unit, ext
 	self._stagger_impact = {
 		2,
 		1,
-		0,
+		6,
 		0,
 		2
 	}

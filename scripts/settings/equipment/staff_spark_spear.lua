@@ -31,6 +31,12 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
+					sub_action = "default",
+					start_time = 0.2,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
 					sub_action = "rapid_left",
 					start_time = 0.2,
 					action = "action_one",
@@ -45,12 +51,6 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0.2,
-					action = "action_wield",
-					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.1,
 					action = "action_two",
 					input = "action_two_hold",
 					end_time = math.huge
@@ -123,6 +123,12 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0.2,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.2,
 					action = "action_one",
 					input = "action_one"
 				},
@@ -131,12 +137,6 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "action_one",
 					input = "action_one_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.2,
-					action = "action_wield",
-					input = "action_wield"
 				},
 				{
 					sub_action = "default",
@@ -222,6 +222,12 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0.3,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.3,
 					action = "action_one",
 					release_required = "action_two_hold",
 					input = "action_one"
@@ -239,12 +245,6 @@ weapon_template.actions = {
 					action = "action_two",
 					input = "action_two_hold",
 					end_time = math.huge
-				},
-				{
-					sub_action = "default",
-					start_time = 0.3,
-					action = "action_wield",
-					input = "action_wield"
 				},
 				{
 					sub_action = "default",
@@ -317,6 +317,12 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0.4,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.4,
 					action = "action_one",
 					release_required = "action_two_hold",
 					input = "action_one"
@@ -327,12 +333,6 @@ weapon_template.actions = {
 					action = "action_two",
 					input = "action_two_hold",
 					end_time = math.huge
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_wield",
-					input = "action_wield"
 				},
 				{
 					sub_action = "default",
@@ -370,16 +370,15 @@ weapon_template.actions = {
 		},
 		shoot_charged_3 = {
 			damage_window_start = 0.1,
+			fire_sound_event = "weapon_staff_spark_spear_charged",
 			fire_sound_on_husk = true,
-			ammo_usage = 1,
 			sphere_sweep_length = 50,
 			fire_sound_event_parameter = "drakegun_charge_fire",
 			sphere_sweep_dot_threshold = 0.5,
-			true_flight_template = "sniper",
+			kind = "charged_projectile",
 			alert_sound_range_hit = 20,
 			charge_value = "light_attack",
-			fire_sound_event = "weapon_staff_spark_spear_charged",
-			kind = "charged_projectile",
+			alert_sound_range_fire = 12,
 			apply_recoil = true,
 			anim_time_scale = 1.5,
 			damage_window_end = 0,
@@ -395,7 +394,7 @@ weapon_template.actions = {
 			hit_effect = "staff_spear",
 			sphere_sweep_radius = 2,
 			overcharge_type = "spear_3",
-			alert_sound_range_fire = 12,
+			ammo_usage = 1,
 			total_time = 1,
 			buff_data = {
 				{
@@ -406,6 +405,12 @@ weapon_template.actions = {
 				}
 			},
 			allowed_chain_actions = {
+				{
+					sub_action = "default",
+					start_time = 0.5,
+					action = "action_wield",
+					input = "action_wield"
+				},
 				{
 					sub_action = "default",
 					start_time = 0.5,
@@ -423,12 +428,6 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0.5,
-					action = "action_wield",
-					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
 					action = "weapon_reload",
 					input = "weapon_reload_hold"
 				}
@@ -439,10 +438,6 @@ weapon_template.actions = {
 
 				return 
 			end,
-			cleave_distribution = {
-				attack = 0.25,
-				impact = 0.25
-			},
 			projectile_info = Projectiles.spear,
 			impact_data = {
 				damage_profile = "fire_spear_3"
@@ -508,6 +503,12 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
+					sub_action = "default",
+					start_time = 0,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
 					sub_action = "shoot_charged_3",
 					start_time = 1.25,
 					action = "action_one",
@@ -524,12 +525,6 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_one",
 					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
 				},
 				{
 					sub_action = "default",

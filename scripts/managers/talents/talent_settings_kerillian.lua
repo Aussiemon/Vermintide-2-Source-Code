@@ -21,10 +21,10 @@ local buff_tweak_data = {
 		multiplier = 0.3
 	},
 	kerillian_shade_dodge_range = {
-		multiplier = 1.1
+		multiplier = 1.2
 	},
 	kerillian_shade_dodge_speed = {
-		multiplier = 1.1
+		multiplier = 1.2
 	},
 	kerillian_shade_movement_speed = {
 		multiplier = 1.05
@@ -82,7 +82,7 @@ local buff_tweak_data = {
 		bonus = 2
 	},
 	kerillian_maidenguard_push_arc = {
-		multiplier = 0.3
+		multiplier = 0.5
 	},
 	kerillian_maidenguard_max_ammo = {
 		multiplier = 0.4
@@ -100,13 +100,13 @@ local buff_tweak_data = {
 		multiplier = 1.05
 	},
 	kerillian_maidenguard_improved_stamina_regen = {
-		multiplier = 0.3
+		multiplier = 0.5
 	},
 	kerillian_maidenguard_improved_dodge = {
-		multiplier = 1.1
+		multiplier = 1.2
 	},
 	kerillian_maidenguard_improved_dodge_speed = {
-		multiplier = 1.1
+		multiplier = 1.2
 	},
 	kerillian_maidenguard_activated_ability_damage = {
 		multiplier = 1
@@ -143,7 +143,7 @@ local buff_tweak_data = {
 		ammo_bonus_fraction = 0.3
 	},
 	kerillian_waywatcher_increased_crit_hit_damage_on_high_health = {
-		activation_health = 0.25
+		activation_health = 0.45
 	},
 	kerillian_waywatcher_crit_hit_damage_on_high_health = {
 		multiplier = 0.3

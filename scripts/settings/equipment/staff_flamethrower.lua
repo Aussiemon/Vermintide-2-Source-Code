@@ -45,26 +45,26 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 1.1,
+					start_time = 0.75,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 1,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default",
-					start_time = 1.5,
+					start_time = 0.75,
 					action = "action_two",
 					input = "action_two"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.9,
-					action = "action_wield",
-					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.9,
+					start_time = 0.75,
 					action = "weapon_reload",
 					input = "weapon_reload"
 				}
@@ -172,16 +172,16 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "shoot_charged",
-					start_time = 0.65,
-					action = "action_one",
-					input = "action_one"
-				},
-				{
 					sub_action = "default",
 					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "shoot_charged",
+					start_time = 0.65,
+					action = "action_one",
+					input = "action_one"
 				},
 				{
 					sub_action = "default",

@@ -1,4 +1,4 @@
-local default_bot_threat_difficulty_data = BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
+local default_bot_threat_difficulty_data = BotConstants and BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	is_bot_aid_threat = true,
 	target_selection_angry = "pick_rat_ogre_target_with_weights",

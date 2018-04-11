@@ -455,6 +455,34 @@ ItemMasterList.frame_collectors_edition = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.frame_community_01 = {
+	description = "frame_community_01_description",
+	temporary_template = "frame_community_01",
+	display_name = "frame_community_01_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_community_01",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.frame_0000 = {
 	description = "frame_0000_description",
 	temporary_template = "frame_0000",
@@ -3395,7 +3423,7 @@ ItemMasterList.wh_1h_axe = {
 	hud_icon = "weapon_generic_icon_axe1h",
 	skin_combination_table = "wh_1h_axe_skins",
 	slot_type = "melee",
-	inventory_icon = "icon_wpn_axe_02_t1",
+	inventory_icon = "icon_wpn_axe_hatchet_t1",
 	display_name = "wh_1h_axe_skin_05_name",
 	has_power_level = true,
 	template = "one_hand_axe_template_1",

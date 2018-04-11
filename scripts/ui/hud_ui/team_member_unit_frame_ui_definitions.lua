@@ -159,8 +159,8 @@ local function create_static_widget()
 				},
 				{
 					pass_type = "texture",
-					style_id = "ammo_bar_bg",
-					texture_id = "ammo_bar_bg",
+					style_id = "ability_bar_bg",
+					texture_id = "ability_bar_bg",
 					retained_mode = RETAINED_MODE_ENABLED
 				}
 			}
@@ -173,7 +173,7 @@ local function create_static_widget()
 			is_host = false,
 			player_level = "",
 			hp_bar_fg = "hud_teammate_hp_bar_frame",
-			ammo_bar_bg = "hud_teammate_ammo_bar_bg"
+			ability_bar_bg = "hud_teammate_ability_bar_bg"
 		},
 		style = {
 			character_portrait = {
@@ -280,7 +280,7 @@ local function create_static_widget()
 					255
 				}
 			},
-			ammo_bar_bg = {
+			ability_bar_bg = {
 				size = {
 					92,
 					5
@@ -336,32 +336,39 @@ local function create_dynamic_portait_widget()
 					end
 				},
 				{
-					style_id = "ammo_bar",
-					pass_type = "texture_uv",
-					content_id = "ammo_bar",
+					pass_type = "texture",
+					style_id = "ammo_indicator",
+					texture_id = "ammo_indicator",
 					retained_mode = RETAINED_MODE_ENABLED,
-					content_change_function = function (content, style)
-						local ammo_progress = content.bar_value
-						local size = style.size
-						local uvs = content.uvs
-						local offset = style.offset
-						local bar_length = 92
-						uvs[2][2] = ammo_progress
-						size[1] = bar_length * ammo_progress
+					content_check_function = function (content)
+						local ammo_progress = content.ammo_percent
 
-						return 
+						return ammo_progress and 0 < ammo_progress and ammo_progress <= 0.33
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "ammo_indicator",
+					texture_id = "ammo_indicator_empty",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						local ammo_progress = content.ammo_percent
+
+						return ammo_progress and ammo_progress <= 0
 					end
 				}
 			}
 		},
 		content = {
-			display_portrait_overlay = false,
+			talk_indicator_highlight = "speaking_icon",
 			connecting = false,
 			display_portrait_icon = false,
-			connecting_icon = "matchmaking_connecting_icon",
+			ammo_indicator_empty = "unit_frame_ammo_empty",
 			bar_start_side = "left",
 			portrait_icon = "status_icon_needs_assist",
-			talk_indicator_highlight = "speaking_icon",
+			display_portrait_overlay = false,
+			connecting_icon = "matchmaking_connecting_icon",
+			ammo_indicator = "unit_frame_ammo_low",
 			ammo_bar = {
 				bar_value = 1,
 				texture_id = "hud_teammate_ammo_bar_fill",
@@ -378,6 +385,23 @@ local function create_dynamic_portait_widget()
 			}
 		},
 		style = {
+			ammo_indicator = {
+				size = {
+					32,
+					32
+				},
+				offset = {
+					60,
+					-40,
+					5
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
 			talk_indicator_highlight = {
 				size = {
 					40,
@@ -429,23 +453,6 @@ local function create_dynamic_portait_widget()
 				},
 				color = {
 					150,
-					255,
-					255,
-					255
-				}
-			},
-			ammo_bar = {
-				size = {
-					92,
-					5
-				},
-				offset = {
-					(health_bar_offset[1] + health_bar_size[1] / 2) - 46,
-					health_bar_offset[2] - 9,
-					health_bar_offset[3] + 18
-				},
-				color = {
-					255,
 					255,
 					255,
 					255
@@ -996,23 +1003,6 @@ local function create_dynamic_health_widget()
 					health_bar_offset[3] + 16
 				}
 			},
-			ammo_bar = {
-				size = {
-					92,
-					5
-				},
-				offset = {
-					(health_bar_offset[1] + health_bar_size[1] / 2) - 46,
-					health_bar_offset[2] - 9,
-					health_bar_offset[3] + 18
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				}
-			},
 			grimoire_debuff_divider = {
 				masked = true,
 				size = {
@@ -1057,16 +1047,86 @@ local function create_dynamic_health_widget()
 	}
 end
 
+local function create_dynamic_ability_widget()
+	return {
+		scenegraph_id = "pivot",
+		element = {
+			passes = {
+				{
+					style_id = "ability_bar",
+					pass_type = "texture_uv",
+					content_id = "ability_bar",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_change_function = function (content, style)
+						local ability_progress = content.bar_value
+						local size = style.size
+						local uvs = content.uvs
+						local offset = style.offset
+						local bar_length = 92
+						uvs[2][2] = ability_progress
+						size[1] = bar_length * ability_progress
+
+						return 
+					end
+				}
+			}
+		},
+		content = {
+			bar_start_side = "left",
+			ability_bar = {
+				bar_value = 1,
+				texture_id = "hud_teammate_ability_bar_fill",
+				uvs = {
+					{
+						0,
+						0
+					},
+					{
+						1,
+						1
+					}
+				}
+			}
+		},
+		style = {
+			ability_bar = {
+				size = {
+					92,
+					5
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					(health_bar_offset[1] + health_bar_size[1] / 2) - 46,
+					health_bar_offset[2] - 9,
+					health_bar_offset[3] + 18
+				}
+			}
+		},
+		offset = {
+			0,
+			-55 * portrait_scale,
+			0
+		}
+	}
+end
+
 local widget_definitions = {
 	loadout_dynamic = create_dynamic_loadout_widget(),
 	portrait_static = UIWidgets.create_portrait_frame("portrait_pivot", "default", "-", portrait_scale, RETAINED_MODE_ENABLED),
 	default_dynamic = create_dynamic_portait_widget(),
 	default_static = create_static_widget(),
-	health_dynamic = create_dynamic_health_widget()
+	health_dynamic = create_dynamic_health_widget(),
+	ability_dynamic = create_dynamic_ability_widget()
 }
 local features_list = {
 	equipment = true,
-	ammo = true
+	ammo = true,
+	ability = true
 }
 local widget_name_by_feature = {
 	static = {
@@ -1081,7 +1141,8 @@ local widget_name_by_feature = {
 		status_icon = "default_dynamic",
 		health = "health_dynamic",
 		equipment = "loadout_dynamic",
-		ammo = "default_dynamic"
+		ammo = "default_dynamic",
+		ability = "ability_dynamic"
 	}
 }
 

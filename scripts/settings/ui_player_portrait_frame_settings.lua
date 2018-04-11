@@ -52,6 +52,18 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_community_01 = {
+		{
+			texture = "portrait_frame_community_01",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	default = {
 		{
 			texture = "portrait_frame_0000",

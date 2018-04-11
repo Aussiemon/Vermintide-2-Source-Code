@@ -43,7 +43,7 @@ local breed_data = {
 	target_selection = "pick_closest_target_with_spillover",
 	no_stagger_duration = true,
 	exchange_order = 3,
-	stagger_threshold_heavy = 4,
+	stagger_threshold_heavy = 3,
 	stagger_multiplier = 0.4,
 	stagger_threshold_light = 0.25,
 	hit_reaction = "ai_default",
@@ -91,14 +91,14 @@ local breed_data = {
 		3,
 		4,
 		5,
-		6
+		5
 	},
 	stagger_reduction = {
-		1,
-		1,
-		1.25,
+		0.9,
+		0.9,
+		1.2,
 		1.5,
-		2
+		1.5
 	},
 	stagger_duration = {
 		0.5,
@@ -127,7 +127,7 @@ local breed_data = {
 		8,
 		12,
 		16,
-		24
+		16
 	},
 	wwise_voices = {
 		"marauder_andreas",

@@ -85,7 +85,7 @@ local breed_data = {
 		1.75,
 		2.3,
 		2.9,
-		3.5
+		2.9
 	},
 	stagger_duration = {
 		0.75,
@@ -109,7 +109,7 @@ local breed_data = {
 		1.25,
 		2,
 		2.5,
-		3.75
+		2.5
 	},
 	wwise_voices = {
 		"fanatic"

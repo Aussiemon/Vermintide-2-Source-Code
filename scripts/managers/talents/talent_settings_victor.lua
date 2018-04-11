@@ -47,13 +47,13 @@ local buff_tweak_data = {
 		multiplier = 0.03
 	},
 	victor_zealot_damage_taken_capped = {
-		bonus = 15
+		bonus = 10
 	},
 	victor_zealot_increased_defence_low_health = {
 		activation_health = 0.5
 	},
 	victor_zealot_defence_on_low_health = {
-		multiplier = -0.25
+		multiplier = -0.35
 	},
 	victor_zealot_increased_block_arc_from_passive = {
 		chunk_size = 25
@@ -80,8 +80,7 @@ local buff_tweak_data = {
 		duration = 8,
 		multiplier = 0.25
 	},
-	victor_zealot_activated_ability_heal = {
-		duration = 5,
+	victor_zealot_activated_ability_heal_buff = {
 		bonus = 2
 	},
 	victor_zealot_activated_ability_cooldown = {
@@ -118,7 +117,7 @@ local buff_tweak_data = {
 		multiplier = 0.3
 	},
 	victor_bountyhunter_melee_damage_on_no_ammo_buff = {
-		multiplier = 0.1
+		multiplier = 0.25
 	},
 	victor_bountyhunter_critical_hit_damage = {
 		multiplier = 0.25
@@ -176,19 +175,19 @@ local buff_tweak_data = {
 	victor_witchhunter_defence_buff_on_disabled = {
 		multiplier = -0.5
 	},
-	victor_witchhunter_attack_speed_on_ping_target_killed = {
-		inherited_duration = 4,
-		inherited_multiplier = 0.1
+	victor_witchhunter_ping_target_attack_speed = {
+		multiplier = 0.1,
+		duration = 4
 	},
-	victor_witchhunter_critical_hit_chance_on_ping_target_killed = {
-		inherited_duration = 4,
-		inherited_bonus = 0.08
+	victor_witchhunter_ping_target_crit_chance = {
+		bonus = 0.08,
+		duration = 4
 	},
 	victor_witchhunter_dodge_range = {
-		multiplier = 1.1
+		multiplier = 1.2
 	},
 	victor_witchhunter_dodge_speed = {
-		multiplier = 1.1
+		multiplier = 1.2
 	},
 	victor_witchhunter_heal_party_on_ping_target_killed = {
 		bonus = 2
@@ -289,10 +288,10 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_activated_ability = {
 		buffs = {
 			{
-				icon = "victor_zealot_activated_ability",
-				is_cooldown = true,
 				remove_buff_func = "end_zealot_activated_ability",
-				dormant = true,
+				max_stacks = 1,
+				icon = "victor_zealot_activated_ability",
+				priority_buff = true,
 				stat_buff = StatBuffIndex.ATTACK_SPEED
 			}
 		}
@@ -422,10 +421,9 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_activated_ability_duration = {
 		buffs = {
 			{
-				icon = "talent_max_health_human",
-				is_cooldown = true,
 				remove_buff_func = "end_zealot_activated_ability",
-				dormant = true,
+				icon = "victor_zealot_activated_ability",
+				priority_buff = true,
 				stat_buff = StatBuffIndex.ATTACK_SPEED
 			}
 		}
@@ -433,13 +431,19 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_activated_ability_heal = {
 		buffs = {
 			{
-				icon = "talent_max_health_human",
-				event = "on_hit",
-				event_buff = true,
-				is_cooldown = true,
-				remove_buff_func = "end_zealot_activated_ability",
-				dormant = true,
+				buff_to_add = "victor_zealot_activated_ability_heal_buff",
+				activation_buff = "victor_zealot_activated_ability",
+				update_func = "activate_buff_on_other_buff"
+			}
+		}
+	},
+	victor_zealot_activated_ability_heal_buff = {
+		buffs = {
+			{
 				max_stacks = 1,
+				event_buff = true,
+				event = "on_hit",
+				icon = "victor_zealot_activated_ability_heal",
 				buff_func = ProcFunctions.heal
 			}
 		}
@@ -795,8 +799,19 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_ping_target_killed",
+				buff_to_add = "victor_witchhunter_ping_target_attack_speed",
 				event_buff = true,
-				buff_func = ProcFunctions.increase_attack_speed
+				buff_func = ProcFunctions.add_buff
+			}
+		}
+	},
+	victor_witchhunter_ping_target_attack_speed = {
+		buffs = {
+			{
+				max_stacks = 1,
+				icon = "victor_witchhunter_attack_speed_on_ping_target_killed",
+				refresh_durations = true,
+				stat_buff = StatBuffIndex.ATTACK_SPEED
 			}
 		}
 	},
@@ -804,8 +819,19 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_ping_target_killed",
+				buff_to_add = "victor_witchhunter_ping_target_crit_chance",
 				event_buff = true,
-				buff_func = ProcFunctions.increase_critical_hit_chance
+				buff_func = ProcFunctions.add_buff
+			}
+		}
+	},
+	victor_witchhunter_ping_target_crit_chance = {
+		buffs = {
+			{
+				max_stacks = 1,
+				icon = "victor_witchhunter_critical_hit_chance_on_ping_target_killed",
+				refresh_durations = true,
+				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
 			}
 		}
 	},
@@ -1157,14 +1183,17 @@ Talents.witch_hunter = {
 		description = "victor_zealot_activated_ability_heal_desc",
 		name = "victor_zealot_activated_ability_heal",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "victor_zealot_activated_ability_heal",
 		description_values = {
 			{
-				value = buff_tweak_data.victor_zealot_activated_ability_heal.bonus
+				value = buff_tweak_data.victor_zealot_activated_ability_heal_buff.bonus
 			}
 		},
 		requirements = {},
-		buffs = {},
+		buffs = {
+			"victor_zealot_activated_ability_heal"
+		},
 		buff_data = {}
 	},
 	{
@@ -1520,10 +1549,10 @@ Talents.witch_hunter = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.victor_witchhunter_attack_speed_on_ping_target_killed.inherited_multiplier
+				value = buff_tweak_data.victor_witchhunter_ping_target_attack_speed.multiplier
 			},
 			{
-				value = buff_tweak_data.victor_witchhunter_attack_speed_on_ping_target_killed.inherited_duration
+				value = buff_tweak_data.victor_witchhunter_ping_target_attack_speed.duration
 			}
 		},
 		requirements = {},
@@ -1553,14 +1582,15 @@ Talents.witch_hunter = {
 		description = "victor_witchhunter_critical_hit_chance_on_ping_target_killed_desc",
 		name = "victor_witchhunter_critical_hit_chance_on_ping_target_killed",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "victor_witchhunter_critical_hit_chance_on_ping_target_killed",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.victor_witchhunter_critical_hit_chance_on_ping_target_killed.inherited_bonus
+				value = buff_tweak_data.victor_witchhunter_ping_target_crit_chance.bonus
 			},
 			{
-				value = buff_tweak_data.victor_witchhunter_critical_hit_chance_on_ping_target_killed.inherited_duration
+				value = buff_tweak_data.victor_witchhunter_ping_target_crit_chance.duration
 			}
 		},
 		requirements = {},

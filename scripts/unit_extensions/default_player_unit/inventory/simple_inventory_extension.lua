@@ -35,6 +35,8 @@ SimpleInventoryExtension.init = function (self, extension_init_context, unit, ex
 			slot_ranged = {}
 		}
 	}
+	self._items_to_spawn = {}
+	self.resync_ids = {}
 	self.recently_acquired_list = {}
 	self._loaded_projectile_settings = {}
 	self._selected_consumable_slot = nil
@@ -171,6 +173,25 @@ SimpleInventoryExtension._send_rpc_add_equipment_buffs = function (self, unit_go
 
 	return 
 end
+SimpleInventoryExtension.override_career_skill_item_template = function (self, item_data)
+	local override_item_template = nil
+	local slot_to_use = item_data.slot_to_use
+
+	if slot_to_use then
+		local equipment = self._equipment
+		local slots = equipment.slots
+		local override_slot_data = slots[slot_to_use]
+		local override_item_template = override_slot_data.item_template
+		local item_template = BackendUtils.get_item_template(item_data)
+		item_template.left_hand_attachment_node_linking = override_item_template.left_hand_attachment_node_linking
+		item_template.right_hand_attachment_node_linking = override_item_template.right_hand_attachment_node_linking
+		item_template.wield_anim = override_item_template.wield_anim
+		item_template.wield_anim_no_ammo = override_item_template.wield_anim_no_ammo
+		override_item_template = item_template
+	end
+
+	return override_item_template
+end
 SimpleInventoryExtension.add_equipment_by_category = function (self, category)
 	local career_name = self.career_extension:career_name()
 	local category_slots = InventorySettings[category]
@@ -227,24 +248,31 @@ SimpleInventoryExtension.recently_acquired = function (self, slot_name)
 	return slot_data
 end
 SimpleInventoryExtension._update_resync_loadout = function (self)
-	local equipment_to_spawn = self._item_to_spawn
+	local _, equipment_to_spawn = next(self._items_to_spawn)
 
 	if not equipment_to_spawn then
 		return 
 	end
 
 	if self.resync_loadout_needed then
-		self.resync_id = self.resync_loadout(self, equipment_to_spawn)
+		for _, equipment_to_spawn in ipairs(self._items_to_spawn) do
+			self.resync_ids[#self.resync_ids + 1] = self.resync_loadout(self, equipment_to_spawn)
+		end
+
 		self.resync_loadout_needed = false
+		self._is_resyncing_loadout = true
 	end
 
-	local resync_id = self.resync_id
+	local _, resync_id = next(self.resync_ids)
 
 	if resync_id and self.all_clients_loaded_resource(self, resync_id) then
 		self._spawn_resynced_loadout(self, equipment_to_spawn)
+		table.remove(self._items_to_spawn, 1)
+		table.remove(self.resync_ids, 1)
+	end
 
-		self._item_to_spawn = nil
-		self.resync_id = nil
+	if #self.resync_ids == 0 then
+		self._is_resyncing_loadout = nil
 	end
 
 	return 
@@ -420,7 +448,15 @@ SimpleInventoryExtension.add_equipment = function (self, slot_name, item_data, u
 	local unit_1p = self._first_person_unit
 	local unit_3p = self._unit
 	local is_bot = self.is_bot
-	local slot_equipment_data = GearUtils.create_equipment(world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent)
+	local override_item_units = nil
+	local override_item_template = self.override_career_skill_item_template(self, item_data)
+
+	if item_data.slot_to_use then
+		local other_slot_slot_data = self._equipment.slots[item_data.slot_to_use]
+		override_item_units = BackendUtils.get_item_units(other_slot_slot_data.item_data)
+	end
+
+	local slot_equipment_data = GearUtils.create_equipment(world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units)
 	slot_equipment_data.master_item = item_data
 	equipment.slots[slot_name] = slot_equipment_data
 	self.recently_acquired_list[slot_name] = slot_equipment_data
@@ -827,11 +863,29 @@ SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, bac
 
 	self.destroy_slot(self, slot_id, true)
 
-	self._item_to_spawn = {
+	self._items_to_spawn[#self._items_to_spawn + 1] = {
 		slot_id = slot_id,
 		item_data = item_data,
 		skin = item_units.skin
 	}
+	local career_skill_weapon_name = self.career_extension:career_skill_weapon_name()
+
+	if career_skill_weapon_name then
+		local career_item_data = rawget(ItemMasterList, career_skill_weapon_name)
+
+		if career_item_data and career_item_data.slot_to_use == slot_id then
+			self.destroy_slot(self, "slot_career_skill_weapon", true)
+
+			career_item_data.left_hand_unit = item_data.left_hand_unit
+			career_item_data.right_hand_unit = item_data.right_hand_unit
+			self._items_to_spawn[#self._items_to_spawn + 1] = {
+				slot_id = "slot_career_skill_weapon",
+				item_data = career_item_data,
+				skin = item_units.skin
+			}
+		end
+	end
+
 	self.resync_loadout_needed = true
 
 	return 
@@ -859,7 +913,10 @@ SimpleInventoryExtension._spawn_resynced_loadout = function (self, equipment_to_
 	end
 
 	self.add_equipment(self, slot_name, item_data)
-	self.wield(self, slot_name)
+
+	if slot_name ~= "slot_career_skill_weapon" then
+		self.wield(self, slot_name)
+	end
 
 	return 
 end
@@ -1112,7 +1169,7 @@ SimpleInventoryExtension.get_selected_consumable_slot_name = function (self)
 	return self._selected_consumable_slot
 end
 SimpleInventoryExtension.resyncing_loadout = function (self)
-	return self.resync_id
+	return self._is_resyncing_loadout
 end
 SimpleInventoryExtension.get_item_slot_extension = function (self, slot_name, system_name)
 	local slot_data = self.get_slot_data(self, slot_name)

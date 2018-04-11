@@ -21,6 +21,12 @@ weapon_template.actions = {
 				{
 					sub_action = "default",
 					start_time = 0.4,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.4,
 					action = "action_one",
 					input = "action_one_hold"
 				},
@@ -29,12 +35,6 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_two",
 					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_wield",
-					input = "action_wield"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -75,10 +75,11 @@ weapon_template.actions = {
 			charge_value = "zoomed_arrow_hit",
 			hit_effect = "arrow_impact",
 			anim_event_last_ammo = "attack_shoot",
+			minimum_hold_time = 0.4,
 			alert_sound_range_fire = 4,
-			apply_recoil = true,
 			ammo_usage = 1,
 			anim_end_event = "to_unzoom",
+			apply_recoil = true,
 			num_projectiles = 3,
 			speed = 8000,
 			hold_input = "action_two_hold",
@@ -88,6 +89,12 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			allowed_chain_actions = {
+				{
+					sub_action = "default",
+					start_time = 0.4,
+					action = "action_wield",
+					input = "action_wield"
+				},
 				{
 					sub_action = "zoomed_shot",
 					start_time = 0.5,
@@ -99,12 +106,6 @@ weapon_template.actions = {
 					start_time = 0.5,
 					action = "action_two",
 					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_wield",
-					input = "action_wield"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -169,16 +170,16 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "zoomed_shot",
-					start_time = 0.3,
-					action = "action_one",
-					input = "action_one"
-				},
-				{
 					sub_action = "default",
 					start_time = 0.3,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "zoomed_shot",
+					start_time = 0.3,
+					action = "action_one",
+					input = "action_one"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)

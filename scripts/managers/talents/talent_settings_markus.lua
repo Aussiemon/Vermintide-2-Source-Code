@@ -36,18 +36,18 @@ local buff_tweak_data = {
 		multiplier = -0.2
 	},
 	markus_huntsman_gain_ammo_on_boss_death = {
-		ammo_bonus_fraction = 0.3
+		ammo_bonus_fraction = 1
 	},
 	markus_huntsman_defence_debuff = {
 		multiplier = 1,
 		duration = 5
 	},
 	markus_huntsman_passive_crit_buff = {
-		bonus = 0.1
+		bonus = 0.25
 	},
 	markus_huntsman_headshots_increase_reload_speed_buff = {
 		duration = 2,
-		multiplier = -0.2
+		multiplier = -0.35
 	},
 	markus_huntsman_passive_improved = {
 		bonus = 2
@@ -93,7 +93,7 @@ local buff_tweak_data = {
 		duration = 1.7
 	},
 	markus_knight_push_arc = {
-		multiplier = 0.3
+		multiplier = 0.5
 	},
 	markus_knight_max_health = {
 		multiplier = 0.25
@@ -172,13 +172,13 @@ local buff_tweak_data = {
 		activation_health = 0.5
 	},
 	markus_mercenary_defence_on_low_health = {
-		multiplier = -0.25
+		multiplier = -0.35
 	},
 	markus_mercenary_passive_defence = {
 		multiplier = -0.25
 	},
 	markus_mercenary_passive_power_level = {
-		multiplier = 0.1
+		multiplier = 0.15
 	},
 	markus_mercenary_activated_ability_cooldown = {
 		multiplier = -0.3
@@ -283,6 +283,7 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				name = "markus_huntsman_activated_ability_headshot_multiplier",
+				max_stacks = 1,
 				stat_buff = StatBuffIndex.HEADSHOT_MULTIPLIER,
 				multiplier = buff_tweak_data.markus_huntsman_activated_ability.headshot_multiplier,
 				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
@@ -534,7 +535,7 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				buff_to_add = "markus_huntsman_activated_ability_regen_buff",
-				activation_buff = "markus_huntsman_activated_ability",
+				activation_buff = "markus_huntsman_activated_ability_headshot_multiplier",
 				update_func = "activate_buff_on_other_buff"
 			}
 		}
@@ -1250,6 +1251,7 @@ Talents.empire_soldier = {
 		description = "markus_huntsman_activated_ability_regen_desc",
 		name = "markus_huntsman_activated_ability_regen",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "markus_huntsman_activated_ability_regen",
 		description_values = {
 			{
@@ -1266,6 +1268,7 @@ Talents.empire_soldier = {
 		description = "markus_huntsman_activated_ability_damage_desc",
 		name = "markus_huntsman_activated_ability_damage",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "markus_huntsman_activated_ability_damage",
 		description_values = {
 			{
@@ -1645,7 +1648,7 @@ Talents.empire_soldier = {
 		description = "markus_mercenary_passive_defence_on_proc_desc",
 		name = "markus_mercenary_passive_defence_on_proc",
 		num_ranks = 1,
-		buffer = "server",
+		buffer = "both",
 		icon = "markus_mercenary_passive_defence_on_proc",
 		description_values = {
 			{
@@ -1663,7 +1666,7 @@ Talents.empire_soldier = {
 		description = "markus_mercenary_passive_power_level_on_proc_desc",
 		name = "markus_mercenary_passive_power_level_on_proc",
 		num_ranks = 1,
-		buffer = "server",
+		buffer = "both",
 		icon = "markus_mercenary_passive_power_level_on_proc",
 		description_values = {
 			{

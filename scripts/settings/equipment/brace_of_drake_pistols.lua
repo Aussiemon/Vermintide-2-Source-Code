@@ -28,6 +28,12 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
+					start_time = 0.4,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
 					start_time = 0.5,
 					action = "action_one",
 					sound_time_offset = -0.05,
@@ -46,12 +52,6 @@ weapon_template.actions = {
 					start_time = 0.6,
 					action = "action_two",
 					input = "action_two"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_wield",
-					input = "action_wield"
 				},
 				{
 					sub_action = "default",
@@ -112,6 +112,12 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
+					start_time = 0.5,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
 					start_time = 0.7,
 					action = "action_one",
 					release_required = "action_two_hold",
@@ -123,12 +129,6 @@ weapon_template.actions = {
 					action = "action_two",
 					send_buffer = true,
 					input = "action_two_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_wield",
-					input = "action_wield"
 				},
 				{
 					sub_action = "default",

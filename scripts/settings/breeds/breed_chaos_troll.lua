@@ -78,7 +78,7 @@ local damage_table_light = {
 		15
 	}
 }
-local default_bot_threat_difficulty_data = BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
+local default_bot_threat_difficulty_data = BotConstants and BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	detection_radius = 9999999,
 	husk_hit_reaction_cooldown = 1,

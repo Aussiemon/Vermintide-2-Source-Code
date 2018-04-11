@@ -108,7 +108,15 @@ ActionUtils.scale_powerlevels = function (power_level, power_type, attacker_unit
 	if cap_to_difficulty then
 		local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 		local difficulty_power_level_cap = difficulty_settings.power_level_cap
-		actual_power_level = math.min(power_level, difficulty_power_level_cap)
+		local difficulty_power_level_max_target = difficulty_settings.power_level_max_target
+
+		if difficulty_power_level_cap < actual_power_level and difficulty_power_level_max_target then
+			local above_cap = actual_power_level - difficulty_power_level_cap
+			local cap_to_max = 800 - difficulty_power_level_cap
+			actual_power_level = difficulty_power_level_cap + difficulty_power_level_max_target * above_cap / cap_to_max
+		else
+			actual_power_level = math.min(power_level, difficulty_power_level_cap)
+		end
 	end
 
 	local min_cap_powerlevel = 200
@@ -121,8 +129,8 @@ ActionUtils.scale_powerlevels = function (power_level, power_type, attacker_unit
 	local starting_bonus_range = 100
 	local powerlevel_diff_ratio = {
 		impact = 2,
-		attack = 3,
-		cleave = 3
+		attack = 3.5,
+		cleave = 3.5
 	}
 	local native_diff_ratio = 5
 	local scaled_powerlevel_section = nil
@@ -137,10 +145,10 @@ ActionUtils.scale_powerlevels = function (power_level, power_type, attacker_unit
 	local scaled_powerlevel = min_cap_powerlevel + scaled_powerlevel_section
 
 	if attacker_unit then
-		slot12 = ActionUtils.apply_buffs_to_power_level(attacker_unit, scaled_powerlevel)
+		scaled_powerlevel = ActionUtils.apply_buffs_to_power_level(attacker_unit, scaled_powerlevel)
 	end
 
-	return power_level
+	return scaled_powerlevel
 end
 ActionUtils.get_power_level = function (power_type, power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit)
 
@@ -189,12 +197,16 @@ ActionUtils.get_power_level_for_target = function (original_power_level, damage_
 			local new_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, nil, critical_strike_settings, dropoff_scalar)
 			attack_armor_power_modifer = attack_armor_power_modifer + new_armor_power_modifer * target_breed.lord_armor
 		end
-
-		power_level = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, power_level, target_breed, target_unit)
 	end
 
 	local attack_power = ActionUtils.get_power_level("attack", power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit)
 	local impact_power = ActionUtils.get_power_level("impact", power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit)
+
+	if is_valid_target then
+		attack_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, attack_power, target_breed, target_unit)
+		impact_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, impact_power, target_breed, target_unit)
+	end
+
 	attack_power = attack_power * attack_armor_power_modifer
 	impact_power = impact_power * impact_armor_power_modifer
 

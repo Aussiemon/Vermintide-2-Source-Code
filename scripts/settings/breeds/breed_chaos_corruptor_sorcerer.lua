@@ -3,7 +3,7 @@ local breed_data = {
 	target_selection = "pick_corruptor_target",
 	unit_template = "ai_unit_chaos_corruptor_sorcerer",
 	no_stagger_duration = true,
-	armor_category = 5,
+	armor_category = 1,
 	race = "chaos",
 	death_sound_event = "chaos_sorcerer_plague_death",
 	animation_sync_rpc = "rpc_sync_anim_state_8",
@@ -37,7 +37,10 @@ local breed_data = {
 		3,
 		4,
 		5,
-		6
+		5
+	},
+	hitzone_multiplier_types = {
+		head = "headshot"
 	},
 	run_on_spawn = AiBreedSnippets.on_chaos_plague_sorcerer_spawn,
 	target_player_sound_events = {

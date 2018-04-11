@@ -30,7 +30,7 @@ ActionCareerBWScholar.client_owner_start_action = function (self, new_action, t,
 		local unit_id = network_manager.unit_game_object_id(network_manager, owner_unit)
 		local heal_type_id = NetworkLookup.heal_types.career_skill
 
-		network_transmit.send_rpc_server(network_transmit, "rpc_request_heal", unit_id, 35, heal_type_id)
+		network_transmit.send_rpc_server(network_transmit, "rpc_request_heal", unit_id, 20, heal_type_id)
 	end
 
 	self._play_vo(self)

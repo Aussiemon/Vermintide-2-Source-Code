@@ -358,11 +358,11 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 			local node = Actor.node(hit_actor)
 			local hit_zone = breed.hit_zones_lookup[node]
 			local hit_zone_name = hit_zone.name
-			local send_to_server = false
+			local send_to_server = true
 			local charge_value = damage_profile.charge_value or "projectile"
 			local is_critical_strike = self._is_critical_strike
 			local owner_unit = self.owner_unit
-			local num_targets_hit = self.num_targets_hit
+			local num_targets_hit = self.num_targets_hit + 1
 
 			DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_targets_hit, send_to_server)
 		end

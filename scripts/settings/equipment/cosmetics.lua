@@ -448,6 +448,10 @@ local frame_collectors_edition = {
 	icon = "unit_frame_02"
 }
 Cosmetics.frame_collectors_edition = table.clone(frame_collectors_edition)
+local frame_community_01 = {
+	icon = "unit_frame_02"
+}
+Cosmetics.frame_community_01 = table.clone(frame_community_01)
 
 for name, cosmetic_data in pairs(Cosmetics) do
 	cosmetic_data.name = name

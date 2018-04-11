@@ -27,7 +27,7 @@ local breed_data = {
 	panic_close_detection_radius_sq = 9,
 	use_slot_type = "medium",
 	bone_lod_level = 1,
-	hit_mass_count = 4,
+	hit_mass_count = 3,
 	patrol_active_perception = "perception_regular",
 	smart_object_template = "chaos_marauder",
 	perception_previous_attacker_stickyness_value = -7.75,
@@ -86,11 +86,11 @@ local breed_data = {
 		39
 	},
 	diff_stagger_resist = {
-		2.5,
-		2.5,
-		4.5,
-		5.5,
-		6
+		2.4,
+		2.4,
+		3.2,
+		4,
+		4
 	},
 	stagger_duration = {
 		0.75,
@@ -110,18 +110,18 @@ local breed_data = {
 		easy = 1
 	},
 	hit_mass_counts = {
-		4,
-		4,
+		3,
+		3,
+		4.5,
 		6,
-		8,
-		12
+		6
 	},
 	hit_mass_counts_block = {
-		6,
-		6,
-		9,
-		12,
-		18
+		5,
+		5,
+		7.5,
+		10,
+		10
 	},
 	wwise_voices = {
 		"marauder_andreas",

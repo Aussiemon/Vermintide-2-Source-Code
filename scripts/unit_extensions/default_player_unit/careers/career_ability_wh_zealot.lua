@@ -145,10 +145,6 @@ CareerAbilityWHZealot._run_ability = function (self)
 	local buff_name = "victor_zealot_activated_ability"
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
-	if talent_extension.has_talent(talent_extension, "victor_zealot_activated_ability_heal", "witch_hunter", true) then
-		buff_name = "victor_zealot_activated_ability_heal"
-	end
-
 	if talent_extension.has_talent(talent_extension, "victor_zealot_activated_ability_duration", "witch_hunter", true) then
 		buff_name = "victor_zealot_activated_ability_duration"
 	end

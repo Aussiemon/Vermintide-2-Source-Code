@@ -25,6 +25,12 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
+					start_time = 0.4,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
 					start_time = 0.75,
 					action = "action_one",
 					release_required = "action_one_hold",
@@ -35,12 +41,6 @@ weapon_template.actions = {
 					start_time = 0.6,
 					action = "action_two",
 					input = "action_two"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_wield",
-					input = "action_wield"
 				},
 				{
 					sub_action = "default",
@@ -103,16 +103,16 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
+					start_time = 0.4,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
 					start_time = 0.6,
 					action = "action_one",
 					release_required = "action_two_hold",
 					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_wield",
-					input = "action_wield"
 				},
 				{
 					sub_action = "default",
@@ -184,16 +184,16 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "geiser_launch",
-					start_time = 0.2,
-					action = "action_one",
-					input = "action_one"
-				},
-				{
 					sub_action = "default",
 					start_time = 0.5,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "geiser_launch",
+					start_time = 0.2,
+					action = "action_one",
+					input = "action_one"
 				},
 				{
 					sub_action = "default",

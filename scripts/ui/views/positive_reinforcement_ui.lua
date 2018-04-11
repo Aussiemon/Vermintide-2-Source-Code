@@ -198,10 +198,6 @@ PositiveReinforcementUI.event_add_positive_enforcement = function (self, hash, i
 	local player_2_profile_image = player_2_profile_index and player_2_career_index and self._get_hero_portrait(self, player_2_profile_index, player_2_career_index)
 
 	if event_type == "aid" then
-		if is_local_player and Unit.alive(player_1_unit) and Unit.alive(player_2_unit) then
-			trigger_assist_buffs(player_1_unit, player_2_unit)
-		end
-
 		return 
 	end
 

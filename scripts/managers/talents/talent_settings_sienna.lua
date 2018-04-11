@@ -61,7 +61,7 @@ local buff_tweak_data = {
 		multiplier = -0.3
 	},
 	sienna_scholar_activated_ability_heal = {
-		bonus = 10
+		bonus = 20
 	},
 	sienna_adept_ability_cooldown_on_hit = {
 		bonus = 0.25
@@ -90,7 +90,7 @@ local buff_tweak_data = {
 		multiplier = -0.15
 	},
 	sienna_adept_healing_received = {
-		multiplier = 0.2
+		multiplier = 0.3
 	},
 	sienna_adept_max_stamina = {
 		bonus = 2
@@ -144,7 +144,7 @@ local buff_tweak_data = {
 		duration = 2
 	},
 	sienna_unchained_push_arc = {
-		multiplier = 0.3
+		multiplier = 0.5
 	},
 	sienna_unchained_max_health = {
 		multiplier = 0.2
@@ -164,10 +164,10 @@ local buff_tweak_data = {
 		multiplier = -0.5
 	},
 	sienna_unchained_reduced_vent_damage = {
-		multiplier = -0.25
+		multiplier = -0.5
 	},
 	sienna_unchained_increased_vent_speed = {
-		multiplier = 0.25
+		multiplier = 0.5
 	},
 	sienna_unchained_reduced_overcharge = {
 		multiplier = -0.15

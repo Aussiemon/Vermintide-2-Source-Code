@@ -442,14 +442,14 @@ AttackTemplates = {
 	},
 	basic_sweep_push = {
 		is_push = true,
-		stagger_value = 1,
+		stagger_value = 2,
 		sound_type = "stun_heavy"
 	},
 	shield_slam = {
 		is_push = true,
 		stagger_angle = "stab",
 		sound_type = "heavy",
-		stagger_value = 1
+		stagger_value = 2
 	},
 	weak_sweep_push = {
 		sound_type = "stun_light",
@@ -460,16 +460,19 @@ AttackTemplates = {
 		is_push = true
 	},
 	heavy_sweep_push = {
-		sound_type = "stun_heavy",
-		is_push = true
+		is_push = true,
+		stagger_value = 3,
+		sound_type = "stun_heavy"
 	},
 	upgraded_sweep_push = {
-		sound_type = "stun_heavy",
-		is_push = true
+		is_push = true,
+		stagger_value = 3,
+		sound_type = "stun_heavy"
 	},
 	super_heavy_sweep_push = {
-		sound_type = "stun_heavy",
-		is_push = true
+		is_push = true,
+		stagger_value = 4,
+		sound_type = "stun_heavy"
 	},
 	resistant_push = {
 		sound_type = "stun_light",

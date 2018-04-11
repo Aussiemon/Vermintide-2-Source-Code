@@ -267,11 +267,14 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		end
 	end
 
+	fassert(damage_type, "No damage_type!")
+
 	local unit = self.unit
 	local damage_table = PlayerUnitHealthExtension.super._add_to_damage_history_buffer(self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 
-	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
-	fassert(damage_type, "No damage_type!")
+	if damage_type ~= "temporary_health_degen" then
+		StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
+	end
 
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type

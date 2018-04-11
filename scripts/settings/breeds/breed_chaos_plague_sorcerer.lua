@@ -37,9 +37,9 @@ local breed_data = {
 	diff_stagger_resist = {
 		3,
 		3,
+		4,
 		5,
-		8,
-		12
+		5
 	},
 	run_on_spawn = AiBreedSnippets.on_chaos_plague_sorcerer_spawn,
 	target_player_sound_events = {

@@ -31,6 +31,12 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
+					start_time = 0.4,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
 					start_time = 0.5,
 					action = "action_one",
 					release_required = "action_one_hold",
@@ -41,12 +47,6 @@ weapon_template.actions = {
 					start_time = 0.4,
 					action = "action_two",
 					input = "action_two"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_wield",
-					input = "action_wield"
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
@@ -104,6 +104,12 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
+					sub_action = "default",
+					start_time = 0.2,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
 					sub_action = "bullet_spray",
 					start_time = 0.2,
 					action = "action_one",
@@ -114,12 +120,6 @@ weapon_template.actions = {
 					start_time = 0.2,
 					action = "action_one",
 					input = "action_one_hold"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.2,
-					action = "action_wield",
-					input = "action_wield"
 				}
 			},
 			recoil_settings = {
@@ -158,16 +158,16 @@ weapon_template.actions = {
 			},
 			allowed_chain_actions = {
 				{
-					sub_action = "bullet_spray",
-					start_time = 0.6,
-					action = "action_one",
-					input = "action_one"
-				},
-				{
 					sub_action = "default",
 					start_time = 0,
 					action = "action_wield",
 					input = "action_wield"
+				},
+				{
+					sub_action = "bullet_spray",
+					start_time = 0.6,
+					action = "action_one",
+					input = "action_one"
 				}
 			},
 			zoom_condition_function = function ()

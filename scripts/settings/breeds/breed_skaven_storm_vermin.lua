@@ -78,8 +78,8 @@ local breed_data = {
 		2.25,
 		2.25,
 		3,
-		4,
-		6
+		3.75,
+		3.75
 	},
 	stagger_duration = {
 		0.5,
@@ -96,7 +96,7 @@ local breed_data = {
 		5,
 		7.5,
 		10,
-		15
+		10
 	},
 	wwise_voices = {
 		"low",

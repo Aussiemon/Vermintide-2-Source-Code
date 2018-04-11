@@ -31,7 +31,7 @@ local breed_data = {
 	unit_template = "ai_unit_pack_master",
 	bone_lod_level = 1,
 	patrol_active_perception = "perception_regular",
-	stagger_reduction = -2,
+	stagger_reduction = 2,
 	smart_object_template = "special",
 	race = "skaven",
 	dialogue_source_name = "skaven_pack_master",
@@ -58,9 +58,9 @@ local breed_data = {
 	diff_stagger_resist = {
 		4,
 		4,
-		5,
-		6,
-		7
+		5.3,
+		6.5,
+		6.5
 	},
 	stagger_duration = {
 		0.25,
