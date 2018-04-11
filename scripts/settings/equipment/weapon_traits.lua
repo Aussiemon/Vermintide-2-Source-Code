@@ -41,7 +41,7 @@ local buff_tweak_data = {
 		multiplier = 0.05
 	},
 	traits_reduce_cooldown_on_crit = {
-		bonus = 5
+		bonus = 2
 	},
 	traits_heal_on_crit = {
 		bonus = 5
@@ -77,7 +77,7 @@ local buff_tweak_data = {
 		proc_chance = 0.25
 	},
 	trait_necklace_heal_self_on_heal_other = {
-		multiplier = 0.8
+		multiplier = 0.35
 	},
 	trait_necklace_increased_healing_received = {
 		multiplier = 0.3
@@ -249,7 +249,7 @@ WeaponTraits.buff_templates = {
 	consecutive_shot_buff = {
 		buffs = {
 			{
-				max_stacks = 10,
+				max_stacks = 5,
 				icon = "ranged_consecutive_hits_increase_power",
 				refresh_durations = true,
 				stat_buff = StatBuffIndex.POWER_LEVEL

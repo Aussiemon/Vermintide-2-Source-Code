@@ -177,7 +177,7 @@ TwitchVoteTemplates.twitch_health_regen = {
 
 				if Unit.alive(unit) then
 					local buff_extension = Managers.state.entity:system("buff_system")
-					local server_controlled = true
+					local server_controlled = false
 
 					buff_extension.add_buff(buff_extension, unit, "twitch_health_regen", unit, server_controlled)
 				end

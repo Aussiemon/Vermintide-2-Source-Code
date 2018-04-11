@@ -1624,6 +1624,7 @@ BuffTemplates = {
 				name = "knockdown bleed",
 				damage = 10,
 				damage_type = "knockdown_bleed",
+				max_stacks = 1,
 				update_func = "knock_down_bleed_update",
 				apply_buff_func = "knock_down_bleed_start",
 				time_between_damage = 3

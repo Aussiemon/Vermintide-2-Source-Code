@@ -1285,7 +1285,7 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 		content.amount_text = nil
 		content.item_icon_frame = "item_frame"
 
-		if slot_type == "melee" or slot_type == "ranged" or slot_type == "weapon_skin" then
+		if slot_type == "melee" or slot_type == "ranged" or slot_type == "weapon_skin" or slot_type == "hat" then
 			local preview_widget = data.preview_widget
 			local previewer_pass_data = preview_widget.element.pass_data[1]
 			local viewport = previewer_pass_data.viewport
@@ -1350,7 +1350,8 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 			local profile = SPProfiles[profile_index]
 			local career_settings = profile.careers[career_index]
 			local portrait_image = career_settings.portrait_image
-			local portrait_frame = self._get_portrait_frame(self, player)
+			local item_template = ItemMasterList[item_key]
+			local portrait_frame = item_template.temporary_template
 			local scenegraph_id = "loot_option_" .. index .. "_center"
 			local scale = 1.5
 			local frame_widget = self._create_player_portrait(self, scenegraph_id, portrait_frame, portrait_image, "", scale)

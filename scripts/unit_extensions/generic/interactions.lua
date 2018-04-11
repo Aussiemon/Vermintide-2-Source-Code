@@ -136,7 +136,7 @@ InteractionDefinitions.revive = {
 			duration = buff_extension.apply_buffs_to_value(buff_extension, duration, StatBuffIndex.FASTER_REVIVE)
 			local revivee_status_extension = ScriptUnit.extension(interactable_unit, "status_system")
 
-			revivee_status_extension.set_knocked_down_bleed_buff(revivee_status_extension, true)
+			revivee_status_extension.set_knocked_down_bleed_buff_paused(revivee_status_extension, true)
 
 			data.done_time = t + duration
 
@@ -184,7 +184,7 @@ InteractionDefinitions.revive = {
 				if health_extension.is_alive(health_extension) then
 					local revivee_status_extension = ScriptUnit.extension(interactable_unit, "status_system")
 
-					revivee_status_extension.set_knocked_down_bleed_buff(revivee_status_extension, false)
+					revivee_status_extension.set_knocked_down_bleed_buff_paused(revivee_status_extension, false)
 				end
 			end
 

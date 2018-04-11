@@ -1095,7 +1095,7 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 			end
 		end
 
-		if is_server then
+		if is_server and not self.knocked_down_bleed_id then
 			self.knocked_down_bleed_id = buff_extension.add_buff(buff_extension, "knockdown_bleed")
 		end
 
@@ -1723,14 +1723,15 @@ end
 GenericStatusExtension.is_knocked_down = function (self)
 	return self.knocked_down
 end
-GenericStatusExtension.set_knocked_down_bleed_buff = function (self, stop_bleed)
-	local buff_extension = self.buff_extension or ScriptUnit.extension(self.unit, "buff_system")
+GenericStatusExtension.set_knocked_down_bleed_buff_paused = function (self, pause_bleed)
+	local unit = self.unit
+	local buff_extension = self.buff_extension or ScriptUnit.extension(unit, "buff_system")
 
-	if self.knocked_down_bleed_id and stop_bleed then
+	if self.knocked_down_bleed_id and pause_bleed then
 		buff_extension.remove_buff(buff_extension, self.knocked_down_bleed_id)
 
 		self.knocked_down_bleed_id = nil
-	elseif self.knocked_down and not stop_bleed then
+	elseif self.knocked_down and not pause_bleed and not self.knocked_down_bleed_id then
 		self.knocked_down_bleed_id = buff_extension.add_buff(buff_extension, "knockdown_bleed")
 	end
 

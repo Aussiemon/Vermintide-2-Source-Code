@@ -442,10 +442,7 @@ EndViewStateSummary._animate_experience_bar = function (self, dt, displaying_rew
 		progress_data.complete = true
 		self._experience_presentation_completed = true
 
-		if self._current_level ~= ExperienceSettings.max_level then
-			self._play_sound(self, "play_gui_mission_summary_experience_bar_end")
-		end
-
+		self._play_sound(self, "play_gui_mission_summary_experience_bar_end")
 		self.parent:present_additional_rewards()
 	end
 
