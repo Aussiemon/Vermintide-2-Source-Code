@@ -80,25 +80,25 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		self.state = "shooting"
 		local current_action = self.current_action
 		local weapon_unit = self.weapon_unit
+		local muzzle_node_name = self.muzzle_node_name
 		local world = self.world
 		local go_id = self.unit_id
+		local muzzle_node = Unit.node(weapon_unit, muzzle_node_name)
 		local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + SPRAY_RADIUS * SPRAY_RADIUS)
 		self.cone_cos_alpha = SPRAY_RANGE / cone_hypotenuse
-		local flamethrower_range = current_action.range or SPRAY_RANGE * SPRAY_RANGE
+		local muzzle_position = Unit.world_position(weapon_unit, muzzle_node)
+		local muzzle_rotation = Unit.world_rotation(weapon_unit, muzzle_node)
 		local flamethrower_effect = current_action.particle_effect_flames
 		local flamethrower_effect_3p = current_action.particle_effect_flames_3p
-		local flamethrower_impact_effect = current_action.particle_effect_impact
 		local flamethrower_effect_id = NetworkLookup.effects[flamethrower_effect_3p]
-		local flamethrower_impact_effect_id = NetworkLookup.effects[flamethrower_impact_effect]
-		self.flamethrower_effect = World.create_particles(world, flamethrower_effect, Vector3.zero())
-		self.flamethrower_impact_effect = World.create_particles(world, flamethrower_impact_effect, Vector3.zero())
+		self.flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation)
 
-		World.link_particles(world, self.flamethrower_effect, weapon_unit, Unit.node(weapon_unit, self.muzzle_node_name), Matrix4x4.identity(), "destroy")
+		World.link_particles(world, self.flamethrower_effect, weapon_unit, muzzle_node, Matrix4x4.identity(), "destroy")
 
 		if self.is_server or LEVEL_EDITOR_TEST then
-			self.network_transmit:send_rpc_clients("rpc_start_flamethrower", go_id, flamethrower_effect_id, flamethrower_impact_effect_id, flamethrower_range)
+			self.network_transmit:send_rpc_clients("rpc_start_flamethrower", go_id, flamethrower_effect_id)
 		else
-			self.network_transmit:send_rpc_server("rpc_start_flamethrower", go_id, flamethrower_effect_id, flamethrower_impact_effect_id, flamethrower_range)
+			self.network_transmit:send_rpc_server("rpc_start_flamethrower", go_id, flamethrower_effect_id)
 		end
 
 		if self.source_id then
@@ -255,12 +255,6 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 			self.flamethrower_effect = nil
 		end
 
-		if self.flamethrower_impact_effect then
-			World.stop_spawning_particles(self.world, self.flamethrower_impact_effect)
-
-			self.flamethrower_impact_effect = nil
-		end
-
 		local go_id = self.unit_id
 
 		if self.is_server or LEVEL_EDITOR_TEST then
@@ -302,12 +296,6 @@ ActionFlamethrower.finish = function (self, reason)
 			self.flamethrower_effect = nil
 		end
 
-		if self.flamethrower_impact_effect then
-			World.stop_spawning_particles(self.world, self.flamethrower_impact_effect)
-
-			self.flamethrower_impact_effect = nil
-		end
-
 		local go_id = self.unit_id
 
 		if self.is_server or LEVEL_EDITOR_TEST then
@@ -342,12 +330,6 @@ ActionFlamethrower.destroy = function (self)
 		World.destroy_particles(self.world, self.flamethrower_effect)
 
 		self.flamethrower_effect = nil
-	end
-
-	if self.flamethrower_impact_effect then
-		World.destroy_particles(self.world, self.flamethrower_impact_effect)
-
-		self.flamethrower_impact_effect = nil
 	end
 
 	return 

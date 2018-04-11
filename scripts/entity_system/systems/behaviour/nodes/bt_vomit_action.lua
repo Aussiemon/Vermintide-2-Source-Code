@@ -28,7 +28,6 @@ BTVomitAction.enter = function (self, unit, blackboard, t)
 	if self.init_attack(self, unit, blackboard, action, t) then
 		blackboard.anim_locked = t + action.attack_time
 		blackboard.move_state = "attacking"
-		blackboard.attack_finished = false
 		blackboard.attack_aborted = false
 		blackboard.keep_target = true
 
@@ -96,7 +95,7 @@ BTVomitAction.init_attack = function (self, unit, blackboard, action, t)
 	blackboard.navigation_extension:stop()
 
 	local down_dot = Vector3.dot(puke_direction, Vector3.down())
-	local use_near_vomit = 0.35 <= down_dot and puke_distance_sq < action.near_vomit_distance
+	local use_near_vomit = 0.35 <= down_dot and puke_distance_sq < action.near_vomit_distance and not blackboard.needs_to_crouch
 
 	if use_near_vomit then
 		vomit_animation = attack_anims.near_vomit
@@ -115,9 +114,10 @@ BTVomitAction.init_attack = function (self, unit, blackboard, action, t)
 	if bot_threats then
 		local current_threat_index = 1
 		local bot_threat = bot_threats[current_threat_index]
-		local bot_threat_start_time = bot_threat.start_time
+		local bot_threat_start_time, bot_threat_duration = AiUtils.calculate_bot_threat_time(bot_threat)
 		blackboard.create_bot_threat_at_t = t + bot_threat_start_time
 		blackboard.current_bot_threat_index = current_threat_index
+		blackboard.bot_threat_duration = bot_threat_duration
 		blackboard.bot_threats_data = bot_threats
 	end
 
@@ -140,11 +140,13 @@ BTVomitAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.is_puking = nil
 	blackboard.create_bot_threat_at_t = nil
 	blackboard.current_bot_threat_index = nil
+	blackboard.bot_threat_duration = nil
 	blackboard.bot_threats_data = nil
 	blackboard.attack_finished = nil
 	blackboard.near_vomit = nil
 	blackboard.update_puke_pos_at_t = nil
 	blackboard.check_puke_time = nil
+	blackboard.anim_locked = nil
 
 	return 
 end
@@ -213,7 +215,7 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 			local bot_threats = blackboard.bot_threats_data
 			local current_bot_threat_index = blackboard.current_bot_threat_index
 			local current_bot_threat = bot_threats[current_bot_threat_index]
-			local bot_threat_duration = current_bot_threat.duration
+			local bot_threat_duration = blackboard.bot_threat_duration
 			local unit_position = POSITION_LOOKUP[unit]
 			local attack_rotation = blackboard.attack_rotation:unbox()
 			local obstacle_position, obstacle_rotation, obstacle_size = self._calculate_oobb_collision(self, current_bot_threat, unit_position, attack_rotation)
@@ -225,10 +227,13 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 
 			if next_bot_threat then
 				local attack_started_at_t = blackboard.attack_started_at_t
-				blackboard.create_bot_threat_at_t = attack_started_at_t + next_bot_threat.start_time
+				local next_bot_threat_time, next_bot_threat_duration = AiUtils.calculate_bot_threat_time(next_bot_threat)
+				blackboard.create_bot_threat_at_t = attack_started_at_t + next_bot_threat_time
+				blackboard.bot_threat_duration = next_bot_threat_duration
 				blackboard.current_bot_threat_index = next_bot_threat_index
 			else
 				blackboard.create_bot_threat_at_t = nil
+				blackboard.bot_threat_duration = nil
 				blackboard.current_bot_threat_index = nil
 			end
 		end

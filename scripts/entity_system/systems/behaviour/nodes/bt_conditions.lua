@@ -150,6 +150,14 @@ BTConditions.ratogre_at_smartobject = function (blackboard)
 
 	return (smartobject_is_next and is_in_smartobject_range and moving_state) or is_smart_objecting
 end
+BTConditions.stormfiend_boss_intro_jump_down = function (blackboard)
+	local smartobject_is_next = blackboard.next_smart_object_data.next_smart_object_id ~= nil
+	local is_in_smartobject_range = blackboard.is_in_smartobject_range
+	local is_smart_objecting = blackboard.is_smart_objecting
+	local is_in_intro = blackboard.jump_down_intro
+
+	return ((smartobject_is_next and is_in_smartobject_range) or is_smart_objecting) and is_in_intro
+end
 BTConditions.at_teleport_smartobject = function (blackboard)
 	local smart_object_type = blackboard.next_smart_object_data.smart_object_type
 	local is_smart_object_teleporter = smart_object_type == "teleporters"
@@ -395,10 +403,10 @@ BTConditions.switching_weapons = function (blackboard)
 	return blackboard.switching_weapons and not blackboard.defensive_mode_duration
 end
 BTConditions.knocked_off_mount = function (blackboard)
-	return blackboard.knocked_off_mount or not AiUtils.unit_alive(blackboard.mounted_data.mount_unit)
+	return (blackboard.knocked_off_mount or not AiUtils.unit_alive(blackboard.mounted_data.mount_unit)) and AiUtils.unit_alive(blackboard.target_unit)
 end
 BTConditions.ready_to_cast_spell = function (blackboard)
-	return blackboard.ready_to_summon and not blackboard.about_to_mount
+	return blackboard.ready_to_summon and not blackboard.about_to_mount and AiUtils.unit_alive(blackboard.target_unit)
 end
 BTConditions.grey_seer_teleport_spell = function (blackboard)
 	return blackboard.current_spell_name == "teleport" and blackboard.quick_teleport
@@ -414,6 +422,9 @@ BTConditions.grey_seer_waiting_death = function (blackboard)
 end
 BTConditions.grey_seer_death = function (blackboard)
 	return blackboard.current_phase == 5
+end
+BTConditions.grey_seer_call_stormfiend = function (blackboard)
+	return blackboard.call_stormfiend
 end
 
 return 

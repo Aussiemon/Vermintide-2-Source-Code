@@ -194,12 +194,12 @@ BuffSystem.add_buff = function (self, unit, template_name, attacker_unit, is_ser
 
 	return server_buff_id
 end
-BuffSystem.remove_server_controlled_buff = function (self, unit, server_buff_id, debug_print)
-	fassert(self.is_server, "[BuffSystem]: Only the server can explicitly remove buffs!")
+BuffSystem.remove_server_controlled_buff = function (self, unit, server_buff_id, handled_in_buff_update_function)
+	fassert(self.is_server, "[BuffSystem]: Only the server can explicitly remove server controlled buffs!")
 
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local id = self.server_controlled_buffs[unit][server_buff_id].local_buff_id
-	local num_buffs_removed = buff_extension.remove_buff(buff_extension, id, debug_print)
+	local num_buffs_removed = buff_extension.remove_buff(buff_extension, id, handled_in_buff_update_function)
 	self.server_controlled_buffs[unit][server_buff_id] = nil
 	self.free_server_buff_ids[#self.free_server_buff_ids + 1] = server_buff_id
 	local network_manager = self.network_manager

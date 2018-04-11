@@ -180,6 +180,7 @@ AnimationCallbackTemplates.server.anim_cb_mounted_knocked_off = function (unit, 
 
 	LocomotionUtils.set_animation_driven_movement(unit, false, false, true)
 	locomotion_extension.use_lerp_rotation(locomotion_extension, true)
+	locomotion_extension.set_movement_type(locomotion_extension, "snap_to_navmesh")
 
 	return 
 end

@@ -73,6 +73,24 @@ BTLeaveHooks.stormfiend_boss_rage_leave = function (unit, blackboard, t)
 	GameSession.set_game_object_field(game, go_id, "show_health_bar", true)
 	Managers.state.event:trigger("show_boss_health_bar", unit)
 
+	local conflict_director = Managers.state.conflict
+	local level_analysis = conflict_director.level_analysis
+	local node_units = level_analysis.generic_ai_node_units.grey_seer_intro_jump_down_to
+
+	if node_units then
+		local node_unit = node_units[1]
+		local pos = Unit.local_position(node_unit, 0)
+		local projected_wanted_pos = LocomotionUtils.pos_on_mesh(blackboard.nav_world, pos, 1, 1)
+		blackboard.goal_destination = Vector3Box(projected_wanted_pos)
+		blackboard.jump_down_intro = true
+	end
+
+	return 
+end
+BTLeaveHooks.stormfiend_boss_jump_down_leave = function (unit, blackboard, t)
+	blackboard.jump_down_intro = nil
+	blackboard.goal_destination = nil
+
 	return 
 end
 BTLeaveHooks.on_grey_seer_intro_leave = function (unit, blackboard, t)

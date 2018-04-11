@@ -82,7 +82,10 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 	return 
 end
 BTAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
-	if blackboard.target_unit_status_extension then
+	local network_manager = Managers.state.network
+	local game = network_manager.game(network_manager)
+
+	if game and blackboard.target_unit_status_extension then
 		self.trigger_attack_sound(self, blackboard.action, unit, blackboard.target_unit, blackboard, blackboard.target_unit_status_extension)
 	end
 
@@ -351,6 +354,17 @@ BTAttackAction.get_attack_cooldown_finished_at = function (self, unit, blackboar
 	end
 
 	local dimishing_damage = dimishing_damage_data[math.min(slots_n, 9)]
+
+	if not dimishing_damage then
+		local action_data = blackboard.action
+		local difficulty = Managers.state.difficulty:get_difficulty()
+
+		if action_data.dimishing_damage and action_data.difficulty_diminishing_damage then
+			dimishing_damage_data = action_data.difficulty_diminishing_damage[difficulty]
+			dimishing_damage = dimishing_damage_data[math.min(slots_n, 9)]
+		end
+	end
+
 	local cooldown_data = dimishing_damage.cooldown
 	local cooldown = AiUtils.random(cooldown_data[1], cooldown_data[2])
 

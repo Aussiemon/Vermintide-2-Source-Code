@@ -118,7 +118,7 @@ BTCorruptorGrabAction.run = function (self, unit, blackboard, t, dt)
 		StatusUtils.set_grabbed_by_corruptor_network("chaos_corruptor_dragging", corruptor_target, true, unit)
 	end
 
-	if corruptor_target and blackboard.drain_life_at < t then
+	if blackboard.grabbed_unit and corruptor_target and blackboard.drain_life_at < t then
 		local distance_to_corruptor_target = Vector3.distance(POSITION_LOOKUP[corruptor_target], POSITION_LOOKUP[unit])
 
 		if distance_to_corruptor_target < 2.5 then

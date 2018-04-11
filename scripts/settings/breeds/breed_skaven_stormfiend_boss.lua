@@ -1,28 +1,30 @@
+local default_bot_threat_difficulty_data = BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	is_bot_aid_threat = true,
 	target_selection_angry = "pick_rat_ogre_target_with_weights",
 	perception = "perception_rat_ogre",
 	poison_resistance = 100,
 	target_selection = "pick_rat_ogre_target_idle",
-	aoe_radius = 1,
+	lord_damage_reduction = true,
 	always_look_at_target = true,
-	stagger_count_reset_time = 5,
+	aoe_radius = 1,
 	armored_on_no_damage = true,
 	bot_hitbox_radius_approximation = 1,
+	behavior = "stormfiend_boss",
 	animation_sync_rpc = "rpc_sync_anim_state_10",
 	run_speed = 5,
 	walk_speed = 5,
 	aim_template = "stormfiend",
 	aoe_height = 2.4,
-	awards_positive_reinforcement_message = true,
 	ignore_nav_propagation_box = true,
-	server_controlled_health_bar = true,
+	awards_positive_reinforcement_message = true,
 	bot_opportunity_target_melee_range = 7,
-	bone_lod_level = 0,
+	server_controlled_health_bar = true,
 	default_inventory_template = "rat_ogre",
 	stagger_resistance = 5,
-	behavior = "stormfiend_boss",
+	bone_lod_level = 0,
 	boss_staggers = true,
+	stagger_count_reset_time = 5,
 	use_avoidance = false,
 	radius = 2,
 	boss = true,
@@ -58,7 +60,6 @@ local breed_data = {
 	far_off_despawn_immunity = true,
 	trigger_dialogue_on_target_switch = true,
 	override_mover_move_distance = 2,
-	boss_damage_reduction = true,
 	base_unit = "units/beings/enemies/skaven_stormfiend/chr_skaven_stormfiend_boss",
 	threat_value = 32,
 	bots_flank_while_targeted = true,
@@ -80,10 +81,10 @@ local breed_data = {
 	},
 	max_health = {
 		700,
-		700,
-		1050,
-		1400,
-		2100
+		500,
+		750,
+		1000,
+		1500
 	},
 	diff_stagger_resist = {
 		4,
@@ -339,7 +340,7 @@ local action_data = {
 					}
 				},
 				wall_collision = {
-					stun_time = 1.1666666666666667,
+					stun_time = 0.8333333333333334,
 					check_range = 1.5,
 					start_check_time = 1.6666666666666667,
 					animation = "attack_charge_end"
@@ -877,7 +878,6 @@ local action_data = {
 		start_distance = 4,
 		afro_hit_sound = "bullet_pass_by",
 		beam_sfx_stop_event = "Stop_stormfiend_torch_loop",
-		stop_shoot_sfx = "Stop_stormfiend_shooting_loop",
 		projectile_max_range = 50,
 		action_weight = 1,
 		global_sound_parameter = "stormfiend_mood",
@@ -894,7 +894,6 @@ local action_data = {
 		impact_push_speed = 6,
 		beam_vfx_unit_name = "units/weapons/enemy/wpn_warpfire/wpn_stormfiend_warpfire",
 		light_weight_projectile_particle_effect = "stormfiend_gun_bullet",
-		shoot_sfx = "Play_stormfiend_shooting_loop",
 		considerations = UtilityConsiderations.stormfiend_boss_shoot,
 		ratling_gun_switch_range = math.huge,
 		aim_constraint_target = {
@@ -1039,9 +1038,9 @@ local action_data = {
 		},
 		attack_power_level = {
 			40,
-			80,
+			60,
+			90,
 			120,
-			160,
 			180
 		},
 		power_distribution = {
@@ -1135,7 +1134,7 @@ local action_data = {
 		aim_start_offset = -1,
 		weapon_setup = "ratling_gun",
 		attack_time = 4,
-		fire_rate_at_start = 35,
+		fire_rate_at_start = 25,
 		rotation_time = 2,
 		attack_template = "shot_machinegun",
 		projectile_speed = 80,

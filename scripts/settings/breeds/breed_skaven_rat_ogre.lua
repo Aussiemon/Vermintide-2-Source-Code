@@ -82,6 +82,7 @@ local damage_table_combo = {
 		15
 	}
 }
+local default_bot_threat_difficulty_data = BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	detection_radius = 9999999,
 	death_reaction = "ai_default",
@@ -683,7 +684,7 @@ local action_data = {
 				player_push_speed = 16,
 				hit_multiple_targets = true,
 				player_push_speed_blocked = 9.6,
-				attack_time = 2.066666666666667,
+				attack_time = 2.1,
 				width = 0.4,
 				attack_anim = {
 					"attack_shove_left",
@@ -722,16 +723,31 @@ local action_data = {
 						4
 					}
 				},
+				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
 				bot_threats = {
-					{
-						collision_type = "cylinder",
-						offset_forward = 0,
-						radius = 4.5,
-						height = 4,
-						offset_right = 0,
-						offset_up = 0,
-						duration = 0.9333333333333333,
-						start_time = 0
+					attack_shove_left = {
+						{
+							collision_type = "cylinder",
+							offset_forward = 0,
+							radius = 4.5,
+							height = 4,
+							offset_right = 0,
+							offset_up = 0,
+							duration = 0.6,
+							start_time = 0.3333333333333333
+						}
+					},
+					attack_shove_right = {
+						{
+							collision_type = "cylinder",
+							offset_forward = 0,
+							radius = 4.5,
+							height = 4,
+							offset_right = 0,
+							offset_up = 0,
+							duration = 0.6,
+							start_time = 0
+						}
 					}
 				}
 			}

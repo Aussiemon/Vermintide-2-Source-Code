@@ -278,7 +278,7 @@ local SpecialDifficultyOverrides = {
 				},
 				spawn_cooldown = {
 					50,
-					70
+					90
 				}
 			}
 		}
@@ -287,13 +287,10 @@ local SpecialDifficultyOverrides = {
 		max_specials = 4,
 		breeds = {
 			"skaven_gutter_runner",
-			"skaven_gutter_runner",
-			"skaven_pack_master",
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"chaos_vortex_sorcerer",
-			"chaos_corruptor_sorcerer",
 			"chaos_corruptor_sorcerer",
 			"skaven_warpfire_thrower"
 		},
@@ -319,10 +316,7 @@ local SpecialDifficultyOverrides_skaven = {
 		max_specials = 3,
 		breeds = {
 			"skaven_gutter_runner",
-			"skaven_gutter_runner",
 			"skaven_pack_master",
-			"skaven_pack_master",
-			"skaven_ratling_gunner",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"skaven_warpfire_thrower"
@@ -347,10 +341,7 @@ local SpecialDifficultyOverrides_skaven = {
 		max_specials = 4,
 		breeds = {
 			"skaven_gutter_runner",
-			"skaven_gutter_runner",
 			"skaven_pack_master",
-			"skaven_pack_master",
-			"skaven_ratling_gunner",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
 			"skaven_warpfire_thrower"
@@ -365,8 +356,8 @@ local SpecialDifficultyOverrides_skaven = {
 					60
 				},
 				spawn_cooldown = {
-					50,
-					90
+					60,
+					100
 				}
 			}
 		}
@@ -375,8 +366,6 @@ local SpecialDifficultyOverrides_skaven = {
 		max_specials = 4,
 		breeds = {
 			"skaven_gutter_runner",
-			"skaven_gutter_runner",
-			"skaven_pack_master",
 			"skaven_pack_master",
 			"skaven_ratling_gunner",
 			"skaven_poison_wind_globadier",
@@ -392,8 +381,8 @@ local SpecialDifficultyOverrides_skaven = {
 					60
 				},
 				spawn_cooldown = {
-					40,
-					70
+					50,
+					90
 				}
 			}
 		}
@@ -422,8 +411,8 @@ local SpecialDifficultyOverrides_chaos = {
 					60
 				},
 				spawn_cooldown = {
-					40,
-					80
+					50,
+					90
 				}
 			}
 		}
@@ -478,7 +467,7 @@ local SpecialDifficultyOverrides_chaos = {
 					60
 				},
 				spawn_cooldown = {
-					40,
+					45,
 					70
 				}
 			}
@@ -1500,7 +1489,7 @@ PacingSettings = {
 			0
 		},
 		delay_horde_threat_value = {
-			harder = 80,
+			harder = 70,
 			hard = 60,
 			normal = 40,
 			easy = 40
@@ -1512,7 +1501,7 @@ PacingSettings = {
 			easy = 35
 		},
 		delay_specials_threat_value = {
-			harder = 80,
+			harder = 70,
 			hard = 60,
 			normal = 40,
 			easy = 40
@@ -1558,13 +1547,18 @@ PacingSettings = {
 				}
 			},
 			hardest = {
+				multiple_hordes = 3,
 				horde_frequency = {
 					50,
 					100
 				},
+				multiple_horde_frequency = {
+					7,
+					10
+				},
 				relax_duration = {
-					35,
-					45
+					25,
+					35
 				}
 			}
 		}
@@ -1608,7 +1602,7 @@ PacingSettings = {
 			0
 		},
 		delay_horde_threat_value = {
-			harder = 80,
+			harder = 70,
 			hard = 60,
 			normal = 40,
 			easy = 40
@@ -1620,7 +1614,7 @@ PacingSettings = {
 			easy = 35
 		},
 		delay_specials_threat_value = {
-			harder = 80,
+			harder = 70,
 			hard = 60,
 			normal = 40,
 			easy = 40
@@ -1666,9 +1660,14 @@ PacingSettings = {
 				}
 			},
 			hardest = {
+				multiple_hordes = 3,
 				horde_frequency = {
 					50,
 					100
+				},
+				multiple_horde_frequency = {
+					7,
+					10
 				},
 				relax_duration = {
 					35,
@@ -2014,13 +2013,13 @@ ConflictDirectorSets = {
 			"chaos",
 			10,
 			"skaven",
-			1
+			2
 		}
 	},
 	mostly_skaven = {
 		pick_random = {
 			"chaos",
-			1,
+			2,
 			"skaven",
 			10
 		}

@@ -49,6 +49,8 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local career_extension = ScriptUnit.extension(owner_unit, "career_system")
+	local anim_time_scale = new_action.anim_time_scale or 1
+	self.anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
 	self.owner_buff_extension = buff_extension
 	self.owner_career_extension = career_extension
 	local has_melee_boost, boost_curve_multiplier = career_extension.has_melee_boost(career_extension)
@@ -252,8 +254,7 @@ ActionSweep._is_within_damage_window = function (self, current_time_in_action, a
 		return false
 	end
 
-	local anim_time_scale = action.anim_time_scale or 1
-	anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
+	local anim_time_scale = self.anim_time_scale
 	damage_window_start = damage_window_start / anim_time_scale
 	damage_window_end = damage_window_end or action.total_time or math.huge
 	damage_window_end = damage_window_end / anim_time_scale

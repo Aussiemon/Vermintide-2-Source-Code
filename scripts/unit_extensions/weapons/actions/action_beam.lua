@@ -45,7 +45,7 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 	self.beam_effect = World.create_particles(world, beam_effect, Vector3.zero())
 	self.beam_end_effect = World.create_particles(world, beam_end_effect, Vector3.zero())
 	self.beam_effect_length_id = World.find_particles_variable(world, beam_effect, "trail_length")
-	self._is_critical_strike = ActionUtils.is_critical_strike(self.owner_unit, current_action, t)
+	self._is_critical_strike = false
 	local go_id = self.unit_id
 
 	if self.is_server or LEVEL_EDITOR_TEST then
@@ -115,6 +115,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 		self.overcharge_extension:add_charge(overcharge_amount)
 
+		self._is_critical_strike = ActionUtils.is_critical_strike(owner_unit, current_action, t)
 		self.overcharge_timer = 0
 		self.overcharge_target_hit = false
 	end

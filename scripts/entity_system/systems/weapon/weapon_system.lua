@@ -341,41 +341,14 @@ WeaponSystem.update_synced_flamethrower_particle_effects = function (self)
 
 		if not unit_id or not Unit.alive(weapon_unit) then
 			World.stop_spawning_particles(self.world, data.flamethrower_effect)
-			World.stop_spawning_particles(self.world, data.flamethrower_impact_effect)
 
 			self.flamethrower_particle_effects[unit] = nil
 		else
 			local muzzle_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
 			local muzzle_rotation = Unit.world_rotation(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
-			local aim_direction = GameSession.game_object_field(game, unit_id, "aim_direction")
-			local aim_position = GameSession.game_object_field(game, unit_id, "aim_position")
-			local range = data.range
-			local result = PhysicsWorld.immediate_raycast_actors(physics_world, aim_direction, aim_position, range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
-			local flamethrower_end_position = aim_position + aim_direction * range
-			local hit_position, hit_unit = nil
-
-			if result then
-				for index, hit in pairs(result) do
-					local potential_hit_position = hit[INDEX_POSITION]
-					local hit_actor = hit[INDEX_ACTOR]
-					local potential_hit_unit = Actor.unit(hit_actor)
-
-					if potential_hit_unit ~= unit then
-						hit_position = potential_hit_position
-						hit_unit = potential_hit_unit
-
-						break
-					end
-				end
-			end
-
-			if hit_unit then
-				flamethrower_end_position = hit_position
-			end
-
 			local world = self.world
 
-			World.move_particles(world, data.flamethrower_impact_effect, flamethrower_end_position, muzzle_rotation)
+			World.move_particles(world, data.flamethrower_effect, muzzle_position, muzzle_rotation)
 		end
 	end
 
@@ -576,29 +549,25 @@ WeaponSystem.rpc_end_geiser = function (self, sender, unit_id)
 
 	return 
 end
-WeaponSystem.rpc_start_flamethrower = function (self, sender, unit_id, flamethrower_effect_id, flamethrower_impact_effect_id, range)
+WeaponSystem.rpc_start_flamethrower = function (self, sender, unit_id, flamethrower_effect_id)
 	if not LEVEL_EDITOR_TEST then
 		local unit = self.unit_storage:unit(unit_id)
 		local flamethrower_effect = NetworkLookup.effects[flamethrower_effect_id]
-		local flamethrower_impact_effect = NetworkLookup.effects[flamethrower_impact_effect_id]
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 		local equipment = inventory_extension.equipment(inventory_extension)
 		local weapon_unit = equipment.right_hand_wielded_unit_3p or equipment.left_hand_wielded_unit_3p
+		local muzzle_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
+		local muzzle_rotation = Unit.world_rotation(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
 		local world = self.world
 		self.flamethrower_particle_effects[unit] = {
-			flamethrower_effect = World.create_particles(world, flamethrower_effect, Vector3.zero()),
-			flamethrower_impact_effect = World.create_particles(world, flamethrower_impact_effect, Vector3.zero()),
+			flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation),
 			flamethrower_effect_name = flamethrower_effect,
-			flamethrower_impact_effect_name = flamethrower_impact_effect,
-			range = range,
 			weapon_unit = weapon_unit
 		}
 
 		if self.is_server then
-			self.network_transmit:send_rpc_clients_except("rpc_start_flamethrower", sender, unit_id, flamethrower_effect_id, flamethrower_impact_effect_id, range)
+			self.network_transmit:send_rpc_clients_except("rpc_start_flamethrower", sender, unit_id, flamethrower_effect_id)
 		end
-
-		World.link_particles(world, self.flamethrower_particle_effects[unit].flamethrower_effect, weapon_unit, Unit.node(weapon_unit, "fx_muzzle"), Matrix4x4.identity(), "destroy")
 	end
 
 	return 
@@ -611,7 +580,6 @@ WeaponSystem.rpc_end_flamethrower = function (self, sender, unit_id)
 
 		if data then
 			World.stop_spawning_particles(world, data.flamethrower_effect)
-			World.stop_spawning_particles(world, data.flamethrower_impact_effect)
 
 			self.flamethrower_particle_effects[unit] = nil
 

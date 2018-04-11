@@ -53,11 +53,11 @@ local breed_data = {
 		1.27
 	},
 	max_health = {
-		1200,
-		800,
-		1200,
-		1600,
-		2400
+		600,
+		720,
+		1080,
+		1440,
+		2160
 	},
 	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
 		if 3 <= blackboard.stagger_count then
@@ -317,7 +317,7 @@ local action_data = {
 		},
 		spawn_rot_func = function (unit, blackboard, _, index)
 			local spawn_rot = Unit.local_rotation(unit, 0)
-			local radians = (index - 2) * 0.23
+			local radians = (index - 2) * 0.3
 			local turn_rot = Quaternion(Vector3.up(), radians)
 			spawn_rot = Quaternion.multiply(spawn_rot, turn_rot)
 

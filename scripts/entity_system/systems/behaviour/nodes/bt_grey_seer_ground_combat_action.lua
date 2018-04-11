@@ -32,16 +32,10 @@ BTGreySeerGroundCombatAction.enter = function (self, unit, blackboard, t)
 
 	local final_phase_data = blackboard.final_phase_data or {}
 	blackboard.final_phase_data = final_phase_data
-
-	if current_phase == 4 then
-		final_phase_data.num_teleports = final_phase_data.num_teleports or 1
-		local override_spawn_group = action.override_spawn_groups[final_phase_data.num_teleports]
-		local call_position = BTSpawnAllies.find_spawn_point(unit, blackboard, action, blackboard.final_phase_data, override_spawn_group)
-		blackboard.call_position = Vector3Box(call_position)
-		final_phase_data.spawn_allies_timer = final_phase_data.spawn_allies_timer or t + 3
-		final_phase_data.teleport_timer = final_phase_data.teleport_timer or t
-		final_phase_data.special_spawn_timer = final_phase_data.special_spawn_timer or t + action.special_spawn_cooldown
-	end
+	final_phase_data.num_teleports = final_phase_data.num_teleports or 1
+	final_phase_data.spawn_allies_timer = final_phase_data.spawn_allies_timer or t + 3
+	final_phase_data.teleport_timer = final_phase_data.teleport_timer or t
+	final_phase_data.special_spawn_timer = final_phase_data.special_spawn_timer or t + action.special_spawn_cooldown
 
 	return 
 end
@@ -54,10 +48,6 @@ BTGreySeerGroundCombatAction.leave = function (self, unit, blackboard, t, reason
 end
 local Unit_alive = Unit.alive
 BTGreySeerGroundCombatAction.run = function (self, unit, blackboard, t, dt)
-	if blackboard.current_phase == 4 and not blackboard.call_position then
-		return "done"
-	end
-
 	local ready_to_cast = self.update_spells(self, unit, blackboard, t)
 
 	if ready_to_cast then
@@ -82,7 +72,7 @@ BTGreySeerGroundCombatAction.update_spells = function (self, unit, blackboard, t
 
 	if current_phase < 4 then
 		ready_to_summon = self.update_regular_spells(self, unit, blackboard, t)
-	elseif current_phase == 4 and blackboard.call_position then
+	elseif current_phase == 4 then
 		ready_to_summon = self.update_final_phase(self, unit, blackboard, t)
 	end
 
@@ -93,12 +83,15 @@ BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboa
 	local ready_to_summon = nil
 	local final_phase_data = blackboard.final_phase_data
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-	local call_position = (blackboard.call_position and blackboard.call_position:unbox()) or POSITION_LOOKUP[unit]
+	local current_phase = blackboard.current_phase
+	local teleport_position_index = final_phase_data.num_teleports or 1
+	local call_position = blackboard.defensive_teleport_positions[teleport_position_index]:unbox()
 	local teleport_timer = final_phase_data.teleport_timer
 	local special_spawn_timer = final_phase_data.special_spawn_timer
 
-	if (call_position and teleport_timer < t) or action.staggers_until_teleport <= blackboard.stagger_count then
-		blackboard.quick_teleport_exit_pos = Vector3Box(call_position)
+	if current_phase == 4 and ((teleport_timer and teleport_timer < t) or action.staggers_until_teleport <= blackboard.stagger_count) then
+		local projected_wanted_pos = LocomotionUtils.pos_on_mesh(blackboard.nav_world, call_position, 1, 1)
+		blackboard.quick_teleport_exit_pos = Vector3Box(projected_wanted_pos)
 		blackboard.quick_teleport = true
 		final_phase_data.teleport_timer = t + action.final_phase_teleport_cooldown
 		blackboard.current_spell_name = "teleport"
@@ -129,7 +122,7 @@ BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboa
 	local spawn_allies_timer = final_phase_data.spawn_allies_timer
 
 	if spawn_allies_timer < t then
-		BTSpawnAllies._spawn(self, unit, final_phase_data, blackboard, t)
+		self.spawn_allies(self, unit, blackboard, t)
 
 		final_phase_data.spawn_allies_timer = t + action.spawn_allies_cooldown
 
@@ -211,6 +204,20 @@ BTGreySeerGroundCombatAction.update_teleport_spell = function (self, unit, black
 			blackboard.quick_teleport_timer = t + 2.5
 		end
 	end
+
+	return 
+end
+BTGreySeerGroundCombatAction.spawn_allies = function (self, unit, blackboard, t)
+	local difficulty = Managers.state.difficulty:get_difficulty()
+	local action = blackboard.action
+	local strictly_not_close_to_players = true
+	local silent = true
+	local composition_type = action.difficulty_spawn[difficulty] or action.spawn
+	local limit_spawners = nil
+	local terror_event_id = action.terror_event_id
+	local conflict_director = Managers.state.conflict
+
+	conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
 
 	return 
 end

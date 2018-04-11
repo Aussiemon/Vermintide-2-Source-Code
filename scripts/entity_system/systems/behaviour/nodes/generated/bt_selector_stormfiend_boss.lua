@@ -44,20 +44,11 @@ BTSelector_stormfiend_boss.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local node_smartobject = children[2]
-	local condition_result = nil
-
-	if blackboard.keep_target then
-		condition_result = false
-	end
-
 	local smartobject_is_next = blackboard.next_smart_object_data.next_smart_object_id ~= nil
 	local is_in_smartobject_range = blackboard.is_in_smartobject_range
 	local is_smart_objecting = blackboard.is_smart_objecting
-	local moving_state = blackboard.move_state == "moving"
-
-	if condition_result == nil then
-		condition_result = (smartobject_is_next and is_in_smartobject_range and moving_state) or is_smart_objecting
-	end
+	local is_in_intro = blackboard.jump_down_intro
+	local condition_result = ((smartobject_is_next and is_in_smartobject_range) or is_smart_objecting) and is_in_intro
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_smartobject, "aborted")

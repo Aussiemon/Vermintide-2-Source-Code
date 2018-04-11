@@ -55,19 +55,19 @@ weapon_template.actions = {
 		zoomed_shot = {
 			reset_aim_on_attack = true,
 			anim_end_event = "to_unzoom",
-			weapon_action_hand = "left",
 			kind = "crossbow",
 			anim_event_no_ammo_left = "attack_shoot_last",
+			weapon_action_hand = "left",
 			alert_sound_range_fire = 4,
-			attack_template = "bolt_sniper",
 			alert_sound_range_hit = 2,
 			reload_when_out_of_ammo = true,
 			charge_value = "zoomed_arrow_hit",
 			hit_effect = "arrow_impact",
 			anim_event_last_ammo = "attack_shoot_last",
 			minimum_hold_time = 0.5,
-			apply_recoil = true,
+			attack_template = "bolt_sniper",
 			ammo_usage = 1,
+			apply_recoil = true,
 			speed = 12000,
 			active_reload_time = 0.25,
 			hold_input = "action_two_hold",
@@ -99,6 +99,11 @@ weapon_template.actions = {
 					input = "action_wield"
 				}
 			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension.clear_input_buffer(input_extension)
+
+				return input_extension.reset_release_input(input_extension)
+			end,
 			cleave_distribution = {
 				attack = 0.5,
 				impact = 0.1

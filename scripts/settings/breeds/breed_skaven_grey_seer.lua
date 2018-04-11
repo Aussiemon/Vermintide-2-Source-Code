@@ -51,7 +51,7 @@ local breed_data = {
 		aggro_decay_per_sec = 25,
 		target_outside_navmesh_mul = 0.7,
 		old_target_aggro_mul = 0.5,
-		target_disabled_aggro_mul = 0,
+		target_disabled_aggro_mul = 0.1,
 		max_distance = 50,
 		target_stickyness_bonus_a = 50,
 		distance_weight = 20,
@@ -59,10 +59,10 @@ local breed_data = {
 	},
 	max_health = {
 		400,
+		400,
 		600,
-		900,
-		1200,
-		1800
+		800,
+		1200
 	},
 	debug_color = {
 		255,
@@ -254,6 +254,7 @@ local action_data = {
 		final_phase_teleport_cooldown = 35,
 		staggers_until_teleport = 5,
 		spawn_group = "grey_seer_spawner",
+		terror_event_id = "grey_seer_spawner",
 		spawn = "skittergate_boss_event_defensive_normal",
 		warp_lightning_spell_cooldown = {
 			8,
@@ -274,7 +275,6 @@ local action_data = {
 			6
 		},
 		special_spawns = {
-			"skaven_gutter_runner",
 			"skaven_ratling_gunner",
 			"skaven_warpfire_thrower",
 			"skaven_pack_master",

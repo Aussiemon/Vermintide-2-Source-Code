@@ -14,11 +14,12 @@ BTMeleeOverlapAttackAction.enter = function (self, unit, blackboard, t)
 	local should_attack = self._init_attack(self, unit, blackboard, action, t, 1)
 
 	if not should_attack then
-		return "done"
+		blackboard.attack_finished = true
+	else
+		blackboard.attack_finished = false
 	end
 
 	blackboard.move_state = "attacking"
-	blackboard.attack_finished = false
 	blackboard.attack_aborted = false
 	blackboard.keep_target = true
 	local attack = blackboard.attack
@@ -260,9 +261,10 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, blackboard, acti
 	if bot_threats then
 		local current_threat_index = 1
 		local bot_threat = bot_threats[current_threat_index]
-		local bot_threat_start_time = bot_threat.start_time
+		local bot_threat_start_time, bot_threat_duration = AiUtils.calculate_bot_threat_time(bot_threat)
 		blackboard.create_bot_threat_at_t = t + bot_threat_start_time
 		blackboard.current_bot_threat_index = current_threat_index
+		blackboard.bot_threat_duration = bot_threat_duration
 		blackboard.bot_threats_data = bot_threats
 	end
 
@@ -317,7 +319,9 @@ BTMeleeOverlapAttackAction.leave = function (self, unit, blackboard, t, reason, 
 	blackboard.create_bot_threat_at_t = nil
 	blackboard.current_bot_threat_index = nil
 	blackboard.bot_threats_data = nil
+	blackboard.bot_threat_duration = nil
 	blackboard.damage_done_time = nil
+	blackboard.attack_finished = nil
 
 	if blackboard.continous_overlap_data then
 		table.clear(blackboard.continous_overlap_data)
@@ -368,8 +372,7 @@ BTMeleeOverlapAttackAction._calculate_oobb_collision = function (self, attack, b
 
 	return oobb_pos, self_rot, size
 end
-BTMeleeOverlapAttackAction._create_bot_aoe_threat = function (self, unit, attack_rotation, attack, bot_threat)
-	local bot_threat_duration = bot_threat.duration
+BTMeleeOverlapAttackAction._create_bot_aoe_threat = function (self, unit, attack_rotation, attack, bot_threat, bot_threat_duration)
 	local unit_position = POSITION_LOOKUP[unit]
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
@@ -423,7 +426,7 @@ BTMeleeOverlapAttackAction._check_wall_collision = function (self, unit, blackbo
 	return not ray_can_go
 end
 BTMeleeOverlapAttackAction.run = function (self, unit, blackboard, t, dt)
-	if t < blackboard.anim_locked then
+	if t <= blackboard.anim_locked then
 		local attack = blackboard.attack
 
 		if blackboard.attack_rotation_update_timer then
@@ -481,18 +484,22 @@ BTMeleeOverlapAttackAction.run = function (self, unit, blackboard, t, dt)
 			local bot_threats = blackboard.bot_threats_data
 			local current_bot_threat_index = blackboard.current_bot_threat_index
 			local current_bot_threat = bot_threats[current_bot_threat_index]
+			local bot_threat_duration = blackboard.bot_threat_duration
 
-			self._create_bot_aoe_threat(self, unit, attack_rotation, attack, current_bot_threat)
+			self._create_bot_aoe_threat(self, unit, attack_rotation, attack, current_bot_threat, bot_threat_duration)
 
 			local next_bot_threat_index = current_bot_threat_index + 1
 			local next_bot_threat = bot_threats[next_bot_threat_index]
 
 			if next_bot_threat then
 				local attack_started_at_t = blackboard.attack_started_at_t
-				blackboard.create_bot_threat_at_t = attack_started_at_t + next_bot_threat.start_time
+				local next_bot_threat_time, next_bot_threat_duration = AiUtils.calculate_bot_threat_time(next_bot_threat)
+				blackboard.create_bot_threat_at_t = attack_started_at_t + next_bot_threat_time
+				blackboard.bot_threat_duration = next_bot_threat_duration
 				blackboard.current_bot_threat_index = next_bot_threat_index
 			else
 				blackboard.create_bot_threat_at_t = nil
+				blackboard.bot_threat_duration = nil
 				blackboard.current_bot_threat_index = nil
 			end
 		end

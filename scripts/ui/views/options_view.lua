@@ -1424,6 +1424,7 @@ OptionsView.changes_been_made = function (self)
 	return 0 < table.size(self.changed_user_settings) or 0 < table.size(self.changed_render_settings) or self.changed_keymaps
 end
 local needs_reload_settings = settings_definitions.needs_reload_settings
+local needs_restart_settings = settings_definitions.needs_restart_settings
 OptionsView.apply_changes = function (self, user_settings, render_settings, pending_user_settings)
 	local needs_reload = false
 
@@ -1438,7 +1439,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 	for setting, value in pairs(render_settings) do
 		Application.set_user_setting("render_settings", setting, value)
 
-		if table.contains(needs_reload_settings, setting) then
+		if not table.contains(needs_restart_settings, setting) then
 			needs_reload = true
 		end
 	end

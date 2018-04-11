@@ -105,6 +105,22 @@ BreedBehaviors.grey_seer = {
 		action_data = ACTIONS.grey_seer_death_sequence
 	},
 	{
+		"BTSequence",
+		{
+			"BTQuickTeleportAction",
+			enter_hook = "grey_seer_call_stormfiend_enter",
+			name = "quick_teleport",
+			action_data = ACTIONS.quick_teleport
+		},
+		{
+			"BTIdleAction",
+			name = "defensive_idle",
+			action_data = ACTIONS.defensive_idle
+		},
+		condition = "grey_seer_call_stormfiend",
+		name = "grey_seer_call_stormfiend"
+	},
+	{
 		"BTStaggerAction",
 		enter_hook = "grey_seer_stagger_enter",
 		name = "stagger",

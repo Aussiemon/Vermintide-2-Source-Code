@@ -15,6 +15,7 @@ BreedBehaviors.stormfiend_boss = {
 		},
 		{
 			"BTClimbAction",
+			leave_hook = "stormfiend_boss_jump_down_leave",
 			name = "climb",
 			condition = "at_climb_smartobject",
 			action_data = ACTIONS.climb
@@ -24,13 +25,7 @@ BreedBehaviors.stormfiend_boss = {
 			condition = "at_jump_smartobject",
 			name = "jump_across"
 		},
-		{
-			"BTSmashDoorAction",
-			name = "smash_door",
-			condition = "at_door_smartobject",
-			action_data = ACTIONS.smash_door
-		},
-		condition = "ratogre_at_smartobject",
+		condition = "stormfiend_boss_intro_jump_down",
 		name = "smartobject"
 	},
 	{
@@ -88,6 +83,7 @@ BreedBehaviors.stormfiend_boss = {
 			},
 			{
 				"BTMeleeOverlapAttackAction",
+				enter_hook = "stormfiend_boss_charge_enter",
 				name = "charge",
 				action_data = ACTIONS.charge
 			},

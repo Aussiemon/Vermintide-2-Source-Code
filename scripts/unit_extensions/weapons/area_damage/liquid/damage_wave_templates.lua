@@ -3,7 +3,7 @@ DamageWaveTemplates = {
 		plague_wave = {
 			fx_separation_dist = 1.5,
 			max_speed = 20,
-			wave_width = 1,
+			wave_width = 0.8,
 			launch_animation = "wave_summon_release",
 			buff_wave_impact_name = "plague_wave_face_base",
 			overflow_dist = 5,
@@ -57,16 +57,17 @@ DamageWaveTemplates = {
 				}
 			},
 			player_push_data = {
+				ahead_dist = 1.5,
 				push_forward_offset = 1.5,
 				push_width = 1.25,
-				ahead_dist = 1.5,
-				player_pushed_speed = 20
+				player_pushed_speed = 20,
+				dodged_width = 0.5
 			}
 		},
 		pattern_plague_wave = {
 			fx_separation_dist = 1.5,
 			max_speed = 15,
-			wave_width = 3,
+			wave_width = 0.8,
 			launch_animation = "wave_summon_release",
 			buff_wave_impact_name = "plague_wave_face_base",
 			overflow_dist = 5,
@@ -117,10 +118,11 @@ DamageWaveTemplates = {
 				}
 			},
 			player_push_data = {
+				ahead_dist = 1.5,
 				push_forward_offset = 1.5,
 				push_width = 1.25,
-				ahead_dist = 1.5,
-				player_pushed_speed = 17
+				player_pushed_speed = 17,
+				dodged_width = 0.5
 			}
 		},
 		vermintide = {
@@ -177,10 +179,11 @@ DamageWaveTemplates = {
 				}
 			},
 			player_push_data = {
+				ahead_dist = 1.5,
 				push_forward_offset = 1.5,
 				push_width = 1.25,
-				ahead_dist = 1.5,
-				player_pushed_speed = 17
+				player_pushed_speed = 17,
+				dodged_width = 0.5
 			}
 		}
 	}

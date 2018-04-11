@@ -691,7 +691,7 @@ DamageProfileTemplates.shot_shotgun = {
 		impact = 0.2
 	},
 	default_target = {
-		boost_curve_coefficient_headshot = 0.5,
+		boost_curve_coefficient_headshot = 0.75,
 		boost_curve_type = "linesman_curve",
 		boost_curve_coefficient = 0.75,
 		attack_template = "shot_shotgun",
@@ -938,7 +938,7 @@ DamageProfileTemplates.shot_carbine_rapier = {
 	charge_value = "instant_projectile",
 	critical_strike = {
 		attack_armor_power_modifer = {
-			1,
+			1.5,
 			0.25,
 			1,
 			1,

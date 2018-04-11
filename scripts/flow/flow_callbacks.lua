@@ -1253,7 +1253,9 @@ function flow_callback_wwise_trigger_event_with_environment(params)
 		fassert(false, "Missing unit or position in wwise trigger even with environment flow node in unit %s", unit)
 	end
 
-	sound_environment_system.set_source_environment(sound_environment_system, source, position)
+	if Vector3.is_valid(position) then
+		sound_environment_system.set_source_environment(sound_environment_system, source, position)
+	end
 
 	local id = WwiseWorld.trigger_event(wwise_world, event, use_occlusion, source)
 	flow_return_table.playing_id = id

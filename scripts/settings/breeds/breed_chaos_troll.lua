@@ -78,6 +78,7 @@ local damage_table_light = {
 		15
 	}
 }
+local default_bot_threat_difficulty_data = BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	detection_radius = 9999999,
 	husk_hit_reaction_cooldown = 1,
@@ -141,7 +142,7 @@ local breed_data = {
 	awards_positive_reinforcement_message = true,
 	aim_template = "chaos_warrior",
 	stagger_threshold_heavy = 1,
-	reach_distance = 3,
+	reach_distance = 4.2,
 	navigation_spline_distance_to_borders = 1,
 	stagger_threshold_light = 1,
 	hit_reaction = "ai_default",
@@ -597,9 +598,10 @@ local action_data = {
 		}
 	},
 	attack_crouch_sweep = {
-		damage_type = "cutting",
+		cooldown = -1,
 		fatigue_type = "ogre_shove",
 		action_weight = 1,
+		damage_type = "cutting",
 		considerations = UtilityConsiderations.attack_crouch_sweep,
 		attacks = {
 			{
@@ -623,12 +625,18 @@ local action_data = {
 				attack_time = 2.3333333333333335,
 				width = 0.4,
 				attack_anim = {
-					"attack_sweep"
+					"attack_sweep",
+					"attack_shove"
 				},
 				continious_overlap = {
 					attack_sweep = {
 						base_node_name = "j_leftforearm",
 						tip_node_name = "j_lefthand",
+						start_time = 0.6666666666666666
+					},
+					attack_shove = {
+						base_node_name = "j_rightforearm",
+						tip_node_name = "j_righthand",
 						start_time = 0.6666666666666666
 					}
 				},
@@ -647,6 +655,7 @@ local action_data = {
 						0
 					}
 				},
+				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
 				bot_threats = {
 					{
 						collision_type = "cylinder",
@@ -655,7 +664,7 @@ local action_data = {
 						height = 3.5,
 						offset_right = 0,
 						offset_up = 0,
-						duration = 1.2,
+						duration = 0.7333333333333333,
 						start_time = 0.6
 					}
 				}
@@ -667,53 +676,6 @@ local action_data = {
 			20
 		},
 		difficulty_damage = damage_table_light,
-		blocked_damage = {
-			15,
-			4,
-			2.5
-		},
-		blocked_difficulty_damage = {
-			easy = {
-				1,
-				4,
-				2.5
-			},
-			normal = {
-				2,
-				4,
-				2.5
-			},
-			hard = {
-				4,
-				5,
-				2.5
-			},
-			survival_hard = {
-				4,
-				5,
-				2.5
-			},
-			harder = {
-				6,
-				7.5,
-				5
-			},
-			survival_harder = {
-				6,
-				7.5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				7.5
-			},
-			survival_hardest = {
-				10,
-				10,
-				7.5
-			}
-		},
 		ignore_staggers = {
 			true,
 			false,
@@ -725,7 +687,6 @@ local action_data = {
 	},
 	melee_shove = {
 		damage_type = "cutting",
-		cooldown = -1,
 		target_running_velocity_threshold = 0.75,
 		fatigue_type = "ogre_shove",
 		action_weight = 1,
@@ -744,7 +705,7 @@ local action_data = {
 				freeze_intensity_decay_time = 15,
 				range = 0.7,
 				anim_driven = false,
-				offset_forward = 1.2,
+				offset_forward = 0.5,
 				player_push_speed_blocked_z = 4,
 				offset_up = 0.5,
 				player_push_speed_z = 4,
@@ -753,7 +714,7 @@ local action_data = {
 				hit_multiple_targets = true,
 				player_push_speed_blocked = 12.8,
 				attack_time = 1.6666666666666667,
-				width = 1,
+				width = 0.8,
 				attack_anim = {
 					"attack_shove"
 				},
@@ -782,6 +743,7 @@ local action_data = {
 						0
 					}
 				},
+				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
 				bot_threats = {
 					{
 						collision_type = "cylinder",
@@ -791,7 +753,7 @@ local action_data = {
 						offset_right = 0,
 						offset_up = 0,
 						duration = 0.9333333333333333,
-						start_time = 0.6
+						start_time = 0.16666666666666666
 					}
 				}
 			}
@@ -845,6 +807,7 @@ local action_data = {
 						0
 					}
 				},
+				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
 				bot_threats = {
 					{
 						collision_type = "cylinder",
@@ -854,7 +817,7 @@ local action_data = {
 						offset_right = 0,
 						offset_up = 0,
 						duration = 0.9333333333333333,
-						start_time = 0.6
+						start_time = 0.16666666666666666
 					}
 				}
 			}
@@ -864,58 +827,10 @@ local action_data = {
 			20,
 			20
 		},
-		difficulty_damage = damage_table_light,
-		blocked_damage = {
-			2,
-			4,
-			2.5
-		},
-		blocked_difficulty_damage = {
-			easy = {
-				1,
-				4,
-				2.5
-			},
-			normal = {
-				2,
-				4,
-				2.5
-			},
-			hard = {
-				4,
-				5,
-				2.5
-			},
-			survival_hard = {
-				4,
-				5,
-				2.5
-			},
-			harder = {
-				6,
-				7.5,
-				5
-			},
-			survival_harder = {
-				6,
-				7.5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				7.5
-			},
-			survival_hardest = {
-				10,
-				10,
-				7.5
-			}
-		}
+		difficulty_damage = damage_table_light
 	},
 	melee_sweep = {
 		damage_type = "cutting",
-		cooldown = -1,
 		target_running_velocity_threshold = 0.75,
 		fatigue_type = "ogre_shove",
 		action_weight = 1,
@@ -972,6 +887,7 @@ local action_data = {
 						0
 					}
 				},
+				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
 				bot_threats = {
 					{
 						collision_type = "cylinder",
@@ -980,8 +896,8 @@ local action_data = {
 						height = 3.5,
 						offset_right = 0,
 						offset_up = 0,
-						duration = 0.9333333333333333,
-						start_time = 0.6
+						duration = 0.6666666666666666,
+						start_time = 0.3333333333333333
 					}
 				}
 			}
@@ -1035,6 +951,7 @@ local action_data = {
 						0
 					}
 				},
+				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
 				bot_threats = {
 					{
 						collision_type = "cylinder",
@@ -1044,7 +961,7 @@ local action_data = {
 						offset_right = 0,
 						offset_up = 0,
 						duration = 0.9333333333333333,
-						start_time = 0.6
+						start_time = 0.16666666666666666
 					}
 				}
 			}
@@ -1105,15 +1022,16 @@ local action_data = {
 	},
 	vomit = {
 		firing_time = 0.77,
-		rotation_time = 1.1,
+		rotation_time = 0.8,
+		action_weight = 1,
 		near_vomit_distance = 25,
 		attack_time = 2.5,
-		action_weight = 1,
 		considerations = UtilityConsiderations.vomit,
 		attack_anims = {
 			ranged_vomit = "attack_vomit_high",
 			near_vomit = "attack_vomit"
 		},
+		bot_threat_difficulty_data = default_bot_threat_difficulty_data,
 		bot_threats = {
 			{
 				height = 3,
@@ -1122,7 +1040,7 @@ local action_data = {
 				duration = 1,
 				offset_up = 0,
 				width = 2.5,
-				start_time = 1
+				start_time = 0.7333333333333333
 			}
 		}
 	},

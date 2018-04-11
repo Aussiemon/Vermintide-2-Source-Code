@@ -603,7 +603,7 @@ UtilityConsiderations = {
 	},
 	troll_melee_shove = {
 		distance_to_target = {
-			max_value = 7,
+			max_value = 6,
 			blackboard_input = "target_dist",
 			spline = {
 				0,
@@ -620,17 +620,9 @@ UtilityConsiderations = {
 			blackboard_input = "target_is_not_downed",
 			is_condition = true
 		},
-		time_since_last = {
-			max_value = 2,
-			blackboard_input = "time_since_last",
-			spline = {
-				0,
-				0,
-				0.95,
-				0,
-				1,
-				1
-			}
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
 		}
 	},
 	troll_melee_sweep = {
@@ -640,7 +632,7 @@ UtilityConsiderations = {
 			spline = {
 				0,
 				1,
-				0.7533333333333332,
+				0.7,
 				1,
 				0.9,
 				0,
@@ -649,7 +641,7 @@ UtilityConsiderations = {
 			}
 		},
 		time_since_last = {
-			max_value = 2,
+			max_value = 4,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
@@ -663,6 +655,10 @@ UtilityConsiderations = {
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
 			is_condition = true
+		},
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
 		}
 	},
 	melee_shove = {
@@ -683,6 +679,18 @@ UtilityConsiderations = {
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
 			is_condition = true
+		},
+		time_since_last = {
+			max_value = 5,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.95,
+				0,
+				1,
+				1
+			}
 		}
 	},
 	spawn_melee_shove = {
@@ -751,10 +759,6 @@ UtilityConsiderations = {
 				1,
 				0
 			}
-		},
-		target_is_not_downed = {
-			blackboard_input = "target_is_not_downed",
-			is_condition = true
 		}
 	},
 	attack_grabbed_chew = {
@@ -771,10 +775,6 @@ UtilityConsiderations = {
 				1,
 				1
 			}
-		},
-		target_is_not_downed = {
-			blackboard_input = "target_is_not_downed",
-			is_condition = true
 		}
 	},
 	attack_grabbed_throw = {
@@ -991,6 +991,10 @@ UtilityConsiderations = {
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
 			is_condition = true
+		},
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
 		}
 	},
 	clan_rat_follow = {
@@ -1204,18 +1208,6 @@ UtilityConsiderations = {
 				0,
 				1,
 				0
-			}
-		},
-		time_since_last = {
-			max_value = 2,
-			blackboard_input = "time_since_last",
-			spline = {
-				0,
-				0,
-				0.95,
-				0,
-				1,
-				1
 			}
 		}
 	},
@@ -1816,6 +1808,10 @@ UtilityConsiderations = {
 				1,
 				1
 			}
+		},
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
 		}
 	},
 	chaos_warrior_special_attack = {

@@ -860,7 +860,8 @@ local unit_templates = {
 			"EnemyOutlineExtension",
 			"GenericUnitAimExtension",
 			"SoundSectorExtension",
-			"AIUnitFadeExtension"
+			"AIUnitFadeExtension",
+			"AIMeleeLineOfSightExtension"
 		},
 		husk_extensions = {
 			"AiHuskBaseExtension",
@@ -886,7 +887,8 @@ local unit_templates = {
 				"AIProximityExtension",
 				"BuffExtension",
 				"DialogueActorExtension",
-				"AIVolumeExtension"
+				"AIVolumeExtension",
+				"AIMeleeLineOfSightExtension"
 			},
 			husk_extensions = {
 				"AiHuskBaseExtension",

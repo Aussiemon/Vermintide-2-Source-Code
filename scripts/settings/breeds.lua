@@ -10,6 +10,7 @@ require("foundation/scripts/util/table")
 require("foundation/scripts/util/error")
 require("scripts/unit_extensions/human/ai_player_unit/ai_breed_snippets")
 require("scripts/settings/dlc_settings")
+require("scripts/settings/player_bots_settings")
 
 Breeds = Breeds or {}
 BreedActions = BreedActions or {}
@@ -124,6 +125,57 @@ for breed_name, breed_actions in pairs(BreedActions) do
 	end
 end
 
+local function set_bot_threat_tweak_data(current_table, max_start_delay)
+	if current_table.duration then
+		current_table.max_start_delay = math.min(max_start_delay, current_table.duration * 0.9)
+	elseif current_table.bot_threat_duration then
+		current_table.bot_threat_max_start_delay = math.min(max_start_delay, current_table.bot_threat_duration * 0.9)
+	end
+
+	return 
+end
+
+local function find_and_set_bot_threat_tweak_data(current_table, current_difficulty)
+	if current_table.bot_threat_difficulty_data then
+		local current_difficulty_data = current_table.bot_threat_difficulty_data[current_difficulty]
+		local max_start_delay = current_difficulty_data.max_start_delay
+
+		if current_table.bot_threats then
+			local bot_threats = current_table.bot_threats
+
+			if bot_threats[1] then
+				local num_threats = #bot_threats
+
+				for i = 1, num_threats, 1 do
+					local bot_threat = bot_threats[i]
+
+					set_bot_threat_tweak_data(bot_threat, max_start_delay)
+				end
+			else
+				for _, animation_bot_threats in pairs(bot_threats) do
+					local num_threats = #animation_bot_threats
+
+					for i = 1, num_threats, 1 do
+						local bot_threat = animation_bot_threats[i]
+
+						set_bot_threat_tweak_data(bot_threat, max_start_delay)
+					end
+				end
+			end
+		elseif current_table.bot_threat_duration then
+			set_bot_threat_tweak_data(current_table, max_start_delay)
+		end
+	else
+		for _, data in pairs(current_table) do
+			if type(data) == "table" then
+				find_and_set_bot_threat_tweak_data(data, current_difficulty)
+			end
+		end
+	end
+
+	return 
+end
+
 function SET_BREED_DIFFICULTY()
 	local current_difficulty = (Managers and Managers.state.difficulty and Managers.state.difficulty:get_difficulty()) or "normal"
 
@@ -143,6 +195,8 @@ function SET_BREED_DIFFICULTY()
 				local blocked_difficulty_damage = action_data.blocked_difficulty_damage[current_difficulty]
 				action_data.blocked_damage = table.clone(blocked_difficulty_damage)
 			end
+
+			find_and_set_bot_threat_tweak_data(action_data, current_difficulty)
 		end
 	end
 

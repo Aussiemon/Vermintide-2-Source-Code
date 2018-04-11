@@ -40,6 +40,7 @@ local damage_table_light = {
 		15
 	}
 }
+local default_bot_threat_difficulty_data = BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	detection_radius = 9999999,
 	bots_should_flank = true,
@@ -642,6 +643,7 @@ local action_data = {
 						0
 					}
 				},
+				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
 				bot_threats = {
 					attack_melee_fwd = {
 						{
@@ -651,8 +653,8 @@ local action_data = {
 							height = 3.5,
 							offset_right = 0,
 							offset_up = 0,
-							duration = 1.1666666666666667,
-							start_time = 0.16666666666666666
+							duration = 1.0666666666666667,
+							start_time = 0.26666666666666666
 						}
 					},
 					attack_melee_bwd = {
@@ -663,8 +665,8 @@ local action_data = {
 							height = 3.75,
 							offset_right = 0,
 							offset_up = 0,
-							duration = 0.9,
-							start_time = 0.7666666666666667
+							duration = 0.8,
+							start_time = 0.8666666666666667
 						}
 					},
 					attack_melee_left = {
@@ -675,8 +677,8 @@ local action_data = {
 							height = 3.5,
 							offset_right = 0,
 							offset_up = 0,
-							duration = 1.0666666666666667,
-							start_time = 0.5333333333333333
+							duration = 0.9666666666666667,
+							start_time = 0.6333333333333333
 						}
 					},
 					attack_melee_right = {
@@ -687,8 +689,8 @@ local action_data = {
 							height = 2.5,
 							offset_right = 0,
 							offset_up = 0,
-							duration = 1.1,
-							start_time = 0.5333333333333333
+							duration = 1,
+							start_time = 0.6333333333333333
 						}
 					}
 				}

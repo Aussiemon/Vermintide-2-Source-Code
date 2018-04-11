@@ -458,6 +458,23 @@ AiUtils.calculate_oobb = function (range, self_pos, self_rot, height, width)
 
 	return oobb_pos, self_rot, size
 end
+local previous_random_value = 0
+AiUtils.calculate_bot_threat_time = function (bot_threat)
+	local duration = bot_threat.duration
+	local max_start_delay = bot_threat.max_start_delay or 0
+	local current_random_value = math.random()
+	local sum_random = previous_random_value + current_random_value
+
+	if 1 < sum_random then
+		sum_random = current_random_value
+	end
+
+	local start_delay = sum_random * max_start_delay
+	local start_time = bot_threat.start_time + start_delay
+	previous_random_value = sum_random
+
+	return start_time, duration - start_delay
+end
 AiUtils.get_actual_attacker_unit = function (attacker_unit)
 	if ScriptUnit.has_extension(attacker_unit, "projectile_system") and not ScriptUnit.has_extension(attacker_unit, "limited_item_track_system") then
 		local projectile_extension = ScriptUnit.extension(attacker_unit, "projectile_system")
@@ -1027,9 +1044,11 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 	local self_forward_flat = Vector3.normalize(Vector3.flat(self_forward))
 	local push_pos = self_pos + self_forward * data.push_forward_offset
 	local radius = data.push_width * 1.5
+	local dodge_radius = data.dodged_width and data.dodged_width * 1.5
 	local forward_pos = self_pos + self_forward * 3
 
 	for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
+		local push_radius = radius
 		local hit_unit = PLAYER_AND_BOT_UNITS[i]
 
 		if displaced_units[hit_unit] then
@@ -1040,7 +1059,15 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 			local other_pos = POSITION_LOOKUP[hit_unit]
 			local to_target = other_pos - push_pos
 
-			if Vector3.length(to_target) < radius then
+			if dodge_radius then
+				local status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
+
+				if status_extension and status_extension.get_is_dodging(status_extension) then
+					push_radius = dodge_radius
+				end
+			end
+
+			if Vector3.length(to_target) < push_radius then
 				local push_width_sqr = data.push_width * data.push_width
 				local pos_projected_on_forward_move_dir = Geometry.closest_point_on_line(other_pos, self_pos, forward_pos)
 				local side_vector = other_pos - pos_projected_on_forward_move_dir

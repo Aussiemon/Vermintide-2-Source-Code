@@ -101,6 +101,7 @@ local damage_table_combo = {
 		15
 	}
 }
+local default_bot_threat_difficulty_data = BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	detection_radius = 9999999,
 	husk_hit_reaction_cooldown = 1,
@@ -178,7 +179,7 @@ local breed_data = {
 		aggro_decay_per_sec = 1,
 		target_outside_navmesh_mul = 0.5,
 		old_target_aggro_mul = 1,
-		target_disabled_aggro_mul = 0,
+		target_disabled_aggro_mul = 0.1,
 		max_distance = 50,
 		target_stickyness_bonus_a = 50,
 		distance_weight = 100,
@@ -669,6 +670,7 @@ local action_data = {
 						4
 					}
 				},
+				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
 				bot_threats = {
 					{
 						collision_type = "cylinder",
@@ -889,6 +891,7 @@ local action_data = {
 						start_time = 0.6666666666666666
 					}
 				},
+				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
 				bot_threats = {
 					{
 						collision_type = "cylinder",
@@ -898,7 +901,7 @@ local action_data = {
 						offset_right = 0,
 						offset_up = 0,
 						duration = 0.8333333333333334,
-						start_time = 0.8
+						start_time = 0.16666666666666666
 					}
 				}
 			}

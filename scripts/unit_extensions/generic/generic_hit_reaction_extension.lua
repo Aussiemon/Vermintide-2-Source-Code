@@ -560,15 +560,29 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	local impact_position = nil
 
 	if hit_effect or should_spawn_blood or sound_event then
-		local actor_name = actors[1]
+		for _, actor_name in ipairs(actors) do
+			if Unit.has_node(unit, actor_name) then
+				impact_position = Unit.world_position(unit, Unit.node(unit, actor_name))
 
-		if not actor_name then
-			impact_position = Unit.world_position(unit, 0)
-		elseif not Unit.has_node(unit, actor_name) then
-			impact_position = Actor.center_of_mass(Unit.actor(unit, actor_name))
-		else
-			local node = Unit.node(unit, actor_name)
-			impact_position = Unit.world_position(unit, node)
+				break
+			elseif Unit.find_actor(unit, actor_name) then
+				impact_position = Actor.center_of_mass(Unit.actor(unit, actor_name))
+
+				break
+			end
+		end
+
+		if not impact_position then
+			if Unit.has_node(unit, "c_hips") then
+				impact_position = Unit.world_position(unit, Unit.node(unit, "c_hips"))
+			elseif Unit.find_actor(unit, "c_hips") then
+				impact_position = Actor.center_of_mass(Unit.actor(unit, "c_hips"))
+			end
+		end
+
+		if not impact_position then
+			hit_effect = nil
+			should_spawn_blood, sound_event = nil
 		end
 	end
 

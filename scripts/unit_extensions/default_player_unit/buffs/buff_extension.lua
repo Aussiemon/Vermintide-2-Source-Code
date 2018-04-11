@@ -343,7 +343,9 @@ BuffExtension._update_buffs = function (self, dt, t)
 				local time_left_on_buff = end_time and end_time - t
 				buff_extension_function_params.time_into_buff = time_into_buff
 				buff_extension_function_params.time_left_on_buff = time_left_on_buff
+				self._debug_buff_removes = true
 				local removed_buff, amount = BuffFunctionTemplates.functions[update_func](self._unit, buff, buff_extension_function_params, world)
+				self._debug_buff_removes = false
 
 				if removed_buff then
 					amount = amount or 1
@@ -375,12 +377,13 @@ BuffExtension.update_stat_buff = function (self, stat_buff_index, difference)
 
 	return 
 end
-BuffExtension.remove_buff = function (self, id)
+BuffExtension.remove_buff = function (self, id, handled_in_buff_update_function)
 	local buffs = self._buffs
 	local num_buffs = #buffs
 	local end_time = Managers.time:time("game")
 	local num_buffs_removed = 0
 	local i = 1
+	local buff_name = ""
 	local buff_type_name = ""
 
 	while i <= num_buffs do
@@ -392,7 +395,11 @@ BuffExtension.remove_buff = function (self, id)
 		buff_extension_function_params.end_time = end_time
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
 
-		if buff.id == id or buff.parent_id == id then
+		if buff.id == id or (buff.parent_id and buff.parent_id == id) then
+			if self._debug_buff_removes then
+				printf("removed buff: name: %s type: %s id: %s parent_id: %s", tostring(buff.name or "no name"), tostring(buff.buff_type or "no type"), tostring(buff.id or "no id"), tostring(buff.parent_id or "no parent_id"))
+			end
+
 			self._remove_sub_buff(self, buff, i, buff_extension_function_params)
 
 			num_buffs = num_buffs - 1
@@ -415,6 +422,18 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 
 	if template.stat_buff then
 		self._remove_stat_buff(self, buff)
+	end
+
+	local buff_to_remove = template.buff_to_add
+
+	if buff_to_remove then
+		for i, buff in ipairs(self._buffs) do
+			local buff_type = buff.buff_type
+
+			if buff_type == buff_to_remove and not buff.duration then
+				buff.duration = 0
+			end
+		end
 	end
 
 	if template.event_buff then

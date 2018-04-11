@@ -3,9 +3,11 @@ local BTEnterHooks = BTEnterHooks
 local unit_alive = Unit.alive
 local ScriptUnit = ScriptUnit
 BTEnterHooks.crouch_on_enter = function (unit, blackboard, t)
-	Managers.state.network:anim_event(unit, "to_crouch")
+	if blackboard.is_upright then
+		Managers.state.network:anim_event(unit, "to_crouch")
 
-	blackboard.is_upright = false
+		blackboard.is_upright = false
+	end
 
 	return 
 end
@@ -94,6 +96,65 @@ BTEnterHooks.grey_seer_death_sequence_teleport = function (unit, blackboard, t)
 		blackboard.quick_teleport_exit_pos = Vector3Box(teleport_position.unbox(teleport_position))
 		blackboard.quick_teleport = true
 		blackboard.current_death_sequence_index = index + 1
+	end
+
+	return 
+end
+BTEnterHooks.grey_seer_call_stormfiend_enter = function (unit, blackboard, t)
+	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+	local mounted_data = blackboard.mounted_data
+	local mount_blackboard = BLACKBOARDS[mounted_data.mount_unit]
+	local call_stormfiend_positions = blackboard.call_stormfiend_positions
+	local self_position = POSITION_LOOKUP[unit]
+	local closest_distance = math.huge
+	local wanted_pos = nil
+
+	for i = 1, #call_stormfiend_positions, 1 do
+		local position = call_stormfiend_positions[i]:unbox()
+		local distance = Vector3.distance(self_position, position)
+
+		if distance < closest_distance then
+			wanted_pos = position
+			closest_distance = distance
+		end
+	end
+
+	local projected_wanted_pos = LocomotionUtils.pos_on_mesh(blackboard.nav_world, wanted_pos, 1, 1)
+	mount_blackboard.goal_destination = Vector3Box(projected_wanted_pos)
+	mount_blackboard.anim_cb_move = true
+	local event_data = FrameTable.alloc_table()
+
+	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_calls_mount_battle", event_data)
+
+	blackboard.quick_teleport = true
+	blackboard.quick_teleport_exit_pos = Vector3Box(projected_wanted_pos)
+
+	return 
+end
+BTEnterHooks.stormfiend_boss_charge_enter = function (unit, blackboard, t)
+	local wanted_unit = nil
+	local furthest_distance = 0
+	local self_pos = POSITION_LOOKUP[unit] + Vector3.up()
+	local world = blackboard.world
+	local physics_world = World.get_data(world, "physics_world")
+
+	for i, pos in ipairs(PLAYER_AND_BOT_POSITIONS) do
+		local player_unit = PLAYER_AND_BOT_UNITS[i]
+		local distance = Vector3.distance(self_pos, pos)
+		local target_pos = pos + Vector3.up()
+
+		if furthest_distance < distance then
+			local is_in_line_of_sight = PerceptionUtils.is_position_in_line_of_sight(unit, self_pos, target_pos, physics_world)
+
+			if is_in_line_of_sight then
+				wanted_unit = player_unit
+			end
+		end
+	end
+
+	if AiUtils.unit_alive(wanted_unit) then
+		blackboard.target_unit = wanted_unit
+		blackboard.keep_target = true
 	end
 
 	return 

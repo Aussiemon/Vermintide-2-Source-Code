@@ -961,14 +961,18 @@ SimpleInventoryExtension.drop_level_event_item = function (self, slot_data)
 	local projectile_info = action.projectile_info
 	local unit = self._unit
 	local position = Unit.world_position(unit, 0) + Vector3(0, 0, 2)
-	local proj_rotation = Quaternion.identity()
-	local velocity = Vector3(math.random(), math.random(), math.random())
-	local angular_velocity_transformed = Vector3(math.random(), math.random(), math.random())
-	local item_data = slot_data.item_data
-	local item_name = item_data.name
-	local spawn_type = "dropped"
 
-	ActionUtils.spawn_pickup_projectile(self._world, weapon_unit, projectile_info.projectile_unit_name, projectile_info.projectile_unit_template_name, action, unit, position, proj_rotation, velocity, angular_velocity_transformed, item_name, spawn_type)
+	if NetworkUtils.network_safe_position(position) then
+		local proj_rotation = Quaternion.identity()
+		local velocity = Vector3(math.random(), math.random(), math.random())
+		local angular_velocity_transformed = Vector3(math.random(), math.random(), math.random())
+		local item_data = slot_data.item_data
+		local item_name = item_data.name
+		local spawn_type = "dropped"
+
+		ActionUtils.spawn_pickup_projectile(self._world, weapon_unit, projectile_info.projectile_unit_name, projectile_info.projectile_unit_template_name, action, unit, position, proj_rotation, velocity, angular_velocity_transformed, item_name, spawn_type)
+	end
+
 	self.destroy_slot(self, "slot_level_event")
 
 	return 
@@ -995,16 +999,19 @@ SimpleInventoryExtension.check_and_drop_pickups = function (self, drop_reason, o
 					local random_angle = math.random(-math.half_pi, math.half_pi)
 					local random_direction = Vector3.normalize(random_vector)
 					local position = (override_pos or POSITION_LOOKUP[unit]) + random_vector * 0.2
-					local rotation = Quaternion.axis_angle(random_direction, random_angle)
-					local pickup_name = pickup_data.pickup_name
-					local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
-					local pickup_spawn_type = "dropped"
-					local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
-					local network_manager = Managers.state.network
 
-					network_manager.network_transmit:send_rpc_server("rpc_spawn_pickup_with_physics", pickup_name_id, position, rotation, pickup_spawn_type_id)
+					if NetworkUtils.network_safe_position(position) then
+						local rotation = Quaternion.axis_angle(random_direction, random_angle)
+						local pickup_name = pickup_data.pickup_name
+						local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
+						local pickup_spawn_type = "dropped"
+						local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
+						local network_manager = Managers.state.network
 
-					i = i + 1
+						network_manager.network_transmit:send_rpc_server("rpc_spawn_pickup_with_physics", pickup_name_id, position, rotation, pickup_spawn_type_id)
+
+						i = i + 1
+					end
 				elseif slot_name == "slot_level_event" then
 					self.drop_level_event_item(self, slot_data)
 				end

@@ -1356,7 +1356,7 @@ AiBreedSnippets.on_stormfiend_boss_dismount = function (unit, blackboard)
 
 		LocomotionUtils.set_animation_driven_movement(grey_seer_unit, true, true, false)
 		locomotion_extension.use_lerp_rotation(locomotion_extension, false)
-		LocomotionUtils.set_animation_translation_scale(grey_seer_unit, Vector3(3, 3, 3))
+		locomotion_extension.set_movement_type(locomotion_extension, "snap_to_navmesh")
 		network_manager.anim_event_with_variable_float(network_manager, grey_seer_unit, "stagger_weakspot_fall_off", "stagger_scale", 1.2)
 
 		local t = Managers.time:time("game")
@@ -1442,6 +1442,34 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 		blackboard.death_sequence_positions = death_sequence_positions
 	end
 
+	local node_units = level_analysis.generic_ai_node_units.grey_seer_teleport_position
+
+	if node_units then
+		local defensive_teleport_positions = {}
+
+		for i = 1, #node_units, 1 do
+			local node_unit = node_units[i]
+			local pos = Unit.local_position(node_unit, 0)
+			defensive_teleport_positions[#defensive_teleport_positions + 1] = Vector3Box(pos)
+		end
+
+		blackboard.defensive_teleport_positions = defensive_teleport_positions
+	end
+
+	local node_units = level_analysis.generic_ai_node_units.grey_seer_call_stormfiend_position
+
+	if node_units then
+		local call_stormfiend_positions = {}
+
+		for i = 1, #node_units, 1 do
+			local node_unit = node_units[i]
+			local pos = Unit.local_position(node_unit, 0)
+			call_stormfiend_positions[#call_stormfiend_positions + 1] = Vector3Box(pos)
+		end
+
+		blackboard.call_stormfiend_positions = call_stormfiend_positions
+	end
+
 	return 
 end
 AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
@@ -1470,6 +1498,13 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 
 		blackboard.face_player_when_teleporting = true
 		blackboard.death_sequence = nil
+		local strictly_not_close_to_players = true
+		local silent = true
+		local composition_type = "skittergate_grey_seer_trickle"
+		local limit_spawners, terror_event_id = nil
+		local conflict_director = Managers.state.conflict
+
+		conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
 	elseif current_phase == 3 and hp < 0.25 then
 		blackboard.current_phase = 4
 	elseif current_phase == 2 and hp < 0.5 then
@@ -1481,6 +1516,9 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 	if not AiUtils.unit_alive(mounted_data.mount_unit) and blackboard.current_phase ~= 4 and blackboard.current_phase ~= 5 then
 		blackboard.current_phase = 4
 		blackboard.knocked_off_mount = true
+		blackboard.call_stormfiend = nil
+		blackboard.about_to_mount = nil
+		blackboard.should_mount_unit = nil
 		local event_data = FrameTable.alloc_table()
 
 		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_stormfiend_dead", event_data)
@@ -1532,24 +1570,22 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 	if blackboard.knocked_off_mount and AiUtils.unit_alive(mounted_data.mount_unit) then
 		local mount_unit = mounted_data.mount_unit
 		local mount_blackboard = BLACKBOARDS[mount_unit]
+		local should_call_stormfiend = not blackboard.call_stormfiend and not mount_blackboard.intro_rage and mounted_timer_finished and not mount_blackboard.goal_position and not mount_blackboard.anim_cb_move
 
-		if mounted_timer_finished and not mount_blackboard.goal_position and not mount_blackboard.anim_cb_move then
-			mount_blackboard.goal_destination = Vector3Box(position)
-			mount_blackboard.anim_cb_move = true
-			local event_data = FrameTable.alloc_table()
-
-			dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_calls_mount_battle", event_data)
+		if should_call_stormfiend then
+			blackboard.call_stormfiend = true
 		elseif mounted_timer_finished then
 			blackboard.about_to_mount = true
 			local mount_unit_position = POSITION_LOOKUP[mount_unit]
-			local distance_to_goal_sq = Vector3.distance_squared(position, mount_unit_position)
+			local distance_to_goal = Vector3.distance(position, mount_unit_position)
 
-			if distance_to_goal_sq < 0.25 then
+			if distance_to_goal < 2 then
 				blackboard.knocked_off_mount = nil
 				blackboard.should_mount_unit = true
-				mount_blackboard.should_mount_unit = true
 				blackboard.ready_to_summon = nil
 				blackboard.about_to_mount = nil
+				blackboard.call_stormfiend = nil
+				mount_blackboard.should_mount_unit = true
 				local health_extension = ScriptUnit.extension(mount_unit, "health_system")
 				local mount_hp = health_extension.current_health_percent(health_extension)
 				mount_blackboard.hp_at_mounted = mount_hp

@@ -32,7 +32,7 @@ ActionShotgun.client_owner_start_action = function (self, new_action, t, chain_a
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local infinite_ammo = false
 	infinite_ammo = buff_extension.get_non_stacking_buff(buff_extension, "victor_bountyhunter_passive_infinite_ammo_buff")
-	self.power_level = (is_critical_strike and buff_extension.apply_buffs_to_value(buff_extension, power_level, StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS)) or power_level
+	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
 
 	if is_critical_strike then
