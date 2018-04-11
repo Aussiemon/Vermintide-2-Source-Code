@@ -4,7 +4,7 @@ SoundEnvironmentSystem = class(SoundEnvironmentSystem, ExtensionSystemBase)
 local RPCS = {}
 local extensions = {}
 local SOURCE_WEIGHT = 0.5
-local LISTENER_WEIGHT = SOURCE_WEIGHT - 1
+local LISTENER_WEIGHT = 1 - SOURCE_WEIGHT
 local FULL_WEIGHT = 1
 SoundEnvironmentSystem.init = function (self, entity_system_creation_context, system_name)
 	SoundEnvironmentSystem.super.init(self, entity_system_creation_context, system_name, extensions)
@@ -107,7 +107,7 @@ SoundEnvironmentSystem.set_source_environment = function (self, source, position
 		local environment = environments[volume_name]
 		local fade_info = environment.fade_info
 
-		WwiseWorld.set_environment(wwise_world, environment.player_aux_bus_name, fade_info.current_value*LISTENER_WEIGHT)
+		WwiseWorld.set_environment(wwise_world, environment.player_aux_bus_name, fade_info.current_value * LISTENER_WEIGHT)
 
 		added_current_environment = added_current_environment or volume_name == current_environment_name
 	end
@@ -161,7 +161,7 @@ SoundEnvironmentSystem._update_source_environments = function (self)
 	local updated_sources = self._updated_sources
 
 	for i = 1, amount_to_update, 1 do
-		current_index = current_index%num_sources + 1
+		current_index = current_index % num_sources + 1
 		local data = updated_sources[current_index]
 		local pos = Unit.world_position(data.unit, data.node)
 		slot11 = self.set_source_environment(self, data.source, pos)
@@ -228,13 +228,13 @@ SoundEnvironmentSystem._update_fade = function (self, t)
 		local fade_start = fade_info.fade_start
 		local fade_time = fade_info.fade_time
 		local current_time = t - fade_start
-		local delta = math.clamp(current_time/fade_time, 0, 1)
+		local delta = math.clamp(current_time / fade_time, 0, 1)
 		local start_value = fade_info.start_value
 		local target_value = fade_info.target_value
 		local value = math.lerp(start_value, target_value, delta)
 		fade_info.current_value = value
 
-		WwiseWorld.set_environment(wwise_world, environment.player_aux_bus_name, value*LISTENER_WEIGHT)
+		WwiseWorld.set_environment(wwise_world, environment.player_aux_bus_name, value * LISTENER_WEIGHT)
 
 		if value == target_value then
 			fade_environments[volume_name] = nil
@@ -295,7 +295,7 @@ SoundEnvironmentSystem.enter_environment = function (self, t, volume_name, curre
 			local current_value = fade_info.current_value
 			local target_value = 1
 			local delta = target_value - current_value
-			fade_time = fade_time*delta
+			fade_time = fade_time * delta
 
 			if fade_time < 0.001 then
 				fade_time = 0.001

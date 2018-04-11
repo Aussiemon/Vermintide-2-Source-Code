@@ -117,7 +117,7 @@ ActiveReloadAmmoUserExtension._update_active_reload = function (self, dt, t)
 	end
 
 	local reload_start_time = self.reload_start_time(self)
-	local dead_zone_time = self.reload_time*DEAD_ZONE_PERCENT
+	local dead_zone_time = self.reload_time * DEAD_ZONE_PERCENT
 
 	if t < reload_start_time + dead_zone_time then
 		return 
@@ -138,31 +138,31 @@ end
 ActiveReloadAmmoUserExtension._debug_draw = function (self, dt, t)
 	local gui = self._gui
 	local w, h = Gui.resolution()
-	local pos = Vector3(w*0.5, h*0.4, 100)
+	local pos = Vector3(w * 0.5, h * 0.4, 100)
 	local bg_size = Vector2(150, 35)
-	local bg_pos_offset = Vector3(-bg_size.x/2, -bg_size.y/2, 0)
+	local bg_pos_offset = Vector3(-bg_size.x / 2, -bg_size.y / 2, 0)
 
 	Gui.rect(gui, pos + bg_pos_offset, bg_size, Color(200, 237, 237, 237))
 
 	local current_time = self.next_reload_time - t
-	local progress = current_time/self.reload_time - 1
+	local progress = 1 - current_time / self.reload_time
 	local marker_size = Vector2(3, 35)
-	local marker_pos_offset = Vector3(bg_size.x*progress - marker_size.x*0.5, 0, 10)
+	local marker_pos_offset = Vector3(bg_size.x * progress - marker_size.x * 0.5, 0, 10)
 
 	Gui.rect(gui, pos + bg_pos_offset + marker_pos_offset, marker_size, Color(255, 0, 0, 0))
 
 	local event_start = self.event_start
 	local event_end = event_start + EVENT_TIME
-	local start_percentage = event_start/self.reload_time
-	local end_percentage = math.min(1, event_end/self.reload_time - 1)
-	local percentage = EVENT_TIME/self.reload_time
-	local area_size = Vector2(bg_size.x*percentage, 35)
-	local area_pos_offset = Vector3(bg_size.x*start_percentage, 0, 5)
+	local start_percentage = event_start / self.reload_time
+	local end_percentage = math.min(1, 1 - event_end / self.reload_time)
+	local percentage = EVENT_TIME / self.reload_time
+	local area_size = Vector2(bg_size.x * percentage, 35)
+	local area_pos_offset = Vector3(bg_size.x * start_percentage, 0, 5)
 
 	Gui.rect(gui, pos + bg_pos_offset + area_pos_offset, area_size, Color(255, 107, 106, 105))
 
 	local indicator_size = Vector2(1, 35)
-	local indicator_pos_offset = Vector3(bg_size.x*DEAD_ZONE_PERCENT, 0, 5)
+	local indicator_pos_offset = Vector3(bg_size.x * DEAD_ZONE_PERCENT, 0, 5)
 
 	Gui.rect(gui, pos + bg_pos_offset + indicator_pos_offset, indicator_size, Color(255, 255, 0, 0))
 
@@ -173,7 +173,7 @@ ActiveReloadAmmoUserExtension._setup_indicator_area = function (self)
 	assert(self.next_reload_time)
 
 	local reload_start = self.reload_start_time(self)
-	self.event_start = self.reload_time*EVENT_START_PERCENT
+	self.event_start = self.reload_time * EVENT_START_PERCENT
 
 	return 
 end

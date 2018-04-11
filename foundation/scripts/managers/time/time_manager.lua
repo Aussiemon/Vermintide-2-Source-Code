@@ -108,7 +108,7 @@ TimeManager.get_demo_transition = function (self)
 end
 TimeManager._update_mean_dt = function (self, dt)
 	local dt_stack = self._dt_stack
-	self._dt_stack_index = self._dt_stack_index%self._dt_stack_max_size + 1
+	self._dt_stack_index = self._dt_stack_index % self._dt_stack_max_size + 1
 	dt_stack[self._dt_stack_index] = dt
 	local dt_sum = 0
 
@@ -116,7 +116,7 @@ TimeManager._update_mean_dt = function (self, dt)
 		dt_sum = dt_sum + dt
 	end
 
-	self._mean_dt = dt_sum/#dt_stack
+	self._mean_dt = dt_sum / #dt_stack
 
 	return 
 end
@@ -165,7 +165,7 @@ TimeManager.set_global_time_scale_lerp = function (self, wanted_scale, duration)
 	self._global_time_scale_lerp_start = self._global_time_scale
 	self._global_time_scale_lerp_end = wanted_scale
 	self._global_time_scale_lerp_progress = 0
-	self._global_time_scale_lerp_increment = duration/1
+	self._global_time_scale_lerp_increment = 1 / duration
 	self._lerp_global_time_scale = true
 
 	return 
@@ -175,7 +175,7 @@ TimeManager._update_global_time_scale_lerp = function (self, dt)
 	local end_value = self._global_time_scale_lerp_end
 	local progress = self._global_time_scale_lerp_progress
 	local lerp_increment = self._global_time_scale_lerp_increment
-	progress = math.clamp(progress + dt*lerp_increment, 0, 1)
+	progress = math.clamp(progress + dt * lerp_increment, 0, 1)
 	local current_value = math.lerp(start_value, end_value, progress)
 	self._global_time_scale = current_value
 	self._global_time_scale_lerp_progress = progress
@@ -187,7 +187,7 @@ TimeManager._update_global_time_scale_lerp = function (self, dt)
 	return 
 end
 TimeManager.scaled_delta_time = function (self, dt)
-	return math.max(dt*self._global_time_scale, 1e-06)
+	return math.max(dt * self._global_time_scale, 1e-06)
 end
 TimeManager.destroy = function (self)
 	for name, timer in pairs(self._timers) do

@@ -81,7 +81,7 @@ BTChewAttackAction.anim_cb_chew_attack = function (self, unit, blackboard)
 	local heal_type = "leech"
 	local difficulty_level = Managers.state.difficulty:get_difficulty()
 	local heal_amount = action.health_leech[difficulty_level]
-	heal_amount = heal_amount*blackboard.chew_attacks_done
+	heal_amount = heal_amount * blackboard.chew_attacks_done
 	heal_amount = DamageUtils.networkify_damage(heal_amount)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 

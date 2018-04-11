@@ -24,6 +24,7 @@ StateLoadingRestartNetwork._init_params = function (self, params)
 	self._world = params.world
 	self._viewport = params.viewport
 	self._loading_view = params.loading_view
+	self._starting_tutorial = params.starting_tutorial
 	self._server_created = true
 	self._lobby_joined = true
 	self._previous_session_error_headers_lookup = {
@@ -65,7 +66,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 
 				local invite_type, lobby_id = Friends.boot_invite()
 
-				if invite_type ~= Friends.NO_INVITE then
+				if invite_type ~= Friends.NO_INVITE and not self._starting_tutorial then
 					lobby_is_server = invite_type == Friends.INVITE_SERVER
 					lobby_to_join = lobby_id
 				end
@@ -98,6 +99,8 @@ StateLoadingRestartNetwork._init_network = function (self)
 	if not self.parent:has_registered_rpcs() then
 		self.parent:register_rpcs()
 	end
+
+	slot7 = self._starting_tutorial and Managers.invite:get_invited_lobby_data()
 
 	if Managers.invite:has_invitation() then
 		self._has_invitation = true

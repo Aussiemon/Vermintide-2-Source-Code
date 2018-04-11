@@ -123,7 +123,7 @@ AIBrain.debug_draw_behaviours = function (self)
 			local go_id = Managers.state.unit_storage:go_id(unit)
 			local target = (blackboard.target_unit and " (X) ") or " (-)"
 			local bt_string = "(" .. go_id .. ") " .. tree_name .. "->" .. node_name .. target .. " " .. moving
-			local offset = Vector3.up()*(index*0.1 + 2.1)
+			local offset = Vector3.up() * (2.1 + index * 0.1)
 
 			if not self._bt_strings[tree_name] then
 				Managers.state.debug_text:clear_unit_text(unit, "behavior_tree")

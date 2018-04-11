@@ -25,7 +25,7 @@ local function compare_utility()
 
 	Profiler.stop("UTIL ENG")
 
-	local norm_value = math.clamp(blackboard_value/consideration.max_value, 0, 1)
+	local norm_value = math.clamp(blackboard_value / consideration.max_value, 0, 1)
 	local f2 = Utility.GetUtilityValueFromSpline
 
 	Profiler.start("UTIL LUA")
@@ -85,7 +85,7 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 		}
 
 		for i = 2, num_points, 1 do
-			local wanted_distance = total_path_dist/num_points*i
+			local wanted_distance = total_path_dist / num_points * i
 			local pos, main_index = MainPathUtils.point_on_mainpath(main_paths, wanted_distance)
 
 			if not pos then
@@ -105,7 +105,7 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 	local ti = #main_path_data.collapsed_path
 	local pos = main_path_data.collapsed_path[ti]:unbox()
 
-	QuickDrawer:sphere(pos, math.sin(t*5)*5 + 10)
+	QuickDrawer:sphere(pos, 10 + math.sin(t * 5) * 5)
 	Debug.text("DISTANCE point: %d, distance %.1f", ti, main_path_data.collapsed_travel_dists[ti])
 	Profiler.start("main_path_a")
 

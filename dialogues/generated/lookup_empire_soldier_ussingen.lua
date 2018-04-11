@@ -19,10 +19,6 @@ assert(DialogueLookup[DialogueLookup_n + 18] == nil)
 assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 assert(DialogueLookup[DialogueLookup_n + 20] == nil)
 assert(DialogueLookup[DialogueLookup_n + 21] == nil)
-assert(DialogueLookup[DialogueLookup_n + 22] == nil)
-assert(DialogueLookup[DialogueLookup_n + 23] == nil)
-assert(DialogueLookup[DialogueLookup_n + 24] == nil)
-assert(DialogueLookup[DialogueLookup_n + 25] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pes_level_ussingen_at_last_end"
 DialogueLookup[DialogueLookup_n + 2] = "pes_level_ussingen_cart_full"
@@ -36,19 +32,15 @@ DialogueLookup[DialogueLookup_n + 9] = "pes_level_ussingen_less_damaged"
 DialogueLookup[DialogueLookup_n + 10] = "pes_level_ussingen_stockpile_burned"
 DialogueLookup[DialogueLookup_n + 11] = "pes_level_ussingen_thick_smoke"
 DialogueLookup[DialogueLookup_n + 12] = "pes_level_ussingen_way_through"
-DialogueLookup[DialogueLookup_n + 13] = "pes_level_ussingen_what_next"
-DialogueLookup[DialogueLookup_n + 14] = "pes_level_ussingen_spotting_town"
-DialogueLookup[DialogueLookup_n + 15] = "pes_level_ussingen_caravan"
-DialogueLookup[DialogueLookup_n + 16] = "pes_level_ussingen_devastation"
-DialogueLookup[DialogueLookup_n + 17] = "pes_level_ussingen_gate_closed"
-DialogueLookup[DialogueLookup_n + 18] = "pes_level_ussingen_search_for_manor"
-DialogueLookup[DialogueLookup_n + 19] = "pes_level_ussingen_marktplatz"
-DialogueLookup[DialogueLookup_n + 20] = "pes_level_ussingen_wrong_way"
-DialogueLookup[DialogueLookup_n + 21] = "pes_level_ussingen_wine_cellar"
-DialogueLookup[DialogueLookup_n + 22] = "pes_level_ussingen_spotting_manor"
-DialogueLookup[DialogueLookup_n + 23] = "pes_level_ussingen_find_way_around"
-DialogueLookup[DialogueLookup_n + 24] = "pes_level_ussingen_manor_found"
-DialogueLookup[DialogueLookup_n + 25] = "pes_level_ussingen_cart_torch"
-DialogueLookup_n = DialogueLookup_n + 25
+DialogueLookup[DialogueLookup_n + 13] = "pes_level_ussingen_spotting_town"
+DialogueLookup[DialogueLookup_n + 14] = "pes_level_ussingen_caravan"
+DialogueLookup[DialogueLookup_n + 15] = "pes_level_ussingen_devastation"
+DialogueLookup[DialogueLookup_n + 16] = "pes_level_ussingen_search_for_manor"
+DialogueLookup[DialogueLookup_n + 17] = "pes_level_ussingen_marktplatz"
+DialogueLookup[DialogueLookup_n + 18] = "pes_level_ussingen_wrong_way"
+DialogueLookup[DialogueLookup_n + 19] = "pes_level_ussingen_wine_cellar"
+DialogueLookup[DialogueLookup_n + 20] = "pes_level_ussingen_spotting_manor"
+DialogueLookup[DialogueLookup_n + 21] = "pes_level_ussingen_find_way_around"
+DialogueLookup_n = DialogueLookup_n + 21
 
 return 

@@ -32,6 +32,7 @@ local fake_input_service = {
 LoadingView.init = function (self, ui_context)
 	local world = ui_context.world
 	self.input_manager = ui_context.input_manager
+	self.return_to_pc_menu = ui_context.return_to_pc_menu
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
@@ -52,12 +53,17 @@ LoadingView.init = function (self, ui_context)
 
 	self.create_ui_elements(self)
 
+	self._gamepad_active = Managers.input:is_device_active("gamepad")
 	DO_RELOAD = false
 	self.active = true
 
 	return 
 end
 LoadingView.texture_resource_loaded = function (self, level_key, act_progression_index, game_difficulty)
+	if self.return_to_pc_menu then
+		return 
+	end
+
 	UIRenderer.destroy(self.ui_renderer, self.world)
 
 	self.level_key = level_key
@@ -106,9 +112,11 @@ LoadingView.create_ui_elements = function (self)
 	self.tip_text_prefix_widget = UIWidget.init(definitions.tip_text_prefix_widget)
 	self.tip_text_suffix_widget = UIWidget.init(definitions.tip_text_suffix_widget)
 	self.gamepad_input_icon = UIWidget.init(definitions.gamepad_input_icon)
+	self.second_gamepad_input_icon = UIWidget.init(definitions.second_gamepad_input_icon)
 	self.second_row_tip_text_prefix_widget = UIWidget.init(definitions.second_row_tip_text_prefix_widget)
 	self.second_row_tip_text_suffix_widget = UIWidget.init(definitions.second_row_tip_text_suffix_widget)
 	self.second_row_gamepad_input_icon = UIWidget.init(definitions.second_row_gamepad_input_icon)
+	self.second_row_second_gamepad_input_icon = UIWidget.init(definitions.second_row_second_gamepad_input_icon)
 	self.act_name_widget = UIWidget.init(definitions.act_name_widget)
 	self.act_name_bg_widget = UIWidget.init(definitions.act_name_bg_widget)
 	self.level_name_widget = UIWidget.init(definitions.level_name_widget)
@@ -128,7 +136,9 @@ LoadingView.create_ui_elements = function (self)
 
 	if not script_data.honduras_demo then
 		self.widgets[#self.widgets + 1] = self.gamepad_input_icon
+		self.widgets[#self.widgets + 1] = self.second_gamepad_input_icon
 		self.widgets[#self.widgets + 1] = self.second_row_gamepad_input_icon
+		self.widgets[#self.widgets + 1] = self.second_row_second_gamepad_input_icon
 		self.widgets[#self.widgets + 1] = self.tip_text_prefix_widget
 		self.widgets[#self.widgets + 1] = self.tip_text_suffix_widget
 		self.widgets[#self.widgets + 1] = self.second_row_tip_text_prefix_widget
@@ -152,8 +162,10 @@ LoadingView.create_ui_elements = function (self)
 
 	self._subtitle_row_widgets = subtitle_row_widgets
 	self.bg_widget.content.bg_texture = self.default_loading_screen
+	local level_settings = self.level_key and LevelSettings[self.level_key]
+	local game_mode = (level_settings and level_settings.game_mode) or "adventure"
 
-	self.setup_tip_text(self)
+	self.setup_tip_text(self, self.act_progression_index, game_mode, self._tip_localization_key)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	return 
@@ -169,9 +181,11 @@ LoadingView.reset_tip_text = function (self)
 	self.tip_text_prefix_widget.content.text = ""
 	self.tip_text_suffix_widget.content.text = ""
 	self.gamepad_input_icon.content.texture_id = nil
+	self.second_gamepad_input_icon.content.texture_id = nil
 	self.second_row_tip_text_prefix_widget.content.text = ""
 	self.second_row_tip_text_suffix_widget.content.text = ""
 	self.second_row_gamepad_input_icon.content.texture_id = nil
+	self.second_row_second_gamepad_input_icon.content.texture_id = nil
 	self.tip_text_prefix_widget.style.text.word_wrap = false
 	self.tip_text_suffix_widget.style.text.word_wrap = false
 	self.second_row_tip_text_prefix_widget.style.text.word_wrap = false
@@ -191,9 +205,11 @@ LoadingView.reset_tip_text = function (self)
 	self.ui_scenegraph.tip_text_prefix.size[1] = definitions.MAXIMUM_TIP_WIDTH
 	self.ui_scenegraph.tip_text_suffix.size[1] = definitions.MAXIMUM_TIP_WIDTH
 	self.ui_scenegraph.gamepad_input_icon.size = definitions.ICON_SIZE
+	self.ui_scenegraph.second_gamepad_input_icon.size = definitions.ICON_SIZE
 	self.ui_scenegraph.second_row_tip_text_prefix.size[1] = definitions.MAXIMUM_TIP_WIDTH
 	self.ui_scenegraph.second_row_tip_text_suffix.size[1] = definitions.MAXIMUM_TIP_WIDTH
 	self.ui_scenegraph.second_row_gamepad_input_icon.size = definitions.ICON_SIZE
+	self.ui_scenegraph.second_row_second_gamepad_input_icon.size = definitions.ICON_SIZE
 
 	return 
 end
@@ -218,7 +234,26 @@ LoadingView.fit_title = function (self)
 
 	return 
 end
-LoadingView.setup_tip_text = function (self, act_progression_index, game_mode)
+local DEFAULT_SECOND_ICON_DATA = {}
+LoadingView._find_second_input_texture = function (self, suffix_text, macro_replacement, input_action, font, scaled_font_size)
+	table.clear(DEFAULT_SECOND_ICON_DATA)
+
+	local second_input_texture_data = DEFAULT_SECOND_ICON_DATA
+	local start_index, end_index = string.find(suffix_text, macro_replacement)
+	local prefix_text = string.sub(suffix_text, 1, start_index - 1)
+	local prefix_text_width = UIRenderer.text_size(self.ui_renderer, prefix_text, font[1], scaled_font_size)
+	second_input_texture_data.icon_offset = prefix_text_width
+	suffix_text = string.gsub(suffix_text, macro_replacement, "      ")
+	second_input_texture_data.button_texture_data = UISettings.get_gamepad_input_texture_data(Managers.input:get_service("Player"), input_action, true)
+
+	return second_input_texture_data, suffix_text
+end
+local DEFAULT_SECOND_ICON_TABLE = {}
+local DEFAULT_ICON_SIZE_TABLE = {
+	0,
+	0
+}
+LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, tip_localization_key)
 	self.fit_title(self)
 	self.reset_tip_text(self)
 
@@ -226,8 +261,10 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode)
 		return 
 	end
 
+	table.clear(DEFAULT_SECOND_ICON_TABLE)
+
 	if game_mode == "survival" then
-		local text = survival_tip_list[math.random(1, #survival_tip_list)]
+		local text = tip_localization_key or survival_tip_list[math.random(1, #survival_tip_list)]
 		self.tip_text_prefix_widget.content.text = Localize(text)
 		self.tip_text_prefix_widget.style.text.horizontal_alignment = "center"
 		self.tip_text_prefix_widget.style.text.word_wrap = true
@@ -235,7 +272,7 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode)
 		local index_table = {}
 
 		if act_progression_index and act_progression_index < 4 then
-			local tip_count = act_progression_index*2 - 9
+			local tip_count = 9 - act_progression_index * 2
 
 			for i = 1, tip_count, 1 do
 				index_table[i] = 3
@@ -246,20 +283,26 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode)
 			index_table[#index_table + 1] = 1
 		end
 
-		local read_index = math.random(1, #index_table)
-		local tip_type_index = index_table[read_index]
-		local tip_type = tip_type_list[tip_type_index]
-		local tip_prefix = tip_type_prefix_list[tip_type]
-		local typ_max_range = tip_type_max_range[tip_type]
-		local tip_random_index = math.random(1, typ_max_range)
-		local tip_index = (tip_random_index < 10 and "0" .. tostring(tip_random_index)) or tostring(tip_random_index)
-		local tip_localization_key = tip_prefix .. "_" .. tip_index
+		local tip_localization_key = tip_localization_key or nil
+
+		if not tip_localization_key then
+			local read_index = math.random(1, #index_table)
+			local tip_type_index = index_table[read_index]
+			local tip_type = tip_type_list[tip_type_index]
+			local tip_prefix = tip_type_prefix_list[tip_type]
+			local typ_max_range = tip_type_max_range[tip_type]
+			local tip_random_index = math.random(1, typ_max_range)
+			local tip_index = (tip_random_index < 10 and "0" .. tostring(tip_random_index)) or tostring(tip_random_index)
+			tip_localization_key = tip_prefix .. "_" .. tip_index
+		end
+
+		self._tip_localization_key = tip_localization_key
 		local input_manager = self.input_manager
 		local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
 		local localized_tip = nil
 
 		if gamepad_active then
-			local input_action = Managers.localizer:get_input_action(tip_localization_key)
+			local input_action, input_actions = Managers.localizer:get_input_action(tip_localization_key)
 
 			if input_action then
 				local button_texture_data = UISettings.get_gamepad_input_texture_data(input_manager.get_service(input_manager, "Player"), input_action, gamepad_active)
@@ -285,69 +328,94 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode)
 					local font, scaled_font_size = UIFontByResolution(text_tip_widget_style)
 					local prefix_text_width = UIRenderer.text_size(self.ui_renderer, prefix_text, font[1], scaled_font_size)
 					local icon_width = button_texture_size[1]
+					local second_input_texture_data = DEFAULT_SECOND_ICON_TABLE
+
+					if input_actions and input_actions[2] then
+						second_input_texture_data, suffix_text = self._find_second_input_texture(self, suffix_text, macro_replacement, input_actions[2], font, scaled_font_size)
+					end
+
+					local second_icon_size = (second_input_texture_data.button_texture_data and second_input_texture_data.button_texture_data.size) or DEFAULT_ICON_SIZE_TABLE
+					local second_icon_texture = second_input_texture_data.button_texture_data and second_input_texture_data.button_texture_data.texture
+					local second_icon_icon_offset = second_input_texture_data.icon_offset or 0
 					local suffix_text_width = UIRenderer.text_size(self.ui_renderer, suffix_text, font[1], scaled_font_size)
-					local total_width = prefix_text_width + icon_width + suffix_text_width
-					local prefix_text_offset = (-total_width*0.5 + prefix_text_width*0.5) - icon_width*0.05
-					local input_icon_offset = -total_width*0.5 + prefix_text_width + icon_width*0.05 + icon_width*0.5
-					local suffix_text_offset = -total_width*0.5 + prefix_text_width + icon_width*0.5 + suffix_text_width*0.5 + icon_width*0.5
+					local total_width = prefix_text_width + icon_width + suffix_text_width + second_icon_size[1]
+					local prefix_text_offset = (-total_width * 0.5 + prefix_text_width * 0.5) - icon_width * 0.05
+					local input_icon_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.05 + icon_width * 0.5
+					local second_icon_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.05 + icon_width * 0.5 + second_icon_icon_offset + second_icon_size[1] * 0.05 + second_icon_size[1]
+					local suffix_text_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.5 + suffix_text_width * 0.5 + icon_width * 0.5
 
 					if definitions.MAXIMUM_TIP_WIDTH < prefix_text_width then
-						local text_rows = UIRenderer.word_wrap(self.ui_renderer, prefix_text, font[1], scaled_font_size, definitions.MAXIMUM_TIP_WIDTH)
+						local text_rows = UIRenderer.word_wrap(self.ui_renderer, prefix_text, font[1], scaled_font_size, definitions.MAXIMUM_TIP_WIDTH - prefix_text_width - icon_width)
 						prefix_text = text_rows[2]
 						prefix_text_width = UIRenderer.text_size(self.ui_renderer, prefix_text, font[1], scaled_font_size)
 						total_width = prefix_text_width + icon_width + suffix_text_width
-						prefix_text_offset = (-total_width*0.5 + prefix_text_width*0.5) - icon_width*0.5
-						input_icon_offset = -total_width*0.5 + prefix_text_width + icon_width*0.05
-						suffix_text_offset = -total_width*0.5 + prefix_text_width + icon_width*0.5 + suffix_text_width*0.5
+						prefix_text_offset = (-total_width * 0.5 + prefix_text_width * 0.5) - icon_width * 0.5
+						input_icon_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.05
+						suffix_text_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.5 + suffix_text_width * 0.5
 						self.tip_text_prefix_widget.content.text = text_rows[1]
 						self.tip_text_prefix_widget.style.text.horizontal_alignment = "center"
 						self.tip_text_prefix_widget.style.text.word_wrap = true
 						self.second_row_tip_text_prefix_widget.style.text.offset[1] = prefix_text_offset
 						self.second_row_gamepad_input_icon.style.texture_id.offset[1] = input_icon_offset
+						self.second_row_second_gamepad_input_icon.style.texture_id.offset[1] = second_icon_offset
 						self.second_row_tip_text_suffix_widget.style.text.offset[1] = suffix_text_offset
-						self.tip_text_prefix_widget.style.text.offset[2] = 11
-						self.second_row_tip_text_prefix_widget.style.text.offset[2] = 11
-						self.second_row_gamepad_input_icon.style.texture_id.offset[2] = 11
-						self.second_row_tip_text_suffix_widget.style.text.offset[2] = 11
+						self.tip_text_prefix_widget.style.text.offset[2] = 0
+						self.second_row_tip_text_prefix_widget.style.text.offset[2] = 0
+						self.second_row_gamepad_input_icon.style.texture_id.offset[2] = 0
+						self.second_row_second_gamepad_input_icon.style.texture_id.offset[2] = 0
+						self.second_row_tip_text_suffix_widget.style.text.offset[2] = 0
 						self.second_row_tip_text_prefix_widget.content.text = prefix_text
 						self.second_row_gamepad_input_icon.content.texture_id = button_texture_texture
+						self.second_row_second_gamepad_input_icon.content.texture_id = second_icon_texture
 						self.second_row_tip_text_suffix_widget.content.text = suffix_text
 						self.ui_scenegraph.second_row_tip_text_prefix.size[1] = prefix_text_width
 						self.ui_scenegraph.second_row_gamepad_input_icon.size = button_texture_size
+						self.ui_scenegraph.second_row_second_gamepad_input_icon.size = second_icon_size
 						self.ui_scenegraph.second_row_tip_text_suffix.size[1] = suffix_text_width
 					elseif definitions.MAXIMUM_TIP_WIDTH < suffix_text_width then
 						local text_rows = UIRenderer.word_wrap(self.ui_renderer, suffix_text, font[1], scaled_font_size, definitions.MAXIMUM_TIP_WIDTH - prefix_text_width - icon_width)
 						suffix_text = text_rows[1]
 						suffix_text_width = UIRenderer.text_size(self.ui_renderer, suffix_text, font[1], scaled_font_size)
 						total_width = prefix_text_width + icon_width + suffix_text_width
-						prefix_text_offset = (-total_width*0.5 + prefix_text_width*0.5) - icon_width*0.5
-						input_icon_offset = -total_width*0.5 + prefix_text_width + icon_width*0.05
-						suffix_text_offset = -total_width*0.5 + prefix_text_width + icon_width*0.5 + suffix_text_width*0.5
+						prefix_text_offset = (-total_width * 0.5 + prefix_text_width * 0.5) - icon_width * 0.5
+						input_icon_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.05
+						suffix_text_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.5 + suffix_text_width * 0.5
 						self.second_row_tip_text_prefix_widget.content.text = text_rows[2]
 						self.second_row_tip_text_prefix_widget.style.text.horizontal_alignment = "center"
 						self.second_row_tip_text_prefix_widget.style.text.word_wrap = true
 						self.tip_text_prefix_widget.style.text.offset[1] = prefix_text_offset
 						self.gamepad_input_icon.style.texture_id.offset[1] = input_icon_offset
+						self.second_gamepad_input_icon.style.texture_id.offset[1] = second_icon_offset
 						self.tip_text_suffix_widget.style.text.offset[1] = suffix_text_offset
-						self.second_row_tip_text_prefix_widget.style.text.offset[2] = 11
-						self.tip_text_prefix_widget.style.text.offset[2] = 11
-						self.gamepad_input_icon.style.texture_id.offset[2] = 11
-						self.tip_text_suffix_widget.style.text.offset[2] = 11
+						self.second_row_tip_text_prefix_widget.style.text.offset[2] = 0
+						self.tip_text_prefix_widget.style.text.offset[2] = 0
+						self.gamepad_input_icon.style.texture_id.offset[2] = 0
+						self.second_gamepad_input_icon.style.texture_id.offset[2] = 0
+						self.tip_text_suffix_widget.style.text.offset[2] = 0
 						self.tip_text_prefix_widget.content.text = prefix_text
 						self.gamepad_input_icon.content.texture_id = button_texture_texture
+						self.second_gamepad_input_icon.content.texture_id = second_icon_texture
 						self.tip_text_suffix_widget.content.text = suffix_text
 						self.ui_scenegraph.tip_text_prefix.size[1] = prefix_text_width
 						self.ui_scenegraph.gamepad_input_icon.size = button_texture_size
+						self.ui_scenegraph.second_gamepad_input_icon.size = second_icon_size
 						self.ui_scenegraph.tip_text_suffix.size[1] = suffix_text_width
 					else
 						self.ui_scenegraph.tip_text_prefix.size[1] = prefix_text_width
 						self.ui_scenegraph.gamepad_input_icon.size = button_texture_size
+						self.ui_scenegraph.second_gamepad_input_icon.size = second_icon_size
 						self.ui_scenegraph.tip_text_suffix.size[1] = suffix_text_width
 						self.tip_text_prefix_widget.style.text.offset[1] = prefix_text_offset
 						self.gamepad_input_icon.style.texture_id.offset[1] = input_icon_offset
+						self.second_gamepad_input_icon.style.texture_id.offset[1] = second_icon_offset
 						self.tip_text_suffix_widget.style.text.offset[1] = suffix_text_offset
+						self.tip_text_prefix_widget.style.text.offset[2] = 0
+						self.gamepad_input_icon.style.texture_id.offset[2] = 0
+						self.second_gamepad_input_icon.style.texture_id.offset[2] = 0
+						self.tip_text_suffix_widget.style.text.offset[2] = 0
 						self.tip_text_prefix_widget.content.text = prefix_text
 						self.gamepad_input_icon.content.texture_id = button_texture_texture
+						self.second_gamepad_input_icon.content.texture_id = second_icon_texture
 						self.tip_text_suffix_widget.content.text = suffix_text
 					end
 				end
@@ -419,7 +487,7 @@ LoadingView.setup_news_ticker = function (self, text)
 
 	return 
 end
-local DO_RELOAD = true
+local DO_RELOAD = false
 LoadingView.update = function (self, dt)
 	if DO_RELOAD then
 		print("reload")
@@ -433,6 +501,17 @@ LoadingView.update = function (self, dt)
 	end
 
 	VisualAssertLog.update(dt)
+
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if gamepad_active ~= self._gamepad_active then
+		local level_settings = self.level_key and LevelSettings[self.level_key]
+		local game_mode = (level_settings and level_settings.game_mode) or "adventure"
+
+		self.setup_tip_text(self, self.act_progression_index, game_mode, self._tip_localization_key)
+
+		self._gamepad_active = gamepad_active
+	end
 
 	if not script_data.disable_news_ticker then
 		local news_ticker_started = self.news_ticker_started
@@ -468,7 +547,7 @@ LoadingView.draw = function (self, dt)
 				news_ticker_widget_position[1] = 1920
 			end
 
-			news_ticker_widget_position[1] = news_ticker_widget_position[1] - dt*self.news_ticker_speed
+			news_ticker_widget_position[1] = news_ticker_widget_position[1] - dt * self.news_ticker_speed
 		end
 	end
 

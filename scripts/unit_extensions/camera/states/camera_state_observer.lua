@@ -25,7 +25,7 @@ CameraStateObserver.on_exit = function (self, unit, input, dt, context, t, next_
 
 	return 
 end
-local MAX_MIN_PITCH = math.pi/2 - math.pi/15
+local MAX_MIN_PITCH = math.pi / 2 - math.pi / 15
 CameraStateObserver.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local camera_extension = self.camera_extension
@@ -53,13 +53,13 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 	end
 
 	local rotation = Unit.local_rotation(unit, 0)
-	local look_sensitivity = (camera_manager.has_viewport(camera_manager, viewport_name) and camera_manager.fov(camera_manager, viewport_name)/0.785) or 1
+	local look_sensitivity = (camera_manager.has_viewport(camera_manager, viewport_name) and camera_manager.fov(camera_manager, viewport_name) / 0.785) or 1
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local look_input = (gamepad_active and input_source.get(input_source, "look_controller_3p")) or input_source.get(input_source, "look")
 	local look_delta = Vector3(0, 0, 0)
 
 	if look_input then
-		look_delta = look_delta + look_input*look_sensitivity
+		look_delta = look_delta + look_input * look_sensitivity
 	end
 
 	local yaw = Quaternion.yaw(rotation) - look_delta.x
@@ -74,7 +74,7 @@ CameraStateObserver.update = function (self, unit, input, dt, context, t)
 	local follow_node = Unit.node(follow_unit, self._follow_node_name)
 	local position = Unit.world_position(follow_unit, follow_node)
 	local previous_position = Unit.world_position(unit, 0)
-	local new_position = Vector3.lerp(previous_position, position, dt*10)
+	local new_position = Vector3.lerp(previous_position, position, dt * 10)
 
 	if self._snap_camera then
 		new_position = position

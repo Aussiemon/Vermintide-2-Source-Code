@@ -1053,15 +1053,183 @@ Colors.color_definitions = {
 	},
 	twitch = {
 		ALPHA,
-		107,
-		62,
-		131
+		100,
+		65,
+		164
 	},
 	very_dark_gray = {
 		ALPHA,
 		80,
 		80,
 		80
+	},
+	wh_captain = {
+		ALPHA,
+		153,
+		184,
+		193
+	},
+	wh_bountyhunter = {
+		ALPHA,
+		198,
+		154,
+		74
+	},
+	wh_zealot = {
+		ALPHA,
+		202,
+		197,
+		174
+	},
+	dr_ranger = {
+		ALPHA,
+		187,
+		235,
+		30
+	},
+	dr_ironbreaker = {
+		ALPHA,
+		41,
+		219,
+		255
+	},
+	dr_slayer = {
+		ALPHA,
+		228,
+		0,
+		0
+	},
+	we_waywatcher = {
+		ALPHA,
+		55,
+		123,
+		44
+	},
+	we_maidenguard = {
+		ALPHA,
+		74,
+		145,
+		236
+	},
+	we_shade = {
+		ALPHA,
+		151,
+		99,
+		192
+	},
+	es_mercenary = {
+		ALPHA,
+		204,
+		128,
+		128
+	},
+	es_huntsman = {
+		ALPHA,
+		114,
+		130,
+		67
+	},
+	es_knight = {
+		ALPHA,
+		36,
+		84,
+		173
+	},
+	bw_adept = {
+		ALPHA,
+		255,
+		93,
+		0
+	},
+	bw_scholar = {
+		ALPHA,
+		173,
+		28,
+		8
+	},
+	bw_unchained = {
+		ALPHA,
+		150,
+		50,
+		100
+	},
+	healthkit_first_aid_kit_01 = {
+		ALPHA,
+		53,
+		204,
+		53
+	},
+	wpn_side_objective_tome_01 = {
+		ALPHA,
+		216,
+		133,
+		0
+	},
+	potion_healing_draught_01 = {
+		ALPHA,
+		53,
+		204,
+		53
+	},
+	potion_damage_boost_01 = {
+		ALPHA,
+		216,
+		174,
+		69
+	},
+	potion_speed_boost_01 = {
+		ALPHA,
+		65,
+		169,
+		228
+	},
+	potion_cooldown_reduction_01 = {
+		ALPHA,
+		197,
+		91,
+		255
+	},
+	wpn_grimoire_01 = {
+		ALPHA,
+		100,
+		65,
+		164
+	},
+	grenade_frag_01 = {
+		ALPHA,
+		240,
+		32,
+		0
+	},
+	grenade_frag_02 = {
+		ALPHA,
+		240,
+		32,
+		0
+	},
+	grenade_smoke_01 = {
+		ALPHA,
+		240,
+		32,
+		0
+	},
+	grenade_smoke_02 = {
+		ALPHA,
+		240,
+		32,
+		0
+	},
+	grenade_fire_01 = {
+		ALPHA,
+		240,
+		32,
+		0
+	},
+	grenade_fire_02 = {
+		ALPHA,
+		240,
+		32,
+		0
 	}
 }
 
@@ -1149,8 +1317,8 @@ end
 
 if not Colors.distinct_colors_lookup then
 	local i = 1
-	local f = i%3*63 + 92
-	local g = f/2
+	local f = 92 + 63 * i % 3
+	local g = f / 2
 	colors = {
 		{
 			0,

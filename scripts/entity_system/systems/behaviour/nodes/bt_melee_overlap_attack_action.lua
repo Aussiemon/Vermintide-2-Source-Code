@@ -52,7 +52,7 @@ end
 local function incremental_randomize(event, blackboard)
 	if type(event) == "table" then
 		if blackboard.attack_random_index then
-			blackboard.attack_random_index = blackboard.attack_random_index%#event + 1
+			blackboard.attack_random_index = blackboard.attack_random_index % #event + 1
 		else
 			blackboard.attack_random_index = 1
 		end
@@ -174,7 +174,7 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, blackboard, acti
 					direction = -direction
 				end
 
-				local space_check_pos = pos + direction*(attack.extra_space_range or 1.2)
+				local space_check_pos = pos + direction * (attack.extra_space_range or 1.2)
 				local can_go = GwNavQueries.raycango(nav_world, pos, space_check_pos)
 
 				if not can_go then
@@ -185,7 +185,7 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, blackboard, acti
 
 		if attack.extra_space_up then
 			local ray_length = attack.extra_space_range or 1.2
-			local space_check_pos = pos + Vector3.up()*2
+			local space_check_pos = pos + Vector3.up() * 2
 			local result, hit_position = PhysicsWorld.immediate_raycast(blackboard.physics_world, pos, space_check_pos, ray_length, "closest", "collision_filter", "filter_ai_mover")
 
 			if result then
@@ -206,10 +206,6 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, blackboard, acti
 	LocomotionUtils.set_animation_driven_movement(unit, anim_driven, affected_by_gravity, script_driven_rotation)
 	locomotion_extension.use_lerp_rotation(locomotion_extension, not anim_driven)
 	Managers.state.network:anim_event(unit, attack_anim)
-
-	if action.sync_with_linked_unit and blackboard.linked_unit then
-		Managers.state.network:anim_event(blackboard.linked_unit, attack_anim)
-	end
 
 	local continious_overlap = attack.continious_overlap
 
@@ -347,11 +343,11 @@ BTMeleeOverlapAttackAction._calculate_cylinder_collision = function (self, attac
 	local height = bot_threat.height or attack.height
 	local offset_up = bot_threat.offset_up or attack.offset_up
 	local offset_forward = bot_threat.offset_forward or attack.offset_forward
-	local half_height = height*0.5
+	local half_height = height * 0.5
 	local size = Vector3(radius, radius, half_height)
 	local forward = Quaternion.forward(self_rot)
 	local up = Quaternion.up(self_rot)
-	local cylinder_center = self_pos + forward*offset_forward + up*(half_height + offset_up)
+	local cylinder_center = self_pos + forward * offset_forward + up * (half_height + offset_up)
 	local rotation = Quaternion.look(up, Vector3.up())
 
 	return cylinder_center, rotation, size
@@ -362,12 +358,12 @@ BTMeleeOverlapAttackAction._calculate_oobb_collision = function (self, attack, b
 	local width = bot_threat.width or attack.width
 	local offset_up = bot_threat.offset_up or attack.offset_up
 	local offset_forward = bot_threat.offset_forward or attack.offset_forward
-	local half_width = width*0.5
-	local half_range = range*0.5
-	local half_height = height*0.5
+	local half_width = width * 0.5
+	local half_range = range * 0.5
+	local half_height = height * 0.5
 	local size = Vector3(half_width, half_range, half_height)
-	local forward = Quaternion.rotate(self_rot, Vector3.forward())*(offset_forward + half_range)
-	local up = Vector3.up()*(offset_up + half_height)
+	local forward = Quaternion.rotate(self_rot, Vector3.forward()) * (offset_forward + half_range)
+	local up = Vector3.up() * (offset_up + half_height)
 	local oobb_pos = self_pos + forward + up
 
 	return oobb_pos, self_rot, size
@@ -412,8 +408,8 @@ BTMeleeOverlapAttackAction._check_wall_collision = function (self, unit, blackbo
 		direction = Quaternion.forward(rotation)
 	end
 
-	local length = check_range + dt*speed
-	local to = from + direction*length
+	local length = check_range + dt * speed
+	local to = from + direction * length
 	local success2, z2 = GwNavQueries.triangle_from_position(nav_world, to, above, below)
 
 	if not success2 then
@@ -529,7 +525,7 @@ BTMeleeOverlapAttackAction.push_player = function (self, unit, hit_unit, push_sp
 	local self_pos = POSITION_LOOKUP[unit]
 	local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 	local to_hit_unit = hit_unit_pos - self_pos
-	local velocity = push_speed*Vector3.normalize(to_hit_unit)
+	local velocity = push_speed * Vector3.normalize(to_hit_unit)
 
 	if push_speed_z then
 		Vector3.set_z(velocity, push_speed_z)
@@ -618,14 +614,14 @@ BTMeleeOverlapAttackAction.anim_cb_damage = function (self, unit, blackboard)
 	local height = attack.height
 	local offset_up = attack.offset_up
 	local offset_forward = attack.offset_forward
-	local half_width = width*0.5
-	local half_range = range*0.5
-	local half_height = height*0.5
+	local half_width = width * 0.5
+	local half_range = range * 0.5
+	local half_height = height * 0.5
 	local hit_size = Vector3(half_width, half_range, half_height)
 	local unit_rotation = Unit.local_rotation(unit, 0)
-	local forward = Quaternion.rotate(unit_rotation, Vector3.forward())*(offset_forward + half_range)
+	local forward = Quaternion.rotate(unit_rotation, Vector3.forward()) * (offset_forward + half_range)
 	local unit_position = POSITION_LOOKUP[unit]
-	local up = Vector3.up()*(offset_up + half_height)
+	local up = Vector3.up() * (offset_up + half_height)
 	local oobb_pos = unit_position + forward + up
 	local time_manager = Managers.time
 	local t = time_manager.time(time_manager, "game")
@@ -659,9 +655,9 @@ BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, 
 	local self_rotation = Unit.local_rotation(unit, 0)
 	local self_forward = Quaternion.forward(self_rotation)
 	local self_pos = POSITION_LOOKUP[unit]
-	local push_pos = self_pos + self_forward*data.push_forward_offset
-	local forward_pos = self_pos + self_forward*3
-	local radius = data.push_width*1.5
+	local push_pos = self_pos + self_forward * data.push_forward_offset
+	local forward_pos = self_pos + self_forward * 3
+	local radius = data.push_width * 1.5
 	local radius_sq = radius^2
 	local debug_drawer = Managers.state.debug:drawer(debug_drawer_info)
 
@@ -671,8 +667,8 @@ BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, 
 
 		local left = Vector3.cross(self_forward, Vector3.up())
 
-		debug_drawer.line(debug_drawer, self_pos - left*data.push_width, forward_pos - left*data.push_width)
-		debug_drawer.line(debug_drawer, self_pos + left*data.push_width, forward_pos + left*data.push_width)
+		debug_drawer.line(debug_drawer, self_pos - left * data.push_width, forward_pos - left * data.push_width)
+		debug_drawer.line(debug_drawer, self_pos + left * data.push_width, forward_pos + left * data.push_width)
 		debug_drawer.circle(debug_drawer, push_pos, radius, Vector3.up())
 		debug_drawer.circle(debug_drawer, push_pos, 0.1, Vector3.up(), Color(0, 255, 128))
 	end
@@ -723,7 +719,7 @@ BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, 
 					local hit_unit_status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
 
 					if not hit_unit_status_extension.knocked_down then
-						local pushed_velocity = data.player_pushed_speed*Vector3.normalize(to_target)
+						local pushed_velocity = data.player_pushed_speed * Vector3.normalize(to_target)
 						local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
 
 						locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
@@ -763,9 +759,9 @@ BTMeleeOverlapAttackAction.weapon_sweep_overlap = function (self, unit, blackboa
 	local height = attack.height
 	local offset_up = attack.offset_up
 	local offset_forward = attack.offset_forward
-	local half_width = width*0.5
-	local half_range = range*0.5
-	local half_height = height*0.5
+	local half_width = width * 0.5
+	local half_range = range * 0.5
+	local half_height = height * 0.5
 	local box_size = Vector3(half_width, half_range, half_height)
 	local box_rot = nil
 	local base_to_tip = tip_node_pos - base_pos
@@ -773,16 +769,16 @@ BTMeleeOverlapAttackAction.weapon_sweep_overlap = function (self, unit, blackboa
 
 	if base_node == tip_node then
 		box_rot = Unit.local_rotation(weapon_unit, base_node)
-		up = Quaternion.up(box_rot)*(offset_up + half_height)
-		forward = Quaternion.forward(box_rot)*(offset_forward + half_range)
+		up = Quaternion.up(box_rot) * (offset_up + half_height)
+		forward = Quaternion.forward(box_rot) * (offset_forward + half_range)
 	else
 		box_rot = Quaternion.look(base_to_tip, Vector3.up())
-		up = Quaternion.up(box_rot)*offset_up
-		forward = Quaternion.forward(box_rot)*offset_forward
+		up = Quaternion.up(box_rot) * offset_up
+		forward = Quaternion.forward(box_rot) * offset_forward
 	end
 
-	local mid_pos = base_pos + base_to_tip*0.5
-	local oobb_pos = mid_pos + up + forward + to_old_frame_tip_node_pos*0.5
+	local mid_pos = base_pos + base_to_tip * 0.5
+	local oobb_pos = mid_pos + up + forward + to_old_frame_tip_node_pos * 0.5
 	local overlap_update_radius = math.max(range, math.max(height, width))
 	local hit_units = data.hit_units
 	local num_hit_units = self.overlap_checks(self, unit, blackboard, physics_world, t, action, attack, oobb_pos, box_rot, box_size, hit_units, overlap_update_radius)
@@ -795,7 +791,7 @@ BTMeleeOverlapAttackAction.weapon_sweep_overlap = function (self, unit, blackboa
 		local pose = Matrix4x4.from_quaternion_position(box_rot, oobb_pos)
 		local ct = t - data.start_time
 
-		QuickDrawerStay:box(pose, box_size, Color((ct*500)%255, (ct*500)%255 - 255, 0))
+		QuickDrawerStay:box(pose, box_size, Color((ct * 500) % 255, 255 - (ct * 500) % 255, 0))
 	end
 
 	return 

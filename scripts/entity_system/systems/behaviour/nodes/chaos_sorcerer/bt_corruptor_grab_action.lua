@@ -50,6 +50,8 @@ BTCorruptorGrabAction.leave = function (self, unit, blackboard, t, reason, destr
 	blackboard.drain_life_at = nil
 	blackboard.has_grabbed_unit = nil
 	blackboard.projectile_position = nil
+	blackboard.target_dodged = nil
+	blackboard.projectile_target_position = nil
 
 	if reason == "aborted" and blackboard.stagger and blackboard.play_grabbed_loop then
 		blackboard.corruptor_grab_stagger = true
@@ -101,6 +103,12 @@ BTCorruptorGrabAction.run = function (self, unit, blackboard, t, dt)
 	local success = self.attack(self, unit, t, dt, blackboard)
 
 	if not blackboard.grabbed_unit then
+		local target_status_ext = blackboard.target_unit_status_extension
+
+		if target_status_ext and target_status_ext.get_is_dodging(target_status_ext) then
+			blackboard.target_dodged = true
+		end
+
 		self.overlap_players(self, unit, t, dt, blackboard)
 	end
 
@@ -178,12 +186,17 @@ BTCorruptorGrabAction.anim_cb_damage = function (self, unit, blackboard)
 	return 
 end
 BTCorruptorGrabAction.overlap_players = function (self, unit, t, dt, blackboard)
+	if not blackboard.projectile_target_position then
+		return 
+	end
+
 	local target_unit = blackboard.corruptor_target
 	local projectile_position = blackboard.projectile_position:unbox()
+	local projectile_target_position = blackboard.projectile_target_position:unbox()
 	local action = blackboard.action
-	local radius = action.projectile_radius
-	local target_position = POSITION_LOOKUP[target_unit]
-	local to_target = target_position - projectile_position
+	local radius = 2
+	local target_position = projectile_target_position
+	local to_target = projectile_target_position - projectile_position
 	local dist = Vector3.length(Vector3.flat(to_target))
 
 	if dist < radius then
@@ -196,11 +209,14 @@ BTCorruptorGrabAction.grab_player = function (self, unit, blackboard)
 	local target_unit = blackboard.corruptor_target
 	local self_pos = POSITION_LOOKUP[unit]
 	local target_unit_pos = POSITION_LOOKUP[target_unit]
+	local projectile_position = blackboard.projectile_position:unbox()
+	local projectile_target_position = blackboard.projectile_target_position:unbox()
 	local target_status_ext = blackboard.target_unit_status_extension
 	local world = blackboard.world
 	local physics_world = World.physics_world(world)
+	local target_distance_squared = Vector3.distance_squared(projectile_target_position, target_unit_pos)
 
-	if target_status_ext and (target_status_ext.get_is_dodging(target_status_ext) or target_status_ext.is_invisible(target_status_ext)) then
+	if blackboard.target_dodged or target_status_ext.is_invisible(target_status_ext) then
 		local dodge_pos = target_unit_pos
 		local dir = Vector3.normalize(Vector3.flat(dodge_pos - self_pos))
 		local forward = Quaternion.forward(Unit.local_rotation(unit, 0))
@@ -208,11 +224,13 @@ BTCorruptorGrabAction.grab_player = function (self, unit, blackboard)
 		local angle = math.acos(dot_value)
 		local distance_squared = Vector3.distance_squared(self_pos, dodge_pos)
 
-		if math.radians_to_degrees(angle) <= blackboard.action.dodge_angle and distance_squared < blackboard.action.dodge_distance*blackboard.action.dodge_distance then
+		if (distance_squared < blackboard.action.min_dodge_angle_squared and math.radians_to_degrees(angle) <= blackboard.action.dodge_angle) or target_distance_squared < blackboard.action.dodge_distance * blackboard.action.dodge_distance then
 			blackboard.attack_success = PerceptionUtils.is_position_in_line_of_sight(unit, self_pos, target_unit_pos, physics_world)
 		else
 			blackboard.attack_success = false
 		end
+	elseif blackboard.action.max_distance_squared < Vector3.distance_squared(self_pos, target_unit_pos) or 25 < target_distance_squared then
+		blackboard.attack_success = false
 	else
 		blackboard.attack_success = PerceptionUtils.is_position_in_line_of_sight(unit, self_pos + Vector3.up(), target_unit_pos + Vector3.up(), physics_world)
 	end
@@ -249,7 +267,7 @@ BTCorruptorGrabAction.play_grabbed_2d_sound = function (self, unit, blackboard, 
 	local player_unit = blackboard.corruptor_target
 	local player = Managers.player:unit_owner(player_unit)
 
-	if player and not player.bot_player then
+	if Unit.alive(player_unit) and player and not player.bot_player then
 		local audio_system_extension = Managers.state.entity:system("audio_system")
 		local sound_event_id = NetworkLookup.sound_events[sound_event]
 		local unit_id = NetworkUnit.game_object_id(player_unit)

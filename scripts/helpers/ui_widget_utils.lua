@@ -13,27 +13,27 @@ UIWidgetUtils.animate_default_button = function (widget, dt)
 	local input_speed = 20
 
 	if input_pressed then
-		input_progress = math.min(input_progress + dt*input_speed, 1)
+		input_progress = math.min(input_progress + dt * input_speed, 1)
 	else
-		input_progress = math.max(input_progress - dt*input_speed, 0)
+		input_progress = math.max(input_progress - dt * input_speed, 0)
 	end
 
 	local input_easing_out_progress = math.easeOutCubic(input_progress)
 	local input_easing_in_progress = math.easeInCubic(input_progress)
 
 	if is_hover then
-		hover_progress = math.min(hover_progress + dt*speed, 1)
+		hover_progress = math.min(hover_progress + dt * speed, 1)
 	else
-		hover_progress = math.max(hover_progress - dt*speed, 0)
+		hover_progress = math.max(hover_progress - dt * speed, 0)
 	end
 
 	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
 	local hover_easing_in_progress = math.easeInCubic(hover_progress)
 
 	if is_selected then
-		selection_progress = math.min(selection_progress + dt*speed, 1)
+		selection_progress = math.min(selection_progress + dt * speed, 1)
 	else
-		selection_progress = math.max(selection_progress - dt*speed, 0)
+		selection_progress = math.max(selection_progress - dt * speed, 0)
 	end
 
 	local select_easing_out_progress = math.easeOutCubic(selection_progress)
@@ -41,16 +41,16 @@ UIWidgetUtils.animate_default_button = function (widget, dt)
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
-	local input_alpha = input_progress*255
-	style.clicked_rect.color[1] = input_progress*100
-	local hover_alpha = hover_progress*255
+	local input_alpha = 255 * input_progress
+	style.clicked_rect.color[1] = 100 * input_progress
+	local hover_alpha = 255 * hover_progress
 	style.hover_glow.color[1] = hover_alpha
 	local text_disabled_style = style.title_text_disabled
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
-	disabled_text_color[2] = disabled_default_text_color[2]*0.4
-	disabled_text_color[3] = disabled_default_text_color[3]*0.4
-	disabled_text_color[4] = disabled_default_text_color[4]*0.4
+	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
+	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
+	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
 	local title_text_style = style.title_text
 	local title_text_color = title_text_style.text_color
 	local title_default_text_color = title_text_style.default_text_color
@@ -83,27 +83,27 @@ UIWidgetUtils.animate_default_icon_tabs = function (widget, dt)
 		local selection_progress = hotspot.selection_progress or 0
 
 		if input_pressed then
-			input_progress = math.min(input_progress + dt*input_speed, 1)
+			input_progress = math.min(input_progress + dt * input_speed, 1)
 		else
-			input_progress = math.max(input_progress - dt*input_speed, 0)
+			input_progress = math.max(input_progress - dt * input_speed, 0)
 		end
 
 		local input_easing_out_progress = math.easeOutCubic(input_progress)
 		local input_easing_in_progress = math.easeInCubic(input_progress)
 
 		if is_hover then
-			hover_progress = math.min(hover_progress + dt*speed, 1)
+			hover_progress = math.min(hover_progress + dt * speed, 1)
 		else
-			hover_progress = math.max(hover_progress - dt*speed, 0)
+			hover_progress = math.max(hover_progress - dt * speed, 0)
 		end
 
 		local hover_easing_out_progress = math.easeOutCubic(hover_progress)
 		local hover_easing_in_progress = math.easeInCubic(hover_progress)
 
 		if is_selected then
-			selection_progress = math.min(selection_progress + dt*speed, 1)
+			selection_progress = math.min(selection_progress + dt * speed, 1)
 		else
-			selection_progress = math.max(selection_progress - dt*speed, 0)
+			selection_progress = math.max(selection_progress - dt * speed, 0)
 		end
 
 		local select_easing_out_progress = math.easeOutCubic(selection_progress)
@@ -112,10 +112,10 @@ UIWidgetUtils.animate_default_icon_tabs = function (widget, dt)
 		local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 		local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 		local clicked_rect_name = "clicked_rect" .. name_suffix
-		local input_alpha = input_progress*255
-		style[clicked_rect_name].color[1] = input_progress*100
+		local input_alpha = 255 * input_progress
+		style[clicked_rect_name].color[1] = 100 * input_progress
 		local hover_glow_name = "hover_glow" .. name_suffix
-		local hover_alpha = combined_progress*255
+		local hover_alpha = 255 * combined_progress
 		style[hover_glow_name].color[1] = hover_alpha
 		local icon_name = "icon" .. name_suffix
 		local icon_style = style[icon_name]
@@ -147,27 +147,27 @@ UIWidgetUtils.animate_default_checkbox_button = function (widget, dt)
 	local selection_progress = hotspot.selection_progress or 0
 
 	if input_pressed then
-		input_progress = math.min(input_progress + dt*input_speed, 1)
+		input_progress = math.min(input_progress + dt * input_speed, 1)
 	else
-		input_progress = math.max(input_progress - dt*input_speed, 0)
+		input_progress = math.max(input_progress - dt * input_speed, 0)
 	end
 
 	local input_easing_out_progress = math.easeOutCubic(input_progress)
 	local input_easing_in_progress = math.easeInCubic(input_progress)
 
 	if is_hover then
-		hover_progress = math.min(hover_progress + dt*speed, 1)
+		hover_progress = math.min(hover_progress + dt * speed, 1)
 	else
-		hover_progress = math.max(hover_progress - dt*speed, 0)
+		hover_progress = math.max(hover_progress - dt * speed, 0)
 	end
 
 	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
 	local hover_easing_in_progress = math.easeInCubic(hover_progress)
 
 	if is_selected then
-		selection_progress = math.min(selection_progress + dt*speed, 1)
+		selection_progress = math.min(selection_progress + dt * speed, 1)
 	else
-		selection_progress = math.max(selection_progress - dt*speed, 0)
+		selection_progress = math.max(selection_progress - dt * speed, 0)
 	end
 
 	local select_easing_out_progress = math.easeOutCubic(selection_progress)
@@ -176,18 +176,18 @@ UIWidgetUtils.animate_default_checkbox_button = function (widget, dt)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local clicked_rect_name = "clicked_rect"
-	local input_alpha = input_progress*255
-	style[clicked_rect_name].color[1] = input_progress*100
+	local input_alpha = 255 * input_progress
+	style[clicked_rect_name].color[1] = 100 * input_progress
 	local hover_glow_name = "hover_glow"
-	local hover_alpha = combined_progress*255
+	local hover_alpha = 255 * combined_progress
 	style[hover_glow_name].color[1] = hover_alpha
 	local text_disabled_name = "text_disabled"
 	local text_disabled_style = style[text_disabled_name]
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
-	disabled_text_color[2] = disabled_default_text_color[2]*0.4
-	disabled_text_color[3] = disabled_default_text_color[3]*0.4
-	disabled_text_color[4] = disabled_default_text_color[4]*0.4
+	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
+	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
+	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
 	local text_name = "text"
 	local text_style = style[text_name]
 	local text_color = text_style.text_color
@@ -221,27 +221,27 @@ UIWidgetUtils.animate_default_text_tabs = function (widget, dt)
 		local selection_progress = hotspot.selection_progress or 0
 
 		if input_pressed then
-			input_progress = math.min(input_progress + dt*input_speed, 1)
+			input_progress = math.min(input_progress + dt * input_speed, 1)
 		else
-			input_progress = math.max(input_progress - dt*input_speed, 0)
+			input_progress = math.max(input_progress - dt * input_speed, 0)
 		end
 
 		local input_easing_out_progress = math.easeOutCubic(input_progress)
 		local input_easing_in_progress = math.easeInCubic(input_progress)
 
 		if is_hover then
-			hover_progress = math.min(hover_progress + dt*speed, 1)
+			hover_progress = math.min(hover_progress + dt * speed, 1)
 		else
-			hover_progress = math.max(hover_progress - dt*speed, 0)
+			hover_progress = math.max(hover_progress - dt * speed, 0)
 		end
 
 		local hover_easing_out_progress = math.easeOutCubic(hover_progress)
 		local hover_easing_in_progress = math.easeInCubic(hover_progress)
 
 		if is_selected then
-			selection_progress = math.min(selection_progress + dt*speed, 1)
+			selection_progress = math.min(selection_progress + dt * speed, 1)
 		else
-			selection_progress = math.max(selection_progress - dt*speed, 0)
+			selection_progress = math.max(selection_progress - dt * speed, 0)
 		end
 
 		local select_easing_out_progress = math.easeOutCubic(selection_progress)
@@ -250,18 +250,18 @@ UIWidgetUtils.animate_default_text_tabs = function (widget, dt)
 		local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 		local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 		local clicked_rect_name = "clicked_rect" .. name_suffix
-		local input_alpha = input_progress*255
-		style[clicked_rect_name].color[1] = input_progress*100
+		local input_alpha = 255 * input_progress
+		style[clicked_rect_name].color[1] = 100 * input_progress
 		local hover_glow_name = "hover_glow" .. name_suffix
-		local hover_alpha = combined_progress*255
+		local hover_alpha = 255 * combined_progress
 		style[hover_glow_name].color[1] = hover_alpha
 		local text_disabled_name = "text_disabled" .. name_suffix
 		local text_disabled_style = style[text_disabled_name]
 		local disabled_default_text_color = text_disabled_style.default_text_color
 		local disabled_text_color = text_disabled_style.text_color
-		disabled_text_color[2] = disabled_default_text_color[2]*0.4
-		disabled_text_color[3] = disabled_default_text_color[3]*0.4
-		disabled_text_color[4] = disabled_default_text_color[4]*0.4
+		disabled_text_color[2] = disabled_default_text_color[2] * 0.4
+		disabled_text_color[3] = disabled_default_text_color[3] * 0.4
+		disabled_text_color[4] = disabled_default_text_color[4] * 0.4
 		local text_name = "text" .. name_suffix
 		local text_style = style[text_name]
 		local text_color = text_style.text_color

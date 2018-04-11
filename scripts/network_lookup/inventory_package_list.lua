@@ -73,6 +73,7 @@ return {
 	"units/beings/player/dwarf_ranger/third_person_base/chr_third_person_husk_base",
 	"units/beings/player/dwarf_ranger_ironbreaker/first_person_base/chr_first_person_mesh",
 	"units/beings/player/dwarf_ranger_ironbreaker/headpiece/dr_i_hat_01",
+	"units/beings/player/dwarf_ranger_ironbreaker/headpiece/dr_i_hat_02",
 	"units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_dwarf_ranger_ironbreaker_backpack",
 	"units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_dwarf_ranger_ironbreaker_beard",
 	"units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",

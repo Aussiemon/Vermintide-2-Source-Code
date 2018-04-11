@@ -3,8 +3,8 @@ require("scripts/utils/spline_curve")
 
 local FRAMES = 100
 local WHEEL_DIAMETER = 0.095
-local WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER*math.pi
-local ANIM_SPEED = FRAMES/30/WHEEL_CIRCUMFERENCE
+local WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * math.pi
+local ANIM_SPEED = 30 / FRAMES / WHEEL_CIRCUMFERENCE
 local ERROR_RECOUP_TIME = 0.5
 local MOVING_THRESHOLD = 0.1
 PayloadExtension = class(PayloadExtension)
@@ -60,10 +60,10 @@ PayloadExtension.init_payload = function (self, payload_gizmos)
 		local spline_curve = self._init_movement_spline(self, self._world, unit, payload_gizmos)
 		local node = Unit.node(unit, extra_joint)
 		local distance = Vector3.distance(Vector3.flat(Unit.world_position(unit, node)), Vector3.flat(Unit.local_position(unit, 0)))
-		local distance_fwd = Quaternion.forward(Unit.local_rotation(unit, 0))*distance
+		local distance_fwd = Quaternion.forward(Unit.local_rotation(unit, 0)) * distance
 		local movement = spline_curve.movement(spline_curve)
 		local speed = 1
-		local total_dt = distance/speed
+		local total_dt = distance / speed
 
 		movement.set_speed(movement, 1)
 
@@ -99,12 +99,12 @@ PayloadExtension._push_player = function (self, player_unit, abs_speed)
 	local self_pos = POSITION_LOOKUP[unit]
 	local pose, half_extents = Unit.box(unit, true)
 	local player_pos = POSITION_LOOKUP[player_unit]
-	half_extents = half_extents*1.2
+	half_extents = half_extents * 1.2
 
 	if math.point_is_inside_oobb(player_pos, pose, half_extents) then
 		local unit_pos_flat = Vector3.flat(self_pos)
 		local player_pos_flat = Vector3.flat(player_pos)
-		local pushed_velocity = Vector3.normalize(player_pos_flat - unit_pos_flat)*abs_speed
+		local pushed_velocity = Vector3.normalize(player_pos_flat - unit_pos_flat) * abs_speed
 		local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
 
 		locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
@@ -120,14 +120,14 @@ PayloadExtension._hit_enemies = function (self, abs_speed, t)
 	local payload_pose, half_extents = Unit.box(payload_unit, true)
 	local largest_extent = (half_extents.y < half_extents.x and half_extents.x) or half_extents.y
 	largest_extent = (half_extents.z < largest_extent and largest_extent) or half_extents.z
-	local radius = largest_extent*2
+	local radius = largest_extent * 2
 	local num_hits = AiUtils.broadphase_query(payload_pos, radius, RESULT_TABLE)
 
 	for i = 1, num_hits, 1 do
 		local hit_unit = RESULT_TABLE[i]
 		local enemy_pos = POSITION_LOOKUP[hit_unit]
-		local inside_small_box = math.point_is_inside_oobb(enemy_pos, payload_pose, half_extents*1.2)
-		local inside_large_box = math.point_is_inside_oobb(enemy_pos, payload_pose, half_extents*2)
+		local inside_small_box = math.point_is_inside_oobb(enemy_pos, payload_pose, half_extents * 1.2)
+		local inside_large_box = math.point_is_inside_oobb(enemy_pos, payload_pose, half_extents * 2)
 
 		if inside_small_box and not STAGGERED[hit_unit] then
 			STAGGERED[hit_unit] = true
@@ -146,7 +146,7 @@ PayloadExtension._hit_enemies = function (self, abs_speed, t)
 			local damage_profile_name = hazard_settings.enemy.damage_profile or "default"
 			local damage_profile = DamageProfileTemplates[damage_profile_name]
 			local target_index = nil
-			local boost_curve_multiplier = 1
+			local boost_curve_multiplier = 0
 			local is_critical_strike = false
 			local can_damage = false
 			local can_stagger = false
@@ -180,7 +180,7 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 		if self._is_server then
 			local speed_settings = metadata.speed_settings
 			local used_speed_settings = (has_players_in_proximity and speed_settings.pushed) or speed_settings.not_pushed
-			local bonus_speed = (used_speed_settings.bonus_speed_per_player or 0)*num_players_in_proximity
+			local bonus_speed = (used_speed_settings.bonus_speed_per_player or 0) * num_players_in_proximity
 			local target_speed = used_speed_settings.speed + bonus_speed
 			local acceleration = used_speed_settings.acceleration
 
@@ -196,9 +196,9 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 				self._stop_command_given = false
 				new_speed = 0
 			elseif 0 < wanted_speed_change then
-				new_speed = math.min(old_speed + acceleration*dt, target_speed)
+				new_speed = math.min(old_speed + acceleration * dt, target_speed)
 			elseif wanted_speed_change < 0 then
-				new_speed = math.max(old_speed - acceleration*dt, target_speed)
+				new_speed = math.max(old_speed - acceleration * dt, target_speed)
 			else
 				new_speed = target_speed
 			end
@@ -268,7 +268,7 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 	self._previous_status = status
 	self._previous_spline_index = current_spline_index
 
-	Unit.set_simple_animation_speed(self._unit, new_speed/ANIM_SPEED, "wheels")
+	Unit.set_simple_animation_speed(self._unit, new_speed / ANIM_SPEED, "wheels")
 	fassert(movement._t == movement._t, "Nan in spline: %s", self._spline_curve._name)
 	Unit.set_local_position(unit, 0, movement.current_position(movement))
 
@@ -342,7 +342,7 @@ PayloadExtension._error_speed_calculation = function (self, dt, t, game, id, mov
 		old_vals.spline_index = spline_index
 		old_vals.subdivision_index = subdiv
 		old_vals.spline_t = spline_t
-		old_vals.error_compensation_speed = error_distance/ERROR_RECOUP_TIME
+		old_vals.error_compensation_speed = error_distance / ERROR_RECOUP_TIME
 		old_vals.last_synch_time = t
 	elseif ERROR_RECOUP_TIME <= t - old_vals.last_synch_time then
 		old_vals.error_compensation_speed = 0

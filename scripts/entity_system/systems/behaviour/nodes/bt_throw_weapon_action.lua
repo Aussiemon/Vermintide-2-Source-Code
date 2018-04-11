@@ -29,7 +29,10 @@ BTThrowWeaponAction.enter = function (self, unit, blackboard, t)
 	blackboard.pushed_position_override = Vector3Box()
 	blackboard.hit_units = {}
 	blackboard.rotation_timer = t + action.rotation_time
-	blackboard.close_attack_timer = t + action.close_attack_time
+
+	if action.close_attack_time then
+		blackboard.close_attack_timer = t + action.close_attack_time
+	end
 
 	return 
 end
@@ -60,6 +63,7 @@ BTThrowWeaponAction.leave = function (self, unit, blackboard, t, reason, destroy
 	blackboard.hit_units = nil
 	blackboard.catched_weapon = nil
 	blackboard.rotation_timer = nil
+	blackboard.ignore_thrown_weapon_overlap = nil
 
 	Managers.state.network:anim_event(unit, "move_fwd")
 
@@ -68,7 +72,7 @@ end
 BTThrowWeaponAction.anim_cb_throw_weapon = function (self, unit, blackboard)
 	local action = blackboard.action
 	local rotation = Unit.local_rotation(unit, 0)
-	local position = POSITION_LOOKUP[unit] + Vector3.up()*2
+	local position = POSITION_LOOKUP[unit] + Vector3.up() * 2
 	local direction = Quaternion.forward(rotation)
 	local world = blackboard.world
 	local physics_world = World.physics_world(world)
@@ -93,8 +97,8 @@ BTThrowWeaponAction.anim_cb_throw_weapon = function (self, unit, blackboard)
 
 		audio_system.play_audio_unit_event(audio_system, action.running_sound_id, blackboard.thrown_unit)
 
-		local obstacle_position, obstacle_rotation, obstacle_size = AiUtils.calculate_oobb(distance, POSITION_LOOKUP[unit], rotation, 2, action.radius*1.2)
-		local bot_threat_duration = distance*0.25
+		local obstacle_position, obstacle_rotation, obstacle_size = AiUtils.calculate_oobb(distance, POSITION_LOOKUP[unit], rotation, 2, action.radius * 1.2)
+		local bot_threat_duration = distance * 0.25
 		local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
 		ai_bot_group_system.aoe_threat_created(ai_bot_group_system, obstacle_position, "oobb", obstacle_size, obstacle_rotation, bot_threat_duration)
@@ -180,9 +184,10 @@ BTThrowWeaponAction.update_thrown_weapon = function (self, unit, blackboard, dt,
 		return 
 	end
 
+	local thrown_state = blackboard.thrown_state
 	local action = blackboard.action
-	local speed = action.throw_speed
-	local unit_position = POSITION_LOOKUP[unit] + Vector3.up()*2
+	local speed = (thrown_state == "moving_towards_target" and action.throw_speed) or (thrown_state == "returning_to_owner" and action.return_speed)
+	local unit_position = POSITION_LOOKUP[unit] + Vector3.up() * 2
 	local wanted_position = blackboard.throw_weapon_goal_position:unbox()
 	local current_position = Unit.local_position(thrown_unit, 0)
 	local distance_to_goal = Vector3.distance(wanted_position, current_position)
@@ -193,8 +198,6 @@ BTThrowWeaponAction.update_thrown_weapon = function (self, unit, blackboard, dt,
 		blackboard.thrown_weapon_angle = 1
 	end
 
-	local thrown_state = blackboard.thrown_state
-
 	if thrown_state == "lingering" then
 		if blackboard.thrown_linger_timer < t then
 			blackboard.thrown_state = "returning_to_owner"
@@ -204,27 +207,31 @@ BTThrowWeaponAction.update_thrown_weapon = function (self, unit, blackboard, dt,
 		end
 	elseif distance_to_goal < 1.5 then
 		if thrown_state == "returning_to_owner" then
+			if not action.hit_targets_on_return then
+				blackboard.ignore_thrown_weapon_overlap = true
+			end
+
 			return true
 		end
 
-		local position = current_position + direction*speed*dt
+		local position = current_position + direction * speed * dt
 
 		Unit.set_local_position(thrown_unit, 0, position)
 		blackboard.throw_weapon_goal_position:store(unit_position)
 
 		blackboard.thrown_state = "lingering"
-		blackboard.thrown_linger_timer = t + 1
+		blackboard.thrown_linger_timer = t + action.arrival_linger_time
 		local audio_system = Managers.state.entity:system("audio_system")
 
 		audio_system.play_audio_unit_event(audio_system, action.impact_sound_id, blackboard.thrown_unit)
 	else
-		local position = current_position + direction*speed*dt
+		local position = current_position + direction * speed * dt
 
 		Unit.set_local_position(thrown_unit, 0, position)
 	end
 
 	if thrown_state == "moving_towards_target" then
-		blackboard.thrown_weapon_angle = blackboard.thrown_weapon_angle + dt*action.rotation_speed
+		blackboard.thrown_weapon_angle = blackboard.thrown_weapon_angle + dt * action.rotation_speed
 		local current_rotation = Unit.local_rotation(thrown_unit, 0)
 		local axis = Vector3.make_axes(direction)
 		local rotation_towards_target = Quaternion.look(direction)
@@ -253,9 +260,11 @@ BTThrowWeaponAction.update_thrown_weapon = function (self, unit, blackboard, dt,
 	for i = 1, #player_and_bot_units, 1 do
 		local target_unit = player_and_bot_units[i]
 
-		self.check_overlap(self, action, blackboard.thrown_unit, unit, blackboard, target_unit)
+		if Unit.alive(target_unit) and not blackboard.ignore_thrown_weapon_overlap then
+			self.check_overlap(self, action, blackboard.thrown_unit, unit, blackboard, target_unit)
+		end
 
-		if action.close_attack_animation and blackboard.close_attack_timer < t then
+		if action.use_close_attack and blackboard.close_attack_timer < t then
 			self.attack_close_units(self, action, unit, blackboard, target_unit, t)
 		end
 	end
@@ -274,26 +283,34 @@ BTThrowWeaponAction.check_overlap = function (self, action, thrown_unit, unit, b
 	local dist = Vector3.length(Vector3.flat(to_target))
 	local hit_unit_id = hit_units[target_unit]
 
-	if not hit_unit_id and dist < radius then
-		local velocity = push_speed*Vector3.normalize(to_target)
+	if not hit_unit_id then
+		local target_status_ext = ScriptUnit.extension(target_unit, "status_system")
 
-		if push_speed_z then
-			Vector3.set_z(velocity, push_speed_z)
+		if target_status_ext and target_status_ext.get_is_dodging(target_status_ext) then
+			radius = action.target_dodged_radius
 		end
 
-		if action.catapult_players then
-			StatusUtils.set_catapulted_network(target_unit, true, velocity)
-		else
-			local locomotion_extension = ScriptUnit.extension(target_unit, "locomotion_system")
+		if dist < radius and target_status_ext and not target_status_ext.is_invisible(target_status_ext) then
+			local velocity = push_speed * Vector3.normalize(to_target)
 
-			locomotion_extension.add_external_velocity(locomotion_extension, velocity)
-		end
+			if push_speed_z then
+				Vector3.set_z(velocity, push_speed_z)
+			end
 
-		hit_units[target_unit] = true
-		local blocked = DamageUtils.check_block(unit, target_unit, action.fatigue_type)
+			if action.catapult_players then
+				StatusUtils.set_catapulted_network(target_unit, true, velocity)
+			else
+				local locomotion_extension = ScriptUnit.extension(target_unit, "locomotion_system")
 
-		if not blocked then
-			AiUtils.damage_target(target_unit, unit, action, action.damage)
+				locomotion_extension.add_external_velocity(locomotion_extension, velocity)
+			end
+
+			hit_units[target_unit] = true
+			local blocked = DamageUtils.check_block(unit, target_unit, action.fatigue_type)
+
+			if not blocked then
+				AiUtils.damage_target(target_unit, unit, action, action.damage)
+			end
 		end
 	end
 
@@ -323,7 +340,7 @@ BTThrowWeaponAction.anim_cb_damage = function (self, unit, blackboard)
 	local pos = POSITION_LOOKUP[blackboard.close_attack_target]
 	local self_pos = Vector3.flat(Unit.local_position(unit, 0))
 	local to_target = pos - self_pos
-	local velocity = Vector3.normalize(to_target)*10
+	local velocity = 10 * Vector3.normalize(to_target)
 	local locomotion_extension = ScriptUnit.extension(blackboard.close_attack_target, "locomotion_system")
 
 	locomotion_extension.add_external_velocity(locomotion_extension, velocity)

@@ -1,67 +1,113 @@
+local function debug_print(message, ...)
+	if DEBUG_TWITCH then
+		print("[Twitch] " .. string.format(message, ...))
+	end
+
+	return 
+end
+
 TwitchVoteTemplates = TwitchVoteTemplates or {}
-TwitchVoteTemplates.rat_ogre = {
-	cost = 200,
+TwitchVoteTemplates.twitch_spawn_rat_ogre = {
 	text = "twitch_vote_spawn_rat_ogre",
-	texture_id = "twitch_rat_ogre",
+	cost = 180,
+	texture_id = "unit_frame_portrait_enemy_rat_ogre",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
+			debug_print("[TWITCH VOTE] Spawning rat ogre")
+
 			local breed = Breeds.skaven_rat_ogre
 
-			Managers.state.conflict:spawn_one(breed)
+			Managers.state.conflict:spawn_one(breed, nil, nil, {
+				max_health_modifier = 0.85
+			})
 		end
 
 		return 
 	end
 }
-TwitchVoteTemplates.stormfiend = {
-	cost = 200,
+TwitchVoteTemplates.twitch_spawn_stormfiend = {
 	text = "twitch_vote_spawn_stormfiend",
-	texture_id = "twitch_rat_ogre",
+	cost = 180,
+	texture_id = "unit_frame_portrait_enemy_stormfiend",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
+			debug_print("[TWITCH VOTE] Spawning stormfiend")
+
 			local breed = Breeds.skaven_stormfiend
 
-			Managers.state.conflict:spawn_one(breed)
+			Managers.state.conflict:spawn_one(breed, nil, nil, {
+				max_health_modifier = 0.85
+			})
 		end
 
 		return 
 	end
 }
-TwitchVoteTemplates.chaos_troll = {
-	cost = 200,
+TwitchVoteTemplates.twitch_spawn_chaos_troll = {
 	text = "twitch_vote_spawn_chaos_troll",
-	texture_id = "twitch_rat_ogre",
+	cost = 180,
+	texture_id = "unit_frame_portrait_enemy_chaos_troll",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
+			debug_print("[TWITCH VOTE] Spawning chaos troll")
+
 			local breed = Breeds.chaos_troll
 
-			Managers.state.conflict:spawn_one(breed)
+			Managers.state.conflict:spawn_one(breed, nil, nil, {
+				max_health_modifier = 0.85
+			})
 		end
 
 		return 
 	end
 }
-TwitchVoteTemplates.chaos_spawn = {
-	cost = 200,
+TwitchVoteTemplates.twitch_spawn_chaos_spawn = {
 	text = "twitch_vote_spawn_chaos_spawn",
-	texture_id = "twitch_rat_ogre",
+	cost = 180,
+	texture_id = "unit_frame_portrait_enemy_chaos_spawn",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
+			debug_print("[TWITCH VOTE] Spawning chaos spawn")
+
 			local breed = Breeds.chaos_spawn
 
-			Managers.state.conflict:spawn_one(breed)
+			Managers.state.conflict:spawn_one(breed, nil, nil, {
+				max_health_modifier = 0.85
+			})
 		end
 
 		return 
 	end
 }
-TwitchVoteTemplates.corruptor_sorcerer = {
-	cost = 100,
+TwitchVoteTemplates.twitch_spawn_corruptor_sorcerer = {
 	text = "twitch_vote_spawn_corruptor_sorcerer",
-	texture_id = "twitch_rat_ogre",
+	cost = 150,
+	texture_id = "unit_frame_portrait_enemy_sorcerer_corruptor",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
-			local amount = 3
+			debug_print("[TWITCH VOTE] Spawning group of corruptor sorcerers")
+
+			local amount = 2
 
 			for i = 1, amount, 1 do
 				local breed = Breeds.chaos_corruptor_sorcerer
@@ -73,12 +119,18 @@ TwitchVoteTemplates.corruptor_sorcerer = {
 		return 
 	end
 }
-TwitchVoteTemplates.vortex_sorcerer = {
-	cost = 100,
+TwitchVoteTemplates.twitch_spawn_vortex_sorcerer = {
 	text = "twitch_vote_spawn_vortex_sorcerer",
-	texture_id = "twitch_rat_ogre",
+	cost = 100,
+	texture_id = "unit_frame_portrait_enemy_chaos_sorcerer",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
+			debug_print("[TWITCH VOTE] Spawning group of vortex sorceres")
+
 			local amount = 3
 
 			for i = 1, amount, 1 do
@@ -91,13 +143,19 @@ TwitchVoteTemplates.vortex_sorcerer = {
 		return 
 	end
 }
-TwitchVoteTemplates.gutter_runner = {
-	cost = 100,
+TwitchVoteTemplates.twitch_spawn_gutter_runner = {
 	text = "twitch_vote_spawn_gutter_runner",
-	texture_id = "twitch_rat_ogre",
+	cost = 150,
+	texture_id = "unit_frame_portrait_enemy_gutter_runner",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
-			local amount = 3
+			debug_print("[TWITCH VOTE] Spawning group of gutter runners")
+
+			local amount = 2
 
 			for i = 1, amount, 1 do
 				local breed = Breeds.skaven_gutter_runner
@@ -109,13 +167,19 @@ TwitchVoteTemplates.gutter_runner = {
 		return 
 	end
 }
-TwitchVoteTemplates.pack_master = {
-	cost = 100,
+TwitchVoteTemplates.twitch_spawn_pack_master = {
 	text = "twitch_vote_spawn_pack_master",
-	texture_id = "twitch_rat_ogre",
+	cost = 150,
+	texture_id = "unit_frame_portrait_enemy_packmaster",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
-			local amount = 3
+			debug_print("[TWITCH VOTE] Spawning group of packmasters")
+
+			local amount = 2
 
 			for i = 1, amount, 1 do
 				local breed = Breeds.skaven_pack_master
@@ -127,12 +191,18 @@ TwitchVoteTemplates.pack_master = {
 		return 
 	end
 }
-TwitchVoteTemplates.poison_wind_globadier = {
-	cost = 100,
+TwitchVoteTemplates.twitch_spawn_poison_wind_globadier = {
 	text = "twitch_vote_spawn_poison_wind_globadier",
-	texture_id = "twitch_rat_ogre",
+	cost = 100,
+	texture_id = "unit_frame_portrait_enemy_poison_wind",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
+			debug_print("[TWITCH VOTE] Spawning group of poison wind globadiers")
+
 			local amount = 3
 
 			for i = 1, amount, 1 do
@@ -145,12 +215,18 @@ TwitchVoteTemplates.poison_wind_globadier = {
 		return 
 	end
 }
-TwitchVoteTemplates.ratling_gunner = {
-	cost = 100,
+TwitchVoteTemplates.twitch_spawn_ratling_gunner = {
 	text = "twitch_vote_spawn_ratling_gunner",
-	texture_id = "twitch_rat_ogre",
+	cost = 100,
+	texture_id = "unit_frame_portrait_enemy_ratling_gunner",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
+			debug_print("[TWITCH VOTE] Spawning group of ratling gunners")
+
 			local amount = 3
 
 			for i = 1, amount, 1 do
@@ -163,12 +239,18 @@ TwitchVoteTemplates.ratling_gunner = {
 		return 
 	end
 }
-TwitchVoteTemplates.warpfire_thrower = {
-	cost = 100,
+TwitchVoteTemplates.twitch_spawn_warpfire_thrower = {
 	text = "twitch_vote_spawn_warpfire_thrower",
-	texture_id = "twitch_rat_ogre",
+	cost = 100,
+	texture_id = "unit_frame_portrait_enemy_warpfire",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
+			debug_print("[TWITCH VOTE] Spawning group of warpfire throwers")
+
 			local amount = 3
 
 			for i = 1, amount, 1 do
@@ -181,30 +263,18 @@ TwitchVoteTemplates.warpfire_thrower = {
 		return 
 	end
 }
-TwitchVoteTemplates.warpfire_thrower = {
-	cost = 100,
-	text = "twitch_vote_spawn_warpfire_thrower",
-	texture_id = "twitch_rat_ogre",
-	on_success = function (is_server)
-		if is_server then
-			local amount = 3
-
-			for i = 1, amount, 1 do
-				local breed = Breeds.skaven_warpfire_thrower
-
-				Managers.state.conflict:spawn_one(breed)
-			end
-		end
-
-		return 
-	end
-}
-TwitchVoteTemplates.horde_vector_blob = {
-	cost = 200,
+TwitchVoteTemplates.twitch_spawn_horde_vector_blob = {
 	text = "twitch_vote_spawn_horde",
-	texture_id = "twitch_rat_ogre",
+	cost = 100,
+	texture_id = "unit_frame_portrait_enemy_clanrat",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
+			debug_print("[TWITCH VOTE] Spawning horde")
+
 			local horde_type = "vector_blob"
 
 			Managers.state.conflict.horde_spawner:horde(horde_type)
@@ -213,12 +283,18 @@ TwitchVoteTemplates.horde_vector_blob = {
 		return 
 	end
 }
-TwitchVoteTemplates.death_squad_storm_vermin = {
-	cost = -300,
+TwitchVoteTemplates.twitch_spawn_death_squad_storm_vermin = {
 	text = "twitch_vote_spawn_death_squad_storm_vermin",
-	texture_id = "twitch_rat_ogre",
+	cost = 250,
+	texture_id = "unit_frame_portrait_enemy_stormvermin",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
+			debug_print("[TWITCH VOTE] Spawning storm vermin death squad")
+
 			local amount = 12
 
 			for i = 1, amount, 1 do
@@ -231,12 +307,18 @@ TwitchVoteTemplates.death_squad_storm_vermin = {
 		return 
 	end
 }
-TwitchVoteTemplates.death_squad_chaos_warrior = {
-	cost = -300,
+TwitchVoteTemplates.twitch_spawn_death_squad_chaos_warrior = {
 	text = "twitch_vote_spawn_death_squad_chaos_warrior",
-	texture_id = "twitch_rat_ogre",
+	cost = 250,
+	texture_id = "unit_frame_portrait_enemy_chaos_warrior",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
+			debug_print("[TWITCH VOTE] Spawning chaos warriors death squad")
+
 			local amount = 6
 
 			for i = 1, amount, 1 do
@@ -249,13 +331,19 @@ TwitchVoteTemplates.death_squad_chaos_warrior = {
 		return 
 	end
 }
-TwitchVoteTemplates.loot_rat_fiesta = {
-	cost = -400,
+TwitchVoteTemplates.twitch_spawn_loot_rat_fiesta = {
 	text = "twitch_vote_spawn_loot_rat_fiesta",
-	texture_id = "twitch_rat_ogre",
+	cost = -300,
+	texture_id = "unit_frame_portrait_enemy_lootrat",
+	texture_size = {
+		60,
+		70
+	},
 	on_success = function (is_server)
 		if is_server then
-			local amount = 20
+			debug_print("[TWITCH VOTE] Spawning loot rat fiesta")
+
+			local amount = 10
 
 			for i = 1, amount, 1 do
 				local breed = Breeds.skaven_loot_rat

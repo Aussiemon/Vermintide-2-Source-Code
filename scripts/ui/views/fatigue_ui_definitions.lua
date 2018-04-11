@@ -1,6 +1,6 @@
 local scenegraph_definition = {
 	root = {
-		is_root = true,
+		scale = "fit",
 		position = {
 			0,
 			0,
@@ -17,7 +17,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		position = {
 			0,
-			-180,
+			-120,
 			1
 		},
 		size = {
@@ -34,8 +34,8 @@ local scenegraph_definition = {
 			1
 		},
 		size = {
-			200,
-			200
+			90,
+			90
 		}
 	}
 }
@@ -44,23 +44,19 @@ local shield_animations = {
 		time = 0.2,
 		pictures = {
 			"fatigue_icon_02",
-			"fatigue_icon_07"
+			"fatigue_icon_05"
 		}
 	},
 	state_3 = {
-		time = 0.5,
+		time = 0.4,
 		pictures = {
-			"fatigue_icon_01",
 			"fatigue_icon_02",
 			"fatigue_icon_03",
 			"fatigue_icon_04",
 			"fatigue_icon_05",
 			"fatigue_icon_06",
 			"fatigue_icon_07",
-			"fatigue_icon_08",
-			"fatigue_icon_09",
-			"fatigue_icon_10",
-			"fatigue_icon_empty"
+			"fatigue_icon_08"
 		}
 	}
 }
@@ -84,13 +80,13 @@ local shield = {
 	},
 	content = {
 		show_glow = false,
-		texture_id = "fatigue_icon_full",
+		texture_id = "fatigue_icon_01",
 		texture_glow_id = "fatigue_icon_glow"
 	},
 	style = {
 		size = {
-			200,
-			200
+			90,
+			90
 		},
 		offset = {
 			0,
@@ -104,9 +100,9 @@ local shield = {
 			255
 		},
 		state_textures = {
-			state_3 = "fatigue_icon_empty",
-			state_2 = "fatigue_icon_broken",
-			state_1 = "fatigue_icon_full"
+			state_3 = "fatigue_icon_08",
+			state_2 = "fatigue_icon_02",
+			state_1 = "fatigue_icon_01"
 		},
 		state_animations = {
 			state_1 = {
@@ -117,6 +113,12 @@ local shield = {
 			}
 		},
 		texture_glow_id = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			texture_size = {
+				64,
+				64
+			},
 			color = {
 				255,
 				90,

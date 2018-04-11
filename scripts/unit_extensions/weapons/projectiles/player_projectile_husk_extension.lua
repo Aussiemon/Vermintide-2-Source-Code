@@ -62,13 +62,14 @@ PlayerProjectileHuskExtension.initialize_projectile = function (self, projectile
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
 		local cleave_distribution = damage_profile.cleave_distribution or DefaultCleaveDistribution
 		local cleave_range = Cleave.max - Cleave.min
-		local cleave_power_level = ActionUtils.scale_powerlevels(self.power_level, "cleave")
-		local attack_cleave_power_level = cleave_power_level*cleave_distribution.attack
+		local owner_unit = self.owner_unit
+		local cleave_power_level = ActionUtils.scale_powerlevels(self.power_level, "cleave", owner_unit)
+		local attack_cleave_power_level = cleave_power_level * cleave_distribution.attack
 		local attack_percentage = DamageUtils.get_power_level_percentage(attack_cleave_power_level)
-		local max_mass_attack = cleave_range*attack_percentage
-		local impact_cleave_power_level = cleave_power_level*cleave_distribution.impact
+		local max_mass_attack = cleave_range * attack_percentage
+		local impact_cleave_power_level = cleave_power_level * cleave_distribution.impact
 		local impact_percentage = DamageUtils.get_power_level_percentage(impact_cleave_power_level)
-		local max_mass_impact = cleave_range*impact_percentage
+		local max_mass_impact = cleave_range * impact_percentage
 		self.max_mass_attack = max_mass_attack
 		self.max_mass_impact = max_mass_impact
 		self.max_mass = (max_mass_impact < max_mass_attack and max_mass_attack) or max_mass_impact
@@ -153,7 +154,7 @@ PlayerProjectileHuskExtension.impact_dynamic = function (self, hit_unit, hit_pos
 	local breed = Unit.get_data(hit_unit, "breed")
 	local is_player = table.contains(PLAYER_AND_BOT_UNITS, hit_unit)
 	local has_ranged_boost = false
-	local ranged_boost_curve_multiplier = 1
+	local ranged_boost_curve_multiplier = 0
 
 	if breed then
 		self.hit_enemy(self, impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, self.hit_units, ranged_boost_curve_multiplier)
@@ -257,7 +258,7 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 		hit_mass_total = 1
 	elseif action_mass_override and action_mass_override[breed.name] then
 		local mass_cost_multiplier = action_mass_override[breed.name]
-		hit_mass_total = hit_mass_total*(mass_cost_multiplier or 1)
+		hit_mass_total = hit_mass_total * (mass_cost_multiplier or 1)
 	end
 
 	self.amount_of_mass_hit = self.amount_of_mass_hit + hit_mass_total
@@ -495,9 +496,9 @@ PlayerProjectileHuskExtension.link_projectile = function (self, hit_unit, hit_po
 	local depth_offset = impact_data.depth_offset or 0.15
 
 	if damage then
-		broken_chance = broken_chance*math.clamp(damage/2, 0.75, 1.25)
+		broken_chance = broken_chance * math.clamp(damage / 2, 0.75, 1.25)
 	else
-		broken_chance = broken_chance*2
+		broken_chance = broken_chance * 2
 	end
 
 	if broken_chance <= 0.5 and projectile_info.dummy_linker_broken_units then
@@ -512,13 +513,13 @@ PlayerProjectileHuskExtension.link_projectile = function (self, hit_unit, hit_po
 			depth_offset = 0.15
 		end
 	elseif damage then
-		depth = depth*math.clamp(damage, 1, 3)
+		depth = depth * math.clamp(damage, 1, 3)
 	end
 
 	local normalized_direction = Vector3.normalize(hit_direction)
 	depth = depth + depth_offset
-	local random_bank = math.random()*2.14 - 0.5
-	local link_position = hit_position + normalized_direction*depth
+	local random_bank = math.random() * 2.14 - 0.5
+	local link_position = hit_position + normalized_direction * depth
 	local link_rotation = Quaternion.look(normalized_direction)
 	local new_link_rotation = Quaternion.multiply(link_rotation, Quaternion(Vector3.forward(), random_bank))
 	local has_projectile_linker_extension = ScriptUnit.has_extension(hit_unit, "projectile_linker_system")

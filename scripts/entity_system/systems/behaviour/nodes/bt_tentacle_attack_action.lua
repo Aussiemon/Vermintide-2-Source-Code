@@ -73,7 +73,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 
 		if data.unit then
 			if data.sub_state == "grabbed" then
-				current_length = current_length - breed.drag_speed*dt
+				current_length = current_length - breed.drag_speed * dt
 				data.current_length = current_length
 				local root_dist_sq = Vector3.length_squared(to_player_from_root)
 				local new_pos = POSITION_LOOKUP[target_unit]
@@ -142,7 +142,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 				local target_dist = Vector3.length(to_player_from_root)
 				local wanted_length = target_dist + evade_length
 				local full_length = data.max_length
-				current_length = current_length + dt*25
+				current_length = current_length + dt * 25
 
 				if full_length <= current_length then
 					current_length = full_length
@@ -159,7 +159,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 					return false
 				end
 			elseif data.sub_state == "target_too_far_away" then
-				current_length = current_length - breed.fail_retract_speed*dt
+				current_length = current_length - breed.fail_retract_speed * dt
 
 				if current_length <= 0 then
 					current_length = 0
@@ -181,7 +181,7 @@ BTTentacleAttackAction.update_tentacle = function (self, unit, blackboard, t, dt
 				local wanted_length = (lock_point_dist or target_dist) + data.spiral_length
 				local is_at_full_length = nil
 				local full_length = data.max_length
-				current_length = current_length + dt*35
+				current_length = current_length + dt * 35
 
 				if full_length <= current_length then
 					current_length = full_length

@@ -1,8 +1,8 @@
 math.degrees_to_radians = function (degrees)
-	return degrees*0.0174532925
+	return degrees * 0.0174532925
 end
 math.radians_to_degrees = function (radians)
-	return radians*57.2957795
+	return radians * 57.2957795
 end
 math.sign = function (x)
 	if 0 < x then
@@ -27,16 +27,16 @@ math.clamp = function (value, min, max)
 	return 
 end
 math.lerp = function (a, b, p)
-	return a*(p - 1) + b*p
+	return a * (1 - p) + b * p
 end
 math.radian_lerp = function (a, b, p)
 	local pi = math.pi
-	local half_pi = math.pi*0.5
+	local half_pi = math.pi * 0.5
 
-	return a + (((b - a)%pi + pi + half_pi)%pi - half_pi)*p
+	return a + (((b - a) % pi + pi + half_pi) % pi - half_pi) * p
 end
 math.angle_lerp = function (a, b, p)
-	return a + (((b - a)%360 + 540)%360 - 180)*p
+	return a + (((b - a) % 360 + 540) % 360 - 180) * p
 end
 math.radian_lerp = function (a, b, p)
 	a = math.radians_to_degrees(a)
@@ -45,19 +45,19 @@ math.radian_lerp = function (a, b, p)
 	return math.degrees_to_radians(math.angle_lerp(a, b, p))
 end
 math.sirp = function (a, b, t)
-	local p = math.cos((t + 1)*math.pi)*0.5 + 0.5
+	local p = 0.5 + 0.5 * math.cos((1 + t) * math.pi)
 
 	return math.lerp(a, b, p)
 end
 math.auto_lerp = function (index_1, index_2, val_1, val_2, val)
-	local t = (val - index_1)/(index_2 - index_1)
+	local t = (val - index_1) / (index_2 - index_1)
 
 	return math.lerp(val_1, val_2, t)
 end
 math.round_with_precision = function (value, precision)
 	local mul = 10^(precision or 0)
 
-	return math.floor(value*mul + 0.5)/mul
+	return math.floor(value * mul + 0.5) / mul
 end
 math.round = function (value_in)
 	local value = value_in
@@ -65,15 +65,15 @@ math.round = function (value_in)
 	return math.floor(value + 0.5)
 end
 math.smoothstep = function (value, min, max)
-	local x = math.clamp((value - min)/(max - min), 0, 1)
+	local x = math.clamp((value - min) / (max - min), 0, 1)
 
-	return x^3*(x*(x*6 - 15) + 10)
+	return x^3 * (x * (x * 6 - 15) + 10)
 end
 Math.random_range = function (min, max)
-	return min + Math.random()*(max - min)
+	return min + Math.random() * (max - min)
 end
-math.half_pi = math.pi*0.5
-math.inverse_sqrt_2 = math.sqrt(2)/1
+math.half_pi = math.pi * 0.5
+math.inverse_sqrt_2 = 1 / math.sqrt(2)
 math.point_is_inside_2d_box = function (pos, llc, extent)
 	if llc[1] < pos.x and pos.x < llc[1] + extent[1] and llc[2] < pos.y and pos.y < llc[2] + extent[2] then
 		return true
@@ -135,8 +135,8 @@ end
 math.cartesian_to_polar = function (x, y)
 	fassert(x ~= 0 and y ~= 0, "Can't convert a zero vector to polar coordinates")
 
-	local radius = math.sqrt(x*x + y*y)
-	local theta = math.atan(y/x)*math.pi/180
+	local radius = math.sqrt(x * x + y * y)
+	local theta = math.atan(y / x) * 180 / math.pi
 
 	if x < 0 then
 		theta = theta + 180
@@ -149,25 +149,25 @@ end
 math.circular_to_square_coordinates = function (v)
 	local u = v.x
 	local v = v.y
-	local uu = u*u
-	local vv = v*v
+	local uu = u * u
+	local vv = v * v
 	local sqrt = math.sqrt
 	local max = math.max
 	local sqrt_2 = sqrt(2)
-	local x = (sqrt(max((u*2*sqrt_2 + 2 + uu) - vv, 0)) - sqrt(max((u*2*sqrt_2 - 2 + uu) - vv, 0)))*0.5
-	local y = (sqrt(max((v*2*sqrt_2 + 2) - uu + vv, 0)) - sqrt(max(v*2*sqrt_2 - 2 - uu + vv, 0)))*0.5
+	local x = 0.5 * (sqrt(max((2 + 2 * u * sqrt_2 + uu) - vv, 0)) - sqrt(max((2 - 2 * u * sqrt_2 + uu) - vv, 0)))
+	local y = 0.5 * (sqrt(max((2 + 2 * v * sqrt_2) - uu + vv, 0)) - sqrt(max(2 - 2 * v * sqrt_2 - uu + vv, 0)))
 
 	return Vector3(x, y, 0)
 end
 math.polar_to_cartesian = function (radius, theta)
-	local theta_rad = theta*math.pi/180
-	local x = radius*math.cos(theta_rad)
-	local y = radius*math.sin(theta_rad)
+	local theta_rad = theta * math.pi / 180
+	local x = radius * math.cos(theta_rad)
+	local y = radius * math.sin(theta_rad)
 
 	return x, y
 end
 math.catmullrom = function (t, p0, p1, p2, p3)
-	return (p1*2 + (-p0 + p2)*t + ((p0*2 - p1*5 + p2*4) - p3)*t*t + ((-p0 + p1*3) - p2*3 + p3)*t*t*t)*0.5
+	return 0.5 * (2 * p1 + (-p0 + p2) * t + ((2 * p0 - 5 * p1 + 4 * p2) - p3) * t * t + ((-p0 + 3 * p1) - 3 * p2 + p3) * t * t * t)
 end
 math.closest_position = function (p0, p1, p2)
 	local p0_p1_dist_sq = Vector3.distance_squared(p0, p1)
@@ -226,9 +226,9 @@ Geometry.closest_point_on_line = function (p, p1, p2)
 		return p2
 	end
 
-	local t = dot1/dot2
+	local t = dot1 / dot2
 
-	return p1 + t*dir
+	return p1 + t * dir
 end
 Geometry.closest_point_on_line = EngineOptimized.closest_point_on_line
 Geometry.closest_point_on_polyline = function (point, points, start_index, end_index)
@@ -290,7 +290,7 @@ Intersect.line_line = function (line_a_pt1, line_a_pt2, line_b_pt1, line_b_pt2)
 	local a = Vector3.dot(line_a_vector, line_a_vector)
 	local e = Vector3.dot(line_b_vector, line_b_vector)
 	local b = Vector3.dot(line_a_vector, line_b_vector)
-	local d = a*e - b*b
+	local d = a * e - b * b
 
 	if d < 0.001 then
 		return nil, nil
@@ -299,8 +299,8 @@ Intersect.line_line = function (line_a_pt1, line_a_pt2, line_b_pt1, line_b_pt2)
 	local r = line_a_pt1 - line_b_pt1
 	local c = Vector3.dot(line_a_vector, r)
 	local f = Vector3.dot(line_b_vector, r)
-	local normalized_distance_along_line_a = (b*f - c*e)/d
-	local normalized_distance_along_line_b = (a*f - b*c)/d
+	local normalized_distance_along_line_a = (b * f - c * e) / d
+	local normalized_distance_along_line_b = (a * f - b * c) / d
 
 	return normalized_distance_along_line_a, normalized_distance_along_line_b
 end
@@ -324,78 +324,78 @@ Intersect.ray_segment = function (ray_from, ray_direction, segment_start, segmen
 end
 math.ease_exp = function (t)
 	if t < 0.5 then
-		return math.pow(2, (t - 0.5)*20)*0.5
+		return 0.5 * math.pow(2, 20 * (t - 0.5))
 	end
 
-	return math.pow(2, (t - 0.5)*20)*0.5 - 1
+	return 1 - 0.5 * math.pow(2, 20 * (0.5 - t))
 end
 math.ease_in_exp = function (t)
-	return math.pow(2, (t - 1)*10)
+	return math.pow(2, 10 * (t - 1))
 end
 math.ease_out_exp = function (t)
-	return math.pow(2, t*-10) - 1
+	return 1 - math.pow(2, -10 * t)
 end
 math.easeCubic = function (t)
-	t = t*2
+	t = t * 2
 
 	if t < 1 then
-		return t*0.5*t*t
+		return 0.5 * t * t * t
 	end
 
 	t = t - 2
 
-	return t*0.5*t*t + 1
+	return 0.5 * t * t * t + 1
 end
 math.easeInCubic = function (t)
-	return t*t*t
+	return t * t * t
 end
 math.easeOutCubic = function (t)
 	t = t - 1
 
-	return t*t*t + 1
+	return t * t * t + 1
 end
 math.ease_out_quad = function (t)
-	return t*-1*(t - 2)
+	return -1 * t * (t - 2)
 end
 local math_ease_cubic = math.easeCubic
 math.ease_pulse = function (t)
 	if t < 0.5 then
-		return math_ease_cubic(t*2)
+		return math_ease_cubic(2 * t)
 	else
-		return math_ease_cubic(t*2 - 2)
+		return math_ease_cubic(2 - 2 * t)
 	end
 
 	return 
 end
 math.bounce = function (t)
-	return math.abs(math.sin((t + 1)*6.28*(t + 1))*(t - 1))
+	return math.abs(math.sin(6.28 * (t + 1) * (t + 1)) * (1 - t))
 end
 
 local function internal_rand_normal()
 	local x1, x2, w, y1, y2 = nil
 
 	repeat
-		x1 = math.random()*2 - 1
-		x2 = math.random()*2 - 1
-		w = x1*x1 + x2*x2
+		x1 = 2 * math.random() - 1
+		x2 = 2 * math.random() - 1
+		w = x1 * x1 + x2 * x2
 	until w < 1
 
-	w = math.sqrt((math.log(w)*-2)/w)
-	y1 = x1*w
-	y2 = x2*w
+	w = math.sqrt((-2 * math.log(w)) / w)
+	y1 = x1 * w
+	y2 = x2 * w
 
 	return y1, y2
 end
 
 math.rand_normal = function (min, max, variance, strict_min, strict_max)
-	local average = (min + max)/2
+	local average = (min + max) / 2
 
 	if variance == nil then
 		variance = 2.4
 	end
 
-	local escala = (max - average)/variance
-	local x = escala*internal_rand_normal() + average
+	local escala = (max - average) / variance
+	local x = escala * internal_rand_normal() + average
 
 	if strict_min ~= nil then
 		x = math.max(x, strict_min)
@@ -440,12 +440,12 @@ math.uuid = function ()
 	end)
 end
 math.get_uniformly_random_point_inside_sector = function (radius1, radius2, angle1, angle2)
-	local radius1_squared = radius1*radius1
-	local radius2_squared = radius2*radius2
-	local angle = angle1 + (angle2 - angle1)*Math.random()
-	local r = math.sqrt(radius1_squared + (radius2_squared - radius1_squared)*Math.random())
-	local dx = r*math.sin(angle)
-	local dy = r*math.cos(angle)
+	local radius1_squared = radius1 * radius1
+	local radius2_squared = radius2 * radius2
+	local angle = angle1 + (angle2 - angle1) * Math.random()
+	local r = math.sqrt(radius1_squared + (radius2_squared - radius1_squared) * Math.random())
+	local dx = r * math.sin(angle)
+	local dy = r * math.cos(angle)
 
 	return dx, dy
 end
@@ -454,7 +454,7 @@ math.clamp_direction = function (direction, clamp_direction, xy_angle, z_angle)
 	local direction_xy_angle = Quaternion.angle(direction_xy_rotation)
 	local clamp_direction_xy_rotation = Quaternion.look(clamp_direction)
 	local clamp_direction_xy_angle = Quaternion.angle(clamp_direction_xy_rotation)
-	local result = Vector3(math.cos(direction_xy_angle)*math.cos(z_angle), math.sin(direction_xy_angle)*math.cos(z_angle), math.sin(z_angle))
+	local result = Vector3(math.cos(direction_xy_angle) * math.cos(z_angle), math.sin(direction_xy_angle) * math.cos(z_angle), math.sin(z_angle))
 
 	return result
 end

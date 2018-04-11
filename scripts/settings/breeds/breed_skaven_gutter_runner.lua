@@ -268,18 +268,18 @@ local action_data = {
 		difficulty_jump_delay_time = {
 			0.3,
 			0.3,
-			0.25,
-			0.2,
-			0.15
+			0.3,
+			0.3,
+			0.3
 		}
 	},
 	prepare_crazy_jump = {
 		difficulty_prepare_jump_time = {
-			0.45,
-			0.45,
 			0.4,
-			0.35,
-			0.25
+			0.4,
+			0.4,
+			0.4,
+			0.4
 		}
 	},
 	ninja_vanish = {

@@ -1,32 +1,75 @@
+local damage_table_light = {
+	easy = {
+		15,
+		10,
+		7
+	},
+	normal = {
+		15,
+		10,
+		10
+	},
+	hard = {
+		25,
+		17,
+		15
+	},
+	survival_hard = {
+		25,
+		17,
+		15
+	},
+	harder = {
+		40,
+		20,
+		15
+	},
+	survival_harder = {
+		40,
+		20,
+		15
+	},
+	hardest = {
+		60,
+		25,
+		15
+	},
+	survival_hardest = {
+		60,
+		25,
+		15
+	}
+}
 local breed_data = {
 	detection_radius = 9999999,
-	perception = "perception_rat_ogre",
-	target_selection_angry = "pick_rat_ogre_target_with_weights",
 	bots_should_flank = true,
+	target_selection_angry = "pick_rat_ogre_target_with_weights",
 	bot_opportunity_target_melee_range_while_ranged = 5,
-	stagger_count_reset_time = 5,
+	race = "skaven",
 	poison_resistance = 100,
+	stagger_threshold_explosion = 1,
 	always_look_at_target = true,
-	use_avoidance = false,
+	target_selection = "pick_rat_ogre_target_idle",
 	animation_sync_rpc = "rpc_sync_anim_state_10",
 	bot_hitbox_radius_approximation = 1,
-	target_selection = "pick_rat_ogre_target_idle",
-	race = "skaven",
+	use_avoidance = false,
+	perception = "perception_rat_ogre",
 	behavior = "stormfiend",
-	stagger_threshold_explosion = 1,
+	is_bot_aid_threat = true,
 	walk_speed = 5,
-	ignore_nav_propagation_box = true,
 	aim_template = "stormfiend",
+	ignore_nav_propagation_box = true,
+	threat_value = 32,
 	bot_opportunity_target_melee_range = 7,
 	bone_lod_level = 0,
-	threat_value = 32,
 	default_inventory_template = "rat_ogre",
 	stagger_resistance = 100,
 	aoe_radius = 1,
-	is_bot_aid_threat = true,
+	stagger_count_reset_time = 5,
 	boss_staggers = true,
 	radius = 2,
 	boss = true,
+	hit_mass_count = 50,
 	chance_of_starting_sleepy = 0,
 	proximity_system_check = true,
 	death_reaction = "ai_default",
@@ -56,6 +99,7 @@ local breed_data = {
 	far_off_despawn_immunity = true,
 	trigger_dialogue_on_target_switch = true,
 	override_mover_move_distance = 2,
+	boss_damage_reduction = true,
 	base_unit = "units/beings/enemies/skaven_stormfiend/chr_skaven_stormfiend",
 	aoe_height = 2.4,
 	bots_flank_while_targeted = true,
@@ -75,11 +119,11 @@ local breed_data = {
 		target_disabled_mul = 0.15
 	},
 	max_health = {
-		1300,
-		1300,
-		1500,
-		1800,
-		2000
+		700,
+		700,
+		1050,
+		1400,
+		2100
 	},
 	stagger_duration = {
 		0,
@@ -280,7 +324,7 @@ local action_data = {
 			speed = 7,
 			radius = 2,
 			collision_filter = "filter_player_hit_box_check",
-			angle = math.pi/6
+			angle = math.pi / 6
 		}
 	},
 	shoot = {
@@ -341,11 +385,11 @@ local action_data = {
 			},
 			attack_fire_turn_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			attack_fire_turn_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		attack_times = {
@@ -372,14 +416,14 @@ local action_data = {
 		},
 		difficulty_damage = {
 			easy = {
-				10,
+				5,
 				10,
 				0,
 				0,
 				10
 			},
 			normal = {
-				10,
+				5,
 				10,
 				0,
 				0,
@@ -400,28 +444,28 @@ local action_data = {
 				10
 			},
 			harder = {
-				10,
+				20,
 				10,
 				0,
 				0,
 				10
 			},
 			survival_harder = {
-				10,
+				20,
 				10,
 				0,
 				0,
 				10
 			},
 			hardest = {
-				10,
+				40,
 				10,
 				0,
 				0,
 				10
 			},
 			survival_hardest = {
-				10,
+				40,
 				10,
 				0,
 				0,
@@ -548,11 +592,11 @@ local action_data = {
 					},
 					attack_melee_left = {
 						dir = 1,
-						rad = math.pi/2
+						rad = math.pi / 2
 					},
 					attack_melee_right = {
 						dir = -1,
-						rad = math.pi/2
+						rad = math.pi / 2
 					}
 				},
 				damage_done_time = {
@@ -655,48 +699,7 @@ local action_data = {
 			20,
 			20
 		},
-		difficulty_damage = {
-			easy = {
-				15,
-				20,
-				20
-			},
-			normal = {
-				20,
-				20,
-				20
-			},
-			hard = {
-				30,
-				25,
-				25
-			},
-			survival_hard = {
-				30,
-				25,
-				25
-			},
-			harder = {
-				40,
-				30,
-				30
-			},
-			survival_harder = {
-				40,
-				30,
-				30
-			},
-			hardest = {
-				60,
-				50,
-				50
-			},
-			survival_hardest = {
-				90,
-				75,
-				75
-			}
-		}
+		difficulty_damage = damage_table_light
 	},
 	charge = {
 		damage_type = "cutting",
@@ -811,48 +814,7 @@ local action_data = {
 			10,
 			5
 		},
-		difficulty_damage = {
-			easy = {
-				15,
-				10,
-				5
-			},
-			normal = {
-				20,
-				10,
-				5
-			},
-			hard = {
-				25,
-				15,
-				10
-			},
-			survival_hard = {
-				25,
-				15,
-				10
-			},
-			harder = {
-				30,
-				20,
-				10
-			},
-			survival_harder = {
-				30,
-				20,
-				10
-			},
-			hardest = {
-				50,
-				30,
-				20
-			},
-			survival_hardest = {
-				75,
-				45,
-				30
-			}
-		},
+		difficulty_damage = damage_table_light,
 		ignore_staggers = {
 			true,
 			true,
@@ -986,11 +948,11 @@ local action_data = {
 			},
 			change_target_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			change_target_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},

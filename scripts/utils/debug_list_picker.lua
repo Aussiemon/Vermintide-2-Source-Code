@@ -104,7 +104,7 @@ DebugListPicker.update = function (self, t, dt)
 
 	if DebugKeyHandler.key_pressed("right_key", "switch spawn category", "ai") then
 		self.column_index = self.column_index + 1
-		self.column_index = (self.column_index - 1)%#pick_list + 1
+		self.column_index = (self.column_index - 1) % #pick_list + 1
 		self.column = self.pick_list[self.column_index]
 		self.row_index = math.clamp(self.row_index, 1, #self.column)
 		self.item = self.column[self.row_index]
@@ -112,7 +112,7 @@ DebugListPicker.update = function (self, t, dt)
 
 	if DebugKeyHandler.key_pressed("left_key", "switch spawn category", "ai") then
 		self.column_index = self.column_index - 1
-		self.column_index = (self.column_index - 1)%#pick_list + 1
+		self.column_index = (self.column_index - 1) % #pick_list + 1
 		self.column = self.pick_list[self.column_index]
 		self.row_index = math.clamp(self.row_index, 1, #self.column)
 		self.item = self.column[self.row_index]
@@ -120,14 +120,14 @@ DebugListPicker.update = function (self, t, dt)
 
 	if DebugKeyHandler.key_pressed("up_key", "switch spawn category", "ai") and self.move_cursor_timer < wall_time then
 		self.row_index = self.row_index - 1
-		self.row_index = (self.row_index - 1)%#column + 1
+		self.row_index = (self.row_index - 1) % #column + 1
 		self.item = self.column[self.row_index]
 		self.move_cursor_timer = wall_time + 0.1
 	end
 
 	if DebugKeyHandler.key_pressed("down_key", "switch spawn category", "ai") and self.move_cursor_timer < wall_time then
 		self.row_index = self.row_index + 1
-		self.row_index = (self.row_index - 1)%#column + 1
+		self.row_index = (self.row_index - 1) % #column + 1
 		self.item = self.column[self.row_index]
 		self.move_cursor_timer = wall_time + 0.1
 	end
@@ -151,7 +151,7 @@ DebugListPicker.update = function (self, t, dt)
 		local res_x = RESOLUTION_LOOKUP.res_w
 		local res_y = RESOLUTION_LOOKUP.res_h
 		local opacity = 0.85
-		local height = self.max_height*self.max_rows
+		local height = self.max_height * self.max_rows
 		local col_text = ""
 		local header_color = nil
 		local base_header_color = Color(200, 100, 0)
@@ -178,7 +178,7 @@ DebugListPicker.update = function (self, t, dt)
 		end
 
 		for i = 1, #column, 1 do
-			local item_pos = upper_pos - Vector3(0, i*font_height, 0)
+			local item_pos = upper_pos - Vector3(0, i * font_height, 0)
 
 			if i == self.row_index then
 				Gui.text(self.gui, " > " .. column[i][1]:upper(), self.font_mtrl, self.font_size, self.font, item_pos, Color(200, 200, 200))
@@ -187,7 +187,7 @@ DebugListPicker.update = function (self, t, dt)
 			end
 		end
 
-		Gui.rect(self.gui, Vector3(5, res_y - height - 80, 899), Vector3(self.max_width, height, 899), Color(opacity*230, 10, 10, 10))
+		Gui.rect(self.gui, Vector3(5, res_y - height - 80, 899), Vector3(self.max_width, height, 899), Color(230 * opacity, 10, 10, 10))
 	end
 
 	return 

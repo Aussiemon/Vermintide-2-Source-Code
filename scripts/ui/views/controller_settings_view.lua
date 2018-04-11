@@ -124,7 +124,7 @@ ControllerSettingsView.create_ui_elements = function (self)
 			parent = "widget_start",
 			offset = {
 				0,
-				-n_widgets*16,
+				-n_widgets * 16,
 				1
 			},
 			size = {
@@ -161,7 +161,7 @@ ControllerSettingsView.create_ui_elements = function (self)
 				parent = "widget_start",
 				offset = {
 					0,
-					-n_widgets*16,
+					-n_widgets * 16,
 					1
 				},
 				size = {

@@ -4,7 +4,7 @@ local player_score_size = {
 	250,
 	580
 }
-local topics_hover_length = player_score_size[1] + 1400
+local topics_hover_length = 1400 + player_score_size[1]
 local scenegraph_definition = {
 	screen = {
 		scale = "fit",
@@ -357,9 +357,9 @@ local animation_definitions = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress - 1)
-				ui_scenegraph.player_panel_2.local_position[1] = anim_progress*400 - -375
-				ui_scenegraph.player_panel_3.local_position[1] = anim_progress*400 + 375
+				local anim_progress = math.easeInCubic(1 - progress)
+				ui_scenegraph.player_panel_2.local_position[1] = -375 - 400 * anim_progress
+				ui_scenegraph.player_panel_3.local_position[1] = 375 + 400 * anim_progress
 
 				return 
 			end,
@@ -377,9 +377,9 @@ local animation_definitions = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress - 1)
-				ui_scenegraph.player_panel_1.local_position[1] = anim_progress*400 - -700
-				ui_scenegraph.player_panel_4.local_position[1] = anim_progress*400 + 700
+				local anim_progress = math.easeInCubic(1 - progress)
+				ui_scenegraph.player_panel_1.local_position[1] = -700 - 400 * anim_progress
+				ui_scenegraph.player_panel_4.local_position[1] = 700 + 400 * anim_progress
 
 				return 
 			end,
@@ -400,7 +400,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

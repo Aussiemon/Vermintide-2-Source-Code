@@ -56,7 +56,7 @@ MainPathUtils.closest_pos_at_main_path_lua = function (main_paths, p)
 		local path = main_paths[best_main_path]
 		closest_node = path.nodes[best_sub_index]:unbox()
 		best_travel_dist = (path.travel_dist and path.travel_dist[best_sub_index] + Vector3.distance(best_point, closest_node)) or 0
-		move_percent = best_travel_dist/total_path_dist
+		move_percent = best_travel_dist / total_path_dist
 	else
 		best_point = nil
 	end
@@ -94,7 +94,7 @@ MainPathUtils.collapse_main_paths = function (main_paths)
 	end
 
 	for break_index, data in pairs(breaks) do
-		breaks[break_index] = (unified_travel_dists[break_index] + unified_travel_dists[break_index + 1])/2
+		breaks[break_index] = (unified_travel_dists[break_index] + unified_travel_dists[break_index + 1]) / 2
 	end
 
 	EngineOptimized.register_main_path(unified_path, unified_travel_dists, segments, #main_paths)
@@ -118,7 +118,7 @@ MainPathUtils.point_on_mainpath_lua = function (main_paths, wanted_distance)
 
 		if wanted_distance <= segment_distance then
 			local remainder_dist = wanted_distance - segment_distance - sub_path.path_length
-			local sub_move_percent = remainder_dist/sub_path.path_length
+			local sub_move_percent = remainder_dist / sub_path.path_length
 			local pos, sub_index = get_path_point(sub_path.nodes, sub_path.path_length, sub_move_percent)
 
 			return pos, i, sub_index
@@ -132,7 +132,7 @@ MainPathUtils.point_on_mainpath_lua = function (main_paths, wanted_distance)
 end
 MainPathUtils.zone_segment_on_mainpath = function (main_paths, p)
 	local best_point, best_travel_dist, move_percent = MainPathUtils.closest_pos_at_main_path(main_paths, p)
-	local index = math.floor((best_travel_dist + 5)/10)
+	local index = math.floor((best_travel_dist + 5) / 10)
 
 	return index
 end
@@ -221,7 +221,7 @@ MainPathUtils.closest_pos_at_collapsed_main_path = function (collapsed_path, col
 			end
 		end
 
-		move_percent = best_travel_dist/total_path_dist
+		move_percent = best_travel_dist / total_path_dist
 	else
 		best_point = nil
 	end
@@ -297,10 +297,10 @@ MainPathUtils.node_list_from_main_paths = function (nav_world, main_paths, max_n
 
 					if max_node_distance < segment_length then
 						local segment_direction = Vector3.normalize(segment)
-						local num_insert_nodes = math.floor(segment_length/max_node_distance)
+						local num_insert_nodes = math.floor(segment_length / max_node_distance)
 
 						for k = 1, num_insert_nodes, 1 do
-							local wanted_node_position = node.unbox(node) + segment_direction*k*max_node_distance
+							local wanted_node_position = node.unbox(node) + segment_direction * k * max_node_distance
 							local num_doors = door_system.get_doors(door_system, wanted_node_position, DOOR_SEARCH_RADIUS, door_broadphase_query_result)
 
 							if 0 < num_doors then
@@ -426,12 +426,12 @@ MainPathUtils.find_equidistant_points_in_node_list = function (node_list, start_
 		local segment = segment_end - segment_start
 		local segment_length = Vector3.length(segment)
 		local segment_direction = Vector3.normalize(segment)
-		local num_points_in_segment = math.ceil((segment_length - segment_offset)/point_distance)
+		local num_points_in_segment = math.ceil((segment_length - segment_offset) / point_distance)
 
 		for i = 0, num_points_in_segment - 1, 1 do
 			points[point_index] = {
-				segment_start + segment_direction*(segment_offset + i*point_distance),
-				segment_direction*node_list_direction,
+				segment_start + segment_direction * (segment_offset + i * point_distance),
+				segment_direction * node_list_direction,
 				node_index
 			}
 			point_index = point_index + 1
@@ -441,7 +441,7 @@ MainPathUtils.find_equidistant_points_in_node_list = function (node_list, start_
 			end
 		end
 
-		local segment_remainder = segment_length - (num_points_in_segment - 1)*point_distance
+		local segment_remainder = segment_length - (num_points_in_segment - 1) * point_distance
 		segment_offset = (segment_offset + point_distance) - segment_remainder
 		node_index = node_index + node_list_direction
 	end

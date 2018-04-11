@@ -5,8 +5,8 @@ local window_size = window_default_settings.size
 local window_spacing = window_default_settings.spacing
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_width_offset = window_size[1]*2 + window_spacing*2
-local window_text_width = window_size[1] - (window_frame_width*2 + 60)
+local window_width_offset = window_size[1] * 2 + window_spacing * 2
+local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -62,7 +62,7 @@ local scenegraph_definition = {
 		parent = "window",
 		horizontal_alignment = "left",
 		size = {
-			window_size[1]*2 + window_spacing,
+			window_size[1] * 2 + window_spacing,
 			window_size[2]
 		},
 		position = {
@@ -356,7 +356,7 @@ local scenegraph_definition = {
 		parent = "window_frame",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1]*2 + window_spacing,
+			window_size[1] * 2 + window_spacing,
 			35
 		},
 		position = {
@@ -574,10 +574,10 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 				uvs = {
 					{
 						0,
-						math.min(size[2]/button_background_texture_settings.size[2], 1) - 1
+						1 - math.min(size[2] / button_background_texture_settings.size[2], 1)
 					},
 					{
-						math.min(size[1]/button_background_texture_settings.size[1], 1),
+						math.min(size[1] / button_background_texture_settings.size[1], 1),
 						1
 					}
 				},
@@ -842,8 +842,8 @@ local function talent_row(scenegraph_id, size, amount, optional_color_name)
 	local slot_width_spacing = 0
 	local offset_layer = 0
 	local total_length = -slot_width_spacing
-	local length_with_spacing = size[1] - slot_width_spacing*(amount - 1)
-	local tab_width = length_with_spacing/amount
+	local length_with_spacing = size[1] - slot_width_spacing * (amount - 1)
+	local tab_width = length_with_spacing / amount
 	local button_size = {
 		tab_width,
 		size[2]
@@ -894,10 +894,10 @@ local function talent_row(scenegraph_id, size, amount, optional_color_name)
 			uvs = {
 				{
 					0,
-					math.min(button_size[2]/background_texture_settings.size[2], 1) - 1
+					1 - math.min(button_size[2] / background_texture_settings.size[2], 1)
 				},
 				{
-					math.min(button_size[1]/background_texture_settings.size[1], 1),
+					math.min(button_size[1] / background_texture_settings.size[1], 1),
 					1
 				}
 			},
@@ -1016,7 +1016,7 @@ local function talent_row(scenegraph_id, size, amount, optional_color_name)
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				offset[1] + 10,
-				(offset[2] + button_size[2]/2) - icon_size[2]/2,
+				(offset[2] + button_size[2] / 2) - icon_size[2] / 2,
 				2
 			}
 		}
@@ -1032,7 +1032,7 @@ local function talent_row(scenegraph_id, size, amount, optional_color_name)
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				offset[1] + 10,
-				(offset[2] + button_size[2]/2) - icon_size[2]/2,
+				(offset[2] + button_size[2] / 2) - icon_size[2] / 2,
 				3
 			}
 		}
@@ -1337,7 +1337,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

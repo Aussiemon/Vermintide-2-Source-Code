@@ -50,7 +50,7 @@ InputDebugger.post_update_device = function (self, input_device, device_data, dt
 		local s_w = RESOLUTION_LOOKUP.res_w
 		local s_h = RESOLUTION_LOOKUP.res_h
 
-		Gui.text(gui, device_name, font_mtrl, font_size, font, Vector3(self.num_updated_devices*x_spacing + 100, s_h - font_size, 900), white_color)
+		Gui.text(gui, device_name, font_mtrl, font_size, font, Vector3(100 + self.num_updated_devices * x_spacing, s_h - font_size, 900), white_color)
 
 		local debug_device_data = self.input_device_data[device_name] or {}
 		self.input_device_data[device_name] = debug_device_data
@@ -94,19 +94,19 @@ InputDebugger.post_update_device = function (self, input_device, device_data, dt
 			if type(data) == "table" then
 				i = i + 1
 
-				Gui.text(gui, "  " .. name, font_mtrl, font_size, font, Vector3(self.num_updated_devices*x_spacing + 100, s_h - font_size*i, 900), blue_color)
+				Gui.text(gui, "  " .. name, font_mtrl, font_size, font, Vector3(100 + self.num_updated_devices * x_spacing, s_h - font_size * i, 900), blue_color)
 
 				for key, value in pairs(data) do
 					if type(key) == "number" then
 						local key_debug_data = debug_data[key]
 
 						if key_debug_data and 0 < key_debug_data then
-							local color = Color(key_debug_data*255, 128, 255, 128)
+							local color = Color(255 * key_debug_data, 128, 255, 128)
 							local button_name = (name == "axis" and input_device.axis_name(key)) or input_device.button_name(key)
 							local text = string.format("    [%s]:%s", button_name, tostring(value))
 							i = i + 1
 
-							Gui.text(gui, text, font_mtrl, font_size, font, Vector3(self.num_updated_devices*x_spacing + 100, s_h - font_size*i, 900), color)
+							Gui.text(gui, text, font_mtrl, font_size, font, Vector3(100 + self.num_updated_devices * x_spacing, s_h - font_size * i, 900), color)
 						end
 					end
 				end
@@ -134,7 +134,7 @@ InputDebugger.debug_input_filters = function (self)
 
 	for input_service_name, input_service in pairs(self.input_manager.input_services) do
 		if input_service.input_filters then
-			render_text(string.format("Filters: %s", input_service_name), Vector3(20, s_h/2 - font_size*i, 900), blue_color)
+			render_text(string.format("Filters: %s", input_service_name), Vector3(20, s_h / 2 - font_size * i, 900), blue_color)
 
 			i = i + 1
 
@@ -142,7 +142,7 @@ InputDebugger.debug_input_filters = function (self)
 				local key = input_filter_data.filter_output
 				local value = InputFilters[input_filter_data.function_data.filter_type].update(input_filter_data.function_data, input_service)
 
-				render_text(string.format("[%s]:%s", key, tostring(value)), Vector3(20, s_h/2 - font_size*i, 900), green_color)
+				render_text(string.format("[%s]:%s", key, tostring(value)), Vector3(20, s_h / 2 - font_size * i, 900), green_color)
 
 				i = i + 1
 			end
@@ -181,7 +181,7 @@ InputDebugger.update_input_service_data = function (self, input_service, t)
 	local s_w = RESOLUTION_LOOKUP.res_w
 	local s_h = RESOLUTION_LOOKUP.res_h
 	local top = s_h - 20 - font_size
-	local x_pos = s_w/2
+	local x_pos = s_w / 2
 	local i = 0
 	local current_input_service_data = nil
 
@@ -281,7 +281,7 @@ InputDebugger.update_selected_device = function (self, input_service, x_pos, top
 	end
 
 	if selected_map_type and selected_map_type ~= "axis" then
-		render_text("Please press key (escape to cancel).", Vector3(s_w/2, s_h/2, 900), normal_color)
+		render_text("Please press key (escape to cancel).", Vector3(s_w / 2, s_h / 2, 900), normal_color)
 
 		local device_type = self.current_selected_device
 		local input_device = InputAux.input_device_mapping[device_type][1]
@@ -290,7 +290,7 @@ InputDebugger.update_selected_device = function (self, input_service, x_pos, top
 		self.last_pressed = last_pressed
 
 		if last_pressed then
-			render_text(string.format("You pressed: %s (%d)", input_device.button_name(last_pressed), last_pressed), Vector3(s_w/2, s_h/2 - font_size*i, 900), normal_color)
+			render_text(string.format("You pressed: %s (%d)", input_device.button_name(last_pressed), last_pressed), Vector3(s_w / 2, s_h / 2 - font_size * i, 900), normal_color)
 
 			local time_for_complete = self.key_selected_wait or t + 1
 			self.key_selected_wait = time_for_complete
@@ -344,10 +344,10 @@ InputDebugger.update_input_modify_type = function (self, input_service, t, x_pos
 			self.selected_input_type = (current_selection == 1 and "filters") or "keymap"
 			self.current_selection = 1
 		elseif input_service.get(input_service, "up_key") and self.hold_timer < t then
-			self.current_selection = current_selection - 3
+			self.current_selection = 3 - current_selection
 			self.hold_timer = t + 0.1
 		elseif input_service.get(input_service, "down_key") and self.hold_timer < t then
-			self.current_selection = current_selection - 3
+			self.current_selection = 3 - current_selection
 			self.hold_timer = t + 0.1
 		elseif input_service.get(input_service, "backspace") then
 			self.selected_input_service = nil
@@ -355,7 +355,7 @@ InputDebugger.update_input_modify_type = function (self, input_service, t, x_pos
 		end
 	end
 
-	top = top - font_size*2
+	top = top - font_size * 2
 
 	return x_pos
 end
@@ -403,11 +403,11 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 			top = top - font_size
 			local current_keybinds = self.current_keybinds
 
-			for i = 1, #current_keybinds/3, 1 do
-				local device_type = current_keybinds[i*3 - 2]
-				local button_name = InputAux.input_device_mapping[device_type][1].button_name(current_keybinds[i*3 - 1])
+			for i = 1, #current_keybinds / 3, 1 do
+				local device_type = current_keybinds[i * 3 - 2]
+				local button_name = InputAux.input_device_mapping[device_type][1].button_name(current_keybinds[i * 3 - 1])
 
-				render_text(string.format("%s:%s[%d] (%s)", device_type, button_name, current_keybinds[i*3 - 1], current_keybinds[i*3]), Vector3(x_pos, top, 900), selected_color)
+				render_text(string.format("%s:%s[%d] (%s)", device_type, button_name, current_keybinds[i * 3 - 1], current_keybinds[i * 3]), Vector3(x_pos, top, 900), selected_color)
 
 				top = top - font_size
 			end
@@ -572,15 +572,15 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 					color = selected_color
 					current_keymap = keymap
 					binding_index = j
-					subkey_index = math.ceil(k/3)
+					subkey_index = math.ceil(k / 3)
 				end
 			elseif current_selection == i then
-				self.handle_edit_debug_keys(self, input_service, i, "selected_binding", "selected_keymap", num_choices/3, t)
+				self.handle_edit_debug_keys(self, input_service, i, "selected_binding", "selected_keymap", num_choices / 3, t)
 
 				color = current_color
 			end
 
-			local text = string.format("[%d.%d] %s [%d] %s (%s)", j, math.ceil(k/3), device_type, button_index, input_device.button_name(button_index), keymap[k + 2])
+			local text = string.format("[%d.%d] %s [%d] %s (%s)", j, math.ceil(k / 3), device_type, button_index, input_device.button_name(button_index), keymap[k + 2])
 
 			render_text(text, Vector3(x_pos, top, 900), color)
 
@@ -592,15 +592,15 @@ InputDebugger.update_selected_keymap_edit = function (self, input_service, dt, t
 		return 
 	end
 
-	render_text("Please press new key (escape to cancel).", Vector3(s_w/2, s_h/2, 900), normal_color)
+	render_text("Please press new key (escape to cancel).", Vector3(s_w / 2, s_h / 2, 900), normal_color)
 
-	local device_type = current_keymap[subkey_index*3 - 2]
+	local device_type = current_keymap[subkey_index * 3 - 2]
 	local input_device = InputAux.input_device_mapping[device_type][1]
 	local pressed_button = input_device.any_pressed()
 	self.last_pressed = self.last_pressed or pressed_button
 
 	if self.last_pressed then
-		render_text(string.format("You pressed: %s (%d)", input_device.button_name(self.last_pressed), self.last_pressed), Vector3(s_w/2, s_h/2 - font_size, 900), normal_color)
+		render_text(string.format("You pressed: %s (%d)", input_device.button_name(self.last_pressed), self.last_pressed), Vector3(s_w / 2, s_h / 2 - font_size, 900), normal_color)
 
 		local time_for_complete = self.key_selected_wait or t + 1
 		self.key_selected_wait = time_for_complete

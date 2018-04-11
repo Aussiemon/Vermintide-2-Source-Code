@@ -168,10 +168,11 @@ BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, s
 
 	return loadouts[career_name][slot_name]
 end
-BackendInterfaceItemPlayfab.get_filtered_items = function (self, filter)
+local empty_params = {}
+BackendInterfaceItemPlayfab.get_filtered_items = function (self, filter, params)
 	local all_items = self.get_all_backend_items(self)
 	local backend_common = Managers.backend:get_interface("common")
-	local items = backend_common.filter_items(backend_common, all_items, filter)
+	local items = backend_common.filter_items(backend_common, all_items, filter, params or empty_params)
 
 	return items
 end
@@ -211,16 +212,17 @@ BackendInterfaceItemPlayfab.check_for_loot = function (self)
 end
 BackendInterfaceItemPlayfab.equipped_by = function (self, backend_id)
 	local loadouts = self._loadouts
+	local equipped_careers = {}
 
 	for career_name, items_by_slot in pairs(loadouts) do
 		for slot_name, item_id in pairs(items_by_slot) do
 			if backend_id == item_id then
-				return career_name
+				table.insert(equipped_careers, career_name)
 			end
 		end
 	end
 
-	return 
+	return equipped_careers
 end
 BackendInterfaceItemPlayfab.is_equipped = function (self, backend_id, profile_name)
 	return 

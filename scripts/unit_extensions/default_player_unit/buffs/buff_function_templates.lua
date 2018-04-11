@@ -48,11 +48,18 @@ end
 local params = {}
 local clearable_params = {}
 local broadphase_results = {}
+local DEBUG_PRINT = true
 
 local function is_local(unit)
 	local player = Managers.player:owner(unit)
 
 	return player and not player.remote
+end
+
+local function is_bot(unit)
+	local player = Managers.player:owner(unit)
+
+	return player and player.bot_player
 end
 
 BuffFunctionTemplates.functions = {
@@ -75,7 +82,7 @@ BuffFunctionTemplates.functions = {
 		local multiplier = params.multiplier
 		local time_into_buff = params.time_into_buff
 		local old_value_to_update_movement_setting, value_to_update_movement_setting, old_multiplier_to_update_movement_setting, multiplier_to_update_movement_setting = nil
-		local percentage_in_lerp = math.min(1, time_into_buff/buff.template.lerp_time)
+		local percentage_in_lerp = math.min(1, time_into_buff / buff.template.lerp_time)
 
 		if bonus then
 			local new_value = math.lerp(0, bonus, percentage_in_lerp)
@@ -93,7 +100,7 @@ BuffFunctionTemplates.functions = {
 				local boon_template = BoonTemplates.increased_combat_movement
 
 				if 0 < num_increased_combat_movement_boons then
-					multiplier = multiplier + (multiplier - 1)*num_increased_combat_movement_boons*boon_template.multiplier
+					multiplier = multiplier + (1 - multiplier) * num_increased_combat_movement_boons * boon_template.multiplier
 				end
 			end
 
@@ -159,8 +166,8 @@ BuffFunctionTemplates.functions = {
 			return 
 		end
 
-		local percentage_in_lerp = math.min(1, time_into_buff/buff.template.lerp_time)
-		percentage_in_lerp = percentage_in_lerp - 1
+		local percentage_in_lerp = math.min(1, time_into_buff / buff.template.lerp_time)
+		percentage_in_lerp = 1 - percentage_in_lerp
 		buff.last_frame_percentage = percentage_in_lerp
 
 		if bonus then
@@ -204,7 +211,7 @@ BuffFunctionTemplates.functions = {
 		end
 
 		if multiplier then
-			movement_setting_value = movement_setting_value*multiplier
+			movement_setting_value = movement_setting_value * multiplier
 		end
 
 		set_variable(path_to_movement_setting_to_modify, unit, movement_setting_value)
@@ -218,7 +225,7 @@ BuffFunctionTemplates.functions = {
 		local movement_setting_value = get_variable(path_to_movement_setting_to_modify, unit)
 
 		if multiplier then
-			movement_setting_value = movement_setting_value/multiplier
+			movement_setting_value = movement_setting_value / multiplier
 		end
 
 		if bonus then
@@ -303,7 +310,7 @@ BuffFunctionTemplates.functions = {
 		return 
 	end,
 	start_dot_damage = function (unit, buff, params)
-		local random_mod_next_dot_time = buff.template.time_between_dot_damages*0.75 + math.random()*0.5*buff.template.time_between_dot_damages
+		local random_mod_next_dot_time = 0.75 * buff.template.time_between_dot_damages + math.random() * 0.5 * buff.template.time_between_dot_damages
 		buff.next_poison_damage_time = params.t + random_mod_next_dot_time
 
 		if buff.template.start_flow_event then
@@ -361,7 +368,7 @@ BuffFunctionTemplates.functions = {
 
 			if health_extension.is_alive(health_extension) then
 				local buff_template = buff.template
-				local random_mod_next_dot_time = buff.template.time_between_dot_damages*0.75 + math.random()*0.5*buff.template.time_between_dot_damages
+				local random_mod_next_dot_time = 0.75 * buff.template.time_between_dot_damages + math.random() * 0.5 * buff.template.time_between_dot_damages
 				buff.next_poison_damage_time = buff.next_poison_damage_time + random_mod_next_dot_time
 
 				if Unit.alive(params.attacker_unit) then
@@ -375,7 +382,7 @@ BuffFunctionTemplates.functions = {
 					local damage_profile_name = buff_template.damage_profile or "default"
 					local damage_profile = DamageProfileTemplates[damage_profile_name]
 					local target_index = nil
-					local boost_curve_multiplier = 1
+					local boost_curve_multiplier = 0
 					local is_critical_strike = false
 					local can_damage = true
 					local can_stagger = false
@@ -585,7 +592,7 @@ BuffFunctionTemplates.functions = {
 
 		local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 		local push_speed = buff_template.push_speed
-		local pushed_velocity = pushed_direction*push_speed
+		local pushed_velocity = pushed_direction * push_speed
 
 		locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
 
@@ -601,6 +608,79 @@ BuffFunctionTemplates.functions = {
 			first_person_extension.stop_spawning_screen_particles(first_person_extension, buff.plague_wave_opaque_particle_id)
 		end
 
+		return 
+	end,
+	apply_vermintide_in_face = function (unit, buff, params, world)
+		local difficulty_name = Managers.state.difficulty:get_difficulty()
+		local buff_template = buff.template
+		local damage = buff_template.difficulty_damage[difficulty_name]
+		buff.damage = damage
+		local breed = Unit.get_data(unit, "breed")
+		buff.armor_type = (breed and (breed.armor_category or 1)) or 4
+		local pushed_direction = nil
+		local attacker_unit = params.attacker_unit
+
+		if Unit.alive(attacker_unit) then
+			local source_breed = Unit.get_data(attacker_unit, "breed")
+			buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+			local victim_position = POSITION_LOOKUP[unit]
+			local attacker_position = POSITION_LOOKUP[attacker_unit]
+			local to_victim = victim_position - attacker_position
+			pushed_direction = Vector3.normalize(to_victim)
+		else
+			pushed_direction = Vector3.backward()
+		end
+
+		local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+		local push_speed = buff_template.push_speed
+		local pushed_velocity = pushed_direction * push_speed
+
+		locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
+
+		buff.vomit_next_t = params.t
+
+		return 
+	end,
+	update_vermintide_in_face = function (unit, buff, params, world)
+		local t = params.t
+		local vomit_next_t = buff.vomit_next_t
+		local buff_template = buff.template
+
+		if vomit_next_t < t then
+			if Managers.state.network.is_server then
+				local health_extension = ScriptUnit.extension(unit, "health_system")
+
+				if health_extension.is_alive(health_extension) then
+					local attacker_unit = (Unit.alive(params.attacker_unit) and params.attacker_unit) or unit
+					local armor_type = buff.armor_type
+					local damage_type = buff_template.damage_type
+					local damage = buff.damage[armor_type]
+					local damage_source = buff.damage_source
+
+					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, Vector3(1, 0, 0), damage_source)
+				end
+			end
+
+			local fatigue_type = buff_template.fatigue_type
+			local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+			if status_extension then
+				status_extension.add_fatigue_points(status_extension, fatigue_type)
+			end
+
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local slowdown_buff_name = buff_template.slowdown_buff_name
+
+			if slowdown_buff_name then
+				buff_extension.add_buff(buff_extension, slowdown_buff_name, params)
+			end
+
+			buff.vomit_next_t = t + buff_template.time_between_dot_damages
+		end
+
+		return 
+	end,
+	remove_vermintide_in_face = function (unit, buff, params, world)
 		return 
 	end,
 	apply_vomit_in_face = function (unit, buff, params, world)
@@ -642,7 +722,7 @@ BuffFunctionTemplates.functions = {
 
 		local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 		local push_speed = buff_template.push_speed
-		local pushed_velocity = pushed_direction*push_speed
+		local pushed_velocity = pushed_direction * push_speed
 
 		locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
 
@@ -798,7 +878,7 @@ BuffFunctionTemplates.functions = {
 			buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
 		end
 
-		buff.warpfire_next_t = params.t
+		buff.warpfire_next_t = params.t + buff_template.time_between_dot_damages
 
 		return 
 	end,
@@ -889,7 +969,7 @@ BuffFunctionTemplates.functions = {
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 
-		if health_extension.current_health_percent(health_extension) == 1 or status_extension.is_knocked_down(status_extension) then
+		if 0.5 <= health_extension.current_health_percent(health_extension) or status_extension.is_knocked_down(status_extension) then
 			return 
 		end
 
@@ -900,12 +980,12 @@ BuffFunctionTemplates.functions = {
 				local heal_amount = buff_template.heal_amount
 
 				if talent_extension.has_talent(talent_extension, "kerillian_waywatcher_improved_regen", "wood_elf", true) then
-					heal_amount = heal_amount*1.5
+					heal_amount = heal_amount * 1.5
 				end
 
 				if health_extension.is_alive(health_extension) then
 					if talent_extension.has_talent(talent_extension, "kerillian_waywatcher_group_regen", "wood_elf", true) then
-						heal_amount = heal_amount*0.5
+						heal_amount = heal_amount * 0.5
 						local player_and_bot_units = PLAYER_AND_BOT_UNITS
 
 						for i = 1, #player_and_bot_units, 1 do
@@ -980,11 +1060,16 @@ BuffFunctionTemplates.functions = {
 		end
 
 		if not breed and first_person_extension then
-			local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
-			local push_speed = buff_template.push_speed
-			local pushed_velocity = pushed_direction*math.max(0, push_speed - distance)
+			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+			local no_ranged_knockback = buff_extension and buff_extension.has_buff_perk(buff_extension, "no_ranged_knockback")
 
-			locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
+			if not no_ranged_knockback then
+				local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+				local push_speed = buff_template.push_speed
+				local pushed_velocity = pushed_direction * math.max(0, push_speed - distance)
+
+				locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
+			end
 		end
 
 		buff.warpfire_next_t = params.t
@@ -1065,11 +1150,16 @@ BuffFunctionTemplates.functions = {
 		end
 
 		if first_person_extension then
-			local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
-			local push_speed = buff_template.push_speed
-			local pushed_velocity = pushed_direction*push_speed
+			local hit_unit_buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+			local no_ranged_knockback = hit_unit_buff_extension and hit_unit_buff_extension.has_buff_perk(hit_unit_buff_extension, "no_ranged_knockback")
 
-			locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
+			if not no_ranged_knockback then
+				local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
+				local push_speed = buff_template.push_speed
+				local pushed_velocity = pushed_direction * push_speed
+
+				locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity)
+			end
 		end
 
 		buff.warpfire_next_t = params.t
@@ -1210,8 +1300,8 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		local num_chunks = math.floor(num_alive_nearby_enemies/chunk_size)
-		local multiplier = num_chunks*min_multiplier
+		local num_chunks = math.floor(num_alive_nearby_enemies / chunk_size)
+		local multiplier = num_chunks * min_multiplier
 
 		if max_multiplier < multiplier then
 			multiplier = max_multiplier
@@ -1256,8 +1346,8 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		local num_chunks = math.floor(num_alive_nearby_enemies/chunk_size)
-		local bonus = num_chunks*min_bonus
+		local num_chunks = math.floor(num_alive_nearby_enemies / chunk_size)
+		local bonus = num_chunks * min_bonus
 
 		if max_bonus < bonus then
 			bonus = max_bonus
@@ -1296,7 +1386,7 @@ BuffFunctionTemplates.functions = {
 			if alive then
 				num_alive_nearby_enemies = num_alive_nearby_enemies + 1
 
-				if math.floor(num_alive_nearby_enemies/chunk_size) == max_stacks then
+				if math.floor(num_alive_nearby_enemies / chunk_size) == max_stacks then
 					break
 				end
 			end
@@ -1306,7 +1396,7 @@ BuffFunctionTemplates.functions = {
 			buff.stack_ids = {}
 		end
 
-		local num_chunks = math.floor(num_alive_nearby_enemies/chunk_size)
+		local num_chunks = math.floor(num_alive_nearby_enemies / chunk_size)
 		local num_buff_stacks = buff_extension.num_buff_type(buff_extension, buff_to_add)
 		local amount_removed = 0
 		local removed_buff = false
@@ -1325,7 +1415,7 @@ BuffFunctionTemplates.functions = {
 			for i = 1, difference, 1 do
 				local stack_ids = buff.stack_ids
 				local buff_id = table.remove(stack_ids, 1)
-				local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id)
+				local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id, DEBUG_PRINT)
 
 				print("removed buff -", buff_to_add)
 				print("buff_id", buff_id)
@@ -1351,7 +1441,7 @@ BuffFunctionTemplates.functions = {
 				buff.stack_ids = {}
 			end
 
-			local num_chunks = math.min(math.floor(overcharge/chunk_size), max_stacks)
+			local num_chunks = math.min(math.floor(overcharge / chunk_size), max_stacks)
 			local num_buff_stacks = buff_extension.num_buff_type(buff_extension, buff_to_add)
 			local amount_removed = 0
 			local removed_buff = false
@@ -1370,7 +1460,7 @@ BuffFunctionTemplates.functions = {
 				for i = 1, difference, 1 do
 					local stack_ids = buff.stack_ids
 					local buff_id = table.remove(stack_ids, 1)
-					local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id)
+					local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id, DEBUG_PRINT)
 					amount_removed = amount_removed + num_buffs_removed
 					removed_buff = true
 				end
@@ -1395,7 +1485,7 @@ BuffFunctionTemplates.functions = {
 			buff.stack_ids = {}
 		end
 
-		local health_chunks = math.floor(current_health/chunk_size)
+		local health_chunks = math.floor(current_health / chunk_size)
 		local num_chunks = math.max(0, max_stacks - health_chunks)
 		local num_buff_stacks = buff_extension.num_buff_type(buff_extension, buff_to_add)
 		local amount_removed = 0
@@ -1415,7 +1505,7 @@ BuffFunctionTemplates.functions = {
 			for i = 1, difference, 1 do
 				local stack_ids = buff.stack_ids
 				local buff_id = table.remove(stack_ids, 1)
-				local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id)
+				local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id, DEBUG_PRINT)
 				amount_removed = amount_removed + num_buffs_removed
 				removed_buff = true
 			end
@@ -1431,13 +1521,13 @@ BuffFunctionTemplates.functions = {
 		local owner_unit = unit
 		local template = buff.template
 		local range = buff.range
-		local range_squared = range*range
+		local range_squared = range * range
 		local owner_position = POSITION_LOOKUP[unit]
 		local player_and_bot_units = PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local buff_to_add = template.buff_to_add
 		local buff_system = Managers.state.entity:system("buff_system")
-		local removed_buff = nil
+		local removed_buff, num_buffs_removed = nil
 
 		for i = 1, num_units, 1 do
 			local unit = player_and_bot_units[i]
@@ -1454,9 +1544,12 @@ BuffFunctionTemplates.functions = {
 						local buff_id = buff.server_id
 
 						if buff_id then
-							buff_system.remove_server_controlled_buff(buff_system, unit, buff_id)
-
+							local num_removed = buff_system.remove_server_controlled_buff(buff_system, unit, buff_id, DEBUG_PRINT)
 							removed_buff = true
+
+							if unit == owner_unit then
+								num_buffs_removed = num_removed
+							end
 						end
 					end
 				end
@@ -1472,7 +1565,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff
+		return removed_buff, num_buffs_removed
 	end,
 	activate_buff_on_closest = function (unit, buff, params)
 		if not Managers.state.network.is_server then
@@ -1482,13 +1575,13 @@ BuffFunctionTemplates.functions = {
 		local owner_unit = unit
 		local template = buff.template
 		local range = buff.range
-		local range_squared = range*range
+		local range_squared = range * range
 		local owner_position = POSITION_LOOKUP[unit]
 		local player_and_bot_units = PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local buff_to_add = template.buff_to_add
 		local buff_system = Managers.state.entity:system("buff_system")
-		local closest_player, removed_buff = nil
+		local closest_player, removed_buff, num_buffs_removed = nil
 
 		for i = 1, num_units, 1 do
 			local unit = player_and_bot_units[i]
@@ -1505,9 +1598,12 @@ BuffFunctionTemplates.functions = {
 						local buff_id = buff.server_id
 
 						if buff_id then
-							buff_system.remove_server_controlled_buff(buff_system, unit, buff_id)
-
+							local num_removed = buff_system.remove_server_controlled_buff(buff_system, unit, buff_id, DEBUG_PRINT)
 							removed_buff = true
+
+							if unit == owner_unit then
+								num_buffs_removed = num_removed
+							end
 						end
 					end
 				end
@@ -1523,7 +1619,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff
+		return removed_buff, num_buffs_removed
 	end,
 	markus_knight_proximity_buff_update = function (unit, buff, params)
 		if not Managers.state.network.is_server then
@@ -1533,7 +1629,7 @@ BuffFunctionTemplates.functions = {
 		local owner_unit = unit
 		local template = buff.template
 		local range = buff.range
-		local range_squared = range*range
+		local range_squared = range * range
 		local owner_position = POSITION_LOOKUP[unit]
 		local player_and_bot_units = PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
@@ -1551,7 +1647,7 @@ BuffFunctionTemplates.functions = {
 			buff_to_add = "markus_knight_passive_defence_aura"
 		end
 
-		local removed_buff = nil
+		local removed_buff, num_buffs_removed = nil
 
 		for i = 1, num_units, 1 do
 			local unit = player_and_bot_units[i]
@@ -1568,9 +1664,12 @@ BuffFunctionTemplates.functions = {
 						local buff_id = buff.server_id
 
 						if buff_id then
-							buff_system.remove_server_controlled_buff(buff_system, unit, buff_id)
-
+							local num_removed = buff_system.remove_server_controlled_buff(buff_system, unit, buff_id, DEBUG_PRINT)
 							removed_buff = true
+
+							if unit == owner_unit then
+								num_buffs_removed = num_removed
+							end
 						end
 					end
 				end
@@ -1586,7 +1685,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff
+		return removed_buff, num_buffs_removed
 	end,
 	kerillian_maidenguard_proximity_buff_update = function (unit, buff, params)
 		if not Managers.state.network.is_server then
@@ -1596,13 +1695,13 @@ BuffFunctionTemplates.functions = {
 		local owner_unit = unit
 		local template = buff.template
 		local range = buff.range
-		local range_squared = range*range
+		local range_squared = range * range
 		local owner_position = POSITION_LOOKUP[unit]
 		local player_and_bot_units = PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local buff_to_add = "kerillian_maidenguard_passive_stamina_regen_buff"
 		local buff_system = Managers.state.entity:system("buff_system")
-		local removed_buff = nil
+		local removed_buff, num_buffs_removed = nil
 
 		for i = 1, num_units, 1 do
 			local unit = player_and_bot_units[i]
@@ -1619,9 +1718,12 @@ BuffFunctionTemplates.functions = {
 						local buff_id = buff.server_id
 
 						if buff_id then
-							buff_system.remove_server_controlled_buff(buff_system, unit, buff_id)
-
+							local num_removed = buff_system.remove_server_controlled_buff(buff_system, unit, buff_id, DEBUG_PRINT)
 							removed_buff = true
+
+							if unit == owner_unit then
+								num_buffs_removed = num_removed
+							end
 						end
 					end
 				end
@@ -1637,7 +1739,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff
+		return removed_buff, num_buffs_removed
 	end,
 	activate_buff_on_other_buff = function (unit, buff, params)
 		local template = buff.template
@@ -1648,20 +1750,21 @@ BuffFunctionTemplates.functions = {
 		local has_buff = buff_extension.get_non_stacking_buff(buff_extension, activation_buff)
 		local apply_buff = (has_buff and not activate_on_missing) or (not has_buff and activate_on_missing)
 		local applied_buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-		local removed_buff = nil
+		local removed_buff, num_buffs_removed = nil
 
 		if apply_buff then
 			if not applied_buff then
 				buff_extension.add_buff(buff_extension, buff_to_add)
 			end
 		elseif applied_buff then
-			buff_extension.remove_buff(buff_extension, applied_buff.id)
+			num_buffs_removed = buff_extension.remove_buff(buff_extension, applied_buff.id, DEBUG_PRINT)
+
 			print("removed buff -", buff_to_add)
 
 			removed_buff = true
 		end
 
-		return removed_buff
+		return removed_buff, num_buffs_removed
 	end,
 	activate_bonus_on_last_standing = function (unit, buff, params)
 		local template = buff.template
@@ -1802,17 +1905,16 @@ BuffFunctionTemplates.functions = {
 
 		local buff_system = Managers.state.entity:system("buff_system")
 		local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-		local removed_buff = nil
+		local removed_buff, num_buffs_removed = nil
 
 		if not adding_buff and buff then
 			if local_player then
-				buff_extension.remove_buff(buff_extension, buff.id)
-
+				num_buffs_removed = buff_extension.remove_buff(buff_extension, buff.id, DEBUG_PRINT)
 				removed_buff = true
 			else
 				local server_id = buff.server_id
+				num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id, DEBUG_PRINT)
 
-				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
 				print("removed buff -", buff_to_add)
 
 				removed_buff = true
@@ -1830,7 +1932,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff
+		return removed_buff, num_buffs_removed
 	end,
 	activate_buff_on_health_percent = function (unit, buff, params)
 		local template = buff.template
@@ -1851,17 +1953,16 @@ BuffFunctionTemplates.functions = {
 
 		local buff_system = Managers.state.entity:system("buff_system")
 		local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-		local removed_buff = nil
+		local removed_buff, num_buffs_removed = nil
 
 		if not adding_buff and buff then
 			if local_player then
-				buff_extension.remove_buff(buff_extension, buff.id)
-
+				num_buffs_removed = buff_extension.remove_buff(buff_extension, buff.id, DEBUG_PRINT)
 				removed_buff = true
 			else
 				local server_id = buff.server_id
+				num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id, DEBUG_PRINT)
 
-				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
 				print("removed buff -", buff_to_add)
 
 				removed_buff = true
@@ -1879,7 +1980,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff
+		return removed_buff, num_buffs_removed
 	end,
 	activate_buff_on_disabled = function (unit, buff, params)
 		local template = buff.template
@@ -1897,17 +1998,16 @@ BuffFunctionTemplates.functions = {
 
 		local buff_system = Managers.state.entity:system("buff_system")
 		local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-		local removed_buff = nil
+		local removed_buff, num_buffs_removed = nil
 
 		if not adding_buff and buff then
 			if local_player then
-				buff_extension.remove_buff(buff_extension, buff.id)
-
+				num_buffs_removed = buff_extension.remove_buff(buff_extension, buff.id, DEBUG_PRINT)
 				removed_buff = true
 			else
 				local server_id = buff.server_id
+				num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id, DEBUG_PRINT)
 
-				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
 				print("removed buff -", buff_to_add)
 
 				removed_buff = true
@@ -1925,7 +2025,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff
+		return removed_buff, num_buffs_removed
 	end,
 	activate_buff_on_no_ammo = function (unit, buff, params)
 		local template = buff.template
@@ -1952,17 +2052,16 @@ BuffFunctionTemplates.functions = {
 
 			local buff_system = Managers.state.entity:system("buff_system")
 			local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-			local removed_buff = nil
+			local removed_buff, num_buffs_removed = nil
 
 			if not adding_buff and buff then
 				if local_player then
-					buff_extension.remove_buff(buff_extension, buff.id)
-
+					num_buffs_removed = buff_extension.remove_buff(buff_extension, buff.id, DEBUG_PRINT)
 					removed_buff = true
 				else
 					local server_id = buff.server_id
+					num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id, DEBUG_PRINT)
 
-					buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
 					print("removed buff -", buff_to_add)
 
 					removed_buff = true
@@ -1980,7 +2079,7 @@ BuffFunctionTemplates.functions = {
 				end
 			end
 
-			return removed_buff
+			return removed_buff, num_buffs_removed
 		end
 
 		return false
@@ -2001,17 +2100,16 @@ BuffFunctionTemplates.functions = {
 
 		local buff_system = Managers.state.entity:system("buff_system")
 		local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-		local removed_buff = nil
+		local removed_buff, num_buffs_removed = nil
 
 		if not adding_buff and buff then
 			if local_player then
-				buff_extension.remove_buff(buff_extension, buff.id)
-
+				num_buffs_removed = buff_extension.remove_buff(buff_extension, buff.id, DEBUG_PRINT)
 				removed_buff = true
 			else
 				local server_id = buff.server_id
+				num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id, DEBUG_PRINT)
 
-				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
 				print("removed buff -", buff_to_add)
 
 				removed_buff = true
@@ -2029,7 +2127,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff
+		return removed_buff, num_buffs_removed
 	end,
 	activate_multiplier_on_disabled = function (unit, buff, params)
 		local template = buff.template
@@ -2137,7 +2235,7 @@ BuffFunctionTemplates.functions = {
 		local bonus = 0
 
 		if talent_extension.has_talent(talent_extension, "bardin_slayer_increased_passive_bonus", "dwarf_ranger", true) then
-			base_multiplier = base_multiplier*1.5
+			base_multiplier = base_multiplier * 1.5
 		end
 
 		if talent_extension.has_talent(talent_extension, "bardin_slayer_increased_activation_number", "dwarf_ranger", true) then
@@ -2379,7 +2477,7 @@ BuffFunctionTemplates.functions = {
 		local base_multiplier = template.base_multiplier
 		local stat_buff_index = template.stat_buff
 		local previous_multiplier = buff.previous_multiplier or 0
-		local multiplier = damage_taken*base_multiplier
+		local multiplier = damage_taken * base_multiplier
 		buff.multiplier = multiplier
 
 		if stat_buff_index and previous_multiplier ~= multiplier then
@@ -2466,7 +2564,7 @@ BuffFunctionTemplates.functions = {
 		return 
 	end,
 	apply_huntsman_activated_ability = function (unit, buff, params)
-		if is_local(unit) then
+		if is_local(unit) and not is_bot(unit) then
 			local fov_multiplier = 0.8
 			local lerp_time = 1
 
@@ -2487,10 +2585,12 @@ BuffFunctionTemplates.functions = {
 	end,
 	end_huntsman_activated_ability = function (unit, buff, params)
 		if is_local(unit) then
-			local fov_multiplier = 1
-			local lerp_time = 1
+			if not is_bot then
+				local fov_multiplier = 1
+				local lerp_time = 1
 
-			Managers.state.camera:set_additional_fov_multiplier_with_lerp_time(fov_multiplier, lerp_time)
+				Managers.state.camera:set_additional_fov_multiplier_with_lerp_time(fov_multiplier, lerp_time)
+			end
 
 			local career_extension = ScriptUnit.extension(unit, "career_system")
 			local status_extension = ScriptUnit.extension(unit, "status_system")
@@ -2498,7 +2598,7 @@ BuffFunctionTemplates.functions = {
 
 			if status_extension.is_invisible(status_extension) then
 				status_extension.set_invisible(status_extension, false)
-				first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_markus_huntsman_exit", nil, true)
+				first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_markus_huntsman_exit")
 				first_person_extension.play_hud_sound_event(first_person_extension, "Stop_career_ability_markus_huntsman_loop")
 
 				MOOD_BLACKBOARD.skill_huntsman_stealth = false
@@ -2597,7 +2697,7 @@ BuffFunctionTemplates.functions = {
 		return 
 	end,
 	start_maidenguard_activated_ability = function (unit, buff, params)
-		if is_local(unit) then
+		if is_local(unit) and not is_bot(unit) then
 			local fov_multiplier = 0.8
 			local lerp_time = 0.2
 
@@ -2608,17 +2708,20 @@ BuffFunctionTemplates.functions = {
 	end,
 	end_maidenguard_activated_ability = function (unit, buff, params)
 		if is_local(unit) then
-			local fov_multiplier = 1
-			local lerp_time = 0.5
+			if not is_bot(unit) then
+				local fov_multiplier = 1
+				local lerp_time = 0.5
 
-			Managers.state.camera:set_additional_fov_multiplier_with_lerp_time(fov_multiplier, lerp_time)
+				Managers.state.camera:set_additional_fov_multiplier_with_lerp_time(fov_multiplier, lerp_time)
+			end
 
-			local career_extension = ScriptUnit.extension(unit, "career_system")
 			local status_extension = ScriptUnit.extension(unit, "status_system")
-			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 			status_extension.set_invisible(status_extension, false)
 			status_extension.set_noclip(status_extension, false)
+
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+
 			career_extension.set_state(career_extension, "default")
 		end
 
@@ -2651,8 +2754,8 @@ BuffFunctionTemplates.functions = {
 		local chunk_size = template.chunk_size
 		local stat_buff_index = template.stat_buff
 		local previous_bonus = buff.previous_bonus or 0
-		local num_chunks = math.floor(damage_taken/chunk_size)
-		local bonus = num_chunks*min_bonus
+		local num_chunks = math.floor(damage_taken / chunk_size)
+		local bonus = num_chunks * min_bonus
 
 		if max_bonus < bonus then
 			bonus = max_bonus
@@ -2680,8 +2783,8 @@ BuffFunctionTemplates.functions = {
 		local chunk_size = template.chunk_size
 		local stat_buff_index = template.stat_buff
 		local previous_multiplier = buff.previous_multiplier or 0
-		local num_chunks = math.floor(damage_taken/chunk_size)
-		local multiplier = num_chunks*min_multiplier
+		local num_chunks = math.floor(damage_taken / chunk_size)
+		local multiplier = num_chunks * min_multiplier
 
 		if max_multiplier < multiplier then
 			multiplier = max_multiplier
@@ -2710,8 +2813,8 @@ BuffFunctionTemplates.functions = {
 			local chunk_size = template.chunk_size
 			local stat_buff_index = template.stat_buff
 			local previous_bonus = buff.previous_bonus or 0
-			local num_chunks = math.floor(overcharge/chunk_size)
-			local bonus = num_chunks*min_bonus
+			local num_chunks = math.floor(overcharge / chunk_size)
+			local bonus = num_chunks * min_bonus
 
 			if max_bonus < bonus then
 				bonus = max_bonus
@@ -2741,8 +2844,8 @@ BuffFunctionTemplates.functions = {
 			local chunk_size = template.chunk_size
 			local stat_buff_index = template.stat_buff
 			local previous_multiplier = buff.previous_multiplier or 0
-			local num_chunks = math.floor(overcharge/chunk_size)
-			local multiplier = math.clamp(num_chunks*min_multiplier, min_multiplier, max_multiplier)
+			local num_chunks = math.floor(overcharge / chunk_size)
+			local multiplier = math.clamp(num_chunks * min_multiplier, min_multiplier, max_multiplier)
 			buff.multiplier = multiplier
 
 			if stat_buff_index and previous_multiplier ~= multiplier then
@@ -2783,7 +2886,7 @@ BuffFunctionTemplates.functions = {
 		local activation_health = template.activation_health
 		local multiplier = 0
 
-		if max_health - damage_taken < activation_health*max_health then
+		if max_health - damage_taken < activation_health * max_health then
 			multiplier = template.multiplier
 		end
 
@@ -2822,13 +2925,13 @@ BuffFunctionTemplates.functions = {
 	end,
 	apply_volume_movement_buff = function (unit, buff, params)
 		local movement_settings = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-		movement_settings.move_speed = movement_settings.move_speed*params.multiplier
+		movement_settings.move_speed = movement_settings.move_speed * params.multiplier
 
 		return 
 	end,
 	remove_volume_movement_buff = function (unit, buff, params)
 		local movement_settings = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-		movement_settings.move_speed = movement_settings.move_speed/params.multiplier
+		movement_settings.move_speed = movement_settings.move_speed / params.multiplier
 
 		return 
 	end
@@ -2838,8 +2941,8 @@ BuffFunctionTemplates.functions.update_charging_action_lerp_movement_buff = func
 	local time_into_buff = params.time_into_buff
 	local old_value_to_update_movement_setting, old_multiplier_to_update_movement_setting, multiplier_to_update_movement_setting = nil
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
-	multiplier = multiplier and buff_extension.apply_buffs_to_value(buff_extension, multiplier - 1, StatBuffIndex.INCREASED_MOVE_SPEED_WHILE_AIMING) - 1
-	local percentage_in_lerp = math.min(1, time_into_buff/buff.template.lerp_time)
+	multiplier = multiplier and 1 - buff_extension.apply_buffs_to_value(buff_extension, 1 - multiplier, StatBuffIndex.INCREASED_MOVE_SPEED_WHILE_AIMING)
+	local percentage_in_lerp = math.min(1, time_into_buff / buff.template.lerp_time)
 
 	if multiplier then
 		local player = Managers.player:owner(unit)
@@ -2850,7 +2953,7 @@ BuffFunctionTemplates.functions.update_charging_action_lerp_movement_buff = func
 			local boon_template = BoonTemplates.increased_combat_movement
 
 			if 0 < num_increased_combat_movement_boons then
-				multiplier = multiplier + (multiplier - 1)*num_increased_combat_movement_boons*boon_template.multiplier
+				multiplier = multiplier + (1 - multiplier) * num_increased_combat_movement_boons * boon_template.multiplier
 			end
 		end
 

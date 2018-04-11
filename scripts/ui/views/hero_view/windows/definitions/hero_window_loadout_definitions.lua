@@ -5,7 +5,7 @@ local window_size = window_default_settings.size
 local window_spacing = window_default_settings.spacing
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_text_width = window_size[1] - (window_frame_width*2 + 60)
+local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local loadout_grid_spacing = 18
 local scenegraph_definition = {
 	root = {
@@ -329,10 +329,10 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 				uvs = {
 					{
 						0,
-						math.min(size[2]/button_background_texture_settings.size[2], 1) - 1
+						1 - math.min(size[2] / button_background_texture_settings.size[2], 1)
 					},
 					{
-						math.min(size[1]/button_background_texture_settings.size[1], 1),
+						math.min(size[1] / button_background_texture_settings.size[1], 1),
 						1
 					}
 				},
@@ -569,7 +569,7 @@ end
 
 local num_equipment_slots = #InventorySettings.equipment_slots
 local widgets = {
-	loadout_background = UIWidgets.create_background("loadout_background", scenegraph_definition.loadout_background.size, "background_leather_02"),
+	loadout_background = UIWidgets.create_background("loadout_background", scenegraph_definition.loadout_background.size, "crafting_bg_top"),
 	loadout_grid = UIWidgets.create_loadout_grid("loadout_grid", scenegraph_definition.loadout_grid.size, num_equipment_slots, loadout_grid_spacing, true),
 	loadout_divider = create_window_divider("loadout_divider", scenegraph_definition.loadout_divider.size)
 }
@@ -643,7 +643,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

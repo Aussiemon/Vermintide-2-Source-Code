@@ -96,7 +96,7 @@ BTMeleeSlamAction.leave = function (self, unit, blackboard, t, reason, destroy)
 end
 BTMeleeSlamAction._calculate_collision = function (self, action, self_pos, forward_direction)
 	local height = action.height
-	local pos = self_pos + forward_direction*action.forward_offset + Vector3(0, 0, height*0.5)
+	local pos = self_pos + forward_direction * action.forward_offset + Vector3(0, 0, height * 0.5)
 	local radius = action.radius
 	local size = Vector3(action.radius, height, action.radius)
 	local rotation = Quaternion.look(Vector3.up(), Vector3.up())
@@ -107,11 +107,11 @@ BTMeleeSlamAction._calculate_cylinder_collision = function (self, action, bot_th
 	local radius = bot_threat.radius or action.radius
 	local height = bot_threat.height or action.height
 	local offset_forward = bot_threat.offset_forward or action.forward_offset
-	local half_height = height*0.5
+	local half_height = height * 0.5
 	local size = Vector3(radius, radius, half_height)
 	local forward = Quaternion.forward(self_rot)
 	local up = Quaternion.up(self_rot)
-	local cylinder_center = self_pos + forward*offset_forward + up*half_height
+	local cylinder_center = self_pos + forward * offset_forward + up * half_height
 	local rotation = Quaternion.look(up, Vector3.up())
 
 	return cylinder_center, rotation, size
@@ -169,7 +169,7 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 					if target_status_extension.is_disabled(target_status_extension) then
 						damage = action.damage
 					elseif DamageUtils.check_block(unit, hit_unit, action.fatigue_type, attack_direction) then
-						local blocked_velocity = action.player_push_speed_blocked*Vector3.normalize(POSITION_LOOKUP[hit_unit] - self_pos)
+						local blocked_velocity = action.player_push_speed_blocked * Vector3.normalize(POSITION_LOOKUP[hit_unit] - self_pos)
 						local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
 
 						locomotion_extension.add_external_velocity(locomotion_extension, blocked_velocity)

@@ -100,11 +100,11 @@ local function validate_pos(nav_world, pos)
 	return 
 end
 
-local DELTA_ANGLE = math.pi/9
+local DELTA_ANGLE = math.pi / 9
 BTPackMasterDragAction.find_hoist_pos = function (self, nav_world, unit, blackboard)
 	local rat_pos = POSITION_LOOKUP[unit]
 	local player_pos = POSITION_LOOKUP[blackboard.drag_target_unit]
-	local start_direction = Vector3.normalize(rat_pos - player_pos)*2.26
+	local start_direction = Vector3.normalize(rat_pos - player_pos) * 2.26
 	local new_pos = validate_pos(nav_world, player_pos + start_direction)
 
 	if new_pos then
@@ -292,8 +292,8 @@ BTPackMasterDragAction.find_destinations = function (self, unit, blackboard, t, 
 	self.setup_destination_test(self, unit, blackboard)
 
 	if script_data.debug_ai_movement then
-		QuickDrawerStay:vector(position, blackboard.last_path_direction:unbox()*2, Colors.get("purple"))
-		QuickDrawerStay:sphere(position + Vector3.up()*1.7, 0.5, (blackboard.threatened and Colors.get("red")) or Colors.get("yellow"))
+		QuickDrawerStay:vector(position, blackboard.last_path_direction:unbox() * 2, Colors.get("purple"))
+		QuickDrawerStay:sphere(position + Vector3.up() * 1.7, 0.5, (blackboard.threatened and Colors.get("red")) or Colors.get("yellow"))
 	end
 
 	return 
@@ -314,7 +314,7 @@ function find_position_to_avoid(unit, blackboard, test)
 			if 0 < distance_sq and distance_sq < max_distance_sq then
 				local dir = enemy_pos - position
 				local normalized_dir = Vector3.normalize(dir)
-				normalized_dir = normalized_dir/math.sqrt(distance_sq)
+				normalized_dir = normalized_dir / math.sqrt(distance_sq)
 				threat_vec = threat_vec - normalized_dir
 			end
 		end
@@ -323,7 +323,7 @@ function find_position_to_avoid(unit, blackboard, test)
 	blackboard.threat_pos = Vector3Box(position - threat_vec)
 
 	if script_data.debug_ai_movement then
-		QuickDrawer:sphere(position - threat_vec*4, 1, Color(0, 255, 0))
+		QuickDrawer:sphere(position - threat_vec * 4, 1, Color(0, 255, 0))
 	end
 
 	return 0 < threatening_players_n
@@ -346,8 +346,8 @@ BTPackMasterDragAction.find_valid_covers = function (self, position, destination
 	local min_rad = 3
 	local bp = Managers.state.conflict.level_analysis.cover_points_broadphase
 	local found_cover_units_n = Broadphase.query(bp, position, max_rad, found_cover_units)
-	min_rad = min_rad*min_rad
-	max_rad = max_rad*max_rad
+	min_rad = min_rad * min_rad
+	max_rad = max_rad * max_rad
 
 	if script_data.debug_ai_movement then
 		QuickDrawerStay:sphere(player_aggro_pos, 2, Colors.get("deep_sky_blue"))
@@ -369,13 +369,13 @@ BTPackMasterDragAction.find_valid_covers = function (self, position, destination
 			local distance_to_players = distance(pos, player_aggro_pos)
 			local direction_score_modifier = max(0, direction_dot)
 			local hidden_score_modifier = max(0, hidden_dot) + 1
-			local score = distance_to_players*direction_score_modifier*hidden_score_modifier
+			local score = distance_to_players * direction_score_modifier * hidden_score_modifier
 
 			if script_data.debug_ai_movement then
-				local color = Color(255, max(-direction_dot, 0)*255, max(direction_dot, 0)*255, max(0, hidden_dot)*255)
+				local color = Color(255, 255 * max(-direction_dot, 0), 255 * max(direction_dot, 0), 255 * max(0, hidden_dot))
 
 				QuickDrawerStay:sphere(pos, 1, color)
-				QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot)*2 + Vector3(0, 0, 1), color)
+				QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), color)
 			end
 
 			destinations[cover_index][1] = Vector3Box(pos)
@@ -422,9 +422,9 @@ BTPackMasterDragAction.find_valid_interest_points = function (self, position, de
 					if min_rad < dist and dist < max_rad then
 						local to_interest_point = ip_pos - position
 						local direction_dot = dot(normalize(to_interest_point), wanted_direction)
-						local direction_score_modifier = direction_dot*2 + 2
+						local direction_score_modifier = direction_dot * 2 + 2
 						local distance_score = max_rad - dist
-						local score = distance_score*direction_score_modifier
+						local score = distance_score * direction_score_modifier
 
 						if script_data.debug_ai_movement then
 							QuickDrawerStay:sphere(ip_pos, 1, Colors.get("pink"))
@@ -481,7 +481,7 @@ BTPackMasterDragAction.find_nav_group_neighbour = function (self, blackboard, po
 
 		if -0.25 < dir_dot then
 			local distance = Vector3.distance_squared(avoid_pos, nav_group_position)
-			local score = distance*dir_score_modifier
+			local score = distance * dir_score_modifier
 			local success, altitude = GwNavQueries.triangle_from_position(blackboard.nav_world, nav_group_position, 1.5, 1.5)
 
 			if success then
@@ -520,17 +520,17 @@ BTPackMasterDragAction.find_escape_destination = function (self, unit, blackboar
 	local destination = nil
 	local angle_towards_pull = math.atan2(last_path_direction.y, last_path_direction.x, 0)
 	local num_segments = 5
-	local angle_per_segment = math.pi/(num_segments - 1)
+	local angle_per_segment = math.pi / (num_segments - 1)
 	local navigation_extension = blackboard.navigation_extension
 	local traverse_logic = navigation_extension.traverse_logic(navigation_extension)
 	local nav_world = blackboard.nav_world
 
 	for i = 1, num_segments, 1 do
-		local angle_modifier = math.ceil((i - 1)*0.5)*(i%2*2 - 1)
-		local angle = angle_modifier*angle_per_segment
+		local angle_modifier = math.ceil((i - 1) * 0.5) * (i % 2 * 2 - 1)
+		local angle = angle_modifier * angle_per_segment
 		local angle_cw = angle_towards_pull + angle
 		local offset_cw = Vector3(math.cos(angle_cw), math.sin(angle_cw), 0)
-		local position_end_cw = escape_point + offset_cw*3
+		local position_end_cw = escape_point + offset_cw * 3
 		local success_cw, altitude_cw = GwNavQueries.triangle_from_position(nav_world, position_end_cw, 0.5, 1)
 
 		if success_cw then
@@ -539,7 +539,7 @@ BTPackMasterDragAction.find_escape_destination = function (self, unit, blackboar
 			if raycango_success then
 				position_end_cw.z = altitude_cw
 				destination = position_end_cw
-				local position_end_cw = escape_point + offset_cw*5
+				local position_end_cw = escape_point + offset_cw * 5
 				local success_cw, altitude_cw = GwNavQueries.triangle_from_position(nav_world, position_end_cw, 0.5, 1)
 
 				if success_cw then
@@ -632,7 +632,7 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 
 			fassert(0 < path_length, "Path length is 0, this will cause div by 0")
 
-			path_length = path_length*path_length
+			path_length = path_length * path_length
 			local current_destination = destinations[destination_test_index][1]:unbox()
 			local destination_score = destinations[destination_test_index][2]
 			local diff = current_destination - packmaster_position
@@ -640,10 +640,10 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 			local first_dir = GwNavAStar.node_at_index(astar, 2) - GwNavAStar.node_at_index(astar, 1)
 			first_dir = Vector3.normalize(first_dir)
 			local reverse_dot = Vector3.dot(last_path_direction, first_dir)
-			local reverse_score_modifier = reverse_dot*0.75 + 0.25
-			local path_length_ratio = distance2/path_length
-			local final_score = path_length_ratio*reverse_score_modifier
-			local new_destination_score = destination_score*final_score
+			local reverse_score_modifier = reverse_dot * 0.75 + 0.25
+			local path_length_ratio = distance2 / path_length
+			local final_score = path_length_ratio * reverse_score_modifier
+			local new_destination_score = destination_score * final_score
 			destinations[destination_test_index][2] = new_destination_score
 			local good_path = 0.4444444444444444 < path_length_ratio and 0 < reverse_score_modifier
 

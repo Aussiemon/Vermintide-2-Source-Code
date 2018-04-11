@@ -16,7 +16,7 @@ local function modify_breed_health_start(context, data)
 			mutator_dprint("Modified breeds(%s) health by (%s)", breed_name, health_modifier)
 
 			for i, health in ipairs(max_health) do
-				max_health[i] = health*health_modifier
+				max_health[i] = health * health_modifier
 			end
 		end
 

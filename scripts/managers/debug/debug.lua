@@ -404,7 +404,7 @@ Debug.visualize_level_unit = function (level_unit_id)
 	QuickDrawer:sphere(position, 1, Colors.get("medium_aqua_marine"))
 
 	for i = 1, 20, 1 do
-		QuickDrawer:sphere(position, i*10, Colors.get("medium_aqua_marine"))
+		QuickDrawer:sphere(position, i * 10, Colors.get("medium_aqua_marine"))
 	end
 
 	return 

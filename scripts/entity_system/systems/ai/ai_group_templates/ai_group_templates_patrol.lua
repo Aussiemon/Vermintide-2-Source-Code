@@ -16,7 +16,7 @@ local function debug_print(...)
 	return 
 end
 
-local TURN_SPEED = math.pi*0.7
+local TURN_SPEED = math.pi * 0.7
 local CONTROLLED_ADVANCE_SPEED = 2.77
 local CONTROLLED_ADVANCE_TIME_LIMIT = 5
 local COMBAT_RANGE = 25
@@ -41,7 +41,7 @@ local NAV_COST_MAP_ALLOWED_LAYERS = {
 local FORMATION_MAX_TIME = 20
 local valid_players_and_bots = VALID_TARGETS_PLAYERS_AND_BOTS
 local CIRCULAR_SPLINE_THRESHOLD = 5
-local play_sound, pick_sound_source_unit, update_animation_triggered_sounds, init_group, set_state, remove_dead_units, calculate_group_middle_position, member_sorting_func, change_path_direction, unit_animation_event, enter_state_find_path_entry, pick_entry_node, set_path_direction, enter_state_forming, enter_formation, set_forming_positions, debug_draw_formation, check_is_in_formation, update_units, find_position_on_navmesh, enter_state_patrolling, update_anchor_position, update_spline_anchor_points, update_anchor_positions, update_anchor_direction, is_valid_target_unit, check_for_players, check_for_doors, enter_state_opening_door, update_state_opening_door, enter_state_controlled_advance, acquire_targets, controlled_advance, enter_state_combat, check_if_players_dead, switch_perception, create_spline_path = nil
+local play_sound, pick_sound_source_unit, update_animation_triggered_sounds, init_group, set_state, remove_dead_units, calculate_group_middle_position, member_sorting_func, change_path_direction, unit_animation_event, set_patrol_path_broken, enter_state_find_path_entry, pick_entry_node, set_path_direction, enter_state_forming, enter_formation, set_forming_positions, debug_draw_formation, check_is_in_formation, update_units, find_position_on_navmesh, enter_state_patrolling, update_anchor_position, update_spline_anchor_points, update_anchor_positions, update_anchor_direction, is_valid_target_unit, check_for_players, check_for_doors, enter_state_opening_door, update_state_opening_door, enter_state_controlled_advance, acquire_targets, controlled_advance, enter_state_combat, check_if_players_dead, switch_perception, create_spline_path = nil
 AIGroupTemplates = AIGroupTemplates or {}
 AIGroupTemplates.spline_patrol = {
 	in_patrol = true,
@@ -82,7 +82,7 @@ AIGroupTemplates.spline_patrol = {
 	update = function (world, nav_world, group, t, dt)
 		remove_dead_units(group)
 
-		if group.num_indexed_members == 0 then
+		if group.num_indexed_members == 0 or group.patrol_path_broken then
 			return 
 		end
 
@@ -151,7 +151,7 @@ function play_sound(group, event)
 end
 
 function pick_sound_source_unit(group)
-	local wanted_unit_i = math.ceil(group.num_indexed_members*0.5)
+	local wanted_unit_i = math.ceil(group.num_indexed_members * 0.5)
 	local wanted_unit = group.indexed_members[wanted_unit_i]
 	group.wwise_source_unit = wanted_unit
 
@@ -195,7 +195,7 @@ local function set_spline_speed(spline, speed, group)
 	local nav_data = group.nav_data
 	local direction = nav_data.node_direction
 	local direction_modifier = (direction == "reversed" and -1) or 1
-	local spline_speed = speed*direction_modifier
+	local spline_speed = speed * direction_modifier
 	local movement = spline.movement(spline)
 
 	movement.set_speed(movement, spline_speed)
@@ -291,7 +291,7 @@ function calculate_group_middle_position(group)
 		middle_position = middle_position + pos
 	end
 
-	middle_position = middle_position/num_indexed_members
+	middle_position = middle_position / num_indexed_members
 
 	return middle_position
 end
@@ -324,8 +324,8 @@ function find_position_on_navmesh(nav_world, position, fallback_position, check1
 		local direction_normalized = Vector3.normalize(Vector3.flat(direction))
 
 		for i = 1, num_distance_checks, 1 do
-			local distance = i*0.5 + 0.5
-			local offset_forward = direction_normalized*distance
+			local distance = 0.5 + i * 0.5
+			local offset_forward = direction_normalized * distance
 			local offset_position = position + offset_forward
 
 			if script_data.debug_storm_vermin_patrol then
@@ -538,7 +538,7 @@ function init_group(nav_world, group, world)
 
 		group.anchors[i].positions = positions
 		local anchor_offset = formation_settings.offsets.ANCHOR_OFFSET
-		local anchor_offset_y = (2 < num_positions and anchor_offset.y*(num_positions - 1)) or anchor_offset.y
+		local anchor_offset_y = (2 < num_positions and anchor_offset.y * (num_positions - 1)) or anchor_offset.y
 		group.anchors[i].wanted_offset = {
 			anchor_offset_y,
 			anchor_offset_y
@@ -817,12 +817,12 @@ function debug_draw_formation(group)
 
 		drawer.sphere(drawer, entry_node_position, 0.05, Colors.get("blue"))
 
-		local offset_y = Vector3(0, 0, i*0.04 + 0.2)
+		local offset_y = Vector3(0, 0, 0.2 + i * 0.04)
 
 		drawer.sphere(drawer, anchor_position, 0.08, Colors.get("pink"))
 		drawer.line(drawer, anchor_position, anchor_position + offset_y, Colors.get("pink"))
 		drawer.line(drawer, anchor_position + offset_y, target_node_position + offset_y, Colors.get("pink"))
-		drawer.vector(drawer, anchor_position + offset_y, anchor.wanted_direction:unbox()*0.2, Colors.get("pink"))
+		drawer.vector(drawer, anchor_position + offset_y, anchor.wanted_direction:unbox() * 0.2, Colors.get("pink"))
 		drawer.line(drawer, target_node_position + offset_y, target_node_position, Colors.get("pink"))
 	end
 
@@ -838,7 +838,7 @@ function set_forming_positions(nav_world, group)
 	local target_node_index = anchors[1].node_index
 	local start_node_index = math.max(target_node_index - 1, 2)
 	local anchor_offset = group.formation_settings.offsets.ANCHOR_OFFSET
-	local wanted_distance = (num_anchors - 1)*anchor_offset.x
+	local wanted_distance = (num_anchors - 1) * anchor_offset.x
 	local backward_distance = MainPathUtils.ray_along_node_list(nav_world, node_list, start_node_index, -1, wanted_distance)
 	local anchor_offset_x, node_list_direction = nil
 
@@ -849,16 +849,24 @@ function set_forming_positions(nav_world, group)
 		local forward_distance = MainPathUtils.ray_along_node_list(nav_world, node_list, start_node_index, 1, wanted_distance)
 
 		if forward_distance <= backward_distance then
-			anchor_offset_x = backward_distance/wanted_distance*anchor_offset.x
+			anchor_offset_x = backward_distance / wanted_distance * anchor_offset.x
 			node_list_direction = -1
 		else
-			anchor_offset_x = forward_distance/wanted_distance*anchor_offset.x
+			anchor_offset_x = forward_distance / wanted_distance * anchor_offset.x
 			node_list_direction = 1
 		end
 	end
 
 	local NODE_LIST_DIRECTION = 1
 	local points = MainPathUtils.find_equidistant_points_in_node_list(node_list, start_node_index, NODE_LIST_DIRECTION, anchor_offset_x, num_anchors)
+	local num_points = #points
+	local invalid_path = num_points < num_anchors
+
+	if invalid_path then
+		set_patrol_path_broken(group)
+
+		return 
+	end
 
 	table.reverse(points)
 
@@ -943,7 +951,7 @@ function update_units(nav_world, group, t, dt)
 				any_unit_lagging_behind = true
 			end
 
-			if far_away_threshold/2 < unit_to_formation_pos_distance then
+			if far_away_threshold / 2 < unit_to_formation_pos_distance then
 				all_units_caught_up = false
 			end
 
@@ -1033,9 +1041,9 @@ function enter_state_patrolling(group)
 
 		local num_anchors = #group.anchors
 		local spline_speed = group.formation_settings.speeds.SPLINE_SPEED
-		local patrol_start_delay_timer = ((num_anchors - 1)*spline_speed)/2
+		local patrol_start_delay_timer = ((num_anchors - 1) * spline_speed) / 2
 		local is_roaming_patrol = group.group_type == "roaming_patrol"
-		local random_delay = (is_roaming_patrol and math.random()*1 - 0.5) or 0
+		local random_delay = (is_roaming_patrol and math.random() * 1 - 0.5) or 0
 		blackboard.stored_goal_destination = blackboard.goal_destination
 		blackboard.goal_destination = nil
 		blackboard.patrol_start_delay_timer = patrol_start_delay_timer + random_delay
@@ -1156,7 +1164,7 @@ function update_anchor_positions(nav_world, group, dt)
 		local dir_normal = Vector3(anchor_dir.y, -anchor_dir.x, 0)
 		local num_positions = #anchor.positions
 		local anchor_offset = group.formation_settings.offsets.ANCHOR_OFFSET
-		local anchor_offset_y = (2 < num_positions and anchor_offset.y*(num_positions - 1)) or anchor_offset.y
+		local anchor_offset_y = (2 < num_positions and anchor_offset.y * (num_positions - 1)) or anchor_offset.y
 		local offset_1, offset_2 = nil
 		local wanted_offset_1 = anchor.wanted_offset[1]
 		local wanted_offset_2 = anchor.wanted_offset[2]
@@ -1172,8 +1180,8 @@ function update_anchor_positions(nav_world, group, dt)
 			offset_2 = anchor_offset_y
 		end
 
-		local wanted_destination_1 = anchor_point - wanted_offset_1*dir_normal
-		local wanted_destination_2 = anchor_point + wanted_offset_2*dir_normal
+		local wanted_destination_1 = anchor_point - wanted_offset_1 * dir_normal
+		local wanted_destination_2 = anchor_point + wanted_offset_2 * dir_normal
 		local check1_up = 0.6
 		local check1_down = 10
 		local check2_up = 1.2
@@ -1189,10 +1197,10 @@ function update_anchor_positions(nav_world, group, dt)
 		local total_distance = distance_1 + distance_2
 
 		if 0 < total_distance then
-			local distance_1_percent = distance_1/total_distance
-			local distance_2_percent = distance_2/total_distance
-			local distributed_distance_1 = distance_1_percent*anchor_offset_y*2
-			local distributed_distance_2 = distance_2_percent*anchor_offset_y*2
+			local distance_1_percent = distance_1 / total_distance
+			local distance_2_percent = distance_2 / total_distance
+			local distributed_distance_1 = distance_1_percent * anchor_offset_y * 2
+			local distributed_distance_2 = distance_2_percent * anchor_offset_y * 2
 			anchor.wanted_offset[1] = distributed_distance_1
 			anchor.wanted_offset[2] = distributed_distance_2
 		else
@@ -1202,8 +1210,8 @@ function update_anchor_positions(nav_world, group, dt)
 
 		for j = 1, num_positions, 1 do
 			if num_positions == 1 then
-				local offset = (wanted_offset_1 - wanted_offset_2)/2
-				local wanted_destination = anchor_point + offset*dir_normal
+				local offset = (wanted_offset_1 - wanted_offset_2) / 2
+				local wanted_destination = anchor_point + offset * dir_normal
 				local position = find_position_on_navmesh(nav_world, wanted_destination, anchor_point, check1_up, check1_down, check2_up, check2_down, check2_side, check2_obstacle_distance, anchor_dir)
 
 				anchor.positions[j]:store(position)
@@ -1212,8 +1220,8 @@ function update_anchor_positions(nav_world, group, dt)
 			elseif j == num_positions then
 				anchor.positions[j]:store(end_points[2])
 			else
-				local offset = wanted_offset_1 - (anchor_offset_y*2*(j - 1))/(num_positions - 1)
-				local wanted_destination = anchor_point - offset*dir_normal
+				local offset = wanted_offset_1 - (anchor_offset_y * 2 * (j - 1)) / (num_positions - 1)
+				local wanted_destination = anchor_point - offset * dir_normal
 				local position = find_position_on_navmesh(nav_world, wanted_destination, anchor_point, check1_up, check1_down, check2_up, check2_down, check2_side, check2_obstacle_distance, anchor_dir)
 
 				anchor.positions[j]:store(position)
@@ -1235,7 +1243,7 @@ function update_anchor_direction(nav_world, group, dt)
 		local target_node_index = anchor.node_index
 
 		if script_data.debug_storm_vermin_patrol then
-			QuickDrawer:vector(anchor_position_on_path + Vector3.up()*0.25, Vector3.normalize(wanted_face_dir)*2, Colors.get("sea_green"))
+			QuickDrawer:vector(anchor_position_on_path + Vector3.up() * 0.25, Vector3.normalize(wanted_face_dir) * 2, Colors.get("sea_green"))
 		end
 
 		local previous_anchor = group.anchors[i - 1]
@@ -1254,7 +1262,7 @@ function update_anchor_direction(nav_world, group, dt)
 			target_node = target_node.unbox(target_node)
 			local search_node_dir = wanted_face_dir
 			local search_node_index = target_node_index
-			face_position = face_position + search_node_dir*length_along_path
+			face_position = face_position + search_node_dir * length_along_path
 
 			if script_data.debug_storm_vermin_patrol then
 				local drawer = Managers.state.debug:drawer({
@@ -1281,8 +1289,8 @@ function update_anchor_direction(nav_world, group, dt)
 		end
 
 		local testsum = math.abs(wanted_rad) + math.abs(previous_face_rad)
-		local testproduct = wanted_rad*previous_face_rad
-		wanted_rad = (wanted_rad + previous_face_rad)/2
+		local testproduct = wanted_rad * previous_face_rad
+		wanted_rad = (wanted_rad + previous_face_rad) / 2
 
 		if math.pi < testsum and testproduct < 0 then
 			if wanted_rad < 0 then
@@ -1295,16 +1303,16 @@ function update_anchor_direction(nav_world, group, dt)
 		local difference = wanted_rad - face_rad
 
 		if 0.0001 < math.abs(difference) then
-			local movement = TURN_SPEED*dt
+			local movement = TURN_SPEED * dt
 
 			if math.pi < difference then
-				difference = difference - math.pi*2
+				difference = difference - math.pi * 2
 			elseif difference < -math.pi then
-				difference = difference + math.pi*2
+				difference = difference + math.pi * 2
 			end
 
 			if difference < 0 then
-				movement = movement*-1
+				movement = movement * -1
 			end
 
 			face_rad = face_rad + movement
@@ -1320,7 +1328,7 @@ function update_anchor_direction(nav_world, group, dt)
 		anchor.current_direction:store(face_dir)
 
 		if script_data.debug_storm_vermin_patrol then
-			QuickDrawer:vector(anchor_position_on_path + Vector3.up()*0.3, Vector3.normalize(face_dir)*2.5, Colors.get("purple"))
+			QuickDrawer:vector(anchor_position_on_path + Vector3.up() * 0.3, Vector3.normalize(face_dir) * 2.5, Colors.get("purple"))
 		end
 
 		local anchor_units = anchor.units
@@ -1543,11 +1551,11 @@ function acquire_targets(group)
 
 	local anchors = group.anchors
 	local num_anchors = #anchors
-	local anchors_to_targets_ratio = math.max(1, num_anchors/target_count)
+	local anchors_to_targets_ratio = math.max(1, num_anchors / target_count)
 
 	for i = 1, num_anchors, 1 do
 		local anchor = anchors[i]
-		local target_unit_index = math.ceil(i/anchors_to_targets_ratio)
+		local target_unit_index = math.ceil(i / anchors_to_targets_ratio)
 		local current_index = 1
 		local selected_target_unit = nil
 
@@ -1725,6 +1733,23 @@ function check_if_players_dead(nav_world, group, t, dt)
 
 			group.patrol_in_combat = false
 		end
+	end
+
+	return 
+end
+
+function set_patrol_path_broken(group)
+	group.patrol_path_broken = true
+	local spline_name = group.spline_name or ""
+
+	print("Broken patrol path, spline_name", spline_name)
+
+	local members = group.indexed_members
+
+	for i, unit in ipairs(members) do
+		local blackboard = BLACKBOARDS[unit]
+
+		Managers.state.conflict:destroy_unit(unit, blackboard, "patrol_path_broken")
 	end
 
 	return 

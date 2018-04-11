@@ -289,7 +289,7 @@ EndViewStateSummary._get_summary_entries = function (self, game_won, game_mode_k
 	local total_experience_gained = 0
 
 	for index, mission_reward in ipairs(mission_rewards) do
-		widget_index = widget_index%#entry_widgets + 1
+		widget_index = widget_index % #entry_widgets + 1
 		local name = "entry_" .. index
 		local text = mission_reward.text
 		local experience = mission_reward.experience and math.round(mission_reward.experience)
@@ -384,7 +384,7 @@ EndViewStateSummary._get_total_experience_progress_data = function (self, curren
 	local min_time = 4
 	local max_time = 7
 	local time_multiplier = UISettings.summary_screen.bar_progress_experience_time_multiplier
-	local time = math.min(math.max(time_multiplier*experience_gained, min_time), max_time)
+	local time = math.min(math.max(time_multiplier * experience_gained, min_time), max_time)
 	local total_experience = current_experience + experience_gained
 	local current_level, start_progress, _, extra_levels = ExperienceSettings.get_level(current_experience)
 	local resulting_level, end_progress, _, resulting_extra_levels = ExperienceSettings.get_level(total_experience)
@@ -417,13 +417,13 @@ EndViewStateSummary._animate_experience_bar = function (self, dt, displaying_rew
 
 	local current_time = progress_data.time
 	local total_time = progress_data.total_time
-	local time_progress = current_time/total_time
+	local time_progress = current_time / total_time
 	local smoothstep_progress = math.smoothstep(time_progress, 0, 1)
 	current_time = math.min(current_time + dt, total_time)
 	progress_data.time = current_time
 	local current_experience = progress_data.current_experience
 	local experience_to_add = progress_data.experience_to_add
-	local current_experience_to_add = math.floor(experience_to_add*smoothstep_progress)
+	local current_experience_to_add = math.floor(experience_to_add * smoothstep_progress)
 	local presentation_experience = math.floor(current_experience + current_experience_to_add)
 	local level_reached, extra_levels = self._set_current_experience(self, presentation_experience)
 
@@ -464,8 +464,8 @@ EndViewStateSummary._set_current_experience = function (self, current_experience
 	local content = experience_bar.content
 	local style = experience_bar.style
 	local default_size = style.experience_bar.default_size
-	style.experience_bar.size[1] = default_size[1]*progress
-	style.experience_bar_end.offset[1] = default_size[1]*progress
+	style.experience_bar.size[1] = default_size[1] * progress
+	style.experience_bar_end.offset[1] = default_size[1] * progress
 
 	if initialize or progress < 1 then
 		widgets_by_name.current_level_text.content.text = tostring(level)

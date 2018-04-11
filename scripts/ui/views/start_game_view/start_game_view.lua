@@ -182,7 +182,7 @@ StartGameView.update = function (self, dt, t)
 	end
 
 	if self._has_active_level_vote(self) then
-		self.close_menu(self)
+		self.close_menu(self, nil, true)
 	end
 
 	local requested_screen_change_data = self._requested_screen_change_data
@@ -414,10 +414,14 @@ StartGameView.on_exit = function (self)
 
 	return 
 end
-StartGameView.exit = function (self, return_to_game)
+StartGameView.exit = function (self, return_to_game, ignore_sound)
 	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition)
+
+	if not ignore_sound then
+		self.play_sound(self, "Play_hud_button_close")
+	end
 
 	self.exiting = true
 
@@ -450,10 +454,10 @@ StartGameView.unsuspend = function (self)
 
 	return 
 end
-StartGameView.close_menu = function (self, return_to_main_screen)
+StartGameView.close_menu = function (self, return_to_main_screen, ignore_sound)
 	local return_to_game = not return_to_main_screen
 
-	self.exit(self, return_to_game)
+	self.exit(self, return_to_game, ignore_sound)
 
 	return 
 end
@@ -485,7 +489,7 @@ StartGameView._has_active_level_vote = function (self)
 	local active_vote_name = voting_manager.vote_in_progress(voting_manager)
 	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
 
-	return is_mission_vote
+	return is_mission_vote and not voting_manager.has_voted(voting_manager, Network.peer_id())
 end
 StartGameView._set_loading_overlay_enabled = function (self, enabled, message)
 	local loading_widgets = self._loading_widgets

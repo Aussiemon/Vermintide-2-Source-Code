@@ -22,9 +22,11 @@ StartGameWindowTwitchLogin.on_enter = function (self, params, offset)
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self._animations = {}
+	self._ui_animations = {}
 
 	self.create_ui_elements(self, params, offset)
 	self.set_active(self, true)
+	self._set_disconnect_button_text(self)
 
 	return 
 end
@@ -39,14 +41,6 @@ StartGameWindowTwitchLogin.create_ui_elements = function (self, params, offset)
 		widgets_by_name[name] = widget
 	end
 
-	self._connect_button_widget = UIWidget.init(definitions.connect_button)
-	local button_text_style = self._connect_button_widget.style.title_text
-	button_text_style.text_color = Colors.get_color_table_with_alpha("twitch", 255)
-	button_text_style.text_color_enabled = Colors.get_color_table_with_alpha("twitch", 255)
-	self._disconnect_button_widget = UIWidget.init(definitions.disconnect_button)
-	local button_text_style = self._disconnect_button_widget.style.title_text
-	button_text_style.text_color = Colors.get_color_table_with_alpha("red", 255)
-	button_text_style.text_color_enabled = Colors.get_color_table_with_alpha("red", 255)
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
 
@@ -79,6 +73,7 @@ StartGameWindowTwitchLogin.update = function (self, dt, t)
 		self.create_ui_elements(self)
 	end
 
+	self._update_popup(self)
 	self._update_animations(self, dt)
 	self._handle_input(self, dt, t)
 	self._update_game_options(self, dt, t)
@@ -97,6 +92,19 @@ StartGameWindowTwitchLogin.set_active = function (self, active, skip_block)
 
 	return 
 end
+StartGameWindowTwitchLogin._update_popup = function (self)
+	if self._error_popup_id then
+		local result = Managers.popup:query_result(self._error_popup_id)
+
+		if result == "ok" then
+			self._error_popup_id = nil
+		elseif result then
+			fassert(false, "[StateTitleScreenMainMenu] The popup result doesn't exist (%s)", result)
+		end
+	end
+
+	return 
+end
 StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 	local frame_widget = self._widgets_by_name.frame_widget
 	local frame_widget_content = frame_widget.content
@@ -104,28 +112,29 @@ StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 	local is_connecting = Managers.twitch:is_connecting()
 	local is_connected = Managers.twitch:is_connected()
 
-	if is_connecting then
-		local connect_button_content = self._connect_button_widget.content
-		local connect_button_hotspot = connect_button_content.button_hotspot
-		connect_button_hotspot.on_pressed = false
-		local disconnect_button_content = self._disconnect_button_widget.content
-		local disconnect_button_hotspot = disconnect_button_content.button_hotspot
-		disconnect_button_hotspot.on_pressed = false
-	else
-		local input_hotspot = frame_widget_content.text_input_hotspot
+	if not is_connecting then
+		local text_input_hotspot = frame_widget_content.text_input_hotspot
 		local screen_hotspot = frame_widget_content.screen_hotspot
 		local frame_hotspot = frame_widget_content.frame_hotspot
 
-		if input_hotspot.on_pressed and not is_connected then
+		if text_input_hotspot.on_pressed and not is_connected then
+			self.parent.parent:set_input_blocked(true)
+
 			frame_widget_content.text_field_active = true
 		elseif screen_hotspot.on_pressed or is_connected then
 			if screen_hotspot.on_pressed and not frame_widget_content.text_field_active and not frame_hotspot.on_pressed then
 				self.set_active(self, false)
 
+				frame_widget_content.text_field_active = false
+
+				self.parent.parent:set_input_blocked(false)
+
 				return 
 			end
 
 			frame_widget_content.text_field_active = false
+
+			self.parent.parent:set_input_blocked(false)
 		end
 
 		if frame_widget_content.text_field_active then
@@ -136,29 +145,43 @@ StartGameWindowTwitchLogin._handle_input = function (self, dt, t)
 				frame_widget_content.text_field_active = false
 				local user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
 
-				Managers.twitch:connect(user_name, callback(self, "cb_connection_callback"))
+				Managers.twitch:connect(user_name, callback(self, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
 			end
 		end
 
-		local connect_button_content = self._connect_button_widget.content
-		local connect_button_hotspot = connect_button_content.button_hotspot
+		if not is_connected then
+			local connect_button_widget = self._widgets_by_name.button_1
 
-		if connect_button_hotspot.on_pressed and not is_connected then
-			local user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
+			if self._is_button_hover_enter(self, connect_button_widget) then
+				self._play_sound(self, "Play_hud_hover")
+			end
 
-			Managers.twitch:connect(user_name, callback(self, "cb_connection_callback"))
-		end
+			local button_pressed = self._is_button_pressed(self, connect_button_widget)
 
-		local disconnect_button_content = self._disconnect_button_widget.content
-		local disconnect_button_hotspot = disconnect_button_content.button_hotspot
+			if button_pressed then
+				local user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
 
-		if disconnect_button_hotspot.on_pressed and is_connected then
-			Managers.twitch:disconnect()
+				Managers.twitch:connect(user_name, callback(self, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
+				self._play_sound(self, "Play_hud_select")
+			end
+		else
+			local disconnect_button_widget = self._widgets_by_name.button_2
 
-			local chat_output_widget = self._widgets_by_name.chat_output_widget
-			local chat_output_content = chat_output_widget.content
-			chat_output_content.message_tables = {}
-			chat_output_content.text_start_offset = 0
+			if self._is_button_hover_enter(self, disconnect_button_widget) then
+				self._play_sound(self, "Play_hud_hover")
+			end
+
+			local button_pressed = self._is_button_pressed(self, disconnect_button_widget)
+
+			if button_pressed then
+				self._play_sound(self, "Play_hud_select")
+				Managers.twitch:disconnect()
+
+				local chat_output_widget = self._widgets_by_name.chat_output_widget
+				local chat_output_content = chat_output_widget.content
+				chat_output_content.message_tables = {}
+				chat_output_content.text_start_offset = 0
+			end
 		end
 	end
 
@@ -182,13 +205,20 @@ StartGameWindowTwitchLogin._update_game_options = function (self, dt, t)
 
 	return 
 end
-StartGameWindowTwitchLogin.cb_connection_callback = function (self, message)
-	local widget = self._widgets_by_name.frame_widget
-	local content = widget.content
-	local style = widget.style
-	content.error_id = message
-	style.error_field.text_color[1] = 255
-	self._error_timer = 5
+StartGameWindowTwitchLogin.cb_connection_error_callback = function (self, message)
+	self._error_popup_id = Managers.popup:queue_popup(message, Localize("popup_header_error_twitch"), "ok", Localize("popup_choice_ok"))
+
+	return 
+end
+StartGameWindowTwitchLogin.cb_connection_success_callback = function (self, user_data)
+	self._set_disconnect_button_text(self)
+
+	return 
+end
+StartGameWindowTwitchLogin._set_disconnect_button_text = function (self)
+	local user_name = (Managers.twitch and Managers.twitch:user_name()) or "N/A"
+	local disconnect_button_widget = self._widgets_by_name.button_2
+	disconnect_button_widget.content.button_hotspot.text = string.format(Localize("start_game_window_twitch_disconnect"), user_name)
 
 	return 
 end
@@ -212,14 +242,43 @@ StartGameWindowTwitchLogin.cb_on_message_received = function (self, key, message
 
 	return 
 end
+StartGameWindowTwitchLogin._is_button_pressed = function (self, widget)
+	local content = widget.content
+	local hotspot = content.button_hotspot
+
+	if hotspot.on_release then
+		hotspot.on_release = false
+
+		return true
+	end
+
+	return 
+end
+StartGameWindowTwitchLogin._is_button_hover_enter = function (self, widget)
+	local content = widget.content
+	local hotspot = content.button_hotspot
+
+	return hotspot.on_hover_enter
+end
 StartGameWindowTwitchLogin.post_update = function (self, dt, t)
 	return 
 end
 StartGameWindowTwitchLogin._update_animations = function (self, dt)
-	self.ui_animator:update(dt)
+	self._update_button_animations(self, dt)
 
+	local ui_animations = self._ui_animations
 	local animations = self._animations
 	local ui_animator = self.ui_animator
+
+	for name, animation in pairs(ui_animations) do
+		UIAnimation.update(animation, dt)
+
+		if UIAnimation.completed(animation) then
+			ui_animations[name] = nil
+		end
+	end
+
+	ui_animator.update(ui_animator, dt)
 
 	for animation_name, animation_id in pairs(animations) do
 		if ui_animator.is_animation_completed(ui_animator, animation_id) then
@@ -233,32 +292,79 @@ StartGameWindowTwitchLogin._update_animations = function (self, dt)
 
 	return 
 end
-StartGameWindowTwitchLogin._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
+StartGameWindowTwitchLogin._update_button_animations = function (self, dt)
+	local widgets_by_name = self._widgets_by_name
+	local widget_prefix = "button_"
 
-	if hotspot.on_release then
-		hotspot.on_release = false
+	for i = 1, 2, 1 do
+		local widget_name = widget_prefix .. i
+		local widget = widgets_by_name[widget_name]
 
-		return true
+		self._animate_button(self, widget, dt)
 	end
 
 	return 
 end
-StartGameWindowTwitchLogin._is_stepper_button_pressed = function (self, widget)
+StartGameWindowTwitchLogin._animate_button = function (self, widget, dt)
 	local content = widget.content
-	local hotspot_left = content.button_hotspot_left
-	local hotspot_right = content.button_hotspot_right
+	local style = widget.style
+	local speed = 8
+	local input_speed = 20
+	local hotspot_name = "button_hotspot"
+	local hotspot = content[hotspot_name]
+	local is_hover = not hotspot.disable_button and hotspot.is_hover
+	local is_selected = not hotspot.disable_button and hotspot.is_selected
+	local input_pressed = hotspot.is_clicked and hotspot.is_clicked == 0
+	local input_progress = hotspot.input_progress or 0
+	local hover_progress = hotspot.hover_progress or 0
+	local selection_progress = hotspot.selection_progress or 0
 
-	if hotspot_left.on_release then
-		hotspot_left.on_release = false
-
-		return true, -1
-	elseif hotspot_right.on_release then
-		hotspot_right.on_release = false
-
-		return true, 1
+	if input_pressed then
+		input_progress = math.min(input_progress + dt * input_speed, 1)
+	else
+		input_progress = math.max(input_progress - dt * input_speed, 0)
 	end
+
+	local input_easing_out_progress = math.easeOutCubic(input_progress)
+	local input_easing_in_progress = math.easeInCubic(input_progress)
+
+	if is_hover then
+		hover_progress = math.min(hover_progress + dt * speed, 1)
+	else
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+	end
+
+	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
+	local hover_easing_in_progress = math.easeInCubic(hover_progress)
+
+	if is_selected then
+		selection_progress = math.min(selection_progress + dt * speed, 1)
+	else
+		selection_progress = math.max(selection_progress - dt * speed, 0)
+	end
+
+	local select_easing_out_progress = math.easeOutCubic(selection_progress)
+	local select_easing_in_progress = math.easeInCubic(selection_progress)
+	local combined_progress = math.max(hover_progress, selection_progress)
+	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
+	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
+	local clicked_rect_name = "clicked_rect"
+	local input_alpha = 255 * input_progress
+	style[clicked_rect_name].color[1] = 100 * input_progress
+	local hover_glow_name = "hover_glow"
+	local hover_alpha = 255 * combined_progress
+	style[hover_glow_name].color[1] = hover_alpha
+	local text_name = "text"
+	local text_style = style[text_name]
+	local text_color = text_style.text_color
+	local default_text_color = text_style.default_text_color
+	local select_text_color = text_style.select_text_color
+
+	Colors.lerp_color_tables(default_text_color, select_text_color, combined_progress, text_color)
+
+	hotspot.hover_progress = hover_progress
+	hotspot.input_progress = input_progress
+	hotspot.selection_progress = selection_progress
 
 	return 
 end
@@ -305,21 +411,11 @@ StartGameWindowTwitchLogin.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.parent:window_input_service()
-	local is_connected = Managers.twitch:is_connected()
-	local is_connecting = Managers.twitch:is_connecting()
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 
 	for _, widget in ipairs(self._widgets) do
 		UIRenderer.draw_widget(ui_renderer, widget)
-	end
-
-	if not is_connecting then
-		if is_connected then
-			UIRenderer.draw_widget(ui_renderer, self._disconnect_button_widget)
-		else
-			UIRenderer.draw_widget(ui_renderer, self._connect_button_widget)
-		end
 	end
 
 	UIRenderer.end_pass(ui_renderer)

@@ -20,6 +20,35 @@ UIPlayerPortraitFrameSettings = {
 				255,
 				255,
 				255
+			},
+			offset = {
+				0,
+				-54,
+				0
+			}
+		}
+	},
+	frame_dev = {
+		{
+			texture = "portrait_frame_dev",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_collectors_edition = {
+		{
+			texture = "portrait_frame_collectors_edition",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
 			}
 		}
 	},

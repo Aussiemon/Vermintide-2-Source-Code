@@ -21,7 +21,7 @@ CameraTransitionGeneric.update = function (self, dt, parameter_value, update_tim
 		assert(false, "CameraTransitionGeneric:update() transition has defined both speed and duration, only one can be allowed at once")
 	elseif speed then
 		local max_length = target - parameter_value
-		local dist_moved = self._time*speed
+		local dist_moved = self._time * speed
 
 		if max_length < dist_moved then
 			value = target
@@ -30,14 +30,14 @@ CameraTransitionGeneric.update = function (self, dt, parameter_value, update_tim
 			value = parameter_value + dist_moved
 		end
 	elseif duration then
-		local t = self._time/duration
+		local t = self._time / duration
 		t = math.min(t, 1)
 
 		if self._transition_func then
 			t = self._transition_func(t)
 		end
 
-		value = parameter_value*(t - 1) + target*t
+		value = parameter_value * (1 - t) + target * t
 		done = duration < self._time
 	end
 

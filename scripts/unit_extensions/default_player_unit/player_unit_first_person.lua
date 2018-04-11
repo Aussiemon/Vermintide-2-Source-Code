@@ -51,8 +51,8 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 	self.player_height_change_start_time = 0
 	self.hide_weapon_reasons = {}
 	self.hide_weapon_lights_reasons = {}
-	local small_delta = math.pi/15
-	self.MAX_MIN_PITCH = math.pi/2 - small_delta
+	local small_delta = math.pi / 15
+	self.MAX_MIN_PITCH = math.pi / 2 - small_delta
 	self.drawer = Managers.state.debug:drawer({
 		mode = "immediate",
 		name = "PlayerUnitFirstPerson"
@@ -179,7 +179,7 @@ PlayerUnitFirstPerson.update_aim_assist_multiplier = function (self, dt)
 		local aim_assist_settings = nil
 		aim_assist_settings = (not action_settings or not action_settings.aim_assist_settings or action_settings.aim_assist_settings) and weapon_template and weapon_template.aim_assist_settings
 		local aim_assist_multiplier = (aim_assist_settings and aim_assist_settings.base_multiplier) or 0
-		local no_aim_input_multiplier = (aim_assist_settings and aim_assist_settings.no_aim_input_multiplier) or aim_assist_multiplier*0.5
+		local no_aim_input_multiplier = (aim_assist_settings and aim_assist_settings.no_aim_input_multiplier) or aim_assist_multiplier * 0.5
 		local input_extension = self.input_extension
 		local look_raw = input_extension.get(input_extension, "look_raw_controller")
 		local move = input_extension.get(input_extension, "move_controller")
@@ -228,8 +228,8 @@ PlayerUnitFirstPerson.reset_aim_assist_multiplier = function (self)
 end
 
 local function ease_out_quad(t, b, c, d)
-	t = t/d
-	local res = -c*t*(t - 2) + b
+	t = t / d
+	local res = -c * t * (t - 2) + b
 
 	return res
 end
@@ -286,8 +286,8 @@ PlayerUnitFirstPerson.update_rotation = function (self, t, dt)
 	elseif self.forced_look_rotation ~= nil then
 		local total_lerp_time = self.forced_total_lerp_time or 0.3
 		self.forced_lerp_timer = self.forced_lerp_timer + dt
-		local p = self.forced_lerp_timer/total_lerp_time - 1
-		p = p*p - 1
+		local p = 1 - self.forced_lerp_timer / total_lerp_time
+		p = 1 - p * p
 		local look_rotation = Quaternion.lerp(self.look_rotation:unbox(), self.forced_look_rotation:unbox(), p)
 		local yaw = Quaternion.yaw(look_rotation)
 		local pitch = math.clamp(Quaternion.pitch(look_rotation), -self.MAX_MIN_PITCH, self.MAX_MIN_PITCH)
@@ -368,8 +368,8 @@ PlayerUnitFirstPerson.calculate_aim_assisted_rotation = function (self, look_rot
 	local target_rotation = Quaternion.look(direction, Vector3.up())
 	local aim_score = aim_assist_data.aim_score
 	local aim_assist_multiplier = self.aim_assist_multiplier
-	local horizontal_lerp = (aim_assist_data.vertical_only and look_rotation) or Quaternion.lerp(look_rotation, target_rotation, dt*33*aim_score*aim_assist_multiplier)
-	local vertical_lerp = Quaternion.lerp(look_rotation, target_rotation, aim_assist_multiplier*0.5*dt*33*aim_score*aim_assist_multiplier)
+	local horizontal_lerp = (aim_assist_data.vertical_only and look_rotation) or Quaternion.lerp(look_rotation, target_rotation, dt * 33 * aim_score * aim_assist_multiplier)
+	local vertical_lerp = Quaternion.lerp(look_rotation, target_rotation, aim_assist_multiplier * 0.5 * dt * 33 * aim_score * aim_assist_multiplier)
 	local yaw = Quaternion.yaw(horizontal_lerp)
 	local pitch = Quaternion.pitch(vertical_lerp)
 	local yaw_rotation = Quaternion(Vector3.up(), yaw)
@@ -408,30 +408,30 @@ PlayerUnitFirstPerson.is_within_default_view = function (self, position)
 	local is_infront = 0 < dot
 
 	if is_infront then
-		local base_vertical_fov_rad = (CameraSettings.first_person._node.vertical_fov*math.pi)/180
-		local base_horizontal_fov_rad = base_vertical_fov_rad*1.7777777777777777
+		local base_vertical_fov_rad = (CameraSettings.first_person._node.vertical_fov * math.pi) / 180
+		local base_horizontal_fov_rad = base_vertical_fov_rad * 1.7777777777777777
 		local camera_right = Quaternion.right(camera_rotation)
 		local camera_up = Quaternion.up(camera_rotation)
 		local c_x = Vector3.dot(to_pos_dir, camera_right)
 		local c_y = dot
 		local c_z = Vector3.dot(to_pos_dir, camera_up)
 		local dot_xy = c_y
-		local c_to_pos_dir_length_xy = math.sqrt(c_x*c_x + c_y*c_y)
+		local c_to_pos_dir_length_xy = math.sqrt(c_x * c_x + c_y * c_y)
 
 		if c_to_pos_dir_length_xy == 0 then
 			return false
 		end
 
-		local cos_xy = dot_xy/c_to_pos_dir_length_xy
+		local cos_xy = dot_xy / c_to_pos_dir_length_xy
 		local yaw = math.acos(cos_xy)
 
-		if yaw <= base_horizontal_fov_rad/2 then
+		if yaw <= base_horizontal_fov_rad / 2 then
 			local dot_uz = c_to_pos_dir_length_xy
-			local to_pos_dir_length_uz = math.sqrt(c_to_pos_dir_length_xy*c_to_pos_dir_length_xy + c_z*c_z)
-			local cos_uz = dot_uz/to_pos_dir_length_uz
+			local to_pos_dir_length_uz = math.sqrt(c_to_pos_dir_length_xy * c_to_pos_dir_length_xy + c_z * c_z)
+			local cos_uz = dot_uz / to_pos_dir_length_uz
 			local pitch = math.acos(cos_uz)
 
-			if pitch <= base_vertical_fov_rad/2 then
+			if pitch <= base_vertical_fov_rad / 2 then
 				return true
 			end
 
@@ -500,7 +500,7 @@ PlayerUnitFirstPerson.set_wanted_player_height = function (self, state, t, time_
 	self.player_height_previous = self.player_height_current
 
 	if time_to_change == nil then
-		time_to_change = math.abs(player_height_wanted - self.player_height_previous)/player_height_movement_speed
+		time_to_change = math.abs(player_height_wanted - self.player_height_previous) / player_height_movement_speed
 		time_to_change = math.clamp(time_to_change, 0.001, 1000)
 	end
 
@@ -547,10 +547,16 @@ PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override)
 
 		if active then
 			self.unhide_weapons(self, "third_person_mode")
-			Unit.flow_event(self.unit, "lua_exit_third_person_camera")
+
+			if self.first_person_mode ~= active then
+				Unit.flow_event(self.unit, "lua_exit_third_person_camera")
+			end
 		else
 			self.hide_weapons(self, "third_person_mode", true)
-			Unit.flow_event(self.unit, "lua_enter_third_person_camera")
+
+			if self.first_person_mode ~= active then
+				Unit.flow_event(self.unit, "lua_enter_third_person_camera")
+			end
 		end
 
 		self.inventory_extension:show_third_person_inventory(not active)
@@ -805,10 +811,10 @@ PlayerUnitFirstPerson.update_rig_movement = function (self, look_delta)
 		lead_max = Vector2(0.5, 0.5)
 	end
 
-	lead_multiplier = lead_multiplier*((weapon_template and weapon_template.rig_motion_multiplier) or 1)
-	lead_decay = lead_decay*((weapon_template and weapon_template.rig_motion_multiplier) or 1)
-	lead_max = lead_max*((weapon_template and weapon_template.rig_motion_multiplier) or 1)
-	local inv_mass = mass/1
+	lead_multiplier = lead_multiplier * ((weapon_template and weapon_template.rig_motion_multiplier) or 1)
+	lead_decay = lead_decay * ((weapon_template and weapon_template.rig_motion_multiplier) or 1)
+	lead_max = lead_max * ((weapon_template and weapon_template.rig_motion_multiplier) or 1)
+	local inv_mass = 1 / mass
 	self.spring_velocity = self.spring_velocity or Vector3Box(0, 0, 0)
 	self.spring_position = self.spring_position or Vector3Box(position)
 	self.lead_offset = self.lead_offset or Vector3Box(0, 0, 0)
@@ -821,34 +827,34 @@ PlayerUnitFirstPerson.update_rig_movement = function (self, look_delta)
 	end
 
 	lead_offset = Vector3.max(Vector3.min(lead_max, lead_offset), -lead_max)
-	lead_offset = Vector3.lerp(lead_offset, Vector3.zero(), math.min(dt*lead_decay, 1))
-	spring_position = spring_position + spring_velocity*dt
+	lead_offset = Vector3.lerp(lead_offset, Vector3.zero(), math.min(dt * lead_decay, 1))
+	spring_position = spring_position + spring_velocity * dt
 	local delta = spring_position - position
-	spring_velocity = spring_velocity - inv_mass*tension*delta*dt
+	spring_velocity = spring_velocity - inv_mass * tension * delta * dt
 
 	if 0.5 <= Vector3.length(delta) and self._state == "falling" then
-		damping = damping/10
+		damping = damping / 10
 	end
 
-	local energy = mass*0.5*Vector3.length_squared(spring_velocity)
-	energy = energy*damping
-	local vv = math.sqrt(energy/(mass*0.5))
-	spring_velocity = spring_velocity - Vector3.normalize(spring_velocity)*vv*dt
+	local energy = 0.5 * mass * Vector3.length_squared(spring_velocity)
+	energy = energy * damping
+	local vv = math.sqrt(energy / (0.5 * mass))
+	spring_velocity = spring_velocity - Vector3.normalize(spring_velocity) * vv * dt
 
 	if is_melee then
-		spring_position = spring_position - right*lead_offset.x + up*lead_offset.y
+		spring_position = spring_position - right * lead_offset.x + up * lead_offset.y
 	end
 
 	local final_position = spring_position
 	local t = Vector3.dot(right, final_position - position)
-	final_position = final_position - right*t*horizontal_motion_damping
+	final_position = final_position - right * t * horizontal_motion_damping
 	local t = Vector3.dot(up, final_position - position)
-	final_position = final_position - up*t*vertical_motion_damping
+	final_position = final_position - up * t * vertical_motion_damping
 	local v_dot = Vector3.dot(forward, Vector3.up())
-	final_position = (final_position + forward*motion_offset) - up*v_dot*vertical_look_multiplier
+	final_position = (final_position + forward * motion_offset) - up * v_dot * vertical_look_multiplier
 
 	if not is_melee then
-		final_position = final_position + right*lead_offset.x + up*lead_offset.y
+		final_position = final_position + right * lead_offset.x + up * lead_offset.y
 	end
 
 	self.spring_position:store(spring_position)
@@ -858,9 +864,9 @@ PlayerUnitFirstPerson.update_rig_movement = function (self, look_delta)
 	if script_data.debug_rig_motion then
 		local aim_target_pos = Unit.world_position(self.first_person_unit, Unit.node(self.first_person_unit, "j_aim_target"))
 
-		QuickDrawer:sphere(aim_target_pos - forward*3, 0.1, Color(255, 255, 255))
-		QuickDrawer:sphere(spring_position + forward*Vector3.length(spring_position - aim_target_pos - forward*3), 0.1, Color(255, 0, 0))
-		QuickDrawer:sphere(final_position + forward*Vector3.length(final_position - aim_target_pos - forward*3), 0.1, Color(0, 255, 0))
+		QuickDrawer:sphere(aim_target_pos - forward * 3, 0.1, Color(255, 255, 255))
+		QuickDrawer:sphere(spring_position + forward * Vector3.length(spring_position - aim_target_pos - forward * 3), 0.1, Color(255, 0, 0))
+		QuickDrawer:sphere(final_position + forward * Vector3.length(final_position - aim_target_pos - forward * 3), 0.1, Color(0, 255, 0))
 	end
 
 	if self._rig_offset_enabled then

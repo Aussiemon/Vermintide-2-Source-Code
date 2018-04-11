@@ -3,7 +3,7 @@ local REFRESH_TIMER_MESSAGE = 300
 local REFRESH_TIMER_NO_MESSAGE = 120
 local scenegraph_definition = {
 	root = {
-		is_root = true,
+		scale = "fit",
 		size = {
 			1920,
 			1080
@@ -11,40 +11,55 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			790
+			980
 		}
 	},
 	news_ticker_text = {
 		vertical_alignment = "bottom",
 		parent = "root",
-		horizontal_alignment = "center",
+		horizontal_alignment = "right",
 		size = {
 			1920,
 			20
 		},
 		position = {
 			1920,
-			2,
+			0,
 			2
 		}
 	},
 	news_ticker_mask = {
 		vertical_alignment = "bottom",
 		parent = "root",
-		horizontal_alignment = "center",
+		horizontal_alignment = "right",
 		size = {
-			1920,
-			40
+			650,
+			30
 		},
 		position = {
 			0,
-			-8,
+			0,
 			3
 		}
 	}
 }
+local text_style = {
+	word_wrap = true,
+	font_size = 18,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "bottom",
+	font_type = "hell_shark_masked",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
 local widget_definitions = {
-	news_ticker_text_widget = UIWidgets.create_simple_text("", "news_ticker_text", 18, Colors.get_color_table_with_alpha("cheeseburger", 255), nil, "hell_shark_masked"),
+	news_ticker_text_widget = UIWidgets.create_simple_text("", "news_ticker_text", nil, nil, text_style),
 	news_ticker_mask_widget = UIWidgets.create_simple_texture("mask_rect", "news_ticker_mask")
 }
 IngameNewsTickerUI.init = function (self, ingame_ui_context)
@@ -115,7 +130,7 @@ IngameNewsTickerUI.update = function (self, dt, t)
 			self.delay = 5
 		end
 
-		news_ticker_widget_position[1] = news_ticker_widget_position[1] - dt*self.news_ticker_speed
+		news_ticker_widget_position[1] = news_ticker_widget_position[1] - dt * self.news_ticker_speed
 
 		self.draw(self, dt, t)
 	end

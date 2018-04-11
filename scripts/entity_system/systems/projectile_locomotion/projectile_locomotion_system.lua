@@ -91,7 +91,7 @@ ProjectileLocomotionSystem._client_validate_position_rotation = function (self, 
 			local is_at_rest = extension.is_at_rest(extension)
 			local allowed_dist = (is_at_rest and REST_CORRECTION_DISTANCE) or ACTIVE_CORRECTION_DISTANCE
 
-			if allowed_dist*allowed_dist < Vector3_distance_squared(server_pos, client_pos) then
+			if allowed_dist * allowed_dist < Vector3_distance_squared(server_pos, client_pos) then
 				local server_rot = GameSession_game_object_field(game, game_object_id, "rotation")
 
 				extension.teleport(extension, server_pos, server_rot)

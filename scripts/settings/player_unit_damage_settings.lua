@@ -6,9 +6,9 @@ PlayerUnitDamageSettings.REGEN_DELAY = 6
 PlayerUnitDamageSettings.REGEN_AMOUNT = 20
 PlayerUnitDamageSettings.REGEN_RAMP_SPEED = 1
 PlayerUnitDamageSettings.REGEN_FUNCTION = function (real_t)
-	local t = real_t*PlayerUnitDamageSettings.REGEN_RAMP_SPEED
+	local t = real_t * PlayerUnitDamageSettings.REGEN_RAMP_SPEED
 
-	return PlayerUnitDamageSettings.REGEN_AMOUNT*t*t
+	return PlayerUnitDamageSettings.REGEN_AMOUNT * t * t
 end
 PlayerUnitDamageSettings.INSTAKILL_THRESHOLD = 100
 PlayerUnitDamageSettings.INSTAKILL_HEALTH_FACTOR = 0

@@ -270,9 +270,9 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 
 	Camera.set_projection_type(cam, data.projection_type)
 
-	local translation_change_speed = data.translation_speed*0.5
+	local translation_change_speed = data.translation_speed * 0.5
 	local speed_change = Vector3.y(input_service.get(input_service, "speed_change"))
-	data.translation_speed = data.translation_speed + speed_change*translation_change_speed
+	data.translation_speed = data.translation_speed + speed_change * translation_change_speed
 
 	if data.translation_speed < 0.001 then
 		data.translation_speed = 0.001
@@ -284,24 +284,24 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 
 	if data.projection_type == Camera.ORTHOGRAPHIC then
 		local ortho_data = data.orthographic_data
-		ortho_data.yaw = (ortho_data.yaw or 0) - Vector3.x(mouse)*data.rotation_speed
+		ortho_data.yaw = (ortho_data.yaw or 0) - Vector3.x(mouse) * data.rotation_speed
 		local q1 = Quaternion(Vector3(0, 0, 1), ortho_data.yaw)
 		local q2 = Quaternion(Vector3.right(), -math.half_pi)
 		local q = Quaternion.multiply(q1, q2)
-		local x_trans = (input_service.get(input_service, "move_right") - input_service.get(input_service, "move_left"))*dt*250
-		local y_trans = (input_service.get(input_service, "move_forward") - input_service.get(input_service, "move_back"))*dt*250
-		local pos = trans + Quaternion.up(q)*y_trans + Quaternion.right(q)*x_trans
+		local x_trans = (input_service.get(input_service, "move_right") - input_service.get(input_service, "move_left")) * dt * 250
+		local y_trans = (input_service.get(input_service, "move_forward") - input_service.get(input_service, "move_back")) * dt * 250
+		local pos = trans + Quaternion.up(q) * y_trans + Quaternion.right(q) * x_trans
 		cm = Matrix4x4.from_quaternion_position(q, pos)
 		local size = ortho_data.size
-		size = size - speed_change*size*dt
+		size = size - speed_change * size * dt
 		ortho_data.size = size
 
 		Camera.set_orthographic_view(cam, -size, size, -size, size)
 	else
 		Matrix4x4.set_translation(cm, Vector3(0, 0, 0))
 
-		local q1 = Quaternion(Vector3(0, 0, 1), -Vector3.x(mouse)*data.rotation_speed)
-		local q2 = Quaternion(Matrix4x4.x(cm), -Vector3.y(mouse)*data.rotation_speed)
+		local q1 = Quaternion(Vector3(0, 0, 1), -Vector3.x(mouse) * data.rotation_speed)
+		local q2 = Quaternion(Matrix4x4.x(cm), -Vector3.y(mouse) * data.rotation_speed)
 		local q = Quaternion.multiply(q1, q2)
 		cm = Matrix4x4.multiply(cm, Matrix4x4.from_quaternion(q))
 		local x_trans = input_service.get(input_service, "move_right") - input_service.get(input_service, "move_left")
@@ -314,7 +314,7 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 		end
 
 		local z_trans = input_service.get(input_service, "move_up") - input_service.get(input_service, "move_down")
-		local offset = Matrix4x4.transform(cm, Vector3(x_trans, y_trans, z_trans)*data.translation_speed)
+		local offset = Matrix4x4.transform(cm, Vector3(x_trans, y_trans, z_trans) * data.translation_speed)
 		trans = Vector3.add(trans, offset)
 
 		Matrix4x4.set_translation(cm, trans)
@@ -365,7 +365,7 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 
 	if input_service.get(input_service, "toggle_control_points") then
 		cm = FreeFlightControlPoints[self.current_control_point]:unbox()
-		self.current_control_point = self.current_control_point%#FreeFlightControlPoints + 1
+		self.current_control_point = self.current_control_point % #FreeFlightControlPoints + 1
 
 		print("Control Point: " .. tostring(self.current_control_point))
 	end
@@ -596,9 +596,9 @@ FreeFlightManager._update_free_flight = function (self, dt, player, data)
 	local viewport = ScriptWorld.free_flight_viewport(world, data.viewport_name)
 	local cam = data.frustum_freeze_camera or ScriptViewport.camera(viewport)
 	local input = self.input_manager:get_service("FreeFlight")
-	local translation_change_speed = data.current_translation_max_speed*0.5
+	local translation_change_speed = data.current_translation_max_speed * 0.5
 	local speed_change = Vector3.y(input.get(input, "speed_change") or Vector3(0, 0, 0))
-	data.current_translation_max_speed = math.max(data.current_translation_max_speed + speed_change*translation_change_speed, 0.01)
+	data.current_translation_max_speed = math.max(data.current_translation_max_speed + speed_change * translation_change_speed, 0.01)
 	local cm = Camera.local_pose(cam)
 	local trans = Matrix4x4.translation(cm)
 
@@ -606,26 +606,26 @@ FreeFlightManager._update_free_flight = function (self, dt, player, data)
 
 	local mouse = input.get(input, "look")
 	local rotation_accumulation = data.rotation_accumulation:unbox() + mouse
-	local rotation = rotation_accumulation*math.min(dt, 1)*(player.free_flight_movement_filter_speed or 15)
+	local rotation = rotation_accumulation * math.min(dt, 1) * (player.free_flight_movement_filter_speed or 15)
 
 	data.rotation_accumulation:store(rotation_accumulation - rotation)
 
-	local q1 = Quaternion(Vector3(0, 0, 1), -Vector3.x(rotation)*data.rotation_speed)
-	local q2 = Quaternion(Matrix4x4.x(cm), -Vector3.y(rotation)*data.rotation_speed)
+	local q1 = Quaternion(Vector3(0, 0, 1), -Vector3.x(rotation) * data.rotation_speed)
+	local q2 = Quaternion(Matrix4x4.x(cm), -Vector3.y(rotation) * data.rotation_speed)
 	local q = Quaternion.multiply(q1, q2)
 	cm = Matrix4x4.multiply(cm, Matrix4x4.from_quaternion(q))
-	local wanted_speed = input.get(input, "move")*data.current_translation_max_speed
+	local wanted_speed = input.get(input, "move") * data.current_translation_max_speed
 	local current_speed = data.current_translation_speed:unbox()
 	local speed_difference = wanted_speed - current_speed
 	local speed_distance = Vector3.length(speed_difference)
 	local speed_difference_direction = Vector3.normalize(speed_difference)
 
 	if speed_change ~= 0 then
-		data.acceleration = (player.free_flight_acceleration_factor or 5)*Vector3.length(speed_difference)
+		data.acceleration = (player.free_flight_acceleration_factor or 5) * Vector3.length(speed_difference)
 	end
 
 	local acceleration = data.acceleration
-	local new_speed = current_speed + speed_difference_direction*math.min(speed_distance, acceleration*dt)
+	local new_speed = current_speed + speed_difference_direction * math.min(speed_distance, acceleration * dt)
 
 	if not Vector3.equal(new_speed, current_speed) then
 	end
@@ -633,7 +633,7 @@ FreeFlightManager._update_free_flight = function (self, dt, player, data)
 	data.current_translation_speed:store(new_speed)
 
 	local rot = Matrix4x4.rotation(cm)
-	local offset = (Quaternion.forward(rot)*new_speed.y + Quaternion.right(rot)*new_speed.x + Quaternion.up(rot)*new_speed.z)*dt
+	local offset = (Quaternion.forward(rot) * new_speed.y + Quaternion.right(rot) * new_speed.x + Quaternion.up(rot) * new_speed.z) * dt
 	trans = Vector3.add(trans, offset)
 
 	Matrix4x4.set_translation(cm, trans)
@@ -656,20 +656,20 @@ FreeFlightManager._update_free_flight = function (self, dt, player, data)
 	if input.get(input, "increase_fov") then
 		local old_fov = Camera.vertical_fov(cam)
 
-		Camera.set_vertical_fov(cam, old_fov + math.pi/72)
+		Camera.set_vertical_fov(cam, old_fov + math.pi / 72)
 	end
 
 	if input.get(input, "decrease_fov") then
 		local old_fov = Camera.vertical_fov(cam)
 
-		Camera.set_vertical_fov(cam, old_fov - math.pi/72)
+		Camera.set_vertical_fov(cam, old_fov - math.pi / 72)
 	end
 
 	local shading_env = World.get_data(world, "shading_environment")
 
 	if shading_env then
 		if input.get(input, "toggle_dof") and not input.get(input, "dof_reset") then
-			data.dof_enabled = data.dof_enabled - 1
+			data.dof_enabled = 1 - data.dof_enabled
 		end
 
 		if input.get(input, "inc_dof_distance") and not input.get(input, "inc_dof_region") and not input.get(input, "inc_dof_padding") and not input.get(input, "inc_dof_scale") then

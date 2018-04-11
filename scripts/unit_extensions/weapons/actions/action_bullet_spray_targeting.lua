@@ -16,9 +16,9 @@ end
 ActionBulletSprayTargeting.client_owner_start_action = function (self, new_action, t)
 	self.current_action = new_action
 	self._target_index = 1
-	local cone_hypotenuse = math.sqrt(SPRAY_RANGE*SPRAY_RANGE + SPRAY_RADIUS*SPRAY_RADIUS)
-	self.CONE_COS_ALPHA = SPRAY_RANGE/cone_hypotenuse
-	self.CIRCLE_RADIUS = SPRAY_RADIUS/(SPRAY_RANGE + POSITION_TWEAK)*(CIRCLE_POSITION + POSITION_TWEAK)
+	local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + SPRAY_RADIUS * SPRAY_RADIUS)
+	self.CONE_COS_ALPHA = SPRAY_RANGE / cone_hypotenuse
+	self.CIRCLE_RADIUS = SPRAY_RADIUS / (SPRAY_RANGE + POSITION_TWEAK) * (CIRCLE_POSITION + POSITION_TWEAK)
 
 	return 
 end
@@ -31,10 +31,10 @@ ActionBulletSprayTargeting.client_owner_post_update = function (self, dt, t, wor
 	self._draw_circle(self, player_position, player_direction)
 
 	if script_data.debug_weapons then
-		local start_point = player_position + player_direction*POSITION_TWEAK
-		local end_point = player_position + player_direction*POSITION_TWEAK + player_direction*SPRAY_RANGE
+		local start_point = player_position + player_direction * POSITION_TWEAK
+		local end_point = player_position + player_direction * POSITION_TWEAK + player_direction * SPRAY_RANGE
 
-		QuickDrawer:cone(player_position + player_direction*POSITION_TWEAK, end_point, SPRAY_RADIUS, Color(255, 255, 0, 255), 50, 50)
+		QuickDrawer:cone(player_position + player_direction * POSITION_TWEAK, end_point, SPRAY_RADIUS, Color(255, 255, 0, 255), 50, 50)
 	end
 
 	return 
@@ -43,7 +43,7 @@ ActionBulletSprayTargeting.finish = function (self, reason)
 	return 
 end
 ActionBulletSprayTargeting._draw_circle = function (self, player_position, player_direction)
-	local circle_position = player_position + POSITION_TWEAK*player_direction + CIRCLE_POSITION*player_direction
+	local circle_position = player_position + POSITION_TWEAK * player_direction + CIRCLE_POSITION * player_direction
 
 	QuickDrawer:circle(circle_position, self.CIRCLE_RADIUS, -player_direction, Color(255, 255, 0, 255))
 

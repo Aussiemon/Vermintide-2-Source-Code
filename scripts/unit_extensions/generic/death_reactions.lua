@@ -183,7 +183,7 @@ local function ai_chaos_tentacle_update(unit, dt, context, t, data, is_server)
 		local tentacle_data = blackboard.tentacle_data
 
 		if tentacle_data.unit then
-			local current_length = tentacle_data.current_length - dt*7
+			local current_length = tentacle_data.current_length - 7 * dt
 			tentacle_data.current_length = math.max(current_length, 0)
 			local tentacle_extension = blackboard.tentacle_spline_extension
 
@@ -223,7 +223,7 @@ local function update_wall_nail(unit, dt, t, data)
 			nail_data.position = Vector3Box(position)
 			local dir = nail_data.attack_direction:unbox()
 			local fly_time = 0.3
-			local ray_dist = nail_data.hit_speed*fly_time
+			local ray_dist = nail_data.hit_speed * fly_time
 
 			fassert(0 < ray_dist, "Ray distance is not greater than 0")
 
@@ -244,9 +244,9 @@ local function update_wall_nail(unit, dt, t, data)
 
 				fassert(Vector3.is_valid(hit_position), "Position from raycast is valid")
 
-				nail_data.target_position = Vector3Box(hit_position - dir*thickness)
+				nail_data.target_position = Vector3Box(hit_position - dir * thickness)
 				nail_data.start_t = t
-				nail_data.end_t = t + math.max(hit_distance/ray_dist*fly_time, 0.01)
+				nail_data.end_t = t + math.max(hit_distance / ray_dist * fly_time, 0.01)
 				data.finish_time = math.max(data.finish_time, t + 30)
 				data.nailed = true
 			else
@@ -1023,7 +1023,7 @@ DeathReactions.templates = {
 							local unit_name = pickup_settings.unit_name
 							local unit_template_name = pickup_settings.unit_template_name or "pickup_unit"
 							local position = POSITION_LOOKUP[unit] + Vector3(math.random() - 0.5, math.random() - 0.5, 1)
-							local rotation = Quaternion(Vector3.right(), math.random()*2*math.pi)
+							local rotation = Quaternion(Vector3.right(), math.random() * 2 * math.pi)
 
 							Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
 

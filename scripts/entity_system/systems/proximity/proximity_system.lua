@@ -7,7 +7,7 @@ local RAYCAST_ENEMY_CHECK_INTERVAL = DialogueSettings.raycast_enemy_check_interv
 local HEAR_ENEMY_CHECK_INTERVAL = DialogueSettings.hear_enemy_check_interval
 local SPECIAL_PROXIMITY_DISTANCE = DialogueSettings.special_proximity_distance
 local SPECIAL_PROXIMITY_DISTANCE_HEARD = DialogueSettings.special_proximity_distance_heard
-local SPECIAL_PROXIMITY_DISTANCE_HEARD_SQ = SPECIAL_PROXIMITY_DISTANCE_HEARD*SPECIAL_PROXIMITY_DISTANCE_HEARD
+local SPECIAL_PROXIMITY_DISTANCE_HEARD_SQ = SPECIAL_PROXIMITY_DISTANCE_HEARD * SPECIAL_PROXIMITY_DISTANCE_HEARD
 local INDEX_POSITION = 1
 local INDEX_DISTANCE = 2
 local INDEX_NORMAL = 3
@@ -172,7 +172,7 @@ local function check_raycast_center(physics_world, unit, target)
 				if hit_unit == target then
 					if script_data.debug_has_been_seen then
 						QuickDrawerStay:line(ray_position, hit_data[INDEX_POSITION], Color(0, 255, 0))
-						QuickDrawerStay:line(hit_data[INDEX_POSITION], ray_position + ray_direction*ray_length, Color(255, 0, 0))
+						QuickDrawerStay:line(hit_data[INDEX_POSITION], ray_position + ray_direction * ray_length, Color(255, 0, 0))
 					end
 
 					return true
@@ -289,7 +289,7 @@ ProximitySystem.physics_async_update = function (self, context, t)
 
 			local last_num_matching_units = proximity_data.num
 
-			if num_matching_units < last_num_matching_units*0.5 or last_num_matching_units*1.5 < num_matching_units then
+			if num_matching_units < last_num_matching_units * 0.5 or last_num_matching_units * 1.5 < num_matching_units then
 				proximity_data.num = num_matching_units
 				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 				local event_data = FrameTable.alloc_table()
@@ -365,10 +365,10 @@ ProximitySystem.physics_async_update = function (self, context, t)
 						cast_ray = true
 						enemy_check_raycasts[ray_write_index] = unit
 						enemy_check_raycasts[ray_write_index + 1] = nearby_unit
-						ray_write_index = (ray_write_index + 1)%ray_max + 1
+						ray_write_index = (ray_write_index + 1) % ray_max + 1
 
 						if ray_read_index == ray_write_index then
-							ray_read_index = (ray_read_index + 1)%ray_max + 1
+							ray_read_index = (ray_read_index + 1) % ray_max + 1
 						end
 					end
 				end
@@ -518,7 +518,7 @@ ProximitySystem._update_nearby_enemies = function (self)
 	end
 
 	if 0 < num_players then
-		player_pos = player_pos/num_players
+		player_pos = player_pos / num_players
 		local list_len = #list
 
 		Profiler.start("broadphase query")
@@ -623,7 +623,7 @@ ProximitySystem._nearby_enemies_debug = function (self, list, new_nearby, new_en
 
 			if dist_sq then
 				local dist = math.sqrt(dist_sq)
-				local brightness = math.min(dist*8, 255) - 255
+				local brightness = 255 - math.min(dist * 8, 255)
 				local enabled = new_enabled_fx[unit]
 				local color = nil
 
@@ -666,7 +666,7 @@ ProximitySystem.post_update = function (self, context, t)
 	local read_index = self.raycast_read_index
 
 	if read_index ~= self.raycast_write_index then
-		self.raycast_read_index = (read_index + 1)%self.raycast_max_index + 1
+		self.raycast_read_index = (read_index + 1) % self.raycast_max_index + 1
 		local unit = enemy_check_raycasts[read_index]
 		local nearby_unit = enemy_check_raycasts[read_index + 1]
 

@@ -111,11 +111,15 @@ MoodSettings = {
 		}
 	},
 	skill_zealot = {
-		environment_setting = "skill_zealot",
+		environment_setting = "skill_slayer",
 		blend_in_time = 0.5,
 		blend_out_time = 0.25,
-		particle_effects_on_enter = {},
-		particle_effects_on_exit = {}
+		particle_effects_on_enter = {
+			"fx/screenspace_fak_healed"
+		},
+		particle_effects_on_exit = {
+			"fx/screenspace_slayer_01"
+		}
 	},
 	skill_huntsman_stealth = {
 		environment_setting = "skill_huntsman_stealth",

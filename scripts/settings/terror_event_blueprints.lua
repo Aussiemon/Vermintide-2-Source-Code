@@ -1595,32 +1595,32 @@ TerrorEventBlueprints = {
 		{
 			"spawn_at_raw",
 			spawner_id = "corpse_pit_zombie_01",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "corpse_pit_zombie_02",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "corpse_pit_zombie_03",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "corpse_pit_zombie_04",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "corpse_pit_zombie_05",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "corpse_pit_zombie_06",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"flow_event",
@@ -4134,13 +4134,6 @@ TerrorEventBlueprints = {
 			duration = 10
 		},
 		{
-			"continue_when",
-			duration = 10000,
-			condition = function (t)
-				return count_event_breed("skaven_slave") < 1 and count_event_breed("skaven_clan_rat") < 1
-			end
-		},
-		{
 			"flow_event",
 			flow_event_name = "skittergate_crumble_escape_01_done"
 		}
@@ -5435,7 +5428,7 @@ TerrorEventBlueprints = {
 			"continue_when",
 			duration = 80,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("skaven_slave") < 2 and count_event_breed("event_mines_plague_monks") < 2
+				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_storm_vermin_commander") < 2 and count_event_breed("skaven_slave") < 2 and count_event_breed("skaven_plague_monk") < 2
 			end
 		},
 		{
@@ -5509,18 +5502,12 @@ TerrorEventBlueprints = {
 		{
 			"spawn",
 			1,
-			breed_name = {
-				"chaos_corruptor_sorcerer",
-				"chaos_vortex_sorcerer"
-			}
+			breed_name = "chaos_vortex_sorcerer"
 		},
 		{
 			"spawn",
 			1,
-			breed_name = {
-				"chaos_corruptor_sorcerer",
-				"chaos_vortex_sorcerer"
-			}
+			breed_name = "chaos_corruptor_sorcerer"
 		},
 		{
 			"delay",
@@ -7510,7 +7497,7 @@ TerrorEventBlueprints = {
 		},
 		{
 			"delay",
-			duration = 5.5
+			duration = 14.5
 		},
 		{
 			"event_horde",
@@ -8186,42 +8173,42 @@ TerrorEventBlueprints = {
 		{
 			"spawn_at_raw",
 			spawner_id = "plaza_zombie_01",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "plaza_zombie_02",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "plaza_zombie_03",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "plaza_zombie_04",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "plaza_zombie_05",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "plaza_zombie_06",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "plaza_zombie_07",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"spawn_at_raw",
 			spawner_id = "plaza_zombie_08",
-			breed_name = "chaos_zombie"
+			breed_name = "chaos_fanatic"
 		},
 		{
 			"flow_event",

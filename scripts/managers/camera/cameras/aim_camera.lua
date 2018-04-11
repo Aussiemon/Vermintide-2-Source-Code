@@ -28,7 +28,7 @@ AimCamera.update = function (self, dt, position, rotation, data)
 	local aim_pitch = root_node.aim_pitch(root_node)
 	local aim_yaw = root_node.aim_yaw(root_node)
 	local rotation_pitch = Quaternion(Vector3(1, 0, 0), aim_pitch)
-	local rotation_yaw = Quaternion(Vector3(0, 0, 1), aim_yaw - math.pi*0.5)
+	local rotation_yaw = Quaternion(Vector3(0, 0, 1), aim_yaw - math.pi * 0.5)
 	local new_rotation = Quaternion.multiply(rotation_yaw, rotation_pitch)
 
 	BaseCamera.update(self, dt, position, new_rotation, data)

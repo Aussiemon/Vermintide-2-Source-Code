@@ -86,7 +86,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.15,
+			anim_time_scale = time_mod * 1.15,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",

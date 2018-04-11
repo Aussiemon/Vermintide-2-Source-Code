@@ -20,7 +20,7 @@ PlayerCharacterStateJumping.on_enter = function (self, unit, input, dt, context,
 	local jump_speed = movement_settings_table.jump.initial_vertical_speed
 
 	if script_data.use_super_jumps then
-		jump_speed = jump_speed*2
+		jump_speed = jump_speed * 2
 	end
 
 	locomotion_extension.set_maximum_upwards_velocity(locomotion_extension, jump_speed)
@@ -30,25 +30,25 @@ PlayerCharacterStateJumping.on_enter = function (self, unit, input, dt, context,
 	local velocity_jump = nil
 
 	if params.post_dodge_jump then
-		velocity_current = velocity_current*PlayerUnitMovementSettings.post_dodge_jump_velocity_scale
-		jump_speed = jump_speed*PlayerUnitMovementSettings.post_dodge_jump_speed_scale
+		velocity_current = velocity_current * PlayerUnitMovementSettings.post_dodge_jump_velocity_scale
+		jump_speed = jump_speed * PlayerUnitMovementSettings.post_dodge_jump_speed_scale
 	end
 
 	if params.backward_jump then
-		velocity_current = velocity_current*PlayerUnitMovementSettings.backwards_jump_velocity_scale
+		velocity_current = velocity_current * PlayerUnitMovementSettings.backwards_jump_velocity_scale
 	end
 
 	local speed_current = Vector3.length(velocity_current)
 
 	if PlayerUnitMovementSettings.move_speed < speed_current then
-		velocity_current = velocity_current*PlayerUnitMovementSettings.move_speed/speed_current
+		velocity_current = velocity_current * PlayerUnitMovementSettings.move_speed / speed_current
 	end
 
 	if previous_state == "climbing_ladder" then
 		local ladder_unit = params.ladder_unit
 		local ladder_rotation = Unit.world_rotation(ladder_unit, 0)
 		local direction = Quaternion.forward(ladder_rotation)
-		velocity_jump = direction*movement_settings_table.ladder.jump_backwards_force
+		velocity_jump = direction * movement_settings_table.ladder.jump_backwards_force
 		self.temp_params.ladder_shaking = params.ladder_shaking
 	else
 		velocity_jump = Vector3(velocity_current.x, velocity_current.y, jump_speed)
@@ -160,9 +160,9 @@ PlayerCharacterStateJumping.update = function (self, unit, input, dt, context, t
 	local inventory_extension = self.inventory_extension
 	local move_speed = math.clamp(movement_settings_table.move_speed, 0, PlayerUnitMovementSettings.move_speed)
 	local move_speed_multiplier = status_extension.current_move_speed_multiplier(status_extension)
-	move_speed = move_speed*move_speed_multiplier
-	move_speed = move_speed*movement_settings_table.player_speed_scale
-	move_speed = move_speed*movement_settings_table.player_air_speed_scale
+	move_speed = move_speed * move_speed_multiplier
+	move_speed = move_speed * movement_settings_table.player_speed_scale
+	move_speed = move_speed * movement_settings_table.player_air_speed_scale
 
 	CharacterStateHelper.move_in_air(self.first_person_extension, input_extension, self.locomotion_extension, move_speed, unit)
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension)

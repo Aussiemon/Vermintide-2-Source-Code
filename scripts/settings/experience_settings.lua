@@ -85,9 +85,9 @@ ExperienceSettings.get_level = function (experience)
 
 	if total_experience_for_main_levels <= experience then
 		local required_exp = experience_levels_main[num_defined_experience_levels]
-		local experience_into_level = (experience - total_experience_for_main_levels)%required_exp
-		local progress = experience_into_level/required_exp
-		local extra_levels = math.floor((experience - total_experience_for_main_levels)/required_exp)
+		local experience_into_level = (experience - total_experience_for_main_levels) % required_exp
+		local progress = experience_into_level / required_exp
+		local extra_levels = math.floor((experience - total_experience_for_main_levels) / required_exp)
 
 		return num_defined_experience_levels, progress, experience_into_level, extra_levels
 	end
@@ -99,7 +99,7 @@ ExperienceSettings.get_level = function (experience)
 		if experience < exp_total then
 			level = i - 1
 			experience_into_level = experience - previous_exp_total
-			progress = experience_into_level/experience_levels_main[i]
+			progress = experience_into_level / experience_levels_main[i]
 
 			break
 		end

@@ -42,7 +42,7 @@ BackendInterfaceCraftingPlayfab.craft = function (self, career_name, item_backen
 
 		PlayFabClientApi.ExecuteCloudScript(generate_challenge_request, craft_challenge_request_cb, craft_challenge_request_cb)
 
-		return id
+		return id, recipe
 	end
 
 	return nil

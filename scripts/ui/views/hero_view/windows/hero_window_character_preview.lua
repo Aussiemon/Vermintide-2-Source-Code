@@ -29,6 +29,7 @@ HeroWindowCharacterPreview.on_enter = function (self, params, offset)
 	self.peer_id = ingame_ui_context.peer_id
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
+	self.skin_sync_id = self.parent.skin_sync_id
 	self._animations = {}
 
 	self.create_ui_elements(self, params, offset)
@@ -131,8 +132,36 @@ HeroWindowCharacterPreview.post_update = function (self, dt, t)
 	if self.world_previewer and self.hero_unit_spawned then
 		self._update_loadout_sync(self)
 		self._update_wielded_slot(self)
+		self._update_skin_sync(self)
 		self.world_previewer:post_update(dt, t)
 	end
+
+	return 
+end
+local FORCE_RESYNC = -1
+HeroWindowCharacterPreview.respawn_hero = function (self)
+	local world_previewer = self.world_previewer
+
+	if not world_previewer then
+		return 
+	end
+
+	self.hero_unit_spawned = false
+
+	local function callback()
+		self.hero_unit_spawned = true
+		self._loadout_sync_id = FORCE_RESYNC
+
+		self:_update_loadout_sync()
+
+		self._selected_loadout_slot_index = FORCE_RESYNC
+
+		self:_update_wielded_slot()
+
+		return 
+	end
+
+	world_previewer.respawn_hero_unit(world_previewer, self.hero_name, self.career_index, false, callback)
 
 	return 
 end
@@ -162,6 +191,18 @@ HeroWindowCharacterPreview._update_loadout_sync = function (self)
 		self._populate_loadout(self)
 
 		self._loadout_sync_id = loadout_sync_id
+	end
+
+	return 
+end
+HeroWindowCharacterPreview._update_skin_sync = function (self)
+	local parent = self.parent
+	local parent_skin_sync_id = parent.skin_sync_id
+
+	if parent_skin_sync_id ~= self.skin_sync_id then
+		self.respawn_hero(self)
+
+		self.skin_sync_id = parent_skin_sync_id
 	end
 
 	return 

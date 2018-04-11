@@ -1,5 +1,6 @@
 TelemetrySettings = {
 	ftp_address = "ftp.fatshark.se/pub/bulldozer/telemetry/",
+	enabled = false,
 	version = 2,
 	title_id = ((BUILD == "debug" or BUILD == "dev") and Development.parameter("telemetry-title-id")) or GameSettingsDevelopment.backend_settings.title_id,
 	blacklist = {

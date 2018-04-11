@@ -13,7 +13,7 @@ local DEFAULT_ENEMY_HITBOX_RADIUS_APPROXIMATION = 0.5
 
 local function check_angle(nav_world, target_position, start_direction, angle, distance)
 	local direction = Quaternion.rotate(Quaternion(Vector3.up(), angle), start_direction)
-	local check_pos = target_position - direction*distance
+	local check_pos = target_position - direction * distance
 	local success, altitude = GwNavQueries.triangle_from_position(nav_world, check_pos, 0.5, 0.5)
 
 	if success then
@@ -36,10 +36,10 @@ local function get_engage_pos(nav_world, target_unit_pos, engage_from, melee_dis
 	end
 
 	local subdivisions_per_side = 3
-	local angle_inc = math.pi/(subdivisions_per_side + 1)
+	local angle_inc = math.pi / (subdivisions_per_side + 1)
 
 	for i = 1, subdivisions_per_side, 1 do
-		local angle = angle_inc*i
+		local angle = angle_inc * i
 		success, pos = check_angle(nav_world, target_unit_pos, start_direction, angle, melee_distance)
 
 		if success then
@@ -143,9 +143,9 @@ BTBotMeleeAction._update_engage_position = function (self, unit, target_unit, bl
 			local new_angle = nil
 
 			if 0 < offset_angle then
-				new_angle = offset_angle + math.pi/8
+				new_angle = offset_angle + math.pi / 8
 			else
-				new_angle = offset_angle - math.pi/8
+				new_angle = offset_angle - math.pi / 8
 			end
 
 			local new_rot = Quaternion.multiply(Quaternion(Vector3.up(), -new_angle), enemy_rot)
@@ -238,7 +238,7 @@ BTBotMeleeAction._is_in_melee_range = function (self, current_position, aim_posi
 	local current_velocity = locomotion_extension.current_velocity(locomotion_extension)
 	local relative_velocity = current_velocity - target_velocity
 	local time_to_next_attack = math.max(self._time_to_next_attack(self, attack_input, blackboard, t) or 0, 0)
-	local check_position = current_position + relative_velocity*time_to_next_attack
+	local check_position = current_position + relative_velocity * time_to_next_attack
 	local melee_range_sq = melee_range^2
 
 	return Vector3.distance_squared(aim_position, check_position) < melee_range_sq
@@ -323,7 +323,7 @@ BTBotMeleeAction._allow_engage = function (self, self_unit, target_unit, blackbo
 	local horde_override_range = action_data.override_engage_range_to_follow_pos_horde
 	local START_HORDE = 10
 	local MAX_HORDE = 30
-	local lerp_t = (num_enemies - START_HORDE)/(MAX_HORDE - START_HORDE)
+	local lerp_t = (num_enemies - START_HORDE) / (MAX_HORDE - START_HORDE)
 	local override_range = nil
 
 	if lerp_t <= 0 then
@@ -331,7 +331,7 @@ BTBotMeleeAction._allow_engage = function (self, self_unit, target_unit, blackbo
 	elseif 1 <= lerp_t then
 		override_range = horde_override_range
 	else
-		override_range = math.lerp(override_range_default, horde_override_range, lerp_t*lerp_t)
+		override_range = math.lerp(override_range_default, horde_override_range, lerp_t * lerp_t)
 	end
 
 	local distance_to_follow_pos = Vector3.distance(aim_position, follow_pos)
@@ -644,9 +644,9 @@ BTBotMeleeAction._debug_draw_melee_range = function (self, unit, target_unit, bl
 	debug_text_manager.clear_unit_text(debug_text_manager, unit, category)
 	debug_text_manager.output_unit_text(debug_text_manager, text, text_size, unit, head_node, offset, 0.5, category, color_vector, viewport_name)
 
-	offset = offset + Vector3.up()*text_size
+	offset = offset + Vector3.up() * text_size
 	text = blackboard.wielded_item_template.name
-	offset = offset + Vector3.up()*text_size
+	offset = offset + Vector3.up() * text_size
 	text = blackboard.wielded_item_template.name
 
 	debug_text_manager.output_unit_text(debug_text_manager, text, text_size, unit, head_node, offset, 0.5, category, color_vector, viewport_name)

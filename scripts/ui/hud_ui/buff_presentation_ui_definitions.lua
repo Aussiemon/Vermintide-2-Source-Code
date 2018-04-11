@@ -119,12 +119,12 @@ local animation_definitions = {
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				local size_progress = math.catmullrom(anim_progress, -2, 0, 1, -5)
-				widget.style.texture_icon.color[1] = anim_progress*255
-				widget.style.texture_frame.color[1] = anim_progress*255
+				widget.style.texture_icon.color[1] = anim_progress * 255
+				widget.style.texture_frame.color[1] = anim_progress * 255
 				local current_size = ui_scenegraph.presentation_widget.size
 				local default_size = scenegraph_definition.presentation_widget.size
-				current_size[1] = math.floor(default_size[1]*size_progress)
-				current_size[2] = math.floor(default_size[2]*size_progress)
+				current_size[1] = math.floor(default_size[1] * size_progress)
+				current_size[2] = math.floor(default_size[2] * size_progress)
 
 				return 
 			end,
@@ -142,12 +142,12 @@ local animation_definitions = {
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				local size_progress = math.catmullrom(anim_progress, 5, 0, 1, 1)
-				widget.style.texture_icon.color[1] = (anim_progress - 1)*255
-				widget.style.texture_frame.color[1] = (anim_progress - 1)*255
+				widget.style.texture_icon.color[1] = (1 - anim_progress) * 255
+				widget.style.texture_frame.color[1] = (1 - anim_progress) * 255
 				local current_size = ui_scenegraph.presentation_widget.size
 				local default_size = scenegraph_definition.presentation_widget.size
-				current_size[1] = default_size[1] - math.floor(size_progress*20)
-				current_size[2] = default_size[2] - math.floor(size_progress*20)
+				current_size[1] = default_size[1] - math.floor(20 * size_progress)
+				current_size[2] = default_size[2] - math.floor(20 * size_progress)
 
 				return 
 			end,

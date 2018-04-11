@@ -224,7 +224,7 @@ TutorialSystem.physics_async_update = function (self, context, t)
 
 		if script_data.tutorial_debug then
 			if DebugKeyHandler.key_pressed("f10", "add debug info slate", "tutorials") then
-				local duration = math.random()*5
+				local duration = math.random() * 5
 
 				self.tutorial_ui:queue_info_slate_entry("tutorial", "DEBUG INFO SLATE, LOOK AT IT GOOOO", duration + 5)
 			end
@@ -532,12 +532,10 @@ TutorialSystem._set_tutorial_ui = function (self, tutorial_ui)
 	return 
 end
 TutorialSystem.flow_callback_show_health_bar = function (self, unit, show)
-	if self.tutorial_ui then
-		if show then
-			self.tutorial_ui:add_health_bar(unit)
-		else
-			self.tutorial_ui:remove_health_bar(unit)
-		end
+	local tutorial_ui = self.tutorial_ui
+
+	if tutorial_ui then
+		tutorial_ui.show_health_bar(tutorial_ui, unit, show)
 	end
 
 	return 

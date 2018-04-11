@@ -136,17 +136,17 @@ BTCritterRatScurryUnderDoorAction._move_towards_smartobject_entrance_update = fu
 	if 0.1 < distance_to_target then
 		local speed = blackboard.breed.run_speed
 
-		if distance_to_target < speed*dt then
+		if distance_to_target < speed * dt then
 			if dt == 0 then
 				speed = 0
 			else
-				speed = distance_to_target/dt
+				speed = distance_to_target / dt
 			end
 		end
 
 		local direction_to_target = Vector3.normalize(vector_to_target)
 
-		locomotion_extension.set_wanted_velocity(locomotion_extension, direction_to_target*speed)
+		locomotion_extension.set_wanted_velocity(locomotion_extension, direction_to_target * speed)
 		locomotion_extension.set_wanted_rotation(locomotion_extension, wanted_rotation)
 	else
 		LocomotionUtils.set_animation_driven_movement(unit, true, false, false)

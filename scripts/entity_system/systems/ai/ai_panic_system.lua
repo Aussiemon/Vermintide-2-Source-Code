@@ -117,7 +117,7 @@ end
 AIPanicSystem.register_panic_zone = function (self, position, radius)
 	local panic_zone = {
 		position = Vector3Box(position),
-		radius_squared = radius*radius,
+		radius_squared = radius * radius,
 		radius = radius
 	}
 	local panic_zones = self.panic_zones

@@ -265,7 +265,7 @@ SpecialsPacing.specials_by_time_window = function (self, t, specials_settings, m
 
 			for i = 1, max_specials, 1 do
 				local index = max_specials - i + 1
-				last_time = t + time_list[index]/sum*spawn_interval + lull_time
+				last_time = t + time_list[index] / sum * spawn_interval + lull_time
 				slots[i].time = last_time
 			end
 

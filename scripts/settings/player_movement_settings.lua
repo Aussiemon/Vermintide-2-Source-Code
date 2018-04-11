@@ -32,7 +32,7 @@ PlayerUnitMovementSettings.FWD_MOVE_SPEED_SCALE = 1
 PlayerUnitMovementSettings.BWD_MOVE_SPEED_SCALE = 0.65
 PlayerUnitMovementSettings.STRAFE_MOVE_SPEED_SCALE = 1
 PlayerUnitMovementSettings.slope_traversion = PlayerUnitMovementSettings.slope_traversion or {}
-PlayerUnitMovementSettings.slope_traversion.max_angle = math.pi*0.27
+PlayerUnitMovementSettings.slope_traversion.max_angle = math.pi * 0.27
 PlayerUnitMovementSettings.slope_traversion.standing_frames = 1
 PlayerUnitMovementSettings.slope_traversion.jump_disallowed_frames = 10
 PlayerUnitMovementSettings.slope_traversion.crouch_step_up = 0.15
@@ -63,7 +63,7 @@ PlayerUnitMovementSettings.ladder.player_ladder_speed_scale = 1
 PlayerUnitMovementSettings.ladder.climb_speed = 3
 PlayerUnitMovementSettings.ladder.climb_move_acceleration_up = 4
 PlayerUnitMovementSettings.ladder.climb_move_acceleration_down = 5
-PlayerUnitMovementSettings.ladder.climb_pitch_offset = math.pi/8
+PlayerUnitMovementSettings.ladder.climb_pitch_offset = math.pi / 8
 PlayerUnitMovementSettings.ladder.climb_speed_lerp_interval = 22.5
 PlayerUnitMovementSettings.ladder.climb_horizontals_multiplier = 0.25
 PlayerUnitMovementSettings.ladder.climb_attach_to_ladder_position_in_ladder_space_y = -0.73
@@ -208,8 +208,8 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end_look_sense_override = 1,
 		movement_speed_modifier = 1,
 		look_override_function = function ()
-			local look_override_x = (math.random() - 0.5)*0.5
-			local look_override_y = math.random()*0.05 + -0.1
+			local look_override_x = 0.5 * (0.5 - math.random())
+			local look_override_y = -0.1 + math.random() * 0.05
 
 			return look_override_x, look_override_y
 		end,
@@ -227,8 +227,8 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end_look_sense_override = 1,
 		movement_speed_modifier = 0.8,
 		look_override_function = function ()
-			local look_override_x = (math.random() - 0.5)*0.5
-			local look_override_y = math.random()*0.1 + -0.2
+			local look_override_x = 0.5 * (0.5 - math.random())
+			local look_override_y = -0.2 + math.random() * 0.1
 
 			return look_override_x, look_override_y
 		end,
@@ -250,8 +250,8 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end_look_sense_override = 1,
 		movement_speed_modifier = 0.8,
 		look_override_function = function ()
-			local look_override_x = (math.random() - 0.5)*0.5
-			local look_override_y = math.random()*0.1 + -0.15
+			local look_override_x = 0.5 * (0.5 - math.random())
+			local look_override_y = -0.15 + math.random() * 0.1
 
 			return look_override_x, look_override_y
 		end,
@@ -269,8 +269,8 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end_look_sense_override = 0.8,
 		movement_speed_modifier = 0.65,
 		look_override_function = function ()
-			local look_override_x = (math.random() - 0.5)*0.5
-			local look_override_y = math.random()*0.2 + -0.3
+			local look_override_x = 0.5 * (0.5 - math.random())
+			local look_override_y = -0.3 + math.random() * 0.2
 
 			return look_override_x, look_override_y
 		end,
@@ -292,8 +292,8 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end_look_sense_override = 0.8,
 		movement_speed_modifier = 0.65,
 		look_override_function = function ()
-			local look_override_x = (math.random() - 0.5)*0.5
-			local look_override_y = math.random()*0.1 + -0.25
+			local look_override_x = 0.5 * (0.5 - math.random())
+			local look_override_y = -0.25 + math.random() * 0.1
 
 			return look_override_x, look_override_y
 		end,
@@ -311,8 +311,8 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end_look_sense_override = 0.7,
 		movement_speed_modifier = 0.5,
 		look_override_function = function ()
-			local look_override_x = (math.random() - 0.5)*0.5
-			local look_override_y = math.random()*0.2 + -0.5
+			local look_override_x = 0.5 * (0.5 - math.random())
+			local look_override_y = -0.5 + math.random() * 0.2
 
 			return look_override_x, look_override_y
 		end,
@@ -334,8 +334,8 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end_look_sense_override = 0.7,
 		movement_speed_modifier = 0.1,
 		look_override_function = function ()
-			local look_override_x = (math.random() - 0.5)*0.5
-			local look_override_y = math.random()*0.2 + -0.5
+			local look_override_x = 0.5 * (0.5 - math.random())
+			local look_override_y = -0.5 + math.random() * 0.2
 
 			return look_override_x, look_override_y
 		end,
@@ -364,8 +364,8 @@ PlayerUnitMovementSettings.fall = PlayerUnitMovementSettings.fall or {}
 PlayerUnitMovementSettings.fall.heights = PlayerUnitMovementSettings.fall.heights or {}
 PlayerUnitMovementSettings.fall.heights.FALL_DAMAGE_MULTIPLIER = 14
 PlayerUnitMovementSettings.fall.heights.MIN_FALL_DAMAGE_HEIGHT = 7
-PlayerUnitMovementSettings.fall.heights.MIN_FALL_DAMAGE = 0
-PlayerUnitMovementSettings.fall.heights.MAX_FALL_DAMAGE = 150
+PlayerUnitMovementSettings.fall.heights.MIN_FALL_DAMAGE_PERCENTAGE = 0
+PlayerUnitMovementSettings.fall.heights.MAX_FALL_DAMAGE_PERCENTAGE = 1
 PlayerUnitMovementSettings.fall.heights.HARD_LANDING_FALL_HEIGHT = 7
 PlayerUnitMovementSettings.landing = PlayerUnitMovementSettings.landing or {}
 PlayerUnitMovementSettings.landing.anim_forced_upper_body_block = 0.3
@@ -391,7 +391,7 @@ PlayerUnitMovementSettings.block.consecutive_block_impact_time = 3
 PlayerUnitMovementSettings.block.consecutive_block_impact_multiplier = 1
 PlayerUnitMovementSettings.block.override_recharge_rate = 0.025
 PlayerUnitMovementSettings.block.aim_direction_pitch_function = function (z)
-	return (z - 0.2)*1.25
+	return 1.25 * (z - 0.2)
 end
 PlayerUnitMovementSettings.parry = PlayerUnitMovementSettings.parry or {}
 PlayerUnitMovementSettings.parry.REQUIRED_MOVEMENT_TO_POSE = 0.003

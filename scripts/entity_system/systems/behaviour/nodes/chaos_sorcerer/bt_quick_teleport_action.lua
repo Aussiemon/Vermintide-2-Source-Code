@@ -8,6 +8,17 @@ BTQuickTeleportAction.init = function (self, ...)
 end
 BTQuickTeleportAction.name = "BTQuickTeleportAction"
 local player_and_bot_units = PLAYER_AND_BOT_UNITS
+
+local function randomize(event)
+	if type(event) == "table" then
+		return event[Math.random(1, #event)]
+	else
+		return event
+	end
+
+	return 
+end
+
 BTQuickTeleportAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -20,7 +31,7 @@ BTQuickTeleportAction.enter = function (self, unit, blackboard, t)
 	local navigation_extension = blackboard.navigation_extension
 
 	navigation_extension.set_enabled(navigation_extension, false)
-	Managers.state.network:anim_event(unit, action.teleport_start_anim)
+	Managers.state.network:anim_event(unit, randomize(action.teleport_start_anim))
 
 	if action.push_close_players then
 		blackboard.hit_units = {}
@@ -120,7 +131,9 @@ BTQuickTeleportAction.anim_cb_teleport_start_finished = function (self, unit, bl
 		Unit.set_local_rotation(unit, 0, unit_to_target_rot)
 	end
 
-	Managers.state.network:anim_event(unit, blackboard.action.teleport_end_anim)
+	if blackboard.action.teleport_end_anim then
+		Managers.state.network:anim_event(unit, blackboard.action.teleport_end_anim)
+	end
 
 	return 
 end
@@ -141,7 +154,7 @@ BTQuickTeleportAction.push_close_players = function (self, unit, blackboard, pos
 	local hit_unit_id = hit_units[target_unit]
 
 	if not hit_unit_id and dist < radius then
-		local velocity = push_speed*Vector3.normalize(to_target)
+		local velocity = push_speed * Vector3.normalize(to_target)
 
 		if push_speed_z then
 			Vector3.set_z(velocity, push_speed_z)

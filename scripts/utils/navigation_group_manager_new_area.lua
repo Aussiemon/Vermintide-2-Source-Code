@@ -137,7 +137,7 @@ NavigationGroupManagerNewArea.calc_polygon_center = function (self, navmesh, pol
 		v = v + vec
 	end
 
-	return v/3
+	return v / 3
 end
 NavigationGroupManagerNewArea.calc_polygon_area = function (self, navmesh, poly)
 	local sides = self.get_polygon_sides(self, navmesh, poly)
@@ -147,8 +147,8 @@ NavigationGroupManagerNewArea.calc_polygon_area = function (self, navmesh, poly)
 		perimeter = perimeter + sides[i]
 	end
 
-	perimeter = perimeter/2
-	local area = math.sqrt(perimeter*(perimeter - sides[1])*(perimeter - sides[2])*(perimeter - sides[3]))
+	perimeter = perimeter / 2
+	local area = math.sqrt(perimeter * (perimeter - sides[1]) * (perimeter - sides[2]) * (perimeter - sides[3]))
 
 	return area
 end

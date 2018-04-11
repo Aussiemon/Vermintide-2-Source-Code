@@ -252,10 +252,10 @@ function UIFontByResolution(font_style, optional_scale)
 	local scale = RESOLUTION_LOOKUP.scale
 
 	if optional_scale then
-		scale = scale*optional_scale
+		scale = scale * optional_scale
 	end
 
-	target_size = (font_style.allow_fractions and font_size*scale) or math_floor(font_size*scale)
+	target_size = (font_style.allow_fractions and font_size * scale) or math_floor(font_size * scale)
 	local closest_size = nil
 	local closest_diff = math.huge
 

@@ -487,8 +487,8 @@ else
 				},
 				{
 					fade = false,
-					transition = "leave_group",
-					display_name = "leave_game_menu_button_name"
+					transition = "return_to_pc_menu",
+					display_name = "menu_return_to_title_screen"
 				},
 				{
 					fade = false,
@@ -523,6 +523,11 @@ else
 				},
 				{
 					fade = false,
+					transition = "return_to_pc_menu",
+					display_name = "menu_return_to_title_screen"
+				},
+				{
+					fade = false,
 					transition = "quit_game",
 					display_name = "quit_menu_button_name"
 				}
@@ -551,6 +556,11 @@ else
 					fade = false,
 					transition = "leave_group",
 					display_name = leave_party_button_text
+				},
+				{
+					fade = false,
+					transition = "return_to_pc_menu",
+					display_name = "menu_return_to_title_screen"
 				},
 				{
 					fade = false,
@@ -1015,7 +1025,7 @@ IngameView.set_background_height = function (self, num_buttons)
 	local button_spacing = self.menu_definition.MENU_BUTTON_SPACING
 	local button_size = self.menu_definition.MENU_BUTTON_SIZE
 	local button_height = button_size[2]
-	local total_button_height = num_buttons*(button_height + button_spacing)
+	local total_button_height = num_buttons * (button_height + button_spacing)
 	local ui_scenegraph = self.ui_scenegraph
 	local background_size = ui_scenegraph.window.size
 	background_size[2] = total_button_height
@@ -1162,7 +1172,7 @@ IngameView.controller_select_button_index = function (self, index, ignore_sound)
 		if is_selected then
 			local widget_scenegraph_id = widget.scenegraph_id
 			local widget_current_position = self.ui_scenegraph[widget_scenegraph_id].local_position
-			gamepad_selection_current_position[2] = gamepad_selection_default_position[2] - i*84
+			gamepad_selection_current_position[2] = gamepad_selection_default_position[2] - i * 84
 		end
 	end
 
@@ -1211,7 +1221,7 @@ IngameView.update_controller_input = function (self, input_service, dt)
 				selection_accepted = self.controller_select_button_index(self, new_index)
 			end
 
-			self.controller_cooldown = GamepadSettings.menu_cooldown*speed_multiplier
+			self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
 
 			return 
 		end
@@ -1228,7 +1238,7 @@ IngameView.update_controller_input = function (self, input_service, dt)
 				selection_accepted = self.controller_select_button_index(self, new_index)
 			end
 
-			self.controller_cooldown = GamepadSettings.menu_cooldown*speed_multiplier
+			self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
 
 			return 
 		end

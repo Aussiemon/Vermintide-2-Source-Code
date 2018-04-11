@@ -51,7 +51,7 @@ DiceKeeper.chest_loot_dice_chance = function (self)
 end
 DiceKeeper.calculcate_loot_die_chance_on_remaining_chests = function (self, percentage_chests_left)
 	if 0 < percentage_chests_left then
-		self._chest_loot_dice_chance = percentage_chests_left/1*0.05
+		self._chest_loot_dice_chance = 0.05 * 1 / percentage_chests_left
 	end
 
 	return 

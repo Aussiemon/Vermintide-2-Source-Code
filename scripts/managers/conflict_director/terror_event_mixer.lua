@@ -403,10 +403,10 @@ TerrorEventMixer.run_functions = {
 		patrol_data.group_type = "roaming_patrol"
 		patrol_data.spline_way_points = data.spline_way_points
 		patrol_data.spline_type = data.spline_type
+		patrol_data.despawn_at_end = false
+		patrol_data.zone_data = data.zone_data
 
 		conflict_director.spawn_spline_group(conflict_director, patrol_template, position, patrol_data)
-
-		patrol_data.despawn_at_end = false
 
 		return true
 	end,
@@ -678,7 +678,7 @@ TerrorEventMixer.start_random_event = function (event_chunk_name)
 	assert(event_chunk, "Cannot find a WeightedRandomTerrorEvent called %s", tostring(event_chunk_name))
 
 	local index = LoadedDice.roll_easy(event_chunk.loaded_probability_table)
-	local index = index*2 - 1
+	local index = index * 2 - 1
 	local event_name = event_chunk[index]
 
 	TerrorEventMixer.add_to_start_event_list(event_name)
@@ -832,7 +832,7 @@ TerrorEventMixer.debug = function (gui, active_events, t, dt)
 	if DebugKeyHandler.key_pressed("mouse_middle_held", "pan terror event mixer", "ai debugger") then
 		local input_service = Managers.free_flight.input_manager:get_service("Debug")
 		local look = input_service.get(input_service, "look")
-		debug_x = debug_x - look.x*0.001
+		debug_x = debug_x - look.x * 0.001
 	end
 
 	local x = 0
@@ -842,7 +842,7 @@ TerrorEventMixer.debug = function (gui, active_events, t, dt)
 		local event = active_events[i]
 
 		if event then
-			TerrorEventMixer.debug_event(gui, event, t, dt, x, y, debug_x*resx, i == 1)
+			TerrorEventMixer.debug_event(gui, event, t, dt, x, y, debug_x * resx, i == 1)
 
 			x = x + debug_win_width + 15
 		end
@@ -855,7 +855,7 @@ TerrorEventMixer.debug_event = function (gui, event, t, dt, x1, y1, panning_x, r
 	local index = event.index
 	local element = elements[index]
 	local func_name = element[1]
-	local borderx = panning_x + 20
+	local borderx = 20 + panning_x
 	local bordery = 280
 	x1 = x1 + borderx + 20
 	y1 = y1 + bordery + 20
@@ -929,7 +929,7 @@ TerrorEventMixer.debug_event = function (gui, event, t, dt, x1, y1, panning_x, r
 			ScriptGUI.ictext(gui, resx, resy, "disabled", tiny_font_mtrl, tiny_font_size, tiny_font, x1 - 10 + 75, bordery - 6, layer, disabled_color)
 		end
 
-		ScriptGUI.icrect(gui, resx, resy, borderx, bordery - 22, x1 + debug_win_width*0.66, bordery - 2, layer - 1, Color(200, 20, 20, 20))
+		ScriptGUI.icrect(gui, resx, resy, borderx, bordery - 22, x1 + debug_win_width * 0.66, bordery - 2, layer - 1, Color(200, 20, 20, 20))
 	end
 
 	return 

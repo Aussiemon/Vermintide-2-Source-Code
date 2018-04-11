@@ -219,7 +219,7 @@ LevelEndView.on_enter = function (self)
 end
 LevelEndView.on_exit = function (self)
 	local difficulty_key = Managers.state.difficulty:get_difficulty()
-	local chest_settings = LootChestData.chests_by_difficulty[difficulty_key]
+	local chest_settings = LootChestData.chests_by_category[difficulty_key]
 	local chests_package_name = chest_settings.package_name
 
 	Managers.package:unload(chests_package_name, "global")
@@ -273,7 +273,7 @@ end
 LevelEndView._set_end_timer = function (self, time)
 	local widget = self._dynamic_widgets.timer_text
 	time = math.ceil(time)
-	local time_text = string.format("%02d:%02d", math.floor(time/60), time%60)
+	local time_text = string.format("%02d:%02d", math.floor(time / 60), time % 60)
 	widget.content.text = string.format(Localize("timer_prefix_time_left") .. ": %s", time_text)
 
 	return 
@@ -476,17 +476,17 @@ LevelEndView._apply_shake_event = function (self, settings, t)
 	local fade_out_time = settings.fade_out_time
 
 	if fade_in_time and t <= fade_in_time then
-		settings.fade_progress = math.clamp((t - start_time)/(fade_in_time - start_time), 0, 1)
+		settings.fade_progress = math.clamp((t - start_time) / (fade_in_time - start_time), 0, 1)
 	elseif fade_out_time and fade_out_time <= t then
-		settings.fade_progress = math.clamp((end_time - t)/(end_time - fade_out_time), 0, 1)
+		settings.fade_progress = math.clamp((end_time - t) / (end_time - fade_out_time), 0, 1)
 	end
 
-	local pitch_noise_value = self._calculate_perlin_value(self, t - settings.start_time, settings)*settings.scale
-	local yaw_noise_value = self._calculate_perlin_value(self, t - settings.start_time + 10, settings)*settings.scale
+	local pitch_noise_value = self._calculate_perlin_value(self, t - settings.start_time, settings) * settings.scale
+	local yaw_noise_value = self._calculate_perlin_value(self, t - settings.start_time + 10, settings) * settings.scale
 	local current_rot = self.get_camera_rotation(self)
-	local deg_to_rad = math.pi/180
-	local yaw_offset = Quaternion(Vector3.up(), yaw_noise_value*deg_to_rad)
-	local pitch_offset = Quaternion(Vector3.right(), pitch_noise_value*deg_to_rad)
+	local deg_to_rad = math.pi / 180
+	local yaw_offset = Quaternion(Vector3.up(), yaw_noise_value * deg_to_rad)
+	local pitch_offset = Quaternion(Vector3.right(), pitch_noise_value * deg_to_rad)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
 	local rotation = Quaternion.multiply(Quaternion.identity(), total_offset)
 
@@ -507,12 +507,12 @@ LevelEndView._calculate_perlin_value = function (self, x, settings)
 	for i = 0, number_of_octaves, 1 do
 		local frequency = 2^i
 		local amplitude = persistance^i
-		total = total + self._interpolated_noise(self, x*frequency, settings)*amplitude
+		total = total + self._interpolated_noise(self, x * frequency, settings) * amplitude
 	end
 
 	local amplitude_multiplier = shake_settings.amplitude or 1
 	local fade_multiplier = settings.fade_progress or 1
-	total = total*amplitude_multiplier*fade_multiplier
+	total = total * amplitude_multiplier * fade_multiplier
 
 	return total
 end
@@ -525,13 +525,13 @@ LevelEndView._interpolated_noise = function (self, x, settings)
 	return math.lerp(v1, v2, remainder)
 end
 LevelEndView._smoothed_noise = function (self, x, settings)
-	return self._noise(self, x, settings)/2 + self._noise(self, x - 1, settings)/4 + self._noise(self, x + 1, settings)/4
+	return self._noise(self, x, settings) / 2 + self._noise(self, x - 1, settings) / 4 + self._noise(self, x + 1, settings) / 4
 end
 LevelEndView._noise = function (self, x, settings)
 	local next_seed, _ = Math.next_random(x + settings.seed)
 	local _, value = Math.next_random(next_seed)
 
-	return value*2 - 1
+	return value * 2 - 1
 end
 LevelEndView.set_camera_position = function (self, position)
 	local _, viewport = self.get_viewport_world(self)
@@ -565,7 +565,7 @@ LevelEndView._position_camera = function (self, optional_pose)
 	if camera_pose then
 		local fov = 65
 
-		Camera.set_vertical_fov(camera, (math.pi*fov)/180)
+		Camera.set_vertical_fov(camera, (math.pi * fov) / 180)
 		ScriptCamera.set_local_pose(camera, camera_pose)
 		ScriptCamera.force_update(world, camera)
 	end
@@ -577,9 +577,9 @@ LevelEndView.set_camera_zoom = function (self, progress)
 	local translation = Matrix4x4.translation(camera_pose)
 	local rotation = Matrix4x4.rotation(camera_pose)
 	local max_distance = 0.5
-	local distance = max_distance*progress
+	local distance = max_distance * progress
 	local dir = Quaternion.forward(rotation)
-	local position = translation + dir*distance
+	local position = translation + dir * distance
 
 	self.set_camera_position(self, position)
 
@@ -591,7 +591,7 @@ LevelEndView._setup_viewport_camera = function (self)
 	local level_camera_rot = Unit.world_rotation(level_camera_unit, 0)
 	local level_camera_pos = Unit.world_position(level_camera_unit, 0)
 	local level_camera_look = Quaternion.forward(level_camera_rot)
-	level_camera_pos = level_camera_pos - level_camera_look*3
+	level_camera_pos = level_camera_pos - level_camera_look * 3
 	local viewport_camera = ScriptViewport.camera(viewport)
 
 	ScriptCamera.set_local_rotation(viewport_camera, level_camera_rot)
@@ -982,7 +982,7 @@ LevelEndView._peer_signaled_done = function (self, peer_id)
 end
 LevelEndView._start_force_shutdown = function (self)
 	self._started_force_shutdown = true
-	self._force_shutdown_timer = 30
+	self._force_shutdown_timer = 10
 
 	return 
 end

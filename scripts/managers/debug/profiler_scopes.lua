@@ -10,7 +10,7 @@ local overloaded = overloaded or false
 local function indent(depth)
 	local ind = ""
 
-	for ii = 0, depth + 2, 1 do
+	for ii = 0, 2 + depth, 1 do
 		ind = ind .. "   "
 	end
 

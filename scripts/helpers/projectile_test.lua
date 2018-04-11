@@ -10,8 +10,8 @@ ProjectileTest.add_simulated_projectile = function (p1, p2, projectile_speed, pr
 		if angle then
 			local to_target = new_p2 - p1
 			local vec_flat = Vector3.normalize(Vector3.flat(to_target))
-			local x_vel_0 = math.cos(angle)*projectile_speed
-			local y_vel_0 = math.sin(angle)*projectile_speed
+			local x_vel_0 = math.cos(angle) * projectile_speed
+			local y_vel_0 = math.sin(angle) * projectile_speed
 			projectiles[#projectiles + 1] = {
 				type = "known_speed",
 				last_dot = 0,
@@ -31,8 +31,8 @@ ProjectileTest.add_simulated_projectile = function (p1, p2, projectile_speed, pr
 		if speed then
 			local to_target = new_p2 - p1
 			local vec_flat = Vector3.normalize(Vector3.flat(to_target))
-			local x_vel_0 = math.cos(projectile_angle)*speed
-			local y_vel_0 = math.sin(projectile_angle)*speed
+			local x_vel_0 = math.cos(projectile_angle) * speed
+			local y_vel_0 = math.sin(projectile_angle) * speed
 			projectiles[#projectiles + 1] = {
 				type = "known_angle",
 				last_dot = 0,
@@ -67,7 +67,7 @@ ProjectileTest.simulate_projectiles = function (physics_world, dt)
 
 		QuickDrawer:line(pos, target_pos, color)
 
-		local hit = dot*p.last_dot < 0
+		local hit = dot * p.last_dot < 0
 
 		if hit or 10 < p.t then
 			if 1 < Vector3.distance(pos, target_pos) then
@@ -112,14 +112,14 @@ ProjectileTest.run_projectile_test = function (world, t, dt)
 	local target_velocity = player_locomotion.velocity_current:unbox()
 	local p1 = Vector3(0, 0, 0)
 	local projectile_speed = 30
-	local projectile_angle = math.pi/4
+	local projectile_angle = math.pi / 4
 	local acceptable_accuracy = 0.01
 
 	QuickDrawer:sphere(p1, 0.5, Color(200, 30, 30))
 	ProjectileTest.simulate_projectiles(physics_world, dt)
 
 	if next_proj_test < t then
-		local odd = math.floor(next_proj_test)%2 == 0
+		local odd = math.floor(next_proj_test) % 2 == 0
 
 		if odd then
 			ProjectileTest.add_simulated_projectile(p1, p2, nil, projectile_angle, target_velocity, gravity)
@@ -171,17 +171,17 @@ ProjectileTest.draw_projectile_trajectory = function (p1, p2, gravity, projectil
 
 	if angle then
 		local vec_flat = Vector3.normalize(Vector3.flat(distance_vector))
-		local velocity = Quaternion.rotate(Quaternion.axis_angle(Vector3.cross(vec_flat, Vector3.up()), angle), vec_flat)*projectile_speed
+		local velocity = Quaternion.rotate(Quaternion.axis_angle(Vector3.cross(vec_flat, Vector3.up()), angle), vec_flat) * projectile_speed
 		local old_pos = p1 + Vector3(0, 0, 0.5)
 		local pos = p1 + Vector3(0, 0, 0.15)
 		local color_table = GameSettingsDevelopment.debug_unit_colors
 		local i = 1
-		velocity = velocity*time_step
+		velocity = velocity * time_step
 
 		while i < 1000 do
-			velocity = velocity - Vector3(0, 0, gravity*time_step*time_step)
+			velocity = velocity - Vector3(0, 0, gravity * time_step * time_step)
 			pos = pos + velocity
-			local color_index = (i - 1)%#color_table + 1
+			local color_index = (i - 1) % #color_table + 1
 			local col = color_table[color_index]
 
 			QuickDrawer:line(old_pos, pos, Color(255, col[1], col[2], col[3]))

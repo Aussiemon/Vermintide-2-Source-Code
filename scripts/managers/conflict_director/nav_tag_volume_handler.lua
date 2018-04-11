@@ -73,13 +73,13 @@ NavTagVolumeHandler.create_mapping = function (self, pos, size, layer_name)
 
 	local mapping = {}
 	local left = pos + Vector3(-size, 0, 0)
-	local left_down = pos + Vector3.normalize(Vector3(-size, -size, 0))*size
+	local left_down = pos + Vector3.normalize(Vector3(-size, -size, 0)) * size
 	local down = pos + Vector3(0, -size, 0)
-	local down_right = pos + Vector3.normalize(Vector3(size, -size, 0))*size
+	local down_right = pos + Vector3.normalize(Vector3(size, -size, 0)) * size
 	local right = pos + Vector3(size, 0, 0)
-	local up_right = pos + Vector3.normalize(Vector3(size, size, 0))*size
+	local up_right = pos + Vector3.normalize(Vector3(size, size, 0)) * size
 	local up = pos + Vector3(0, size, 0)
-	local up_left = pos + Vector3.normalize(Vector3(-size, size, 0))*size
+	local up_left = pos + Vector3.normalize(Vector3(-size, size, 0)) * size
 	mapping.bottom_points = {
 		{
 			left[1],

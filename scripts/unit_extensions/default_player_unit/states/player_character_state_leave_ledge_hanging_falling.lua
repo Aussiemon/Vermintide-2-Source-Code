@@ -23,7 +23,7 @@ PlayerCharacterStateLeaveLedgeHangingFalling.on_enter = function (self, unit, in
 	local ledge_rotation = Unit.world_rotation(ledge_unit, node)
 	local ledge_forward = Quaternion.forward(ledge_rotation)
 	local position = Unit.local_position(unit, 0)
-	position = position - ledge_forward*movement_settings_table.ledge_hanging.leaving_falling_forward_push_constant
+	position = position - ledge_forward * movement_settings_table.ledge_hanging.leaving_falling_forward_push_constant
 
 	self.locomotion_extension:enable_script_driven_movement()
 	self.locomotion_extension:teleport_to(position)

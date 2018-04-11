@@ -84,7 +84,7 @@ BTErraticFollowAction.run = function (self, unit, blackboard, t, dt)
 		local pos = POSITION_LOOKUP[unit] + Vector3(0, 0, 0.25)
 		local fwd = Quaternion.forward(Unit.local_rotation(unit, 0))
 
-		QuickDrawerStay:line(pos, pos + fwd*2, Color(255, 100, 0))
+		QuickDrawerStay:line(pos, pos + fwd * 2, Color(255, 100, 0))
 	end
 
 	local move_state = blackboard.move_state
@@ -148,7 +148,7 @@ BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomoti
 		local success = self.investigate_jump(self, unit, t, blackboard, pos, locomotion_extension)
 
 		if success then
-			blackboard.next_jump_time = t + math.random()*4
+			blackboard.next_jump_time = t + math.random() * 4
 
 			return 
 		else
@@ -241,7 +241,7 @@ BTErraticFollowAction.check_for_high_jump = function (self, unit, blackboard)
 	local pos = POSITION_LOOKUP[unit]
 	local fwd = Vector3.normalize(Quaternion.forward(Unit.world_rotation(unit, 0)))
 	local above_pos = pos + Vector3(0, 0, 2)
-	local infront_pos = above_pos + fwd*2
+	local infront_pos = above_pos + fwd * 2
 	local result, hit_position = PhysicsWorld.immediate_raycast(physics_world, infront_pos, Vector3(0, 0, 1), ray_length, "closest", "collision_filter", "filter_ai_mover")
 	local result2, hit_position2 = PhysicsWorld.immediate_raycast(physics_world, above_pos, Vector3(0, 0, 1), ray_length, "closest", "collision_filter", "filter_ai_mover")
 	local can_jump_high = (not result or not hit_position) and (not result2 or not hit_position2)
@@ -253,7 +253,7 @@ BTErraticFollowAction.check_dir = function (self, p0, travel_dir, nav_world, tra
 	local color_success = Color(0, 255, 0)
 	local color_fail = Color(255, 0, 0)
 	local jump_dir = Quaternion.rotate(Quaternion(Vector3.up(), data.ray_angle), travel_dir)
-	local p1 = p0 + jump_dir*data.ray_dist
+	local p1 = p0 + jump_dir * data.ray_dist
 	local success, hit_pos = GwNavQueries.raycast(nav_world, p0, p1, traverse_logic)
 
 	if debug_movement then
@@ -269,7 +269,7 @@ BTErraticFollowAction.check_dir = function (self, p0, travel_dir, nav_world, tra
 			local d = data[j]
 			local end_dir = Quaternion.rotate(Quaternion(Vector3.up(), d.ray_angle), jump_dir)
 			local end_dot = Vector3.dot(travel_dir, end_dir)
-			local p2 = p1 + end_dir*d.ray_dist
+			local p2 = p1 + end_dir * d.ray_dist
 
 			if end_dot <= 0 then
 				if debug_movement then
@@ -357,8 +357,8 @@ BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, un
 			local p = unit_position + Vector3(0, 0, 4)
 
 			QuickDrawerStay:line(unit_position, p, Color(200, 200, 10))
-			QuickDrawerStay:line(p, p + move_dir*2, Color(0, 200, 0))
-			QuickDrawerStay:line(p, p + travel_dir*2.5, Color(0, 200, 200))
+			QuickDrawerStay:line(p, p + move_dir * 2, Color(0, 200, 0))
+			QuickDrawerStay:line(p, p + travel_dir * 2.5, Color(0, 200, 200))
 		end
 
 		right_of_to_goal = 0 < Vector3.cross(move_dir, travel_dir)[3]

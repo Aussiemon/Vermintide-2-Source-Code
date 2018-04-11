@@ -70,7 +70,7 @@ GameTimerUI.draw = function (self, dt)
 end
 GameTimerUI.set_time = function (self, time)
 	local floor = math.floor
-	local timer_text = string.format("%.2d:%.2d:%.2d", floor(time/3600), floor(time/60)%60, floor(time)%60)
+	local timer_text = string.format("%.2d:%.2d:%.2d", floor(time / 3600), floor(time / 60) % 60, floor(time) % 60)
 	self.timer_widget_content.timer_text = timer_text
 
 	return 

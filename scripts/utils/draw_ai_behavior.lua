@@ -11,11 +11,11 @@ local TINY_FONT_MTRL = "materials/fonts/" .. TINY_FONT
 local LAYER = 100
 local RES_X, RES_Y = Application.resolution()
 local NODE_HEIGHT = 0.04
-local MIN_NODE_WIDTH = RES_X/160
-local NODE_SPACING = RES_X*1e-05
-local TEXT_SPACING = RES_X/2
-local THIN_BORDER = RES_X/5
-local THICK_BORDER = RES_X/15
+local MIN_NODE_WIDTH = 160 / RES_X
+local NODE_SPACING = RES_X * 1e-05
+local TEXT_SPACING = 2 / RES_X
+local THIN_BORDER = 5 / RES_X
+local THICK_BORDER = 15 / RES_X
 local FADE_TIME = 3
 local reuse_fill_lines = {}
 local state_counter = 1
@@ -24,7 +24,7 @@ local nodes = {}
 local row_heights = {
 	NODE_HEIGHT
 }
-local ROW_SPACING = NODE_HEIGHT*0.5
+local ROW_SPACING = NODE_HEIGHT * 0.5
 local BORDER_SPACING = NODE_HEIGHT
 DrawAiBehaviour = {}
 local DrawAiBehaviour = DrawAiBehaviour
@@ -216,7 +216,7 @@ local function reset_circle_array()
 end
 
 local function add_item_to_circle_array(item)
-	DrawAiBehaviour.circle_array_index = DrawAiBehaviour.circle_array_index%DrawAiBehaviour.circle_max_size + 1
+	DrawAiBehaviour.circle_array_index = DrawAiBehaviour.circle_array_index % DrawAiBehaviour.circle_max_size + 1
 	DrawAiBehaviour.circle_array[DrawAiBehaviour.circle_array_index] = item
 
 	return 
@@ -230,14 +230,14 @@ local function present_circle_array(gui, x, y)
 	local x1 = x
 	local y1 = y
 
-	ScriptGUI.icrect(gui, RES_X, RES_Y, x1 - 5, y1 - 5, x1 + 300, y1 + num_items*20 + 10, LAYER, Color(100, 100, 100, 150))
+	ScriptGUI.icrect(gui, RES_X, RES_Y, x1 - 5, y1 - 5, x1 + 300, y1 + num_items * 20 + 10, LAYER, Color(100, 100, 100, 150))
 
 	for i = 1, num_items, 1 do
 		local text = a[index]
 
-		ScriptGUI.ictext(gui, RES_X, RES_Y, text, FONT_MTRL, FONT_SIZE, FONT, x1, y1 + i*20, 400, Color(255, 220, 120))
+		ScriptGUI.ictext(gui, RES_X, RES_Y, text, FONT_MTRL, FONT_SIZE, FONT, x1, y1 + 20 * i, 400, Color(255, 220, 120))
 
-		index = (index - 2)%max_items + 1
+		index = (index - 2) % max_items + 1
 	end
 
 	return 
@@ -364,8 +364,8 @@ local v3box_meta = getmetatable(Vector3Box(0, 0, 0))
 
 local function draw_blackboard(gui, node, blackboard, x1, y1, extra_info, node_width, extra_height, tcolor)
 	local pos_x = x1 + TEXT_SPACING
-	local pos_y = y1 + NODE_HEIGHT*0.8
-	local text_height = SMALL_FONT_SIZE/RES_Y
+	local pos_y = y1 + NODE_HEIGHT * 0.8
+	local text_height = SMALL_FONT_SIZE / RES_Y
 	local text_layer = LAYER + 1
 	local node_type = node.name
 	local bb_color = Color(255, 0, 0, 0)
@@ -439,7 +439,7 @@ local function draw_blackboard(gui, node, blackboard, x1, y1, extra_info, node_w
 			end
 		end
 	elseif extra_info then
-		extra_height = extra_height + RES_Y/5
+		extra_height = extra_height + 5 / RES_Y
 		local ecolor = Color(240, 255, 55, 100)
 
 		for k, string in ipairs(extra_info) do
@@ -453,7 +453,7 @@ local function draw_blackboard(gui, node, blackboard, x1, y1, extra_info, node_w
 
 	if 0 < longest_text_length then
 		local min_pos, max_pos = Gui.text_extents(gui, longest_text, FONT_MTRL, SMALL_FONT_SIZE)
-		local text_width = (max_pos.x - min_pos.x)/RES_X
+		local text_width = (max_pos.x - min_pos.x) / RES_X
 		node_width = math.max(node_width, text_width + TEXT_SPACING)
 	end
 
@@ -465,7 +465,7 @@ local function draw_utility_nodes(gui, blackboard, running, action_data, text, c
 	local size = Vector2(160, 100)
 	local step_y = size.y + 40
 	local pos_y = -215
-	local pos = Vector3(x1*RES_X, ((y1 - 1 + NODE_HEIGHT) - extra_height)*RES_Y, LAYER + 10)
+	local pos = Vector3(x1 * RES_X, ((1 - y1 + NODE_HEIGHT) - extra_height) * RES_Y, LAYER + 10)
 	local num = 0
 
 	for name, consideration_data in pairs(considerations) do
@@ -502,13 +502,13 @@ local function draw_utility_nodes(gui, blackboard, running, action_data, text, c
 
 	ScriptGUI.text(gui, sum_text, TINY_FONT_MTRL, TINY_FONT_SIZE, TINY_FONT, pos + Vector3(3, -102, 0), yellow)
 
-	local extra_utility_height = num*0.1
+	local extra_utility_height = num * 0.1
 
 	return extra_utility_height
 end
 
 local function draw_hook_box(gui, node, node_width, extra_height, header_text, hook_id, x1, bottom_y, box_color)
-	local text_height = SMALL_FONT_SIZE/RES_Y
+	local text_height = SMALL_FONT_SIZE / RES_Y
 	local start_y = bottom_y
 	local pos_x = x1
 	bottom_y = start_y + text_height
@@ -536,7 +536,7 @@ local function draw_node(gui, node, text, running, x1, y1, node_width, extra_hei
 
 		if draw_timers[node] ~= FADE_TIME then
 			for id, timer in pairs(draw_timers) do
-				draw_timers[id] = timer*0.9
+				draw_timers[id] = timer * 0.9
 			end
 
 			draw_timers[node] = FADE_TIME
@@ -551,7 +551,7 @@ local function draw_node(gui, node, text, running, x1, y1, node_width, extra_hei
 			if timer <= 0 then
 				draw_timers[node] = nil
 			else
-				green = math.lerp(60, 255, timer/FADE_TIME)
+				green = math.lerp(60, 255, timer / FADE_TIME)
 				draw_timers[node] = timer
 			end
 		end
@@ -570,13 +570,13 @@ local function draw_node(gui, node, text, running, x1, y1, node_width, extra_hei
 		ScriptGUI.irect(gui, RES_X, RES_Y, x1 - THIN_BORDER, y1 - THIN_BORDER, x1 + node_width + THIN_BORDER, y1 + NODE_HEIGHT + extra_height + THIN_BORDER, LAYER - 1, Color(255, 242, 152, 7))
 	end
 
-	ScriptGUI.itext(gui, RES_X, RES_Y, node.name, FONT_MTRL, SMALL_FONT_SIZE, FONT, x1 + TEXT_SPACING, y1 + NODE_HEIGHT*0.28, LAYER + 1, tcolor)
+	ScriptGUI.itext(gui, RES_X, RES_Y, node.name, FONT_MTRL, SMALL_FONT_SIZE, FONT, x1 + TEXT_SPACING, y1 + NODE_HEIGHT * 0.28, LAYER + 1, tcolor)
 
 	local bottom_y = y1 + NODE_HEIGHT + extra_height
 	local box_height = nil
 
 	ScriptGUI.irect(gui, RES_X, RES_Y, x1, y1, x1 + node_width, bottom_y, LAYER, color)
-	ScriptGUI.itext(gui, RES_X, RES_Y, text, FONT_MTRL, FONT_SIZE, FONT, x1 + TEXT_SPACING, y1 + NODE_HEIGHT*0.7, LAYER + 1, tcolor)
+	ScriptGUI.itext(gui, RES_X, RES_Y, text, FONT_MTRL, FONT_SIZE, FONT, x1 + TEXT_SPACING, y1 + NODE_HEIGHT * 0.7, LAYER + 1, tcolor)
 
 	local enter_hook = node._tree_node.enter_hook
 
@@ -604,7 +604,7 @@ local function draw_node_children(bt, gui, node, node_children, blackboard, row,
 		start_x = x1
 		start_y = child_y + extra_utility_height
 	else
-		start_x = x1 - total_width*0.5 + node_width*0.5
+		start_x = x1 - total_width * 0.5 + node_width * 0.5
 		start_y = child_y
 	end
 
@@ -615,7 +615,7 @@ local function draw_node_children(bt, gui, node, node_children, blackboard, row,
 	local line_color_normal = Color(150, 100, 255, 100)
 	local line_color_sequence = Color(150, 100, 50, 200)
 	local line_layer = LAYER - 1
-	local line_x = x1 + node_width*0.5
+	local line_x = x1 + node_width * 0.5
 	local line_y1 = y1 + NODE_HEIGHT
 	local line_width_sequence = 6
 	local line_width_normal = 2
@@ -630,7 +630,7 @@ local function draw_node_children(bt, gui, node, node_children, blackboard, row,
 		local child_default_total_width = nodes[child_identifier].total_w or 0
 
 		if node.name ~= "BTSequence" then
-			cx = cx + child_default_total_width*0.5
+			cx = cx + child_default_total_width * 0.5
 		end
 
 		local child_extra_total_width, child_extra_total_height, child_extra_height, child_width = DrawAiBehaviour.draw_tree(bt, gui, child, blackboard, next_row, t, dt, cx, cy, draw_utility)
@@ -647,22 +647,22 @@ local function draw_node_children(bt, gui, node, node_children, blackboard, row,
 			ScriptGUI.hud_iline(gui, RES_X, RES_Y, p1, p2, line_layer, line_width_sequence, line_color_sequence)
 
 			line_y1 = line_y2 + NODE_HEIGHT + child_extra_height
-			cy = cy + NODE_HEIGHT*1.5 + child_extra_height + child_extra_total_height
+			cy = cy + NODE_HEIGHT * 1.5 + child_extra_height + child_extra_total_height
 			line_width_sequence = line_width_normal
 		else
-			local p1 = Vector2(x1 + node_width*0.5, y1 + NODE_HEIGHT)
-			local p2 = Vector2(cx + child_default_width*0.5, child_y)
+			local p1 = Vector2(x1 + node_width * 0.5, y1 + NODE_HEIGHT)
+			local p2 = Vector2(cx + child_default_width * 0.5, child_y)
 
 			ScriptGUI.hud_iline(gui, RES_X, RES_Y, p1, p2, line_layer, line_width_normal, line_color_normal)
 
-			cx = cx + child_default_total_width*0.5 + child_extra_total_width
+			cx = cx + child_default_total_width * 0.5 + child_extra_total_width
 			cx = cx + child_default_width + NODE_SPACING
 		end
 	end
 
 	row_heights[next_row] = NODE_HEIGHT + max_child_extra_height
-	local xb = RES_X/5
-	local yb = RES_Y/5
+	local xb = 5 / RES_X
+	local yb = 5 / RES_Y
 	local ocolor = Color(70, 55, 155, 200)
 	local bounding_box_x1 = start_x - xb
 	local bounding_box_y1 = child_y - yb
@@ -670,7 +670,7 @@ local function draw_node_children(bt, gui, node, node_children, blackboard, row,
 
 	if node.name == "BTSequence" then
 		bounding_box_x2 = start_x + max_child_width + xb
-		bounding_box_y2 = (cy + yb) - NODE_HEIGHT*0.5
+		bounding_box_y2 = (cy + yb) - NODE_HEIGHT * 0.5
 		ocolor = Color(70, 150, 50, 200)
 	else
 		bounding_box_x2 = (cx + xb) - NODE_SPACING
@@ -695,8 +695,8 @@ DrawAiBehaviour.tree_width = function (gui, node)
 	local name = node.name
 	local id_min, id_max = Gui.text_extents(gui, id, FONT_MTRL, FONT_SIZE)
 	local name_min, name_max = Gui.text_extents(gui, name, FONT_MTRL, SMALL_FONT_SIZE)
-	local id_width = (id_max.x - id_min.x)/RES_X + TEXT_SPACING
-	local name_width = (name_max.x - name_min.x)/RES_X + TEXT_SPACING
+	local id_width = (id_max.x - id_min.x) / RES_X + TEXT_SPACING
+	local name_width = (name_max.x - name_min.x) / RES_X + TEXT_SPACING
 	local text_width = math.max(MIN_NODE_WIDTH, id_width, name_width)
 	nodes[id] = {
 		w = text_width

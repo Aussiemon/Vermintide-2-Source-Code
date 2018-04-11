@@ -48,8 +48,10 @@ IngameUI.init = function (self, ingame_ui_context)
 	self.wwise_world = Managers.world:wwise_world(world)
 	self.world = world
 	self.top_world = top_world
-	self.ui_renderer = self.create_ui_renderer(self, world)
-	self.ui_top_renderer = self.create_ui_renderer(self, top_world)
+	local game_mode_key = Managers.state.game_mode:game_mode_key()
+	local is_tutorial = game_mode_key == "tutorial"
+	self.ui_renderer = self.create_ui_renderer(self, world, is_tutorial)
+	self.ui_top_renderer = self.create_ui_renderer(self, top_world, is_tutorial)
 	self.blocked_transitions = view_settings.blocked_transitions
 	self.fps = 0
 	self._fps_cooldown = 0
@@ -116,8 +118,8 @@ IngameUI.init = function (self, ingame_ui_context)
 
 	return 
 end
-IngameUI.create_ui_renderer = function (self, world)
-	return view_settings.ui_renderer_function(world)
+IngameUI.create_ui_renderer = function (self, world, is_tutorial)
+	return view_settings.ui_renderer_function(world, is_tutorial)
 end
 IngameUI.setup_views = function (self, ingame_ui_context)
 	self.views = view_settings.views_function(ingame_ui_context)
@@ -545,8 +547,6 @@ IngameUI._handle_resolution_changes = function (self)
 
 		self.last_resolution_y = res_y
 		self.last_resolution_x = res_x
-
-		self.deactivate_end_screen_ui(self, nil, true)
 	end
 
 	return 
@@ -841,6 +841,8 @@ end
 IngameUI.get_transition = function (self)
 	if self.leave_game then
 		return "leave_game"
+	elseif self.return_to_pc_menu then
+		return "return_to_pc_menu"
 	elseif self.return_to_title_screen then
 		return "return_to_title_screen"
 	elseif self.return_to_demo_title_screen then
@@ -977,7 +979,7 @@ IngameUI._render_fps = function (self, dt)
 		if dt < 1e-07 then
 			fps = 0
 		else
-			fps = dt/1
+			fps = 1 / dt
 		end
 
 		self.fps = fps

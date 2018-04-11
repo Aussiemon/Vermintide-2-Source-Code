@@ -175,12 +175,12 @@ BTVomitAction._calculate_oobb_collision = function (self, bot_threat, self_pos, 
 	local height = bot_threat.height
 	local offset_forward = bot_threat.offset_forward
 	local offset_up = bot_threat.offset_up
-	local half_width = width*0.5
-	local half_range = range*0.5
-	local half_height = height*0.5
+	local half_width = width * 0.5
+	local half_range = range * 0.5
+	local half_height = height * 0.5
 	local size = Vector3(half_width, half_range, half_height)
-	local forward = Quaternion.rotate(self_rot, Vector3.forward())*(offset_forward + half_range)
-	local up = Vector3.up()*(offset_up + half_height)
+	local forward = Quaternion.rotate(self_rot, Vector3.forward()) * (offset_forward + half_range)
+	local up = Vector3.up() * (offset_up + half_height)
 	local oobb_pos = self_pos + forward + up
 
 	return oobb_pos, self_rot, size
@@ -263,7 +263,7 @@ BTVomitAction.player_vomit_hit_check = function (self, unit, blackboard)
 	local troll_head_node = Unit.node(unit, "j_head")
 	local troll_head_pos = Unit.world_position(unit, troll_head_node)
 	local puke_pos = blackboard.puke_position:unbox()
-	local offset_dir = Vector3.normalize(puke_pos - POSITION_LOOKUP[unit])*2 + Vector3(0, 0, 1)
+	local offset_dir = 2 * Vector3.normalize(puke_pos - POSITION_LOOKUP[unit]) + Vector3(0, 0, 1)
 	local to_puke = (puke_pos + offset_dir) - troll_head_pos
 	local puke_direction = Vector3.normalize(to_puke)
 	local puke_distance = Vector3.length(to_puke)

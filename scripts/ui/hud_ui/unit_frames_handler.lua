@@ -292,7 +292,7 @@ end
 UnitFramesHandler._align_team_member_frames = function (self)
 	local start_offset_y = -100
 	local start_offset_x = 80
-	local spacing = 210
+	local spacing = 220
 	local is_visible = self._is_visible
 	local count = 0
 
@@ -305,7 +305,7 @@ UnitFramesHandler._align_team_member_frames = function (self)
 
 			if (peer_id or connecting_peer_id) and is_visible then
 				local position_x = start_offset_x
-				local position_y = start_offset_y - count*spacing
+				local position_y = start_offset_y - count * spacing
 
 				widget.set_position(widget, position_x, position_y)
 
@@ -369,38 +369,6 @@ UnitFramesHandler._set_player_extensions = function (self, player_data, player_u
 
 	return 
 end
-UnitFramesHandler.get_portrait_frame = function (self, unit, player)
-	local player_portrait_frame = "default"
-
-	if unit and player then
-		local dead_portrait_frame = "unit_frame_death"
-		local network_manager = Managers.state.network
-		local network_game = network_manager.game(network_manager)
-
-		if network_game and not LEVEL_EDITOR_TEST and Unit.alive(unit) then
-			if player == self.my_player then
-				local career_extension = ScriptUnit.extension(unit, "career_system")
-				local career_name = career_extension.career_name(career_extension)
-				local item_interface = Managers.backend:get_interface("items")
-				local item = BackendUtils.get_loadout_item(career_name, "slot_frame")
-
-				if item then
-					local item_data = item.data
-					local frame_name = item_data.temporary_template
-
-					if not frame_name then
-					end
-				end
-			else
-				local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-				local frame_name_id = GameSession.game_object_field(network_game, unit_id, "frame_name")
-				player_portrait_frame = NetworkLookup.cosmetics[frame_name_id]
-			end
-		end
-	end
-
-	return player_portrait_frame
-end
 local empty_features_list = {}
 UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 	if not unit_frame.sync then
@@ -445,6 +413,9 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		player_data.extensions = nil
 	end
 
+	local go_id = Managers.state.unit_storage:go_id(player_unit)
+	local network_manager = Managers.state.network
+	local game = network_manager.game(network_manager)
 	local ability_cooldown_percentage = 0
 	local extensions = player_data.extensions
 	local equipment, career_index = nil
@@ -481,11 +452,15 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		needs_help = status_extension.is_grabbed_by_pack_master(status_extension) or status_extension.is_hanging_from_hook(status_extension) or status_extension.is_pounced_down(status_extension)
 		local num_grimoires = buff_extension.num_buff_perk(buff_extension, "skaven_grimoire")
 		local multiplier = buff_extension.apply_buffs_to_value(buff_extension, PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
-		active_percentage = num_grimoires*multiplier + 1
+		local num_twitch_grimoires = buff_extension.num_buff_perk(buff_extension, "twitch_grimoire")
+		local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
+		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier
 		equipment = inventory_extension.equipment(inventory_extension)
 		career_index = career_extension.career_index(career_extension)
-		local ability_cooldown, max_cooldown = career_extension.current_ability_cooldown(career_extension)
-		ability_cooldown_percentage = ability_cooldown/max_cooldown
+
+		if game and go_id then
+			ability_cooldown_percentage = GameSession.game_object_field(game, go_id, "ability_percentage") or 0
+		end
 	else
 		shield_percent = 0
 		health_percent = 0
@@ -499,7 +474,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 	local display_name = UIRenderer.crop_text(player.name(player), 17)
 	local level_text = (is_player_controlled and (ExperienceSettings.get_player_level(player) or "")) or "BOT"
 	local portrait_texture = (career_index and get_portrait_name_by_profile_index(profile_index, career_index)) or "unit_frame_portrait_default"
-	local frame_texture = self.get_portrait_frame(self, player_unit, player)
+	local frame_texture = Managers.state.entity:system("cosmetic_system"):get_equipped_frame(player_unit)
 	local is_player_server = self.host_peer_id == peer_id
 	local is_host = is_player_controlled and is_player_server
 	local show_icon = false
@@ -641,7 +616,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 	if update_ability and data.ability_cooldown_percentage ~= ability_cooldown_percentage then
 		data.ability_cooldown_percentage = ability_cooldown_percentage
 
-		widget.set_ability_percentage(widget, ability_cooldown_percentage - 1)
+		widget.set_ability_percentage(widget, 1 - ability_cooldown_percentage)
 
 		dirty = true
 	end
@@ -675,9 +650,6 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 				local item_template = BackendUtils.get_item_template(item_data)
 
 				if item_template.ammo_data then
-					local network_manager = Managers.state.network
-					local game = network_manager.game(network_manager)
-					local go_id = Managers.state.unit_storage:go_id(player_unit)
 					local ammo_fraction = 1
 
 					if game and go_id then
@@ -861,7 +833,7 @@ UnitFramesHandler.update = function (self, dt, t, ignore_own_player)
 	Profiler.start("sync")
 	self._sync_player_stats(self, self._unit_frames[self._current_frame_index])
 
-	self._current_frame_index = self._current_frame_index%#self._unit_frames + 1
+	self._current_frame_index = 1 + self._current_frame_index % #self._unit_frames
 
 	Profiler.stop("sync")
 

@@ -322,11 +322,11 @@ local action_data = {
 			},
 			slam_shield_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			slam_shield_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
@@ -347,11 +347,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		considerations = UtilityConsiderations.clan_rat_follow
@@ -615,7 +615,7 @@ local action_data = {
 				ai_shield_extension.set_is_blocking(ai_shield_extension, is_blocking)
 
 				if not is_blocking then
-					blackboard.stagger_time = blackboard.stagger_time + math.clamp(blackboard.stagger*0.2, 0, 0.6)
+					blackboard.stagger_time = blackboard.stagger_time + math.clamp(0.2 * blackboard.stagger, 0, 0.6)
 				end
 
 				if not blackboard.blocked and blackboard.stagger < 2 and action.shield_block_anims then

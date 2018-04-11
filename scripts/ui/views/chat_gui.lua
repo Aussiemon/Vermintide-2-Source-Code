@@ -114,11 +114,11 @@ ChatGui.set_font_size = function (self, font_size)
 
 	self.chat_output_widget.style.text.font_size = font_size
 	self.chat_input_widget.style.text.font_size = font_size + 2
-	self.chat_input_widget.style.background.size[2] = definitions.CHAT_HEIGHT - 26 - (font_size + 4) - 200
+	self.chat_input_widget.style.background.size[2] = definitions.CHAT_HEIGHT - 26 - 200 - (font_size + 4)
 	self.chat_input_widget.style.text.caret_size[2] = font_size + 6
 	local ui_scenegraph = self.ui_scenegraph
 	local scenegraph_definition = definitions.scenegraph_definition
-	ui_scenegraph[self.chat_input_widget.style.text.scenegraph_id].size[2] = definitions.CHAT_HEIGHT - 26 - (font_size + 4) - 200
+	ui_scenegraph[self.chat_input_widget.style.text.scenegraph_id].size[2] = definitions.CHAT_HEIGHT - 26 - 200 - (font_size + 4)
 	ui_scenegraph[self.chat_output_widget.style.text.scenegraph_id].size[2] = definitions.CHAT_HEIGHT - 26 - (font_size + 4)
 
 	return 
@@ -378,19 +378,19 @@ ChatGui.set_menu_transition_fraction = function (self, fraction)
 	local window_content = chat_window_widget.content
 	local window_style = chat_window_widget.style
 	fraction = math.max(fraction, 0.11)
-	local uv_fraction = fraction - 1
+	local uv_fraction = 1 - fraction
 	local frame_top_scenegraph_id = window_style.frame_top.scenegraph_id
 	local default_definition_frame_top = scenegraph_definition[frame_top_scenegraph_id]
 	window_content.frame_top.uvs[1][1] = uv_fraction
-	ui_scenegraph[frame_top_scenegraph_id].size[1] = default_definition_frame_top.size[1]*fraction
+	ui_scenegraph[frame_top_scenegraph_id].size[1] = default_definition_frame_top.size[1] * fraction
 	local frame_bottom_scenegraph_id = window_style.frame_bottom.scenegraph_id
 	local default_definition_frame_bottom = scenegraph_definition[frame_bottom_scenegraph_id]
 	window_content.frame_bottom.uvs[1][1] = uv_fraction
-	ui_scenegraph[frame_bottom_scenegraph_id].size[1] = default_definition_frame_bottom.size[1]*fraction
+	ui_scenegraph[frame_bottom_scenegraph_id].size[1] = default_definition_frame_bottom.size[1] * fraction
 	local background_scenegraph_id = window_style.background.scenegraph_id
 	local default_definition_background = scenegraph_definition[background_scenegraph_id]
 	window_content.background.uvs[1][1] = uv_fraction
-	ui_scenegraph[background_scenegraph_id].size[1] = default_definition_background.size[1]*fraction
+	ui_scenegraph[background_scenegraph_id].size[1] = default_definition_background.size[1] * fraction
 
 	return 
 end
@@ -403,12 +403,12 @@ ChatGui.update_transition = function (self, dt)
 
 	local total_transition_time = 0.2
 	transition_timer = math.min(transition_timer + dt, total_transition_time)
-	local progress = transition_timer/total_transition_time
+	local progress = transition_timer / total_transition_time
 
 	if self.opening then
 		self.set_menu_transition_fraction(self, progress)
 	elseif self.closing then
-		self.set_menu_transition_fraction(self, progress - 1)
+		self.set_menu_transition_fraction(self, 1 - progress)
 	end
 
 	if progress == 1 then
@@ -745,11 +745,11 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 			local bottom_y_pos = scroll_bottom_y_pos + chat_bottom_y_pos
 			local scenegraph_id = scroll_widget.style.scrollbar.scenegraph_id
 			local bar_height = scroll_widget_content.scroll_bar_height
-			local half_bar_size = bar_height/2
+			local half_bar_size = bar_height / 2
 			local y_pos = bottom_y_pos - half_bar_size
 			local size = UISceneGraph.get_size(ui_scenegraph, scenegraph_id)
 			local current_position = math.clamp(y_pos, 0, size[2])
-			local max_value = math.min(current_position/size[2], 1)
+			local max_value = math.min(current_position / size[2], 1)
 			scroll_widget_content.internal_scroll_value = scroll_widget_content.internal_scroll_value + 0.025
 
 			if max_value < scroll_widget_content.internal_scroll_value then
@@ -800,7 +800,7 @@ ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)
 	local tab_widget = self.tab_widget
 	input_widget.content.text_field = self.chat_message
 	input_widget.content.caret_index = self.chat_index
-	output_widget.content.text_start_offset = scrollbar_widget.content.scroll_value - 1
+	output_widget.content.text_start_offset = 1 - scrollbar_widget.content.scroll_value
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 
@@ -820,7 +820,7 @@ ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)
 		local fade_length = UISettings.chat.chat_close_fade_length
 
 		if chat_close_time and chat_close_time < fade_length then
-			local progress = chat_close_time/fade_length
+			local progress = chat_close_time / fade_length
 
 			self._set_chat_window_alpha(self, progress)
 		elseif self._refocus_chat_window then
@@ -866,28 +866,28 @@ ChatGui._set_chat_window_alpha = function (self, progress)
 	local output_widget = self.chat_output_widget
 	local scrollbar_widget = self.scrollbar_widget
 	local style = window_widget.style
-	style.frame_top.color[1] = ui_settings.window_frame_top_alpha*progress
-	style.frame_bottom.color[1] = ui_settings.window_frame_bottom_alpha*progress
-	style.background.color[1] = ui_settings.window_background_alpha*progress
+	style.frame_top.color[1] = ui_settings.window_frame_top_alpha * progress
+	style.frame_bottom.color[1] = ui_settings.window_frame_bottom_alpha * progress
+	style.background.color[1] = ui_settings.window_background_alpha * progress
 	style = input_widget.style
-	style.background.color[1] = ui_settings.input_background_alpha*progress
-	style.text.text_color[1] = ui_settings.input_text_alpha*progress
-	style.text.caret_color[1] = ui_settings.input_caret_alpha*progress
+	style.background.color[1] = ui_settings.input_background_alpha * progress
+	style.text.text_color[1] = ui_settings.input_text_alpha * progress
+	style.text.caret_color[1] = ui_settings.input_caret_alpha * progress
 	style = output_widget.style
-	style.background.color[1] = ui_settings.output_background_alpha*progress
-	style.text.text_color[1] = ui_settings.output_text_alpha*progress
-	style.text.name_color[1] = ui_settings.output_text_alpha*progress
-	style.text.name_color_dev[1] = ui_settings.output_text_alpha*progress
-	style.text.name_color_system[1] = ui_settings.output_text_alpha*progress
+	style.background.color[1] = ui_settings.output_background_alpha * progress
+	style.text.text_color[1] = ui_settings.output_text_alpha * progress
+	style.text.name_color[1] = ui_settings.output_text_alpha * progress
+	style.text.name_color_dev[1] = ui_settings.output_text_alpha * progress
+	style.text.name_color_system[1] = ui_settings.output_text_alpha * progress
 	style = scrollbar_widget.style
-	style.background.color[1] = ui_settings.scrollbar_background_alpha*progress
-	local stroke_alpha = ui_settings.scrollbar_background_stroke_alpha*progress
+	style.background.color[1] = ui_settings.scrollbar_background_alpha * progress
+	local stroke_alpha = ui_settings.scrollbar_background_stroke_alpha * progress
 	style.background_stroke_top.color[1] = stroke_alpha
 	style.background_stroke_bottom.color[1] = stroke_alpha
 	style.background_stroke_left.color[1] = stroke_alpha
 	style.background_stroke_right.color[1] = stroke_alpha
-	style.scrollbar.color[1] = ui_settings.scrollbar_alpha*progress
-	stroke_alpha = ui_settings.scrollbar_stroke_alpha*progress
+	style.scrollbar.color[1] = ui_settings.scrollbar_alpha * progress
+	stroke_alpha = ui_settings.scrollbar_stroke_alpha * progress
 	style.scrollbar_stroke_top.color[1] = stroke_alpha
 	style.scrollbar_stroke_bottom.color[1] = stroke_alpha
 

@@ -180,6 +180,10 @@ MatchmakingUI.update = function (self, dt, t, show_detailed_matchmaking_info)
 
 				if cancel_matchmaking then
 					self.matchmaking_manager:cancel_matchmaking()
+
+					if Managers.deed:has_deed() then
+						Managers.deed:reset()
+					end
 				end
 			end
 		elseif has_mission_vote then
@@ -211,12 +215,12 @@ MatchmakingUI._draw = function (self, ui_renderer, input_service, is_matchmaking
 	local detailed_info_visibility_progress = self._detailed_info_visibility_progress
 
 	if detailed_info_visibility_progress then
-		detailed_info_visibility_progress = math.min(detailed_info_visibility_progress + dt*1.2, 1)
+		detailed_info_visibility_progress = math.min(detailed_info_visibility_progress + dt * 1.2, 1)
 		local anim_progress = math.easeOutCubic(detailed_info_visibility_progress)
 		local definition = scenegraph_definition.detailed_info_box
 		local default_size = definition.size
 		local default_position = definition.position
-		self.ui_scenegraph.detailed_info_box.local_position[2] = default_size[2]*(anim_progress - 1) + default_position[2]
+		self.ui_scenegraph.detailed_info_box.local_position[2] = default_size[2] * (1 - anim_progress) + default_position[2]
 
 		if detailed_info_visibility_progress == 1 then
 			self._detailed_info_visibility_progress = nil
@@ -313,15 +317,15 @@ MatchmakingUI._update_matchmaking_info = function (self)
 	return 
 end
 MatchmakingUI._update_status = function (self, dt)
-	local rotation_progresss = ((self._rotation_progresss or 0) + dt*0.2)%1
+	local rotation_progresss = ((self._rotation_progresss or 0) + dt * 0.2) % 1
 	self._rotation_progresss = rotation_progresss
 	local anim_progress = math.easeCubic(rotation_progresss)
-	local rotation_angle = anim_progress*360
+	local rotation_angle = anim_progress * 360
 	local radians = math.degrees_to_radians(rotation_angle)
 	local loading_icon = self._get_widget(self, "loading_status_frame")
 	loading_icon.style.texture_id.angle = radians
 	local connecting_rotation_speed = 200
-	local connecting_rotation_angle = (dt*connecting_rotation_speed)%360
+	local connecting_rotation_angle = (dt * connecting_rotation_speed) % 360
 	local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
 
 	for i = 1, 4, 1 do
@@ -386,7 +390,7 @@ MatchmakingUI._update_mission_timer = function (self)
 	local vote_template = voting_manager.active_vote_template(voting_manager)
 	local duration = vote_template.duration
 	local vote_time_left = voting_manager.vote_time_left(voting_manager)
-	local time_progress = math.max(vote_time_left/duration, 0)
+	local time_progress = math.max(vote_time_left / duration, 0)
 
 	self._set_vote_time_progress(self, time_progress)
 
@@ -568,13 +572,13 @@ MatchmakingUI._update_button_prompts = function (self)
 			local input_icon_scenegraph_id = input_icon_widget.scenegraph_id
 			local input_icon_scenegraph = ui_scenegraph[input_icon_scenegraph_id]
 			text_width_input = icon_size[1]
-			input_icon_scenegraph.local_position[1] = text_width_input*0.5
+			input_icon_scenegraph.local_position[1] = text_width_input * 0.5
 			input_icon_scenegraph.size[1] = text_width_input
 			input_icon_scenegraph.size[2] = icon_size[2]
 		end
 
 		local total_length = text_width_input + text_width_prefix + text_width_suffix
-		local offset = -(total_length*0.5)
+		local offset = -(total_length * 0.5)
 
 		if not texture_data then
 			text_widget_prefix.style.text.offset[1] = offset
@@ -822,7 +826,7 @@ MatchmakingUI._set_vote_time_progress = function (self, progress)
 	local scenegraph_id = widget.scenegraph_id
 	local default_size = self.scenegraph_definition[scenegraph_id].size
 	local current_size = self.ui_scenegraph[scenegraph_id].size
-	current_size[1] = default_size[1]*progress
+	current_size[1] = default_size[1] * progress
 	uvs[2][1] = progress
 
 	return 

@@ -33,12 +33,12 @@ ProjectileFlameWaveLocomotionExtension.init = function (self, extension_init_con
 	local lateral_dir = Vector3.cross(flat_dir, Vector3.up())
 	self._lateral_direction = Vector3Box(lateral_dir)
 	self._lateral_speed = lateral_speed
-	local flat_velocity = flat_dir*initial_forward_speed + lateral_dir*lateral_speed
+	local flat_velocity = flat_dir * initial_forward_speed + lateral_dir * lateral_speed
 	self._flat_velocity = Vector3Box(flat_velocity)
 	local t = Managers.time:time("game") - age
 	self.t = t
 	self._velocity = Vector3Box(flat_velocity)
-	local interval = EVALUATE_DISTANCE/initial_forward_speed
+	local interval = EVALUATE_DISTANCE / initial_forward_speed
 	self._next_point_time_interval = interval
 	self._last_position_time = t
 	self._next_position_time = t + interval
@@ -67,7 +67,7 @@ ProjectileFlameWaveLocomotionExtension.init = function (self, extension_init_con
 end
 ProjectileFlameWaveLocomotionExtension._calculate_next_position = function (self, pos, velocity)
 	local nav_world = self._nav_world
-	local wanted_next_pos = pos + velocity*self._next_point_time_interval
+	local wanted_next_pos = pos + velocity * self._next_point_time_interval
 	local success, z = GwNavQueries.triangle_from_position(nav_world, wanted_next_pos, 5, 5, self._layerless_traverse_logic)
 
 	if success then
@@ -104,10 +104,10 @@ ProjectileFlameWaveLocomotionExtension._update_position = function (self, dt, t)
 	local delta_t = t - self._last_position_time
 	local last_pos = self._last_position:unbox()
 	local next_pos = self._next_position:unbox()
-	local current_pos = last_pos + self._flat_velocity:unbox()*delta_t
+	local current_pos = last_pos + self._flat_velocity:unbox() * delta_t
 	local current_z = math.lerp(last_pos.z, next_pos.z, math.smoothstep(delta_t, self._last_position_time, self._next_position_time))
 	current_pos.z = current_z
-	self._distance_travelled = self._distance_travelled + self._flat_direction_speed*dt
+	self._distance_travelled = self._distance_travelled + self._flat_direction_speed * dt
 	local network_manager = Managers.state.network
 
 	if not self.is_husk then
@@ -128,18 +128,18 @@ ProjectileFlameWaveLocomotionExtension._update_spawn = function (self, dt, t, ne
 
 	local time_since_spawn = t - self._last_spawn
 	local relative_speed = self._lateral_speed - self._neighbour_lateral_speed
-	local lateral_diff = time_since_spawn*relative_speed + MAX_LATERAL_DIST*0.5
+	local lateral_diff = time_since_spawn * relative_speed + MAX_LATERAL_DIST * 0.5
 
 	if MAX_LATERAL_DIST < math.abs(lateral_diff) then
-		self._spawn_projectile(self, new_position, self._flat_direction:unbox(), (self._lateral_speed + self._neighbour_lateral_speed)*0.5)
+		self._spawn_projectile(self, new_position, self._flat_direction:unbox(), (self._lateral_speed + self._neighbour_lateral_speed) * 0.5)
 
-		self._last_spawn = self._last_spawn + MAX_LATERAL_DIST/math.abs(relative_speed)
+		self._last_spawn = self._last_spawn + MAX_LATERAL_DIST / math.abs(relative_speed)
 	end
 
 	return 
 end
 ProjectileFlameWaveLocomotionExtension._spawn_projectile = function (self, new_position, flat_direction, lateral_speed)
-	local position = new_position + -self._lateral_direction:unbox()*math.sign(lateral_speed)*MAX_LATERAL_DIST*0.5
+	local position = new_position + -self._lateral_direction:unbox() * math.sign(lateral_speed) * MAX_LATERAL_DIST * 0.5
 	local age = Managers.time:time("game") - self.t
 	local extension_init_data = self.extension_init_data
 
@@ -163,7 +163,7 @@ ProjectileFlameWaveLocomotionExtension.update = function (self, unit, input, dt,
 		local new_position = self._update_position(self, dt, t)
 
 		Unit.set_local_position(unit, 0, new_position)
-		self._velocity:store((new_position - old_position)/dt)
+		self._velocity:store((new_position - old_position) / dt)
 		self._update_spawn(self, dt, t, new_position)
 	end
 

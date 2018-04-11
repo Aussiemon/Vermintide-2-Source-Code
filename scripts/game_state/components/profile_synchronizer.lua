@@ -519,7 +519,10 @@ ProfileSynchronizer.get_first_free_profile = function (self)
 	return 
 end
 ProfileSynchronizer.rpc_client_request_mark_profile = function (self, sender, profile_index, local_player_id)
-	if self._profile_owners[profile_index] then
+	local profile_owner = self._profile_owners[profile_index]
+	local owned_by_another = profile_owner and profile_owner.peer_id ~= sender
+
+	if owned_by_another then
 		local result = REQUEST_RESULTS.failure
 
 		self._network_transmit:send_rpc("rpc_server_request_mark_profile_result", sender, profile_index, result, local_player_id)
@@ -656,7 +659,7 @@ ProfileSynchronizer._draw_state = function (self)
 		self._gui = World.create_screen_gui(world, "immediate", "material", font)
 	end
 
-	Gui.rect(self._gui, Vector2(0, 0), Vector2(margin*2 + profile_width + owner_width + state_width, height), background_color)
+	Gui.rect(self._gui, Vector2(0, 0), Vector2(margin * 2 + profile_width + owner_width + state_width, height), background_color)
 
 	local x = margin
 

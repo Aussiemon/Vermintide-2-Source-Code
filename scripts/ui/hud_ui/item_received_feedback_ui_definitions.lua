@@ -282,7 +282,7 @@ local function create_reinforcement_widget(index, scenegraph_id, frame_settings_
 	style[center_icon_name] = {
 		color = table.clone(default_color),
 		offset = {
-			widget_length/2 - 20 - 8,
+			widget_length / 2 - 20 - 8,
 			-20,
 			2
 		},
@@ -322,12 +322,12 @@ local function create_reinforcement_widget(index, scenegraph_id, frame_settings_
 		}
 		local portrait_texture = "icons_placeholder"
 		local portrait_size = {
-			portrait_size[1]*scale,
-			portrait_size[2]*scale
+			portrait_size[1] * scale,
+			portrait_size[2] * scale
 		}
 		local offset = table.clone(default_offset)
-		offset[1] = portrait_offset[1] - portrait_size[1]/2 + offset[1]*scale
-		offset[2] = portrait_offset[2] - portrait_size[2]/2 + offset[2]*scale
+		offset[1] = portrait_offset[1] - portrait_size[1] / 2 + offset[1] * scale
+		offset[2] = portrait_offset[2] - portrait_size[2] / 2 + offset[2] * scale
 		offset[3] = portrait_offset[3]
 		local portrait_name = "portrait_" .. i
 		passes[#passes + 1] = {
@@ -379,7 +379,7 @@ local function create_reinforcement_widget(index, scenegraph_id, frame_settings_
 	widget.offset = {
 		0,
 		0,
-		(index - 1)*10
+		(index - 1) * 10
 	}
 	widget.scenegraph_id = scenegraph_id
 

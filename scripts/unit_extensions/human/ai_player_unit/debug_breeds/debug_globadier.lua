@@ -7,7 +7,7 @@ DebugGlobadier.update = function (unit, blackboard, t)
 	end
 
 	local target_position = POSITION_LOOKUP[target_unit]
-	local offset = Vector3.up()*0.2
+	local offset = Vector3.up() * 0.2
 	local breed = blackboard.breed
 	local skulk_approach_action = BreedActions.skaven_poison_wind_globadier.skulk_approach
 	local advance_towards_players_action = BreedActions.skaven_poison_wind_globadier.advance_towards_players
@@ -36,7 +36,7 @@ DebugGlobadier.update = function (unit, blackboard, t)
 		local slot_count_time_modifier = advance_towards_players_action.slot_count_time_modifier
 		local slot_count_distance_modifier = advance_towards_players_action.slot_count_distance_modifier
 		local time_unit_first_throw_raw = math.round_with_precision(math.max(advance_data.time_until_first_throw - advance_data.timer, 0), 2)
-		time_until_first_throw = advance_data.time_until_first_throw + slot_count_time_modifier*slot_count
+		time_until_first_throw = advance_data.time_until_first_throw + slot_count_time_modifier * slot_count
 		time_until_first_throw = math.max(time_until_first_throw - advance_data.timer, 0)
 		time_until_first_throw = math.round_with_precision(time_until_first_throw, 2)
 		time_until_first_throw_string = time_until_first_throw or "-"
@@ -48,8 +48,8 @@ DebugGlobadier.update = function (unit, blackboard, t)
 		throw_at_distance = advance_data.throw_at_distance
 
 		if throw_at_distance then
-			local time_in_approach_distance_modifier = advance_towards_players_action.time_before_throw_distance_modifier*advance_data.time_before_throw_timer
-			throw_at_distance = throw_at_distance + advance_towards_players_action.slot_count_distance_modifier*slot_count + time_in_approach_distance_modifier
+			local time_in_approach_distance_modifier = advance_towards_players_action.time_before_throw_distance_modifier * advance_data.time_before_throw_timer
+			throw_at_distance = throw_at_distance + advance_towards_players_action.slot_count_distance_modifier * slot_count + time_in_approach_distance_modifier
 			local target_dist = blackboard.target_dist
 			distance_until_throw = math.max(target_dist - throw_at_distance, 0)
 			distance_until_throw = math.round_with_precision(distance_until_throw, 2)
@@ -104,7 +104,7 @@ local font_mtrl = "materials/fonts/" .. font
 local row_height = 17
 DebugGlobadier.debug_hud_print = function (caption, value, index, valid)
 	local gui = Debug.gui
-	local y = index*row_height - 220
+	local y = 220 - index * row_height
 	local caption_pos = Vector3(20, y, 100)
 	local caption_color = Colors.get("steel_blue")
 
@@ -132,8 +132,8 @@ end
 DebugGlobadier.debug_hud_background = function (max_index)
 	local gui = Debug.gui
 	local width = 300
-	local height = max_index*row_height + 30
-	local y = max_index*row_height - 200
+	local height = max_index * row_height + 30
+	local y = 200 - max_index * row_height
 	local pos = Vector3(10, y, 90)
 	local size = Vector3(width, height, 0)
 	local color = Colors.get_color_with_alpha("black", 150)

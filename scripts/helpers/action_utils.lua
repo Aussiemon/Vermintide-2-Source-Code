@@ -61,20 +61,21 @@ ActionUtils.get_dropoff_scalar = function (damage_profile, target_settings, atta
 		return 
 	end
 
-	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
-
-	if buff_extension.has_buff_perk(buff_extension, "no_damage_dropoff") then
-		return 0
-	end
-
 	local attacker_position = POSITION_LOOKUP[attacker_unit] or Unit.world_position(attacker_unit, 0)
 	local target_position = POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0)
 	local distance = Vector3.distance(target_position, attacker_position)
 	local dropoff_start = range_dropoff_settings.dropoff_start
 	local dropoff_end = range_dropoff_settings.dropoff_end
+	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+	if buff_extension.has_buff_perk(buff_extension, "no_damage_dropoff") then
+		dropoff_start = dropoff_start * 2
+		dropoff_end = dropoff_end * 2
+	end
+
 	local dropoff_scale = dropoff_end - dropoff_start
 	local dropoff_distance = math.clamp(distance - dropoff_start, 0, dropoff_scale)
-	local dropoff_scalar = dropoff_distance/dropoff_scale
+	local dropoff_scalar = dropoff_distance / dropoff_scale
 
 	return dropoff_scalar
 end
@@ -89,7 +90,7 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 	end
 
 	if critical_armor_power_modifier and critical_armor_power_modifier[target_unit_armor] then
-		armor_power_modifier = critical_armor_power_modifier[target_unit_armor]
+		armor_power_modifier = (target_unit_primary_armor and critical_armor_power_modifier[target_unit_primary_armor]) or critical_armor_power_modifier[target_unit_armor]
 	else
 
 		-- decompilation error in this vicinity
@@ -100,7 +101,7 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 
 	return armor_power_modifier
 end
-ActionUtils.scale_powerlevels = function (power_level, power_type)
+ActionUtils.scale_powerlevels = function (power_level, power_type, attacker_unit)
 	local cap_to_difficulty = true
 	local actual_power_level = power_level
 
@@ -127,17 +128,21 @@ ActionUtils.scale_powerlevels = function (power_level, power_type)
 	local scaled_powerlevel_section = nil
 
 	if min_cap_powerlevel + starting_bonus_range <= actual_power_level then
-		scaled_powerlevel_section = (actual_power_level - min_cap_powerlevel)*(powerlevel_diff_ratio[power_type] - 1)/(native_diff_ratio - 1)
+		scaled_powerlevel_section = (actual_power_level - min_cap_powerlevel) * (powerlevel_diff_ratio[power_type] - 1) / (native_diff_ratio - 1)
 	else
-		local starting_bonus = starting_powerlevel_bonus*((actual_power_level - 200)/starting_bonus_range - 1)
-		scaled_powerlevel_section = ((actual_power_level + starting_bonus) - min_cap_powerlevel)*(powerlevel_diff_ratio[power_type] - 1)/(native_diff_ratio - 1)
+		local starting_bonus = starting_powerlevel_bonus * (1 - (actual_power_level - 200) / starting_bonus_range)
+		scaled_powerlevel_section = ((actual_power_level + starting_bonus) - min_cap_powerlevel) * (powerlevel_diff_ratio[power_type] - 1) / (native_diff_ratio - 1)
 	end
 
 	local scaled_powerlevel = min_cap_powerlevel + scaled_powerlevel_section
 
-	return scaled_powerlevel
+	if attacker_unit then
+		slot12 = ActionUtils.apply_buffs_to_power_level(attacker_unit, scaled_powerlevel)
+	end
+
+	return power_level
 end
-ActionUtils.get_power_level = function (power_type, power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar)
+ActionUtils.get_power_level = function (power_type, power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit)
 
 	-- decompilation error in this vicinity
 	local power_distribution = target_settings.power_distribution or damage_profile.power_distribution or DefaultPowerDistribution
@@ -153,9 +158,9 @@ ActionUtils.get_power_level = function (power_type, power_level, damage_profile,
 		power_multiplier = power_distribution[power_type]
 	end
 
-	local scaled_powerlevel = ActionUtils.scale_powerlevels(power_level, power_type)
+	local scaled_powerlevel = ActionUtils.scale_powerlevels(power_level, power_type, attacker_unit)
 
-	return scaled_powerlevel*power_multiplier
+	return scaled_powerlevel * power_multiplier
 end
 ActionUtils.get_power_level_for_target = function (original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, target_unit, hit_zone_name, armortype_override)
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
@@ -182,16 +187,16 @@ ActionUtils.get_power_level_for_target = function (original_power_level, damage_
 
 		if target_breed and target_breed.lord_armor and target_unit_primary_armor_attack == 6 and attack_armor_power_modifer == 0 then
 			local new_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, nil, critical_strike_settings, dropoff_scalar)
-			attack_armor_power_modifer = attack_armor_power_modifer + new_armor_power_modifer*target_breed.lord_armor
+			attack_armor_power_modifer = attack_armor_power_modifer + new_armor_power_modifer * target_breed.lord_armor
 		end
 
 		power_level = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, power_level, target_breed, target_unit)
 	end
 
-	local attack_power = ActionUtils.get_power_level("attack", power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar)
-	local impact_power = ActionUtils.get_power_level("impact", power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar)
-	attack_power = attack_power*attack_armor_power_modifer
-	impact_power = impact_power*impact_armor_power_modifer
+	local attack_power = ActionUtils.get_power_level("attack", power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit)
+	local impact_power = ActionUtils.get_power_level("impact", power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit)
+	attack_power = attack_power * attack_armor_power_modifer
+	impact_power = impact_power * impact_armor_power_modifer
 
 	return attack_power, impact_power
 end

@@ -4,7 +4,7 @@ local fade_duration = 1.5
 local fade_min = 0.1
 local margin = 50
 local lost_gaze_threshhold = 1
-local dbg_bbs = false
+local DEBUG_BOUNDING_BOXES = false
 UICleanUI.create = function ()
 	return {
 		dirty = true,
@@ -16,41 +16,41 @@ UICleanUI.create = function ()
 	}
 end
 
-function get_world_bb(bbs)
+local function get_world_bounding_box(bounding_boxes)
 	local rx, ry = Application.resolution()
 	local x = rx
 	local y = ry
 	local xx = 0
 	local yy = 0
 
-	for _, bb in ipairs(bbs) do
-		x = math.min(x, bb[1][1])
-		y = math.min(y, bb[1][2])
-		xx = math.max(xx, bb[1][1] + bb[2][1])
-		yy = math.max(yy, bb[1][2] + bb[2][2])
+	for _, bounding_box in ipairs(bounding_boxes) do
+		x = math.min(x, bounding_box[1][1])
+		y = math.min(y, bounding_box[1][2])
+		xx = math.max(xx, bounding_box[1][1] + bounding_box[2][1])
+		yy = math.max(yy, bounding_box[1][2] + bounding_box[2][2])
 	end
 
 	local ui_scale = RESOLUTION_LOOKUP.scale
 
 	return {
-		x*ui_scale,
-		y*ui_scale,
-		xx*ui_scale,
-		yy*ui_scale
+		x * ui_scale,
+		y * ui_scale,
+		xx * ui_scale,
+		yy * ui_scale
 	}
 end
 
-function pad_bb(bb, margin)
+local function pad_bounding_box(bounding_box, margin)
 	return {
-		bb[1] - margin,
-		bb[2] - margin,
-		bb[3] + margin,
-		bb[4] + margin
+		bounding_box[1] - margin,
+		bounding_box[2] - margin,
+		bounding_box[3] + margin,
+		bounding_box[4] + margin
 	}
 end
 
-function point_in_bb(bb, p)
-	return bb[1] < p[1] and p[1] < bb[3] and bb[2] < p[2] and p[2] < bb[4]
+local function point_in_bounding_box(x, y, bounding_box)
+	return bounding_box[1] < x and x < bounding_box[3] and bounding_box[2] < y and y < bounding_box[4]
 end
 
 UICleanUI.update = function (self, dt, context)
@@ -62,13 +62,14 @@ UICleanUI.update = function (self, dt, context)
 	end
 
 	local gaze_x, gaze_y = Tobii.get_gaze_point()
-	gaze_x = gaze_x*0.5 + 0.5
-	gaze_y = gaze_y*0.5 + 0.5
+	gaze_x = gaze_x * 0.5 + 0.5
+	gaze_y = gaze_y * 0.5 + 0.5
 	local res_x, res_y = Application.resolution()
-	local gaze_gx = gaze_x*res_x
-	local gaze_gy = gaze_y*res_y
+	local gaze_gx = gaze_x * res_x
+	local gaze_gy = gaze_y * res_y
 	local ability_ui = self.hud.ability_ui
 	local equipment_background = self.hud.equipment_ui
+	local gamepad_equipment_background = self.hud.gamepad_equipment_ui
 	local portrait_size = {
 		86,
 		108
@@ -87,43 +88,56 @@ UICleanUI.update = function (self, dt, context)
 		end
 	end
 
-	local portrait_bbs = {}
+	local portrait_bounding_boxes = {}
 
 	for unit_index, unit_frame in ipairs(self.hud.unit_frames_handler._unit_frames) do
 		local centre_pos = unit_frame.widget.ui_scenegraph.portrait_pivot.world_position
-		portrait_bbs[unit_index] = {
+		portrait_bounding_boxes[unit_index] = {
 			{
-				centre_pos[1] - portrait_size[1]*0.5,
+				centre_pos[1] - portrait_size[1] * 0.5,
 				centre_pos[2] - portrait_size[2]
 			},
 			portrait_size
 		}
 	end
 
-	local bottom_bbs = {
+	local equipment_world_position = equipment_background.ui_scenegraph.background_panel.world_position
+	local gamepad_equipment_world_position = gamepad_equipment_background.ui_scenegraph.background_panel.world_position
+	local equipment_size = equipment_background.ui_scenegraph.background_panel.size
+	local gamepad_equipment_size = gamepad_equipment_background.ui_scenegraph.background_panel.size
+	local bottom_bounding_boxes = {
 		{
-			equipment_background.ui_scenegraph.background_panel.world_position,
-			equipment_background.ui_scenegraph.background_panel.size
+			{
+				(gamepad_equipment_world_position[1] < equipment_world_position[1] and equipment_world_position[1]) or gamepad_equipment_world_position[1],
+				(gamepad_equipment_world_position[2] < equipment_world_position[2] and equipment_world_position[2]) or gamepad_equipment_world_position[2],
+				(gamepad_equipment_world_position[3] < equipment_world_position[3] and equipment_world_position[3]) or gamepad_equipment_world_position[3]
+			},
+			{
+				(gamepad_equipment_size[1] < equipment_size[1] and equipment_size[1]) or gamepad_equipment_size[1],
+				(gamepad_equipment_size[2] < equipment_size[2] and equipment_size[2]) or gamepad_equipment_size[2]
+			}
 		}
 	}
-	local left_portrait_bbs = {
-		portrait_bbs[2],
-		portrait_bbs[3],
-		portrait_bbs[4]
+	local left_portrait_bounding_boxes = {
+		portrait_bounding_boxes[2],
+		portrait_bounding_boxes[3],
+		portrait_bounding_boxes[4]
 	}
-	local bottom_left_bbs = {
-		portrait_bbs[1]
+	local bottom_left_bounding_boxes = {
+		portrait_bounding_boxes[1]
 	}
 
 	if not self.clusters or RESOLUTION_LOOKUP.modified or self.dirty then
+		local hud = self.hud
+
 		if self.clusters then
-			self.clusters.bottom.bb = pad_bb(get_world_bb(bottom_bbs), margin)
-			self.clusters.left.bb = pad_bb(get_world_bb(left_portrait_bbs), margin)
-			self.clusters.bottom_left.bb = pad_bb(get_world_bb(bottom_left_bbs), margin)
+			self.clusters.bottom.bounding_box = pad_bounding_box(get_world_bounding_box(bottom_bounding_boxes), margin)
+			self.clusters.left.bounding_box = pad_bounding_box(get_world_bounding_box(left_portrait_bounding_boxes), margin)
+			self.clusters.bottom_left.bounding_box = pad_bounding_box(get_world_bounding_box(bottom_left_bounding_boxes), margin)
 		else
 			self.clusters = {
 				mission = {
-					bb = {
+					bounding_box = {
 						0,
 						0,
 						10,
@@ -132,45 +146,70 @@ UICleanUI.update = function (self, dt, context)
 					widgets = {}
 				},
 				bottom = {
-					bb = pad_bb(get_world_bb(bottom_bbs), margin),
+					bounding_box = pad_bounding_box(get_world_bounding_box(bottom_bounding_boxes), margin),
 					widgets = {
 						{
 							alpha = -1,
-							widget = self.hud.equipment_ui
+							widget = hud.equipment_ui
 						},
 						{
 							alpha = -1,
-							widget = self.hud.ability_ui
+							widget = hud.gamepad_equipment_ui
+						},
+						{
+							set_alpha_function = "set_equipment_alpha",
+							alpha = -1,
+							widget = hud.unit_frames_handler:get_unit_widget(1)
+						},
+						{
+							set_alpha_function = "set_health_alpha",
+							alpha = -1,
+							widget = hud.unit_frames_handler:get_unit_widget(1)
+						},
+						{
+							set_alpha_function = "set_ability_alpha",
+							alpha = -1,
+							widget = hud.unit_frames_handler:get_unit_widget(1)
+						},
+						{
+							alpha = -1,
+							widget = hud.ability_ui
 						}
 					}
 				},
 				left = {
-					bb = pad_bb(get_world_bb(left_portrait_bbs), margin),
+					bounding_box = pad_bounding_box(get_world_bounding_box(left_portrait_bounding_boxes), margin),
 					widgets = {
 						{
 							alpha = 1,
-							widget = self.hud.unit_frames_handler:get_unit_widget(2)
+							widget = hud.unit_frames_handler:get_unit_widget(2)
 						},
 						{
 							alpha = -1,
-							widget = self.hud.unit_frames_handler:get_unit_widget(3)
+							widget = hud.unit_frames_handler:get_unit_widget(3)
 						},
 						{
 							alpha = -1,
-							widget = self.hud.unit_frames_handler:get_unit_widget(4)
+							widget = hud.unit_frames_handler:get_unit_widget(4)
 						}
 					}
 				},
 				bottom_left = {
-					bb = pad_bb(get_world_bb(left_portrait_bbs), margin),
+					bounding_box = pad_bounding_box(get_world_bounding_box(left_portrait_bounding_boxes), margin),
 					widgets = {
 						{
+							set_alpha_function = "set_default_alpha",
 							alpha = -1,
-							widget = self.hud.unit_frames_handler:get_unit_widget(1)
+							widget = hud.unit_frames_handler:get_unit_widget(1)
+						},
+						{
+							set_alpha_function = "set_portrait_alpha",
+							alpha = -1,
+							widget = hud.unit_frames_handler:get_unit_widget(1)
 						},
 						{
 							alpha = -1,
-							widget = self.hud.buff_ui
+							widget = hud.buff_ui
 						}
 					}
 				}
@@ -178,32 +217,34 @@ UICleanUI.update = function (self, dt, context)
 		end
 	end
 
-	local clocksEmpty = true
+	local clocks_empty = true
 
 	for clock, time in pairs(self.clocks) do
-		clocksEmpty = false
+		clocks_empty = false
 	end
 
-	for name, cluster in pairs(self.clusters) do
-		local cutscene_system = Managers.state.entity:system("cutscene_system")
-		local in_cutscene = cutscene_system and cutscene_system.active_camera
-		local visibility = point_in_bb(cluster.bb, {
-			gaze_gx,
-			gaze_gy
-		})
+	local cutscene_system = Managers.state.entity:system("cutscene_system")
+	local in_cutscene = cutscene_system and cutscene_system.active_camera
+	local clocks = self.clocks
+	local clusters = self.clusters
+
+	for name, cluster in pairs(clusters) do
+		local clock = clocks[name]
+		local visibility = point_in_bounding_box(gaze_gx, gaze_gy, cluster.bounding_box)
 		cluster.visible = visibility
 
-		if visibility or clocksEmpty or off_window_override or in_cutscene then
-			self.clocks[name] = fade_delay + fade_duration
+		if visibility or clocks_empty or off_window_override or in_cutscene then
+			clock = fade_delay + fade_duration
 		else
-			self.clocks[name] = math.max(0, self.clocks[name] - dt)
+			clock = math.max(0, clock - dt)
 		end
 
-		local alpha = self.clocks[name]/fade_duration
-		alpha = alpha*(fade_min - 1) + fade_min
+		local alpha = clock / fade_duration
+		alpha = alpha * (1 - fade_min) + fade_min
 		alpha = math.clamp(alpha, 0, 1)
+		local widgets = cluster.widgets
 
-		for _, box in pairs(cluster.widgets) do
+		for _, box in pairs(widgets) do
 			if not tobii_active then
 				if box.alpha ~= 1 then
 					if box.widget.set_panel_alpha then
@@ -217,30 +258,37 @@ UICleanUI.update = function (self, dt, context)
 					box.alpha = 1
 				end
 			elseif box.alpha ~= alpha then
-				if box.widget.set_panel_alpha then
-					box.widget:set_panel_alpha(alpha)
-				end
+				if box.set_alpha_function then
+					box.widget[box.set_alpha_function](box.widget, alpha)
+				else
+					if box.widget.set_panel_alpha then
+						box.widget:set_panel_alpha(alpha)
+					end
 
-				if box.widget.set_alpha then
-					box.widget:set_alpha(alpha)
+					if box.widget.set_alpha then
+						box.widget:set_alpha(alpha)
+					end
 				end
 
 				box.alpha = alpha
 			end
 		end
+
+		clocks[name] = clock
 	end
 
-	if dbg_bbs then
+	if DEBUG_BOUNDING_BOXES then
 		local gui = self.hud.ui_renderer.gui
+		local clusters = self.clusters
 
-		for name, cluster in pairs(self.clusters) do
-			local col = Color(100, 0, 255, 255)
+		for name, cluster in pairs(clusters) do
+			local color = Color(100, 0, 255, 255)
 
 			if cluster.visible then
-				col = Color(100, 255, 0, 255)
+				color = Color(100, 255, 0, 255)
 			end
 
-			ScriptGUI.icrect(gui, res_x, res_y, cluster.bb[1], res_y - cluster.bb[2], cluster.bb[3], res_y - cluster.bb[4], 1, col)
+			ScriptGUI.icrect(gui, res_x, res_y, cluster.bounding_box[1], res_y - cluster.bounding_box[2], cluster.bounding_box[3], res_y - cluster.bounding_box[4], 1, color)
 		end
 	end
 

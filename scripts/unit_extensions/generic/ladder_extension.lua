@@ -30,14 +30,14 @@ LadderExtension.perlin_shake = {
 }
 
 local function calc_noise(x, seed)
-	local next_seed, _ = Math.next_random(x*seed)
+	local next_seed, _ = Math.next_random(x * seed)
 	local _, value = Math.next_random(next_seed)
 
-	return value*2 - 1
+	return value * 2 - 1
 end
 
 local function calc_smoothed_noise(x, seed)
-	return calc_noise(x, seed)/2 + calc_noise(x - 1, seed)/4 + calc_noise(x + 1, seed)/4
+	return calc_noise(x, seed) / 2 + calc_noise(x - 1, seed) / 4 + calc_noise(x + 1, seed) / 4
 end
 
 local function calc_interpolated_noise(x, seed)
@@ -56,11 +56,11 @@ local function calculate_perlin_value(x, persistance, number_of_octaves, seed)
 	for i = 0, number_of_octaves, 1 do
 		local frequency = 2^i
 		local amplitude = persistance^i
-		total = total + calc_interpolated_noise(x*frequency, seed)*amplitude
+		total = total + calc_interpolated_noise(x * frequency, seed) * amplitude
 		max_value = max_value + amplitude
 	end
 
-	local normalized_total = total/max_value
+	local normalized_total = total / max_value
 
 	return normalized_total
 end
@@ -73,11 +73,11 @@ LadderExtension.update_enabled = function (self, unit, input, dt, context, t)
 
 		if shake_t < duration then
 			if self._enable_shake then
-				local perlin_value_x = calculate_perlin_value(shake_t*config.frequency_multiplier, config.persistance, config.octaves, self._seed_x)
-				local perlin_value_y = calculate_perlin_value(shake_t*config.frequency_multiplier, config.persistance, config.octaves, self._seed_y)
-				local magnitude = config.magnitude*math.lerp(1, 0, shake_t/duration)^2
+				local perlin_value_x = calculate_perlin_value(shake_t * config.frequency_multiplier, config.persistance, config.octaves, self._seed_x)
+				local perlin_value_y = calculate_perlin_value(shake_t * config.frequency_multiplier, config.persistance, config.octaves, self._seed_y)
+				local magnitude = config.magnitude * math.lerp(1, 0, shake_t / duration)^2
 
-				Unit.set_local_position(self._unit, self._node, self._start_position:unbox() + Vector3(perlin_value_x*magnitude, perlin_value_y*magnitude, 0))
+				Unit.set_local_position(self._unit, self._node, self._start_position:unbox() + Vector3(perlin_value_x * magnitude, perlin_value_y * magnitude, 0))
 			end
 		else
 			Managers.state.entity:system("ladder_system"):disable_update_function("LadderExtension", "update", self._unit)

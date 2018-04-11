@@ -154,6 +154,14 @@ DamageProfileTemplates.heavy_slashing_linesman = {
 	default_target = PowerLevelTemplates.default_target_linesman_H,
 	targets = PowerLevelTemplates.targets_linesman_H
 }
+DamageProfileTemplates.heavy_slashing_linesman_polearm = {
+	charge_value = "heavy_attack",
+	critical_strike = PowerLevelTemplates.critical_strike_linesman_H,
+	cleave_distribution = PowerLevelTemplates.cleave_distribution_linesman_executioner_H,
+	armor_modifier = PowerLevelTemplates.armor_modifier_linesman_H,
+	default_target = PowerLevelTemplates.default_target_linesman_H,
+	targets = PowerLevelTemplates.targets_linesman_H
+}
 DamageProfileTemplates.heavy_slashing_linesman_executioner = {
 	charge_value = "heavy_attack",
 	critical_strike = PowerLevelTemplates.critical_strike_linesman_H,
@@ -321,6 +329,15 @@ DamageProfileTemplates.heavy_slashing_smiter_stab = {
 	armor_modifier = PowerLevelTemplates.armor_modifier_stab_smiter_H,
 	default_target = PowerLevelTemplates.default_target_stab_smiter_H,
 	targets = PowerLevelTemplates.targets_stab_smiter_H
+}
+DamageProfileTemplates.maidenguard_dash_ability = {
+	charge_value = "light_attack",
+	require_damage_for_dot = false,
+	critical_strike = PowerLevelTemplates.critical_strike_fencer_stab_L,
+	cleave_distribution = PowerLevelTemplates.cleave_distribution_smiter_default,
+	armor_modifier = PowerLevelTemplates.armor_modifier_fencer_stab_L_AP,
+	default_target = PowerLevelTemplates.default_target_maidenguard_dash_ability,
+	targets = PowerLevelTemplates.targets_maidenguard_dash_ability
 }
 DamageProfileTemplates.light_fencer_stab = {
 	charge_value = "light_attack",
@@ -523,7 +540,7 @@ DamageProfileTemplates.crossbow_bolt = {
 	default_target = {
 		boost_curve_coefficient_headshot = 2.5,
 		boost_curve_type = "smiter_curve",
-		boost_curve_coefficient = 0.75,
+		boost_curve_coefficient = 1,
 		attack_template = "bolt_sniper",
 		power_distribution_near = {
 			attack = 0.5,
@@ -619,10 +636,10 @@ DamageProfileTemplates.shot_shotgun = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			0.3,
 			1,
 			0.5,
-			0.25
+			0
 		},
 		impact_armor_power_modifer = {
 			1,
@@ -636,8 +653,8 @@ DamageProfileTemplates.shot_shotgun = {
 	armor_modifier_near = {
 		attack = {
 			1,
-			0.5,
-			0.5,
+			0.3,
+			0.3,
 			0.75,
 			1,
 			0
@@ -655,7 +672,7 @@ DamageProfileTemplates.shot_shotgun = {
 		attack = {
 			1,
 			0,
-			0.35,
+			0.25,
 			0.75,
 			1,
 			0
@@ -676,7 +693,7 @@ DamageProfileTemplates.shot_shotgun = {
 	default_target = {
 		boost_curve_coefficient_headshot = 0.5,
 		boost_curve_type = "linesman_curve",
-		boost_curve_coefficient = 0.5,
+		boost_curve_coefficient = 0.75,
 		attack_template = "shot_shotgun",
 		power_distribution_near = {
 			attack = 0.25,
@@ -828,7 +845,7 @@ DamageProfileTemplates.shot_machinegun_shotgun = {
 	default_target = {
 		boost_curve_coefficient_headshot = 1.5,
 		boost_curve_type = "ninja_curve",
-		boost_curve_coefficient = 0.75,
+		boost_curve_coefficient = 0.4,
 		attack_template = "shot_machinegun",
 		power_distribution_near = {
 			attack = 0.275,
@@ -847,7 +864,7 @@ DamageProfileTemplates.shot_carbine = {
 		attack_armor_power_modifer = {
 			1.5,
 			0.5,
-			1,
+			0.75,
 			1,
 			1,
 			0.25
@@ -855,7 +872,7 @@ DamageProfileTemplates.shot_carbine = {
 		impact_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			0.75,
 			1,
 			1,
 			0.25
@@ -865,7 +882,7 @@ DamageProfileTemplates.shot_carbine = {
 		attack = {
 			1.5,
 			0.5,
-			0.8,
+			0.75,
 			1,
 			1,
 			0
@@ -873,7 +890,7 @@ DamageProfileTemplates.shot_carbine = {
 		impact = {
 			1,
 			0.5,
-			0.8,
+			0.75,
 			1,
 			1,
 			0
@@ -1077,7 +1094,7 @@ DamageProfileTemplates.shot_repeating = {
 		attack_armor_power_modifer = {
 			1.25,
 			0.4,
-			1,
+			0.75,
 			1,
 			1,
 			0.25
@@ -1095,7 +1112,7 @@ DamageProfileTemplates.shot_repeating = {
 		attack = {
 			1.25,
 			0.4,
-			1,
+			0.75,
 			1,
 			0.5,
 			0
@@ -1113,7 +1130,7 @@ DamageProfileTemplates.shot_repeating = {
 		attack = {
 			1,
 			0.25,
-			1,
+			0.75,
 			1,
 			0.5,
 			0
@@ -1134,7 +1151,7 @@ DamageProfileTemplates.shot_repeating = {
 	default_target = {
 		boost_curve_coefficient_headshot = 1,
 		boost_curve_type = "linesman_curve",
-		boost_curve_coefficient = 0.75,
+		boost_curve_coefficient = 0.6,
 		attack_template = "shot_repeating_handgun",
 		power_distribution_near = {
 			attack = 0.35,
@@ -1154,7 +1171,7 @@ DamageProfileTemplates.shot_sniper = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			1.5,
+			1,
 			1,
 			0.75,
 			0.2
@@ -1172,7 +1189,7 @@ DamageProfileTemplates.shot_sniper = {
 		attack = {
 			1,
 			1,
-			1.5,
+			1,
 			1,
 			0.75,
 			0.2
@@ -1227,19 +1244,20 @@ DamageProfileTemplates.shot_sniper = {
 DamageProfileTemplates.shot_sniper_ability = {
 	charge_value = "instant_projectile",
 	shield_break = true,
+	is_explosion = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			1.5,
+			2,
 			1,
 			1,
-			0.65
+			1
 		},
 		impact_armor_power_modifer = {
 			1,
 			1,
-			0,
+			200,
 			1,
 			1,
 			1
@@ -1249,15 +1267,15 @@ DamageProfileTemplates.shot_sniper_ability = {
 		attack = {
 			1,
 			1,
-			1,
+			2,
 			0.1,
 			1,
-			0.65
+			1
 		},
 		impact = {
 			1,
 			1,
-			0,
+			200,
 			0.1,
 			1,
 			1
@@ -1268,9 +1286,9 @@ DamageProfileTemplates.shot_sniper_ability = {
 		impact = 0.3
 	},
 	default_target = {
-		boost_curve_coefficient_headshot = 1,
+		boost_curve_coefficient_headshot = 0.5,
 		boost_curve_type = "ninja_curve",
-		boost_curve_coefficient = 0.75,
+		boost_curve_coefficient = 0.5,
 		attack_template = "shot_sniper",
 		power_distribution = {
 			attack = 1,
@@ -1282,29 +1300,30 @@ DamageProfileTemplates.shot_sniper_ability = {
 DamageProfileTemplates.shot_shotgun_ability = {
 	charge_value = "instant_projectile",
 	shield_break = true,
+	is_explosion = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			0.3,
-			0.5,
+			0.1,
+			0.2,
 			0.25,
 			1,
-			0.25
+			0.025
 		},
 		impact_armor_power_modifer = {
 			1,
 			0.5,
-			0,
+			200,
 			0.25,
 			1,
-			0.25
+			0.05
 		}
 	},
-	armor_modifier = {
+	armor_modifier_near = {
 		attack = {
 			1,
-			0.3,
-			0.5,
+			0.1,
+			0.2,
 			0.25,
 			1,
 			0
@@ -1312,7 +1331,25 @@ DamageProfileTemplates.shot_shotgun_ability = {
 		impact = {
 			1,
 			0.5,
+			100,
+			0.25,
+			1,
+			0
+		}
+	},
+	armor_modifier_far = {
+		attack = {
+			1,
 			0,
+			0.2,
+			0.25,
+			1,
+			0
+		},
+		impact = {
+			1,
+			0.5,
+			200,
 			0.25,
 			1,
 			0
@@ -1323,13 +1360,17 @@ DamageProfileTemplates.shot_shotgun_ability = {
 		impact = 0.3
 	},
 	default_target = {
-		boost_curve_coefficient_headshot = 1,
+		boost_curve_coefficient_headshot = 0.25,
 		boost_curve_type = "ninja_curve",
-		boost_curve_coefficient = 0.75,
+		boost_curve_coefficient = 0.25,
 		attack_template = "shot_sniper",
-		power_distribution = {
-			attack = 1,
+		power_distribution_near = {
+			attack = 0.5,
 			impact = 0.5
+		},
+		power_distribution_far = {
+			attack = 0.25,
+			impact = 0.25
 		},
 		range_dropoff_settings = sniper_dropoff_ranges
 	}
@@ -1398,7 +1439,7 @@ DamageProfileTemplates.arrow_sniper_kruber = {
 	default_target = {
 		boost_curve_coefficient_headshot = 1,
 		boost_curve_type = "ninja_curve",
-		boost_curve_coefficient = 0.75,
+		boost_curve_coefficient = 1,
 		attack_template = "bolt_sniper",
 		power_distribution_near = {
 			attack = 0.75,
@@ -1468,8 +1509,8 @@ DamageProfileTemplates.arrow_machinegun = {
 		}
 	},
 	cleave_distribution = {
-		attack = 0.15,
-		impact = 0.15
+		attack = 0.1,
+		impact = 0.1
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 1,
@@ -1550,7 +1591,7 @@ DamageProfileTemplates.arrow_carbine = {
 	default_target = {
 		boost_curve_coefficient_headshot = 1,
 		boost_curve_type = "linesman_curve",
-		boost_curve_coefficient = 0.75,
+		boost_curve_coefficient = 1.25,
 		attack_template = "arrow_carbine",
 		power_distribution_near = {
 			attack = 0.4,
@@ -1645,10 +1686,10 @@ DamageProfileTemplates.arrow_sniper_trueflight = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			2,
 			1,
 			1,
-			1
+			1,
+			0.25
 		},
 		impact_armor_power_modifer = {
 			1,
@@ -1663,10 +1704,10 @@ DamageProfileTemplates.arrow_sniper_trueflight = {
 		attack = {
 			1,
 			1,
-			2,
+			1,
 			0.25,
 			1,
-			1
+			0.25
 		},
 		impact = {
 			1,
@@ -1684,7 +1725,7 @@ DamageProfileTemplates.arrow_sniper_trueflight = {
 			2,
 			0.25,
 			1,
-			0
+			0.25
 		},
 		impact = {
 			1,
@@ -1772,6 +1813,10 @@ DamageProfileTemplates.shortbow_hagbane = {
 			0
 		}
 	},
+	cleave_distribution = {
+		attack = 0.05,
+		impact = 0.05
+	},
 	default_target = {
 		dot_template_name = "arrow_poison_dot",
 		boost_curve_type = "ninja_curve",
@@ -1846,10 +1891,10 @@ DamageProfileTemplates.staff_fireball = {
 	default_target = {
 		boost_curve_coefficient_headshot = 1,
 		boost_curve_type = "linesman_curve",
-		boost_curve_coefficient = 1,
+		boost_curve_coefficient = 0.75,
 		attack_template = "fireball",
 		power_distribution_near = {
-			attack = 0.25,
+			attack = 0.35,
 			impact = 0.3
 		},
 		power_distribution_far = {
@@ -1920,8 +1965,8 @@ DamageProfileTemplates.fire_spark = {
 		}
 	},
 	cleave_distribution = {
-		attack = 0.175,
-		impact = 0.175
+		attack = 0.01,
+		impact = 0.01
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 1.5,
@@ -2093,6 +2138,7 @@ DamageProfileTemplates.fire_spear_2 = {
 }
 DamageProfileTemplates.fire_spear_trueflight = {
 	charge_value = "projectile",
+	is_explosion = true,
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -2248,8 +2294,8 @@ DamageProfileTemplates.staff_fireball_charged = {
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			2,
-			5,
+			1,
+			4,
 			1,
 			1,
 			0.25
@@ -2291,11 +2337,11 @@ DamageProfileTemplates.staff_fireball_charged = {
 		boost_curve_coefficient = 1,
 		attack_template = "fireball",
 		power_distribution_near = {
-			attack = 0.35,
-			impact = 0.75
+			attack = 0.3,
+			impact = 0.5
 		},
 		power_distribution_far = {
-			attack = 0.35,
+			attack = 0.3,
 			impact = 0.25
 		},
 		range_dropoff_settings = {
@@ -2353,8 +2399,8 @@ DamageProfileTemplates.flamethrower_spray = {
 		boost_curve_coefficient = 0.2,
 		attack_template = "wizard_staff_beam",
 		power_distribution_near = {
-			attack = 0.075,
-			impact = 0.175
+			attack = 0.1,
+			impact = 0.2
 		},
 		power_distribution_far = {
 			attack = 0.05,
@@ -2412,7 +2458,7 @@ DamageProfileTemplates.flamethrower = {
 		boost_curve_coefficient = 0.2,
 		attack_template = "wizard_staff_beam",
 		power_distribution_near = {
-			attack = 0.05,
+			attack = 0.06,
 			impact = 0.1
 		},
 		power_distribution_far = {
@@ -2528,10 +2574,10 @@ DamageProfileTemplates.beam = {
 		dot_template_name = "beam_burning_dot",
 		boost_curve_coefficient_headshot = 2,
 		boost_curve_type = "linesman_curve",
-		boost_curve_coefficient = 1,
+		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_beam",
 		power_distribution_near = {
-			attack = 0.05,
+			attack = 0.075,
 			impact = 0.065
 		},
 		power_distribution_far = {
@@ -2663,15 +2709,15 @@ DamageProfileTemplates.blast = {
 	default_target = {
 		boost_curve_coefficient_headshot = 2,
 		boost_curve_type = "linesman_curve",
-		boost_curve_coefficient = 1,
+		boost_curve_coefficient = 0.5,
 		attack_template = "flame_blast",
 		power_distribution_near = {
-			attack = 0.15,
-			impact = 0.25
+			attack = 0.1,
+			impact = 0.275
 		},
 		power_distribution_far = {
 			attack = 0.05,
-			impact = 0.1
+			impact = 0.15
 		},
 		range_dropoff_settings = {
 			dropoff_start = 5,
@@ -2711,7 +2757,7 @@ DamageProfileTemplates.beam_shot = {
 		},
 		impact = {
 			1,
-			0.3,
+			0.8,
 			1,
 			1,
 			1,
@@ -2721,7 +2767,7 @@ DamageProfileTemplates.beam_shot = {
 	armor_modifier_far = {
 		attack = {
 			1,
-			0,
+			0.5,
 			1,
 			1,
 			1,
@@ -2729,7 +2775,7 @@ DamageProfileTemplates.beam_shot = {
 		},
 		impact = {
 			1,
-			0.1,
+			0.5,
 			1,
 			1,
 			1,
@@ -2744,15 +2790,15 @@ DamageProfileTemplates.beam_shot = {
 		boost_curve_coefficient_headshot = 2,
 		dot_template_name = "burning_3W_dot",
 		boost_curve_type = "ninja_curve",
-		boost_curve_coefficient = 1,
+		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_beam_sniper",
 		power_distribution_near = {
-			attack = 0.3,
+			attack = 0.7,
 			impact = 0.3
 		},
 		power_distribution_far = {
-			attack = 0.3,
-			impact = 0.1
+			attack = 0.5,
+			impact = 0.2
 		},
 		range_dropoff_settings = {
 			dropoff_start = 10,
@@ -2768,7 +2814,7 @@ DamageProfileTemplates.geiser = {
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
-			0.8,
+			0.35,
 			1,
 			1,
 			1,
@@ -2786,7 +2832,7 @@ DamageProfileTemplates.geiser = {
 	armor_modifier = {
 		attack = {
 			1,
-			0.8,
+			0.35,
 			1,
 			1,
 			1,
@@ -2862,7 +2908,7 @@ DamageProfileTemplates.frag_grenade = {
 		attack = {
 			1,
 			0.5,
-			3.5,
+			1.5,
 			1,
 			1
 		},
@@ -2946,7 +2992,7 @@ DamageProfileTemplates.fireball_charged_explosion = {
 		damage_type = "drakegun",
 		power_distribution = {
 			attack = 0.25,
-			impact = 0.4
+			impact = 0.5
 		}
 	}
 }
@@ -2960,7 +3006,7 @@ DamageProfileTemplates.overcharge_explosion_ability = {
 	armor_modifier = {
 		attack = {
 			1,
-			0.5,
+			0.2,
 			1.5,
 			1,
 			0.75,
@@ -2980,7 +3026,7 @@ DamageProfileTemplates.overcharge_explosion_ability = {
 		dot_template_name = "burning_1W_dot",
 		damage_type = "burn_shotgun",
 		power_distribution = {
-			attack = 0.25,
+			attack = 0.15,
 			impact = 0.75
 		}
 	}
@@ -3092,7 +3138,7 @@ DamageProfileTemplates.poison = {
 		attack_template = "arrow_poison_aoe",
 		damage_type = "arrow_poison_dot",
 		power_distribution = {
-			attack = 0.05,
+			attack = 0.035,
 			impact = 0
 		}
 	}
@@ -3163,9 +3209,78 @@ DamageProfileTemplates.poison_aoe = {
 		}
 	}
 }
-DamageProfileTemplates.bleed = table.clone(DamageProfileTemplates.default)
-DamageProfileTemplates.bleed.no_stagger = true
-DamageProfileTemplates.bleed.default_target.damage_type = "bleed"
+DamageProfileTemplates.bleed = {
+	charge_value = "n/a",
+	no_stagger = true,
+	cleave_distribution = {
+		attack = 0.25,
+		impact = 0.25
+	},
+	armor_modifier = {
+		attack = {
+			1,
+			0.5,
+			1,
+			1,
+			0.5,
+			0
+		},
+		impact = {
+			1,
+			0.5,
+			1,
+			1,
+			0.5,
+			0
+		}
+	},
+	default_target = {
+		damage_type = "bleed",
+		boost_curve_type = "tank_curve",
+		boost_curve_coefficient = 0.2,
+		attack_template = "light_blunt_tank",
+		power_distribution = {
+			attack = 0.075,
+			impact = 0
+		}
+	}
+}
+DamageProfileTemplates.bleed_maidenguard = {
+	charge_value = "n/a",
+	no_stagger = true,
+	cleave_distribution = {
+		attack = 0.25,
+		impact = 0.25
+	},
+	armor_modifier = {
+		attack = {
+			1,
+			0.5,
+			1,
+			1,
+			0.5,
+			0
+		},
+		impact = {
+			1,
+			0.5,
+			1,
+			1,
+			0.5,
+			0
+		}
+	},
+	default_target = {
+		damage_type = "bleed",
+		boost_curve_type = "tank_curve",
+		boost_curve_coefficient = 0.2,
+		attack_template = "light_blunt_tank",
+		power_distribution = {
+			attack = 0.05,
+			impact = 0.05
+		}
+	}
+}
 DamageProfileTemplates.burning_dot = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.burning_dot.no_stagger = true
 DamageProfileTemplates.burning_dot.default_target.damage_type = "burninating"
@@ -3173,7 +3288,7 @@ DamageProfileTemplates.burning_dot.default_target.armor_modifier = {
 	attack = {
 		1,
 		0.75,
-		4,
+		3,
 		1,
 		1,
 		0

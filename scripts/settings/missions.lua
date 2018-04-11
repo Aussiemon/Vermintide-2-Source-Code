@@ -1490,6 +1490,7 @@ Missions.prologue_light_attack = {
 Missions.prologue_blocking = {
 	text = "mission_objective_prologue_blocking",
 	mission_template_name = "simple",
+	input_service_fallback = "Tutorial",
 	is_tutorial_input = true,
 	tooltip_text = "tutorial_tooltip_block",
 	tooltip_inputs = {
@@ -1503,22 +1504,18 @@ Missions.prologue_blocking = {
 Missions.prologue_dodge = {
 	text = "mission_objective_prologue_dodge",
 	mission_template_name = "simple",
-	is_tutorial_input = true,
+	input_service_fallback = "Tutorial",
 	dont_show_mission_end_tooltip = true,
+	is_tutorial_input = true,
 	tooltip_text = "mission_objective_tutorial_dodge_left",
 	tooltip_inputs = {
 		{
-			suffix = "",
+			suffix = "/",
 			prefix = "",
 			action = "move_left_pressed"
 		},
 		{
-			suffix = "",
-			prefix = "",
-			action = "move_back_pressed"
-		},
-		{
-			suffix = "",
+			suffix = "+",
 			prefix = "",
 			action = "move_right_pressed"
 		},
@@ -1570,6 +1567,7 @@ Missions.prologue_find_allies = {
 Missions.prologue_use_special_ability = {
 	text = "mission_objective_prologue_special_ability",
 	mission_template_name = "simple",
+	input_service_fallback = "Tutorial",
 	is_tutorial_input = true,
 	tooltip_text = "tutorial_tooltip_special_ability",
 	tooltip_inputs = {
@@ -1685,11 +1683,12 @@ Missions.prologue_escape_in_portal = {
 Missions.prologue_pushing = {
 	text = "mission_objective_prologue_pushing",
 	mission_template_name = "simple",
+	input_service_fallback = "Tutorial",
 	is_tutorial_input = true,
 	tooltip_text = "tutorial_tooltip_push",
 	tooltip_inputs = {
 		{
-			suffix = "",
+			suffix = "+",
 			prefix = "input_hold",
 			action = "action_two_hold"
 		},
@@ -1701,7 +1700,7 @@ Missions.prologue_pushing = {
 	},
 	tooltip_gamepad_inputs = {
 		{
-			suffix = "",
+			suffix = "+",
 			prefix = "input_hold",
 			action = "action_two_hold"
 		},
@@ -1820,6 +1819,10 @@ Missions.nurgle_destroy_cluster_03 = {
 	text = "mission_nurgle_destroy_cluster_03",
 	mission_template_name = "collect",
 	collect_amount = 7
+}
+Missions.nurgle_to_the_surface = {
+	mission_template_name = "goal",
+	text = "mission_nurgle_to_the_surface"
 }
 Missions.nurgle_escape_through_the_portal = {
 	mission_template_name = "goal",

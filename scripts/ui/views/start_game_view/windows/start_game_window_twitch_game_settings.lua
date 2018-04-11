@@ -1,5 +1,6 @@
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_twitch_game_settings_definitions")
 local widget_definitions = definitions.widgets
+local other_options_widget_definitions = definitions.other_options_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
@@ -36,6 +37,9 @@ StartGameWindowTwitchGameSettings.on_enter = function (self, params, offset)
 	self._ui_animations = {}
 
 	self.create_ui_elements(self, params, offset)
+
+	self._twitch_active = nil
+
 	self._update_difficulty_option(self)
 
 	return 
@@ -51,7 +55,16 @@ StartGameWindowTwitchGameSettings.create_ui_elements = function (self, params, o
 		widgets_by_name[name] = widget
 	end
 
+	local other_options_widgets = {}
+
+	for name, widget_definition in pairs(other_options_widget_definitions) do
+		local widget = UIWidget.init(widget_definition)
+		other_options_widgets[#other_options_widgets + 1] = widget
+		widgets_by_name[name] = widget
+	end
+
 	self._widgets = widgets
+	self._other_options_widgets = other_options_widgets
 	self._widgets_by_name = widgets_by_name
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
@@ -69,6 +82,7 @@ StartGameWindowTwitchGameSettings.create_ui_elements = function (self, params, o
 	widgets_by_name.game_option_2.content.button_hotspot.disable_button = true
 
 	self._set_additional_options_enabled_state(self, false)
+	self._update_additional_options(self, true)
 
 	local game_option_1 = widgets_by_name.game_option_1
 	local anim = self._animate_pulse(self, game_option_1.style.glow_frame.color, 1, 255, 100, 2)
@@ -273,18 +287,20 @@ StartGameWindowTwitchGameSettings._handle_input = function (self, dt, t)
 		end
 
 		local host_button = widgets_by_name.host_button
+		local strict_matchmaking_button = widgets_by_name.strict_matchmaking_button
 
 		UIWidgetUtils.animate_default_checkbox_button(host_button, dt)
+		UIWidgetUtils.animate_default_checkbox_button(strict_matchmaking_button, dt)
+
+		if self._is_button_hover_enter(self, widgets_by_name.game_option_1) or self._is_button_hover_enter(self, widgets_by_name.game_option_2) or self._is_button_hover_enter(self, widgets_by_name.play_button) then
+			self._play_sound(self, "play_gui_lobby_button_01_difficulty_confirm_hover")
+		end
 
 		changed_selection = self._is_other_option_button_selected(self, host_button, self._always_host_enabled)
 
 		if changed_selection ~= nil then
 			parent.set_always_host_option_enabled(parent, changed_selection)
 		end
-
-		local strict_matchmaking_button = widgets_by_name.strict_matchmaking_button
-
-		UIWidgetUtils.animate_default_checkbox_button(strict_matchmaking_button, dt)
 
 		changed_selection = self._is_other_option_button_selected(self, strict_matchmaking_button, self._strict_matchmaking_enabled)
 
@@ -349,33 +365,33 @@ StartGameWindowTwitchGameSettings._on_option_button_hover_exit = function (self,
 
 	return 
 end
-StartGameWindowTwitchGameSettings._update_additional_options = function (self)
+StartGameWindowTwitchGameSettings._update_additional_options = function (self, force_update)
 	local parent = self.parent
-	local private_enabled = parent.is_private_option_enabled(parent)
-	local always_host_enabled = parent.is_always_host_option_enabled(parent)
-	local strict_matchmaking_enabled = parent.is_strict_matchmaking_option_enabled(parent)
+	local private_enabled = true
+	local always_host_enabled = true
+	local strict_matchmaking_enabled = false
 	local twitch_active = Managers.twitch and Managers.twitch:is_connected()
 	local lobby = self._network_lobby
 	local num_members = #lobby.members(lobby):get_members()
 	local is_alone = num_members == 1
 
-	if is_alone ~= self._is_alone or private_enabled ~= self._private_enabled or always_host_enabled ~= self._always_host_enabled or strict_matchmaking_enabled ~= self._strict_matchmaking_enabled or twitch_active ~= self._twitch_active then
+	if force_update or is_alone ~= self._is_alone or private_enabled ~= self._private_enabled or always_host_enabled ~= self._always_host_enabled or strict_matchmaking_enabled ~= self._strict_matchmaking_enabled or twitch_active ~= self._twitch_active then
 		local widgets_by_name = self._widgets_by_name
-		local private_is_selected = twitch_active or private_enabled
-		local private_is_disabled = twitch_active
-		local always_host_is_selected = twitch_active or private_enabled or not is_alone or always_host_enabled
-		local always_host_is_disabled = twitch_active or private_enabled or not is_alone or twitch_active
-		local strict_matchmaking_is_selected = not twitch_active and not always_host_enabled and not private_enabled and is_alone and strict_matchmaking_enabled
-		local strict_matchmaking_is_disabled = private_enabled or always_host_enabled or not is_alone or twitch_active
-		local private_hotspot = widgets_by_name.private_button.content.button_hotspot
-		private_hotspot.disable_button = private_is_disabled
-		private_hotspot.is_selected = private_is_selected
-		local host_hotspot = widgets_by_name.host_button.content.button_hotspot
-		host_hotspot.disable_button = always_host_is_disabled
-		host_hotspot.is_selected = always_host_is_selected
-		local strict_matchmaking_hotspot = widgets_by_name.strict_matchmaking_button.content.button_hotspot
-		strict_matchmaking_hotspot.disable_button = strict_matchmaking_is_disabled
-		strict_matchmaking_hotspot.is_selected = strict_matchmaking_is_selected
+		local private_is_selected = true
+		local always_host_is_selected = true
+		local strict_matchmaking_is_selected = false
+		local private_button = widgets_by_name.private_button
+		private_button.content.button_hotspot.disable_button = true
+		private_button.content.button_hotspot.is_selected = private_is_selected
+		private_button.style.hover_glow.color[1] = 0
+		local host_button = widgets_by_name.host_button
+		host_button.content.button_hotspot.disable_button = true
+		host_button.content.button_hotspot.is_selected = always_host_is_selected
+		host_button.style.hover_glow.color[1] = 0
+		local strict_matchmaking_button = widgets_by_name.strict_matchmaking_button
+		strict_matchmaking_button.content.button_hotspot.disable_button = true
+		strict_matchmaking_button.content.button_hotspot.is_selected = strict_matchmaking_is_selected
+		strict_matchmaking_button.style.hover_glow.color[1] = 0
 		self._private_enabled = private_enabled
 		self._always_host_enabled = always_host_enabled
 		self._strict_matchmaking_enabled = strict_matchmaking_enabled
@@ -388,16 +404,17 @@ end
 StartGameWindowTwitchGameSettings._update_difficulty_option = function (self)
 	local parent = self.parent
 	local difficulty_key = parent.get_difficulty_option(parent)
+	local twitch_active = Managers.twitch and Managers.twitch:is_connected()
 
-	if difficulty_key ~= self._difficulty_key then
+	if difficulty_key ~= self._difficulty_key or twitch_active ~= self._twitch_active then
 		self._set_difficulty_option(self, difficulty_key)
 
 		self._difficulty_key = difficulty_key
-
-		self._set_additional_options_enabled_state(self, true)
-
+		local enable_play = DifficultySettings[difficulty_key] ~= nil
+		local twitch_active = Managers.twitch and Managers.twitch:is_connected()
 		local widgets_by_name = self._widgets_by_name
-		widgets_by_name.play_button.content.button_hotspot.disable_button = false
+		local enable_button = enable_play and twitch_active
+		widgets_by_name.play_button.content.button_hotspot.disable_button = not enable_button
 	end
 
 	return 
@@ -405,10 +422,10 @@ end
 StartGameWindowTwitchGameSettings._set_difficulty_option = function (self, difficulty_key)
 	local widgets_by_name = self._widgets_by_name
 	local difficulty_settings = DifficultySettings[difficulty_key]
-	local display_name = difficulty_settings.display_name
-	local display_image = difficulty_settings.display_image
-	widgets_by_name.game_option_2.content.option_text = Localize(display_name)
-	widgets_by_name.game_option_2.content.icon = display_image
+	local display_name = difficulty_settings and difficulty_settings.display_name
+	local display_image = difficulty_settings and difficulty_settings.display_image
+	widgets_by_name.game_option_2.content.option_text = (display_name and Localize(display_name)) or ""
+	widgets_by_name.game_option_2.content.icon = display_image or nil
 
 	return 
 end
@@ -478,6 +495,10 @@ StartGameWindowTwitchGameSettings.draw = function (self, dt)
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
+	for _, widget in ipairs(self._other_options_widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
+	end
+
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
@@ -508,7 +529,7 @@ StartGameWindowTwitchGameSettings._create_style_animation_enter = function (self
 	local current_color_value = pass_style.color[1]
 	local target_color_value = target_value
 	local total_time = 0.2
-	local animation_duration = (current_color_value/target_color_value - 1)*total_time
+	local animation_duration = (1 - current_color_value / target_color_value) * total_time
 
 	if 0 < animation_duration and not instant then
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)
@@ -531,7 +552,7 @@ StartGameWindowTwitchGameSettings._create_style_animation_exit = function (self,
 	local current_color_value = pass_style.color[1]
 	local target_color_value = target_value
 	local total_time = 0.2
-	local animation_duration = current_color_value/255*total_time
+	local animation_duration = current_color_value / 255 * total_time
 
 	if 0 < animation_duration and not instant then
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)

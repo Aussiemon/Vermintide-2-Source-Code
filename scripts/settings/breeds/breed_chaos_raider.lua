@@ -359,11 +359,11 @@ local action_data = {
 			},
 			alerted_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			alerted_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
@@ -384,11 +384,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		considerations = UtilityConsiderations.clan_rat_follow

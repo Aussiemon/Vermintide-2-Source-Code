@@ -319,7 +319,7 @@ local breed_data = {
 	}
 }
 Breeds.chaos_fanatic = table.create_copy(Breeds.chaos_fanatic, breed_data)
-BreedActionDimishingDamageDifficulty = {
+local BreedActionDimishingDamageDifficulty = {
 	easy = {
 		{
 			damage = 2,
@@ -903,11 +903,11 @@ local action_data = {
 			},
 			alerted_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			alerted_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			alerted_fwd_2 = {},
 			alerted_bwd_2 = {
@@ -916,11 +916,11 @@ local action_data = {
 			},
 			alerted_left_2 = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			alerted_right_2 = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			alerted_fwd_3 = {},
 			alerted_bwd_3 = {
@@ -929,11 +929,11 @@ local action_data = {
 			},
 			alerted_left_3 = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			alerted_right_3 = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
@@ -954,11 +954,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		walk_anims = {
@@ -971,10 +971,10 @@ local action_data = {
 	running_attack = {
 		damage_type = "cutting",
 		hit_react_type = "medium",
-		dodge_rotation_time = 1,
 		player_push_speed = 3,
 		fatigue_type = "blocked_running",
 		action_weight = 10,
+		dodge_rotation_time = 1,
 		dodge_window_start = 1.1,
 		attack_intensity = 0.5,
 		moving_attack = true,
@@ -1033,7 +1033,8 @@ local action_data = {
 				6
 			}
 		},
-		dimishing_damage = {}
+		dimishing_damage = {},
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty
 	},
 	normal_attack = {
 		moving_attack_intensity = 0.75,
@@ -1188,6 +1189,7 @@ local action_data = {
 			}
 		},
 		dimishing_damage = {},
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
 		attack_directions = {
 			attack_reach_down = "left",
 			attack_run_3 = "left",

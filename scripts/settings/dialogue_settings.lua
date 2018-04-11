@@ -83,7 +83,8 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/dwarf_ranger_skaven_stronghold",
 		"dialogues/generated/witch_hunter_skaven_stronghold",
 		"dialogues/generated/empire_soldier_skaven_stronghold",
-		"dialogues/generated/wood_elf_skaven_stronghold"
+		"dialogues/generated/wood_elf_skaven_stronghold",
+		"dialogues/generated/skaven_warlord_skaven_stronghold_level"
 	},
 	ussingen_demo = {
 		"dialogues/generated/wood_elf_ussingen",

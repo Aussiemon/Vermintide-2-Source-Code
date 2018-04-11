@@ -43,7 +43,7 @@ BTIdleAction.enter = function (self, unit, blackboard, t)
 	elseif blackboard.is_passive and blackboard.spawn_type ~= "horde" and blackboard.spawn_type ~= "horde_hidden" then
 		if action and action.animations then
 			local anims = action.animations
-			local index = action.anim_cycle_index%#anims + 1
+			local index = action.anim_cycle_index % #anims + 1
 			animation = anims[index]
 			action.anim_cycle_index = index
 		end
@@ -51,7 +51,7 @@ BTIdleAction.enter = function (self, unit, blackboard, t)
 		network_manager.anim_event(network_manager, unit, "to_passive")
 	elseif action and action.combat_animations then
 		local anims = action.combat_animations
-		local index = action.anim_cycle_index%#anims + 1
+		local index = action.anim_cycle_index % #anims + 1
 		animation = anims[index]
 		action.anim_cycle_index = index
 	end
@@ -114,9 +114,8 @@ end
 local Unit_alive = Unit.alive
 BTIdleAction.run = function (self, unit, blackboard, t, dt)
 	local target_unit = blackboard.target_unit
-	local is_allied = blackboard.breed.allied
 
-	if Unit_alive(target_unit) and not is_allied then
+	if Unit_alive(target_unit) then
 		local rot = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 
 		blackboard.locomotion_extension:set_wanted_rotation(rot)

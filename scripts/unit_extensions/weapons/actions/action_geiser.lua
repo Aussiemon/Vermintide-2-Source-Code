@@ -31,7 +31,7 @@ ActionGeiser.client_owner_start_action = function (self, new_action, t, chain_ac
 	self.targeting_effect_id = chain_action_data.targeting_effect_id
 	local owner_career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
 	local has_ranged_boost = false
-	local boost_curve_multiplier = 1
+	local boost_curve_multiplier = 0
 
 	if owner_career_extension then
 		has_ranged_boost, boost_curve_multiplier = owner_career_extension.has_ranged_boost(owner_career_extension)
@@ -43,7 +43,7 @@ ActionGeiser.client_owner_start_action = function (self, new_action, t, chain_ac
 
 	self._damage_buffer_index = 1
 	self._check_buffs = true
-	self._is_critical_strike = is_critical_strike or has_ranged_boost
+	self._is_critical_strike = is_critical_strike
 
 	return 
 end
@@ -92,7 +92,7 @@ ActionGeiser.fire = function (self, reason)
 	local first_person_unit = self.first_person_unit
 	local weapon_system = Managers.state.entity:system("weapon_system")
 	local radius = self.radius
-	local half_height = self.height*0.5
+	local half_height = self.height * 0.5
 	local position = self.position:unbox()
 	local physics_world = World.get_data(self.world, "physics_world")
 	local network_manager = Managers.state.network
@@ -165,7 +165,7 @@ ActionGeiser.fire = function (self, reason)
 				local target_index = nil
 
 				if damage_profile.target_radius and damage_profile.targets then
-					local proximity_factor = attack_distance/radius
+					local proximity_factor = attack_distance / radius
 					local shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit)
 
 					if shield_blocked then

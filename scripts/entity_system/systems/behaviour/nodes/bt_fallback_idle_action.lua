@@ -17,7 +17,7 @@ BTFallbackIdleAction.enter = function (self, unit, blackboard, t)
 		animation = action.idle_animation
 	elseif action and action.combat_animations then
 		local anims = action.combat_animations
-		local index = action.anim_cycle_index%#anims + 1
+		local index = action.anim_cycle_index % #anims + 1
 		animation = anims[index]
 		action.anim_cycle_index = index
 	end

@@ -26,7 +26,7 @@ PlayerCharacterStateWalking.on_enter = function (self, unit, input, dt, context,
 	elseif not script_data.disable_nice_movement then
 		local current_speed = Vector3.length(current_velocity)
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-		self.current_movement_speed_scale = math.min(current_speed/movement_settings_table.move_speed, 1)
+		self.current_movement_speed_scale = math.min(current_speed / movement_settings_table.move_speed, 1)
 	else
 		self.current_movement_speed_scale = 1
 	end
@@ -98,7 +98,7 @@ PlayerCharacterStateWalking._handle_ladder_collision = function (self, t, moveme
 			above_align_cube = true
 		else
 			local epsilon = 0.02
-			close_enough = distance < epsilon + 0.7 and 0 < distance
+			close_enough = distance < 0.7 + epsilon and 0 < distance
 			facing_correctly = looking_up and not facing_ladder and 0 < movement_in_ladder_direction
 		end
 
@@ -255,8 +255,8 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	local move_input = CharacterStateHelper.get_movement_input(input_extension)
 
 	if not self.is_bot then
-		local move_acceleration_up_dt = movement_settings_table.move_acceleration_up*dt
-		local move_acceleration_down_dt = movement_settings_table.move_acceleration_down*dt
+		local move_acceleration_up_dt = movement_settings_table.move_acceleration_up * dt
+		local move_acceleration_down_dt = movement_settings_table.move_acceleration_down * dt
 
 		if is_moving then
 			current_movement_speed_scale = math.min(1, current_movement_speed_scale + move_acceleration_up_dt)
@@ -278,7 +278,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 
 	local current_max_move_speed = (is_crouching and movement_settings_table.crouch_move_speed) or (is_walking and movement_settings_table.walk_move_speed) or movement_settings_table.move_speed
 	local move_speed_multiplier = status_extension.current_move_speed_multiplier(status_extension)
-	local final_move_speed = current_max_move_speed*move_speed_multiplier*current_movement_speed_scale*movement_settings_table.player_speed_scale
+	local final_move_speed = current_max_move_speed * move_speed_multiplier * current_movement_speed_scale * movement_settings_table.player_speed_scale
 	local move_input_direction = Vector3.normalize(move_input)
 
 	if Vector3.length_squared(move_input) == 0 then

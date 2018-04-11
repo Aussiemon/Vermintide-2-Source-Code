@@ -133,19 +133,19 @@ DebugKeyHandler.render = function ()
 		offset_lerp = 0.3
 	end
 
-	local header_color = Color(offset_lerp*250, 255, 255, 100)
-	local category_color = Color(offset_lerp*250, 255, 255, 255)
-	local key_color = Color(offset_lerp*250, 255, 120, 0)
-	local description_color = Color(offset_lerp*255, 150, 150, 150)
+	local header_color = Color(offset_lerp * 250, 255, 255, 100)
+	local category_color = Color(offset_lerp * 250, 255, 255, 255)
+	local key_color = Color(offset_lerp * 250, 255, 120, 0)
+	local description_color = Color(offset_lerp * 255, 150, 150, 150)
 	local res_x, res_y = Application.resolution()
 	local gui = DebugKeyHandler.gui
 	local start_y = DebugKeyHandler.current_y
-	DebugKeyHandler.current_y = math.lerp(start_y, res_y/2 + (DebugKeyHandler.num_keys*font_size)/2 + (table.size(DebugKeyHandler.keys)*font_size)/2, 0.1)
+	DebugKeyHandler.current_y = math.lerp(start_y, res_y / 2 + (DebugKeyHandler.num_keys * font_size) / 2 + (table.size(DebugKeyHandler.keys) * font_size) / 2, 0.1)
 	local pos = Vector3(res_x - 230, start_y, 200)
 
 	Gui.text(gui, "Debug keys", font_mtrl, font_size, font, pos, header_color)
 
-	pos.y = pos.y - font_size*1.5
+	pos.y = pos.y - font_size * 1.5
 	local even = false
 
 	for category, category_keys in pairs(DebugKeyHandler.keys) do
@@ -162,13 +162,13 @@ DebugKeyHandler.render = function ()
 			pos.y = pos.y - font_size
 		end
 
-		pos.y = pos.y - font_size/2
+		pos.y = pos.y - font_size / 2
 	end
 
-	Gui.rect(gui, Vector3(res_x - 250, pos.y + font_size, 100), Vector2(250, start_y - pos.y), Color(offset_lerp*240, 25, 50, 25))
+	Gui.rect(gui, Vector3(res_x - 250, pos.y + font_size, 100), Vector2(250, start_y - pos.y), Color(offset_lerp * 240, 25, 50, 25))
 
 	if not DebugKeyHandler.enabled then
-		Gui.rect(gui, Vector3(res_x - 250, pos.y + font_size, 300), Vector2(250, start_y - pos.y), Color(offset_lerp*200, 20, 20, 20))
+		Gui.rect(gui, Vector3(res_x - 250, pos.y + font_size, 300), Vector2(250, start_y - pos.y), Color(offset_lerp * 200, 20, 20, 20))
 	end
 
 	return 

@@ -628,7 +628,7 @@ WeaponTraits.traits = {
 		buff_name = "traits_ranged_increase_power_level_vs_armour_crit",
 		description_values = {
 			{
-				value_type = "multiplier",
+				value_type = "percent",
 				value = buff_tweak_data.ranged_power_vs_unarmored.multiplier
 			}
 		}

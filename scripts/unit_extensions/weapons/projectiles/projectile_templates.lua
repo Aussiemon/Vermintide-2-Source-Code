@@ -13,7 +13,7 @@ ProjectileTemplates.trajectory_templates = {
 			local estimated_target_position = target_position
 
 			for i = 1, ITERATIONS, 1 do
-				estimated_target_position = target_position + t*target_velocity
+				estimated_target_position = target_position + t * target_velocity
 				local height = estimated_target_position.z - initial_position.z
 				local speed_squared = speed^2
 				local flat_distance = Vector3.length(Vector3.flat(estimated_target_position - initial_position))
@@ -22,18 +22,18 @@ ProjectileTemplates.trajectory_templates = {
 					return 0, estimated_target_position
 				end
 
-				local sqrt_val = speed_squared^2 - gravity*(gravity*flat_distance^2 + height*2*speed_squared)
+				local sqrt_val = speed_squared^2 - gravity * (gravity * flat_distance^2 + 2 * height * speed_squared)
 
 				if sqrt_val <= 0 then
 					return nil, estimated_target_position
 				end
 
 				local second_degree_component = math.sqrt(sqrt_val)
-				local angle1 = math.atan((speed_squared + second_degree_component)/(gravity*flat_distance))
-				local angle2 = math.atan((speed_squared - second_degree_component)/(gravity*flat_distance))
+				local angle1 = math.atan((speed_squared + second_degree_component) / (gravity * flat_distance))
+				local angle2 = math.atan((speed_squared - second_degree_component) / (gravity * flat_distance))
 				angle = math.min(angle1, angle2)
 				local flat_distance = Vector3.length(Vector3.flat(estimated_target_position - initial_position))
-				t = flat_distance/(speed*math.cos(angle))
+				t = flat_distance / (speed * math.cos(angle))
 			end
 
 			return angle, estimated_target_position
@@ -174,8 +174,8 @@ function check_for_afro_hit(recent_impacts, num_impacts)
 	local only_hit_afro = true
 	local non_afro_hit_index = nil
 
-	for i = 1, num_impacts/ProjectileImpactDataIndex.STRIDE, 1 do
-		local j = (i - 1)*ProjectileImpactDataIndex.STRIDE
+	for i = 1, num_impacts / ProjectileImpactDataIndex.STRIDE, 1 do
+		local j = (i - 1) * ProjectileImpactDataIndex.STRIDE
 		hit_unit = recent_impacts[j + ProjectileImpactDataIndex.UNIT]
 		actor_index = recent_impacts[j + ProjectileImpactDataIndex.ACTOR_INDEX]
 		hit_actor = Unit.actor(hit_unit, actor_index)

@@ -13,13 +13,13 @@ BlendCamera.init = function (self, root_node)
 			local match_x = blend_definition.match_value_x
 			local match_y = blend_definition.match_value_y
 
-			return (math.min(math.abs(blend_x - match_x), 1) - 1)*(math.min(math.abs(blend_y - match_y), 1) - 1)
+			return (1 - math.min(math.abs(blend_x - match_x), 1)) * (1 - math.min(math.abs(blend_y - match_y), 1))
 		end,
 		match = function (blend_definition, data)
 			local blend = data[blend_definition.blend_parameter]
 			local match = blend_definition.match_value
 
-			return math.min(math.abs(blend - match), 1) - 1
+			return 1 - math.min(math.abs(blend - match), 1)
 		end
 	}
 
@@ -66,12 +66,12 @@ BlendCamera.update = function (self, dt, position, rotation, data)
 
 		assert(0 <= weight, "[BlendCamera:update() individual weight lesser than 0, undefined.")
 
-		total_offset = total_offset + offset*weight
+		total_offset = total_offset + offset * weight
 	end
 
 	assert(0 < total_weight, "[BlendCamera:update() total blend weights are lower than 0")
 
-	local new_position = position + total_offset/total_weight
+	local new_position = position + total_offset / total_weight
 
 	BlendCamera.super.update(self, dt, new_position, rotation, data)
 

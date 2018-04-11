@@ -38,7 +38,7 @@ RESOLUTION_XB1 = {
 local native_screen_width, native_screen_height, resolutions_by_aspect_ratio = nil
 
 local function resolution_supported(width, height)
-	local ratio = width/height
+	local ratio = width / height
 
 	return AspectRatio.LOWER_LIMIT < ratio and ratio < AspectRatio.UPPER_LIMIT
 end
@@ -83,7 +83,7 @@ local function determine_native_aspect_ratio_and_resolution()
 		end
 
 		table.sort(tmp, function (x, y)
-			return y.w*y.h < x.w*x.h
+			return y.w * y.h < x.w * x.h
 		end)
 
 		native_screen_height = tmp[1].h
@@ -157,8 +157,8 @@ end
 
 function UIResolutionScale()
 	local w, h = UIResolution()
-	local width_scale = math.min(w/UIResolutionWidthFragments(), 1)
-	local height_scale = math.min(h/UIResolutionHeightFragments(), 1)
+	local width_scale = math.min(w / UIResolutionWidthFragments(), 1)
+	local height_scale = math.min(h / UIResolutionHeightFragments(), 1)
 
 	return math.min(width_scale, height_scale)
 end
@@ -172,27 +172,27 @@ function UIResolutionScaleWidth()
 end
 
 function UIInverseResolutionScale()
-	return UIResolutionScale()/1
+	return 1 / UIResolutionScale()
 end
 
 function UIResolutionScale_pow2()
 	local w, _ = UIResolution()
-	local scale = w/UIResolutionWidthFragments()
-	local scale_pow2 = math.pow(2, math.ceil(math.log(scale)/math.log(2)))
+	local scale = w / UIResolutionWidthFragments()
+	local scale_pow2 = math.pow(2, math.ceil(math.log(scale) / math.log(2)))
 
 	return scale_pow2
 end
 
 function UIResolutionScaleHeight_pow2()
-	local scale = UIResolutionHeightFragments()/NUM_SCREEN_FRAGMENTS_H_16_9
-	local scale_pow2 = math.pow(2, math.ceil(math.log(scale)/math.log(2)))
+	local scale = UIResolutionHeightFragments() / NUM_SCREEN_FRAGMENTS_H_16_9
+	local scale_pow2 = math.pow(2, math.ceil(math.log(scale) / math.log(2)))
 
 	return scale_pow2
 end
 
 function UIResolutionScaleWidth_pow2()
-	local scale = UIResolutionWidthFragments()/NUM_SCREEN_FRAGMENTS_W_16_9
-	local scale_pow2 = math.pow(2, math.ceil(math.log(scale)/math.log(2)))
+	local scale = UIResolutionWidthFragments() / NUM_SCREEN_FRAGMENTS_W_16_9
+	local scale_pow2 = math.pow(2, math.ceil(math.log(scale) / math.log(2)))
 
 	return scale_pow2
 end
@@ -202,14 +202,14 @@ function UIScalePositionTableToResolution(position, pixel_snap)
 
 	if pixel_snap then
 		return {
-			math.round(position[1]*scale),
-			math.round(position[2]*scale),
+			math.round(position[1] * scale),
+			math.round(position[2] * scale),
 			position[3] or 0
 		}
 	else
 		return {
-			position[1]*scale,
-			position[2]*scale,
+			position[1] * scale,
+			position[2] * scale,
 			position[3] or 0
 		}
 	end
@@ -221,9 +221,9 @@ function UIScaleVectorToResolution(position, pixel_snap)
 	local scale = RESOLUTION_LOOKUP.scale
 
 	if pixel_snap then
-		return Vector3(math.round(position[1]*scale), math.round(position[2]*scale), position[3] or 0)
+		return Vector3(math.round(position[1] * scale), math.round(position[2] * scale), position[3] or 0)
 	else
-		return Vector3(position[1]*scale, position[2]*scale, position[3] or 0)
+		return Vector3(position[1] * scale, position[2] * scale, position[3] or 0)
 	end
 
 	return 
@@ -233,9 +233,9 @@ function UIScaleScalarToResolution(scalar, pixel_snap)
 	local scale = RESOLUTION_LOOKUP.scale
 
 	if pixel_snap then
-		return math.round(scalar*scale)
+		return math.round(scalar * scale)
 	else
-		return scalar*scale
+		return scalar * scale
 	end
 
 	return 
@@ -245,9 +245,9 @@ function UIInverseScaleVectorToResolution(position, pixel_snap)
 	local scale = RESOLUTION_LOOKUP.inv_scale
 
 	if pixel_snap then
-		return Vector3(math.round(position[1]*scale), math.round(position[2]*scale), position[3] or 0)
+		return Vector3(math.round(position[1] * scale), math.round(position[2] * scale), position[3] or 0)
 	else
-		return Vector3(position[1]*scale, position[2]*scale, position[3] or 0)
+		return Vector3(position[1] * scale, position[2] * scale, position[3] or 0)
 	end
 
 	return 
@@ -257,9 +257,9 @@ function UIScaleVectorToResolution_pow2(position, pixel_snap)
 	local scale = UIResolutionScale_pow2()
 
 	if pixel_snap then
-		return Vector3(math.round(position[1]*scale), math.round(position[2]*scale), position[3] or 0)
+		return Vector3(math.round(position[1] * scale), math.round(position[2] * scale), position[3] or 0)
 	else
-		return Vector3(position[1]*scale, position[2]*scale, position[3] or 0)
+		return Vector3(position[1] * scale, position[2] * scale, position[3] or 0)
 	end
 
 	return 
@@ -402,8 +402,8 @@ function InitVideo()
 				y
 			})
 			table.insert(resolutions, {
-				x*2,
-				y*2
+				2 * x,
+				2 * y
 			})
 
 			i = i + 1
@@ -457,10 +457,10 @@ function AccomodateViewport()
 	native_screen_width, native_screen_height = Application.resolution()
 	local max = nil
 	current_aspect_ratio, max = AspectRatio.calculate(native_screen_width, native_screen_height)
-	current_viewport.x = max.x/native_screen_width
-	current_viewport.y = max.y/native_screen_height
-	current_viewport.width = max.width/native_screen_width
-	current_viewport.height = max.height/native_screen_height
+	current_viewport.x = max.x / native_screen_width
+	current_viewport.y = max.y / native_screen_height
+	current_viewport.width = max.width / native_screen_width
+	current_viewport.height = max.height / native_screen_height
 
 	return 
 end

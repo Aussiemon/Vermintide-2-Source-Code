@@ -19,6 +19,20 @@ local scenegraph_definition = {
 			1080
 		}
 	},
+	console_cursor = {
+		vertical_alignment = "center",
+		parent = "root",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			0,
+			-10
+		},
+		size = {
+			1920,
+			1080
+		}
+	},
 	screen = {
 		scale = "fit",
 		position = {
@@ -356,7 +370,7 @@ local scenegraph_definition = {
 		parent = "background",
 		horizontal_alignment = "center",
 		position = {
-			-PLAYER_LIST_SIZE[1]/2,
+			-PLAYER_LIST_SIZE[1] / 2,
 			-70,
 			1
 		},
@@ -525,8 +539,8 @@ local function create_loot_widget(scenegraph_id, texture, amount)
 	}
 	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
 	local texture_size = texture_settings.size
-	local texture_total_width = texture_size[1]*amount
-	local total_spacing = spacing[1]*(amount - 1)
+	local texture_total_width = texture_size[1] * amount
+	local total_spacing = spacing[1] * (amount - 1)
 	local size = {
 		texture_total_width + total_spacing,
 		texture_size[2] + spacing[2]
@@ -601,8 +615,8 @@ local function create_loot_widget(scenegraph_id, texture, amount)
 					255
 				},
 				offset = {
-					-size[1]/2,
-					-texture_size[2]/2,
+					-size[1] / 2,
+					-texture_size[2] / 2,
 					2
 				}
 			},
@@ -627,8 +641,8 @@ local function create_loot_widget(scenegraph_id, texture, amount)
 					255
 				},
 				offset = {
-					-size[1]/2,
-					-texture_size[2]/2,
+					-size[1] / 2,
+					-texture_size[2] / 2,
 					1
 				},
 				draw_count = amount
@@ -654,8 +668,8 @@ local function create_loot_widget(scenegraph_id, texture, amount)
 					255
 				},
 				offset = {
-					-size[1]/2,
-					-texture_size[2]/2,
+					-size[1] / 2,
+					-texture_size[2] / 2,
 					3
 				},
 				draw_count = amount
@@ -929,7 +943,9 @@ local popup_widget_definition = {
 		}
 	},
 	content = {
-		list_content = {}
+		list_content = {
+			allow_multi_hover = true
+		}
 	},
 	style = {
 		list_style = {
@@ -1283,7 +1299,9 @@ local function player_widget_definition(index)
 			kick_tooltip_text = "input_description_vote_kick_player",
 			show_voice_button = false,
 			frame = frame_settings.texture,
-			button_hotspot = {},
+			button_hotspot = {
+				allow_multi_hover = true
+			},
 			chat_button_hotspot = {},
 			kick_button_hotspot = {},
 			voice_button_hotspot = {},
@@ -1296,8 +1314,8 @@ local function player_widget_definition(index)
 						0
 					},
 					{
-						math.min(size[1]/background_texture_settings.size[1], 1),
-						math.min((size[2] - 50)/background_texture_settings.size[2], 1)
+						math.min(size[1] / background_texture_settings.size[1], 1),
+						math.min((size[2] - 50) / background_texture_settings.size[2], 1)
 					}
 				},
 				texture_id = background_texture
@@ -1489,7 +1507,7 @@ local function player_widget_definition(index)
 					50
 				},
 				offset = {
-					size[1]/2 - 20 - size[1]/4*1.5,
+					size[1] / 2 - 20 - size[1] / 4 * 1.5,
 					10,
 					3
 				}
@@ -1506,7 +1524,7 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					size[1]/2 - 20 - size[1]/4*1.5,
+					size[1] / 2 - 20 - size[1] / 4 * 1.5,
 					10,
 					4
 				}
@@ -1523,7 +1541,7 @@ local function player_widget_definition(index)
 					50
 				},
 				offset = {
-					size[1]/2 - 20 - size[1]/4*0.5,
+					size[1] / 2 - 20 - size[1] / 4 * 0.5,
 					10,
 					3
 				}
@@ -1540,7 +1558,7 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					size[1]/2 - 20 - size[1]/4*0.5,
+					size[1] / 2 - 20 - size[1] / 4 * 0.5,
 					10,
 					4
 				}
@@ -1557,7 +1575,7 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					size[1]/2 - 20 - size[1]/4*0.5,
+					size[1] / 2 - 20 - size[1] / 4 * 0.5,
 					10,
 					5
 				}
@@ -1574,7 +1592,7 @@ local function player_widget_definition(index)
 					50
 				},
 				offset = {
-					size[1]/2 - 20 + size[1]/4*0.5,
+					size[1] / 2 - 20 + size[1] / 4 * 0.5,
 					10,
 					3
 				}
@@ -1591,7 +1609,7 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					size[1]/2 - 20 + size[1]/4*0.5,
+					size[1] / 2 - 20 + size[1] / 4 * 0.5,
 					10,
 					4
 				}
@@ -1608,7 +1626,7 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					size[1]/2 - 20 + size[1]/4*0.5,
+					size[1] / 2 - 20 + size[1] / 4 * 0.5,
 					10,
 					5
 				}
@@ -1625,7 +1643,7 @@ local function player_widget_definition(index)
 					50
 				},
 				offset = {
-					size[1]/2 - 20 + size[1]/4*1.5,
+					size[1] / 2 - 20 + size[1] / 4 * 1.5,
 					10,
 					3
 				}
@@ -1642,7 +1660,7 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					size[1]/2 - 20 + size[1]/4*1.5,
+					size[1] / 2 - 20 + size[1] / 4 * 1.5,
 					10,
 					4
 				}
@@ -1701,7 +1719,7 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					size[1]/2 - 132,
+					size[1] / 2 - 132,
 					size[2] - 150,
 					3
 				},
@@ -1798,271 +1816,14 @@ local function player_widget_definition(index)
 	return definition
 end
 
-local platform = PLATFORM
-local generic_input_actions = {
-	own_player = {
-		{
-			input_action = "back",
-			priority = 5,
-			description_text = "input_description_close"
-		}
-	},
-	server_default = {
-		{
-			input_action = "mute_voice",
-			priority = 3,
-			description_text = "input_description_mute_voice"
-		},
-		{
-			input_action = "show_profile",
-			priority = 4,
-			description_text = (platform == "xb1" and "input_description_show_profile_xb1") or "input_description_show_profile"
-		},
-		{
-			input_action = "back",
-			priority = 5,
-			description_text = "input_description_close"
-		}
-	},
-	server_chat_muted = {
-		{
-			input_action = "mute_voice",
-			priority = 3,
-			description_text = "input_description_mute_voice"
-		},
-		{
-			input_action = "show_profile",
-			priority = 4,
-			description_text = (platform == "xb1" and "input_description_show_profile_xb1") or "input_description_show_profile"
-		},
-		{
-			input_action = "back",
-			priority = 5,
-			description_text = "input_description_close"
-		}
-	},
-	server_voice_muted = {
-		{
-			input_action = "mute_voice",
-			priority = 3,
-			description_text = "input_description_unmute_voice"
-		},
-		{
-			input_action = "show_profile",
-			priority = 4,
-			description_text = (platform == "xb1" and "input_description_show_profile_xb1") or "input_description_show_profile"
-		},
-		{
-			input_action = "back",
-			priority = 5,
-			description_text = "input_description_close"
-		}
-	},
-	server_voice_and_chat_muted = {
-		{
-			input_action = "mute_voice",
-			priority = 3,
-			description_text = "input_description_unmute_voice"
-		},
-		{
-			input_action = "show_profile",
-			priority = 4,
-			description_text = (platform == "xb1" and "input_description_show_profile_xb1") or "input_description_show_profile"
-		},
-		{
-			input_action = "back",
-			priority = 5,
-			description_text = "input_description_close"
-		}
-	},
-	default = {
-		{
-			input_action = "kick_player",
-			priority = 2,
-			description_text = "input_description_vote_kick_player"
-		},
-		{
-			input_action = "mute_voice",
-			priority = 4,
-			description_text = "input_description_mute_voice"
-		},
-		{
-			input_action = "show_profile",
-			priority = 5,
-			description_text = (platform == "xb1" and "input_description_show_profile_xb1") or "input_description_show_profile"
-		},
-		{
-			input_action = "back",
-			priority = 6,
-			description_text = "input_description_close"
-		}
-	},
-	kick_unavailable = {
-		{
-			input_action = "mute_voice",
-			priority = 4,
-			description_text = "input_description_mute_voice"
-		},
-		{
-			input_action = "show_profile",
-			priority = 5,
-			description_text = (platform == "xb1" and "input_description_show_profile_xb1") or "input_description_show_profile"
-		},
-		{
-			input_action = "back",
-			priority = 6,
-			description_text = "input_description_close"
-		}
-	},
-	chat_muted = {
-		{
-			input_action = "kick_player",
-			priority = 2,
-			description_text = "input_description_vote_kick_player"
-		},
-		{
-			input_action = "mute_voice",
-			priority = 4,
-			description_text = "input_description_mute_voice"
-		},
-		{
-			input_action = "show_profile",
-			priority = 5,
-			description_text = (platform == "xb1" and "input_description_show_profile_xb1") or "input_description_show_profile"
-		},
-		{
-			input_action = "back",
-			priority = 6,
-			description_text = "input_description_close"
-		}
-	},
-	voice_muted = {
-		{
-			input_action = "kick_player",
-			priority = 2,
-			description_text = "input_description_vote_kick_player"
-		},
-		{
-			input_action = "mute_voice",
-			priority = 4,
-			description_text = "input_description_unmute_voice"
-		},
-		{
-			input_action = "show_profile",
-			priority = 5,
-			description_text = (platform == "xb1" and "input_description_show_profile_xb1") or "input_description_show_profile"
-		},
-		{
-			input_action = "back",
-			priority = 6,
-			description_text = "input_description_close"
-		}
-	},
-	voice_and_kick_unavailable = {
-		{
-			input_action = "mute_voice",
-			priority = 4,
-			description_text = "input_description_unmute_voice"
-		},
-		{
-			input_action = "show_profile",
-			priority = 5,
-			description_text = (platform == "xb1" and "input_description_show_profile_xb1") or "input_description_show_profile"
-		},
-		{
-			input_action = "back",
-			priority = 6,
-			description_text = "input_description_close"
-		}
-	},
-	voice_and_chat_muted = {
-		{
-			input_action = "kick_player",
-			priority = 2,
-			description_text = "input_description_vote_kick_player"
-		},
-		{
-			input_action = "mute_voice",
-			priority = 4,
-			description_text = "input_description_unmute_voice"
-		},
-		{
-			input_action = "show_profile",
-			priority = 5,
-			description_text = (platform == "xb1" and "input_description_show_profile_xb1") or "input_description_show_profile"
-		},
-		{
-			input_action = "back",
-			priority = 6,
-			description_text = "input_description_close"
-		}
-	}
-}
-
-if PLATFORM == "win32" then
-	generic_input_actions.server_default[#generic_input_actions.server_default + 1] = {
-		input_action = "mute_chat",
-		priority = 2,
-		description_text = "input_description_mute_chat"
-	}
-	generic_input_actions.server_chat_muted[#generic_input_actions.server_chat_muted + 1] = {
-		input_action = "mute_chat",
-		priority = 2,
-		description_text = "input_description_unmute_chat"
-	}
-	generic_input_actions.server_voice_muted[#generic_input_actions.server_voice_muted + 1] = {
-		input_action = "mute_chat",
-		priority = 2,
-		description_text = "input_description_mute_chat"
-	}
-	generic_input_actions.server_voice_and_chat_muted[#generic_input_actions.server_voice_and_chat_muted + 1] = {
-		input_action = "mute_chat",
-		priority = 2,
-		description_text = "input_description_unmute_chat"
-	}
-	generic_input_actions.default[#generic_input_actions.default + 1] = {
-		input_action = "mute_chat",
-		priority = 3,
-		description_text = "input_description_mute_chat"
-	}
-	generic_input_actions.chat_muted[#generic_input_actions.chat_muted + 1] = {
-		input_action = "mute_chat",
-		priority = 3,
-		description_text = "input_description_unmute_chat"
-	}
-	generic_input_actions.voice_muted[#generic_input_actions.voice_muted + 1] = {
-		input_action = "mute_chat",
-		priority = 3,
-		description_text = "input_description_mute_chat"
-	}
-	generic_input_actions.voice_and_chat_muted[#generic_input_actions.voice_and_chat_muted + 1] = {
-		input_action = "mute_chat",
-		priority = 3,
-		description_text = "input_description_unmute_chat"
-	}
-end
-
-local private_input_description = {
-	name = "stick",
-	gamepad_support = true,
-	actions = {
-		{
-			input_action = "toggle_private",
-			priority = 1,
-			description_text = "input_description_change_privacy"
-		}
-	}
-}
-
 return {
 	PLAYER_LIST_SIZE = PLAYER_LIST_SIZE,
-	private_input_description = private_input_description,
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,
 	specific_widget_definitions = specific_widget_definitions,
 	static_widget_definitions = static_widget_definitions,
 	player_widget_definition = player_widget_definition,
 	popup_widget_definition = popup_widget_definition,
-	generic_input_actions = generic_input_actions,
-	create_loot_widget = create_loot_widget
+	create_loot_widget = create_loot_widget,
+	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor")
 }

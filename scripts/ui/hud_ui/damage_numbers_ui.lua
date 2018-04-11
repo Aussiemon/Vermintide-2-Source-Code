@@ -95,7 +95,7 @@ DamageNumbersUI.event_add_damage_number = function (self, damage, size, unit, ti
 		floating_speed = 150,
 		alpha = 255,
 		size = size,
-		text = damage*100,
+		text = damage,
 		color = {
 			255,
 			color.x,
@@ -174,14 +174,14 @@ DamageNumbersUI.draw = function (self, dt)
 					local is_critical_strike = unit_text.is_critical_strike
 					local time_left = unit_text.time - self._time
 					local total_time = unit_text.time - unit_text.starting_time
-					local inv_progress = time_left/total_time
-					local progress = inv_progress - 1
+					local inv_progress = time_left / total_time
+					local progress = 1 - inv_progress
 					local ease_out_proggress = easeOutCubic(progress)
-					local x = world_to_screen_position.x*inverse_scale
-					local y = world_to_screen_position.z*inverse_scale
+					local x = world_to_screen_position.x * inverse_scale
+					local y = world_to_screen_position.z * inverse_scale
 					damage_text_offset[1] = x + unit_text.random_x_offset
-					damage_text_offset[2] = y + unit_text.random_y_offset + ease_out_proggress*unit_text.floating_speed
-					local alpha = (ease_out_proggress - 1)*255
+					damage_text_offset[2] = y + unit_text.random_y_offset + ease_out_proggress * unit_text.floating_speed
+					local alpha = (1 - ease_out_proggress) * 255
 					damage_text_content.text = text
 					damage_text_widget.style.text.text_color = unit_text.color
 					damage_text_widget.style.text.text_color[1] = alpha
@@ -189,8 +189,8 @@ DamageNumbersUI.draw = function (self, dt)
 					local font_size = unit_text.size
 
 					if is_critical_strike then
-						local size_progress = easeOutCubic(math.min(progress*10, 1))
-						font_size = font_size + math.ease_pulse(size_progress)*30
+						local size_progress = easeOutCubic(math.min(progress * 10, 1))
+						font_size = font_size + math.ease_pulse(size_progress) * 30
 					end
 
 					damage_text_widget.style.text.font_size = font_size

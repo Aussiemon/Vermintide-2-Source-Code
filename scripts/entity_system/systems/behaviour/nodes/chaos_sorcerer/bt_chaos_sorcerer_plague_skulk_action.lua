@@ -15,7 +15,7 @@ BTChaosSorcererPlagueSkulkAction.enter = function (self, unit, blackboard, t)
 	local target_dist = blackboard.target_dist
 	local skulk_data = blackboard.skulk_data or {}
 	blackboard.skulk_data = skulk_data
-	skulk_data.direction = skulk_data.direction or math.random(0, 1)*2 - 1
+	skulk_data.direction = skulk_data.direction or 1 - math.random(0, 1) * 2
 	skulk_data.radius = skulk_data.radius or blackboard.target_dist
 	blackboard.action = action
 
@@ -124,8 +124,8 @@ BTChaosSorcererPlagueSkulkAction.run = function (self, unit, blackboard, t, dt)
 			center_pos = target_pos
 		end
 
-		local spread = math.random()*5 + math.random()*5 + math.random()*5
-		local dist = spread*0.5 + 10
+		local spread = math.random() * 5 + math.random() * 5 + math.random() * 5
+		local dist = spread * 0.5 + 10
 		local tries = 5
 		local teleport_pos = ConflictUtils.get_spawn_pos_on_circle(blackboard.nav_world, unit_pos, dist, spread, tries)
 
@@ -318,7 +318,7 @@ BTChaosSorcererPlagueSkulkAction.get_plague_wave_cast_position = function (self,
 		min_dist = action.third_wave_min_distance
 	end
 
-	local mid_dist = (max_dist + min_dist)/2
+	local mid_dist = (max_dist + min_dist) / 2
 	local pi = math.pi
 	local plague_wave_cast_position = nil
 	local target_start_pos = projected_start_pos
@@ -333,9 +333,9 @@ BTChaosSorcererPlagueSkulkAction.get_plague_wave_cast_position = function (self,
 
 	if target_start_pos then
 		local rand_deg = math.random(0, 360)
-		local radians = (rand_deg*pi)/180
+		local radians = (rand_deg * pi) / 180
 		local direction = Vector3(math.sin(radians), math.cos(radians), 0)
-		local projected_end_pos = target_position + direction*max_dist
+		local projected_end_pos = target_position + direction * max_dist
 
 		if projected_end_pos then
 			local success, hit_position = GwNavQueries.raycast(nav_world, target_start_pos, projected_end_pos)
@@ -345,10 +345,10 @@ BTChaosSorcererPlagueSkulkAction.get_plague_wave_cast_position = function (self,
 				local is_within_bounds = min_dist < distance and distance < max_dist
 
 				if is_within_bounds then
-					local wanted_pos = target_position + direction*math.random(min_dist, distance)
+					local wanted_pos = target_position + direction * math.random(min_dist, distance)
 
 					if mid_dist <= distance then
-						wanted_pos = target_position + direction*math.random(mid_dist, distance)
+						wanted_pos = target_position + direction * math.random(mid_dist, distance)
 					end
 
 					local teleport_pos_on_mesh = LocomotionUtils.pos_on_mesh(nav_world, wanted_pos, 1, 1)
@@ -394,7 +394,7 @@ BTChaosSorcererPlagueSkulkAction.get_skulk_target = function (self, unit, blackb
 
 	if blackboard.is_close then
 		if dist < (action.preferred_distance or 20) then
-			to_target = to_target + to_target_dir*(math.random() + 1)
+			to_target = to_target + to_target_dir * (1 + math.random())
 		else
 			blackboard.is_close = false
 			to_target = to_target + to_target_dir
@@ -406,15 +406,15 @@ BTChaosSorcererPlagueSkulkAction.get_skulk_target = function (self, unit, blackb
 
 	local cross_dir = Vector3(0, 0, direction)
 	local mod = 0.1
-	local alpha = math.pi*math.clamp((mod*20)/dist, 0.01, 0.15)
+	local alpha = math.pi * math.clamp((mod * 20) / dist, 0.01, 0.15)
 
 	if teleporting then
-		alpha = alpha*1.5
+		alpha = alpha * 1.5
 	end
 
 	for i = 1, TRIES, 1 do
-		local rot_vec = to_target - to_target_dir*0.5
-		local pos = target_position + Quaternion.rotate(Quaternion(cross_dir, alpha*i), rot_vec)
+		local rot_vec = to_target - to_target_dir * 0.5
+		local pos = target_position + Quaternion.rotate(Quaternion(cross_dir, alpha * i), rot_vec)
 		pos = ConflictUtils.find_center_tri(nav_world, pos)
 
 		if pos then
@@ -422,7 +422,7 @@ BTChaosSorcererPlagueSkulkAction.get_skulk_target = function (self, unit, blackb
 		end
 	end
 
-	skulk_data.direction = skulk_data.direction*-1
+	skulk_data.direction = skulk_data.direction * -1
 
 	return 
 end

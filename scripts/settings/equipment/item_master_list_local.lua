@@ -536,7 +536,7 @@ ItemMasterList.potion_damage_boost_01 = {
 	inventory_icon = "icons_placeholder",
 	left_hand_unit = "units/weapons/player/wpn_potion_01/wpn_potion_strenght_01",
 	description_type = "potion",
-	hud_icon = "hud_inventory_icon_potion_2",
+	hud_icon = "hud_inventory_icon_potion_strength",
 	item_type = "potion",
 	can_wield = {
 		"bw_scholar",
@@ -564,7 +564,7 @@ ItemMasterList.potion_speed_boost_01 = {
 	slot_type = "potion",
 	rarity = "plentiful",
 	description_type = "potion",
-	hud_icon = "hud_inventory_icon_potion",
+	hud_icon = "hud_inventory_icon_potion_speed",
 	item_type = "potion",
 	can_wield = {
 		"bw_scholar",
@@ -592,7 +592,7 @@ ItemMasterList.potion_cooldown_reduction_01 = {
 	slot_type = "potion",
 	rarity = "plentiful",
 	description_type = "potion",
-	hud_icon = "hud_inventory_icon_potion",
+	hud_icon = "hud_inventory_icon_potion_cooldown_reduction",
 	item_type = "potion",
 	can_wield = {
 		"bw_scholar",

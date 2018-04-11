@@ -67,7 +67,7 @@ end
 BTAlliedFollowAction._get_wanted_pos = function (self, unit, blackboard)
 	local target_unit = blackboard.player_controller
 	local target_position = POSITION_LOOKUP[target_unit]
-	local wanted_position = target_position + Vector3.forward()*0.5 + Quaternion.right(Unit.local_rotation(target_unit, 0))*2
+	local wanted_position = target_position + Vector3.forward() * 0.5 + Quaternion.right(Unit.local_rotation(target_unit, 0)) * 2
 	local projected_pos = LocomotionUtils.pos_on_mesh(blackboard.nav_world, wanted_position, 1, 1)
 
 	if projected_pos then

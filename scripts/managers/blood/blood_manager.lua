@@ -57,7 +57,7 @@ BloodManager._update_weapon_blood = function (self, dt, t)
 
 	for attacker_unit, blood_data in pairs(self._weapon_blood) do
 		for weapon, amount in pairs(blood_data) do
-			blood_data[weapon] = math.clamp(amount - BloodSettings.weapon_blood.dissolve_rate*dt, 0, BloodSettings.weapon_blood.max_value)
+			blood_data[weapon] = math.clamp(amount - BloodSettings.weapon_blood.dissolve_rate * dt, 0, BloodSettings.weapon_blood.max_value)
 
 			self._set_weapon_blood_intensity(self, attacker_unit, weapon, blood_data[weapon])
 		end
@@ -139,7 +139,7 @@ BloodManager._update_distance_fade = function (self, dt, t)
 				local pos = Unit.local_position(unit, 0)
 				local distance_sq = Vector3.distance_squared(pos, camera_pos)
 
-				if t + 2 < time and BloodSettings.blood_decals.distance_despawn*BloodSettings.blood_decals.distance_despawn <= distance_sq then
+				if t + 2 < time and BloodSettings.blood_decals.distance_despawn * BloodSettings.blood_decals.distance_despawn <= distance_sq then
 					self._set_fade_values(self, unit, t, 2)
 
 					self._blood_fades[unit] = t + 2
@@ -301,7 +301,7 @@ BloodManager.spawn_blood_ball = function (self, position, direction, damage_type
 			local velocity = BloodSettings.blood_ball.damage_type_velocities[damage_type]
 			local real_velocity = velocity or default_velocity
 
-			Actor.add_velocity(actor, Vector3.normalize(direction)*real_velocity)
+			Actor.add_velocity(actor, Vector3.normalize(direction) * real_velocity)
 		end
 
 		local health_ext = ScriptUnit.extension(hit_unit, "health_system")
@@ -334,8 +334,8 @@ BloodManager._spawn_effects = function (self, hit_unit, breed, health_ext)
 		return 
 	end
 
-	local inverse_health_percentage = health_ext.current_health_percent(health_ext) - 1
-	local step = (#blood_effect_data + 1)/1
+	local inverse_health_percentage = 1 - health_ext.current_health_percent(health_ext)
+	local step = 1 / (#blood_effect_data + 1)
 	local current_threshold = step
 
 	for idx, data in ipairs(blood_effect_data) do
@@ -362,7 +362,7 @@ end
 BloodManager._update_blood_intensity = function (self, hit_unit, breed, health_ext)
 	local blood_intensity_data = breed.blood_intensity
 	local num_meshes = Unit.num_meshes(hit_unit)
-	local inverse_health_percentage = health_ext.current_health_percent(health_ext) - 1
+	local inverse_health_percentage = 1 - health_ext.current_health_percent(health_ext)
 
 	for i = 0, num_meshes - 1, 1 do
 		local mesh = Unit.mesh(hit_unit, i)
@@ -380,7 +380,7 @@ BloodManager._update_blood_intensity = function (self, hit_unit, breed, health_e
 end
 BloodManager.add_blood_decal = function (self, touched_unit, actor, my_unit, position, normal, velocity)
 	local dot_value = Vector3.dot(normal, Vector3.normalize(velocity))
-	local tangent = Vector3.normalize(Vector3.normalize(velocity) - dot_value*normal)
+	local tangent = Vector3.normalize(Vector3.normalize(velocity) - dot_value * normal)
 	local tangent_rotation = Quaternion.look(tangent, normal)
 	local blood_unit_name = "units/decals/projection_blood_" .. string.format("%02d", tostring(Math.random(1, 17)))
 	self._blood_units = self._blood_units or {}
@@ -447,10 +447,10 @@ BloodManager.add_enemy_blood = function (self, position, normal, actor)
 		if damage_ext and damage_ext.is_alive(damage_ext) then
 			local enemy_base_pos = Unit.local_position(unit, 0)
 			local _, extents = Unit.box(unit)
-			local height = extents[3]*0.5
-			local distance = math.max(extents[1], extents[2])*0.5
+			local height = extents[3] * 0.5
+			local distance = math.max(extents[1], extents[2]) * 0.5
 			local enemy_pos = enemy_base_pos + Vector3(0, 0, height)
-			local real_position = enemy_pos + Vector3.normalize(position - enemy_pos)*distance
+			local real_position = enemy_pos + Vector3.normalize(position - enemy_pos) * distance
 			local pose = Unit.local_pose(unit, 0)
 			local inv_world = Matrix4x4.inverse(pose)
 			local normal = Vector3.normalize(position - enemy_pos)
@@ -486,12 +486,12 @@ BloodManager.test_enemy_blood = function (self, position)
 	local unit = World.units(Application.main_world())[716]
 
 	if Unit.alive(unit) then
-		local time = Application.time_since_launch()*0.25
+		local time = Application.time_since_launch() * 0.25
 
 		Unit.set_local_rotation(unit, 0, Quaternion.look(Vector3(0, 1, 0), Vector3.up()))
 
 		local normal = Vector3.normalize(Vector3(math.random(-100, 100), math.random(-100, 100), math.random(-100, 100)))
-		local pos = position or Vector3(math.sin(time)*100, -math.cos(time)*100, 75)
+		local pos = position or Vector3(math.sin(time) * 100, -math.cos(time) * 100, 75)
 		local enemy_dir = Quaternion.forward(Unit.local_rotation(unit, 0))
 		local actor = Unit.actor(unit, 0)
 

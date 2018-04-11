@@ -89,11 +89,11 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_pure_network_update_units =
 	local math_max = math.max
 	local null_vector = Vector3.zero()
 	local POSITION_LOOKUP = POSITION_LOOKUP
-	local VELOCITY_EPSILON_SQ = NetworkConstants.VELOCITY_EPSILON*NetworkConstants.VELOCITY_EPSILON
+	local VELOCITY_EPSILON_SQ = NetworkConstants.VELOCITY_EPSILON * NetworkConstants.VELOCITY_EPSILON
 	local POS_EPSILON_SQ = 0.0001
 	local POS_LERP_TIME = 0.1
 	local WALK_THRESHOLD = 0.97
-	local rotation_lerp_amount = math.min(dt*15, 1)
+	local rotation_lerp_amount = math.min(dt * 15, 1)
 	local game = data.game
 	local unit_storage = Managers.state.unit_storage
 
@@ -125,8 +125,8 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_pure_network_update_units =
 			local last_pos_offset = extension.last_lerp_position_offset:unbox()
 			local accumulated_movement = extension.accumulated_movement:unbox()
 			extension._pos_lerp_time = extension._pos_lerp_time + dt
-			local lerp_t = extension._pos_lerp_time/POS_LERP_TIME
-			local move_delta = network_velocity*dt
+			local lerp_t = extension._pos_lerp_time / POS_LERP_TIME
+			local move_delta = network_velocity * dt
 			accumulated_movement = accumulated_movement + move_delta
 			local lerp_pos_offset = Vector3.lerp(last_pos_offset, null_vector, math_min(lerp_t, 1))
 			lerp_pos = last_pos + accumulated_movement + lerp_pos_offset
@@ -258,23 +258,23 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units = functi
 			local current_rotation_inv = Quaternion.inverse(current_rotation)
 			local delta_rotation = Quaternion.multiply(current_rotation_inv, anim_rotation)
 			local yaw_rotation_radians = Quaternion.yaw(delta_rotation)
-			yaw_rotation_radians = yaw_rotation_radians*extension._animation_rotation_scale
+			yaw_rotation_radians = yaw_rotation_radians * extension._animation_rotation_scale
 			wanted_rotation = Quaternion.multiply(current_rotation, Quaternion(up_vector, yaw_rotation_radians))
 		end
 
-		local wanted_velocity = (wanted_position - current_position)/dt
+		local wanted_velocity = (wanted_position - current_position) / dt
 		wanted_velocity = Vector3.multiply_elements(wanted_velocity, extension._animation_translation_scale:unbox())
 		local final_position, final_velocity = nil
 		local mover = Unit.mover(unit)
 
 		if extension.is_affected_by_gravity and mover ~= nil then
 			local previous_velocity = extension._velocity:unbox()
-			wanted_velocity.z = previous_velocity.z - dt*9.82
+			wanted_velocity.z = previous_velocity.z - 9.82 * dt
 
-			Mover.move(mover, wanted_velocity*dt, dt)
+			Mover.move(mover, wanted_velocity * dt, dt)
 
 			final_position = Mover.position(mover)
-			final_velocity = (final_position - current_position)/dt
+			final_velocity = (final_position - current_position) / dt
 
 			if Mover.collides_down(mover) and 0 < Mover.standing_frames(mover) then
 				final_velocity.z = 0

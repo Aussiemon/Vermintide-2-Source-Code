@@ -3,6 +3,7 @@ PlayerBotNavigation.init = function (self, extension_init_context, unit, extensi
 	self._unit = unit
 	self._nav_world = extension_init_data.nav_world
 	self._final_goal_reached = false
+	self._position_when_final_goal_reached = Vector3Box(0, 0, 0)
 	self._player = Managers.player:owner(unit)
 	self._destination = Vector3Box(0, 0, 0)
 	self._traverse_data = Managers.state.bot_nav_transition:traverse_logic()
@@ -45,7 +46,7 @@ PlayerBotNavigation.update = function (self, unit, input, dt, context, t)
 
 	return 
 end
-local SAME_DIRECTION_THRESHOLD = math.cos(math.pi/8)
+local SAME_DIRECTION_THRESHOLD = math.cos(math.pi / 8)
 PlayerBotNavigation.move_to = function (self, target_position, callback)
 	fassert(not callback or type(callback) == "function", "Tried to pass invalid callback value to PlayerBotNavigation:move_to()")
 
@@ -116,6 +117,9 @@ PlayerBotNavigation.teleport = function (self, destination)
 	self._has_queued_target = false
 	self._queued_path_callback = nil
 	self._final_goal_reached = true
+
+	self._position_when_final_goal_reached:store(destination)
+
 	self._path = nil
 	self._path_index = 0
 	self._path_callback = nil
@@ -223,7 +227,7 @@ local function is_same_point(p1, p2)
 		local x = diff.x
 		local y = diff.y
 
-		return x*x + y*y < 0.0001
+		return x * x + y * y < 0.0001
 	end
 
 	return 
@@ -250,6 +254,8 @@ PlayerBotNavigation._update_path = function (self, t)
 		self._final_goal_reached = final_reached
 
 		if final_reached then
+			self._position_when_final_goal_reached:store(position)
+
 			self._current_transition = nil
 		else
 			local new_goal = path[self._path_index]:unbox()
@@ -258,20 +264,7 @@ PlayerBotNavigation._update_path = function (self, t)
 		end
 	end
 
-	if script_data.ai_bots_debug then
-		local color = self._player.color:unbox()
-		local drawer = Managers.state.debug:drawer({
-			mode = "immediate",
-			name = "PlayerBotNavigation"
-		})
-
-		drawer.vector(drawer, previous_goal, position - previous_goal, color)
-		drawer.vector(drawer, position, current_goal - position, color)
-
-		for i = 1, #self._path - 1, 1 do
-			drawer.vector(drawer, self._path[i]:unbox(), self._path[i + 1]:unbox() - self._path[i]:unbox(), color)
-		end
-	end
+	self._debug_draw_path(self, position, previous_goal, current_goal)
 
 	return 
 end
@@ -285,7 +278,7 @@ PlayerBotNavigation._reevaluate_current_nav_transition = function (self, self_un
 
 	for unit, data in pairs(self._available_nav_transitions) do
 		if data.type == "ladder" then
-			local dist = Vector3.distance_squared(self_position, (data.from:unbox() + data.to:unbox())*0.5)
+			local dist = Vector3.distance_squared(self_position, (data.from:unbox() + data.to:unbox()) * 0.5)
 
 			if dist < best_ladder_dist then
 				best_ladder_dist = dist
@@ -357,7 +350,7 @@ local FLAT_THRESHOLD_DEFAULT = 0.05
 local TIME_UNTIL_RAMP_THRESHOLD = 0.25
 local MAX_FLAT_THRESHOLD = 0.2
 local RAMP_TIME = 0.25
-local RAMP_SPEED = (MAX_FLAT_THRESHOLD - FLAT_THRESHOLD_DEFAULT)/RAMP_TIME
+local RAMP_SPEED = (MAX_FLAT_THRESHOLD - FLAT_THRESHOLD_DEFAULT) / RAMP_TIME
 PlayerBotNavigation._goal_reached = function (self, position, goal, previous_goal, t)
 	local unit_to_goal_direction = goal - position
 	local previous_to_goal_direction = goal - previous_goal
@@ -369,7 +362,7 @@ PlayerBotNavigation._goal_reached = function (self, position, goal, previous_goa
 	local flat_threshold = FLAT_THRESHOLD_DEFAULT
 
 	if self._close_to_goal_time then
-		flat_threshold = math.clamp(flat_threshold + (t - self._close_to_goal_time - TIME_UNTIL_RAMP_THRESHOLD)*RAMP_SPEED, FLAT_THRESHOLD_DEFAULT, MAX_FLAT_THRESHOLD)
+		flat_threshold = math.clamp(flat_threshold + (t - self._close_to_goal_time - TIME_UNTIL_RAMP_THRESHOLD) * RAMP_SPEED, FLAT_THRESHOLD_DEFAULT, MAX_FLAT_THRESHOLD)
 	end
 
 	local at_goal = flat_distance < flat_threshold and -0.35 < distance_z and distance_z < 0.5
@@ -485,10 +478,6 @@ PlayerBotNavigation._path_failed = function (self, t)
 	return 
 end
 PlayerBotNavigation._path_successful = function (self, t)
-	if script_data.ai_bots_debug then
-		self._debug_draw_path(self)
-	end
-
 	self._last_successful_path = t
 	self._successive_failed_paths = 0
 	local cb = self._path_callback
@@ -511,21 +500,45 @@ PlayerBotNavigation.destination = function (self)
 
 	return 
 end
-PlayerBotNavigation._debug_draw_path = function (self)
-	if self._path then
-		local drawer_name = "bot_astar" .. self._player.player_name
-		local drawer = Managers.state.debug:drawer({
-			mode = "retained",
-			name = drawer_name
-		})
+PlayerBotNavigation.position_when_destination_reached = function (self)
+	if self._final_goal_reached then
+		return self._position_when_final_goal_reached:unbox()
+	else
+		return nil
+	end
 
-		drawer.reset(drawer)
+	return 
+end
+local debug_drawer_info = {
+	mode = "immediate",
+	name = "PlayerBotNavigation"
+}
+PlayerBotNavigation._debug_draw_path = function (self, position, previous_goal, current_goal)
+	if script_data.ai_bots_debug then
+		local color = self._player.color:unbox()
+		local drawer = Managers.state.debug:drawer(debug_drawer_info)
 
-		for index, position in ipairs(self._path) do
-			local size = math.lerp(0.15, 0.3, (index - 1)/(#self._path - 1))
+		drawer.vector(drawer, previous_goal, position - previous_goal, color)
+		drawer.vector(drawer, position, current_goal - position, color)
 
-			drawer.sphere(drawer, position.unbox(position), size, self._player.color:unbox())
+		local path = self._path
+		local num_nodes = #path
+
+		for i = 1, num_nodes - 1, 1 do
+			local current_node = path[i]:unbox()
+			local next_node = path[i + 1]:unbox()
+
+			drawer.vector(drawer, current_node, next_node - current_node, color)
+
+			local size = math.lerp(0.15, 0.3, (i - 1) / (num_nodes - 1))
+
+			drawer.sphere(drawer, current_node, size, color)
 		end
+
+		local last_node = path[num_nodes]:unbox()
+		local size = math.lerp(0.15, 0.3, (num_nodes - 1) / (num_nodes - 1))
+
+		drawer.sphere(drawer, last_node, size, color)
 	end
 
 	return 

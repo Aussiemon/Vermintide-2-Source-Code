@@ -188,10 +188,6 @@ HeroView.update = function (self, dt, t)
 		return 
 	end
 
-	if self._has_active_level_vote(self) then
-		self.close_menu(self)
-	end
-
 	local requested_screen_change_data = self._requested_screen_change_data
 
 	if requested_screen_change_data then
@@ -427,11 +423,14 @@ HeroView.on_exit = function (self)
 
 	return 
 end
-HeroView.exit = function (self, return_to_game)
+HeroView.exit = function (self, return_to_game, ignore_sound)
 	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition)
-	self.play_sound(self, "Play_hud_button_close")
+
+	if not ignore_sound then
+		self.play_sound(self, "Play_hud_button_close")
+	end
 
 	self.exiting = true
 
@@ -467,10 +466,10 @@ HeroView.unsuspend = function (self)
 
 	return 
 end
-HeroView.close_menu = function (self, return_to_main_screen)
+HeroView.close_menu = function (self, return_to_main_screen, ignore_sound)
 	local return_to_game = not return_to_main_screen
 
-	self.exit(self, return_to_game)
+	self.exit(self, return_to_game, ignore_sound)
 
 	return 
 end
@@ -502,7 +501,7 @@ HeroView._has_active_level_vote = function (self)
 	local active_vote_name = voting_manager.vote_in_progress(voting_manager)
 	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
 
-	return is_mission_vote
+	return is_mission_vote and not voting_manager.has_voted(voting_manager, Network.peer_id())
 end
 HeroView._set_loading_overlay_enabled = function (self, enabled, message)
 	local loading_widgets = self._loading_widgets

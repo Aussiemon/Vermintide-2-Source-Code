@@ -12,9 +12,9 @@ UIUtils.get_talent_description = function (talent_data)
 			local value = data.value
 
 			if value_type == "percent" then
-				values[#values + 1] = math.abs(value*100)
+				values[#values + 1] = math.abs(100 * value)
 			elseif value_type == "baked_percent" then
-				values[#values + 1] = math.abs((value - 1)*100)
+				values[#values + 1] = math.abs(100 * (value - 1))
 			else
 				values[#values + 1] = value
 			end
@@ -43,7 +43,7 @@ UIUtils.get_property_description = function (property_name, lerp_value)
 
 		if type(value) == "table" then
 			if 2 < #value then
-				local index = (lerp_value == 1 and #value) or math.floor(lerp_value/#value/1) + 1
+				local index = (lerp_value == 1 and #value) or 1 + math.floor(lerp_value / 1 / #value)
 				display_value = value[index]
 				min_value = value[1]
 				max_value = value[#value]
@@ -57,12 +57,15 @@ UIUtils.get_property_description = function (property_name, lerp_value)
 		end
 
 		if value_type == "percent" then
-			display_value = math.abs(display_value*100)
-			min_value = math.abs(min_value*100)
-			max_value = math.abs(max_value*100)
+			display_value = math.abs(100 * display_value)
+			min_value = math.abs(100 * min_value)
+			max_value = math.abs(100 * max_value)
 			advanced_description = string.format(" (%.1f%% - %.1f%%)", min_value, max_value)
-		else
-			advanced_description = string.format(" (%.1f - %.1f)", min_value, max_value)
+		elseif value_type == "baked_percent" then
+			display_value = math.abs(100 * (display_value - 1))
+			min_value = math.abs(100 * (min_value - 1))
+			max_value = math.abs(100 * (max_value - 1))
+			advanced_description = string.format(" (%.1f%% - %.1f%%)", min_value, max_value)
 		end
 
 		text = string.format(description_text, display_value)
@@ -87,7 +90,7 @@ UIUtils.get_trait_description = function (trait_name)
 			local value = data.value
 
 			if value_type == "percent" then
-				values[#values + 1] = math.abs(value*100)
+				values[#values + 1] = math.abs(100 * value)
 			else
 				values[#values + 1] = value
 			end
@@ -103,6 +106,7 @@ end
 UIUtils.get_ui_information_from_item = function (item)
 	local item_data = item.data
 	local item_type = item_data.item_type
+	local rarity = item.rarity
 	local inventory_icon, display_name, description = nil
 
 	if item_type == "weapon_skin" then
@@ -117,6 +121,19 @@ UIUtils.get_ui_information_from_item = function (item)
 		inventory_icon = skin_template.inventory_icon
 		display_name = skin_template.display_name
 		description = skin_template.description
+	elseif rarity == "default" then
+		local item_key = item_data.key
+		local default_item_data = UISettings.default_items[item_key]
+
+		if default_item_data then
+			inventory_icon = default_item_data.inventory_icon or item_data.inventory_icon
+			display_name = default_item_data.display_name or item_data.display_name
+			description = default_item_data.description or item_data.description
+		else
+			inventory_icon = item_data.inventory_icon
+			display_name = item_data.display_name
+			description = item_data.description
+		end
 	else
 		inventory_icon = item_data.inventory_icon
 		display_name = item_data.display_name

@@ -19,7 +19,7 @@ local function enemy_variation_tint_part(unit, variation, material_result)
 	local variable_value = math.random(variation.min, variation.max)
 
 	if variation.scale ~= nil then
-		variable_value = variable_value*variation.scale
+		variable_value = variable_value * variation.scale
 	end
 
 	local meshes = variation.meshes
@@ -225,7 +225,7 @@ local function enemy_dismember_spawn_gib(unit, world, gibsettings, unit_inventor
 			node_id = Script.index_offset()
 		end
 
-		Actor.add_velocity(actor, Quaternion.rotate(Unit.world_rotation(gib_unit, node_id), Vector3(math.random()*0.5 + 2, math.random() - 0.5, math.random() - 0.5))*gibsettings.gib_push_force)
+		Actor.add_velocity(actor, Quaternion.rotate(Unit.world_rotation(gib_unit, node_id), Vector3(2 + 0.5 * math.random(), math.random() - 0.5, math.random() - 0.5)) * gibsettings.gib_push_force)
 	end
 
 	return gib_unit

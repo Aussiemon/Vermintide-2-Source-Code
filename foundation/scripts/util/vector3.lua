@@ -8,7 +8,7 @@ Vector3.step = function (start, target, step_size)
 	if distance < step_size then
 		return target, true
 	else
-		return start + Vector3.normalize(offset)*step_size, false
+		return start + Vector3.normalize(offset) * step_size, false
 	end
 
 	return 
@@ -22,7 +22,7 @@ Vector3.flat_angle = function (v1, v2)
 	local a1 = math.atan2(v1.y, v1.x)
 	local a2 = math.atan2(v2.y, v2.x)
 
-	return (a2 - a1 + math.pi)%(math.pi*2) - math.pi
+	return (a2 - a1 + math.pi) % (2 * math.pi) - math.pi
 end
 Vector3.clamp = function (v, min, max)
 	local x, y, z = Vector3.to_elements(v)
@@ -47,7 +47,7 @@ Vector3.deprecated_copy = function (vector)
 	return Vector3(vector[1], vector[2], vector[3])
 end
 Vector3.project_on_plane = function (vector, normal)
-	return vector - Vector3.dot(vector, normal)*normal
+	return vector - Vector3.dot(vector, normal) * normal
 end
 Vector3Aux = Vector3Aux or {}
 Vector3Aux.box = function (destination, vector_3)

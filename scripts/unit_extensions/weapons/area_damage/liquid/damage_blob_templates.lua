@@ -80,14 +80,14 @@ DamageBlobTemplates = {
 			local particle_name = "fx/chr_warp_fire_flamethrower_01"
 			local effect_variable_id = World.find_particles_variable(world, particle_name, "firepoint_1")
 
-			World.set_particles_variable(world, particle_id, effect_variable_id, firepoint_1_pos + dir_norm*0.1)
+			World.set_particles_variable(world, particle_id, effect_variable_id, firepoint_1_pos + dir_norm * 0.1)
 
 			effect_variable_id = World.find_particles_variable(world, particle_name, "firepoint_2")
 
 			World.set_particles_variable(world, particle_id, effect_variable_id, target_unit_pos - Vector3.up())
 
 			effect_variable_id = World.find_particles_variable(world, particle_name, "firelife_1")
-			local lifetime = length/4
+			local lifetime = length / 4
 			local particle_life_time_vector = self._particle_life_time:unbox()
 			particle_life_time_vector.x = lifetime
 

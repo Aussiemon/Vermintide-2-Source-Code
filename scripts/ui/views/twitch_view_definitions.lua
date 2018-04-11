@@ -333,7 +333,7 @@ local function create_window(scenegraph_id, size)
 				if not content.text_field_active then
 					style.caret_color[1] = 0
 				else
-					style.caret_color[1] = math.sin(Application.time_since_launch()*5)*128 + 128
+					style.caret_color[1] = 128 + math.sin(Application.time_since_launch() * 5) * 128
 				end
 
 				return not Managers.twitch:is_connected() and not Managers.twitch:is_connecting()
@@ -350,8 +350,8 @@ local function create_window(scenegraph_id, size)
 					return 
 				end
 
-				local timer = math.ceil(Application.time_since_launch()*10)
-				local dots = timer%5
+				local timer = math.ceil(Application.time_since_launch() * 10)
+				local dots = timer % 5
 				local dot_str = ""
 
 				for i = 1, dots, 1 do
@@ -401,8 +401,8 @@ local function create_window(scenegraph_id, size)
 					0
 				},
 				{
-					math.min(size[1]/background_texture_settings.size[1], 1),
-					math.min(size[2]/background_texture_settings.size[2], 1)
+					math.min(size[1] / background_texture_settings.size[1], 1),
+					math.min(size[2] / background_texture_settings.size[2], 1)
 				}
 			},
 			texture_id = background_texture

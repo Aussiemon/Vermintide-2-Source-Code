@@ -45,6 +45,7 @@ local breed_data = {
 	dogpile_value = 5,
 	death_sound_event = "Play_enemy_marauder_death_vce",
 	dodge_timer = 0.15,
+	awards_positive_reinforcement_message = true,
 	no_stagger_duration = true,
 	berzerking_stagger_time = 0.75,
 	exchange_order = 3,
@@ -322,7 +323,7 @@ local breed_data = {
 	}
 }
 Breeds.chaos_berzerker = table.create_copy(Breeds.chaos_berzerker, breed_data)
-BreedActionDimishingDamageDifficulty = {
+local BreedActionDimishingDamageDifficulty = {
 	easy = {
 		{
 			damage = 2,
@@ -900,11 +901,11 @@ local action_data = {
 			},
 			alerted_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			alerted_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
@@ -940,11 +941,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_fwd_jog = {},
 			move_start_bwd_jog = {
@@ -953,11 +954,11 @@ local action_data = {
 			},
 			move_start_left_jog = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right_jog = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		considerations = UtilityConsiderations.clan_rat_follow
@@ -1019,7 +1020,7 @@ local action_data = {
 			}
 		},
 		considerations = UtilityConsiderations.chaos_berzerker_running_attack,
-		dimishing_damage = {},
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
 		ignore_staggers = JUMPATTACK_IGNORE_STAGGERS
 	},
 	normal_attack = {
@@ -1151,7 +1152,7 @@ local action_data = {
 			}
 		},
 		considerations = UtilityConsiderations.berzerker_attack,
-		dimishing_damage = {}
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty
 	},
 	combat_shout = {
 		cooldown = -1,
@@ -1195,7 +1196,7 @@ local action_data = {
 				local berzerker_stagger_multiplier = (blackboard.stagger_type < 3 and math.clamp(blackboard.stagger_type - 1, 1, 1.5)) or 1
 
 				if blackboard.stagger_type ~= 6 and blackboard.stagger_type ~= 3 then
-					blackboard.stagger_time = t + blackboard.breed.berzerking_stagger_time*berzerker_stagger_multiplier
+					blackboard.stagger_time = t + blackboard.breed.berzerking_stagger_time * berzerker_stagger_multiplier
 				end
 			end
 
@@ -1463,27 +1464,30 @@ local frenzy_attack = {
 	cooldown = -1,
 	num_attacks = 3,
 	fatigue_type = "blocked_attack",
-	damage_type = "cutting_berserker",
 	attack_intensity = 5,
 	moving_attack = true,
 	attack_anim = "attack_pounce",
+	damage_type = "cutting_berserker",
 	player_push_speed = 4,
 	move_anim = "move_fwd",
 	considerations = UtilityConsiderations.berzerker_frenzy_attack,
 	ignore_staggers = DEFAULT_ALLOWED_STAGGERS,
 	attack_directions = {
-		attack_combo_3_01 = "right",
 		attack_combo_1_01 = "left",
+		attack_combo_1_02 = "left",
 		attack_combo_3_04 = "right",
-		attack_combo_3_finish = "left",
+		attack_combo_3_01 = "right",
 		attack_combo_3_03 = "right",
 		attack_pounce_2 = "right",
 		attack_combo_3_02 = "left",
 		attack_combo_1_05 = "left",
+		attack_combo_3_finish = "left",
 		attack_combo_1_04 = "right",
 		attack_combo_1_03 = "right",
 		attack_combo_2_01 = "right",
-		attack_combo_1_02 = "left",
+		attack_move = "left",
+		attack_lunge = "left",
+		attack_run = "left",
 		attack_combo_2_05 = "right",
 		attack_combo_2_04 = "left",
 		attack_combo_2_03 = "right",
@@ -1738,7 +1742,7 @@ local frenzy_attack = {
 			8
 		}
 	},
-	dimishing_damage = {},
+	difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
 	target_type_exceptions = {
 		poison_well = {
 			attack_anim = "poison_well"

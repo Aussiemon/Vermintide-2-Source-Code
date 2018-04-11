@@ -208,7 +208,7 @@ PlayerCharacterStateGrabbedByTentacle.states = {
 			local to_portal = portal_attachment_pos - current_pos
 
 			if 0.01 < Vector3.length_squared(to_portal) then
-				local wanted_velocity = to_portal*5
+				local wanted_velocity = 5 * to_portal
 
 				parent.locomotion_extension:set_wanted_velocity(wanted_velocity)
 			else
@@ -274,7 +274,7 @@ PlayerCharacterStateGrabbedByTentacle.states = {
 	}
 }
 PlayerCharacterStateGrabbedByTentacle.get_drag_velocity = function (self, player_pos, t, dt)
-	self.winding_dist = self.winding_dist - self.drag_speed*dt
+	self.winding_dist = self.winding_dist - self.drag_speed * dt
 	local spline = self.tentacle_spline_extension.spline
 	local tentacle_data = self.tentacle_spline_extension.tentacle_data
 	local out_dist = (tentacle_data.portal_spawn_type == "floor" and 3.3) or 2.5
@@ -305,14 +305,14 @@ PlayerCharacterStateGrabbedByTentacle.get_drag_velocity = function (self, player
 		end
 
 		if 1 < ds then
-			spline_pos = wall_pos + portal_forward*2
+			spline_pos = wall_pos + portal_forward * 2
 		end
 
 		to_portal_along_spline = Vector3.normalize(spline_pos - player_pos)
 	end
 
 	local look_dir = nil
-	local velocity = to_portal_along_spline*self.drag_speed
+	local velocity = to_portal_along_spline * self.drag_speed
 
 	return velocity, look_dir
 end

@@ -163,13 +163,13 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 		if act_verified and (not act or act == act_key) then
 			local act_settings = ActSettings[act_key]
 			local act_sorting = act_settings.sorting
-			local act_index = (act_sorting - 1)%max_act_number + 1
+			local act_index = (act_sorting - 1) % max_act_number + 1
 			local is_end_act = max_act_number < act_sorting
 			local act_position_y = 0
 			local act_widget = nil
 
 			if not is_end_act then
-				act_position_y = -level_height_spacing + (max_act_number - act_index)*level_height_spacing
+				act_position_y = -level_height_spacing + (max_act_number - act_index) * level_height_spacing
 				act_widget = self._act_widgets[act_index]
 			else
 				act_widget = self.end_act_widget
@@ -187,13 +187,13 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 
 			for level_index, level_data in ipairs(levels) do
 				if is_end_act then
-					level_position_x = level_width_spacing*4
+					level_position_x = level_width_spacing * 4
 				elseif act_index == 1 and not is_end_act then
 					if level_index == 1 then
-						if not (level_position_x + level_width_spacing/2) then
+						if not (level_position_x + level_width_spacing / 2) then
 						end
 					end
-				elseif act_index ~= 2 and level_index == 1 and not (level_position_x + level_width_spacing/2) then
+				elseif act_index ~= 2 and level_index == 1 and not (level_position_x + level_width_spacing / 2) then
 				end
 
 				local index = #assigned_widgets + 1
@@ -350,7 +350,7 @@ end
 StartGameWindowMissionSelection._set_presentation_info = function (self, level_id)
 	local widgets_by_name = self._widgets_by_name
 	local level_text = ""
-	local description_text = ""
+	local level_description_text = ""
 	local frame_texture = "map_frame_00"
 	local draw_info = false
 	local selected_level_widget = widgets_by_name.selected_level
@@ -363,11 +363,13 @@ StartGameWindowMissionSelection._set_presentation_info = function (self, level_i
 		local level_image = level_settings.level_image
 		local boss_level = level_settings.boss_level
 		local display_name = level_settings.display_name
+		level_description_text = level_settings.description_text
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
 		frame_texture = self._get_selection_frame_by_difficulty_index(self, completed_difficulty_index)
 		content.icon = level_image
 		content.boss_level = boss_level
 		level_text = Localize(display_name)
+		level_description_text = Localize(level_description_text)
 		draw_info = true
 	end
 
@@ -378,7 +380,7 @@ StartGameWindowMissionSelection._set_presentation_info = function (self, level_i
 	widgets_by_name.helper_text.content.visible = not draw_info
 	widgets_by_name.level_title_divider.content.visible = draw_info
 	widgets_by_name.level_title.content.text = level_text
-	widgets_by_name.description_text.content.text = description_text
+	widgets_by_name.description_text.content.text = level_description_text
 
 	return 
 end
@@ -435,6 +437,16 @@ StartGameWindowMissionSelection._is_button_pressed = function (self, widget)
 
 	return 
 end
+StartGameWindowMissionSelection._is_button_hovered = function (self, widget)
+	local content = widget.content
+	local hotspot = content.button_hotspot
+
+	if hotspot.on_hover_enter then
+		return true
+	end
+
+	return 
+end
 StartGameWindowMissionSelection._is_stepper_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot_left = content.button_hotspot_left
@@ -468,12 +480,19 @@ StartGameWindowMissionSelection._handle_input = function (self, dt, t)
 
 	if active_node_widgets then
 		for index, widget in ipairs(active_node_widgets) do
+			if self._is_button_hovered(self, widget) then
+				self._play_sound(self, "play_gui_lobby_button_02_mission_act_hover")
+			end
+
 			if self._is_button_pressed(self, widget) then
 				local content = widget.content
 				local level_settings = content.level_data
 				local level_id = level_settings.level_id
 
-				self._select_level(self, level_id)
+				if self._selected_level_id ~= level_id then
+					self._play_sound(self, "play_gui_lobby_button_02_mission_act_click")
+					self._select_level(self, level_id)
+				end
 
 				return 
 			end
@@ -484,7 +503,13 @@ StartGameWindowMissionSelection._handle_input = function (self, dt, t)
 
 	UIWidgetUtils.animate_default_button(select_button, dt)
 
+	if self._is_button_hovered(self, select_button) then
+		self._play_sound(self, "play_gui_lobby_button_01_difficulty_confirm_hover")
+	end
+
 	if self._is_button_pressed(self, select_button) then
+		self._play_sound(self, "play_gui_lobby_button_02_mission_select")
+
 		local previous_game_mode_index = parent.get_previous_selected_game_mode_index(parent)
 
 		parent.set_selected_level_id(parent, self._selected_level_id)

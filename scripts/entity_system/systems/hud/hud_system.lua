@@ -47,12 +47,16 @@ HUDSystem.rpc_set_current_location = function (self, sender, unit_id, location_i
 	return 
 end
 HUDSystem.add_subtitle = function (self, speaker, subtitle)
-	self.ingame_ui.ingame_hud.subtitle_gui:start_subtitle(speaker, subtitle)
+	if self.ingame_ui.ingame_hud.subtitle_gui then
+		self.ingame_ui.ingame_hud.subtitle_gui:start_subtitle(speaker, subtitle)
+	end
 
 	return 
 end
 HUDSystem.remove_subtitle = function (self, speaker)
-	self.ingame_ui.ingame_hud.subtitle_gui:stop_subtitle(speaker)
+	if self.ingame_ui.ingame_hud.subtitle_gui then
+		self.ingame_ui.ingame_hud.subtitle_gui:stop_subtitle(speaker)
+	end
 
 	return 
 end

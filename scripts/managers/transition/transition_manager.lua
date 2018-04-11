@@ -223,7 +223,7 @@ TransitionManager._render = function (self, dt)
 
 	local color = self._color:unbox()
 
-	Gui.rect(self._gui, Vector3(0, 0, UILayer.transition), Vector2(w, h), Color(self._fade*255, color.x, color.y, color.z))
+	Gui.rect(self._gui, Vector3(0, 0, UILayer.transition), Vector2(w, h), Color(self._fade * 255, color.x, color.y, color.z))
 
 	return 
 end
@@ -285,7 +285,7 @@ TransitionManager.update = function (self, dt)
 		return 
 	end
 
-	self._fade = math.clamp(self._fade + self._fade_speed*math.min(dt, 0.03333333333333333), 0, 1)
+	self._fade = math.clamp(self._fade + self._fade_speed * math.min(dt, 0.03333333333333333), 0, 1)
 
 	if self._fade_state == "fade_in" and 1 <= self._fade then
 		self._fade = 1

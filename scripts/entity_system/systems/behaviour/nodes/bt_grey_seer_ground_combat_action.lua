@@ -98,6 +98,7 @@ BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboa
 	local action = blackboard.action
 	local ready_to_summon = nil
 	local final_phase_data = blackboard.final_phase_data
+	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local call_position = (blackboard.call_position and blackboard.call_position:unbox()) or POSITION_LOOKUP[unit]
 	local teleport_timer = final_phase_data.teleport_timer
 	local special_spawn_timer = final_phase_data.special_spawn_timer
@@ -113,6 +114,10 @@ BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboa
 		if 4 < final_phase_data.num_teleports then
 			final_phase_data.num_teleports = 1
 		end
+
+		local event_data = FrameTable.alloc_table()
+
+		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_teleport_away", event_data)
 
 		return true
 	end
@@ -135,6 +140,10 @@ BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboa
 		final_phase_data.spawn_allies_timer = t + action.spawn_allies_cooldown
 
 		Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "egs_summon", DialogueSettings.default_hear_distance)
+
+		local event_data = FrameTable.alloc_table()
+
+		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_cast_vermintide", event_data)
 	end
 
 	ready_to_summon = self.update_regular_spells(self, unit, blackboard, t)
@@ -164,13 +173,6 @@ BTGreySeerGroundCombatAction.update_regular_spells = function (self, unit, black
 		local event_data = FrameTable.alloc_table()
 
 		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_cast_vermintide", event_data)
-	elseif teleport_timer < t and blackboard.quick_teleport and current_phase < 4 then
-		blackboard.current_spell_name = "teleport"
-		ready_to_summon = true
-		spell_data.teleport_spell_timer = t + spell_data.teleport_spell_cooldown
-		local event_data = FrameTable.alloc_table()
-
-		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_teleport_away", event_data)
 	end
 
 	return ready_to_summon
@@ -178,7 +180,7 @@ end
 BTGreySeerGroundCombatAction.update_warp_lightning_spell = function (self, unit, blackboard, t, position, target_unit_direction)
 	local magic_missile_spell = blackboard.magic_missile_data
 
-	magic_missile_spell.throw_pos:store(position + Vector3.up()*2)
+	magic_missile_spell.throw_pos:store(position + Vector3.up() * 2)
 
 	if target_unit_direction then
 		magic_missile_spell.target_direction:store(target_unit_direction)
@@ -204,7 +206,7 @@ BTGreySeerGroundCombatAction.update_teleport_spell = function (self, unit, black
 	if quick_teleport_timer and quick_teleport_timer < t then
 		local skulk_data = blackboard.skulk_data or {}
 		blackboard.skulk_data = skulk_data
-		skulk_data.direction = skulk_data.direction or math.random(0, 1)*2 - 1
+		skulk_data.direction = skulk_data.direction or 1 - math.random(0, 1) * 2
 		skulk_data.radius = skulk_data.radius or blackboard.target_dist
 		local teleport_pos = BTChaosSorcererPlagueSkulkAction:get_skulk_target(unit, blackboard, true)
 

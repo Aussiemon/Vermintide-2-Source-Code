@@ -5,10 +5,10 @@ NewsTickerManager.init = function (self)
 	self._platform = PLATFORM
 
 	if self._platform == "win32" then
-		self._loading_screen_url = Development.parameter("news_ticker_url") or "http://patch.fatshark.se/empty.txt"
-		self._ingame_url = Development.parameter("news_ticker_ingame_url") or "http://patch.fatshark.se/empty.txt"
+		self._loading_screen_url = Development.parameter("news_ticker_url") or "http://cdn.fatsharkgames.se/vermintide_2_news_ticker.txt"
+		self._ingame_url = Development.parameter("news_ticker_ingame_url") or "http://cdn.fatsharkgames.se/vermintide_2_news_ticker_ingame.txt"
 	else
-		self._server_name = "patch.fatshark.se"
+		self._server_name = "cdn.fatsharkgames.se"
 		self._loading_screen_url = "empty.txt"
 		self._ingame_url = "empty.txt"
 	end

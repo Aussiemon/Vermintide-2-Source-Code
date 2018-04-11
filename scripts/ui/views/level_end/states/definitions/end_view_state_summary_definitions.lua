@@ -406,7 +406,7 @@ local animation_definitions = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-				ui_scenegraph.background.local_position[2] = (anim_progress - 1)*400
+				ui_scenegraph.background.local_position[2] = 400 * (1 - anim_progress)
 
 				return 
 			end,
@@ -427,8 +427,8 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
-				ui_scenegraph.background.local_position[2] = anim_progress*-400
+				params.render_settings.alpha_multiplier = 1 - anim_progress
+				ui_scenegraph.background.local_position[2] = -400 * anim_progress
 
 				return 
 			end,
@@ -451,7 +451,7 @@ local animation_definitions = {
 				local default_size = scenegraph_definition[scenegraph_id].size
 				local list_index = params.list_index
 				local spacing = params.spacing
-				local start_position = (default_size[2] + spacing)*(list_index - 1)
+				local start_position = (default_size[2] + spacing) * (list_index - 1)
 				local position_increase = default_size[2] + spacing
 				offset[2] = -start_position
 				offset[2] = -start_position
@@ -466,8 +466,8 @@ local animation_definitions = {
 				local content = widget.content
 				local style = widget.style
 				local offset = widget.offset
-				local anim_progress = math.easeInCubic(progress - 1)
-				offset[1] = anim_progress*-30
+				local anim_progress = math.easeInCubic(1 - progress)
+				offset[1] = -30 * anim_progress
 
 				return 
 			end,
@@ -497,7 +497,7 @@ local animation_definitions = {
 				local summary_text_style = style.summary_text
 				local summary_text_shadow_style = style.summary_text_shadow
 				local background_style = style.background
-				local alpha = math.easeOutCubic(progress)*255
+				local alpha = math.easeOutCubic(progress) * 255
 				summary_text_style.text_color[1] = alpha
 				summary_text_shadow_style.text_color[1] = alpha
 
@@ -529,7 +529,7 @@ local animation_definitions = {
 				local content = widget.content
 				local experience = params.experience
 				local value = params.value
-				local counter = math.floor((experience or value)*progress)
+				local counter = math.floor((experience or value) * progress)
 
 				if not content.xp_count or content.xp_count ~= counter then
 					WwiseWorld.trigger_event(params.wwise_world, "play_gui_mission_summary_entry_count")
@@ -539,7 +539,7 @@ local animation_definitions = {
 				content.xp_text = tostring(counter)
 				local xp_text_style = style.xp_text
 				local xp_text_shadow_style = style.xp_text_shadow
-				local alpha = math.easeOutCubic(progress)*255
+				local alpha = math.easeOutCubic(progress) * 255
 				xp_text_style.text_color[1] = alpha
 				xp_text_shadow_style.text_color[1] = alpha
 
@@ -586,7 +586,7 @@ local animation_definitions = {
 					local start_font_size = 32
 					local target_font_size = 40
 					local anim_progress = math.ease_pulse(progress)
-					local new_font_size = start_font_size + (target_font_size - start_font_size)*anim_progress
+					local new_font_size = start_font_size + (target_font_size - start_font_size) * anim_progress
 					text_style.font_size = new_font_size
 					text_shadow_style.font_size = new_font_size
 				end
@@ -613,9 +613,9 @@ local animation_definitions = {
 				local style = widget.style
 				local content = widget.content
 				local offset = widget.offset
-				local anim_progress = math.easeOutCubic(progress - 1)
-				offset[1] = -(anim_progress*220 + 30)
-				local alpha = anim_progress*255 - 255
+				local anim_progress = math.easeOutCubic(1 - progress)
+				offset[1] = -(30 + 220 * anim_progress)
+				local alpha = 255 - anim_progress * 255
 				style.text.text_color[1] = alpha
 				style.text_shadow.text_color[1] = alpha
 
@@ -638,7 +638,7 @@ local animation_definitions = {
 				local content = widget.content
 				local offset = widget.offset
 				local anim_progress = math.easeOutCubic(progress)
-				offset[1] = anim_progress*30 + -30
+				offset[1] = -30 + 30 * anim_progress
 
 				return 
 			end,
@@ -659,8 +659,8 @@ local animation_definitions = {
 				local content = widget.content
 				local offset = widget.offset
 				local anim_progress = math.easeOutCubic(progress)
-				offset[1] = anim_progress*250
-				local alpha = anim_progress*255 - 255
+				offset[1] = 250 * anim_progress
+				local alpha = 255 - anim_progress * 255
 				style.text.text_color[1] = alpha
 				style.text_shadow.text_color[1] = alpha
 
@@ -683,10 +683,10 @@ local animation_definitions = {
 				local content = widget.content
 				local offset = widget.offset
 				local anim_progress = math.easeOutCubic(progress)
-				local degrees = anim_progress*180
+				local degrees = 180 * anim_progress
 				local texture_style = style.texture_id
 				texture_style.angle = math.degrees_to_radians(degrees)
-				texture_style.color[1] = math.ease_pulse(progress)*255
+				texture_style.color[1] = 255 * math.ease_pulse(progress)
 
 				return 
 			end,
@@ -711,7 +711,7 @@ local animation_definitions = {
 				local target_font_size = 60
 				local anim_progress = math.easeOutCubic(progress)
 				local anim_progress = math.ease_pulse(anim_progress)
-				local new_font_size = start_font_size + (target_font_size - start_font_size)*anim_progress
+				local new_font_size = start_font_size + (target_font_size - start_font_size) * anim_progress
 				text_style.font_size = new_font_size
 				text_shadow_style.font_size = new_font_size
 
@@ -738,7 +738,7 @@ local animation_definitions = {
 				local target_font_size = 60
 				local anim_progress = math.easeOutCubic(progress)
 				local anim_progress = math.ease_pulse(anim_progress)
-				local new_font_size = start_font_size + (target_font_size - start_font_size)*anim_progress
+				local new_font_size = start_font_size + (target_font_size - start_font_size) * anim_progress
 				text_style.font_size = new_font_size
 				text_shadow_style.font_size = new_font_size
 
@@ -761,7 +761,7 @@ local animation_definitions = {
 				local widget = params.widget
 				local style = widget.style
 				local summary_text_shadow_style = style.summary_text_shadow
-				local alpha = math.easeOutCubic(progress - 1)*255
+				local alpha = math.easeOutCubic(1 - progress) * 255
 				summary_text_shadow_style.text_color[1] = alpha
 
 				return 
@@ -781,7 +781,7 @@ local animation_definitions = {
 				local widget = params.widget
 				local style = widget.style
 				local xp_text_shadow_style = style.xp_text_shadow
-				local alpha = math.easeOutCubic(progress - 1)*255
+				local alpha = math.easeOutCubic(1 - progress) * 255
 				xp_text_shadow_style.text_color[1] = alpha
 
 				return 

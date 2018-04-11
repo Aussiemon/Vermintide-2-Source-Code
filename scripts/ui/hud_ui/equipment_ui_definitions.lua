@@ -198,30 +198,15 @@ local scenegraph_definition = {
 		}
 	}
 }
-local inventory_slot_backgrounds = {
-	wpn_grimoire_01 = "hud_inventory_slot_bg_04",
-	potion_speed_boost_01 = "hud_inventory_slot_bg_05",
-	potion_healing_draught_01 = "hud_inventory_slot_bg_03",
-	grenade_frag_02 = "hud_inventory_slot_bg_02",
-	grenade_smoke_01 = "hud_inventory_slot_bg_02",
-	grenade_frag_01 = "hud_inventory_slot_bg_02",
-	grenade_smoke_02 = "hud_inventory_slot_bg_02",
-	grenade_fire_01 = "hud_inventory_slot_bg_02",
-	grenade_fire_02 = "hud_inventory_slot_bg_02",
-	default = "hud_inventory_slot_bg_01",
-	wpn_side_objective_tome_01 = "hud_inventory_slot_bg_04",
-	potion_damage_boost_01 = "hud_inventory_slot_bg_05",
-	healthkit_first_aid_kit_01 = "hud_inventory_slot_bg_03"
-}
 
 local function create_slot_widget(index, total_amount)
 	local actual_index = index - 1
 	local spacing = 24
 	local slot_width = slot_size[1]
-	local total_slot_width = slot_width*total_amount
-	local total_width = total_slot_width + spacing*(total_amount - 1)
+	local total_slot_width = slot_width * total_amount
+	local total_width = total_slot_width + spacing * (total_amount - 1)
 	local frame_offset = {
-		actual_index*(slot_width + spacing),
+		actual_index * (slot_width + spacing),
 		0,
 		-30
 	}
@@ -468,7 +453,12 @@ local ammo_text_center_style = {
 }
 local widget_definitions = {
 	background_panel = UIWidgets.create_simple_texture("hud_inventory_panel", "background_panel", nil, RETAINED_MODE_ENABLED),
-	background_panel_bg = UIWidgets.create_simple_texture("hud_inventory_panel_bg", "background_panel_bg", nil, RETAINED_MODE_ENABLED),
+	background_panel_bg = UIWidgets.create_simple_texture("hud_inventory_panel_bg", "background_panel_bg", nil, RETAINED_MODE_ENABLED)
+}
+local ammo_widget_definitions = {
+	ammo_text_clip = UIWidgets.create_simple_text("-", "ammo_text_clip", nil, nil, ammo_text_clip_style, nil, RETAINED_MODE_ENABLED),
+	ammo_text_remaining = UIWidgets.create_simple_text("-", "ammo_text_remaining", nil, nil, ammo_text_remaining_style, nil, RETAINED_MODE_ENABLED),
+	ammo_text_center = UIWidgets.create_simple_text("/", "ammo_text_center", nil, nil, ammo_text_center_style, nil, RETAINED_MODE_ENABLED),
 	ammo_background = UIWidgets.create_simple_texture("loot_objective_bg", "ammo_background", nil, RETAINED_MODE_ENABLED, {
 		200,
 		255,
@@ -486,11 +476,6 @@ local widget_definitions = {
 			1
 		}
 	}, "overcharge", nil, RETAINED_MODE_ENABLED)
-}
-local ammo_widget_definitions = {
-	ammo_text_clip = UIWidgets.create_simple_text("-", "ammo_text_clip", nil, nil, ammo_text_clip_style, nil, RETAINED_MODE_ENABLED),
-	ammo_text_remaining = UIWidgets.create_simple_text("-", "ammo_text_remaining", nil, nil, ammo_text_remaining_style, nil, RETAINED_MODE_ENABLED),
-	ammo_text_center = UIWidgets.create_simple_text("/", "ammo_text_center", nil, nil, ammo_text_center_style, nil, RETAINED_MODE_ENABLED)
 }
 local slots = InventorySettings.slots
 local slot_widget_definitions = {}
@@ -510,6 +495,5 @@ return {
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,
 	ammo_widget_definitions = ammo_widget_definitions,
-	slot_widget_definitions = slot_widget_definitions,
-	inventory_slot_backgrounds = inventory_slot_backgrounds
+	slot_widget_definitions = slot_widget_definitions
 }

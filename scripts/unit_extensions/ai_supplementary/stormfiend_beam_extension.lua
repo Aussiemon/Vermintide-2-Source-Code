@@ -67,7 +67,7 @@ StormfiendBeamExtension.create_beam = function (self, node_name)
 		if node_name == "fx_right_muzzle" then
 			offset_rotation = Quaternion.look(Vector3.right())
 		else
-			offset_rotation = Quaternion.look(Vector3.right() + Vector3.up()*0.2)
+			offset_rotation = Quaternion.look(Vector3.right() + Vector3.up() * 0.2)
 		end
 
 		local pose = Matrix4x4.from_quaternion(Quaternion.multiply(muzzle_rotation, offset_rotation))
@@ -91,9 +91,9 @@ StormfiendBeamExtension.get_target_position = function (self, unit)
 		local unit_position = Unit.world_position(unit, self.muzzle_node)
 		target_position[3] = unit_position[3]
 		local forward_offset = Vector3.normalize(target_position - unit_position)
-		target_position = target_position + forward_offset*self.beam_forward_offset
+		target_position = target_position + forward_offset * self.beam_forward_offset
 
-		return target_position + Vector3.up()*self.beam_up_offset
+		return target_position + Vector3.up() * self.beam_up_offset
 	end
 
 	return false
@@ -113,14 +113,14 @@ StormfiendBeamExtension.update = function (self, unit, input, dt, context, t)
 			local dir_norm = Vector3.normalize(muzzle_to_target)
 			local effect_variable_id = World.find_particles_variable(world, self.particle_name, "firepoint_1")
 
-			World.set_particles_variable(world, self.warpfire_particle_id, effect_variable_id, firepoint_1_pos + dir_norm*0.1)
+			World.set_particles_variable(world, self.warpfire_particle_id, effect_variable_id, firepoint_1_pos + dir_norm * 0.1)
 
 			effect_variable_id = World.find_particles_variable(world, self.particle_name, "firepoint_2")
 
 			World.set_particles_variable(world, self.warpfire_particle_id, effect_variable_id, target_unit_pos)
 
 			effect_variable_id = World.find_particles_variable(world, self.particle_name, "firelife_1")
-			local lifetime = length/4
+			local lifetime = length / 4
 			local particle_life_time_vector = self.particle_life_time:unbox()
 			particle_life_time_vector.x = lifetime
 

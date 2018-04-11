@@ -14,13 +14,13 @@ LoadedDice = {
 			end
 
 			for i = 1, n, 1 do
-				prob[i] = probabilities[i]/sum
+				prob[i] = probabilities[i] / sum
 			end
 		end
 
 		local small = {}
 		local large = {}
-		local average = n/1
+		local average = 1 / n
 
 		for i = 1, n, 1 do
 			if average <= prob[i] then
@@ -56,7 +56,7 @@ LoadedDice = {
 		end
 
 		for i = 1, n, 1 do
-			prob[i] = prob[i]*n
+			prob[i] = prob[i] * n
 		end
 
 		return prob, alias
@@ -71,14 +71,14 @@ LoadedDice = {
 local only_prob_table = {}
 LoadedDice.create_from_mixed = function (mixed_table, normalized)
 	local only_prob_table = only_prob_table
-	local num_probabilities = #mixed_table/2
+	local num_probabilities = #mixed_table / 2
 
 	for i = num_probabilities, #only_prob_table, 1 do
 		only_prob_table[i] = nil
 	end
 
 	for i = 1, num_probabilities, 1 do
-		only_prob_table[i] = mixed_table[i*2]
+		only_prob_table[i] = mixed_table[i * 2]
 	end
 
 	local p, a = LoadedDice.create(only_prob_table, normalized)
@@ -115,7 +115,7 @@ LoadedDice.test = function ()
 	local s = "Loaded Dice | "
 
 	for i = 1, #test, 1 do
-		s = s .. test[i] .. "->" .. count[i] .. "( " .. count[i]/tries .. "% ) | "
+		s = s .. test[i] .. "->" .. count[i] .. "( " .. count[i] / tries .. "% ) | "
 	end
 
 	print(s)

@@ -86,7 +86,7 @@ BTChampionAttackAction._init_attack = function (self, unit, blackboard, action, 
 	elseif action.mode == "radial_cylinder" then
 		blackboard.overlap_start_time = t + action.overlap_start_time
 		blackboard.overlap_end_time = t + action.overlap_end_time
-		blackboard.overlap_angle_speed = (action.overlap_end_angle_offset - action.overlap_start_angle_offset)/(action.overlap_end_time - action.overlap_start_time)
+		blackboard.overlap_angle_speed = (action.overlap_end_angle_offset - action.overlap_start_angle_offset) / (action.overlap_end_time - action.overlap_start_time)
 		local forward = Quaternion.forward(blackboard.attack_rotation:unbox())
 		local forward_angle = math.atan2(forward.y, forward.x)
 		blackboard.overlap_start_angle = forward_angle + action.overlap_start_angle_offset
@@ -96,7 +96,7 @@ BTChampionAttackAction._init_attack = function (self, unit, blackboard, action, 
 		local num_points = 1
 		local fwd = Quaternion.forward(rotation)
 		local pos = POSITION_LOOKUP[unit]
-		local wanted_start_pos = pos + fwd*action.offset_forward
+		local wanted_start_pos = pos + fwd * action.offset_forward
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 		local above = 2
 		local below = 2
@@ -118,7 +118,7 @@ BTChampionAttackAction._init_attack = function (self, unit, blackboard, action, 
 			POSITIONS_TEMP[num_points] = last_pos
 
 			while success and num_points < action.num_wave_points do
-				local new_wanted_pos = last_pos + fwd*distance
+				local new_wanted_pos = last_pos + fwd * distance
 				success, z = GwNavQueries.triangle_from_position(nav_world, new_wanted_pos, above, below)
 
 				if success then
@@ -129,7 +129,7 @@ BTChampionAttackAction._init_attack = function (self, unit, blackboard, action, 
 						local from = last_pos + Vector3(0, 0, ray_z_offset)
 						local offset = new_wanted_pos - last_pos
 						local dist = Vector3.length(offset)
-						local dir = offset/dist
+						local dir = offset / dist
 						local hit = PhysicsWorld.raycast(pw, from, dir, dist, "closest", "collision_filter", "filter_ai_line_of_sight_check")
 						success = not hit
 					end
@@ -169,7 +169,7 @@ BTChampionAttackAction._init_attack = function (self, unit, blackboard, action, 
 
 		local speed = action.wave_speed
 		blackboard.overlap_start_time = t + action.overlap_start_time
-		blackboard.overlap_end_time = blackboard.overlap_start_time + num_points*speed
+		blackboard.overlap_end_time = blackboard.overlap_start_time + num_points * speed
 		blackboard.last_overlap_index = 0
 	end
 
@@ -183,7 +183,7 @@ BTChampionAttackAction._init_attack = function (self, unit, blackboard, action, 
 		if action.collision_type == "cylinder" then
 			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.special_attacking_target)
 			local pos = self._calculate_cylinder_collision(self, action, POSITION_LOOKUP[unit], rot)
-			local size = Vector3(action.radius, action.radius, action.height*0.5)
+			local size = Vector3(action.radius, action.radius, action.height * 0.5)
 
 			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(pos, "cylinder", size, nil, bot_threat_duration)
 		elseif action.collision_type == "oobb" or not action.collision_type then
@@ -392,14 +392,14 @@ BTChampionAttackAction._update_overlap = function (self, unit, blackboard, actio
 		local from, to = nil
 
 		if last_t < start_t then
-			local lerp_t = (start_t - last_t)/(t - last_t)
+			local lerp_t = (start_t - last_t) / (t - last_t)
 			from = Vector3.lerp(old_pos, new_pos, lerp_t)
 		else
 			from = old_pos
 		end
 
 		if end_t < t then
-			local lerp_t = (end_t - last_t)/(t - last_t)
+			local lerp_t = (end_t - last_t) / (t - last_t)
 			to = Vector3.lerp(old_pos, new_pos, lerp_t)
 		else
 			to = new_pos
@@ -424,7 +424,7 @@ BTChampionAttackAction._update_overlap = function (self, unit, blackboard, actio
 		local action_range = action.range
 
 		if type(action_range) == "function" then
-			base_range = action_range((t - start_t)/(end_t - start_t))
+			base_range = action_range((t - start_t) / (end_t - start_t))
 		else
 			base_range = action_range
 		end
@@ -432,10 +432,10 @@ BTChampionAttackAction._update_overlap = function (self, unit, blackboard, actio
 		local range = base_range + ((movement_controlled_rotation and length) or Vector3.dot(delta, forward))
 		local height = action.height
 		local width = action.width
-		local half_range = range*0.5
-		local half_height = height*0.5
-		local oobb_pos = from + forward*(action.offset_forward + half_range) + up*(action.offset_up + half_height)
-		local size = Vector3(width*0.5, half_range, half_height)
+		local half_range = range * 0.5
+		local half_height = height * 0.5
+		local oobb_pos = from + forward * (action.offset_forward + half_range) + up * (action.offset_up + half_height)
+		local size = Vector3(width * 0.5, half_range, half_height)
 		local pw = World.get_data(blackboard.world, "physics_world")
 		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", rot, "size", size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check", "use_global_table")
 
@@ -455,8 +455,8 @@ BTChampionAttackAction._update_overlap = function (self, unit, blackboard, actio
 			local collision = false
 
 			if success then
-				local length = action.overlap_check_walls_range + dt*Vector3.length(blackboard.locomotion_extension:current_velocity())
-				local to = from + forward*length
+				local length = action.overlap_check_walls_range + dt * Vector3.length(blackboard.locomotion_extension:current_velocity())
+				local to = from + forward * length
 				local success2, z2 = GwNavQueries.triangle_from_position(nav_world, to, math.max(above, length), math.max(below, length))
 
 				if not success2 or not GwNavQueries.raycango(nav_world, Vector3(from.x, from.y, z), Vector3(to.x, to.y, z2)) then
@@ -499,7 +499,7 @@ BTChampionAttackAction._update_nav_mesh_wave = function (self, unit, blackboard,
 	local speed = action.wave_speed
 	local wave_points = blackboard.overlap_wave_points
 	local relative_t = t - start_t
-	local new_index = math.min(math.floor(relative_t*speed + 1), #wave_points)
+	local new_index = math.min(math.floor(relative_t * speed + 1), #wave_points)
 	local last_index = blackboard.last_overlap_index
 	local start_index = math.min(last_index + 1, new_index)
 	local pw = World.get_data(world, "physics_world")
@@ -539,10 +539,10 @@ BTChampionAttackAction._update_nav_mesh_wave = function (self, unit, blackboard,
 		from = (from and from.unbox(from)) or POSITION_LOOKUP[unit]
 		local rot = Quaternion.look(to - from, Vector3.up())
 		local y = math.max(Vector3.length(to - pos), Vector3.length(from - pos))
-		local half_height = action.height*0.5
-		local size = Vector3(action.width*0.5, y, half_height)
+		local half_height = action.height * 0.5
+		local size = Vector3(action.width * 0.5, y, half_height)
 		local up = Quaternion.up(rot)
-		local oobb_pos = (to + from)*0.5 + up*half_height
+		local oobb_pos = (to + from) * 0.5 + up * half_height
 		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", rot, "size", size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check", "use_global_table")
 
 		table.append(HITS_TEMP, hit_actors)
@@ -606,7 +606,7 @@ BTChampionAttackAction.anim_cb_damage = function (self, unit, blackboard)
 
 			local fwd = Quaternion.forward(rotation)
 
-			drawer.cylinder(drawer, cylinder_center - fwd*size.y, cylinder_center + fwd*size.y, math.max(size.x, size.z), nil, 4)
+			drawer.cylinder(drawer, cylinder_center - fwd * size.y, cylinder_center + fwd * size.y, math.max(size.x, size.z), nil, 4)
 		end
 
 		self._deal_damage(self, unit, blackboard, action, self_pos, hit_actors, actor_count, true)
@@ -639,15 +639,15 @@ BTChampionAttackAction._update_radial_cylinder = function (self, unit, blackboar
 
 		local fwd = Quaternion.forward(rotation)
 
-		drawer.cylinder(drawer, cylinder_center - fwd*size.y, cylinder_center + fwd*size.y, math.max(size.x, size.z), nil, 4)
+		drawer.cylinder(drawer, cylinder_center - fwd * size.y, cylinder_center + fwd * size.y, math.max(size.x, size.z), nil, 4)
 	end
 
 	local start_angle = blackboard.overlap_start_angle
 	local old_angle = blackboard.overlap_last_angle
-	local new_angle = start_angle + attack_t*blackboard.overlap_angle_speed
+	local new_angle = start_angle + attack_t * blackboard.overlap_angle_speed
 	local relative_angle = new_angle - old_angle
 	local check_radius = 0.5
-	local two_pi = math.pi*2
+	local two_pi = 2 * math.pi
 	local hit_list = {}
 	local num_hit = 0
 
@@ -670,11 +670,11 @@ BTChampionAttackAction._update_radial_cylinder = function (self, unit, blackboar
 				fassert(false, "Radial cylinder overlap with invalid direction %s", tostring(direction))
 			end
 
-			local dist = math.sqrt(x*x + y*y)
+			local dist = math.sqrt(x * x + y * y)
 			local angle = math.atan2(y, x)
-			local radial_width = math.tan(check_radius, dist)*2
-			local min_angle = (angle - radial_width - old_angle)%two_pi
-			local max_angle = ((angle + radial_width) - old_angle)%two_pi
+			local radial_width = 2 * math.tan(check_radius, dist)
+			local min_angle = (angle - radial_width - old_angle) % two_pi
+			local max_angle = ((angle + radial_width) - old_angle) % two_pi
 
 			if max_angle < min_angle then
 				min_angle = min_angle - two_pi
@@ -701,12 +701,12 @@ BTChampionAttackAction._calculate_cylinder_collision = function (self, action, s
 	local offset_up = action.offset_up
 	local offset_forward = action.offset_forward
 	local offset_right = action.offset_right
-	local half_height = height*0.5
+	local half_height = height * 0.5
 	local size = Vector3(radius, half_height, radius)
 	local forward = Quaternion.forward(self_rot)
 	local up = Quaternion.up(self_rot)
 	local right = Quaternion.right(self_rot)
-	local cylinder_center = self_pos + forward*(radius + offset_forward) + up*(half_height + offset_up) + right*offset_right
+	local cylinder_center = self_pos + forward * (radius + offset_forward) + up * (half_height + offset_up) + right * offset_right
 	local rotation = Quaternion.look(up, Vector3.up())
 
 	return cylinder_center, size, rotation
@@ -717,11 +717,11 @@ BTChampionAttackAction._calculate_oobb_collision = function (self, action, self_
 	local width = action.width
 	local offset_up = action.offset_up
 	local offset_forward = action.offset_forward
-	local half_range = range*0.5
-	local half_height = height*0.5
-	local size = Vector3(width*0.5, half_range, half_height)
-	local forward = Quaternion.rotate(self_rot, Vector3.forward())*(offset_forward + half_range)
-	local up = Vector3.up()*(half_height + offset_up)
+	local half_range = range * 0.5
+	local half_height = height * 0.5
+	local size = Vector3(width * 0.5, half_range, half_height)
+	local forward = Quaternion.rotate(self_rot, Vector3.forward()) * (offset_forward + half_range)
+	local up = Vector3.up() * (half_height + offset_up)
 	local oobb_pos = self_pos + forward + up
 
 	return oobb_pos, self_rot, size
@@ -738,7 +738,7 @@ BTChampionAttackAction._deal_damage = function (self, unit, blackboard, action, 
 
 	if impact_shove then
 		local speed = Vector3.length(blackboard.locomotion_extension:current_velocity())
-		shove_speed = speed*impact_shove
+		shove_speed = speed * impact_shove
 	end
 
 	assert(not shove_speed == not shove_z_speed, "Shove speed and shove_z_speed both or neither need to be set")
@@ -778,7 +778,7 @@ BTChampionAttackAction._deal_damage = function (self, unit, blackboard, action, 
 				local push_speed = action.player_push_speed_blocked
 
 				if push_speed then
-					local blocked_velocity = push_speed*Vector3.normalize(target_pos - self_pos)
+					local blocked_velocity = push_speed * Vector3.normalize(target_pos - self_pos)
 					local locomotion_extension = ScriptUnit.extension(target_unit, "locomotion_system")
 
 					locomotion_extension.add_external_velocity(locomotion_extension, blocked_velocity)
@@ -808,7 +808,7 @@ BTChampionAttackAction._catapult_players = function (self, unit, blackboard, act
 
 	if impact_shove then
 		local speed = Vector3.length(blackboard.locomotion_extension:current_velocity())
-		shove_speed = speed*impact_shove
+		shove_speed = speed * impact_shove
 	end
 
 	for _, data in ipairs(catapulted_players) do
@@ -823,7 +823,7 @@ BTChampionAttackAction._catapult_player = function (self, unit, shove_speed, sho
 	local target_status_extension = ScriptUnit.extension(target_unit, "status_system")
 
 	if not target_status_extension.is_knocked_down(target_status_extension) and not target_status_extension.is_dead(target_status_extension) then
-		local push_velocity = direction*shove_speed
+		local push_velocity = direction * shove_speed
 
 		Vector3.set_z(push_velocity, shove_z_speed)
 		StatusUtils.set_catapulted_network(target_unit, true, push_velocity)

@@ -87,7 +87,7 @@ DifficultyUnlockUI.align_icon_widgets = function (self)
 	local icon_draw_count = self.icon_draw_count
 	local icon_widgets = self.icon_widgets
 	local widget_width = 50
-	local draw_position_x = -(icon_draw_count/2*widget_width) + widget_width*0.5
+	local draw_position_x = -(icon_draw_count / 2 * widget_width) + widget_width * 0.5
 
 	if icon_widgets then
 		local ui_scenegraph = self.ui_scenegraph

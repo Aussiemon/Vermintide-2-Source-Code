@@ -79,8 +79,7 @@ HitEffectsChaosSorcerer = {
 			damage_type = sideways_damage_types
 		},
 		animations = {
-			"death_dissolve",
-			"ragdoll"
+			"death_dissolve"
 		},
 		push = {
 			distal_force = 0,
@@ -95,8 +94,7 @@ HitEffectsChaosSorcerer = {
 			damage_type = smiter_damage_types
 		},
 		animations = {
-			"death_dissolve",
-			"ragdoll"
+			"death_dissolve"
 		},
 		push = {
 			distal_force = 0,
@@ -111,8 +109,7 @@ HitEffectsChaosSorcerer = {
 			damage_type = fencer_damage_types
 		},
 		animations = {
-			"death_dissolve",
-			"ragdoll"
+			"death_dissolve"
 		},
 		push = {
 			distal_force = 20,
@@ -127,8 +124,7 @@ HitEffectsChaosSorcerer = {
 			damage_type = ranged_damage_types
 		},
 		animations = {
-			"death_dissolve",
-			"ragdoll"
+			"death_dissolve"
 		},
 		push = {
 			distal_force = 25,
@@ -147,8 +143,7 @@ HitEffectsChaosSorcerer = {
 			damage_type = "forced"
 		},
 		animations = {
-			"death_dissolve",
-			"ragdoll"
+			"death_dissolve"
 		}
 	}
 }

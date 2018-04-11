@@ -60,8 +60,8 @@ local function create_loot_widget(texture, amount)
 	}
 	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
 	local texture_size = texture_settings.size
-	local texture_total_width = texture_size[1]*amount
-	local total_spacing = spacing[1]*(amount - 1)
+	local texture_total_width = texture_size[1] * amount
+	local total_spacing = spacing[1] * (amount - 1)
 	local size = {
 		texture_total_width + total_spacing,
 		texture_size[2] + spacing[2]
@@ -139,8 +139,8 @@ local function create_loot_widget(texture, amount)
 					255
 				},
 				size = {
-					size[1] + frame_corner_size[1]*2,
-					size[2] + frame_corner_size[2]*2
+					size[1] + frame_corner_size[1] * 2,
+					size[2] + frame_corner_size[2] * 2
 				},
 				offset = {
 					-frame_corner_size[1],
@@ -190,8 +190,8 @@ local function create_loot_widget(texture, amount)
 					255
 				},
 				offset = {
-					-size[1]/2,
-					-texture_size[2]/2,
+					-size[1] / 2,
+					-texture_size[2] / 2,
 					2
 				},
 				draw_count = amount
@@ -218,8 +218,8 @@ local function create_loot_widget(texture, amount)
 					255
 				},
 				offset = {
-					-size[1]/2,
-					-texture_size[2]/2,
+					-size[1] / 2,
+					-texture_size[2] / 2,
 					1
 				},
 				draw_count = amount
@@ -246,8 +246,8 @@ local function create_loot_widget(texture, amount)
 					255
 				},
 				offset = {
-					-size[1]/2,
-					-texture_size[2]/2,
+					-size[1] / 2,
+					-texture_size[2] / 2,
 					3
 				},
 				draw_count = amount

@@ -31,8 +31,9 @@ ActionCareerDRRanger._create_smoke_screen = function (self)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local buff_name = "bardin_ranger_activated_ability"
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
+	local has_extended_duration_talent = talent_extension.has_talent(talent_extension, "bardin_ranger_activated_ability_duration", "dwarf_ranger", true)
 
-	if talent_extension.has_talent(talent_extension, "bardin_ranger_activated_ability_duration", "dwarf_ranger", true) then
+	if has_extended_duration_talent then
 		buff_name = "bardin_ranger_activated_ability_duration"
 	end
 
@@ -47,7 +48,7 @@ ActionCareerDRRanger._create_smoke_screen = function (self)
 	local unit_name = "units/gameplay/line_of_sight_blocker/hemisphere_los_blocker"
 	local unit_template_name = "network_synched_dummy_unit"
 	local unit, unit_go_id = unit_spawner.spawn_network_unit(unit_spawner, unit_name, unit_template_name, nil, POSITION_LOOKUP[owner_unit], Quaternion.identity(), nil)
-	local explosion_template_name = "bardin_ranger_activated_ability_stagger"
+	local explosion_template_name = (has_extended_duration_talent and "bardin_ranger_activated_ability_upgraded_stagger") or "bardin_ranger_activated_ability_stagger"
 	local explosion_template = ExplosionTemplates[explosion_template_name]
 	local scale = explosion_template.explosion.radius
 

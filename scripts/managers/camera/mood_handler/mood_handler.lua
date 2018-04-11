@@ -119,7 +119,7 @@ MoodHandler.add_mood_blend = function (self, current_mood, next_mood)
 		self.mood_blends = {
 			value = 0,
 			mood = current_mood,
-			speed = blend_time/1,
+			speed = 1 / blend_time,
 			blends = self.mood_blends
 		}
 	end
@@ -190,16 +190,16 @@ MoodHandler.update_mood_blends = function (self, dt)
 end
 MoodHandler.set_mood_weights = function (self, dt, blend, mood_weights, weight)
 	if blend then
-		blend.value = blend.value + blend.speed*dt
+		blend.value = blend.value + blend.speed * dt
 
 		if 1 <= blend.value then
 			blend.blends = nil
 			mood_weights[#mood_weights + 1] = weight
 		else
-			mood_weights[#mood_weights + 1] = blend.value*weight
+			mood_weights[#mood_weights + 1] = blend.value * weight
 			mood_weights[#mood_weights + 1] = blend.mood
 
-			return self.set_mood_weights(self, dt, blend.blends, mood_weights, weight*(blend.value - 1))
+			return self.set_mood_weights(self, dt, blend.blends, mood_weights, weight * (1 - blend.value))
 		end
 	else
 		mood_weights[#mood_weights + 1] = weight
@@ -236,10 +236,10 @@ MoodHandler.update_environment_variables = function (self)
 					value_to_set = value_to_set or var_value
 				elseif var_type == "scalar" then
 					value_to_set = value_to_set or 0
-					value_to_set = value_to_set + var_value*mood_weight
+					value_to_set = value_to_set + var_value * mood_weight
 				elseif var_type == "vector2" or var_type == "vector3" then
 					value_to_set = value_to_set or Vector3(0, 0, 0)
-					value_to_set = value_to_set + var_value.unbox(var_value)*mood_weight
+					value_to_set = value_to_set + var_value.unbox(var_value) * mood_weight
 				end
 
 				variables_to_set[var_name] = value_to_set
@@ -283,17 +283,17 @@ MoodHandler.apply_environment_variables = function (self, shading_environment)
 		elseif var_type == "texture" then
 			ShadingEnvironment.set_texture(shading_environment, var_name, var_value)
 		elseif var_type == "scalar" then
-			local default_value = ShadingEnvironment.scalar(shading_environment, var_name)*weight_remainder
+			local default_value = ShadingEnvironment.scalar(shading_environment, var_name) * weight_remainder
 			local set_value = var_value + default_value
 
 			ShadingEnvironment.set_scalar(shading_environment, var_name, set_value)
 		elseif var_type == "vector2" then
-			local default_value = ShadingEnvironment.vector2(shading_environment, var_name)*weight_remainder
+			local default_value = ShadingEnvironment.vector2(shading_environment, var_name) * weight_remainder
 			local set_value = var_value.unbox(var_value) + default_value
 
 			ShadingEnvironment.set_vector2(shading_environment, var_name, set_value)
 		elseif var_type == "vector3" then
-			local default_value = ShadingEnvironment.vector3(shading_environment, var_name)*weight_remainder
+			local default_value = ShadingEnvironment.vector3(shading_environment, var_name) * weight_remainder
 			local set_value = var_value.unbox(var_value) + default_value
 
 			ShadingEnvironment.set_vector3(shading_environment, var_name, set_value)

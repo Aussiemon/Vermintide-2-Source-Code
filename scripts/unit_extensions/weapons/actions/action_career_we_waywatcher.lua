@@ -20,7 +20,7 @@ ActionCareerWEWaywatcher.client_owner_start_action = function (self, new_action,
 		local unit_id = network_manager.unit_game_object_id(network_manager, owner_unit)
 		local heal_type_id = NetworkLookup.heal_types.career_skill
 
-		network_transmit.send_rpc_server(network_transmit, "rpc_request_heal", unit_id, 35, heal_type_id)
+		network_transmit.send_rpc_server(network_transmit, "rpc_request_heal", unit_id, 20, heal_type_id)
 	end
 
 	if talent_extension.has_talent(talent_extension, "kerillian_waywatcher_activated_ability_restore_ammo", "wood_elf", true) then
@@ -59,7 +59,7 @@ ActionCareerWEWaywatcher._restore_ammo = function (self)
 	local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
 	local ammo_percent = ammo_extension.total_ammo_fraction(ammo_extension)
 	local ammo_bonus_fraction = 0.5
-	local ammo_amount = math.max(math.round(ammo_extension.get_max_ammo(ammo_extension)*ammo_bonus_fraction), 1)
+	local ammo_amount = math.max(math.round(ammo_extension.get_max_ammo(ammo_extension) * ammo_bonus_fraction), 1)
 
 	if ammo_extension then
 		ammo_extension.add_ammo_to_reserve(ammo_extension, ammo_amount)

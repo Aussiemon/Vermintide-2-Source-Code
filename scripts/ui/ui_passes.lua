@@ -252,17 +252,17 @@ UIPasses.list_pass = {
 
 		if ui_style.scenegraph_id then
 			local parent_size = ui_scenegraph[ui_style.scenegraph_id].size
-			local total_width = num_draws*list_member_offset[1] + size[1]
-			local total_height = num_draws*list_member_offset[2] + size[2]
+			local total_width = num_draws * list_member_offset[1] + size[1]
+			local total_height = num_draws * list_member_offset[2] + size[2]
 
 			if ui_style.horizontal_alignment == "center" then
-				element_alignment_position[1] = (position[1] + parent_size[1]/2) - total_width/2
+				element_alignment_position[1] = (position[1] + parent_size[1] / 2) - total_width / 2
 			elseif ui_style.horizontal_alignment == "right" then
 				element_alignment_position[1] = (position[1] + parent_size[1]) - total_width
 			end
 
 			if ui_style.vertical_alignment == "center" then
-				element_alignment_position[2] = (position[2] + parent_size[2]/2) - total_height/2
+				element_alignment_position[2] = (position[2] + parent_size[2] / 2) - total_height / 2
 			elseif ui_style.vertical_alignment == "top" then
 				element_alignment_position[2] = (position[2] + parent_size[2]) - math.abs(list_member_offset[2])
 			end
@@ -283,7 +283,7 @@ UIPasses.list_pass = {
 			local column_index = nil
 
 			if columns then
-				column_index = index%columns
+				column_index = index % columns
 
 				if column_index == 0 then
 					column_index = columns - 1
@@ -298,21 +298,21 @@ UIPasses.list_pass = {
 
 			if element_list_member_offset then
 				if column_index then
-					element_position[1] = element_alignment_position[1] + column_offset*column_index
-					element_position[2] = element_alignment_position[2] + element_list_member_offset[2]*row_count
+					element_position[1] = element_alignment_position[1] + column_offset * column_index
+					element_position[2] = element_alignment_position[2] + element_list_member_offset[2] * row_count
 					element_position[3] = element_alignment_position[3] + element_list_member_offset[3]
 				else
-					element_position[1] = element_alignment_position[1] + element_list_member_offset[1]*row_count
-					element_position[2] = element_alignment_position[2] + element_list_member_offset[2]*row_count
+					element_position[1] = element_alignment_position[1] + element_list_member_offset[1] * row_count
+					element_position[2] = element_alignment_position[2] + element_list_member_offset[2] * row_count
 					element_position[3] = element_alignment_position[3] + element_list_member_offset[3]
 				end
 			elseif column_index then
-				element_position[1] = element_alignment_position[1] + column_offset*column_index
-				element_position[2] = element_alignment_position[2] + list_member_offset[2]*row_count
+				element_position[1] = element_alignment_position[1] + column_offset * column_index
+				element_position[2] = element_alignment_position[2] + list_member_offset[2] * row_count
 				element_position[3] = element_alignment_position[3] + list_member_offset[3]
 			else
-				element_position[1] = element_alignment_position[1] + list_member_offset[1]*row_count
-				element_position[2] = element_alignment_position[2] + list_member_offset[2]*row_count
+				element_position[1] = element_alignment_position[1] + list_member_offset[1] * row_count
+				element_position[2] = element_alignment_position[2] + list_member_offset[2] * row_count
 				element_position[3] = element_alignment_position[3] + list_member_offset[3]
 			end
 
@@ -392,13 +392,13 @@ UIPasses.gradient_mask_texture = {
 				if ui_style.horizontal_alignment == "right" then
 					position[1] = (position[1] + size[1]) - texture_size[1]
 				elseif ui_style.horizontal_alignment == "center" then
-					position[1] = position[1] + (size[1] - texture_size[1])/2
+					position[1] = position[1] + (size[1] - texture_size[1]) / 2
 				end
 
 				local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 				if ui_style.vertical_alignment == "center" then
-					position[2] = position[2] + (size[2] - texture_size[2])/2
+					position[2] = position[2] + (size[2] - texture_size[2]) / 2
 				elseif ui_style.vertical_alignment == "top" then
 					position[2] = (position[2] + size[2]) - texture_size[2]
 				end
@@ -437,13 +437,13 @@ UIPasses.texture_frame = {
 				if ui_style.horizontal_alignment == "right" then
 					position[1] = (position[1] + size[1]) - texture_size[1]
 				elseif ui_style.horizontal_alignment == "center" then
-					position[1] = position[1] + (size[1] - texture_size[1])/2
+					position[1] = position[1] + (size[1] - texture_size[1]) / 2
 				end
 
 				local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 				if ui_style.vertical_alignment == "center" then
-					position[2] = position[2] + (size[2] - texture_size[2])/2
+					position[2] = position[2] + (size[2] - texture_size[2]) / 2
 				elseif ui_style.vertical_alignment == "top" then
 					position[2] = (position[2] + size[2]) - texture_size[2]
 				end
@@ -459,8 +459,8 @@ UIPasses.texture_frame = {
 				gui_position[2] = position[2] + frame_margins[2]
 				gui_position[3] = position[3]
 				gui_size = Vector2(0, 0)
-				gui_size[1] = size[1] - frame_margins[1]*2
-				gui_size[2] = size[2] - frame_margins[2]*2
+				gui_size[1] = size[1] - frame_margins[1] * 2
+				gui_size[2] = size[2] - frame_margins[2] * 2
 			end
 		end
 
@@ -506,13 +506,13 @@ UIPasses.texture = {
 				if ui_style.horizontal_alignment == "right" then
 					position[1] = (position[1] + size[1]) - texture_size[1]
 				elseif ui_style.horizontal_alignment == "center" then
-					position[1] = position[1] + (size[1] - texture_size[1])/2
+					position[1] = position[1] + (size[1] - texture_size[1]) / 2
 				end
 
 				local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 				if ui_style.vertical_alignment == "center" then
-					position[2] = position[2] + (size[2] - texture_size[2])/2
+					position[2] = position[2] + (size[2] - texture_size[2]) / 2
 				elseif ui_style.vertical_alignment == "top" then
 					position[2] = (position[2] + size[2]) - texture_size[2]
 				end
@@ -564,13 +564,13 @@ UIPasses.shader_tiled_texture = {
 				if ui_style.horizontal_alignment == "right" then
 					position[1] = (position[1] + size[1]) - texture_size[1]
 				elseif ui_style.horizontal_alignment == "center" then
-					position[1] = position[1] + (size[1] - texture_size[1])/2
+					position[1] = position[1] + (size[1] - texture_size[1]) / 2
 				end
 
 				local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 				if ui_style.vertical_alignment == "center" then
-					position[2] = position[2] + (size[2] - texture_size[2])/2
+					position[2] = position[2] + (size[2] - texture_size[2]) / 2
 				elseif ui_style.vertical_alignment == "top" then
 					position[2] = (position[2] + size[2]) - texture_size[2]
 				end
@@ -581,7 +581,7 @@ UIPasses.shader_tiled_texture = {
 
 		local texture_id = pass_definition.texture_id
 		local tile_size = ui_style.tile_size
-		local tiles = Vector2(size[1]/tile_size[1], size[2]/tile_size[2])
+		local tiles = Vector2(size[1] / tile_size[1], size[2] / tile_size[2])
 		local material = Gui.material(ui_renderer.gui, ui_content[texture_id])
 
 		Material.set_vector2(material, "tile_multiplier", tiles)
@@ -589,11 +589,11 @@ UIPasses.shader_tiled_texture = {
 		local tile_offset = Vector2(0, 0)
 
 		if ui_style.tile_offset[1] then
-			tile_offset[1] = position[1]/tile_size[1]
+			tile_offset[1] = position[1] / tile_size[1]
 		end
 
 		if ui_style.tile_offset[2] then
-			tile_offset[2] = position[2]/tile_size[2]
+			tile_offset[2] = position[2] / tile_size[2]
 		end
 
 		Material.set_vector2(material, "tile_offset", tile_offset)
@@ -795,13 +795,13 @@ UIPasses.texture_uv = {
 				if ui_style.horizontal_alignment == "right" then
 					position[1] = (position[1] + size[1]) - texture_size[1]
 				elseif ui_style.horizontal_alignment == "center" then
-					position[1] = position[1] + (size[1] - texture_size[1])/2
+					position[1] = position[1] + (size[1] - texture_size[1]) / 2
 				end
 
 				local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 				if ui_style.vertical_alignment == "center" then
-					position[2] = position[2] + (size[2] - texture_size[2])/2
+					position[2] = position[2] + (size[2] - texture_size[2]) / 2
 				elseif ui_style.vertical_alignment == "top" then
 					position[2] = (position[2] + size[2]) - texture_size[2]
 				end
@@ -884,13 +884,13 @@ UIPasses.rotated_texture = {
 				if ui_style.horizontal_alignment == "right" then
 					position[1] = (position[1] + size[1]) - texture_size[1]
 				elseif ui_style.horizontal_alignment == "center" then
-					position[1] = position[1] + (size[1] - texture_size[1])/2
+					position[1] = position[1] + (size[1] - texture_size[1]) / 2
 				end
 
 				local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 				if ui_style.vertical_alignment == "center" then
-					position[2] = position[2] + (size[2] - texture_size[2])/2
+					position[2] = position[2] + (size[2] - texture_size[2]) / 2
 				elseif ui_style.vertical_alignment == "top" then
 					position[2] = (position[2] + size[2]) - texture_size[2]
 				end
@@ -923,13 +923,13 @@ UIPasses.rounded_background = {
 				if ui_style.horizontal_alignment == "right" then
 					position[1] = (position[1] + size[1]) - rect_size[1]
 				elseif ui_style.horizontal_alignment == "center" then
-					position[1] = position[1] + (size[1] - rect_size[1])/2
+					position[1] = position[1] + (size[1] - rect_size[1]) / 2
 				end
 
 				local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 				if ui_style.vertical_alignment == "center" then
-					position[2] = position[2] + (size[2] - rect_size[2])/2
+					position[2] = position[2] + (size[2] - rect_size[2]) / 2
 				elseif ui_style.vertical_alignment == "top" then
 					position[2] = (position[2] + size[2]) - rect_size[2]
 				end
@@ -943,7 +943,24 @@ UIPasses.rounded_background = {
 }
 UIPasses.rect = {
 	init = function (pass_definition)
-		return nil
+		if pass_definition.retained_mode then
+			return {
+				dirty = true
+			}
+		end
+
+		return 
+	end,
+	destroy = function (ui_renderer, pass_data, pass_definition)
+		assert(pass_definition.retained_mode, "why u destroy immediate pass?")
+
+		if pass_data.retained_id then
+			UIRenderer.destroy_bitmap(ui_renderer, pass_data.retained_id)
+
+			pass_data.retained_id = nil
+		end
+
+		return 
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		if ui_style then
@@ -953,13 +970,13 @@ UIPasses.rect = {
 				if ui_style.horizontal_alignment == "right" then
 					position[1] = (position[1] + size[1]) - texture_size[1]
 				elseif ui_style.horizontal_alignment == "center" then
-					position[1] = position[1] + (size[1] - texture_size[1])/2
+					position[1] = position[1] + (size[1] - texture_size[1]) / 2
 				end
 
 				local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 				if ui_style.vertical_alignment == "center" then
-					position[2] = position[2] + (size[2] - texture_size[2])/2
+					position[2] = position[2] + (size[2] - texture_size[2]) / 2
 				elseif ui_style.vertical_alignment == "top" then
 					position[2] = (position[2] + size[2]) - texture_size[2]
 				end
@@ -968,7 +985,16 @@ UIPasses.rect = {
 			end
 		end
 
-		return UIRenderer.draw_rect(ui_renderer, position, size, ui_style.color)
+		if pass_definition.retained_mode then
+			local retained_id = pass_definition.retained_mode and ((pass_data.retained_id and pass_data.retained_id) or true)
+			retained_id = UIRenderer.draw_rect(ui_renderer, position, size, ui_style.color, retained_id)
+			pass_data.retained_id = (retained_id and retained_id) or pass_data.retained_id
+			pass_data.dirty = false
+		else
+			UIRenderer.draw_rect(ui_renderer, position, size, ui_style.color)
+		end
+
+		return 
 	end
 }
 local cursor_value_type_name = "Vector3"
@@ -1027,9 +1053,9 @@ UIPasses.scrollbar_hotspot = {
 		hotspot_size[2] = size[2]
 
 		if ui_style.hotspot_width_modifier then
-			local size_x = hotspot_size[1]*ui_style.hotspot_width_modifier
+			local size_x = hotspot_size[1] * ui_style.hotspot_width_modifier
 			hotspot_size[1] = size_x
-			hotspot_position[1] = hotspot_position[1] - size_x/2 + size[1]/2
+			hotspot_position[1] = hotspot_position[1] - size_x / 2 + size[1] / 2
 		end
 
 		is_hover = math.point_is_inside_2d_box(cursor_position, hotspot_position, hotspot_size)
@@ -1037,11 +1063,11 @@ UIPasses.scrollbar_hotspot = {
 		local percentage = ui_content.percentage
 		local scrollbar_size = pass_data.scrollbar_size
 		scrollbar_size[1] = hotspot_size[1]
-		local scrollbar_height = math.max(ui_style.min_scrollbar_height, hotspot_size[2]*percentage)
+		local scrollbar_height = math.max(ui_style.min_scrollbar_height, hotspot_size[2] * percentage)
 		scrollbar_size[2] = scrollbar_height
 		local scroll_value = ui_content.scroll_value
 		local bar_move_area = hotspot_size[2] - scrollbar_height
-		local scrollbar_offset_y = bar_move_area*scroll_value
+		local scrollbar_offset_y = bar_move_area * scroll_value
 		local scrollbar_position = pass_data.scrollbar_position
 		scrollbar_position[1] = hotspot_position[1]
 		scrollbar_position[2] = hotspot_position[2] + scrollbar_offset_y
@@ -1074,13 +1100,13 @@ UIPasses.scrollbar_hotspot = {
 				local start_y = pass_data.start_move_pos[2]
 				local cursor_y = cursor[2]
 				local diff_y = cursor_y - start_y
-				local delta = diff_y/bar_move_area
+				local delta = diff_y / bar_move_area
 				local og_value = ui_content.og_scroll_value
 				target_value = math.clamp(og_value + delta, 0, 1)
 			else
 				local cursor_y = cursor[2]
 				local y_diff = cursor_y - hotspot_position[2]
-				target_value = math.clamp(y_diff/bar_move_area, 0, 1)
+				target_value = math.clamp(y_diff / bar_move_area, 0, 1)
 			end
 		end
 
@@ -1098,7 +1124,7 @@ UIPasses.scrollbar_hotspot = {
 			if is_hover_scroll_area then
 				local scroll_axis = input_service.get(input_service, "scroll_axis")
 				local y = scroll_axis[2]
-				local move = ui_content.scroll_amount*y
+				local move = ui_content.scroll_amount * y
 				target_value = math.clamp(ui_content.scroll_value + move, 0, 1)
 			end
 		end
@@ -1181,11 +1207,11 @@ UIPasses.scrollbar = {
 		local percentage = ui_content.percentage
 		local scrollbar_size = pass_data.scrollbar_size
 		scrollbar_size[1] = size[1]
-		local scrollbar_height = math.max(ui_style.min_scrollbar_height, size[2]*percentage)
+		local scrollbar_height = math.max(ui_style.min_scrollbar_height, size[2] * percentage)
 		scrollbar_size[2] = scrollbar_height
 		local scroll_value = ui_content.scroll_value
 		local bar_move_area = size[2] - scrollbar_height
-		local scrollbar_offset_y = bar_move_area*scroll_value
+		local scrollbar_offset_y = bar_move_area * scroll_value
 		local scrollbar_position = pass_data.scrollbar_position
 		scrollbar_position[1] = position[1]
 		scrollbar_position[2] = position[2] + scrollbar_offset_y
@@ -1263,20 +1289,20 @@ local function get_position_offset(text_width, font_height, font_min, font_max, 
 	if data.horizontal_alignment == "right" then
 		offset = Vector3(size[1] - text_width, 0, 0)
 	elseif data.horizontal_alignment == "center" then
-		local x_offset = (size[1] - text_width)/2
+		local x_offset = (size[1] - text_width) / 2
 		offset = Vector3(x_offset - origin.x, 0, 0)
 	end
 
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 	if data.vertical_alignment == "center" then
-		local y_offset = (size[2] - font_height*inv_scale*0.5)/2
+		local y_offset = (size[2] - font_height * inv_scale * 0.5) / 2
 		offset = offset + Vector3(0, y_offset, 0)
 	elseif data.vertical_alignment == "top" then
-		local y_offset = size[2] - font_max*inv_scale
+		local y_offset = size[2] - font_max * inv_scale
 		offset = offset + Vector3(0, y_offset, 0)
 	else
-		offset.y = offset.y + math.abs(font_min)*inv_scale
+		offset.y = offset.y + math.abs(font_min) * inv_scale
 	end
 
 	return offset
@@ -1398,8 +1424,8 @@ UIPasses.text_area_chat = {
 								formatted_emojis[row] = formatted_emojis[row] or {}
 								formatted_emojis[row][#formatted_emojis[row] + 1] = {
 									data = emoji_data,
-									offset_x = (width + spacing_width*0.5) - ui_style.emoji_size[1]*0.5,
-									offset_y = -ui_style.emoji_size[2]*0.3,
+									offset_x = (width + spacing_width * 0.5) - ui_style.emoji_size[1] * 0.5,
+									offset_y = -ui_style.emoji_size[2] * 0.3,
 									size = ui_style.emoji_size
 								}
 								local cropped_msg = string.gsub(split_msg, indicator, blank_area, 1)
@@ -1458,8 +1484,8 @@ UIPasses.text_area_chat = {
 		end
 
 		local spacing = ui_style.spacing or 0
-		local num_texts_to_draw = math.floor(size[2]/(ui_style.font_size + spacing))
-		local text_height = num_texts_to_draw*ui_style.font_size
+		local num_texts_to_draw = math.floor(size[2] / (ui_style.font_size + spacing))
+		local text_height = num_texts_to_draw * ui_style.font_size
 		local allowed_overlap = 12
 
 		if size[2] + allowed_overlap < text_height then
@@ -1472,19 +1498,19 @@ UIPasses.text_area_chat = {
 		if vertical_alignment == "top" then
 			position = position + Vector3(0, size[2], 0)
 		elseif vertical_alignment == "bottom" then
-			local text_area_draw_height = (ui_style.font_size + spacing)*(num_texts_to_draw - 1)
+			local text_area_draw_height = (ui_style.font_size + spacing) * (num_texts_to_draw - 1)
 			position = position + Vector3(0, text_area_draw_height - minimum[2], 0)
 		end
 
-		local percent_num_texts_to_draw = num_texts_to_draw/num_texts
+		local percent_num_texts_to_draw = num_texts_to_draw / num_texts
 		local text_start_offset = ui_content.text_start_offset
-		local num_texts_to_scale_on = (percent_num_texts_to_draw - 1)*num_texts
+		local num_texts_to_scale_on = (1 - percent_num_texts_to_draw) * num_texts
 		local start_index, discrepancy, _ = nil
 
 		if PLATFORM == "xb1" then
-			_, start_index = math.modf((num_texts_to_scale_on + 1)*text_start_offset)
+			_, start_index = math.modf((1 + num_texts_to_scale_on) * text_start_offset)
 		else
-			start_index, discrepancy = math.modf((num_texts_to_scale_on + 1)*text_start_offset)
+			start_index, discrepancy = math.modf((1 + num_texts_to_scale_on) * text_start_offset)
 		end
 
 		local stop_index = math.min(num_texts, start_index + num_texts_to_draw)
@@ -1590,7 +1616,7 @@ UIPasses.text = {
 		end
 
 		if ui_style.upper_case then
-			text = string.upper(text)
+			text = TextToUpper(text)
 		end
 
 		local widget_scale = nil
@@ -1630,23 +1656,23 @@ UIPasses.text = {
 			local max_texts = ui_content.max_texts or #texts
 			local num_texts = math.min(#texts - text_start_index - 1, max_texts)
 			local inv_scale = RESOLUTION_LOOKUP.inv_scale
-			local full_font_height = (font_max + math.abs(font_min))*inv_scale
+			local full_font_height = (font_max + math.abs(font_min)) * inv_scale
 			local text_offset = Vector3(0, (ui_style.grow_downward and full_font_height) or -full_font_height, 0)
 
 			if ui_style.dynamic_height then
-				size[2] = num_texts*full_font_height
+				size[2] = num_texts * full_font_height
 				position.y = position.y - size[2]
 			end
 
 			local last_line_color = ui_style.last_line_color
 
 			if ui_style.vertical_alignment == "top" then
-				position = position + Vector3(0, size[2] - font_max*inv_scale, 0)
+				position = position + Vector3(0, size[2] - font_max * inv_scale, 0)
 			elseif ui_style.vertical_alignment == "center" then
-				position[2] = position[2] + (size[2] - full_font_height*0.5)/2
-				position[2] = position[2] + math.max(num_texts - 1, 0)*0.5*full_font_height
+				position[2] = position[2] + (size[2] - full_font_height * 0.5) / 2
+				position[2] = position[2] + math.max(num_texts - 1, 0) * 0.5 * full_font_height
 			else
-				position = position + Vector3(0, (num_texts - 1)*full_font_height + math.abs(font_min)*inv_scale, 0)
+				position = position + Vector3(0, (num_texts - 1) * full_font_height + math.abs(font_min) * inv_scale, 0)
 			end
 
 			if ui_style.horizontal_alignment == "center" then
@@ -1656,7 +1682,7 @@ UIPasses.text = {
 					text = texts[i - 1 + text_start_index]
 					local text_length = (text and UTF8Utils.string_length(text)) or 0
 					local width, height, min = UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
-					local alignment_offset = Vector3(size[1]/2 - width/2, 0, 0)
+					local alignment_offset = Vector3(size[1] / 2 - width / 2, 0, 0)
 					local color = ui_style.text_color
 
 					if ui_style.line_colors and ui_style.line_colors[i] then
@@ -1749,8 +1775,8 @@ UIPasses.text = {
 				position[3] = position[3] - 1
 				position[2] = (position[2] + full_font_height + font_min) - padding_y
 				position[1] = position[1] - 2 - padding_x
-				size[1] = size[1] + padding_x*2
-				size[2] = num_texts*full_font_height + padding_y*2
+				size[1] = size[1] + padding_x * 2
+				size[2] = num_texts * full_font_height + padding_y * 2
 
 				if ui_style.masked then
 					UIRenderer_draw_texture(ui_renderer, "rect_masked", position, size, ui_style.rect_color, ui_style.masked, ui_style and ui_style.saturated)
@@ -1842,13 +1868,13 @@ UIPasses.text = {
 local function draw_lorebook_texts(initial_retained_id, section, ui_renderer, position, font_material, font_size, font_name, text_color)
 	local width = section.width
 	local texts = section.texts
-	local num_texts = #texts/3
+	local num_texts = #texts / 3
 	local retained_id = initial_retained_id
 
 	for i = 1, num_texts, 1 do
-		local text = texts[i*3 - 2]
-		local justified = texts[i*3 - 1]
-		local new_position = position + texts[i*3]:unbox()
+		local text = texts[i * 3 - 2]
+		local justified = texts[i * 3 - 1]
+		local new_position = position + texts[i * 3]:unbox()
 
 		if justified then
 			retained_id = UIRenderer.draw_justified_text(ui_renderer, text, font_material, font_size, font_name, new_position, text_color, retained_id, width)
@@ -2002,14 +2028,14 @@ UIPasses.text_positive_reinforcement = {
 
 		local inv_scale = RESOLUTION_LOOKUP.inv_scale
 		local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
-		local full_font_height = (font_max + math.abs(font_min))*inv_scale
+		local full_font_height = (font_max + math.abs(font_min)) * inv_scale
 
 		if ui_style.vertical_alignment == "top" then
-			position = position + Vector3(0, size[2] - font_max*inv_scale, 0)
+			position = position + Vector3(0, size[2] - font_max * inv_scale, 0)
 		elseif ui_style.vertical_alignment == "center" then
-			position[2] = position[2] + (size[2] - full_font_height*0.5)/2
+			position[2] = position[2] + (size[2] - full_font_height * 0.5) / 2
 		else
-			position = position + Vector3(0, math.abs(font_min)*inv_scale, 0)
+			position = position + Vector3(0, math.abs(font_min) * inv_scale, 0)
 		end
 
 		local color_text = ui_style.text_color
@@ -2066,13 +2092,13 @@ UIPasses.multiple_texts = {
 
 			if axis == 2 then
 				if ui_style.horizontal_alignment == "center" then
-					alignment_offset[1] = size[1]*0.5 - width*0.5
+					alignment_offset[1] = size[1] * 0.5 - width * 0.5
 				elseif ui_style.horizontal_alignment == "right" then
 					alignment_offset[1] = size[1] - width
 				end
 
 				if ui_style.vertical_alignment == "center" then
-					alignment_offset[2] = size[2]*0.5 - height*0.5
+					alignment_offset[2] = size[2] * 0.5 - height * 0.5
 				elseif ui_style.vertical_alignment == "top" then
 					alignment_offset[2] = size[2] - height
 				end
@@ -2082,13 +2108,13 @@ UIPasses.multiple_texts = {
 				end
 
 				if ui_style.horizontal_alignment == "center" then
-					alignment_offset[1] = size[1]*0.5 - width*0.5
+					alignment_offset[1] = size[1] * 0.5 - width * 0.5
 				elseif ui_style.horizontal_alignment == "right" then
 					alignment_offset[1] = size[1] - width
 				end
 
 				if ui_style.vertical_alignment == "center" then
-					alignment_offset[2] = size[2]*0.5 - height*0.5
+					alignment_offset[2] = size[2] * 0.5 - height * 0.5
 				elseif ui_style.vertical_alignment == "top" then
 					alignment_offset[2] = size[2] - height
 				end
@@ -2156,7 +2182,7 @@ UIPasses.viewport = {
 
 		local fov = style.fov or 65
 
-		Camera.set_vertical_fov(camera, (math.pi*fov)/180)
+		Camera.set_vertical_fov(camera, (math.pi * fov) / 180)
 
 		local ui_renderer = nil
 
@@ -2190,11 +2216,11 @@ UIPasses.viewport = {
 		local resx = RESOLUTION_LOOKUP.res_w
 		local resy = RESOLUTION_LOOKUP.res_h
 		local viewport_size = Vector3.zero()
-		viewport_size.x = scaled_size.x/resx
-		viewport_size.y = scaled_size.y/resy
+		viewport_size.x = scaled_size.x / resx
+		viewport_size.y = scaled_size.y / resy
 		local viewport_position = Vector3.zero()
-		viewport_position.x = scaled_position.x/resx
-		viewport_position.y = scaled_position.y/resy - 1 - viewport_size.y
+		viewport_position.x = scaled_position.x / resx
+		viewport_position.y = 1 - scaled_position.y / resy - viewport_size.y
 
 		if Viewport.get_data(pass_data.viewport, "initialize") then
 			Viewport.set_data(pass_data.viewport, "initialize", false)
@@ -2208,7 +2234,7 @@ UIPasses.viewport = {
 
 			local multiplier = (splitscreen and 0.5) or 1
 
-			Viewport.set_rect(pass_data.viewport, viewport_position.x*multiplier, viewport_position.y*multiplier, viewport_size.x*multiplier, viewport_size.y*multiplier)
+			Viewport.set_rect(pass_data.viewport, viewport_position.x * multiplier, viewport_position.y * multiplier, viewport_size.x * multiplier, viewport_size.y * multiplier)
 
 			pass_data.viewport_rect_pos_x = viewport_position.x
 			pass_data.viewport_rect_pos_y = viewport_position.y
@@ -2228,20 +2254,20 @@ UIPasses.viewport = {
 		local resx = RESOLUTION_LOOKUP.res_w
 		local resy = RESOLUTION_LOOKUP.res_h
 		local camera_space_position = Vector3.zero()
-		local aspect_ratio = resx/resy
+		local aspect_ratio = resx / resy
 		local default_aspect = 1.7777777777777777
 
 		if aspect_ratio < default_aspect then
-			local scale_x = screen_position.x/resx
-			local width = resy/9*16
-			camera_space_position.x = resx*0.5 - width*0.5 + width*scale_x
-			local scale_y = screen_position.y/resy
-			local height = pass_data.size_scale_x*resy
-			camera_space_position.y = resy*0.5 - height*0.5 + height*scale_y
+			local scale_x = screen_position.x / resx
+			local width = resy / 9 * 16
+			camera_space_position.x = resx * 0.5 - width * 0.5 + width * scale_x
+			local scale_y = screen_position.y / resy
+			local height = pass_data.size_scale_x * resy
+			camera_space_position.y = resy * 0.5 - height * 0.5 + height * scale_y
 		elseif default_aspect < aspect_ratio then
-			local scale_x = screen_position.x/resx
-			local width = pass_data.size_scale_y*resx
-			camera_space_position.x = resx*0.5 - width*0.5 + width*scale_x
+			local scale_x = screen_position.x / resx
+			local width = pass_data.size_scale_y * resx
+			camera_space_position.x = resx * 0.5 - width * 0.5 + width * scale_x
 			camera_space_position.y = screen_position.y
 		else
 			camera_space_position.x = screen_position.x
@@ -2331,8 +2357,8 @@ UIPasses.drag = {
 
 			assert(drag_texture_size, "Missing texture_size")
 
-			drag_position_table[1] = scaled_cursor.x - drag_texture_size[1]*0.5
-			drag_position_table[2] = scaled_cursor.y - drag_texture_size[2]*0.5
+			drag_position_table[1] = scaled_cursor.x - drag_texture_size[1] * 0.5
+			drag_position_table[2] = scaled_cursor.y - drag_texture_size[2] * 0.5
 			drag_position_table[3] = 999
 
 			UIRenderer_draw_texture(ui_renderer, ui_content[pass_definition.texture_id], drag_position_table, drag_texture_size, nil, nil, false)
@@ -2386,9 +2412,9 @@ UIPasses.gamepad_cursor = {
 		end
 
 		if script_data.ui_debug_hover then
-			local cursor_size = Vector2(GAMEPAD_CURSOR_SIZE*0.5, GAMEPAD_CURSOR_SIZE*0.5)
+			local cursor_size = Vector2(GAMEPAD_CURSOR_SIZE * 0.5, GAMEPAD_CURSOR_SIZE * 0.5)
 			local cursor_position = Vector3(cursor_position_table[1], cursor_position_table[2], cursor_position_table[3])
-			local pos = cursor_position + cursor_size*0.5
+			local pos = cursor_position + cursor_size * 0.5
 
 			UIRenderer.draw_rect(ui_renderer, {
 				pos[1],
@@ -2432,7 +2458,7 @@ UIPasses.hover = {
 		local cursor = (input_service and input_service.has(input_service, "cursor") and input_service.get(input_service, "cursor")) or NilCursor
 
 		if ui_content.hover_type == "circle" then
-			local half_size = (ui_renderer.get_scaling(ui_renderer)*size)/2
+			local half_size = (ui_renderer.get_scaling(ui_renderer) * size) / 2
 			local pos_center = Vector3Aux.flat(ScaleVectorToResolution(position)) + half_size
 			local square_distance = Vector3.distance_squared(Vector3Aux.unbox(cursor), pos_center)
 		else
@@ -2514,12 +2540,12 @@ UIPasses.generic_tooltip = {
 		local res_w = RESOLUTION_LOOKUP.res_w
 		local res_h = RESOLUTION_LOOKUP.res_h
 
-		if res_h*0.5 < position[2] + parent_size[2]*0.5 then
+		if res_h * 0.5 < position[2] + parent_size[2] * 0.5 then
 			draw_downwards = true
 			position[2] = position[2] + parent_size[2]
 		end
 
-		if res_w*0.5 < position[1] + parent_size[1]*0.5 then
+		if res_w * 0.5 < position[1] + parent_size[1] * 0.5 then
 			position[1] = position[1] - size[1] - 5
 		else
 			position[1] = position[1] + parent_size[1] + 5
@@ -2614,7 +2640,7 @@ UIPasses.additional_option_tooltip = {
 			pass_definition.alpha_multiplier = 0
 		elseif alpha_progress then
 			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
-			local alpha_progress = math.min(alpha_progress + dt*tooltip_fade_in_speed, 1)
+			local alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
 			pass_definition.alpha_multiplier = math.easeOutCubic(alpha_progress)
 
 			if alpha_progress == 1 then
@@ -2629,7 +2655,13 @@ UIPasses.additional_option_tooltip = {
 		local draw_downwards = true
 		local res_w = RESOLUTION_LOOKUP.res_w
 		local res_h = RESOLUTION_LOOKUP.res_h
-		position[1] = position[1] - size[1]
+
+		if ui_style.horizontal_alignment == "center" then
+			position[1] = (position[1] + parent_size[1] / 2) - size[1] / 2
+		else
+			position[1] = position[1] - size[1]
+		end
+
 		local tooltip_total_height = 0
 		local passes = pass_definition.passes
 		local draw = false
@@ -2652,8 +2684,14 @@ UIPasses.additional_option_tooltip = {
 
 		local scale = UIResolutionScale()
 		local scale_inversed = UIInverseResolutionScale()
-		local actual_screen_y_position = position[2]*scale
-		position[2] = position[2] + tooltip_total_height
+		local actual_screen_y_position = position[2] * scale
+
+		if ui_style.vertical_alignment == "top" then
+			position[2] = position[2] + parent_size[2] + tooltip_total_height
+		else
+			position[2] = position[2] + tooltip_total_height
+		end
+
 		local position_x = position[1]
 		local position_y = position[2]
 		local position_z = position[3]
@@ -2730,7 +2768,7 @@ UIPasses.level_tooltip = {
 			pass_definition.alpha_multiplier = 0
 		elseif alpha_progress then
 			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
-			local alpha_progress = math.min(alpha_progress + dt*tooltip_fade_in_speed, 1)
+			local alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
 			pass_definition.alpha_multiplier = math.easeOutCubic(alpha_progress)
 
 			if alpha_progress == 1 then
@@ -2745,7 +2783,7 @@ UIPasses.level_tooltip = {
 		local draw_downwards = true
 		local res_w = RESOLUTION_LOOKUP.res_w
 		local res_h = RESOLUTION_LOOKUP.res_h
-		position[1] = (position[1] + parent_size[1]/2) - size[1]/2
+		position[1] = (position[1] + parent_size[1] / 2) - size[1] / 2
 		local tooltip_total_height = 0
 		local passes = pass_definition.passes
 		local draw = false
@@ -2768,7 +2806,7 @@ UIPasses.level_tooltip = {
 
 		local scale = UIResolutionScale()
 		local scale_inversed = UIInverseResolutionScale()
-		local actual_screen_y_position = position[2]*scale
+		local actual_screen_y_position = position[2] * scale
 		position[2] = position[2] + parent_size[2] + tooltip_total_height
 		local position_x = position[1]
 		local position_y = position[2]
@@ -2826,10 +2864,11 @@ UIPasses.hero_power_tooltip = {
 		}
 		pass_definition.alpha_multiplier = 1
 
-		return nil
+		return {}
 	end,
 	update = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, input_service, dt, ui_style_global, visible)
 		if not visible then
+			pass_data.player = nil
 			pass_definition.alpha_progress = 0
 			pass_definition.alpha_wait_time = UISettings.tooltip_wait_duration
 		end
@@ -2837,6 +2876,10 @@ UIPasses.hero_power_tooltip = {
 		return 
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, parent_size, input_service, dt, ui_style_global)
+		if not pass_data.player then
+			pass_data.player = Managers.player:local_player()
+		end
+
 		local alpha_wait_time = pass_definition.alpha_wait_time
 		local alpha_progress = pass_definition.alpha_progress
 
@@ -2852,7 +2895,7 @@ UIPasses.hero_power_tooltip = {
 			pass_definition.alpha_multiplier = 0
 		elseif alpha_progress then
 			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
-			local alpha_progress = math.min(alpha_progress + dt*tooltip_fade_in_speed, 1)
+			local alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
 			pass_definition.alpha_multiplier = math.easeOutCubic(alpha_progress)
 
 			if alpha_progress == 1 then
@@ -2867,7 +2910,6 @@ UIPasses.hero_power_tooltip = {
 		local draw_downwards = true
 		local res_w = RESOLUTION_LOOKUP.res_w
 		local res_h = RESOLUTION_LOOKUP.res_h
-		position[1] = (position[1] + parent_size[1]/2) - size[1]/2
 		local tooltip_total_height = 0
 		local passes = pass_definition.passes
 		local draw = false
@@ -2880,6 +2922,7 @@ UIPasses.hero_power_tooltip = {
 		end
 
 		frame_margin = end_pass.data.frame_margin or 0
+		position[1] = position[1] + parent_size[1] + frame_margin
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
@@ -2890,8 +2933,8 @@ UIPasses.hero_power_tooltip = {
 
 		local scale = UIResolutionScale()
 		local scale_inversed = UIInverseResolutionScale()
-		local actual_screen_y_position = position[2]*scale
-		position[2] = position[2] + parent_size[2] + tooltip_total_height
+		local actual_screen_y_position = position[2] * scale
+		position[2] = position[2] + tooltip_total_height
 		local position_x = position[1]
 		local position_y = position[2]
 		local position_z = position[3]
@@ -2968,7 +3011,7 @@ UIPasses.option_tooltip = {
 			pass_definition.alpha_multiplier = 0
 		elseif alpha_progress then
 			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
-			local alpha_progress = math.min(alpha_progress + dt*tooltip_fade_in_speed, 1)
+			local alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
 			pass_definition.alpha_multiplier = math.easeOutCubic(alpha_progress)
 
 			if alpha_progress == 1 then
@@ -3005,7 +3048,7 @@ UIPasses.option_tooltip = {
 
 		local scale = UIResolutionScale()
 		local scale_inversed = UIInverseResolutionScale()
-		local actual_screen_y_position = position[2]*scale
+		local actual_screen_y_position = position[2] * scale
 		position[2] = position[2] + parent_size[2] + tooltip_total_height
 		local position_x = position[1]
 		local position_y = position[2]
@@ -3140,9 +3183,9 @@ UIPasses.item_tooltip = {
 		local tooltip_wait_duration = UISettings.tooltip_wait_duration
 		pass_definition.alpha_wait_times = {
 			tooltip_wait_duration,
-			tooltip_wait_duration*2,
-			tooltip_wait_duration*2,
-			tooltip_wait_duration*2
+			tooltip_wait_duration * 2,
+			tooltip_wait_duration * 2,
+			tooltip_wait_duration * 2
 		}
 		pass_definition.tooltip_sizes = {}
 
@@ -3150,6 +3193,7 @@ UIPasses.item_tooltip = {
 	end,
 	update = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, input_service, dt, ui_style_global, visible)
 		if not visible then
+			pass_data.player = nil
 			local tooltip_wait_duration = UISettings.tooltip_wait_duration
 			pass_definition.alpha_progress = 0
 			pass_definition.alpha_wait_time = tooltip_wait_duration
@@ -3158,7 +3202,7 @@ UIPasses.item_tooltip = {
 
 			if alpha_wait_times then
 				for i = 1, 4, 1 do
-					alpha_wait_times[i] = tooltip_wait_duration*2
+					alpha_wait_times[i] = tooltip_wait_duration * 2
 					items_alpha_progress[i] = 0
 				end
 			end
@@ -3167,6 +3211,10 @@ UIPasses.item_tooltip = {
 		return 
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, parent_size, input_service, dt, ui_style_global)
+		if not pass_data.player then
+			pass_data.player = Managers.player:local_player()
+		end
+
 		local preview_item = ui_content[pass_definition.item_id]
 
 		if not preview_item then
@@ -3187,13 +3235,15 @@ UIPasses.item_tooltip = {
 
 			if slot_names then
 				local slot_name = slot_names[1]
-				local local_player = Managers.player:local_player()
+				local player = pass_data.player
 
-				if local_player then
-					local career_name = local_player.career_name(local_player)
+				if player then
 					local backend_items = Managers.backend:get_interface("items")
-					local item_filter = "equipped_by == " .. career_name .. " and slot_type == " .. slot_type
-					local equipped_items = backend_items.get_filtered_items(backend_items, item_filter)
+					local item_filter = "equipped_by_current_career and slot_type == " .. slot_type
+					local params = {
+						player = player
+					}
+					local equipped_items = backend_items.get_filtered_items(backend_items, item_filter, params)
 
 					for _, item in ipairs(equipped_items) do
 						if item.backend_id ~= preview_item_backend_id then
@@ -3212,7 +3262,7 @@ UIPasses.item_tooltip = {
 		local res_h = RESOLUTION_LOOKUP.res_h
 		local direction = nil
 
-		if res_w*0.5 < (position[1] + parent_size[1]*0.5)*scale then
+		if res_w * 0.5 < (position[1] + parent_size[1] * 0.5) * scale then
 			position[1] = position[1] - size[1] - 5
 			direction = -1
 		else
@@ -3287,7 +3337,7 @@ UIPasses.item_tooltip = {
 
 				if alpha_progress then
 					local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
-					local alpha_progress = math.min(alpha_progress + dt*tooltip_fade_in_speed, 1)
+					local alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
 					pass_definition.alpha_multiplier = math.easeOutCubic(alpha_progress)
 
 					if alpha_progress == 1 then
@@ -3300,11 +3350,11 @@ UIPasses.item_tooltip = {
 				end
 
 				if first_item then
-					position[2] = (position[2] + tooltip_total_height) - frame_margin/2
-					local actual_screen_y_position = position[2]*scale + top_spacing
+					position[2] = (position[2] + tooltip_total_height) - frame_margin / 2
+					local actual_screen_y_position = position[2] * scale + top_spacing
 
 					if res_h < actual_screen_y_position then
-						position[2] = position[2] - (actual_screen_y_position - res_h)*scale_inversed
+						position[2] = position[2] - (actual_screen_y_position - res_h) * scale_inversed
 					end
 
 					wanted_max_height = position[2]
@@ -3312,8 +3362,8 @@ UIPasses.item_tooltip = {
 
 				if not first_item then
 					if has_dubble_compares and tooltip_sizes[2] + tooltip_sizes[3] < res_h then
-						position[1] = start_position_x + size[1]*direction
-						local tooltip_bottom_y_position = wanted_max_height - (tooltip_sizes[2] + tooltip_sizes[3] + equipped_panel_height*2)
+						position[1] = start_position_x + size[1] * direction
+						local tooltip_bottom_y_position = wanted_max_height - (tooltip_sizes[2] + tooltip_sizes[3] + equipped_panel_height * 2)
 
 						if tooltip_bottom_y_position < 0 then
 							local new_wanted_height = wanted_max_height + math.abs(tooltip_bottom_y_position)
@@ -3326,10 +3376,10 @@ UIPasses.item_tooltip = {
 						elseif index == 2 then
 							position[2] = wanted_max_height
 						else
-							position[2] = wanted_max_height - (tooltip_sizes[2] + equipped_panel_height*2)
+							position[2] = wanted_max_height - (tooltip_sizes[2] + equipped_panel_height * 2)
 						end
 					else
-						position[1] = position[1] + size[1]*direction
+						position[1] = position[1] + size[1] * direction
 						local tooltip_bottom_y_position = wanted_max_height - tooltip_total_height
 
 						if tooltip_bottom_y_position < 0 then
@@ -3341,7 +3391,7 @@ UIPasses.item_tooltip = {
 				end
 
 				local position_x = position[1]
-				local position_y = position[2] + frame_margin/2*scale
+				local position_y = position[2] + frame_margin / 2 * scale
 				local position_z = position[3]
 				draw = true
 
@@ -3425,7 +3475,7 @@ UIPasses.talent_tooltip = {
 			pass_definition.alpha_multiplier = 0
 		elseif alpha_progress then
 			local tooltip_fade_in_speed = UISettings.tooltip_fade_in_speed
-			local alpha_progress = math.min(alpha_progress + dt*tooltip_fade_in_speed, 1)
+			local alpha_progress = math.min(alpha_progress + dt * tooltip_fade_in_speed, 1)
 			pass_definition.alpha_multiplier = math.easeOutCubic(alpha_progress)
 
 			if alpha_progress == 1 then
@@ -3440,7 +3490,7 @@ UIPasses.talent_tooltip = {
 		local draw_downwards = true
 		local res_w = RESOLUTION_LOOKUP.res_w
 		local res_h = RESOLUTION_LOOKUP.res_h
-		position[1] = (position[1] + parent_size[1]/2) - size[1]/2
+		position[1] = (position[1] + parent_size[1] / 2) - size[1] / 2
 		local tooltip_total_height = 0
 		local passes = pass_definition.passes
 		local draw = false
@@ -3463,7 +3513,7 @@ UIPasses.talent_tooltip = {
 
 		local scale = UIResolutionScale()
 		local scale_inversed = UIInverseResolutionScale()
-		local actual_screen_y_position = position[2]*scale
+		local actual_screen_y_position = position[2] * scale
 		position[2] = position[2] + parent_size[2] + tooltip_total_height
 		local position_x = position[1]
 		local position_y = position[2]
@@ -3545,7 +3595,7 @@ UIPasses.tooltip_text = {
 		local text_start_index = ui_content.text_start_index or 1
 		local max_texts = ui_content.max_texts or #texts
 		local num_texts = math.min(#texts - text_start_index - 1, max_texts)
-		local full_font_height = (font_max + math.abs(font_min))*RESOLUTION_LOOKUP.inv_scale
+		local full_font_height = (font_max + math.abs(font_min)) * RESOLUTION_LOOKUP.inv_scale
 		local text_offset = Vector3(0, (ui_style.grow_downward and full_font_height) or -full_font_height, 0)
 		local fixed_position = ui_style.fixed_position
 
@@ -3562,7 +3612,7 @@ UIPasses.tooltip_text = {
 		temp_cursor_pos[1] = temp_cursor_pos[1] + ((cursor_offset and cursor_offset[1]) or 25)
 		temp_cursor_pos[2] = temp_cursor_pos[2] - ((cursor_offset and cursor_offset[2]) or 15)
 		local cursor_position = UIInverseScaleVectorToResolution(temp_cursor_pos)
-		tooltip_size[2] = full_font_height*num_texts
+		tooltip_size[2] = full_font_height * num_texts
 		tooltip_size[1] = 0
 
 		for i = 1, num_texts, 1 do
@@ -3606,8 +3656,8 @@ UIPasses.tooltip_text = {
 		position[3] = position[3] - 1
 		position[2] = (position[2] + full_font_height + font_min) - padding_y
 		position[1] = position[1] - 2 - padding_x
-		tooltip_size[1] = tooltip_size[1] + padding_x*2
-		tooltip_size[2] = tooltip_size[2] + padding_y*2
+		tooltip_size[1] = tooltip_size[1] + padding_x * 2
+		tooltip_size[2] = tooltip_size[2] + padding_y * 2
 
 		UIRenderer.draw_rounded_rect(ui_renderer, position, tooltip_size, 5, tooltip_background_color)
 
@@ -3657,9 +3707,9 @@ UIPasses.rect_text = {
 		local text_start_index = ui_content.text_start_index or 1
 		local max_texts = ui_content.max_texts or #texts
 		local num_texts = math.min(#texts - text_start_index - 1, max_texts)
-		local full_font_height = (font_max + math.abs(font_min))*RESOLUTION_LOOKUP.inv_scale
+		local full_font_height = (font_max + math.abs(font_min)) * RESOLUTION_LOOKUP.inv_scale
 		local text_offset = Vector3(0, (ui_style.grow_downward and full_font_height) or -full_font_height, 0)
-		rect_text_size[2] = full_font_height*num_texts
+		rect_text_size[2] = full_font_height * num_texts
 		rect_text_size[1] = 0
 
 		if ui_style.static_rect_width then
@@ -3682,7 +3732,7 @@ UIPasses.rect_text = {
 				text = texts[i - 1 + text_start_index]
 				local text_length = (text and UTF8Utils.string_length(text)) or 0
 				local width, height, min = UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
-				local alignment_offset = Vector3(size[1]/2 - width/2, 0, 0)
+				local alignment_offset = Vector3(size[1] / 2 - width / 2, 0, 0)
 				local line_color_override = nil
 
 				if ui_style.color_override then
@@ -3698,7 +3748,7 @@ UIPasses.rect_text = {
 				line_start_index = line_start_index + text_length + 1
 			end
 
-			position[1] = position[1] - rect_text_size[1]*0.5
+			position[1] = position[1] - rect_text_size[1] * 0.5
 		else
 			for i = 1, num_texts, 1 do
 				local text_line = texts[i - 1 + text_start_index]
@@ -3715,10 +3765,10 @@ UIPasses.rect_text = {
 		local padding_x = 4
 		local padding_y = 2
 		position[3] = position[3] - 1
-		position[2] = position[2] + font_min*RESOLUTION_LOOKUP.inv_scale
+		position[2] = position[2] + font_min * RESOLUTION_LOOKUP.inv_scale
 		position[1] = position[1] - 2 - padding_x
-		rect_text_size[1] = rect_text_size[1] + padding_x*2
-		rect_text_size[2] = rect_text_size[2] + padding_y*2
+		rect_text_size[1] = rect_text_size[1] + padding_x * 2
+		rect_text_size[2] = rect_text_size[2] + padding_y * 2
 
 		if ui_style.masked then
 			UIRenderer_draw_texture(ui_renderer, "rect_masked", position, rect_text_size, ui_style.rect_color, ui_style.masked, ui_style and ui_style.saturated)
@@ -3760,13 +3810,13 @@ UIPasses.hotspot = {
 				is_hover = false
 			else
 				local scale = RESOLUTION_LOOKUP.scale
-				cursor_position[1] = cursor_position[1]*scale
-				cursor_position[2] = cursor_position[2]*scale
-				local cursor_size = Vector2(GAMEPAD_CURSOR_SIZE*0.5, GAMEPAD_CURSOR_SIZE*0.5)
-				is_hover = math.box_overlap_box(cursor_position - cursor_size*0.5, cursor_size, pixel_pos, pixel_size)
+				cursor_position[1] = cursor_position[1] * scale
+				cursor_position[2] = cursor_position[2] * scale
+				local cursor_size = Vector2(GAMEPAD_CURSOR_SIZE * 0.5, GAMEPAD_CURSOR_SIZE * 0.5)
+				is_hover = math.box_overlap_box(cursor_position - cursor_size * 0.5, cursor_size, pixel_pos, pixel_size)
 			end
 		elseif hover_type == "circle" then
-			local half_size = pixel_size/2
+			local half_size = pixel_size / 2
 			local pos_center = Vector3.flat(pixel_pos) + half_size
 			local square_distance = Vector3.distance_squared(cursor_position, pos_center)
 		else
@@ -4179,13 +4229,17 @@ UIPasses.item_presentation = {
 		}
 		pass_definition.alpha_multiplier = 1
 
-		return nil
+		return {}
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global)
 		local item = ui_content[pass_definition.item_id]
 
 		if not item then
 			return 
+		end
+
+		if not pass_data.player then
+			pass_data.player = Managers.player:local_player()
 		end
 
 		size[2] = 0
@@ -4213,11 +4267,11 @@ UIPasses.item_presentation = {
 		end
 
 		if ui_style.vertical_alignment == "center" then
-			position[2] = (position[2] + tooltip_total_height/2) - frame_margin/2
+			position[2] = (position[2] + tooltip_total_height / 2) - frame_margin / 2
 		end
 
 		local position_x = position[1]
-		local position_y = position[2] + frame_margin/2
+		local position_y = position[2] + frame_margin / 2
 		local position_z = position[3]
 		draw = true
 

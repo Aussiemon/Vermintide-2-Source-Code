@@ -234,9 +234,9 @@ QuestManager._calculate_contract_session_progress = function (self, contract, pa
 			local join_percent = statistics_db.get_stat(statistics_db, stats_id, "level_progress_on_join")
 			local progress_percent = statistics_db.get_stat(statistics_db, "session", "level_progress") - join_percent
 			local allowed_damage = 300
-			local penalty = math.max(dmg_taken/allowed_damage, 1)
+			local penalty = math.max(dmg_taken / allowed_damage, 1)
 
-			return math.floor(progress_percent/penalty)
+			return math.floor(progress_percent / penalty)
 		elseif task_type == "avoid_deaths_team" then
 			local allowed_deaths = 0
 			local starting_points = 4
@@ -251,9 +251,9 @@ QuestManager._calculate_contract_session_progress = function (self, contract, pa
 				damage = damage + statistics_db.get_stat(statistics_db, "session", "damage_taken_per_breed", breed_name)
 			end
 
-			local penalty = math.max(damage/allowed_damage, 1)
+			local penalty = math.max(damage / allowed_damage, 1)
 
-			return math.floor(penalty/100)
+			return math.floor(100 / penalty)
 		elseif task_type == "avoid_globadier_damage_individual" then
 			local local_player = Managers.player:local_player()
 			local stats_id = local_player.stats_id(local_player)
@@ -261,9 +261,9 @@ QuestManager._calculate_contract_session_progress = function (self, contract, pa
 			local join_percent = statistics_db.get_stat(statistics_db, stats_id, "level_progress_on_join")
 			local progress_percent = statistics_db.get_stat(statistics_db, "session", "level_progress") - join_percent
 			local allowed_damage = 75
-			local penalty = math.max(dmg_taken/allowed_damage, 1)
+			local penalty = math.max(dmg_taken / allowed_damage, 1)
 
-			return math.floor(progress_percent/penalty)
+			return math.floor(progress_percent / penalty)
 		end
 
 		fassert(false, "trying to calculate session progress on a contract with an unsuported task: %s", task_type)

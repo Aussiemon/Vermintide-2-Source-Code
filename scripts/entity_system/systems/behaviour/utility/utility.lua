@@ -9,8 +9,8 @@ Utility.GetUtilityValueFromSpline = function (spline, norm_value)
 			local y1 = spline[i + 1]
 			local x2 = spline[i - 2]
 			local y2 = spline[i - 1]
-			local m = (y1 - y2)/(x1 - x2)
-			local y = m*(norm_value - x1) + y1
+			local m = (y1 - y2) / (x1 - x2)
+			local y = m * (norm_value - x1) + y1
 
 			return y
 		end
@@ -53,11 +53,11 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 				end
 			else
 				min_value = consideration.min_value or 0
-				local norm_value = math.clamp((blackboard_value - min_value)/(consideration.max_value - min_value), 0, 1)
+				local norm_value = math.clamp((blackboard_value - min_value) / (consideration.max_value - min_value), 0, 1)
 				utility = get_utility_from_spline(consideration.spline, norm_value)
 			end
 
-			total_utility = total_utility*utility
+			total_utility = total_utility * utility
 
 			if not from_draw_ai_behavior then
 				AiUtils.print("ai_debug_utility_considerations", "------------> action:", action_name, " consideration:", name, " utility:", utilily)
@@ -65,7 +65,7 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 		end
 	end
 
-	total_utility = total_utility*breed_action.action_weight
+	total_utility = total_utility * breed_action.action_weight
 
 	return total_utility
 end

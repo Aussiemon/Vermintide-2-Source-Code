@@ -383,8 +383,8 @@ UIFrameSettings = {
 		texture = "item_icon_hover",
 		outer_frame = true,
 		texture_size = {
-			152,
-			152
+			128,
+			128
 		},
 		texture_sizes = {
 			corner = {
@@ -531,8 +531,8 @@ UIFrameSettings = {
 	channel_selected_01 = {
 		texture = "item_icon_hover",
 		texture_size = {
-			152,
-			152
+			128,
+			128
 		},
 		texture_sizes = {
 			corner = {

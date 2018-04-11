@@ -39,21 +39,21 @@ FunctionCallProfiler.render = function ()
 	local gui = FunctionCallProfiler.gui
 	local render_frame_index = FunctionCallProfiler.current_frame - 1
 	local frames = FunctionCallProfiler.frames
-	local start_x = res_x/2
-	local start_y = res_y/2
+	local start_x = res_x / 2
+	local start_y = res_y / 2
 	local pos = Vector3(start_x, start_y - font_size, 200)
 
 	for i = 1, num_frames, 1 do
-		render_frame_index = render_frame_index%num_frames + 1
+		render_frame_index = render_frame_index % num_frames + 1
 		local frame = frames[render_frame_index]
 
 		for frame_name, count in pairs(frame) do
 			Gui.text(gui, frame_name .. "    " .. tostring(count), font_mtrl, font_size, font, pos, key_color)
 
-			pos.y = pos.y - font_size*1.5
+			pos.y = pos.y - font_size * 1.5
 		end
 
-		pos.y = pos.y - font_size*1.5
+		pos.y = pos.y - font_size * 1.5
 	end
 
 	Gui.rect(gui, Vector3(start_x, pos.y + font_size, 100), Vector2(250, start_y - pos.y), Color(240, 25, 50, 25))

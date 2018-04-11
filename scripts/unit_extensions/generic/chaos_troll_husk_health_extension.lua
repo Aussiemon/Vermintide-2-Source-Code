@@ -9,7 +9,7 @@ ChaosTrollHuskHealthExtension.init = function (self, extension_init_context, uni
 	self.state = "unhurt"
 	local breed = Breeds.chaos_troll
 	local action = BreedActions.chaos_troll.downed
-	self.go_down_health = self.health*action.become_downed_hp_percent
+	self.go_down_health = self.health * action.become_downed_hp_percent
 	self.regen_pulse_interval = breed.regen_pulse_interval
 	self.downed_pulse_interval = breed.downed_pulse_interval
 	self.regen_pulse_intensity = breed.regen_pulse_intensity
@@ -20,7 +20,7 @@ ChaosTrollHuskHealthExtension.init = function (self, extension_init_context, uni
 	return 
 end
 ChaosTrollHuskHealthExtension.current_max_health_percent = function (self)
-	return self.health/self.original_health
+	return self.health / self.original_health
 end
 ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
 	if self.state == "dead" then
@@ -32,7 +32,7 @@ ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
 
 		if self.start_reset_time < t then
 			self.down_reset_timer = self.down_reset_timer + dt
-			local percent_damage = self.down_reset_timer/self.action.reset_duration - 1
+			local percent_damage = 1 - self.down_reset_timer / self.action.reset_duration
 
 			set_material_property(self.unit, "damage_value", "mtr_skin", percent_damage, true)
 		end
@@ -98,11 +98,11 @@ ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_ma
 
 		self.state = state
 	elseif state == "unhurt" then
-		local percent_damage = self.damage/math.max(self.health - self.go_down_health, 0.01)
+		local percent_damage = self.damage / math.max(self.health - self.go_down_health, 0.01)
 
 		set_material_property(self.unit, "damage_value", "mtr_skin", percent_damage, true)
 	elseif state == "wounded" then
-		local percent_damage = self.damage/(self.health - self.damage)
+		local percent_damage = self.damage / (self.health - self.damage)
 
 		set_material_property(self.unit, "damage_value", "mtr_skin", percent_damage, true)
 	end

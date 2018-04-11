@@ -11,7 +11,7 @@ FunctionCommandQueue.run_commands = function (self)
 	local stride = self.command_stride
 
 	for index = 0, self.command_index - 1, 1 do
-		local base_index = index*stride
+		local base_index = index * stride
 		local function_call = command_queue[base_index + 1]
 
 		function_call(unpack_index[stride - 1](command_queue, base_index + 2))
@@ -33,14 +33,14 @@ FunctionCommandQueue.cleanup_destroyed_unit = function (self, unit)
 	local i = 1
 
 	while i <= list_size do
-		local base_index = (i - 1)*stride
+		local base_index = (i - 1) * stride
 		local function_call = command_queue[base_index + 1]
 
 		if function_call == unit_animation_event then
 			local target_unit = command_queue[base_index + 2]
 
 			if target_unit == unit then
-				local base_list_size = (list_size - 1)*stride
+				local base_list_size = (list_size - 1) * stride
 
 				for j = 1, stride, 1 do
 					local copy_index = base_list_size + j
@@ -64,7 +64,7 @@ end
 FunctionCommandQueue.queue_function_command = function (self, function_call, ...)
 	local index = self.command_index
 	local command_queue = self.command_queue
-	local base_index = index*self.command_stride
+	local base_index = index * self.command_stride
 	command_queue[base_index + 1] = function_call
 	local select = select
 	local num_args = select("#", ...)

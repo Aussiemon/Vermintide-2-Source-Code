@@ -349,7 +349,7 @@ Breeds.skaven_clan_rat = table.create_copy(Breeds.skaven_clan_rat, breed_data)
 Breeds.skaven_clan_rat_tutorial = table.create_copy(Breeds.skaven_clan_rat_tutorial, breed_data)
 Breeds.skaven_clan_rat_tutorial.detection_radius = 2
 Breeds.skaven_clan_rat_tutorial.debug_spawn_category = "Misc"
-BreedActionDimishingDamageDifficulty = {
+local BreedActionDimishingDamageDifficulty = {
 	easy = {
 		{
 			damage = 2,
@@ -895,11 +895,11 @@ local action_data = {
 			},
 			alerted_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			alerted_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
@@ -920,11 +920,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		considerations = UtilityConsiderations.clan_rat_follow
@@ -991,15 +991,16 @@ local action_data = {
 			}
 		},
 		considerations = UtilityConsiderations.clan_rat_running_attack,
-		dimishing_damage = {}
+		dimishing_damage = {},
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty
 	},
 	normal_attack = {
 		damage_type = "cutting",
+		move_anim = "move_fwd",
 		fatigue_type = "blocked_attack",
 		attack_intensity = 0.5,
 		player_push_speed = 3,
 		action_weight = 1,
-		move_anim = "move_fwd",
 		default_attack = {
 			anims = {
 				"attack_pounce",
@@ -1126,6 +1127,7 @@ local action_data = {
 		},
 		considerations = UtilityConsiderations.clan_rat_attack,
 		dimishing_damage = {},
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
 		attack_directions = {
 			attack_run = "left",
 			attack_move_2 = "left",

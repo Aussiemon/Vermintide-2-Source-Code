@@ -208,7 +208,7 @@ SimpleInventoryExtension.update = function (self, unit, input, dt, context, t)
 	local ammo_percentage = 1
 
 	if current_ammo and max_ammo then
-		ammo_percentage = current_ammo/max_ammo
+		ammo_percentage = current_ammo / max_ammo
 	end
 
 	local network_manager = Managers.state.network
@@ -739,7 +739,7 @@ SimpleInventoryExtension._add_ammo_to_slot = function (self, slot_name, slot_dat
 	local refill_amount = nil
 
 	if amount then
-		refill_amount = max_ammo*amount
+		refill_amount = max_ammo * amount
 	end
 
 	ammo_extension.add_ammo(ammo_extension, refill_amount)
@@ -991,10 +991,10 @@ SimpleInventoryExtension.check_and_drop_pickups = function (self, drop_reason, o
 
 			if should_drop then
 				if pickup_data and slot_name ~= "slot_level_event" then
-					local random_vector = override_dir or Vector3(math.random(-1, 1) + i*2, math.random(-1, 1) + i, math.random(0, 1))
+					local random_vector = override_dir or Vector3(math.random(-1, 1) + 2 * i, math.random(-1, 1) + i, math.random(0, 1))
 					local random_angle = math.random(-math.half_pi, math.half_pi)
 					local random_direction = Vector3.normalize(random_vector)
-					local position = (override_pos or POSITION_LOOKUP[unit]) + random_vector*0.2
+					local position = (override_pos or POSITION_LOOKUP[unit]) + random_vector * 0.2
 					local rotation = Quaternion.axis_angle(random_direction, random_angle)
 					local pickup_name = pickup_data.pickup_name
 					local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
@@ -1124,8 +1124,9 @@ end
 SimpleInventoryExtension.get_num_grimoires = function (self)
 	local buff_extension = ScriptUnit.extension(self._unit, "buff_system")
 	local num_grimoires = buff_extension.num_buff_perk(buff_extension, "skaven_grimoire")
+	local num_twitch_grimoires = buff_extension.num_buff_perk(buff_extension, "twitch_grimoire")
 
-	return num_grimoires
+	return num_grimoires, num_twitch_grimoires
 end
 local buffs = {
 	client = {},

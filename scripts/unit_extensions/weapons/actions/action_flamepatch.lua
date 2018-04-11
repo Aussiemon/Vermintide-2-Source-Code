@@ -44,7 +44,7 @@ ActionFlamepatch.client_owner_start_action = function (self, new_action, t)
 
 	self.overcharge_extension:add_charge(overcharge_amount)
 
-	local flamethrower_range = new_action.range or SPRAY_RANGE*SPRAY_RANGE
+	local flamethrower_range = new_action.range or SPRAY_RANGE * SPRAY_RANGE
 	local flamethrower_effect = new_action.particle_effect_flames
 	local flamethrower_effect_3p = new_action.particle_effect_flames_3p
 	local flamethrower_impact_effect = new_action.particle_effect_impact
@@ -110,7 +110,7 @@ ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_da
 				local current_position = first_person_extension.current_position(first_person_extension)
 				local current_rotation = first_person_extension.current_rotation(first_person_extension)
 				local direction = Quaternion.forward(current_rotation)
-				local end_point = current_position + direction*POSITION_TWEAK + direction*(SPRAY_RANGE - SPRAY_RADIUS)
+				local end_point = current_position + direction * POSITION_TWEAK + direction * (SPRAY_RANGE - SPRAY_RADIUS)
 
 				self.spawn_liquid_area(self, current_action.liquid_area.liquid_template, current_position, direction)
 			end
@@ -122,7 +122,7 @@ ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_da
 		local muzzle_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, self.muzzle_node_name))
 		local muzzle_rotation = Unit.world_rotation(weapon_unit, Unit.node(weapon_unit, self.muzzle_node_name))
 		local muzzle_direction = Quaternion.forward(muzzle_rotation)
-		local flamethrower_range = current_action.range or SPRAY_RANGE*SPRAY_RANGE
+		local flamethrower_range = current_action.range or SPRAY_RANGE * SPRAY_RANGE
 		local world = self.world
 		local physics_world = World.get_data(world, "physics_world")
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, muzzle_position, muzzle_direction, flamethrower_range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
@@ -156,7 +156,7 @@ ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_da
 					end
 
 					if hit then
-						hit_position = potential_hit_position - muzzle_direction*0.15
+						hit_position = potential_hit_position - muzzle_direction * 0.15
 						hit_unit = potential_hit_unit
 
 						break

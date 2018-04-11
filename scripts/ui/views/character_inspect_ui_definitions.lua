@@ -8,7 +8,7 @@ local ITEM_SPACING = 30
 local NUM_ITEM_SLOTS = 7
 local WINDOW_WIDTH_SPACING = 50
 local WINDOW_SIZE = {
-	ITEM_SIZE[1]*NUM_ITEM_SLOTS + (NUM_ITEM_SLOTS - 1)*ITEM_SPACING + WINDOW_WIDTH_SPACING*2,
+	ITEM_SIZE[1] * NUM_ITEM_SLOTS + (NUM_ITEM_SLOTS - 1) * ITEM_SPACING + WINDOW_WIDTH_SPACING * 2,
 	550
 }
 local scenegraph_definition = {
@@ -76,7 +76,7 @@ local scenegraph_definition = {
 			1
 		},
 		size = {
-			WINDOW_SIZE[1] - WINDOW_WIDTH_SPACING*2,
+			WINDOW_SIZE[1] - WINDOW_WIDTH_SPACING * 2,
 			ITEM_SIZE[2] + ITEM_SPACING
 		}
 	},
@@ -104,7 +104,7 @@ local scenegraph_definition = {
 			1
 		},
 		size = {
-			WINDOW_SIZE[1] - WINDOW_WIDTH_SPACING*2,
+			WINDOW_SIZE[1] - WINDOW_WIDTH_SPACING * 2,
 			ITEM_SIZE[2] + ITEM_SPACING
 		}
 	},
@@ -127,7 +127,7 @@ local scenegraph_definition = {
 		parent = "item_background",
 		horizontal_alignment = "left",
 		position = {
-			ITEM_SPACING/2,
+			ITEM_SPACING / 2,
 			0,
 			5
 		},

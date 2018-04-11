@@ -109,7 +109,7 @@ LocomotionTemplates.AILocomotionExtension = {
 	end,
 	update_gravity = function (data, t, dt)
 		for unit, extension in pairs(data.affected_by_gravity_update_units) do
-			extension._wanted_velocity.z = extension._velocity.z - extension._gravity*dt
+			extension._wanted_velocity.z = extension._velocity.z - extension._gravity * dt
 		end
 
 		return 
@@ -127,9 +127,9 @@ LocomotionTemplates.AILocomotionExtension = {
 			local current_rotation_inv = Quaternion.inverse(current_rotation)
 			local delta_rotation = Quaternion.multiply(current_rotation_inv, wanted_rotation)
 			local yaw_rotation_radians = Quaternion.yaw(delta_rotation)
-			yaw_rotation_radians = yaw_rotation_radians*extension._animation_rotation_scale
+			yaw_rotation_radians = yaw_rotation_radians * extension._animation_rotation_scale
 			wanted_rotation = Quaternion.multiply(current_rotation, Quaternion(up_vector, yaw_rotation_radians))
-			local wanted_velocity = (wanted_position - current_position)/dt
+			local wanted_velocity = (wanted_position - current_position) / dt
 			wanted_velocity = Vector3.multiply_elements(wanted_velocity, extension._animation_translation_scale:unbox())
 			extension._wanted_velocity = wanted_velocity
 			extension._wanted_rotation = wanted_rotation
@@ -142,7 +142,7 @@ LocomotionTemplates.AILocomotionExtension = {
 			local wanted_pose = Unit.animation_wanted_root_pose(unit)
 			local wanted_position = Matrix4x4.translation(wanted_pose)
 			local current_position = Unit.local_position(unit, 0)
-			local wanted_velocity = (wanted_position - current_position)/dt
+			local wanted_velocity = (wanted_position - current_position) / dt
 			wanted_velocity = Vector3.multiply_elements(wanted_velocity, extension._animation_translation_scale:unbox())
 			extension._wanted_velocity = wanted_velocity
 		end
@@ -175,7 +175,7 @@ LocomotionTemplates.AILocomotionExtension = {
 		for unit, extension in pairs(data.rotation_speed_modifier_update_units) do
 			local lerp_total_time = extension._rotation_speed_modifier_lerp_end_time - extension._rotation_speed_modifier_lerp_start_time
 			local time_in_lerp = math.max(0, t - extension._rotation_speed_modifier_lerp_start_time)
-			local lerp_percentage = time_in_lerp/lerp_total_time
+			local lerp_percentage = time_in_lerp / lerp_total_time
 
 			if 1 <= lerp_percentage then
 				extension._rotation_speed_modifier = 1
@@ -209,7 +209,7 @@ LocomotionTemplates.AILocomotionExtension = {
 		for unit, extension in pairs(data.script_driven_update_units) do
 			local wanted_velocity = extension._wanted_velocity
 			local current_position = Unit_local_position(unit, 0)
-			local final_position = current_position + wanted_velocity*dt
+			local final_position = current_position + wanted_velocity * dt
 
 			extension._velocity:store(wanted_velocity)
 			Unit_set_local_position(unit, 0, final_position)
@@ -239,12 +239,12 @@ LocomotionTemplates.AILocomotionExtension = {
 					if mesh_position then
 						if data.animation_update_units[unit] then
 							final_velocity = extension._wanted_velocity
-							final_position = current_position - final_velocity*dt
+							final_position = current_position - final_velocity * dt
 						else
 							local speed = blackboard.breed.run_speed
 							local to_goal = current_position - mesh_position
-							final_velocity = Vector3.normalize(to_goal)*speed
-							final_position = current_position - final_velocity*dt
+							final_velocity = Vector3.normalize(to_goal) * speed
+							final_position = current_position - final_velocity * dt
 							final_velocity.z = 0
 						end
 					else
@@ -271,7 +271,7 @@ LocomotionTemplates.AILocomotionExtension = {
 			local wanted_velocity_flat_size_sq = Vector3_length_squared(Vector3.flat(wanted_velocity))
 			local final_position, final_velocity = nil
 			final_position = GwNavQueries_move_on_navmesh(nav_world, current_position, wanted_velocity, dt)
-			final_velocity = (final_position - current_position)/dt
+			final_velocity = (final_position - current_position) / dt
 
 			extension._velocity:store(final_velocity)
 			Unit_set_local_position(unit, 0, final_position)
@@ -285,7 +285,7 @@ LocomotionTemplates.AILocomotionExtension = {
 
 			if extension._mover_displacement_duration then
 				extension._mover_displacement_t = extension._mover_displacement_t - dt
-				mover_displacement = extension._mover_displacement:unbox()*extension._mover_displacement_t/extension._mover_displacement_duration
+				mover_displacement = extension._mover_displacement:unbox() * extension._mover_displacement_t / extension._mover_displacement_duration
 
 				if extension._mover_displacement_t <= 0 then
 					extension._mover_displacement_duration = nil
@@ -298,10 +298,10 @@ LocomotionTemplates.AILocomotionExtension = {
 			local wanted_velocity = extension._wanted_velocity
 			local mover = Unit.mover(unit)
 
-			Mover_move(mover, wanted_velocity*dt, dt)
+			Mover_move(mover, wanted_velocity * dt, dt)
 
 			local final_position = Mover.position(mover) - mover_displacement
-			local final_velocity = (final_position - current_position)/dt
+			local final_velocity = (final_position - current_position) / dt
 			local mover_collides_down = Mover.collides_down(mover)
 
 			if mover_collides_down and 0 < Mover.standing_frames(mover) then

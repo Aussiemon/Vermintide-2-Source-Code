@@ -738,8 +738,8 @@ local animation_definitions = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + (anim_progress - 1)*-100
-				ui_scenegraph.right_side_root.local_position[1] = scenegraph_definition.right_side_root.position[1] + (anim_progress - 1)*100
+				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + -100 * (1 - anim_progress)
+				ui_scenegraph.right_side_root.local_position[1] = scenegraph_definition.right_side_root.position[1] + 100 * (1 - anim_progress)
 
 				return 
 			end,
@@ -760,9 +760,9 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
-				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + anim_progress*-100
-				ui_scenegraph.right_side_root.local_position[1] = scenegraph_definition.right_side_root.position[1] + anim_progress*100
+				params.render_settings.alpha_multiplier = 1 - anim_progress
+				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + -100 * anim_progress
+				ui_scenegraph.right_side_root.local_position[1] = scenegraph_definition.right_side_root.position[1] + 100 * anim_progress
 
 				return 
 			end,

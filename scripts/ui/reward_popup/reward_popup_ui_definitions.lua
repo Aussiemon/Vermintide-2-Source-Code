@@ -559,14 +559,14 @@ local animations = {
 
 					if widget_type == "level" then
 						local text_style = widget.style.text
-						text_style.font_size = level_text_style.font_size*math.catmullrom(math.easeOutCubic(progress), -0.5, 1, 1, -0.5)
+						text_style.font_size = level_text_style.font_size * math.catmullrom(math.easeOutCubic(progress), -0.5, 1, 1, -0.5)
 					elseif widget_type == "item" then
 						local scenegraph_id = widget.scenegraph_id
 						local default_size = scenegraph_definition[scenegraph_id].size
 						local size = ui_scenegraph[scenegraph_id].size
 						local size_fraction = math.ease_out_exp(progress)
-						size[1] = default_size[1] + default_size[1]*(size_fraction - 1)
-						size[2] = default_size[2] + default_size[2]*(size_fraction - 1)
+						size[1] = default_size[1] + default_size[1] * (1 - size_fraction)
+						size[2] = default_size[2] + default_size[2] * (1 - size_fraction)
 					end
 				end
 
@@ -589,7 +589,7 @@ local animations = {
 				for _, data in pairs(widget_type) do
 					local widget = data.widget
 					local widget_type = data.widget_type
-					data.alpha_multiplier = anim_fraction - 1
+					data.alpha_multiplier = 1 - anim_fraction
 				end
 
 				return 
@@ -666,7 +666,7 @@ local animations = {
 				local anim_fraction = math.easeInCubic(progress)
 				local background_top_widget = widgets.background_top
 				local background_bottom_widget = widgets.background_bottom
-				local alpha = anim_fraction*255
+				local alpha = 255 * anim_fraction
 				background_top_widget.style.texture_id.color[1] = alpha
 				background_bottom_widget.style.texture_id.color[1] = alpha
 
@@ -694,10 +694,10 @@ local animations = {
 				local default_background_bottom_size = scenegraph_definition[background_bottom_scenegraph_id].size
 				local current_background_bottom_size = ui_scenegraph[background_bottom_scenegraph_id].size
 				local anim_size_fraction = math.catmullrom(progress, -4, 1, 1, -1)
-				current_background_top_size[1] = default_background_top_size[1]*anim_size_fraction
-				current_background_top_size[2] = default_background_top_size[2]*anim_size_fraction
-				current_background_bottom_size[1] = default_background_bottom_size[1]*anim_size_fraction
-				current_background_bottom_size[2] = default_background_bottom_size[2]*anim_size_fraction
+				current_background_top_size[1] = default_background_top_size[1] * anim_size_fraction
+				current_background_top_size[2] = default_background_top_size[2] * anim_size_fraction
+				current_background_bottom_size[1] = default_background_bottom_size[1] * anim_size_fraction
+				current_background_bottom_size[2] = default_background_bottom_size[2] * anim_size_fraction
 
 				return 
 			end,
@@ -726,23 +726,23 @@ local animations = {
 				local background_center_scenegraph_id = background_center_widget.scenegraph_id
 				local current_background_center_size = ui_scenegraph[background_center_scenegraph_id].size
 				local default_background_center_size = scenegraph_definition[background_center_scenegraph_id].size
-				current_background_center_size[2] = math.ceil(default_background_center_size[2]*anim_fraction)
-				local half_center_height = default_background_center_size[2]/2
-				local height_fraction = default_background_center_size[2]/82
+				current_background_center_size[2] = math.ceil(default_background_center_size[2] * anim_fraction)
+				local half_center_height = default_background_center_size[2] / 2
+				local height_fraction = default_background_center_size[2] / 82
 				local center_uvs = background_center_widget.content.texture_id.uvs
-				local total_uv_change = height_fraction*anim_fraction
-				center_uvs[1][2] = math.min(total_uv_change + 0.5, 1)
-				center_uvs[2][2] = math.max(total_uv_change - 0.5, 0)
-				current_background_top_position[2] = default_background_top_position[2] + half_center_height*anim_fraction
-				current_background_bottom_position[2] = default_background_bottom_position[2] - half_center_height*anim_fraction
+				local total_uv_change = height_fraction * anim_fraction
+				center_uvs[1][2] = math.min(0.5 + total_uv_change, 1)
+				center_uvs[2][2] = math.max(0.5 - total_uv_change, 0)
+				current_background_top_position[2] = default_background_top_position[2] + half_center_height * anim_fraction
+				current_background_bottom_position[2] = default_background_bottom_position[2] - half_center_height * anim_fraction
 				local background_top_glow_widget = widgets.background_top_glow
 				background_top_glow_widget.content.texture_id.uvs[2][2] = anim_fraction
-				local new_top_glow_height = anim_fraction*55
+				local new_top_glow_height = 55 * anim_fraction
 				ui_scenegraph.background_top_glow.size[2] = new_top_glow_height
 				ui_scenegraph.background_top_glow.local_position[2] = -new_top_glow_height
 				local background_bottom_glow_widget = widgets.background_bottom_glow
 				background_bottom_glow_widget.content.texture_id.uvs[2][2] = anim_fraction
-				local new_bottom_glow_height = anim_fraction*55
+				local new_bottom_glow_height = 55 * anim_fraction
 				ui_scenegraph.background_bottom_glow.size[2] = new_bottom_glow_height
 				ui_scenegraph.background_bottom_glow.local_position[2] = new_bottom_glow_height
 
@@ -763,7 +763,7 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
-				local inv_anim_fraction = math.easeInCubic(progress) - 1
+				local inv_anim_fraction = 1 - math.easeInCubic(progress)
 				local background_top_widget = widgets.background_top
 				local background_top_scenegraph_id = background_top_widget.scenegraph_id
 				local default_background_top_position = scenegraph_definition[background_top_scenegraph_id].position
@@ -776,23 +776,23 @@ local animations = {
 				local background_center_scenegraph_id = background_center_widget.scenegraph_id
 				local current_background_center_size = ui_scenegraph[background_center_scenegraph_id].size
 				local default_background_center_size = scenegraph_definition[background_center_scenegraph_id].size
-				current_background_center_size[2] = math.ceil(default_background_center_size[2] - default_background_center_size[2]*anim_fraction)
-				local half_center_height = default_background_center_size[2]/2
-				local height_fraction = default_background_center_size[2]/82
+				current_background_center_size[2] = math.ceil(default_background_center_size[2] - default_background_center_size[2] * anim_fraction)
+				local half_center_height = default_background_center_size[2] / 2
+				local height_fraction = default_background_center_size[2] / 82
 				local center_uvs = background_center_widget.content.texture_id.uvs
-				local total_uv_change = height_fraction*inv_anim_fraction
-				center_uvs[1][2] = math.min(total_uv_change + 0.5, 1)
-				center_uvs[2][2] = math.max(total_uv_change - 0.5, 0)
-				current_background_top_position[2] = (default_background_top_position[2] + half_center_height) - half_center_height*anim_fraction
-				current_background_bottom_position[2] = default_background_bottom_position[2] - half_center_height + half_center_height*anim_fraction
+				local total_uv_change = height_fraction * inv_anim_fraction
+				center_uvs[1][2] = math.min(0.5 + total_uv_change, 1)
+				center_uvs[2][2] = math.max(0.5 - total_uv_change, 0)
+				current_background_top_position[2] = (default_background_top_position[2] + half_center_height) - half_center_height * anim_fraction
+				current_background_bottom_position[2] = default_background_bottom_position[2] - half_center_height + half_center_height * anim_fraction
 				local background_top_glow_widget = widgets.background_top_glow
 				background_top_glow_widget.content.texture_id.uvs[2][2] = inv_anim_fraction
-				local new_top_glow_height = inv_anim_fraction*55
+				local new_top_glow_height = 55 * inv_anim_fraction
 				ui_scenegraph.background_top_glow.size[2] = new_top_glow_height
 				ui_scenegraph.background_top_glow.local_position[2] = -new_top_glow_height
 				local background_bottom_glow_widget = widgets.background_bottom_glow
 				background_bottom_glow_widget.content.texture_id.uvs[2][2] = inv_anim_fraction
-				local new_bottom_glow_height = inv_anim_fraction*55
+				local new_bottom_glow_height = 55 * inv_anim_fraction
 				ui_scenegraph.background_bottom_glow.size[2] = new_bottom_glow_height
 				ui_scenegraph.background_bottom_glow.local_position[2] = new_bottom_glow_height
 
@@ -820,7 +820,7 @@ local animations = {
 				local background_center_widget = widgets.background_center
 				local background_bottom_widget = widgets.background_bottom
 				local anim_fraction = math.easeOutCubic(progress)
-				local alpha = anim_fraction*255 - 255
+				local alpha = 255 - 255 * anim_fraction
 				background_top_widget.style.texture_id.color[1] = alpha
 				background_bottom_widget.style.texture_id.color[1] = alpha
 				background_center_widget.style.texture_id.color[1] = alpha
@@ -839,7 +839,7 @@ local animations = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_fraction = math.easeOutCubic(progress - 1)
+				local anim_fraction = math.easeOutCubic(1 - progress)
 				params.blur_progress = anim_fraction
 
 				return 

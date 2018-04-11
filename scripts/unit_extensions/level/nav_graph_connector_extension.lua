@@ -17,7 +17,7 @@ NavGraphConnectorExtension.init = function (self, extension_init_context, unit, 
 		})
 		local pose, half_extents = Unit.box(unit)
 
-		drawer.box(drawer, pose, half_extents*1.1, Colors.get("purple"))
+		drawer.box(drawer, pose, half_extents * 1.1, Colors.get("purple"))
 	end
 
 	return 

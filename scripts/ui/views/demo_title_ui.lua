@@ -60,7 +60,7 @@ DemoTitleUI._setup_world_gui = function (self)
 	local position = Matrix4x4.translation(pose.unbox(pose))
 	local rotation = Matrix4x4.rotation(pose.unbox(pose))
 	local forward = Quaternion.forward(rotation)
-	local new_pose = Matrix4x4.from_quaternion_position(rotation, position + forward*1.5)
+	local new_pose = Matrix4x4.from_quaternion_position(rotation, position + forward * 1.5)
 
 	Gui.move(self._world_gui, new_pose)
 
@@ -90,11 +90,11 @@ end
 DemoTitleUI.shading_callback = function (self, world, shading_env, viewport)
 	for name, settings in pairs(OutlineSettings.colors) do
 		local c = settings.color
-		local color = Vector3(c[2]/255, c[3]/255, c[4]/255)
+		local color = Vector3(c[2] / 255, c[3] / 255, c[4] / 255)
 		local multiplier = settings.outline_multiplier
 
 		if settings.pulsate then
-			multiplier = settings.outline_multiplier*0.5 + math.sin(Application.time_since_launch()*settings.pulse_multiplier)*settings.outline_multiplier*0.5
+			multiplier = settings.outline_multiplier * 0.5 + math.sin(Application.time_since_launch() * settings.pulse_multiplier) * settings.outline_multiplier * 0.5
 		end
 
 		ShadingEnvironment.set_vector3(shading_env, settings.variable, color)
@@ -303,7 +303,7 @@ DemoTitleUI._setup_characters = function (self)
 
 	for _, character_data in pairs(characters) do
 		local character_offset_position = character_data.position_offset:unbox()
-		local pos = camera_pos + camera_right_flat*character_offset_position[1] + camera_forward_flat*character_offset_position[2] + Vector3.up()*character_offset_position[3]
+		local pos = camera_pos + camera_right_flat * character_offset_position[1] + camera_forward_flat * character_offset_position[2] + Vector3.up() * character_offset_position[3]
 		local is_hit, hit_pos, hit_distance, normal = PhysicsWorld.immediate_raycast(physics_world, pos, Vector3(0, 0, -1), 5, "closest", "collision_filter", "filter_ai_mover")
 
 		if is_hit then
@@ -563,7 +563,7 @@ DemoTitleUI._update_camera = function (self, dt, t)
 
 		local time = self._ref_time or CAMERA_TRANSITION_TIME
 		self._timer = math.clamp(self._timer + dt, 0, time)
-		local progress = math.smoothstep(self._timer/time, 0, 1)
+		local progress = math.smoothstep(self._timer / time, 0, 1)
 		local pose = Matrix4x4.lerp(source_camera_pose.unbox(source_camera_pose), target_camera_pose.unbox(target_camera_pose), progress)
 		local camera = ScriptViewport.camera(self._viewport)
 
@@ -588,8 +588,8 @@ DemoTitleUI._update_camera = function (self, dt, t)
 	local position = Matrix4x4.translation(pose.unbox(pose))
 	local rotation = Matrix4x4.rotation(pose.unbox(pose))
 	local forward = Quaternion.forward(rotation)
-	local scale_value = w/1920*0.5
-	local new_pose = Matrix4x4.from_quaternion_position(rotation, position + forward*scale_value)
+	local scale_value = w / 1920 * 0.5
+	local new_pose = Matrix4x4.from_quaternion_position(rotation, position + forward * scale_value)
 
 	Gui.move(self._world_gui, new_pose)
 
@@ -599,7 +599,7 @@ DemoTitleUI._draw_3d_logo = function (self, dt, t)
 	local base_size = Vector2(1920, 1080)
 	local w, h = Gui.resolution()
 
-	Gui.bitmap(self._world_gui, "vermintide_logo_title", Vector3((-base_size[1]*w)/WORLD_GUI_RESOLUTION*0.5, (-base_size[2]*w)/WORLD_GUI_RESOLUTION*0.3, 1), Vector2((base_size[1]*w)/WORLD_GUI_RESOLUTION, (base_size[2]*w)/WORLD_GUI_RESOLUTION))
+	Gui.bitmap(self._world_gui, "vermintide_logo_title", Vector3((-base_size[1] * w) / WORLD_GUI_RESOLUTION * 0.5, (-base_size[2] * w) / WORLD_GUI_RESOLUTION * 0.3, 1), Vector2((base_size[1] * w) / WORLD_GUI_RESOLUTION, (base_size[2] * w) / WORLD_GUI_RESOLUTION))
 
 	return 
 end
@@ -713,18 +713,18 @@ DemoTitleUI._draw_fps = function (self, dt, t)
 	local ui_top_renderer = self._ui_renderer
 	local fps = self._old_fps
 	self._fps_cooldown = self._fps_cooldown + dt
-	test_fps = test_fps + dt/1
+	test_fps = test_fps + 1 / dt
 	test_fps_n = test_fps_n + 1
 
 	if 1 < self._fps_cooldown then
 		self._old_fps = self._fps
-		self._fps = test_fps/test_fps_n
+		self._fps = test_fps / test_fps_n
 		test_fps = 0
 		test_fps_n = 0
 		self._fps_cooldown = 0
 	end
 
-	self._old_fps = math.lerp(self._old_fps, self._fps, dt*0.2)
+	self._old_fps = math.lerp(self._old_fps, self._fps, dt * 0.2)
 	local text = string.format("%.2f FPS", fps)
 	local color = nil
 	local red_cap = 30
@@ -743,8 +743,8 @@ DemoTitleUI._draw_fps = function (self, dt, t)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
 	local res_width = RESOLUTION_LOOKUP.res_w
 	local res_height = RESOLUTION_LOOKUP.res_h
-	res_width = res_width*inv_scale
-	res_height = res_height*inv_scale
+	res_width = res_width * inv_scale
+	res_height = res_height * inv_scale
 	local text_size = debug_font_size
 	local width, height = UIRenderer.text_size(ui_top_renderer, text, debug_font_mtrl, text_size)
 	local x = res_width - width - debug_font_size - 16

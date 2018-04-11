@@ -74,7 +74,7 @@ EnvironmentBlender.update_shading_settings = function (self)
 			local weight = volume.weight
 			shading_settings[#shading_settings + 1] = volume.environment
 			shading_settings[#shading_settings + 1] = weight
-			particle_light_intensity = particle_light_intensity + weight*volume.particle_light_intensity
+			particle_light_intensity = particle_light_intensity + weight * volume.particle_light_intensity
 		end
 	end
 
@@ -131,8 +131,8 @@ EnvironmentBlender.debug_color = function (self)
 end
 EnvironmentBlender.debug_draw = function (self, shading_settings)
 	local w, h = Gui.resolution()
-	local x = w*0.01
-	local y = h*0.95
+	local x = w * 0.01
+	local y = h * 0.95
 	local spacing = 5
 	local size = 36
 	local offset_y = 0

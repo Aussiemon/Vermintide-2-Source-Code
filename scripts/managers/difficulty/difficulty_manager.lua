@@ -17,24 +17,7 @@ DifficultyManager.set_difficulty = function (self, difficulty)
 	self.difficulty = difficulty
 	self.difficulty_rank = DifficultySettings[difficulty].rank
 
-	for breed_name, breed_actions in pairs(BreedActions) do
-		for action_name, action_data in pairs(breed_actions) do
-			if action_data.dimishing_damage then
-				local difficulty_dimishing_damage = table.clone(BreedActionDimishingDamageDifficulty[difficulty])
-				action_data.dimishing_damage = difficulty_dimishing_damage
-			end
-
-			if action_data.difficulty_damage then
-				local difficulty_damage = table.clone(action_data.difficulty_damage[difficulty])
-				action_data.damage = difficulty_damage
-			end
-
-			if action_data.blocked_difficulty_damage then
-				local blocked_difficulty_damage = table.clone(action_data.blocked_difficulty_damage[difficulty])
-				action_data.blocked_damage = blocked_difficulty_damage
-			end
-		end
-	end
+	SET_BREED_DIFFICULTY()
 
 	if self.is_server then
 		local lobby_data = self.lobby_host:get_stored_lobby_data()

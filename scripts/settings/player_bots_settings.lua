@@ -24,6 +24,17 @@ BotActions.default = {
 		minimum_obstruction_reevaluation_time = 0.2,
 		action_weight = 1
 	},
+	shoot_ability = {
+		abort_input = "defend",
+		evaluation_duration = 2,
+		charge_input = "activate_ability",
+		action_weight = 1,
+		slot_name = "slot_career_skill_weapon",
+		maximum_obstruction_reevaluation_time = 0.3,
+		evaluation_duration_without_firing = 4,
+		fire_input = "none",
+		minimum_obstruction_reevaluation_time = 0.2
+	},
 	switch_melee = {
 		wanted_slot = "slot_melee",
 		action_weight = 1
@@ -89,6 +100,82 @@ BotActions.default = {
 	rescue_ledge_hanging = {
 		aim_node = "j_head",
 		use_block_interaction = true
+	},
+	use_ability = {
+		dr_ironbreaker = {
+			activation = {},
+			wait_action = {
+				input = "defend"
+			},
+			end_condition = {
+				buffs = {
+					"bardin_ironbreaker_activated_ability",
+					"bardin_ironbreaker_activated_ability_duration"
+				}
+			}
+		},
+		dr_slayer = {
+			activation = {
+				action = "aim_at_target"
+			}
+		},
+		dr_ranger = {
+			activation = {
+				wait_on_career_weapon_done = true
+			}
+		},
+		es_mercenary = {
+			activation = {}
+		},
+		es_huntsman = {
+			activation = {},
+			end_condition = {
+				done_when_arriving_at_destination = true,
+				buffs = {
+					"markus_huntsman_activated_ability"
+				}
+			}
+		},
+		es_knight = {
+			activation = {
+				action = "aim_at_target"
+			}
+		},
+		we_waywatcher = {},
+		we_maidenguard = {
+			activation = {
+				action = "aim_at_target"
+			}
+		},
+		wh_captain = {
+			activation = {}
+		},
+		wh_bountyhunter = {},
+		wh_zealot = {
+			activation = {
+				action = "aim_at_target"
+			}
+		},
+		we_shade = {
+			activation = {},
+			end_condition = {
+				done_when_arriving_at_destination = true,
+				buffs = {
+					"kerillian_shade_activated_ability",
+					"kerillian_shade_activated_ability_duration"
+				}
+			}
+		},
+		bw_adept = {
+			activation = {
+				action = "aim_at_target",
+				min_hold_time = 0.2
+			}
+		},
+		bw_scholar = {},
+		bw_unchained = {
+			activation = {}
+		}
 	}
 }
 
@@ -109,6 +196,7 @@ PlayerBots.default = {
 }
 BotConstants.default = {
 	Z_MOVE_TO_EPSILON = 0.3,
+	FLAT_MOVE_TO_PREVIOUS_POS_EPSILON = 0.25,
 	FLAT_MOVE_TO_EPSILON = 0.05
 }
 local PerceptionTypes = {

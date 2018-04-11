@@ -93,8 +93,8 @@ PerlinNoise.draw_height = function (self, height, x, y, z, rad)
 		mode = "lel",
 		name = "perlin noise"
 	})
-	local index = math.clamp(height*100, -15, 15)
-	index = (index + 15)/2
+	local index = math.clamp(height * 100, -15, 15)
+	index = (index + 15) / 2
 	index = math.floor(index)
 
 	if index == 0 then
@@ -145,12 +145,12 @@ PerlinNoise.filter_list_using_noise = function (self, list, height_threshold)
 end
 PerlinNoise.normalize = function (self, gradient_x, gradient_y)
 	local s = nil
-	s = math.sqrt(gradient_x*gradient_x + gradient_y*gradient_y)
+	s = math.sqrt(gradient_x * gradient_x + gradient_y * gradient_y)
 
 	assert(s ~= 0, "dividing by zero is not recommended")
 
-	gradient_x = gradient_x/s
-	gradient_y = gradient_y/s
+	gradient_x = gradient_x / s
+	gradient_y = gradient_y / s
 
 	return gradient_x, gradient_y
 end
@@ -165,7 +165,7 @@ PerlinNoise.setup = function (self)
 
 		repeat
 			for j = 1, 2, 1 do
-				self._gradients[i][j] = Math.random(-10, 10)*0.1
+				self._gradients[i][j] = Math.random(-10, 10) * 0.1
 				check = check and self._gradients[i][j] == 0
 			end
 		until not check
@@ -201,10 +201,10 @@ PerlinNoise.get_height = function (self, x, y)
 	local point_y = y
 	local tx = x + 4096
 	local ty = y + 4096
-	local p0_x = math.floor(tx)%self._n
-	local p1_x = (p0_x + 1)%self._n
-	local p0_y = math.floor(ty)%self._n
-	local p1_y = (p0_y + 1)%self._n
+	local p0_x = math.floor(tx) % self._n
+	local p1_x = (p0_x + 1) % self._n
+	local p0_y = math.floor(ty) % self._n
+	local p1_y = (p0_y + 1) % self._n
 
 	if p0_x == 0 then
 		p0_x = 1
@@ -250,12 +250,12 @@ PerlinNoise.get_height = function (self, x, y)
 	return z
 end
 PerlinNoise.at2 = function (self, gradient, vec_x, vec_y)
-	local arctang = gradient[1]*vec_x + gradient[2]*vec_y
+	local arctang = gradient[1] * vec_x + gradient[2] * vec_y
 
 	return arctang
 end
 PerlinNoise.getSCurve = function (self, p)
-	local s_curve = p^5*6 - p^4*15 + p^3*10
+	local s_curve = 6 * p^5 - 15 * p^4 + 10 * p^3
 
 	return s_curve
 end
@@ -274,11 +274,11 @@ PerlinNoise.simulate_points = function (self)
 
 	for i = self._lowest_point.x, self._highest_point.x, 1 do
 		local lal = i
-		i = i + Math.random(-1, 1)/10
+		i = i + Math.random(-1, 1) / 10
 
 		for j = self._lowest_point.y, self._highest_point.y, 1 do
 			local lalal = j
-			j = j + Math.random(-1, 1)/10
+			j = j + Math.random(-1, 1) / 10
 			local height = self.get_height(self, i, j)
 
 			if height < lowest then
@@ -287,8 +287,8 @@ PerlinNoise.simulate_points = function (self)
 				highest = height
 			end
 
-			local index = math.clamp(height*100, -15, 15)
-			local asd = (index + 15)/2
+			local index = math.clamp(height * 100, -15, 15)
+			local asd = (index + 15) / 2
 			index = asd
 			index = math.floor(index)
 

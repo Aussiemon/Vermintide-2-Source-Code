@@ -206,15 +206,14 @@ InventorySystem.rpc_give_equipment = function (self, sender, interactor_game_obj
 				local pickup_settings = AllPickups[pickup_name]
 				local wwise_world = Managers.world:wwise_world(self.world)
 				local sound_event = pickup_settings.pickup_sound_event
-
-				if sound_event and not owner.bot_player then
-					WwiseWorld.trigger_event(wwise_world, sound_event)
-				end
-
 				local interactor_unit = self.unit_storage:unit(interactor_game_object_id)
 				local interactor_player = interactor_unit and Managers.player:owner(interactor_unit)
 
-				if interactor_player and not interactor_player.local_player then
+				if not owner.bot_player and interactor_player and not interactor_player.local_player then
+					if sound_event then
+						WwiseWorld.trigger_event(wwise_world, sound_event)
+					end
+
 					Managers.state.event:trigger("give_item_feedback", sender .. item_name, interactor_player, item_name)
 				end
 			end

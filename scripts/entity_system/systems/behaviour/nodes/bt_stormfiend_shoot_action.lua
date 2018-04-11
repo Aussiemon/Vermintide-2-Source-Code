@@ -67,7 +67,7 @@ BTStormfiendShootAction.set_global_environment_intensity = function (self, unit,
 
 	audio_system.set_global_parameter_with_lerp(audio_system, sound_parameter, new_intensity)
 
-	local percentage_taken = new_intensity/max_intensity
+	local percentage_taken = new_intensity / max_intensity
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
 	local parameter_id = NetworkLookup.global_parameter_names[sound_parameter]
@@ -135,8 +135,8 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 
 	local attack_start_distance = action.start_distance
 	local attack_maximum_length = action.maximum_length
-	local start_position = unit_position + target_direction*attack_start_distance
-	local end_check_position = start_position + target_direction*attack_maximum_length
+	local start_position = unit_position + target_direction * attack_start_distance
+	local end_check_position = start_position + target_direction * attack_maximum_length
 	local above = 1
 	local below = 2
 	local nav_world = blackboard.nav_world
@@ -199,7 +199,7 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 	end
 
 	local aim_start_offset = action.aim_start_offset
-	aim_start_position = (aim_start_position or start_position) + target_direction*aim_start_offset
+	aim_start_position = (aim_start_position or start_position) + target_direction * aim_start_offset
 
 	return firewall_start_position, aim_start_position, aim_end_position
 end
@@ -250,10 +250,6 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 		network_manager.anim_event(network_manager, unit, "to_combat")
 		network_manager.anim_event(network_manager, unit, attack_animation)
 
-		if action.sync_with_linked_unit and blackboard.linked_unit then
-			network_manager.anim_event(network_manager, blackboard.linked_unit, attack_animation)
-		end
-
 		local aim_constraint_target_name = action.aim_constraint_target[attack_arm]
 		local data = blackboard.shoot_data
 		data.aim_start_position = Vector3Box(aim_start_position)
@@ -289,7 +285,7 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 			blackboard.current_bot_threat_index = current_threat_index
 			blackboard.bot_threats_data = bot_threats
 			local to_aim_end_flat = Vector3.flat(aim_end_position - unit_position)
-			blackboard.bot_threat_range = Vector3.length(to_aim_end_flat) - bot_threat.offset_forward + SPHERE_CAST_RADIUS*1.5
+			blackboard.bot_threat_range = Vector3.length(to_aim_end_flat) - bot_threat.offset_forward + 1.5 * SPHERE_CAST_RADIUS
 		end
 	end
 
@@ -412,12 +408,12 @@ BTStormfiendShootAction._calculate_oobb_collision = function (self, bot_threat, 
 	local width = bot_threat.width
 	local offset_up = bot_threat.offset_up
 	local offset_forward = bot_threat.offset_forward
-	local half_width = width*0.5
-	local half_range = range*0.5
-	local half_height = height*0.5
+	local half_width = width * 0.5
+	local half_range = range * 0.5
+	local half_height = height * 0.5
 	local size = Vector3(half_width, half_range, half_height)
-	local forward = Quaternion.rotate(self_rot, Vector3.forward())*(offset_forward + half_range)
-	local up = Vector3.up()*(offset_up + half_height)
+	local forward = Quaternion.rotate(self_rot, Vector3.forward()) * (offset_forward + half_range)
+	local up = Vector3.up() * (offset_up + half_height)
 	local oobb_pos = self_pos + forward + up
 
 	return oobb_pos, self_rot, size
@@ -432,8 +428,22 @@ BTStormfiendShootAction._create_bot_aoe_threat = function (self, unit, attack_ro
 
 	return 
 end
-BTStormfiendShootAction.create_firewall = function (self, unit, data)
+BTStormfiendShootAction.create_firewall = function (self, unit, blackboard, data)
 	local start_pos = data.firewall_start_position:unbox()
+	local nav_world = blackboard.nav_world
+	local success, z = GwNavQueries.triangle_from_position(nav_world, start_pos, 1, 1)
+
+	if success then
+		start_pos = Vector3.copy(start_pos)
+		start_pos.z = z
+	else
+		start_pos = GwNavQueries.inside_position_from_outside_position(nav_world, start_pos, 3, 3, 1, 1)
+	end
+
+	if not start_pos then
+		return 
+	end
+
 	local direction = data.direction:unbox()
 	local extension_init_data = {
 		area_damage_system = {
@@ -532,24 +542,25 @@ BTStormfiendShootAction._fire_from_position_direction = function (self, unit, bl
 	local node_name = action.muzzle_nodes[attack_arm]
 	local muzzle_node = Unit.node(unit, node_name)
 	local muzzle_pos = Unit.world_position(unit, muzzle_node)
-	local target_position = POSITION_LOOKUP[blackboard.target_unit]
+	local unit_spine_pos = Unit.world_position(blackboard.target_unit, Unit.node(blackboard.target_unit, "j_spine"))
+	local target_position = unit_spine_pos
 	local current_pos = data.current_gun_aim_position:unbox()
-	local lerp_value = math.min(dt*4, 1)
+	local lerp_value = math.min(dt * 6, 1)
 	local position = Vector3.lerp(current_pos, target_position, lerp_value)
 	local direction = Vector3.normalize(position - muzzle_pos)
 
 	data.current_gun_aim_position:store(position)
 
-	local fire_pos = muzzle_pos - Vector3.normalize(direction)*1.25
+	local fire_pos = muzzle_pos - Vector3.normalize(direction) * 1.25
 
 	return fire_pos, direction
 end
 BTStormfiendShootAction._update_ratling_gun = function (self, unit, blackboard, t, dt)
 	local data = blackboard.shoot_data
 	local time_in_shoot_action = t - data.shoot_start
-	local percentage_in_shoot_action = math.clamp(time_in_shoot_action/data.shoot_duration*data.max_fire_rate_at_percentage_modifier, 0, 1)
+	local percentage_in_shoot_action = math.clamp(time_in_shoot_action / data.shoot_duration * data.max_fire_rate_at_percentage_modifier, 0, 1)
 	local current_time_between_shots = math.lerp(data.time_between_shots_at_start, data.time_between_shots_at_end, percentage_in_shoot_action)
-	local shots_to_fire = (math.floor(time_in_shoot_action/current_time_between_shots) + 1) - data.shots_fired
+	local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
 
 	for i = 1, shots_to_fire, 1 do
 		data.shots_fired = data.shots_fired + 1
@@ -561,16 +572,16 @@ BTStormfiendShootAction._update_ratling_gun = function (self, unit, blackboard, 
 end
 BTStormfiendShootAction._shoot_ratling_gun = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
-	local two_pi = math.pi*2
+	local two_pi = math.pi * 2
 	local data = blackboard.shoot_data
 	local world = blackboard.world
 	local physics_world = World.get_data(world, "physics_world")
 	local from_position, direction = self._fire_from_position_direction(self, unit, blackboard, data, dt)
 	local normalized_direction = Vector3.normalize(direction)
-	local spread_angle = Math.random()*action.spread
+	local spread_angle = Math.random() * action.spread
 	local dir_rot = Quaternion.look(normalized_direction, Vector3.up())
 	local pitch = Quaternion(Vector3.right(), spread_angle)
-	local roll = Quaternion(Vector3.forward(), Math.random()*two_pi)
+	local roll = Quaternion(Vector3.forward(), Math.random() * two_pi)
 	local spread_rot = Quaternion.multiply(Quaternion.multiply(dir_rot, roll), pitch)
 	local spread_direction = Quaternion.forward(spread_rot)
 	local distance = 40
@@ -585,7 +596,7 @@ BTStormfiendShootAction._shoot_ratling_gun = function (self, unit, blackboard, t
 		cleave_distribution = action.cleave_distribution,
 		hit_effect = action.hit_effect,
 		afro_hit_sound = action.afro_hit_sound,
-		player_push_velocity = Vector3Box(normalized_direction*action.impact_push_speed)
+		player_push_velocity = Vector3Box(normalized_direction * action.impact_push_speed)
 	}
 	local attack_arm = data.attack_arm
 	local node_name = action.muzzle_nodes[attack_arm]
@@ -610,7 +621,7 @@ BTStormfiendShootAction.anim_cb_attack_fire = function (self, unit, blackboard)
 
 		if blackboard.weapon_setup == "warpfire_thrower" then
 			if data.firewall_start_position then
-				BTStormfiendShootAction:create_firewall(unit, data)
+				BTStormfiendShootAction:create_firewall(unit, blackboard, data)
 			end
 
 			local world = blackboard.world
@@ -624,9 +635,9 @@ BTStormfiendShootAction.anim_cb_attack_fire = function (self, unit, blackboard)
 			data.shoot_start = t
 			data.shoot_duration = 2
 			data.shots_fired = 0
-			data.time_between_shots_at_start = action.fire_rate_at_start/1
-			data.time_between_shots_at_end = action.fire_rate_at_end/1
-			data.max_fire_rate_at_percentage_modifier = action.max_fire_rate_at_percentage/1
+			data.time_between_shots_at_start = 1 / action.fire_rate_at_start
+			data.time_between_shots_at_end = 1 / action.fire_rate_at_end
+			data.max_fire_rate_at_percentage_modifier = 1 / action.max_fire_rate_at_percentage
 			data.current_gun_aim_position = Vector3Box(POSITION_LOOKUP[blackboard.target_unit])
 		end
 
@@ -708,7 +719,7 @@ BTStormfiendShootAction._debug_fire_beam = function (self, start_position, end_p
 				local hit = hits[i]
 				local distance = hit.distance
 				local hit_position_world = hit.position
-				local hit_position_along_ray = start_position + ray_direction*distance
+				local hit_position_along_ray = start_position + ray_direction * distance
 				local color = nil
 
 				if stop_hit_index == nil or i < stop_hit_index then

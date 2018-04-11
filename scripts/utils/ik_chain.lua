@@ -75,8 +75,8 @@ IkChain.backward = function (self, joints, lengths, num_joints, target_pos)
 
 	for i = num_joints - 1, 1, -1 do
 		local r = joints[i + 1] - joints[i]
-		local l = lengths[i]/Vector3.length(r)
-		local pos = (l - 1)*joints[i + 1] + l*joints[i]
+		local l = lengths[i] / Vector3.length(r)
+		local pos = (1 - l) * joints[i + 1] + l * joints[i]
 		joints[i] = pos
 	end
 
@@ -87,8 +87,8 @@ IkChain.forward = function (self, joints, lengths, num_joints, start_pos)
 
 	for i = 1, num_joints - 1, 1 do
 		local r = joints[i + 1] - joints[i]
-		local l = lengths[i]/Vector3.length(r)
-		local pos = (l - 1)*joints[i] + l*joints[i + 1]
+		local l = lengths[i] / Vector3.length(r)
+		local pos = (1 - l) * joints[i] + l * joints[i + 1]
 		joints[i + 1] = pos
 	end
 
@@ -105,8 +105,8 @@ IkChain.forward_constrained = function (self, joints, lengths, num_joints, start
 
 	for i = 1, num_joints - 1, 1 do
 		local r = joints[i + 1] - joints[i]
-		local l = lengths[i]/Vector3.length(r)
-		local pos = (l - 1)*joints[i] + l*joints[i + 1]
+		local l = lengths[i] / Vector3.length(r)
+		local pos = (1 - l) * joints[i] + l * joints[i + 1]
 		local wanted_dir = Vector3.normalize(pos - joints[i])
 		local dot = Vector3.dot(cone_dir, wanted_dir)
 
@@ -116,7 +116,7 @@ IkChain.forward_constrained = function (self, joints, lengths, num_joints, start
 			local axis_dir = Vector3.cross(cone_dir, wanted_dir)
 			local axis_rot = Quaternion(axis_dir, constrain_angle)
 			local constrained_vec = Quaternion.rotate(axis_rot, cone_dir)
-			joints[i + 1] = joints[i] + constrained_vec*lengths[i]
+			joints[i + 1] = joints[i] + constrained_vec * lengths[i]
 		end
 
 		cone_dir = Vector3.normalize(joints[i + 1] - joints[i])
@@ -129,7 +129,7 @@ IkChain.solve = function (self, t, dt)
 	local target_pos = self.target_pos:unbox()
 	local aim_pos = self.aim_pos:unbox()
 	local to_target = target_pos - aim_pos
-	local target_pos = aim_pos + to_target*(self.acc or 1)*dt
+	local target_pos = aim_pos + to_target * (self.acc or 1) * dt
 
 	self.aim_pos:store(target_pos)
 
@@ -143,8 +143,8 @@ IkChain.solve = function (self, t, dt)
 	if self.totallength < distance then
 		for i = 1, num_joints - 1, 1 do
 			local r = Vector3.length(target_pos - joints[i])
-			local l = lengths[i]/r
-			joints[i + 1] = (l - 1)*joints[i] + l*target_pos
+			local l = lengths[i] / r
+			joints[i + 1] = (1 - l) * joints[i] + l * target_pos
 		end
 	else
 		local dif = Vector3.length(joints[num_joints] - target_pos)

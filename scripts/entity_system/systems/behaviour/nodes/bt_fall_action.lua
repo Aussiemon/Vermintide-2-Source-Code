@@ -6,13 +6,13 @@ local function get_fall_animation(unit, blackboard)
 	local vel_x = velocity.x
 	local vel_y = velocity.y
 
-	if vel_x*vel_x + vel_y*vel_y < 1e-07 then
+	if vel_x * vel_x + vel_y * vel_y < 1e-07 then
 		return "falling_fwd"
 	end
 
 	local unit_rotation = Unit.local_rotation(unit, 0)
 	local unit_direction = Quaternion.forward(unit_rotation)
-	local flat_dot = vel_x*unit_direction.x + vel_y*unit_direction.y
+	local flat_dot = vel_x * unit_direction.x + vel_y * unit_direction.y
 
 	if 0 <= flat_dot then
 		return "falling_fwd"

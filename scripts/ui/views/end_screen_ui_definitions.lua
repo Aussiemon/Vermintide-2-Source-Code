@@ -248,12 +248,12 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
-				local size_fraction = math.easeCubic(progress - 1)
+				local size_fraction = math.easeCubic(1 - progress)
 				local anim_size_fraction = math.catmullrom(size_fraction, 1.8, 0, 1, -1)
-				widgets.banner.style.texture_id.color[1] = anim_fraction*255
+				widgets.banner.style.texture_id.color[1] = 255 * anim_fraction
 				local banner_default_size = scenegraph_definition.end_screen_banner_victory.size
-				ui_scenegraph.end_screen_banner_victory.size[1] = banner_default_size[1] + banner_default_size[1]*3*anim_size_fraction
-				ui_scenegraph.end_screen_banner_victory.size[2] = banner_default_size[2] + banner_default_size[2]*3*anim_size_fraction
+				ui_scenegraph.end_screen_banner_victory.size[1] = banner_default_size[1] + banner_default_size[1] * 3 * anim_size_fraction
+				ui_scenegraph.end_screen_banner_victory.size[2] = banner_default_size[2] + banner_default_size[2] * 3 * anim_size_fraction
 
 				return 
 			end,
@@ -270,13 +270,13 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
-				local anim_font_size_fraction = math.ease_in_exp(progress - 1)
-				local alpha = anim_fraction*255
+				local anim_font_size_fraction = math.ease_in_exp(1 - progress)
+				local alpha = 255 * anim_fraction
 				local text_style = widgets.title_text.style.text
 				local text_shadow_style = widgets.title_text.style.text_shadow
 				text_style.text_color[1] = alpha
 				text_shadow_style.text_color[1] = alpha
-				local new_text_size = anim_font_size_fraction*100 + 100
+				local new_text_size = 100 + 100 * anim_font_size_fraction
 				text_style.font_size = new_text_size
 				text_shadow_style.font_size = new_text_size
 
@@ -296,10 +296,10 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeOutCubic(progress)
 				local alpha_fraction = math.ease_pulse(anim_fraction)
-				local alpha = alpha_fraction*255
+				local alpha = 255 * alpha_fraction
 				widgets.shine_1.style.texture_id.color[1] = alpha
 				local degrees = 90
-				widgets.shine_1.style.texture_id.angle = math.degrees_to_radians(degrees*anim_fraction)
+				widgets.shine_1.style.texture_id.angle = math.degrees_to_radians(degrees * anim_fraction)
 
 				return 
 			end,
@@ -317,10 +317,10 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeOutCubic(progress)
 				local alpha_fraction = math.ease_pulse(anim_fraction)
-				local alpha = alpha_fraction*255
+				local alpha = 255 * alpha_fraction
 				widgets.shine_2.style.texture_id.color[1] = alpha
 				local degrees = -90
-				widgets.shine_2.style.texture_id.angle = math.degrees_to_radians(degrees*anim_fraction + 75)
+				widgets.shine_2.style.texture_id.angle = math.degrees_to_radians(75 + degrees * anim_fraction)
 
 				return 
 			end,
@@ -337,7 +337,7 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeOutCubic(progress)
-				local alpha = anim_fraction*255
+				local alpha = 255 * anim_fraction
 				widgets.effect_1.style.texture_id.color[1] = alpha
 				widgets.effect_2.style.texture_id.color[1] = alpha
 
@@ -356,7 +356,7 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
-				params.draw_flags.banner_alpha_multiplier = anim_fraction - 1
+				params.draw_flags.banner_alpha_multiplier = 1 - anim_fraction
 
 				return 
 			end,
@@ -382,12 +382,12 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
-				local size_fraction = math.easeCubic(progress - 1)
+				local size_fraction = math.easeCubic(1 - progress)
 				local anim_size_fraction = math.catmullrom(size_fraction, 1.8, 0, 1, -1)
-				widgets.banner.style.texture_id.color[1] = anim_fraction*255
+				widgets.banner.style.texture_id.color[1] = 255 * anim_fraction
 				local banner_default_size = scenegraph_definition.end_screen_banner_defeat.size
-				ui_scenegraph.end_screen_banner_defeat.size[1] = banner_default_size[1] + banner_default_size[1]*3*anim_size_fraction
-				ui_scenegraph.end_screen_banner_defeat.size[2] = banner_default_size[2] + banner_default_size[2]*3*anim_size_fraction
+				ui_scenegraph.end_screen_banner_defeat.size[1] = banner_default_size[1] + banner_default_size[1] * 3 * anim_size_fraction
+				ui_scenegraph.end_screen_banner_defeat.size[2] = banner_default_size[2] + banner_default_size[2] * 3 * anim_size_fraction
 
 				return 
 			end,
@@ -404,13 +404,13 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
-				local anim_font_size_fraction = math.ease_in_exp(progress - 1)
-				local alpha = anim_fraction*255
+				local anim_font_size_fraction = math.ease_in_exp(1 - progress)
+				local alpha = 255 * anim_fraction
 				local text_style = widgets.title_text.style.text
 				local text_shadow_style = widgets.title_text.style.text_shadow
 				text_style.text_color[1] = alpha
 				text_shadow_style.text_color[1] = alpha
-				local new_text_size = anim_font_size_fraction*100 + 100
+				local new_text_size = 100 + 100 * anim_font_size_fraction
 				text_style.font_size = new_text_size
 				text_shadow_style.font_size = new_text_size
 
@@ -429,7 +429,7 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
-				local alpha = anim_fraction*255
+				local alpha = 255 * anim_fraction
 				widgets.effect_1.style.texture_id.color[1] = alpha
 
 				return 
@@ -447,7 +447,7 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.ease_out_quad(progress)
-				local alpha = anim_fraction*255
+				local alpha = 255 * anim_fraction
 				widgets.effect_2.style.texture_id.color[1] = alpha
 
 				return 
@@ -465,7 +465,7 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
-				params.draw_flags.banner_alpha_multiplier = anim_fraction - 1
+				params.draw_flags.banner_alpha_multiplier = 1 - anim_fraction
 
 				return 
 			end,
@@ -488,7 +488,7 @@ local animations = {
 				local anim_fraction = math.easeOutCubic(local_progress)
 				local widget = widgets[1]
 				local color = widget.style.rect.color
-				local alpha = anim_fraction*255
+				local alpha = 255 * anim_fraction
 				color[1] = alpha
 
 				return 
@@ -510,7 +510,7 @@ local animations = {
 				local anim_fraction = math.easeOutCubic(local_progress)
 				local widget = widgets[1]
 				local color = widget.style.rect.color
-				local alpha = anim_fraction*255 - 255
+				local alpha = 255 - anim_fraction * 255
 				color[1] = alpha
 
 				return 
@@ -534,8 +534,8 @@ local animations = {
 				params.draw_flags.draw_text = true
 				local anim_fraction = math.easeOutCubic(local_progress)
 				local widget = widgets[1]
-				widget.style.banner_effect_texture.color[1] = anim_fraction*255
-				widget.style.banner_texture.color[1] = anim_fraction*255
+				widget.style.banner_effect_texture.color[1] = anim_fraction * 255
+				widget.style.banner_texture.color[1] = anim_fraction * 255
 
 				return 
 			end,
@@ -553,8 +553,8 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
 				local anim_fraction = math.easeOutCubic(local_progress)
 				local widget = widgets[1]
-				widget.style.banner_effect_texture.color[1] = (anim_fraction - 1)*255
-				widget.style.banner_texture.color[1] = (anim_fraction - 1)*255
+				widget.style.banner_effect_texture.color[1] = (1 - anim_fraction) * 255
+				widget.style.banner_texture.color[1] = (1 - anim_fraction) * 255
 
 				return 
 			end,

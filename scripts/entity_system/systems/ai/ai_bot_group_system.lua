@@ -67,41 +67,41 @@ AIBotGroupSystem.init = function (self, context, system_name)
 	self._in_carry_event = false
 	local up = Vector3.up()
 	self._left_vectors_outside_volume = {
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*1)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*2)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*3)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*4)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*5)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*6)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*7)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*0)/8)))
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 1) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 2) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 3) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 4) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 5) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 6) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 7) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 0) / 8)))
 	}
 	self._right_vectors_outside_volume = {
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*1)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*2)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*3)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*4)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*5)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*6)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*7)/8)))
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 1) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 2) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 3) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 4) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 5) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 6) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 7) / 8)))
 	}
 	self._left_vectors = {
-		Vector3Box(Quaternion.forward(Quaternion(up, math.pi*0.5))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*5)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*3)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*6)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*2)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*7)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi*1)/8)))
+		Vector3Box(Quaternion.forward(Quaternion(up, math.pi * 0.5))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 5) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 3) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 6) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 2) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 7) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (math.pi * 1) / 8)))
 	}
 	self._right_vectors = {
-		Vector3Box(Quaternion.forward(Quaternion(up, -math.pi*0.5))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*5)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*3)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*6)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*2)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*7)/8))),
-		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi*1)/8)))
+		Vector3Box(Quaternion.forward(Quaternion(up, -math.pi * 0.5))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 5) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 3) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 6) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 2) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 7) / 8))),
+		Vector3Box(Quaternion.forward(Quaternion(up, (-math.pi * 1) / 8)))
 	}
 	self._available_health_pickups = {}
 	local mule_pickups = {}
@@ -317,7 +317,7 @@ AIBotGroupSystem._update_move_targets = function (self, dt, t)
 			average_bot_pos = average_bot_pos + POSITION_LOOKUP[unit]
 		end
 
-		average_bot_pos = average_bot_pos/num_bots
+		average_bot_pos = average_bot_pos / num_bots
 		selected_unit = self._find_closest_move_target(self, TEMP_PLAYER_UNITS, self._last_move_target_unit, average_bot_pos)
 	end
 
@@ -457,7 +457,7 @@ AIBotGroupSystem._find_most_lonely_move_target = function (self, targets, origin
 		local sq_dist = Vector3.distance_squared(position1, origin)
 
 		if LONELINESS_FAR_AWAY_DISTANCE_SQ < sq_dist then
-			loneliness = -sq_dist*LONELINESS_FAR_AWAY_MODIFIER
+			loneliness = -sq_dist * LONELINESS_FAR_AWAY_MODIFIER
 		else
 			loneliness = 0
 		end
@@ -610,7 +610,7 @@ AIBotGroupSystem._assign_destination_points = function (self, bot_ai_data, point
 		local pos = POSITION_LOOKUP[unit]
 
 		for i, point in ipairs(points) do
-			utility[i] = math.sqrt(math.max(0.001, Vector3.distance(pos, point)))/1
+			utility[i] = 1 / math.sqrt(math.max(0.001, Vector3.distance(pos, point)))
 		end
 
 		units[#units + 1] = unit
@@ -654,7 +654,7 @@ AIBotGroupSystem._calculate_center_of_volume = function (self, volume_mapping)
 		center_pos = center_pos + Vector3(point[1], point[2], point[3])
 	end
 
-	center_pos = center_pos/#volume_mapping.bottom_points
+	center_pos = center_pos / #volume_mapping.bottom_points
 	local longest_distance_sq = 0
 
 	for _, point in pairs(volume_mapping.bottom_points) do
@@ -720,7 +720,7 @@ local function add_points(points, from_pos, to_pos, amount)
 	end
 
 	for i = 1, amount, 1 do
-		local pos = Vector3.lerp(from_pos, to_pos, i/amount)
+		local pos = Vector3.lerp(from_pos, to_pos, i / amount)
 		points[#points + 1] = pos
 	end
 
@@ -742,7 +742,7 @@ AIBotGroupSystem._find_points = function (self, nav_world, origin_point, rotatio
 		-- decompilation error in this vicinity
 		right_index = right_index + 1
 		local distance, hit_pos = self._raycast(self, nav_world, origin_point, Quaternion.rotate(rotation, right_vectors[right_index]:unbox()), range)
-		local num_points = math.floor(distance/space_per_player)
+		local num_points = math.floor(distance / space_per_player)
 
 		add_points(points, origin_point, hit_pos, num_points)
 
@@ -756,22 +756,22 @@ end
 local SPACE_NEEDED = 0.25
 AIBotGroupSystem._raycast = function (self, nav_world, point, vector, range)
 	local ray_range = range + SPACE_NEEDED
-	local to = point + vector*ray_range
+	local to = point + vector * ray_range
 	local success, pos = GwNavQueries.raycast(nav_world, point, to)
 
 	if script_data.ai_bots_debug then
-		QuickDrawer:line(point, point + vector*ray_range + Vector3(0, 0, 0.1), Color(255, 0, 0))
+		QuickDrawer:line(point, point + vector * ray_range + Vector3(0, 0, 0.1), Color(255, 0, 0))
 	end
 
 	if success then
-		return range, pos - vector*SPACE_NEEDED, true
+		return range, pos - vector * SPACE_NEEDED, true
 	else
 		local distance = Vector3.length(Vector3.flat(pos - point))
 
 		if distance < SPACE_NEEDED then
 			return 0, point, false
 		else
-			return distance - SPACE_NEEDED, pos - vector*SPACE_NEEDED, success
+			return distance - SPACE_NEEDED, pos - vector * SPACE_NEEDED, success
 		end
 	end
 
@@ -951,7 +951,7 @@ AIBotGroupSystem._can_revive_with_urgent_target = function (self, bot_unit, self
 		return not hit_by_projectile and revive_min_distance_sq < distance_squared
 	else
 		is_bot_target = urgent_target_blackboard.target_unit == bot_unit
-		revive_min_distance_sq = revive_min_distance_sq*((is_bot_target and 4) or 1)
+		revive_min_distance_sq = revive_min_distance_sq * ((is_bot_target and 4) or 1)
 
 		return revive_min_distance_sq < distance_squared
 	end
@@ -1015,7 +1015,7 @@ AIBotGroupSystem._calculate_opportunity_utility = function (self, bot_unit, self
 	end
 
 	stickyness_modifier = (potential_target == current_target and STICKYNESS_DISTANCE_MODIFIER) or 0
-	local proximity = (distance + stickyness_modifier)/1
+	local proximity = 1 / (distance + stickyness_modifier)
 
 	return proximity, distance
 end
@@ -1025,7 +1025,7 @@ AIBotGroupSystem._update_pickups = function (self, dt, t)
 	Profiler.start("do overlaps")
 
 	if self._update_pickups_at < t then
-		self._update_pickups_at = t + 0.15 + Math.random()*0.1
+		self._update_pickups_at = t + 0.15 + Math.random() * 0.1
 		local last_key = self._last_key_in_available_pickups
 
 		if last_key ~= nil and not players[last_key] then
@@ -1176,7 +1176,7 @@ local function find_permutation(current_bot_index, current_utility, solution, be
 		for unit, pos in pairs(health_item_list) do
 			if health_item_lookup[unit] then
 				local stickiness_modifier = (current_pickup == unit and STICKINESS) or 0
-				local utility = (current_utility + Vector3.distance_squared(bot_pos, pos)) - stickiness_modifier - bot_hp*HP_DISTANCE_MODIFIER
+				local utility = (current_utility + Vector3.distance_squared(bot_pos, pos)) - stickiness_modifier - bot_hp * HP_DISTANCE_MODIFIER
 				health_item_lookup[unit] = nil
 				solution[current_bot_index] = unit
 				best_utility = find_permutation(current_bot_index + 1, utility, solution, best_utility, best_solution, empties_left, health_item_lookup, health_item_list, num_valid_bots)
@@ -1391,7 +1391,7 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 			local hp_percent = health_extension.current_health_percent(health_extension)
 
 			if status_ext.is_wounded(status_ext) then
-				hp_percent = hp_percent/3
+				hp_percent = hp_percent / 3
 			end
 
 			BOT_HEALTH[num_valid_bots] = hp_percent
@@ -1543,7 +1543,7 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 	table.clear(HEALTH_ITEMS_TEMP)
 	table.clear(AUXILIARY_HEALTH_SLOT_ITEMS_TEMP)
 
-	if not self._in_carry_event and more_items_than_players and lowest_hp_bot_has_item and math.min(lowest_bot_health_procent*1.2, 1) < lowest_human_hp_percent then
+	if not self._in_carry_event and more_items_than_players and lowest_hp_bot_has_item and math.min(lowest_bot_health_procent * 1.2, 1) < lowest_human_hp_percent then
 		lowest_hp_bot_blackboard.force_use_health_pickup = true
 	end
 
@@ -1552,7 +1552,7 @@ end
 AIBotGroupSystem._calculate_priority_target_utility = function (self, self_position, target, time, current_target)
 	local stickyness_modifier = (target == current_target and STICKYNESS_DISTANCE_MODIFIER) or 0
 	local distance = math.max(Vector3.distance(self_position, POSITION_LOOKUP[target]), 1)
-	local proximity = (distance + stickyness_modifier)/1
+	local proximity = 1 / (distance + stickyness_modifier)
 	local duration = time
 
 	return proximity + duration, distance
@@ -1836,7 +1836,7 @@ local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_heig
 	local bot_z = bot_position.z
 	local offset_x = bot_x - x
 	local offset_y = bot_y - y
-	local flat_dist_from_center = math.sqrt(offset_x*offset_x + offset_y*offset_y)
+	local flat_dist_from_center = math.sqrt(offset_x * offset_x + offset_y * offset_y)
 	local radius = math.max(size.x, size.y)
 	local half_height = size.z
 
@@ -1845,7 +1845,7 @@ local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_heig
 		local drawer = Managers.state.debug:drawer(debug_drawer_info)
 
 		drawer.reset(drawer)
-		drawer.cylinder(drawer, cylinder_position, cylinder_position + Vector3.up()*2*half_height, radius, Colors.get("red"))
+		drawer.cylinder(drawer, cylinder_position, cylinder_position + Vector3.up() * 2 * half_height, radius, Colors.get("red"))
 	end
 
 	if flat_dist_from_center <= radius + bot_radius and z - bot_height - half_height < bot_z and bot_z < z + half_height then
@@ -1855,10 +1855,10 @@ local function detect_cylinder(nav_world, traverse_logic, bot_position, bot_heig
 		if flat_dist_from_center < EPSILON then
 			escape_dir = Vector3(0, 1, 0)
 		else
-			escape_dir = Vector3(offset_x/flat_dist_from_center, offset_y/flat_dist_from_center, 0)
+			escape_dir = Vector3(offset_x / flat_dist_from_center, offset_y / flat_dist_from_center, 0)
 		end
 
-		local to = bot_position + escape_dir*escape_dist
+		local to = bot_position + escape_dir * escape_dist
 		local above = 2
 		local below = 2
 		local success, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
@@ -1884,7 +1884,7 @@ local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height
 	local bot_z = bot_position.z
 	local offset_x = bot_x - sphere_x
 	local offset_y = bot_y - sphere_y
-	local flat_dist_from_center = math.sqrt(offset_x*offset_x + offset_y*offset_y)
+	local flat_dist_from_center = math.sqrt(offset_x * offset_x + offset_y * offset_y)
 
 	if script_data.ai_bots_aoe_threat_debug then
 		local sphere_position = Vector3(sphere_x, sphere_y, sphere_z)
@@ -1903,10 +1903,10 @@ local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height
 		if flat_dist_from_center < EPSILON then
 			escape_dir = Vector3(0, 1, 0)
 		else
-			escape_dir = Vector3(offset_x/flat_dist_from_center, offset_y/flat_dist_from_center, 0)
+			escape_dir = Vector3(offset_x / flat_dist_from_center, offset_y / flat_dist_from_center, 0)
 		end
 
-		local to = bot_position + escape_dir*escape_dist
+		local to = bot_position + escape_dir * escape_dist
 		local above = 2
 		local below = 2
 		local success, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)
@@ -1927,7 +1927,7 @@ local function detect_sphere(nav_world, traverse_logic, bot_position, bot_height
 end
 
 local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, bot_radius, x, y, z, rotation, extents)
-	local half_bot_height = bot_height*0.5
+	local half_bot_height = bot_height * 0.5
 	local offset = bot_position - Vector3(x, y, z - half_bot_height)
 	local right_vector = Quaternion.right(rotation)
 	local x_offset = Vector3.dot(right_vector, offset)
@@ -1950,11 +1950,11 @@ local function detect_oobb(nav_world, traverse_logic, bot_position, bot_height, 
 	end
 
 	local area_damage_system = Managers.state.entity:system("area_damage_system")
-	local sign = (x_offset == 0 and math.random(0, 1)*2 - 1) or math.sign(x_offset)
+	local sign = (x_offset == 0 and 1 - math.random(0, 1) * 2) or math.sign(x_offset)
 	local to_direction = nil
 
 	for i = 1, 2, 1 do
-		local to = bot_position - x_offset*right_vector + sign*(bot_radius + extents_x)*right_vector
+		local to = bot_position - x_offset * right_vector + sign * (bot_radius + extents_x) * right_vector
 		local above = 2
 		local below = 2
 		local on_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, to, above, below)

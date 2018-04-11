@@ -297,8 +297,8 @@ local action_data = {
 			15,
 			15
 		},
-		radial_speed_feet_shooting = math.pi*0.725,
-		radial_speed_upper_body_shooting = math.pi*0.35,
+		radial_speed_feet_shooting = math.pi * 0.725,
+		radial_speed_upper_body_shooting = math.pi * 0.35,
 		line_of_fire_nav_obstacle_half_extents = Vector3Box(1, 25, 1),
 		arc_of_sight_nav_obstacle_half_extents = Vector3Box(5, 5, 1),
 		ignore_staggers = {

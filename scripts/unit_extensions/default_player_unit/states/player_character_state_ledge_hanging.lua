@@ -106,10 +106,10 @@ PlayerCharacterStateLedgeHanging.update = function (self, unit, input, dt, conte
 
 	if self.position_lerp_timer then
 		self.position_lerp_timer = self.position_lerp_timer + dt
-		local percentage_in_lerp = math.clamp(self.position_lerp_timer/self.time_for_position_lerp, 0, 1)
+		local percentage_in_lerp = math.clamp(self.position_lerp_timer / self.time_for_position_lerp, 0, 1)
 		local start_position = self.lerp_start_position:unbox()
 		local target_position = self.lerp_target_position:unbox()
-		local new_position = start_position + (target_position - start_position)*percentage_in_lerp
+		local new_position = start_position + (target_position - start_position) * percentage_in_lerp
 
 		locomotion_extension.teleport_to(locomotion_extension, new_position)
 
@@ -146,25 +146,20 @@ PlayerCharacterStateLedgeHanging.calculate_start_position = function (self)
 	local finger_box_rotation = Unit.world_rotation(ledge_unit, node)
 	local finger_box_scale = Unit.local_scale(ledge_unit, node)
 	local finger_box_right_vector = Quaternion.right(finger_box_rotation)
-
-	print("Before", position_offset_amount)
-
-	local player_hands_safe = global_unit_scale.x/1*0.3*finger_box_scale.x/1 - 1
+	local player_hands_safe = 1 - 0.3 * 1 / global_unit_scale.x * 1 / finger_box_scale.x
 
 	if player_hands_safe <= math.abs(position_offset_amount) then
 		position_offset_amount = (0 <= position_offset_amount and player_hands_safe) or -player_hands_safe
 	end
 
-	print("After", position_offset_amount)
-
-	position_offset_amount = position_offset_amount*global_unit_scale.x*finger_box_scale.x
-	local new_position = finger_box_position + finger_box_right_vector*position_offset_amount
+	position_offset_amount = position_offset_amount * global_unit_scale.x * finger_box_scale.x
+	local new_position = finger_box_position + finger_box_right_vector * position_offset_amount
 	local distance = Vector3.distance(current_position, new_position)
 
 	self.lerp_start_position:store(current_position)
 	self.lerp_target_position:store(new_position)
 
-	self.time_for_position_lerp = distance*movement_settings_table.ledge_hanging.attach_position_lerp_time_per_meter
+	self.time_for_position_lerp = distance * movement_settings_table.ledge_hanging.attach_position_lerp_time_per_meter
 	self.position_lerp_timer = 0
 
 	ScriptUnit.extension(unit, "whereabouts_system"):set_new_hang_ledge_position(finger_box_position)
@@ -192,11 +187,11 @@ PlayerCharacterStateLedgeHanging.calculate_offset_rotation = function (self)
 	local rotation = Unit.local_rotation(unit, 0)
 	local to_player = Quaternion.forward(rotation)
 	local ledge_position = self.lerp_target_position:unbox()
-	local ray_origin_offset = Vector3.up()*0.25
-	local ray_origin_position = ledge_position + to_player*0.25 + ray_origin_offset
+	local ray_origin_offset = Vector3.up() * 0.25
+	local ray_origin_position = ledge_position + to_player * 0.25 + ray_origin_offset
 	local physics_world = World.physics_world(self.world)
 	local is_in_line_of_sight = PerceptionUtils.is_position_in_line_of_sight
-	local below_player_position = ray_origin_position - Vector3.up()*2.25
+	local below_player_position = ray_origin_position - Vector3.up() * 2.25
 	local ray_1_succeded, ray_1_position = is_in_line_of_sight(unit, ray_origin_position, below_player_position, physics_world)
 
 	if not ray_1_succeded then
@@ -204,7 +199,7 @@ PlayerCharacterStateLedgeHanging.calculate_offset_rotation = function (self)
 		local num_rays = 5
 
 		for i = 1, num_rays, 1 do
-			ray_goal_position = below_player_position + to_player*0.5*i
+			ray_goal_position = below_player_position + to_player * 0.5 * i
 			ray_succeded, hit_position = is_in_line_of_sight(unit, ray_origin_position, ray_goal_position, physics_world)
 
 			if script_data.debug_hang_ledges then

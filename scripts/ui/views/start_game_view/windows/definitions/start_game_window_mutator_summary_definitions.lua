@@ -4,7 +4,7 @@ local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_text_width = window_size[1] - (window_frame_width*2 + 60)
+local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local game_option_size = {
 	window_size[1] - 20,
 	700
@@ -172,10 +172,10 @@ local function create_placeholder_option(scenegraph_id, size)
 				uvs = {
 					{
 						0,
-						math.min(size[2]/background_texture_settings.size[2], 1) - 1
+						1 - math.min(size[2] / background_texture_settings.size[2], 1)
 					},
 					{
-						math.min(size[1]/background_texture_settings.size[1], 1),
+						math.min(size[1] / background_texture_settings.size[1], 1),
 						1
 					}
 				},
@@ -290,7 +290,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

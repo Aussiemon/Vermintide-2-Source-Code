@@ -10,7 +10,7 @@ AICommanderSystem.init = function (self, context, name)
 	self.commander_cooldown = 5
 	self.last_update_t = 0
 	local update_frequency = 2
-	self.update_cooldown = update_frequency/1
+	self.update_cooldown = 1 / update_frequency
 	self.last_slot_count = 0
 
 	return 
@@ -104,7 +104,7 @@ AICommanderSystem.command_noncore_rats = function (self, t)
 					local distance_to_special_sq = Vector3.distance_squared(commander_position, special_position)
 
 					if 4 < distance_to_special_sq then
-						local commander_score = distance_to_special_sq/1
+						local commander_score = 1 / distance_to_special_sq
 
 						if best_commander_score < commander_score then
 							best_commander_score = commander_score
@@ -156,7 +156,7 @@ AICommanderSystem.command_core_rats = function (self, t)
 				local nearby_ais_n = AiUtils.broadphase_query(commander_position, 10, nearby_ais)
 				nearby_ais_n = nearby_ais_n - 1
 				local distance_to_target_player = Vector3.distance_squared(commander_position, player_pos)
-				local commander_score = (nearby_ais_n*nearby_ais_n)/distance_to_target_player
+				local commander_score = (nearby_ais_n * nearby_ais_n) / distance_to_target_player
 
 				if distance_to_target_player < 16 then
 					commander_score = 0

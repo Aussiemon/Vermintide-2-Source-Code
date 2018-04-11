@@ -159,7 +159,7 @@ BTNinjaApproachAction.run = function (self, unit, blackboard, t, dt)
 			if dist < breed.jump_range then
 				blackboard.skulk_jump_tries = blackboard.skulk_jump_tries + 1
 				local rand = math.random()
-				local growing_aggro = rand < blackboard.skulk_jump_tries/3
+				local growing_aggro = rand < blackboard.skulk_jump_tries / 3
 
 				if growing_aggro then
 					blackboard.in_los = self.check_free_los(self, unit, blackboard)
@@ -353,20 +353,20 @@ BTNinjaApproachAction.dodge = function (self, unit, blackboard, dodge_vec, aim_v
 		left_right = -left_right
 	end
 
-	local dodge_dir = left_right*2 + normalized_velocity
-	local dodge_pos = pos + dodge_dir*dodge_dist
+	local dodge_dir = left_right * 2 + normalized_velocity
+	local dodge_pos = pos + dodge_dir * dodge_dist
 
 	if self.try_dodge_pos(self, unit, blackboard, pos, dodge_pos) then
-		local pass_check_pos = pos + dodge_dir*dodge_dist_check
+		local pass_check_pos = pos + dodge_dir * dodge_dist_check
 		blackboard.dodge_pos = Vector3Box(pass_check_pos)
 
 		return 
 	end
 
-	dodge_pos = pos - dodge_dir*dodge_dist
+	dodge_pos = pos - dodge_dir * dodge_dist
 
 	if self.try_dodge_pos(self, unit, blackboard, pos, dodge_pos) then
-		local pass_check_pos = pos - dodge_dir*dodge_dist_check
+		local pass_check_pos = pos - dodge_dir * dodge_dist_check
 		blackboard.dodge_pos = Vector3Box(pass_check_pos)
 	end
 
@@ -463,7 +463,7 @@ BTNinjaApproachAction.check_high_point_on_line = function (self, nav_world, from
 	dist_left_to_rat = dist_left_to_rat or math.floor(Vector3.distance(p1, rat_pos))
 
 	for i = 2, dist_left_to_rat + 1, 1 do
-		local check_height_pos = from_pos + dir*i
+		local check_height_pos = from_pos + dir * i
 		local success, z = GwNavQueries.triangle_from_position(nav_world, check_height_pos, above, below)
 
 		QuickDrawer:sphere(check_height_pos, 0.2, Color(255, 255, 0))
@@ -488,9 +488,9 @@ BTNinjaApproachAction.get_new_goal = function (self, unit, blackboard, t)
 		local min_dist = 10
 		local max_dist = 15
 		local dir = blackboard.skulk_around_dir
-		dir = dir or math.random(0, 1)*2 - 1
+		dir = dir or 1 - math.random(0, 1) * 2
 		blackboard.skulk_around_dir = dir
-		local angle = math.random(10, 35)*dir
+		local angle = math.random(10, 35) * dir
 		local max_tries = 5
 		pos = LocomotionUtils.outside_goal(blackboard.nav_world, POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit], min_dist, max_dist, angle, max_tries)
 

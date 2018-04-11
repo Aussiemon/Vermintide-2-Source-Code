@@ -75,13 +75,13 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 		self.damage_profile = damage_profile
 		local cleave_distribution = damage_profile.cleave_distribution or DefaultCleaveDistribution
 		local cleave_range = Cleave.max - Cleave.min
-		local cleave_power_level = ActionUtils.scale_powerlevels(power_level, "cleave")
-		local attack_cleave_power_level = cleave_power_level*cleave_distribution.attack
+		local cleave_power_level = ActionUtils.scale_powerlevels(power_level, "cleave", unit)
+		local attack_cleave_power_level = cleave_power_level * cleave_distribution.attack
 		local attack_percentage = DamageUtils.get_power_level_percentage(attack_cleave_power_level)
-		local max_targets_attack = cleave_range*attack_percentage
-		local impact_cleave_power_level = cleave_power_level*cleave_distribution.impact
+		local max_targets_attack = cleave_range * attack_percentage
+		local impact_cleave_power_level = cleave_power_level * cleave_distribution.impact
 		local impact_percentage = DamageUtils.get_power_level_percentage(impact_cleave_power_level)
-		local max_targets_impact = cleave_range*impact_percentage
+		local max_targets_impact = cleave_range * impact_percentage
 		self.max_targets_attack = max_targets_attack
 		self.max_targets_impact = max_targets_impact
 		self.max_targets = (max_targets_impact < max_targets_attack and max_targets_attack) or max_targets_impact
@@ -302,16 +302,16 @@ PlayerCharacterStateLunging._move_on_ground = function (self, unit, dt, t, lunge
 		speed = speed_function(lunge_time, duration)
 	else
 		local max_speed = lunge_data.initial_speed
-		speed = math.lerp(lunge_data.initial_speed, lunge_data.falloff_to_speed, math.min(lunge_time/duration, 1))
+		speed = math.lerp(lunge_data.initial_speed, lunge_data.falloff_to_speed, math.min(lunge_time / duration, 1))
 	end
 
 	local base_speed = 1
 
 	if base_speed < speed then
-		locomotion_extension.set_wanted_velocity(locomotion_extension, move_direction*base_speed)
-		locomotion_extension.set_script_movement_time_scale(locomotion_extension, speed/base_speed)
+		locomotion_extension.set_wanted_velocity(locomotion_extension, move_direction * base_speed)
+		locomotion_extension.set_script_movement_time_scale(locomotion_extension, speed / base_speed)
 	else
-		locomotion_extension.set_wanted_velocity(locomotion_extension, move_direction*speed)
+		locomotion_extension.set_wanted_velocity(locomotion_extension, move_direction * speed)
 	end
 
 	return lunge_time < duration
@@ -337,23 +337,23 @@ PlayerCharacterStateLunging._move_in_air = function (self, unit, dt, t, lunge_da
 		speed = speed_function(lunge_time, duration)
 	else
 		local max_speed = lunge_data.initial_speed
-		speed = math.lerp(lunge_data.initial_speed, lunge_data.falloff_to_speed, math.min(lunge_time/duration, 1))
+		speed = math.lerp(lunge_data.initial_speed, lunge_data.falloff_to_speed, math.min(lunge_time / duration, 1))
 	end
 
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local prev_move_velocity = Vector3.flat(locomotion_extension.current_velocity(locomotion_extension))
-	local new_move_velocity = prev_move_velocity + move_direction*speed
+	local new_move_velocity = prev_move_velocity + move_direction * speed
 	local new_move_speed = Vector3.length(new_move_velocity)
 	local new_move_direction = Vector3.normalize(new_move_velocity)
 
-	locomotion_extension.set_wanted_velocity(locomotion_extension, new_move_direction*speed)
+	locomotion_extension.set_wanted_velocity(locomotion_extension, new_move_direction * speed)
 
 	return lunge_time < duration
 end
 PlayerCharacterStateLunging._parse_attack_data = function (self, damage_settings)
 	local career_power_level = self.career_extension:get_career_power_level()
 	local power_level_multiplier = damage_settings.power_level_multiplier
-	local power_level = career_power_level*power_level_multiplier
+	local power_level = career_power_level * power_level_multiplier
 	local damage_profile_name = damage_settings.damage_profile or "default"
 	local damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
 	local hit_zone_hit_name = damage_settings.hit_zone_hit_name
@@ -369,7 +369,7 @@ PlayerCharacterStateLunging._calculate_hit_mass = function (self, shield_blocked
 
 		if action_mass_override and action_mass_override[breed.name] then
 			local mass_cost_multiplier = current_action.hit_mass_count[breed.name]
-			hit_mass_total = hit_mass_total*(mass_cost_multiplier or 1)
+			hit_mass_total = hit_mass_total * (mass_cost_multiplier or 1)
 		end
 
 		self.amount_of_mass_hit = self.amount_of_mass_hit + hit_mass_total
@@ -381,17 +381,17 @@ PlayerCharacterStateLunging._calculate_hit_mass = function (self, shield_blocked
 end
 PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage_data)
 	local padding = damage_data.depth_padding
-	local half_width = damage_data.width*0.5
-	local half_height = damage_data.height*0.5
+	local half_width = 0.5 * damage_data.width
+	local half_height = 0.5 * damage_data.height
 	local debug = false
 	local new_pos = POSITION_LOOKUP[unit]
 	local old_pos = self._last_position:unbox()
 	local delta_move = new_pos - old_pos
-	local half_length = Vector3.length(delta_move)*0.5 + padding
+	local half_length = Vector3.length(delta_move) * 0.5 + padding
 	local rot = Quaternion.look(delta_move, Vector3.up())
 	local first_person_extension = self.first_person_extension
 	local forward_direction = Quaternion.forward(first_person_extension.current_rotation(first_person_extension))
-	local mid_pos = (new_pos + old_pos)*0.5 + Vector3(0, 0, half_height) + (damage_data.offset_forward or 0)*forward_direction
+	local mid_pos = (new_pos + old_pos) * 0.5 + Vector3(0, 0, half_height) + (damage_data.offset_forward or 0) * forward_direction
 	local size = Vector3(half_width, half_length, half_height)
 	local collision_filter = damage_data.collision_filter
 	local actors, num_actors = PhysicsWorld.immediate_overlap(self.physics_world, "shape", "oobb", "position", mid_pos, "rotation", rot, "size", size, "collision_filter", collision_filter, "use_global_table")
@@ -452,10 +452,10 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 				if damage_data.stagger_angles then
 					local owner_to_hit_dir = Vector3.normalize(hit_unit_pos - new_pos)
 					local cross = Vector3.cross(Vector3.flat(owner_to_hit_dir), Vector3.flat(forward_direction))
-					local additional_stagger_angle = Math.random(damage_data.stagger_angles.min, damage_data.stagger_angles.max)*((cross.z < 0 and -1) or 1)
+					local additional_stagger_angle = Math.random(damage_data.stagger_angles.min, damage_data.stagger_angles.max) * ((cross.z < 0 and -1) or 1)
 					local new_attack_direction = attack_direction
-					new_attack_direction.x = math.cos(additional_stagger_angle)*attack_direction.x - math.sin(additional_stagger_angle)*attack_direction.y
-					new_attack_direction.y = math.sin(additional_stagger_angle)*attack_direction.x + math.cos(additional_stagger_angle)*attack_direction.y
+					new_attack_direction.x = math.cos(additional_stagger_angle) * attack_direction.x - math.sin(additional_stagger_angle) * attack_direction.y
+					new_attack_direction.y = math.sin(additional_stagger_angle) * attack_direction.x + math.cos(additional_stagger_angle) * attack_direction.y
 					final_stagger_direction = Vector3.normalize(new_attack_direction)
 				else
 					final_stagger_direction = attack_direction
@@ -465,7 +465,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 				local damage_source_id = NetworkLookup.damage_sources[damage_source]
 				local actual_hit_target_index = nil
 				local shield_break_procc = false
-				local boost_curve_multiplier = false
+				local boost_curve_multiplier = 0
 				local is_critical_strike = false
 				local can_damage = true
 				local can_stagger = true
@@ -517,7 +517,7 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 		local unit = self.unit
 		local attacker_unit_id = network_manager.unit_game_object_id(network_manager, unit)
 		local radius = blast_damage_data.radius
-		local blast_pos = new_pos + forward_direction*radius
+		local blast_pos = new_pos + forward_direction * radius
 		local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", blast_pos, "size", radius, "collision_filter", collision_filter, "use_global_table")
 
 		table.clear(hit_units)
@@ -536,7 +536,7 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 					local damage_source = "career_ability"
 					local damage_source_id = NetworkLookup.damage_sources[damage_source]
 					local attack_direction = Vector3.normalize(blast_pos - POSITION_LOOKUP[hit_unit])
-					local boost_curve_multiplier = 1
+					local boost_curve_multiplier = 0
 					local actual_hit_target_index = nil
 					local shield_blocked = not ignore_shield and AiUtils.attack_is_shield_blocked(hit_unit, unit)
 					local shield_break_procc = false

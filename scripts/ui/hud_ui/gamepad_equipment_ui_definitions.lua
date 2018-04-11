@@ -212,21 +212,6 @@ local scenegraph_definition = {
 		}
 	}
 }
-local inventory_slot_backgrounds = {
-	wpn_grimoire_01 = "hud_inventory_slot_bg_04",
-	potion_speed_boost_01 = "hud_inventory_slot_bg_05",
-	potion_healing_draught_01 = "hud_inventory_slot_bg_03",
-	grenade_frag_02 = "hud_inventory_slot_bg_02",
-	grenade_smoke_01 = "hud_inventory_slot_bg_02",
-	grenade_frag_01 = "hud_inventory_slot_bg_02",
-	grenade_smoke_02 = "hud_inventory_slot_bg_02",
-	grenade_fire_01 = "hud_inventory_slot_bg_02",
-	grenade_fire_02 = "hud_inventory_slot_bg_02",
-	default = "hud_inventory_slot_bg_01",
-	wpn_side_objective_tome_01 = "hud_inventory_slot_bg_04",
-	potion_damage_boost_01 = "hud_inventory_slot_bg_05",
-	healthkit_first_aid_kit_01 = "hud_inventory_slot_bg_03"
-}
 
 local function create_weapon_slot_widget(scenegraph_id)
 	local frame_settings = UIFrameSettings.menu_frame_06
@@ -251,7 +236,7 @@ local function create_weapon_slot_widget(scenegraph_id)
 					texture_id = "melee_weapon_texture_id",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return content.wielded_slot == "slot_melee"
+						return content.wielded_slot == "melee"
 					end
 				},
 				{
@@ -260,7 +245,7 @@ local function create_weapon_slot_widget(scenegraph_id)
 					texture_id = "deselected_weapon_texture_id",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return content.wielded_slot ~= "slot_melee" and content.wielded_slot ~= "slot_ranged"
+						return content.wielded_slot ~= "melee" and content.wielded_slot ~= "ranged"
 					end
 				},
 				{
@@ -269,19 +254,26 @@ local function create_weapon_slot_widget(scenegraph_id)
 					texture_id = "ranged_weapon_texture_id",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return content.wielded_slot == "slot_ranged"
+						return content.wielded_slot == "ranged"
 					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "highlight_weapon_texture",
+					texture_id = "highlight_weapon_texture_id",
+					retained_mode = RETAINED_MODE_ENABLED
 				}
 			}
 		},
 		content = {
-			ranged_weapon_texture_id = "weapon_generic_icon_range",
-			melee_weapon_texture_id = "weapon_generic_icon_melee",
-			visible = true,
 			background_texture_id = "hud_inventory_slot_bg_01",
 			deselected_weapon_texture_id = "weapon_generic_icon_melee_deselected",
-			is_expired = false,
+			visible = true,
 			selected = false,
+			is_expired = false,
+			highlight_weapon_texture_id = "hud_inventory_slot_selection",
+			melee_weapon_texture_id = "weapon_generic_icon_melee",
+			ranged_weapon_texture_id = "weapon_generic_icon_range",
 			weapon_frame = frame_settings.texture
 		},
 		style = {
@@ -314,7 +306,7 @@ local function create_weapon_slot_widget(scenegraph_id)
 				offset = {
 					0,
 					0,
-					-32
+					-33
 				},
 				size = {
 					300,
@@ -351,6 +343,30 @@ local function create_weapon_slot_widget(scenegraph_id)
 					1
 				}
 			},
+			highlight_weapon_texture = {
+				vertical_alignment = "bottom",
+				angle = 0,
+				horizontal_alignment = "center",
+				pivot = {
+					18,
+					23
+				},
+				color = {
+					192,
+					255,
+					255,
+					255
+				},
+				texture_size = {
+					277,
+					20
+				},
+				offset = {
+					14,
+					4,
+					-32
+				}
+			},
 			deselected_weapon = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
@@ -380,10 +396,10 @@ local function create_slot_widget(index, total_amount)
 	local actual_index = index - 1
 	local spacing = 0
 	local slot_width = slot_size[1]
-	local total_slot_width = slot_width*total_amount
-	local total_width = total_slot_width + spacing*(total_amount - 1)
+	local total_slot_width = slot_width * total_amount
+	local total_width = total_slot_width + spacing * (total_amount - 1)
 	local frame_offset = {
-		actual_index*(slot_width + spacing),
+		actual_index * (slot_width + spacing),
 		0,
 		-30
 	}
@@ -419,6 +435,11 @@ local function create_slot_widget(index, total_amount)
 					pass_type = "texture",
 					style_id = "texture_background",
 					texture_id = "texture_background",
+					retained_mode = RETAINED_MODE_ENABLED
+				},
+				{
+					style_id = "rect_background",
+					pass_type = "rect",
 					retained_mode = RETAINED_MODE_ENABLED
 				},
 				{
@@ -555,7 +576,7 @@ local function create_slot_widget(index, total_amount)
 				offset = {
 					0,
 					0,
-					1
+					5
 				}
 			},
 			texture_frame = {
@@ -621,7 +642,7 @@ local function create_slot_widget(index, total_amount)
 			texture_arrow_up = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
-				angle = math.pi*0.5,
+				angle = math.pi * 0.5,
 				pivot = {
 					10,
 					15
@@ -688,7 +709,7 @@ local function create_slot_widget(index, total_amount)
 			texture_arrow_selected_up = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
-				angle = math.pi*0.5,
+				angle = math.pi * 0.5,
 				pivot = {
 					10,
 					15
@@ -781,12 +802,23 @@ local function create_slot_widget(index, total_amount)
 				horizontal_alignment = "center",
 				texture_size = slot_icon_size,
 				color = {
-					255,
+					0,
 					255,
 					255,
 					255
 				},
 				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			rect_background = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				rect_size = slot_icon_size,
+				color = {
+					255,
 					0,
 					0,
 					0
@@ -864,6 +896,12 @@ local ammo_text_center_style = {
 local widget_definitions = {
 	background_panel = UIWidgets.create_simple_texture("hud_inventory_panel", "background_panel", nil, RETAINED_MODE_ENABLED),
 	background_panel_bg = UIWidgets.create_simple_texture("hud_inventory_panel_bg", "background_panel_bg", nil, RETAINED_MODE_ENABLED),
+	weapon_slot = create_weapon_slot_widget("weapon_slot")
+}
+local ammo_widget_definitions = {
+	ammo_text_clip = UIWidgets.create_simple_text("-", "ammo_text_clip", nil, nil, ammo_text_clip_style, nil, RETAINED_MODE_ENABLED),
+	ammo_text_remaining = UIWidgets.create_simple_text("-", "ammo_text_remaining", nil, nil, ammo_text_remaining_style, nil, RETAINED_MODE_ENABLED),
+	ammo_text_center = UIWidgets.create_simple_text("/", "ammo_text_center", nil, nil, ammo_text_center_style, nil, RETAINED_MODE_ENABLED),
 	ammo_background = UIWidgets.create_simple_texture("loot_objective_bg", "ammo_background", nil, RETAINED_MODE_ENABLED, {
 		200,
 		255,
@@ -880,13 +918,7 @@ local widget_definitions = {
 			1,
 			1
 		}
-	}, "overcharge", nil, RETAINED_MODE_ENABLED),
-	weapon_slot = create_weapon_slot_widget("weapon_slot")
-}
-local ammo_widget_definitions = {
-	ammo_text_clip = UIWidgets.create_simple_text("-", "ammo_text_clip", nil, nil, ammo_text_clip_style, nil, RETAINED_MODE_ENABLED),
-	ammo_text_remaining = UIWidgets.create_simple_text("-", "ammo_text_remaining", nil, nil, ammo_text_remaining_style, nil, RETAINED_MODE_ENABLED),
-	ammo_text_center = UIWidgets.create_simple_text("/", "ammo_text_center", nil, nil, ammo_text_center_style, nil, RETAINED_MODE_ENABLED)
+	}, "overcharge", nil, RETAINED_MODE_ENABLED)
 }
 local slots = InventorySettings.slots
 local slot_widget_definitions = {}
@@ -906,6 +938,5 @@ return {
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,
 	ammo_widget_definitions = ammo_widget_definitions,
-	slot_widget_definitions = slot_widget_definitions,
-	inventory_slot_backgrounds = inventory_slot_backgrounds
+	slot_widget_definitions = slot_widget_definitions
 }

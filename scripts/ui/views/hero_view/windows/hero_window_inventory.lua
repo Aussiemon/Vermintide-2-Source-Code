@@ -154,6 +154,14 @@ HeroWindowInventory._handle_input = function (self, dt, t)
 		self._play_sound(self, "play_gui_inventory_item_hover")
 	end
 
+	for i = 1, 6, 1 do
+		local widget = widgets_by_name["material_text_" .. i]
+
+		if self._is_button_hovered(self, widget) then
+			self._play_sound(self, "play_gui_equipment_button_hover")
+		end
+	end
+
 	if item then
 		local backend_id = item.backend_id
 		self._pressed_backend_id = backend_id
@@ -209,6 +217,42 @@ HeroWindowInventory._update_page_info = function (self)
 
 	return 
 end
+HeroWindowInventory._update_crafting_material_panel = function (self)
+	local backend_items = Managers.backend:get_interface("items")
+	local material_textures = UISettings.crafting_material_icons_small
+	local material_order = UISettings.crafting_material_order
+	local widgets_by_name = self._widgets_by_name
+	local index = 1
+
+	for index, item_key in ipairs(material_order) do
+		local texture = material_textures[item_key]
+		local item_filter = "item_key == " .. item_key
+		local items = backend_items.get_filtered_items(backend_items, item_filter)
+		local item = items and items[1]
+		local backend_id = item and item.backend_id
+		local amount = (backend_id and backend_items.get_item_amount(backend_items, backend_id)) or 0
+		local widget = widgets_by_name["material_text_" .. index]
+		local content = widget.content
+		local amount_text = nil
+
+		if 1000 <= amount then
+			amount_text = "+999"
+		else
+			amount_text = tostring(amount)
+		end
+
+		content.text = amount_text
+		content.icon = texture
+
+		if not content.item then
+			content.item = item or {
+				data = table.clone(ItemMasterList[item_key])
+			}
+		end
+	end
+
+	return 
+end
 HeroWindowInventory._update_inventory_items = function (self)
 	local item_grid = self._item_grid
 	local parent = self.parent
@@ -228,6 +272,8 @@ HeroWindowInventory._update_inventory_items = function (self)
 		self._inventory_sync_id = inventory_sync_id
 		self._selected_craft_page_name = selected_craft_page_name
 		self._optional_craft_item_filter = optional_craft_item_filter
+
+		self._update_crafting_material_panel(self)
 	end
 
 	return 

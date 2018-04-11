@@ -30,26 +30,26 @@ CameraTransitionPositionLinear.update = function (self, dt, position, update_tim
 	elseif speed then
 		local target_vec = node_2_position - node_1_position
 		local max_length = Vector3.length(target_vec)
-		local dist_moved = time*speed
+		local dist_moved = time * speed
 
 		if max_length <= dist_moved then
 			pos = node_2_position
 			done = true
 		else
 			local dir = Vector3.normalize(target_vec)
-			pos = node_1_position + dir*dist_moved
+			pos = node_1_position + dir * dist_moved
 		end
 	elseif duration then
 		assert(0 < duration, "CameraTransitionPositionLinear has a zero duration")
 
-		local t = time/duration
+		local t = time / duration
 		t = math.min(t, 1)
 
 		if self._transition_func then
 			t = self._transition_func(t)
 		end
 
-		pos = node_1_position*(t - 1) + node_2_position*t
+		pos = node_1_position * (1 - t) + node_2_position * t
 		done = duration < time
 	end
 

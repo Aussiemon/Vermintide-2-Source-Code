@@ -172,6 +172,8 @@ StartGameWindowGameMode._handle_input = function (self, dt, t)
 
 		self.parent:set_layout(layout_index)
 	elseif self._is_button_pressed(self, widgets_by_name.game_option_4) then
+		self.parent:set_layout(4)
+	elseif self._is_button_pressed(self, widgets_by_name.game_option_5) then
 		self.parent:set_layout(8)
 	end
 
@@ -181,7 +183,7 @@ StartGameWindowGameMode._update_game_options_hover_effect = function (self, dt)
 	local widgets_by_name = self._widgets_by_name
 	local widget_prefix = "game_option_"
 
-	for i = 1, 3, 1 do
+	for i = 1, 4, 1 do
 		local widget_name = widget_prefix .. i
 		local widget = widgets_by_name[widget_name]
 
@@ -192,7 +194,11 @@ StartGameWindowGameMode._update_game_options_hover_effect = function (self, dt)
 		end
 	end
 
-	UIWidgetUtils.animate_default_button(widgets_by_name.game_option_4, dt)
+	if self._is_button_hover_enter(self, widgets_by_name.game_option_5) then
+		self._play_sound(self, "play_gui_equipment_button_hover")
+	end
+
+	UIWidgetUtils.animate_default_button(widgets_by_name.game_option_5, dt)
 
 	return 
 end
@@ -261,7 +267,7 @@ StartGameWindowGameMode._create_style_animation_enter = function (self, widget, 
 	local current_color_value = pass_style.color[1]
 	local target_color_value = target_value
 	local total_time = 0.2
-	local animation_duration = (current_color_value/target_color_value - 1)*total_time
+	local animation_duration = (1 - current_color_value / target_color_value) * total_time
 
 	if 0 < animation_duration and not instant then
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)
@@ -284,7 +290,7 @@ StartGameWindowGameMode._create_style_animation_exit = function (self, widget, t
 	local current_color_value = pass_style.color[1]
 	local target_color_value = target_value
 	local total_time = 0.2
-	local animation_duration = current_color_value/255*total_time
+	local animation_duration = current_color_value / 255 * total_time
 
 	if 0 < animation_duration and not instant then
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)
@@ -320,27 +326,27 @@ StartGameWindowGameMode._animate_option_button = function (self, widget, dt)
 	local input_speed = 20
 
 	if input_pressed then
-		input_progress = math.min(input_progress + dt*input_speed, 1)
+		input_progress = math.min(input_progress + dt * input_speed, 1)
 	else
-		input_progress = math.max(input_progress - dt*input_speed, 0)
+		input_progress = math.max(input_progress - dt * input_speed, 0)
 	end
 
 	local input_easing_out_progress = math.easeOutCubic(input_progress)
 	local input_easing_in_progress = math.easeInCubic(input_progress)
 
 	if is_hover then
-		hover_progress = math.min(hover_progress + dt*speed, 1)
+		hover_progress = math.min(hover_progress + dt * speed, 1)
 	else
-		hover_progress = math.max(hover_progress - dt*speed, 0)
+		hover_progress = math.max(hover_progress - dt * speed, 0)
 	end
 
 	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
 	local hover_easing_in_progress = math.easeInCubic(hover_progress)
 
 	if is_selected then
-		selection_progress = math.min(selection_progress + dt*speed, 1)
+		selection_progress = math.min(selection_progress + dt * speed, 1)
 	else
-		selection_progress = math.max(selection_progress - dt*speed, 0)
+		selection_progress = math.max(selection_progress - dt * speed, 0)
 	end
 
 	local select_easing_out_progress = math.easeOutCubic(selection_progress)
@@ -348,10 +354,10 @@ StartGameWindowGameMode._animate_option_button = function (self, widget, dt)
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
-	local input_alpha = input_progress*255
-	style.button_clicked_rect.color[1] = input_progress*100
-	style.hover_glow.color[1] = combined_progress*255
-	local select_alpha = selection_progress*255
+	local input_alpha = 255 * input_progress
+	style.button_clicked_rect.color[1] = 100 * input_progress
+	style.hover_glow.color[1] = 255 * combined_progress
+	local select_alpha = 255 * selection_progress
 	style.select_glow.color[1] = select_alpha
 	style.icon_selected.color[1] = select_alpha
 	style.skull_select_glow.color[1] = select_alpha
@@ -359,9 +365,9 @@ StartGameWindowGameMode._animate_option_button = function (self, widget, dt)
 	local text_disabled_style = style.button_text_disabled
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
-	disabled_text_color[2] = disabled_default_text_color[2]*0.4
-	disabled_text_color[3] = disabled_default_text_color[3]*0.4
-	disabled_text_color[4] = disabled_default_text_color[4]*0.4
+	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
+	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
+	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
 	local button_text_style = style.button_text
 	local button_text_color = button_text_style.text_color
 	local default_text_color = button_text_style.default_text_color
@@ -376,9 +382,9 @@ StartGameWindowGameMode._animate_option_button = function (self, widget, dt)
 	local background_icon_style = style.background_icon
 	local background_icon_color = background_icon_style.color
 	local background_icon_default_color = background_icon_style.default_color
-	background_icon_color[2] = background_icon_default_color[2] + combined_progress*(background_icon_default_color[2] - 255)
-	background_icon_color[3] = background_icon_default_color[3] + combined_progress*(background_icon_default_color[3] - 255)
-	background_icon_color[4] = background_icon_default_color[4] + combined_progress*(background_icon_default_color[4] - 255)
+	background_icon_color[2] = background_icon_default_color[2] + combined_progress * (255 - background_icon_default_color[2])
+	background_icon_color[3] = background_icon_default_color[3] + combined_progress * (255 - background_icon_default_color[3])
+	background_icon_color[4] = background_icon_default_color[4] + combined_progress * (255 - background_icon_default_color[4])
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress

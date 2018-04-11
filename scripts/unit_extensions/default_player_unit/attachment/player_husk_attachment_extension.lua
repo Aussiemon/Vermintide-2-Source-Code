@@ -16,6 +16,7 @@ PlayerHuskAttachmentExtension.init = function (self, extension_init_context, uni
 end
 PlayerHuskAttachmentExtension.extensions_ready = function (self, world, unit)
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
+	self._cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
 
 	return 
 end
@@ -56,6 +57,8 @@ PlayerHuskAttachmentExtension.create_attachment = function (self, slot_name, ite
 		Unit.flow_event(self._unit, show_attachments_event)
 	end
 
+	self._show_attachment(self, slot_name, slot_data, true)
+
 	attachments.slots[slot_name] = slot_data
 	local outline_extension = ScriptUnit.extension(self._unit, "outline_system")
 
@@ -89,11 +92,25 @@ PlayerHuskAttachmentExtension.show_attachments = function (self, show)
 	local slots = self._attachments.slots
 
 	for slot_name, slot_data in pairs(slots) do
-		local unit = slot_data.unit
+		self._show_attachment(self, slot_name, slot_data, show)
+	end
 
-		Unit.set_unit_visibility(unit, show)
+	return 
+end
+PlayerHuskAttachmentExtension._show_attachment = function (self, slot_name, slot_data, show)
+	local should_show = show
+	local always_hide = self._cosmetic_extension:always_hide_attachment_slot(slot_name)
 
-		if show then
+	if always_hide then
+		should_show = false
+	end
+
+	local unit = slot_data.unit
+
+	if unit then
+		Unit.set_unit_visibility(unit, should_show)
+
+		if should_show then
 			Unit.flow_event(unit, "lua_attachment_unhidden")
 		else
 			Unit.flow_event(unit, "lua_attachment_hidden")

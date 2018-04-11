@@ -189,6 +189,8 @@ StartGameWindowMutatorGrid._handle_input = function (self, dt, t)
 	end
 
 	if item then
+		self._play_sound(self, "play_gui_lobby_button_04_heroic_deed_inventory_click")
+
 		local backend_id = item.backend_id
 
 		self.parent:set_selected_heroic_deed_backend_id(backend_id)

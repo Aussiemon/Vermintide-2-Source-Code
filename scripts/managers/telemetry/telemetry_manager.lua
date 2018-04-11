@@ -1,7 +1,7 @@
 require("scripts/managers/telemetry/telemetry_events")
 require("scripts/managers/telemetry/telemetry_rpc_listener")
 
-local DEBUG = Development.parameter("debug-telemetry")
+local DEBUG = Development.parameter("debug_telemetry")
 local SAVE_FILE = "telemetry"
 local SAVE_DATA = {
 	upload_attempts = 0

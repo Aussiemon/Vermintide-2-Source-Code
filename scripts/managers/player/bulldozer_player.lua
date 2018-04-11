@@ -5,7 +5,6 @@ BulldozerPlayer = class(BulldozerPlayer, Player)
 BulldozerPlayer.init = function (self, network_manager, input_source, viewport_name, viewport_world_name, is_server, local_player_id, unique_id)
 	BulldozerPlayer.super.init(self, network_manager, input_source, viewport_name, viewport_world_name, is_server, local_player_id)
 
-	self._profile_index = 0
 	self.local_player = true
 	self.game_object_id = nil
 	self.camera_follow_unit = nil
@@ -25,7 +24,14 @@ BulldozerPlayer.init = function (self, network_manager, input_source, viewport_n
 	return 
 end
 BulldozerPlayer.profile_index = function (self)
-	return self._profile_index
+	if self._profile_index then
+		return self._profile_index
+	end
+
+	local profile_synchronizer = self.network_manager.profile_synchronizer
+	local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, self.peer_id, self._local_player_id)
+
+	return profile_index
 end
 BulldozerPlayer.set_profile_index = function (self, index)
 	self._profile_index = index
@@ -36,7 +42,8 @@ BulldozerPlayer.type = function (self)
 	return "BulldozerPlayer"
 end
 BulldozerPlayer.profile_display_name = function (self)
-	local profile = SPProfiles[self._profile_index]
+	local profile_index = self.profile_index(self)
+	local profile = SPProfiles[profile_index]
 	local display_name = profile and profile.display_name
 
 	return display_name
@@ -45,6 +52,8 @@ BulldozerPlayer.despawn = function (self)
 	for mood, _ in pairs(MoodSettings) do
 		MOOD_BLACKBOARD[mood] = false
 	end
+
+	Managers.state.camera:set_additional_fov_multiplier(1)
 
 	local player_unit = self.player_unit
 
@@ -63,7 +72,8 @@ BulldozerPlayer.career_index = function (self)
 	return career_index
 end
 BulldozerPlayer.career_name = function (self)
-	local profile = SPProfiles[self._profile_index]
+	local profile_index = self.profile_index(self)
+	local profile = SPProfiles[profile_index]
 	local display_name = profile and profile.display_name
 
 	if display_name then
@@ -81,7 +91,7 @@ BulldozerPlayer.set_spawn_position_rotation = function (self, position, rotation
 	return 
 end
 BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is_initial_spawn, ammo_melee, ammo_ranged, healthkit, potion, grenade)
-	local profile_index = self._profile_index
+	local profile_index = self.profile_index(self)
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
 	local career_index = self.career_index(self)
@@ -92,6 +102,10 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty_settings = difficulty_manager.get_difficulty_settings(difficulty_manager)
 	local player_wounds = difficulty_settings.wounds
+
+	if Managers.state.game_mode:has_mutator("instant_death") then
+		player_wounds = 1
+	end
 
 	if self.spawn_position then
 		optional_position = self.spawn_position:unbox()
@@ -453,8 +467,8 @@ end
 BulldozerPlayer.best_aquired_power_level = function (self)
 	local sum = Managers.backend:get_interface("items"):sum_best_power_levels()
 	local level = ExperienceSettings.get_highest_character_level()
-	local character_power_level = PowerLevelFromLevelSettings.starting_power_level + PowerLevelFromLevelSettings.power_level_per_level*level
-	local best_aquired_power_level = character_power_level + sum/5
+	local character_power_level = PowerLevelFromLevelSettings.starting_power_level + PowerLevelFromLevelSettings.power_level_per_level * level
+	local best_aquired_power_level = character_power_level + sum / 5
 
 	return best_aquired_power_level
 end

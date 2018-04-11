@@ -184,9 +184,19 @@ HeroWindowTalents._is_stepper_button_pressed = function (self, widget)
 
 	return 
 end
+HeroWindowTalents._is_button_hover_enter = function (self, widget)
+	local content = widget.content
+	local hotspot = content.button_hotspot
+
+	return hotspot.on_hover_enter and not hotspot.is_selected
+end
 HeroWindowTalents._handle_input = function (self, dt, t)
 	local parent = self.parent
 	local widgets_by_name = self._widgets_by_name
+
+	if self._is_button_hover_enter(self, widgets_by_name.career_perk_1) or self._is_button_hover_enter(self, widgets_by_name.career_perk_2) or self._is_button_hover_enter(self, widgets_by_name.career_perk_3) then
+		self._play_sound(self, "play_gui_equipment_button_hover")
+	end
 
 	if self._is_talent_hovered(self) then
 		self._play_sound(self, "play_gui_talents_selection_hover")
@@ -203,6 +213,7 @@ HeroWindowTalents._handle_input = function (self, dt, t)
 
 		self._play_sound(self, "play_gui_talents_selection_click")
 		self._update_talent_sync(self)
+		parent.update_talent_sync(parent)
 	end
 
 	return 
@@ -270,7 +281,7 @@ HeroWindowTalents._get_text_height = function (self, ui_renderer, size, ui_style
 	local max_texts = #texts
 	local num_texts = math.min(#texts - text_start_index - 1, max_texts)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min))*inv_scale*num_texts
+	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 
 	return full_font_height
 end
@@ -283,7 +294,7 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 	local profile_index = FindProfileIndex(hero_name)
 	local profile = SPProfiles[profile_index]
 	local career_settings = profile.careers[career_index]
-	local start_index = (career_index - 1)*NumTalentRows
+	local start_index = (career_index - 1) * NumTalentRows
 	local tree = TalentTrees[hero_name][career_settings.talent_tree_index]
 	local talents = self._selected_talents
 	local all_talents = Talents[hero_name]
@@ -441,9 +452,17 @@ HeroWindowTalents._populate_career_info = function (self, initialize)
 	local profile_index = FindProfileIndex(hero_name)
 	local profile = SPProfiles[profile_index]
 	local career_settings = profile.careers[career_index]
+	local career_name = career_settings.name
 	local character_selection_image = career_settings.character_selection_image
 	local display_name = career_settings.display_name
-	local widget_by_name = self._widgets_by_name
+	local widgets_by_name = self._widgets_by_name
+	local career_color = (Colors.color_definitions[career_name] and Colors.get_color_table_with_alpha(career_name, 255)) or {
+		255,
+		255,
+		255,
+		255
+	}
+	widgets_by_name.career_background.style.background.color = career_color
 	local passive_ability_data = career_settings.passive_ability
 	local activated_ability_data = career_settings.activated_ability
 	local passive_display_name = passive_ability_data.display_name
@@ -452,12 +471,21 @@ HeroWindowTalents._populate_career_info = function (self, initialize)
 	local activated_display_name = activated_ability_data.display_name
 	local activated_description = activated_ability_data.description
 	local activated_icon = activated_ability_data.icon
-	widget_by_name.passive_title_text.content.text = Localize(passive_display_name)
-	widget_by_name.passive_description_text.content.text = Localize(passive_description)
-	widget_by_name.passive_icon.content.texture_id = passive_icon
-	widget_by_name.active_title_text.content.text = Localize(activated_display_name)
-	widget_by_name.active_description_text.content.text = Localize(activated_description)
-	widget_by_name.active_icon.content.texture_id = activated_icon
+	widgets_by_name.passive_title_text.content.text = Localize(passive_display_name)
+	widgets_by_name.passive_description_text.content.text = Localize(passive_description)
+	widgets_by_name.passive_icon.content.texture_id = passive_icon
+	widgets_by_name.active_title_text.content.text = Localize(activated_display_name)
+	widgets_by_name.active_description_text.content.text = Localize(activated_description)
+	widgets_by_name.active_icon.content.texture_id = activated_icon
+	local passive_perks = passive_ability_data.perks
+
+	for index, data in ipairs(passive_perks) do
+		local display_name = data.display_name
+		local description = data.description
+		local widget = widgets_by_name["career_perk_" .. index]
+		widget.content.text = Localize(display_name)
+		widget.content.tooltip_data = data
+	end
 
 	return 
 end

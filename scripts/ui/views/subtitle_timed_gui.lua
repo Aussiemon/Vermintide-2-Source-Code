@@ -54,7 +54,7 @@ SubtitleTimedGui.update = function (self, dt)
 		local widget = target_widgets[i]
 		local offset_y = widget.style.text.offset[2]
 		local offset_y_old = offset_y
-		offset_y = offset_y + dt*self.text_speed
+		offset_y = offset_y + dt * self.text_speed
 
 		if 0 < offset_y and offset_y_old <= 0 then
 			local next_text_index = self.next_text_index + 1
@@ -62,24 +62,24 @@ SubtitleTimedGui.update = function (self, dt)
 			local text = self.texts[next_text_index]
 			widget.content.text = text or ""
 		elseif 200 < offset_y then
-			offset_y = offset_y - #target_widgets*50
+			offset_y = offset_y - #target_widgets * 50
 			widget.style.text.text_color[1] = 0
 		end
 
 		widget.style.text.offset[2] = offset_y
 
 		if 0 <= offset_y and offset_y < 50 then
-			local alpha = math.lerp(0, 255, offset_y/50)
+			local alpha = math.lerp(0, 255, offset_y / 50)
 			widget.style.text.text_color[1] = alpha
 		elseif 50 <= offset_y and offset_y < 150 then
 			widget.style.text.text_color[1] = 255
 		elseif 150 <= offset_y then
-			local alpha = math.lerp(255, 0, (offset_y - 150)/50)
+			local alpha = math.lerp(255, 0, (offset_y - 150) / 50)
 			widget.style.text.text_color[1] = alpha
 		end
 	end
 
-	local text_scroll_height = self.text_scroll_height + dt*self.text_speed
+	local text_scroll_height = self.text_scroll_height + dt * self.text_speed
 
 	if script_data.subtitle_debug then
 	end

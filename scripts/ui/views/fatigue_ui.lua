@@ -45,21 +45,26 @@ FatigueUI.shield_state = function (self, shield_number, living_shields)
 end
 FatigueUI.setup_hud = function (self, status_extension)
 	local fatigue_points, max_fatigue_points = status_extension.current_fatigue_points(status_extension)
-	local active_shields = math.floor(max_fatigue_points/2 + 0.5)
+	local active_shields = math.floor(max_fatigue_points / 2 + 0.5)
 	local offset = 30
-	local total_width = offset*(active_shields - 1)
-	local half_width = total_width/2
-	local living_shields = max_fatigue_points*0.5 - fatigue_points*0.5
+	local total_width = offset * (active_shields - 1)
+	local half_width = total_width / 2
+	local living_shields = max_fatigue_points * 0.5 - fatigue_points * 0.5
 	local shields = self.shields
 
 	for i = 1, active_shields, 1 do
 		local shield = shields[i]
 		local style = shield.style
-		local width_offet = half_width - offset*(i - 1)
+		local width_offet = half_width - offset * (i - 1)
 		style.offset[1] = width_offet
 		style.texture_glow_id.offset[1] = width_offet
 		shield.state = self.shield_state(self, i, living_shields)
 		shield.content.texture_id = style.state_textures[shield.state]
+
+		if self.active then
+			style.color[1] = 255
+			style.texture_glow_id.color[1] = 255
+		end
 	end
 
 	self.active_shields = active_shields
@@ -114,7 +119,7 @@ FatigueUI.update = function (self, dt)
 	elseif self.active then
 		local fatigue_points, max_fatigue_points = status_extension.current_fatigue_points(status_extension)
 
-		if fatigue_points/max_fatigue_points < 0.6 and not should_be_active then
+		if fatigue_points / max_fatigue_points < 0.6 and not should_be_active then
 			self.active = false
 
 			self.start_fade_out(self)
@@ -160,7 +165,7 @@ FatigueUI.update_shields = function (self, status_extension, dt)
 		return 
 	end
 
-	local living_shields = max_fatigue_points*0.5 - fatigue_points*0.5
+	local living_shields = max_fatigue_points * 0.5 - fatigue_points * 0.5
 	local active_shields = self.active_shields
 	local shields = self.shields
 

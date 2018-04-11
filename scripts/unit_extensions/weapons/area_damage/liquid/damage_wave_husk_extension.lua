@@ -51,7 +51,7 @@ DamageWaveHuskExtension.destroy = function (self)
 	return 
 end
 DamageWaveHuskExtension.update = function (self, unit, input, dt, context, t)
-	local lerp_value = math.min(dt*10, 1)
+	local lerp_value = math.min(dt * 10, 1)
 	local current_pos = position_lookup[unit]
 	local wanted_pos = GameSession.game_object_field(self.game, self.go_id, "position")
 	local pos = Vector3.lerp(current_pos, wanted_pos, lerp_value)
@@ -65,7 +65,7 @@ DamageWaveHuskExtension.update = function (self, unit, input, dt, context, t)
 	if script_data.debug_damage_wave then
 		local travel_dir = Quaternion.forward(rot)
 		local height_percentage = GameSession.game_object_field(self.game, self.go_id, "height_percentage")
-		local height = height_percentage*self.max_height
+		local height = height_percentage * self.max_height
 		local pos = Unit.local_position(unit, 0)
 
 		self.debug_render_wave(self, t, dt, pos, travel_dir, height)
@@ -156,14 +156,14 @@ DamageWaveHuskExtension.on_wavefront_impact = function (self, unit)
 	return 
 end
 local segments = 20
-local half_segments = segments/2
+local half_segments = segments / 2
 local wave_length = 1
 DamageWaveHuskExtension.debug_render_wave = function (self, t, dt, pos, travel_dir, height)
 	local k = 0
 
 	for i = -half_segments, half_segments - 1, 1 do
-		local size = math.sin(-math.pi + k/segments*math.pi)*self.max_height
-		local p = (pos + travel_dir*i/segments*wave_length) - size*Vector3(0, 0, 1) - Vector3(0, 0, height*2)
+		local size = math.sin(-math.pi + k / segments * math.pi) * self.max_height
+		local p = (pos + travel_dir * i / segments * wave_length) - size * Vector3(0, 0, 1) - Vector3(0, 0, height * 2)
 
 		QuickDrawer:circle(p, self.max_height, travel_dir, Colors.get("lime_green"))
 

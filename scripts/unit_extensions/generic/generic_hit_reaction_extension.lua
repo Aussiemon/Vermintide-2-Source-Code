@@ -392,7 +392,7 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 	end
 
 	local impact_position = Actor.center_of_mass(Unit.actor(unit, actor_name))
-	local line_pos = impact_position + hit_direction*2
+	local line_pos = impact_position + hit_direction * 2
 	local dot_pos = impact_position + Vector3(0, 0, -2)
 	local dot = Vector3.dot(Vector3.normalize(impact_position - line_pos), Vector3.normalize(impact_position - dot_pos))
 	local is_diagonal = 0.51 < dot and dot < 0.7
@@ -400,11 +400,11 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 	local angle = Vector3.flat_angle(hit_unit_dir, hit_direction)
 	local direction = nil
 
-	if angle < -math.pi*0.75 or math.pi*0.75 < angle then
+	if angle < -math.pi * 0.75 or math.pi * 0.75 < angle then
 		direction = nil
-	elseif angle < -math.pi*0.25 then
+	elseif angle < -math.pi * 0.25 then
 		direction = "right"
-	elseif angle < math.pi*0.25 then
+	elseif angle < math.pi * 0.25 then
 		direction = nil
 	else
 		direction = "left"
@@ -521,7 +521,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 			local fwd = Quaternion.forward(Unit.local_rotation(unit, 0))
 			local flat_fwd = Vector3.normalize(Vector3.flat(fwd))
 			local found = false
-			local angle = (math.atan2(hit_direction_flat.y, hit_direction_flat.x) - math.atan2(flat_fwd.y, flat_fwd.x))%(math.pi*2)
+			local angle = (math.atan2(hit_direction_flat.y, hit_direction_flat.x) - math.atan2(flat_fwd.y, flat_fwd.x)) % (math.pi * 2)
 
 			for i = 1, #angles, 1 do
 				local angle_data = angles[i]
@@ -683,14 +683,14 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	local distal_force = push_parameters.distal_force or 0
 	local lateral_force = push_parameters.lateral_force or 0
 	local vertical_force = push_parameters.vertical_force or 0
-	local distal_vector = distal_direction*distal_force
-	local lateral_vector = lateral_direction*lateral_force
+	local distal_vector = distal_direction * distal_force
+	local lateral_vector = lateral_direction * lateral_force
 	local vertical_vector = Vector3(0, 0, vertical_force)
 	local death_velocity = delayed_push.death_velocity
 	local push_force = nil
 
 	if death_velocity then
-		push_force = distal_vector + lateral_vector + vertical_vector + death_velocity.unbox(death_velocity)*20
+		push_force = distal_vector + lateral_vector + vertical_vector + death_velocity.unbox(death_velocity) * 20
 	else
 		push_force = distal_vector + lateral_vector + vertical_vector
 	end
@@ -699,13 +699,13 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	local breed = Unit.get_data(unit, "breed")
 
 	if breed.scale_death_push then
-		push_force = push_force*breed.scale_death_push
+		push_force = push_force * breed.scale_death_push
 	end
 
-	push_force = push_force*0.25
-	local push_velocity = Vector3.normalize(push_force)*push_velocity_factor
-	local push_mass = Vector3.length(push_force)*1
-	local push_mass_actor = push_mass/num_actors
+	push_force = push_force * 0.25
+	local push_velocity = Vector3.normalize(push_force) * push_velocity_factor
+	local push_mass = Vector3.length(push_force) * 1
+	local push_mass_actor = push_mass / num_actors
 
 	for i = 1, num_actors, 1 do
 		actor = Unit.actor(unit, push_actors[i])

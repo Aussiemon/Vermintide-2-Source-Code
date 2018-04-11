@@ -2,6 +2,7 @@ DamageWaveExtension = class(DamageWaveExtension)
 local unit_alive = Unit.alive
 local player_and_bot_units = PLAYER_AND_BOT_UNITS
 local position_lookup = POSITION_LOOKUP
+local impact_hit_units = {}
 DamageWaveExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
 	local entity_manager = Managers.state.entity
@@ -54,7 +55,7 @@ DamageWaveExtension.init = function (self, extension_init_context, unit, extensi
 	self.start_speed = template.start_speed
 	self.acceleration = template.acceleration
 	self.max_speed = template.max_speed
-	self.wavefront_radius = template.wave_width/2
+	self.wavefront_radius = template.wave_width / 2
 	self.wave_width = template.wave_width
 	self.travel_dist = 0
 	self.apply_buff_to_ai = template.apply_buff_to_ai
@@ -76,12 +77,12 @@ DamageWaveExtension.set_update_func = function (self, update_func, init_func, t)
 	return 
 end
 DamageWaveExtension._calculate_oobb_collision = function (self, width, range, height, offset_forward, offset_up, self_pos, self_rot)
-	local half_width = width*0.5
-	local half_range = range*0.5
-	local half_height = height*0.5
+	local half_width = width * 0.5
+	local half_range = range * 0.5
+	local half_height = height * 0.5
 	local size = Vector3(half_width, half_range, half_height)
-	local forward = Quaternion.rotate(self_rot, Vector3.forward())*(offset_forward + half_range)
-	local up = Vector3.up()*(offset_up + half_height)
+	local forward = Quaternion.rotate(self_rot, Vector3.forward()) * (offset_forward + half_range)
+	local up = Vector3.up() * (offset_up + half_height)
 	local oobb_pos = self_pos + forward + up
 
 	return oobb_pos, self_rot, size
@@ -107,7 +108,7 @@ DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_p
 	if use_nav_cost_map_volumes then
 		local nav_cost_map_cost_type = template.nav_cost_map_cost_type
 		local blob_separation_dist = self.blob_separation_dist
-		local num_volumes_guess = math.max(math.floor(initial_dist/blob_separation_dist), 1)
+		local num_volumes_guess = math.max(math.floor(initial_dist / blob_separation_dist), 1)
 		local ai_system = self.ai_system
 		self._nav_cost_map_id = ai_system.create_nav_cost_map(ai_system, nav_cost_map_cost_type, num_volumes_guess)
 	end
@@ -116,8 +117,8 @@ DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_p
 	local create_bot_aoe_threat = template.create_bot_aoe_threat
 
 	if create_bot_aoe_threat then
-		local threat_duration = (0 < start_speed and initial_dist/start_speed) or initial_dist
-		local width = self.wave_width*2
+		local threat_duration = (0 < start_speed and initial_dist / start_speed) or initial_dist
+		local width = self.wave_width * 2
 		local range = initial_dist + self.overflow_dist
 		local height = self.wave_width
 		local offset_forward = 0
@@ -129,7 +130,7 @@ DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_p
 
 	self.last_dist = initial_dist
 	self.last_fx_dist = initial_dist
-	self.effect_id = World.create_particles(self.world, self.fx_name_running, position + Vector3.up()*5, effect_rotation)
+	self.effect_id = World.create_particles(self.world, self.fx_name_running, position + Vector3.up() * 5, effect_rotation)
 
 	World.link_particles(self.world, self.effect_id, self.unit, 0, Matrix4x4.identity(), template.particle_arrived_stop_mode)
 
@@ -157,7 +158,7 @@ DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_p
 	self.unit_id = unit_id
 	local launch_animation = self.launch_animation
 
-	if launch_animation then
+	if launch_animation and Unit.has_animation_state_machine(unit) then
 		network_manager.anim_event(network_manager, unit, launch_animation)
 	end
 
@@ -219,6 +220,8 @@ DamageWaveExtension.destroy = function (self)
 		World.stop_spawning_particles(world, fx_id)
 	end
 
+	table.clear(impact_hit_units)
+
 	return 
 end
 DamageWaveExtension.abort = function (self)
@@ -249,7 +252,7 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	local current_speed = self.wave_speed
 
 	if current_speed < self.max_speed then
-		current_speed = current_speed + acceleration*dt
+		current_speed = current_speed + acceleration * dt
 		self.wave_speed = current_speed
 	end
 
@@ -258,9 +261,9 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	local to_target = target_pos - position
 	local to_target_dir = Vector3.normalize(to_target)
 	local wave_dir = self.wave_direction:unbox()
-	local frame_dist = current_speed*dt
+	local frame_dist = current_speed * dt
 	self.travel_dist = self.travel_dist + frame_dist
-	position = position + wave_dir*frame_dist
+	position = position + wave_dir * frame_dist
 	local nav_world = self.nav_world
 	local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, position, 1.5, 1.5)
 
@@ -288,19 +291,19 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	end
 
 	local height_percentage = nil
-	local p = (0 < total_dist and dist/total_dist) or 0
+	local p = (0 < total_dist and dist / total_dist) or 0
 
 	if grow then
 		height_percentage = math.clamp(p, 0, 1)
 	else
-		height_percentage = math.clamp(p - 1, 0, 1)
+		height_percentage = math.clamp(1 - p, 0, 1)
 	end
 
 	GameSession.set_game_object_field(self.game, self.unit_id, "height_percentage", height_percentage)
 	GameSession.set_game_object_field(self.game, self.unit_id, "position", position)
 
 	if script_data.debug_damage_wave then
-		local size = height_percentage*self.max_height
+		local size = height_percentage * self.max_height
 
 		self.debug_render_wave(self, t, dt, position, wave_dir, size)
 	end
@@ -310,6 +313,10 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	return to_target_dir, dist, success
 end
 DamageWaveExtension.on_hit_by_wave = function (hit_unit, unit, parent)
+	if impact_hit_units[hit_unit] then
+		return 
+	end
+
 	local world = parent.world
 	local normal_rotation = Quaternion.look(Vector3.forward(), Vector3.up())
 
@@ -347,6 +354,8 @@ DamageWaveExtension.on_hit_by_wave = function (hit_unit, unit, parent)
 	if unit_id then
 		parent.network_transmit:send_rpc_clients("rpc_damage_wave_set_state", unit_id, NetworkLookup.damage_wave_states.impact)
 	end
+
+	impact_hit_units[hit_unit] = true
 
 	return 
 end
@@ -394,7 +403,7 @@ DamageWaveExtension.wave_arrived = function (self, t, unit)
 		local position = Vector3(last_blob[1], last_blob[2], last_blob[3])
 		local radius = last_blob[4]
 		local rim_distance = radius + BLOB_EXTRA_SAFE_DISTANCE
-		local rim_position_forward = position + forward*rim_distance
+		local rim_position_forward = position + forward * rim_distance
 		local success_forward, altitude_forward = GwNavQueries.triangle_from_position(self.nav_world, rim_position_forward, 1.5, 1.5)
 
 		if success_forward then
@@ -482,7 +491,7 @@ DamageWaveExtension.check_overlap = function (self, unit, target_unit, wave_radi
 		end
 	elseif dist_sq < wave_radius_sq then
 		local line_dist = Vector3.distance(p1, pos_projected_on_wave_line)
-		local blob_index = math.floor(line_dist/self.initial_dist*num_blobs + 0.5) + 1
+		local blob_index = math.floor(0.5 + line_dist / self.initial_dist * num_blobs) + 1
 		blob_index = math.clamp(blob_index, 1, num_blobs)
 		local blob = self.blobs[blob_index]
 		local z = blob[3]
@@ -524,7 +533,7 @@ DamageWaveExtension.update = function (self, unit, input, dt, context, t)
 		if Vector3.dot(to_target_dir, wave_dir) < 0 or dist < 0.1 or not on_mesh then
 			local overflow_dist = self.overflow_dist
 
-			self.target_pos:store(position + wave_dir*overflow_dist)
+			self.target_pos:store(position + wave_dir * overflow_dist)
 
 			self.last_dist = self.last_dist + overflow_dist
 			self.last_fx_dist = self.last_fx_dist + overflow_dist
@@ -585,7 +594,7 @@ DamageWaveExtension.insert_blob = function (self, position, radius, rotation, na
 	local rim_nodes = self.rim_nodes
 	local rim_distance = radius + BLOB_EXTRA_SAFE_DISTANCE
 	local right = Quaternion.right(rotation)
-	local rim_position_right = position + right*rim_distance
+	local rim_position_right = position + right * rim_distance
 	local success_right, altitude_right = GwNavQueries.triangle_from_position(nav_world, rim_position_right, 1.5, 1.5)
 
 	if success_right then
@@ -594,7 +603,7 @@ DamageWaveExtension.insert_blob = function (self, position, radius, rotation, na
 	end
 
 	local left = -right
-	local rim_position_left = position + left*rim_distance
+	local rim_position_left = position + left * rim_distance
 	local success_left, altitude_left = GwNavQueries.triangle_from_position(nav_world, rim_position_left, 1.5, 1.5)
 
 	if success_left then
@@ -604,7 +613,7 @@ DamageWaveExtension.insert_blob = function (self, position, radius, rotation, na
 
 	if blob_index == 1 then
 		local backward = -Quaternion.forward(rotation)
-		local rim_position_backward = position + backward*rim_distance
+		local rim_position_backward = position + backward * rim_distance
 		local success_backward, altitude_backward = GwNavQueries.triangle_from_position(nav_world, rim_position_backward, 1.5, 1.5)
 
 		if success_backward then
@@ -782,14 +791,14 @@ DamageWaveExtension.hot_join_sync = function (self, sender)
 	return 
 end
 local segments = 20
-local half_segments = segments/2
+local half_segments = segments / 2
 local wave_length = 1
 DamageWaveExtension.debug_render_wave = function (self, t, dt, pos, travel_dir, height)
 	local k = 0
 
 	for i = -half_segments, half_segments - 1, 1 do
-		local size = math.sin(-math.pi + k/segments*math.pi)*self.max_height
-		local p = (pos + travel_dir*i/segments*wave_length) - size*Vector3(0, 0, 1) - Vector3(0, 0, height*2)
+		local size = math.sin(-math.pi + k / segments * math.pi) * self.max_height
+		local p = (pos + travel_dir * i / segments * wave_length) - size * Vector3(0, 0, 1) - Vector3(0, 0, height * 2)
 
 		QuickDrawer:circle(p, self.max_height, travel_dir, Colors.get("lime_green"))
 

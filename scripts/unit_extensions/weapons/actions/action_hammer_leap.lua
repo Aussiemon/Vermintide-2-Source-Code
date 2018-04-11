@@ -61,10 +61,10 @@ ActionHammerLeap.update_is_finished = function (self, dt, t, world, reason)
 		local target_position = self.target_position:unbox() + self.leap_z_offset:unbox()
 		local target_vector = target_position - player_position
 		local target_vector_flat = Vector3.normalize(Vector3.flat(target_vector))
-		local angle = math.pi/180*(self.max_angle - Vector3.length(target_vector)/self.attack_range*(self.max_angle - self.min_angle))
+		local angle = math.pi / 180 * (self.max_angle - Vector3.length(target_vector) / self.attack_range * (self.max_angle - self.min_angle))
 		local speed = WeaponHelper:wanted_projectile_speed(target_vector, 9.82, angle)
 		local direction = Quaternion.rotate(Quaternion.axis_angle(Vector3.cross(target_vector_flat, Vector3.up()), angle), target_vector_flat)
-		local velocity = direction*speed
+		local velocity = direction * speed
 
 		status_extension.set_hammer_leaping(status_extension, true, velocity)
 

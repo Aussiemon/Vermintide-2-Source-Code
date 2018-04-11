@@ -181,7 +181,7 @@ UnitFramesUI.update = function (self, dt, t, my_player)
 	self.update_portrait_frames(self, dt, my_player)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 
-	self.overlay_time = (self.overlay_time or 0) + dt*1.4
+	self.overlay_time = (self.overlay_time or 0) + dt * 1.4
 
 	self.update_player_unit_frame(self, dt, t, ui_scenegraph, ui_renderer, peer_id, local_player_id, my_player)
 	self.update_teammates_unit_frames(self, dt, t, ui_scenegraph, ui_renderer, my_player)
@@ -312,7 +312,7 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 					local has_shield, shield_amount = health_extension.has_assist_shield(health_extension)
 
 					if has_shield then
-						shield_percent = shield_amount/max_health
+						shield_percent = shield_amount / max_health
 
 						if not self.shielded_players[i + 1] then
 							local hp_bar_highlight = portrait_style.hp_bar_highlight
@@ -380,11 +380,11 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 					elseif is_knocked_down then
 						portrait_content.portrait_overlay = "unit_frame_portrait_dead"
 						local i = math.sirp(0, 0.7, self.overlay_time)
-						alpha = i*255
+						alpha = 255 * i
 					elseif needs_help then
 						portrait_content.portrait_overlay = "unit_frame_red_overlay"
 						local i = math.sirp(0.6, 1, self.overlay_time)
-						alpha = i*255
+						alpha = 255 * i
 					end
 
 					modified_teammate[i] = modified_teammate[i] or portrait_style.portrait_overlay.color[1] ~= alpha
@@ -409,13 +409,15 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 					local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 					local num_grimoires = buff_extension.num_buff_perk(buff_extension, "skaven_grimoire")
 					local multiplier = buff_extension.apply_buffs_to_value(buff_extension, PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
-					active_percentage = num_grimoires*multiplier + 1
+					local num_twitch_grimoires = buff_extension.num_buff_perk(buff_extension, "twitch_grimoire")
+					local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
+					active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier
 				end
 
-				fassert(health_percent*active_percentage <= 1, "Health was greater then 1. %s , %s", health_percent, active_percentage)
+				fassert(health_percent * active_percentage <= 1, "Health was greater then 1. %s , %s", health_percent, active_percentage)
 
-				local health_changed = self.on_player_health_changed(self, "player_" .. index, player_portrait_widget, health_percent*active_percentage)
-				local grims_changed = self.on_num_grimoires_changed(self, "player_" .. index .. "_grimoires", player_portrait_widget, active_percentage - 1)
+				local health_changed = self.on_player_health_changed(self, "player_" .. index, player_portrait_widget, health_percent * active_percentage)
+				local grims_changed = self.on_num_grimoires_changed(self, "player_" .. index .. "_grimoires", player_portrait_widget, 1 - active_percentage)
 				modified_teammate[i] = modified_teammate[i] or health_changed or grims_changed
 				local hp_bar_value = player_portrait_widget.content.hp_bar.bar_value
 				local grimoire_value = player_portrait_widget.content.hp_bar_grimoire_debuff.bar_value
@@ -432,11 +434,11 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 					local max_health_divider_style = player_portrait_widget.style.hp_bar_max_health_divider
 					local default_bar_length = definitions.scenegraph_definition.hp_bar_grimoire_debuff_fill.size[1]
 					local bar_value = portrait_content.hp_bar_grimoire_debuff.bar_value
-					local bar_offset = -bar_value*default_bar_length
+					local bar_offset = -bar_value * default_bar_length
 					max_health_divider_style.offset[1] = bar_offset
 					grimoire_icon_content.active = true
 					local grimoire_icon_style = player_portrait_widget.style.hp_bar_grimoire_icon
-					grimoire_icon_style.offset[1] = bar_offset/2
+					grimoire_icon_style.offset[1] = bar_offset / 2
 				end
 
 				low_health = (not is_dead and not is_knocked_down and health_percent < UISettings.unit_frames.low_health_threshold) or nil
@@ -492,13 +494,13 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 
 				local talk_indicator_style = player_portrait_widget.style.talk_indicator_highlight
 				local old_alpha = talk_indicator_style.color[1]
-				old_alpha = old_alpha + ((is_talking and 1) or -1)*255*dt
+				old_alpha = old_alpha + ((is_talking and 1) or -1) * 255 * dt
 
 				if is_talking then
-					old_alpha = old_alpha + math.sin(t*3)*20
-					old_alpha = old_alpha + math.cos((t + 1)*13)*20
+					old_alpha = old_alpha + math.sin(t * 3) * 20
+					old_alpha = old_alpha + math.cos((t + 1) * 13) * 20
 					local scenegraph_size = self.ui_scenegraph[talk_indicator_style.scenegraph_id].size
-					scenegraph_size[2] = math.sin(t*7)*15 + 70 + math.cos((t + 1)*17)*10
+					scenegraph_size[2] = 70 + math.sin(t * 7) * 15 + math.cos((t + 1) * 17) * 10
 				end
 
 				old_alpha = math.clamp(old_alpha, 0, 255)
@@ -531,7 +533,7 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 					portrait_content.display_portrait_icon = false
 					local connecting_icon_style = player_portrait_widget.style.connecting_icon
 					local connecting_rotation_speed = 200
-					local connecting_rotation_angle = (dt*connecting_rotation_speed)%360
+					local connecting_rotation_angle = (dt * connecting_rotation_speed) % 360
 					local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
 					connecting_icon_style.angle = connecting_icon_style.angle + connecting_radians
 					modified_teammate[i] = true
@@ -598,7 +600,7 @@ UnitFramesUI.update_player_unit_frame = function (self, dt, t, ui_scenegraph, ui
 		local has_shield, shield_amount = health_extension.has_assist_shield(health_extension)
 
 		if has_shield then
-			shield_percent = shield_amount/max_health
+			shield_percent = shield_amount / max_health
 
 			if not self.shielded_players[1] then
 				local hp_bar_highlight = portrait_style.hp_bar_highlight
@@ -628,7 +630,9 @@ UnitFramesUI.update_player_unit_frame = function (self, dt, t, ui_scenegraph, ui
 		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 		local num_grimoires = buff_extension.num_buff_perk(buff_extension, "skaven_grimoire")
 		local multiplier = buff_extension.apply_buffs_to_value(buff_extension, PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
-		active_percentage = num_grimoires*multiplier + 1
+		local num_twitch_grimoires = buff_extension.num_buff_perk(buff_extension, "twitch_grimoire")
+		local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
+		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier
 	else
 		health_percent = 0
 		is_knocked_down = false
@@ -640,10 +644,10 @@ UnitFramesUI.update_player_unit_frame = function (self, dt, t, ui_scenegraph, ui
 	local num_of_health_dividers = 0
 	local low_health = (not is_dead and not is_knocked_down and health_percent < UISettings.unit_frames.low_health_threshold) or nil
 
-	fassert(health_percent*active_percentage <= 1, "Health was greater then 1. %s , %s", health_percent, active_percentage)
+	fassert(health_percent * active_percentage <= 1, "Health was greater then 1. %s , %s", health_percent, active_percentage)
 
-	local health_changed = self.on_player_health_changed(self, "my_player", player_portrait, health_percent*active_percentage)
-	local grims_changed = self.on_num_grimoires_changed(self, "my_player_grimoires", player_portrait, active_percentage - 1)
+	local health_changed = self.on_player_health_changed(self, "my_player", player_portrait, health_percent * active_percentage)
+	local grims_changed = self.on_num_grimoires_changed(self, "my_player_grimoires", player_portrait, 1 - active_percentage)
 	modified_portrait = modified_portrait or health_changed or grims_changed
 	local hp_bar_value = player_portrait.content.hp_bar.bar_value
 	local grimoire_value = player_portrait.content.hp_bar_grimoire_debuff.bar_value
@@ -660,11 +664,11 @@ UnitFramesUI.update_player_unit_frame = function (self, dt, t, ui_scenegraph, ui
 		local max_health_divider_style = player_portrait.style.hp_bar_max_health_divider
 		local default_bar_length = definitions.scenegraph_definition.hp_bar_grimoire_debuff_fill.size[1]
 		local bar_value = portrait_content.hp_bar_grimoire_debuff.bar_value
-		local bar_offset = bar_value*default_bar_length
+		local bar_offset = bar_value * default_bar_length
 		max_health_divider_style.offset[1] = bar_offset
 		grimoire_icon_content.active = true
 		local grimoire_icon_style = player_portrait.style.hp_bar_grimoire_icon
-		grimoire_icon_style.offset[1] = bar_offset/2
+		grimoire_icon_style.offset[1] = bar_offset / 2
 	end
 
 	local show_overlay = false
@@ -699,11 +703,11 @@ UnitFramesUI.update_player_unit_frame = function (self, dt, t, ui_scenegraph, ui
 			elseif is_knocked_down then
 				portrait_content.portrait_overlay = "unit_frame_portrait_dead"
 				local i = math.sirp(0, 0.7, self.overlay_time)
-				alpha = i*255
+				alpha = 255 * i
 			elseif needs_help then
 				portrait_content.portrait_overlay = "unit_frame_red_overlay"
 				local i = math.sirp(0.6, 1, self.overlay_time)
-				alpha = i*255
+				alpha = 255 * i
 			end
 
 			modified_portrait = modified_portrait or portrait_style.portrait_overlay.color[1] ~= alpha
@@ -739,13 +743,13 @@ UnitFramesUI.update_player_unit_frame = function (self, dt, t, ui_scenegraph, ui
 
 	local talk_indicator_style = player_portrait.style.talk_indicator_highlight
 	local old_alpha = talk_indicator_style.color[1]
-	old_alpha = old_alpha + ((is_talking and 1) or -1)*255*dt
+	old_alpha = old_alpha + ((is_talking and 1) or -1) * 255 * dt
 
 	if is_talking then
-		old_alpha = old_alpha + math.sin(t*3)*20
-		old_alpha = old_alpha + math.cos((t + 1)*13)*20
+		old_alpha = old_alpha + math.sin(t * 3) * 20
+		old_alpha = old_alpha + math.cos((t + 1) * 13) * 20
 		local scenegraph_size = self.ui_scenegraph[talk_indicator_style.scenegraph_id].size
-		scenegraph_size[2] = math.sin(t*7)*15 + 70 + math.cos((t + 1)*17)*10
+		scenegraph_size[2] = 70 + math.sin(t * 7) * 15 + math.cos((t + 1) * 17) * 10
 	end
 
 	old_alpha = math.clamp(old_alpha, 0, 255)
@@ -789,9 +793,9 @@ UnitFramesUI.on_player_health_changed = function (self, name, widget, health_per
 		local anim_time = nil
 
 		if current_bar_health < health_percent then
-			anim_time = (health_percent - current_bar_health)*lerp_time
+			anim_time = (health_percent - current_bar_health) * lerp_time
 		else
-			anim_time = (current_bar_health - health_percent)*lerp_time
+			anim_time = (current_bar_health - health_percent) * lerp_time
 		end
 
 		local animate_highlight = (not is_knocked_down and health_percent < (health_percent_current or 1)) or false
@@ -823,9 +827,9 @@ UnitFramesUI.on_num_grimoires_changed = function (self, name, widget, health_deb
 		local anim_time = nil
 
 		if current_bar_health_debuff < health_debuff_percent then
-			anim_time = (health_debuff_percent - current_bar_health_debuff)*lerp_time
+			anim_time = (health_debuff_percent - current_bar_health_debuff) * lerp_time
 		else
-			anim_time = (current_bar_health_debuff - health_debuff_percent)*lerp_time
+			anim_time = (current_bar_health_debuff - health_debuff_percent) * lerp_time
 		end
 
 		widget_animation_data.animate = true
@@ -847,16 +851,16 @@ UnitFramesUI.update_player_bar_animation = function (self, widget, bar, time, to
 
 	if 0 < total_time then
 		local style = widget.style
-		local progress = math.min(time/total_time, 1)
+		local progress = math.min(time / total_time, 1)
 		local catmullrom_value = math.catmullrom(progress, -14, 0, 0, 0)
 		local weight = 7
-		local weighted_average = (progress*(weight - 1) + 1)/weight
+		local weighted_average = (progress * (weight - 1) + 1) / weight
 		local bar_fraction = nil
 
 		if anim_start_health < anim_end_health then
-			bar_fraction = anim_start_health + (anim_end_health - anim_start_health)*weighted_average
+			bar_fraction = anim_start_health + (anim_end_health - anim_start_health) * weighted_average
 		else
-			bar_fraction = anim_start_health - (anim_start_health - anim_end_health)*weighted_average
+			bar_fraction = anim_start_health - (anim_start_health - anim_end_health) * weighted_average
 		end
 
 		bar.bar_value = bar_fraction
@@ -875,9 +879,9 @@ UnitFramesUI.update_damage_highlight = function (self, widget, time, dt)
 
 	if 0 < total_time then
 		local style = widget.style
-		local progress = math.min(time/total_time, 1)
+		local progress = math.min(time / total_time, 1)
 		local catmullrom_value = math.catmullrom(progress, -8, 0, 0, -8)
-		local highlight_alpha = catmullrom_value*255
+		local highlight_alpha = 255 * catmullrom_value
 		style.hp_bar_highlight.color[1] = highlight_alpha
 		widget.element.dirty = true
 
@@ -892,9 +896,9 @@ UnitFramesUI.update_talk_highlight = function (self, widget, time, dt)
 
 	if 0 < total_time then
 		local style = widget.style
-		local progress = math.min(time/total_time, 1)
+		local progress = math.min(time / total_time, 1)
 		local catmullrom_value = math.catmullrom(progress, -8, 0, 0, -8)
-		local highlight_alpha = catmullrom_value*255
+		local highlight_alpha = 255 * catmullrom_value
 		style.hp_bar_highlight.color[1] = highlight_alpha
 
 		return (progress < 1 and time) or nil
@@ -964,9 +968,9 @@ UnitFramesUI.animate_slot_equip = function (self, animation_data, dt)
 	local total_time = animation_data.total_time
 	local time = animation_data.time
 	time = time + dt
-	local progress = math.min(time/total_time, 1)
+	local progress = math.min(time / total_time, 1)
 	local catmullrom_value = math.catmullrom(progress, -10, 0, 0, -4)
-	style.color[1] = catmullrom_value*255
+	style.color[1] = 255 * catmullrom_value
 	animation_data.time = time
 
 	return (progress < 1 and animation_data) or nil

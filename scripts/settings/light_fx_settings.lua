@@ -140,7 +140,7 @@ LightFXConditionalSettings = {
 }
 
 function percent_to_rgb(percent)
-	percent = percent - 1
+	percent = 1 - percent
 
 	if percent == 1 then
 		percent = 0.99
@@ -149,11 +149,11 @@ function percent_to_rgb(percent)
 	local r, g, b = nil
 
 	if percent < 0.5 then
-		r = math.floor(percent/0.5*255)
+		r = math.floor(255 * percent / 0.5)
 		g = 255
 	else
 		r = 255
-		g = math.floor((percent%0.5 - 0.5)/0.5*255)
+		g = math.floor(255 * (0.5 - percent % 0.5) / 0.5)
 	end
 
 	b = 0

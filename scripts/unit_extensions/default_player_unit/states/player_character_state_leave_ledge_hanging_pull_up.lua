@@ -106,7 +106,7 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.update = function (self, unit, input
 	if status_extension.start_climb_rotation then
 		local wanted_rotation = self.start_rotation_box:unbox()
 		local current_rotation = Unit.local_rotation(unit, 0)
-		local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, math.min(dt*2, 1))
+		local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, math.min(dt * 2, 1))
 
 		Unit.set_local_rotation(unit, 0, new_rotation)
 	end
@@ -131,7 +131,7 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.calculate_end_position = function (s
 	local respawn_box_position = Unit.world_position(ledge_unit, node)
 	local respawn_box_rotation = Unit.world_rotation(ledge_unit, node)
 	local respawn_box_right_vector = Quaternion.right(respawn_box_rotation)
-	local new_position = respawn_box_position + respawn_box_right_vector*position_offset_amount
+	local new_position = respawn_box_position + respawn_box_right_vector * position_offset_amount
 	local nav_mesh_pos = ScriptUnit.extension(unit, "whereabouts_system"):get_hang_ledge_spawn_position()
 	local distance = Vector3.distance(new_position, nav_mesh_pos)
 	local is_close = distance < 4

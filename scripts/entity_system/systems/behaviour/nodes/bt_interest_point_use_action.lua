@@ -22,8 +22,8 @@ BTInterestPointUseAction.enter = function (self, unit, blackboard, t)
 	local duration = request.point_extension.duration
 
 	if duration and 0 < duration then
-		local duration_multiplier = math.random()*0.4 + 0.8
-		blackboard.ip_end_time = t + duration*duration_multiplier
+		local duration_multiplier = 0.8 + math.random() * 0.4
+		blackboard.ip_end_time = t + duration * duration_multiplier
 	end
 
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
@@ -74,7 +74,7 @@ BTInterestPointUseAction.run = function (self, unit, blackboard, t, dt)
 		local max_moving = InterestPointSettings.max_rats_currently_moving_to_ip
 
 		if max_moving < moving_to_ip then
-			blackboard.ip_end_time = t + 1 + math.random()*2
+			blackboard.ip_end_time = t + 1 + math.random() * 2
 
 			return "running"
 		end
@@ -91,8 +91,8 @@ BTInterestPointUseAction.run = function (self, unit, blackboard, t, dt)
 				return "done"
 			elseif next_request.result == "failed" then
 				local current_request = interest_point_system_api.get_claim(blackboard.ip_request_id)
-				local duration_multiplier = math.random()*0.4 + 0.8
-				local duration = current_request.point_extension.duration*duration_multiplier
+				local duration_multiplier = 0.8 + math.random() * 0.4
+				local duration = current_request.point_extension.duration * duration_multiplier
 				blackboard.ip_end_time = blackboard.ip_end_time + duration
 
 				interest_point_system_api.release_claim(blackboard.ip_next_request_id)

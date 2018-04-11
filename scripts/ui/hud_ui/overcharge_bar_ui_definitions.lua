@@ -156,7 +156,7 @@ local widget_definitions = {
 				},
 				offset = {
 					charge_bar_size[1],
-					charge_bar_size[2]/2 - 17,
+					charge_bar_size[2] / 2 - 17,
 					5
 				},
 				color = {
@@ -173,7 +173,7 @@ local widget_definitions = {
 				},
 				offset = {
 					charge_bar_size[1] + 2,
-					charge_bar_size[2]/2 - 17 - 2,
+					charge_bar_size[2] / 2 - 17 - 2,
 					5
 				},
 				color = {

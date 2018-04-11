@@ -171,13 +171,13 @@ PlayerCharacterStateClimbingLadder.update = function (self, unit, input, dt, con
 	local is_moving = CharacterStateHelper.has_move_input(input_extension)
 
 	if is_moving then
-		self.movement_speed = math.min(1, self.movement_speed + movement_settings_table.ladder.climb_move_acceleration_up*dt)
+		self.movement_speed = math.min(1, self.movement_speed + movement_settings_table.ladder.climb_move_acceleration_up * dt)
 	else
-		self.movement_speed = math.max(0, self.movement_speed - movement_settings_table.ladder.climb_move_acceleration_down*dt)
+		self.movement_speed = math.max(0, self.movement_speed - movement_settings_table.ladder.climb_move_acceleration_down * dt)
 	end
 
 	local move_speed_multiplier = status_extension.current_move_speed_multiplier(status_extension)
-	local move_speed = movement_settings_table.ladder.climb_speed*move_speed_multiplier*movement_settings_table.ladder.player_ladder_speed_scale*self.movement_speed
+	local move_speed = movement_settings_table.ladder.climb_speed * move_speed_multiplier * movement_settings_table.ladder.player_ladder_speed_scale * self.movement_speed
 	local ladder_rotation = Unit.local_rotation(self.ladder_unit, 0)
 	local ladder_pos = Unit.world_position(self.ladder_unit, 0)
 	local ladder_offset = Vector3.dot(-Quaternion.forward(ladder_rotation), POSITION_LOOKUP[unit] - ladder_pos) + movement_settings_table.ladder.climb_attach_to_ladder_position_in_ladder_space_y
@@ -194,7 +194,7 @@ PlayerCharacterStateClimbingLadder.update = function (self, unit, input, dt, con
 	CharacterStateHelper.look_limited_rotation_freedom(input_extension, player.viewport_name, self.first_person_extension, self.ladder_unit, unit, max_radians, max_radians, status_extension, self.inventory_extension)
 	self.on_ladder_animation(self)
 
-	self.accumilated_distance = self.accumilated_distance + math.abs(current_velocity_z)*dt
+	self.accumilated_distance = self.accumilated_distance + math.abs(current_velocity_z) * dt
 
 	if not player.bot_player and 1 < self.accumilated_distance then
 		self.accumilated_distance = 0
@@ -237,17 +237,17 @@ PlayerCharacterStateClimbingLadder._move_on_ladder = function (self, first_perso
 			local percentage_to_increase_input = nil
 
 			if 0 < pitch_value then
-				percentage_to_increase_input = (pitch_value - 1)*(pitch_value - 1) - 1
+				percentage_to_increase_input = 1 - (1 - pitch_value) * (1 - pitch_value)
 			else
-				percentage_to_increase_input = (pitch_value - -1)*(pitch_value - -1) + -1
+				percentage_to_increase_input = -1 + (-1 - pitch_value) * (-1 - pitch_value)
 			end
 
-			y_input = y_input*percentage_to_increase_input
+			y_input = y_input * percentage_to_increase_input
 		end
 
 		if collides_down then
 			if 0 < y_input then
-				direction = Vector3(x_input*movement_settings_table.ladder.climb_horizontals_multiplier, 0, y_input)
+				direction = Vector3(x_input * movement_settings_table.ladder.climb_horizontals_multiplier, 0, y_input)
 			else
 				direction = Vector3(x_input, y_input, 0)
 			end
@@ -256,13 +256,13 @@ PlayerCharacterStateClimbingLadder._move_on_ladder = function (self, first_perso
 				x_input = -x_input
 			end
 
-			direction = Vector3(x_input*movement_settings_table.ladder.climb_horizontals_multiplier, 0, y_input)
+			direction = Vector3(x_input * movement_settings_table.ladder.climb_horizontals_multiplier, 0, y_input)
 		end
 	end
 
 	local move_direction = Quaternion.rotate(rotation, direction)
 
-	locomotion_extension.set_wanted_velocity(locomotion_extension, move_direction*speed + ladder_offset*Quaternion.forward(rotation)*4)
+	locomotion_extension.set_wanted_velocity(locomotion_extension, move_direction * speed + ladder_offset * Quaternion.forward(rotation) * 4)
 
 	return 
 end

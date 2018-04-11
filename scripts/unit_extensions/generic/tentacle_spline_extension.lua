@@ -32,10 +32,10 @@ TentacleSplineExtension.init = function (self, extension_init_context, unit, ext
 		local target_pos = (self.target_unit and POSITION_LOOKUP[self.target_unit]) or tentacle_data.last_target_pos:unbox()
 		local joints = {}
 		local segment_length = 0.5
-		local length = segment_length*10
+		local length = segment_length * 10
 
 		for i = 1, 10, 1 do
-			joints[i] = Vector3(0, 0, i*segment_length)
+			joints[i] = Vector3(0, 0, i * segment_length)
 		end
 
 		self.ik_tentacle = IkChain:new(joints, start_pos, target_pos, 0.01)
@@ -186,7 +186,7 @@ TentacleSplineExtension.parse_nodes = function (self, unit, tip_node_name)
 	return nodes, node_spacing, max_length
 end
 TentacleSplineExtension.get_ground_pos_at_wall = function (self, unit, nav_world, wall_pos)
-	local portal_forward = Quaternion.forward(Unit.local_rotation(unit, 0))*1.5
+	local portal_forward = Quaternion.forward(Unit.local_rotation(unit, 0)) * 1.5
 	local pos = wall_pos + portal_forward
 	local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, pos, 0.3, 5)
 
@@ -219,7 +219,7 @@ TentacleSplineExtension.spawn_chaos_tentacle = function (self, unit, blackboard,
 	local position = POSITION_LOOKUP[unit]
 	local rot = Unit.local_rotation(unit, 0)
 	local fwd = Vector3.normalize(Quaternion.forward(rot))
-	local wall_pos = position + fwd*inside_wall_distance
+	local wall_pos = position + fwd * inside_wall_distance
 	local portal_unit = nil
 
 	if is_server then
@@ -333,50 +333,50 @@ local TentacleAlignFunctions = {
 			local side = Vector3.cross(player_fwd, to_head)
 			local fwd = Vector3.cross(side, to_head)
 			local c = s_pos
-			spline_points[k] = (c + side*w) - to_head*0.2
+			spline_points[k] = (c + side * w) - to_head * 0.2
 			k = k + 1
-			spline_points[k] = (c + fwd*m) - to_head*0.1
+			spline_points[k] = (c + fwd * m) - to_head * 0.1
 			k = k + 1
-			spline_points[k] = c - side*w - to_head*0
+			spline_points[k] = c - side * w - to_head * 0
 			k = k + 1
-			spline_points[k] = c - fwd*m + to_head*0.1
+			spline_points[k] = c - fwd * m + to_head * 0.1
 			k = k + 1
-			spline_points[k] = c + side*w + to_head*0.2
+			spline_points[k] = c + side * w + to_head * 0.2
 			k = k + 1
-			spline_points[k] = c + fwd*m + to_head*0.3
+			spline_points[k] = c + fwd * m + to_head * 0.3
 			k = k + 1
-			spline_points[k] = c - side*w + to_head*0.4
+			spline_points[k] = c - side * w + to_head * 0.4
 			k = k + 1
-			spline_points[k] = c - fwd*m2 + to_head*0.5
+			spline_points[k] = c - fwd * m2 + to_head * 0.5
 			k = k + 1
-			spline_points[k] = c + side*w + to_head*0.6
+			spline_points[k] = c + side * w + to_head * 0.6
 			k = k + 1
-			spline_points[k] = c + fwd*m + to_head*0.7
+			spline_points[k] = c + fwd * m + to_head * 0.7
 			k = k + 1
-			spline_points[k] = c - side*w + to_head*0.8
+			spline_points[k] = c - side * w + to_head * 0.8
 		else
 			local target_pos = POSITION_LOOKUP[target_unit]
-			spline_points[k] = target_pos + side*w + Vector3(0, 0, h - 0.3)
+			spline_points[k] = target_pos + side * w + Vector3(0, 0, h - 0.3)
 			k = k + 1
-			spline_points[k] = target_pos + to_player_dir*m + Vector3(0, 0, h - 0.2)
+			spline_points[k] = target_pos + to_player_dir * m + Vector3(0, 0, h - 0.2)
 			k = k + 1
-			spline_points[k] = target_pos - side*w + Vector3(0, 0, h - 0.1)
+			spline_points[k] = target_pos - side * w + Vector3(0, 0, h - 0.1)
 			k = k + 1
-			spline_points[k] = target_pos - to_player_dir*m + Vector3(0, 0, h + 0)
+			spline_points[k] = target_pos - to_player_dir * m + Vector3(0, 0, h + 0)
 			k = k + 1
-			spline_points[k] = target_pos + side*w + Vector3(0, 0, h + 0.1)
+			spline_points[k] = target_pos + side * w + Vector3(0, 0, h + 0.1)
 			k = k + 1
-			spline_points[k] = target_pos + to_player_dir*m + Vector3(0, 0, h + 0.2)
+			spline_points[k] = target_pos + to_player_dir * m + Vector3(0, 0, h + 0.2)
 			k = k + 1
-			spline_points[k] = target_pos - side*w + Vector3(0, 0, h + 0.3)
+			spline_points[k] = target_pos - side * w + Vector3(0, 0, h + 0.3)
 			k = k + 1
-			spline_points[k] = target_pos - to_player_dir*m + Vector3(0, 0, h + 0.4)
+			spline_points[k] = target_pos - to_player_dir * m + Vector3(0, 0, h + 0.4)
 			k = k + 1
-			spline_points[k] = target_pos + side*w + Vector3(0, 0, h + 0.5)
+			spline_points[k] = target_pos + side * w + Vector3(0, 0, h + 0.5)
 			k = k + 1
-			spline_points[k] = target_pos + to_player_dir*m + Vector3(0, 0, h + 0.6)
+			spline_points[k] = target_pos + to_player_dir * m + Vector3(0, 0, h + 0.6)
 			k = k + 1
-			spline_points[k] = target_pos - side*w + Vector3(0, 0, h + 0.7)
+			spline_points[k] = target_pos - side * w + Vector3(0, 0, h + 0.7)
 		end
 
 		return lock_point_index
@@ -398,11 +398,11 @@ local TentacleAlignFunctions = {
 		local side = Vector3.cross(player_fwd, to_head)
 		local fwd = Vector3.cross(side, to_head)
 		local c = s_pos
-		spline_points[k] = (c + side*w) - to_head*0.2
+		spline_points[k] = (c + side * w) - to_head * 0.2
 		k = k + 1
-		spline_points[k] = c - fwd*1.5 - to_head*0.1
+		spline_points[k] = c - fwd * 1.5 - to_head * 0.1
 		k = k + 1
-		spline_points[k] = c - fwd*5 - to_head*0.5
+		spline_points[k] = c - fwd * 5 - to_head * 0.5
 
 		return lock_point_index
 	end
@@ -467,7 +467,7 @@ TentacleSplineExtension.update_global_movement_sound_intensity = function (self,
 	local current_length = self.reach_dist or previous_length
 	local scaling = breed.movement_sound_scaling
 	local max_intensity = breed.movement_sound_max_intensity
-	local new_intensity = math.min(math.abs(previous_length - current_length)/dt*scaling, max_intensity)
+	local new_intensity = math.min(math.abs(previous_length - current_length) / dt * scaling, max_intensity)
 	local sound_parameter = breed.movement_sound_parameter
 	local audio_system = Managers.state.entity:system("audio_system")
 
@@ -702,14 +702,14 @@ TentacleSplineExtension.funnel_tentacle_to_center = function (self, spline_point
 	local influence_dist = 4
 
 	if debug_spline then
-		QuickDrawer:line(wall_pos - portal_forward*2, wall_pos + portal_forward*influence_dist, Color(0, 100, 200))
+		QuickDrawer:line(wall_pos - portal_forward * 2, wall_pos + portal_forward * influence_dist, Color(0, 100, 200))
 	end
 
 	Debug.text("influence dist: %.2f", influence_dist)
 
 	for i = from, to, 1 do
 		local point = spline_points[i]
-		local p = Geometry.closest_point_on_line(point, root_pos, wall_pos + portal_forward*influence_dist)
+		local p = Geometry.closest_point_on_line(point, root_pos, wall_pos + portal_forward * influence_dist)
 
 		if debug_spline then
 			QuickDrawer:sphere(p, 0.05, Color(0, 100, 200))
@@ -720,7 +720,7 @@ TentacleSplineExtension.funnel_tentacle_to_center = function (self, spline_point
 		local dist_along_fwd = Vector3.length(p - root_pos)
 		local outside_dist = dist_along_fwd - root_to_align_dist
 		dist_along_fwd = math.clamp(outside_dist, 0, dist_along_fwd, influence_dist)
-		local d = math.clamp(dist_along_fwd/influence_dist, 0, 1) - 1
+		local d = 1 - math.clamp(dist_along_fwd / influence_dist, 0, 1)
 
 		Debug.text("D %d %.2f total dist: %.2f rdist: %.2f", i, d, Vector3.length(p - root_pos) - root_to_align_dist, root_to_align_dist)
 
@@ -729,11 +729,11 @@ TentacleSplineExtension.funnel_tentacle_to_center = function (self, spline_point
 
 		if horiz_influence_dist then
 			local horiz_dist = Vector3.length(straight_to_point)
-			e = math.clamp(horiz_dist/horiz_influence_dist, 0, 1) - 1
-			e = e*e
-			p = point - straight_to_point*(d + e)*0.5
+			e = 1 - math.clamp(horiz_dist / horiz_influence_dist, 0, 1)
+			e = e * e
+			p = point - straight_to_point * (d + e) * 0.5
 		else
-			p = point - straight_to_point*d
+			p = point - straight_to_point * d
 		end
 
 		spline_points[i] = p
@@ -743,7 +743,7 @@ TentacleSplineExtension.funnel_tentacle_to_center = function (self, spline_point
 end
 TentacleSplineExtension.funnel_one_point = function (self, point, wall_pos, root_pos, portal_forward, root_to_align_dist, horiz_influence_dist)
 	local influence_dist = 4
-	local p = Geometry.closest_point_on_line(point, root_pos, wall_pos + portal_forward*influence_dist)
+	local p = Geometry.closest_point_on_line(point, root_pos, wall_pos + portal_forward * influence_dist)
 
 	if debug_spline then
 		QuickDrawer:sphere(p, 0.05, Color(0, 100, 200))
@@ -751,17 +751,17 @@ TentacleSplineExtension.funnel_one_point = function (self, point, wall_pos, root
 
 	local dist_along_fwd = Vector3.length(p - root_pos)
 	dist_along_fwd = math.clamp(dist_along_fwd - root_to_align_dist, 0, dist_along_fwd)
-	local d = math.clamp(dist_along_fwd/influence_dist, 0, 1) - 1
+	local d = 1 - math.clamp(dist_along_fwd / influence_dist, 0, 1)
 	local straight_to_point = point - p
 	local e = 1
 
 	if horiz_influence_dist then
 		local horiz_dist = Vector3.length(straight_to_point)
-		e = math.clamp(horiz_dist/horiz_influence_dist, 0, 1) - 1
-		e = e*e
+		e = 1 - math.clamp(horiz_dist / horiz_influence_dist, 0, 1)
+		e = e * e
 	end
 
-	p = point - straight_to_point*(d + e)*0.5
+	p = point - straight_to_point * (d + e) * 0.5
 
 	return p, Vector3.length(straight_to_point)
 end
@@ -779,8 +779,8 @@ local function get_path_point_from_back(nodes, dist)
 		if dist < travel_dist then
 			local missing = travel_dist - dist
 			local left_over = p1p2_dist - missing
-			local part = left_over/p1p2_dist
-			local part_vec = vec*part
+			local part = left_over / p1p2_dist
+			local part_vec = vec * part
 			local move_vec = p1 + part_vec
 
 			return move_vec, i
@@ -821,22 +821,22 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 		elseif target_dist < 30 then
 			index_list = index_lists.attack_a
 			local ampl = 1.5
-			local tt = t*1.5
+			local tt = t * 1.5
 
 			if portal_spawn_type == "wall" then
 				local d = target_dist
 				local base = root_pos + Vector3(0, 0, 0.5)
 				spline_points[1] = root_pos
-				spline_points[2] = base + to_player_dir*d*0.1
-				spline_points[3] = base + to_player_dir*d*0.2
-				spline_points[4] = base + to_player_dir*d*0.3
-				spline_points[5] = base + to_player_dir*d*0.4
-				spline_points[6] = base + to_player_dir*d*0.5
-				spline_points[7] = base + to_player_dir*d*0.6
-				spline_points[8] = base + to_player_dir*d*0.7
-				spline_points[9] = base + to_player_dir*d*0.8
-				spline_points[10] = base + to_player_dir*d*0.9
-				spline_points[11] = base + to_player_dir*d*1
+				spline_points[2] = base + to_player_dir * d * 0.1
+				spline_points[3] = base + to_player_dir * d * 0.2
+				spline_points[4] = base + to_player_dir * d * 0.3
+				spline_points[5] = base + to_player_dir * d * 0.4
+				spline_points[6] = base + to_player_dir * d * 0.5
+				spline_points[7] = base + to_player_dir * d * 0.6
+				spline_points[8] = base + to_player_dir * d * 0.7
+				spline_points[9] = base + to_player_dir * d * 0.8
+				spline_points[10] = base + to_player_dir * d * 0.9
+				spline_points[11] = base + to_player_dir * d * 1
 
 				for i = 1, #spline_points, 1 do
 					QuickDrawer:sphere(spline_points[i], 0.26, Color(0, 255, 0))
@@ -846,17 +846,17 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 
 				local function split(to_point, z_hi, z_low)
 					local dist = Vector3_length(to_point)
-					local e = math.clamp(dist/4, 0, 1)
+					local e = math.clamp(dist / 4, 0, 1)
 
-					return Vector3(to_point.x, to_point.y, e*z_hi + (e - 1)*z_low)
+					return Vector3(to_point.x, to_point.y, e * z_hi + (e - 1) * z_low)
 				end
 
 				local h = Vector3(0, 0, 1)
 				local list = {
-					to_player_dir*target_dist*0.1,
-					to_player_dir*target_dist*0.25 + side*0.25*math.sin((tt + 0)*ampl) + Vector3(0, 0, math.sin((tt + 0)*0.5) + 0.5)*0.25,
-					to_player_dir*target_dist*0.5 + side*0.5*math.sin((tt + 0.6)*ampl) + Vector3(0, 0, math.sin((tt + 0.1)*0.5) + 0.5)*0.5,
-					to_player_dir*target_dist*0.75 + side*math.sin((tt + 0.9)*ampl*0.5) + Vector3(0, 0, math.sin((tt + 0.2)*0.5) + 0.5)
+					to_player_dir * target_dist * 0.1,
+					to_player_dir * target_dist * 0.25 + side * 0.25 * math.sin((tt + 0) * ampl) + Vector3(0, 0, 0.5 + math.sin((tt + 0) * 0.5)) * 0.25,
+					to_player_dir * target_dist * 0.5 + side * 0.5 * math.sin((tt + 0.6) * ampl) + Vector3(0, 0, 0.5 + math.sin((tt + 0.1) * 0.5)) * 0.5,
+					to_player_dir * target_dist * 0.75 + side * math.sin((tt + 0.9) * ampl * 0.5) + Vector3(0, 0, 0.5 + math.sin((tt + 0.2) * 0.5))
 				}
 				spline_points[1] = root_pos
 				local to_surface = wall_pos - root_pos
@@ -870,9 +870,9 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 			k = #spline_points
 		else
 			spline_points[1] = root_pos
-			spline_points[2] = root_pos + portal_forward*3
-			spline_points[3] = root_pos + to_player_dir*(math.sin(t*2)*1 + 6) + Vector3.cross(to_player_dir, Vector3.up())*2.5*math.sin(t*1.5)
-			spline_points[4] = (root_pos + to_player_dir*8.5) - Vector3.cross(to_player_dir, Vector3.up())*0.5*(math.cos(t*3)*0.3 + 0.7)
+			spline_points[2] = root_pos + portal_forward * 3
+			spline_points[3] = root_pos + to_player_dir * (6 + 1 * math.sin(t * 2)) + Vector3.cross(to_player_dir, Vector3.up()) * 2.5 * math.sin(t * 1.5)
+			spline_points[4] = (root_pos + to_player_dir * 8.5) - Vector3.cross(to_player_dir, Vector3.up()) * 0.5 * (0.7 + 0.3 * math.cos(t * 3))
 			k = 4
 		end
 
@@ -895,7 +895,7 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 			lock_point_index = TentacleAlignFunctions.attack(self.target_unit, spline_points, k)
 		elseif template_name == "launch_out" then
 			k = k + 1
-			spline_points[k] = target_pos + side*0.55 + Vector3(0, 0, 2)
+			spline_points[k] = target_pos + side * 0.55 + Vector3(0, 0, 2)
 		elseif template_name == "evaded" then
 			lock_point_index = TentacleAlignFunctions.evaded(self.target_unit, spline_points, k)
 		end
@@ -922,10 +922,10 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 
 		local anchor_point_pos = ap
 		tentacle_data.look_dir = Vector3Box(Vector3.normalize(anchor_point_pos - pos))
-		local anchor_point2_pos = (use_extra_anchor_point and anchor_point_pos - tentacle_data.look_dir:unbox()*0.2) or nil
+		local anchor_point2_pos = (use_extra_anchor_point and anchor_point_pos - tentacle_data.look_dir:unbox() * 0.2) or nil
 
 		if debug_spline then
-			QuickDrawer:line(pos, pos + tentacle_data.look_dir:unbox()*5, Color(200, 200, 255))
+			QuickDrawer:line(pos, pos + tentacle_data.look_dir:unbox() * 5, Color(200, 200, 255))
 			QuickDrawer:sphere(ap, 0.33, Color(124, 0, 220))
 		end
 
@@ -939,7 +939,7 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 
 		spline_points = {}
 		local num_nodes = #nodes - 1
-		local alpha = (math.pi*2)/num_nodes
+		local alpha = (2 * math.pi) / num_nodes
 
 		for i = 1, num_nodes, 1 do
 			local pos = nodes[i]:unbox()
@@ -1032,21 +1032,21 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 		end
 	end
 
-	local alpha = (math.pi*20)/num_spacings
+	local alpha = (20 * math.pi) / num_spacings
 
 	for i = 1, num_spacings, 1 do
 		local node = nodes[i]
 		local pos, tangent, is_last = spline.get_point_at_distance(spline, dists[i])
 
 		if debug_dists then
-			local pt = pos + Vector3(0, 0, 0.33)*i%5
+			local pt = pos + Vector3(0, 0, 0.33) * i % 5
 
 			Debug.world_sticky_text(pt, string.format("%.1f", dists[i]), "blue")
 			QuickDrawer:line(pos, pt, Color(255, 128, 0))
 		end
 
 		if lock_point_index and dists[i] < lock_point_dist - 2 then
-			local a = math.sin(t*6 + alpha*i)*0.065
+			local a = math.sin(t * 6 + alpha * i) * 0.065
 			pos = pos + Vector3(a, a, a)
 		end
 

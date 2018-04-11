@@ -120,7 +120,7 @@ function flow_callback_query_server_seeded_random_float(params)
 	local min = params.min or 0
 	local max = params.max or 1
 	local rnd = server_seeded_random(nil, nil, params.debug_name)
-	flow_return_table.value = min + rnd*(max - min)
+	flow_return_table.value = min + rnd * (max - min)
 
 	return flow_return_table
 end
@@ -1065,7 +1065,7 @@ function flow_callback_set_ai_aggro_modifier(params)
 	local unit = params.unit
 	local aggro_modifier = params.aggro_modifier
 	local aggro_extension = ScriptUnit.extension(unit, "aggro_system")
-	aggro_extension.aggro_modifier = aggro_modifier*-1
+	aggro_extension.aggro_modifier = aggro_modifier * -1
 
 	return 
 end
@@ -1987,6 +1987,22 @@ function flow_callback_force_unit_animation(params)
 	return 
 end
 
+function flow_callback_synced_animation(params)
+	local unit = params.unit
+	local animation_event = params.animation_event
+	local game = Managers.state.network:game()
+	local unit_storage = Managers.state.unit_storage
+	local go_id = unit_storage.go_id(unit_storage, unit)
+	local animation_synced_unit_id = GameSession.game_object_field(game, go_id, "animation_synced_unit_id")
+	local target_unit = unit_storage.unit(unit_storage, animation_synced_unit_id)
+
+	if target_unit and animation_event and Unit.has_animation_event(target_unit, animation_event) then
+		Unit.animation_event(target_unit, animation_event)
+	end
+
+	return 
+end
+
 function flow_callback_trigger_dialogue_story(params)
 	local unit = params.unit
 
@@ -2079,7 +2095,7 @@ function flow_callback_start_fade(params)
 	if mesh and material_name then
 		assert(Mesh.has_material(mesh, material_name), string.format("[flow_callback_start_fade] The material %s doesn't exist for mesh %s", mesh_name, material_name))
 
-		material = Mesh.material(mesh, material)
+		material = Mesh.material(mesh, material_name)
 	end
 
 	if mesh and material then
@@ -2479,7 +2495,7 @@ function flow_callback_broadphase_deal_damage(params)
 	if Unit.alive(attacker_unit) then
 		local rot = Unit.world_rotation(attacker_unit, 0)
 		local params_dir = params.direction
-		attack_direction = Quaternion.right(rot)*params_dir.x + Quaternion.forward(rot)*params_dir.y + Quaternion.up(rot)*params_dir.z
+		attack_direction = Quaternion.right(rot) * params_dir.x + Quaternion.forward(rot) * params_dir.y + Quaternion.up(rot) * params_dir.z
 	else
 		attack_direction = params.direction
 	end
@@ -2493,7 +2509,7 @@ function flow_callback_broadphase_deal_damage(params)
 		local damage_profile_name = hazard_settings.enemy.damage_profile or "default"
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
 		local target_index = nil
-		local boost_curve_multiplier = 1
+		local boost_curve_multiplier = 0
 		local is_critical_strike = false
 		local can_damage = false
 		local can_stagger = false

@@ -87,7 +87,7 @@ BTComboAttackAction.enter = function (self, unit, blackboard, t)
 
 	if action.combo_attack_cycle_index then
 		local num_anims = action.combo_anim_variations
-		local index = action.combo_attack_cycle_index%num_anims + 1
+		local index = action.combo_attack_cycle_index % num_anims + 1
 		combo.attack_variation = index
 		action.combo_attack_cycle_index = index
 	else
@@ -170,9 +170,9 @@ BTComboAttackAction._start_attack = function (self, unit, blackboard, t, action,
 		local rot = LocomotionUtils.rotation_towards_unit_flat(unit, attacking_target)
 		local range = attack_data.bot_threat_range or 2
 		local width = attack_data.bot_threat_width or 1
-		local half_range = range*0.5
-		local forward = Quaternion.rotate(rot, Vector3.forward())*half_range
-		local oobb_pos = POSITION_LOOKUP[unit] + forward + Vector3.up()*0.5
+		local half_range = range * 0.5
+		local forward = Quaternion.rotate(rot, Vector3.forward()) * half_range
+		local oobb_pos = POSITION_LOOKUP[unit] + forward + Vector3.up() * 0.5
 
 		Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(oobb_pos, "oobb", Vector3(width, range, 0.5), rot, attack_data.bot_threat_duration)
 	end
@@ -332,8 +332,8 @@ BTComboAttackAction._follow = function (self, dt, t, unit, blackboard, current_a
 
 	if t < self.last_attack_time + attack_start_slow_factor_time then
 		local attack_start_slow_fraction = current_attack.attack_start_slow_fraction or breed.attack_start_slow_fraction or 0
-		local attack_start_slow_factor = attack_start_slow_fraction - 1 + attack_start_slow_fraction*(t - self.last_attack_time)/attack_start_slow_factor_time
-		max_speed = max_speed*attack_start_slow_factor
+		local attack_start_slow_factor = 1 - attack_start_slow_fraction + attack_start_slow_fraction * (t - self.last_attack_time) / attack_start_slow_factor_time
+		max_speed = max_speed * attack_start_slow_factor
 	end
 
 	attack_stop_time = current_attack.attack_stop_time or breed.attack_stop_time or nil
@@ -408,11 +408,11 @@ BTComboAttackAction._update_rotation_target_lerped = function (self, t, unit, bl
 	if attack_t < start_in then
 		speed = DEFAULT_ROTATION_SPEED
 	elseif attack_t < end_in then
-		speed = math.lerp(DEFAULT_ROTATION_SPEED, target_speed, (attack_t - start_in)/(end_in - start_in))
+		speed = math.lerp(DEFAULT_ROTATION_SPEED, target_speed, (attack_t - start_in) / (end_in - start_in))
 	elseif attack_t < start_out then
 		speed = target_speed
 	elseif attack_t < end_out then
-		speed = math.lerp(target_speed, DEFAULT_ROTATION_SPEED, (attack_t - start_out)/(end_out - start_out))
+		speed = math.lerp(target_speed, DEFAULT_ROTATION_SPEED, (attack_t - start_out) / (end_out - start_out))
 	else
 		speed = DEFAULT_ROTATION_SPEED
 	end
@@ -447,7 +447,7 @@ BTComboAttackAction._push_non_targets = function (self, self_pos, current_target
 					local lateral_direction = Vector3.cross(forward_direction, Vector3.up())
 					local lateral_dist = Vector3.dot(lateral_direction, to_player)
 					local speed_factor = math.auto_lerp(close_impact_radius, far_impact_radius, 1, 0, math.abs(lateral_dist))
-					local velocity = forward_direction*speed_factor*forward_impact_speed + lateral_direction*speed_factor*lateral_impact_speed
+					local velocity = forward_direction * speed_factor * forward_impact_speed + lateral_direction * speed_factor * lateral_impact_speed
 					local player_locomotion = ScriptUnit.extension(player_unit, "locomotion_system")
 
 					player_locomotion.add_external_velocity(player_locomotion, velocity)

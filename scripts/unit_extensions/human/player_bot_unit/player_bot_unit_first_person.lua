@@ -33,8 +33,8 @@ PlayerBotUnitFirstPerson.init = function (self, extension_init_context, unit, ex
 	self.player_height_time_to_change = 0
 	self.player_height_change_start_time = 0
 	self.look_delta = nil
-	local small_delta = math.pi/15
-	self.MAX_MIN_PITCH = math.pi/2 - small_delta
+	local small_delta = math.pi / 15
+	self.MAX_MIN_PITCH = math.pi / 2 - small_delta
 	self.drawer = Managers.state.debug:drawer({
 		mode = "immediate",
 		name = "PlayerBotUnitFirstPerson"
@@ -68,8 +68,8 @@ PlayerBotUnitFirstPerson.destroy = function (self)
 end
 
 local function ease_out_quad(t, b, c, d)
-	t = t/d
-	local res = -c*t*(t - 2) + b
+	t = t / d
+	local res = -c * t * (t - 2) + b
 
 	return res
 end

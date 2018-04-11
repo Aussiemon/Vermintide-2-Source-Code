@@ -69,8 +69,8 @@ local function create_cooldown_widget(scenegraph_id, amount)
 		25
 	}
 	local icon_center_position = {
-		size[1]/2 - icon_size[1]/2,
-		size[2]/2 - icon_size[2]/2
+		size[1] / 2 - icon_size[1] / 2,
+		size[2] / 2 - icon_size[2] / 2
 	}
 	local x = 0
 	local y = 0
@@ -79,12 +79,12 @@ local function create_cooldown_widget(scenegraph_id, amount)
 
 	for i = 1, amount, 1 do
 		local real_index = i - 1
-		local fraction = real_index/amount
-		local rotation_progress = (start_progress + fraction)%1
-		local degress = rotation_progress*360
-		local angle = -((degress*math.pi)/180)
-		local ptx = x + r*math.cos(angle)
-		local pty = y + r*math.sin(angle)
+		local fraction = real_index / amount
+		local rotation_progress = (start_progress + fraction) % 1
+		local degress = rotation_progress * 360
+		local angle = -((degress * math.pi) / 180)
+		local ptx = x + r * math.cos(angle)
+		local pty = y + r * math.sin(angle)
 		local passes = definition.element.passes
 		local content = definition.content
 		local style = definition.style

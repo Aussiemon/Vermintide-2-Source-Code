@@ -73,9 +73,9 @@ local function alloc_table()
 	end
 
 	if frame_table_counter == frame_table_max_size then
-		printf("Increasing frame table size to %d", frame_table_max_size*2)
+		printf("Increasing frame table size to %d", frame_table_max_size * 2)
 
-		frame_table_max_size = frame_table_max_size*2
+		frame_table_max_size = frame_table_max_size * 2
 
 		for i = frame_table_counter, frame_table_max_size, 1 do
 			frame_table_collection_buffers[1][i] = {}
@@ -118,7 +118,7 @@ local function clear_tables()
 end
 
 local function swap_tables()
-	frame_table_current_buffer = frame_table_current_buffer - 3
+	frame_table_current_buffer = 3 - frame_table_current_buffer
 
 	return 
 end

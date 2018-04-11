@@ -279,7 +279,7 @@ HordeCompositions = {
 			}
 		}
 	},
-	stormdorf_boss_event_defensive_easy = {
+	stronghold_boss_event_defensive_easy = {
 		{
 			name = "plain",
 			weight = 6,
@@ -297,65 +297,7 @@ HordeCompositions = {
 			}
 		}
 	},
-	stormdorf_boss_event_defensive_normal = {
-		{
-			name = "plain",
-			weight = 6,
-			breeds = {
-				"skaven_slave",
-				{
-					5,
-					7
-				},
-				"skaven_clan_rat",
-				{
-					4,
-					7
-				}
-			}
-		},
-		{
-			name = "somevermin",
-			weight = 2,
-			breeds = {
-				"skaven_clan_rat",
-				{
-					5,
-					7
-				}
-			}
-		}
-	},
-	stormdorf_boss_event_defensive_hard = {
-		{
-			name = "plain",
-			weight = 6,
-			breeds = {
-				"skaven_slave",
-				{
-					4,
-					6
-				},
-				"skaven_clan_rat",
-				{
-					5,
-					7
-				}
-			}
-		},
-		{
-			name = "somevermin",
-			weight = 2,
-			breeds = {
-				"skaven_clan_rat",
-				{
-					8,
-					10
-				}
-			}
-		}
-	},
-	stormdorf_boss_event_defensive_harder = {
+	stronghold_boss_event_defensive_normal = {
 		{
 			name = "plain",
 			weight = 6,
@@ -364,6 +306,59 @@ HordeCompositions = {
 				{
 					6,
 					8
+				}
+			}
+		},
+		{
+			name = "somevermin",
+			weight = 2,
+			breeds = {
+				"skaven_clan_rat",
+				{
+					3,
+					5
+				}
+			}
+		}
+	},
+	stronghold_boss_event_defensive_hard = {
+		{
+			name = "plain",
+			weight = 6,
+			breeds = {
+				"skaven_slave",
+				{
+					10,
+					12
+				}
+			}
+		},
+		{
+			name = "somevermin",
+			weight = 2,
+			breeds = {
+				"skaven_clan_rat",
+				{
+					6,
+					8
+				},
+				"skaven_plague_monk",
+				{
+					1,
+					2
+				}
+			}
+		}
+	},
+	stronghold_boss_event_defensive_harder = {
+		{
+			name = "plain",
+			weight = 6,
+			breeds = {
+				"skaven_slave",
+				{
+					12,
+					15
 				},
 				"skaven_clan_rat",
 				{
@@ -380,19 +375,24 @@ HordeCompositions = {
 				{
 					12,
 					14
+				},
+				"skaven_plague_monk",
+				{
+					2,
+					3
 				}
 			}
 		}
 	},
-	stormdorf_boss_event_defensive_hardest = {
+	stronghold_boss_event_defensive_hardest = {
 		{
 			name = "plain",
 			weight = 6,
 			breeds = {
 				"skaven_slave",
 				{
-					8,
-					12
+					15,
+					17
 				},
 				"skaven_clan_rat",
 				{
@@ -407,21 +407,142 @@ HordeCompositions = {
 			breeds = {
 				"skaven_clan_rat",
 				{
-					16,
-					20
+					14,
+					16
+				},
+				"skaven_plague_monk",
+				{
+					3,
+					4
 				}
 			}
 		}
 	},
-	warcamp_boss_event_trickle = {
+	stronghold_boss_trickle = {
+		{
+			name = "plain",
+			weight = 6,
+			breeds = {
+				"skaven_slave",
+				{
+					5,
+					6
+				}
+			}
+		}
+	},
+	warcamp_boss_event_trickle_normal = {
 		{
 			name = "plain",
 			weight = 6,
 			breeds = {
 				"chaos_marauder",
 				{
-					2,
-					3
+					3,
+					5
+				}
+			}
+		},
+		{
+			name = "somevermin",
+			weight = 2,
+			breeds = {
+				"chaos_marauder",
+				{
+					3,
+					4
+				},
+				"chaos_raider",
+				{
+					1,
+					1
+				}
+			}
+		}
+	},
+	warcamp_boss_event_trickle_hard = {
+		{
+			name = "plain",
+			weight = 6,
+			breeds = {
+				"chaos_marauder",
+				{
+					3,
+					5
+				}
+			}
+		},
+		{
+			name = "somevermin",
+			weight = 2,
+			breeds = {
+				"chaos_marauder",
+				{
+					3,
+					5
+				},
+				"chaos_raider",
+				{
+					1,
+					1
+				}
+			}
+		}
+	},
+	warcamp_boss_event_trickle_harder = {
+		{
+			name = "plain",
+			weight = 6,
+			breeds = {
+				"chaos_marauder",
+				{
+					4,
+					6
+				}
+			}
+		},
+		{
+			name = "somevermin",
+			weight = 2,
+			breeds = {
+				"chaos_marauder",
+				{
+					4,
+					6
+				},
+				"chaos_raider",
+				{
+					1,
+					2
+				}
+			}
+		}
+	},
+	warcamp_boss_event_trickle_hardest = {
+		{
+			name = "plain",
+			weight = 6,
+			breeds = {
+				"chaos_marauder",
+				{
+					5,
+					6
+				}
+			}
+		},
+		{
+			name = "somevermin",
+			weight = 2,
+			breeds = {
+				"chaos_marauder",
+				{
+					5,
+					6
+				},
+				"chaos_raider",
+				{
+					1,
+					2
 				}
 			}
 		}
@@ -451,18 +572,29 @@ HordeCompositions = {
 			breeds = {
 				"chaos_marauder",
 				{
-					2,
-					3
-				},
-				"chaos_marauder",
-				{
-					2,
-					3
+					4,
+					6
 				},
 				"chaos_raider",
 				{
 					1,
-					1
+					2
+				}
+			}
+		},
+		{
+			name = "horde",
+			weight = 4,
+			breeds = {
+				"chaos_fanatic",
+				{
+					8,
+					10
+				},
+				"chaos_marauder",
+				{
+					3,
+					4
 				}
 			}
 		},
@@ -472,13 +604,13 @@ HordeCompositions = {
 			breeds = {
 				"chaos_marauder",
 				{
-					3,
-					5
+					4,
+					6
 				},
 				"chaos_berzerker",
 				{
-					2,
-					3
+					1,
+					2
 				}
 			}
 		}
@@ -491,17 +623,33 @@ HordeCompositions = {
 				"chaos_marauder",
 				{
 					4,
-					5
+					6
 				},
 				"chaos_marauder",
 				{
-					4,
+					3,
 					5
 				},
 				"chaos_raider",
 				{
 					1,
-					1
+					2
+				}
+			}
+		},
+		{
+			name = "horde",
+			weight = 4,
+			breeds = {
+				"chaos_fanatic",
+				{
+					10,
+					12
+				},
+				"chaos_marauder",
+				{
+					4,
+					5
 				}
 			}
 		},
@@ -509,10 +657,15 @@ HordeCompositions = {
 			name = "somevermin",
 			weight = 2,
 			breeds = {
-				"chaos_berzerker",
+				"chaos_marauder",
 				{
 					4,
 					6
+				},
+				"chaos_berzerker",
+				{
+					2,
+					3
 				}
 			}
 		}
@@ -534,8 +687,24 @@ HordeCompositions = {
 				},
 				"chaos_raider",
 				{
-					1,
-					2
+					2,
+					3
+				}
+			}
+		},
+		{
+			name = "horde",
+			weight = 4,
+			breeds = {
+				"chaos_fanatic",
+				{
+					12,
+					15
+				},
+				"chaos_marauder",
+				{
+					5,
+					6
 				}
 			}
 		},
@@ -543,10 +712,31 @@ HordeCompositions = {
 			name = "somevermin",
 			weight = 2,
 			breeds = {
+				"chaos_marauder",
+				{
+					4,
+					6
+				},
 				"chaos_berzerker",
 				{
-					5,
-					8
+					3,
+					4
+				}
+			}
+		},
+		{
+			name = "somevermin",
+			weight = 2,
+			breeds = {
+				"chaos_warrior",
+				{
+					1,
+					2
+				},
+				"chaos_berzerker",
+				{
+					1,
+					2
 				}
 			}
 		}
@@ -574,12 +764,33 @@ HordeCompositions = {
 			}
 		},
 		{
+			name = "horde",
+			weight = 4,
+			breeds = {
+				"chaos_fanatic",
+				{
+					16,
+					18
+				},
+				"chaos_marauder",
+				{
+					4,
+					5
+				}
+			}
+		},
+		{
 			name = "somevermin",
 			weight = 2,
 			breeds = {
 				"chaos_warrior",
 				{
-					3,
+					2,
+					3
+				},
+				"chaos_marauder",
+				{
+					4,
 					5
 				}
 			}
@@ -615,8 +826,8 @@ HordeCompositions = {
 				},
 				"skaven_clan_rat",
 				{
-					3,
-					4
+					6,
+					8
 				}
 			}
 		},
@@ -644,8 +855,8 @@ HordeCompositions = {
 				},
 				"skaven_clan_rat",
 				{
-					4,
-					6
+					8,
+					10
 				}
 			}
 		},
@@ -655,8 +866,24 @@ HordeCompositions = {
 			breeds = {
 				"skaven_slave",
 				{
-					12,
-					14
+					15,
+					20
+				}
+			}
+		},
+		{
+			name = "berzerkers",
+			weight = 2,
+			breeds = {
+				"skaven_plague_monk",
+				{
+					3,
+					5
+				},
+				"skaven_clan_rat",
+				{
+					6,
+					8
 				}
 			}
 		}
@@ -666,15 +893,10 @@ HordeCompositions = {
 			name = "plain",
 			weight = 6,
 			breeds = {
-				"skaven_storm_vermin",
-				{
-					1,
-					2
-				},
 				"skaven_clan_rat",
 				{
-					4,
-					6
+					10,
+					12
 				},
 				"skaven_clan_rat_with_shield",
 				{
@@ -689,8 +911,40 @@ HordeCompositions = {
 			breeds = {
 				"skaven_slave",
 				{
-					14,
-					16
+					20,
+					25
+				}
+			}
+		},
+		{
+			name = "berzerkers",
+			weight = 2,
+			breeds = {
+				"skaven_plague_monk",
+				{
+					4,
+					6
+				},
+				"skaven_clan_rat",
+				{
+					8,
+					10
+				}
+			}
+		},
+		{
+			name = "shield_vermins",
+			weight = 2,
+			breeds = {
+				"skaven_storm_vermin_with_shield",
+				{
+					3,
+					4
+				},
+				"skaven_clan_rat_with_shield",
+				{
+					8,
+					10
 				}
 			}
 		}
@@ -707,7 +961,7 @@ HordeCompositions = {
 				},
 				"skaven_clan_rat",
 				{
-					8,
+					10,
 					12
 				},
 				"skaven_clan_rat_with_shield",
@@ -723,8 +977,58 @@ HordeCompositions = {
 			breeds = {
 				"skaven_slave",
 				{
-					16,
-					20
+					25,
+					30
+				}
+			}
+		},
+		{
+			name = "berzerkers",
+			weight = 2,
+			breeds = {
+				"skaven_plague_monk",
+				{
+					6,
+					8
+				},
+				"skaven_clan_rat",
+				{
+					10,
+					12
+				}
+			}
+		},
+		{
+			name = "shield_vermins",
+			weight = 2,
+			breeds = {
+				"skaven_storm_vermin_with_shield",
+				{
+					4,
+					6
+				},
+				"skaven_clan_rat_with_shield",
+				{
+					8,
+					10
+				}
+			}
+		}
+	},
+	skittergate_grey_seer_trickle = {
+		{
+			name = "plain",
+			weight = 6,
+			breeds = {
+				"skaven_slave",
+				{
+					6,
+					8
+				},
+				"skaven_clan_rat",
+				{
+					3,
+					4
 				}
 			}
 		}
@@ -732,17 +1036,6 @@ HordeCompositions = {
 	sorcerer_boss_hit_extra = {
 		{
 			name = "extra_a",
-			weight = 6,
-			breeds = {
-				"chaos_zombie",
-				{
-					1,
-					2
-				}
-			}
-		},
-		{
-			name = "extra_b",
 			weight = 6,
 			breeds = {
 				"chaos_fanatic",
@@ -762,11 +1055,6 @@ HordeCompositions = {
 				{
 					3,
 					5
-				},
-				"chaos_zombie",
-				{
-					1,
-					2
 				}
 			}
 		}
@@ -778,13 +1066,8 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					6,
-					8
-				},
-				"chaos_zombie",
-				{
-					4,
-					5
+					10,
+					12
 				}
 			}
 		},
@@ -801,11 +1084,6 @@ HordeCompositions = {
 				{
 					4,
 					5
-				},
-				"chaos_zombie",
-				{
-					3,
-					4
 				}
 			}
 		},
@@ -815,34 +1093,13 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					3,
-					4
+					5,
+					6
 				},
 				"chaos_raider",
 				{
 					1,
 					2
-				},
-				"chaos_zombie",
-				{
-					3,
-					4
-				}
-			}
-		},
-		{
-			name = "wave_e",
-			weight = 4,
-			breeds = {
-				"chaos_fanatic",
-				{
-					4,
-					6
-				},
-				"chaos_zombie",
-				{
-					9,
-					12
 				}
 			}
 		},
@@ -855,13 +1112,8 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					8,
-					10
-				},
-				"chaos_zombie",
-				{
-					4,
-					5
+					12,
+					14
 				}
 			}
 		},
@@ -871,18 +1123,13 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					6,
-					7
+					7,
+					8
 				},
 				"chaos_marauder",
 				{
-					4,
-					5
-				},
-				"chaos_zombie",
-				{
-					3,
-					4
+					5,
+					6
 				}
 			}
 		},
@@ -899,11 +1146,6 @@ HordeCompositions = {
 				{
 					1,
 					2
-				},
-				"chaos_zombie",
-				{
-					3,
-					4
 				}
 			}
 		},
@@ -916,10 +1158,10 @@ HordeCompositions = {
 					6,
 					8
 				},
-				"chaos_zombie",
+				"chaos_berzerker",
 				{
-					9,
-					12
+					1,
+					2
 				}
 			}
 		},
@@ -932,13 +1174,8 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					8,
-					10
-				},
-				"chaos_zombie",
-				{
-					4,
-					5
+					14,
+					16
 				}
 			}
 		},
@@ -953,13 +1190,8 @@ HordeCompositions = {
 				},
 				"chaos_marauder",
 				{
-					4,
-					5
-				},
-				"chaos_zombie",
-				{
-					3,
-					4
+					6,
+					8
 				}
 			}
 		},
@@ -967,18 +1199,13 @@ HordeCompositions = {
 			name = "wave_c",
 			weight = 4,
 			breeds = {
-				"chaos_fanatic",
+				"chaos_marauder",
 				{
-					2,
-					3
+					7,
+					8
 				},
 				"chaos_warrior",
-				1,
-				"chaos_zombie",
-				{
-					3,
-					4
-				}
+				1
 			}
 		},
 		{
@@ -987,18 +1214,13 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					6,
-					7
+					8,
+					10
 				},
 				"chaos_raider",
 				{
 					1,
 					2
-				},
-				"chaos_zombie",
-				{
-					3,
-					4
 				}
 			}
 		},
@@ -1006,15 +1228,15 @@ HordeCompositions = {
 			name = "wave_e",
 			weight = 4,
 			breeds = {
-				"chaos_fanatic",
+				"chaos_marauder",
 				{
-					6,
-					8
+					5,
+					7
 				},
-				"chaos_zombie",
+				"chaos_berzerker",
 				{
-					9,
-					12
+					2,
+					3
 				}
 			}
 		},
@@ -1027,13 +1249,8 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					8,
-					10
-				},
-				"chaos_zombie",
-				{
-					4,
-					5
+					16,
+					20
 				}
 			}
 		},
@@ -1048,13 +1265,8 @@ HordeCompositions = {
 				},
 				"chaos_marauder",
 				{
-					4,
-					5
-				},
-				"chaos_zombie",
-				{
-					3,
-					4
+					8,
+					10
 				}
 			}
 		},
@@ -1062,18 +1274,13 @@ HordeCompositions = {
 			name = "wave_c",
 			weight = 4,
 			breeds = {
-				"chaos_fanatic",
+				"chaos_marauder",
 				{
-					2,
-					3
+					8,
+					10
 				},
 				"chaos_warrior",
-				1,
-				"chaos_zombie",
-				{
-					3,
-					4
-				}
+				2
 			}
 		},
 		{
@@ -1082,18 +1289,13 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					6,
-					7
+					8,
+					10
 				},
 				"chaos_raider",
 				{
-					1,
-					2
-				},
-				"chaos_zombie",
-				{
-					3,
-					4
+					2,
+					3
 				}
 			}
 		},
@@ -1101,15 +1303,15 @@ HordeCompositions = {
 			name = "wave_e",
 			weight = 4,
 			breeds = {
-				"chaos_fanatic",
+				"chaos_marauder",
 				{
-					6,
-					8
+					4,
+					6
 				},
-				"chaos_zombie",
+				"chaos_berzerker",
 				{
-					9,
-					12
+					4,
+					5
 				}
 			}
 		},

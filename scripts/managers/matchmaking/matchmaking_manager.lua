@@ -510,7 +510,7 @@ MatchmakingManager.get_average_power_level = function (self)
 		return 0
 	end
 
-	return math.floor(total_power_level/num_players)
+	return math.floor(total_power_level / num_players)
 end
 MatchmakingManager.has_required_power_level = function (self, lobby_data, profile_name, career_name)
 	local difficulty = lobby_data.difficulty
@@ -650,28 +650,79 @@ MatchmakingManager._get_unlocked_levels_by_party = function (self)
 
 	return unlocked_levels
 end
-MatchmakingManager._get_level_key_by_amount_played_by_party = function (self, level_keys)
-	local temp = {}
+MatchmakingManager._get_level_key_by_amount_played_by_party = function (self, level_keys, debug_completed_times, debug_last_played_level, ignore_prints)
+	fassert(0 < #level_keys, "Empty level_keys list")
+
+	local times_played_list = {}
 	local players = Managers.player:human_players()
 	local statistics_db = self.statistics_db
-	local amount_of_completed_levels = 0
 
 	for _, player in pairs(players) do
 		local stats_id = player.stats_id(player)
 
 		for i, level_key in ipairs(level_keys) do
-			local times_completed = statistics_db.get_persistent_stat(statistics_db, stats_id, "completed_levels", level_key)
-			temp[i] = (temp[i] or 0) + times_completed
-			amount_of_completed_levels = amount_of_completed_levels + times_completed
+			local times_played = (debug_completed_times and debug_completed_times[level_key]) or statistics_db.get_persistent_stat(statistics_db, stats_id, "played_levels_quickplay", level_key)
+			times_played_list[i] = (times_played_list[i] or 0) + times_played
 		end
 	end
 
-	for i, amount in ipairs(temp) do
-		temp[i] = amount_of_completed_levels - temp[i]
+	if not ignore_prints then
+		table.dump(times_played_list, "times_played_list raw")
 	end
 
-	local p, a = LoadedDice.create(temp, false)
+	local modify_level_keys = {}
+
+	for _, player in pairs(players) do
+		local stats_id = player.stats_id(player)
+		local last_completed_level_id = statistics_db.get_persistent_stat(statistics_db, stats_id, "last_played_level_id")
+		local level_key = debug_last_played_level or UnlockableLevels[last_completed_level_id]
+
+		if level_key then
+			local i = table.find(level_keys, level_key)
+
+			if i then
+				modify_level_keys[level_key] = i
+			end
+		end
+	end
+
+	local increase_last_played_amount = 5
+
+	for level_key, i in pairs(modify_level_keys) do
+		if not ignore_prints then
+			printf("increasing level_key(%s) by (%s) because of last_played_level_id", level_key, tostring(increase_last_played_amount))
+		end
+
+		times_played_list[i] = times_played_list[i] + increase_last_played_amount
+	end
+
+	if not ignore_prints then
+		table.dump(times_played_list, "times_played_list after last played")
+	end
+
+	local highest_completed_count = 0
+
+	for i, amount in ipairs(times_played_list) do
+		local new_amount = amount
+		times_played_list[i] = new_amount
+
+		if highest_completed_count < new_amount then
+			highest_completed_count = new_amount
+		end
+	end
+
+	for i, amount in ipairs(times_played_list) do
+		times_played_list[i] = highest_completed_count - amount + 1
+	end
+
+	local p, a = LoadedDice.create(times_played_list, false)
 	local result = LoadedDice.roll(p, a)
+
+	if not ignore_prints then
+		table.dump(level_keys, "level_keys")
+		table.dump(times_played_list, "times_played_list after roll")
+		printf("Winning level (%s)", level_keys[result])
+	end
 
 	return level_keys[result]
 end
@@ -685,6 +736,86 @@ MatchmakingManager.get_weighed_random_unlocked_level = function (self)
 	local level_key = self._get_level_key_by_amount_played_by_party(self, level_keys)
 
 	return level_key
+end
+
+local function dump_array(t, name)
+	printf("[%s]", name)
+
+	for key, value in ipairs(t) do
+		printf("[%s] = (%s)", tostring(key), tostring(value))
+	end
+
+	printf("[/%s]", name)
+
+	return 
+end
+
+MatchmakingManager.debug_get_weighed_level = function (self)
+	local level_keys = {
+		"farmlands",
+		"ussingen",
+		"nurgle",
+		"warcamp",
+		"catacombs",
+		"fort",
+		"military",
+		"skittergate",
+		"elven_ruins",
+		"skaven_stronghold",
+		"ground_zero",
+		"bell",
+		"mines"
+	}
+	local times_played = {
+		farmlands = 1,
+		ussingen = 3,
+		nurgle = 0,
+		warcamp = 2,
+		catacombs = 1,
+		fort = 0,
+		military = 1,
+		skittergate = 0,
+		elven_ruins = 1,
+		skaven_stronghold = 1,
+		ground_zero = 1,
+		bell = 1,
+		mines = 1
+	}
+	local last_played_level = "ussingen"
+	local results = {}
+
+	for _, level_key in ipairs(level_keys) do
+		results[level_key] = 0
+	end
+
+	local results_percentage = {}
+	local test_times = 10000
+
+	for i = 1, test_times, 1 do
+		local level_key = self._get_level_key_by_amount_played_by_party(self, level_keys, times_played, last_played_level, true)
+		results[level_key] = results[level_key] + 1
+	end
+
+	for result, amount in pairs(results) do
+		results_percentage[result] = amount / test_times
+	end
+
+	local function sort(a, b)
+		local picked_a = results[a]
+		local picked_b = results[b]
+
+		return picked_b < picked_a
+	end
+
+	table.sort(level_keys, sort)
+
+	for _, level_key in ipairs(level_keys) do
+		local last_played = level_key == last_played_level
+
+		printf("(%s)\t\tplayed(%s)\t\tlast_played(%s)\t\tpicked: (%s) - (%.2f%%)", level_key, tostring(times_played[level_key]), tostring(last_played), tostring(results[level_key]), tostring(results_percentage[level_key]))
+	end
+
+	return 
 end
 MatchmakingManager.set_matchmaking_data = function (self, next_level_key, difficulty, act_key, game_mode, private_game, quick_game, eac_authorized)
 	local level_transition_handler = self.level_transition_handler

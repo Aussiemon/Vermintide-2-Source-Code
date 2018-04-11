@@ -127,16 +127,16 @@ BTSelector_stormfiend_boss.run = function (self, unit, blackboard, t, dt)
 		self.set_running_child(self, unit, blackboard, t, nil, "failed")
 	end
 
-	local node_target_rage = children[5]
+	local node_dual_shoot_intro = children[5]
 	local condition_result = blackboard.intro_rage
 
 	if condition_result then
-		self.set_running_child(self, unit, blackboard, t, node_target_rage, "aborted")
-		Profiler_start("target_rage")
+		self.set_running_child(self, unit, blackboard, t, node_dual_shoot_intro, "aborted")
+		Profiler_start("dual_shoot_intro")
 
-		local result, evaluate = node_target_rage.run(node_target_rage, unit, blackboard, t, dt)
+		local result, evaluate = node_dual_shoot_intro.run(node_dual_shoot_intro, unit, blackboard, t, dt)
 
-		Profiler_stop("target_rage")
+		Profiler_stop("dual_shoot_intro")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -145,7 +145,7 @@ BTSelector_stormfiend_boss.run = function (self, unit, blackboard, t, dt)
 		if result ~= "failed" then
 			return result, evaluate
 		end
-	elseif node_target_rage == child_running then
+	elseif node_dual_shoot_intro == child_running then
 		self.set_running_child(self, unit, blackboard, t, nil, "failed")
 	end
 

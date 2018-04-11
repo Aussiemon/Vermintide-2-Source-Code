@@ -167,6 +167,22 @@ weapon_template.actions = {
 	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
 	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
 }
+weapon_template.attack_meta_data = {
+	aim_at_node = "j_head",
+	charge_shot_delay = 0.1,
+	always_charge_before_firing = true,
+	charged_attack_action_name = "default",
+	can_charge_shot = true,
+	ignore_enemies_for_obstruction_charged = true,
+	base_action_name = "action_career_release",
+	aim_at_node_charged = "j_head",
+	ignore_allies_for_obstruction = true,
+	minimum_charge_time = 0.38,
+	ignore_allies_for_obstruction_charged = true,
+	charge_when_obstructed = true,
+	ignore_enemies_for_obstruction = true,
+	charge_against_armoured_enemy = true
+}
 weapon_template.default_spread_template = "bounty_hunter_handgun"
 weapon_template.left_hand_unit = "units/weapons/player/wpn_emp_shotgun/wpn_emp_shotgun"
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.bounty_hunter_handgun

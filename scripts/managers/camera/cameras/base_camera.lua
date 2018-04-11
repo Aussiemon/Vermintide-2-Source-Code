@@ -23,18 +23,18 @@ BaseCamera.parse_parameters = function (self, camera_settings, parent_node)
 		self._name = camera_settings.name
 	end
 
-	local degrees_to_radians = math.pi/180
+	local degrees_to_radians = math.pi / 180
 	self._fade_to_black = camera_settings.fade_to_black
-	self._vertical_fov = camera_settings.vertical_fov and camera_settings.vertical_fov*degrees_to_radians
+	self._vertical_fov = camera_settings.vertical_fov and camera_settings.vertical_fov * degrees_to_radians
 	self._should_apply_fov_multiplier = camera_settings.should_apply_fov_multiplier or parent_node.should_apply_fov_multiplier(parent_node)
-	self._default_fov = (camera_settings.default_fov and camera_settings.default_fov*degrees_to_radians) or parent_node.default_fov(parent_node)
+	self._default_fov = (camera_settings.default_fov and camera_settings.default_fov * degrees_to_radians) or parent_node.default_fov(parent_node)
 	self._near_range = camera_settings.near_range or parent_node.near_range(parent_node)
 	self._far_range = camera_settings.far_range or parent_node.far_range(parent_node)
-	self._pitch_min = (camera_settings.pitch_min and camera_settings.pitch_min*degrees_to_radians) or parent_node.pitch_min(parent_node)
-	self._pitch_max = (camera_settings.pitch_max and camera_settings.pitch_max*degrees_to_radians) or parent_node.pitch_max(parent_node)
-	self._pitch_speed = (camera_settings.pitch_speed and camera_settings.pitch_speed*degrees_to_radians) or parent_node.pitch_speed(parent_node)
-	self._yaw_speed = (camera_settings.yaw_speed and camera_settings.yaw_speed*degrees_to_radians) or parent_node.yaw_speed(parent_node)
-	self._pitch_offset = (camera_settings.pitch_offset and camera_settings.pitch_offset*degrees_to_radians) or parent_node.pitch_offset(parent_node)
+	self._pitch_min = (camera_settings.pitch_min and camera_settings.pitch_min * degrees_to_radians) or parent_node.pitch_min(parent_node)
+	self._pitch_max = (camera_settings.pitch_max and camera_settings.pitch_max * degrees_to_radians) or parent_node.pitch_max(parent_node)
+	self._pitch_speed = (camera_settings.pitch_speed and camera_settings.pitch_speed * degrees_to_radians) or parent_node.pitch_speed(parent_node)
+	self._yaw_speed = (camera_settings.yaw_speed and camera_settings.yaw_speed * degrees_to_radians) or parent_node.yaw_speed(parent_node)
+	self._pitch_offset = (camera_settings.pitch_offset and camera_settings.pitch_offset * degrees_to_radians) or parent_node.pitch_offset(parent_node)
 	self._safe_position_offset = camera_settings.safe_position_offset or parent_node.safe_position_offset(parent_node)
 	self._tree_transitions = camera_settings.tree_transitions or parent_node.tree_transitions(parent_node)
 	self._node_transitions = camera_settings.node_transitions or parent_node.node_transitions(parent_node)
@@ -48,8 +48,8 @@ BaseCamera.parse_parameters = function (self, camera_settings, parent_node)
 		self._environment_params.focal_scale = camera_settings.focal_scale
 	end
 
-	self._yaw_origin = camera_settings.yaw_origin and (camera_settings.yaw_origin*math.pi)/180
-	self._pitch_origin = camera_settings.pitch_origin and (camera_settings.pitch_origin*math.pi)/180
+	self._yaw_origin = camera_settings.yaw_origin and (camera_settings.yaw_origin * math.pi) / 180
+	self._pitch_origin = camera_settings.pitch_origin and (camera_settings.pitch_origin * math.pi) / 180
 	self._constraint_function = camera_settings.constraint or parent_node.constraint_function(parent_node)
 
 	return 

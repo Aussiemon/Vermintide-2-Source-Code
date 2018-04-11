@@ -53,18 +53,20 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 			self.charging_sound_id = wwise_playing_id
 			self.wwise_source_id = wwise_source_id
 		end
+
+		local aim_sound_event = self.current_action.aim_sound_event
+
+		if aim_sound_event then
+			local position = POSITION_LOOKUP[owner_unit]
+
+			WwiseUtils.trigger_position_event(self.world, aim_sound_event, position)
+		end
 	end
 
 	local charge_sound_husk_name = self.current_action.charge_sound_husk_name
 
 	if charge_sound_husk_name then
 		ActionUtils.play_husk_sound_event(charge_sound_husk_name, owner_unit)
-	end
-
-	if self.current_action.aim_sound_event then
-		local position = POSITION_LOOKUP[self.owner_unit]
-
-		WwiseUtils.trigger_position_event(self.world, self.current_action.aim_sound_event, position)
 	end
 
 	local spread_template_override = new_action.spread_template_override
@@ -114,7 +116,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 		end
 	end
 
-	if not self.played_aim_sound and self.aim_sound_time <= t then
+	if not self.played_aim_sound and self.aim_sound_time <= t and not is_bot then
 		local sound_event = current_action.aim_sound_event
 
 		if sound_event then
@@ -193,7 +195,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 		end
 	end
 
-	self.charge_value = math.min(math.max(t - time_to_shoot, 0)/self.charge_time, 1)
+	self.charge_value = math.min(math.max(t - time_to_shoot, 0) / self.charge_time, 1)
 
 	if not is_bot then
 		local charge_sound_parameter_name = current_action.charge_sound_parameter_name

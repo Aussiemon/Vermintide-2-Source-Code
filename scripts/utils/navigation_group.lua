@@ -71,7 +71,7 @@ end
 NavigationGroup.calculate_group_center = function (self, poly_center, poly_hash, nav_world)
 	local group_size = self._group_size
 	local curr_center = self._group_center:unbox()
-	local new_center = ((group_size - 1)*curr_center + poly_center)/group_size
+	local new_center = ((group_size - 1) * curr_center + poly_center) / group_size
 	local new_center_poly = GwNavTraversal.get_seed_triangle(nav_world, new_center)
 	local new_center_hash = new_center_poly and self.get_poly_hash(self, new_center_poly, nav_world)
 
@@ -144,14 +144,14 @@ NavigationGroup.destroy = function (self)
 end
 NavigationGroup.calc_polygon_center = function (self, poly, nav_world)
 	local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, poly)
-	local center = (p1 + p2 + p3)/3
+	local center = (p1 + p2 + p3) / 3
 
 	return center
 end
 NavigationGroup.get_poly_hash = function (self, poly, nav_world)
 	local a, b, c = Script.temp_count()
 	local poly_center = self.calc_polygon_center(self, poly, nav_world)
-	local poly_hash = poly_center.x*0.0001 + poly_center.y + poly_center.z*10000
+	local poly_hash = poly_center.x * 0.0001 + poly_center.y + poly_center.z * 10000
 
 	Script.set_temp_count(a, b, c)
 

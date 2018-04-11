@@ -279,7 +279,7 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 
 			if distance < snap_distance then
 				local side_snap_distance = 1
-				local closest_point_on_velocity = Geometry.closest_point_on_line(pos, pos, pos + normalized_velocity*3)
+				local closest_point_on_velocity = Geometry.closest_point_on_line(pos, pos, pos + normalized_velocity * 3)
 				local to_side_vec = Vector3.flat(closest_point_on_velocity - target_pos)
 				local side_distance = Vector3.length(to_side_vec)
 
@@ -527,12 +527,12 @@ BTCrazyJumpAction.debug = function (self, unit, blackboard, data, t)
 		if target_pos then
 			local velocity = blackboard.locomotion_extension:current_velocity()
 			local normalized_velocity = Vector3.normalize(velocity)
-			local closest_point_on_velocity = Geometry.closest_point_on_line(target_pos, pos, pos + normalized_velocity*20)
+			local closest_point_on_velocity = Geometry.closest_point_on_line(target_pos, pos, pos + normalized_velocity * 20)
 			local to_side_vec = Vector3.flat(closest_point_on_velocity - target_pos)
 			local side_distance = Vector3.length(to_side_vec)
 
 			QuickDrawer:line(closest_point_on_velocity, Vector3(target_pos.x, target_pos.y, closest_point_on_velocity.z))
-			QuickDrawer:line(pos, pos + normalized_velocity*20, Color(255, 0, 0))
+			QuickDrawer:line(pos, pos + normalized_velocity * 20, Color(255, 0, 0))
 			QuickDrawer:sphere(closest_point_on_velocity, 0.05, Color(255, 0, 200, 100))
 		end
 	end

@@ -194,13 +194,13 @@ AINavigationSystem.update_destination = function (self, t)
 					repath_allowed = false
 					blackboard.no_path_found = true
 					extension._failed_move_attempts = extension._failed_move_attempts + 1
-					extension._wait_timer = t + math.min(WAIT_TIMER_MAX, WAIT_TIMER_INCREMENT*extension._failed_move_attempts)
+					extension._wait_timer = t + math.min(WAIT_TIMER_MAX, WAIT_TIMER_INCREMENT * extension._failed_move_attempts)
 
 					if script_data.ai_debug_failed_pathing then
 						local debug_pos = extension._debug_position_when_starting_search:unbox()
 
-						QuickDrawerStay:capsule(debug_pos, debug_pos + Vector3.up()*10, math.random()*0.1 + 0.1, colorred)
-						QuickDrawerStay:line(debug_pos + Vector3.up()*10, position_current_destination, colorred)
+						QuickDrawerStay:capsule(debug_pos, debug_pos + Vector3.up() * 10, 0.1 + math.random() * 0.1, colorred)
+						QuickDrawerStay:line(debug_pos + Vector3.up() * 10, position_current_destination, colorred)
 						QuickDrawerStay:sphere(position_current_destination, 0.1, colorred)
 					end
 
@@ -300,7 +300,7 @@ AINavigationSystem.update_destination = function (self, t)
 				local position_unit = POSITION_LOOKUP[unit]
 				local debug_height = extension._wait_timer - t
 
-				QuickDrawer:cylinder(position_unit, position_unit + Vector3.up()*debug_height, math.random()*0.2 + 1, colorred)
+				QuickDrawer:cylinder(position_unit, position_unit + Vector3.up() * debug_height, 1 + math.random() * 0.2, colorred)
 			end
 		end
 	end
@@ -456,7 +456,7 @@ AINavigationSystem.update_desired_velocity = function (self, t, dt)
 				if raycasts_done < 1 and extension._raycast_timer < t then
 					extension._raycast_timer = t + 1
 					raycasts_done = raycasts_done + 1
-					local target_position = pos + Quaternion.forward(wanted_rotation)*2
+					local target_position = pos + Quaternion.forward(wanted_rotation) * 2
 					local result = GwNavQueries.raycango(nav_world, pos, target_position, extension._traverse_logic)
 
 					if not result then
@@ -466,11 +466,11 @@ AINavigationSystem.update_desired_velocity = function (self, t, dt)
 					end
 				end
 
-				local rotation_speed = locomotion_extension.get_rotation_speed(locomotion_extension)*locomotion_extension.get_rotation_speed_modifier(locomotion_extension)*dt
+				local rotation_speed = locomotion_extension.get_rotation_speed(locomotion_extension) * locomotion_extension.get_rotation_speed_modifier(locomotion_extension) * dt
 
 				if distance_sq_to_destination < 9 then
-					rotation_speed = math.min(1, rotation_speed*2)
-					speed = speed*0.5
+					rotation_speed = math.min(1, rotation_speed * 2)
+					speed = speed * 0.5
 				end
 
 				local current_rotation = Unit.world_rotation(unit, 0)
@@ -478,18 +478,18 @@ AINavigationSystem.update_desired_velocity = function (self, t, dt)
 
 				locomotion_extension.set_wanted_rotation(locomotion_extension, new_rotation)
 
-				desired_velocity = Quaternion.forward(new_rotation)*speed
+				desired_velocity = Quaternion.forward(new_rotation) * speed
 
 				if script_data.ai_debug_failed_pathing then
-					QuickDrawer:capsule(pos + Vector3.up()*2, pos + Vector3.up()*3, math.random()*0.2 + 0.1, colorgreen)
+					QuickDrawer:capsule(pos + Vector3.up() * 2, pos + Vector3.up() * 3, 0.1 + math.random() * 0.2, colorgreen)
 				end
 			end
 		end
 
 		desired_velocity.z = 0
 		local desired_speed = Vector3.length(desired_velocity)
-		extension._current_speed = math.min(desired_speed, extension._max_speed, extension._current_speed + dt*3*extension._max_speed)
-		desired_velocity = Vector3.normalize(desired_velocity)*extension._current_speed
+		extension._current_speed = math.min(desired_speed, extension._max_speed, extension._current_speed + dt * 3 * extension._max_speed)
+		desired_velocity = Vector3.normalize(desired_velocity) * extension._current_speed
 
 		locomotion_extension.set_wanted_velocity_flat(locomotion_extension, desired_velocity)
 	end
@@ -676,7 +676,7 @@ AINavigationSystem._debug_draw_nav_path = function (self, drawer, navigation_ext
 	if 0 < node_count then
 		local previous_node_position = nil
 		local current_node_index = GwNavBot.get_path_current_node_index(nav_bot)
-		local offset = Vector3.up()*0.05
+		local offset = Vector3.up() * 0.05
 
 		for i = 0, node_count - 1, 1 do
 			local position = GwNavBot.get_path_node_pos(nav_bot, i)
@@ -713,7 +713,7 @@ AINavigationSystem._debug_draw_far_path = function (self, drawer, debug_unit, bl
 				node_color = Colors.get("orange")
 			elseif i == current_far_path_index then
 				node_color = Colors.get("green")
-				node_size = node_size + math.random()*0.1
+				node_size = node_size + math.random() * 0.1
 			elseif i < num_far_path_nodes then
 				node_color = Colors.get("yellow")
 			else

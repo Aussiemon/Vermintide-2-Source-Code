@@ -114,10 +114,10 @@ InputAux.combination_functions = {
 		return lhs - rhs
 	end,
 	mul = function (lhs, rhs)
-		return lhs*rhs
+		return lhs * rhs
 	end,
 	avg = function (lhs, rhs)
-		return (lhs + rhs)/2
+		return (lhs + rhs) / 2
 	end,
 	or = function (lhs, rhs)
 		return lhs or rhs

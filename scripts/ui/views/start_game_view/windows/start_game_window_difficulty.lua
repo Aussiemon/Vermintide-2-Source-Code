@@ -4,7 +4,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 local STARTING_DIFFICULTY_INDEX = 1
-local DEBUG_NUM_VISIBLE_DIFFICULTIES = 3
+local DEBUG_NUM_VISIBLE_DIFFICULTIES = nil
 StartGameWindowDifficulty = class(StartGameWindowDifficulty)
 StartGameWindowDifficulty.NAME = "StartGameWindowDifficulty"
 StartGameWindowDifficulty.on_enter = function (self, params, offset)
@@ -261,36 +261,39 @@ StartGameWindowDifficulty._set_info_window = function (self, difficulty_key)
 	local description = difficulty_settings.description
 	local display_name = difficulty_settings.display_name
 	local display_image = difficulty_settings.display_image
+	local xp_multiplier_number = difficulty_settings.xp_multiplier
+	local chest_max_powerlevel = difficulty_settings.max_chest_power_level
 	widgets_by_name.difficulty_title.content.text = Localize(display_name)
 	widgets_by_name.difficulty_texture.content.texture_id = display_image
 	widgets_by_name.description_text.content.text = Localize(description)
+	widgets_by_name.difficulty_chest_info.content.text = Localize("difficulty_chest_max_powerlevel") .. ": " .. tostring(chest_max_powerlevel)
+	widgets_by_name.xp_multiplier.content.text = Localize("difficulty_xp_multiplier") .. ": " .. tostring(xp_multiplier_number * 100) .. "%"
 
 	return 
 end
 StartGameWindowDifficulty._update_difficulty_lock = function (self)
 	local difficulties = self._get_difficulty_options(self)
 	local widgets_by_name = self._widgets_by_name
+	local select_button = widgets_by_name.select_button
+	local selected_difficulty_key = self._selected_difficulty_key
 
-	if self._selected_difficulty_key then
-		local human_players = Managers.player:human_players()
-		local players_below_power_level = DifficultyManager.players_below_required_power_level(self._selected_difficulty_key, human_players)
+	if selected_difficulty_key then
+		local approved = self.parent:is_difficulty_approved(selected_difficulty_key)
 
-		if 0 < #players_below_power_level then
-			local select_button = widgets_by_name.select_button
+		if not approved then
 			select_button.content.button_hotspot.disable_button = true
-			local difficulty_settings = DifficultySettings[self._selected_difficulty_key]
+			local difficulty_settings = DifficultySettings[selected_difficulty_key]
 			local required_power_level = difficulty_settings.required_power_level
 			local difficulty_lock_text = Localize("required_power_level")
 			widgets_by_name.difficulty_lock_text.content.text = string.format("%s: %s", difficulty_lock_text, tostring(UIUtils.presentable_hero_power_level(required_power_level)))
 			widgets_by_name.difficulty_is_locked_text.content.text = Localize("required_power_level_not_met_in_party")
 		else
-			local select_button = widgets_by_name.select_button
 			select_button.content.button_hotspot.disable_button = false
 			widgets_by_name.difficulty_lock_text.content.text = ""
 			widgets_by_name.difficulty_is_locked_text.content.text = ""
 		end
-
-		self._set_blocking_peers(self, players_below_power_level)
+	else
+		select_button.content.button_hotspot.disable_button = true
 	end
 
 	return 
@@ -301,7 +304,7 @@ StartGameWindowDifficulty._set_blocking_peers = function (self, players_below_po
 	local blocking_peers_style = blocking_peers.style
 	local num_players_below_power_level = #players_below_power_level
 	local width = definitions.scenegraph_definition.blocking_peers.size[1]
-	local text_width = width/num_players_below_power_level
+	local text_width = width / num_players_below_power_level
 	local text = "(%s"
 
 	for i = 1, num_players_below_power_level, 1 do
@@ -319,8 +322,6 @@ StartGameWindowDifficulty._set_blocking_peers = function (self, players_below_po
 	if num_players_below_power_level == 0 then
 		text = ""
 	end
-
-	blocking_peers.content.text = text
 
 	return 
 end
@@ -380,11 +381,11 @@ StartGameWindowDifficulty._animate_difficulty_option_button = function (self, wi
 	local speed = 8
 
 	if is_hover then
-		hover_progress = math.min(hover_progress + dt*speed, 1)
-		image_hover_progress = math.min(image_hover_progress + dt*image_speed, 1)
+		hover_progress = math.min(hover_progress + dt * speed, 1)
+		image_hover_progress = math.min(image_hover_progress + dt * image_speed, 1)
 	else
-		hover_progress = math.max(hover_progress - dt*speed, 0)
-		image_hover_progress = math.max(image_hover_progress - dt*image_speed, 0)
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+		image_hover_progress = math.max(image_hover_progress - dt * image_speed, 0)
 	end
 
 	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
@@ -396,11 +397,11 @@ StartGameWindowDifficulty._animate_difficulty_option_button = function (self, wi
 	local speed = 10
 
 	if is_selected then
-		selection_progress = math.min(selection_progress + dt*speed, 1)
-		image_select_progress = math.min(image_select_progress + dt*image_speed, 1)
+		selection_progress = math.min(selection_progress + dt * speed, 1)
+		image_select_progress = math.min(image_select_progress + dt * image_speed, 1)
 	else
-		selection_progress = math.max(selection_progress - dt*speed, 0)
-		image_select_progress = math.max(image_select_progress - dt*image_speed, 0)
+		selection_progress = math.max(selection_progress - dt * speed, 0)
+		image_select_progress = math.max(image_select_progress - dt * image_speed, 0)
 	end
 
 	local select_easing_out_progress = math.easeOutCubic(selection_progress)
@@ -409,16 +410,16 @@ StartGameWindowDifficulty._animate_difficulty_option_button = function (self, wi
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
-	local alpha = hover_easing_out_progress*255
+	local alpha = 255 * hover_easing_out_progress
 	local text_style = style.title_text
 	local default_text_color = text_style.default_text_color
 	local text_color = text_style.text_color
 	local text_disabled_style = style.title_text_disabled
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
-	disabled_text_color[2] = disabled_default_text_color[2]*0.4
-	disabled_text_color[3] = disabled_default_text_color[3]*0.4
-	disabled_text_color[4] = disabled_default_text_color[4]*0.4
+	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
+	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
+	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
 	widget.snap_pixel_positions = combined_progress == 0 or combined_progress == 1 or combined_image_progress == 0 or combined_image_progress == 1
 	hotspot.hover_progress = hover_progress
 	hotspot.image_hover_progress = image_hover_progress
@@ -427,29 +428,29 @@ StartGameWindowDifficulty._animate_difficulty_option_button = function (self, wi
 	local title_text_style = style.title_text
 	local title_text_color = title_text_style.text_color
 	local title_default_text_color = title_text_style.default_text_color
-	title_text_color[2] = title_default_text_color[2]*0.6 + combined_progress*title_default_text_color[2]*0.4
-	title_text_color[3] = title_default_text_color[3]*0.6 + combined_progress*title_default_text_color[3]*0.4
-	title_text_color[4] = title_default_text_color[4]*0.6 + combined_progress*title_default_text_color[4]*0.4
+	title_text_color[2] = title_default_text_color[2] * 0.6 + combined_progress * title_default_text_color[2] * 0.4
+	title_text_color[3] = title_default_text_color[3] * 0.6 + combined_progress * title_default_text_color[3] * 0.4
+	title_text_color[4] = title_default_text_color[4] * 0.6 + combined_progress * title_default_text_color[4] * 0.4
 	local icon_style = style.icon
 	local icon_color = icon_style.color
-	icon_color[2] = combined_progress*102 + 153
-	icon_color[3] = combined_progress*102 + 153
-	icon_color[4] = combined_progress*102 + 153
+	icon_color[2] = 153 + combined_progress * 102
+	icon_color[3] = 153 + combined_progress * 102
+	icon_color[4] = 153 + combined_progress * 102
 	local background_style = style.background
 	local background_color = background_style.color
-	background_color[2] = combined_progress*102 + 153
-	background_color[3] = combined_progress*102 + 153
-	background_color[4] = combined_progress*102 + 153
+	background_color[2] = 153 + combined_progress * 102
+	background_color[3] = 153 + combined_progress * 102
+	background_color[4] = 153 + combined_progress * 102
 	local select_style = style.select
 	local select_color = select_style.color
-	select_color[2] = select_easing_out_progress*255
-	select_color[3] = select_easing_out_progress*255
-	select_color[4] = select_easing_out_progress*255
+	select_color[2] = select_easing_out_progress * 255
+	select_color[3] = select_easing_out_progress * 255
+	select_color[4] = select_easing_out_progress * 255
 	local icon_glow_style = style.icon_glow
 	local icon_glow_color = icon_glow_style.color
-	icon_glow_color[2] = combined_progress*255
-	icon_glow_color[3] = combined_progress*255
-	icon_glow_color[4] = combined_progress*255
+	icon_glow_color[2] = combined_progress * 255
+	icon_glow_color[3] = combined_progress * 255
+	icon_glow_color[4] = combined_progress * 255
 
 	return 
 end
@@ -488,7 +489,7 @@ StartGameWindowDifficulty._get_text_height = function (self, ui_renderer, size, 
 	local max_texts = #texts
 	local num_texts = math.min(#texts - text_start_index - 1, max_texts)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min))*inv_scale*num_texts
+	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 
 	return full_font_height
 end

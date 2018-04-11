@@ -538,7 +538,7 @@ local function array_binary_insert(a, value, comp_function)
 	local iState = 0
 
 	while iStart <= iEnd do
-		iMid = floor((iStart + iEnd)/2)
+		iMid = floor((iStart + iEnd) / 2)
 
 		if comp_function(value, at[iMid]) then
 			iState = 0

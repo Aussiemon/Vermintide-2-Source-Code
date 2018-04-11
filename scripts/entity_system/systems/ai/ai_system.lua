@@ -148,7 +148,7 @@ AISystem.create_nav_cost_map = function (self, cost_layer, num_volumes_guess)
 	fassert(cost_map_ids_size < cost_map_ids_max_size, "Error! Too many Nav Cost Maps!")
 
 	while cost_map_ids[cost_map_id] do
-		cost_map_id = cost_map_id%cost_map_ids_max_size + 1
+		cost_map_id = cost_map_id % cost_map_ids_max_size + 1
 	end
 
 	local nav_world = self._nav_world
@@ -193,7 +193,7 @@ AISystem.add_nav_cost_map_box_volume = function (self, transform, scale_vector, 
 	fassert(volume_ids_size < volume_ids_max_size, "Error! Too many Nav Cost Map Volumes!")
 
 	while volume_ids[volume_id] do
-		volume_id = volume_id%volume_ids_max_size + 1
+		volume_id = volume_id % volume_ids_max_size + 1
 	end
 
 	local cost_map_data = self._nav_cost_maps_data[cost_map_id]
@@ -224,7 +224,7 @@ AISystem.add_nav_cost_map_sphere_volume = function (self, position, radius, cost
 	fassert(volume_ids_size < volume_ids_max_size, "Error! Too many Nav Cost Map Volumes!")
 
 	while volume_ids[volume_id] do
-		volume_id = volume_id%volume_ids_max_size + 1
+		volume_id = volume_id % volume_ids_max_size + 1
 	end
 
 	local cost_map_data = self._nav_cost_maps_data[cost_map_id]
@@ -664,7 +664,7 @@ AISystem.update_perception = function (self, t, dt)
 	current_perception_unit = (self.ai_units_perception[current_perception_unit] ~= nil and current_perception_unit) or nil
 	local TIME_BETWEEN_UPDATE = 1
 	local num_perception_units = self.num_perception_units
-	local num_to_update = math.ceil((num_perception_units*dt)/TIME_BETWEEN_UPDATE)
+	local num_to_update = math.ceil((num_perception_units * dt) / TIME_BETWEEN_UPDATE)
 
 	for i = 1, num_to_update, 1 do
 		current_perception_unit = next(ai_units_perception, current_perception_unit)
@@ -838,7 +838,7 @@ AISystem.update_debug_draw = function (self, t)
 			local enemy = blackboard.target_unit
 
 			if unit_alive(enemy) then
-				local ai_pos = Unit.local_position(unit, 0) + Vector3.up()*2
+				local ai_pos = Unit.local_position(unit, 0) + Vector3.up() * 2
 
 				QuickDrawer:line(ai_pos, Unit.world_position(enemy, 0) + Vector3(0, 0, 1.5), Color(125, 255, 0, 0))
 				QuickDrawer:box(Unit.world_pose(enemy, 0), Vector3(0.5, 0.5, 1.5), Color(125, 255, 0, 0))
@@ -866,16 +866,16 @@ AISystem.update_debug_draw = function (self, t)
 				local health_threshold = stagger_immunity.health_threshold
 				local index = 1
 
-				Managers.state.debug_text:output_unit_text(health, 0.2, unit, head_node, Vector3.up()*0.2*index, 0.1, "stagger_immunity", color_vector, viewport_name)
+				Managers.state.debug_text:output_unit_text(health, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
 				index = index + 1
 
 				if health_threshold < health_percent then
-					Managers.state.debug_text:output_unit_text("damage left:" .. health_percent - health_threshold, 0.2, unit, head_node, Vector3.up()*0.2*index, 0.1, "stagger_immunity", color_vector, viewport_name)
+					Managers.state.debug_text:output_unit_text("damage left:" .. health_percent - health_threshold, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
 					index = index + 1
 
-					Managers.state.debug_text:output_unit_text("STAGGER_IMMUNE:HIGH_HEALTH", 0.2, unit, head_node, Vector3.up()*0.2*index, 0.1, "stagger_immunity", color_vector, viewport_name)
+					Managers.state.debug_text:output_unit_text("STAGGER_IMMUNE:HIGH_HEALTH", 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
 					index = index + 1
 				else
@@ -890,7 +890,7 @@ AISystem.update_debug_draw = function (self, t)
 							ignore_stagger_info = ignore_stagger_info .. "[" .. ignore_stagger_value .. "]"
 						end
 
-						Managers.state.debug_text:output_unit_text(ignore_stagger_info, 0.2, unit, head_node, Vector3.up()*0.2*index, 0.1, "stagger_immunity", color_vector, viewport_name)
+						Managers.state.debug_text:output_unit_text(ignore_stagger_info, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
 						index = index + 1
 					end
@@ -903,15 +903,15 @@ AISystem.update_debug_draw = function (self, t)
 						if stagger_immune then
 							local time_left = math.round_with_precision((stagger_immunity.stagger_immune_at + stagger_immunity.time) - t, 2)
 
-							Managers.state.debug_text:output_unit_text("time left:" .. time_left, 0.2, unit, head_node, Vector3.up()*0.2*index, 0.1, "stagger_immunity", color_vector, viewport_name)
+							Managers.state.debug_text:output_unit_text("time left:" .. time_left, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
 							index = index + 1
 
-							Managers.state.debug_text:output_unit_text("damage left:" .. stagger_immunity.debug_damage_left, 0.2, unit, head_node, Vector3.up()*0.2*index, 0.1, "stagger_immunity", color_vector, viewport_name)
+							Managers.state.debug_text:output_unit_text("damage left:" .. stagger_immunity.debug_damage_left, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
 							index = index + 1
 
-							Managers.state.debug_text:output_unit_text("STAGGER_IMMUNE:HITS", 0.2, unit, head_node, Vector3.up()*0.2*index, 0.1, "stagger_immunity", color_vector, viewport_name)
+							Managers.state.debug_text:output_unit_text("STAGGER_IMMUNE:HITS", 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
 							index = index + 1
 						end
@@ -920,7 +920,7 @@ AISystem.update_debug_draw = function (self, t)
 					if not stagger_immune then
 						local hits_until_stagger_immunity = "hits_until_stagger_immunity:" .. stagger_immunity.num_attacks - (stagger_immunity.num_hits or 0)
 
-						Managers.state.debug_text:output_unit_text(hits_until_stagger_immunity, 0.2, unit, head_node, Vector3.up()*0.2*index, 0.1, "stagger_immunity", color_vector, viewport_name)
+						Managers.state.debug_text:output_unit_text(hits_until_stagger_immunity, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
 						index = index + 1
 					end
@@ -1044,10 +1044,10 @@ local function update_blackboard(unit, blackboard, t, dt)
 		local z = offset.z
 		local x = offset.x
 		local y = offset.y
-		local flat_sq = x*x + y*y
+		local flat_sq = x * x + y * y
 		blackboard.target_dist_z = z
 		blackboard.target_dist_xy_sq = flat_sq
-		local target_dist = sqrt(flat_sq + z*z)
+		local target_dist = sqrt(flat_sq + z * z)
 		local inside_priority_distance = target_dist < PRIORITIZED_DISTANCE
 		blackboard.target_dist = target_dist
 		local slot_pos = ai_slot_system.ai_unit_slot_position(ai_slot_system, unit) or current_position

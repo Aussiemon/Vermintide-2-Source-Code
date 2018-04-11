@@ -12,16 +12,16 @@ local scenegraph_definition = {
 		}
 	},
 	twitch_icon = {
-		vertical_alignment = "top",
+		vertical_alignment = "bottom",
 		parent = "root",
 		horizontal_alignment = "right",
 		size = {
-			100,
-			43
+			80,
+			27.200000000000003
 		},
 		position = {
-			0,
-			0,
+			-10,
+			10,
 			1
 		}
 	}
@@ -37,21 +37,30 @@ local twitch_icon = {
 			},
 			{
 				pass_type = "texture",
-				style_id = "twitch_validate",
-				texture_id = "twitch_validate",
+				style_id = "twitch_connected",
+				texture_id = "twitch_connected",
 				content_check_function = function (content, style)
 					local connected = Managers.twitch:is_connected()
 
 					return connected
 				end
+			},
+			{
+				pass_type = "texture",
+				style_id = "twitch_disconnected",
+				texture_id = "twitch_disconnected",
+				content_check_function = function (content, style)
+					local disconnected = not Managers.twitch:is_connected()
+
+					return disconnected
+				end
 			}
 		}
 	},
 	content = {
-		fuzzy_circle = "fuzzy_circle",
 		twitch_icon = "twitch_small_logo",
-		twitch_validate = "twitch_validate",
-		glass_indicator = "glass_indicator"
+		twitch_connected = "twitch_connected",
+		twitch_disconnected = "twitch_disconnected"
 	},
 	style = {
 		twitch_icon = {
@@ -62,35 +71,40 @@ local twitch_icon = {
 				0,
 				1
 			},
-			color = {
-				255,
-				255,
-				255,
-				255
-			},
+			color = Colors.get_table("white"),
 			texture_size = {
-				120,
-				43
+				80,
+				27.200000000000003
 			}
 		},
-		twitch_validate = {
+		twitch_connected = {
 			vertical_alignment = "center",
 			scenegraph_id = "twitch_icon",
 			horizontal_alignment = "left",
 			offset = {
-				-45,
-				0,
+				-40,
+				2,
 				1
 			},
-			color = {
-				255,
-				255,
-				255,
-				255
-			},
+			color = Colors.get_table("white"),
 			texture_size = {
-				25,
-				25
+				30,
+				30
+			}
+		},
+		twitch_disconnected = {
+			vertical_alignment = "center",
+			scenegraph_id = "twitch_icon",
+			horizontal_alignment = "left",
+			offset = {
+				-40,
+				2,
+				1
+			},
+			color = Colors.get_table("white"),
+			texture_size = {
+				30,
+				30
 			}
 		}
 	}

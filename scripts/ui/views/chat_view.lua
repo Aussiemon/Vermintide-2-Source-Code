@@ -615,11 +615,11 @@ ChatView.cb_populate_recent_channels = function (self, channel_list, channel_lis
 		channel_entry_content.channel_name_id = cropped_channel_name
 		channel_entry_content.num_members_id = num_members .. " Member(s)"
 		channel_entry_style.icon.texture_size = {
-			scenegraph_entry_size[2] - channels_width_spacing*2,
-			scenegraph_entry_size[2] - channels_height_spacing*2
+			scenegraph_entry_size[2] - channels_width_spacing * 2,
+			scenegraph_entry_size[2] - channels_height_spacing * 2
 		}
-		channel_entry_style.channel_name.offset[1] = scenegraph_entry_size[2] - channels_width_spacing*2 + channels_width_spacing
-		channel_entry_style.num_members.offset[1] = scenegraph_entry_size[2] - channels_width_spacing*2 + channels_width_spacing
+		channel_entry_style.channel_name.offset[1] = scenegraph_entry_size[2] - channels_width_spacing * 2 + channels_width_spacing
+		channel_entry_style.num_members.offset[1] = scenegraph_entry_size[2] - channels_width_spacing * 2 + channels_width_spacing
 		channel_entry_style.background.size[1] = scenegraph_entry_size[1]
 		channel_entry_style.background.size[2] = scenegraph_entry_size[2] - channels_height_spacing
 		self._recent_channels_widgets["channel_entry_" .. index] = channel_entry
@@ -855,20 +855,20 @@ ChatView._create_channels_list = function (self)
 	local channels_offset = channels_list_settings.channels_offset
 	local channels_per_row = channels_list_settings.channels_per_row
 	local max_rows = channels_list_settings.max_rows
-	local width = parent_scenegraph_entry_size[1] - channels_offset[1]*2 - (channels_per_row - 1)*channels_width_spacing
-	local height = parent_scenegraph_entry_size[2] - -channels_offset[2]*2 - (max_rows - 3)*channels_height_spacing
-	local entry_width = width/channels_per_row
-	local entry_height = height/(max_rows - 2)
+	local width = parent_scenegraph_entry_size[1] - channels_offset[1] * 2 - (channels_per_row - 1) * channels_width_spacing
+	local height = parent_scenegraph_entry_size[2] - -channels_offset[2] * 2 - (max_rows - 3) * channels_height_spacing
+	local entry_width = width / channels_per_row
+	local entry_height = height / (max_rows - 2)
 	channels_list_settings.channels_entry_size = {
 		entry_width,
 		entry_height
 	}
 	channel_entry_icon_style.texture_size = {
-		entry_height - channels_width_spacing*2,
-		entry_height - channels_height_spacing*2
+		entry_height - channels_width_spacing * 2,
+		entry_height - channels_height_spacing * 2
 	}
-	channel_entry_channel_name_style.offset[1] = entry_height - channels_width_spacing*2 + channels_width_spacing
-	channel_entry_num_members_style.offset[1] = entry_height - channels_width_spacing*2 + channels_width_spacing
+	channel_entry_channel_name_style.offset[1] = entry_height - channels_width_spacing * 2 + channels_width_spacing
+	channel_entry_num_members_style.offset[1] = entry_height - channels_width_spacing * 2 + channels_width_spacing
 	channel_entry_background_style.size[1] = channels_list_settings.channels_entry_size[1]
 	channel_entry_background_style.size[2] = channels_list_settings.channels_entry_size[2] - channels_height_spacing
 	local channel_entry_style = channel_entry.style
@@ -922,7 +922,7 @@ ChatView.cb_populate_channels_list = function (self, search_text, channel_list, 
 		end
 	end
 
-	channels_list_settings.current_rows = math.ceil(#CHANNEL_MATCHES/channels_list_settings.channels_per_row)
+	channels_list_settings.current_rows = math.ceil(#CHANNEL_MATCHES / channels_list_settings.channels_per_row)
 	local widget = self._channels_list_widgets.channel_window_widget
 	local widget_content = widget.content
 	widget_content.fetching_channels = false
@@ -957,10 +957,10 @@ ChatView._handle_and_draw_channels_list = function (self, ui_renderer, ui_sceneg
 	local channel_to_join = nil
 
 	for i = 1, math.min(rows_to_draw, 4), 1 do
-		channel_entry_offset[2] = base_offset[2] - (i - 1)*channel_entry_size[2] - (i - 1)*channels_height_spacing
+		channel_entry_offset[2] = base_offset[2] - (i - 1) * channel_entry_size[2] - (i - 1) * channels_height_spacing
 
 		for j = 1, channels_per_row, 1 do
-			local index = (i - 1)*channels_per_row + j
+			local index = (i - 1) * channels_per_row + j
 
 			if not CHANNEL_MATCHES[index] then
 				break
@@ -972,7 +972,7 @@ ChatView._handle_and_draw_channels_list = function (self, ui_renderer, ui_sceneg
 				channel_entry_content.num_members_id = strings[2] .. " Member(s)"
 			end
 
-			channel_entry_offset[1] = base_offset[1] + (j - 1)*channel_entry_size[1] + (j - 1)*channels_width_spacing
+			channel_entry_offset[1] = base_offset[1] + (j - 1) * channel_entry_size[1] + (j - 1) * channels_width_spacing
 
 			UIRenderer.draw_widget(ui_renderer, channel_entry)
 
@@ -1353,7 +1353,7 @@ ChatView._handle_command_list = function (self)
 
 		for idx, command_info in ipairs(COMMANDS) do
 			local command = command_info.command
-			local widget = UIWidget.init(create_command_entry_func(command, command_info.description_text, command_info.parameter, description_offset, command_info.color, cnt*20 - -20, frame_widget_content.chat_text))
+			local widget = UIWidget.init(create_command_entry_func(command, command_info.description_text, command_info.parameter, description_offset, command_info.color, -20 - 20 * cnt, frame_widget_content.chat_text))
 			self._commands_list_widgets["command_" .. cnt + 1] = widget
 			cnt = cnt + 1
 			local command_style = widget.style.command
@@ -1365,7 +1365,7 @@ ChatView._handle_command_list = function (self)
 		end
 
 		self._commands_list_widgets.command_list_frame = UIWidget.init(widget_definitions.commands_list_frame)
-		self._ui_scenegraph.commands_list.size[2] = cnt*20 + 40
+		self._ui_scenegraph.commands_list.size[2] = 40 + cnt * 20
 		self._ui_scenegraph.commands_list.size[1] = max_width + 10
 		self._ui_scenegraph.commands_list_entry.size[1] = max_width + 20
 	end
@@ -1381,7 +1381,7 @@ ChatView._create_channel_list = function (self)
 	local max_width = 0
 
 	for channel, _ in pairs(channels) do
-		local widget = UIWidget.init(create_channel_entry_func(channel, cnt*40 - -50))
+		local widget = UIWidget.init(create_channel_entry_func(channel, -50 - 40 * cnt))
 		self._channel_list_widgets["channel_" .. cnt + 1] = widget
 		cnt = cnt + 1
 		local channel_style = widget.style.channel_name
@@ -1393,7 +1393,7 @@ ChatView._create_channel_list = function (self)
 	end
 
 	self._channel_list_widgets.channel_list_frame = UIWidget.init(widget_definitions.channel_list_frame)
-	self._ui_scenegraph.channel_list.size[2] = cnt*40 + 100
+	self._ui_scenegraph.channel_list.size[2] = 100 + cnt * 40
 	self._ui_scenegraph.channel_list.size[1] = max_width + 125
 	self._ui_scenegraph.channel_list_entry.size[1] = max_width + 40
 
@@ -1415,7 +1415,7 @@ ChatView._create_emoji_list = function (self)
 	self._emoji_widgets.emoji = UIWidget.init(widget_definitions.create_emoji_func())
 	local emoji_list_settings = definitions.emoji_list_settings
 	local num_emojis = #EMOJI_SETTINGS
-	emoji_list_settings.current_rows = math.ceil(num_emojis/emoji_list_settings.emojis_per_row)
+	emoji_list_settings.current_rows = math.ceil(num_emojis / emoji_list_settings.emojis_per_row)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._input_manager:get_service("chat_view")
@@ -1423,7 +1423,7 @@ ChatView._create_emoji_list = function (self)
 	local emoji_widget = self._emoji_widgets.emoji
 	local scenegraph_entry = ui_scenegraph[emoji_widget.scenegraph_id]
 	local rows_to_handle = emoji_list_settings.max_rows - 1
-	local height = (rows_to_handle + 2)*scenegraph_entry.size[2] + (rows_to_handle - 1)*emoji_list_settings.emoji_height_spacing
+	local height = (rows_to_handle + 2) * scenegraph_entry.size[2] + (rows_to_handle - 1) * emoji_list_settings.emoji_height_spacing
 	emoji_widget.offset[2] = height
 	emoji_list_settings.height = height
 	local emoji_frame_widget = self._emoji_widgets.emoji_list_frame
@@ -1431,17 +1431,17 @@ ChatView._create_emoji_list = function (self)
 	local emoji_frame_widget_style = emoji_frame_widget.style
 	local scenegraph_entry = ui_scenegraph[emoji_frame_widget.scenegraph_id]
 	scenegraph_entry.size = {
-		emoji_list_settings.emoji_size[1]*emoji_list_settings.emojis_per_row + (emoji_list_settings.emojis_per_row - 1)*emoji_list_settings.emoji_width_spacing + emoji_list_settings.emoji_offset[1]*2 + 20,
-		height + emoji_list_settings.emoji_offset[2]*2
+		emoji_list_settings.emoji_size[1] * emoji_list_settings.emojis_per_row + (emoji_list_settings.emojis_per_row - 1) * emoji_list_settings.emoji_width_spacing + emoji_list_settings.emoji_offset[1] * 2 + 20,
+		height + emoji_list_settings.emoji_offset[2] * 2
 	}
-	emoji_frame_widget_style.mask_rect.offset[2] = emoji_list_settings.emoji_size[2] + emoji_list_settings.emoji_height_spacing*3
+	emoji_frame_widget_style.mask_rect.offset[2] = emoji_list_settings.emoji_size[2] + emoji_list_settings.emoji_height_spacing * 3
 	emoji_frame_widget_style.mask_rect.size = {
 		scenegraph_entry.size[1],
-		scenegraph_entry.size[2] - (emoji_list_settings.emoji_size[2] + emoji_list_settings.emoji_height_spacing*3)
+		scenegraph_entry.size[2] - (emoji_list_settings.emoji_size[2] + emoji_list_settings.emoji_height_spacing * 3)
 	}
 	local emoji_scrollbar_widget = UIWidget.init(widget_definitions.create_emoji_scroller_func())
 	local scenegraph_entry = ui_scenegraph[emoji_scrollbar_widget.scenegraph_id]
-	scenegraph_entry.size[2] = height/emoji_list_settings.max_rows
+	scenegraph_entry.size[2] = height / emoji_list_settings.max_rows
 
 	if emoji_list_settings.max_rows < emoji_list_settings.current_rows then
 		self._emoji_widgets.emoji_scrollbar = emoji_scrollbar_widget
@@ -1479,14 +1479,14 @@ ChatView._handle_and_draw_emoji_list_input = function (self, dt)
 		self._emoji_scroll = (math.abs(self._emoji_scroll) < math.abs(scroll_input) and scroll_input) or self._emoji_scroll
 	end
 
-	local max_offset = rows*emoji_size[2] + (rows - 1)*emoji_offset[2]
+	local max_offset = rows * emoji_size[2] + (rows - 1) * emoji_offset[2]
 	self._base_offset = math.clamp((self._base_offset or 0) - self._emoji_scroll, 0, max_offset)
-	local row_index_offset = math.floor(self._base_offset/(emoji_size[2] + emoji_offset[2]))
-	self._emoji_scroll = math.lerp(math.abs(self._emoji_scroll), 0, dt*2.5)*math.sign(self._emoji_scroll)
-	emoji_widget_offset[2] = height + self._base_offset%(emoji_size[2] + emoji_offset[2])
+	local row_index_offset = math.floor(self._base_offset / (emoji_size[2] + emoji_offset[2]))
+	self._emoji_scroll = math.lerp(math.abs(self._emoji_scroll), 0, dt * 2.5) * math.sign(self._emoji_scroll)
+	emoji_widget_offset[2] = height + self._base_offset % (emoji_size[2] + emoji_offset[2])
 
 	if emoji_scrollbar_widget then
-		emoji_scrollbar_widget.offset[2] = -(self._base_offset/max_offset)*((rows_to_show - 2)*(emoji_size[2] + emoji_offset[2]) + 15)
+		emoji_scrollbar_widget.offset[2] = -(self._base_offset / max_offset) * ((rows_to_show - 2) * (emoji_size[2] + emoji_offset[2]) + 15)
 	end
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, nil)
@@ -1499,14 +1499,14 @@ ChatView._handle_and_draw_emoji_list_input = function (self, dt)
 
 	local is_hover = false
 
-	for i = row_index_offset + 1, rows_to_show + row_index_offset, 1 do
+	for i = 1 + row_index_offset, rows_to_show + row_index_offset, 1 do
 		emoji_widget_offset[2] = emoji_widget_offset[2] - emoji_size[2] - emoji_offset[2]
 
 		for k = 1, emojis_per_row, 1 do
 			local row_start_index = k - 1
-			local x = row_start_index*(emoji_size[1] + emoji_width_spacing)
+			local x = row_start_index * (emoji_size[1] + emoji_width_spacing)
 			emoji_widget_offset[1] = x
-			local index = (i - 1)*emojis_per_row + k
+			local index = (i - 1) * emojis_per_row + k
 			local emoji_data = EMOJI_SETTINGS[index]
 			emoji_widget_content.texture_id = (emoji_data and emoji_data.texture) or nil
 
@@ -1532,7 +1532,7 @@ ChatView._handle_and_draw_emoji_list_input = function (self, dt)
 					emoji_frame_widget_content.emoji_texture_id = EMOJI_SETTINGS[index].texture
 					emoji_frame_widget_style.emoji_texture.texture_size = emoji_size
 					emoji_frame_widget_style.emoji_texture.offset[1] = emoji_size[1]
-					emoji_frame_widget_style.emoji_text.offset[1] = emoji_size[1]*2 + emoji_width_spacing
+					emoji_frame_widget_style.emoji_text.offset[1] = emoji_size[1] * 2 + emoji_width_spacing
 				end
 			end
 		end
@@ -1569,7 +1569,7 @@ ChatView._create_private_list = function (self)
 	local max_width = 0
 
 	for user, _ in pairs(private_messages) do
-		local widget = UIWidget.init(create_private_user_entry_func(user, cnt*30 - -20, new_per_user[user]))
+		local widget = UIWidget.init(create_private_user_entry_func(user, -20 - 30 * cnt, new_per_user[user]))
 		self._private_list_widgets[user] = widget
 		cnt = cnt + 1
 		local user_style = widget.style.user_name
@@ -1581,7 +1581,7 @@ ChatView._create_private_list = function (self)
 	end
 
 	self._private_list_widgets.private_user_list_frame = UIWidget.init(widget_definitions.private_user_list_frame)
-	self._ui_scenegraph.private_user_list.size[2] = cnt*30 + 40
+	self._ui_scenegraph.private_user_list.size[2] = 40 + cnt * 30
 	self._ui_scenegraph.private_user_list.size[1] = max_width + 125
 	self._ui_scenegraph.private_user_list.position[2] = self._ui_scenegraph.private_user_list.size[2] + 5
 	self._ui_scenegraph.private_user_list_entry.size[1] = max_width + 40
@@ -1604,7 +1604,7 @@ ChatView._create_filtered_user_list = function (self, filter)
 	local max_width = 0
 
 	for idx, user_name in ipairs(user_list) do
-		local widget = UIWidget.init(create_filtered_user_name_entry_func(string.gsub(user_name, "@", ""), cnt*30 - -20))
+		local widget = UIWidget.init(create_filtered_user_name_entry_func(string.gsub(user_name, "@", ""), -20 - 30 * cnt))
 		self._filtered_user_names_list_widgets[user_name] = widget
 		cnt = cnt + 1
 		local user_name_style = widget.style.user_name
@@ -1616,7 +1616,7 @@ ChatView._create_filtered_user_list = function (self, filter)
 	end
 
 	self._filtered_user_names_list_widgets.filtered_user_names_list_frame = UIWidget.init(widget_definitions.filtered_user_names_list_frame)
-	self._ui_scenegraph.filtered_user_names_list.size[2] = cnt*25 + 40
+	self._ui_scenegraph.filtered_user_names_list.size[2] = 40 + cnt * 25
 	self._ui_scenegraph.filtered_user_names_list.size[1] = max_width + 60
 	self._ui_scenegraph.filtered_user_names_list_entry.size[1] = max_width + 10
 

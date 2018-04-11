@@ -469,7 +469,7 @@ GDCStartUI.set_input_text = function (self, optinal_text)
 	widget_content.prefix_text = prefix_text
 	ui_scenegraph.input_text.position[2] = (scaled_font_size == text_style.font_size and 3) or 0
 	ui_scenegraph.input_prefix_text.position[2] = ui_scenegraph.input_text.position[2]
-	ui_scenegraph.input.position[1] = -((text_width + texture_size_x)*0.5) + prefix_text_width
+	ui_scenegraph.input.position[1] = -((text_width + texture_size_x) * 0.5) + prefix_text_width
 
 	return 
 end

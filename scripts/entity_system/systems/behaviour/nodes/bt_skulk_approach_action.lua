@@ -12,7 +12,7 @@ BTSkulkApproachAction.enter = function (self, unit, blackboard, t)
 	local target_dist = blackboard.target_dist
 	local skulk_start_radius = (target_dist and math.min(action.skulk_init_distance, target_dist)) or action.skulk_init_distance
 	local skulk_data = blackboard.skulk_data or {}
-	local direction = skulk_data.direction or math.random(0, 1)*2 - 1
+	local direction = skulk_data.direction or 1 - math.random(0, 1) * 2
 	skulk_data.direction = direction
 	skulk_data.radius = skulk_data.radius or skulk_start_radius
 	skulk_data.skulk_around_time = skulk_data.skulk_around_time or 0
@@ -126,7 +126,7 @@ BTSkulkApproachAction.update_skulk_data = function (self, unit, blackboard, dt)
 
 	if blackboard.move_pos then
 		local decrease_radius_speed = action.decrease_radius_speed
-		d_radius = dt*decrease_radius_speed
+		d_radius = dt * decrease_radius_speed
 	else
 		d_radius = RADIUS_DECRESE_PER_TEST
 	end
@@ -211,7 +211,7 @@ BTSkulkApproachAction.get_random_goal_on_circle = function (self, unit, blackboa
 	local target_position = POSITION_LOOKUP[target_unit]
 	local unit_position = POSITION_LOOKUP[unit]
 	local direction = skulk_data.direction
-	local offset = Vector3.up()*0.2
+	local offset = Vector3.up() * 0.2
 	local look_at_direction = unit_position - target_position
 	local target_to_unit_rotation = Quaternion.look(look_at_direction, Vector3.up())
 	local target_to_unit_forward = Quaternion.forward(target_to_unit_rotation)
@@ -219,10 +219,10 @@ BTSkulkApproachAction.get_random_goal_on_circle = function (self, unit, blackboa
 	local a, angle = AiUtils.get_angle_between_vectors(target_to_unit_forward, rotation_forward)
 
 	for i = 1, TRIES, 1 do
-		local random_angle = (i*3 + Math.random(0, 3))*direction
+		local random_angle = (i * 3 + Math.random(0, 3)) * direction
 
 		if i == TRIES then
-			random_angle = direction*2
+			random_angle = 2 * direction
 		end
 
 		local final_angle = angle + random_angle
@@ -231,7 +231,7 @@ BTSkulkApproachAction.get_random_goal_on_circle = function (self, unit, blackboa
 		local final_radius = radius + random_radius
 		local rotation = Quaternion.axis_angle(Vector3.up(), radians)
 		local forward_vector = Quaternion.forward(rotation)
-		local position = target_position + forward_vector*final_radius
+		local position = target_position + forward_vector * final_radius
 		local nav_world = blackboard.nav_world
 		local on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, position, 5, 5)
 
@@ -259,7 +259,7 @@ BTSkulkApproachAction.debug_show_skulk_circle = function (self, unit, blackboard
 	local radius = skulk_data.radius
 	local target_unit = blackboard.target_unit
 	local target_position = POSITION_LOOKUP[target_unit]
-	local offset = Vector3.up()*0.2
+	local offset = Vector3.up() * 0.2
 
 	QuickDrawer:circle(target_position + offset, radius, Vector3.up(), Colors.get("light_green"))
 	QuickDrawer:circle(target_position + offset, skulk_start_radius, Vector3.up(), Colors.get("light_green"))

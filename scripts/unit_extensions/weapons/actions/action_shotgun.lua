@@ -138,10 +138,10 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 				end
 			end
 
-			hit_position = (result and result[#result][1]) or current_position + direction*current_action.range
+			hit_position = (result and result[#result][1]) or current_position + direction * current_action.range
 
 			Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
-			Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - current_position)*0.1)
+			Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - current_position) * 0.1)
 			Unit.flow_event(weapon_unit, "lua_bullet_trail")
 			Unit.flow_event(weapon_unit, "lua_bullet_trail_set")
 		end

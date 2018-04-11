@@ -133,8 +133,8 @@ DamageIndicatorGui.update = function (self, dt)
 	local indicator_positions = self.indicator_positions
 
 	if 0 < array_length then
-		for i = 1, array_length/DamageDataIndex.STRIDE, 1 do
-			local index = (i - 1)*DamageDataIndex.STRIDE
+		for i = 1, array_length / DamageDataIndex.STRIDE, 1 do
+			local index = (i - 1) * DamageDataIndex.STRIDE
 			local attacker = strided_array[index + DamageDataIndex.ATTACKER]
 			local damage_type = strided_array[index + DamageDataIndex.DAMAGE_TYPE]
 			local show_direction = not ignored_damage_types[damage_type]

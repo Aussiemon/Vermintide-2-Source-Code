@@ -507,85 +507,6 @@ LiquidAreaDamageTemplates = {
 				}
 			}
 		},
-		flamethrower_patch = {
-			sfx_name_start = "Play_enemy_stormfiend_fire_ground_loop",
-			fx_name_rim = "fx/wpnfx_flamethrower_ground_rim_01",
-			cell_size = 1,
-			liquid_spread_function = "default_spread",
-			starting_pressure = 30,
-			apply_buff_to_player = false,
-			do_direct_damage_player = false,
-			buff_template_name = "stormfiend_warpfire_ground_base",
-			linearized_flow = false,
-			damage_type = "warpfire_ground",
-			do_direct_damage_ai = true,
-			end_pressure = 5,
-			fx_name_filled = "fx/wpnfx_flamethrower_ground_01",
-			apply_buff_to_ai = true,
-			time_of_life = 2,
-			max_liquid = 35,
-			sfx_name_stop = "Stop_enemy_stormfiend_fire_ground_loop",
-			buff_condition_function = "stormfiend_warpfire_ground_base_condition",
-			immune_breeds = {},
-			difficulty_direct_damage = {
-				easy = {
-					3,
-					3,
-					3,
-					0,
-					3
-				},
-				normal = {
-					3,
-					3,
-					3,
-					0,
-					3
-				},
-				hard = {
-					3,
-					3,
-					3,
-					0,
-					3
-				},
-				survival_hard = {
-					3,
-					3,
-					3,
-					0,
-					3
-				},
-				harder = {
-					3,
-					3,
-					3,
-					0,
-					3
-				},
-				survival_harder = {
-					3,
-					3,
-					3,
-					0,
-					3
-				},
-				hardest = {
-					3,
-					3,
-					3,
-					0,
-					3
-				},
-				survival_hardest = {
-					3,
-					3,
-					3,
-					0,
-					3
-				}
-			}
-		},
 		sienna_unchained_ability_patch = {
 			damage_buff_template_name = "burning_1W_dot",
 			fx_name_rim = "fx/chr_unchained_living_bomb_lingering",
@@ -743,13 +664,13 @@ LiquidAreaDamageTemplates = {
 		return 1
 	end,
 	default_spread = function (angle)
-		return math.max((angle/math.pi - 1)^2 - 0.45, 0)
+		return math.max((1 - angle / math.pi)^2 - 0.45, 0)
 	end,
 	forward_spread = function (angle)
-		return math.max(angle/(math.pi*0.25) - 1, 0)
+		return math.max(1 - angle / (math.pi * 0.25), 0)
 	end,
 	flamethrower_spread = function (angle)
-		return math.max((angle/math.pi - 1)^2, 0)
+		return math.max((1 - angle / math.pi)^2, 0)
 	end,
 	bile_troll_vomit_init = function (self, t)
 		local troll_unit = self._source_unit

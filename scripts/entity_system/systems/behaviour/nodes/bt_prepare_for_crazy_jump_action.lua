@@ -182,7 +182,7 @@ BTPrepareForCrazyJumpAction.ready_to_jump = function (unit, blackboard, data, se
 	local enemy_spine_node = Unit.node(blackboard.target_unit, "j_neck")
 	local p1 = position_lookup[unit]
 	local p2 = Unit.world_position(blackboard.target_unit, 0) + Vector3(0, 0, 0.2)
-	local move_forward = Vector3.normalize(p2 - p1)*0.3
+	local move_forward = Vector3.normalize(p2 - p1) * 0.3
 	p1 = p1 + move_forward
 	local total_distance = Vector3.distance(p1, p2)
 	local in_los, velocity, time_of_flight = nil
@@ -252,7 +252,7 @@ BTPrepareForCrazyJumpAction.test_trajectory = function (blackboard, p1, p2, segm
 			return 
 		end
 
-		local right = Vector3.cross(Vector3.normalize(p2 - p1), Vector3.up())*0.4
+		local right = Vector3.cross(Vector3.normalize(p2 - p1), Vector3.up()) * 0.4
 		in_los = WeaponHelper.ray_segmented_test(physics_world, segment_list, Vector3(0, 0, 0.7) + right)
 
 		if not in_los then
@@ -275,7 +275,7 @@ BTPrepareForCrazyJumpAction.test_simple_jump = function (to_target, jump_speed)
 		Vector3.set_z(to_target, 0)
 
 		local to_vec_flat = Vector3.normalize(to_target)
-		local velocity = Quaternion.rotate(Quaternion.axis_angle(Vector3.cross(to_vec_flat, Vector3.up()), angle), to_vec_flat)*jump_speed
+		local velocity = Quaternion.rotate(Quaternion.axis_angle(Vector3.cross(to_vec_flat, Vector3.up()), angle), to_vec_flat) * jump_speed
 
 		return velocity
 	end

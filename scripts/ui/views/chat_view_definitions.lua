@@ -6,8 +6,8 @@ local num_users_in_list = 12
 local chat_frame_name = "menu_frame_06"
 local chat_frame_settings = UIFrameSettings[chat_frame_name]
 local chat_frame_edge_height = chat_frame_settings.texture_sizes.horizontal[2]
-local window_size = user_list_height - user_list_frame_height*2
-local user_list_entry_size = window_size/num_users_in_list
+local window_size = user_list_height - user_list_frame_height * 2
+local user_list_entry_size = window_size / num_users_in_list
 local emoji_list_settings = {
 	emoji_width_spacing = 5,
 	max_rows = 7,
@@ -296,8 +296,8 @@ local scenegraph_definition = {
 		parent = "feed_area_top",
 		horizontal_alignment = "center",
 		size = {
-			chat_frame_edge_height*2 - 690,
-			chat_frame_edge_height*2 - 800
+			690 - chat_frame_edge_height * 2,
+			800 - chat_frame_edge_height * 2
 		}
 	},
 	list_area = {
@@ -319,7 +319,7 @@ local scenegraph_definition = {
 		parent = "list_area",
 		horizontal_alignment = "left",
 		size = {
-			user_list_frame_height*2 - 400,
+			400 - user_list_frame_height * 2,
 			user_list_entry_size
 		},
 		position = {
@@ -1001,7 +1001,7 @@ local function create_window(scenegraph_id, size)
 				if not content.text_field_active then
 					return false
 				else
-					style.caret_color[1] = math.sin(Application.time_since_launch()*5)*128 + 128
+					style.caret_color[1] = 128 + math.sin(Application.time_since_launch() * 5) * 128
 				end
 
 				content.real_chat_text = content.chat_text.text
@@ -1077,8 +1077,8 @@ local function create_window(scenegraph_id, size)
 					0
 				},
 				{
-					math.min(size[1]/background_texture_settings.size[1], 1),
-					math.min(size[2]/background_texture_settings.size[2], 1)
+					math.min(size[1] / background_texture_settings.size[1], 1),
+					math.min(size[2] / background_texture_settings.size[2], 1)
 				}
 			},
 			texture_id = background_texture
@@ -1520,7 +1520,7 @@ local function create_user_entry(index)
 	local frame_settings = UIFrameSettings.menu_frame_06
 	local offset = {
 		0,
-		-(user_list_entry_size*(index - 1)),
+		-(user_list_entry_size * (index - 1)),
 		0
 	}
 
@@ -2327,7 +2327,7 @@ function create_private_user_entry(name, offset_y, new)
 
 					if content.new then
 						local time = Managers.time:time("main")
-						blend = math.sin(time*8)*0.5 + 0.5
+						blend = 0.5 + math.sin(time * 8) * 0.5
 					end
 
 					style.current_color[2] = math.lerp(selected_color[2], unselected_color[2], blend)
@@ -2641,7 +2641,7 @@ function create_command_entry(command, description, parameter, description_offse
 			font_type = "hell_shark_arial",
 			text_color = Colors.get_table("gray"),
 			offset = {
-				description_offset + 30,
+				30 + description_offset,
 				0,
 				3
 			}
@@ -2833,10 +2833,10 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 				uvs = {
 					{
 						0,
-						size[2]/background_texture_settings.size[2] - 1
+						1 - size[2] / background_texture_settings.size[2]
 					},
 					{
-						size[1]/background_texture_settings.size[1],
+						size[1] / background_texture_settings.size[1],
 						1
 					}
 				},
@@ -2950,7 +2950,7 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 				},
 				size = {
 					size[1],
-					math.min(60, size[2] - frame_settings.texture_sizes.horizontal[2]*2)
+					math.min(60, size[2] - frame_settings.texture_sizes.horizontal[2] * 2)
 				}
 			},
 			glass_top = {
@@ -2984,7 +2984,7 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 				},
 				size = {
 					size[1],
-					math.min(60, size[2] - frame_settings.texture_sizes.horizontal[2]*2)
+					math.min(60, size[2] - frame_settings.texture_sizes.horizontal[2] * 2)
 				}
 			},
 			side_detail_left = {
@@ -2996,7 +2996,7 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 				},
 				offset = {
 					-9,
-					size[2]/2 - side_detail_texture_size[2]/2,
+					size[2] / 2 - side_detail_texture_size[2] / 2,
 					8
 				},
 				size = {
@@ -3013,7 +3013,7 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 				},
 				offset = {
 					size[1] - side_detail_texture_size[1] + 9,
-					size[2]/2 - side_detail_texture_size[2]/2,
+					size[2] / 2 - side_detail_texture_size[2] / 2,
 					8
 				},
 				size = {
@@ -3516,7 +3516,7 @@ local function create_channels_window(scenegraph_id, size)
 
 				local dt = Managers.time:mean_dt()
 				local connecting_rotation_speed = 400
-				local connecting_rotation_angle = (dt*connecting_rotation_speed)%360
+				local connecting_rotation_angle = (dt * connecting_rotation_speed) % 360
 				local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
 				style.angle = style.angle + connecting_radians
 
@@ -3619,7 +3619,7 @@ local function create_channels_window(scenegraph_id, size)
 					return 
 				end
 
-				local on = math.floor(Managers.time:time("main")*2)%2
+				local on = math.floor(Managers.time:time("main") * 2) % 2
 				style.caret_color[1] = (on == 0 and 255) or 0
 
 				return true
@@ -3668,8 +3668,8 @@ local function create_channels_window(scenegraph_id, size)
 					0
 				},
 				{
-					math.min(size[1]/background_texture_settings.size[1], 1),
-					math.min(size[2]/background_texture_settings.size[2], 1)
+					math.min(size[1] / background_texture_settings.size[1], 1),
+					math.min(size[2] / background_texture_settings.size[2], 1)
 				}
 			},
 			texture_id = background_texture
@@ -4070,7 +4070,7 @@ local function create_create_channel_window(scenegraph_id, size)
 					return 
 				end
 
-				local on = math.floor(Managers.time:time("main")*2)%2
+				local on = math.floor(Managers.time:time("main") * 2) % 2
 				style.caret_color[1] = (on == 0 and 255) or 0
 
 				return true
@@ -4114,8 +4114,8 @@ local function create_create_channel_window(scenegraph_id, size)
 					0
 				},
 				{
-					math.min(size[1]/background_texture_settings.size[1], 1),
-					math.min(size[2]/background_texture_settings.size[2], 1)
+					math.min(size[1] / background_texture_settings.size[1], 1),
+					math.min(size[2] / background_texture_settings.size[2], 1)
 				}
 			},
 			texture_id = background_texture
@@ -4416,7 +4416,7 @@ local function create_send_invite_window(scenegraph_id, size)
 					return 
 				end
 
-				local on = math.floor(Managers.time:time("main")*2)%2
+				local on = math.floor(Managers.time:time("main") * 2) % 2
 				style.caret_color[1] = (on == 0 and 255) or 0
 
 				return true
@@ -4460,8 +4460,8 @@ local function create_send_invite_window(scenegraph_id, size)
 					0
 				},
 				{
-					math.min(size[1]/background_texture_settings.size[1], 1),
-					math.min(size[2]/background_texture_settings.size[2], 1)
+					math.min(size[1] / background_texture_settings.size[1], 1),
+					math.min(size[2] / background_texture_settings.size[2], 1)
 				}
 			},
 			texture_id = background_texture
@@ -4720,7 +4720,7 @@ local function create_recent_channels_window(scenegraph_id, size)
 
 				local dt = Managers.time:mean_dt()
 				local connecting_rotation_speed = 400
-				local connecting_rotation_angle = (dt*connecting_rotation_speed)%360
+				local connecting_rotation_angle = (dt * connecting_rotation_speed) % 360
 				local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
 				style.angle = style.angle + connecting_radians
 
@@ -4805,8 +4805,8 @@ local function create_recent_channels_window(scenegraph_id, size)
 					0
 				},
 				{
-					math.min(size[1]/background_texture_settings.size[1], 1),
-					math.min(size[2]/background_texture_settings.size[2], 1)
+					math.min(size[1] / background_texture_settings.size[1], 1),
+					math.min(size[2] / background_texture_settings.size[2], 1)
 				}
 			},
 			texture_id = background_texture

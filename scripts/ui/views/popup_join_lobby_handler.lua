@@ -709,7 +709,7 @@ PopupJoinLobbyHandler._on_option_button_hover = function (self, widget, style_id
 	local current_color_value = pass_style.color[2]
 	local target_color_value = 255
 	local total_time = UISettings.scoreboard.topic_hover_duration
-	local animation_duration = (current_color_value/target_color_value - 1)*total_time
+	local animation_duration = (1 - current_color_value / target_color_value) * total_time
 
 	for i = 2, 4, 1 do
 		if 0 < animation_duration then
@@ -729,7 +729,7 @@ PopupJoinLobbyHandler._on_option_button_dehover = function (self, widget, style_
 	local current_color_value = pass_style.color[1]
 	local target_color_value = 100
 	local total_time = UISettings.scoreboard.topic_hover_duration
-	local animation_duration = current_color_value/255*total_time
+	local animation_duration = current_color_value / 255 * total_time
 
 	for i = 2, 4, 1 do
 		if 0 < animation_duration then
@@ -891,8 +891,8 @@ PopupJoinLobbyHandler._assign_career_data_by_hero = function (self, hero_name)
 		local selection_default_offset = selection_style.default_offset
 		selection_size[1] = selection_texture_size[1]
 		selection_size[2] = selection_texture_size[2]
-		selection_offset[1] = (selection_default_offset[1] + icon_size[1]/2) - selection_size[1]/2
-		selection_offset[2] = (selection_default_offset[2] + icon_size[2]/2) - selection_size[2]/2
+		selection_offset[1] = (selection_default_offset[1] + icon_size[1] / 2) - selection_size[1] / 2
+		selection_offset[2] = (selection_default_offset[2] + icon_size[2] / 2) - selection_size[2] / 2
 	end
 
 	return 
@@ -923,8 +923,8 @@ PopupJoinLobbyHandler._assign_hero_portraits = function (self)
 		selection_size[1] = selection_texture_size[1]
 		selection_size[2] = selection_texture_size[2]
 		local icon_size = style[icon_name].size
-		selection_offset[1] = (selection_default_offset[1] + icon_size[1]/2) - selection_size[1]/2
-		selection_offset[2] = (selection_default_offset[2] + icon_size[2]/2) - selection_size[2]/2
+		selection_offset[1] = (selection_default_offset[1] + icon_size[1] / 2) - selection_size[1] / 2
+		selection_offset[2] = (selection_default_offset[2] + icon_size[2] / 2) - selection_size[2] / 2
 	end
 
 	return 

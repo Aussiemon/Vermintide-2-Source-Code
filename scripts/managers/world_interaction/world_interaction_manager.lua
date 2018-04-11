@@ -40,7 +40,7 @@ WorldInteractionManager._add_water_ripple = function (self, pos, angle, material
 	self._water_ripples[#self._water_ripples + 1] = {
 		timer = 0,
 		pos = Vector3Box(pos),
-		size_variable = random_ripple_size_diff*0.5 - 1 + Math.random()*random_ripple_size_diff,
+		size_variable = 1 - random_ripple_size_diff * 0.5 + Math.random() * random_ripple_size_diff,
 		angle = angle,
 		material = material or water_settings.default_ripple_material,
 		stretch_multiplier = stretch_multiplier,
@@ -59,10 +59,10 @@ WorldInteractionManager.add_simple_effect = function (self, material, unit, posi
 	if Unit.alive(player_unit) then
 		local material_settings = WorldInteractionSettings[material]
 		local window_size = math.clamp(material_settings.window_size, 1, 100)
-		local window_distance = window_size*0.5
+		local window_distance = window_size * 0.5
 		local player_pos = POSITION_LOOKUP[player_unit]
 
-		if Vector3.distance_squared(player_pos, position) < window_distance*window_distance then
+		if Vector3.distance_squared(player_pos, position) < window_distance * window_distance then
 			self["_add_simple_" .. material .. "_effect"](self, unit, position)
 		end
 	end
@@ -82,11 +82,11 @@ WorldInteractionManager._add_simple_water_effect = function (self, unit, positio
 	local player_unit = local_player and local_player.player_unit
 
 	if Unit.alive(player_unit) then
-		local window_distance = window_size*0.5
+		local window_distance = window_size * 0.5
 		local player_pos = POSITION_LOOKUP[player_unit]
 		local start_size = water_splash_settings.start_size
 
-		if Vector3.distance_squared(position, player_pos) < window_distance*window_distance then
+		if Vector3.distance_squared(position, player_pos) < window_distance * window_distance then
 			self._add_water_ripple(self, position, 0, material, random_size_diff, stretch_multiplier, timer_ref, start_size, multiplier)
 		end
 	end
@@ -166,7 +166,7 @@ WorldInteractionManager._update_water_data = function (self, dt, t)
 		local available_units = self._units.water
 		local local_player = Managers.player:local_player()
 		local player_unit = local_player and local_player.player_unit
-		local window_distance = window_size*0.5
+		local window_distance = window_size * 0.5
 		local player_pos = Vector3.flat(POSITION_LOOKUP[player_unit])
 
 		if Unit.alive(player_unit) and available_units and next(available_units) then
@@ -178,7 +178,7 @@ WorldInteractionManager._update_water_data = function (self, dt, t)
 				if available_units[unit] then
 					local unit_pos = Unit.local_position(unit, 0)
 
-					if Vector3.distance_squared(unit_pos, player_pos) < window_distance*window_distance then
+					if Vector3.distance_squared(unit_pos, player_pos) < window_distance * window_distance then
 						COLLECTED_UNITS[current_index] = unit
 						current_index = current_index + 1
 					end
@@ -186,7 +186,7 @@ WorldInteractionManager._update_water_data = function (self, dt, t)
 			end
 
 			local ai_broadphase = Managers.state.entity:system("ai_system").broadphase
-			local num_enemies = Broadphase.query(ai_broadphase, player_pos, window_size*0.5, ENEMIES)
+			local num_enemies = Broadphase.query(ai_broadphase, player_pos, window_size * 0.5, ENEMIES)
 
 			for i = 1, num_enemies, 1 do
 				local unit = ENEMIES[i]
@@ -198,7 +198,7 @@ WorldInteractionManager._update_water_data = function (self, dt, t)
 			end
 
 			local origo = Vector3(0, 0, 0)
-			local speed_limit_squared = speed_limit*speed_limit
+			local speed_limit_squared = speed_limit * speed_limit
 			local contributing_units = 0
 
 			for i = 1, current_index - 1, 1 do
@@ -213,7 +213,7 @@ WorldInteractionManager._update_water_data = function (self, dt, t)
 						if dir and speed_limit_squared < Vector3.distance_squared(Vector3.flat(dir), origo) then
 							local flat_dir = Vector3.normalize(Vector3(dir[1], dir[2], 0))
 							local dot_value = Vector3.dot(flat_dir, Vector3(0, 1, 0))
-							local angle = math.acos(dot_value)*((flat_dir[1] < 0 and 1) or -1)
+							local angle = math.acos(dot_value) * ((flat_dir[1] < 0 and 1) or -1)
 							local pos = POSITION_LOOKUP[unit]
 
 							self._add_water_ripple(self, pos, angle)
@@ -270,20 +270,20 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 		local stretch_multiplier = water_data.stretch_multiplier or ripple_stretch_multiplier
 		local multiplier = water_data.multiplier or default_ripple_multiplier
 		local default_size = water_data.default_size or default_ripple_start_size
-		local start_size = default_size[1]*(water_data.size_variable or 0)
-		local t = math.easeOutCubic(water_data.timer/ref_time)
-		local size = math.lerp(start_size, start_size*multiplier, t)
-		local relative_world_pos = Vector2(pos[1]%window_size, pos[2]%window_size)
-		local relative_texture_pos = Vector2(relative_world_pos[1]/window_size, relative_world_pos[2]/window_size)
-		local relative_screen_pos = Vector3(relative_texture_pos[1]*w, h - relative_texture_pos[2]*h, 0)
-		local relative_texture_size = Vector2((size*stretch_multiplier[1])/window_size*w, (size*stretch_multiplier[2])/window_size*h)
+		local start_size = default_size[1] * (water_data.size_variable or 0)
+		local t = math.easeOutCubic(water_data.timer / ref_time)
+		local size = math.lerp(start_size, start_size * multiplier, t)
+		local relative_world_pos = Vector2(pos[1] % window_size, pos[2] % window_size)
+		local relative_texture_pos = Vector2(relative_world_pos[1] / window_size, relative_world_pos[2] / window_size)
+		local relative_screen_pos = Vector3(relative_texture_pos[1] * w, h - relative_texture_pos[2] * h, 0)
+		local relative_texture_size = Vector2((size * stretch_multiplier[1]) / window_size * w, (size * stretch_multiplier[2]) / window_size * h)
 		local layer = 50
 		local angle = water_data.angle
-		local realtive_start_pos = relative_screen_pos - relative_texture_size*0.5
-		local tm = Rotation2D(Vector3(0, 0, 0), angle, realtive_start_pos + relative_texture_size*0.5)
-		local value = math.pow(water_data.timer/ref_time, 3) - 1
-		value = t - 1
-		local alpha = value*255
+		local realtive_start_pos = relative_screen_pos - relative_texture_size * 0.5
+		local tm = Rotation2D(Vector3(0, 0, 0), angle, realtive_start_pos + relative_texture_size * 0.5)
+		local value = 1 - math.pow(water_data.timer / ref_time, 3)
+		value = 1 - t
+		local alpha = value * 255
 
 		Gui.bitmap_3d(self._gui, water_data.material, tm, realtive_start_pos, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
@@ -296,7 +296,7 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 		if duplicate_edge_cases then
 			if realtive_start_pos.x < 0 then
 				local offset = realtive_start_pos + Vector3(w, 0, 0)
-				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size*0.5)
+				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size * 0.5)
 
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
@@ -307,7 +307,7 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 				end
 			elseif w < realtive_start_pos.x + relative_texture_size.x then
 				local offset = realtive_start_pos + Vector3(-w, 0, 0)
-				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size*0.5)
+				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size * 0.5)
 
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
@@ -320,7 +320,7 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 
 			if realtive_start_pos.y < 0 then
 				local offset = realtive_start_pos + Vector3(0, h, 0)
-				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size*0.5)
+				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size * 0.5)
 
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
@@ -331,7 +331,7 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 				end
 			elseif h < realtive_start_pos.y + relative_texture_size.x then
 				local offset = realtive_start_pos + Vector3(0, -h, 0)
-				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size*0.5)
+				local tm = Rotation2D(Vector3(0, 0, 0), angle, offset + relative_texture_size * 0.5)
 
 				Gui.bitmap_3d(self._gui, water_data.material, tm, offset, layer, relative_texture_size, Color(alpha, 255, 255, 255))
 
@@ -399,18 +399,18 @@ WorldInteractionManager._update_foliage_players = function (self, dt, t)
 				local texture_size = nil
 
 				if player.local_player then
-					TEXTURE_SIZE[1] = texture_world_size[1]*local_player_multiplier
-					TEXTURE_SIZE[2] = texture_world_size[2]*local_player_multiplier
+					TEXTURE_SIZE[1] = texture_world_size[1] * local_player_multiplier
+					TEXTURE_SIZE[2] = texture_world_size[2] * local_player_multiplier
 					texture_size = TEXTURE_SIZE
 				else
 					texture_size = texture_world_size
 				end
 
-				local relative_world_pos = Vector2(unit_pos[1]%window_size, unit_pos[2]%window_size)
-				local relative_texture_pos = Vector2(relative_world_pos[1]/window_size, relative_world_pos[2]/window_size)
-				local relative_screen_pos = Vector3(relative_texture_pos[1]*w, h - relative_texture_pos[2]*h, 0)
-				local relative_texture_size = Vector2(texture_size[1]/window_size*w, texture_size[2]/window_size*h)
-				local realtive_start_pos = relative_screen_pos - relative_texture_size*0.5
+				local relative_world_pos = Vector2(unit_pos[1] % window_size, unit_pos[2] % window_size)
+				local relative_texture_pos = Vector2(relative_world_pos[1] / window_size, relative_world_pos[2] / window_size)
+				local relative_screen_pos = Vector3(relative_texture_pos[1] * w, h - relative_texture_pos[2] * h, 0)
+				local relative_texture_size = Vector2(texture_size[1] / window_size * w, texture_size[2] / window_size * h)
+				local realtive_start_pos = relative_screen_pos - relative_texture_size * 0.5
 
 				Gui.bitmap(self._gui, material_name, realtive_start_pos, relative_texture_size, Color(255, 255, 255, 255))
 
@@ -455,18 +455,18 @@ WorldInteractionManager._update_foliage_ai = function (self, local_player_unit, 
 	local player_pos = Unit.local_position(local_player_unit, 0)
 	local ai_broadphase = Managers.state.entity:system("ai_system").broadphase
 	local ai_unit = nil
-	local num_enemies = Broadphase.query(ai_broadphase, player_pos, window_size*0.5, ENEMIES)
+	local num_enemies = Broadphase.query(ai_broadphase, player_pos, window_size * 0.5, ENEMIES)
 
 	for i = 1, num_enemies, 1 do
 		ai_unit = ENEMIES[i]
 
 		if Unit.alive(ai_unit) then
 			local unit_pos = POSITION_LOOKUP[ai_unit]
-			local relative_world_pos = Vector2(unit_pos[1]%window_size, unit_pos[2]%window_size)
-			local relative_texture_pos = Vector2(relative_world_pos[1]/window_size, relative_world_pos[2]/window_size)
-			local relative_screen_pos = Vector3(relative_texture_pos[1]*w, h - relative_texture_pos[2]*h, 0)
-			local relative_texture_size = Vector2(texture_world_size[1]/window_size*w, texture_world_size[2]/window_size*h)
-			local realtive_start_pos = relative_screen_pos - relative_texture_size*0.5
+			local relative_world_pos = Vector2(unit_pos[1] % window_size, unit_pos[2] % window_size)
+			local relative_texture_pos = Vector2(relative_world_pos[1] / window_size, relative_world_pos[2] / window_size)
+			local relative_screen_pos = Vector3(relative_texture_pos[1] * w, h - relative_texture_pos[2] * h, 0)
+			local relative_texture_size = Vector2(texture_world_size[1] / window_size * w, texture_world_size[2] / window_size * h)
+			local realtive_start_pos = relative_screen_pos - relative_texture_size * 0.5
 
 			Gui.bitmap(self._gui, material_name, realtive_start_pos, relative_texture_size, Color(255, 255, 255, 255))
 

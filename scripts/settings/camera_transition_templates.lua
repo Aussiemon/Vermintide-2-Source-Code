@@ -10,12 +10,12 @@ CameraTransitionTemplates.dead = {
 		class = "CameraTransitionPositionLinear",
 		duration = CameraTransitionSettings.perspective_transition_time,
 		transition_func = function (t)
-			return math.sin(t*0.5*math.pi)*0.8 + 0.2
+			return math.sin(0.5 * t * math.pi) * 0.8 + 0.2
 		end
 	},
 	rotation = {
 		class = "CameraTransitionRotationLerp",
-		duration = CameraTransitionSettings.perspective_transition_time*0.8
+		duration = CameraTransitionSettings.perspective_transition_time * 0.8
 	}
 }
 CameraTransitionTemplates.reviving = {
@@ -23,12 +23,12 @@ CameraTransitionTemplates.reviving = {
 		class = "CameraTransitionPositionLinear",
 		duration = CameraTransitionSettings.perspective_transition_time,
 		transition_func = function (t)
-			return math.sin(t*0.5*math.pi)*0.8 + 0.2
+			return math.sin(0.5 * t * math.pi) * 0.8 + 0.2
 		end
 	},
 	rotation = {
 		class = "CameraTransitionRotationLerp",
-		duration = CameraTransitionSettings.perspective_transition_time*0.8
+		duration = CameraTransitionSettings.perspective_transition_time * 0.8
 	}
 }
 CameraTransitionTemplates.first_person = {
@@ -36,12 +36,12 @@ CameraTransitionTemplates.first_person = {
 		class = "CameraTransitionPositionLinear",
 		duration = CameraTransitionSettings.perspective_transition_time,
 		transition_func = function (t)
-			return t^2*0.8
+			return t^2 * 0.8
 		end
 	},
 	rotation = {
 		class = "CameraTransitionRotationLerp",
-		duration = CameraTransitionSettings.perspective_transition_time*0.8
+		duration = CameraTransitionSettings.perspective_transition_time * 0.8
 	}
 }
 CameraTransitionTemplates.over_shoulder = {
@@ -49,12 +49,12 @@ CameraTransitionTemplates.over_shoulder = {
 		class = "CameraTransitionPositionLinear",
 		duration = DURATION,
 		transition_func = function (t)
-			return math.sin(t*0.5*math.pi)
+			return math.sin(0.5 * t * math.pi)
 		end
 	},
 	rotation = {
 		class = "CameraTransitionRotationLerp",
-		duration = DURATION*0.05
+		duration = DURATION * 0.05
 	},
 	vertical_fov = {
 		parameter = "vertical_fov",
@@ -70,12 +70,12 @@ CameraTransitionTemplates.grabbed_by_chaos_spawn = {
 		class = "CameraTransitionPositionLinear",
 		duration = DURATION,
 		transition_func = function (t)
-			return math.sin(t*0.25*math.pi)
+			return math.sin(0.25 * t * math.pi)
 		end
 	},
 	rotation = {
 		class = "CameraTransitionRotationLerp",
-		duration = DURATION*0.05
+		duration = DURATION * 0.05
 	},
 	vertical_fov = {
 		parameter = "vertical_fov",
@@ -91,12 +91,12 @@ CameraTransitionTemplates.zoom = {
 		class = "CameraTransitionPositionLinear",
 		duration = DURATION,
 		transition_func = function (t)
-			return math.sin(t*0.5*math.pi)
+			return math.sin(0.5 * t * math.pi)
 		end
 	},
 	rotation = {
 		class = "CameraTransitionRotationLerp",
-		duration = DURATION*0.05
+		duration = DURATION * 0.05
 	},
 	vertical_fov = {
 		parameter = "vertical_fov",

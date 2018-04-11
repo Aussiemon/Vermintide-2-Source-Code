@@ -778,6 +778,7 @@ PlayerControllerKeymaps = {
 		}
 	}
 }
+TutorialPlayerControllerKeymaps = table.clone(PlayerControllerKeymaps)
 PlayerControllerFilters = {
 	win32 = InputUtils.keymaps_key_approved("win32") and {
 		move = {
@@ -1207,6 +1208,7 @@ PlayerControllerFilters = {
 		}
 	}
 }
+TutorialPlayerControllerFilters = table.clone(PlayerControllerFilters)
 TwitchControllerSettings = {
 	win32 = InputUtils.keymaps_key_approved("win32") and {
 		execute_login_1 = {
@@ -3261,7 +3263,42 @@ IngamePlayerListKeymaps = {
 			"pressed"
 		},
 		ingame_player_list_exit = {},
-		activate_ingame_player_list = {}
+		activate_ingame_player_list = {},
+		axis_cursor = {
+			"gamepad",
+			"left",
+			"axis"
+		},
+		left_press = {
+			"gamepad",
+			"a",
+			"pressed"
+		},
+		left_hold = {
+			"gamepad",
+			"a",
+			"held"
+		},
+		left_release = {
+			"gamepad",
+			"a",
+			"released"
+		},
+		right_press = {
+			"gamepad",
+			"right_shoulder",
+			"pressed"
+		},
+		right_hold = {
+			"gamepad",
+			"right_shoulder",
+			"held"
+		},
+		right_release = {
+			"gamepad",
+			"right_shoulder",
+			"released"
+		}
 	},
 	ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		toggle_menu = {
@@ -3315,7 +3352,42 @@ IngamePlayerListKeymaps = {
 			"pressed"
 		},
 		ingame_player_list_exit = {},
-		activate_ingame_player_list = {}
+		activate_ingame_player_list = {},
+		axis_cursor = {
+			"gamepad",
+			"left",
+			"axis"
+		},
+		left_press = {
+			"gamepad",
+			"cross",
+			"pressed"
+		},
+		left_hold = {
+			"gamepad",
+			"cross",
+			"held"
+		},
+		left_release = {
+			"gamepad",
+			"cross",
+			"released"
+		},
+		right_press = {
+			"gamepad",
+			"r1",
+			"pressed"
+		},
+		right_hold = {
+			"gamepad",
+			"r1",
+			"held"
+		},
+		right_release = {
+			"gamepad",
+			"r1",
+			"released"
+		}
 	}
 }
 IngamePlayerListFilters = {
@@ -3335,8 +3407,38 @@ IngamePlayerListFilters = {
 			}
 		}
 	},
-	xb1 = InputUtils.keymaps_key_approved("xb1") and {},
-	ps4 = InputUtils.keymaps_key_approved("ps4") and {}
+	xb1 = InputUtils.keymaps_key_approved("xb1") and {
+		cursor = {
+			filter_type = "gamepad_cursor",
+			multiplier = 1000,
+			acceleration_delay = 0.2,
+			acceleration_threshold = 0.5,
+			threshold = 0.1,
+			min_multiplier_y = 25,
+			accelerate_time_ref = 1.2,
+			input_mapping = "axis_cursor",
+			multiplier_y = 40,
+			multiplier_x = 40,
+			min_multiplier_x = 25,
+			hover_multiplier = 0.3
+		}
+	},
+	ps4 = InputUtils.keymaps_key_approved("ps4") and {
+		cursor = {
+			filter_type = "gamepad_cursor",
+			multiplier = 1000,
+			acceleration_delay = 0.2,
+			acceleration_threshold = 0.5,
+			threshold = 0.1,
+			min_multiplier_y = 25,
+			accelerate_time_ref = 1.2,
+			input_mapping = "axis_cursor",
+			multiplier_y = 40,
+			multiplier_x = 40,
+			min_multiplier_x = 25,
+			hover_multiplier = 0.3
+		}
+	}
 }
 IngameMenuKeymaps = {
 	win32 = InputUtils.keymaps_key_approved("win32") and {

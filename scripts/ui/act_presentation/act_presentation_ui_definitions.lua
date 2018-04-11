@@ -300,20 +300,20 @@ local animations = {
 				local anim_fraction = math.easeInCubic(progress)
 				local render_settings = params.render_settings
 				render_settings.alpha_multiplier = anim_fraction
-				local size_fraction = math.easeCubic(progress - 1)
+				local size_fraction = math.easeCubic(1 - progress)
 				local anim_size_fraction = math.catmullrom(size_fraction, 1.8, 0, 1, -1)
 				local widget = widgets.level
 				local style = widget.style
 				local size_multiplier = 3
 				local icon_size = style.icon.texture_size
-				icon_size[1] = size_multiplier*168*anim_size_fraction + 168
-				icon_size[2] = size_multiplier*168*anim_size_fraction + 168
+				icon_size[1] = 168 + 168 * size_multiplier * anim_size_fraction
+				icon_size[2] = 168 + 168 * size_multiplier * anim_size_fraction
 				local frame_size = style.frame.texture_size
-				frame_size[1] = size_multiplier*180*anim_size_fraction + 180
-				frame_size[2] = size_multiplier*180*anim_size_fraction + 180
+				frame_size[1] = 180 + 180 * size_multiplier * anim_size_fraction
+				frame_size[2] = 180 + 180 * size_multiplier * anim_size_fraction
 				local glass_size = style.glass.texture_size
-				glass_size[1] = size_multiplier*216*anim_size_fraction + 216
-				glass_size[2] = size_multiplier*216*anim_size_fraction + 216
+				glass_size[1] = 216 + 216 * size_multiplier * anim_size_fraction
+				glass_size[2] = 216 + 216 * size_multiplier * anim_size_fraction
 
 				return 
 			end,
@@ -342,10 +342,10 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
-				local anim_font_size_fraction = math.ease_in_exp(progress - 1)
-				local size_fraction = math.easeCubic(progress - 1)
+				local anim_font_size_fraction = math.ease_in_exp(1 - progress)
+				local size_fraction = math.easeCubic(1 - progress)
 				local anim_size_fraction = math.catmullrom(size_fraction, 1.8, 0, 1, -1)
-				local alpha = anim_fraction*255
+				local alpha = 255 * anim_fraction
 				local text_style = widgets.level_title.style.text
 				local text_shadow_style = widgets.level_title.style.text_shadow
 				local act_text_style = widgets.act_title.style.text
@@ -373,7 +373,7 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
 				local render_settings = params.render_settings
-				render_settings.alpha_multiplier = anim_fraction - 1
+				render_settings.alpha_multiplier = 1 - anim_fraction
 
 				return 
 			end,
@@ -404,20 +404,20 @@ local animations = {
 				local anim_fraction = math.easeInCubic(progress)
 				local render_settings = params.render_settings
 				render_settings.alpha_multiplier = anim_fraction
-				local size_fraction = math.easeCubic(progress - 1)
+				local size_fraction = math.easeCubic(1 - progress)
 				local anim_size_fraction = math.catmullrom(size_fraction, 1.8, 0, 1, -1)
 				local widget = widgets.level
 				local style = widget.style
 				local size_multiplier = 3
 				local icon_size = style.icon.texture_size
-				icon_size[1] = size_multiplier*168*anim_size_fraction + 168
-				icon_size[2] = size_multiplier*168*anim_size_fraction + 168
+				icon_size[1] = 168 + 168 * size_multiplier * anim_size_fraction
+				icon_size[2] = 168 + 168 * size_multiplier * anim_size_fraction
 				local frame_size = style.frame.texture_size
-				frame_size[1] = size_multiplier*180*anim_size_fraction + 180
-				frame_size[2] = size_multiplier*180*anim_size_fraction + 180
+				frame_size[1] = 180 + 180 * size_multiplier * anim_size_fraction
+				frame_size[2] = 180 + 180 * size_multiplier * anim_size_fraction
 				local glass_size = style.glass.texture_size
-				glass_size[1] = size_multiplier*216*anim_size_fraction + 216
-				glass_size[2] = size_multiplier*216*anim_size_fraction + 216
+				glass_size[1] = 216 + 216 * size_multiplier * anim_size_fraction
+				glass_size[2] = 216 + 216 * size_multiplier * anim_size_fraction
 
 				return 
 			end,
@@ -446,10 +446,10 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
-				local anim_font_size_fraction = math.ease_in_exp(progress - 1)
-				local size_fraction = math.easeCubic(progress - 1)
+				local anim_font_size_fraction = math.ease_in_exp(1 - progress)
+				local size_fraction = math.easeCubic(1 - progress)
 				local anim_size_fraction = math.catmullrom(size_fraction, 1.8, 0, 1, -1)
-				local alpha = anim_fraction*255
+				local alpha = 255 * anim_fraction
 				local text_style = widgets.level_title.style.text
 				local text_shadow_style = widgets.level_title.style.text_shadow
 				local act_text_style = widgets.act_title.style.text
@@ -489,7 +489,7 @@ local animations = {
 
 				local anim_fraction = math.easeOutCubic(progress)
 				anim_fraction = math.ease_pulse(anim_fraction)
-				local alpha = anim_fraction*255
+				local alpha = 255 * anim_fraction
 				local frame_glow = widgets.level.style.frame_glow
 				frame_glow.color[1] = alpha
 
@@ -526,7 +526,7 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
 				local render_settings = params.render_settings
-				render_settings.alpha_multiplier = anim_fraction - 1
+				render_settings.alpha_multiplier = 1 - anim_fraction
 
 				return 
 			end,

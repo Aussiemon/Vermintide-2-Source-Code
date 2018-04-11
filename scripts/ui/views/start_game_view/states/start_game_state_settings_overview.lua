@@ -169,10 +169,10 @@ StartGameStateSettingsOverview._change_window = function (self, window_index, wi
 	local window_size = window_default_settings.size
 	local window_spacing = window_default_settings.spacing or 10
 	local window_width = window_size[1]
-	local total_spacing = window_spacing*(MAX_ACTIVE_WINDOWS - 1)
-	local total_windows_width = MAX_ACTIVE_WINDOWS*window_width
-	local start_width_offset = -(total_windows_width/2 + window_width/2) - (total_spacing/2 + window_spacing)
-	local window_width_offset = start_width_offset + window_index*window_width + window_index*window_spacing
+	local total_spacing = window_spacing * (MAX_ACTIVE_WINDOWS - 1)
+	local total_windows_width = MAX_ACTIVE_WINDOWS * window_width
+	local start_width_offset = -(total_windows_width / 2 + window_width / 2) - (total_spacing / 2 + window_spacing)
+	local window_width_offset = start_width_offset + window_index * window_width + window_index * window_spacing
 	local window_offset = {
 		window_width_offset,
 		0,
@@ -405,6 +405,12 @@ StartGameStateSettingsOverview._update_animations = function (self, dt)
 
 	return 
 end
+StartGameStateSettingsOverview._is_button_hover_enter = function (self, widget)
+	local content = widget.content
+	local hotspot = content.button_hotspot
+
+	return hotspot.on_hover_enter
+end
 StartGameStateSettingsOverview._handle_input = function (self, dt, t)
 	local widgets_by_name = self._widgets_by_name
 	local input_service = self.parent:input_service()
@@ -417,6 +423,10 @@ StartGameStateSettingsOverview._handle_input = function (self, dt, t)
 	UIWidgetUtils.animate_default_button(back_button, dt)
 	UIWidgetUtils.animate_default_button(exit_button, dt)
 
+	if self._is_button_hover_enter(self, back_button) or self._is_button_hover_enter(self, exit_button) then
+		self.play_sound(self, "play_gui_equipment_button_hover")
+	end
+
 	if reset_on_exit and (input_pressed or self._is_button_pressed(self, back_button)) then
 		self.play_sound(self, "play_gui_lobby_back")
 
@@ -424,7 +434,6 @@ StartGameStateSettingsOverview._handle_input = function (self, dt, t)
 
 		self.set_layout(self, start_layout)
 	elseif close_on_exit and (input_pressed or self._is_button_pressed(self, exit_button)) then
-		self.play_sound(self, "Play_hud_button_close")
 		self.parent:close_menu()
 
 		return 
@@ -600,16 +609,21 @@ end
 StartGameStateSettingsOverview.is_strict_matchmaking_option_enabled = function (self)
 	return self._use_strict_matchmaking
 end
-StartGameStateSettingsOverview.set_difficulty_option = function (self, difficulty_key)
-	if difficulty_key ~= nil then
-		local human_players = Managers.player:human_players()
-		local players_below_difficulty = DifficultyManager.players_below_required_power_level(difficulty_key, human_players)
-
-		if 0 < #players_below_difficulty then
-			difficulty_key = nil
-		end
+StartGameStateSettingsOverview.is_difficulty_approved = function (self, difficulty_key)
+	if not difficulty_key then
+		return false
 	end
 
+	local human_players = Managers.player:human_players()
+	local players_below_difficulty = DifficultyManager.players_below_required_power_level(difficulty_key, human_players)
+
+	if 0 < #players_below_difficulty then
+		return false
+	end
+
+	return true
+end
+StartGameStateSettingsOverview.set_difficulty_option = function (self, difficulty_key)
 	if self._layout_save_settings then
 		self._layout_save_settings.difficulty_key = difficulty_key
 	end
@@ -618,8 +632,14 @@ StartGameStateSettingsOverview.set_difficulty_option = function (self, difficult
 
 	return 
 end
-StartGameStateSettingsOverview.get_difficulty_option = function (self)
-	return self._selected_difficulty_key
+StartGameStateSettingsOverview.get_difficulty_option = function (self, ignore_approval)
+	local selected_difficulty_key = self._selected_difficulty_key
+
+	if not ignore_approval and selected_difficulty_key and not self.is_difficulty_approved(self, selected_difficulty_key) then
+		selected_difficulty_key = nil
+	end
+
+	return selected_difficulty_key
 end
 StartGameStateSettingsOverview.set_play_button_enabled = function (self, enabled)
 	return 

@@ -18,9 +18,9 @@ BTInterestPointApproachAction.enter = function (self, unit, blackboard, t)
 
 	navigation_extension.allow_layer(navigation_extension, "doors", false)
 	navigation_extension.allow_layer(navigation_extension, "planks", false)
-	navigation_extension.set_layer_cost(navigation_extension, "jumps", allowed_layers.jumps*2)
-	navigation_extension.set_layer_cost(navigation_extension, "ledges", allowed_layers.ledges*2)
-	navigation_extension.set_layer_cost(navigation_extension, "ledges_with_fence", allowed_layers.ledges_with_fence*2)
+	navigation_extension.set_layer_cost(navigation_extension, "jumps", 2 * allowed_layers.jumps)
+	navigation_extension.set_layer_cost(navigation_extension, "ledges", 2 * allowed_layers.ledges)
+	navigation_extension.set_layer_cost(navigation_extension, "ledges_with_fence", 2 * allowed_layers.ledges_with_fence)
 	navigation_extension.move_to(navigation_extension, position)
 	navigation_extension.set_max_speed(navigation_extension, breed.passive_walk_speed)
 
@@ -96,7 +96,7 @@ BTInterestPointApproachAction.run = function (self, unit, blackboard, t, dt)
 		else
 			local direction = Vector3.normalize(target_position - unit_position)
 
-			locomotion_extension.set_wanted_velocity(locomotion_extension, direction*2)
+			locomotion_extension.set_wanted_velocity(locomotion_extension, direction * 2)
 			locomotion_extension.set_wanted_rotation(locomotion_extension, target_rotation)
 		end
 	end

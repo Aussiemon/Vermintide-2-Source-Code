@@ -58,10 +58,57 @@ local function check_unlock(unlock_name)
 	return false
 end
 
+local function check_level_hero(hero_name, required_level)
+	local experience = ExperienceSettings.get_experience(hero_name)
+
+	return required_level <= ExperienceSettings.get_level(experience)
+end
+
+local rarity_index = {
+	common = 2,
+	plentiful = 1,
+	exotic = 4,
+	rare = 3,
+	unique = 5
+}
+
+local function equipped_items_of_rarity(required_rarity)
+	local required_rarity_index = rarity_index[required_rarity]
+
+	assert(required_rarity_index, "Invalid rarity %s", required_rarity)
+
+	local backend = Managers.backend
+
+	if not backend then
+		return false
+	end
+
+	local backend_items = backend.get_interface(backend, "items")
+
+	if not backend_items then
+		return false
+	end
+
+	local filter = "equipped_by_current_career and is_equipment_slot"
+	local items = backend_items.get_filtered_items(backend_items, filter)
+	local ret = {}
+
+	for _, item in ipairs(items) do
+		local item_rarity = rarity_index[item.rarity]
+
+		if item_rarity and required_rarity_index <= item_rarity then
+			table.insert(ret, item)
+		end
+	end
+
+	return ret
+end
+
 AchievementTemplates = {
 	complete_tutorial = {
 		ID_XB1 = "TROP001",
 		ID_PS4 = "TROP001",
+		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
 			return check_level_list(statistics_db, stats_id, {
 				LevelSettings.prologue.level_id
@@ -71,6 +118,7 @@ AchievementTemplates = {
 	complete_act_one = {
 		ID_XB1 = "TROP002",
 		ID_PS4 = "TROP002",
+		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
 			return LevelUnlockUtils.act_completed(statistics_db, stats_id, "act_1")
 		end
@@ -78,6 +126,7 @@ AchievementTemplates = {
 	complete_act_two = {
 		ID_XB1 = "TROP003",
 		ID_PS4 = "TROP003",
+		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
 			return LevelUnlockUtils.act_completed(statistics_db, stats_id, "act_2")
 		end
@@ -85,6 +134,7 @@ AchievementTemplates = {
 	complete_act_three = {
 		ID_XB1 = "TROP004",
 		ID_PS4 = "TROP004",
+		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
 			return LevelUnlockUtils.act_completed(statistics_db, stats_id, "act_3")
 		end
@@ -92,6 +142,7 @@ AchievementTemplates = {
 	complete_skittergate_normal = {
 		ID_XB1 = "TROP005",
 		ID_PS4 = "TROP005",
+		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
 			local diff = DifficultySettings.normal.rank
 
@@ -103,6 +154,7 @@ AchievementTemplates = {
 	complete_skittergate_hard = {
 		ID_XB1 = "TROP006",
 		ID_PS4 = "TROP006",
+		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hard.rank
 
@@ -114,6 +166,7 @@ AchievementTemplates = {
 	complete_skittergate_nightmare = {
 		ID_XB1 = "TROP007",
 		ID_PS4 = "TROP007",
+		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
 			local diff = DifficultySettings.harder.rank
 
@@ -125,12 +178,231 @@ AchievementTemplates = {
 	complete_skittergate_cataclysm = {
 		ID_XB1 = "TROP008",
 		ID_PS4 = "TROP008",
+		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hardest.rank
 
 			return check_level_list_difficulty(statistics_db, stats_id, {
 				LevelSettings.skittergate.level_id
 			}, diff)
+		end
+	},
+	level_thirty_wood_elf = {
+		ID_XB1 = "TROP009",
+		ID_PS4 = "TROP009",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			return check_level_hero("wood_elf", 30)
+		end
+	},
+	level_thirty_witch_hunter = {
+		ID_XB1 = "TROP010",
+		ID_PS4 = "TROP010",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			return check_level_hero("witch_hunter", 30)
+		end
+	},
+	level_thirty_empire_soldier = {
+		ID_XB1 = "TROP011",
+		ID_PS4 = "TROP011",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			return check_level_hero("empire_soldier", 30)
+		end
+	},
+	level_thirty_bright_wizard = {
+		ID_XB1 = "TROP012",
+		ID_PS4 = "TROP012",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			return check_level_hero("bright_wizard", 30)
+		end
+	},
+	level_thirty_dwarf_ranger = {
+		ID_XB1 = "TROP013",
+		ID_PS4 = "TROP013",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			return check_level_hero("dwarf_ranger", 30)
+		end
+	},
+	level_thirty_all = {
+		ID_XB1 = "TROP014",
+		ID_PS4 = "TROP014",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			return check_level_hero("wood_elf", 30) and check_level_hero("witch_hunter", 30) and check_level_hero("empire_soldier", 30) and check_level_hero("bright_wizard", 30) and check_level_hero("dwarf_ranger", 30)
+		end
+	},
+	unlock_first_talent_point = {
+		ID_XB1 = "TROP015",
+		ID_PS4 = "TROP015",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			local heroes = {
+				"wood_elf",
+				"witch_hunter",
+				"empire_soldier",
+				"bright_wizard",
+				"dwarf_ranger"
+			}
+
+			for _, hero in ipairs(heroes) do
+				if 1 <= ProgressionUnlocks.get_num_talent_points(hero) then
+					return true
+				end
+			end
+
+			return false
+		end
+	},
+	unlock_all_talent_points = {
+		ID_XB1 = "TROP016",
+		ID_PS4 = "TROP016",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			local heroes = {
+				"wood_elf",
+				"witch_hunter",
+				"empire_soldier",
+				"bright_wizard",
+				"dwarf_ranger"
+			}
+
+			for _, hero in ipairs(heroes) do
+				if ProgressionUnlocks.get_num_talent_points(hero) == 5 then
+					return true
+				end
+			end
+
+			return false
+		end
+	},
+	craft_item = {
+		ID_XB1 = "TROP017",
+		ID_PS4 = "TROP017",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			local crafted_items = statistics_db.get_persistent_stat(statistics_db, stats_id, "crafted_items")
+
+			return 1 <= crafted_items
+		end
+	},
+	craft_fifty_items = {
+		ID_XB1 = "TROP018",
+		ID_PS4 = "TROP018",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			local crafted_items = statistics_db.get_persistent_stat(statistics_db, stats_id, "crafted_items")
+
+			return 50 <= crafted_items
+		end
+	},
+	salvage_item = {
+		ID_XB1 = "TROP019",
+		ID_PS4 = "TROP019",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			local crafted_items = statistics_db.get_persistent_stat(statistics_db, stats_id, "salvaged_items")
+
+			return 1 <= crafted_items
+		end
+	},
+	salvage_hundred_items = {
+		ID_XB1 = "TROP020",
+		ID_PS4 = "TROP020",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			local crafted_items = statistics_db.get_persistent_stat(statistics_db, stats_id, "salvaged_items")
+
+			return 100 <= crafted_items
+		end
+	},
+	equip_common_quality = {
+		ID_XB1 = "TROP021",
+		ID_PS4 = "TROP021",
+		context = "set_loadout",
+		evaluate = function (statistics_db, stats_id)
+			local items = equipped_items_of_rarity("common")
+
+			return 1 <= #items
+		end
+	},
+	equip_rare_quality = {
+		ID_XB1 = "TROP022",
+		ID_PS4 = "TROP022",
+		context = "set_loadout",
+		evaluate = function (statistics_db, stats_id)
+			local items = equipped_items_of_rarity("rare")
+
+			return 1 <= #items
+		end
+	},
+	equip_exotic_quality = {
+		ID_XB1 = "TROP023",
+		ID_PS4 = "TROP023",
+		context = "set_loadout",
+		evaluate = function (statistics_db, stats_id)
+			local items = equipped_items_of_rarity("exotic")
+
+			return 1 <= #items
+		end
+	},
+	equip_all_exotic_quality = {
+		ID_XB1 = "TROP024",
+		ID_PS4 = "TROP024",
+		context = "set_loadout",
+		evaluate = function (statistics_db, stats_id)
+			local items = equipped_items_of_rarity("exotic")
+
+			return #items == 5
+		end
+	},
+	equip_veteran_quality = {
+		ID_XB1 = "TROP025",
+		ID_PS4 = "TROP025",
+		context = "set_loadout",
+		evaluate = function (statistics_db, stats_id)
+			local items = equipped_items_of_rarity("unique")
+
+			return 1 <= #items
+		end
+	},
+	complete_level_all = {
+		ID_XB1 = "TROP026",
+		ID_PS4 = "TROP026",
+		context = "in_inn",
+		evaluate = function (statistics_db, stats_id)
+			local heroes = {
+				"bright_wizard",
+				"wood_elf",
+				"empire_soldier",
+				"dwarf_ranger",
+				"witch_hunter"
+			}
+
+			for level_key, level in pairs(LevelSettings) do
+				if table.contains(UnlockableLevels, level_key) then
+					local all_completed = true
+
+					for _, hero in ipairs(heroes) do
+						local completed = statistics_db.get_persistent_stat(statistics_db, stats_id, "completed_levels_" .. hero, level_key)
+
+						if completed == 0 then
+							all_completed = false
+
+							break
+						end
+					end
+
+					if all_completed then
+						return true
+					end
+				end
+			end
+
+			return false
 		end
 	}
 }

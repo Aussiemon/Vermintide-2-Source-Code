@@ -125,7 +125,7 @@ CharacterStateHelper.check_to_start_dodge = function (unit, input_extension, sta
 	end
 
 	if not start_dodge and dodge_input and input_extension.minimum_dodge_input < input_length then
-		local normalized_input = input/input_length
+		local normalized_input = input / input_length
 		local x = normalized_input.x
 		local y = normalized_input.y
 		local abs_x = math.abs(x)
@@ -163,10 +163,10 @@ CharacterStateHelper.move_on_ground = function (first_person_extension, input_ex
 
 	if local_move_direction.y < 0 then
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-		speed = speed*movement_settings_table.backward_move_scale
+		speed = speed * movement_settings_table.backward_move_scale
 	end
 
-	locomotion_extension.set_wanted_velocity(locomotion_extension, move_direction*speed)
+	locomotion_extension.set_wanted_velocity(locomotion_extension, move_direction * speed)
 
 	return 
 end
@@ -187,9 +187,9 @@ CharacterStateHelper.update_soft_collision_movement = function (first_person_ext
 
 			if height_diference <= movement_settings_table.soft_collision.max_height_diference and length <= movement_settings_table.soft_collision.max_distance then
 				local direction = Vector3.normalize(distance)
-				local speed = (length + movement_settings_table.soft_collision.speed_modifier)/1
-				speed = speed*speed
-				final_velocity = final_velocity + direction*speed
+				local speed = 1 / (length + movement_settings_table.soft_collision.speed_modifier)
+				speed = speed * speed
+				final_velocity = final_velocity + direction * speed
 			end
 		end
 	end
@@ -203,7 +203,7 @@ CharacterStateHelper.update_soft_collision_movement = function (first_person_ext
 	else
 		final_direction_length = math.clamp(final_direction_length, movement_settings_table.soft_collision.lowest_speed, movement_settings_table.soft_collision.highest_speed)
 
-		locomotion_extension.set_wanted_velocity(locomotion_extension, final_direction*final_direction_length)
+		locomotion_extension.set_wanted_velocity(locomotion_extension, final_direction * final_direction_length)
 	end
 
 	if final_direction_length <= idle_speed_threshold then
@@ -371,17 +371,17 @@ CharacterStateHelper.move_in_air = function (first_person_extension, input_exten
 	local move_cap = math.clamp(movement_settings_table.move_speed, 0, PlayerUnitMovementSettings.move_speed)
 
 	if movement.y < 0 then
-		speed = speed*movement_settings_table.backward_move_scale
-		move_cap = move_cap*movement_settings_table.backward_move_scale*0.9
+		speed = speed * movement_settings_table.backward_move_scale
+		move_cap = move_cap * movement_settings_table.backward_move_scale * 0.9
 	end
 
 	local prev_move_velocity = Vector3.flat(locomotion_extension.current_velocity(locomotion_extension))
-	local new_move_velocity = prev_move_velocity + move_velocity*speed
+	local new_move_velocity = prev_move_velocity + move_velocity * speed
 	local new_move_speed = Vector3.length(new_move_velocity)
-	new_move_speed = math.clamp(new_move_speed, 0, move_cap*movement_settings_table.player_speed_scale)
+	new_move_speed = math.clamp(new_move_speed, 0, move_cap * movement_settings_table.player_speed_scale)
 	local new_move_direction = Vector3.normalize(new_move_velocity)
 
-	locomotion_extension.set_wanted_velocity(locomotion_extension, new_move_direction*new_move_speed)
+	locomotion_extension.set_wanted_velocity(locomotion_extension, new_move_direction * new_move_speed)
 
 	return 
 end
@@ -407,10 +407,10 @@ CharacterStateHelper.look = function (input_extension, viewport_name, first_pers
 	Profiler.start("look")
 
 	local camera_manager = Managers.state.camera
-	local look_sensitivity = override_sens or (camera_manager.has_viewport(camera_manager, viewport_name) and camera_manager.fov(camera_manager, viewport_name)/0.785) or 1
+	local look_sensitivity = override_sens or (camera_manager.has_viewport(camera_manager, viewport_name) and camera_manager.fov(camera_manager, viewport_name) / 0.785) or 1
 	local is_3p = false
 	local look_delta = CharacterStateHelper.get_look_input(input_extension, status_extension, inventory_extension, is_3p)
-	look_delta = look_delta*look_sensitivity
+	look_delta = look_delta * look_sensitivity
 
 	if override_delta then
 		look_delta = look_delta + override_delta
@@ -423,10 +423,10 @@ CharacterStateHelper.look = function (input_extension, viewport_name, first_pers
 end
 CharacterStateHelper.look_limited_rotation_freedom = function (input_extension, viewport_name, first_person_extension, ledge_unit, unit, max_radians_yaw, max_radians_pitch, status_extension, inventory_extension)
 	local camera_manager = Managers.state.camera
-	local look_sensitivity = (camera_manager.has_viewport(camera_manager, viewport_name) and Managers.state.camera:fov(viewport_name)/0.785) or 1
+	local look_sensitivity = (camera_manager.has_viewport(camera_manager, viewport_name) and Managers.state.camera:fov(viewport_name) / 0.785) or 1
 	local is_3p = false
 	local look_delta = CharacterStateHelper.get_look_input(input_extension, status_extension, inventory_extension, is_3p)
-	look_delta = look_delta*look_sensitivity
+	look_delta = look_delta * look_sensitivity
 	local new_look_delta = look_delta
 
 	if max_radians_yaw then
@@ -451,7 +451,7 @@ CharacterStateHelper.look_limited_rotation_freedom = function (input_extension, 
 		local own_pitch = Quaternion.pitch(Unit.local_rotation(first_person_extension.first_person_unit, 0))
 		local dif_pitch = ladder_pitch - own_pitch
 		local look_delta_y = Vector3.y(new_look_delta)
-		local half_pi = math.pi/2
+		local half_pi = math.pi / 2
 
 		if look_delta_y < 0 and max_radians_pitch < dif_pitch then
 			look_delta_y = 0
@@ -472,9 +472,9 @@ CharacterStateHelper.lerp_player_rotation_radian = function (player_radian, targ
 	local final_radian_value = nil
 
 	if (0 <= target_radian and 0 <= player_radian) or (target_radian <= 0 and player_radian <= 0) then
-		final_radian_value = player_radian + (target_radian - player_radian)*percentage_in_lerp
+		final_radian_value = player_radian + (target_radian - player_radian) * percentage_in_lerp
 	else
-		local current_rotation = original_diference_radian*percentage_in_lerp
+		local current_rotation = original_diference_radian * percentage_in_lerp
 
 		if target_radian < 0 then
 			local dif_radian = math.abs(target_radian) + player_radian
@@ -545,8 +545,8 @@ CharacterStateHelper.time_in_ladder_move_animation = function (unit, ladder_base
 	local unit_position_height = Vector3.z(unit_pos)
 	local above_ladder_position = unit_position_height - ladder_base_height
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-	local percentage_in_move_animation = above_ladder_position%movement_settings_table.ladder.whole_movement_animation_distance/movement_settings_table.ladder.whole_movement_animation_distance
-	local time_in_move_animation = percentage_in_move_animation*movement_settings_table.ladder.movement_animation_length
+	local percentage_in_move_animation = above_ladder_position % movement_settings_table.ladder.whole_movement_animation_distance / movement_settings_table.ladder.whole_movement_animation_distance
+	local time_in_move_animation = percentage_in_move_animation * movement_settings_table.ladder.movement_animation_length
 
 	return time_in_move_animation
 end
@@ -1127,8 +1127,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 	if new_action and new_sub_action then
 		local career_ext = ScriptUnit.extension(unit, "career_system")
-		local base_power_level = career_ext.get_career_power_level(career_ext)
-		local power_level = ActionUtils.apply_buffs_to_power_level(unit, base_power_level)
+		local power_level = career_ext.get_career_power_level(career_ext)
 		local actions = item_template.actions
 		local new_action_settings = actions[new_action][new_sub_action]
 		local weapon_action_hand = new_action_settings.weapon_action_hand or "right"
@@ -1183,18 +1182,6 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 			Profiler.stop("weapon_action")
 
 			return 
-		end
-
-		if not right_hand_weapon_extension then
-			print("---")
-			table.dump(item_data, nil, 2)
-			print("---")
-			table.dump(item_template, nil, 2)
-			print("---")
-			table.dump(actions, nil, 2)
-			print("---")
-			table.dump(new_action_settings, nil, 2)
-			print("---")
 		end
 
 		assert(right_hand_weapon_extension, "tried to start a right hand weapon action without a right hand wielded unit")

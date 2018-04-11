@@ -92,7 +92,7 @@ AIMeleeLineOfSightSystem.update = function (self, context, t)
 	local BENEATH_ABOVE_EPSILON = 0.1
 	local RAY_DISTANCE_EPSILON = 0.1
 	local raycasts = 0
-	local index = self._update_queue_index%max_index + 1
+	local index = self._update_queue_index % max_index + 1
 	local queue = self._update_queue
 	local offsets = OFFSETS
 	local num_offsets = 3
@@ -134,13 +134,13 @@ AIMeleeLineOfSightSystem.update = function (self, context, t)
 						local from = self_pos + ray_from_offset
 						local to_offset = target_offset + Vector3(0, 0, z_offset_target - ray_from_offset.z)
 						local dist = math.max(Vector3.length(to_offset), 0.0001)
-						local dir = to_offset/dist
+						local dir = to_offset / dist
 
 						if RAY_DISTANCE_EPSILON < dist then
 							local hit, hit_pos, hit_dist, hit_normal, hit_actor = PhysicsWorld.raycast(physics_world, from, dir, dist, "closest", "collision_filter", "filter_ai_line_of_sight_check")
 
 							if debug then
-								QuickDrawer:line(from, from + dist*dir, Color(0, 255, 255))
+								QuickDrawer:line(from, from + dist * dir, Color(0, 255, 255))
 							end
 
 							if not hit or Actor.unit(hit_actor) == target then
@@ -148,7 +148,7 @@ AIMeleeLineOfSightSystem.update = function (self, context, t)
 							end
 						else
 							if debug then
-								QuickDrawer:line(from, from + dir*0.1, Color(255, 255, 255))
+								QuickDrawer:line(from, from + 0.1 * dir, Color(255, 255, 255))
 							end
 
 							success = true
@@ -164,23 +164,23 @@ AIMeleeLineOfSightSystem.update = function (self, context, t)
 							raycasts = raycasts + 1
 							local offset = offsets[i]
 							local from = self_pos + ray_from_offset
-							local to_offset = target_offset + Vector3(right_vector.x*offset.x, right_vector.y*offset.x, offset.z - ray_from_offset.z)
+							local to_offset = target_offset + Vector3(right_vector.x * offset.x, right_vector.y * offset.x, offset.z - ray_from_offset.z)
 							local dist = Vector3.length(to_offset)
-							local dir = to_offset/dist
+							local dir = to_offset / dist
 							local hit, hit_pos, hit_dist, hit_normal, hit_actor = PhysicsWorld.raycast(physics_world, from, dir, dist, "closest", "collision_filter", "filter_ai_line_of_sight_check")
 
 							if not hit or Actor.unit(hit_actor) == target then
 								success = true
 
 								if debug then
-									QuickDrawer:line(from, from + dist*dir, Color(0, 255, 0))
+									QuickDrawer:line(from, from + dist * dir, Color(0, 255, 0))
 								end
 
 								break
 							end
 
 							if debug then
-								QuickDrawer:line(from, from + dist*dir, Color(255, 0, 255))
+								QuickDrawer:line(from, from + dist * dir, Color(255, 0, 255))
 							end
 						end
 					end

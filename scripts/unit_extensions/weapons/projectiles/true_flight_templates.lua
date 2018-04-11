@@ -11,7 +11,7 @@ TrueFlightTemplates.active_ability_kerillian_way_watcher = {
 	find_target_func = "find_closest_highest_value_target",
 	life_time_factor = 0.6,
 	time_between_raycasts = 0.05,
-	lerp_constant = 100,
+	lerp_constant = 150,
 	max_on_target_time = math.huge
 }
 TrueFlightTemplates.active_ability_sienna_scholar = {
@@ -25,8 +25,8 @@ TrueFlightTemplates.active_ability_sienna_scholar = {
 	speed_multiplier = 0.01,
 	find_target_func = "find_closest_highest_value_target",
 	life_time_factor = 0.6,
-	lerp_distance_threshold = 30,
-	lerp_constant = 75,
+	lerp_distance_threshold = 625,
+	lerp_constant = 150,
 	max_on_target_time = math.huge
 }
 TrueFlightTemplates.machinegun = {
@@ -68,7 +68,7 @@ TrueFlightTemplates.sorcerer_magic_missile = {
 	time_between_raycasts = 0.1,
 	lerp_constant = 50,
 	lerp_modifier_func = function (distance)
-		return (distance < 7 and 0.01) or distance/5
+		return (distance < 7 and 0.01) or 5 / distance
 	end
 }
 TrueFlightTemplates.sorcerer_strike_missile = {
@@ -87,7 +87,7 @@ TrueFlightTemplates.sorcerer_strike_missile = {
 	time_between_raycasts = 0.1,
 	lerp_constant = 50,
 	lerp_modifier_func = function (distance)
-		return (distance < 7 and 0.01) or distance/3
+		return (distance < 7 and 0.01) or 3 / distance
 	end,
 	template_state_func = function (parent, projectile_unit, state_id, is_server)
 		if state_id == 1 then
@@ -109,7 +109,7 @@ TrueFlightTemplates.sorcerer_magic_missile_ground = {
 	time_between_raycasts = 0.1,
 	lerp_constant = 50,
 	lerp_modifier_func = function (distance)
-		return (distance < 7 and 0.01) or distance/5
+		return (distance < 7 and 0.01) or 5 / distance
 	end
 }
 TrueFlightTemplates.sorcerer_slow_bomb_missile = {
@@ -138,7 +138,7 @@ TrueFlightTemplates.sorcerer_slow_bomb_missile = {
 		50
 	},
 	lerp_modifier_func = function (distance)
-		return (distance < 5 and 1) or distance/5
+		return (distance < 5 and 1) or 5 / distance
 	end,
 	template_state_func = function (parent, projectile_unit, state_id, is_server, hit_unit)
 		if state_id == 1 then
@@ -169,9 +169,9 @@ TrueFlightTemplates.sorcerer_vortex_dummy_missile = {
 	speed_multiplier = 1,
 	target_tracking_check_func = "update_towards_position_target",
 	lerp_modifier_func = function (distance, height, t)
-		local max_radius = math.clamp((height + 0.01)^2/112.5, 0.25, 40)
-		local denominator = max_radius - max_radius*0.5*math.abs(math.sin(t*0.5))
-		local final_value = distance/denominator
+		local max_radius = math.clamp(112.5 / (height + 0.01)^2, 0.25, 40)
+		local denominator = max_radius - 0.5 * max_radius * math.abs(math.sin(0.5 * t))
+		local final_value = distance / denominator
 
 		return final_value
 	end

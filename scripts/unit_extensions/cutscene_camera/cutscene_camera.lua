@@ -136,21 +136,35 @@ CutsceneCamera.update_cutscene_camera = function (self)
 	return 
 end
 CutsceneCamera._handle_input = function (self, pose)
-	local look_delta_raw = Mouse.axis(Mouse.axis_index("mouse"))
-	local mouse_look_invert_y = Application.user_setting("mouse_look_invert_y") or false
-	local mouse_look_sensitivity = Application.user_setting("mouse_look_sensitivity") or 0
-	local look_delta = look_delta_raw*0.0006*0.85^(-mouse_look_sensitivity)
+	local look_delta = nil
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
-	if mouse_look_invert_y then
-		look_delta.y = -look_delta.y
+	if gamepad_active then
+		local gamepad = Managers.input:get_most_recent_device()
+		local look_delta_raw = gamepad.axis(gamepad.axis_index("right"))
+		local gamepad_look_invert_y = Application.user_setting("gamepad_look_invert_y")
+		look_delta = look_delta_raw * 0.025
+
+		if not gamepad_look_invert_y then
+			look_delta.y = -look_delta.y
+		end
+	else
+		local look_delta_raw = Mouse.axis(Mouse.axis_index("mouse"))
+		local mouse_look_invert_y = Application.user_setting("mouse_look_invert_y") or false
+		local mouse_look_sensitivity = Application.user_setting("mouse_look_sensitivity") or 0
+		look_delta = look_delta_raw * 0.0006 * 0.85^(-mouse_look_sensitivity)
+
+		if mouse_look_invert_y then
+			look_delta.y = -look_delta.y
+		end
 	end
 
 	if math.sign(look_delta.x) ~= math.sign(self.look_offset[1]) then
-		look_delta.x = look_delta.x*math.clamp(math.easeInCubic(math.abs(self.look_offset[1])/self.max_yaw_angle - 1), 0.01, 1)
+		look_delta.x = look_delta.x * math.clamp(math.easeInCubic(1 - math.abs(self.look_offset[1]) / self.max_yaw_angle), 0.01, 1)
 	end
 
 	if math.sign(look_delta.y) ~= math.sign(self.look_offset[2]) then
-		look_delta.y = look_delta.y*math.clamp(math.easeInCubic(math.abs(self.look_offset[2])/self.max_pitch_angle - 1), 0.01, 1)
+		look_delta.y = look_delta.y * math.clamp(math.easeInCubic(1 - math.abs(self.look_offset[2]) / self.max_pitch_angle), 0.01, 1)
 	end
 
 	self.look_offset[1] = math.clamp(self.look_offset[1] - look_delta.x, -self.max_yaw_angle, self.max_yaw_angle)
@@ -175,8 +189,8 @@ CutsceneCamera.transition_progress = function (self, start_time, end_time, time)
 	if interpolation_time <= 0.001 then
 		progress = 1
 	else
-		progress = math.clamp((time - start_time)/interpolation_time, 0, 1)
-		progress = (progress*2 - 3)*progress^2
+		progress = math.clamp((time - start_time) / interpolation_time, 0, 1)
+		progress = (3 - 2 * progress) * progress^2
 	end
 
 	return progress

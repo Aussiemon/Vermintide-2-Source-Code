@@ -60,7 +60,7 @@ BTPackMasterEscortRatOgreAction.run = function (self, unit, blackboard, t, dt)
 	local ogre_rot = Unit.local_rotation(ogre, 0)
 	local ogre_fwd = Quaternion.forward(ogre_rot)
 	local ogre_side = Vector3.normalize(Vector3.cross(ogre_fwd, Vector3.up()))
-	local pack_master_pos = ogre_pos + ogre_fwd*4 + ogre_side*escort_slot.side_offset
+	local pack_master_pos = ogre_pos + ogre_fwd * 4 + ogre_side * escort_slot.side_offset
 	local success, hit_pos = GwNavQueries.raycast(blackboard.nav_world, ogre_pos, pack_master_pos)
 
 	if success then

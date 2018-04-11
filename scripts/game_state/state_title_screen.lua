@@ -154,7 +154,7 @@ StateTitleScreen._setup_world = function (self)
 	self._viewport = ScriptWorld.create_viewport(self._world, self._viewport_name, "default", 1)
 	local camera = ScriptViewport.camera(self._viewport)
 
-	Camera.set_vertical_fov(camera, (math.pi*65)/180)
+	Camera.set_vertical_fov(camera, (math.pi * 65) / 180)
 	Camera.set_far_range(camera, 5000)
 
 	return 
@@ -299,7 +299,7 @@ StateTitleScreen._update_play_go_progress = function (self, dt, t)
 		self._is_installed = true
 	else
 		local progress_percentage = Managers.play_go:progress_percentage()
-		local progress = tostring(progress_percentage*100)
+		local progress = tostring(100 * progress_percentage)
 		local progress_string = string.format(self._play_go_progress_string, progress)
 
 		self._title_start_ui:set_playgo_status(progress_string)

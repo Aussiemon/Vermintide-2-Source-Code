@@ -36,47 +36,90 @@ local running_pushed_data = {
 		0
 	}
 }
+local damage_table_light = {
+	easy = {
+		15,
+		10,
+		7
+	},
+	normal = {
+		15,
+		10,
+		10
+	},
+	hard = {
+		25,
+		17,
+		15
+	},
+	survival_hard = {
+		25,
+		17,
+		15
+	},
+	harder = {
+		40,
+		20,
+		15
+	},
+	survival_harder = {
+		40,
+		20,
+		15
+	},
+	hardest = {
+		60,
+		25,
+		15
+	},
+	survival_hardest = {
+		60,
+		25,
+		15
+	}
+}
 local breed_data = {
 	detection_radius = 9999999,
 	husk_hit_reaction_cooldown = 1,
 	walk_speed = 4,
 	big_boy_turning_dot = 0.4,
-	has_inventory = true,
-	behavior = "troll",
+	chance_of_starting_sleepy = 0,
+	use_avoidance = false,
 	patrol_active_target_selection = "pick_rat_ogre_target_with_weights",
-	death_reaction = "ai_default",
-	always_look_at_target = true,
 	patrol_active_perception = "perception_rat_ogre",
+	always_look_at_target = true,
+	exchange_order = 1,
 	animation_sync_rpc = "rpc_sync_anim_state_9",
 	aoe_radius = 1,
-	exchange_order = 1,
 	patrol_detection_radius = 10,
 	boss = true,
-	chance_of_starting_sleepy = 0,
+	scale_death_push = 1,
+	has_inventory = true,
 	regen_pulse_intensity = 0.05,
-	use_avoidance = false,
+	behavior = "troll",
 	ignore_nav_propagation_box = true,
-	target_selection_angry = "pick_chaos_troll_target_with_weights",
 	bot_opportunity_target_melee_range = 7,
 	wield_inventory_on_spawn = true,
 	default_inventory_template = "chaos_troll",
 	stagger_resistance = 100,
 	use_aggro = true,
-	scale_death_push = 1,
+	target_selection_angry = "pick_chaos_troll_target_with_weights",
 	boss_staggers = true,
 	downed_pulse_interval = 1,
 	panic_close_detection_radius_sq = 9,
 	radius = 2,
 	poison_resistance = 100,
 	keep_weapon_on_death = false,
-	no_stagger_duration = false,
+	hit_mass_count = 50,
 	stagger_threshold_explosion = 1,
+	no_stagger_duration = false,
 	is_bot_aid_threat = true,
-	distance_sq_idle_auto_detect_target = 49,
 	race = "chaos",
-	bot_opportunity_target_melee_range_while_ranged = 5,
+	regen_pulse_interval = 2,
 	proximity_system_check = true,
+	death_reaction = "ai_default",
 	armor_category = 3,
+	bot_opportunity_target_melee_range_while_ranged = 5,
 	bot_hitbox_radius_approximation = 1,
 	combat_music_state = "troll",
 	trigger_dialogue_on_target_switch = true,
@@ -84,11 +127,11 @@ local breed_data = {
 	threat_value = 32,
 	use_big_boy_turning = true,
 	use_navigation_path_splines = true,
-	bone_lod_level = 0,
 	distance_sq_can_detect_target = 2025,
-	smart_object_template = "chaos_troll",
+	bone_lod_level = 0,
 	perception_continuous = "perception_continuous_chaos_troll",
 	initial_is_passive = false,
+	smart_object_template = "chaos_troll",
 	passive_in_patrol_start_anim = "move_fwd",
 	bots_should_flank = true,
 	downed_pulse_intensity = 0.2,
@@ -112,9 +155,10 @@ local breed_data = {
 	player_locomotion_constrain_radius = 1.5,
 	stagger_threshold_medium = 1,
 	dialogue_target_switch_attack_tag = "chaos_troll_target_changed",
-	regen_pulse_interval = 2,
+	distance_sq_idle_auto_detect_target = 49,
 	far_off_despawn_immunity = true,
 	patrol_passive_perception = "perception_rat_ogre",
+	boss_damage_reduction = true,
 	base_unit = "units/beings/enemies/chaos_troll/chr_chaos_troll",
 	aoe_height = 2.4,
 	displace_players_data = pushed_data,
@@ -135,11 +179,11 @@ local breed_data = {
 		target_disabled_mul = 0
 	},
 	max_health = {
-		700,
-		700,
-		1050,
-		1400,
-		2000
+		450,
+		475,
+		750,
+		1000,
+		1500
 	},
 	stagger_duration = {
 		0,
@@ -152,9 +196,9 @@ local breed_data = {
 		1
 	},
 	health_regen_per_sec = {
+		1.5,
+		1.5,
 		2,
-		2,
-		3,
 		5,
 		10
 	},
@@ -315,11 +359,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		init_blackboard = {
@@ -347,11 +391,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		init_blackboard = {
@@ -402,11 +446,11 @@ local action_data = {
 					attack_cleave = {},
 					attack_cleave_left = {
 						dir = 1,
-						rad = math.pi/2
+						rad = math.pi / 2
 					},
 					attack_cleave_right = {
 						dir = -1,
-						rad = math.pi/2
+						rad = math.pi / 2
 					}
 				},
 				attack_anim = {
@@ -456,27 +500,27 @@ local action_data = {
 		},
 		difficulty_damage = {
 			easy = {
-				25,
+				15,
 				20,
 				15
 			},
 			normal = {
-				35,
+				15,
 				25,
 				20
 			},
 			hard = {
-				50,
+				30,
 				35,
 				30
 			},
 			survival_hard = {
-				40,
+				30,
 				35,
 				30
 			},
 			harder = {
-				80,
+				50,
 				40,
 				30
 			},
@@ -486,12 +530,12 @@ local action_data = {
 				30
 			},
 			hardest = {
-				150,
+				100,
 				50,
 				30
 			},
 			survival_hardest = {
-				150,
+				100,
 				75,
 				45
 			}
@@ -508,17 +552,17 @@ local action_data = {
 				2.5
 			},
 			normal = {
-				5,
+				3,
 				4,
 				2.5
 			},
 			hard = {
-				15,
+				10,
 				5,
 				2.5
 			},
 			survival_hard = {
-				7,
+				10,
 				5,
 				2.5
 			},
@@ -622,48 +666,7 @@ local action_data = {
 			20,
 			20
 		},
-		difficulty_damage = {
-			easy = {
-				5,
-				20,
-				20
-			},
-			normal = {
-				8,
-				20,
-				20
-			},
-			hard = {
-				12,
-				25,
-				25
-			},
-			survival_hard = {
-				12,
-				25,
-				25
-			},
-			harder = {
-				20,
-				30,
-				30
-			},
-			survival_harder = {
-				20,
-				30,
-				30
-			},
-			hardest = {
-				40,
-				50,
-				50
-			},
-			survival_hardest = {
-				40,
-				75,
-				75
-			}
-		},
+		difficulty_damage = damage_table_light,
 		blocked_damage = {
 			15,
 			4,
@@ -861,48 +864,7 @@ local action_data = {
 			20,
 			20
 		},
-		difficulty_damage = {
-			easy = {
-				5,
-				20,
-				20
-			},
-			normal = {
-				8,
-				20,
-				20
-			},
-			hard = {
-				12,
-				25,
-				25
-			},
-			survival_hard = {
-				12,
-				25,
-				25
-			},
-			harder = {
-				20,
-				30,
-				30
-			},
-			survival_harder = {
-				20,
-				30,
-				30
-			},
-			hardest = {
-				40,
-				50,
-				50
-			},
-			survival_hardest = {
-				40,
-				75,
-				75
-			}
-		},
+		difficulty_damage = damage_table_light,
 		blocked_damage = {
 			2,
 			4,
@@ -1092,48 +1054,7 @@ local action_data = {
 			20,
 			20
 		},
-		difficulty_damage = {
-			easy = {
-				5,
-				20,
-				20
-			},
-			normal = {
-				8,
-				20,
-				20
-			},
-			hard = {
-				12,
-				25,
-				25
-			},
-			survival_hard = {
-				12,
-				25,
-				25
-			},
-			harder = {
-				20,
-				30,
-				30
-			},
-			survival_harder = {
-				20,
-				30,
-				30
-			},
-			hardest = {
-				40,
-				50,
-				50
-			},
-			survival_hardest = {
-				40,
-				75,
-				75
-			}
-		},
+		difficulty_damage = damage_table_light,
 		blocked_damage = {
 			2,
 			4,
@@ -1221,11 +1142,11 @@ local action_data = {
 			},
 			change_target_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			change_target_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
@@ -1237,7 +1158,7 @@ local action_data = {
 			speed = 7,
 			radius = 2,
 			collision_filter = "filter_player_hit_box_check",
-			angle = math.pi/6
+			angle = math.pi / 6
 		}
 	},
 	downed = {
@@ -1248,7 +1169,7 @@ local action_data = {
 		respawn_hp_min_percent = 0.6,
 		min_downed_duration = 3,
 		become_downed_hp_percent = 0.4,
-		downed_duration = 5
+		downed_duration = 7
 	},
 	stagger = {
 		scale_animation_speeds = true,

@@ -12,7 +12,7 @@ weapon_template.actions = {
 			kind = "melee_start",
 			aim_assist_max_ramp_multiplier = 0.4,
 			uninterruptible = true,
-			anim_event = "attack_swing_charge_pose",
+			anim_event = "attack_swing_charge",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -71,7 +71,7 @@ weapon_template.actions = {
 			kind = "melee_start",
 			aim_assist_max_ramp_multiplier = 0.4,
 			uninterruptible = true,
-			anim_event = "attack_swing_charge_pose",
+			anim_event = "attack_swing_charge",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -130,7 +130,7 @@ weapon_template.actions = {
 			kind = "melee_start",
 			aim_assist_max_ramp_multiplier = 0.4,
 			uninterruptible = true,
-			anim_event = "attack_swing_charge_pose",
+			anim_event = "attack_swing_charge",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -307,7 +307,7 @@ weapon_template.actions = {
 			kind = "melee_start",
 			aim_assist_max_ramp_multiplier = 0.4,
 			uninterruptible = true,
-			anim_event = "attack_swing_charge_stab_pose",
+			anim_event = "attack_swing_charge_stab",
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
@@ -385,7 +385,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.1,
+			anim_time_scale = time_mod * 1.1,
 			buff_data = {
 				{
 					start_time = 0,
@@ -570,7 +570,7 @@ weapon_template.actions = {
 			end
 		},
 		heavy_attack_stab = {
-			damage_window_start = 0.2,
+			damage_window_start = 0.22,
 			anim_end_event = "attack_finished",
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
@@ -580,7 +580,7 @@ weapon_template.actions = {
 			additional_critical_strike_chance = 0,
 			damage_profile = "medium_slashing_smiter_stab_1h",
 			hit_effect = "melee_hit_sword_1h",
-			damage_window_end = 0.29,
+			damage_window_end = 0.32,
 			impact_sound_event = "stab_hit",
 			dedicated_target_range = 2.5,
 			uninterruptible = true,
@@ -590,7 +590,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.15,
+			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
 					start_time = 0,
@@ -662,7 +662,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.25,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,
@@ -720,7 +720,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.2,
+			anim_time_scale = time_mod * 1.2,
 			buff_data = {
 				{
 					start_time = 0,
@@ -779,7 +779,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.25,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,
@@ -838,7 +838,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.25,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,
@@ -897,7 +897,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.25,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,

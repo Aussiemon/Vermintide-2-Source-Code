@@ -250,11 +250,11 @@ for item_template_name, item_template in pairs(Weapons) do
 
 				if set_default_tap_attack_range and string.find(sub_action_name, "light_attack") then
 					local current_attack_range = tap_attack_meta_data.max_range or math.huge
-					local tap_attack_range = TAP_ATTACK_BASE_RANGE_OFFSET + WEAPON_DAMAGE_UNIT_LENGTH_EXTENT*range_mod
+					local tap_attack_range = TAP_ATTACK_BASE_RANGE_OFFSET + WEAPON_DAMAGE_UNIT_LENGTH_EXTENT * range_mod
 					tap_attack_meta_data.max_range = math.min(current_attack_range, tap_attack_range)
 				elseif set_default_hold_attack_range and string.find(sub_action_name, "heavy_attack") then
 					local current_attack_range = hold_attack_meta_data.max_range or math.huge
-					local hold_attack_range = HOLD_ATTACK_BASE_RANGE_OFFSET + WEAPON_DAMAGE_UNIT_LENGTH_EXTENT*range_mod
+					local hold_attack_range = HOLD_ATTACK_BASE_RANGE_OFFSET + WEAPON_DAMAGE_UNIT_LENGTH_EXTENT * range_mod
 					hold_attack_meta_data.max_range = math.min(current_attack_range, hold_attack_range)
 				end
 			end

@@ -39,7 +39,7 @@ EnvironmentBlendTime.update = function (self, dt)
 		self._value = self._target_value
 		self._force_blend = false
 	else
-		self._value = math.lerp(self._value, self._target_value, self._lerp_speed*dt)
+		self._value = math.lerp(self._value, self._target_value, self._lerp_speed * dt)
 	end
 
 	return 

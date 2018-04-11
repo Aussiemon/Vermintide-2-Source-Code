@@ -46,7 +46,7 @@ PingTargetExtension._add_witch_hunter_buff = function (self, unit, pinger_unit)
 	local buff_extension = self._buff_extension
 
 	if buff_extension then
-		local wh_buff_name = "victor_witchhunter_passive_debuff"
+		local wh_buff_name = "defence_debuff_enemies"
 		local has_buff = buff_extension.has_buff_type(buff_extension, wh_buff_name)
 
 		if not has_buff then

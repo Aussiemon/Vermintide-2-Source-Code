@@ -377,7 +377,7 @@ NavigationGroupManager.make_sure_group_centers_are_on_mesh = function (self)
 
 			if triangle then
 				local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(self.nav_world, triangle)
-				local tri_center = (p1 + p2 + p3)/3
+				local tri_center = (p1 + p2 + p3) / 3
 
 				group._group_center:store(tri_center)
 			else
@@ -513,15 +513,15 @@ NavigationGroupManager.calc_neighour_distances = function (self)
 end
 NavigationGroupManager.calc_polygon_center = function (self, poly)
 	local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(self.nav_world, poly)
-	local center = (p1 + p2 + p3)/3
+	local center = (p1 + p2 + p3) / 3
 
 	return center
 end
 NavigationGroupManager.calc_polygon_area = function (self, poly)
 	local p1, p2, p3 = self.get_polygon_sides(self, poly)
 	local perimeter = p1 + p2 + p3
-	perimeter = perimeter/2
-	local area = math.sqrt(perimeter*(perimeter - p1)*(perimeter - p2)*(perimeter - p3))
+	perimeter = perimeter / 2
+	local area = math.sqrt(perimeter * (perimeter - p1) * (perimeter - p2) * (perimeter - p3))
 
 	return area
 end
@@ -657,7 +657,7 @@ NavigationGroupManager.get_group_center = function (self, poly)
 end
 NavigationGroupManager.get_poly_hash = function (self, poly)
 	local poly_center = self.calc_polygon_center(self, poly)
-	local poly_hash = poly_center.x*0.0001 + poly_center.y + poly_center.z*10000
+	local poly_hash = poly_center.x * 0.0001 + poly_center.y + poly_center.z * 10000
 
 	return poly_hash
 end
@@ -785,16 +785,16 @@ NavigationGroupManager.draw_group_connections = function (self)
 			local p1 = group._group_center:unbox() + h
 			local p2 = n_group._group_center:unbox() + h
 			local to_dir = Vector3.normalize(p2 - p1)
-			local arrow = Vector3.cross(to_dir, Vector3.up())/2
+			local arrow = Vector3.cross(to_dir, Vector3.up()) / 2
 			local text = string.format("dist=%.1f", Vector3.length(p2 - p1))
 
-			Debug.world_sticky_text((p2 + p1)*0.5, text, "red")
+			Debug.world_sticky_text((p2 + p1) * 0.5, text, "red")
 			QuickDrawerStay:line(p1, p2, col)
 
 			local p3 = p2 - to_dir
 
-			QuickDrawerStay:line(p3, p3 - to_dir*0.45 + arrow, col)
-			QuickDrawerStay:line(p3, p3 - to_dir*0.45 - arrow, col)
+			QuickDrawerStay:line(p3, p3 - to_dir * 0.45 + arrow, col)
+			QuickDrawerStay:line(p3, p3 - to_dir * 0.45 - arrow, col)
 		end
 	end
 
@@ -832,9 +832,9 @@ NavigationGroupManager.knit_groups_with_ledges = function (self)
 end
 
 local function get_tri_hash(p1, p2, p3)
-	local center = (p1 + p2 + p3)/3
+	local center = (p1 + p2 + p3) / 3
 
-	return center.x*0.0001 + center.y + center.z*10000
+	return center.x * 0.0001 + center.y + center.z * 10000
 end
 
 NavigationGroupManager.breadth_first_search_all_triangles = function (self, triangle)
@@ -872,8 +872,8 @@ NavigationGroupManager.breadth_first_search_all_triangles = function (self, tria
 
 			if neighbor then
 				local p1, p2, p3 = get_triangle_vertices(nav_world, neighbor)
-				local center = (p1 + p2 + p3)/3
-				local tri_hash = center.x*0.0001 + center.y + center.z*10000
+				local center = (p1 + p2 + p3) / 3
+				local tri_hash = center.x * 0.0001 + center.y + center.z * 10000
 
 				if not tri_lookup[tri_hash] then
 					num_triangles = num_triangles + 1

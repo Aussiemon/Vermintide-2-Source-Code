@@ -5,15 +5,15 @@ local window_size = window_default_settings.size
 local window_spacing = window_default_settings.spacing
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_width_offset = window_size[1]*2 + window_spacing*2
-local window_text_width = window_size[1] - (window_frame_width*2 + 60)
+local window_width_offset = window_size[1] * 2 + window_spacing * 2
+local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local career_window_size = {
-	window_size[1]*2 + window_spacing,
+	window_size[1] * 2 + window_spacing,
 	window_size[2]
 }
 local career_info_size = {
-	career_window_size[1]/2 - 40,
-	career_window_size[2] - 50
+	math.floor(career_window_size[1] / 2 - 10),
+	140
 }
 local scenegraph_definition = {
 	root = {
@@ -80,10 +80,41 @@ local scenegraph_definition = {
 		vertical_alignment = "top",
 		parent = "window_frame",
 		horizontal_alignment = "center",
-		size = career_window_size,
+		size = {
+			career_window_size[1] - 20,
+			career_info_size[2] + 40
+		},
 		position = {
 			0,
+			-10,
+			1
+		}
+	},
+	career_window_edge = {
+		vertical_alignment = "bottom",
+		parent = "career_window",
+		horizontal_alignment = "center",
+		size = {
+			career_window_size[1] - 20,
+			0
+		},
+		position = {
 			0,
+			40,
+			1
+		}
+	},
+	career_window_center_edge = {
+		vertical_alignment = "top",
+		parent = "career_window",
+		horizontal_alignment = "center",
+		size = {
+			0,
+			career_info_size[2] - 5
+		},
+		position = {
+			0,
+			-5,
 			1
 		}
 	},
@@ -93,8 +124,8 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		size = career_info_size,
 		position = {
-			30,
-			-20,
+			0,
+			0,
 			1
 		}
 	},
@@ -107,8 +138,8 @@ local scenegraph_definition = {
 			80
 		},
 		position = {
-			0,
-			0,
+			10,
+			-50,
 			5
 		}
 	},
@@ -135,8 +166,8 @@ local scenegraph_definition = {
 			50
 		},
 		position = {
-			90,
-			-10,
+			10,
+			-5,
 			1
 		}
 	},
@@ -150,35 +181,35 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			15,
+			10,
 			1
 		}
 	},
 	passive_type_title = {
 		vertical_alignment = "top",
-		parent = "passive_title_divider",
-		horizontal_alignment = "left",
+		parent = "passive_window",
+		horizontal_alignment = "right",
 		size = {
 			career_info_size[1] - 90,
 			50
 		},
 		position = {
-			0,
+			-10,
 			-5,
 			1
 		}
 	},
 	passive_description_text = {
 		vertical_alignment = "top",
-		parent = "passive_window",
+		parent = "passive_icon",
 		horizontal_alignment = "left",
 		size = {
-			career_info_size[1] - 20,
+			career_info_size[1] - 110,
 			career_info_size[2] - 90
 		},
 		position = {
+			90,
 			0,
-			-90,
 			1
 		}
 	},
@@ -188,8 +219,8 @@ local scenegraph_definition = {
 		horizontal_alignment = "right",
 		size = career_info_size,
 		position = {
-			-30,
-			-20,
+			0,
+			0,
 			1
 		}
 	},
@@ -202,8 +233,8 @@ local scenegraph_definition = {
 			80
 		},
 		position = {
-			0,
-			0,
+			10,
+			-50,
 			5
 		}
 	},
@@ -230,8 +261,8 @@ local scenegraph_definition = {
 			50
 		},
 		position = {
-			90,
-			-10,
+			10,
+			-5,
 			1
 		}
 	},
@@ -245,35 +276,119 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			15,
+			10,
 			1
 		}
 	},
 	active_type_title = {
 		vertical_alignment = "top",
-		parent = "active_title_divider",
-		horizontal_alignment = "left",
+		parent = "active_window",
+		horizontal_alignment = "right",
 		size = {
 			career_info_size[1] - 90,
 			50
 		},
 		position = {
-			0,
+			-10,
 			-5,
 			1
 		}
 	},
 	active_description_text = {
 		vertical_alignment = "top",
-		parent = "active_window",
+		parent = "active_icon",
 		horizontal_alignment = "left",
 		size = {
-			career_info_size[1] - 20,
+			career_info_size[1] - 110,
 			career_info_size[2] - 90
 		},
 		position = {
+			90,
 			0,
-			-90,
+			1
+		}
+	},
+	career_perks = {
+		vertical_alignment = "bottom",
+		parent = "career_window",
+		horizontal_alignment = "center",
+		size = {
+			career_window_size[1] - 40,
+			40
+		},
+		position = {
+			0,
+			10,
+			4
+		}
+	},
+	career_perk_1 = {
+		vertical_alignment = "center",
+		parent = "career_perks",
+		horizontal_alignment = "center",
+		size = {
+			200,
+			40
+		},
+		position = {
+			-350,
+			-6,
+			1
+		}
+	},
+	career_perk_2 = {
+		vertical_alignment = "center",
+		parent = "career_perks",
+		horizontal_alignment = "center",
+		size = {
+			200,
+			40
+		},
+		position = {
+			0,
+			-6,
+			1
+		}
+	},
+	career_perk_3 = {
+		vertical_alignment = "center",
+		parent = "career_perks",
+		horizontal_alignment = "center",
+		size = {
+			200,
+			40
+		},
+		position = {
+			350,
+			-6,
+			1
+		}
+	},
+	talent_title_text = {
+		vertical_alignment = "bottom",
+		parent = "career_window",
+		horizontal_alignment = "center",
+		size = {
+			career_window_size[1],
+			50
+		},
+		position = {
+			0,
+			-60,
+			1
+		}
+	},
+	talent_title_divider = {
+		vertical_alignment = "bottom",
+		parent = "talent_title_text",
+		horizontal_alignment = "center",
+		size = {
+			264,
+			21
+		},
+		position = {
+			0,
+			-10,
 			1
 		}
 	},
@@ -301,7 +416,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			120,
+			110,
 			0
 		}
 	},
@@ -315,7 +430,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			120,
+			110,
 			0
 		}
 	},
@@ -329,7 +444,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			120,
+			110,
 			0
 		}
 	},
@@ -343,7 +458,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			120,
+			110,
 			0
 		}
 	},
@@ -394,13 +509,13 @@ local description_text_style = {
 }
 local type_title_text_style = {
 	word_wrap = true,
-	font_size = 20,
+	font_size = 18,
 	localize = false,
 	use_shadow = true,
-	horizontal_alignment = "left",
+	horizontal_alignment = "right",
 	vertical_alignment = "top",
 	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	text_color = Colors.get_color_table_with_alpha("gray", 200),
 	offset = {
 		0,
 		0,
@@ -423,8 +538,8 @@ local sub_title_text_style = {
 		2
 	}
 }
-local level_area_text_style = {
-	font_size = 32,
+local talent_title_text_style = {
+	font_size = 36,
 	upper_case = true,
 	localize = false,
 	use_shadow = true,
@@ -432,11 +547,11 @@ local level_area_text_style = {
 	horizontal_alignment = "center",
 	vertical_alignment = "center",
 	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("red", 255),
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
-		-8,
-		4
+		-6,
+		2
 	}
 }
 
@@ -574,10 +689,10 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 				uvs = {
 					{
 						0,
-						math.min(size[2]/button_background_texture_settings.size[2], 1) - 1
+						1 - math.min(size[2] / button_background_texture_settings.size[2], 1)
 					},
 					{
-						math.min(size[1]/button_background_texture_settings.size[1], 1),
+						math.min(size[1] / button_background_texture_settings.size[1], 1),
 						1
 					}
 				},
@@ -1003,7 +1118,7 @@ local function talent_row(scenegraph_id, size, amount)
 		80,
 		80
 	}
-	local start_width_offset = size[1] - (button_size[1]*amount + slot_width_spacing*(amount - 1))
+	local start_width_offset = size[1] - (button_size[1] * amount + slot_width_spacing * (amount - 1))
 
 	for k = 1, amount, 1 do
 		local name_suffix = "_" .. tostring(k)
@@ -1278,7 +1393,7 @@ local function talent_row(scenegraph_id, size, amount)
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				offset[1] + 10,
-				(offset[2] + button_size[2]/2) - icon_size[2]/2 - 1,
+				(offset[2] + button_size[2] / 2) - icon_size[2] / 2 - 1,
 				3
 			}
 		}
@@ -1303,7 +1418,7 @@ local function talent_row(scenegraph_id, size, amount)
 			},
 			offset = {
 				offset[1] + 10,
-				(offset[2] + button_size[2]/2) - icon_size[2]/2 - 1,
+				(offset[2] + button_size[2] / 2) - icon_size[2] / 2 - 1,
 				4
 			}
 		}
@@ -1327,7 +1442,7 @@ local function talent_row(scenegraph_id, size, amount)
 			},
 			offset = {
 				offset[1] + 10,
-				(offset[2] + button_size[2]/2) - icon_size[2]/2 - 1,
+				(offset[2] + button_size[2] / 2) - icon_size[2] / 2 - 1,
 				4
 			}
 		}
@@ -1342,7 +1457,7 @@ local function talent_row(scenegraph_id, size, amount)
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				offset[1] + 10,
-				(offset[2] + button_size[2]/2) - icon_size[2]/2 - 1,
+				(offset[2] + button_size[2] / 2) - icon_size[2] / 2 - 1,
 				5
 			}
 		}
@@ -1572,7 +1687,112 @@ local function create_vertical_window_divider(scenegraph_id, size, optional_text
 	return widget
 end
 
+local function create_career_perk_text(text, scenegraph_id)
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text",
+					content_check_function = function (content)
+						return not content.button_hotspot.is_hover
+					end
+				},
+				{
+					style_id = "text_hover",
+					pass_type = "text",
+					text_id = "text",
+					content_check_function = function (content)
+						return content.button_hotspot.is_hover
+					end
+				},
+				{
+					style_id = "text_shadow",
+					pass_type = "text",
+					text_id = "text"
+				},
+				{
+					style_id = "tooltip",
+					additional_option_id = "tooltip_data",
+					pass_type = "additional_option_tooltip",
+					content_check_function = function (content)
+						return content.button_hotspot.is_hover
+					end
+				}
+			}
+		},
+		content = {
+			text = text,
+			button_hotspot = {}
+		},
+		style = {
+			text = {
+				word_wrap = true,
+				upper_case = false,
+				localize = false,
+				font_size = 20,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				offset = {
+					0,
+					0,
+					2
+				}
+			},
+			text_hover = {
+				word_wrap = true,
+				upper_case = false,
+				localize = false,
+				font_size = 20,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					0,
+					2
+				}
+			},
+			text_shadow = {
+				word_wrap = true,
+				upper_case = false,
+				localize = false,
+				font_size = 20,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					2,
+					-2,
+					0
+				}
+			},
+			tooltip = {
+				vertical_alignment = "top",
+				localize = true,
+				horizontal_alignment = "center"
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 local widgets = {
+	talent_title_text = UIWidgets.create_simple_text(Localize("hero_window_talents"), "talent_title_text", nil, nil, talent_title_text_style),
 	talent_row_1 = talent_row("talent_row_1", scenegraph_definition.talent_row_1.size, 3, "green"),
 	talent_row_2 = talent_row("talent_row_2", scenegraph_definition.talent_row_2.size, 3),
 	talent_row_3 = talent_row("talent_row_3", scenegraph_definition.talent_row_3.size, 3),
@@ -1586,6 +1806,26 @@ local widgets = {
 		0,
 		0
 	}, 1),
+	career_info_window = UIWidgets.create_frame("career_window", scenegraph_definition.window_frame.size, window_frame, 10),
+	career_info_window_rect = UIWidgets.create_simple_rect("career_window", {
+		150,
+		0,
+		0,
+		0
+	}, 1),
+	career_info_window_bottom_edge = create_window_divider("career_window_edge", scenegraph_definition.career_window_edge.size),
+	career_info_window_center_edge = create_vertical_window_divider("career_window_center_edge", scenegraph_definition.career_window_center_edge.size),
+	career_perks_dots = UIWidgets.create_simple_centered_texture_amount("mission_objective_01", {
+		54,
+		22
+	}, "career_perks", 2),
+	career_perks_dots_glow = UIWidgets.create_simple_centered_texture_amount("mission_objective_glow_02", {
+		54,
+		22
+	}, "career_perks", 2),
+	career_perk_1 = create_career_perk_text("", "career_perk_1"),
+	career_perk_2 = create_career_perk_text("", "career_perk_2"),
+	career_perk_3 = create_career_perk_text("", "career_perk_3"),
 	passive_title_text = UIWidgets.create_simple_text("n/a", "passive_title_text", nil, nil, sub_title_text_style),
 	passive_type_title = UIWidgets.create_simple_text(Localize("hero_view_passive_ability"), "passive_type_title", nil, nil, type_title_text_style),
 	passive_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "passive_title_divider"),
@@ -1633,7 +1873,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

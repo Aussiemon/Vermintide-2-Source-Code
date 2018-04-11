@@ -259,14 +259,14 @@ BTLootRatFleeAction.debug_draw_path_nodes = function (self, nav_world, nodes, br
 
 		if i == target_node_index then
 			if break_nodes[node] then
-				QuickDrawer:sphere(node_position, math.sin(t)*0.15 + 0.25, Colors.get("dark_blue"))
+				QuickDrawer:sphere(node_position, 0.25 + math.sin(t) * 0.15, Colors.get("dark_blue"))
 			else
 				local success = GwNavQueries.triangle_from_position(nav_world, node_position, 1, 1)
 
 				if success then
-					QuickDrawer:sphere(node_position, math.sin(t)*0.15 + 0.25, Colors.get("pink"))
+					QuickDrawer:sphere(node_position, 0.25 + math.sin(t) * 0.15, Colors.get("pink"))
 				else
-					QuickDrawer:sphere(node_position, math.sin(t)*0.15 + 0.25, Colors.get("dark_red"))
+					QuickDrawer:sphere(node_position, 0.25 + math.sin(t) * 0.15, Colors.get("dark_red"))
 				end
 			end
 		elseif break_nodes[node] then

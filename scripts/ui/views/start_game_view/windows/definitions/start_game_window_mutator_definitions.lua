@@ -4,7 +4,7 @@ local window_frame = window_default_settings.frame
 local window_size = window_default_settings.size
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_text_width = window_size[1] - (window_frame_width*2 + 60)
+local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -61,7 +61,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			window_text_width,
-			window_size[2]/2
+			window_size[2] / 2
 		},
 		position = {
 			0,
@@ -217,7 +217,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

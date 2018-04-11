@@ -98,7 +98,7 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 
 	self.state = "waiting_to_hit"
 	local anim_time_scale = ActionUtils.apply_attack_speed_buff(new_action.anim_time_scale or 1, owner_unit)
-	self.time_to_hit = t + (new_action.hit_time or 0)/anim_time_scale
+	self.time_to_hit = t + (new_action.hit_time or 0) / anim_time_scale
 
 	table.clear(self.hit_units)
 	table.clear(self.target_hit_zones_names)
@@ -144,7 +144,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 	local unit_forward = Quaternion.forward(Unit.local_rotation(first_person_unit, 0))
 	local self_pos = POSITION_LOOKUP[owner_unit]
 	local forward_offset = 0.5
-	local attack_pos = self_pos + unit_forward*forward_offset + Vector3(0, 0, 1)
+	local attack_pos = self_pos + unit_forward * forward_offset + Vector3(0, 0, 1)
 	local radius = current_action.push_radius
 	local collision_filter = "filter_melee_sweep"
 	local actors, actors_n = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", attack_pos, "size", radius, "types", "dynamics", "collision_filter", collision_filter, "use_global_table")
@@ -203,6 +203,12 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 					local is_critical_strike = self._is_critical_strike
 
 					ActionSweep._play_character_impact(self, is_server, owner_unit, hit_unit, breed, target_hit_position, hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, shield_blocked, self.melee_boost_curve_multiplier, is_critical_strike)
+
+					local charge_value = self.damage_profile.charge_value or "heavy_attack"
+					local num_hit_targets = 1
+					local send_to_server = true
+
+					DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, num_hit_targets, send_to_server)
 					weapon_system.send_rpc_attack_hit(weapon_system, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", nil, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true)
 				end
 			end

@@ -275,7 +275,7 @@ local widget_definitions = {
 					52,
 					52
 				},
-				angle = math.pi/4,
+				angle = math.pi / 4,
 				pivot = {
 					26,
 					26
@@ -291,7 +291,7 @@ local widget_definitions = {
 					52,
 					52
 				},
-				angle = math.pi/4,
+				angle = math.pi / 4,
 				pivot = {
 					26,
 					26

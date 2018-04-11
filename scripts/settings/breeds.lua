@@ -118,23 +118,38 @@ for breed_name, breed_data in pairs(Breeds) do
 	end
 end
 
-local current_difficulty = (Managers and Managers.state.difficulty and Managers.state.difficulty:get_difficulty()) or "normal"
-
 for breed_name, breed_actions in pairs(BreedActions) do
 	for action_name, action_data in pairs(breed_actions) do
 		action_data.name = action_name
-
-		if action_data.dimishing_damage then
-			local difficulty_dimishing_damage = table.clone(BreedActionDimishingDamageDifficulty[current_difficulty])
-			action_data.dimishing_damage = difficulty_dimishing_damage
-		end
-
-		if action_data.difficulty_damage then
-			local difficulty_damage = action_data.difficulty_damage[current_difficulty]
-			action_data.damage = difficulty_damage
-		end
 	end
 end
+
+function SET_BREED_DIFFICULTY()
+	local current_difficulty = (Managers and Managers.state.difficulty and Managers.state.difficulty:get_difficulty()) or "normal"
+
+	for breed_name, breed_actions in pairs(BreedActions) do
+		for action_name, action_data in pairs(breed_actions) do
+			if action_data.difficulty_diminishing_damage then
+				local difficulty_dimishing_damage = action_data.difficulty_diminishing_damage[current_difficulty]
+				action_data.dimishing_damage = table.clone(difficulty_dimishing_damage)
+			end
+
+			if action_data.difficulty_damage then
+				local difficulty_damage = action_data.difficulty_damage[current_difficulty]
+				action_data.damage = table.clone(difficulty_damage)
+			end
+
+			if action_data.blocked_difficulty_damage then
+				local blocked_difficulty_damage = action_data.blocked_difficulty_damage[current_difficulty]
+				action_data.blocked_damage = table.clone(blocked_difficulty_damage)
+			end
+		end
+	end
+
+	return 
+end
+
+SET_BREED_DIFFICULTY()
 
 for name, consideration in pairs(UtilityConsiderations) do
 	consideration.name = name

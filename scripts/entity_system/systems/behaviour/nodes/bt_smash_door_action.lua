@@ -181,7 +181,7 @@ BTSmashDoorAction.StateMovingToSmartObjectEntrance.update = function (self, dt, 
 		local locomotion_extension = blackboard.locomotion_extension
 		local move_speed = action.move_speed or blackboard.breed.walk_speed
 
-		locomotion_extension.set_wanted_velocity(locomotion_extension, direction_to_target*move_speed)
+		locomotion_extension.set_wanted_velocity(locomotion_extension, direction_to_target * move_speed)
 		locomotion_extension.set_wanted_rotation(locomotion_extension, Quaternion.look(look_direction_wanted))
 	else
 		local preferred_door_action = blackboard.preferred_door_action
@@ -335,7 +335,7 @@ BTSmashDoorAction.StateMovingToSmartObjectExit.update = function (self, dt, t)
 		local locomotion_extension = blackboard.locomotion_extension
 		local move_speed = blackboard.action.move_speed or blackboard.breed.walk_speed
 
-		locomotion_extension.set_wanted_velocity(locomotion_extension, direction_to_target*move_speed)
+		locomotion_extension.set_wanted_velocity(locomotion_extension, direction_to_target * move_speed)
 		locomotion_extension.set_wanted_rotation(locomotion_extension, Quaternion.look(look_direction_wanted))
 	else
 		blackboard.smash_door.done = true

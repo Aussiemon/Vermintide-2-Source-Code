@@ -56,7 +56,7 @@ ItemGridUI.set_item_page = function (self, page_index)
 	local widget = self._widget
 	local content = widget.content
 	local item_slots = content.slots
-	local start_read_index = (page_index - 1)*item_slots + 1
+	local start_read_index = (page_index - 1) * item_slots + 1
 	local items = self._items
 
 	self._populate_inventory_page(self, items, start_read_index)
@@ -291,8 +291,8 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 	local style = widget.style
 	local rows = content.rows
 	local columns = content.columns
-	local row_index = math.floor((slot_index - 1)/columns) + 1
-	local column_index = (slot_index - 1)%columns + 1
+	local row_index = math.floor((slot_index - 1) / columns) + 1
+	local column_index = (slot_index - 1) % columns + 1
 	local name_sufix = "_" .. tostring(row_index) .. "_" .. tostring(column_index)
 	local item_icon_name = "item_icon" .. name_sufix
 	local item_amount_name = "amount_text" .. name_sufix
@@ -381,7 +381,7 @@ ItemGridUI.repopulate_current_inventory_page = function (self)
 	local page_index = self._selected_page_index
 	local total_item_pages = self._total_item_pages
 	local item_slots = content.slots
-	local start_read_index = (page_index - 1)*item_slots + 1
+	local start_read_index = (page_index - 1) * item_slots + 1
 
 	self._populate_inventory_page(self, items, start_read_index)
 
@@ -541,11 +541,6 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 	content.title_text = title_text
 
 	if keep_page_index then
-		local items = self._items
-		local item_sort_func = self._item_sort_func
-
-		self._sort_items(self, items, item_sort_func)
-
 		local page_index = math.min(current_page_index, self._total_item_pages)
 
 		self.set_item_page(self, page_index)
@@ -555,22 +550,30 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 end
 ItemGridUI.change_item_filter = function (self, item_filter, change_page)
 	self._item_filter = item_filter
-	local items = {}
-	items = self._get_items_by_filter(self, item_filter)
+	local items_1 = self._get_items_by_filter(self, "can_wield_by_current_career and " .. item_filter)
+	local items_2 = self._get_items_by_filter(self, "not can_wield_by_current_career and " .. item_filter)
+	local item_sort_func = self._item_sort_func
+
+	if item_sort_func then
+		self._sort_items(self, items_1, item_sort_func)
+		self._sort_items(self, items_2, item_sort_func)
+	end
+
+	local items = items_1
+
+	for _, value in pairs(items_2) do
+		items[#items + 1] = value
+	end
+
 	self._items = items
 	local widget = self._widget
 	local content = widget.content
 	local num_slots = content.slots
 	local num_items = #items
-	local total_pages = math.max(math.ceil(num_items/num_slots), 1)
+	local total_pages = math.max(math.ceil(num_items / num_slots), 1)
 	self._total_item_pages = total_pages
 
 	if change_page then
-		local items = self._items
-		local item_sort_func = self._item_sort_func
-
-		self._sort_items(self, items, item_sort_func)
-
 		local page_index = 1
 
 		self.set_item_page(self, page_index)
@@ -717,7 +720,7 @@ ItemGridUI.is_slot_hovered = function (self)
 			local slot_hotspot = content[hotspot_name]
 
 			if slot_hotspot.internal_is_hover then
-				return (i - 1)*rows + k
+				return (i - 1) * rows + k
 			end
 		end
 	end

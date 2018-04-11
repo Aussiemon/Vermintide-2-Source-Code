@@ -9,6 +9,9 @@ LocalizationManager.init = function (self, path)
 	self._localizer = Localizer(path)
 	self._macros = {}
 	self._find_macro_callback_to_self = callback(self._find_macro, self)
+	local has_steam = rawget(_G, "Steam")
+	local language_id = Application.user_setting("language_id") or (has_steam and Steam:language()) or "en"
+	self._language_id = language_id
 
 	return 
 end
@@ -16,6 +19,13 @@ LocalizationManager.add_macro = function (self, macro, callback_function)
 	self._macros[macro] = callback_function
 
 	return 
+end
+LocalizationManager.text_to_upper = function (self, text)
+	if self._language_id == "en" then
+		return string.upper(text)
+	end
+
+	return text
 end
 LocalizationManager.lookup = function (self, text_id)
 	if script_data.show_longest_localizations then
@@ -54,6 +64,10 @@ end
 
 function Localize(text_id)
 	return Managers.localizer:lookup(text_id)
+end
+
+function TextToUpper(text)
+	return Managers.localizer:text_to_upper(text)
 end
 
 local locales = {
@@ -168,25 +182,30 @@ function localize_longest(text_id)
 	return pick_longest(localizations)
 end
 
+local INPUT_ACTIONS = {}
 LocalizationManager.get_input_action = function (self, text_id)
 	local str = Localizer.lookup(self._localizer, text_id) or "<" .. tostring(text_id) .. ">"
-	local macro = string.match(str, "%b$;[%a_]*:")
-	local input_action = nil
+	local macro = string.match(str, "%b$;[%a%d_]*:")
 
-	if macro then
+	table.clear(INPUT_ACTIONS)
+
+	while macro do
+		local start_index, end_index = string.find(str, macro)
+		str = string.sub(str, end_index + 2)
 		local arg_start = string.find(macro, ";")
 		local input_service_and_action = string.sub(macro, arg_start + 1, -2)
 		local split_start, split_end = string.find(input_service_and_action, "__")
-		input_action = string.sub(input_service_and_action, split_end + 1)
+		INPUT_ACTIONS[#INPUT_ACTIONS + 1] = string.sub(input_service_and_action, split_end + 1)
+		macro = string.match(str, "%b$;[%a%d_]*:")
 	end
 
-	return input_action
+	return INPUT_ACTIONS[1], INPUT_ACTIONS
 end
 LocalizationManager.replace_macro_in_string = function (self, text_id, replacement_str)
 	local str = Localizer.lookup(self._localizer, text_id) or "<" .. tostring(text_id) .. ">"
-	local result, _ = string.gsub(str, "%b$;[%a_]*:", replacement_str)
+	local result, num_replacements = string.gsub(str, "%b$;[%a%d_]*:", replacement_str)
 
-	return result, str, Localize(text_id)
+	return result, str, Localize(text_id), num_replacements
 end
 
 return 

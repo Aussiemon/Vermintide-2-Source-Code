@@ -67,7 +67,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-((COMPACT_PREVIEW_SPACING[2] + 275) - 58),
+			-((275 + COMPACT_PREVIEW_SPACING[2]) - 58),
 			2
 		}
 	},
@@ -81,7 +81,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-((COMPACT_PREVIEW_SPACING[2] + 450) - 58),
+			-((450 + COMPACT_PREVIEW_SPACING[2]) - 58),
 			2
 		}
 	}
@@ -204,7 +204,7 @@ local X_OFFSET = 4
 
 local function survey_rating_definitions(index)
 	local i = index - 1
-	local x_offset = ((X_OFFSET + 58)*i + 29) - (X_OFFSET + 58)*2.5
+	local x_offset = ((X_OFFSET + 58) * i + 29) - (58 + X_OFFSET) * 2.5
 	local definition = {
 		scenegraph_id = "survey_rating_buttons",
 		element = {

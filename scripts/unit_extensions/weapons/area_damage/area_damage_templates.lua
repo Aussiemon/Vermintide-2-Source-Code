@@ -65,7 +65,7 @@ AreaDamageTemplates.templates = {
 						local unit_position = POSITION_LOOKUP[player_unit]
 						local area_damage_position = Unit.local_position(aoe_unit, 0)
 						local distance_sq = Vector3.distance_squared(unit_position, area_damage_position)
-						local is_inside_radius = distance_sq < radius*radius
+						local is_inside_radius = distance_sq < radius * radius
 						local t = Managers.time:time("game")
 
 						if is_inside_radius and not player_unit_particles[player_unit] then
@@ -178,7 +178,7 @@ AreaDamageTemplates.templates = {
 						local unit_position = POSITION_LOOKUP[player_unit]
 						local area_damage_position = Unit.local_position(aoe_unit, 0)
 						local distance_sq = Vector3.distance_squared(unit_position, area_damage_position)
-						local is_inside_radius = distance_sq < radius*radius
+						local is_inside_radius = distance_sq < radius * radius
 						local t = Managers.time:time("game")
 
 						if is_inside_radius and not player_unit_particles[player_unit] then
@@ -261,7 +261,7 @@ AreaDamageTemplates.templates = {
 
 				if gravity_well and num_ai_units then
 					local t = Managers.time:time("game")
-					local duration = damage_interval*2
+					local duration = damage_interval * 2
 					local gravity_well_strength = gravity_well.strength
 					local gravity_well_position = area_damage_position + Vector3(0, 0, gravity_well.z_offset)
 					local BLACKBOARDS = BLACKBOARDS
@@ -384,7 +384,7 @@ AreaDamageTemplates.templates = {
 				for i = 1, ai_units_n, 1 do
 					local ai_unit = ai_units[i]
 					local breed = Unit.get_data(ai_unit, "breed")
-					local chance_to_die = breed.poison_resistance - 100
+					local chance_to_die = 100 - breed.poison_resistance
 					local health_extension = ScriptUnit.extension(ai_unit, "health_system")
 
 					assert(health_extension)
@@ -422,7 +422,7 @@ AreaDamageTemplates.templates = {
 				local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 				local weapon_system = Managers.state.entity:system("weapon_system")
 
-				weapon_system.send_rpc_attack_hit(weapon_system, damage_source_id, unit_id, unit_id, hit_zone_id, damage_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 1, "is_critical_strike", false)
+				weapon_system.send_rpc_attack_hit(weapon_system, damage_source_id, unit_id, unit_id, hit_zone_id, damage_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 0, "is_critical_strike", false)
 
 				return 
 			end

@@ -18,9 +18,9 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	self._career_data = career_data
 	local initial_ability_percentage = extension_init_data.initial_ability_percentage or 0
 	local max_cooldown = career_data.activated_ability.cooldown
-	local initial_cooldown_percentage = initial_ability_percentage - 1
+	local initial_cooldown_percentage = 1 - initial_ability_percentage
 	initial_cooldown_percentage = math.clamp(initial_cooldown_percentage, 0, 1)
-	self._initial_cooldown = max_cooldown*initial_cooldown_percentage
+	self._initial_cooldown = max_cooldown * initial_cooldown_percentage
 
 	if career_data.activated_ability.ability_class then
 		self._activated_ability = career_data.activated_ability.ability_class:new(extension_init_context, unit, extension_init_data)
@@ -73,7 +73,7 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local cooldown_speed_multiplier = buff_extension.apply_buffs_to_value(buff_extension, 1, StatBuffIndex.COOLDOWN_REGEN)
-	self._cooldown = math.max(self._cooldown - dt*cooldown_speed_multiplier, 0)
+	self._cooldown = math.max(self._cooldown - dt * cooldown_speed_multiplier, 0)
 
 	if self._is_ready then
 		if self._activated_ability and ((self.is_server and player.bot_player) or player.local_player) then
@@ -103,7 +103,7 @@ CareerExtension._update_game_object_field = function (self, unit)
 	local ability_percentage = 1
 
 	if ability_cooldown then
-		ability_percentage = ability_cooldown/max_cooldown
+		ability_percentage = ability_cooldown / max_cooldown
 	end
 
 	local network_manager = Managers.state.network
@@ -131,7 +131,7 @@ CareerExtension.start_activated_ability_cooldown = function (self, refund_percen
 	self._max_cooldown = activated_ability_data.cooldown
 	local buff_extension = ScriptUnit.extension(self._unit, "buff_system")
 	local cooldown = buff_extension.apply_buffs_to_value(buff_extension, cooldown, StatBuffIndex.ACTIVATED_COOLDOWN)
-	self._cooldown = cooldown*((refund_percent or 0) - 1)
+	self._cooldown = cooldown * (1 - (refund_percent or 0))
 	self._cooldown_paused = false
 
 	if self._initial_cooldown then
@@ -186,7 +186,7 @@ end
 CareerExtension.create_aoe = function (self, position, radius, duration, end_function_name)
 	self._aoe_data = {
 		position = Vector3Box(position),
-		radius_squared = radius*radius,
+		radius_squared = radius * radius,
 		duration_left = duration,
 		end_function_name = end_function_name
 	}
@@ -206,8 +206,8 @@ end
 CareerExtension.has_melee_boost = function (self)
 	local buff_extension = self._buff_extension
 	local has_shade_buff = buff_extension.has_buff_type(buff_extension, "kerillian_shade_activated_ability") or buff_extension.has_buff_type(buff_extension, "kerillian_shade_activated_ability_duration")
-	local has_murder_hobo_buff = buff_extension.has_buff_type(buff_extension, "markus_huntsman_activated_ability")
-	local multiplier = (has_shade_buff and 5) or (has_murder_hobo_buff and 1.5) or 1
+	local has_murder_hobo_buff = false
+	local multiplier = (has_shade_buff and 4) or (has_murder_hobo_buff and 1) or 0
 
 	return has_shade_buff or has_murder_hobo_buff, multiplier
 end
@@ -215,7 +215,7 @@ CareerExtension.has_ranged_boost = function (self)
 	local buff_extension = self._buff_extension
 	local has_murder_hobo_buff = buff_extension.has_buff_type(buff_extension, "markus_huntsman_activated_ability")
 	local has_ranger_buff = buff_extension.has_buff_type(buff_extension, "bardin_ranger_activated_ability") or buff_extension.has_buff_type(buff_extension, "bardin_ranger_activated_ability_duration")
-	local multiplier = (has_murder_hobo_buff and 1.5) or (has_ranger_buff and 1.5) or 1
+	local multiplier = (has_murder_hobo_buff and 2) or (has_ranger_buff and 1) or 0
 
 	return has_murder_hobo_buff or has_ranger_buff, multiplier
 end
@@ -228,15 +228,23 @@ CareerExtension.get_career_power_level = function (self)
 		local player_manager = Managers.player
 		local leader_player = player_manager.party_leader_player(player_manager)
 
-		if DEDICATED_SERVER then
-			local power_level = leader_player.get_data(leader_player, "power_level")
+		if leader_player then
+			if DEDICATED_SERVER then
+				local power_level = leader_player.get_data(leader_player, "power_level")
 
-			if power_level then
-				return power_level
+				if power_level then
+					return power_level
+				end
+			else
+				local leader_profile_display_name = leader_player.profile_display_name(leader_player)
+				local leader_career_name = leader_player.career_name(leader_player)
+
+				if not leader_profile_display_name then
+				end
+
+				if not leader_career_name then
+				end
 			end
-		else
-			profile_name = leader_player.profile_display_name(leader_player)
-			career_name = leader_player.career_name(leader_player)
 		end
 	end
 

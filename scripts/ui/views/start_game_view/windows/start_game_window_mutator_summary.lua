@@ -119,6 +119,12 @@ StartGameWindowMutatorSummary._is_button_pressed = function (self, widget)
 
 	return 
 end
+StartGameWindowMutatorSummary._is_button_hover_enter = function (self, widget)
+	local content = widget.content
+	local hotspot = content.button_hotspot
+
+	return hotspot.on_hover_enter
+end
 StartGameWindowMutatorSummary._handle_input = function (self, dt, t)
 	if not self._selected_backend_id then
 		return 
@@ -127,6 +133,10 @@ StartGameWindowMutatorSummary._handle_input = function (self, dt, t)
 	local confirm_button = self._widgets_by_name.confirm_button
 
 	UIWidgetUtils.animate_default_button(confirm_button, dt)
+
+	if self._is_button_hover_enter(self, confirm_button) then
+		self._play_sound(self, "play_gui_lobby_button_01_difficulty_confirm_hover")
+	end
 
 	if self._is_button_pressed(self, confirm_button) then
 		self.confirm_button_pressed = true

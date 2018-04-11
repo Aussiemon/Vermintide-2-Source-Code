@@ -57,7 +57,7 @@ LevelAnalysis._random = function (self, ...)
 end
 LevelAnalysis._random_float_interval = function (self, a, b)
 	local seed, value = Math.next_random(self.seed)
-	local value = a + (b - a)*value
+	local value = a + (b - a) * value
 	self.seed = seed
 
 	return value
@@ -507,7 +507,7 @@ LevelAnalysis.boss_gizmo_spawned = function (self, unit)
 	end
 
 	if script_data.debug_ai_recycler then
-		QuickDrawerStay:sphere(Unit.local_position(unit, 0), 2, Color(map_section_index*64, map_section_index%4*64, map_section_index%8*32))
+		QuickDrawerStay:sphere(Unit.local_position(unit, 0), 2, Color(map_section_index * 64, map_section_index % 4 * 64, map_section_index % 8 * 32))
 		QuickDrawerStay:sphere(Unit.local_position(unit, 0), 0.25, Color(200, 200, 200))
 	end
 
@@ -686,6 +686,36 @@ LevelAnalysis.spawn_all_boss_spline_patrols = function (self, optional_id)
 
 	return 
 end
+LevelAnalysis.inject_all_bosses_into_main_path = function (self)
+	local boss_waypoints = self.boss_waypoints
+
+	if not boss_waypoints then
+		return false
+	end
+
+	print("SPAWN BOSS SPLINES")
+
+	local terror_event_kind = "event_boss"
+	local terror_spawners = self.terror_spawners
+	local data = terror_spawners[terror_event_kind]
+	local spawners = data.spawners
+
+	for i = 1, #spawners, 1 do
+		local spawner = spawners[i]
+		local travel_dist = spawner[2]
+		local spawner_pos = Unit.local_position(spawner[1], 0)
+		local boxed_pos = Vector3Box(spawner_pos)
+		local event_data = {
+			event_kind = "event_boss"
+		}
+
+		self.enemy_recycler:add_main_path_terror_event(boxed_pos, "boss_event_rat_ogre", 45, event_data)
+		QuickDrawerStay:line(spawner_pos, spawner_pos + Vector3(0, 0, 15), Color(125, 255, 0))
+		QuickDrawerStay:sphere(spawner_pos, 1, Color(125, 255, 0))
+	end
+
+	return 
+end
 LevelAnalysis.give_events = function (self, main_paths, terror_spawners, num_sections, generated_event_list, terror_event_list, event_settings, level_overrides)
 	local spawn_distance = 0
 	local padding = (level_overrides and level_overrides.hand_placed_padding_dist) or event_settings.hand_placed_padding_dist
@@ -735,7 +765,7 @@ LevelAnalysis.give_events = function (self, main_paths, terror_spawners, num_sec
 				local end_travel_dist = spawners[end_index][2]
 				local forbidden_dist = padding - start_travel_dist - spawn_distance
 
-				print(string.format("[LevelAnalysis] section: %d, start-index: %d, end-index: %d, forbidden-dist: %.1f", i, start_index, end_index, forbidden_dist))
+				print(string.format("[LevelAnalysis] section: %d, start-index: %d, end-index: %d, forbidden-dist: %.1f start-travel-dist: %.1f, end-travel-dist: %.1f spawn_distance %.1f", i, start_index, end_index, forbidden_dist, start_travel_dist, end_travel_dist, spawn_distance))
 
 				if 0 < forbidden_dist then
 					local forbidden_travel_dist = start_travel_dist + forbidden_dist
@@ -758,18 +788,23 @@ LevelAnalysis.give_events = function (self, main_paths, terror_spawners, num_sec
 
 						start_index = new_start_index
 					else
-						print(string.format("[LevelAnalysis] failed to find spawner - too few spawners in section %d, forbidden-dist %.1f", i, forbidden_dist))
+						print(string.format("[LevelAnalysis] failed to find spawner - too few spawners in section %d, forbidden-dist %.1f from: %.1f to: %.1f", i, forbidden_dist, forbidden_travel_dist, end_travel_dist))
+						print("[LevelAnalysis] \t\t--> fallback -> using main-path spawning for section", i, forbidden_travel_dist, end_travel_dist)
 
 						local random_dist = self._random_float_interval(self, forbidden_travel_dist, end_travel_dist)
 						local pos = MainPathUtils.point_on_mainpath(main_paths, random_dist)
 
-						print("[LevelAnalysis] \t\t--> fallback -> using main-path spawning for section", i)
+						if pos then
+							spawn_distance = random_dist
+							boxed_pos = Vector3Box(pos)
+							event_data = {
+								event_kind = terror_event_kind
+							}
+						else
+							print("[LevelAnalysis] \t\t--> fallback 2 -> pick any spawner in segment (MIGHT GET BOSSES VERY CLOSE TO EACHOTHER)", i)
 
-						spawn_distance = random_dist
-						boxed_pos = Vector3Box(pos)
-						event_data = {
-							event_kind = terror_event_kind
-						}
+							start_index = level_sections[i]
+						end
 					end
 				end
 
@@ -811,7 +846,7 @@ LevelAnalysis.give_events = function (self, main_paths, terror_spawners, num_sec
 			local level_sections = data.level_sections
 			local start_index = level_sections[i]
 			local end_index = level_sections[i + 1] - 1
-			local index = math.floor((start_index + end_index)/2)
+			local index = math.floor((start_index + end_index) / 2)
 			local spawners = data.spawners
 			local spawner = spawners[index]
 			boxed_pos = Vector3Box(Unit.local_position(spawner[1], 0))
@@ -980,9 +1015,9 @@ LevelAnalysis.automatic_terror_creation = function (self, main_paths, total_main
 	}
 	local level_path_dist = total_main_path_dist
 	local adjusted_path_distance = level_path_dist - safe_distance
-	local num_event_places_f = adjusted_path_distance/event_every_x_meter
+	local num_event_places_f = adjusted_path_distance / event_every_x_meter
 	local num_event_places = math.floor(num_event_places_f)
-	local trailing_event_fraction = num_event_places_f%1
+	local trailing_event_fraction = num_event_places_f % 1
 	local trailing_event = (self._random(self) <= trailing_event_fraction and 1) or 0
 	local num_events = num_event_places + trailing_event
 	local padding = (level_overrides and level_overrides.padding_dist) or event_settings.padding_dist
@@ -1574,7 +1609,7 @@ LevelAnalysis.main_path = function (self, index)
 end
 LevelAnalysis.get_path_point = function (path_list, path_length, move_percent)
 	local travel_dist = 0
-	local goal_dist = move_percent*path_length
+	local goal_dist = move_percent * path_length
 
 	for i = 1, #path_list - 1, 1 do
 		local p1 = path_list[i]:unbox()
@@ -1586,8 +1621,8 @@ LevelAnalysis.get_path_point = function (path_list, path_length, move_percent)
 		if goal_dist < travel_dist then
 			local missing = travel_dist - goal_dist
 			local left_over = p1p2_dist - missing
-			local part = left_over/p1p2_dist
-			local part_vec = vec*part
+			local part = left_over / p1p2_dist
+			local part_vec = vec * part
 			local move_vec = p1 + part_vec
 
 			return move_vec, i
@@ -1609,9 +1644,9 @@ local cols = {}
 
 for i = 1, 16, 1 do
 	cols[i] = {
-		math.floor((i/16 - 1)*255),
+		math.floor((1 - i / 16) * 255),
 		0,
-		math.floor(i/16*255)
+		math.floor(i / 16 * 255)
 	}
 end
 
@@ -1674,7 +1709,7 @@ LevelAnalysis.debug = function (self, t)
 				end
 			end
 
-			local p = t%5/5
+			local p = t % 5 / 5
 			local point = LevelAnalysis.get_path_point(nodes, path_length, p)
 
 			QuickDrawer:sphere(point + Vector3(0, 0, 1.5), 1.366, Color(255, 244, 183, 7))
@@ -1706,8 +1741,8 @@ LevelAnalysis.get_main_and_sub_zone_index_from_pos = function (nav_world, zones,
 	if triangle then
 		local a, b, c = Script.temp_count()
 		local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
-		local tri_center = (p1 + p2 + p3)/3
-		local key = tri_center.x*0.0001 + tri_center.y + tri_center.z*10000
+		local tri_center = (p1 + p2 + p3) / 3
+		local key = tri_center.x * 0.0001 + tri_center.y + tri_center.z * 10000
 
 		Script.set_temp_count(a, b, c)
 
@@ -1717,8 +1752,8 @@ LevelAnalysis.get_main_and_sub_zone_index_from_pos = function (nav_world, zones,
 		print("get_main_and_sub_zone_index_from_pos", pos, key, triangle_id, baked_number)
 
 		if baked_number then
-			local zone_index = math.floor(baked_number/10000)
-			local zone_outer_index = baked_number%10000
+			local zone_index = math.floor(baked_number / 10000)
+			local zone_outer_index = baked_number % 10000
 			local zone = zones[zone_index]
 
 			return zone, zone_index, zone_outer_index

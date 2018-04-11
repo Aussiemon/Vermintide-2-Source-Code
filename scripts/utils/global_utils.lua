@@ -45,8 +45,8 @@ function UPDATE_RESOLUTION_LOOKUP(force_update)
 
 		AccomodateViewport()
 
-		resolution_lookup.scale = UIResolutionScale()*UISettings.ui_scale/100
-		resolution_lookup.inv_scale = resolution_lookup.scale/1
+		resolution_lookup.scale = UIResolutionScale() * UISettings.ui_scale / 100
+		resolution_lookup.inv_scale = 1 / resolution_lookup.scale
 	end
 
 	resolution_lookup.modified = resolution_modified

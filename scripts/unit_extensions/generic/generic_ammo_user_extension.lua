@@ -9,7 +9,7 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	self.reload_time = ammo_data.reload_time
 	self.single_clip = ammo_data.single_clip
 	self.max_ammo = ammo_data.max_ammo
-	self.start_ammo = math.floor(ammo_percent*self.max_ammo)
+	self.start_ammo = math.floor(ammo_percent * self.max_ammo)
 	self.ammo_per_clip = ammo_data.ammo_per_clip or self.max_ammo
 	self.original_max_ammo = self.max_ammo
 	self.original_start_ammo = self.start_ammo
@@ -143,7 +143,7 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 				self.next_reload_time = t + reload_time
 
 				if self.play_reload_animation then
-					Unit.set_flow_variable(self.unit, "wwise_reload_speed", unmodded_reload_time/reload_time)
+					Unit.set_flow_variable(self.unit, "wwise_reload_speed", unmodded_reload_time / reload_time)
 					self.start_reload_animation(self, reload_time)
 
 					if not owner_player.bot_player then
@@ -334,7 +334,7 @@ GenericAmmoUserExtension.total_remaining_ammo = function (self)
 	return self.remaining_ammo(self) + self.ammo_count(self)
 end
 GenericAmmoUserExtension.total_ammo_fraction = function (self)
-	return (self.remaining_ammo(self) + self.ammo_count(self))/self.max_ammo
+	return (self.remaining_ammo(self) + self.ammo_count(self)) / self.max_ammo
 end
 GenericAmmoUserExtension.get_max_ammo = function (self)
 	return self.max_ammo

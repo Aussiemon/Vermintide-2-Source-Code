@@ -60,7 +60,7 @@ SimpleDoorExtension.set_door_state_and_duration = function (self, new_state, fra
 	end
 
 	self.current_state = new_state
-	local animation_length = frames/SIMPLE_ANIMATION_FPS/speed
+	local animation_length = frames / SIMPLE_ANIMATION_FPS / speed
 	local t = Managers.time:time("game")
 	self.animation_stop_time = t + animation_length
 

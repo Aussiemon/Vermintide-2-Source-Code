@@ -469,7 +469,7 @@ Bulldozer._handle_graphics_quality = function (self)
 	return 
 end
 Bulldozer._init_random = function (self)
-	local seed = (os.clock()*10000)%1000
+	local seed = (os.clock() * 10000) % 1000
 
 	math.randomseed(seed)
 	math.random(5, 30000)
@@ -647,13 +647,13 @@ Bulldozer.rift_start = function (self)
 	local info = Oculus.hmd_info(hmd_device)
 	Bulldozer.rift_info = info
 	info.hmd_device = hmd_device
-	local horizontal_shift = info.horizontal_screen_size*0.25 - info.lens_separation_distance*0.5
-	local projection_center_offset = (horizontal_shift*4)/info.horizontal_screen_size
+	local horizontal_shift = info.horizontal_screen_size * 0.25 - info.lens_separation_distance * 0.5
+	local projection_center_offset = (4 * horizontal_shift) / info.horizontal_screen_size
 	Bulldozer.left_projection_transform = Matrix4x4Box(Matrix4x4.from_translation(Vector3(projection_center_offset, 0, 0)))
 	Bulldozer.right_projection_transform = Matrix4x4Box(Matrix4x4.from_translation(Vector3(-projection_center_offset, 0, 0)))
-	Bulldozer.half_eye_shift = info.interpupillary_distance*0.5*info.horizontal_screen_size*0.25
-	Bulldozer.left_lens_center = Vector3Box(info.lens_separation_distance*2*info.horizontal_screen_size - 1, 0.5)
-	Bulldozer.right_lens_center = Vector3Box(info.lens_separation_distance*2*info.horizontal_screen_size - 1, 0.5)
+	Bulldozer.half_eye_shift = info.interpupillary_distance * 0.5 * info.horizontal_screen_size * 0.25
+	Bulldozer.left_lens_center = Vector3Box(1 - 2 * info.lens_separation_distance * info.horizontal_screen_size, 0.5)
+	Bulldozer.right_lens_center = Vector3Box(1 - 2 * info.lens_separation_distance * info.horizontal_screen_size, 0.5)
 
 	return 
 end

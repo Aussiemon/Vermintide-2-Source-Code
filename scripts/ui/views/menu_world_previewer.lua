@@ -154,9 +154,9 @@ MenuWorldPreviewer.update = function (self, dt)
 	local character_unit = self.character_unit
 
 	if character_unit then
-		if math.pi*2 < self.camera_xy_angle_target then
-			self.camera_xy_angle_current = self.camera_xy_angle_current - math.pi*2
-			self.camera_xy_angle_target = self.camera_xy_angle_target - math.pi*2
+		if math.pi * 2 < self.camera_xy_angle_target then
+			self.camera_xy_angle_current = self.camera_xy_angle_current - math.pi * 2
+			self.camera_xy_angle_target = self.camera_xy_angle_target - math.pi * 2
 		end
 
 		local character_xy_angle_new = math.lerp(self.camera_xy_angle_current, self.camera_xy_angle_target, 0.1)
@@ -262,7 +262,6 @@ MenuWorldPreviewer._update_units_visibility = function (self, dt)
 				end
 			end
 
-			self.character_unit_skin_data = nil
 			self.character_unit_hidden = false
 		end
 
@@ -276,9 +275,9 @@ MenuWorldPreviewer._update_camera_animation_data = function (self, animation_dat
 		if data.total_time then
 			local old_time = data.time
 			data.time = math.min(old_time + dt, data.total_time)
-			local progress = math.min(1, data.time/data.total_time)
+			local progress = math.min(1, data.time / data.total_time)
 			local func = data.func
-			data.value = (data.to - data.from)*((func and func(progress)) or progress) + data.from
+			data.value = (data.to - data.from) * ((func and func(progress)) or progress) + data.from
 
 			if progress == 1 then
 				data.total_time = nil
@@ -364,7 +363,7 @@ MenuWorldPreviewer.handle_mouse_input = function (self, input_service, dt)
 
 	if is_moving_camera and mouse_hold then
 		if self.last_mouse_position then
-			self.camera_xy_angle_target = self.camera_xy_angle_target - (mouse.x - self.last_mouse_position[1])*0.01
+			self.camera_xy_angle_target = self.camera_xy_angle_target - (mouse.x - self.last_mouse_position[1]) * 0.01
 		end
 
 		mouse_pos_temp[1] = mouse.x
@@ -390,7 +389,7 @@ MenuWorldPreviewer.handle_controller_input = function (self, input_service, dt)
 	local camera_move = input_service.get(input_service, "gamepad_right_axis")
 
 	if camera_move and 0.01 < Vector3.length(camera_move) then
-		self.camera_xy_angle_target = self.camera_xy_angle_target + -camera_move.x*dt*5
+		self.camera_xy_angle_target = self.camera_xy_angle_target + -camera_move.x * dt * 5
 	end
 
 	return 
@@ -539,6 +538,12 @@ MenuWorldPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale)
 
 	return 
 end
+MenuWorldPreviewer.respawn_hero_unit = function (self, profile_name, career_index, state_character, callback)
+	self.clear_units(self)
+	self.spawn_hero_unit(self, profile_name, career_index, state_character, callback)
+
+	return 
+end
 MenuWorldPreviewer.wield_weapon_slot = function (self, slot_type)
 	self._wielded_slot_type = slot_type
 	local melee_slot_info = self.item_info_by_slot.melee
@@ -605,6 +610,26 @@ MenuWorldPreviewer.unequip_item_in_slot = function (self, item_slot_type, slot_i
 	return 
 end
 MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
+	local skin_data = self.character_unit_skin_data
+
+	if skin_data and skin_data.always_hide_attachment_slots then
+		local hide_slot = false
+
+		for _, slot_name in ipairs(skin_data.always_hide_attachment_slots) do
+			if slot.name == slot_name then
+				printf("[MenuWorldPreviewer]:equip_item() - Skipping equipping of item(%s), because equipped skin(%s) wants to hide it", item_name, skin_data.name)
+
+				hide_slot = true
+
+				break
+			end
+		end
+
+		if hide_slot then
+			return 
+		end
+	end
+
 	self.items_loaded = nil
 	local item_slot_type = slot.type
 	local slot_index = slot.slot_index

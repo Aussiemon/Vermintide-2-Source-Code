@@ -58,8 +58,8 @@ PlayerManager.rpc_to_client_spawn_player = function (self, sender, local_player_
 		return 
 	end
 
-	local ammo_melee = ammo_melee_percent_int*0.01
-	local ammo_ranged = ammo_ranged_percent_int*0.01
+	local ammo_melee = ammo_melee_percent_int * 0.01
+	local ammo_ranged = ammo_ranged_percent_int * 0.01
 	local player = self.player(self, Network.peer_id(), local_player_id)
 
 	player.set_profile_index(player, profile_index)
@@ -355,7 +355,13 @@ PlayerManager.party_leader_player = function (self)
 			return Managers.player:local_player()
 		end
 
-		return self.player_from_peer_id(self, leader_peer_id, 1)
+		local party_leader_player = self.player_from_peer_id(self, leader_peer_id, 1)
+
+		if not party_leader_player then
+			Application.warning("[PlayerManager:party_leader_player] Could not fetch party player from peer_id %s", leader_peer_id)
+		end
+
+		return party_leader_player
 	end
 
 	return 

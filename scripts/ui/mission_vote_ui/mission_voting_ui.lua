@@ -39,7 +39,7 @@ local function get_text_height(ui_renderer, size, ui_style, ui_content, text, ui
 	local max_texts = ui_content.max_texts or #texts
 	local num_texts = math.min(#texts - text_start_index - 1, max_texts)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min))*inv_scale*num_texts
+	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 
 	return full_font_height
 end
@@ -404,7 +404,7 @@ MissionVotingUI.update_vote_timer = function (self)
 	local vote_template = voting_manager.active_vote_template(voting_manager)
 	local duration = vote_template.duration
 	local vote_time_left = voting_manager.vote_time_left(voting_manager)
-	local time_progress = math.max(vote_time_left/duration, 0)
+	local time_progress = math.max(vote_time_left / duration, 0)
 
 	self._set_vote_time_progress(self, time_progress)
 
@@ -419,7 +419,7 @@ MissionVotingUI._set_vote_time_progress = function (self, progress)
 	local scenegraph_id = widget.scenegraph_id
 	local default_size = self.scenegraph_definition[scenegraph_id].size
 	local current_size = self.ui_scenegraph[scenegraph_id].size
-	current_size[1] = default_size[1]*progress
+	current_size[1] = default_size[1] * progress
 	uvs[2][1] = progress
 
 	return 
@@ -463,6 +463,7 @@ MissionVotingUI.update = function (self, menu_active, dt, t)
 			end
 
 			self.update_vote_timer(self)
+			UIWidgetUtils.animate_default_button(widgets_by_name.button_abort, dt)
 
 			if not self.has_voted then
 				local active_voting = voting_manager.active_voting
@@ -539,7 +540,7 @@ MissionVotingUI.draw = function (self, dt)
 	local alpha_multiplier = render_settings.alpha_multiplier
 	alpha_multiplier = 1
 	render_settings.alpha_multiplier = alpha_multiplier
-	ui_scenegraph.window.local_position[2] = alpha_multiplier*50 + -50
+	ui_scenegraph.window.local_position[2] = -50 + alpha_multiplier * 50
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
@@ -604,12 +605,12 @@ MissionVotingUI.update_pulse_animations = function (self, dt)
 	local menu_active = self.menu_active
 	local speed_multiplier = (menu_active and 5) or 8
 	local time_since_launch = Application.time_since_launch()
-	local progress = (not menu_active or 0) and math.sin(time_since_launch*speed_multiplier)*0.5 + 0.5
+	local progress = (not menu_active or 0) and 0.5 + math.sin(time_since_launch * speed_multiplier) * 0.5
 
 	if menu_active then
-		slot7 = progress*50 + 50
+		slot7 = 50 + progress * 50
 	else
-		local alpha = progress*155 + 100
+		local alpha = 100 + progress * 155
 		widgets_by_name.timer_fg.style.texture_id.color[1] = alpha
 		widgets_by_name.timer_glow.style.texture_id.color[1] = alpha
 	end

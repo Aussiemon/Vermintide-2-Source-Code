@@ -43,7 +43,7 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	self._starting_pressure = template.starting_pressure or 5
 	self._end_pressure = template.end_pressure or 0.5
 	self._spawned_unit_index = 1
-	self._cell_radius = cell_size/2
+	self._cell_radius = cell_size / 2
 	self._do_direct_damage_ai = template.do_direct_damage_ai
 	self._do_direct_damage_player = template.do_direct_damage_player
 	local difficulty_name = Managers.state.difficulty:get_difficulty()
@@ -368,7 +368,7 @@ local fill_list = {
 	}
 }
 LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
-	local liquid_left = self._num_liquid/self._max_liquid - 1
+	local liquid_left = 1 - self._num_liquid / self._max_liquid
 	local pressure_coeff = liquid_left
 	local pressure = math.lerp(self._end_pressure, self._starting_pressure, pressure_coeff)
 	local active_flow = self._active_flow
@@ -389,7 +389,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 		local spread_function = self._spread_function
 		local directions = self._grid:directions()
 		local pi = math.pi
-		local two_pi = pi*2
+		local two_pi = 2 * pi
 
 		for real_index, liquid in pairs(self._active_flow) do
 			local all_done = true
@@ -439,8 +439,8 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 				local neighbour_index = entry.index
 				local weight = entry.weight
 				local neighbour = flow[neighbour_index]
-				local flow_fraction = weight/total_weight
-				local new_amount = dt*pressure*flow_fraction
+				local flow_fraction = weight / total_weight
+				local new_amount = dt * pressure * flow_fraction
 				local old_amount = neighbour.amount
 				local total_amount = new_amount + old_amount
 
@@ -493,7 +493,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 			local pos = liquid.position:unbox()
 
 			if show_volume then
-				QuickDrawer:sphere(pos, amount*0.5 + 0.05)
+				QuickDrawer:sphere(pos, 0.05 + 0.5 * amount)
 
 				if liquid.full then
 					local color = (liquid.done and Color(0, 255, 0)) or Color(0, 0, 255)
@@ -506,7 +506,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 				local angle = liquid.angle
 				local dir = Vector3(math.cos(angle), math.sin(angle), 0)
 
-				QuickDrawer:vector(pos + Vector3.up()*0.55, dir*1.5, Color(255, 0, 0))
+				QuickDrawer:vector(pos + Vector3.up() * 0.55, dir * 1.5, Color(255, 0, 0))
 			end
 		end
 	end
@@ -661,7 +661,7 @@ LiquidAreaDamageExtension._is_unit_colliding = function (self, grid, unit)
 
 	if unit_pos then
 		for i = 0, 1, 1 do
-			local i, j, k = grid.find_index(grid, unit_pos + i*Vector3.up())
+			local i, j, k = grid.find_index(grid, unit_pos + i * Vector3.up())
 
 			if grid.is_out_of_bounds(grid, i, j, k) then
 				break
@@ -673,7 +673,7 @@ LiquidAreaDamageExtension._is_unit_colliding = function (self, grid, unit)
 			if liquid then
 				if liquid.full then
 					if script_data.debug_liquid_system then
-						QuickDrawer:sphere(liquid.position:unbox(), math.random()*0.05 + 0.05, Colors.get("red"))
+						QuickDrawer:sphere(liquid.position:unbox(), 0.05 + math.random() * 0.05, Colors.get("red"))
 					end
 
 					return true

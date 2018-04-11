@@ -49,12 +49,12 @@ BTInGravityWellAction._set_wanted_velocity = function (self, dt, blackboard, sel
 	local new_velocity = nil
 
 	if dist_sq < 1 then
-		new_velocity = (old_velocity - dir*Vector3.dot(old_velocity, dir))*(dt*5 - 1)
+		new_velocity = (old_velocity - dir * Vector3.dot(old_velocity, dir)) * (1 - 5 * dt)
 	else
-		local force_magnitude = gravity_well_strength/dist_sq
+		local force_magnitude = gravity_well_strength / dist_sq
 		broke_free = force_magnitude < 0.1
-		local force = dir*force_magnitude
-		new_velocity = old_velocity + dt*force
+		local force = dir * force_magnitude
+		new_velocity = old_velocity + dt * force
 		new_velocity.z = math.min(new_velocity.z, 2)
 	end
 

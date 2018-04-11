@@ -77,10 +77,10 @@ StateMachineManager._draw_panel = function (self)
 	local column_margin = 16
 	local text_margin = 4
 	local root_state_machines = self._root_state_machines(self)
-	local column1_width = self._state_machines_column_width(self, root_state_machines) + text_margin*2
+	local column1_width = self._state_machines_column_width(self, root_state_machines) + 2 * text_margin
 	self._column1_width = math.max(column1_width, self._column1_width)
 
-	Gui.rect(self._gui, Vector2(column_margin, column_margin), Vector2(self._column1_width, height - column_margin*2), Color(64, 0, 0, 0))
+	Gui.rect(self._gui, Vector2(column_margin, column_margin), Vector2(self._column1_width, height - 2 * column_margin), Color(64, 0, 0, 0))
 
 	local x = column_margin
 	local y = height - column_margin

@@ -14,7 +14,7 @@ local math_huge = math.huge
 function RandomTable_get_0_to_1(seed)
 	assert(seed ~= math_huge)
 
-	local index = math.floor(seed%RandomTable_n) + 1
+	local index = 1 + math.floor(seed % RandomTable_n)
 
 	assert(1 <= index and index <= RandomTable_n)
 
@@ -24,7 +24,7 @@ end
 function RandomTable_get_05_to_05(seed)
 	assert(seed ~= math_huge)
 
-	local index = math.floor(seed%RandomTable_n) + 1
+	local index = 1 + math.floor(seed % RandomTable_n)
 
 	assert(1 <= index and index <= RandomTable_n)
 

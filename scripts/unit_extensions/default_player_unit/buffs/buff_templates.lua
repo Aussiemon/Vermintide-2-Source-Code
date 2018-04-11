@@ -248,6 +248,12 @@ local function is_local(unit)
 	return player and not player.remote
 end
 
+local function is_bot(unit)
+	local player = Managers.player:owner(unit)
+
+	return player and player.bot_player
+end
+
 ProcFunctions = {
 	heal = function (player, buff, params)
 		local player_unit = player.player_unit
@@ -566,7 +572,6 @@ ProcFunctions = {
 		return 
 	end,
 	victor_zealot_gain_invulnerability = function (player, buff, params)
-		local buff_system = Managers.state.entity:system("buff_system")
 		local player_unit = player.player_unit
 		local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
@@ -577,10 +582,13 @@ ProcFunctions = {
 			local killing_blow = current_health <= damage
 
 			if killing_blow then
-				if Managers.state.network.is_server then
-					local heal_amount = (current_health - damage)*-1 + 1
+				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
-					buff_system.add_buff(buff_system, player_unit, "victor_zealot_invulnerability_on_lethal_damage_taken", player_unit, true)
+				buff_extension.add_buff(buff_extension, "victor_zealot_invulnerability_on_lethal_damage_taken")
+
+				if Managers.state.network.is_server then
+					local heal_amount = (current_health - damage) * -1 + 1
+
 					DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
 				end
 
@@ -732,7 +740,7 @@ ProcFunctions = {
 			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
 			local result = math.random(1, 100)
 
-			if result < drop_chance*100 then
+			if result < drop_chance * 100 then
 				local enemy_pos = POSITION_LOOKUP[killed_unit]
 				local raycast_down = true
 				local pickup_system = Managers.state.entity:system("pickup_system")
@@ -741,7 +749,7 @@ ProcFunctions = {
 					if 1 < math.random(1, 4) then
 						pickup_system.debug_spawn_pickup(pickup_system, "ammo_ranger", enemy_pos, raycast_down)
 					else
-						pickup_system.debug_spawn_pickup(pickup_system, "healing_draught", enemy_pos, raycast_down)
+						pickup_system.debug_spawn_pickup(pickup_system, "frag_grenade_t1", enemy_pos, raycast_down)
 					end
 				elseif talent_extension.has_talent(talent_extension, "bardin_ranger_passive_spawn_potions", "dwarf_ranger", true) then
 					local drop_result = math.random(1, 6)
@@ -788,9 +796,13 @@ ProcFunctions = {
 			local disabler_unit = status_extension.get_disabler_unit(status_extension)
 
 			if Unit.alive(disabler_unit) then
-				local buff_extension = ScriptUnit.extension(disabler_unit, "buff_system")
+				local disabler_breed = disabler_unit and Unit.get_data(disabler_unit, "breed")
 
-				buff_extension.add_buff(buff_extension, buff_to_add)
+				if not disabler_breed or not disabler_breed.boss then
+					local buff_extension = ScriptUnit.extension(disabler_unit, "buff_system")
+
+					buff_extension.add_buff(buff_extension, buff_to_add)
+				end
 			end
 		end
 
@@ -817,7 +829,7 @@ ProcFunctions = {
 		if Unit.alive(attacking_unit) then
 			local buff_extension = ScriptUnit.extension(attacking_unit, "buff_system")
 
-			buff_extension.add_buff(buff_extension, "traits_melee_increase_damage_on_block_proc")
+			buff_extension.add_buff(buff_extension, "defence_debuff_enemies")
 		end
 
 		return 
@@ -972,12 +984,16 @@ ProcFunctions = {
 			local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
 			local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
-			status_extension.set_invisible(status_extension, false)
-			first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_markus_huntsman_exit", nil, true)
-			first_person_extension.play_hud_sound_event(first_person_extension, "Stop_career_ability_markus_huntsman_loop")
+			if status_extension.is_invisible(status_extension) then
+				status_extension.set_invisible(status_extension, false)
+				first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_markus_huntsman_exit")
+				first_person_extension.play_hud_sound_event(first_person_extension, "Stop_career_ability_markus_huntsman_loop")
+			end
 
-			MOOD_BLACKBOARD.skill_huntsman_stealth = false
-			MOOD_BLACKBOARD.skill_huntsman_surge = true
+			if not is_bot(player_unit) then
+				MOOD_BLACKBOARD.skill_huntsman_stealth = false
+				MOOD_BLACKBOARD.skill_huntsman_surge = true
+			end
 		end
 
 		return 
@@ -1074,7 +1090,7 @@ ProcFunctions = {
 			local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
 			local ammo_percent = ammo_extension.total_ammo_fraction(ammo_extension)
 			local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
-			local ammo_amount = math.max(math.round(ammo_extension.get_max_ammo(ammo_extension)*ammo_bonus_fraction), 1)
+			local ammo_amount = math.max(math.round(ammo_extension.get_max_ammo(ammo_extension) * ammo_bonus_fraction), 1)
 
 			if ammo_extension then
 				ammo_extension.add_ammo_to_reserve(ammo_extension, ammo_amount)
@@ -1104,7 +1120,7 @@ ProcFunctions = {
 			local ammo_percent = ammo_extension.total_ammo_fraction(ammo_extension)
 			local activate_bonus = ammo_percent < buff_template.activation_ammo
 			local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
-			local ammo_amount = math.max(math.round(ammo_extension.get_max_ammo(ammo_extension)*ammo_bonus_fraction), 1)
+			local ammo_amount = math.max(math.round(ammo_extension.get_max_ammo(ammo_extension) * ammo_bonus_fraction), 1)
 
 			if ammo_extension and activate_bonus then
 				ammo_extension.add_ammo_to_reserve(ammo_extension, ammo_amount)
@@ -1125,7 +1141,7 @@ ProcFunctions = {
 			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
 
 			if talent_extension.has_talent(talent_extension, "markus_huntsman_passive_improved", "empire_soldier", true) then
-				ammo_amount = ammo_amount*2
+				ammo_amount = ammo_amount * 2
 			end
 
 			if talent_extension.has_talent(talent_extension, "markus_huntsman_passive_crit_buff_on_headshot", "empire_soldier", true) then
@@ -1148,16 +1164,14 @@ ProcFunctions = {
 
 		return 
 	end,
-	markus_huntsman_headshots_restore_health_proc = function (player, buff, params)
+	markus_huntsman_increase_reload_speed = function (player, buff, params)
 		local player_unit = player.player_unit
 		local attack_type = params[2]
 		local hit_zone_name = params[3]
+		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
-		if Unit.alive(player_unit) and hit_zone_name == "head" and (attack_type == "instant_projectile" or attack_type == "projectile") and Managers.player.is_server then
-			local buff_template = buff.template
-			local heal_amount = buff_template.heal_amount
-
-			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+		if Unit.alive(player_unit) and hit_zone_name == "head" and (attack_type == "instant_projectile" or attack_type == "projectile") then
+			buff_extension.add_buff(buff_extension, "markus_huntsman_headshots_increase_reload_speed_buff")
 		end
 
 		return 
@@ -1254,7 +1268,7 @@ ProcFunctions = {
 
 		if Unit.alive(player_unit) and attacker_unit ~= player_unit then
 			local career_extension = ScriptUnit.extension(player_unit, "career_system")
-			local cooldown_removed = buff.bonus*damage_taken
+			local cooldown_removed = buff.bonus * damage_taken
 
 			career_extension.reduce_activated_ability_cooldown(career_extension, cooldown_removed)
 		end
@@ -1464,38 +1478,96 @@ PotionSpreadTrinketTemplates = {
 }
 TrinketSpreadDistance = 10
 BuffTemplates = {
-	twitch_no_overcharge_no_ammo_reloads = {
+	twitch_damage_boost = {
 		activation_effect = "fx/screenspace_potion_01",
 		deactivation_sound = "hud_gameplay_stance_deactivate",
 		activation_sound = "hud_gameplay_stance_smiter_activate",
 		buffs = {
 			{
+				duration = 20,
+				name = "armor penetration",
+				refresh_durations = true,
 				max_stacks = 1,
-				name = "twitch_no_overcharge_no_ammo_reloads",
-				duration = 10
+				icon = "potion_buff_01"
+			}
+		}
+	},
+	twitch_speed_boost = {
+		activation_effect = "fx/screenspace_potion_02",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
+		activation_sound = "hud_gameplay_stance_ninjafencer_activate",
+		buffs = {
+			{
+				apply_buff_func = "apply_movement_buff",
+				multiplier = 1.5,
+				name = "movement",
+				icon = "potion_buff_02",
+				refresh_durations = true,
+				remove_buff_func = "remove_movement_buff",
+				max_stacks = 1,
+				duration = 20,
+				path_to_movement_setting_to_modify = {
+					"move_speed"
+				}
+			},
+			{
+				multiplier = 0.5,
+				name = "attack speed buff",
+				refresh_durations = true,
+				max_stacks = 1,
+				duration = 20,
+				stat_buff = StatBuffIndex.ATTACK_SPEED
+			}
+		}
+	},
+	twitch_cooldown_reduction_boost = {
+		activation_effect = "fx/screenspace_potion_02",
+		deactivation_sound = "hud_gameplay_stance_deactivate",
+		activation_sound = "hud_gameplay_stance_ninjafencer_activate",
+		buffs = {
+			{
+				name = "cooldown reduction buff",
+				multiplier = 10,
+				duration = 10,
+				max_stacks = 1,
+				icon = "potion_buff_03",
+				refresh_durations = true,
+				stat_buff = StatBuffIndex.COOLDOWN_REGEN
+			}
+		}
+	},
+	twitch_no_overcharge_no_ammo_reloads = {
+		buffs = {
+			{
+				max_stacks = 1,
+				icon = "victor_bountyhunter_passive_infinite_ammo",
+				duration = 30,
+				name = "twitch_no_overcharge_no_ammo_reloads"
 			}
 		}
 	},
 	twitch_health_regen = {
 		buffs = {
 			{
-				heal = 2,
+				icon = "bardin_ranger_activated_ability_heal",
 				name = "twitch_health_regen",
+				heal = 1,
 				heal_type = "health_regen",
-				duration = 10,
 				time_between_heal = 1,
 				update_func = "health_regen_update",
-				apply_buff_func = "health_regen_start"
+				apply_buff_func = "health_regen_start",
+				duration = 30
 			}
 		}
 	},
 	twitch_health_degen = {
 		buffs = {
 			{
-				duration = 10,
+				icon = "bardin_slayer_crit_chance",
 				name = "twitch_health_degen",
-				damage = 2,
+				damage = 1,
 				damage_type = "health_degen",
+				duration = 20,
 				update_func = "health_degen_update",
 				apply_buff_func = "health_degen_start",
 				time_between_damage = 1
@@ -1505,10 +1577,11 @@ BuffTemplates = {
 	twitch_grimoire_health_debuff = {
 		buffs = {
 			{
+				duration = 30,
 				name = "twitch_grimoire_health_debuff",
 				debuff = true,
-				perk = "grimoire",
-				duration = 10,
+				icon = "buff_icon_grimoire_health_debuff",
+				perk = "twitch_grimoire",
 				stat_buff = StatBuffIndex.MAX_HEALTH,
 				multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 			}
@@ -1517,10 +1590,11 @@ BuffTemplates = {
 	twitch_power_boost_dismember = {
 		buffs = {
 			{
-				perk = "bloody_mess",
+				duration = 30,
 				multiplier = 0.25,
+				perk = "bloody_mess",
 				max_stacks = 1,
-				duration = 10,
+				icon = "markus_huntsman_activated_ability",
 				stat_buff = StatBuffIndex.POWER_LEVEL
 			}
 		}
@@ -1776,7 +1850,7 @@ BuffTemplates = {
 				perk = "skaven_grimoire",
 				name = "grimoire_health_debuff",
 				debuff = true,
-				icon = "teammate_consumable_icon_grimoire",
+				icon = "buff_icon_grimoire_health_debuff",
 				dormant = true
 			}
 		}
@@ -2223,6 +2297,21 @@ BuffTemplates = {
 			}
 		}
 	},
+	weapon_bleed_dot_maidenguard = {
+		buffs = {
+			{
+				damage_profile = "bleed_maidenguard",
+				name = "weapon bleed dot test",
+				duration = 3,
+				refresh_durations = true,
+				apply_buff_func = "start_dot_damage",
+				time_between_dot_damages = 1,
+				hit_zone = "neck",
+				max_stacks = 1,
+				update_func = "apply_dot_damage"
+			}
+		}
+	},
 	kerillian_shade_ability_dot = {
 		buffs = {
 			{
@@ -2292,6 +2381,22 @@ BuffTemplates = {
 				time_between_dot_damages = 0.65,
 				damage_type = "burninating",
 				damage_profile = "flamethrower_burning_dot",
+				update_func = "apply_dot_damage"
+			}
+		}
+	},
+	sienna_adept_ability_trail = {
+		buffs = {
+			{
+				apply_buff_func = "start_dot_damage",
+				name = "burning dot",
+				start_flow_event = "burn",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				end_flow_event = "smoke",
+				time_between_dot_damages = 0.25,
+				damage_type = "burninating",
+				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage"
 			}
 		}
@@ -2822,8 +2927,10 @@ BuffTemplates = {
 	defence_debuff_enemies = {
 		buffs = {
 			{
-				multiplier = 0.5,
+				multiplier = 0.2,
 				name = "defence_debuff_enemies",
+				refresh_durations = true,
+				max_stacks = 1,
 				duration = 5,
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
 			}
@@ -3761,7 +3868,6 @@ BuffTemplates = {
 			{
 				refresh_durations = true,
 				name = "stormfiend_warpfire_ground",
-				duration = 1,
 				remove_buff_func = "remove_moving_through_warpfire",
 				apply_buff_func = "apply_moving_through_warpfire",
 				time_between_dot_damages = 0.75,
@@ -4340,6 +4446,116 @@ BuffTemplates = {
 				max_stacks = 1,
 				icon = "troll_vomit_debuff",
 				push_speed = 6,
+				difficulty_damage = {
+					easy = {
+						1,
+						1,
+						0,
+						0.5,
+						1
+					},
+					normal = {
+						1,
+						1,
+						0,
+						2,
+						1
+					},
+					hard = {
+						1,
+						1,
+						0,
+						3,
+						1
+					},
+					survival_hard = {
+						1,
+						1,
+						0,
+						1,
+						1
+					},
+					harder = {
+						1,
+						1,
+						0,
+						4,
+						1
+					},
+					survival_harder = {
+						1,
+						1,
+						0,
+						2,
+						1
+					},
+					hardest = {
+						1,
+						1,
+						0,
+						6,
+						1
+					},
+					survival_hardest = {
+						1,
+						1,
+						0,
+						4,
+						1
+					}
+				}
+			},
+			{
+				name = "decrease_jump_speed",
+				multiplier = 0.7,
+				duration = 3.5,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"jump",
+					"initial_vertical_speed"
+				}
+			},
+			{
+				name = "decrease_dodge_speed",
+				multiplier = 0.7,
+				duration = 3.5,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"dodging",
+					"speed_modifier"
+				}
+			},
+			{
+				name = "decrease_dodge_distance",
+				multiplier = 0.7,
+				duration = 3.5,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				path_to_movement_setting_to_modify = {
+					"dodging",
+					"distance_modifier"
+				}
+			}
+		}
+	},
+	vermintide_face_base = {
+		buffs = {
+			{
+				apply_buff_func = "apply_vermintide_in_face",
+				name = "plague_wave_face",
+				update_func = "update_vermintide_in_face",
+				dormant = true,
+				remove_buff_func = "remove_vermintide_in_face",
+				fatigue_type = "vomit_face",
+				duration = 3.5,
+				refresh_durations = true,
+				time_between_dot_damages = 0.65,
+				damage_type = "plague_face",
+				max_stacks = 1,
+				icon = "troll_vomit_debuff",
+				push_speed = 15,
 				difficulty_damage = {
 					easy = {
 						1,
@@ -5170,9 +5386,9 @@ for buff_name, buff_template in pairs(BuffTemplates) do
 							value = value - 1
 						end
 
-						value = math.abs(value*100)
+						value = math.abs(value * 100)
 					elseif key == "bonus" and value < 0 then
-						value = value*-1
+						value = value * -1
 					end
 
 					description_values[i] = value

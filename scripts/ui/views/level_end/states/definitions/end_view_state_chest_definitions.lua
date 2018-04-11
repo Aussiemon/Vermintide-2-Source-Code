@@ -468,7 +468,7 @@ local animation_definitions = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-				ui_scenegraph.score_entry_window.local_position[1] = (anim_progress - 1)*400 - 50
+				ui_scenegraph.score_entry_window.local_position[1] = 50 - 400 * (1 - anim_progress)
 
 				return 
 			end,
@@ -489,9 +489,9 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
-				ui_scenegraph.score_entry_window.local_position[1] = anim_progress*400 - 50
-				ui_scenegraph.chest_title.local_position[2] = anim_progress*100 + -100
+				params.render_settings.alpha_multiplier = 1 - anim_progress
+				ui_scenegraph.score_entry_window.local_position[1] = 50 - 400 * anim_progress
+				ui_scenegraph.chest_title.local_position[2] = -100 + 100 * anim_progress
 
 				return 
 			end,
@@ -523,10 +523,10 @@ local animation_definitions = {
 				local widget = params.widget
 				local style = widget.style
 				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress*255
+				local alpha = anim_progress * 255
 				style.texture_id.color[1] = alpha
 				style.text.text_color[1] = alpha
-				style.text_disabled.text_color[1] = alpha - 255
+				style.text_disabled.text_color[1] = 255 - alpha
 				local marker_color_from = Colors.color_definitions.font_default
 				local marker_color_to = Colors.color_definitions.white
 				local marker_color = style.marker.color
@@ -554,9 +554,9 @@ local animation_definitions = {
 				local default_size = icon_style.default_size
 				local offset = icon_style.offset
 				local size_increase = 10
-				size[1] = default_size[1] + size_increase*anim_progress
-				size[2] = default_size[2] + size_increase*anim_progress
-				offset[1] = -(size[1] - default_size[1])*0.5
+				size[1] = default_size[1] + size_increase * anim_progress
+				size[2] = default_size[2] + size_increase * anim_progress
+				offset[1] = -(size[1] - default_size[1]) * 0.5
 
 				return 
 			end,
@@ -575,7 +575,7 @@ local animation_definitions = {
 				local anim_progress = math.ease_pulse(progress)
 				local font_size = 20
 				local max_font_size = 26
-				local new_font_size = font_size + (max_font_size - font_size)*anim_progress
+				local new_font_size = font_size + (max_font_size - font_size) * anim_progress
 				local widget = params.widget
 				widget.style.text.font_size = new_font_size
 				widget.style.text_shadow.font_size = new_font_size
@@ -610,7 +610,7 @@ local animation_definitions = {
 				local style = widget.style
 				local offset = widget.offset
 				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress*255
+				local alpha = anim_progress * 255
 				local icon_glow_color = style.texture_id_glow.color
 				local text_color = style.text.text_color
 				icon_glow_color[1] = alpha
@@ -619,8 +619,8 @@ local animation_definitions = {
 
 				Colors.lerp_color_tables(text_color_from, text_color_to, anim_progress, text_color)
 
-				offset[1] = anim_progress*20
-				style.marker.offset[1] = -offset[1] + -10
+				offset[1] = anim_progress * 20
+				style.marker.offset[1] = -10 + -offset[1]
 
 				return 
 			end,
@@ -642,7 +642,7 @@ local animation_definitions = {
 				local style = widget.style
 				local offset = widget.offset
 				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress*255 - 255
+				local alpha = 255 - anim_progress * 255
 				local icon_color = style.texture_id.color
 				local icon_glow_color = style.texture_id_glow.color
 				local text_color = style.text.text_color
@@ -650,15 +650,15 @@ local animation_definitions = {
 				local text_color_from = Colors.color_definitions.font_title
 				local text_color_to = Colors.get_color_table_with_alpha("font_default", 255)
 				local color_multiplier = 0.8
-				text_color_to[2] = text_color_to[2]*color_multiplier
-				text_color_to[3] = text_color_to[3]*color_multiplier
-				text_color_to[4] = text_color_to[4]*color_multiplier
+				text_color_to[2] = text_color_to[2] * color_multiplier
+				text_color_to[3] = text_color_to[3] * color_multiplier
+				text_color_to[4] = text_color_to[4] * color_multiplier
 
 				Colors.lerp_color_tables(text_color_from, text_color_to, anim_progress, text_color)
 				Colors.lerp_color_tables(Colors.color_definitions.white, text_color_to, anim_progress, icon_color)
 
-				offset[1] = anim_progress*20 - 20
-				style.marker.offset[1] = -offset[1] + -10
+				offset[1] = 20 - anim_progress * 20
+				style.marker.offset[1] = -10 + -offset[1]
 
 				return 
 			end,
@@ -686,14 +686,14 @@ local animation_definitions = {
 				local style = widget.style
 				local offset = widget.offset
 				local anim_progress = math.easeOutCubic(progress)
-				local alpha = anim_progress*255
+				local alpha = anim_progress * 255
 				style.checkbox.color[1] = alpha
 				style.checkbox_shadow.color[1] = alpha
 				local size = style.checkbox.texture_size
 				local default_width = 37
 				local default_height = 31
-				size[1] = default_width + (anim_progress - 1)*default_width*2
-				size[2] = default_height + (anim_progress - 1)*default_height*2
+				size[1] = default_width + (1 - anim_progress) * default_width * 2
+				size[2] = default_height + (1 - anim_progress) * default_height * 2
 
 				return 
 			end,
@@ -712,7 +712,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress*255
+				local alpha = anim_progress * 255
 				widgets.chest_title.style.text.text_color[1] = alpha
 				widgets.chest_title.style.text_shadow.text_color[1] = alpha
 				widgets.chest_sub_title.style.text.text_color[1] = alpha
@@ -738,13 +738,13 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress*255
+				local alpha = anim_progress * 255
 				widgets.upgrade_background.style.texture_id.color[1] = alpha
 				local scenegraph_id = "upgrade_background"
 				local default_size = scenegraph_definition[scenegraph_id].size
 				local size = ui_scenegraph[scenegraph_id].size
-				size[1] = default_size[1] + default_size[1]*(anim_progress - 1)
-				size[2] = default_size[2] + default_size[2]*(anim_progress - 1)
+				size[1] = default_size[1] + default_size[1] * (1 - anim_progress)
+				size[2] = default_size[2] + default_size[2] * (1 - anim_progress)
 
 				return 
 			end,
@@ -765,13 +765,13 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress*255
+				local alpha = anim_progress * 255
 				local widget = widgets.upgrade_text
 				widget.style.text.text_color[1] = alpha
 				widget.style.text_shadow.text_color[1] = alpha
 				local font_size = 50
 				local max_font_size = 100
-				local new_font_size = font_size + (max_font_size - font_size)*(anim_progress - 1)
+				local new_font_size = font_size + (max_font_size - font_size) * (1 - anim_progress)
 				widget.style.text.font_size = new_font_size
 				widget.style.text_shadow.font_size = new_font_size
 
@@ -790,7 +790,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress*255 - 255
+				local alpha = 255 - anim_progress * 255
 				widgets.upgrade_background.style.texture_id.color[1] = alpha
 
 				return 
@@ -808,7 +808,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress*255 - 255
+				local alpha = 255 - anim_progress * 255
 				widgets.upgrade_text.style.text.text_color[1] = alpha
 				widgets.upgrade_text.style.text_shadow.text_color[1] = alpha
 
@@ -833,7 +833,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress*255
+				local alpha = anim_progress * 255
 				widgets.chest_title.style.text.text_color[1] = alpha
 				widgets.chest_title.style.text_shadow.text_color[1] = alpha
 				widgets.chest_sub_title.style.text.text_color[1] = alpha

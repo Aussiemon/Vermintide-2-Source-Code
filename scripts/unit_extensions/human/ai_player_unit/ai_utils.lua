@@ -221,7 +221,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 			if 0 < slots_n then
 				local dimishing_damage = dimishing_damage_data[math.min(slots_n, 9)]
 				local damage_modifier = dimishing_damage.damage
-				damage = damage*damage_modifier
+				damage = damage * damage_modifier
 			end
 		end
 
@@ -236,7 +236,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 			if not target_status_extension.is_disabled(target_status_extension) then
 				local player_locomotion = ScriptUnit.extension(target_unit, "locomotion_system")
 
-				player_locomotion.add_external_velocity(player_locomotion, push_speed*damage_direction, action.max_player_push_speed)
+				player_locomotion.add_external_velocity(player_locomotion, push_speed * damage_direction, action.max_player_push_speed)
 			end
 		end
 	end
@@ -445,7 +445,7 @@ AiUtils.rotate_vector = function (vector, radians)
 	local x = math.cos(l_radians)
 	local y = math.sin(l_radians)
 	local return_vector = Vector3(x, y, 0)
-	return_vector = return_vector*length
+	return_vector = return_vector * length
 
 	return return_vector
 end
@@ -461,12 +461,12 @@ end
 AiUtils.calculate_oobb = function (range, self_pos, self_rot, height, width)
 	local height = height or 2
 	local width = width or 2
-	local half_width = width*0.5
-	local half_range = range*0.5
-	local half_height = height*0.5
+	local half_width = width * 0.5
+	local half_range = range * 0.5
+	local half_height = height * 0.5
 	local size = Vector3(half_width, half_range, half_height)
-	local forward = Quaternion.rotate(self_rot, Vector3.forward())*half_range
-	local up = Vector3.up()*half_height
+	local forward = Quaternion.rotate(self_rot, Vector3.forward()) * half_range
+	local up = Vector3.up() * half_height
 	local oobb_pos = self_pos + forward + up
 
 	return oobb_pos, self_rot, size
@@ -730,7 +730,7 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 	blackboard.pushing_unit = attacker_unit
 	blackboard.stagger_direction = Vector3Box(stagger_direction)
 	blackboard.stagger_length = stagger_length
-	blackboard.stagger_time = stagger_duration*difficulty_modifier + t
+	blackboard.stagger_time = stagger_duration * difficulty_modifier + t
 	local stagger_value_to_add = stagger_value or 1
 	blackboard.stagger = (blackboard.stagger and blackboard.stagger + stagger_value_to_add) or stagger_value_to_add
 	blackboard.stagger_type = stagger_type
@@ -781,7 +781,7 @@ AiUtils.override_stagger = function (unit, blackboard, attacker_unit, stagger_di
 	return false
 end
 AiUtils.random = function (value1, value2)
-	return value1 + Math.random()*(value2 - value1)
+	return value1 + Math.random() * (value2 - value1)
 end
 local MAX_TRIES = 10
 local MIN_ANGLE_STEP = 4
@@ -798,13 +798,13 @@ AiUtils.advance_towards_target = function (unit, blackboard, min_distance, max_d
 	local min_angle_step = min_angle_step or MIN_ANGLE_STEP
 	local max_angle_step = max_angle_step or MAX_ANGLE_STEP
 	local min_angle = min_angle or MIN_ANGLE
-	direction = direction or math.random(0, 1)*2 - 1
+	direction = direction or 1 - math.random(0, 1) * 2
 	local from_position = POSITION_LOOKUP[unit]
 	local target_position = POSITION_LOOKUP[target_unit]
 
 	for j = 1, 2, 1 do
 		for i = 1, max_tries, 1 do
-			local angle = min_angle + math.random(min_angle_step*i, max_angle_step*i)*direction
+			local angle = min_angle + math.random(min_angle_step * i, max_angle_step * i) * direction
 			local position, wanted_distance = LocomotionUtils.outside_goal(blackboard.nav_world, from_position, target_position, min_distance, max_distance, angle, 3, above, below)
 
 			if position then
@@ -874,7 +874,7 @@ AiUtils.set_default_anim_constraint = function (unit, constraint_target)
 	local position = POSITION_LOOKUP[unit]
 	local rotation = Unit.world_rotation(unit, 0)
 	local rotation_forward = Quaternion.forward(rotation)
-	local aim_target = position + rotation_forward*5 + Vector3.up()*1.25
+	local aim_target = position + rotation_forward * 5 + Vector3.up() * 1.25
 
 	Unit.animation_set_constraint_target(unit, constraint_target, aim_target)
 
@@ -927,7 +927,7 @@ AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_
 	local damage_direction = damage_direction or Vector3(0, 0, 1)
 	local health = ScriptUnit.extension(victim_unit, "health_system"):current_health()
 
-	for i = 1, math.ceil(health/damage_amount), 1 do
+	for i = 1, math.ceil(health / damage_amount), 1 do
 		DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, "suicide")
 	end
 
@@ -942,7 +942,7 @@ AiUtils.update_aggro = function (unit, blackboard, breed, t, dt)
 	local aggro_list = blackboard.aggro_list
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 	local strided_array, array_length = health_extension.recent_damages(health_extension)
-	local aggro_decay = dt*breed.perception_weights.aggro_decay_per_sec
+	local aggro_decay = dt * breed.perception_weights.aggro_decay_per_sec
 
 	for enemy_unit, aggro in pairs(aggro_list) do
 		aggro_list[enemy_unit] = math.clamp(aggro - aggro_decay, 0, 100)
@@ -954,7 +954,7 @@ AiUtils.update_aggro = function (unit, blackboard, breed, t, dt)
 		local stride = DamageDataIndex.STRIDE
 		local index = 0
 
-		for i = 1, array_length/stride, 1 do
+		for i = 1, array_length / stride, 1 do
 			local attacker_unit = strided_array[index + DamageDataIndex.ATTACKER]
 			local damage_amount = strided_array[index + DamageDataIndex.DAMAGE_AMOUNT]
 			local damage_source = strided_array[index + DamageDataIndex.DAMAGE_SOURCE_NAME]
@@ -963,7 +963,7 @@ AiUtils.update_aggro = function (unit, blackboard, breed, t, dt)
 			if master_list_item then
 				local slot_type = master_list_item.slot_type
 				local multiplier = aggro_multipliers[slot_type] or 1
-				damage_amount = damage_amount*multiplier
+				damage_amount = damage_amount * multiplier
 			end
 
 			local aggro = aggro_list[attacker_unit]
@@ -1045,17 +1045,17 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 	local self_forward = Quaternion.forward(Unit.local_rotation(unit, 0))
 	local self_pos = POSITION_LOOKUP[unit]
 	local self_forward_flat = Vector3.normalize(Vector3.flat(self_forward))
-	local push_pos = self_pos + self_forward*data.push_forward_offset
-	local radius = data.push_width*1.5
-	local forward_pos = self_pos + self_forward*3
+	local push_pos = self_pos + self_forward * data.push_forward_offset
+	local radius = data.push_width * 1.5
+	local forward_pos = self_pos + self_forward * 3
 
 	if draw_debug then
 		QuickDrawer:line(self_pos, forward_pos)
 
 		local left = Vector3.cross(self_forward, Vector3(0, 0, 1))
 
-		QuickDrawer:line(self_pos - left*data.push_width, forward_pos - left*data.push_width)
-		QuickDrawer:line(self_pos + left*data.push_width, forward_pos + left*data.push_width)
+		QuickDrawer:line(self_pos - left * data.push_width, forward_pos - left * data.push_width)
+		QuickDrawer:line(self_pos + left * data.push_width, forward_pos + left * data.push_width)
 		QuickDrawer:circle(push_pos, radius, Vector3(0, 0, 1))
 		QuickDrawer:circle(push_pos, 0.1, Vector3(0, 0, 1), Color(0, 255, 128))
 	end
@@ -1078,7 +1078,7 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 			local to_target = other_pos - push_pos
 
 			if Vector3.length(to_target) < radius then
-				local push_width_sqr = data.push_width*data.push_width
+				local push_width_sqr = data.push_width * data.push_width
 				local pos_projected_on_forward_move_dir = Geometry.closest_point_on_line(other_pos, self_pos, forward_pos)
 				local side_vector = other_pos - pos_projected_on_forward_move_dir
 
@@ -1090,12 +1090,12 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 
 						if not target_status_extension.knocked_down then
 							if not displaced_units[hit_unit] then
-								local pushed_velocity = data.player_pushed_speed*Vector3.normalize(other_pos - self_pos)
+								local pushed_velocity = data.player_pushed_speed * Vector3.normalize(other_pos - self_pos)
 								local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
-								local push_scaler = ahead_dist/data.ahead_dist - 1
-								push_scaler = push_scaler*push_scaler
+								local push_scaler = 1 - ahead_dist / data.ahead_dist
+								push_scaler = push_scaler * push_scaler
 
-								locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity*push_scaler)
+								locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity * push_scaler)
 
 								if hit_func then
 									hit_func(hit_unit, unit, ...)

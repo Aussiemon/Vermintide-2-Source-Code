@@ -70,13 +70,15 @@ CareerAbilityESKnight._ability_available = function (self)
 	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityESKnight._start_priming = function (self)
-	local decal_unit_name = self._decal_unit_name
-	local unit_spawner = Managers.state.unit_spawner
-	self._decal_unit = unit_spawner.spawn_local_unit(unit_spawner, decal_unit_name)
-	local flow_event = "lua_es_knight_activated_start_priming"
+	if self._local_player then
+		local decal_unit_name = self._decal_unit_name
+		local unit_spawner = Managers.state.unit_spawner
+		self._decal_unit = unit_spawner.spawn_local_unit(unit_spawner, decal_unit_name)
+		local flow_event = "lua_es_knight_activated_start_priming"
 
-	Unit.flow_event(self._owner_unit, flow_event)
-	Unit.flow_event(self._first_person_unit, flow_event)
+		Unit.flow_event(self._owner_unit, flow_event)
+		Unit.flow_event(self._first_person_unit, flow_event)
+	end
 
 	local buff_extension = self._buff_extension
 	local buff_template_name = "planted_decrease_movement"
@@ -89,22 +91,25 @@ CareerAbilityESKnight._start_priming = function (self)
 	return 
 end
 CareerAbilityESKnight._update_priming = function (self, dt)
-	local owner_unit = self._owner_unit
-	local first_person_extension = self._first_person_extension
-	local player_position = Unit.local_position(self._owner_unit, 0)
-	local player_rotation = first_person_extension.current_rotation(first_person_extension)
-	local player_direction_flat = Vector3.flat(Vector3.normalize(Quaternion.forward(player_rotation)))
-	local player_rotation_flat = Quaternion.look(player_direction_flat, Vector3.up())
+	if self._decal_unit then
+		local first_person_extension = self._first_person_extension
+		local player_position = Unit.local_position(self._owner_unit, 0)
+		local player_rotation = first_person_extension.current_rotation(first_person_extension)
+		local player_direction_flat = Vector3.flat(Vector3.normalize(Quaternion.forward(player_rotation)))
+		local player_rotation_flat = Quaternion.look(player_direction_flat, Vector3.up())
 
-	Unit.set_local_position(self._decal_unit, 0, player_position)
-	Unit.set_local_rotation(self._decal_unit, 0, player_rotation_flat)
+		Unit.set_local_position(self._decal_unit, 0, player_position)
+		Unit.set_local_rotation(self._decal_unit, 0, player_rotation_flat)
+	end
 
-	local total_lerp_time = 2.5
-	local lerp_value = self._fov_lerp_time/total_lerp_time
-	local fov_multiplier = math.lerp(1, 0.95, lerp_value)
-	self._fov_lerp_time = math.min(self._fov_lerp_time + dt, total_lerp_time)
+	if self._local_player then
+		local total_lerp_time = 2.5
+		local lerp_value = self._fov_lerp_time / total_lerp_time
+		local fov_multiplier = math.lerp(1, 0.95, lerp_value)
+		self._fov_lerp_time = math.min(self._fov_lerp_time + dt, total_lerp_time)
 
-	Managers.state.camera:set_additional_fov_multiplier(fov_multiplier)
+		Managers.state.camera:set_additional_fov_multiplier(fov_multiplier)
+	end
 
 	return 
 end
@@ -115,11 +120,6 @@ CareerAbilityESKnight._stop_priming = function (self)
 		unit_spawner.mark_for_deletion(unit_spawner, self._decal_unit)
 	end
 
-	local flow_event = "lua_es_knight_activated_stop_priming"
-
-	Unit.flow_event(self._owner_unit, flow_event)
-	Unit.flow_event(self._first_person_unit, flow_event)
-
 	if self._buff_id then
 		local buff_extension = self._buff_extension
 
@@ -128,9 +128,16 @@ CareerAbilityESKnight._stop_priming = function (self)
 		self._buff_id = nil
 	end
 
-	self._fov_lerp_time = 0
+	if self._local_player then
+		local flow_event = "lua_es_knight_activated_stop_priming"
 
-	Managers.state.camera:set_additional_fov_multiplier(1)
+		Unit.flow_event(self._owner_unit, flow_event)
+		Unit.flow_event(self._first_person_unit, flow_event)
+
+		self._fov_lerp_time = 0
+
+		Managers.state.camera:set_additional_fov_multiplier(1)
+	end
 
 	self._is_priming = false
 
@@ -139,12 +146,8 @@ end
 CareerAbilityESKnight._run_ability = function (self)
 	self._stop_priming(self)
 
-	local world = self._world
 	local owner_unit = self._owner_unit
-	local is_server = self._is_server
 	local local_player = self._local_player
-	local network_manager = self._network_manager
-	local network_transmit = network_manager.network_transmit
 	local status_extension = self._status_extension
 	local career_extension = self._career_extension
 	local buff_extension = self._buff_extension
@@ -167,11 +170,19 @@ CareerAbilityESKnight._run_ability = function (self)
 		})
 	end
 
+	local flow_events = nil
+
 	if local_player then
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_kruber_charge_enter")
 		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_kruber_charge_forward")
+
+		flow_events = {
+			impact = "lua_es_knight_activated_impact",
+			start = "lua_es_knight_activated_start_move",
+			finished = "lua_es_knight_activated_finished"
+		}
 	end
 
 	status_extension.set_noclip(status_extension, true)
@@ -189,11 +200,7 @@ CareerAbilityESKnight._run_ability = function (self)
 		duration = 1.5,
 		initial_speed = 20,
 		animation_event = "foot_knight_ability_charge_start",
-		flow_events = {
-			impact = "lua_es_knight_activated_impact",
-			start = "lua_es_knight_activated_start_move",
-			finished = "lua_es_knight_activated_finished"
-		},
+		flow_events = flow_events,
 		speed_function = function (lunge_time, duration)
 			local end_duration = 0.25
 			local rush_time = lunge_time - hold_duration - windup_duration
@@ -206,48 +213,48 @@ CareerAbilityESKnight._run_ability = function (self)
 			local normal_move_speed = 2
 
 			if rush_time <= 0 and 0 < hold_duration then
-				local t = -rush_time/(hold_duration + windup_duration)
+				local t = -rush_time / (hold_duration + windup_duration)
 
 				return math.lerp(0, -1, t)
 			elseif rush_time < windup_duration then
-				local t_value = rush_time/windup_duration
-				local interpolation_value = math.cos((t_value + 1)*math.pi*0.5)
+				local t_value = rush_time / windup_duration
+				local interpolation_value = math.cos((t_value + 1) * math.pi * 0.5)
 
 				return math.min(math.lerp(windup_speed, start_speed, interpolation_value), rush_speed)
 			elseif rush_time < rush_duration then
-				local t_value = rush_time/rush_duration
-				local acceleration = math.min(rush_time/rush_duration/3, 1)
-				local interpolation_value = math.cos(t_value*math.pi*0.5)
+				local t_value = rush_time / rush_duration
+				local acceleration = math.min(rush_time / rush_duration / 3, 1)
+				local interpolation_value = math.cos(t_value * math.pi * 0.5)
 				local offset = nil
 				local step_time = 0.25
 
-				if step_time*8 < rush_time then
+				if 8 * step_time < rush_time then
 					offset = 0
-				elseif step_time*7 < rush_time then
-					offset = (rush_time - 1.4)/step_time
-				elseif step_time*6 < rush_time then
-					offset = (rush_time - step_time*6)/step_time
-				elseif step_time*5 < rush_time then
-					offset = (rush_time - step_time*5)/step_time
-				elseif step_time*4 < rush_time then
-					offset = (rush_time - step_time*4)/step_time
-				elseif step_time*3 < rush_time then
-					offset = (rush_time - step_time*3)/step_time
-				elseif step_time*2 < rush_time then
-					offset = (rush_time - step_time*2)/step_time
+				elseif 7 * step_time < rush_time then
+					offset = (rush_time - 1.4) / step_time
+				elseif 6 * step_time < rush_time then
+					offset = (rush_time - 6 * step_time) / step_time
+				elseif 5 * step_time < rush_time then
+					offset = (rush_time - 5 * step_time) / step_time
+				elseif 4 * step_time < rush_time then
+					offset = (rush_time - 4 * step_time) / step_time
+				elseif 3 * step_time < rush_time then
+					offset = (rush_time - 3 * step_time) / step_time
+				elseif 2 * step_time < rush_time then
+					offset = (rush_time - 2 * step_time) / step_time
 				elseif step_time < rush_time then
-					offset = (rush_time - step_time)/step_time
+					offset = (rush_time - step_time) / step_time
 				else
-					offset = rush_time/step_time
+					offset = rush_time / step_time
 				end
 
-				local offset_multiplier = offset*0.4 - 1
-				local speed = offset_multiplier*acceleration*acceleration*math.lerp(end_speed, rush_speed, interpolation_value)
+				local offset_multiplier = 1 - offset * 0.4
+				local speed = offset_multiplier * acceleration * acceleration * math.lerp(end_speed, rush_speed, interpolation_value)
 
 				return speed
 			else
-				local t_value = (rush_time - rush_duration)/end_duration
-				local interpolation_value = math.cos((t_value + 1)*math.pi*0.5) + 1
+				local t_value = (rush_time - rush_duration) / end_duration
+				local interpolation_value = 1 + math.cos((t_value + 1) * math.pi * 0.5)
 
 				return math.lerp(normal_move_speed, end_speed, interpolation_value)
 			end

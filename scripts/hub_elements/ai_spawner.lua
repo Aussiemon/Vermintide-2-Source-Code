@@ -111,7 +111,7 @@ AISpawner.update = function (self, unit, input, dt, context, t)
 		if self._spawned_units < self._max_amount then
 			self.spawn_unit(self)
 
-			self._next_spawn = t + self._config.spawn_rate/1
+			self._next_spawn = t + 1 / self._config.spawn_rate
 		else
 			self.on_deactivate(self)
 		end

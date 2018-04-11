@@ -69,9 +69,12 @@ CareerAbilityWHCaptain._ability_available = function (self)
 	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityWHCaptain._start_priming = function (self)
-	local world = self._world
-	local effect_name = self._priming_fx_name
-	self._priming_fx_id = World.create_particles(world, effect_name, Vector3.zero())
+	if self._local_player then
+		local world = self._world
+		local effect_name = self._priming_fx_name
+		self._priming_fx_id = World.create_particles(world, effect_name, Vector3.zero())
+	end
+
 	self._is_priming = true
 
 	return 
@@ -90,10 +93,11 @@ CareerAbilityWHCaptain._update_priming = function (self, dt)
 	return 
 end
 CareerAbilityWHCaptain._stop_priming = function (self)
-	local world = self._world
 	local effect_id = self._priming_fx_id
 
 	if effect_id then
+		local world = self._world
+
 		World.destroy_particles(world, effect_id)
 
 		self._priming_fx_id = nil
@@ -110,7 +114,6 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 	local owner_unit = self._owner_unit
 	local is_server = self._is_server
 	local local_player = self._local_player
-	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	local buff_system = Managers.state.entity:system("buff_system")
 	local buff_to_add = "victor_witchhunter_activated_ability_crit_buff"
@@ -119,17 +122,8 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 		buff_to_add = "victor_witchhunter_activated_ability_duration"
 	end
 
-	if self._effect_id then
-		World.destroy_particles(world, self._effect_id)
-
-		self._effect_id = nil
-	end
-
-	self._is_priming = false
 	local network_manager = self._network_manager
 	local network_transmit = network_manager.network_transmit
-	local player_manager = Managers.player
-	local status_extension = self._status_extension
 	local career_extension = self._career_extension
 
 	CharacterStateHelper.play_animation_event(owner_unit, "witch_hunter_active_ability")
@@ -142,27 +136,14 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 
 	local nearby_player_units = FrameTable.alloc_table()
 	local proximity_extension = Managers.state.entity:system("proximity_system")
+	local position = POSITION_LOOKUP[owner_unit]
 	local broadphase = proximity_extension.player_units_broadphase
 
-	Broadphase.query(broadphase, POSITION_LOOKUP[owner_unit], radius, nearby_player_units)
-
-	local heal_type_id = NetworkLookup.heal_types.buff
-	local fatigue_type_id = NetworkLookup.fatigue_types.career_victor_captain
-	local revivable_units = FrameTable.alloc_table()
-	local owner_unit_go_id = network_manager.unit_game_object_id(network_manager, owner_unit)
+	Broadphase.query(broadphase, position, radius, nearby_player_units)
 
 	for _, player_unit in pairs(nearby_player_units) do
 		if Unit.alive(player_unit) then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-
-			if is_server then
-				buff_system.add_buff(buff_system, player_unit, buff_to_add, owner_unit, true)
-			else
-				local buff_template_name_id = NetworkLookup.buff_templates[buff_to_add]
-				local unit_object_id = network_manager.unit_game_object_id(network_manager, player_unit)
-
-				network_transmit.send_rpc_server(network_transmit, "rpc_add_buff", unit_object_id, buff_template_name_id, owner_unit_go_id, 0, true)
-			end
+			buff_system.add_buff(buff_system, player_unit, buff_to_add, owner_unit)
 		end
 	end
 
@@ -171,12 +152,12 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 	local scale = 1
 	local damage_source = "career_ability"
 	local is_husk = false
-	local position = POSITION_LOOKUP[owner_unit]
 	local rotation = Quaternion.identity()
 	local career_power_level = career_extension.get_career_power_level(career_extension)
 
 	DamageUtils.create_explosion(world, owner_unit, position, rotation, explosion_template, scale, damage_source, is_server, is_husk, owner_unit, career_power_level)
 
+	local owner_unit_go_id = network_manager.unit_game_object_id(network_manager, owner_unit)
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 

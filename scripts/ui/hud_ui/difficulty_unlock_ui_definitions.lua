@@ -434,9 +434,9 @@ local animations = {
 				local current_background_bottom_position = ui_scenegraph[background_bottom_scenegraph_id].local_position
 				local top_start_height = 2000
 				local bottom_start_height = -2000
-				current_background_top_position[2] = top_start_height - top_start_height*anim_fraction
-				current_background_bottom_position[2] = bottom_start_height - bottom_start_height*anim_fraction
-				local alpha = progress*255
+				current_background_top_position[2] = top_start_height - top_start_height * anim_fraction
+				current_background_bottom_position[2] = bottom_start_height - bottom_start_height * anim_fraction
+				local alpha = 255 * progress
 				background_top_widget.style.texture_id.color[1] = alpha
 				background_bottom_widget.style.texture_id.color[1] = alpha
 
@@ -466,13 +466,13 @@ local animations = {
 				local current_background_center_size = ui_scenegraph[background_center_scenegraph_id].size
 				local default_background_center_size = scenegraph_definition[background_center_scenegraph_id].size
 				local center_uvs = background_center_widget.content.texture_id.uvs
-				local total_uv_change = anim_fraction*0.5
+				local total_uv_change = 0.5 * anim_fraction
 				center_uvs[1][2] = total_uv_change
-				center_uvs[2][2] = total_uv_change - 1
-				current_background_center_size[2] = default_background_center_size[2]*anim_fraction
-				local half_center_height = default_background_center_size[2]/2
-				current_background_top_position[2] = half_center_height*anim_fraction
-				current_background_bottom_position[2] = -(half_center_height*anim_fraction)
+				center_uvs[2][2] = 1 - total_uv_change
+				current_background_center_size[2] = default_background_center_size[2] * anim_fraction
+				local half_center_height = default_background_center_size[2] / 2
+				current_background_top_position[2] = half_center_height * anim_fraction
+				current_background_bottom_position[2] = -(half_center_height * anim_fraction)
 
 				return 
 			end,
@@ -520,7 +520,7 @@ local animations = {
 				local anim_fraction = math.easeOutCubic(progress)
 				local icon_widgets = widgets.icons
 				local alpha_start_progress = 0.5
-				local alpha_progress = math.max(progress - alpha_start_progress, 0)/alpha_start_progress
+				local alpha_progress = math.max(progress - alpha_start_progress, 0) / alpha_start_progress
 				local icons_end_values = params.icons_end_values
 
 				for widget_index, widget in ipairs(icon_widgets) do
@@ -538,10 +538,10 @@ local animations = {
 							local end_position_y = part_end_values.y
 							local alpha_fade_multiplier = part_end_values.alpha_fade_multiplier
 							local angle = part_end_values.angle
-							part_offset[1] = end_position_x*anim_fraction
-							part_offset[2] = end_position_y*anim_fraction
-							part_color[1] = math.min(alpha_progress*alpha_fade_multiplier*255, 255) - 255
-							part_style.angle = angle*anim_fraction
+							part_offset[1] = end_position_x * anim_fraction
+							part_offset[2] = end_position_y * anim_fraction
+							part_color[1] = 255 - math.min(255 * alpha_progress * alpha_fade_multiplier, 255)
+							part_style.angle = angle * anim_fraction
 						end
 					end
 				end
@@ -562,8 +562,8 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local parent_position = ui_scenegraph.background.local_position
 				local parent_default_position = scenegraph_definition.background.position
-				parent_position[1] = (parent_default_position[1] + 10) - math.catmullrom(progress, 5, 1, 1, -1)*10
-				parent_position[2] = (parent_default_position[2] + 10) - math.catmullrom(progress, -1, 1, 1, 5)*10
+				parent_position[1] = (parent_default_position[1] + 10) - 10 * math.catmullrom(progress, 5, 1, 1, -1)
+				parent_position[2] = (parent_default_position[2] + 10) - 10 * math.catmullrom(progress, -1, 1, 1, 5)
 
 				return 
 			end,
@@ -589,7 +589,7 @@ local animations = {
 				local anim_fraction = math.easeOutCubic(progress)
 				local icon_widgets = widgets.icons
 				local alpha_start_progress = 0.5
-				local alpha_progress = math.max(progress - alpha_start_progress, 0)/alpha_start_progress
+				local alpha_progress = math.max(progress - alpha_start_progress, 0) / alpha_start_progress
 				local icons_end_values = params.icons_end_values
 
 				for widget_index, widget in ipairs(icon_widgets) do
@@ -607,10 +607,10 @@ local animations = {
 							local end_position_y = part_end_values.y
 							local alpha_fade_multiplier = part_end_values.alpha_fade_multiplier
 							local angle = part_end_values.angle
-							part_offset[1] = end_position_x*anim_fraction
-							part_offset[2] = end_position_y*anim_fraction
-							part_color[1] = math.min(alpha_progress*alpha_fade_multiplier*255, 255) - 255
-							part_style.angle = angle*anim_fraction
+							part_offset[1] = end_position_x * anim_fraction
+							part_offset[2] = end_position_y * anim_fraction
+							part_color[1] = 255 - math.min(255 * alpha_progress * alpha_fade_multiplier, 255)
+							part_style.angle = angle * anim_fraction
 						end
 					end
 				end
@@ -631,8 +631,8 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local parent_position = ui_scenegraph.background.local_position
 				local parent_default_position = scenegraph_definition.background.position
-				parent_position[1] = parent_default_position[1] + math.catmullrom(progress, -1, 1, 1, 5)*10 - 10
-				parent_position[2] = parent_default_position[2] + math.catmullrom(progress, -5, 1, 1, 1)*10 - 10
+				parent_position[1] = parent_default_position[1] + 10 - 10 * math.catmullrom(progress, -1, 1, 1, 5)
+				parent_position[2] = parent_default_position[2] + 10 - 10 * math.catmullrom(progress, -5, 1, 1, 1)
 
 				return 
 			end,
@@ -658,7 +658,7 @@ local animations = {
 				local anim_fraction = math.easeOutCubic(progress)
 				local icon_widgets = widgets.icons
 				local alpha_start_progress = 0.5
-				local alpha_progress = math.max(progress - alpha_start_progress, 0)/alpha_start_progress
+				local alpha_progress = math.max(progress - alpha_start_progress, 0) / alpha_start_progress
 				local icons_end_values = params.icons_end_values
 
 				for widget_index, widget in ipairs(icon_widgets) do
@@ -676,10 +676,10 @@ local animations = {
 							local end_position_y = part_end_values.y
 							local alpha_fade_multiplier = part_end_values.alpha_fade_multiplier
 							local angle = part_end_values.angle
-							part_offset[1] = end_position_x*anim_fraction
-							part_offset[2] = end_position_y*anim_fraction
-							part_color[1] = math.min(alpha_progress*alpha_fade_multiplier*255, 255) - 255
-							part_style.angle = angle*anim_fraction
+							part_offset[1] = end_position_x * anim_fraction
+							part_offset[2] = end_position_y * anim_fraction
+							part_color[1] = 255 - math.min(255 * alpha_progress * alpha_fade_multiplier, 255)
+							part_style.angle = angle * anim_fraction
 						end
 					end
 				end
@@ -700,8 +700,8 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local parent_position = ui_scenegraph.background.local_position
 				local parent_default_position = scenegraph_definition.background.position
-				parent_position[1] = (parent_default_position[1] + 10) - math.catmullrom(progress, 5, 1, 1, 1)*10
-				parent_position[2] = (parent_default_position[2] + 10) - math.catmullrom(progress, 1, 1, 1, 5)*10
+				parent_position[1] = (parent_default_position[1] + 10) - 10 * math.catmullrom(progress, 5, 1, 1, 1)
+				parent_position[2] = (parent_default_position[2] + 10) - 10 * math.catmullrom(progress, 1, 1, 1, 5)
 
 				return 
 			end,
@@ -720,8 +720,8 @@ local animations = {
 				local anim_fraction = math.easeOutCubic(progress)
 				local difficulty_title_text_widget = widgets.difficulty_title_text
 				local text_style = difficulty_title_text_widget.style.text
-				text_style.text_color[1] = anim_fraction*255
-				text_style.font_size = math.catmullrom(math.easeOutCubic(progress), -0.5, 1, 1, -0.5)*28
+				text_style.text_color[1] = 255 * anim_fraction
+				text_style.font_size = 28 * math.catmullrom(math.easeOutCubic(progress), -0.5, 1, 1, -0.5)
 
 				return 
 			end,
@@ -746,8 +746,8 @@ local animations = {
 				local anim_fraction = math.easeOutCubic(progress)
 				local difficulty_text_widget = widgets.difficulty_text
 				local text_style = difficulty_text_widget.style.text
-				text_style.text_color[1] = anim_fraction*255
-				text_style.font_size = math.catmullrom(math.easeOutCubic(progress), -0.5, 1, 1, -0.5)*40
+				text_style.text_color[1] = 255 * anim_fraction
+				text_style.font_size = 40 * math.catmullrom(math.easeOutCubic(progress), -0.5, 1, 1, -0.5)
 
 				return 
 			end,
@@ -765,7 +765,7 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
 				local background_glow_widget = widgets.background_glow
-				background_glow_widget.style.texture_id.color[1] = anim_fraction*255
+				background_glow_widget.style.texture_id.color[1] = 255 * anim_fraction
 
 				return 
 			end,
@@ -781,7 +781,7 @@ local animations = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local alpha = progress*255 - 255
+				local alpha = 255 - 255 * progress
 				local background_glow_widget = widgets.background_glow
 				background_glow_widget.style.texture_id.color[1] = alpha
 
@@ -802,7 +802,7 @@ local animations = {
 				local background_top_widget = widgets.background_top
 				local background_center_widget = widgets.background_center
 				local background_bottom_widget = widgets.background_bottom
-				local alpha = progress*255 - 255
+				local alpha = 255 - 255 * progress
 				background_top_widget.style.texture_id.color[1] = alpha
 				background_bottom_widget.style.texture_id.color[1] = alpha
 				background_center_widget.style.texture_id.color[1] = alpha
@@ -821,7 +821,7 @@ local animations = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local alpha = progress*255 - 255
+				local alpha = 255 - 255 * progress
 				local icon_widgets = widgets.icons
 
 				for widget_index, widget in ipairs(icon_widgets) do
@@ -845,7 +845,7 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeOutCubic(progress)
 				local difficulty_title_text_widget = widgets.difficulty_title_text
-				difficulty_title_text_widget.style.text.text_color[1] = anim_fraction*255 - 255
+				difficulty_title_text_widget.style.text.text_color[1] = 255 - 255 * anim_fraction
 
 				return 
 			end,
@@ -863,7 +863,7 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeOutCubic(progress)
 				local difficulty_text_widget = widgets.difficulty_text
-				difficulty_text_widget.style.text.text_color[1] = anim_fraction*255 - 255
+				difficulty_text_widget.style.text.text_color[1] = 255 - 255 * anim_fraction
 
 				return 
 			end,
@@ -911,7 +911,7 @@ local animations = {
 				local anim_fraction = math.easeOutCubic(progress)
 				local icon_widgets = widgets.icons
 				local alpha_start_progress = 0.5
-				local alpha_progress = math.max(progress - alpha_start_progress, 0)/alpha_start_progress
+				local alpha_progress = math.max(progress - alpha_start_progress, 0) / alpha_start_progress
 				local icons_end_values = params.icons_end_values
 
 				for widget_index, widget in ipairs(icon_widgets) do
@@ -929,10 +929,10 @@ local animations = {
 							local end_position_y = part_end_values.y
 							local alpha_fade_multiplier = part_end_values.alpha_fade_multiplier
 							local angle = part_end_values.angle
-							part_offset[1] = end_position_x*anim_fraction
-							part_offset[2] = end_position_y*anim_fraction
-							part_color[1] = math.min(alpha_progress*alpha_fade_multiplier*255, 255) - 255
-							part_style.angle = angle*anim_fraction
+							part_offset[1] = end_position_x * anim_fraction
+							part_offset[2] = end_position_y * anim_fraction
+							part_color[1] = 255 - math.min(255 * alpha_progress * alpha_fade_multiplier, 255)
+							part_style.angle = angle * anim_fraction
 						end
 					end
 				end
@@ -953,8 +953,8 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local parent_position = ui_scenegraph.background.local_position
 				local parent_default_position = scenegraph_definition.background.position
-				parent_position[1] = (parent_default_position[1] + 10) - math.catmullrom(progress, 5, 1, 1, -1)*10
-				parent_position[2] = (parent_default_position[2] + 10) - math.catmullrom(progress, -1, 1, 1, 5)*10
+				parent_position[1] = (parent_default_position[1] + 10) - 10 * math.catmullrom(progress, 5, 1, 1, -1)
+				parent_position[2] = (parent_default_position[2] + 10) - 10 * math.catmullrom(progress, -1, 1, 1, 5)
 
 				return 
 			end,
@@ -980,7 +980,7 @@ local animations = {
 				local anim_fraction = math.easeOutCubic(progress)
 				local icon_widgets = widgets.icons
 				local alpha_start_progress = 0.5
-				local alpha_progress = math.max(progress - alpha_start_progress, 0)/alpha_start_progress
+				local alpha_progress = math.max(progress - alpha_start_progress, 0) / alpha_start_progress
 				local icons_end_values = params.icons_end_values
 
 				for widget_index, widget in ipairs(icon_widgets) do
@@ -998,10 +998,10 @@ local animations = {
 							local end_position_y = part_end_values.y
 							local alpha_fade_multiplier = part_end_values.alpha_fade_multiplier
 							local angle = part_end_values.angle
-							part_offset[1] = end_position_x*anim_fraction
-							part_offset[2] = end_position_y*anim_fraction
-							part_color[1] = math.min(alpha_progress*alpha_fade_multiplier*255, 255) - 255
-							part_style.angle = angle*anim_fraction
+							part_offset[1] = end_position_x * anim_fraction
+							part_offset[2] = end_position_y * anim_fraction
+							part_color[1] = 255 - math.min(255 * alpha_progress * alpha_fade_multiplier, 255)
+							part_style.angle = angle * anim_fraction
 						end
 					end
 				end
@@ -1022,8 +1022,8 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local parent_position = ui_scenegraph.background.local_position
 				local parent_default_position = scenegraph_definition.background.position
-				parent_position[1] = parent_default_position[1] + math.catmullrom(progress, -1, 1, 1, 5)*10 - 10
-				parent_position[2] = parent_default_position[2] + math.catmullrom(progress, -5, 1, 1, 1)*10 - 10
+				parent_position[1] = parent_default_position[1] + 10 - 10 * math.catmullrom(progress, -1, 1, 1, 5)
+				parent_position[2] = parent_default_position[2] + 10 - 10 * math.catmullrom(progress, -5, 1, 1, 1)
 
 				return 
 			end,
@@ -1042,8 +1042,8 @@ local animations = {
 				local anim_fraction = math.easeOutCubic(progress)
 				local difficulty_title_text_widget = widgets.difficulty_title_text
 				local text_style = difficulty_title_text_widget.style.text
-				text_style.text_color[1] = anim_fraction*255
-				text_style.font_size = math.catmullrom(math.easeOutCubic(progress), -0.5, 1, 1, -0.5)*28
+				text_style.text_color[1] = 255 * anim_fraction
+				text_style.font_size = 28 * math.catmullrom(math.easeOutCubic(progress), -0.5, 1, 1, -0.5)
 
 				return 
 			end,
@@ -1068,8 +1068,8 @@ local animations = {
 				local anim_fraction = math.easeOutCubic(progress)
 				local difficulty_text_widget = widgets.difficulty_text
 				local text_style = difficulty_text_widget.style.text
-				text_style.text_color[1] = anim_fraction*255
-				text_style.font_size = math.catmullrom(math.easeOutCubic(progress), -0.5, 1, 1, -0.5)*40
+				text_style.text_color[1] = 255 * anim_fraction
+				text_style.font_size = 40 * math.catmullrom(math.easeOutCubic(progress), -0.5, 1, 1, -0.5)
 
 				return 
 			end,
@@ -1087,7 +1087,7 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
 				local background_glow_widget = widgets.background_glow
-				background_glow_widget.style.texture_id.color[1] = anim_fraction*255
+				background_glow_widget.style.texture_id.color[1] = 255 * anim_fraction
 
 				return 
 			end,
@@ -1103,7 +1103,7 @@ local animations = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local alpha = progress*255 - 255
+				local alpha = 255 - 255 * progress
 				local background_glow_widget = widgets.background_glow
 				background_glow_widget.style.texture_id.color[1] = alpha
 
@@ -1124,7 +1124,7 @@ local animations = {
 				local background_top_widget = widgets.background_top
 				local background_center_widget = widgets.background_center
 				local background_bottom_widget = widgets.background_bottom
-				local alpha = progress*255 - 255
+				local alpha = 255 - 255 * progress
 				background_top_widget.style.texture_id.color[1] = alpha
 				background_bottom_widget.style.texture_id.color[1] = alpha
 				background_center_widget.style.texture_id.color[1] = alpha
@@ -1143,7 +1143,7 @@ local animations = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local alpha = progress*255 - 255
+				local alpha = 255 - 255 * progress
 				local icon_widgets = widgets.icons
 
 				for widget_index, widget in ipairs(icon_widgets) do
@@ -1167,7 +1167,7 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeOutCubic(progress)
 				local difficulty_title_text_widget = widgets.difficulty_title_text
-				difficulty_title_text_widget.style.text.text_color[1] = anim_fraction*255 - 255
+				difficulty_title_text_widget.style.text.text_color[1] = 255 - 255 * anim_fraction
 
 				return 
 			end,
@@ -1185,7 +1185,7 @@ local animations = {
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeOutCubic(progress)
 				local difficulty_text_widget = widgets.difficulty_text
-				difficulty_text_widget.style.text.text_color[1] = anim_fraction*255 - 255
+				difficulty_text_widget.style.text.text_color[1] = 255 - 255 * anim_fraction
 
 				return 
 			end,

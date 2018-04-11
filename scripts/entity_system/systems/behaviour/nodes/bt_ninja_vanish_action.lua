@@ -117,7 +117,7 @@ BTNinjaVanishAction.find_escape_position = function (unit, blackboard)
 	end
 
 	if 0 < num_found then
-		local pick = math.random(math.ceil(num_found/2), num_found)
+		local pick = math.random(math.ceil(num_found / 2), num_found)
 		local cover_point_unit = hidden_cover_units[pick]
 
 		if cover_point_unit then
@@ -131,7 +131,7 @@ BTNinjaVanishAction.find_escape_position = function (unit, blackboard)
 		if POSITION_LOOKUP[ahead_unit] then
 			local main_path_player_info = conflict_director.main_path_player_info
 			local player_info = main_path_player_info[ahead_unit]
-			local pos, path_index = MainPathUtils.point_on_mainpath(main_path_info.main_paths, player_info.travel_dist + 30 + math.random()*10)
+			local pos, path_index = MainPathUtils.point_on_mainpath(main_path_info.main_paths, player_info.travel_dist + 30 + math.random() * 10)
 
 			return pos
 		else

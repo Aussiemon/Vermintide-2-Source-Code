@@ -218,7 +218,7 @@ VoteManager.update = function (self, dt)
 							self.vote(self, vote_option.vote)
 						else
 							active_voting.input_hold_timer = math.min(input_hold_timer + dt, input_hold_time)
-							active_voting.input_hold_progress = active_voting.input_hold_timer/input_hold_time
+							active_voting.input_hold_progress = active_voting.input_hold_timer / input_hold_time
 						end
 					elseif input == active_voting.current_hold_input then
 						active_voting.current_hold_input = nil
@@ -259,7 +259,7 @@ VoteManager._vote_result = function (self, vote_time_ended)
 
 	if vote_time_ended or num_of_votes == number_of_voters then
 		for vote_option, vote_option_count in ipairs(current_vote_results) do
-			local vote_success_ratio = vote_option_count/num_of_votes
+			local vote_success_ratio = vote_option_count / num_of_votes
 
 			if success_percent <= vote_success_ratio then
 				return vote_option
@@ -267,7 +267,7 @@ VoteManager._vote_result = function (self, vote_time_ended)
 		end
 	end
 
-	local num_of_votes_needed = (minimum_voter_percent and minimum_voter_percent <= num_of_votes/number_of_voters) or false
+	local num_of_votes_needed = (minimum_voter_percent and minimum_voter_percent <= num_of_votes / number_of_voters) or false
 
 	if num_of_votes_needed or num_of_votes == number_of_voters then
 		return 0

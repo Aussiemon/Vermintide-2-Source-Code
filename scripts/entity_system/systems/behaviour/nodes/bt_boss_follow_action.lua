@@ -78,20 +78,12 @@ BTBossFollowAction._go_idle = function (self, unit, blackboard, navigation_exten
 		locomotion_extension.set_wanted_rotation(locomotion_extension, rot)
 	end
 
-	if blackboard.linked_unit and action.sync_with_linked_unit then
-		Managers.state.network:anim_event(blackboard.linked_unit, action.idle_anim or "idle")
-	end
-
 	return 
 end
 BTBossFollowAction._go_moving = function (self, unit, blackboard, action)
 	blackboard.move_state = "moving"
 
 	Managers.state.network:anim_event(unit, action.move_anim)
-
-	if blackboard.linked_unit and action.sync_with_linked_unit then
-		Managers.state.network:anim_event(blackboard.linked_unit, action.move_anim)
-	end
 
 	return 
 end
@@ -173,7 +165,7 @@ end
 local broad_phase_fling_units = {}
 BTBossFollowAction.check_fling_skaven = function (self, unit, blackboard, t)
 	local forward = Quaternion.forward(Unit.local_rotation(unit, 0))
-	local check_pos = POSITION_LOOKUP[unit] + forward*2.6
+	local check_pos = POSITION_LOOKUP[unit] + forward * 2.6
 	local ai_system = Managers.state.entity:system("ai_system")
 	local num_units = Broadphase.query(ai_system.broadphase, check_pos, 1, broad_phase_fling_units)
 
@@ -244,8 +236,8 @@ BTBossFollowAction._follow_target_stormfiend = function (self, unit, blackboard,
 
 			if 360 <= min_angle then
 				min_angle = min_angle - 360
-				min_distance = min_distance*0.8
-				max_distance = max_distance*0.8
+				min_distance = min_distance * 0.8
+				max_distance = max_distance * 0.8
 			end
 		end
 

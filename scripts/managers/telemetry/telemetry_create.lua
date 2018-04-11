@@ -19,6 +19,10 @@ function CreateTelemetryManager()
 		print("[TelemetryManager] No telemetry on the dedicated server! Fallback to dummy...")
 
 		return TelemetryManagerDummy:new()
+	elseif TelemetrySettings.enabled == false then
+		print("[TelemetryManager] Disabled! Fallback to dummy...")
+
+		return TelemetryManagerDummy:new()
 	else
 		return TelemetryManager:new()
 	end

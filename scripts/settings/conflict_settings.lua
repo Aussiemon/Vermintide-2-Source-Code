@@ -196,20 +196,19 @@ end
 
 PackDistributions = {
 	periodical = {
-		min_hi_dist = 1,
+		min_hi_dist = 2,
 		min_low_dist = 7,
 		max_low_density = 0.4,
-		min_hi_density = 0.7,
-		random_dist = false,
+		min_hi_density = 0.65,
+		random_distribution = false,
 		zero_density_below = 0.1,
 		max_hi_dist = 3,
 		min_low_density = 0,
+		zero_clamp_max_dist = 5,
 		max_low_dist = 10,
 		max_hi_density = 1
 	},
-	waved = {},
-	random = {},
-	uphill = {}
+	random = {}
 }
 RoamingSettings = {
 	default = {
@@ -1773,7 +1772,7 @@ PacingSettings = {
 }
 PackSpawningDistribution = {
 	standard = {
-		goal_density = 0.5,
+		goal_density = 0.45,
 		clamp_main_path_zone_area = 100,
 		length_density_coefficient = 0,
 		spawn_cycle_length = 350,
@@ -1896,7 +1895,7 @@ PackSpawningSettings = {
 		roaming_set = {
 			breed_packs = "marauders",
 			breed_packs_peeks_overide_chance = {
-				0.94,
+				0.5,
 				1
 			},
 			breed_packs_override = {

@@ -283,7 +283,7 @@ CraftPageCraftItem._handle_input = function (self, dt, t)
 		end
 
 		local max_time = 2
-		local progress = math.min(self._craft_input_time/max_time, 1)
+		local progress = math.min(self._craft_input_time / max_time, 1)
 		craft_input_accepted = self._handle_craft_input_progress(self, progress)
 
 		WwiseWorld.set_global_parameter(self.wwise_world, "craft_forge_button_progress", progress)
@@ -329,7 +329,7 @@ end
 CraftPageCraftItem._handle_craft_input_progress = function (self, progress)
 	local has_progress = progress ~= 0
 	local bard_default_width = scenegraph_definition.craft_bar.size[1]
-	self.ui_scenegraph.craft_bar.size[1] = bard_default_width*progress
+	self.ui_scenegraph.craft_bar.size[1] = bard_default_width * progress
 
 	if progress == 1 then
 		return true

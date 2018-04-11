@@ -40,7 +40,7 @@ EnduranceBadgeUI.align_badge_widgets = function (self)
 			local scenegraph_id = widget.scenegraph_id
 			local widget_scenegraph = ui_scenegraph[scenegraph_id]
 			local local_position = widget_scenegraph.local_position
-			local_position[1] = (index - 1)*64 + (index - 1)*spacing
+			local_position[1] = (index - 1) * 64 + (index - 1) * spacing
 			widget.element.dirty = true
 		end
 	end

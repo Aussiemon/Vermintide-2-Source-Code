@@ -34,7 +34,7 @@ local item_icons = {
 	grenade_frag_02 = "killfeed_icon_05",
 	grenade_fire_01 = "killfeed_icon_09",
 	grenade_frag_01 = "killfeed_icon_05",
-	potion_cooldown_reduction_01 = "killfeed_icon_10",
+	potion_cooldown_reduction_01 = "killfeed_icon_13",
 	potion_damage_boost_01 = "killfeed_icon_10",
 	healthkit_first_aid_kit_01 = "reinforcement_heal"
 }
@@ -169,8 +169,8 @@ ItemReceivedFeedbackUI._assign_portrait_texture = function (self, widget, pass_n
 	local style = widget.style[pass_name]
 	local portrait_offset = style.portrait_offset
 	local offset = style.offset
-	offset[1] = portrait_offset[1] - portrait_size[1]/2
-	offset[2] = portrait_offset[2] - portrait_size[2]/2
+	offset[1] = portrait_offset[1] - portrait_size[1] / 2
+	offset[2] = portrait_offset[2] - portrait_size[2] / 2
 	style.size = portrait_size
 
 	return 
@@ -238,25 +238,25 @@ ItemReceivedFeedbackUI.update = function (self, dt, t)
 
 		if not removed then
 			local step_size = 70
-			local new_height_offset = (index - 1)*step_size
+			local new_height_offset = (index - 1) * step_size
 			local diff = math.abs(math.abs(offset[2]) - math.abs(new_height_offset))
 			local time_left = event.remove_time - t
 			local fade_duration = 0.3
 			local fade_out_progress = 0
 
 			if fade_duration < time_left then
-				fade_out_progress = math.clamp((show_duration - time_left)/fade_duration, 0, 1)
+				fade_out_progress = math.clamp((show_duration - time_left) / fade_duration, 0, 1)
 			else
-				fade_out_progress = math.clamp(time_left/fade_duration, 0, 1)
+				fade_out_progress = math.clamp(time_left / fade_duration, 0, 1)
 			end
 
 			local move_time_left = math.max(time_left - show_duration - move_duration, 0)
-			local offset_progress = math.clamp(move_time_left/move_duration, 0, 1) - 1
-			offset[1] = math.easeOutCubic(offset_progress)*50
-			style.arrow.offset[1] = math.easeOutCubic(offset_progress)*35
-			style.icon.offset[1] = math.easeOutCubic(offset_progress)*80
+			local offset_progress = 1 - math.clamp(move_time_left / move_duration, 0, 1)
+			offset[1] = 50 * math.easeOutCubic(offset_progress)
+			style.arrow.offset[1] = 35 * math.easeOutCubic(offset_progress)
+			style.icon.offset[1] = 80 * math.easeOutCubic(offset_progress)
 			local anim_progress = math.easeOutCubic(fade_out_progress)
-			local alpha = anim_progress*255
+			local alpha = 255 * anim_progress
 			local text_style_ids = content.text_style_ids
 
 			for _, style_id in ipairs(text_style_ids) do

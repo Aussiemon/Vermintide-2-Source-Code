@@ -5,10 +5,10 @@ local window_size = window_default_settings.size
 local window_spacing = window_default_settings.spacing
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_text_width = window_size[1] - (window_frame_width*2 + 60)
+local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 NUM_CRAFT_SLOTS_X = 3
 NUM_CRAFT_SLOTS_Y = 3
-NUM_CRAFT_SLOTS = NUM_CRAFT_SLOTS_X*NUM_CRAFT_SLOTS_Y
+NUM_CRAFT_SLOTS = NUM_CRAFT_SLOTS_X * NUM_CRAFT_SLOTS_Y
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -69,7 +69,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-26,
+			-66,
 			6
 		}
 	},
@@ -83,7 +83,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			60,
+			20,
 			35
 		}
 	},
@@ -177,7 +177,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

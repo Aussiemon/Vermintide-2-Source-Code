@@ -134,10 +134,10 @@ ActionHandgunLock.client_owner_post_update = function (self, dt, t, world, can_d
 			end
 
 			local weapon_unit = self.weapon_unit
-			local hit_position = (result and result[#result][1]) or owner_unit_position + direction*100
+			local hit_position = (result and result[#result][1]) or owner_unit_position + direction * 100
 
 			Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
-			Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - owner_unit_position)*0.1)
+			Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - owner_unit_position) * 0.1)
 			Unit.flow_event(weapon_unit, "lua_bullet_trail")
 			Unit.flow_event(weapon_unit, "lua_bullet_trail_set")
 		end

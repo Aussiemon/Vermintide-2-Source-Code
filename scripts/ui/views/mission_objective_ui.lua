@@ -193,7 +193,7 @@ MissionObjectiveUI._get_text_size = function (self, ui_renderer, text, max_width
 			local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_name, font_size)
 			local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, max_width)
 			local num_texts = #texts
-			full_font_height = (font_max + math.abs(font_min))*RESOLUTION_LOOKUP.inv_scale*num_texts
+			full_font_height = (font_max + math.abs(font_min)) * RESOLUTION_LOOKUP.inv_scale * num_texts
 			style.font_size = math.max(style.font_size - 1, style.min_font_size)
 			style.new_font_size = style.font_size
 

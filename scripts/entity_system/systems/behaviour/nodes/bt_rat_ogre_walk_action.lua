@@ -79,7 +79,7 @@ BTRatOgreWalkAction.follow = function (self, unit, t, dt, blackboard, locomotion
 		navigation_extension.set_max_speed(navigation_extension, blackboard.breed.patrol_walk_speed)
 	end
 
-	QuickDrawer:sphere(blackboard.patrol_goal_pos:unbox(), math.sin(t*7) + 1.2)
+	QuickDrawer:sphere(blackboard.patrol_goal_pos:unbox(), 1.2 + math.sin(t * 7))
 
 	if blackboard.move_state ~= "moving" and 0.5 < distance then
 		blackboard.move_state = "moving"

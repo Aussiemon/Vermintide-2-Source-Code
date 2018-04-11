@@ -66,6 +66,13 @@ BTMountUnitAction.run = function (self, unit, blackboard, t, dt)
 				mount_blackboard.mounting_finished = true
 				mount_blackboard.linked_unit = unit
 				blackboard.hp_at_knocked_off = nil
+				local game = Managers.state.network:game()
+				local go_id = Managers.state.unit_storage:go_id(mount_unit)
+				local target_go_id = Managers.state.unit_storage:go_id(unit)
+
+				if game and go_id and target_go_id then
+					GameSession.set_game_object_field(game, go_id, "animation_synced_unit_id", target_go_id)
+				end
 			end
 		end
 

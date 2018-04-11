@@ -16,7 +16,7 @@ local tabs_size = {
 }
 local tabs_active_size = {
 	ui_size[1],
-	ui_size[2] - top_info_box_size[2] - tabs_size[2]*1
+	ui_size[2] - top_info_box_size[2] - tabs_size[2] * 1
 }
 local scenegraph_info = {
 	ui_size = ui_size,
@@ -154,7 +154,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			friends_entry_size[1],
-			friends_entry_size[2]*FRIEND_LIST_LIMIT
+			friends_entry_size[2] * FRIEND_LIST_LIMIT
 		},
 		position = {
 			0,
@@ -168,7 +168,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			friends_entry_size[1],
-			friends_entry_size[2]*FRIEND_LIST_LIMIT
+			friends_entry_size[2] * FRIEND_LIST_LIMIT
 		},
 		position = {
 			0,
@@ -563,7 +563,9 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id, edge_ta
 			percentage = 0.1,
 			scroll_value = 1
 		},
-		list_content = {}
+		list_content = {
+			allow_multi_hover = true
+		}
 	}
 	local list_content = content.list_content
 
@@ -1006,8 +1008,8 @@ local function create_info_box_button_rotated_texture(scenegraph_id, texture)
 			},
 			angle = math.pi,
 			pivot = {
-				size[1]*0.5,
-				size[2]*0.5
+				size[1] * 0.5,
+				size[2] * 0.5
 			},
 			offset = {
 				0,
@@ -1023,8 +1025,8 @@ local function create_info_box_button_rotated_texture(scenegraph_id, texture)
 			},
 			color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 			pivot = {
-				size[1]*0.5,
-				size[2]*0.5
+				size[1] * 0.5,
+				size[2] * 0.5
 			},
 			offset = {
 				0,
@@ -1050,7 +1052,9 @@ end
 
 local function create_hotspot_area(scenegraph_id, size)
 	local passes = {}
-	local content = {}
+	local content = {
+		allow_multi_hover = true
+	}
 	local style = {}
 	passes[#passes + 1] = {
 		pass_type = "hotspot",

@@ -6,12 +6,12 @@ local window_spacing = window_default_settings.spacing
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local window_width_offset = window_size[1] + window_spacing
-local window_text_width = window_size[1] - (window_frame_width*2 + 60)
+local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local large_window_frame = window_default_settings.large_window_frame
 local large_window_frame_width = UIFrameSettings[large_window_frame].texture_sizes.vertical[1]
 local inner_window_size = {
-	window_size[1]*3 + window_spacing*2 + large_window_frame_width*2,
-	window_size[2] + large_window_frame_width*2
+	window_size[1] * 3 + window_spacing * 2 + large_window_frame_width * 2,
+	window_size[2] + large_window_frame_width * 2
 }
 local filter_frame_size = {
 	400,
@@ -51,7 +51,7 @@ local lobby_info_buttons_size = {
 }
 local lobby_info_server_buttons_frame_size = {
 	lobby_info_buttons_size[1],
-	lobby_info_buttons_size[2]*1 + 5
+	lobby_info_buttons_size[2] * 1 + 5
 }
 local scenegraph_definition = {
 	root = {
@@ -205,7 +205,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			large_window_frame_width - 21,
+			21 - large_window_frame_width,
 			30
 		}
 	},
@@ -602,8 +602,8 @@ local scenegraph_definition = {
 		parent = "password_popup",
 		horizontal_alignment = "center",
 		size = {
-			password_popup_frame_size[1]*0.85,
-			password_popup_frame_size[2]*0.85
+			password_popup_frame_size[1] * 0.85,
+			password_popup_frame_size[2] * 0.85
 		},
 		position = {
 			0,
@@ -1070,8 +1070,8 @@ local function window_icon_tabs(scenegraph_id, size, amount, optional_color_name
 	local slot_width_spacing = 0
 	local offset_layer = 0
 	local total_length = -slot_width_spacing
-	local length_with_spacing = size[1] - slot_width_spacing*(amount - 1)
-	local tab_width = length_with_spacing/amount
+	local length_with_spacing = size[1] - slot_width_spacing * (amount - 1)
+	local tab_width = length_with_spacing / amount
 	local button_size = {
 		tab_width,
 		size[2]
@@ -1122,10 +1122,10 @@ local function window_icon_tabs(scenegraph_id, size, amount, optional_color_name
 			uvs = {
 				{
 					0,
-					math.min(button_size[2]/background_texture_settings.size[2], 1) - 1
+					1 - math.min(button_size[2] / background_texture_settings.size[2], 1)
 				},
 				{
-					math.min(button_size[1]/background_texture_settings.size[1], 1),
+					math.min(button_size[1] / background_texture_settings.size[1], 1),
 					1
 				}
 			},
@@ -1195,8 +1195,8 @@ local function window_icon_tabs(scenegraph_id, size, amount, optional_color_name
 			size = icon_size,
 			color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 			offset = {
-				(offset[1] + button_size[1]/2) - icon_size[1]/2,
-				(offset[2] + button_size[2]/2) - icon_size[1]/2 + 2,
+				(offset[1] + button_size[1] / 2) - icon_size[1] / 2,
+				(offset[2] + button_size[2] / 2) - icon_size[1] / 2 + 2,
 				2
 			}
 		}
@@ -1567,10 +1567,10 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 				uvs = {
 					{
 						0,
-						math.min(size[2]/button_background_texture_settings.size[2], 1) - 1
+						1 - math.min(size[2] / button_background_texture_settings.size[2], 1)
 					},
 					{
-						math.min(size[1]/button_background_texture_settings.size[1], 1),
+						math.min(size[1] / button_background_texture_settings.size[1], 1),
 						1
 					}
 				},
@@ -1846,12 +1846,12 @@ for index, profile_index in ipairs(ProfilePriority) do
 end
 
 local hero_entry_size_scale = 0.75
-local hero_entry_width = hero_entry_size_scale*96
-local hero_entry_height = hero_entry_size_scale*112
-local hero_entry_spacing = hero_entry_size_scale*5
+local hero_entry_width = 96 * hero_entry_size_scale
+local hero_entry_height = 112 * hero_entry_size_scale
+local hero_entry_spacing = 5 * hero_entry_size_scale
 hero_entry_frame_size = {
-	hero_entry_size_scale*86,
-	hero_entry_size_scale*108
+	86 * hero_entry_size_scale,
+	108 * hero_entry_size_scale
 }
 local level_name_style = {
 	font_size = 32,
@@ -2028,7 +2028,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

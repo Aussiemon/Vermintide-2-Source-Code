@@ -17,7 +17,7 @@ SteamHelper.debug_friends = function ()
 		friends[id] = {
 			playing_this_game = false,
 			name = "debug_friend_" .. i,
-			playing_game = i%2 == 1,
+			playing_game = i % 2 == 1,
 			status = math.random(1, 6)
 		}
 	end

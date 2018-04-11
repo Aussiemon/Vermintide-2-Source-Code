@@ -89,7 +89,7 @@ SmartMatch._start_smartmatch = function (self, dt)
 		return 
 	end
 
-	local timeout_in_seconds = (self._is_host and self._timout*10) or self._timout
+	local timeout_in_seconds = (self._is_host and self._timout * 10) or self._timout
 	local preserve_session_mode = (self._is_host and PreserveSessionMode.ALWAYS) or PreserveSessionMode.NEVER
 
 	dprintf("PreserveSessionMode %s. is host %s", (preserve_session_mode == PreserveSessionMode.ALWAYS and "ALWAYS") or "NEVER", (self._is_host and "TRUE") or "FALSE")

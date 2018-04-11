@@ -179,7 +179,7 @@ TutorialTooltipUI.update = function (self, tooltip_tutorial, player_unit, dt)
 				widget.element.dirty = true
 			end
 
-			ui_scenegraph.tutorial_tooltip_input_field.local_position[1] = (total_width - 1920 + 5)*0.5
+			ui_scenegraph.tutorial_tooltip_input_field.local_position[1] = (1920 - total_width + 5) * 0.5
 
 			return self.tutorial_tooltip_widget, tooltip_name
 		end

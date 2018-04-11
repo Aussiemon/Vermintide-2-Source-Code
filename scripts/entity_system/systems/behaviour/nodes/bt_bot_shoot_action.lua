@@ -10,8 +10,8 @@ BTBotShootAction.name = "BTBotShootAction"
 local DEFAULT_AIM_DATA = {
 	min_radius_pseudo_random_c = 0.0557,
 	max_radius_pseudo_random_c = 0.01475,
-	min_radius = math.pi/72,
-	max_radius = math.pi/16
+	min_radius = math.pi / 72,
+	max_radius = math.pi / 16
 }
 local THIS_UNIT = nil
 
@@ -33,23 +33,26 @@ BTBotShootAction.enter = function (self, unit, blackboard, t)
 	blackboard.next_evaluate = t + action_data.evaluation_duration
 	blackboard.next_evaluate_without_firing = t + action_data.evaluation_duration_without_firing
 	local inventory_ext = blackboard.inventory_extension
-	local wielded_slot_name = inventory_ext.get_wielded_slot_name(inventory_ext)
+	local wielded_slot_name = action_data.slot_name or inventory_ext.get_wielded_slot_name(inventory_ext)
 	local slot_data = inventory_ext.get_slot_data(inventory_ext, wielded_slot_name)
 	local item_data = slot_data.item_data
 	local item_template = BackendUtils.get_item_template(item_data)
 	local attack_meta_data = item_template.attack_meta_data or {}
-	local attack_action = item_template.actions.action_one.default
-	local charged_attack_action = item_template.actions.action_one[attack_meta_data.charged_attack_action_name or "shoot_charged"] or attack_action
+	local base_attack_action = item_template.actions[attack_meta_data.base_action_name or "action_one"]
+	local attack_action = base_attack_action.default
+	local charged_attack_action = base_attack_action[attack_meta_data.charged_attack_action_name or "shoot_charged"] or attack_action
 	local ignore_enemies_for_obstruction = attack_meta_data.ignore_enemies_for_obstruction
 	local ignore_enemies_for_obstruction_charged = (attack_meta_data.ignore_enemies_for_obstruction_charged == nil and ignore_enemies_for_obstruction) or attack_meta_data.ignore_enemies_for_obstruction_charged
-	local ignore_hitting_allies = not Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged
+	local ignore_hitting_allies = not Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged or attack_meta_data.ignore_allies_for_obstruction
+	local ignore_hitting_allies_charged = not Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged or attack_meta_data.ignore_allies_for_obstruction_charged
 	blackboard.shoot = {
-		num_aim_rolls = 0,
 		obstructed = true,
+		num_aim_rolls = 0,
 		charging_shot = false,
 		aim_data = attack_meta_data.aim_data or DEFAULT_AIM_DATA,
 		reevaluate_aim_time = t,
 		can_charge_shot = attack_meta_data.can_charge_shot,
+		charge_shot_delay = attack_meta_data.charge_shot_delay,
 		minimum_charge_time = attack_meta_data.minimum_charge_time,
 		reevaluate_obstruction_time = t,
 		charge_range_squared = (attack_meta_data.charge_above_range and attack_meta_data.charge_above_range^2) or nil,
@@ -68,7 +71,7 @@ BTBotShootAction.enter = function (self, unit, blackboard, t)
 		obstruction_fuzzyness_range = attack_meta_data.obstruction_fuzzyness_range,
 		obstruction_fuzzyness_range_charged = attack_meta_data.obstruction_fuzzyness_range_charged or attack_meta_data.obstruction_fuzzyness_range,
 		collision_filter = (ignore_enemies_for_obstruction and ignore_hitting_allies and "filter_bot_ranged_line_of_sight_no_allies_no_enemies") or (ignore_hitting_allies and "filter_bot_ranged_line_of_sight_no_allies") or (ignore_enemies_for_obstruction and "filter_bot_ranged_line_of_sight_no_enemies") or "filter_bot_ranged_line_of_sight",
-		collision_filter_charged = (ignore_enemies_for_obstruction_charged and "filter_bot_ranged_line_of_sight_no_enemies") or "filter_bot_ranged_line_of_sight"
+		collision_filter_charged = (ignore_enemies_for_obstruction_charged and ignore_hitting_allies_charged and "filter_bot_ranged_line_of_sight_no_allies_no_enemies") or (ignore_hitting_allies_charged and "filter_bot_ranged_line_of_sight_no_allies") or (ignore_enemies_for_obstruction_charged and "filter_bot_ranged_line_of_sight_no_enemies") or "filter_bot_ranged_line_of_sight"
 	}
 	blackboard.ranged_obstruction_by_static = nil
 
@@ -80,6 +83,13 @@ BTBotShootAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local input_ext = blackboard.input_extension
 
 	input_ext.set_aiming(input_ext, false)
+
+	local action_data = self._tree_node.action_data
+	local shoot_blackboard = blackboard.shoot
+
+	if shoot_blackboard.charging_shot and action_data.abort_input then
+		input_ext[action_data.abort_input](input_ext)
+	end
 
 	blackboard.shoot = nil
 
@@ -128,15 +138,15 @@ BTBotShootAction._set_new_aim_target = function (self, self_unit, t, shoot_black
 end
 
 local function draw_estimated_arc(max_steps, max_time, position, velocity, gravity)
-	local time_step = max_time/max_steps
+	local time_step = max_time / max_steps
 
 	for i = 1, max_steps, 1 do
-		local new_position = position + velocity*time_step
+		local new_position = position + velocity * time_step
 		local delta = new_position - position
 
 		QuickDrawer:line(position, new_position, Color(100, 200, 200))
 
-		velocity = velocity + gravity*time_step
+		velocity = velocity + gravity * time_step
 		position = new_position
 	end
 
@@ -157,7 +167,7 @@ BTBotShootAction._wanted_aim_rotation = function (self, self_unit, target_unit, 
 
 		Profiler.start("trajectory prediction")
 
-		angle, target_position = prediction_function(projectile_speed/100, -gravity_setting, current_position, target_pos, target_current_velocity)
+		angle, target_position = prediction_function(projectile_speed / 100, -gravity_setting, current_position, target_pos, target_current_velocity)
 
 		Profiler.stop("trajectory prediction")
 
@@ -166,7 +176,7 @@ BTBotShootAction._wanted_aim_rotation = function (self, self_unit, target_unit, 
 				print("BTBotShootAction no angle found, target out of range")
 			end
 
-			angle = math.pi*0.25
+			angle = math.pi * 0.25
 		end
 
 		target_rotation = Quaternion.multiply(Quaternion.look(Vector3.normalize(Vector3.flat(target_position - current_position)), Vector3.up()), Quaternion(Vector3.right(), angle))
@@ -174,8 +184,8 @@ BTBotShootAction._wanted_aim_rotation = function (self, self_unit, target_unit, 
 		if self_unit == script_data.debug_unit then
 			QuickDrawer:sphere(target_position, 0.1, Color(0, 0, 255))
 			QuickDrawer:sphere(current_position, 0.1, Color(0, 0, 255))
-			QuickDrawer:vector(current_position, Quaternion.forward(target_rotation)*3, Color(0, 0, 255))
-			draw_estimated_arc(100, 1, current_position, Quaternion.forward(target_rotation)*projectile_speed*0.01, Vector3(0, 0, gravity_setting))
+			QuickDrawer:vector(current_position, Quaternion.forward(target_rotation) * 3, Color(0, 0, 255))
+			draw_estimated_arc(100, 1, current_position, Quaternion.forward(target_rotation) * projectile_speed * 0.01, Vector3(0, 0, gravity_setting))
 		end
 	else
 		target_position = target_pos
@@ -205,46 +215,46 @@ BTBotShootAction._aim_position = function (self, dt, t, self_unit, current_posit
 	local yaw_speed, pitch_speed = self._calculate_aim_speed(self, self_unit, dt, current_yaw, current_pitch, wanted_yaw, wanted_pitch, shoot_blackboard.aim_speed_yaw, shoot_blackboard.aim_speed_pitch)
 	shoot_blackboard.aim_speed_yaw = yaw_speed
 	shoot_blackboard.aim_speed_pitch = pitch_speed
-	local new_yaw = current_yaw + yaw_speed*dt
-	local new_pitch = current_pitch + pitch_speed*dt
+	local new_yaw = current_yaw + yaw_speed * dt
+	local new_pitch = current_pitch + pitch_speed * dt
 	local yaw_rot = Quaternion(Vector3.up(), new_yaw)
 	local pitch_rot = Quaternion(Vector3.right(), new_pitch)
 	local actual_rotation = Quaternion.multiply(yaw_rot, pitch_rot)
 	local pi = math.pi
-	local yaw_offset = (new_yaw - wanted_yaw + pi)%(pi*2) - pi
+	local yaw_offset = (new_yaw - wanted_yaw + pi) % (pi * 2) - pi
 	local pitch_offset = new_pitch - wanted_pitch
 
 	return yaw_offset, pitch_offset, wanted_rotation, actual_rotation, aim_position
 end
 BTBotShootAction._calculate_aim_speed = function (self, self_unit, dt, current_yaw, current_pitch, wanted_yaw, wanted_pitch, current_yaw_speed, current_pitch_speed)
 	local pi = math.pi
-	local yaw_offset = (wanted_yaw - current_yaw + pi)%(pi*2) - pi
+	local yaw_offset = (wanted_yaw - current_yaw + pi) % (pi * 2) - pi
 	local pitch_offset = wanted_pitch - current_pitch
 	local yaw_offset_sign = math.sign(yaw_offset)
 	local yaw_speed_sign = math.sign(current_yaw_speed)
 	local has_overshot = yaw_speed_sign ~= 0 and yaw_offset_sign ~= yaw_speed_sign
-	local wanted_yaw_speed = yaw_offset*math.pi*10
+	local wanted_yaw_speed = yaw_offset * math.pi * 10
 	local new_yaw_speed = nil
 	local acceleration = 7.5
 	local deceleration = 25
 
 	if has_overshot and 0 < yaw_offset_sign then
-		new_yaw_speed = math.min(current_yaw_speed + deceleration*dt, 0)
+		new_yaw_speed = math.min(current_yaw_speed + deceleration * dt, 0)
 	elseif has_overshot then
-		new_yaw_speed = math.max(current_yaw_speed - deceleration*dt, 0)
+		new_yaw_speed = math.max(current_yaw_speed - deceleration * dt, 0)
 	elseif 0 < yaw_offset_sign then
 		if current_yaw_speed <= wanted_yaw_speed then
-			new_yaw_speed = math.min(current_yaw_speed + acceleration*dt, wanted_yaw_speed)
+			new_yaw_speed = math.min(current_yaw_speed + acceleration * dt, wanted_yaw_speed)
 		else
-			new_yaw_speed = math.max(current_yaw_speed - deceleration*dt, wanted_yaw_speed)
+			new_yaw_speed = math.max(current_yaw_speed - deceleration * dt, wanted_yaw_speed)
 		end
 	elseif wanted_yaw_speed <= current_yaw_speed then
-		new_yaw_speed = math.max(current_yaw_speed - acceleration*dt, wanted_yaw_speed)
+		new_yaw_speed = math.max(current_yaw_speed - acceleration * dt, wanted_yaw_speed)
 	else
-		new_yaw_speed = math.min(current_yaw_speed + deceleration*dt, wanted_yaw_speed)
+		new_yaw_speed = math.min(current_yaw_speed + deceleration * dt, wanted_yaw_speed)
 	end
 
-	local lerped_pitch_speed = pitch_offset/dt
+	local lerped_pitch_speed = pitch_offset / dt
 
 	return new_yaw_speed, lerped_pitch_speed
 end
@@ -300,14 +310,14 @@ BTBotShootAction._aim = function (self, unit, blackboard, dt, t)
 	local input_ext = blackboard.input_extension
 	local range_squared = Vector3.distance_squared(camera_position, actual_aim_position)
 
-	if self._should_charge(self, shoot_bb, range_squared, target_unit) then
-		self._charge_shot(self, shoot_bb, input_ext, t)
+	if self._should_charge(self, shoot_bb, range_squared, target_unit, t) then
+		self._charge_shot(self, shoot_bb, action_data, input_ext, t)
 	end
 
 	input_ext.set_aim_rotation(input_ext, actual_aim_rotation)
 
 	if self._aim_good_enough(self, dt, t, shoot_bb, yaw_offset, pitch_offset) and self._may_attack(self, target_unit, shoot_bb, range_squared, t) then
-		self._fire_shot(self, shoot_bb, input_ext)
+		self._fire_shot(self, shoot_bb, action_data, input_ext, t)
 	end
 
 	local evaluate = (blackboard.fired and blackboard.next_evaluate < t) or blackboard.next_evaluate_without_firing < t
@@ -330,7 +340,7 @@ BTBotShootAction._aim_good_enough = function (self, dt, t, shoot_blackboard, yaw
 	local aim_data = bb.aim_data
 
 	if bb.reevaluate_aim_time < t then
-		local offset = math.sqrt(pitch_offset*pitch_offset + yaw_offset*yaw_offset)
+		local offset = math.sqrt(pitch_offset * pitch_offset + yaw_offset * yaw_offset)
 
 		if aim_data.max_radius < offset then
 			bb.aim_good_enough = false
@@ -341,9 +351,9 @@ BTBotShootAction._aim_good_enough = function (self, dt, t, shoot_blackboard, yaw
 			local num_rolls = bb.num_aim_rolls + 1
 
 			if offset < aim_data.min_radius then
-				success = Math.random() < aim_data.min_radius_pseudo_random_c*num_rolls
+				success = Math.random() < aim_data.min_radius_pseudo_random_c * num_rolls
 			else
-				local prob = math.auto_lerp(aim_data.min_radius, aim_data.max_radius, aim_data.min_radius_pseudo_random_c, aim_data.max_radius_pseudo_random_c, offset)*num_rolls
+				local prob = math.auto_lerp(aim_data.min_radius, aim_data.max_radius, aim_data.min_radius_pseudo_random_c, aim_data.max_radius_pseudo_random_c, offset) * num_rolls
 				success = Math.random() < prob
 			end
 
@@ -365,8 +375,10 @@ BTBotShootAction._aim_good_enough = function (self, dt, t, shoot_blackboard, yaw
 
 	return bb.aim_good_enough
 end
-BTBotShootAction._should_charge = function (self, shoot_blackboard, range_squared, target_unit)
-	if not shoot_blackboard.can_charge_shot then
+BTBotShootAction._should_charge = function (self, shoot_blackboard, range_squared, target_unit, t)
+	local next_charge_shot_t = shoot_blackboard.next_charge_shot_t
+
+	if not shoot_blackboard.can_charge_shot or (next_charge_shot_t and t < next_charge_shot_t) then
 		return false
 	end
 
@@ -382,22 +394,32 @@ BTBotShootAction._should_charge = function (self, shoot_blackboard, range_square
 
 	return shoot_blackboard.always_charge_before_firing or shoot_blackboard.charging_shot or (shoot_blackboard.charge_range_squared and shoot_blackboard.charge_range_squared < range_squared) or (shoot_blackboard.charge_against_armoured_enemy and (not shoot_blackboard.target_breed or shoot_blackboard.target_breed.armour_category == 2))
 end
-BTBotShootAction._fire_shot = function (self, shoot_blackboard, input_extension)
+BTBotShootAction._fire_shot = function (self, shoot_blackboard, action_data, input_extension, t)
 	shoot_blackboard.charging_shot = false
 	shoot_blackboard.charge_start_time = nil
 	shoot_blackboard.fired = true
 
-	input_extension.fire(input_extension)
+	if action_data.fire_input ~= "none" then
+		local input = action_data.fire_input or "fire"
+
+		input_extension[input](input_extension)
+	end
+
+	if shoot_blackboard.charge_shot_delay then
+		shoot_blackboard.next_charge_shot_t = t + shoot_blackboard.charge_shot_delay
+	end
 
 	return 
 end
-BTBotShootAction._charge_shot = function (self, shoot_blackboard, input_extension, t)
+BTBotShootAction._charge_shot = function (self, shoot_blackboard, action_data, input_extension, t)
 	if not shoot_blackboard.charging_shot then
 		shoot_blackboard.charge_start_time = t
 		shoot_blackboard.charging_shot = true
 	end
 
-	input_extension.charge_shot(input_extension)
+	local input = action_data.charge_input or "charge_shot"
+
+	input_extension[input](input_extension)
 
 	return 
 end
@@ -422,7 +444,7 @@ BTBotShootAction._reevaluate_obstruction = function (self, unit, shoot_blackboar
 	end
 
 	shoot_blackboard.obstructed = obstructed
-	shoot_blackboard.reevaluate_obstruction_time = t + min + Math.random()*(max - min)
+	shoot_blackboard.reevaluate_obstruction_time = t + min + Math.random() * (max - min)
 
 	return obstructed_by_static
 end
@@ -433,7 +455,7 @@ local INDEX_ACTOR = 4
 BTBotShootAction._is_shot_obstructed = function (self, physics_world, from, direction, self_unit, target_unit, actual_aim_position, collision_filter)
 	local max_distance = Vector3.length(actual_aim_position - from)
 
-	PhysicsWorld.prepare_actors_for_raycast(physics_world, from, direction, 0.01, 0.5, max_distance*max_distance)
+	PhysicsWorld.prepare_actors_for_raycast(physics_world, from, direction, 0.01, 0.5, max_distance * max_distance)
 
 	local raycast_hits = PhysicsWorld.immediate_raycast(physics_world, from, direction, max_distance, "all", "collision_filter", collision_filter)
 

@@ -4,7 +4,7 @@ local segment_list = {}
 local function get_leap_data(physics_world, own_position, target_position)
 	local gravity = -PlayerUnitMovementSettings.gravity_acceleration
 	local jump_speed = nil
-	local jump_angle = math.pi/6
+	local jump_angle = math.pi / 6
 	local sections = 8
 	local in_los, velocity, time_of_flight, hit_pos = nil
 	local target_velocity = Vector3.zero()
@@ -131,14 +131,14 @@ CareerAbilityDRSlayer._update_priming = function (self)
 	end
 
 	local landing_position = nil
-	local collision_filter = "filter_geiser_check"
+	local collision_filter = "filter_adept_teleport"
 	local result, hit_position, hit_distance, normal = PhysicsWorld.immediate_raycast(physics_world, player_position, player_direction, 10, "closest", "collision_filter", collision_filter)
 
 	if result then
 		landing_position = hit_position
 
 		if Vector3.dot(normal, Vector3.up()) < 0.75 then
-			local step_back = Vector3.normalize(hit_position - player_position)*1
+			local step_back = Vector3.normalize(hit_position - player_position) * 1
 			local step_back_position = hit_position - step_back
 			local new_result, new_hit_position, new_hit_distance, new_normal = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
 
@@ -148,7 +148,7 @@ CareerAbilityDRSlayer._update_priming = function (self)
 		end
 	else
 		landing_position = hit_position
-		local new_result, new_hit_position, new_hit_distance, new_normal = PhysicsWorld.immediate_raycast(physics_world, player_position + player_direction*10, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
+		local new_result, new_hit_position, new_hit_distance, new_normal = PhysicsWorld.immediate_raycast(physics_world, player_position + player_direction * 10, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
 
 		if new_result then
 			landing_position = new_hit_position
@@ -258,7 +258,7 @@ CareerAbilityDRSlayer._run_ability = function (self)
 			local rotation = Quaternion.identity()
 			local explosion_template = "bardin_slayer_activated_ability_landing_stagger"
 			local scale = 1
-			local career_power_level = career_extension:get_career_power_level()
+			local career_power_level = career_extension:get_career_power_level() * ((has_impact_damage_buff and 2) or 1)
 			local area_damage_system = Managers.state.entity:system("area_damage_system")
 
 			area_damage_system.create_explosion(area_damage_system, owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level)

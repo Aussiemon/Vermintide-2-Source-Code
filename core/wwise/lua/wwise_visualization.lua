@@ -82,7 +82,7 @@ local function render_soundscape_unit(lines, lines_noz, unit)
 			Matrix4x4.set_y(pose, Vector3.normalize(Matrix4x4.y(pose)))
 			Matrix4x4.set_z(pose, Vector3.normalize(Matrix4x4.z(pose)))
 			LineObject.add_box(lines_noz, source_shape_color, pose, scale)
-			LineObject.add_box(lines_noz, trigger_range_color, pose, scale + Vector3(1, 1, 1)*range)
+			LineObject.add_box(lines_noz, trigger_range_color, pose, scale + Vector3(1, 1, 1) * range)
 		end
 	end
 

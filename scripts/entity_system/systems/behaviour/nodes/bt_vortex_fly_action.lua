@@ -50,12 +50,12 @@ BTVortexFlyAction._move_to_destination = function (self, current_position, desti
 	if 0.1 < destination_distance then
 		local speed = max_speed
 
-		if destination_distance < speed*dt then
-			speed = destination_distance/dt
+		if destination_distance < speed * dt then
+			speed = destination_distance / dt
 		end
 
 		local destination_direction = Vector3.normalize(destination_vector)
-		local wanted_velocity = destination_direction*speed
+		local wanted_velocity = destination_direction * speed
 
 		locomotion_extension.set_wanted_velocity(locomotion_extension, wanted_velocity)
 

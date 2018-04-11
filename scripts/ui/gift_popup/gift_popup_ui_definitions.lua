@@ -397,7 +397,7 @@ local animation_definitions = {
 
 				if chest_unit and Unit.alive(chest_unit) then
 					local anim_progress = math.easeCubic(progress)
-					local degrees = anim_progress*720
+					local degrees = anim_progress * 720
 					local radian_angle = math.degrees_to_radians(degrees)
 					local unit_rotation = Quaternion.axis_angle(Vector3(0, 0, 1), radian_angle)
 
@@ -438,7 +438,7 @@ local animation_definitions = {
 
 						if max_value < largest_value then
 							local diff = largest_value - max_value
-							local scale_fraction = diff/largest_value - 1
+							local scale_fraction = 1 - diff / largest_value
 							local scale = Vector3(0, 0, 0)
 
 							Unit.set_local_scale(chest_unit, 0, scale)
@@ -456,7 +456,7 @@ local animation_definitions = {
 				if chest_unit and Unit.alive(chest_unit) then
 					local anim_progress = math.easeCubic(progress)
 					local end_scale_fraction = params.end_scale_fraction or 0.15
-					local scale_fraction = end_scale_fraction*anim_progress
+					local scale_fraction = end_scale_fraction * anim_progress
 					local scale = Vector3(scale_fraction, scale_fraction, scale_fraction)
 
 					if progress == 1 then
@@ -490,13 +490,13 @@ local animation_definitions = {
 					local camera_position = ScriptCamera.position(camera)
 					local camera_forward_vector = Quaternion.forward(camera_rotation)
 					local unit_spawn_position = camera_position + camera_forward_vector
-					unit_spawn_position.z = unit_spawn_position.z - 0.3 + anim_progress*0.29
+					unit_spawn_position.z = unit_spawn_position.z - 0.3 + 0.29 * anim_progress
 					local unit_box, box_dimension = Unit.box(chest_unit)
 					local unit_center_position = Matrix4x4.translation(unit_box)
 					local unit_root_position = Unit.world_position(chest_unit, 0)
 					local offset = unit_center_position - unit_root_position
 					local scale_fraction = params.end_scale_fraction or 0
-					offset = offset*scale_fraction
+					offset = offset * scale_fraction
 					local display_position = unit_spawn_position - offset
 
 					Unit.set_local_position(chest_unit, 0, display_position)
@@ -521,7 +521,7 @@ local animation_definitions = {
 				local popup_bg = widgets.popup_bg
 				local title_text = widgets.title_text
 				local description_text = widgets.description_text
-				local alpha = anim_progress*255
+				local alpha = 255 * anim_progress
 				divider.style.texture_id.color[1] = alpha
 				popup_bg.style.texture_id.color[1] = alpha
 				title_text.style.text.text_color[1] = alpha
@@ -542,7 +542,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress*255
+				local alpha = 255 * anim_progress
 				local claim_button = widgets.claim_button
 				claim_button.style.texture.color[1] = alpha
 				claim_button.style.text.text_color[1] = alpha
@@ -656,7 +656,7 @@ local animation_definitions = {
 
 						if max_value < largest_value then
 							local diff = largest_value - max_value
-							local scale_fraction = diff/largest_value - 1
+							local scale_fraction = 1 - diff / largest_value
 							params.end_scale_fraction = scale_fraction
 						end
 					end
@@ -668,9 +668,9 @@ local animation_definitions = {
 				local chest_unit = params.chest_unit
 
 				if chest_unit and Unit.alive(chest_unit) then
-					local anim_progress = math.easeOutCubic(progress) - 1
+					local anim_progress = 1 - math.easeOutCubic(progress)
 					local end_scale_fraction = params.end_scale_fraction or 0.1
-					local scale_fraction = end_scale_fraction*anim_progress
+					local scale_fraction = end_scale_fraction * anim_progress
 					local scale = Vector3(scale_fraction, scale_fraction, scale_fraction)
 
 					Unit.set_local_scale(chest_unit, 0, scale)

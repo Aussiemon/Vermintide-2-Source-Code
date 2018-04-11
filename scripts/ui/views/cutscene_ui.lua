@@ -17,7 +17,6 @@ CutsceneUI.init = function (self, ingame_ui_context, cutscene_system)
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph)
 	self.letterbox_widget = UIWidget.init(definitions.widgets.letterbox)
-	self.transparent_game_logo_widget = UIWidget.init(definitions.widgets.transparent_game_logo)
 	self.ui_animations = {}
 	self.fx_fade_widgets = {}
 	self.fx_fade_widgets_pool = {}
@@ -152,7 +151,6 @@ CutsceneUI.draw_game_logo_widget = function (self, dt)
 		local input_service = self.input_manager:get_service("cutscene")
 
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
-		UIRenderer.draw_widget(ui_renderer, self.transparent_game_logo_widget)
 		UIRenderer.end_pass(ui_renderer)
 	end
 
@@ -230,17 +228,17 @@ CutsceneUI.fx_fade = function (self, fade_in_time, hold_time, fade_out_time, col
 	local start_alpha = 0
 	local target_alpha = 1
 	local anim_time = fade_in_time + hold_time + fade_out_time
-	fade_in_time = fade_in_time/anim_time
-	fade_out_time = fade_out_time/anim_time
-	hold_time = fade_out_time - 1
+	fade_in_time = fade_in_time / anim_time
+	fade_out_time = fade_out_time / anim_time
+	hold_time = 1 - fade_out_time
 
 	local function anim_func(t)
 		if t < fade_in_time then
-			return math_ease_cubic(t/fade_in_time)
+			return math_ease_cubic(t / fade_in_time)
 		elseif t < hold_time then
 			return 1
 		elseif 0 < fade_out_time then
-			return math_ease_cubic((t - 1)/fade_out_time)
+			return math_ease_cubic((1 - t) / fade_out_time)
 		else
 			return 0
 		end
@@ -266,17 +264,17 @@ CutsceneUI.fx_text_popup = function (self, fade_in_time, hold_time, fade_out_tim
 	local start_alpha = 0
 	local target_alpha = 1
 	local anim_time = fade_in_time + hold_time + fade_out_time
-	fade_in_time = fade_in_time/anim_time
-	fade_out_time = fade_out_time/anim_time
-	hold_time = fade_out_time - 1
+	fade_in_time = fade_in_time / anim_time
+	fade_out_time = fade_out_time / anim_time
+	hold_time = 1 - fade_out_time
 
 	local function anim_func(t)
 		if t < fade_in_time then
-			return math_ease_cubic(t/fade_in_time)
+			return math_ease_cubic(t / fade_in_time)
 		elseif t < hold_time then
 			return 1
 		elseif 0 < fade_out_time then
-			return math_ease_cubic((t - 1)/fade_out_time)
+			return math_ease_cubic((1 - t) / fade_out_time)
 		else
 			return 0
 		end
@@ -315,18 +313,12 @@ end
 CutsceneUI.fade_in_logo = function (self, fade_time)
 	local ui_animations = self.ui_animations
 	self.draw_game_logo = true
-	local texture_style = self.transparent_game_logo_widget.style.texture_id
-	ui_animations.logo_fade_out = nil
-	ui_animations.logo_fade_in = UIAnimation.init(UIAnimation.function_by_time, texture_style.color, 1, 0, 255, fade_time, math.easeOutCubic)
 
 	return 
 end
 CutsceneUI.fade_out_logo = function (self, fade_time)
 	local ui_animations = self.ui_animations
 	self.draw_game_logo = true
-	local texture_style = self.transparent_game_logo_widget.style.texture_id
-	ui_animations.logo_fade_in = nil
-	ui_animations.logo_fade_out = UIAnimation.init(UIAnimation.function_by_time, texture_style.color, 1, 255, 0, fade_time, math.easeInCubic)
 
 	return 
 end

@@ -38,9 +38,9 @@ BTPackMasterInitialPullAction._find_pull_position = function (self, unit, blackb
 	local num_segments = 10
 
 	for i = 1, num_segments, 1 do
-		local angle = math.degrees_to_radians((i*45)/num_segments)
+		local angle = math.degrees_to_radians((45 * i) / num_segments)
 		local angle_cw = angle_towards_pull + angle
-		local offset_cw = action.pull_distance*Vector3(math.cos(angle_cw), math.sin(angle_cw), 0)
+		local offset_cw = action.pull_distance * Vector3(math.cos(angle_cw), math.sin(angle_cw), 0)
 		local position_end_cw = position + offset_cw
 		local success_cw, altitude_cw = GwNavQueries.triangle_from_position(nav_world, position_end_cw, 0.5, 0.5)
 		local raycango_success = GwNavQueries.raycango(nav_world, position, position_end_cw, traverse_logic)
@@ -52,7 +52,7 @@ BTPackMasterInitialPullAction._find_pull_position = function (self, unit, blackb
 			break
 		else
 			local angle_ccw = angle_towards_pull - angle
-			local offset_ccw = action.pull_distance*Vector3(math.cos(angle_ccw), math.sin(angle_ccw), 0)
+			local offset_ccw = action.pull_distance * Vector3(math.cos(angle_ccw), math.sin(angle_ccw), 0)
 			local position_target_ccw = position + offset_ccw
 			local success_ccw, altitude_ccw = GwNavQueries.triangle_from_position(nav_world, position_target_ccw, 0.5, 0.5)
 			local raycango_success_ccw = GwNavQueries.raycango(nav_world, position, position_target_ccw, traverse_logic)

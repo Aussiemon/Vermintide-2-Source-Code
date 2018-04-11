@@ -116,7 +116,7 @@ PlayerWhereaboutsExtension._check_bot_nav_transition = function (self, nav_world
 		fassert(not self._falling and not self._jumping, "Tried to jump or fall while falling without aborting landing")
 
 		self._jumping = true
-		local perform_distance_check = input.player_state == nil or input.player_state ~= "lunging" or input.player_state ~= "leaping"
+		local perform_distance_check = input.player_state == nil or (input.player_state ~= "lunging" and input.player_state ~= "leaping")
 		local pos = self._find_start_position(self, current_position, perform_distance_check)
 
 		if pos then
@@ -127,7 +127,7 @@ PlayerWhereaboutsExtension._check_bot_nav_transition = function (self, nav_world
 		fassert(not self._jumping and not self._falling, "Tried to fall or jump while jumping without aborting landing")
 
 		self._falling = true
-		local perform_distance_check = input.player_state == nil or input.player_state ~= "lunging" or input.player_state ~= "leaping"
+		local perform_distance_check = input.player_state == nil or (input.player_state ~= "lunging" and input.player_state ~= "leaping")
 		local pos = self._find_start_position(self, current_position, perform_distance_check)
 
 		if pos then
@@ -258,13 +258,13 @@ PlayerWhereaboutsExtension._debug_draw = function (self, unit_position, point_li
 
 	if Vector3.is_valid(last_onground_pos_on_nav_mesh) then
 		local cos_t = math.abs(math.cos(t))
-		local cos_2t = math.abs(math.cos(t*2))
+		local cos_2t = math.abs(math.cos(2 * t))
 		local sin_t = math.abs(math.sin(t))
-		local debug_color = Color(cos_t*255, sin_t*255, cos_t*255)
+		local debug_color = Color(cos_t * 255, sin_t * 255, cos_t * 255)
 
 		QuickDrawer:sphere(last_onground_pos_on_nav_mesh, 0.25, debug_color)
 		QuickDrawer:line(unit_position, last_onground_pos_on_nav_mesh, debug_color)
-		QuickDrawer:sphere(unit_position, cos_2t*0.2 + 0.05, debug_color)
+		QuickDrawer:sphere(unit_position, cos_2t * 0.2 + 0.05, debug_color)
 	end
 
 	for i = 1, #point_list, 1 do

@@ -40,9 +40,9 @@ PlayerHud.draw_player_names = function (self, unit)
 	local camera = ScriptViewport.camera(viewport)
 	local res_x = RESOLUTION_LOOKUP.res_w
 	local res_y = RESOLUTION_LOOKUP.res_h
-	local viewport_center = Vector3(res_x/2, res_y/2, 0)
-	local text_visibility_radius_sq = res_y/3
-	text_visibility_radius_sq = text_visibility_radius_sq*text_visibility_radius_sq
+	local viewport_center = Vector3(res_x / 2, res_y / 2, 0)
+	local text_visibility_radius_sq = res_y / 3
+	text_visibility_radius_sq = text_visibility_radius_sq * text_visibility_radius_sq
 	local gui = self.gui
 	local offset_vector = Vector3(0, 0, 0.925)
 
@@ -59,11 +59,11 @@ PlayerHud.draw_player_names = function (self, unit)
 				local player_screen_pos_center = Camera.world_to_screen(camera, player_world_pos_center)
 				player_screen_pos_center = Vector3(player_screen_pos_center.x, player_screen_pos_center.z, 0)
 				local player_screen_pos_head = Camera.world_to_screen(camera, player_world_pos_head)
-				local text_pos = Vector3(player_screen_pos_head.x - text_length/2, player_screen_pos_head.z, 0)
+				local text_pos = Vector3(player_screen_pos_head.x - text_length / 2, player_screen_pos_head.z, 0)
 				local distance_to_center_sq = Vector3.distance_squared(player_screen_pos_center, viewport_center)
 				local delta = math.max(text_visibility_radius_sq - distance_to_center_sq, 0)
-				local opacity = delta/text_visibility_radius_sq
-				local color = Color(opacity*255, 0, 200, 200)
+				local opacity = delta / text_visibility_radius_sq
+				local color = Color(255 * opacity, 0, 200, 200)
 
 				Gui.text(gui, name, font_mtrl, font_size, font, text_pos, color)
 			end

@@ -63,7 +63,6 @@ IngameHud.init = function (self, ingame_ui_context)
 	self.peer_id = ingame_ui_context.peer_id
 	self.player_manager = ingame_ui_context.player_manager
 	self.mission_system = Managers.state.entity:system("mission_system")
-	self.subtitle_gui = SubtitleGui:new(ingame_ui_context)
 	self.damage_indicator_gui = DamageIndicatorGui:new(ingame_ui_context)
 	self.interaction_ui = InteractionUI:new(ingame_ui_context)
 	self.tutorial_ui = TutorialUI:new(ingame_ui_context)
@@ -93,7 +92,6 @@ IngameHud.init = function (self, ingame_ui_context)
 	self.unit_frames_handler = UnitFramesHandler:new(ingame_ui_context)
 	self.buff_ui = BuffUI:new(ingame_ui_context)
 	self.buff_presentation_ui = BuffPresentationUI:new(ingame_ui_context)
-	self.twitch_vote_ui = TwitchVoteUI:new(ingame_ui_context)
 	self.equipment_ui = EquipmentUI:new(ingame_ui_context)
 	self.gamepad_equipment_ui = GamePadEquipmentUI:new(ingame_ui_context)
 	self.ability_ui = AbilityUI:new(ingame_ui_context)
@@ -109,6 +107,15 @@ IngameHud.init = function (self, ingame_ui_context)
 
 	if self.is_in_inn then
 		self.news_feed_ui = NewsFeedUI:new(ingame_ui_context)
+		self.subtitle_gui = SubtitleGui:new(ingame_ui_context)
+	else
+		local twitch_ui = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
+
+		if twitch_ui then
+			self.twitch_vote_ui = TwitchVoteUI:new(ingame_ui_context)
+		else
+			self.subtitle_gui = SubtitleGui:new(ingame_ui_context)
+		end
 	end
 
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
@@ -119,10 +126,6 @@ IngameHud.init = function (self, ingame_ui_context)
 	elseif game_mode_key == "tutorial" then
 		self.tutorial_input_ui = TutorialInputUI:new(ingame_ui_context)
 		self.tutorial_intro_ui = TutorialIntroUI:new(ingame_ui_context)
-	end
-
-	if self.gdc_build then
-		self.gdc_start_ui = GDCStartUI:new(ingame_ui_context)
 	end
 
 	return 
@@ -188,7 +191,10 @@ IngameHud.destroy = function (self)
 		self.news_feed_ui:destroy()
 	end
 
-	self.subtitle_gui:destroy()
+	if self.subtitle_gui then
+		self.subtitle_gui:destroy()
+	end
+
 	self.damage_indicator_gui:destroy()
 	self.tutorial_ui:destroy()
 	self.interaction_ui:destroy()
@@ -483,9 +489,12 @@ IngameHud._update_always = function (self, dt, t, player, context)
 	if not active_cutscene then
 	end
 
-	Profiler.start("subtitle_gui")
-	self.subtitle_gui:update(dt)
-	Profiler.stop("subtitle_gui")
+	if self.subtitle_gui then
+		Profiler.start("subtitle_gui")
+		self.subtitle_gui:update(dt)
+		Profiler.stop("subtitle_gui")
+	end
+
 	Profiler.start("Player List")
 
 	local ingame_player_list_ui = self.ingame_player_list_ui
@@ -726,8 +735,8 @@ IngameHud.post_update = function (self, dt, t, hud_visible)
 end
 IngameHud._update_crosshair_position = function (self, player_unit, dt)
 	local inv_res_scale = RESOLUTION_LOOKUP.inv_scale
-	local position_x = RESOLUTION_LOOKUP.res_w*0.5*inv_res_scale
-	local position_y = RESOLUTION_LOOKUP.res_h*0.5*inv_res_scale
+	local position_x = RESOLUTION_LOOKUP.res_w * 0.5 * inv_res_scale
+	local position_y = RESOLUTION_LOOKUP.res_h * 0.5 * inv_res_scale
 
 	if not Unit.alive(player_unit) then
 		return position_x, position_y
@@ -747,8 +756,8 @@ IngameHud._update_crosshair_position = function (self, player_unit, dt)
 			local camera = ScriptViewport.camera(viewport)
 			local position_in_screen = Camera.world_to_screen(camera, world_pos)
 			position_in_screen.z = 1
-			position_in_screen.x = position_in_screen.x*inv_res_scale
-			position_in_screen.y = position_in_screen.y*inv_res_scale
+			position_in_screen.x = position_in_screen.x * inv_res_scale
+			position_in_screen.y = position_in_screen.y * inv_res_scale
 
 			return position_in_screen.x, position_in_screen.y
 		end

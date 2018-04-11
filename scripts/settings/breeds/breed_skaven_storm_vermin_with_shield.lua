@@ -369,11 +369,11 @@ local action_data = {
 			},
 			slam_shield_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			slam_shield_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
@@ -394,11 +394,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		considerations = UtilityConsiderations.clan_rat_follow
@@ -724,14 +724,14 @@ local action_data = {
 
 			if shield_user and stagger then
 				if not blocked and stagger <= block_count and action.shield_block_anims then
-					blackboard.stagger_time = blackboard.stagger_time + math.max(0.5, stagger/block_count)*breed.block_stagger_mod
+					blackboard.stagger_time = blackboard.stagger_time + math.max(0.5, stagger / block_count) * breed.block_stagger_mod
 					stagger_anims = action.shield_block_anims[stagger_type]
 
 					ai_shield_extension.set_is_blocking(ai_shield_extension, true)
 
 					idle_event = "idle_shield_up"
 				elseif not blocked and is_blocking and block_count < stagger and action.shield_stagger_anims then
-					blackboard.stagger_time = blackboard.stagger_time + stagger/block_count*breed.block_stagger_mod_2
+					blackboard.stagger_time = blackboard.stagger_time + stagger / block_count * breed.block_stagger_mod_2
 					local index = Math.random(1, 2)
 					local anim_table = {
 						"idle_shield_down",
@@ -754,7 +754,7 @@ local action_data = {
 					idle_event = "idle_shield_up"
 				else
 					stagger_anims = action.stagger_anims[stagger_type]
-					blackboard.stagger_time = blackboard.stagger_time + stagger/block_count*breed.block_stagger_mod_2
+					blackboard.stagger_time = blackboard.stagger_time + stagger / block_count * breed.block_stagger_mod_2
 					local index = Math.random(1, 2)
 					local anim_table = {
 						"idle_shield_down",

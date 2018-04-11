@@ -21,6 +21,12 @@ ActionHandgun.client_owner_start_action = function (self, new_action, t, chain_a
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.current_action = new_action
 	self.power_level = power_level
+
+	if new_action.use_beam_consecutive_hits and chain_action_data and chain_action_data.beam_consecutive_hits then
+		self.charge_multiplier = 0.5 + 0.5 * math.clamp(chain_action_data.beam_consecutive_hits / 3, 0, 1)
+		self.power_level = self.power_level * self.charge_multiplier
+	end
+
 	self.owner_buff_extension = buff_extension
 
 	if not Managers.player:owner(self.owner_unit).bot_player then
@@ -84,7 +90,7 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 		local overcharge_type = self.overcharge_type
 
 		if overcharge_type then
-			local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
+			local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type] * (self.charge_multiplier or 1)
 
 			self.overcharge_extension:add_charge(overcharge_amount)
 		end
@@ -175,10 +181,10 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 			Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
 		end
 
-		local hit_position = (result and result[#result][1]) or position + direction*100
+		local hit_position = (result and result[#result][1]) or position + direction * 100
 
 		Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
-		Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - position)*0.1)
+		Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - position) * 0.1)
 		Unit.flow_event(weapon_unit, "lua_bullet_trail")
 		Unit.flow_event(weapon_unit, "lua_bullet_trail_set")
 	end
@@ -226,6 +232,7 @@ ActionHandgun.finish = function (self, reason)
 		status_extension.set_blocking(status_extension, false)
 	end
 
+	self.charge_multiplier = nil
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
 	if hud_extension then

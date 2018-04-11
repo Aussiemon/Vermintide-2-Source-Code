@@ -81,22 +81,6 @@ local inventory_consumable_icons = (platform == "win32" and {
 	healthkit_first_aid_kit_01 = "consumables_medpack",
 	potion_speed_boost_01 = "consumables_speed"
 }
-local inventory_consumable_slot_backgrounds = {
-	wpn_grimoire_01 = "hud_inventory_slot_bg_small_04",
-	potion_cooldown_reduction_01 = "hud_inventory_slot_bg_small_05",
-	potion_healing_draught_01 = "hud_inventory_slot_bg_small_03",
-	grenade_frag_02 = "hud_inventory_slot_bg_small_02",
-	potion_speed_boost_01 = "hud_inventory_slot_bg_small_05",
-	grenade_frag_01 = "hud_inventory_slot_bg_small_02",
-	grenade_smoke_02 = "hud_inventory_slot_bg_small_02",
-	grenade_smoke_01 = "hud_inventory_slot_bg_small_02",
-	grenade_fire_01 = "hud_inventory_slot_bg_small_02",
-	grenade_fire_02 = "hud_inventory_slot_bg_small_02",
-	default = "hud_inventory_slot_bg_small_01",
-	wpn_side_objective_tome_01 = "hud_inventory_slot_bg_small_04",
-	potion_damage_boost_01 = "hud_inventory_slot_bg_small_05",
-	healthkit_first_aid_kit_01 = "hud_inventory_slot_bg_small_03"
-}
 local inventory_index_by_slot = (platform == "win32" and {
 	slot_healthkit = 1,
 	slot_grenade = 3,
@@ -114,12 +98,12 @@ local weapon_slot_widget_settings = {
 }
 local health_bar_size_fraction = 1
 local health_bar_size = {
-	health_bar_size_fraction*92,
-	health_bar_size_fraction*9
+	health_bar_size_fraction * 92,
+	health_bar_size_fraction * 9
 }
 local health_bar_offset = {
-	-(health_bar_size[1]/2),
-	health_bar_size_fraction*-25,
+	-(health_bar_size[1] / 2),
+	-25 * health_bar_size_fraction,
 	0
 }
 
@@ -194,12 +178,12 @@ local function create_static_widget()
 		style = {
 			character_portrait = {
 				size = {
-					portrait_scale*86,
-					portrait_scale*108
+					86 * portrait_scale,
+					108 * portrait_scale
 				},
 				offset = {
-					portrait_scale*-43,
-					portrait_scale*-54 + portrait_scale*55,
+					-43 * portrait_scale,
+					-54 * portrait_scale + 55 * portrait_scale,
 					0
 				},
 				color = {
@@ -246,7 +230,7 @@ local function create_static_widget()
 				text_color = Colors.get_table("white"),
 				offset = {
 					0,
-					portrait_scale*110,
+					110 * portrait_scale,
 					health_bar_offset[3] + 15
 				}
 			},
@@ -258,7 +242,7 @@ local function create_static_widget()
 				text_color = Colors.get_table("black"),
 				offset = {
 					2,
-					portrait_scale*110 - 2,
+					110 * portrait_scale - 2,
 					health_bar_offset[3] + 14
 				}
 			},
@@ -268,8 +252,8 @@ local function create_static_widget()
 					17
 				},
 				offset = {
-					(health_bar_offset[1] + health_bar_size[1]/2) - 50,
-					(health_bar_offset[2] + health_bar_size[2]/2) - 8.5,
+					(health_bar_offset[1] + health_bar_size[1] / 2) - 50,
+					(health_bar_offset[2] + health_bar_size[2] / 2) - 8.5,
 					health_bar_offset[3] + 15
 				},
 				color = {
@@ -285,8 +269,8 @@ local function create_static_widget()
 					24
 				},
 				offset = {
-					(health_bar_offset[1] + health_bar_size[1]/2) - 50,
-					(health_bar_offset[2] + health_bar_size[2]/2) - 8.5 - 7,
+					(health_bar_offset[1] + health_bar_size[1] / 2) - 50,
+					(health_bar_offset[2] + health_bar_size[2] / 2) - 8.5 - 7,
 					health_bar_offset[3] + 20
 				},
 				color = {
@@ -302,7 +286,7 @@ local function create_static_widget()
 					5
 				},
 				offset = {
-					(health_bar_offset[1] + health_bar_size[1]/2) - 46,
+					(health_bar_offset[1] + health_bar_size[1] / 2) - 46,
 					health_bar_offset[2] - 9,
 					health_bar_offset[3] + 15
 				},
@@ -316,96 +300,17 @@ local function create_static_widget()
 		},
 		offset = {
 			0,
-			portrait_scale*-55,
+			-55 * portrait_scale,
 			0
 		}
 	}
 end
 
-local function create_dynamic_potrait_widget()
+local function create_dynamic_portait_widget()
 	return {
 		scenegraph_id = "pivot",
 		element = {
 			passes = {
-				{
-					pass_type = "texture",
-					style_id = "hp_bar_highlight",
-					texture_id = "hp_bar_highlight",
-					retained_mode = RETAINED_MODE_ENABLED,
-					content_check_function = function (content, style)
-						return not content.has_shield
-					end
-				},
-				{
-					style_id = "grimoire_debuff_divider",
-					texture_id = "grimoire_debuff_divider",
-					pass_type = "texture",
-					retained_mode = RETAINED_MODE_ENABLED,
-					content_check_function = function (content)
-						return content.hp_bar.draw_health_bar
-					end,
-					content_change_function = function (content, style)
-						local hp_bar_content = content.hp_bar
-						local internal_bar_value = hp_bar_content.internal_bar_value
-						local actual_active_percentage = content.actual_active_percentage or 1
-						local grim_progress = math.max(internal_bar_value, actual_active_percentage)
-						local offset = style.offset
-						offset[1] = health_bar_offset[1] + health_bar_size[1]*grim_progress
-
-						return 
-					end
-				},
-				{
-					pass_type = "gradient_mask_texture",
-					style_id = "hp_bar",
-					texture_id = "texture_id",
-					content_id = "hp_bar",
-					retained_mode = RETAINED_MODE_ENABLED,
-					content_check_function = function (content)
-						return content.draw_health_bar
-					end
-				},
-				{
-					pass_type = "gradient_mask_texture",
-					style_id = "total_health_bar",
-					texture_id = "texture_id",
-					content_id = "total_health_bar",
-					retained_mode = RETAINED_MODE_ENABLED,
-					content_check_function = function (content)
-						return content.draw_health_bar
-					end
-				},
-				{
-					style_id = "grimoire_bar",
-					pass_type = "texture_uv",
-					content_id = "grimoire_bar",
-					retained_mode = RETAINED_MODE_ENABLED,
-					content_change_function = function (content, style)
-						local parent_content = content.parent
-						local hp_bar_content = parent_content.hp_bar
-						local internal_bar_value = hp_bar_content.internal_bar_value
-						local actual_active_percentage = parent_content.actual_active_percentage or 1
-						local grim_progress = math.max(internal_bar_value, actual_active_percentage)
-						local size = style.size
-						local uvs = content.uvs
-						local offset = style.offset
-						local bar_length = health_bar_size[1]
-						uvs[1][1] = grim_progress
-						size[1] = bar_length*(grim_progress - 1)
-						offset[1] = health_bar_offset[1] + 2 + bar_length*grim_progress
-
-						return 
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "hp_bar",
-					texture_id = "hp_bar_mask",
-					retained_mode = RETAINED_MODE_ENABLED,
-					content_check_function = function (content)
-						return content.hp_bar.draw_health_bar
-					end
-				},
 				{
 					pass_type = "texture",
 					style_id = "portrait_icon",
@@ -442,7 +347,7 @@ local function create_dynamic_potrait_widget()
 						local offset = style.offset
 						local bar_length = 92
 						uvs[2][2] = ammo_progress
-						size[1] = bar_length*ammo_progress
+						size[1] = bar_length * ammo_progress
 
 						return 
 					end
@@ -450,44 +355,16 @@ local function create_dynamic_potrait_widget()
 			}
 		},
 		content = {
-			talk_indicator_highlight = "speaking_icon",
-			grimoire_debuff_divider = "hud_teammate_hp_bar_grim_divider",
-			display_portrait_icon = false,
+			display_portrait_overlay = false,
 			connecting = false,
+			display_portrait_icon = false,
+			connecting_icon = "matchmaking_connecting_icon",
 			bar_start_side = "left",
 			portrait_icon = "status_icon_needs_assist",
-			hp_bar_highlight = "hud_teammate_hp_bar_highlight",
-			display_portrait_overlay = false,
-			connecting_icon = "matchmaking_connecting_icon",
-			hp_bar_mask = "teammate_hp_bar_mask",
-			hp_bar = {
-				bar_value = 1,
-				internal_bar_value = 0,
-				texture_id = "teammate_hp_bar_color_tint_1",
-				draw_health_bar = true
-			},
-			total_health_bar = {
-				bar_value = 1,
-				internal_bar_value = 0,
-				texture_id = "teammate_hp_bar_1",
-				draw_health_bar = true
-			},
+			talk_indicator_highlight = "speaking_icon",
 			ammo_bar = {
 				bar_value = 1,
 				texture_id = "hud_teammate_ammo_bar_fill",
-				uvs = {
-					{
-						0,
-						0
-					},
-					{
-						1,
-						1
-					}
-				}
-			},
-			grimoire_bar = {
-				texture_id = "hud_panel_hp_bar_bg_grimoire",
 				uvs = {
 					{
 						0,
@@ -542,11 +419,11 @@ local function create_dynamic_potrait_widget()
 			},
 			portrait_icon = {
 				size = {
-					portrait_scale*86,
-					portrait_scale*108
+					86 * portrait_scale,
+					108 * portrait_scale
 				},
 				offset = {
-					-(portrait_scale*86)/2,
+					-(86 * portrait_scale) / 2,
 					0,
 					1
 				},
@@ -557,66 +434,13 @@ local function create_dynamic_potrait_widget()
 					255
 				}
 			},
-			total_health_bar = {
-				gradient_threshold = 1,
-				size = {
-					health_bar_size[1],
-					health_bar_size[2]
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					health_bar_offset[1],
-					health_bar_offset[2],
-					health_bar_offset[3] + 17
-				}
-			},
-			hp_bar = {
-				gradient_threshold = 1,
-				size = {
-					health_bar_size[1],
-					health_bar_size[2]
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					health_bar_offset[1],
-					health_bar_offset[2],
-					health_bar_offset[3] + 18
-				}
-			},
-			grimoire_bar = {
-				size = {
-					health_bar_size[1],
-					health_bar_size[2]
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					health_bar_offset[1],
-					health_bar_offset[2],
-					health_bar_offset[3] + 16
-				}
-			},
 			ammo_bar = {
 				size = {
 					92,
 					5
 				},
 				offset = {
-					(health_bar_offset[1] + health_bar_size[1]/2) - 46,
+					(health_bar_offset[1] + health_bar_size[1] / 2) - 46,
 					health_bar_offset[2] - 9,
 					health_bar_offset[3] + 18
 				},
@@ -626,46 +450,11 @@ local function create_dynamic_potrait_widget()
 					255,
 					255
 				}
-			},
-			grimoire_debuff_divider = {
-				masked = true,
-				size = {
-					3,
-					28
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					health_bar_offset[1],
-					health_bar_offset[2],
-					23
-				}
-			},
-			hp_bar_highlight = {
-				size = {
-					100,
-					17
-				},
-				offset = {
-					(health_bar_offset[1] + health_bar_size[1]/2) - 50,
-					health_bar_offset[2] - 7,
-					health_bar_offset[3] + 19
-				},
-				color = {
-					0,
-					255,
-					255,
-					255
-				}
 			}
 		},
 		offset = {
 			0,
-			portrait_scale*-55,
+			-55 * portrait_scale,
 			0
 		}
 	}
@@ -816,8 +605,8 @@ local function create_dynamic_loadout_widget()
 		style = {
 			item_slot_bg_1 = {
 				size = {
-					slot_scale*29,
-					slot_scale*34
+					29 * slot_scale,
+					29 * slot_scale
 				},
 				offset = {
 					-35,
@@ -833,8 +622,8 @@ local function create_dynamic_loadout_widget()
 			},
 			item_slot_frame_1 = {
 				size = {
-					slot_scale*29,
-					slot_scale*34
+					29 * slot_scale,
+					29 * slot_scale
 				},
 				offset = {
 					-35,
@@ -855,7 +644,7 @@ local function create_dynamic_loadout_widget()
 				},
 				offset = {
 					-32.5,
-					5,
+					2,
 					8
 				},
 				color = {
@@ -867,8 +656,8 @@ local function create_dynamic_loadout_widget()
 			},
 			item_slot_highlight_1 = {
 				size = {
-					slot_scale*29,
-					slot_scale*34
+					29 * slot_scale,
+					29 * slot_scale
 				},
 				offset = {
 					-35,
@@ -884,8 +673,8 @@ local function create_dynamic_loadout_widget()
 			},
 			item_slot_bg_2 = {
 				size = {
-					slot_scale*29,
-					slot_scale*34
+					29 * slot_scale,
+					29 * slot_scale
 				},
 				offset = {
 					0,
@@ -901,8 +690,8 @@ local function create_dynamic_loadout_widget()
 			},
 			item_slot_frame_2 = {
 				size = {
-					slot_scale*29,
-					slot_scale*34
+					29 * slot_scale,
+					29 * slot_scale
 				},
 				offset = {
 					0,
@@ -923,7 +712,7 @@ local function create_dynamic_loadout_widget()
 				},
 				offset = {
 					2.5,
-					5,
+					2,
 					8
 				},
 				color = {
@@ -935,8 +724,8 @@ local function create_dynamic_loadout_widget()
 			},
 			item_slot_highlight_2 = {
 				size = {
-					slot_scale*29,
-					slot_scale*34
+					29 * slot_scale,
+					29 * slot_scale
 				},
 				offset = {
 					0,
@@ -952,8 +741,8 @@ local function create_dynamic_loadout_widget()
 			},
 			item_slot_bg_3 = {
 				size = {
-					slot_scale*29,
-					slot_scale*34
+					29 * slot_scale,
+					29 * slot_scale
 				},
 				offset = {
 					35,
@@ -969,8 +758,8 @@ local function create_dynamic_loadout_widget()
 			},
 			item_slot_frame_3 = {
 				size = {
-					slot_scale*29,
-					slot_scale*34
+					29 * slot_scale,
+					29 * slot_scale
 				},
 				offset = {
 					35,
@@ -991,7 +780,7 @@ local function create_dynamic_loadout_widget()
 				},
 				offset = {
 					37.5,
-					5,
+					2,
 					8
 				},
 				color = {
@@ -1003,8 +792,8 @@ local function create_dynamic_loadout_widget()
 			},
 			item_slot_highlight_3 = {
 				size = {
-					slot_scale*29,
-					slot_scale*34
+					29 * slot_scale,
+					29 * slot_scale
 				},
 				offset = {
 					35,
@@ -1021,19 +810,259 @@ local function create_dynamic_loadout_widget()
 		},
 		offset = {
 			-15,
-			health_bar_offset[2] - 105,
+			health_bar_offset[2] - 96,
+			0
+		}
+	}
+end
+
+local function create_dynamic_health_widget()
+	return {
+		scenegraph_id = "pivot",
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "hp_bar_highlight",
+					texture_id = "hp_bar_highlight",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return not content.has_shield
+					end
+				},
+				{
+					style_id = "grimoire_debuff_divider",
+					texture_id = "grimoire_debuff_divider",
+					pass_type = "texture",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return content.hp_bar.draw_health_bar
+					end,
+					content_change_function = function (content, style)
+						local hp_bar_content = content.hp_bar
+						local internal_bar_value = hp_bar_content.internal_bar_value
+						local actual_active_percentage = content.actual_active_percentage or 1
+						local grim_progress = math.max(internal_bar_value, actual_active_percentage)
+						local offset = style.offset
+						offset[1] = health_bar_offset[1] + health_bar_size[1] * grim_progress
+
+						return 
+					end
+				},
+				{
+					pass_type = "gradient_mask_texture",
+					style_id = "hp_bar",
+					texture_id = "texture_id",
+					content_id = "hp_bar",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return content.draw_health_bar
+					end
+				},
+				{
+					pass_type = "gradient_mask_texture",
+					style_id = "total_health_bar",
+					texture_id = "texture_id",
+					content_id = "total_health_bar",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return content.draw_health_bar
+					end
+				},
+				{
+					style_id = "grimoire_bar",
+					pass_type = "texture_uv",
+					content_id = "grimoire_bar",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_change_function = function (content, style)
+						local parent_content = content.parent
+						local hp_bar_content = parent_content.hp_bar
+						local internal_bar_value = hp_bar_content.internal_bar_value
+						local actual_active_percentage = parent_content.actual_active_percentage or 1
+						local grim_progress = math.max(internal_bar_value, actual_active_percentage)
+						local size = style.size
+						local uvs = content.uvs
+						local offset = style.offset
+						local bar_length = health_bar_size[1]
+						uvs[1][1] = grim_progress
+						size[1] = bar_length * (1 - grim_progress)
+						offset[1] = 2 + health_bar_offset[1] + bar_length * grim_progress
+
+						return 
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "hp_bar",
+					texture_id = "hp_bar_mask",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return content.hp_bar.draw_health_bar
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "portrait_icon",
+					texture_id = "portrait_icon",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return content.display_portrait_icon
+					end
+				}
+			}
+		},
+		content = {
+			grimoire_debuff_divider = "hud_teammate_hp_bar_grim_divider",
+			hp_bar_highlight = "hud_teammate_hp_bar_highlight",
+			bar_start_side = "left",
+			hp_bar_mask = "teammate_hp_bar_mask",
+			hp_bar = {
+				bar_value = 1,
+				internal_bar_value = 0,
+				texture_id = "teammate_hp_bar_color_tint_1",
+				draw_health_bar = true
+			},
+			total_health_bar = {
+				bar_value = 1,
+				internal_bar_value = 0,
+				texture_id = "teammate_hp_bar_1",
+				draw_health_bar = true
+			},
+			grimoire_bar = {
+				texture_id = "hud_panel_hp_bar_bg_grimoire",
+				uvs = {
+					{
+						0,
+						0
+					},
+					{
+						1,
+						1
+					}
+				}
+			}
+		},
+		style = {
+			total_health_bar = {
+				gradient_threshold = 1,
+				size = {
+					health_bar_size[1],
+					health_bar_size[2]
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					health_bar_offset[1],
+					health_bar_offset[2],
+					health_bar_offset[3] + 17
+				}
+			},
+			hp_bar = {
+				gradient_threshold = 1,
+				size = {
+					health_bar_size[1],
+					health_bar_size[2]
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					health_bar_offset[1],
+					health_bar_offset[2],
+					health_bar_offset[3] + 18
+				}
+			},
+			grimoire_bar = {
+				size = {
+					health_bar_size[1],
+					health_bar_size[2]
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					health_bar_offset[1],
+					health_bar_offset[2],
+					health_bar_offset[3] + 16
+				}
+			},
+			ammo_bar = {
+				size = {
+					92,
+					5
+				},
+				offset = {
+					(health_bar_offset[1] + health_bar_size[1] / 2) - 46,
+					health_bar_offset[2] - 9,
+					health_bar_offset[3] + 18
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			grimoire_debuff_divider = {
+				masked = true,
+				size = {
+					3,
+					28
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					health_bar_offset[1],
+					health_bar_offset[2],
+					23
+				}
+			},
+			hp_bar_highlight = {
+				size = {
+					100,
+					17
+				},
+				offset = {
+					(health_bar_offset[1] + health_bar_size[1] / 2) - 50,
+					health_bar_offset[2] - 7,
+					health_bar_offset[3] + 19
+				},
+				color = {
+					0,
+					255,
+					255,
+					255
+				}
+			}
+		},
+		offset = {
+			0,
+			-55 * portrait_scale,
 			0
 		}
 	}
 end
 
 local widget_definitions = {
-	default_dynamic = create_dynamic_potrait_widget(),
-	loadout_static = create_static_loadout_widget(),
 	loadout_dynamic = create_dynamic_loadout_widget(),
 	portrait_static = UIWidgets.create_portrait_frame("portrait_pivot", "default", "-", portrait_scale, RETAINED_MODE_ENABLED),
-	default_dynamic = create_dynamic_potrait_widget(),
-	default_static = create_static_widget()
+	default_dynamic = create_dynamic_portait_widget(),
+	default_static = create_static_widget(),
+	health_dynamic = create_dynamic_health_widget()
 }
 local features_list = {
 	equipment = true,
@@ -1042,29 +1071,21 @@ local features_list = {
 local widget_name_by_feature = {
 	static = {
 		default = "default_static",
-		weapons = "loadout_dynamic",
-		status_icon = "default_dynamic",
-		health = "default_static",
-		portrait_frame = "portrait_static",
-		equipment = "loadout_dynamic",
 		player_name = "default_static",
-		level = "default_static"
+		level = "default_static",
+		portrait_frame = "portrait_static"
 	},
 	dynamic = {
 		default = "default_dynamic",
-		player_name = "default_static",
 		weapons = "loadout_dynamic",
-		portrait_frame = "portrait_static",
-		ammo = "default_dynamic",
-		equipment = "loadout_dynamic",
 		status_icon = "default_dynamic",
-		health = "default_dynamic",
-		level = "default_static"
+		health = "health_dynamic",
+		equipment = "loadout_dynamic",
+		ammo = "default_dynamic"
 	}
 }
 
 return {
-	inventory_consumable_slot_backgrounds = inventory_consumable_slot_backgrounds,
 	weapon_slot_widget_settings = weapon_slot_widget_settings,
 	inventory_index_by_slot = inventory_index_by_slot,
 	inventory_consumable_icons = inventory_consumable_icons,

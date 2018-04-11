@@ -99,7 +99,7 @@ end
 PlayerCharacterStateInVortex.update_spin_velocity = function (self, unit, vortex_unit, vortex_unit_go_id, dt)
 	local game = self.game
 	local radius_percentage = GameSession.game_object_field(game, vortex_unit_go_id, "inner_radius_percentage")
-	local wanted_inner_radius = self.vortex_full_inner_radius*radius_percentage*0.75
+	local wanted_inner_radius = self.vortex_full_inner_radius * radius_percentage * 0.75
 	local ascend_speed = self.ascend_speed
 	local rotation_speed = self.rotation_speed
 	local radius_change_speed = self.radius_change_speed
@@ -107,7 +107,7 @@ PlayerCharacterStateInVortex.update_spin_velocity = function (self, unit, vortex
 	local vortex_position = POSITION_LOOKUP[vortex_unit]
 	local velocity, new_radius, new_height, spinn_dir = LocomotionUtils.get_vortex_spin_velocity(unit_position, vortex_position, wanted_inner_radius, Vector3.up(), rotation_speed, radius_change_speed, ascend_speed, dt)
 	local height_percentage = GameSession.game_object_field(game, vortex_unit_go_id, "height_percentage")
-	local vortex_height = self.vortex_max_height*height_percentage
+	local vortex_height = self.vortex_max_height * height_percentage
 
 	if vortex_height < new_height then
 		velocity.z = 0

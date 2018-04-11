@@ -277,8 +277,8 @@ AIInventoryExtension.drop_single_item = function (self, item_inventory_index, re
 
 			local actor = Unit.create_actor(item_unit, "rp_dropped")
 
-			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random())*40)
-			Actor.add_velocity(actor, optional_drop_direction or Vector3(math.random()*2 - 0.5, math.random()*2 - 0.5, 4.5))
+			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
+			Actor.add_velocity(actor, optional_drop_direction or Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
 
 			item_system.wielding_unit = nil
 			item_system.dropped = true
@@ -324,8 +324,8 @@ AIInventoryExtension._drop_unit = function (self, drop_unit_name, item_unit, ite
 
 	local actor = Unit.create_actor(new_item_unit, "rp_dropped")
 
-	Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random())*40)
-	Actor.add_velocity(actor, optional_drop_direction or Vector3(math.random()*2 - 0.5, math.random()*2 - 0.5, 4.5))
+	Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 40)
+	Actor.add_velocity(actor, optional_drop_direction or Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
 
 	if drop_multiple then
 		self.dropped_items[item_inventory_index] = self.dropped_items[item_inventory_index] or {}

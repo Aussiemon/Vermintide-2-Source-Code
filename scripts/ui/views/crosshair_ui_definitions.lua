@@ -157,7 +157,7 @@ local scenegraph_definition = {
 		parent = "crosshair_root",
 		horizontal_alignment = "center",
 		position = {
-			-(HIT_GAP + 4),
+			-(4 + HIT_GAP),
 			0,
 			1
 		},
@@ -172,7 +172,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		position = {
 			0,
-			-(HIT_GAP + 4),
+			-(4 + HIT_GAP),
 			1
 		},
 		size = {
@@ -186,7 +186,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		position = {
 			0,
-			HIT_GAP + 4,
+			4 + HIT_GAP,
 			1
 		},
 		size = {
@@ -204,7 +204,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-80,
+			-30,
 			1
 		}
 	}
@@ -247,8 +247,8 @@ local widget_definitions = {
 		style = {
 			angle = 0,
 			pivot = {
-				scenegraph_definition.crosshair_arrow.size[1]/2,
-				scenegraph_definition.crosshair_arrow.size[2]/2
+				scenegraph_definition.crosshair_arrow.size[1] / 2,
+				scenegraph_definition.crosshair_arrow.size[2] / 2
 			},
 			offset = {
 				0,
@@ -266,8 +266,8 @@ local widget_definitions = {
 		style = {
 			angle = 0,
 			pivot = {
-				scenegraph_definition.crosshair_line.size[1]/2,
-				scenegraph_definition.crosshair_line.size[2]/2
+				scenegraph_definition.crosshair_line.size[1] / 2,
+				scenegraph_definition.crosshair_line.size[2] / 2
 			},
 			offset = {
 				0,
@@ -285,8 +285,8 @@ local widget_definitions = {
 		style = {
 			angle = 0,
 			pivot = {
-				scenegraph_definition.crosshair_shotgun.size[1]/2,
-				scenegraph_definition.crosshair_shotgun.size[2]/2
+				scenegraph_definition.crosshair_shotgun.size[1] / 2,
+				scenegraph_definition.crosshair_shotgun.size[2] / 2
 			},
 			offset = {
 				0,
@@ -379,7 +379,7 @@ local widget_definitions = {
 		},
 		style = {
 			rotating_texture = {
-				angle = math.pi*0.5,
+				angle = 0.5 * math.pi,
 				pivot = {
 					5,
 					2
@@ -410,7 +410,7 @@ local widget_definitions = {
 		},
 		style = {
 			rotating_texture = {
-				angle = math.pi*0.5,
+				angle = 0.5 * math.pi,
 				pivot = {
 					5,
 					2
@@ -456,8 +456,8 @@ local widget_definitions = {
 				255
 			},
 			texture_size = {
-				42,
-				46
+				55,
+				50
 			}
 		}
 	},
@@ -512,8 +512,8 @@ local widget_definitions = {
 				255
 			},
 			texture_size = {
-				58,
-				50
+				75,
+				52
 			}
 		}
 	},

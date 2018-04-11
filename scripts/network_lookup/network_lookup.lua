@@ -154,6 +154,7 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_witch_hunter_skaven_stronghold",
 	"dialogues/generated/lookup_wood_elf_skaven_stronghold",
 	"dialogues/generated/lookup_empire_soldier_skaven_stronghold",
+	"dialogues/generated/lookup_skaven_warlord_skaven_stronghold_level",
 	"dialogues/generated/lookup_bright_wizard_nurgle",
 	"dialogues/generated/lookup_dwarf_ranger_nurgle",
 	"dialogues/generated/lookup_witch_hunter_nurgle",
@@ -1041,6 +1042,7 @@ NetworkLookup.buff_templates = {
 	"victor_witchhunter_damage_on_grimoire_picked_up",
 	"victor_witchhunter_passive_debuff",
 	"victor_witchhunter_headshot_damage_increase",
+	"victor_witchhunter_defence_buff_on_disabled",
 	"markus_knight_defence_buff",
 	"markus_mercenary_activated_ability",
 	"markus_mercenary_attack_speed_on_last_standing",
@@ -1084,6 +1086,7 @@ NetworkLookup.buff_templates = {
 	"passive_career_bw_1_2",
 	"warpfire_thrower_ground_base",
 	"warpfire_thrower_face_base",
+	"sienna_adept_ability_trail",
 	"burning_1W_dot",
 	"burning_3W_dot",
 	"beam_burning_dot",
@@ -1092,10 +1095,12 @@ NetworkLookup.buff_templates = {
 	"arrow_poison_dot",
 	"aoe_poison_dot",
 	"weapon_bleed_dot_test",
+	"weapon_bleed_dot_maidenguard",
 	"slow_grenade_slow",
 	"chaos_zombie_explosion",
 	"chaos_magic_missile",
 	"chaos_slow_bomb_missile",
+	"vermintide_face_base",
 	"traits_heal_on_crit",
 	"traits_melee_shield_on_assist",
 	"trait_necklace_no_healing_health_regen",
@@ -1122,6 +1127,9 @@ NetworkLookup.buff_templates = {
 	"properties_power_vs_frenzy",
 	"properties_health",
 	"properties_revive_speed",
+	"twitch_speed_boost_boost",
+	"twitch_damage_boost_boost",
+	"twitch_cooldown_reduction_boost",
 	"twitch_no_overcharge_no_ammo_reloads",
 	"twitch_health_regen",
 	"twitch_health_degen",
@@ -1219,6 +1227,7 @@ NetworkLookup.effects = {
 	"fx/wpnfx_grenade_impact",
 	"fx/wpnfx_frag_grenade_impact",
 	"fx/wpnfx_smoke_grenade_impact",
+	"fx/wpnfx_smoke_grenade_impact_Upgraded",
 	"fx/wpnfx_fire_grenade_impact",
 	"fx/wpnfx_warplock_pistol_impact_flesh",
 	"fx/chr_player_fak_healed",
@@ -1253,7 +1262,9 @@ NetworkLookup.effects = {
 	"fx/wpn_chaos_sorcerer_boss_bomb_03",
 	"fx/chr_nurgle_explosion_01",
 	"fx/doomwheel_explosion",
-	"fx/chr_iron_breaker_ability_taunt"
+	"fx/warp_lightning_bolt_impact",
+	"fx/chr_iron_breaker_ability_taunt",
+	"fx/chr_grey_seer_lightning_hit_02"
 }
 NetworkLookup.light_weight_projectile_particle_effects = create_lookup({}, LightWeightProjectileParticleEffects)
 NetworkLookup.localized_strings = {
@@ -1457,7 +1468,8 @@ NetworkLookup.sound_events = {
 	"chaos_corruptor_spawning",
 	"chaos_corruptor_spawning_stop",
 	"chaos_corruptor_corrupting",
-	"chaos_corruptor_corrupting_stop"
+	"chaos_corruptor_corrupting_stop",
+	"Play_emitter_grey_seer_lightning_bolt_hit"
 }
 NetworkLookup.global_parameter_names = {
 	"occupied_slots_percentage",
@@ -1816,6 +1828,9 @@ NetworkLookup.boons = create_lookup({
 NetworkLookup.weapon_skins = create_lookup({
 	"n/a"
 }, WeaponSkins.skins)
+NetworkLookup.performance_titles = create_lookup({
+	"n/a"
+}, PerformanceTitles.titles)
 
 local function statistics_path_names(path_names, stat)
 	if not stat.value then

@@ -7445,13 +7445,13 @@ return function ()
 				"query_context",
 				"killer_name",
 				OP.EQ,
-				"empire_soldier"
+				"bright_wizard"
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"witch_hunter"
 			},
 			{
 				"faction_memory",

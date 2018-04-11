@@ -289,7 +289,7 @@ FriendsView.create_ui_elements = function (self)
 end
 FriendsView.create_friend_entry = function (self, i)
 	local size_y = definitions.scenegraph_definition.friend_list.size[2]
-	local offset_y = size_y*-1
+	local offset_y = size_y * -1
 	local content = {
 		name = "n/a",
 		selected = false,
@@ -588,8 +588,8 @@ FriendsView.cb_refresh_friends_done = function (self, friends_list, use_cached_f
 	if overflowing_friends <= 0 then
 		self.scrollbar_widget.content.scroll_step = 0
 	else
-		local bar_length = math.min(math.max(overflowing_friends/friends_n, 0.1) - 1, 0.9)
-		local steps_possible = overflowing_friends/1
+		local bar_length = math.min(1 - math.max(overflowing_friends / friends_n, 0.1), 0.9)
+		local steps_possible = 1 / overflowing_friends
 		self.scrollbar_widget.content.scroll_bar_info.bar_height_percentage = bar_length
 		self.scrollbar_widget.content.button_scroll_step = steps_possible
 		self.scroll_field_widget.content.scroll_step = steps_possible
@@ -1146,7 +1146,7 @@ FriendsView.draw = function (self, gamepad_active, dt, input_service)
 
 		if self.updating_friend_info then
 			local connecting_rotation_speed = 350
-			local connecting_rotation_angle = (dt*connecting_rotation_speed)%360
+			local connecting_rotation_angle = (dt * connecting_rotation_speed) % 360
 			local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
 			local update_icon_widget = self.friend_info_update_icon
 			update_icon_widget.style.texture_id.angle = update_icon_widget.style.texture_id.angle + connecting_radians
@@ -1273,7 +1273,7 @@ FriendsView.on_scroll_changed = function (self, value)
 
 	if max_visible_elements and max_visible_elements < total_elements then
 		local current_scroll_value = value
-		local new_start_index = math.max(0, math.round(current_scroll_value*(total_elements - max_visible_elements))) + 1
+		local new_start_index = math.max(0, math.round(current_scroll_value * (total_elements - max_visible_elements))) + 1
 		list_style.start_index = new_start_index
 	end
 
@@ -1318,14 +1318,14 @@ FriendsView.handle_controller_navigation_input = function (self, input_service, 
 		local move_up_hold = input_service.get(input_service, "move_up_hold")
 
 		if move_up or move_up_hold then
-			self.controller_cooldown = GamepadSettings.menu_cooldown*speed_multiplier
+			self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
 			new_selection_index = math.max(selection_index - 1, 1)
 		else
 			local move_down = input_service.get(input_service, "move_down")
 			local move_down_hold = input_service.get(input_service, "move_down_hold")
 
 			if move_down or move_down_hold then
-				self.controller_cooldown = GamepadSettings.menu_cooldown*speed_multiplier
+				self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
 				new_selection_index = math.min(selection_index + 1, friends_n)
 			end
 		end

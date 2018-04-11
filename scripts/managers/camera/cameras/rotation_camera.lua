@@ -14,11 +14,11 @@ RotationCamera.parse_parameters = function (self, camera_settings, parent_node)
 	BaseCamera.parse_parameters(self, camera_settings, parent_node)
 
 	if camera_settings.offset_pitch then
-		self._offset_pitch = math.pi*camera_settings.offset_pitch*INV_180
+		self._offset_pitch = math.pi * camera_settings.offset_pitch * INV_180
 	end
 
 	if camera_settings.offset_yaw then
-		self._offset_yaw = math.pi*camera_settings.offset_yaw*INV_180
+		self._offset_yaw = math.pi * camera_settings.offset_yaw * INV_180
 	end
 
 	return 

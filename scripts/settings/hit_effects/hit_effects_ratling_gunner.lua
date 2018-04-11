@@ -14,21 +14,21 @@ wounding_damage_types = {
 local SHOOTING_HIT_EFFECT_ANIMS = {
 	angles = {
 		{
-			to = math.pi/18,
+			to = math.pi / 18,
 			animations = {
 				"hit_reaction_shoot_fwd",
 				"hit_reaction_shoot_fwd_2"
 			}
 		},
 		{
-			to = (math.pi*3)/4,
+			to = (3 * math.pi) / 4,
 			animations = {
 				"hit_reaction_shoot_left",
 				"hit_reaction_shoot_left_2"
 			}
 		},
 		{
-			to = (math.pi*5)/4,
+			to = (5 * math.pi) / 4,
 			animations = {
 				"hit_reaction_shoot_bwd",
 				"hit_reaction_shoot_bwd_2",
@@ -36,7 +36,7 @@ local SHOOTING_HIT_EFFECT_ANIMS = {
 			}
 		},
 		{
-			to = (math.pi*35)/18,
+			to = (35 * math.pi) / 18,
 			animations = {
 				"hit_reaction_shoot_right",
 				"hit_reaction_shoot_right_2"

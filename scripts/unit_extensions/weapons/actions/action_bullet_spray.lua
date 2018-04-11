@@ -43,8 +43,8 @@ ActionBulletSpray.client_owner_start_action = function (self, new_action, t, cha
 		self.used_ammo = false
 	end
 
-	local cone_hypotenuse = math.sqrt(SPRAY_RANGE*SPRAY_RANGE + SPRAY_RADIUS*SPRAY_RADIUS)
-	self.CONE_COS_ALPHA = SPRAY_RANGE/cone_hypotenuse
+	local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + SPRAY_RADIUS * SPRAY_RADIUS)
+	self.CONE_COS_ALPHA = SPRAY_RANGE / cone_hypotenuse
 	local overcharge_type = new_action.overcharge_type
 
 	if overcharge_type then
@@ -114,7 +114,7 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 
 		if breed then
 			local rand = math.random()
-			local chance = #NODES/1
+			local chance = 1 / #NODES
 			local cumalative_value = 0
 
 			for i = 1, #NODES, 1 do
@@ -142,10 +142,10 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 		end
 
 		local weapon_unit = self.weapon_unit
-		local hit_position = (result and result[#result][1]) or player_position + direction*100
+		local hit_position = (result and result[#result][1]) or player_position + direction * 100
 
 		Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
-		Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - player_position)*0.1)
+		Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - player_position) * 0.1)
 		Unit.flow_event(weapon_unit, "lua_bullet_trail")
 		Unit.flow_event(weapon_unit, "lua_bullet_trail_set")
 	end
@@ -200,10 +200,10 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 		end
 	end
 
-	local start_point = player_position + player_direction*POSITION_TWEAK + player_direction*SPRAY_RADIUS
-	local end_point = player_position + player_direction*POSITION_TWEAK + player_direction*(SPRAY_RANGE - SPRAY_RADIUS)
+	local start_point = player_position + player_direction * POSITION_TWEAK + player_direction * SPRAY_RADIUS
+	local end_point = player_position + player_direction * POSITION_TWEAK + player_direction * (SPRAY_RANGE - SPRAY_RADIUS)
 
-	PhysicsWorld.prepare_actors_for_overlap(physics_world, start_point, SPRAY_RANGE*SPRAY_RANGE)
+	PhysicsWorld.prepare_actors_for_overlap(physics_world, start_point, SPRAY_RANGE * SPRAY_RANGE)
 
 	local result = PhysicsWorld.linear_sphere_sweep(physics_world, start_point, end_point, SPRAY_RADIUS, 100, "collision_filter", "filter_character_trigger", "report_initial_overlap")
 
@@ -269,8 +269,8 @@ ActionBulletSpray._check_within_cone = function (self, player_position, player_d
 	local CONE_COS_ALPHA = self.CONE_COS_ALPHA
 
 	if player then
-		local cone_hypotenuse = math.sqrt(SPRAY_RANGE*SPRAY_RANGE + PLAYER_SPRAY_RADIUS*PLAYER_SPRAY_RADIUS)
-		CONE_COS_ALPHA = SPRAY_RANGE/cone_hypotenuse
+		local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + PLAYER_SPRAY_RADIUS * PLAYER_SPRAY_RADIUS)
+		CONE_COS_ALPHA = SPRAY_RANGE / cone_hypotenuse
 	end
 
 	local target_position = Unit.world_position(target, Unit.node(target, "j_neck"))

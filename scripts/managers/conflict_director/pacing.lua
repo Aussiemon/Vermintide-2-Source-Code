@@ -95,7 +95,7 @@ Pacing.enemy_killed = function (self, killed_unit, player_units)
 		local amount = nil
 
 		if 0 < dist then
-			amount = dist/1*CurrentIntensitySettings.intensity_add_nearby_kill
+			amount = 1 / dist * CurrentIntensitySettings.intensity_add_nearby_kill
 		else
 			amount = CurrentIntensitySettings.intensity_add_nearby_kill
 		end
@@ -180,7 +180,7 @@ Pacing.update = function (self, t, dt, alive_player_units)
 		sum_intensity = sum_intensity + intensity
 	end
 
-	self.total_intensity = sum_intensity/num_alive_player_units
+	self.total_intensity = sum_intensity / num_alive_player_units
 
 	self.intensity_graphs(self, t, dt, alive_player_units)
 

@@ -106,11 +106,6 @@ local filter_macros = {
 
 		return item_data.item_type
 	end,
-	slot_type = function (item, backend_id)
-		local item_data = item.data
-
-		return item_data.slot_type
-	end,
 	chest_category = function (item, backend_id)
 		local item_data = item.data
 
@@ -132,23 +127,69 @@ local filter_macros = {
 
 		return 
 	end,
-	equipped_by = function (item, backend_id)
-		local item_data = item.data
-		local backend_items = Managers.backend:get_interface("items")
-		local career_name = backend_items.equipped_by(backend_items, backend_id)
+	equipped_by_current_career = function (item, backend_id, params)
+		Profiler.start("equipped_by_current_career")
 
-		return career_name or false
+		local item_data = item.data
+		local profile_synchronizer = Managers.state.network.profile_synchronizer
+		local player = nil
+
+		if params and params.player then
+			player = params.player
+		else
+			player = Managers.player:local_player()
+		end
+
+		if not player then
+			return false
+		end
+
+		local profile_index = player.profile_index(player)
+
+		if not profile_index or profile_index == 0 then
+			return false
+		end
+
+		local career_index = player.career_index(player)
+
+		if not career_index or career_index == 0 then
+			return false
+		end
+
+		local hero_data = SPProfiles[profile_index]
+		local career_data = hero_data.careers[career_index]
+		local career_name = career_data.name
+		local backend_items = Managers.backend:get_interface("items")
+		local career_names = backend_items.equipped_by(backend_items, backend_id)
+
+		Profiler.stop("equipped_by_current_career")
+
+		return table.contains(career_names, career_name)
 	end,
 	is_equipped = function (item, backend_id)
 		local item_data = item.data
 		local backend_items = Managers.backend:get_interface("items")
-		local career_name = backend_items.equipped_by(backend_items, backend_id)
+		local career_names = backend_items.equipped_by(backend_items, backend_id)
 
-		if career_name then
+		if 0 < #career_names then
 			return true
 		end
 
 		return false
+	end,
+	is_equipment_slot = function (item, backend_id)
+		local item_data = item.data
+		local is_slot = false
+
+		for _, slot in ipairs(InventorySettings.equipment_slots) do
+			if item_data.slot_type == slot.type then
+				is_slot = true
+
+				break
+			end
+		end
+
+		return is_slot
 	end,
 	current_hero = function (item, backend_id)
 		local item_data = item.data
@@ -250,9 +291,9 @@ local filter_macros = {
 			local rarity = backend_items.get_item_rarity(backend_items, backend_id)
 
 			if rarity ~= "default" then
-				local career_name = backend_items.equipped_by(backend_items, backend_id)
+				local career_names = backend_items.equipped_by(backend_items, backend_id)
 
-				if not career_name then
+				if #career_names == 0 then
 					return true
 				end
 			end
@@ -290,8 +331,9 @@ local filter_macros = {
 
 		if (slot_type == "ranged" or slot_type == "melee") and not item.skin then
 			local backend_items = Managers.backend:get_interface("items")
+			local career_names = backend_items.equipped_by(backend_items, backend_id)
 
-			if not backend_items.equipped_by(backend_items, backend_id) then
+			if #career_names == 0 then
 				local weapon_skin_name = item_data.key .. "_skin"
 
 				return backend_items.has_item(backend_items, weapon_skin_name)
@@ -332,7 +374,8 @@ local filter_macros = {
 	end
 }
 BackendInterfaceCommon.filter_postfix_cache = BackendInterfaceCommon.filter_postfix_cache or {}
-BackendInterfaceCommon.filter_items = function (self, items, filter_infix)
+local empty_params = {}
+BackendInterfaceCommon.filter_items = function (self, items, filter_infix, params)
 	local filter_postfix = BackendInterfaceCommon.filter_postfix_cache[filter_infix]
 
 	if not filter_postfix then
@@ -368,7 +411,7 @@ BackendInterfaceCommon.filter_items = function (self, items, filter_infix)
 				local macro_func = filter_macros[token]
 
 				if macro_func then
-					stack[#stack + 1] = macro_func(item, backend_id)
+					stack[#stack + 1] = macro_func(item, backend_id, params or empty_params)
 				else
 					stack[#stack + 1] = token
 				end

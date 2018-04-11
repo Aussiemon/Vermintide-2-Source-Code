@@ -612,7 +612,7 @@ LinkerTransportationExtension._get_position_from_index = function (self, index)
 		local translation = Matrix4x4.translation(pose)
 		local rotation = Matrix4x4.rotation(pose)
 		translation.z = transport_position.z
-		position = translation + Quaternion.rotate(rotation, Vector3(half_extents[1]*0.5, half_extents[2]*0.5*self._bot_slots_offset[index], 0))
+		position = translation + Quaternion.rotate(rotation, Vector3(half_extents[1] * 0.5, half_extents[2] * 0.5 * self._bot_slots_offset[index], 0))
 	end
 
 	return position
@@ -638,7 +638,7 @@ LinkerTransportationExtension._link_transported_unit = function (self, unit_to_l
 				local translation = Matrix4x4.translation(pose)
 				local rotation = Matrix4x4.rotation(pose)
 				translation.z = transport_position.z
-				local position = translation + Quaternion.rotate(rotation, Vector3(half_extents[1]*0.5, half_extents[2]*0.5*self._bot_slots_offset[index], 0))
+				local position = translation + Quaternion.rotate(rotation, Vector3(half_extents[1] * 0.5, half_extents[2] * 0.5 * self._bot_slots_offset[index], 0))
 				offset = position - transport_position
 			end
 

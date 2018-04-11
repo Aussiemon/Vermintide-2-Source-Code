@@ -88,50 +88,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pbw_level_ussingen_cart_idea",
-		response = "pbw_level_ussingen_cart_idea",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_ussingen_cart_idea"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"faction_memory",
-				"level_ussingen_cart_idea",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ussingen_cart_idea",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pbw_level_ussingen_cellar",
 		response = "pbw_level_ussingen_cellar",
 		criterias = {
@@ -184,6 +140,12 @@ return function ()
 				"concept",
 				OP.EQ,
 				"seen_item"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				2
 			},
 			{
 				"query_context",
@@ -522,50 +484,6 @@ return function ()
 			{
 				"faction_memory",
 				"level_ussingen_way_through",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pbw_level_ussingen_what_next",
-		response = "pbw_level_ussingen_what_next",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_ussingen_what_next"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"faction_memory",
-				"level_ussingen_what_next",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ussingen_what_next",
 				OP.ADD,
 				1
 			}
@@ -912,50 +830,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pbw_level_ussingen_marktplatz",
-		response = "pbw_level_ussingen_marktplatz",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_ussingen_marktplatz"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"faction_memory",
-				"level_ussingen_marktplatz",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ussingen_marktplatz",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pbw_level_ussingen_wrong_way",
 		response = "pbw_level_ussingen_wrong_way",
 		criterias = {
@@ -1014,6 +888,12 @@ return function ()
 				"item_tag",
 				OP.EQ,
 				"level_ussingen_wine_cellar"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				2
 			},
 			{
 				"query_context",
@@ -1175,50 +1055,6 @@ return function ()
 			}
 		}
 	})
-	define_rule({
-		name = "pbw_level_ussingen_cart_torch",
-		response = "pbw_level_ussingen_cart_torch",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_ussingen_cart_torch"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"faction_memory",
-				"level_ussingen_cart_torch",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ussingen_cart_torch",
-				OP.ADD,
-				1
-			}
-		}
-	})
 	add_dialogues({
 		pbw_level_ussingen_doomed_town = {
 			sound_events_n = 4,
@@ -1253,36 +1089,28 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_ussingen_way_through = {
-			sound_events_n = 4,
+		pbw_ussingen_intro_a = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 2,
 			database = "bright_wizard_ussingen",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pbw_level_ussingen_way_through_01",
-				"pbw_level_ussingen_way_through_02",
-				"pbw_level_ussingen_way_through_03",
-				"pbw_level_ussingen_way_through_04"
+				[1.0] = "pbw_ussingen_intro_a_01",
+				[2.0] = "pbw_ussingen_intro_a_02"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pbw_level_ussingen_way_through_01",
-				"pbw_level_ussingen_way_through_02",
-				"pbw_level_ussingen_way_through_03",
-				"pbw_level_ussingen_way_through_04"
+				[1.0] = "pbw_ussingen_intro_a_01",
+				[2.0] = "pbw_ussingen_intro_a_02"
 			},
 			randomize_indexes = {}
 		},
@@ -1476,36 +1304,28 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_ussingen_wine_cellar = {
-			sound_events_n = 4,
+		pbw_ussingen_intro_b = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 2,
 			database = "bright_wizard_ussingen",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pbw_level_ussingen_wine_cellar_01",
-				"pbw_level_ussingen_wine_cellar_02",
-				"pbw_level_ussingen_wine_cellar_03",
-				"pbw_level_ussingen_wine_cellar_04"
+				[1.0] = "pbw_ussingen_intro_b_01",
+				[2.0] = "pbw_ussingen_intro_b_02"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pbw_level_ussingen_wine_cellar_01",
-				"pbw_level_ussingen_wine_cellar_02",
-				"pbw_level_ussingen_wine_cellar_03",
-				"pbw_level_ussingen_wine_cellar_04"
+				[1.0] = "pbw_ussingen_intro_b_01",
+				[2.0] = "pbw_ussingen_intro_b_02"
 			},
 			randomize_indexes = {}
 		},
@@ -1572,130 +1392,6 @@ return function ()
 				"pbw_level_ussingen_spotting_manor_02",
 				"pbw_level_ussingen_spotting_manor_03",
 				"pbw_level_ussingen_spotting_manor_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_ussingen_intro_b = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "bright_wizard_ussingen",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pbw_ussingen_intro_b_01",
-				[2.0] = "pbw_ussingen_intro_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pbw_ussingen_intro_b_01",
-				[2.0] = "pbw_ussingen_intro_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_ussingen_cart_torch = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_ussingen",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_ussingen_cart_torch_01",
-				"pbw_level_ussingen_cart_torch_02",
-				"pbw_level_ussingen_cart_torch_03",
-				"pbw_level_ussingen_cart_torch_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_level_ussingen_cart_torch_01",
-				"pbw_level_ussingen_cart_torch_02",
-				"pbw_level_ussingen_cart_torch_03",
-				"pbw_level_ussingen_cart_torch_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_ussingen_wrong_way = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_ussingen",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_ussingen_wrong_way_01",
-				"pbw_level_ussingen_wrong_way_02",
-				"pbw_level_ussingen_wrong_way_03",
-				"pbw_level_ussingen_wrong_way_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_level_ussingen_wrong_way_01",
-				"pbw_level_ussingen_wrong_way_02",
-				"pbw_level_ussingen_wrong_way_03",
-				"pbw_level_ussingen_wrong_way_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_ussingen_marktplatz = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_ussingen",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_ussingen_marktplatz_01",
-				"pbw_level_ussingen_marktplatz_02",
-				"pbw_level_ussingen_marktplatz_03",
-				"pbw_level_ussingen_marktplatz_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_level_ussingen_marktplatz_01",
-				"pbw_level_ussingen_marktplatz_02",
-				"pbw_level_ussingen_marktplatz_03",
-				"pbw_level_ussingen_marktplatz_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1860,6 +1556,72 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_level_ussingen_wine_cellar = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "bright_wizard_ussingen",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_level_ussingen_wine_cellar_01",
+				"pbw_level_ussingen_wine_cellar_02",
+				"pbw_level_ussingen_wine_cellar_03",
+				"pbw_level_ussingen_wine_cellar_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pbw_level_ussingen_wine_cellar_01",
+				"pbw_level_ussingen_wine_cellar_02",
+				"pbw_level_ussingen_wine_cellar_03",
+				"pbw_level_ussingen_wine_cellar_04"
+			},
+			randomize_indexes = {}
+		},
+		pbw_level_ussingen_wrong_way = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "bright_wizard_ussingen",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_level_ussingen_wrong_way_01",
+				"pbw_level_ussingen_wrong_way_02",
+				"pbw_level_ussingen_wrong_way_03",
+				"pbw_level_ussingen_wrong_way_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pbw_level_ussingen_wrong_way_01",
+				"pbw_level_ussingen_wrong_way_02",
+				"pbw_level_ussingen_wrong_way_03",
+				"pbw_level_ussingen_wrong_way_04"
+			},
+			randomize_indexes = {}
+		},
 		pbw_level_ussingen_search_for_manor = {
 			sound_events_n = 3,
 			randomize_indexes_n = 0,
@@ -1889,7 +1651,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_ussingen_cart_idea = {
+		pbw_level_ussingen_way_through = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1897,10 +1659,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pbw_level_ussingen_cart_idea_01",
-				"pbw_level_ussingen_cart_idea_02",
-				"pbw_level_ussingen_cart_idea_03",
-				"pbw_level_ussingen_cart_idea_04"
+				"pbw_level_ussingen_way_through_01",
+				"pbw_level_ussingen_way_through_02",
+				"pbw_level_ussingen_way_through_03",
+				"pbw_level_ussingen_way_through_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -1909,41 +1671,16 @@ return function ()
 				"dialogue_shout"
 			},
 			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			},
 			localization_strings = {
-				"pbw_level_ussingen_cart_idea_01",
-				"pbw_level_ussingen_cart_idea_02",
-				"pbw_level_ussingen_cart_idea_03",
-				"pbw_level_ussingen_cart_idea_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_ussingen_intro_a = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "bright_wizard_ussingen",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pbw_ussingen_intro_a_01",
-				[2.0] = "pbw_ussingen_intro_a_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pbw_ussingen_intro_a_01",
-				[2.0] = "pbw_ussingen_intro_a_02"
+				"pbw_level_ussingen_way_through_01",
+				"pbw_level_ussingen_way_through_02",
+				"pbw_level_ussingen_way_through_03",
+				"pbw_level_ussingen_way_through_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1980,39 +1717,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_ussingen_escape = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_ussingen",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_ussingen_escape_01",
-				"pbw_level_ussingen_escape_02",
-				"pbw_level_ussingen_escape_03",
-				"pbw_level_ussingen_escape_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
-			},
-			localization_strings = {
-				"pbw_level_ussingen_escape_01",
-				"pbw_level_ussingen_escape_02",
-				"pbw_level_ussingen_escape_03",
-				"pbw_level_ussingen_escape_04"
-			},
-			randomize_indexes = {}
-		},
 		pbw_level_ussingen_spotting_town = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -2046,7 +1750,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_ussingen_what_next = {
+		pbw_level_ussingen_escape = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -2054,10 +1758,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pbw_level_ussingen_what_next_01",
-				"pbw_level_ussingen_what_next_02",
-				"pbw_level_ussingen_what_next_03",
-				"pbw_level_ussingen_what_next_04"
+				"pbw_level_ussingen_escape_01",
+				"pbw_level_ussingen_escape_02",
+				"pbw_level_ussingen_escape_03",
+				"pbw_level_ussingen_escape_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -2066,16 +1770,16 @@ return function ()
 				"dialogue_shout"
 			},
 			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
 			},
 			localization_strings = {
-				"pbw_level_ussingen_what_next_01",
-				"pbw_level_ussingen_what_next_02",
-				"pbw_level_ussingen_what_next_03",
-				"pbw_level_ussingen_what_next_04"
+				"pbw_level_ussingen_escape_01",
+				"pbw_level_ussingen_escape_02",
+				"pbw_level_ussingen_escape_03",
+				"pbw_level_ussingen_escape_04"
 			},
 			randomize_indexes = {}
 		},

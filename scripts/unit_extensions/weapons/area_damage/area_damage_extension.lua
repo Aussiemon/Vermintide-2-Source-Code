@@ -23,7 +23,7 @@ AreaDamageExtension.init = function (self, extension_init_context, unit, extensi
 	self.nav_tag_volume_layer = extension_init_data.nav_tag_volume_layer or Unit.get_data(unit, "nav_tag_volume_layer")
 	self.explosion_template_name = extension_init_data.explosion_template_name
 	self.owner_player = extension_init_data.owner_player
-	self.effect_size = self.radius*1.5
+	self.effect_size = self.radius * 1.5
 	self.damage_timer = 0
 	self.life_timer = 0
 	self.is_server = Managers.player.is_server
@@ -174,9 +174,9 @@ AreaDamageExtension.start = function (self)
 		local particle_radius = nav_mesh_effect.particle_radius
 		local particle_spacing = nav_mesh_effect.particle_spacing
 		local particle_name = nav_mesh_effect.particle_name
-		local particle_diameter = particle_radius*2
-		local particle_space_diameter = particle_spacing*2
-		local layers = (radius - particle_radius)/particle_space_diameter
+		local particle_diameter = 2 * particle_radius
+		local particle_space_diameter = 2 * particle_spacing
+		local layers = (radius - particle_radius) / particle_space_diameter
 		local floored_layers = math.floor(layers)
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 
@@ -190,14 +190,14 @@ AreaDamageExtension.start = function (self)
 		ids[num_particles] = id
 
 		for i = 1, floored_layers, 1 do
-			local current_radius = radius - (floored_layers - i)*particle_space_diameter - particle_radius
-			local circumference = current_radius*2*pi
-			local particles_in_layer = math.floor(circumference/particle_space_diameter)
-			local particle_radial_spacing = (pi*2)/particles_in_layer
+			local current_radius = radius - (floored_layers - i) * particle_space_diameter - particle_radius
+			local circumference = current_radius * 2 * pi
+			local particles_in_layer = math.floor(circumference / particle_space_diameter)
+			local particle_radial_spacing = (2 * pi) / particles_in_layer
 
 			for j = 1, particles_in_layer, 1 do
-				local angle = j*particle_radial_spacing
-				local particle_pos = unit_pos + current_radius*Vector3(math.cos(angle), math.sin(angle), 0)
+				local angle = j * particle_radial_spacing
+				local particle_pos = unit_pos + current_radius * Vector3(math.cos(angle), math.sin(angle), 0)
 				local success, z = GwNavQueries.triangle_from_position(nav_world, particle_pos, 1.5, 2)
 
 				if success then

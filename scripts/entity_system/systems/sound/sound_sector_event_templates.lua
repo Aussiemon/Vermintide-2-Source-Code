@@ -62,7 +62,7 @@ SoundSectorEventTemplates.distant_horde = {
 			return false
 		end
 
-		units_center = units_center/num_horde_units
+		units_center = units_center / num_horde_units
 		local distance = Vector3.distance_squared(camera_position, units_center)
 		local is_within_distance = min_distance <= distance and distance <= max_distance
 
@@ -136,7 +136,7 @@ SoundSectorEventTemplates.distant_horde_marauder = {
 			return false
 		end
 
-		units_center = units_center/num_horde_units_marauder
+		units_center = units_center / num_horde_units_marauder
 		local distance = Vector3.distance_squared(camera_position, units_center)
 		local is_within_distance = min_distance <= distance and distance <= max_distance
 
@@ -241,7 +241,7 @@ SoundSectorEventTemplates.marauder_mass_idle = {
 		end
 
 		local units_center = marauders_center:unbox()
-		units_center = units_center/num_marauder_units
+		units_center = units_center / num_marauder_units
 		local distance = Vector3.distance_squared(camera_position, units_center)
 		local is_within_distance = min_distance <= distance and distance <= max_distance
 
@@ -249,7 +249,7 @@ SoundSectorEventTemplates.marauder_mass_idle = {
 			local particle_value = Vector2(1, 1)
 
 			if total_length then
-				total_length = total_length/num_marauder_units
+				total_length = total_length / num_marauder_units
 
 				if total_length < max_particle_length then
 					particle_value[2] = total_length

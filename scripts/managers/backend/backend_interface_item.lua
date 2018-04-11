@@ -178,10 +178,11 @@ Items.get_all_backend_items = function (self)
 
 	return self._items
 end
-Items.get_filtered_items = function (self, filter)
+local empty_params = {}
+Items.get_filtered_items = function (self, filter, params)
 	local all_items = self.get_all_backend_items(self)
 	local backend_common = Managers.backend:get_interface("common")
-	local items = backend_common.filter_items(backend_common, all_items, filter)
+	local items = backend_common.filter_items(backend_common, all_items, filter, params or empty_params)
 
 	return items
 end
@@ -572,17 +573,18 @@ BackendInterfaceItem.check_for_loot = function (self)
 	return 
 end
 BackendInterfaceItem.equipped_by = function (self, backend_id)
+	local equipped_heroes = {}
 	local loadout = self._backend_items:get_loadout()
 
 	for hero, slots in pairs(loadout) do
 		for slot, id in pairs(slots) do
 			if backend_id == id then
-				return hero, slot
+				table.insert(equipped_heroes, hero)
 			end
 		end
 	end
 
-	return 
+	return equipped_heroes
 end
 BackendInterfaceItem.is_equipped = function (self, backend_id, profile_name)
 	local loadout = self._backend_items:get_loadout()

@@ -90,12 +90,12 @@ BTPackMasterGetHookAction.find_hidden_cover = function (self, position, player_c
 	local max = math.max
 	local bp = Managers.state.conflict.level_analysis.cover_points_broadphase
 	local found_cover_units_n = Broadphase.query(bp, position, max_rad, found_cover_units)
-	min_rad = min_rad*min_rad
-	max_rad = max_rad*max_rad
+	min_rad = min_rad * min_rad
+	max_rad = max_rad * max_rad
 
 	if script_data.debug_ai_movement then
 		QuickDrawerStay:sphere(player_center_pos, 2, Colors.get("cyan"))
-		QuickDrawerStay:vector(player_center_pos, wanted_direction*4, Colors.get("cyan"))
+		QuickDrawerStay:vector(player_center_pos, wanted_direction * 4, Colors.get("cyan"))
 	end
 
 	local max_i = math.min(found_cover_units_n, 15)
@@ -117,10 +117,10 @@ BTPackMasterGetHookAction.find_hidden_cover = function (self, position, player_c
 			end
 
 			if script_data.debug_ai_movement then
-				local color = Color(255, max(-direction_dot, 0)*255, max(direction_dot, 0)*255, max(0, hidden_dot)*255)
+				local color = Color(255, 255 * max(-direction_dot, 0), 255 * max(direction_dot, 0), 255 * max(0, hidden_dot))
 
 				QuickDrawerStay:sphere(pos, 1, color)
-				QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot)*2 + Vector3(0, 0, 1), color)
+				QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), color)
 			end
 		end
 	end

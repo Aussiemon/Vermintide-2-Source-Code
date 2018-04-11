@@ -94,8 +94,10 @@ BuffUI._sync_buffs = function (self)
 					local data = active_buffs[j]
 
 					if data.id == buff_id then
-						data.verified = true
-						verified = true
+						if not end_time or end_time == data.end_time then
+							data.verified = true
+							verified = true
+						end
 
 						break
 					end
@@ -222,7 +224,7 @@ BuffUI._add_buff = function (self, buff, infinite, end_time)
 
 	num_buffs = #self._active_buffs
 	local horizontal_spacing = BUFF_SIZE[1] + BUFF_SPACING
-	local total_length = num_buffs*horizontal_spacing - BUFF_SPACING
+	local total_length = num_buffs * horizontal_spacing - BUFF_SPACING
 	local start_position_x = total_length - horizontal_spacing
 	local widget_offset = widget.offset
 
@@ -260,7 +262,7 @@ BuffUI._update_pivot_alignment = function (self, dt)
 	end
 
 	alignment_duration = math.min(alignment_duration + dt, ALIGNMENT_DURATION_TIME)
-	local progress = alignment_duration/ALIGNMENT_DURATION_TIME
+	local progress = alignment_duration / ALIGNMENT_DURATION_TIME
 	local anim_progress = math.easeOutCubic(progress, 0, 1)
 
 	if progress == 1 then
@@ -276,7 +278,7 @@ BuffUI._update_pivot_alignment = function (self, dt)
 		local widget_target_distance = data.target_distance
 
 		if widget_target_distance then
-			widget_offset[1] = widget_target_position + widget_target_distance*(anim_progress - 1)
+			widget_offset[1] = widget_target_position + widget_target_distance * (1 - anim_progress)
 		end
 
 		self._set_widget_dirty(self, widget)
@@ -290,12 +292,12 @@ BuffUI._align_widgets = function (self)
 	local gamepad_active = self.input_manager:is_device_active("gamepad")
 	local horizontal_spacing = BUFF_SIZE[1] + BUFF_SPACING
 	local num_buffs = #self._active_buffs
-	local total_length = num_buffs*horizontal_spacing - BUFF_SPACING
+	local total_length = num_buffs * horizontal_spacing - BUFF_SPACING
 
 	for index, data in ipairs(self._active_buffs) do
 		local widget = data.widget
 		local widget_offset = widget.offset
-		local target_position = (index - 1)*horizontal_spacing
+		local target_position = (index - 1) * horizontal_spacing
 		data.target_position = target_position
 		data.target_distance = math.abs(widget_offset[1] - target_position)
 
@@ -432,7 +434,7 @@ BuffUI._update_buffs = function (self, dt)
 			if not infinite then
 				if t < end_time then
 					local time_left = math.max(end_time - t, 0)
-					local progress = math.min(time_left/duration, 1) - 1
+					local progress = 1 - math.min(time_left / duration, 1)
 
 					self._set_widget_time_progress(self, widget, progress, time_left, is_cooldown)
 				end
@@ -485,12 +487,12 @@ BuffUI._set_widget_time_progress = function (self, widget, progress, time_left, 
 		content.is_expired = false
 
 		if is_cooldown then
-			style.texture_cooldown.color[1] = (progress - 1)*255
-			style.icon_mask.color[1] = (progress - 1)*255
+			style.texture_cooldown.color[1] = 255 * (1 - progress)
+			style.icon_mask.color[1] = 255 * (1 - progress)
 			style.texture_duration.color[1] = 0
 			style.texture_icon.saturated = true
 		else
-			style.texture_duration.color[1] = (progress - 1)*255
+			style.texture_duration.color[1] = 255 * (1 - progress)
 		end
 	else
 		content.is_expired = true

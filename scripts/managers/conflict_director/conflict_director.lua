@@ -228,7 +228,7 @@ ConflictDirector.update_player_crumbs = function (self, t, dt)
 				end
 
 				player_crumbs[player_crumbs.current_index] = Vector3Box(pos)
-				local oldest_index = (player_crumbs.current_index - 2)%#player_crumbs + 1
+				local oldest_index = (player_crumbs.current_index - 2) % #player_crumbs + 1
 				local oldest_pos = player_crumbs[oldest_index]
 
 				if oldest_pos then
@@ -507,7 +507,7 @@ ConflictDirector.get_main_path_player_data = function (self, unit)
 	return self.main_path_player_info[unit]
 end
 ConflictDirector.get_index = function (self, number, mod)
-	local index = math.floor(number)%mod
+	local index = math.floor(number) % mod
 
 	if index == 0 then
 		index = mod
@@ -1442,9 +1442,16 @@ ConflictDirector.spawn_unit = function (self, breed, spawn_pos, spawn_rot, spawn
 	Profiler.start("create ai extensions")
 
 	local health = breed.max_health and breed.max_health[difficulty_rank]
+
+	if health then
+		local max_health_modifier = optional_data.max_health_modifier or 1
+		health = health * max_health_modifier
+	end
+
 	local extension_init_data = {
 		health_system = {
-			health = health
+			health = health,
+			optional_data = optional_data
 		},
 		ai_system = {
 			size_variation = 1,
@@ -1647,7 +1654,7 @@ ConflictDirector.calculate_threat_value = function (self)
 	local activated_per_breed = Managers.state.performance:activated_per_breed()
 
 	for breed_name, amount in pairs(activated_per_breed) do
-		threat_value = threat_value + threat_values[breed_name]*amount
+		threat_value = threat_value + threat_values[breed_name] * amount
 		i = i + amount
 	end
 
@@ -1874,10 +1881,10 @@ ConflictDirector.debug_spawn_all_breeds = function (self, except_these_breeds, u
 		local spawn_pos = nil
 
 		for j = 1, num_attempts, 1 do
-			local offset = Vector3(math.random()*4 - 2, math.random()*4 - 2, 0)
+			local offset = Vector3(4 * math.random() - 2, 4 * math.random() - 2, 0)
 
 			if j == 1 then
-				offset = Vector3(-grid_size/2 + i%grid_size, -grid_size/2 + math.floor(i/grid_size), 0)
+				offset = Vector3(-grid_size / 2 + i % grid_size, -grid_size / 2 + math.floor(i / grid_size), 0)
 			end
 
 			spawn_pos = LocomotionUtils.pos_on_mesh(self.nav_world, pos + offset)
@@ -2108,7 +2115,7 @@ ConflictDirector.aim_spawning_surface = function (self, breed, on_navmesh, optio
 	local position, distance, normal, actor = self.player_aim_raycast(self, self._world, false, "filter_ray_horde_spawn")
 
 	if breed.inside_wall_spawn_distance then
-		position = position - normal*breed.inside_wall_spawn_distance
+		position = position - normal * breed.inside_wall_spawn_distance
 	end
 
 	local spawn_category = "debug_spawn"
@@ -2311,10 +2318,10 @@ ConflictDirector.spawn_group = function (self, patrol_template_name, position, d
 		local spawn_pos = nil
 
 		for j = 1, num_attempts, 1 do
-			local offset = Vector3(Math.random()*4 - 2, Math.random()*4 - 2, 0)
+			local offset = Vector3(4 * Math.random() - 2, 4 * Math.random() - 2, 0)
 
 			if spawn_in_grid and j == 1 then
-				offset = Vector3(-grid_size/2 + i%grid_size, -grid_size/2 + math.floor(i/grid_size), 0)
+				offset = Vector3(-grid_size / 2 + i % grid_size, -grid_size / 2 + math.floor(i / grid_size), 0)
 			end
 
 			spawn_pos = LocomotionUtils.pos_on_mesh(self.nav_world, position + offset)
@@ -2360,6 +2367,7 @@ ConflictDirector.spawn_spline_group = function (self, patrol_template_name, posi
 	local spline_name = data.spline_name
 	local formation = data.formation
 	local despawn_at_end = data.despawn_at_end
+	local zone_data = data.zone_data
 	local ai_group_system = Managers.state.entity:system("ai_group_system")
 	local group_start_position = position and Vector3Box(position)
 	local base_group_data = {
@@ -2370,6 +2378,7 @@ ConflictDirector.spawn_spline_group = function (self, patrol_template_name, posi
 		group_type = group_type,
 		group_start_position = group_start_position,
 		data = data,
+		zone_data = zone_data,
 		despawn_at_end = despawn_at_end
 	}
 	local spline = ai_group_system.spline(ai_group_system, spline_name)
@@ -2389,6 +2398,23 @@ ConflictDirector.spawn_spline_group = function (self, patrol_template_name, posi
 
 	return 
 end
+ConflictDirector._check_hi_data_override = function (self, breed, breed_count, zone_data)
+	local breed_name = breed.name
+	local data = breed_count[breed_name]
+
+	if data then
+		data.count = data.count + 1
+
+		if data.max_amount < data.count then
+			breed = data.switch_breed
+			data.switch_count = data.switch_count + 1
+
+			return breed, breed_name
+		end
+	end
+
+	return breed
+end
 ConflictDirector._spawn_spline_group = function (self, base_group_data)
 	local spawn_category = "patrol"
 	local formation = base_group_data.formation
@@ -2406,6 +2432,14 @@ ConflictDirector._spawn_spline_group = function (self, base_group_data)
 		return 
 	end
 
+	local zone_data = base_group_data.zone_data
+	local breed_count = nil
+
+	if zone_data then
+		local hi_data = zone_data.hi_data
+		breed_count = hi_data and hi_data.breed_count
+	end
+
 	base_group_data.size = group_size
 
 	for row, columns in ipairs(formation_data) do
@@ -2414,11 +2448,23 @@ ConflictDirector._spawn_spline_group = function (self, base_group_data)
 
 			if not Breeds[breed_name] then
 			else
+				local optional_data = nil
+				local spawn_breed = Breeds[breed_name]
+
+				if breed_count then
+					local old_breed = nil
+					spawn_breed, old_breed = self._check_hi_data_override(self, spawn_breed, breed_count, zone_data)
+					optional_data = {
+						debug_info = "Patrol",
+						zone_data = zone_data,
+						replaced_breed = (spawn_breed.name ~= old_breed and old_breed) or nil
+					}
+				end
+
 				local spawn_pos = data.start_position:unbox()
 				local direction = data.start_direction:unbox()
 				local rotation = Quaternion.look(direction, Vector3.up())
-				local spawn_breed = Breeds[breed_name]
-				local group_data = table.clone(base_group_data)
+				local group_data = table.shallow_copy(base_group_data)
 				group_data.breed = breed_name
 				group_data.group_position = {
 					row = row,
@@ -2427,7 +2473,7 @@ ConflictDirector._spawn_spline_group = function (self, base_group_data)
 				group_data.despawn_at_end = despawn_at_end
 				spawn_breed.far_off_despawn_immunity = true
 
-				self.spawn_queued_unit(self, spawn_breed, Vector3Box(spawn_pos), QuaternionBox(rotation), spawn_category, nil, nil, nil, group_data)
+				self.spawn_queued_unit(self, spawn_breed, Vector3Box(spawn_pos), QuaternionBox(rotation), spawn_category, nil, nil, optional_data, group_data)
 			end
 		end
 	end
@@ -2654,6 +2700,11 @@ ConflictDirector.level_flow_event = function (self, event_name)
 end
 ConflictDirector.update_server_debug = function (self, t, dt)
 	Profiler.start("Conflict Server Debug")
+
+	if script_data.debug_zone_baker_on_screen then
+		self.spawn_zone_baker:draw_zone_info_on_screen()
+	end
+
 	ConflictDirectorTests.update(self, t, dt)
 
 	if script_data.debug_current_threat_value then
@@ -2682,10 +2733,10 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 
 				if valid then
 					QuickDrawerStay:sphere(pos, 1, green)
-					QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot)*2 + Vector3(0, 0, 1), green)
+					QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), green)
 				else
 					QuickDrawerStay:sphere(pos, 1, red)
-					QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot)*2 + Vector3(0, 0, 1), red)
+					QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), red)
 				end
 			end
 		end
@@ -2720,7 +2771,7 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 		local joints = {}
 
 		for i = 1, 30, 1 do
-			joints[i] = Vector3(0, 0, i*0.5)
+			joints[i] = Vector3(0, 0, i * 0.5)
 		end
 
 		self.ik_tentacle = IkChain:new(joints, start_pos, target_pos, 0.01, 0.8)
@@ -2750,7 +2801,7 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 		end
 
 		for i = 1, size, 1 do
-			local index = self._current_debug_list_index%size + 1
+			local index = self._current_debug_list_index % size + 1
 
 			if index == 1 then
 				self._current_debug_list_index = index
@@ -3006,7 +3057,7 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 			QuickDrawer:sphere(clusters[i], cluster_radius)
 
 			for j = 1, sizes[i], 1 do
-				QuickDrawer:sphere(clusters[i] + Vector3(0, 0, j + 2), 0.6)
+				QuickDrawer:sphere(clusters[i] + Vector3(0, 0, 2 + j), 0.6)
 			end
 		end
 
@@ -3033,8 +3084,8 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 			QuickDrawer:cone(player_pos, player_pos + Vector3(0, 0, 2), 0.3, color, 8, 8)
 			QuickDrawer:line(player_pos + Vector3(0, 0, 1), path_pos + Vector3(0, 0, 1), color)
 
-			local ap = main_path_info.ahead_percent*100
-			local np = self._next_progression_percent*100
+			local ap = main_path_info.ahead_percent * 100
+			local np = self._next_progression_percent * 100
 
 			Debug.text("Ahead unit travel dist: %.1f, progression %d/%d", player_info.travel_dist, ap, np)
 		end
@@ -3176,11 +3227,11 @@ ConflictDirector.spawn_mesh_cut = function (self)
 	local xc = 1
 	local yc = 2
 	local cell_size = 2
-	local radius = cell_size/2 + 0.3
+	local radius = cell_size / 2 + 0.3
 
 	for i = -xc, xc, 1 do
 		for j = -yc, yc, 1 do
-			local pos = spawn_pos + Vector3(i*cell_size, j*cell_size, -1)
+			local pos = spawn_pos + Vector3(i * cell_size, j * cell_size, -1)
 
 			QuickDrawerStay:sphere(pos, radius)
 

@@ -2,11 +2,11 @@ local function noise(x, seed)
 	local next_seed, _ = Math.next_random(x + seed)
 	local _, value = Math.next_random(next_seed)
 
-	return value*2 - 1
+	return value * 2 - 1
 end
 
 local function smoothed_noise(x, seed)
-	return noise(x, seed)/2 + noise(x - 1, seed)/4 + noise(x + 1, seed)/4
+	return noise(x, seed) / 2 + noise(x - 1, seed) / 4 + noise(x + 1, seed) / 4
 end
 
 local function interpolated_noise(x, seed)
@@ -27,14 +27,14 @@ PerlinPath = {
 			local waves = {}
 			local amplitude = persistance^i
 			local x = 0
-			local step_dist = i/1
+			local step_dist = 1 / i
 
 			for j = 0, i, 1 do
 				local next_seed, _ = Math.next_random(x + seed)
 				local _, value = Math.next_random(next_seed)
 				waves[j] = {
 					x,
-					value*amplitude
+					value * amplitude
 				}
 				x = x + step_dist
 				seed = next_seed
@@ -51,12 +51,12 @@ local zone_length = 25
 PerlinPath.make_easy_path = function (nav_world, main_path, path_length)
 	local new_path = {}
 	local cycle_length = zone_length
-	local num_cycles = path_length/cycle_length
-	local new_cycle_length = path_length/math.floor(num_cycles)
+	local num_cycles = path_length / cycle_length
+	local new_cycle_length = path_length / math.floor(num_cycles)
 	local x = 0
 
 	for i = 1, num_cycles, 1 do
-		local pos = LevelAnalysis.get_path_point(main_path, path_length, i/num_cycles)
+		local pos = LevelAnalysis.get_path_point(main_path, path_length, i / num_cycles)
 		new_path[#new_path + 1] = Vector3Box(pos)
 	end
 
@@ -81,9 +81,9 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 			seed_list[num_triangles] = pos
 			local a, b, c = Script.temp_count()
 			local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
-			local tri_center = (p1 + p2 + p3)/3
-			local key = tri_center.x*0.0001 + tri_center.y + tri_center.z*10000
-			area_list[num_triangles] = Vector3.length(Vector3.cross(p2 - p1, p3 - p1))/2
+			local tri_center = (p1 + p2 + p3) / 3
+			local key = tri_center.x * 0.0001 + tri_center.y + tri_center.z * 10000
+			area_list[num_triangles] = Vector3.length(Vector3.cross(p2 - p1, p3 - p1)) / 2
 
 			Script.set_temp_count(a, b, c)
 
@@ -98,10 +98,10 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 		triangle = triangles[i]
 		local a, b, c = Script.temp_count()
 		local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
-		local tri_center = (p1 + p2 + p3)/3
-		local key = tri_center.x*0.0001 + tri_center.y + tri_center.z*10000
+		local tri_center = (p1 + p2 + p3) / 3
+		local key = tri_center.x * 0.0001 + tri_center.y + tri_center.z * 10000
 		local seed_index = lookup[key]
-		area_list[seed_index] = area_list[seed_index] + Vector3.length(Vector3.cross(p2 - p1, p3 - p1))/2
+		area_list[seed_index] = area_list[seed_index] + Vector3.length(Vector3.cross(p2 - p1, p3 - p1)) / 2
 
 		Script.set_temp_count(a, b, c)
 
@@ -116,8 +116,8 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 			local neighbour = neighbors[k]
 			local t1, t2, t3 = Script.temp_count()
 			p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, neighbour)
-			local tri_center = (p1 + p2 + p3)/3
-			local key = tri_center.x*0.0001 + tri_center.y + tri_center.z*10000
+			local tri_center = (p1 + p2 + p3) / 3
+			local key = tri_center.x * 0.0001 + tri_center.y + tri_center.z * 10000
 
 			if not lookup[key] then
 				local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, neighbour)
@@ -178,17 +178,17 @@ PerlinPath.draw_debug_spawns = function (nav_world, gui, triangles, lookup, area
 		local a, b, c = Script.temp_count()
 		local h = Vector3(0, 0, 0.1)
 		local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
-		local tri_center = (p1 + p2 + p3)/3
-		local key = tri_center.x*0.0001 + tri_center.y + tri_center.z*10000
+		local tri_center = (p1 + p2 + p3) / 3
+		local key = tri_center.x * 0.0001 + tri_center.y + tri_center.z * 10000
 
-		Gui.triangle(gui, p1 + h, p2 + h, p3 + h, 2, Colors.get_indexed((lookup[key] + 12)%32 + 1))
+		Gui.triangle(gui, p1 + h, p2 + h, p3 + h, 2, Colors.get_indexed((12 + lookup[key]) % 32 + 1))
 		Script.set_temp_count(a, b, c)
 	end
 
 	return 
 end
 PerlinPath.make_path = function (oktave_table, points)
-	local step_dist = points/1
+	local step_dist = 1 / points
 	local x = 0
 
 	for i = start_oktave, end_oktave, 1 do
@@ -202,12 +202,12 @@ PerlinPath.normalize_path = function (points, wanted_area_fill_rate)
 	local segments = #points - 1
 
 	for i = 1, segments, 1 do
-		area = area + (points[i][2] + points[i + 1][2])*0.5
+		area = area + (points[i][2] + points[i + 1][2]) * 0.5
 	end
 
 	local total_area = segments
-	local area_fill_rate = area/total_area
-	local multiply_with = wanted_area_fill_rate/area_fill_rate
+	local area_fill_rate = area / total_area
+	local multiply_with = wanted_area_fill_rate / area_fill_rate
 
 	return multiply_with
 end

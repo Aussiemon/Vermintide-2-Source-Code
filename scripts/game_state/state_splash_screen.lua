@@ -148,15 +148,15 @@ StateSplashScreen.update_esrb_logo = function (self, dt, t)
 	local bitmap_name = "esrb_logo"
 
 	if total_time - 0.5 < timer then
-		alpha = math.clamp((total_time - timer)/0.5, 0, 1)*255 - 255
+		alpha = 255 - 255 * math.clamp((total_time - timer) / 0.5, 0, 1)
 	elseif timer <= 0.5 then
-		alpha = math.clamp(timer/0.5 - 1, 0, 255)*255
+		alpha = 255 * math.clamp(1 - timer / 0.5, 0, 255)
 	end
 
 	local w, h = Application.resolution()
 
 	Gui.rect(self.gui, Vector3(0, 0, 0), Vector2(w, h), Color(255, 0, 0, 0))
-	Gui.bitmap(self.gui, bitmap_name, Vector3(w*0.5 - size[1]*0.5, h*0.5 - size[2]*0.5, 1), Vector2(size[1], size[2]))
+	Gui.bitmap(self.gui, bitmap_name, Vector3(w * 0.5 - size[1] * 0.5, h * 0.5 - size[2] * 0.5, 1), Vector2(size[1], size[2]))
 	Gui.rect(self.gui, Vector3(0, 0, 2), Vector2(w, h), Color(alpha, 0, 0, 0))
 
 	self.esrb_timer = math.clamp(self.esrb_timer + math.clamp(dt, 0, 0.1), 0, total_time)

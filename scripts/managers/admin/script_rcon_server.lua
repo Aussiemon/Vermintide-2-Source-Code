@@ -215,7 +215,7 @@ ScriptRconServer._command_ban = function (self, peer_id, name, days_str)
 	local unban_at = nil
 
 	if days ~= nil then
-		unban_at = os.time() + days*24*60*60
+		unban_at = os.time() + days * 24 * 60 * 60
 	end
 
 	local manager = Managers.ban_list

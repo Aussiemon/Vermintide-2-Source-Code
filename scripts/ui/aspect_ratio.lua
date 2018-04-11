@@ -18,11 +18,11 @@ AspectRatio.Mapping = table.mirror_table({
 	[AspectRatio.AR4_3] = "4:3",
 	[AspectRatio.AR_SPLITSCREEN] = "Splitscreen"
 })
-AspectRatio.UPPER_LIMIT = AspectRatio.Values[AspectRatio.AR16_9]*1.05
-AspectRatio.LOWER_LIMIT = AspectRatio.Values[AspectRatio.AR_SPLITSCREEN]*0.95
+AspectRatio.UPPER_LIMIT = 1.05 * AspectRatio.Values[AspectRatio.AR16_9]
+AspectRatio.LOWER_LIMIT = 0.95 * AspectRatio.Values[AspectRatio.AR_SPLITSCREEN]
 
 local function fit_aspect(ratio, screen_width, screen_height)
-	local window_ratio = screen_width/screen_height
+	local window_ratio = screen_width / screen_height
 	local tmp_table = FrameTable.alloc_table()
 	tmp_table.width = screen_width
 	tmp_table.height = screen_height
@@ -30,19 +30,19 @@ local function fit_aspect(ratio, screen_width, screen_height)
 	tmp_table.y = 0
 
 	if window_ratio < ratio then
-		tmp_table.height = tmp_table.width/ratio
-		tmp_table.y = (screen_height - tmp_table.height)/2
+		tmp_table.height = tmp_table.width / ratio
+		tmp_table.y = (screen_height - tmp_table.height) / 2
 	else
-		tmp_table.width = tmp_table.height*ratio
-		tmp_table.x = (screen_width - tmp_table.width)/2
+		tmp_table.width = tmp_table.height * ratio
+		tmp_table.x = (screen_width - tmp_table.width) / 2
 	end
 
 	return tmp_table
 end
 
 local function box_max(box1, box2)
-	local b1 = box1.width*box1.height
-	local b2 = box2.width*box2.height
+	local b1 = box1.width * box1.height
+	local b2 = box2.width * box2.height
 
 	return (b2 < b1 and box1) or box2
 end

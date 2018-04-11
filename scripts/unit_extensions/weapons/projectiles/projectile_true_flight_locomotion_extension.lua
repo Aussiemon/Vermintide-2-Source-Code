@@ -54,7 +54,7 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 
 	self._legitimate_target_func = (template.legitimate_target_func and self[template.legitimate_target_func]) or self.legitimate_target
 	self._lerp_modifier_func = template.lerp_modifier_func or function (distance)
-		return (distance < 5 and 1) or distance/5
+		return (distance < 5 and 1) or 5 / distance
 	end
 	self.target_players = template.target_players
 
@@ -123,7 +123,7 @@ ProjectileTrueFlightLocomotionExtension._do_forced_impact = function (self, unit
 end
 ProjectileTrueFlightLocomotionExtension.bounce = function (self, hit_normal)
 	local current_direction = self.current_direction:unbox()
-	local bounce_dir = Vector3.normalize(current_direction - Vector3.dot(current_direction, hit_normal)*2*hit_normal)
+	local bounce_dir = Vector3.normalize(current_direction - 2 * Vector3.dot(current_direction, hit_normal) * hit_normal)
 	self.bounce_dir = Vector3Box(bounce_dir)
 	self.bounced = true
 
@@ -184,7 +184,7 @@ ProjectileTrueFlightLocomotionExtension.update = function (self, unit, input, dt
 	if self.bounced then
 		local bounce_dir = self.bounce_dir:unbox()
 		direction = bounce_dir
-		new_position = current_position + bounce_dir*0.5
+		new_position = current_position + bounce_dir * 0.5
 		self.bounced = false
 	else
 		if can_see_target then
@@ -291,7 +291,7 @@ ProjectileTrueFlightLocomotionExtension.update_towards_slow_bomb_target = functi
 
 	if self._slow_bomb_triggered then
 		local speed_mod = template.triggered_speed_mult
-		local new_position = position + current_direction*self.speed*speed_multiplier*speed_mod*dt
+		local new_position = position + current_direction * self.speed * speed_multiplier * speed_mod * dt
 
 		return new_position
 	elseif distance < template.trigger_dist then
@@ -305,14 +305,14 @@ ProjectileTrueFlightLocomotionExtension.update_towards_slow_bomb_target = functi
 		network_manager.network_transmit:send_rpc_clients("rpc_set_projectile_state", unit_id, 1)
 	end
 
-	local speed_mod = math.clamp((distance < 10 and 1) or distance/10, 0, 3)
-	local speed = self.speed*speed_multiplier*speed_mod
+	local speed_mod = math.clamp((distance < 10 and 1) or distance / 10, 0, 3)
+	local speed = self.speed * speed_multiplier * speed_mod
 	local lerp_modifier = self._lerp_modifier_func(distance)
-	lerp_modifier = lerp_modifier*lerp_modifier*math.min(self.on_target_time, 0.25)/0.25
-	local lerp_value = math.min(dt*lerp_modifier*100, 0.75)
+	lerp_modifier = lerp_modifier * lerp_modifier * math.min(self.on_target_time, 0.25) / 0.25
+	local lerp_value = math.min(dt * lerp_modifier * 100, 0.75)
 	local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, lerp_value)
 	local new_direction = Quaternion.forward(new_rotation)
-	local new_position = position + new_direction*speed*dt
+	local new_position = position + new_direction * speed * dt
 
 	return new_position
 end
@@ -330,7 +330,7 @@ ProjectileTrueFlightLocomotionExtension.update_towards_strike_missile_target = f
 	if self._missile_triggered then
 		if self._missile_striking then
 			local speed_mod = template.triggered_speed_mult
-			local new_position = position + current_direction*self.speed*speed_multiplier*speed_mod*dt
+			local new_position = position + current_direction * self.speed * speed_multiplier * speed_mod * dt
 
 			return new_position
 		else
@@ -356,7 +356,7 @@ ProjectileTrueFlightLocomotionExtension.update_towards_strike_missile_target = f
 			end
 
 			local speed_mod = 0.1
-			local new_position = position + current_direction*self.speed*speed_multiplier*speed_mod*dt
+			local new_position = position + current_direction * self.speed * speed_multiplier * speed_mod * dt
 
 			return new_position
 		end
@@ -374,14 +374,14 @@ ProjectileTrueFlightLocomotionExtension.update_towards_strike_missile_target = f
 
 	local current_rotation = Quaternion.look(current_direction)
 	local wanted_rotation = Quaternion.look(wanted_direction)
-	self.speed = self.speed - dt*5
-	local speed = self.speed*speed_multiplier
+	self.speed = self.speed - 5 * dt
+	local speed = self.speed * speed_multiplier
 	local lerp_modifier = self._lerp_modifier_func(dist_to_target)
-	lerp_modifier = lerp_modifier*lerp_modifier*math.min(self.on_target_time, 0.5)/0.5
-	local lerp_value = math.min(dt*lerp_modifier*100, 0.75)
+	lerp_modifier = lerp_modifier * lerp_modifier * math.min(self.on_target_time, 0.5) / 0.5
+	local lerp_value = math.min(dt * lerp_modifier * 100, 0.75)
 	local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, lerp_value)
 	local new_direction = Quaternion.forward(new_rotation)
-	local new_position = position + new_direction*speed*dt
+	local new_position = position + new_direction * speed * dt
 
 	return new_position
 end
@@ -397,12 +397,12 @@ ProjectileTrueFlightLocomotionExtension.update_towards_position_target = functio
 	local wanted_rotation = Quaternion.look(wanted_direction)
 	local height_over_target = self.height_offset + math.max(position.z - target_position.z, 0)
 	local lerp_modifier = self._lerp_modifier_func(distance, height_over_target, t)
-	lerp_modifier = lerp_modifier*lerp_modifier*math.min(self.on_target_time, 0.25)/0.25
-	local lerp_value = math.min(dt*lerp_modifier*100, 0.75)
+	lerp_modifier = lerp_modifier * lerp_modifier * math.min(self.on_target_time, 0.25) / 0.25
+	local lerp_value = math.min(dt * lerp_modifier * 100, 0.75)
 	local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, lerp_value)
 	local new_direction = Quaternion.forward(new_rotation)
-	local speed = self.speed*speed_multiplier
-	local new_position = position + new_direction*speed*dt
+	local speed = self.speed * speed_multiplier
+	local new_position = position + new_direction * speed * dt
 
 	return new_position
 end
@@ -419,12 +419,12 @@ ProjectileTrueFlightLocomotionExtension.update_towards_target = function (self, 
 	local wanted_rotation = Quaternion.look(wanted_direction)
 	local height_over_target = self.height_offset + math.max(position.z - target_position.z, 0)
 	local lerp_modifier = self._lerp_modifier_func(distance, height_over_target, t)
-	lerp_modifier = lerp_modifier*lerp_modifier*math.min(self.on_target_time, 0.25)/0.25
-	local lerp_value = math.min(dt*lerp_modifier*100, 0.75)
+	lerp_modifier = lerp_modifier * lerp_modifier * math.min(self.on_target_time, 0.25) / 0.25
+	local lerp_value = math.min(dt * lerp_modifier * 100, 0.75)
 	local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, lerp_value)
 	local new_direction = Quaternion.forward(new_rotation)
-	local speed = self.speed*speed_multiplier
-	local new_position = position + new_direction*speed*dt
+	local speed = self.speed * speed_multiplier
+	local new_position = position + new_direction * speed * dt
 	local create_bot_threat = template.create_bot_threat
 
 	if self.target_players and create_bot_threat then
@@ -458,20 +458,20 @@ ProjectileTrueFlightLocomotionExtension.update_towards_target_ability = function
 		local lerp_modifier = nil
 
 		if lerp_squared_distance_threshold then
-			lerp_modifier = math.max(lerp_squared_distance_threshold - distance*distance, 1)/lerp_squared_distance_threshold
+			lerp_modifier = math.max(lerp_squared_distance_threshold - distance * distance, 1) / lerp_squared_distance_threshold
 		elseif lerp_distance_threshold then
-			lerp_modifier = math.max(lerp_distance_threshold - distance, 1)/lerp_distance_threshold
+			lerp_modifier = math.max(lerp_distance_threshold - distance, 1) / lerp_distance_threshold
 		end
 
-		lerp_modifier = lerp_modifier*life_time_factor
-		lerp_modifier = lerp_modifier*lerp_modifier
-		local lerp_value = dt*lerp_modifier*lerp_constant
+		lerp_modifier = lerp_modifier * life_time_factor
+		lerp_modifier = lerp_modifier * lerp_modifier
+		local lerp_value = dt * lerp_modifier * lerp_constant
 		local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, lerp_value)
 		new_direction = Quaternion.forward(new_rotation)
 	end
 
-	local speed = self.speed*speed_multiplier
-	local new_position = position + new_direction*speed*dt
+	local speed = self.speed * speed_multiplier
+	local new_position = position + new_direction * speed * dt
 
 	return new_position
 end
@@ -479,7 +479,7 @@ ProjectileTrueFlightLocomotionExtension.update_seeking_target = function (self, 
 	local true_flight_template = TrueFlightTemplates[self.true_flight_template_name]
 	local speed_multiplier = true_flight_template.speed_multiplier
 	local dt = self.dt
-	local speed = self.speed*speed_multiplier
+	local speed = self.speed * speed_multiplier
 	local angle = self.angle
 	local gravity = self.gravity
 	local target_vector = Vector3Box.unbox(self.target_vector_boxed)
@@ -513,7 +513,7 @@ ProjectileTrueFlightLocomotionExtension.find_player_target = function (self, pos
 		local start_index = Math.random(1, players_n)
 
 		for i = start_index, start_index + players_n, 1 do
-			local index = (i - 1)%players_n + 1
+			local index = (i - 1) % players_n + 1
 			local unit = player_units[index]
 
 			if ScriptUnit.has_extension(unit, "health_system") then
@@ -544,14 +544,14 @@ ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self,
 		local current_direction = self.current_direction:unbox()
 
 		QuickDrawerStay:sphere(position, 0.2, Color(255, 0, 0))
-		QuickDrawerStay:sphere(position + current_direction*10, 4, Color(0, 255, 0))
+		QuickDrawerStay:sphere(position + current_direction * 10, 4, Color(0, 255, 0))
 
-		ai_units_n = AiUtils.broadphase_query(position + current_direction*10, broadphase_radius, ai_units)
+		ai_units_n = AiUtils.broadphase_query(position + current_direction * 10, broadphase_radius, ai_units)
 
 		if ai_units_n <= 0 then
-			ai_units_n = AiUtils.broadphase_query(position + current_direction*20, broadphase_radius*2, ai_units)
+			ai_units_n = AiUtils.broadphase_query(position + current_direction * 20, broadphase_radius * 2, ai_units)
 
-			QuickDrawerStay:sphere(position + current_direction*20, 10, Color(100, 255, 0))
+			QuickDrawerStay:sphere(position + current_direction * 20, 10, Color(100, 255, 0))
 		end
 	end
 
@@ -582,10 +582,10 @@ ProjectileTrueFlightLocomotionExtension.find_closest_highest_value_target = func
 		ai_units_n = AiUtils.broadphase_query(self.target_position:unbox(), broadphase_radius, ai_units)
 	else
 		local current_direction = self.current_direction:unbox()
-		ai_units_n = AiUtils.broadphase_query(position + current_direction*forward_search_distance_to_find_target, broadphase_radius, ai_units)
+		ai_units_n = AiUtils.broadphase_query(position + current_direction * forward_search_distance_to_find_target, broadphase_radius, ai_units)
 
 		if ai_units_n <= 0 then
-			ai_units_n = AiUtils.broadphase_query(position + current_direction*forward_search_distance_to_find_target*2, broadphase_radius*2, ai_units)
+			ai_units_n = AiUtils.broadphase_query(position + current_direction * forward_search_distance_to_find_target * 2, broadphase_radius * 2, ai_units)
 		end
 	end
 

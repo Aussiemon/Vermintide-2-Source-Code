@@ -12,8 +12,8 @@ WeaponHelper.wanted_projectile_angle = function (self, distance_vector, projecti
 	local y = distance_vector.z
 	local g = projectile_gravity
 	local v = projectile_speed
-	local v2 = v*v
-	local to_sqrt = v2*v2 - g*(g*x*x + y*2*v2)
+	local v2 = v * v
+	local to_sqrt = v2 * v2 - g * (g * x * x + 2 * y * v2)
 
 	fassert(g ~= 0, "Asking for projectile angle with gravity 0, this will cause division by 0.")
 
@@ -22,8 +22,8 @@ WeaponHelper.wanted_projectile_angle = function (self, distance_vector, projecti
 	end
 
 	local s = math.sqrt(to_sqrt)
-	local a1 = math.atan((v2 - s)/(g*x))
-	local a2 = math.atan((v2 + s)/(g*x))
+	local a1 = math.atan((v2 - s) / (g * x))
+	local a2 = math.atan((v2 + s) / (g * x))
 
 	return a1, a2, x
 end
@@ -31,14 +31,14 @@ WeaponHelper.wanted_projectile_speed = function (self, distance_vector, projecti
 	local x = Vector3.length(Vector3.flat(distance_vector))
 	local y = distance_vector.z
 	local g = math.abs(projectile_gravity)
-	local denominator = (x*math.tan(wanted_angle) - y)*2
+	local denominator = 2 * (x * math.tan(wanted_angle) - y)
 
 	fassert(denominator ~= 0, "Denominator is 0.")
 
-	local aux = math.abs(g/denominator)
+	local aux = math.abs(g / denominator)
 
 	if 0 <= aux then
-		return x/math.cos(wanted_angle)*math.sqrt(aux), x
+		return x / math.cos(wanted_angle) * math.sqrt(aux), x
 	end
 
 	return 
@@ -51,8 +51,8 @@ WeaponHelper.speed_to_hit_moving_target = function (p1, p2, projectile_angle, ta
 	for i = 1, 10, 1 do
 		local distance_vector = estimated_target_position - p1
 		local projectile_speed, flat_distance = WeaponHelper:wanted_projectile_speed(distance_vector, gravity, projectile_angle)
-		local tof = flat_distance/(projectile_speed*math_cos)
-		estimated_target_position = p2 + tof*target_velocity
+		local tof = flat_distance / (projectile_speed * math_cos)
+		estimated_target_position = p2 + tof * target_velocity
 		local distance_error = Vector3.length(estimated_target_position - old_estimated_target_position)
 
 		if distance_error <= acceptable_accuracy then
@@ -83,18 +83,18 @@ WeaponHelper.angle_to_hit_moving_target = function (p1, p2, projectile_speed, ta
 			return 0, estimated_target_position
 		end
 
-		local sqrt_val = speed_squared^2 - gravity*(gravity*flat_distance^2 + height*2*speed_squared)
+		local sqrt_val = speed_squared^2 - gravity * (gravity * flat_distance^2 + 2 * height * speed_squared)
 
 		if sqrt_val <= 0 then
 			return nil, estimated_target_position
 		end
 
 		local second_degree_component = math.sqrt(sqrt_val)
-		local angle1 = math.atan((speed_squared + second_degree_component)/(gravity*flat_distance))
-		local angle2 = math.atan((speed_squared - second_degree_component)/(gravity*flat_distance))
+		local angle1 = math.atan((speed_squared + second_degree_component) / (gravity * flat_distance))
+		local angle2 = math.atan((speed_squared - second_degree_component) / (gravity * flat_distance))
 		angle = (use_greatest_angle and math.max(angle1, angle2)) or math.min(angle1, angle2)
-		t = flat_distance/(projectile_speed*math.cos(angle))
-		estimated_target_position = p2 + t*target_velocity
+		t = flat_distance / (projectile_speed * math.cos(angle))
+		estimated_target_position = p2 + t * target_velocity
 		flat_distance = Vector3.length(Vector3.flat(estimated_target_position - p1))
 		local distance_error = math.abs(old_flat_distance - flat_distance)
 
@@ -122,23 +122,23 @@ WeaponHelper.test_angled_trajectory = function (physics_world, p1, p2, gravity, 
 
 	if angle and projectile_speed then
 		local vec_flat = Vector3.normalize(Vector3.flat(distance_vector))
-		local velocity = Quaternion.rotate(Quaternion.axis_angle(Vector3.cross(vec_flat, Vector3.up()), angle), vec_flat)*projectile_speed
-		local x_vel_0 = math.cos(angle)*projectile_speed
-		local y_vel_0 = math.sin(angle)*projectile_speed
+		local velocity = Quaternion.rotate(Quaternion.axis_angle(Vector3.cross(vec_flat, Vector3.up()), angle), vec_flat) * projectile_speed
+		local x_vel_0 = math.cos(angle) * projectile_speed
+		local y_vel_0 = math.sin(angle) * projectile_speed
 		local flat_speed = Vector3.length(Vector3(velocity.x, velocity.y, 0))
-		local t_total = flat_dist/flat_speed
+		local t_total = flat_dist / flat_speed
 		sections = sections or 4
 		local t = 0
-		local delta_time = t_total/sections
+		local delta_time = t_total / sections
 		local segment_pos1 = Vector3(p1.x, p1.y, p1.z)
 		local segment_pos2 = nil
 		segment_list[1] = p1
 
 		for i = 1, sections, 1 do
-			t = t_total*i/sections
-			local x = x_vel_0*t
-			local z = y_vel_0*t + gravity*0.5*t^2
-			segment_pos2 = p1 + vec_flat*x
+			t = t_total * i / sections
+			local x = x_vel_0 * t
+			local z = y_vel_0 * t + 0.5 * gravity * t^2
+			segment_pos2 = p1 + vec_flat * x
 			segment_pos2.z = segment_pos2.z + z
 
 			if script_data.debug_ai_movement then
@@ -229,12 +229,12 @@ WeaponHelper.multi_ray_test = function (physics_world, p1, p2, relative_position
 		end
 	end
 
-	local right = Vector3.cross(Vector3.normalize(p2 - p1), Vector3.up())*1
+	local right = Vector3.cross(Vector3.normalize(p2 - p1), Vector3.up()) * 1
 
 	for i = 1, #relative_positions, 2 do
 		local x = relative_positions[i]
 		local y = relative_positions[i + 1]
-		local delta = x*right + y*Vector3.up()
+		local delta = x * right + y * Vector3.up()
 		local pos1 = p1 + delta
 		local pos2 = p2 + delta
 		local result, hit_position, _, _, actor = immediate_raycast(physics_world, pos1, current_velocity, length, "closest", "collision_filter", "filter_ai_mover")
@@ -255,9 +255,9 @@ WeaponHelper.multi_ray_test = function (physics_world, p1, p2, relative_position
 	return true
 end
 WeaponHelper.draw_ball_at_time = function (physics_world, p1, vec_flat, gravity, x_vel_0, y_vel_0, t, color)
-	local length = t*x_vel_0
-	local height = t*y_vel_0 + gravity*0.5*t^2
-	local position = p1 + vec_flat*length
+	local length = t * x_vel_0
+	local height = t * y_vel_0 + 0.5 * gravity * t^2
+	local position = p1 + vec_flat * length
 	position.z = position.z + height
 
 	QuickDrawer:sphere(position, 0.3, color or Colors.get_indexed(66))
@@ -274,23 +274,23 @@ WeaponHelper.calculate_trajectory = function (self, world, initial_position, tar
 
 	local target_vector = target_position - initial_position
 	local normalized_target_vector = Vector3.normalize(Vector3.flat(target_vector))
-	local angle = math.random(30) + 30
+	local angle = 30 + math.random(30)
 	local radians = math.degrees_to_radians(angle)
 	local trajectory_hits_target = nil
-	local projectile_speed = math.round(WeaponHelper:wanted_projectile_speed(target_vector, gravity, radians)*100, 0)
+	local projectile_speed = math.round(WeaponHelper:wanted_projectile_speed(target_vector, gravity, radians) * 100, 0)
 
 	if projectile_speed <= max_speed then
-		trajectory_hits_target = WeaponHelper:_trajectory_hits_target(world, radians, projectile_speed/100, gravity, initial_position, target_position, normalized_target_vector, drawer)
+		trajectory_hits_target = WeaponHelper:_trajectory_hits_target(world, radians, projectile_speed / 100, gravity, initial_position, target_position, normalized_target_vector, drawer)
 	end
 
 	if not trajectory_hits_target then
 		for i = 0, 4, 1 do
-			angle = i*10 + 30
+			angle = 30 + 10 * i
 			radians = math.degrees_to_radians(angle)
-			projectile_speed = math.round(WeaponHelper:wanted_projectile_speed(target_vector, gravity, radians)*100, 0)
+			projectile_speed = math.round(WeaponHelper:wanted_projectile_speed(target_vector, gravity, radians) * 100, 0)
 
 			if projectile_speed <= max_speed then
-				trajectory_hits_target = WeaponHelper:_trajectory_hits_target(world, radians, projectile_speed/100, gravity, initial_position, target_position, normalized_target_vector, drawer)
+				trajectory_hits_target = WeaponHelper:_trajectory_hits_target(world, radians, projectile_speed / 100, gravity, initial_position, target_position, normalized_target_vector, drawer)
 			end
 
 			if trajectory_hits_target then
@@ -339,9 +339,9 @@ WeaponHelper._trajectory_hits_target = function (self, world, radians, speed, gr
 	return false
 end
 WeaponHelper.position_on_trajectory = function (self, initial_position, normalized_target_vector, projectile_speed, radians, projectile_gravity, t)
-	local length = projectile_speed*t*math.cos(radians)
-	local height = projectile_speed*t*math.sin(radians) + projectile_gravity*0.5*t^2
-	local position = initial_position + normalized_target_vector*length
+	local length = projectile_speed * t * math.cos(radians)
+	local height = projectile_speed * t * math.sin(radians) + 0.5 * projectile_gravity * t^2
+	local position = initial_position + normalized_target_vector * length
 	position.z = position.z + height
 
 	return position

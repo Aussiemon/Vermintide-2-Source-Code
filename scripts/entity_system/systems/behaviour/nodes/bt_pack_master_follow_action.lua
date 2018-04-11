@@ -53,11 +53,11 @@ BTPackMasterFollowAction.run = function (self, unit, blackboard, t, dt)
 	local target_position = POSITION_LOOKUP[target_unit]
 	local hook_time = 0.4
 	local target_locomotion_extension = ScriptUnit.extension(target_unit, "locomotion_system")
-	local extrapolated_target_position = target_position + target_locomotion_extension.average_velocity(target_locomotion_extension)*hook_time
+	local extrapolated_target_position = target_position + target_locomotion_extension.average_velocity(target_locomotion_extension) * hook_time
 	local distance_sq = Vector3.distance_squared(current_position, extrapolated_target_position)
 	local attack_distance = blackboard.action.distance_to_attack
 
-	if distance_sq < attack_distance*attack_distance then
+	if distance_sq < attack_distance * attack_distance then
 		local has_line_of_sight = PerceptionUtils.pack_master_has_line_of_sight_for_attack(blackboard.physics_world, unit, target_unit)
 
 		if has_line_of_sight then

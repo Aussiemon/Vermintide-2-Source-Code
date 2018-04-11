@@ -64,18 +64,18 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	self.damage_profile = damage_profile
 	local cleave_distribution = damage_profile.cleave_distribution or DefaultCleaveDistribution
 	local cleave_range = Cleave.max - Cleave.min
-	local cleave_power_level = ActionUtils.scale_powerlevels(self.power_level, "cleave")
-	local attack_cleave_power_level = cleave_power_level*cleave_distribution.attack
+	local cleave_power_level = ActionUtils.scale_powerlevels(self.power_level, "cleave", owner_unit)
+	local attack_cleave_power_level = cleave_power_level * cleave_distribution.attack
 	local attack_percentage = DamageUtils.get_power_level_percentage(attack_cleave_power_level)
-	local max_targets_attack = cleave_range*attack_percentage
-	local impact_cleave_power_level = cleave_power_level*cleave_distribution.impact
+	local max_targets_attack = cleave_range * attack_percentage
+	local impact_cleave_power_level = cleave_power_level * cleave_distribution.impact
 	local impact_percentage = DamageUtils.get_power_level_percentage(impact_cleave_power_level)
-	local max_targets_impact = cleave_range*impact_percentage
+	local max_targets_impact = cleave_range * impact_percentage
 	max_targets_attack = buff_extension.apply_buffs_to_value(buff_extension, max_targets_attack or 1, StatBuffIndex.INCREASED_MAX_TARGETS)
 	max_targets_impact = buff_extension.apply_buffs_to_value(buff_extension, max_targets_impact or 1, StatBuffIndex.INCREASED_MAX_TARGETS)
 
 	if buff_extension.has_buff_type(buff_extension, "armor penetration") then
-		max_targets_impact = max_targets_impact*2
+		max_targets_impact = max_targets_impact * 2
 	end
 
 	self.max_targets_attack = max_targets_attack
@@ -151,7 +151,7 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 			local hit_unit = Actor.unit(actor)
 			local breed = unit_get_data(hit_unit, "breed")
 
-			if breed and not breed.allied then
+			if breed then
 				local node = Actor.node(actor)
 				local hit_zone = breed.hit_zones_lookup[node]
 
@@ -172,7 +172,7 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	local rotation = Unit.world_rotation(weapon_unit, 0)
 	local weapon_up_dir = Quaternion.up(rotation)
 	local weapon_up_offset_mod = new_action.weapon_up_offset_mod or 0
-	local weapon_up_offset = weapon_up_dir*weapon_up_offset_mod
+	local weapon_up_offset = weapon_up_dir * weapon_up_offset_mod
 	local actual_position_initial = POSITION_LOOKUP[weapon_unit]
 	local position_initial = Vector3(actual_position_initial.x, actual_position_initial.y, actual_position_initial.z - self.down_offset) + weapon_up_offset
 
@@ -225,10 +225,10 @@ ActionSweep.client_owner_post_update = function (self, dt, t, world, _, current_
 		i = i + 1
 		local interpolated_dt = math.min(max_dt, dt - current_dt)
 		current_dt = math.min(current_dt + max_dt, dt)
-		local lerp_t = current_dt/dt
+		local lerp_t = current_dt / dt
 		local current_position = Vector3.lerp(start_position, end_position, lerp_t)
 		local current_rotation = Quaternion.lerp(start_rotation, end_rotation, lerp_t)
-		can_damage = self._is_within_damage_window(self, current_time_in_action - dt*2 + current_dt, current_action, owner_unit)
+		can_damage = self._is_within_damage_window(self, current_time_in_action - 2 * dt + current_dt, current_action, owner_unit)
 		aborted = self._do_overlap(self, interpolated_dt, t, unit, owner_unit, current_action, physics_world, can_damage, current_position, current_rotation)
 	end
 
@@ -254,9 +254,9 @@ ActionSweep._is_within_damage_window = function (self, current_time_in_action, a
 
 	local anim_time_scale = action.anim_time_scale or 1
 	anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
-	damage_window_start = damage_window_start/anim_time_scale
+	damage_window_start = damage_window_start / anim_time_scale
 	damage_window_end = damage_window_end or action.total_time or math.huge
-	damage_window_end = damage_window_end/anim_time_scale
+	damage_window_end = damage_window_end / anim_time_scale
 	local after_start = damage_window_start < current_time_in_action
 	local before_end = current_time_in_action < damage_window_end
 
@@ -277,7 +277,7 @@ ActionSweep._calculate_hit_mass = function (self, difficulty_rank, target_health
 			hit_mass_total = 1
 		elseif action_mass_override and action_mass_override[breed.name] then
 			local mass_cost_multiplier = action_mass_override[breed.name]
-			hit_mass_total = hit_mass_total*(mass_cost_multiplier or 1)
+			hit_mass_total = hit_mass_total * (mass_cost_multiplier or 1)
 		end
 
 		local game = self.network_manager:game()
@@ -285,11 +285,11 @@ ActionSweep._calculate_hit_mass = function (self, difficulty_rank, target_health
 		local hit_unit_action_name = NetworkLookup.bt_action_names[hit_unit_action_id]
 
 		if hit_unit_action_name == "stagger" then
-			hit_mass_total = hit_mass_total*0.75
+			hit_mass_total = hit_mass_total * 0.75
 		end
 
 		if buff_extension.has_buff_perk(buff_extension, "hit_mass_override") then
-			hit_mass_total = hit_mass_total*0.75
+			hit_mass_total = hit_mass_total * 0.75
 		end
 
 		self.amount_of_mass_hit = self.amount_of_mass_hit + hit_mass_total
@@ -335,7 +335,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 	local weapon_up_dir = Quaternion.up(current_rotation)
 	local weapon_up_offset_mod = current_action.weapon_up_offset_mod or 0
-	local weapon_up_offset = weapon_up_dir*weapon_up_offset_mod
+	local weapon_up_offset = weapon_up_dir * weapon_up_offset_mod
 
 	if not can_damage and not self.could_damage_last_update then
 		local actual_last_position_current = current_position
@@ -362,28 +362,28 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 	local weapon_half_extents = self.stored_half_extents:unbox()
 	local weapon_half_length = weapon_half_extents.z
 	local range_mod = current_action.range_mod or 1
-	local width_mod = (current_action.width_mod and current_action.width_mod*1.25) or 25
-	local height_mod = (current_action.height_mod and current_action.height_mod*1.25) or 4
+	local width_mod = (current_action.width_mod and current_action.width_mod * 1.25) or 25
+	local height_mod = (current_action.height_mod and current_action.height_mod * 1.25) or 4
 
 	if global_is_inside_inn then
-		range_mod = range_mod*0.65
-		width_mod = width_mod/4
+		range_mod = 0.65 * range_mod
+		width_mod = width_mod / 4
 	end
 
-	weapon_half_length = weapon_half_length*range_mod
-	weapon_half_extents.x = weapon_half_extents.x*width_mod
-	weapon_half_extents.y = weapon_half_extents.y*height_mod
+	weapon_half_length = weapon_half_length * range_mod
+	weapon_half_extents.x = weapon_half_extents.x * width_mod
+	weapon_half_extents.y = weapon_half_extents.y * height_mod
 
 	if script_data.debug_weapons then
-		drawer.capsule(drawer, position_previous, position_previous + weapon_up_dir_previous*weapon_half_length*2, 0.02)
-		drawer.capsule(drawer, position_current, position_current + current_rot_up*weapon_half_length*2, 0.01, Color(0, 0, 255))
+		drawer.capsule(drawer, position_previous, position_previous + weapon_up_dir_previous * weapon_half_length * 2, 0.02)
+		drawer.capsule(drawer, position_current, position_current + current_rot_up * weapon_half_length * 2, 0.01, Color(0, 0, 255))
 		Debug.text("Missed target count: %d", self.missed_targets or 0)
 	end
 
 	local weapon_rot = current_rotation
 	local middle_rot = Quaternion.lerp(rotation_previous, weapon_rot, 0.5)
-	local position_start = position_previous + weapon_up_dir_previous*weapon_half_length
-	local position_end = (position_previous + current_rot_up*weapon_half_length*2) - Quaternion.up(rotation_previous)*weapon_half_length
+	local position_start = position_previous + weapon_up_dir_previous * weapon_half_length
+	local position_end = (position_previous + current_rot_up * weapon_half_length * 2) - Quaternion.up(rotation_previous) * weapon_half_length
 	local max_num_hits = 5
 	local attack_direction = calculate_attack_direction(current_action, weapon_rot)
 	local owner_player = Managers.player:owner(owner_unit)
@@ -396,9 +396,9 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 		PhysicsWorld.start_reusing_sweep_tables()
 	end
 
-	local sweep_results1 = PhysicsWorld.linear_obb_sweep(physics_world, position_previous, position_previous + weapon_up_dir_previous*weapon_half_length*2, weapon_cross_section, rotation_previous, max_num_hits, "collision_filter", collision_filter, "report_initial_overlap")
+	local sweep_results1 = PhysicsWorld.linear_obb_sweep(physics_world, position_previous, position_previous + weapon_up_dir_previous * weapon_half_length * 2, weapon_cross_section, rotation_previous, max_num_hits, "collision_filter", collision_filter, "report_initial_overlap")
 	local sweep_results2 = PhysicsWorld.linear_obb_sweep(physics_world, position_start, position_end, weapon_half_extents, rotation_previous, max_num_hits, "collision_filter", collision_filter, "report_initial_overlap")
-	local sweep_results3 = PhysicsWorld.linear_obb_sweep(physics_world, position_previous + current_rot_up*weapon_half_length, position_current + current_rot_up*weapon_half_length, weapon_half_extents, rotation_current, max_num_hits, "collision_filter", collision_filter, "report_initial_overlap")
+	local sweep_results3 = PhysicsWorld.linear_obb_sweep(physics_world, position_previous + current_rot_up * weapon_half_length, position_current + current_rot_up * weapon_half_length, weapon_half_extents, rotation_current, max_num_hits, "collision_filter", collision_filter, "report_initial_overlap")
 	local num_results1 = 0
 	local num_results2 = 0
 	local num_results3 = 0
@@ -486,7 +486,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 				is_dodging = AiUtils.attack_is_dodged(hit_unit)
 			end
 
-			if is_character and hit_units[hit_unit] == nil and in_view and not hit_self and not breed.allied then
+			if is_character and hit_units[hit_unit] == nil and in_view and not hit_self then
 				hit_units[hit_unit] = true
 				shield_blocked = is_dodging or (AiUtils.attack_is_shield_blocked(hit_unit, owner_unit) and not current_action.ignore_armour_hit and not self.ignore_mass_and_armour)
 				local network_manager = self.network_manager
@@ -805,7 +805,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 		drawer.sphere(drawer, position_end, 0.1, Color(255, 0, 255))
 		drawer.vector(drawer, position_start, position_end - position_start)
 
-		local pose = Matrix4x4.from_quaternion_position(rotation_current, position_previous + Quaternion.up(rotation_current)*weapon_half_length)
+		local pose = Matrix4x4.from_quaternion_position(rotation_current, position_previous + Quaternion.up(rotation_current) * weapon_half_length)
 
 		drawer.box_sweep(drawer, pose, weapon_half_extents, position_current - position_previous)
 	end
@@ -823,7 +823,7 @@ ActionSweep._play_environmental_effect = function (self, weapon_rotation, curren
 	local world = self.world
 	local weapon_impact_direction = (current_action.impact_axis and current_action.impact_axis:unbox()) or Vector3.forward()
 	local hit_effect = current_action.hit_effect
-	local impact_direction = weapon_right*weapon_impact_direction.x + weapon_fwd*weapon_impact_direction.y + weapon_up*weapon_impact_direction.z
+	local impact_direction = weapon_right * weapon_impact_direction.x + weapon_fwd * weapon_impact_direction.y + weapon_up * weapon_impact_direction.z
 	local impact_rotation = Quaternion.look(impact_direction, -weapon_right)
 	local owner_unit = self.owner_unit
 	local owner_player = Managers.player:owner(owner_unit)
@@ -838,8 +838,8 @@ ActionSweep._play_environmental_effect = function (self, weapon_rotation, curren
 	if script_data.debug_material_effects then
 		local drawer = self._drawer
 
-		drawer.vector(drawer, hit_position - impact_direction*0.1, impact_direction*0.1)
-		drawer.vector(drawer, hit_position - impact_direction*0.1, weapon_fwd*0.1)
+		drawer.vector(drawer, hit_position - impact_direction * 0.1, impact_direction * 0.1)
+		drawer.vector(drawer, hit_position - impact_direction * 0.1, weapon_fwd * 0.1)
 	end
 
 	return 
@@ -974,11 +974,11 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 			local hit_unit_dir = Quaternion.forward(Unit.local_rotation(hit_unit, 0))
 			local angle_difference = Vector3.flat_angle(hit_unit_dir, attack_direction)
 
-			if angle_difference < -math.pi*0.75 or math.pi*0.75 < angle_difference then
+			if angle_difference < -math.pi * 0.75 or math.pi * 0.75 < angle_difference then
 				hit_anim = "hit_reaction_backward"
-			elseif angle_difference < -math.pi*0.25 then
+			elseif angle_difference < -math.pi * 0.25 then
 				hit_anim = "hit_reaction_left"
-			elseif angle_difference < math.pi*0.25 then
+			elseif angle_difference < math.pi * 0.25 then
 				hit_anim = "hit_reaction_forward"
 			else
 				hit_anim = "hit_reaction_right"

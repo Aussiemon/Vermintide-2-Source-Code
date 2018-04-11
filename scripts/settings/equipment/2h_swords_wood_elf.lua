@@ -194,7 +194,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.2,
+			anim_time_scale = time_mod * 1.2,
 			buff_data = {
 				{
 					start_time = 0,
@@ -204,12 +204,12 @@ weapon_template.actions = {
 				},
 				{
 					start_time = 0.2,
-					external_multiplier = 1.4,
-					end_time = 0.35,
+					external_multiplier = 1.5,
+					end_time = 0.4,
 					buff_name = "planted_fast_decrease_movement"
 				},
 				{
-					start_time = 0.35,
+					start_time = 0.4,
 					external_multiplier = 0.8,
 					end_time = 0.5,
 					buff_name = "planted_fast_decrease_movement"
@@ -218,14 +218,14 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_right",
-					start_time = 0.85,
+					start_time = 0.75,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default_right",
-					start_time = 0.85,
+					start_time = 0.75,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
@@ -268,7 +268,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1,
+			anim_time_scale = time_mod * 1.1,
 			buff_data = {
 				{
 					start_time = 0,
@@ -278,12 +278,12 @@ weapon_template.actions = {
 				},
 				{
 					start_time = 0.2,
-					external_multiplier = 1.4,
-					end_time = 0.35,
+					external_multiplier = 1.5,
+					end_time = 0.4,
 					buff_name = "planted_fast_decrease_movement"
 				},
 				{
-					start_time = 0.35,
+					start_time = 0.4,
 					external_multiplier = 0.8,
 					end_time = 0.5,
 					buff_name = "planted_fast_decrease_movement"
@@ -292,14 +292,14 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_left",
-					start_time = 0.85,
+					start_time = 0.75,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default_left",
-					start_time = 0.85,
+					start_time = 0.75,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
@@ -343,7 +343,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.5,
+			anim_time_scale = time_mod * 1.5,
 			buff_data = {
 				{
 					start_time = 0,
@@ -407,7 +407,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.2,
+			anim_time_scale = time_mod * 1.2,
 			buff_data = {
 				{
 					start_time = 0,
@@ -474,7 +474,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.2,
+			anim_time_scale = time_mod * 1.2,
 			buff_data = {
 				{
 					start_time = 0,

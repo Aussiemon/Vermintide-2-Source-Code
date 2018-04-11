@@ -290,7 +290,7 @@ KeepDecorationView.spawn_unit = function (self, unit_name)
 	local camera_rotation = self._get_camera_rotation(self)
 	local camera_forward_vector = Quaternion.forward(camera_rotation)
 	local camera_look_rotation = Quaternion.look(camera_forward_vector, Vector3.up())
-	local horizontal_rotation = Quaternion.axis_angle(Vector3.up(), math.pi*1)
+	local horizontal_rotation = Quaternion.axis_angle(Vector3.up(), math.pi * 1)
 	local unit_spawn_rotation = Quaternion.multiply(camera_look_rotation, horizontal_rotation)
 	local camera_position = self._get_camera_position(self)
 	local unit_spawn_position = camera_position + camera_forward_vector
@@ -321,12 +321,12 @@ KeepDecorationView.spawn_unit = function (self, unit_name)
 
 		if max_value < largest_value then
 			local diff = largest_value - max_value
-			local scale_fraction = diff/largest_value - 1
+			local scale_fraction = 1 - diff / largest_value
 			local scale = Vector3(scale_fraction, scale_fraction, scale_fraction)
 
 			Unit.set_local_scale(unit, 0, scale)
 
-			offset = offset*scale_fraction
+			offset = offset * scale_fraction
 		end
 
 		local display_position = unit_spawn_position - offset

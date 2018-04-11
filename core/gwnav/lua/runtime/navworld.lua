@@ -189,9 +189,9 @@ NavWorld.init_graph_connector = function (self, unit)
 	local down_up = NavHelpers.unit_script_data(unit, true, "GwNavGraphConnector", "down_up")
 	local up_down = NavHelpers.unit_script_data(unit, true, "GwNavGraphConnector", "up_down")
 	local bidirectional_edges = down_up and up_down
-	local half_subdivision_count = math.floor((unitScale[1]*0.5)/sampling_step)
-	local current_vertex_left_offset = half_subdivision_count*sampling_step
-	local sub_graph_count = half_subdivision_count*2 + 1
+	local half_subdivision_count = math.floor((0.5 * unitScale[1]) / sampling_step)
+	local current_vertex_left_offset = half_subdivision_count * sampling_step
+	local sub_graph_count = half_subdivision_count * 2 + 1
 	local is_exclusive, color, layer_id, smartobject_id, user_data_id = NavHelpers.get_layer_and_smartobject(unit, "GwNavGraphConnector")
 
 	if is_exclusive then
@@ -207,7 +207,7 @@ NavWorld.init_graph_connector = function (self, unit)
 	end
 
 	local temp_a = unitPos
-	local temp_b = unitPos - forward*unitScale[2] + up*unitScale[3]
+	local temp_b = unitPos - forward * unitScale[2] + up * unitScale[3]
 
 	for i = 1, sub_graph_count, 1 do
 		local control_points = {}
@@ -219,8 +219,8 @@ NavWorld.init_graph_connector = function (self, unit)
 			down_idx = 1
 		end
 
-		control_points[start_idx] = temp_a - right*current_vertex_left_offset
-		control_points[down_idx] = temp_b - right*current_vertex_left_offset
+		control_points[start_idx] = temp_a - right * current_vertex_left_offset
+		control_points[down_idx] = temp_b - right * current_vertex_left_offset
 		local navgraph = NavGraph(self.gwnavworld, bidirectional_edges, control_points, color, layer_id, smartobject_id, user_data_id)
 		self.navgraphs[#self.navgraphs + 1] = navgraph
 
@@ -243,10 +243,10 @@ NavWorld.init_tagbox = function (self, unit)
 	local right = Quaternion.right(unitRot)
 	local up = Quaternion.up(unitRot)
 	local point_table = {
-		(unitPos + forward*extent_x) - right*extent_y,
-		unitPos + forward*extent_x + right*extent_y,
-		unitPos - forward*extent_x + right*extent_y,
-		unitPos - forward*extent_x - right*extent_y
+		(unitPos + forward * extent_x) - right * extent_y,
+		unitPos + forward * extent_x + right * extent_y,
+		unitPos - forward * extent_x + right * extent_y,
+		unitPos - forward * extent_x - right * extent_y
 	}
 	local alt_min = unitPos[3] - extent_z
 	local alt_max = unitPos[3] + extent_z

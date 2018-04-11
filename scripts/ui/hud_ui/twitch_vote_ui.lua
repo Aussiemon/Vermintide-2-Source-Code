@@ -1,16 +1,23 @@
 local definitions = local_require("scripts/ui/hud_ui/twitch_vote_ui_definitions")
+local scenegraph_definition = definitions.scenegraph_definition
+local definition_settings = definitions.settings
 local DEBUG_VOTE_UI = false
+local DO_RELOAD = true
+local RESULT_TIMER = 3
 TwitchVoteUI = class(TwitchVoteUI)
 TwitchVoteUI.init = function (self, ingame_ui_context)
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ingame_ui = ingame_ui_context.ingame_ui
 	self._input_manager = ingame_ui_context.input_manager
-	self._active = false
+	self.active = false
 	self._active_vote = nil
 	self._vote_activated = false
 	self._votes = {}
 	self._ui_animations = {}
 	self._animation_callbacks = {}
+	self._render_settings = {
+		alpha_multiplier = 1
+	}
 
 	self._create_elements(self)
 	Managers.state.event:register(self, "add_vote_ui", "event_add_vote_ui")
@@ -22,10 +29,14 @@ end
 TwitchVoteUI.event_add_vote_ui = function (self, vote_key)
 	local vote_data = Managers.twitch:get_vote_data(vote_key)
 
+	if not vote_data then
+		return 
+	end
+
 	if vote_data.vote_type == "standard_vote" then
-		self.add_vote_ui(self, vote_data.vote_templates[1], vote_data.vote_templates[2], vote_data.option_strings, vote_key)
+		self.start_standard_vote(self, vote_data.vote_templates[1], vote_data.vote_templates[2], vote_data.option_strings, vote_key)
 	elseif vote_data.vote_type == "multiple_choice" then
-		self.add_multiple_choice_vote_ui(self, vote_data.vote_templates[1], vote_data.option_strings, vote_key)
+		self.start_multiple_choice_vote(self, vote_data.vote_templates[1], vote_data.option_strings, vote_key)
 	end
 
 	return 
@@ -39,253 +50,22 @@ TwitchVoteUI.event_finish_vote_ui = function (self, vote_key, winning_index)
 
 	local winning_template_name = vote_data.vote_templates[winning_index]
 	local vote_type = vote_data.vote_type
-
-	if vote_type == "standard_vote" then
-		self._finish_standard_vote_ui(self, vote_key, winning_index, winning_template_name)
-	elseif vote_type == "multiple_choice" then
-		self._start_multiple_choice_finish_animation(self, vote_key, winning_index, winning_template_name)
-	end
-
-	return 
-end
-TwitchVoteUI._finish_standard_vote_ui = function (self, vote_key, winning_index, winning_template_name)
-	if not self._active_vote or not self._vote_widget then
-		return 
-	end
-
-	if self._active_vote.vote_type ~= "standard_vote" then
-		print("Wrong vote type - Resetting")
-
-		self._active_vote = nil
-		self._vote_widget = nil
-		self._vote_count = {
-			0,
-			0,
-			0,
-			0,
-			0
-		}
-
-		table.remove(self._votes, 1)
-
-		self._widgets = {}
-		self._vote_icon_count = 0
-
-		return 
-	end
-
-	local template = TwitchVoteTemplates[winning_template_name]
-	self._active_vote.completed = true
-	self._vote_widget.content.vote_data.timer = 0
-	self._vote_widget.content.complete_text = (template and (template.text or string.format("Missing Text for template: %s", winning_template_name))) or TwitchSettings.default_draw_vote
-	self._ui_animations.inner_timer_rect_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_timer_rect.texture_size, 1, 100, 400, 0.5, math.easeOutCubic)
-	self._ui_animations.outer_timer_rect_offset = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_timer_rect.offset, 1, -3, -153, 0.5, math.easeOutCubic)
-	self._ui_animations.outer_timer_rect_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_timer_rect.size, 1, 106, 406, 0.5, math.easeOutCubic)
-	self._ui_animations.fade_text = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.complete_text.text_color, 1, 0, 255, 0.5, math.easeInCubic)
-
-	if winning_index == 1 then
-		self._ui_animations.pulse_red = UIAnimation.init(UIAnimation.pulse_animation3, self._vote_widget.style.vote_a.color, 2, 255, 128, 7, 2)
-		self._ui_animations.pulse_green = UIAnimation.init(UIAnimation.pulse_animation3, self._vote_widget.style.vote_a.color, 3, 255, 128, 7, 2)
-		self._ui_animations.pulse_blue = UIAnimation.init(UIAnimation.pulse_animation3, self._vote_widget.style.vote_a.color, 4, 255, 128, 7, 2)
-		self._ui_animations.fade = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.vote_b.color, 1, 255, 0, 1, math.easeOutCubic)
-		self._ui_animations.bar_a = UIAnimation.init(UIAnimation.function_by_time, self._active_vote.vote_percentages, 1, self._active_vote.vote_percentages[1], 1, 0.5, math.easeOutCubic)
-		self._ui_animations.bar_b = UIAnimation.init(UIAnimation.function_by_time, self._active_vote.vote_percentages, 2, self._active_vote.vote_percentages[2], 0, 0.5, math.easeOutCubic)
-		self._ui_animations.inner_vote_area_rect_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_vote_area_rect.size, 1, self._vote_widget.style.inner_vote_area_rect.size[1], 480, 0.5, math.easeOutCubic)
-		self._ui_animations.outer_vote_area_rect_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_vote_area_rect.size, 1, self._vote_widget.style.outer_vote_area_rect.size[1], 480, 0.5, math.easeOutCubic)
-		self._ui_animations.inner_vote_area_glass_rect_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_vote_area_glass.texture_size, 1, self._vote_widget.style.inner_vote_area_glass.texture_size[1], 480, 0.5, math.easeOutCubic)
-	elseif winning_index == 2 then
-		self._ui_animations.pulse_red = UIAnimation.init(UIAnimation.pulse_animation3, self._vote_widget.style.vote_b.color, 2, 255, 128, 7, 2)
-		self._ui_animations.pulse_green = UIAnimation.init(UIAnimation.pulse_animation3, self._vote_widget.style.vote_b.color, 3, 255, 128, 7, 2)
-		self._ui_animations.pulse_blue = UIAnimation.init(UIAnimation.pulse_animation3, self._vote_widget.style.vote_b.color, 4, 255, 128, 7, 2)
-		self._ui_animations.fade = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.vote_a.color, 1, 255, 0, 1, math.easeOutCubic)
-		self._ui_animations.bar_a = UIAnimation.init(UIAnimation.function_by_time, self._active_vote.vote_percentages, 1, self._active_vote.vote_percentages[1], 0, 0.5, math.easeOutCubic)
-		self._ui_animations.bar_b = UIAnimation.init(UIAnimation.function_by_time, self._active_vote.vote_percentages, 2, self._active_vote.vote_percentages[2], 1, 0.5, math.easeOutCubic)
-		self._ui_animations.inner_vote_area_rect_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_vote_area_rect.size, 1, self._vote_widget.style.inner_vote_area_rect.size[1], 500, 0.5, math.easeOutCubic)
-		self._ui_animations.outer_vote_area_rect_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_vote_area_rect.size, 1, self._vote_widget.style.outer_vote_area_rect.size[1], 506, 0.5, math.easeOutCubic)
-		self._ui_animations.inner_vote_area_glass_rect_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_vote_area_glass.texture_size, 1, self._vote_widget.style.inner_vote_area_glass.texture_size[1], 500, 0.5, math.easeOutCubic)
-		self._ui_animations.inner_vote_area_rect_offset = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_vote_area_rect.offset, 1, self._vote_widget.style.inner_vote_area_rect.offset[1], 100, 0.5, math.easeOutCubic)
-		self._ui_animations.outer_vote_area_rect_offset = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_vote_area_rect.offset, 1, self._vote_widget.style.outer_vote_area_rect.offset[1], 97, 0.5, math.easeOutCubic)
-		self._ui_animations.inner_vote_area_glass_rect_offset = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_vote_area_glass.offset, 1, self._vote_widget.style.inner_vote_area_glass.offset[1], 100, 0.5, math.easeOutCubic)
-	else
-		self._active_vote.vote_percentages[1] = 0
-		self._active_vote.vote_percentages[2] = 0
-		self._ui_animations.fade_a = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.vote_a.color, 1, 255, 0, 1, math.easeOutCubic)
-		self._ui_animations.fade_b = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.vote_b.color, 1, 255, 0, 1, math.easeOutCubic)
-		self._ui_animations.inner_vote_area_rect_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_vote_area_rect.size, 1, self._vote_widget.style.inner_vote_area_rect.size[1], 400, 0.5, math.easeOutCubic)
-		self._ui_animations.outer_vote_area_rect_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_vote_area_rect.size, 1, self._vote_widget.style.outer_vote_area_rect.size[1], 406, 0.5, math.easeOutCubic)
-		self._ui_animations.inner_vote_area_glass_rect_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_vote_area_glass.texture_size, 1, self._vote_widget.style.inner_vote_area_glass.texture_size[1], 400, 0.5, math.easeOutCubic)
-		self._ui_animations.inner_vote_area_rect_offset = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_vote_area_rect.offset, 1, self._vote_widget.style.inner_vote_area_rect.offset[1], 100, 0.5, math.easeOutCubic)
-		self._ui_animations.outer_vote_area_rect_offset = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_vote_area_rect.offset, 1, self._vote_widget.style.outer_vote_area_rect.offset[1], 97, 0.5, math.easeOutCubic)
-		self._ui_animations.inner_vote_area_glass_rect_offset = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_vote_area_glass.offset, 1, self._vote_widget.style.inner_vote_area_glass.offset[1], 100, 0.5, math.easeOutCubic)
-	end
-
-	self._ui_animations.placeholder = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_timer_rect.offset, 2, self._vote_widget.style.inner_timer_rect.offset[2], self._vote_widget.style.inner_timer_rect.offset[2], 2, math.easeOutCubic)
-	self._animation_callbacks.placeholder = {
-		name = "animate_out",
-		animation = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.base_area.position, 2, 150, -300, 0.5, math.easeOutCubic)
+	local active_vote = self._active_vote
+	local vote_template = TwitchVoteTemplates[winning_template_name]
+	self._vote_result = {
+		vote_key = vote_key,
+		winning_index = winning_index,
+		winning_template_name = winning_template_name,
+		vote_template = vote_template
 	}
 
-	return 
-end
-TwitchVoteUI._start_multiple_choice_finish_animation = function (self, vote_key, winning_index, winning_template_name)
-	if not self._active_vote or not self._vote_widget then
-		return 
+	if vote_type == "standard_vote" then
+		self.show_ui(self, "standard_vote_result")
+	elseif vote_type == "multiple_choice" then
+		self.show_ui(self, "multiple_choice_result")
 	end
 
-	if self._active_vote.vote_type ~= "multiple_choice" then
-		print("Wrong vote type - Resetting")
-
-		self._active_vote = nil
-		self._vote_widget = nil
-		self._vote_count = {
-			0,
-			0,
-			0,
-			0,
-			0
-		}
-
-		table.remove(self._votes, 1)
-
-		self._widgets = {}
-		self._vote_icon_count = 0
-
-		return 
-	end
-
-	self._active_vote.completed = true
-	local timer_multiplier = 1
-	local content = self._vote_widget.content
-	local portraits = {}
-
-	for i = 1, 5, 1 do
-		local id = "icon_" .. i
-
-		if content[id] then
-			portraits[i] = id
-		end
-	end
-
-	local winning_name = portraits[winning_index]
-	local win_text = (TwitchVoteTemplates[winning_template_name] and TwitchVoteTemplates[winning_template_name].text) or "It was a Draw!"
-	content.win_text = win_text
-
-	if winning_name then
-		self._vote_widget.style[winning_name].offset[3] = self._vote_widget.style[winning_name].offset[3] + 5
-		self._vote_widget.style[winning_name .. "_frame"].offset[3] = self._vote_widget.style[winning_name .. "_frame"].offset[3] + 5
-		self._vote_widget.style[winning_name .. "_masked"].offset[3] = self._vote_widget.style[winning_name .. "_masked"].offset[3] + 5
-		self._ui_animations.portrait_offset_mask_size = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_mask"].texture_size, 2, self._vote_widget.style[winning_name .. "_mask"].texture_size[2], 130, 0, math.easeOutCubic)
-		self._ui_animations.pulse_red = UIAnimation.init(UIAnimation.pulse_animation3, self._vote_widget.style[winning_name .. "_masked"].color, 2, 255, 128, 8, 0.9)
-		self._ui_animations.pulse_green = UIAnimation.init(UIAnimation.pulse_animation3, self._vote_widget.style[winning_name .. "_masked"].color, 3, 255, 128, 8, 0.9)
-		self._ui_animations.pulse_blue = UIAnimation.init(UIAnimation.pulse_animation3, self._vote_widget.style[winning_name .. "_masked"].color, 4, 255, 128, 8, 0.9)
-		content.name_tag = content[winning_name .. "_name_full"]
-		portraits[winning_index] = nil
-	end
-
-	for _, portrait_name in pairs(portraits) do
-		self._ui_animations[portrait_name .. "_mask_size"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[portrait_name .. "_mask"].texture_size, 2, self._vote_widget.style[portrait_name .. "_mask"].texture_size[2], 0, timer_multiplier*0.5, math.easeOutCubic)
-		self._vote_widget.style[portrait_name].offset[3] = self._vote_widget.style[portrait_name].offset[3] - 5
-		self._vote_widget.style[portrait_name .. "_frame"].offset[3] = self._vote_widget.style[portrait_name .. "_frame"].offset[3] - 5
-		self._vote_widget.style[portrait_name .. "_masked"].offset[3] = self._vote_widget.style[portrait_name .. "_masked"].offset[3] - 5
-		self._ui_animations[portrait_name .. "_name"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[portrait_name .. "_name"].text_color, 1, 255, 60, timer_multiplier*0.25, math.easeOutCubic)
-		self._ui_animations[portrait_name .. "_vote_text"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[portrait_name .. "_vote_text"].text_color, 1, 255, 60, timer_multiplier*0.25, math.easeOutCubic)
-	end
-
-	self._vote_widget.content.vote_data.timer = 0
-	self._ui_animations.fade_timer_text = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.timer.text_color, 1, 255, 0, timer_multiplier*0.5, math.easeOutCubic)
-	self._ui_animations.placeholder = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.icon_1_outer_rect.color, 2, self._vote_widget.style.icon_1_outer_rect.color[2], self._vote_widget.style.icon_1_outer_rect.color[2], timer_multiplier*1, math.easeOutCubic)
-	self._animation_callbacks.placeholder = callback(self, "_continue_multiple_choice_animation", winning_name, winning_index, timer_multiplier)
-
-	return 
-end
-TwitchVoteUI._continue_multiple_choice_animation = function (self, winning_name, winning_index, timer_multiplier)
-	if winning_name then
-		self._ui_animations.portrait_offset = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name].offset, 2, 0, 25, timer_multiplier*0.5, math.easeOutCubic)
-		self._ui_animations.portrait_offset_frame = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_frame"].offset, 2, 0, 25, timer_multiplier*0.5, math.easeOutCubic)
-		self._ui_animations.portrait_offset_masked = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_masked"].offset, 2, 0, 25, timer_multiplier*0.5, math.easeOutCubic)
-		self._ui_animations.portrait_offset_mask = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_mask"].offset, 2, 0, 25, timer_multiplier*0.5, math.easeOutCubic)
-		local size = self._vote_widget.style[winning_name].texture_size
-		self._ui_animations.portrait_size_x = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name].texture_size, 1, size[1], size[1]*1.2, timer_multiplier*0.5, math.easeOutCubic)
-		self._ui_animations.portrait_size_y = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name].texture_size, 2, size[2], size[2]*1.2, timer_multiplier*0.5, math.easeOutCubic)
-		local size = self._vote_widget.style[winning_name .. "_frame"].texture_size
-		self._ui_animations.portrait_frame_size_x = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_frame"].texture_size, 1, size[1], size[1]*1.2, timer_multiplier*0.5, math.easeOutCubic)
-		self._ui_animations.portrait_frame_size_y = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_frame"].texture_size, 2, size[2], size[2]*1.2, timer_multiplier*0.5, math.easeOutCubic)
-		local size = self._vote_widget.style[winning_name .. "_masked"].texture_size
-		self._ui_animations.portrait_masked_size_x = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_masked"].texture_size, 1, size[1], size[1]*1.2, timer_multiplier*0.5, math.easeOutCubic)
-		self._ui_animations.portrait_masked_size_y = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_masked"].texture_size, 2, size[2], size[2]*1.2, timer_multiplier*0.5, math.easeOutCubic)
-		local size = self._vote_widget.style[winning_name .. "_mask"].texture_size
-		self._ui_animations.portrait_mask_size_x = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_mask"].texture_size, 1, size[1], size[1]*1.2, timer_multiplier*0.5, math.easeOutCubic)
-		self._ui_animations.portrait_mask_size_y = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_mask"].texture_size, 2, size[2], size[2]*1.2, timer_multiplier*0.5, math.easeOutCubic)
-		self._ui_animations[winning_name .. "_name"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_name"].text_color, 1, 255, 0, timer_multiplier*0.25, math.easeOutCubic)
-		self._ui_animations[winning_name .. "_vote_text"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_vote_text"].text_color, 1, 255, 0, timer_multiplier*0.25, math.easeOutCubic)
-		self._ui_animations[winning_name .. "_name_inner_rect"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_name_inner_rect"].color, 1, 255, 0, timer_multiplier*0.25, math.easeOutCubic)
-		self._ui_animations[winning_name .. "_name_outer_rect"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_name_outer_rect"].color, 1, 255, 0, timer_multiplier*0.25, math.easeOutCubic)
-		self._ui_animations[winning_name .. "_inner_rect"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_inner_rect"].color, 1, 255, 0, timer_multiplier*0.25, math.easeOutCubic)
-		self._ui_animations[winning_name .. "_outer_rect"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[winning_name .. "_outer_rect"].color, 1, 255, 0, timer_multiplier*0.25, math.easeOutCubic)
-	end
-
-	local extra_offset = self._vote_widget.style.inner_timer_rect.offset[1] - 315
-	self._ui_animations.inner_timer_rect_offset_x = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_timer_rect.extra_offset, 1, 0, extra_offset, timer_multiplier*0.5, math.easeOutCubic)
-	self._ui_animations.outer_timer_rect_offset_x = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_timer_rect.extra_offset, 1, 0, extra_offset, timer_multiplier*0.5, math.easeOutCubic)
-	local offset = self._vote_widget.style.inner_timer_rect.offset[2]
-	self._ui_animations.inner_timer_rect_offset_y = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_timer_rect.offset, 2, offset, offset + 90, timer_multiplier*0.5, math.easeOutCubic)
-	local offset = self._vote_widget.style.outer_timer_rect.offset[2]
-	self._ui_animations.outer_timer_rect_offset_y = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_timer_rect.offset, 2, offset, offset + 90, timer_multiplier*0.5, math.easeOutCubic)
-	local name = self._vote_widget.content.name_tag
-	local style = self._vote_widget.style.name_tag
-	local font, scaled_font_size = UIFontByResolution(style)
-	local text_width = UIRenderer.text_size(self._ui_renderer, name, font[1], scaled_font_size)
-	local extra_size = text_width + 50
-	local size = self._vote_widget.style.inner_timer_rect.rect_size[1]
-	self._ui_animations.inner_timer_rect_size_x = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_timer_rect.rect_size, 1, size, extra_size, timer_multiplier*0.5, math.easeOutCubic)
-	local size = self._vote_widget.style.outer_timer_rect.area_size[1]
-	self._ui_animations.outer_timer_rect_size_x = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_timer_rect.area_size, 1, size, extra_size, timer_multiplier*0.5, math.easeOutCubic)
-	local size = self._vote_widget.style.inner_timer_rect.rect_size[1]
-	self._ui_animations.inner_timer_rect_size_y = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_timer_rect.rect_size, 2, size, size - 80, timer_multiplier*0.5, math.easeOutCubic)
-	local size = self._vote_widget.style.outer_timer_rect.area_size[1]
-	self._ui_animations.outer_timer_rect_size_y = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_timer_rect.area_size, 2, size, size - 80, timer_multiplier*0.5, math.easeOutCubic)
-	local extra_offset = self._vote_widget.style.vote.offset[1] - -350 + self._vote_widget.style.vote.texture_size[1]*0.5
-	self._ui_animations.vote_offset = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.vote.extra_offset, 1, 0, extra_offset, timer_multiplier*0.5, math.easeOutCubic)
-	local extra_size = self._vote_widget.style.inner_rect.texture_size[1] - 700
-	self._ui_animations.inner_rect_size_x = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_rect.extra_texture_size, 1, 0, extra_size, timer_multiplier*0.5, math.easeOutCubic)
-	self._ui_animations.outer_rect_size_x = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_rect.extra_area_size, 1, 0, extra_size + 4, timer_multiplier*0.5, math.easeOutCubic)
-	local size = self._vote_widget.style.inner_rect.texture_size[2]
-	self._ui_animations.inner_rect_size_y = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.inner_rect.texture_size, 2, size, size*2, timer_multiplier*0.5, math.easeOutCubic)
-	local size = self._vote_widget.style.outer_rect.area_size[2]
-	self._ui_animations.outer_rect_size_y = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.outer_rect.area_size, 2, size, size*2 - 4, timer_multiplier*0.5, math.easeOutCubic)
-	self._ui_animations.name_tag_alpha = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.name_tag.text_color, 1, 0, 255, timer_multiplier*0.25, math.easeOutCubic)
-	self._ui_animations.win_text_alpha = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.win_text.text_color, 1, 0, 255, timer_multiplier*0.25, math.easeOutCubic)
-	local content = self._vote_widget.content
-	local portraits = {}
-
-	for i = 1, 5, 1 do
-		local id = "icon_" .. i
-
-		if content[id] then
-			portraits[i] = id
-		end
-	end
-
-	if winning_index then
-		portraits[winning_index] = nil
-	end
-
-	for _, portrait_name in pairs(portraits) do
-		self._ui_animations[portrait_name .. "_name"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[portrait_name .. "_name"].text_color, 1, 60, 0, timer_multiplier*0.25, math.easeOutCubic)
-		self._ui_animations[portrait_name .. "_vote_text"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[portrait_name .. "_vote_text"].text_color, 1, 60, 0, timer_multiplier*0.25, math.easeOutCubic)
-		self._ui_animations[portrait_name .. "_name_inner_rect"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[portrait_name .. "_name_inner_rect"].color, 1, 128, 0, timer_multiplier*0.25, math.easeOutCubic)
-		self._ui_animations[portrait_name .. "_name_outer_rect"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[portrait_name .. "_name_outer_rect"].color, 1, 128, 0, timer_multiplier*0.25, math.easeOutCubic)
-		self._ui_animations[portrait_name .. "_inner_rect"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[portrait_name .. "_inner_rect"].color, 1, 128, 0, timer_multiplier*0.25, math.easeOutCubic)
-		self._ui_animations[portrait_name .. "_outer_rect"] = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style[portrait_name .. "_outer_rect"].color, 1, 128, 0, timer_multiplier*0.25, math.easeOutCubic)
-	end
-
-	self._ui_animations.placeholder_two = UIAnimation.init(UIAnimation.function_by_time, self._vote_widget.style.icon_1_outer_rect.color, 2, self._vote_widget.style.icon_1_outer_rect.color[2], self._vote_widget.style.icon_1_outer_rect.color[2], timer_multiplier*2, math.easeOutCubic)
-	self._animation_callbacks.placeholder_two = callback(self, "_finish_multiple_choice_animation")
-
-	return 
-end
-TwitchVoteUI._finish_multiple_choice_animation = function (self)
-	self._ui_animations.animate_out = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.base_area.position, 2, 150, -300, 0.5, math.easeOutCubic)
+	Application.error("[TwitchVoteUI] event_finish_vote_ui")
 
 	return 
 end
@@ -307,7 +87,7 @@ TwitchVoteUI.event_reset_vote_ui = function (self, vote_key)
 		print("RESET: Removed Active vote with key")
 	else
 		self._votes = {}
-		self._active = false
+		self.active = false
 		self._active_vote = nil
 		self._vote_widget = nil
 
@@ -316,7 +96,7 @@ TwitchVoteUI.event_reset_vote_ui = function (self, vote_key)
 
 	return 
 end
-TwitchVoteUI.add_vote_ui = function (self, vote_template_a_name, vote_template_b_name, vote_inputs, vote_key)
+TwitchVoteUI.start_standard_vote = function (self, vote_template_a_name, vote_template_b_name, vote_inputs, vote_key)
 	local vote_template_a = TwitchVoteTemplates[vote_template_a_name]
 
 	fassert(vote_template_a, "[TwitchVoteUI] Could not find any vote template for %s", vote_template_a_name)
@@ -326,7 +106,8 @@ TwitchVoteUI.add_vote_ui = function (self, vote_template_a_name, vote_template_b
 	fassert(vote_template_b, "[TwitchVoteUI] Could not find any vote template for %s", vote_template_b_name)
 	print("added vote")
 
-	self._votes[#self._votes + 1] = {
+	local vote_data = Managers.twitch:get_vote_data(vote_key)
+	local vote = {
 		vote_type = "standard_vote",
 		vote_template_a = table.clone(vote_template_a),
 		vote_template_b = table.clone(vote_template_b),
@@ -334,19 +115,24 @@ TwitchVoteUI.add_vote_ui = function (self, vote_template_a_name, vote_template_b
 			"#a",
 			"#b"
 		},
-		vote_key = vote_key
+		vote_key = vote_key,
+		timer = vote_data.timer
 	}
-	self._active = true
+	self.active = true
+	self._active_vote = vote
+
+	self.show_ui(self, "standard_vote")
 
 	return 
 end
-TwitchVoteUI.add_multiple_choice_vote_ui = function (self, vote_template_name, vote_inputs, vote_key)
+TwitchVoteUI.start_multiple_choice_vote = function (self, vote_template_name, vote_inputs, vote_key)
 	local vote_template = TwitchVoteTemplates[vote_template_name]
 
 	fassert(vote_template, "[TwitchVoteUI] Could not find any vote template for %s", vote_template_name)
 	print("added multiple choice vote")
 
-	self._votes[#self._votes + 1] = {
+	local vote_data = Managers.twitch:get_vote_data(vote_key)
+	local vote = {
 		vote_type = "multiple_choice",
 		vote_template = table.clone(vote_template),
 		inputs = vote_inputs or {
@@ -356,9 +142,13 @@ TwitchVoteUI.add_multiple_choice_vote_ui = function (self, vote_template_name, v
 			"#d",
 			"#e"
 		},
-		vote_key = vote_key
+		vote_key = vote_key,
+		timer = vote_data.timer
 	}
-	self._active = true
+	self.active = true
+	self._active_vote = vote
+
+	self.show_ui(self, "multiple_choice_vote")
 
 	return 
 end
@@ -370,13 +160,7 @@ end
 TwitchVoteUI._create_elements = function (self)
 	local scenegraph_definition = definitions.scenegraph_definition
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	local widgets = definitions.widgets
 	self._widgets = {}
-
-	for widget_name, widget_data in pairs(widgets) do
-		self._widgets[widget_name] = UIWidget.init(widget_data)
-	end
-
 	self._vote_count = {
 		0,
 		0,
@@ -391,7 +175,6 @@ TwitchVoteUI._create_elements = function (self)
 
 	return 
 end
-local DO_RELOAD = true
 TwitchVoteUI.update = function (self, dt, t)
 	script_data.vote_ui = self
 
@@ -402,9 +185,10 @@ TwitchVoteUI.update = function (self, dt, t)
 
 		self._ui_animations = {}
 		self._animation_callbacks = {}
+		self._active_vote = nil
 	end
 
-	if not self._active then
+	if not self.active then
 		return 
 	end
 
@@ -414,97 +198,97 @@ TwitchVoteUI.update = function (self, dt, t)
 		end
 	end
 
+	self._update_transition(self, dt)
 	self._draw(self, dt, t)
-	self._update_animations(self, dt, t)
-	self._update_vote_data(self, dt, t)
 	self._update_active_vote(self, dt, t)
 
-	return 
-end
-TwitchVoteUI._update_animations = function (self, dt, t)
-	if not self._active_vote or not self._vote_activated then
-		return 
+	local ui = self._ui
+
+	if ui == "multiple_choice_vote" then
+		self._update_multiple_votes_ui(self, dt)
+	elseif ui == "standard_vote" then
+		self._update_standard_vote(self, dt)
+	elseif ui == "multiple_choice_result" or ui == "standard_vote_result" then
+		self._update_result(self, dt)
 	end
 
-	for name, animation in pairs(self._ui_animations) do
-		UIAnimation.update(animation, dt)
+	return 
+end
+TwitchVoteUI._update_transition = function (self, dt)
+	local fade_out = self._fade_out
 
-		if UIAnimation.completed(animation) then
-			self._ui_animations[name] = nil
-			local animation_callback_data = self._animation_callbacks[name]
+	if fade_out then
+		local fade_out_speed = 1
+		local render_settings = self._render_settings
+		local alpha_multiplier = math.clamp(render_settings.alpha_multiplier - dt * fade_out_speed, 0, 1)
+		render_settings.alpha_multiplier = alpha_multiplier
 
-			if animation_callback_data then
-				if type(animation_callback_data) == "table" then
-					self._ui_animations[animation_callback_data.name] = animation_callback_data.animation
-				else
-					animation_callback_data()
-				end
+		if alpha_multiplier == 0 then
+			self._ui = nil
+			self._fade_out = nil
 
-				self._animation_callbacks[name] = nil
+			if self._next_ui then
+				self._show_next_ui(self)
+			else
+				self.active = false
 			end
 		end
-	end
-
-	if not next(self._ui_animations) and self._active_vote and self._active_vote.completed then
-		print("ANIMATION FINISHED: Removed Active vote")
-
-		self._active_vote = nil
-		self._vote_widget = nil
-		self._vote_count = {
-			0,
-			0,
-			0,
-			0,
-			0
-		}
-
-		table.remove(self._votes, 1)
-
-		self._widgets = {}
-		self._vote_icon_count = 0
-	end
-
-	return 
-end
-TwitchVoteUI._update_vote_data = function (self, dt, t)
-	if self._active_vote then
-		return 
-	end
-
-	if #self._votes < 1 then
-		self._active = false
 
 		return 
 	end
 
-	self._active_vote = self._votes[1]
-	local vote_type = self._active_vote.vote_type
-	local create_vote_function = nil
+	local fade_in = self._fade_in
 
-	if vote_type == "standard_vote" then
-		create_vote_function = definitions.create_vote_function
-		local vote_widget = create_vote_function(self._active_vote)
-		self._vote_widget = UIWidget.init(vote_widget)
-		self._vote_widget.content.vote_data = self._active_vote
-	elseif vote_type == "multiple_choice" then
-		create_vote_function = definitions.create_multiple_vote_function
-		local vote_widget = create_vote_function(self._active_vote, self._ui_renderer.gui)
-		self._vote_widget = UIWidget.init(vote_widget)
-		self._vote_widget.content.vote_data = self._active_vote
+	if fade_in then
+		local fade_in_speed = 5
+		local render_settings = self._render_settings
+		local alpha_multiplier = math.clamp(render_settings.alpha_multiplier + dt * fade_in_speed, 0, 1)
+		render_settings.alpha_multiplier = alpha_multiplier
+
+		if alpha_multiplier == 1 then
+			self._fade_in = nil
+		end
+
+		return 
 	end
-
-	self._ui_animations.animate_in = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.base_area.position, 2, -300, 150, 0.5, math.easeOutCubic)
 
 	return 
 end
+TwitchVoteUI.show_ui = function (self, ui)
+	self._next_ui = ui
 
-local function altered_sin(value, offset)
-	local new_value = value*12
-	local acceleration = math.ease_exp(value - 1)
+	if self._ui then
+		self._fade_out = true
+	else
+		self._show_next_ui(self)
+	end
 
-	return math.sin((new_value + offset)*math.easeOutCubic(value - 1))*20*math.ease_exp(value - 1)
+	return 
 end
+TwitchVoteUI.hide_ui = function (self)
+	self._fade_out = true
 
+	return 
+end
+TwitchVoteUI._show_next_ui = function (self)
+	local ui = self._next_ui
+
+	if ui == "multiple_choice_vote" then
+		self._show_multiple_choice_vote(self)
+	elseif ui == "multiple_choice_result" then
+		self._show_multiple_choice_result(self)
+	elseif ui == "standard_vote" then
+		self._show_standard_vote(self)
+	elseif ui == "standard_vote_result" then
+		self._show_standard_vote_result(self)
+	end
+
+	self._ui = ui
+	self._fade_in = true
+	self._next_ui = nil
+
+	return 
+end
 TwitchVoteUI._create_vote_icon = function (self, vote_index)
 	if self._ui_animations.animate_in or 50 <= table.size(self._widgets) or not self._vote_widget then
 		return 
@@ -613,7 +397,7 @@ TwitchVoteUI._update_active_vote = function (self, dt, t)
 	local percentages = {}
 
 	for i = 1, 5, 1 do
-		percentages[i] = (0 < total_amount and options[i]/total_amount) or 0
+		percentages[i] = (0 < total_amount and options[i] / total_amount) or 0
 	end
 
 	self._active_vote.vote_percentages = self._active_vote.vote_percentages or {
@@ -625,7 +409,7 @@ TwitchVoteUI._update_active_vote = function (self, dt, t)
 	}
 
 	for i = 1, 5, 1 do
-		self._active_vote.vote_percentages[i] = math.lerp(self._active_vote.vote_percentages[i] or 0, percentages[i], dt*2)
+		self._active_vote.vote_percentages[i] = math.lerp(self._active_vote.vote_percentages[i] or 0, percentages[i], dt * 2)
 	end
 
 	if DEBUG_VOTE_UI then
@@ -646,17 +430,16 @@ TwitchVoteUI._draw = function (self, dt, t)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self._input_manager:get_service("ingame_menu")
+	local render_settings = self._render_settings
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, {
-		snap_pixel_positions = false
-	})
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
-	for _, widget in pairs(self._widgets) do
-		UIRenderer.draw_widget(ui_renderer, widget)
-	end
+	local ui = self._ui
 
-	if self._vote_widget and self._vote_activated then
-		UIRenderer.draw_widget(ui_renderer, self._vote_widget)
+	if ui then
+		for _, widget in pairs(self._widgets) do
+			UIRenderer.draw_widget(ui_renderer, widget)
+		end
 	end
 
 	UIRenderer.end_pass(ui_renderer)
@@ -665,8 +448,284 @@ TwitchVoteUI._draw = function (self, dt, t)
 end
 TwitchVoteUI.destroy = function (self)
 	Managers.state.event:unregister("add_vote_ui", self)
+	Managers.state.event:unregister("finish_vote_ui", self)
+	Managers.state.event:unregister("reset_vote_ui", self)
 
 	return 
+end
+TwitchVoteUI._show_multiple_choice_vote = function (self)
+	local active_vote = self._active_vote
+
+	if not active_vote then
+		return 
+	end
+
+	self._widgets = {}
+	local widgets = definitions.widgets.multiple_choice
+
+	for widget_name, widget_data in pairs(widgets) do
+		self._widgets[widget_name] = UIWidget.init(widget_data)
+	end
+
+	local players = self._sorted_player_list(self)
+	local option_strings = active_vote.inputs
+
+	for index, player in pairs(players) do
+		local profile_index = player.profile_index(player)
+		local player_profile = SPProfiles[profile_index]
+
+		if not player_profile then
+		else
+			local career_index = player.career_index(player)
+			local career_settings = player_profile.careers[career_index]
+			local base_portrait = career_settings.portrait_image .. "_twitch"
+			local masked_portrait = career_settings.portrait_image .. "_masked"
+			local widget_index = "hero_" .. index
+			local widget = self._widgets[widget_index]
+			local content = widget.content
+			content.portrait = base_portrait
+			content.masked_portrait = masked_portrait
+			content.profile_index = profile_index
+			local vote_widget_index = "hero_vote_" .. index
+			local vote_widget = self._widgets[vote_widget_index]
+			vote_widget.content.text = option_strings[profile_index]
+		end
+	end
+
+	local vote_icon_widget = self._widgets.vote_icon
+	local vote_template = active_vote.vote_template
+	local texture_id = vote_template.texture_id
+	vote_icon_widget.content.texture_id = texture_id
+	local texture_size = vote_template.texture_size
+	self._ui_scenegraph.vote_icon.size = texture_size
+	local vote_text_widget = self._widgets.vote_text
+	local text = vote_template.text
+	vote_text_widget.content.text = text
+
+	return 
+end
+TwitchVoteUI._update_multiple_votes_ui = function (self, dt)
+	local active_vote = self._active_vote
+
+	if not active_vote then
+		return 
+	end
+
+	local highest_percentage = 0
+	local glow_index = 0
+
+	for index = 1, 4, 1 do
+		local widget_name = "hero_" .. index
+		local widget = self._widgets[widget_name]
+		local content = widget.content
+		local profile_index = content.profile_index
+		local percentage = active_vote.vote_percentages[profile_index] or 0
+		local style = widget.style
+		local height = style.mask.base_size[2] * percentage
+		style.mask.texture_size[2] = height
+
+		if highest_percentage < percentage then
+			glow_index = index
+			highest_percentage = percentage
+		end
+	end
+
+	for index = 1, 4, 1 do
+		local widget_name = "hero_glow_" .. index
+		local widget = self._widgets[widget_name]
+		local glow = index == glow_index
+		local content = widget.content
+		content.visible = glow
+	end
+
+	local timer = active_vote.timer
+	local time_left = math.abs(math.ceil(timer))
+	local timer_widget = self._widgets.timer
+	timer_widget.content.text = time_left
+
+	return 
+end
+TwitchVoteUI._show_multiple_choice_result = function (self)
+	self._fade_out = false
+	local vote_result = self._vote_result
+
+	assert(vote_result)
+
+	self._widgets = {}
+	local widgets = definitions.widgets.multiple_choice_result
+
+	for widget_name, widget_data in pairs(widgets) do
+		self._widgets[widget_name] = UIWidget.init(widget_data)
+	end
+
+	local winner_text_widget = self._widgets.winner_text
+	local winner_portrait_widget = self._widgets.winner_portrait
+	local winning_index = vote_result.winning_index
+
+	print("winning_index", winning_index)
+	assert(0 < winning_index and winning_index <= 5)
+
+	local human_and_bot_players = Managers.player:human_and_bot_players()
+
+	for peer_id, player in pairs(human_and_bot_players) do
+		local profile_index = player.profile_index(player)
+
+		if profile_index == winning_index then
+			local name = player.name(player)
+			winner_text_widget.content.text = name
+			local player_profile = SPProfiles[profile_index]
+			local career_index = player.career_index(player)
+			local career_settings = player_profile.careers[career_index]
+			local base_portrait = career_settings.portrait_image
+			winner_portrait_widget.content.portrait = base_portrait
+			winner_portrait_widget.content.visible = true
+		end
+	end
+
+	local vote_template = vote_result.vote_template
+
+	if vote_template then
+		local result_icon_widget = self._widgets.result_icon
+		local texture_id = vote_template.texture_id
+		result_icon_widget.content.texture_id = texture_id
+		local result_text_widget = self._widgets.result_text
+		local text = vote_template.text
+		result_text_widget.content.text = text
+	end
+
+	self._result_timer = RESULT_TIMER
+
+	return 
+end
+TwitchVoteUI._update_result = function (self, dt)
+	self._result_timer = self._result_timer - dt
+
+	if 0 < self._result_timer then
+		return 
+	end
+
+	self.hide_ui(self)
+
+	return 
+end
+TwitchVoteUI._show_standard_vote = function (self)
+	local active_vote = self._active_vote
+
+	if not active_vote then
+		return 
+	end
+
+	self._widgets = {}
+	local widgets = definitions.widgets.standard_vote
+
+	for widget_name, widget_data in pairs(widgets) do
+		self._widgets[widget_name] = UIWidget.init(widget_data)
+	end
+
+	local vote_template_a = active_vote.vote_template_a
+	local vote_template_b = active_vote.vote_template_b
+	local vote_icon_padding = definition_settings.vote_icon_padding
+	local vote_icon_a_widget = self._widgets.vote_icon_a
+	local texture_a = vote_template_a.texture_id
+	local texture_a_size = vote_template_a.texture_size
+	local use_frame_texture_a = vote_template_a.use_frame_texture or false
+	self._ui_scenegraph.vote_icon_a.size = texture_a_size
+	self._ui_scenegraph.vote_icon_a.position[1] = -texture_a_size[1] - vote_icon_padding
+	vote_icon_a_widget.content.texture_id = texture_a
+	local vote_icon_b_widget = self._widgets.vote_icon_b
+	local texture_b = vote_template_b.texture_id
+	local texture_b_size = vote_template_b.texture_size
+	local use_frame_texture_b = vote_template_b.use_frame_texture or false
+	self._ui_scenegraph.vote_icon_b.size = texture_b_size
+	self._ui_scenegraph.vote_icon_b.position[1] = texture_b_size[1] + vote_icon_padding
+	vote_icon_b_widget.content.texture_id = texture_b
+	self._widgets.vote_icon_rect_a.content.visible = use_frame_texture_a
+	self._widgets.vote_icon_rect_b.content.visible = use_frame_texture_b
+	local vote_text_a_widget = self._widgets.vote_text_a
+	vote_text_a_widget.content.text = vote_template_a.text
+	local vote_text_b_widget = self._widgets.vote_text_b
+	vote_text_b_widget.content.text = vote_template_b.text
+
+	return 
+end
+TwitchVoteUI._update_standard_vote = function (self)
+	local active_vote = self._active_vote
+
+	if not active_vote then
+		return 
+	end
+
+	local timer = active_vote.timer
+	local time_left = math.abs(math.ceil(timer))
+	local timer_widget = self._widgets.timer
+	timer_widget.content.text = time_left
+	local vote_percentages = active_vote.vote_percentages
+	local vote_percentage_a = vote_percentages[1]
+	local vote_percentage_b = vote_percentages[2]
+	local result_a_bar_default_size = scenegraph_definition.result_a_bar.size
+	local result_a_bar_size = self._ui_scenegraph.result_a_bar.size
+	result_a_bar_size[1] = math.ceil(result_a_bar_default_size[1] * vote_percentage_a)
+	local result_b_bar_default_size = scenegraph_definition.result_b_bar.size
+	local result_b_bar_size = self._ui_scenegraph.result_b_bar.size
+	result_b_bar_size[1] = math.ceil(result_b_bar_default_size[1] * vote_percentage_b)
+	self._widgets.result_bar_a_eyes.content.visible = vote_percentage_b <= vote_percentage_a
+	self._widgets.result_bar_b_eyes.content.visible = vote_percentage_a <= vote_percentage_b
+
+	return 
+end
+TwitchVoteUI._show_standard_vote_result = function (self)
+	self._fade_out = false
+	local vote_result = self._vote_result
+
+	assert(vote_result)
+
+	self._widgets = {}
+	local widgets = definitions.widgets.standard_vote_result
+
+	for widget_name, widget_data in pairs(widgets) do
+		self._widgets[widget_name] = UIWidget.init(widget_data)
+	end
+
+	self._result_timer = RESULT_TIMER
+	local winning_template_name = vote_result.winning_template_name
+
+	assert(winning_template_name)
+
+	local winning_template = TwitchVoteTemplates[winning_template_name]
+	local texture_id = winning_template.texture_id
+	local result_icon_widget = self._widgets.result_icon
+	result_icon_widget.content.texture_id = texture_id
+	local result_icon_widget = self._widgets.result_icon
+	local texture = winning_template.texture_id
+	local texture_size = winning_template.texture_size
+	self._ui_scenegraph.sv_result_icon.size = texture_size
+	result_icon_widget.content.texture_id = texture
+	local use_frame_texture = winning_template.use_frame_texture or false
+	self._widgets.result_icon_rect.content.visible = use_frame_texture
+	local result_text_widget = self._widgets.result_text
+	local text = winning_template.text
+	result_text_widget.content.text = text
+
+	return 
+end
+TwitchVoteUI._sorted_player_list = function (self)
+	local human_and_bot_players = Managers.player:human_and_bot_players()
+	local players = {}
+
+	for peer_id, player in pairs(human_and_bot_players) do
+		table.insert(players, player)
+	end
+
+	local function sort_by_profile_index(player_a, player_b)
+		local profile_index_a = player_a.profile_index(player_a)
+		local profile_index_b = player_b.profile_index(player_b)
+
+		return profile_index_a < profile_index_b
+	end
+
+	table.sort(players, sort_by_profile_index)
+
+	return players
 end
 
 return 

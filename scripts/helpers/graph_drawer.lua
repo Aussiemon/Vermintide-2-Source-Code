@@ -252,14 +252,14 @@ Graph.update = function (self, input_service, t)
 
 		if input_service.get(input_service, "mouse_right_held") then
 			self.zoom_window = {}
-			local zoom_factor_x_min = (self.visual_frame.x_max - self.range_x[1])/(self.visual_frame.x_max - self.visual_frame.x_min)
-			local zoom_factor_x_max = (self.range_x[2] - self.visual_frame.x_min)/(self.visual_frame.x_max - self.visual_frame.x_min)
-			local zoom_factor_y_min = (self.visual_frame.y_max - self.range_y[1])/(self.visual_frame.y_max - self.visual_frame.y_min)
-			local zoom_factor_y_max = (self.range_y[2] - self.visual_frame.y_min)/(self.visual_frame.y_max - self.visual_frame.y_min)
-			self.zoom_window.x_min = (origin.x + graph_size_x) - graph_size_x*zoom_factor_x_min
-			self.zoom_window.x_max = origin.x + graph_size_x*zoom_factor_x_max
-			self.zoom_window.y_min = (origin.y + graph_size_y) - graph_size_y*zoom_factor_y_min
-			self.zoom_window.y_max = origin.y + graph_size_y*zoom_factor_y_max
+			local zoom_factor_x_min = (self.visual_frame.x_max - self.range_x[1]) / (self.visual_frame.x_max - self.visual_frame.x_min)
+			local zoom_factor_x_max = (self.range_x[2] - self.visual_frame.x_min) / (self.visual_frame.x_max - self.visual_frame.x_min)
+			local zoom_factor_y_min = (self.visual_frame.y_max - self.range_y[1]) / (self.visual_frame.y_max - self.visual_frame.y_min)
+			local zoom_factor_y_max = (self.range_y[2] - self.visual_frame.y_min) / (self.visual_frame.y_max - self.visual_frame.y_min)
+			self.zoom_window.x_min = (origin.x + graph_size_x) - graph_size_x * zoom_factor_x_min
+			self.zoom_window.x_max = origin.x + graph_size_x * zoom_factor_x_max
+			self.zoom_window.y_min = (origin.y + graph_size_y) - graph_size_y * zoom_factor_y_min
+			self.zoom_window.y_max = origin.y + graph_size_y * zoom_factor_y_max
 			self.zoom_window.min_size = 100
 			self.scroll_lock.right = true
 			self.scroll_lock.left = true
@@ -275,10 +275,10 @@ Graph.update = function (self, input_service, t)
 				local y_inside = true
 
 				if origin.x + graph_size_x < mouse.x then
-					local zoom_factor = (self.range_x[2] - self.visual_frame.x_min)/(self.visual_frame.x_max - self.visual_frame.x_min)
+					local zoom_factor = (self.range_x[2] - self.visual_frame.x_min) / (self.visual_frame.x_max - self.visual_frame.x_min)
 					self.zoom_window = {
 						x_min = origin.x,
-						x_max = origin.x + graph_size_x*zoom_factor,
+						x_max = origin.x + graph_size_x * zoom_factor,
 						y_min = origin.y,
 						y_max = origin.y + graph_size_y,
 						min_size = 100
@@ -288,9 +288,9 @@ Graph.update = function (self, input_service, t)
 
 					return 
 				elseif mouse.x < origin.x then
-					local zoom_factor = (self.visual_frame.x_max - self.range_x[1])/(self.visual_frame.x_max - self.visual_frame.x_min)
+					local zoom_factor = (self.visual_frame.x_max - self.range_x[1]) / (self.visual_frame.x_max - self.visual_frame.x_min)
 					self.zoom_window = {
-						x_min = (origin.x + graph_size_x) - graph_size_x*zoom_factor,
+						x_min = (origin.x + graph_size_x) - graph_size_x * zoom_factor,
 						x_max = origin.x + graph_size_x,
 						y_min = origin.y,
 						y_max = origin.y + graph_size_y,
@@ -303,13 +303,13 @@ Graph.update = function (self, input_service, t)
 				end
 
 				if origin.y + graph_size_y < mouse.y then
-					local zoom_factor_min = (self.visual_frame.y_max - self.range_y[1])/(self.visual_frame.y_max - self.visual_frame.y_min)
-					local zoom_factor_max = (self.range_y[2] - self.visual_frame.y_min)/(self.visual_frame.y_max - self.visual_frame.y_min)
+					local zoom_factor_min = (self.visual_frame.y_max - self.range_y[1]) / (self.visual_frame.y_max - self.visual_frame.y_min)
+					local zoom_factor_max = (self.range_y[2] - self.visual_frame.y_min) / (self.visual_frame.y_max - self.visual_frame.y_min)
 					self.zoom_window = {
 						x_min = (origin.x + graph_size_x) - graph_size_x,
 						x_max = origin.x + graph_size_x,
-						y_min = (origin.y + graph_size_y) - graph_size_y*zoom_factor_min,
-						y_max = origin.y + graph_size_y*zoom_factor_max,
+						y_min = (origin.y + graph_size_y) - graph_size_y * zoom_factor_min,
+						y_max = origin.y + graph_size_y * zoom_factor_max,
 						min_size = 100
 					}
 					self.scroll_lock.vertical = true
@@ -358,20 +358,20 @@ Graph.update = function (self, input_service, t)
 		end
 
 		local pan = Vector2(self.pan_previous.x - mouse.x, self.pan_previous.y - mouse.y)
-		local scale_x = (self.visual_frame.x_max - self.visual_frame.x_min)/graph_size_x
-		local scale_y = (self.visual_frame.y_max - self.visual_frame.y_min)/graph_size_y
+		local scale_x = (self.visual_frame.x_max - self.visual_frame.x_min) / graph_size_x
+		local scale_y = (self.visual_frame.y_max - self.visual_frame.y_min) / graph_size_y
 
 		if not self.scroll_lock.left then
-			self.visual_frame.x_min = self.visual_frame.x_min + pan.x*scale_x
+			self.visual_frame.x_min = self.visual_frame.x_min + pan.x * scale_x
 		end
 
 		if not self.scroll_lock.right then
-			self.visual_frame.x_max = self.visual_frame.x_max + pan.x*scale_x
+			self.visual_frame.x_max = self.visual_frame.x_max + pan.x * scale_x
 		end
 
 		if not self.scroll_lock.vertical then
-			self.visual_frame.y_min = self.visual_frame.y_min + pan.y*scale_y
-			self.visual_frame.y_max = self.visual_frame.y_max + pan.y*scale_y
+			self.visual_frame.y_min = self.visual_frame.y_min + pan.y * scale_y
+			self.visual_frame.y_max = self.visual_frame.y_max + pan.y * scale_y
 		end
 
 		self.pan_previous = {
@@ -381,10 +381,10 @@ Graph.update = function (self, input_service, t)
 	end
 
 	if self.state == "zoom_prepare" then
-		local x_min_percentage = (self.zoom_window.x_min - origin.x)/graph_size_x
-		local x_max_percentage = (self.zoom_window.x_max - origin.x)/graph_size_x
-		local y_min_percentage = (self.zoom_window.y_min - origin.x)/graph_size_y
-		local y_max_percentage = (self.zoom_window.y_max - origin.x)/graph_size_y
+		local x_min_percentage = (self.zoom_window.x_min - origin.x) / graph_size_x
+		local x_max_percentage = (self.zoom_window.x_max - origin.x) / graph_size_x
+		local y_min_percentage = (self.zoom_window.y_min - origin.x) / graph_size_y
+		local y_max_percentage = (self.zoom_window.y_max - origin.x) / graph_size_y
 		self.visual_frame.x_min = math.max(self.range_x[1], self.visual_frame.x_min)
 		self.visual_frame.x_max = math.min(self.range_x[2], self.visual_frame.x_max)
 		self.visual_frame.y_min = math.max(self.range_y[1], self.visual_frame.y_min)
@@ -453,7 +453,7 @@ Graph.draw = function (self, gui, input_service, t)
 	local color_annotation_text_bg = Colors.get_color_with_alpha("black", 100)
 	local color_annotation_bg = Colors.get_color_with_alpha("black", 150)
 	local color_axis = Colors.get("white")
-	local color_zoom_window = Colors.get_color_with_alpha("white", (self.anim_done_t == nil and 100) or math.lerp(100, 0, self.anim_done_t - t - 1))
+	local color_zoom_window = Colors.get_color_with_alpha("white", (self.anim_done_t == nil and 100) or math.lerp(100, 0, 1 - self.anim_done_t - t))
 	local color_zoom_window_too_small = Colors.get_color_with_alpha("red", 100)
 	local origin = Vector3(100, 100, 0)
 	local graph_size_x = 800
@@ -474,7 +474,7 @@ Graph.draw = function (self, gui, input_service, t)
 	Gui.triangle(gui, axis_y_p1, axis_y_p2, axis_y_p3, layer, color_axis)
 	ScriptGUI.hud_line(gui, origin, origin + Vector3(graph_size_x + 10, 0, 0), layer, 1, color_axis)
 	ScriptGUI.hud_line(gui, origin, origin + Vector3(0, graph_size_y + 10, 0), layer, 1, color_axis)
-	Gui.text(gui, self.axis_names[1], font_mtrl, font_size, font, origin + Vector3(graph_size_x + -50, -20, 0), color_axis)
+	Gui.text(gui, self.axis_names[1], font_mtrl, font_size, font, origin + Vector3(-50 + graph_size_x, -20, 0), color_axis)
 	Gui.text(gui, self.axis_names[2], font_mtrl, font_size, font, origin + Vector3(-50, graph_size_y + 20, 0), color_axis)
 
 	local visual_x_min = self.visual_frame.x_min
@@ -487,25 +487,25 @@ Graph.draw = function (self, gui, input_service, t)
 	end
 
 	Gui.text(gui, string.format("(%.2f, %.2f)", visual_x_min, visual_y_min), font_mtrl, font_size, font, origin + Vector3(-50, -20, 0), color_axis)
-	Gui.text(gui, string.format("(%.2f, %.2f)", visual_x_max, visual_y_max), font_mtrl, font_size, font, origin + Vector3(graph_size_x + -50, graph_size_y + 10, 0), color_axis)
+	Gui.text(gui, string.format("(%.2f, %.2f)", visual_x_max, visual_y_max), font_mtrl, font_size, font, origin + Vector3(-50 + graph_size_x, 10 + graph_size_y, 0), color_axis)
 
 	if not self.valid then
 		return 
 	end
 
-	local scale_x = graph_size_x/(visual_x_max - visual_x_min)
-	local scale_y = graph_size_y/(visual_y_max - visual_y_min)
+	local scale_x = graph_size_x / (visual_x_max - visual_x_min)
+	local scale_y = graph_size_y / (visual_y_max - visual_y_min)
 
 	for plot_name, plot in pairs(self.plots) do
 		local line_color = (plot.line_color and Colors.get(plot.line_color)) or color_point_line
 		local point_color = (plot.line_color and Colors.get(plot.line_color)) or color_point_bg
 		local xs = array.items(plot.points_x)
 		local ys = array.items(plot.points_y)
-		local p1 = Vector3((xs[1] - visual_x_min)*scale_x, (ys[1] - visual_y_min)*scale_y, 0)
+		local p1 = Vector3((xs[1] - visual_x_min) * scale_x, (ys[1] - visual_y_min) * scale_y, 0)
 		local num_points = array.num_items(plot.points_x)
 
 		for i = 2, num_points, 1 do
-			local p2 = Vector3((xs[i] - visual_x_min)*scale_x, (ys[i] - visual_y_min)*scale_y, 0)
+			local p2 = Vector3((xs[i] - visual_x_min) * scale_x, (ys[i] - visual_y_min) * scale_y, 0)
 			local p1_x_inside = 0 <= p1.x and p1.x <= graph_size_x
 			local p1_y_inside = 0 <= p1.y and p1.y <= graph_size_y
 			local p2_x_inside = 0 <= p2.x and p2.x <= graph_size_x
@@ -528,7 +528,7 @@ Graph.draw = function (self, gui, input_service, t)
 
 	for i = 1, num_annotations, 1 do
 		local annotation = annotations[i]
-		local pos = Vector3((annotation.x - visual_x_min)*scale_x, 0, 0)
+		local pos = Vector3((annotation.x - visual_x_min) * scale_x, 0, 0)
 		local x_inside = 0 <= pos.x and pos.x <= graph_size_x
 
 		if x_inside then
@@ -552,11 +552,11 @@ Graph.draw = function (self, gui, input_service, t)
 				local text_width = text_max.x - text_min.x + 10
 				local color_annotation_box = Colors.get(annotation.color)
 
-				Gui.rect(gui, origin + Vector3(0, annotation_text_y_offset - -70, 0), Vector3(text_width, 30, 0), color_annotation_text_bg)
-				Gui.rect(gui, origin + Vector3(0, annotation_text_y_offset - -70, 0), Vector3(text_width, 5, 0), color_annotation_box)
-				Gui.text(gui, annotation.text, font_mtrl, font_size, font, origin + Vector3(5, annotation_text_y_offset - -60, 0), color_point_bg)
+				Gui.rect(gui, origin + Vector3(0, -70 - annotation_text_y_offset, 0), Vector3(text_width, 30, 0), color_annotation_text_bg)
+				Gui.rect(gui, origin + Vector3(0, -70 - annotation_text_y_offset, 0), Vector3(text_width, 5, 0), color_annotation_box)
+				Gui.text(gui, annotation.text, font_mtrl, font_size, font, origin + Vector3(5, -60 - annotation_text_y_offset, 0), color_point_bg)
 
-				local pos_graph = Vector3(pos.x, (annotation.y - visual_y_min)*scale_y, 0)
+				local pos_graph = Vector3(pos.x, (annotation.y - visual_y_min) * scale_y, 0)
 
 				Gui.rect(gui, pos_graph + origin + Vector3(-5, -5, 101), Vector3(10, 10, 0), color_annotation_box)
 				Gui.rect(gui, pos_graph + origin + Vector3(-6, -6, 100), Vector3(12, 12, 0), color_point_bg)
@@ -568,7 +568,7 @@ Graph.draw = function (self, gui, input_service, t)
 				ScriptGUI.hud_line(gui, pos + origin, pos + origin + Vector3(0, graph_size_y, 0), layer, 1, color_annotation_line_hot)
 
 				local color_annotation_box_hot = Colors.get_color_with_alpha(annotation.color, 150)
-				local pos_graph = Vector3(pos.x, (annotation.y - visual_y_min)*scale_y, 0)
+				local pos_graph = Vector3(pos.x, (annotation.y - visual_y_min) * scale_y, 0)
 
 				Gui.rect(gui, pos_graph + origin + Vector3(-3, -3, 100), Vector3(6, 6, 0), color_annotation_box_hot)
 			end
@@ -579,7 +579,7 @@ Graph.draw = function (self, gui, input_service, t)
 			ScriptGUI.hud_line(gui, pos + origin, pos + origin + Vector3(0, graph_size_y, 0), layer, 1, color_annotation_line)
 
 			if annotation.live then
-				local pos_graph = Vector3(pos.x, (annotation.y - visual_y_min)*scale_y, 0) + origin + Vector3(-3, -3, 100)
+				local pos_graph = Vector3(pos.x, (annotation.y - visual_y_min) * scale_y, 0) + origin + Vector3(-3, -3, 100)
 
 				Gui.text(gui, annotation.text, font_mtrl, font_size, font, pos_graph, color_annotation_box)
 			end

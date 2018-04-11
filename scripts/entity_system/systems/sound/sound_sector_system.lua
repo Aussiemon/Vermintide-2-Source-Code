@@ -288,7 +288,7 @@ SoundSectorSystem.debug_draw_hud = function (self, camera_position)
 
 	Gui.rect(self.debug_gui_screen, debug_center - Vector3(150, 150, 1), Vector2(300, 300), Color(100, 100, 100, 100))
 	Gui.rect(self.debug_gui_screen, debug_center, Vector2(10, 10), Color(100, 100, 255, 100))
-	ScriptGUI.hud_line(self.debug_gui_screen, debug_center, debug_center + Vector3.flat(camera_fwd_vec)*150, 3, 2, Color(255, 0, 255, 0))
+	ScriptGUI.hud_line(self.debug_gui_screen, debug_center, debug_center + Vector3.flat(camera_fwd_vec) * 150, 3, 2, Color(255, 0, 255, 0))
 	ScriptGUI.hud_line(self.debug_gui_screen, debug_center, debug_center + Vector3(150, 0, 0), 3, 2, Color(255, 0, 100, 0))
 	ScriptGUI.hud_line(self.debug_gui_screen, debug_center, debug_center + Vector3(-150, 0, 0), 3, 2, Color(255, 0, 100, 0))
 	ScriptGUI.hud_line(self.debug_gui_screen, debug_center, debug_center + Vector3(0, 150, 0), 3, 2, Color(255, 0, 100, 0))
@@ -304,7 +304,7 @@ SoundSectorSystem.debug_draw = function (self, sector_center, sector_index, came
 	local debug_center = Vector3(200, 200, 2)
 	local distance = Vector3.distance(camera_position, sector_center)
 	local direction_camera_to_center = Vector3.normalize(sector_center - camera_position)
-	local debug_pos_center = debug_center + Vector3.flat(direction_camera_to_center*distance*5)
+	local debug_pos_center = debug_center + Vector3.flat(direction_camera_to_center * distance * 5)
 
 	Gui.text(self.debug_gui_screen, tostring(sector_index), font_mtrl, font_size + 30, font, debug_pos_center, Color(255, 255, 255, 0))
 
@@ -313,7 +313,7 @@ SoundSectorSystem.debug_draw = function (self, sector_center, sector_index, came
 		local unit_center = Matrix4x4.translation(pose)
 		local distance = Vector3.distance(camera_position, unit_center)
 		local direction_camera_to_unit = Vector3.normalize(unit_center - camera_position)
-		local debug_pos = debug_center + Vector3.flat(direction_camera_to_unit*distance*5)
+		local debug_pos = debug_center + Vector3.flat(direction_camera_to_unit * distance * 5)
 
 		Gui.text(self.debug_gui_screen, tostring(sector_index), font_mtrl, font_size, font, debug_pos, Color(255, 255, 0, 0))
 	end

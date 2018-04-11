@@ -5,14 +5,14 @@ local window_size = window_default_settings.size
 local window_spacing = window_default_settings.spacing
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_width_offset = window_size[1]*2 + window_spacing*2
-local window_text_width = window_size[1] - (window_frame_width*2 + 60)
+local window_width_offset = window_size[1] * 2 + window_spacing * 2
+local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local difficulty_option_size = {
 	1020,
 	200
 }
 local large_window_size = {
-	window_size[1]*2 + window_spacing,
+	window_size[1] * 2 + window_spacing,
 	window_size[2]
 }
 local info_window_size = {
@@ -64,7 +64,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = large_window_size,
 		position = {
-			window_size[1]/2 + window_spacing/2,
+			window_size[1] / 2 + window_spacing / 2,
 			0,
 			1
 		}
@@ -184,7 +184,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			window_text_width,
-			window_size[2]/2
+			window_size[2] / 2
 		},
 		position = {
 			0,
@@ -502,7 +502,7 @@ local function create_level_widget(i, specific_scenegraph_id)
 				13
 			},
 			offset = {
-				size[1]/2,
+				size[1] / 2,
 				0,
 				1
 			},
@@ -526,7 +526,7 @@ local function create_level_widget(i, specific_scenegraph_id)
 				43
 			},
 			offset = {
-				size[1]/2,
+				size[1] / 2,
 				0,
 				2
 			},
@@ -822,7 +822,7 @@ local function create_act_widget(index, optional_texture_version)
 		},
 		title_bg = {
 			size = {
-				size[1]/2,
+				size[1] / 2,
 				40
 			},
 			color = {
@@ -839,7 +839,7 @@ local function create_act_widget(index, optional_texture_version)
 		},
 		title_edge = {
 			size = {
-				size[1]/2,
+				size[1] / 2,
 				5
 			},
 			color = {
@@ -984,7 +984,7 @@ local function create_end_act_widget(optional_texture_version)
 		},
 		title_bg = {
 			size = {
-				size[1]/2,
+				size[1] / 2,
 				40
 			},
 			color = {
@@ -1001,7 +1001,7 @@ local function create_end_act_widget(optional_texture_version)
 		},
 		title_edge = {
 			size = {
-				size[1]/2,
+				size[1] / 2,
 				5
 			},
 			color = {
@@ -1280,7 +1280,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

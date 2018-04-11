@@ -27,7 +27,6 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_aborted = false
 	blackboard.has_engaged = true
 	blackboard.target_speed = 0
-	blackboard.keep_target = true
 
 	if action.blocked_anim then
 		blackboard.blocked_anim = action.blocked_anim
@@ -59,7 +58,7 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	local target_unit_status_extension = blackboard.target_unit_status_extension
 
 	if target_unit_status_extension then
-		target_unit_status_extension.add_attack_intensity(target_unit_status_extension, attack_intensity*(math.random()*0.5 + 0.75))
+		target_unit_status_extension.add_attack_intensity(target_unit_status_extension, attack_intensity * (0.75 + 0.5 * math.random()))
 	end
 
 	return 
@@ -145,7 +144,6 @@ BTStormVerminAttackAction.leave = function (self, unit, blackboard, t, reason, d
 	blackboard.reset_attack = nil
 	blackboard.reset_attack_delay = nil
 	blackboard.reset_attack_animation_locked = nil
-	blackboard.keep_target = nil
 	local action = blackboard.action
 	local reset_stagger_count = action.reset_stagger_count
 
@@ -182,7 +180,7 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 
 		if 2.5 < distance then
 			if blackboard.set_dodge_rotation_timer then
-				target_speed = breed.run_speed*0.25
+				target_speed = breed.run_speed * 0.25
 			else
 				target_speed = breed.run_speed
 			end
@@ -190,7 +188,7 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 			if blackboard.set_dodge_rotation_timer then
 				target_speed = 0
 			else
-				target_speed = target_speed*1.15
+				target_speed = target_speed * 1.15
 			end
 		end
 
@@ -201,7 +199,7 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	if blackboard.special_attacking_target and blackboard.bot_threat_at_t and blackboard.bot_threat_at_t < t then
+	if Unit.alive(blackboard.special_attacking_target) and blackboard.bot_threat_at_t and blackboard.bot_threat_at_t < t then
 		self._create_bot_threat(self, unit, blackboard)
 
 		blackboard.bot_threat_at_t = nil
@@ -217,7 +215,7 @@ BTStormVerminAttackAction._create_bot_threat = function (self, unit, blackboard)
 		if action.collision_type == "cylinder" then
 			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.special_attacking_target)
 			local pos = self._calculate_cylinder_collision(self, action, POSITION_LOOKUP[unit], rot)
-			local size = Vector3(action.radius, action.radius, action.height*0.5)
+			local size = Vector3(action.radius, action.radius, action.height * 0.5)
 
 			Managers.state.entity:system("ai_bot_group_system"):aoe_threat_created(pos, "cylinder", size, nil, bot_threat_duration)
 		elseif action.collision_type == "oobb" or not action.collision_type then
@@ -307,13 +305,13 @@ BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 	local width = action.width
 	local offset_up = action.offset_up
 	local offset_forward = action.offset_forward
-	local half_range = range*0.5
-	local half_height = height*0.5
-	local hit_size = Vector3(width*0.5, half_range, half_height)
+	local half_range = range * 0.5
+	local half_height = height * 0.5
+	local hit_size = Vector3(width * 0.5, half_range, half_height)
 	local rat_pos = Unit.local_position(unit, 0)
 	local rat_rot = Unit.local_rotation(unit, 0)
-	local forward = Quaternion.rotate(rat_rot, Vector3.forward())*(offset_forward + half_range)
-	local up = Vector3.up()*(half_height + offset_up)
+	local forward = Quaternion.rotate(rat_rot, Vector3.forward()) * (offset_forward + half_range)
+	local up = Vector3.up() * (half_height + offset_up)
 	local oobb_pos = rat_pos + forward + up
 	local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", rat_rot, "size", hit_size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check", "use_global_table")
 
@@ -378,7 +376,7 @@ BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 				if not target_status_extension.knocked_down then
 					local player_locomotion = ScriptUnit.extension(target_unit, "locomotion_system")
 
-					player_locomotion.add_external_velocity(player_locomotion, push_speed*shove_dir, action.max_player_push_speed)
+					player_locomotion.add_external_velocity(player_locomotion, push_speed * shove_dir, action.max_player_push_speed)
 				end
 			end
 		end
@@ -394,12 +392,12 @@ BTStormVerminAttackAction._calculate_cylinder_collision = function (self, action
 	local offset_up = action.offset_up
 	local offset_forward = action.offset_forward
 	local offset_right = action.offset_right
-	local half_height = height*0.5
+	local half_height = height * 0.5
 	local size = Vector3(radius, half_height, radius)
 	local forward = Quaternion.forward(self_rot)
 	local up = Quaternion.up(self_rot)
 	local right = Quaternion.right(self_rot)
-	local cylinder_center = self_pos + forward*(radius + offset_forward) + up*(half_height + offset_up) + right*offset_right
+	local cylinder_center = self_pos + forward * (radius + offset_forward) + up * (half_height + offset_up) + right * offset_right
 	local rotation = Quaternion.look(up, Vector3.up())
 
 	return cylinder_center, size, rotation
@@ -410,11 +408,11 @@ BTStormVerminAttackAction._calculate_oobb_collision = function (self, action, se
 	local width = action.width
 	local offset_up = action.offset_up
 	local offset_forward = action.offset_forward
-	local half_range = range*0.5
-	local half_height = height*0.5
-	local size = Vector3(width*0.5, half_range, half_height)
-	local forward = Quaternion.rotate(self_rot, Vector3.forward())*(offset_forward + half_range)
-	local up = Vector3.up()*(half_height + offset_up)
+	local half_range = range * 0.5
+	local half_height = height * 0.5
+	local size = Vector3(width * 0.5, half_range, half_height)
+	local forward = Quaternion.rotate(self_rot, Vector3.forward()) * (offset_forward + half_range)
+	local up = Vector3.up() * (half_height + offset_up)
 	local oobb_pos = self_pos + forward + up
 
 	return oobb_pos, self_rot, size
@@ -461,7 +459,7 @@ BTStormVerminAttackAction.catapult_enemy = function (unit, blackboard, action, t
 		local enemy_pos = POSITION_LOOKUP[target_unit]
 		local shove_dir = Vector3.normalize(enemy_pos - self_pos)
 		local shove_speed = action.shove_speed
-		local push_velocity = shove_dir*shove_speed
+		local push_velocity = shove_dir * shove_speed
 
 		Vector3.set_z(push_velocity, action.shove_z_speed)
 		StatusUtils.set_catapulted_network(target_unit, true, push_velocity)

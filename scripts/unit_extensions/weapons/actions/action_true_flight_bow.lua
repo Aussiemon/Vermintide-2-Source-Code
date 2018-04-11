@@ -145,9 +145,9 @@ ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 
 		if spread_extension then
 			if 1 < self.num_projectiles_shot then
-				local spread_horizontal_angle = math.pi*(self.num_projectiles_shot%2 + 0.5)
-				local shot_count_offset = (self.num_projectiles_shot ~= 1 or 0) and math.round((self.num_projectiles_shot - 1)*0.5, 0)
-				local angle_offset = self.multi_projectile_spread*shot_count_offset
+				local spread_horizontal_angle = math.pi * (self.num_projectiles_shot % 2 + 0.5)
+				local shot_count_offset = (self.num_projectiles_shot ~= 1 or 0) and math.round((self.num_projectiles_shot - 1) * 0.5, 0)
+				local angle_offset = self.multi_projectile_spread * shot_count_offset
 				fire_rotation = spread_extension.combine_spread_rotations(spread_extension, spread_horizontal_angle, angle_offset, fire_rotation)
 			end
 
@@ -160,7 +160,7 @@ ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 		local target_vector = Vector3.normalize(Quaternion.forward(fire_rotation))
 
 		if 1 < i then
-			speed = speed*(i*0.05 - 1)
+			speed = speed * (1 - i * 0.05)
 		end
 
 		local target_unit = self.targets and ((current_action.single_target and self.targets[1]) or self.targets[i])

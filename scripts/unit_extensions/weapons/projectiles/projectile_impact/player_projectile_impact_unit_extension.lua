@@ -57,7 +57,7 @@ PlayerProjectileImpactUnitExtension.update = function (self, unit, input, dt, co
 	elseif impact_type == "sphere_sweep" then
 		if static_impact_type == "sphere_sweep" then
 			self.update_sphere_sweep(self, unit, input, dt, context, t, self.radius, self.enemy_collision_filter)
-			self.update_sphere_sweep(self, unit, input, dt, context, t, self.radius*0.25, self.static_collision_filter)
+			self.update_sphere_sweep(self, unit, input, dt, context, t, self.radius * 0.25, self.static_collision_filter)
 		elseif static_impact_type == "raycast" then
 			self.update_sphere_sweep(self, unit, input, dt, context, t, self.radius, self.enemy_collision_filter)
 			self.update_raycast(self, unit, input, dt, context, t, self.static_collision_filter)
@@ -111,7 +111,7 @@ PlayerProjectileImpactUnitExtension._do_raycast = function (self, unit, from, to
 	direction = Vector3.normalize(direction)
 	local offset = Vector3(0, 0, self.scene_query_height_offset)
 
-	PhysicsWorld.prepare_actors_for_raycast(physics_world, from, direction, 0, 1, length*length)
+	PhysicsWorld.prepare_actors_for_raycast(physics_world, from, direction, 0, 1, length * length)
 
 	local result = PhysicsWorld.immediate_raycast(physics_world, from + offset, direction, length, "all", "collision_filter", collision_filter)
 

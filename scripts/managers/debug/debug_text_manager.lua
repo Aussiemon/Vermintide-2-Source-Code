@@ -54,7 +54,7 @@ DebugTextManager._update_unit_texts = function (self, viewport_name, dt)
 						if fade then
 							local time_left = gui_text.time - self._time
 							local total_time = gui_text.time - gui_text.starting_time
-							local alpha = time_left/total_time*255
+							local alpha = time_left / total_time * 255
 							color = Color(alpha, gui_text.color.r, gui_text.color.g, gui_text.color.b)
 						else
 							color = Color(gui_text.color.r, gui_text.color.g, gui_text.color.b)
@@ -64,7 +64,7 @@ DebugTextManager._update_unit_texts = function (self, viewport_name, dt)
 
 						if floating_position_box then
 							local floating_position = floating_position_box.unbox(floating_position_box)
-							floating_position = floating_position + Vector3.forward()*dt*0.5
+							floating_position = floating_position + Vector3.forward() * dt * 0.5
 							text_offset = text_offset + floating_position
 
 							gui_text.floating_position_box:store(floating_position)
@@ -138,7 +138,7 @@ DebugTextManager.output_unit_text = function (self, text, text_size, unit, node_
 	local text_extent_min, text_extent_max = Gui.text_extents(gui, text, font, text_size)
 	local text_width = text_extent_max[1] - text_extent_min[1]
 	local text_height = text_extent_max[3] - text_extent_min[3]
-	local text_offset = Vector3(-text_width/2, -text_height/2, 0)
+	local text_offset = Vector3(-text_width / 2, -text_height / 2, 0)
 	offset = offset or Vector3(0, 0, 0)
 	category = category or "none"
 	color = color or Vector3(255, 255, 255)
@@ -217,7 +217,7 @@ DebugTextManager.output_world_text = function (self, text, text_size, position, 
 	local text_extent_min, text_extent_max = Gui.text_extents(gui, text, font, text_size)
 	local text_width = text_extent_max[1] - text_extent_min[1]
 	local text_height = text_extent_max[3] - text_extent_min[3]
-	local text_offset = Vector3(-text_width/2, -text_height/2, 0)
+	local text_offset = Vector3(-text_width / 2, -text_height / 2, 0)
 	category = category or "none"
 	color = color or Vector3(255, 255, 255)
 	local new_text = {
@@ -274,12 +274,12 @@ DebugTextManager.output_screen_text = function (self, text, text_size, time, col
 	local text_extent_min, text_extent_max = Gui.text_extents(gui, text, font, text_size)
 	local text_w = text_extent_max[1] - text_extent_min[1]
 	local text_h = text_extent_max[3] - text_extent_min[3]
-	local text_position = Vector3(resolution.x/2 - text_w/2, resolution.y/2 - text_h/2, 11)
+	local text_position = Vector3(resolution.x / 2 - text_w / 2, resolution.y / 2 - text_h / 2, 11)
 	local bgr_margin = 10
 	local bgr_x = text_position.x - bgr_margin
 	local bgr_y = text_position.y - bgr_margin
-	local bgr_w = text_w + bgr_margin*2
-	local bgr_h = text_h + bgr_margin*2
+	local bgr_w = text_w + bgr_margin * 2
+	local bgr_h = text_h + bgr_margin * 2
 	local bgr_position = Vector3(bgr_x, bgr_y, 10)
 	local bgr_size = Vector2(bgr_w, bgr_h)
 

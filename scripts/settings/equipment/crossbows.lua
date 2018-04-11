@@ -331,14 +331,14 @@ weapon_template.targets_property = function (template, quality)
 end
 weapon_template.ammo_property = function (template, quality)
 	if quality then
-		template.ammo_data.max_ammo = template.ammo_data.max_ammo + math.floor(template.ammo_data.max_ammo*quality*0.1)
+		template.ammo_data.max_ammo = template.ammo_data.max_ammo + math.floor(template.ammo_data.max_ammo * quality * 0.1)
 	end
 
 	return 
 end
 weapon_template.reload_property = function (template, quality)
 	if quality then
-		template.ammo_data.reload_time = template.ammo_data.reload_time - quality*0.1
+		template.ammo_data.reload_time = template.ammo_data.reload_time - quality * 0.1
 	end
 
 	return 

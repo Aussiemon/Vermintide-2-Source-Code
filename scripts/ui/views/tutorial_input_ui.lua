@@ -9,11 +9,15 @@ TutorialInputUI.init = function (self, ingame_ui_context)
 	self._tutorial_tooltip_animations = {}
 	self._tutorial_tooltip_input_widgets = {}
 	self._active_tutorial_tooltips = {}
+	self._prefixes = {
+		mouse = "mouse"
+	}
 
 	self._create_ui_elements(self)
 	Managers.state.event:register(self, "event_add_tutorial_input", "event_add_tutorial_input")
 	Managers.state.event:register(self, "event_update_tutorial_input", "event_update_tutorial_input")
 	Managers.state.event:register(self, "event_remove_tutorial_input", "event_remove_tutorial_input")
+	Managers.state.event:register(self, "input_changed", "event_input_changed")
 
 	return 
 end
@@ -22,6 +26,7 @@ TutorialInputUI.destroy = function (self)
 		Managers.state.event:unregister("event_add_tutorial_input", self)
 		Managers.state.event:unregister("event_update_tutorial_input", self)
 		Managers.state.event:unregister("event_remove_tutorial_input", self)
+		Managers.state.event:unregister("input_changed", self)
 	end
 
 	return 
@@ -61,7 +66,14 @@ TutorialInputUI.event_remove_tutorial_input = function (self, mission_name)
 
 	return 
 end
+TutorialInputUI.event_input_changed = function (self)
+	self._input_changed = true
+
+	return 
+end
 TutorialInputUI._create_ui_elements = function (self)
+	self._tutorial_tooltip_animations = {}
+
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph)
@@ -76,7 +88,7 @@ TutorialInputUI._create_ui_elements = function (self)
 
 	return 
 end
-TutorialInputUI._button_texture_data_by_input_action = function (self, input_action, alt_button_name)
+TutorialInputUI._button_texture_data_by_input_action = function (self, input_action, alt_button_name, active_template)
 	local input_manager = self._input_manager
 	local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
 	local platform = PLATFORM
@@ -91,8 +103,13 @@ TutorialInputUI._button_texture_data_by_input_action = function (self, input_act
 		return button_texture_data
 	else
 		local input_service = input_manager.get_service(input_manager, "Player")
+		local alternate_input_action = nil
 
-		return UISettings.get_gamepad_input_texture_data(input_service, input_action, gamepad_active)
+		if active_template.input_service_fallback then
+			alternate_input_action = input_manager.get_service(input_manager, active_template.input_service_fallback)
+		end
+
+		return UISettings.get_gamepad_input_texture_data(input_service, input_action, gamepad_active, alternate_input_action)
 	end
 
 	return 
@@ -152,9 +169,11 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 
 	local input_widgets = self._tutorial_tooltip_input_widgets
 
-	if force_update or tooltip_name ~= active_tooltip_name or gamepad_active ~= widget_content.using_gamepad_input then
+	if force_update or tooltip_name ~= active_tooltip_name or gamepad_active ~= widget_content.using_gamepad_input or self._input_changed then
 		widget_content.using_gamepad_input = gamepad_active
 		widget_content.input_set = true
+		widget_content.unassigned = false
+		self._input_changed = false
 		self._active_tooltip_name = tooltip_name
 
 		if self._active_tooltip_name ~= tooltip_name then
@@ -169,6 +188,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 		widget_content.show_bg = 0 < num_inputs
 		widget_content.description = text
 		widget_content.sub_description = sub_text
+		local parent_widget_content = widget_content
 		local total_width = 0
 		local num_widgets = 0
 
@@ -178,12 +198,13 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 			local widget_style = widget.style
 			local input = inputs[i]
 			local input_action = input.action
-			local button_texture_data, button_text = self._button_texture_data_by_input_action(self, input_action)
+			local button_texture_data, button_text, keymap_binding, unassigned = self._button_texture_data_by_input_action(self, input_action, nil, active_template)
 
 			if not button_texture_data and active_template.alt_action_icons then
-				button_texture_data, button_text = self._button_texture_data_by_input_action(self, input_action, active_template.alt_action_icons[input_action])
+				button_texture_data, button_text = self._button_texture_data_by_input_action(self, input_action, active_template.alt_action_icons[input_action], active_template)
 			end
 
+			parent_widget_content.unassigned = parent_widget_content.unassigned or unassigned
 			local texture_size_x = 0
 			local texture_size_y = 0
 
@@ -201,7 +222,21 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 					texture_size_x = button_texture_data.size[1]
 					texture_size_y = button_texture_data.size[2]
 				else
-					button_text = "[" .. button_text .. "]"
+					if keymap_binding and button_text ~= "" then
+						local device_name = keymap_binding[1]
+						local prefix = device_name and self._prefixes[device_name]
+
+						if prefix then
+							button_text = prefix .. " " .. button_text
+						end
+					end
+
+					if button_text == "" then
+						button_text = Localize("unassigned_keymap")
+					else
+						button_text = "[" .. button_text .. "]"
+					end
+
 					local textures = {}
 					local sizes = {}
 					local tile_sizes = {}
@@ -258,7 +293,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 			widget.content.visible = false
 		end
 
-		ui_scenegraph.tutorial_tooltip_input_field.local_position[1] = -(total_width + 5)*0.5
+		ui_scenegraph.tutorial_tooltip_input_field.local_position[1] = -(total_width + 5) * 0.5
 
 		return self._tutorial_tooltip_widget, tooltip_name
 	end
@@ -309,6 +344,9 @@ TutorialInputUI._fade = function (self, from_alpha, to_alpha, duration, complete
 	local sub_description_shadow_style = widget_style.sub_description_shadow
 	local completed_texture_style = widget_style.completed_texture
 	local completed_texture_shadow_style = widget_style.completed_texture_shadow
+	local unassigned_style = widget_style.unassigned
+	local unassigned_shadow_style = widget_style.unassigned_shadow
+	local unassigned_background_style = widget_style.unassigned_background
 	local tutorial_tooltip_animations = self._tutorial_tooltip_animations
 	local wait_time = (completed and 0.5) or 0
 	self._tutorial_tooltip_widget.content.completed = completed
@@ -323,6 +361,9 @@ TutorialInputUI._fade = function (self, from_alpha, to_alpha, duration, complete
 
 	tutorial_tooltip_animations.completed_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, completed_texture_style.color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 	tutorial_tooltip_animations.completed_shadow_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, completed_texture_shadow_style.color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
+	tutorial_tooltip_animations.unassigned_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, unassigned_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
+	tutorial_tooltip_animations.unassigned_shadow_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, unassigned_shadow_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
+	tutorial_tooltip_animations.unassigned_background_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, unassigned_background_style.color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 	tutorial_tooltip_animations.tooltip_bg_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, bg_style.color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 	tutorial_tooltip_animations.tooltip_divider_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, divider_style.color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 	tutorial_tooltip_animations.tooltip_description_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, description_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)

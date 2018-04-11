@@ -653,12 +653,12 @@ UIElements = {
 				offset_function = function (ui_scenegraph, ui_style, ui_content)
 					local local_position = UISceneGraph.get_local_position(ui_scenegraph, ui_style.scenegraph_id)
 					local bar_height = ui_content.scroll_bar_height
-					local half_bar_height = bar_height/2
+					local half_bar_height = bar_height / 2
 					local min = ui_content.scroll_offset_min
 					local max = ui_content.scroll_offset_max
-					local y_pos = math.min(min + (max - min)*ui_content.internal_scroll_value, max - bar_height)
+					local y_pos = math.min(min + (max - min) * ui_content.internal_scroll_value, max - bar_height)
 					local_position[2] = y_pos
-					ui_content.scroll_value = (y_pos - min)/(max - bar_height - min)
+					ui_content.scroll_value = (y_pos - min) / (max - bar_height - min)
 
 					return 
 				end
@@ -679,7 +679,7 @@ UIElements = {
 					local scenegraph_id = ui_style.scenegraph_id
 					local world_position = UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)
 					local bar_height = ui_content.scroll_bar_height
-					local half_bar_size = bar_height/2
+					local half_bar_size = bar_height / 2
 					local start_delta_cursor = half_bar_size
 					local y_pos = cursor[2] - start_delta_cursor
 					local size = UISceneGraph.get_size(ui_scenegraph, scenegraph_id)
@@ -689,7 +689,7 @@ UIElements = {
 					local scroll_offset_max = ui_content.scroll_offset_max
 					local max_world_pos = (world_position[2] + scroll_offset_max) - half_bar_size - ui_content.scroll_offset_min
 					local current_position = math.clamp(current_offset_center_bar, 0, size[2])
-					local delta_value = math.min(current_position/size[2], 1)
+					local delta_value = math.min(current_position / size[2], 1)
 					ui_content.internal_scroll_value = delta_value
 
 					return 

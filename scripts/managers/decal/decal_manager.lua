@@ -43,7 +43,7 @@ DecalManager.add_projection_decal = function (self, effect_name, material, hit_u
 	local impact_direction = Quaternion.forward(rotation)
 	local impact_dir_proj_x = Vector3.dot(impact_direction, Quaternion.right(normal_rotation))
 	local impact_dir_proj_y = Vector3.dot(impact_direction, Quaternion.forward(normal_rotation))
-	local impact_dir_proj = Quaternion.right(normal_rotation)*impact_dir_proj_x + Quaternion.forward(normal_rotation)*impact_dir_proj_y
+	local impact_dir_proj = Quaternion.right(normal_rotation) * impact_dir_proj_x + Quaternion.forward(normal_rotation) * impact_dir_proj_y
 	local aligned_rotation = Quaternion.look(impact_dir_proj, normal)
 	local unit = World.spawn_unit(world, decal_unit_name, position, aligned_rotation)
 

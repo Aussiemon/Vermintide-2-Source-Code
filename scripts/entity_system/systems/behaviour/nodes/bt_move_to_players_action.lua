@@ -174,8 +174,8 @@ BTMoveToPlayersAction._find_target_ratling_gunner = function (self, unit, blackb
 end
 BTMoveToPlayersAction._update_move_to_players_position = function (self, blackboard, navigation_extension, wanted_position, data)
 	local attempts = data.find_move_position_attempts
-	local above = attempts*0.2 + 0.7
-	local below = attempts*0.2 + 2
+	local above = 0.7 + attempts * 0.2
+	local below = 2 + attempts * 0.2
 	local goal_pos = nil
 	local traverse_logic = navigation_extension.traverse_logic(navigation_extension)
 	local nav_world = navigation_extension.nav_world(navigation_extension)
@@ -185,7 +185,7 @@ BTMoveToPlayersAction._update_move_to_players_position = function (self, blackbo
 		goal_pos = Vector3(wanted_position.x, wanted_position.y, z)
 	else
 		local distance_from_nav_mesh = 0
-		local lateral = attempts*0.5
+		local lateral = attempts * 0.5
 		goal_pos = GwNavQueries.inside_position_from_outside_position(nav_world, wanted_position, below, above, lateral, distance_from_nav_mesh, traverse_logic)
 	end
 
@@ -233,7 +233,7 @@ BTMoveToPlayersAction._valid_globadier_target = function (self, target_distance,
 end
 BTMoveToPlayersAction._has_line_of_sight = function (self, unit, target_unit, world, t)
 	local start_pos = POSITION_LOOKUP[unit] + Vector3.up()
-	local end_pos = POSITION_LOOKUP[target_unit] + Vector3.up()*1.75
+	local end_pos = POSITION_LOOKUP[target_unit] + Vector3.up() * 1.75
 	local look_vector = end_pos - start_pos
 	local direction = Vector3.normalize(look_vector)
 	local length = Vector3.length(look_vector)

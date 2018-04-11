@@ -30,8 +30,8 @@ local scenegraph_definition = {
 		parent = "root",
 		horizontal_alignment = "left",
 		position = {
-			-RETICULE_SIZE/2,
-			RETICULE_SIZE/2,
+			-RETICULE_SIZE / 2,
+			RETICULE_SIZE / 2,
 			1
 		},
 		size = {
@@ -44,8 +44,8 @@ local scenegraph_definition = {
 		parent = "root",
 		horizontal_alignment = "right",
 		position = {
-			RETICULE_SIZE/2,
-			-RETICULE_SIZE/2,
+			RETICULE_SIZE / 2,
+			-RETICULE_SIZE / 2,
 			1
 		},
 		size = {
@@ -101,7 +101,7 @@ local widget_definitions = {
 				},
 				offset = {
 					0,
-					RETICULE_SIZE/2 - RETICULE_THICKNESS/2
+					RETICULE_SIZE / 2 - RETICULE_THICKNESS / 2
 				}
 			},
 			vertical = {
@@ -116,7 +116,7 @@ local widget_definitions = {
 					RETICULE_SIZE
 				},
 				offset = {
-					RETICULE_SIZE/2 - RETICULE_THICKNESS/2,
+					RETICULE_SIZE / 2 - RETICULE_THICKNESS / 2,
 					0
 				}
 			}
@@ -154,7 +154,7 @@ local widget_definitions = {
 				},
 				offset = {
 					0,
-					RETICULE_SIZE/2 - RETICULE_THICKNESS/2
+					RETICULE_SIZE / 2 - RETICULE_THICKNESS / 2
 				}
 			},
 			vertical = {
@@ -169,7 +169,7 @@ local widget_definitions = {
 					RETICULE_SIZE
 				},
 				offset = {
-					RETICULE_SIZE/2 - RETICULE_THICKNESS/2,
+					RETICULE_SIZE / 2 - RETICULE_THICKNESS / 2,
 					0
 				}
 			}
@@ -303,15 +303,15 @@ UICalibrationView.update = function (self, ui_renderer, input_service, dt)
 		local w = RESOLUTION_LOOKUP.res_w
 		local h = RESOLUTION_LOOKUP.res_h
 		local diff_x = cursor_x - start_x
-		local norm_x = diff_x/1920*2
+		local norm_x = diff_x / 1920 * 2
 		local start_y = cursor_start[2]
 		local cursor_y = cursor[2]
 		local diff_y = cursor_y - start_y
-		local norm_y = diff_y/h*2
+		local norm_y = diff_y / h * 2
 
 		if self.modifying_retucile == "bottom_right" then
-			norm_x = norm_x*-1
-			norm_y = norm_y*-1
+			norm_x = -1 * norm_x
+			norm_y = -1 * norm_y
 		end
 
 		local new_scale_x = self.start_root[1] - norm_x
@@ -341,10 +341,10 @@ UICalibrationView.evaluate_new_root_scale = function (self, root_scale)
 	local scale_x = root_scale[1]
 
 	if 1 < scale_x then
-		local new_root_screen_x = scale_x*1920
+		local new_root_screen_x = 1920 * scale_x
 
 		if w < new_root_screen_x then
-			local diff = (new_root_screen_x - w)/w
+			local diff = (new_root_screen_x - w) / w
 			scale_x = scale_x - diff
 		end
 	elseif scale_x < 0.2 then

@@ -73,11 +73,11 @@ BTJumpSlamImpactAction.catapult_player = function (target_unit, impact_position,
 		return 
 	end
 
-	local angle = math.pi/6
+	local angle = math.pi / 6
 	local flat_towards_player = Vector3.normalize(Vector3.flat(towards_player))
-	local length = push_speed*math.cos(angle)
-	local height = push_speed*math.sin(angle)
-	local push_velocity = flat_towards_player*length
+	local length = push_speed * math.cos(angle)
+	local height = push_speed * math.sin(angle)
+	local push_velocity = flat_towards_player * length
 	push_velocity.z = height
 
 	StatusUtils.set_catapulted_network(target_unit, true, push_velocity)
@@ -121,7 +121,7 @@ BTJumpSlamImpactAction.impact_damage = function (attacking_unit, t, radius, stag
 							local damage_done = nil
 
 							if max_damage_radius < distance then
-								damage_done = raw_damage*(distance - max_damage_radius)/falloff_radius
+								damage_done = raw_damage * (distance - max_damage_radius) / falloff_radius
 							else
 								damage_done = raw_damage
 							end

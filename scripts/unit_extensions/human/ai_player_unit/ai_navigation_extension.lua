@@ -197,7 +197,7 @@ AINavigationExtension.add_movement_modifier = function (self, new_modifier)
 	local current_amount = self._num_movement_modifiers
 
 	if size <= current_amount then
-		size = size*2
+		size = size * 2
 
 		if BUILD == "dev" then
 			fassert(false, "[AINavigationExtension] More than %i movement modifers at the same time", self._movement_modifier_table_size)
@@ -212,7 +212,7 @@ AINavigationExtension.add_movement_modifier = function (self, new_modifier)
 	local id = self._last_movement_modifier_index
 
 	while modifiers[id] do
-		id = id%size + 1
+		id = id % size + 1
 	end
 
 	modifiers[id] = new_modifier
@@ -247,11 +247,11 @@ AINavigationExtension._recalculate_max_speed = function (self)
 		local mod = modifiers[i]
 
 		if mod then
-			aggregate_mod = mod*aggregate_mod
+			aggregate_mod = mod * aggregate_mod
 		end
 	end
 
-	GwNavBot.set_max_desired_linear_speed(self._nav_bot, aggregate_mod*self._max_speed)
+	GwNavBot.set_max_desired_linear_speed(self._nav_bot, aggregate_mod * self._max_speed)
 
 	return 
 end

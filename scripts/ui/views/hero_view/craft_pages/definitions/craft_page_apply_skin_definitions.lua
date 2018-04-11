@@ -5,13 +5,13 @@ local window_size = window_default_settings.size
 local window_spacing = window_default_settings.spacing
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_text_width = window_size[1] - (window_frame_width*2 + 60)
+local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 NUM_CRAFT_SLOTS_X = 1
 NUM_CRAFT_SLOTS_Y = 1
-NUM_CRAFT_SLOTS = NUM_CRAFT_SLOTS_X*NUM_CRAFT_SLOTS_Y
+NUM_CRAFT_SLOTS = NUM_CRAFT_SLOTS_X * NUM_CRAFT_SLOTS_Y
 NUM_RECIPE_SLOTS_X = 1
 NUM_RECIPE_SLOTS_Y = 1
-NUM_RECIPE_SLOTS = NUM_RECIPE_SLOTS_X*NUM_RECIPE_SLOTS_Y
+NUM_RECIPE_SLOTS = NUM_RECIPE_SLOTS_X * NUM_RECIPE_SLOTS_Y
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -72,7 +72,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			68,
+			28,
 			6
 		}
 	},
@@ -104,6 +104,34 @@ local scenegraph_definition = {
 			0
 		}
 	},
+	item_grid_icon = {
+		vertical_alignment = "center",
+		parent = "item_grid",
+		horizontal_alignment = "center",
+		size = {
+			60,
+			67
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	item_grid_2_icon = {
+		vertical_alignment = "center",
+		parent = "item_grid_2",
+		horizontal_alignment = "center",
+		size = {
+			50,
+			55
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
 	craft_button = {
 		vertical_alignment = "bottom",
 		parent = "window",
@@ -114,7 +142,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			60,
+			20,
 			35
 		}
 	},
@@ -165,6 +193,8 @@ local widgets = {
 	item_grid_bg = UIWidgets.create_simple_texture("crafting_bg_02", "item_grid", nil, nil, nil, -2),
 	item_grid_bg_2 = UIWidgets.create_simple_texture("crafting_bg_02", "item_grid_2", nil, nil, nil, -2),
 	item_grid_link = UIWidgets.create_simple_texture("crafting_bg_04", "item_grid_link", nil, nil, nil, 0),
+	item_grid_icon = UIWidgets.create_simple_texture("crafting_icon_01", "item_grid_icon"),
+	item_grid_2_icon = UIWidgets.create_simple_texture("crafting_icon_02", "item_grid_2_icon"),
 	item_grid = UIWidgets.create_grid("item_grid", scenegraph_definition.item_grid.size, NUM_CRAFT_SLOTS_Y, NUM_CRAFT_SLOTS_X, 20, 20),
 	item_grid_2 = UIWidgets.create_grid("item_grid_2", scenegraph_definition.item_grid_2.size, NUM_RECIPE_SLOTS_Y, NUM_RECIPE_SLOTS_X, 30, 30),
 	craft_button = UIWidgets.create_default_button("craft_button", scenegraph_definition.craft_button.size, nil, nil, Localize("hero_view_crafting_apply_skin"), 24, nil, "button_detail_02"),
@@ -211,7 +241,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

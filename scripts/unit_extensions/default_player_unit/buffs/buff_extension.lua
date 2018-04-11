@@ -1,5 +1,7 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
 local bpc = dofile("scripts/settings/bpc")
 script_data.buff_debug = script_data.buff_debug or Development.parameter("buff_debug")
 BuffExtension = class(BuffExtension)
@@ -150,7 +152,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 					local variable_bonus_table = sub_buff_template.variable_bonus
 
 					if variable_bonus_table then
-						local bonus_index = (variable_value == 1 and #variable_bonus_table) or math.floor(variable_value/#variable_bonus_table/1) + 1
+						local bonus_index = (variable_value == 1 and #variable_bonus_table) or 1 + math.floor(variable_value / 1 / #variable_bonus_table)
 						bonus = variable_bonus_table[bonus_index]
 					end
 
@@ -377,14 +379,17 @@ BuffExtension.update_stat_buff = function (self, stat_buff_index, difference)
 
 	return 
 end
-BuffExtension.remove_buff = function (self, id)
+BuffExtension.remove_buff = function (self, id, debug_print)
 	local buffs = self._buffs
 	local num_buffs = #buffs
 	local end_time = Managers.time:time("game")
 	local num_buffs_removed = 0
 	local i = 1
+	local buff_type_name = ""
 
 	while i <= num_buffs do
+
+		-- decompilation error in this vicinity
 		local buff = buffs[i]
 		local template = buff.template
 		buff_extension_function_params.bonus = buff.bonus
@@ -392,26 +397,15 @@ BuffExtension.remove_buff = function (self, id)
 		buff_extension_function_params.t = end_time
 		buff_extension_function_params.end_time = end_time
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
-
-		if buff.id == id or buff.parent_id == id then
-			self._remove_sub_buff(self, buff, i, buff_extension_function_params)
-
-			num_buffs = num_buffs - 1
-			num_buffs_removed = num_buffs_removed + 1
-		else
-			i = i + 1
-		end
 	end
 
-	if 1 < num_buffs_removed then
-		print("### BuffExtension:remove_buff() removed more then one buff id: " .. id)
-	end
+	if debug_print then
+		local buff_id = id or "-"
 
-	if num_buffs_removed == 0 then
-		if id then
-			print("### BuffExtension:remove_buff() couldnt find and remove buff id: " .. id)
+		if 1 < num_buffs_removed then
+			printf("### BuffExtension:remove_buff() removed more then one buff id: %d buffs: %s", buff_id, buff_type_name)
 		else
-			print("### BuffExtension:remove_buff() couldnt find and remove buff because it had no id")
+			printf("### BuffExtension:remove_buff() couldnt find and remove buff id: %d", buff_id)
 		end
 	end
 
@@ -615,8 +609,8 @@ BuffExtension.apply_buffs_to_value = function (self, value, stat_buff)
 
 		if math.random() <= proc_chance then
 			local bonus = stat_buff_data.bonus
-			local multiplier = stat_buff_data.multiplier + 1
-			final_value = (final_value + bonus)*multiplier
+			local multiplier = 1 + stat_buff_data.multiplier
+			final_value = final_value * multiplier + bonus
 
 			if is_proc then
 				procced = true

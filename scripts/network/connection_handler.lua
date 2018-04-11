@@ -56,7 +56,7 @@ ConnectionHandler.update = function (self, dt)
 	local num_new_connections = 0
 	local pending_connects = self.pending_connects
 	local current_connections = self.current_connections
-	local connected_value = self.last_connected_value - 3
+	local connected_value = 3 - self.last_connected_value
 
 	for peer_id, _ in pairs(pending_connects) do
 		if Network.has_connection(peer_id) and not Network.is_broken(peer_id) then

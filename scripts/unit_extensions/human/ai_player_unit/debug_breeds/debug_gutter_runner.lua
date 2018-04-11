@@ -19,7 +19,7 @@ DebugGutterRunner.update = function (unit, blackboard, t)
 	local growing_aggro = nil
 
 	if blackboard.skulk_jump_tries then
-		growing_aggro = string.format("%.1f%% tries: %d", blackboard.skulk_jump_tries/10*100, blackboard.skulk_jump_tries)
+		growing_aggro = string.format("%.1f%% tries: %d", blackboard.skulk_jump_tries / 10 * 100, blackboard.skulk_jump_tries)
 	else
 		growing_aggro = "n/a"
 	end
@@ -49,7 +49,7 @@ local font_mtrl = "materials/fonts/" .. font
 local row_height = 17
 DebugGutterRunner.debug_hud_print = function (caption, value, index, valid)
 	local gui = Debug.gui
-	local y = index*row_height - 220
+	local y = 220 - index * row_height
 	local caption_pos = Vector3(20, y, 100)
 	local caption_color = Colors.get("steel_blue")
 
@@ -77,8 +77,8 @@ end
 DebugGutterRunner.debug_hud_background = function (max_index)
 	local gui = Debug.gui
 	local width = 300
-	local height = max_index*row_height + 30
-	local y = max_index*row_height - 200
+	local height = max_index * row_height + 30
+	local y = 200 - max_index * row_height
 	local pos = Vector3(10, y, 90)
 	local size = Vector3(width, height, 0)
 	local color = Colors.get_color_with_alpha("black", 150)

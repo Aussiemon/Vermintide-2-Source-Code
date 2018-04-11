@@ -265,7 +265,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.3,
+			anim_time_scale = time_mod * 1.3,
 			buff_data = {
 				{
 					start_time = 0,
@@ -334,7 +334,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.3,
+			anim_time_scale = time_mod * 1.3,
 			buff_data = {
 				{
 					start_time = 0,
@@ -396,7 +396,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1,
+			anim_time_scale = time_mod * 1,
 			buff_data = {
 				{
 					start_time = 0,
@@ -460,7 +460,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1,
+			anim_time_scale = time_mod * 1,
 			buff_data = {
 				{
 					start_time = 0,
@@ -523,7 +523,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1,
+			anim_time_scale = time_mod * 1,
 			buff_data = {
 				{
 					start_time = 0.1,
@@ -596,7 +596,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.35,
+			anim_time_scale = time_mod * 1.35,
 			buff_data = {
 				{
 					start_time = 0,
@@ -660,7 +660,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.2,
+			anim_time_scale = time_mod * 1.2,
 			buff_data = {
 				{
 					start_time = 0,

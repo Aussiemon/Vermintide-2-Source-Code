@@ -2,7 +2,7 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTRatlingGunnerShootAction = class(BTRatlingGunnerShootAction, BTNode)
 local PI = math.pi
-local TWO_PI = PI*2
+local TWO_PI = PI * 2
 BTRatlingGunnerShootAction.init = function (self, ...)
 	BTRatlingGunnerShootAction.super.init(self, ...)
 
@@ -24,12 +24,12 @@ BTRatlingGunnerShootAction.enter = function (self, unit, blackboard, t)
 
 	data.shoot_start = nil
 	data.shots_fired = nil
-	data.time_between_shots_at_start = action.fire_rate_at_start/1
-	data.time_between_shots_at_end = action.fire_rate_at_end/1
-	data.max_fire_rate_at_percentage_modifier = action.max_fire_rate_at_percentage/1
+	data.time_between_shots_at_start = 1 / action.fire_rate_at_start
+	data.time_between_shots_at_end = 1 / action.fire_rate_at_end
+	data.max_fire_rate_at_percentage_modifier = 1 / action.max_fire_rate_at_percentage
 	data.target_switch_distance_squared = AiUtils.random(action.target_switch_distance[1], action.target_switch_distance[2])^2
 	data.target_obscured = false
-	data.target_check = t + 0.2 + Math.random()*0.1
+	data.target_check = t + 0.2 + Math.random() * 0.1
 	self._use_obstacle = false
 
 	if self._use_obstacle then
@@ -213,9 +213,9 @@ BTRatlingGunnerShootAction.stop_shooting = function (self, unit, data)
 end
 BTRatlingGunnerShootAction._update_shooting = function (self, unit, blackboard, data, t, dt)
 	local time_in_shoot_action = t - data.shoot_start
-	local percentage_in_shoot_action = math.clamp(time_in_shoot_action/data.shoot_duration*data.max_fire_rate_at_percentage_modifier, 0, 1)
+	local percentage_in_shoot_action = math.clamp(time_in_shoot_action / data.shoot_duration * data.max_fire_rate_at_percentage_modifier, 0, 1)
 	local current_time_between_shots = math.lerp(data.time_between_shots_at_start, data.time_between_shots_at_end, percentage_in_shoot_action)
-	local shots_to_fire = (math.floor(time_in_shoot_action/current_time_between_shots) + 1) - data.shots_fired
+	local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
 
 	Profiler.start("shoot")
 
@@ -232,8 +232,8 @@ BTRatlingGunnerShootAction._update_shooting = function (self, unit, blackboard, 
 		local sight_extents = blackboard.action.arc_of_sight_nav_obstacle_half_extents:unbox()
 		local fire_position, fire_direction = self._fire_from_position_direction(self, blackboard, data)
 		local direction = Vector3.normalize(fire_direction)
-		local lof_position = fire_position + direction*fire_extents.y
-		local aos_position = fire_position + direction*sight_extents.y
+		local lof_position = fire_position + direction * fire_extents.y
+		local aos_position = fire_position + direction * sight_extents.y
 		local rotation = Quaternion.look(direction, Vector3.up())
 		local fire_pose = Matrix4x4.from_quaternion_position(rotation, lof_position)
 		local sight_pose = Matrix4x4.from_quaternion_position(rotation, aos_position)
@@ -260,7 +260,7 @@ BTRatlingGunnerShootAction._update_shooting = function (self, unit, blackboard, 
 	return 
 end
 BTRatlingGunnerShootAction._start_shooting = function (self, blackboard, unit, data, t)
-	local shoot_time = math.round(data.shoot_duration*100)
+	local shoot_time = math.round(data.shoot_duration * 100)
 	local owner_unit_id = Managers.state.unit_storage:go_id(unit)
 
 	Managers.state.network.network_transmit:send_rpc_clients("rpc_ai_weapon_shoot_start", owner_unit_id, shoot_time)
@@ -284,8 +284,8 @@ BTRatlingGunnerShootAction._start_shooting = function (self, blackboard, unit, d
 		local sight_extents = blackboard.action.arc_of_sight_nav_obstacle_half_extents:unbox()
 		local fire_position, fire_direction = self._fire_from_position_direction(self, blackboard, data)
 		local direction = Vector3.normalize(fire_direction)
-		local lof_position = fire_position + direction*fire_extents.y
-		local aos_position = fire_position + direction*sight_extents.y
+		local lof_position = fire_position + direction * fire_extents.y
+		local aos_position = fire_position + direction * sight_extents.y
 		local rotation = Quaternion.look(direction, Vector3.up())
 		local fire_pose = Matrix4x4.from_quaternion_position(rotation, lof_position)
 		local sight_pose = Matrix4x4.from_quaternion_position(rotation, aos_position)
@@ -300,7 +300,7 @@ BTRatlingGunnerShootAction._start_shooting = function (self, blackboard, unit, d
 	local self_pos = POSITION_LOOKUP[unit]
 	local to_target = POSITION_LOOKUP[data.target_unit] - self_pos
 	local distance = Vector3.length(to_target)
-	local obstacle_position, obstacle_rotation, obstacle_size = AiUtils.calculate_oobb(distance*2, self_pos, Quaternion.look(to_target))
+	local obstacle_position, obstacle_rotation, obstacle_size = AiUtils.calculate_oobb(distance * 2, self_pos, Quaternion.look(to_target))
 	local bot_threat_duration = 3
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
@@ -331,22 +331,22 @@ BTRatlingGunnerShootAction._update_target = function (self, unit, blackboard, ac
 				self._notify_no_longer_attacking(self, unit, old_target)
 				self._notify_attacking(self, unit, target)
 
-				data.target_check = t + 0.1 + Math.random()*0.05
+				data.target_check = t + 0.1 + Math.random() * 0.05
 			elseif old_target_visible then
 				data.target_obscured = false
 				data.target_node_name = old_target_visible_node_name
-				data.target_check = t + 0.1 + Math.random()*0.05
+				data.target_check = t + 0.1 + Math.random() * 0.05
 			else
-				data.target_check = t + 0.5 + Math.random()*0.25
+				data.target_check = t + 0.5 + Math.random() * 0.25
 				data.target_obscured = true
 			end
 		elseif old_target_visible then
 			data.target_obscured = false
 			data.target_node_name = old_target_visible_node_name
-			data.target_check = t + 0.1 + Math.random()*0.05
+			data.target_check = t + 0.1 + Math.random() * 0.05
 		else
 			data.target_obscured = true
-			data.target_check = t + 0.5 + Math.random()*0.25
+			data.target_check = t + 0.5 + Math.random() * 0.25
 		end
 
 		if not data.target_obscured then
@@ -409,11 +409,11 @@ BTRatlingGunnerShootAction._end_align_towards_target = function (self, unit, dat
 end
 local MAX_SPEED = 5
 local SLOW_SPEED = 1
-local STOP_SPEED = SLOW_SPEED*0.5
-local SLOW_DOWN_ANGLE = PI/12
-local ACCELERATION = PI*12
-local DECELERATION = PI*6
-local STOP_ANGLE = PI/32
+local STOP_SPEED = SLOW_SPEED * 0.5
+local SLOW_DOWN_ANGLE = PI / 12
+local ACCELERATION = PI * 12
+local DECELERATION = PI * 6
+local STOP_ANGLE = PI / 32
 local AIM_PIVOT_HEIGHT = 0.7
 BTRatlingGunnerShootAction._update_align_towards_target = function (self, unit, blackboard, t, dt)
 	local data = blackboard.attack_pattern_data
@@ -426,27 +426,27 @@ BTRatlingGunnerShootAction._update_align_towards_target = function (self, unit, 
 	local wanted_speed = self._angle_to_speed(self, angle_left)
 
 	if wanted_speed == 0 and 0 < speed then
-		speed = math.max(speed - DECELERATION*dt, 0)
+		speed = math.max(speed - DECELERATION * dt, 0)
 	elseif wanted_speed == 0 and speed < 0 then
-		speed = math.min(speed + DECELERATION*dt, 0)
+		speed = math.min(speed + DECELERATION * dt, 0)
 	elseif speed < wanted_speed and 0 < wanted_speed then
-		speed = math.min(speed + ACCELERATION*dt, wanted_speed)
+		speed = math.min(speed + ACCELERATION * dt, wanted_speed)
 	elseif wanted_speed < speed and wanted_speed < 0 then
-		speed = math.max(speed - ACCELERATION*dt, wanted_speed)
+		speed = math.max(speed - ACCELERATION * dt, wanted_speed)
 	elseif speed < wanted_speed and wanted_speed < 0 then
-		speed = math.min(speed + DECELERATION*dt, wanted_speed)
+		speed = math.min(speed + DECELERATION * dt, wanted_speed)
 	else
-		speed = math.max(speed - ACCELERATION*dt, wanted_speed)
+		speed = math.max(speed - ACCELERATION * dt, wanted_speed)
 	end
 
 	data.align_speed = speed
-	local angle = speed*dt + 0
+	local angle = 0 + speed * dt
 	local new_rot = Quaternion.multiply(current_rotation, Quaternion(Vector3.up(), angle))
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension.set_wanted_rotation(locomotion_extension, new_rot)
 
-	local lerp_value = math.min(dt*3, 1)
+	local lerp_value = math.min(dt * 3, 1)
 	local new_shoot_direction = Vector3.lerp(data.shoot_direction_box:unbox(), Quaternion.forward(new_rot), lerp_value)
 
 	data.shoot_direction_box:store(new_shoot_direction)
@@ -473,14 +473,14 @@ BTRatlingGunnerShootAction._aim_at_target = function (self, unit, blackboard, t,
 	local target_position, wanted_rotation, unit_position = self._calculate_wanted_target_position(self, unit, target_unit, data)
 	local current_rotation = Unit.local_rotation(unit, 0)
 	local angle = Quaternion.yaw(wanted_rotation) - Quaternion.yaw(current_rotation)
-	local normalized_angle = (angle%TWO_PI + PI)%TWO_PI - PI
+	local normalized_angle = (angle % TWO_PI + PI) % TWO_PI - PI
 	local self_pos = POSITION_LOOKUP[unit]
 	local pivot = self_pos + Vector3(0, 0, AIM_PIVOT_HEIGHT)
 	local wanted_aim_position_offset = target_position - pivot
 	local wanted_aim_rotation = Quaternion.look(wanted_aim_position_offset, Vector3.up())
 	local current_aim_rotation = data.current_aim_rotation:unbox()
 	local lerped_rotation = self._rotate_from_to(self, current_aim_rotation, wanted_aim_rotation, action.radial_speed_upper_body_shooting, dt)
-	local aim_position = pivot + Quaternion.forward(lerped_rotation)*Vector3.length(wanted_aim_position_offset)
+	local aim_position = pivot + Quaternion.forward(lerped_rotation) * Vector3.length(wanted_aim_position_offset)
 
 	data.current_aim_rotation:store(lerped_rotation)
 
@@ -491,7 +491,7 @@ BTRatlingGunnerShootAction._aim_at_target = function (self, unit, blackboard, t,
 	data.aim_position_box:store(aim_position)
 	data.shoot_direction_box:store(aim_position - pivot)
 
-	local realign = PI/3 < normalized_angle or normalized_angle < -PI
+	local realign = PI / 3 < normalized_angle or normalized_angle < -PI
 	local physics_world = World.get_data(blackboard.world, "physics_world")
 
 	PhysicsWorld.prepare_actors_for_raycast(physics_world, pivot, Vector3.normalize(aim_position - pivot), action.spread)
@@ -504,18 +504,18 @@ BTRatlingGunnerShootAction._remaining_angle = function (self, from, to)
 	local from_angle = math.atan2(from_forward.y, from_forward.x)
 	local to_angle = math.atan2(to_forward.y, to_forward.x)
 	local pi = PI
-	local pi2 = pi*2
+	local pi2 = pi * 2
 	local angle_diff = to_angle - from_angle
-	local normalized_angle_diff = (angle_diff%pi2 + pi)%pi2 - pi
+	local normalized_angle_diff = (angle_diff % pi2 + pi) % pi2 - pi
 
 	return normalized_angle_diff
 end
 BTRatlingGunnerShootAction._rotate_from_to = function (self, from, to, max_angle_speed, dt)
-	local max_delta = max_angle_speed*dt
+	local max_delta = max_angle_speed * dt
 	local inner_product = Quaternion.dot(to, from)
-	local angle_difference = math.acos(math.clamp(inner_product, -1, 1))*2
-	local normalized_angle_diff = math.abs((angle_difference%TWO_PI + PI)%TWO_PI - PI)
-	local lerp_t = (angle_difference == 0 and 1) or math.min(max_delta/angle_difference, 1)
+	local angle_difference = 2 * math.acos(math.clamp(inner_product, -1, 1))
+	local normalized_angle_diff = math.abs((angle_difference % TWO_PI + PI) % TWO_PI - PI)
+	local lerp_t = (angle_difference == 0 and 1) or math.min(max_delta / angle_difference, 1)
 
 	return Quaternion.lerp(from, to, lerp_t), math.max(normalized_angle_diff - max_delta, 0)
 end
@@ -531,7 +531,7 @@ BTRatlingGunnerShootAction._fire_from_position_direction = function (self, black
 		direction = data.aim_position_box:unbox() - position
 	end
 
-	local fire_pos = position - Vector3.normalize(direction)*0.25
+	local fire_pos = position - Vector3.normalize(direction) * 0.25
 
 	return fire_pos, direction
 end
@@ -542,10 +542,10 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 	local physics_world = World.get_data(world, "physics_world")
 	local from_position, direction = self._fire_from_position_direction(self, blackboard, data)
 	local normalized_direction = Vector3.normalize(direction)
-	local spread_angle = Math.random()*action.spread
+	local spread_angle = Math.random() * action.spread
 	local dir_rot = Quaternion.look(normalized_direction, Vector3.up())
 	local pitch = Quaternion(Vector3.right(), spread_angle)
-	local roll = Quaternion(Vector3.forward(), Math.random()*TWO_PI)
+	local roll = Quaternion(Vector3.forward(), Math.random() * TWO_PI)
 	local spread_rot = Quaternion.multiply(Quaternion.multiply(dir_rot, roll), pitch)
 	local spread_direction = Quaternion.forward(spread_rot)
 	local distance = 40
@@ -560,7 +560,7 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 		cleave_distribution = action.cleave_distribution,
 		hit_effect = action.hit_effect,
 		afro_hit_sound = action.afro_hit_sound,
-		player_push_velocity = Vector3Box(normalized_direction*action.impact_push_speed)
+		player_push_velocity = Vector3Box(normalized_direction * action.impact_push_speed)
 	}
 
 	Profiler.start("create projectile")

@@ -65,7 +65,7 @@ PlayerCharacterStateGrabbedByChaosSpawn.on_exit = function (self, unit, input, d
 		local node2 = Unit.node(unit, "j_rightfoot")
 		local pos1 = Unit.world_position(unit, node1)
 		local pos2 = Unit.world_position(unit, node2)
-		pos = (pos1 + pos2)/2
+		pos = (pos1 + pos2) / 2
 	else
 		pos = Unit.world_position(unit, Unit.node(unit, "root_point"))
 	end

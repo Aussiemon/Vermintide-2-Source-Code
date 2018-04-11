@@ -19,7 +19,7 @@ BTAdvanceTowardsPlayersAction.enter = function (self, unit, blackboard, t)
 	advance_towards_players.timer = advance_towards_players.timer or 0
 	advance_towards_players.time_before_throw_timer = 0
 	advance_towards_players.evaluate_timer = EVALUATE_TIME
-	advance_towards_players.direction = advance_towards_players.direction or math.random(0, 1)*2 - 1
+	advance_towards_players.direction = advance_towards_players.direction or 1 - math.random(0, 1) * 2
 	advance_towards_players.time_until_first_throw = AiUtils.random(action.time_until_first_throw[1], action.time_until_first_throw[2])
 	advance_towards_players.throw_at_distance = AiUtils.random(throw_at_distance[1], throw_at_distance[2])
 	advance_towards_players.goal_get_fails = advance_towards_players.goal_get_fails or 0
@@ -184,7 +184,7 @@ BTAdvanceTowardsPlayersAction.want_to_throw = function (self, unit, blackboard, 
 	local action = blackboard.action
 	local slot_count = blackboard.total_slots_count
 	local advance_towards_players = blackboard.advance_towards_players
-	local time_until_first_throw = advance_towards_players.time_until_first_throw + action.slot_count_time_modifier*slot_count
+	local time_until_first_throw = advance_towards_players.time_until_first_throw + action.slot_count_time_modifier * slot_count
 	local time_in_approach = advance_towards_players.timer
 
 	if time_in_approach < time_until_first_throw then
@@ -213,8 +213,8 @@ BTAdvanceTowardsPlayersAction.want_to_throw = function (self, unit, blackboard, 
 		end
 	end
 
-	local time_before_throw_distance_modifier = action.time_before_throw_distance_modifier*advance_towards_players.time_before_throw_timer
-	local slot_count_distance_modifier = action.slot_count_distance_modifier*slot_count
+	local time_before_throw_distance_modifier = action.time_before_throw_distance_modifier * advance_towards_players.time_before_throw_timer
+	local slot_count_distance_modifier = action.slot_count_distance_modifier * slot_count
 	local throw_at_distance = advance_towards_players.throw_at_distance + slot_count_distance_modifier + time_before_throw_distance_modifier
 	local target_dist = blackboard.target_dist
 
@@ -232,7 +232,7 @@ BTAdvanceTowardsPlayersAction.can_throw = function (self, unit, blackboard, t)
 	end
 
 	local start_pos = POSITION_LOOKUP[unit] + Vector3.up()
-	local end_pos = POSITION_LOOKUP[blackboard.target_unit] + Vector3.up()*2
+	local end_pos = POSITION_LOOKUP[blackboard.target_unit] + Vector3.up() * 2
 	local look_vector = end_pos - start_pos
 	local direction = Vector3.normalize(look_vector)
 	local length = Vector3.length(look_vector)
@@ -246,7 +246,7 @@ BTAdvanceTowardsPlayersAction.get_new_goal = function (self, unit, blackboard)
 	local max_distance = action.keep_target_distance[2]
 	local advance_towards_players = blackboard.advance_towards_players
 	local fails = advance_towards_players.goal_get_fails
-	local above_below = math.min(fails*5 + 3, 30)
+	local above_below = math.min(3 + 5 * fails, 30)
 	local position, distance, direction = AiUtils.advance_towards_target(unit, blackboard, min_distance, max_distance, nil, nil, nil, nil, advance_towards_players.direction, above_below, above_below)
 
 	if position then

@@ -328,12 +328,12 @@ local widget_definitions = {
 						local bar_value = content.bar_value
 						local uv_start_pixels = style.uv_start_pixels
 						local uv_scale_pixels = style.uv_scale_pixels
-						local uv_pixels = uv_start_pixels + uv_scale_pixels*bar_value
+						local uv_pixels = uv_start_pixels + uv_scale_pixels * bar_value
 						local uvs = style.uvs
 						local uv_scale_axis = style.scale_axis
 						local offset_scale = style.offset_scale
 						local offset = style.offset
-						uvs[2][uv_scale_axis] = uv_pixels/(uv_start_pixels + uv_scale_pixels)
+						uvs[2][uv_scale_axis] = uv_pixels / (uv_start_pixels + uv_scale_pixels)
 						size[uv_scale_axis] = uv_pixels
 
 						return content.color, uvs, size, offset
@@ -471,7 +471,7 @@ InteractionUI._handle_interaction_progress = function (self, progress)
 		local glow_style = widget_style.glow
 		local glow_size = glow_style.size
 		local glow_offset = glow_style.offset
-		glow_offset[1] = -(glow_size[1]/2) + progress*217
+		glow_offset[1] = -(glow_size[1] / 2) + 217 * progress
 
 		return true
 	end
@@ -691,7 +691,7 @@ InteractionUI._assign_button_info = function (self, interact_action, failed_reas
 			texture_size_x = button_texture_data.size[1]
 			texture_size_y = button_texture_data.size[2]
 		else
-			button_text = "[" .. string.upper(button_text) .. "]"
+			button_text = "[" .. TextToUpper(button_text) .. "]"
 			local button_text_style = widget_style.button_text
 			local font, scaled_font_size = UIFontByResolution(button_text_style)
 			local text_width, text_height, min = UIRenderer.text_size(ui_renderer, button_text, font[1], scaled_font_size)

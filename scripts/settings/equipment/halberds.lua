@@ -201,7 +201,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.1,
+			anim_time_scale = time_mod * 1.1,
 			buff_data = {
 				{
 					start_time = 0,
@@ -287,7 +287,7 @@ weapon_template.actions = {
 			impact_sound_event = "axe_1h_hit",
 			use_target = false,
 			anim_end_event = "attack_finished",
-			damage_profile = "heavy_slashing_linesman",
+			damage_profile = "heavy_slashing_linesman_polearm",
 			dedicated_target_range = 3,
 			weapon_up_offset_mod = 0.45,
 			uninterruptible = true,
@@ -297,7 +297,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*0.85,
+			anim_time_scale = time_mod * 0.85,
 			buff_data = {
 				{
 					start_time = 0,
@@ -377,7 +377,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1,
+			anim_time_scale = time_mod * 1,
 			buff_data = {
 				{
 					start_time = 0,
@@ -462,7 +462,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1,
+			anim_time_scale = time_mod * 1,
 			buff_data = {
 				{
 					start_time = 0,
@@ -542,7 +542,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.15,
+			anim_time_scale = time_mod * 1.15,
 			buff_data = {
 				{
 					start_time = 0,
@@ -631,7 +631,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1,
+			anim_time_scale = time_mod * 1,
 			buff_data = {
 				{
 					start_time = 0,

@@ -47,7 +47,7 @@ local scenegraph_definition = {
 		parent = "screen",
 		horizontal_alignment = "left",
 		position = {
-			0,
+			20,
 			15,
 			500
 		}
@@ -61,8 +61,8 @@ local scenegraph_definition = {
 			40
 		},
 		position = {
-			30,
-			2,
+			0,
+			0,
 			5
 		}
 	},
@@ -76,7 +76,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			2,
+			0,
 			5
 		}
 	},
@@ -89,7 +89,7 @@ local scenegraph_definition = {
 			40
 		},
 		position = {
-			110,
+			0,
 			0,
 			5
 		}
@@ -457,30 +457,10 @@ local scenegraph_definition = {
 		}
 	}
 }
-
-local function create_button_textures()
-	local button_texture_data = ButtonTextureByName(nil, "win32")
-	local textures = {}
-
-	for i = 1, #button_texture_data, 1 do
-		textures[i] = button_texture_data[i].texture
-	end
-
-	return textures
-end
-
 skip_widget = {
 	scenegraph_id = "skip_input",
 	element = {
 		passes = {
-			{
-				texture_id = "icon_textures",
-				style_id = "keyboard_input_icon",
-				pass_type = "multi_texture",
-				content_check_function = function (content)
-					return not content.input_icon
-				end
-			},
 			{
 				style_id = "input_text_1",
 				pass_type = "text",
@@ -489,15 +469,15 @@ skip_widget = {
 			{
 				style_id = "input_text_2",
 				pass_type = "text",
-				text_id = "input_text_2"
+				text_id = "input_text_2",
+				content_check_function = function (content)
+					return not content.input_icon
+				end
 			},
 			{
 				style_id = "input_text_3",
 				pass_type = "text",
-				text_id = "input_text_3",
-				content_check_function = function (content)
-					return not content.input_icon
-				end
+				text_id = "input_text_3"
 			},
 			{
 				pass_type = "texture",
@@ -521,65 +501,53 @@ skip_widget = {
 				content_check_function = function (content)
 					return content.using_keyboard
 				end
+			},
+			{
+				style_id = "hold_bar_bg",
+				pass_type = "rect",
+				content_check_function = function (content)
+					return content.using_keyboard
+				end
 			}
 		}
 	},
 	content = {
 		input_icon_bar = "controller_hold_bar",
-		input_text_3 = "",
-		using_keyboard = true,
+		input_text_2 = "",
 		input_text_1 = "",
-		icon_textures = create_button_textures(),
-		input_text_2 = Localize("to_skip")
+		using_keyboard = true,
+		input_text_3 = Localize("to_skip")
 	},
 	style = {
 		hold_bar = {
 			scenegraph_id = "skip_input_icon",
-			color = Colors.get_color_table_with_alpha("cheeseburger", 255),
+			color = Colors.get_color_table_with_alpha("font_title", 255),
 			offset = {
-				3,
-				-12,
-				0
+				-5,
+				-16,
+				1
 			},
 			size = {
 				0,
 				8
 			}
 		},
-		keyboard_input_icon = {
+		hold_bar_bg = {
 			scenegraph_id = "skip_input_icon",
-			horizontal_alignment = "right",
-			vertical_alignment = "bottom",
-			tile_sizes = {
-				[2] = {
-					8,
-					36
-				}
-			},
-			texture_sizes = {
-				{
-					20,
-					36
-				},
-				{
-					8,
-					36
-				},
-				{
-					20,
-					36
-				}
-			},
-			offset = {
-				0,
-				-5,
-				0
-			},
 			color = {
 				255,
 				255,
 				255,
 				255
+			},
+			offset = {
+				-5,
+				-16,
+				0
+			},
+			size = {
+				0,
+				8
 			}
 		},
 		input_icon = {
@@ -606,14 +574,31 @@ skip_widget = {
 			font_size = 36,
 			word_wrap = false,
 			pixel_perfect = true,
-			horizontal_alignment = "right",
+			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			dynamic_font = true,
 			font_type = "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("white", 255)
 		},
 		input_text_2 = {
+			font_size = 36,
+			upper_case = true,
+			horizontal_alignment = "left",
+			word_wrap = false,
+			pixel_perfect = true,
 			scenegraph_id = "skip_input_text_2",
+			vertical_alignment = "center",
+			dynamic_font = true,
+			font_type = "hell_shark",
+			text_color = Colors.get_color_table_with_alpha("font_title", 255),
+			offset = {
+				0,
+				0,
+				0
+			}
+		},
+		input_text_3 = {
+			scenegraph_id = "skip_input_text_3",
 			font_size = 36,
 			word_wrap = false,
 			pixel_perfect = true,
@@ -622,22 +607,6 @@ skip_widget = {
 			dynamic_font = true,
 			font_type = "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("white", 255)
-		},
-		input_text_3 = {
-			scenegraph_id = "skip_input_text_3",
-			word_wrap = false,
-			font_size = 24,
-			pixel_perfect = true,
-			horizontal_alignment = "right",
-			vertical_alignment = "bottom",
-			dynamic_font = true,
-			font_type = "hell_shark",
-			text_color = Colors.get_color_table_with_alpha("white", 255),
-			offset = {
-				0,
-				5,
-				0
-			}
 		}
 	}
 }
@@ -848,7 +817,7 @@ local function get_slider_progress(min, max, value)
 	local range = max - min
 	local norm_value = math.clamp(value, min, max) - min
 
-	return norm_value/range
+	return norm_value / range
 end
 
 local gamma_value_settings = {
@@ -1076,7 +1045,7 @@ TitleLoadingUI.update = function (self, dt)
 				local max = gamma_value_settings.max
 				local num_decimals = gamma_value_settings.num_decimals
 				local internal_value = stepper.content.internal_value
-				local value = math.round_with_precision(min + (max - min)*internal_value, num_decimals or 0)
+				local value = math.round_with_precision(min + (max - min) * internal_value, num_decimals or 0)
 				stepper.content.value = value
 				local gamma_adjuster = self._gamma_widgets_by_name.gamma_adjuster
 				local gamma_adjuster_content = gamma_adjuster.content
@@ -1094,7 +1063,7 @@ TitleLoadingUI.update = function (self, dt)
 				local max = panning_value_settings.max
 				local num_decimals = panning_value_settings.num_decimals
 				local internal_value = stepper.content.internal_value
-				local index = math.round_with_precision(min + (max - min)*internal_value, num_decimals or 0)
+				local index = math.round_with_precision(min + (max - min) * internal_value, num_decimals or 0)
 				local options = panning_value_settings.options
 				local option = options[index]
 				stepper.content.value = option.value
@@ -1124,7 +1093,7 @@ TitleLoadingUI.update = function (self, dt)
 				local max = dynamic_range_value_settings.max
 				local num_decimals = dynamic_range_value_settings.num_decimals
 				local internal_value = stepper.content.internal_value
-				local index = math.round_with_precision(min + (max - min)*internal_value, num_decimals or 0)
+				local index = math.round_with_precision(min + (max - min) * internal_value, num_decimals or 0)
 				local options = dynamic_range_value_settings.options
 				local option = options[index]
 				stepper.content.value = option.value
@@ -1254,27 +1223,27 @@ TitleLoadingUI._animate_button = function (self, widget, dt)
 	local input_speed = 20
 
 	if input_pressed then
-		input_progress = math.min(input_progress + dt*input_speed, 1)
+		input_progress = math.min(input_progress + dt * input_speed, 1)
 	else
-		input_progress = math.max(input_progress - dt*input_speed, 0)
+		input_progress = math.max(input_progress - dt * input_speed, 0)
 	end
 
 	local input_easing_out_progress = math.easeOutCubic(input_progress)
 	local input_easing_in_progress = math.easeInCubic(input_progress)
 
 	if is_hover then
-		hover_progress = math.min(hover_progress + dt*speed, 1)
+		hover_progress = math.min(hover_progress + dt * speed, 1)
 	else
-		hover_progress = math.max(hover_progress - dt*speed, 0)
+		hover_progress = math.max(hover_progress - dt * speed, 0)
 	end
 
 	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
 	local hover_easing_in_progress = math.easeInCubic(hover_progress)
 
 	if is_selected then
-		selection_progress = math.min(selection_progress + dt*speed, 1)
+		selection_progress = math.min(selection_progress + dt * speed, 1)
 	else
-		selection_progress = math.max(selection_progress - dt*speed, 0)
+		selection_progress = math.max(selection_progress - dt * speed, 0)
 	end
 
 	local select_easing_out_progress = math.easeOutCubic(selection_progress)
@@ -1282,17 +1251,17 @@ TitleLoadingUI._animate_button = function (self, widget, dt)
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
-	local input_alpha = input_progress*255
-	style.clicked_rect.color[1] = input_progress*100
-	local hover_alpha = hover_progress*255
+	local input_alpha = 255 * input_progress
+	style.clicked_rect.color[1] = 100 * input_progress
+	local hover_alpha = 255 * hover_progress
 	style.hover_glow.color[1] = hover_alpha
-	local select_alpha = selection_progress*255
+	local select_alpha = 255 * selection_progress
 	local text_disabled_style = style.title_text_disabled
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
-	disabled_text_color[2] = disabled_default_text_color[2]*0.4
-	disabled_text_color[3] = disabled_default_text_color[3]*0.4
-	disabled_text_color[4] = disabled_default_text_color[4]*0.4
+	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
+	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
+	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress
@@ -1339,8 +1308,8 @@ TitleLoadingUI._handle_stepper_input = function (self, widget, stepper_settings,
 	local min = stepper_settings.min
 	local max = stepper_settings.max
 	local diff = max - min
-	local total_step = diff*10^num_decimals
-	local step = total_step/1
+	local total_step = diff * 10^num_decimals
+	local step = 1 / total_step
 	local move = gamepad_active and input_service.get(input_service, "analog_input")
 	local analog_speed = 0.01
 	local current_time = Managers.time:time("main")
@@ -1357,8 +1326,8 @@ TitleLoadingUI._handle_stepper_input = function (self, widget, stepper_settings,
 			input_been_made = true
 		end
 	elseif move and 0 < math.abs(move.x) and not input_cooldown then
-		local step_change = math.max(math.abs(math.pow(move.x, 2)*total_step*dt*analog_speed), step)
-		internal_value = math.clamp(internal_value + step_change*math.sign(move.x), 0, 1)
+		local step_change = math.max(math.abs(math.pow(move.x, 2) * total_step * dt * analog_speed), step)
+		internal_value = math.clamp(internal_value + step_change * math.sign(move.x), 0, 1)
 		input_been_made = true
 	end
 
@@ -1372,11 +1341,11 @@ TitleLoadingUI._handle_stepper_input = function (self, widget, stepper_settings,
 	if input_been_made then
 		if on_cooldown_last_frame then
 			input_cooldown_multiplier = math.max(input_cooldown_multiplier - 0.1, 0.1)
-			content.input_cooldown = math.ease_in_exp(input_cooldown_multiplier)*0.2
+			content.input_cooldown = 0.2 * math.ease_in_exp(input_cooldown_multiplier)
 			content.input_cooldown_multiplier = input_cooldown_multiplier
 		else
 			input_cooldown_multiplier = 1
-			content.input_cooldown = math.ease_in_exp(input_cooldown_multiplier)*0.2
+			content.input_cooldown = 0.2 * math.ease_in_exp(input_cooldown_multiplier)
 			content.input_cooldown_multiplier = input_cooldown_multiplier
 		end
 	end
@@ -1390,7 +1359,7 @@ TitleLoadingUI._on_stepper_arrow_hover = function (self, widget, style_id)
 	local current_alpha = pass_style.color[1]
 	local target_alpha = 255
 	local total_time = 0.2
-	local animation_duration = (current_alpha/target_alpha - 1)*total_time
+	local animation_duration = (1 - current_alpha / target_alpha) * total_time
 
 	if 0 < animation_duration then
 		local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
@@ -1409,7 +1378,7 @@ TitleLoadingUI._on_stepper_arrow_dehover = function (self, widget, style_id)
 	local current_alpha = pass_style.color[1]
 	local target_alpha = 0
 	local total_time = 0.2
-	local animation_duration = current_alpha/255*total_time
+	local animation_duration = current_alpha / 255 * total_time
 
 	if 0 < animation_duration then
 		local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
@@ -1489,38 +1458,35 @@ TitleLoadingUI._update_input_text = function (self, dt)
 	if not texture_data then
 		if widget_content.input_text ~= input_text then
 			widget_content.input_text_1 = Localize("input_hold")
-			widget_content.input_text_3 = Localize("any_key")
+			widget_content.input_text_2 = " [" .. Localize("any_key") .. "] "
 			widget_content.input_icon = nil
 		end
 	elseif texture_data.texture ~= widget_content.input_icon then
 		widget_content.input_text_1 = Localize("input_hold")
 		ui_scenegraph.skip_input_icon.size = texture_data.size
 		widget_content.input_icon = texture_data.texture
-		widget_content.input_text_3 = ""
+		widget_content.input_text_2 = ""
 	end
 
+	local icon_spacing = 10
+	local using_keyboard = (not texture_data and true) or false
+	widget_content.using_keyboard = using_keyboard
 	local font, scaled_font_size = UIFontByResolution(widget_style.input_text_1)
 	local text_width, text_height, min = UIRenderer.text_size(self._ui_renderer, widget_content.input_text_1, font[1], scaled_font_size)
 	ui_scenegraph.skip_input_text_1.size[1] = text_width
-	ui_scenegraph.skip_input_icon.position[1] = ui_scenegraph.skip_input_text_1.position[1] + text_width + ui_scenegraph.skip_input_icon.size[1]*0.25
+	ui_scenegraph.skip_input_icon.position[1] = ui_scenegraph.skip_input_text_1.position[1] + text_width + icon_spacing
+	ui_scenegraph.skip_input_text_2.position[1] = text_width
 
 	if texture_data then
-		ui_scenegraph.skip_input.position[1] = 0
-	end
-
-	widget_content.using_keyboard = (not texture_data and true) or false
-
-	if texture_data then
-		ui_scenegraph.skip_input_text_2.position[1] = ui_scenegraph.skip_input_text_1.position[1] + text_width + ui_scenegraph.skip_input_icon.size[1]*1.75
+		ui_scenegraph.skip_input_text_3.position[1] = ui_scenegraph.skip_input_icon.position[1] + ui_scenegraph.skip_input_icon.size[1] + icon_spacing
 	else
-		local offset = 30
-		local font, scaled_font_size = UIFontByResolution(widget_style.input_text_3)
-		local text_width, text_height, min = UIRenderer.text_size(self._ui_renderer, widget_content.input_text_3, font[1], scaled_font_size)
-		ui_scenegraph.skip_input_text_3.size[1] = text_width
-		widget_style.keyboard_input_icon.tile_sizes[2][1] = text_width
-		ui_scenegraph.skip_input_text_3.position[1] = ui_scenegraph.skip_input_text_1.position[1] + ui_scenegraph.skip_input_text_1.size[1] + offset
-		ui_scenegraph.skip_input_text_2.position[1] = ui_scenegraph.skip_input_text_3.position[1] + ui_scenegraph.skip_input_text_3.size[1] + offset
-		self.hold_bar_max_length = text_width + 34
+		local font, scaled_font_size = UIFontByResolution(widget_style.input_text_2)
+		local input_text_2 = TextToUpper(widget_content.input_text_2)
+		local text_width, text_height, min = UIRenderer.text_size(self._ui_renderer, input_text_2, font[1], scaled_font_size)
+		ui_scenegraph.skip_input_text_2.size[1] = text_width
+		ui_scenegraph.skip_input_text_3.position[1] = ui_scenegraph.skip_input_text_2.position[1] + text_width
+		self.hold_bar_max_length = text_width
+		self._skip_widget.style.hold_bar_bg.size[1] = self.hold_bar_max_length
 	end
 
 	self._can_draw_input_widget = true
@@ -1582,13 +1548,13 @@ TitleLoadingUI._update_input = function (self, dt)
 		self._fade_timer = total_fade_time
 		self._cancel_timer = (self._cancel_timer or 0) + dt
 	else
-		self._cancel_timer = (self._cancel_timer or 0) - dt*3
+		self._cancel_timer = (self._cancel_timer or 0) - dt * 3
 	end
 
-	self._handle_skip_fade(self, self._fade_timer/total_fade_time*255)
+	self._handle_skip_fade(self, self._fade_timer / total_fade_time * 255)
 
 	self._cancel_timer = math.clamp(self._cancel_timer, 0, total_hold_time)
-	local progress = self._cancel_timer/total_hold_time
+	local progress = self._cancel_timer / total_hold_time
 
 	if 1 <= progress or (cancel_video and self._cancel_video) then
 		self._cancel_timer = nil
@@ -1615,7 +1581,8 @@ TitleLoadingUI._update_input = function (self, dt)
 		local hold_bar_max_length = self.hold_bar_max_length
 
 		if hold_bar_max_length then
-			self._skip_widget.style.hold_bar.size[1] = hold_bar_max_length*fraction
+			local new_length = hold_bar_max_length * fraction
+			self._skip_widget.style.hold_bar.size[1] = new_length
 		end
 	end
 
@@ -1630,7 +1597,7 @@ TitleLoadingUI._handle_skip_fade = function (self, alpha)
 	skip_input_style.input_text_3.text_color[1] = alpha
 	skip_input_style.input_icon.color[1] = alpha
 	skip_input_style.input_icon_bar.color[1] = alpha
-	skip_input_style.keyboard_input_icon.color[1] = alpha
+	skip_input_style.hold_bar_bg.color[1] = alpha
 
 	return 
 end

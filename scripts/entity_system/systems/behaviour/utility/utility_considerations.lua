@@ -2069,6 +2069,52 @@ UtilityConsiderations = {
 			is_condition = true
 		}
 	},
+	stormfiend_boss_dual_shoot = {
+		distance_to_target = {
+			max_value = 15,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				0,
+				0.3,
+				0,
+				0.55,
+				1,
+				0.8,
+				0,
+				1,
+				0
+			}
+		},
+		time_since_last = {
+			max_value = 10,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.8,
+				0,
+				1,
+				1
+			}
+		},
+		time_since_last_done = {
+			max_value = 1.5,
+			blackboard_input = "time_since_last_done",
+			spline = {
+				0,
+				0,
+				0.7,
+				0,
+				1,
+				1
+			}
+		},
+		target_is_not_downed = {
+			blackboard_input = "target_is_not_downed",
+			is_condition = true
+		}
+	},
 	stormfiend_boss_melee_shove = {
 		distance_to_target = {
 			max_value = 4.5,
@@ -3051,15 +3097,13 @@ UtilityConsiderations = {
 	},
 	chaos_exalted_defensive_aoe = {
 		time_since_last = {
-			max_value = 10,
+			max_value = 4,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
 				0,
 				0.5,
 				0,
-				0.66,
-				0.2,
 				1,
 				1
 			}
@@ -3118,6 +3162,52 @@ UtilityConsiderations = {
 		},
 		time_since_last = {
 			max_value = 10,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.7,
+				0,
+				0.9,
+				1,
+				1,
+				1
+			}
+		}
+	},
+	chaos_exalted_champion_angry_lunge_attack = {
+		distance_to_target = {
+			max_value = 15,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				0,
+				0.2,
+				0,
+				0.4,
+				0,
+				0.45,
+				1,
+				0.6,
+				1,
+				0.8,
+				1,
+				0.85,
+				0,
+				1,
+				0
+			}
+		},
+		ray_can_go_to_target = {
+			is_condition = true,
+			blackboard_input = "ray_can_go_to_target"
+		},
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
+		},
+		time_since_last = {
+			max_value = 1,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
@@ -3329,6 +3419,50 @@ UtilityConsiderations = {
 			}
 		}
 	},
+	chaos_exalted_angry_charge_sequence = {
+		phase = {
+			max_value = 3,
+			blackboard_input = "current_phase",
+			spline = {
+				0,
+				0,
+				0.5,
+				0,
+				0.7,
+				0,
+				1,
+				1
+			}
+		},
+		time_since_last = {
+			max_value = 2200,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.025,
+				0,
+				1,
+				1
+			}
+		}
+	},
+	grey_seer_death_sequence = {
+		phase = {
+			max_value = 5,
+			blackboard_input = "current_phase",
+			spline = {
+				0,
+				0,
+				0.5,
+				0,
+				0.8,
+				0,
+				1,
+				1
+			}
+		}
+	},
 	storm_vermin_champion_follow = {
 		distance_to_target = {
 			max_value = 20,
@@ -3471,6 +3605,22 @@ UtilityConsiderations = {
 				0,
 				0.6,
 				1,
+				1,
+				1
+			}
+		}
+	},
+	exalted_plague_wave_skulking = {
+		time_since_last_plague_wave = {
+			max_value = 8,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.5,
+				0,
+				0.66,
+				0.2,
 				1,
 				1
 			}

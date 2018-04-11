@@ -1,6 +1,8 @@
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
 require("scripts/settings/twitch_settings")
 
-local DEBUG_TWITCH = false
+DEBUG_TWITCH = false
 
 local function debug_print(message, ...)
 	if DEBUG_TWITCH then
@@ -28,16 +30,20 @@ TwitchManager.init = function (self)
 	local settings = Application.settings()
 	self._twitch_settings = settings.twitch
 
-	print(Application.settings("twitch"))
+	debug_print(Application.settings("twitch"))
 
 	self._headers = {
 		"Accept: application/vnd.twitchtv.v5+json",
 		"Client-ID: " .. self._twitch_settings.client_id
 	}
+	TwitchSettings.default_downtime = Application.user_setting("twitch_time_between_votes")
+	TwitchSettings.default_vote_time = Application.user_setting("twitch_vote_time")
+	TwitchSettings.difficulty = Application.user_setting("twitch_difficulty")
+	self._debug_vote_timer = 0.25
 
 	return 
 end
-TwitchManager.connect = function (self, twitch_user_name, optional_connect_callback)
+TwitchManager.connect = function (self, twitch_user_name, optional_connection_failure_callback, optional_connection_success_callback)
 	fassert(twitch_user_name, "[TwitchManager] You need to provide a user name to connect")
 
 	local url = "https://api.twitch.tv/kraken/users?login=" .. twitch_user_name
@@ -45,7 +51,8 @@ TwitchManager.connect = function (self, twitch_user_name, optional_connect_callb
 		[Managers.curl._curl.OPT_SSL_VERIFYPEER] = false
 	}
 	self._connecting = true
-	self._connect_callback = optional_connect_callback
+	self._connection_failure_callback = optional_connection_failure_callback
+	self._connection_success_callback = optional_connection_success_callback
 	self._twitch_user_name = twitch_user_name
 
 	Managers.curl:get(url, self._headers, callback(self, "cb_on_user_info_received"), {
@@ -63,17 +70,22 @@ TwitchManager.cb_on_user_info_received = function (self, success, code, headers,
 	if success then
 		if result_data then
 			if result_data.error then
-				local message = string.format("%s. Error: %s. Error code: %s", result_data.message, result_data.error, code)
+				local message = string.format(Localize("start_game_window_twitch_error_connection"), result_data.message, result_data.error, code)
 
 				Application.error("[TwitchManager] " .. message)
 
-				if self._connect_callback then
-					self._connect_callback(message)
+				if self._connection_failure_callback then
+					self._connection_failure_callback(message)
 				end
 			elseif 0 < result_data._total then
 				local user_data = result_data.users[1]
 				local user_id = user_data._id
 				local twitch_user_name = user_data.name
+
+				if self._connection_success_callback then
+					self._connection_success_callback(user_data)
+				end
+
 				local url = "https://api.twitch.tv/kraken/streams/" .. user_id
 				local options = {
 					[Managers.curl._curl.OPT_SSL_VERIFYPEER] = false
@@ -86,35 +98,35 @@ TwitchManager.cb_on_user_info_received = function (self, success, code, headers,
 
 				return 
 			else
-				local message = "Could not find any user by the name: " .. userdata[2]
+				local message = string.format(Localize("start_game_window_twitch_error_no_user"), userdata[2])
 
 				Application.error("[TwitchManager] " .. message)
 
-				if self._connect_callback then
-					self._connect_callback(message)
+				if self._connection_failure_callback then
+					self._connection_failure_callback(message)
 				end
 			end
 		else
-			local message = "Could not parse the result from twitch"
+			local message = Localize("start_game_window_twitch_error_parsing_results")
 
 			Application.error("[TwitchManager] " .. message)
 
-			if self._connect_callback then
-				self._connect_callback(message)
+			if self._connection_failure_callback then
+				self._connection_failure_callback(message)
 			end
 		end
 	else
-		local message = "Somthing went wrong when trying to connect to twitch"
+		local message = Localize("start_game_window_twitch_error_generic")
 
 		Application.error("[TwitchManager] " .. message)
 
-		if self._connect_callback then
-			self._connect_callback(message)
+		if self._connection_failure_callback then
+			self._connection_failure_callback(message)
 		end
 	end
 
 	self._connecting = false
-	self._connect_callback = nil
+	self._connection_failure_callback = nil
 
 	return 
 end
@@ -145,16 +157,16 @@ TwitchManager.cb_on_user_streams_received = function (self, success, code, heade
 		end
 	end
 
-	local message = string.format("Could not find any active streams for user: %s. Error code: %s", userdata[2], code)
+	local message = string.format(Localize("start_game_window_twitch_error_no_active_streams"), userdata[2], code)
 
 	Application.error("[TwitchManager] " .. message)
 
-	if self._connect_callback then
-		self._connect_callback(message)
+	if self._connection_failure_callback then
+		self._connection_failure_callback(message)
 	end
 
 	self._connecting = false
-	self._connect_callback = nil
+	self._connection_failure_callback = nil
 
 	return 
 end
@@ -173,7 +185,7 @@ TwitchManager.cb_on_notify_connected = function (self, connected)
 	local is_server = Managers.state.network and Managers.state.network.is_server
 
 	if not connected and self._activated and is_server then
-		self._popup_id = Managers.popup:queue_popup(Localize("popup_disconnected_from_twitch"), Localize("popup_disconnected_from_twitch_header"), "return_to_inn", Localize("button_ok"))
+		self._popup_id = Managers.popup:queue_popup(Localize("popup_disconnected_from_twitch"), Localize("popup_header_error_twitch"), "return_to_inn", Localize("button_ok"))
 		local network_manager = Managers.state.network
 
 		if network_manager then
@@ -358,7 +370,7 @@ TwitchManager.register_vote = function (self, time, vote_type, validation_func, 
 		self._activate_next_vote(self)
 	end
 
-	self._vote_key_index = self._vote_key_index%255 + 1
+	self._vote_key_index = 1 + self._vote_key_index % 255
 
 	return vote_key
 end
@@ -513,7 +525,7 @@ TwitchManager.rpc_finish_twitch_vote = function (self, sender, vote_key, user_na
 	local is_server = Managers.state.network and Managers.state.network.is_server
 	local vote_template_name = NetworkLookup.twitch_vote_templates[vote_template_id]
 
-	print("Vote results:", vote_index, vote_template_name)
+	debug_print("Vote results:", vote_index, vote_template_name)
 
 	local vote_data = self._votes_lookup_table[vote_key]
 
@@ -695,49 +707,64 @@ end
 TwitchManager._handle_results = function (self, vote_results)
 	local network_manager = Managers.state.network
 	local is_server = network_manager.is_server
-	local best_option = 0
+	local best_option = -1
 	local best_option_index = 0
-	local draw = false
+	local current_vote = self._current_vote
+	local vote_type = current_vote.vote_type
+	local settings_options = TwitchSettings[vote_type]
+	local num_options = table.size(settings_options)
+	local options = vote_results.options
 
-	for idx, option in ipairs(vote_results.options) do
-		if best_option < option then
-			best_option_index = idx
-			best_option = option
-			draw = false
-		elseif option == best_option then
-			draw = true
-		end
-	end
-
-	if not draw and 0 < best_option_index then
-		local vote_template_name = vote_results.vote_templates[best_option_index]
-
-		if not Development.parameter("twitch_disable_result") then
-			TwitchVoteTemplates[vote_template_name].on_success(is_server, best_option_index)
+	for i = 1, num_options, 1 do
+		if vote_type == "multiple_choice" then
+			local valid_player_index = self._valid_player_index(self, i)
 		else
-			vote_template_name = "none"
+			local option = options[i]
+
+			if best_option < option then
+				best_option_index = i
+				best_option = option
+			elseif option == best_option then
+				local random_winner = math.random(2)
+
+				if random_winner == 1 then
+					best_option_index = i
+					best_option = option
+				end
+			end
 		end
-
-		if vote_results.show_vote_ui then
-			Managers.state.event:trigger("finish_vote_ui", vote_results.vote_key, best_option_index)
-		end
-
-		local unnecessary_user_name = ""
-
-		Managers.state.network.network_transmit:send_rpc_clients("rpc_update_twitch_vote", NetworkLookup.twitch_rpc_types.rpc_finish_twitch_vote, vote_results.vote_key, unnecessary_user_name, best_option_index, NetworkLookup.twitch_vote_templates[vote_template_name])
-	else
-		Application.error("[TwitchManager] It was a DRAW!")
-
-		if vote_results.show_vote_ui then
-			Managers.state.event:trigger("finish_vote_ui", vote_results.vote_key, 0)
-		end
-
-		local unnecessary_user_name = ""
-
-		Managers.state.network.network_transmit:send_rpc_clients("rpc_update_twitch_vote", NetworkLookup.twitch_rpc_types.rpc_finish_twitch_vote, vote_results.vote_key, unnecessary_user_name, 0, NetworkLookup.twitch_vote_templates.draw)
 	end
+
+	local vote_template_name = vote_results.vote_templates[best_option_index]
+
+	if not Development.parameter("twitch_disable_result") then
+		TwitchVoteTemplates[vote_template_name].on_success(is_server, best_option_index)
+	else
+		vote_template_name = "none"
+	end
+
+	if vote_results.show_vote_ui then
+		Managers.state.event:trigger("finish_vote_ui", vote_results.vote_key, best_option_index)
+	end
+
+	local unnecessary_user_name = ""
+
+	Managers.state.network.network_transmit:send_rpc_clients("rpc_update_twitch_vote", NetworkLookup.twitch_rpc_types.rpc_finish_twitch_vote, vote_results.vote_key, unnecessary_user_name, best_option_index, NetworkLookup.twitch_vote_templates[vote_template_name])
 
 	return 
+end
+TwitchManager._valid_player_index = function (self, index)
+	local players = Managers.player:human_and_bot_players()
+
+	for peer_id, player in pairs(players) do
+		local profile_index = player.profile_index(player)
+
+		if index == profile_index then
+			return true
+		end
+	end
+
+	return false
 end
 TwitchManager._validate_data = function (self, dt, t)
 	local current_vote = self._current_vote
@@ -765,6 +792,10 @@ TwitchManager.destroy = function (self)
 	return 
 end
 TwitchManager.activate_twitch_game_mode = function (self, network_event_delegate, game_mode_key)
+	if Development.parameter("twitch_debug_voting") then
+		self._connected = true
+	end
+
 	local network_manager = Managers.state.network and Managers.state.network
 	local is_server = network_manager and network_manager.is_server
 
@@ -781,6 +812,25 @@ TwitchManager.activate_twitch_game_mode = function (self, network_event_delegate
 
 		local lobby = network_manager.lobby(network_manager)
 		self._activated = (lobby.lobby_data(lobby, "twitch_enabled") == "true" and true) or false
+
+		if Development.parameter("twitch_debug_voting") then
+			self._activated = true
+		end
+	end
+
+	return 
+end
+TwitchManager.debug_activate_twitch_game_mode = function (self)
+	local twitch_debug_voting = Development.parameter("twitch_debug_voting")
+
+	if twitch_debug_voting then
+		Managers.state.event:trigger("activate_twitch_game_mode")
+
+		self._twitch_game_mode = TwitchGameMode:new(self)
+		self._activated = true
+		self._connected = true
+	else
+		self.deactivate_twitch_game_mode(self)
 	end
 
 	return 
@@ -808,6 +858,67 @@ TwitchManager._update_twitch_game_mode = function (self, dt, t)
 	end
 
 	self._twitch_game_mode:update(dt, t)
+
+	if Development.parameter("twitch_debug_voting") then
+		self._update_debug_voting(self, dt)
+	end
+
+	return 
+end
+local debug_messages = {
+	"default_vote_a_str",
+	"default_vote_b_str",
+	"default_vote_c_str",
+	"default_vote_d_str",
+	"default_vote_e_str"
+}
+TwitchManager._update_debug_voting = function (self, dt)
+	self._debug_vote_timer = self._debug_vote_timer - dt
+
+	if 0 < self._debug_vote_timer then
+		return 
+	end
+
+	local current_vote = self._current_vote
+
+	if not current_vote then
+		return 
+	end
+
+	local message_index = nil
+	local vote_type = current_vote.vote_type
+
+	if vote_type == "standard_vote" then
+		local debug_result = math.random(2)
+		message_index = debug_messages[debug_result]
+	else
+		local debug_result = math.random(5)
+		local valid_player_index = self._valid_player_index(self, debug_result)
+
+		if not valid_player_index then
+			return 
+		end
+
+		message_index = debug_messages[debug_result]
+	end
+
+	local message = TwitchSettings.multiple_choice[message_index]
+	local options = current_vote.options
+	local option_strings = current_vote.option_strings
+
+	for idx, option_string in ipairs(option_strings) do
+		if string.find(message, option_string) then
+			options[idx] = options[idx] + 1
+
+			break
+		end
+	end
+
+	local vote_key = current_vote.vote_key
+
+	self._update_game_object(self, vote_key, current_vote)
+
+	self._debug_vote_timer = 0.25
 
 	return 
 end
@@ -839,7 +950,7 @@ TwitchGameMode.update = function (self, dt, t)
 	return 
 end
 TwitchGameMode._decide_next_vote_templates = function (self)
-	if math.random(2)%2 == 0 then
+	if math.random(3) % 3 == 0 then
 		return self._next_multiple_choice_vote(self)
 	else
 		return self._next_standard_vote(self)
@@ -859,26 +970,51 @@ TwitchGameMode._next_multiple_choice_vote = function (self)
 
 	return "multiple_choice", vote_templates, validation_func
 end
+TwitchGameMode._get_first_option = function (self)
+	local want_positive_effect = self._funds < TwitchSettings.cutoff_for_guaranteed_positive_vote
+	local templates = nil
+
+	if want_positive_effect then
+		templates = TwitchPositiveStandardVoteTemplatesLookup
+	elseif math.random(3) % 3 == 0 then
+		templates = TwitchStandardVoteTemplatesLookup
+	else
+		templates = TwitchNegativeStandardVoteTemplatesLookup
+	end
+
+	local num_templates = #templates
+	local random_template_index = Math.random(num_templates)
+	local vote_template_name = templates[random_template_index]
+	local selected_vote_info = TwitchVoteTemplates[vote_template_name]
+
+	return selected_vote_info, vote_template_name
+end
 TwitchGameMode._next_standard_vote = function (self)
 	self._selected_templates = self._selected_templates or {}
 	local selected_templates = self._selected_templates
-	local vote_template_a_name = TwitchStandardVoteTemplatesLookup[Math.random(#TwitchStandardVoteTemplatesLookup)]
-	local selected_vote_info = TwitchVoteTemplates[vote_template_a_name]
-	local cost = selected_vote_info.cost
-	local sign = math.sign(cost)
+	local first_vote_info, first_template_name = self._get_first_option(self)
+	local first_vote_cost = first_vote_info.cost
+	local first_is_positive = first_vote_cost < 0
+	local sign = math.sign(first_vote_cost)
 	local sign_diff = (0 < sign and -1) or 1
 	local best_template_diff = math.huge
-	local best_template_name = nil
-	selected_templates[vote_template_a_name] = true
+	local best_template_name, total_cost = nil
+	selected_templates[first_template_name] = true
 
-	for name, vote_info in pairs(TwitchVoteTemplates) do
-		if name ~= vote_template_a_name and not selected_templates[name] then
-			local template_cost = vote_info.cost*sign_diff
-			local diff = cost - template_cost
+	for selected_template_name, vote_info in pairs(TwitchVoteTemplates) do
+		if not selected_templates[selected_template_name] and not vote_info.multiple_choice and selected_template_name ~= first_template_name then
+			local second_vote_cost = vote_info.cost
+			local second_is_positive = second_vote_cost < 0
 
-			if diff < best_template_diff then
-				best_template_name = name
-				best_template_diff = diff
+			if first_is_positive ~= second_is_positive and 5 < math.random(1, 100) then
+			else
+				local diff = first_vote_cost - second_vote_cost * sign_diff
+
+				if diff < best_template_diff then
+					best_template_name = selected_template_name
+					best_template_diff = diff
+					total_cost = first_vote_cost + second_vote_cost
+				end
 			end
 		end
 	end
@@ -888,9 +1024,10 @@ TwitchGameMode._next_standard_vote = function (self)
 
 		return self._next_standard_vote(self)
 	else
+		self._funds = self._funds - total_cost
 		selected_templates[best_template_name] = true
 		local vote_templates = {
-			vote_template_a_name,
+			first_template_name,
 			best_template_name
 		}
 

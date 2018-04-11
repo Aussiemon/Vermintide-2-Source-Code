@@ -49,7 +49,7 @@ NavigationPath.draw = function (self, color, offset)
 	local previous_node = nil
 
 	for _, node in ipairs(self._path) do
-		drawer.sphere(drawer, node.unbox(node) + Vector3.up()*0.05 + offset, 0.05, color)
+		drawer.sphere(drawer, node.unbox(node) + Vector3.up() * 0.05 + offset, 0.05, color)
 	end
 
 	return 

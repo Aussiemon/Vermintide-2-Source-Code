@@ -13,7 +13,7 @@ BTSpawningAction.enter = function (self, unit, blackboard, t)
 
 	if blackboard.spawn_type == "horde" then
 		local ai_extension = ScriptUnit.extension(unit, "ai_system")
-		local animation_translation_scale = ai_extension.size_variation(ai_extension)/1
+		local animation_translation_scale = 1 / ai_extension.size_variation(ai_extension)
 
 		LocomotionUtils.set_animation_translation_scale(unit, Vector3(animation_translation_scale, animation_translation_scale, animation_translation_scale))
 
@@ -43,10 +43,6 @@ BTSpawningAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.spawn_last_pos = Vector3Box(POSITION_LOOKUP[unit])
 	blackboard.spawn_immovable_time = 0
-
-	if breed.allied then
-		blackboard.player_controller = Managers.player:local_player().player_unit
-	end
 
 	return 
 end
@@ -134,7 +130,7 @@ BTSpawningAction.run = function (self, unit, blackboard, t, dt)
 				if BUILD ~= "release" then
 					QuickDrawerStay:sphere(current_pos + Vector3.up(), 1, Colors.get("orange"))
 					QuickDrawerStay:vector(current_pos, Vector3.down(), Colors.get("orange"))
-					QuickDrawerStay:vector(current_pos, Vector3.down()*20, Colors.get("orange"))
+					QuickDrawerStay:vector(current_pos, Vector3.down() * 20, Colors.get("orange"))
 					Debug.world_sticky_text(current_pos, "BTSpawningAction couldn't find place to land.", Colors.get("orange"))
 				end
 
@@ -151,7 +147,7 @@ BTSpawningAction.run = function (self, unit, blackboard, t, dt)
 	if blackboard.spawn_landing_state == "falling" then
 		local fall_speed = locomotion_extension.current_velocity(locomotion_extension).z
 		local landing_destination = blackboard.landing_destination:unbox()
-		local next_height = current_pos.z + fall_speed*dt*2
+		local next_height = current_pos.z + fall_speed * dt * 2
 
 		if next_height < landing_destination.z then
 			local network_manager = Managers.state.network

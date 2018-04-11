@@ -63,7 +63,7 @@ ActionThrow._throw = function (self)
 	local av = current_action.angular_velocity
 	local angular_velocity = Vector3(av[1], av[2], av[3])
 	local angular_velocity_transformed = Matrix4x4.transform_without_translation(weapon_pose, angular_velocity)
-	local velocity = Vector3.normalize(Quaternion.forward(rotation) + Vector3(0, 0, current_action.uppety or 0.6))*speed + thrower_velocity*velocity_multiplier
+	local velocity = Vector3.normalize(Quaternion.forward(rotation) + Vector3(0, 0, current_action.uppety or 0.6)) * speed + thrower_velocity * velocity_multiplier
 	local proj_rotation = Unit.world_rotation(self.weapon_unit, 0)
 
 	if current_action.is_statue_and_needs_rotation_cause_reasons then
@@ -75,7 +75,7 @@ ActionThrow._throw = function (self)
 		proj_rotation = Quaternion.look(Vector3.normalize(Vector3.flat(POSITION_LOOKUP[owner_unit]) - Vector3.flat(position)))
 	end
 
-	local raycast_vector = (first_person_unit_pos + forward*1.2) - first_person_unit_pos
+	local raycast_vector = (first_person_unit_pos + forward * 1.2) - first_person_unit_pos
 	local length = Vector3.length(raycast_vector)
 	local direction = Vector3.normalize(raycast_vector)
 	local physics_world = World.get_data(self.world, "physics_world")

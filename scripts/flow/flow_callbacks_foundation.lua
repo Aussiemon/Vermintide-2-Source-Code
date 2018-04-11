@@ -289,7 +289,7 @@ function flow_callback_math_multiplication(params)
 	local factor_two = params.factor_two
 
 	return {
-		value = factor_one*factor_two
+		value = factor_one * factor_two
 	}
 end
 
@@ -298,7 +298,7 @@ function flow_callback_math_multiplication_vector3(params)
 	local float = params.float
 
 	return {
-		value = vector*float
+		value = vector * float
 	}
 end
 
@@ -309,7 +309,7 @@ function flow_callback_math_division(params)
 	fassert(divisor ~= 0, "Trying to divide by 0 in division flow node.")
 
 	return {
-		value = dividend/divisor
+		value = dividend / divisor
 	}
 end
 
@@ -661,7 +661,7 @@ function flow_callback_start_fade(params)
 	if mesh and material_name then
 		assert(Mesh.has_material(mesh, material_name), string.format("[flow_callback_start_fade] The material %s doesn't exist for mesh %s", mesh_name, material_name))
 
-		material = Mesh.material(mesh, material)
+		material = Mesh.material(mesh, material_name)
 	end
 
 	if mesh and material then

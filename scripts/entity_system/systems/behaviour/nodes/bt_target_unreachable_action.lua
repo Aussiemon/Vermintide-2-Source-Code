@@ -44,7 +44,7 @@ BTTargetUnreachableAction.run = function (self, unit, blackboard, t, dt)
 		local score = 0
 		local distance_enemy_and_target_sq = Vector3.distance_squared(target_position, test_position)
 
-		if distance_enemy_and_target_sq < reach_distance_squared*4 then
+		if distance_enemy_and_target_sq < reach_distance_squared * 4 then
 			score = distance_enemy_and_target_sq
 		else
 			local distance_point_sq = Vector3.distance_squared(test_position, position)

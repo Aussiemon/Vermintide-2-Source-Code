@@ -716,7 +716,7 @@ local background_widget_definitions = {
 					scroll_function = function (ui_scenegraph, ui_style, ui_content, input_service, scroll_axis)
 						local scroll_step = ui_content.scroll_step or 0.1
 						local current_scroll_value = ui_content.internal_scroll_value
-						current_scroll_value = current_scroll_value + scroll_step*-scroll_axis.y
+						current_scroll_value = current_scroll_value + scroll_step * -scroll_axis.y
 						ui_content.internal_scroll_value = math.clamp(current_scroll_value, 0, 1)
 
 						return 
@@ -1089,7 +1089,7 @@ local function create_checkbox_widget(text, scenegraph_id, base_offset)
 			debug_middle_line = {
 				offset = {
 					base_offset[1],
-					(base_offset[2] + CHECKBOX_WIDGET_SIZE[2]/2) - 1,
+					(base_offset[2] + CHECKBOX_WIDGET_SIZE[2] / 2) - 1,
 					base_offset[3] + 10
 				},
 				size = {
@@ -1269,7 +1269,15 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 					pass_type = "held",
 					style_id = "slider_box",
 					held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						local cursor = UIInverseScaleVectorToResolution(input_service.get(input_service, "cursor"))
+						local cursor = nil
+						local gamepad_active = Managers.input:is_device_active("gamepad")
+
+						if gamepad_active then
+							cursor = input_service.get(input_service, "cursor")
+						else
+							cursor = UIInverseScaleVectorToResolution(input_service.get(input_service, "cursor"))
+						end
+
 						local scenegraph_id = ui_content.scenegraph_id
 						local world_position = UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)
 						local size_x = ui_style.size[1]
@@ -1277,7 +1285,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 						local pos_start = world_position[1] + ui_style.offset[1]
 						local old_value = ui_content.internal_value
 						local cursor_x_norm = cursor_x - pos_start
-						local value = math.clamp(cursor_x_norm/size_x, 0, 1)
+						local value = math.clamp(cursor_x_norm / size_x, 0, 1)
 						ui_content.internal_value = value
 
 						if old_value ~= value and not ui_content.callback_on_release then
@@ -1298,20 +1306,20 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 						local internal_value = ui_content.internal_value
 						local min = ui_content.min
 						local max = ui_content.max
-						local real_value = math.round_with_precision(min + (max - min)*internal_value, ui_content.num_decimals or 0)
+						local real_value = math.round_with_precision(min + (max - min) * internal_value, ui_content.num_decimals or 0)
 						ui_content.value = real_value
 						ui_content.value_text = real_value
 						local slider_box_style = ui_style.slider_box
 						local slider_box_size = slider_box_style.size
 						local base_offset_x = slider_box_style.offset[1]
-						local size_x = slider_box_size[1]*internal_value
+						local size_x = slider_box_size[1] * internal_value
 						local slider_icon_style = ui_style.slider
 						local slider_icon_hover_style = ui_style.slider_hover
 						local slider_icon_offset = slider_icon_style.offset
 						local slider_icon_size = slider_icon_style.size
 						local slider_icon_x = math.max(0, math.min(size_x - slider_icon_size[1], slider_box_size[1] - slider_icon_size[1]))
-						slider_icon_style.offset[1] = (base_offset_x + size_x) - slider_icon_style.size[1]/2
-						slider_icon_hover_style.offset[1] = (slider_icon_style.offset[1] + slider_icon_size[1]/2) - slider_icon_hover_style.size[1]/2
+						slider_icon_style.offset[1] = (base_offset_x + size_x) - slider_icon_style.size[1] / 2
+						slider_icon_hover_style.offset[1] = (slider_icon_style.offset[1] + slider_icon_size[1] / 2) - slider_icon_hover_style.size[1] / 2
 
 						if ui_content.hotspot.is_hover or ui_content.altering_value then
 							ui_style.value_text.text_color = ui_style.value_text.hover_color
@@ -1582,7 +1590,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 			slider_box = {
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH + 30,
-					(base_offset[2] + SLIDER_WIDGET_SIZE[2]/2) - 4,
+					(base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2) - 4,
 					base_offset[3] + 10
 				},
 				size = {
@@ -1599,7 +1607,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 			slider_box_hotspot = {
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH + 19,
-					(base_offset[2] + SLIDER_WIDGET_SIZE[2]/2) - 13.5,
+					(base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2) - 13.5,
 					base_offset[3] + 10
 				},
 				size = {
@@ -1612,7 +1620,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH,
-					(base_offset[2] + SLIDER_WIDGET_SIZE[2]/2) - 13.5,
+					(base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2) - 13.5,
 					base_offset[3] + 15
 				},
 				size = {
@@ -1625,7 +1633,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH,
-					(base_offset[2] + SLIDER_WIDGET_SIZE[2]/2) - 12.5,
+					(base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2) - 12.5,
 					base_offset[3] + 15
 				},
 				size = {
@@ -1636,7 +1644,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 			input_field_background = {
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - 50 - 2,
-					(base_offset[2] + SLIDER_WIDGET_SIZE[2]/2) - (SLIDER_WIDGET_SIZE[2] - 10)/2,
+					(base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2) - (SLIDER_WIDGET_SIZE[2] - 10) / 2,
 					base_offset[3]
 				},
 				color = INPUT_FIELD_COLOR,
@@ -1648,7 +1656,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 			input_field_background_2 = {
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - 50,
-					(base_offset[2] + SLIDER_WIDGET_SIZE[2]/2) - (SLIDER_WIDGET_SIZE[2] - 10)/2,
+					(base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2) - (SLIDER_WIDGET_SIZE[2] - 10) / 2,
 					base_offset[3] + 1
 				},
 				color = {
@@ -1671,7 +1679,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				font_type = "hell_shark_masked",
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - 25,
-					(base_offset[2] + SLIDER_WIDGET_SIZE[2]/2) - (SLIDER_WIDGET_SIZE[2] - 10)/2 - 2,
+					(base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2) - (SLIDER_WIDGET_SIZE[2] - 10) / 2 - 2,
 					base_offset[3] + 2
 				},
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -1681,7 +1689,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 			debug_middle_line = {
 				offset = {
 					base_offset[1],
-					(base_offset[2] + SLIDER_WIDGET_SIZE[2]/2) - 1,
+					(base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2) - 1,
 					base_offset[3] + 10
 				},
 				size = {
@@ -1723,7 +1731,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				masked = true,
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH,
-					base_offset[2] + SLIDER_WIDGET_SIZE[2]/2 - 13.5,
+					base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2 - 13.5,
 					base_offset[3] + 1
 				},
 				size = {
@@ -1736,7 +1744,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				masked = true,
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH + 6,
-					base_offset[2] + SLIDER_WIDGET_SIZE[2]/2 - 17.5,
+					base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2 - 17.5,
 					base_offset[3]
 				},
 				size = {
@@ -1753,11 +1761,11 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 			left_arrow_hotspot = {
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH,
-					base_offset[2] + SLIDER_WIDGET_SIZE[2]/2 - 13.5,
+					base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2 - 13.5,
 					base_offset[3]
 				},
 				size = {
-					INPUT_FIELD_WIDTH/2,
+					INPUT_FIELD_WIDTH / 2,
 					27
 				}
 			},
@@ -1765,7 +1773,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				masked = true,
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - 19 - 52,
-					base_offset[2] + SLIDER_WIDGET_SIZE[2]/2 - 13.5,
+					base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2 - 13.5,
 					base_offset[3]
 				},
 				size = {
@@ -1782,7 +1790,7 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 				masked = true,
 				offset = {
 					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - 30 - 52 - 5,
-					base_offset[2] + SLIDER_WIDGET_SIZE[2]/2 - 17.5,
+					base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2 - 17.5,
 					base_offset[3]
 				},
 				size = {
@@ -1802,12 +1810,12 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 			},
 			right_arrow_hotspot = {
 				offset = {
-					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH/2,
-					base_offset[2] + SLIDER_WIDGET_SIZE[2]/2 - 13.5,
+					(base_offset[1] + SLIDER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH / 2,
+					base_offset[2] + SLIDER_WIDGET_SIZE[2] / 2 - 13.5,
 					base_offset[3]
 				},
 				size = {
-					INPUT_FIELD_WIDTH/2,
+					INPUT_FIELD_WIDTH / 2,
 					27
 				}
 			}
@@ -1888,7 +1896,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 		item_contents[i] = content
 	end
 
-	local selected_bg_y = item_size[2]*options_n
+	local selected_bg_y = item_size[2] * options_n
 	local pi = math.pi
 	local definition = {
 		element = {
@@ -2236,7 +2244,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				masked = true,
 				offset = {
 					(base_offset[1] + DROP_DOWN_WIDGET_SIZE[1]) - 31,
-					base_offset[2] + DROP_DOWN_WIDGET_SIZE[2]/2 - 7.5,
+					base_offset[2] + DROP_DOWN_WIDGET_SIZE[2] / 2 - 7.5,
 					base_offset[3] + 1
 				},
 				size = {
@@ -2249,7 +2257,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				masked = true,
 				offset = {
 					(base_offset[1] + DROP_DOWN_WIDGET_SIZE[1]) - 31,
-					base_offset[2] + DROP_DOWN_WIDGET_SIZE[2]/2 - 14 + 13,
+					base_offset[2] + DROP_DOWN_WIDGET_SIZE[2] / 2 - 14 + 13,
 					base_offset[3]
 				},
 				size = {
@@ -2262,7 +2270,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				masked = true,
 				offset = {
 					(base_offset[1] + DROP_DOWN_WIDGET_SIZE[1]) - 31,
-					(base_offset[2] + DROP_DOWN_WIDGET_SIZE[2]/2 - 14) - 12,
+					(base_offset[2] + DROP_DOWN_WIDGET_SIZE[2] / 2 - 14) - 12,
 					base_offset[3]
 				},
 				size = {
@@ -2278,7 +2286,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				dynamic_font = true,
 				font_type = "hell_shark_masked",
 				offset = {
-					(base_offset[1] + DROP_DOWN_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH/2,
+					(base_offset[1] + DROP_DOWN_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH / 2,
 					base_offset[2] + 2,
 					base_offset[3] + 3
 				},
@@ -2308,7 +2316,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 			debug_middle_line = {
 				offset = {
 					base_offset[1],
-					(base_offset[2] + DROP_DOWN_WIDGET_SIZE[2]/2) - 1,
+					(base_offset[2] + DROP_DOWN_WIDGET_SIZE[2] / 2) - 1,
 					base_offset[3] + 10
 				},
 				size = {
@@ -2635,7 +2643,7 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				masked = true,
 				offset = {
 					(base_offset[1] + STEPPER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH,
-					base_offset[2] + STEPPER_WIDGET_SIZE[2]/2 - 13.5,
+					base_offset[2] + STEPPER_WIDGET_SIZE[2] / 2 - 13.5,
 					base_offset[3] + 1
 				},
 				size = {
@@ -2648,7 +2656,7 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				masked = true,
 				offset = {
 					(base_offset[1] + STEPPER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH + 6,
-					base_offset[2] + STEPPER_WIDGET_SIZE[2]/2 - 17.5,
+					base_offset[2] + STEPPER_WIDGET_SIZE[2] / 2 - 17.5,
 					base_offset[3]
 				},
 				size = {
@@ -2665,11 +2673,11 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 			left_arrow_hotspot = {
 				offset = {
 					(base_offset[1] + STEPPER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH,
-					base_offset[2] + STEPPER_WIDGET_SIZE[2]/2 - 13.5,
+					base_offset[2] + STEPPER_WIDGET_SIZE[2] / 2 - 13.5,
 					base_offset[3]
 				},
 				size = {
-					INPUT_FIELD_WIDTH/2,
+					INPUT_FIELD_WIDTH / 2,
 					27
 				}
 			},
@@ -2677,7 +2685,7 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				masked = true,
 				offset = {
 					(base_offset[1] + STEPPER_WIDGET_SIZE[1]) - 19,
-					base_offset[2] + STEPPER_WIDGET_SIZE[2]/2 - 13.5,
+					base_offset[2] + STEPPER_WIDGET_SIZE[2] / 2 - 13.5,
 					base_offset[3] + 1
 				},
 				size = {
@@ -2690,7 +2698,7 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				masked = true,
 				offset = {
 					(base_offset[1] + STEPPER_WIDGET_SIZE[1]) - 30 - 5,
-					base_offset[2] + STEPPER_WIDGET_SIZE[2]/2 - 17.5,
+					base_offset[2] + STEPPER_WIDGET_SIZE[2] / 2 - 17.5,
 					base_offset[3]
 				},
 				size = {
@@ -2706,12 +2714,12 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 			},
 			right_arrow_hotspot = {
 				offset = {
-					(base_offset[1] + STEPPER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH/2,
-					base_offset[2] + STEPPER_WIDGET_SIZE[2]/2 - 13.5,
+					(base_offset[1] + STEPPER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH / 2,
+					base_offset[2] + STEPPER_WIDGET_SIZE[2] / 2 - 13.5,
 					base_offset[3]
 				},
 				size = {
-					INPUT_FIELD_WIDTH/2,
+					INPUT_FIELD_WIDTH / 2,
 					27
 				}
 			},
@@ -2735,7 +2743,7 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				dynamic_font = true,
 				font_type = "hell_shark_masked",
 				offset = {
-					(base_offset[1] + STEPPER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH/2,
+					(base_offset[1] + STEPPER_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH / 2,
 					base_offset[2] + 2,
 					base_offset[3]
 				},
@@ -2746,7 +2754,7 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 			debug_middle_line = {
 				offset = {
 					base_offset[1],
-					(base_offset[2] + STEPPER_WIDGET_SIZE[2]/2) - 1,
+					(base_offset[2] + STEPPER_WIDGET_SIZE[2] / 2) - 1,
 					base_offset[3] + 10
 				},
 				size = {
@@ -2874,7 +2882,7 @@ local function create_title_widget(text, optional_font_size, optional_text_color
 			debug_middle_line = {
 				offset = {
 					base_offset[1],
-					(base_offset[2] + TITLE_WIDGET_SIZE[2]/2) - 1,
+					(base_offset[2] + TITLE_WIDGET_SIZE[2] / 2) - 1,
 					base_offset[3] + 10
 				},
 				size = {
@@ -3044,7 +3052,7 @@ local function create_text_link_widget(text, url, optional_font_size, optional_t
 			debug_middle_line = {
 				offset = {
 					base_offset[1],
-					(base_offset[2] + TEXT_LINK_WIDGET_SIZE[2]/2) - 1,
+					(base_offset[2] + TEXT_LINK_WIDGET_SIZE[2] / 2) - 1,
 					base_offset[3] + 10
 				},
 				size = {
@@ -3251,7 +3259,7 @@ local function create_option_widget(ui_renderer, text, options, selected_option,
 	style.debug_middle_line = {
 		offset = {
 			base_offset[1],
-			(base_offset[2] + OPTION_WIDGET_SIZE[2]/2) - 1,
+			(base_offset[2] + OPTION_WIDGET_SIZE[2] / 2) - 1,
 			base_offset[3] + 10
 		},
 		size = {
@@ -3333,7 +3341,7 @@ local function create_option_widget(ui_renderer, text, options, selected_option,
 		content[option_text_id] = option_text
 
 		if style[option_text_id].upper_case then
-			option_text = string.upper(option_text)
+			option_text = TextToUpper(option_text)
 		end
 
 		local font, scaled_font_size = UIFontByResolution(style[option_text_id])
@@ -3443,9 +3451,9 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 						end
 
 						if ui_content.active then
-							ui_content.active_t = ui_content.active_t + ui_renderer.dt*2.5
+							ui_content.active_t = ui_content.active_t + ui_renderer.dt * 2.5
 							local i = math.sirp(0, 1, ui_content.active_t)
-							ui_style.selected_rect.color[1] = i*255
+							ui_style.selected_rect.color[1] = i * 255
 						else
 							ui_style.selected_rect.color[1] = 255
 						end
@@ -3569,7 +3577,7 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 			selected_rect = {
 				offset = {
 					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH - 2,
-					(base_offset[2] + KEYBIND_WIDGET_SIZE[2]/2) - (KEYBIND_WIDGET_SIZE[2] - 10)/2,
+					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
 					base_offset[3] + 2
 				},
 				size = {
@@ -3581,7 +3589,7 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 			debug_middle_line = {
 				offset = {
 					base_offset[1],
-					(base_offset[2] + KEYBIND_WIDGET_SIZE[2]/2) - 1,
+					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - 1,
 					base_offset[3] + 10
 				},
 				size = {
@@ -3610,7 +3618,7 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 			input_field_background = {
 				offset = {
 					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH,
-					(base_offset[2] + KEYBIND_WIDGET_SIZE[2]/2) - (KEYBIND_WIDGET_SIZE[2] - 10)/2,
+					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
 					base_offset[3] + 1
 				},
 				color = INPUT_FIELD_COLOR,
@@ -3622,7 +3630,7 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 			input_field_background_2 = {
 				offset = {
 					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH - 2,
-					(base_offset[2] + KEYBIND_WIDGET_SIZE[2]/2) - (KEYBIND_WIDGET_SIZE[2] - 10)/2,
+					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
 					base_offset[3] + 2
 				},
 				color = {
@@ -3887,8 +3895,8 @@ SettingsWidgetTypeTemplate = {
 			local min = content.min
 			local max = content.max
 			local diff = max - min
-			local total_step = diff*10^num_decimals
-			local step = total_step/1
+			local total_step = diff * 10^num_decimals
+			local step = 1 / total_step
 			local input_been_made = false
 
 			if input_service.get(input_service, "move_left_hold") then
@@ -3906,11 +3914,11 @@ SettingsWidgetTypeTemplate = {
 
 				if on_cooldown_last_frame then
 					input_cooldown_multiplier = math.max(input_cooldown_multiplier - 0.1, 0.1)
-					content.input_cooldown = math.ease_in_exp(input_cooldown_multiplier)*0.2
+					content.input_cooldown = 0.2 * math.ease_in_exp(input_cooldown_multiplier)
 					content.input_cooldown_multiplier = input_cooldown_multiplier
 				else
 					input_cooldown_multiplier = 1
-					content.input_cooldown = math.ease_in_exp(input_cooldown_multiplier)*0.2
+					content.input_cooldown = 0.2 * math.ease_in_exp(input_cooldown_multiplier)
 					content.input_cooldown_multiplier = input_cooldown_multiplier
 				end
 

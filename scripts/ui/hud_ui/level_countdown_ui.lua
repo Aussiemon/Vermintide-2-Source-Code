@@ -146,7 +146,7 @@ LevelCountdownUI.update_enter_game_counter = function (self, start_time, max_sta
 		if color_timer then
 			local total_color_time = 0.5
 			color_timer = math.min(color_timer + dt, total_color_time)
-			local color_progress = color_timer/total_color_time
+			local color_progress = color_timer / total_color_time
 			self.color_timer = color_timer
 
 			Colors.lerp_color_tables(colors.normal, colors.selected, color_progress, widget_style.timer_text.text_color)

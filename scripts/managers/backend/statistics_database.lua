@@ -15,7 +15,7 @@ local function convert_from_backend(raw_value, database_type)
 			local hex_value = tonumber(hex_char, 16)
 
 			for i = 4, 1, -1 do
-				local hex_temp = hex_value/2
+				local hex_temp = hex_value / 2
 				hex_value = floor(hex_temp)
 				local new_value_n = value_n + i
 				value[new_value_n] = (hex_value ~= hex_temp and true) or false
@@ -41,13 +41,13 @@ local function convert_to_backend(value, database_type)
 		local raw_value = ""
 		local value_n = #value
 
-		assert(value_n%4 == 0, "Incorrectly stored statistic")
+		assert(value_n % 4 == 0, "Incorrectly stored statistic")
 
 		for i = 1, value_n, 4 do
 			local dec_value = 0
 
 			for j = 0, 3, 1 do
-				dec_value = dec_value*2 + ((value[i + j] == true and 1) or 0)
+				dec_value = dec_value * 2 + ((value[i + j] == true and 1) or 0)
 			end
 
 			local hex_value = string.format("%X", dec_value)
@@ -183,6 +183,19 @@ local function networkified_path(path)
 	return networkified_path
 end
 
+local function cap_sync_value(value)
+	local max_size = 65535
+
+	if max_size < value then
+		Application.warning(string.format("Trying to sync value exceeding maximum size %d > %d", value, max_size))
+		print(Script.callstack())
+
+		value = max_size
+	end
+
+	return value
+end
+
 local function sync_stat(peer_id, stat_peer_id, stat_local_player_id, path, path_step, stat)
 	if stat.value then
 		if stat.sync_on_hot_join then
@@ -191,7 +204,7 @@ local function sync_stat(peer_id, stat_peer_id, stat_local_player_id, path, path
 
 			local networkified_path = networkified_path(path)
 
-			RPC.rpc_sync_statistics_number(peer_id, stat_peer_id, stat_local_player_id, networkified_path, stat.value, stat.persistent_value or 0)
+			RPC.rpc_sync_statistics_number(peer_id, stat_peer_id, stat_local_player_id, networkified_path, cap_sync_value(stat.value), cap_sync_value(stat.persistent_value or 0))
 		end
 	else
 		for stat_name, stat_definition in pairs(stat) do
@@ -214,7 +227,7 @@ local function sync_stat_to_server(network_transmit, stat_peer_id, stat_local_pl
 
 			local networkified_path = networkified_path(path)
 
-			network_transmit.send_rpc_server(network_transmit, "rpc_sync_statistics_number", stat_peer_id, stat_local_player_id, networkified_path, stat.value, stat.persistent_value)
+			network_transmit.send_rpc_server(network_transmit, "rpc_sync_statistics_number", stat_peer_id, stat_local_player_id, networkified_path, cap_sync_value(stat.value), cap_sync_value(stat.persistent_value))
 		end
 	else
 		for stat_name, stat_definition in pairs(stat) do
@@ -487,12 +500,12 @@ local function debug_draw_stat(name, stat, indent_level)
 
 	if stat_type == "number" then
 		if math.ceil(stat) == stat then
-			Debug.text("%s%s = %d", string.rep(" ", indent_level*2), name, stat)
+			Debug.text("%s%s = %d", string.rep(" ", indent_level * 2), name, stat)
 		else
-			Debug.text("%s%s = %.2f", string.rep(" ", indent_level*2), name, stat)
+			Debug.text("%s%s = %.2f", string.rep(" ", indent_level * 2), name, stat)
 		end
 	elseif stat_type == "table" then
-		Debug.text("%s%s", string.rep(" ", indent_level*2), name, stat)
+		Debug.text("%s%s", string.rep(" ", indent_level * 2), name, stat)
 
 		for k, v in pairs(stat) do
 			debug_draw_stat(k, v, indent_level + 1)

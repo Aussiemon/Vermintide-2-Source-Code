@@ -150,7 +150,7 @@ BTWarpfireThrowerShootAction.run = function (self, unit, blackboard, t, dt)
 					if self._init_attack(self, unit, target_unit, blackboard, action) then
 						self._attack_fire(self, unit, warpfire_data, action, blackboard, t)
 
-						blackboard.warpfire_face_timer = t + blackboard.target_dist*0.08
+						blackboard.warpfire_face_timer = t + blackboard.target_dist * 0.08
 						local unit_position = POSITION_LOOKUP[unit]
 						local to_target = Vector3.flat(POSITION_LOOKUP[target_unit] - unit_position)
 						local to_target_normalized = Vector3.normalize(to_target)
@@ -176,7 +176,7 @@ BTWarpfireThrowerShootAction.run = function (self, unit, blackboard, t, dt)
 					local realign, new_target = self._aim_at_target(self, unit, target_unit, attack_pattern_data, blackboard, action, t, dt)
 
 					if new_target then
-						blackboard.warpfire_face_timer = t + blackboard.target_dist*0.08
+						blackboard.warpfire_face_timer = t + blackboard.target_dist * 0.08
 					end
 
 					if realign then
@@ -215,13 +215,13 @@ BTWarpfireThrowerShootAction._move_warpfire_blob = function (self, unit, warpfir
 		local warpfire_follow_target_speed = action.warpfire_follow_target_speed
 
 		if close_attack_range < target_dist then
-			lerp_value = math.min(dt*warpfire_follow_target_speed, 1)
+			lerp_value = math.min(dt * warpfire_follow_target_speed, 1)
 			wanted_position = target_position
 		else
-			lerp_value = math.min(dt*warpfire_follow_target_speed*6, 1)
+			lerp_value = math.min(dt * warpfire_follow_target_speed * 6, 1)
 			local unit_position = POSITION_LOOKUP[unit]
 			local unit_to_target = Vector3.normalize(target_position - unit_position)
-			wanted_position = unit_position + unit_to_target*close_attack_range
+			wanted_position = unit_position + unit_to_target * close_attack_range
 		end
 
 		local new_blob_position = Vector3.lerp(blob_position, wanted_position, lerp_value)
@@ -262,10 +262,10 @@ BTWarpfireThrowerShootAction._start_align_towards_target = function (self, unit,
 	return 
 end
 local PI = math.pi
-local TWO_PI = PI*2
-local ACCELERATION = PI*24
-local DECELERATION = PI*6
-local STOP_ANGLE = PI/32
+local TWO_PI = PI * 2
+local ACCELERATION = PI * 24
+local DECELERATION = PI * 6
+local STOP_ANGLE = PI / 32
 local AIM_PIVOT_HEIGHT = 0.7
 BTWarpfireThrowerShootAction._remaining_angle = function (self, from, to)
 	local from_forward = Quaternion.forward(from)
@@ -273,9 +273,9 @@ BTWarpfireThrowerShootAction._remaining_angle = function (self, from, to)
 	local from_angle = math.atan2(from_forward.y, from_forward.x)
 	local to_angle = math.atan2(to_forward.y, to_forward.x)
 	local pi = PI
-	local pi2 = pi*2
+	local pi2 = pi * 2
 	local angle_diff = to_angle - from_angle
-	local normalized_angle_diff = (angle_diff%pi2 + pi)%pi2 - pi
+	local normalized_angle_diff = (angle_diff % pi2 + pi) % pi2 - pi
 
 	return normalized_angle_diff
 end
@@ -297,27 +297,27 @@ BTWarpfireThrowerShootAction._update_align_towards_target = function (self, unit
 	local speed = attack_pattern_data.align_speed
 
 	if wanted_speed == 0 and 0 < speed then
-		speed = math.max(speed - DECELERATION*dt, 0)
+		speed = math.max(speed - DECELERATION * dt, 0)
 	elseif wanted_speed == 0 and speed < 0 then
-		speed = math.min(speed + DECELERATION*dt, 0)
+		speed = math.min(speed + DECELERATION * dt, 0)
 	elseif speed < wanted_speed and 0 < wanted_speed then
-		speed = math.min(speed + ACCELERATION*dt, wanted_speed)
+		speed = math.min(speed + ACCELERATION * dt, wanted_speed)
 	elseif wanted_speed < speed and wanted_speed < 0 then
-		speed = math.max(speed - ACCELERATION*dt, wanted_speed)
+		speed = math.max(speed - ACCELERATION * dt, wanted_speed)
 	elseif speed < wanted_speed and wanted_speed < 0 then
-		speed = math.min(speed + DECELERATION*dt, wanted_speed)
+		speed = math.min(speed + DECELERATION * dt, wanted_speed)
 	else
-		speed = math.max(speed - ACCELERATION*dt, wanted_speed)
+		speed = math.max(speed - ACCELERATION * dt, wanted_speed)
 	end
 
 	attack_pattern_data.align_speed = speed
-	local angle = speed*dt
+	local angle = speed * dt
 	local new_rot = Quaternion.multiply(current_rotation, Quaternion(Vector3.up(), angle))
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension.set_wanted_rotation(locomotion_extension, new_rot)
 
-	local lerp_value = math.min(dt*3, 1)
+	local lerp_value = math.min(dt * 3, 1)
 	local new_shoot_direction = Vector3.lerp(attack_pattern_data.shoot_direction_box:unbox(), Quaternion.forward(new_rot), lerp_value)
 
 	attack_pattern_data.shoot_direction_box:store(new_shoot_direction)
@@ -340,8 +340,8 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 	local warpfire_unit = attack_pattern_data.warpfire_gun_unit
 	local forward = Vector3.flat(Quaternion.forward(Unit.world_rotation(warpfire_unit, muzzle_node)))
 	local forward_normalized = Vector3.normalize(forward)
-	local aim_pos = muzzle_pos + forward_normalized*action.close_attack_range
-	muzzle_pos = muzzle_pos - forward_normalized*0.5
+	local aim_pos = muzzle_pos + forward_normalized * action.close_attack_range
+	muzzle_pos = muzzle_pos - forward_normalized * 0.5
 	local physics_world = blackboard.physics_world
 	local radius = action.hit_radius
 	local max_hits = 10
@@ -420,10 +420,10 @@ BTWarpfireThrowerShootAction._aim_at_target = function (self, unit, target_unit,
 	local wanted_aim_rotation = Quaternion.look(wanted_aim_position_offset, Vector3.up())
 	local current_aim_rotation = attack_pattern_data.current_aim_rotation:unbox()
 	local distance_to_target = Vector3.distance(self_pos, target_position)
-	local aim_rotation_modifier = (distance_to_target < aim_rotation_override_distance and aim_rotation_override_speed_multiplier) or (target_is_dodging and aim_rotation_dodge_multipler) or math.max(distance_to_target/action.close_attack_range - 1, 0.1)
-	local upper_body_rotation_speed = action.radial_speed_upper_body_shooting*math.min(aim_rotation_modifier, aim_rotation_override_speed_multiplier)
+	local aim_rotation_modifier = (distance_to_target < aim_rotation_override_distance and aim_rotation_override_speed_multiplier) or (target_is_dodging and aim_rotation_dodge_multipler) or math.max(1 - distance_to_target / action.close_attack_range, 0.1)
+	local upper_body_rotation_speed = action.radial_speed_upper_body_shooting * math.min(aim_rotation_modifier, aim_rotation_override_speed_multiplier)
 	local lerped_rotation = self._rotate_from_to(self, current_aim_rotation, wanted_aim_rotation, upper_body_rotation_speed, dt)
-	local aim_position = pivot + Quaternion.forward(lerped_rotation)*Vector3.length(wanted_aim_position_offset)
+	local aim_position = pivot + Quaternion.forward(lerped_rotation) * Vector3.length(wanted_aim_position_offset)
 
 	attack_pattern_data.current_aim_rotation:store(lerped_rotation)
 
@@ -465,10 +465,10 @@ BTWarpfireThrowerShootAction._aim_at_target = function (self, unit, target_unit,
 end
 BTWarpfireThrowerShootAction._rotate_from_to = function (self, from, to, max_angle_speed, dt)
 	local inner_product = Quaternion.dot(to, from)
-	local angle_difference = math.acos(math.clamp(inner_product, -1, 1))*2
-	local max_delta = max_angle_speed*dt
-	local lerp_t = (angle_difference == 0 and 1) or math.min(max_delta/angle_difference, 1)
-	local normalized_angle_diff = math.abs((angle_difference%TWO_PI + PI)%TWO_PI - PI)
+	local angle_difference = 2 * math.acos(math.clamp(inner_product, -1, 1))
+	local max_delta = max_angle_speed * dt
+	local lerp_t = (angle_difference == 0 and 1) or math.min(max_delta / angle_difference, 1)
+	local normalized_angle_diff = math.abs((angle_difference % TWO_PI + PI) % TWO_PI - PI)
 
 	return Quaternion.lerp(from, to, lerp_t), math.max(normalized_angle_diff - max_delta, 0)
 end
@@ -476,9 +476,9 @@ BTWarpfireThrowerShootAction._calculate_wanted_target_position = function (self,
 	local unit_position = Unit.world_position(unit, Unit.node(unit, "c_spine"))
 	local target_position = POSITION_LOOKUP[target_unit] + Vector3.up()
 	local unit_to_target = target_position - unit_position
-	local mid_pos = unit_position + unit_to_target*0.5
+	local mid_pos = unit_position + unit_to_target * 0.5
 	local length = Vector3.length(target_position - unit_position)
-	mid_pos.z = mid_pos.z + length*0.01
+	mid_pos.z = mid_pos.z + length * 0.01
 
 	if length < 2 then
 		mid_pos = target_position
@@ -534,7 +534,7 @@ BTWarpfireThrowerShootAction._create_warpfire_blob = function (self, unit, data,
 	warpfire_data.blob_unit = damage_blob_unit
 	warpfire_data.blob_extension = damage_blob_extension
 	local length = Vector3.length(target_position - unit_position)
-	local wait_time = length/10
+	local wait_time = length / 10
 
 	damage_blob_extension.start_placing_blobs(damage_blob_extension, wait_time, t)
 
@@ -545,11 +545,11 @@ BTWarpfireThrowerShootAction._calculate_cylinder_collision = function (self, act
 	local height = action.bot_threat_height
 	local offset_up = action.bot_threat_offset_up
 	local offset_forward = action.bot_threat_offset_forward
-	local half_height = height*0.5
+	local half_height = height * 0.5
 	local size = Vector3(radius, radius, half_height)
 	local forward = Quaternion.forward(self_rot)
 	local up = Quaternion.up(self_rot)
-	local cylinder_center = self_pos + forward*offset_forward + up*(half_height + offset_up)
+	local cylinder_center = self_pos + forward * offset_forward + up * (half_height + offset_up)
 
 	return cylinder_center, size
 end

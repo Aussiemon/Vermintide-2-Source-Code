@@ -33,10 +33,10 @@ PlayerCharacterStateGrabbedByPackMaster.on_enter = function (self, unit, input, 
 	local packmaster_unit = status_extension.get_pack_master_grabber(status_extension)
 	local packmaster_unit_position = position_lookup[packmaster_unit]
 	local position = position_lookup[unit]
-	local num_initial_crumbs = self.bread_crumb_trail_n/2
+	local num_initial_crumbs = self.bread_crumb_trail_n / 2
 
 	for i = 1, num_initial_crumbs, 1 do
-		self.bread_crumb_trail[i]:store(Vector3.lerp(position, packmaster_unit_position, i/num_initial_crumbs))
+		self.bread_crumb_trail[i]:store(Vector3.lerp(position, packmaster_unit_position, i / num_initial_crumbs))
 	end
 
 	self.move_target_index = 1
@@ -294,19 +294,19 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 		self.bread_crumb_trail_timer = t + 0.4
 
 		if self.store_index == self.move_target_index then
-			self.move_target_index = (self.store_index + self.bread_crumb_trail_n/2)%self.bread_crumb_trail_n + 1
+			self.move_target_index = (self.store_index + self.bread_crumb_trail_n / 2) % self.bread_crumb_trail_n + 1
 
 			self.locomotion_extension:teleport_to(self.bread_crumb_trail[self.move_target_index]:unbox())
 		end
 
 		self.bread_crumb_trail[self.store_index]:store(packmaster_unit_position)
 
-		self.store_index = self.store_index%self.bread_crumb_trail_n + 1
+		self.store_index = self.store_index % self.bread_crumb_trail_n + 1
 	end
 
 	local position = position_lookup[unit]
 	local wanted_distance = self.desired_distance
-	local wanted_distance_sq = wanted_distance*wanted_distance
+	local wanted_distance_sq = wanted_distance * wanted_distance
 	local best_crumb_position = nil
 	local best_crumb_distance_sq = math.huge
 
@@ -322,16 +322,16 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 	end
 
 	local direction = Vector3.normalize(best_crumb_position - packmaster_unit_position)
-	local wanted_position = packmaster_unit_position + direction*wanted_distance
+	local wanted_position = packmaster_unit_position + direction * wanted_distance
 	local breed = Unit.get_data(packmaster_unit, "breed")
 	local packmaster_speed = breed.walk_speed
 	local distance_sq = Vector3.distance_squared(position, packmaster_unit_position)
 	local distance_sq_from_desired = distance_sq - wanted_distance_sq
-	local speed_factor_from_distance = packmaster_speed*0.9 + distance_sq_from_desired*0.4
+	local speed_factor_from_distance = packmaster_speed * 0.9 + distance_sq_from_desired * 0.4
 	local to_bread_crumb_vector = wanted_position - position
 	local to_bread_crumb_direction = Vector3.normalize(to_bread_crumb_vector)
 
-	self.locomotion_extension:set_wanted_velocity(to_bread_crumb_direction*speed_factor_from_distance)
+	self.locomotion_extension:set_wanted_velocity(to_bread_crumb_direction * speed_factor_from_distance)
 	Vector3.set_z(to_bread_crumb_direction, 0)
 
 	local rotation_wanted = Quaternion.look(-to_bread_crumb_direction)
@@ -350,7 +350,7 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 	if script_data.debug_ai_movement then
 		QuickDrawer:line(position, wanted_position)
 		QuickDrawer:sphere(position, 0.2, Colors.get("magenta"))
-		QuickDrawer:sphere(wanted_position + Vector3.up()*0.4, 0.2, Colors.get("magenta"))
+		QuickDrawer:sphere(wanted_position + Vector3.up() * 0.4, 0.2, Colors.get("magenta"))
 
 		for i = 1, self.bread_crumb_trail_n, 1 do
 			local bread_crumb_position = self.bread_crumb_trail[i]:unbox()

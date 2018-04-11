@@ -1,3 +1,11 @@
+-- Decompilation Error: _run_step(_unwarp_loops, node, repeat_until=True)
+
+-- Decompilation Error: _run_step(_unwarp_expressions, node)
+
+-- Decompilation Error: _run_step(_unwarp_ifs, node)
+
+-- Decompilation Error: _glue_flows(node)
+
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
 -- WARNING: Error occurred during decompilation.
@@ -263,7 +271,7 @@ local directions = {
 			0,
 			0
 		},
-		rot = math.pi/2
+		rot = math.pi / 2
 	},
 	{
 		up = {
@@ -271,7 +279,7 @@ local directions = {
 			1,
 			0
 		},
-		rot = math.pi/2
+		rot = math.pi / 2
 	},
 	{
 		up = {
@@ -279,7 +287,7 @@ local directions = {
 			1,
 			0
 		},
-		rot = -math.pi/2
+		rot = -math.pi / 2
 	},
 	{
 		up = {
@@ -287,7 +295,7 @@ local directions = {
 			0,
 			0
 		},
-		rot = -math.pi/2
+		rot = -math.pi / 2
 	},
 	{
 		up = {
@@ -303,7 +311,7 @@ local directions = {
 			0,
 			1
 		},
-		rot = math.pi/2
+		rot = math.pi / 2
 	},
 	{
 		up = {
@@ -311,7 +319,7 @@ local directions = {
 			0,
 			1
 		},
-		rot = -math.pi/2
+		rot = -math.pi / 2
 	},
 	{
 		up = {
@@ -627,9 +635,9 @@ DiceRoller._update_glow = function (self, dt)
 
 	for _, data in pairs(self._glow_dice) do
 		data.time = data.time + dt
-		local dist = math.min(1, data.time*duration)
+		local dist = math.min(1, data.time * duration)
 		local scale = math.sirp(0, 1, dist)
-		local emissive = target_emissive/scale
+		local emissive = target_emissive / scale
 
 		set_emissive(data.unit, emissive)
 	end
@@ -677,7 +685,7 @@ DiceRoller.roll_dices = function (self)
 		local data = dice_simulation_settings[i]
 		local dice_type = data.dice_type
 		local unit_name = unit_names[dice_type] .. "_no_physics"
-		local initial_position = data.initial_position:unbox()*SCALAR
+		local initial_position = data.initial_position:unbox() * SCALAR
 		local initial_rotation = data.initial_rotation:unbox()
 		local dice_unit = World.spawn_unit(world, unit_name, initial_position, initial_rotation)
 
@@ -711,7 +719,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 	for i = 1, num_dice, 1 do
 		local valid_pos = false
-		local initial_position = Vector3(16, 0, 0) + Vector3(math.random()/20, math.random()/20, 0.07)*100
+		local initial_position = Vector3(16, 0, 0) + Vector3(math.random() / 20, math.random() / 20, 0.07) * 100
 
 		for j = 1, #initial_positions, 1 do
 
@@ -730,7 +738,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 				-- decompilation error in this vicinity
 				--- BLOCK #2 59-77, warpins: 1 ---
 				valid_pos = false
-				initial_position = initial_position + Vector3(math.random(-1, 1)/20, math.random(-1, 1)/20, 0)*50
+				initial_position = initial_position + Vector3(math.random(-1, 1) / 20, math.random(-1, 1) / 20, 0) * 50
 				--- END OF BLOCK #2 ---
 
 
@@ -755,7 +763,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 			-- decompilation error in this vicinity
 			--- BLOCK #2 59-77, warpins: 1 ---
 			valid_pos = false
-			initial_position = initial_position + Vector3(math.random(-1, 1)/20, math.random(-1, 1)/20, 0)*50
+			initial_position = initial_position + Vector3(math.random(-1, 1) / 20, math.random(-1, 1) / 20, 0) * 50
 			--- END OF BLOCK #2 ---
 
 
@@ -810,7 +818,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 		Unit.set_unit_visibility(dice_unit, false)
 		Actor.wake_up(actor)
-		Actor.set_velocity(actor, Vector3(-0.25, -0.5, -0.07)*65)
+		Actor.set_velocity(actor, Vector3(-0.25, -0.5, -0.07) * 65)
 		--- END OF BLOCK #0 ---
 
 		slot12 = if success then
@@ -1517,14 +1525,14 @@ DiceRoller.update = function (self, dt)
 		local positions = data.positions
 		local rotations = data.rotations
 		local total_positions_rotations = #positions
-		local total_time = total_positions_rotations*0.016666666666666666
-		local percentage_through_simulation = roll_time/total_time
-		local progress = math.min(percentage_through_simulation*total_positions_rotations, total_positions_rotations)
+		local total_time = total_positions_rotations * 0.016666666666666666
+		local percentage_through_simulation = roll_time / total_time
+		local progress = math.min(percentage_through_simulation * total_positions_rotations, total_positions_rotations)
 		local lower_index = math.max(math.floor(progress), 1)
 		local upper_index = math.min(math.max(math.ceil(progress), 1), total_positions_rotations)
 		local lerp_value = progress - lower_index
-		local lower_position = (positions[lower_index]:unbox() - offset)*SCALAR + offset
-		local upper_position = (positions[upper_index]:unbox() - offset)*SCALAR + offset
+		local lower_position = (positions[lower_index]:unbox() - offset) * SCALAR + offset
+		local upper_position = (positions[upper_index]:unbox() - offset) * SCALAR + offset
 		local new_position = Vector3.lerp(lower_position, upper_position, lerp_value)
 		local lower_rotation = rotations[lower_index]:unbox()
 		local upper_rotation = rotations[upper_index]:unbox()
@@ -2319,7 +2327,7 @@ if Development.parameter("dice_chance_simulation") then
 
 			-- decompilation error in this vicinity
 			--- BLOCK #1 306-315, warpins: 1 ---
-			successes[i] = math.round_with_precision(successes[i]/num_simulations*100, 3) .. "%"
+			successes[i] = math.round_with_precision(successes[i] / num_simulations * 100, 3) .. "%"
 			--- END OF BLOCK #1 ---
 
 			FLOW; TARGET BLOCK #2

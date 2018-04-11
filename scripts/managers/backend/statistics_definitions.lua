@@ -49,28 +49,19 @@ player.dynamic_objects_destroyed = {
 	value = 0,
 	database_name = "dynamic_objects_destroyed"
 }
-player.complete_level_bright_wizard = {
-	value = 0,
-	database_name = "complete_level_bright_wizard"
-}
-player.complete_level_wood_elf = {
-	value = 0,
-	database_name = "complete_level_wood_elf"
-}
-player.complete_level_empire_soldier = {
-	value = 0,
-	database_name = "complete_level_empire_soldier"
-}
-player.complete_level_witch_hunter = {
-	value = 0,
-	database_name = "complete_level_witch_hunter"
-}
-player.complete_level_dwarf_ranger = {
-	value = 0,
-	database_name = "complete_level_dwarf_ranger"
-}
+player.completed_levels_bright_wizard = {}
+player.completed_levels_wood_elf = {}
+player.completed_levels_empire_soldier = {}
+player.completed_levels_witch_hunter = {}
+player.completed_levels_dwarf_ranger = {}
 player.collected_grimoires = {}
 player.collected_tomes = {}
+player.played_levels_quickplay = {}
+player.last_played_level_id = {
+	value = 0,
+	database_name = "last_played_level_id",
+	sync_to_server = true
+}
 player.kills_total = {
 	value = 0,
 	sync_on_hot_join = true
@@ -86,6 +77,10 @@ player.completed_levels_difficulty = {}
 player.crafted_items = {
 	value = 0,
 	database_name = "crafted_items"
+}
+player.salvaged_items = {
+	value = 0,
+	database_name = "salvaged_items"
 }
 player.lorebook_unlocks = {
 	database_name = "lorebook_unlocks",
@@ -129,8 +124,32 @@ for level_key, level in pairs(LevelSettings) do
 			value = 0,
 			sync_on_hot_join = true,
 			sync_to_server = true,
-			database_name = level_key
+			database_name = "completed_levels_" .. level_key
 		}
+		player.played_levels_quickplay[level_key] = {
+			value = 0,
+			sync_to_server = true,
+			database_name = "played_levels_quickplay_" .. level_key
+		}
+		local heroes = {
+			"bright_wizard",
+			"wood_elf",
+			"empire_soldier",
+			"witch_hunter",
+			"dwarf_ranger"
+		}
+
+		for _, hero in ipairs(heroes) do
+			local key = "completed_levels_" .. hero
+			local t = player[key]
+			t[level_key] = {
+				value = 0,
+				sync_on_hot_join = true,
+				sync_to_server = true,
+				database_name = key .. "_" .. level_key
+			}
+		end
+
 		local level_difficulty_name = level_key .. "_difficulty_completed"
 		LevelDifficultyDBNames[level_key] = level_difficulty_name
 		player.completed_levels_difficulty[level_difficulty_name] = {

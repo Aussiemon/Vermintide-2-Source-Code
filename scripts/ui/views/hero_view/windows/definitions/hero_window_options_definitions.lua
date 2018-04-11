@@ -5,8 +5,8 @@ local window_size = window_default_settings.size
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
 local game_option_size = {
-	window_size[1] - window_frame_width*2,
-	(window_size[2] - window_frame_height*2)/3.5
+	window_size[1] - window_frame_width * 2,
+	(window_size[2] - window_frame_height * 2) / 3.5
 }
 local scenegraph_definition = {
 	root = {
@@ -133,7 +133,7 @@ local scenegraph_definition = {
 		parent = "hero_info_bg",
 		horizontal_alignment = "right",
 		size = {
-			window_size[1]/2,
+			window_size[1] / 2,
 			35
 		},
 		position = {
@@ -147,7 +147,7 @@ local scenegraph_definition = {
 		parent = "prestige_button",
 		horizontal_alignment = "left",
 		size = {
-			window_size[1]/2,
+			window_size[1] / 2,
 			35
 		},
 		position = {
@@ -273,12 +273,12 @@ local scenegraph_definition = {
 		parent = "career_name",
 		horizontal_alignment = "left",
 		size = {
-			window_size[1]/2,
+			window_size[1] / 2,
 			4
 		},
 		position = {
 			0,
-			-18,
+			-16,
 			1
 		}
 	},
@@ -292,45 +292,45 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-16,
-			1
-		}
-	},
-	power_title = {
-		vertical_alignment = "bottom",
-		parent = "hero_name",
-		horizontal_alignment = "left",
-		size = {
-			window_size[1],
-			0
-		},
-		position = {
-			0,
-			-50,
-			1
-		}
-	},
-	power_text = {
-		vertical_alignment = "bottom",
-		parent = "power_title",
-		horizontal_alignment = "left",
-		size = {
-			window_size[1],
-			0
-		},
-		position = {
-			0,
-			-40,
+			-12,
 			1
 		}
 	},
 	power_text_bg = {
-		vertical_alignment = "center",
-		parent = "power_text",
+		vertical_alignment = "bottom",
+		parent = "hero_info_bg",
 		horizontal_alignment = "left",
 		size = {
-			100,
-			60
+			115,
+			63
+		},
+		position = {
+			30,
+			10,
+			1
+		}
+	},
+	power_text = {
+		vertical_alignment = "center",
+		parent = "power_text_bg",
+		horizontal_alignment = "center",
+		size = {
+			window_size[1],
+			0
+		},
+		position = {
+			-4,
+			-3,
+			1
+		}
+	},
+	power_title = {
+		vertical_alignment = "top",
+		parent = "power_text_bg",
+		horizontal_alignment = "center",
+		size = {
+			window_size[1],
+			0
 		},
 		position = {
 			0,
@@ -510,12 +510,12 @@ local hero_name_style = {
 }
 local power_title_style = {
 	use_shadow = true,
-	vertical_alignment = "center",
+	vertical_alignment = "bottom",
 	localize = true,
-	horizontal_alignment = "left",
+	horizontal_alignment = "center",
 	font_size = 20,
 	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
 		0,
@@ -540,8 +540,8 @@ local power_text_style = {
 	use_shadow = true,
 	vertical_alignment = "center",
 	localize = false,
-	horizontal_alignment = "left",
-	font_size = 52,
+	horizontal_alignment = "center",
+	font_size = 42,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("white", 255),
 	offset = {
@@ -873,10 +873,10 @@ local function create_button(scenegraph_id, size, button_text, font_size, use_bo
 				uvs = {
 					{
 						0,
-						math.min(size[2]/button_background_texture_settings.size[2], 1) - 1
+						1 - math.min(size[2] / button_background_texture_settings.size[2], 1)
 					},
 					{
-						math.min(size[1]/button_background_texture_settings.size[1], 1),
+						math.min(size[1] / button_background_texture_settings.size[1], 1),
 						1
 					}
 				},
@@ -1115,17 +1115,90 @@ local widgets = {
 					content_id = "button_hotspot"
 				},
 				{
+					pass_type = "texture",
+					style_id = "background",
+					texture_id = "background"
+				},
+				{
+					pass_type = "texture",
+					style_id = "hover",
+					texture_id = "hover",
+					content_check_function = function (content)
+						return content.button_hotspot.is_hover
+					end
+				},
+				{
 					pass_type = "hero_power_tooltip",
 					content_check_function = function (content)
 						return content.button_hotspot.is_hover
 					end
+				},
+				{
+					pass_type = "rotated_texture",
+					style_id = "effect",
+					texture_id = "effect"
 				}
 			}
 		},
 		content = {
+			effect = "sparkle_effect",
+			background = "hero_power_bg",
+			hover = "hero_power_bg_hover",
 			button_hotspot = {}
 		},
-		style = {}
+		style = {
+			background = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			hover = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					140,
+					89
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			effect = {
+				vertical_alignment = "top",
+				angle = 0,
+				horizontal_alignment = "right",
+				offset = {
+					110,
+					120,
+					4
+				},
+				pivot = {
+					128,
+					128
+				},
+				texture_size = {
+					256,
+					256
+				},
+				color = Colors.get_color_table_with_alpha("white", 0)
+			}
+		}
 	},
 	hero_info_divider = create_window_divider("hero_info_divider", scenegraph_definition.hero_info_divider.size),
 	hero_info_detail = UIWidgets.create_simple_texture("divider_01_top", "hero_info_detail"),
@@ -1205,7 +1278,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

@@ -97,7 +97,7 @@ AIDebugger.update = function (self, t, dt)
 			local cm = Unit.local_pose(self.active_unit, 0)
 			local pos = Matrix4x4.translation(cm)
 			local forward = Matrix4x4.forward(cm)
-			local new_pos = pos - forward*4 + Vector3.up()*3
+			local new_pos = pos - forward * 4 + Vector3.up() * 3
 
 			Matrix4x4.set_translation(cm, new_pos)
 
@@ -182,7 +182,7 @@ AIDebugger.update = function (self, t, dt)
 		end
 
 		if DebugKeyHandler.key_pressed("m", "show blackboard", "ai debugger", "left ctrl") then
-			self.cycle_info = (self.cycle_info + 1)%3
+			self.cycle_info = (self.cycle_info + 1) % 3
 			local c = self.cycle_info
 
 			if c == 1 then
@@ -273,24 +273,24 @@ AIDebugger.perlin_path = function (self, t, x, y, xsize, ysize)
 	local gui = self.screen_gui
 	local seed = 60337
 	local oktaves = PerlinPath.make_perlin_path(15, 15, 1, seed)
-	local mul_with = PerlinPath.normalize_path(oktaves[1], math.sin(t*0.1)*0.5 + 0.5)
-	local x1 = x*resx
-	local y1 = y*resy
-	local x2 = resx*(x + xsize)
-	local y2 = resy*(y + ysize)
+	local mul_with = PerlinPath.normalize_path(oktaves[1], 0.5 + 0.5 * math.sin(t * 0.1))
+	local x1 = x * resx
+	local y1 = y * resy
+	local x2 = resx * (x + xsize)
+	local y2 = resy * (y + ysize)
 
 	ScriptGUI.icrect(gui, resx, resy, x1, y1, x2, y2, layer - 1, Color(200, 20, 20, 20))
 
 	for i = 1, #oktaves, 1 do
 		local octave = oktaves[i]
-		local p1 = Vector3(x + octave[0][1]*xsize, y + (octave[0][2]*mul_with - 1)*ysize, 0)
+		local p1 = Vector3(x + octave[0][1] * xsize, y + (1 - octave[0][2] * mul_with) * ysize, 0)
 		local p2 = nil
 
 		for j = 1, #octave, 1 do
 			local p = octave[j]
-			p2 = Vector3(x + p[1]*xsize, y + (p[2]*mul_with - 1)*ysize, 0)
+			p2 = Vector3(x + p[1] * xsize, y + (1 - p[2] * mul_with) * ysize, 0)
 
-			ScriptGUI.hud_iline(gui, resx, resy, p1, p2, layer, line_width, colors[i%5 + 1])
+			ScriptGUI.hud_iline(gui, resx, resy, p1, p2, layer, line_width, colors[i % 5 + 1])
 
 			p1 = p2
 		end
@@ -452,7 +452,7 @@ end
 AIDebugger.draw_hot_unit = function (self)
 	local position = Unit.local_position(self.hot_unit, 0)
 
-	self.drawer:sphere(position + Vector3.up()*2, 0.15, Color(255, 255, 100, 0))
+	self.drawer:sphere(position + Vector3.up() * 2, 0.15, Color(255, 255, 100, 0))
 
 	return 
 end
@@ -460,7 +460,7 @@ AIDebugger.draw_active_unit = function (self, t)
 	local drawer = self.drawer
 	local position = Unit.local_position(self.active_unit, 0)
 
-	drawer.sphere(drawer, position + Vector3.up()*2, 0.1, Color(255, 255, 255, 0))
+	drawer.sphere(drawer, position + Vector3.up() * 2, 0.1, Color(255, 255, 255, 0))
 	self.draw_nearby_navmesh(self, self.active_unit)
 
 	return 
@@ -501,8 +501,8 @@ AIDebugger.draw_nearby_navmesh = function (self, ai_unit)
 		triangle = triangles[i]
 		local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
 		local triangle_center = p1 + p2 + p3
-		local table_index = math.ceil((triangle_center.x + triangle_center.y)%24 + 1)
-		local green = color_table[table_index]*10
+		local table_index = math.ceil((triangle_center.x + triangle_center.y) % 24 + 1)
+		local green = color_table[table_index] * 10
 
 		Gui.triangle(self.world_gui, p1 + offset, p2 + offset, p3 + offset, 0, Color(150, 0, green, 255))
 		LineObject.add_line(self._line_object, Color(0, 0, 200), p1 + offset, p2 + offset)
@@ -530,7 +530,7 @@ AIDebugger.draw_nearby_navmesh = function (self, ai_unit)
 			if not is_in_list_already then
 				local p2_1, p2_2, p2_3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
 
-				if Vector3.distance((p2_1 + p2_2 + p2_3)*0.33, position) < 5 then
+				if Vector3.distance((p2_1 + p2_2 + p2_3) * 0.33, position) < 5 then
 					num_triangles = num_triangles + 1
 					triangles[num_triangles] = neighbor
 				end
@@ -628,7 +628,7 @@ AIDebugger.draw_blackboard = function (self, ai_unit)
 	pos.y = pos.y - font_size_blackboard
 
 	if columns == 1 then
-		Gui.rect(gui, Vector3(150, pos.y, 100), Vector2(pos.x + 400, start_y - pos.y + font_size_blackboard*3), Color(240, 25, 50, 25))
+		Gui.rect(gui, Vector3(150, pos.y, 100), Vector2(pos.x + 400, start_y - pos.y + font_size_blackboard * 3), Color(240, 25, 50, 25))
 	else
 		Gui.rect(gui, Vector3(150, 0, 100), Vector2(pos.x + 400, start_y + 50), Color(240, 25, 50, 25))
 	end
@@ -669,16 +669,16 @@ AIDebugger.draw_behavior_tree = function (self, ai_unit, t, dt)
 		if mouse_middle_held or pan_mouse_vertical then
 			local input_service = self.free_flight_manager.input_manager:get_service("Debug")
 			local look = input_service.get(input_service, "look")
-			self.tree_x = self.tree_x - look.x*0.001
+			self.tree_x = self.tree_x - look.x * 0.001
 
 			if pan_mouse_vertical then
-				self.tree_y = self.tree_y - look.y*0.001
+				self.tree_y = self.tree_y - look.y * 0.001
 			end
 		elseif right_shoulder_held then
 			local input_service = self.free_flight_manager.input_manager:get_service("Debug")
 			local look = input_service.get(input_service, "look_raw")
-			self.tree_x = self.tree_x - look.x*0.1
-			self.tree_y = self.tree_y - look.y*0.1
+			self.tree_x = self.tree_x - look.x * 0.1
+			self.tree_y = self.tree_y - look.y * 0.1
 		end
 
 		if DebugKeyHandler.key_pressed("mouse_middle_held", "pan reset behaviour graph", "ai debugger", "left shift") then
@@ -701,7 +701,7 @@ AIDebugger.draw_reticule = function (self)
 		local material, uv00, uv11, size = HUDHelper.atlas_material(atlas_name, crosshair)
 		local scale = 1
 
-		Gui.bitmap_uv(self.screen_gui, material, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), Vector3((resolution_width - scale*size.x)/2, (resolution_height - scale*size.y)/2, 0), scale*size, color)
+		Gui.bitmap_uv(self.screen_gui, material, Vector2(uv00[1], uv00[2]), Vector2(uv11[1], uv11[2]), Vector3((resolution_width - scale * size.x) / 2, (resolution_height - scale * size.y) / 2, 0), scale * size, color)
 	end
 
 	return 
@@ -719,7 +719,7 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 	local bar_width = 0.15
 	local bar_height = 0.02
 	local wedge = 0.0025
-	local win_x = (bar_width + wedge) - 1
+	local win_x = 1 - (bar_width + wedge)
 	local win_y = 0.15
 	local row = win_y
 	local conflict_director = Managers.state.conflict
@@ -727,10 +727,10 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 	local sum_intensity, player_intensity = pacing.get_intensity(pacing)
 
 	for k = 1, #player_intensity, 1 do
-		local int = player_intensity[k]*0.01
+		local int = player_intensity[k] * 0.01
 		local x1 = win_x
 		local y1 = row + bar_height
-		local x2 = win_x + bar_width*int
+		local x2 = win_x + bar_width * int
 		local y2 = row
 
 		ScriptGUI.irect(gui, res_x, res_y, x1, y1, win_x + bar_width, y2, 1, Color(100, 10, 10, 10))
@@ -741,14 +741,14 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 
 	ScriptGUI.itext(gui, res_x, res_y, "[Player Intensity]", font_mtrl, font_size, font, win_x, win_y, 3, Color(255, 237, 237, 152))
 
-	row = row + bar_height*1
+	row = row + bar_height * 1
 
-	ScriptGUI.itext(gui, res_x, res_y, "[Total Intensity]", font_mtrl, font_size, font, win_x, row + bar_height*0.75, 3, Color(255, 237, 237, 152))
+	ScriptGUI.itext(gui, res_x, res_y, "[Total Intensity]", font_mtrl, font_size, font, win_x, row + bar_height * 0.75, 3, Color(255, 237, 237, 152))
 
-	row = row + bar_height*1
+	row = row + bar_height * 1
 
 	ScriptGUI.irect(gui, res_x, res_y, win_x, row + bar_height, win_x + bar_width, row, 1, Color(100, 90, 10, 10))
-	ScriptGUI.irect(gui, res_x, res_y, win_x, row + bar_height, win_x + bar_width*sum_intensity*0.01, row, 2, Color(200, 130, 10, 10))
+	ScriptGUI.irect(gui, res_x, res_y, win_x, row + bar_height, win_x + bar_width * sum_intensity * 0.01, row, 2, Color(200, 130, 10, 10))
 
 	local decay_text = ""
 	local frozen = conflict_director.intensity_decay_frozen(conflict_director)
@@ -766,10 +766,10 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 		end
 	end
 
-	row = row + bar_height*1.5
+	row = row + bar_height * 1.5
 	local small_font_size = 22
 
-	ScriptGUI.itext(gui, res_x, res_y, decay_text, font_mtrl, small_font_size, font, win_x, row + bar_height*0.75, 3, Color(255, 200, 200, 32))
+	ScriptGUI.itext(gui, res_x, res_y, decay_text, font_mtrl, small_font_size, font, win_x, row + bar_height * 0.75, 3, Color(255, 200, 200, 32))
 
 	return 
 end
@@ -878,20 +878,20 @@ AIDebugger.draw_hint = function (self, t)
 
 	local anim_t = t - self.hint_time_when_key_handle_visible
 
-	if math.pi*2 < anim_t then
+	if math.pi * 2 < anim_t then
 		hint_shown = true
 
 		return 
 	end
 
-	local opacity = math.min(1, math.sin(anim_t*0.5)*3)*255
+	local opacity = math.min(1, math.sin(anim_t * 0.5) * 3) * 255
 	local msg = "Hint: you can show ai debugger shortcuts by enabling 'debug_key_handler_visible' in the debug menu"
 	local msg_min, msg_max = Gui.text_extents(gui, msg, font_mtrl, font_size)
 	local msg_width = msg_max.x - msg_min.x
-	local x = res_x/2 - msg_width/2
+	local x = res_x / 2 - msg_width / 2
 
 	Gui.text(gui, msg, font_mtrl, font_size, font, Vector3(x, 20, 150), Color(opacity, 255, 255, 255))
-	Gui.rect(gui, Vector3(x - 20, 0, 100), Vector2(msg_width + 40, 50), Color(opacity*0.75, 25, 50, 25))
+	Gui.rect(gui, Vector3(x - 20, 0, 100), Vector2(msg_width + 40, 50), Color(opacity * 0.75, 25, 50, 25))
 
 	return 
 end
@@ -947,7 +947,7 @@ AIDebugger.draw_extensions = function (self, ai_unit)
 	pos.y = pos.y - font_size_blackboard
 
 	if columns == 1 then
-		Gui.rect(gui, Vector3(150, pos.y, 100), Vector2(pos.x + 400, start_y - pos.y + font_size_blackboard*3), Color(240, 25, 50, 25))
+		Gui.rect(gui, Vector3(150, pos.y, 100), Vector2(pos.x + 400, start_y - pos.y + font_size_blackboard * 3), Color(240, 25, 50, 25))
 	else
 		Gui.rect(gui, Vector3(150, 0, 100), Vector2(pos.x + 400, start_y + 50), Color(240, 25, 50, 25))
 	end

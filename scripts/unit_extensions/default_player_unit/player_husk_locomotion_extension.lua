@@ -9,6 +9,7 @@ PlayerHuskLocomotionExtension.init = function (self, extension_init_context, uni
 	self.is_server = Managers.player.is_server
 	self.velocity_current = Vector3Box(0, 0, 0)
 	self._current_rotation = QuaternionBox(Quaternion.identity())
+	self.has_moved_from_start_position = extension_init_data.has_moved_from_start_position
 	self.move_speed_anim_var = Unit.animation_find_variable(unit, "move_speed")
 
 	Managers.player:assign_unit_ownership(unit, self.player, true)
@@ -195,6 +196,8 @@ PlayerHuskLocomotionExtension.update_movement = function (self, dt, unit, moveme
 		velocity = Vector3(0, 0, 0)
 	end
 
+	self.has_moved_from_start_position = GameSession.game_object_field(self.game, self.id, "has_moved_from_start_position")
+
 	self._extrapolation_movement(self, unit, dt, old_pos, new_pos, new_rot, movement_state, velocity, linked_movement)
 	self.velocity_current:store(velocity)
 	self._current_rotation:store(new_rot)
@@ -219,8 +222,8 @@ PlayerHuskLocomotionExtension._extrapolation_movement = function (self, unit, dt
 	self._pos_lerp_time = (self._pos_lerp_time or 0) + dt
 	self._velocity_lerp_time = (self._velocity_lerp_time or 0) + dt
 	local pos_lerp_time = (linked_movement and POS_LERP_TIME_LINKED) or POS_LERP_TIME
-	local lerp_t = self._pos_lerp_time/pos_lerp_time
-	local move_delta = velocity*dt
+	local lerp_t = self._pos_lerp_time / pos_lerp_time
+	local move_delta = velocity * dt
 	accumulated_movement = accumulated_movement + move_delta
 	local lerp_pos = Vector3.lerp(last_pos_offset, Vector3(0, 0, 0), math.min(lerp_t, 1))
 	local pos = last_pos + accumulated_movement + lerp_pos
@@ -257,7 +260,7 @@ PlayerHuskLocomotionExtension._extrapolation_movement = function (self, unit, dt
 
 	local old_rot = Unit.local_rotation(unit, 0)
 
-	Unit.set_local_rotation(unit, 0, Quaternion.lerp(old_rot, new_rot, math.min(dt*15, 1)))
+	Unit.set_local_rotation(unit, 0, Quaternion.lerp(old_rot, new_rot, math.min(dt * 15, 1)))
 
 	return 
 end
@@ -278,9 +281,9 @@ PlayerHuskLocomotionExtension._update_speed_variable = function (self)
 	local movement_anim_scale = nil
 
 	if speed < self.walk_speed_treshold then
-		movement_anim_scale = speed/self.walk_speed_treshold
+		movement_anim_scale = speed / self.walk_speed_treshold
 	elseif self.run_speed_treshold < speed then
-		movement_anim_scale = speed/self.run_speed_treshold
+		movement_anim_scale = speed / self.run_speed_treshold
 	else
 		movement_anim_scale = 1
 	end
@@ -297,14 +300,14 @@ PlayerHuskLocomotionExtension._calculate_move_speed_var_from_mps = function (sel
 
 	if move_speed <= WALK_THRESHOLD then
 		speed_var = 0
-		speed_multiplier = move_speed/WALK_THRESHOLD
+		speed_multiplier = move_speed / WALK_THRESHOLD
 	elseif move_speed <= JOG_THRESHOLD then
-		speed_var = (move_speed - WALK_THRESHOLD)/(JOG_THRESHOLD - WALK_THRESHOLD)
+		speed_var = (move_speed - WALK_THRESHOLD) / (JOG_THRESHOLD - WALK_THRESHOLD)
 	elseif move_speed <= RUN_THRESHOLD then
-		speed_var = (move_speed - JOG_THRESHOLD)/(RUN_THRESHOLD - JOG_THRESHOLD) + 1
+		speed_var = 1 + (move_speed - JOG_THRESHOLD) / (RUN_THRESHOLD - JOG_THRESHOLD)
 	else
 		speed_var = 3
-		speed_multiplier = move_speed/RUN_THRESHOLD
+		speed_multiplier = move_speed / RUN_THRESHOLD
 	end
 
 	return speed_var, speed_multiplier

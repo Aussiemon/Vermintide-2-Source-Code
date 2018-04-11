@@ -166,6 +166,8 @@ assert(DialogueLookup[DialogueLookup_n + 165] == nil)
 assert(DialogueLookup[DialogueLookup_n + 166] == nil)
 assert(DialogueLookup[DialogueLookup_n + 167] == nil)
 assert(DialogueLookup[DialogueLookup_n + 168] == nil)
+assert(DialogueLookup[DialogueLookup_n + 169] == nil)
+assert(DialogueLookup[DialogueLookup_n + 170] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pwe_curse"
 DialogueLookup[DialogueLookup_n + 2] = "pwe_targeted_by_ratling"
@@ -324,17 +326,19 @@ DialogueLookup[DialogueLookup_n + 154] = "pwe_gameplay_armoured_enemy_bright_wiz
 DialogueLookup[DialogueLookup_n + 155] = "pwe_gameplay_armoured_enemy_dwarf_ranger"
 DialogueLookup[DialogueLookup_n + 156] = "pwe_gameplay_armoured_enemy_empire_soldier"
 DialogueLookup[DialogueLookup_n + 157] = "pwe_ability_activate_shade"
-DialogueLookup[DialogueLookup_n + 158] = "pwe_gameplay_bile_troll_incapacitaded"
-DialogueLookup[DialogueLookup_n + 159] = "pwe_gameplay_empire_soldier_eaten"
-DialogueLookup[DialogueLookup_n + 160] = "pwe_gameplay_bright_wizard_eaten"
-DialogueLookup[DialogueLookup_n + 161] = "pwe_gameplay_dwarf_ranger_eaten"
-DialogueLookup[DialogueLookup_n + 162] = "pwe_gameplay_witch_hunter_eaten"
-DialogueLookup[DialogueLookup_n + 163] = "pwe_gameplay_tips_wizard_wind"
-DialogueLookup[DialogueLookup_n + 164] = "pwe_gameplay_tips_wizard_plague"
-DialogueLookup[DialogueLookup_n + 165] = "pwe_gameplay_parry_witch_hunter"
-DialogueLookup[DialogueLookup_n + 166] = "pwe_gameplay_parry_dwarf_ranger"
-DialogueLookup[DialogueLookup_n + 167] = "pwe_gameplay_parry_bright_wizard"
-DialogueLookup[DialogueLookup_n + 168] = "pwe_gameplay_parry_empire_soldier"
-DialogueLookup_n = DialogueLookup_n + 168
+DialogueLookup[DialogueLookup_n + 158] = "pwe_activate_ability_handmaiden"
+DialogueLookup[DialogueLookup_n + 159] = "pwe_activate_ability_waystalker"
+DialogueLookup[DialogueLookup_n + 160] = "pwe_gameplay_bile_troll_incapacitaded"
+DialogueLookup[DialogueLookup_n + 161] = "pwe_gameplay_empire_soldier_eaten"
+DialogueLookup[DialogueLookup_n + 162] = "pwe_gameplay_bright_wizard_eaten"
+DialogueLookup[DialogueLookup_n + 163] = "pwe_gameplay_dwarf_ranger_eaten"
+DialogueLookup[DialogueLookup_n + 164] = "pwe_gameplay_witch_hunter_eaten"
+DialogueLookup[DialogueLookup_n + 165] = "pwe_gameplay_tips_wizard_wind"
+DialogueLookup[DialogueLookup_n + 166] = "pwe_gameplay_tips_wizard_plague"
+DialogueLookup[DialogueLookup_n + 167] = "pwe_gameplay_parry_witch_hunter"
+DialogueLookup[DialogueLookup_n + 168] = "pwe_gameplay_parry_dwarf_ranger"
+DialogueLookup[DialogueLookup_n + 169] = "pwe_gameplay_parry_bright_wizard"
+DialogueLookup[DialogueLookup_n + 170] = "pwe_gameplay_parry_empire_soldier"
+DialogueLookup_n = DialogueLookup_n + 170
 
 return 

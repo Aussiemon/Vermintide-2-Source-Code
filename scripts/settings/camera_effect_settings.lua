@@ -1290,8 +1290,8 @@ function hit_impact_multiplied_by_x(new_sequence_name, sequence_name, x, time_sc
 
 		for i, point in ipairs(sequence) do
 			axis_table[i] = {
-				value = point.value*x,
-				time_stamp = point.time_stamp*time_scale
+				value = point.value * x,
+				time_stamp = point.time_stamp * time_scale
 			}
 		end
 

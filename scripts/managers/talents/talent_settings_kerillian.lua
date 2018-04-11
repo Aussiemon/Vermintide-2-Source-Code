@@ -30,11 +30,11 @@ local buff_tweak_data = {
 		multiplier = 1.05
 	},
 	kerillian_shade_defence_debuff = {
-		multiplier = 0.25,
+		multiplier = 1,
 		duration = 5
 	},
 	kerillian_shade_damage_on_grimoire_picked_up = {
-		multiplier = 0.25
+		multiplier = 0.15
 	},
 	kerillian_shade_passive_improved = {
 		multiplier = 0.25
@@ -58,10 +58,10 @@ local buff_tweak_data = {
 		bonus = 0.5
 	},
 	kerillian_maidenguard_passive_dodge = {
-		multiplier = 1.125
+		multiplier = 1.15
 	},
 	kerillian_maidenguard_passive_dodge_speed = {
-		multiplier = 1.125
+		multiplier = 1.15
 	},
 	kerillian_maidenguard_passive_increased_stamina = {
 		bonus = 0.3
@@ -91,7 +91,7 @@ local buff_tweak_data = {
 		multiplier = -0.05
 	},
 	kerillian_maidenguard_heavy_hits = {
-		multiplier = 0.1
+		multiplier = 0.15
 	},
 	kerillian_maidenguard_defence_on_last_standing = {
 		multiplier = -0.5
@@ -103,10 +103,10 @@ local buff_tweak_data = {
 		multiplier = 0.3
 	},
 	kerillian_maidenguard_improved_dodge = {
-		multiplier = 1.05
+		multiplier = 1.1
 	},
 	kerillian_maidenguard_improved_dodge_speed = {
-		multiplier = 1.05
+		multiplier = 1.1
 	},
 	kerillian_maidenguard_activated_ability_damage = {
 		multiplier = 1
@@ -128,7 +128,7 @@ local buff_tweak_data = {
 		heal_amount = 2
 	},
 	kerillian_waywatcher_passive_increased_ammunition = {
-		multiplier = 1
+		multiplier = 0.5
 	},
 	kerillian_waywatcher_crit_chance = {
 		bonus = 0.05
@@ -140,7 +140,7 @@ local buff_tweak_data = {
 		multiplier = 0.05
 	},
 	kerillian_waywatcher_gain_ammo_on_boss_death = {
-		ammo_bonus_fraction = 0.5
+		ammo_bonus_fraction = 0.3
 	},
 	kerillian_waywatcher_increased_crit_hit_damage_on_high_health = {
 		activation_health = 0.25
@@ -167,10 +167,10 @@ local buff_tweak_data = {
 		multiplier = -0.3
 	},
 	kerillian_waywatcher_activated_ability_heal = {
-		bonus = 35
+		bonus = 20
 	},
 	kerillian_waywatcher_activated_ability_restore_ammo = {
-		multiplier = 0.5
+		multiplier = 0.2
 	}
 }
 TalentBuffTemplates = TalentBuffTemplates or {}
@@ -230,6 +230,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				icon = "passive_bonus_kerillian_shade",
 				name = "kerillian_shade_activated_ability",
+				refresh_durations = true,
 				max_stacks = 1,
 				remove_buff_func = "end_shade_activated_ability",
 				dormant = true
@@ -362,7 +363,8 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				max_stacks = 1,
-				remove_buff_func = "end_shade_activated_ability"
+				remove_buff_func = "end_shade_activated_ability",
+				refresh_durations = true
 			}
 		}
 	},
@@ -731,9 +733,9 @@ TalentTrees.wood_elf = {
 			"kerillian_shade_backstabs_replenishes_ammunition"
 		},
 		{
-			"kerillian_regrowth",
-			"kerillian_bloodlust",
-			"kerillian_conqueror"
+			"kerillian_shade_regrowth",
+			"kerillian_shade_bloodlust",
+			"kerillian_shade_conqueror"
 		},
 		{
 			"kerillian_shade_activated_ability_duration",
@@ -758,9 +760,9 @@ TalentTrees.wood_elf = {
 			"kerillian_maidenguard_improved_stamina_regen"
 		},
 		{
-			"kerillian_regrowth",
-			"kerillian_bloodlust",
-			"kerillian_conqueror"
+			"kerillian_maidenguard_regrowth",
+			"kerillian_maidenguard_bloodlust",
+			"kerillian_maidenguard_conqueror"
 		},
 		{
 			"kerillian_maidenguard_activated_ability_invis_duration",
@@ -785,9 +787,9 @@ TalentTrees.wood_elf = {
 			"kerillian_waywatcher_group_regen"
 		},
 		{
-			"kerillian_regrowth",
-			"kerillian_bloodlust",
-			"kerillian_conqueror"
+			"kerillian_waywatcher_regrowth",
+			"kerillian_waywatcher_bloodlust",
+			"kerillian_waywatcher_conqueror"
 		},
 		{
 			"kerillian_waywatcher_activated_ability_cooldown",
@@ -947,7 +949,7 @@ Talents.wood_elf = {
 	},
 	{
 		description = "regrowth_desc",
-		name = "kerillian_regrowth",
+		name = "kerillian_shade_regrowth",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_shade_regrowth",
@@ -960,7 +962,7 @@ Talents.wood_elf = {
 	},
 	{
 		description = "bloodlust_desc",
-		name = "kerillian_bloodlust",
+		name = "kerillian_shade_bloodlust",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_shade_bloodlust",
@@ -973,7 +975,7 @@ Talents.wood_elf = {
 	},
 	{
 		description = "conqueror_desc",
-		name = "kerillian_conqueror",
+		name = "kerillian_shade_conqueror",
 		num_ranks = 1,
 		buffer = "server",
 		icon = "kerillian_shade_conqueror",
@@ -1090,6 +1092,7 @@ Talents.wood_elf = {
 		description = "kerillian_maidenguard_slower_heavy_hits_desc",
 		name = "kerillian_maidenguard_slower_heavy_hits",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "kerillian_maidenguard_slower_heavy_hits",
 		description_values = {
 			{
@@ -1175,6 +1178,45 @@ Talents.wood_elf = {
 		requirements = {},
 		buffs = {
 			"kerillian_maidenguard_improved_stamina_regen"
+		},
+		buff_data = {}
+	},
+	{
+		description = "regrowth_desc",
+		name = "kerillian_maidenguard_regrowth",
+		num_ranks = 1,
+		buffer = "server",
+		icon = "kerillian_maidenguard_regrowth",
+		description_values = {},
+		requirements = {},
+		buffs = {
+			"regrowth"
+		},
+		buff_data = {}
+	},
+	{
+		description = "bloodlust_desc",
+		name = "kerillian_maidenguard_bloodlust",
+		num_ranks = 1,
+		buffer = "server",
+		icon = "kerillian_maidenguard_bloodlust",
+		description_values = {},
+		requirements = {},
+		buffs = {
+			"bloodlust"
+		},
+		buff_data = {}
+	},
+	{
+		description = "conqueror_desc",
+		name = "kerillian_maidenguard_conqueror",
+		num_ranks = 1,
+		buffer = "server",
+		icon = "kerillian_maidenguard_conqueror",
+		description_values = {},
+		requirements = {},
+		buffs = {
+			"conqueror"
 		},
 		buff_data = {}
 	},
@@ -1368,6 +1410,45 @@ Talents.wood_elf = {
 		icon = "kerillian_waywatcher_group_regen",
 		requirements = {},
 		buffs = {},
+		buff_data = {}
+	},
+	{
+		description = "regrowth_desc",
+		name = "kerillian_waywatcher_regrowth",
+		num_ranks = 1,
+		buffer = "server",
+		icon = "kerillian_waywatcher_regrowth",
+		description_values = {},
+		requirements = {},
+		buffs = {
+			"regrowth"
+		},
+		buff_data = {}
+	},
+	{
+		description = "bloodlust_desc",
+		name = "kerillian_waywatcher_bloodlust",
+		num_ranks = 1,
+		buffer = "server",
+		icon = "kerillian_waywatcher_bloodlust",
+		description_values = {},
+		requirements = {},
+		buffs = {
+			"bloodlust"
+		},
+		buff_data = {}
+	},
+	{
+		description = "conqueror_desc",
+		name = "kerillian_waywatcher_conqueror",
+		num_ranks = 1,
+		buffer = "server",
+		icon = "kerillian_waywatcher_conqueror",
+		description_values = {},
+		requirements = {},
+		buffs = {
+			"conqueror"
+		},
 		buff_data = {}
 	},
 	{

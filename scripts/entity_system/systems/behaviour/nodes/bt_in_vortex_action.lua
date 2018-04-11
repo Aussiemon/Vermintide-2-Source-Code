@@ -56,7 +56,7 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 
 	if state == "ejected_from_vortex" then
 		local velocity = blackboard.ejected_from_vortex:unbox()
-		velocity = velocity - Vector3(0, 0, 9.82)*dt
+		velocity = velocity - Vector3(0, 0, 9.82) * dt
 		local locomotion_extension = blackboard.locomotion_extension
 
 		locomotion_extension.set_wanted_velocity(locomotion_extension, velocity)
@@ -66,7 +66,7 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 		local mover_collides_down = Mover.collides_down(mover)
 
 		if mover_collides_down then
-			velocity = velocity - Vector3.normalize(velocity)*dt
+			velocity = velocity - Vector3.normalize(velocity) * dt
 
 			blackboard.ejected_from_vortex:store(velocity)
 

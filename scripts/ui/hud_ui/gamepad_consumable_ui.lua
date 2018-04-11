@@ -468,8 +468,8 @@ GamepadConsumableUI._update_slot_positions = function (self)
 		local background_offset = background_style.offset
 		local background_size = background_style.size
 		local offset = widget.offset
-		local widget_width = background_size[1]*size_multiplier
-		offset[1] = width_offset + widget_width*0.5
+		local widget_width = background_size[1] * size_multiplier
+		offset[1] = width_offset + widget_width * 0.5
 		width_offset = width_offset + widget_width + slot_spacing
 		widget.element.dirty = true
 	end

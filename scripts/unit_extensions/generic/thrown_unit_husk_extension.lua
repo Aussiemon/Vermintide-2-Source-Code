@@ -21,7 +21,7 @@ ThrownUnitHuskExtension.destroy = function (self)
 	return 
 end
 ThrownUnitHuskExtension.update = function (self, unit, input, dt, context, t)
-	local lerp_value = math.min(dt*20, 1)
+	local lerp_value = math.min(dt * 20, 1)
 	local current_pos = POSITION_LOOKUP[unit]
 	local wanted_pos = GameSession.game_object_field(self.game, self.go_id, "position")
 	local pos = Vector3.lerp(current_pos, wanted_pos, lerp_value)

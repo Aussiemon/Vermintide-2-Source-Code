@@ -24,7 +24,7 @@ BTRatlingGunnerWindUpAction.enter = function (self, unit, blackboard, t)
 		data.last_known_unit_position:store(unit_position)
 
 		data.target_obscured = false
-		data.target_check = t + 0.05 + Math.random()*0.025
+		data.target_check = t + 0.05 + Math.random() * 0.025
 	else
 		data.abort_windup = true
 		blackboard.attack_pattern_data = data
@@ -91,9 +91,9 @@ BTRatlingGunnerWindUpAction._update_target = function (self, unit, blackboard, d
 	end
 
 	if data.target_obscured then
-		data.target_check = t + 0.5 + Math.random()*0.25
+		data.target_check = t + 0.5 + Math.random() * 0.25
 	else
-		data.target_check = t + 0.1 + Math.random()*0.05
+		data.target_check = t + 0.1 + Math.random() * 0.05
 	end
 
 	return 

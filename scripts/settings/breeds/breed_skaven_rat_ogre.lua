@@ -1,21 +1,105 @@
+local damage_table_light = {
+	easy = {
+		15,
+		10,
+		7
+	},
+	normal = {
+		15,
+		10,
+		10
+	},
+	hard = {
+		25,
+		17,
+		15
+	},
+	survival_hard = {
+		25,
+		17,
+		15
+	},
+	harder = {
+		40,
+		20,
+		15
+	},
+	survival_harder = {
+		40,
+		20,
+		15
+	},
+	hardest = {
+		60,
+		25,
+		15
+	},
+	survival_hardest = {
+		60,
+		25,
+		15
+	}
+}
+local damage_table_combo = {
+	easy = {
+		10,
+		10,
+		7
+	},
+	normal = {
+		10,
+		10,
+		10
+	},
+	hard = {
+		15,
+		17,
+		15
+	},
+	survival_hard = {
+		15,
+		17,
+		15
+	},
+	harder = {
+		30,
+		20,
+		15
+	},
+	survival_harder = {
+		30,
+		20,
+		15
+	},
+	hardest = {
+		50,
+		25,
+		15
+	},
+	survival_hardest = {
+		50,
+		25,
+		15
+	}
+}
 local breed_data = {
 	detection_radius = 9999999,
-	stagger_threshold_medium = 1,
+	death_reaction = "ai_default",
 	walk_speed = 5,
 	big_boy_turning_dot = 0.4,
 	blood_effect_name = "fx/impact_blood_ogre",
-	death_reaction = "ai_default",
-	patrol_active_target_selection = "pick_rat_ogre_target_with_weights",
-	jump_slam_gravity = 19,
-	target_selection = "pick_rat_ogre_target_idle",
 	passive_in_patrol_start_anim = "move_fwd",
+	patrol_active_target_selection = "pick_rat_ogre_target_with_weights",
+	target_selection = "pick_rat_ogre_target_idle",
+	jump_slam_gravity = 19,
+	chance_of_starting_sleepy = 0,
 	animation_sync_rpc = "rpc_sync_anim_state_8",
 	aoe_radius = 1,
-	patrol_detection_radius = 10,
 	run_speed = 7,
 	patrol_active_perception = "perception_rat_ogre",
 	target_selection_angry = "pick_rat_ogre_target_with_weights",
-	is_bot_aid_threat = true,
+	perception_continuous = "perception_continuous_rat_ogre",
+	bot_opportunity_target_melee_range_while_ranged = 5,
 	bots_should_flank = true,
 	ignore_nav_propagation_box = true,
 	bot_opportunity_target_melee_range = 7,
@@ -23,26 +107,27 @@ local breed_data = {
 	headshot_coop_stamina_fatigue_type = "headshot_special",
 	default_inventory_template = "rat_ogre",
 	stagger_resistance = 100,
-	use_aggro = true,
+	patrol_detection_radius = 10,
 	threat_value = 32,
 	boss_staggers = true,
 	panic_close_detection_radius_sq = 9,
 	radius = 2,
 	boss = true,
+	hit_mass_count = 50,
 	stagger_threshold_explosion = 1,
-	chance_of_starting_sleepy = 0,
+	use_avoidance = false,
 	race = "skaven",
-	bone_lod_level = 0,
 	proximity_system_check = true,
 	poison_resistance = 100,
 	armor_category = 3,
-	use_avoidance = false,
+	bone_lod_level = 0,
+	use_aggro = true,
 	bot_hitbox_radius_approximation = 0.75,
 	patrol_walk_speed = 2.5,
 	use_big_boy_turning = true,
 	distance_sq_can_detect_target = 2025,
 	smart_targeting_width = 0.6,
-	perception_continuous = "perception_continuous_rat_ogre",
+	is_bot_aid_threat = true,
 	behavior = "ogre",
 	boost_curve_multiplier_override = 3,
 	has_inventory = true,
@@ -64,11 +149,12 @@ local breed_data = {
 	smart_object_template = "rat_ogre",
 	perception = "perception_rat_ogre",
 	player_locomotion_constrain_radius = 1.5,
-	bot_opportunity_target_melee_range_while_ranged = 5,
+	stagger_threshold_medium = 1,
 	distance_sq_idle_auto_detect_target = 49,
 	far_off_despawn_immunity = true,
 	patrol_passive_perception = "perception_rat_ogre",
 	override_mover_move_distance = 1.5,
+	boss_damage_reduction = true,
 	base_unit = "units/beings/enemies/skaven_rat_ogre/chr_skaven_rat_ogre",
 	aoe_height = 2.4,
 	perception_weights = {
@@ -87,11 +173,11 @@ local breed_data = {
 		target_disabled_mul = 0.15
 	},
 	max_health = {
-		1000,
-		1000,
-		1500,
-		2000,
-		2000
+		700,
+		700,
+		1050,
+		1400,
+		2100
 	},
 	stagger_duration = {
 		0,
@@ -356,11 +442,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		init_blackboard = {
@@ -406,11 +492,11 @@ local action_data = {
 			},
 			change_target_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			change_target_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		change_target_fwd_close_anims = {
@@ -492,48 +578,7 @@ local action_data = {
 			8,
 			5
 		},
-		difficulty_damage = {
-			easy = {
-				8,
-				6,
-				5
-			},
-			normal = {
-				15,
-				8,
-				5
-			},
-			hard = {
-				20,
-				10,
-				5
-			},
-			survival_hard = {
-				20,
-				10,
-				5
-			},
-			harder = {
-				25,
-				15,
-				10
-			},
-			survival_harder = {
-				25,
-				15,
-				10
-			},
-			hardest = {
-				40,
-				20,
-				15
-			},
-			survival_hardest = {
-				60,
-				30,
-				22.5
-			}
-		},
+		difficulty_damage = damage_table_light,
 		stagger_impact = {
 			1,
 			2,
@@ -602,48 +647,7 @@ local action_data = {
 			12,
 			10
 		},
-		difficulty_damage = {
-			easy = {
-				12,
-				10,
-				7
-			},
-			normal = {
-				17,
-				12,
-				10
-			},
-			hard = {
-				25,
-				17,
-				15
-			},
-			survival_hard = {
-				25,
-				17,
-				15
-			},
-			harder = {
-				40,
-				20,
-				15
-			},
-			survival_harder = {
-				40,
-				20,
-				15
-			},
-			hardest = {
-				75,
-				25,
-				15
-			},
-			survival_hardest = {
-				75,
-				25,
-				15
-			}
-		},
+		difficulty_damage = damage_table_combo,
 		ignore_staggers = {
 			true,
 			false,
@@ -796,48 +800,7 @@ local action_data = {
 			20,
 			20
 		},
-		difficulty_damage = {
-			easy = {
-				15,
-				20,
-				20
-			},
-			normal = {
-				20,
-				20,
-				20
-			},
-			hard = {
-				30,
-				25,
-				25
-			},
-			survival_hard = {
-				30,
-				25,
-				25
-			},
-			harder = {
-				40,
-				30,
-				30
-			},
-			survival_harder = {
-				40,
-				30,
-				30
-			},
-			hardest = {
-				60,
-				50,
-				50
-			},
-			survival_hardest = {
-				90,
-				75,
-				75
-			}
-		}
+		difficulty_damage = damage_table_light
 	},
 	target_unreachable = {
 		move_anim = "move_start_fwd"
@@ -857,19 +820,20 @@ local action_data = {
 	},
 	jump_slam_impact = {
 		stagger_distance = 7,
-		damage_type = "blunt",
+		stagger_radius = 7.5,
 		max_damage_radius = 2.5,
 		catapult_players = true,
-		hit_react_type = "heavy",
 		fatigue_type = "blocked_jump_slam",
-		stagger_radius = 7.5,
+		hit_react_type = "heavy",
+		damage_type = "blunt",
 		catapult_within_radius = 7,
 		catapulted_player_speed = 7,
 		damage = {
-			5,
+			10,
 			0,
 			0
 		},
+		difficulty_damage = damage_table_light,
 		stagger_impact = {
 			1,
 			2,
@@ -882,7 +846,7 @@ local action_data = {
 			speed = 7,
 			radius = 2,
 			collision_filter = "filter_player_hit_box_check",
-			angle = math.pi/6
+			angle = math.pi / 6
 		}
 	},
 	stagger = {

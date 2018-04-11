@@ -36,7 +36,8 @@ local unit_templates = {
 			"PlayerUnitDarknessExtension",
 			"PlayerUnitSmartTargetingExtension",
 			"PlayerUnitOverchargeExtension",
-			"PlayerSoundEffectExtension"
+			"PlayerSoundEffectExtension",
+			"PlayerUnitVisualEffectsExtension"
 		},
 		self_owned_extensions_server = {
 			"PlayerInputExtension",
@@ -77,7 +78,8 @@ local unit_templates = {
 			"PlayerUnitDarknessExtension",
 			"PlayerUnitSmartTargetingExtension",
 			"PlayerUnitOverchargeExtension",
-			"PlayerSoundEffectExtension"
+			"PlayerSoundEffectExtension",
+			"PlayerUnitVisualEffectsExtension"
 		},
 		husk_extensions = {
 			"SimpleHuskInventoryExtension",
@@ -102,7 +104,8 @@ local unit_templates = {
 			"StatisticsExtension",
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
-			"PlayerUnitDarknessExtension"
+			"PlayerUnitDarknessExtension",
+			"PlayerHuskVisualEffectsExtension"
 		},
 		husk_extensions_server = {
 			"SimpleHuskInventoryExtension",
@@ -134,7 +137,8 @@ local unit_templates = {
 			"StatisticsExtension",
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
-			"PlayerUnitDarknessExtension"
+			"PlayerUnitDarknessExtension",
+			"PlayerHuskVisualEffectsExtension"
 		}
 	},
 	player_unit_3rd_tutorial = {
@@ -172,7 +176,8 @@ local unit_templates = {
 			"PlayerUnitDarknessExtension",
 			"PlayerUnitSmartTargetingExtension",
 			"PlayerUnitOverchargeExtension",
-			"PlayerSoundEffectExtension"
+			"PlayerSoundEffectExtension",
+			"PlayerUnitVisualEffectsExtension"
 		},
 		self_owned_extensions_server = {
 			"PlayerInputTutorialExtension",
@@ -212,7 +217,8 @@ local unit_templates = {
 			"PlayerUnitDarknessExtension",
 			"PlayerUnitSmartTargetingExtension",
 			"PlayerUnitOverchargeExtension",
-			"PlayerSoundEffectExtension"
+			"PlayerSoundEffectExtension",
+			"PlayerUnitVisualEffectsExtension"
 		},
 		husk_extensions = {
 			"SimpleHuskInventoryExtension",
@@ -236,7 +242,8 @@ local unit_templates = {
 			"StatisticsExtension",
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
-			"PlayerUnitDarknessExtension"
+			"PlayerUnitDarknessExtension",
+			"PlayerHuskVisualEffectsExtension"
 		},
 		husk_extensions_server = {
 			"SimpleHuskInventoryExtension",
@@ -267,7 +274,8 @@ local unit_templates = {
 			"StatisticsExtension",
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
-			"PlayerUnitDarknessExtension"
+			"PlayerUnitDarknessExtension",
+			"PlayerHuskVisualEffectsExtension"
 		}
 	},
 	player_bot_unit = {
@@ -308,7 +316,8 @@ local unit_templates = {
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
 			"PlayerUnitCosmeticExtension",
-			"PlayerUnitOverchargeExtension"
+			"PlayerUnitOverchargeExtension",
+			"PlayerUnitVisualEffectsExtension"
 		},
 		husk_extensions = {
 			"SimpleHuskInventoryExtension",
@@ -333,7 +342,8 @@ local unit_templates = {
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
 			"PlayerUnitCosmeticExtension",
-			"PlayerUnitDarknessExtension"
+			"PlayerUnitDarknessExtension",
+			"PlayerHuskVisualEffectsExtension"
 		}
 	},
 	ai_pet_unit = {

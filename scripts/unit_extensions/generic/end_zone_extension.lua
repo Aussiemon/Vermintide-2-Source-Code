@@ -202,7 +202,7 @@ EndZoneExtension._idle = function (self, dt, t)
 		return 
 	end
 
-	if self._always_activated or self._closest_player <= EndZoneSettings.activate_size*EndZoneSettings.activate_size then
+	if self._always_activated or self._closest_player <= EndZoneSettings.activate_size * EndZoneSettings.activate_size then
 		self._state_data = {
 			timer = 0
 		}
@@ -228,14 +228,14 @@ EndZoneExtension._idle = function (self, dt, t)
 	return 
 end
 EndZoneExtension._open = function (self, dt, t)
-	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size*EndZoneSettings.activate_size) then
+	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size * EndZoneSettings.activate_size) then
 		local animation_time = EndZoneSettings.animation_time or 0.5
 		self._state_data.timer = math.clamp(self._state_data.timer + dt, 0, animation_time)
-		local scale = math.smoothstep(self._state_data.timer/animation_time, 0, 1)
+		local scale = math.smoothstep(self._state_data.timer / animation_time, 0, 1)
 		local node = Unit.node(self._unit, "ap_dome_scaler")
 
 		Unit.set_local_scale(self._unit, node, Vector3(scale, scale, scale))
-		self._set_light_intensity(self, scale*scale*scale)
+		self._set_light_intensity(self, scale * scale * scale)
 
 		if scale == 1 then
 			self._state_data.end_zone_timer = self.end_time(self)
@@ -250,18 +250,18 @@ EndZoneExtension._open = function (self, dt, t)
 	return 
 end
 EndZoneExtension._close = function (self, dt, t)
-	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size*EndZoneSettings.activate_size) then
+	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size * EndZoneSettings.activate_size) then
 		self._state = "_open"
 
 		Unit.flow_event(self._unit, "opening_end_zone")
 	else
 		local animation_time = EndZoneSettings.animation_time or 0.5
 		self._state_data.timer = math.clamp(self._state_data.timer - dt, 0, animation_time)
-		local scale = math.smoothstep(self._state_data.timer/animation_time, 0, 1)
+		local scale = math.smoothstep(self._state_data.timer / animation_time, 0, 1)
 		local node = Unit.node(self._unit, "ap_dome_scaler")
 
 		Unit.set_local_scale(self._unit, node, Vector3(scale, scale, scale))
-		self._set_light_intensity(self, scale*scale*scale)
+		self._set_light_intensity(self, scale * scale * scale)
 
 		if scale == 0 then
 			self._state = "_idle"
@@ -285,14 +285,14 @@ EndZoneExtension._close = function (self, dt, t)
 	return 
 end
 EndZoneExtension._end_mission_check = function (self, dt, t)
-	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size*EndZoneSettings.activate_size) then
+	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size * EndZoneSettings.activate_size) then
 		local inside = nil
 
 		if self._is_server then
 			for player_unit, distance_squared in pairs(self._player_distances) do
 				local status_ext = ScriptUnit.extension(player_unit, "status_system")
 
-				if EndZoneSettings.size*EndZoneSettings.size < distance_squared then
+				if EndZoneSettings.size * EndZoneSettings.size < distance_squared then
 					if not status_ext.is_disabled(status_ext) then
 						inside = false
 					end
@@ -356,9 +356,9 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 		self._drawer:reset()
 
 		if self._is_server then
-			local timer_progress = self.end_time_left(self)/self.end_time(self)
-			local red = math.lerp(0, 1, timer_progress)*255
-			local green = math.lerp(1, 0, timer_progress)*255
+			local timer_progress = self.end_time_left(self) / self.end_time(self)
+			local red = math.lerp(0, 1, timer_progress) * 255
+			local green = math.lerp(1, 0, timer_progress) * 255
 
 			self._drawer:sphere(Unit.local_position(self._unit, 0), 5, Color(red, green, 0), 30, 30)
 		end

@@ -97,11 +97,11 @@ local function create_target_slots(target_unit, target_unit_extension, color_ind
 				index = i,
 				anchor_weight = 0,
 				type = slot_type,
-				radians = math.degrees_to_radians(total_slots_count/360),
+				radians = math.degrees_to_radians(360 / total_slots_count),
 				priority = slot_data.priority,
 				position_check_index = SLOT_POSITION_CHECK_INDEX.CHECK_MIDDLE
 			}
-			local j = (i - 1)%9 + 1
+			local j = (i - 1) % 9 + 1
 			slot.debug_color_name = SLOT_COLORS[color_index][j]
 			slots[i] = slot
 		end
@@ -272,7 +272,7 @@ AISlotSystem.hot_join_sync = function (self, sender, player)
 end
 local AI_UPDATES_PER_FRAME = 1
 local SLOT_QUEUE_RADIUS = 1.75
-local SLOT_QUEUE_RADIUS_SQ = SLOT_QUEUE_RADIUS*SLOT_QUEUE_RADIUS
+local SLOT_QUEUE_RADIUS_SQ = SLOT_QUEUE_RADIUS * SLOT_QUEUE_RADIUS
 local SLOT_QUEUE_RANDOM_POS_MAX_UP = 1.5
 local SLOT_QUEUE_RANDOM_POS_MAX_DOWN = 2
 local SLOT_QUEUE_RANDOM_POS_MAX_HORIZONTAL = 3
@@ -364,14 +364,14 @@ local function get_slot_queue_position(unit_extension_data, slot, nav_world, dis
 	local target_to_ai_distance = Vector3.distance(target_unit_position, ai_unit_position)
 	local queue_distance = SlotSettings[slot_type].queue_distance
 	local slot_queue_distance = target_to_ai_distance + queue_distance + slot_queue_distance_modifier
-	local slot_queue_position = target_unit_position + slot_queue_direction*slot_queue_distance
+	local slot_queue_position = target_unit_position + slot_queue_direction * slot_queue_distance
 	local slot_queue_position_on_navmesh = clamp_position_on_navmesh(slot_queue_position, nav_world)
 	local max_tries = 5
 	local i = 1
 
 	while not slot_queue_position_on_navmesh and i <= max_tries do
-		slot_queue_distance = math.max(target_to_ai_distance*(i/max_tries - 1), slot_distance) + queue_distance + slot_queue_distance_modifier
-		slot_queue_position = target_unit_position + slot_queue_direction*slot_queue_distance
+		slot_queue_distance = math.max(target_to_ai_distance * (1 - i / max_tries), slot_distance) + queue_distance + slot_queue_distance_modifier
+		slot_queue_position = target_unit_position + slot_queue_direction * slot_queue_distance
 		slot_queue_position_on_navmesh = clamp_position_on_navmesh(slot_queue_position, nav_world)
 		i = i + 1
 	end
@@ -380,7 +380,7 @@ local function get_slot_queue_position(unit_extension_data, slot, nav_world, dis
 
 	if not slot_queue_position_on_navmesh then
 		penalty_term = PENALTY_TERM
-		slot_queue_position = target_unit_position + slot_queue_direction*queue_distance
+		slot_queue_position = target_unit_position + slot_queue_direction * queue_distance
 
 		return slot_queue_position, penalty_term
 	else
@@ -402,11 +402,11 @@ local function offset_slot(target_unit, slot_absolute_position, target_unit_posi
 	if 0.1 < Vector3.length(target_velocity) then
 		local speed = Vector3.length(target_velocity)
 		local move_direction = Vector3.normalize(target_velocity)
-		local wanted_slot_offset = move_direction*speed
+		local wanted_slot_offset = move_direction * speed
 		local slot_to_target_dir = Vector3.normalize(target_unit_position - slot_absolute_position)
 		local dot = Vector3.dot(slot_to_target_dir, move_direction)
-		local predict_time = math.max((dot - 0.5)*2, 0)
-		local current_slot_offset = wanted_slot_offset*predict_time
+		local predict_time = math.max(2 * (dot - 0.5), 0)
+		local current_slot_offset = wanted_slot_offset * predict_time
 		local slot_offset_position = slot_absolute_position + current_slot_offset
 
 		return slot_offset_position
@@ -458,7 +458,7 @@ AISlotSystem.improve_slot_position = function (self, ai_unit, t)
 		end
 
 		ai_unit_extension.wait_slot_distance = distance
-		ai_unit_extension.improve_wait_slot_position_t = t + Math.random()*0.4
+		ai_unit_extension.improve_wait_slot_position_t = t + Math.random() * 0.4
 	else
 		return 
 	end
@@ -593,7 +593,7 @@ local function rotate_position_from_origin(origin, position, radians, distance)
 	local direction_vector = Vector3.normalize(Vector3.flat(position - origin))
 	local rotation = Quaternion(-Vector3.up(), radians)
 	local vector = Quaternion.rotate(rotation, direction_vector)
-	local position_rotated = origin + vector*distance
+	local position_rotated = origin + vector * distance
 
 	return position_rotated
 end
@@ -645,7 +645,7 @@ local function get_slot_position_on_navmesh_from_outside_target(target_position,
 	end
 
 	for i = 0, max_tries - 1, 1 do
-		local wanted_position = target_position + slot_direction*(i*dist_per_try + distance)
+		local wanted_position = target_position + slot_direction * (i * dist_per_try + distance)
 		position_on_navmesh = clamp_position_on_navmesh(wanted_position, nav_world, above, below)
 
 		if position_on_navmesh then
@@ -672,7 +672,7 @@ local function get_reachable_slot_position_on_navmesh(slot, target_unit, target_
 			check_position = rotate_position_from_origin(position_on_navmesh, target_position, check_radians, SLOT_RADIUS)
 		end
 
-		local ray_target_pos = target_position + Vector3.normalize(check_position - target_position)*raycango_offset
+		local ray_target_pos = target_position + Vector3.normalize(check_position - target_position) * raycango_offset
 		local ray_can_go = GwNavQueries.raycango(nav_world, check_position, ray_target_pos, traverse_logic)
 
 		if not ray_can_go then
@@ -683,7 +683,7 @@ local function get_reachable_slot_position_on_navmesh(slot, target_unit, target_
 		position_on_navmesh, original_position = get_slot_position_on_navmesh(target_unit, target_position, check_position, radians, distance, should_offset_slot, nav_world, above, below)
 
 		if position_on_navmesh then
-			local ray_target_pos = target_position + Vector3.normalize(position_on_navmesh - target_position)*raycango_offset
+			local ray_target_pos = target_position + Vector3.normalize(position_on_navmesh - target_position) * raycango_offset
 			local ray_can_go = GwNavQueries.raycango(nav_world, position_on_navmesh, ray_target_pos, traverse_logic)
 
 			if ray_can_go then
@@ -695,7 +695,7 @@ local function get_reachable_slot_position_on_navmesh(slot, target_unit, target_
 	end
 
 	if not position_on_navmesh then
-		slot.position_check_index = (slot.position_check_index + 1)%SLOT_POSITION_CHECK_INDEX_SIZE
+		slot.position_check_index = (slot.position_check_index + 1) % SLOT_POSITION_CHECK_INDEX_SIZE
 	end
 
 	return position_on_navmesh, original_position
@@ -716,7 +716,7 @@ local function overlap_with_other_target_slot(slot, target_units, unit_extension
 
 			for slot_type, slot_data in pairs(all_slots) do
 				local radius = SlotSettings[slot_type].radius
-				local overlap_distance_sq = radius*radius
+				local overlap_distance_sq = radius * radius
 				local target_slots = slot_data.slots
 				local total_slots_count = slot_data.total_slots_count
 
@@ -754,7 +754,7 @@ local function overlap_with_own_slots(slot, unit_extension_data)
 		if slot_a_type == slot_b_type then
 		else
 			local slot_b_radius = SlotSettings[slot_b_type].radius
-			local overlap_distance_sq = slot_b_radius*slot_b_radius
+			local overlap_distance_sq = slot_b_radius * slot_b_radius
 			local slots = slot_data.slots
 			local num_slots = slot_data.total_slots_count
 
@@ -783,7 +783,7 @@ local function overlap_with_own_slots(slot, unit_extension_data)
 end
 
 local OVERLAP_SLOT_TO_TARGET_DISTANCE = 1.2
-local OVERLAP_SLOT_TO_TARGET_DISTANCE_SQ = OVERLAP_SLOT_TO_TARGET_DISTANCE*OVERLAP_SLOT_TO_TARGET_DISTANCE
+local OVERLAP_SLOT_TO_TARGET_DISTANCE_SQ = OVERLAP_SLOT_TO_TARGET_DISTANCE * OVERLAP_SLOT_TO_TARGET_DISTANCE
 
 local function overlap_with_other_target(slot, target_units, unit_extension_data)
 	local slot_target_unit = slot.target_unit
@@ -920,8 +920,8 @@ local function set_ghost_position(target_unit_extension, slot, nav_world, traver
 
 		local slot_type = slot.type
 		local slot_distance = SlotSettings[slot_type].distance
-		local ghost_position_distance = slot_distance + ((distance - slot_distance)*(max_tries - i))/max_tries
-		ghost_position = target_unit_position + ghost_position_direction*ghost_position_distance
+		local ghost_position_distance = slot_distance + ((distance - slot_distance) * (max_tries - i)) / max_tries
+		ghost_position = target_unit_position + ghost_position_direction * ghost_position_distance
 		ghost_position_on_navmesh = clamp_position_on_navmesh(ghost_position, nav_world)
 	end
 
@@ -959,7 +959,7 @@ local function update_slot_anchor_weight(slot, target_unit, unit_extension_data)
 
 		if not slot_released then
 			slot.anchor_weight = slot.anchor_weight + score
-			score = score/2
+			score = score / 2
 		end
 	end
 
@@ -983,7 +983,7 @@ local function update_slot_anchor_weight(slot, target_unit, unit_extension_data)
 
 		if not slot_released then
 			slot.anchor_weight = slot.anchor_weight + score
-			score = score/2
+			score = score / 2
 		end
 	end
 
@@ -1009,7 +1009,7 @@ local function update_anchor_weights(target_unit, unit_extension_data)
 end
 
 local RELEASE_SLOT_DISTANCE = 3
-local RELEASE_SLOT_DISTANCE_SQ = RELEASE_SLOT_DISTANCE*RELEASE_SLOT_DISTANCE
+local RELEASE_SLOT_DISTANCE_SQ = RELEASE_SLOT_DISTANCE * RELEASE_SLOT_DISTANCE
 
 local function check_to_release_slot(slot)
 	if slot.disabled then
@@ -1070,7 +1070,7 @@ local function update_anchor_slot_position(slot, unit_extension_data, should_off
 	local direction_vector = (ai_unit and Vector3.normalize(ai_position - target_position)) or Vector3.forward()
 	local slot_type = slot.type
 	local slot_distance = SlotSettings[slot_type].distance
-	local wanted_position = target_position + direction_vector*slot_distance
+	local wanted_position = target_position + direction_vector * slot_distance
 	local position_on_navmesh, original_position = nil
 
 	if target_outside_navmesh then
@@ -1082,8 +1082,8 @@ local function update_anchor_slot_position(slot, unit_extension_data, should_off
 	local i = 0
 
 	while i <= MAX_GET_SLOT_POSITION_TRIES and not position_on_navmesh do
-		local sign = (0 < i%2 and -1) or 1
-		local radians = math.ceil(i/2)*sign
+		local sign = (0 < i % 2 and -1) or 1
+		local radians = math.ceil(i / 2) * sign
 
 		if target_outside_navmesh then
 			position_on_navmesh, original_position = get_slot_position_on_navmesh_from_outside_target(target_position, direction_vector, radians, slot_distance, nav_world, above, below)
@@ -1240,8 +1240,8 @@ local function update_target_slots_positions_on_ladder(target_unit, target_units
 		local slot_offset_dist = 1
 		local ladder_dir = Vector3.normalize(Vector3.flat(Quaternion.forward(Unit.world_rotation(ladder_unit, 0))))
 		local ladder_right = Vector3.cross(ladder_dir, Vector3.up())
-		local top_half = math.floor(total_slots_count/2)
-		local top_anchor_index = math.ceil(top_half/2)
+		local top_half = math.floor(total_slots_count / 2)
+		local top_anchor_index = math.ceil(top_half / 2)
 		local top_anchor_slot = target_slots[top_anchor_index]
 
 		top_anchor_slot.original_absolute_position:store(top)
@@ -1253,7 +1253,7 @@ local function update_target_slots_positions_on_ladder(target_unit, target_units
 
 		for i = top_anchor_index - 1, 1, -1 do
 			local slot = target_slots[i]
-			local new_wanted_pos = last_pos - ladder_right*slot_offset_dist
+			local new_wanted_pos = last_pos - ladder_right * slot_offset_dist
 			success = success and GwNavQueries.raycango(nav_world, last_pos, new_wanted_pos, traverse_logic)
 
 			slot.original_absolute_position:store(new_wanted_pos)
@@ -1268,7 +1268,7 @@ local function update_target_slots_positions_on_ladder(target_unit, target_units
 
 		for i = top_anchor_index + 1, top_half, 1 do
 			local slot = target_slots[i]
-			local new_wanted_pos = last_pos + ladder_right*slot_offset_dist
+			local new_wanted_pos = last_pos + ladder_right * slot_offset_dist
 			success = success and GwNavQueries.raycango(nav_world, last_pos, new_wanted_pos, traverse_logic)
 
 			slot.original_absolute_position:store(new_wanted_pos)
@@ -1276,7 +1276,7 @@ local function update_target_slots_positions_on_ladder(target_unit, target_units
 			update_slot_status(slot, success, target_units, unit_extension_data)
 		end
 
-		local bottom_anchor_index = top_half + math.ceil((total_slots_count - top_half)/2)
+		local bottom_anchor_index = top_half + math.ceil((total_slots_count - top_half) / 2)
 		local bottom_anchor_slot = target_slots[bottom_anchor_index]
 
 		bottom_anchor_slot.original_absolute_position:store(bottom)
@@ -1287,15 +1287,15 @@ local function update_target_slots_positions_on_ladder(target_unit, target_units
 		local above = 1
 		local below = 1
 		local circle_radius = 1
-		local center = bottom + circle_radius*ladder_dir
+		local center = bottom + circle_radius * ladder_dir
 		local right_amount = bottom_anchor_index - 1 - top_half
-		local angle_increment = math.pi/2.5/right_amount
+		local angle_increment = math.pi / 2.5 / right_amount
 		local increment = 1
 
 		for i = bottom_anchor_index - 1, top_half + 1, -1 do
 			local slot = target_slots[i]
-			local angle = math.pi*1.5 + increment*angle_increment
-			local new_wanted_pos = center + circle_radius*(ladder_right*math.cos(angle) + ladder_dir*math.sin(angle))
+			local angle = math.pi * 1.5 + increment * angle_increment
+			local new_wanted_pos = center + circle_radius * (ladder_right * math.cos(angle) + ladder_dir * math.sin(angle))
 			local z = nil
 			success, z = GwNavQueries.triangle_from_position(nav_world, last_pos, above, below)
 
@@ -1311,14 +1311,14 @@ local function update_target_slots_positions_on_ladder(target_unit, target_units
 		end
 
 		local left_amount = total_slots_count - bottom_anchor_index
-		angle_increment = math.pi/2.5/left_amount
+		angle_increment = math.pi / 2.5 / left_amount
 		increment = 1
 		last_pos = bottom
 
 		for i = bottom_anchor_index + 1, total_slots_count, 1 do
 			local slot = target_slots[i]
-			local angle = math.pi*1.5 - increment*angle_increment
-			local new_wanted_pos = center + circle_radius*(ladder_right*math.cos(angle) + ladder_dir*math.sin(angle))
+			local angle = math.pi * 1.5 - increment * angle_increment
+			local new_wanted_pos = center + circle_radius * (ladder_right * math.cos(angle) + ladder_dir * math.sin(angle))
 			local z = nil
 			success, z = GwNavQueries.triangle_from_position(nav_world, last_pos, above, below)
 
@@ -1527,7 +1527,7 @@ local function get_best_slot_to_wait_on(target_unit, ai_unit, unit_extension_dat
 
 			if not slot_queue_position then
 			else
-				local slot_queue_distance = Vector3.distance_squared(slot_queue_position, ai_unit_position) + queue_n*queue_n*SLOT_QUEUE_PENALTY_MULTIPLIER + additional_penalty
+				local slot_queue_distance = Vector3.distance_squared(slot_queue_position, ai_unit_position) + queue_n * queue_n * SLOT_QUEUE_PENALTY_MULTIPLIER + additional_penalty
 
 				if slot_queue_distance < best_distance then
 					best_distance = slot_queue_distance
@@ -1601,7 +1601,7 @@ local function update_slot_sound(is_server, network_transmit, target_units, unit
 				local disabled_slots_count = slot_data.disabled_slots_count
 				local total_slots_count = slot_data.total_slots_count
 				local enabled_slots_count = total_slots_count - disabled_slots_count
-				local percentage_taken = (0 < enabled_slots_count and taken_slots/enabled_slots_count) or 0
+				local percentage_taken = (0 < enabled_slots_count and taken_slots / enabled_slots_count) or 0
 				percentage_taken = math.clamp(percentage_taken, 0, 1)
 
 				if largest_percentage_taken < percentage_taken then
@@ -1621,7 +1621,7 @@ local function update_slot_sound(is_server, network_transmit, target_units, unit
 
 		if is_server_player then
 			if player.local_player then
-				audio_system.set_global_parameter_with_lerp(audio_system, "occupied_slots_percentage", largest_percentage_taken*100)
+				audio_system.set_global_parameter_with_lerp(audio_system, "occupied_slots_percentage", largest_percentage_taken * 100)
 			else
 				local peer_id = player.network_id(player)
 
@@ -1963,7 +1963,7 @@ AISlotSystem.on_add_extension = function (self, world, unit, extension_name, ext
 			local total_slots_count = Unit.get_data(unit, unit_data_var_name) or setting.count
 			local slot_data = {
 				total_slots_count = total_slots_count,
-				slot_radians = math.degrees_to_radians(total_slots_count/360),
+				slot_radians = math.degrees_to_radians(360 / total_slots_count),
 				slots_count = 0,
 				use_wait_slots = setting.use_wait_slots,
 				priority = setting.priority,
@@ -2104,7 +2104,7 @@ function debug_draw_slots(unit_extension_data, nav_world, t)
 		name = "AISlotSystem_immediate"
 	})
 	local targets = global_ai_target_units
-	local z = Vector3.up()*0.1
+	local z = Vector3.up() * 0.1
 
 	for i_target, target_unit in pairs(targets) do
 		if not unit_alive(target_unit) then
@@ -2126,9 +2126,9 @@ function debug_draw_slots(unit_extension_data, nav_world, t)
 						drawer.circle(drawer, target_position + z, 0.45, Vector3.up(), target_color)
 
 						if target_unit_extension.next_slot_status_update_at then
-							local percent = (t - target_unit_extension.next_slot_status_update_at)/SLOT_STATUS_UPDATE_INTERVAL
+							local percent = (t - target_unit_extension.next_slot_status_update_at) / SLOT_STATUS_UPDATE_INTERVAL
 
-							drawer.circle(drawer, target_position + z, percent*0.45, Vector3.up(), target_color)
+							drawer.circle(drawer, target_position + z, 0.45 * percent, Vector3.up(), target_color)
 						end
 
 						for i = 1, target_slots_n, 1 do
@@ -2227,7 +2227,7 @@ function debug_draw_slots(unit_extension_data, nav_world, t)
 									check_position = rotate_position_from_origin(check_position, target_position, radians, SLOT_RADIUS)
 								end
 
-								local ray_from_pos = target_position + Vector3.normalize(check_position - target_position)*RAYCANGO_OFFSET
+								local ray_from_pos = target_position + Vector3.normalize(check_position - target_position) * RAYCANGO_OFFSET
 
 								drawer.line(drawer, ray_from_pos + z, check_position + z, color)
 								drawer.circle(drawer, check_position + z, 0.1, Vector3.up(), Color(255, 0, 255))

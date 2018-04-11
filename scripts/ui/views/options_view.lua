@@ -19,7 +19,7 @@ local function get_slider_value(min, max, value)
 	local range = max - min
 	local norm_value = math.clamp(value, min, max) - min
 
-	return norm_value/range
+	return norm_value / range
 end
 
 local function assigned(a, b)
@@ -256,6 +256,7 @@ OptionsView.init = function (self, ingame_ui_context)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
+	self.is_in_tutorial = ingame_ui_context.is_in_tutorial
 	self.platform = PLATFORM
 	local input_manager = ingame_ui_context.input_manager
 
@@ -275,7 +276,13 @@ OptionsView.init = function (self, ingame_ui_context)
 
 	local input_service = input_manager.get_service(input_manager, "options_menu")
 	local gui_layer = definitions.scenegraph_definition.root.position[3]
-	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_renderer, input_service, 6, gui_layer, generic_input_actions.main_menu.reset)
+	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, 6, gui_layer, generic_input_actions.main_menu.reset)
+
+	self._setup_input_functions(self)
+
+	return 
+end
+OptionsView._setup_input_functions = function (self)
 	self._input_functions = {
 		checkbox = function (widget, input_source, dt)
 			if widget.content.hotspot.on_release then
@@ -343,8 +350,8 @@ OptionsView.init = function (self, ingame_ui_context)
 			local min = content.min
 			local max = content.max
 			local diff = max - min
-			local total_step = diff*10^num_decimals
-			local step = total_step/1
+			local total_step = diff * 10^num_decimals
+			local step = 1 / total_step
 			local input_been_made = false
 
 			if left_hotspot.is_clicked == 0 or left_hotspot.on_release then
@@ -365,11 +372,11 @@ OptionsView.init = function (self, ingame_ui_context)
 
 					if on_cooldown_last_frame then
 						input_cooldown_multiplier = math.max(input_cooldown_multiplier - 0.1, 0.1)
-						content.input_cooldown = math.ease_in_exp(input_cooldown_multiplier)*0.2
+						content.input_cooldown = 0.2 * math.ease_in_exp(input_cooldown_multiplier)
 						content.input_cooldown_multiplier = input_cooldown_multiplier
 					else
 						input_cooldown_multiplier = 1
-						content.input_cooldown = math.ease_in_exp(input_cooldown_multiplier)*0.2
+						content.input_cooldown = 0.2 * math.ease_in_exp(input_cooldown_multiplier)
 						content.input_cooldown_multiplier = input_cooldown_multiplier
 					end
 				elseif callback_on_release and (left_hotspot.on_release or right_hotspot.on_release) then
@@ -638,6 +645,16 @@ OptionsView.create_ui_elements = function (self)
 	end
 
 	self.title_buttons_n = title_buttons_n
+
+	if self.is_in_tutorial then
+		for idx, widget in ipairs(self.title_buttons) do
+			if not TutorialSettingsMenuNavigation[idx] then
+				local content = widget.content
+				content.button_text.disable_button = true
+			end
+		end
+	end
+
 	self.exit_button = UIWidget.init(button_definitions.exit_button)
 	self.apply_button = UIWidget.init(button_definitions.apply_button)
 	self.reset_to_default = UIWidget.init(button_definitions.reset_to_default)
@@ -766,7 +783,7 @@ OptionsView._setup_text_button_size = function (self, widget)
 	end
 
 	if text_style.upper_case then
-		text = string.upper(text)
+		text = TextToUpper(text)
 	end
 
 	local ui_scenegraph = self.ui_scenegraph
@@ -1559,7 +1576,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 
 	if fov then
 		local base_fov = CameraSettings.first_person._node.vertical_fov
-		local fov_multiplier = fov/base_fov
+		local fov_multiplier = fov / base_fov
 		local camera_manager = Managers.state.camera
 
 		if camera_manager then
@@ -1577,7 +1594,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 		local input_filters = player_input_service.get_active_filters(player_input_service, platform_key)
 		local look_filter = input_filters.look
 		local function_data = look_filter.function_data
-		function_data.multiplier = base_look_multiplier*0.85^(-mouse_look_sensitivity)
+		function_data.multiplier = base_look_multiplier * 0.85^(-mouse_look_sensitivity)
 	end
 
 	local mouse_look_invert_y = user_settings.mouse_look_invert_y
@@ -1601,16 +1618,16 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 		local input_filters = player_input_service.get_active_filters(player_input_service, platform_key)
 		local look_filter = input_filters.look_controller
 		local function_data = look_filter.function_data
-		function_data.multiplier_x = base_look_multiplier*0.85^(-gamepad_look_sensitivity)
-		function_data.min_multiplier_x = (base_filter.look_controller.multiplier_min_x and base_filter.look_controller.multiplier_min_x*0.85^(-gamepad_look_sensitivity)) or function_data.multiplier_x*0.25
+		function_data.multiplier_x = base_look_multiplier * 0.85^(-gamepad_look_sensitivity)
+		function_data.min_multiplier_x = (base_filter.look_controller.multiplier_min_x and base_filter.look_controller.multiplier_min_x * 0.85^(-gamepad_look_sensitivity)) or function_data.multiplier_x * 0.25
 		local melee_look_filter = input_filters.look_controller_melee
 		local function_data = melee_look_filter.function_data
-		function_data.multiplier_x = base_melee_look_multiplier*0.85^(-gamepad_look_sensitivity)
-		function_data.min_multiplier_x = (base_filter.look_controller_melee.multiplier_min_x and base_filter.look_controller_melee.multiplier_min_x*0.85^(-gamepad_look_sensitivity)) or function_data.multiplier_x*0.25
+		function_data.multiplier_x = base_melee_look_multiplier * 0.85^(-gamepad_look_sensitivity)
+		function_data.min_multiplier_x = (base_filter.look_controller_melee.multiplier_min_x and base_filter.look_controller_melee.multiplier_min_x * 0.85^(-gamepad_look_sensitivity)) or function_data.multiplier_x * 0.25
 		local ranged_look_filter = input_filters.look_controller_ranged
 		local function_data = ranged_look_filter.function_data
-		function_data.multiplier_x = base_ranged_look_multiplier*0.85^(-gamepad_look_sensitivity)
-		function_data.min_multiplier_x = (base_filter.look_controller_ranged.multiplier_min_x and base_filter.look_controller_ranged.multiplier_min_x*0.85^(-gamepad_look_sensitivity)) or function_data.multiplier_x*0.25
+		function_data.multiplier_x = base_ranged_look_multiplier * 0.85^(-gamepad_look_sensitivity)
+		function_data.min_multiplier_x = (base_filter.look_controller_ranged.multiplier_min_x and base_filter.look_controller_ranged.multiplier_min_x * 0.85^(-gamepad_look_sensitivity)) or function_data.multiplier_x * 0.25
 	end
 
 	local gamepad_look_sensitivity_y = user_settings.gamepad_look_sensitivity_y
@@ -1624,13 +1641,13 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 		local input_filters = player_input_service.get_active_filters(player_input_service, platform_key)
 		local look_filter = input_filters.look_controller
 		local function_data = look_filter.function_data
-		function_data.multiplier_y = base_look_multiplier*0.85^(-gamepad_look_sensitivity_y)
+		function_data.multiplier_y = base_look_multiplier * 0.85^(-gamepad_look_sensitivity_y)
 		local melee_look_filter = input_filters.look_controller_melee
 		local function_data = melee_look_filter.function_data
-		function_data.multiplier_y = base_melee_look_multiplier*0.85^(-gamepad_look_sensitivity_y)
+		function_data.multiplier_y = base_melee_look_multiplier * 0.85^(-gamepad_look_sensitivity_y)
 		local ranged_look_filter = input_filters.look_controller_ranged
 		local function_data = ranged_look_filter.function_data
-		function_data.multiplier_y = base_ranged_look_multiplier*0.85^(-gamepad_look_sensitivity_y)
+		function_data.multiplier_y = base_ranged_look_multiplier * 0.85^(-gamepad_look_sensitivity_y)
 	end
 
 	local gamepad_zoom_sensitivity = user_settings.gamepad_zoom_sensitivity
@@ -1642,8 +1659,8 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 		local input_filters = player_input_service.get_active_filters(player_input_service, platform_key)
 		local look_filter = input_filters.look_controller_zoom
 		local function_data = look_filter.function_data
-		function_data.multiplier_x = base_look_multiplier*0.85^(-gamepad_zoom_sensitivity)
-		function_data.min_multiplier_x = (base_filter.look_controller_zoom.multiplier_min_x and base_filter.look_controller_zoom.multiplier_min_x*0.85^(-gamepad_zoom_sensitivity)) or function_data.multiplier_x*0.25
+		function_data.multiplier_x = base_look_multiplier * 0.85^(-gamepad_zoom_sensitivity)
+		function_data.min_multiplier_x = (base_filter.look_controller_zoom.multiplier_min_x and base_filter.look_controller_zoom.multiplier_min_x * 0.85^(-gamepad_zoom_sensitivity)) or function_data.multiplier_x * 0.25
 	end
 
 	local gamepad_zoom_sensitivity_y = user_settings.gamepad_zoom_sensitivity_y
@@ -1655,7 +1672,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 		local input_filters = player_input_service.get_active_filters(player_input_service, platform_key)
 		local look_filter = input_filters.look_controller_zoom
 		local function_data = look_filter.function_data
-		function_data.multiplier_y = base_look_multiplier*0.85^(-gamepad_zoom_sensitivity_y)
+		function_data.multiplier_y = base_look_multiplier * 0.85^(-gamepad_zoom_sensitivity_y)
 	end
 
 	local gamepad_look_invert_y = user_settings.gamepad_look_invert_y
@@ -1819,7 +1836,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 		local tobii_extended_view_sensitivity = user_settings.tobii_extended_view_sensitivity
 
 		if tobii_extended_view_sensitivity ~= nil then
-			Tobii.set_extended_view_responsiveness(tobii_extended_view_sensitivity/100)
+			Tobii.set_extended_view_responsiveness(tobii_extended_view_sensitivity / 100)
 		end
 
 		local tobii_extended_view_use_head_tracking = user_settings.tobii_extended_view_use_head_tracking
@@ -1827,6 +1844,24 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 		if tobii_extended_view_use_head_tracking ~= nil then
 			Tobii.set_extended_view_use_head_tracking(tobii_extended_view_use_head_tracking)
 		end
+	end
+
+	local twitch_vote_time = user_settings.twitch_vote_time
+
+	if twitch_vote_time then
+		TwitchSettings.default_vote_time = twitch_vote_time
+	end
+
+	local twitch_time_between_votes = user_settings.twitch_time_between_votes
+
+	if twitch_time_between_votes then
+		TwitchSettings.default_downtime = twitch_time_between_votes
+	end
+
+	local twitch_difficulty = user_settings.twitch_difficulty
+
+	if twitch_difficulty then
+		TwitchSettings.difficulty = twitch_difficulty
 	end
 
 	if PLATFORM == "win32" then
@@ -1971,6 +2006,7 @@ OptionsView.update = function (self, dt)
 		local selected_title = self.selected_title
 
 		self.create_ui_elements(self)
+		self._setup_input_functions(self)
 
 		if selected_title then
 			self.select_settings_title(self, selected_title)
@@ -2560,9 +2596,9 @@ OptionsView.update_settings_list = function (self, settings_list, ui_renderer, u
 		temp_pos_table.x = list_position[1] + offset[1]
 		temp_pos_table.y = list_position[2] + offset[2]
 		local lower_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
-		temp_pos_table.y = temp_pos_table.y + size[2]/2
+		temp_pos_table.y = temp_pos_table.y + size[2] / 2
 		local middle_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
-		temp_pos_table.y = temp_pos_table.y + size[2]/2
+		temp_pos_table.y = temp_pos_table.y + size[2] / 2
 		local top_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
 		local visible = lower_visible or top_visible
 		widget.content.visible = visible
@@ -2644,7 +2680,7 @@ OptionsView.update_scrollbar = function (self, settings_list, ui_scenegraph)
 	local scrollbar = self.scrollbar
 	local value = scrollbar.content.scroll_bar_info.value
 	local max_offset_y = settings_list.max_offset_y
-	local offset_y = max_offset_y*value
+	local offset_y = max_offset_y * value
 	local scenegraph = ui_scenegraph[settings_list.scenegraph_id]
 	scenegraph.offset[2] = offset_y
 
@@ -2656,7 +2692,14 @@ OptionsView.handle_title_buttons = function (self, ui_renderer, disable_all_inpu
 
 	for i = 1, title_buttons_n, 1 do
 		local widget = title_buttons[i]
-		widget.content.button_text.disable_button = disable_all_input
+
+		if disable_all_input then
+			widget.content.button_text.disable_button = true
+		elseif self.is_in_tutorial then
+			widget.content.button_text.disable_button = not TutorialSettingsMenuNavigation[i]
+		else
+			widget.content.button_text.disable_button = false
+		end
 
 		UIRenderer.draw_widget(ui_renderer, widget)
 
@@ -2871,7 +2914,7 @@ OptionsView.setup_scrollbar = function (self, settings_list, optional_value)
 	local scenegraph_id = settings_list.scenegraph_id
 	local settings_list_size_y = self.ui_scenegraph[scenegraph_id].size[2]
 	local mask_size_y = self.ui_scenegraph.list_mask.size[2]
-	local percentage = mask_size_y/settings_list_size_y
+	local percentage = mask_size_y / settings_list_size_y
 	scrollbar.content.scroll_bar_info.bar_height_percentage = percentage
 
 	self.set_scrollbar_value(self, optional_value or 0)
@@ -2950,6 +2993,50 @@ OptionsView.change_gamepad_generic_input_action = function (self, reset_input_de
 
 	return 
 end
+OptionsView._find_next_title_tab = function (self)
+	local selected_title = self.selected_title + 1
+	local new_tab_index = nil
+
+	for i = selected_title, self.title_buttons_n, 1 do
+		local widget = self.title_buttons[i]
+
+		if not widget then
+			break
+		end
+
+		local widget_content = widget.content
+
+		if not widget_content.button_text.disable_button then
+			new_tab_index = i
+
+			break
+		end
+	end
+
+	return new_tab_index
+end
+OptionsView._find_previous_title_tab = function (self)
+	local selected_title = self.selected_title - 1
+	local new_tab_index = nil
+
+	for i = selected_title, 1, -1 do
+		local widget = self.title_buttons[i]
+
+		if not widget then
+			break
+		end
+
+		local widget_content = widget.content
+
+		if not widget_content.button_text.disable_button then
+			new_tab_index = i
+
+			break
+		end
+	end
+
+	return new_tab_index
+end
 OptionsView.handle_controller_navigation_input = function (self, dt, input_service)
 	self.change_gamepad_generic_input_action(self)
 
@@ -2968,14 +3055,9 @@ OptionsView.handle_controller_navigation_input = function (self, dt, input_servi
 			local new_tab_index = nil
 
 			if input_service.get(input_service, "cycle_next") then
-				local selected_title = self.selected_title
-				local title_buttons_n = self.title_buttons_n
-				new_tab_index = math.min(selected_title + 1, title_buttons_n)
-				new_tab_index = (new_tab_index ~= selected_title and new_tab_index) or nil
+				new_tab_index = self._find_next_title_tab(self)
 			elseif input_service.get(input_service, "cycle_previous") then
-				local selected_title = self.selected_title
-				new_tab_index = math.max(selected_title - 1, 1)
-				new_tab_index = (new_tab_index ~= selected_title and new_tab_index) or nil
+				new_tab_index = self._find_previous_title_tab(self)
 			end
 
 			if new_tab_index then
@@ -3171,12 +3253,12 @@ OptionsView.move_scrollbar_based_on_selection = function (self, index)
 				local mask_pos_y = mask_pos[2]
 				local widget_pos_y = list_position[2] + base_widget_offset[2]
 				local diff = math.abs(mask_pos_y - widget_pos_y)
-				step = diff/max_offset_y
+				step = diff / max_offset_y
 			else
 				local mask_upper_pos_y = mask_pos[2] + mask_size[2]
 				local widget_upper_pos_y = temp_pos_table.y
 				local diff = math.abs(mask_upper_pos_y - widget_upper_pos_y)
-				step = -(diff/max_offset_y)
+				step = -(diff / max_offset_y)
 			end
 
 			local scrollbar = self.scrollbar
@@ -3262,7 +3344,7 @@ OptionsView.on_stepper_arrow_hover = function (self, widget, style_id)
 	local current_alpha = pass_style.color[1]
 	local target_alpha = 255
 	local total_time = UISettings.scoreboard.topic_hover_duration
-	local animation_duration = (current_alpha/target_alpha - 1)*total_time
+	local animation_duration = (1 - current_alpha / target_alpha) * total_time
 
 	if 0 < animation_duration then
 		local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
@@ -3280,7 +3362,7 @@ OptionsView.on_stepper_arrow_dehover = function (self, widget, style_id)
 	local current_alpha = pass_style.color[1]
 	local target_alpha = 0
 	local total_time = UISettings.scoreboard.topic_hover_duration
-	local animation_duration = current_alpha/255*total_time
+	local animation_duration = current_alpha / 255 * total_time
 
 	if 0 < animation_duration then
 		local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
@@ -5003,7 +5085,7 @@ OptionsView.cb_mouse_look_sensitivity_setup = function (self)
 	local input_filters = input_service.get_active_filters(input_service, platform_key)
 	local look_filter = input_filters.look
 	local function_data = look_filter.function_data
-	function_data.multiplier = base_look_multiplier*0.85^(-sensitivity)
+	function_data.multiplier = base_look_multiplier * 0.85^(-sensitivity)
 
 	return value, min, max, 1, "menu_settings_mouse_look_sensitivity", default_value
 end
@@ -5073,16 +5155,16 @@ OptionsView.cb_gamepad_look_sensitivity_setup = function (self)
 	local input_filters = input_service.get_active_filters(input_service, platform_key)
 	local look_filter = input_filters.look_controller
 	local function_data = look_filter.function_data
-	function_data.multiplier_x = base_look_multiplier*0.85^(-sensitivity)
-	function_data.min_multiplier_x = (base_filter.look_controller.multiplier_min_x and base_filter.look_controller.multiplier_min_x*0.85^(-sensitivity)) or function_data.multiplier_x*0.25
+	function_data.multiplier_x = base_look_multiplier * 0.85^(-sensitivity)
+	function_data.min_multiplier_x = (base_filter.look_controller.multiplier_min_x and base_filter.look_controller.multiplier_min_x * 0.85^(-sensitivity)) or function_data.multiplier_x * 0.25
 	local melee_look_filter = input_filters.look_controller_melee
 	local function_data = melee_look_filter.function_data
-	function_data.multiplier_x = base_melee_look_multiplier*0.85^(-sensitivity)
-	function_data.min_multiplier_x = (base_filter.look_controller_melee.multiplier_min_x and base_filter.look_controller_melee.multiplier_min_x*0.85^(-sensitivity)) or function_data.multiplier_x*0.25
+	function_data.multiplier_x = base_melee_look_multiplier * 0.85^(-sensitivity)
+	function_data.min_multiplier_x = (base_filter.look_controller_melee.multiplier_min_x and base_filter.look_controller_melee.multiplier_min_x * 0.85^(-sensitivity)) or function_data.multiplier_x * 0.25
 	local ranged_look_filter = input_filters.look_controller_ranged
 	local function_data = ranged_look_filter.function_data
-	function_data.multiplier_x = base_ranged_look_multiplier*0.85^(-sensitivity)
-	function_data.min_multiplier_x = (base_filter.look_controller_ranged.multiplier_min_x and base_filter.look_controller_ranged.multiplier_min_x*0.85^(-sensitivity)) or function_data.multiplier_x*0.25
+	function_data.multiplier_x = base_ranged_look_multiplier * 0.85^(-sensitivity)
+	function_data.min_multiplier_x = (base_filter.look_controller_ranged.multiplier_min_x and base_filter.look_controller_ranged.multiplier_min_x * 0.85^(-sensitivity)) or function_data.multiplier_x * 0.25
 
 	return value, min, max, 1, "menu_settings_gamepad_look_sensitivity", default_value
 end
@@ -5118,13 +5200,13 @@ OptionsView.cb_gamepad_look_sensitivity_y_setup = function (self)
 	local input_filters = input_service.get_active_filters(input_service, platform_key)
 	local look_filter = input_filters.look_controller
 	local function_data = look_filter.function_data
-	function_data.multiplier_y = base_look_multiplier*0.85^(-sensitivity)
+	function_data.multiplier_y = base_look_multiplier * 0.85^(-sensitivity)
 	local melee_look_filter = input_filters.look_controller_melee
 	local function_data = melee_look_filter.function_data
-	function_data.multiplier_y = base_melee_look_multiplier*0.85^(-sensitivity)
+	function_data.multiplier_y = base_melee_look_multiplier * 0.85^(-sensitivity)
 	local ranged_look_filter = input_filters.look_controller_ranged
 	local function_data = ranged_look_filter.function_data
-	function_data.multiplier_y = base_ranged_look_multiplier*0.85^(-sensitivity)
+	function_data.multiplier_y = base_ranged_look_multiplier * 0.85^(-sensitivity)
 
 	return value, min, max, 1, "menu_settings_gamepad_look_sensitivity_y", default_value
 end
@@ -5158,8 +5240,8 @@ OptionsView.cb_gamepad_zoom_sensitivity_setup = function (self)
 	local input_filters = input_service.get_active_filters(input_service, platform_key)
 	local look_filter = input_filters.look_controller_zoom
 	local function_data = look_filter.function_data
-	function_data.multiplier_x = base_look_multiplier*0.85^(-sensitivity)
-	function_data.min_multiplier_x = (base_filter.look_controller_zoom.multiplier_min_x and base_filter.look_controller_zoom.multiplier_min_x*0.85^(-sensitivity)) or function_data.multiplier_x*0.25
+	function_data.multiplier_x = base_look_multiplier * 0.85^(-sensitivity)
+	function_data.min_multiplier_x = (base_filter.look_controller_zoom.multiplier_min_x and base_filter.look_controller_zoom.multiplier_min_x * 0.85^(-sensitivity)) or function_data.multiplier_x * 0.25
 
 	return value, min, max, 1, "menu_settings_gamepad_zoom_sensitivity", default_value
 end
@@ -5193,7 +5275,7 @@ OptionsView.cb_gamepad_zoom_sensitivity_y_setup = function (self)
 	local input_filters = input_service.get_active_filters(input_service, platform_key)
 	local look_filter = input_filters.look_controller_zoom
 	local function_data = look_filter.function_data
-	function_data.multiplier_y = base_look_multiplier*0.85^(-sensitivity)
+	function_data.multiplier_y = base_look_multiplier * 0.85^(-sensitivity)
 
 	return value, min, max, 1, "menu_settings_gamepad_zoom_sensitivity_y", default_value
 end
@@ -6535,7 +6617,7 @@ OptionsView.cb_fov_setup = function (self)
 	local fov = Application.user_setting("render_settings", "fov") or base_fov
 	local value = get_slider_value(min, max, fov)
 	fov = math.clamp(fov, min, max)
-	local fov_multiplier = fov/base_fov
+	local fov_multiplier = fov / base_fov
 	local camera_manager = Managers.state.camera
 
 	if camera_manager then
@@ -7284,7 +7366,7 @@ local function get_button_locale_name(controller_type, button_name)
 		button_locale_name = Pad1.button_locale_name(button_index) ~= "" or button_name
 	end
 
-	return (button_locale_name ~= "" and button_locale_name) or string.upper(button_name)
+	return (button_locale_name ~= "" and button_locale_name) or TextToUpper(button_name)
 end
 
 OptionsView.cb_keybind_setup = function (self, keymappings_key, keymappings_table_key, actions)
@@ -7395,6 +7477,164 @@ OptionsView.cb_keybind_changed = function (self, new_key, device, content)
 
 	self.changed_keymaps = true
 	content.selected_key = get_button_locale_name(device, new_key)
+
+	return 
+end
+OptionsView.cb_twitch_vote_time = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	local value = options_values[current_selection]
+	self.changed_user_settings.twitch_vote_time = value
+
+	return 
+end
+OptionsView.cb_twitch_vote_time_setup = function (self)
+	local options = {
+		{
+			text = "30",
+			value = 30
+		},
+		{
+			text = "45",
+			value = 45
+		},
+		{
+			text = "60",
+			value = 60
+		},
+		{
+			text = "75",
+			value = 75
+		},
+		{
+			text = "90",
+			value = 90
+		}
+	}
+	local default_value = DefaultUserSettings.get("user_settings", "twitch_vote_time")
+	local user_settings_value = Application.user_setting("twitch_vote_time")
+	local default_option, selected_option = nil
+
+	for i, option in ipairs(options) do
+		if option.value == user_settings_value then
+			selected_option = i
+		end
+
+		if option.value == default_value then
+			default_option = i
+		end
+	end
+
+	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
+
+	return selected_option or default_option, options, "menu_settings_twitch_vote_time", default_option
+end
+OptionsView.cb_twitch_vote_time_saved_value = function (self, widget)
+	local value = assigned(self.changed_user_settings.twitch_vote_time, Application.user_setting("twitch_vote_time")) or DefaultUserSettings.get("user_settings", "twitch_vote_time")
+	local options_values = widget.content.options_values
+	local selected_option = 1
+
+	for i = 1, #options_values, 1 do
+		if value == options_values[i] then
+			selected_option = i
+
+			break
+		end
+	end
+
+	widget.content.current_selection = selected_option
+
+	return 
+end
+OptionsView.cb_twitch_time_between_votes = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	local value = options_values[current_selection]
+	self.changed_user_settings.twitch_time_between_votes = value
+
+	return 
+end
+OptionsView.cb_twitch_time_between_votes_setup = function (self)
+	local options = {
+		{
+			text = "30",
+			value = 30
+		},
+		{
+			text = "45",
+			value = 45
+		},
+		{
+			text = "60",
+			value = 60
+		},
+		{
+			text = "75",
+			value = 75
+		},
+		{
+			text = "90",
+			value = 90
+		}
+	}
+	local default_value = DefaultUserSettings.get("user_settings", "twitch_time_between_votes")
+	local user_settings_value = Application.user_setting("twitch_time_between_votes")
+	local default_option, selected_option = nil
+
+	for i, option in ipairs(options) do
+		if option.value == user_settings_value then
+			selected_option = i
+		end
+
+		if option.value == default_value then
+			default_option = i
+		end
+	end
+
+	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
+
+	return selected_option or default_option, options, "menu_settings_twitch_time_between_votes", default_option
+end
+OptionsView.cb_twitch_time_between_votes_saved_value = function (self, widget)
+	local value = assigned(self.changed_user_settings.twitch_time_between_votes, Application.user_setting("twitch_time_between_votes")) or DefaultUserSettings.get("user_settings", "twitch_time_between_votes")
+	local options_values = widget.content.options_values
+	local selected_option = 1
+
+	for i = 1, #options_values, 1 do
+		if value == options_values[i] then
+			selected_option = i
+
+			break
+		end
+	end
+
+	widget.content.current_selection = selected_option
+
+	return 
+end
+OptionsView.cb_twitch_difficulty_setup = function (self)
+	local min = 0
+	local max = 100
+	local twitch_difficulty = Application.user_setting("twitch_difficulty") or DefaultUserSettings.get("user_settings", "twitch_difficulty")
+	local default_value = DefaultUserSettings.get("user_settings", "twitch_difficulty")
+	local value = get_slider_value(min, max, twitch_difficulty)
+
+	return value, min, max, 0, "menu_settings_twitch_difficulty", default_value
+end
+OptionsView.cb_twitch_difficulty_saved_value = function (self, widget)
+	local content = widget.content
+	local min = content.min
+	local max = content.max
+	local twitch_difficulty = assigned(self.changed_user_settings.twitch_difficulty, Application.user_setting("twitch_difficulty") or DefaultUserSettings.get("user_settings", "twitch_difficulty"))
+	twitch_difficulty = math.clamp(twitch_difficulty, min, max)
+	content.internal_value = get_slider_value(min, max, twitch_difficulty)
+	content.value = twitch_difficulty
+
+	return 
+end
+OptionsView.cb_twitch_difficulty = function (self, content)
+	local value = content.value
+	self.changed_user_settings.twitch_difficulty = value
 
 	return 
 end

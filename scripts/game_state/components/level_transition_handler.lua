@@ -218,10 +218,10 @@ LevelTransitionHandler.update = function (self)
 end
 LevelTransitionHandler.generate_level_seed = function (self)
 	local t = Managers.time:time("main")
-	local time_since_start = (os.clock()*10000)%961748927
+	local time_since_start = (os.clock() * 10000) % 961748927
 	local date_time = os.time()
 	local low_time = tonumber(tostring(string.format("%d", date_time)):reverse():sub(1, 6))
-	local seed = (time_since_start + low_time)%15485867
+	local seed = (time_since_start + low_time) % 15485867
 	seed = math.floor(seed)
 	self.level_seed = seed
 

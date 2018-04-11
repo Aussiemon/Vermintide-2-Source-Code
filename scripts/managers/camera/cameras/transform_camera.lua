@@ -19,9 +19,9 @@ TransformCamera.parse_parameters = function (self, camera_settings, parent_node)
 end
 TransformCamera.update = function (self, dt, position, rotation, data)
 	local offset_position = self._offset_position
-	local offset_x = offset_position.x*Quaternion.right(rotation)
-	local offset_y = offset_position.y*Quaternion.forward(rotation)
-	local offset_z = offset_position.z*Quaternion.up(rotation)
+	local offset_x = offset_position.x * Quaternion.right(rotation)
+	local offset_y = offset_position.y * Quaternion.forward(rotation)
+	local offset_z = offset_position.z * Quaternion.up(rotation)
 	position = position + offset_x + offset_y + offset_z
 
 	BaseCamera.update(self, dt, position, rotation, data)

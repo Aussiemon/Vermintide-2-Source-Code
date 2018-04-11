@@ -20,6 +20,7 @@ end
 PlayerUnitAttachmentExtension.extensions_ready = function (self, world, unit)
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self.career_extension = ScriptUnit.extension(unit, "career_system")
+	self._cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
 	local attachments = self._attachments
 	local profile = self._profile
 	local attachment_slots = InventorySettings.attachment_slots
@@ -141,28 +142,40 @@ PlayerUnitAttachmentExtension.get_slot_data = function (self, slot_id)
 
 	return slots[slot_id]
 end
+PlayerUnitAttachmentExtension._show_attachment = function (self, slot_name, slot_data, show)
+	local should_show = show
+	local always_hide = self._cosmetic_extension:always_hide_attachment_slot(slot_name)
+
+	if always_hide then
+		should_show = false
+	end
+
+	local unit = slot_data.unit
+
+	Unit.set_unit_visibility(unit, should_show)
+
+	if should_show then
+		Unit.flow_event(unit, "lua_attachment_unhidden")
+
+		local item_data = slot_data.item_data
+		local item_template = BackendUtils.get_item_template(item_data)
+		local show_attachments_event = item_template.show_attachments_event
+
+		if show_attachments_event then
+			Unit.flow_event(self._unit, show_attachments_event)
+		end
+	else
+		Unit.flow_event(unit, "lua_attachment_hidden")
+	end
+
+	return 
+end
 PlayerUnitAttachmentExtension.show_attachments = function (self, show)
 	local slots = self._attachments.slots
 
 	for slot_name, slot_data in pairs(slots) do
 		if slot_data.unit then
-			local unit = slot_data.unit
-
-			Unit.set_unit_visibility(unit, show)
-
-			if show then
-				Unit.flow_event(unit, "lua_attachment_unhidden")
-
-				local item_data = slot_data.item_data
-				local item_template = BackendUtils.get_item_template(item_data)
-				local show_attachments_event = item_template.show_attachments_event
-
-				if show_attachments_event then
-					Unit.flow_event(self._unit, show_attachments_event)
-				end
-			else
-				Unit.flow_event(unit, "lua_attachment_hidden")
-			end
+			self._show_attachment(self, slot_name, slot_data, show)
 		end
 	end
 

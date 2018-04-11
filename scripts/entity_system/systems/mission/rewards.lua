@@ -77,16 +77,21 @@ Rewards._mission_results = function (self, game_won)
 
 		local mission_complete_reward = {
 			text = "mission_completed_" .. difficulty,
-			experience = EXPERIENCE_REWARD*self.difficulty_experience_multiplier(self)
+			experience = EXPERIENCE_REWARD * self.difficulty_experience_multiplier(self)
 		}
 
 		table.insert(mission_results, 1, mission_complete_reward)
 	else
 		local mission_system = Managers.state.entity:system("mission_system")
 		local completed_distance = mission_system.percentage_completed(mission_system) or 0
+
+		if difficulty_rank <= 2 then
+			completed_distance = math.clamp(completed_distance, 0.25, 1)
+		end
+
 		local mission_failed_reward = {
 			text = "mission_failed_" .. difficulty,
-			experience = EXPERIENCE_REWARD*self.difficulty_experience_multiplier(self)*math.clamp(completed_distance, 0.25, math.huge)
+			experience = EXPERIENCE_REWARD * self.difficulty_experience_multiplier(self) * completed_distance
 		}
 
 		table.insert(mission_results, 1, mission_failed_reward)
@@ -132,19 +137,19 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 			local token_type = data.token_type
 
 			if data.evaluation_type == "percent" then
-				local percent_completed = amount*100
+				local percent_completed = amount * 100
 				local experience_per_percent = data.experience_per_percent or 0
 				local dice_per_percent = data.dice_per_percent or 0
 				local tokens_per_percent = data.tokens_per_percent or 0
-				experience = math.ceil(percent_completed*experience_per_percent)
-				bonus_dice = math.floor(percent_completed*dice_per_percent)
-				bonus_tokens = math.floor(percent_completed*tokens_per_percent)
+				experience = math.ceil(percent_completed * experience_per_percent)
+				bonus_dice = math.floor(percent_completed * dice_per_percent)
+				bonus_tokens = math.floor(percent_completed * tokens_per_percent)
 
 				if 0 < experience then
 					mission_rewards_n = mission_rewards_n + 1
 					mission_rewards[mission_rewards_n] = {
 						text = data.mission_data.text,
-						experience = experience*self.difficulty_experience_multiplier(self)
+						experience = experience * self.difficulty_experience_multiplier(self)
 					}
 				end
 			elseif data.evaluation_type == "amount" then
@@ -152,15 +157,15 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 				local experience_per_amount = data.experience_per_amount or 0
 				local dice_per_amount = data.dice_per_amount or 0
 				local tokens_per_amount = data.tokens_per_amount or 0
-				experience = collected_amount*experience_per_amount
-				bonus_dice = collected_amount*dice_per_amount
-				bonus_tokens = collected_amount*tokens_per_amount
+				experience = collected_amount * experience_per_amount
+				bonus_dice = collected_amount * dice_per_amount
+				bonus_tokens = collected_amount * tokens_per_amount
 
 				if 0 < experience then
 					mission_rewards_n = mission_rewards_n + 1
 					mission_rewards[mission_rewards_n] = {
 						text = data.mission_data.text,
-						experience = experience*self.difficulty_experience_multiplier(self)
+						experience = experience * self.difficulty_experience_multiplier(self)
 					}
 				end
 			end

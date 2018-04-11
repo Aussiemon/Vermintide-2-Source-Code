@@ -147,22 +147,22 @@ MenuGuiSettings = {
 	},
 	multiply_color_alpha = function (color, alpha)
 		local a, r, g, b = unpack(color)
-		a = a*alpha
+		a = a * alpha
 
 		return Color(a, r, g, b)
 	end,
 	multiply_color = function (color, amount)
 		local a, r, g, b = unpack(color)
 
-		return Color(a, r, g*amount, b*amount)
+		return Color(a, r, g * amount, b * amount)
 	end
 }
 
 local function convert(value)
-	value[1] = value[1]*255
-	value[2] = (value[2]%360*256)/360
-	value[3] = (value[3]*255)/4
-	value[4] = (value[4]*255)/4
+	value[1] = value[1] * 255
+	value[2] = (value[2] % 360 * 256) / 360
+	value[3] = (value[3] * 255) / 4
+	value[4] = (value[4] * 255) / 4
 
 	return 
 end

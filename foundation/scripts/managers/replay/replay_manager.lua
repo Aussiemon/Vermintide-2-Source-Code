@@ -90,7 +90,7 @@ ReplayManager.move_to_current_frame = function (self)
 				teller.set_speed(teller, self._current_story_id, 0)
 			end
 
-			teller.set_time(teller, self._current_story_id, (self._frame - self._stories[self._current_story_index].framestart)*self._frame_time)
+			teller.set_time(teller, self._current_story_id, (self._frame - self._stories[self._current_story_index].framestart) * self._frame_time)
 		end
 	end
 

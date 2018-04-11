@@ -101,7 +101,7 @@ local scenegraph_definition = {
 		size = game_option_size,
 		position = {
 			0,
-			-(game_option_size[2] + 16)*2 - 16,
+			-(game_option_size[2] + 16) * 2 - 16,
 			2
 		}
 	},
@@ -112,7 +112,7 @@ local scenegraph_definition = {
 		size = game_option_size,
 		position = {
 			0,
-			-(game_option_size[2] + 16)*3 - 16,
+			-(game_option_size[2] + 16) * 3 - 16,
 			2
 		}
 	},
@@ -344,7 +344,8 @@ local widgets = {
 	game_option_1 = UIWidgets.create_window_category_button("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_adventure_title"), "options_button_icon_quickplay", "menu_options_button_image_02"),
 	game_option_2 = UIWidgets.create_window_category_button("game_option_2", scenegraph_definition.game_option_2.size, Localize("start_game_window_specific_title"), "options_button_icon_custom", "menu_options_button_image_04"),
 	game_option_3 = UIWidgets.create_window_category_button("game_option_3", scenegraph_definition.game_option_3.size, Localize("start_game_window_mutator_title"), "options_button_icon_deed", "menu_options_button_image_05"),
-	game_option_4 = UIWidgets.create_default_image_button("game_option_5", scenegraph_definition.game_option_5.size, nil, nil, Localize("start_game_window_lobby_browser"), 28),
+	game_option_4 = UIWidgets.create_window_category_button("game_option_4", scenegraph_definition.game_option_4.size, Localize("start_game_window_twitch"), "options_button_icon_twitch"),
+	game_option_5 = UIWidgets.create_default_image_button("game_option_5", scenegraph_definition.game_option_5.size, nil, nil, Localize("start_game_window_lobby_browser"), 28, "lobby_browser_icon"),
 	game_options_left_chain = UIWidgets.create_tiled_texture("game_options_left_chain", "chain_link_01", {
 		16,
 		19
@@ -390,7 +391,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

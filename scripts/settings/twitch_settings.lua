@@ -1,8 +1,7 @@
-TwitchSettings = {
+TwitchSettings = TwitchSettings or {
 	max_diff = 200,
 	initial_downtime = 60,
-	default_vote_time = 30,
-	default_downtime = 30,
+	cutoff_for_guaranteed_positive_vote = -200,
 	default_draw_vote = "twitch_vote_draw",
 	funds = 0,
 	standard_vote = {
@@ -45,6 +44,8 @@ fassert(min_diff <= TwitchSettings.max_diff, "[TwitchSettings] The minimum diffe
 TwitchVoteTemplatesLookup = {}
 TwitchMultipleChoiceVoteTemplatesLookup = {}
 TwitchStandardVoteTemplatesLookup = {}
+TwitchPositiveStandardVoteTemplatesLookup = {}
+TwitchNegativeStandardVoteTemplatesLookup = {}
 
 for name, template in pairs(TwitchVoteTemplates) do
 	TwitchVoteTemplatesLookup[#TwitchVoteTemplatesLookup + 1] = name
@@ -56,6 +57,14 @@ for name, template in pairs(TwitchVoteTemplates) do
 	else
 		TwitchStandardVoteTemplatesLookup[#TwitchStandardVoteTemplatesLookup + 1] = name
 		TwitchStandardVoteTemplatesLookup[name] = #TwitchStandardVoteTemplatesLookup
+
+		if template.cost < 0 then
+			TwitchPositiveStandardVoteTemplatesLookup[#TwitchPositiveStandardVoteTemplatesLookup + 1] = name
+			TwitchPositiveStandardVoteTemplatesLookup[name] = #TwitchPositiveStandardVoteTemplatesLookup
+		else
+			TwitchNegativeStandardVoteTemplatesLookup[#TwitchNegativeStandardVoteTemplatesLookup + 1] = name
+			TwitchNegativeStandardVoteTemplatesLookup[name] = #TwitchNegativeStandardVoteTemplatesLookup
+		end
 	end
 end
 

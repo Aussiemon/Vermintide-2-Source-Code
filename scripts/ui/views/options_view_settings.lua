@@ -687,6 +687,24 @@ if rawget(_G, "LightFX") then
 	}
 end
 
+gameplay_settings_definition[#gameplay_settings_definition + 1] = {
+	setup = "cb_twitch_vote_time_setup",
+	saved_value = "cb_twitch_vote_time_saved_value",
+	callback = "cb_twitch_vote_time",
+	tooltip_text = "tooltip_twitch_vote_time",
+	widget_type = "drop_down"
+}
+gameplay_settings_definition[#gameplay_settings_definition + 1] = {
+	setup = "cb_twitch_time_between_votes_setup",
+	saved_value = "cb_twitch_time_between_votes_saved_value",
+	callback = "cb_twitch_time_between_votes",
+	tooltip_text = "tooltip_twitch_time_between_votes",
+	widget_type = "drop_down"
+}
+gameplay_settings_definition[#gameplay_settings_definition + 1] = {
+	size_y = 110,
+	widget_type = "empty"
+}
 local display_settings_definition = {
 	{
 		size_y = 30,
@@ -1050,6 +1068,10 @@ local gamepad_settings_definition = {
 		widget_type = "stepper"
 	},
 	{
+		size_y = 30,
+		widget_type = "empty"
+	},
+	{
 		setup = "cb_gamepad_look_sensitivity_setup",
 		saved_value = "cb_gamepad_look_sensitivity_saved_value",
 		callback = "cb_gamepad_look_sensitivity",
@@ -1057,11 +1079,41 @@ local gamepad_settings_definition = {
 		widget_type = "slider"
 	},
 	{
+		size_y = 10,
+		widget_type = "empty"
+	},
+	{
+		setup = "cb_gamepad_look_sensitivity_y_setup",
+		saved_value = "cb_gamepad_look_sensitivity_y_saved_value",
+		callback = "cb_gamepad_look_sensitivity_y",
+		tooltip_text = "tooltip_gamepad_look_sensitivity_xb1",
+		widget_type = "slider"
+	},
+	{
+		size_y = 30,
+		widget_type = "empty"
+	},
+	{
 		setup = "cb_gamepad_zoom_sensitivity_setup",
 		saved_value = "cb_gamepad_zoom_sensitivity_saved_value",
 		callback = "cb_gamepad_zoom_sensitivity",
 		tooltip_text = "tooltip_gamepad_zoom_sensitivity",
 		widget_type = "slider"
+	},
+	{
+		size_y = 10,
+		widget_type = "empty"
+	},
+	{
+		setup = "cb_gamepad_zoom_sensitivity_y_setup",
+		saved_value = "cb_gamepad_zoom_sensitivity_y_saved_value",
+		callback = "cb_gamepad_zoom_sensitivity_y",
+		tooltip_text = "tooltip_gamepad_zoom_sensitivity_xb1",
+		widget_type = "slider"
+	},
+	{
+		size_y = 30,
+		widget_type = "empty"
 	},
 	{
 		setup = "cb_gamepad_auto_aim_enabled_setup",
@@ -1197,6 +1249,15 @@ SettingsMenuNavigation = {
 	"keybind_settings",
 	"gamepad_settings",
 	"network_settings"
+}
+TutorialSettingsMenuNavigation = {
+	true,
+	true,
+	true,
+	true,
+	true,
+	true,
+	true
 }
 local title_button_definitions = {
 	[#title_button_definitions + 1] = UIWidgets.create_text_button("settings_button_1", "settings_view_gameplay", 18),

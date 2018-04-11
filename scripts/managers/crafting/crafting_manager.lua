@@ -40,13 +40,22 @@ CraftingManager.craft = function (self, items)
 	local career_index = player.career_index(player)
 	local career = careers[career_index]
 	local career_name = career.name
-	local craft_id = crafting_interface.craft(crafting_interface, career_name, item_backend_ids)
+	local craft_id, recipe = crafting_interface.craft(crafting_interface, career_name, item_backend_ids)
 
-	if craft_id then
+	if craft_id and recipe then
 		local stats_id = player.stats_id(player)
 		local statistics_db = player_manager.statistics_db(player_manager)
 
-		statistics_db.increment_stat(statistics_db, stats_id, "crafted_items")
+		if recipe.name == "salvage" then
+			local salvaged_items = statistics_db.get_persistent_stat(statistics_db, stats_id, "salvaged_items")
+			salvaged_items = salvaged_items + #items
+
+			statistics_db.set_stat(statistics_db, stats_id, "salvaged_items", salvaged_items)
+		else
+			statistics_db.increment_stat(statistics_db, stats_id, "crafted_items")
+		end
+
+		Managers.backend:commit()
 	end
 
 	return craft_id
@@ -60,6 +69,18 @@ CraftingManager.debug_set_crafted_items_stat = function (self, value)
 	statistics_db.set_stat(statistics_db, stats_id, "crafted_items", value)
 	Managers.backend:commit()
 	print("Number of crafted items set to", value)
+
+	return 
+end
+CraftingManager.debug_set_salvaged_items_stat = function (self, value)
+	local player_manager = Managers.player
+	local player = player_manager.local_player(player_manager)
+	local stats_id = player.stats_id(player)
+	local statistics_db = player_manager.statistics_db(player_manager)
+
+	statistics_db.set_stat(statistics_db, stats_id, "salvaged_items", value)
+	Managers.backend:commit()
+	print("Number of salvaged items set to", value)
 
 	return 
 end

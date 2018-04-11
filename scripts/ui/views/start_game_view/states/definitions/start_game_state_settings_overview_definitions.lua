@@ -6,7 +6,7 @@ local small_window_spacing = window_default_settings.spacing
 local large_window_frame = window_default_settings.large_window_frame
 local large_window_frame_width = UIFrameSettings[large_window_frame].texture_sizes.vertical[1]
 local inner_window_size = {
-	small_window_size[1]*3 + small_window_spacing*2 + large_window_frame_width*2,
+	small_window_size[1] * 3 + small_window_spacing * 2 + large_window_frame_width * 2,
 	small_window_size[2] + 80
 }
 local window_size = {

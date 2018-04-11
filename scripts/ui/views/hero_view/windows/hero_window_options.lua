@@ -3,6 +3,7 @@ local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
+local HERO_POWER_EFFECT_DURATION = 1
 HeroWindowOptions = class(HeroWindowOptions)
 HeroWindowOptions.NAME = "HeroWindowOptions"
 HeroWindowOptions.on_enter = function (self, params, offset)
@@ -10,7 +11,7 @@ HeroWindowOptions.on_enter = function (self, params, offset)
 
 	self.parent = params.parent
 	local ingame_ui_context = params.ingame_ui_context
-	self.ui_renderer = ingame_ui_context.ui_renderer
+	self.ui_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
@@ -46,7 +47,6 @@ HeroWindowOptions.on_enter = function (self, params, offset)
 		cosmetics = widgets_by_name.game_option_4,
 		loot_chest = widgets_by_name.game_option_5
 	}
-	widgets_by_name.game_option_4.content.button_hotspot.disable_button = true
 
 	return 
 end
@@ -97,6 +97,7 @@ HeroWindowOptions.update = function (self, dt, t)
 	self._update_selected_option(self)
 	self._update_loadout_sync(self)
 	self._update_animations(self, dt)
+	self._update_hero_power_effect(self, dt)
 	self.draw(self, dt)
 
 	return 
@@ -194,7 +195,8 @@ HeroWindowOptions._handle_input = function (self, dt, t)
 	elseif self._is_button_pressed(self, widgets_by_name.game_option_4) then
 		self.parent:set_layout(4)
 	elseif self._is_button_pressed(self, widgets_by_name.game_option_5) then
-		self.parent.parent:requested_screen_change_by_name("loot")
+		self._play_sound(self, "play_gui_lobby_button_00_custom")
+		self.parent:requested_screen_change_by_name("loot")
 	end
 
 	return 
@@ -216,7 +218,7 @@ HeroWindowOptions._update_game_options_hover_effect = function (self, dt)
 
 	UIWidgetUtils.animate_default_button(widgets_by_name.game_option_5, dt)
 
-	if self._is_button_hover_enter(self, widgets_by_name.game_option_5) then
+	if self._is_button_hover_enter(self, widgets_by_name.game_option_5) or self._is_button_hover_enter(self, widgets_by_name.hero_power_tooltip) then
 		self._play_sound(self, "play_gui_equipment_button_hover")
 	end
 
@@ -277,7 +279,7 @@ HeroWindowOptions._update_experience_presentation = function (self)
 	local is_max_level = level == ExperienceSettings.max_level
 	local experience_bar_default_size = scenegraph_definition.experience_bar.size
 	local experience_bar_size = self.ui_scenegraph.experience_bar.size
-	experience_bar_size[1] = math.ceil(experience_bar_default_size[1]*progress)
+	experience_bar_size[1] = math.ceil(experience_bar_default_size[1] * progress)
 	local text = Localize("level") .. " " .. tostring(level)
 
 	if is_max_level and extra_levels and 0 < extra_levels then
@@ -299,7 +301,42 @@ HeroWindowOptions._calculate_power_level = function (self)
 	local total_power_level = BackendUtils.get_total_power_level(hero_name, career_name)
 	local presentable_hero_power_level = UIUtils.presentable_hero_power_level(total_power_level)
 	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.power_text.content.text = tostring(presentable_hero_power_level)
+	local content = widgets_by_name.power_text.content
+	local play_effect = content.power and content.power < presentable_hero_power_level
+
+	if play_effect then
+		self._hero_power_effect_time = HERO_POWER_EFFECT_DURATION
+	end
+
+	content.power = presentable_hero_power_level
+	content.text = tostring(presentable_hero_power_level)
+
+	return 
+end
+local power_default_color = Colors.get_color_table_with_alpha("white", 255)
+local power_increase_color = Colors.get_color_table_with_alpha("font_title", 255)
+HeroWindowOptions._update_hero_power_effect = function (self, dt)
+	local hero_power_effect_time = self._hero_power_effect_time
+
+	if hero_power_effect_time then
+		hero_power_effect_time = math.max(hero_power_effect_time - dt, 0)
+		local progress = 1 - hero_power_effect_time / HERO_POWER_EFFECT_DURATION
+		local anim_progress = math.easeOutCubic(progress)
+		local pulse_progress = math.ease_pulse(anim_progress)
+		local widgets_by_name = self._widgets_by_name
+		local effect_style = widgets_by_name.hero_power_tooltip.style.effect
+		effect_style.angle = math.degrees_to_radians(120 * anim_progress)
+		effect_style.color[1] = 255 * pulse_progress
+		local text_style = widgets_by_name.power_text.style.text
+
+		Colors.lerp_color_tables(power_default_color, power_increase_color, pulse_progress, text_style.text_color)
+
+		if progress == 1 then
+			self._hero_power_effect_time = nil
+		else
+			self._hero_power_effect_time = hero_power_effect_time
+		end
+	end
 
 	return 
 end
@@ -389,7 +426,7 @@ HeroWindowOptions._get_text_height = function (self, ui_renderer, size, ui_style
 	local max_texts = #texts
 	local num_texts = math.min(#texts - text_start_index - 1, max_texts)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min))*inv_scale*num_texts
+	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 
 	return full_font_height
 end
@@ -429,7 +466,7 @@ HeroWindowOptions._create_style_animation_enter = function (self, widget, target
 	local current_color_value = pass_style.color[1]
 	local target_color_value = target_value
 	local total_time = 0.2
-	local animation_duration = (current_color_value/target_color_value - 1)*total_time
+	local animation_duration = (1 - current_color_value / target_color_value) * total_time
 
 	if 0 < animation_duration and not instant then
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)
@@ -447,7 +484,7 @@ HeroWindowOptions._create_style_animation_exit = function (self, widget, target_
 	local current_color_value = pass_style.color[1]
 	local target_color_value = target_value
 	local total_time = 0.2
-	local animation_duration = current_color_value/255*total_time
+	local animation_duration = current_color_value / 255 * total_time
 
 	if 0 < animation_duration and not instant then
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)
@@ -483,27 +520,27 @@ HeroWindowOptions._animate_option_button = function (self, widget, dt)
 	local input_speed = 20
 
 	if input_pressed then
-		input_progress = math.min(input_progress + dt*input_speed, 1)
+		input_progress = math.min(input_progress + dt * input_speed, 1)
 	else
-		input_progress = math.max(input_progress - dt*input_speed, 0)
+		input_progress = math.max(input_progress - dt * input_speed, 0)
 	end
 
 	local input_easing_out_progress = math.easeOutCubic(input_progress)
 	local input_easing_in_progress = math.easeInCubic(input_progress)
 
 	if is_hover then
-		hover_progress = math.min(hover_progress + dt*speed, 1)
+		hover_progress = math.min(hover_progress + dt * speed, 1)
 	else
-		hover_progress = math.max(hover_progress - dt*speed, 0)
+		hover_progress = math.max(hover_progress - dt * speed, 0)
 	end
 
 	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
 	local hover_easing_in_progress = math.easeInCubic(hover_progress)
 
 	if is_selected then
-		selection_progress = math.min(selection_progress + dt*speed, 1)
+		selection_progress = math.min(selection_progress + dt * speed, 1)
 	else
-		selection_progress = math.max(selection_progress - dt*speed, 0)
+		selection_progress = math.max(selection_progress - dt * speed, 0)
 	end
 
 	local select_easing_out_progress = math.easeOutCubic(selection_progress)
@@ -511,10 +548,10 @@ HeroWindowOptions._animate_option_button = function (self, widget, dt)
 	local combined_progress = math.max(hover_progress, selection_progress)
 	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
-	local input_alpha = input_progress*255
-	style.button_clicked_rect.color[1] = input_progress*100
-	style.hover_glow.color[1] = combined_progress*255
-	local select_alpha = selection_progress*255
+	local input_alpha = 255 * input_progress
+	style.button_clicked_rect.color[1] = 100 * input_progress
+	style.hover_glow.color[1] = 255 * combined_progress
+	local select_alpha = 255 * selection_progress
 	style.select_glow.color[1] = select_alpha
 	style.icon_selected.color[1] = select_alpha
 	style.skull_select_glow.color[1] = select_alpha
@@ -522,9 +559,9 @@ HeroWindowOptions._animate_option_button = function (self, widget, dt)
 	local text_disabled_style = style.button_text_disabled
 	local disabled_default_text_color = text_disabled_style.default_text_color
 	local disabled_text_color = text_disabled_style.text_color
-	disabled_text_color[2] = disabled_default_text_color[2]*0.4
-	disabled_text_color[3] = disabled_default_text_color[3]*0.4
-	disabled_text_color[4] = disabled_default_text_color[4]*0.4
+	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
+	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
+	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
 	local button_text_style = style.button_text
 	local button_text_color = button_text_style.text_color
 	local default_text_color = button_text_style.default_text_color
@@ -539,9 +576,9 @@ HeroWindowOptions._animate_option_button = function (self, widget, dt)
 	local background_icon_style = style.background_icon
 	local background_icon_color = background_icon_style.color
 	local background_icon_default_color = background_icon_style.default_color
-	background_icon_color[2] = background_icon_default_color[2] + combined_progress*(background_icon_default_color[2] - 255)
-	background_icon_color[3] = background_icon_default_color[3] + combined_progress*(background_icon_default_color[3] - 255)
-	background_icon_color[4] = background_icon_default_color[4] + combined_progress*(background_icon_default_color[4] - 255)
+	background_icon_color[2] = background_icon_default_color[2] + combined_progress * (255 - background_icon_default_color[2])
+	background_icon_color[3] = background_icon_default_color[3] + combined_progress * (255 - background_icon_default_color[3])
+	background_icon_color[4] = background_icon_default_color[4] + combined_progress * (255 - background_icon_default_color[4])
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress

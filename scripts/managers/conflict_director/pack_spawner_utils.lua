@@ -62,7 +62,7 @@ PackSpawnerUtils.spawn_in_circle = function (breed_pack, pack_size, pos)
 		end
 
 		angle = start_angle
-		local radius = i/2
+		local radius = i / 2
 		local start_point = Vector3(radius, 0, 5)
 		local points_left = total_points - points_found
 
@@ -73,8 +73,8 @@ PackSpawnerUtils.spawn_in_circle = function (breed_pack, pack_size, pos)
 				return total_points, spawn_pack
 			end
 
-			local offset_x = math.random(-1, 1)/10
-			local offset_y = math.random(-radius, radius)/10
+			local offset_x = math.random(-1, 1) / 10
+			local offset_y = math.random(-radius, radius) / 10
 			start_point = start_point + Vector3(offset_x, offset_y, 0)
 			local pos_offset = Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(angle)), start_point)
 			local unit_position = PackSpawnerUtils.modify_spawn_position(pos_offset, pos)
@@ -120,8 +120,8 @@ PackSpawnerUtils.spawn_random_pack = function (breed_pack, pos, mesh)
 		local attempts = 0
 
 		while attempts < 10 do
-			local offset_x = (math.random() - 0.5)*spawn_range*2
-			local offset_y = (math.random() - 0.5)*spawn_range*2
+			local offset_x = (math.random() - 0.5) * spawn_range * 2
+			local offset_y = (math.random() - 0.5) * spawn_range * 2
 			local unit_position = PackSpawnerUtils.modify_spawn_position(Vector2(offset_x, offset_y), pos)
 
 			if not PackSpawnerUtils.check_unit_overlap(unit_position, spawn_pack, i) then

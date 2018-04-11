@@ -144,23 +144,28 @@ BackendInterfaceHeroAttributesPlayFab.save = function (self, save_callback)
 		}
 	}
 
-	local function request_callback(result)
+	local function request_callback(on_complete, result)
 		if result.Error then
 			Application.warning("Error saving hero attributes!")
 			table.dump(result, "PlayFabError", math.huge)
-			save_callback(false)
+			save_callback(on_complete, false)
 		else
 			table.clear(self._attributes_to_save)
 			print("Hero attributes saved!")
-			save_callback(true)
+			save_callback(on_complete, true)
 		end
 
 		return 
 	end
 
-	PlayFabClientApi.ExecuteCloudScript(request, request_callback, request_callback)
+	return {
+		payload = table.clone(request),
+		callback = function (payload, on_complete)
+			PlayFabClientApi.ExecuteCloudScript(payload, callback(request_callback, on_complete), callback(request_callback, on_complete))
 
-	return true
+			return 
+		end
+	}
 end
 
 return 

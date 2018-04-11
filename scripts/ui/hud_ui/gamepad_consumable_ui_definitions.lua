@@ -264,7 +264,7 @@ local animations = {
 				local anim_fraction = math.easeInCubic(progress)
 				local widget = widgets[1]
 				local highlight_color = widget.style.texture_highlight.color
-				local alpha = anim_fraction*255
+				local alpha = 255 * anim_fraction
 				highlight_color[1] = alpha
 
 				return 

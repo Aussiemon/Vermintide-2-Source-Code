@@ -165,7 +165,7 @@ PickupSystem.remove_pickups_due_to_crossroads = function (self, removed_path_dis
 		for i = 1, #spawners, 1 do
 			local spawner_unit = spawners[i]
 			local percentage_through_level = Unit.get_data(spawner_unit, "percentage_through_level")
-			local travel_dist = percentage_through_level*total_main_path_length
+			local travel_dist = percentage_through_level * total_main_path_length
 
 			for j = 1, num_removed_dist_pairs, 1 do
 				local dist_pair = removed_path_distances[j]
@@ -242,11 +242,15 @@ PickupSystem.populate_pickups = function (self, checkpoint_data)
 	self.spawn_guarenteed_pickups(self)
 
 	local primary_pickup_settings = pickup_settings.primary or pickup_settings
-	seed = self.spawn_spread_pickups(self, primary_pickup_spawners, primary_pickup_settings, comparator, seed)
+	seed = self.spawn_spread_pickups(self, primary_pickup_spawners, primary_pickup_settings, comparator, seed, 1)
 	local secondary_pickup_settings = pickup_settings.secondary
 
 	if secondary_pickup_settings then
-		seed = self.spawn_spread_pickups(self, secondary_pickup_spawners, secondary_pickup_settings, comparator, seed)
+		seed = self.spawn_spread_pickups(self, secondary_pickup_spawners, secondary_pickup_settings, comparator, seed, 2)
+	end
+
+	if script_data.debug_pickup_spawners then
+		self.debug_draw_spread_pickups(self)
 	end
 
 	return 
@@ -254,7 +258,7 @@ end
 local pickups_to_spawn = {}
 local section_spawners = {}
 local used_spawners = {}
-PickupSystem.spawn_spread_pickups = function (self, spawners, pickup_settings, comparator, seed)
+PickupSystem.spawn_spread_pickups = function (self, spawners, pickup_settings, comparator, seed, priority)
 	table.sort(spawners, comparator)
 
 	for pickup_type, value in pairs(pickup_settings) do
@@ -290,10 +294,19 @@ PickupSystem.spawn_spread_pickups = function (self, spawners, pickup_settings, c
 		end
 
 		local num_sections = #pickups_to_spawn
-		local section_size = num_sections/1
+		local section_size = 1 / num_sections
 		local section_start_point = 0
 		local section_end_point = 0
 		local spawn_debt = 0
+
+		if 2 <= #spawners then
+			local first_spawner_percentage_through_level = Unit.get_data(spawners[1], "percentage_through_level")
+			local last_spawner_percentage_through_level = Unit.get_data(spawners[#spawners], "percentage_through_level")
+			local section_scale = 1 - first_spawner_percentage_through_level - 1 - last_spawner_percentage_through_level
+			local section_start_point_offset = first_spawner_percentage_through_level
+			section_size = section_scale / num_sections
+			section_start_point = section_start_point_offset
+		end
 
 		for i = 1, num_sections, 1 do
 			table.clear(section_spawners)
@@ -308,6 +321,10 @@ PickupSystem.spawn_spread_pickups = function (self, spawners, pickup_settings, c
 
 				if (section_start_point <= percentage_through_level and percentage_through_level < section_end_point) or (num_sections == i and percentage_through_level == 1) then
 					section_spawners[#section_spawners + 1] = spawner_unit
+
+					if script_data.debug_pickup_spawners then
+						self._debug_add_spread_pickup_spawner(self, pickup_type, i, spawner_unit, priority)
+					end
 				end
 			end
 
@@ -316,7 +333,7 @@ PickupSystem.spawn_spread_pickups = function (self, spawners, pickup_settings, c
 
 			if 0 < num_section_spawners and 0 <= spawn_debt then
 				local remaining_sections = num_sections - i + 1
-				local pickups_in_section = math.min(math.ceil(spawn_debt/remaining_sections) + 1, num_section_spawners)
+				local pickups_in_section = math.min(1 + math.ceil(spawn_debt / remaining_sections), num_section_spawners)
 				local rnd = nil
 				seed, rnd = Math.next_random(seed)
 				local bonus_spawn = remaining_sections ~= 1 and pickups_in_section == 1 and rnd < NearPickupSpawnChance[pickup_type]
@@ -355,8 +372,11 @@ PickupSystem.spawn_spread_pickups = function (self, spawners, pickup_settings, c
 								local spawner_extension = ScriptUnit.extension(spawner_unit, "pickup_system")
 								local position, rotation, full = spawner_extension.get_spawn_location_data(spawner_extension)
 								local spawn_type = "spawner"
+								local pickup_unit = self._spawn_pickup(self, settings, pickup_name, position, rotation, false, spawn_type)
 
-								self._spawn_pickup(self, settings, pickup_name, position, rotation, false, spawn_type)
+								if script_data.debug_pickup_spawners and pickup_unit then
+									self._debug_add_spread_pickup(self, spawner_unit, pickup_type)
+								end
 
 								num_spawned_pickups_in_section = num_spawned_pickups_in_section + 1
 								selected_spawner = spawner_unit
@@ -406,6 +426,177 @@ PickupSystem.spawn_spread_pickups = function (self, spawners, pickup_settings, c
 	end
 
 	return seed
+end
+PickupSystem._debug_add_spread_pickup_spawner = function (self, pickup_type, section_index, spawner_unit, priority)
+	local spawners = self._debug_spread_pickup_spawners
+
+	if not spawners then
+		spawners = {}
+		self._debug_spread_pickup_spawners = spawners
+	end
+
+	local spawners_by_priority = spawners[priority]
+
+	if not spawners_by_priority then
+		spawners_by_priority = {}
+		spawners[priority] = spawners_by_priority
+	end
+
+	local spawners_by_type = spawners_by_priority[pickup_type]
+
+	if not spawners_by_type then
+		spawners_by_type = {}
+		spawners_by_priority[pickup_type] = spawners_by_type
+	end
+
+	local spawners_by_type_and_section = spawners_by_type[section_index]
+
+	if not spawners_by_type_and_section then
+		spawners_by_type_and_section = {}
+		spawners_by_type[section_index] = spawners_by_type_and_section
+	end
+
+	spawners_by_type_and_section[#spawners_by_type_and_section + 1] = spawner_unit
+
+	return 
+end
+PickupSystem._debug_add_spread_pickup = function (self, spawner_unit, pickup_type)
+	local pickups = self._debug_spread_pickups
+
+	if not pickups then
+		pickups = {}
+		self._debug_spread_pickups = pickups
+	end
+
+	pickups[spawner_unit] = pickup_type
+
+	return 
+end
+PickupSystem.debug_draw_spread_pickups = function (self)
+	if not script_data.debug_pickup_spawners then
+		Application.warning("The debug_pickup_spawners option must be set to true from the debug menu when using this feature")
+
+		return 
+	end
+
+	local spawners = self._debug_spread_pickup_spawners
+	local pickups = self._debug_spread_pickups
+	local draw_mode = self._debug_spread_pickups_draw_mode
+
+	if not spawners then
+		return 
+	end
+
+	if draw_mode then
+		draw_mode = draw_mode + 1
+	else
+		draw_mode = 0
+	end
+
+	local pickup_type_colors = {
+		healing = Colors.get("yellow"),
+		potions = Colors.get("orange"),
+		level_events = Colors.get("red"),
+		ammo = Colors.get("green"),
+		grenades = Colors.get("blue"),
+		improved_grenades = Colors.get("cyan"),
+		special = Colors.get("magenta"),
+		lorebook_pages = Colors.get("white"),
+		undefined = Colors.get("black")
+	}
+	local section_colors = {
+		Colors.get("orange"),
+		Colors.get("pink"),
+		Colors.get("yellow"),
+		Colors.get("red"),
+		Colors.get("light_green"),
+		Colors.get("blue"),
+		Colors.get("cyan"),
+		Colors.get("magenta"),
+		Colors.get("white")
+	}
+	local drawer = Managers.state.debug:drawer({
+		mode = "retained",
+		name = "debug_spread_pickups"
+	})
+
+	drawer.reset(drawer)
+
+	if 0 < draw_mode then
+		local pickup_type_cnt = 0
+		local found_type = false
+
+		for priority, pickup_types in ipairs(spawners) do
+			if found_type then
+				break
+			end
+
+			for pickup_type, sections in pairs(pickup_types) do
+				pickup_type_cnt = pickup_type_cnt + 1
+
+				if pickup_type_cnt == draw_mode then
+					local section_color_index = 0
+
+					for _, spawner_units in pairs(sections) do
+						section_color_index = section_color_index + 1
+
+						if #section_colors < section_color_index then
+							section_color_index = 1
+						end
+
+						local section_color = section_colors[section_color_index]
+
+						for _, spawner_unit in ipairs(spawner_units) do
+							local spawner_extension = ScriptUnit.extension(spawner_unit, "pickup_system")
+							local position, _, _ = spawner_extension.get_spawn_location_data(spawner_extension)
+
+							drawer.line(drawer, position, position + Vector3(0, 0, 20), section_color)
+
+							if pickups and pickups[spawner_unit] == pickup_type then
+								drawer.sphere(drawer, position + Vector3(0, 0, 20), 0.6, section_color)
+							end
+						end
+					end
+
+					found_type = true
+
+					print("Drawing pickup spawner sections for \"" .. pickup_type .. "\" of priority " .. priority)
+
+					break
+				end
+			end
+		end
+
+		if not found_type then
+			draw_mode = 0
+		end
+	end
+
+	if draw_mode == 0 then
+		print("Drawing all spawners colored by pickup type")
+
+		for priority, pickup_types in ipairs(spawners) do
+			for pickup_type, sections in pairs(pickup_types) do
+				for _, spawner_units in pairs(sections) do
+					for _, spawner_unit in ipairs(spawner_units) do
+						local spawner_extension = ScriptUnit.extension(spawner_unit, "pickup_system")
+						local position, _, _ = spawner_extension.get_spawn_location_data(spawner_extension)
+						local color = pickup_type_colors[pickup_type] or pickup_type_colors.undefined
+
+						drawer.line(drawer, position, position + Vector3(0, 0, 20), color)
+
+						if pickups and pickups[spawner_unit] then
+							drawer.sphere(drawer, position + Vector3(0, 0, 20), 0.6, color)
+						end
+					end
+				end
+			end
+		end
+	end
+
+	self._debug_spread_pickups_draw_mode = draw_mode
+
+	return 
 end
 PickupSystem.spawn_guarenteed_pickups = function (self)
 	local spawners = self.guaranteed_pickup_spawners
@@ -559,7 +750,7 @@ PickupSystem._check_teleporting_pickup_line_of_sight = function (self, unit)
 
 			if MAX_RAY_DIST < length then
 			elseif MIN_RAY_DIST < length then
-				local direction = diff/length
+				local direction = diff / length
 				local hit = PhysicsWorld.immediate_raycast(physics_world, head_height_pos, direction, length, "closest", "collision_filter", "filter_player_mover")
 
 				if not hit then
@@ -816,10 +1007,10 @@ PickupSystem.debug_show_pickups = function (self, dt, t)
 	local spawned_pickups = self._spawned_pickups
 	local local_position = Unit.local_position
 	local color = Color(45, 245, 100)
-	local step = (math.pi*2)/6
+	local step = (2 * math.pi) / 6
 
 	for i = 1, spiral_segments, 1 do
-		spiral[i] = Vector3(math.sin(t*6 + i*step)*0.3, math.cos(t*6 + i*step)*0.5, (i - 1)*4)
+		spiral[i] = Vector3(math.sin(t * 6 + i * step) * 0.3, math.cos(t * 6 + i * step) * 0.5, (i - 1) * 4)
 	end
 
 	for k, unit in pairs(spawned_pickups) do

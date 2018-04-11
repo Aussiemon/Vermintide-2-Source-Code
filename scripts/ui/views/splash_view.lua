@@ -100,15 +100,6 @@ local scenegraph_definition = {
 			203
 		}
 	},
-	autodesk_splash = {
-		vertical_alignment = "center",
-		parent = "background",
-		horizontal_alignment = "center",
-		size = {
-			1200,
-			195
-		}
-	},
 	bld_splash_partners = {
 		vertical_alignment = "center",
 		parent = "background",
@@ -118,16 +109,72 @@ local scenegraph_definition = {
 			1080
 		}
 	},
+	autodesk_splash = {
+		vertical_alignment = "center",
+		parent = "bld_splash_partners",
+		horizontal_alignment = "center",
+		size = {
+			385,
+			90
+		},
+		position = {
+			-400,
+			300,
+			0
+		}
+	},
+	partner_splash_umbra = {
+		vertical_alignment = "center",
+		parent = "bld_splash_partners",
+		horizontal_alignment = "center",
+		size = {
+			313,
+			128
+		},
+		position = {
+			-400,
+			0,
+			0
+		}
+	},
+	partner_splash_wwise = {
+		vertical_alignment = "center",
+		parent = "bld_splash_partners",
+		horizontal_alignment = "center",
+		size = {
+			315,
+			93
+		},
+		position = {
+			-400,
+			-300,
+			0
+		}
+	},
+	partner_splash_simplygon = {
+		vertical_alignment = "center",
+		parent = "bld_splash_partners",
+		horizontal_alignment = "center",
+		size = {
+			150,
+			107
+		},
+		position = {
+			400,
+			300,
+			0
+		}
+	},
 	partner_splash_dobly = {
-		vertical_alignment = "top",
-		parent = "partner_splash_dts",
-		horizontal_alignment = "left",
+		vertical_alignment = "center",
+		parent = "bld_splash_partners",
+		horizontal_alignment = "center",
 		size = {
 			314,
 			80
 		},
 		position = {
-			-450,
+			400,
 			0,
 			0
 		}
@@ -141,22 +188,8 @@ local scenegraph_definition = {
 			88
 		},
 		position = {
-			0,
-			230,
-			0
-		}
-	},
-	partner_splash_umbra = {
-		vertical_alignment = "top",
-		parent = "partner_splash_dts",
-		horizontal_alignment = "right",
-		size = {
-			313,
-			128
-		},
-		position = {
-			450,
-			0,
+			400,
+			-300,
 			0
 		}
 	},
@@ -185,34 +218,6 @@ local scenegraph_definition = {
 		position = {
 			0,
 			-240,
-			0
-		}
-	},
-	partner_splash_wwise = {
-		vertical_alignment = "bottom",
-		parent = "partner_splash_dts",
-		horizontal_alignment = "right",
-		size = {
-			315,
-			93
-		},
-		position = {
-			452,
-			-232,
-			0
-		}
-	},
-	partner_splash_simplygon = {
-		vertical_alignment = "center",
-		parent = "bld_splash_partners",
-		horizontal_alignment = "center",
-		size = {
-			150,
-			107
-		},
-		position = {
-			-225,
-			-230,
 			0
 		}
 	},
@@ -295,32 +300,39 @@ local splash_content = {
 		}
 	},
 	{
-		scenegraph_id = "autodesk_splash",
-		type = "texture",
-		axis = 2,
-		time = 3,
-		text_vertical_alignment = "bottom",
-		spacing = 5,
-		text_horizontal_alignment = "center",
-		pixel_perfect = false,
-		dynamic_font = false,
-		direction = 1,
 		texts_scenegraph_id = "texts",
+		scenegraph_id = "bld_splash_partners",
+		time = 3,
+		type = "texture",
+		font_size = 13,
+		pixel_perfect = false,
+		partner_splash = true,
+		text_horizontal_alignment = "center",
+		dynamic_font = false,
+		spacing = 5,
+		text_vertical_alignment = "bottom",
 		font_type = "hell_shark",
 		localize = true,
-		font_size = 13,
-		material_name = "autodesk_splash",
-		texts = {
-			"adsk_legal_1"
-		},
-		size = {
-			1920,
-			13
+		texture_materials = {
+			"autodesk_splash",
+			"umbra",
+			"wwise",
+			"simplygon",
+			"dolby",
+			"dts"
 		},
 		offset = {
 			0,
-			55,
+			110,
 			0
+		},
+		texture_scenegraph_ids = {
+			"autodesk_splash",
+			"partner_splash_umbra",
+			"partner_splash_wwise",
+			"partner_splash_simplygon",
+			"partner_splash_dobly",
+			"partner_splash_dts"
 		}
 	}
 }
@@ -432,10 +444,10 @@ SplashView._update_texture = function (self, gui, dt)
 	dt = math.min(dt, 0.03333333333333333)
 
 	if total_time - 0.5 < timer then
-		local value = (timer - total_time - 0.5)/0.5*255
+		local value = 255 * (timer - total_time - 0.5) / 0.5
 		self._current_widget.style.foreground.color[1] = value
 	elseif timer <= 0.5 then
-		local value = (timer/0.5 - 1)*255
+		local value = 255 * (1 - timer / 0.5)
 		self._current_widget.style.foreground.color[1] = value
 	else
 		self._current_widget.style.foreground.color[1] = 0

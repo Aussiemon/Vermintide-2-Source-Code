@@ -206,7 +206,7 @@ TitleMainUI._handle_menu_input = function (self, dt, t)
 
 	if navigation_allowed then
 		if input_service.get(input_service, "down") then
-			current_index = current_index%#self._menu_widgets + 1
+			current_index = 1 + current_index % #self._menu_widgets
 
 			self._play_sound(self, "hud_menu_select")
 		elseif input_service.get(input_service, "up") then
@@ -498,9 +498,9 @@ TitleMainUI.anim_select_button = function (self, animation_data, index, dt)
 		return 
 	end
 
-	animation_data.timer = animation_data.timer or animation_data.progress*MENU_ITEM_FADE_IN
+	animation_data.timer = animation_data.timer or animation_data.progress * MENU_ITEM_FADE_IN
 	animation_data.timer = animation_data.timer + dt
-	animation_data.progress = math.clamp(animation_data.timer/MENU_ITEM_FADE_IN, 0, 1)
+	animation_data.progress = math.clamp(animation_data.timer / MENU_ITEM_FADE_IN, 0, 1)
 	local menu_item = self._menu_widgets[index]
 	local item_disabled = menu_item.content.disabled
 	local color = (item_disabled and Colors.color_definitions.gray) or Colors.color_definitions.cheeseburger
@@ -529,9 +529,9 @@ TitleMainUI.anim_deselect_button = function (self, animation_data, index, dt, op
 	local progress = 0
 
 	if not optional_progress then
-		animation_data.timer = animation_data.timer or animation_data.progress*MENU_ITEM_FADE_OUT
+		animation_data.timer = animation_data.timer or animation_data.progress * MENU_ITEM_FADE_OUT
 		animation_data.timer = animation_data.timer - dt
-		animation_data.progress = math.clamp(animation_data.timer/MENU_ITEM_FADE_OUT, 0, 1)
+		animation_data.progress = math.clamp(animation_data.timer / MENU_ITEM_FADE_OUT, 0, 1)
 		progress = animation_data.progress
 	else
 		progress = optional_progress
@@ -546,7 +546,7 @@ TitleMainUI.anim_deselect_button = function (self, animation_data, index, dt, op
 	menu_item.style.text.text_color[4] = math.lerp(color[4], select_color[4], math.smoothstep(progress, 0, 1))
 
 	if optional_progress then
-		menu_item.style.text.font_size = menu_button_font_size*(progress - 1)
+		menu_item.style.text.font_size = menu_button_font_size * (1 - progress)
 	else
 		menu_item.style.text.font_size = math.lerp(menu_item.style.text.font_size, menu_button_font_size, math.easeInCubic(progress))
 	end
@@ -564,7 +564,7 @@ TitleMainUI._get_word_wrap_size = function (self, localized_text, text_style, te
 	local lines = UIRenderer.word_wrap(self._ui_renderer, localized_text, font[1], scaled_font_size, text_area_width)
 	local text_width, text_height = self._get_text_size(self, localized_text, text_style)
 
-	return text_width, text_height*#lines
+	return text_width, text_height * #lines
 end
 TitleMainUI._add_menu_item_animation = function (self, index, func)
 	self._menu_item_animations[index] = {
@@ -636,14 +636,14 @@ TitleMainUI._animate_lock = function (self, dt)
 	local lock_middle_bottom = widget.lock_middle_bottom
 	local speed = 3
 	local angle = self._lock_angle or 0
-	angle = angle + dt*speed
+	angle = angle + dt * speed
 
 	if self._show_menu_when_ready then
 		if moduluse_value < angle then
 			angle = 0
 		end
 	else
-		angle = angle%moduluse_value
+		angle = angle % moduluse_value
 	end
 
 	lock_outer_top.style.texture_id.angle = angle

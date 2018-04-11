@@ -86,8 +86,8 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 			local angle = action.launch_angle or 0.7
 			local speed = missile_data.magic_missile_speed
 			target_dir = Quaternion.rotate(Quaternion.axis_angle(Vector3.cross(target_dir, Vector3.up()), angle), target_dir)
-			local up = Vector3.cross(target_dir, Vector3.up())*(math.random()*2 - 1)*0.25
-			local right = Vector3.cross(target_dir, Vector3.right())*(math.random()*2 - 1)*0.25
+			local up = Vector3.cross(target_dir, Vector3.up()) * (1 - 2 * math.random()) * 0.25
+			local right = Vector3.cross(target_dir, Vector3.right()) * (1 - 2 * math.random()) * 0.25
 			local target_dir = Vector3.normalize(target_dir + up + right)
 
 			self.launch_magic_missile(self, blackboard, action, throw_pos, target_dir, angle, speed, unit, blackboard.target_unit, nil, missile_data)

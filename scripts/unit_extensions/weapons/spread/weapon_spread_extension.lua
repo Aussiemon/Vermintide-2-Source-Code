@@ -104,8 +104,8 @@ WeaponSpreadExtension.update = function (self, unit, input, dt, context, t)
 		new_yaw = owner_buff_extension.apply_buffs_to_value(owner_buff_extension, new_yaw, StatBuffIndex.REDUCED_SPREAD_MOVING)
 	end
 
-	current_pitch = math.lerp(current_pitch, new_pitch, dt*lerp_speed_pitch)
-	current_yaw = math.lerp(current_yaw, new_yaw, dt*lerp_speed_yaw)
+	current_pitch = math.lerp(current_pitch, new_pitch, dt * lerp_speed_pitch)
+	current_yaw = math.lerp(current_yaw, new_yaw, dt * lerp_speed_yaw)
 
 	if current_state ~= new_state then
 		self.current_state = new_state
@@ -156,15 +156,15 @@ end
 WeaponSpreadExtension.get_max_pitch_rotation = function (self, roll_rotation)
 	local current_pitch = self.current_pitch
 	local current_yaw = self.current_yaw
-	local x = current_yaw*math.cos(roll_rotation)
-	local y = current_pitch*math.sin(roll_rotation)
+	local x = current_yaw * math.cos(roll_rotation)
+	local y = current_pitch * math.sin(roll_rotation)
 	local length = Vector3.length(Vector3(x, y, 0))
 
 	if length < 1e-05 then
 		return 0
 	end
 
-	local max_pitch_rotation = (current_pitch*current_yaw)/length
+	local max_pitch_rotation = (current_pitch * current_yaw) / length
 
 	return math.degrees_to_radians(max_pitch_rotation)
 end
@@ -187,8 +187,8 @@ WeaponSpreadExtension.reset_spread_template = function (self)
 	return 
 end
 WeaponSpreadExtension.get_randomised_spread = function (self, current_rotation)
-	local rand_roll_rotation = math.random()*math.pi*2
-	local pitch = math.random()*self.get_max_pitch_rotation(self, rand_roll_rotation)
+	local rand_roll_rotation = math.random() * math.pi * 2
+	local pitch = math.random() * self.get_max_pitch_rotation(self, rand_roll_rotation)
 	local final_rotation = self.combine_spread_rotations(self, rand_roll_rotation, pitch, current_rotation)
 
 	return final_rotation
@@ -201,20 +201,20 @@ WeaponSpreadExtension.get_target_style_spread = function (self, original_current
 	local current_shot = (bullseye and original_current_shot - 1) or original_current_shot
 	local max_shots = (bullseye and original_max_shots - 1) or original_max_shots
 	local layers_of_shots = num_layers_spread or 1
-	local shot_roll_current_angle = layers_of_shots*current_shot/max_shots
-	local shot_roll_spread_modifier = layers_of_shots/max_shots
-	local roll_modifier = ((math.random()*0.3 + 0.85)*shot_roll_spread_modifier*2 + shot_roll_current_angle) - shot_roll_spread_modifier
-	local rand_roll_rotation = roll_modifier*math.pi*2
+	local shot_roll_current_angle = layers_of_shots * current_shot / max_shots
+	local shot_roll_spread_modifier = layers_of_shots / max_shots
+	local roll_modifier = ((0.85 + 0.3 * math.random()) * shot_roll_spread_modifier * 2 + shot_roll_current_angle) - shot_roll_spread_modifier
+	local rand_roll_rotation = roll_modifier * math.pi * 2
 	local max_pitch_rotation = self.get_max_pitch_rotation(self, rand_roll_rotation)
-	local random_pitch_scale = math.sqrt(math.random()*0.5 + 0.25)
+	local random_pitch_scale = math.sqrt(0.25 + 0.5 * math.random())
 
-	if layers_of_shots == 2 and current_shot <= max_shots/layers_of_shots then
-		random_pitch_scale = random_pitch_scale*(spread_pitch or 0.8)/2
+	if layers_of_shots == 2 and current_shot <= max_shots / layers_of_shots then
+		random_pitch_scale = random_pitch_scale * (spread_pitch or 0.8) / 2
 	else
-		random_pitch_scale = random_pitch_scale*(spread_pitch or 0.8)
+		random_pitch_scale = random_pitch_scale * (spread_pitch or 0.8)
 	end
 
-	local rand_pitch_rotation = random_pitch_scale*max_pitch_rotation
+	local rand_pitch_rotation = random_pitch_scale * max_pitch_rotation
 	local final_rotation = self.combine_spread_rotations(self, rand_roll_rotation, rand_pitch_rotation, current_rotation)
 
 	return final_rotation

@@ -296,7 +296,7 @@ NewsFeedUI._update_alignment = function (self, dt)
 	end
 
 	alignment_duration = math.max(alignment_duration - dt, 0)
-	local progress = alignment_duration/ALIGNMENT_DURATION_TIME
+	local progress = alignment_duration / ALIGNMENT_DURATION_TIME
 	local anim_progress = math.easeCubic(progress)
 
 	if progress == 1 then
@@ -313,7 +313,7 @@ NewsFeedUI._update_alignment = function (self, dt)
 		local widget_offset = widget.offset
 		local current_position = data.current_position
 		local diff = current_position - widget_target_position
-		widget_offset[2] = current_position - diff*(anim_progress - 1)
+		widget_offset[2] = current_position - diff * (1 - anim_progress)
 		widget_target_position = widget_target_position - vertical_spacing
 	end
 
@@ -334,7 +334,7 @@ NewsFeedUI._update_state_animations = function (self, dt)
 			local progress = 0
 
 			if state == ANIM_STATE_ENTER then
-				progress = anim_duration/ENTER_DURATION_TIME - 1
+				progress = 1 - anim_duration / ENTER_DURATION_TIME
 
 				if progress == 1 then
 					data.anim_duration = nil
@@ -342,7 +342,7 @@ NewsFeedUI._update_state_animations = function (self, dt)
 					data.anim_duration = anim_duration
 				end
 			elseif state == ANIM_STATE_EXIT then
-				progress = anim_duration/ENTER_DURATION_TIME
+				progress = anim_duration / ENTER_DURATION_TIME
 
 				if progress == 0 then
 					data.anim_duration = nil
@@ -376,14 +376,14 @@ NewsFeedUI._animate_widget = function (self, widget, state, progress)
 	local anim_progress = 0
 
 	if state == ANIM_STATE_ENTER then
-		anim_progress = math.easeCubic(math.min(progress*2, 1))
+		anim_progress = math.easeCubic(math.min(progress * 2, 1))
 	else
 		anim_progress = math.easeCubic(progress)
 	end
 
 	local horizontal_diztance = 100
-	offset[1] = anim_progress*horizontal_diztance - 100
-	local alpha = anim_progress*255
+	offset[1] = 100 - anim_progress * horizontal_diztance
+	local alpha = anim_progress * 255
 	style.text.text_color[1] = alpha
 	style.text_shadow.text_color[1] = alpha
 	style.title_text.text_color[1] = alpha
@@ -394,11 +394,11 @@ NewsFeedUI._animate_widget = function (self, widget, state, progress)
 
 	if state == ANIM_STATE_ENTER then
 		local effect_progress = math.ease_pulse(progress)
-		effect_color[1] = effect_progress*255
-		effect_style.offset[1] = offset[1] - 120
+		effect_color[1] = effect_progress * 255
+		effect_style.offset[1] = 120 - offset[1]
 		local degrees = 75
 		local rotation_progress = math.easeCubic(progress)
-		effect_style.angle = math.degrees_to_radians(degrees*rotation_progress)
+		effect_style.angle = math.degrees_to_radians(degrees * rotation_progress)
 	elseif alpha < effect_color[1] then
 		effect_color[1] = alpha
 	end

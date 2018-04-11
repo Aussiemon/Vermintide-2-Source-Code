@@ -63,7 +63,7 @@ BTTransformAction.transform = function (self, unit, blackboard)
 		local original_hp_percentage = ScriptUnit.extension(unit, "health_system"):current_health_percent()
 		local health_extension = ScriptUnit.extension(transformed_unit, "health_system")
 		local max_health = health_extension.get_max_health(health_extension)
-		local damage = max_health*(original_hp_percentage - 1)
+		local damage = max_health * (1 - original_hp_percentage)
 
 		health_extension.set_current_damage(health_extension, damage)
 

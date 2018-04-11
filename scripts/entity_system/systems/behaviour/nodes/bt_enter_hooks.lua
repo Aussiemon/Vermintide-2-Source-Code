@@ -86,6 +86,18 @@ BTEnterHooks.on_grey_seer_intro_enter = function (unit, blackboard, t)
 
 	return 
 end
+BTEnterHooks.grey_seer_death_sequence_teleport = function (unit, blackboard, t)
+	local index = blackboard.current_death_sequence_index or 1
+	local teleport_position = blackboard.death_sequence_positions[index]
+
+	if teleport_position then
+		blackboard.quick_teleport_exit_pos = Vector3Box(teleport_position.unbox(teleport_position))
+		blackboard.quick_teleport = true
+		blackboard.current_death_sequence_index = index + 1
+	end
+
+	return 
+end
 BTEnterHooks.to_combat = function (unit, blackboard, t)
 	Managers.state.network:anim_event(unit, "to_combat")
 
@@ -129,6 +141,11 @@ BTEnterHooks.on_chaos_exalted_sorcerer_intro_enter = function (unit, blackboard,
 
 		blackboard.intro_timer = nil
 	end
+
+	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+	local event_data = FrameTable.alloc_table()
+
+	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "ebh_intro", event_data)
 
 	return 
 end
@@ -215,6 +232,10 @@ BTEnterHooks.sorcerer_begin_defensive_mode = function (unit, blackboard, t)
 	blackboard.teleport_health_percent = blackboard.health_extension:current_health_percent() - 0.1
 	blackboard.spell_count = 0
 	blackboard.phase = "defensive_starts"
+	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+	local event_data = FrameTable.alloc_table()
+
+	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "ebh_summon", event_data)
 
 	return 
 end
@@ -227,6 +248,14 @@ BTEnterHooks.sorcerer_spawn_horde = function (unit, blackboard, t)
 	setup_sorcerer_boss_spawning(unit, blackboard, data)
 
 	blackboard.spawning_allies = data
+
+	return 
+end
+BTEnterHooks.sorcerer_defensive_seeking_bomb = function (unit, blackboard, t)
+	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+	local event_data = FrameTable.alloc_table()
+
+	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "ebh_insect_spell", event_data)
 
 	return 
 end
@@ -282,8 +311,6 @@ BTEnterHooks.block_stagger_start = function (unit, blackboard, t)
 	return 
 end
 BTEnterHooks.sorcerer_evade = function (unit, blackboard, t)
-	print("Sorcerer evade")
-
 	blackboard.quick_teleport = true
 	local difficulty = Managers.state.difficulty:get_difficulty()
 	local composition_type = "sorcerer_boss_hit_extra"
@@ -294,6 +321,36 @@ BTEnterHooks.sorcerer_evade = function (unit, blackboard, t)
 	local limit_spawners = nil
 
 	conflict_director.horde_spawner:execute_event_horde(t, spawner_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
+
+	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+	local event_data = FrameTable.alloc_table()
+
+	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "ebh_taunt", event_data)
+
+	return 
+end
+BTEnterHooks.warlord_defensive_on_enter = function (unit, blackboard, t)
+	local spawn_allies_positions = blackboard.spawn_allies_positions
+	local self_position = POSITION_LOOKUP[unit]
+	local furthest_distance = 0
+	local wanted_pos = nil
+
+	for i = 1, #spawn_allies_positions, 1 do
+		local position = spawn_allies_positions[i]:unbox()
+		local distance = Vector3.distance(self_position, position)
+
+		if furthest_distance < distance then
+			wanted_pos = position
+			furthest_distance = distance
+		end
+	end
+
+	blackboard.override_spawn_allies_call_position = Vector3Box(wanted_pos)
+
+	return 
+end
+BTEnterHooks.keep_target = function (unit, blackboard, t)
+	blackboard.keep_target = true
 
 	return 
 end

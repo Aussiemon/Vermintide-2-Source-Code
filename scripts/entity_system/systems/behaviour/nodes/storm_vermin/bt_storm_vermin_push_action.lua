@@ -97,7 +97,7 @@ BTStormVerminPushAction.anim_cb_stormvermin_push = function (self, unit, blackbo
 	if not status_extension.is_disabled(status_extension) then
 		StatusUtils.set_pushed_network(target_unit, true)
 
-		local velocity = Quaternion.forward(Unit.local_rotation(unit, 0))*action.impact_push_speed
+		local velocity = Quaternion.forward(Unit.local_rotation(unit, 0)) * action.impact_push_speed
 		local locomotion_extension = ScriptUnit.extension(target_unit, "locomotion_system")
 
 		locomotion_extension.add_external_velocity(locomotion_extension, velocity, action.max_impact_push_speed)

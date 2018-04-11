@@ -156,11 +156,11 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 		})
 
 		local player_locomotion = ScriptUnit.extension(unit, "locomotion_system")
-		local push_direction = Vector3.normalize(Vector3((math.random() - 0.5)*2, (math.random() - 0.5)*2, 0))
+		local push_direction = Vector3.normalize(Vector3(2 * (math.random() - 0.5), 2 * (math.random() - 0.5), 0))
 
 		player_locomotion.add_external_velocity(player_locomotion, push_direction, 10)
 
-		self.movement_speed = math.random()*0.5 + 0.15
+		self.movement_speed = math.random() * 0.5 + 0.15
 		self.movement_speed_limit = self.movement_speed
 
 		first_person_extension.animation_event(first_person_extension, "overheat_indicator")
@@ -171,11 +171,11 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 	local player = Managers.player:owner(unit)
 
 	if is_moving then
-		self.movement_speed = math.min(1, self.movement_speed + movement_settings_table.move_acceleration_up*dt)
+		self.movement_speed = math.min(1, self.movement_speed + movement_settings_table.move_acceleration_up * dt)
 	elseif player and player.bot_player then
 		self.movement_speed = 0
 	else
-		self.movement_speed = math.max(self.movement_speed_limit, self.movement_speed - movement_settings_table.move_acceleration_down*dt)
+		self.movement_speed = math.max(self.movement_speed_limit, self.movement_speed - movement_settings_table.move_acceleration_down * dt)
 	end
 
 	local walking = input_extension.get(input_extension, "walk")
@@ -186,9 +186,9 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 		status_extension.set_slowed(status_extension, walking)
 	end
 
-	move_speed = move_speed*move_speed_multiplier
-	move_speed = move_speed*movement_settings_table.player_speed_scale
-	move_speed = move_speed*self.movement_speed
+	move_speed = move_speed * move_speed_multiplier
+	move_speed = move_speed * movement_settings_table.player_speed_scale
+	move_speed = move_speed * self.movement_speed
 	local movement = Vector3(0, 0.9, 0)
 	local move_input = input_extension.get(input_extension, "move")
 
@@ -202,7 +202,7 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 		local controller_length = Vector3.length(move_input_controller)
 
 		if 0 < controller_length then
-			move_speed = move_speed*controller_length
+			move_speed = move_speed * controller_length
 		end
 
 		movement = movement + move_input_controller

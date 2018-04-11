@@ -41,7 +41,7 @@ local function get_text_height(ui_renderer, size, ui_style, ui_content, text, ui
 	local max_texts = ui_content.max_texts or #texts
 	local num_texts = math.min(#texts - text_start_index - 1, max_texts)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min))*inv_scale*num_texts
+	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 
 	return full_font_height
 end
@@ -205,6 +205,10 @@ end
 StartGameWindowMutatorList._handle_input = function (self, dt, t)
 	local widgets_by_name = self._widgets_by_name
 
+	if self._is_button_hover_enter(self, widgets_by_name.overlay_button) or self._is_button_hover_enter(self, widgets_by_name.play_button) then
+		self._play_sound(self, "play_gui_lobby_button_01_difficulty_confirm_hover")
+	end
+
 	if self._is_button_pressed(self, widgets_by_name.overlay_button) then
 		self.parent:set_layout(7)
 	elseif self._is_button_pressed(self, widgets_by_name.play_button) and self._selected_backend_id then
@@ -301,7 +305,7 @@ StartGameWindowMutatorList._create_style_animation_enter = function (self, widge
 	local current_color_value = pass_style.color[1]
 	local target_color_value = target_value
 	local total_time = 0.2
-	local animation_duration = (current_color_value/target_color_value - 1)*total_time
+	local animation_duration = (1 - current_color_value / target_color_value) * total_time
 
 	if 0 < animation_duration and not instant then
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)
@@ -324,7 +328,7 @@ StartGameWindowMutatorList._create_style_animation_exit = function (self, widget
 	local current_color_value = pass_style.color[1]
 	local target_color_value = target_value
 	local total_time = 0.2
-	local animation_duration = current_color_value/255*total_time
+	local animation_duration = current_color_value / 255 * total_time
 
 	if 0 < animation_duration and not instant then
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)

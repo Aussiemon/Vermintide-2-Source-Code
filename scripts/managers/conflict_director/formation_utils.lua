@@ -8,9 +8,9 @@ FormationUtils = {
 		}
 		local num_units_x = formation_template.size[1]
 		local num_units_y = formation_template.size[2]
-		local half_spacing = spacing/2
-		local half_width = num_units_x/2 - half_spacing
-		local half_height = num_units_y/2 - half_spacing
+		local half_spacing = spacing / 2
+		local half_width = num_units_x / 2 - half_spacing
+		local half_height = num_units_y / 2 - half_spacing
 		local arrangement = formation.arrangement
 		local k = 0
 
@@ -18,8 +18,8 @@ FormationUtils = {
 			for i = 0, num_units_x - 1, 1 do
 				k = k + 1
 				arrangement[k] = {
-					i*spacing - half_width,
-					j*spacing - half_height
+					i * spacing - half_width,
+					j * spacing - half_height
 				}
 			end
 		end

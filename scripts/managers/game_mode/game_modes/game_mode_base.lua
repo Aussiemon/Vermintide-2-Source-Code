@@ -25,7 +25,7 @@ GameModeBase._is_time_up = function (self)
 
 	local network_time = Managers.state.network:network_time()
 	local max_time = NetworkConstants.clock_time.max
-	local time_up = 0.9 < network_time/max_time
+	local time_up = 0.9 < network_time / max_time
 
 	return time_up
 end

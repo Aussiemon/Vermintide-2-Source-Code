@@ -90,13 +90,13 @@ VisualAssertLog.update = function ()
 				local min, max = Gui.text_extents(gui, tostring(assert_data.message), font_mtrl, font_size)
 				local width = max.x - min.x
 
-				Gui.text(gui, tostring(assert_data.message), font_mtrl, font_size, font, Vector3(screen_width/2 - width/2, y_pos, 999), text_color)
+				Gui.text(gui, tostring(assert_data.message), font_mtrl, font_size, font, Vector3(screen_width / 2 - width / 2, y_pos, 999), text_color)
 
 				for i, text in ipairs(assert_data.traceback) do
 					min, max = Gui.text_extents(gui, tostring(text), font_mtrl, font_size)
 					width = max.x - min.x
 
-					Gui.text(gui, tostring(text), font_mtrl, font_size, font, Vector3(50, y_pos - i*font_size, 999), text_color)
+					Gui.text(gui, tostring(text), font_mtrl, font_size, font, Vector3(50, y_pos - i * font_size, 999), text_color)
 				end
 			end
 		end
@@ -108,7 +108,7 @@ end
 local function fixup_callstack(callstack_table)
 	local callstack_size = #callstack_table
 
-	table.remove(callstack_table, (callstack_size + 1)/2 + 2)
+	table.remove(callstack_table, (callstack_size + 1) / 2 + 2)
 	table.remove(callstack_table, 3)
 	table.remove(callstack_table, 2)
 

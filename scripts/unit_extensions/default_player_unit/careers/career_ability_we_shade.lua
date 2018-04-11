@@ -50,12 +50,12 @@ CareerAbilityWEShade._ability_available = function (self)
 	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityWEShade._run_ability = function (self)
-	local world = self._world
 	local owner_unit = self._owner_unit
-	local is_server = self._is_server
 	local local_player = self._local_player
 
 	if self._effect_id then
+		local world = self._world
+
 		World.destroy_particles(world, self._effect_id)
 
 		self._effect_id = nil

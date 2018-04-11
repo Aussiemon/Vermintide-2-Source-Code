@@ -140,7 +140,7 @@ CreditsView.update = function (self, dt)
 	end
 
 	local input_axis = (gamepad_active and input_service.get(input_service, "gamepad_left_axis")) or input_service.get(input_service, "scroll_axis")
-	local current_offset = math.max(0, (self.current_offset + dt*50) - input_axis.y*30)
+	local current_offset = math.max(0, (self.current_offset + dt * 50) - input_axis.y * 30)
 	self.current_offset = current_offset
 	local ui_top_renderer = self.ui_top_renderer
 	local scenegraph_id = "text_position"
@@ -158,7 +158,7 @@ CreditsView.update = function (self, dt)
 	local h = RESOLUTION_LOOKUP.res_h
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 
-	UIRenderer.draw_texture(ui_top_renderer, "gradient_credits_menu", Vector3(0, 0, UILayer.credits_gradient), Vector2(w*inverse_scale, h*inverse_scale))
+	UIRenderer.draw_texture(ui_top_renderer, "gradient_credits_menu", Vector3(0, 0, UILayer.credits_gradient), Vector2(w * inverse_scale, h * inverse_scale))
 
 	local credit_entries = credits.entries
 

@@ -676,9 +676,9 @@ local function create_video(scenegraph_id, material_name)
 						local num_frames = VideoPlayer.number_of_frames(content.parent.video_player)
 
 						if current_frame <= fade_range_in then
-							style.color[1] = current_frame/fade_range_in*255
+							style.color[1] = current_frame / fade_range_in * 255
 						elseif num_frames - fade_range_out - black_frames <= current_frame then
-							style.color[1] = math.clamp((num_frames - current_frame - black_frames)/fade_range_out, 0, 1)*255
+							style.color[1] = math.clamp((num_frames - current_frame - black_frames) / fade_range_out, 0, 1) * 255
 						else
 							style.color[1] = 255
 						end
@@ -730,7 +730,7 @@ local function create_simple_pulsating_text(text, scenegraph_id, size, color, te
 					pass_type = "text",
 					text_id = "text",
 					content_check_function = function (content, style)
-						style.text_color[1] = math.sin(Application.time_since_launch()*5)*95 + 160
+						style.text_color[1] = 160 + math.sin(Application.time_since_launch() * 5) * 95
 
 						return true
 					end

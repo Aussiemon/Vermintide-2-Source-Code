@@ -198,7 +198,7 @@ end
 NavGraphSystem._level_unit_smart_object_id = function (self, unit)
 	local level = LevelHelper:current_level(self.world)
 	local unit_level_id = Level.unit_index(level, unit)
-	local smart_object_id = unit_level_id + 10000
+	local smart_object_id = 10000 + unit_level_id
 
 	fassert(not self.smart_objects[smart_object_id], "Smart Object with id %s already registered!", smart_object_id)
 
@@ -276,8 +276,8 @@ NavGraphSystem.smart_object_from_unit_data = function (self, unit, smart_object_
 			local right = Quaternion.right(rotation)
 			local forward = Quaternion.forward(rotation)
 			local up = Quaternion.up(rotation)
-			entrance_position = position + right*entrance_offset_x + forward*entrance_offset_y + up*entrance_offset_z
-			exit_position = position + right*exit_offset_x + forward*exit_offset_y + up*exit_offset_z
+			entrance_position = position + right * entrance_offset_x + forward * entrance_offset_y + up * entrance_offset_z
+			exit_position = position + right * exit_offset_x + forward * exit_offset_y + up * exit_offset_z
 		end
 
 		i = i + 1
@@ -324,7 +324,7 @@ NavGraphSystem.update = function (self, context, t, dt)
 		end
 	end
 
-	if not LEVEL_EDITOR_TEST and self.ledgelator_version ~= WANTED_LEDGELATOR_VERSION and 3 < math.floor(t)%10 then
+	if not LEVEL_EDITOR_TEST and self.ledgelator_version ~= WANTED_LEDGELATOR_VERSION and 3 < math.floor(t) % 10 then
 		Debug.text("WARNING: Using old smart objects. Found version=%s Wanted version=%s", tostring(self.ledgelator_version), WANTED_LEDGELATOR_VERSION)
 		Debug.text("Re-generate and save from level editor, then run generate_resource_packages.bat")
 	end

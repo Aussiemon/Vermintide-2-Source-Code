@@ -54,7 +54,6 @@ CareerAbilityESHuntsman._ability_available = function (self)
 	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityESHuntsman._run_ability = function (self)
-	local world = self.world
 	local owner_unit = self.owner_unit
 	local is_server = self.is_server
 	local local_player = self.local_player
@@ -70,14 +69,12 @@ CareerAbilityESHuntsman._run_ability = function (self)
 	}
 	local local_buff_names = {
 		"markus_huntsman_activated_ability",
-		"markus_huntsman_activated_ability_increased_attack_speed",
 		"markus_huntsman_activated_ability_increased_reload_speed",
 		"markus_huntsman_activated_ability_decrease_move_speed",
 		"markus_huntsman_activated_ability_decrease_crouch_move_speed",
 		"markus_huntsman_activated_ability_decrease_walk_move_speed",
 		"markus_huntsman_activated_ability_decrease_dodge_speed",
 		"markus_huntsman_activated_ability_decrease_dodge_distance",
-		"markus_huntsman_activated_ability_guaranteed_ranged_critical_strikes",
 		"markus_huntsman_end_activated_on_ranged_hit",
 		"markus_huntsman_end_activated_on_melee_hit"
 	}
@@ -108,14 +105,16 @@ CareerAbilityESHuntsman._run_ability = function (self)
 		})
 	end
 
-	if local_player then
+	if local_player or (is_server and self.bot_player) then
 		local first_person_extension = self.first_person_extension
 
-		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_markus_huntsman_enter", nil, true)
+		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_markus_huntsman_enter")
 		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_markus_huntsman_loop")
 		first_person_extension.animation_event(first_person_extension, "shade_stealth_ability")
 
-		MOOD_BLACKBOARD.skill_huntsman_stealth = true
+		if local_player then
+			MOOD_BLACKBOARD.skill_huntsman_stealth = true
+		end
 
 		career_extension.set_state(career_extension, "markus_activate_huntsman")
 	end

@@ -17,6 +17,26 @@ local CHAOS_EXALTED_CHAMPION_WARCAMP_COMBAT = {
 		action_data = ACTIONS.spawn_sequence
 	},
 	{
+		"BTSequence",
+		{
+			"BTMeleeOverlapAttackAction",
+			name = "angry_charge",
+			action_data = ACTIONS.angry_charge
+		},
+		{
+			"BTMeleeOverlapAttackAction",
+			name = "angry_charge",
+			action_data = ACTIONS.angry_charge
+		},
+		{
+			"BTMeleeOverlapAttackAction",
+			name = "angry_charge",
+			action_data = ACTIONS.angry_charge
+		},
+		name = "angry_charge_sequence",
+		action_data = ACTIONS.angry_charge_sequence
+	},
+	{
 		"BTClanRatFollowAction",
 		name = "follow",
 		action_data = ACTIONS.follow
@@ -38,7 +58,9 @@ local CHAOS_EXALTED_CHAMPION_WARCAMP_COMBAT = {
 	},
 	{
 		"BTStormVerminAttackAction",
+		enter_hook = "keep_target",
 		name = "special_attack_cleave",
+		leave_hook = "reset_keep_target",
 		action_data = ACTIONS.special_attack_cleave
 	},
 	{
@@ -63,8 +85,8 @@ local CHAOS_EXALTED_CHAMPION_WARCAMP_DEFENSIVE = {
 	"BTUtilityNode",
 	{
 		"BTChampionAttackAction",
-		name = "special_attack_aoe",
-		action_data = ACTIONS.special_attack_aoe
+		name = "special_attack_aoe_defensive",
+		action_data = ACTIONS.special_attack_aoe_defensive
 	},
 	{
 		"BTThrowWeaponAction",
@@ -75,11 +97,6 @@ local CHAOS_EXALTED_CHAMPION_WARCAMP_DEFENSIVE = {
 		"BTStormVerminAttackAction",
 		name = "special_attack_launch_defensive",
 		action_data = ACTIONS.special_attack_launch_defensive
-	},
-	{
-		"BTStormVerminAttackAction",
-		name = "special_attack_sweep",
-		action_data = ACTIONS.special_attack_sweep
 	},
 	{
 		"BTStormVerminAttackAction",

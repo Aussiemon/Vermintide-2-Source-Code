@@ -17,13 +17,97 @@ local pushed_data = {
 		0
 	}
 }
+local damage_table_light = {
+	easy = {
+		15,
+		10,
+		7
+	},
+	normal = {
+		15,
+		10,
+		10
+	},
+	hard = {
+		25,
+		17,
+		15
+	},
+	survival_hard = {
+		25,
+		17,
+		15
+	},
+	harder = {
+		40,
+		20,
+		15
+	},
+	survival_harder = {
+		40,
+		20,
+		15
+	},
+	hardest = {
+		60,
+		25,
+		15
+	},
+	survival_hardest = {
+		60,
+		25,
+		15
+	}
+}
+local damage_table_combo = {
+	easy = {
+		10,
+		10,
+		7
+	},
+	normal = {
+		10,
+		10,
+		10
+	},
+	hard = {
+		15,
+		17,
+		15
+	},
+	survival_hard = {
+		15,
+		17,
+		15
+	},
+	harder = {
+		30,
+		20,
+		15
+	},
+	survival_harder = {
+		30,
+		20,
+		15
+	},
+	hardest = {
+		50,
+		25,
+		15
+	},
+	survival_hardest = {
+		50,
+		25,
+		15
+	}
+}
 local breed_data = {
 	detection_radius = 9999999,
 	husk_hit_reaction_cooldown = 1,
 	target_selection_angry = "pick_rat_ogre_target_with_weights",
 	big_boy_turning_dot = 0.4,
-	stagger_threshold_explosion = 1,
-	perception = "perception_rat_ogre",
+	stagger_threshold_medium = 1,
+	death_reaction = "ai_default",
 	target_selection = "pick_rat_ogre_target_idle",
 	race = "chaos",
 	navigation_spline_distance_to_borders = 1,
@@ -32,24 +116,26 @@ local breed_data = {
 	bot_hitbox_radius_approximation = 0.8,
 	animation_sync_rpc = "rpc_sync_anim_state_12",
 	perception_continuous = "perception_continuous_chaos_spawn",
-	stagger_threshold_medium = 1,
+	boss_damage_reduction = true,
 	run_speed = 7,
-	poison_resistance = 100,
+	chance_of_starting_sleepy = 0,
 	walk_speed = 3.5,
 	ignore_nav_propagation_box = true,
 	bots_should_flank = true,
 	bot_opportunity_target_melee_range = 7,
+	headshot_coop_stamina_fatigue_type = "headshot_special",
 	threat_value = 32,
-	bone_lod_level = 0,
 	stagger_resistance = 100,
-	scale_death_push = 1,
+	bone_lod_level = 0,
 	boss_staggers = true,
+	scale_death_push = 1,
 	radius = 2,
 	boss = true,
-	chance_of_starting_sleepy = 0,
+	hit_mass_count = 50,
+	stagger_threshold_explosion = 1,
 	use_avoidance = false,
 	proximity_system_check = true,
-	death_reaction = "ai_default",
+	poison_resistance = 100,
 	armor_category = 3,
 	use_big_boy_turning = false,
 	use_navigation_path_splines = false,
@@ -73,7 +159,7 @@ local breed_data = {
 	unit_template = "ai_unit_chaos_spawn",
 	combat_spawn_stinger = "enemy_chaos_spawn_stinger",
 	smart_object_template = "chaos_spawn",
-	headshot_coop_stamina_fatigue_type = "headshot_special",
+	perception = "perception_rat_ogre",
 	player_locomotion_constrain_radius = 1.5,
 	bot_opportunity_target_melee_range_while_ranged = 5,
 	distance_sq_idle_auto_detect_target = 49,
@@ -99,11 +185,11 @@ local breed_data = {
 		target_disabled_mul = 0.15
 	},
 	max_health = {
-		1000,
-		1000,
-		1500,
-		2000,
-		2000
+		700,
+		700,
+		1050,
+		1400,
+		2100
 	},
 	stagger_duration = {
 		0,
@@ -347,7 +433,7 @@ local action_data = {
 			speed = 7,
 			radius = 2,
 			collision_filter = "filter_player_hit_box_check",
-			angle = math.pi/6
+			angle = math.pi / 6
 		}
 	},
 	combo_attack = {
@@ -443,48 +529,7 @@ local action_data = {
 			12,
 			10
 		},
-		difficulty_damage = {
-			easy = {
-				12,
-				10,
-				7
-			},
-			normal = {
-				17,
-				12,
-				10
-			},
-			hard = {
-				25,
-				17,
-				15
-			},
-			survival_hard = {
-				25,
-				17,
-				15
-			},
-			harder = {
-				40,
-				20,
-				15
-			},
-			survival_harder = {
-				40,
-				20,
-				15
-			},
-			hardest = {
-				75,
-				25,
-				15
-			},
-			survival_hardest = {
-				75,
-				25,
-				15
-			}
-		}
+		difficulty_damage = damage_table_combo
 	},
 	melee_slam = {
 		stagger_distance = 7,
@@ -511,32 +556,32 @@ local action_data = {
 		},
 		blocked_difficulty_damage = {
 			easy = {
-				4,
+				1,
 				4,
 				2.5
 			},
 			normal = {
-				5,
+				1,
 				4,
 				2.5
 			},
 			hard = {
-				7,
+				4,
 				5,
 				2.5
 			},
 			survival_hard = {
-				7,
+				4,
 				5,
 				2.5
 			},
 			harder = {
-				9,
+				6,
 				7.5,
 				5
 			},
 			survival_harder = {
-				9,
+				6,
 				7.5,
 				5
 			},
@@ -556,48 +601,7 @@ local action_data = {
 			8,
 			5
 		},
-		difficulty_damage = {
-			easy = {
-				8,
-				6,
-				5
-			},
-			normal = {
-				15,
-				8,
-				5
-			},
-			hard = {
-				20,
-				10,
-				5
-			},
-			survival_hard = {
-				20,
-				10,
-				5
-			},
-			harder = {
-				25,
-				15,
-				10
-			},
-			survival_harder = {
-				25,
-				15,
-				10
-			},
-			hardest = {
-				40,
-				20,
-				15
-			},
-			survival_hardest = {
-				60,
-				30,
-				22.5
-			}
-		},
+		difficulty_damage = damage_table_light,
 		stagger_impact = {
 			1,
 			2,
@@ -684,48 +688,7 @@ local action_data = {
 			20,
 			20
 		},
-		difficulty_damage = {
-			easy = {
-				15,
-				20,
-				20
-			},
-			normal = {
-				20,
-				20,
-				20
-			},
-			hard = {
-				30,
-				25,
-				25
-			},
-			survival_hard = {
-				30,
-				25,
-				25
-			},
-			harder = {
-				40,
-				30,
-				30
-			},
-			survival_harder = {
-				40,
-				30,
-				30
-			},
-			hardest = {
-				60,
-				50,
-				50
-			},
-			survival_hardest = {
-				90,
-				75,
-				75
-			}
-		}
+		difficulty_damage = damage_table_light
 	},
 	attack_grabbed_smash = {
 		damage_type = "cutting",
@@ -799,48 +762,7 @@ local action_data = {
 			20,
 			20
 		},
-		difficulty_damage = {
-			easy = {
-				15,
-				20,
-				20
-			},
-			normal = {
-				20,
-				20,
-				20
-			},
-			hard = {
-				30,
-				25,
-				25
-			},
-			survival_hard = {
-				30,
-				25,
-				25
-			},
-			harder = {
-				40,
-				30,
-				30
-			},
-			survival_harder = {
-				40,
-				30,
-				30
-			},
-			hardest = {
-				60,
-				50,
-				50
-			},
-			survival_hardest = {
-				90,
-				75,
-				75
-			}
-		}
+		difficulty_damage = damage_table_light
 	},
 	attack_grabbed_throw = {
 		action_weight = 1,
@@ -899,21 +821,21 @@ local action_data = {
 			}
 		},
 		health_leech = {
-			harder = 80,
-			normal = 50,
-			hard = 60,
+			harder = 200,
+			normal = 30,
+			hard = 100,
 			survival_hard = 60,
 			survival_harder = 80,
-			hardest = 125,
+			hardest = 300,
 			survival_hardest = 125,
-			easy = 50
+			easy = 30
 		}
 	},
 	tentacle_grab = {
 		damage_type = "cutting",
 		ignore_ai_damage = true,
 		fatigue_type = "ogre_shove",
-		action_weight = 3,
+		action_weight = 6,
 		considerations = UtilityConsiderations.chaos_spawn_tentacle_grab,
 		attacks = {
 			{
@@ -976,7 +898,7 @@ local action_data = {
 						offset_right = 0,
 						offset_up = 0,
 						duration = 0.8333333333333334,
-						start_time = 0
+						start_time = 0.8
 					}
 				}
 			}
@@ -986,48 +908,7 @@ local action_data = {
 			20,
 			20
 		},
-		difficulty_damage = {
-			easy = {
-				15,
-				20,
-				20
-			},
-			normal = {
-				20,
-				20,
-				20
-			},
-			hard = {
-				30,
-				25,
-				25
-			},
-			survival_hard = {
-				30,
-				25,
-				25
-			},
-			harder = {
-				40,
-				30,
-				30
-			},
-			survival_harder = {
-				40,
-				30,
-				30
-			},
-			hardest = {
-				60,
-				50,
-				50
-			},
-			survival_hardest = {
-				90,
-				75,
-				75
-			}
-		}
+		difficulty_damage = damage_table_light
 	},
 	erratic_follow = {
 		leave_walk_dist_sq = 9,
@@ -1058,11 +939,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		init_blackboard = {
@@ -1077,16 +958,16 @@ local action_data = {
 			{
 				"move_jump_left_45_turn_right_45",
 				ray_dist = 5,
-				ray_angle = -math.pi*0.25
+				ray_angle = -math.pi * 0.25
 			},
 			{
 				"move_jump_left_45_turn_right_90",
 				ray_dist = 5,
-				ray_angle = -math.pi*0.5
+				ray_angle = -math.pi * 0.5
 			},
 			name = "move_jump_left_anims",
 			ray_dist = 8,
-			ray_angle = math.pi*0.25
+			ray_angle = math.pi * 0.25
 		},
 		move_jump_right_anims = {
 			{
@@ -1097,16 +978,16 @@ local action_data = {
 			{
 				"move_jump_right_45_turn_left_45",
 				ray_dist = 5,
-				ray_angle = math.pi*0.25
+				ray_angle = math.pi * 0.25
 			},
 			{
 				"move_jump_right_45_turn_left_90",
 				ray_dist = 5,
-				ray_angle = math.pi*0.5
+				ray_angle = math.pi * 0.5
 			},
 			name = "move_jump_right_anims",
 			ray_dist = 8,
-			ray_angle = -math.pi*0.25
+			ray_angle = -math.pi * 0.25
 		},
 		move_jump_fwd_anims = {
 			{
@@ -1117,22 +998,22 @@ local action_data = {
 			{
 				"move_jump_fwd_turn_left_45",
 				ray_dist = 5,
-				ray_angle = math.pi*0.25
+				ray_angle = math.pi * 0.25
 			},
 			{
 				"move_jump_fwd_turn_left_90",
 				ray_dist = 5,
-				ray_angle = math.pi*0.5
+				ray_angle = math.pi * 0.5
 			},
 			{
 				"move_jump_fwd_turn_right_45",
 				ray_dist = 5,
-				ray_angle = -math.pi*0.25
+				ray_angle = -math.pi * 0.25
 			},
 			{
 				"move_jump_fwd_turn_right_90",
 				ray_dist = 5,
-				ray_angle = -math.pi*0.5
+				ray_angle = -math.pi * 0.5
 			},
 			ray_angle = 0,
 			name = "move_jump_fwd_anims",
@@ -1150,18 +1031,18 @@ local action_data = {
 				ray_angle = 0
 			},
 			ray_dist = 8,
-			ray_angle = math.pi*0.25
+			ray_angle = math.pi * 0.25
 		},
 		move_jump_only_fwd_left_anims = {
 			{
 				"move_jump_fwd_turn_left_45",
 				ray_dist = 5,
-				ray_angle = math.pi*0.25
+				ray_angle = math.pi * 0.25
 			},
 			{
 				"move_jump_fwd_turn_left_90",
 				ray_dist = 5,
-				ray_angle = math.pi*0.5
+				ray_angle = math.pi * 0.5
 			},
 			ray_angle = 0,
 			ray_dist = 8
@@ -1178,18 +1059,18 @@ local action_data = {
 				ray_angle = 0
 			},
 			ray_dist = 8,
-			ray_angle = -math.pi*0.25
+			ray_angle = -math.pi * 0.25
 		},
 		move_jump_only_fwd_right_anims = {
 			{
 				"move_jump_fwd_turn_right_45",
 				ray_dist = 5,
-				ray_angle = -math.pi*0.25
+				ray_angle = -math.pi * 0.25
 			},
 			{
 				"move_jump_fwd_turn_right_90",
 				ray_dist = 5,
-				ray_angle = -math.pi*0.5
+				ray_angle = -math.pi * 0.5
 			},
 			ray_angle = 0,
 			ray_dist = 8
@@ -1234,11 +1115,11 @@ local action_data = {
 			},
 			change_target_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			change_target_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		close_anims_name = {
@@ -1253,11 +1134,11 @@ local action_data = {
 			},
 			turn_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			turn_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},

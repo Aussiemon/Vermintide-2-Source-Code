@@ -121,6 +121,7 @@ Weapons.cannon_ball.actions.action_one.default.projectile_info = {
 	projectile_unit_name = "units/weapons/player/pup_cannon_ball_01/pup_cannon_ball_01"
 }
 Weapons.training_dummy = Weapons.training_dummy or table.clone(weapon_template)
+Weapons.training_dummy.buffs = nil
 Weapons.training_dummy.left_hand_unit = "units/gameplay/training_dummy/wpn_training_dummy"
 Weapons.training_dummy.actions.action_one.default.speed = 2
 Weapons.training_dummy.actions.action_one.default.angular_velocity = {

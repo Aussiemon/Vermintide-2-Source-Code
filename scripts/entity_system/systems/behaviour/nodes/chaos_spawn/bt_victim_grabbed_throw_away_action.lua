@@ -39,7 +39,7 @@ BTVictimGrabbedThrowAwayAction.enter = function (self, unit, blackboard, t)
 		local nav_world = blackboard.nav_world
 		local pos = POSITION_LOOKUP[unit]
 		local target_pos = POSITION_LOOKUP[blackboard.target_unit]
-		local block_check_pos = pos + (target_pos - pos)*ray_length
+		local block_check_pos = pos + (target_pos - pos) * ray_length
 		can_go = GwNavQueries.raycango(nav_world, pos, block_check_pos)
 	end
 
@@ -75,7 +75,7 @@ BTVictimGrabbedThrowAwayAction.find_throw_direction = function (self, unit, blac
 			direction = -direction
 		end
 
-		local space_check_pos = pos + direction*ray_length
+		local space_check_pos = pos + direction * ray_length
 		local can_go = GwNavQueries.raycango(nav_world, pos, space_check_pos)
 
 		if can_go then
@@ -115,12 +115,12 @@ BTVictimGrabbedThrowAwayAction.catapult_player = function (self, unit, blackboar
 	if blackboard.target_unit then
 		target_pos = POSITION_LOOKUP[blackboard.target_unit]
 	else
-		target_pos = victim_pos + Quaternion.forward(Unit.local_rotation(unit, 0))*10
+		target_pos = victim_pos + Quaternion.forward(Unit.local_rotation(unit, 0)) * 10
 	end
 
 	local saved_throw_dir = blackboard.use_stored_throw_direction and blackboard.throw_direction:unbox()
 	local throw_dir = saved_throw_dir or Vector3.normalize(target_pos - victim_pos)
-	local velocity = throw_speed*throw_dir
+	local velocity = throw_speed * throw_dir
 
 	if throw_speed_z then
 		Vector3.set_z(velocity, throw_speed_z)

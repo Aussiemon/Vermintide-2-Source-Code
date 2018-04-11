@@ -2,14 +2,14 @@ local function get_median(list)
 	local n = #list
 	local median = nil
 
-	if n%2 == 0 then
-		local i1 = n/2
+	if n % 2 == 0 then
+		local i1 = n / 2
 		local i2 = i1 + 1
 		local d1 = list[i1]
 		local d2 = list[i2]
-		median = (d1 + d2)/2
+		median = (d1 + d2) / 2
 	else
-		local i = math.ceil(n/2)
+		local i = math.ceil(n / 2)
 		median = list[i]
 	end
 
@@ -24,7 +24,7 @@ local function get_mean(list)
 		s = s + list[i]
 	end
 
-	local mean = s/n
+	local mean = s / n
 
 	return mean
 end
@@ -39,7 +39,7 @@ local function get_sd(list, median)
 		differences = differences + difference_squared
 	end
 
-	local variance = differences/n
+	local variance = differences / n
 	local sd = math.sqrt(variance)
 
 	return sd
@@ -207,7 +207,7 @@ NetworkClockClient._debug_stuff = function (self, dt)
 end
 NetworkClockClient.rpc_network_time_sync_response = function (self, sender, time_sent_request, server_time)
 	local current_time = self._clock
-	local client_latency_delta = (current_time - time_sent_request)/2
+	local client_latency_delta = (current_time - time_sent_request) / 2
 	local client_server_delta = server_time - current_time
 	local delta = client_server_delta + client_latency_delta
 
@@ -229,7 +229,7 @@ NetworkClockClient.rpc_network_time_sync_response = function (self, sender, time
 end
 NetworkClockClient.rpc_network_current_server_time_response = function (self, sender, time_sent_request, server_time)
 	local current_time = self._clock
-	local client_latency_delta = (current_time - time_sent_request)/2
+	local client_latency_delta = (current_time - time_sent_request) / 2
 	local client_server_delta = server_time - current_time
 	local delta = client_server_delta + client_latency_delta
 

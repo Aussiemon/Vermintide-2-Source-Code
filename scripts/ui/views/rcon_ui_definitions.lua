@@ -1,14 +1,14 @@
 local MARGIN = 8
-local WIDTH = MARGIN*2 - 960
-local HEIGHT = MARGIN*2 - 1080
+local WIDTH = 960 - 2 * MARGIN
+local HEIGHT = 1080 - 2 * MARGIN
 local HEADER_HEIGHT = 32
 local HEADER_BORDER = 1
 local FOOTER_HEIGHT = 32
 local WINDOW_MARGIN = 2
 local SCROLLBAR_WIDTH = 8
-local SCROLLBAR_HEIGHT = HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT - WINDOW_MARGIN*2
+local SCROLLBAR_HEIGHT = HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT - 2 * WINDOW_MARGIN
 local SCROLLBAR_MARGIN = 1
-local BAR_WIDTH = SCROLLBAR_WIDTH - SCROLLBAR_MARGIN*2
+local BAR_WIDTH = SCROLLBAR_WIDTH - 2 * SCROLLBAR_MARGIN
 local BAR_HEIGHT = 65
 local FRAME_HEIGHT = 4
 local scenegraph_definition = {
@@ -39,7 +39,7 @@ local scenegraph_definition = {
 	window_root = {
 		parent = "root",
 		position = {
-			WIDTH - 1920 - MARGIN,
+			1920 - WIDTH - MARGIN,
 			8,
 			0
 		},
@@ -176,7 +176,7 @@ local scenegraph_definition = {
 			3
 		},
 		size = {
-			SCROLLBAR_WIDTH - SCROLLBAR_MARGIN*2,
+			SCROLLBAR_WIDTH - 2 * SCROLLBAR_MARGIN,
 			BAR_HEIGHT
 		}
 	},
@@ -225,7 +225,7 @@ local scenegraph_definition = {
 		},
 		size = {
 			WIDTH - SCROLLBAR_WIDTH,
-			HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT - WINDOW_MARGIN*2
+			HEIGHT - HEADER_HEIGHT - FOOTER_HEIGHT - 2 * WINDOW_MARGIN
 		}
 	},
 	input_root = {
@@ -411,8 +411,8 @@ local input_widget = {
 			scenegraph_id = "window_frame_top",
 			color = Colors.get_table("black"),
 			size = {
-				WIDTH - HEADER_BORDER*2,
-				FOOTER_HEIGHT - HEADER_BORDER*2
+				WIDTH - 2 * HEADER_BORDER,
+				FOOTER_HEIGHT - 2 * HEADER_BORDER
 			},
 			offset = {
 				HEADER_BORDER,
@@ -529,12 +529,12 @@ local scrollbar_widget = {
 				offset_function = function (ui_scenegraph, ui_style, ui_content)
 					local local_position = UISceneGraph.get_local_position(ui_scenegraph, ui_style.scenegraph_id)
 					local bar_height = ui_content.scroll_bar_height
-					local half_bar_height = bar_height/2
+					local half_bar_height = bar_height / 2
 					local min = ui_content.scroll_offset_min
 					local max = ui_content.scroll_offset_max
-					local y_pos = math.min(min + (max - min)*ui_content.internal_scroll_value, max - bar_height)
+					local y_pos = math.min(min + (max - min) * ui_content.internal_scroll_value, max - bar_height)
 					local_position[2] = y_pos
-					ui_content.scroll_value = (y_pos - min)/(max - bar_height - min)
+					ui_content.scroll_value = (y_pos - min) / (max - bar_height - min)
 
 					return 
 				end
@@ -566,7 +566,7 @@ local scrollbar_widget = {
 					local scenegraph_id = ui_style.scenegraph_id
 					local world_position = UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)
 					local bar_height = ui_content.scroll_bar_height
-					local half_bar_size = bar_height/2
+					local half_bar_size = bar_height / 2
 					local start_delta_cursor = half_bar_size
 					local y_pos = cursor[2] - start_delta_cursor
 					local size = UISceneGraph.get_size(ui_scenegraph, scenegraph_id)
@@ -576,7 +576,7 @@ local scrollbar_widget = {
 					local scroll_offset_max = ui_content.scroll_offset_max
 					local max_world_pos = (world_position[2] + scroll_offset_max) - half_bar_size - ui_content.scroll_offset_min
 					local current_position = math.clamp(current_offset_center_bar, 0, size[2])
-					local delta_value = math.min(current_position/size[2], 1)
+					local delta_value = math.min(current_position / size[2], 1)
 					ui_content.internal_scroll_value = delta_value
 
 					return 

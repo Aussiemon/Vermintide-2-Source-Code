@@ -71,7 +71,7 @@ EnvironmentBlendVolume.update = function (self, dt)
 		if self._data.is_sphere then
 			local camera_pos = ScriptCamera.position(camera)
 			local volume_pos = self._data.sphere_pos:unbox()
-			self._is_inside = Vector3.distance_squared(camera_pos, volume_pos) < self._data.sphere_radius*self._data.sphere_radius
+			self._is_inside = Vector3.distance_squared(camera_pos, volume_pos) < self._data.sphere_radius * self._data.sphere_radius
 		else
 			self._is_inside = Level.is_point_inside_volume(self._level, self._volume_name, ScriptCamera.position(camera))
 		end
@@ -83,7 +83,7 @@ EnvironmentBlendVolume.update = function (self, dt)
 		self._current_timer = (self._is_inside and 1) or 0
 		self._force_blend = false
 	else
-		self._current_timer = math.clamp(self._current_timer + self._blend_time/1*dt*target, 0, 1)
+		self._current_timer = math.clamp(self._current_timer + 1 / self._blend_time * dt * target, 0, 1)
 	end
 
 	self._value = math.smoothstep(self._current_timer, 0, 1)

@@ -50,6 +50,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.input_manager = ingame_ui_context.input_manager
+	self.voting_manager = ingame_ui_context.voting_manager
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
@@ -74,11 +75,13 @@ HeroViewStateOverview.on_enter = function (self, params)
 	self.hero_name = display_name
 	self.career_index = career_index
 	self.profile_index = profile_index
+	self.is_server = self.parent.is_server
 	self._animations = {}
 	self._ui_animations = {}
 	self.loadout_sync_id = 0
 	self.inventory_sync_id = 0
 	self.talent_sync_id = 0
+	self.skin_sync_id = 0
 	self.disabled_backend_ids_sync_id = 0
 	self._disabled_backend_ids = {}
 
@@ -180,10 +183,10 @@ HeroViewStateOverview._change_window = function (self, window_index, window_name
 	local window_size = window_default_settings.size
 	local window_spacing = window_default_settings.spacing or 10
 	local window_width = window_size[1]
-	local total_spacing = window_spacing*2
-	local total_windows_width = window_width*3
-	local start_width_offset = -(total_windows_width/2 + window_width/2) - (total_spacing/2 + window_spacing)
-	local window_width_offset = start_width_offset + alignment_index*window_width + alignment_index*window_spacing
+	local total_spacing = window_spacing * 2
+	local total_windows_width = 3 * window_width
+	local start_width_offset = -(total_windows_width / 2 + window_width / 2) - (total_spacing / 2 + window_spacing)
+	local window_width_offset = start_width_offset + alignment_index * window_width + alignment_index * window_spacing
 	local window_offset = {
 		window_width_offset,
 		0,
@@ -314,6 +317,13 @@ HeroViewStateOverview.clear_wanted_menu_state = function (self)
 
 	return 
 end
+HeroViewStateOverview.requested_screen_change_by_name = function (self, state)
+	self._on_close_next_state = state
+
+	self.close_menu(self)
+
+	return 
+end
 HeroViewStateOverview.on_exit = function (self, params)
 	print("[HeroViewState] Exit Substate HeroViewStateOverview")
 
@@ -364,18 +374,78 @@ HeroViewStateOverview.update = function (self, dt, t)
 	self._update_transition_timer(self, dt)
 	self._windows_update(self, dt, t)
 
+	local respawning = self._respawning
+
+	if respawning then
+		self.update_respawning(self)
+	end
+
 	local transitioning = self.parent:transitioning()
 	local wanted_state = self._wanted_state(self)
 
 	if not self._transition_timer then
 		if not transitioning then
-			self._handle_input(self, dt, t)
+			if self._has_active_level_vote(self) then
+				local ignore_sound_on_close_menu = true
+
+				self.close_menu(self, ignore_sound_on_close_menu)
+			else
+				self._handle_input(self, dt, t)
+			end
 		end
 
 		if wanted_state or self._new_state then
 			self.parent:clear_wanted_state()
 
 			return wanted_state or self._new_state
+		end
+	end
+
+	return 
+end
+HeroViewStateOverview._has_active_level_vote = function (self)
+	local voting_manager = self.voting_manager
+	local active_vote_name = voting_manager.vote_in_progress(voting_manager)
+	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
+
+	return is_mission_vote and not voting_manager.has_voted(voting_manager, Network.peer_id())
+end
+HeroViewStateOverview.update_respawning = function (self)
+	if self._despawning_player_unit then
+		if not Unit.alive(self._despawning_player_unit) then
+			self.profile_synchronizer:request_select_profile(self.profile_index, self.local_player_id)
+
+			self._despawning_player_unit = nil
+
+			if self.is_server then
+				Managers.state.network.network_server:peer_despawned_player(self.peer_id)
+			end
+		end
+
+		return 
+	end
+
+	local result, result_local_player_id = self.profile_synchronizer:profile_request_result()
+
+	assert(not result or self.local_player_id == result_local_player_id, "Local player id mismatch between ui and request.")
+
+	if result then
+		self._respawning = nil
+
+		self.profile_synchronizer:clear_profile_request_result()
+
+		if self.is_server then
+			Managers.state.network.network_server:peer_respawn_player(self.peer_id)
+		else
+			Managers.state.network.network_transmit:send_rpc_server("rpc_client_respawn_player")
+		end
+
+		local ignore_sound_on_close_menu = self._ignore_sound_on_close_menu
+
+		if self._on_close_next_state then
+			self.parent:requested_screen_change_by_name(self._on_close_next_state)
+		else
+			self.parent:close_menu(nil, ignore_sound_on_close_menu)
 		end
 	end
 
@@ -410,6 +480,12 @@ HeroViewStateOverview._update_animations = function (self, dt)
 
 	return 
 end
+HeroViewStateOverview._is_button_hover_enter = function (self, widget)
+	local content = widget.content
+	local hotspot = content.button_hotspot
+
+	return hotspot.on_hover_enter
+end
 HeroViewStateOverview._handle_input = function (self, dt, t)
 	local input_blocked = self._input_blocked
 
@@ -427,9 +503,13 @@ HeroViewStateOverview._handle_input = function (self, dt, t)
 	UIWidgetUtils.animate_default_button(exit_button, dt)
 	UIWidgetUtils.animate_default_button(back_button, dt)
 
+	if self._is_button_hover_enter(self, back_button) or self._is_button_hover_enter(self, exit_button) then
+		self.play_sound(self, "play_gui_equipment_button_hover")
+	end
+
 	if close_on_exit and (input_pressed or self._is_button_pressed(self, exit_button)) then
 		self.play_sound(self, "Play_hud_hover")
-		self.parent:close_menu()
+		self.close_menu(self)
 
 		return 
 	elseif input_pressed or self._is_button_pressed(self, back_button) then
@@ -440,6 +520,43 @@ HeroViewStateOverview._handle_input = function (self, dt, t)
 		if previous_layout_key then
 			self.set_layout(self, previous_layout_key)
 		end
+	end
+
+	return 
+end
+HeroViewStateOverview.close_menu = function (self, ignore_sound_on_close_menu)
+	local loadout_changed = 0 < self.loadout_sync_id
+	local talent_changed = 0 < self.talent_sync_id
+	local skin_changed = 0 < self.skin_sync_id
+	local respawn = skin_changed
+
+	if respawn then
+		self.respawn(self)
+
+		self._ignore_sound_on_close_menu = ignore_sound_on_close_menu
+	elseif self._on_close_next_state then
+		self.parent:requested_screen_change_by_name(self._on_close_next_state)
+	else
+		self.parent:close_menu(nil, ignore_sound_on_close_menu)
+	end
+
+	return 
+end
+HeroViewStateOverview.respawn = function (self)
+	local player = self.player_manager:player_from_peer_id(self.peer_id)
+	local player_unit = player.player_unit
+
+	if player_unit then
+		local position = Unit.world_position(player_unit, 0)
+		local rotation = Unit.world_rotation(player_unit, 0)
+
+		player.set_spawn_position_rotation(player, position, rotation)
+
+		self._despawning_player_unit = player.player_unit
+
+		player.despawn(player)
+
+		self._respawning = true
 	end
 
 	return 
@@ -627,10 +744,28 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_type
 		local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
 
 		attachment_extension.create_attachment_in_slot(attachment_extension, slot_name, backend_id)
+	elseif slot_type == "frame" then
+		local frame_data = ItemHelper.get_template_by_item_name(item_data.key)
+		local frame_name = frame_data.name
+		local cosmetic_system = Managers.state.entity:system("cosmetic_system")
+
+		cosmetic_system.set_equipped_frame(cosmetic_system, unit, frame_name)
 	end
 
 	self.loadout_sync_id = self.loadout_sync_id + 1
 	self.inventory_sync_id = self.inventory_sync_id + 1
+
+	Managers.state.event:trigger("event_set_loadout_items")
+
+	return 
+end
+HeroViewStateOverview.update_talent_sync = function (self)
+	self.talent_sync_id = self.talent_sync_id + 1
+
+	return 
+end
+HeroViewStateOverview.update_skin_sync = function (self)
+	self.skin_sync_id = self.skin_sync_id + 1
 
 	return 
 end

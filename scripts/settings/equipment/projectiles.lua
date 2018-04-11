@@ -1,14 +1,15 @@
 require("scripts/settings/explosion_templates")
 
 ProjectileGravitySettings = {
+	bounty_hunter_shot = -0.01,
 	default = -9.82,
-	bolts = -5,
 	drakegun = -9.82,
+	bolts = -5,
 	spark = -0.5,
-	gaze_fireball = -0.01,
 	drake_pistols = 0,
 	arrows = -9.82,
 	fireball = -9.82,
+	gaze_fireball = -0.01,
 	sniper_arrows = -12.82,
 	staff = -9.82,
 	flame_wave_fireball = -6
@@ -300,7 +301,7 @@ Projectiles.bardin_ranger_career_weapon = {
 }
 Projectiles.victor_bounty_hunter = table.clone(Projectiles.crossbow_bolt) or table.clone(Projectiles.default)
 Projectiles.victor_bounty_hunter.radius = 0.15
-Projectiles.victor_bounty_hunter.gravity_settings = "drake_pistols"
+Projectiles.victor_bounty_hunter.gravity_settings = "bounty_hunter_shot"
 Projectiles.kerillian_waywatcher_career_arrows = {
 	projectile_unit_template_name = "player_projectile_unit",
 	dummy_linker_unit_name = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1_3ps",

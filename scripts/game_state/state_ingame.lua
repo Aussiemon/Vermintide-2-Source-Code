@@ -50,6 +50,7 @@ require("scripts/managers/quest/quest_manager")
 require("scripts/managers/performance/performance_manager")
 require("scripts/managers/world_interaction/world_interaction_manager")
 require("scripts/managers/decal/decal_manager")
+require("scripts/managers/performance_title/performance_title_manager")
 
 StateIngame = class(StateIngame)
 StateIngame.NAME = "StateIngame"
@@ -373,7 +374,11 @@ StateIngame.on_enter = function (self)
 			params.level_end_view_wrapper = level_end_view_wrappers[i]
 		end
 
-		Managers.player:add_player(nil, viewport_name, self.world_name, i)
+		local player = Managers.player:add_player(nil, viewport_name, self.world_name, i)
+
+		if loading_context.quickplay_bonus then
+			StatisticsUtil.register_played_quickplay_level(self.statistics_db, player, level_key)
+		end
 
 		self.machines[i] = StateMachine:new(self, StateInGameRunning, params, true)
 	end
@@ -1226,6 +1231,32 @@ StateIngame._check_exit = function (self, t)
 				network_manager.leave_game(network_manager, force_diconnect)
 			end
 
+			if Development.parameter("attract_mode") then
+				Managers.transition:force_fade_in()
+			else
+				Managers.transition:fade_in(GameSettings.transition_fade_in_speed)
+			end
+
+			Managers.transition:show_loading_icon()
+		elseif transition == "return_to_pc_menu" then
+			self.exit_type = "return_to_pc_menu"
+
+			if self.network_server then
+				self.network_server:disconnect_all_peers("host_left_game")
+			elseif self._lobby_client and self._lobby_client.state == LobbyState.JOINED then
+				print("Leaving lobby, noting it as one I don't want to matchmake back into soon")
+
+				local lobby_id = self._lobby_client:id()
+
+				Managers.matchmaking:add_broken_lobby(lobby_id, t, true)
+			end
+
+			if network_manager.in_game_session(network_manager) then
+				local force_diconnect = true
+
+				network_manager.leave_game(network_manager, force_diconnect)
+			end
+
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed)
 			Managers.transition:show_loading_icon()
 		elseif transition == "afk_kick" then
@@ -1399,6 +1430,15 @@ StateIngame._check_exit = function (self, t)
 			else
 				return StateLoading
 			end
+		elseif exit_type == "return_to_pc_menu" then
+			printf("[StateIngame] Transition to StateLoadingRestartNetwork on %q", self.exit_type)
+			self.level_transition_handler:set_next_level(self.level_transition_handler:default_level_key())
+
+			self.parent.loading_context.restart_network = true
+			self.parent.loading_context.show_profile_on_startup = true
+			self.parent.loading_context.return_to_pc_menu = true
+
+			return StateLoading
 		elseif exit_type == "demo_completed" then
 			self.parent.loading_context.restart_network = true
 
@@ -1581,6 +1621,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	end
 
 	Managers.telemetry.rpc_listener:unregister(self.network_event_delegate)
+	Managers.state.performance_title:unregister_rpcs()
 	DebugKeyHandler.set_enabled(false)
 	DebugScreen.destroy()
 	self.network_timer_handler:unregister_rpcs()
@@ -2029,8 +2070,11 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.state.network:set_unit_spawner(unit_spawner)
 
 	Managers.state.bot_nav_transition = BotNavTransitionManager:new(self.world, is_server, network_event_delegate)
-	Managers.state.achievement = AchievementManager:new(self.world, self.statistics_db)
+	Managers.state.achievement = AchievementManager:new(self.world, self.statistics_db, self.is_in_inn)
 	Managers.state.blood = BloodManager:new(self.world)
+	Managers.state.performance_title = PerformanceTitleManager:new(self.network_transmit, self.statistics_db, is_server)
+
+	Managers.state.performance_title:register_rpcs(network_event_delegate)
 
 	return 
 end
@@ -2119,6 +2163,12 @@ StateIngame.gm_event_end_conditions_met = function (self, reason, checkpoint_ava
 		end
 	elseif game_lost and self.is_server and checkpoint_available then
 		Managers.state.voting:request_vote("continue_level", nil, Network.peer_id())
+	end
+
+	if self.is_server and not self.is_in_inn then
+		local human_players = Managers.player:human_players()
+
+		Managers.state.performance_title:evaluate_titles(human_players)
 	end
 
 	for _, machine in pairs(self.machines) do

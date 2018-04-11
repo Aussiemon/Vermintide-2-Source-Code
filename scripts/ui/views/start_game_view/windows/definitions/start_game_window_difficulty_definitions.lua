@@ -5,8 +5,8 @@ local window_size = window_default_settings.size
 local window_spacing = window_default_settings.spacing
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_width_offset = window_size[1]*2 + window_spacing*2
-local window_text_width = window_size[1] - (window_frame_width*2 + 60)
+local window_width_offset = window_size[1] * 2 + window_spacing * 2
+local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local difficulty_option_size = {
 	1020,
 	200
@@ -79,7 +79,7 @@ local scenegraph_definition = {
 		size = difficulty_option_size,
 		position = {
 			window_spacing,
-			-window_frame_height/2,
+			-window_frame_height / 2,
 			1
 		}
 	},
@@ -90,7 +90,7 @@ local scenegraph_definition = {
 		size = difficulty_option_size,
 		position = {
 			window_spacing,
-			-(difficulty_option_size[2] + window_frame_height + window_frame_height/2),
+			-(difficulty_option_size[2] + window_frame_height + window_frame_height / 2),
 			1
 		}
 	},
@@ -101,7 +101,7 @@ local scenegraph_definition = {
 		size = difficulty_option_size,
 		position = {
 			window_spacing,
-			-((difficulty_option_size[2] + window_frame_height)*2 + window_frame_height/2),
+			-((difficulty_option_size[2] + window_frame_height) * 2 + window_frame_height / 2),
 			1
 		}
 	},
@@ -112,7 +112,7 @@ local scenegraph_definition = {
 		size = difficulty_option_size,
 		position = {
 			window_spacing,
-			-((difficulty_option_size[2] + window_frame_height)*3 + window_frame_height/2),
+			-((difficulty_option_size[2] + window_frame_height) * 3 + window_frame_height / 2),
 			1
 		}
 	},
@@ -122,11 +122,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			window_text_width,
-			window_size[2]/2
+			window_size[2] / 2
 		},
 		position = {
 			0,
-			0,
+			35,
 			1
 		}
 	},
@@ -172,7 +172,7 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	difficulty_lock_text = {
+	difficulty_chest_info = {
 		vertical_alignment = "top",
 		parent = "description_text",
 		horizontal_alignment = "center",
@@ -182,7 +182,35 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-140,
+			-120,
+			0
+		}
+	},
+	difficulty_xp_multiplier = {
+		vertical_alignment = "top",
+		parent = "difficulty_chest_info",
+		horizontal_alignment = "center",
+		size = {
+			window_text_width,
+			20
+		},
+		position = {
+			0,
+			-30,
+			0
+		}
+	},
+	difficulty_lock_text = {
+		vertical_alignment = "top",
+		parent = "difficulty_xp_multiplier",
+		horizontal_alignment = "center",
+		size = {
+			window_text_width,
+			20
+		},
+		position = {
+			0,
+			-70,
 			0
 		}
 	},
@@ -196,21 +224,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-28,
-			0
-		}
-	},
-	blocking_peers = {
-		vertical_alignment = "top",
-		parent = "difficulty_is_locked_text",
-		horizontal_alignment = "center",
-		size = {
-			window_text_width,
-			20
-		},
-		position = {
-			0,
-			-60,
+			-35,
 			0
 		}
 	},
@@ -269,6 +283,38 @@ local difficulty_text_style = {
 	vertical_alignment = "bottom",
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local difficulty_chest_info_style = {
+	font_size = 20,
+	upper_case = false,
+	localize = false,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("cyan", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local difficulty_xp_multiplier_style = {
+	font_size = 20,
+	upper_case = false,
+	localize = false,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "center",
+	vertical_alignment = "top",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("cyan", 255),
 	offset = {
 		0,
 		0,
@@ -669,10 +715,10 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 				uvs = {
 					{
 						0,
-						math.min(size[2]/button_background_texture_settings.size[2], 1) - 1
+						1 - math.min(size[2] / button_background_texture_settings.size[2], 1)
 					},
 					{
-						math.min(size[1]/button_background_texture_settings.size[1], 1),
+						math.min(size[1] / button_background_texture_settings.size[1], 1),
 						1
 					}
 				},
@@ -919,9 +965,10 @@ local widgets = {
 	difficulty_texture = UIWidgets.create_simple_texture("difficulty_option_1", "difficulty_texture"),
 	difficulty_title_divider = UIWidgets.create_simple_texture("divider_01_top", "difficulty_title_divider"),
 	description_text = UIWidgets.create_simple_text(Localize("start_game_window_adventure_desc"), "description_text", nil, nil, description_text_style),
+	difficulty_chest_info = UIWidgets.create_simple_text("", "difficulty_chest_info", nil, nil, difficulty_chest_info_style),
+	xp_multiplier = UIWidgets.create_simple_text("", "difficulty_xp_multiplier", nil, nil, difficulty_xp_multiplier_style),
 	difficulty_lock_text = UIWidgets.create_simple_text("difficulty_lock_text", "difficulty_lock_text", nil, nil, difficulty_lock_text_style),
 	difficulty_is_locked_text = UIWidgets.create_simple_text("Some people in your party do not meet the required Hero Power.", "difficulty_is_locked_text", nil, nil, difficulty_is_locked_text_style),
-	blocking_peers = UIWidgets.create_simple_text("blocking_peers", "blocking_peers", nil, nil, blocking_peers_text_style),
 	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("confirm_menu_button_name"), 32)
 }
 local animation_definitions = {
@@ -958,7 +1005,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

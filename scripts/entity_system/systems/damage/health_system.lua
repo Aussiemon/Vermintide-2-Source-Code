@@ -59,6 +59,13 @@ end
 HealthSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, self.NAME, extension_init_data)
 	self.unit_extensions[unit] = extension
+	local optional_data = extension_init_data.optional_data
+
+	if optional_data then
+		extension.zone_data = optional_data.zone_data
+		extension.replaced_breed = optional_data.replaced_breed
+		extension.debug_info = optional_data.debug_info
+	end
 
 	if extension_name == "PlayerUnitHealthExtension" then
 		self.player_unit_extensions[unit] = extension
@@ -90,7 +97,7 @@ HealthSystem.hot_join_sync = function (self, sender)
 	return 
 end
 HealthSystem.update = function (self, context, t)
-	self.active_damage_buffer_index = self.active_damage_buffer_index - 3
+	self.active_damage_buffer_index = 3 - self.active_damage_buffer_index
 	local active_damage_buffer_index = self.active_damage_buffer_index
 	local pdArray_set_empty = pdArray.set_empty
 	local player_unit_extensions = self.player_unit_extensions
@@ -176,7 +183,10 @@ HealthSystem.update_debug = function (self)
 		end
 	end
 
-	if script_data.show_ai_health then
+	local show_ai_health = script_data.show_ai_health
+	local show_ai_spawn_info = script_data.show_ai_spawn_info
+
+	if show_ai_health or show_ai_spawn_info then
 		local player = Managers.player:local_player()
 
 		if player == nil then
@@ -194,7 +204,11 @@ HealthSystem.update_debug = function (self)
 			local num_units = Broadphase.query(broadphase, center_pos, 20, debug_units)
 			local offset_vector = Vector3(0, 0, 0.5)
 			local offset_vector2 = Vector3(0, 0, 0.65)
+			local offset_vector3 = Vector3(0, 0, 0.75)
 			local desc_color = Vector3(255, 200, 0)
+			local desc_color2 = Vector3(255, 0, 200)
+			local head_color = Vector3(255, 70, 0)
+			local change_color = Vector3(55, 70, 255)
 			local color1 = Vector3(0, 175, 75)
 			local color2 = Vector3(175, 175, 0)
 			local color3 = Vector3(175, 0, 0)
@@ -208,29 +222,69 @@ HealthSystem.update_debug = function (self)
 
 				if head_node then
 					local health_extension = self.unit_extensions[unit]
-					local current_health = health_extension.health - health_extension.damage
-					local max_health = health_extension.health
-					local p = current_health/max_health
-					local color = (0.99 < p and color1) or (0.25 < p and color2) or color3
 
-					if p <= 0 then
-						local text = string.format("dead", current_health, health_extension.health)
+					if show_ai_health then
+						debug_text_manager.clear_unit_text(debug_text_manager, unit, "health")
 
-						debug_text_manager.clear_unit_text(debug_text_manager, unit, "health")
-						debug_text_manager.output_unit_text(debug_text_manager, text, 0.16, unit, head_node, offset_vector, nil, "health", deadcolor, viewport_name)
-					else
-						debug_text_manager.clear_unit_text(debug_text_manager, unit, "health")
+						local current_health = health_extension.health - health_extension.damage
+						local max_health = health_extension.health
+						local p = current_health / max_health
+						local color = (0.99 < p and color1) or (0.25 < p and color2) or color3
+
+						if p <= 0 then
+							local text = string.format("dead", current_health, health_extension.health)
+
+							debug_text_manager.output_unit_text(debug_text_manager, text, 0.16, unit, head_node, offset_vector, nil, "health", deadcolor, viewport_name)
+						else
+							local text = string.format("%.2f / %.2f", current_health, health_extension.health)
+
+							debug_text_manager.output_unit_text(debug_text_manager, text, 0.3, unit, head_node, offset_vector, nil, "health", color, viewport_name)
+						end
 
 						local ai_group_extension = ScriptUnit.has_extension(unit, "ai_group_system")
 						local template_name = (ai_group_extension and ai_group_extension.template) or ""
 
 						if template_name then
-							debug_text_manager.output_unit_text(debug_text_manager, template_name, 0.15, unit, head_node, offset_vector2, nil, "health", desc_color, viewport_name)
+							debug_text_manager.output_unit_text(debug_text_manager, template_name, 0.15, unit, head_node, offset_vector2, nil, "health", head_color, viewport_name)
 						end
+					end
 
-						local text = string.format("%.2f / %.2f", current_health, health_extension.health)
+					if show_ai_spawn_info then
+						debug_text_manager.clear_unit_text(debug_text_manager, unit, "spawn_info")
 
-						debug_text_manager.output_unit_text(debug_text_manager, text, 0.3, unit, head_node, offset_vector, nil, "health", color, viewport_name)
+						local zone_data = health_extension.zone_data
+
+						if zone_data then
+							local text, col = nil
+							local replaced_breed = health_extension.replaced_breed
+
+							if replaced_breed then
+								col = change_color
+								text = string.format("%s R>%s", health_extension.debug_info or "Roaming", health_extension.replaced_breed)
+							else
+								col = head_color
+								text = string.format("%s", health_extension.debug_info or "Roaming")
+							end
+
+							debug_text_manager.output_unit_text(debug_text_manager, text, 0.15, unit, head_node, offset_vector3, nil, "spawn_info", col, viewport_name)
+
+							text = string.format("%s - zone_id: %q", zone_data.pack_type or "?", zone_data.unique_zone_id)
+
+							if zone_data.hi then
+								col = desc_color2
+							else
+								col = desc_color
+							end
+
+							debug_text_manager.output_unit_text(debug_text_manager, text, 0.15, unit, head_node, offset_vector2, nil, "spawn_info", col, viewport_name)
+						else
+							local ai_group_extension = ScriptUnit.has_extension(unit, "ai_group_system")
+							local template_name = (ai_group_extension and ai_group_extension.template) or ""
+
+							if template_name then
+								debug_text_manager.output_unit_text(debug_text_manager, template_name, 0.15, unit, head_node, offset_vector2, nil, "spawn_info", head_color, viewport_name)
+							end
+						end
 					end
 				end
 			end
@@ -454,17 +508,25 @@ HealthSystem.rpc_take_falling_damage = function (self, sender, go_id, fall_heigh
 		return 
 	end
 
-	fall_height = fall_height*0.25
-	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-	local FALL_DAMAGE_MULTIPLIER = movement_settings_table.fall.heights.FALL_DAMAGE_MULTIPLIER
-	local MIN_FALL_DAMAGE_HEIGHT = movement_settings_table.fall.heights.MIN_FALL_DAMAGE_HEIGHT
-	local MIN_FALL_DAMAGE = movement_settings_table.fall.heights.MIN_FALL_DAMAGE
-	local MAX_FALL_DAMAGE = movement_settings_table.fall.heights.MAX_FALL_DAMAGE
-	local HARD_LANDING_FALL_HEIGHT = movement_settings_table.fall.heights.HARD_LANDING_FALL_HEIGHT
+	local player_health_extension = self.player_unit_extensions[unit]
 
-	if MIN_FALL_DAMAGE_HEIGHT < fall_height then
-		local delta = fall_height - MIN_FALL_DAMAGE_HEIGHT
-		local fall_damage = math.clamp(delta*FALL_DAMAGE_MULTIPLIER, MIN_FALL_DAMAGE, MAX_FALL_DAMAGE)
+	if not player_health_extension then
+		return 
+	end
+
+	fall_height = fall_height * 0.25
+	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
+	local damage_multiplier = movement_settings_table.fall.heights.FALL_DAMAGE_MULTIPLIER
+	local min_fall_damage_height = movement_settings_table.fall.heights.MIN_FALL_DAMAGE_HEIGHT
+	local min_fall_damage_percentage = movement_settings_table.fall.heights.MIN_FALL_DAMAGE_PERCENTAGE
+	local max_fall_damage_percentage = movement_settings_table.fall.heights.MAX_FALL_DAMAGE_PERCENTAGE
+	local max_health = player_health_extension.get_max_health(player_health_extension)
+	local min_fall_damage = max_health * min_fall_damage_percentage
+	local max_fall_damage = max_health * max_fall_damage_percentage
+
+	if min_fall_damage_height < fall_height then
+		local delta = fall_height - min_fall_damage_height
+		local fall_damage = math.clamp(delta * damage_multiplier, min_fall_damage, max_fall_damage)
 		local damage_direction = Vector3.up()
 		local hit_zone_name = "full"
 		local damage_type = "kinetic"

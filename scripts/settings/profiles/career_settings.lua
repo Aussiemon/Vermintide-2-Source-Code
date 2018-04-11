@@ -20,7 +20,7 @@ CareerSettings = {
 		profile_name = "dwarf_ranger",
 		display_name = "dr_ironbreaker",
 		name = "dr_ironbreaker",
-		character_selection_image = "career_dwarf_ironbreaker",
+		preview_idle_animation = "career_idle_01",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
@@ -42,8 +42,8 @@ CareerSettings = {
 			attack_speed_speed = 10
 		},
 		video = {
-			material_name = "bardin_ironbreaker_video",
-			resource = "video/career_videos/bardin_ironbreaker_video"
+			material_name = "dr_ironbreaker",
+			resource = "video/career_videos/bardin/dr_ironbreaker"
 		},
 		preview_items = {
 			"dr_shield_hammer",
@@ -77,7 +77,7 @@ CareerSettings = {
 		profile_name = "dwarf_ranger",
 		display_name = "dr_slayer",
 		name = "dr_slayer",
-		character_selection_image = "career_dwarf_slayer",
+		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
@@ -98,8 +98,8 @@ CareerSettings = {
 			movement_speed = 9
 		},
 		video = {
-			material_name = "bardin_slayer_video",
-			resource = "video/career_videos/bardin_slayer_video"
+			material_name = "dr_slayer",
+			resource = "video/career_videos/bardin/dr_slayer"
 		},
 		preview_items = {
 			"dr_dual_wield_axes",
@@ -133,7 +133,7 @@ CareerSettings = {
 		profile_name = "dwarf_ranger",
 		display_name = "dr_ranger",
 		name = "dr_ranger",
-		character_selection_image = "career_dwarf_ranger",
+		preview_idle_animation = "career_idle_03",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
@@ -154,8 +154,8 @@ CareerSettings = {
 			movement_speed = 8
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "dr_ranger",
+			resource = "video/career_videos/bardin/dr_ranger"
 		},
 		preview_items = {
 			"dr_crossbow",
@@ -189,7 +189,7 @@ CareerSettings = {
 		profile_name = "empire_soldier",
 		display_name = "es_huntsman",
 		name = "es_huntsman",
-		character_selection_image = "career_emperor_poacher",
+		preview_idle_animation = "career_idle_03",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
@@ -209,8 +209,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.05
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "es_huntsman",
+			resource = "video/career_videos/kruber/es_huntsman"
 		},
 		preview_items = {
 			"es_handgun",
@@ -244,7 +244,7 @@ CareerSettings = {
 		profile_name = "empire_soldier",
 		display_name = "es_knight",
 		name = "es_knight",
-		character_selection_image = "career_emperor_full_plate",
+		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
@@ -265,7 +265,7 @@ CareerSettings = {
 		},
 		video = {
 			material_name = "es_knight",
-			resource = "video/career_videos/es_knight"
+			resource = "video/career_videos/kruber/es_knight"
 		},
 		preview_items = {
 			"es_sword_shield",
@@ -299,7 +299,7 @@ CareerSettings = {
 		profile_name = "empire_soldier",
 		display_name = "es_mercenary",
 		name = "es_mercenary",
-		character_selection_image = "career_emperor_normal",
+		preview_idle_animation = "career_idle_01",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
@@ -319,8 +319,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.05
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "es_mercenary",
+			resource = "video/career_videos/kruber/es_mercenary"
 		},
 		preview_items = {
 			"es_halberd",
@@ -354,7 +354,7 @@ CareerSettings = {
 		profile_name = "wood_elf",
 		display_name = "we_shade",
 		name = "we_shade",
-		character_selection_image = "career_wood_elf_shade",
+		preview_idle_animation = "career_idle_01",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
@@ -374,8 +374,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.1
 		},
 		video = {
-			material_name = "ww_shade",
-			resource = "video/career_videos/ww_shade"
+			material_name = "we_shade",
+			resource = "video/career_videos/kerillian/we_shade"
 		},
 		preview_items = {
 			"we_dual_wield_sword_dagger",
@@ -409,7 +409,7 @@ CareerSettings = {
 		profile_name = "wood_elf",
 		display_name = "we_maidenguard",
 		name = "we_maidenguard",
-		character_selection_image = "career_wood_elf_maiden",
+		preview_idle_animation = "career_idle_03",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
@@ -429,8 +429,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.05
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "we_maidenguard",
+			resource = "video/career_videos/kerillian/we_maidenguard"
 		},
 		preview_items = {
 			"we_spear",
@@ -464,7 +464,7 @@ CareerSettings = {
 		profile_name = "wood_elf",
 		display_name = "we_waywatcher",
 		name = "we_waywatcher",
-		character_selection_image = "career_wood_elf_waywatcher",
+		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
@@ -484,8 +484,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.05
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "we_waywatcher",
+			resource = "video/career_videos/kerillian/we_waywatcher"
 		},
 		preview_items = {
 			"we_longbow",
@@ -519,7 +519,7 @@ CareerSettings = {
 		profile_name = "witch_hunter",
 		display_name = "wh_zealot",
 		name = "wh_zealot",
-		character_selection_image = "career_witch_hunter_zealot",
+		preview_idle_animation = "career_idle_03",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
@@ -539,8 +539,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.05
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "wh_zealot",
+			resource = "video/career_videos/victor/wh_zealot"
 		},
 		preview_items = {
 			"es_1h_flail",
@@ -574,7 +574,7 @@ CareerSettings = {
 		profile_name = "witch_hunter",
 		display_name = "wh_bountyhunter",
 		name = "wh_bountyhunter",
-		character_selection_image = "career_witch_hunter_bounty_hunter",
+		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
@@ -594,8 +594,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.05
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "wh_bountyhunter",
+			resource = "video/career_videos/victor/wh_bountyhunter"
 		},
 		preview_items = {
 			"wh_repeating_pistols",
@@ -629,7 +629,7 @@ CareerSettings = {
 		profile_name = "witch_hunter",
 		display_name = "wh_captain",
 		name = "wh_captain",
-		character_selection_image = "career_witch_hunter_captain",
+		preview_idle_animation = "career_idle_01",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
@@ -649,8 +649,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.05
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "wh_captain",
+			resource = "video/career_videos/victor/wh_captain"
 		},
 		preview_items = {
 			"wh_fencing_sword",
@@ -684,7 +684,7 @@ CareerSettings = {
 		profile_name = "bright_wizard",
 		display_name = "bw_scholar",
 		name = "bw_scholar",
-		character_selection_image = "career_bright_wizard_sniper",
+		preview_idle_animation = "career_idle_03",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
@@ -704,8 +704,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.05
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "bw_scholar",
+			resource = "video/career_videos/sienna/bw_scholar"
 		},
 		preview_items = {
 			"bw_skullstaff_spear",
@@ -739,7 +739,7 @@ CareerSettings = {
 		profile_name = "bright_wizard",
 		display_name = "bw_adept",
 		name = "bw_adept",
-		character_selection_image = "career_bright_wizard_boomer",
+		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		talent_tree_index = 2,
@@ -759,8 +759,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.05
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "bw_adept",
+			resource = "video/career_videos/sienna/bw_adept"
 		},
 		preview_items = {
 			"bw_skullstaff_fireball",
@@ -794,7 +794,7 @@ CareerSettings = {
 		profile_name = "bright_wizard",
 		display_name = "bw_unchained",
 		name = "bw_unchained",
-		character_selection_image = "career_bright_wizard_melee",
+		preview_idle_animation = "career_idle_01",
 		preview_animation = "career_select_01",
 		icon = "icons_placeholder",
 		talent_tree_index = 3,
@@ -814,8 +814,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.05
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "bw_unchained",
+			resource = "video/career_videos/sienna/bw_unchained"
 		},
 		preview_items = {
 			"bw_flame_sword",
@@ -847,9 +847,9 @@ CareerSettings = {
 	},
 	empire_soldier_tutorial = {
 		profile_name = "empire_soldier",
-		display_name = "empire_soldier_tutorial",
+		display_name = "empire_soldier",
 		name = "empire_soldier_tutorial",
-		character_selection_image = "career_emperor_full_plate",
+		preview_idle_animation = "career_idle_02",
 		preview_animation = "career_select_02",
 		icon = "icons_placeholder",
 		description = "markus_2_desc",
@@ -867,8 +867,8 @@ CareerSettings = {
 			base_critical_strike_chance = 0.05
 		},
 		video = {
-			material_name = "out",
-			resource = "video/career_videos/out"
+			material_name = "es_knight",
+			resource = "video/career_videos/kruber/es_knight"
 		},
 		preview_items = {
 			"es_sword_shield",

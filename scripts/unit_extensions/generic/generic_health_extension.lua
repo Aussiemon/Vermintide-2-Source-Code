@@ -99,7 +99,7 @@ GenericHealthExtension.is_alive = function (self)
 	return not self.dead
 end
 GenericHealthExtension.current_health_percent = function (self)
-	return self.damage/self.health - 1
+	return 1 - self.damage / self.health
 end
 GenericHealthExtension.current_health = function (self)
 	return self.health - self.damage
@@ -121,8 +121,8 @@ end
 GenericHealthExtension.set_max_health = function (self, health, update_unmodfied)
 	local health_constant = NetworkConstants.health
 	local network_health = math.clamp(health, health_constant.min, health_constant.max)
-	local decimal = network_health%1
-	local rounded_decimal = math.round(decimal*4)*0.25
+	local decimal = network_health % 1
+	local rounded_decimal = math.round(decimal * 4) * 0.25
 	network_health = math.floor(network_health) + rounded_decimal
 
 	if update_unmodfied then
@@ -275,7 +275,7 @@ GenericHealthExtension.has_assist_shield = function (self)
 	return false
 end
 GenericHealthExtension.recent_damages = function (self)
-	local previous_buffer_index = self.system_data.active_damage_buffer_index - 3
+	local previous_buffer_index = 3 - self.system_data.active_damage_buffer_index
 	local damage_queue = self.damage_buffers[previous_buffer_index]
 
 	return pdArray.data(damage_queue)

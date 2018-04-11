@@ -56,7 +56,7 @@ ActionFlamethrower.client_owner_start_action = function (self, new_action, t, ch
 	self.charge_level = (chain_action_data and chain_action_data.charge_level) or 1
 
 	if not new_action.fire_stop_time or not (t + new_action.fire_stop_time) then
-		slot6 = t + self.charge_level*(new_action.charge_fuel_time_multiplier or 3)
+		slot6 = t + self.charge_level * (new_action.charge_fuel_time_multiplier or 3)
 	end
 
 	self.max_flame_time = slot6
@@ -82,9 +82,9 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		local weapon_unit = self.weapon_unit
 		local world = self.world
 		local go_id = self.unit_id
-		local cone_hypotenuse = math.sqrt(SPRAY_RANGE*SPRAY_RANGE + SPRAY_RADIUS*SPRAY_RADIUS)
-		self.cone_cos_alpha = SPRAY_RANGE/cone_hypotenuse
-		local flamethrower_range = current_action.range or SPRAY_RANGE*SPRAY_RANGE
+		local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + SPRAY_RADIUS * SPRAY_RADIUS)
+		self.cone_cos_alpha = SPRAY_RANGE / cone_hypotenuse
+		local flamethrower_range = current_action.range or SPRAY_RANGE * SPRAY_RANGE
 		local flamethrower_effect = current_action.particle_effect_flames
 		local flamethrower_effect_3p = current_action.particle_effect_flames_3p
 		local flamethrower_impact_effect = current_action.particle_effect_impact
@@ -160,7 +160,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 						if breed then
 							local rand = math.random()
-							local chance = #NODES/1
+							local chance = 1 / #NODES
 							local cumalative_value = 0
 
 							for i = 1, #NODES, 1 do
@@ -184,7 +184,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 							local override_damage_profile = nil
 
 							if consecutive_hits then
-								power_level = power_level*math.clamp(consecutive_hits, 0, 4)*0.5
+								power_level = power_level * math.clamp(consecutive_hits, 0, 4) * 0.5
 
 								if consecutive_hits < 5 then
 									override_damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
@@ -204,7 +204,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 				local muzzle_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, self.muzzle_node_name))
 				local muzzle_rotation = Unit.world_rotation(weapon_unit, Unit.node(weapon_unit, self.muzzle_node_name))
 				local muzzle_direction = Quaternion.forward(muzzle_rotation)
-				local flamethrower_range = current_action.range or SPRAY_RANGE*SPRAY_RANGE
+				local flamethrower_range = current_action.range or SPRAY_RANGE * SPRAY_RANGE
 				local world = self.world
 				local physics_world = World.get_data(world, "physics_world")
 				local player_rotation = Unit.world_rotation(first_person_unit, 0)
@@ -377,13 +377,13 @@ ActionFlamethrower._select_targets = function (self, world, show_outline)
 	local player_rotation = Unit.world_rotation(first_person_unit, 0)
 	local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 	local ignore_hitting_allies = not Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged
-	local start_point = player_position + player_direction*POSITION_TWEAK + player_direction*SPRAY_RADIUS
+	local start_point = player_position + player_direction * POSITION_TWEAK + player_direction * SPRAY_RADIUS
 	local broadphase_radius = 6
 	local ai_units = {}
-	local ai_units_n = AiUtils.broadphase_query(player_position + player_direction*broadphase_radius, broadphase_radius, ai_units)
+	local ai_units_n = AiUtils.broadphase_query(player_position + player_direction * broadphase_radius, broadphase_radius, ai_units)
 	local physics_world = World.get_data(world, "physics_world")
 
-	PhysicsWorld.prepare_actors_for_overlap(physics_world, start_point, SPRAY_RANGE*SPRAY_RANGE)
+	PhysicsWorld.prepare_actors_for_overlap(physics_world, start_point, SPRAY_RANGE * SPRAY_RANGE)
 
 	if ai_units then
 		local num_hits = ai_units_n
@@ -428,8 +428,8 @@ ActionFlamethrower._check_within_cone = function (self, player_position, player_
 	local cone_cos_alpha = self.cone_cos_alpha
 
 	if player then
-		local cone_hypotenuse = math.sqrt(SPRAY_RANGE*SPRAY_RANGE + PLAYER_SPRAY_RADIUS*PLAYER_SPRAY_RADIUS)
-		cone_cos_alpha = SPRAY_RANGE/cone_hypotenuse
+		local cone_hypotenuse = math.sqrt(SPRAY_RANGE * SPRAY_RANGE + PLAYER_SPRAY_RADIUS * PLAYER_SPRAY_RADIUS)
+		cone_cos_alpha = SPRAY_RANGE / cone_hypotenuse
 	end
 
 	local target_position = Unit.world_position(target, Unit.node(target, "j_neck"))

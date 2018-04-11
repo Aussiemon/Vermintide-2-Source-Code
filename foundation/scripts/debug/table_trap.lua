@@ -136,17 +136,17 @@ table_trap._add_forwarding_metafunctions = function (metatable, data_table)
 	metatable.__mul = function (lhs, rhs)
 		local a, b = table_trap._replace_with_data_if_metatable_matches(lhs, rhs, metatable, data_table)
 
-		return a*b
+		return a * b
 	end
 	metatable.__div = function (lhs, rhs)
 		local a, b = table_trap._replace_with_data_if_metatable_matches(lhs, rhs, metatable, data_table)
 
-		return a/b
+		return a / b
 	end
 	metatable.__mod = function (lhs, rhs)
 		local a, b = table_trap._replace_with_data_if_metatable_matches(lhs, rhs, metatable, data_table)
 
-		return a%b
+		return a % b
 	end
 	metatable.__pow = function (lhs, rhs)
 		local a, b = table_trap._replace_with_data_if_metatable_matches(lhs, rhs, metatable, data_table)

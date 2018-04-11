@@ -1,3 +1,5 @@
+require("scripts/managers/backend_playfab/playfab_request_queue")
+
 REDUCTION_INTERVAL = 80
 DELAY_MULTIPLIER = 5
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
@@ -8,6 +10,7 @@ PlayFabMirror.init = function (self, signin_result)
 	self._commit_current_id = nil
 	self._last_id = 0
 	self._queued_commit = {}
+	self._request_queue = PlayFabRequestQueue:new()
 	self._best_power_levels = nil
 	self.sum_best_power_levels = nil
 	local commit_limit_data = signin_result.InfoResultPayload.UserReadOnlyData.commit_limit_total
@@ -163,7 +166,7 @@ PlayFabMirror.character_data_request_cb = function (self, characters, i, result)
 		local character_id = result.CharacterId
 		local character_name = self._career_lookup[character_id]
 		local character_data = result.Data
-		local broken_slots = self._set_career_data(self, character_id, character_data)
+		local broken_slots = self._set_inital_career_data(self, character_id, character_data)
 
 		if broken_slots then
 			self._num_items_to_load = self._num_items_to_load + 1
@@ -217,7 +220,7 @@ PlayFabMirror.fix_career_data_request_cb = function (self, characters, i, result
 
 	return 
 end
-PlayFabMirror._set_career_data = function (self, character_id, character_data)
+PlayFabMirror._set_inital_career_data = function (self, character_id, character_data)
 	local career_name = self._career_lookup[character_id]
 	local career_data = self._career_data[career_name]
 	local career_data_mirror = self._career_data_mirror[career_name]
@@ -252,6 +255,19 @@ PlayFabMirror._set_career_data = function (self, character_id, character_data)
 	end
 
 	return broken_slots
+end
+PlayFabMirror._set_career_data_mirror = function (self, character_id, character_data)
+	local career_name = self._career_lookup[character_id]
+	local career_data_mirror = self._career_data_mirror[career_name]
+
+	table.clear(career_data_mirror)
+
+	for key, data in pairs(character_data) do
+		local value = data.Value
+		career_data_mirror[key] = value
+	end
+
+	return 
 end
 PlayFabMirror.inventory_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
@@ -369,6 +385,8 @@ PlayFabMirror.update = function (self, dt)
 		self._commit_limit_timer = REDUCTION_INTERVAL
 		self._commit_limit_total = math.max(self._commit_limit_total - 1, 1)
 	end
+
+	self._request_queue:update(dt)
 
 	return 
 end
@@ -552,7 +570,14 @@ PlayFabMirror.commit = function (self, skip_queue)
 	local id = nil
 
 	if skip_queue and not self._commit_current_id then
-		id = self._commit_internal(self)
+		if queued_commit.active then
+			local id = queued_commit.id
+
+			print("FORCE COMMIT", id)
+			self._commit_internal(self, id, skip_queue)
+		else
+			id = self._commit_internal(self, nil, skip_queue)
+		end
 	elseif not queued_commit.active then
 		id = self._queue_commit(self)
 	end
@@ -570,7 +595,7 @@ PlayFabMirror._new_id = function (self)
 end
 PlayFabMirror._queue_commit = function (self)
 	local queued_commit = self._queued_commit
-	local timer = self._commit_limit_total*DELAY_MULTIPLIER
+	local timer = self._commit_limit_total * DELAY_MULTIPLIER
 	local id = self._new_id(self)
 	queued_commit.timer = timer
 	queued_commit.id = id
@@ -592,8 +617,10 @@ local keys = {
 	"talents"
 }
 local num_updates_per_request = 5
-local num_requests = math.ceil(#keys/num_updates_per_request)
-PlayFabMirror._commit_internal = function (self, queue_id)
+local num_requests = math.ceil(#keys / num_updates_per_request)
+PlayFabMirror._commit_internal = function (self, queue_id, skip_queue)
+	print("PlayFabMirror:_commit_internal", queue_id, skip_queue)
+
 	local career_data = self._career_data
 	local career_data_mirror = self._career_data_mirror
 	local commit_id = queue_id or self._new_id(self)
@@ -615,7 +642,7 @@ PlayFabMirror._commit_internal = function (self, queue_id)
 			table.clear(keys_to_remove)
 
 			local dirty = false
-			local starting_index = (i - 1)*num_updates_per_request + 1
+			local starting_index = (i - 1) * num_updates_per_request + 1
 			local ending_index = starting_index + num_updates_per_request - 1
 
 			for j = starting_index, ending_index, 1 do
@@ -648,7 +675,7 @@ PlayFabMirror._commit_internal = function (self, queue_id)
 				function_params.commit_id = commit_id
 				function_params.commit_limit_total = self._commit_limit_total
 
-				self._send_update_character_data_request(self, update_character_data_request)
+				self._send_update_character_data_request(self, update_character_data_request, skip_queue)
 
 				status = "waiting"
 				num_updates = num_updates + 1
@@ -664,41 +691,56 @@ PlayFabMirror._commit_internal = function (self, queue_id)
 	}
 	self._commit_current_id = commit_id
 	local save_statistics_cb = callback(self, "save_statistics_cb", commit_id)
-	local request_sent = Managers.backend:get_interface("statistics"):save(save_statistics_cb)
+	local request = Managers.backend:get_interface("statistics"):save(save_statistics_cb)
 
-	if request_sent then
+	if request then
 		commit.status = "waiting"
 		commit.wait_for_stats = true
+
+		self._request_queue:enqueue("save_statistics", request, skip_queue)
 	end
 
 	local save_keep_decorations_cb = callback(self, "save_keep_decorations_cb", commit_id)
-	request_sent = Managers.backend:get_interface("keep_decorations"):save(save_keep_decorations_cb)
+	request = Managers.backend:get_interface("keep_decorations"):save(save_keep_decorations_cb)
 
-	if request_sent then
+	if request then
 		commit.status = "waiting"
 		commit.wait_for_keep_decorations = true
+
+		self._request_queue:enqueue("save_keep_decorations", request, skip_queue)
 	end
 
 	local save_hero_attributes_cb = callback(self, "save_hero_attributes_cb", commit_id)
-	request_sent = Managers.backend:get_interface("hero_attributes"):save(save_hero_attributes_cb)
+	request = Managers.backend:get_interface("hero_attributes"):save(save_hero_attributes_cb)
 
-	if request_sent then
+	if request then
 		commit.status = "waiting"
 		commit.wait_for_hero_attributes = true
+
+		self._request_queue:enqueue("save_hero_attributes", request, skip_queue)
 	end
 
 	self._commits[commit_id] = commit
 
 	return commit_id
 end
-PlayFabMirror._send_update_character_data_request = function (self, update_character_data_request)
-	local update_character_data_request_cb = callback(self, "update_character_data_request_cb")
+PlayFabMirror._send_update_character_data_request = function (self, update_character_data_request, skip_queue)
+	local request = {
+		payload = table.clone(update_character_data_request),
+		callback = function (payload, on_complete)
+			local update_character_data_request_cb = callback(self, "update_character_data_request_cb", on_complete)
 
-	PlayFabClientApi.ExecuteCloudScript(update_character_data_request, update_character_data_request_cb, update_character_data_request_cb)
+			PlayFabClientApi.ExecuteCloudScript(payload, update_character_data_request_cb, update_character_data_request_cb)
+
+			return 
+		end
+	}
+
+	self._request_queue:enqueue("send_update_character_data_request", request, skip_queue)
 
 	return 
 end
-PlayFabMirror.update_character_data_request_cb = function (self, result)
+PlayFabMirror.update_character_data_request_cb = function (self, on_complete, result)
 	local function_result = result.FunctionResult
 	local get_data_result = function_result.GetDataResult
 	local commit_id = function_result.CommitId
@@ -712,14 +754,16 @@ PlayFabMirror.update_character_data_request_cb = function (self, result)
 		local character_id = get_data_result.CharacterId
 		local character_data = get_data_result.Data
 
-		self._set_career_data(self, character_id, character_data)
+		self._set_career_data_mirror(self, character_id, character_data)
 
 		commit.num_updates = commit.num_updates + 1
 	end
 
+	on_complete()
+
 	return 
 end
-PlayFabMirror.save_statistics_cb = function (self, commit_id, success)
+PlayFabMirror.save_statistics_cb = function (self, commit_id, on_complete, success)
 	local commit = self._commits[commit_id]
 	commit.wait_for_stats = false
 
@@ -727,9 +771,11 @@ PlayFabMirror.save_statistics_cb = function (self, commit_id, success)
 		commit.status = "commit_error"
 	end
 
+	on_complete()
+
 	return 
 end
-PlayFabMirror.save_keep_decorations_cb = function (self, commit_id, success)
+PlayFabMirror.save_keep_decorations_cb = function (self, commit_id, on_complete, success)
 	local commit = self._commits[commit_id]
 	commit.wait_for_keep_decorations = false
 
@@ -737,15 +783,19 @@ PlayFabMirror.save_keep_decorations_cb = function (self, commit_id, success)
 		commit.status = "commit_error"
 	end
 
+	on_complete()
+
 	return 
 end
-PlayFabMirror.save_hero_attributes_cb = function (self, commit_id, success)
+PlayFabMirror.save_hero_attributes_cb = function (self, commit_id, on_complete, success)
 	local commit = self._commits[commit_id]
 	commit.wait_for_hero_attributes = false
 
 	if success == false then
 		commit.status = "commit_error"
 	end
+
+	on_complete()
 
 	return 
 end

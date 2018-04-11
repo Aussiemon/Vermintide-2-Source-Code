@@ -9,21 +9,33 @@ local function dprint(...)
 	return 
 end
 
-local function ballistic_raycast(physics_world, max_steps, max_time, position, velocity, gravity, collision_filter)
-	local time_step = max_time/max_steps
+CareerAbilityBWAdept._ballistic_raycast = function (self, physics_world, max_steps, max_time, position, velocity, gravity, collision_filter)
+	local time_step = max_time / max_steps
+	local radius = 0.85
+	local max_hits = 10
 
 	for i = 1, max_steps, 1 do
-		local new_position = position + velocity*time_step
-		local delta = new_position - position
-		local direction = Vector3.normalize(delta)
-		local distance = Vector3.length(delta)
-		local result, hit_position, hit_distance, normal, actor = PhysicsWorld.immediate_raycast(physics_world, position, direction, distance, "closest", "collision_filter", collision_filter)
+		local new_position = position + velocity * time_step
+		local result = PhysicsWorld.linear_sphere_sweep(physics_world, position, new_position, radius, max_hits, "collision_filter", collision_filter, "report_initial_overlap")
 
-		if hit_position then
-			return result, hit_position, hit_distance, normal, actor
+		if result then
+			local num_hits = #result
+
+			for i = 1, num_hits, 1 do
+				local hit = result[i]
+				local hit_actor = hit.actor
+				local hit_position = hit.position
+				local hit_normal = hit.normal
+				local hit_distance = hit.distance
+				local hit_unit = Actor.unit(hit_actor)
+
+				if hit_unit ~= self.owner_unit then
+					return true, hit_position, hit_distance, hit_normal, hit_actor
+				end
+			end
 		end
 
-		velocity = velocity + gravity*time_step
+		velocity = velocity + gravity * time_step
 		position = new_position
 	end
 
@@ -32,7 +44,7 @@ end
 
 local function travel_time(starting_position, target_position, speed)
 	local distance = Vector3.distance(target_position, starting_position)
-	local time = distance/speed
+	local time = distance / speed
 
 	return time
 end
@@ -180,13 +192,24 @@ CareerAbilityBWAdept._update_priming = function (self, dt, t)
 	local up = Vector3(0, 0, 1)
 	local player_rotation = Quaternion.look(GameSession.game_object_field(game, unit_id, "aim_direction"), up)
 	local max_steps = 10
-	local max_time = 1.2
-	local speed = 15
+	local max_time = 0.9
+	local speed = 12
 	local angle = 0
-	local velocity = Quaternion.forward(Quaternion.multiply(player_rotation, Quaternion(Vector3.right(), angle)))*speed
-	local gravity = Vector3(0, 0, -9.82)
-	local collision_filter = "filter_geiser_check"
-	local result, hit_position, hit_distance, normal = ballistic_raycast(physics_world, max_steps, max_time, player_position, velocity, gravity, collision_filter, false)
+	local velocity = Quaternion.forward(Quaternion.multiply(player_rotation, Quaternion(Vector3.right(), angle))) * speed
+	local gravity = Vector3(0, 0, -2)
+	local collision_filter = "filter_adept_teleport"
+	local result, hit_position, hit_distance, normal = self._ballistic_raycast(self, physics_world, max_steps, max_time, player_position, velocity, gravity, collision_filter, false)
+
+	if result and Vector3.dot(normal, Vector3.up()) < 0.75 then
+		local step_back = Vector3.normalize(hit_position - player_position) * 1.5
+		local step_back_position = hit_position - step_back
+		local new_result, new_hit_position, new_hit_distance, new_normal = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 100, "closest", "collision_filter", collision_filter)
+
+		if new_result then
+			hit_position = new_hit_position
+		end
+	end
+
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	local new_hit_position = get_target_pos_on_navmesh(hit_position, nav_world)
 

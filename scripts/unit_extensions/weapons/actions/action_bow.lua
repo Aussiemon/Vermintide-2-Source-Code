@@ -20,6 +20,7 @@ ActionBow.client_owner_start_action = function (self, new_action, t, chain_actio
 	local owner_unit = self.owner_unit
 	local weapon_unit = self.weapon_unit
 	local first_person_unit = self.first_person_unit
+	local owner_career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.owner_buff_extension = buff_extension

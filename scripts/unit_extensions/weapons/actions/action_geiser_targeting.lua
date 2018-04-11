@@ -116,16 +116,16 @@ ActionGeiserTargeting.client_owner_post_update = function (self, dt, t, world, c
 	local max_time = 1.5
 	local speed = self.speed
 	local angle = self.angle
-	local velocity = Quaternion.forward(Quaternion.multiply(first_person_rotation, Quaternion(Vector3.right(), angle)))*speed
+	local velocity = Quaternion.forward(Quaternion.multiply(first_person_rotation, Quaternion(Vector3.right(), angle))) * speed
 	local gravity = Vector3(0, 0, self.gravity)
 	local collision_filter = "filter_geiser_check"
 	local overcharge_extension = self.overcharge_extension
 
 	local function ballistic_raycast(max_steps, max_time, position, velocity, gravity, collision_filter, visualize)
-		local time_step = max_time/max_steps
+		local time_step = max_time / max_steps
 
 		for i = 1, max_steps, 1 do
-			local new_position = position + velocity*time_step
+			local new_position = position + velocity * time_step
 			local delta = new_position - position
 			local direction = Vector3.normalize(delta)
 			local distance = Vector3.length(delta)
@@ -139,7 +139,7 @@ ActionGeiserTargeting.client_owner_post_update = function (self, dt, t, world, c
 				return result, hit_position, hit_distance, normal, actor
 			end
 
-			velocity = velocity + gravity*time_step
+			velocity = velocity + gravity * time_step
 			position = new_position
 		end
 
@@ -153,7 +153,7 @@ ActionGeiserTargeting.client_owner_post_update = function (self, dt, t, world, c
 		local up = Vector3(0, 0, 1)
 
 		if Vector3.dot(normal, up) < 0.75 then
-			local half_step_back = Vector3.normalize(position - player_position)*1
+			local half_step_back = 1 * Vector3.normalize(position - player_position)
 			local new_position = position - half_step_back
 			local result, hit_position, hit_distance, normal = PhysicsWorld.immediate_raycast(physics_world, new_position, Vector3(0, 0, -1), 5, "closest", "collision_filter", collision_filter)
 
@@ -167,12 +167,12 @@ ActionGeiserTargeting.client_owner_post_update = function (self, dt, t, world, c
 
 	self.position:store(position)
 
-	self.charge_value = math.min(math.max(t - time_to_shoot, 0)/self.charge_time, 1)
+	self.charge_value = math.min(math.max(t - time_to_shoot, 0) / self.charge_time, 1)
 	local min_radius = self.min_radius
 	local max_radius = self.max_radius
-	local radius = math.min(max_radius, (max_radius - min_radius)*self.charge_value + min_radius)
+	local radius = math.min(max_radius, (max_radius - min_radius) * self.charge_value + min_radius)
 	self.radius = radius
-	local scale = radius*2
+	local scale = radius * 2
 
 	World.move_particles(world, self.targeting_effect_id, position)
 	World.set_particles_variable(world, self.targeting_effect_id, self.targeting_variable_id, Vector3(scale, scale, 1))

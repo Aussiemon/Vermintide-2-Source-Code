@@ -23,12 +23,12 @@ BTTriggerMoveToAction.leave = function (self, unit, blackboard, t, reason, destr
 	return 
 end
 BTTriggerMoveToAction.run = function (self, unit, blackboard, t, dt)
-	blackboard.trigger_index = (blackboard.trigger_index + 1)%8
+	blackboard.trigger_index = (blackboard.trigger_index + 1) % 8
 	local trigger_index = blackboard.trigger_index
-	local angle = math.degrees_to_radians((blackboard.trigger_index*360)/8)
+	local angle = math.degrees_to_radians((blackboard.trigger_index * 360) / 8)
 	local direction = Vector3(math.sin(angle), math.cos(angle), 0)
 	local position = POSITION_LOOKUP[unit]
-	local target_position = position + direction*1
+	local target_position = position + direction * 1
 	local result = GwNavQueries.raycango(blackboard.nav_world, position, target_position, blackboard.navigation_extension._traverse_logic)
 
 	if not result then

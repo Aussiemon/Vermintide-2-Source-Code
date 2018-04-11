@@ -43,7 +43,7 @@ ConflictUtils.cluster_positions = function (positions, min_dist)
 	local clusters_sizes = clusters_sizes
 	clusters_sizes[1] = 1
 	cluster_index_lookup[1] = 1
-	min_dist = min_dist*min_dist
+	min_dist = min_dist * min_dist
 	local work_queue = cluster_work_queue
 
 	for i = 1, 3, 1 do
@@ -102,7 +102,7 @@ local max_cluster_score = {
 }
 ConflictUtils.cluster_weight_and_loneliness = function (positions, min_dist)
 	local distance_squared = Vector3.distance_squared
-	min_dist = min_dist*min_dist
+	min_dist = min_dist * min_dist
 	local num_positions = #positions
 
 	if num_positions == 1 then
@@ -148,7 +148,7 @@ ConflictUtils.cluster_weight_and_loneliness = function (positions, min_dist)
 	end
 
 	loneliness[1] = ab + ac + ad
-	local cluster_utility = utility_sum/max_cluster_score[num_positions]
+	local cluster_utility = utility_sum / max_cluster_score[num_positions]
 	local loneliest_value = 0
 	local loneliest_index = 1
 
@@ -159,7 +159,7 @@ ConflictUtils.cluster_weight_and_loneliness = function (positions, min_dist)
 		end
 	end
 
-	loneliest_value = math.sqrt(loneliest_value)/num_positions
+	loneliest_value = math.sqrt(loneliest_value) / num_positions
 
 	return cluster_utility, loneliest_index, loneliest_value, loneliness
 end
@@ -182,7 +182,7 @@ ConflictUtils.average_player_position = function ()
 		return nil
 	end
 
-	player_center_pos = player_center_pos*player_count/1
+	player_center_pos = player_center_pos * 1 / player_count
 
 	return player_center_pos
 end
@@ -199,7 +199,7 @@ ConflictUtils.hidden_cover_points = function (center_position, avoid_pos_list, m
 	end
 
 	local bp = Managers.state.conflict.level_analysis.cover_points_broadphase
-	min_rad = min_rad*min_rad
+	min_rad = min_rad * min_rad
 	dot_threshold = dot_threshold or -0.9
 	local MAX_RANGE = 40
 	local num_found_cover_units = Broadphase.query(bp, center_position, math.min(max_rad, MAX_RANGE), found_cover_units)
@@ -244,11 +244,11 @@ ConflictUtils.hidden_cover_points = function (center_position, avoid_pos_list, m
 
 				if script_data.debug_near_cover_points then
 					QuickDrawer:sphere(pos, 0.8, green)
-					QuickDrawer:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot)*2 + Vector3(0, 0, 1), green)
+					QuickDrawer:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), green)
 				end
 			elseif script_data.debug_near_cover_points then
 				QuickDrawer:sphere(pos, 0.8, red)
-				QuickDrawer:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot)*2 + Vector3(0, 0, 1), red)
+				QuickDrawer:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), red)
 			end
 		end
 	end
@@ -271,10 +271,10 @@ ConflictUtils.test_is_cover_point_hidden = function ()
 
 		if ConflictUtils.is_cover_point_hidden(cover_unit, PLAYER_POSITIONS, min_rad) then
 			QuickDrawer:sphere(pos, 0.8, green)
-			QuickDrawer:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot)*2 + Vector3(0, 0, 1), green)
+			QuickDrawer:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), green)
 		else
 			QuickDrawer:sphere(pos, 0.8, red)
-			QuickDrawer:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot)*2 + Vector3(0, 0, 1), red)
+			QuickDrawer:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), red)
 		end
 	end
 
@@ -327,7 +327,7 @@ ConflictUtils.get_random_spawner_with_id = function (id, except_spawner_unit)
 		local spawner = spawners[index]
 
 		if 1 < num and spawner == except_spawner_unit then
-			index = (index - 1)%num + 1
+			index = (index - 1) % num + 1
 			spawner = spawners[index]
 		end
 
@@ -371,8 +371,8 @@ ConflictUtils.get_biggest_cluster = function (clusters_sizes)
 end
 ConflictUtils.filter_positions = function (center_pos, main_target_pos, spawner_units, min_dist, max_dist)
 	local list = {}
-	max_dist = max_dist*max_dist
-	min_dist = min_dist*min_dist
+	max_dist = max_dist * max_dist
+	min_dist = min_dist * min_dist
 	local behind_dist = distance_squared(center_pos, main_target_pos)
 
 	for j = 1, #spawner_units, 1 do
@@ -394,8 +394,8 @@ end
 ConflictUtils.filter_horde_spawners = function (player_positions, spawner_units, hidden_spawner_units, min_dist, max_dist)
 	local list = {}
 	local hidden_list = {}
-	max_dist = max_dist*max_dist
-	min_dist = min_dist*min_dist
+	max_dist = max_dist * max_dist
+	min_dist = min_dist * min_dist
 
 	for i = 1, #player_positions, 1 do
 		local pos = player_positions[i]
@@ -420,8 +420,8 @@ end
 ConflictUtils.filter_horde_spawners_strictly = function (player_positions, spawner_units, hidden_spawner_units, min_dist, max_dist)
 	local list = {}
 	local hidden_list = {}
-	max_dist = max_dist*max_dist
-	min_dist = min_dist*min_dist
+	max_dist = max_dist * max_dist
+	min_dist = min_dist * min_dist
 	local num_player_pos = #player_positions
 
 	for j = 1, #spawner_units, 1 do
@@ -451,7 +451,7 @@ ConflictUtils.filter_horde_spawners_strictly = function (player_positions, spawn
 end
 ConflictUtils.get_hidden_pos = function (world, nav_world, center_pos, avoid_positions, radius, radius_spread, avoid_dist_sqr, max_tries, cake_slice_dir, cake_slice_angle_radians)
 	local h = Vector3(0, 0, 1)
-	local half_radius_spread = radius_spread*0.5
+	local half_radius_spread = radius_spread * 0.5
 	local ignore_umbra = not World.umbra_available(world)
 	local drawfunc = QuickDrawerStay
 
@@ -528,7 +528,7 @@ end
 ConflictUtils.simulate_dummy_target = function (nav_world, center_pos, t)
 	local radius = 15
 	local add_vec = Vector3(radius, 0, 1)
-	local angle_in_radians = (t/3)%(math.pi*2)
+	local angle_in_radians = (t / 3) % (math.pi * 2)
 	local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), angle_in_radians), add_vec)
 	local success, altitude = GwNavQueries.triangle_from_position(nav_world, pos, 15, 15)
 
@@ -548,7 +548,7 @@ ConflictUtils.check_spawn_pos = function (mesh, pos)
 
 		if not fail then
 			local p1, p2, p3 = NavigationMesh.polygon_vertices(mesh, poly)
-			local triangle_center = (NavigationMesh.vertex(mesh, p1) + NavigationMesh.vertex(mesh, p2) + NavigationMesh.vertex(mesh, p3))/3
+			local triangle_center = (NavigationMesh.vertex(mesh, p1) + NavigationMesh.vertex(mesh, p2) + NavigationMesh.vertex(mesh, p3)) / 3
 
 			if math.abs(cpos.z - triangle_center.z) < 3 then
 				return true
@@ -559,15 +559,15 @@ ConflictUtils.check_spawn_pos = function (mesh, pos)
 	return false
 end
 ConflictUtils.get_spawn_pos_on_circle_segment = function (nav_world, center_pos, radius, direction, width, tries)
-	local lifted = center_pos + Vector3.up()*1
+	local lifted = center_pos + Vector3.up() * 1
 	local _, base_angle = math.cartesian_to_polar(direction.x, direction.y)
-	local r_steps = radius/tries
+	local r_steps = radius / tries
 
 	for ii = 1, tries, 1 do
-		local angle_offset = Math.random_range(-width/2, width/2)
+		local angle_offset = Math.random_range(-width / 2, width / 2)
 		local angle = base_angle + angle_offset
 		local dir = Vector3.normalize(direction)
-		local distance = Math.random_range(radius - ii*r_steps, radius - (ii - 1)*r_steps)
+		local distance = Math.random_range(radius - ii * r_steps, radius - (ii - 1) * r_steps)
 		local x, y = math.polar_to_cartesian(distance, angle)
 		local search_pos = center_pos + Vector3(x, y, direction.z)
 		local pos = ConflictUtils.find_center_tri(nav_world, search_pos)
@@ -580,12 +580,12 @@ ConflictUtils.get_spawn_pos_on_circle_segment = function (nav_world, center_pos,
 	return false
 end
 ConflictUtils.test_cake_slice = function (nav_world, center_pos, t)
-	local cake_slice_dir = Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(t%20/20*360)), Vector3(0, 20, 0))
+	local cake_slice_dir = Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(t % 20 / 20 * 360)), Vector3(0, 20, 0))
 
 	QuickDrawer:line(center_pos + Vector3(0, 0, 1), center_pos + cake_slice_dir + Vector3(0, 0, 1), Color(0, 255, 175))
 
 	for i = 1, 100, 1 do
-		local v = ConflictUtils.get_spawn_pos_on_cake_slice(nav_world, center_pos, 1, 40, cake_slice_dir, math.pi/4, 5)
+		local v = ConflictUtils.get_spawn_pos_on_cake_slice(nav_world, center_pos, 1, 40, cake_slice_dir, math.pi / 4, 5)
 
 		if v then
 			QuickDrawer:sphere(v, 0.5, Color(0, 0, 175))
@@ -596,7 +596,7 @@ ConflictUtils.test_cake_slice = function (nav_world, center_pos, t)
 end
 ConflictUtils.get_spawn_pos_on_cake_slice = function (nav_world, center_pos, radius1, radius2, cake_slice_dir, cake_slice_angle_radians, tries)
 	local slice_angle = math.atan2(cake_slice_dir.x, cake_slice_dir.y)
-	local half_slice_angle = cake_slice_angle_radians*0.5
+	local half_slice_angle = cake_slice_angle_radians * 0.5
 	local angle1 = slice_angle - half_slice_angle
 	local angle2 = slice_angle + half_slice_angle
 
@@ -616,7 +616,7 @@ ConflictUtils.get_spawn_pos_on_cake_slice = function (nav_world, center_pos, rad
 end
 ConflictUtils.get_spawn_pos_on_circle = function (nav_world, center_pos, dist, spread, tries)
 	for i = 1, tries, 1 do
-		local add_vec = Vector3(dist + (math.random() - 0.5)*spread, 0, 1)
+		local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)
 		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
 		pos = ConflictUtils.find_center_tri(nav_world, pos)
 
@@ -629,7 +629,7 @@ ConflictUtils.get_spawn_pos_on_circle = function (nav_world, center_pos, dist, s
 end
 ConflictUtils.get_spawn_pos_on_circle_with_func = function (nav_world, center_pos, dist, spread, tries, filter_func, filter_data)
 	for i = 1, tries, 1 do
-		local add_vec = Vector3(dist + (math.random() - 0.5)*spread, 0, 1)
+		local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)
 		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
 		pos = ConflictUtils.find_center_tri(nav_world, pos)
 
@@ -665,7 +665,7 @@ ConflictUtils.get_closest_spawn_dist = function (mesh, unit_list, ray_from, ray_
 	end
 
 	if closest then
-		local spawn_pos = closest[1] + dir*(closest[2] + radius)*MonsterToppingsDef.spawn_dist_multiplier
+		local spawn_pos = closest[1] + dir * (closest[2] + radius) * MonsterToppingsDef.spawn_dist_multiplier
 
 		if ConflictUtils.check_spawn_pos(mesh, spawn_pos) then
 			return spawn_pos
@@ -692,16 +692,16 @@ ConflictUtils.tetris_spawn = function (world, spawn_func, player, spawn_list, po
 		local radius = breed.radius
 
 		for i = 1, max_dir_tries, 1 do
-			local radians = math.random()*2*math.pi
+			local radians = math.random() * 2 * math.pi
 			local dir = Vector3(math.cos(radians), math.sin(radians), 0)
-			local end_pos = pos + dir*ray_dist
+			local end_pos = pos + dir * ray_dist
 			local spawn_pos = ConflictUtils.get_closest_spawn_dist(mesh, already_spawned, end_pos, pos, dir, radius)
 
 			if spawn_pos then
 				local spawn_rot = rot
 
 				if GameTweakData.RANDOM_MONSTER_SPAWN_ROT then
-					local add_rot = Quaternion(Vector3.up(), math.random()*GameTweakData.RANDOM_MONSTER_SPAWN_ROT - math.random()*GameTweakData.RANDOM_MONSTER_SPAWN_ROT)
+					local add_rot = Quaternion(Vector3.up(), math.random() * GameTweakData.RANDOM_MONSTER_SPAWN_ROT - math.random() * GameTweakData.RANDOM_MONSTER_SPAWN_ROT)
 					spawn_rot = Quaternion.multiply(add_rot, rot)
 				end
 
@@ -733,9 +733,9 @@ ConflictUtils.boxify_pos_array = function (array)
 end
 ConflictUtils.draw_stack_of_balls = function (pos, a, r, g, b)
 	QuickDrawer:sphere(pos + Vector3(0, 0, 1), 0.4, Color(a, r, g, b))
-	QuickDrawer:sphere(pos + Vector3(0, 0, 1.5), 0.3, Color(a, r*0.75, g*0.75, b*0.75))
-	QuickDrawer:sphere(pos + Vector3(0, 0, 2), 0.2, Color(a, r*0.5, g*0.5, b*0.5))
-	QuickDrawer:sphere(pos + Vector3(0, 0, 2.5), 0.1, Color(a, r*0.25, g*0.25, b*0.25))
+	QuickDrawer:sphere(pos + Vector3(0, 0, 1.5), 0.3, Color(a, r * 0.75, g * 0.75, b * 0.75))
+	QuickDrawer:sphere(pos + Vector3(0, 0, 2), 0.2, Color(a, r * 0.5, g * 0.5, b * 0.5))
+	QuickDrawer:sphere(pos + Vector3(0, 0, 2.5), 0.1, Color(a, r * 0.25, g * 0.25, b * 0.25))
 
 	return 
 end
@@ -906,15 +906,15 @@ ConflictUtils.make_roaming_spawns = function (self, nav_world, level_analysis)
 	local i = 0
 	local lookup = {}
 	local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
-	local p = (p1 + p2 + p3)/3
-	lookup[p.x*0.0001 + p.y + p.z*10000] = true
+	local p = (p1 + p2 + p3) / 3
+	lookup[p.x * 0.0001 + p.y + p.z * 10000] = true
 
 	while i < num_triangles do
 		i = i + 1
 		triangle = triangles[i]
 		local a, b, c = Script.temp_count()
 		local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, triangle)
-		local triangle_center = (p1 + p2 + p3)/3
+		local triangle_center = (p1 + p2 + p3) / 3
 
 		if math.random() < density then
 			list[#list + 1] = Vector3Box(triangle_center)
@@ -931,8 +931,8 @@ ConflictUtils.make_roaming_spawns = function (self, nav_world, level_analysis)
 			local neighbour = neighbors[j]
 			local a, b, c = Script.temp_count()
 			p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, neighbour)
-			local tri_center = (p1 + p2 + p3)/3
-			local key = tri_center.x*0.0001 + tri_center.y + tri_center.z*10000
+			local tri_center = (p1 + p2 + p3) / 3
+			local key = tri_center.x * 0.0001 + tri_center.y + tri_center.z * 10000
 
 			Script.set_temp_count(a, b, c)
 

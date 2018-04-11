@@ -461,14 +461,14 @@ PlayerInventoryUI.update_inventory_slots_positions = function (self, dt)
 		local widget = self.inventory_slots_widgets[i]
 		local next_widget_index = i - 1
 		local next_widget = self.inventory_slots_widgets[next_widget_index]
-		local widget_height = ui_scenegraph[scenegraph_background_id].size[2]*size_multiplier
+		local widget_height = ui_scenegraph[scenegraph_background_id].size[2] * size_multiplier
 
 		if not inventory_entry_root_lookup_table[i] then
 			inventory_entry_root_lookup_table[i] = "inventory_entry_root_" .. i
 		end
 
 		local scenegraph_root_id = inventory_entry_root_lookup_table[i]
-		ui_scenegraph[scenegraph_root_id].position[2] = height_offset + widget_height*0.5
+		ui_scenegraph[scenegraph_root_id].position[2] = height_offset + widget_height * 0.5
 		height_offset = height_offset + widget_height + slot_spacing
 	end
 
@@ -515,8 +515,8 @@ PlayerInventoryUI.add_animation_for_slot_index = function (self, index, selected
 
 	if selected then
 		if not optional_duration then
-			local size_diff_fraction = (icon_size[1] - default_width)/default_width - 1
-			duration = size_diff_fraction*default_total_time
+			local size_diff_fraction = 1 - (icon_size[1] - default_width) / default_width
+			duration = size_diff_fraction * default_total_time
 		end
 
 		self.animating_selected_slot = true
@@ -532,7 +532,7 @@ PlayerInventoryUI.add_animation_for_slot_index = function (self, index, selected
 
 	local icon_current_size = ui_scenegraph[scenegraph_icon_id].size
 	local icon_default_size = definitions.scenegraph_definition[scenegraph_icon_id].size
-	local start_scale_fraction = icon_current_size[1]/icon_default_size[1]
+	local start_scale_fraction = icon_current_size[1] / icon_default_size[1]
 
 	if animations[scenegraph_id] then
 		local animation = animations[scenegraph_id]
@@ -592,11 +592,11 @@ PlayerInventoryUI.animate_slot_widget = function (self, animation_data, dt)
 	local widget_style = widget.style
 	local inventory_hud_settings = UISettings.inventory_hud
 	time = time + dt
-	local progress = math.min(time/total_time, 1)
+	local progress = math.min(time / total_time, 1)
 	local smoothstep = math.smoothstep(progress, 0, 1)
-	local lit_progress = math.min(progress*2, 1)
+	local lit_progress = math.min(progress * 2, 1)
 	local lit_smoothstep = math.smoothstep(lit_progress, 0, 1)
-	local ammo_progress = (selected and math.min(math.max(0, (progress - 0.8)/0.2), 1)) or math.min(math.max(0, progress/0.2), 1)
+	local ammo_progress = (selected and math.min(math.max(0, (progress - 0.8) / 0.2), 1)) or math.min(math.max(0, progress / 0.2), 1)
 
 	if not inventory_entry_lookup_table[widget_index] then
 		inventory_entry_lookup_table[widget_index] = "inventory_entry_" .. widget_index
@@ -623,45 +623,45 @@ PlayerInventoryUI.animate_slot_widget = function (self, animation_data, dt)
 	local widget_background_scenegraph = ui_scenegraph[scenegraph_background_id]
 	widget.element.dirty = true
 	local scale_fraction_diff = (selected and target_scale_fraction - start_scale_fraction) or start_scale_fraction - target_scale_fraction
-	local new_scale_fraction = (selected and start_scale_fraction + scale_fraction_diff*smoothstep) or start_scale_fraction - scale_fraction_diff*smoothstep
+	local new_scale_fraction = (selected and start_scale_fraction + scale_fraction_diff * smoothstep) or start_scale_fraction - scale_fraction_diff * smoothstep
 	local icon_default_size = scenegraph_definition[scenegraph_icon_id].size
-	widget_icon_scenegraph.size[1] = icon_default_size[1]*new_scale_fraction
-	widget_icon_scenegraph.size[2] = icon_default_size[2]*new_scale_fraction
+	widget_icon_scenegraph.size[1] = icon_default_size[1] * new_scale_fraction
+	widget_icon_scenegraph.size[2] = icon_default_size[2] * new_scale_fraction
 	local background_default_size = scenegraph_definition[scenegraph_background_id].size
-	widget_background_scenegraph.size[1] = background_default_size[1]*new_scale_fraction
-	widget_background_scenegraph.size[2] = background_default_size[2]*new_scale_fraction
+	widget_background_scenegraph.size[1] = background_default_size[1] * new_scale_fraction
+	widget_background_scenegraph.size[2] = background_default_size[2] * new_scale_fraction
 	local new_lit_alpha = 0
 
 	if selected then
-		local lit_alpha_diff = start_selected_alpha - 255
-		new_lit_alpha = start_selected_alpha + lit_alpha_diff*lit_smoothstep
+		local lit_alpha_diff = 255 - start_selected_alpha
+		new_lit_alpha = start_selected_alpha + lit_alpha_diff * lit_smoothstep
 	else
-		new_lit_alpha = start_selected_alpha - start_selected_alpha*lit_smoothstep
+		new_lit_alpha = start_selected_alpha - start_selected_alpha * lit_smoothstep
 	end
 
 	widget_style.background_lit.color[1] = new_lit_alpha
 	widget_style.background_lit.color[1] = new_lit_alpha
 	widget_style.icon_lit.color[1] = new_lit_alpha
-	widget_style.icon.color[1] = new_lit_alpha - 255
+	widget_style.icon.color[1] = 255 - new_lit_alpha
 	widget_style.stance_bar_lit.color[1] = new_lit_alpha
-	widget_style.stance_bar_fg.color[1] = new_lit_alpha - 255
+	widget_style.stance_bar_fg.color[1] = 255 - new_lit_alpha
 	local widget_stance_bar_scenegraph = ui_scenegraph[scenegraph_stance_bar_id]
 	local stance_bar_default_size = scenegraph_definition[scenegraph_stance_bar_id].size
-	widget_stance_bar_scenegraph.size[1] = stance_bar_default_size[1]*new_scale_fraction
-	widget_stance_bar_scenegraph.size[2] = stance_bar_default_size[2]*new_scale_fraction
+	widget_stance_bar_scenegraph.size[1] = stance_bar_default_size[1] * new_scale_fraction
+	widget_stance_bar_scenegraph.size[2] = stance_bar_default_size[2] * new_scale_fraction
 	local widget_stance_bar_fill_scenegraph = ui_scenegraph[scenegraph_stance_bar_fill_id]
 	local stance_bar_fill_default_definitions = scenegraph_definition[scenegraph_stance_bar_fill_id]
 	local stance_bar_fill_default_size = stance_bar_fill_default_definitions.size
 	local stance_bar_fill_default_position = stance_bar_fill_default_definitions.position
-	widget_stance_bar_fill_scenegraph.size[1] = stance_bar_fill_default_size[1]*new_scale_fraction
-	widget_stance_bar_fill_scenegraph.size[2] = stance_bar_fill_default_size[2]*new_scale_fraction
-	widget_stance_bar_fill_scenegraph.local_position[1] = stance_bar_fill_default_position[1]*new_scale_fraction
-	widget_stance_bar_fill_scenegraph.local_position[2] = stance_bar_fill_default_position[2]*new_scale_fraction
-	widget_style.stance_bar.uv_scale_pixels = new_scale_fraction*67
+	widget_stance_bar_fill_scenegraph.size[1] = stance_bar_fill_default_size[1] * new_scale_fraction
+	widget_stance_bar_fill_scenegraph.size[2] = stance_bar_fill_default_size[2] * new_scale_fraction
+	widget_stance_bar_fill_scenegraph.local_position[1] = stance_bar_fill_default_position[1] * new_scale_fraction
+	widget_stance_bar_fill_scenegraph.local_position[2] = stance_bar_fill_default_position[2] * new_scale_fraction
+	widget_style.stance_bar.uv_scale_pixels = 67 * new_scale_fraction
 	local widget_stance_bar_glow_scenegraph = ui_scenegraph[scenegraph_stance_bar_glow_id]
 	local stance_bar_glow_default_size = scenegraph_definition[scenegraph_stance_bar_glow_id].size
-	widget_stance_bar_glow_scenegraph.size[1] = stance_bar_glow_default_size[1]*new_scale_fraction
-	widget_stance_bar_glow_scenegraph.size[2] = stance_bar_glow_default_size[2]*new_scale_fraction
+	widget_stance_bar_glow_scenegraph.size[1] = stance_bar_glow_default_size[1] * new_scale_fraction
+	widget_stance_bar_glow_scenegraph.size[2] = stance_bar_glow_default_size[2] * new_scale_fraction
 	local default_alpha = inventory_hud_settings.slot_default_alpha
 	local selected_alpha = inventory_hud_settings.slot_select_alpha
 	local target_alpha = (selected and selected_alpha) or default_alpha
@@ -669,11 +669,11 @@ PlayerInventoryUI.animate_slot_widget = function (self, animation_data, dt)
 
 	if icon_style.color[1] ~= target_alpha then
 		local alpha_diff = (selected and target_alpha - start_alpha) or start_alpha - target_alpha
-		local new_alpha = (selected and start_alpha + alpha_diff*smoothstep) or start_alpha - alpha_diff*smoothstep
+		local new_alpha = (selected and start_alpha + alpha_diff * smoothstep) or start_alpha - alpha_diff * smoothstep
 		icon_style.color[1] = new_alpha
 		local ammo_text_style = widget_style.ammo_text_1
 		local stance_bar_style = widget_style.stance_bar
-		local ammo_alpha = (selected and ammo_progress*target_alpha) or (ammo_progress - 1)*selected_alpha
+		local ammo_alpha = (selected and ammo_progress * target_alpha) or (1 - ammo_progress) * selected_alpha
 		stance_bar_style.color[1] = new_alpha
 		ammo_text_style.text_color[1] = new_alpha
 	end

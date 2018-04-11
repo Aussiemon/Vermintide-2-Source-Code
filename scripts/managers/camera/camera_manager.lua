@@ -156,10 +156,10 @@ CameraManager._update_shadow_lights = function (self, dt, viewport)
 		end
 
 		if script_data.debug_draw_shadow_lights and 0 < max_lights then
-			local step = max_lights/255
+			local step = 255 / max_lights
 
 			for i = 1, max_lights, 1 do
-				QuickDrawer:sphere(Unit.local_position(lights[i].unit, 0), 0.25, Color(i*step, step*i - 255, 0))
+				QuickDrawer:sphere(Unit.local_position(lights[i].unit, 0), 0.25, Color(i * step, 255 - step * i, 0))
 			end
 		end
 	end
@@ -321,11 +321,11 @@ CameraManager.shading_callback = function (self, world, shading_env, viewport)
 
 		for name, settings in pairs(OutlineSettings.colors) do
 			local c = settings.color
-			local color = Vector3(c[2]/255, c[3]/255, c[4]/255)
+			local color = Vector3(c[2] / 255, c[3] / 255, c[4] / 255)
 			local multiplier = settings.outline_multiplier
 
 			if settings.pulsate then
-				multiplier = settings.outline_multiplier*0.5 + math.sin(Application.time_since_launch()*settings.pulse_multiplier)*settings.outline_multiplier*0.5
+				multiplier = settings.outline_multiplier * 0.5 + math.sin(Application.time_since_launch() * settings.pulse_multiplier) * settings.outline_multiplier * 0.5
 			end
 
 			ShadingEnvironment.set_vector3(shading_env, settings.variable, color)
@@ -360,7 +360,7 @@ CameraManager.shading_callback = function (self, world, shading_env, viewport)
 
 		gamma = Application.user_setting("gamma") or 1
 
-		ShadingEnvironment.set_scalar(shading_env, "exposure", ShadingEnvironment.scalar(shading_env, "exposure")*gamma)
+		ShadingEnvironment.set_scalar(shading_env, "exposure", ShadingEnvironment.scalar(shading_env, "exposure") * gamma)
 
 		if Application.user_setting("render_settings", "particles_receive_shadows") then
 			local last_slice_idx = ShadingEnvironment.array_elements(shading_env, "sun_shadow_slice_depth_ranges") - 1
@@ -699,7 +699,7 @@ CameraManager._smooth_camera_collision = function (self, camera_position, safe_p
 
 			hit = hits[1]
 			local x = Vector3.dot(dir, hit.position - cast_from)
-			local y = Vector3.length(hit.position - cast_from - x*dir)
+			local y = Vector3.length(hit.position - cast_from - x * dir)
 
 			if y < SWEEP_EPSILON then
 				local pos = hit.position
@@ -714,12 +714,12 @@ CameraManager._smooth_camera_collision = function (self, camera_position, safe_p
 			if y < near_radius then
 				cd = x - cast_radius
 			else
-				cd = (x + (y - near_radius)/(smooth_radius - near_radius)*(len - x)) - cast_radius
+				cd = (x + (y - near_radius) / (smooth_radius - near_radius) * (len - x)) - cast_radius
 			end
 
 			if cd < cast_distance then
 				cast_distance = cd
-				cast_to = cast_from + dir*cast_distance
+				cast_to = cast_from + dir * cast_distance
 			end
 
 			if cast_radius - y < 0.05 then
@@ -788,7 +788,7 @@ CameraManager.camera_effect_sequence_event = function (self, event, start_time)
 
 		fassert(0 < recuperate_percentage, "Camera effect sequence time_to_recuperate_to is %f", recuperate_percentage)
 
-		local time_to_recover = recuperate_percentage/100*duration
+		local time_to_recover = recuperate_percentage / 100 * duration
 		sequence_event_settings.time_to_recover = time_to_recover
 		sequence_event_settings.recovery_values = self._calculate_sequence_event_values_normal(self, sequence_event_settings.event.values, time_to_recover)
 		sequence_event_settings.previous_values = previous_values
@@ -880,8 +880,8 @@ CameraManager._apply_offset = function (self, current_data, t)
 	local offset_x = offset.x
 	local offset_y = offset.y
 	local offset_z = offset.z
-	local x = offset_x*Quaternion.right(current_data.rotation)
-	local y = offset_y*Quaternion.forward(current_data.rotation)
+	local x = offset_x * Quaternion.right(current_data.rotation)
+	local y = offset_y * Quaternion.forward(current_data.rotation)
 	local z = Vector3(0, 0, offset_z)
 	local new_pos = current_data.position + x + y + z
 	new_data.position = new_pos
@@ -895,7 +895,7 @@ CameraManager._update_additional_fov_multiplier = function (self, dt)
 		return 
 	end
 
-	local lerp_value = data.current_lerp_time/data.total_lerp_time
+	local lerp_value = data.current_lerp_time / data.total_lerp_time
 	local fov_multiplier = math.lerp(self._additional_fov_multiplier, data.fov_multiplier, lerp_value)
 	data.current_lerp_time = math.min(data.current_lerp_time + dt, data.total_lerp_time)
 
@@ -1002,7 +1002,7 @@ CameraManager._calculate_sequence_event_values_recovery = function (self, t)
 	local starting_values = sequence_event_settings.previous_values
 	local recovery_values = sequence_event_settings.recovery_values
 	local start_time = sequence_event_settings.start_time
-	local progress = (t - start_time)/time_to_recover
+	local progress = (t - start_time) / time_to_recover
 
 	for modifier, value in pairs(starting_values) do
 		new_values[modifier] = math.lerp(value, recovery_values[modifier], progress)
@@ -1034,7 +1034,7 @@ CameraManager._calculate_sequence_event_values_normal = function (self, event_va
 					assert(false, "Time stamp difference is 0, this would result in a div0")
 				end
 
-				local lerp_progress = progress/time_stamp_difference
+				local lerp_progress = progress / time_stamp_difference
 				new_values[modifier_type] = self._sequence_event_settings.transition_function(current_settings.value, next_settings.value, lerp_progress)
 
 				break
@@ -1047,18 +1047,18 @@ end
 CameraManager._calculate_sequence_event_position = function (self, camera_data, new_values)
 	local current_pos = camera_data.position
 	local current_rot = camera_data.rotation
-	local x = new_values.x*Quaternion.right(current_rot)
-	local y = new_values.y*Quaternion.forward(current_rot)
+	local x = new_values.x * Quaternion.right(current_rot)
+	local y = new_values.y * Quaternion.forward(current_rot)
 	local z = Vector3(0, 0, new_values.z)
 
 	return current_pos + x + y + z
 end
 CameraManager._calculate_sequence_event_rotation = function (self, camera_data, new_values)
 	local current_rot = camera_data.rotation
-	local deg_to_rad = math.pi/180
-	local yaw_offset = Quaternion(Vector3.up(), new_values.yaw*deg_to_rad)
-	local pitch_offset = Quaternion(Vector3.right(), new_values.pitch*deg_to_rad)
-	local roll_offset = Quaternion(Vector3.forward(), new_values.roll*deg_to_rad)
+	local deg_to_rad = math.pi / 180
+	local yaw_offset = Quaternion(Vector3.up(), new_values.yaw * deg_to_rad)
+	local pitch_offset = Quaternion(Vector3.right(), new_values.pitch * deg_to_rad)
+	local roll_offset = Quaternion(Vector3.forward(), new_values.roll * deg_to_rad)
 	local total_offset = Quaternion.multiply(Quaternion.multiply(yaw_offset, pitch_offset), roll_offset)
 
 	return Quaternion.multiply(current_rot, total_offset)
@@ -1071,17 +1071,17 @@ CameraManager._apply_shake_event = function (self, settings, camera_data, t)
 	local fade_out_time = settings.fade_out_time
 
 	if fade_in_time and t <= fade_in_time then
-		settings.fade_progress = math.clamp((t - start_time)/(fade_in_time - start_time), 0, 1)
+		settings.fade_progress = math.clamp((t - start_time) / (fade_in_time - start_time), 0, 1)
 	elseif fade_out_time and fade_out_time <= t then
-		settings.fade_progress = math.clamp((end_time - t)/(end_time - fade_out_time), 0, 1)
+		settings.fade_progress = math.clamp((end_time - t) / (end_time - fade_out_time), 0, 1)
 	end
 
-	local pitch_noise_value = self._calculate_perlin_value(self, t - settings.start_time, settings)*settings.scale
-	local yaw_noise_value = self._calculate_perlin_value(self, t - settings.start_time + 10, settings)*settings.scale
+	local pitch_noise_value = self._calculate_perlin_value(self, t - settings.start_time, settings) * settings.scale
+	local yaw_noise_value = self._calculate_perlin_value(self, t - settings.start_time + 10, settings) * settings.scale
 	local current_rot = camera_data.rotation
-	local deg_to_rad = math.pi/180
-	local yaw_offset = Quaternion(Vector3.up(), yaw_noise_value*deg_to_rad)
-	local pitch_offset = Quaternion(Vector3.right(), pitch_noise_value*deg_to_rad)
+	local deg_to_rad = math.pi / 180
+	local yaw_offset = Quaternion(Vector3.up(), yaw_noise_value * deg_to_rad)
+	local pitch_offset = Quaternion(Vector3.right(), pitch_noise_value * deg_to_rad)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
 	camera_data.rotation = Quaternion.multiply(current_rot, total_offset)
 
@@ -1108,12 +1108,12 @@ CameraManager._apply_recoil_event = function (self, settings, current_data, dt, 
 	local new_data = current_data
 	local current_rotation = current_data.rotation
 	local climbing = t < climb_end_time
-	local done_percentage = (climbing and current_climb_time/climb_duration) or current_restore_time/restore_duration
+	local done_percentage = (climbing and current_climb_time / climb_duration) or current_restore_time / restore_duration
 	done_percentage = (climbing and climb_function(done_percentage)) or restore_function(done_percentage)
 	local starting_yaw_rotation = (not climbing and math.degrees_to_radians(horizontal_climb)) or 0
 	local starting_pitch_rotation = (not climbing and math.degrees_to_radians(vertical_climb)) or 0
-	local current_yaw_rotation = math.degrees_to_radians((climbing and horizontal_climb) or -horizontal_climb)*done_percentage
-	local current_pitch_rotation = math.degrees_to_radians((climbing and vertical_climb) or -vertical_climb)*done_percentage
+	local current_yaw_rotation = math.degrees_to_radians((climbing and horizontal_climb) or -horizontal_climb) * done_percentage
+	local current_pitch_rotation = math.degrees_to_radians((climbing and vertical_climb) or -vertical_climb) * done_percentage
 	local yaw_offset = Quaternion(Vector3.up(), starting_yaw_rotation + current_yaw_rotation)
 	local pitch_offset = Quaternion(Vector3.right(), starting_pitch_rotation + current_pitch_rotation)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
@@ -1158,12 +1158,12 @@ CameraManager._calculate_perlin_value = function (self, x, settings)
 	for i = 0, number_of_octaves, 1 do
 		local frequency = 2^i
 		local amplitude = persistance^i
-		total = total + self._interpolated_noise(self, x*frequency, settings)*amplitude
+		total = total + self._interpolated_noise(self, x * frequency, settings) * amplitude
 	end
 
 	local amplitude_multiplier = event_settings.amplitude or 1
 	local fade_multiplier = settings.fade_progress or 1
-	total = total*amplitude_multiplier*fade_multiplier
+	total = total * amplitude_multiplier * fade_multiplier
 
 	return total
 end
@@ -1176,13 +1176,13 @@ CameraManager._interpolated_noise = function (self, x, settings)
 	return math.lerp(v1, v2, remainder)
 end
 CameraManager._smoothed_noise = function (self, x, settings)
-	return self._noise(self, x, settings)/2 + self._noise(self, x - 1, settings)/4 + self._noise(self, x + 1, settings)/4
+	return self._noise(self, x, settings) / 2 + self._noise(self, x - 1, settings) / 4 + self._noise(self, x + 1, settings) / 4
 end
 CameraManager._noise = function (self, x, settings)
 	local next_seed, _ = Math.next_random(x + settings.seed)
 	local _, value = Math.next_random(next_seed)
 
-	return value*2 - 1
+	return value * 2 - 1
 end
 CameraManager.apply_level_particle_effects = function (self, effects, viewport_name)
 	for _, effect in ipairs(effects) do
@@ -1256,13 +1256,13 @@ CameraManager._update_camera_properties = function (self, camera, shadow_cull_ca
 	end
 
 	if script_data.fov_override then
-		Camera.set_vertical_fov(shadow_cull_camera, (math.pi*script_data.fov_override)/180)
-		Camera.set_vertical_fov(camera, (math.pi*script_data.fov_override)/180)
+		Camera.set_vertical_fov(shadow_cull_camera, (math.pi * script_data.fov_override) / 180)
+		Camera.set_vertical_fov(camera, (math.pi * script_data.fov_override) / 180)
 	elseif camera_data.vertical_fov then
 		local vertical_fov = camera_data.vertical_fov
 
 		if current_node.should_apply_fov_multiplier(current_node) then
-			Camera.set_vertical_fov(camera, vertical_fov*self._fov_multiplier*self._additional_fov_multiplier)
+			Camera.set_vertical_fov(camera, vertical_fov * self._fov_multiplier * self._additional_fov_multiplier)
 			Camera.set_vertical_fov(shadow_cull_camera, current_node.default_fov(current_node))
 		else
 			Camera.set_vertical_fov(camera, vertical_fov)
@@ -1270,7 +1270,7 @@ CameraManager._update_camera_properties = function (self, camera, shadow_cull_ca
 		end
 
 		if script_data.camera_debug and Managers.state.debug then
-			local fov_text = string.format("Vertical FOV: %s", (vertical_fov*180)/math.pi)
+			local fov_text = string.format("Vertical FOV: %s", (vertical_fov * 180) / math.pi)
 
 			Debug.text(fov_text)
 		end
@@ -1309,7 +1309,7 @@ CameraManager._update_sound_listener = function (self, viewport_name)
 	local offset = self._listener_elevation_offset
 	local min = self._listener_elevation_min
 	local max = self._listener_elevation_max
-	local elevation = math.clamp((position.z - offset)*scale, min, max)
+	local elevation = math.clamp((position.z - offset) * scale, min, max)
 
 	if script_data.debug_wwise_elevation then
 		Debug.text("Elevation: %f", elevation)

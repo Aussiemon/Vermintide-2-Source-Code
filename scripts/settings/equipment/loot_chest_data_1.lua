@@ -149,7 +149,7 @@ LootChestData.power_level_tables = {
 		bonus_item_1 = 24
 	}
 }
-LootChestData.chests_by_difficulty = {
+LootChestData.chests_by_category = {
 	easy = {
 		package_name = "resource_packages/chests_d1",
 		backend_keys = {
@@ -302,6 +302,15 @@ LootChestData.chests_by_difficulty = {
 			"units/gameplay/loot_chests/gameplay_loot_chest_d2_t4",
 			"units/gameplay/loot_chests/gameplay_loot_chest_d2_t5",
 			"units/gameplay/loot_chests/gameplay_loot_chest_d2_t6"
+		}
+	},
+	level_up = {
+		package_name = "resource_packages/chests_level_up",
+		backend_keys = {
+			"level_chest"
+		},
+		chest_unit_names = {
+			"units/gameplay/loot_chests/gameplay_loot_chest_level_up"
 		}
 	}
 }

@@ -39,7 +39,7 @@ local function get_text_height(ui_renderer, size, ui_style, ui_content, text, ui
 	local max_texts = ui_content.max_texts or #texts
 	local num_texts = math.min(#texts - text_start_index - 1, max_texts)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min))*inv_scale*num_texts
+	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 
 	return full_font_height
 end
@@ -68,7 +68,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_texture_name = data.frame_name
 			local frame_settings = UIFrameSettings[frame_texture_name]
@@ -76,10 +76,10 @@ UITooltipPasses = {
 
 			if draw then
 				if draw_downwards then
-					position[2] = position[2] - size[2] - edge_height*2
+					position[2] = position[2] - size[2] - edge_height * 2
 				end
 
-				size[2] = size[2] + edge_height*2
+				size[2] = size[2] + edge_height * 2
 				position[3] = start_layer
 				local background_color = data.background_color
 				background_color[1] = alpha
@@ -93,7 +93,7 @@ UITooltipPasses = {
 				UIRenderer.draw_texture_frame(ui_renderer, position, size, frame_settings.texture, frame_settings.texture_size, frame_settings.texture_sizes, frame_color)
 			end
 
-			return edge_height*2
+			return edge_height * 2
 		end
 	},
 	item_background = {
@@ -130,14 +130,14 @@ UITooltipPasses = {
 					255,
 					255
 				},
-				frame_margin = frame_edge_height*2
+				frame_margin = frame_edge_height * 2
 			}
 
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_texture_name = data.frame_name
 			local frame_settings = UIFrameSettings[frame_texture_name]
@@ -147,8 +147,8 @@ UITooltipPasses = {
 				local item_data = item.data
 				local rarity = item.rarity or item_data.rarity
 				local rarity_color = Colors.get_table(rarity)
-				position[2] = position[2] - size[2] - edge_height*2
-				size[2] = (size[2] + edge_height*2) - 2
+				position[2] = position[2] - size[2] - edge_height * 2
+				size[2] = (size[2] + edge_height * 2) - 2
 				position[3] = start_layer
 				local background_texture = data.background_texture
 				local background_texture_size = data.background_texture_size
@@ -156,14 +156,9 @@ UITooltipPasses = {
 				local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 				local background_size = background_texture_settings.size
 				local uvs = data.uvs
-				uvs[2][1] = math.min(size[1]/background_size[1], 1)
-				uvs[2][2] = math.min(size[2]/background_size[2], 1)
+				uvs[2][1] = math.min(size[1] / background_size[1], 1)
+				uvs[2][2] = math.min(size[2] / background_size[2], 1)
 				local color = data.background_color
-				local color_multiplier = (rarity == "plentiful" and 0.5) or 1
-				color[1] = alpha
-				color[2] = rarity_color[2]*color_multiplier
-				color[3] = rarity_color[3]*color_multiplier
-				color[4] = rarity_color[4]*color_multiplier
 
 				UIRenderer.draw_tiled_texture(ui_renderer, background_texture, position, size, background_texture_size, color)
 
@@ -175,7 +170,7 @@ UITooltipPasses = {
 				UIRenderer.draw_texture_frame(ui_renderer, position, size, frame_settings.texture, frame_settings.texture_size, frame_settings.texture_sizes, frame_color)
 			end
 
-			return edge_height*2
+			return edge_height * 2
 		end
 	},
 	weapon_stats = {
@@ -277,7 +272,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
@@ -307,12 +302,12 @@ UITooltipPasses = {
 			local star_width = icon_size[1]
 			local star_height = icon_size[2]
 			local num_rows = #weapon_stats_data
-			local star_total_length = star_width*5
-			local star_total_height = star_height*num_rows
+			local star_total_length = star_width * 5
+			local star_total_height = star_height * num_rows
 			local total_height = frame_margin
 
 			if draw_downwards then
-				position[2] = position[2] - frame_margin*2
+				position[2] = position[2] - frame_margin * 2
 			else
 				position[2] = position[2] + star_total_height
 			end
@@ -333,7 +328,7 @@ UITooltipPasses = {
 					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 
 					if i == 2 then
-						position[1] = position_x - frame_margin + frame_margin/4
+						position[1] = position_x - frame_margin + frame_margin / 4
 					else
 						position[1] = position_x + frame_margin
 					end
@@ -365,7 +360,7 @@ UITooltipPasses = {
 					local key = attack_data.key
 
 					if attack_index == 1 then
-						position[1] = position_x + frame_margin/2
+						position[1] = position_x + frame_margin / 2
 						local text_id = "stat_title"
 						local text_style = style[text_id]
 						local text_size = data.text_size
@@ -387,15 +382,15 @@ UITooltipPasses = {
 					if attack_index == 1 then
 						position[1] = position_x + frame_margin
 					else
-						position[1] = (position_x + size[1]) - star_total_length - star_width - frame_margin/4
+						position[1] = (position_x + size[1]) - star_total_length - star_width - frame_margin / 4
 					end
 
-					local steps = math.round(value*10)
+					local steps = math.round(value * 10)
 					local left_half_draw_count = 0
 					local right_half_draw_count = 0
 
 					for i = 1, steps, 1 do
-						if i%2 == 1 then
+						if i % 2 == 1 then
 							left_half_draw_count = left_half_draw_count + 1
 						else
 							right_half_draw_count = right_half_draw_count + 1
@@ -511,7 +506,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local bottom_spacing = 20
 			local frame_margin = data.frame_margin or 0
@@ -538,7 +533,7 @@ UITooltipPasses = {
 			position[1] = position[1] + frame_margin + 100 + entry_texture_size[1]
 			local loop_func = ipairs
 			local text_size = data.text_size
-			text_size[1] = size[1] - (frame_margin*2 + 100) - entry_texture_size[1]
+			text_size[1] = size[1] - (frame_margin * 2 + 100) - entry_texture_size[1]
 
 			if keywords then
 				for index, keyword in loop_func(keywords) do
@@ -561,7 +556,7 @@ UITooltipPasses = {
 						local entry_texture_pass_data = data.entry_texture_pass_data
 						local entry_texture_pass_definition = data.entry_texture_pass_definition
 						position[1] = position[1] - entry_texture_size[1]
-						position[2] = (position[2] + text_height/2) - entry_texture_size[2]/2
+						position[2] = (position[2] + text_height / 2) - entry_texture_size[2] / 2
 						local color = entry_texture_style.color
 						color[1] = alpha
 
@@ -669,7 +664,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local bottom_spacing = 20
 			local frame_margin = data.frame_margin or 0
@@ -691,7 +686,7 @@ UITooltipPasses = {
 				local title_text_pass_data = data.title_text_pass_data
 				local title_text = content.title
 				local text_size = data.text_size
-				text_size[1] = size[1] - (frame_margin*2 + frame_margin)
+				text_size[1] = size[1] - (frame_margin * 2 + frame_margin)
 				text_size[2] = 0
 				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
 				text_size[2] = title_text_height
@@ -748,7 +743,7 @@ UITooltipPasses = {
 						local icon_size = data.icon_size
 						local icon_color = icon_style.color
 						icon_color[1] = alpha
-						position[2] = (position[2] + text_height/2) - icon_size[2]/2 - 2
+						position[2] = (position[2] + text_height / 2) - icon_size[2] / 2 - 2
 
 						UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
 
@@ -886,7 +881,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local bottom_spacing = 20
 			local top_spacing = 20
@@ -929,7 +924,7 @@ UITooltipPasses = {
 
 					local text = title_text .. "\n" .. description_text
 					local text_size = data.text_size
-					text_size[1] = size[1] - frame_margin*2 - icon_size[1]
+					text_size[1] = size[1] - frame_margin * 2 - icon_size[1]
 					text_size[2] = 0
 					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 					text_size[2] = text_height
@@ -1047,7 +1042,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local properties = item.properties
@@ -1065,7 +1060,7 @@ UITooltipPasses = {
 				local text_pass_data = data.text_pass_data
 				local text = content.text
 				local text_size = data.text_size
-				text_size[1] = size[1] - frame_margin*2
+				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
 				local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 				total_height = total_height + text_height
@@ -1076,9 +1071,9 @@ UITooltipPasses = {
 				local frame_content = data.content
 				local frame_style = data.style.frame
 				frame_size[1] = text_size[1]
-				frame_size[2] = text_size[2] + frame_margin/2
+				frame_size[2] = text_size[2] + frame_margin / 2
 				total_height = total_height + frame_size[2]
-				position[2] = position[2] - frame_size[2] - frame_margin/2
+				position[2] = position[2] - frame_size[2] - frame_margin / 2
 				position[1] = position[1] + frame_margin
 				local old_y_position = position[2]
 
@@ -1098,7 +1093,7 @@ UITooltipPasses = {
 					position[3] = position[3] + 1
 				end
 
-				position[2] = old_y_position + frame_margin/4
+				position[2] = old_y_position + frame_margin / 4
 				text_size[1] = frame_size[1]
 
 				if draw then
@@ -1197,13 +1192,15 @@ UITooltipPasses = {
 
 				if slot_names then
 					local slot_name = slot_names[1]
-					local local_player = Managers.player:local_player()
+					local player = pass_data.player
 
-					if local_player then
-						local career_name = local_player.career_name(local_player)
+					if player then
 						local backend_items = Managers.backend:get_interface("items")
-						local item_filter = "equipped_by == " .. career_name .. " and slot_type == " .. slot_type
-						local equipped_items = backend_items.get_filtered_items(backend_items, item_filter)
+						local item_filter = "equipped_by_current_career and slot_type == " .. slot_type
+						local params = {
+							player = player
+						}
+						local equipped_items = backend_items.get_filtered_items(backend_items, item_filter, params)
 						local is_equipped = false
 
 						for _, item in ipairs(equipped_items) do
@@ -1228,7 +1225,7 @@ UITooltipPasses = {
 			end
 
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local style = data.style
@@ -1242,7 +1239,7 @@ UITooltipPasses = {
 			local text_pass_data = data.text_pass_data
 			local text = content.text
 			local text_size = data.text_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 			text_size[2] = text_height
@@ -1252,9 +1249,9 @@ UITooltipPasses = {
 			local frame_content = data.content
 			local frame_style = data.style.frame
 			frame_size[1] = text_size[1]
-			frame_size[2] = text_size[2] + frame_margin/2
+			frame_size[2] = text_size[2] + frame_margin / 2
 			total_height = frame_size[2]
-			position[2] = position[2] + frame_margin/2
+			position[2] = position[2] + frame_margin / 2
 			position[1] = position[1] + frame_margin
 			local old_y_position = position[2]
 
@@ -1274,7 +1271,7 @@ UITooltipPasses = {
 				position[3] = position[3] + 1
 			end
 
-			position[2] = old_y_position + frame_margin/3
+			position[2] = old_y_position + frame_margin / 3
 			text_size[1] = frame_size[1]
 
 			if draw then
@@ -1406,7 +1403,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
@@ -1424,14 +1421,14 @@ UITooltipPasses = {
 			local backend_id = item.backend_id
 			local item_template = BackendUtils.get_item_template(item_data, backend_id)
 			local max_fatigue_points = item_template.max_fatigue_points
-			content.text = tostring(max_fatigue_points/2)
+			content.text = tostring(max_fatigue_points / 2)
 			position[3] = start_layer + 2
 			position[1] = position_x + frame_margin
 			local title_text_style = style.title
 			local title_text_pass_data = data.title_text_pass_data
 			local title_text = content.title
 			local title_text_size = data.title_text_size
-			title_text_size[1] = size[1] - frame_margin*2
+			title_text_size[1] = size[1] - frame_margin * 2
 			title_text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, title_text_size, title_text_style, content, title_text, ui_style_global)
 			title_text_size[2] = title_text_height
@@ -1444,7 +1441,7 @@ UITooltipPasses = {
 			local text_pass_data = data.text_pass_data
 			local text = content.text
 			local text_size = data.text_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 			local font, size_of_font = UIFontByResolution(text_style)
@@ -1464,21 +1461,21 @@ UITooltipPasses = {
 
 			position[2] = position_y - title_text_height
 			local block_angle = item_template.block_angle
-			local block_fraction = block_angle/360/2
+			local block_fraction = block_angle / 360 / 2
 			local block_arc_pass_definition = data.block_arc_pass_definition
 			local block_arc_pass_data = data.block_arc_pass_data
 			local block_arc_size = data.block_arc_size
 			local block_arc_style = style.block_arc
 			local block_arc_color = style.block_arc.color
 			local background_color = block_arc_style.background_color
-			block_arc_color[1] = block_fraction*255*alpha_multiplier
-			position[1] = (position_x + size[1] - block_arc_size[1]) - frame_margin*2 - text_width
+			block_arc_color[1] = 255 * block_fraction * alpha_multiplier
+			position[1] = (position_x + size[1] - block_arc_size[1]) - frame_margin * 2 - text_width
 			position[2] = position[2] - block_arc_size[2]
 
 			if draw then
 				background_color[1] = alpha
 
-				UIRenderer.draw_rounded_rect(ui_renderer, position, block_arc_size, block_arc_size[1]/2, background_color)
+				UIRenderer.draw_rounded_rect(ui_renderer, position, block_arc_size, block_arc_size[1] / 2, background_color)
 			end
 
 			position[3] = position[3] + 1
@@ -1493,8 +1490,8 @@ UITooltipPasses = {
 			local icon_pass_definition = data.icon_pass_definition
 			local icon_color = icon_style.color
 			icon_color[1] = alpha
-			position[1] = (position[1] + block_arc_size[1]/2) - icon_size[1]/2
-			position[2] = (position[2] + block_arc_size[2]/2) - icon_size[2]/2
+			position[1] = (position[1] + block_arc_size[1] / 2) - icon_size[1] / 2
+			position[2] = (position[2] + block_arc_size[2] / 2) - icon_size[2] / 2
 
 			if draw then
 				UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
@@ -1581,7 +1578,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
@@ -1626,7 +1623,7 @@ UITooltipPasses = {
 			local title_text_pass_data = data.title_text_pass_data
 			local title_text = content.title
 			local title_text_size = data.title_text_size
-			title_text_size[1] = size[1] - frame_margin*2
+			title_text_size[1] = size[1] - frame_margin * 2
 			title_text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, title_text_size, title_text_style, content, title_text, ui_style_global)
 			title_text_size[2] = title_text_height
@@ -1640,7 +1637,7 @@ UITooltipPasses = {
 				local text_pass_data = data.text_pass_data
 				local text = content.text
 				local text_size = data.text_size
-				text_size[1] = size[1] - frame_margin*2
+				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
 				local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 				text_size[2] = text_height
@@ -1707,7 +1704,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local bottom_spacing = 20
 			local frame_margin = data.frame_margin or 0
@@ -1735,7 +1732,7 @@ UITooltipPasses = {
 			position[3] = start_layer + 2
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_pass_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local total_height = 0
 
@@ -1948,7 +1945,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
@@ -1970,10 +1967,10 @@ UITooltipPasses = {
 			text = title_text .. "\n" .. type_text
 			local text_style = style.text
 			local text_shadow_style = style.text_shadow
-			local local_player = Managers.player:local_player()
+			local player = pass_data.player
 
-			if local_player then
-				local career_name = local_player.career_name(local_player)
+			if player then
+				local career_name = player.career_name(player)
 				local can_wield_table = item_data and item_data.can_wield
 				local can_wield = can_wield_table and table.contains(can_wield_table, career_name)
 
@@ -1991,7 +1988,7 @@ UITooltipPasses = {
 			local text_pass_data = data.text_pass_data
 			title_text_style.text_color = rarity_color
 			local text_size = data.text_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
 			local type_text_height = get_text_height(ui_renderer, text_size, text_style, content, type_text, ui_style_global)
@@ -2004,8 +2001,8 @@ UITooltipPasses = {
 			total_height = total_height + background_size[2]
 
 			if draw then
-				position[2] = position[2] - background_size[2] + frame_margin/2
-				position[1] = (position[1] + size[1]/2) - background_size[1]/2
+				position[2] = position[2] - background_size[2] + frame_margin / 2
+				position[1] = (position[1] + size[1] / 2) - background_size[1] / 2
 				local old_x_position = position[1]
 				local old_y_position = position[2]
 				local edge_size = data.edge_size
@@ -2068,7 +2065,7 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, title_text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				position[1] = old_x_position + text_style.offset[1]
-				position[2] = position_y - frame_margin*1.5 - (title_text_height + type_text_height) + text_style.offset[2]
+				position[2] = position_y - frame_margin * 1.5 - (title_text_height + type_text_height) + text_style.offset[2]
 				position[3] = start_layer + 6 + text_style.offset[3]
 				text_size[1] = background_size[1]
 				content.text = type_text
@@ -2078,7 +2075,7 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				position[1] = old_x_position + text_shadow_style.offset[1]
-				position[2] = position_y - frame_margin*1.5 - (title_text_height + type_text_height) + text_shadow_style.offset[2]
+				position[2] = position_y - frame_margin * 1.5 - (title_text_height + type_text_height) + text_shadow_style.offset[2]
 				position[3] = start_layer + 6 + text_shadow_style.offset[3]
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
@@ -2183,7 +2180,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local text_styles = data.text_styles
@@ -2213,7 +2210,7 @@ UITooltipPasses = {
 					if buff then
 						if buff.multiplier then
 							buff_value = buff.multiplier
-							text_content.stat = "+" .. buff_value*100 .. "% " .. buff.description
+							text_content.stat = "+" .. buff_value * 100 .. "% " .. buff.description
 						else
 							text_content.stat = "+" .. buff_value .. " " .. buff.description
 						end
@@ -2230,7 +2227,7 @@ UITooltipPasses = {
 			position[3] = start_layer + 5
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_pass_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = size[2]
 			local text_total_height = 0
 
@@ -2300,16 +2297,16 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
 			local style = data.style
 			local item_data = item.data
-			local local_player = Managers.player:local_player()
+			local player = pass_data.player
 
-			if local_player then
-				local career_name = local_player.career_name(local_player)
+			if player then
+				local career_name = player.career_name(player)
 				local can_wield_table = item_data and item_data.can_wield
 				local can_wield = can_wield_table and table.contains(can_wield_table, career_name)
 
@@ -2338,14 +2335,14 @@ UITooltipPasses = {
 					local text_style = style.text
 					local text_pass_data = data.text_pass_data
 					local text_size = data.text_size
-					text_size[1] = size[1] - frame_margin*2
+					text_size[1] = size[1] - frame_margin * 2
 					text_size[2] = 0
 					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 					text_size[2] = text_height
 
 					if draw then
 						position[1] = position_x + frame_margin
-						position[2] = position[2] - text_height + frame_margin*0.5
+						position[2] = position[2] - text_height + frame_margin * 0.5
 						text_style.text_color[1] = alpha
 
 						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
@@ -2394,7 +2391,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
@@ -2412,7 +2409,7 @@ UITooltipPasses = {
 				local text_style = style.text
 				local text_pass_data = data.text_pass_data
 				local text_size = data.text_size
-				text_size[1] = size[1] - frame_margin*2
+				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
 				local text_height = get_text_height(ui_renderer, text_size, text_style, content, content.text, ui_style_global)
 				text_size[2] = text_height
@@ -2440,6 +2437,16 @@ UITooltipPasses = {
 	item_description = {
 		setup_data = function ()
 			local data = {
+				background_color = {
+					240,
+					3,
+					3,
+					3
+				},
+				background_size = {
+					0,
+					50
+				},
 				text_pass_data = {
 					text_id = "text"
 				},
@@ -2497,6 +2504,19 @@ UITooltipPasses = {
 						horizontal_alignment = "left",
 						font_type = "hell_shark",
 						text_color = Colors.get_color_table_with_alpha("font_button_normal", 255)
+					},
+					background = {
+						color = {
+							150,
+							0,
+							0,
+							0
+						},
+						offset = {
+							0,
+							0,
+							-1
+						}
 					}
 				}
 			}
@@ -2505,7 +2525,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
@@ -2515,14 +2535,12 @@ UITooltipPasses = {
 			local slot_type = item_data.slot_type
 			local _, _, description = UIUtils.get_ui_information_from_item(item)
 
-			if description and slot_type ~= "loot_chest" then
+			if description then
 				local localized_description = Localize(description)
 
 				if localized_description ~= "" then
 					text = Localize(description)
 				end
-			else
-				text = description
 			end
 
 			if not text then
@@ -2537,13 +2555,26 @@ UITooltipPasses = {
 			local text_style = style.text
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 			text_size[2] = text_height
-			local total_height = text_height + frame_margin*0.5
+			local total_height = text_height + frame_margin * 0.5
 
 			if draw then
+				local background_size = data.background_size
+				local background_style = style.background
+				local background_color = background_style.color
+				background_color[1] = alpha
+				background_size[2] = text_height + frame_margin
+				background_size[1] = size[1]
+				position[2] = position_y - background_size[2]
+				position[3] = start_layer + 3
+
+				UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
+
+				position[1] = position_x
+				position[2] = position_y
 				local edge_size = data.edge_size
 				edge_size[1] = size[1]
 				local edge_style = style.edge
@@ -2552,7 +2583,7 @@ UITooltipPasses = {
 				edge_texture_size[1] = size[1]
 				local edge_texture = content.edge_texture
 				edge_color[1] = alpha
-				local start_position_y = position[2] - frame_margin*0.5
+				local start_position_y = position[2] - frame_margin * 0.5
 				position[2] = start_position_y
 				position[3] = start_layer + 4
 
@@ -2575,7 +2606,7 @@ UITooltipPasses = {
 				UIRenderer.draw_texture(ui_renderer, edge_holder_right_texture, position, edge_holder_size, edge_holder_color)
 
 				position[1] = position_x + frame_margin
-				position[2] = start_position_y - total_height + frame_margin*0.5
+				position[2] = start_position_y - total_height + frame_margin * 0.5
 				text_style.text_color[1] = alpha
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
@@ -2646,7 +2677,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, talent, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local text_styles = data.text_styles
@@ -2677,7 +2708,7 @@ UITooltipPasses = {
 			position[3] = start_layer + 5
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_pass_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = size[2]
 			local text_total_height = frame_margin
 
@@ -2776,7 +2807,7 @@ UITooltipPasses = {
 			end
 
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local style = data.style
@@ -2790,7 +2821,7 @@ UITooltipPasses = {
 			local text_pass_data = data.text_pass_data
 			text_pass_data.text_id = text_id
 			local text_size = data.text_size
-			local text_width = size[1] - frame_margin*2
+			local text_width = size[1] - frame_margin * 2
 			text_size[1] = text_width
 			text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, text, ui_style_global)
@@ -2884,7 +2915,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, level_data, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local style = data.style
@@ -2893,7 +2924,7 @@ UITooltipPasses = {
 			local text_content = content.text_content
 			local level_key = level_data.level_id
 			local display_name = level_data.display_name
-			local total_height = frame_margin*0.5
+			local total_height = frame_margin * 0.5
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
@@ -2905,7 +2936,7 @@ UITooltipPasses = {
 			position[2] = (draw_downwards and position[2] - total_height) or position[2] + frame_edge_height
 			position[3] = start_layer + 5
 			local text_size = data.text_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local text_total_height = -frame_edge_height
 			local text_pass_data = data.text_pass_data
@@ -3009,16 +3040,22 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, additional_option_data, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local style = data.style
 			local content = data.content
 			local text_styles = style.text_styles
 			local text_content = content.text_content
-			local title = additional_option_data.title
+			local title = additional_option_data.title or additional_option_data.display_name
 			local description = additional_option_data.description
-			local total_height = frame_margin*0.5
+
+			if ui_style and ui_style.localize then
+				title = Localize(title)
+				description = Localize(description)
+			end
+
+			local total_height = frame_margin * 0.5
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
@@ -3031,7 +3068,7 @@ UITooltipPasses = {
 			position[2] = (draw_downwards and position[2] - total_height) or position[2] + frame_edge_height
 			position[3] = start_layer + 5
 			local text_size = data.text_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local text_total_height = -frame_edge_height
 			local text_pass_data = data.text_pass_data
@@ -3150,7 +3187,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
@@ -3179,7 +3216,7 @@ UITooltipPasses = {
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
 			local type_text_height = get_text_height(ui_renderer, text_size, text_style, content, type_text, ui_style_global)
@@ -3206,7 +3243,7 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, title_text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				position[1] = old_x_position + text_style.offset[1]
-				position[2] = position_y - frame_margin*1.5 - (title_text_height + type_text_height) + text_style.offset[2]
+				position[2] = position_y - frame_margin * 1.5 - (title_text_height + type_text_height) + text_style.offset[2]
 				position[3] = start_layer + 6 + text_style.offset[3]
 				text_size[1] = size[1]
 				content.text = type_text
@@ -3216,7 +3253,7 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				position[1] = old_x_position + text_shadow_style.offset[1]
-				position[2] = position_y - frame_margin*1.5 - (title_text_height + type_text_height) + text_shadow_style.offset[2]
+				position[2] = position_y - frame_margin * 1.5 - (title_text_height + type_text_height) + text_shadow_style.offset[2]
 				position[3] = start_layer + 6 + text_shadow_style.offset[3]
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
@@ -3299,7 +3336,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
@@ -3328,7 +3365,7 @@ UITooltipPasses = {
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
 			local type_text_height = get_text_height(ui_renderer, text_size, text_style, content, type_text, ui_style_global)
@@ -3355,7 +3392,7 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, title_text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				position[1] = old_x_position + text_style.offset[1]
-				position[2] = position_y - frame_margin*1.5 - (title_text_height + type_text_height) + text_style.offset[2]
+				position[2] = position_y - frame_margin * 1.5 - (title_text_height + type_text_height) + text_style.offset[2]
 				position[3] = start_layer + 6 + text_style.offset[3]
 				text_size[1] = size[1]
 				content.text = type_text
@@ -3365,7 +3402,7 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				position[1] = old_x_position + text_shadow_style.offset[1]
-				position[2] = position_y - frame_margin*1.5 - (title_text_height + type_text_height) + text_shadow_style.offset[2]
+				position[2] = position_y - frame_margin * 1.5 - (title_text_height + type_text_height) + text_shadow_style.offset[2]
 				position[3] = start_layer + 6 + text_shadow_style.offset[3]
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
@@ -3432,7 +3469,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local item_data = item.data
 			local item_type = item_data.item_type
 
@@ -3477,7 +3514,7 @@ UITooltipPasses = {
 					content.icon = icon or data.default_icon
 					local text = title_text .. "\n" .. description_text
 					local text_size = data.text_size
-					text_size[1] = size[1] - frame_margin*3 - icon_size[1]
+					text_size[1] = size[1] - frame_margin * 3 - icon_size[1]
 					text_size[2] = 0
 					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 					text_size[2] = text_height
@@ -3621,7 +3658,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
@@ -3638,14 +3675,14 @@ UITooltipPasses = {
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
-			local total_height = frame_margin*4
+			local total_height = frame_margin * 4
 			local title_text = ""
 			title_text = Localize("deed_reward_title")
 			local title_text_style = style.title_text
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
 			local text_height = title_text_height
@@ -3680,14 +3717,14 @@ UITooltipPasses = {
 				divider_color[1] = alpha
 				position[3] = start_layer + 6
 				position[2] = old_y_position - text_height
-				position[1] = old_x_position + size[1]/2 - divider_size[1]/2
+				position[1] = old_x_position + size[1] / 2 - divider_size[1] / 2
 
 				UIRenderer.draw_texture(ui_renderer, divider_texture, position, divider_size, divider_color)
 
 				local rewards = item_data.rewards
 				local num_rewards = #rewards
 				local spacing = 20
-				local start_offset = -(num_rewards - 1)*(spacing*0.5 + 40)
+				local start_offset = -(num_rewards - 1) * (40 + spacing * 0.5)
 
 				for index = 1, num_rewards, 1 do
 					local item_key = rewards[index]
@@ -3698,8 +3735,8 @@ UITooltipPasses = {
 					local item_style = style.item
 					local item_color = item_style.color
 					item_color[1] = alpha
-					local reward_position_x = old_x_position + size[1]/2 - item_size[1]/2 + start_offset
-					local reward_position_y = old_y_position - (text_height + item_size[2] + divider_size[2]/2)
+					local reward_position_x = old_x_position + size[1] / 2 - item_size[1] / 2 + start_offset
+					local reward_position_y = old_y_position - (text_height + item_size[2] + divider_size[2] / 2)
 					position[1] = reward_position_x
 					position[2] = reward_position_y
 					position[3] = start_layer + 4
@@ -3793,7 +3830,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
@@ -3814,7 +3851,7 @@ UITooltipPasses = {
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
-			local text_width = size[1] - frame_margin*2
+			local text_width = size[1] - frame_margin * 2
 			text_size[1] = text_width
 			text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
@@ -3824,7 +3861,7 @@ UITooltipPasses = {
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
-				local old_y_position = position[2] - total_height + frame_margin*2
+				local old_y_position = position[2] - total_height + frame_margin * 2
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = old_y_position - frame_margin + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -3893,7 +3930,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
@@ -3911,13 +3948,18 @@ UITooltipPasses = {
 			local total_height = frame_margin
 			local difficulty_key = item_data.chest_category
 			local difficulty_settings = DifficultySettings[difficulty_key]
+
+			if not difficulty_settings then
+				return 0
+			end
+
 			local difficulty_display_name = difficulty_settings.display_name
 			local title_text = content.prefix .. Localize(difficulty_display_name)
 			local title_text_style = style.title_text
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
-			local text_width = size[1] - frame_margin*2
+			local text_width = size[1] - frame_margin * 2
 			text_size[1] = text_width
 			text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
@@ -3927,7 +3969,7 @@ UITooltipPasses = {
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
-				local old_y_position = position[2] - total_height + frame_margin*2
+				local old_y_position = position[2] - total_height + frame_margin * 2
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = old_y_position - frame_margin + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -3996,7 +4038,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
@@ -4024,7 +4066,7 @@ UITooltipPasses = {
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
-			local text_width = size[1] - frame_margin*2
+			local text_width = size[1] - frame_margin * 2
 			text_size[1] = text_width
 			text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
@@ -4034,7 +4076,7 @@ UITooltipPasses = {
 
 			if draw then
 				local old_x_position = position[1] + frame_margin
-				local old_y_position = position[2] - total_height + frame_margin*2
+				local old_y_position = position[2] - total_height + frame_margin * 2
 				position[1] = old_x_position + title_text_style.offset[1]
 				position[2] = old_y_position - frame_margin + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -4103,7 +4145,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
@@ -4122,7 +4164,7 @@ UITooltipPasses = {
 				local title_text_shadow_style = style.title_text_shadow
 				local text_pass_data = data.text_pass_data
 				local text_size = data.text_size
-				local text_width = size[1] - frame_margin*2
+				local text_width = size[1] - frame_margin * 2
 				text_size[1] = text_width
 				text_size[2] = 0
 				local title_text_height = get_text_height(ui_renderer, text_size, title_text_style, content, title_text, ui_style_global)
@@ -4131,7 +4173,7 @@ UITooltipPasses = {
 
 				if draw then
 					local old_x_position = position[1] + frame_margin
-					local old_y_position = position[2] - total_height + frame_margin*2
+					local old_y_position = position[2] - total_height + frame_margin * 2
 					position[1] = old_x_position + title_text_style.offset[1]
 					position[2] = old_y_position - frame_margin + title_text_style.offset[2]
 					position[3] = start_layer + 6 + title_text_style.offset[3]
@@ -4187,7 +4229,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
@@ -4210,7 +4252,7 @@ UITooltipPasses = {
 				local text_style = style.text
 				local text_pass_data = data.text_pass_data
 				local text_size = data.text_size
-				text_size[1] = size[1] - frame_margin*2
+				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
 				local text_height = get_text_height(ui_renderer, text_size, text_style, content, content.text, ui_style_global)
 				text_size[2] = text_height
@@ -4238,6 +4280,16 @@ UITooltipPasses = {
 	keywords = {
 		setup_data = function ()
 			local data = {
+				background_color = {
+					240,
+					3,
+					3,
+					3
+				},
+				background_size = {
+					0,
+					50
+				},
 				text_pass_data = {
 					text_id = "text"
 				},
@@ -4295,6 +4347,19 @@ UITooltipPasses = {
 						horizontal_alignment = "center",
 						font_type = "hell_shark",
 						text_color = Colors.get_color_table_with_alpha("forest_green", 255)
+					},
+					background = {
+						color = {
+							150,
+							0,
+							0,
+							0
+						},
+						offset = {
+							0,
+							0,
+							-1
+						}
 					}
 				}
 			}
@@ -4303,7 +4368,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
@@ -4341,13 +4406,26 @@ UITooltipPasses = {
 				local text_style = style.text
 				local text_pass_data = data.text_pass_data
 				local text_size = data.text_size
-				text_size[1] = size[1] - frame_margin*2
+				text_size[1] = size[1] - frame_margin * 2
 				text_size[2] = 0
 				local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 				text_size[2] = text_height
-				local total_height = text_height + frame_margin*0.5
+				local total_height = text_height + frame_margin * 0.5
 
 				if draw then
+					local background_size = data.background_size
+					local background_style = style.background
+					local background_color = background_style.color
+					background_color[1] = alpha
+					background_size[2] = total_height
+					background_size[1] = size[1]
+					position[2] = position_y - background_size[2]
+					position[3] = start_layer + 3
+
+					UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
+
+					position[1] = position_x
+					position[2] = position_y
 					local edge_size = data.edge_size
 					edge_size[1] = size[1]
 					local edge_style = style.edge
@@ -4377,7 +4455,7 @@ UITooltipPasses = {
 					UIRenderer.draw_texture(ui_renderer, edge_holder_right_texture, position, edge_holder_size, edge_holder_color)
 
 					position[1] = position_x + frame_margin
-					position[2] = position[2] - (total_height + frame_margin*0.5)*0.5
+					position[2] = position[2] - (total_height + frame_margin * 0.5) * 0.5
 					text_style.text_color[1] = alpha
 
 					UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
@@ -4477,12 +4555,12 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
-			local local_player = Managers.player:local_player()
+			local player = pass_data.player
 			local hero_name, career_name = nil
 
-			if local_player then
-				hero_name = local_player.profile_display_name(local_player)
-				career_name = local_player.career_name(local_player)
+			if player then
+				hero_name = player.profile_display_name(player)
+				career_name = player.career_name(player)
 
 				if not hero_name or not career_name then
 					return 0
@@ -4502,7 +4580,7 @@ UITooltipPasses = {
 			power_level_list.hero = math.floor(hero_power_level)
 			power_level_list.item = math.floor(item_power_level)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
@@ -4513,7 +4591,7 @@ UITooltipPasses = {
 			local title_text_pass_data = data.title_text_pass_data
 			local title_text = content.title
 			local text_size = data.text_size
-			text_size[1] = size[1] - (frame_margin*2 + frame_margin)
+			text_size[1] = size[1] - (frame_margin * 2 + frame_margin)
 			text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
 			text_size[2] = title_text_height
@@ -4527,8 +4605,8 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
 			end
 
-			total_height = total_height + frame_margin*0.5
-			position[2] = position[2] - frame_margin*0.5
+			total_height = total_height + frame_margin * 0.5
+			position[2] = position[2] - frame_margin * 0.5
 			local index = 1
 			local entry_list = content.entry_list
 
@@ -4563,7 +4641,7 @@ UITooltipPasses = {
 					local icon_size = data.icon_size
 					local icon_color = icon_style.color
 					icon_color[1] = alpha
-					position[2] = (position[2] + text_height/2) - icon_size[2]/2 - 2
+					position[2] = (position[2] + text_height / 2) - icon_size[2] / 2 - 2
 
 					UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
 
@@ -4680,7 +4758,7 @@ UITooltipPasses = {
 			local style = data.style
 			local content = data.content
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
@@ -4692,7 +4770,7 @@ UITooltipPasses = {
 			local title_text_pass_data = data.title_text_pass_data
 			local title_text = content.title
 			local text_size = data.text_size
-			text_size[1] = size[1] - (frame_margin*2 + frame_margin)
+			text_size[1] = size[1] - (frame_margin * 2 + frame_margin)
 			text_size[2] = 0
 			local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
 			text_size[2] = title_text_height
@@ -4706,8 +4784,8 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
 			end
 
-			total_height = total_height + frame_margin*0.5
-			position[2] = position[2] - frame_margin*0.5
+			total_height = total_height + frame_margin * 0.5
+			position[2] = position[2] - frame_margin * 0.5
 			local index = 1
 			local entry_list = content.entry_list
 
@@ -4732,7 +4810,7 @@ UITooltipPasses = {
 					local icon_size = data.icon_size
 					local icon_color = icon_style.color
 					icon_color[1] = alpha
-					position[2] = (position[2] + text_height/2) - icon_size[2]/2 - 2
+					position[2] = (position[2] + text_height / 2) - icon_size[2] / 2 - 2
 
 					UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
 
@@ -4828,7 +4906,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
@@ -4840,11 +4918,11 @@ UITooltipPasses = {
 			local text_style = style.text
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local text_height = get_text_height(ui_renderer, text_size, text_style, content, content.text, ui_style_global)
 			text_size[2] = text_height
-			local total_height = text_height + frame_margin*0.5
+			local total_height = text_height + frame_margin * 0.5
 
 			if draw then
 				local edge_size = data.edge_size
@@ -4855,7 +4933,7 @@ UITooltipPasses = {
 				edge_texture_size[1] = size[1]
 				local edge_texture = content.edge_texture
 				edge_color[1] = alpha
-				local start_position_y = position[2] - frame_margin*0.5
+				local start_position_y = position[2] - frame_margin * 0.5
 				position[2] = start_position_y
 				position[3] = start_layer + 4
 
@@ -4878,7 +4956,7 @@ UITooltipPasses = {
 				UIRenderer.draw_texture(ui_renderer, edge_holder_right_texture, position, edge_holder_size, edge_holder_color)
 
 				position[1] = position_x + frame_margin
-				position[2] = start_position_y - total_height + frame_margin*0.5
+				position[2] = start_position_y - total_height + frame_margin * 0.5
 				text_style.text_color[1] = alpha
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
@@ -4919,7 +4997,7 @@ UITooltipPasses = {
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
 			local alpha_multiplier = pass_definition.alpha_multiplier
-			local alpha = alpha_multiplier*255
+			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
@@ -4932,7 +5010,7 @@ UITooltipPasses = {
 			local text_style = style.text
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_size
-			text_size[1] = size[1] - frame_margin*2
+			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local text_height = get_text_height(ui_renderer, text_size, text_style, content, content.text, ui_style_global)
 			text_size[2] = text_height

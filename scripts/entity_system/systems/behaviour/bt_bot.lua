@@ -7,13 +7,9 @@ BotBehaviors = {
 			name = "disabled"
 		},
 		{
-			"BTSelector",
-			{
-				"BTBotTransportedIdleAction",
-				name = "transported_idle"
-			},
+			"BTNilAction",
 			condition = "is_transported",
-			name = "transported"
+			name = "transported_idle"
 		},
 		{
 			"BTSelector",
@@ -183,6 +179,42 @@ BotBehaviors = {
 		{
 			"BTSelector",
 			{
+				"BTBotInventorySwitchAction",
+				name = "switch_melee",
+				condition = "is_slot_not_wielded",
+				condition_args = {
+					"slot_melee",
+					"slot_career_skill_weapon"
+				},
+				action_data = BotActions.default.switch_melee
+			},
+			{
+				"BTBotActivateAbilityAction",
+				name = "use_ability",
+				action_data = BotActions.default.use_ability
+			},
+			name = "activate_normal_ability",
+			condition = "can_activate_ability",
+			condition_args = {
+				false
+			}
+		},
+		{
+			"BTSelector",
+			{
+				"BTBotShootAction",
+				name = "shoot_ability",
+				action_data = BotActions.default.shoot_ability
+			},
+			name = "activate_ranged_shot_ability",
+			condition = "can_activate_ability",
+			condition_args = {
+				true
+			}
+		},
+		{
+			"BTSelector",
+			{
 				"BTSelector",
 				{
 					"BTBotInventorySwitchAction",
@@ -317,7 +349,7 @@ BotBehaviors = {
 				name = "follow",
 				action_data = BotActions.default.follow
 			},
-			condition = "can_see_ally",
+			condition = "ally_within_range_or_solo",
 			name = "in_combat"
 		},
 		{

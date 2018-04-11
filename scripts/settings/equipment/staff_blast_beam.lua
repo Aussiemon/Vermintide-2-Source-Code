@@ -48,14 +48,14 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "charged_beam",
-					start_time = 0.5,
-					action = "action_one",
+					start_time = 0.3,
+					action = "action_two",
 					input = "action_two"
 				},
 				{
 					sub_action = "charged_beam",
-					start_time = 0.5,
-					action = "action_one",
+					start_time = 0.3,
+					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
@@ -152,55 +152,6 @@ weapon_template.actions = {
 				climb_function = math.easeInCubic,
 				restore_function = math.ease_out_quad
 			}
-		},
-		charged_beam = {
-			reset_aim_on_attack = true,
-			damage_window_start = 0.1,
-			is_spell = true,
-			damage_profile = "beam_shot",
-			kind = "handgun",
-			fire_time = 2,
-			headshot_multiplier = 2,
-			spread_template_override = "handgun",
-			hit_effect = "fireball_impact",
-			damage_window_end = 0,
-			overcharge_type = "beam_staff_sniper",
-			charge_value = "light_attack",
-			fire_sound_event = "weapon_staff_fire_beam_end_shot",
-			anim_event = "attack_shoot_beam_spark",
-			total_time = 0.66,
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0.3,
-					action = "action_one",
-					release_required = "action_one_hold",
-					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.3,
-					action = "action_two",
-					input = "action_two"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.2,
-					action = "action_wield",
-					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.3,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				}
-			},
-			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
-
-				return input_extension.reset_release_input(input_extension)
-			end
 		}
 	},
 	action_two = {
@@ -267,6 +218,56 @@ weapon_template.actions = {
 					input = "weapon_reload"
 				}
 			}
+		},
+		charged_beam = {
+			damage_window_start = 0.1,
+			damage_profile = "beam_shot",
+			is_spell = true,
+			fire_time = 0,
+			kind = "handgun",
+			reset_aim_on_attack = true,
+			spread_template_override = "handgun",
+			headshot_multiplier = 2,
+			hit_effect = "fireball_impact",
+			damage_window_end = 0,
+			overcharge_type = "beam_staff_sniper",
+			charge_value = "light_attack",
+			use_beam_consecutive_hits = true,
+			fire_sound_event = "weapon_staff_fire_beam_end_shot",
+			anim_event = "attack_shoot_beam_spark",
+			total_time = 0.66,
+			allowed_chain_actions = {
+				{
+					sub_action = "default",
+					start_time = 0.3,
+					action = "action_one",
+					release_required = "action_one_hold",
+					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.3,
+					action = "action_two",
+					input = "action_two"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.2,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.2,
+					action = "weapon_reload",
+					input = "weapon_reload"
+				}
+			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension.clear_input_buffer(input_extension)
+
+				return input_extension.reset_release_input(input_extension)
+			end
 		}
 	},
 	weapon_reload = {

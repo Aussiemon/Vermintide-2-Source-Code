@@ -89,7 +89,7 @@ PlayerCharacterStateGrabbedByCorruptor.states = {
 				local current_pos = position_lookup[unit]
 				local distance = Vector3.distance(wanted_pos, current_pos)
 				local to_corruptor = wanted_pos - current_pos
-				local velocity = Vector3.normalize(to_corruptor)*2
+				local velocity = Vector3.normalize(to_corruptor) * 2
 
 				locomotion.set_maximum_upwards_velocity(locomotion, velocity.z)
 				locomotion.set_forced_velocity(locomotion, velocity)
@@ -113,7 +113,7 @@ PlayerCharacterStateGrabbedByCorruptor.states = {
 				local wanted_pos = position_lookup[corruptor_unit]
 				local current_pos = position_lookup[unit]
 				local distance = Vector3.distance(wanted_pos, current_pos)
-				local velocity = Vector3.normalize(wanted_pos - current_pos)*4
+				local velocity = Vector3.normalize(wanted_pos - current_pos) * 4
 
 				if 1.5 < distance then
 					locomotion.set_forced_velocity(locomotion, velocity)

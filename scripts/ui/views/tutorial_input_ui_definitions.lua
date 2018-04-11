@@ -110,11 +110,25 @@ local scenegraph_definition = {
 			0,
 			0
 		}
+	},
+	tutorial_tooltip_unassigned = {
+		vertical_alignment = "top",
+		parent = "tutorial_tooltip_background",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			0,
+			1
+		},
+		size = {
+			0,
+			0
+		}
 	}
 }
 local alpha = 0
 
-local function create_tutorial_tooltip_input_description_definitions(amount)
+local function create_tutorial_tooltip_input_description_definitions(amount, unassigned)
 	local input_description_widgets = {}
 
 	for i = 1, amount, 1 do
@@ -459,6 +473,30 @@ local widget_definitions = {
 					style_id = "sub_description_shadow",
 					pass_type = "text",
 					text_id = "sub_description"
+				},
+				{
+					style_id = "unassigned",
+					pass_type = "text",
+					text_id = "unassigned_id",
+					content_check_function = function (content)
+						return content.unassigned
+					end
+				},
+				{
+					style_id = "unassigned_shadow",
+					pass_type = "text",
+					text_id = "unassigned_id",
+					content_check_function = function (content)
+						return content.unassigned
+					end
+				},
+				{
+					texture_id = "background",
+					style_id = "unassigned_background",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.unassigned
+					end
 				}
 			}
 		},
@@ -466,8 +504,10 @@ local widget_definitions = {
 			completed_texture = "tutorial_input_completed",
 			description = "tutorial_tooltip_advanced_enemy_armor",
 			background = "tab_menu_bg_02",
+			unassigned_id = "unassigned_keymap",
 			completed = false,
 			sub_description = "",
+			unassigned = false,
 			divider = "divider_01_top"
 		},
 		style = {
@@ -601,6 +641,60 @@ local widget_definitions = {
 					2,
 					-2,
 					1
+				}
+			},
+			unassigned = {
+				scenegraph_id = "tutorial_tooltip_unassigned",
+				localize = true,
+				horizontal_alignment = "center",
+				word_wrap = false,
+				pixel_perfect = true,
+				font_size = 20,
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("red", alpha),
+				offset = {
+					0,
+					15,
+					1
+				}
+			},
+			unassigned_shadow = {
+				scenegraph_id = "tutorial_tooltip_unassigned",
+				localize = true,
+				horizontal_alignment = "center",
+				word_wrap = false,
+				pixel_perfect = true,
+				font_size = 20,
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", alpha),
+				offset = {
+					2,
+					13,
+					0
+				}
+			},
+			unassigned_background = {
+				vertical_alignment = "center",
+				scenegraph_id = "tutorial_tooltip_unassigned",
+				horizontal_alignment = "center",
+				offset = {
+					0,
+					15,
+					0
+				},
+				texture_size = {
+					308.25,
+					45.75
+				},
+				color = {
+					alpha,
+					255,
+					255,
+					255
 				}
 			}
 		}

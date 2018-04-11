@@ -54,7 +54,7 @@ local function randomize_actions(unit, actions, blackboard, t)
 
 	for i = 1, num_actions, 1 do
 		local picked_index = nil
-		local random_utility_score = math.random()*total_utility_score
+		local random_utility_score = math.random() * total_utility_score
 
 		for j = i, num_actions, 1 do
 			local action_utility_score = actions[j].utility_score

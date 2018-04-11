@@ -1,89 +1,8 @@
 ScoreboardHelper = ScoreboardHelper or {}
 ScoreboardHelper.scoreboard_topic_stats = {
 	{
-		name = "kills_total",
-		stat_type = "kills_total",
-		display_text = "scoreboard_topic_kills_total",
-		sort_function = function (a, b)
-			return b.score < a.score
-		end
-	},
-	{
-		name = "headshots",
-		stat_type = "headshots",
-		display_text = "scoreboard_topic_headshots",
-		sort_function = function (a, b)
-			return b.score < a.score
-		end
-	},
-	{
-		name = "kills_melee",
-		stat_type = "kills_melee",
-		display_text = "scoreboard_topic_kills_melee",
-		sort_function = function (a, b)
-			return b.score < a.score
-		end
-	},
-	{
-		name = "kills_ranged",
-		stat_type = "kills_ranged",
-		display_text = "scoreboard_topic_kills_ranged",
-		sort_function = function (a, b)
-			return b.score < a.score
-		end
-	},
-	{
-		name = "revives",
-		stat_type = "revives",
-		display_text = "scoreboard_topic_revives",
-		sort_function = function (a, b)
-			return b.score < a.score
-		end
-	},
-	{
-		name = "times_revived",
-		stat_type = "times_revived",
-		display_text = "scoreboard_topic_times_revived",
-		sort_function = function (a, b)
-			return a.score < b.score
-		end
-	},
-	{
-		name = "damage_taken",
-		stat_type = "damage_taken",
-		display_text = "scoreboard_topic_damage_taken",
-		sort_function = function (a, b)
-			return a.score < b.score
-		end
-	},
-	{
-		name = "damage_dealt",
-		stat_type = "damage_dealt",
-		display_text = "scoreboard_topic_damage_dealt",
-		sort_function = function (a, b)
-			return b.score < a.score
-		end
-	},
-	{
-		name = "kills_core_enemies",
-		display_text = "scoreboard_topic_kills_skaven_core_rats",
-		stat_types = {
-			{
-				"kills_per_breed",
-				"skaven_clan_rat"
-			},
-			{
-				"kills_per_breed",
-				"skaven_slave"
-			}
-		},
-		sort_function = function (a, b)
-			return b.score < a.score
-		end
-	},
-	{
-		name = "kills_storm_vermins",
-		display_text = "scoreboard_topic_kills_skaven_storm_vermin",
+		name = "kills_elites",
+		display_text = "scoreboard_topic_kills_elites",
 		stat_types = {
 			{
 				"kills_per_breed",
@@ -92,6 +11,26 @@ ScoreboardHelper.scoreboard_topic_stats = {
 			{
 				"kills_per_breed",
 				"skaven_storm_vermin_commander"
+			},
+			{
+				"kills_per_breed",
+				"skaven_storm_vermin_with_shield"
+			},
+			{
+				"kills_per_breed",
+				"skaven_plague_monk"
+			},
+			{
+				"kills_per_breed",
+				"chaos_warrior"
+			},
+			{
+				"kills_per_breed",
+				"chaos_berzerker"
+			},
+			{
+				"kills_per_breed",
+				"chaos_raider"
 			}
 		},
 		sort_function = function (a, b)
@@ -113,6 +52,22 @@ ScoreboardHelper.scoreboard_topic_stats = {
 			{
 				"kills_per_breed",
 				"skaven_pack_master"
+			},
+			{
+				"kills_per_breed",
+				"skaven_ratling_gunner"
+			},
+			{
+				"kills_per_breed",
+				"skaven_warpfire_thrower"
+			},
+			{
+				"kills_per_breed",
+				"chaos_corruptor_sorcerer"
+			},
+			{
+				"kills_per_breed",
+				"chaos_vortex_sorcerer"
 			}
 		},
 		sort_function = function (a, b)
@@ -120,14 +75,74 @@ ScoreboardHelper.scoreboard_topic_stats = {
 		end
 	},
 	{
-		name = "kills_bosses",
-		display_text = "scoreboard_topic_damage_bosses",
+		name = "kills_total",
+		stat_type = "kills_total",
+		display_text = "scoreboard_topic_kills_total",
+		sort_function = function (a, b)
+			return b.score < a.score
+		end
+	},
+	{
+		name = "kills_melee",
+		stat_type = "kills_melee",
+		display_text = "scoreboard_topic_kills_melee",
+		sort_function = function (a, b)
+			return b.score < a.score
+		end
+	},
+	{
+		name = "kills_ranged",
+		stat_type = "kills_ranged",
+		display_text = "scoreboard_topic_kills_ranged",
+		sort_function = function (a, b)
+			return b.score < a.score
+		end
+	},
+	{
+		name = "damage_taken",
+		stat_type = "damage_taken",
+		display_text = "scoreboard_topic_damage_taken",
+		sort_function = function (a, b)
+			return a.score < b.score
+		end
+	},
+	{
+		name = "damage_dealt",
+		stat_type = "damage_dealt",
+		display_text = "scoreboard_topic_damage_dealt",
+		sort_function = function (a, b)
+			return b.score < a.score
+		end
+	},
+	{
+		name = "damage_dealt_bosses",
+		display_text = "scoreboard_topic_damage_dealt_bosses",
 		stat_types = {
 			{
 				"damage_dealt_per_breed",
 				"skaven_rat_ogre"
+			},
+			{
+				"damage_dealt_per_breed",
+				"skaven_stormfiend"
+			},
+			{
+				"damage_dealt_per_breed",
+				"chaos_spawn"
+			},
+			{
+				"damage_dealt_per_breed",
+				"chaos_troll"
 			}
 		},
+		sort_function = function (a, b)
+			return b.score < a.score
+		end
+	},
+	{
+		name = "headshots",
+		stat_type = "headshots",
+		display_text = "scoreboard_topic_headshots",
 		sort_function = function (a, b)
 			return b.score < a.score
 		end
@@ -141,9 +156,9 @@ ScoreboardHelper.scoreboard_topic_stats = {
 		end
 	},
 	{
-		name = "aidings",
-		stat_type = "aidings",
-		display_text = "scoreboard_topic_aidings",
+		name = "revives",
+		stat_type = "revives",
+		display_text = "scoreboard_topic_revives",
 		sort_function = function (a, b)
 			return b.score < a.score
 		end
@@ -155,21 +170,20 @@ ScoreboardHelper.scoreboard_grouped_topic_stats = {
 		stats = {
 			"kills_total",
 			"kills_specials",
-			"kills_storm_vermins",
-			"kills_core_enemies",
+			"kills_elites",
 			"kills_ranged",
 			"kills_melee",
 			"damage_dealt",
-			"headshots"
+			"damage_dealt_bosses",
+			"damage_taken",
+			"headshots",
+			"saves",
+			"revives"
 		}
 	},
 	{
 		group_name = "defense",
-		stats = {
-			"aidings",
-			"saves",
-			"revives"
-		}
+		stats = {}
 	}
 }
 
@@ -222,39 +236,6 @@ local function get_score_by_name(statistics_db, stats_id, stat_name)
 		stat_name = stat_name,
 		display_text = topic.display_text
 	}
-end
-
-local function get_portrait_frame(player)
-	local unit = player.player_unit
-	local player_portrait_frame = "default"
-
-	if Unit.alive(unit) then
-		local network_manager = Managers.state.network
-		local network_game = network_manager.game(network_manager)
-
-		if network_game and not LEVEL_EDITOR_TEST then
-			if player.local_player then
-				local career_extension = ScriptUnit.extension(unit, "career_system")
-				local career_name = career_extension.career_name(career_extension)
-				local item_interface = Managers.backend:get_interface("items")
-				local item = BackendUtils.get_loadout_item(career_name, "slot_frame")
-
-				if item then
-					local item_data = item.data
-					local frame_name = item_data.temporary_template
-
-					if not frame_name then
-					end
-				end
-			else
-				local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-				local frame_name_id = GameSession.game_object_field(network_game, unit_id, "frame_name")
-				player_portrait_frame = NetworkLookup.cosmetics[frame_name_id]
-			end
-		end
-	end
-
-	return player_portrait_frame
 end
 
 ScoreboardHelper.get_sorted_topic_statistics = function (statistics_db, profile_synchronizer)
@@ -366,6 +347,7 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 
 	local bots_and_players = Managers.player:human_and_bot_players()
 	local own_player_stats_id = nil
+	local cosmetic_system = Managers.state.entity:system("cosmetic_system")
 	local player_list = {}
 
 	for _, player in pairs(bots_and_players) do
@@ -376,7 +358,7 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 		local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, player_peer_id, player.local_player_id(player))
 		local career_index = player.career_index(player)
 		local is_player_controlled = player.is_player_controlled(player)
-		local portrait_frame = get_portrait_frame(player)
+		local portrait_frame = cosmetic_system.get_equipped_frame(cosmetic_system, player.player_unit)
 		local player_level = ExperienceSettings.get_player_level(player)
 		player_list[stats_id] = {
 			name = player_name,

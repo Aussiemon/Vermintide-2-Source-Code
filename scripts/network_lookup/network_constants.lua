@@ -4,7 +4,7 @@ NetworkConstants.damage_hotjoin_sync = Network.type_info("damage_hotjoin_sync")
 NetworkConstants.health = Network.type_info("health")
 NetworkConstants.velocity = Network.type_info("velocity")
 NetworkConstants.enemy_velocity = Network.type_info("enemy_velocity")
-NetworkConstants.VELOCITY_EPSILON = Vector3.length(Vector3(NetworkConstants.velocity.tolerance, NetworkConstants.velocity.tolerance, NetworkConstants.velocity.tolerance))*1.1
+NetworkConstants.VELOCITY_EPSILON = Vector3.length(Vector3(NetworkConstants.velocity.tolerance, NetworkConstants.velocity.tolerance, NetworkConstants.velocity.tolerance)) * 1.1
 NetworkConstants.position = Network.type_info("position")
 NetworkConstants.rotation = Network.type_info("rotation")
 NetworkConstants.enemy_rotation = Network.type_info("enemy_rotation")
@@ -115,5 +115,8 @@ fassert(num_dialogues <= max_dialogues, "Too many entries in dialogue lookup (%i
 NetworkConstants.statuses = Network.type_info("player_status")
 
 assert(#NetworkLookup.statuses <= NetworkConstants.statuses.max, "Too many statuses, raise global.network_config value for player_status by a factor 2")
+
+NetworkConstants.uint_16 = Network.type_info("uint_16")
+NetworkConstants.server_controlled_buff_id = Network.type_info("server_controlled_buff_id")
 
 return 

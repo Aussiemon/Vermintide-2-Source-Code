@@ -28,14 +28,14 @@ NavDefaultSmartObjectFollower.initial_jump_velocity = function (self)
 	local Az = Vector3.z(A)
 	local Bz = Vector3.z(B)
 	local Cz = math.max(Az, Bz) + self.jump_height
-	local v0z = math.sqrt(self.free_fall_acceleration*2*(Cz - Az))
-	local D = v0z*v0z + self.free_fall_acceleration*2*(Az - Bz)
-	local tB = (v0z + math.sqrt(D))/self.free_fall_acceleration
+	local v0z = math.sqrt(2 * self.free_fall_acceleration * (Cz - Az))
+	local D = v0z * v0z + 2 * self.free_fall_acceleration * (Az - Bz)
+	local tB = (v0z + math.sqrt(D)) / self.free_fall_acceleration
 	local v0 = B - A
 
 	Vector3.set_z(v0, 0)
 
-	v0 = v0/tB
+	v0 = v0 / tB
 
 	self.jump_forward:store(Vector3.normalize(v0))
 	Vector3.set_z(v0, v0z)
@@ -61,8 +61,8 @@ NavDefaultSmartObjectFollower.move_unit = function (self, dt)
 	local velocity = self.jump_velocity:unbox()
 	local forward = self.jump_forward:unbox()
 
-	self.navbot:update_pose(forward, bot_position + velocity*dt)
-	self.jump_velocity:store(velocity - Vector3(0, 0, self.free_fall_acceleration)*dt)
+	self.navbot:update_pose(forward, bot_position + velocity * dt)
+	self.jump_velocity:store(velocity - Vector3(0, 0, self.free_fall_acceleration) * dt)
 
 	return 
 end
@@ -71,9 +71,9 @@ NavDefaultSmartObjectFollower.move_unit_with_mover = function (self, dt, mover)
 	local velocity = self.jump_velocity:unbox()
 	local forward = self.jump_forward:unbox()
 
-	Mover.set_position(mover, bot_position + velocity*dt)
+	Mover.set_position(mover, bot_position + velocity * dt)
 	self.navbot:update_pose(forward, Mover.position(mover))
-	self.jump_velocity:store(velocity - Vector3(0, 0, self.free_fall_acceleration)*dt)
+	self.jump_velocity:store(velocity - Vector3(0, 0, self.free_fall_acceleration) * dt)
 
 	return 
 end

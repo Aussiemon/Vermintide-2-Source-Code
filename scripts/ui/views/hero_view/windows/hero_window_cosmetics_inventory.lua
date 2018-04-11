@@ -250,6 +250,13 @@ HeroWindowCosmeticsInventory._handle_input = function (self, dt, t)
 
 	if item then
 		parent._set_loadout_item(parent, item)
+
+		local item_data = item.data
+		local slot_type = item_data.slot_type
+
+		if slot_type == "skin" then
+			parent.update_skin_sync(parent)
+		end
 	end
 
 	local item_tabs = widgets_by_name.item_tabs

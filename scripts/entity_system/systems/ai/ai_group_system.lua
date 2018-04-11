@@ -86,7 +86,7 @@ AIGroupSystem.add_ready_splines = function (self, waypoint_list, spline_type)
 			local start_position = start_position_boxed.unbox(start_position_boxed)
 
 			if #spline_points == 2 then
-				table.insert(spline_points, 2, Vector3Box((start_position + spline_points[2]:unbox())/2))
+				table.insert(spline_points, 2, Vector3Box((start_position + spline_points[2]:unbox()) / 2))
 			end
 
 			local start_direction = Vector3.normalize(spline_points[3]:unbox() - start_position)
@@ -605,7 +605,7 @@ AIGroupSystem.update = function (self, context, t)
 					local start_position = start_position_boxed.unbox(start_position_boxed)
 
 					if #spline_points == 2 then
-						table.insert(spline_points, 2, Vector3Box((start_position + spline_points[2]:unbox())/2))
+						table.insert(spline_points, 2, Vector3Box((start_position + spline_points[2]:unbox()) / 2))
 					end
 
 					local start_direction = Vector3.normalize(spline_points[3]:unbox() - start_position)
@@ -791,7 +791,7 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 	local start_direction = self.spline_start_direction(self, spline_name)
 	local formation_data = table.clone(formation)
 	local num_rows = #formation
-	local formation_length = (num_rows - 1)*anchor_offset_x
+	local formation_length = (num_rows - 1) * anchor_offset_x
 	local group_size = 0
 	local spline = self._spline_lookup[spline_name]
 	local spline_curve = nil
@@ -812,7 +812,7 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 	for row, columns in ipairs(formation) do
 		for column, breed_name in ipairs(columns) do
 			local num_columns_in_row = #columns
-			local distance = formation_length - (row - 1)*anchor_offset_x
+			local distance = formation_length - (row - 1) * anchor_offset_x
 			local position_on_spline, direction_on_spline = self._get_position_on_spline_by_distance(self, distance, spline_curve, start_spline_index)
 
 			if position_on_spline == nil then
@@ -821,8 +821,8 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 			end
 
 			local direction_on_spline_normal = Vector3(direction_on_spline.y, -direction_on_spline.x, 0)
-			local column_length = (num_columns_in_row - 1)*anchor_offset_y*2
-			local offset_y = direction_on_spline_normal*(-column_length/2 + anchor_offset_y*2*(column - 1))
+			local column_length = (num_columns_in_row - 1) * anchor_offset_y * 2
+			local offset_y = direction_on_spline_normal * (-column_length / 2 + anchor_offset_y * 2 * (column - 1))
 			local offset = offset_y
 			local wanted_spawn_position = position_on_spline + offset
 			local start_direction = Vector3.flat(direction_on_spline)

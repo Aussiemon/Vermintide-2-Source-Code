@@ -60,7 +60,7 @@ AudioSystem._update_global_parameters = function (self, dt)
 			local start_value = data.interpolation_start_value
 			local end_value = data.interpolation_end_value
 			local increment_value = LERP_PROGRESS_PER_SECOND[name] or LERP_PROGRESS_PER_SECOND.default
-			progress = math.clamp(progress + dt*increment_value, 0, 1)
+			progress = math.clamp(progress + dt * increment_value, 0, 1)
 			local current_value = math.lerp(start_value, end_value, progress)
 
 			if math.abs(end_value - current_value) < 0.005 then
@@ -361,7 +361,7 @@ AudioSystem.rpc_server_audio_unit_param_float_event = function (self, sender, so
 end
 AudioSystem.rpc_client_audio_set_global_parameter_with_lerp = function (self, sender, parameter_id, value)
 	local name = NetworkLookup.global_parameter_names[parameter_id]
-	local percentage = value*100
+	local percentage = value * 100
 
 	self.set_global_parameter_with_lerp(self, name, percentage)
 

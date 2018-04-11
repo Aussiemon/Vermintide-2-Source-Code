@@ -76,7 +76,7 @@ ActionHammerSlam.update_is_finished = function (self, dt, t, world, reason)
 			local player_position = POSITION_LOOKUP[owner_unit]
 			local player_rotation = Unit.world_rotation(self.owner_unit_first_person, 0)
 			local direction = Vector3.normalize(Vector3.flat(Quaternion.forward(player_rotation)))
-			local hit_position = player_position + direction*(TOTAL_RADIUS + FORWARD_OFFSET)
+			local hit_position = player_position + direction * (TOTAL_RADIUS + FORWARD_OFFSET)
 			local callback = callback(self, "slam_overlap_callback")
 
 			PhysicsWorld.overlap(physics_world, callback, "shape", "sphere", "position", hit_position, "size", TOTAL_RADIUS, "types", "both", "collision_filter", "filter_melee_sweep")
@@ -119,8 +119,8 @@ ActionHammerSlam.slam_overlap_callback = function (self, actors)
 			local player_rotation = Unit.world_rotation(self.owner_unit_first_person, 0)
 			local direction = Vector3.normalize(Vector3.flat(Quaternion.forward(player_rotation)))
 			local flat_rotation = Quaternion.look(direction)
-			local kill_circle_pos = player_position + direction*(MEDIUM_RADIUS + FORWARD_OFFSET)
-			local destroy_circle_pos = player_position + direction*(SHORT_RADIUS + FORWARD_OFFSET)
+			local kill_circle_pos = player_position + direction * (MEDIUM_RADIUS + FORWARD_OFFSET)
+			local destroy_circle_pos = player_position + direction * (SHORT_RADIUS + FORWARD_OFFSET)
 			local distance_to_kill = Vector3.distance(Vector3.flat(POSITION_LOOKUP[hit_unit]), Vector3.flat(kill_circle_pos))
 			local distance_to_destroy = Vector3.distance(Vector3.flat(POSITION_LOOKUP[hit_unit]), Vector3.flat(destroy_circle_pos))
 			local in_medium_range = distance_to_kill <= MEDIUM_RADIUS
@@ -143,16 +143,16 @@ ActionHammerSlam._draw_targeting_decal = function (self, world)
 	local player_rotation = Unit.world_rotation(self.owner_unit_first_person, 0)
 	local direction = Vector3.normalize(Vector3.flat(Quaternion.forward(player_rotation)))
 	local flat_rotation = Quaternion.look(direction)
-	local push_circle_pos = player_position + direction*(TOTAL_RADIUS + FORWARD_OFFSET)
-	local kill_circle_pos = player_position + direction*(MEDIUM_RADIUS + FORWARD_OFFSET)
-	local destroy_circle_pos = player_position + direction*(SHORT_RADIUS + FORWARD_OFFSET)
+	local push_circle_pos = player_position + direction * (TOTAL_RADIUS + FORWARD_OFFSET)
+	local kill_circle_pos = player_position + direction * (MEDIUM_RADIUS + FORWARD_OFFSET)
+	local destroy_circle_pos = player_position + direction * (SHORT_RADIUS + FORWARD_OFFSET)
 
 	QuickDrawer:sphere(push_circle_pos, TOTAL_RADIUS, Color(255, 50, 255, 50))
 	QuickDrawer:sphere(kill_circle_pos, MEDIUM_RADIUS, Color(255, 255, 50, 50))
 	QuickDrawer:sphere(destroy_circle_pos, SHORT_RADIUS, Color(255, 50, 50, 255))
 
 	local targeting_decal = self.targeting_decal
-	local scale = TOTAL_RADIUS*2
+	local scale = TOTAL_RADIUS * 2
 
 	Unit.set_local_position(targeting_decal, 0, push_circle_pos)
 	Unit.set_local_rotation(targeting_decal, 0, flat_rotation)

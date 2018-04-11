@@ -367,7 +367,7 @@ ContractLogUI._get_text_size = function (self, text_style, text)
 	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
 	local num_texts = #texts
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min))*inv_scale
+	local full_font_height = (font_max + math.abs(font_min)) * inv_scale
 	local longest_width = 0
 
 	for i = 1, num_texts, 1 do
@@ -379,7 +379,7 @@ ContractLogUI._get_text_size = function (self, text_style, text)
 		end
 	end
 
-	return num_texts*full_font_height, longest_width
+	return num_texts * full_font_height, longest_width
 end
 ContractLogUI.update = function (self, dt, t)
 	local dirty = false

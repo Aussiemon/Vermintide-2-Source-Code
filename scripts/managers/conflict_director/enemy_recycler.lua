@@ -150,7 +150,7 @@ EnemyRecycler.draw_roaming_splines = function (self)
 end
 local SizeOfInterestPoint = SizeOfInterestPoint
 local min_roaming_patrol_size = 3
-EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, pack_type, pack_size_ip_unit_name)
+EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, pack_type, pack_size_ip_unit_name, zone_data)
 	local amount = SizeOfInterestPoint[pack_size_ip_unit_name]
 
 	if amount < min_roaming_patrol_size then
@@ -170,7 +170,7 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, p
 		local spline = self.ai_group_system:spline(spline_name)
 
 		if spline then
-			start_pos = self.patrol_analysis:get_path_point(spline.spline_points, nil, math.random()*0.9)
+			start_pos = self.patrol_analysis:get_path_point(spline.spline_points, nil, math.random() * 0.9)
 		end
 
 		local zone = self.group_manager:get_group_from_position(start_pos)
@@ -193,7 +193,8 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, p
 			pack_type = pack_type,
 			spline_name = spline_name,
 			pack = pack,
-			spline_way_points = spline_waypoints
+			spline_way_points = spline_waypoints,
+			zone_data = zone_data
 		}
 		local area = {
 			spline_start_position,
@@ -244,7 +245,7 @@ EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack
 			elseif NavTagVolumeUtils.inside_level_volume_layer(level, nav_tag_volume_handler, pos, "NO_SPAWN") then
 				spawn = false
 			elseif roaming_patrols_allowed then
-				local area = self.inject_roaming_patrol(self, area_position, area_rot, pack_type, pack_size)
+				local area = self.inject_roaming_patrol(self, area_position, area_rot, pack_type, pack_size, zone_data)
 
 				if area then
 					areas[k] = area
@@ -343,6 +344,7 @@ EnemyRecycler.update_main_path_events = function (self, t)
 			event_data.map_section = map_section
 		end
 
+		print("main path terror event triggered:", event_name)
 		TerrorEventMixer.start_event(event_name, event_data)
 
 		id = id + 1
@@ -788,7 +790,9 @@ EnemyRecycler.add_main_path_terror_event = function (self, boxed_pos, terror_eve
 	if script_data.debug_ai_recycler then
 		local trigger_pos = MainPathUtils.point_on_mainpath(nil, travel_dist)
 
-		QuickDrawerStay:sphere(trigger_pos + Vector3(0, 0, 2), 1, Color(255, 0, 0))
+		QuickDrawerStay:sphere(trigger_pos + Vector3(0, 0, 2), 0.5, Color(255, 0, 0))
+		QuickDrawerStay:line(trigger_pos + Vector3(0, 0, 2), boxed_pos.unbox(boxed_pos) + Vector3(0, 0, 1), Color(255, 0, 0))
+		Debug.world_sticky_text(trigger_pos + Vector3(0, 0, 2), #main_path_events + 1, "green")
 	end
 
 	local num_events = #main_path_events
@@ -807,6 +811,25 @@ EnemyRecycler.add_main_path_terror_event = function (self, boxed_pos, terror_eve
 	table.sort(main_path_events, function (a, b)
 		return a[1] < b[1]
 	end)
+
+	return 
+end
+EnemyRecycler.setup_main_path_events = function (self, t)
+	local main_path_events = self.main_path_events
+
+	if #main_path_events <= 0 then
+		self.current_main_path_event_id = nil
+
+		return 
+	end
+
+	table.sort(main_path_events, function (a, b)
+		return a[1] < b[1]
+	end)
+
+	self.current_main_path_event_id = 1
+	local travel_dist = main_path_events[1][1]
+	self.current_main_path_event_activation_dist = travel_dist
 
 	return 
 end
@@ -908,7 +931,7 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 		local info = main_path_player_info[local_player_unit]
 
 		if info then
-			Debug.text("travel-dist: %.1fm, move_percent: %.1f%%, path-index: %d, sub-index: %d", info.travel_dist, info.move_percent*100, info.path_index, info.sub_index)
+			Debug.text("travel-dist: %.1fm, move_percent: %.1f%%, path-index: %d, sub-index: %d", info.travel_dist, info.move_percent * 100, info.path_index, info.sub_index)
 		end
 	end
 
@@ -969,7 +992,7 @@ EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned
 				end
 			end
 
-			blackboard.stuck_check_time = t + 3 + i*dt
+			blackboard.stuck_check_time = t + 3 + i * dt
 		end
 
 		local num_players_far_away = 0

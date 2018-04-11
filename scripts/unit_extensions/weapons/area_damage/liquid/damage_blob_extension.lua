@@ -111,7 +111,7 @@ DamageBlobExtension.stop_placing_blobs = function (self, t)
 		local position = Vector3(last_blob[1], last_blob[2], last_blob[3])
 		local radius = last_blob[4]
 		local rim_distance = radius + BLOB_EXTRA_SAFE_DISTANCE
-		local rim_position_forward = position + forward*rim_distance
+		local rim_position_forward = position + forward * rim_distance
 		local success_forward, altitude_forward = GwNavQueries.triangle_from_position(self.nav_world, rim_position_forward, 1.5, 1.5)
 
 		if success_forward then
@@ -356,7 +356,7 @@ DamageBlobExtension.insert_blob = function (self, position, radius, rotation, t,
 	local rim_nodes = self.rim_nodes
 	local rim_distance = radius + BLOB_EXTRA_SAFE_DISTANCE
 	local right = Quaternion.right(rotation)
-	local rim_position_right = position + right*rim_distance
+	local rim_position_right = position + right * rim_distance
 	local success_right, altitude_right = GwNavQueries.triangle_from_position(nav_world, rim_position_right, 1.5, 1.5)
 
 	if success_right then
@@ -365,7 +365,7 @@ DamageBlobExtension.insert_blob = function (self, position, radius, rotation, t,
 	end
 
 	local left = -right
-	local rim_position_left = position + left*rim_distance
+	local rim_position_left = position + left * rim_distance
 	local success_left, altitude_left = GwNavQueries.triangle_from_position(nav_world, rim_position_left, 1.5, 1.5)
 
 	if success_left then
@@ -375,7 +375,7 @@ DamageBlobExtension.insert_blob = function (self, position, radius, rotation, t,
 
 	if blob_index == 1 then
 		local backward = -Quaternion.forward(rotation)
-		local rim_position_backward = position + backward*rim_distance
+		local rim_position_backward = position + backward * rim_distance
 		local success_backward, altitude_backward = GwNavQueries.triangle_from_position(nav_world, rim_position_backward, 1.5, 1.5)
 
 		if success_backward then
@@ -436,8 +436,8 @@ DamageBlobExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 
 			if fx_size then
 				local particle_size = fx_size.unbox(fx_size)
-				particle_size[1] = math.min(particle_size[1] + dt*1.5, fx_max_radius)
-				particle_size[2] = math.min(particle_size[2] + dt*2, fx_max_height)
+				particle_size[1] = math.min(particle_size[1] + dt * 1.5, fx_max_radius)
+				particle_size[2] = math.min(particle_size[2] + dt * 2, fx_max_height)
 				local effect_variable_id = World.find_particles_variable(world, fx_name_filled, fx_size_variable)
 
 				World.set_particles_variable(world, fx_id, effect_variable_id, particle_size)
@@ -489,17 +489,12 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 
 	if self.apply_buff_to_player then
 		local blob_radius = self.blob_radius
-		local blob_index = next(self.blobs, self.current_blob_index) or 1
-		local blob = blobs[blob_index]
-		self.current_blob_index = blob_index
 
-		for j = 1, #player_and_bot_units, 1 do
-			local target_unit = player_and_bot_units[j]
+		for i = 1, #player_and_bot_units, 1 do
+			local target_unit = player_and_bot_units[i]
 
-			self.check_overlap(self, unit, target_unit, blob_radius, blob, buff_system, num_blobs)
+			self.check_overlap(self, unit, target_unit, blob_radius, first_blob_position, last_blob_position, buff_system, num_blobs)
 		end
-
-		self.current_blob_index = blob_index
 	end
 
 	if not self.apply_buff_to_ai then
@@ -580,20 +575,18 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 
 	return 
 end
-DamageBlobExtension.check_overlap = function (self, unit, target_unit, blob_radius, blob, buff_system, num_blobs)
+DamageBlobExtension.check_overlap = function (self, unit, target_unit, blob_radius, p1, p2, buff_system, num_blobs)
 	local player_units_inside = self.player_units_inside
 	local test_pos = position_lookup[target_unit]
-	local blob_position = Vector3(blob[1], blob[2], blob[3])
-	local to_target_flat = Vector3.flat(test_pos - blob_position)
-	local dist_sq = Vector3.length_squared(to_target_flat)
+	local pos_projected_on_wave_line = Geometry.closest_point_on_line(test_pos, p1, p2)
+	local to_line_flat = Vector3.flat(test_pos - pos_projected_on_wave_line)
+	local dist_sq = Vector3.length_squared(to_line_flat)
 	local blob_radius_sq = blob_radius^2
 	local inside_id = player_units_inside[target_unit]
 	local status_extension = ScriptUnit.extension(target_unit, "status_system")
-	local buff_extension = ScriptUnit.extension(target_unit, "buff_system")
-	local buff_template_type = self.buff_template_type
 
 	if inside_id then
-		if blob_radius_sq < dist_sq and not buff_extension.has_buff_type(buff_extension, buff_template_type) then
+		if blob_radius_sq < dist_sq then
 			if status_extension.in_liquid_unit == unit then
 				StatusUtils.set_in_liquid_network(target_unit, false)
 			end
@@ -603,8 +596,14 @@ DamageBlobExtension.check_overlap = function (self, unit, target_unit, blob_radi
 			player_units_inside[target_unit] = nil
 		end
 	elseif dist_sq < blob_radius_sq then
+		local line_dist = Vector3.distance(p1, pos_projected_on_wave_line)
+		local blob_index = math.floor(0.5 + line_dist * num_blobs) + 1
+		blob_index = math.clamp(blob_index, 1, num_blobs)
+		local blob = self.blobs[blob_index]
 		local z = blob[3]
 		local buff_template_name = self.buff_template_name
+		local buff_template_type = self.buff_template_type
+		local buff_extension = ScriptUnit.extension(target_unit, "buff_system")
 
 		if math.abs(test_pos.z - z) < blob_radius and not buff_extension.has_buff_type(buff_extension, buff_template_type) then
 			if status_extension.in_liquid_unit ~= unit then
@@ -655,7 +654,7 @@ DamageBlobExtension.hot_join_sync = function (self, sender)
 	for i = 1, #fx_list - 1, 2 do
 		local fx_entry = fx_list[i]
 		local position = fx_entry.position:unbox()
-		local life_time_percentage = math.max(fx_entry.time - t, 0)/blob_life_time
+		local life_time_percentage = math.max(fx_entry.time - t, 0) / blob_life_time
 
 		network_transmit.send_rpc(network_transmit, "rpc_add_damage_blob_fx", sender, unit_id, position, life_time_percentage)
 	end

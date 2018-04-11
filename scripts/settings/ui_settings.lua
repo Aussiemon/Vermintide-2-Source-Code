@@ -1,14 +1,15 @@
 UISettings = {
-	start_drag_threshold = 0.15,
-	tooltip_fade_in_speed = 4,
-	double_click_threshold = 0.1,
-	max_craft_material_presentation_amount = 999,
 	tooltip_wait_duration = 0.1,
+	start_drag_threshold = 0.15,
+	double_click_threshold = 0.1,
+	tooltip_fade_in_speed = 4,
+	max_craft_material_presentation_amount = 999,
+	chest_upgrade_score_topics_min_duration = 0.5,
 	chest_upgrade_score_topics_max_duration = 7,
+	max_inventory_items = 1000,
 	hero_panel_height = 120,
 	use_subtitles = true,
 	max_fatigue_shields = 20,
-	chest_upgrade_score_topics_min_duration = 0.5,
 	game_start_windows = {
 		frame = "menu_frame_09",
 		spacing = 25,
@@ -158,7 +159,7 @@ UISettings = {
 		fade_time = 1
 	},
 	crosshair = {
-		hit_marker_fade = 0.4
+		hit_marker_fade = 0.6
 	},
 	unit_frames = {
 		health_bar_lerp_time = 1,
@@ -243,31 +244,32 @@ UISettings = {
 	},
 	use_ps4_input_icons = Application.user_setting("gamepad_use_ps4_style_input_icons"),
 	breed_textures = {
-		skaven_stormfiend = "unit_frame_portrait_enemy_stormfiend",
-		chaos_raider = "unit_frame_portrait_enemy_chaos_warrior",
 		chaos_exalted_champion_warcamp = "unit_frame_portrait_enemy_chaos_warrior",
-		skaven_stormfiend_boss = "unit_frame_portrait_enemy_stormfiend",
-		skaven_storm_vermin_warlord = "unit_frame_portrait_enemy_stormvermin",
+		chaos_raider = "unit_frame_portrait_enemy_raider",
+		skaven_stormfiend = "unit_frame_portrait_enemy_stormfiend",
 		chaos_exalted_champion_norsca = "unit_frame_portrait_enemy_chaos_warrior",
+		skaven_storm_vermin_warlord = "unit_frame_portrait_enemy_warlord",
 		skaven_storm_vermin_with_shield = "unit_frame_portrait_enemy_stormvermin",
-		skaven_gutter_runner = "unit_frame_portrait_enemy_gutter_runner",
 		skaven_poison_wind_globadier = "unit_frame_portrait_enemy_poison_wind",
+		skaven_gutter_runner = "unit_frame_portrait_enemy_gutter_runner",
 		skaven_clan_rat_with_shield = "unit_frame_portrait_enemy_clanrat",
+		skaven_plague_monk = "unit_frame_portrait_enemy_plague_monk",
 		chaos_fanatic = "unit_frame_portrait_enemy_fanatic",
-		skaven_slave = "unit_frame_portrait_enemy_clanrat",
-		skaven_ratling_gunner = "unit_frame_portrait_enemy_ratling_gunner",
+		skaven_slave = "unit_frame_portrait_enemy_slave_rat",
+		chaos_vortex_sorcerer = "unit_frame_portrait_enemy_sorcerer_vortex",
 		chaos_vortex = "unit_frame_portrait_enemy_sorcerer_vortex",
 		skaven_clan_rat = "unit_frame_portrait_enemy_clanrat",
 		skaven_stormfiend_demo = "unit_frame_portrait_enemy_stormfiend",
 		chaos_plague_sorcerer = "unit_frame_portrait_enemy_chaos_sorcerer",
-		skaven_plague_monk = "unit_frame_portrait_enemy_plague_monk",
-		chaos_zombie = "unit_frame_portrait_enemy_chaos_marauder",
+		skaven_ratling_gunner = "unit_frame_portrait_enemy_ratling_gunner",
+		chaos_exalted_sorcerer = "unit_frame_portrait_enemy_sorcerer_boss",
 		chaos_tentacle_sorcerer = "unit_frame_portrait_enemy_chaos_sorcerer",
+		chaos_zombie = "unit_frame_portrait_enemy_plague_zombie",
 		skaven_rat_ogre = "unit_frame_portrait_enemy_rat_ogre",
 		chaos_troll = "unit_frame_portrait_enemy_chaos_troll",
 		chaos_spawn = "unit_frame_portrait_enemy_chaos_spawn",
 		chaos_corruptor_sorcerer = "unit_frame_portrait_enemy_sorcerer_corruptor",
-		chaos_vortex_sorcerer = "unit_frame_portrait_enemy_sorcerer_vortex",
+		skaven_stormfiend_boss = "unit_frame_portrait_enemy_stormfiend",
 		skaven_storm_vermin = "unit_frame_portrait_enemy_stormvermin",
 		chaos_marauder = "unit_frame_portrait_enemy_chaos_marauder",
 		chaos_berzerker = "unit_frame_portrait_enemy_savage",
@@ -276,6 +278,7 @@ UISettings = {
 		chaos_tentacle = "unit_frame_portrait_enemy_chaos_sorcerer",
 		skaven_loot_rat = "unit_frame_portrait_enemy_lootrat",
 		skaven_pack_master = "unit_frame_portrait_enemy_packmaster",
+		chaos_spawn_exalted_champion_norsca = "unit_frame_portrait_enemy_chaos_spawn",
 		skaven_grey_seer = "unit_frame_portrait_enemy_rasknitt",
 		chaos_warrior = "unit_frame_portrait_enemy_chaos_warrior",
 		skaven_storm_vermin_commander = "unit_frame_portrait_enemy_stormvermin",
@@ -590,17 +593,17 @@ UISettings = {
 			display_name = "display_name_default_witch_hunter_wh_1h_falchions"
 		},
 		ring = {
-			inventory_icon = "icon_charm_01",
+			inventory_icon = "icon_charm_09",
 			description = "description_default_ring",
 			display_name = "display_name_default_ring"
 		},
 		necklace = {
-			inventory_icon = "icon_necklace_default_01",
+			inventory_icon = "icon_necklace_09",
 			description = "description_default_necklace",
 			display_name = "display_name_default_necklace"
 		},
 		trinket = {
-			inventory_icon = "icon_trinket_01",
+			inventory_icon = "icon_trinket_12",
 			description = "description_default_trinket",
 			display_name = "display_name_default_trinket"
 		}
@@ -640,6 +643,22 @@ UISettings = {
 		ranged = "tabs_icon_ranged",
 		skins = "tabs_icon_character_skins"
 	},
+	crafting_material_order = {
+		"crafting_material_scrap",
+		"crafting_material_weapon",
+		"crafting_material_jewellery",
+		"crafting_material_dust_1",
+		"crafting_material_dust_2",
+		"crafting_material_dust_3"
+	},
+	crafting_material_icons_small = {
+		crafting_material_dust_3 = "icon_crafting_dust_03_small",
+		crafting_material_dust_1 = "icon_crafting_dust_01_small",
+		crafting_material_weapon = "icon_crafting_weapon_part_small",
+		crafting_material_scrap = "icon_crafting_scrap_small",
+		crafting_material_jewellery = "icon_crafting_jewellery_part_small",
+		crafting_material_dust_2 = "icon_crafting_dust_02_small"
+	},
 	loot_containers = {
 		epic = "loot_container_icon_02",
 		default = "loot_container_icon_01",
@@ -662,6 +681,27 @@ UISettings = {
 		plentiful = 6,
 		rare = 4,
 		unique = 2
+	},
+	inventory_consumable_slot_colors = {
+		healthkit_first_aid_kit_01 = Colors.get_color_table_with_alpha("healthkit_first_aid_kit_01", 255),
+		wpn_side_objective_tome_01 = Colors.get_color_table_with_alpha("wpn_side_objective_tome_01", 255),
+		potion_healing_draught_01 = Colors.get_color_table_with_alpha("potion_healing_draught_01", 255),
+		potion_damage_boost_01 = Colors.get_color_table_with_alpha("potion_damage_boost_01", 255),
+		potion_speed_boost_01 = Colors.get_color_table_with_alpha("potion_speed_boost_01", 255),
+		potion_cooldown_reduction_01 = Colors.get_color_table_with_alpha("potion_cooldown_reduction_01", 255),
+		wpn_grimoire_01 = Colors.get_color_table_with_alpha("wpn_grimoire_01", 255),
+		grenade_frag_01 = Colors.get_color_table_with_alpha("grenade_frag_01", 255),
+		grenade_frag_02 = Colors.get_color_table_with_alpha("grenade_frag_02", 255),
+		grenade_smoke_01 = Colors.get_color_table_with_alpha("grenade_smoke_01", 255),
+		grenade_smoke_02 = Colors.get_color_table_with_alpha("grenade_smoke_02", 255),
+		grenade_fire_01 = Colors.get_color_table_with_alpha("grenade_fire_01", 255),
+		grenade_fire_02 = Colors.get_color_table_with_alpha("grenade_fire_02", 255),
+		default = {
+			255,
+			0,
+			0,
+			0
+		}
 	}
 }
 local button_mapping = {
@@ -1227,7 +1267,7 @@ function ButtonTextureByName(button_name, platform)
 	return 
 end
 
-UISettings.get_gamepad_input_texture_data = function (input_service, input_action, gamepad_active)
+UISettings.get_gamepad_input_texture_data = function (input_service, input_action, gamepad_active, optional_alternative_input_service)
 	local platform = PLATFORM
 
 	if platform == "win32" and gamepad_active then
@@ -1236,6 +1276,7 @@ UISettings.get_gamepad_input_texture_data = function (input_service, input_actio
 
 	local button_texture_data = nil
 	local button_name = ""
+	local unassigned = false
 	local keymap_binding = input_service.get_keymapping(input_service, input_action, platform)
 
 	if #keymap_binding < 3 then
@@ -1246,9 +1287,17 @@ UISettings.get_gamepad_input_texture_data = function (input_service, input_actio
 	local key_index = keymap_binding[2]
 	local key_action_type = keymap_binding[3]
 
+	if key_index == UNASSIGNED_KEY and optional_alternative_input_service then
+		keymap_binding = optional_alternative_input_service.get_keymapping(optional_alternative_input_service, input_action, platform)
+		device_type = keymap_binding[1]
+		key_index = keymap_binding[2]
+		key_action_type = keymap_binding[3]
+		unassigned = true
+	end
+
 	if key_index and key_index ~= UNASSIGNED_KEY then
 		if device_type == "keyboard" then
-			button_name = Keyboard.button_locale_name(key_index)
+			button_name = Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index)
 		elseif device_type == "mouse" then
 			button_name = Mouse.button_name(key_index)
 		elseif device_type == "gamepad" then
@@ -1260,13 +1309,10 @@ UISettings.get_gamepad_input_texture_data = function (input_service, input_actio
 		end
 	end
 
-	if not button_name then
-		error("UISettings - get_gamepad_input_texture_data: Button name is nil")
-	end
-
+	button_name = button_name or "ERROR"
 	button_texture_data = ButtonTextureByName(button_name, platform)
 
-	return button_texture_data, button_name, keymap_binding
+	return button_texture_data, button_name, keymap_binding, unassigned
 end
 
 return 

@@ -365,7 +365,7 @@ if has_steam and not disable_voip then
 	Voip.set_volume = function (self, voip_bus_volume)
 		assert(0 <= voip_bus_volume and voip_bus_volume <= 100)
 
-		voip_bus_volume = voip_bus_volume*0.5 - 50
+		voip_bus_volume = voip_bus_volume * 0.5 - 50
 
 		Timpani.set_bus_volume("voip", voip_bus_volume)
 		Timpani.set_bus_volume("Master Bus", voip_bus_volume)

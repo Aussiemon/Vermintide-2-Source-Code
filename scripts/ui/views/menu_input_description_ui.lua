@@ -181,7 +181,7 @@ MenuInputDescriptionUI.create_ui_elements = function (self, ui_renderer, number_
 
 	return 
 end
-MenuInputDescriptionUI.draw = function (self, dt)
+MenuInputDescriptionUI.draw = function (self, ui_renderer, dt)
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_service
 	local ui_renderer = self.ui_renderer
@@ -345,7 +345,7 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 			local font, scaled_font_size = UIFontByResolution(text_style)
 			local text_width, text_height, min = UIRenderer.text_size(ui_renderer, description_text, font[1], scaled_font_size)
 			local widget_length = action_texture_size[1] + text_width
-			ui_scenegraph[scenegraph_id].local_position[1] = -widget_length/2
+			ui_scenegraph[scenegraph_id].local_position[1] = -widget_length / 2
 			total_width = total_width + widget_length + spacing
 			widgets_width_list[widget_use_index] = widget_length
 		end
@@ -353,14 +353,14 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 
 	total_width = total_width - spacing
 	local parent_width = ui_scenegraph.input_description_field.size[1]
-	local widget_start_position = parent_width/2 - total_width/2
+	local widget_start_position = parent_width / 2 - total_width / 2
 
 	for i = 1, widget_use_index, 1 do
 		local widget_width = widgets_width_list[i]
-		local new_x = widget_start_position + widget_width/2
+		local new_x = widget_start_position + widget_width / 2
 		local scenegraph_root_id = "input_description_root_" .. i
 		ui_scenegraph[scenegraph_root_id].local_position[1] = new_x
-		widget_start_position = new_x + widget_width/2 + spacing
+		widget_start_position = new_x + widget_width / 2 + spacing
 	end
 
 	self.number_of_descriptions_in_use = (widget_use_index ~= 0 and widget_use_index) or nil

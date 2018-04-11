@@ -18,6 +18,7 @@ CorruptorBeamExtension.init = function (self, extension_init_context, unit, exte
 	self.stop_beam_start_sound = "Stop_enemy_corruptor_sorcerer_sucking_magic"
 	self.beam_end_sound = "Play_enemy_corruptor_sorcerer_pull_magic"
 	self.stop_beam_end_sound = "Stop_enemy_corruptor_sorcerer_pull_magic"
+	self.aimed_at_position = nil
 
 	return 
 end
@@ -72,6 +73,7 @@ CorruptorBeamExtension.remove_vfx_and_sfx = function (self, unit)
 
 	self.state = nil
 	self.projectile_position = nil
+	self.aimed_at_position = nil
 
 	return 
 end
@@ -128,31 +130,51 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 	local target_unit = self.target_unit
 	local projectile_unit = self.projectile_unit
 
+	Profiler.start("corruptor_beam_update")
+
 	if Unit.alive(target_unit) then
 		local world = self.world
-		local target_position = Unit.world_position(target_unit, Unit.node(target_unit, "j_neck"))
 		local self_pos = Unit.world_position(unit, Unit.node(unit, "a_voice"))
-		local direction = Vector3.normalize(target_position - self_pos)
-		local distance = Vector3.distance(self_pos, target_position)
+		local real_target_position = Unit.world_position(target_unit, Unit.node(target_unit, "j_neck"))
+
+		if not self.aimed_at_position then
+			self.aimed_at_position = Vector3Box(real_target_position + 1 * Vector3.normalize(real_target_position - self_pos))
+		end
+
+		local direction = Vector3.normalize(real_target_position - self_pos)
+		local distance = Vector3.distance(self_pos, real_target_position)
 		local rotation = Quaternion.look(direction)
 		local material_name = "beam"
 		local variable_name = "uv_dynamic_scaling"
 
 		if state == "projectile" and self.beam_effect then
+			local target_position = self.aimed_at_position:unbox()
 			local current_pos = Unit.local_position(projectile_unit, 0)
-			local wanted_position = current_pos + direction*self.projectile_speed*dt
+			local projectile_target_position = target_position
+			local projectile_direction = Vector3.normalize(projectile_target_position - current_pos)
+			local wanted_position = current_pos + projectile_direction * self.projectile_speed * dt
 			local distance_to_particle = Vector3.distance(self_pos, wanted_position)
+			local caster_to_projectile_direction = Vector3.normalize(wanted_position - self_pos)
+			local caster_to_projectile_rotation = Quaternion.look(caster_to_projectile_direction)
 
 			Unit.set_local_position(projectile_unit, 0, wanted_position)
-			World.move_particles(world, self.beam_effect, self_pos, rotation)
+			World.move_particles(world, self.beam_effect, self_pos, caster_to_projectile_rotation)
 			World.set_particles_variable(world, self.beam_effect, self.beam_effect_variable_id, Vector3(0.3, distance_to_particle, 0))
-			World.set_particles_material_scalar(world, self.beam_effect, material_name, variable_name, distance_to_particle*1)
+			World.set_particles_material_scalar(world, self.beam_effect, material_name, variable_name, distance_to_particle * 1)
 
 			if self.is_server then
 				local blackboard = BLACKBOARDS[unit]
 
 				if blackboard.projectile_position then
 					blackboard.projectile_position:store(wanted_position)
+				end
+
+				if not blackboard.projectile_target_position then
+					blackboard.projectile_target_position = Vector3Box(target_position)
+				else
+					local new_target_position = distance * projectile_direction + projectile_direction
+
+					blackboard.projectile_target_position:store(target_position)
 				end
 			end
 		elseif state == "start_beam" and self.beam_effect and self.beam_effect_start and self.beam_effect_end then
@@ -166,11 +188,13 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 
 			World.move_particles(world, self.beam_effect, self_pos, rotation)
 			World.set_particles_variable(world, self.beam_effect, self.beam_effect_variable_id, Vector3(0.3, distance, 0))
-			World.set_particles_material_scalar(world, self.beam_effect, material_name, variable_name, distance*1)
+			World.set_particles_material_scalar(world, self.beam_effect, material_name, variable_name, distance * 1)
 			World.move_particles(world, self.beam_effect_start, self_pos, rotation)
-			World.move_particles(world, self.beam_effect_end, target_position, rotation_inverse)
+			World.move_particles(world, self.beam_effect_end, real_target_position, rotation_inverse)
 		end
 	end
+
+	Profiler.stop("corruptor_beam_update")
 
 	return 
 end

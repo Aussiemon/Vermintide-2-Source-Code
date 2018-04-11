@@ -161,7 +161,7 @@ FriendsUIComponent._update_refresh_animations = function (self, dt)
 		local target = math.pi
 		local speed = 20
 		local rotate_progress = content.rotate_progress or start
-		rotate_progress = math.min(rotate_progress + dt*speed, target)
+		rotate_progress = math.min(rotate_progress + dt * speed, target)
 
 		if rotate_progress == target then
 			rotate_progress = start
@@ -233,12 +233,12 @@ FriendsUIComponent._update_active_tab = function (self, input_service, dt)
 	local tabs_size = definitions.scenegraph_info.tabs_size
 	local tabs_active_size = definitions.scenegraph_info.tabs_active_size
 	local list_style = active_tab.style.list_style
-	local size_y = list_style.list_member_offset[2]*list_style.num_draws - tabs_active_size[2] - tabs_size[2] - 10
+	local size_y = list_style.list_member_offset[2] * list_style.num_draws - tabs_active_size[2] - tabs_size[2] - 10
 	local list_scenegraph_id = list_style.scenegraph_id
 	local scenegraph_node = self._ui_scenegraph[list_scenegraph_id]
 	local scenegraph_pos = scenegraph_node.position
-	local value = active_tab.content.scrollbar.scroll_value - 1
-	scenegraph_pos[2] = -tabs_size[2] + size_y*value
+	local value = 1 - active_tab.content.scrollbar.scroll_value
+	scenegraph_pos[2] = -tabs_size[2] + size_y * value
 
 	self._update_list(self, active_tab)
 	self._handle_list_input(self, active_tab)
@@ -268,12 +268,12 @@ FriendsUIComponent._update_list = function (self, active_tab)
 		local style = item_styles[i]
 		local size = style.size
 		local offset = style.list_member_offset
-		_update_list_temp_pos_table.x = list_pos[1] + offset[1]*i + size[1]/2
-		_update_list_temp_pos_table.y = list_pos[2] + list_size[2] + offset[2]*i
+		_update_list_temp_pos_table.x = list_pos[1] + offset[1] * i + size[1] / 2
+		_update_list_temp_pos_table.y = list_pos[2] + list_size[2] + offset[2] * i
 		local lower_visible = math.point_is_inside_2d_box(_update_list_temp_pos_table, mask_pos, mask_size)
-		_update_list_temp_pos_table.y = _update_list_temp_pos_table.y + size[2]/2
+		_update_list_temp_pos_table.y = _update_list_temp_pos_table.y + size[2] / 2
 		local middle_visible = math.point_is_inside_2d_box(_update_list_temp_pos_table, mask_pos, mask_size)
-		_update_list_temp_pos_table.y = _update_list_temp_pos_table.y + size[2]/2
+		_update_list_temp_pos_table.y = _update_list_temp_pos_table.y + size[2] / 2
 		local top_visible = math.point_is_inside_2d_box(_update_list_temp_pos_table, mask_pos, mask_size)
 		local visible = lower_visible or top_visible
 		content.visible = visible
@@ -441,16 +441,16 @@ FriendsUIComponent._setup_tab_scrollbar = function (self, widget)
 	if num_draws == 0 then
 		total_size = list_member_offset_y
 	else
-		total_size = list_member_offset_y*num_draws
+		total_size = list_member_offset_y * num_draws
 	end
 
-	local percentage = focus_size/total_size
+	local percentage = focus_size / total_size
 	local scrollbar_content = widget.content.scrollbar
 
 	if percentage < 1 then
 		scrollbar_content.percentage = percentage
 		scrollbar_content.scroll_value = 1
-		scrollbar_content.scroll_amount = list_member_offset_y/total_size
+		scrollbar_content.scroll_amount = list_member_offset_y / total_size
 	else
 		scrollbar_content.scroll_value = 1
 	end

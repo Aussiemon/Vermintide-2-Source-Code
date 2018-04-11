@@ -36,7 +36,7 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 
 	for _, setting in pairs(self._settings) do
 		local min, max = Gui.text_extents(gui, self._num_ai_string, setting.font, setting.size, setting.material)
-		local x = math.floor(((w + min.x) - max.x)*0.5)
+		local x = math.floor(((w + min.x) - max.x) * 0.5)
 		local y = h - setting.distance_from_top
 		local z = 999
 
@@ -81,7 +81,7 @@ PerformanceManager.update = function (self, dt, t)
 		local color = nil
 
 		if setting.color_to then
-			local t_val = math.sin((t%1 - 1)*math.pi*0.5)
+			local t_val = math.sin((1 - t % 1) * math.pi * 0.5)
 			local from = setting.color:unbox()
 			local to = setting.color_to:unbox()
 			local from_a, from_r, from_g, from_b = Quaternion.to_elements(from)

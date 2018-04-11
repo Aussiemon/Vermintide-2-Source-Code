@@ -72,7 +72,7 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 		QuickDrawerStay:vector(from, direction, Color(255, 255, 255, 0))
 	end
 
-	PhysicsWorld.prepare_actors_for_raycast(physics_world, from, direction, 0.1, 9, length*length)
+	PhysicsWorld.prepare_actors_for_raycast(physics_world, from, direction, 0.1, 9, length * length)
 
 	local result = PhysicsWorld.immediate_raycast(physics_world, from, direction, length, "all", "collision_filter", collision_filter)
 

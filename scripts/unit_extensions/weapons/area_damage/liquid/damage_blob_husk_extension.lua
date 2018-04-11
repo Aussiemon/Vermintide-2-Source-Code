@@ -119,8 +119,8 @@ DamageBlobHuskExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 
 		if fx_size then
 			local particle_size = fx_size.unbox(fx_size)
-			particle_size[1] = math.min(particle_size[1] + dt*1.5, fx_max_radius)
-			particle_size[2] = math.min(particle_size[2] + dt*2, fx_max_height)
+			particle_size[1] = math.min(particle_size[1] + dt * 1.5, fx_max_radius)
+			particle_size[2] = math.min(particle_size[2] + dt * 2, fx_max_height)
 			local effect_variable_id = World.find_particles_variable(world, fx_name_filled, fx_size_variable)
 
 			World.set_particles_variable(world, fx_id, effect_variable_id, particle_size)
@@ -157,14 +157,14 @@ DamageBlobHuskExtension.add_damage_blob_fx = function (self, position, life_time
 	local rotation = Unit.local_rotation(unit, 0)
 	local t = Managers.time:time("game")
 	local blob_full_life_time = self.blob_life_time
-	local blob_life_time = life_time_percentage*blob_full_life_time
+	local blob_life_time = life_time_percentage * blob_full_life_time
 	local time_past = math.max(blob_full_life_time - blob_life_time, 0)
 	local blob_death_time = t + blob_life_time
 	local particle_size = Vector3Box(0.6, 1.2, 0)
 	local fx_max_radius = self.fx_max_radius
 	local fx_max_height = self.fx_max_height
-	particle_size[1] = math.min(particle_size[1] + time_past*1.5, fx_max_radius)
-	particle_size[2] = math.min(particle_size[2] + time_past*2, fx_max_height)
+	particle_size[1] = math.min(particle_size[1] + time_past * 1.5, fx_max_radius)
+	particle_size[2] = math.min(particle_size[2] + time_past * 2, fx_max_height)
 
 	print(life_time_percentage, blob_life_time)
 

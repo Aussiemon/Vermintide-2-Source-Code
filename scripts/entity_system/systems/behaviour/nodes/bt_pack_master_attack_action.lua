@@ -122,7 +122,7 @@ BTPackMasterAttackAction.attack_success = function (self, unit, blackboard)
 			local angle = math.acos(dot_value)
 			local distance_squared = Vector3.distance_squared(pos, dodge_pos)
 
-			if math.radians_to_degrees(angle) <= blackboard.action.dodge_angle and distance_squared < blackboard.action.dodge_distance*blackboard.action.dodge_distance then
+			if math.radians_to_degrees(angle) <= blackboard.action.dodge_angle and distance_squared < blackboard.action.dodge_distance * blackboard.action.dodge_distance then
 				blackboard.attack_success = PerceptionUtils.pack_master_has_line_of_sight_for_attack(blackboard.physics_world, unit, target_unit)
 			else
 				blackboard.attack_success = false

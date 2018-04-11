@@ -222,11 +222,11 @@ local action_data = {
 			},
 			attack_fire_turn_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			attack_fire_turn_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		attack_times = {

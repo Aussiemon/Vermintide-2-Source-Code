@@ -44,19 +44,19 @@ UIAnimator.start_animation = function (self, animation_sequence_name, widget, sc
 
 			assert(animation.start_relative_to < i)
 
-			local relative_animation_end = times[(relative_animation_index - 1)*2 + 2]
-			local duration = animation.duration/((animation.scale_duration_by_speed and speed) or 1)
+			local relative_animation_end = times[(relative_animation_index - 1) * 2 + 2]
+			local duration = animation.duration / ((animation.scale_duration_by_speed and speed) or 1)
 			local start_progress_new = relative_animation_end + animation.start_relative_time_offset
 			local end_progress_new = start_progress_new + duration
-			times[(i - 1)*2 + 1] = start_progress_new
-			times[(i - 1)*2 + 2] = end_progress_new
+			times[(i - 1) * 2 + 1] = start_progress_new
+			times[(i - 1) * 2 + 2] = end_progress_new
 		elseif animation.scale_duration_by_speed then
-			local duration = (animation.end_progress - animation.start_progress)/((animation.scale_duration_by_speed and speed) or 1)
-			times[(i - 1)*2 + 1] = animation.start_progress
-			times[(i - 1)*2 + 2] = animation.start_progress + duration
+			local duration = (animation.end_progress - animation.start_progress) / ((animation.scale_duration_by_speed and speed) or 1)
+			times[(i - 1) * 2 + 1] = animation.start_progress
+			times[(i - 1) * 2 + 2] = animation.start_progress + duration
 		else
-			times[(i - 1)*2 + 1] = animation.start_progress
-			times[(i - 1)*2 + 2] = animation.end_progress
+			times[(i - 1) * 2 + 1] = animation.start_progress
+			times[(i - 1) * 2 + 2] = animation.end_progress
 		end
 	end
 
@@ -86,15 +86,15 @@ UIAnimator.update = function (self, dt)
 			for i = 1, #animation_sequence, 1 do
 				local lol = math.random()
 				local animation = animation_sequence[i]
-				local start_progress = times[(i - 1)*2 + 1]
-				local end_progress = times[(i - 1)*2 + 2]
+				local start_progress = times[(i - 1) * 2 + 1]
+				local end_progress = times[(i - 1) * 2 + 2]
 
 				if time < end_progress then
 					all_done = false
 				end
 
 				if start_progress < time and not completed_animations[animation.name] then
-					local local_progress = (time - start_progress)/(end_progress - start_progress)
+					local local_progress = (time - start_progress) / (end_progress - start_progress)
 
 					if 1 <= local_progress then
 						local_progress = 1

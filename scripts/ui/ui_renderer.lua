@@ -28,10 +28,10 @@ local relative_uvs = {
 local function get_relative_uvs(global_uv00, global_uv11, local_uvs)
 	local size_x = global_uv11[2] - global_uv00[2]
 	local size_y = global_uv11[1] - global_uv00[1]
-	relative_uvs[1][2] = global_uv00[2] + size_x*local_uvs[1][2]
-	relative_uvs[2][2] = global_uv00[2] + size_x*local_uvs[2][2]
-	relative_uvs[1][1] = global_uv00[1] + size_y*local_uvs[1][1]
-	relative_uvs[2][1] = global_uv00[1] + size_y*local_uvs[2][1]
+	relative_uvs[1][2] = global_uv00[2] + size_x * local_uvs[1][2]
+	relative_uvs[2][2] = global_uv00[2] + size_x * local_uvs[2][2]
+	relative_uvs[1][1] = global_uv00[1] + size_y * local_uvs[1][1]
+	relative_uvs[2][1] = global_uv00[1] + size_y * local_uvs[2][1]
 
 	return relative_uvs
 end
@@ -67,7 +67,7 @@ UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_po
 
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
 	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
-	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
+	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
 	if texture_settings then
 		local uv00_table = texture_settings.uv00
@@ -114,7 +114,7 @@ UIRenderer.script_draw_bitmap_uv = function (gui, render_settings, material, uvs
 	end
 
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
+	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
 	if texture_settings then
 		local new_uvs = get_relative_uvs(texture_settings.uv00, texture_settings.uv11, uvs)
@@ -157,7 +157,7 @@ local Gui_bitmap_3d = Gui.bitmap_3d
 UIRenderer.script_draw_bitmap_3d = function (gui, render_settings, material, tm, gui_layer, gui_size, color, masked, retained_id)
 	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(material)
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
+	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
 	if texture_settings then
 		local material_name = nil
@@ -472,10 +472,10 @@ UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global,
 			end
 
 			if widget_optional_scale then
-				pass_size[1] = pass_size[1]*widget_optional_scale
-				pass_size[2] = pass_size[2]*widget_optional_scale
-				pass_position[1] = pass_position[1]*widget_optional_scale
-				pass_position[2] = pass_position[2]*widget_optional_scale
+				pass_size[1] = pass_size[1] * widget_optional_scale
+				pass_size[2] = pass_size[2] * widget_optional_scale
+				pass_position[1] = pass_position[1] * widget_optional_scale
+				pass_position[2] = pass_position[2] * widget_optional_scale
 			end
 
 			Profiler_start("pass draw")
@@ -573,12 +573,18 @@ UIRenderer.draw_border_fill_rect = function (self, lower_left_corner, size, colo
 
 	return 
 end
-UIRenderer.draw_rect = function (self, lower_left_corner, size, color)
+UIRenderer.draw_rect = function (self, lower_left_corner, size, color, retained_id)
 	local render_settings = self.render_settings
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	color = Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
+	color = Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
-	Gui.rect(self.gui, UIScaleVectorToResolution(lower_left_corner), UIScaleVectorToResolution(size), color)
+	if retained_id == true then
+		return Gui.rect(self.gui_retained, UIScaleVectorToResolution(lower_left_corner), UIScaleVectorToResolution(size), color)
+	elseif retained_id then
+		return Gui.update_rect(self.gui_retained, retained_id, UIScaleVectorToResolution(lower_left_corner), UIScaleVectorToResolution(size), color)
+	else
+		return Gui.rect(self.gui, UIScaleVectorToResolution(lower_left_corner), UIScaleVectorToResolution(size), color)
+	end
 
 	return 
 end
@@ -595,7 +601,7 @@ UIRenderer.draw_rect_rotated = function (self, size, position, angle, pivot, col
 
 	local render_settings = self.render_settings
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	color = Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
+	color = Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
 	Gui.rect_3d(self.gui, tm, Vector3.zero(), position[3], size, color)
 
@@ -651,7 +657,7 @@ local function debug_draw_texture(self, pos, size, texture)
 
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
-	if math.point_is_inside_2d_box(inv_scale*Mouse.axis(2), pos, size) then
+	if math.point_is_inside_2d_box(inv_scale * Mouse.axis(2), pos, size) then
 		UIRenderer.draw_rect(self, position, size, color)
 
 		local text = string.format("%s : %s", layer, texture)
@@ -702,8 +708,8 @@ UIRenderer.draw_texture_flip_horizontal = function (self, material, lower_left_c
 end
 UIRenderer.draw_texture = function (self, material, lower_left_corner, size, color, masked, saturated, retained_id)
 	local scale = RESOLUTION_LOOKUP.scale
-	local gui_position = Vector3(lower_left_corner[1]*scale, lower_left_corner[2]*scale, lower_left_corner[3] or 0)
-	local gui_size = Vector3(size[1]*scale, size[2]*scale, size[3] or 0)
+	local gui_position = Vector3(lower_left_corner[1] * scale, lower_left_corner[2] * scale, lower_left_corner[3] or 0)
+	local gui_size = Vector3(size[1] * scale, size[2] * scale, size[3] or 0)
 
 	if retained_id == true then
 		return UIRenderer.script_draw_bitmap(self.gui_retained, self.render_settings, material, gui_position, gui_size, color, masked, saturated, nil)
@@ -925,7 +931,7 @@ UIRenderer.draw_tiled_texture = function (self, material, lower_left_corner, siz
 	texture_size = UIScaleVectorToResolution(texture_size)
 	local texture_size_x = texture_size[1]
 	local texture_size_y = texture_size[2]
-	local num_x = area_size[1]/texture_size[1]
+	local num_x = area_size[1] / texture_size[1]
 	local gui = self.gui
 	local gui_retained = self.gui_retained
 	local v, q, m = Script.temp_count()
@@ -936,16 +942,16 @@ UIRenderer.draw_tiled_texture = function (self, material, lower_left_corner, siz
 
 	while 0 < num_x do
 		position.y = default_y_position
-		local num_y = area_size[2]/texture_size[2]
+		local num_y = area_size[2] / texture_size[2]
 		local x_amount = (1 <= num_x and 1) or num_x
 		uvs_draw_tiled_texture[2][1] = x_amount
-		local x_size = texture_size_x*x_amount
+		local x_size = texture_size_x * x_amount
 
 		while 0 < num_y do
 			local y_amount = (1 <= num_y and 1) or num_y
-			local y_size = texture_size_y*y_amount
+			local y_size = texture_size_y * y_amount
 			local draw_size = Vector2(x_size, y_size)
-			uvs_draw_tiled_texture[1][2] = y_amount - 1
+			uvs_draw_tiled_texture[1][2] = 1 - y_amount
 
 			if retained_ids == true then
 				retained_id = UIRenderer_script_draw_bitmap_uv(gui_retained, self.render_settings, uvs_draw_tiled_texture, position, draw_size, color, masked, saturated, nil)
@@ -975,7 +981,7 @@ UIRenderer.draw_centered_texture_amount = function (self, material, lower_left_c
 	texture_size = UIScaleVectorToResolution(texture_size)
 	local distance_spacing = spacing or 0
 	local draw_size = Vector2(texture_size[1], texture_size[2])
-	local distance_between_textures = area_size[axis]/(texture_amount + 1)
+	local distance_between_textures = area_size[axis] / (texture_amount + 1)
 	local is_material_table = type(material) == "table"
 	local gui = self.gui
 	local gui_retained = self.gui_retained
@@ -988,7 +994,7 @@ UIRenderer.draw_centered_texture_amount = function (self, material, lower_left_c
 	for i = 1, texture_amount, 1 do
 		local texture_color = (texture_colors and texture_colors[i] and texture_colors[i]) or color
 		local texture_position = Vector3(position.x, position.y, position.z)
-		texture_position[axis] = texture_position[axis] + distance_between_textures*i - texture_size[axis]*0.5
+		texture_position[axis] = texture_position[axis] + distance_between_textures * i - texture_size[axis] * 0.5
 
 		if retained_ids == true then
 			local retained_id = UIRenderer.script_draw_bitmap(gui_retained, self.render_settings, (is_material_table and material[i]) or material, texture_position, draw_size, texture_color, masked, nil, nil)
@@ -1009,13 +1015,13 @@ UIRenderer.draw_centered_uv_texture_amount = function (self, material, lower_lef
 	local area_size = UIScaleVectorToResolution(size)
 	default_texture_size = UIScaleVectorToResolution(default_texture_size)
 	local distance_spacing = spacing or 0
-	local distance_between_textures = area_size[axis]/(texture_amount + 1)
+	local distance_between_textures = area_size[axis] / (texture_amount + 1)
 	local is_material_table = type(material) == "table"
 	local gui = self.gui
 
 	for i = 1, texture_amount, 1 do
 		local texture_position = Vector3(position.x, position.y, position.z)
-		texture_position[axis] = texture_position[axis] + distance_between_textures*i - default_texture_size[axis]*0.5
+		texture_position[axis] = texture_position[axis] + distance_between_textures * i - default_texture_size[axis] * 0.5
 		local uvs = texture_uvs[i]
 		local texture_size_vector = UIScaleVectorToResolution(texture_sizes[i])
 		local draw_size = Vector2(texture_size_vector[1], texture_size_vector[2])
@@ -1082,7 +1088,7 @@ UIRenderer.draw_text = function (self, text, font_material, font_size, font_name
 	local return_value = nil
 	local render_settings = self.render_settings
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
+	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 	local offscreen_target = render_settings and render_settings.offscreen_target
 
 	if offscreen_target then
@@ -1124,7 +1130,7 @@ UIRenderer.draw_justified_text = function (self, text, font_material, font_size,
 	local ui_position = UIScaleVectorToResolution(position)
 	local render_settings = self.render_settings
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
+	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
 	if retained_id == true then
 		return Gui.text(self.gui_retained, text, font_material, font_size, font_name, ui_position, color, "justify", UIScaleScalarToResolution(justify_width), ...)
@@ -1145,9 +1151,9 @@ UIRenderer.word_wrap = function (self, text, font_material, size, width, option)
 	local rows, return_indices = nil
 
 	if option then
-		rows, return_indices = Gui.word_wrap(self.gui, text, font_material, size, width*scale, whitespace, soft_dividers, return_dividers, reuse_global_table, option)
+		rows, return_indices = Gui.word_wrap(self.gui, text, font_material, size, width * scale, whitespace, soft_dividers, return_dividers, reuse_global_table, option)
 	else
-		rows, return_indices = Gui.word_wrap(self.gui, text, font_material, size, width*scale, whitespace, soft_dividers, return_dividers, reuse_global_table)
+		rows, return_indices = Gui.word_wrap(self.gui, text, font_material, size, width * scale, whitespace, soft_dividers, return_dividers, reuse_global_table)
 	end
 
 	return rows, return_indices
@@ -1155,8 +1161,8 @@ end
 UIRenderer.text_size = function (self, text, font_material, font_size, ...)
 	local min, max, caret = Gui.text_extents(self.gui, text, font_material, font_size, ...)
 	local inv_scaling = RESOLUTION_LOOKUP.inv_scale
-	local width = (max.x + min.x)*inv_scaling
-	local height = (max.y - min.y)*inv_scaling
+	local width = (max.x + min.x) * inv_scaling
+	local height = (max.y - min.y) * inv_scaling
 
 	return width, height, min
 end
@@ -1166,7 +1172,7 @@ UIRenderer.draw_video = function (self, material_name, position, size, color)
 	local pixel_snap = true
 	local render_settings = self.render_settings
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
+	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
 	Gui.video(gui, material_name, video_player, UIScaleVectorToResolution(position), UIScaleVectorToResolution(size, pixel_snap), color)
 
@@ -1183,26 +1189,26 @@ UIRenderer.draw_splash_video = function (self, material_name, position, size, co
 
 	local gui = self.gui
 	local w, h = Gui.resolution()
-	local aspect_ratio = w/h
+	local aspect_ratio = w / h
 	local default_aspect_ratio = 1.7777777777777777
 	local height = h
 	local width = w
 
 	if 0.005 < math.abs(aspect_ratio - default_aspect_ratio) then
 		width = w
-		height = width/default_aspect_ratio
+		height = width / default_aspect_ratio
 
 		if h < height then
-			width = h*default_aspect_ratio
+			width = h * default_aspect_ratio
 			height = h
 		end
 	end
 
 	local render_settings = self.render_settings
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
+	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
-	Gui.video(gui, material_name, video_player, Vector2(w*0.5 - width*0.5, h*0.5 - height*0.5, position[3]), Vector2(width, height), color)
+	Gui.video(gui, material_name, video_player, Vector2(w * 0.5 - width * 0.5, h * 0.5 - height * 0.5, position[3]), Vector2(width, height), color)
 
 	return 
 end
@@ -1210,9 +1216,9 @@ local circleVerts = {}
 local CIRCLE_VERTS = 32
 
 for i = 1, CIRCLE_VERTS, 1 do
-	local a = i/CIRCLE_VERTS*math.pi*2
-	circleVerts[i*2 - 1] = math.cos(a)
-	circleVerts[i*2] = math.sin(a)
+	local a = i / CIRCLE_VERTS * math.pi * 2
+	circleVerts[i * 2 - 1] = math.cos(a)
+	circleVerts[i * 2] = math.sin(a)
 end
 
 UIRenderer.draw_circle = function (self, position, radius, size, color)
@@ -1220,23 +1226,23 @@ UIRenderer.draw_circle = function (self, position, radius, size, color)
 	local Gui_triangle = Gui.triangle
 	local render_settings = self.render_settings
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
+	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 	local layer = 999
 	local p1 = Vector3(unpack(position))
 	p1.z = p1.y
 	local x = p1.x
 	local y = p1.y
-	local p2 = Vector3(x + circleVerts[1]*radius, 0, y + circleVerts[2]*radius)
+	local p2 = Vector3(x + circleVerts[1] * radius, 0, y + circleVerts[2] * radius)
 
 	for i = 2, CIRCLE_VERTS, 1 do
-		local p3 = Vector3(x + circleVerts[i*2 - 1]*radius, 0, y + circleVerts[i*2]*radius)
+		local p3 = Vector3(x + circleVerts[i * 2 - 1] * radius, 0, y + circleVerts[i * 2] * radius)
 
 		Gui_triangle(gui, p1, p2, p3, layer, color)
 
 		p2 = p3
 	end
 
-	local p3 = Vector3(x + circleVerts[1]*radius, 0, y + circleVerts[2]*radius)
+	local p3 = Vector3(x + circleVerts[1] * radius, 0, y + circleVerts[2] * radius)
 
 	Gui_triangle(gui, p1, p2, p3, layer, color)
 
@@ -1246,7 +1252,7 @@ UIRenderer.draw_rounded_rect = function (self, position, size, radius, color)
 	local Gui_triangle = Gui.triangle
 	position = UIScaleVectorToResolution(position)
 	size = UIScaleVectorToResolution(size)
-	local n = CIRCLE_VERTS/4
+	local n = CIRCLE_VERTS / 4
 	local x = position[1]
 	local y = position[2]
 	local w = size[1]
@@ -1254,50 +1260,50 @@ UIRenderer.draw_rounded_rect = function (self, position, size, radius, color)
 	local n_v = 0
 	local gui = self.gui
 	local layer = position[3]
-	local p1 = Vector3(position[1] + w/2, 0, position[2] + h/2)
-	local p2 = Vector3((x + w) - radius + circleVerts[1]*radius, 0, (y + h) - radius + circleVerts[2]*radius)
+	local p1 = Vector3(position[1] + w / 2, 0, position[2] + h / 2)
+	local p2 = Vector3((x + w) - radius + circleVerts[1] * radius, 0, (y + h) - radius + circleVerts[2] * radius)
 	local render_settings = self.render_settings
 	local alpha_multiplier = (render_settings and render_settings.alpha_multiplier) or 1
-	color = color and Color(color[1]*alpha_multiplier, color[2], color[3], color[4])
+	color = color and Color(color[1] * alpha_multiplier, color[2], color[3], color[4])
 
 	for i = 2, n, 1 do
-		local p3 = Vector3((x + w) - radius + circleVerts[i*2 - 1]*radius, 0, (y + h) - radius + circleVerts[i*2]*radius)
+		local p3 = Vector3((x + w) - radius + circleVerts[i * 2 - 1] * radius, 0, (y + h) - radius + circleVerts[i * 2] * radius)
 
 		Gui_triangle(gui, p1, p2, p3, layer, color)
 
 		p2 = p3
 	end
 
-	for i = n, n*2, 1 do
-		local p3 = Vector3(x + radius + circleVerts[i*2 - 1]*radius, 0, (y + h) - radius + circleVerts[i*2]*radius)
+	for i = n, n * 2, 1 do
+		local p3 = Vector3(x + radius + circleVerts[i * 2 - 1] * radius, 0, (y + h) - radius + circleVerts[i * 2] * radius)
 
 		Gui_triangle(gui, p1, p2, p3, layer, color)
 
 		p2 = p3
 	end
 
-	for i = n*2, n*3, 1 do
-		local p3 = Vector3(x + radius + circleVerts[i*2 - 1]*radius, 0, y + radius + circleVerts[i*2]*radius)
+	for i = n * 2, n * 3, 1 do
+		local p3 = Vector3(x + radius + circleVerts[i * 2 - 1] * radius, 0, y + radius + circleVerts[i * 2] * radius)
 
 		Gui_triangle(gui, p1, p2, p3, layer, color)
 
 		p2 = p3
 	end
 
-	for i = n*3, n*4, 1 do
-		local p3 = Vector3((x + w) - radius + circleVerts[i*2 - 1]*radius, 0, y + radius + circleVerts[i*2]*radius)
+	for i = n * 3, n * 4, 1 do
+		local p3 = Vector3((x + w) - radius + circleVerts[i * 2 - 1] * radius, 0, y + radius + circleVerts[i * 2] * radius)
 
 		Gui_triangle(gui, p1, p2, p3, layer, color)
 
 		p2 = p3
 	end
 
-	local p3 = Vector3((x + w) - radius + circleVerts[1]*radius, 0, y + radius + circleVerts[2]*radius)
+	local p3 = Vector3((x + w) - radius + circleVerts[1] * radius, 0, y + radius + circleVerts[2] * radius)
 
 	Gui_triangle(gui, p1, p2, p3, layer, color)
 
 	p2 = p3
-	p3 = Vector3((x + w) - radius + circleVerts[1]*radius, 0, (y + h) - radius + circleVerts[2]*radius)
+	p3 = Vector3((x + w) - radius + circleVerts[1] * radius, 0, (y + h) - radius + circleVerts[2] * radius)
 
 	Gui_triangle(gui, p1, p2, p3, layer, color)
 
@@ -1360,9 +1366,9 @@ UIRenderer.crop_text_width = function (self, text, max_width, style)
 
 	if max_width < text_width then
 		repeat
-			local width_percent = ((max_width - crop_suffix_width)/text_width - 1)*0.5 - 1
+			local width_percent = 1 - (1 - (max_width - crop_suffix_width) / text_width) * 0.5
 			local num_char = UTF8Utils.string_length(text)
-			num_char = math.floor(num_char*width_percent)
+			num_char = math.floor(num_char * width_percent)
 			text = UTF8Utils.sub_string(text, 1, num_char)
 
 			if num_char <= 0 then
@@ -1459,10 +1465,10 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 	local texture_size_y = texture_size[2]
 	local x_size = size.x
 	local y_size = size.y
-	local corner_uv_size_x = corner_size_x/texture_size_x
-	local corner_uv_size_y = corner_size_y/texture_size_y
+	local corner_uv_size_x = corner_size_x / texture_size_x
+	local corner_uv_size_y = corner_size_y / texture_size_y
 	uvs[1][1] = 0
-	uvs[1][2] = corner_uv_size_y - 1
+	uvs[1][2] = 1 - corner_uv_size_y
 	uvs[2][1] = corner_uv_size_x
 	uvs[2][2] = 1
 
@@ -1475,15 +1481,15 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 
 	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, (y_pos + y_size) - corner_size_y, layer), corner_size_vec, color, masked, saturated)
 
-	uvs[1][1] = corner_uv_size_x - 1
+	uvs[1][1] = 1 - corner_uv_size_x
 	uvs[1][2] = 0
 	uvs[2][1] = 1
 	uvs[2][2] = corner_uv_size_y
 
 	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3((x_pos + x_size) - corner_size_x, (y_pos + y_size) - corner_size_y, layer), corner_size_vec, color, masked, saturated)
 
-	uvs[1][1] = corner_uv_size_x - 1
-	uvs[1][2] = corner_uv_size_y - 1
+	uvs[1][1] = 1 - corner_uv_size_x
+	uvs[1][2] = 1 - corner_uv_size_y
 	uvs[2][1] = 1
 	uvs[2][2] = 1
 
@@ -1491,10 +1497,10 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 
 	uvs[1][1] = corner_uv_size_x
 	uvs[1][2] = corner_uv_size_y
-	uvs[2][1] = corner_uv_size_x - 1
-	uvs[2][2] = corner_uv_size_y - 1
+	uvs[2][1] = 1 - corner_uv_size_x
+	uvs[2][2] = 1 - corner_uv_size_y
 
-	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos + corner_size_x, y_pos + corner_size_y, layer), size - corner_size_vec*2, color, masked, saturated)
+	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos + corner_size_x, y_pos + corner_size_y, layer), size - corner_size_vec * 2, color, masked, saturated)
 	Profiler.stop("draw corners")
 
 	if only_corners then
@@ -1507,16 +1513,16 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 	local tile_vertical_size_x = tile_vertical_size[1]
 	local tile_vertical_size_y = tile_vertical_size[2]
 	local tile_vertical_size_vec = Vector2(unpack(tile_vertical_size))
-	local bar_height = size[2] - corner_size_y*2
+	local bar_height = size[2] - corner_size_y * 2
 	tile_vertical_size_vec[2] = bar_height
 	uvs[1][1] = 0
-	uvs[1][2] = tile_vertical_size_y/size[2]*0.5 - 0.5
-	uvs[2][1] = tile_vertical_size_x/texture_size_x
-	uvs[2][2] = tile_vertical_size_y/size[2]*0.5 + 0.5
-	uvs_r[1][1] = tile_vertical_size_x/texture_size_x - 1
-	uvs_r[1][2] = tile_vertical_size_y/size[2]*0.5 - 0.5
+	uvs[1][2] = 0.5 - tile_vertical_size_y / size[2] * 0.5
+	uvs[2][1] = tile_vertical_size_x / texture_size_x
+	uvs[2][2] = 0.5 + tile_vertical_size_y / size[2] * 0.5
+	uvs_r[1][1] = 1 - tile_vertical_size_x / texture_size_x
+	uvs_r[1][2] = 0.5 - tile_vertical_size_y / size[2] * 0.5
 	uvs_r[2][1] = 1
-	uvs_r[2][2] = tile_vertical_size_y/size[2]*0.5 + 0.5
+	uvs_r[2][2] = 0.5 + tile_vertical_size_y / size[2] * 0.5
 	local math_floor = math.floor
 	local tile_pos_y = y_pos + corner_size_y
 
@@ -1529,15 +1535,15 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 	local tile_horizontal_size_x = tile_horizontal_size[1]
 	local tile_horizontal_size_y = tile_horizontal_size[2]
 	local tile_horizontal_size_vec = Vector2(unpack(tile_horizontal_size))
-	local bar_width = size[1] - corner_size_x*2
+	local bar_width = size[1] - corner_size_x * 2
 	tile_horizontal_size_vec[1] = bar_width
-	uvs_u[1][1] = tile_horizontal_size_x/size[1]*0.5 - 0.5
+	uvs_u[1][1] = 0.5 - tile_horizontal_size_x / size[1] * 0.5
 	uvs_u[1][2] = 0
-	uvs_u[2][1] = tile_horizontal_size_x/size[1]*0.5 + 0.5
-	uvs_u[2][2] = tile_horizontal_size_y/texture_size_y
-	uvs[1][1] = tile_horizontal_size_x/size[1]*0.5 - 0.5
-	uvs[1][2] = tile_horizontal_size_y/texture_size_y - 1
-	uvs[2][1] = tile_horizontal_size_x/size[1]*0.5 + 0.5
+	uvs_u[2][1] = 0.5 + tile_horizontal_size_x / size[1] * 0.5
+	uvs_u[2][2] = tile_horizontal_size_y / texture_size_y
+	uvs[1][1] = 0.5 - tile_horizontal_size_x / size[1] * 0.5
+	uvs[1][2] = 1 - tile_horizontal_size_y / texture_size_y
+	uvs[2][1] = 0.5 + tile_horizontal_size_x / size[1] * 0.5
 	uvs[2][2] = 1
 	local tile_pos_x = x_pos + corner_size_x
 

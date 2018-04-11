@@ -93,7 +93,7 @@ LoadingIconView._update_loading_icon = function (self, dt)
 	local loading_icon_style = widget.style.loading_icon
 	local current_index = loading_icon_content.current_index
 	local icon_data = loading_icon_data
-	local speed = icon_data.frames_per_second/1
+	local speed = 1 / icon_data.frames_per_second
 
 	if not self.icon_timer then
 		self.icon_timer = speed
@@ -101,7 +101,7 @@ LoadingIconView._update_loading_icon = function (self, dt)
 		local timer = self.icon_timer - math.min(dt, 0.05)
 
 		if timer <= 0 then
-			local new_index = current_index%#icon_data.image_db + 1
+			local new_index = 1 + current_index % #icon_data.image_db
 			loading_icon_content.current_index = new_index
 			loading_icon_content.loading_icon_id = icon_data.image_db[new_index]
 			self.icon_timer = timer + speed
@@ -116,7 +116,7 @@ LoadingIconView._update_loading_icon = function (self, dt)
 		self._icon_fade_timer = math.clamp(self._icon_fade_timer - dt, 0, FADE_TIME)
 	end
 
-	loading_icon_style.color[1] = self._icon_fade_timer/FADE_TIME*255
+	loading_icon_style.color[1] = self._icon_fade_timer / FADE_TIME * 255
 
 	return 
 end

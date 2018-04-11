@@ -5,7 +5,7 @@ local window_size = window_default_settings.size
 local window_spacing = window_default_settings.spacing
 local window_frame_width = UIFrameSettings[window_frame].texture_sizes.vertical[1]
 local window_frame_height = UIFrameSettings[window_frame].texture_sizes.horizontal[2]
-local window_text_width = window_size[1] - (window_frame_width*2 + 60)
+local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -62,12 +62,26 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			window_size[1],
-			261
+			221
 		},
 		position = {
 			0,
 			0,
 			25
+		}
+	},
+	window_top_edge = {
+		vertical_alignment = "bottom",
+		parent = "window_top",
+		horizontal_alignment = "center",
+		size = {
+			window_size[1],
+			78
+		},
+		position = {
+			0,
+			-78,
+			10
 		}
 	},
 	window_center = {
@@ -80,7 +94,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-375,
+			-457,
 			-25
 		}
 	},
@@ -90,7 +104,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			window_size[1],
-			209
+			167
 		},
 		position = {
 			0,
@@ -142,35 +156,35 @@ local scenegraph_definition = {
 	},
 	page_button_next = {
 		vertical_alignment = "bottom",
-		parent = "window",
+		parent = "window_top",
 		horizontal_alignment = "right",
 		size = {
-			window_size[1]*0.4,
+			window_size[1] * 0.4,
 			42
 		},
 		position = {
 			0,
-			0,
-			28
+			-42,
+			1
 		}
 	},
 	page_button_previous = {
 		vertical_alignment = "bottom",
-		parent = "window",
+		parent = "window_top",
 		horizontal_alignment = "left",
 		size = {
-			window_size[1]*0.4,
+			window_size[1] * 0.4,
 			42
 		},
 		position = {
 			0,
-			0,
-			28
+			-42,
+			1
 		}
 	},
 	page_button_divider = {
 		vertical_alignment = "bottom",
-		parent = "window",
+		parent = "window_top",
 		horizontal_alignment = "center",
 		size = {
 			window_size[1],
@@ -178,22 +192,22 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			42,
-			36
+			0,
+			9
 		}
 	},
 	page_text_area = {
 		vertical_alignment = "bottom",
-		parent = "window",
+		parent = "window_top",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1]*0.2,
+			window_size[1] * 0.2,
 			42
 		},
 		position = {
 			0,
-			0,
-			37
+			-42,
+			5
 		}
 	},
 	page_button_edge_right = {
@@ -230,7 +244,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			window_size[1],
-			window_size[2]/2 - 40
+			window_size[2] / 2 - 40
 		},
 		position = {
 			0,
@@ -309,7 +323,7 @@ local page_number_left_text_style = {
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
-		-(window_size[1]*0.1 + 5),
+		-(window_size[1] * 0.1 + 5),
 		4,
 		2
 	}
@@ -324,7 +338,7 @@ local page_number_right_text_style = {
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
-		window_size[1]*0.1 + 4,
+		window_size[1] * 0.1 + 4,
 		4,
 		2
 	}
@@ -403,7 +417,7 @@ local function create_window_divider(scenegraph_id, size)
 				offset = {
 					3,
 					-6,
-					1
+					10
 				},
 				size = {
 					9,
@@ -420,7 +434,7 @@ local function create_window_divider(scenegraph_id, size)
 				offset = {
 					size[1] - 12,
 					-6,
-					1
+					10
 				},
 				size = {
 					9,
@@ -536,6 +550,7 @@ end
 local widgets = {
 	window_frame = UIWidgets.create_frame("window", scenegraph_definition.window.size, window_frame, 38),
 	window_background_top = UIWidgets.create_simple_texture("crafting_bg_top", "window_top"),
+	window_background_top_edge = UIWidgets.create_simple_texture("crafting_bg_top_edge", "window_top_edge"),
 	window_background_bottom = UIWidgets.create_simple_texture("crafting_bg_bottom", "window_bottom"),
 	window_background_center = UIWidgets.create_simple_texture("crafting_bg", "window_center"),
 	page_button_next = UIWidgets.create_simple_window_button("page_button_next", scenegraph_definition.page_button_next.size, Localize("menu_next"), 16),
@@ -601,7 +616,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,

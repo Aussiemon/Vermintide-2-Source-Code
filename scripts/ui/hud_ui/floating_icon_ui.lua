@@ -110,8 +110,8 @@ FloatingIconUI.sync_active_missions = function (self, dt)
 	return 
 end
 local center_position = {
-	scenegraph_definition.screen.size[1]*0.5,
-	scenegraph_definition.screen.size[2]*0.5
+	scenegraph_definition.screen.size[1] * 0.5,
+	scenegraph_definition.screen.size[2] * 0.5
 }
 FloatingIconUI.update_objective_icon = function (self, data, player_unit, dt)
 	local ui_scenegraph = self.ui_scenegraph
@@ -229,24 +229,24 @@ end
 FloatingIconUI.get_floating_icon_position = function (self, screen_pos_x, screen_pos_y, forward_dot, right_dot, tooltip_settings)
 	local root_size = UISceneGraph.get_size_scaled(self.ui_scenegraph, "screen")
 	local scale = RESOLUTION_LOOKUP.scale
-	local scaled_root_size_x = root_size[1]*scale
-	local scaled_root_size_y = root_size[2]*scale
-	local scaled_root_size_x_half = scaled_root_size_x*0.5
-	local scaled_root_size_y_half = scaled_root_size_y*0.5
+	local scaled_root_size_x = root_size[1] * scale
+	local scaled_root_size_y = root_size[2] * scale
+	local scaled_root_size_x_half = scaled_root_size_x * 0.5
+	local scaled_root_size_y_half = scaled_root_size_y * 0.5
 	local screen_width = RESOLUTION_LOOKUP.res_w
 	local screen_height = RESOLUTION_LOOKUP.res_h
-	local center_pos_x = screen_width/2
-	local center_pos_y = screen_height/2
+	local center_pos_x = screen_width / 2
+	local center_pos_y = screen_height / 2
 	local x_diff = screen_pos_x - center_pos_x
 	local y_diff = center_pos_y - screen_pos_y
 	local is_x_clamped = false
 	local is_y_clamped = false
 
-	if scaled_root_size_x_half*0.9 < math.abs(x_diff) then
+	if scaled_root_size_x_half * 0.9 < math.abs(x_diff) then
 		is_x_clamped = true
 	end
 
-	if scaled_root_size_y_half*0.9 < math.abs(y_diff) then
+	if scaled_root_size_y_half * 0.9 < math.abs(y_diff) then
 		is_y_clamped = true
 	end
 
@@ -257,18 +257,18 @@ FloatingIconUI.get_floating_icon_position = function (self, screen_pos_x, screen
 
 	if is_clamped or is_behind then
 		local distance_from_center = tooltip_settings.distance_from_center
-		clamped_x_pos = scaled_root_size_x_half + right_dot*distance_from_center.width*scale
-		clamped_y_pos = scaled_root_size_y_half + forward_dot*distance_from_center.height*scale
+		clamped_x_pos = scaled_root_size_x_half + right_dot * distance_from_center.width * scale
+		clamped_y_pos = scaled_root_size_y_half + forward_dot * distance_from_center.height * scale
 	else
 		local screen_pos_diff_x = screen_width - scaled_root_size_x
 		local screen_pos_diff_y = screen_height - scaled_root_size_y
-		clamped_x_pos = clamped_x_pos - screen_pos_diff_x/2
-		clamped_y_pos = clamped_y_pos - screen_pos_diff_y/2
+		clamped_x_pos = clamped_x_pos - screen_pos_diff_x / 2
+		clamped_y_pos = clamped_y_pos - screen_pos_diff_y / 2
 	end
 
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
-	clamped_x_pos = clamped_x_pos*inverse_scale
-	clamped_y_pos = clamped_y_pos*inverse_scale
+	clamped_x_pos = clamped_x_pos * inverse_scale
+	clamped_y_pos = clamped_y_pos * inverse_scale
 
 	return clamped_x_pos, clamped_y_pos, is_clamped, is_behind
 end
@@ -280,15 +280,15 @@ FloatingIconUI.get_arrow_angle_and_offset = function (self, forward_dot, right_d
 	local angle = math.atan2(right_dot, forward_dot)
 
 	if height_from_center < -400 and 0.6 < forward_dot then
-		offset_y = -(icon_size[2]*0.5 + arrow_size[2])
-		static_angle_value = static_angle_value*2
+		offset_y = -(icon_size[2] * 0.5 + arrow_size[2])
+		static_angle_value = static_angle_value * 2
 	elseif 400 < height_from_center and 0.6 < forward_dot then
-		offset_y = icon_size[2]*0.5 + arrow_size[2]
+		offset_y = icon_size[2] * 0.5 + arrow_size[2]
 		static_angle_value = 0
 	elseif 0 < angle then
-		offset_x = icon_size[2]*0.5 + arrow_size[2]
+		offset_x = icon_size[2] * 0.5 + arrow_size[2]
 	elseif angle < 0 then
-		offset_x = -(icon_size[2]*0.5 + arrow_size[2])
+		offset_x = -(icon_size[2] * 0.5 + arrow_size[2])
 		static_angle_value = -static_angle_value
 	else
 		offset_x, offset_y, offset_z = nil
@@ -306,7 +306,7 @@ FloatingIconUI.get_icon_size = function (self, position, player_position, curren
 
 	if start_scale_distance < distance then
 		icon_scale = self.icon_scale_by_distance(self, distance - start_scale_distance, end_scale_distance)
-		size = math.lerp(current_size, icon_scale*original_size, 0.2)
+		size = math.lerp(current_size, icon_scale * original_size, 0.2)
 	end
 
 	return size, icon_scale
@@ -315,7 +315,7 @@ FloatingIconUI.icon_scale_by_distance = function (self, current_distance, max_di
 	local distance = math.min(max_distance, current_distance)
 	distance = math.max(0, distance)
 	local min_scale = UISettings.tutorial.mission_tooltip.minimum_icon_scale
-	local scale = math.max(min_scale, distance/max_distance - 1)
+	local scale = math.max(min_scale, 1 - distance / max_distance)
 
 	return scale
 end

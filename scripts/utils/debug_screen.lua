@@ -1,14 +1,14 @@
-local font_size = (RESOLUTION_LOOKUP.scale or 1)*20
+local font_size = 20 * (RESOLUTION_LOOKUP.scale or 1)
 local font = "gw_arial_32"
 local font_mtrl = "materials/fonts/" .. font
 local fade_speed = 10
-local console_width = (RESOLUTION_LOOKUP.scale or 1)*800
+local console_width = 800 * (RESOLUTION_LOOKUP.scale or 1)
 local base_layer = UILayer.debug_screen
 
 local function ease_out_quad(t, b, c, d)
-	t = t/d
+	t = t / d
 
-	return -c*t*(t - 2) + b
+	return -c * t * (t - 2) + b
 end
 
 local indicator_offset = 0
@@ -268,7 +268,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 	local gui = DebugScreen.gui
 	local time_scale = GLOBAL_TIME_SCALE
-	dt = dt/GLOBAL_TIME_SCALE
+	dt = dt / GLOBAL_TIME_SCALE
 	local DebugScreen = DebugScreen
 	local script_data = script_data
 	local opened_this_frame = false
@@ -324,9 +324,9 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	DebugScreen.update_search(input_manager, input_service, gui, t, dt)
 
 	if DebugScreen.active then
-		DebugScreen.fade_timer = math.min(1, DebugScreen.fade_timer + dt*fade_speed)
+		DebugScreen.fade_timer = math.min(1, DebugScreen.fade_timer + dt * fade_speed)
 	else
-		DebugScreen.fade_timer = math.max(0, DebugScreen.fade_timer - dt*fade_speed)
+		DebugScreen.fade_timer = math.max(0, DebugScreen.fade_timer - dt * fade_speed)
 	end
 
 	local filtered_console_settings = DebugScreen.console_settings
@@ -365,10 +365,10 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 	if input_service.get(input_service, "up_key") and DebugScreen.hold_to_move_timer < t then
 		if DebugScreen.is_holding then
-			DebugScreen.hold_to_move_timer = t + GLOBAL_TIME_SCALE*0.1*accelerate_factor
-			accelerate_factor = accelerate_factor*0.95
+			DebugScreen.hold_to_move_timer = t + 0.1 * GLOBAL_TIME_SCALE * accelerate_factor
+			accelerate_factor = accelerate_factor * 0.95
 		else
-			DebugScreen.hold_to_move_timer = t + GLOBAL_TIME_SCALE*0.1
+			DebugScreen.hold_to_move_timer = t + 0.1 * GLOBAL_TIME_SCALE
 			DebugScreen.is_holding = true
 			accelerate_factor = 1
 		end
@@ -415,10 +415,10 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 	if input_service.get(input_service, "down_key") and DebugScreen.hold_to_move_timer < t then
 		if DebugScreen.is_holding then
-			DebugScreen.hold_to_move_timer = t + GLOBAL_TIME_SCALE*0.1*accelerate_factor
-			accelerate_factor = accelerate_factor*0.95
+			DebugScreen.hold_to_move_timer = t + 0.1 * GLOBAL_TIME_SCALE * accelerate_factor
+			accelerate_factor = accelerate_factor * 0.95
 		else
-			DebugScreen.hold_to_move_timer = t + GLOBAL_TIME_SCALE*0.1
+			DebugScreen.hold_to_move_timer = t + 0.1 * GLOBAL_TIME_SCALE
 			DebugScreen.is_holding = true
 			accelerate_factor = 1
 		end
@@ -489,7 +489,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	local num_categories_above = table.size(category_list_above) - 1
 	local num_categories_total = table.size(category_list_total) - 1
 	local offset_lerp = ease_out_quad(DebugScreen.fade_timer, 0, 1, 1)
-	local offset_x = offset_lerp*console_width
+	local offset_x = offset_lerp * console_width
 	local res_x = RESOLUTION_LOOKUP.res_w
 	local res_y = RESOLUTION_LOOKUP.res_h
 	local pos_y = res_y - 100
@@ -497,20 +497,20 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	local wanted_y_offset = 0
 
 	if 5 < DebugScreen.hot_id then
-		wanted_y_offset = (DebugScreen.hot_id - 5)*(font_size + 2) + num_categories_above*font_size*1.4
+		wanted_y_offset = (DebugScreen.hot_id - 5) * (font_size + 2) + num_categories_above * font_size * 1.4
 	end
 
 	if DebugScreen.active_id ~= nil then
 		local cs = filtered_console_settings[DebugScreen.active_id]
 
 		if 5 < cs.hot_id then
-			wanted_y_offset = wanted_y_offset + (cs.hot_id - 5)*(font_size + 2)
+			wanted_y_offset = wanted_y_offset + (cs.hot_id - 5) * (font_size + 2)
 		end
 	end
 
 	DebugScreen.target_y_offset = math.lerp(DebugScreen.target_y_offset, wanted_y_offset, 0.1)
 	pos_y = pos_y + DebugScreen.target_y_offset
-	indicator_offset = indicator_offset + dt*10
+	indicator_offset = indicator_offset + dt * 10
 
 	if 10 < indicator_offset then
 		indicator_offset = 0
@@ -519,32 +519,32 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	local indicator_offset_anim = indicator_offset
 
 	if 5 < indicator_offset_anim then
-		indicator_offset_anim = indicator_offset_anim - 10
+		indicator_offset_anim = 10 - indicator_offset_anim
 	end
 
 	local hacky_offset_pls_calculate_this_better = 500
-	local total_height = #DebugScreen.console_settings*(font_size + 2) + num_categories_total*font_size*1.4 + hacky_offset_pls_calculate_this_better
-	local current_height = (DebugScreen.hot_id - 1)*(font_size + 2) + num_categories_above*font_size*1.4
-	local scrollbar_size = (res_y*res_y)/total_height
+	local total_height = #DebugScreen.console_settings * (font_size + 2) + num_categories_total * font_size * 1.4 + hacky_offset_pls_calculate_this_better
+	local current_height = (DebugScreen.hot_id - 1) * (font_size + 2) + num_categories_above * font_size * 1.4
+	local scrollbar_size = (res_y * res_y) / total_height
 	local scrollarea_size = total_height - res_y
-	local scrollposition_ratio = current_height/scrollarea_size
-	local scrollbar_pos = (res_y*current_height)/total_height
+	local scrollposition_ratio = current_height / scrollarea_size
+	local scrollbar_pos = (res_y * current_height) / total_height
 	local scrollbar_layer = base_layer + 1
 
-	Gui.rect(gui, Vector3(0, 0, base_layer), Vector2(offset_x, res_y), Color(offset_lerp*220, 25, 50, 25))
-	Gui.rect(gui, Vector3(0, res_y - scrollbar_pos - scrollbar_size, scrollbar_layer), Vector2(3, scrollbar_size), Color(offset_lerp*150, 200, 200, 25))
+	Gui.rect(gui, Vector3(0, 0, base_layer), Vector2(offset_x, res_y), Color(offset_lerp * 220, 25, 50, 25))
+	Gui.rect(gui, Vector3(0, res_y - scrollbar_pos - scrollbar_size, scrollbar_layer), Vector2(3, scrollbar_size), Color(offset_lerp * 150, 200, 200, 25))
 
-	local hot_anim_t = (math.sin(t/GLOBAL_TIME_SCALE*10) + 1)*0.5
-	local white = Color(offset_lerp*250, 255, 255, 255)
-	local text_color = Color(offset_lerp*250, 120, 120, 0)
-	local text_color_overridden = Color(offset_lerp*255, 200, 200, 0)
-	local text_color_hot = Color(offset_lerp*255, hot_anim_t*25 + 230, hot_anim_t*25 + 230, hot_anim_t*200)
-	local text_color_active = Color(offset_lerp*255, 100, 255, 100)
-	local text_color_option_default_value = Color(offset_lerp*255, 50, 150, 50)
-	local text_color_option_overridden = Color(offset_lerp*255, 100, 255, 100)
-	local text_color_option_hot = Color(offset_lerp*255, 200, 255, 200)
-	local text_color_description = Color(offset_lerp*255, 150, 150, 150)
-	local row_highlight_color = Color(offset_lerp*150, 100, 100, 50)
+	local hot_anim_t = (math.sin(t / GLOBAL_TIME_SCALE * 10) + 1) * 0.5
+	local white = Color(offset_lerp * 250, 255, 255, 255)
+	local text_color = Color(offset_lerp * 250, 120, 120, 0)
+	local text_color_overridden = Color(offset_lerp * 255, 200, 200, 0)
+	local text_color_hot = Color(offset_lerp * 255, 230 + 25 * hot_anim_t, 230 + 25 * hot_anim_t, 200 * hot_anim_t)
+	local text_color_active = Color(offset_lerp * 255, 100, 255, 100)
+	local text_color_option_default_value = Color(offset_lerp * 255, 50, 150, 50)
+	local text_color_option_overridden = Color(offset_lerp * 255, 100, 255, 100)
+	local text_color_option_hot = Color(offset_lerp * 255, 200, 255, 200)
+	local text_color_description = Color(offset_lerp * 255, 150, 150, 150)
+	local row_highlight_color = Color(offset_lerp * 150, 100, 100, 50)
 	local setting_x = 30
 	local option_x = 50
 	local category_current = nil
@@ -560,7 +560,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		local text = cs.title
 
 		if cs.category ~= category_current then
-			pos_y = pos_y - font_size*0.4
+			pos_y = pos_y - font_size * 0.4
 			category_current = cs.category
 
 			Gui.text(gui, cs.category, font_mtrl, font_size, font, Vector3(10, pos_y, category_text_layer), white)
@@ -697,15 +697,15 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 			end
 
 			if cs.bitmap then
-				local bitmap_size = Vector2(1, 1)*cs.bitmap_size
+				local bitmap_size = Vector2(1, 1) * cs.bitmap_size
 
-				Gui.bitmap(gui, cs.bitmap, Vector3(offset_x/2 - cs.bitmap_size/2, pos_y - cs.bitmap_size, bitmap_layer), bitmap_size, Color(offset_lerp*250, 255, 255, 255))
+				Gui.bitmap(gui, cs.bitmap, Vector3(offset_x / 2 - cs.bitmap_size / 2, pos_y - cs.bitmap_size, bitmap_layer), bitmap_size, Color(offset_lerp * 250, 255, 255, 255))
 
 				pos_y = pos_y - cs.bitmap_size
 			end
 		elseif is_hot then
 			Gui.rect(gui, Vector3(0, pos_y - 5, row_highlight_layer), Vector2(offset_x, 25), row_highlight_color)
-			Gui.text(gui, ">", font_mtrl, font_size, font, Vector3(indicator_offset_anim + 10, pos_y, base_text_layer), text_color_hot)
+			Gui.text(gui, ">", font_mtrl, font_size, font, Vector3(10 + indicator_offset_anim, pos_y, base_text_layer), text_color_hot)
 			Gui.text(gui, text, font_mtrl, font_size, font, Vector3(setting_x, pos_y, base_text_layer), text_color_hot)
 
 			if input_service.get(input_service, "left_key") and DebugScreen.active_id == nil then
@@ -943,7 +943,7 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 
 	local search_text_box_layer = base_layer + 3
 	local search_text_layer = base_layer + 4
-	local hot_anim_t = (math.sin(t/GLOBAL_TIME_SCALE*10) + 1)*0.5
+	local hot_anim_t = (math.sin(t / GLOBAL_TIME_SCALE * 10) + 1) * 0.5
 	local res_x = RESOLUTION_LOOKUP.res_w
 	local res_y = RESOLUTION_LOOKUP.res_h
 	local search_title_box_pos = Vector3(50, res_y - 60, search_text_box_layer)
@@ -953,19 +953,19 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 	DebugScreen.search_text_box_width = DebugScreen.search_text_box_width or 0
 
 	if not DebugScreen.search_active then
-		DebugScreen.search_text_box_width = math.max(0, DebugScreen.search_text_box_width - dt*2000)
+		DebugScreen.search_text_box_width = math.max(0, DebugScreen.search_text_box_width - 2000 * dt)
 
 		if 5 < DebugScreen.hot_id then
 		else
-			Gui.rect(gui, search_text_box_pos, Vector2(DebugScreen.search_text_box_width, 35), Colors.get_color_with_alpha("dark_olive_green", math.cos(hot_anim_t)*25 + 100))
-			Gui.rect(gui, search_title_box_pos, Vector2(200, 35), Colors.get_color_with_alpha("orange", math.cos(hot_anim_t)*5 + 15))
-			Gui.text(gui, "Search (backspace) ", font_mtrl, font_size, font, search_title_pos, Colors.get_color_with_alpha("white", math.cos(hot_anim_t)*100 + 100))
+			Gui.rect(gui, search_text_box_pos, Vector2(DebugScreen.search_text_box_width, 35), Colors.get_color_with_alpha("dark_olive_green", 100 + math.cos(hot_anim_t) * 25))
+			Gui.rect(gui, search_title_box_pos, Vector2(200, 35), Colors.get_color_with_alpha("orange", 15 + math.cos(hot_anim_t) * 5))
+			Gui.text(gui, "Search (backspace) ", font_mtrl, font_size, font, search_title_pos, Colors.get_color_with_alpha("white", 100 + math.cos(hot_anim_t) * 100))
 		end
 
 		return 
 	end
 
-	DebugScreen.search_text_box_width = math.min(400, DebugScreen.search_text_box_width + dt*2000)
+	DebugScreen.search_text_box_width = math.min(400, DebugScreen.search_text_box_width + 2000 * dt)
 	local keystrokes = Keyboard.keystrokes()
 
 	for i = 1, #keystrokes, 1 do
@@ -981,7 +981,7 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 		end
 	end
 
-	Gui.rect(gui, search_text_box_pos, Vector2(DebugScreen.search_text_box_width, 35), Colors.get_color_with_alpha("dark_olive_green", math.cos(hot_anim_t)*25 + 225))
+	Gui.rect(gui, search_text_box_pos, Vector2(DebugScreen.search_text_box_width, 35), Colors.get_color_with_alpha("dark_olive_green", 225 + math.cos(hot_anim_t) * 25))
 	Gui.rect(gui, search_title_box_pos, Vector2(200, 35), Colors.get_color_with_alpha("olive", 225))
 	Gui.text(gui, "Search: ", font_mtrl, font_size, font, search_title_pos, Colors.get("white"))
 	Gui.text(gui, DebugScreen.search_string, font_mtrl, font_size, font, search_text_pos, Colors.get("yellow"))
@@ -989,7 +989,7 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 	local min, max = Gui.text_extents(gui, DebugScreen.search_string, font_mtrl, font_size)
 	local width = max.x - min.x
 
-	Gui.rect(gui, search_text_pos + Vector3(width + 1, -2, 0), Vector2(10, 20), Colors.get_color_with_alpha("white", math.cos(hot_anim_t)*250 + -50))
+	Gui.rect(gui, search_text_pos + Vector3(width + 1, -2, 0), Vector2(10, 20), Colors.get_color_with_alpha("white", -50 + math.cos(hot_anim_t) * 250))
 
 	return 
 end

@@ -52,7 +52,7 @@ DialogueStateHandler.update = function (self, t)
 			debug_printf("Triggering %s after %.2fs", dialogue_data.identifier, t - dialogue_data.start_time)
 		end
 
-		self._current_index = self._current_index%#self._playing_dialogues + 1
+		self._current_index = 1 + self._current_index % #self._playing_dialogues
 		num_checks = num_checks + 1
 
 		if self._current_index ~= start_index and MAX_DIALOGUE_CHECKS_PER_FRAME <= num_checks then

@@ -92,7 +92,7 @@ BTAttackAction.trigger_attack_sound = function (self, action, unit, target_unit,
 	if blackboard.attack_token and target_unit_status_extension then
 		local attack_intensity = (blackboard.moving_attack and action.moving_attack_intensity) or action.attack_intensity or 0.75
 
-		target_unit_status_extension.add_attack_intensity(target_unit_status_extension, attack_intensity*(math.random()*0.5 + 0.75))
+		target_unit_status_extension.add_attack_intensity(target_unit_status_extension, attack_intensity * (0.75 + 0.5 * math.random()))
 
 		local breed = blackboard.breed
 		local is_behind_player = AiUtils.unit_is_behind_player(unit, target_unit)
@@ -237,15 +237,15 @@ BTAttackAction.run = function (self, unit, blackboard, t, dt)
 
 		if 2.5 < distance then
 			if blackboard.locked_attack_rotation then
-				target_speed = breed.run_speed*0.25
+				target_speed = breed.run_speed * 0.25
 			else
-				target_speed = breed.run_speed*1.1
+				target_speed = breed.run_speed * 1.1
 			end
 		elseif 1.5 < distance then
 			if blackboard.locked_attack_rotation then
 				target_speed = 0
 			else
-				target_speed = target_speed*1.4
+				target_speed = target_speed * 1.4
 			end
 		end
 

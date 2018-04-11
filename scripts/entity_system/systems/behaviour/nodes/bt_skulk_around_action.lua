@@ -134,7 +134,7 @@ BTSkulkAroundAction.get_new_skulk_goal = function (self, unit, blackboard)
 	end
 
 	local spawn_zone_baker = conflict_director.spawn_zone_baker
-	local zone_index = math.clamp(math.floor((wanted_travel_dist + 5)/10), 1, #spawn_zone_baker.zones)
+	local zone_index = math.clamp(math.floor((wanted_travel_dist + 5) / 10), 1, #spawn_zone_baker.zones)
 	local zone = spawn_zone_baker.zones[zone_index]
 	local nodes = nil
 	local nearby_islands = zone.nearby_islands

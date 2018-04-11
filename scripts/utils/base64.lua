@@ -36,10 +36,10 @@ function to_base64(to_encode)
 		bit_pattern = bit_pattern .. to_binary(string.byte(string.sub(to_encode, i, i)))
 	end
 
-	if string.len(bit_pattern)%3 == 2 then
+	if string.len(bit_pattern) % 3 == 2 then
 		trailing = "=="
 		bit_pattern = bit_pattern .. "0000000000000000"
-	elseif string.len(bit_pattern)%3 == 1 then
+	elseif string.len(bit_pattern) % 3 == 1 then
 		trailing = "="
 		bit_pattern = bit_pattern .. "00000000"
 	end
@@ -50,7 +50,7 @@ function to_base64(to_encode)
 		encoded = encoded .. string.sub(index_table, offset + 1, offset + 1)
 	end
 
-	return string.sub(encoded, 1, string.len(trailing) - -1) .. trailing
+	return string.sub(encoded, 1, -1 - string.len(trailing)) .. trailing
 end
 
 function from_base64(to_decode)

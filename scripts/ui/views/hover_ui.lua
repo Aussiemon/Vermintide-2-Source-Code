@@ -245,8 +245,8 @@ HoverUI.update_widget_pivot_position = function (self, ui_scenegraph, input_serv
 		local text = active_widget.content.text
 		local text_width, text_height = self.get_text_size(self, text, text_style)
 		local widget_scenegraph_definition = ui_scenegraph.default_hover_widget
-		widget_scenegraph_definition.size[1] = text_width*TEXT_SIZE_MULTIPLIER
-		widget_scenegraph_definition.size[2] = text_height*TEXT_SIZE_MULTIPLIER
+		widget_scenegraph_definition.size[1] = text_width * TEXT_SIZE_MULTIPLIER
+		widget_scenegraph_definition.size[2] = text_height * TEXT_SIZE_MULTIPLIER
 	end
 
 	return 

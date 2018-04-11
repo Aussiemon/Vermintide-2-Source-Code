@@ -75,19 +75,11 @@ BTStaggerAction.enter = function (self, unit, blackboard, t)
 		local anim_scale = action_data.stagger_animation_scale or blackboard.stagger_animation_scale or 1
 
 		network_manager.anim_event_with_variable_float(network_manager, unit, push_anim, "stagger_scale", anim_scale)
-
-		if action_data.sync_with_linked_unit and blackboard.linked_unit then
-			network_manager.anim_event_with_variable_float(network_manager, blackboard.linked_unit, push_anim, "stagger_scale", anim_scale)
-		end
 	else
 		network_manager.anim_event(network_manager, unit, push_anim)
 	end
 
 	network_manager.anim_event(network_manager, unit, idle_event)
-
-	if action_data.sync_with_linked_unit and blackboard.linked_unit then
-		network_manager.anim_event(network_manager, blackboard.linked_unit, push_anim)
-	end
 
 	local scale = blackboard.stagger_length
 
@@ -146,10 +138,10 @@ BTStaggerAction._select_animation = function (self, unit, blackboard, impact_vec
 	else
 		impact_dir.z = 0
 
-		if math.pi*0.75 < angle then
+		if math.pi * 0.75 < angle then
 			impact_rot = Quaternion.look(-impact_dir)
 			anim_table = (moving_stagger and stagger_anims.moving_bwd) or stagger_anims.bwd
-		elseif angle < math.pi*0.25 then
+		elseif angle < math.pi * 0.25 then
 			impact_rot = Quaternion.look(impact_dir)
 			anim_table = (moving_stagger and stagger_anims.moving_fwd) or stagger_anims.fwd
 		elseif 0 < Vector3.cross(my_fwd, impact_dir).z then
@@ -168,7 +160,7 @@ BTStaggerAction._select_animation = function (self, unit, blackboard, impact_vec
 	local anim = anim_table[index]
 
 	if anim == blackboard.last_stagger_anim then
-		anim = anim_table[index%num_anims + 1]
+		anim = anim_table[index % num_anims + 1]
 	end
 
 	blackboard.last_stagger_anim = anim
@@ -254,7 +246,7 @@ BTStaggerAction.run = function (self, unit, blackboard, t, dt)
 			locomotion_extension.set_rotation_speed(locomotion_extension, 10)
 			LocomotionUtils.set_animation_driven_movement(unit, false, false, false)
 			locomotion_extension.use_lerp_rotation(locomotion_extension, true)
-			locomotion_extension.set_wanted_velocity(locomotion_extension, impact_dir*(blackboard.fallen_stagger_timer - t + 1))
+			locomotion_extension.set_wanted_velocity(locomotion_extension, impact_dir * (blackboard.fallen_stagger_timer - t + 1))
 
 			blackboard.fallen_stagger_direction = nil
 		elseif blackboard.fallen_stagger_timer and blackboard.fallen_stagger_timer < t then

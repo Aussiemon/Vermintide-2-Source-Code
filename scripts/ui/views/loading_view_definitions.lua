@@ -106,11 +106,22 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			20,
+			35,
 			2
 		}
 	},
 	gamepad_input_icon = {
+		vertical_alignment = "bottom",
+		parent = "background_image",
+		horizontal_alignment = "center",
+		size = ICON_SIZE,
+		position = {
+			0,
+			65,
+			3
+		}
+	},
+	second_gamepad_input_icon = {
 		vertical_alignment = "bottom",
 		parent = "background_image",
 		horizontal_alignment = "center",
@@ -160,6 +171,17 @@ local scenegraph_definition = {
 			3
 		}
 	},
+	second_row_second_gamepad_input_icon = {
+		vertical_alignment = "bottom",
+		parent = "background_image",
+		horizontal_alignment = "center",
+		size = ICON_SIZE,
+		position = {
+			0,
+			36,
+			3
+		}
+	},
 	second_row_tip_text_suffix = {
 		vertical_alignment = "bottom",
 		parent = "background_image",
@@ -179,12 +201,12 @@ local scenegraph_definition = {
 		parent = "background_image",
 		horizontal_alignment = "center",
 		size = {
-			1254,
+			1920,
 			20
 		},
 		position = {
-			1300,
-			-33,
+			1960,
+			-10,
 			2
 		}
 	},
@@ -193,12 +215,12 @@ local scenegraph_definition = {
 		parent = "background_image",
 		horizontal_alignment = "center",
 		size = {
-			1254,
+			1920,
 			40
 		},
 		position = {
 			6,
-			-23,
+			0,
 			3
 		}
 	},
@@ -335,7 +357,7 @@ local press_to_continue_widget = {
 				pass_type = "text",
 				text_id = "text",
 				content_check_function = function (content, style)
-					style.text_color[1] = math.sin(Application.time_since_launch()*4)*64 + 192
+					style.text_color[1] = 192 + math.sin(Application.time_since_launch() * 4) * 64
 
 					return true
 				end
@@ -437,7 +459,7 @@ local subtitle_row_widgets = {}
 
 for i = 1, NUM_SUBTITLE_ROWS, 1 do
 	local scenegraph_id = "subtitle_row_" .. tostring(i)
-	local start_offset_y = -(i - 1)*50
+	local start_offset_y = -(i - 1) * 50
 	local subtitle_row_widget = {
 		element = {
 			passes = {
@@ -472,6 +494,21 @@ for i = 1, NUM_SUBTITLE_ROWS, 1 do
 	subtitle_row_widgets[i] = subtitle_row_widget
 end
 
+local news_ticker_text_style = {
+	word_wrap = true,
+	font_size = 24,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "bottom",
+	font_type = "hell_shark_masked",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
 local definitions = {
 	scenegraph_definition = scenegraph_definition,
 	dead_space_filler = dead_space_filler,
@@ -592,13 +629,38 @@ local definitions = {
 			}
 		}
 	},
+	second_gamepad_input_icon = {
+		scenegraph_id = "second_gamepad_input_icon",
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "texture_id",
+					texture_id = "texture_id",
+					content_check_function = function (content)
+						return content.texture_id
+					end
+				}
+			}
+		},
+		content = {},
+		style = {
+			texture_id = {
+				offset = {
+					0,
+					0,
+					1
+				}
+			}
+		}
+	},
 	tip_text_suffix_widget = UIWidgets.create_simple_text("", "tip_text_suffix", nil, nil, {
 		vertical_alignment = "center",
 		word_wrap = false,
 		horizontal_alignment = "left",
 		font_size = 22,
 		font_type = "hell_shark",
-		text_color = Colors.get_color_table_with_alpha("cheeseburger", 255),
+		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			0,
 			0,
@@ -643,6 +705,31 @@ local definitions = {
 			}
 		}
 	},
+	second_row_second_gamepad_input_icon = {
+		scenegraph_id = "second_row_second_gamepad_input_icon",
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "texture_id",
+					texture_id = "texture_id",
+					content_check_function = function (content)
+						return content.texture_id
+					end
+				}
+			}
+		},
+		content = {},
+		style = {
+			texture_id = {
+				offset = {
+					0,
+					0,
+					1
+				}
+			}
+		}
+	},
 	second_row_tip_text_suffix_widget = UIWidgets.create_simple_text("", "second_row_tip_text_suffix", nil, nil, {
 		vertical_alignment = "center",
 		word_wrap = false,
@@ -656,18 +743,7 @@ local definitions = {
 			2
 		}
 	}),
-	news_ticker_text_widget = UIWidgets.create_simple_text("", "news_ticker_text", nil, nil, {
-		vertical_alignment = "center",
-		font_type = "hell_shark_masked",
-		font_size = 24,
-		horizontal_alignment = "left",
-		text_color = Colors.get_color_table_with_alpha("cheeseburger", 255),
-		offset = {
-			0,
-			0,
-			2
-		}
-	}),
+	news_ticker_text_widget = UIWidgets.create_simple_text("", "news_ticker_text", nil, nil, news_ticker_text_style),
 	news_ticker_mask_widget = UIWidgets.create_simple_texture("mask_rect", "news_ticker_mask"),
 	MAXIMUM_TIP_WIDTH = MAXIMUM_TIP_WIDTH,
 	ICON_SIZE = ICON_SIZE

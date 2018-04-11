@@ -95,7 +95,7 @@ EndViewStateChest.on_enter = function (self, params)
 		}
 	}
 	local difficulty_key = context.difficulty
-	local chest_settings = LootChestData.chests_by_difficulty[difficulty_key]
+	local chest_settings = LootChestData.chests_by_category[difficulty_key]
 	local chest_unit_names = chest_settings.chest_unit_names
 	local display_names = chest_settings.display_names
 
@@ -179,7 +179,7 @@ EndViewStateChest._initialize_score_topics = function (self)
 		widget.content.name = name
 		local scenegraph_id = widget.scenegraph_id
 		local widget_height = scenegraph_definition[scenegraph_id].size[2]
-		widget.offset[2] = -(widget_height + spacing)*(index - 1)
+		widget.offset[2] = -(widget_height + spacing) * (index - 1)
 	end
 
 	return 
@@ -275,7 +275,7 @@ EndViewStateChest.update = function (self, dt, t)
 			}
 		}
 		local difficulty_key = self._context.difficulty
-		local chest_settings = LootChestData.chests_by_difficulty[difficulty_key]
+		local chest_settings = LootChestData.chests_by_category[difficulty_key]
 		local chest_unit_names = chest_settings.chest_unit_names
 		local display_names = chest_settings.display_names
 
@@ -452,12 +452,12 @@ EndViewStateChest.done = function (self)
 	return self._score_entry_presentation_done
 end
 EndViewStateChest._set_entry_text_progress = function (self, progress)
-	local internal_progress = progress - 1
-	internal_progress = ((progress - 0.5)*-4*(progress - 0.5) + 1)*0.5
+	local internal_progress = 1 - progress
+	internal_progress = (-4 * (progress - 0.5) * (progress - 0.5) + 1) * 0.5
 	local default_entry_scenegraph = scenegraph_definition.score_entry_texture
 	local entry_scenegraph = self.ui_scenegraph.score_entry_texture
-	entry_scenegraph.local_position[1] = default_entry_scenegraph.position[1] + progress*200
-	local alpha = internal_progress*255
+	entry_scenegraph.local_position[1] = default_entry_scenegraph.position[1] + 200 * progress
+	local alpha = internal_progress * 255
 	local widgets_by_name = self._widgets_by_name
 	local score_entry_texture_widget = widgets_by_name.score_entry_texture
 	local score_entry_text_widget = widgets_by_name.score_entry_text
@@ -603,7 +603,7 @@ EndViewStateChest._start_presentation = function (self, t)
 	if 0 < num_tomes then
 		local score_name = "tome"
 		local tome_score = scores[score_name]
-		local total_tome_score = tome_score*num_tomes
+		local total_tome_score = tome_score * num_tomes
 
 		self._add_score(self, {
 			id = entry_id,
@@ -622,7 +622,7 @@ EndViewStateChest._start_presentation = function (self, t)
 	if 0 < num_grimoires then
 		local score_name = "grimoire"
 		local grimoire_score = scores[score_name]
-		local total_grimoire_score = grimoire_score*num_grimoires
+		local total_grimoire_score = grimoire_score * num_grimoires
 
 		self._add_score(self, {
 			id = entry_id,
@@ -641,7 +641,7 @@ EndViewStateChest._start_presentation = function (self, t)
 	if 0 < num_loot_dice then
 		local score_name = "loot_dice"
 		local loot_dice_score = scores[score_name]
-		local total_loot_dice_score = loot_dice_score*num_loot_dice
+		local total_loot_dice_score = loot_dice_score * num_loot_dice
 
 		self._add_score(self, {
 			id = entry_id,
@@ -785,16 +785,16 @@ EndViewStateChest._animate_score_progress = function (self, dt, t)
 	local actual_entry_score = math.clamp(entry_data.score, 0, max_score - total_score)
 	local min_time = UISettings.chest_upgrade_score_topics_min_duration or 0.5
 	local max_time = UISettings.chest_upgrade_score_topics_max_duration or 7
-	local duration_fraction = (0 < score_left and math.min(actual_entry_score/score_left, 1)) or 0
-	local duration = math.clamp(duration_fraction*max_time, min_time, max_time)
+	local duration_fraction = (0 < score_left and math.min(actual_entry_score / score_left, 1)) or 0
+	local duration = math.clamp(duration_fraction * max_time, min_time, max_time)
 	entry_duration = math.min(entry_duration + dt, duration)
-	local entry_progress = entry_duration/duration
+	local entry_progress = entry_duration / duration
 	local default_multiplier = 0.5
 	local score_per_chest = LootChestData.score_per_chest
-	local bars_fraction = score_per_chest/entry_score
-	local speed_multiplier = default_multiplier*bars_fraction
+	local bars_fraction = score_per_chest / entry_score
+	local speed_multiplier = default_multiplier * bars_fraction
 	local entry_animation_progress = math.easeOutCubic(entry_progress)
-	local entry_presentation_score = actual_entry_score*entry_animation_progress
+	local entry_presentation_score = actual_entry_score * entry_animation_progress
 	local entry_presentation_total_score = math.min(total_score + entry_presentation_score, max_score)
 	local max_upgraded = entry_presentation_total_score == max_score
 
@@ -816,7 +816,7 @@ EndViewStateChest._animate_score_progress = function (self, dt, t)
 		local current_total_score = current_chest_settings.total_score
 		local current_score_requirement = current_chest_settings.score_requirement
 		local previous_total_score = current_total_score - current_score_requirement
-		animation_progress = (entry_presentation_total_score - previous_total_score)/current_score_requirement
+		animation_progress = (entry_presentation_total_score - previous_total_score) / current_score_requirement
 	else
 		animation_progress = 1
 	end
@@ -883,7 +883,7 @@ EndViewStateChest._set_presentation_progress = function (self, presentation_prog
 	local score_bar_scenegraph = self.ui_scenegraph[score_bar_scenegraph_id]
 	local score_bar_definiton = scenegraph_definition[score_bar_scenegraph_id]
 	local score_bar_default_size = score_bar_definiton.size
-	score_bar_scenegraph.size[1] = math.ceil(score_bar_default_size[1]*presentation_progress)
+	score_bar_scenegraph.size[1] = math.ceil(score_bar_default_size[1] * presentation_progress)
 
 	if not ignore_sound then
 		WwiseWorld.set_global_parameter(self.wwise_world, "summary_meter_progress", presentation_progress)
@@ -899,7 +899,7 @@ EndViewStateChest._update_chest_zoom_wait_time = function (self, dt, t)
 	end
 
 	chest_zoom_wait_duration = chest_zoom_wait_duration + dt
-	local progress = math.min(chest_zoom_wait_duration/CHEST_PRESENTATION_ZOOM_WAIT_TIME, 1)
+	local progress = math.min(chest_zoom_wait_duration / CHEST_PRESENTATION_ZOOM_WAIT_TIME, 1)
 
 	if progress == 1 then
 		self._chest_zoom_wait_duration = nil
@@ -918,7 +918,7 @@ EndViewStateChest._update_chest_zoom_time = function (self, dt, t)
 	end
 
 	chest_zoom_duration = chest_zoom_duration + dt
-	local progress = math.min(chest_zoom_duration/CHEST_PRESENTATION_ZOOM_TIME, 1)
+	local progress = math.min(chest_zoom_duration / CHEST_PRESENTATION_ZOOM_TIME, 1)
 	local animation_progress = math.easeOutCubic(progress)
 
 	self.parent:set_camera_zoom(animation_progress)
@@ -940,7 +940,7 @@ EndViewStateChest._update_chest_bonus_time = function (self, dt, t)
 	end
 
 	chest_bonus_duration = chest_bonus_duration + dt
-	local progress = math.min(chest_bonus_duration/CHEST_PRESENTATION_BONUS_TIME, 1)
+	local progress = math.min(chest_bonus_duration / CHEST_PRESENTATION_BONUS_TIME, 1)
 
 	if progress == 1 then
 		self._chest_bonus_duration = nil
@@ -959,7 +959,7 @@ EndViewStateChest._update_chest_exit_time = function (self, dt, t)
 	end
 
 	chest_wait_exit_duration = chest_wait_exit_duration + dt
-	local progress = math.min(chest_wait_exit_duration/CHEST_PRESENTATION_EXIT_TIME, 1)
+	local progress = math.min(chest_wait_exit_duration / CHEST_PRESENTATION_EXIT_TIME, 1)
 
 	if progress == 1 then
 		self.parent:present_chest_rewards()

@@ -115,11 +115,11 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 	local player = Managers.player:owner(unit)
 
 	if is_moving then
-		self.movement_speed = math.min(0.75, self.movement_speed + movement_settings_table.move_acceleration_up*dt)
+		self.movement_speed = math.min(0.75, self.movement_speed + movement_settings_table.move_acceleration_up * dt)
 	elseif player and player.bot_player then
 		self.movement_speed = 0
 	else
-		self.movement_speed = math.max(self.movement_speed_limit, self.movement_speed - movement_settings_table.move_acceleration_down*dt)
+		self.movement_speed = math.max(self.movement_speed_limit, self.movement_speed - movement_settings_table.move_acceleration_down * dt)
 	end
 
 	local walking = input_extension.get(input_extension, "walk")
@@ -130,9 +130,9 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 		status_extension.set_slowed(status_extension, walking)
 	end
 
-	move_speed = move_speed*move_speed_multiplier
-	move_speed = move_speed*movement_settings_table.player_speed_scale
-	move_speed = move_speed*self.movement_speed
+	move_speed = move_speed * move_speed_multiplier
+	move_speed = move_speed * movement_settings_table.player_speed_scale
+	move_speed = move_speed * self.movement_speed
 	local movement = Vector3(0, 0, 0)
 	local move_input = input_extension.get(input_extension, "move")
 
@@ -146,7 +146,7 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 		local controller_length = Vector3.length(move_input_controller)
 
 		if 0 < controller_length then
-			move_speed = move_speed*controller_length
+			move_speed = move_speed * controller_length
 		end
 
 		movement = movement + move_input_controller
@@ -155,7 +155,7 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 	local stagger = nil
 
 	if self.next_pulse < t then
-		stagger = Vector3((math.random() - 0.5)*2, (math.random() - 0.5)*2, 0)
+		stagger = Vector3(2 * (math.random() - 0.5), 2 * (math.random() - 0.5), 0)
 		local stagger_direction = Vector3.normalize(stagger)
 		local stagger_speed = Vector3.length(stagger)
 		self.next_pulse = t + 0.2
@@ -166,8 +166,8 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 	end
 
 	movement = movement + self.last_stagger:unbox()
-	self.current_stagger_speed = math.max(0, self.current_stagger_speed - movement_settings_table.move_acceleration_down*dt)
-	move_speed = move_speed*self.current_stagger_speed*self.movement_speed_modifier
+	self.current_stagger_speed = math.max(0, self.current_stagger_speed - movement_settings_table.move_acceleration_down * dt)
+	move_speed = move_speed * self.current_stagger_speed * self.movement_speed_modifier
 	local move_input_direction = nil
 	move_input_direction = Vector3.normalize(movement)
 
@@ -201,7 +201,7 @@ PlayerCharacterStateStunned.update = function (self, unit, input, dt, context, t
 		look_override = self.look_override:unbox()
 	end
 
-	local percentage_done = self.time_in_state/self.duration
+	local percentage_done = self.time_in_state / self.duration
 	local look_sense_override = math.min(self.end_look_sense_override, math.lerp(self.start_look_sense_override, 1, percentage_done))
 
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension, look_sense_override, look_override)

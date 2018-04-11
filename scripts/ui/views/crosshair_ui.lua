@@ -309,8 +309,8 @@ CrosshairUI.update_spread = function (self, dt, equipment)
 
 	local maximum_pitch = SpreadTemplates.maximum_pitch
 	local maximum_yaw = SpreadTemplates.maximum_yaw
-	local pitch_percentage = pitch/maximum_pitch
-	local yaw_percentage = yaw/maximum_yaw
+	local pitch_percentage = pitch / maximum_pitch
+	local yaw_percentage = yaw / maximum_yaw
 	local pitch_offset = math.lerp(0, definitions.max_spread_pitch, pitch_percentage)
 	local yaw_offset = math.lerp(0, definitions.max_spread_yaw, yaw_percentage)
 
@@ -441,8 +441,8 @@ CrosshairUI._set_widget_point_offset = function (self, widget, point_index, max_
 	local pivot = widget_style.pivot
 	pitch_offset = pitch_offset or 0
 	yaw_offset = yaw_offset or 0
-	offset[1] = ptx + pitch_offset*math.sign(ptx)
-	offset[2] = pty + yaw_offset*math.sign(pty)
+	offset[1] = ptx + pitch_offset * math.sign(ptx)
+	offset[2] = pty + yaw_offset * math.sign(pty)
 	widget_style.angle = -angle
 
 	return 
@@ -451,16 +451,16 @@ CrosshairUI._get_point_offset = function (self, point_index, max_points, pitch_p
 	local max_radius = MAX_SIZE
 	local x = 0
 	local y = 0
-	local pitch_radius = max_radius*pitch_percentage
-	local yaw_radius = max_radius*yaw_percentage
-	local start_progress = ((start_degrees or 0)/360)%1
+	local pitch_radius = max_radius * pitch_percentage
+	local yaw_radius = max_radius * yaw_percentage
+	local start_progress = ((start_degrees or 0) / 360) % 1
 	local real_index = point_index - 1
-	local fraction = real_index/max_points
-	local rotation_progress = (start_progress + fraction)%1
-	local degress = rotation_progress*360
-	local angle = -((degress*math.pi)/180)
-	local pty = y + pitch_radius*math.sin(angle)
-	local ptx = x + yaw_radius*math.cos(angle)
+	local fraction = real_index / max_points
+	local rotation_progress = (start_progress + fraction) % 1
+	local degress = rotation_progress * 360
+	local angle = -((degress * math.pi) / 180)
+	local pty = y + pitch_radius * math.sin(angle)
+	local ptx = x + yaw_radius * math.cos(angle)
 
 	return ptx, pty, angle
 end

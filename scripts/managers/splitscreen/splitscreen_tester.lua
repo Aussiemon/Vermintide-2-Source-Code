@@ -62,8 +62,8 @@ SPLITSCREEN_OTHER_OFFSET_X = 0.275
 SPLITSCREEN_OTHER_OFFSET_Y = 0.5
 SPLITSCREEN_OTHER_WIDTH = 0.625
 SPLITSCREEN_OTHER_HEIGHT = 0.5
-SPLITSCREEN_RES_X = SPLITSCREEN_WIDTH*1920
-SPLITSCREEN_RES_Y = SPLITSCREEN_HEIGHT*1080
+SPLITSCREEN_RES_X = 1920 * SPLITSCREEN_WIDTH
+SPLITSCREEN_RES_Y = 1080 * SPLITSCREEN_HEIGHT
 SplitscreenTester.init = function (self)
 	self._setup_names(self)
 	self._setup_background(self)
@@ -168,7 +168,7 @@ SplitscreenTester._update_splitscreen_camera = function (self, dt, t)
 				local node = Unit.node(bot_unit, "j_head")
 				local bot_fwd = Vector3.flat(Quaternion.forward(Unit.world_rotation(bot_unit, node)))
 				local camera_rot = Quaternion.look(bot_fwd, Vector3.up())
-				local camera_pos = Unit.world_position(bot_unit, node) + bot_fwd*0.1
+				local camera_pos = Unit.world_position(bot_unit, node) + bot_fwd * 0.1
 				local camera = ScriptViewport.camera(self._splitscreen_viewport)
 
 				ScriptCamera.set_local_position(camera, camera_pos)
@@ -201,8 +201,8 @@ SplitscreenTester._update_input = function (self, dt, t)
 	return 
 end
 SplitscreenTester._resize_viewports = function (self)
-	local multiplier_x = (self._splitscreen_active and SPLITSCREEN_WIDTH) or SPLITSCREEN_WIDTH/1
-	local multiplier_y = (self._splitscreen_active and SPLITSCREEN_HEIGHT) or SPLITSCREEN_HEIGHT/1
+	local multiplier_x = (self._splitscreen_active and SPLITSCREEN_WIDTH) or 1 / SPLITSCREEN_WIDTH
+	local multiplier_y = (self._splitscreen_active and SPLITSCREEN_HEIGHT) or 1 / SPLITSCREEN_HEIGHT
 	local extra_offset_x = (self._splitscreen_active and SPLITSCREEN_OFFSET_X) or 0
 	local extra_offset_y = (self._splitscreen_active and SPLITSCREEN_OFFSET_Y) or 0
 	local worlds = Managers.world._worlds
@@ -216,8 +216,8 @@ SplitscreenTester._resize_viewports = function (self)
 			if not no_scaling then
 				local rect = Viewport.get_data(viewport, "rect")
 
-				Viewport.set_rect(viewport, rect[1]*multiplier_x, rect[2]*multiplier_y, rect[3]*multiplier_x, rect[4]*multiplier_y, extra_offset_x)
-				print("Resizing: " .. Viewport.get_data(viewport, "name"), rect[1]*multiplier_x, rect[2]*multiplier_y, rect[3]*multiplier_x, rect[4]*multiplier_y)
+				Viewport.set_rect(viewport, rect[1] * multiplier_x, rect[2] * multiplier_y, rect[3] * multiplier_x, rect[4] * multiplier_y, extra_offset_x)
+				print("Resizing: " .. Viewport.get_data(viewport, "name"), rect[1] * multiplier_x, rect[2] * multiplier_y, rect[3] * multiplier_x, rect[4] * multiplier_y)
 			end
 		end
 	end
@@ -254,7 +254,7 @@ Application.resolution = function ()
 	local multiplier_y = (splitscreen and SPLITSCREEN_HEIGHT) or 1
 	local w, h = application_resolution()
 
-	return w*multiplier_x, h*multiplier_y
+	return w * multiplier_x, h * multiplier_y
 end
 gui_resolution = gui_resolution or Gui.resolution
 Gui.resolution = function ()
@@ -263,7 +263,7 @@ Gui.resolution = function ()
 	local multiplier_y = (splitscreen and SPLITSCREEN_HEIGHT) or 1
 	local w, h = gui_resolution()
 
-	return w*multiplier_x, h*multiplier_y
+	return w * multiplier_x, h * multiplier_y
 end
 Application.screen_resolution = function ()
 	return application_resolution()
@@ -273,7 +273,7 @@ Camera.world_to_screen = function (...)
 	local pos = camera_world_to_screen(...)
 
 	if Managers.splitscreen and Managers.splitscreen:active() then
-		pos[1] = pos[1]*SPLITSCREEN_WIDTH
+		pos[1] = pos[1] * SPLITSCREEN_WIDTH
 	end
 
 	return pos

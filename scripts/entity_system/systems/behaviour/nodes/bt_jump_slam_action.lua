@@ -73,7 +73,7 @@ BTJumpSlamAction.run = function (self, unit, blackboard, t, dt)
 
 	if z_speed < 0 and not data.constrained then
 		data.constrained = true
-		local constrain_max = POSITION_LOOKUP[unit] + Vector3.up()*2
+		local constrain_max = POSITION_LOOKUP[unit] + Vector3.up() * 2
 		local constrain_min = data.target_pos:unbox()
 
 		LocomotionUtils.constrain_on_clients(unit, true, constrain_min, constrain_max)
@@ -115,7 +115,7 @@ BTJumpSlamAction._calculate_sphere_collision = function (self, action, bot_threa
 	local radius = bot_threat.radius or action.radius
 	local offset_forward = bot_threat.offset_forward or action.forward_offset
 	local forward = Quaternion.forward(self_rot)
-	local sphere_center = self_pos + forward*offset_forward
+	local sphere_center = self_pos + forward * offset_forward
 
 	return sphere_center, radius
 end

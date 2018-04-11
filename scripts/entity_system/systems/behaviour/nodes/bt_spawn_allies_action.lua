@@ -187,7 +187,7 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 	local call_position = POSITION_LOOKUP[unit]
 
 	if 0 < num_players then
-		local flat_average_player_position = Vector3.flat(average_player_position/num_players)
+		local flat_average_player_position = Vector3.flat(average_player_position / num_players)
 		local best_dist_sq = -math.huge
 		local best_index = nil
 		local num_spawners = #spawners
@@ -233,7 +233,7 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 		draw("sphere", pos1, 0.34, Color(0, 255, 255))
 		draw("sphere", pos2, 0.34, Color(0, 255, 255))
 
-		local average_pos = (SPAWN_POS_TEMP[best_index] + SPAWN_POS_TEMP[best_other_index])*0.5
+		local average_pos = (SPAWN_POS_TEMP[best_index] + SPAWN_POS_TEMP[best_other_index]) * 0.5
 		average_pos.z = math.max(SPAWN_POS_TEMP[best_index].z, SPAWN_POS_TEMP[best_other_index].z)
 
 		draw("sphere", average_pos, 0.34, Color(0, 255, 255))
@@ -241,7 +241,7 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 
 		local step = 0.25
 		local nav_world = blackboard.nav_world
-		local check_pos = average_pos + fwd*1.5
+		local check_pos = average_pos + fwd * 1.5
 		local above = 0.25
 		local below = 10
 		local success, z = nil
@@ -250,7 +250,7 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 
 		for i = 1, 10, 1 do
 			local old_check = check_pos
-			check_pos = check_pos + step*fwd
+			check_pos = check_pos + step * fwd
 			success, z = GwNavQueries.triangle_from_position(nav_world, check_pos, above, below)
 
 			if success then
@@ -313,7 +313,7 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 		local spawner_system = Managers.state.entity:system("spawner_system")
 
 		for i = 1, #spawn_list, 1 do
-			local unit = spawners[(i - 1)%#spawners + 1]
+			local unit = spawners[(i - 1) % #spawners + 1]
 
 			spawner_system.spawn_horde(spawner_system, unit, 1, {
 				Breeds[spawn_list[i]]

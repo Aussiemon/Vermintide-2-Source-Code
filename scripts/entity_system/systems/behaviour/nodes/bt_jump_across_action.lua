@@ -138,12 +138,12 @@ BTJumpAcrossAction.run = function (self, unit, blackboard, t, dt)
 		if 0.1 < distance_to_target then
 			local speed = blackboard.breed.run_speed
 
-			if distance_to_target < speed*dt then
-				speed = distance_to_target/dt
+			if distance_to_target < speed * dt then
+				speed = distance_to_target / dt
 			end
 
 			local direction_to_target = Vector3.normalize(vector_to_target)
-			local wanted_velocity = direction_to_target*speed
+			local wanted_velocity = direction_to_target * speed
 
 			locomotion_extension.set_wanted_velocity(locomotion_extension, wanted_velocity)
 			locomotion_extension.set_wanted_rotation(locomotion_extension, wanted_rotation)
@@ -154,7 +154,7 @@ BTJumpAcrossAction.run = function (self, unit, blackboard, t, dt)
 					name = "BTJumpAcrossAction2"
 				})
 
-				drawer.vector(drawer, unit_position + Vector3.up()*0.3, vector_to_target)
+				drawer.vector(drawer, unit_position + Vector3.up() * 0.3, vector_to_target)
 				drawer.sphere(drawer, move_target, 0.3, Colors.get("blue"))
 			end
 		else
@@ -173,7 +173,7 @@ BTJumpAcrossAction.run = function (self, unit, blackboard, t, dt)
 					Managers.state.network:anim_event(unit, randomize(jump_anim_threshold.animation_jump))
 
 					local animation_distance = jump_anim_threshold.horizontal_length
-					local forward_factor = horizontal_length/animation_distance
+					local forward_factor = horizontal_length / animation_distance
 					local height_factor = jump_vector.z
 
 					LocomotionUtils.set_animation_translation_scale(unit, Vector3(forward_factor, forward_factor, height_factor))
@@ -222,7 +222,7 @@ BTJumpAcrossAction._debug_draw_update = function (self, unit, blackboard, t)
 	Debug.text("BTJumpAcrossAction pos=             %s", tostring(unit_position))
 	drawer.sphere(drawer, jump_entrance_pos, 0.3, Colors.get("red"))
 	drawer.sphere(drawer, jump_exit_pos, 0.3, Colors.get("red"))
-	drawer.sphere(drawer, unit_position, math.sin(t*5)*0.01 + 0.3, Colors.get("purple"))
+	drawer.sphere(drawer, unit_position, 0.3 + math.sin(t * 5) * 0.01, Colors.get("purple"))
 	debug_graph():add_point(t, unit_position.z)
 
 	return 

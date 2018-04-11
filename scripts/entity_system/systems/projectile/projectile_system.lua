@@ -110,7 +110,7 @@ end
 ProjectileSystem.spawn_flame_wave_projectile = function (self, owner_unit, scale, item_name, item_template_name, action_name, sub_action_name, position, flat_angle, lateral_speed, initial_forward_speed, age, neighbour_lateral_speed, distance_travelled)
 	local action = Weapons[item_template_name].actions[action_name][sub_action_name]
 	local projectile_info = action.projectile_info
-	scale = scale/100
+	scale = scale / 100
 	local min = projectile_info.radius_min
 	local max = projectile_info.radius_max
 	local radius = projectile_info.radius or (min and max and math.lerp(projectile_info.radius_min, projectile_info.radius_max, scale)) or nil
@@ -167,7 +167,7 @@ ProjectileSystem.spawn_player_projectile = function (self, owner_unit, position,
 
 	local trajectory_template_name = projectile_info.trajectory_template_name
 	local rotate_around = projectile_info.rotate_around
-	scale = scale/100
+	scale = scale / 100
 	local min = projectile_info.radius_min
 	local max = projectile_info.radius_max
 	local radius = projectile_info.radius or (min and max and math.lerp(projectile_info.radius_min, projectile_info.radius_max, scale)) or nil
@@ -393,7 +393,7 @@ ProjectileSystem.spawn_true_flight_projectile = function (self, owner_unit, targ
 	local projectile_info = action.projectile_info
 	local gravity_settings = projectile_info.gravity_settings
 	local trajectory_template_name = projectile_info.trajectory_template_name
-	scale = scale/100
+	scale = scale / 100
 	local min = projectile_info.radius_min
 	local max = projectile_info.radius_max
 	local radius = projectile_info.radius or (min and max and math.lerp(projectile_info.radius_min, projectile_info.radius_max, scale)) or nil
@@ -790,8 +790,8 @@ ProjectileSystem._move_light_weight_projectile = function (self, dt, world, proj
 	local pos = projectile.position:unbox()
 	local dir = projectile.direction:unbox()
 	local rot = projectile.rotation:unbox()
-	local dist = projectile.speed*dt
-	local new_pos = pos + dir*dist
+	local dist = projectile.speed * dt
+	local new_pos = pos + dir * dist
 
 	for id, settings in pairs(projectile.particle_settings) do
 		if not settings.link then

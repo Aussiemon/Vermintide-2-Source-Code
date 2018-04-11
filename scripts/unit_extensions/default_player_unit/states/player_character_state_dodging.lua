@@ -183,7 +183,7 @@ PlayerCharacterStateDodging.update_dodge = function (self, unit, dt, t)
 	local speed_modifier = movement_settings_table.dodging.speed_modifier
 	local distance_modifier = movement_settings_table.dodging.distance_modifier
 	local distance_moved = Vector3.distance(Unit.world_position(unit, 0), self.last_position:unbox())
-	local move_procent = distance_moved/self.distance_supposed_to_move
+	local move_procent = distance_moved / self.distance_supposed_to_move
 
 	if move_procent < movement_settings_table.dodging.stop_threshold then
 		return false
@@ -193,7 +193,7 @@ PlayerCharacterStateDodging.update_dodge = function (self, unit, dt, t)
 		return false
 	end
 
-	local time_in_dodge = self.time_in_dodge*diminishing_return_factor
+	local time_in_dodge = self.time_in_dodge * diminishing_return_factor
 	local speed_at_times = movement_settings_table.dodging.speed_at_times
 	local breaked = false
 	local start_point = self.current_speed_setting_index + 1
@@ -214,19 +214,19 @@ PlayerCharacterStateDodging.update_dodge = function (self, unit, dt, t)
 	if next_speed_setting_index <= #speed_at_times then
 		local time_between_settings = speed_at_times[next_speed_setting_index].time_in_dodge - speed_at_times[current_speed_setting_index].time_in_dodge
 		local time_in_setting = time_in_dodge - speed_at_times[current_speed_setting_index].time_in_dodge
-		local percentage_in_between = time_in_setting/time_between_settings
-		self.speed = math.lerp(speed_at_times[current_speed_setting_index].speed, speed_at_times[next_speed_setting_index].speed, percentage_in_between)*speed_modifier*diminishing_return_factor
+		local percentage_in_between = time_in_setting / time_between_settings
+		self.speed = math.lerp(speed_at_times[current_speed_setting_index].speed, speed_at_times[next_speed_setting_index].speed, percentage_in_between) * speed_modifier * diminishing_return_factor
 	else
-		self.speed = speed_at_times[current_speed_setting_index].speed*speed_modifier*diminishing_return_factor
+		self.speed = speed_at_times[current_speed_setting_index].speed * speed_modifier * diminishing_return_factor
 	end
 
 	local unit_rotation = self.first_person_extension:current_rotation()
 	local flat_unit_rotation = Quaternion.look(Vector3.flat(Quaternion.forward(unit_rotation)), Vector3.up())
 	local move_direction = Quaternion.rotate(flat_unit_rotation, self.dodge_direction:unbox())
 
-	self.locomotion_extension:set_wanted_velocity(move_direction*self.speed)
+	self.locomotion_extension:set_wanted_velocity(move_direction * self.speed)
 
-	local move_delta = self.speed*dt
+	local move_delta = self.speed * dt
 	self.distance_supposed_to_move = move_delta
 	self.distance_left = self.distance_left - move_delta
 
@@ -252,7 +252,7 @@ PlayerCharacterStateDodging.start_dodge = function (self, unit, t)
 	self.speed = movement_settings_table.dodging.speed_at_times[self.current_speed_setting_index].speed
 	self.distance_supposed_to_move = 0
 	self.time_in_dodge = 0
-	self.distance_left = movement_settings_table.dodging.distance*movement_settings_table.dodging.distance_modifier*self.status_extension:get_dodge_cooldown()
+	self.distance_left = movement_settings_table.dodging.distance * movement_settings_table.dodging.distance_modifier * self.status_extension:get_dodge_cooldown()
 
 	self.last_position:store(Unit.world_position(unit, 0))
 	self.calculate_dodge_total_time(self, unit)
@@ -269,8 +269,8 @@ PlayerCharacterStateDodging.calculate_dodge_total_time = function (self, unit)
 	local dodge_fatigue = self.dodge_fatigue
 	local diminishing_return_factor = self.status_extension:get_dodge_cooldown()
 	local speed_modifier = movement_settings_table.dodging.speed_modifier
-	local distance_modifier = movement_settings_table.dodging.distance_modifier*diminishing_return_factor
-	local speed = movement_settings_table.dodging.speed_at_times[1].speed*speed_modifier*diminishing_return_factor
+	local distance_modifier = movement_settings_table.dodging.distance_modifier * diminishing_return_factor
+	local speed = movement_settings_table.dodging.speed_at_times[1].speed * speed_modifier * diminishing_return_factor
 
 	while not_hit_end do
 		time_in_dodge = time_in_dodge + time_step
@@ -292,15 +292,15 @@ PlayerCharacterStateDodging.calculate_dodge_total_time = function (self, unit)
 		if next_speed_setting_index <= #speed_at_times then
 			local time_between_settings = speed_at_times[next_speed_setting_index].time_in_dodge - speed_at_times[current_speed_setting_index].time_in_dodge
 			local time_in_setting = time_in_dodge - speed_at_times[current_speed_setting_index].time_in_dodge
-			local percentage_in_between = time_in_setting/time_between_settings
-			speed = math.lerp(speed_at_times[current_speed_setting_index].speed, speed_at_times[next_speed_setting_index].speed, percentage_in_between)*speed_modifier*diminishing_return_factor
+			local percentage_in_between = time_in_setting / time_between_settings
+			speed = math.lerp(speed_at_times[current_speed_setting_index].speed, speed_at_times[next_speed_setting_index].speed, percentage_in_between) * speed_modifier * diminishing_return_factor
 		else
-			speed = speed_at_times[current_speed_setting_index].speed*speed_modifier
+			speed = speed_at_times[current_speed_setting_index].speed * speed_modifier
 		end
 
-		distance_travelled = distance_travelled + speed*time_step
+		distance_travelled = distance_travelled + speed * time_step
 
-		if movement_settings_table.dodging.distance*distance_modifier*diminishing_return_factor < distance_travelled then
+		if movement_settings_table.dodging.distance * distance_modifier * diminishing_return_factor < distance_travelled then
 			not_hit_end = false
 		end
 	end

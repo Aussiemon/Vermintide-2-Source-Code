@@ -47,7 +47,7 @@ LevelEndViewWrapper._create_world = function (self)
 	local fov = 65
 	local camera = ScriptViewport.camera(viewport)
 
-	Camera.set_vertical_fov(camera, (math.pi*fov)/180)
+	Camera.set_vertical_fov(camera, (math.pi * fov) / 180)
 
 	self._world_viewport = viewport
 	self._world = world

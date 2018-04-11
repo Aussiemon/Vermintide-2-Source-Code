@@ -64,13 +64,9 @@ BTTargetRageAction.enter = function (self, unit, blackboard, t)
 	network_manager.anim_event(network_manager, unit, "to_combat")
 	network_manager.anim_event(network_manager, unit, rage_anim)
 
-	if action.sync_with_linked_unit and blackboard.linked_unit then
-		network_manager.anim_event(network_manager, blackboard.linked_unit, rage_anim)
-	end
-
 	if script_data.debug_ai_movement then
 		debug3d(unit, rage_anim .. " " .. ((anim_driven and "(ANIM DRIVEN)") or ""), "purple")
-		QuickDrawerStay:vector(POSITION_LOOKUP[unit] + Vector3.up(), Quaternion.forward(Unit.local_rotation(unit, 0))*3, Color(140, 0, 220))
+		QuickDrawerStay:vector(POSITION_LOOKUP[unit] + Vector3.up(), Quaternion.forward(Unit.local_rotation(unit, 0)) * 3, Color(140, 0, 220))
 	end
 
 	if 7 < blackboard.target_dist then

@@ -98,7 +98,7 @@ AbilityUI._sync_ability_cooldown = function (self)
 	self._ability_duration = ability_duration
 
 	if ability_cooldown then
-		local cooldown_fraction = ability_cooldown/max_cooldown
+		local cooldown_fraction = ability_cooldown / max_cooldown
 		local input_pressed = self._is_ability_input_pressed(self)
 
 		if not ability_paused and input_pressed and self._current_cooldown_fraction == 0 then
@@ -346,20 +346,20 @@ AbilityUI._update_ability_animations = function (self, dt)
 	local style = widget.style
 	local speed_multiplier = 5
 	local time_since_launch = Application.time_since_launch()
-	local pulse_progress = math.sin(time_since_launch*speed_multiplier)*0.5 + 0.5
-	local effect_alpha = math.min(style.ability_effect_left.color[1] + dt*200, 255)
+	local pulse_progress = 0.5 + math.sin(time_since_launch * speed_multiplier) * 0.5
+	local effect_alpha = math.min(style.ability_effect_left.color[1] + dt * 200, 255)
 	style.ability_effect_left.color[1] = effect_alpha
 	style.ability_effect_top_left.color[1] = effect_alpha
 	style.ability_effect_right.color[1] = effect_alpha
 	style.ability_effect_top_right.color[1] = effect_alpha
-	style.input_text_gamepad.text_color[1] = pulse_progress*155 + 100
-	style.input_text_shadow_gamepad.text_color[1] = pulse_progress*155 + 100
-	style.input_texture_left_shoulder.color[1] = pulse_progress*155 + 100
-	style.input_texture_right_shoulder.color[1] = pulse_progress*155 + 100
+	style.input_text_gamepad.text_color[1] = 100 + pulse_progress * 155
+	style.input_text_shadow_gamepad.text_color[1] = 100 + pulse_progress * 155
+	style.input_texture_left_shoulder.color[1] = 100 + pulse_progress * 155
+	style.input_texture_right_shoulder.color[1] = 100 + pulse_progress * 155
 	style.input_texture_right_shoulder.color[3] = math.lerp(255, 0, pulse_progress)
 	style.input_texture_left_shoulder.color[3] = math.lerp(255, 0, pulse_progress)
 	style.input_text_gamepad.text_color[3] = math.lerp(255, 0, pulse_progress)
-	style.ability_bar_highlight.color[1] = pulse_progress*155 + 100
+	style.ability_bar_highlight.color[1] = 100 + pulse_progress * 155
 
 	self._set_widget_dirty(self, widget)
 

@@ -834,7 +834,7 @@ ExplosionTemplates = {
 				}
 			},
 			power_distribution = {
-				attack = 0,
+				attack = 0.25,
 				impact = 1
 			}
 		}
@@ -894,6 +894,39 @@ ExplosionTemplates = {
 			alert_enemies_radius = 15,
 			sound_event_name = "Play_bardin_ranger_smoke_grenade_ability",
 			effect_name = "fx/wpnfx_smoke_grenade_impact",
+			armour_modifier = {
+				attack = {
+					1,
+					0.5,
+					2.5,
+					1,
+					1.5
+				},
+				impact = {
+					1,
+					0.5,
+					100,
+					1,
+					1.5
+				}
+			},
+			power_distribution = {
+				attack = 0,
+				impact = 1
+			}
+		}
+	},
+	bardin_ranger_activated_ability_upgraded_stagger = {
+		explosion = {
+			use_attacker_power_level = true,
+			radius = 7,
+			max_damage_radius = 2,
+			damage_type = "grenade",
+			alert_enemies = true,
+			attack_template = "drakegun",
+			alert_enemies_radius = 15,
+			sound_event_name = "Play_bardin_ranger_smoke_grenade_ability",
+			effect_name = "fx/wpnfx_smoke_grenade_impact_Upgraded",
 			armour_modifier = {
 				attack = {
 					1,

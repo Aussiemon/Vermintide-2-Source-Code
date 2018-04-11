@@ -61,7 +61,7 @@ end
 NavBoxObstacle.update = function (self, dt)
 	local transform = Unit.local_pose(self.unit, 1)
 	local pos = Matrix4x4.translation(transform)
-	local linear_velocity = (pos - self.lastpos:unbox())/dt
+	local linear_velocity = (pos - self.lastpos:unbox()) / dt
 	local rotation = Unit.local_rotation(self.unit, 1)
 
 	self.set_does_trigger_tagvolume(self, self.does_trigger_tag_volume and Vector3.length(linear_velocity) == 0)
@@ -72,7 +72,7 @@ NavBoxObstacle.update = function (self, dt)
 	if Quaternion.is_valid(rotation) and Quaternion.is_valid(last_rot) then
 		local rotation_delta = Quaternion.multiply(Quaternion.inverse(rotation), last_rot)
 		local angular_velocity_vector, angular_delta = Quaternion.decompose(rotation_delta)
-		angular_velocity = (angular_velocity_vector*angular_delta)/dt
+		angular_velocity = (angular_velocity_vector * angular_delta) / dt
 	end
 
 	self.set_next_update_config(self, transform, linear_velocity, angular_velocity)

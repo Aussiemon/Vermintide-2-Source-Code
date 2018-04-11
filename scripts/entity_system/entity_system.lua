@@ -150,6 +150,8 @@ require("scripts/unit_extensions/weapons/projectiles/projectile_flame_wave_locom
 require("scripts/unit_extensions/weapons/ammo/active_reload_ammo_user_extension")
 require("scripts/unit_extensions/weapons/spread/weapon_spread_extension")
 require("scripts/unit_extensions/default_player_unit/charge/player_unit_overcharge_extension")
+require("scripts/unit_extensions/default_player_unit/player_husk_visual_effects_extension")
+require("scripts/unit_extensions/default_player_unit/player_unit_visual_effects_extension")
 require("scripts/unit_extensions/default_player_unit/target_override_extension")
 require("scripts/unit_extensions/cutscene_camera/cutscene_camera")
 require("scripts/unit_extensions/smart_targeting/player_unit_smart_targeting_extension")
@@ -258,6 +260,10 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	})
 	self._add_system(self, "sound_effect_system", ExtensionSystemBase, entity_system_creation_context, {
 		"PlayerSoundEffectExtension"
+	})
+	self._add_system(self, "visual_effects_system", ExtensionSystemBase, entity_system_creation_context, {
+		"PlayerUnitVisualEffectsExtension",
+		"PlayerHuskVisualEffectsExtension"
 	})
 	self._add_system(self, "ai_slot_system", AISlotSystem, entity_system_creation_context)
 	self._add_system(self, "area_damage_system", AreaDamageSystem, entity_system_creation_context)

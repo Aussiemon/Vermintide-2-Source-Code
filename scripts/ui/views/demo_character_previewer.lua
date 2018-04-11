@@ -191,8 +191,8 @@ DemoCharacterPreviewer._update_hover = function (self)
 		return 
 	else
 		local scale = RESOLUTION_LOOKUP.scale
-		cursor.x = cursor.x*scale
-		cursor.y = cursor.y*scale
+		cursor.x = cursor.x * scale
+		cursor.y = cursor.y * scale
 	end
 
 	if not Unit.alive(self._character_unit) then
@@ -206,8 +206,8 @@ DemoCharacterPreviewer._update_hover = function (self)
 	local direction = to - from
 	local physics_world = World.physics_world(self._world)
 	local unit_box, box_dimension = Unit.box(self._character_unit)
-	box_dimension[1] = box_dimension[1]*0.25
-	box_dimension[2] = box_dimension[2]*0.25
+	box_dimension[1] = box_dimension[1] * 0.25
+	box_dimension[2] = box_dimension[2] * 0.25
 	local hit = Intersect.ray_box(from, direction, unit_box, box_dimension)
 
 	if hit then
@@ -277,7 +277,7 @@ DemoCharacterPreviewer.pressed_pose = function (self)
 	local node_index = Unit.has_node(unit, node) and Unit.node(unit, node)
 	local pos = Unit.world_position(unit, node_index)
 	local zoom_offset = self._zoom_offset:unbox()
-	local camera_pos = pos + camera_right_flat*zoom_offset[1] + camera_forward_flat*zoom_offset[2] + Vector3.up()*zoom_offset[3]
+	local camera_pos = pos + camera_right_flat * zoom_offset[1] + camera_forward_flat * zoom_offset[2] + Vector3.up() * zoom_offset[3]
 
 	return Matrix4x4Box(Matrix4x4.from_quaternion_position(current_camera_rot, camera_pos))
 end

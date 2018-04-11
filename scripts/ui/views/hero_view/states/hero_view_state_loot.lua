@@ -250,6 +250,16 @@ HeroViewStateLoot.on_enter = function (self, params, optional_ignore_item_popula
 	self.player_manager = player_manager
 	self.player = local_player
 	self.peer_id = ingame_ui_context.peer_id
+	self.local_player_id = ingame_ui_context.local_player_id
+	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
+	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+	local profile_settings = SPProfiles[profile_index]
+	local display_name = profile_settings.display_name
+	local character_name = profile_settings.character_name
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local career_index = hero_attributes.get(hero_attributes, display_name, "career")
+	self.career_index = career_index
+	self.profile_index = profile_index
 	self._animations = {}
 	self._units = {}
 	self.world_manager = ingame_ui_context.world_manager
@@ -313,10 +323,7 @@ end
 HeroViewStateLoot.populate_items = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local hero_name = self.hero_name
-	local player = self.player
-	local player_unit = player.player_unit
-	local career_extension = ScriptUnit.extension(player_unit, "career_system")
-	local career_index = career_extension.career_index(career_extension)
+	local career_index = self.career_index
 
 	local function sort_func(a, b)
 		local a_data = a.data
@@ -346,7 +353,7 @@ HeroViewStateLoot.populate_items = function (self)
 
 	local items = {}
 	local grid_widget = widgets_by_name.item_grid
-	local item_grid = ItemGridUI:new(settings_by_screen, grid_widget, hero_name, career_index, self.hero_name, self.career_index)
+	local item_grid = ItemGridUI:new(settings_by_screen, grid_widget, hero_name, career_index)
 	local placeholder_items = {}
 
 	item_grid.disable_locked_items(item_grid, true)
@@ -384,6 +391,19 @@ HeroViewStateLoot.transitioning = function (self)
 	end
 
 	return 
+end
+HeroViewStateLoot._can_open_chests = function (self)
+	local backend_items = Managers.backend:get_interface("items")
+	local items = backend_items.get_all_backend_items(backend_items)
+	local item_count = 0
+
+	for _, _ in pairs(items) do
+		item_count = item_count + 1
+	end
+
+	local can_open = item_count < UISettings.max_inventory_items
+
+	return can_open
 end
 HeroViewStateLoot.wanted_menu_state = function (self)
 	return self._wanted_menu_state
@@ -468,6 +488,7 @@ HeroViewStateLoot.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.loot_ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+	widgets_by_name.item_cap_warning_text.content.visible = false
 
 	self._setup_reward_option_widgets(self)
 
@@ -553,7 +574,7 @@ HeroViewStateLoot._position_camera = function (self, optional_pose)
 	if camera_pose then
 		local fov = 65
 
-		Camera.set_vertical_fov(camera, (math.pi*fov)/180)
+		Camera.set_vertical_fov(camera, (math.pi * fov) / 180)
 		ScriptCamera.set_local_pose(camera, camera_pose)
 		ScriptCamera.force_update(world, camera)
 	end
@@ -767,7 +788,7 @@ HeroViewStateLoot._update_animations = function (self, dt)
 				local rarity = content.rarity
 				local anim_progress = 0
 				local glow_alpha_progress = content.glow_alpha_progress or 0
-				local speed = dt*3
+				local speed = dt * 3
 
 				if button_hotspot.on_hover_enter then
 					local sound_event = (rarity and "play_gui_chest_reward_hover_start_" .. tostring(rarity)) or "play_gui_chest_reward_start"
@@ -789,11 +810,11 @@ HeroViewStateLoot._update_animations = function (self, dt)
 
 				content.glow_alpha_progress = glow_alpha_progress
 				local style = widget.style
-				style.lock_glow.color[1] = style.lock_glow.default_color[1]*anim_progress
-				style.lock_glow_1.color[1] = style.lock_glow_1.default_color[1]*anim_progress
-				style.lock_glow_2.color[1] = style.lock_glow_2.default_color[1]*anim_progress
-				style.lock_bottom_glow.color[1] = style.lock_bottom_glow.default_color[1]*anim_progress
-				style.lock_bottom_glow_2.color[1] = style.lock_bottom_glow_2.default_color[1]*anim_progress
+				style.lock_glow.color[1] = style.lock_glow.default_color[1] * anim_progress
+				style.lock_glow_1.color[1] = style.lock_glow_1.default_color[1] * anim_progress
+				style.lock_glow_2.color[1] = style.lock_glow_2.default_color[1] * anim_progress
+				style.lock_bottom_glow.color[1] = style.lock_bottom_glow.default_color[1] * anim_progress
+				style.lock_bottom_glow_2.color[1] = style.lock_bottom_glow_2.default_color[1] * anim_progress
 			end
 		end
 	end
@@ -951,10 +972,10 @@ HeroViewStateLoot._select_grid_item = function (self, item, t)
 		local item_data = item.data
 		local chest_category = item_data.chest_category
 		local chest_tier = item_data.chest_tier
-		local chests_by_difficulty = LootChestData.chests_by_difficulty
+		local chests_by_category = LootChestData.chests_by_category
 		local unit_name, sound_event = nil
 
-		for key, chests_data in pairs(chests_by_difficulty) do
+		for key, chests_data in pairs(chests_by_category) do
 			if key == chest_category then
 				local chest_unit_names = chests_data.chest_unit_names
 
@@ -985,7 +1006,9 @@ HeroViewStateLoot._select_grid_item = function (self, item, t)
 	end
 
 	self._selected_item = item
-	widgets_by_name.open_button.content.button_hotspot.disable_button = item == nil
+	local can_open = self._can_open_chests(self)
+	widgets_by_name.item_cap_warning_text.content.visible = not can_open and item ~= nil
+	widgets_by_name.open_button.content.button_hotspot.disable_button = not can_open or item == nil
 
 	return 
 end
@@ -1201,6 +1224,8 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 	local reward_options = self._reward_options
 	local player = self.player
 	local hero_name = self.hero_name
+	local career_index = self.career_index
+	local profile_index = self.profile_index
 
 	for index, data in ipairs(reward_options) do
 		local backend_id = rewards[index]
@@ -1230,6 +1255,10 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 		content.draw_frame = nil
 		content.button_hotspot.disable_button = false
 		content.glow_alpha_progress = 0
+
+		table.clear(content.item_hotspot)
+		table.clear(content.item_hotspot_2)
+
 		style.item_name.text_color[1] = 0
 		style.item_name_shadow.text_color[1] = 0
 		style.item_type.text_color[1] = 0
@@ -1283,9 +1312,6 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 			world_previewer.on_enter(world_previewer, preview_widget, hero_name)
 			world_previewer.wait_for_force_unhide(world_previewer)
 
-			local player_unit = player.player_unit
-			local career_extension = ScriptUnit.extension(player_unit, "career_system")
-			local career_index = career_extension.career_index(career_extension)
 			local optional_skin = item_data.name
 
 			self._spawn_hero_skin_unit(self, world_previewer, hero_name, career_index, optional_skin)
@@ -1321,11 +1347,7 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 			style.image.texture_size[1] = texture_settings.size[1]
 			style.image.texture_size[2] = texture_settings.size[2]
 		elseif slot_type == "frame" then
-			local profile_index = FindProfileIndex(hero_name)
 			local profile = SPProfiles[profile_index]
-			local player_unit = player.player_unit
-			local career_extension = ScriptUnit.extension(player_unit, "career_system")
-			local career_index = career_extension.career_index(career_extension)
 			local career_settings = profile.careers[career_index]
 			local portrait_image = career_settings.portrait_image
 			local portrait_frame = self._get_portrait_frame(self, player)
@@ -1368,7 +1390,7 @@ HeroViewStateLoot.cb_hero_unit_spawned = function (self, world_previewer, hero_n
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
 	local career_settings = careers[career_index]
-	local preview_animation = career_settings.preview_animation
+	local preview_idle_animation = career_settings.preview_idle_animation
 	local preview_wield_slot = career_settings.preview_wield_slot
 	local preview_items = career_settings.preview_items
 
@@ -1388,8 +1410,8 @@ HeroViewStateLoot.cb_hero_unit_spawned = function (self, world_previewer, hero_n
 		end
 	end
 
-	if preview_animation then
-		world_previewer.play_character_animation(world_previewer, preview_animation)
+	if preview_idle_animation then
+		world_previewer.play_character_animation(world_previewer, preview_idle_animation)
 	end
 
 	return 
@@ -1400,46 +1422,13 @@ HeroViewStateLoot._create_player_portrait = function (self, scenegraph_id, portr
 
 	return widget
 end
-HeroViewStateLoot._get_portrait_frame = function (self, player)
-	local unit = player.player_unit
-	local player_portrait_frame = "default"
-
-	if unit and player then
-		local dead_portrait_frame = "unit_frame_death"
-		local network_manager = Managers.state.network
-		local network_game = network_manager.game(network_manager)
-
-		if network_game and not LEVEL_EDITOR_TEST and Unit.alive(unit) then
-			if player.local_player then
-				local career_extension = ScriptUnit.extension(unit, "career_system")
-				local career_name = career_extension.career_name(career_extension)
-				local item_interface = Managers.backend:get_interface("items")
-				local item = BackendUtils.get_loadout_item(career_name, "slot_frame")
-
-				if item then
-					local item_data = item.data
-					local frame_name = item_data.temporary_template
-
-					if not frame_name then
-					end
-				end
-			else
-				local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-				local frame_name_id = GameSession.game_object_field(network_game, unit_id, "frame_name")
-				player_portrait_frame = NetworkLookup.cosmetics[frame_name_id]
-			end
-		end
-	end
-
-	return player_portrait_frame
-end
 HeroViewStateLoot._set_background_blur_progress = function (self, progress)
 	local world, viewport = self.get_viewport_world(self)
 	local shading_env = World.get_data(world, "shading_environment")
 
 	if shading_env then
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", progress*1)
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", progress*0.75)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", progress * 1)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", progress * 0.75)
 		ShadingEnvironment.apply(shading_env)
 	end
 
@@ -1490,12 +1479,12 @@ HeroViewStateLoot._open_chest = function (self, selected_item)
 	local selected_item_data = selected_item.data
 	local chest_category = selected_item_data.chest_category
 	local chest_tier = selected_item_data.chest_tier
-	local chests_by_difficulty = LootChestData.chests_by_difficulty
+	local chests_by_category = LootChestData.chests_by_category
 	self._opening_chest = true
 	self._rewards_presented = false
 	local unit_name = nil
 
-	for key, chests_data in pairs(chests_by_difficulty) do
+	for key, chests_data in pairs(chests_by_category) do
 		if key == chest_category then
 			local chest_unit_names = chests_data.chest_unit_names
 
@@ -1572,13 +1561,13 @@ HeroViewStateLoot._animate_reward_options_entry = function (self, dt)
 end
 HeroViewStateLoot.set_reward_options_height_progress = function (self, progress)
 	local w, h = UIResolution()
-	local progress_1 = math.min(progress*1.1, 1)
-	local progress_2 = math.min(progress*1.3, 1)
+	local progress_1 = math.min(progress * 1.1, 1)
+	local progress_2 = math.min(progress * 1.3, 1)
 	local progress_3 = progress
 	local ui_scenegraph = self.ui_scenegraph
-	ui_scenegraph.loot_option_1.local_position[2] = -h*(math.catmullrom(math.easeOutCubic(progress_1), 0, 0, 1, -1.8) - 1)
-	ui_scenegraph.loot_option_2.local_position[2] = -h*(math.catmullrom(math.easeOutCubic(progress_2), 0, 0, 1, -1.8) - 1)
-	ui_scenegraph.loot_option_3.local_position[2] = -h*(math.catmullrom(math.easeOutCubic(progress_3), 0, 0, 1, -1.8) - 1)
+	ui_scenegraph.loot_option_1.local_position[2] = -h * (1 - math.catmullrom(math.easeOutCubic(progress_1), 0, 0, 1, -1.8))
+	ui_scenegraph.loot_option_2.local_position[2] = -h * (1 - math.catmullrom(math.easeOutCubic(progress_2), 0, 0, 1, -1.8))
+	ui_scenegraph.loot_option_3.local_position[2] = -h * (1 - math.catmullrom(math.easeOutCubic(progress_3), 0, 0, 1, -1.8))
 
 	return 
 end
@@ -1638,9 +1627,9 @@ HeroViewStateLoot.set_camera_zoom = function (self, progress)
 	local translation = Matrix4x4.translation(camera_pose)
 	local rotation = Matrix4x4.rotation(camera_pose)
 	local max_distance = 0.5
-	local distance = max_distance*progress
+	local distance = max_distance * progress
 	local dir = Quaternion.forward(rotation)
-	local position = translation + dir*distance
+	local position = translation + dir * distance
 
 	self.set_camera_position(self, position)
 
@@ -1648,24 +1637,24 @@ HeroViewStateLoot.set_camera_zoom = function (self, progress)
 end
 HeroViewStateLoot.set_grid_animation_progress = function (self, progress)
 	local ui_scenegraph = self.ui_scenegraph
-	ui_scenegraph.info_root.local_position[1] = progress*400
-	ui_scenegraph.item_grid_root.local_position[1] = progress*-400
-	ui_scenegraph.open_button.local_position[2] = progress*200 - 30
-	ui_scenegraph.close_button.local_position[2] = progress*200 - 30
-	self._grid_alpha_multiplier = progress - 1
+	ui_scenegraph.info_root.local_position[1] = 400 * progress
+	ui_scenegraph.item_grid_root.local_position[1] = -400 * progress
+	ui_scenegraph.open_button.local_position[2] = 30 - 200 * progress
+	ui_scenegraph.close_button.local_position[2] = 30 - 200 * progress
+	self._grid_alpha_multiplier = 1 - progress
 
 	return 
 end
 HeroViewStateLoot.set_continue_button_animation_progress = function (self, progress)
 	local ui_scenegraph = self.ui_scenegraph
-	ui_scenegraph.continue_button.local_position[2] = progress*200 + -170
+	ui_scenegraph.continue_button.local_position[2] = -170 + 200 * progress
 	self._continue_button_alpha_multiplier = progress
 
 	return 
 end
 HeroViewStateLoot.set_chest_title_alpha_progress = function (self, progress)
 	local widgets_by_name = self._widgets_by_name
-	local alpha = progress*255
+	local alpha = 255 * progress
 	widgets_by_name.chest_title.style.text.text_color[1] = alpha
 	widgets_by_name.chest_title.style.text_shadow.text_color[1] = alpha
 	widgets_by_name.chest_sub_title.style.text.text_color[1] = alpha
@@ -1682,10 +1671,10 @@ HeroViewStateLoot._update_enter_animation_time = function (self, dt, t)
 	end
 
 	center_animation_duration = center_animation_duration + dt
-	local progress = math.min(center_animation_duration/CHEST_PRESENTATION_ZOOM_OUT_TIME, 1)
+	local progress = math.min(center_animation_duration / CHEST_PRESENTATION_ZOOM_OUT_TIME, 1)
 	local animation_progress = math.easeOutCubic(progress)
 
-	self.set_grid_animation_progress(self, animation_progress - 1)
+	self.set_grid_animation_progress(self, 1 - animation_progress)
 
 	if progress == 1 then
 		self._enter_animation_duration = nil
@@ -1703,7 +1692,7 @@ HeroViewStateLoot._update_continue_button_animation_time = function (self, dt, t
 	end
 
 	continue_button_animation_duration = continue_button_animation_duration + dt
-	local progress = math.min(continue_button_animation_duration/CHEST_PRESENTATION_ZOOM_OUT_TIME, 1)
+	local progress = math.min(continue_button_animation_duration / CHEST_PRESENTATION_ZOOM_OUT_TIME, 1)
 	local animation_progress = math.easeOutCubic(progress)
 
 	self.set_continue_button_animation_progress(self, animation_progress)
@@ -1723,21 +1712,21 @@ HeroViewStateLoot._update_camera_look_up_time = function (self, dt, t)
 		return 
 	end
 
-	local previous_progress = math.min(camera_look_up_duration/CHEST_PRESENTATION_LOOK_UP_TIME, 1)
+	local previous_progress = math.min(camera_look_up_duration / CHEST_PRESENTATION_LOOK_UP_TIME, 1)
 	local previous_animation_progress = math.easeCubic(previous_progress)
 	camera_look_up_duration = camera_look_up_duration + dt
-	local progress = math.min(camera_look_up_duration/CHEST_PRESENTATION_LOOK_UP_TIME, 1)
+	local progress = math.min(camera_look_up_duration / CHEST_PRESENTATION_LOOK_UP_TIME, 1)
 	local animation_progress = math.easeCubic(progress)
 	local degrees = 60
-	local previous_angle = math.degrees_to_radians(degrees*previous_animation_progress)
-	local angle = math.degrees_to_radians(degrees*animation_progress)
+	local previous_angle = math.degrees_to_radians(degrees * previous_animation_progress)
+	local angle = math.degrees_to_radians(degrees * animation_progress)
 	local animation_rotation = Quaternion(Vector3.right(), angle - previous_angle)
 	local current_rotation = self.get_camera_rotation(self)
 	local new_rotation = Quaternion.multiply(current_rotation, animation_rotation)
 
 	self.set_camera_rotation(self, new_rotation)
 
-	self.background_fade_widget.style.rect.color[1] = animation_progress*200
+	self.background_fade_widget.style.rect.color[1] = animation_progress * 200
 
 	if progress == 1 then
 		if self._chest_unit then
@@ -1758,21 +1747,21 @@ HeroViewStateLoot._update_camera_look_down_time = function (self, dt, t)
 		return 
 	end
 
-	local previous_progress = math.min(camera_look_down_duration/CHEST_PRESENTATION_LOOK_DOWN_TIME, 1)
+	local previous_progress = math.min(camera_look_down_duration / CHEST_PRESENTATION_LOOK_DOWN_TIME, 1)
 	local previous_animation_progress = math.easeOutCubic(previous_progress)
 	camera_look_down_duration = camera_look_down_duration + dt
-	local progress = math.min(camera_look_down_duration/CHEST_PRESENTATION_LOOK_DOWN_TIME, 1)
+	local progress = math.min(camera_look_down_duration / CHEST_PRESENTATION_LOOK_DOWN_TIME, 1)
 	local animation_progress = math.easeOutCubic(progress)
 	local degrees = -60
-	local previous_angle = math.degrees_to_radians(degrees*previous_animation_progress)
-	local angle = math.degrees_to_radians(degrees*animation_progress)
+	local previous_angle = math.degrees_to_radians(degrees * previous_animation_progress)
+	local angle = math.degrees_to_radians(degrees * animation_progress)
 	local animation_rotation = Quaternion(Vector3.right(), angle - previous_angle)
 	local current_rotation = self.get_camera_rotation(self)
 	local new_rotation = Quaternion.multiply(current_rotation, animation_rotation)
 
 	self.set_camera_rotation(self, new_rotation)
 
-	self.background_fade_widget.style.rect.color[1] = (animation_progress - 1)*200
+	self.background_fade_widget.style.rect.color[1] = (1 - animation_progress) * 200
 
 	if progress == 1 then
 		self._camera_look_down_duration = nil
@@ -1790,7 +1779,7 @@ HeroViewStateLoot._update_chest_open_wait_time = function (self, dt, t)
 	end
 
 	chest_open_wait_duration = chest_open_wait_duration + dt
-	local progress = math.min(chest_open_wait_duration/CHEST_PRESENTATION_OPEN_WAIT_TIME, 1)
+	local progress = math.min(chest_open_wait_duration / CHEST_PRESENTATION_OPEN_WAIT_TIME, 1)
 	local animation_progress = math.easeOutCubic(progress)
 
 	if progress == 1 then
@@ -1814,12 +1803,12 @@ HeroViewStateLoot._update_chest_zoom_in_time = function (self, dt, t)
 	end
 
 	chest_zoom_in_duration = chest_zoom_in_duration + dt
-	local progress = math.min(chest_zoom_in_duration/CHEST_PRESENTATION_ZOOM_IN_TIME, 1)
+	local progress = math.min(chest_zoom_in_duration / CHEST_PRESENTATION_ZOOM_IN_TIME, 1)
 	local animation_progress = math.easeOutCubic(progress)
 
 	self.set_camera_zoom(self, animation_progress)
 	self.set_grid_animation_progress(self, animation_progress)
-	self.set_chest_title_alpha_progress(self, animation_progress - 1)
+	self.set_chest_title_alpha_progress(self, 1 - animation_progress)
 
 	if progress == 1 then
 		self._chest_zoom_in_duration = nil
@@ -1838,7 +1827,7 @@ HeroViewStateLoot._update_chest_zoom_out_time = function (self, dt, t)
 	end
 
 	chest_zoom_out_duration = chest_zoom_out_duration + dt
-	local progress = math.min(chest_zoom_out_duration/CHEST_PRESENTATION_ZOOM_OUT_TIME, 1) - 1
+	local progress = 1 - math.min(chest_zoom_out_duration / CHEST_PRESENTATION_ZOOM_OUT_TIME, 1)
 	local animation_progress = math.easeInCubic(progress)
 
 	self.set_camera_zoom(self, animation_progress)
@@ -1860,7 +1849,7 @@ HeroViewStateLoot._update_camera_shake_chest_spawn_time = function (self, dt, t)
 	end
 
 	camera_shake_chest_spawn_duration = camera_shake_chest_spawn_duration + dt
-	local progress = math.min(camera_shake_chest_spawn_duration/CAMERA_SHAKE_CHEST_SPAWN_TIME, 1)
+	local progress = math.min(camera_shake_chest_spawn_duration / CAMERA_SHAKE_CHEST_SPAWN_TIME, 1)
 
 	if progress == 1 then
 		self._camera_shake_chest_spawn_duration = nil
@@ -1900,17 +1889,17 @@ HeroViewStateLoot._apply_shake_event = function (self, settings, t)
 	local fade_out_time = settings.fade_out_time
 
 	if fade_in_time and t <= fade_in_time then
-		settings.fade_progress = math.clamp((t - start_time)/(fade_in_time - start_time), 0, 1)
+		settings.fade_progress = math.clamp((t - start_time) / (fade_in_time - start_time), 0, 1)
 	elseif fade_out_time and fade_out_time <= t then
-		settings.fade_progress = math.clamp((end_time - t)/(end_time - fade_out_time), 0, 1)
+		settings.fade_progress = math.clamp((end_time - t) / (end_time - fade_out_time), 0, 1)
 	end
 
-	local pitch_noise_value = self._calculate_perlin_value(self, t - settings.start_time, settings)*settings.scale
-	local yaw_noise_value = self._calculate_perlin_value(self, t - settings.start_time + 10, settings)*settings.scale
+	local pitch_noise_value = self._calculate_perlin_value(self, t - settings.start_time, settings) * settings.scale
+	local yaw_noise_value = self._calculate_perlin_value(self, t - settings.start_time + 10, settings) * settings.scale
 	local current_rot = self.get_camera_rotation(self)
-	local deg_to_rad = math.pi/180
-	local yaw_offset = Quaternion(Vector3.up(), yaw_noise_value*deg_to_rad)
-	local pitch_offset = Quaternion(Vector3.right(), pitch_noise_value*deg_to_rad)
+	local deg_to_rad = math.pi / 180
+	local yaw_offset = Quaternion(Vector3.up(), yaw_noise_value * deg_to_rad)
+	local pitch_offset = Quaternion(Vector3.right(), pitch_noise_value * deg_to_rad)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
 	local rotation = Quaternion.multiply(Quaternion.identity(), total_offset)
 
@@ -1931,12 +1920,12 @@ HeroViewStateLoot._calculate_perlin_value = function (self, x, settings)
 	for i = 0, number_of_octaves, 1 do
 		local frequency = 2^i
 		local amplitude = persistance^i
-		total = total + self._interpolated_noise(self, x*frequency, settings)*amplitude
+		total = total + self._interpolated_noise(self, x * frequency, settings) * amplitude
 	end
 
 	local amplitude_multiplier = shake_settings.amplitude or 1
 	local fade_multiplier = settings.fade_progress or 1
-	total = total*amplitude_multiplier*fade_multiplier
+	total = total * amplitude_multiplier * fade_multiplier
 
 	return total
 end
@@ -1949,13 +1938,13 @@ HeroViewStateLoot._interpolated_noise = function (self, x, settings)
 	return math.lerp(v1, v2, remainder)
 end
 HeroViewStateLoot._smoothed_noise = function (self, x, settings)
-	return self._noise(self, x, settings)/2 + self._noise(self, x - 1, settings)/4 + self._noise(self, x + 1, settings)/4
+	return self._noise(self, x, settings) / 2 + self._noise(self, x - 1, settings) / 4 + self._noise(self, x + 1, settings) / 4
 end
 HeroViewStateLoot._noise = function (self, x, settings)
 	local next_seed, _ = Math.next_random(x + settings.seed)
 	local _, value = Math.next_random(next_seed)
 
-	return value*2 - 1
+	return value * 2 - 1
 end
 HeroViewStateLoot._get_card_spawn_position = function (self)
 	local camera_position = self.get_camera_position(self)
@@ -1969,39 +1958,6 @@ HeroViewStateLoot._get_card_spawn_position = function (self)
 
 	return world_position
 end
-HeroViewStateLoot._get_portrait_frame = function (self, player)
-	local unit = player.player_unit
-	local player_portrait_frame = "default"
-
-	if unit and player then
-		local dead_portrait_frame = "unit_frame_death"
-		local network_manager = Managers.state.network
-		local network_game = network_manager.game(network_manager)
-
-		if network_game and not LEVEL_EDITOR_TEST and Unit.alive(unit) then
-			if player.local_player then
-				local career_extension = ScriptUnit.extension(unit, "career_system")
-				local career_name = career_extension.career_name(career_extension)
-				local item_interface = Managers.backend:get_interface("items")
-				local item = BackendUtils.get_loadout_item(career_name, "slot_frame")
-
-				if item then
-					local item_data = item.data
-					local frame_name = item_data.temporary_template
-
-					if not frame_name then
-					end
-				end
-			else
-				local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-				local frame_name_id = GameSession.game_object_field(network_game, unit_id, "frame_name")
-				player_portrait_frame = NetworkLookup.cosmetics[frame_name_id]
-			end
-		end
-	end
-
-	return player_portrait_frame
-end
 HeroViewStateLoot._create_portrait_frame_widget = function (self, frame_settings_name, portrait_texture, player_level_text)
 	local widget_definition = UIWidgets.create_portrait_frame("info_portrait_root", frame_settings_name, player_level_text, 1, nil, portrait_texture)
 	local widget = UIWidget.init(widget_definition)
@@ -2012,18 +1968,17 @@ HeroViewStateLoot._create_portrait_frame_widget = function (self, frame_settings
 end
 HeroViewStateLoot._setup_info_window = function (self)
 	local hero_name = self.hero_name
-	local player = self.player
-	local player_unit = player.player_unit
-	local career_extension = ScriptUnit.extension(player_unit, "career_system")
-	local career_index = career_extension.career_index(career_extension)
-	local profile_index = FindProfileIndex(hero_name)
+	local career_index = self.career_index
+	local profile_index = self.profile_index
 	local profile_settings = SPProfiles[profile_index]
 	local character_name = profile_settings.character_name
 	local career_settings = profile_settings.careers[career_index]
 	local portrait_image = career_settings.portrait_image
+	local player = self.player
+	local player_unit = player.player_unit
 	local player_level = ExperienceSettings.get_player_level(player)
 	local player_level_text = (player_level and tostring(player_level)) or "-"
-	local portrait_frame = self._get_portrait_frame(self, player)
+	local portrait_frame = "default"
 	local portrait_widget = self._create_portrait_frame_widget(self, portrait_frame, portrait_image, player_level_text)
 	self._portrait_widget = portrait_widget
 	self._widgets_by_name.info_text_title.content.text = Localize(character_name)

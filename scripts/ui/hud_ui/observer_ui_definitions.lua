@@ -223,7 +223,7 @@ local widget_definitions = {
 					dynamic_function = function (content, style, size, dt, ui_renderer)
 						local bar_value = content.bar_value
 						local is_wounded = content.is_wounded
-						local inverted_bar_value = bar_value - 1
+						local inverted_bar_value = 1 - bar_value
 
 						if is_wounded then
 							content.texture_id = content.wounded_texture_id
@@ -241,11 +241,11 @@ local widget_definitions = {
 
 						local uv_start_pixels = style.uv_start_pixels
 						local uv_scale_pixels = style.uv_scale_pixels
-						local uv_pixels = uv_start_pixels + uv_scale_pixels*bar_value
+						local uv_pixels = uv_start_pixels + uv_scale_pixels * bar_value
 						local uvs = style.uvs
 						local uv_scale_axis = style.scale_axis
 						local offset_scale = style.offset_scale
-						uvs[2][uv_scale_axis] = uv_pixels/(uv_start_pixels + uv_scale_pixels)
+						uvs[2][uv_scale_axis] = uv_pixels / (uv_start_pixels + uv_scale_pixels)
 						size[uv_scale_axis] = uv_pixels
 
 						return style.color, uvs, size
@@ -264,7 +264,7 @@ local widget_definitions = {
 						color[4] = 255
 						local uv_start_pixels = style.uv_start_pixels
 						local uv_scale_pixels = style.uv_scale_pixels
-						local uv_pixels = uv_start_pixels + uv_scale_pixels*bar_value
+						local uv_pixels = uv_start_pixels + uv_scale_pixels * bar_value
 						local uvs = style.uvs
 						local uv_scale_axis = style.scale_axis
 						local offset_scale = style.offset_scale
@@ -272,9 +272,9 @@ local widget_definitions = {
 						offset[1] = 0
 						offset[2] = 0
 						offset[3] = 0
-						uvs[2][uv_scale_axis] = uv_pixels/(uv_start_pixels + uv_scale_pixels)
+						uvs[2][uv_scale_axis] = uv_pixels / (uv_start_pixels + uv_scale_pixels)
 						size[uv_scale_axis] = uv_pixels
-						offset[uv_scale_axis] = ((uv_start_pixels + uv_scale_pixels) - uv_pixels)*offset_scale
+						offset[uv_scale_axis] = ((uv_start_pixels + uv_scale_pixels) - uv_pixels) * offset_scale
 
 						return color, uvs, size, offset
 					end
@@ -289,7 +289,7 @@ local widget_definitions = {
 						local bar_value_size = content.bar_value_size
 						local uv_start_pixels = style.uv_start_pixels
 						local uv_scale_pixels = style.uv_scale_pixels
-						local uv_pixels = uv_start_pixels + uv_scale_pixels*bar_value_position
+						local uv_pixels = uv_start_pixels + uv_scale_pixels * bar_value_position
 						local uvs = style.uvs
 						local uv_scale_axis = style.scale_axis
 						local offset_scale = style.offset_scale
@@ -297,10 +297,10 @@ local widget_definitions = {
 						offset[1] = 0
 						offset[2] = 0
 						offset[3] = 0
-						uvs[2][uv_scale_axis] = uv_pixels/(uv_start_pixels + uv_scale_pixels)
-						local shield_size = uv_start_pixels + uv_scale_pixels*bar_value_size
+						uvs[2][uv_scale_axis] = uv_pixels / (uv_start_pixels + uv_scale_pixels)
+						local shield_size = uv_start_pixels + uv_scale_pixels * bar_value_size
 						size[uv_scale_axis] = shield_size
-						local bar_offset = bar_value_offset*uv_scale_pixels
+						local bar_offset = bar_value_offset * uv_scale_pixels
 						local pos = uv_scale_pixels - shield_size - bar_offset
 
 						if shield_size + uv_pixels < uv_scale_pixels - bar_offset then

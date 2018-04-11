@@ -858,8 +858,8 @@ local animation_definitions = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local alpha = math.easeCubic(progress)*255
-				local text_alpha = math.easeCubic(progress)*150
+				local alpha = math.easeCubic(progress) * 255
+				local text_alpha = math.easeCubic(progress) * 150
 				local widget_index = params.widget_index
 				local widget = widgets[widget_index]
 				local widget_style = widget.style
@@ -921,7 +921,7 @@ local animation_definitions = {
 					local position = ui_scenegraph[scenegraph_id].local_position
 					local start_height = start_heights[i]
 					local distance_per_entry = 260
-					position[2] = start_height - distance_per_entry*math.easeOutCubic(progress)
+					position[2] = start_height - distance_per_entry * math.easeOutCubic(progress)
 				end
 
 				return 
@@ -940,7 +940,7 @@ local animation_definitions = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local alpha = math.easeOutCubic(progress)*255
+				local alpha = math.easeOutCubic(progress) * 255
 				local widget_index = params.widget_index
 				local task_index = params.task_index
 				local widget = widgets[widget_index]
@@ -971,7 +971,7 @@ local animation_definitions = {
 					local widget = widgets[widget_index]
 					local widget_style = widget.style
 					local name = "task_value_" .. task_index
-					widget_style[name].font_size = math.catmullrom(progress, -0.5, 1, 1, -0.5)*32
+					widget_style[name].font_size = 32 * math.catmullrom(progress, -0.5, 1, 1, -0.5)
 				end
 
 				return 
@@ -1000,7 +1000,7 @@ local animation_definitions = {
 					local value = data.value
 					local session_value = data.session_value
 					local end_value = data.end_value
-					local new_value = math.floor(session_value*progress)
+					local new_value = math.floor(session_value * progress)
 					local name = "task_value_" .. task_index
 					widget_content[name] = tostring(value + new_value) .. "/" .. tostring(end_value)
 
@@ -1055,7 +1055,7 @@ local animation_definitions = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local alpha = math.easeOutCubic(progress)*255 - 255
+				local alpha = 255 - math.easeOutCubic(progress) * 255
 				local widget_index = params.widget_index
 				local task_index = params.task_index
 				local widget = widgets[widget_index]
@@ -1089,15 +1089,15 @@ local animation_definitions = {
 				local contract_session_progress = params.contract_session_progress
 				local progress_bar_style = widget_style.progress_bar
 				local progress_bar_content = widget_content.progress_bar
-				local bar_progress = math.min(contract_start_progress + contract_session_progress*math.easeCubic(progress), 1)
-				progress_bar_style.size[1] = progress_bar_style.uv_scale_pixels*bar_progress
+				local bar_progress = math.min(contract_start_progress + contract_session_progress * math.easeCubic(progress), 1)
+				progress_bar_style.size[1] = progress_bar_style.uv_scale_pixels * bar_progress
 				progress_bar_content.uvs[2][progress_bar_style.scale_axis] = bar_progress
 
 				if progress == 1 and bar_progress == 1 then
 					params.play_completed = true
 				end
 
-				bar_progress = math.floor(bar_progress*100, 0)
+				bar_progress = math.floor(bar_progress * 100, 0)
 				local text = Localize("dlc1_3_1_contract_presentation_progress_prefix")
 				widget_content.bar_text = text .. ": " .. tostring(bar_progress) .. "%"
 
@@ -1123,7 +1123,7 @@ local animation_definitions = {
 					local widget_content = widget.content
 					local widget_style = widget.style
 					local anim_progress = math.easeInCubic(progress)
-					local alpha = math.min(anim_progress*120 + 20, 120)
+					local alpha = math.min(20 + anim_progress * 120, 120)
 					local completed_style = widget_style.texture_completed
 					local color = completed_style.color
 					color[1] = alpha
@@ -1132,12 +1132,12 @@ local animation_definitions = {
 					local catmullrom_progress = math.catmullrom(anim_progress, 1.8, 1.8, 1.2, 1.2)
 					local default_width = 408
 					local default_height = 179
-					size[1] = math.floor(default_width*catmullrom_progress)
-					size[2] = math.floor(default_height*catmullrom_progress)
+					size[1] = math.floor(default_width * catmullrom_progress)
+					size[2] = math.floor(default_height * catmullrom_progress)
 					local default_offset_x = 250
 					local default_offset_y = 40
-					offset[1] = default_offset_x - (size[1] - default_width)*0.5
-					offset[2] = default_offset_y - (size[2] - default_height)*0.5
+					offset[1] = default_offset_x - (size[1] - default_width) * 0.5
+					offset[2] = default_offset_y - (size[2] - default_height) * 0.5
 				end
 
 				return 
@@ -1170,7 +1170,7 @@ local animation_definitions = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local alpha = math.easeOutCubic(progress)*50
+				local alpha = math.easeOutCubic(progress) * 50
 				local widget_index = params.widget_index
 				local task_index = params.task_index
 				local widget = widgets[widget_index]
@@ -1194,10 +1194,10 @@ local animation_definitions = {
 				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local alpha = math.easeCubic(progress)*255 - 255
-				local text_alpha = math.easeCubic(progress)*150 - 150
-				local overlay_alpha = math.easeCubic(progress)*50 - 50
-				local completed_alpha = math.easeCubic(progress)*120 - 120
+				local alpha = 255 - math.easeCubic(progress) * 255
+				local text_alpha = 150 - math.easeCubic(progress) * 150
+				local overlay_alpha = 50 - math.easeCubic(progress) * 50
+				local completed_alpha = 120 - math.easeCubic(progress) * 120
 				local num_widgets = params.num_widgets
 
 				for i = 1, num_widgets, 1 do

@@ -99,10 +99,10 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 		local damage_datas, num_damages = self.health_extension:recent_damages()
 		local interrupted = false
 
-		for i = 1, num_damages/DamageDataIndex.STRIDE, 1 do
+		for i = 1, num_damages / DamageDataIndex.STRIDE, 1 do
 			local zero_index = i - 1
-			local damage_amount = damage_datas[zero_index*DamageDataIndex.STRIDE + DamageDataIndex.DAMAGE_AMOUNT]
-			local damage_type = damage_datas[zero_index*DamageDataIndex.STRIDE + DamageDataIndex.DAMAGE_TYPE]
+			local damage_amount = damage_datas[zero_index * DamageDataIndex.STRIDE + DamageDataIndex.DAMAGE_AMOUNT]
+			local damage_type = damage_datas[zero_index * DamageDataIndex.STRIDE + DamageDataIndex.DAMAGE_TYPE]
 
 			if 0 < damage_amount and not IGNORED_DAMAGE_TYPES[damage_type] then
 				interrupted = true
@@ -152,8 +152,8 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 		else
 			local res_w = RESOLUTION_LOOKUP.res_w
 			local res_h = RESOLUTION_LOOKUP.res_h
-			local center_x = res_w*0.5
-			local center_y = res_h*0.5
+			local center_x = res_w * 0.5
+			local center_y = res_h * 0.5
 			self.ray_casted = true
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local camera_position = first_person_extension.current_position(first_person_extension)
@@ -327,12 +327,12 @@ end
 GenericUnitInteractorExtension._claculate_interaction_distance_score = function (self, interactable_unit, camera_position, half_width, half_height, camera)
 	local unit_pos = Unit.world_position(interactable_unit, 0)
 	local ray_distance = INTERACT_RAY_DISTANCE
-	local world_score = Vector3.distance_squared(unit_pos, camera_position)/(ray_distance*ray_distance)
+	local world_score = Vector3.distance_squared(unit_pos, camera_position) / (ray_distance * ray_distance)
 	local unit_screen_pos = Camera.world_to_screen(camera, unit_pos)
 	local middle_offset = Vector3(half_width - unit_screen_pos.x, half_height - unit_screen_pos.z, 0)
-	local screen_score = Vector3.length(middle_offset)/(half_width*2)
+	local screen_score = Vector3.length(middle_offset) / (half_width * 2)
 
-	return world_score*screen_score
+	return world_score * screen_score
 end
 GenericUnitInteractorExtension._get_player_camera = function (self)
 	local player = Managers.player:owner(self.unit)

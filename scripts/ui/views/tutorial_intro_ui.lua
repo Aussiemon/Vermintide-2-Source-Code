@@ -7,7 +7,6 @@ local template_settings = {
 			localize = true,
 			delay = 0,
 			font_size = 70,
-			sound_event = "hud_area_indicator",
 			text = "tutorial_intro_fatshark_games",
 			fade_in_duration = 0.5,
 			duration = 3,
@@ -25,7 +24,6 @@ local template_settings = {
 			localize = true,
 			delay = 5,
 			font_size = 70,
-			sound_event = "hud_area_indicator",
 			text = "tutorial_intro_games_workshop",
 			fade_in_duration = 0.5,
 			duration = 3,
@@ -43,7 +41,6 @@ local template_settings = {
 			localize = true,
 			delay = 5,
 			font_size = 60,
-			sound_event = "hud_area_indicator",
 			text = "tutorial_intro_end_times_adventure",
 			fade_in_duration = 0.5,
 			duration = 3,
@@ -57,14 +54,13 @@ local template_settings = {
 		},
 		{
 			fade_out_duration = 0.51,
-			image = "hero_view_home_logo",
+			image = "vermintide_2_logo_tutorial",
 			delay = 7,
-			sound_event = "hud_area_indicator",
 			fade_in_duration = 1,
 			duration = 3,
 			image_size = {
-				280,
-				200
+				1920,
+				1080
 			},
 			offset = {
 				0,
@@ -80,7 +76,6 @@ local template_settings = {
 			localize = true,
 			delay = 0,
 			font_size = 30,
-			sound_event = "hud_area_indicator",
 			text = "tutorial_intro_presents",
 			fade_in_duration = 0.5,
 			duration = 3,
@@ -98,7 +93,6 @@ local template_settings = {
 			localize = true,
 			delay = 5,
 			font_size = 28,
-			sound_event = "hud_area_indicator",
 			text = "tutorial_intro_in_association_with",
 			fade_in_duration = 0.5,
 			duration = 3,
@@ -116,7 +110,6 @@ local template_settings = {
 			localize = true,
 			delay = 5,
 			font_size = 30,
-			sound_event = "hud_area_indicator",
 			text = "tutorial_intro_an",
 			fade_in_duration = 0.4,
 			duration = 3,
@@ -125,6 +118,59 @@ local template_settings = {
 			offset = {
 				0,
 				50,
+				0
+			}
+		}
+	},
+	template_3 = {
+		{
+			fade_out_duration = 0.4,
+			font_upper_case = false,
+			localize = false,
+			delay = 0,
+			font_size = 30,
+			text = "",
+			fade_in_duration = 0.5,
+			duration = 3,
+			font_type = "hell_shark",
+			color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				0,
+				-50,
+				0
+			}
+		},
+		{
+			fade_out_duration = 0.4,
+			font_upper_case = false,
+			localize = false,
+			delay = 5,
+			font_size = 28,
+			text = "",
+			fade_in_duration = 0.5,
+			duration = 3,
+			font_type = "hell_shark",
+			color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				0,
+				50,
+				0
+			}
+		},
+		{
+			fade_out_duration = 0.4,
+			font_upper_case = false,
+			localize = true,
+			delay = 5,
+			font_size = 30,
+			text = "tutorial_intro_adventure",
+			fade_in_duration = 0.4,
+			duration = 3,
+			font_type = "hell_shark",
+			color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				0,
+				-45,
 				0
 			}
 		}
@@ -175,6 +221,7 @@ end
 TutorialIntroUI.event_start_tutorial_intro_text = function (self)
 	self.start_template_by_index(self, "template_1", 1)
 	self.start_template_by_index(self, "template_2", 1)
+	self.start_template_by_index(self, "template_3", 1)
 
 	return 
 end
@@ -289,7 +336,7 @@ TutorialIntroUI.update = function (self, dt)
 
 				fade_in_duration = math.max(0, fade_in_duration - dt)
 				local default_fade_in_duration = active_entry.default_fade_in_duration
-				local progress = fade_in_duration/default_fade_in_duration - 1
+				local progress = 1 - fade_in_duration / default_fade_in_duration
 
 				self.fade(self, widget, progress)
 
@@ -310,7 +357,7 @@ TutorialIntroUI.update = function (self, dt)
 			elseif fade_out_duration then
 				fade_out_duration = math.max(0, fade_out_duration - dt)
 				local default_fade_out_duration = active_entry.default_fade_out_duration
-				local progress = fade_out_duration/default_fade_out_duration
+				local progress = fade_out_duration / default_fade_out_duration
 
 				self.fade(self, widget, progress)
 
@@ -332,7 +379,7 @@ TutorialIntroUI.update = function (self, dt)
 	return 
 end
 TutorialIntroUI.fade = function (self, widget, progress)
-	local alpha = progress*255
+	local alpha = progress * 255
 	local style = widget.style
 
 	if style.text then

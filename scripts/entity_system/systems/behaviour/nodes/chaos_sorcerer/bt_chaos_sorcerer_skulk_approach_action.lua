@@ -18,7 +18,7 @@ BTChaosSorcererSkulkApproachAction.enter = function (self, unit, blackboard, t)
 	local target_dist = blackboard.target_dist
 	local skulk_data = blackboard.skulk_data or {}
 	blackboard.skulk_data = skulk_data
-	skulk_data.direction = skulk_data.direction or math.random(0, 1)*2 - 1
+	skulk_data.direction = skulk_data.direction or 1 - math.random(0, 1) * 2
 	skulk_data.radius = skulk_data.radius or blackboard.target_dist
 	blackboard.action = action
 
@@ -71,15 +71,15 @@ BTChaosSorcererSkulkApproachAction.enter = function (self, unit, blackboard, t)
 
 	return 
 end
-local VORTEX_CHECK_ANGLE_INCREMENT = math.pi/4
+local VORTEX_CHECK_ANGLE_INCREMENT = math.pi / 4
 BTChaosSorcererSkulkApproachAction._initialize_vortex_data = function (self, blackboard, action)
 	local vortex_template = VortexTemplates[action.vortex_template_name]
 	local max_radius = vortex_template.full_inner_radius
-	local start_check_direction = Vector3.forward()*max_radius
+	local start_check_direction = Vector3.forward() * max_radius
 	local check_directions = {}
 
 	for i = 1, 8, 1 do
-		local current_rotation = Quaternion(Vector3.up(), VORTEX_CHECK_ANGLE_INCREMENT*(i - 1))
+		local current_rotation = Quaternion(Vector3.up(), VORTEX_CHECK_ANGLE_INCREMENT * (i - 1))
 		local direction = Quaternion.rotate(current_rotation, start_check_direction)
 		check_directions[i] = Vector3Box(direction)
 	end
@@ -143,8 +143,8 @@ BTChaosSorcererSkulkApproachAction.run = function (self, unit, blackboard, t, dt
 			center_pos = target_pos
 		end
 
-		local spread = math.random()*5 + math.random()*5 + math.random()*5
-		local dist = spread*0.5 + action.preferred_distance
+		local spread = math.random() * 5 + math.random() * 5 + math.random() * 5
+		local dist = spread * 0.5 + action.preferred_distance
 		local tries = 5
 		local teleport_pos = ConflictUtils.get_spawn_pos_on_circle(blackboard.nav_world, unit_pos, dist, spread, tries)
 
@@ -264,7 +264,7 @@ BTChaosSorcererSkulkApproachAction.get_skulk_target = function (self, unit, blac
 
 	if blackboard.is_close then
 		if dist < preferred_distance then
-			to_target = to_target + to_target_dir*(math.random() + 1)
+			to_target = to_target + to_target_dir * (1 + math.random())
 		else
 			blackboard.is_close = false
 			to_target = to_target + to_target_dir
@@ -276,20 +276,20 @@ BTChaosSorcererSkulkApproachAction.get_skulk_target = function (self, unit, blac
 
 	local cross_dir = Vector3(0, 0, direction)
 	local mod = 0.1
-	local alpha = math.pi*math.clamp((mod*20)/dist, 0.01, 0.15)
+	local alpha = math.pi * math.clamp((mod * 20) / dist, 0.01, 0.15)
 
 	if teleporting then
-		alpha = alpha*1.5
+		alpha = alpha * 1.5
 	end
 
 	for i = 1, TRIES, 1 do
-		local rot_vec = to_target - to_target_dir*0.5
+		local rot_vec = to_target - to_target_dir * 0.5
 
 		if blackboard.num_summons and (action.teleport_closer_summon_limit or 3) <= blackboard.num_summons then
-			rot_vec = Vector3.normalize(target_position - unit_position)*action.teleport_closer_range
+			rot_vec = Vector3.normalize(target_position - unit_position) * action.teleport_closer_range
 		end
 
-		local pos = target_position + Quaternion.rotate(Quaternion(cross_dir, alpha*i), rot_vec)
+		local pos = target_position + Quaternion.rotate(Quaternion(cross_dir, alpha * i), rot_vec)
 		pos = ConflictUtils.find_center_tri(nav_world, pos)
 
 		if pos then
@@ -297,7 +297,7 @@ BTChaosSorcererSkulkApproachAction.get_skulk_target = function (self, unit, blac
 		end
 	end
 
-	skulk_data.direction = skulk_data.direction*-1
+	skulk_data.direction = skulk_data.direction * -1
 
 	return 
 end
@@ -307,7 +307,7 @@ BTChaosSorcererSkulkApproachAction.debug_show_skulk_circle = function (self, uni
 	local radius = skulk_data.radius
 	local target_unit = blackboard.target_unit
 	local target_position = POSITION_LOOKUP[target_unit]
-	local offset = Vector3.up()*0.2
+	local offset = Vector3.up() * 0.2
 
 	QuickDrawer:circle(target_position + offset, blackboard.target_dist, Vector3.up(), Colors.get("light_green"))
 	QuickDrawer:circle(target_position + offset, skulk_data.radius, Vector3.up(), Colors.get("light_green"))
@@ -501,8 +501,8 @@ BTChaosSorcererSkulkApproachAction.prepare_wall_search = function (portal_data, 
 			local pos = pos_c + up
 			local rot = unit_local_rotation(cover_unit, 0)
 			local to_wall = Quaternion.forward(rot)
-			local to_right = -Quaternion.right(rot)*0.85
-			local to_up = -Quaternion.up(rot)*0.85
+			local to_right = -Quaternion.right(rot) * 0.85
+			local to_up = -Quaternion.up(rot) * 0.85
 
 			QuickDrawerStay:sphere(pos_c, 0.15, col_c)
 			QuickDrawerStay:sphere(pos, 0.1, col)
@@ -518,7 +518,7 @@ BTChaosSorcererSkulkApproachAction.prepare_wall_search = function (portal_data, 
 end
 
 local function get_random_pos_on_circle(center_pos, dist, spread)
-	local add_vec = Vector3(dist + (math.random() - 0.5)*spread, 0, 1)
+	local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)
 	local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
 
 	return pos
@@ -616,7 +616,7 @@ BTChaosSorcererSkulkApproachAction.evaluate_wall = function (portal_data, nav_wo
 
 					if debug_wall then
 						QuickDrawerStay:cylinder(hit_position, hit_position + normal, portal_radius, Color(220, 60, 70), 10)
-						QuickDrawerStay:sphere(hit_position, portal_radius*0.5, Color(220, 30, 30))
+						QuickDrawerStay:sphere(hit_position, portal_radius * 0.5, Color(220, 30, 30))
 					end
 
 					return "success"

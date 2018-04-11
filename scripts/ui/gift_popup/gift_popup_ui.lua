@@ -155,10 +155,10 @@ GiftPopupUI._align_thumb_widgets = function (self)
 	local num_thumb_widgets = #thumb_widgets
 	local max_display_width = 630
 	local thumb_width = 64
-	local total_thumb_width = num_thumb_widgets*thumb_width
-	local free_spacing_width = (max_display_width - total_thumb_width)/math.max(num_thumb_widgets - 1, 1)
+	local total_thumb_width = num_thumb_widgets * thumb_width
+	local free_spacing_width = (max_display_width - total_thumb_width) / math.max(num_thumb_widgets - 1, 1)
 	local distance_between = (0 < free_spacing_width and math.min(free_spacing_width, 36)) or free_spacing_width
-	local start_offset = -((distance_between + thumb_width)*(num_thumb_widgets - 1))/2
+	local start_offset = -((distance_between + thumb_width) * (num_thumb_widgets - 1)) / 2
 
 	for index, widget in ipairs(thumb_widgets) do
 		widget.offset[1] = start_offset
@@ -756,12 +756,12 @@ GiftPopupUI.spawn_chest_unit = function (self)
 
 		if max_value < largest_value then
 			local diff = largest_value - max_value
-			local scale_fraction = diff/largest_value - 1
+			local scale_fraction = 1 - diff / largest_value
 			local scale = Vector3(scale_fraction, scale_fraction, scale_fraction)
 
 			Unit.set_local_scale(chest_unit, 0, scale)
 
-			offset = offset*scale_fraction
+			offset = offset * scale_fraction
 		end
 
 		local display_position = unit_spawn_position - offset
@@ -784,7 +784,7 @@ GiftPopupUI.auto_rotate = function (self, dt)
 	if chest_unit and Unit.alive(chest_unit) then
 		local speed_multiplier = self.unit_auto_rotate_speed_multiplier or 0.5
 		local current_value = self.unit_auto_rotate_value or 0
-		local value = (current_value + dt*speed_multiplier)%(math.pi*2)
+		local value = (current_value + dt * speed_multiplier) % (math.pi * 2)
 		local unit_rotation = Quaternion.axis_angle(Vector3(0, 0, 1), -value)
 
 		Unit.set_local_rotation(chest_unit, 0, unit_rotation)
@@ -937,7 +937,7 @@ GiftPopupUI.spawn_link_unit = function (self, item_key)
 	local camera_rotation = self.get_camera_rotation(self)
 	local camera_forward_vector = Quaternion.forward(camera_rotation)
 	local camera_look_rotation = Quaternion.look(camera_forward_vector, Vector3.up())
-	local horizontal_rotation = Quaternion.axis_angle(Vector3.up(), math.pi*1)
+	local horizontal_rotation = Quaternion.axis_angle(Vector3.up(), math.pi * 1)
 	local unit_spawn_rotation = Quaternion.multiply(camera_look_rotation, horizontal_rotation)
 	local camera_position = self.get_camera_position(self)
 	local unit_spawn_position = camera_position + camera_forward_vector
@@ -967,12 +967,12 @@ GiftPopupUI.spawn_link_unit = function (self, item_key)
 
 		if max_value < largest_value then
 			local diff = largest_value - max_value
-			local scale_fraction = diff/largest_value - 1
+			local scale_fraction = 1 - diff / largest_value
 			local scale = Vector3(scale_fraction, scale_fraction, scale_fraction)
 
 			Unit.set_local_scale(link_unit, 0, scale)
 
-			offset = offset*scale_fraction
+			offset = offset * scale_fraction
 		end
 
 		local display_position = unit_spawn_position - offset
@@ -1070,7 +1070,7 @@ GiftPopupUI._update_thumb_selection_timer = function (self, dt)
 			timer = math.min(timer + dt, total_time)
 			self._selection_timer = timer
 
-			return timer/total_time
+			return timer / total_time
 		end
 	end
 
@@ -1095,7 +1095,7 @@ GiftPopupUI._update_thumb_widgets = function (self, dt, instant)
 end
 GiftPopupUI._animate_thumb_element = function (self, widget, index, progress)
 	local is_selection_widget = self._selection_index == index
-	local anim_progress = (is_selection_widget and math.easeCubic(progress)) or math.easeCubic(progress - 1)
+	local anim_progress = (is_selection_widget and math.easeCubic(progress)) or math.easeCubic(1 - progress)
 
 	return 
 end

@@ -157,10 +157,10 @@ BTPackMasterSkulkAroundAction.get_new_goal = function (self, unit, blackboard)
 		local min_dist = 10
 		local max_dist = 25
 		local dir = blackboard.skulk_around_dir
-		dir = dir or math.random(0, 1)*2 - 1
+		dir = dir or 1 - math.random(0, 1) * 2
 		blackboard.skulk_around_dir = dir
-		local angle = math.random(10, 180)*dir
-		local above_below = fails*5 + 5
+		local angle = math.random(10, 180) * dir
+		local above_below = 5 + fails * 5
 		pos = LocomotionUtils.outside_goal(blackboard.nav_world, POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit], min_dist, max_dist, angle, 5, above_below, above_below)
 
 		if pos then

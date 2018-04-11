@@ -115,7 +115,7 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 	local current_charge_time = nil
 
 	if 0 < full_charge_time and 0 < charge_time then
-		current_charge_time = full_charge_time/charge_time - 1
+		current_charge_time = 1 - full_charge_time / charge_time
 	elseif (0 < full_charge_time and charge_time <= 0) or (full_charge_time <= 0 and 0 < charge_time) or (full_charge_time <= 0 and charge_time <= 0) then
 		current_charge_time = 1
 	end
@@ -235,9 +235,9 @@ ActionCharge.finish = function (self, reason)
 
 	if self.remove_overcharge_on_interrupt then
 		if reason == "interrupted" then
-			overcharge_extension.remove_charge(overcharge_extension, self.total_overcharge_added*0.75)
+			overcharge_extension.remove_charge(overcharge_extension, self.total_overcharge_added * 0.75)
 		elseif reason == "hold_input_released" then
-			overcharge_extension.remove_charge(overcharge_extension, self.total_overcharge_added*0.5)
+			overcharge_extension.remove_charge(overcharge_extension, self.total_overcharge_added * 0.5)
 		end
 	end
 

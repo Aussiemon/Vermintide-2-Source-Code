@@ -266,13 +266,18 @@ weapon_template.ammo_data = {
 }
 weapon_template.attack_meta_data = {
 	aim_at_node = "j_spine1",
+	charge_shot_delay = 0.1,
+	always_charge_before_firing = true,
 	charged_attack_action_name = "shoot_charged",
-	ignore_enemies_for_obstruction_charged = true,
 	can_charge_shot = true,
+	ignore_enemies_for_obstruction_charged = false,
+	base_action_name = "action_career_release",
 	aim_at_node_charged = "j_head",
+	ignore_allies_for_obstruction = true,
 	minimum_charge_time = 0.55,
+	ignore_allies_for_obstruction_charged = true,
 	charge_when_obstructed = true,
-	ignore_enemies_for_obstruction = true,
+	ignore_enemies_for_obstruction = false,
 	charge_against_armoured_enemy = true
 }
 weapon_template.default_spread_template = "sparks"

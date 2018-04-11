@@ -96,10 +96,18 @@ local function clear_dirty_flag(stats)
 end
 
 BackendInterfaceStatisticsPlayFab.save = function (self, save_callback)
-	local player = Managers.player:local_player()
+	local player_manager = Managers.player
+
+	if not player_manager then
+		print("[BackendInterfaceStatisticsPlayFab] No player manager, skipping saving statistics...")
+
+		return false
+	end
+
+	local player = player_manager.local_player(player_manager)
 
 	if not player then
-		print("No player found, skipping saving statistics...")
+		print("[BackendInterfaceStatisticsPlayFab] No player found, skipping saving statistics...")
 
 		return false
 	end
@@ -111,7 +119,7 @@ BackendInterfaceStatisticsPlayFab.save = function (self, save_callback)
 	self._mirror:set_stats(player_stats)
 
 	if table.is_empty(stats_to_save) then
-		print("No modified player statistics to save...")
+		print("[BackendInterfaceStatisticsPlayFab] No modified player statistics to save...")
 
 		return false
 	end
@@ -123,23 +131,28 @@ BackendInterfaceStatisticsPlayFab.save = function (self, save_callback)
 		}
 	}
 
-	local function request_callback(result)
+	local function request_callback(on_complete, result)
 		if result.Error then
-			Application.warning("Error saving player statistics!")
+			Application.warning("[BackendInterfaceStatisticsPlayFab] Error saving player statistics!")
 			table.dump(result, "PlayFabError", math.huge)
-			save_callback(false)
+			save_callback(on_complete, false)
 		else
 			clear_dirty_flag(stats_to_save)
-			print("Player statistics saved!")
-			save_callback(true)
+			print("[BackendInterfaceStatisticsPlayFab] Player statistics saved!")
+			save_callback(on_complete, true)
 		end
 
 		return 
 	end
 
-	PlayFabClientApi.ExecuteCloudScript(request, request_callback, request_callback)
+	return {
+		payload = table.clone(request),
+		callback = function (payload, on_complete)
+			PlayFabClientApi.ExecuteCloudScript(payload, callback(request_callback, on_complete), callback(request_callback, on_complete))
 
-	return true
+			return 
+		end
+	}
 end
 
 return 

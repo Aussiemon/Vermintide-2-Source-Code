@@ -67,7 +67,7 @@ MissionTemplates = {
 			return 
 		end,
 		evaluate_mission = function (data, dt)
-			return data.get_current_amount(data) == data.collect_amount, data.get_current_amount(data)/data.collect_amount
+			return data.get_current_amount(data) == data.collect_amount, data.get_current_amount(data) / data.collect_amount
 		end,
 		create_sync_data = function (data)
 			local sync_data = {
@@ -117,7 +117,7 @@ MissionTemplates = {
 			return 
 		end,
 		evaluate_mission = function (data, dt)
-			return data.current_amount == data.defend_amount, data.current_amount/data.defend_amount
+			return data.current_amount == data.defend_amount, data.current_amount / data.defend_amount
 		end,
 		create_sync_data = function (data)
 			local sync_data = {
@@ -197,8 +197,8 @@ MissionTemplates = {
 		end,
 		update_text = function (data)
 			local time = math.ceil(data.time_left)
-			local minutes = math.floor(time/60)
-			local seconds = time%60
+			local minutes = math.floor(time / 60)
+			local seconds = time % 60
 			local sminutes = (10 <= minutes and tostring(minutes)) or string.format("0%s", tostring(minutes))
 			local sseconds = (10 <= seconds and tostring(seconds)) or string.format("0%s", tostring(seconds))
 			local text = string.format("%s:%s\n%s", sminutes, sseconds, data.mission_text)

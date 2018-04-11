@@ -128,12 +128,14 @@ PlayerUnitHealthExtension._calculate_max_health = function (self)
 	max_health = buff_extension.apply_buffs_to_value(buff_extension, max_health, StatBuffIndex.MAX_HEALTH)
 	local num_grimoires = buff_extension.num_buff_perk(buff_extension, "skaven_grimoire")
 	local multiplier = buff_extension.apply_buffs_to_value(buff_extension, PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+	local num_twitch_grimoires = buff_extension.num_buff_perk(buff_extension, "twitch_grimoire")
+	local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 
-	if 0 < num_grimoires then
-		modifier = num_grimoires*multiplier + 1
+	if 0 < num_grimoires + num_twitch_grimoires then
+		modifier = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier
 	end
 
-	max_health = max_health*modifier
+	max_health = max_health * modifier
 	max_health = DamageUtils.networkify_health(max_health)
 
 	return max_health
@@ -202,17 +204,17 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 				temporary_health = max_health
 			elseif state == "alive" then
 				health = 0
-				temporary_health = max_health/2
+				temporary_health = max_health / 2
 			end
 		elseif max_health ~= previous_max_health then
-			local previous_health_percentage = health/previous_max_health
-			health = max_health*previous_health_percentage
+			local previous_health_percentage = health / previous_max_health
+			health = max_health * previous_health_percentage
 		end
 
 		local set_health_percentage = self.set_health_percentage
 
 		if set_health_percentage then
-			health = max_health*set_health_percentage
+			health = max_health * set_health_percentage
 			self.set_health_percentage = nil
 		end
 
@@ -223,7 +225,10 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", temporary_health)
 
 		if script_data.show_player_health then
-			Debug.text("[%s] perm=%.2f (%.3f%%) temp=%.2f (%.3f%%) max=%.2f", SPProfilesAbbreviation[self._profile_index], health, self.current_permanent_health_percent(self), temporary_health, self.current_temporary_health_percent(self), max_health)
+			local max_wounds = status_extension.max_wounds_network_safe(status_extension)
+			local current_wounds = status_extension.num_wounds_remaining(status_extension)
+
+			Debug.text("[%s] perm=%.2f (%.3f%%) temp=%.2f (%.3f%%) max=%.2f wounds=%.0f/%.0f", SPProfilesAbbreviation[self._profile_index], health, self.current_permanent_health_percent(self), temporary_health, self.current_temporary_health_percent(self), max_health, current_wounds, max_wounds)
 		end
 
 		if self.wounded_degen_timer <= t then
@@ -369,7 +374,7 @@ PlayerUnitHealthExtension.add_heal = function (self, healer_unit, heal_amount, h
 		local current_temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
 		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
-		if self.status_extension:is_permanent_heal(heal_type) then
+		if self.status_extension:is_permanent_heal(heal_type) and not self.status_extension:is_knocked_down() then
 			local new_temporary_health = (current_temporary_health >= heal_amount or 0) and current_temporary_health - heal_amount
 
 			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
@@ -479,7 +484,7 @@ PlayerUnitHealthExtension.current_health_percent = function (self)
 		local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
 		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
-		return (health + temporary_health)/max_health
+		return (health + temporary_health) / max_health
 	end
 
 	return 1
@@ -492,7 +497,7 @@ PlayerUnitHealthExtension.current_permanent_health_percent = function (self)
 		local health = GameSession.game_object_field(game, game_object_id, "current_health")
 		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
-		return health/max_health
+		return health / max_health
 	end
 
 	return 1
@@ -505,7 +510,7 @@ PlayerUnitHealthExtension.current_temporary_health_percent = function (self)
 		local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
 		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
-		return temporary_health/max_health
+		return temporary_health / max_health
 	end
 
 	return 1

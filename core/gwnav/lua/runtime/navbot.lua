@@ -227,7 +227,7 @@ NavBot.on_compute_path_to_brand_new_destination_for_crowd_dispersion = function 
 	return 
 end
 NavBot.next_route_index = function (self)
-	self.target_route_vertex = math.max((self.target_route_vertex + 1)%(table.getn(self.route) + 1), 1)
+	self.target_route_vertex = math.max((self.target_route_vertex + 1) % (table.getn(self.route) + 1), 1)
 
 	return 
 end
@@ -402,8 +402,8 @@ NavBot.move_unit_with_mover = function (self, dt, gravity)
 		end
 
 		local output_velocity = GwNavBot.output_velocity(self.gwnavbot)
-		local v = output_velocity*dt
-		v.z = v.z - dt*gravity
+		local v = output_velocity * dt
+		v.z = v.z - dt * gravity
 
 		Mover.move(mover, v, dt)
 		self.update_pose(self, Vector3.normalize(output_velocity), Mover.position(mover))

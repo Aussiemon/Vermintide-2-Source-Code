@@ -17,6 +17,10 @@ DefaultAnimationFunctions = {
 		player_input.set_enabled(player_input, false)
 		player_input.set_allowed_inputs(player_input, allowed_input)
 		player_input.set_disallowed_inputs(player_input)
+		Managers.state.event:trigger("close_ingame_menu")
+		Managers.input:device_block_service("gamepad", 1, "ingame_menu")
+		Managers.input:device_block_service("keyboard", 1, "ingame_menu")
+		Managers.input:device_block_service("mouse", 1, "ingame_menu")
 
 		local first_person_ext = ScriptUnit.extension(player_unit, "first_person_system")
 		local player_head_pos = Unit.world_position(player_unit, Unit.node(player_unit, "j_neck"))
@@ -74,7 +78,9 @@ DefaultAnimationFunctions = {
 				this.stop_timer = nil
 			end
 
+			local gamepad_active = Managers.input:is_device_active("gamepad")
 			local input_service = Managers.input:get_service("Player")
+			local alternate_input_service = Managers.input:get_service("Tutorial")
 			local in_sequence = this.input_requirement == "sequence"
 
 			if in_sequence then
@@ -82,7 +88,14 @@ DefaultAnimationFunctions = {
 				local success = true
 
 				for _, input in ipairs(inputs) do
-					local result = input_service.get(input_service, input)
+					local result = nil
+					local keymap_data = not gamepad_active and input_service.get_keymapping(input_service, input)
+
+					if not keymap_data or keymap_data[2] == UNASSIGNED_KEY then
+						result = alternate_input_service.get(alternate_input_service, input)
+					else
+						result = input_service.get(input_service, input)
+					end
 
 					if type(result) == "number" and result == 0 then
 						success = false
@@ -107,7 +120,14 @@ DefaultAnimationFunctions = {
 					local success = true
 
 					for _, input in ipairs(inputs) do
-						local result = input_service.get(input_service, input)
+						local result = nil
+						local keymap_data = not gamepad_active and input_service.get_keymapping(input_service, input)
+
+						if not keymap_data or keymap_data[2] == UNASSIGNED_KEY then
+							result = alternate_input_service.get(alternate_input_service, input)
+						else
+							result = input_service.get(input_service, input)
+						end
 
 						if type(result) == "number" and result == 0 then
 							success = false
@@ -175,6 +195,9 @@ DefaultAnimationFunctions = {
 		player_input.set_enabled(player_input, this.player_input_enabled)
 		player_input.set_allowed_inputs(player_input, this.allowed_input)
 		player_input.set_disallowed_inputs(player_input, this.disallowed_input)
+		Managers.input:device_unblock_service("gamepad", 1, "ingame_menu")
+		Managers.input:device_unblock_service("keyboard", 1, "ingame_menu")
+		Managers.input:device_unblock_service("mouse", 1, "ingame_menu")
 
 		local first_person_ext = ScriptUnit.extension(player_unit, "first_person_system")
 		local rotation = Unit.local_rotation(player_unit, 0)

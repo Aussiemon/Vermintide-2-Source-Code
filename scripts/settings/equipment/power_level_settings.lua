@@ -10,16 +10,16 @@ BoostCurves = {
 	},
 	linesman_curve = {
 		0,
-		0.3,
-		0.6,
-		0.8,
+		0.2,
+		0.4,
+		0.7,
 		1
 	},
 	smiter_curve = {
 		0,
-		0.2,
-		0.4,
-		0.7,
+		0.25,
+		0.5,
+		0.75,
 		1
 	},
 	tank_curve = {
@@ -31,9 +31,9 @@ BoostCurves = {
 	},
 	ninja_curve = {
 		0,
+		0.5,
 		0.7,
 		0.85,
-		0.9,
 		1
 	}
 }
@@ -94,8 +94,8 @@ DefaultPowerLevel = 195
 MinFallDistanceForBonus = 3
 FallingPowerLevelBonusMultiplier = 1.15
 DefaultCleaveDistribution = {
-	attack = 0.25,
-	impact = 0.25
+	attack = 0.15,
+	impact = 0.15
 }
 DefaultArmorPowerModifier = {
 	attack = {

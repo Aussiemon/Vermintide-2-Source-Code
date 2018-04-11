@@ -194,8 +194,8 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 			local ratio = limit.exchange_ratio
 
 			if ratio < overflow then
-				local exchanged_amount = math.floor(overflow/ratio)
-				amount = amount - exchanged_amount*ratio
+				local exchanged_amount = math.floor(overflow / ratio)
+				amount = amount - exchanged_amount * ratio
 				local exchange_breed = limit.spawn_breed
 
 				if type(exchange_breed) == "table" then
@@ -213,7 +213,7 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 						active_enemies = active_enemies + self._try_spawn_breed(self, exchange_breed[i], spawn_list_per_breed, spawn_list, breed_limits, active_enemies, group_template)
 					end
 				else
-					D("replacing %i %s with %i %s", exchanged_amount*ratio, breed_name, exchanged_amount, exchange_breed)
+					D("replacing %i %s with %i %s", exchanged_amount * ratio, breed_name, exchanged_amount, exchange_breed)
 
 					spawn_list_per_breed[exchange_breed] = (spawn_list_per_breed[exchange_breed] or 0) + exchanged_amount
 					active_enemies = active_enemies + self._try_spawn_breed(self, exchange_breed, spawn_list_per_breed, spawn_list, breed_limits, active_enemies, group_template)
@@ -262,7 +262,7 @@ SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawn
 	local total_amount = #spawn_list
 
 	for i = 1, num_spawners_to_use, 1 do
-		local to_spawn = math.floor(total_amount/(num_spawners_to_use - i + 1))
+		local to_spawn = math.floor(total_amount / (num_spawners_to_use - i + 1))
 
 		D("\t spawner %i gets %i rats.", i, to_spawn)
 
@@ -511,11 +511,11 @@ SpawnerSystem.debug_show_spawners = function (self, t, spawners)
 
 		QuickDrawer:line(pos, pos + add_height, color)
 
-		local d = t%10*7
+		local d = 7 * t % 10
 
 		QuickDrawer:sphere(pos + Vector3(0, 0, d), 0.5, color)
-		QuickDrawer:sphere(pos + Vector3(0, 0, (d + 10)%h), 0.5, color)
-		QuickDrawer:sphere(pos + Vector3(0, 0, (d + 20)%h), 0.5, color)
+		QuickDrawer:sphere(pos + Vector3(0, 0, (d + 10) % h), 0.5, color)
+		QuickDrawer:sphere(pos + Vector3(0, 0, (d + 20) % h), 0.5, color)
 	end
 
 	return 
@@ -569,9 +569,9 @@ SpawnerSystem.show_hidden_spawners = function (self, t)
 		center_pos = free_flight_manager.camera_position_rotation(free_flight_manager)
 	end
 
-	local s = math.sin(t*10)
-	local color = Color(s*64 + 192, s*64 + 192, 0)
-	local fail_color = Color(s*64 + 192, 0, 0)
+	local s = math.sin(t * 10)
+	local color = Color(192 + 64 * s, 192 + 64 * s, 0)
+	local fail_color = Color(192 + 64 * s, 0, 0)
 	local amount = 0
 	local bad = 0
 	local radius = 40
@@ -579,7 +579,7 @@ SpawnerSystem.show_hidden_spawners = function (self, t)
 	if center_pos then
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 		amount = Broadphase.query(self.hidden_spawners_broadphase, center_pos, radius, found_hidden_spawners)
-		local spinn = math.sin(t*5)*0.33
+		local spinn = math.sin(t * 5) * 0.33
 		local spinn_vec = Vector3(spinn, spinn, 0)
 		local h_pos = Vector3(spinn, spinn, 30)
 

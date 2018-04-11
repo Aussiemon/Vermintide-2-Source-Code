@@ -247,7 +247,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.25,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,
@@ -337,7 +337,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.25,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,
@@ -423,7 +423,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.4,
+			anim_time_scale = time_mod * 1.4,
 			buff_data = {
 				{
 					start_time = 0,
@@ -488,7 +488,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.5,
+			anim_time_scale = time_mod * 1.5,
 			buff_data = {
 				{
 					start_time = 0,
@@ -553,7 +553,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.4,
+			anim_time_scale = time_mod * 1.4,
 			buff_data = {
 				{
 					start_time = 0,
@@ -618,7 +618,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod*1.7,
+			anim_time_scale = time_mod * 1.7,
 			buff_data = {
 				{
 					start_time = 0,
@@ -825,7 +825,7 @@ weapon_template.actions = {
 			anim_event = "attack_shoot",
 			reload_time = 0.5,
 			total_time = 0.8,
-			anim_time_scale = time_mod*2,
+			anim_time_scale = time_mod * 2,
 			buff_data = {
 				{
 					start_time = 0,
@@ -858,7 +858,7 @@ weapon_template.actions = {
 			recoil_settings = {
 				horizontal_climb = 0,
 				restore_duration = 0.25,
-				vertical_climb = 2,
+				vertical_climb = 0.25,
 				climb_duration = 0.1,
 				climb_function = math.easeInCubic,
 				restore_function = math.ease_out_quad

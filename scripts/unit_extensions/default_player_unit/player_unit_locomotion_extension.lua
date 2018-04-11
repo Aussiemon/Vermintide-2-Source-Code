@@ -39,12 +39,16 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 
 	self.move_to_non_intersecting_position(self)
 
+	local position = Unit.world_position(unit, 0)
+	self.has_moved_from_start_position = false
+	self._start_position = Vector3Box(position)
+
 	if self.is_server then
 		local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
 
 		AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table, nil, 1)
 
-		self._latest_position_on_navmesh = Vector3Box(Unit.world_position(unit, 0))
+		self._latest_position_on_navmesh = Vector3Box(position)
 		self._nav_world = Managers.state.entity:system("ai_system"):nav_world()
 		self._nav_traverse_logic = GwNavTraverseLogic.create(self._nav_world, nav_cost_map_cost_table)
 		self._nav_cost_map_cost_table = nav_cost_map_cost_table
@@ -300,7 +304,7 @@ end
 local ai_units = {}
 PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, unit, dt, t, calculate_fall_velocity)
 	if self._script_movement_time_scale then
-		dt = dt*self._script_movement_time_scale
+		dt = dt * self._script_movement_time_scale
 		self._script_movement_time_scale = nil
 	end
 
@@ -333,19 +337,19 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 		if external_length < external_direction_component then
 		elseif 0 < external_direction_component then
-			velocity_wanted = velocity_wanted - external_dir*external_direction_component + flat_external_velocity
+			velocity_wanted = velocity_wanted - external_dir * external_direction_component + flat_external_velocity
 		else
-			flat_external_velocity = flat_external_velocity + external_dir*external_direction_component*dt
-			local wanted_component = velocity_wanted - external_dir*external_direction_component
+			flat_external_velocity = flat_external_velocity + external_dir * external_direction_component * dt
+			local wanted_component = velocity_wanted - external_dir * external_direction_component
 			velocity_wanted = wanted_component + flat_external_velocity
 		end
 
 		if self.on_ground then
 			local friction_constant = 15
-			local friction = math.min(friction_constant*dt, external_length)*-external_dir
+			local friction = math.min(friction_constant * dt, external_length) * -external_dir
 			new_external_velocity = flat_external_velocity + friction
 		else
-			new_external_velocity = flat_external_velocity*(math.min(dt*0.00225*external_length*external_length, 1) - 1)
+			new_external_velocity = flat_external_velocity * (1 - math.min(dt * 0.00225 * external_length * external_length, 1))
 		end
 
 		if Vector3.length(new_external_velocity) < 0.01 then
@@ -357,13 +361,13 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 	drag_koeff = (self.use_drag and 0.00255) or 1
 	local speed = Vector3.length(velocity_wanted)
-	local drag_force = drag_koeff*speed*speed*Vector3.normalize(-velocity_wanted)
-	local dragged_velocity = velocity_wanted + drag_force*dt
+	local drag_force = drag_koeff * speed * speed * Vector3.normalize(-velocity_wanted)
+	local dragged_velocity = velocity_wanted + drag_force * dt
 
 	if calculate_fall_velocity then
 		local fall_speed = dragged_velocity.z
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-		fall_speed = fall_speed - movement_settings_table.gravity_acceleration*dt
+		fall_speed = fall_speed - movement_settings_table.gravity_acceleration * dt
 		dragged_velocity.z = math.min(self.maximum_upward_velocity, fall_speed)
 	end
 
@@ -378,14 +382,14 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 	if 0.001 < velocity_flat_length then
 		Profiler.start("manual mover")
 
-		velocity_flat_normalized = velocity_flat_normalized/velocity_flat_length
+		velocity_flat_normalized = velocity_flat_normalized / velocity_flat_length
 		local flat_player_pos = Vector3.flat(current_position)
-		local constrain_end_pos = flat_player_pos + velocity_flat_normalized*2
+		local constrain_end_pos = flat_player_pos + velocity_flat_normalized * 2
 		local constrained_target = nil
 		local min_dot = -1
 		local max_dot = 1
 		local query_radius = 1
-		local query_position = current_position + velocity_flat_normalized*0.5
+		local query_position = current_position + velocity_flat_normalized * 0.5
 
 		if self._mover_modes.enemy_noclip == false then
 			local num_ai_units = AiUtils.broadphase_query(query_position, query_radius, ai_units)
@@ -397,13 +401,13 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 				if is_alive and breed.player_locomotion_constrain_radius ~= nil then
 					local ai_radius = breed.player_locomotion_constrain_radius
-					local ai_min_dist_sq = ai_radius*ai_radius*2*2
+					local ai_min_dist_sq = ai_radius * ai_radius * 2 * 2
 					local ai_position = Vector3.flat(POSITION_LOOKUP[ai_unit])
 					local ai_point_on_line = flat_player_pos + velocity_flat_normalized
 					local ai_dist_to_line_sq = Vector3.distance_squared(ai_position, ai_point_on_line)
 
 					if ai_dist_to_line_sq < ai_min_dist_sq then
-						constrained_target = ai_position + Vector3.normalize(ai_point_on_line - ai_position)*ai_radius*2
+						constrained_target = ai_position + Vector3.normalize(ai_point_on_line - ai_position) * ai_radius * 2
 						local dot = Vector3.dot(velocity_flat_normalized, Vector3.normalize(constrained_target - flat_player_pos))
 						min_dot = math.max(min_dot, dot)
 						max_dot = math.min(max_dot, dot)
@@ -421,7 +425,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 			dragged_velocity = constrained_target - flat_player_pos
 
 			if 0.001 < Vector3.length(dragged_velocity) then
-				dragged_velocity = Vector3.normalize(dragged_velocity)*dragged_velocity_magnitude*max_dot
+				dragged_velocity = Vector3.normalize(dragged_velocity) * dragged_velocity_magnitude * max_dot
 			end
 
 			dragged_velocity.z = fall_speed
@@ -430,13 +434,13 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 		Profiler.stop("manual mover")
 	end
 
-	local delta = dragged_velocity*dt
+	local delta = dragged_velocity * dt
 
 	Mover.move(mover, delta, dt)
 	Profiler.stop("mover move")
 
 	local final_position = Mover.position(mover)
-	local final_velocity = (final_position - current_position)/dt
+	local final_velocity = (final_position - current_position) / dt
 
 	self.velocity_network:store(final_velocity)
 	Unit.set_local_position(unit, 0, final_position)
@@ -450,7 +454,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 		local external_length = Vector3.length(new_external_velocity)
 
 		if vel_dot < external_length then
-			self.external_velocity:store(vel_dot*external_dir)
+			self.external_velocity:store(vel_dot * external_dir)
 		end
 	end
 
@@ -465,8 +469,8 @@ PlayerUnitLocomotionExtension.update_animation_driven_movement = function (self,
 	local delta_anim = wanted_position - current_position
 	local velocity = self.velocity_current:unbox()
 	local velocity_fall = Vector3(0, 0, velocity.z)
-	velocity_fall.z = velocity_fall.z - dt*9.82
-	local delta_velocity = velocity_fall*dt
+	velocity_fall.z = velocity_fall.z - 9.82 * dt
+	local delta_velocity = velocity_fall * dt
 	local delta_total = delta_velocity + delta_anim
 	local mover = Unit.mover(unit)
 
@@ -477,7 +481,7 @@ PlayerUnitLocomotionExtension.update_animation_driven_movement = function (self,
 	Unit.set_local_position(unit, 0, mover_position)
 
 	local final_position = Vector3(wanted_position.x, wanted_position.y, mover_position.z)
-	local velocity_new = (final_position - current_position)/dt
+	local velocity_new = (final_position - current_position) / dt
 
 	if self.moving_on_slope(self, true, unit, mover, mover_position) then
 		velocity_new.z = velocity_fall.z
@@ -497,7 +501,7 @@ PlayerUnitLocomotionExtension.update_animation_driven_movement_no_mover = functi
 	Unit.set_local_position(unit, 0, wanted_position)
 
 	local current_position = POSITION_LOOKUP[unit]
-	local velocity_new = (wanted_position - current_position)/dt
+	local velocity_new = (wanted_position - current_position) / dt
 
 	self.velocity_network:store(velocity_new)
 	self.velocity_current:store(velocity_new)
@@ -529,7 +533,7 @@ PlayerUnitLocomotionExtension.update_script_driven_ladder_transition_movement = 
 
 	Unit.set_local_position(unit, 0, final_position)
 
-	local velocity = (wanted_position - current_position)/dt
+	local velocity = (wanted_position - current_position) / dt
 
 	self.velocity_network:store(velocity)
 	self.velocity_current:store(velocity)
@@ -556,7 +560,7 @@ end
 PlayerUnitLocomotionExtension.update_script_driven_no_mover_movement = function (self, unit, dt, t)
 	local velocity = self.velocity_wanted:unbox()
 	local current_position = POSITION_LOOKUP[unit]
-	local final_position = current_position + velocity*dt
+	local final_position = current_position + velocity * dt
 
 	Unit.set_local_position(unit, 0, final_position)
 	self.velocity_network:store(velocity)
@@ -621,7 +625,7 @@ PlayerUnitLocomotionExtension.sync_network_velocity = function (self, game, go_i
 	local platform_ext = self._platform_extension
 
 	if platform_ext then
-		velocity = velocity + platform_ext.movement_delta(platform_ext)/dt
+		velocity = velocity + platform_ext.movement_delta(platform_ext) / dt
 	end
 
 	Unit.animation_set_variable(self.unit, self.move_speed_anim_var, math.min(Vector3.length(self.velocity_current:unbox()), MAX_MOVE_SPEED))
@@ -654,8 +658,8 @@ PlayerUnitLocomotionExtension.add_external_velocity = function (self, velocity_d
 	local old_velocity = self.external_velocity:unbox()
 	local max_velocity_delta = upper_limit or 5
 	local already_moving_in_dir = Vector3.dot(old_velocity, Vector3.normalize(velocity_delta))
-	local velocity_mod = (max_velocity_delta - math.clamp(already_moving_in_dir, 0, max_velocity_delta))/max_velocity_delta
-	local modified_delta = velocity_delta*velocity_mod
+	local velocity_mod = (max_velocity_delta - math.clamp(already_moving_in_dir, 0, max_velocity_delta)) / max_velocity_delta
+	local modified_delta = velocity_delta * velocity_mod
 	local new_velocity = old_velocity + modified_delta
 
 	self.external_velocity:store(new_velocity)
@@ -714,11 +718,6 @@ PlayerUnitLocomotionExtension.current_relative_velocity = function (self)
 
 	return velocity_relative
 end
-PlayerUnitLocomotionExtension._print_state = function (self)
-	print("[PlayerUnitLocomotionExtension] new state:", self.state)
-
-	return 
-end
 PlayerUnitLocomotionExtension.enable_linked_movement = function (self, parent_unit, node, offset)
 	self.state = "linked_movement"
 	self.link_data = {
@@ -741,8 +740,6 @@ PlayerUnitLocomotionExtension.enable_linked_movement = function (self, parent_un
 		GameSession.set_game_object_field(game, go_id, "link_offset", offset)
 	end
 
-	self._print_state(self)
-
 	return 
 end
 PlayerUnitLocomotionExtension.disable_linked_movement = function (self)
@@ -759,14 +756,10 @@ end
 PlayerUnitLocomotionExtension.enable_animation_driven_movement = function (self)
 	self.state = "animation_driven"
 
-	self._print_state(self)
-
 	return 
 end
 PlayerUnitLocomotionExtension.enable_animation_driven_movement_with_rotation_no_mover = function (self)
 	self.state = "animation_driven_with_rotation_no_mover"
-
-	self._print_state(self)
 
 	return 
 end
@@ -774,8 +767,6 @@ PlayerUnitLocomotionExtension.enable_script_driven_movement = function (self)
 	self.velocity_forced = nil
 	self._script_movement_time_scale = nil
 	self.state = "script_driven"
-
-	self._print_state(self)
 
 	return 
 end
@@ -785,7 +776,6 @@ PlayerUnitLocomotionExtension.enable_script_driven_ladder_movement = function (s
 	self.state = "script_driven_ladder"
 
 	self.set_wanted_velocity(self, Vector3.zero())
-	self._print_state(self)
 
 	return 
 end
@@ -793,14 +783,10 @@ PlayerUnitLocomotionExtension.enable_script_driven_ladder_transition_movement = 
 	self.state = "script_driven_ladder_transition_movement"
 	self.old_error = Vector3Box(0, 0, 0)
 
-	self._print_state(self)
-
 	return 
 end
 PlayerUnitLocomotionExtension.enable_script_driven_no_mover_movement = function (self)
 	self.state = "script_driven_no_mover"
-
-	self._print_state(self)
 
 	return 
 end

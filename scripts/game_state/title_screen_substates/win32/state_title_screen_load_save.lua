@@ -36,6 +36,9 @@ StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 	self.parent.parent.loading_context.level_transition_handler = level_transition_handler
 	self.parent.parent.loading_context.switch_to_tutorial_backend = true
 	self.parent.parent.loading_context.first_time = true
+	SaveData.has_completed_tutorial = true
+
+	Managers.save:auto_save(SaveFileName, SaveData)
 
 	return 
 end

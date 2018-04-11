@@ -185,7 +185,7 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 				local value = event_data_array_temp[i]
 
 				if type(value) == "number" then
-					assert(value%1 == 0, "Tried to pass non-integer value to dialogue event")
+					assert(value % 1 == 0, "Tried to pass non-integer value to dialogue event")
 					assert(0 <= value, "Tried to send a dialogue data number smaller than zero")
 
 					event_data_array_temp[i] = value + 1
@@ -292,7 +292,7 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 			extension.wwise_voice_switch_value = wwise_voice_switch_value
 			local wwise_voice_switch_group = breed.wwise_voice_switch_group
 			extension.wwise_voice_switch_group = wwise_voice_switch_group
-			self.wwise_voice_switch_value_indices[breed_name] = current_index%number_voices + 1
+			self.wwise_voice_switch_value_indices[breed_name] = current_index % number_voices + 1
 
 			if script_data.sound_debug then
 				printf("[DialogueSystem] Spawned breed %s - using switch group '%s' with '%s'", breed_name, wwise_voice_switch_group, wwise_voice_switch_value)
@@ -1248,11 +1248,11 @@ DialogueSystem.update_debug = function (self, t)
 		end
 
 		if context_height ~= 0 then
-			Gui.rect(gui, Vector2(start_x2 - 15, start_y2 + 15), Vector2(300, context_height*10 - -30), Color(200, 20, 20, 20))
+			Gui.rect(gui, Vector2(start_x2 - 15, start_y2 + 15), Vector2(300, -30 - 10 * context_height), Color(200, 20, 20, 20))
 		end
 
 		for i, missing in ipairs(debug_text.missing_vo) do
-			Gui.text(gui, tostring("Missing Sound for: " .. debug_text.missing_vo[i]), font_mtrl, font_size, font, Vector3(start_x2, start_y2 - i*10, 250), data_color)
+			Gui.text(gui, tostring("Missing Sound for: " .. debug_text.missing_vo[i]), font_mtrl, font_size, font, Vector3(start_x2, start_y2 - 10 * i, 250), data_color)
 		end
 
 		local player_input = Managers.input.input_services.Player

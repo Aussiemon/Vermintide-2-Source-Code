@@ -100,12 +100,12 @@ BTJumpToPositionAction.run = function (self, unit, blackboard, t, dt)
 		if 0.1 < distance_to_target then
 			local speed = blackboard.breed.run_speed
 
-			if distance_to_target < speed*dt then
-				speed = distance_to_target/dt
+			if distance_to_target < speed * dt then
+				speed = distance_to_target / dt
 			end
 
 			local direction_to_target = Vector3.normalize(vector_to_target)
-			local wanted_velocity = direction_to_target*speed
+			local wanted_velocity = direction_to_target * speed
 
 			locomotion_extension.set_wanted_velocity(locomotion_extension, wanted_velocity)
 			locomotion_extension.set_wanted_rotation(locomotion_extension, wanted_rotation)
@@ -119,7 +119,7 @@ BTJumpToPositionAction.run = function (self, unit, blackboard, t, dt)
 			local jump_vector = exit_pos - entrance_pos
 			local horizontal_length = Vector3.length(Vector3.flat(jump_vector))
 			local animation_distance = blackboard.action.horizontal_length
-			local forward_factor = horizontal_length/animation_distance
+			local forward_factor = horizontal_length / animation_distance
 			local height_factor = jump_vector.z
 			blackboard.jump_state = "waiting_to_reach_end"
 		end

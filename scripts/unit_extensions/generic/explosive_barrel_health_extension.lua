@@ -31,8 +31,8 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 	if owner_unit_health_extension then
 		local recent_damages, num_damages = owner_unit_health_extension.recent_damages(owner_unit_health_extension)
 
-		for i = 1, num_damages/DamageDataIndex.STRIDE, 1 do
-			local j = (i - 1)*DamageDataIndex.STRIDE
+		for i = 1, num_damages / DamageDataIndex.STRIDE, 1 do
+			local j = (i - 1) * DamageDataIndex.STRIDE
 			local attacker_unit = recent_damages[j + DamageDataIndex.ATTACKER]
 			local damage_amount = recent_damages[j + DamageDataIndex.DAMAGE_AMOUNT]
 			local damage_type = recent_damages[j + DamageDataIndex.DAMAGE_TYPE]
@@ -55,7 +55,7 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 	if self.ignited and not self._dead and not self.exploded then
 		local network_time = Managers.state.network:network_time()
 		local fuse_time_left = self.explode_time - network_time
-		local fuse_time_percent = fuse_time_left/self.fuse_time
+		local fuse_time_percent = fuse_time_left / self.fuse_time
 
 		Unit.set_data(self.unit, "fuse_time_percent", fuse_time_percent)
 

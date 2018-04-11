@@ -136,7 +136,7 @@ function update_shoot(world, unit, data)
 
 	if wwise_source_id then
 		local time_shooting = data.shoot_time - data.shoot_timer
-		local time_shooting_percent = time_shooting/data.shoot_timer
+		local time_shooting_percent = time_shooting / data.shoot_timer
 		local wwise_world = Managers.world:wwise_world(world)
 
 		WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "ratling_gun_shooting_loop_parameter", time_shooting_percent)

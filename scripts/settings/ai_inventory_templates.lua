@@ -578,26 +578,6 @@ local items = {
 		unit_name = "units/beings/enemies/addons/chaos_marauder/moc_helmet_12/moc_helmet_12",
 		attachment_node_linking = AttachmentNodeLinking.ai_helmet
 	},
-	raider_helmet_01 = {
-		unit_extension_template = "ai_helmet_unit",
-		unit_name = "units/beings/enemies/addons/chaos_warrior/woc_helmet_01/woc_helmet_01",
-		attachment_node_linking = AttachmentNodeLinking.ai_helmet_cw
-	},
-	raider_helmet_02 = {
-		unit_extension_template = "ai_helmet_unit",
-		unit_name = "units/beings/enemies/addons/chaos_warrior/woc_helmet_02/woc_helmet_02",
-		attachment_node_linking = AttachmentNodeLinking.ai_helmet_cw
-	},
-	raider_helmet_03 = {
-		unit_extension_template = "ai_helmet_unit",
-		unit_name = "units/beings/enemies/addons/chaos_warrior/woc_helmet_03/woc_helmet_03",
-		attachment_node_linking = AttachmentNodeLinking.ai_helmet_cw
-	},
-	raider_helmet_04 = {
-		unit_extension_template = "ai_helmet_unit",
-		unit_name = "units/beings/enemies/addons/chaos_warrior/woc_helmet_04/woc_helmet_04",
-		attachment_node_linking = AttachmentNodeLinking.ai_helmet_cw
-	},
 	woc_helmet_01 = {
 		unit_extension_template = "ai_helmet_unit",
 		unit_name = "units/beings/enemies/addons/chaos_warrior/woc_helmet_01/woc_helmet_01",
@@ -795,12 +775,6 @@ local item_categories = {
 		items.zombie_blob_02,
 		items.zombie_blob_03,
 		items.zombie_blob_04
-	},
-	raider_helmet = {
-		items.raider_helmet_01,
-		items.raider_helmet_02,
-		items.raider_helmet_03,
-		items.raider_helmet_04
 	},
 	berzerker_helmet = {
 		items.moc_helmet_11
@@ -1035,7 +1009,6 @@ InventoryConfigurations = {
 		enemy_hit_sound = "spear",
 		anim_state_event = "to_2h_axe",
 		items = {
-			item_categories.raider_helmet,
 			item_categories.two_h_axe_moc
 		}
 	},

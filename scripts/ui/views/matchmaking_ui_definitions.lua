@@ -763,10 +763,10 @@ local function create_status_widget(texture, scenegraph_id)
 						local color = style.color
 
 						if content.is_connecting then
-							local color_progress = ((content.color_progress or 1) + dt)%1
+							local color_progress = ((content.color_progress or 1) + dt) % 1
 							content.color_progress = color_progress
 							local anim_progress = math.ease_pulse(color_progress)
-							color[1] = anim_progress*255
+							color[1] = 255 * anim_progress
 						elseif content.is_connected then
 							color[1] = 255
 						end

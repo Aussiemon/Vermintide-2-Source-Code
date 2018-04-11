@@ -312,6 +312,528 @@ local breed_data = {
 	}
 }
 Breeds.chaos_marauder_with_shield = table.create_copy(Breeds.chaos_marauder_with_shield, breed_data)
+local BreedActionDimishingDamageDifficulty = {
+	easy = {
+		{
+			damage = 2,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				1,
+				2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.25,
+				2.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.5,
+				2.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.75,
+				2.75
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2,
+				3
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.25,
+				3.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.5,
+				3.5
+			}
+		}
+	},
+	normal = {
+		{
+			damage = 2,
+			cooldown = {
+				0.75,
+				1
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0.75,
+				1
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				1,
+				2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.25,
+				2.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.5,
+				2.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.75,
+				2.75
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2,
+				3
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.25,
+				3.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.5,
+				3.5
+			}
+		}
+	},
+	hard = {
+		{
+			damage = 2,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				1,
+				2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.25,
+				2.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.25,
+				2.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.5,
+				2.75
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.75,
+				3
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2,
+				3.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.25,
+				3.5
+			}
+		}
+	},
+	survival_hard = {
+		{
+			damage = 2,
+			cooldown = {
+				1,
+				1.5
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				1,
+				1.5
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				1,
+				1.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.25,
+				1.75
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.5,
+				2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1.75,
+				2.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2,
+				2.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.25,
+				3.25
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				2.5,
+				3.5
+			}
+		}
+	},
+	harder = {
+		{
+			damage = 2.5,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.6,
+				1.1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.7,
+				1.2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.8,
+				1.3
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.9,
+				1.4
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1,
+				1.5
+			}
+		}
+	},
+	survival_harder = {
+		{
+			damage = 2.5,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1.5,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.5,
+				1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.6,
+				1.1
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.7,
+				1.2
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.8,
+				1.3
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0.9,
+				1.4
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				1,
+				1.5
+			}
+		}
+	},
+	hardest = {
+		{
+			damage = 2.5,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 1.8,
+			cooldown = {
+				0,
+				0.3
+			}
+		},
+		{
+			damage = 1.6,
+			cooldown = {
+				0,
+				0.35
+			}
+		},
+		{
+			damage = 1.4,
+			cooldown = {
+				0,
+				0.4
+			}
+		},
+		{
+			damage = 1.2,
+			cooldown = {
+				0,
+				0.45
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0,
+				0.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0,
+				0.5
+			}
+		}
+	},
+	survival_hardest = {
+		{
+			damage = 2.5,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 2,
+			cooldown = {
+				0,
+				0.25
+			}
+		},
+		{
+			damage = 1.8,
+			cooldown = {
+				0,
+				0.3
+			}
+		},
+		{
+			damage = 1.6,
+			cooldown = {
+				0,
+				0.35
+			}
+		},
+		{
+			damage = 1.4,
+			cooldown = {
+				0,
+				0.4
+			}
+		},
+		{
+			damage = 1.2,
+			cooldown = {
+				0,
+				0.45
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0,
+				0.5
+			}
+		},
+		{
+			damage = 1,
+			cooldown = {
+				0,
+				0.5
+			}
+		}
+	}
+}
 local action_data = {
 	alerted = {
 		no_hesitation = true,
@@ -334,11 +856,11 @@ local action_data = {
 			},
 			alerted_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			alerted_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
@@ -359,11 +881,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
@@ -428,7 +950,8 @@ local action_data = {
 				6
 			}
 		},
-		dimishing_damage = {}
+		dimishing_damage = {},
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty
 	},
 	normal_attack = {
 		player_push_speed = 3,
@@ -634,7 +1157,7 @@ local action_data = {
 				ai_shield_extension.set_is_blocking(ai_shield_extension, is_blocking)
 
 				if not is_blocking then
-					blackboard.stagger_time = blackboard.stagger_time + math.clamp(blackboard.stagger*0.2, 0, 0.6)
+					blackboard.stagger_time = blackboard.stagger_time + math.clamp(0.2 * blackboard.stagger, 0, 0.6)
 				end
 
 				if not blackboard.blocked and blackboard.stagger < 3 and action.shield_block_anims then

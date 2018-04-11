@@ -49,9 +49,9 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 	local math_min = math.min
 	local res_w = RESOLUTION_LOOKUP.res_w
 	local res_h = RESOLUTION_LOOKUP.res_h
-	local aim_screen_pos_x = res_w/2
-	local aim_screen_pos_y = res_h/2
-	local min_size = res_w/1280*8
+	local aim_screen_pos_x = res_w / 2
+	local aim_screen_pos_y = res_h / 2
+	local min_size = 8 * res_w / 1280
 	local input_extension = self.input_extension
 	local first_person_extension = self.first_person_extension
 	local inventory_extension = self.inventory_extension
@@ -135,13 +135,13 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 
 						Profiler.start("inner_loop")
 
-						local smart_targeting_outer_width = breed.smart_targeting_outer_width or smart_targeting_width*2
+						local smart_targeting_outer_width = breed.smart_targeting_outer_width or smart_targeting_width * 2
 						local smart_targeting_height_multiplier = breed.smart_targeting_height_multiplier or 1
 						local locomotion = extension_func(unit, "locomotion_system")
 						local locomotion_velocity = locomotion.current_velocity(locomotion)
-						local aim_scalar = EngineOptimized.smart_targeting_optimized(camera, target_pos, look_right, distance, effective_max_range, range_scalar_at_effective_max_range, max_range, min_size, aim_screen_pos_x, aim_screen_pos_y, smart_targeting_width, smart_targeting_outer_width, smart_targeting_height_multiplier, (projectile_speed or 0)*0.01, drop_multiplier, locomotion_velocity, debug_gui)
+						local aim_scalar = EngineOptimized.smart_targeting_optimized(camera, target_pos, look_right, distance, effective_max_range, range_scalar_at_effective_max_range, max_range, min_size, aim_screen_pos_x, aim_screen_pos_y, smart_targeting_width, smart_targeting_outer_width, smart_targeting_height_multiplier, (projectile_speed or 0) * 0.01, drop_multiplier, locomotion_velocity, debug_gui)
 						local score_modifier = previous_score_modifiers[unit] or 0.1
-						local score = breed_weapon_scalar*aim_scalar*score_modifier
+						local score = breed_weapon_scalar * aim_scalar * score_modifier
 
 						if highest_score < score then
 							highest_score = score
@@ -150,7 +150,7 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 						end
 
 						if 0 < score then
-							score_modifiers[unit] = math_min(score_modifier + dt*2, 1)
+							score_modifiers[unit] = math_min(score_modifier + dt * 2, 1)
 						end
 
 						Profiler.stop("inner_loop")
@@ -218,8 +218,8 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 	local normalize_func = Vector3.normalize
 	local res_w = RESOLUTION_LOOKUP.res_w
 	local res_h = RESOLUTION_LOOKUP.res_h
-	local aim_screen_pos_x = res_w/2
-	local aim_screen_pos_y = res_h/2
+	local aim_screen_pos_x = res_w / 2
+	local aim_screen_pos_y = res_h / 2
 	local input_extension = self.input_extension
 	local first_person_extension = self.first_person_extension
 	local inventory_extension = self.inventory_extension

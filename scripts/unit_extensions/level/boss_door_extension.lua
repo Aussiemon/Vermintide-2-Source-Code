@@ -104,7 +104,7 @@ BossDoorExtension.destroy_box_obstacles = function (self)
 	return 
 end
 BossDoorExtension.animation_played = function (self, frames, speed)
-	local animation_length = frames/SIMPLE_ANIMATION_FPS/speed
+	local animation_length = frames / SIMPLE_ANIMATION_FPS / speed
 	local t = Managers.time:time("game")
 	self.animation_stop_time = t + animation_length
 

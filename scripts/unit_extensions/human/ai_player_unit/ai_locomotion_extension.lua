@@ -110,7 +110,7 @@ AILocomotionExtension.teleport_to = function (self, position, rotation)
 	if game then
 		local game_object_id = network_manager.unit_game_object_id(network_manager, unit)
 		local has_teleported_value = GameSession.game_object_field(game, game_object_id, "has_teleported")
-		has_teleported_value = has_teleported_value%NetworkConstants.teleports.max + 1
+		has_teleported_value = has_teleported_value % NetworkConstants.teleports.max + 1
 
 		GameSession.set_game_object_field(game, game_object_id, "has_teleported", has_teleported_value)
 	end

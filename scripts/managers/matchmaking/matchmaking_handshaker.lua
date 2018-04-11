@@ -1,7 +1,7 @@
 local function make_handshake_cookie(peer_id, peer_type)
 	local prefix = "HSC"
 	local peer_id = tostring(Network.peer_id())
-	local r = math.floor(math.random()*1000000)
+	local r = math.floor(math.random() * 1000000)
 	local cookie = "%s-%010d-%s-[%s]":format(prefix, r, peer_type, peer_id)
 
 	return cookie
@@ -71,7 +71,7 @@ MatchmakingHandshakerHost.update = function (self, t)
 
 		self.ping_start_time = Application.time_since_launch()
 		local previous_ping_time_write_index = self.ping_time_write_index or 0
-		self.ping_time_write_index = (previous_ping_time_write_index + 1)%6
+		self.ping_time_write_index = (previous_ping_time_write_index + 1) % 6
 		self.next_ping_time = math.floor(t) + 2
 
 		self.send_rpc_to_clients(self, "rpc_ping", self.pings_by_peer_id)

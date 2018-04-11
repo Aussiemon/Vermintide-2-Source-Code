@@ -70,9 +70,12 @@ CareerAbilityWHZealot._ability_available = function (self)
 	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityWHZealot._start_priming = function (self)
-	local decal_unit_name = self._decal_unit_name
-	local unit_spawner = Managers.state.unit_spawner
-	self._decal_unit = unit_spawner.spawn_local_unit(unit_spawner, decal_unit_name)
+	if self._local_player then
+		local decal_unit_name = self._decal_unit_name
+		local unit_spawner = Managers.state.unit_spawner
+		self._decal_unit = unit_spawner.spawn_local_unit(unit_spawner, decal_unit_name)
+	end
+
 	local buff_extension = self._buff_extension
 	local buff_template_name = "planted_decrease_movement"
 	local buff_params = {
@@ -84,22 +87,23 @@ CareerAbilityWHZealot._start_priming = function (self)
 	return 
 end
 CareerAbilityWHZealot._update_priming = function (self, dt)
-	local owner_unit = self._owner_unit
-	local first_person_extension = self._first_person_extension
-	local player_position = Unit.local_position(self._owner_unit, 0)
-	local player_rotation = first_person_extension.current_rotation(first_person_extension)
-	local player_direction_flat = Vector3.flat(Vector3.normalize(Quaternion.forward(player_rotation)))
-	local player_rotation_flat = Quaternion.look(player_direction_flat, Vector3.up())
+	if self._local_player then
+		local first_person_extension = self._first_person_extension
+		local player_position = Unit.local_position(self._owner_unit, 0)
+		local player_rotation = first_person_extension.current_rotation(first_person_extension)
+		local player_direction_flat = Vector3.flat(Vector3.normalize(Quaternion.forward(player_rotation)))
+		local player_rotation_flat = Quaternion.look(player_direction_flat, Vector3.up())
 
-	Unit.set_local_position(self._decal_unit, 0, player_position)
-	Unit.set_local_rotation(self._decal_unit, 0, player_rotation_flat)
+		Unit.set_local_position(self._decal_unit, 0, player_position)
+		Unit.set_local_rotation(self._decal_unit, 0, player_rotation_flat)
 
-	local total_lerp_time = 1.9
-	local lerp_value = self._fov_lerp_time/total_lerp_time
-	local fov_multiplier = math.lerp(1, 1.07, lerp_value)
-	self._fov_lerp_time = math.min(self._fov_lerp_time + dt, total_lerp_time)
+		local total_lerp_time = 1.9
+		local lerp_value = self._fov_lerp_time / total_lerp_time
+		local fov_multiplier = math.lerp(1, 1.07, lerp_value)
+		self._fov_lerp_time = math.min(self._fov_lerp_time + dt, total_lerp_time)
 
-	Managers.state.camera:set_additional_fov_multiplier(fov_multiplier)
+		Managers.state.camera:set_additional_fov_multiplier(fov_multiplier)
+	end
 
 	return 
 end
@@ -118,9 +122,11 @@ CareerAbilityWHZealot._stop_priming = function (self)
 		self._buff_id = nil
 	end
 
-	self._fov_lerp_time = 0
+	if self._local_player then
+		self._fov_lerp_time = 0
 
-	Managers.state.camera:set_additional_fov_multiplier(1)
+		Managers.state.camera:set_additional_fov_multiplier(1)
+	end
 
 	self._is_priming = false
 
@@ -129,7 +135,6 @@ end
 CareerAbilityWHZealot._run_ability = function (self)
 	self._stop_priming(self)
 
-	local world = self._world
 	local owner_unit = self._owner_unit
 	local is_server = self._is_server
 	local local_player = self._local_player
@@ -162,20 +167,23 @@ CareerAbilityWHZealot._run_ability = function (self)
 		network_transmit.send_rpc_server(network_transmit, "rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
 	end
 
-	if local_player then
+	if local_player or (is_server and self._bot_player) then
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_victor_zealot_enter", nil, true)
 		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_victor_zealot_loop")
-		first_person_extension.animation_event(first_person_extension, "shade_stealth_ability")
 
-		MOOD_BLACKBOARD.skill_zealot = true
+		if local_player then
+			first_person_extension.animation_event(first_person_extension, "shade_stealth_ability")
 
-		career_extension.set_state(career_extension, "victor_activate_zealot")
+			MOOD_BLACKBOARD.skill_zealot = true
 
-		local position = POSITION_LOOKUP[owner_unit]
+			career_extension.set_state(career_extension, "victor_activate_zealot")
 
-		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_zealot_charge", position)
+			local position = POSITION_LOOKUP[owner_unit]
+
+			WwiseUtils.trigger_position_event(self._world, "Play_career_ability_zealot_charge", position)
+		end
 	end
 
 	status_extension.set_noclip(status_extension, true)

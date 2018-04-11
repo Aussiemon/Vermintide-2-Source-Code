@@ -19,7 +19,7 @@ CameraTransitionRotationLerp.update = function (self, dt, rotation, update_time)
 	local node_1_rot = (self._freeze_node_1 and self._node_1_rot_table:unbox()) or rotation
 	local node_2_rot = self._node_2:rotation()
 	local duration = self._duration
-	local t = self._time/self._duration
+	local t = self._time / self._duration
 	local done = 1 <= t
 	local rot = Quaternion.lerp(node_1_rot, node_2_rot, math.min(t, 1))
 

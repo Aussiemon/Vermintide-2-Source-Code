@@ -1203,8 +1203,8 @@ local function create_dynamic_loadout_widget()
 			},
 			equipped_weapon = {
 				size = {
-					settings.weapon.scale*256,
-					settings.weapon.scale*64
+					settings.weapon.scale * 256,
+					settings.weapon.scale * 64
 				},
 				color = {
 					255,
@@ -1220,8 +1220,8 @@ local function create_dynamic_loadout_widget()
 			},
 			equipped_weapon_lit = {
 				size = {
-					settings.weapon.scale*256,
-					settings.weapon.scale*64
+					settings.weapon.scale * 256,
+					settings.weapon.scale * 64
 				},
 				color = {
 					255,

@@ -130,16 +130,6 @@ HeroWindowLoadout._handle_input = function (self, dt, t)
 		self._play_sound(self, "play_gui_equipment_selection_click")
 	end
 
-	local slot_index_right_clicked = self._is_equipment_slot_right_clicked(self)
-
-	if slot_index_right_clicked and self._equipment_items[slot_index_right_clicked] then
-		local slot = InventorySettings.slots_by_ui_slot_index[slot_index_right_clicked]
-		local slot_type = slot.type
-		local success = parent.unequip_item_in_slot(parent, slot_type)
-
-		self._play_sound(self, "play_gui_equipment_selection_click")
-	end
-
 	return 
 end
 HeroWindowLoadout._update_selected_loadout_slot_index = function (self)

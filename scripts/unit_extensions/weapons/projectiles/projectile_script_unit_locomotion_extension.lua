@@ -43,7 +43,7 @@ ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _,
 
 	local position = POSITION_LOOKUP[unit]
 	local dt = self.dt
-	local speed = self.speed/100
+	local speed = self.speed / 100
 	local angle = self.radians
 	local gravity = self.gravity
 	local target_vector = Vector3Box.unbox(self.target_vector_boxed)
@@ -78,7 +78,7 @@ ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _,
 
 	if self.rotate_around then
 		local axis = Vector3.make_axes(direction_norm)
-		rotation = Quaternion.multiply(Quaternion.axis_angle(axis, self.dt*10), rotation)
+		rotation = Quaternion.multiply(Quaternion.axis_angle(axis, self.dt * 10), rotation)
 	end
 
 	Unit.set_local_rotation(unit, 0, rotation)

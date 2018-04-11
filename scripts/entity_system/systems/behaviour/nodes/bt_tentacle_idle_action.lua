@@ -21,7 +21,7 @@ BTTentacleIdleAction.run = function (self, unit, blackboard, t, dt, bt_name)
 
 	if 0 < current_length then
 		local breed = blackboard.breed
-		data.current_length = data.current_length - dt*breed.fail_retract_speed
+		data.current_length = data.current_length - dt * breed.fail_retract_speed
 		local tentacle_extension = blackboard.tentacle_spline_extension
 
 		tentacle_extension.set_reach_dist(tentacle_extension, current_length)

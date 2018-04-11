@@ -75,8 +75,33 @@ end
 PlayerUnitCosmeticExtension.get_equipped_frame = function (self)
 	return self._cosmetics.frame
 end
+PlayerUnitCosmeticExtension.set_equipped_frame = function (self, frame_name)
+	self._cosmetics.frame = Cosmetics[frame_name]
+	self._frame_name = frame_name
+
+	return 
+end
 PlayerUnitCosmeticExtension.get_equipped_frame_name = function (self)
 	return self._frame_name
+end
+PlayerUnitCosmeticExtension.always_hide_attachment_slot = function (self, slot_name)
+	local skin = self._cosmetics.skin
+
+	if not skin then
+		return false
+	end
+
+	local always_hide_attachment_slots = skin.always_hide_attachment_slots
+
+	if not always_hide_attachment_slots then
+		return false
+	end
+
+	if not table.contains(always_hide_attachment_slots, slot_name) then
+		return false
+	end
+
+	return true
 end
 PlayerUnitCosmeticExtension.hot_join_sync = function (self, sender)
 	return 

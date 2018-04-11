@@ -82,7 +82,7 @@ T.update_average_velocity = function (data, t, dt)
 
 		while SAMPLE_UPDATE_RATE < t - last_sample do
 			last_sample = last_sample + SAMPLE_UPDATE_RATE
-			index = index%num_velocities + 1
+			index = index % num_velocities + 1
 
 			velocities[index]:store(extension.velocity_current:unbox())
 
@@ -98,7 +98,7 @@ T.update_average_velocity = function (data, t, dt)
 				total_velocity = total_velocity + velocity.unbox(velocity)
 			end
 
-			extension._average_velocity:store(total_velocity/num_velocities)
+			extension._average_velocity:store(total_velocity / num_velocities)
 
 			local small_sample_size = 7
 			local small_total_velocity = Vector3(0, 0, 0)
@@ -114,7 +114,7 @@ T.update_average_velocity = function (data, t, dt)
 				end
 			end
 
-			extension._small_sample_size_average_velocity:store(small_total_velocity/small_sample_size)
+			extension._small_sample_size_average_velocity:store(small_total_velocity / small_sample_size)
 		end
 	end
 
@@ -190,6 +190,15 @@ T.update_movement = function (data, t, dt)
 		elseif state == "script_driven_no_mover" then
 			extension.update_script_driven_no_mover_movement(extension, unit, dt, t)
 		end
+
+		if not extension.has_moved_from_start_position then
+			local start_position = extension._start_position:unbox()
+			local current_position = POSITION_LOOKUP[unit]
+
+			if 0.25 < Vector3.distance_squared(start_position, current_position) then
+				extension.has_moved_from_start_position = true
+			end
+		end
 	end
 
 	Profiler.stop("update movement")
@@ -230,10 +239,11 @@ T.update_network = function (data, dt)
 		if extension._platform_unit then
 			local platform_pos = Unit.local_position(extension._platform_unit, 0)
 			position = position - platform_pos
-			velocity = velocity + extension._platform_extension:movement_delta()/dt
+			velocity = velocity + extension._platform_extension:movement_delta() / dt
 		end
 
 		GameSession_set_game_object_field(game, go_id, "position", Vector3.clamp(position, min, max))
+		GameSession_set_game_object_field(game, go_id, "has_moved_from_start_position", extension.has_moved_from_start_position)
 		Unit.animation_set_variable(unit, extension.move_speed_anim_var, math.min(Vector3.length(extension.velocity_current:unbox()), MAX_MOVE_SPEED))
 		GameSession_set_game_object_field(game, go_id, "velocity", Vector3.clamp(velocity, min_vel, max_vel))
 		GameSession_set_game_object_field(game, go_id, "average_velocity", Vector3.clamp(extension._average_velocity:unbox(), min_vel, max_vel))
@@ -301,7 +311,7 @@ T.update_rotation = function (data, t, dt)
 
 				local final_rotation = Quaternion_look(velocity_current)
 
-				Unit.set_local_rotation(unit, 0, Quaternion_lerp(Unit.local_rotation(unit, 0), final_rotation, dt*5))
+				Unit.set_local_rotation(unit, 0, Quaternion_lerp(Unit.local_rotation(unit, 0), final_rotation, dt * 5))
 			elseif extension.target_rotation_data then
 				local target_rotation_data = extension.target_rotation_data
 				local start_rotation = target_rotation_data.start_rotation:unbox()

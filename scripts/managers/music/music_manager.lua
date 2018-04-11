@@ -17,7 +17,7 @@ MusicManager.bus_transition_functions = {
 		return math.lerp(transition.start_value, transition.target_value, t)
 	end,
 	sine = function (transition, t)
-		return math.lerp(transition.start_value, transition.target_value, math.sin(t*math.pi*0.5))
+		return math.lerp(transition.start_value, transition.target_value, math.sin(t * math.pi * 0.5))
 	end,
 	smoothstep = function (transition, t)
 		return math.lerp(transition.start_value, transition.target_value, math.smoothstep(t, 0, 1))
@@ -162,7 +162,6 @@ MusicManager.game_object_created = function (self, game_object_id, owner_id, go_
 end
 MusicManager.game_object_destroyed = function (self, game_object_id, owner_id, go_template)
 	Application.warning("[MusicManager:game_object_destroyed] Removed go_template == self._go_template check due to crash")
-	fassert(self._game_object_id == game_object_id and self._owner_id == owner_id, "Tearing down music sync game object broken.")
 
 	self._game_object_id = nil
 	self._owner_id = nil

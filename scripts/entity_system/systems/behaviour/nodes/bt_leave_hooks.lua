@@ -112,6 +112,16 @@ BTLeaveHooks.on_grey_seer_intro_leave = function (unit, blackboard, t)
 
 	return 
 end
+BTLeaveHooks.on_grey_seer_death_sequence_leave = function (unit, blackboard, t)
+	blackboard.current_phase = 6
+	local health_extension = ScriptUnit.extension(blackboard.unit, "health_system")
+	health_extension.is_invincible = false
+
+	blackboard.navigation_extension:set_enabled(false)
+	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
+
+	return 
+end
 BTLeaveHooks.leave_attack_grabbed_smash = function (unit, blackboard, t)
 	if blackboard.stagger then
 		StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
@@ -171,6 +181,11 @@ BTLeaveHooks.on_lord_warlord_intro_leave = function (unit, blackboard, t)
 			blackboard.exit_pos = Vector3Box(exit_pos)
 		end
 	end
+
+	return 
+end
+BTLeaveHooks.reset_keep_target = function (unit, blackboard, t)
+	blackboard.keep_target = nil
 
 	return 
 end

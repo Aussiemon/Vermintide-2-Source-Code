@@ -9,7 +9,7 @@ local function debug_print(...)
 	return 
 end
 
-local TURN_SPEED = math.pi*0.7
+local TURN_SPEED = math.pi * 0.7
 local ANTENNA_SPEED = 6
 local ANTENNA_LOCK_DISTANCE = 1
 local ANTENNA_WIDTH = 0.88
@@ -165,7 +165,7 @@ function play_sound(group, event)
 end
 
 function pick_sound_source_unit(group)
-	local wanted_unit_i = math.ceil(group.num_indexed_members*0.5)
+	local wanted_unit_i = math.ceil(group.num_indexed_members * 0.5)
 	local wanted_unit = group.indexed_members[wanted_unit_i]
 	group.wwise_source_unit = wanted_unit
 
@@ -287,7 +287,7 @@ function calculate_group_middle_position(group)
 		middle_position = middle_position + pos
 	end
 
-	middle_position = middle_position/num_indexed_members
+	middle_position = middle_position / num_indexed_members
 
 	return middle_position
 end
@@ -437,7 +437,7 @@ function init_group(nav_world, group)
 	group.door_unit = nil
 	group.killed_units = 0
 	group.main_path_travel_dist = nil
-	local num_anchors = math.ceil(group.num_indexed_members/2)
+	local num_anchors = math.ceil(group.num_indexed_members / 2)
 
 	for i = 1, num_anchors, 1 do
 		group.anchors[i] = {
@@ -692,12 +692,12 @@ function debug_draw_formation(group)
 
 		drawer.sphere(drawer, entry_node_position, 0.05, Colors.get("blue"))
 
-		local offset_y = Vector3(0, 0, i*0.04 + 0.2)
+		local offset_y = Vector3(0, 0, 0.2 + i * 0.04)
 
 		drawer.sphere(drawer, anchor_position, 0.08, Colors.get("pink"))
 		drawer.line(drawer, anchor_position, anchor_position + offset_y, Colors.get("pink"))
 		drawer.line(drawer, anchor_position + offset_y, target_node_position + offset_y, Colors.get("pink"))
-		drawer.vector(drawer, anchor_position + offset_y, anchor.wanted_direction:unbox()*0.2, Colors.get("pink"))
+		drawer.vector(drawer, anchor_position + offset_y, anchor.wanted_direction:unbox() * 0.2, Colors.get("pink"))
 		drawer.line(drawer, target_node_position + offset_y, target_node_position, Colors.get("pink"))
 	end
 
@@ -712,7 +712,7 @@ function set_forming_positions(nav_world, group)
 	local num_anchors = #anchors
 	local target_node_index = anchors[1].node_index
 	local start_node_index = math.max(target_node_index - 1, 2)
-	local wanted_distance = (num_anchors - 1)*ANCHOR_OFFSET.x
+	local wanted_distance = (num_anchors - 1) * ANCHOR_OFFSET.x
 	local backward_distance = MainPathUtils.ray_along_node_list(nav_world, node_list, start_node_index, -1, wanted_distance)
 	local anchor_offset, node_list_direction = nil
 
@@ -723,10 +723,10 @@ function set_forming_positions(nav_world, group)
 		local forward_distance = MainPathUtils.ray_along_node_list(nav_world, node_list, start_node_index, 1, wanted_distance)
 
 		if forward_distance <= backward_distance then
-			anchor_offset = backward_distance/wanted_distance*ANCHOR_OFFSET.x
+			anchor_offset = backward_distance / wanted_distance * ANCHOR_OFFSET.x
 			node_list_direction = -1
 		else
-			anchor_offset = forward_distance/wanted_distance*ANCHOR_OFFSET.x
+			anchor_offset = forward_distance / wanted_distance * ANCHOR_OFFSET.x
 			node_list_direction = 1
 		end
 	end
@@ -768,15 +768,15 @@ function update_units(nav_world, group, t, dt)
 		local blackboard = BLACKBOARDS[unit]
 		local breed = blackboard.breed
 		local navigation_extension = blackboard.navigation_extension
-		local anchor_index = math.ceil(i*0.5)
+		local anchor_index = math.ceil(i * 0.5)
 		local anchor = group.anchors[anchor_index]
 		local anchor_point = Vector3Box.unbox(anchor.point)
-		local anchor_unit_index = (i - 1)%2 + 1
+		local anchor_unit_index = (i - 1) % 2 + 1
 		anchor.units[anchor_unit_index] = unit
 		local anchor_dir = Vector3Box.unbox(anchor.current_direction)
 		local dir_normal = Vector3(anchor_dir.y, -anchor_dir.x, 0)
-		local multiplier = (i - 1)%2*2 - 1
-		local offset = ANCHOR_OFFSET.y*dir_normal*multiplier
+		local multiplier = (i - 1) % 2 * 2 - 1
+		local offset = ANCHOR_OFFSET.y * dir_normal * multiplier
 		local wanted_destination = anchor_point + offset
 		local check1_up = 0.6
 		local check1_down = 0.6
@@ -787,7 +787,7 @@ function update_units(nav_world, group, t, dt)
 		local destination = find_position_on_navmesh(nav_world, wanted_destination, anchor_point, check1_up, check1_down, check2_up, check2_down, check2_side, check2_obstacle_distance)
 		local unit_to_formation_pos_distance = Vector3.distance(unit_pos, destination)
 
-		if i%2 == 1 then
+		if i % 2 == 1 then
 			anchor.unit_distance = unit_to_formation_pos_distance
 		else
 			local previous_distance = anchor.unit_distance
@@ -902,7 +902,7 @@ function update_anchor_position(nav_world, group, dt)
 		local antenna_target = Vector3Box.unbox(anchor.antenna_target_pos)
 		local dir_to_antenna_target = Vector3.normalize(antenna_target - anchor_position)
 		local distance = Vector3.length(target_node_position - anchor_on_path)
-		local max_anchor_speed = WALK_SPEED*1.2
+		local max_anchor_speed = WALK_SPEED * 1.2
 		local distance_to_previous_anchor = ANCHOR_OFFSET.x
 		local previous_anchor = group.anchors[i - 1]
 
@@ -931,27 +931,27 @@ function update_anchor_position(nav_world, group, dt)
 		distance_to_previous_anchor = math.max(distance_to_previous_anchor, 0.001)
 		distance_to_next_anchor = math.max(distance_to_next_anchor, 0.001)
 		local multiplier = 1
-		multiplier = multiplier*distance_to_previous_anchor/ANCHOR_OFFSET.x
-		multiplier = multiplier*ANCHOR_OFFSET.x/distance_to_next_anchor
+		multiplier = multiplier * distance_to_previous_anchor / ANCHOR_OFFSET.x
+		multiplier = multiplier * ANCHOR_OFFSET.x / distance_to_next_anchor
 		local unit_distance = math.max(0.001, anchor.unit_distance)
-		multiplier = multiplier*MOVE_SPEED_BALANCER/unit_distance
+		multiplier = multiplier * MOVE_SPEED_BALANCER / unit_distance
 
 		if STRAGGLER_DISTANCE < unit_distance then
 			multiplier = 0
 		end
 
-		local speed = max_anchor_speed*multiplier
-		local movement = dir_to_antenna_target*speed*dt
+		local speed = max_anchor_speed * multiplier
+		local movement = dir_to_antenna_target * speed * dt
 		local anchor_on_path_dot = Vector3.dot(dir, anchor_on_path - previous_node_position)
 		local target_node_dot = Vector3.dot(dir, node_diff)
-		anchor.path_percentage = anchor_on_path_dot/target_node_dot
+		anchor.path_percentage = anchor_on_path_dot / target_node_dot
 
 		if script_data.debug_storm_vermin_patrol then
 			local category = "anchor_index_" .. i
 			local text_size = 0.4
 			local color_table = Colors.get_table("white")
 			local color_vector = Vector3(color_table[2], color_table[3], color_table[4])
-			local z = Vector3.up()*0.4
+			local z = Vector3.up() * 0.4
 
 			Managers.state.debug_text:clear_world_text(category)
 			Managers.state.debug_text:output_world_text(i, text_size, anchor_position + z, nil, category, color_vector)
@@ -1011,7 +1011,7 @@ function update_anchor_position(nav_world, group, dt)
 		end
 
 		local anchor_dot = Vector3.dot(dir, new_anchor_position - previous_node_position)
-		anchor_on_path = previous_node_position + dir*anchor_dot
+		anchor_on_path = previous_node_position + dir * anchor_dot
 		anchor.point_on_path = Vector3Box(anchor_on_path)
 		anchor.point = Vector3Box(new_anchor_position)
 		anchor.wanted_direction = Vector3Box(dir)
@@ -1069,7 +1069,7 @@ function update_anchor_direction(nav_world, group, dt)
 				distance_to_next_node = Vector3.distance(face_position, target_node)
 
 				if length_along_path < distance_to_next_node then
-					face_position = face_position + search_node_dir*length_along_path
+					face_position = face_position + search_node_dir * length_along_path
 				else
 					face_position = target_node
 					search_node_index = search_node_index + 1
@@ -1113,8 +1113,8 @@ function update_anchor_direction(nav_world, group, dt)
 		end
 
 		local testsum = math.abs(wanted_rad) + math.abs(previous_face_rad)
-		local testproduct = wanted_rad*previous_face_rad
-		wanted_rad = (wanted_rad + previous_face_rad)/2
+		local testproduct = wanted_rad * previous_face_rad
+		wanted_rad = (wanted_rad + previous_face_rad) / 2
 
 		if math.pi < testsum and testproduct < 0 then
 			if wanted_rad < 0 then
@@ -1127,16 +1127,16 @@ function update_anchor_direction(nav_world, group, dt)
 		local difference = wanted_rad - face_rad
 
 		if 0.0001 < math.abs(difference) then
-			local movement = TURN_SPEED*dt
+			local movement = TURN_SPEED * dt
 
 			if math.pi < difference then
-				difference = difference - math.pi*2
+				difference = difference - math.pi * 2
 			elseif difference < -math.pi then
-				difference = difference + math.pi*2
+				difference = difference + math.pi * 2
 			end
 
 			if difference < 0 then
-				movement = movement*-1
+				movement = movement * -1
 			end
 
 			face_rad = face_rad + movement
@@ -1210,10 +1210,10 @@ function antennae_check(nav_world, group, dt)
 
 		if move_antenna then
 			local distance_to_next_node = Vector3.dot(target_node - antenna_on_path, wanted_face_dir)
-			local antenna_change = ANTENNA_SPEED*dt
+			local antenna_change = ANTENNA_SPEED * dt
 
 			if antenna_change < distance_to_next_node then
-				antenna_on_path = antenna_on_path + antenna_change*movement_dir
+				antenna_on_path = antenna_on_path + antenna_change * movement_dir
 			else
 				antenna_on_path = target_node
 			end
@@ -1230,7 +1230,7 @@ function antennae_check(nav_world, group, dt)
 		end
 
 		local wanted_dir_normal = Vector3(-wanted_face_dir.y, wanted_face_dir.x, 0)
-		local antenna_mid_position = antenna_on_path + wanted_dir_normal*antenna_x_offset
+		local antenna_mid_position = antenna_on_path + wanted_dir_normal * antenna_x_offset
 		local success, altitude = GwNavQueries.triangle_from_position(nav_world, antenna_mid_position, 0.5, 0.5)
 
 		if success then
@@ -1243,9 +1243,9 @@ function antennae_check(nav_world, group, dt)
 		local rotated_offset, antenna_position = nil
 
 		for j = 1, 2, 1 do
-			local other_normal = wanted_dir_normal*multiplier
-			multiplier = multiplier*-1
-			antenna_position = antenna_mid_position + other_normal*ANTENNA_WIDTH
+			local other_normal = wanted_dir_normal * multiplier
+			multiplier = multiplier * -1
+			antenna_position = antenna_mid_position + other_normal * ANTENNA_WIDTH
 
 			if script_data.debug_storm_vermin_patrol then
 				local drawer = Managers.state.debug:drawer({
@@ -1274,7 +1274,7 @@ function antennae_check(nav_world, group, dt)
 		antenna_x_offset = antenna_x_offset + total_distance
 		anchor.antenna_x_displacement = math.max(-ANTENNA_WIDTH, math.min(ANTENNA_WIDTH, antenna_x_offset))
 
-		if total_distance == 0 or antenna_x_offset*total_distance < 0 then
+		if total_distance == 0 or antenna_x_offset * total_distance < 0 then
 			if allow_lock then
 				antenna_lock = true
 			end
@@ -1286,9 +1286,9 @@ function antennae_check(nav_world, group, dt)
 
 		if antenna_lock then
 			local antenna_on_path2 = Vector3Box.unbox(anchor.locked_antenna_target_on_path)
-			antenna_target = antenna_on_path2 + wanted_dir_normal*antenna_x_offset
+			antenna_target = antenna_on_path2 + wanted_dir_normal * antenna_x_offset
 		else
-			antenna_target = antenna_on_path + wanted_dir_normal*antenna_x_offset
+			antenna_target = antenna_on_path + wanted_dir_normal * antenna_x_offset
 		end
 
 		if script_data.debug_storm_vermin_patrol and antenna_lock then
@@ -1493,7 +1493,7 @@ function debug_break_node_astar(group, astar_data, color)
 	local box_forward = Vector3.normalize(to_position - from_position)
 	local box_up = Vector3.up()
 	local box_right = Vector3.cross(box_forward, box_up)
-	local box_center = from_position + box_forward*node_distance*0.5
+	local box_center = from_position + box_forward * node_distance * 0.5
 	local box_pose = Matrix4x4.identity()
 
 	Matrix4x4.set_forward(box_pose, box_forward)
@@ -1501,7 +1501,7 @@ function debug_break_node_astar(group, astar_data, color)
 	Matrix4x4.set_up(box_pose, box_up)
 	Matrix4x4.set_translation(box_pose, box_center)
 
-	local box_extents = Vector3(BREAK_NODE_ASTAR_BOX_EXTENTS, node_distance/2 + BREAK_NODE_ASTAR_BOX_EXTENTS, 0.1)
+	local box_extents = Vector3(BREAK_NODE_ASTAR_BOX_EXTENTS, node_distance / 2 + BREAK_NODE_ASTAR_BOX_EXTENTS, 0.1)
 	local drawer = Managers.state.debug:drawer({
 		mode = "retained",
 		name = "storm_vermin_patrol_retained_until_destroy"
@@ -1521,7 +1521,7 @@ function enter_state_controlled_advance(nav_world, group, t)
 
 	for i = 1, num_indexed_members, 1 do
 		local unit = indexed_members[i]
-		local anchor_i = math.ceil(i*0.5)
+		local anchor_i = math.ceil(i * 0.5)
 		local blackboard = BLACKBOARDS[unit]
 		local navigation_extension = blackboard.navigation_extension
 
@@ -1588,11 +1588,11 @@ function acquire_targets(group)
 
 	local anchors = group.anchors
 	local num_anchors = #anchors
-	local anchors_to_targets_ratio = math.max(1, num_anchors/target_count)
+	local anchors_to_targets_ratio = math.max(1, num_anchors / target_count)
 
 	for i = 1, num_anchors, 1 do
 		local anchor = anchors[i]
-		local target_unit_index = math.ceil(i/anchors_to_targets_ratio)
+		local target_unit_index = math.ceil(i / anchors_to_targets_ratio)
 		local current_index = 1
 		local selected_target_unit = nil
 

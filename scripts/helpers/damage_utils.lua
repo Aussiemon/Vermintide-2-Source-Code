@@ -19,7 +19,7 @@ DamageUtils.get_power_level_percentage = function (power_level)
 	local min_power_level = MIN_POWER_LEVEL
 	local max_power_level = MAX_POWER_LEVEL
 	local actual_power_level = power_level
-	local percentage = (actual_power_level - min_power_level)/(max_power_level - min_power_level)
+	local percentage = (actual_power_level - min_power_level) / (max_power_level - min_power_level)
 
 	return percentage
 end
@@ -76,44 +76,38 @@ local function get_clamped_curve_value(curve, index)
 end
 
 DamageUtils.get_boost_curve_multiplier = function (curve, percent)
-	local x = (#curve - 1)*percent
+	local x = (#curve - 1) * percent
 	local index = math.floor(x) + 1
 	local t = x - math.floor(x)
 	local p0 = get_clamped_curve_value(curve, index - 1)
 	local p1 = get_clamped_curve_value(curve, index + 0)
 	local p2 = get_clamped_curve_value(curve, index + 1)
 	local p3 = get_clamped_curve_value(curve, index + 2)
-	local a = (-p0/2 + (p1*3)/2) - (p2*3)/2 + p3/2
-	local b = (p0 - (p1*5)/2 + p2*2) - p3/2
-	local c = -p0/2 + p2/2
+	local a = (-p0 / 2 + (3 * p1) / 2) - (3 * p2) / 2 + p3 / 2
+	local b = (p0 - (5 * p1) / 2 + 2 * p2) - p3 / 2
+	local c = -p0 / 2 + p2 / 2
 	local d = p1
-	local value = a*t*t*t + b*t*t + c*t + d
+	local value = a * t * t * t + b * t * t + c * t + d
 
 	return value
 end
-DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_unit, hit_zone_name, original_power_level, boost_curve, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, backstab_multiplier)
+DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_unit, hit_zone_name, original_power_level, boost_curve, boost_damage_multiplier, is_critical_strike, damage_profile, target_index, backstab_multiplier)
 	if damage_profile and damage_profile.no_damage then
 		return 0
 	end
 
-	local target_unit_health_extension = ScriptUnit.has_extension(target_unit, "health_system")
-	local is_invincible = target_unit_health_extension and target_unit_health_extension.is_invincible
+	if target_unit then
+		local target_unit_health_extension = ScriptUnit.has_extension(target_unit, "health_system")
+		local is_invincible = target_unit_health_extension and target_unit_health_extension.is_invincible
 
-	if is_invincible then
-		return 0
+		if is_invincible then
+			return 0
+		end
 	end
 
 	damage_output = damage_output or DamageOutput
-	local buff_extension = nil
-	local has_damage_boost = false
-
-	if attacker_unit and unit_alive(attacker_unit) and ScriptUnit.has_extension(attacker_unit, "buff_system") then
-		buff_extension = ScriptUnit.extension(attacker_unit, "buff_system")
-		has_damage_boost = buff_extension.has_buff_type(buff_extension, "armor penetration")
-	end
-
-	local is_enemy_damage = attacker_unit and not table.contains(PLAYER_AND_BOT_UNITS, attacker_unit)
-	local is_player_on_player_damage = attacker_unit and table.contains(PLAYER_AND_BOT_UNITS, target_unit) and table.contains(PLAYER_AND_BOT_UNITS, attacker_unit)
+	local is_enemy_damage = attacker_unit == nil or (attacker_unit and not table.contains(PLAYER_AND_BOT_UNITS, attacker_unit))
+	local is_player_on_player_damage = not is_enemy_damage and attacker_unit and table.contains(PLAYER_AND_BOT_UNITS, target_unit) and table.contains(PLAYER_AND_BOT_UNITS, attacker_unit)
 	local target_unit_armor, target_unit_primary_armor = nil
 
 	if is_player_on_player_damage then
@@ -122,26 +116,35 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 		target_unit_armor, target_unit_primary_armor = DamageUtils.get_unit_armor(target_unit, hit_zone_name)
 	end
 
-	local damage_boost_damage = 0
+	local buff_extension = nil
+	local has_power_boost = false
 
-	if has_damage_boost then
-		local damage_boost_armor = nil
+	if attacker_unit and unit_alive(attacker_unit) and ScriptUnit.has_extension(attacker_unit, "buff_system") then
+		buff_extension = ScriptUnit.extension(attacker_unit, "buff_system")
+		has_power_boost = buff_extension.has_buff_type(buff_extension, "armor penetration")
+	end
+
+	local power_boost_damage = 0
+	local headshot_boost_damage = 0
+
+	if has_power_boost or (boost_damage_multiplier and 0 < boost_damage_multiplier) then
+		local power_boost_armor = nil
 
 		if target_unit_armor == 2 or target_unit_armor == 5 or target_unit_armor == 6 then
-			damage_boost_armor = 1
+			power_boost_armor = 1
 		else
-			damage_boost_armor = target_unit_armor
+			power_boost_armor = target_unit_armor
 		end
 
-		local damage_boost_target_damages = damage_output[damage_boost_armor] or ((damage_boost_armor ~= 0 or 0) and damage_output[1])
+		local power_boost_target_damages = damage_output[power_boost_armor] or ((power_boost_armor ~= 0 or 0) and damage_output[1])
 
-		if type(damage_boost_target_damages) == "table" then
-			local damage_boost_damage_range = damage_boost_target_damages.max - damage_boost_target_damages.min
-			local damage_boost_attack_power, _ = ActionUtils.get_power_level_for_target(original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, target_unit, hit_zone_name, damage_boost_armor)
-			local damage_boost_percentage = DamageUtils.get_power_level_percentage(damage_boost_attack_power)
-			damage_boost_damage = damage_boost_target_damages.min + damage_boost_damage_range*damage_boost_percentage
+		if type(power_boost_target_damages) == "table" then
+			local power_boost_damage_range = power_boost_target_damages.max - power_boost_target_damages.min
+			local power_boost_attack_power, _ = ActionUtils.get_power_level_for_target(original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, target_unit, hit_zone_name, power_boost_armor)
+			local power_boost_percentage = DamageUtils.get_power_level_percentage(power_boost_attack_power)
+			power_boost_damage = power_boost_target_damages.min + power_boost_damage_range * power_boost_percentage
 		else
-			damage_boost_damage = damage_boost_target_damages
+			power_boost_damage = power_boost_target_damages
 		end
 	end
 
@@ -157,30 +160,55 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 			percentage = DamageUtils.get_power_level_percentage(attack_power)
 		end
 
-		damage = target_damages.min + damage_range*percentage
+		damage = target_damages.min + damage_range * percentage
 	else
 		damage = target_damages
 	end
 
+	local backstab_damage = nil
+
+	if backstab_multiplier then
+		backstab_damage = (power_boost_damage and damage < power_boost_damage and power_boost_damage * (backstab_multiplier - 1)) or damage * (backstab_multiplier - 1)
+	end
+
 	if not is_enemy_damage then
-		local boost_amount = 0
+		local breed = unit_get_data(target_unit, "breed")
+		local power_boost_amount = 0
 		local head_shot_boost_amount = 0
 
-		if has_damage_boost then
+		if has_power_boost then
 			if target_unit_armor == 1 then
-				boost_amount = boost_amount + 0.5
+				power_boost_amount = power_boost_amount + 0.75
 			elseif target_unit_armor == 2 then
-				boost_amount = boost_amount + 0.75
+				power_boost_amount = power_boost_amount + 0.6
 			elseif target_unit_armor == 3 then
-				boost_amount = boost_amount + 0.75
+				power_boost_amount = power_boost_amount + 0.5
 			elseif target_unit_armor == 4 then
-				boost_amount = boost_amount + 0.5
+				power_boost_amount = power_boost_amount + 0.5
 			elseif target_unit_armor == 5 then
-				boost_amount = boost_amount + 0.5
+				power_boost_amount = power_boost_amount + 0.5
 			elseif target_unit_armor == 6 then
-				boost_amount = boost_amount + 0.5
+				power_boost_amount = power_boost_amount + 0.3
 			else
-				boost_amount = boost_amount + 0.5
+				power_boost_amount = power_boost_amount + 0.5
+			end
+		end
+
+		if boost_damage_multiplier and 0 < boost_damage_multiplier then
+			if target_unit_armor == 1 then
+				power_boost_amount = power_boost_amount + 0.75
+			elseif target_unit_armor == 2 then
+				power_boost_amount = power_boost_amount + 0.3
+			elseif target_unit_armor == 3 then
+				power_boost_amount = power_boost_amount + 0.75
+			elseif target_unit_armor == 4 then
+				power_boost_amount = power_boost_amount + 0.5
+			elseif target_unit_armor == 5 then
+				power_boost_amount = power_boost_amount + 0.5
+			elseif target_unit_armor == 6 then
+				power_boost_amount = power_boost_amount + 0.2
+			else
+				power_boost_amount = power_boost_amount + 0.5
 			end
 		end
 
@@ -190,23 +218,23 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 		if multiplier_type == "headshot" or multiplier_type == "weakspot" or multiplier_type == "protected_weakspot" then
 			if 0 < damage then
 				if target_unit_armor == 3 then
-					head_shot_boost_amount = head_shot_boost_amount + ((target_settings and (target_settings.headshot_boost_boss or target_settings.headshot_boost)) or 0.5)
+					head_shot_boost_amount = head_shot_boost_amount + ((target_settings and (target_settings.headshot_boost_boss or target_settings.headshot_boost)) or 0.25)
 				else
 					head_shot_boost_amount = head_shot_boost_amount + ((target_settings and target_settings.headshot_boost) or 0.5)
 				end
 			elseif target_unit_primary_armor == 6 and damage == 0 then
-				head_shot_boost_amount = 0
+				head_shot_boost_amount = head_shot_boost_amount + (target_settings and (target_settings.headshot_boost_heavy_armor or 0.25))
 			elseif target_unit_armor == 2 and damage == 0 then
 				head_shot_boost_amount = head_shot_boost_amount + ((target_settings and (target_settings.headshot_boost_armor or target_settings.headshot_boost)) or 0.5)
 			end
 
 			if multiplier_type == "protected_weakspot" then
-				head_shot_boost_amount = head_shot_boost_amount*0.25
+				head_shot_boost_amount = head_shot_boost_amount * 0.25
 			end
 		end
 
 		if multiplier_type == "protected_spot" then
-			boost_amount = boost_amount - 0.5
+			power_boost_amount = power_boost_amount - 0.5
 			head_shot_boost_amount = head_shot_boost_amount - 0.5
 		end
 
@@ -214,12 +242,10 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 			head_shot_boost_amount = 0
 		end
 
-		if backstab_multiplier then
-			damage = damage*backstab_multiplier
-		end
+		local crit_boost = 0
 
 		if is_critical_strike then
-			local crit_boost = damage_profile.crit_boost or 0.5
+			crit_boost = damage_profile.crit_boost or 0.5
 
 			if buff_extension then
 				crit_boost = buff_extension.apply_buffs_to_value(buff_extension, crit_boost, StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS)
@@ -228,44 +254,63 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 			if damage_profile.no_crit_boost then
 				crit_boost = 0
 			end
-
-			head_shot_boost_amount = head_shot_boost_amount + crit_boost
 		end
 
-		if boost_curve and (0 < boost_amount or 0 < head_shot_boost_amount) then
+		if boost_curve and (0 < power_boost_amount or 0 < head_shot_boost_amount or 0 < crit_boost) then
 			local modified_boost_curve, modified_boost_curve_head_shot = nil
-			local boost_damage = 0
 			local boost_coefficient = (target_settings and target_settings.boost_curve_coefficient) or DefaultBoostCurveCoefficient
 			local boost_coefficient_headshot = (target_settings and target_settings.boost_curve_coefficient_headshot) or DefaultBoostCurveCoefficient
 
-			if boost_curve_multiplier then
-				local breed = unit_get_data(target_unit, "breed")
-
+			if boost_damage_multiplier and 0 < boost_damage_multiplier then
 				if breed and breed.boost_curve_multiplier_override then
-					boost_curve_multiplier = math.clamp(boost_curve_multiplier, 0, breed.boost_curve_multiplier_override)
+					boost_damage_multiplier = math.clamp(boost_damage_multiplier, 0, breed.boost_curve_multiplier_override)
 				end
 
-				boost_coefficient = boost_coefficient*boost_curve_multiplier
-				boost_coefficient_headshot = boost_coefficient_headshot*boost_curve_multiplier
+				boost_coefficient = boost_coefficient * boost_damage_multiplier
+				boost_coefficient_headshot = boost_coefficient_headshot * boost_damage_multiplier
 			end
 
-			if 0 < boost_amount then
+			if 0 < power_boost_amount then
 				modified_boost_curve = DamageUtils.get_modified_boost_curve(boost_curve, boost_coefficient)
-				boost_amount = math.clamp(boost_amount, 0, 1)
-				local boost_multiplier = DamageUtils.get_boost_curve_multiplier(modified_boost_curve or boost_curve, boost_amount)
-				boost_damage = math.max(damage_boost_damage, 1)*boost_multiplier
+				power_boost_amount = math.clamp(power_boost_amount, 0, 1)
+				local boost_multiplier = DamageUtils.get_boost_curve_multiplier(modified_boost_curve or boost_curve, power_boost_amount)
+				power_boost_damage = math.max(math.max(power_boost_damage, damage), 1) * boost_multiplier
 			end
 
-			if head_shot_boost_amount then
+			if head_shot_boost_amount or crit_boost then
 				local buff_extension = ScriptUnit.extension(attacker_unit, "buff_system")
 				head_shot_boost_amount = buff_extension.apply_buffs_to_value(buff_extension, head_shot_boost_amount, StatBuffIndex.HEADSHOT_MULTIPLIER)
 				modified_boost_curve_head_shot = DamageUtils.get_modified_boost_curve(boost_curve, boost_coefficient_headshot)
-				head_shot_boost_amount = math.clamp(head_shot_boost_amount, 0, 1)
+				head_shot_boost_amount = math.clamp(head_shot_boost_amount + crit_boost, 0, 1)
 				local head_shot_boost_multiplier = DamageUtils.get_boost_curve_multiplier(modified_boost_curve_head_shot or boost_curve, head_shot_boost_amount)
-				boost_damage = boost_damage + math.max(damage, 1)*head_shot_boost_multiplier
+				headshot_boost_damage = math.max(math.max(power_boost_damage, damage), 1) * head_shot_boost_multiplier
 			end
+		end
 
-			damage = damage + boost_damage
+		if breed and breed.armored_boss_damage_reduction then
+			damage = damage * 0.8
+			power_boost_damage = power_boost_damage * 0.5
+			backstab_damage = backstab_damage and backstab_damage * 0.75
+		end
+
+		if breed and breed.boss_damage_reduction then
+			damage = damage * 0.45
+			power_boost_damage = power_boost_damage * 0.5
+			headshot_boost_damage = headshot_boost_damage * 0.5
+			backstab_damage = backstab_damage and backstab_damage * 0.75
+		end
+
+		if breed and breed.lord_damage_reduction then
+			damage = damage * 0.25
+			power_boost_damage = power_boost_damage * 0.5
+			headshot_boost_damage = headshot_boost_damage * 0.5
+			backstab_damage = backstab_damage and backstab_damage * 0.5
+		end
+
+		damage = damage + power_boost_damage + headshot_boost_damage
+
+		if backstab_damage then
+			damage = damage + backstab_damage
 		end
 
 		if is_critical_strike then
@@ -280,7 +325,6 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 
 			if killing_blow_triggered then
 				local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-				local breed = unit_get_data(target_unit, "breed")
 
 				if breed then
 					local boss = breed.boss
@@ -302,15 +346,11 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 		local friendly_fire_multiplier = difficulty_settings.friendly_fire_multiplier
 
 		if friendly_fire_multiplier then
-			damage = damage*friendly_fire_multiplier
+			damage = damage * friendly_fire_multiplier
 		end
 	end
 
 	local heavy_armour_damage = false
-
-	if difficulty_settings.always_damage_heavy and target_unit_primary_armor == 6 and damage == 0 then
-		heavy_armour_damage = true
-	end
 
 	return damage, heavy_armour_damage
 end
@@ -337,22 +377,22 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 		local stagger_range = stagger_settings.max - stagger_settings.min
 		local _, impact_power = ActionUtils.get_power_level_for_target(original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, target_unit, hit_zone_name, target_unit_armor)
 		local percentage = DamageUtils.get_power_level_percentage(impact_power)
-		stagger_strength = stagger_range*percentage
+		stagger_strength = stagger_range * percentage
 
 		if is_critical_strike then
 			local boost_amount = attacker_buff_extension.apply_buffs_to_value(attacker_buff_extension, 0.5, StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS)
 			local boost_multiplier = DamageUtils.get_boost_curve_multiplier(boost_curve, boost_amount)
-			stagger_strength = stagger_strength + stagger_strength*boost_multiplier
+			stagger_strength = stagger_strength + stagger_strength * boost_multiplier
 		end
 
 		stagger_strength = stagger_settings.min + stagger_strength
-		local has_damage_boost = false
+		local has_power_boost = false
 
 		if attacker_unit and unit_alive(attacker_unit) and attacker_buff_extension then
-			has_damage_boost = attacker_buff_extension.has_buff_type(attacker_buff_extension, "armor penetration")
+			has_power_boost = attacker_buff_extension.has_buff_type(attacker_buff_extension, "armor penetration")
 
-			if has_damage_boost then
-				stagger_strength = stagger_strength*2
+			if has_power_boost then
+				stagger_strength = stagger_strength * 2
 			end
 		end
 
@@ -372,15 +412,15 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 			end
 
 			if blackboard.stagger then
-				local stagger_bonus = math.clamp(blackboard.stagger*(breed.stagger_multiplier or 0.5)*stagger_strength, 0, stagger_strength)
+				local stagger_bonus = math.clamp(blackboard.stagger * (breed.stagger_multiplier or 0.5) * stagger_strength, 0, stagger_strength)
 				stagger_strength = stagger_strength + stagger_bonus
 			end
 
 			if 0 < stagger_strength then
-				local stagger_threshold_light = (breed.stagger_threshold_light and breed.stagger_threshold_light*stagger_resistance) or 0
-				local stagger_threshold_medium = (breed.stagger_threshold_medium and breed.stagger_threshold_medium*stagger_resistance) or stagger_resistance
-				local stagger_threshold_heavy = (breed.stagger_threshold_heavy and breed.stagger_threshold_heavy*stagger_resistance) or stagger_resistance*2
-				local stagger_threshold_explosion = (breed.stagger_threshold_explosion and breed.stagger_threshold_explosion*stagger_resistance) or stagger_resistance*10
+				local stagger_threshold_light = (breed.stagger_threshold_light and breed.stagger_threshold_light * stagger_resistance) or 0
+				local stagger_threshold_medium = (breed.stagger_threshold_medium and breed.stagger_threshold_medium * stagger_resistance) or stagger_resistance
+				local stagger_threshold_heavy = (breed.stagger_threshold_heavy and breed.stagger_threshold_heavy * stagger_resistance) or 2 * stagger_resistance
+				local stagger_threshold_explosion = (breed.stagger_threshold_explosion and breed.stagger_threshold_explosion * stagger_resistance) or 10 * stagger_resistance
 				local excessive_force = 0
 				local scale = nil
 				local impact_modifier = 1
@@ -390,18 +430,18 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 				elseif stagger_strength < stagger_threshold_medium then
 					stagger = 1
 					excessive_force = stagger_strength
-					scale = (0 < excessive_force and excessive_force/stagger_resistance) or 0
-					impact_modifier = math.clamp(scale, 0, 1)*0.25 + 0.75
+					scale = (0 < excessive_force and excessive_force / stagger_resistance) or 0
+					impact_modifier = 0.75 + 0.25 * math.clamp(scale, 0, 1)
 				elseif stagger_strength < stagger_threshold_heavy then
 					stagger = 2
 					excessive_force = stagger_strength - stagger_threshold_medium
-					scale = (0 < excessive_force and excessive_force/stagger_resistance) or 0
-					impact_modifier = math.clamp(scale, 0, 1)*0.25 + 0.75
+					scale = (0 < excessive_force and excessive_force / stagger_resistance) or 0
+					impact_modifier = 0.75 + 0.25 * math.clamp(scale, 0, 1)
 				elseif stagger_strength < stagger_threshold_explosion then
 					stagger = 3
 					excessive_force = stagger_strength - stagger_threshold_heavy
-					scale = (0 < excessive_force and stagger_resistance/excessive_force) or 0
-					impact_modifier = math.clamp(scale, 0, 1)*0.25 + 0.75
+					scale = (0 < excessive_force and stagger_resistance / excessive_force) or 0
+					impact_modifier = 0.75 + 0.25 * math.clamp(scale, 0, 1)
 				elseif damage_profile.is_explosion then
 					stagger = 6
 				else
@@ -411,12 +451,12 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 				if breed.stagger_duration_difficulty_mod then
 					local stagger_duration_difficulty_table = breed.stagger_duration_difficulty_mod
 					local breed_duration_modifier = stagger_duration_difficulty_table[difficulty_rank] or 1
-					duration = duration*breed_duration_modifier
+					duration = duration * breed_duration_modifier
 				end
 
-				local time_modifier = math.clamp(excessive_force/stagger_resistance, 0, 2)*0.25 + 0.75
-				duration = duration*time_modifier
-				distance = math.clamp(distance*impact_modifier, 0.8, 1.2)
+				local time_modifier = 0.75 + 0.25 * math.clamp(excessive_force / stagger_resistance, 0, 2)
+				duration = duration * time_modifier
+				distance = math.clamp(distance * impact_modifier, 0.8, 1.2)
 			end
 		end
 	end
@@ -465,17 +505,17 @@ DamageUtils.calculate_stagger_player = function (stagger_table, target_unit, att
 	end
 
 	if breed.no_stagger_duration and not attack_template.always_stagger then
-		duration = duration*0.25
+		duration = duration * 0.25
 	end
 
 	local stagger_duration_modifier = target_settings.stagger_duration_modifier or damage_profile.stagger_duration_modifier or DefaultStaggerDurationModifier
 	local stagger_distance_modifier = target_settings.stagger_distance_modifier or damage_profile.stagger_distance_modifier or DefaultStaggerDistanceModifier
 	local stagger_duration_table = (breed.stagger_duration and breed.stagger_duration[stagger]) or DefaultStaggerDuration
-	duration = duration*stagger_duration_table*stagger_duration_modifier
-	distance = distance*stagger_distance_modifier
+	duration = duration * stagger_duration_table * stagger_duration_modifier
+	distance = distance * stagger_distance_modifier
 
 	if not breed.no_random_stagger_duration then
-		duration = math.max((duration + math.random()*1) - 0.5, 0)
+		duration = math.max((duration + math.random() * 1) - 0.5, 0)
 	end
 
 	return stagger, duration, distance, stagger_value
@@ -497,30 +537,30 @@ DamageUtils.calculate_stagger_dummy = function (stagger_table, target_unit, atta
 		local stagger_range = stagger_settings.max - stagger_settings.min
 		local _, impact_power = ActionUtils.get_power_level_for_target(original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, target_unit, hit_zone_name)
 		local percentage = DamageUtils.get_power_level_percentage(impact_power)
-		stagger_strength = stagger_range*percentage
+		stagger_strength = stagger_range * percentage
 
 		if is_critical_strike then
 			local boost_amount = attacker_buff_extension.apply_buffs_to_value(attacker_buff_extension, 0.5, StatBuffIndex.CRITICAL_STRIKE_EFFECTIVENESS)
 			local boost_multiplier = DamageUtils.get_boost_curve_multiplier(boost_curve, boost_amount)
-			stagger_strength = stagger_strength + stagger_strength*boost_multiplier
+			stagger_strength = stagger_strength + stagger_strength * boost_multiplier
 		end
 
 		stagger_strength = stagger_settings.min + stagger_strength
-		local has_damage_boost = false
+		local has_power_boost = false
 
 		if attacker_unit and unit_alive(attacker_unit) and attacker_buff_extension then
-			has_damage_boost = attacker_buff_extension.has_buff_type(attacker_buff_extension, "armor penetration")
+			has_power_boost = attacker_buff_extension.has_buff_type(attacker_buff_extension, "armor penetration")
 
-			if has_damage_boost then
-				stagger_strength = stagger_strength*2
+			if has_power_boost then
+				stagger_strength = stagger_strength * 2
 			end
 		end
 
 		local stagger_resistance = 1.5
 		local stagger_threshold_light = 0
 		local stagger_threshold_medium = stagger_resistance
-		local stagger_threshold_heavy = stagger_resistance*2
-		local stagger_threshold_explosion = stagger_resistance*10
+		local stagger_threshold_heavy = 2 * stagger_resistance
+		local stagger_threshold_explosion = 10 * stagger_resistance
 		local excessive_force, scale = nil
 		local impact_modifier = 1
 
@@ -529,18 +569,18 @@ DamageUtils.calculate_stagger_dummy = function (stagger_table, target_unit, atta
 		elseif stagger_strength < stagger_threshold_medium then
 			stagger = 1
 			excessive_force = stagger_strength
-			scale = (0 < excessive_force and excessive_force/stagger_resistance) or 0
-			impact_modifier = math.clamp(scale, 0, 1)*0.25 + 0.75
+			scale = (0 < excessive_force and excessive_force / stagger_resistance) or 0
+			impact_modifier = 0.75 + 0.25 * math.clamp(scale, 0, 1)
 		elseif stagger_strength < stagger_threshold_heavy then
 			stagger = 2
 			excessive_force = stagger_strength - stagger_threshold_medium
-			scale = (0 < excessive_force and excessive_force/stagger_resistance) or 0
-			impact_modifier = math.clamp(scale, 0, 1)*0.25 + 0.75
+			scale = (0 < excessive_force and excessive_force / stagger_resistance) or 0
+			impact_modifier = 0.75 + 0.25 * math.clamp(scale, 0, 1)
 		elseif stagger_strength < stagger_threshold_explosion then
 			stagger = 3
 			excessive_force = stagger_strength - stagger_threshold_heavy
-			scale = (0 < excessive_force and stagger_resistance/excessive_force) or 0
-			impact_modifier = math.clamp(scale, 0, 1)*0.25 + 0.75
+			scale = (0 < excessive_force and stagger_resistance / excessive_force) or 0
+			impact_modifier = 0.75 + 0.25 * math.clamp(scale, 0, 1)
 		elseif damage_profile.is_explosion then
 			stagger = 6
 		else
@@ -608,13 +648,13 @@ DamageUtils.calculate_stagger = function (impact_table, duration_table, target_u
 	end
 
 	if breed.no_stagger_duration then
-		duration = duration*0.25
+		duration = duration * 0.25
 	elseif breed.stagger_duration_mod then
-		duration = duration*breed.stagger_duration_mod
+		duration = duration * breed.stagger_duration_mod
 	elseif blocked then
 		duration = math.lerp(duration, 1.25, breed.block_stagger_mod or 0.5)
 	elseif shield_user then
-		duration = duration*(breed.shield_stagger_mod or 0.6)
+		duration = duration * (breed.shield_stagger_mod or 0.6)
 	else
 		duration = math.max((duration + math.random()) - 0.5, 0)
 	end
@@ -661,8 +701,8 @@ end
 DamageUtils.draw_aoe_size = function (target_unit, breed)
 	local radius, height = DamageUtils.calculate_aoe_size(target_unit)
 	local unit_position = POSITION_LOOKUP[target_unit]
-	local unit_top_position = unit_position + Vector3(0, 0, math.max(height - radius*0.5, height*0.5))
-	local unit_bottom_position = unit_position + Vector3(0, 0, math.min(radius*0.5, height*0.5))
+	local unit_top_position = unit_position + Vector3(0, 0, math.max(height - radius * 0.5, height * 0.5))
+	local unit_bottom_position = unit_position + Vector3(0, 0, math.min(radius * 0.5, height * 0.5))
 
 	QuickDrawer:capsule(unit_bottom_position, unit_top_position, radius, Color(255, 255, 0, 255))
 
@@ -760,13 +800,13 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 
 			power_level = attacker_power_level
 			power_level_max = attacker_power_level
-			power_level_min = power_level_max*(explosion_data.attacker_power_level_offset or DefaultAttackerPowerLevelOffset)
+			power_level_min = power_level_max * (explosion_data.attacker_power_level_offset or DefaultAttackerPowerLevelOffset)
 		end
 
 		if explosion_data.scale_power_level then
-			power_level = math.max(explosion_data.scale_power_level, scale)*power_level
-			power_level_max = math.max(explosion_data.scale_power_level, scale)*power_level_max
-			power_level_min = math.max(explosion_data.scale_power_level, scale)*power_level_min
+			power_level = math.max(explosion_data.scale_power_level, scale) * power_level
+			power_level_max = math.max(explosion_data.scale_power_level, scale) * power_level_max
+			power_level_min = math.max(explosion_data.scale_power_level, scale) * power_level_min
 		end
 
 		local power_level_glance = power_level_settings.power_level_glance
@@ -807,8 +847,8 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 						local is_immune = breed and explosion_data.immune_breeds and explosion_data.immune_breeds[breed.name]
 						local target_radius, target_height = DamageUtils.calculate_aoe_size(hit_unit, breed)
 						local unit_position = POSITION_LOOKUP[hit_unit] or unit_local_position(hit_unit, 0)
-						local unit_top_position = unit_position + Vector3(0, 0, math.max(target_height - target_radius*0.5, target_height*0.5))
-						local unit_bottom_position = unit_position + Vector3(0, 0, math.min(target_radius*0.5, target_height*0.5))
+						local unit_top_position = unit_position + Vector3(0, 0, math.max(target_height - target_radius * 0.5, target_height * 0.5))
+						local unit_bottom_position = unit_position + Vector3(0, 0, math.min(target_radius * 0.5, target_height * 0.5))
 						local closest_point = Geometry.closest_point_on_line(impact_position, unit_bottom_position, unit_top_position)
 						local hit_direction = closest_point - impact_position
 						local hit_distance = math.max(Vector3.length(hit_direction) - target_radius, 0)
@@ -822,7 +862,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 						local distance_factor = 1
 
 						if max_damage_radius < hit_distance then
-							distance_factor = (hit_distance - max_damage_radius)/(radius - max_damage_radius) - 1
+							distance_factor = 1 - (hit_distance - max_damage_radius) / (radius - max_damage_radius)
 						end
 
 						local glancing_hit = max_damage_radius < hit_distance
@@ -884,7 +924,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 							end
 
 							if scaled_power_level and distance_factor then
-								scaled_power_level = scaled_power_level*distance_factor
+								scaled_power_level = scaled_power_level * distance_factor
 							end
 
 							local damage_profile_name = (glancing_hit and explosion_data.damage_profile_glance) or explosion_data.damage_profile or "default"
@@ -897,7 +937,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 							local t = Managers.time:time("game")
 							local damage_profile = DamageProfileTemplates[damage_profile_name]
 							local target_index = nil
-							local boost_curve_multiplier = 1
+							local boost_curve_multiplier = 0
 							local shield_break_procc = false
 							local is_critical_strike = false
 							local backstab_multiplier = 1
@@ -920,7 +960,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 								local status_extension = ScriptUnit.extension(hit_unit, "status_system")
 
 								if not status_extension.is_disabled(status_extension) then
-									ScriptUnit.extension(hit_unit, "locomotion_system"):add_external_velocity(hit_direction_normalized*push_speed)
+									ScriptUnit.extension(hit_unit, "locomotion_system"):add_external_velocity(hit_direction_normalized * push_speed)
 								end
 							end
 						end
@@ -1050,16 +1090,16 @@ end
 DamageUtils.networkify_damage = function (damage_amount)
 	local damage = NetworkConstants.damage
 	damage_amount = math.clamp(damage_amount, damage.min, damage.max)
-	local decimal = damage_amount%1
-	local rounded_decimal = math.round(decimal*4)*0.25
+	local decimal = damage_amount % 1
+	local rounded_decimal = math.round(decimal * 4) * 0.25
 
 	return math.floor(damage_amount) + rounded_decimal
 end
 DamageUtils.networkify_health = function (health_amount)
 	local health = NetworkConstants.health
 	health_amount = math.clamp(health_amount, health.min, health.max)
-	local decimal = health_amount%1
-	local rounded_decimal = math.round(decimal*4)*0.25
+	local decimal = health_amount % 1
+	local rounded_decimal = math.round(decimal * 4) * 0.25
 
 	return math.floor(health_amount) + rounded_decimal
 end
@@ -1170,11 +1210,11 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 		local is_alive = AiUtils.unit_alive(hit_unit)
 
 		if is_alive then
-			local color_modifier_red = math.min(damage_amount*4 + 120, 255)
-			local color_modifier_green = math.max(damage_amount*4 - 200, 0)
+			local color_modifier_red = math.min(120 + damage_amount * 4, 255)
+			local color_modifier_green = math.max(200 - damage_amount * 4, 0)
 			local color1 = Vector3(color_modifier_red, color_modifier_green, 0)
-			local random_x = math.random(-30, 30)*0.01
-			local text_size = damage_amount*0.75 + 40
+			local random_x = math.random(-30, 30) * 0.01
+			local text_size = 40 + damage_amount * 0.75
 			local duration = 2.2
 
 			if is_critical_strike then
@@ -1330,7 +1370,9 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 			damage = (damage_type ~= "overcharge" and buff_extension.apply_buffs_to_value(buff_extension, damage, StatBuffIndex.DAMAGE_TAKEN_KD)) or 0
 		end
 
-		if damage_type ~= "overcharge" and 0 < damage and not is_knocked_down then
+		local valid_damage_to_overheat = damage_source ~= "ground_impact" and damage_type ~= "overcharge" and damage_type ~= "temporary_health_degen"
+
+		if valid_damage_to_overheat and 0 < damage and not is_knocked_down then
 			local original_damage = damage
 			local new_damage = buff_extension.apply_buffs_to_value(buff_extension, damage, StatBuffIndex.DAMAGE_TAKEN_TO_OVERCHARGE)
 
@@ -1354,7 +1396,7 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 		local damage_cap = buff_extension.apply_buffs_to_value(buff_extension, 0, StatBuffIndex.MAX_DAMAGE_TAKEN)
 
 		if 0 < damage_cap and damage_cap <= damage then
-			damage = math.max(damage*0.5, damage_cap)
+			damage = math.max(damage * 0.5, damage_cap)
 		end
 
 		if buff_extension.has_buff_type(buff_extension, "shared_health_pool") and not ignored_shared_damage_types[damage_source] then
@@ -1375,7 +1417,7 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 				end
 			end
 
-			damage = damage/num_players_with_shared_health_pool
+			damage = damage / num_players_with_shared_health_pool
 		end
 
 		local is_invulnerable = buff_extension.has_buff_type(buff_extension, "invulnerable")
@@ -1545,7 +1587,7 @@ DamageUtils.apply_buffs_to_heal = function (healed_unit, healer_unit, heal_amoun
 				end
 			end
 
-			heal_amount = heal_amount/num_players_with_shared_health_pool
+			heal_amount = heal_amount / num_players_with_shared_health_pool
 
 			if heal_type == "bandage" or heal_type == "healing_draught" then
 				shared_medpack = true
@@ -1589,7 +1631,7 @@ DamageUtils.debug_deal_damage = function (victim_unit, attack_template_name, hit
 	local damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
 	local weapon_system = Managers.state.entity:system("weapon_system")
 
-	weapon_system.send_rpc_attack_hit(weapon_system, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id, "power_level", 100, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 1, "is_critical_strike", false)
+	weapon_system.send_rpc_attack_hit(weapon_system, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id, "power_level", 100, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 0, "is_critical_strike", false)
 
 	return 
 end
@@ -1604,7 +1646,7 @@ DamageUtils.check_distance = function (action, blackboard, attacking_unit, targe
 	local player_radius = 1
 
 	if blackboard.target_dodged_during_attack or blackboard.set_dodge_rotation_timer then
-		player_radius = player_radius*(current_action.player_dodged_radius or breed.player_dodged_radius or 0.75)
+		player_radius = player_radius * (current_action.player_dodged_radius or breed.player_dodged_radius or 0.75)
 	end
 
 	if action.use_box_range then
@@ -1613,7 +1655,7 @@ DamageUtils.check_distance = function (action, blackboard, attacking_unit, targe
 		local z = to_target.z
 		local flat_range = blackboard.attack_range_flat + player_radius
 
-		if z < blackboard.attack_range_up and blackboard.attack_range_down < z and x*x + y*y < flat_range*flat_range then
+		if z < blackboard.attack_range_up and blackboard.attack_range_down < z and x * x + y * y < flat_range * flat_range then
 			return true
 		end
 	else
@@ -1756,8 +1798,8 @@ DamageUtils.camera_shake_by_distance = function (shake_name, start_time, player_
 
 	if source_unit then
 		local d = Vector3.distance(unit_local_position(source_unit, 0), unit_local_position(player_unit_to_shake, 0))
-		scale = math.clamp((d - near_dist)/(far_dist - near_dist), 0, 1) - 1
-		scale = far_value + scale*(near_value - far_value)
+		scale = 1 - math.clamp((d - near_dist) / (far_dist - near_dist), 0, 1)
+		scale = far_value + scale * (near_value - far_value)
 	end
 
 	Managers.state.camera:camera_effect_shake_event(shake_name, start_time, scale)
@@ -1773,7 +1815,7 @@ local hit_data = {}
 DamageUtils.is_enemy = function (unit)
 	local breed = unit_get_data(unit, "breed")
 
-	return breed and not breed.allied
+	return breed
 end
 DamageUtils.is_character = function (unit)
 	local has_breed = Unit.has_data(unit, "breed")
@@ -1819,11 +1861,11 @@ DamageUtils.damage_dummy_unit = function (hit_unit, attacker_unit, hit_zone_name
 		local charge_value = damage_profile.charge_value
 		local buffed_damage_amount = DamageUtils.apply_buffs_to_damage(damage_amount, hit_unit, attacker_unit, damage_source, dummy_units, damage_type, charge_value)
 		local final_damage_amount = DamageUtils.networkify_damage(buffed_damage_amount)
-		local color_modifier_red = math.min(final_damage_amount*4 + 120, 255)
-		local color_modifier_green = math.max(final_damage_amount*4 - 200, 0)
+		local color_modifier_red = math.min(120 + final_damage_amount * 4, 255)
+		local color_modifier_green = math.max(200 - final_damage_amount * 4, 0)
 		local color1 = Vector3(color_modifier_red, color_modifier_green, 0)
-		local random_x = math.random(-30, 30)*0.01
-		local text_size = final_damage_amount*0.75 + 40
+		local random_x = math.random(-30, 30) * 0.01
+		local text_size = 40 + final_damage_amount * 0.75
 		local duration = 2.2
 
 		if is_critical_strike then
@@ -1865,19 +1907,19 @@ DamageUtils.damage_dummy_unit = function (hit_unit, attacker_unit, hit_zone_name
 		local hit_unit_dir = Quaternion.forward(Unit.local_rotation(hit_unit, 0))
 		local angle_difference = Vector3.flat_angle(hit_unit_dir, attack_direction)
 
-		if angle_difference < -math.pi*0.75 or math.pi*0.75 < angle_difference then
+		if angle_difference < -math.pi * 0.75 or math.pi * 0.75 < angle_difference then
 			if stagger_type == 3 then
 				hit_anim = "stagger_heavy_fwd"
 			else
 				hit_anim = "stagger_light_fwd"
 			end
-		elseif angle_difference < -math.pi*0.25 then
+		elseif angle_difference < -math.pi * 0.25 then
 			if stagger_type == 3 then
 				hit_anim = "stagger_heavy_right"
 			else
 				hit_anim = "stagger_light_right"
 			end
-		elseif angle_difference < math.pi*0.25 then
+		elseif angle_difference < math.pi * 0.25 then
 			if stagger_type == 3 then
 				hit_anim = "stagger_heavy_bwd"
 			else
@@ -1915,13 +1957,13 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
 	local cleave_distribution = damage_profile.cleave_distribution or DefaultCleaveDistribution
 	local cleave_range = Cleave.max - Cleave.min
-	local cleave_power_level = ActionUtils.scale_powerlevels(power_level, "cleave")
-	local attack_cleave_power_level = cleave_power_level*cleave_distribution.attack
+	local cleave_power_level = ActionUtils.scale_powerlevels(power_level, "cleave", owner_unit)
+	local attack_cleave_power_level = cleave_power_level * cleave_distribution.attack
 	local attack_percentage = DamageUtils.get_power_level_percentage(attack_cleave_power_level)
-	local max_targets_attack = cleave_range*attack_percentage
-	local impact_cleave_power_level = cleave_power_level*cleave_distribution.impact
+	local max_targets_attack = cleave_range * attack_percentage
+	local impact_cleave_power_level = cleave_power_level * cleave_distribution.impact
 	local impact_percentage = DamageUtils.get_power_level_percentage(impact_cleave_power_level)
-	local max_targets_impact = cleave_range*impact_percentage
+	local max_targets_impact = cleave_range * impact_percentage
 
 	if owner_buff_extension then
 		max_targets_attack = owner_buff_extension.apply_buffs_to_value(owner_buff_extension, max_targets_attack, StatBuffIndex.PENETRATING_SHOT_PROC)
@@ -1930,14 +1972,12 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 		owner_buff_extension.trigger_procs(owner_buff_extension, "on_ranged_hit")
 	end
 
-	local has_ranged_boost = false
-	local boost_curve_multiplier = 1
+	local has_ranged_boost, boost_curve_multiplier = nil
 
 	if owner_career_extension then
 		has_ranged_boost, boost_curve_multiplier = owner_career_extension.has_ranged_boost(owner_career_extension)
 	end
 
-	is_critical_strike = is_critical_strike or has_ranged_boost
 	local max_targets = (max_targets_impact < max_targets_attack and max_targets_attack) or max_targets_impact
 	local ai_system = Managers.state.entity:system("ai_system")
 	local owner_is_bot = owner_is_player and owner_is_player.bot_player
@@ -1969,11 +2009,6 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 			local is_inventory_item = ScriptUnit.has_extension(hit_unit, "ai_inventory_item_system")
 			local is_target = hit_unit == target or target == nil
 			local breed = unit_get_data(hit_unit, "breed")
-
-			if breed and breed.allied then
-				return hit_data
-			end
-
 			local hit_zone_name = "full"
 
 			if breed then
@@ -2228,13 +2263,18 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 							end
 						end
 					elseif hit_unit_player and current_action.player_push_velocity then
-						local status_extension = ScriptUnit.extension(hit_unit, "status_system")
+						local hit_unit_buff_extension = ScriptUnit.has_extension(hit_unit, "buff_system")
+						local no_ranged_knockback = hit_unit_buff_extension and hit_unit_buff_extension.has_buff_perk(hit_unit_buff_extension, "no_ranged_knockback")
 
-						if not status_extension.is_disabled(status_extension) then
-							local max_impact_push_speed = current_action.max_impact_push_speed
-							local locomotion = ScriptUnit.extension(hit_unit, "locomotion_system")
+						if not no_ranged_knockback then
+							local status_extension = ScriptUnit.extension(hit_unit, "status_system")
 
-							locomotion.add_external_velocity(locomotion, current_action.player_push_velocity:unbox(), max_impact_push_speed)
+							if not status_extension.is_disabled(status_extension) then
+								local max_impact_push_speed = current_action.max_impact_push_speed
+								local locomotion = ScriptUnit.extension(hit_unit, "locomotion_system")
+
+								locomotion.add_external_velocity(locomotion, current_action.player_push_velocity:unbox(), max_impact_push_speed)
+							end
 						end
 					end
 
@@ -2319,7 +2359,7 @@ DamageUtils.get_modified_boost_curve = function (boost_curve, boost_curve_coeffi
 	table.clear(modified_boost_curve)
 
 	for index, value in ipairs(boost_curve) do
-		modified_boost_curve[index] = boost_curve[index]*boost_curve_coefficient
+		modified_boost_curve[index] = boost_curve[index] * boost_curve_coefficient
 	end
 
 	return modified_boost_curve
@@ -2511,7 +2551,7 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 				local current_fall_distance = status_extension.fall_distance(status_extension)
 
 				if MinFallDistanceForBonus <= current_fall_distance then
-					attack_power_level = attack_power_level*FallingPowerLevelBonusMultiplier
+					attack_power_level = attack_power_level * FallingPowerLevelBonusMultiplier
 				end
 			end
 		end

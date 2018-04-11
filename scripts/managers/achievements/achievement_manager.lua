@@ -1,12 +1,10 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/settings/level_unlock_settings")
 require("scripts/managers/achievements/achievement_templates")
 
 local platform_functions = {
 	debug_platform = {
 		check_version_number = function ()
-			local token = Application.time_since_launch() + 1 + math.random()*2
+			local token = Application.time_since_launch() + 1 + math.random() * 2
 
 			return false, token
 		end,
@@ -19,9 +17,9 @@ local platform_functions = {
 			return false
 		end,
 		unlock = function (platform_id, template)
-			print("[AchivementDebug] Unlocked:", template.name)
+			print("[AchievementDebug] Unlocked:", template.name)
 
-			local token = Application.time_since_launch() + 1 + math.random()*2
+			local token = Application.time_since_launch() + 1 + math.random() * 2
 
 			return token
 		end,
@@ -156,9 +154,10 @@ local platform_functions = {
 	}
 }
 AchievementManager = class(AchievementManager)
-AchievementManager.init = function (self, world, statistics_db)
+AchievementManager.init = function (self, world, statistics_db, is_in_inn)
 	self.world = world
 	self.statistics_db = statistics_db
+	self.context_is_in_inn = is_in_inn
 	self.in_progress = {}
 	self.hero_stat_table = {}
 
@@ -168,7 +167,7 @@ AchievementManager.init = function (self, world, statistics_db)
 		self.completed_achievements = {}
 	end
 
-	self.next_achievement_to_process_index = 1
+	self.next_achievement_to_process_index = 0
 	self.initialized_achievements = false
 	local platform = PLATFORM
 	local use_debug_platform = Development.parameter("achievement_debug_platform")
@@ -201,13 +200,22 @@ AchievementManager.init = function (self, world, statistics_db)
 		self.platform = "debug_platform"
 	end
 
-	self._enabled = false
+	self._enabled = true
 
 	Managers.state.event:register(self, "event_enable_achievements", "event_enable_achievements")
+	Managers.state.event:register(self, "event_set_loadout_items", "event_set_loadout_items")
 
 	return 
 end
 AchievementManager.event_enable_achievements = function (self, enable)
+	self._enabled = enable
+
+	return 
+end
+AchievementManager.event_set_loadout_items = function (self)
+	self.context_set_loadout = true
+	self.next_achievement_to_process_index = 0
+
 	return 
 end
 AchievementManager._initialize_xbox_achivements = function (self)
@@ -222,6 +230,9 @@ AchievementManager._initialize_xbox_achivements = function (self)
 	return 
 end
 AchievementManager.destroy = function (self)
+	Managers.state.event:unregister("event_enable_achievements", self)
+	Managers.state.event:unregister("event_set_loadout_items", self)
+
 	if self.gui then
 		World.destroy_gui(self.world, self.gui)
 
@@ -335,11 +346,31 @@ AchievementManager.update = function (self, dt)
 
 		while 0 < to_process do
 			to_process = to_process - 1
-			self.next_achievement_to_process_index = self.next_achievement_to_process_index%achievements_n + 1
+			self.next_achievement_to_process_index = self.next_achievement_to_process_index % achievements_n + 1
 			local template = achievements[self.next_achievement_to_process_index]
-			local name = template.name
 
-			if not completed_achievements[name] and not in_progress[name] then
+			if not template then
+				break
+			end
+
+			local name = template.name
+			local in_context = false
+
+			if template.context == "in_inn" then
+				if self.context_is_in_inn then
+					in_context = true
+				end
+			elseif template.context == "set_loadout" then
+				if self.context_set_loadout then
+					in_context = true
+				end
+			else
+				in_context = true
+			end
+
+			local should_evaluate = not completed_achievements[name] and not in_progress[name] and in_context
+
+			if should_evaluate then
 				Profiler.start(name)
 
 				local result = template.evaluate(statistics_db, stats_id)
@@ -348,7 +379,17 @@ AchievementManager.update = function (self, dt)
 
 				if result then
 					local token, error_msg = platform_functions.unlock(platform_id, template)
+
+					if token then
+						in_progress[name] = token
+					elseif error_msg then
+						ScriptApplication.send_to_crashify("[AchievementManager]", "ERROR: %s", error_msg)
+					end
 				end
+			end
+
+			if self.next_achievement_to_process_index == achievements_n then
+				self.context_set_loadout = false
 			end
 		end
 
@@ -423,7 +464,7 @@ AchievementManager.debug_draw = function (self)
 		local key_color = Color(250, 255, 120, 0)
 		local description_color = Color(255, 255, 255, 100)
 		local strikethrough_color = Color(100, 255, 255, 0)
-		local start_pos = Vector3(res_x/2, res_y - 100, 200)
+		local start_pos = Vector3(res_x / 2, res_y - 100, 200)
 		local pos = Vector3.copy(start_pos)
 		local header_text = string.format("Achievements [%s]", self.platform)
 

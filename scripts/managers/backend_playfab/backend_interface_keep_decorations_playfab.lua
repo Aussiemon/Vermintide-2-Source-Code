@@ -18,7 +18,7 @@ BackendInterfaceKeepDecorationsPlayFab.init = function (self, backend_mirror)
 	local requests = {}
 
 	for ii = 1, #all_keys, 1 do
-		local request_index = math.ceil(ii/request_size)
+		local request_index = math.ceil(ii / request_size)
 		local request = requests[request_index]
 
 		if not request then
@@ -108,23 +108,28 @@ BackendInterfaceKeepDecorationsPlayFab.save = function (self, save_callback)
 		}
 	}
 
-	local function on_complete(result)
+	local function request_callback(on_complete, result)
 		if result.Error then
 			Application.warning("Error saving Keep Decorations!")
 			table.dump(result, "PlayFabError", math.huge)
-			save_callback(false)
+			save_callback(on_complete, false)
 		else
 			print("Keep Decorations saved!")
 			table.clear(data_to_save)
-			save_callback(true)
+			save_callback(on_complete, true)
 		end
 
 		return 
 	end
 
-	PlayFabClientApi.ExecuteCloudScript(request, on_complete)
+	return {
+		payload = table.clone(request),
+		callback = function (payload, on_complete)
+			PlayFabClientApi.ExecuteCloudScript(payload, callback(request_callback, on_complete), callback(request_callback, on_complete))
 
-	return true
+			return 
+		end
+	}
 end
 
 return 

@@ -39,6 +39,13 @@ StateInGameRunning.on_enter = function (self, params)
 	self.is_in_tutorial = params.is_in_tutorial
 	self.end_conditions_met = false
 
+	if self.is_in_tutorial then
+		input_manager.create_input_service(input_manager, "Tutorial", "TutorialPlayerControllerKeymaps", "TutorialPlayerControllerFilters")
+		input_manager.map_device_to_service(input_manager, "Tutorial", "keyboard")
+		input_manager.map_device_to_service(input_manager, "Tutorial", "mouse")
+		input_manager.map_device_to_service(input_manager, "Tutorial", "gamepad")
+	end
+
 	input_manager.create_input_service(input_manager, "Player", "PlayerControllerKeymaps", "PlayerControllerFilters")
 	input_manager.map_device_to_service(input_manager, "Player", "keyboard")
 	input_manager.map_device_to_service(input_manager, "Player", "mouse")
@@ -83,6 +90,7 @@ StateInGameRunning.on_enter = function (self, params)
 	event_manager.register(event_manager, self, "level_start_local_player_spawned", "event_local_player_spawned")
 	event_manager.register(event_manager, self, "checkpoint_vote_cancelled", "on_checkpoint_vote_cancelled")
 	event_manager.register(event_manager, self, "conflict_director_setup_done", "event_conflict_director_setup_done")
+	event_manager.register(event_manager, self, "close_ingame_menu", "event_close_ingame_menu")
 
 	if PLATFORM == "xb1" then
 		event_manager.register(event_manager, self, "trigger_xbox_round_end", "event_trigger_xbox_round_end")
@@ -120,6 +128,7 @@ StateInGameRunning.on_enter = function (self, params)
 		room_manager = Managers.state.room,
 		is_server = params.is_server,
 		is_in_inn = params.is_in_inn,
+		is_in_tutorial = self.is_in_tutorial,
 		network_lobby = self._lobby_host or self._lobby_client,
 		network_event_delegate = params.network_event_delegate,
 		peer_id = peer_id,
@@ -475,7 +484,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		ingame_ui.activate_end_screen_ui(ingame_ui, game_won, checkpoint_available, level_key, previous_completed_difficulty_index)
 
 		local difficulty_key = Managers.state.difficulty:get_difficulty()
-		local chest_settings = LootChestData.chests_by_difficulty[difficulty_key]
+		local chest_settings = LootChestData.chests_by_category[difficulty_key]
 		local chests_package_name = chest_settings.package_name
 		self.chests_package_name = chests_package_name
 
@@ -483,6 +492,8 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	end
 
 	self.game_lost = game_lost
+
+	Managers.backend:commit(true)
 
 	if self.is_in_inn or self.is_in_tutorial then
 		return 
@@ -648,6 +659,15 @@ StateInGameRunning.disable_ui = function (self)
 
 	return 
 end
+StateInGameRunning.event_close_ingame_menu = function (self)
+	local ingame_ui = self.ingame_ui
+
+	if ingame_ui then
+		ingame_ui.suspend_active_view(ingame_ui)
+	end
+
+	return 
+end
 StateInGameRunning.update_ui = function (self)
 	if self._disable_ui then
 		return 
@@ -800,10 +820,6 @@ StateInGameRunning.on_exit = function (self)
 	self.player = nil
 
 	self._cancel_afk_warning(self)
-
-	local skip_queue = true
-
-	Managers.backend:commit(skip_queue)
 
 	return 
 end

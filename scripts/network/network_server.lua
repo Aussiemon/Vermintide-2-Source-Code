@@ -749,7 +749,7 @@ NetworkServer._draw_peer_states = function (self)
 		self._gui = World.create_screen_gui(world, "immediate", "material", font)
 	end
 
-	Gui.rect(self._gui, Vector2(0, 0), Vector2(margin*2 + peer_width + state_width, height), background_color)
+	Gui.rect(self._gui, Vector2(0, 0), Vector2(margin * 2 + peer_width + state_width, height), background_color)
 
 	local x = margin
 

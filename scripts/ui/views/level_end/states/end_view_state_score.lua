@@ -412,39 +412,6 @@ EndViewStateScore._setup_player_scores = function (self, players_session_scores)
 
 	return 
 end
-EndViewStateScore._get_portrait_frame = function (self, player)
-	local unit = player.player_unit
-	local player_portrait_frame = "default"
-
-	if unit then
-		local dead_portrait_frame = "unit_frame_death"
-		local network_manager = Managers.state.network
-		local network_game = network_manager.game(network_manager)
-
-		if network_game and not LEVEL_EDITOR_TEST and Unit.alive(unit) then
-			if player.local_player then
-				local career_extension = ScriptUnit.extension(unit, "career_system")
-				local career_name = career_extension.career_name(career_extension)
-				local item_interface = Managers.backend:get_interface("items")
-				local item = BackendUtils.get_loadout_item(career_name, "slot_frame")
-
-				if item then
-					local item_data = item.data
-					local frame_name = item_data.temporary_template
-
-					if not frame_name then
-					end
-				end
-			else
-				local unit_id = network_manager.unit_game_object_id(network_manager, unit)
-				local frame_name_id = GameSession.game_object_field(network_game, unit_id, "frame_name")
-				player_portrait_frame = NetworkLookup.cosmetics[frame_name_id]
-			end
-		end
-	end
-
-	return player_portrait_frame
-end
 local position_colors = {
 	Colors.get_color_table_with_alpha("cyan", 255),
 	Colors.get_color_table_with_alpha("gold", 255),
@@ -526,7 +493,7 @@ EndViewStateScore._setup_score_panel = function (self, score_panel_scores, playe
 				local row_name = "row_bg" .. line_suffix
 				local row_content = content[row_name]
 				row_content[score_text_name] = player_score
-				row_content.has_background = total_row_index%2 == 0
+				row_content.has_background = total_row_index % 2 == 0
 				row_content.has_highscore = has_highscore
 				row_content.has_score = true
 
@@ -550,7 +517,7 @@ EndViewStateScore._set_score_topic_by_row = function (self, row, text)
 	local row_content = content[row_name]
 	row_content[score_text_name] = text
 	row_content.has_score = true
-	row_content.has_background = row%2 == 0
+	row_content.has_background = row % 2 == 0
 
 	return 
 end

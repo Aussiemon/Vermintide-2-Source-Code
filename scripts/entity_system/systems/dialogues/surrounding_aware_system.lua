@@ -51,7 +51,7 @@ SurroundingAwareSystem.add_event = function (unit, event_name, distance, ...)
 
 	fassert(type(event_name) == "string", "First argument to add_event must be an event-name.")
 	fassert(type(distance) == "number", "Second argument to add_event must be distance.")
-	fassert(num_args%2 == 0, "Arguments must be set by key, value-pairs. Thus num args must be an even number.")
+	fassert(num_args % 2 == 0, "Arguments must be set by key, value-pairs. Thus num args must be an even number.")
 	pack_index[num_args + 4](array_data, event_array_size + 1, num_args, unit, event_name, distance, ...)
 
 	local new_size = event_array_size + num_args + 4
@@ -68,7 +68,7 @@ SurroundingAwareSystem.add_system_event = function (self, unit, event_name, dist
 
 	fassert(type(event_name) == "string", "First argument to add_event must be an event-name.")
 	fassert(type(distance) == "number", "Second argument to add_event must be distance.")
-	fassert(num_args%2 == 0, "Arguments must be set by key, value-pairs. Thus num args must be an even number.")
+	fassert(num_args % 2 == 0, "Arguments must be set by key, value-pairs. Thus num args must be an even number.")
 	pack_index[num_args + 4](array_data, event_array_size + 1, num_args, unit, event_name, distance, ...)
 
 	local new_size = event_array_size + num_args + 4
@@ -192,10 +192,10 @@ local function is_in_range(observer_position, target_position, observer_forward,
 		return false, observer_to_target_vector, observer_target_direction, nil, nil
 	end
 
-	local distance_det = view_distance_sq/(distance_squared*2)
+	local distance_det = view_distance_sq / (2 * distance_squared)
 	local forward_dot = Vector3.dot(observer_forward, observer_target_direction)
 	local angle = math.acos(forward_dot)
-	local max_angle = view_angle_rad*distance_det
+	local max_angle = view_angle_rad * distance_det
 
 	if max_angle <= angle then
 		return false, observer_to_target_vector, observer_target_direction, angle, max_angle
@@ -251,8 +251,8 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 	local observer_fpp = GameSession.game_object_field(game, unit_id, "aim_position")
 	local observer_forward = GameSession.game_object_field(game, unit_id, "aim_direction")
 	local dialogue_extension = ScriptUnit.extension_input(unit, "dialogue_system")
-	local broadphase_size = DialogueSettings.max_view_distance*0.5
-	local broadphase_position = observer_fpp + observer_forward*broadphase_size
+	local broadphase_size = DialogueSettings.max_view_distance * 0.5
+	local broadphase_position = observer_fpp + observer_forward * broadphase_size
 	local num_nearby = Broadphase.query(broadphase, broadphase_position, broadphase_size, found_units)
 	local previous_seen_observer = seen_observers[unit]
 	local closest_observer_utility = math.huge
@@ -279,7 +279,7 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 				end
 
 				local view_distance_sq = lookat_target_ext.view_distance_sq
-				local view_angle_rad = extension.view_angle_rad*((target == previous_seen_observer and VIEW_ANGLE_STICKINESS) or 1)
+				local view_angle_rad = extension.view_angle_rad * ((target == previous_seen_observer and VIEW_ANGLE_STICKINESS) or 1)
 				local in_range, observer_to_target_vector, observer_target_direction, angle, max_angle = is_in_range(observer_fpp, target_center, observer_forward, view_distance_sq, view_angle_rad)
 
 				if in_range and not darkness_system.is_in_darkness(darkness_system, target_center) then
@@ -299,7 +299,7 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 						seen_recently[target] = t
 					elseif is_in_view then
 						local angle_multiplier = BASE_ANGLE_MULTIPLIER + ((target == previous_seen_observer and STICKINESS_MODIFIER) or 0)
-						local utility = angle*angle_multiplier + observer_to_target_length
+						local utility = angle * angle_multiplier + observer_to_target_length
 
 						if utility < closest_observer_utility then
 							closest_observer_unit = target
@@ -371,8 +371,8 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 	local unit_id = unit_storage.go_id(unit_storage, player_unit)
 	local observer_fpp = GameSession.game_object_field(game, unit_id, "aim_position")
 	local observer_forward = GameSession.game_object_field(game, unit_id, "aim_direction")
-	local broadphase_size = DialogueSettings.max_view_distance*0.5
-	local observe_position = observer_fpp + observer_forward*broadphase_size
+	local broadphase_size = DialogueSettings.max_view_distance * 0.5
+	local observe_position = observer_fpp + observer_forward * broadphase_size
 	local num_nearby = Broadphase.query(broadphase, observe_position, broadphase_size, found_units)
 
 	drawer.sphere(drawer, observe_position, broadphase_size, Colors.get("light_blue"))
@@ -400,7 +400,7 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 				end
 
 				local view_distance_sq = lookat_target_ext.view_distance_sq
-				local view_angle_rad = extension.view_angle_rad*((target == previous_seen_observer and VIEW_ANGLE_STICKINESS) or 1)
+				local view_angle_rad = extension.view_angle_rad * ((target == previous_seen_observer and VIEW_ANGLE_STICKINESS) or 1)
 				local in_range, observer_to_target_vector, observer_target_direction, angle, max_angle = is_in_range(observer_fpp, target_center, observer_forward, view_distance_sq, view_angle_rad)
 				local observer_to_target_length = Vector3.length(observer_to_target_vector)
 				debug_text = string.format(debug_text .. "DISTANCE: %.2f/%.2f", observer_to_target_length, lookat_target_ext.view_distance)
@@ -503,8 +503,8 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 					event_data.distance = distance
 					event_data.height_distance = height_distance
 
-					for k = 1, num_args/2, 1 do
-						local array_data_index = i + 3 + (k - 1)*2 + 1
+					for k = 1, num_args / 2, 1 do
+						local array_data_index = i + 3 + (k - 1) * 2 + 1
 						event_data[array_data[array_data_index]] = array_data[array_data_index + 1]
 					end
 

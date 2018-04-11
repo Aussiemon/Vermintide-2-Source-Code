@@ -23,6 +23,15 @@ table.clone = function (t)
 
 	return clone
 end
+table.shallow_copy = function (t)
+	local copy = {}
+
+	for key, value in pairs(t) do
+		copy[key] = value
+	end
+
+	return copy
+end
 table.crop = function (t, index)
 	local new_table = {}
 	local new_table_size = 0
@@ -154,7 +163,7 @@ end
 table.reverse = function (t)
 	local size = #t
 
-	for i = 1, math.floor(size/2), 1 do
+	for i = 1, math.floor(size / 2), 1 do
 		t[size - i + 1] = t[i]
 		t[i] = t[size - i + 1]
 	end

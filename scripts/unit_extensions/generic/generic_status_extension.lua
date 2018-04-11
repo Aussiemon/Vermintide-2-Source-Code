@@ -132,7 +132,7 @@ GenericStatusExtension.destroy = function (self)
 	return 
 end
 GenericStatusExtension.add_damage_intensity = function (self, percent_health_lost, damage_type)
-	self.intensity = math.clamp(self.intensity + percent_health_lost*CurrentIntensitySettings.intensity_add_per_percent_dmg_taken*100, 0, 100)
+	self.intensity = math.clamp(self.intensity + percent_health_lost * CurrentIntensitySettings.intensity_add_per_percent_dmg_taken * 100, 0, 100)
 	self.intensity_decay_delay = CurrentIntensitySettings.decay_delay
 
 	return 
@@ -176,22 +176,22 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 	if self.is_server then
 		local stride = DamageDataIndex.STRIDE
 
-		for i = 1, num_damages/stride, 1 do
-			local index = (i - 1)*stride
+		for i = 1, num_damages / stride, 1 do
+			local index = (i - 1) * stride
 			local damage_type = damages[index + DamageDataIndex.DAMAGE_TYPE]
 
 			if not intensity_ignored_damage_types[damage_type] then
 				local amount = damages[index + DamageDataIndex.DAMAGE_AMOUNT]
 				local max_health = health_extension.get_max_health(health_extension)
 
-				self.add_damage_intensity(self, amount/max_health, damage_type)
+				self.add_damage_intensity(self, amount / max_health, damage_type)
 			end
 		end
 
 		local ignore_decay_delay = self.conflict_director.pacing:ignore_intensity_decay_delay()
 
 		if (self.intensity_decay_delay <= 0 or ignore_decay_delay) and not self.conflict_director:intensity_decay_frozen() then
-			self.intensity = math.clamp(self.intensity - CurrentIntensitySettings.decay_per_second*dt, 0, CurrentIntensitySettings.max_intensity)
+			self.intensity = math.clamp(self.intensity - CurrentIntensitySettings.decay_per_second * dt, 0, CurrentIntensitySettings.max_intensity)
 		end
 
 		self.intensity_decay_delay = self.intensity_decay_delay - dt
@@ -213,20 +213,20 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			attack_intensity_decay = ATTACK_INTENSITY_DECAY_FAST
 		end
 
-		self.attack_intensity = self.attack_intensity - dt*attack_intensity_decay*self.attack_intensity_threshold
+		self.attack_intensity = self.attack_intensity - dt * attack_intensity_decay * self.attack_intensity_threshold
 	end
 
 	if self.move_speed_multiplier_timer < 1 then
 		local move_speed_timer_added_bonus = dt
-		move_speed_timer_added_bonus = move_speed_timer_added_bonus*PlayerUnitStatusSettings.move_speed_reduction_on_hit_recover_time
+		move_speed_timer_added_bonus = move_speed_timer_added_bonus * PlayerUnitStatusSettings.move_speed_reduction_on_hit_recover_time
 		self.move_speed_multiplier_timer = self.move_speed_multiplier_timer + move_speed_timer_added_bonus
 	end
 
 	if 0 < num_damages then
 		local slow_movement = false
 
-		for i = 1, num_damages/DamageDataIndex.STRIDE, 1 do
-			local damage_type = damages[(i - 1)*DamageDataIndex.STRIDE + DamageDataIndex.DAMAGE_TYPE]
+		for i = 1, num_damages / DamageDataIndex.STRIDE, 1 do
+			local damage_type = damages[(i - 1) * DamageDataIndex.STRIDE + DamageDataIndex.DAMAGE_TYPE]
 
 			if PlayerUnitMovementSettings.slowing_damage_types[damage_type] then
 				slow_movement = true
@@ -236,7 +236,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		end
 
 		if slow_movement then
-			self.move_speed_multiplier = self.current_move_speed_multiplier(self)*0.5
+			self.move_speed_multiplier = self.current_move_speed_multiplier(self) * 0.5
 			self.move_speed_multiplier = math.max(0.2, self.move_speed_multiplier)
 			self.move_speed_multiplier_timer = 0
 		end
@@ -248,24 +248,24 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		local previous_max_fatigue_points = self.max_fatigue_points
 		local max_fatigue_points = self._get_current_max_fatigue_points(self) or previous_max_fatigue_points
 		local degen_delay = self.block_broken_degen_delay or self.push_degen_delay or PlayerUnitStatusSettings.FATIGUE_DEGEN_DELAY
-		degen_delay = degen_delay/self.buff_extension:apply_buffs_to_value(1, StatBuffIndex.FATIGUE_REGEN)
+		degen_delay = degen_delay / self.buff_extension:apply_buffs_to_value(1, StatBuffIndex.FATIGUE_REGEN)
 
 		if previous_max_fatigue_points ~= max_fatigue_points then
-			self.fatigue = (max_fatigue_points ~= 0 or 0) and previous_max_fatigue_points/max_fatigue_points*self.fatigue
+			self.fatigue = (max_fatigue_points ~= 0 or 0) and previous_max_fatigue_points / max_fatigue_points * self.fatigue
 		end
 
 		if 0 < num_damages and 50 <= self.fatigue then
 			if self.action_stun_push then
 				self.action_stun_push = false
 			else
-				self.remove_fatigue_points(self, max_fatigue_points/100)
+				self.remove_fatigue_points(self, 100 / max_fatigue_points)
 			end
 		end
 
 		if self.last_fatigue_gain_time + degen_delay <= t then
 			self.action_stun_push = false
 			self.show_fatigue_gui = false
-			local degen_amount = (max_fatigue_points ~= 0 or 0) and PlayerUnitStatusSettings.FATIGUE_POINTS_DEGEN_AMOUNT/max_fatigue_points*PlayerUnitStatusSettings.MAX_FATIGUE
+			local degen_amount = (max_fatigue_points ~= 0 or 0) and PlayerUnitStatusSettings.FATIGUE_POINTS_DEGEN_AMOUNT / max_fatigue_points * PlayerUnitStatusSettings.MAX_FATIGUE
 			local new_degen_amount = self.buff_extension:apply_buffs_to_value(degen_amount, StatBuffIndex.FATIGUE_REGEN)
 
 			if degen_amount < new_degen_amount then
@@ -274,7 +274,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 				self.has_bonus_fatigue_active = false
 			end
 
-			self.remove_fatigue_points(self, new_degen_amount*dt)
+			self.remove_fatigue_points(self, new_degen_amount * dt)
 
 			self.block_broken_degen_delay = nil
 			self.push_degen_delay = nil
@@ -314,7 +314,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		local first_person_extension = self.first_person_extension
 
 		if first_person_extension and self.low_health_playing_id then
-			local health = current_player_health*100
+			local health = current_player_health * 100
 			local wwise_world = Managers.world:wwise_world(self.world)
 
 			WwiseWorld.set_source_parameter(wwise_world, self.low_health_source_id, "health_status", health)
@@ -441,8 +441,8 @@ GenericStatusExtension._debug_draw_block_arcs = function (self, unit)
 			local outer_block_angle = buff_extension.apply_buffs_to_value(buff_extension, weapon_template.outer_block_angle or 360, StatBuffIndex.BLOCK_ANGLE)
 			block_angle = math.clamp(block_angle, 0, 360)
 			outer_block_angle = math.clamp(outer_block_angle, 0, 360)
-			local block_half_angle = math.rad(block_angle*0.5)
-			local outer_block_half_angle = math.rad(outer_block_angle*0.5)
+			local block_half_angle = math.rad(block_angle * 0.5)
+			local outer_block_half_angle = math.rad(outer_block_angle * 0.5)
 			local color = Color(255, 255, 255)
 
 			if self.is_blocking(self) then
@@ -455,14 +455,14 @@ GenericStatusExtension._debug_draw_block_arcs = function (self, unit)
 			local inner_left_direction = Quaternion.rotate(Quaternion(Vector3.up(), block_half_angle), player_direction_flat)
 			local inner_right_direction = Quaternion.rotate(Quaternion(Vector3.up(), -block_half_angle), player_direction_flat)
 
-			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_left_direction)*2 + Vector3.up(), color)
-			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_right_direction)*2 + Vector3.up(), color)
+			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_left_direction) * 2 + Vector3.up(), color)
+			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_right_direction) * 2 + Vector3.up(), color)
 
 			local outer_left_direction = Quaternion.rotate(Quaternion(Vector3.up(), outer_block_half_angle), player_direction_flat)
 			local outer_right_direction = Quaternion.rotate(Quaternion(Vector3.up(), -outer_block_half_angle), player_direction_flat)
 
-			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_left_direction)*2 + Vector3.up(), color)
-			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_right_direction)*2 + Vector3.up(), color)
+			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_left_direction) * 2 + Vector3.up(), color)
+			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_right_direction) * 2 + Vector3.up(), color)
 		end
 	end
 
@@ -479,20 +479,20 @@ GenericStatusExtension._debug_draw_push_arcs = function (self, unit)
 		local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 		local player_direction_flat = Vector3.flat(player_direction)
 		local buff_extension = self.buff_extension
-		local push_half_angle = math.rad(buff_extension.apply_buffs_to_value(buff_extension, current_action.push_angle or 90, StatBuffIndex.BLOCK_ANGLE)*0.5)
-		local outer_push_half_angle = math.rad(buff_extension.apply_buffs_to_value(buff_extension, current_action.outer_push_angle or 360, StatBuffIndex.BLOCK_ANGLE)*0.5)
+		local push_half_angle = math.rad(buff_extension.apply_buffs_to_value(buff_extension, current_action.push_angle or 90, StatBuffIndex.BLOCK_ANGLE) * 0.5)
+		local outer_push_half_angle = math.rad(buff_extension.apply_buffs_to_value(buff_extension, current_action.outer_push_angle or 360, StatBuffIndex.BLOCK_ANGLE) * 0.5)
 		local color = Color(255, 255, 255)
 		local inner_left_direction = Quaternion.rotate(Quaternion(Vector3.up(), push_half_angle), player_direction_flat)
 		local inner_right_direction = Quaternion.rotate(Quaternion(Vector3.up(), -push_half_angle), player_direction_flat)
 
-		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_left_direction)*2 + Vector3.up(), color)
-		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_right_direction)*2 + Vector3.up(), color)
+		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_left_direction) * 2 + Vector3.up(), color)
+		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(inner_right_direction) * 2 + Vector3.up(), color)
 
 		local outer_left_direction = Quaternion.rotate(Quaternion(Vector3.up(), outer_push_half_angle), player_direction_flat)
 		local outer_right_direction = Quaternion.rotate(Quaternion(Vector3.up(), -outer_push_half_angle), player_direction_flat)
 
-		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_left_direction)*2 + Vector3.up(), color)
-		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_right_direction)*2 + Vector3.up(), color)
+		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_left_direction) * 2 + Vector3.up(), color)
+		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_right_direction) * 2 + Vector3.up(), color)
 	end
 
 	return 
@@ -526,20 +526,17 @@ end
 GenericStatusExtension.update_falling = function (self, t)
 	if self.locomotion_extension:is_on_ground() and not self.on_ladder then
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(self.unit)
-		local FALL_DAMAGE_MULTIPLIER = movement_settings_table.fall.heights.FALL_DAMAGE_MULTIPLIER
-		local MIN_FALL_DAMAGE_HEIGHT = movement_settings_table.fall.heights.MIN_FALL_DAMAGE_HEIGHT
-		local MIN_FALL_DAMAGE = movement_settings_table.fall.heights.MIN_FALL_DAMAGE
-		local MAX_FALL_DAMAGE = movement_settings_table.fall.heights.MAX_FALL_DAMAGE
-		local HARD_LANDING_FALL_HEIGHT = movement_settings_table.fall.heights.HARD_LANDING_FALL_HEIGHT
+		local min_fall_damage_height = movement_settings_table.fall.heights.MIN_FALL_DAMAGE_HEIGHT
+		local hard_landing_fall_height = movement_settings_table.fall.heights.HARD_LANDING_FALL_HEIGHT
 		local end_fall_height = POSITION_LOOKUP[self.unit].z
 		local fall_distance = self.fall_height - end_fall_height
 		local fall_event = "landed"
 
-		if MIN_FALL_DAMAGE_HEIGHT < fall_distance then
+		if min_fall_damage_height < fall_distance then
 			fall_distance = math.abs(fall_distance)
 
 			if not global_is_inside_inn then
-				local network_height = math.clamp(fall_distance*4, 0, 255)
+				local network_height = math.clamp(fall_distance * 4, 0, 255)
 				local network_manager = Managers.state.network
 				local unit_storage = Managers.state.unit_storage
 				local go_id = unit_storage.go_id(unit_storage, self.unit)
@@ -549,7 +546,7 @@ GenericStatusExtension.update_falling = function (self, t)
 
 			fall_event = "landed_soft"
 
-			if HARD_LANDING_FALL_HEIGHT <= fall_distance then
+			if hard_landing_fall_height <= fall_distance then
 				fall_event = "landed_hard"
 			end
 		end
@@ -582,7 +579,7 @@ GenericStatusExtension._get_current_max_fatigue_points = function (self)
 			if boon_handler then
 				local num_bonus_fatigue_boons = boon_handler.get_num_boons(boon_handler, "bonus_fatigue")
 				local boon_template = BoonTemplates.bonus_fatigue
-				max_fatigue_points = max_fatigue_points + num_bonus_fatigue_boons*boon_template.fatigue_increase
+				max_fatigue_points = max_fatigue_points + num_bonus_fatigue_boons * boon_template.fatigue_increase
 			end
 		end
 
@@ -619,8 +616,8 @@ GenericStatusExtension.can_block = function (self, attacking_unit, attack_direct
 		local outer_block_angle = buff_extension.apply_buffs_to_value(buff_extension, weapon_template.outer_block_angle or 360, StatBuffIndex.BLOCK_ANGLE)
 		block_angle = math.clamp(block_angle, 0, 360)
 		outer_block_angle = math.clamp(outer_block_angle, 0, 360)
-		local block_half_angle = math.rad(block_angle*0.5)
-		local outer_block_half_angle = math.rad(outer_block_angle*0.5)
+		local block_half_angle = math.rad(block_angle * 0.5)
+		local outer_block_half_angle = math.rad(outer_block_angle * 0.5)
 		local dot = Vector3.dot(block_direction_flat, player_direction_flat)
 		local angle_to_attacker = math.acos(dot)
 		local block = angle_to_attacker <= block_half_angle
@@ -693,7 +690,7 @@ GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_
 	if blocking_unit then
 		local unit_pos = POSITION_LOOKUP[blocking_unit]
 		local unit_rot = Unit.world_rotation(blocking_unit, 0)
-		local particle_position = unit_pos + Quaternion.up(unit_rot)*Math.random()*0.5 + Quaternion.right(unit_rot)*0.1
+		local particle_position = unit_pos + Quaternion.up(unit_rot) * Math.random() * 0.5 + Quaternion.right(unit_rot) * 0.1
 
 		World.create_particles(self.world, "fx/wpnfx_sword_spark_parry", particle_position)
 	end
@@ -767,7 +764,7 @@ GenericStatusExtension.fatigued = function (self)
 	local max_fatigue = PlayerUnitStatusSettings.MAX_FATIGUE
 	local max_fatigue_points = self.max_fatigue_points
 
-	return (max_fatigue_points == 0 and true) or max_fatigue - max_fatigue/max_fatigue_points < self.fatigue
+	return (max_fatigue_points == 0 and true) or max_fatigue - max_fatigue / max_fatigue_points < self.fatigue
 end
 GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attacking_unit, blocking_weapon_unit, fatigue_point_costs_multiplier)
 	local buff_extension = self.buff_extension
@@ -780,7 +777,7 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	local t = Managers.time:time("game")
 	local max_fatigue = PlayerUnitStatusSettings.MAX_FATIGUE
 	local max_fatigue_points = self.max_fatigue_points
-	local fatigue_cost = amount*max_fatigue/max_fatigue_points*(fatigue_point_costs_multiplier or 1)
+	local fatigue_cost = amount * max_fatigue / max_fatigue_points * (fatigue_point_costs_multiplier or 1)
 
 	if blocking_weapon_unit and self.timed_block and t < self.timed_block then
 		fatigue_cost = buff_extension.apply_buffs_to_value(buff_extension, fatigue_cost, StatBuffIndex.TIMED_BLOCK_COST)
@@ -797,7 +794,7 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 			local overcharge_extension = ScriptUnit.has_extension(self.unit, "overcharge_system")
 
 			if overcharge_extension and overcharge_extension.above_overcharge_threshold(overcharge_extension) then
-				fatigue_cost = fatigue_cost*0.5
+				fatigue_cost = fatigue_cost * 0.5
 
 				overcharge_extension.remove_charge(overcharge_extension, amount)
 			end
@@ -877,7 +874,7 @@ end
 GenericStatusExtension.add_dodge_cooldown = function (self)
 	self.get_dodge_item_data(self)
 
-	self.dodge_cooldown = math.min(self.dodge_cooldown + 1, self.dodge_count + 3)
+	self.dodge_cooldown = math.min(self.dodge_cooldown + 1, 3 + self.dodge_count)
 	self.dodge_cooldown_delay = nil
 
 	return 
@@ -889,7 +886,7 @@ GenericStatusExtension.start_dodge_cooldown = function (self, t)
 end
 GenericStatusExtension.get_dodge_cooldown = function (self)
 	local buff_extension = ScriptUnit.extension(self.unit, "buff_system")
-	local cooldown = (math.max(self.dodge_cooldown - self.dodge_count, 0)/3 - 1)*0.6 + 0.4
+	local cooldown = 0.4 + 0.6 * (1 - math.max(self.dodge_cooldown - self.dodge_count, 0) / 3)
 
 	return (buff_extension.has_buff_type(buff_extension, "passive_career_we_2") and 1) or cooldown
 end
@@ -906,7 +903,7 @@ GenericStatusExtension.current_fatigue_points = function (self)
 	local max_fatigue = PlayerUnitStatusSettings.MAX_FATIGUE
 	local max_fatigue_points = self.max_fatigue_points
 
-	return (max_fatigue_points ~= 0 or 0) and math.ceil(self.fatigue/max_fatigue/max_fatigue_points), max_fatigue_points
+	return (max_fatigue_points ~= 0 or 0) and math.ceil(self.fatigue / max_fatigue / max_fatigue_points), max_fatigue_points
 end
 GenericStatusExtension.set_pushed = function (self, pushed, t)
 	if pushed and self.push_cooldown then
@@ -1342,7 +1339,7 @@ GenericStatusExtension.switch_variable_zoom = function (self, zoom_table)
 
 		for i, camera_name in ipairs(zoom_table) do
 			if camera_name == self.zoom_mode then
-				new_index = i%#zoom_table + 1
+				new_index = i % #zoom_table + 1
 
 				break
 			end
@@ -1790,7 +1787,10 @@ GenericStatusExtension.is_ogre_target = function (self)
 	return not self.is_dead(self) and not self.is_pounced_down(self) and not self.is_grabbed_by_pack_master(self) and not self.is_hanging_from_hook(self) and not self.is_using_transport(self) and not self.is_grabbed_by_tentacle(self) and not self.is_grabbed_by_chaos_spawn(self)
 end
 GenericStatusExtension.is_chaos_spawn_target = function (self)
-	return not self.is_dead(self) and not self.is_pounced_down(self) and not self.is_grabbed_by_pack_master(self) and not self.is_hanging_from_hook(self) and not self.is_using_transport(self) and not self.is_grabbed_by_tentacle(self) and not self.is_grabbed_by_chaos_spawn(self)
+	return not self.is_dead(self) and not self.is_knocked_down(self) and not self.is_pounced_down(self) and not self.is_grabbed_by_pack_master(self) and not self.is_hanging_from_hook(self) and not self.is_using_transport(self) and not self.is_grabbed_by_tentacle(self) and not self.is_grabbed_by_chaos_spawn(self)
+end
+GenericStatusExtension.is_lord_target = function (self)
+	return not self.is_dead(self) and not self.is_knocked_down(self) and not self.is_pounced_down(self) and not self.is_grabbed_by_pack_master(self) and not self.is_hanging_from_hook(self) and not self.is_using_transport(self) and not self.is_grabbed_by_tentacle(self) and not self.is_grabbed_by_chaos_spawn(self)
 end
 GenericStatusExtension.is_available_for_career_revive = function (self)
 	return self.is_knocked_down(self) and not self.is_pounced_down(self) and not self.is_grabbed_by_pack_master(self) and not self.is_hanging_from_hook(self) and not self.is_grabbed_by_tentacle(self) and not self.is_grabbed_by_chaos_spawn(self)
@@ -1833,6 +1833,9 @@ GenericStatusExtension.is_pulled_up = function (self)
 end
 GenericStatusExtension.is_zooming = function (self)
 	return self.zooming
+end
+GenericStatusExtension.num_wounds_remaining = function (self)
+	return self.wounds
 end
 GenericStatusExtension.has_wounds_remaining = function (self)
 	return 1 < self.wounds

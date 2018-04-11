@@ -94,7 +94,7 @@ BTAlertedAction.decide_deadline = function (self, unit, blackboard, t)
 	local forward_vector_flat = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 	local dot_product = Vector3.dot(forward_vector_flat, target_vector_flat)
 	local min_deadline = (0.25 < dot_product and 0.5) or 1
-	local max_deadline = math.max(min_deadline, dot_product*2 - 2)
+	local max_deadline = math.max(min_deadline, 2 - dot_product * 2)
 	local time_alerted = Math.random(min_deadline, max_deadline)
 	local breed = blackboard.breed
 	local action = blackboard.action
@@ -129,7 +129,7 @@ BTAlertedAction.should_hesitate = function (self, unit, blackboard, action)
 				local success_target, ray_pos_target = GwNavQueries.raycast(nav_world, to_pos, from_pos)
 				local diff = ray_pos_self - ray_pos_target
 				local height_diff = diff.z
-				blackboard.no_hesitation = 2 < height_diff and math.pi/3 < math.asin(height_diff/Vector3.length(diff))
+				blackboard.no_hesitation = 2 < height_diff and math.pi / 3 < math.asin(height_diff / Vector3.length(diff))
 			end
 		else
 			blackboard.no_hesitation = true

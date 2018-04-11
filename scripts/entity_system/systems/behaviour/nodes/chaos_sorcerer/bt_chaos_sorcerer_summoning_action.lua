@@ -106,9 +106,9 @@ BTChaosSorcererSummoningAction.run = function (self, unit, blackboard, t, dt)
 	local target_unit = blackboard.summon_target_unit
 
 	if Unit.alive(target_unit) then
-		local status_ext = ScriptUnit.extension(target_unit, "status_system")
+		local status_ext = ScriptUnit.has_extension(target_unit, "status_system")
 
-		if not status_ext.is_invisible(status_ext) and not status_ext.get_is_dodging(status_ext) then
+		if status_ext and not status_ext.is_invisible(status_ext) and not status_ext.get_is_dodging(status_ext) then
 			blackboard.target_position:store(POSITION_LOOKUP[target_unit])
 		end
 
@@ -168,12 +168,12 @@ BTChaosSorcererSummoningAction._start_vortex_summoning = function (self, unit, b
 	local summon_position = vortex_data.vortex_spawn_pos:unbox()
 	local max_height = vortex_template.max_height
 	local spawn_radius = vortex_data.vortex_spawn_radius
-	local inner_radius_p = math.min(spawn_radius/vortex_template.full_inner_radius, 1)
+	local inner_radius_p = math.min(spawn_radius / vortex_template.full_inner_radius, 1)
 	local inner_decal_unit_name = action.inner_decal_unit_name
 
 	if inner_decal_unit_name then
 		local inner_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), summon_position)
-		local inner_radius = math.max(vortex_template.min_inner_radius, inner_radius_p*vortex_template.full_inner_radius)
+		local inner_radius = math.max(vortex_template.min_inner_radius, inner_radius_p * vortex_template.full_inner_radius)
 
 		Matrix4x4.set_scale(inner_spawn_pose, Vector3(inner_radius, inner_radius, inner_radius))
 
@@ -184,7 +184,7 @@ BTChaosSorcererSummoningAction._start_vortex_summoning = function (self, unit, b
 
 	if outer_decal_unit_name then
 		local outer_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), summon_position)
-		local outer_radius = math.max(vortex_template.min_outer_radius, inner_radius_p*vortex_template.full_outer_radius)
+		local outer_radius = math.max(vortex_template.min_outer_radius, inner_radius_p * vortex_template.full_outer_radius)
 
 		Matrix4x4.set_scale(outer_spawn_pose, Vector3(outer_radius, outer_radius, outer_radius))
 
@@ -194,13 +194,13 @@ BTChaosSorcererSummoningAction._start_vortex_summoning = function (self, unit, b
 	vortex_data.next_missile_cast_t = t
 	vortex_data.num_dummy_missiles = 0
 	local physics_world = vortex_data.physics_world
-	local start_check_position = summon_position + Vector3.up()*VORTEX_MIN_DUMMY_MISSILE_HEIGHT
+	local start_check_position = summon_position + Vector3.up() * VORTEX_MIN_DUMMY_MISSILE_HEIGHT
 	local hit, hit_position, hit_distance, _, _ = PhysicsWorld.immediate_raycast(physics_world, start_check_position, Vector3.up(), max_height - VORTEX_MIN_DUMMY_MISSILE_HEIGHT, "closest", "collision_filter", "filter_ai_mover")
 	local max_height = (hit and VORTEX_MIN_DUMMY_MISSILE_HEIGHT + hit_distance) or max_height
 	vortex_data.max_height = max_height
 	local unit_position = POSITION_LOOKUP[unit]
 	local distance = Vector3.distance(unit_position, summon_position)
-	local extra_time = distance*action.extra_time_per_distance
+	local extra_time = distance * action.extra_time_per_distance
 	vortex_data.summoning_done_t = t + action.summoning_time + extra_time
 	vortex_data.extra_time = extra_time
 	local breed = blackboard.breed
@@ -278,9 +278,9 @@ BTChaosSorcererSummoningAction._launch_vortex_dummy_missile = function (self, ow
 	local speed = action.missile_speed
 	local life_time = action.missile_life_time + vortex_data.extra_time
 	local true_flight_template_name = "sorcerer_vortex_dummy_missile"
-	local max_height = math.max(vortex_data.max_height/2, VORTEX_MIN_DUMMY_MISSILE_HEIGHT + 0.5)
-	local height_offset = VORTEX_MIN_DUMMY_MISSILE_HEIGHT + (max_height - VORTEX_MIN_DUMMY_MISSILE_HEIGHT)*math.random()
-	target_position = target_position + Vector3.up()*height_offset
+	local max_height = math.max(vortex_data.max_height / 2, VORTEX_MIN_DUMMY_MISSILE_HEIGHT + 0.5)
+	local height_offset = VORTEX_MIN_DUMMY_MISSILE_HEIGHT + (max_height - VORTEX_MIN_DUMMY_MISSILE_HEIGHT) * math.random()
+	target_position = target_position + Vector3.up() * height_offset
 	local extension_init_data = {
 		projectile_locomotion_system = {
 			trajectory_template_name = "throw_trajectory",
@@ -368,9 +368,9 @@ BTChaosSorcererSummoningAction.spawn_portal = function (self, unit, blackboard, 
 
 	if inside_wall_spawn_distance then
 		local normal = Quaternion.forward(portal_rot)
-		tentacle_pos = portal_pos - normal*inside_wall_spawn_distance
+		tentacle_pos = portal_pos - normal * inside_wall_spawn_distance
 
-		QuickDrawerStay:line(tentacle_pos, tentacle_pos + normal*5, Colors.get("light_green"))
+		QuickDrawerStay:line(tentacle_pos, tentacle_pos + normal * 5, Colors.get("light_green"))
 		QuickDrawerStay:sphere(tentacle_pos, 0.1, Colors.get("light_green"))
 	end
 
@@ -407,7 +407,7 @@ BTChaosSorcererSummoningAction.boss_sorcerer_spawn_tentacle_in_arena = function 
 	local normal = Quaternion.forward(portal_rot)
 	local inside_wall_spawn_distance = breed.inside_wall_spawn_distance
 	local spawn_category = "portal"
-	local tentacle_pos = portal_pos - normal*inside_wall_spawn_distance
+	local tentacle_pos = portal_pos - normal * inside_wall_spawn_distance
 	local portal_unit = Managers.state.conflict:spawn_unit(breed, tentacle_pos, portal_rot, spawn_category, nil)
 	blackboard.tentacle_portal_units[portal_unit] = true
 	local tentacle_blackboard = BLACKBOARDS[portal_unit]
@@ -443,7 +443,7 @@ end
 BTChaosSorcererSummoningAction.update_summon_plague_wave = function (self, unit, blackboard, t, dt)
 	if blackboard.summon_plague_wave_timer < t then
 		if not blackboard.summoning_unit then
-			local unit_name = "units/beings/enemies/chaos_sorcerer_fx/chr_chaos_sorcerer_fx"
+			local unit_name = DamageWaveTemplates.templates[blackboard.damage_wave_template_name or "plague_wave"].fx_unit
 			local extension_init_data = {
 				area_damage_system = {
 					damage_wave_template_name = blackboard.damage_wave_template_name or "plague_wave",
@@ -467,8 +467,8 @@ BTChaosSorcererSummoningAction.update_summon_plague_wave = function (self, unit,
 			local current_pos = POSITION_LOOKUP[summoning_unit]
 			local source_unit_pos = POSITION_LOOKUP[source_unit]
 			local source_unit_dir = Quaternion.forward(source_unit_rot)
-			local wanted_pos = source_unit_pos + source_unit_dir*2
-			local lerp_value = math.min(dt*2, 1)
+			local wanted_pos = source_unit_pos + source_unit_dir * 2
+			local lerp_value = math.min(dt * 2, 1)
 			local pos = Vector3.lerp(current_pos, wanted_pos, lerp_value)
 			local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(blackboard.nav_world, pos, 1.5, 1.5)
 
@@ -509,6 +509,20 @@ BTChaosSorcererSummoningAction.spawn_plague_wave = function (self, unit, blackbo
 		end
 	end
 
+	if not projected_start_pos then
+		local p = GwNavQueries.inside_position_from_outside_position(nav_world, plague_wave_pos, 6, 6, 4, 0.5)
+
+		if p then
+			projected_start_pos = p
+		else
+			blackboard.ready_to_summon = false
+
+			damage_wave_extension.abort(damage_wave_extension)
+
+			return false
+		end
+	end
+
 	local success = GwNavQueries.raycango(nav_world, projected_start_pos, projected_end_pos)
 	local optional_target_pos = nil
 
@@ -523,7 +537,7 @@ BTChaosSorcererSummoningAction.spawn_plague_wave = function (self, unit, blackbo
 		local ray_check_offset = 2.5
 
 		for i = 1, tries, 1 do
-			local ray_check_position = target_position + target_to_start_normalized*ray_check_offset*i
+			local ray_check_position = target_position + target_to_start_normalized * ray_check_offset * i
 			local success = GwNavQueries.raycango(nav_world, projected_start_pos, ray_check_position)
 
 			if success then
@@ -623,7 +637,7 @@ BTChaosSorcererSummoningAction.spawn_plague_waves_in_patterns = function (self, 
 			end
 
 			spawn_dir = Quaternion.forward(spawn_rot)
-			local target_pos = spawn_pos + spawn_dir*range
+			local target_pos = spawn_pos + spawn_dir * range
 
 			if action.goal_pos_func then
 				target_pos = action.goal_pos_func(unit, blackboard, spawner_unit, j, spawn_pos, target_pos, spawn_dir)

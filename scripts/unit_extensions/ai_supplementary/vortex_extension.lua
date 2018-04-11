@@ -4,7 +4,7 @@ local position_lookup = POSITION_LOOKUP
 local player_and_bot_units = PLAYER_AND_BOT_UNITS
 local BLACKBOARDS = BLACKBOARDS
 local NUMBER_OF_RAYCASTS = 36
-local RAYCAST_INVERAL_RAD = (math.pi*2)/NUMBER_OF_RAYCASTS
+local RAYCAST_INVERAL_RAD = (2 * math.pi) / NUMBER_OF_RAYCASTS
 local NAV_COST_MAP_UPDATE_INTERVAL = 0.5
 VortexExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
@@ -21,7 +21,7 @@ VortexExtension.init = function (self, extension_init_context, unit, extension_i
 	local inner_fx_id = World.create_particles(world, inner_fx_name, position)
 	local rotation = Unit.local_rotation(unit, 0)
 	local inner_pose = Matrix4x4.from_quaternion(rotation)
-	local inner_scale_xy = vortex_template.full_inner_radius/vortex_template.full_fx_radius
+	local inner_scale_xy = vortex_template.full_inner_radius / vortex_template.full_fx_radius
 	local inner_fx_z_scale_multiplier = vortex_template.inner_fx_z_scale_multiplier or 1
 
 	Matrix4x4.set_scale(inner_pose, Vector3(inner_scale_xy, inner_scale_xy, inner_fx_z_scale_multiplier))
@@ -31,7 +31,7 @@ VortexExtension.init = function (self, extension_init_context, unit, extension_i
 	local outer_fx_name = vortex_template.outer_fx_name
 	local outer_fx_id = World.create_particles(world, outer_fx_name, position)
 	local outer_pose = Matrix4x4.from_quaternion(rotation)
-	local outer_scale_xy = vortex_template.full_outer_radius/vortex_template.full_fx_radius
+	local outer_scale_xy = vortex_template.full_outer_radius / vortex_template.full_fx_radius
 	local outer_fx_z_scale_multiplier = vortex_template.outer_fx_z_scale_multiplier or 1
 
 	Matrix4x4.set_scale(outer_pose, Vector3(outer_scale_xy, outer_scale_xy, outer_fx_z_scale_multiplier))
@@ -260,14 +260,14 @@ VortexExtension.update = function (self, unit, input, dt, context, t)
 		self._next_nav_cost_map_update_t = t + NAV_COST_MAP_UPDATE_INTERVAL
 	end
 
-	local fx_radius_percentage = fx_radius/vortex_template.full_fx_radius
+	local fx_radius_percentage = fx_radius / vortex_template.full_fx_radius
 	local height = vortex_data.height
-	local height_percentage = height/vortex_template.max_height
+	local height_percentage = height / vortex_template.max_height
 	local current_height_lerp = self.current_height_lerp
-	local height_lerp = math.lerp(current_height_lerp, height_percentage, math.min(dt*HEIGHT_FX_LERP, 1))
+	local height_lerp = math.lerp(current_height_lerp, height_percentage, math.min(dt * HEIGHT_FX_LERP, 1))
 	self.current_height_lerp = height_lerp
-	local scale_xy = fx_radius_percentage*vortex_template.full_fx_radius
-	local scale_z = height_lerp*vortex_template.max_height
+	local scale_xy = fx_radius_percentage * vortex_template.full_fx_radius
+	local scale_z = height_lerp * vortex_template.max_height
 
 	Unit.set_local_scale(unit, 0, Vector3(scale_xy, scale_xy, scale_z))
 
@@ -316,15 +316,15 @@ VortexExtension._update_nav_cost_map_volumes = function (self, position, full_ou
 
 	local speed = Vector3.length(velocity)
 	local max_speed = navigation_extension.get_max_speed(navigation_extension)
-	local lerp_value = speed/max_speed
+	local lerp_value = speed / max_speed
 	local scale_value = math.lerp(1, 2, lerp_value)
-	local new_scale = Vector3(full_outer_radius, scale_value*full_outer_radius, 1)
+	local new_scale = Vector3(full_outer_radius, scale_value * full_outer_radius, 1)
 	local medium_cost_map_id = self._medium_cost_nav_cost_map_id
 	local medium_cost_volume_id = self._medium_cost_nav_cost_map_volume_id
 
 	ai_system.set_nav_cost_map_volume_scale(ai_system, medium_cost_volume_id, medium_cost_map_id, new_scale)
 
-	local medium_cost_position = high_cost_position + high_cost_direction*full_outer_radius*0.5*scale_value
+	local medium_cost_position = high_cost_position + high_cost_direction * 0.5 * full_outer_radius * scale_value
 	local medium_cost_transform = Matrix4x4.from_quaternion_position(high_cost_rotation, medium_cost_position)
 
 	ai_system.set_nav_cost_map_volume_transform(ai_system, medium_cost_volume_id, medium_cost_map_id, medium_cost_transform)
@@ -337,7 +337,7 @@ VortexExtension._update_height = function (self, unit, t, dt, vortex_template, v
 	local current_raycast_rad = vortex_data.current_raycast_rad
 	local check_radius = vortex_data.inner_radius
 	local unit_position = position_lookup[unit]
-	local ray_source = unit_position + Vector3(math.cos(current_raycast_rad)*check_radius, math.sin(current_raycast_rad)*check_radius, check_z_offset)
+	local ray_source = unit_position + Vector3(math.cos(current_raycast_rad) * check_radius, math.sin(current_raycast_rad) * check_radius, check_z_offset)
 	local physics_world = vortex_data.physics_world
 	local current_height = vortex_data.height
 	local max_height = vortex_template.max_height - check_z_offset
@@ -359,7 +359,7 @@ VortexExtension._update_height = function (self, unit, t, dt, vortex_template, v
 
 	local write_index = height_ring_buffer.write_index
 	buffer[write_index] = new_height + check_z_offset
-	height_ring_buffer.write_index = write_index%max_size + 1
+	height_ring_buffer.write_index = write_index % max_size + 1
 
 	if vortex_data.wanted_height ~= minimum_height then
 		vortex_data.wanted_height = minimum_height
@@ -372,22 +372,22 @@ VortexExtension._update_height = function (self, unit, t, dt, vortex_template, v
 		vortex_data.height = wanted_height
 	elseif current_height < wanted_height then
 		local start_lerp_height = vortex_data.start_lerp_height
-		local current_lerp_value = math.abs(current_height - start_lerp_height)/math.abs(wanted_height - start_lerp_height)
-		local new_lerp_value = math.clamp(current_lerp_value + dt*INCREASE_HEIGHT_LERP_PROGRESS_PER_SECOND, 0, 1)
+		local current_lerp_value = math.abs(current_height - start_lerp_height) / math.abs(wanted_height - start_lerp_height)
+		local new_lerp_value = math.clamp(current_lerp_value + dt * INCREASE_HEIGHT_LERP_PROGRESS_PER_SECOND, 0, 1)
 		vortex_data.height = math.lerp(start_lerp_height, wanted_height, new_lerp_value)
 	end
 
 	if script_data.debug_vortex then
-		local ray_end = ray_source + Vector3.up()*new_height
+		local ray_end = ray_source + Vector3.up() * new_height
 		local debug_color = (hit and Colors.get("red")) or Colors.get("green")
 
 		QuickDrawer:line(ray_source, ray_end, debug_color)
 		QuickDrawer:sphere(ray_source, 0.25, Colors.get("yellow"))
 		QuickDrawer:sphere(ray_end, 0.25, debug_color)
 
-		local current_height_top = unit_position + Vector3.up()*vortex_data.height
+		local current_height_top = unit_position + Vector3.up() * vortex_data.height
 		local projected_height_top = Vector3(ray_end.x, ray_end.y, current_height_top.z)
-		local wanted_height_top = unit_position + Vector3.up()*vortex_data.wanted_height
+		local wanted_height_top = unit_position + Vector3.up() * vortex_data.wanted_height
 		local projected_wanted_height_top = Vector3(ray_end.x, ray_end.y, wanted_height_top.z)
 
 		QuickDrawer:sphere(current_height_top, 0.125, Colors.get("pink"))
@@ -408,7 +408,7 @@ VortexExtension._update_radius = function (self, unit, t, dt, nav_world, travers
 	local current_fx_radius = vortex_data.fx_radius
 	local radius_check_rad = vortex_data.current_raycast_rad
 	local check_radius = vortex_template.full_inner_radius
-	local ray_end = unit_position + Vector3(math.cos(radius_check_rad)*check_radius, math.sin(radius_check_rad)*check_radius, 0)
+	local ray_end = unit_position + Vector3(math.cos(radius_check_rad) * check_radius, math.sin(radius_check_rad) * check_radius, 0)
 	local success, projected_start_pos, projected_end_pos, hit_position = LocomotionUtils.raycast_on_navmesh(nav_world, unit_position, ray_end, traverse_logic, 1, 1)
 
 	if not projected_start_pos then
@@ -432,11 +432,11 @@ VortexExtension._update_radius = function (self, unit, t, dt, nav_world, travers
 	minimum_inner_radius = math.max(minimum_inner_radius, vortex_template.min_inner_radius)
 	local write_index = inner_radius_ring_buffer.write_index
 	buffer[write_index] = hit_distance
-	inner_radius_ring_buffer.write_index = write_index%max_size + 1
+	inner_radius_ring_buffer.write_index = write_index % max_size + 1
 
 	if vortex_data.wanted_inner_radius ~= minimum_inner_radius then
-		local wanted_fx_radius_p = minimum_inner_radius/vortex_template.full_inner_radius
-		local wanted_fx_radius = math.max(vortex_template.full_fx_radius*wanted_fx_radius_p, vortex_template.min_fx_radius)
+		local wanted_fx_radius_p = minimum_inner_radius / vortex_template.full_inner_radius
+		local wanted_fx_radius = math.max(vortex_template.full_fx_radius * wanted_fx_radius_p, vortex_template.min_fx_radius)
 		vortex_data.wanted_fx_radius = wanted_fx_radius
 		vortex_data.wanted_inner_radius = minimum_inner_radius
 		vortex_data.start_lerp_inner_radius = current_inner_radius
@@ -449,8 +449,8 @@ VortexExtension._update_radius = function (self, unit, t, dt, nav_world, travers
 		vortex_data.inner_radius = wanted_inner_radius
 	elseif current_inner_radius < wanted_inner_radius then
 		local start_lerp_inner_radius = vortex_data.start_lerp_inner_radius
-		local current_lerp_value = math.abs(current_inner_radius - start_lerp_inner_radius)/math.abs(wanted_inner_radius - start_lerp_inner_radius)
-		local new_lerp_value = math.clamp(current_lerp_value + dt*INCREASE_RADIUS_LERP_PROGRESS_PER_SECOND, 0, 1)
+		local current_lerp_value = math.abs(current_inner_radius - start_lerp_inner_radius) / math.abs(wanted_inner_radius - start_lerp_inner_radius)
+		local new_lerp_value = math.clamp(current_lerp_value + dt * INCREASE_RADIUS_LERP_PROGRESS_PER_SECOND, 0, 1)
 		vortex_data.inner_radius = math.lerp(start_lerp_inner_radius, wanted_inner_radius, new_lerp_value)
 	end
 
@@ -458,14 +458,14 @@ VortexExtension._update_radius = function (self, unit, t, dt, nav_world, travers
 
 	if wanted_fx_radius ~= current_fx_radius then
 		local start_lerp_fx_radius = vortex_data.start_lerp_fx_radius
-		local current_lerp_value = math.abs(current_fx_radius - start_lerp_fx_radius)/math.abs(wanted_fx_radius - start_lerp_fx_radius)
+		local current_lerp_value = math.abs(current_fx_radius - start_lerp_fx_radius) / math.abs(wanted_fx_radius - start_lerp_fx_radius)
 		local lerp_constant = (current_fx_radius < wanted_fx_radius and INCREASE_RADIUS_LERP_PROGRESS_PER_SECOND) or DECREASE_RADIUS_LERP_PROGRESS_PER_SECOND
-		local new_lerp_value = math.clamp(current_lerp_value + dt*lerp_constant, 0, 1)
+		local new_lerp_value = math.clamp(current_lerp_value + dt * lerp_constant, 0, 1)
 		vortex_data.fx_radius = math.lerp(start_lerp_fx_radius, wanted_fx_radius, new_lerp_value)
 	end
 
-	local inner_radius_p = vortex_data.inner_radius/vortex_template.full_inner_radius
-	vortex_data.outer_radius = math.max(vortex_template.min_outer_radius, vortex_template.full_outer_radius*inner_radius_p)
+	local inner_radius_p = vortex_data.inner_radius / vortex_template.full_inner_radius
+	vortex_data.outer_radius = math.max(vortex_template.min_outer_radius, vortex_template.full_outer_radius * inner_radius_p)
 
 	if script_data.debug_vortex then
 		local debug_ray_color = (success and Colors.get("white")) or Colors.get("red")
@@ -482,7 +482,7 @@ VortexExtension._update_radius = function (self, unit, t, dt, nav_world, travers
 	return 
 end
 VortexExtension.control_size = function (self, unit, t, dt, nav_world, traverse_logic, vortex_template, vortex_data)
-	vortex_data.current_raycast_rad = math.fmod(vortex_data.current_raycast_rad + RAYCAST_INVERAL_RAD, math.pi*2)
+	vortex_data.current_raycast_rad = math.fmod(vortex_data.current_raycast_rad + RAYCAST_INVERAL_RAD, 2 * math.pi)
 
 	self._update_radius(self, unit, t, dt, nav_world, traverse_logic, vortex_template, vortex_data)
 	self._update_height(self, unit, t, dt, vortex_template, vortex_data)
@@ -491,9 +491,9 @@ VortexExtension.control_size = function (self, unit, t, dt, nav_world, traverse_
 	local go_id = Managers.state.unit_storage:go_id(unit)
 
 	if game and go_id then
-		local inner_radius_p = vortex_data.inner_radius/vortex_template.full_inner_radius
-		local fx_radius_p = vortex_data.fx_radius/vortex_template.full_fx_radius
-		local height_p = vortex_data.height/vortex_template.max_height
+		local inner_radius_p = vortex_data.inner_radius / vortex_template.full_inner_radius
+		local fx_radius_p = vortex_data.fx_radius / vortex_template.full_fx_radius
+		local height_p = vortex_data.height / vortex_template.max_height
 
 		GameSession.set_game_object_field(game, go_id, "inner_radius_percentage", inner_radius_p)
 		GameSession.set_game_object_field(game, go_id, "fx_radius_percentage", fx_radius_p)
@@ -517,7 +517,7 @@ VortexExtension._update_attract_players = function (self, unit, blackboard, vort
 	local player_collision_filter = "filter_player_mover"
 	local land_test_above = 15
 	local land_test_below = 15
-	local epsilon_up = Vector3.up()*0.05
+	local epsilon_up = Vector3.up() * 0.05
 	local near_vortex_distance = outer_radius + 2
 	local num_player_and_bots = #player_and_bot_units
 
@@ -568,7 +568,7 @@ VortexExtension._update_attract_players = function (self, unit, blackboard, vort
 			elseif vortex_eject_height < height or vortex_height < height or vortex_eject_time < t then
 				local current_velocity = locomotion_extension.current_velocity(locomotion_extension)
 				local velocity_normalized = Vector3.normalize(current_velocity)
-				local wanted_landing_position = LocomotionUtils.pos_on_mesh(nav_world, player_position + velocity_normalized*eject_distance, land_test_above, land_test_below)
+				local wanted_landing_position = LocomotionUtils.pos_on_mesh(nav_world, player_position + velocity_normalized * eject_distance, land_test_above, land_test_below)
 
 				if wanted_landing_position then
 					local success, velocity = WeaponHelper.test_angled_trajectory(physics_world, player_position, wanted_landing_position + epsilon_up, -player_gravity, player_eject_speed, nil, EJECT_SEGMENT_LIST, NUM_SEGMENTS, player_collision_filter)
@@ -590,8 +590,8 @@ VortexExtension._update_attract_players = function (self, unit, blackboard, vort
 				if not target_status_extension.is_catapulted(target_status_extension) then
 					if player_distance < outer_radius then
 						local edge_distance = outer_radius - player_distance
-						local time_multiplier = edge_distance/outer_radius
-						players_ejected[player_unit] = t + 0.5 + vortex_template.player_ejected_bliss_time*0.5 + vortex_template.player_ejected_bliss_time*time_multiplier*0.5
+						local time_multiplier = edge_distance / outer_radius
+						players_ejected[player_unit] = t + 0.5 + vortex_template.player_ejected_bliss_time * 0.5 + vortex_template.player_ejected_bliss_time * time_multiplier * 0.5
 					else
 						players_ejected[player_unit] = t + 0.5 + vortex_template.player_ejected_bliss_time
 					end
@@ -602,11 +602,11 @@ VortexExtension._update_attract_players = function (self, unit, blackboard, vort
 		elseif valid_vortex_target and not target_status_extension.is_in_vortex(target_status_extension) and player_distance < outer_radius and minimum_height_diff <= height and height < vortex_height then
 			if inner_radius < player_distance then
 				local distance_to_inner_radius = player_distance - inner_radius
-				local k = math.clamp(distance_to_inner_radius/falloff_radius - 1, 0, 1)
-				local speed = player_attract_speed*k*k
+				local k = math.clamp(1 - distance_to_inner_radius / falloff_radius, 0, 1)
+				local speed = player_attract_speed * k * k
 				local dir = Vector3.normalize(suck_dir)
 
-				locomotion_extension.add_external_velocity(locomotion_extension, dir*speed)
+				locomotion_extension.add_external_velocity(locomotion_extension, dir * speed)
 			else
 				StatusUtils.set_in_vortex_network(player_unit, true, unit)
 
@@ -651,10 +651,10 @@ VortexExtension._update_attract_outside_ai = function (self, vortex_data, vortex
 
 						if inner_radius < ai_distance then
 							local distance_to_inner_radius = ai_distance - inner_radius
-							local k = math.clamp(distance_to_inner_radius/falloff_radius - 1, 0, 1)
-							local speed = ai_attract_speed*k*k
+							local k = math.clamp(1 - distance_to_inner_radius / falloff_radius, 0, 1)
+							local speed = ai_attract_speed * k * k
 							local dir = Vector3.normalize(suck_dir)
-							local velocity = dir*speed
+							local velocity = dir * speed
 
 							locomotion_extension.set_external_velocity(locomotion_extension, velocity)
 						else
@@ -742,29 +742,29 @@ local spiral = {}
 local spiral_segments = 8
 local spiral_lines = 10
 VortexExtension.debug_render_vortex = function (self, t, dt, pos, fx_radius, inner_radius, outer_radius, spin_speed, height)
-	fx_radius = fx_radius + math.sin(t*1.7)*0.4
-	local step = (math.pi*2)/6
-	local col_delta = math.floor(spiral_segments/155)
-	local height_step = height/spiral_segments
+	fx_radius = fx_radius + math.sin(t * 1.7) * 0.4
+	local step = (2 * math.pi) / 6
+	local col_delta = math.floor(155 / spiral_segments)
+	local height_step = height / spiral_segments
 
 	for j = 1, spiral_lines, 1 do
-		local alpha = (j*2*math.pi)/spiral_lines
+		local alpha = (j * 2 * math.pi) / spiral_lines
 
 		for i = 1, spiral_segments, 1 do
-			local r = fx_radius + (i*i*0.5)/spiral_segments
-			local v = t*spin_speed + i*step + alpha
-			spiral[i] = Vector3(math.sin(v)*r, math.cos(v)*r, (i - 1)*height_step)
+			local r = fx_radius + (0.5 * i * i) / spiral_segments
+			local v = t * spin_speed + i * step + alpha
+			spiral[i] = Vector3(math.sin(v) * r, math.cos(v) * r, (i - 1) * height_step)
 		end
 
-		local r = fx_radius + math.sin(t)*0.2
-		local v = t*spin_speed + alpha + step*0
-		local pos1 = Vector3(math.sin(v)*r, math.cos(v)*r, 0)
+		local r = fx_radius + math.sin(t) * 0.2
+		local v = t * spin_speed + alpha + 0 * step
+		local pos1 = Vector3(math.sin(v) * r, math.cos(v) * r, 0)
 
-		QuickDrawer:sphere(pos + pos1, (math.sin(v*3) + 1)/3, Color(155, 255, 155))
+		QuickDrawer:sphere(pos + pos1, (math.sin(v * 3) + 1) / 3, Color(155, 255, 155))
 
 		for i = 1, spiral_segments, 1 do
 			local pos2 = spiral[i]
-			local color = Color(col_delta*i - 155, col_delta*i - 255, col_delta*i - 155)
+			local color = Color(155 - col_delta * i, 255 - col_delta * i, 155 - col_delta * i)
 
 			QuickDrawer:line(pos + pos1, pos + pos2, color)
 

@@ -36,7 +36,7 @@ BenchmarkHandler.init = function (self, ingame_ui, world)
 		local old_add_damage_func = GenericHealthExtension.add_damage
 		local dmg_mult = BenchmarkSettings.bot_damage_multiplier
 		GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type)
-			damage_amount = damage_amount*dmg_mult
+			damage_amount = damage_amount * dmg_mult
 
 			old_add_damage_func(self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type)
 
@@ -624,7 +624,7 @@ BenchmarkHandler._update_input = function (self, dt, t)
 		self._trigger_cycle_view = false
 		local bots = Managers.player:bots()
 		local num_bots = #bots
-		self._current_bot_view = (self._current_bot_view or 0)%num_bots + 1
+		self._current_bot_view = 1 + (self._current_bot_view or 0) % num_bots
 
 		if 0 < self._current_bot_view then
 			ai_bot_group_system.first_person_debug(ai_bot_group_system, self._current_bot_view)
@@ -675,7 +675,7 @@ BenchmarkHandler._handle_teleport = function (self, dt, t)
 		end
 
 		self._cycle_time = BenchmarkSettings.cycle_time
-		self._portal_index = self._portal_index%#self._portals + 1
+		self._portal_index = 1 + self._portal_index % #self._portals
 	end
 
 	return 

@@ -365,7 +365,7 @@ PatrolAnalysis.inject_spline_path = function (self, spline, line_drawer)
 	if 0 < node_count then
 		local previous_node_position = nil
 		local current_node_index = GwNavBot.get_path_current_node_index(navbot)
-		local offset = Vector3.up()*0.05
+		local offset = Vector3.up() * 0.05
 
 		for i = 0, node_count - 1, 1 do
 			local position = GwNavBot.get_path_node_pos(navbot, i)
@@ -373,7 +373,7 @@ PatrolAnalysis.inject_spline_path = function (self, spline, line_drawer)
 			spline_points_index = spline_points_index + 1
 
 			if draw and line_drawer then
-				local color_index = (spline.index - 1)%num_debug_colors + 1
+				local color_index = (spline.index - 1) % num_debug_colors + 1
 				local ct = debug_colors_lookup[color_index]
 				local color = Color(ct[1], ct[2], ct[3], ct[4])
 
@@ -479,7 +479,7 @@ local Vector3_length = Vector3.length
 PatrolAnalysis.get_path_point = function (self, points, path_length, move_percent)
 	local path_length = path_length or self.get_path_length(self, points)
 	local travel_dist = 0
-	local goal_dist = move_percent*path_length
+	local goal_dist = move_percent * path_length
 
 	for i = 1, #points - 1, 1 do
 		local p1 = points[i]:unbox()
@@ -491,8 +491,8 @@ PatrolAnalysis.get_path_point = function (self, points, path_length, move_percen
 		if goal_dist < travel_dist then
 			local missing = travel_dist - goal_dist
 			local left_over = p1p2_dist - missing
-			local part = left_over/p1p2_dist
-			local part_vec = vec*part
+			local part = left_over / p1p2_dist
+			local part_vec = vec * part
 			local move_vec = p1 + part_vec
 
 			return move_vec, i

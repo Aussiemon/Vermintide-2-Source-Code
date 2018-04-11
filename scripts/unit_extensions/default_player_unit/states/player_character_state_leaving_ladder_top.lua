@@ -27,7 +27,7 @@ PlayerCharacterStateLeavingLadderTop.on_enter = function (self, unit, input, dt,
 	self.finish_time = t + duration
 
 	self.wanted_forward_bonus_velocity:store(Quaternion.forward(Unit.local_rotation(ladder_unit, 0)))
-	self.on_enter_animation_event(self, duration/2)
+	self.on_enter_animation_event(self, 2 / duration)
 
 	local loc_ext = self.locomotion_extension
 

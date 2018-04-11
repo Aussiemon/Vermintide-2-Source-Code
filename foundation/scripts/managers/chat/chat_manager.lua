@@ -253,7 +253,7 @@ ChatManager.get_recently_sent_messages = function (self)
 	return self.recently_sent_messages
 end
 ChatManager.next_message_target = function (self)
-	self.current_message_target_index = self.current_message_target_index%#self.message_targets + 1
+	self.current_message_target_index = 1 + self.current_message_target_index % #self.message_targets
 	local message_target_type = self.message_targets[self.current_message_target_index].message_target_type
 	local filter_name = CHAT_VIEWS[self.current_view_index]
 	local view_filter = CHAT_VIEW_LUT[filter_name].filter
@@ -529,7 +529,7 @@ ChatManager.send_system_chat_message_to_all_except = function (self, channel_id,
 		end
 	end
 
-	local message_sender = "SYSTEM"
+	local message_sender = "System"
 	local message = string.format(Localize(message_id), localization_param)
 
 	self._add_message_to_list(self, channel_id, message_sender, message, is_system_message, pop_chat, is_dev)
@@ -560,7 +560,7 @@ ChatManager.send_system_chat_message = function (self, channel_id, message_id, l
 		end
 	end
 
-	local message_sender = "SYSTEM"
+	local message_sender = "System"
 	local message = string.format(Localize(message_id), localization_param)
 
 	self._add_message_to_list(self, channel_id, message_sender, message, is_system_message, pop_chat, is_dev)
@@ -570,7 +570,7 @@ end
 ChatManager.add_local_system_message = function (self, channel_id, message, pop_chat)
 	fassert(self.has_channel(self, channel_id), "Haven't registered channel: %s", tostring(channel_id))
 
-	local message_sender = "SYSTEM"
+	local message_sender = "System"
 	local is_system_message = true
 	local is_dev = false
 
@@ -601,20 +601,20 @@ ChatManager.add_irc_message = function (self, message_type, username, message, p
 
 		self._add_message_to_list(self, channel_id, username, message, nil, true, false, message_type, link_data, data)
 	elseif message_type == Irc.SYSTEM_MSG then
-		self._add_message_to_list(self, channel_id, "SYSTEM", message, nil, true, false, message_type, nil, data)
+		self._add_message_to_list(self, channel_id, "System", message, nil, true, false, message_type, nil, data)
 	elseif message_type == Irc.JOIN_MSG then
 		if username == Managers.irc:user_name() then
-			self._add_message_to_list(self, channel_id, "SYSTEM", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
+			self._add_message_to_list(self, channel_id, "System", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
 			self.add_message_target(self, parameter, Irc.CHANNEL_MSG)
 		else
-			self._add_message_to_list(self, channel_id, "SYSTEM", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
+			self._add_message_to_list(self, channel_id, "System", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
 		end
 	elseif message_type == Irc.LEAVE_MSG then
 		if username == Managers.irc:user_name() then
-			self._add_message_to_list(self, channel_id, "SYSTEM", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
+			self._add_message_to_list(self, channel_id, "System", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
 			self.remove_message_target(self, parameter)
 		else
-			self._add_message_to_list(self, channel_id, "SYSTEM", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
+			self._add_message_to_list(self, channel_id, "System", message, nil, true, false, Irc.SYSTEM_MSG, nil, data)
 		end
 	end
 
@@ -667,7 +667,7 @@ ChatManager.rpc_chat_message = function (self, sender, channel_id, message_sende
 
 	if self.is_channel_member(self, channel_id) then
 		if is_system_message then
-			message_sender = "SYSTEM"
+			message_sender = "System"
 			message = string.format(Localize(message), localization_param)
 		end
 
@@ -739,7 +739,7 @@ ChatManager._switch_view_internally = function (self, view_index)
 	return 
 end
 ChatManager.switch_view = function (self, view_index)
-	self.current_view_index = self.current_view_index%#CHAT_VIEWS + 1
+	self.current_view_index = 1 + self.current_view_index % #CHAT_VIEWS
 	local chat_messages = self.chat_messages
 
 	table.clear(chat_messages)
@@ -830,7 +830,7 @@ ChatManager.game_invite = function (self, parameters, message, recent_message_in
 		end
 
 		if message_target_data.message_target_type == Irc.PARTY_MSG then
-			self._add_message_to_list(self, 1, "SYSTEM", "You cannot invite people already in your party", false, true, false, Irc.SYSTEM_MSG)
+			self._add_message_to_list(self, 1, "System", "You cannot invite people already in your party", false, true, false, Irc.SYSTEM_MSG)
 
 			return 
 		end

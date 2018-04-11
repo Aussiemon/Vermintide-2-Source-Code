@@ -69,23 +69,27 @@ CareerAbilityWEMaidenGuard._ability_available = function (self)
 	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityWEMaidenGuard._start_priming = function (self)
-	local decal_unit_name = self._decal_unit_name
-	local unit_spawner = Managers.state.unit_spawner
-	self._decal_unit = unit_spawner.spawn_local_unit(unit_spawner, decal_unit_name)
+	if self._local_player then
+		local decal_unit_name = self._decal_unit_name
+		local unit_spawner = Managers.state.unit_spawner
+		self._decal_unit = unit_spawner.spawn_local_unit(unit_spawner, decal_unit_name)
+	end
+
 	self._is_priming = true
 
 	return 
 end
 CareerAbilityWEMaidenGuard._update_priming = function (self)
-	local owner_unit = self._owner_unit
-	local first_person_extension = self._first_person_extension
-	local player_position = Unit.local_position(self._owner_unit, 0)
-	local player_rotation = first_person_extension.current_rotation(first_person_extension)
-	local player_direction_flat = Vector3.flat(Vector3.normalize(Quaternion.forward(player_rotation)))
-	local player_rotation_flat = Quaternion.look(player_direction_flat, Vector3.up())
+	if self._decal_unit then
+		local first_person_extension = self._first_person_extension
+		local player_position = Unit.local_position(self._owner_unit, 0)
+		local player_rotation = first_person_extension.current_rotation(first_person_extension)
+		local player_direction_flat = Vector3.flat(Vector3.normalize(Quaternion.forward(player_rotation)))
+		local player_rotation_flat = Quaternion.look(player_direction_flat, Vector3.up())
 
-	Unit.set_local_position(self._decal_unit, 0, player_position)
-	Unit.set_local_rotation(self._decal_unit, 0, player_rotation_flat)
+		Unit.set_local_position(self._decal_unit, 0, player_position)
+		Unit.set_local_rotation(self._decal_unit, 0, player_rotation_flat)
+	end
 
 	return 
 end
@@ -140,7 +144,7 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 
 		local position = POSITION_LOOKUP[owner_unit]
 
-		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_maiden_guard_charge", position)
+		WwiseUtils.trigger_position_event(world, "Play_career_ability_maiden_guard_charge", position)
 	end
 
 	status_extension.set_noclip(status_extension, true)
@@ -168,11 +172,11 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 			hit_zone_hit_name = "full",
 			ignore_shield = true,
 			interrupt_on_max_hit_mass = false,
-			power_level_multiplier = 0.8,
 			interrupt_on_first_hit = false,
-			damage_profile = "medium_slashing_linesman",
+			damage_profile = "maidenguard_dash_ability",
 			width = 1.5,
 			allow_backstab = true,
+			power_level_multiplier = (has_impact_damage_buff and 1.5) or 1.5,
 			stagger_angles = {
 				max = 90,
 				min = 90

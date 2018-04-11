@@ -242,7 +242,7 @@ RewardPopupUI._get_widget_by_type = function (self, widget_type, value)
 		local texture_size = texture_settings.size
 		widget_size[1] = texture_size[1]
 		widget_size[2] = texture_size[2]
-		widget_height = widget_size[2]/2
+		widget_height = widget_size[2] / 2
 	elseif widget_type == "career" then
 		local career_settings = CareerSettings[value]
 		local texture = "small_" .. career_settings.portrait_image
@@ -330,7 +330,7 @@ RewardPopupUI._setup_presentation = function (self, presentation_data)
 	return animation_data
 end
 RewardPopupUI._align_presentation_widgets = function (self, widgets_data, total_widgets_height)
-	local start_height_position = total_widgets_height/2
+	local start_height_position = total_widgets_height / 2
 	local ui_scenegraph = self.ui_scenegraph
 
 	for _, data in ipairs(widgets_data) do
@@ -340,7 +340,7 @@ RewardPopupUI._align_presentation_widgets = function (self, widgets_data, total_
 		local scenegraph_id = widget.scenegraph_id
 		local widget_position = ui_scenegraph[scenegraph_id].local_position
 		widget_position[2] = 0
-		start_height_position = widget_position[2] - height/2
+		start_height_position = widget_position[2] - height / 2
 	end
 
 	return 
@@ -485,7 +485,7 @@ RewardPopupUI._get_text_height = function (self, ui_renderer, size, ui_style, te
 	local max_texts = #texts
 	local num_texts = math.min(#texts - text_start_index - 1, max_texts)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min))*inv_scale*num_texts
+	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 
 	return full_font_height
 end
@@ -496,10 +496,10 @@ RewardPopupUI.set_fullscreen_effect_enable_state = function (self, enabled, prog
 
 	if shading_env then
 		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", (enabled and 1) or 0)
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", (enabled and progress*0.75) or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", (enabled and progress * 0.75) or 0)
 		ShadingEnvironment.apply(shading_env)
 
-		self.screen_background_widget.style.rect.color[1] = progress*100
+		self.screen_background_widget.style.rect.color[1] = 100 * progress
 	end
 
 	self._fullscreen_effect_enabled = enabled

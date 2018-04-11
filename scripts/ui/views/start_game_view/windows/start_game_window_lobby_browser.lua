@@ -1262,7 +1262,7 @@ StartGameWindowLobbyBrowser._on_stepper_arrow_hover = function (self, widget, na
 	local current_alpha = pass_style.color[1]
 	local target_alpha = 255
 	local total_time = UISettings.scoreboard.topic_hover_duration
-	local animation_duration = (current_alpha/target_alpha - 1)*total_time
+	local animation_duration = (1 - current_alpha / target_alpha) * total_time
 
 	if 0 < animation_duration then
 		ui_animations[animation_name .. "_hover"] = self._animate_element_by_time(self, pass_style.color, 1, current_alpha, target_alpha, animation_duration)
@@ -1282,7 +1282,7 @@ StartGameWindowLobbyBrowser._on_stepper_arrow_dehover = function (self, widget, 
 	local current_alpha = pass_style.color[1]
 	local target_alpha = 0
 	local total_time = UISettings.scoreboard.topic_hover_duration
-	local animation_duration = current_alpha/255*total_time
+	local animation_duration = current_alpha / 255 * total_time
 
 	if 0 < animation_duration then
 		ui_animations[animation_name .. "_hover"] = self._animate_element_by_time(self, pass_style.color, 1, current_alpha, target_alpha, animation_duration)

@@ -739,7 +739,6 @@ InputManager.is_showing_tooltip = function (self)
 end
 InputManager.add_keymaps_data = function (self, keymaps, name)
 	local stored_keymaps_data = self.stored_keymaps_data
-	local save_loaded = SaveData.save_loaded
 	local saved_keymaps = PlayerData.controls
 
 	fassert(not stored_keymaps_data[name], "[InputManager] - keymaps already stored with name: %s", name)
@@ -755,7 +754,7 @@ InputManager.add_keymaps_data = function (self, keymaps, name)
 		}
 	end
 
-	if save_loaded then
+	if saved_keymaps then
 		self.apply_saved_keymaps(self, name)
 	end
 
@@ -799,7 +798,7 @@ InputManager.setup_keymaps = function (self, keymaps)
 		local n_keymap = #keymap
 		keymap.n = n_keymap
 
-		assert(n_keymap/3 == math.floor(n_keymap/3), "An input mapping must be paired by three arguments: device-type, button-name, operation")
+		assert(n_keymap / 3 == math.floor(n_keymap / 3), "An input mapping must be paired by three arguments: device-type, button-name, operation")
 
 		local input_map_type = nil
 
@@ -913,18 +912,18 @@ InputManager.add_keybinding = function (self, keybinding_table_name, keybinding_
 
 	local n_varargs = select("#", ...)
 
-	assert(n_varargs/3 == math.floor(n_varargs/3), "Bad amount of arguments (%d) to :add_keybinding(). Must supply input device type, keymap button index and keymap type for every key.", n_varargs)
+	assert(n_varargs / 3 == math.floor(n_varargs / 3), "Bad amount of arguments (%d) to :add_keybinding(). Must supply input device type, keymap button index and keymap type for every key.", n_varargs)
 
 	local new_mapping = {
 		n = 0
 	}
 	keymaps[keymap_name] = new_mapping
 
-	for i = 1, n_varargs/3, 1 do
+	for i = 1, n_varargs / 3, 1 do
 		local n = new_mapping.n
-		local input_device_type = select(i*3 - 2, ...)
-		local keymap_button_index = select(i*3 - 1, ...)
-		local keymap_type = select(i*3, ...)
+		local input_device_type = select(i * 3 - 2, ...)
+		local keymap_button_index = select(i * 3 - 1, ...)
+		local keymap_type = select(i * 3, ...)
 
 		assert(type(keymap_button_index) == "number", "New button index must be a number.")
 
@@ -940,7 +939,7 @@ InputManager.add_keybinding = function (self, keybinding_table_name, keybinding_
 			assert(input_device.axis_name(keymap_button_index), "No such axis index %d in device type %s", keymap_button_index, input_device_type)
 		end
 
-		assert(InputAux.input_map_types[keymap_type], "Bad keymap type %s to add_keybinding() at vararg %d", keymap_type, i*3)
+		assert(InputAux.input_map_types[keymap_type], "Bad keymap type %s to add_keybinding() at vararg %d", keymap_type, i * 3)
 
 		new_mapping[n + 1] = input_device_type
 		new_mapping[n + 2] = keymap_button_index

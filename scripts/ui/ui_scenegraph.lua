@@ -119,7 +119,7 @@ local function handle_alignment(position, data, width, height, parent_size_x, pa
 
 	if horizontal_alignment then
 		if horizontal_alignment == "center" then
-			Vector3.set_x(position, (Vector3.x(position) + parent_size_x/2) - width/2)
+			Vector3.set_x(position, (Vector3.x(position) + parent_size_x / 2) - width / 2)
 		elseif horizontal_alignment == "right" then
 			Vector3.set_x(position, (Vector3.x(position) + parent_size_x) - width)
 		end
@@ -129,7 +129,7 @@ local function handle_alignment(position, data, width, height, parent_size_x, pa
 
 	if vertical_alignment then
 		if vertical_alignment == "center" then
-			Vector3.set_y(position, (Vector3.y(position) + parent_size_y/2) - height/2)
+			Vector3.set_y(position, (Vector3.y(position) + parent_size_y / 2) - height / 2)
 		elseif vertical_alignment == "top" then
 			Vector3.set_y(position, (Vector3.y(position) + parent_size_y) - height)
 		end
@@ -206,17 +206,17 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 	local hierarchical_scenegraph = scenegraph.hierarchical_scenegraph
 	local scale = RESOLUTION_LOOKUP.scale
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
-	local root_scale_x = UISettings.root_scale[1]*UISettings.ui_scale/100
-	local root_scale_y = UISettings.root_scale[2]*UISettings.ui_scale/100
+	local root_scale_x = UISettings.root_scale[1] * UISettings.ui_scale / 100
+	local root_scale_y = UISettings.root_scale[2] * UISettings.ui_scale / 100
 
 	if UISettings.use_hud_screen_fit then
-		root_scale_x = w/(UIResolutionWidthFragments()*scale)
+		root_scale_x = w / (UIResolutionWidthFragments() * scale)
 	else
 		root_scale_x = UISettings.root_scale[1]
 	end
 
-	local w_inverse_scale = w*inverse_scale
-	local h_inverse_scale = h*inverse_scale
+	local w_inverse_scale = w * inverse_scale
+	local h_inverse_scale = h * inverse_scale
 
 	for i = 1, scenegraph.n_hierarchical_scenegraph, 1 do
 		local scenegraph_object = hierarchical_scenegraph[i]
@@ -237,54 +237,54 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 		local size_y = size and size[2]
 
 		if scenegraph_object.is_root then
-			size_y = size_y*h/(size_y*scale)
-			size_x = size_x*root_scale_x
-			size_y = size_y*root_scale_y
-			local scaled_x = size_x*scale
-			local scaled_y = size_y*scale
-			local x = ((Vector3_x(current_world_position) + w/2) - scaled_x/2)*inverse_scale
-			local y = ((Vector3_y(current_world_position) + h/2) - scaled_y/2)*inverse_scale
+			size_y = size_y * h / (size_y * scale)
+			size_x = size_x * root_scale_x
+			size_y = size_y * root_scale_y
+			local scaled_x = size_x * scale
+			local scaled_y = size_y * scale
+			local x = ((Vector3_x(current_world_position) + w / 2) - scaled_x / 2) * inverse_scale
+			local y = ((Vector3_y(current_world_position) + h / 2) - scaled_y / 2) * inverse_scale
 
 			Vector3_set_x(current_world_position, x)
 			Vector3_set_y(current_world_position, y)
 		elseif scenegraph_object.scale == "fit" then
-			size_x = w*inverse_scale
-			size_y = h*inverse_scale
+			size_x = w * inverse_scale
+			size_y = h * inverse_scale
 
 			Vector3_set_x(current_world_position, 0)
 			Vector3_set_y(current_world_position, 0)
 		elseif scenegraph_object.scale == "aspect_ratio" then
-			local aspect_ratio = w/h
-			local default_aspect_ratio = size_x/size_y
+			local aspect_ratio = w / h
+			local default_aspect_ratio = size_x / size_y
 			size_x = w
 			size_y = h
 
 			if 0.005 < math.abs(aspect_ratio - default_aspect_ratio) then
 				size_x = w
-				size_y = size_x/default_aspect_ratio
+				size_y = size_x / default_aspect_ratio
 
 				if h < size_y then
-					size_x = h*default_aspect_ratio
+					size_x = h * default_aspect_ratio
 					size_y = h
 				end
 			end
 
-			size_x = size_x*inverse_scale
-			size_y = size_y*inverse_scale
+			size_x = size_x * inverse_scale
+			size_y = size_y * inverse_scale
 
-			handle_alignment(current_world_position, scenegraph_object, size_x, size_y, w*inverse_scale, h*inverse_scale)
+			handle_alignment(current_world_position, scenegraph_object, size_x, size_y, w * inverse_scale, h * inverse_scale)
 		elseif scenegraph_object.scale == "fit_width" then
 			Vector3_set_x(current_world_position, 0)
 
-			size_x = w*inverse_scale
+			size_x = w * inverse_scale
 
-			handle_alignment(current_world_position, scenegraph_object, nil, size_y, nil, h*inverse_scale)
+			handle_alignment(current_world_position, scenegraph_object, nil, size_y, nil, h * inverse_scale)
 		elseif scenegraph_object.scale == "fit_height" then
 			Vector3_set_y(current_world_position, 0)
 
-			size_z = h*inverse_scale
+			size_z = h * inverse_scale
 
-			handle_alignment(current_world_position, scenegraph_object, size_x, nil, w*inverse_scale, nil)
+			handle_alignment(current_world_position, scenegraph_object, size_x, nil, w * inverse_scale, nil)
 		end
 
 		Vector3Aux.box(scenegraph_object.world_position, current_world_position)
@@ -326,23 +326,23 @@ UISceneGraph.get_size_scaled = function (scenegraph, scenegraph_object_name, opt
 		local scale = RESOLUTION_LOOKUP.scale
 
 		if optional_scale then
-			scale = scale*optional_scale
+			scale = scale * optional_scale
 		end
 
-		local root_scale_x = UISettings.root_scale[1]*UISettings.ui_scale/100
-		local root_scale_y = UISettings.root_scale[2]*UISettings.ui_scale/100
+		local root_scale_x = UISettings.root_scale[1] * UISettings.ui_scale / 100
+		local root_scale_y = UISettings.root_scale[2] * UISettings.ui_scale / 100
 
 		if UISettings.use_hud_screen_fit then
-			root_scale_x = w/(UIResolutionWidthFragments()*scale)
+			root_scale_x = w / (UIResolutionWidthFragments() * scale)
 		else
 			root_scale_x = UISettings.root_scale[1]
 		end
 
 		local size_x = size[1]
 		local size_y = size[2]
-		size_y = size_y*h/(size_y*scale)
-		size_x = size_x*root_scale_x
-		size_y = size_y*root_scale_y
+		size_y = size_y * h / (size_y * scale)
+		size_x = size_x * root_scale_x
+		size_y = size_y * root_scale_y
 
 		return Vector2(size_x, size_y)
 	elseif scenegraph_object.scale == "fit" then
@@ -350,47 +350,47 @@ UISceneGraph.get_size_scaled = function (scenegraph, scenegraph_object_name, opt
 		local h = RESOLUTION_LOOKUP.res_h
 		local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 
-		return Vector2(w*inverse_scale, h*inverse_scale)
+		return Vector2(w * inverse_scale, h * inverse_scale)
 	elseif scenegraph_object.scale == "fit_width" then
 		local w = RESOLUTION_LOOKUP.res_w
 		local h = RESOLUTION_LOOKUP.res_h
 		local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 
-		return Vector2(w*inverse_scale, size[2])
+		return Vector2(w * inverse_scale, size[2])
 	elseif scenegraph_object.scale == "fit_height" then
 		local w = RESOLUTION_LOOKUP.res_w
 		local h = RESOLUTION_LOOKUP.res_h
 		local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 
-		return Vector2(size[1], h*inverse_scale)
+		return Vector2(size[1], h * inverse_scale)
 	elseif scenegraph_object.scale == "aspect_ratio" then
 		local w = RESOLUTION_LOOKUP.res_w
 		local h = RESOLUTION_LOOKUP.res_h
 		local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 		local size_x = size[1]
 		local size_y = size[2]
-		local aspect_ratio = w/h
-		local default_aspect_ratio = size_x/size_y
+		local aspect_ratio = w / h
+		local default_aspect_ratio = size_x / size_y
 		size_x = w
 		size_y = h
 
 		if 0.005 < math.abs(aspect_ratio - default_aspect_ratio) then
 			size_x = w
-			size_y = size_x/default_aspect_ratio
+			size_y = size_x / default_aspect_ratio
 
 			if h < size_y then
-				size_x = h*default_aspect_ratio
+				size_x = h * default_aspect_ratio
 				size_y = h
 			end
 		end
 
-		size_x = size_x*inverse_scale
-		size_y = size_y*inverse_scale
+		size_x = size_x * inverse_scale
+		size_y = size_y * inverse_scale
 
 		return Vector2(size_x, size_y)
 	else
 		if optional_scale then
-			return Vector2(size[1]*optional_scale, size[2]*optional_scale)
+			return Vector2(size[1] * optional_scale, size[2] * optional_scale)
 		end
 
 		return Vector2(size[1], size[2])
@@ -408,8 +408,8 @@ UISceneGraph.set_local_position = function (scenegraph, scenegraph_object_name, 
 end
 UISceneGraph.screen_position_to_resolution_position = function (pos_x, pos_y, resolution_width, resolution_height)
 	local current_width, current_height = Application.resolution()
-	local new_x = resolution_width/current_width*pos_x
-	local new_y = resolution_height/current_height*pos_y
+	local new_x = resolution_width / current_width * pos_x
+	local new_y = resolution_height / current_height * pos_y
 
 	return new_x, new_y
 end
@@ -433,19 +433,19 @@ local function debug_render_scenegraph(ui_renderer, scenegraph, n_scenegraph)
 			local inverse_scale = RESOLUTION_LOOKUP.inv_scale
 			local w = RESOLUTION_LOOKUP.res_w
 			local h = RESOLUTION_LOOKUP.res_h
-			size[1] = w*inverse_scale
-			size[2] = h*inverse_scale
+			size[1] = w * inverse_scale
+			size[2] = h * inverse_scale
 			draw = false
 		end
 
 		if scenegraph_object.is_root then
-			local root_scale_x = UISettings.root_scale[1]*UISettings.ui_scale/100
-			local root_scale_y = UISettings.root_scale[2]*UISettings.ui_scale/100
+			local root_scale_x = UISettings.root_scale[1] * UISettings.ui_scale / 100
+			local root_scale_y = UISettings.root_scale[2] * UISettings.ui_scale / 100
 			local scale = RESOLUTION_LOOKUP.scale
 			local w = RESOLUTION_LOOKUP.res_w
 			local h = RESOLUTION_LOOKUP.res_h
-			size[1] = size[1]*root_scale_x
-			size[2] = size[2]*h/(size[2]*scale)*root_scale_y
+			size[1] = size[1] * root_scale_x
+			size[2] = size[2] * h / (size[2] * scale) * root_scale_y
 			draw = false
 		end
 

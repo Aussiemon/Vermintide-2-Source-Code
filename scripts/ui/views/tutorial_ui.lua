@@ -23,8 +23,8 @@ TutorialUI = class(TutorialUI)
 local function convert_current_screen_resolution_position_to_target_resolution(pos_width, pos_height, resolution_width, resolution_height)
 	local current_width = RESOLUTION_LOOKUP.res_w
 	local current_height = RESOLUTION_LOOKUP.res_h
-	local width = resolution_width/current_width*pos_width
-	local height = resolution_height/current_height*pos_height
+	local width = resolution_width / current_width * pos_width
+	local height = resolution_height / current_height * pos_height
 
 	return width, height
 end
@@ -335,8 +335,8 @@ TutorialUI.pre_render_update = function (self, dt, t)
 	return 
 end
 local center_position = {
-	definitions.scenegraph.root.size[1]*0.5,
-	definitions.scenegraph.root.size[2]*0.5
+	definitions.scenegraph.root.size[1] * 0.5,
+	definitions.scenegraph.root.size[2] * 0.5
 }
 TutorialUI.update_mission_tooltip = function (self, tooltip_tutorial, player_unit, dt)
 	local ui_scenegraph = self.floating_icons_ui_scene_graph
@@ -599,14 +599,14 @@ TutorialUI._floating_icon_overlap = function (self, widget_holder, x, y, scale)
 	local overlap = nil
 
 	for _, pos in pairs(lookup) do
-		if ((pos[1] <= x and x <= pos[1] + scale*200) or (x <= pos[1] and pos[1] <= x + scale*200)) and ((pos[2] <= y and y <= pos[2] + definitions.FLOATING_ICON_SIZE[2]*scale) or (y <= pos[2] and pos[2] <= y + definitions.FLOATING_ICON_SIZE[2]*scale)) then
+		if ((pos[1] <= x and x <= pos[1] + 200 * scale) or (x <= pos[1] and pos[1] <= x + 200 * scale)) and ((pos[2] <= y and y <= pos[2] + definitions.FLOATING_ICON_SIZE[2] * scale) or (y <= pos[2] and pos[2] <= y + definitions.FLOATING_ICON_SIZE[2] * scale)) then
 			if y < pos[2] then
-				overlap = -definitions.FLOATING_ICON_SIZE[2]*0.75*scale
+				overlap = -definitions.FLOATING_ICON_SIZE[2] * 0.75 * scale
 
 				break
 			end
 
-			overlap = definitions.FLOATING_ICON_SIZE[2]*0.75*scale
+			overlap = definitions.FLOATING_ICON_SIZE[2] * 0.75 * scale
 
 			break
 		end
@@ -696,8 +696,8 @@ TutorialUI.update_objective_tooltip_widget = function (self, widget_holder, play
 		ui_scenegraph.tooltip_mission_icon.size[2] = new_icon_size
 		widget.style.texture_id.size[1] = new_icon_size
 		widget.style.texture_id.size[2] = new_icon_size
-		widget.style.texture_id.offset[2] = new_icon_size*(new_icon_scale - 1)
-		local font_size = math.lerp(widget_holder.current_font_size or 30, new_icon_scale*30, 0.2)
+		widget.style.texture_id.offset[2] = new_icon_size * (1 - new_icon_scale)
+		local font_size = math.lerp(widget_holder.current_font_size or 30, new_icon_scale * 30, 0.2)
 		widget.style.text.font_size = font_size
 
 		if widget.style.text_shadow then
@@ -760,24 +760,24 @@ end
 TutorialUI.get_floating_icon_position = function (self, screen_pos_x, screen_pos_y, forward_dot, right_dot, tooltip_settings)
 	local root_size = UISceneGraph.get_size_scaled(self.ui_scenegraph, "root")
 	local scale = RESOLUTION_LOOKUP.scale
-	local scaled_root_size_x = root_size[1]*scale
-	local scaled_root_size_y = root_size[2]*scale
-	local scaled_root_size_x_half = scaled_root_size_x*0.5
-	local scaled_root_size_y_half = scaled_root_size_y*0.5
+	local scaled_root_size_x = root_size[1] * scale
+	local scaled_root_size_y = root_size[2] * scale
+	local scaled_root_size_x_half = scaled_root_size_x * 0.5
+	local scaled_root_size_y_half = scaled_root_size_y * 0.5
 	local screen_width = RESOLUTION_LOOKUP.res_w
 	local screen_height = RESOLUTION_LOOKUP.res_h
-	local center_pos_x = screen_width/2
-	local center_pos_y = screen_height/2
+	local center_pos_x = screen_width / 2
+	local center_pos_y = screen_height / 2
 	local x_diff = screen_pos_x - center_pos_x
 	local y_diff = center_pos_y - screen_pos_y
 	local is_x_clamped = false
 	local is_y_clamped = false
 
-	if scaled_root_size_x_half*0.9 < math.abs(x_diff) then
+	if scaled_root_size_x_half * 0.9 < math.abs(x_diff) then
 		is_x_clamped = true
 	end
 
-	if scaled_root_size_y_half*0.9 < math.abs(y_diff) then
+	if scaled_root_size_y_half * 0.9 < math.abs(y_diff) then
 		is_y_clamped = true
 	end
 
@@ -788,18 +788,18 @@ TutorialUI.get_floating_icon_position = function (self, screen_pos_x, screen_pos
 
 	if is_clamped or is_behind then
 		local distance_from_center = tooltip_settings.distance_from_center
-		clamped_x_pos = scaled_root_size_x_half + right_dot*distance_from_center.width*scale
-		clamped_y_pos = scaled_root_size_y_half + forward_dot*distance_from_center.height*scale
+		clamped_x_pos = scaled_root_size_x_half + right_dot * distance_from_center.width * scale
+		clamped_y_pos = scaled_root_size_y_half + forward_dot * distance_from_center.height * scale
 	else
 		local screen_pos_diff_x = screen_width - scaled_root_size_x
 		local screen_pos_diff_y = screen_height - scaled_root_size_y
-		clamped_x_pos = clamped_x_pos - screen_pos_diff_x/2
-		clamped_y_pos = clamped_y_pos - screen_pos_diff_y/2
+		clamped_x_pos = clamped_x_pos - screen_pos_diff_x / 2
+		clamped_y_pos = clamped_y_pos - screen_pos_diff_y / 2
 	end
 
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
-	clamped_x_pos = clamped_x_pos*inverse_scale
-	clamped_y_pos = clamped_y_pos*inverse_scale
+	clamped_x_pos = clamped_x_pos * inverse_scale
+	clamped_y_pos = clamped_y_pos * inverse_scale
 
 	return clamped_x_pos, clamped_y_pos, is_clamped, is_behind
 end
@@ -847,15 +847,15 @@ TutorialUI.get_arrow_angle_and_offset = function (self, forward_dot, right_dot, 
 	local angle = math.atan2(right_dot, forward_dot)
 
 	if height_from_center < -400 and 0.6 < forward_dot then
-		offset_y = -(icon_size[2]*0.5 + arrow_size[2])
-		static_angle_value = static_angle_value*2
+		offset_y = -(icon_size[2] * 0.5 + arrow_size[2])
+		static_angle_value = static_angle_value * 2
 	elseif 400 < height_from_center and 0.6 < forward_dot then
-		offset_y = icon_size[2]*0.5 + arrow_size[2]
+		offset_y = icon_size[2] * 0.5 + arrow_size[2]
 		static_angle_value = 0
 	elseif 0 < angle then
-		offset_x = icon_size[2]*0.5 + arrow_size[2]
+		offset_x = icon_size[2] * 0.5 + arrow_size[2]
 	elseif angle < 0 then
-		offset_x = -(icon_size[2]*0.5 + arrow_size[2])
+		offset_x = -(icon_size[2] * 0.5 + arrow_size[2])
 		static_angle_value = -static_angle_value
 	else
 		offset_x, offset_y, offset_z = nil
@@ -873,7 +873,7 @@ TutorialUI.get_icon_size = function (self, position, player_position, current_si
 
 	if start_scale_distance < distance then
 		icon_scale = self.icon_scale_by_distance(self, distance - start_scale_distance, end_scale_distance)
-		size = math.lerp(current_size, icon_scale*original_size, 0.2)
+		size = math.lerp(current_size, icon_scale * original_size, 0.2)
 	end
 
 	return size, icon_scale
@@ -882,7 +882,7 @@ TutorialUI.icon_scale_by_distance = function (self, current_distance, max_distan
 	local distance = math.min(max_distance, current_distance)
 	distance = math.max(0, distance)
 	local min_scale = UISettings.tutorial.mission_tooltip.minimum_icon_scale
-	local scale = math.max(min_scale, distance/max_distance - 1)
+	local scale = math.max(min_scale, 1 - distance / max_distance)
 
 	return scale
 end
@@ -890,10 +890,10 @@ TutorialUI.distance_between_screen_positions = function (self, position_a, posit
 	local width = position_a[1] - position_b[1]
 	local height = position_a[2] - position_b[2]
 
-	if width < 0 and not (width*-1) then
+	if width < 0 and not (-1 * width) then
 	end
 
-	if height < 0 and not (height*-1) then
+	if height < 0 and not (-1 * height) then
 	end
 
 	return {
@@ -915,16 +915,16 @@ TutorialUI.animate_in_mission_tooltip = function (self, time, render_text, dt, w
 	local text_style = widget.style.text
 	local total_time = 0.5
 	time = time + dt
-	local progress = math.min(time/total_time, 1)
-	local icon_progress = math.min(progress/0.5, 1)
-	local text_progress = math.min(math.max(0, (progress - 0.5)/0.5), 1)
+	local progress = math.min(time / total_time, 1)
+	local icon_progress = math.min(progress / 0.5, 1)
+	local text_progress = math.min(math.max(0, (progress - 0.5) / 0.5), 1)
 	local catmullrom_value = math.catmullrom(icon_progress, 1, 0.9, 1, -0.1)
 	local icon_style = widget.style.texture_id
-	local icon_size = catmullrom_value*definitions.FLOATING_ICON_SIZE[1]
+	local icon_size = catmullrom_value * definitions.FLOATING_ICON_SIZE[1]
 	size_target[1] = icon_size
 	size_target[2] = icon_size
-	icon_style.color[1] = math.min(progress*4, 1)*255
-	local text_alpha = (render_text and text_progress*255) or 0
+	icon_style.color[1] = math.min(progress * 4, 1) * 255
+	local text_alpha = (render_text and 255 * text_progress) or 0
 	widget.style.text.text_color[1] = text_alpha
 
 	if widget.style.text_shadow then
@@ -1298,7 +1298,7 @@ TutorialUI.update_info_slate_entries = function (self, dt, t)
 			end
 		elseif self.tutorial_state == "moving" then
 			if ui_animator.is_animation_completed(ui_animator, self.tutorial_anim_id) then
-				self.info_slate_slots_taken[self.tutorial_entry.slot - 3] = false
+				self.info_slate_slots_taken[3 - self.tutorial_entry.slot] = false
 				self.tutorial_state = "visible"
 			end
 		elseif self.tutorial_state == "flashing" then
@@ -1351,7 +1351,7 @@ TutorialUI.info_slate_text_height = function (self, text, text_style)
 	local margin = 20
 	local text_count = #texts
 
-	return font_height*RESOLUTION_LOOKUP.inv_scale*text_count + margin, text_count
+	return font_height * RESOLUTION_LOOKUP.inv_scale * text_count + margin, text_count
 end
 TutorialUI.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
@@ -1390,6 +1390,19 @@ TutorialUI.remove_health_bar = function (self, unit)
 
 		if health_bar and health_bar.unit == unit then
 			self.health_bars[i] = nil
+
+			break
+		end
+	end
+
+	return 
+end
+TutorialUI.show_health_bar = function (self, unit, visible)
+	for i = 1, definitions.NUMBER_OF_HEALTH_BARS, 1 do
+		local health_bar = self.health_bars[i]
+
+		if health_bar and health_bar.unit == unit then
+			health_bar.visible = visible
 
 			break
 		end
@@ -1459,14 +1472,18 @@ TutorialUI.update_health_bars = function (self, dt, player_unit)
 				local x_pos, y_pos = self.convert_world_to_screen_position(self, camera, world_position)
 				local scenegraph_definition = health_bar.scenegraph_definition
 				local ui_local_position = scenegraph_definition.local_position
-				ui_local_position[1] = x_pos*inverse_scale
-				ui_local_position[2] = y_pos*inverse_scale
+				ui_local_position[1] = x_pos * inverse_scale
+				ui_local_position[2] = y_pos * inverse_scale
 				local size = scenegraph_definition.size
 				local style = health_bar.widget.style
-				style.texture_fg.size[1] = size[1]*health_percent_current
+				style.texture_fg.size[1] = size[1] * health_percent_current
 				health_bar.widget.content.visible = true
 			else
 				health_bar.widget.content.visible = false
+			end
+
+			if health_bar.widget.content.visible ~= health_bar.visible then
+				health_bar.widget.content.visible = health_bar.visible
 			end
 		end
 	end

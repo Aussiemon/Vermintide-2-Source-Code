@@ -562,8 +562,8 @@ local animations = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local alpha_progress = math.easeCubic(progress)
-				local anim_progress = math.easeCubic(progress - 1)
-				ui_scenegraph.ready_button_alone.local_position[2] = scenegraph_definition.ready_button_alone.position[2] - anim_progress*100
+				local anim_progress = math.easeCubic(1 - progress)
+				ui_scenegraph.ready_button_alone.local_position[2] = scenegraph_definition.ready_button_alone.position[2] - 100 * anim_progress
 				params.render_settings.alpha_multiplier = alpha_progress
 
 				return 

@@ -53,7 +53,7 @@ LootCratesPreviewer._animate_entry_positions = function (self, dt, t)
 	local end_positions = self.end_positions
 	local progress_multiplier = 1
 	local entry_progress = self._entry_progress or 0
-	entry_progress = math.min(entry_progress + dt*progress_multiplier, 1)
+	entry_progress = math.min(entry_progress + dt * progress_multiplier, 1)
 	local anim_progress = math.easeInCubic(entry_progress)
 	local world = self.background_world
 	local spawned_units = self._spawned_units
@@ -65,7 +65,7 @@ LootCratesPreviewer._animate_entry_positions = function (self, dt, t)
 		local unit_position = Unit.local_position(unit, 0)
 		local distance_total = spawn_position[3] - end_position[3]
 		local distance_left = unit_position[3] - end_position[3]
-		local new_position_y = spawn_position[3] - anim_progress*distance_total
+		local new_position_y = spawn_position[3] - anim_progress * distance_total
 		unit_position[3] = new_position_y
 
 		Unit.set_local_position(unit, 0, unit_position)
@@ -142,7 +142,7 @@ LootCratesPreviewer.spawn_units = function (self, units_name)
 			local camera_rotation = self._get_camera_rotation(self)
 			local camera_forward_vector = Quaternion.forward(camera_rotation)
 			local camera_look_rotation = Quaternion.look(camera_forward_vector, Vector3.up())
-			local horizontal_rotation = Quaternion.axis_angle(Vector3.up(), math.pi*1)
+			local horizontal_rotation = Quaternion.axis_angle(Vector3.up(), math.pi * 1)
 			local unit_spawn_rotation = Quaternion.multiply(camera_look_rotation, horizontal_rotation)
 			local camera_position = self._get_camera_position(self)
 			local unit_spawn_position = Vector3(spawn_position[1], spawn_position[2], spawn_position[3])
@@ -169,12 +169,12 @@ LootCratesPreviewer.spawn_units = function (self, units_name)
 
 				if max_value < largest_value then
 					local diff = largest_value - max_value
-					local scale_fraction = diff/largest_value - 1
+					local scale_fraction = 1 - diff / largest_value
 					local scale = Vector3(scale_fraction, scale_fraction, scale_fraction)
 
 					Unit.set_local_scale(unit, 0, scale)
 
-					offset = offset*scale_fraction
+					offset = offset * scale_fraction
 				end
 
 				local display_position = unit_spawn_position - offset

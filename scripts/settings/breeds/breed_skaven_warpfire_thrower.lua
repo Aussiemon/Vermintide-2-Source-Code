@@ -263,8 +263,8 @@ local action_data = {
 			left = "turn_left",
 			right = "turn_right"
 		},
-		radial_speed_upper_body_shooting = math.pi*0.5,
-		radial_speed_feet_shooting = math.pi*1.9,
+		radial_speed_upper_body_shooting = math.pi * 0.5,
+		radial_speed_feet_shooting = math.pi * 1.9,
 		ai_push_data = {
 			stagger_distance = 1,
 			stagger_impact = {

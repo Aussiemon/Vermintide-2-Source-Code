@@ -6,9 +6,9 @@ UIAnimation = UIAnimation or {
 		num_data = 1,
 		init = function (target, target_index, target_value, p0, p1, p2, p3, time)
 			if target_index then
-				target[target_index] = p1*target_value
+				target[target_index] = p1 * target_value
 			else
-				local start_value = p1*target_value
+				local start_value = p1 * target_value
 
 				for i = 1, #target, 1 do
 					target[i] = start_value
@@ -19,9 +19,9 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, target_value, p0, p1, p2, p3, time, progressed_time)
 			progressed_time = progressed_time + dt
-			local progress_fraction = math.min(progressed_time/time, 1)
+			local progress_fraction = math.min(progressed_time / time, 1)
 			local catmullrom_value = math.catmullrom(progress_fraction, p0, p1, p2, p3)
-			local new_value = catmullrom_value*target_value
+			local new_value = catmullrom_value * target_value
 
 			if target_index then
 				target[target_index] = new_value
@@ -38,8 +38,8 @@ UIAnimation = UIAnimation or {
 		num_args = 9,
 		num_data = 1,
 		init = function (target, offset_target, target_index, target_value, p0, p1, p2, p3, time)
-			local start_value = p1*target_value
-			local value_diff = (target_value - start_value)*0.5
+			local start_value = p1 * target_value
+			local value_diff = (target_value - start_value) * 0.5
 
 			if target_index then
 				target[target_index] = start_value
@@ -55,10 +55,10 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, offset_target, target_index, target_value, p0, p1, p2, p3, time, progressed_time)
 			progressed_time = progressed_time + dt
-			local progress_fraction = math.min(progressed_time/time, 1)
+			local progress_fraction = math.min(progressed_time / time, 1)
 			local catmullrom_value = math.catmullrom(progress_fraction, p0, p1, p2, p3)
-			local new_value = catmullrom_value*target_value
-			local value_diff = (target_value - new_value)*0.5
+			local new_value = catmullrom_value * target_value
+			local value_diff = (target_value - new_value) * 0.5
 
 			if target_index then
 				target[target_index] = new_value
@@ -83,8 +83,8 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, min, max, speed, progressed_time)
 			progressed_time = progressed_time + dt
-			local wave_value = math.sin(progressed_time*speed)
-			local current_value = min + wave_value*wave_value*(max - min)
+			local wave_value = math.sin(progressed_time * speed)
+			local current_value = min + wave_value * wave_value * (max - min)
 			target[target_index] = current_value
 
 			return true, progressed_time
@@ -98,10 +98,10 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, min, max, speed, progressed_time)
 			progressed_time = progressed_time + dt
-			local wave_value = math.sin(progressed_time*speed)
+			local wave_value = math.sin(progressed_time * speed)
 
 			for target_index, target_value in pairs(target) do
-				local current_value = min[target_index] + wave_value*wave_value*(max[target_index] - min[target_index])
+				local current_value = min[target_index] + wave_value * wave_value * (max[target_index] - min[target_index])
 				target[target_index] = math.floor(current_value)
 			end
 
@@ -115,8 +115,8 @@ UIAnimation = UIAnimation or {
 			return 0
 		end,
 		update = function (dt, target, target_index, origin, mod, speed, time, progressed_time)
-			progressed_time = progressed_time + dt*speed
-			local alive = progressed_time <= time*speed
+			progressed_time = progressed_time + dt * speed
+			local alive = progressed_time <= time * speed
 			local value = nil
 
 			if alive then
@@ -137,8 +137,8 @@ UIAnimation = UIAnimation or {
 			return 0
 		end,
 		update = function (dt, target, target_index, origin, mod, speed, time, progressed_time)
-			progressed_time = progressed_time + dt*speed
-			local alive = progressed_time <= time*speed
+			progressed_time = progressed_time + dt * speed
+			local alive = progressed_time <= time * speed
 			local value = nil
 
 			if alive then
@@ -164,7 +164,7 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, from, to, time, func_ptr, progressed_time)
 			progressed_time = progressed_time + dt
-			target[target_index] = from + func_ptr(progressed_time)*(to - from)
+			target[target_index] = from + func_ptr(progressed_time) * (to - from)
 
 			return true, progressed_time
 		end
@@ -177,9 +177,9 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, from_x, from_y, to_x, to_y, time, progressed_time)
 			progressed_time = progressed_time + dt
-			local delta_time = progressed_time/time
-			target[1] = (to_x - from_x)*delta_time + from_x
-			target[2] = (to_y - from_y)*delta_time + from_y
+			local delta_time = progressed_time / time
+			target[1] = (to_x - from_x) * delta_time + from_x
+			target[2] = (to_y - from_y) * delta_time + from_y
 
 			return progressed_time <= time, progressed_time
 		end
@@ -192,10 +192,10 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, from_2, from_3, from_4, to_2, to_3, to_4, time, progressed_time)
 			progressed_time = progressed_time + dt
-			local delta_time = math.min(1, progressed_time/time)
-			target[2] = (to_2 - from_2)*delta_time + from_2
-			target[3] = (to_3 - from_3)*delta_time + from_3
-			target[4] = (to_4 - from_4)*delta_time + from_4
+			local delta_time = math.min(1, progressed_time / time)
+			target[2] = (to_2 - from_2) * delta_time + from_2
+			target[3] = (to_3 - from_3) * delta_time + from_3
+			target[4] = (to_4 - from_4) * delta_time + from_4
 
 			return progressed_time <= time, progressed_time
 		end
@@ -210,8 +210,8 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, from, to, time, func_ptr, progressed_time)
 			progressed_time = progressed_time + dt
-			local delta_time = math.min(1, progressed_time/time)
-			target[target_index] = from + func_ptr(delta_time)*(to - from)
+			local delta_time = math.min(1, progressed_time / time)
+			target[target_index] = from + func_ptr(delta_time) * (to - from)
 
 			return progressed_time <= time, progressed_time
 		end
@@ -226,8 +226,8 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, from, to, time, offset, func_ptr, progressed_time)
 			progressed_time = progressed_time + dt
-			local delta_time = math.min(1, progressed_time/time)
-			target[target_index] = from + func_ptr(delta_time, offset)*(to - from)
+			local delta_time = math.min(1, progressed_time / time)
+			target[target_index] = from + func_ptr(delta_time, offset) * (to - from)
 
 			return progressed_time <= time, progressed_time
 		end
@@ -242,8 +242,8 @@ UIAnimation = UIAnimation or {
 		end,
 		update = function (dt, target, target_index, from, to, time, progressed_time)
 			progressed_time = progressed_time + dt
-			local delta_time = math.min(1, progressed_time/time)
-			target[target_index] = (to - from)*delta_time + from
+			local delta_time = math.min(1, progressed_time / time)
+			target[target_index] = (to - from) * delta_time + from
 
 			return progressed_time <= time, progressed_time
 		end
@@ -289,13 +289,13 @@ UIAnimation = UIAnimation or {
 		num_data = 2,
 		init = function (target, target_index, pictures, total_time)
 			local num_pictures = #pictures
-			local time_step = total_time/num_pictures
+			local time_step = total_time / num_pictures
 
 			return 0, time_step
 		end,
 		update = function (dt, target, target_index, pictures, total_time, progressed_time, time_step)
 			progressed_time = math.min(progressed_time + dt, total_time)
-			local picture_id = math.floor(progressed_time/time_step) + 1
+			local picture_id = math.floor(progressed_time / time_step) + 1
 			local picture = pictures[picture_id] or pictures[#pictures]
 			target[target_index] = picture
 
@@ -356,7 +356,7 @@ UIAnimation.init = function (...)
 	local pack_func = pack_index[num_data]
 	local unpack_func = unpack_index[num_args]
 
-	pack_func(data_array, num_args + 2, data_array[1].init(unpack_func(data_array, 2)))
+	pack_func(data_array, 2 + num_args, data_array[1].init(unpack_func(data_array, 2)))
 
 	return ui_animation
 end
@@ -414,7 +414,7 @@ UIAnimation.init_debug = function (...)
 	local pack_func = pack_index[num_data]
 	local unpack_func = unpack_index[num_args]
 
-	pack_func(data_array, num_args + 2, data_array[1].init(unpack_func(data_array, 2)))
+	pack_func(data_array, 2 + num_args, data_array[1].init(unpack_func(data_array, 2)))
 
 	return ui_animation
 end

@@ -68,7 +68,7 @@ HordeSpawner.horde = function (self, horde_type, extra_data, no_fallback)
 
 	if not horde_type then
 		if CurrentHordeSettings.mix_paced_hordes then
-			if self.num_paced_hordes%2 == 0 then
+			if self.num_paced_hordes % 2 == 0 then
 				if math.random() < CurrentHordeSettings.chance_of_vector then
 					horde_type = "vector"
 				else
@@ -461,14 +461,14 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, fallback, overri
 				if breed_name then
 					spawner.num_to_spawn = spawner.num_to_spawn + 1
 					spawner.spawn_list[#spawner.spawn_list + 1] = breed_name
-					horde_spawner_index = horde_spawner_index%num_horde_spawns + 1
+					horde_spawner_index = horde_spawner_index % num_horde_spawns + 1
 					missing = missing - 1
 
 					if missing <= 0 then
 						break
 					end
 				else
-					horde_spawner_index = horde_spawner_index%num_horde_spawns + 1
+					horde_spawner_index = horde_spawner_index % num_horde_spawns + 1
 				end
 			end
 
@@ -477,7 +477,7 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, fallback, overri
 
 				if breed_name then
 					spawner = horde.cover_spawns[hidden_spawner_index]
-					hidden_spawner_index = hidden_spawner_index%num_cover_spawns + 1
+					hidden_spawner_index = hidden_spawner_index % num_cover_spawns + 1
 					spawner.num_to_spawn = spawner.num_to_spawn + 1
 					spawner.spawn_list[#spawner.spawn_list + 1] = breed_name
 					missing = missing - 1
@@ -562,7 +562,7 @@ HordeSpawner.replace_hidden_spawners = function (self, hidden_spawners, spawner_
 		local spawner = hidden_spawners[i]
 
 		if 0 < spawner.num_to_spawn then
-			local index = (count - 1)%num_found + 1
+			local index = (count - 1) % num_found + 1
 			spawner.cover_point_unit = found_cover_points[index]
 			count = count + 1
 
@@ -734,7 +734,7 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 
 	local hidden_lookup = self.spawner_system:hidden_spawners_lookup()
 	local spawner_count = 0
-	local f_amount_per_spawner = num_to_spawn/max_spawners
+	local f_amount_per_spawner = num_to_spawn / max_spawners
 	local amount_per_spawner = math.floor(f_amount_per_spawner)
 	local bucket = f_amount_per_spawner
 	local spawn_counter = 0
@@ -845,7 +845,7 @@ HordeSpawner.get_pos_ahead_or_behind_players_on_mainpath = function (self, check
 
 	if player_unit then
 		local player_info = conflict_director.main_path_player_info[player_unit]
-		local dist = player_info.travel_dist + dist*((check_ahead and 1) or -1)
+		local dist = player_info.travel_dist + dist * ((check_ahead and 1) or -1)
 
 		if dist < 0 then
 			return false
@@ -921,12 +921,12 @@ HordeSpawner.execute_vector_blob_horde = function (self, extra_data, fallback)
 			local offset = nil
 
 			if j == 1 then
-				offset = Vector3(-num_columns/2 + i%num_columns, -num_columns/2 + math.floor(i/num_columns), 0)
+				offset = Vector3(-num_columns / 2 + i % num_columns, -num_columns / 2 + math.floor(i / num_columns), 0)
 			else
-				offset = Vector3(math.random()*4 - 2, math.random()*4 - 2, 0)
+				offset = Vector3(4 * math.random() - 2, 4 * math.random() - 2, 0)
 			end
 
-			spawn_pos = LocomotionUtils.pos_on_mesh(nav_world, blob_pos + offset*2)
+			spawn_pos = LocomotionUtils.pos_on_mesh(nav_world, blob_pos + offset * 2)
 
 			if spawn_pos then
 				local breed = Breeds[spawn_list[i]]
@@ -1125,7 +1125,7 @@ HordeSpawner.update_horde = function (self, horde, t)
 				for i = 1, #horde_spawns, 1 do
 					local horde_spawn = horde_spawns[i]
 					local spawn_rate = self.spawner_system:spawn_horde(horde_spawn.spawner, horde_spawn.num_to_spawn, breeds, horde_spawn.spawn_list, horde.group_template)
-					horde_spawn.all_done_spawned_time = t + spawn_rate/1*horde_spawn.num_to_spawn
+					horde_spawn.all_done_spawned_time = t + 1 / spawn_rate * horde_spawn.num_to_spawn
 				end
 			end
 
@@ -1268,8 +1268,8 @@ HordeSpawner.hidden_cover_points = function (self, broadphase, epicenter_pos, pl
 	local min_long_dist_squared = main_target_pos and distance_squared(player_pos_list[1], main_target_pos)
 	local green = Color(255, 0, 240, 0)
 	local red = Color(255, 240, 0, 0)
-	min_rad = min_rad*min_rad
-	max_rad = max_rad*max_rad
+	min_rad = min_rad * min_rad
+	max_rad = max_rad * max_rad
 
 	for i = 1, num_cover_points, 1 do
 		local cover_unit = found_units[i]
@@ -1301,11 +1301,11 @@ HordeSpawner.hidden_cover_points = function (self, broadphase, epicenter_pos, pl
 
 						if script_data.debug_hordes then
 							QuickDrawerStay:sphere(pos, 1, green)
-							QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot)*2 + Vector3(0, 0, 1), green)
+							QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), green)
 						end
 					elseif script_data.debug_hordes then
 						QuickDrawerStay:sphere(pos, 1, red)
-						QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot)*2 + Vector3(0, 0, 1), red)
+						QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), red)
 					end
 				end
 			end
@@ -1325,7 +1325,7 @@ HordeSpawner.calc_sectors = function (self, center_pos, list, sectors)
 		local pos = unit_local_position(unit, 0)
 		local dir_to_center = vector3_normalize(pos - center_pos)
 		local angle = math_atan2(dir_to_center.y, dir_to_center.x)
-		local sector_index = math.max(1, math.ceil((angle + pi)/(pi*2)*num_sectors))
+		local sector_index = math.max(1, math.ceil((angle + pi) / (2 * pi) * num_sectors))
 		local sector = sectors[sector_index]
 		sector[#sector + 1] = unit
 	end
@@ -1397,7 +1397,7 @@ function test_sectors()
 		local pos = center_pos + p
 		local dir_to_center = vector3_normalize(pos - center_pos)
 		local angle = math.atan2(dir_to_center.y, dir_to_center.x)
-		local sector_index = math.max(1, math.ceil((angle + pi)/(pi*2)*num_sectors))
+		local sector_index = math.max(1, math.ceil((angle + pi) / (2 * pi) * num_sectors))
 
 		if sector_index <= num_sectors then
 			QuickDrawerStay:sphere(pos, 1.2, sector_colors[sector_index])

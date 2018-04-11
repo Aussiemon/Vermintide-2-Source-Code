@@ -140,7 +140,7 @@ local function create_log_entry(index)
 					10
 				},
 				offset = {
-					(icon_width + 3) - -5,
+					-5 - (icon_width + 3),
 					10,
 					4
 				},
@@ -159,11 +159,11 @@ local function create_log_entry(index)
 				vertical_alignment = "top",
 				font_type = "hell_shark",
 				size = {
-					ENTRY_LENGTH*2,
+					ENTRY_LENGTH * 2,
 					20
 				},
 				offset = {
-					ENTRY_LENGTH - -5,
+					-5 - ENTRY_LENGTH,
 					10,
 					4
 				},

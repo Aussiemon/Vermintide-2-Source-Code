@@ -72,7 +72,7 @@ BTVortexWanderAction._wander_around = function (self, unit, t, dt, blackboard, v
 
 				vortex_data.wander_state = "calculating_path"
 			else
-				vortex_data.idle_time = t + math.random()*0.5
+				vortex_data.idle_time = t + math.random() * 0.5
 				vortex_data.wander_state = "no_path_found"
 			end
 		elseif Unit.alive(target_unit) then
@@ -88,7 +88,7 @@ BTVortexWanderAction._wander_around = function (self, unit, t, dt, blackboard, v
 					vortex_data.wander_state = "calculating_path"
 				end
 			else
-				vortex_data.idle_time = t + math.random()*0.5
+				vortex_data.idle_time = t + math.random() * 0.5
 				vortex_data.wander_state = "no_path_found"
 			end
 		else

@@ -179,6 +179,10 @@ StartGameWindowAdventureSettings._handle_input = function (self, dt, t)
 	local parent = self.parent
 	local widgets_by_name = self._widgets_by_name
 
+	if self._is_button_hover_enter(self, widgets_by_name.game_option_1) or self._is_button_hover_enter(self, widgets_by_name.play_button) then
+		self._play_sound(self, "play_gui_lobby_button_01_difficulty_confirm_hover")
+	end
+
 	if self._is_button_released(self, widgets_by_name.game_option_1) then
 		parent.set_layout(parent, 9)
 	end
@@ -203,8 +207,9 @@ StartGameWindowAdventureSettings._update_difficulty_option = function (self)
 		self._set_difficulty_option(self, difficulty_key)
 
 		self._difficulty_key = difficulty_key
-		self._widgets_by_name.play_button.content.button_hotspot.disable_button = false
-		self._widgets_by_name.game_option_reward.content.button_hotspot.disable_button = false
+		local enable_play = DifficultySettings[difficulty_key] ~= nil
+		self._widgets_by_name.play_button.content.button_hotspot.disable_button = not enable_play
+		self._widgets_by_name.game_option_reward.content.button_hotspot.disable_button = not enable_play
 	end
 
 	return 
@@ -212,11 +217,11 @@ end
 StartGameWindowAdventureSettings._set_difficulty_option = function (self, difficulty_key)
 	local widgets_by_name = self._widgets_by_name
 	local difficulty_settings = DifficultySettings[difficulty_key]
-	local display_name = difficulty_settings.display_name
-	local display_image = difficulty_settings.display_image
-	local completed_frame_texture = difficulty_settings.completed_frame_texture or "map_frame_00"
-	widgets_by_name.game_option_1.content.option_text = Localize(display_name)
-	widgets_by_name.game_option_1.content.icon = display_image
+	local display_name = difficulty_settings and difficulty_settings.display_name
+	local display_image = difficulty_settings and difficulty_settings.display_image
+	local completed_frame_texture = (difficulty_settings and difficulty_settings.completed_frame_texture) or "map_frame_00"
+	widgets_by_name.game_option_1.content.option_text = (display_name and Localize(display_name)) or ""
+	widgets_by_name.game_option_1.content.icon = display_image or nil
 	widgets_by_name.game_option_1.content.icon_frame = completed_frame_texture
 
 	return 
@@ -307,7 +312,7 @@ StartGameWindowAdventureSettings._create_style_animation_enter = function (self,
 	local current_color_value = pass_style.color[1]
 	local target_color_value = target_value
 	local total_time = 0.2
-	local animation_duration = (current_color_value/target_color_value - 1)*total_time
+	local animation_duration = (1 - current_color_value / target_color_value) * total_time
 
 	if 0 < animation_duration and not instant then
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)
@@ -330,7 +335,7 @@ StartGameWindowAdventureSettings._create_style_animation_exit = function (self, 
 	local current_color_value = pass_style.color[1]
 	local target_color_value = target_value
 	local total_time = 0.2
-	local animation_duration = current_color_value/255*total_time
+	local animation_duration = current_color_value / 255 * total_time
 
 	if 0 < animation_duration and not instant then
 		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)

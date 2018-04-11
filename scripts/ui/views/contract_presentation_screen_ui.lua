@@ -247,9 +247,9 @@ ContractPresentationScreenUI._set_contract_start_info_by_contract_id = function 
 		tasks_total_end_values = tasks_total_end_values + task_required
 	end
 
-	tasks_total_progress = (0 < tasks_total_end_values and tasks_total_start_values/tasks_total_end_values) or 0
+	tasks_total_progress = (0 < tasks_total_end_values and tasks_total_start_values / tasks_total_end_values) or 0
 	tasks_total_progress = math.max(math.min(tasks_total_progress, 1), 0)
-	local tasks_total_session_progress = (0 < tasks_total_end_values and tasks_total_session_values/tasks_total_end_values) or 0
+	local tasks_total_session_progress = (0 < tasks_total_end_values and tasks_total_session_values / tasks_total_end_values) or 0
 	tasks_total_session_progress = math.max(math.min(tasks_total_session_progress, 1), 0)
 
 	self._set_widget_task_amount(self, widget, index_count)
@@ -263,7 +263,7 @@ ContractPresentationScreenUI._set_widget_task_amount = function (self, widget, a
 	widget_style.texture_divider.texture_amount = amount - 1
 	local task_bg_size = widget.style.task_bg_size
 	local task_start_offset = widget.style.task_start_offset
-	local width_per_task = task_bg_size[1]/amount
+	local width_per_task = task_bg_size[1] / amount
 
 	for i = 1, amount, 1 do
 		local task_text_style = widget_style["task_text_" .. i]
@@ -273,15 +273,15 @@ ContractPresentationScreenUI._set_widget_task_amount = function (self, widget, a
 		local texture_task_icon_style = widget_style["texture_task_icon_" .. i]
 		task_text_style.size[1] = width_per_task
 		task_value_style.size[1] = width_per_task
-		local text_start_position = task_start_offset + width_per_task*(i - 1)
+		local text_start_position = task_start_offset + width_per_task * (i - 1)
 		task_text_style.offset[1] = text_start_position
 		task_value_style.offset[1] = text_start_position
 		local marker_size = texture_task_marker_style.size
-		texture_task_marker_style.offset[1] = task_start_offset + width_per_task*(i - 1) + 20 + width_per_task*0.5 - marker_size[1]*0.5
+		texture_task_marker_style.offset[1] = 20 + task_start_offset + width_per_task * (i - 1) + width_per_task * 0.5 - marker_size[1] * 0.5
 		local glow_size = texture_task_glow_style.size
-		texture_task_glow_style.offset[1] = task_start_offset + width_per_task*(i - 1) + width_per_task*0.5 - glow_size[1]*0.5
+		texture_task_glow_style.offset[1] = task_start_offset + width_per_task * (i - 1) + width_per_task * 0.5 - glow_size[1] * 0.5
 		local icon_size = texture_task_icon_style.size
-		texture_task_icon_style.offset[1] = task_start_offset + width_per_task*(i - 1) + width_per_task*0.5 - icon_size[1]*0.5
+		texture_task_icon_style.offset[1] = task_start_offset + width_per_task * (i - 1) + width_per_task * 0.5 - icon_size[1] * 0.5
 	end
 
 	return 
@@ -317,9 +317,9 @@ ContractPresentationScreenUI._set_widget_contract_progress = function (self, wid
 	local widget_style = widget.style
 	local progress_bar_style = widget_style.progress_bar
 	local progress_bar_content = widget_content.progress_bar
-	progress_bar_style.size[1] = progress_bar_style.uv_scale_pixels*progress
+	progress_bar_style.size[1] = progress_bar_style.uv_scale_pixels * progress
 	progress_bar_content.uvs[2][progress_bar_style.scale_axis] = progress
-	progress = math.floor(progress*100, 1)
+	progress = math.floor(progress * 100, 1)
 	local progress_text = tostring(progress) .. "%"
 	local text = Localize("dlc1_3_1_contract_presentation_progress_prefix")
 	widget_content.bar_text = text .. ": " .. progress_text
@@ -359,7 +359,7 @@ ContractPresentationScreenUI._get_text_size = function (self, text_style, text)
 	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
 	local num_texts = #texts
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
-	local full_font_height = (font_max + math.abs(font_min))*inv_scale
+	local full_font_height = (font_max + math.abs(font_min)) * inv_scale
 	local longest_width = 0
 
 	for i = 1, num_texts, 1 do
@@ -371,7 +371,7 @@ ContractPresentationScreenUI._get_text_size = function (self, text_style, text)
 		end
 	end
 
-	return num_texts*full_font_height, longest_width
+	return num_texts * full_font_height, longest_width
 end
 ContractPresentationScreenUI._handle_animations = function (self)
 	local num_active_contract_widget = self.num_active_contract_widget

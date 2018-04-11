@@ -173,8 +173,8 @@ PositiveReinforcementUI._assign_portrait_texture = function (self, widget, pass_
 	local style = widget.style[pass_name]
 	local portrait_offset = style.portrait_offset
 	local offset = style.offset
-	offset[1] = portrait_offset[1] - portrait_size[1]/2
-	offset[2] = portrait_offset[2] - portrait_size[2]/2
+	offset[1] = portrait_offset[1] - portrait_size[1] / 2
+	offset[2] = portrait_offset[2] - portrait_size[2] / 2
 	style.size = portrait_size
 
 	return 
@@ -297,12 +297,12 @@ PositiveReinforcementUI.update = function (self, dt, t)
 
 		if not removed then
 			local step_size = 80
-			local new_height_offset = -((index - 1)*step_size)
+			local new_height_offset = -((index - 1) * step_size)
 			local diff = math.abs(math.abs(offset[2]) - math.abs(new_height_offset))
 
 			if new_height_offset < offset[2] then
 				local speed = 400
-				offset[2] = math.max(offset[2] - dt*speed, new_height_offset)
+				offset[2] = math.max(offset[2] - dt * speed, new_height_offset)
 			else
 				offset[2] = new_height_offset
 			end
@@ -312,14 +312,14 @@ PositiveReinforcementUI.update = function (self, dt, t)
 			local fade_out_progress = 0
 
 			if fade_duration < time_left then
-				fade_out_progress = math.clamp((show_duration - time_left)/fade_duration, 0, 1)
-				offset[1] = -(math.easeInCubic(fade_out_progress - 1)*35)
+				fade_out_progress = math.clamp((show_duration - time_left) / fade_duration, 0, 1)
+				offset[1] = -(math.easeInCubic(1 - fade_out_progress) * 35)
 			else
-				fade_out_progress = math.clamp(time_left/fade_duration, 0, 1)
+				fade_out_progress = math.clamp(time_left / fade_duration, 0, 1)
 			end
 
 			local anim_progress = math.easeOutCubic(fade_out_progress)
-			local alpha = anim_progress*255
+			local alpha = 255 * anim_progress
 			local texte_style_ids = content.texte_style_ids
 
 			for _, style_id in ipairs(texte_style_ids) do

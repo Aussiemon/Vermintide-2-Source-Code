@@ -312,20 +312,20 @@ BTNinjaSkulkAction.dodge = function (self, unit, blackboard, dodge_vec, aim_vec)
 		left_right = -left_right
 	end
 
-	local dodge_dir = left_right*2 + normalized_velocity
-	local dodge_pos = pos + dodge_dir*dodge_dist
+	local dodge_dir = left_right * 2 + normalized_velocity
+	local dodge_pos = pos + dodge_dir * dodge_dist
 
 	if self.try_dodge_pos(self, unit, blackboard, pos, dodge_pos) then
-		local pass_check_pos = pos + dodge_dir*dodge_dist_check
+		local pass_check_pos = pos + dodge_dir * dodge_dist_check
 		blackboard.dodge_pos = Vector3Box(pass_check_pos)
 
 		return 
 	end
 
-	dodge_pos = pos - dodge_dir*dodge_dist
+	dodge_pos = pos - dodge_dir * dodge_dist
 
 	if self.try_dodge_pos(self, unit, blackboard, pos, dodge_pos) then
-		local pass_check_pos = pos - dodge_dir*dodge_dist_check
+		local pass_check_pos = pos - dodge_dir * dodge_dist_check
 		blackboard.dodge_pos = Vector3Box(pass_check_pos)
 	end
 
@@ -396,9 +396,9 @@ BTNinjaSkulkAction.get_new_goal = function (self, unit, blackboard)
 		local min_dist = 10
 		local max_dist = 15
 		local dir = blackboard.skulk_around_dir
-		dir = dir or math.random(0, 1)*2 - 1
+		dir = dir or 1 - math.random(0, 1) * 2
 		blackboard.skulk_around_dir = dir
-		local angle = math.random(10, 35)*dir
+		local angle = math.random(10, 35) * dir
 		local max_tries = 5
 		pos = LocomotionUtils.outside_goal(blackboard.nav_world, POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit], min_dist, max_dist, angle, max_tries)
 

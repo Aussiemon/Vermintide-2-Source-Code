@@ -305,7 +305,7 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 	local profile_index = local_player.profile_index(local_player)
 	local profile = SPProfiles[profile_index]
 
-	statistics_db.increment_stat(statistics_db, stats_id, "complete_level_" .. profile.display_name)
+	statistics_db.increment_stat(statistics_db, stats_id, "completed_levels_" .. profile.display_name, level_id)
 
 	local mission_system = Managers.state.entity:system("mission_system")
 	local grimoire_mission_data = mission_system.get_level_end_mission_data(mission_system, "grimoire_hidden_mission")
@@ -338,10 +338,29 @@ StatisticsUtil.register_complete_tutorial = function (statistics_db)
 
 	return 
 end
+StatisticsUtil.register_played_quickplay_level = function (statistics_db, player, level_key)
+	if not table.find(UnlockableLevels, level_key) then
+		return 
+	end
+
+	statistics_db.increment_stat(statistics_db, player.stats_id(player), "played_levels_quickplay", level_key)
+	StatisticsUtil.register_last_played_level_id(statistics_db, player, level_key)
+
+	return 
+end
+StatisticsUtil.register_last_played_level_id = function (statistics_db, player, level_key)
+	local unlockable_level_id = table.find(UnlockableLevels, level_key)
+
+	if unlockable_level_id then
+		statistics_db.set_stat(statistics_db, player.stats_id(player), "last_played_level_id", unlockable_level_id)
+	end
+
+	return 
+end
 StatisticsUtil.get_game_progress = function (statistics_db)
 	local local_player = Managers.player:local_player()
 	local stats_id = local_player.stats_id(local_player)
-	local max_value = #MainGameLevels*5
+	local max_value = #MainGameLevels * 5
 	local current_value = 0
 	local level_difficulty_name, level_completed_difficulty = nil
 
@@ -354,7 +373,7 @@ StatisticsUtil.get_game_progress = function (statistics_db)
 		current_value = current_value + level_completed_difficulty
 	end
 
-	local game_progress = current_value/max_value*100
+	local game_progress = current_value / max_value * 100
 
 	return game_progress
 end
@@ -475,7 +494,7 @@ StatisticsUtil.register_complete_survival_level = function (statistics_db)
 		if started_on_unlocked_difficulty then
 			local difficulty = difficulty_manager.get_difficulty(difficulty_manager)
 			local difficulty_index = table.find(level_difficulties, difficulty)
-			local completed_difficulty_index = (difficulty_index == #level_difficulties and (difficulty_index - start_difficulty_index + 1)*13 <= completed_waves and difficulty_index) or difficulty_index - 1
+			local completed_difficulty_index = (difficulty_index == #level_difficulties and 13 * (difficulty_index - start_difficulty_index + 1) <= completed_waves and difficulty_index) or difficulty_index - 1
 
 			if 0 < completed_difficulty_index then
 				completed_difficulty = level_difficulties[completed_difficulty_index]

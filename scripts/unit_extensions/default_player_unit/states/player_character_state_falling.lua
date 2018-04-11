@@ -175,7 +175,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 		local distance = Vector3.dot(ladder_plane_inv_normal, ladder_offset)
 		local epsilon = 0.1
 
-		if self_pos.z < Vector3.z(Unit.world_position(ladder_unit, top_node)) and 0 < distance and distance < epsilon + 0.7 then
+		if self_pos.z < Vector3.z(Unit.world_position(ladder_unit, top_node)) and 0 < distance and distance < 0.7 + epsilon then
 			local params = self.temp_params
 			params.ladder_unit = ladder_unit
 
@@ -199,7 +199,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 
 		local jump_speed = movement_settings_table.jump.initial_vertical_speed
 		local velocity_current = self.locomotion_extension:current_velocity()
-		local velocity_jump = Vector3(velocity_current.x, velocity_current.y, (velocity_current.z < -3 and jump_speed*0.5) or jump_speed*1.5)
+		local velocity_jump = Vector3(velocity_current.x, velocity_current.y, (velocity_current.z < -3 and jump_speed * 0.5) or jump_speed * 1.5)
 
 		self.locomotion_extension:set_forced_velocity(velocity_jump)
 		self.locomotion_extension:set_wanted_velocity(velocity_jump)
@@ -208,9 +208,9 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 	local inventory_extension = self.inventory_extension
 	local move_speed = movement_settings_table.move_speed
 	local move_speed_multiplier = status_extension.current_move_speed_multiplier(status_extension)
-	move_speed = move_speed*move_speed_multiplier
-	move_speed = move_speed*movement_settings_table.player_speed_scale
-	move_speed = move_speed*movement_settings_table.player_air_speed_scale
+	move_speed = move_speed * move_speed_multiplier
+	move_speed = move_speed * movement_settings_table.player_speed_scale
+	move_speed = move_speed * movement_settings_table.player_air_speed_scale
 
 	CharacterStateHelper.move_in_air(self.first_person_extension, input_extension, self.locomotion_extension, move_speed, unit)
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension)

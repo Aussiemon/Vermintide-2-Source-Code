@@ -391,12 +391,12 @@ local function create_inventory_entry_widgets(num_of_entries)
 							local bar_value = content.bar_value
 							local uv_start_pixels = style.uv_start_pixels
 							local uv_scale_pixels = style.uv_scale_pixels
-							local uv_pixels = uv_start_pixels + uv_scale_pixels*bar_value
+							local uv_pixels = uv_start_pixels + uv_scale_pixels * bar_value
 							local uvs = style.uvs
 							local uv_scale_axis = style.scale_axis
 							local offset_scale = style.offset_scale
 							local offset = style.offset
-							uvs[1][uv_scale_axis] = uv_pixels/(uv_start_pixels + uv_scale_pixels) - 1
+							uvs[1][uv_scale_axis] = 1 - uv_pixels / (uv_start_pixels + uv_scale_pixels)
 							size[uv_scale_axis] = uv_pixels
 
 							return content.color, uvs, size, offset

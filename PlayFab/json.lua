@@ -167,11 +167,11 @@ local function codepoint_to_utf8(n)
 	if n <= 127 then
 		return string.char(n)
 	elseif n <= 2047 then
-		return string.char(f(n/64) + 192, n%64 + 128)
+		return string.char(f(n / 64) + 192, n % 64 + 128)
 	elseif n <= 65535 then
-		return string.char(f(n/4096) + 224, f(n%4096/64) + 128, n%64 + 128)
+		return string.char(f(n / 4096) + 224, f(n % 4096 / 64) + 128, n % 64 + 128)
 	elseif n <= 1114111 then
-		return string.char(f(n/262144) + 240, f(n%262144/4096) + 128, f(n%4096/64) + 128, n%64 + 128)
+		return string.char(f(n / 262144) + 240, f(n % 262144 / 4096) + 128, f(n % 4096 / 64) + 128, n % 64 + 128)
 	end
 
 	error(string.format("invalid unicode codepoint '%x'", n))
@@ -184,7 +184,7 @@ local function parse_unicode_escape(s)
 	local n2 = tonumber(s.sub(s, 9, 12), 16)
 
 	if n2 then
-		return codepoint_to_utf8((n1 - 55296)*1024 + n2 - 56320 + 65536)
+		return codepoint_to_utf8((n1 - 55296) * 1024 + n2 - 56320 + 65536)
 	else
 		return codepoint_to_utf8(n1)
 	end

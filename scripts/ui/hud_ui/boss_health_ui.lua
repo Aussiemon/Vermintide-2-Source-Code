@@ -143,7 +143,7 @@ BossHealthUI._draw = function (self, dt, t)
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("Player")
 	local render_settings = self.render_settings
-	render_settings.alpha_multiplier = math.min(render_settings.alpha_multiplier + dt*5, 1)
+	render_settings.alpha_multiplier = math.min(render_settings.alpha_multiplier + dt * 5, 1)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
@@ -195,7 +195,7 @@ BossHealthUI._sync_boss_health = function (self, dt, t)
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local health_percentage = health_extension.current_health_percent(health_extension)
 		local health_max_percentage = health_extension.current_max_health_percent(health_extension)
-		progress = health_percentage*health_max_percentage
+		progress = health_percentage * health_max_percentage
 		max_health_fraction = health_max_percentage
 		self._freeze_healing = self._breed_name == "chaos_troll" and health_extension.state == "down"
 	end
@@ -229,7 +229,7 @@ end
 BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, instant, dt, t)
 	progress = progress or 0
 	local current_health_percent = self._current_progress or 1
-	local health_anim_progress = current_health_percent + math.sign(progress - current_health_percent)*dt*0.3
+	local health_anim_progress = current_health_percent + math.sign(progress - current_health_percent) * dt * 0.3
 	local instant = self._next_update_is_instant or instant
 
 	if instant then
@@ -250,11 +250,11 @@ BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, 
 	local bar_offset = bar_style.offset
 	local bar_default_size = bar_style.default_size
 	local bar_default_offset = bar_style.default_offset
-	bar_size[1] = bar_default_size[1]*(health_anim_progress or 1)
+	bar_size[1] = bar_default_size[1] * (health_anim_progress or 1)
 	bar_uvs[2][1] = health_anim_progress
 	max_health_fraction = max_health_fraction or 1
 	local current_max_health_fraction = self._current_max_health_fraction or 1
-	local max_health_anim_fraction = current_max_health_fraction + math.sign(max_health_fraction - current_max_health_fraction)*dt*0.3
+	local max_health_anim_fraction = current_max_health_fraction + math.sign(max_health_fraction - current_max_health_fraction) * dt * 0.3
 
 	if instant then
 		max_health_anim_fraction = max_health_fraction
@@ -271,7 +271,7 @@ BossHealthUI._set_bar_progress = function (self, progress, max_health_fraction, 
 	local dead_space_bar_offset = dead_space_bar_style.offset
 	local dead_space_bar_default_size = dead_space_bar_style.default_size
 	local dead_space_bar_default_offset = dead_space_bar_style.default_offset
-	dead_space_bar_size[1] = dead_space_bar_default_size[1]*((max_health_anim_fraction or 1) - 1)
+	dead_space_bar_size[1] = dead_space_bar_default_size[1] * (1 - (max_health_anim_fraction or 1))
 	dead_space_bar_uvs[1][1] = max_health_anim_fraction
 	dead_space_bar_offset[1] = dead_space_bar_default_size[1] - dead_space_bar_size[1]
 	local dead_space_bar_divider_style = style.dead_space_bar_divider
@@ -297,8 +297,8 @@ BossHealthUI._set_healing_amount = function (self, start_progress, end_progress,
 	local bar_offset = bar_style.offset
 	local bar_uvs = bar_content.uvs
 	local total_progress = end_progress - start_progress
-	local total_bar_length = bar_length*total_progress
-	local bar_offset_x = bar_length*start_progress
+	local total_bar_length = bar_length * total_progress
+	local bar_offset_x = bar_length * start_progress
 	bar_uvs[1][1] = start_progress
 	bar_uvs[2][1] = end_progress
 	bar_size[1] = total_bar_length
@@ -324,7 +324,7 @@ BossHealthUI._update_healing_bar = function (self, dt, t, freeze_healing)
 	if healing_end_progress <= healing_start_progress then
 		new_healing_start_progress = healing_end_progress
 	elseif self._healing_life_time and self._healing_life_time <= t and not freeze_healing then
-		new_healing_start_progress = math.min(healing_start_progress + dt*0.5, healing_end_progress)
+		new_healing_start_progress = math.min(healing_start_progress + dt * 0.5, healing_end_progress)
 	end
 
 	if freeze_healing then
@@ -333,7 +333,7 @@ BossHealthUI._update_healing_bar = function (self, dt, t, freeze_healing)
 		local min_health_percent = action.respawn_hp_min_percent
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local current_max_health = health_extension.current_max_health_percent(health_extension)
-		new_healing_start_progress = min_health_percent*current_max_health
+		new_healing_start_progress = min_health_percent * current_max_health
 	end
 
 	self._set_healing_amount(self, new_healing_start_progress, healing_end_progress)
@@ -354,16 +354,16 @@ BossHealthUI._set_health_edge_texture_position_progress = function (self, progre
 	local bar_edge_style = style.bar_edge
 	local bar_edge_offset = bar_edge_style.offset
 	local bar_edge_default_width_offset = bar_edge_style.default_width_offset
-	bar_edge_offset[1] = bar_length*progress - bar_edge_default_width_offset
+	bar_edge_offset[1] = bar_length * progress - bar_edge_default_width_offset
 	content.bar_edge_fraction = progress
 
 	return 
 end
 BossHealthUI._update_healing_effect = function (self, dt, t)
 	if self._healing_effect_life_time then
-		local time_progress = math.max(self._healing_effect_life_time - t, 0)/HEALING_EFFECT_LIFE_TIME
-		local healing_effect_progress = time_progress - 1
-		local effect_alpha = math.ease_pulse(healing_effect_progress)*255
+		local time_progress = math.max(self._healing_effect_life_time - t, 0) / HEALING_EFFECT_LIFE_TIME
+		local healing_effect_progress = 1 - time_progress
+		local effect_alpha = 255 * math.ease_pulse(healing_effect_progress)
 
 		self._set_health_effect_alpha(self, effect_alpha)
 

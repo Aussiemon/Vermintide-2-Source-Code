@@ -477,7 +477,7 @@ SpawnManager._update_player_status = function (self, dt, t)
 			end
 
 			Debug.text("    health_state: " .. status.health_state .. " health_percentage: " .. status.health_percentage)
-			Debug.text("    ammo, melee: " .. status.ammo.slot_melee*100 .. "%% ranged:" .. status.ammo.slot_ranged*100 .. "%%")
+			Debug.text("    ammo, melee: " .. status.ammo.slot_melee * 100 .. "%% ranged:" .. status.ammo.slot_ranged * 100 .. "%%")
 
 			if status.profile_index then
 				Debug.text("    profile_index: " .. status.profile_index)
@@ -976,8 +976,8 @@ SpawnManager._spawn_player = function (self, status)
 	netpack_consumables(status.consumables, CONSUMABLES_TEMP)
 
 	local ammo = status.ammo
-	local ammo_melee_percent_int = math.floor(ammo.slot_melee*100)
-	local ammo_ranged_percent_int = math.floor(ammo.slot_ranged*100)
+	local ammo_melee_percent_int = math.floor(ammo.slot_melee * 100)
+	local ammo_ranged_percent_int = math.floor(ammo.slot_ranged * 100)
 	local session = Managers.state.network:game()
 
 	if session then

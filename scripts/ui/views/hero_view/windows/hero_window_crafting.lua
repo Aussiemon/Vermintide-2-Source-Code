@@ -361,7 +361,7 @@ HeroWindowCrafting._update_craft_start_time = function (self, dt, t)
 	end
 
 	craft_start_duration = craft_start_duration + dt
-	local progress = math.min(craft_start_duration/0.5, 1)
+	local progress = math.min(craft_start_duration / 0.5, 1)
 	local animation_progress = math.easeInCubic(progress)
 
 	self._set_crafting_fg_progress(self, animation_progress)
@@ -385,10 +385,10 @@ HeroWindowCrafting._update_craft_glow_in_time = function (self, dt, t)
 	end
 
 	craft_glow_in_duration = craft_glow_in_duration + dt
-	local progress = math.min(craft_glow_in_duration/0.5, 1)
+	local progress = math.min(craft_glow_in_duration / 0.5, 1)
 	local animation_progress = math.easeInCubic(progress)
 	local widget = self._widgets_by_name.crafting_fg_glow
-	widget.style.texture_id.color[1] = animation_progress*255
+	widget.style.texture_id.color[1] = animation_progress * 255
 
 	if progress == 1 then
 		self._craft_glow_in_duration = nil
@@ -407,8 +407,8 @@ HeroWindowCrafting._update_craft_glow_wait_time = function (self, dt, t)
 	end
 
 	craft_glow_wait_duration = craft_glow_wait_duration + dt
-	local progress = math.min(craft_glow_wait_duration/1, 1)
-	local animation_progress = math.ease_pulse(progress - 1)
+	local progress = math.min(craft_glow_wait_duration / 1, 1)
+	local animation_progress = math.ease_pulse(1 - progress)
 
 	if progress == 1 then
 		self._craft_glow_wait_duration = nil
@@ -426,10 +426,10 @@ HeroWindowCrafting._update_craft_glow_out_time = function (self, dt, t)
 	end
 
 	craft_glow_out_duration = craft_glow_out_duration + dt
-	local progress = math.min(craft_glow_out_duration/0.5, 1)
-	local animation_progress = math.easeOutCubic(progress - 1)
+	local progress = math.min(craft_glow_out_duration / 0.5, 1)
+	local animation_progress = math.easeOutCubic(1 - progress)
 	local widget = self._widgets_by_name.crafting_fg_glow
-	widget.style.texture_id.color[1] = animation_progress*255
+	widget.style.texture_id.color[1] = animation_progress * 255
 
 	if progress == 1 then
 		self._craft_end_duration = 0
@@ -454,8 +454,8 @@ HeroWindowCrafting._set_crafting_fg_progress = function (self, progress)
 	local ui_scenegraph = self.ui_scenegraph
 	local current_size = ui_scenegraph[scenegraph_id].size
 	local default_size = scenegraph_definition[scenegraph_id].size
-	current_size[2] = default_size[2]*progress
-	uvs[1][2] = progress - 1
+	current_size[2] = default_size[2] * progress
+	uvs[1][2] = 1 - progress
 	uvs[2][2] = 1
 
 	return 
@@ -468,8 +468,8 @@ HeroWindowCrafting._update_craft_end_time = function (self, dt, t)
 	end
 
 	craft_end_duration = craft_end_duration + dt
-	local progress = math.min(craft_end_duration/0.8, 1)
-	local animation_progress = math.easeCubic(progress - 1)
+	local progress = math.min(craft_end_duration / 0.8, 1)
+	local animation_progress = math.easeCubic(1 - progress)
 
 	self._set_crafting_fg_progress(self, animation_progress)
 

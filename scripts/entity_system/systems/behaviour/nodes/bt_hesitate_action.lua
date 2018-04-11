@@ -18,7 +18,7 @@ local HESITATION_SCALING_MINIMUM_RANGE_SQ = 4
 local BROADPHASE_QUERY_RADIUS = 10
 local HESITATION_EXIT_LOWER_BOUND = 0.3
 local HESITATION_EXIT_UPPER_BOUND = 1.4
-local RE_RAYCAST_DOT = math.sin(math.pi/3)
+local RE_RAYCAST_DOT = math.sin(math.pi / 3)
 local DO_DOT_CHECK_FOR_RE_RAYCAST = false
 local WALL_ROTATION_FACTOR = 1
 BTHesitateAction.enter = function (self, unit, blackboard, t)
@@ -41,7 +41,7 @@ BTHesitateAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.hesitate_wall = false
 	blackboard.outnumber_multiplier = 1
-	blackboard.outnumber_timer = t + 0.2 + Math.random()*0.2
+	blackboard.outnumber_timer = t + 0.2 + Math.random() * 0.2
 	blackboard.hesitating = true
 	blackboard.hesitate_timer = nil
 	blackboard.do_wall_check = action.do_wall_check
@@ -101,7 +101,7 @@ BTHesitateAction.set_unit_wall_hesitation = function (self, unit, blackboard, cu
 		local diff = Vector3.flat(pos - current_pos)
 
 		if 0.05 <= Vector3.dot(diff, Quaternion.forward(hesitate_wall_rotation)) then
-			locomotion_extension:set_wanted_velocity_flat(diff*2)
+			locomotion_extension:set_wanted_velocity_flat(diff * 2)
 		else
 			blackboard.hesitate_wall_position = nil
 
@@ -139,7 +139,7 @@ BTHesitateAction.wall_check = function (self, unit, blackboard, current_pos, dir
 		local OPTIMAL_DISTANCE = 1.2
 
 		if hit_distance < OPTIMAL_DISTANCE then
-			blackboard.hesitate_wall_position = Vector3Box(hit_pos + normal*OPTIMAL_DISTANCE)
+			blackboard.hesitate_wall_position = Vector3Box(hit_pos + normal * OPTIMAL_DISTANCE)
 
 			LocomotionUtils.set_animation_driven_movement(unit, false)
 		end
@@ -151,13 +151,13 @@ BTHesitateAction.wall_check = function (self, unit, blackboard, current_pos, dir
 end
 BTHesitateAction.calculate_outnumber_multiplier = function (self, unit, blackboard, t, dt, current_pos, target_pos)
 	local target_dist_sq = Vector3.distance_squared(target_pos, current_pos)
-	local hesitation_delta = HESITATION_PROXIMITY_SCALING/math.max(target_dist_sq - HESITATION_SCALING_MINIMUM_RANGE_SQ, 1)*dt + dt
+	local hesitation_delta = HESITATION_PROXIMITY_SCALING / math.max(target_dist_sq - HESITATION_SCALING_MINIMUM_RANGE_SQ, 1) * dt + dt
 	local outnumber_multiplier = nil
 
 	if blackboard.taunt_unit then
 		outnumber_multiplier = 1
 	elseif t < blackboard.outnumber_timer then
-		blackboard.outnumber_timer = t + 0.2 + Math.random()*0.2
+		blackboard.outnumber_timer = t + 0.2 + Math.random() * 0.2
 		local broadphase = blackboard.group_blackboard.broadphase
 
 		table.clear(BROADPHASE_QUERY_RESULT)
@@ -193,7 +193,7 @@ BTHesitateAction.calculate_outnumber_multiplier = function (self, unit, blackboa
 			end
 		end
 
-		outnumber_multiplier = allies_nearby/math.max(enemies_nearby, 1)*1.25
+		outnumber_multiplier = 1.25 * allies_nearby / math.max(enemies_nearby, 1)
 		blackboard.outnumber_multiplier = outnumber_multiplier
 
 		if enemies_nearby < allies_nearby then
@@ -283,7 +283,7 @@ BTHesitateAction.run = function (self, unit, blackboard, t, dt)
 
 	local target_pos = POSITION_LOOKUP[blackboard.target_unit]
 	local outnumber_multiplier, hesitation_delta = self.calculate_outnumber_multiplier(self, unit, blackboard, t, dt, current_pos, target_pos)
-	local hesitation = blackboard.hesitation + hesitation_delta*blackboard.outnumber_multiplier
+	local hesitation = blackboard.hesitation + hesitation_delta * blackboard.outnumber_multiplier
 	local panic_override = blackboard.oh_shit_proximity_panic_override or blackboard.taunt_unit
 	local should_start_move_animation = (breed.hesitation_timer or HESITATION_TIMER) < hesitation or panic_override
 
@@ -339,7 +339,7 @@ BTHesitateAction.run = function (self, unit, blackboard, t, dt)
 		local nav_world = blackboard.nav_world
 		local direction = -Quaternion.forward(rot)
 
-		if blackboard.do_wall_check and not GwNavQueries.raycango(nav_world, current_pos, current_pos + direction*0.5) then
+		if blackboard.do_wall_check and not GwNavQueries.raycango(nav_world, current_pos, current_pos + 0.5 * direction) then
 			self.wall_check(self, unit, blackboard, current_pos, direction)
 		end
 

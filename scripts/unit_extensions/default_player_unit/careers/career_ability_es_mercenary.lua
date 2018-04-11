@@ -69,9 +69,12 @@ CareerAbilityESMercenary._ability_available = function (self)
 	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
 end
 CareerAbilityESMercenary._start_priming = function (self)
-	local world = self._world
-	local effect_name = self._priming_fx_name
-	self._priming_fx_id = World.create_particles(world, effect_name, Vector3.zero())
+	if self._local_player then
+		local world = self._world
+		local effect_name = self._priming_fx_name
+		self._priming_fx_id = World.create_particles(world, effect_name, Vector3.zero())
+	end
+
 	self._is_priming = true
 
 	return 
@@ -90,10 +93,11 @@ CareerAbilityESMercenary._update_priming = function (self, dt)
 	return 
 end
 CareerAbilityESMercenary._stop_priming = function (self)
-	local world = self._world
 	local effect_id = self._priming_fx_id
 
 	if effect_id then
+		local world = self._world
+
 		World.destroy_particles(world, effect_id)
 
 		self._priming_fx_id = nil
@@ -112,14 +116,12 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 	local local_player = self._local_player
 	local network_manager = self._network_manager
 	local network_transmit = network_manager.network_transmit
-	local player_manager = self._player_manager
 	local status_extension = self._status_extension
 	local career_extension = self._career_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
 	CharacterStateHelper.play_animation_event(owner_unit, "mercenary_active_ability")
 
-	local heal_amount = 25
 	local radius = 15
 	local nearby_player_units = FrameTable.alloc_table()
 	local proximity_extension = Managers.state.entity:system("proximity_system")
@@ -127,7 +129,6 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 
 	Broadphase.query(broadphase, POSITION_LOOKUP[owner_unit], radius, nearby_player_units)
 
-	local heal_type_id = NetworkLookup.heal_types.career_skill
 	local revivable_units = FrameTable.alloc_table()
 
 	for _, player_unit in pairs(nearby_player_units) do
@@ -149,28 +150,28 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 		end
 	end
 
+	local heal_amount = 25
+
 	if talent_extension.has_talent(talent_extension, "markus_mercenary_activated_ability_improved_healing") then
 		heal_amount = 40
 	end
+
+	local heal_type_id = NetworkLookup.heal_types.career_skill
 
 	for _, player_unit in pairs(nearby_player_units) do
 		local unit_go_id = network_manager.unit_game_object_id(network_manager, player_unit)
 
 		if unit_go_id then
 			network_transmit.send_rpc_server(network_transmit, "rpc_request_heal", unit_go_id, heal_amount, heal_type_id)
-			print(heal_amount)
-			print(heal_amount)
-			print(heal_amount)
 		end
 	end
+
+	local position = POSITION_LOOKUP[owner_unit]
 
 	if local_player then
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension.animation_event(first_person_extension, "ability_shout")
-
-		local position = POSITION_LOOKUP[owner_unit]
-
 		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_mercenary_shout_out", position)
 	end
 
@@ -179,7 +180,6 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 	local scale = 1
 	local damage_source = "career_ability"
 	local is_husk = false
-	local position = POSITION_LOOKUP[owner_unit]
 	local rotation = Quaternion.identity()
 	local career_power_level = career_extension.get_career_power_level(career_extension)
 	local player_and_bot_units = PLAYER_AND_BOT_UNITS

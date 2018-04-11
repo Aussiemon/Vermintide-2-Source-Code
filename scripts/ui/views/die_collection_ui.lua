@@ -155,19 +155,19 @@ for i = 1, 3, 1 do
 
 	for j = 1, 10, 1 do
 		local scenegraph_id = "die_category_" .. i .. "_button_" .. j
-		category.passes[(num_passes + j*3) - 2] = {
+		category.passes[(num_passes + j * 3) - 2] = {
 			pass_type = "hotspot",
 			content_id = "button_" .. j .. "_hotspot",
 			scenegraph_id = scenegraph_id
 		}
-		category.passes[(num_passes + j*3) - 1] = {
+		category.passes[(num_passes + j * 3) - 1] = {
 			texture_id = "texture",
 			pass_type = "texture",
 			content_id = "button_" .. j,
 			style_id = "button_" .. j,
 			scenegraph_id = scenegraph_id
 		}
-		category.passes[num_passes + j*3] = {
+		category.passes[num_passes + j * 3] = {
 			texture_id = "highlight_texture",
 			pass_type = "texture",
 			content_id = "button_" .. j,
@@ -329,7 +329,7 @@ scenegraph_definition = {
 		parent = "die_category_base",
 		position = {
 			BASE_CATEGORY_OFFSET_X,
-			BASE_CATEGORY_OFFSET_Y + CATEGORY_OFFSET*0,
+			BASE_CATEGORY_OFFSET_Y + CATEGORY_OFFSET * 0,
 			2
 		},
 		size = SUB_CATEGORY_SIZE
@@ -338,7 +338,7 @@ scenegraph_definition = {
 		parent = "die_category_base",
 		position = {
 			BASE_CATEGORY_OFFSET_X,
-			BASE_CATEGORY_OFFSET_Y + CATEGORY_OFFSET*1,
+			BASE_CATEGORY_OFFSET_Y + CATEGORY_OFFSET * 1,
 			2
 		},
 		size = SUB_CATEGORY_SIZE
@@ -347,7 +347,7 @@ scenegraph_definition = {
 		parent = "die_category_base",
 		position = {
 			BASE_CATEGORY_OFFSET_X,
-			BASE_CATEGORY_OFFSET_Y + CATEGORY_OFFSET*2,
+			BASE_CATEGORY_OFFSET_Y + CATEGORY_OFFSET * 2,
 			2
 		},
 		size = SUB_CATEGORY_SIZE
@@ -360,8 +360,8 @@ for j = 1, 3, 1 do
 		scenegraph_definition[scenegraph_id] = {
 			parent = "die_category_" .. j,
 			position = {
-				(i - 1)%5*dietype_button_offset_x + 84,
-				dietype_button_offset_y - math.floor((i - 1)/5)*dietype_button_offset_y,
+				84 + (i - 1) % 5 * dietype_button_offset_x,
+				dietype_button_offset_y - math.floor((i - 1) / 5) * dietype_button_offset_y,
 				2
 			},
 			size = dietype_button_size

@@ -40,17 +40,17 @@ RootCamera.parse_parameters = function (self, camera_settings, parent_node)
 		self._name = camera_settings.name
 	end
 
-	local degrees_to_radians = math.pi/180
-	self._vertical_fov = camera_settings.vertical_fov and camera_settings.vertical_fov*degrees_to_radians
+	local degrees_to_radians = math.pi / 180
+	self._vertical_fov = camera_settings.vertical_fov and camera_settings.vertical_fov * degrees_to_radians
 	self._should_apply_fov_multiplier = camera_settings.should_apply_fov_multiplier or false
-	self._default_fov = (camera_settings.default_fov and camera_settings.default_fov*degrees_to_radians) or self._vertical_fov
+	self._default_fov = (camera_settings.default_fov and camera_settings.default_fov * degrees_to_radians) or self._vertical_fov
 	self._near_range = camera_settings.near_range
 	self._far_range = camera_settings.far_range
-	self._pitch_min = camera_settings.pitch_min and camera_settings.pitch_min*degrees_to_radians
-	self._pitch_max = camera_settings.pitch_max and camera_settings.pitch_max*degrees_to_radians
-	self._pitch_speed = camera_settings.pitch_speed and camera_settings.pitch_speed*degrees_to_radians
-	self._yaw_speed = camera_settings.yaw_speed and camera_settings.yaw_speed*degrees_to_radians
-	self._pitch_offset = camera_settings.pitch_offset and camera_settings.pitch_offset*degrees_to_radians
+	self._pitch_min = camera_settings.pitch_min and camera_settings.pitch_min * degrees_to_radians
+	self._pitch_max = camera_settings.pitch_max and camera_settings.pitch_max * degrees_to_radians
+	self._pitch_speed = camera_settings.pitch_speed and camera_settings.pitch_speed * degrees_to_radians
+	self._yaw_speed = camera_settings.yaw_speed and camera_settings.yaw_speed * degrees_to_radians
+	self._pitch_offset = camera_settings.pitch_offset and camera_settings.pitch_offset * degrees_to_radians
 	self._safe_position_offset = camera_settings.safe_position_offset
 	self._tree_transitions = camera_settings.tree_transitions
 	self._node_transitions = camera_settings.node_transitions
@@ -107,8 +107,8 @@ RootCamera.update_pitch_yaw = function (self, dt, data, current_node)
 
 		if 0 < math.abs(look_vec.x) then
 			local total_dt = self._accumulated_dt + dt
-			local max_speed = max_yaw_speed*total_dt
-			yaw_delta_value = math.clamp(look_vec.x*yaw_speed*dyn_yaw_scale, -max_speed, max_speed)
+			local max_speed = max_yaw_speed * total_dt
+			yaw_delta_value = math.clamp(look_vec.x * yaw_speed * dyn_yaw_scale, -max_speed, max_speed)
 			self._accumulated_dt = 0
 		else
 			yaw_delta_value = 0
@@ -120,10 +120,10 @@ RootCamera.update_pitch_yaw = function (self, dt, data, current_node)
 		end
 	elseif yaw_speed then
 		self._accumulated_dt = 0
-		yaw_delta_value = look_vec.x*yaw_speed*dyn_yaw_scale
+		yaw_delta_value = look_vec.x * yaw_speed * dyn_yaw_scale
 	end
 
-	local pitch_delta_value = look_vec.y*pitch_speed*dyn_pitch_scale
+	local pitch_delta_value = look_vec.y * pitch_speed * dyn_pitch_scale
 	local constraint_function = current_node.constraint_function(current_node)
 
 	if constraint_function then
@@ -131,10 +131,10 @@ RootCamera.update_pitch_yaw = function (self, dt, data, current_node)
 		local dir = Quaternion.forward(rot)
 		local norm_flat_dir = Vector3.normalize(Vector3.flat(dir))
 		local yaw = math.atan2(norm_flat_dir.x, norm_flat_dir.y)
-		local yaw_diff = (yaw + self._aim_yaw + math.pi)%(math.pi*2) - math.pi
+		local yaw_diff = (yaw + self._aim_yaw + math.pi) % (2 * math.pi) - math.pi
 		local relative_pitch = self._aim_pitch
 		local new_yaw, new_pitch = constraint_function(yaw_diff, relative_pitch, yaw_delta_value, pitch_delta_value)
-		self._aim_yaw = (new_yaw - yaw)%(math.pi*2)
+		self._aim_yaw = (new_yaw - yaw) % (2 * math.pi)
 
 		if not new_pitch then
 			if pitch_speed then
@@ -149,7 +149,7 @@ RootCamera.update_pitch_yaw = function (self, dt, data, current_node)
 		end
 
 		if yaw_speed then
-			self._aim_yaw = (self._aim_yaw - yaw_delta_value)%(math.pi*2)
+			self._aim_yaw = (self._aim_yaw - yaw_delta_value) % (2 * math.pi)
 		end
 	end
 

@@ -29,10 +29,6 @@ BenchmarkSettings = {
 		player_invincible = true,
 		wanted_profile = "bright_wizard"
 	},
-	user_settings = {
-		disable_gutter_runner = true,
-		disable_pack_master = true
-	},
 	attract_mode_settings = {
 		display_name = "intel_loading_screen_attract_mode",
 		loading_screen_wwise_events = {}
@@ -46,14 +42,6 @@ BenchmarkSettings = {
 local function setup_parameters(parameters)
 	for parameter, value in pairs(parameters) do
 		Development.set_parameter(parameter, value)
-	end
-
-	return 
-end
-
-local function setup_user_settings(settings)
-	for setting, value in pairs(settings) do
-		Application.set_user_setting("development_settings", setting, value)
 	end
 
 	return 
@@ -80,7 +68,6 @@ for _, arg in pairs(args) do
 
 		Development.set_parameter("attract_mode", true)
 		setup_parameters(BenchmarkSettings.parameters)
-		setup_user_settings(BenchmarkSettings.user_settings)
 		override_display_name(BenchmarkSettings.attract_mode_settings)
 
 		break
@@ -96,7 +83,6 @@ for _, arg in pairs(args) do
 		BenchmarkSettings.parameters.show_fps = true
 
 		setup_parameters(BenchmarkSettings.parameters)
-		setup_user_settings(BenchmarkSettings.user_settings)
 		override_display_name(BenchmarkSettings.benchmark_mode_settings)
 
 		break
@@ -112,7 +98,7 @@ BenchmarkSettings.demo_mode_overrides = function ()
 		print("Entering demo mode")
 
 		for setting_name, setting in pairs(PackSpawningSettings) do
-			setting.area_density_coefficient = setting.area_density_coefficient*0.75
+			setting.area_density_coefficient = setting.area_density_coefficient * 0.75
 		end
 
 		for setting_name, setting in pairs(BreedPacks) do

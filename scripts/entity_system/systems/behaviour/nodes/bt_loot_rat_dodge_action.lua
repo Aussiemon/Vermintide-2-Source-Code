@@ -112,23 +112,23 @@ BTLootRatDodgeAction.dodge = function (self, unit, blackboard, dodge_vector, thr
 		left_right = -left_right
 	end
 
-	local dodge_direction = left_right*2 + normalized_velocity
+	local dodge_direction = left_right * 2 + normalized_velocity
 	local dodge_distance = blackboard.action.dodge_distance
 	local pass_check_distance = dodge_distance - 0.3
-	local try_position = unit_position + dodge_direction*dodge_distance
+	local try_position = unit_position + dodge_direction * dodge_distance
 	local dodge_position = self.try_dodge_position(self, unit, blackboard, unit_position, try_position)
 
 	if dodge_position then
-		local pass_check_position = unit_position + dodge_direction*pass_check_distance
+		local pass_check_position = unit_position + dodge_direction * pass_check_distance
 
 		return dodge_position, pass_check_position, 0 < Vector3.cross(dodge_direction, normalized_velocity).z
 	end
 
-	try_position = unit_position - dodge_direction*dodge_distance
+	try_position = unit_position - dodge_direction * dodge_distance
 	dodge_position = self.try_dodge_position(self, unit, blackboard, unit_position, try_position)
 
 	if dodge_position then
-		local pass_check_position = unit_position - dodge_direction*pass_check_distance
+		local pass_check_position = unit_position - dodge_direction * pass_check_distance
 
 		return dodge_position, pass_check_position, 0 < Vector3.cross(-dodge_direction, normalized_velocity).z
 	end

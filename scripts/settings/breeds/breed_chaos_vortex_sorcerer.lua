@@ -100,7 +100,7 @@ local action_data = {
 		update_func_name = "_update_vortex_summoning",
 		cleanup_func_name = "_clean_up_vortex_summoning",
 		link_decal_units_to_vortex = false,
-		missile_launch_angle = math.pi/4,
+		missile_launch_angle = math.pi / 4,
 		ignore_staggers = {
 			true,
 			true,

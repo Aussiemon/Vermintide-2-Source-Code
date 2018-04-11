@@ -52,7 +52,7 @@ BTRandom.run = function (self, unit, blackboard, t, dt)
 	local num_children = #self._children
 
 	for i = 1, num_children, 1 do
-		local actual_index = ((i + child_to_run_index) - 2)%num_children + 1
+		local actual_index = ((i + child_to_run_index) - 2) % num_children + 1
 		local child = self._children[actual_index]
 
 		if child.condition(child, blackboard) then

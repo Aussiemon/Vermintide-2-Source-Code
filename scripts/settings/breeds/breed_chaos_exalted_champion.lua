@@ -19,9 +19,9 @@ local pushed_data = {
 }
 local breed_data = {
 	is_bot_threat = true,
-	bots_should_flank = true,
-	walk_speed = 2,
 	angry_run_speed = 6,
+	walk_speed = 2,
+	bots_should_flank = true,
 	poison_resistance = 100,
 	aoe_radius = 0.4,
 	aoe_height = 1.7,
@@ -61,7 +61,7 @@ local breed_data = {
 	smart_targeting_width = 0.2,
 	perception_continuous = "perception_continuous_rat_ogre",
 	initial_is_passive = false,
-	boost_curve_multiplier_override = 2,
+	boost_curve_multiplier_override = 1,
 	bot_melee_aim_node = "j_spine1",
 	has_inventory = true,
 	no_stagger_duration = true,
@@ -70,6 +70,7 @@ local breed_data = {
 	combat_music_state = "champion_chaos_exalted_warcamp",
 	hit_reaction = "ai_default",
 	passive_in_patrol = false,
+	armored_boss_damage_reduction = true,
 	smart_targeting_outer_width = 1,
 	hit_effect_template = "HitEffectsChaosExaltedChampion",
 	smart_targeting_height_multiplier = 3,
@@ -81,7 +82,6 @@ local breed_data = {
 	weapon_reach = 2.2,
 	far_off_despawn_immunity = true,
 	trigger_dialogue_on_target_switch = true,
-	stagger_immune = true,
 	base_unit = "units/beings/enemies/chaos_warrior_boss/chr_chaos_warrior_boss",
 	enter_walk_distance = 1,
 	bots_flank_while_targeted = false,
@@ -113,10 +113,10 @@ local breed_data = {
 	},
 	max_health = {
 		400,
-		400,
 		600,
-		800,
-		1200
+		900,
+		1200,
+		1800
 	},
 	debug_color = {
 		255,
@@ -129,7 +129,7 @@ local breed_data = {
 	run_on_despawn = AiBreedSnippets.on_chaos_exalted_champion_despawn,
 	run_on_death = AiBreedSnippets.on_chaos_exalted_champion_death,
 	hitzone_multiplier_types = {
-		head = "protected_weakspot"
+		head = "headshot"
 	},
 	hit_zones = {
 		full = {
@@ -329,34 +329,36 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
 	throw_weapon = {
-		hit_react_type = "heavy",
-		radius = 1.5,
+		catapult_players = true,
+		radius = 1.25,
 		catch_animation = "catch_weapon",
-		throw_speed = 30,
-		action_weight = 4,
+		throw_speed = 25,
+		return_speed = 45,
 		rotation_time = 2,
+		hit_react_type = "heavy",
 		fatigue_type = "blocked_sv_cleave",
-		attack_close_range = 4,
-		stop_sound_id = "Stop_enemy_champion_axe",
-		close_attack_time = 2,
-		damage_type = "cutting",
+		arrival_linger_time = 0.25,
 		throw_animation = "throw_weapon",
-		close_attack_animation = "attack_punch_unarmed",
+		damage_type = "cutting",
+		stop_sound_id = "Stop_enemy_champion_axe",
 		impact_sound_id = "Play_enemy_champion_axe_impact",
 		pull_sound_id = "Play_enemy_champion_pull_axe",
-		catapult_players = true,
+		target_dodged_radius = 0.25,
+		use_close_attack = false,
 		push_speed_z = 6,
+		action_weight = 4,
 		rotation_speed = 20,
 		throw_unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_chaos_2h_axe_03_boss",
+		hit_targets_on_return = false,
 		running_sound_id = "Play_enemy_champion_throw_axe",
 		push_speed = 10,
 		considerations = UtilityConsiderations.chaos_exalted_champion_throw_attack,
@@ -365,19 +367,24 @@ local action_data = {
 			12,
 			15
 		},
+		damage = {
+			20,
+			10,
+			5
+		},
 		difficulty_damage = {
 			easy = {
-				10,
+				8,
 				5,
 				10
 			},
 			normal = {
-				15,
+				8,
 				10,
 				15
 			},
 			hard = {
-				20,
+				16,
 				15,
 				20
 			},
@@ -406,31 +413,33 @@ local action_data = {
 		action_weight = 0.5,
 		considerations = UtilityConsiderations.chaos_exalted_defensive_idle,
 		idle_animation = {
-			"idle_2",
-			"idle_defence_2"
+			"idle_2"
 		}
 	},
 	spawn_sequence = {
 		action_weight = 20,
 		considerations = UtilityConsiderations.storm_vermin_champion_spawn
 	},
+	angry_charge_sequence = {
+		action_weight = 20,
+		considerations = UtilityConsiderations.chaos_exalted_angry_charge_sequence
+	},
 	intro_sequence = {
 		action_weight = 20
 	},
 	spawn_allies = {
 		has_ward = false,
-		optional_go_to_spawn = "warcamp_boss_minions",
-		defensive_mode_duration = 20,
-		stay_still = false,
 		run_to_spawn_speed = 7,
+		defensive_mode_duration = 30,
+		stay_still = false,
 		stinger_name = "enemy_horde_chaos_stinger",
-		spawn_group = "warcamp_boss_minions",
 		move_anim = "move_fwd",
+		spawn_group = "warcamp_boss_minions",
+		terror_event_id = "warcamp_boss_minions",
 		duration = 2,
 		find_spawn_points = true,
 		spawn = "warcamp_boss_event_defensive_hard",
 		animation = {
-			"idle_defence",
 			"idle_defence_2"
 		},
 		difficulty_spawn = {
@@ -457,32 +466,32 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
 	special_attack_cleave = {
-		fatigue_type = "blocked_sv_cleave",
 		height = 2,
 		offset_forward = 0,
+		fatigue_type = "blocked_sv_cleave",
 		offset_up = 0,
 		rotation_time = 2.6,
 		hit_react_type = "heavy",
 		catapult = true,
-		shove_speed = 9,
-		no_block_stagger = true,
 		shove_z_speed = 5,
-		damage_type = "cutting",
+		no_block_stagger = true,
 		bot_threat_duration = 1.1666666666666667,
-		range = 3.8,
+		damage_type = "cutting",
 		bot_threat_start_time = 1,
+		range = 3.8,
 		knocked_down_attack_threshold = 0.6,
 		reset_attack_animation_speed = 2.5,
 		action_weight = 1,
+		shove_speed = 9,
 		bot_threat_start_time_step = 0.8333333333333334,
 		width = 1.25,
 		considerations = UtilityConsiderations.chaos_exalted_cleave_attack,
@@ -501,11 +510,6 @@ local action_data = {
 			15,
 			10
 		},
-		blocked_damage = {
-			7,
-			7,
-			5
-		},
 		difficulty_damage = {
 			easy = {
 				15,
@@ -514,23 +518,23 @@ local action_data = {
 			},
 			normal = {
 				15,
-				15,
-				10
+				10,
+				8
 			},
 			hard = {
 				20,
-				20,
-				15
+				15,
+				10
 			},
 			harder = {
 				30,
-				30,
-				25
+				20,
+				15
 			},
 			hardest = {
 				50,
-				50,
-				45
+				35,
+				20
 			}
 		},
 		ignore_staggers = {
@@ -595,7 +599,7 @@ local action_data = {
 			"attack_downed"
 		},
 		damage = {
-			20,
+			15,
 			10,
 			5
 		},
@@ -606,14 +610,14 @@ local action_data = {
 				5
 			},
 			normal = {
-				20,
 				10,
-				5
+				5,
+				2
 			},
 			hard = {
-				25,
 				15,
-				10
+				10,
+				5
 			},
 			survival_hard = {
 				25,
@@ -621,7 +625,7 @@ local action_data = {
 				10
 			},
 			harder = {
-				30,
+				25,
 				20,
 				10
 			},
@@ -631,7 +635,7 @@ local action_data = {
 				10
 			},
 			hardest = {
-				50,
+				40,
 				30,
 				20
 			},
@@ -656,11 +660,10 @@ local action_data = {
 	special_attack_aoe = {
 		offset_forward = -4,
 		height = 4,
-		radius = 5,
+		radius = 4.5,
 		collision_type = "cylinder",
 		rotation_time = 0,
 		fatigue_type = "blocked_slam",
-		shove_speed = 10,
 		shove_z_speed = 7,
 		bot_threat_duration = 0.75,
 		damage_type = "cutting",
@@ -669,56 +672,10 @@ local action_data = {
 		offset_right = 0,
 		player_push_speed = 20,
 		action_weight = 4,
+		shove_speed = 10,
 		player_push_speed_blocked = 15,
 		ignore_abort_on_blocked_attack = true,
 		considerations = UtilityConsiderations.chaos_exalted_aoe,
-		blocked_damage = {
-			0,
-			0,
-			0
-		},
-		blocked_difficulty_damage = {
-			easy = {
-				0,
-				0,
-				0
-			},
-			normal = {
-				0,
-				0,
-				0
-			},
-			hard = {
-				2,
-				2,
-				2
-			},
-			survival_hard = {
-				2,
-				2,
-				2
-			},
-			harder = {
-				5,
-				5,
-				5
-			},
-			survival_harder = {
-				5,
-				5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				10
-			},
-			survival_hardest = {
-				10,
-				10,
-				10
-			}
-		},
 		damage = {
 			20,
 			10,
@@ -726,19 +683,19 @@ local action_data = {
 		},
 		difficulty_damage = {
 			easy = {
+				15,
 				10,
-				5,
 				5
 			},
 			normal = {
 				10,
 				5,
-				5
+				2
 			},
 			hard = {
 				15,
 				10,
-				10
+				5
 			},
 			survival_hard = {
 				25,
@@ -746,7 +703,7 @@ local action_data = {
 				10
 			},
 			harder = {
-				30,
+				25,
 				20,
 				10
 			},
@@ -756,8 +713,8 @@ local action_data = {
 				10
 			},
 			hardest = {
-				50,
 				30,
+				25,
 				20
 			},
 			survival_hardest = {
@@ -778,11 +735,10 @@ local action_data = {
 	special_attack_aoe_defensive = {
 		offset_forward = -4,
 		height = 4,
-		radius = 5,
+		radius = 4.5,
 		collision_type = "cylinder",
 		rotation_time = 0,
 		fatigue_type = "blocked_slam",
-		shove_speed = 10,
 		shove_z_speed = 7,
 		bot_threat_duration = 0.75,
 		damage_type = "cutting",
@@ -791,56 +747,10 @@ local action_data = {
 		offset_right = 0,
 		player_push_speed = 20,
 		action_weight = 4,
+		shove_speed = 10,
 		player_push_speed_blocked = 15,
 		ignore_abort_on_blocked_attack = true,
 		considerations = UtilityConsiderations.chaos_exalted_defensive_aoe,
-		blocked_damage = {
-			0,
-			0,
-			0
-		},
-		blocked_difficulty_damage = {
-			easy = {
-				0,
-				0,
-				0
-			},
-			normal = {
-				0,
-				0,
-				0
-			},
-			hard = {
-				2,
-				2,
-				2
-			},
-			survival_hard = {
-				2,
-				2,
-				2
-			},
-			harder = {
-				5,
-				5,
-				5
-			},
-			survival_harder = {
-				5,
-				5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				10
-			},
-			survival_hardest = {
-				10,
-				10,
-				10
-			}
-		},
 		damage = {
 			20,
 			10,
@@ -848,19 +758,19 @@ local action_data = {
 		},
 		difficulty_damage = {
 			easy = {
+				15,
 				10,
-				5,
 				5
 			},
 			normal = {
 				10,
 				5,
-				5
+				2
 			},
 			hard = {
 				15,
 				10,
-				10
+				5
 			},
 			survival_hard = {
 				25,
@@ -868,7 +778,7 @@ local action_data = {
 				10
 			},
 			harder = {
-				30,
+				25,
 				20,
 				10
 			},
@@ -878,8 +788,8 @@ local action_data = {
 				10
 			},
 			hardest = {
-				50,
 				30,
+				25,
 				20
 			},
 			survival_hardest = {
@@ -1220,11 +1130,6 @@ local action_data = {
 			10,
 			5
 		},
-		blocked_damage = {
-			6,
-			6,
-			4
-		},
 		difficulty_damage = {
 			easy = {
 				15,
@@ -1232,14 +1137,14 @@ local action_data = {
 				5
 			},
 			normal = {
-				20,
 				10,
-				5
+				5,
+				2
 			},
 			hard = {
-				25,
 				15,
-				10
+				10,
+				5
 			},
 			survival_hard = {
 				25,
@@ -1247,7 +1152,7 @@ local action_data = {
 				10
 			},
 			harder = {
-				30,
+				25,
 				20,
 				10
 			},
@@ -1257,8 +1162,8 @@ local action_data = {
 				10
 			},
 			hardest = {
-				50,
 				30,
+				25,
 				20
 			},
 			survival_hardest = {
@@ -1396,5 +1301,7 @@ local action_data = {
 	}
 }
 BreedActions.chaos_exalted_champion = table.create_copy(BreedActions.chaos_exalted_champion, action_data)
+BreedActions.chaos_exalted_champion.angry_charge = table.create_copy(BreedActions.chaos_exalted_champion.angry_charge, BreedActions.chaos_exalted_champion.charge)
+BreedActions.chaos_exalted_champion.angry_charge.considerations = UtilityConsiderations.chaos_exalted_champion_angry_lunge_attack
 
 return 

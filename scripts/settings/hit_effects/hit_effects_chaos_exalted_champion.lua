@@ -38,10 +38,7 @@ HitEffectsChaosExaltedChampion = {
 		animations = {
 			"death_named_01",
 			"death_named_02",
-			"death_spawn"
-		},
-		sound_event = {
-			"Play_enemy_vce_chaos_warrior_hurt_head"
+			"death_decapitate"
 		}
 	},
 	default_headshot = {

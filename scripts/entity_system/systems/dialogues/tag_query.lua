@@ -3,7 +3,7 @@ TagQuery.__index = TagQuery
 TagQuery.add = function (self, ...)
 	local n_args = select("#", ...)
 
-	assert(n_args == math.floor(n_args/2)*2, "Uneven amount of args, number of arguments: %d", n_args)
+	assert(n_args == math.floor(n_args / 2) * 2, "Uneven amount of args, number of arguments: %d", n_args)
 
 	local query_context = self.query_context
 

@@ -170,7 +170,7 @@ ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world,
 
 			local radians = math.degrees_to_radians(angle)
 			local gravity = ProjectileGravitySettings[projectile_info.gravity_settings]
-			local position_on_trajectory = WeaponHelper:position_on_trajectory(position, target_vector, speed/100, radians, gravity, life_time)
+			local position_on_trajectory = WeaponHelper:position_on_trajectory(position, target_vector, speed / 100, radians, gravity, life_time)
 			target_vector = Vector3.normalize(Vector3.flat(position_on_trajectory - muzzle_pos))
 			position = muzzle_pos
 		end
@@ -189,10 +189,10 @@ ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world,
 					throw_vector = throw_vector + Vector3(0, 0, current_action.throw_up_this_much_in_target_direction)
 					throw_vector = Vector3.normalize(throw_vector)
 					local sin = -throw_vector[3]
-					local cos = math.sqrt(sin*sin - 1)
+					local cos = math.sqrt(1 - sin * sin)
 					local speed_squared_limit = 22500
-					local speed_squared = math.clamp((gravity*-0.5*dl*dl)/(dh*cos*cos - dl*sin*cos), 0.1, speed_squared_limit)
-					speed = math.sqrt(speed_squared)*100
+					local speed_squared = math.clamp((-0.5 * gravity * dl * dl) / (dh * cos * cos - dl * sin * cos), 0.1, speed_squared_limit)
+					speed = math.sqrt(speed_squared) * 100
 				end
 			end
 		end
@@ -211,11 +211,11 @@ ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world,
 		local action_name = lookup_data.action_name
 		local sub_action_name = lookup_data.sub_action_name
 		local charge_level = self.charge_level
-		local scale = math.round(math.max(charge_level, 0)*100)
+		local scale = math.round(math.max(charge_level, 0) * 100)
 		local projectile_power_level = self.power_level
 
 		if current_action.scale_power_level then
-			projectile_power_level = math.max(current_action.scale_power_level, self.charge_level)*projectile_power_level
+			projectile_power_level = math.max(current_action.scale_power_level, self.charge_level) * projectile_power_level
 		end
 
 		local item_data = ItemMasterList[item_name]

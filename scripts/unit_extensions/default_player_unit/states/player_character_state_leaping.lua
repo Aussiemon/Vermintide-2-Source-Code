@@ -30,8 +30,8 @@ PlayerCharacterStateLeaping.on_enter = function (self, unit, input, dt, context,
 	local start_position = POSITION_LOOKUP[unit]
 	local projected_hit_pos = leap_data.projected_hit_pos:unbox()
 	local distance = Vector3.length(projected_hit_pos - start_position)
-	local needed_speed = distance/leap_data.time_of_flight
-	local forward_velocity = look_direction_flat*needed_speed
+	local needed_speed = distance / leap_data.time_of_flight
+	local forward_velocity = look_direction_flat * needed_speed
 	local velocity_jump = Vector3(forward_velocity.x, forward_velocity.y, jump_speed)
 	local initial_velocity = leap_data.initial_velocity:unbox()
 
@@ -145,7 +145,7 @@ PlayerCharacterStateLeaping.update = function (self, unit, input, dt, context, t
 	local current_position = POSITION_LOOKUP[unit]
 	local starting_pos = self._leap_data.starting_pos:unbox()
 	local distance_travelled = Vector3.length(current_position - starting_pos)
-	local percentage_done = distance_travelled/self._leap_data.total_distance
+	local percentage_done = distance_travelled / self._leap_data.total_distance
 	local look_override_x = 0
 	local look_override_y = math.lerp(0, -0.01, percentage_done)
 	local look_sense_override = math.min(1, math.lerp(0.1, 1, percentage_done))
@@ -169,12 +169,12 @@ PlayerCharacterStateLeaping._update_movement = function (self, unit, dt, t)
 	local starting_pos = leap_data.starting_pos:unbox()
 	local distance_travelled = Vector3.length(current_position - starting_pos)
 
-	if leap_data.total_distance*0.75 <= distance_travelled then
+	if leap_data.total_distance * 0.75 <= distance_travelled then
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration*1.5
-	elseif leap_data.total_distance*0.5 <= distance_travelled then
+		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * 1.5
+	elseif leap_data.total_distance * 0.5 <= distance_travelled then
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration*1.25
+		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * 1.25
 	end
 
 	local colliding_down = CharacterStateHelper.is_colliding_down(unit)
@@ -224,7 +224,7 @@ PlayerCharacterStateLeaping._start_leap = function (self, unit, velocity, t)
 	locomotion_extension.set_wanted_velocity(locomotion_extension, velocity)
 
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-	movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration*0.9
+	movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * 0.9
 
 	return 
 end

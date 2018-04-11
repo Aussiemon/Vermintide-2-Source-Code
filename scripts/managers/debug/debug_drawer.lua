@@ -30,9 +30,9 @@ end
 DebugDrawer.capsule_overlap = function (self, position, size, rotation, color)
 	fassert(size.x == size.z, "Passing diffent x and y size doesn't do anything, capsules overlaps are always sphere swept, not spheroid shaped.")
 
-	local radius = (size.x + size.z)*0.5
+	local radius = (size.x + size.z) * 0.5
 	local forward = Quaternion.forward(rotation)
-	local offset_y = forward*(size.y - radius)
+	local offset_y = forward * (size.y - radius)
 	local from = position - offset_y
 	local to = position + offset_y
 
@@ -60,12 +60,12 @@ DebugDrawer.box_sweep = function (self, pose, extents, movement_vector, color1, 
 	local x_vect = Matrix4x4.right(pose)
 	local y_vect = Matrix4x4.forward(pose)
 	local z_vect = Matrix4x4.up(pose)
-	local x_positive = x_vect*extents.x
-	local x_negative = -x_vect*extents.x
-	local y_positive = y_vect*extents.y
-	local y_negative = -y_vect*extents.y
-	local z_positive = z_vect*extents.z
-	local z_negative = -z_vect*extents.z
+	local x_positive = x_vect * extents.x
+	local x_negative = -x_vect * extents.x
+	local y_positive = y_vect * extents.y
+	local y_negative = -y_vect * extents.y
+	local z_positive = z_vect * extents.z
+	local z_negative = -z_vect * extents.z
 	local box1corner1 = pos + x_positive + y_positive + z_positive
 	local box1corner2 = pos + x_negative + y_positive + z_positive
 	local box1corner3 = pos + x_negative + y_negative + z_positive
@@ -128,15 +128,15 @@ DebugDrawer.arrow_2d = function (self, from, to, color)
 	local length = Vector3.length(vector)
 	local base_axis = Vector3.cross(Vector3.normalize(vector), Vector3.up())
 
-	self.line(self, to, to - vector*0.2 + base_axis*length*0.2, color)
-	self.line(self, to, to - vector*0.2 - base_axis*length*0.2, color)
+	self.line(self, to, to - 0.2 * vector + base_axis * length * 0.2, color)
+	self.line(self, to, to - 0.2 * vector - base_axis * length * 0.2, color)
 
 	return 
 end
 DebugDrawer.cylinder = function (self, pos1, pos2, radius, color, segments)
 	color = color or Color(255, 255, 255)
 	segments = segments or 5
-	local step = (pos2 - pos1)/segments
+	local step = (pos2 - pos1) / segments
 	local pos = pos1
 	local normal = Vector3.normalize(step)
 
@@ -155,26 +155,26 @@ DebugDrawer.vector = function (self, position, vector, color)
 	local length = Vector3.length(vector)
 	local normalized = Vector3.normalize(vector)
 	local tip_scale = 0.2
-	local tip_length = length*tip_scale
-	local tip_width = (length*tip_scale)/2
+	local tip_length = length * tip_scale
+	local tip_width = (length * tip_scale) / 2
 	local tip = position + vector
 	local x, y = Vector3.make_axes(normalized)
-	local aux = tip - normalized*tip_length
+	local aux = tip - normalized * tip_length
 
 	self.line(self, position, tip, color)
-	self.line(self, tip, aux - x*tip_width, color)
-	self.line(self, tip, aux + x*tip_width, color)
-	self.line(self, tip, aux - y*tip_width, color)
-	self.line(self, tip, aux + y*tip_width, color)
+	self.line(self, tip, aux - x * tip_width, color)
+	self.line(self, tip, aux + x * tip_width, color)
+	self.line(self, tip, aux - y * tip_width, color)
+	self.line(self, tip, aux + y * tip_width, color)
 
 	return 
 end
 DebugDrawer.quaternion = function (self, position, quaternion, scale)
 	scale = scale or 1
 
-	self.vector(self, position, scale*Quaternion.right(quaternion), Color(255, 0, 0))
-	self.vector(self, position, scale*Quaternion.forward(quaternion), Color(0, 255, 0))
-	self.vector(self, position, scale*Quaternion.up(quaternion), Color(0, 0, 255))
+	self.vector(self, position, scale * Quaternion.right(quaternion), Color(255, 0, 0))
+	self.vector(self, position, scale * Quaternion.forward(quaternion), Color(0, 255, 0))
+	self.vector(self, position, scale * Quaternion.up(quaternion), Color(0, 0, 255))
 
 	return 
 end
@@ -182,7 +182,7 @@ DebugDrawer.matrix4x4 = function (self, matrix, scale)
 	scale = scale or 1
 	local position = Matrix4x4.translation(matrix)
 
-	self.sphere(self, position, scale*0.25)
+	self.sphere(self, position, scale * 0.25)
 
 	local rotation = Matrix4x4.rotation(matrix)
 

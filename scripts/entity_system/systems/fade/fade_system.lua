@@ -191,7 +191,7 @@ FadeSystem.calculate_and_set_jitter_alpha = function (self, camera_position_flat
 		local height_difference = math.abs(camera_height - fade_unit_position_height)
 
 		if height_difference < MAX_HEIGHT_DIFFERENCE then
-			value = math.clamp((to_vec_length - MIN_FADE_DISTANCE)/CHANGE_DISTANCE, 0, 1) - 1
+			value = 1 - math.clamp((to_vec_length - MIN_FADE_DISTANCE) / CHANGE_DISTANCE, 0, 1)
 		else
 			value = 0
 		end
@@ -205,7 +205,7 @@ FadeSystem.calculate_and_set_jitter_alpha = function (self, camera_position_flat
 
 	return value
 end
-SAFE_DISTANCE = SAFE_DISTANCE or MIN_FADE_DISTANCE*2
+SAFE_DISTANCE = SAFE_DISTANCE or MIN_FADE_DISTANCE * 2
 FadeSystem._verify_length = function (self, vec, unit)
 	if SAFE_DISTANCE < math.abs(vec[1]) or SAFE_DISTANCE < math.abs(vec[2]) then
 		return false

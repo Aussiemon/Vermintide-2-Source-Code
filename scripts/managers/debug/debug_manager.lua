@@ -116,7 +116,7 @@ DebugManager.reset_drawer = function (self, drawer_name)
 	return 
 end
 DebugManager.update = function (self, dt, t)
-	local dt = dt/time_scale_list[self.time_scale_index]/100
+	local dt = dt / time_scale_list[self.time_scale_index] / 100
 
 	self.update_time_scale(self, dt)
 
@@ -233,7 +233,7 @@ DebugManager.update_time_scale = function (self, dt)
 		local service = input_manager.get_service(input_manager, "Debug")
 
 		if service and service.get(service, "time_scale") then
-			self.time_scale_accumulating_value = self.time_scale_accumulating_value + service.get(service, "time_scale_axis")*dt*5
+			self.time_scale_accumulating_value = self.time_scale_accumulating_value + service.get(service, "time_scale_axis") * dt * 5
 
 			if 1 < self.time_scale_accumulating_value then
 				time_scale_index = math.min(time_scale_index + 1, #time_scale_list)
@@ -303,14 +303,14 @@ DebugManager._adjust_player_speed = function (self)
 			local units = PlayerUnitMovementSettings.get_active_units_in_movement_settings()
 
 			for __, unit in pairs(units) do
-				PlayerUnitMovementSettings.get_movement_settings_table(unit).player_speed_scale = speed_scale_list[speed_scale_index]*0.01
+				PlayerUnitMovementSettings.get_movement_settings_table(unit).player_speed_scale = speed_scale_list[speed_scale_index] * 0.01
 			end
 		elseif Vector3.y(Mouse.axis(wheel_axis)) < 0 then
 			speed_scale_index = math.max(speed_scale_index - 1, 1)
 			local units = PlayerUnitMovementSettings.get_active_units_in_movement_settings()
 
 			for __, unit in pairs(units) do
-				PlayerUnitMovementSettings.get_movement_settings_table(unit).player_speed_scale = speed_scale_list[speed_scale_index]*0.01
+				PlayerUnitMovementSettings.get_movement_settings_table(unit).player_speed_scale = speed_scale_list[speed_scale_index] * 0.01
 			end
 		end
 
@@ -528,7 +528,7 @@ DebugManager.destroy = function (self)
 	return 
 end
 DebugManager.set_time_scale = function (self, time_scale_index)
-	local time_scale = time_scale_list[time_scale_index]*0.01
+	local time_scale = time_scale_list[time_scale_index] * 0.01
 
 	Application.set_time_step_policy("external_multiplier", time_scale)
 

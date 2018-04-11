@@ -168,7 +168,7 @@ RconUI._draw_widgets = function (self, dt, input_service)
 	input_widget.content.text_field = self._input_message
 	input_widget.content.header_field = self._header
 	input_widget.content.caret_index = self._input_index
-	output_widget.content.text_start_offset = scrollbar_widget.content.scroll_value - 1
+	output_widget.content.text_start_offset = 1 - scrollbar_widget.content.scroll_value
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 	UIAnimation.update(ui_animations.caret_pulse, dt)

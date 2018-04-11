@@ -90,6 +90,16 @@ UnitVariationSettings.skaven_pack_master.material_variations.cloth_tint.meshes =
 UnitVariationSettings.skaven_plague_monk = table.create_copy(UnitVariationSettings.skaven_plague_monk, UnitVariationSettings.skaven_common)
 UnitVariationSettings.skaven_ratling_gunner = table.create_copy(UnitVariationSettings.skaven_ratling_gunner, UnitVariationSettings.skaven_common)
 UnitVariationSettings.skaven_warpfire_thrower = table.create_copy(UnitVariationSettings.skaven_warpfire_thrower, UnitVariationSettings.skaven_common)
+UnitVariationSettings.skaven_warpfire_thrower.material_variations.cloth_tint = {
+	min = 0,
+	max = 30,
+	materials = {
+		"mtr_outfit"
+	},
+	variables = {
+		"tint_color_variation"
+	}
+}
 UnitVariationSettings.skaven_rat_ogre = table.create_copy(UnitVariationSettings.skaven_rat_ogre, UnitVariationSettings.skaven_common)
 UnitVariationSettings.skaven_stormfiend = table.create_copy(UnitVariationSettings.skaven_stormfiend, UnitVariationSettings.skaven_common)
 UnitVariationSettings.skaven_stormfiend.material_variations.master_skin_tint = {
@@ -393,8 +403,8 @@ UnitVariationSettings.skaven_clan_rat_with_shield.body_parts.upper_body = {
 	}
 }
 UnitVariationSettings.skaven_clan_rat_with_shield.material_variations.tint_set_1 = {
-	min = 0,
-	max = 0,
+	min = 2,
+	max = 2,
 	materials = {
 		"mtr_outfit"
 	},
@@ -403,8 +413,8 @@ UnitVariationSettings.skaven_clan_rat_with_shield.material_variations.tint_set_1
 	}
 }
 UnitVariationSettings.skaven_clan_rat_with_shield.material_variations.tint_set_2 = {
-	min = 2,
-	max = 2,
+	min = 3,
+	max = 3,
 	materials = {
 		"mtr_outfit"
 	},
@@ -491,8 +501,8 @@ UnitVariationSettings.skaven_loot_rat.material_variations.cloth_tint.meshes = {
 	"g_scarf_lod2"
 }
 UnitVariationSettings.skaven_loot_rat.material_variations.tint_set_1 = {
-	min = 5,
-	max = 5,
+	min = 6,
+	max = 6,
 	materials = {
 		"mtr_outfit"
 	},
@@ -501,8 +511,8 @@ UnitVariationSettings.skaven_loot_rat.material_variations.tint_set_1 = {
 	}
 }
 UnitVariationSettings.skaven_loot_rat.material_variations.tint_set_2 = {
-	min = 6,
-	max = 6,
+	min = 7,
+	max = 7,
 	materials = {
 		"mtr_outfit"
 	},
@@ -819,6 +829,16 @@ UnitVariationSettings.skaven_storm_vermin_with_shield.materials_enabled_from_sta
 	"tint_set_2"
 }
 UnitVariationSettings.skaven_storm_vermin_champion = table.create_copy(UnitVariationSettings.skaven_storm_vermin_champion, UnitVariationSettings.skaven_storm_vermin_with_shield)
+UnitVariationSettings.skaven_storm_vermin_champion.material_variations.tint_set_1 = {
+	min = 4,
+	max = 4,
+	materials = {
+		"mtr_outfit"
+	},
+	variables = {
+		"tint_color_set_1"
+	}
+}
 UnitVariationSettings.skaven_storm_vermin_champion.material_variations.tint_set_2 = {
 	min = 5,
 	max = 5,
@@ -830,6 +850,77 @@ UnitVariationSettings.skaven_storm_vermin_champion.material_variations.tint_set_
 	}
 }
 UnitVariationSettings.skaven_storm_vermin_warlord = table.create_copy(UnitVariationSettings.skaven_storm_vermin_warlord, UnitVariationSettings.skaven_storm_vermin_champion)
+UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.skin_tint = {
+	min = 8,
+	max = 8,
+	materials = {
+		"mtr_skin",
+		"mtr_fur"
+	},
+	variables = {
+		"tint_color_variation"
+	}
+}
+UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.cloth_tint = {
+	min = 0,
+	max = 0,
+	materials = {
+		"mtr_outfit"
+	},
+	variables = {
+		"tint_color_variation"
+	}
+}
+UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.tint_set_1 = {
+	min = 6,
+	max = 6,
+	materials = {
+		"mtr_outfit"
+	},
+	variables = {
+		"tint_color_set_1"
+	}
+}
+UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.tint_set_2 = {
+	min = 7,
+	max = 7,
+	materials = {
+		"mtr_outfit"
+	},
+	variables = {
+		"tint_color_set_2"
+	}
+}
+UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.tint_skin_set_1 = {
+	min = 14,
+	max = 14,
+	materials = {
+		"mtr_skin",
+		"mtr_fur"
+	},
+	variables = {
+		"tint_color_set_1"
+	}
+}
+UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.tint_skinset_2 = {
+	min = 14,
+	max = 14,
+	materials = {
+		"mtr_skin",
+		"mtr_fur"
+	},
+	variables = {
+		"tint_color_set_2"
+	}
+}
+UnitVariationSettings.skaven_storm_vermin_warlord.materials_enabled_from_start = {
+	"skin_tint",
+	"cloth_tint",
+	"tint_set_1",
+	"tint_set_2",
+	"tint_skin_set_1",
+	"tint_skinset_2"
+}
 UnitVariationSettings.chaos_warrior = {
 	enabled_from_start = {
 		"cloth1",
@@ -1473,7 +1564,6 @@ UnitVariationSettings.chaos_berzerker = {
 UnitVariationSettings.chaos_raider = {
 	enabled_from_start = {
 		"lower_body",
-		"upper_body",
 		"left_arm",
 		"right_arm"
 	},
@@ -1495,85 +1585,6 @@ UnitVariationSettings.chaos_raider = {
 				weight = 1
 			}
 		},
-		upper_body = {
-			{
-				weight = 1,
-				enables = {
-					"upper_body_straps"
-				}
-			},
-			{
-				weight = 1,
-				enables = {
-					"upper_body_straps"
-				}
-			},
-			{
-				weight = 1,
-				enables = {
-					"upper_body_straps"
-				}
-			},
-			{
-				group = "vg_body_girdle_1",
-				weight = 1,
-				enables = {
-					"upper_body_girdle_straps"
-				}
-			},
-			{
-				group = "vg_body_girdle_1",
-				weight = 1,
-				enables = {
-					"upper_body_girdle_straps"
-				}
-			},
-			{
-				group = "vg_body_girdle_2",
-				weight = 1,
-				enables = {
-					"upper_body_girdle_straps"
-				}
-			},
-			{
-				group = "vg_body_girdle_2",
-				weight = 1,
-				enables = {
-					"upper_body_girdle_straps"
-				}
-			}
-		},
-		upper_body_straps = {
-			{
-				group = "vg_body_straps_c_1",
-				weight = 1,
-				enables = {
-					"left_shoulder",
-					"right_shoulder",
-					"upper_body_straps_detail"
-				}
-			}
-		},
-		upper_body_girdle_straps = {
-			{
-				group = "vg_body_straps_c_girdle_1",
-				weight = 1,
-				enables = {
-					"left_shoulder",
-					"right_shoulder",
-					"upper_body_straps_detail"
-				}
-			}
-		},
-		upper_body_straps_detail = {
-			{
-				weight = 1,
-				group = "vg_body_straps_detail_1"
-			},
-			{
-				weight = 1
-			}
-		},
 		left_arm = {
 			{
 				weight = 1,
@@ -1581,20 +1592,6 @@ UnitVariationSettings.chaos_raider = {
 			},
 			{
 				weight = 1
-			}
-		},
-		left_shoulder = {
-			{
-				weight = 1,
-				group = "vg_shoulder_left_1"
-			},
-			{
-				weight = 1,
-				group = "vg_shoulder_left_2"
-			},
-			{
-				weight = 1,
-				group = "vg_shoulder_left_3"
 			}
 		},
 		right_arm = {
@@ -1605,20 +1602,6 @@ UnitVariationSettings.chaos_raider = {
 			{
 				weight = 1
 			}
-		},
-		right_shoulder = {
-			{
-				weight = 1,
-				group = "vg_shoulder_right_1"
-			},
-			{
-				weight = 1,
-				group = "vg_shoulder_right_2"
-			},
-			{
-				weight = 1,
-				group = "vg_shoulder_right_3"
-			}
 		}
 	},
 	materials_enabled_from_start = {
@@ -1628,8 +1611,7 @@ UnitVariationSettings.chaos_raider = {
 		"body_tint",
 		"tattoo",
 		"tattoo_amount",
-		"tattoo_color",
-		"moc_attachments_tints"
+		"tattoo_color"
 	},
 	material_variations = {
 		cloth_tint = {
@@ -1646,9 +1628,7 @@ UnitVariationSettings.chaos_raider = {
 			min = 9,
 			max = 9,
 			materials = {
-				"mtr_outfit",
-				"m_moc_attachements",
-				"m_moc_hood"
+				"mtr_outfit"
 			},
 			variables = {
 				"tint_color_set_1"
@@ -1659,8 +1639,6 @@ UnitVariationSettings.chaos_raider = {
 			max = 10,
 			materials = {
 				"mtr_outfit",
-				"m_moc_attachements",
-				"m_moc_hood",
 				"mtr_body"
 			},
 			variables = {
@@ -1705,26 +1683,6 @@ UnitVariationSettings.chaos_raider = {
 			},
 			variables = {
 				"tattoo_color_variation"
-			}
-		},
-		vg_body_hood_1 = {
-			min = 0,
-			max = 31,
-			materials = {
-				"m_moc_hood"
-			},
-			variables = {
-				"tint_color_variation"
-			}
-		},
-		moc_attachments_tints = {
-			min = 0,
-			max = 31,
-			materials = {
-				"m_moc_attachements"
-			},
-			variables = {
-				"tint_color_variation"
 			}
 		}
 	}

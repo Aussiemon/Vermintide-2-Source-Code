@@ -16,7 +16,7 @@ BTZombieExplodeAction.enter = function (self, unit, blackboard, t)
 	network_manager.anim_event(network_manager, unit, explode_animation)
 
 	blackboard.explosion_timer = t + action.explosion_at_time
-	blackboard.bot_threat_timer = t + action.explosion_at_time*0.75
+	blackboard.bot_threat_timer = t + action.explosion_at_time * 0.75
 
 	return 
 end

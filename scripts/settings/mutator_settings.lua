@@ -40,7 +40,7 @@ end
 local mutator_settings = {
 	no_ammo = {
 		description = "description_mutator_no_ammo",
-		icon = "icons_placeholder",
+		icon = "mutator_icon_no_ammo",
 		display_name = "display_name_mutator_no_ammo",
 		remove_pickups = {
 			"ammo"
@@ -48,7 +48,7 @@ local mutator_settings = {
 	},
 	no_pickups = {
 		description = "description_mutator_no_pickups",
-		icon = "icons_placeholder",
+		icon = "mutator_icon_no_pickups",
 		display_name = "display_name_mutator_no_pickups",
 		remove_pickups = {
 			"all"
@@ -57,7 +57,7 @@ local mutator_settings = {
 	player_dot = {
 		description = "description_mutator_player_dot",
 		display_name = "display_name_mutator_player_dot",
-		icon = "icons_placeholder",
+		icon = "mutator_icon_player_dot",
 		server_start_function = function (context, data)
 			data.player_units = {}
 
@@ -71,31 +71,13 @@ local mutator_settings = {
 	},
 	instant_death = {
 		description = "description_mutator_instant_death",
-		icon = "icons_placeholder",
-		display_name = "display_name_mutator_instant_death",
-		server_update_function = function (context, data, dt, t)
-			local player_units = PLAYER_AND_BOT_UNITS
-			local num_player_unit = #player_units
-			local get_extension = ScriptUnit.extension
-
-			for i = 1, num_player_unit, 1 do
-				local unit = player_units[i]
-				local status_ext = get_extension(unit, "status_system")
-
-				if status_ext.is_knocked_down(status_ext) then
-					local health_ext = get_extension(unit, "health_system")
-
-					health_ext.die(health_ext)
-				end
-			end
-
-			return 
-		end
+		icon = "mutator_icon_instant_death",
+		display_name = "display_name_mutator_instant_death"
 	},
 	whiterun = {
 		description = "description_mutator_whiterun",
 		display_name = "display_name_mutator_whiterun",
-		icon = "icons_placeholder",
+		icon = "mutator_icon_whiterun",
 		check_dependencies = function ()
 			if not BackendUtils.get_total_power_level then
 				return false
@@ -111,7 +93,7 @@ local mutator_settings = {
 			local vanilla_get_total_power_level = BackendUtils.get_total_power_level
 
 			local function get_total_power_level_whiterun(profile_name, career_name)
-				return 65
+				return 200
 			end
 
 			BackendUtils.get_total_power_level = get_total_power_level_whiterun
@@ -139,7 +121,7 @@ local mutator_settings = {
 	no_respawn = {
 		description = "description_mutator_no_respawn",
 		display_name = "display_name_mutator_no_respawn",
-		icon = "icons_placeholder",
+		icon = "mutator_icon_no_respawn",
 		server_start_game_mode_function = function (context, data)
 			Managers.state.spawn:set_respawning_enabled(false)
 
@@ -151,7 +133,7 @@ local mutator_settings = {
 	},
 	elite_run = {
 		description = "description_mutator_elite_run",
-		icon = "icons_placeholder",
+		icon = "mutator_icon_elite_run",
 		display_name = "display_name_mutator_elite_run",
 		roamer_override_lookup = {
 			chaos_marauder_with_shield = "chaos_berzerker",
@@ -216,7 +198,7 @@ local mutator_settings = {
 	},
 	specials_frequency = {
 		description = "description_mutator_specials_frequency",
-		icon = "icons_placeholder",
+		icon = "mutator_icon_specials_frequency",
 		display_name = "display_name_mutator_specials_frequency",
 		spawn_time_reduction = 0.4,
 		max_specials = 2,
@@ -241,25 +223,25 @@ local mutator_settings = {
 						local modified = false
 
 						if method_name == "specials_by_time_window" then
-							method_settings.spawn_interval[1] = method_settings.spawn_interval[1]*spawn_time_reduction
-							method_settings.spawn_interval[2] = method_settings.spawn_interval[2]*spawn_time_reduction
+							method_settings.spawn_interval[1] = method_settings.spawn_interval[1] * spawn_time_reduction
+							method_settings.spawn_interval[2] = method_settings.spawn_interval[2] * spawn_time_reduction
 							modified = true
 							local new_1 = method_settings.spawn_interval[1]
 							local new_2 = method_settings.spawn_interval[2]
-							local old_1 = new_1/spawn_time_reduction
-							local old_2 = new_2/spawn_time_reduction
+							local old_1 = new_1 / spawn_time_reduction
+							local old_2 = new_2 / spawn_time_reduction
 							debug_string = sprintf("%s specials_by_time_window.spawn_interval(%s, %s) old(%s, %s)", debug_string, new_1, new_2, old_1, old_2)
 						end
 
 						if method_name == "specials_by_slots" then
 							local spawn_cooldown = method_settings.spawn_cooldown
-							method_settings.spawn_cooldown[1] = method_settings.spawn_cooldown[1]*spawn_time_reduction
-							method_settings.spawn_cooldown[2] = method_settings.spawn_cooldown[2]*spawn_time_reduction
+							method_settings.spawn_cooldown[1] = method_settings.spawn_cooldown[1] * spawn_time_reduction
+							method_settings.spawn_cooldown[2] = method_settings.spawn_cooldown[2] * spawn_time_reduction
 							modified = true
 							local new_1 = method_settings.spawn_cooldown[1]
 							local new_2 = method_settings.spawn_cooldown[2]
-							local old_1 = new_1/spawn_time_reduction
-							local old_2 = new_2/spawn_time_reduction
+							local old_1 = new_1 / spawn_time_reduction
+							local old_2 = new_2 / spawn_time_reduction
 							debug_string = sprintf("%s specials_by_slots.spawn_cooldown(%s, %s) old(%s, %s)", debug_string, new_1, new_2, old_1, old_2)
 						end
 
@@ -291,7 +273,7 @@ local mutator_settings = {
 		display_name = "display_name_mutator_hordes_galore",
 		horde_frequency_modifier = 0.9,
 		horde_startup_time_modifier = 0.9,
-		icon = "icons_placeholder",
+		icon = "mutator_icon_hordes_galore",
 		server_start_function = function (context, data)
 			local template = data.template
 			local horde_frequency_modifier = template.horde_frequency_modifier
@@ -304,12 +286,12 @@ local mutator_settings = {
 				if not pacing_settings.disabled then
 					local horde_frequency_1 = pacing_settings.horde_frequency[1]
 					local horde_frequency_2 = pacing_settings.horde_frequency[2]
-					pacing_settings.horde_frequency[1] = horde_frequency_1 - horde_frequency_1*horde_frequency_modifier
-					pacing_settings.horde_frequency[2] = horde_frequency_2 - horde_frequency_2*horde_frequency_modifier
+					pacing_settings.horde_frequency[1] = horde_frequency_1 - horde_frequency_1 * horde_frequency_modifier
+					pacing_settings.horde_frequency[2] = horde_frequency_2 - horde_frequency_2 * horde_frequency_modifier
 					local horde_startup_time_1 = pacing_settings.horde_startup_time[1]
 					local horde_startup_time_2 = pacing_settings.horde_startup_time[2]
-					pacing_settings.horde_startup_time[1] = horde_startup_time_1 - horde_startup_time_1*horde_startup_time_modifier
-					pacing_settings.horde_startup_time[2] = horde_startup_time_2 - horde_startup_time_2*horde_startup_time_modifier
+					pacing_settings.horde_startup_time[1] = horde_startup_time_1 - horde_startup_time_1 * horde_startup_time_modifier
+					pacing_settings.horde_startup_time[2] = horde_startup_time_2 - horde_startup_time_2 * horde_startup_time_modifier
 
 					mutator_dprint("Changed horde frequency for pacing setting (%s) from ({%s, %s}) to ({%s,%s}), (%s))", name, horde_frequency_1, horde_frequency_2, pacing_settings.horde_frequency[1], pacing_settings.horde_frequency[2], horde_frequency_modifier)
 					mutator_dprint("Changed horde startup time for pacing setting (%s) from ({%s, %s}) to ({%s,%s}), (%s))", name, horde_startup_time_1, horde_startup_time_2, pacing_settings.horde_startup_time[1], pacing_settings.horde_startup_time[2], horde_startup_time_modifier)
@@ -336,7 +318,7 @@ local mutator_settings = {
 		description = "description_mutator_powerful_elites",
 		health_modifier = 2,
 		display_name = "display_name_mutator_powerful_elites",
-		icon = "icons_placeholder",
+		icon = "mutator_icon_powerful_elites",
 		modify_health_breeds = {
 			"skaven_storm_vermin",
 			"skaven_storm_vermin_commander",

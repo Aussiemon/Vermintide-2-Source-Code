@@ -147,7 +147,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	local career_power_level = career_extension.get_career_power_level(career_extension)
 
 	if talent_extension.has_talent(talent_extension, "sienna_unchained_activated_ability_damage", "bright_wizard", true) then
-		career_power_level = career_power_level*1.5
+		career_power_level = career_power_level * 1.5
 	end
 
 	local area_damage_system = Managers.state.entity:system("area_damage_system")

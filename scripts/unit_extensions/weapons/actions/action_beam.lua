@@ -135,7 +135,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 		local range = current_action.range or 30
 		local collision_filter = "filter_player_ray_projectile"
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, current_position, direction, range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
-		local beam_end_position = current_position + direction*range
+		local beam_end_position = current_position + direction * range
 		local hit_unit, hit_position = nil
 
 		if result then
@@ -166,7 +166,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 					end
 
 					if hit then
-						hit_position = potential_hit_position - direction*0.15
+						hit_position = potential_hit_position - direction * 0.15
 						hit_unit = potential_hit_unit
 
 						break
@@ -186,13 +186,13 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 				local health_extension = ScriptUnit.has_extension(hit_unit, "health_system")
 
-				if current_action.damage_interval*self.ramping_interval <= self.damage_timer then
+				if current_action.damage_interval * self.ramping_interval <= self.damage_timer then
 					Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], 5)
 
 					self.damage_timer = 0
 
 					if health_extension then
-						self.ramping_interval = math.clamp(self.ramping_interval*1.4, 0.45, 1.5)
+						self.ramping_interval = math.clamp(self.ramping_interval * 1.4, 0.45, 1.5)
 					end
 				end
 
@@ -213,11 +213,11 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 					if health_extension then
 						local override_damage_profile = nil
 						local power_level = self.power_level
-						power_level = power_level*self.ramping_interval
+						power_level = power_level * self.ramping_interval
 
 						if hit_unit ~= self.current_target then
 							self.consecutive_hits = 0
-							power_level = power_level*0.5
+							power_level = power_level * 0.5
 							override_damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
 						else
 							self.consecutive_hits = self.consecutive_hits + 1
@@ -239,7 +239,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 						if health_extension.is_alive(health_extension) then
 							local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[current_action.overcharge_type]
 
-							self.overcharge_extension:add_charge(overcharge_amount*self.ramping_interval)
+							self.overcharge_extension:add_charge(overcharge_amount * self.ramping_interval)
 						end
 					end
 				end
@@ -305,7 +305,9 @@ ActionBeam.finish = function (self, reason)
 		self.network_transmit:send_rpc_server("rpc_end_beam", go_id)
 	end
 
-	return 
+	return {
+		beam_consecutive_hits = self.consecutive_hits
+	}
 end
 ActionBeam.destroy = function (self)
 	if self.beam_end_effect then

@@ -138,6 +138,8 @@ local transitions = {
 		local is_answered = telemetry_survey_view.is_survey_answered(telemetry_survey_view)
 		local is_timed_out = telemetry_survey_view.is_survey_timed_out(telemetry_survey_view)
 
+		Managers.backend:commit(true)
+
 		if (use_survey and (is_answered or is_timed_out)) or not use_survey or level_key == "inn_level" then
 			Boot.quit_game = true
 			self.current_view = nil
@@ -164,6 +166,11 @@ local transitions = {
 
 		return 
 	end,
+	do_return_to_pc_menu = function (self)
+		self.return_to_pc_menu = true
+
+		return 
+	end,
 	leave_game = function (self)
 		if self.popup_id then
 			Managers.popup:cancel_popup(self.popup_id)
@@ -180,6 +187,23 @@ local transitions = {
 			self.input_manager:block_device_except_service(nil, "gamepad", 1)
 
 			self.leave_game = true
+		end
+
+		return 
+	end,
+	return_to_pc_menu = function (self)
+		if self.popup_id then
+			Managers.popup:cancel_popup(self.popup_id)
+		end
+
+		local network_server = Managers.state.network.network_server
+
+		if network_server and not network_server.are_all_peers_ingame(network_server) then
+			local text = Localize("player_join_block_exit_game")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
+		else
+			local text = Localize("exit_game_popup_text_xb1")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic_xb1"), "do_return_to_pc_menu", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 		end
 
 		return 
@@ -362,7 +386,7 @@ local transitions = {
 	end
 }
 view_settings = {
-	ui_renderer_function = function (world)
+	ui_renderer_function = function (world, is_tutorial)
 		local materials = {
 			"material",
 			"materials/ui/ui_1080p_hud_atlas_textures",
@@ -379,6 +403,11 @@ view_settings = {
 			"material",
 			"materials/fonts/gw_fonts"
 		}
+
+		if is_tutorial then
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "materials/ui/ui_1080p_tutorial_textures"
+		end
 
 		for _, settings in pairs(CareerSettings) do
 			local video = settings.video
@@ -394,7 +423,7 @@ view_settings = {
 
 		return 
 	end,
-	ui_top_renderer_function = function (top_world)
+	ui_top_renderer_function = function (top_world, is_tutorial)
 		local materials = {
 			"material",
 			"materials/ui/ui_1080p_hud_atlas_textures",
@@ -411,6 +440,11 @@ view_settings = {
 			"material",
 			"materials/fonts/gw_fonts"
 		}
+
+		if is_tutorial then
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "materials/ui/ui_1080p_tutorial_textures"
+		end
 
 		for _, settings in pairs(CareerSettings) do
 			local video = settings.video

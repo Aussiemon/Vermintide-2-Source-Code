@@ -19,10 +19,11 @@ local breed_data = {
 	target_selection = "pick_closest_target_with_spillover",
 	has_running_attack = true,
 	threat_value = 5,
+	awards_positive_reinforcement_message = true,
 	no_stagger_duration = true,
 	berzerking_stagger_time = 0.65,
-	run_speed_interpolation_factor = 0.5,
 	bone_lod_level = 1,
+	run_speed_interpolation_factor = 0.5,
 	attack_general_sound_event = "Play_plague_monk_frenzy_attack_vce",
 	default_inventory_template = "dual_sword",
 	stagger_resistance = 1.5,
@@ -325,7 +326,7 @@ local breed_data = {
 	}
 }
 Breeds.skaven_plague_monk = table.create_copy(Breeds.skaven_plague_monk, breed_data)
-BreedActionDimishingDamageDifficulty = {
+local BreedActionDimishingDamageDifficulty = {
 	easy = {
 		{
 			damage = 2,
@@ -893,11 +894,11 @@ local action_data = {
 			},
 			alerted_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			alerted_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		}
 	},
@@ -918,11 +919,11 @@ local action_data = {
 			},
 			move_start_left = {
 				dir = 1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			},
 			move_start_right = {
 				dir = -1,
-				rad = math.pi/2
+				rad = math.pi / 2
 			}
 		},
 		considerations = UtilityConsiderations.clan_rat_follow
@@ -984,15 +985,16 @@ local action_data = {
 			}
 		},
 		considerations = UtilityConsiderations.clan_rat_running_attack,
-		dimishing_damage = {}
+		dimishing_damage = {},
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty
 	},
 	normal_attack = {
-		cooldown = 3,
-		player_push_speed = 3,
-		fatigue_type = "blocked_attack",
-		action_weight = 1,
-		damage_type = "cutting",
 		move_anim = "move_fwd",
+		cooldown = 3,
+		damage_type = "cutting",
+		fatigue_type = "blocked_attack",
+		player_push_speed = 3,
+		action_weight = 1,
 		default_attack = {
 			anims = "attack_pounce"
 		},
@@ -1108,6 +1110,7 @@ local action_data = {
 		},
 		considerations = UtilityConsiderations.plague_monk_normal_attack,
 		dimishing_damage = {},
+		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
 		target_type_exceptions = {
 			poison_well = {
 				attack_anim = "poison_well"
@@ -1151,7 +1154,7 @@ local action_data = {
 				local berzerker_stagger_multiplier = (blackboard.stagger_type < 4 and math.clamp(blackboard.stagger_type - 1, 1, 1.5)) or 1
 
 				if blackboard.stagger_type ~= 6 then
-					blackboard.stagger_time = t + blackboard.breed.berzerking_stagger_time*berzerker_stagger_multiplier
+					blackboard.stagger_time = t + blackboard.breed.berzerking_stagger_time * berzerker_stagger_multiplier
 				end
 			end
 
@@ -1313,19 +1316,35 @@ local action_data = {
 	}
 }
 local frenzy_attack = {
+	action_weight = 10,
 	num_attacks = 3,
 	combo_anim_variations = 2,
+	damage_type = "cutting_berserker",
 	cooldown = -1,
 	fatigue_type = "blocked_attack",
-	damage_type = "cutting_berserker",
 	moving_attack = true,
 	attack_anim = "attack_pounce",
 	player_push_speed = 4,
-	action_weight = 10,
 	move_anim = "move_fwd",
 	start_sound_event = "Play_enemy_plague_monk_start_frenzy",
 	considerations = UtilityConsiderations.plague_monk_frenzy_attack,
 	ignore_staggers = DEFAULT_ALLOWED_STAGGERS,
+	attack_directions = {
+		attack_2_run_quick_2 = "right",
+		attack_quick_3 = "right",
+		attack_run_medium = "right",
+		attack_run_quick_2 = "left",
+		attack_2_quick_3 = "right",
+		attack_pounce_2 = "right",
+		attack_2_quick_2 = "left",
+		attack_medium = "right",
+		attack_2_medium = "left",
+		attack_run_medium_2 = "left",
+		attack_2_run_quick_3 = "left",
+		attack_quick_2 = "left",
+		attack_run_quick_3 = "right",
+		attack_pounce = "left"
+	},
 	init_blackboard = {
 		time_since_last_combo = math.huge
 	},
@@ -1553,6 +1572,7 @@ local frenzy_attack = {
 		}
 	},
 	dimishing_damage = {},
+	difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty,
 	target_type_exceptions = {
 		poison_well = {
 			attack_anim = "poison_well"

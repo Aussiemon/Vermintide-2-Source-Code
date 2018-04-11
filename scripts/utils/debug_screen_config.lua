@@ -177,6 +177,17 @@ local settings = {
 		category = "Twitch"
 	},
 	{
+		description = "Activates twitch game mode and randomized twich votes without connected to stream",
+		setting_name = "twitch_debug_voting",
+		category = "Twitch",
+		is_boolean = true,
+		func = function ()
+			Managers.twitch:debug_activate_twitch_game_mode()
+
+			return 
+		end
+	},
+	{
 		description = "",
 		setting_name = "Default development settings",
 		category = "Presets",
@@ -996,10 +1007,32 @@ Features that make player mechanics nicer to work with.
 		category = "AI recommended"
 	},
 	{
+		description = "Writes out from what BreedPack the unit was picked. What zone he spawned in. If he was replaced.",
+		is_boolean = true,
+		setting_name = "show_ai_spawn_info",
+		category = "AI recommended"
+	},
+	{
 		description = "Draws a spinning line abouve each pickup in game",
 		is_boolean = true,
 		setting_name = "show_spawned_pickups",
 		category = "AI recommended"
+	},
+	{
+		description = "Collects the data needed for drawing pickup spawners and spawn sections. Restart required.",
+		is_boolean = true,
+		setting_name = "debug_pickup_spawners",
+		category = "Pickup Spawners"
+	},
+	{
+		description = "The debug_pickup_spawners option must be set to true when using this feature",
+		category = "Pickup Spawners",
+		setting_name = "Toggle Pickup Spawners Draw Mode",
+		func = function ()
+			Managers.state.entity:system("pickup_system"):debug_draw_spread_pickups()
+
+			return 
+		end
 	},
 	{
 		description = "Draws lines up in the sky where each ai is",
@@ -1035,6 +1068,12 @@ Features that make player mechanics nicer to work with.
 		description = "Dump lots of debug in the console when constructing the zones & packs. Will draw 1m spheres around units that gets replaced via BreedPacks zone_checks. Each hi/low segment will have the same colored spheres. Units that are not replaced, but counted will have small spheres.",
 		is_boolean = true,
 		setting_name = "debug_zone_baker",
+		category = "Conflict & Pacing"
+	},
+	{
+		description = "Draws zones on screen, and lots of debug on ground",
+		is_boolean = true,
+		setting_name = "debug_zone_baker_on_screen",
 		category = "Conflict & Pacing"
 	},
 	{
@@ -1156,7 +1195,7 @@ Features that make player mechanics nicer to work with.
 		category = "AI"
 	},
 	{
-		description = "Draws a sphere and text at each respawner unit in the level",
+		description = "Draws a sphere and text at each respawner unit in the level. Must set 'debug_ai_recycler=true'",
 		category = "AI",
 		setting_name = "debug_spawn_ogre_from_closest_boss_spawner",
 		func = function ()
@@ -1461,12 +1500,12 @@ Features that make player mechanics nicer to work with.
 				local ms = 0.1
 
 				printf("Changing pathfinding budget to %.1fms", ms)
-				GwNavWorld.set_pathfinder_budget(nav_world, ms*0.001)
+				GwNavWorld.set_pathfinder_budget(nav_world, ms * 0.001)
 			else
 				local ms = 100
 
 				printf("Changing pathfinding budget to %.1fms", ms)
-				GwNavWorld.set_pathfinder_budget(nav_world, ms*0.001)
+				GwNavWorld.set_pathfinder_budget(nav_world, ms * 0.001)
 			end
 
 			return 
@@ -5687,6 +5726,12 @@ Features that make player mechanics nicer to work with.
 		category = "Bots"
 	},
 	{
+		description = "Disables bot usage of career abilities.",
+		is_boolean = true,
+		setting_name = "ai_bots_career_abilities_disabled",
+		category = "Bots"
+	},
+	{
 		description = "Will set the total number of players + bots in game",
 		setting_name = "cap_num_bots",
 		category = "Bots",
@@ -6103,6 +6148,52 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
+		description = "",
+		setting_name = "Number of Salvaged Items",
+		category = "Progression",
+		item_source = {
+			0,
+			10,
+			20,
+			30,
+			40,
+			50,
+			60,
+			70,
+			80,
+			90,
+			100,
+			200,
+			300,
+			400,
+			500,
+			600,
+			700,
+			800,
+			900,
+			1000,
+			2000,
+			3000,
+			4000,
+			5000
+		},
+		custom_item_source_order = function (item_source, options)
+			for _, v in ipairs(item_source) do
+				local option = v
+				options[#options + 1] = option
+			end
+
+			return 
+		end,
+		func = function (options, index)
+			local option = options[index]
+
+			Managers.state.crafting:debug_set_salvaged_items_stat(option)
+
+			return 
+		end
+	},
+	{
 		description = "Set sum of best power levels, ignoring actual value in the backend",
 		category = "Progression",
 		setting_name = "sum_of_best_power_levels_override",
@@ -6506,6 +6597,12 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "debug_player_buffs",
 		category = "HUD"
+	},
+	{
+		description = "Prints the number of server controlled buffs.",
+		is_boolean = true,
+		setting_name = "debug_server_controlled_buffs",
+		category = "Player mechanics"
 	},
 	{
 		description = "Adds all melee items for this hero.",

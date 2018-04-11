@@ -196,10 +196,10 @@ ActionBountyHunterHandgun._shotgun_shoot = function (self)
 			end
 		end
 
-		hit_position = (result and result[#result][1]) or current_position + direction*current_action.range
+		hit_position = (result and result[#result][1]) or current_position + direction * current_action.range
 
 		Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
-		Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - current_position)*0.1)
+		Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - current_position) * 0.1)
 		Unit.flow_event(weapon_unit, "lua_bullet_trail")
 		Unit.flow_event(weapon_unit, "lua_bullet_trail_set")
 	end
@@ -233,7 +233,7 @@ ActionBountyHunterHandgun._do_aoe = function (self)
 	local attacker_unit_id = network_manager.unit_game_object_id(network_manager, owner_unit)
 	local unit_forward = Quaternion.forward(Unit.local_rotation(owner_unit, 0))
 	local self_pos = POSITION_LOOKUP[owner_unit]
-	local attack_pos = self_pos + unit_forward*0.5
+	local attack_pos = self_pos + unit_forward * 0.5
 	local radius = current_action.aoe_radius
 	local collision_filter = "filter_melee_sweep"
 	local actors, actors_n = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", attack_pos, "size", radius, "types", "dynamics", "collision_filter", collision_filter, "use_global_table")

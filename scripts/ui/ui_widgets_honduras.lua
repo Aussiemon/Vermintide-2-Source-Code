@@ -619,8 +619,8 @@ UIWidgets.create_hero_frame = function (scenegraph_id, size, frame_name, backgro
 						0
 					},
 					{
-						math.min(size[1]/background_texture_settings.size[1], 1),
-						math.min(size[2]/background_texture_settings.size[2], 1)
+						math.min(size[1] / background_texture_settings.size[1], 1),
+						math.min(size[2] / background_texture_settings.size[2], 1)
 					}
 				},
 				texture_id = background_texture
@@ -696,16 +696,16 @@ UIWidgets.create_recipe_grid = function (scenegraph_id, size, rows, slots_per_ro
 	local content = {
 		rows = rows,
 		columns = slots_per_row,
-		slots = rows*slots_per_row
+		slots = rows * slots_per_row
 	}
 	local style = {}
-	local row_length = slots_per_row*slot_size[1] + slot_width_spacing*(slots_per_row - 1)
+	local row_length = slots_per_row * slot_size[1] + slot_width_spacing * (slots_per_row - 1)
 	local row_difference_to_background = size[1] - row_length
-	local column_height = rows*slot_size[2] + slot_height_spacing*(rows - 1)
+	local column_height = rows * slot_size[2] + slot_height_spacing * (rows - 1)
 	local column_difference_to_background = size[2] - column_height
 	local slot_start_offset = {
-		row_difference_to_background/2,
-		size[2] - column_difference_to_background/2 - slot_size[2]
+		row_difference_to_background / 2,
+		size[2] - column_difference_to_background / 2 - slot_size[2]
 	}
 	local offset_layer = 3
 
@@ -715,8 +715,8 @@ UIWidgets.create_recipe_grid = function (scenegraph_id, size, rows, slots_per_ro
 			local column_start_index = i - 1
 			local row_start_index = k - 1
 			local offset = {
-				slot_start_offset[1] + row_start_index*(slot_size[1] + slot_width_spacing),
-				slot_start_offset[2] - column_start_index*(slot_size[2] + slot_height_spacing),
+				slot_start_offset[1] + row_start_index * (slot_size[1] + slot_width_spacing),
+				slot_start_offset[2] - column_start_index * (slot_size[2] + slot_height_spacing),
 				offset_layer
 			}
 			local item_name = "item" .. name_suffix
@@ -975,7 +975,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 	local content = {
 		rows = rows,
 		columns = slots_per_row,
-		slots = rows*slots_per_row
+		slots = rows * slots_per_row
 	}
 	local style = {}
 
@@ -1076,7 +1076,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 		style.page_arrow_left = {
 			color = default_color,
 			offset = {
-				size[1]*0.4 - 40,
+				size[1] * 0.4 - 40,
 				23,
 				1
 			},
@@ -1088,7 +1088,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 		style.page_arrow_right = {
 			color = default_color,
 			offset = {
-				size[1]*0.6 + 12,
+				size[1] * 0.6 + 12,
 				23,
 				1
 			},
@@ -1104,24 +1104,24 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 			horizontal_alignment = "center",
 			text_color = Colors.get_color_table_with_alpha("font_title", 255),
 			offset = {
-				size[1]*0.4,
+				size[1] * 0.4,
 				25,
 				2
 			},
 			size = {
-				size[1]*0.2,
+				size[1] * 0.2,
 				30
 			}
 		}
 	end
 
-	local row_length = slots_per_row*slot_size[1] + slot_width_spacing*(slots_per_row - 1)
+	local row_length = slots_per_row * slot_size[1] + slot_width_spacing * (slots_per_row - 1)
 	local row_difference_to_background = size[1] - row_length
-	local column_height = rows*slot_size[2] + slot_height_spacing*(rows - 1)
+	local column_height = rows * slot_size[2] + slot_height_spacing * (rows - 1)
 	local column_difference_to_background = size[2] - column_height
 	local slot_start_offset = {
-		row_difference_to_background/2,
-		size[2] - column_difference_to_background/2 - slot_size[2]
+		row_difference_to_background / 2,
+		size[2] - column_difference_to_background / 2 - slot_size[2]
 	}
 	local offset_layer = 3
 
@@ -1131,8 +1131,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 			local column_start_index = i - 1
 			local row_start_index = k - 1
 			local offset = {
-				slot_start_offset[1] + row_start_index*(slot_size[1] + slot_width_spacing),
-				slot_start_offset[2] - column_start_index*(slot_size[2] + slot_height_spacing),
+				slot_start_offset[1] + row_start_index * (slot_size[1] + slot_width_spacing),
+				slot_start_offset[2] - column_start_index * (slot_size[2] + slot_height_spacing),
 				offset_layer
 			}
 			local item_name = "item" .. name_suffix
@@ -1286,8 +1286,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 			}
 			style[slot_hover_name] = {
 				size = {
-					100,
-					100
+					128,
+					128
 				},
 				color = {
 					255,
@@ -1296,8 +1296,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					255
 				},
 				offset = {
-					offset[1] - (slot_size[1] - 100)/2,
-					offset[2] - (slot_size[2] - 100)/2,
+					offset[1] - (128 - slot_size[1]) / 2,
+					offset[2] - (128 - slot_size[2]) / 2,
 					0
 				}
 			}
@@ -1314,8 +1314,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 			}
 			style[slot_equipped_name] = {
 				size = {
-					100,
-					100
+					80,
+					80
 				},
 				color = {
 					255,
@@ -1324,8 +1324,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					255
 				},
 				offset = {
-					offset[1] - (slot_size[1] - 100)/2,
-					offset[2] - (slot_size[2] - 100)/2,
+					offset[1] - (80 - slot_size[1]) / 2,
+					offset[2] - (80 - slot_size[2]) / 2,
 					6
 				}
 			}
@@ -1423,8 +1423,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					255
 				},
 				offset = {
-					(offset[1] + icon_size[1]/2) - 20,
-					(offset[2] + icon_size[2]/2) - 20,
+					(offset[1] + icon_size[1] / 2) - 20,
+					(offset[2] + icon_size[2] / 2) - 20,
 					4
 				}
 			}
@@ -1455,8 +1455,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					local backend_id = item and item.backend_id
 
 					if item and ItemHelper.is_new_backend_id(backend_id) then
-						local progress = math.sin(Application.time_since_launch()*5)*0.5 + 0.5
-						style.color[1] = progress*200 + 55
+						local progress = 0.5 + math.sin(Application.time_since_launch() * 5) * 0.5
+						style.color[1] = 55 + progress * 200
 						local hotspot = content[hotspot_name]
 
 						if hotspot.on_hover_enter and ItemHelper.is_new_backend_id(backend_id) then
@@ -1469,8 +1469,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 			}
 			style[new_icon_name] = {
 				size = {
-					icon_size[1] + new_frame_width*2,
-					icon_size[2] + new_frame_width*2
+					icon_size[1] + new_frame_width * 2,
+					icon_size[2] + new_frame_width * 2
 				},
 				color = default_color,
 				texture_size = new_frame_settings.texture_size,
@@ -1677,15 +1677,15 @@ UIWidgets.create_loadout_grid = function (scenegraph_id, size, rows, spacing, al
 	local content = {
 		rows = rows,
 		columns = slots_per_row,
-		slots = rows*slots_per_row
+		slots = rows * slots_per_row
 	}
-	local row_length = slots_per_row*slot_size[1] + slot_width_spacing*(slots_per_row - 1)
+	local row_length = slots_per_row * slot_size[1] + slot_width_spacing * (slots_per_row - 1)
 	local row_difference_to_background = background_width - row_length
-	local column_height = rows*slot_size[2] + slot_height_spacing*(rows - 1)
+	local column_height = rows * slot_size[2] + slot_height_spacing * (rows - 1)
 	local column_difference_to_background = background_height - column_height
 	local slot_start_offset = {
-		(align_horizontal and row_difference_to_background/2) or row_difference_to_background/2,
-		background_height - column_difference_to_background/2 - slot_size[2]
+		(align_horizontal and row_difference_to_background / 2) or row_difference_to_background / 2,
+		background_height - column_difference_to_background / 2 - slot_size[2]
 	}
 	local offset_layer = 0
 
@@ -1695,8 +1695,8 @@ UIWidgets.create_loadout_grid = function (scenegraph_id, size, rows, spacing, al
 			local column_start_index = i - 1
 			local row_start_index = k - 1
 			local offset = {
-				slot_start_offset[1] + row_start_index*(slot_size[1] + slot_width_spacing),
-				slot_start_offset[2] - column_start_index*(slot_size[2] + slot_height_spacing),
+				slot_start_offset[1] + row_start_index * (slot_size[1] + slot_width_spacing),
+				slot_start_offset[2] - column_start_index * (slot_size[2] + slot_height_spacing),
 				offset_layer
 			}
 			local hotspot_name = "hotspot" .. name_suffix
@@ -1858,8 +1858,8 @@ UIWidgets.create_loadout_grid = function (scenegraph_id, size, rows, spacing, al
 					100
 				},
 				offset = {
-					offset[1] + (slot_size[1] - 34)/2,
-					(offset[2] + slot_size[2] - 34) - (slot_size[1] - 34)/2,
+					offset[1] + (slot_size[1] - 34) / 2,
+					(offset[2] + slot_size[2] - 34) - (slot_size[1] - 34) / 2,
 					2
 				}
 			}
@@ -1876,8 +1876,8 @@ UIWidgets.create_loadout_grid = function (scenegraph_id, size, rows, spacing, al
 			}
 			style[slot_hover_name] = {
 				size = {
-					100,
-					100
+					128,
+					128
 				},
 				color = {
 					255,
@@ -1886,8 +1886,8 @@ UIWidgets.create_loadout_grid = function (scenegraph_id, size, rows, spacing, al
 					255
 				},
 				offset = {
-					offset[1] - (slot_size[1] - 100)/2,
-					offset[2] - (slot_size[2] - 100)/2,
+					offset[1] - (128 - slot_size[1]) / 2,
+					offset[2] - (128 - slot_size[2]) / 2,
 					0
 				}
 			}
@@ -1904,8 +1904,8 @@ UIWidgets.create_loadout_grid = function (scenegraph_id, size, rows, spacing, al
 			}
 			style[slot_selected_name] = {
 				size = {
-					100,
-					100
+					80,
+					80
 				},
 				color = {
 					255,
@@ -1914,8 +1914,8 @@ UIWidgets.create_loadout_grid = function (scenegraph_id, size, rows, spacing, al
 					255
 				},
 				offset = {
-					offset[1] - (slot_size[1] - 100)/2,
-					offset[2] - (slot_size[2] - 100)/2,
+					offset[1] - (80 - slot_size[1]) / 2,
+					offset[2] - (80 - slot_size[2]) / 2,
 					8
 				}
 			}
@@ -1992,8 +1992,8 @@ UIWidgets.create_inventory_statistics = function (scenegraph_id, size, backgroun
 					0
 				},
 				{
-					size[1]/background_texture_settings.size[1],
-					size[2]/background_texture_settings.size[2]
+					size[1] / background_texture_settings.size[1],
+					size[2] / background_texture_settings.size[2]
 				}
 			},
 			texture_id = background_texture
@@ -2013,7 +2013,7 @@ UIWidgets.create_inventory_statistics = function (scenegraph_id, size, backgroun
 				255
 			},
 			offset = {
-				size[1]/2 - 175,
+				size[1] / 2 - 175,
 				size[2] - 90,
 				1
 			}
@@ -2246,7 +2246,7 @@ UIWidgets.create_weapon_statistics = function (scenegraph_id, size)
 	}
 
 	for i = 1, 5, 1 do
-		local height_offset = size[2] - i*20 - 50
+		local height_offset = size[2] - 20 * i - 50
 		local spacing = {
 			2,
 			0
@@ -2373,7 +2373,7 @@ UIWidgets.create_weapon_statistics = function (scenegraph_id, size)
 			"stats_star_right",
 			"stats_star_right"
 		}
-		local width_offset = size[1] - 5 - (texture_size[1]*5 + spacing[1]*4)
+		local width_offset = size[1] - 5 - (texture_size[1] * 5 + spacing[1] * 4)
 		multi_texture_name = "stars_right_bg_" .. i
 		passes[#passes + 1] = {
 			pass_type = "multi_texture",
@@ -2509,8 +2509,8 @@ UIWidgets.create_background_with_frame = function (scenegraph_id, size, backgrou
 					0
 				},
 				{
-					math.min(size[1]/background_size[1], 1),
-					math.min(size[2]/background_size[2], 1)
+					math.min(size[1] / background_size[1], 1),
+					math.min(size[2] / background_size[2], 1)
 				}
 			},
 			texture_id = background_texture
@@ -2640,8 +2640,8 @@ UIWidgets.create_background = function (scenegraph_id, size, background_texture,
 					0
 				},
 				{
-					math.min(size[1]/background_texture_settings.size[1], 1),
-					math.min(size[2]/background_texture_settings.size[2], 1)
+					math.min(size[1] / background_texture_settings.size[1], 1),
+					math.min(size[2] / background_texture_settings.size[2], 1)
 				}
 			},
 			texture_id = background_texture
@@ -2722,7 +2722,7 @@ UIWidgets.create_craft_recipe_window = function (scenegraph_id, size, num_compon
 	local default_color = Colors.get_color_table_with_alpha("white", 255)
 	local background_texture = background_texture or "menu_frame_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local title_detail_length = size[1]*0.3
+	local title_detail_length = size[1] * 0.3
 	local widget = {
 		element = {}
 	}
@@ -2765,8 +2765,8 @@ UIWidgets.create_craft_recipe_window = function (scenegraph_id, size, num_compon
 					0
 				},
 				{
-					size[1]/background_texture_settings.size[1],
-					size[2]/background_texture_settings.size[2]
+					size[1] / background_texture_settings.size[1],
+					size[2] / background_texture_settings.size[2]
 				}
 			},
 			texture_id = background_texture
@@ -2785,7 +2785,7 @@ UIWidgets.create_craft_recipe_window = function (scenegraph_id, size, num_compon
 				255
 			},
 			offset = {
-				size[1]/2 - 215,
+				size[1] / 2 - 215,
 				size[2] - 110,
 				1
 			}
@@ -2862,7 +2862,7 @@ UIWidgets.create_craft_recipe_window = function (scenegraph_id, size, num_compon
 		local name_suffix = "_" .. tostring(i)
 		local offset = {
 			components_start_offset[1],
-			components_start_offset[2] - (index*row_height + index*row_spacing),
+			components_start_offset[2] - (index * row_height + index * row_spacing),
 			components_start_offset[3]
 		}
 		local component_active = "component_active" .. name_suffix
@@ -2899,7 +2899,7 @@ UIWidgets.create_craft_recipe_window = function (scenegraph_id, size, num_compon
 			font_type = "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("loading_screen_stone", 255),
 			size = {
-				size[1] - components_start_offset[1]*2 - icon_size[1] - 5,
+				size[1] - components_start_offset[1] * 2 - icon_size[1] - 5,
 				icon_size[2]
 			},
 			offset = {
@@ -2943,11 +2943,11 @@ UIWidgets.create_hero_screen_selector = function (scenegraph_id, size, amount)
 	local slot_width_spacing = 10
 	local offset_layer = 0
 	local total_length = slot_width_spacing
-	local has_center_button = ((amount + 1)/2)%2 == 0
+	local has_center_button = ((amount + 1) / 2) % 2 == 0
 	local x_pos = 0
 
 	for k = 1, amount, 1 do
-		local center_button = k == (amount + 1)/2
+		local center_button = k == (amount + 1) / 2
 		local icon_size = (center_button and {
 			49,
 			49
@@ -2969,7 +2969,7 @@ UIWidgets.create_hero_screen_selector = function (scenegraph_id, size, amount)
 		x_pos = x_pos + slot_size[1] + slot_width_spacing
 		local offset = {
 			-x_pos,
-			-slot_size[2]/2,
+			-slot_size[2] / 2,
 			offset_layer
 		}
 		local hotspot_name = "hotspot" .. name_suffix
@@ -2996,8 +2996,8 @@ UIWidgets.create_hero_screen_selector = function (scenegraph_id, size, amount)
 			size = icon_size,
 			color = select_color,
 			offset = {
-				(offset[1] + slot_size[1]/2) - icon_size[1]/2,
-				(offset[2] + slot_size[2]/2) - icon_size[2]/2,
+				(offset[1] + slot_size[1] / 2) - icon_size[1] / 2,
+				(offset[2] + slot_size[2] / 2) - icon_size[2] / 2,
 				2
 			}
 		}
@@ -3014,8 +3014,8 @@ UIWidgets.create_hero_screen_selector = function (scenegraph_id, size, amount)
 			size = icon_size,
 			color = default_color,
 			offset = {
-				(offset[1] + slot_size[1]/2) - icon_size[1]/2,
-				(offset[2] + slot_size[2]/2) - icon_size[2]/2,
+				(offset[1] + slot_size[1] / 2) - icon_size[1] / 2,
+				(offset[2] + slot_size[2] / 2) - icon_size[2] / 2,
 				2
 			}
 		}
@@ -3124,7 +3124,7 @@ UIWidgets.create_hero_screen_selector = function (scenegraph_id, size, amount)
 	widget.content = content
 	widget.style = style
 	widget.offset = {
-		total_length/2,
+		total_length / 2,
 		0,
 		0
 	}
@@ -3144,11 +3144,11 @@ UIWidgets.create_menu_selector = function (scenegraph_id, amount, font_size)
 	local slot_width_spacing = 10
 	local offset_layer = 0
 	local total_length = 0
-	local has_center_button = ((amount + 1)/2)%2 == 0
+	local has_center_button = ((amount + 1) / 2) % 2 == 0
 	local x_pos = 0
 
 	for k = 1, amount, 1 do
-		local center_button = k == (amount + 1)/2
+		local center_button = k == (amount + 1) / 2
 		local icon_size = {
 			40,
 			40
@@ -3242,7 +3242,7 @@ UIWidgets.create_menu_selector = function (scenegraph_id, amount, font_size)
 	widget.content = content
 	widget.style = style
 	widget.offset = {
-		-total_length/2,
+		-total_length / 2,
 		0,
 		0
 	}
@@ -3351,8 +3351,8 @@ UIWidgets.create_hero_view_button = function (scenegraph_id, size, text, backgro
 						0
 					},
 					{
-						size[1]/background_texture_settings.size[1],
-						size[2]/background_texture_settings.size[2]
+						size[1] / background_texture_settings.size[1],
+						size[2] / background_texture_settings.size[2]
 					}
 				},
 				texture_id = background_texture
@@ -3375,7 +3375,7 @@ UIWidgets.create_hero_view_button = function (scenegraph_id, size, text, backgro
 				},
 				offset = {
 					-9,
-					size[2]/2 - 10.5,
+					size[2] / 2 - 10.5,
 					5
 				}
 			},
@@ -3392,7 +3392,7 @@ UIWidgets.create_hero_view_button = function (scenegraph_id, size, text, backgro
 				},
 				offset = {
 					size[1] - 8,
-					size[2]/2 - 10.5,
+					size[2] / 2 - 10.5,
 					5
 				}
 			},
@@ -3408,7 +3408,7 @@ UIWidgets.create_hero_view_button = function (scenegraph_id, size, text, backgro
 					255
 				},
 				offset = {
-					size[1]/2 - 8.5,
+					size[1] / 2 - 8.5,
 					size[2] - 8,
 					5
 				}
@@ -3425,7 +3425,7 @@ UIWidgets.create_hero_view_button = function (scenegraph_id, size, text, backgro
 					255
 				},
 				offset = {
-					size[1]/2 - 8.5,
+					size[1] / 2 - 8.5,
 					-9,
 					5
 				}
@@ -3437,8 +3437,8 @@ UIWidgets.create_hero_view_button = function (scenegraph_id, size, text, backgro
 				horizontal_alignment = "center",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				size = {
-					size[1] - frame_settings.texture_sizes.horizontal[2]*2,
-					size[2] - frame_settings.texture_sizes.vertical[1]*2
+					size[1] - frame_settings.texture_sizes.horizontal[2] * 2,
+					size[2] - frame_settings.texture_sizes.vertical[1] * 2
 				},
 				offset = {
 					frame_settings.texture_sizes.horizontal[2],
@@ -3453,8 +3453,8 @@ UIWidgets.create_hero_view_button = function (scenegraph_id, size, text, backgro
 				horizontal_alignment = "center",
 				text_color = Colors.get_color_table_with_alpha("gray", 255),
 				size = {
-					size[1] - frame_settings.texture_sizes.horizontal[2]*2,
-					size[2] - frame_settings.texture_sizes.vertical[1]*2
+					size[1] - frame_settings.texture_sizes.horizontal[2] * 2,
+					size[2] - frame_settings.texture_sizes.vertical[1] * 2
 				},
 				offset = {
 					frame_settings.texture_sizes.horizontal[2],
@@ -3480,8 +3480,8 @@ UIWidgets.create_hero_view_button = function (scenegraph_id, size, text, backgro
 			},
 			glas_frame = {
 				size = {
-					size[1] - frame_settings.texture_sizes.horizontal[2]*2,
-					size[2] - frame_settings.texture_sizes.vertical[1]*2
+					size[1] - frame_settings.texture_sizes.horizontal[2] * 2,
+					size[2] - frame_settings.texture_sizes.vertical[1] * 2
 				},
 				texture_size = glass_frame_settings.texture_size,
 				texture_sizes = glass_frame_settings.texture_sizes,
@@ -3499,8 +3499,8 @@ UIWidgets.create_hero_view_button = function (scenegraph_id, size, text, backgro
 			},
 			glas_frame_pressed = {
 				size = {
-					size[1] - frame_settings.texture_sizes.horizontal[2]*2,
-					size[2] - frame_settings.texture_sizes.vertical[1]*2
+					size[1] - frame_settings.texture_sizes.horizontal[2] * 2,
+					size[2] - frame_settings.texture_sizes.vertical[1] * 2
 				},
 				texture_size = glass_frame_settings.texture_size,
 				texture_sizes = glass_frame_settings.texture_sizes,
@@ -3595,13 +3595,13 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 	local slot_height_spacing = 10
 	local background_width = size[1]
 	local background_height = size[2]
-	local row_length = slots_per_row*slot_size[1] + slot_width_spacing*(slots_per_row - 1)
+	local row_length = slots_per_row * slot_size[1] + slot_width_spacing * (slots_per_row - 1)
 	local row_difference_to_background = background_width - row_length
-	local column_height = rows*slot_size[2] + slot_height_spacing*(rows - 1)
+	local column_height = rows * slot_size[2] + slot_height_spacing * (rows - 1)
 	local column_difference_to_background = background_height - column_height
 	local slot_start_offset = {
-		row_difference_to_background/2 + grid_offset[1],
-		background_height - column_difference_to_background/2 - slot_size[2] + grid_offset[2]
+		row_difference_to_background / 2 + grid_offset[1],
+		background_height - column_difference_to_background / 2 - slot_size[2] + grid_offset[2]
 	}
 	local widget = {
 		element = {}
@@ -3610,7 +3610,7 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 	local content = {
 		rows = rows,
 		columns = slots_per_row,
-		slots = rows*slots_per_row
+		slots = rows * slots_per_row
 	}
 	local style = {}
 	local offset_layer = 0
@@ -3621,8 +3621,8 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 			local column_start_index = i - 1
 			local row_start_index = k - 1
 			local offset = {
-				slot_start_offset[1] + row_start_index*(slot_size[1] + slot_width_spacing),
-				slot_start_offset[2] - column_start_index*(slot_size[2] + slot_height_spacing),
+				slot_start_offset[1] + row_start_index * (slot_size[1] + slot_width_spacing),
+				slot_start_offset[2] - column_start_index * (slot_size[2] + slot_height_spacing),
 				offset_layer
 			}
 			local hotspot_name = "hotspot" .. name_suffix
@@ -3657,8 +3657,8 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 					255
 				},
 				offset = {
-					offset[1] + (slot_size[1] - slot_size[1])/2,
-					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1])/2,
+					offset[1] + (slot_size[1] - slot_size[1]) / 2,
+					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1]) / 2,
 					4
 				}
 			}
@@ -3672,8 +3672,8 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 				size = slot_size,
 				color = slot_color,
 				offset = {
-					offset[1] + (slot_size[1] - slot_size[1])/2,
-					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1])/2,
+					offset[1] + (slot_size[1] - slot_size[1]) / 2,
+					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1]) / 2,
 					2
 				}
 			}
@@ -3716,8 +3716,8 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 				size = slot_size,
 				color = slot_hover_color,
 				offset = {
-					offset[1] + (slot_size[1] - slot_size[1])/2,
-					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1])/2,
+					offset[1] + (slot_size[1] - slot_size[1]) / 2,
+					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1]) / 2,
 					2
 				}
 			}
@@ -3735,8 +3735,8 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 				size = slot_size,
 				color = slot_selected_color,
 				offset = {
-					offset[1] + (slot_size[1] - slot_size[1])/2,
-					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1])/2,
+					offset[1] + (slot_size[1] - slot_size[1]) / 2,
+					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1]) / 2,
 					2
 				}
 			}
@@ -3758,8 +3758,8 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 				max_width = 500,
 				size = slot_size,
 				offset = {
-					offset[1] + (slot_size[1] - slot_size[1])/2,
-					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1])/2,
+					offset[1] + (slot_size[1] - slot_size[1]) / 2,
+					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1]) / 2,
 					2
 				},
 				text_color = Colors.get_color_table_with_alpha("white", 255),
@@ -3801,8 +3801,8 @@ UIWidgets.create_reward_card = function (scenegraph_id, size)
 		300
 	}
 	local item_offset = {
-		size[1]/2 - icon_size[1]/2,
-		size[2] - icon_size[2] - math.floor(size[2]*0.1),
+		size[1] / 2 - icon_size[1] / 2,
+		size[2] - icon_size[2] - math.floor(size[2] * 0.1),
 		3
 	}
 	local widget = {
@@ -3965,8 +3965,8 @@ UIWidgets.create_score_topic = function (scenegraph_id, size)
 		163
 	}
 	local icon_offset = {
-		size[1]/2 - icon_size[1]/2,
-		size[2]/2 - icon_size[2]/2,
+		size[1] / 2 - icon_size[1] / 2,
+		size[2] / 2 - icon_size[2] / 2,
 		3
 	}
 	local frame_settings = UIFrameSettings.menu_frame_03
@@ -4021,8 +4021,8 @@ UIWidgets.create_score_topic = function (scenegraph_id, size)
 						0
 					},
 					{
-						size[1]/background_texture_settings.size[1],
-						size[2]/background_texture_settings.size[2]
+						size[1] / background_texture_settings.size[1],
+						size[2] / background_texture_settings.size[2]
 					}
 				},
 				texture_id = background_texture
@@ -4038,16 +4038,16 @@ UIWidgets.create_score_topic = function (scenegraph_id, size)
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 0),
 				size = {
-					size[1]*0.8,
-					size[2]/2
+					size[1] * 0.8,
+					size[2] / 2
 				},
 				offset = {
-					size[1]*0.1,
+					size[1] * 0.1,
 					10,
 					5
 				},
 				default_offset = {
-					size[1]*0.1,
+					size[1] * 0.1,
 					10,
 					5
 				}
@@ -4061,17 +4061,17 @@ UIWidgets.create_score_topic = function (scenegraph_id, size)
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_title", 0),
 				size = {
-					size[1]*0.8,
-					size[2]*0.3
+					size[1] * 0.8,
+					size[2] * 0.3
 				},
 				offset = {
-					size[1]*0.1,
-					size[2]*0.72,
+					size[1] * 0.1,
+					size[2] * 0.72,
 					5
 				},
 				default_offset = {
-					size[1]*0.1,
-					size[2]*0.72,
+					size[1] * 0.1,
+					size[2] * 0.72,
 					5
 				}
 			},
@@ -4225,8 +4225,8 @@ UIWidgets.create_background_masked_text = function (scenegraph_id, size, text, b
 						0
 					},
 					{
-						math.min(size[1]/background_texture_settings.size[1], 1),
-						math.min(size[2]/background_texture_settings.size[2], 1)
+						math.min(size[1] / background_texture_settings.size[1], 1),
+						math.min(size[2] / background_texture_settings.size[2], 1)
 					}
 				},
 				texture_id = background_texture
@@ -4667,7 +4667,7 @@ UIWidgets.create_score_list = function (scenegraph_id, size, rows)
 		local name_suffix = "_" .. tostring(i)
 		local offset = {
 			0,
-			size[2] - (row_height + row_spacing)*i + score_top_offset,
+			size[2] - (row_height + row_spacing) * i + score_top_offset,
 			0
 		}
 		local hotspot_name = "hotspot" .. name_suffix
@@ -4741,7 +4741,7 @@ UIWidgets.create_score_list = function (scenegraph_id, size, rows)
 			},
 			offset = {
 				offset[1],
-				offset[2] - horizontal_divider_texture_settings.size[2]*0.5,
+				offset[2] - horizontal_divider_texture_settings.size[2] * 0.5,
 				offset[3]
 			},
 			texture_tiling_size = horizontal_divider_texture_settings.size
@@ -5307,8 +5307,8 @@ UIWidgets.create_experience_bar = function (scenegraph_id, size, masked)
 				masked = masked,
 				color = Colors.get_color_table_with_alpha("white", 255),
 				size = {
-					size[1] - frame_settings.texture_sizes.horizontal[2]*2,
-					size[2] - frame_settings.texture_sizes.vertical[1]*2
+					size[1] - frame_settings.texture_sizes.horizontal[2] * 2,
+					size[2] - frame_settings.texture_sizes.vertical[1] * 2
 				},
 				offset = {
 					frame_settings.texture_sizes.horizontal[2],
@@ -5320,12 +5320,12 @@ UIWidgets.create_experience_bar = function (scenegraph_id, size, masked)
 				masked = masked,
 				color = Colors.get_color_table_with_alpha("white", 255),
 				size = {
-					size[1] - frame_settings.texture_sizes.horizontal[2]*2,
-					size[2] - frame_settings.texture_sizes.vertical[1]*2
+					size[1] - frame_settings.texture_sizes.horizontal[2] * 2,
+					size[2] - frame_settings.texture_sizes.vertical[1] * 2
 				},
 				default_size = {
 					size[1] - frame_settings.texture_sizes.horizontal[2],
-					size[2] - frame_settings.texture_sizes.vertical[1]*2
+					size[2] - frame_settings.texture_sizes.vertical[1] * 2
 				},
 				offset = {
 					frame_settings.texture_sizes.horizontal[2],
@@ -5337,8 +5337,8 @@ UIWidgets.create_experience_bar = function (scenegraph_id, size, masked)
 				masked = masked,
 				color = Colors.get_color_table_with_alpha("white", 255),
 				size = {
-					size[1] - frame_settings.texture_sizes.horizontal[2]*2,
-					size[2] - frame_settings.texture_sizes.vertical[1]*2
+					size[1] - frame_settings.texture_sizes.horizontal[2] * 2,
+					size[2] - frame_settings.texture_sizes.vertical[1] * 2
 				},
 				offset = {
 					frame_settings.texture_sizes.horizontal[2],
@@ -5559,8 +5559,8 @@ UIWidgets.create_talent_tab = function (scenegraph_id, size)
 			255
 		},
 		offset = {
-			offset[1] + (size[1] - icon_size[1])/2,
-			(offset[2] + size[2] - icon_size[2]) - (size[1] - icon_size[1])/2,
+			offset[1] + (size[1] - icon_size[1]) / 2,
+			(offset[2] + size[2] - icon_size[2]) - (size[1] - icon_size[1]) / 2,
 			3
 		}
 	}
@@ -5575,8 +5575,8 @@ UIWidgets.create_talent_tab = function (scenegraph_id, size)
 		size = size,
 		color = background_color,
 		offset = {
-			offset[1] + (size[1] - size[1])/2,
-			(offset[2] + size[2] - size[2]) - (size[1] - size[1])/2,
+			offset[1] + (size[1] - size[1]) / 2,
+			(offset[2] + size[2] - size[2]) - (size[1] - size[1]) / 2,
 			2
 		}
 	}
@@ -5600,8 +5600,8 @@ UIWidgets.create_talent_tab = function (scenegraph_id, size)
 			0
 		},
 		offset = {
-			(offset[1] + (size[1] - size[1])/2) - 0.5,
-			(offset[2] + size[2] - size[2]) - (size[1] - size[1])/2 - 1,
+			(offset[1] + (size[1] - size[1]) / 2) - 0.5,
+			(offset[2] + size[2] - size[2]) - (size[1] - size[1]) / 2 - 1,
 			0
 		}
 	}
@@ -5682,8 +5682,8 @@ UIWidgets.create_tab_selector = function (scenegraph_id, size, height, slot_icon
 	local slot_width_spacing = 0
 	local offset_layer = 0
 	local total_length = -slot_width_spacing
-	local length_with_spacing = size[1] - slot_width_spacing*(amount - 1)
-	local tab_width = length_with_spacing/amount
+	local length_with_spacing = size[1] - slot_width_spacing * (amount - 1)
+	local tab_width = length_with_spacing / amount
 	local slot_size = {
 		tab_width,
 		height
@@ -5738,8 +5738,8 @@ UIWidgets.create_tab_selector = function (scenegraph_id, size, height, slot_icon
 					0
 				},
 				{
-					slot_size[1]/background_texture_settings.size[1],
-					slot_size[2]/background_texture_settings.size[2]
+					slot_size[1] / background_texture_settings.size[1],
+					slot_size[2] / background_texture_settings.size[2]
 				}
 			},
 			texture_id = background_texture
@@ -5878,8 +5878,8 @@ UIWidgets.create_tab_selector = function (scenegraph_id, size, height, slot_icon
 				size = icon_size,
 				color = default_color,
 				offset = {
-					(offset[1] + slot_size[1]/2) - icon_size[1]/2,
-					(offset[2] + slot_size[2]/2) - icon_size[1]/2,
+					(offset[1] + slot_size[1] / 2) - icon_size[1] / 2,
+					(offset[2] + slot_size[2] / 2) - icon_size[1] / 2,
 					2
 				}
 			}
@@ -5964,7 +5964,7 @@ UIWidgets.create_tab_selector = function (scenegraph_id, size, height, slot_icon
 				255
 			},
 			offset = {
-				offset[1] + slot_size[1]/2 - 17.5,
+				offset[1] + slot_size[1] / 2 - 17.5,
 				(offset[2] + slot_size[2]) - 13,
 				6
 			}
@@ -6048,7 +6048,7 @@ UIWidgets.create_tab_selector = function (scenegraph_id, size, height, slot_icon
 				255
 			},
 			offset = {
-				offset[1] + slot_size[1]/2 - 22.5,
+				offset[1] + slot_size[1] / 2 - 22.5,
 				offset[2] - 4,
 				50
 			}
@@ -6075,7 +6075,7 @@ UIWidgets.create_character_selection_frame = function (scenegraph_id, size)
 	local frame_settings = UIFrameSettings.menu_frame_06
 	local portrait_center_position = {
 		0,
-		size[2]/2
+		size[2] / 2
 	}
 	local text_width_offset = 75
 
@@ -6160,8 +6160,8 @@ UIWidgets.create_character_selection_frame = function (scenegraph_id, size)
 						0
 					},
 					{
-						size[1]/background_texture_settings.size[1],
-						size[2]/background_texture_settings.size[2]
+						size[1] / background_texture_settings.size[1],
+						size[2] / background_texture_settings.size[2]
 					}
 				},
 				texture_id = background_texture
@@ -6175,8 +6175,8 @@ UIWidgets.create_character_selection_frame = function (scenegraph_id, size)
 						0
 					},
 					{
-						size[1]/background_texture_settings.size[1],
-						size[2]/background_texture_settings.size[2]
+						size[1] / background_texture_settings.size[1],
+						size[2] / background_texture_settings.size[2]
 					}
 				},
 				texture_id = background_texture
@@ -6436,8 +6436,8 @@ UIWidgets.create_career_summary_window = function (scenegraph_id, size)
 						0
 					},
 					{
-						size[1]/background_texture_settings.size[1],
-						size[2]/background_texture_settings.size[2]
+						size[1] / background_texture_settings.size[1],
+						size[2] / background_texture_settings.size[2]
 					}
 				},
 				texture_id = background_texture
@@ -6731,10 +6731,10 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				uvs = {
 					{
 						0,
-						size[2]/background_texture_settings.size[2] - 1
+						1 - size[2] / background_texture_settings.size[2]
 					},
 					{
-						size[1]/background_texture_settings.size[1],
+						size[1] / background_texture_settings.size[1],
 						1
 					}
 				},
@@ -6768,8 +6768,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 					2
 				},
 				size = {
-					size[1] - frame_width*2,
-					size[2] - frame_width*2
+					size[1] - frame_width * 2,
+					size[2] - frame_width * 2
 				}
 			},
 			hover_glow = {
@@ -6919,7 +6919,7 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				},
 				offset = {
 					(optional_detail_offset and -optional_detail_offset) or -9,
-					size[2]/2 - side_detail_texture_size[2]/2,
+					size[2] / 2 - side_detail_texture_size[2] / 2,
 					9
 				},
 				size = {
@@ -6936,7 +6936,7 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				},
 				offset = {
 					size[1] - side_detail_texture_size[1] + (optional_detail_offset or 9),
-					size[2]/2 - side_detail_texture_size[2]/2,
+					size[2] / 2 - side_detail_texture_size[2] / 2,
 					9
 				},
 				size = {
@@ -6967,10 +6967,10 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 		200,
 		200
 	}
-	local background_icon_scale = math.min(size[2]/background_icon_size[2], 1) - 1
+	local background_icon_scale = 1 - math.min(size[2] / background_icon_size[2], 1)
 	local background_icon_width_fraction = 0.9
 	local background_icon_size = {
-		background_icon_size[1]*background_icon_width_fraction,
+		background_icon_size[1] * background_icon_width_fraction,
 		size[2]
 	}
 
@@ -7101,11 +7101,11 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 				uvs = {
 					{
 						0,
-						background_icon_scale*0.5
+						0.5 * background_icon_scale
 					},
 					{
 						background_icon_width_fraction,
-						background_icon_scale/2 - 1
+						1 - background_icon_scale / 2
 					}
 				},
 				texture_id = background_icon
@@ -7114,10 +7114,10 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 				uvs = {
 					{
 						0,
-						size[2]/background_texture_settings.size[2] - 1
+						1 - size[2] / background_texture_settings.size[2]
 					},
 					{
-						size[1]/background_texture_settings.size[1],
+						size[1] / background_texture_settings.size[1],
 						1
 					}
 				},
@@ -7147,7 +7147,7 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 				},
 				offset = {
 					size[1] - background_icon_size[1],
-					size[2]/2 - background_icon_size[2]/2,
+					size[2] / 2 - background_icon_size[2] / 2,
 					1
 				},
 				size = background_icon_size
@@ -7165,8 +7165,8 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 					3
 				},
 				size = {
-					size[1] - frame_width*2,
-					size[2] - frame_width*2
+					size[1] - frame_width * 2,
+					size[2] - frame_width * 2
 				}
 			},
 			hover_glow = {
@@ -7221,7 +7221,7 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 				},
 				offset = {
 					size[1] - 126,
-					size[2]/2 - 25.5,
+					size[2] / 2 - 25.5,
 					7
 				},
 				size = {
@@ -7333,7 +7333,7 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 				},
 				offset = {
 					(optional_detail_offset and -optional_detail_offset) or -9,
-					size[2]/2 - side_detail_texture_size[2]/2,
+					size[2] / 2 - side_detail_texture_size[2] / 2,
 					10
 				},
 				size = {
@@ -7350,7 +7350,7 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 				},
 				offset = {
 					size[1] - side_detail_texture_size[1] + (optional_detail_offset or 9),
-					size[2]/2 - side_detail_texture_size[2]/2,
+					size[2] / 2 - side_detail_texture_size[2] / 2,
 					10
 				},
 				size = {
@@ -7381,8 +7381,8 @@ UIWidgets.create_default_icon_tabs = function (scenegraph_id, size, amount)
 	local slot_width_spacing = 0
 	local offset_layer = 0
 	local total_length = -slot_width_spacing
-	local length_with_spacing = size[1] - slot_width_spacing*(amount - 1)
-	local tab_width = length_with_spacing/amount
+	local length_with_spacing = size[1] - slot_width_spacing * (amount - 1)
+	local tab_width = length_with_spacing / amount
 	local button_size = {
 		tab_width,
 		size[2]
@@ -7438,10 +7438,10 @@ UIWidgets.create_default_icon_tabs = function (scenegraph_id, size, amount)
 			uvs = {
 				{
 					0,
-					math.min(button_size[2]/background_texture_settings.size[2], 1) - 1
+					1 - math.min(button_size[2] / background_texture_settings.size[2], 1)
 				},
 				{
-					math.min(button_size[1]/background_texture_settings.size[1], 1),
+					math.min(button_size[1] / background_texture_settings.size[1], 1),
 					1
 				}
 			},
@@ -7580,8 +7580,8 @@ UIWidgets.create_default_icon_tabs = function (scenegraph_id, size, amount)
 			default_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 			select_color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
-				(offset[1] + button_size[1]/2) - icon_size[1]/2,
-				(offset[2] + button_size[2]/2) - icon_size[1]/2 + 4,
+				(offset[1] + button_size[1] / 2) - icon_size[1] / 2,
+				(offset[2] + button_size[2] / 2) - icon_size[1] / 2 + 4,
 				4
 			}
 		}
@@ -7597,8 +7597,8 @@ UIWidgets.create_default_icon_tabs = function (scenegraph_id, size, amount)
 			size = icon_size,
 			color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
-				(offset[1] + button_size[1]/2) - icon_size[1]/2 + 2,
-				(offset[2] + button_size[2]/2) - icon_size[1]/2 + 2,
+				(offset[1] + button_size[1] / 2) - icon_size[1] / 2 + 2,
+				(offset[2] + button_size[2] / 2) - icon_size[1] / 2 + 2,
 				3
 			}
 		}
@@ -7667,10 +7667,10 @@ UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, 
 		uvs = {
 			{
 				0,
-				math.min(size[2]/background_texture_settings.size[2], 1) - 1
+				1 - math.min(size[2] / background_texture_settings.size[2], 1)
 			},
 			{
-				math.min(size[1]/background_texture_settings.size[1], 1),
+				math.min(size[1] / background_texture_settings.size[1], 1),
 				1
 			}
 		},
@@ -7898,7 +7898,7 @@ UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, 
 	}
 	local checkbox_offset = {
 		(size[1] - checkbox_size[1] + offset[1]) - 20,
-		(offset[2] + size[2]/2) - checkbox_size[2]/2 + 2,
+		(offset[2] + size[2] / 2) - checkbox_size[2] / 2 + 2,
 		3
 	}
 	style[checkbox_background_name] = {
@@ -7991,7 +7991,7 @@ UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, 
 	}
 	local marker_offset = {
 		checkbox_offset[1] + 4,
-		(checkbox_offset[2] + marker_size[2]/2) - 1,
+		(checkbox_offset[2] + marker_size[2] / 2) - 1,
 		checkbox_offset[3] + 2
 	}
 	style[checkbox_marker_name] = {
@@ -8040,8 +8040,8 @@ UIWidgets.create_default_text_tabs = function (scenegraph_id, size, amount)
 	local slot_width_spacing = 0
 	local offset_layer = 0
 	local total_length = -slot_width_spacing
-	local length_with_spacing = size[1] - slot_width_spacing*(amount - 1)
-	local tab_width = length_with_spacing/amount
+	local length_with_spacing = size[1] - slot_width_spacing * (amount - 1)
+	local tab_width = length_with_spacing / amount
 	local button_size = {
 		tab_width,
 		size[2]
@@ -8097,10 +8097,10 @@ UIWidgets.create_default_text_tabs = function (scenegraph_id, size, amount)
 			uvs = {
 				{
 					0,
-					math.min(button_size[2]/background_texture_settings.size[2], 1) - 1
+					1 - math.min(button_size[2] / background_texture_settings.size[2], 1)
 				},
 				{
-					math.min(button_size[1]/background_texture_settings.size[1], 1),
+					math.min(button_size[1] / background_texture_settings.size[1], 1),
 					1
 				}
 			},
@@ -8404,10 +8404,10 @@ UIWidgets.create_simple_window_button = function (scenegraph_id, size, text, fon
 				uvs = {
 					{
 						0,
-						size[2]/background_texture_settings.size[2] - 1
+						1 - size[2] / background_texture_settings.size[2]
 					},
 					{
-						size[1]/background_texture_settings.size[1],
+						size[1] / background_texture_settings.size[1],
 						1
 					}
 				},
@@ -8760,10 +8760,10 @@ UIWidgets.create_window_category_button = function (scenegraph_id, size, button_
 				uvs = {
 					{
 						0,
-						math.min(size[2]/background_texture_settings.size[2], 1) - 1
+						1 - math.min(size[2] / background_texture_settings.size[2], 1)
 					},
 					{
-						math.min(size[1]/background_texture_settings.size[1], 1),
+						math.min(size[1] / background_texture_settings.size[1], 1),
 						1
 					}
 				},
@@ -8798,8 +8798,8 @@ UIWidgets.create_window_category_button = function (scenegraph_id, size, button_
 					1
 				},
 				size = {
-					size[1] - frame_width*2,
-					size[2] - frame_width*2
+					size[1] - frame_width * 2,
+					size[2] - frame_width * 2
 				}
 			},
 			background_icon = {
@@ -9354,10 +9354,10 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size)
 				uvs = {
 					{
 						0,
-						size[2]/background_texture_settings.size[2] - 1
+						1 - size[2] / background_texture_settings.size[2]
 					},
 					{
-						size[1]/background_texture_settings.size[1],
+						size[1] / background_texture_settings.size[1],
 						1
 					}
 				},
@@ -9475,7 +9475,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size)
 				},
 				size = {
 					size[1],
-					math.min(60, size[2] - frame_settings.texture_sizes.horizontal[2]*2)
+					math.min(60, size[2] - frame_settings.texture_sizes.horizontal[2] * 2)
 				}
 			},
 			glass_top = {
@@ -9509,7 +9509,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size)
 				},
 				size = {
 					size[1],
-					math.min(60, size[2] - frame_settings.texture_sizes.horizontal[2]*2)
+					math.min(60, size[2] - frame_settings.texture_sizes.horizontal[2] * 2)
 				}
 			},
 			effect = {
@@ -9538,7 +9538,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size)
 				},
 				offset = {
 					0,
-					size[2]/2 - 36,
+					size[2] / 2 - 36,
 					8
 				},
 				size = {
@@ -9555,7 +9555,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size)
 				},
 				offset = {
 					size[1] - 88,
-					size[2]/2 - 36,
+					size[2] / 2 - 36,
 					8
 				},
 				size = {
@@ -9572,7 +9572,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size)
 				},
 				offset = {
 					0,
-					size[2]/2 - 36,
+					size[2] / 2 - 36,
 					8
 				},
 				size = {
@@ -9589,7 +9589,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size)
 				},
 				offset = {
 					size[1] - 88,
-					size[2]/2 - 36,
+					size[2] / 2 - 36,
 					8
 				},
 				size = {
@@ -9606,7 +9606,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size)
 				},
 				offset = {
 					0,
-					size[2]/2 - side_detail_glow_size[2]/2,
+					size[2] / 2 - side_detail_glow_size[2] / 2,
 					9
 				},
 				size = {
@@ -9623,7 +9623,7 @@ UIWidgets.create_play_button = function (scenegraph_id, size, text, font_size)
 				},
 				offset = {
 					size[1] - side_detail_glow_size[1],
-					size[2]/2 - side_detail_glow_size[2]/2,
+					size[2] / 2 - side_detail_glow_size[2] / 2,
 					9
 				},
 				size = {
@@ -9719,8 +9719,8 @@ UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, backgr
 						0
 					},
 					{
-						size[1]/background_texture_settings.size[1],
-						size[2]/background_texture_settings.size[2]
+						size[1] / background_texture_settings.size[1],
+						size[2] / background_texture_settings.size[2]
 					}
 				},
 				texture_id = background_texture
@@ -9975,8 +9975,8 @@ UIWidgets.create_stepper = function (scenegraph_id, size, frame_name, background
 						0
 					},
 					{
-						size[1]/background_size[1],
-						size[2]/background_size[2]
+						size[1] / background_size[1],
+						size[2] / background_size[2]
 					}
 				},
 				texture_id = background_texture
@@ -9988,8 +9988,8 @@ UIWidgets.create_stepper = function (scenegraph_id, size, frame_name, background
 						0
 					},
 					{
-						arrow_button_size[1]/background_size[1],
-						arrow_button_size[2]/background_size[2]
+						arrow_button_size[1] / background_size[1],
+						arrow_button_size[2] / background_size[2]
 					}
 				},
 				texture_id = background_texture
@@ -10168,8 +10168,8 @@ UIWidgets.create_stepper = function (scenegraph_id, size, frame_name, background
 			left_button_icon = {
 				size = arrow_icon_size,
 				offset = {
-					left_button_offset[1] + arrow_button_size[1]/2 - arrow_icon_size[1]/2,
-					left_button_offset[2] + arrow_button_size[2]/2 - arrow_icon_size[2]/2,
+					left_button_offset[1] + arrow_button_size[1] / 2 - arrow_icon_size[1] / 2,
+					left_button_offset[2] + arrow_button_size[2] / 2 - arrow_icon_size[2] / 2,
 					2
 				},
 				color = {
@@ -10188,8 +10188,8 @@ UIWidgets.create_stepper = function (scenegraph_id, size, frame_name, background
 				},
 				size = arrow_icon_size,
 				offset = {
-					left_button_offset[1] + arrow_button_size[1]/2 - arrow_icon_size[1]/2,
-					left_button_offset[2] + arrow_button_size[2]/2 - arrow_icon_size[2]/2,
+					left_button_offset[1] + arrow_button_size[1] / 2 - arrow_icon_size[1] / 2,
+					left_button_offset[2] + arrow_button_size[2] / 2 - arrow_icon_size[2] / 2,
 					3
 				}
 			},
@@ -10275,8 +10275,8 @@ UIWidgets.create_stepper = function (scenegraph_id, size, frame_name, background
 				},
 				size = arrow_icon_size,
 				offset = {
-					right_button_offset[1] + arrow_button_size[1]/2 - arrow_icon_size[1]/2,
-					right_button_offset[2] + arrow_button_size[2]/2 - arrow_icon_size[2]/2,
+					right_button_offset[1] + arrow_button_size[1] / 2 - arrow_icon_size[1] / 2,
+					right_button_offset[2] + arrow_button_size[2] / 2 - arrow_icon_size[2] / 2,
 					2
 				},
 				color = {
@@ -10300,8 +10300,8 @@ UIWidgets.create_stepper = function (scenegraph_id, size, frame_name, background
 				},
 				size = arrow_icon_size,
 				offset = {
-					right_button_offset[1] + arrow_button_size[1]/2 - arrow_icon_size[1]/2,
-					right_button_offset[2] + arrow_button_size[2]/2 - arrow_icon_size[2]/2,
+					right_button_offset[1] + arrow_button_size[1] / 2 - arrow_icon_size[1] / 2,
+					right_button_offset[2] + arrow_button_size[2] / 2 - arrow_icon_size[2] / 2,
 					3
 				}
 			}
@@ -10495,8 +10495,8 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 			},
 			color = default_color,
 			offset = {
-				(offset[1] + icon_size[1]/2) - 15,
-				(offset[2] + icon_size[2]/2) - 19,
+				(offset[1] + icon_size[1] / 2) - 15,
+				(offset[2] + icon_size[2] / 2) - 19,
 				offset[3] + 5
 			}
 		}
@@ -10521,8 +10521,8 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 				},
 				color = default_color,
 				offset = {
-					(offset[1] + icon_size[1]/2) - frame_size[1]/2,
-					(offset[2] + icon_size[2]/2) - frame_size[2]/2,
+					(offset[1] + icon_size[1] / 2) - frame_size[1] / 2,
+					(offset[2] + icon_size[2] / 2) - frame_size[2] / 2,
 					offset[3] + 3
 				}
 			}
@@ -10536,7 +10536,7 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 	widget.content = content
 	widget.style = style
 	widget.offset = {
-		-total_length/2,
+		-total_length / 2,
 		0,
 		0
 	}
@@ -10579,7 +10579,7 @@ UIWidgets.create_title_widget = function (scenegraph_id, size, title_text, use_f
 	}
 
 	if not disable_detail then
-		local title_detail_length = size[1]*0.3
+		local title_detail_length = size[1] * 0.3
 		passes[#passes + 1] = {
 			texture_id = "title_detail_center",
 			style_id = "title_detail_center",
@@ -10612,7 +10612,7 @@ UIWidgets.create_title_widget = function (scenegraph_id, size, title_text, use_f
 				255
 			},
 			offset = {
-				size[1]/2 - 42.5,
+				size[1] / 2 - 42.5,
 				size[2] - 60,
 				4
 			}
@@ -10629,7 +10629,7 @@ UIWidgets.create_title_widget = function (scenegraph_id, size, title_text, use_f
 				255
 			},
 			offset = {
-				size[1]/2 - title_detail_length/2,
+				size[1] / 2 - title_detail_length / 2,
 				size[2] - 60,
 				3
 			}
@@ -10646,7 +10646,7 @@ UIWidgets.create_title_widget = function (scenegraph_id, size, title_text, use_f
 				255
 			},
 			offset = {
-				size[1]/2 - title_detail_length/2 - 7,
+				size[1] / 2 - title_detail_length / 2 - 7,
 				size[2] - 60,
 				3
 			}
@@ -10663,7 +10663,7 @@ UIWidgets.create_title_widget = function (scenegraph_id, size, title_text, use_f
 				255
 			},
 			offset = {
-				size[1]/2 + title_detail_length/2,
+				size[1] / 2 + title_detail_length / 2,
 				size[2] - 60,
 				3
 			}
@@ -10686,7 +10686,7 @@ UIWidgets.create_title_widget = function (scenegraph_id, size, title_text, use_f
 			style.title_bg_fade = {
 				angle = 0,
 				pivot = {
-					size[1]/2,
+					size[1] / 2,
 					40
 				},
 				size = {
@@ -10708,7 +10708,7 @@ UIWidgets.create_title_widget = function (scenegraph_id, size, title_text, use_f
 		else
 			style.title_bg_fade = {
 				pivot = {
-					size[1]/2,
+					size[1] / 2,
 					40
 				},
 				angle = math.degrees_to_radians(180),
@@ -10824,10 +10824,10 @@ UIWidgets.create_large_window_title = function (scenegraph_id, size, text, font_
 				uvs = {
 					{
 						0,
-						size[2]/background_texture_settings.size[2] - 1
+						1 - size[2] / background_texture_settings.size[2]
 					},
 					{
-						size[1]/background_texture_settings.size[1],
+						size[1] / background_texture_settings.size[1],
 						1
 					}
 				},
@@ -10862,7 +10862,7 @@ UIWidgets.create_large_window_title = function (scenegraph_id, size, text, font_
 				},
 				size = {
 					size[1],
-					math.min(60, size[2] - frame_settings.texture_sizes.horizontal[2]*2)
+					math.min(60, size[2] - frame_settings.texture_sizes.horizontal[2] * 2)
 				}
 			},
 			title_text = {
@@ -10996,8 +10996,8 @@ UIWidgets.create_console_cursor = function (scenegraph_id)
 				255
 			},
 			offset = {
-				-GAMEPAD_CURSOR_SIZE*0.5,
-				-GAMEPAD_CURSOR_SIZE*0.5,
+				-GAMEPAD_CURSOR_SIZE * 0.5,
+				-GAMEPAD_CURSOR_SIZE * 0.5,
 				1000
 			}
 		}
@@ -11066,8 +11066,8 @@ UIWidgets.create_difficulty_selector = function (scenegraph_id, size, spacing, a
 	local slot_width_spacing = spacing or 0
 	local offset_layer = 0
 	local total_length = -slot_width_spacing
-	local length_with_spacing = size[1] - slot_width_spacing*(amount - 1)
-	local tab_width = length_with_spacing/amount
+	local length_with_spacing = size[1] - slot_width_spacing * (amount - 1)
+	local tab_width = length_with_spacing / amount
 	image_size = image_size or {
 		194,
 		190
@@ -11116,7 +11116,7 @@ UIWidgets.create_difficulty_selector = function (scenegraph_id, size, spacing, a
 				255
 			},
 			offset = {
-				(offset[1] + slot_size[1]/2) - image_size[1]/2,
+				(offset[1] + slot_size[1] / 2) - image_size[1] / 2,
 				(offset[2] + slot_size[2]) - image_size[2],
 				2
 			}
@@ -11177,7 +11177,7 @@ UIWidgets.create_difficulty_selector = function (scenegraph_id, size, spacing, a
 			default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = {
 				slot_size[1],
-				slot_size[2]*0.2 - frame_settings.texture_sizes.vertical[1]
+				slot_size[2] * 0.2 - frame_settings.texture_sizes.vertical[1]
 			},
 			offset = {
 				offset[1],
@@ -11234,11 +11234,11 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 			0,
 			0
 		}
-		size[1] = size[1]*scale
-		size[2] = size[2]*scale
+		size[1] = size[1] * scale
+		size[2] = size[2] * scale
 		local offset = table.clone(data.offset or default_offset)
-		offset[1] = -(size[1]/2) + offset[1]*scale
-		offset[2] = offset[2]*scale
+		offset[1] = -(size[1] / 2) + offset[1] * scale
+		offset[2] = offset[2] * scale
 		offset[3] = data.layer or 0
 		passes[#passes + 1] = {
 			pass_type = "texture",
@@ -11256,12 +11256,12 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 
 	if portrait_texture then
 		local portrait_size = {
-			portrait_size[1]*scale,
-			portrait_size[2]*scale
+			portrait_size[1] * scale,
+			portrait_size[2] * scale
 		}
 		local portrait_offset = {
-			-(portrait_size[1]/2) + portrait_offset[1]*scale,
-			-(portrait_size[2]/2) + portrait_offset[2]*scale,
+			-(portrait_size[1] / 2) + portrait_offset[1] * scale,
+			-(portrait_size[2] / 2) + portrait_offset[2] * scale,
 			1
 		}
 		local portrait_name = "portrait"
@@ -11280,16 +11280,16 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 	end
 
 	local portrait_size = {
-		portrait_size[1]*scale,
-		portrait_size[2]*scale
+		portrait_size[1] * scale,
+		portrait_size[2] * scale
 	}
 	local level_size = {
 		22,
 		15
 	}
 	local level_offset = {
-		level_offset[1]*scale - level_size[1]/2 - 1,
-		(-(portrait_size[2]/2) + level_offset[2]*scale) - 4,
+		level_offset[1] * scale - level_size[1] / 2 - 1,
+		(-(portrait_size[2] / 2) + level_offset[2] * scale) - 4,
 		15
 	}
 	local level_name = "level"
@@ -11354,11 +11354,11 @@ UIWidgets.create_portrait_frame_button = function (scenegraph_id, frame_settings
 			0,
 			0
 		}
-		size[1] = size[1]*scale
-		size[2] = size[2]*scale
+		size[1] = size[1] * scale
+		size[2] = size[2] * scale
 		local offset = table.clone(data.offset or default_offset)
-		offset[1] = -(size[1]/2) + offset[1]*scale
-		offset[2] = -(size[2]/2) + offset[2]*scale
+		offset[1] = -(size[1] / 2) + offset[1] * scale
+		offset[2] = -(size[2] / 2) + offset[2] * scale
 		offset[3] = data.layer or 0
 		passes[#passes + 1] = {
 			pass_type = "texture",
@@ -11375,12 +11375,12 @@ UIWidgets.create_portrait_frame_button = function (scenegraph_id, frame_settings
 	end
 
 	local portrait_size = {
-		portrait_size[1]*scale,
-		portrait_size[2]*scale
+		portrait_size[1] * scale,
+		portrait_size[2] * scale
 	}
 	local offset = table.clone(default_offset)
-	offset[1] = -(portrait_size[1]/2) + offset[1]*scale
-	offset[2] = -(portrait_size[2]/2) + scale*25
+	offset[1] = -(portrait_size[1] / 2) + offset[1] * scale
+	offset[2] = -(portrait_size[2] / 2) + 25 * scale
 	offset[3] = 20
 	local portrait_name = "portrait"
 	passes[#passes + 1] = {
@@ -11458,12 +11458,12 @@ UIWidgets.create_cosmetic_list = function (scenegraph_id, size, amount)
 	}
 	local style = {}
 	local slot_height_spacing = 5
-	local total_slots_height = size[2] - (amount - 1)*slot_height_spacing
+	local total_slots_height = size[2] - (amount - 1) * slot_height_spacing
 	local slot_size = {
-		size[1]*0.9,
-		total_slots_height/amount
+		size[1] * 0.9,
+		total_slots_height / amount
 	}
-	local start_width_offset = size[1]/2 - slot_size[1]/2
+	local start_width_offset = size[1] / 2 - slot_size[1] / 2
 	local start_height_offset = size[2] - slot_size[2]
 	local frame_settings = UIFrameSettings.menu_tab_frame_01
 	local offset_layer = 0
@@ -11566,7 +11566,7 @@ UIWidgets.create_cosmetic_list = function (scenegraph_id, size, amount)
 		style.page_arrow_left = {
 			color = default_color,
 			offset = {
-				size[1]*0.4 - 40,
+				size[1] * 0.4 - 40,
 				-46,
 				1
 			},
@@ -11578,7 +11578,7 @@ UIWidgets.create_cosmetic_list = function (scenegraph_id, size, amount)
 		style.page_arrow_right = {
 			color = default_color,
 			offset = {
-				size[1]*0.6 + 12,
+				size[1] * 0.6 + 12,
 				-46,
 				1
 			},
@@ -11594,12 +11594,12 @@ UIWidgets.create_cosmetic_list = function (scenegraph_id, size, amount)
 			horizontal_alignment = "center",
 			text_color = Colors.get_color_table_with_alpha("font_title", 255),
 			offset = {
-				size[1]*0.4,
+				size[1] * 0.4,
 				-48,
 				2
 			},
 			size = {
-				size[1]*0.2,
+				size[1] * 0.2,
 				30
 			}
 		}
@@ -11684,8 +11684,8 @@ UIWidgets.create_cosmetic_list = function (scenegraph_id, size, amount)
 					0
 				},
 				{
-					slot_size[1]/background_texture_settings.size[1],
-					slot_size[2]/background_texture_settings.size[2]
+					slot_size[1] / background_texture_settings.size[1],
+					slot_size[2] / background_texture_settings.size[2]
 				}
 			},
 			texture_id = background_texture
@@ -11713,7 +11713,7 @@ UIWidgets.create_cosmetic_list = function (scenegraph_id, size, amount)
 			},
 			offset = {
 				(offset[1] + slot_size[1]) - 30,
-				(offset[2] + slot_size[2]/2) - 10,
+				(offset[2] + slot_size[2] / 2) - 10,
 				5
 			}
 		}
@@ -11833,8 +11833,8 @@ UIWidgets.create_cosmetic_list = function (scenegraph_id, size, amount)
 		}
 		style[hover_frame_name] = {
 			size = {
-				slot_size[1] + corner_size[1]*2,
-				slot_size[2] + corner_size[2]*2
+				slot_size[1] + corner_size[1] * 2,
+				slot_size[2] + corner_size[2] * 2
 			},
 			texture_size = hover_frame_settings.texture_size,
 			texture_sizes = hover_frame_settings.texture_sizes,
@@ -11960,7 +11960,7 @@ UIWidgets.create_cosmetic_list = function (scenegraph_id, size, amount)
 			},
 			offset = {
 				offset[1] - 17.5 + 2,
-				(offset[2] + slot_size[2]/2) - 11,
+				(offset[2] + slot_size[2] / 2) - 11,
 				6
 			}
 		}
@@ -12092,7 +12092,7 @@ UIWidgets.create_cosmetic_list = function (scenegraph_id, size, amount)
 			},
 			offset = {
 				(slot_size[1] + offset[1] - 17.5) - 2,
-				(offset[2] + slot_size[2]/2) - 11,
+				(offset[2] + slot_size[2] / 2) - 11,
 				6
 			}
 		}
@@ -12251,8 +12251,8 @@ UIWidgets.create_score_entry = function (scenegraph_id, size, num_rows, side)
 				0
 			},
 			{
-				math.min(size[1]/background_texture_settings.size[1], 1),
-				math.min(size[2]/background_texture_settings.size[2], 1)
+				math.min(size[1] / background_texture_settings.size[1], 1),
+				math.min(size[2] / background_texture_settings.size[2], 1)
 			}
 		},
 		texture_id = background_texture
@@ -12266,7 +12266,7 @@ UIWidgets.create_score_entry = function (scenegraph_id, size, num_rows, side)
 	local bg_color_multiplier = 0.8
 	style[background_glow_left_name] = {
 		size = {
-			size[1]/2,
+			size[1] / 2,
 			size[2]
 		},
 		color = Colors.get_color_table_with_alpha("blue", 255),
@@ -12298,12 +12298,12 @@ UIWidgets.create_score_entry = function (scenegraph_id, size, num_rows, side)
 	local bg_color_multiplier = 0.8
 	style[background_glow_right_name] = {
 		size = {
-			size[1]/2,
+			size[1] / 2,
 			size[2]
 		},
 		color = Colors.get_color_table_with_alpha("blue", 255),
 		offset = {
-			offset[1] + size[1]/2,
+			offset[1] + size[1] / 2,
 			offset[2],
 			1
 		}
@@ -12421,7 +12421,7 @@ UIWidgets.create_score_entry = function (scenegraph_id, size, num_rows, side)
 
 	for k = 1, num_rows, 1 do
 		local line_suffix = "_" .. k
-		local line_height_offset = -(k*row_size[2])
+		local line_height_offset = -(k * row_size[2])
 		local row_offset = {
 			offset[1],
 			(offset[2] + size[2]) - 80 + line_height_offset,
@@ -12582,8 +12582,8 @@ UIWidgets.create_score_entry = function (scenegraph_id, size, num_rows, side)
 				255
 			},
 			offset = {
-				(row_offset[1] + row_size[1]/2) - 35.5,
-				(row_offset[2] + row_size[2]/2) - 19.5,
+				(row_offset[1] + row_size[1] / 2) - 35.5,
+				(row_offset[2] + row_size[2] / 2) - 19.5,
 				row_offset[3] + 4
 			}
 		}
@@ -12680,8 +12680,8 @@ UIWidgets.create_score_topics = function (scenegraph_id, size, hover_hotspot_len
 				0
 			},
 			{
-				math.min(box_size[1]/background_texture_settings.size[1], 1),
-				math.min(box_size[2]/background_texture_settings.size[2], 1)
+				math.min(box_size[1] / background_texture_settings.size[1], 1),
+				math.min(box_size[2] / background_texture_settings.size[2], 1)
 			}
 		},
 		texture_id = background_texture
@@ -12787,7 +12787,7 @@ UIWidgets.create_score_topics = function (scenegraph_id, size, hover_hotspot_len
 	for k = 1, num_rows, 1 do
 		local line_suffix = "_" .. k
 		local row_name = "row_bg" .. line_suffix
-		local line_height_offset = -(k*row_size[2])
+		local line_height_offset = -(k * row_size[2])
 		local row_offset = {
 			offset[1],
 			(offset[2] + size[2]) - row_start + line_height_offset,
@@ -12835,7 +12835,7 @@ UIWidgets.create_score_topics = function (scenegraph_id, size, hover_hotspot_len
 					255
 				},
 				offset = {
-					row_offset[1] - hover_hotspot_length/2 + row_size[1]/2,
+					row_offset[1] - hover_hotspot_length / 2 + row_size[1] / 2,
 					row_offset[2],
 					row_offset[3]
 				}
@@ -12975,8 +12975,8 @@ UIWidgets.create_score_topics = function (scenegraph_id, size, hover_hotspot_len
 				255
 			},
 			offset = {
-				(row_offset[1] + row_size[1]/2) - 35.5,
-				(row_offset[2] + row_size[2]/2) - 19.5,
+				(row_offset[1] + row_size[1] / 2) - 35.5,
+				(row_offset[2] + row_size[2] / 2) - 19.5,
 				row_offset[3] + 2
 			}
 		}
@@ -13017,9 +13017,9 @@ UIWidgets.create_page_dot_selector = function (scenegraph_id, amount)
 	local slot_width_spacing = 40
 	local offset_layer = 0
 	local total_length = 0
-	local length_with_spacing = slot_size[1]*amount + slot_width_spacing*(amount - 1)
-	local tab_width = length_with_spacing/amount
-	local start_width_offset = -length_with_spacing/2
+	local length_with_spacing = slot_size[1] * amount + slot_width_spacing * (amount - 1)
+	local tab_width = length_with_spacing / amount
+	local start_width_offset = -length_with_spacing / 2
 
 	for k = 1, amount, 1 do
 		local name_suffix = "_" .. tostring(k)

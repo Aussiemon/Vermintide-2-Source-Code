@@ -499,12 +499,13 @@ PowerLevelTemplates = {
 	},
 	targets_linesman_executioner_H = {
 		{
-			boost_curve_type = "linesman_curve",
 			boost_curve_coefficient_headshot = 2,
+			boost_curve_type = "linesman_curve",
+			boost_curve_coefficient = 0.75,
 			attack_template = "slashing_linesman",
 			power_distribution = {
-				attack = 0.25,
-				impact = 0.15
+				attack = 0.275,
+				impact = 0.25
 			}
 		},
 		{
@@ -610,7 +611,7 @@ PowerLevelTemplates = {
 	critical_strike_axe_linesman_L = {
 		attack_armor_power_modifer = {
 			1,
-			1,
+			0.5,
 			1.5,
 			1,
 			1
@@ -653,15 +654,16 @@ PowerLevelTemplates = {
 	},
 	targets_axe_linesman_L = {
 		{
+			boost_curve_coefficient_headshot = 2,
 			boost_curve_type = "linesman_curve",
 			attack_template = "heavy_slashing_linesman",
 			power_distribution = {
 				attack = 0.2,
-				impact = 0.125
+				impact = 0.175
 			},
 			armor_modifier = {
 				attack = {
-					0.9,
+					1,
 					0.5,
 					1.5,
 					1,
@@ -731,7 +733,6 @@ PowerLevelTemplates = {
 	},
 	default_target_axe_linesman_M = {
 		boost_curve_type = "linesman_curve",
-		boost_curve_coefficient_headshot = 1.5,
 		attack_template = "light_slashing_linesman",
 		power_distribution = {
 			attack = 0.075,
@@ -740,15 +741,16 @@ PowerLevelTemplates = {
 	},
 	targets_axe_linesman_M = {
 		{
+			boost_curve_coefficient_headshot = 1.5,
 			boost_curve_type = "linesman_curve",
 			attack_template = "heavy_slashing_linesman",
 			power_distribution = {
 				attack = 0.25,
-				impact = 0.15
+				impact = 0.2
 			},
 			armor_modifier = {
 				attack = {
-					0.9,
+					1,
 					0.5,
 					1.5,
 					1,
@@ -783,7 +785,7 @@ PowerLevelTemplates = {
 	critical_strike_axe_linesman_H = {
 		attack_armor_power_modifer = {
 			1,
-			1,
+			0.5,
 			1.5,
 			1,
 			1
@@ -818,6 +820,7 @@ PowerLevelTemplates = {
 	},
 	default_target_axe_linesman_H = {
 		boost_curve_type = "linesman_curve",
+		boost_curve_coefficient_headshot = 0.75,
 		attack_template = "light_slashing_linesman",
 		power_distribution = {
 			attack = 0.1,
@@ -826,11 +829,12 @@ PowerLevelTemplates = {
 	},
 	targets_axe_linesman_H = {
 		{
+			boost_curve_coefficient_headshot = 0.75,
 			boost_curve_type = "linesman_curve",
 			attack_template = "heavy_slashing_linesman",
 			power_distribution = {
-				attack = 0.3,
-				impact = 0.2
+				attack = 0.35,
+				impact = 0.25
 			},
 			armor_modifier = {
 				attack = {
@@ -851,14 +855,16 @@ PowerLevelTemplates = {
 		},
 		{
 			boost_curve_type = "linesman_curve",
+			boost_curve_coefficient_headshot = 0.75,
 			attack_template = "slashing_linesman",
 			power_distribution = {
-				attack = 0.175,
+				attack = 0.25,
 				impact = 0.15
 			}
 		},
 		{
 			boost_curve_type = "linesman_curve",
+			boost_curve_coefficient_headshot = 0.75,
 			attack_template = "light_slashing_linesman",
 			power_distribution = {
 				attack = 0.125,
@@ -873,7 +879,23 @@ PowerLevelTemplates = {
 	critical_strike_smiter_L = {
 		attack_armor_power_modifer = {
 			1,
+			0.75,
+			1.5,
 			1,
+			1
+		},
+		impact_armor_power_modifer = {
+			1,
+			1,
+			1,
+			1,
+			1
+		}
+	},
+	critical_strike_smiter_L_dual_light = {
+		attack_armor_power_modifer = {
+			1,
+			0.3,
 			1.5,
 			1,
 			1
@@ -946,7 +968,7 @@ PowerLevelTemplates = {
 	critical_strike_smiter_M = {
 		attack_armor_power_modifer = {
 			1,
-			1,
+			0.8,
 			1.5,
 			1,
 			1
@@ -1023,7 +1045,7 @@ PowerLevelTemplates = {
 	critical_strike_smiter_H = {
 		attack_armor_power_modifer = {
 			1,
-			1,
+			0.5,
 			1.5,
 			1,
 			1
@@ -1053,8 +1075,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_smiter_H = {
+		boost_curve_coefficient_headshot = 0.75,
 		boost_curve_type = "smiter_curve",
-		boost_curve_coefficient_headshot = 1,
+		boost_curve_coefficient = 0.75,
 		attack_template = "heavy_slashing_smiter",
 		power_distribution = {
 			attack = 0.65,
@@ -1062,8 +1085,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_smiter_executioner_H = {
-		boost_curve_type = "ninja_curve",
 		boost_curve_coefficient_headshot = 2,
+		boost_curve_type = "ninja_curve",
+		boost_curve_coefficient = 0.75,
 		attack_template = "heavy_slashing_smiter_hs",
 		power_distribution = {
 			attack = 0.65,
@@ -1071,8 +1095,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_smiter_H_charged = {
+		boost_curve_coefficient_headshot = 1,
 		boost_curve_type = "smiter_curve",
-		boost_curve_coefficient_headshot = 1.5,
+		boost_curve_coefficient = 0.5,
 		attack_template = "heavy_blunt_smiter",
 		power_distribution = {
 			attack = 1.2,
@@ -1083,7 +1108,7 @@ PowerLevelTemplates = {
 	critical_strike_stab_smiter_L = {
 		attack_armor_power_modifer = {
 			1,
-			1,
+			0.5,
 			1.5,
 			1,
 			1
@@ -1113,8 +1138,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_stab_smiter_L = {
-		boost_curve_type = "smiter_curve",
 		boost_curve_coefficient_headshot = 2,
+		boost_curve_type = "smiter_curve",
+		boost_curve_coefficient = 0.75,
 		attack_template = "stab_smiter",
 		power_distribution = {
 			attack = 0.2,
@@ -1125,7 +1151,7 @@ PowerLevelTemplates = {
 	critical_strike_stab_smiter_M = {
 		attack_armor_power_modifer = {
 			1,
-			1,
+			0.5,
 			1.5,
 			1,
 			1
@@ -1180,8 +1206,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_stab_smiter_M_1h = {
-		boost_curve_type = "ninja_curve",
 		boost_curve_coefficient_headshot = 2,
+		boost_curve_type = "ninja_curve",
+		boost_curve_coefficient = 0.75,
 		attack_template = "stab_smiter",
 		power_distribution = {
 			attack = 0.25,
@@ -1192,7 +1219,7 @@ PowerLevelTemplates = {
 	critical_strike_stab_smiter_H = {
 		attack_armor_power_modifer = {
 			1,
-			1,
+			0.3,
 			1.5,
 			1,
 			1
@@ -1208,7 +1235,7 @@ PowerLevelTemplates = {
 	armor_modifier_stab_smiter_H = {
 		attack = {
 			1,
-			0.5,
+			0.3,
 			1.5,
 			1,
 			0.75
@@ -1222,8 +1249,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_stab_smiter_H = {
-		boost_curve_type = "ninja_curve",
 		boost_curve_coefficient_headshot = 2,
+		boost_curve_type = "ninja_curve",
+		boost_curve_coefficient = 0.75,
 		attack_template = "stab_smiter",
 		power_distribution = {
 			attack = 0.35,
@@ -1287,6 +1315,17 @@ PowerLevelTemplates = {
 		power_distribution = {
 			attack = 0.1,
 			impact = 0.1
+		}
+	},
+	targets_fencer_stab_L = {},
+	default_target_maidenguard_dash_ability = {
+		dot_template_name = "weapon_bleed_dot_test",
+		boost_curve_coefficient_headshot = 3,
+		boost_curve_type = "ninja_curve",
+		attack_template = "light_stab_smiter",
+		power_distribution = {
+			attack = 0,
+			impact = 0.125
 		}
 	},
 	targets_fencer_stab_L = {},
@@ -1526,7 +1565,7 @@ PowerLevelTemplates = {
 	critical_strike_burning_tank_M = {
 		attack_armor_power_modifer = {
 			1,
-			0.4,
+			0.5,
 			1,
 			1,
 			1
@@ -1695,7 +1734,7 @@ PowerLevelTemplates = {
 	},
 	cleave_distribution_tank_H = {
 		attack = 0.2,
-		impact = 0.6
+		impact = 0.8
 	},
 	default_target_tank_H = {
 		boost_curve_type = "tank_curve",

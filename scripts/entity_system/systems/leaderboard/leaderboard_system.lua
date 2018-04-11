@@ -38,17 +38,17 @@ local PRECISION = 10000000
 local function calculate_wave_score(nr_waves_completed, completion_time)
 	assert(nr_waves_completed <= 200 and completion_time <= 10800, "Leaderboard error: Too many waves or too long playtime!")
 
-	local wave_score = PRECISION*nr_waves_completed
-	local time_score = math.floor(PRECISION/completion_time) - 1
+	local wave_score = PRECISION * nr_waves_completed
+	local time_score = math.floor(PRECISION / completion_time) - 1
 	local final_score = wave_score + time_score
 
 	return final_score
 end
 
 function get_wave_and_time_from_score(score)
-	local nr_waves_completed = math.floor(score/PRECISION)
-	local rest = score%PRECISION
-	local completion_time = math.floor(PRECISION/(rest + 1))
+	local nr_waves_completed = math.floor(score / PRECISION)
+	local rest = score % PRECISION
+	local completion_time = math.floor(PRECISION / (rest + 1))
 
 	return nr_waves_completed, completion_time
 end

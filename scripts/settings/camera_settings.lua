@@ -5,7 +5,7 @@ CameraTweaks = CameraTweaks or {}
 CameraTweaks.zoom = {
 	scale = 0.1,
 	interpolation_function = function (current, target, dt)
-		return math.lerp(current, target, dt*7)
+		return math.lerp(current, target, dt * 7)
 	end
 }
 local THIRD_PERSON_TRANSITIONS = {

@@ -104,7 +104,6 @@ StartMenuStateOverview.create_ui_elements = function (self, params)
 	UIRenderer.clear_scenegraph_queue(self.ui_top_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
-	widgets_by_name.tutorial_button.content.button_hotspot.disable_button = true
 
 	return 
 end
@@ -259,7 +258,7 @@ StartMenuStateOverview.cb_hero_unit_spawned = function (self, hero_name)
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
 	local career_settings = careers[career_index]
-	local preview_animation = career_settings.preview_animation
+	local preview_idle_animation = career_settings.preview_idle_animation
 	local preview_wield_slot = career_settings.preview_wield_slot
 	local preview_items = career_settings.preview_items
 
@@ -279,8 +278,8 @@ StartMenuStateOverview.cb_hero_unit_spawned = function (self, hero_name)
 		end
 	end
 
-	if preview_animation then
-		self.world_previewer:play_character_animation(preview_animation)
+	if preview_idle_animation then
+		self.world_previewer:play_character_animation(preview_idle_animation)
 	end
 
 	return 
@@ -472,7 +471,7 @@ StartMenuStateOverview._on_option_button_hover = function (self, widget, style_i
 	local current_color_value = pass_style.color[2]
 	local target_color_value = 255
 	local total_time = UISettings.scoreboard.topic_hover_duration
-	local animation_duration = (current_color_value/target_color_value - 1)*total_time
+	local animation_duration = (1 - current_color_value / target_color_value) * total_time
 
 	for i = 2, 4, 1 do
 		if 0 < animation_duration then
@@ -492,7 +491,7 @@ StartMenuStateOverview._on_option_button_dehover = function (self, widget, style
 	local current_color_value = pass_style.color[1]
 	local target_color_value = 100
 	local total_time = UISettings.scoreboard.topic_hover_duration
-	local animation_duration = current_color_value/255*total_time
+	local animation_duration = current_color_value / 255 * total_time
 
 	for i = 2, 4, 1 do
 		if 0 < animation_duration then

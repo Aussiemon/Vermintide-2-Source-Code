@@ -27,14 +27,14 @@ BackendUtils.get_hero_power_level_from_level = function (profile_name)
 	local experience = ExperienceSettings.get_experience(profile_name)
 	local level = ExperienceSettings.get_level(experience)
 
-	return settings.power_level_per_level*level
+	return settings.power_level_per_level * level
 end
 BackendUtils.get_hero_power_level = function (profile_name)
 	local settings = PowerLevelFromLevelSettings
 	local experience = ExperienceSettings.get_experience(profile_name)
 	local level = ExperienceSettings.get_level(experience)
 
-	return settings.power_level_per_level*level + settings.starting_power_level
+	return settings.power_level_per_level * level + settings.starting_power_level
 end
 BackendUtils.get_average_item_power_level = function (career_name)
 	local backend_items = Managers.backend:get_interface("items")
@@ -56,7 +56,7 @@ BackendUtils.get_average_item_power_level = function (career_name)
 		end
 	end
 
-	return total_item_power_level/num_slots
+	return total_item_power_level / num_slots
 end
 BackendUtils.get_total_power_level = function (profile_name, career_name)
 	if script_data.power_level_override then

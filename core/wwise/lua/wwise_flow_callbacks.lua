@@ -356,7 +356,7 @@ M.wwise_get_playing_elapsed = function (t)
 	local wwise_world = Wwise.wwise_world(Application.flow_callback_context_world())
 	local elapsed_in_ms = WwiseWorld.get_playing_elapsed(wwise_world, id)
 	elapsed_in_ms = elapsed_in_ms or 0
-	local seconds = elapsed_in_ms/1000
+	local seconds = elapsed_in_ms / 1000
 
 	return {
 		seconds = seconds,

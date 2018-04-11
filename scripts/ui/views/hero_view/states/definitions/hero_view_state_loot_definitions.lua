@@ -209,7 +209,7 @@ local scenegraph_definition = {
 		parent = "item_window",
 		horizontal_alignment = "right",
 		size = {
-			grid_size[1]*0.4,
+			grid_size[1] * 0.4,
 			42
 		},
 		position = {
@@ -237,7 +237,7 @@ local scenegraph_definition = {
 		parent = "item_window",
 		horizontal_alignment = "left",
 		size = {
-			grid_size[1]*0.4,
+			grid_size[1] * 0.4,
 			42
 		},
 		position = {
@@ -279,7 +279,7 @@ local scenegraph_definition = {
 		parent = "item_window",
 		horizontal_alignment = "center",
 		size = {
-			grid_size[1]*0.2,
+			grid_size[1] * 0.2,
 			42
 		},
 		position = {
@@ -510,6 +510,20 @@ local scenegraph_definition = {
 			100,
 			0,
 			1
+		}
+	},
+	item_cap_warning_text = {
+		vertical_alignment = "bottom",
+		parent = "open_button",
+		horizontal_alignment = "center",
+		size = {
+			500,
+			100
+		},
+		position = {
+			0,
+			100,
+			10
 		}
 	},
 	open_button = {
@@ -755,6 +769,22 @@ local sub_title_text_style = {
 		2
 	}
 }
+local warning_text_style = {
+	word_wrap = true,
+	upper_case = false,
+	localize = false,
+	use_shadow = true,
+	font_size = 36,
+	horizontal_alignment = "center",
+	vertical_alignment = "bottom",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("red", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
 local info_title_text_style = {
 	word_wrap = true,
 	upper_case = false,
@@ -797,7 +827,7 @@ local page_number_left_text_style = {
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
-		-(grid_size[1]*0.1 + 5),
+		-(grid_size[1] * 0.1 + 5),
 		4,
 		2
 	}
@@ -812,7 +842,7 @@ local page_number_right_text_style = {
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
-		grid_size[1]*0.1 + 4,
+		grid_size[1] * 0.1 + 4,
 		4,
 		2
 	}
@@ -1157,8 +1187,8 @@ local function create_loot_widget(index, size)
 				400
 			},
 			offset = {
-				size[1]/2 - 200,
-				size[2]/2 - 200,
+				size[1] / 2 - 200,
+				size[2] / 2 - 200,
 				0
 			}
 		},
@@ -1514,7 +1544,7 @@ local function create_loot_widget(index, size)
 				80
 			},
 			offset = {
-				size[1]/2 - 40,
+				size[1] / 2 - 40,
 				-40,
 				14
 			},
@@ -1652,7 +1682,7 @@ local function create_loot_widget(index, size)
 				80
 			},
 			offset = {
-				size[1]/2 - 40,
+				size[1] / 2 - 40,
 				-40,
 				4
 			}
@@ -1891,7 +1921,8 @@ local widgets = {
 		0
 	}),
 	open_button = UIWidgets.create_default_button("open_button", scenegraph_definition.open_button.size, nil, nil, Localize("interaction_action_open"), 32, "green"),
-	close_button = UIWidgets.create_default_button("close_button", scenegraph_definition.close_button.size, nil, nil, Localize("interaction_action_close"), 32)
+	close_button = UIWidgets.create_default_button("close_button", scenegraph_definition.close_button.size, nil, nil, Localize("interaction_action_close"), 32),
+	item_cap_warning_text = UIWidgets.create_simple_text(Localize("item_cap_warning_text"), "item_cap_warning_text", nil, nil, warning_text_style)
 }
 local option_background_widgets = {
 	loot_background_1 = UIWidgets.create_background("loot_option_1", scenegraph_definition.loot_option_1.size, "item_tooltip_background_old"),
@@ -1969,8 +2000,8 @@ local animation_definitions = {
 				local scenegraph_id = widget.scenegraph_id
 				local definition = scenegraph_definition[scenegraph_id]
 				local definition_size = definition.size
-				offset[1] = math.catmullrom(bounce_anim_progress, 10, 1, 1, -1)*5 - 5
-				offset[2] = math.catmullrom(bounce_anim_progress, -1, 1, 1, 10)*5 - 5
+				offset[1] = 5 - 5 * math.catmullrom(bounce_anim_progress, 10, 1, 1, -1)
+				offset[2] = 5 - 5 * math.catmullrom(bounce_anim_progress, -1, 1, 1, 10)
 
 				return 
 			end,
@@ -1989,11 +2020,11 @@ local animation_definitions = {
 				local anim_progress = math.easeOutCubic(progress)
 				local content = widget.content
 				local style = widget.style
-				style.lock_bottom_glow.color[1] = math.max(style.lock_bottom_glow.color[1], style.lock_bottom_glow.default_color[1]*anim_progress)
-				style.lock_bottom_glow_2.color[1] = math.max(style.lock_bottom_glow_2.color[1], style.lock_bottom_glow_2.default_color[1]*anim_progress)
-				style.lock_glow.color[1] = math.min(style.lock_glow.color[1], style.lock_glow.default_color[1]*(anim_progress - 1))
-				style.lock_glow_1.color[1] = math.min(style.lock_glow_1.color[1], style.lock_glow_1.default_color[1]*(anim_progress - 1))
-				style.lock_glow_2.color[1] = math.min(style.lock_glow_2.color[1], style.lock_glow_2.default_color[1]*(anim_progress - 1))
+				style.lock_bottom_glow.color[1] = math.max(style.lock_bottom_glow.color[1], style.lock_bottom_glow.default_color[1] * anim_progress)
+				style.lock_bottom_glow_2.color[1] = math.max(style.lock_bottom_glow_2.color[1], style.lock_bottom_glow_2.default_color[1] * anim_progress)
+				style.lock_glow.color[1] = math.min(style.lock_glow.color[1], style.lock_glow.default_color[1] * (1 - anim_progress))
+				style.lock_glow_1.color[1] = math.min(style.lock_glow_1.color[1], style.lock_glow_1.default_color[1] * (1 - anim_progress))
+				style.lock_glow_2.color[1] = math.min(style.lock_glow_2.color[1], style.lock_glow_2.default_color[1] * (1 - anim_progress))
 
 				return 
 			end,
@@ -2023,7 +2054,7 @@ local animation_definitions = {
 				local scenegraph_id = widget.scenegraph_id
 				local definition = scenegraph_definition[scenegraph_id]
 				local definition_size = definition.size
-				local new_height = anim_progress*400
+				local new_height = anim_progress * 400
 				ui_scenegraph[scenegraph_id].size[2] = new_height
 				local reward_option = params.reward_option
 				local background_widget = reward_option.background_widget
@@ -2031,7 +2062,7 @@ local animation_definitions = {
 				local background_uvs = background_content.uvs
 				local background_texture = background_content.texture_id
 				local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-				background_uvs[2][2] = math.min(new_height/background_texture_settings.size[2], 1)
+				background_uvs[2][2] = math.min(new_height / background_texture_settings.size[2], 1)
 				style.item_name.offset[2] = new_height + 182 + 35
 				style.item_name_shadow.offset[2] = style.item_name.offset[2] - 2
 				style.item_type.offset[2] = (new_height + 182) - 5
@@ -2086,9 +2117,9 @@ local animation_definitions = {
 				local anim_progress = math.easeOutCubic(progress)
 				local content = widget.content
 				local style = widget.style
-				style.final_glow.color[1] = math.max(style.final_glow.color[1], style.final_glow.default_color[1]*anim_progress)
-				style.final_glow_1.color[1] = math.max(style.final_glow_1.color[1], style.final_glow_1.default_color[1]*anim_progress)
-				style.final_glow_2.color[1] = math.max(style.final_glow_2.color[1], style.final_glow_2.default_color[1]*anim_progress)
+				style.final_glow.color[1] = math.max(style.final_glow.color[1], style.final_glow.default_color[1] * anim_progress)
+				style.final_glow_1.color[1] = math.max(style.final_glow_1.color[1], style.final_glow_1.default_color[1] * anim_progress)
+				style.final_glow_2.color[1] = math.max(style.final_glow_2.color[1], style.final_glow_2.default_color[1] * anim_progress)
 
 				return 
 			end,
@@ -2107,7 +2138,7 @@ local animation_definitions = {
 				local anim_progress = math.easeOutCubic(progress)
 				local content = widget.content
 				local style = widget.style
-				local alpha = anim_progress*255
+				local alpha = 255 * anim_progress
 				style.item_name.text_color[1] = alpha
 				style.item_name_shadow.text_color[1] = alpha
 				style.item_type.text_color[1] = alpha
@@ -2153,7 +2184,7 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress - 1
+				params.render_settings.alpha_multiplier = 1 - anim_progress
 
 				return 
 			end,
