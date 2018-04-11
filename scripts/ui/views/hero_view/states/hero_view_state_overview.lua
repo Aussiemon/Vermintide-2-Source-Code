@@ -57,6 +57,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 		snap_pixel_positions = true
 	}
 	self.wwise_world = params.wwise_world
+	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.world_previewer = params.world_previewer
 	self.platform = PLATFORM
 	local player_manager = Managers.player
@@ -335,6 +336,14 @@ HeroViewStateOverview.on_exit = function (self, params)
 
 	local active_windows = self._active_windows
 	local params = self._window_params
+	local loadout_changed = 0 < self.loadout_sync_id
+	local talent_changed = 0 < self.talent_sync_id
+	local skin_changed = 0 < self.skin_sync_id
+	local respawn = skin_changed
+
+	if respawn then
+		self.ingame_ui:respawn()
+	end
 
 	for _, window in pairs(active_windows) do
 		if window.on_exit then
@@ -374,12 +383,6 @@ HeroViewStateOverview.update = function (self, dt, t)
 	self._update_transition_timer(self, dt)
 	self._windows_update(self, dt, t)
 
-	local respawning = self._respawning
-
-	if respawning then
-		self.update_respawning(self)
-	end
-
 	local transitioning = self.parent:transitioning()
 	local wanted_state = self._wanted_state(self)
 
@@ -409,47 +412,6 @@ HeroViewStateOverview._has_active_level_vote = function (self)
 	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
 
 	return is_mission_vote and not voting_manager.has_voted(voting_manager, Network.peer_id())
-end
-HeroViewStateOverview.update_respawning = function (self)
-	if self._despawning_player_unit then
-		if not Unit.alive(self._despawning_player_unit) then
-			self.profile_synchronizer:request_select_profile(self.profile_index, self.local_player_id)
-
-			self._despawning_player_unit = nil
-
-			if self.is_server then
-				Managers.state.network.network_server:peer_despawned_player(self.peer_id)
-			end
-		end
-
-		return 
-	end
-
-	local result, result_local_player_id = self.profile_synchronizer:profile_request_result()
-
-	assert(not result or self.local_player_id == result_local_player_id, "Local player id mismatch between ui and request.")
-
-	if result then
-		self._respawning = nil
-
-		self.profile_synchronizer:clear_profile_request_result()
-
-		if self.is_server then
-			Managers.state.network.network_server:peer_respawn_player(self.peer_id)
-		else
-			Managers.state.network.network_transmit:send_rpc_server("rpc_client_respawn_player")
-		end
-
-		local ignore_sound_on_close_menu = self._ignore_sound_on_close_menu
-
-		if self._on_close_next_state then
-			self.parent:requested_screen_change_by_name(self._on_close_next_state)
-		else
-			self.parent:close_menu(nil, ignore_sound_on_close_menu)
-		end
-	end
-
-	return 
 end
 HeroViewStateOverview.post_update = function (self, dt, t)
 	self.ui_animator:update(dt)
@@ -525,38 +487,10 @@ HeroViewStateOverview._handle_input = function (self, dt, t)
 	return 
 end
 HeroViewStateOverview.close_menu = function (self, ignore_sound_on_close_menu)
-	local loadout_changed = 0 < self.loadout_sync_id
-	local talent_changed = 0 < self.talent_sync_id
-	local skin_changed = 0 < self.skin_sync_id
-	local respawn = skin_changed
-
-	if respawn then
-		self.respawn(self)
-
-		self._ignore_sound_on_close_menu = ignore_sound_on_close_menu
-	elseif self._on_close_next_state then
+	if self._on_close_next_state then
 		self.parent:requested_screen_change_by_name(self._on_close_next_state)
 	else
 		self.parent:close_menu(nil, ignore_sound_on_close_menu)
-	end
-
-	return 
-end
-HeroViewStateOverview.respawn = function (self)
-	local player = self.player_manager:player_from_peer_id(self.peer_id)
-	local player_unit = player.player_unit
-
-	if player_unit then
-		local position = Unit.world_position(player_unit, 0)
-		local rotation = Unit.world_rotation(player_unit, 0)
-
-		player.set_spawn_position_rotation(player, position, rotation)
-
-		self._despawning_player_unit = player.player_unit
-
-		player.despawn(player)
-
-		self._respawning = true
 	end
 
 	return 

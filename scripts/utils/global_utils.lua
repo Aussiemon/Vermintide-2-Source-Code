@@ -198,6 +198,7 @@ function UPDATE_PLAYER_LISTS()
 end
 
 function REMOVE_PLAYER_UNIT_FROM_LISTS(player_unit)
+	POSITION_LOOKUP[player_unit] = nil
 	local player_units = PLAYER_UNITS
 	local player_positions = PLAYER_POSITIONS
 	local size = #player_units

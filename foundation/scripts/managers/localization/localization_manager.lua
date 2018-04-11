@@ -20,12 +20,11 @@ LocalizationManager.add_macro = function (self, macro, callback_function)
 
 	return 
 end
+LocalizationManager.language_id = function (self)
+	return self._language_id
+end
 LocalizationManager.text_to_upper = function (self, text)
-	if self._language_id == "en" then
-		return string.upper(text)
-	end
-
-	return text
+	return Utf8.upper(text)
 end
 LocalizationManager.lookup = function (self, text_id)
 	if script_data.show_longest_localizations then

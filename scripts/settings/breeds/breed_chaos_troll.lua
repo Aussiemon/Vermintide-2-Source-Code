@@ -196,8 +196,8 @@ local breed_data = {
 		1
 	},
 	health_regen_per_sec = {
-		1.5,
-		1.5,
+		0.5,
+		0.5,
 		2,
 		5,
 		10
@@ -1166,7 +1166,7 @@ local action_data = {
 		standup_anim_duration = 5,
 		reset_duration = 5,
 		reduce_hp_permanently = true,
-		respawn_hp_min_percent = 0.6,
+		respawn_hp_min_percent = 0.5,
 		min_downed_duration = 3,
 		become_downed_hp_percent = 0.4,
 		downed_duration = 7

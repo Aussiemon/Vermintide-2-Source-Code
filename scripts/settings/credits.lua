@@ -159,11 +159,16 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan Vargek",
+			text = "Mikael Sundvall",
 			type = "person"
 		},
 		{
-			text = "Mikael Sundvall",
+			text = "credits_technical_level_designer",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Johan Vargek",
 			type = "person"
 		},
 		{
@@ -246,11 +251,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Christoffer Wiss",
-			type = "person"
-		},
-		{
-			text = "Daniel Morja",
+			text = "Elias Stolt",
 			type = "person"
 		},
 		{
@@ -259,7 +260,11 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Elias Stolt",
+			text = "Christoffer Wiss",
+			type = "person"
+		},
+		{
+			text = "Daniel Morja",
 			type = "person"
 		},
 		{
@@ -556,6 +561,59 @@ local Credits = {
 			type = "person"
 		},
 		{
+			text = "credits_quality_assurance_manager",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Otto Elggren",
+			type = "person"
+		},
+		{
+			text = "credits_qa_release_specialist",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Emilia Johansson Kiviaho",
+			type = "person"
+		},
+		{
+			text = "credits_qa_console_specialist",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Rasmus Liljenberg",
+			type = "person"
+		},
+		{
+			text = "credits_quality_assurance",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Eric Sernfalk",
+			type = "person"
+		},
+		{
+			text = "credits_additional_quality_assurance",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Philip Johansson",
+			type = "person"
+		},
+		{
+			text = "Emelie Isacsson",
+			type = "person"
+		},
+		{
+			text = "Tomas Lundgren",
+			type = "person"
+		},
+		{
 			text = "credits_marketing_manager",
 			localized = true,
 			type = "title"
@@ -668,59 +726,6 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "credits_quality_assurance_manager",
-			localized = true,
-			type = "title"
-		},
-		{
-			text = "Otto Elggren",
-			type = "person"
-		},
-		{
-			text = "credits_qa_release_specialist",
-			localized = true,
-			type = "title"
-		},
-		{
-			text = "Emilia Johansson Kiviaho",
-			type = "person"
-		},
-		{
-			text = "credits_qa_console_specialist",
-			localized = true,
-			type = "title"
-		},
-		{
-			text = "Rasmus Liljenberg",
-			type = "person"
-		},
-		{
-			text = "credits_quality_assurance",
-			localized = true,
-			type = "title"
-		},
-		{
-			text = "Eric Sernfalk",
-			type = "person"
-		},
-		{
-			text = "credits_additional_quality_assurance",
-			localized = true,
-			type = "title"
-		},
-		{
-			text = "Philip_Johansson",
-			type = "person"
-		},
-		{
-			text = "Emelie_Isacsson",
-			type = "person"
-		},
-		{
-			text = "Tomas_Lundgren",
-			type = "person"
-		},
-		{
 			text = "credits_office_managers",
 			localized = true,
 			type = "title"
@@ -761,8 +766,8 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Art",
-			localized = false,
+			text = "credits_art",
+			localized = true,
 			type = "header"
 		},
 		{
@@ -834,8 +839,8 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "CG Supervision",
-			localized = false,
+			text = "credits_cg_supervision",
+			localized = true,
 			type = "header"
 		},
 		{
@@ -843,8 +848,8 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Tech anim direction",
-			localized = false,
+			text = "credits_technical_director",
+			localized = true,
 			type = "header"
 		},
 		{
@@ -1024,7 +1029,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Credits Marauders",
+			text = "Marauders",
 			localized = false,
 			type = "title"
 		},
@@ -1104,12 +1109,24 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Production Baby",
+			text = "Production Babies",
 			localized = false,
 			type = "header"
 		},
 		{
 			text = "August Jonas Link Hellberg",
+			type = "person"
+		},
+		{
+			text = "Juni Löfdahl",
+			type = "person"
+		},
+		{
+			text = "Esther Villabona Djuric",
+			type = "person"
+		},
+		{
+			text = "Anton Eneqvist Gimeno",
 			type = "person"
 		},
 		{

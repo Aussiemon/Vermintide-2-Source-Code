@@ -619,6 +619,18 @@ UtilityConsiderations = {
 		target_is_not_downed = {
 			blackboard_input = "target_is_not_downed",
 			is_condition = true
+		},
+		time_since_last = {
+			max_value = 2,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.95,
+				0,
+				1,
+				1
+			}
 		}
 	},
 	troll_melee_sweep = {
@@ -1188,10 +1200,22 @@ UtilityConsiderations = {
 				1,
 				0.52,
 				1,
-				0.9,
+				0.55,
 				0,
 				1,
 				0
+			}
+		},
+		time_since_last = {
+			max_value = 2,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.95,
+				0,
+				1,
+				1
 			}
 		}
 	},

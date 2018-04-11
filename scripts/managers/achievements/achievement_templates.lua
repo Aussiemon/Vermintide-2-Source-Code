@@ -139,7 +139,7 @@ AchievementTemplates = {
 			return LevelUnlockUtils.act_completed(statistics_db, stats_id, "act_3")
 		end
 	},
-	complete_skittergate_normal = {
+	complete_skittergate_recruit = {
 		ID_XB1 = "TROP005",
 		ID_PS4 = "TROP005",
 		context = "in_inn",
@@ -151,7 +151,7 @@ AchievementTemplates = {
 			}, diff)
 		end
 	},
-	complete_skittergate_hard = {
+	complete_skittergate_veteran = {
 		ID_XB1 = "TROP006",
 		ID_PS4 = "TROP006",
 		context = "in_inn",
@@ -163,7 +163,7 @@ AchievementTemplates = {
 			}, diff)
 		end
 	},
-	complete_skittergate_nightmare = {
+	complete_skittergate_champion = {
 		ID_XB1 = "TROP007",
 		ID_PS4 = "TROP007",
 		context = "in_inn",
@@ -175,7 +175,7 @@ AchievementTemplates = {
 			}, diff)
 		end
 	},
-	complete_skittergate_cataclysm = {
+	complete_skittergate_legend = {
 		ID_XB1 = "TROP008",
 		ID_PS4 = "TROP008",
 		context = "in_inn",

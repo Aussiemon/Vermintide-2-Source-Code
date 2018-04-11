@@ -690,14 +690,18 @@ PlayFabMirror._commit_internal = function (self, queue_id, skip_queue)
 		updates_to_make = num_updates
 	}
 	self._commit_current_id = commit_id
-	local save_statistics_cb = callback(self, "save_statistics_cb", commit_id)
-	local request = Managers.backend:get_interface("statistics"):save(save_statistics_cb)
+	local request = nil
 
-	if request then
-		commit.status = "waiting"
-		commit.wait_for_stats = true
+	if skip_queue then
+		local save_statistics_cb = callback(self, "save_statistics_cb", commit_id)
+		request = Managers.backend:get_interface("statistics"):save(save_statistics_cb)
 
-		self._request_queue:enqueue("save_statistics", request, skip_queue)
+		if request then
+			commit.status = "waiting"
+			commit.wait_for_stats = true
+
+			self._request_queue:enqueue("save_statistics", request, skip_queue)
+		end
 	end
 
 	local save_keep_decorations_cb = callback(self, "save_keep_decorations_cb", commit_id)

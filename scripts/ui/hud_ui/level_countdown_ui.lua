@@ -60,8 +60,15 @@ LevelCountdownUI.update = function (self, dt)
 	if start_time and max_start_time then
 		if self.update_enter_game_counter(self, start_time, max_start_time, dt) then
 			self.draw(self, dt)
+
+			if not self._timer_active then
+				self.ingame_ui:handle_transition("close_active")
+
+				self._timer_active = true
+			end
 		else
 			self.last_timer_value = max_start_time
+			self._timer_active = false
 		end
 	end
 
@@ -114,6 +121,7 @@ LevelCountdownUI.stop_enter_game_countdown = function (self)
 	self.enter_game = nil
 	self.enter_game_started = nil
 	self.last_timer_value = nil
+	self._timer_active = nil
 
 	return 
 end

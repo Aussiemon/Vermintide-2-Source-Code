@@ -95,7 +95,7 @@ DamageNumbersUI.event_add_damage_number = function (self, damage, size, unit, ti
 		floating_speed = 150,
 		alpha = 255,
 		size = size,
-		text = damage,
+		text = damage * 100,
 		color = {
 			255,
 			color.x,

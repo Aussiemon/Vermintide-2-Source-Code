@@ -24,10 +24,15 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 				local predicate = "killed_special"
 				local local_human = not attacker_player.remote and not attacker_player.bot_player
 				local profile_index = attacker_player.profile_index(attacker_player)
-				local career_index = attacker_player.career_index(attacker_player)
 				local stats_id = attacker_player.stats_id(attacker_player)
+				local attacker_player_unit = attacker_player.player_unit
 
-				Managers.state.event:trigger("add_coop_feedback_kill", stats_id .. breed_name, local_human, predicate, profile_index, career_index, breed_name)
+				if Unit.alive(attacker_player_unit) then
+					local career_extension = ScriptUnit.extension(attacker_player_unit, "career_system")
+					local career_index = (career_extension and career_extension.career_index(career_extension)) or attacker_player.career_index(attacker_player)
+
+					Managers.state.event:trigger("add_coop_feedback_kill", stats_id .. breed_name, local_human, predicate, profile_index, career_index, breed_name)
+				end
 			end
 
 			statistics_db.increment_stat(statistics_db, stats_id, "kills_per_breed", breed_name)

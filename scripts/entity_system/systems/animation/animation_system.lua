@@ -217,7 +217,9 @@ AnimationSystem._set_variable_by_distance = function (self, unit, anim_variable_
 
 	local initial_distance = Vector3.length(to_target)
 
-	fassert(0 < initial_distance, "Setting initial distance to 0, this will cause div by 0 later.")
+	if initial_distance < 0.001 then
+		initial_distance = 0.001
+	end
 
 	local data = self.anim_variable_update_list[unit]
 

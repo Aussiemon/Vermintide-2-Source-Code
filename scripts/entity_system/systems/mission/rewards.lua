@@ -27,6 +27,8 @@ Rewards.award_end_of_level_rewards = function (self, game_won, hero_name)
 	local deed_manager = Managers.deed
 
 	if game_won and deed_manager.has_deed(deed_manager) and not deed_manager.is_deed_owner(deed_manager) then
+		print("Awarding end of level rewards, found deed! Waiting for owner to consume.")
+
 		self._consuming_deed = true
 		self._end_of_level_info = {
 			game_won = game_won,
@@ -48,6 +50,8 @@ Rewards._award_end_of_level_rewards = function (self, game_won, hero_name)
 	local deed_item_name, deed_item_backend_id = nil
 
 	if Managers.deed:has_deed() then
+		print("Awarding end of level rewards, found deed!")
+
 		local deed_data, deed_backend_id = Managers.deed:active_deed()
 		deed_item_name = deed_data.name
 		deed_item_backend_id = deed_backend_id
@@ -198,6 +202,8 @@ Rewards._generate_end_of_level_loot = function (self, game_won, hero_name, start
 	return 
 end
 Rewards.cb_deed_consumed = function (self)
+	print("Deed has been consumed callback!")
+
 	self._consuming_deed = nil
 	local end_of_level_info = self._end_of_level_info
 	self._end_of_level_info = nil

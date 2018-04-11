@@ -772,7 +772,7 @@ CharacterSelectionStateCharacter._change_profile = function (self, profile_index
 	if player.player_unit then
 		self._despawning_player_unit_profile_change = player.player_unit
 
-		player.despawn(player)
+		Managers.state.spawn:delayed_despawn(player)
 	else
 		profile_synchronizer.request_select_profile(profile_synchronizer, profile_index, self.local_player_id)
 	end
@@ -795,7 +795,7 @@ CharacterSelectionStateCharacter._change_career = function (self, profile_index,
 	if player.player_unit then
 		self._despawning_player_unit_career_change = player_unit
 
-		player.despawn(player)
+		Managers.state.spawn:delayed_despawn(player)
 
 		self._respawn_position = Vector3Box(POSITION_LOOKUP[player_unit])
 		self._respawn_rotation = QuaternionBox(Unit.local_rotation(player_unit, 0))

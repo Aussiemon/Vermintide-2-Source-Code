@@ -50,6 +50,7 @@ SpawnManager.init = function (self, world, is_server, network_event_delegate, un
 	self._checkpoint_data = nil
 	self._forced_bot_profile_index = nil
 	self._respawns_enabled = true
+	self._despawn_queue = {}
 	self._debug_HON6842 = false
 
 	return 
@@ -306,6 +307,29 @@ SpawnManager.update = function (self, dt, t)
 		if self._respawns_enabled and allow_respawns then
 			self._update_respawns(self, dt, t)
 		end
+	end
+
+	if 0 < #self._despawn_queue then
+		self._update_despawns(self)
+	end
+
+	return 
+end
+SpawnManager.delayed_despawn = function (self, player)
+	local despawn_queue = self._despawn_queue
+	despawn_queue[#despawn_queue + 1] = player
+
+	return 
+end
+SpawnManager._update_despawns = function (self)
+	local despawn_queue = self._despawn_queue
+
+	for i = #despawn_queue, 1, -1 do
+		local player = despawn_queue[i]
+
+		player.despawn(player)
+
+		despawn_queue[i] = nil
 	end
 
 	return 

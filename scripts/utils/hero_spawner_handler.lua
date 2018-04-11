@@ -44,7 +44,7 @@ HeroSpawnerHandler.start = function (self)
 
 		self.despawning_player_unit = player.player_unit
 
-		player.despawn(player)
+		Managers.state.spawn:delayed_despawn(player)
 	else
 		self.profile_synchronizer:request_select_profile(self.hero_index, player.local_player_id(player))
 	end

@@ -64,7 +64,7 @@ PlayerCharacterStateDead.update = function (self, unit, input, dt, context, t)
 	if not self.despawned and self.dead_player_destroy_time < time_since_death then
 		local player = Managers.player:unit_owner(unit)
 
-		player.despawn(player)
+		Managers.state.spawn:delayed_despawn(player)
 
 		self.despawned = true
 		MOOD_BLACKBOARD.knocked_down = false

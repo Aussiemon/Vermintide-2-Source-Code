@@ -60,6 +60,8 @@ BulldozerPlayer.despawn = function (self)
 	if Unit.alive(player_unit) then
 		REMOVE_PLAYER_UNIT_FROM_LISTS(player_unit)
 		Managers.state.unit_spawner:mark_for_deletion(player_unit)
+	else
+		print("bulldozer_player was already despanwed. Should not happen.")
 	end
 
 	return 

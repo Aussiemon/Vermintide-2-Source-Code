@@ -554,6 +554,12 @@ StateIngame.on_enter = function (self)
 		end
 	end
 
+	if Managers.deed:has_deed() then
+		local is_owner = Managers.deed:is_deed_owner(self.peer_id)
+
+		printf("Entered StateIngame with a deed active! is_owner(%s)", tostring(is_owner))
+	end
+
 	Managers.state.event:trigger("start_game_time", Managers.state.network:network_time())
 
 	return 

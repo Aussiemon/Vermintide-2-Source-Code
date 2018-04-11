@@ -718,9 +718,11 @@ MatchmakingUI.large_window_set_player_portrait = function (self, index, peer_id)
 	if peer_id then
 		local player_manager = Managers.player
 		local player = player_manager.player(player_manager, peer_id, 1)
+		local player_unit = player and player.player_unit
 
-		if player and player.player_unit then
-			local career_index = player.career_index(player)
+		if Unit.alive(player_unit) then
+			local career_extension = ScriptUnit.extension(player_unit, "career_system")
+			local career_index = (career_extension and career_extension.career_index(career_extension)) or player.career_index(player)
 			local profile_index = player.profile_index(player)
 
 			if career_index and profile_index then

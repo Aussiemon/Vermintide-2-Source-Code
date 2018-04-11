@@ -379,7 +379,7 @@ BuffExtension.update_stat_buff = function (self, stat_buff_index, difference)
 
 	return 
 end
-BuffExtension.remove_buff = function (self, id, debug_print)
+BuffExtension.remove_buff = function (self, id)
 	local buffs = self._buffs
 	local num_buffs = #buffs
 	local end_time = Managers.time:time("game")
@@ -399,8 +399,8 @@ BuffExtension.remove_buff = function (self, id, debug_print)
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
 	end
 
-	if debug_print then
-		local buff_id = id or "-"
+	if script_data.buff_debug then
+		buff_id = id or "-"
 
 		if 1 < num_buffs_removed then
 			printf("### BuffExtension:remove_buff() removed more then one buff id: %d buffs: %s", buff_id, buff_type_name)

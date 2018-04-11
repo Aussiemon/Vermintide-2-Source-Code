@@ -179,6 +179,8 @@ DeedManager.rpc_select_deed = function (self, sender, item_name_id, owner_peer_i
 	return 
 end
 DeedManager.rpc_deed_consumed = function (self, sender)
+	print("Deed has been consumed by owner, act on reward callback!")
+
 	if not self._reward_callback then
 		self._has_consumed_deed = true
 	else
@@ -186,7 +188,8 @@ DeedManager.rpc_deed_consumed = function (self, sender)
 	end
 
 	if self._is_server then
-		self._send_rpc_to_clients_except("rpc_deed_consumed", sender)
+		print("Sending to the other clients to act on deed consume")
+		self._send_rpc_to_clients_except(self, "rpc_deed_consumed", sender)
 	end
 
 	return 

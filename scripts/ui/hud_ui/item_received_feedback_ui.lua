@@ -177,8 +177,10 @@ ItemReceivedFeedbackUI._assign_portrait_texture = function (self, widget, pass_n
 end
 ItemReceivedFeedbackUI.event_give_item_feedback = function (self, hash, giver_player, item_name)
 	local player_1_name = (giver_player and giver_player.name(giver_player)) or nil
+	local player_unit = giver_player and giver_player.player_unit
+	local career_extension = Unit.alive(player_unit) and ScriptUnit.extension(player_unit, "career_system")
+	local player_1_career_index = (career_extension and career_extension.career_index(career_extension)) or (giver_player and giver_player.profile_index(giver_player))
 	local player_1_profile_index = (giver_player and giver_player.profile_index(giver_player)) or nil
-	local player_1_career_index = (giver_player and giver_player.career_index(giver_player)) or nil
 	local player_1_profile_image = player_1_profile_index and player_1_career_index and self._get_hero_portrait(self, player_1_profile_index, player_1_career_index)
 	local item_icon = item_icons[item_name] or "icons_placeholder"
 

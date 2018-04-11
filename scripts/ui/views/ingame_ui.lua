@@ -69,6 +69,7 @@ IngameUI.init = function (self, ingame_ui_context)
 	ingame_ui_context.ui_renderer = self.ui_renderer
 	ingame_ui_context.ui_top_renderer = self.ui_top_renderer
 	ingame_ui_context.ingame_ui = self
+	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.peer_id = ingame_ui_context.peer_id
 	self.local_player_id = ingame_ui_context.local_player_id
 	self.ingame_hud = IngameHud:new(ingame_ui_context)
@@ -374,6 +375,12 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 
 	if self.is_server then
 		self.update_map_enable_state(self)
+	end
+
+	local respawning = self._respawning
+
+	if respawning then
+		self.update_respawning(self)
 	end
 
 	Profiler.start("popup_handler")
@@ -1078,6 +1085,60 @@ IngameUI.unavailable_hero_popup_active = function (self)
 	local popup_join_lobby_handler = self.popup_join_lobby_handler
 
 	return popup_join_lobby_handler and popup_join_lobby_handler.visible
+end
+IngameUI.respawn = function (self)
+	local player = Managers.player:player_from_peer_id(self.peer_id)
+	local player_unit = player.player_unit
+
+	if player_unit then
+		local position = Unit.world_position(player_unit, 0)
+		local rotation = Unit.world_rotation(player_unit, 0)
+
+		player.set_spawn_position_rotation(player, position, rotation)
+
+		self._despawning_player_unit = player.player_unit
+
+		Managers.state.spawn:delayed_despawn(player)
+
+		self._respawning = true
+	end
+
+	return 
+end
+IngameUI.update_respawning = function (self)
+	if self._despawning_player_unit then
+		if not Unit.alive(self._despawning_player_unit) then
+			local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+
+			self.profile_synchronizer:request_select_profile(profile_index, self.local_player_id)
+
+			self._despawning_player_unit = nil
+
+			if self.is_server then
+				Managers.state.network.network_server:peer_despawned_player(self.peer_id)
+			end
+		end
+
+		return 
+	end
+
+	local result, result_local_player_id = self.profile_synchronizer:profile_request_result()
+
+	assert(not result or self.local_player_id == result_local_player_id, "Local player id mismatch between ui and request.")
+
+	if result then
+		self._respawning = nil
+
+		self.profile_synchronizer:clear_profile_request_result()
+
+		if self.is_server then
+			Managers.state.network.network_server:peer_respawn_player(self.peer_id)
+		else
+			Managers.state.network.network_transmit:send_rpc_server("rpc_client_respawn_player")
+		end
+	end
+
+	return 
 end
 
 return 

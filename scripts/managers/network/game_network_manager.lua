@@ -223,7 +223,7 @@ GameNetworkManager.leave_game = function (self, force_disconnect)
 		local local_players = Managers.player:players_at_peer(Network.peer_id())
 
 		for _, player in pairs(local_players) do
-			player.despawn(player)
+			Managers.state.spawn:delayed_despawn(player)
 			printf("despawning player %s", player.name(player))
 		end
 
