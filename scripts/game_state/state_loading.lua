@@ -1224,7 +1224,11 @@ StateLoading.on_exit = function (self, application_shutdown)
 	local package_manager = Managers.package
 
 	if self._ui_package_name and (package_manager.has_loaded(package_manager, self._ui_package_name, "global_loading_screens") or package_manager.is_loading(package_manager, self._ui_package_name)) then
-		package_manager.unload(package_manager, self._ui_package_name, "global_loading_screens")
+		if package_manager.can_unload(package_manager, self._ui_package_name) then
+			package_manager.unload(package_manager, self._ui_package_name, "global_loading_screens")
+		else
+			Application.error(string.format("Tried to unload locked package %s. Free all resources before unloading the package.", self._ui_package_name))
+		end
 	end
 
 	ScriptWorld.destroy_viewport(self._world, self._viewport_name)

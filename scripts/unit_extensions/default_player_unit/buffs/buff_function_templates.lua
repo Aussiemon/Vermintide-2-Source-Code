@@ -1,5 +1,4 @@
 BuffFunctionTemplates = BuffFunctionTemplates or {}
-local HANDLED_IN_BUFF_UPDATE_FUNCTION = true
 
 local function get_variable(path_to_movement_setting_to_modify, unit)
 	assert(0 < #path_to_movement_setting_to_modify, "movement_setting_exists needs at least a movement_setting_to_modify")
@@ -1415,8 +1414,6 @@ BuffFunctionTemplates.functions = {
 
 		local num_chunks = math.floor(num_alive_nearby_enemies / chunk_size)
 		local num_buff_stacks = buff_extension.num_buff_type(buff_extension, buff_to_add)
-		local removed_buff = false
-		local amount_removed = 0
 
 		if num_buff_stacks < num_chunks then
 			local difference = num_chunks - num_buff_stacks
@@ -1432,16 +1429,12 @@ BuffFunctionTemplates.functions = {
 			for i = 1, difference, 1 do
 				local stack_ids = buff.stack_ids
 				local buff_id = table.remove(stack_ids, 1)
-				local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
 
-				dprintf("[activate_buff_stacks_based_on_enemy_proximity] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff_id)
-
-				amount_removed = amount_removed + num_buffs_removed
-				removed_buff = true
+				buff_extension.remove_buff(buff_extension, buff_id)
 			end
 		end
 
-		return removed_buff, amount_removed
+		return 
 	end,
 	activate_buff_stacks_based_on_overcharge_chunks = function (unit, buff, params)
 		if is_local(unit) then
@@ -1459,8 +1452,6 @@ BuffFunctionTemplates.functions = {
 
 			local num_chunks = math.min(math.floor(overcharge / chunk_size), max_stacks)
 			local num_buff_stacks = buff_extension.num_buff_type(buff_extension, buff_to_add)
-			local removed_buff = false
-			local amount_removed = 0
 
 			if num_buff_stacks < num_chunks then
 				local difference = num_chunks - num_buff_stacks
@@ -1476,19 +1467,13 @@ BuffFunctionTemplates.functions = {
 				for i = 1, difference, 1 do
 					local stack_ids = buff.stack_ids
 					local buff_id = table.remove(stack_ids, 1)
-					local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
 
-					dprintf("[activate_buff_stacks_based_on_overcharge_chunks] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff_id)
-
-					amount_removed = amount_removed + num_buffs_removed
-					removed_buff = true
+					buff_extension.remove_buff(buff_extension, buff_id)
 				end
 			end
-
-			return removed_buff, amount_removed
 		end
 
-		return false, 0
+		return 
 	end,
 	activate_buff_stacks_based_on_health_chunks = function (unit, buff, params)
 		local health_extension = ScriptUnit.extension(unit, "health_system")
@@ -1507,8 +1492,6 @@ BuffFunctionTemplates.functions = {
 		local health_chunks = math.floor(current_health / chunk_size)
 		local num_chunks = math.max(0, max_stacks - health_chunks)
 		local num_buff_stacks = buff_extension.num_buff_type(buff_extension, buff_to_add)
-		local removed_buff = false
-		local amount_removed = 0
 
 		if num_buff_stacks < num_chunks then
 			local difference = num_chunks - num_buff_stacks
@@ -1524,17 +1507,12 @@ BuffFunctionTemplates.functions = {
 			for i = 1, difference, 1 do
 				local stack_ids = buff.stack_ids
 				local buff_id = table.remove(stack_ids, 1)
-				local num_buffs_removed = buff_extension.remove_buff(buff_extension, buff_id)
-				slot24 = HANDLED_IN_BUFF_UPDATE_FUNCTION
 
-				dprintf("[activate_buff_stacks_based_on_health_chunks] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff_id)
-
-				amount_removed = amount_removed + num_buffs_removed
-				removed_buff = true
+				buff_extension.remove_buff(buff_extension, buff_id)
 			end
 		end
 
-		return removed_buff, amount_removed
+		return 
 	end,
 	activate_buff_on_distance = function (unit, buff, params)
 		if not Managers.state.network.is_server then
@@ -1550,8 +1528,6 @@ BuffFunctionTemplates.functions = {
 		local num_units = #player_and_bot_units
 		local buff_to_add = template.buff_to_add
 		local buff_system = Managers.state.entity:system("buff_system")
-		local removed_buff = false
-		local amount_removed = 0
 
 		for i = 1, num_units, 1 do
 			local unit = player_and_bot_units[i]
@@ -1568,15 +1544,7 @@ BuffFunctionTemplates.functions = {
 						local buff_id = buff.server_id
 
 						if buff_id then
-							local num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, unit, buff_id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
-
-							dprintf("[activate_buff_on_distance] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff_id)
-
-							removed_buff = true
-
-							if unit == owner_unit then
-								amount_removed = num_buffs_removed
-							end
+							buff_system.remove_server_controlled_buff(buff_system, unit, buff_id)
 						end
 					end
 				end
@@ -1592,7 +1560,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff, amount_removed
+		return 
 	end,
 	activate_buff_on_closest = function (unit, buff, params)
 		if not Managers.state.network.is_server then
@@ -1609,8 +1577,6 @@ BuffFunctionTemplates.functions = {
 		local buff_to_add = template.buff_to_add
 		local buff_system = Managers.state.entity:system("buff_system")
 		local closest_player = nil
-		local removed_buff = false
-		local amount_removed = 0
 
 		for i = 1, num_units, 1 do
 			local unit = player_and_bot_units[i]
@@ -1627,15 +1593,7 @@ BuffFunctionTemplates.functions = {
 						local buff_id = buff.server_id
 
 						if buff_id then
-							local num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, unit, buff_id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
-
-							dprintf("[activate_buff_on_closest] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff_id)
-
-							removed_buff = true
-
-							if unit == owner_unit then
-								amount_removed = num_buffs_removed
-							end
+							buff_system.remove_server_controlled_buff(buff_system, unit, buff_id)
 						end
 					end
 				end
@@ -1651,7 +1609,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff, amount_removed
+		return 
 	end,
 	markus_knight_proximity_buff_update = function (unit, buff, params)
 		if not Managers.state.network.is_server then
@@ -1678,9 +1636,6 @@ BuffFunctionTemplates.functions = {
 			buff_to_add_2 = "markus_knight_improved_passive_defence_aura"
 		end
 
-		local removed_buff = false
-		local amount_removed = 0
-
 		for i = 1, num_units, 1 do
 			local unit = player_and_bot_units[i]
 
@@ -1696,15 +1651,7 @@ BuffFunctionTemplates.functions = {
 						local buff_id = buff.server_id
 
 						if buff_id then
-							local num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, unit, buff_id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
-
-							dprintf("[markus_knight_proximity_buff_update] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff_id)
-
-							removed_buff = true
-
-							if unit == owner_unit then
-								amount_removed = num_buffs_removed
-							end
+							buff_system.remove_server_controlled_buff(buff_system, unit, buff_id)
 						end
 					end
 				end
@@ -1720,7 +1667,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff, amount_removed
+		return 
 	end,
 	kerillian_maidenguard_proximity_buff_update = function (unit, buff, params)
 		if not Managers.state.network.is_server then
@@ -1736,8 +1683,6 @@ BuffFunctionTemplates.functions = {
 		local num_units = #player_and_bot_units
 		local buff_to_add = "kerillian_maidenguard_passive_stamina_regen_buff"
 		local buff_system = Managers.state.entity:system("buff_system")
-		local removed_buff = false
-		local amount_removed = 0
 
 		for i = 1, num_units, 1 do
 			local unit = player_and_bot_units[i]
@@ -1754,15 +1699,7 @@ BuffFunctionTemplates.functions = {
 						local buff_id = buff.server_id
 
 						if buff_id then
-							local num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, unit, buff_id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
-
-							dprintf("[kerillian_maidenguard_proximity_buff_update] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff_id)
-
-							removed_buff = true
-
-							if unit == owner_unit then
-								amount_removed = num_buffs_removed
-							end
+							buff_system.remove_server_controlled_buff(buff_system, unit, buff_id)
 						end
 					end
 				end
@@ -1778,7 +1715,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff, amount_removed
+		return 
 	end,
 	activate_buff_on_other_buff = function (unit, buff, params)
 		local template = buff.template
@@ -1789,22 +1726,16 @@ BuffFunctionTemplates.functions = {
 		local has_buff = buff_extension.get_non_stacking_buff(buff_extension, activation_buff)
 		local apply_buff = (has_buff and not activate_on_missing) or (not has_buff and activate_on_missing)
 		local applied_buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-		local removed_buff = false
-		local num_buffs_removed = 0
 
 		if apply_buff then
 			if not applied_buff then
 				buff_extension.add_buff(buff_extension, buff_to_add)
 			end
 		elseif applied_buff then
-			num_buffs_removed = buff_extension.remove_buff(buff_extension, applied_buff.id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
-
-			dprintf("[activate_buff_on_other_buff] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, applied_buff.id)
-
-			removed_buff = true
+			buff_extension.remove_buff(buff_extension, applied_buff.id)
 		end
 
-		return removed_buff, num_buffs_removed
+		return 
 	end,
 	activate_bonus_on_last_standing = function (unit, buff, params)
 		local template = buff.template
@@ -1945,23 +1876,14 @@ BuffFunctionTemplates.functions = {
 
 		local buff_system = Managers.state.entity:system("buff_system")
 		local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-		local removed_buff = false
-		local num_buffs_removed = nil
 
 		if not adding_buff and buff then
 			if local_player then
-				num_buffs_removed = buff_extension.remove_buff(buff_extension, buff.id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
-
-				dprintf("[activate_buff_on_last_standing] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff.id)
-
-				removed_buff = true
+				buff_extension.remove_buff(buff_extension, buff.id)
 			else
 				local server_id = buff.server_id
-				num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
 
-				dprintf("[activate_buff_on_last_standing] removed buff: %s, removed %d buffs with server_id: %s", buff_to_add, num_buffs_removed, server_id)
-
-				removed_buff = true
+				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
 			end
 		elseif adding_buff and not buff then
 			if local_player then
@@ -1976,7 +1898,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff, num_buffs_removed
+		return 
 	end,
 	activate_buff_on_health_percent = function (unit, buff, params)
 		local template = buff.template
@@ -1997,23 +1919,14 @@ BuffFunctionTemplates.functions = {
 
 		local buff_system = Managers.state.entity:system("buff_system")
 		local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-		local removed_buff = false
-		local num_buffs_removed = 0
 
 		if not adding_buff and buff then
 			if local_player then
-				num_buffs_removed = buff_extension.remove_buff(buff_extension, buff.id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
-
-				dprintf("[activate_buff_on_health_percent] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff.id)
-
-				removed_buff = true
+				buff_extension.remove_buff(buff_extension, buff.id)
 			else
 				local server_id = buff.server_id
-				num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
 
-				dprintf("[activate_buff_on_health_percent] removed buff: %s, removed %d buffs with server_id: %s", buff_to_add, num_buffs_removed, server_id)
-
-				removed_buff = true
+				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
 			end
 		elseif adding_buff and not buff then
 			if local_player then
@@ -2028,7 +1941,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff, num_buffs_removed
+		return 
 	end,
 	activate_buff_on_disabled = function (unit, buff, params)
 		local template = buff.template
@@ -2046,23 +1959,14 @@ BuffFunctionTemplates.functions = {
 
 		local buff_system = Managers.state.entity:system("buff_system")
 		local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-		local removed_buff = false
-		local num_buffs_removed = 0
 
 		if not adding_buff and buff then
 			if local_player then
-				num_buffs_removed = buff_extension.remove_buff(buff_extension, buff.id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
-
-				dprintf("[activate_buff_on_disabled] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff.id)
-
-				removed_buff = true
+				buff_extension.remove_buff(buff_extension, buff.id)
 			else
 				local server_id = buff.server_id
-				num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
 
-				dprintf("[activate_buff_on_disabled] removed buff: %s, removed %d buffs with server_id: %s", buff_to_add, num_buffs_removed, server_id)
-
-				removed_buff = true
+				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
 			end
 		elseif adding_buff and not buff then
 			if local_player then
@@ -2077,7 +1981,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff, num_buffs_removed
+		return 
 	end,
 	activate_buff_on_no_ammo = function (unit, buff, params)
 		local template = buff.template
@@ -2104,23 +2008,14 @@ BuffFunctionTemplates.functions = {
 
 			local buff_system = Managers.state.entity:system("buff_system")
 			local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-			local removed_buff = false
-			local num_buffs_removed = 0
 
 			if not adding_buff and buff then
 				if local_player then
-					num_buffs_removed = buff_extension.remove_buff(buff_extension, buff.id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
-
-					dprintf("[activate_buff_on_no_ammo] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff.id)
-
-					removed_buff = true
+					buff_extension.remove_buff(buff_extension, buff.id)
 				else
 					local server_id = buff.server_id
-					num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
 
-					dprintf("[activate_buff_on_no_ammo] removed buff: %s, removed %d buffs with server_id: %s", buff_to_add, num_buffs_removed, server_id)
-
-					removed_buff = true
+					buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
 				end
 			elseif adding_buff and not buff then
 				if local_player then
@@ -2134,8 +2029,6 @@ BuffFunctionTemplates.functions = {
 					end
 				end
 			end
-
-			return removed_buff, num_buffs_removed
 		end
 
 		return false, 0
@@ -2156,23 +2049,14 @@ BuffFunctionTemplates.functions = {
 
 		local buff_system = Managers.state.entity:system("buff_system")
 		local buff = buff_extension.get_non_stacking_buff(buff_extension, buff_to_add)
-		local removed_buff = false
-		local num_buffs_removed = 0
 
 		if not adding_buff and buff then
 			if local_player then
-				num_buffs_removed = buff_extension.remove_buff(buff_extension, buff.id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
-
-				dprintf("[activate_buff_on_grimoire_picked_up] removed buff: %s, removed %d buffs with id: %s", buff_to_add, num_buffs_removed, buff.id)
-
-				removed_buff = true
+				buff_extension.remove_buff(buff_extension, buff.id)
 			else
 				local server_id = buff.server_id
-				num_buffs_removed = buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id, HANDLED_IN_BUFF_UPDATE_FUNCTION)
 
-				dprintf("[activate_buff_on_grimoire_picked_up] remove buff: %s, removed %d buffs with server_id: %s", buff_to_add, num_buffs_removed, server_id)
-
-				removed_buff = true
+				buff_system.remove_server_controlled_buff(buff_system, owner_unit, server_id)
 			end
 		elseif adding_buff and not buff then
 			if local_player then
@@ -2187,7 +2071,7 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 
-		return removed_buff, num_buffs_removed
+		return 
 	end,
 	activate_multiplier_on_disabled = function (unit, buff, params)
 		local template = buff.template

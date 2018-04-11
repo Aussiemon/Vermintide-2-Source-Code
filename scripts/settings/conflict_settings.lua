@@ -1489,9 +1489,10 @@ PacingSettings = {
 			0
 		},
 		delay_horde_threat_value = {
-			harder = 70,
+			harder = 65,
 			hard = 60,
 			normal = 40,
+			hardest = 80,
 			easy = 40
 		},
 		delay_mini_patrol_threat_value = {
@@ -1501,9 +1502,10 @@ PacingSettings = {
 			easy = 35
 		},
 		delay_specials_threat_value = {
-			harder = 70,
+			harder = 65,
 			hard = 60,
 			normal = 40,
+			hardest = 80,
 			easy = 40
 		},
 		mini_patrol = {
@@ -1602,9 +1604,10 @@ PacingSettings = {
 			0
 		},
 		delay_horde_threat_value = {
-			harder = 70,
+			harder = 65,
 			hard = 60,
 			normal = 40,
+			hardest = 80,
 			easy = 40
 		},
 		delay_mini_patrol_threat_value = {
@@ -1614,9 +1617,10 @@ PacingSettings = {
 			easy = 35
 		},
 		delay_specials_threat_value = {
-			harder = 70,
+			harder = 65,
 			hard = 60,
 			normal = 40,
+			hardest = 80,
 			easy = 40
 		},
 		mini_patrol = {
@@ -1791,7 +1795,7 @@ PackSpawningSettings = {
 			},
 			breed_packs_override = {
 				{
-					"shield_rats_no_elites",
+					"shield_rats",
 					2,
 					0.035
 				},
@@ -1809,6 +1813,83 @@ PackSpawningSettings = {
 					"marauders_elites",
 					2,
 					0.03
+				}
+			}
+		},
+		difficulty_overrides = {
+			hard = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"shield_rats",
+						2,
+						0.04
+					},
+					{
+						"plague_monks",
+						2,
+						0.035
+					},
+					{
+						"marauders",
+						2,
+						0.035
+					},
+					{
+						"marauders_elites",
+						2,
+						0.035
+					}
+				}
+			},
+			harder = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"shield_rats",
+						2,
+						0.04
+					},
+					{
+						"plague_monks",
+						2,
+						0.035
+					},
+					{
+						"marauders",
+						2,
+						0.035
+					},
+					{
+						"marauders_elites",
+						2,
+						0.035
+					}
+				}
+			},
+			hardest = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"shield_rats",
+						2,
+						0.04
+					},
+					{
+						"plague_monks",
+						2,
+						0.035
+					},
+					{
+						"marauders",
+						2,
+						0.035
+					},
+					{
+						"marauders_elites",
+						2,
+						0.035
+					}
 				}
 			}
 		}
@@ -1831,12 +1912,12 @@ PackSpawningSettings = {
 				{
 					"marauders",
 					2,
-					0.03
+					0.035
 				},
 				{
 					"marauders_elites",
 					2,
-					0.03
+					0.035
 				}
 			}
 		}
@@ -1858,8 +1939,55 @@ PackSpawningSettings = {
 				},
 				{
 					"plague_monks",
-					1,
+					2,
 					0.03
+				}
+			}
+		},
+		difficulty_overrides = {
+			hard = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"shield_rats",
+						2,
+						0.04
+					},
+					{
+						"plague_monks",
+						2,
+						0.035
+					}
+				}
+			},
+			harder = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"shield_rats",
+						2,
+						0.04
+					},
+					{
+						"plague_monks",
+						2,
+						0.035
+					}
+				}
+			},
+			hardest = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"shield_rats",
+						2,
+						0.04
+					},
+					{
+						"plague_monks",
+						2,
+						0.035
+					}
 				}
 			}
 		}
@@ -1881,8 +2009,55 @@ PackSpawningSettings = {
 				},
 				{
 					"plague_monks",
-					1,
+					2,
 					0.03
+				}
+			}
+		},
+		difficulty_overrides = {
+			hard = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"shield_rats",
+						2,
+						0.04
+					},
+					{
+						"plague_monks",
+						2,
+						0.035
+					}
+				}
+			},
+			harder = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"shield_rats",
+						2,
+						0.04
+					},
+					{
+						"plague_monks",
+						2,
+						0.035
+					}
+				}
+			},
+			hardest = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"shield_rats",
+						2,
+						0.04
+					},
+					{
+						"plague_monks",
+						2,
+						0.035
+					}
 				}
 			}
 		}
@@ -1916,6 +2091,83 @@ PackSpawningSettings = {
 					"marauders_berzerkers",
 					2,
 					0.03
+				}
+			}
+		},
+		difficulty_overrides = {
+			hard = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"marauders_and_warriors",
+						2,
+						0.035
+					},
+					{
+						"marauders_shields",
+						2,
+						0.035
+					},
+					{
+						"marauders_elites",
+						2,
+						0.035
+					},
+					{
+						"marauders_berzerkers",
+						2,
+						0.035
+					}
+				}
+			},
+			harder = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"marauders_and_warriors",
+						2,
+						0.035
+					},
+					{
+						"marauders_shields",
+						2,
+						0.035
+					},
+					{
+						"marauders_elites",
+						2,
+						0.035
+					},
+					{
+						"marauders_berzerkers",
+						2,
+						0.035
+					}
+				}
+			},
+			hardest = {
+				area_density_coefficient = 0.045,
+				breed_packs_override = {
+					{
+						"marauders_and_warriors",
+						2,
+						0.035
+					},
+					{
+						"marauders_shields",
+						2,
+						0.035
+					},
+					{
+						"marauders_elites",
+						2,
+						0.035
+					},
+					{
+						"marauders_berzerkers",
+						2,
+						0.035
+					}
 				}
 			}
 		}

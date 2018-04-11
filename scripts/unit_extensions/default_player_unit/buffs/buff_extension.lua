@@ -312,6 +312,7 @@ end
 BuffExtension._update_buffs = function (self, dt, t)
 	local world = self.world
 	local buffs = self._buffs
+	local unit = self._unit
 	local num_buffs = #buffs
 	local i = 1
 
@@ -332,8 +333,6 @@ BuffExtension._update_buffs = function (self, dt, t)
 				local delayed_buff_name = buff.delayed_buff_name
 
 				self.add_buff(self, delayed_buff_name)
-			else
-				num_buffs = num_buffs - 1
 			end
 		else
 			local update_func = template.update_func
@@ -343,18 +342,14 @@ BuffExtension._update_buffs = function (self, dt, t)
 				local time_left_on_buff = end_time and end_time - t
 				buff_extension_function_params.time_into_buff = time_into_buff
 				buff_extension_function_params.time_left_on_buff = time_left_on_buff
-				self._debug_buff_removes = true
-				local removed_buff, amount = BuffFunctionTemplates.functions[update_func](self._unit, buff, buff_extension_function_params, world)
-				self._debug_buff_removes = false
 
-				if removed_buff then
-					amount = amount or 1
-					num_buffs = num_buffs - amount
-				end
+				BuffFunctionTemplates.functions[update_func](unit, buff, buff_extension_function_params, world)
 			end
+
+			i = i + 1
 		end
 
-		i = i + 1
+		num_buffs = #buffs
 	end
 
 	return 
@@ -383,8 +378,6 @@ BuffExtension.remove_buff = function (self, id, handled_in_buff_update_function)
 	local end_time = Managers.time:time("game")
 	local num_buffs_removed = 0
 	local i = 1
-	local buff_name = ""
-	local buff_type_name = ""
 
 	while i <= num_buffs do
 		local buff = buffs[i]
@@ -396,10 +389,6 @@ BuffExtension.remove_buff = function (self, id, handled_in_buff_update_function)
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
 
 		if buff.id == id or (buff.parent_id and buff.parent_id == id) then
-			if self._debug_buff_removes then
-				printf("removed buff: name: %s type: %s id: %s parent_id: %s", tostring(buff.name or "no name"), tostring(buff.buff_type or "no type"), tostring(buff.id or "no id"), tostring(buff.parent_id or "no parent_id"))
-			end
-
 			self._remove_sub_buff(self, buff, i, buff_extension_function_params)
 
 			num_buffs = num_buffs - 1

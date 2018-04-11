@@ -455,7 +455,7 @@ SimpleInventoryExtension.show_first_person_inventory = function (self, show)
 	self._show_first_person = show
 	local right_hand_wielded_unit = self._equipment.right_hand_wielded_unit
 
-	if right_hand_wielded_unit then
+	if right_hand_wielded_unit and Unit.alive(right_hand_wielded_unit) then
 		if Unit.has_visibility_group(right_hand_wielded_unit, "normal") then
 			Unit.set_visibility(right_hand_wielded_unit, "normal", show)
 		else
@@ -485,7 +485,7 @@ SimpleInventoryExtension.show_first_person_inventory = function (self, show)
 
 	local left_hand_wielded_unit = self._equipment.left_hand_wielded_unit
 
-	if left_hand_wielded_unit then
+	if left_hand_wielded_unit and Unit.alive(left_hand_wielded_unit) then
 		if Unit.has_visibility_group(left_hand_wielded_unit, "normal") then
 			Unit.set_visibility(left_hand_wielded_unit, "normal", show)
 		else
