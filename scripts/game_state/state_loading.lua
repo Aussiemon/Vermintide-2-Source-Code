@@ -503,6 +503,10 @@ StateLoading.update = function (self, dt, t)
 		Managers.game_server:update(dt, t)
 	end
 
+	if Managers.eac ~= nil then
+		Managers.eac:update(dt, t)
+	end
+
 	local menu_active = false
 	local menu_input_service = nil
 

@@ -42,6 +42,7 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id)
 		local start_new_voting = self.can_start_vote(self, name, vote_data)
 
 		if start_new_voting then
+			self._server_abort_active_vote(self)
 			self._server_start_vote(self, name, nil, vote_data)
 
 			local sync_data = vote_template.pack_sync_data(vote_data)
@@ -65,6 +66,20 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id)
 		local sync_data = vote_template.pack_sync_data(vote_data)
 
 		Managers.state.network.network_transmit:send_rpc_server(client_start_vote_rpc, vote_type_id, sync_data)
+	end
+
+	return 
+end
+VoteManager._server_abort_active_vote = function (self)
+	local active_voting = self.active_voting
+
+	if active_voting then
+		local ingame_context = self.ingame_context
+		local vote_data = active_voting.data
+		local result_data = active_voting.template.on_complete(0, ingame_context, vote_data)
+
+		self.rpc_client_complete_vote(self, nil, 0)
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_client_complete_vote", 0)
 	end
 
 	return 

@@ -94,6 +94,31 @@ PlayFabMirror.sign_in_reward_request_cb = function (self, result)
 			end
 		end
 
+		self._request_fix_inventory_data_1(self)
+	end
+
+	return 
+end
+PlayFabMirror._request_fix_inventory_data_1 = function (self)
+	local request = {
+		FunctionName = "fixInventoryData1",
+		FunctionParameter = {}
+	}
+	local request_cb = callback(self, "fix_inventory_data_1_request_cb")
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb, request_cb)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+
+	return 
+end
+PlayFabMirror.fix_inventory_data_1_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	if result.Error then
+		table.dump(result, nil, 6)
+		fassert(false, "fix_inventory_data_1_request_cb: it failed!")
+	else
 		self._request_user_inventory(self)
 	end
 

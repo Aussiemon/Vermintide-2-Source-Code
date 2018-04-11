@@ -567,10 +567,6 @@ BTConditions.can_activate.bw_unchained = function (blackboard)
 	return false
 end
 BTConditions.can_activate_ability = function (blackboard, args)
-	if script_data.ai_bots_career_abilities_disabled then
-		return false
-	end
-
 	local career_extension = blackboard.career_extension
 	local is_using_ability = blackboard.activate_ability_data.is_using_ability
 	local career_name = career_extension.career_name(career_extension)

@@ -192,9 +192,13 @@ TerrorEventMixer.init_functions = {
 		return 
 	end,
 	enable_kick = function (event, element, t)
+		Managers.state.voting:set_vote_kick_enabled(true)
+
 		return 
 	end,
 	disable_kick = function (event, element, t)
+		Managers.state.voting:set_vote_kick_enabled(false)
+
 		return 
 	end,
 	set_freeze_condition = function (event, element, t)
@@ -318,7 +322,8 @@ TerrorEventMixer.run_functions = {
 		position = data.optional_pos and data.optional_pos:unbox()
 		local conflict_director = Managers.state.conflict
 		local group_data = data.group_data
-		local unit_queue_id = conflict_director.spawn_one(conflict_director, Breeds[element.breed_name], position, group_data, optional_data)
+		local breed_name = element.breed_name
+		local unit_queue_id = conflict_director.spawn_one(conflict_director, Breeds[breed_name], position, group_data, optional_data)
 
 		if unit_queue_id then
 			return true

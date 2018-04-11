@@ -190,8 +190,6 @@ end
 
 local dummy_size = {}
 UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, scenegraph_id)
-	Profiler.start("UISceneGraph.update_scenegraph")
-
 	local w = RESOLUTION_LOOKUP.res_w
 	local h = RESOLUTION_LOOKUP.res_h
 
@@ -293,18 +291,12 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 
 		if children then
 			if scenegraph.is_static then
-				Profiler.start("UISceneGraph.update_scenegraph_children_static")
 				EngineOptimized.scenegraph_cached_update_children(scenegraph_object.scene_graph_ref, current_world_position, children, scenegraph_object.num_children, size_x, size_y)
-				Profiler.stop("UISceneGraph.update_scenegraph_children_static")
 			else
-				Profiler.start("UISceneGraph.update_scenegraph_children_dynamic")
 				EngineOptimized.scenegraph_update_children(current_world_position, children, scenegraph_object.num_children, size_x, size_y)
-				Profiler.stop("UISceneGraph.update_scenegraph_children_dynamic")
 			end
 		end
 	end
-
-	Profiler.stop("UISceneGraph.update_scenegraph")
 
 	return 
 end

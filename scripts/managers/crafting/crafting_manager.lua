@@ -24,7 +24,7 @@ end
 CraftingManager.destroy = function (self)
 	return 
 end
-CraftingManager.craft = function (self, items)
+CraftingManager.craft = function (self, items, recipe_override)
 	local crafting_interface = self._crafting_interface
 	local item_backend_ids = {}
 
@@ -40,7 +40,7 @@ CraftingManager.craft = function (self, items)
 	local career_index = player.career_index(player)
 	local career = careers[career_index]
 	local career_name = career.name
-	local craft_id, recipe = crafting_interface.craft(crafting_interface, career_name, item_backend_ids)
+	local craft_id, recipe = crafting_interface.craft(crafting_interface, career_name, item_backend_ids, recipe_override)
 
 	if craft_id and recipe then
 		local stats_id = player.stats_id(player)

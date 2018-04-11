@@ -229,9 +229,6 @@ end
 ProximitySystem.physics_async_update = function (self, context, t)
 	local nearby_units = nearby_units
 	local dt = context.dt
-
-	Profiler.start("Moving units")
-
 	local Broadphase_move = Broadphase.move
 	local POSITION_LOOKUP = POSITION_LOOKUP
 	local enemy_broadphase = self.enemy_broadphase
@@ -259,8 +256,6 @@ ProximitySystem.physics_async_update = function (self, context, t)
 		Broadphase_move(special_units_broadphase, extension.special_broadphase_id, position)
 	end
 
-	Profiler.stop("Moving units")
-
 	local enemy_check_raycasts = self.enemy_check_raycasts
 	local unit_forwards = self.unit_forwards
 	local ray_read_index = self.raycast_read_index
@@ -269,8 +264,6 @@ ProximitySystem.physics_async_update = function (self, context, t)
 
 	for unit, extension in pairs(player_unit_extensions_map) do
 		local position = POSITION_LOOKUP[unit]
-
-		Profiler.start("Update Proximity Type Data")
 
 		for proximity_type, proximity_data in pairs(extension.proximity_types) do
 			local broadphase = proximity_data.broadphase
@@ -312,9 +305,6 @@ ProximitySystem.physics_async_update = function (self, context, t)
 
 			table.clear(nearby_units)
 		end
-
-		Profiler.stop("Update Proximity Type Data")
-		Profiler.start("See and hear enemies")
 
 		local raycast_timer = extension.raycast_timer + dt
 		local hear_timer = extension.hear_timer + dt
@@ -388,8 +378,6 @@ ProximitySystem.physics_async_update = function (self, context, t)
 		extension.hear_timer = hear_timer
 		extension.raycast_timer = raycast_timer
 		unit_forwards[unit] = nil
-
-		Profiler.stop("See and hear enemies")
 	end
 
 	self._update_nearby_boss(self)
@@ -464,13 +452,7 @@ ProximitySystem._update_nearby_boss = function (self)
 
 	local broadphase_result = self._broadphase_result
 	local player_position = POSITION_LOOKUP[player_unit]
-
-	Profiler.start("broadphase query")
-
 	local num_units = Broadphase.query(self.enemy_broadphase, player_position, 3, broadphase_result)
-
-	Profiler.stop("broadphase query")
-
 	local closest_distance = math.huge
 
 	for i = 1, num_units, 1 do
@@ -493,8 +475,6 @@ ProximitySystem._update_nearby_enemies = function (self)
 	if DEDICATED_SERVER then
 		return 
 	end
-
-	Profiler.start("update nearby enemies")
 
 	local old_nearby = self._old_nearby
 	local new_nearby = self._new_nearby
@@ -520,12 +500,7 @@ ProximitySystem._update_nearby_enemies = function (self)
 	if 0 < num_players then
 		player_pos = player_pos / num_players
 		local list_len = #list
-
-		Profiler.start("broadphase query")
-
 		local num_units = Broadphase.query(self.enemy_broadphase, player_pos, 30, broadphase_result)
-
-		Profiler.stop("broadphase query")
 
 		for i = 1, num_units, 1 do
 			local unit = broadphase_result[i]
@@ -545,8 +520,6 @@ ProximitySystem._update_nearby_enemies = function (self)
 		local higher_unit = list[1]
 
 		if higher_unit then
-			Profiler.start("sort")
-
 			local higher_unit_dist = new_nearby[higher_unit]
 
 			while not higher_unit_dist and 0 < list_len do
@@ -604,15 +577,11 @@ ProximitySystem._update_nearby_enemies = function (self)
 
 			self._old_enabled_fx = new_enabled_fx
 			self._new_enabled_fx = old_enabled_fx
-
-			Profiler.stop("sort")
 		end
 	end
 
 	self._old_nearby = new_nearby
 	self._new_nearby = old_nearby
-
-	Profiler.stop("update nearby enemies")
 
 	return 
 end

@@ -1120,10 +1120,6 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 
 	if knocked_down then
 		if is_server then
-			if script_data.debug_player_intensity then
-				Managers.state.conflict.pacing:annotate_graph("knockdown", "red")
-			end
-
 			self.add_intensity(self, CurrentIntensitySettings.intensity_add_knockdown)
 		end
 

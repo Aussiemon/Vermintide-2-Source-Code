@@ -69,11 +69,6 @@ PlayerWhereaboutsExtension.update = function (self, unit, input, dt, context, t)
 	local input = self._input
 
 	self._get_closest_positions(self, pos, input.is_onground, self.closest_positions, self.closest_distances)
-
-	if script_data.ai_bots_debug then
-		self._debug_draw(self, pos, self.closest_positions, t)
-	end
-
 	self._check_bot_nav_transition(self, self.nav_world, input, pos)
 
 	if self.hang_ledge_position then

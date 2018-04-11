@@ -301,13 +301,6 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 
 	GameSession.set_game_object_field(self.game, self.unit_id, "height_percentage", height_percentage)
 	GameSession.set_game_object_field(self.game, self.unit_id, "position", position)
-
-	if script_data.debug_damage_wave then
-		local size = height_percentage * self.max_height
-
-		self.debug_render_wave(self, t, dt, position, wave_dir, size)
-	end
-
 	GameSession.set_game_object_field(self.game, self.unit_id, "rotation", current_rotation)
 
 	return to_target_dir, dist, success
@@ -565,10 +558,6 @@ DamageWaveExtension.update = function (self, unit, input, dt, context, t)
 
 	Unit.set_local_rotation(unit, 0, Quaternion.look(self.wave_direction:unbox()))
 	self.update_blob_overlaps(self)
-
-	if script_data.debug_damage_wave then
-		self.debug_render_blobs(self)
-	end
 
 	return 
 end

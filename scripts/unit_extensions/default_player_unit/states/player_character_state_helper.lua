@@ -404,8 +404,6 @@ CharacterStateHelper.looking_down = function (first_person_extension, threshold)
 	return (dot < threshold and true) or false
 end
 CharacterStateHelper.look = function (input_extension, viewport_name, first_person_extension, status_extension, inventory_extension, override_sens, override_delta)
-	Profiler.start("look")
-
 	local camera_manager = Managers.state.camera
 	local look_sensitivity = override_sens or (camera_manager.has_viewport(camera_manager, viewport_name) and camera_manager.fov(camera_manager, viewport_name) / 0.785) or 1
 	local is_3p = false
@@ -417,7 +415,6 @@ CharacterStateHelper.look = function (input_extension, viewport_name, first_pers
 	end
 
 	first_person_extension.set_look_delta(first_person_extension, look_delta)
-	Profiler.stop("look")
 
 	return 
 end
@@ -970,15 +967,11 @@ local weapon_action_interrupt_damage_types = {
 }
 local interupting_action_data = {}
 CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension, inventory_extension, health_extension)
-	Profiler.start("weapon_action")
-
 	local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
 
 	table.clear(interupting_action_data)
 
 	if not item_data then
-		Profiler.stop("weapon_action")
-
 		return 
 	end
 
@@ -1050,8 +1043,6 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 					status_extension.set_pushed(status_extension, true, t)
 				end
 			end
-
-			Profiler.stop("weapon_action")
 
 			return 
 		end
@@ -1158,7 +1149,6 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 			left_hand_weapon_extension.start_action(left_hand_weapon_extension, new_action, new_sub_action, item_template.actions, t, power_level, left_action_init_data)
 			right_hand_weapon_extension.start_action(right_hand_weapon_extension, new_action, new_sub_action, item_template.actions, t, power_level, right_action_init_data)
-			Profiler.stop("weapon_action")
 
 			return 
 		end
@@ -1179,7 +1169,6 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 			end
 
 			left_hand_weapon_extension.start_action(left_hand_weapon_extension, new_action, new_sub_action, item_template.actions, t, power_level, next_action_init_data)
-			Profiler.stop("weapon_action")
 
 			return 
 		end
@@ -1192,8 +1181,6 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 		right_hand_weapon_extension.start_action(right_hand_weapon_extension, new_action, new_sub_action, item_template.actions, t, power_level, next_action_init_data)
 	end
-
-	Profiler.stop("weapon_action")
 
 	return 
 end
@@ -1252,8 +1239,6 @@ CharacterStateHelper.reload = function (input_extension, inventory_extension, st
 	return 
 end
 CharacterStateHelper.check_crouch = function (unit, input_extension, status_extension, toggle_crouch, first_person_extension, t)
-	Profiler.start("crouch")
-
 	local is_crouching = status_extension.is_crouching(status_extension)
 	local crouch = is_crouching
 	local toggle_input = input_extension.get(input_extension, "crouch")
@@ -1272,8 +1257,6 @@ CharacterStateHelper.check_crouch = function (unit, input_extension, status_exte
 	elseif not crouch and is_crouching and CharacterStateHelper.can_uncrouch(unit) then
 		CharacterStateHelper.uncrouch(unit, t, first_person_extension, status_extension)
 	end
-
-	Profiler.stop("crouch")
 
 	return is_crouching
 end

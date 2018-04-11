@@ -182,8 +182,6 @@ Pacing.update = function (self, t, dt, alive_player_units)
 
 	self.total_intensity = sum_intensity / num_alive_player_units
 
-	self.intensity_graphs(self, t, dt, alive_player_units)
-
 	return 
 end
 Pacing.toggle_graph = function (self)

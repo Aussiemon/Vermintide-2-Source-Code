@@ -89,8 +89,6 @@ BackendInterfaceLoot.generate_weapon_with_properties = function (self, item_key,
 	return 
 end
 BackendInterfaceLoot._refresh_attributes = function (self)
-	Profiler.start("BackendInterfaceLoot:_refresh_attributes()")
-
 	local entities = Backend.get_entities_with_attributes(DB_ENTITY_TYPE)
 	local attributes_by_entity_id = {}
 
@@ -103,8 +101,6 @@ BackendInterfaceLoot._refresh_attributes = function (self)
 	end
 
 	self._attributes = attributes_by_entity_id
-
-	Profiler.stop("BackendInterfaceLoot:_refresh_attributes()")
 
 	return 
 end

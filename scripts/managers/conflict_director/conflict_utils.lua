@@ -835,6 +835,34 @@ ConflictUtils.display_number_of_breeds = function (header, num_spawned, num_spaw
 
 	return 
 end
+local count_list = {}
+ConflictUtils.display_number_of_breeds_in_segment = function (header, units_spawned_by_breed, zone_data)
+	table.clear(count_list)
+
+	local s = header .. ", "
+
+	for breed_name, unit_list in pairs(units_spawned_by_breed) do
+		for _, ai_unit in pairs(unit_list) do
+			local health_extension = ScriptUnit.has_extension(ai_unit, "health_system")
+			local hi_data1 = zone_data.hi_data
+			local hi_data2 = health_extension.zone_data and health_extension.zone_data.hi_data
+
+			if hi_data1 and hi_data1 == hi_data2 then
+				count_list[breed_name] = (count_list[breed_name] or 0) + 1
+
+				QuickDrawer:sphere(POSITION_LOOKUP[ai_unit], 0.75, Color(200, 0, 200))
+			end
+		end
+	end
+
+	Debug.text(s)
+
+	for breed_name, amount in pairs(count_list) do
+		s = s .. breed_name .. "=" .. amount .. ", "
+	end
+
+	return s
+end
 ConflictUtils.show_where_ai_is = function (spawned)
 	local POSITION_LOOKUP = POSITION_LOOKUP
 	local h = Vector3(0, 0, 40)
@@ -867,8 +895,6 @@ ConflictUtils.get_level_units_with_id = function (unit_name, unit_list, id)
 	return unit_list
 end
 ConflictUtils.make_roaming_spawns = function (self, nav_world, level_analysis)
-	Profiler.start("make_spawns")
-
 	local list = {}
 
 	if LEVEL_EDITOR_TEST then
@@ -943,8 +969,6 @@ ConflictUtils.make_roaming_spawns = function (self, nav_world, level_analysis)
 			end
 		end
 	end
-
-	Profiler.stop("make_spawns")
 
 	return list
 end

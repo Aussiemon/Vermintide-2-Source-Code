@@ -274,10 +274,6 @@ EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack
 		end
 
 		self.unique_area_id = k
-
-		if script_data.debug_group_recycling then
-			self.draw_roaming_splines(self)
-		end
 	end
 
 	if not CurrentConflictSettings.roaming.disabled and not script_data.ai_critter_spawning_disabled then
@@ -312,10 +308,6 @@ end
 EnemyRecycler.update = function (self, t, dt, player_positions, threat_population, player_areas, use_player_areas)
 	self._update_roaming_spawning(self, t, player_positions, threat_population, player_areas, use_player_areas)
 	self.ai_group_system:prepare_update_recycler(player_positions, player_areas, use_player_areas)
-
-	if script_data.debug_ai_recycler then
-		self.draw_debug(self, player_positions)
-	end
 
 	return 
 end
@@ -646,14 +638,10 @@ end
 local area_checks_per_frame = 20
 local remove_zones = {}
 EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, threat_population, player_zones, use_player_zones)
-	Profiler.start("recycler - pack spawning")
-
 	local INDEX_SEEN = 3
 	local INDEX_SEEN_LAST_FRAME = 4
 	local INDEX_ZONE = 6
 	local roaming = CurrentRoamingSettings
-	local astar_checks = 0
-	local astar_cached_checks = 0
 	local wakeup_distance = roaming.despawn_distance
 	local wakeup_distance_z = roaming.despawn_distance_z or 30
 	local sleep_distance = wakeup_distance + 5
@@ -699,8 +687,6 @@ EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, th
 
 				if use_player_zones and zone and area[INDEX_ZONE] then
 					local _, path_dist, cached = self.group_manager:a_star_cached(zone, area[INDEX_ZONE])
-					astar_checks = astar_checks + ((not cached or 0) and 1)
-					astar_cached_checks = astar_cached_checks + ((cached and 1) or 0)
 
 					if not path_dist or path_dist < path_distance_threshold then
 						area[INDEX_SEEN] = area[INDEX_SEEN] + 1
@@ -756,12 +742,6 @@ EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, th
 
 	self.remembered_area_index = math.clamp(index - num_to_remove, 1, #areas)
 	self.visible = self.visible + add_visible
-
-	if script_data.debug_ai_recycler then
-		Debug.text("Recycler a-star checks/frame cached:" .. tostring(astar_cached_checks) .. " real:" .. tostring(astar_checks))
-	end
-
-	Profiler.stop("recycler - pack spawning")
 
 	return 
 end
@@ -849,8 +829,6 @@ EnemyRecycler.draw_main_path_events = function (self, drawer)
 	return 
 end
 EnemyRecycler.draw_debug = function (self, player_positions)
-	Profiler.start("recycler - debug")
-
 	local shutdown = self.shutdown_areas
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
@@ -935,14 +913,10 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 		end
 	end
 
-	Profiler.stop("recycler - debug")
-
 	return 
 end
 local NUM_FAR_OFF_CHECKS = 6
 EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned)
-	Profiler.start("recycler  far off despawn")
-
 	local index = self.far_off_index or 1
 	local size = #spawned
 	local num = NUM_FAR_OFF_CHECKS
@@ -1027,8 +1001,6 @@ EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned
 	end
 
 	self.far_off_index = index
-
-	Profiler.stop("recycler  far off despawn")
 
 	return 
 end

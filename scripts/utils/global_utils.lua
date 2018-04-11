@@ -7,12 +7,10 @@ RESOLUTION_LOOKUP = RESOLUTION_LOOKUP or {}
 POSITION_LOOKUP = POSITION_LOOKUP or Script.new_map(256)
 BLACKBOARDS = BLACKBOARDS or Script.new_map(256)
 local position_lookup = POSITION_LOOKUP
-local position_lookup_backup = {}
 local resolution_lookup = RESOLUTION_LOOKUP
 
 function CLEAR_POSITION_LOOKUP()
 	table.clear(position_lookup)
-	table.clear(position_lookup_backup)
 
 	return 
 end
@@ -20,22 +18,12 @@ end
 local world_position = Unit.world_position
 
 function UPDATE_POSITION_LOOKUP()
-	Profiler.start("UPDATE_POSITION_LOOKUP")
 	EngineOptimized.update_position_lookup(position_lookup)
-	Profiler.stop("UPDATE_POSITION_LOOKUP")
-
-	if script_data.debug_enabled and not script_data.disable_debug_position_lookup then
-		for unit, _ in pairs(position_lookup) do
-			position_lookup_backup[unit] = world_position(unit, 0)
-		end
-	end
 
 	return 
 end
 
 function UPDATE_RESOLUTION_LOOKUP(force_update)
-	Profiler.start("UPDATE_RESOLUTION_LOOKUP")
-
 	local w, h = Application.resolution()
 	local resolution_modified = w ~= resolution_lookup.res_w or h ~= resolution_lookup.res_h
 
@@ -50,46 +38,6 @@ function UPDATE_RESOLUTION_LOOKUP(force_update)
 	end
 
 	resolution_lookup.modified = resolution_modified
-
-	Profiler.stop("UPDATE_RESOLUTION_LOOKUP")
-
-	return 
-end
-
-local cleared = false
-
-function VALIDATE_POSITION_LOOKUP()
-	if not script_data.debug_enabled then
-		return 
-	end
-
-	if script_data.disable_debug_position_lookup then
-		if not cleared then
-			script_data.position_lookup_backup = {}
-			cleared = true
-		end
-
-		return 
-	end
-
-	Profiler.start("VALIDATE_POSITION_LOOKUP")
-
-	cleared = false
-
-	for unit, pos in pairs(position_lookup) do
-		local alive, info = unit_alive(unit)
-
-		assert(alive, "Unit was destroyed but not removed from POSITION_LOOKUP ", tostring(info))
-
-		local other_pos = position_lookup_backup[unit]
-
-		if other_pos and 0.0001 < Vector3.distance_squared(pos, other_pos) then
-			assert(false, "Modified cached vector3, bad coder!! [%s ==> %s]", tostring(other_pos), tostring(pos))
-		end
-	end
-
-	table.clear(position_lookup_backup)
-	Profiler.stop("VALIDATE_POSITION_LOOKUP")
 
 	return 
 end
@@ -117,8 +65,10 @@ local function is_valid_aggro_target(unit)
 		return false
 	end
 
-	if ScriptUnit.has_extension(unit, "status_system") then
-		return is_valid(unit) and is_valid_target(unit)
+	local status_ext = ScriptUnit.has_extension(unit, "status_system")
+
+	if status_ext then
+		return not status_ext.ready_for_assisted_respawn and not status_ext.is_in_end_zone(status_ext) and not status_ext.is_invisible(status_ext) and not status_ext.spawn_grace and ScriptUnit.extension(unit, "health_system"):is_alive()
 	end
 
 	return true

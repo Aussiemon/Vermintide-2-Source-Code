@@ -23,8 +23,8 @@ BackendInterfaceCraftingPlayfab._new_id = function (self)
 
 	return self._last_id
 end
-BackendInterfaceCraftingPlayfab.craft = function (self, career_name, item_backend_ids)
-	local recipe, item_backend_ids_and_amounts = self._get_valid_recipe(self, item_backend_ids)
+BackendInterfaceCraftingPlayfab.craft = function (self, career_name, item_backend_ids, recipe_override)
+	local recipe, item_backend_ids_and_amounts = self._get_valid_recipe(self, item_backend_ids, recipe_override)
 	local hero_name = CareerSettings[career_name].profile_name
 
 	if recipe and recipe.result_function_playfab then

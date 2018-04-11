@@ -288,8 +288,6 @@ DamageBlobExtension.place_blobs = function (self, unit, t)
 	return 
 end
 DamageBlobExtension.update = function (self, unit, input, dt, context, t)
-	Profiler.start("damage_blob_extension")
-
 	local state = self.state
 
 	if state == "waiting" then
@@ -302,12 +300,8 @@ DamageBlobExtension.update = function (self, unit, input, dt, context, t)
 		Managers.state.unit_spawner:mark_for_deletion(unit)
 	end
 
-	Profiler.start("update_blob_fx")
 	self.update_blobs_fx_and_sfx(self, t, dt)
-	Profiler.stop("update_blob_fx")
-	Profiler.start("update_blob_overlaps")
 	self.update_blob_overlaps(self, t)
-	Profiler.stop("update_blob_overlaps")
 
 	local blob_update_function = self._blob_update_function
 
@@ -321,8 +315,6 @@ DamageBlobExtension.update = function (self, unit, input, dt, context, t)
 			self.network_transmit:send_rpc_clients("rpc_abort_damage_blob", unit_id)
 		end
 	end
-
-	Profiler.stop("damage_blob_extension")
 
 	if script_data.debug_damage_blobs then
 		self._debug_render_blobs(self)

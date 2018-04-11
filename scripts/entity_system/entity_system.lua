@@ -367,30 +367,22 @@ EntitySystem.finalize_setup = function (self)
 	return 
 end
 EntitySystem.pre_update = function (self, dt)
-	Profiler.start("EntitySystem:pre_update")
 	self.system_update(self, "pre_update", dt)
-	Profiler.stop("EntitySystem:pre_update")
 
 	return 
 end
 EntitySystem.update = function (self, dt)
-	Profiler.start("EntitySystem:update")
 	self.system_update(self, "update", dt)
-	Profiler.stop("EntitySystem:update")
 
 	return 
 end
 EntitySystem.post_update = function (self, dt)
-	Profiler.start("EntitySystem:post_update")
 	self.system_update(self, "post_update", dt)
-	Profiler.stop("EntitySystem:post_update")
 
 	return 
 end
 EntitySystem.physics_async_update = function (self)
-	Profiler.start("EntitySystem:physics_async_update")
 	self.system_update(self, "physics_async_update", self.system_update_context.dt)
-	Profiler.stop("EntitySystem:physics_async_update")
 
 	return 
 end
@@ -428,8 +420,6 @@ EntitySystem.hot_join_sync = function (self, sender)
 	return 
 end
 EntitySystem.destroy = function (self)
-	Profiler.start("EntitySystem:destroy")
-
 	local units = World.units(self.world)
 
 	self.entity_manager:unregister_units(units, #units)
@@ -438,7 +428,6 @@ EntitySystem.destroy = function (self)
 	self.system_update_context = nil
 
 	GarbageLeakDetector.register_object(self, "EntitySystem")
-	Profiler.stop("EntitySystem:destroy")
 
 	return 
 end

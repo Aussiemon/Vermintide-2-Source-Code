@@ -126,10 +126,6 @@ BTMeleeSlamAction._create_bot_aoe_threat = function (self, unit, attack_rotation
 
 	return 
 end
-local debug_drawer_info = {
-	mode = "retained",
-	name = "BTMeleeSlamAction"
-}
 BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 	local world = blackboard.world
 	local physics_world = World.get_data(world, "physics_world")
@@ -207,13 +203,6 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 	end
 
 	blackboard.attacking_target = nil
-
-	if script_data.debug_ai_attack then
-		local drawer = Managers.state.debug:drawer(debug_drawer_info)
-
-		drawer.reset(drawer)
-		drawer.capsule_overlap(drawer, pos, size, rotation)
-	end
 
 	return 
 end

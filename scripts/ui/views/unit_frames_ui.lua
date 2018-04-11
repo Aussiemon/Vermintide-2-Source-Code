@@ -163,8 +163,6 @@ UnitFramesUI.set_visible = function (self, visible)
 	return 
 end
 UnitFramesUI.update = function (self, dt, t, my_player)
-	Profiler.start("update_unit_frames")
-
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("ingame_menu")
@@ -173,8 +171,6 @@ UnitFramesUI.update = function (self, dt, t, my_player)
 	local player_unit = my_player.player_unit
 
 	if not player_unit then
-		Profiler.stop("update_unit_frames")
-
 		return 
 	end
 
@@ -188,7 +184,6 @@ UnitFramesUI.update = function (self, dt, t, my_player)
 	self.update_health_animations(self, dt)
 	self.update_slot_equip_animations(self, dt)
 	UIRenderer.end_pass(ui_renderer)
-	Profiler.stop("update_unit_frames")
 
 	return 
 end
@@ -255,9 +250,6 @@ local tmp_peer_ids_by_index_old = {}
 local modified_teammate = {}
 UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph, ui_renderer, my_player)
 	local modified_teammate = modified_teammate
-
-	Profiler.start("update_teammates_unit_frames")
-
 	local profile_synchronizer = self.profile_synchronizer
 	local human_players = self.player_manager:human_and_bot_players()
 	local i = 0
@@ -573,13 +565,9 @@ UnitFramesUI.update_teammates_unit_frames = function (self, dt, t, ui_scenegraph
 		tmp_peer_ids_by_index[idx] = nil
 	end
 
-	Profiler.stop("update_teammates_unit_frames")
-
 	return 
 end
 UnitFramesUI.update_player_unit_frame = function (self, dt, t, ui_scenegraph, ui_renderer, peer_id, local_player_id, my_player)
-	Profiler.start("update_player_unit_frame")
-
 	local profile_synchronizer = self.profile_synchronizer
 	local player_unit = my_player.player_unit
 	local health_percent, total_health, is_knocked_down, is_dead, inventory_extension, dialogue_extension, needs_help, is_wounded, level, is_ready_for_assisted_respawn = nil
@@ -763,7 +751,6 @@ UnitFramesUI.update_player_unit_frame = function (self, dt, t, ui_scenegraph, ui
 	end
 
 	UIRenderer.draw_widget(ui_renderer, player_portrait)
-	Profiler.stop("update_player_unit_frame")
 
 	return 
 end
@@ -907,8 +894,6 @@ UnitFramesUI.update_talk_highlight = function (self, widget, time, dt)
 	return nil
 end
 UnitFramesUI.update_health_animations = function (self, dt)
-	Profiler.start("update_unit_frames_animations")
-
 	local bar_animations = self.bar_animations_data
 
 	if bar_animations then
@@ -939,8 +924,6 @@ UnitFramesUI.update_health_animations = function (self, dt)
 			end
 		end
 	end
-
-	Profiler.stop("update_unit_frames_animations")
 
 	return 
 end

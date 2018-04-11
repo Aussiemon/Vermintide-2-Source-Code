@@ -631,12 +631,10 @@ TwitchManager.disconnect = function (self)
 	return 
 end
 TwitchManager.update = function (self, dt, t)
-	Profiler.start("twitch_manager")
 	self._handle_popup(self)
 	self._validate_data(self, dt, t)
 	self._update_vote_data(self, dt, t)
 	self._update_twitch_game_mode(self, dt, t)
-	Profiler.stop("twitch_manager")
 
 	return 
 end

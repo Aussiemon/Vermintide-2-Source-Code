@@ -962,7 +962,7 @@ function check_for_recent_attackers(unit, blackboard, t)
 	if 0 < nr_damages then
 		local attacking_unit = recent_damages[DamageDataIndex.ATTACKER]
 
-		if Unit.alive(attacking_unit) then
+		if Unit.alive(attacking_unit) and VALID_PLAYERS_AND_BOTS[attacking_unit] then
 			local dist_sqr = Vector3.distance_squared(POSITION_LOOKUP[unit], POSITION_LOOKUP[attacking_unit])
 
 			if min_retaliation_dist_sqr < dist_sqr then

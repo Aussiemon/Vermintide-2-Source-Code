@@ -277,7 +277,8 @@ CraftPageUpgradeItem._handle_input = function (self, dt, t)
 			items[#items + 1] = backend_id
 		end
 
-		local recipe_available = parent.craft(parent, items)
+		local recipe_override = self._recipe_name
+		local recipe_available = parent.craft(parent, items, recipe_override)
 
 		if recipe_available then
 			self._set_craft_button_disabled(self, true)

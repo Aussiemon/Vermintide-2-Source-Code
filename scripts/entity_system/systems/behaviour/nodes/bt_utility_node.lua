@@ -49,9 +49,6 @@ local function randomize_actions(unit, actions, blackboard, t)
 		total_utility_score = total_utility_score + score
 	end
 
-	AiUtils.printf("ai_debug_utility_considerations", "============== pick best action for: %q =====================", tostring(unit))
-	AiUtils.printf("ai_debug_utility_considerations", "SELECTED ORDER \t utility")
-
 	for i = 1, num_actions, 1 do
 		local picked_index = nil
 		local random_utility_score = math.random() * total_utility_score
@@ -76,8 +73,6 @@ local function randomize_actions(unit, actions, blackboard, t)
 
 		total_utility_score = total_utility_score - actions[picked_index].utility_score
 
-		AiUtils.printf("ai_debug_utility_considerations", "\t%s  \t %f", actions[picked_index].name, actions[picked_index].utility_score)
-
 		if picked_index ~= i then
 			swap(actions, picked_index, i)
 		end
@@ -98,20 +93,13 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 		blackboard[self.fail_cooldown_name] = nil
 	end
 
-	Profiler.start("BTUtilityNode")
-
 	local running_node = self.current_running_child(self, blackboard)
 	local result = "failed"
 	local evaluate_next_frame = nil
 
 	if running_node and not blackboard.evaluate then
 		local running_node_id = running_node._identifier
-
-		Profiler.start(running_node_id)
-
 		result, evaluate_next_frame = running_node.evaluate(running_node, unit, blackboard, t, dt)
-
-		Profiler.stop(running_node_id)
 
 		if result == "done" then
 			local utility_data = blackboard.utility_actions[running_node_id]
@@ -121,19 +109,12 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 		if result ~= "failed" then
 			blackboard.evaluate = evaluate_next_frame
 
-			Profiler.stop("BTUtilityNode")
-
 			return result
 		end
 	end
 
 	local actions = self._action_list
-
-	Profiler.start("randomize_actions")
-
 	local num_actions = randomize_actions(unit, actions, blackboard, t)
-
-	Profiler.stop("randomize_actions")
 
 	for i = 1, num_actions, 1 do
 		local action = actions[i]
@@ -149,12 +130,7 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 		local utility_data = blackboard.utility_actions[action_name]
 		utility_data.last_time = t
 		local node_id = node._identifier
-
-		Profiler.start(node_id)
-
 		result, evaluate_next_frame = node.evaluate(node, unit, blackboard, t, dt)
-
-		Profiler.stop(node_id)
 
 		if result ~= "running" then
 			if result == "done" then
@@ -174,8 +150,6 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if result == "running" or result == "done" then
-		Profiler.stop("BTUtilityNode")
-
 		return result
 	end
 
@@ -187,8 +161,6 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 	end
 
 	blackboard[self.fail_cooldown_name] = fail_cooldown_t
-
-	Profiler.stop("BTUtilityNode")
 
 	return result
 end

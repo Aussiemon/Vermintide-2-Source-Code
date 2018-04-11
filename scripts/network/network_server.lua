@@ -662,37 +662,9 @@ NetworkServer._update_eac_match = function (self, dt)
 			data.eac_match_timer = math.max(0, data.eac_match_timer - dt)
 
 			if data.eac_match_timer == 0 then
-				local server_state, peer_state = nil
+				local determined, can_play = self.eac_check_peer(self, peer_id)
 
-				if DEDICATED_SERVER then
-					local gs = Managers.game_server
-					server_state = "untrusted"
-					peer_state = EACServer.state(self._eac_server, peer_id)
-				else
-					local host = self.lobby_host
-					server_state = EAC.state()
-
-					if peer_id == self.my_peer_id then
-						peer_state = server_state
-					else
-						peer_state = EACServer.state(self._eac_server, peer_id)
-					end
-				end
-
-				if server_state == "undetermined" then
-					return 
-				end
-
-				if peer_state == "undetermined" then
-					return 
-				end
-
-				printf("[NetworkServer] Host EAC state is %s, peer %s's state is %s", server_state, peer_id, peer_state)
-
-				local match = nil
-				match = ((server_state ~= "banned" and peer_state ~= "banned") or false) and server_state == peer_state
-
-				if match then
+				if can_play then
 				else
 					printf("[NetworkServer] Peer's EAC status doesn't match the server, disconnecting peer (%s)", peer_id)
 					self.disconnect_peer(self, peer_id, "eac_authorize_failed")
@@ -711,6 +683,41 @@ NetworkServer._update_eac_match = function (self, dt)
 	end
 
 	return 
+end
+NetworkServer.eac_check_peer = function (self, peer_id)
+	local server_state, peer_state = nil
+
+	if DEDICATED_SERVER then
+		local gs = Managers.game_server
+		server_state = "untrusted"
+		peer_state = EACServer.state(self._eac_server, peer_id)
+	else
+		local host = self.lobby_host
+		server_state = EAC.state()
+
+		if peer_id == self.my_peer_id then
+			peer_state = server_state
+		else
+			peer_state = EACServer.state(self._eac_server, peer_id)
+		end
+	end
+
+	if server_state == "undetermined" then
+		return false, true
+	end
+
+	if peer_state == "undetermined" then
+		return false, true
+	end
+
+	local match = nil
+	match = ((server_state ~= "banned" and peer_state ~= "banned") or false) and server_state == peer_state
+
+	if not match then
+		printf("[NetworkServer] Host EAC state is %s, peer %s's state is %s", server_state, peer_id, peer_state)
+	end
+
+	return true, match
 end
 NetworkServer._draw_peer_states = function (self)
 	if DEDICATED_SERVER then

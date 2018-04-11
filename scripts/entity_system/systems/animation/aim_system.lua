@@ -22,9 +22,7 @@ end
 AimSystem.update = function (self, context, t)
 	local dt = context.dt
 
-	Profiler.start("GenericUnitAimExtension")
 	self.update_extension(self, "GenericUnitAimExtension", dt, context, t)
-	Profiler.stop("GenericUnitAimExtension")
 
 	return 
 end

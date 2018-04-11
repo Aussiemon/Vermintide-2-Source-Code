@@ -161,9 +161,7 @@ AccountManager.update = function (self, dt)
 			self._verify_privileges(self)
 			self._verify_user_in_cache(self)
 			self._update_bandwidth_query(self, dt)
-			Profiler.start("Presence")
 			self._presence:update(dt)
-			Profiler.stop("Presence")
 		end
 	end
 
@@ -201,8 +199,6 @@ AccountManager.setup_friendslist = function (self)
 		}
 
 		if (table.contains(events, SocialEventType.RTA_DISCONNECT_ERR) or not self._added_local_user_to_graph) and not self._user_detached then
-			Profiler.start("FRIENDS")
-
 			local user_id = self._user_id
 
 			if Social.add_local_user_to_graph(user_id) then
@@ -211,8 +207,6 @@ AccountManager.setup_friendslist = function (self)
 				self.offline_friends_group_id = Social.create_filtered_social_group(user_id, SocialPresenceFilter.ALL_OFFLINE, SocialRelationshipFilter.FRIENDS)
 				self._added_local_user_to_graph = true
 			end
-
-			Profiler.stop("FRIENDS")
 
 			return true
 		end

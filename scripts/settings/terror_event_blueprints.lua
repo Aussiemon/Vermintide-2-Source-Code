@@ -1962,6 +1962,9 @@ TerrorEventBlueprints = {
 			stinger_name = "enemy_horde_stinger"
 		},
 		{
+			"disable_kick"
+		},
+		{
 			"event_horde",
 			spawner_id = "elven_ruins_toptier",
 			composition_type = "event_medium"
@@ -2687,6 +2690,9 @@ TerrorEventBlueprints = {
 		{
 			"control_specials",
 			enable = false
+		},
+		{
+			"disable_kick"
 		},
 		{
 			"set_master_event_running",
@@ -3669,6 +3675,9 @@ TerrorEventBlueprints = {
 			name = "fort_horde_gate"
 		},
 		{
+			"disable_kick"
+		},
+		{
 			"control_pacing",
 			enable = false
 		},
@@ -3922,6 +3931,9 @@ TerrorEventBlueprints = {
 	},
 	stronghold_boss = {
 		{
+			"disable_kick"
+		},
+		{
 			"set_master_event_running",
 			name = "stronghold_boss"
 		},
@@ -4096,6 +4108,9 @@ TerrorEventBlueprints = {
 	},
 	skittergate_rasknitt_boss = {
 		{
+			"disable_kick"
+		},
+		{
 			"set_master_event_running",
 			name = "skittergate_rasknitt_boss"
 		},
@@ -4142,6 +4157,9 @@ TerrorEventBlueprints = {
 		{
 			"set_master_event_running",
 			name = "canyon_bell_event"
+		},
+		{
+			"disable_kick"
 		},
 		{
 			"set_freeze_condition",
@@ -4553,6 +4571,9 @@ TerrorEventBlueprints = {
 		{
 			"set_master_event_running",
 			name = "gz_chaos_boss"
+		},
+		{
+			"disable_kick"
 		},
 		{
 			"spawn_at_raw",
@@ -5678,6 +5699,9 @@ TerrorEventBlueprints = {
 		{
 			"set_master_event_running",
 			name = "military_end_event_survival"
+		},
+		{
+			"disable_kick"
 		},
 		{
 			"play_stinger",
@@ -8852,6 +8876,9 @@ TerrorEventBlueprints = {
 		}
 	},
 	warcamp_door_guard = {
+		{
+			"disable_kick"
+		},
 		{
 			"spawn_at_raw",
 			spawner_id = "wc_shield_dude_1",

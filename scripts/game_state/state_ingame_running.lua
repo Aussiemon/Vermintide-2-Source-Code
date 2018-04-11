@@ -566,8 +566,6 @@ if PLATFORM ~= "win32" and (BUILD == "dev" or BUILD == "debug") then
 end
 
 StateInGameRunning.update = function (self, dt, t)
-	Profiler.start("StateInGameRunning:update()")
-
 	if DebugKeyHandler.key_pressed("f5", "reload_ui", "ui") then
 		self.create_ingame_ui(self, self.ingame_ui_context)
 	end
@@ -618,18 +616,13 @@ StateInGameRunning.update = function (self, dt, t)
 		end
 	end
 
-	Profiler.start("AFK Kick")
-
 	local main_t = Managers.time:time("main")
 
 	self.update_player_afk_check(self, dt, main_t)
-	Profiler.stop("AFK Kick")
 
 	if self._benchmark_handler then
 		self._benchmark_handler:update(dt, t)
 	end
-
-	Profiler.stop("StateInGameRunning:update()")
 
 	return 
 end

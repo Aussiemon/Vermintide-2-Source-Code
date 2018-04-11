@@ -78,9 +78,12 @@ end
 BTStormVerminPushAction.attack = function (self, unit, t, dt, blackboard)
 	local locomotion = blackboard.locomotion_extension
 	local attacking_target = blackboard.attacking_target
-	local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, attacking_target)
 
-	locomotion.set_wanted_rotation(locomotion, rotation)
+	if Unit.alive(attacking_target) then
+		local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, attacking_target)
+
+		locomotion.set_wanted_rotation(locomotion, rotation)
+	end
 
 	return 
 end

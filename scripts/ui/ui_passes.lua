@@ -199,9 +199,7 @@ UIPasses.state_texture = {
 		if texture then
 			local draw_function = ui_style.draw_function or "draw_texture"
 
-			Profiler.start("state_texture: " .. draw_function)
 			UIRenderer[draw_function](ui_renderer, texture, position, size, ui_style.color, ui_style and ui_style.masked)
-			Profiler.stop("state_texture: " .. draw_function)
 		end
 
 		return 
@@ -349,9 +347,7 @@ UIPasses.list_pass = {
 				end
 
 				if draw then
-					Profiler.start("list_pass: " .. sub_pass_definition.pass_type)
 					UIPasses[sub_pass_definition.pass_type].draw(ui_renderer, sub_pass_data, ui_scenegraph, sub_pass_definition, pass_element_style, pass_element_content, Vector3(unpack(pass_position)), pass_size, input_service, dt)
-					Profiler.stop("list_pass: " .. sub_pass_definition.pass_type)
 				end
 			end
 
@@ -1329,7 +1325,6 @@ UIPasses.text_area_chat = {
 			return 
 		end
 
-		Profiler.start("text area chat")
 		table.clear_array(message_array, #message_array)
 		table.clear(name_array)
 		table.clear(name_color_array)
@@ -1565,8 +1560,6 @@ UIPasses.text_area_chat = {
 
 			position.y = position.y - ui_style.font_size - spacing
 		end
-
-		Profiler.stop("text area chat")
 
 		return 
 	end
@@ -2010,8 +2003,6 @@ UIPasses.text_positive_reinforcement = {
 			return 
 		end
 
-		Profiler.start("text positive reinforcement")
-
 		local font_material, font_size, font_name = nil
 
 		if ui_style.font_type then
@@ -2049,8 +2040,6 @@ UIPasses.text_positive_reinforcement = {
 
 			position.y = position.y + ui_style.font_size
 		end
-
-		Profiler.stop("text positive reinforcement")
 
 		return 
 	end

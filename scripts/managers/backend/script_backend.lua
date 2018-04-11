@@ -115,11 +115,7 @@ ScriptBackend.update = function (self)
 		self._check_current_commit(self)
 	end
 
-	Profiler.start("Backend update")
-
 	local result = Backend.update()
-
-	Profiler.stop("Backend update")
 
 	return result
 end

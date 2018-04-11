@@ -144,10 +144,13 @@ BTVictimGrabbedThrowAwayAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local target_unit = blackboard.target_unit
-	local saved_throw_dir = blackboard.use_stored_throw_direction and blackboard.throw_direction:unbox()
-	local rot = (saved_throw_dir and Quaternion.look(saved_throw_dir)) or (Unit_alive(target_unit) and LocomotionUtils.rotation_towards_unit_flat(unit, target_unit))
 
-	blackboard.locomotion_extension:set_wanted_rotation(rot)
+	if Unit.alive(target_unit) then
+		local saved_throw_dir = blackboard.use_stored_throw_direction and blackboard.throw_direction:unbox()
+		local rot = (saved_throw_dir and Quaternion.look(saved_throw_dir)) or (Unit_alive(target_unit) and LocomotionUtils.rotation_towards_unit_flat(unit, target_unit))
+
+		blackboard.locomotion_extension:set_wanted_rotation(rot)
+	end
 
 	return "running"
 end

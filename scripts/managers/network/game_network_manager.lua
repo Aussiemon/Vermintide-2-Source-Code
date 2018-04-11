@@ -124,14 +124,11 @@ GameNetworkManager.in_game_session = function (self)
 	return 
 end
 GameNetworkManager.update_receive = function (self, dt)
-	Profiler.start("GameNetworkManager:update_receive()")
 	Network.update_receive(dt, self._event_delegate.event_table)
 
 	local game_session = self.game_session
 
 	if not game_session then
-		Profiler.stop("GameNetworkManager:update_receive()")
-
 		return 
 	end
 
@@ -150,14 +147,10 @@ GameNetworkManager.update_receive = function (self, dt)
 		self._left_game = true
 	end
 
-	Profiler.stop("GameNetworkManager:update_receive()")
-
 	return 
 end
 GameNetworkManager.update_transmit = function (self, dt)
-	Profiler.start("GameNetworkManager:update_transmit()")
 	Network.update_transmit()
-	Profiler.stop("GameNetworkManager:update_transmit()")
 
 	return 
 end
@@ -696,8 +689,6 @@ GameNetworkManager.set_peer_synchronizing = function (self, peer_id)
 	return 
 end
 GameNetworkManager._hot_join_sync = function (self, peer_id)
-	Profiler.start("hot_join_sync")
-
 	if Managers.state.debug then
 		Managers.state.debug:hot_join_sync(peer_id)
 	end
@@ -728,7 +719,6 @@ GameNetworkManager._hot_join_sync = function (self, peer_id)
 	self._object_synchronizing_clients[peer_id] = nil
 
 	self.network_transmit:remove_peer_ignore(peer_id)
-	Profiler.stop("hot_join_sync")
 
 	return 
 end

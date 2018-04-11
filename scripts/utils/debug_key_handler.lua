@@ -59,8 +59,6 @@ DebugKeyHandler.key_pressed = function (key, description, category, key_modifier
 		return 
 	end
 
-	Profiler.start("DebugKeyHandler.key_pressed")
-
 	local input_service = DebugKeyHandler.input_manager:get_service(input_service_name or "Debug")
 
 	if not input_service then
@@ -101,8 +99,6 @@ DebugKeyHandler.key_pressed = function (key, description, category, key_modifier
 	end
 
 	local key_pressed = input_service.get(input_service, key)
-
-	Profiler.stop("DebugKeyHandler.key_pressed")
 
 	return modifier_pressed and key_pressed
 end

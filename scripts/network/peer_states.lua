@@ -273,8 +273,9 @@ PeerStates.WaitingForEnterGame = {
 	end,
 	update = function (self, dt)
 		local server = self.server
+		local state_determined, can_play = server.eac_check_peer(server, self.peer_id)
 
-		if self.is_ingame and server.game_network_manager then
+		if self.is_ingame and server.game_network_manager and state_determined and can_play then
 			local peer_id = self.peer_id
 
 			if not server.peers_added_to_gamesession[peer_id] then

@@ -966,40 +966,13 @@ BuffFunctionTemplates.functions = {
 		local t = params.t
 		local buff_template = buff.template
 		local next_heal_tick = buff.next_heal_tick or 0
-		local health_extension = ScriptUnit.extension(unit, "health_system")
-		local status_extension = ScriptUnit.extension(unit, "status_system")
-
-		if 0.5 <= health_extension.current_health_percent(health_extension) or status_extension.is_knocked_down(status_extension) then
-			return 
-		end
+		local regen_cap = 0.5
 
 		if next_heal_tick < t and Unit.alive(unit) then
 			local talent_extension = ScriptUnit.extension(unit, "talent_system")
 
-			if Managers.state.network.is_server then
-				local heal_amount = buff_template.heal_amount
-
-				if talent_extension.has_talent(talent_extension, "kerillian_waywatcher_improved_regen", "wood_elf", true) then
-					heal_amount = heal_amount * 1.5
-				end
-
-				if health_extension.is_alive(health_extension) then
-					if talent_extension.has_talent(talent_extension, "kerillian_waywatcher_group_regen", "wood_elf", true) then
-						heal_amount = heal_amount * 0.5
-						local player_and_bot_units = PLAYER_AND_BOT_UNITS
-
-						for i = 1, #player_and_bot_units, 1 do
-							DamageUtils.heal_network(player_and_bot_units[i], unit, heal_amount, "career_passive")
-						end
-					else
-						DamageUtils.heal_network(unit, unit, heal_amount, "career_passive")
-					end
-				end
-			end
-
 			if talent_extension.has_talent(talent_extension, "kerillian_waywatcher_regenerate_ammunition", "wood_elf", true) then
 				local weapon_slot = "slot_ranged"
-				local ammo_amount = 1
 				local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 				local slot_data = inventory_extension.get_slot_data(inventory_extension, weapon_slot)
 				local right_unit_1p = slot_data.right_unit_1p
@@ -1009,7 +982,40 @@ BuffFunctionTemplates.functions = {
 				local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
 
 				if ammo_extension then
+					local ammo_bonus_fraction = 0.04
+					local ammo_amount = math.max(math.round(ammo_extension.get_max_ammo(ammo_extension) * ammo_bonus_fraction), 1)
+
 					ammo_extension.add_ammo_to_reserve(ammo_extension, ammo_amount)
+				end
+			end
+
+			if Managers.state.network.is_server then
+				local health_extension = ScriptUnit.extension(unit, "health_system")
+				local status_extension = ScriptUnit.extension(unit, "status_system")
+				local heal_amount = buff_template.heal_amount
+
+				if health_extension.is_alive(health_extension) and not status_extension.is_knocked_down(status_extension) and not status_extension.is_assisted_respawning(status_extension) then
+					if talent_extension.has_talent(talent_extension, "kerillian_waywatcher_group_regen", "wood_elf", true) then
+						heal_amount = heal_amount * 0.5
+						local player_and_bot_units = PLAYER_AND_BOT_UNITS
+
+						for i = 1, #player_and_bot_units, 1 do
+							if Unit.alive(player_and_bot_units[i]) then
+								local health_extension = ScriptUnit.extension(player_and_bot_units[i], "health_system")
+								local status_extension = ScriptUnit.extension(player_and_bot_units[i], "status_system")
+
+								if health_extension.current_permanent_health_percent(health_extension) <= regen_cap and not status_extension.is_knocked_down(status_extension) and not status_extension.is_assisted_respawning(status_extension) and health_extension.is_alive(health_extension) then
+									DamageUtils.heal_network(player_and_bot_units[i], unit, heal_amount, "career_passive")
+								end
+							end
+						end
+					elseif health_extension.current_permanent_health_percent(health_extension) <= regen_cap then
+						if talent_extension.has_talent(talent_extension, "kerillian_waywatcher_improved_regen", "wood_elf", true) then
+							heal_amount = heal_amount * 1.5
+						end
+
+						DamageUtils.heal_network(unit, unit, heal_amount, "career_passive")
+					end
 				end
 			end
 
@@ -1634,17 +1640,16 @@ BuffFunctionTemplates.functions = {
 		local player_and_bot_units = PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
-		local buff_to_add = nil
+		local buff_to_add = "markus_knight_passive_defence_aura"
+		local buff_to_add_2 = nil
 		local buff_system = Managers.state.entity:system("buff_system")
 
 		if talent_extension.has_talent(talent_extension, "markus_knight_passive_stamina_aura", "empire_soldier", true) then
-			buff_to_add = "markus_knight_passive_stamina_aura"
+			buff_to_add_2 = "markus_knight_passive_stamina_aura"
 		elseif talent_extension.has_talent(talent_extension, "markus_knight_passive_movement_speed_aura", "empire_soldier", true) then
-			buff_to_add = "markus_knight_passive_movement_speed_aura"
+			buff_to_add_2 = "markus_knight_passive_movement_speed_aura"
 		elseif talent_extension.has_talent(talent_extension, "markus_knight_improved_passive_defence_aura", "empire_soldier", true) then
-			buff_to_add = "markus_knight_improved_passive_defence_aura"
-		else
-			buff_to_add = "markus_knight_passive_defence_aura"
+			buff_to_add_2 = "markus_knight_improved_passive_defence_aura"
 		end
 
 		local removed_buff, num_buffs_removed = nil

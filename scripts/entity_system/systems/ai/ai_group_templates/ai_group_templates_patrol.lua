@@ -352,25 +352,6 @@ function find_position_on_navmesh(nav_world, position, fallback_position, check1
 		end
 	end
 
-	if script_data.debug_storm_vermin_patrol then
-		local drawer = Managers.state.debug:drawer({
-			mode = "immediate",
-			name = "storm_vermin_patrol_immediate"
-		})
-
-		if success then
-			drawer.sphere(drawer, found_position, 0.1, Colors.get("green"))
-			drawer.line(drawer, found_position, fallback_position, Colors.get("green"))
-		elseif found_position == fallback_position then
-			drawer.sphere(drawer, found_position, 0.1, Colors.get("red"))
-		else
-			drawer.sphere(drawer, found_position, 0.1, Colors.get("yellow"))
-			drawer.line(drawer, found_position, fallback_position, Colors.get("yellow"))
-		end
-
-		drawer.sphere(drawer, position, 0.05, Colors.get("orange"))
-	end
-
 	return found_position
 end
 

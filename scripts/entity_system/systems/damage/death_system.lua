@@ -75,12 +75,7 @@ local function start_death_reaction(unit, death_extension, killing_blow, active_
 	local network_type = death_extension.network_type
 	local death_reaction_template = death_extension.death_reaction_template
 	local death_reaction = DeathReactions.templates[death_reaction_template][network_type]
-
-	Profiler.start(profiler_names[network_type][death_reaction_template][1])
-
 	local death_reaction_data, death_is_done = death_reaction.start(unit, context, t, killing_blow, is_server)
-
-	Profiler.stop(profiler_names[network_type][death_reaction_template][1])
 
 	if death_is_done == DeathReactions.IS_DONE then
 		Unit.flow_event(unit, "lua_dead")
@@ -97,9 +92,7 @@ local function start_death_reaction(unit, death_extension, killing_blow, active_
 		local breed = blackboard.breed
 
 		if breed.run_on_death then
-			Profiler.start("run_on_death")
 			breed.run_on_death(unit, blackboard)
-			Profiler.stop("run_on_death")
 		end
 	end
 
@@ -114,8 +107,6 @@ DeathSystem.update = function (self, context, t)
 	local active_reactions = self.active_reactions
 	local death_reactions_to_start = self.death_reactions_to_start
 
-	Profiler.start("start_death_reactions")
-
 	for unit, killing_blow in pairs(death_reactions_to_start) do
 		local death_extension = self.unit_extensions[unit]
 
@@ -124,19 +115,12 @@ DeathSystem.update = function (self, context, t)
 		death_reactions_to_start[unit] = nil
 	end
 
-	Profiler.stop("start_death_reactions")
-	Profiler.start("active_reactions")
-
 	for network_type, templates in pairs(active_reactions) do
 		for template, units in pairs(templates) do
 			local death_reaction = DeathReactions.templates[template][network_type]
 
 			for unit, extension in pairs(units) do
-				Profiler.start(profiler_names[network_type][template][2])
-
 				local death_is_done = death_reaction.update(unit, dt, context, t, extension.death_reaction_data)
-
-				Profiler.stop(profiler_names[network_type][template][2])
 
 				if death_is_done == IS_DONE then
 					Unit.flow_event(unit, "lua_dead")
@@ -147,8 +131,6 @@ DeathSystem.update = function (self, context, t)
 			end
 		end
 	end
-
-	Profiler.stop("active_reactions")
 
 	return 
 end

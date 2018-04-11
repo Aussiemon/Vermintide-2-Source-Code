@@ -53,10 +53,8 @@ EnvironmentBlender.event_unregister_environment_volume = function (self, id)
 	return 
 end
 EnvironmentBlender.update = function (self, dt, t)
-	Profiler.start("EnvironmentBlender:update")
 	self.environment_handler:update(dt, t)
 	self.update_shading_settings(self)
-	Profiler.stop("EnvironmentBlender:update")
 
 	return 
 end

@@ -34,8 +34,6 @@ AiUtils.aggro_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit)
 		return 
 	end
 
-	Profiler.start("aggro_nearby_friends_of_enemy")
-
 	local num_broadphase_query_result = Broadphase.query(broadphase, Unit.local_position(unit, 0), 5, broadphase_query_result)
 
 	for i = 1, num_broadphase_query_result, 1 do
@@ -51,8 +49,6 @@ AiUtils.aggro_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit)
 
 		broadphase_query_result[i] = nil
 	end
-
-	Profiler.stop("aggro_nearby_friends_of_enemy")
 
 	return 
 end
@@ -150,8 +146,6 @@ AiUtils.alert_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit, 
 		return 
 	end
 
-	Profiler.start("alert_nearby_friends_of_enemy")
-
 	local num_results = Broadphase.query(broadphase, Unit.local_position(unit, 0), range, broadphase_query_result)
 
 	for i = 1, num_results, 1 do
@@ -167,8 +161,6 @@ AiUtils.alert_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit, 
 
 		broadphase_query_result[i] = nil
 	end
-
-	Profiler.stop("alert_nearby_friends_of_enemy")
 
 	return 
 end
@@ -420,12 +412,7 @@ AiUtils.broadphase_query = function (position, radius, result_table)
 
 	local ai_system = Managers.state.entity:system("ai_system")
 	local broadphase = ai_system.group_blackboard.broadphase
-
-	Profiler.start("Ai broadphase query")
-
 	local num_hits = Broadphase.query(broadphase, position, radius, result_table)
-
-	Profiler.stop("Ai broadphase query")
 
 	return num_hits
 end
@@ -885,12 +872,6 @@ AiUtils.ninja_vanish_when_taking_damage = function (unit, blackboard)
 	local recent_damages, nr_damages = health_extension.recent_damages(health_extension)
 
 	if 0 < nr_damages then
-		if script_data.debug_ai_movement then
-			local pos = position_lookup[unit]
-
-			QuickDrawerStay:cylinder(pos, pos + Vector3(0, 0, 4), 0.3, Color(200, 0, 51), 20)
-		end
-
 		blackboard.ninja_vanish = true
 	end
 
@@ -1041,7 +1022,6 @@ AiUtils.debug_bot_transitions = function (gui, t, x1, y1)
 	return 
 end
 AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt, hit_func, ...)
-	local draw_debug = script_data.debug_ai_movement
 	local self_forward = Quaternion.forward(Unit.local_rotation(unit, 0))
 	local self_pos = POSITION_LOOKUP[unit]
 	local self_forward_flat = Vector3.normalize(Vector3.flat(self_forward))
@@ -1049,29 +1029,12 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 	local radius = data.push_width * 1.5
 	local forward_pos = self_pos + self_forward * 3
 
-	if draw_debug then
-		QuickDrawer:line(self_pos, forward_pos)
-
-		local left = Vector3.cross(self_forward, Vector3(0, 0, 1))
-
-		QuickDrawer:line(self_pos - left * data.push_width, forward_pos - left * data.push_width)
-		QuickDrawer:line(self_pos + left * data.push_width, forward_pos + left * data.push_width)
-		QuickDrawer:circle(push_pos, radius, Vector3(0, 0, 1))
-		QuickDrawer:circle(push_pos, 0.1, Vector3(0, 0, 1), Color(0, 255, 128))
-	end
-
 	for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
 		local hit_unit = PLAYER_AND_BOT_UNITS[i]
 
 		if displaced_units[hit_unit] then
 			if displaced_units[hit_unit] < t then
 				displaced_units[hit_unit] = nil
-			end
-
-			if draw_debug then
-				local other_pos = POSITION_LOOKUP[hit_unit]
-
-				QuickDrawerStay:circle(other_pos, 0.1, Vector3(0, 0, 1), Color(200, 50, 0))
 			end
 		else
 			local other_pos = POSITION_LOOKUP[hit_unit]
@@ -1103,10 +1066,6 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 							end
 
 							displaced_units[hit_unit] = t + 0.1
-
-							if draw_debug then
-								QuickDrawerStay:circle(other_pos, 0.1, Vector3(0, 0, 1), Color(0, 262, 255))
-							end
 						end
 					end
 				end

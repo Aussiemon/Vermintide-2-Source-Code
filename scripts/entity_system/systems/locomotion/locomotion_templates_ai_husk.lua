@@ -4,8 +4,6 @@ local detailed_profiler_start, detailed_profiler_stop = nil
 local DETAILED_PROFILING = true
 
 if DETAILED_PROFILING then
-	detailed_profiler_start = Profiler.start
-	detailed_profiler_start = Profiler.stop
 else
 	function detailed_profiler_start()
 		return 
@@ -45,16 +43,12 @@ LocomotionTemplates.AiHuskLocomotionExtension.update = function (data, t, dt)
 		LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units(data, t, dt)
 	else
 		LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units_navmesh_check(data, t, dt)
-		Profiler.start("EngineOptimizedExtensions")
 		EngineOptimizedExtensions.ai_husk_locomotion_update(dt, game, data.all_update_units)
-		Profiler.stop("EngineOptimizedExtensions")
 	end
 
 	return 
 end
 LocomotionTemplates.AiHuskLocomotionExtension.update_alive = function (data, t, dt)
-	Profiler.start("update_alive")
-
 	local all_update_units = data.all_update_units
 	local pure_network_update_units = data.pure_network_update_units
 	local other_update_units = data.other_update_units
@@ -70,13 +64,9 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_alive = function (data, t, 
 		end
 	end
 
-	Profiler.stop("update_alive")
-
 	return 
 end
 LocomotionTemplates.AiHuskLocomotionExtension.update_pure_network_update_units = function (data, t, dt)
-	Profiler.start("update_pure_network_update_units")
-
 	local GameSession_game_object_field = GameSession.game_object_field
 	local Vector3_length_squared = Vector3.length_squared
 	local Vector3_length = Vector3.length
@@ -164,14 +154,10 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_pure_network_update_units =
 		Unit.animation_set_variable(unit, extension._move_speed_anim_var, math_max(speed, WALK_THRESHOLD))
 	end
 
-	Profiler.stop("update_pure_network_update_units")
-
 	return 
 end
 local ALLOWED_MOVER_MOVE_DISTANCE = 0.5
 LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units_navmesh_check = function (data, t, dt)
-	Profiler.start("update_other_update_units_navmesh_check")
-
 	local nav_world = data.nav_world
 	local physics_world, traverse_logic = nil
 
@@ -203,14 +189,6 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units_navmesh_
 
 						Unit.set_local_position(unit, 0, mover_position)
 					else
-						local radius = Mover.radius(mover)
-
-						QuickDrawerStay:sphere(current_position, radius, Colors.get("red"))
-						QuickDrawerStay:line(current_position, current_position + Vector3(0, 0, 5), Colors.get("red"))
-
-						local debug_text = string.format("LD should check the Navmesh here, Mover separation failed for %s!", breed.name)
-
-						Debug.world_sticky_text(current_position + Vector3(0, 0, 5), debug_text, "red")
 						extension.set_mover_disable_reason(extension, "not_constrained_by_mover", true)
 
 						extension.hit_wall = true
@@ -220,13 +198,9 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units_navmesh_
 		end
 	end
 
-	Profiler.stop("update_other_update_units_navmesh_check")
-
 	return 
 end
 LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units = function (data, t, dt)
-	Profiler.start("animation_update_units")
-
 	local GameSession_game_object_field = GameSession.game_object_field
 	local Vector3_length_squared = Vector3.length_squared
 	local Vector3_length = Vector3.length
@@ -309,8 +283,6 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units = functi
 
 		Unit.animation_set_variable(unit, extension._move_speed_anim_var, math.max(speed, WALK_THRESHOLD))
 	end
-
-	Profiler.stop("animation_update_units")
 
 	return 
 end

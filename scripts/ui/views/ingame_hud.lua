@@ -350,10 +350,7 @@ IngameHud._update_survival_ui = function (self, dt, t)
 			local mission_data = active_missions.survival_wave
 
 			if mission_data then
-				Profiler.start("game timer")
 				game_timer_ui.update(game_timer_ui, dt, mission_data)
-				Profiler.stop("game timer")
-				Profiler.start("endurance badges")
 
 				local endurance_badge_ui = self.endurance_badge_ui
 
@@ -361,16 +358,11 @@ IngameHud._update_survival_ui = function (self, dt, t)
 					endurance_badge_ui.update(endurance_badge_ui, dt)
 				end
 
-				Profiler.stop("endurance badges")
-				Profiler.start("Difficulty unlock")
-
 				local difficulty_unlock_ui = self.difficulty_unlock_ui
 
 				if difficulty_unlock_ui then
 					difficulty_unlock_ui.update(difficulty_unlock_ui, dt, mission_data)
 				end
-
-				Profiler.stop("Difficulty unlock")
 			end
 		end
 	end
@@ -432,9 +424,7 @@ IngameHud._draw = function (self, dt, player, t, menu_active)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 
 	if player and not active_cutscene then
-		Profiler.start("damage_indicator_gui")
 		self.damage_indicator_gui:update(dt)
-		Profiler.stop("damage_indicator_gui")
 	end
 
 	UIRenderer.end_pass(ui_renderer)
@@ -442,8 +432,6 @@ IngameHud._draw = function (self, dt, player, t, menu_active)
 	return 
 end
 IngameHud.update = function (self, dt, t, menu_active, context)
-	Profiler.start("IngameHud")
-
 	local active_cutscene = self.is_cutscene_active(self)
 	local peer_id = self.peer_id
 	local player = self.player_manager:player_from_peer_id(peer_id)
@@ -472,17 +460,12 @@ IngameHud.update = function (self, dt, t, menu_active, context)
 	end
 
 	self._update_always(self, dt, t, player, context)
-	Profiler.stop("IngameHud")
 
 	return 
 end
 IngameHud._update_always = function (self, dt, t, player, context)
-	Profiler.start("Tobii")
 	self._update_clean_ui(self, dt, t, player, context)
-	Profiler.stop("Tobii")
-	Profiler.start("Crosshair UI")
 	self._update_crosshair_ui(self, dt, t, player, context)
-	Profiler.stop("Crosshair UI")
 
 	local active_cutscene = self.is_cutscene_active(self)
 
@@ -490,43 +473,27 @@ IngameHud._update_always = function (self, dt, t, player, context)
 	end
 
 	if self.subtitle_gui then
-		Profiler.start("subtitle_gui")
 		self.subtitle_gui:update(dt)
-		Profiler.stop("subtitle_gui")
 	end
-
-	Profiler.start("Player List")
 
 	local ingame_player_list_ui = self.ingame_player_list_ui
 
 	ingame_player_list_ui.update(ingame_player_list_ui, dt)
-	Profiler.stop("Player List")
-	Profiler.start("News Ticker")
 
 	if not script_data.disable_news_ticker and self.ingame_news_ticker_ui then
 		self.ingame_news_ticker_ui:update(dt, t)
 	end
 
-	Profiler.stop("News Ticker")
-	Profiler.start("gdc")
-
 	if self.gdc_build then
 		self.gdc_start_ui:update(dt)
 	end
-
-	Profiler.stop("gdc")
-	Profiler.start("damage_numbers_ui")
 
 	if self.damage_numbers_ui then
 		self.damage_numbers_ui:update(dt)
 	end
 
-	Profiler.stop("damage_numbers_ui")
-
 	if self.tutorial_intro_ui then
-		Profiler.start("Tutorial Intro UI")
 		self.tutorial_intro_ui:update(dt, t)
-		Profiler.stop("Tutorial Intro UI")
 	end
 
 	return 
@@ -536,184 +503,103 @@ IngameHud._update_while_alive = function (self, dt, t, player, context)
 	local game_mode_disable_hud = game_mode.game_mode_hud_disabled and game_mode.game_mode_hud_disabled(game_mode)
 
 	if not game_mode_disable_hud then
-		Profiler.start("Unit Frames")
-
 		if self.unit_frames_handler then
 			local ignore_own_player = false
 
 			self.unit_frames_handler:update(dt, t, ignore_own_player)
 		end
 
-		Profiler.stop("Unit Frames")
-
 		if self.player_inventory_ui then
-			Profiler.start("Player Inventory")
 			self.player_inventory_ui:update(dt, t, player)
-			Profiler.stop("Player Inventory")
 		end
 	end
 
 	if self.game_timer_ui then
-		Profiler.start("game timer")
 		self.game_timer_ui:update(dt)
-		Profiler.stop("game timer")
 	end
 
-	Profiler.start("Interaction")
 	self.interaction_ui:update(dt, t, player)
-	Profiler.stop("Interaction")
-	Profiler.start("Crosshair")
 	self.crosshair:update(dt)
-	Profiler.stop("Crosshair")
 
 	if self.tutorial_input_ui then
-		Profiler.start("Tutorial Tooltip UI")
 		self.tutorial_input_ui:update(dt, t)
-		Profiler.stop("Tutorial Tooltip UI")
 	end
 
 	if not game_mode_disable_hud then
-		Profiler.start("Item Received Feedback Messages")
 		self.item_received_feedback_ui:update(dt, t)
-		Profiler.stop("Item Received Feedback Messages")
-		Profiler.start("Bonus Dice")
 		self.bonus_dice_ui:update(dt)
-		Profiler.stop("Bonus Dice")
-		Profiler.start("Fatigue")
 		self.fatigue_ui:update(dt)
-		Profiler.stop("Fatigue")
-		Profiler.start("Overcharge Bar")
 		self.overcharge_bar_ui:update(dt, t, player)
-		Profiler.stop("Overcharge Bar")
-		Profiler.start("Buff UI")
 
 		if self.buff_ui then
 			self.buff_ui:update(dt, t)
 		end
 
-		Profiler.stop("Buff UI")
-		Profiler.start("News Feed UI")
-
 		if self.news_feed_ui then
 			self.news_feed_ui:update(dt, t)
 		end
-
-		Profiler.stop("News Feed UI")
-		Profiler.start("Buff Presentation UI")
 
 		if self.buff_presentation_ui then
 			self.buff_presentation_ui:update(dt, t)
 		end
 
-		Profiler.stop("Buff Presentation UI")
-		Profiler.start("Twitch Vote UI")
-
 		if self.twitch_vote_ui then
 			self.twitch_vote_ui:update(dt, t)
 		end
-
-		Profiler.stop("Twitch Vote UI")
-		Profiler.start("Equipment UI")
 
 		if self.equipment_ui then
 			self.equipment_ui:update(dt, t)
 		end
 
-		Profiler.stop("Equipment UI")
-		Profiler.start("Gamepad Equipment UI")
-
 		if self.gamepad_equipment_ui then
 			self.gamepad_equipment_ui:update(dt, t)
 		end
-
-		Profiler.stop("Gamepad Equipment UI")
-		Profiler.start("Ability UI")
 
 		if self.ability_ui then
 			self.ability_ui:update(dt, t)
 		end
 
-		Profiler.stop("Ability UI")
-		Profiler.start("loot_objective")
 		self.loot_objective:update(dt, t)
-		Profiler.stop("loot_objective")
-		Profiler.start("Wait For Rescue")
 		self.wait_for_rescue_ui:update(dt, t)
-		Profiler.stop("Wait For Rescue")
-		Profiler.start("Boss Health Bar")
 		self.boss_health_ui:update(dt, t)
-		Profiler.stop("Boss Health Bar")
-		Profiler.start("Positive Reinforcement Messages")
 		self.positive_reinforcement_ui:update(dt, t)
-		Profiler.stop("Positive Reinforcement Messages")
 	end
 
-	Profiler.start("mission_objective")
 	self.mission_objective:update(dt, t)
-	Profiler.stop("mission_objective")
-	Profiler.start("area_indicator")
 	self.area_indicator:update(dt)
-	Profiler.stop("area_indicator")
-	Profiler.start("Contract Log")
 
 	if self.contract_log_ui then
 		self.contract_log_ui:update(dt, t)
 	end
 
-	Profiler.stop("Contract Log")
-
 	return 
 end
 IngameHud._update_while_dead = function (self, dt, t, player, context)
-	Profiler.start("Observer")
-
 	local observer_ui = self.observer_ui
 
 	if observer_ui then
 		self.observer_ui:update(dt, t)
 	end
 
-	Profiler.stop("Observer")
-
 	local game_mode = Managers.state.game_mode:game_mode()
 	local game_mode_disable_hud = game_mode.game_mode_hud_disabled and game_mode.game_mode_hud_disabled(game_mode)
 
-	if not game_mode_disable_hud then
-		Profiler.start("Unit Frames")
+	if not game_mode_disable_hud and self.unit_frames_handler then
+		local ignore_own_player = true
 
-		if self.unit_frames_handler then
-			local ignore_own_player = true
-
-			self.unit_frames_handler:update(dt, t, ignore_own_player)
-		end
-
-		Profiler.stop("Unit Frames")
+		self.unit_frames_handler:update(dt, t, ignore_own_player)
 	end
 
 	if self.game_timer_ui then
-		Profiler.start("game timer")
 		self.game_timer_ui:update(dt)
-		Profiler.stop("game timer")
 	end
 
-	Profiler.start("mission_objective")
 	self.mission_objective:update(dt, t)
-	Profiler.stop("mission_objective")
-	Profiler.start("loot_objective")
 	self.loot_objective:update(dt, t)
-	Profiler.stop("loot_objective")
-	Profiler.start("Wait For Rescue")
 	self.wait_for_rescue_ui:update(dt, t)
-	Profiler.stop("Wait For Rescue")
-	Profiler.start("Boss Health Bar")
 	self.boss_health_ui:update(dt, t)
-	Profiler.stop("Boss Health Bar")
-	Profiler.start("Positive Reinforcement Messages")
 	self.positive_reinforcement_ui:update(dt, t)
-	Profiler.stop("Positive Reinforcement Messages")
-	Profiler.start("area_indicator")
 	self.area_indicator:update(dt)
-	Profiler.stop("area_indicator")
 
 	return 
 end
@@ -724,12 +610,9 @@ IngameHud.post_update = function (self, dt, t, hud_visible)
 		self.gift_popup_ui:post_update(dt, t)
 	end
 
-	Profiler.start("Player List post update")
-
 	local ingame_player_list_ui = self.ingame_player_list_ui
 
 	ingame_player_list_ui.post_update(ingame_player_list_ui, dt)
-	Profiler.stop("Player List post update")
 
 	return 
 end

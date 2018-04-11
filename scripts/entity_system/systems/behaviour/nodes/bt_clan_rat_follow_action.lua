@@ -139,11 +139,7 @@ BTClanRatFollowAction.leave = function (self, unit, blackboard, t, reason, destr
 end
 local Unit_alive = Unit.alive
 BTClanRatFollowAction.run = function (self, unit, blackboard, t, dt)
-	Profiler.start("BTClanRatFollowAction")
-
 	if not Unit_alive(blackboard.target_unit) then
-		Profiler.stop("BTClanRatFollowAction")
-
 		return "done"
 	end
 
@@ -157,14 +153,10 @@ BTClanRatFollowAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if blackboard.walking then
-		Profiler.start("follow-walk")
 		self._update_walking(self, unit, blackboard, dt, t)
-		Profiler.stop("follow-walk")
 	end
 
 	if not blackboard.walking and not blackboard.start_anim_done then
-		Profiler.start("follow-start-anim")
-
 		if not blackboard.start_anim_locked then
 			self.start_move_animation(self, unit, blackboard)
 
@@ -185,14 +177,10 @@ BTClanRatFollowAction.run = function (self, unit, blackboard, t, dt)
 			blackboard.start_anim_locked = nil
 			blackboard.start_anim_done = true
 		end
-
-		Profiler.stop("follow-start-anim")
 	else
 		self.follow(self, unit, blackboard, t, dt)
 		self.do_dialogue(self, unit, blackboard, t, dt)
 	end
-
-	Profiler.start("reach-dest")
 
 	local should_evaluate = nil
 	local navigation_extension = blackboard.navigation_extension
@@ -202,9 +190,6 @@ BTClanRatFollowAction.run = function (self, unit, blackboard, t, dt)
 		should_evaluate = "evaluate"
 		blackboard.time_to_next_evaluate = (prioritized_update and t + 0.1) or t + 0.5
 	end
-
-	Profiler.stop("reach-dest")
-	Profiler.stop("BTClanRatFollowAction")
 
 	return "running", should_evaluate
 end
@@ -305,8 +290,6 @@ BTClanRatFollowAction._calculate_walk_dir = function (self, right_vector, forwar
 	return dir
 end
 BTClanRatFollowAction.follow = function (self, unit, blackboard, t, dt)
-	Profiler.start("follow-follow")
-
 	local breed = blackboard.breed
 	local target_unit = blackboard.target_unit
 	local target_distance = blackboard.target_dist
@@ -400,8 +383,6 @@ BTClanRatFollowAction.follow = function (self, unit, blackboard, t, dt)
 			end
 		end
 	end
-
-	Profiler.stop("follow-follow")
 
 	return 
 end

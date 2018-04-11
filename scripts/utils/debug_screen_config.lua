@@ -1209,6 +1209,28 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
+		description = "Injects all patrols into the main path'",
+		category = "AI",
+		setting_name = "debug_spawn_all_boss_patrols",
+		func = function ()
+			print("All boss patrols injected into the main path now")
+			Managers.state.conflict.level_analysis:spawn_all_boss_spline_patrols()
+
+			return 
+		end
+	},
+	{
+		description = "Injects all bosses into the main path'",
+		category = "AI",
+		setting_name = "debug_spawn_all_bosses",
+		func = function ()
+			print("All boss enemies are now injected into the main path!")
+			Managers.state.conflict.level_analysis:inject_all_bosses_into_main_path()
+
+			return 
+		end
+	},
+	{
 		description = "Debug spawn ogre from closest boss spawner. NOTE: debug_ai_recycler must be true at level load.",
 		category = "AI",
 		setting_name = "debug_draw_respaners",

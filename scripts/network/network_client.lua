@@ -120,6 +120,7 @@ NetworkClient.rpc_notify_connected = function (self, sender)
 			EAC.set_host(self.server_peer_id)
 
 			self._eac_has_set_host = true
+			self._next_eac_match_check = 0
 		end
 
 		RPC.rpc_notify_lobby_joined(self.server_peer_id, self.wanted_profile_index, Application.user_setting("clan_tag") or "0")
@@ -296,29 +297,45 @@ NetworkClient._update_eac_match = function (self, dt)
 	self._next_eac_match_check = math.max(0, (self._next_eac_match_check or 0) - dt)
 
 	if self._next_eac_match_check == 0 then
-		local own_id = Network.peer_id()
-		local host_state = EAC.state(self.server_peer_id)
-		local own_state = EAC.state()
+		EAC.validate_host()
 
-		if host_state ~= "undetermined" and own_state ~= "undetermined" then
-			printf("Host (%s) EAC state is %s, own (%s) state is %s", self.server_peer_id, host_state, own_id, own_state)
+		self._next_eac_match_check = 10
+	end
 
-			local match = nil
-			match = ((host_state ~= "banned" and own_state ~= "banned") or false) and host_state == own_state
+	local state_determined, can_play = self._eac_host_check(self)
 
-			if match then
-				self._next_eac_match_check = 10
-			else
-				printf("eac missmatch leading to eac_authorize_failed")
+	if can_play then
+	else
+		printf("eac mismatch leading to eac_authorize_failed")
 
-				self.fail_reason = "eac_authorize_failed"
+		self.fail_reason = "eac_authorize_failed"
 
-				self.set_state(self, "eac_match_failed")
-			end
-		end
+		self.set_state(self, "eac_match_failed")
 	end
 
 	return 
+end
+NetworkClient._eac_host_check = function (self)
+	if not self._eac_has_set_host then
+		return false, true
+	end
+
+	local own_id = Network.peer_id()
+	local host_state = EAC.state(self.server_peer_id)
+	local own_state = EAC.state()
+
+	if host_state == "undetermined" or own_state == "undetermined" then
+		return false, true
+	end
+
+	local match = nil
+	match = ((host_state ~= "banned" and own_state ~= "banned") or false) and host_state == own_state
+
+	if not match then
+		printf("Host (%s) EAC state is %s, own (%s) state is %s", self.server_peer_id, host_state, own_id, own_state)
+	end
+
+	return true, match
 end
 NetworkClient.can_enter_game = function (self)
 	return self.state == "waiting_enter_game"

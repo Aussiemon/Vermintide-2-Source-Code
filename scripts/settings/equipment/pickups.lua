@@ -581,49 +581,4 @@ for group, pickups in pairs(Pickups) do
 	NearPickupSpawnChance[group] = NearPickupSpawnChance[group] or 0
 end
 
-DebugPickupsList = {}
-local category_lookup = {}
-
-function generate_debug_pickup(pickups)
-	for pickup_name, pickup in pairs(pickups) do
-		if pickup.type then
-			local category_name = pickup.debug_pickup_category or "Other"
-			local category = category_lookup[category_name]
-
-			if not category then
-				local index = #DebugPickupsList + 1
-				category = {
-					name = category_name
-				}
-				DebugPickupsList[index] = category
-				category_lookup[category_name] = category
-			end
-
-			category[#category + 1] = {
-				pickup_name
-			}
-		else
-			generate_debug_pickup(pickup)
-		end
-	end
-
-	return 
-end
-
-generate_debug_pickup(Pickups)
-
-local function sort_category_alphabetically_func(a, b)
-	return a.name < b.name
-end
-
-table.sort(DebugPickupsList, sort_category_alphabetically_func)
-
-local function sort_items_alphabetically_func(a, b)
-	return a[1] < b[1]
-end
-
-for k, category in ipairs(DebugPickupsList) do
-	table.sort(category, sort_items_alphabetically_func)
-end
-
 return 

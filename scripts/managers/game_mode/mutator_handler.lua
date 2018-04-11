@@ -39,15 +39,11 @@ MutatorHandler.destroy = function (self)
 	return 
 end
 MutatorHandler.update = function (self, dt, t)
-	Profiler.start("MutatorHandler")
-
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
 	local is_server = self._is_server
 
 	for name, mutator_data in pairs(active_mutators) do
-		Profiler.start(name)
-
 		local template = mutator_data.template
 
 		if is_server and template.server.update then
@@ -57,11 +53,7 @@ MutatorHandler.update = function (self, dt, t)
 		if self._has_local_client and template.client.update then
 			template.client.update(mutator_context, mutator_data, dt, t)
 		end
-
-		Profiler.stop(name)
 	end
-
-	Profiler.stop("MutatorHandler")
 
 	return 
 end

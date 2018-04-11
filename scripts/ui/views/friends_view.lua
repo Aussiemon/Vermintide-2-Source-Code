@@ -384,8 +384,6 @@ FriendsView.refresh_friends = function (self)
 end
 local EMPTY_TABLE = {}
 FriendsView.cb_refresh_friends_done = function (self, friends_list, use_cached_friends_list)
-	Profiler.start("FriendsView:cb_refresh_friends_done()")
-
 	if use_cached_friends_list and not self.cached_friends_list then
 	end
 
@@ -598,8 +596,6 @@ FriendsView.cb_refresh_friends_done = function (self, friends_list, use_cached_f
 	if PLATFORM == "ps4" and not use_cached_friends_list then
 		self.refresh_psn_room_data(self, friends, playing_bulldozer_friends)
 	end
-
-	Profiler.stop("FriendsView:cb_refresh_friends_done()")
 
 	return 
 end
@@ -1010,8 +1006,6 @@ FriendsView.update = function (self, dt, t, is_sub_menu, optional_input_service)
 		end
 	end
 
-	Profiler.start("FriendsView:update()")
-
 	if self.popup_id then
 		local result = Managers.popup:query_result(self.popup_id)
 
@@ -1081,7 +1075,6 @@ FriendsView.update = function (self, dt, t, is_sub_menu, optional_input_service)
 			end
 
 			self.exit(self)
-			Profiler.stop("FriendsView:update()")
 
 			return 
 		end
@@ -1090,8 +1083,6 @@ FriendsView.update = function (self, dt, t, is_sub_menu, optional_input_service)
 		self.draw(self, gamepad_active, dt, input_service)
 		self.update_buttons(self, dt, nil, input_service)
 	end
-
-	Profiler.stop("FriendsView:update()")
 
 	return 
 end

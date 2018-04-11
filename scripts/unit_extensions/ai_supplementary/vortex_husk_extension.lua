@@ -84,19 +84,6 @@ VortexHuskExtension.update = function (self, unit, input, dt, context, t)
 
 	Unit.set_local_scale(unit, 0, Vector3(scale_xy, scale_xy, scale_z))
 
-	if script_data.debug_vortex then
-		local height = vortex_template.max_height * height_percentage
-		local fx_radius = vortex_template.full_fx_radius * fx_radius_percentage
-		local inner_radius_percentage = GameSession.game_object_field(game, go_id, "inner_radius_percentage")
-		local outer_radius = math.max(vortex_template.min_outer_radius, vortex_template.full_outer_radius * inner_radius_percentage)
-		local inner_radius = vortex_template.full_inner_radius * inner_radius_percentage
-		local spin_speed = vortex_template.ai_rotation_speed
-		local position = POSITION_LOOKUP[unit]
-
-		self.debug_render_vortex(self, t, dt, position, fx_radius, inner_radius, outer_radius, spin_speed, height)
-		Debug.text(string.format("VORTEX : FX_RADIUS: %.2f INNER_RADIUS: %.2f OUTER_RADIUS: %.2f HEIGHT: %.2f SPIN_SPEED: %.2f HEIGHT_LERP: %.4f", fx_radius, inner_radius, outer_radius, height, spin_speed, height_lerp))
-	end
-
 	return 
 end
 local spiral = {}

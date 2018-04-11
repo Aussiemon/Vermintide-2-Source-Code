@@ -251,12 +251,9 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	local is_dead = not health_extension.is_alive(health_extension)
 
 	if not is_dead then
-		Profiler.start(self.hit_reaction_template)
-
 		local hit_reaction = HitReactions.get_reaction(self.hit_reaction_template, self.is_husk)
 
 		hit_reaction(unit, dt, context, t, biggest_hit)
-		Profiler.stop(self.hit_reaction_template)
 	end
 
 	if not self.hit_effect_template then
@@ -306,13 +303,9 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
 	parameters.force_dismember = buff_extension and buff_extension.has_buff_perk(buff_extension, "bloody_mess")
 
-	Profiler.start("executing effects")
-
 	for i = 1, num_effects, 1 do
 		self._execute_effect(self, unit, hit_effects[i], biggest_hit, parameters, t, dt)
 	end
-
-	Profiler.stop("executing effects")
 
 	return 
 end
@@ -476,8 +469,6 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 
 			projectile_linker_system.clear_linked_projectiles(projectile_linker_system, unit)
 		end
-
-		debug_printf("Dismember event %q triggered", dismember_event)
 	end
 
 	if flow_event then
@@ -487,8 +478,6 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 			end
 
 			self._delayed_flow = flow_event
-
-			debug_printf("Delayed flow event %q", tostring(flow_event))
 		elseif death_has_started then
 			flow_event = nil
 		else

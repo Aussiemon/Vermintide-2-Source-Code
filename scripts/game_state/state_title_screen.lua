@@ -2,6 +2,7 @@ require("scripts/game_state/state_title_screen_main")
 require("scripts/settings/platform_specific")
 require("scripts/game_state/state_loading")
 require("scripts/managers/rcon/rcon_manager")
+require("scripts/managers/eac/eac_manager")
 require("scripts/settings/game_settings")
 require("scripts/ui/views/beta_overlay")
 require("foundation/scripts/managers/chat/chat_manager")
@@ -55,6 +56,10 @@ StateTitleScreen.on_enter = function (self, params)
 	self._init_chat_manager(self)
 
 	Managers.rcon = Managers.rcon or RconManager:new()
+
+	if PLATFORM == "win32" then
+		Managers.eac = Managers.eac or EacManager:new()
+	end
 
 	if Development.parameter("use_beta_overlay") then
 		self._init_beta_overlay(self)
@@ -238,6 +243,10 @@ StateTitleScreen.update = function (self, dt, t)
 
 	if Managers.state.controller_features then
 		Managers.state.controller_features:update(dt, t)
+	end
+
+	if Managers.eac ~= nil then
+		Managers.eac:update(dt, t)
 	end
 
 	local render_only_background = GameSettingsDevelopment.skip_start_screen

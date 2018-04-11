@@ -170,9 +170,7 @@ SplineMovementMetered._current_spline = function (self)
 	return self._splines[self._current_spline_index]
 end
 SplineMovementMetered.update = function (self, dt)
-	Profiler.start("SplineMovementMetered:update(dt)")
 	self.move(self, dt * self._speed)
-	Profiler.stop("SplineMovementMetered:update(dt)")
 
 	return 
 end

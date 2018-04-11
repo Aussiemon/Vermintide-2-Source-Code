@@ -156,9 +156,7 @@ StateTitleScreenMainMenu.update = function (self, dt, t)
 	local active_view = self._active_view
 
 	if active_view then
-		Profiler.start(active_view)
 		self._views[active_view]:update(dt, t)
-		Profiler.stop(active_view)
 		title_start_ui.update(title_start_ui, dt, t, BACKGROUND_ONLY)
 	else
 		local input_service = self.input_manager:get_service("main_menu")

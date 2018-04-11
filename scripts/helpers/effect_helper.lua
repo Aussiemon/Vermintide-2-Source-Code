@@ -95,15 +95,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 		end
 
 		if sound_character then
-			if script_data.debug_material_effects then
-				printf("   sound param: \"sound_character\", sound_value %q", sound_character)
-			end
-
 			WwiseWorld.set_switch(wwise_world, "character", sound_character, wwise_source_id)
-		end
-
-		if script_data.debug_material_effects then
-			printf("   sound param: \"husk\", sound_value %q", (husk and "true") or "false")
 		end
 
 		WwiseWorld.set_switch(wwise_world, "husk", (husk and "true") or "false", wwise_source_id)

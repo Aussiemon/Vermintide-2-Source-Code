@@ -158,26 +158,12 @@ RespawnHandler.remove_respawn_units_due_to_crossroads = function (self, removed_
 	return 
 end
 RespawnHandler.recalc_respawner_dist_due_to_crossroads = function (self)
-	local debug_respawners = script_data.debug_player_respawns
-	local up = Vector3(0, 0, 1)
 	local respawners = self._respawn_units
 	local unit_local_position = Unit.local_position
 
 	for i = 1, #respawners, 1 do
 		local respawner = respawners[i]
 		local best_point, best_travel_dist, move_percent, best_sub_index, best_main_path = MainPathUtils.closest_pos_at_main_path(nil, unit_local_position(respawner.unit, 0))
-
-		if debug_respawners then
-			local pos = unit_local_position(respawner.unit, 0) + up
-
-			QuickDrawerStay:sphere(pos, 0.53, Color(255, 200, 0))
-			QuickDrawerStay:line(best_point + up, pos, Color(255, 200, 0))
-
-			local s = string.format("respawer %d, dist: %.1f, newdist: %.1f", i, respawner.distance_through_level, best_travel_dist)
-
-			Debug.world_sticky_text(pos, s, "yellow")
-		end
-
 		respawner.distance_through_level = best_travel_dist
 	end
 

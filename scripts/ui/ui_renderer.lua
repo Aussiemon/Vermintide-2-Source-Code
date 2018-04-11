@@ -354,11 +354,6 @@ local function nop()
 end
 
 UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global, scenegraph_id, ui_content, ui_animations, offset)
-	local Profiler_start = Profiler.start
-	local Profiler_stop = Profiler.stop
-
-	Profiler_start("UIRenderer.draw_element")
-
 	local ui_scenegraph = self.ui_scenegraph
 	local position = Vector3(unpack(UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)))
 
@@ -386,11 +381,6 @@ UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global,
 
 	for i, pass_info in ipairs(ui_element.passes) do
 		local pass_type = pass_info.pass_type
-		Profiler_stop = Profiler.stop
-		Profiler_start = Profiler.start
-
-		Profiler_start(pass_type)
-
 		local content_id = pass_info.content_id
 		local element_content = (content_id and ui_content[content_id]) or ui_content
 		local visible = true
@@ -444,7 +434,6 @@ UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global,
 			local visible_previous = pass_data.visible
 			pass_data.visible = visible
 		elseif not visible then
-			Profiler_stop(pass_type)
 		else
 			local pass_size, pass_position = nil
 			local pass_scenegraph_id = (style_data and style_data.scenegraph_id) or pass_info.scenegraph_id
@@ -478,16 +467,11 @@ UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global,
 				pass_position[2] = pass_position[2] * widget_optional_scale
 			end
 
-			Profiler_start("pass draw")
 			ui_pass.draw(self, pass_data, ui_scenegraph, pass_info, style_data, element_content, pass_position, pass_size, input_service, dt, ui_style_global)
-			Profiler_stop("pass draw")
-			Profiler_stop(pass_type)
 		end
 	end
 
 	ui_element.dirty = nil
-
-	Profiler_stop("UIRenderer.draw_element")
 
 	return 
 end
@@ -1452,9 +1436,6 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 	local vertical = UIScalePositionTableToResolution(texture_sizes.vertical)
 	texture_size = UIScalePositionTableToResolution(texture_size)
 	local layer = position[3]
-
-	Profiler.start("draw corners")
-
 	local corner_size = corner
 	local corner_size_x = corner_size[1]
 	local corner_size_y = corner_size[2]
@@ -1501,13 +1482,10 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 	uvs[2][2] = 1 - corner_uv_size_y
 
 	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos + corner_size_x, y_pos + corner_size_y, layer), size - corner_size_vec * 2, color, masked, saturated)
-	Profiler.stop("draw corners")
 
 	if only_corners then
 		return 
 	end
-
-	Profiler.start("tile bar vertical")
 
 	local tile_vertical_size = vertical
 	local tile_vertical_size_x = tile_vertical_size[1]
@@ -1528,8 +1506,6 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 
 	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
 	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_r, Vector3((x_pos + x_size) - tile_vertical_size_x, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
-	Profiler.stop("tile bar vertical")
-	Profiler.start("tile bar horizontal")
 
 	local tile_horizontal_size = horizontal
 	local tile_horizontal_size_x = tile_horizontal_size[1]
@@ -1549,7 +1525,6 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 
 	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(tile_pos_x, y_pos, layer), tile_horizontal_size_vec, color, masked, saturated)
 	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_u, Vector3(tile_pos_x, (y_pos + y_size) - tile_horizontal_size_y, layer), tile_horizontal_size_vec, color, masked, saturated)
-	Profiler.stop("tile bar horizontal")
 
 	return 
 end

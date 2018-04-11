@@ -501,12 +501,8 @@ local function _calculate_closest_target_with_spillover_score(target_unit, targe
 	local target_unit_position = POSITION_LOOKUP[target_unit]
 	local distance_sq = Vector3.distance_squared(ai_unit_position, target_unit_position)
 
-	Profiler.start("line of sight checks")
-
 	if not target_current then
 		if target_unit ~= target_current and detection_radius_sq < distance_sq then
-			Profiler.stop("line of sight checks")
-
 			return 
 		end
 
@@ -524,15 +520,11 @@ local function _calculate_closest_target_with_spillover_score(target_unit, targe
 				local result, pos = PhysicsWorld.immediate_raycast(physics_world, raycast_pos, direction, distance, "closest", "types", "statics", "collision_filter", "filter_ai_line_of_sight_check")
 
 				if result then
-					Profiler.stop("line of sight checks")
-
 					return 
 				end
 			end
 		end
 	end
-
-	Profiler.stop("line of sight checks")
 
 	local dogpile_count = 0
 	local disabled_slots_count = 0
@@ -720,38 +712,6 @@ PerceptionUtils.patrol_passive_target_selection = function (ai_unit, blackboard,
 							distance_to_target_sq = distance_sq
 						end
 					end
-				end
-
-				local num_group_members = group.num_indexed_members
-
-				if script_data.debug_storm_vermin_patrol and num_group_members then
-					local drawer = Managers.state.debug:drawer({
-						mode = "retained",
-						name = "storm_vermin_patrol_targeting_retained"
-					})
-					storm_patrol_debug_draw_count = storm_patrol_debug_draw_count + 1
-
-					if num_group_members < storm_patrol_debug_draw_count then
-						drawer.reset(drawer)
-
-						storm_patrol_debug_draw_count = 1
-					end
-
-					local anchor_direction = blackboard.anchor_direction
-					local ai_unit_rotation = (anchor_direction and anchor_direction.unbox(anchor_direction)) or Quaternion.forward(Unit.world_rotation(ai_unit, 0))
-					local ai_unit_direction = Vector3.normalize(ai_unit_rotation)
-					local angle = math.acos(view_cone_dot) * 180 / math.pi
-					local view_vector_center = ai_unit_direction * breed.patrol_detection_radius
-					local view_vector_left = Quaternion.rotate(Quaternion.from_euler_angles_xyz(0, 0, angle), view_vector_center)
-					local view_vector_right = Quaternion.rotate(Quaternion.from_euler_angles_xyz(0, 0, -angle), view_vector_center)
-
-					drawer.line(drawer, ai_unit_position, ai_unit_position + view_vector_center, Colors.get("red"))
-					drawer.line(drawer, ai_unit_position, ai_unit_position + view_vector_left, Colors.get("red"))
-					drawer.line(drawer, ai_unit_position, ai_unit_position + view_vector_right, Colors.get("red"))
-
-					local panic_close_detection_radius = math.sqrt(breed.panic_close_detection_radius_sq)
-
-					drawer.circle(drawer, ai_unit_position, panic_close_detection_radius, Vector3.up(), Colors.get("red"))
 				end
 			end
 		end
@@ -952,24 +912,10 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 	local num_enemies = #PLAYER_AND_BOT_UNITS
 	local best_score = -1000
 	local group_blackboard = blackboard.group_blackboard
-	local debug_ai_perception = script_data.debug_ai_perception
 
 	for i = 1, num_enemies, 1 do
 		local enemy_unit = PLAYER_AND_BOT_UNITS[i]
 		local score = 0
-		local player_score = nil
-
-		if debug_ai_perception then
-			player_score = score_table[enemy_unit]
-
-			if player_score then
-				table.clear(player_score)
-			else
-				player_score = {}
-				score_table[enemy_unit] = player_score
-			end
-		end
-
 		local dist = math.huge
 		local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
 
@@ -981,29 +927,12 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 
 				if sticky_time < weights.target_stickyness_duration_a then
 					score = score + weights.target_stickyness_bonus_a
-
-					if debug_ai_perception then
-						player_score.sticky_a = weights.target_stickyness_duration_a
-					end
-
-					if debug_ai_perception then
-						player_score.sticky_time = sticky_time
-					end
 				elseif sticky_time < weights.target_stickyness_duration_b then
 					score = score + (1 - sticky_time / weights.target_stickyness_duration_b) * weights.target_stickyness_bonus_b
-
-					if debug_ai_perception then
-						player_score.sticky_b = (1 - sticky_time / weights.target_stickyness_duration_b) * weights.target_stickyness_bonus_b
-						player_score.sticky_time = sticky_time
-					end
 				end
 			elseif group_blackboard.special_targets[enemy_unit] then
 				blackboard.secondary_target = enemy_unit
 				score = score + weights.targeted_by_other_special
-
-				if debug_ai_perception then
-					player_score.dogpile = weights.targeted_by_other_special
-				end
 			end
 
 			local enemy_pos = POSITION_LOOKUP[enemy_unit]
@@ -1014,10 +943,6 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 			if distance_valid_target then
 				local inv_radius = math.clamp(1 - dist / weights.max_distance, 0, 1)
 				score = score + inv_radius * inv_radius * weights.distance_weight
-
-				if debug_ai_perception then
-					player_score.dist = inv_radius * weights.distance_weight
-				end
 			end
 
 			if not breed.ignore_targets_outside_detection_radius or blackboard.target_unit or distance_valid_target then
@@ -1031,36 +956,16 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 
 				score = score + aggro
 
-				if debug_ai_perception then
-					player_score.aggro = aggro
-				end
-
 				if enemy_disabled then
 					score = score * weights.target_disabled_mul
-
-					if debug_ai_perception then
-						player_score["ko/ledge"] = weights.target_disabled_mul
-					end
 				end
 
 				if t - status_extension.last_catapulted_time < 5 then
 					score = score * weights.target_catapulted_mul
-
-					if debug_ai_perception then
-						player_score.catapult = weights.target_catapulted_mul
-					end
 				end
 
 				if blackboard.target_outside_navmesh then
 					score = score * weights.target_outside_navmesh_mul
-
-					if debug_ai_perception then
-						player_score.outside = weights.target_outside_navmesh_mul
-					end
-				end
-
-				if debug_ai_perception then
-					player_score.SUM = score
 				end
 
 				if best_score < score then
@@ -1069,9 +974,6 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 					best_score = score
 				end
 			end
-		elseif debug_ai_perception then
-			player_score["NOT VALID"] = 0
-			player_score.SUM = 0
 		end
 	end
 
@@ -1664,34 +1566,6 @@ PerceptionUtils.troll_crouch_check = function (unit, blackboard, t)
 
 	blackboard.needs_to_crouch = t < blackboard.crouch_sticky_timer
 
-	if script_data.debug_ai_movement then
-		local col = nil
-
-		if result and hit_position then
-			QuickDrawer:sphere(hit_position, 0.25, col)
-
-			col = Color(255, 0, 0)
-		else
-			col = Color(105, 255, 0)
-		end
-
-		QuickDrawer:sphere(infront_pos, 0.05, col)
-		QuickDrawer:line(infront_pos, infront_pos + Vector3(0, 0, ray_length), col)
-
-		col = nil
-
-		if result2 and hit_position2 then
-			QuickDrawer:sphere(hit_position2, 0.25, col)
-
-			col = Color(255, 0, 0)
-		else
-			col = Color(105, 255, 0)
-		end
-
-		QuickDrawer:sphere(above_pos, 0.05, col)
-		QuickDrawer:line(above_pos, above_pos + Vector3(0, 0, ray_length), col)
-	end
-
 	return 
 end
 PerceptionUtils.perception_continuous_chaos_troll = function (unit, blackboard, breed, t, dt)
@@ -1850,15 +1724,12 @@ PerceptionUtils.perception_rat_ogre = function (unit, blackboard, breed, pick_ta
 			end
 
 			if breed.trigger_dialogue_on_target_switch then
-				Profiler.start("dialogue trigger")
-
 				local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 				local event_data = FrameTable.alloc_table()
 				event_data.attack_tag = breed.dialogue_target_switch_attack_tag or "rat_ogre_change_target"
 				event_data.target_name = ScriptUnit.extension(target_unit, "dialogue_system").context.player_profile
 
 				dialogue_input.trigger_networked_dialogue_event(dialogue_input, breed.dialogue_target_switch_event or "enemy_attack", event_data)
-				Profiler.stop("dialogue trigger")
 			end
 
 			if ScriptUnit.has_extension(target_unit, "sound_effect_system") then

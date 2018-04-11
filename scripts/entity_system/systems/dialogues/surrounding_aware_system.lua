@@ -148,18 +148,9 @@ SurroundingAwareSystem.on_remove_extension = function (self, unit, extension_nam
 	return 
 end
 SurroundingAwareSystem.update = function (self, context, t)
-	Profiler.start("SeenRecently")
 	self.update_seen_recently(self, context, t)
-	Profiler.stop("SeenRecently")
-	Profiler.start("Lookat")
 	self.update_lookat(self, context, t)
-	Profiler.stop("Lookat")
-	Profiler.start("Events")
 	self.update_events(self, context, t)
-	Profiler.stop("Events")
-	Profiler.start("Debug")
-	self.update_debug(self, context, t)
-	Profiler.stop("Debug")
 
 	return 
 end
@@ -337,10 +328,6 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 
 	return 
 end
-local debug_drawer_info = {
-	mode = "immediate",
-	name = "surrounding_aware"
-}
 SurroundingAwareSystem.update_debug = function (self, context, t)
 	if not script_data.dialogue_debug_lookat then
 		return 

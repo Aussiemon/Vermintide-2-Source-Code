@@ -520,22 +520,6 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 
 	if current_action_settings then
 		local owner_unit = self.owner_unit
-
-		if script_data.debug_weapons then
-			local player_manager = Managers.player
-			local player = player_manager.owner(player_manager, owner_unit)
-			local profile_display_name = player.profile_display_name(player)
-			local lookup_data = current_action_settings.lookup_data
-			local current_time_in_action = t - self.action_time_started
-
-			Debug.text("Action time:    %.2f", current_time_in_action)
-			Debug.text("Current Action: %s/%s", lookup_data.action_name, lookup_data.sub_action_name)
-			Debug.text("Can chain:      %s", tostring(is_within_a_chain_window(current_time_in_action, self.current_action_settings, owner_unit)))
-			Debug.text("Can do damage:  %s", tostring(is_within_damage_window(current_time_in_action, self.current_action_settings, owner_unit)))
-			Debug.text("Weapon Template: %s", lookup_data.item_template_name)
-			Debug.text("Player:  %s", tostring(profile_display_name))
-		end
-
 		local wwise_world = Managers.world:wwise_world(self.world)
 		local allowed_chain_actions = current_action_settings.allowed_chain_actions
 		local num_chain_actions = #allowed_chain_actions
@@ -566,14 +550,10 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 			local buff_data = current_action_settings.buff_data
 
 			if buff_data then
-				Profiler.start("buff")
 				ActionUtils.update_action_buff_data(self.action_buff_data, buff_data, owner_unit, t)
-				Profiler.stop("buff")
 			end
 
-			Profiler.start(action_kind)
 			action.client_owner_post_update(action, dt, t, self.world, can_damage, current_time_in_action)
-			Profiler.stop(action_kind)
 
 			if current_action_settings.cooldown then
 				self.cooldown_timer = t + current_action_settings.cooldown

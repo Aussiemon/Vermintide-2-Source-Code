@@ -170,6 +170,9 @@ end
 BTEnterHooks.sorcerer_dummy_idle = function (unit, blackboard, t)
 	Managers.state.network:anim_event(unit, "to_plague_wave")
 
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	health_extension.is_invincible = true
+
 	return 
 end
 BTEnterHooks.corruptor_enter = function (unit, blackboard, t)

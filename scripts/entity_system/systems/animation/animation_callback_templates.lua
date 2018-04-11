@@ -638,6 +638,15 @@ AnimationCallbackTemplates.server.anim_cb_stagger_immune = function (unit, param
 
 	return 
 end
+AnimationCallbackTemplates.server.anim_cb_disable_invincibility = function (unit, param)
+	local health_extension = ScriptUnit.has_extension(unit, "health_system")
+
+	if health_extension then
+		health_extension.is_invincible = false
+	end
+
+	return 
+end
 AnimationCallbackTemplates.server.anim_cb_combat_step_stop = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
 

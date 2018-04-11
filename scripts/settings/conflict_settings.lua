@@ -1,7 +1,6 @@
 require("scripts/settings/horde_compositions")
 require("scripts/settings/horde_compositions_pacing")
 
-WAS_RELOADED = true
 HordeSettingsBasics = {
 	ambush = {
 		max_size,
@@ -2391,21 +2390,23 @@ DebugBreedSpawns[#DebugBreedSpawns + 1] = {
 		"Everything",
 		"debug_spawn_all_breeds",
 		{
-			skaven_dummy_clan_rat = true,
-			chaos_dummy_troll = true,
-			chaos_exalted_sorcerer = true,
-			chaos_tentacle_sorcerer = true,
-			chaos_exalted_champion_warcamp = true,
-			skaven_grey_seer = true,
-			skaven_stormfiend_demo = true,
-			skaven_dummy_slave = true,
+			skaven_storm_vermin_champion = true,
 			chaos_dummy_sorcerer = true,
+			chaos_exalted_champion_warcamp = true,
+			chaos_exalted_sorcerer = true,
+			skaven_storm_vermin_warlord = true,
+			skaven_dummy_clan_rat = true,
+			chaos_plague_sorcerer = true,
+			skaven_dummy_slave = true,
 			chaos_exalted_champion_norsca = true,
 			chaos_tentacle = true,
-			skaven_storm_vermin_warlord = true,
-			skaven_stormfiend_boss = true,
 			chaos_spawn_exalted_champion_norsca = true,
-			skaven_storm_vermin_champion = true,
+			skaven_stormfiend_demo = true,
+			chaos_dummy_troll = true,
+			skaven_grey_seer = true,
+			chaos_tentacle_sorcerer = true,
+			chaos_zombie = true,
+			skaven_stormfiend_boss = true,
 			chaos_vortex = true
 		}
 	},

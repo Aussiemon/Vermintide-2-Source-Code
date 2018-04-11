@@ -105,8 +105,6 @@ FadeSystem.update = function (self, context, t)
 	local num_fade_units = self.num_fade_units
 	local unit_extension_data = self.unit_extension_data
 
-	Profiler.start("fade_unit_list")
-
 	for i = 1, num_fade_units, 1 do
 		local fade_unit = fade_unit_list[i]
 		local extension = unit_extension_data[fade_unit]
@@ -115,15 +113,12 @@ FadeSystem.update = function (self, context, t)
 		extension.cached_value = value
 	end
 
-	Profiler.stop("fade_unit_list")
 	self.update_ai_units(self, camera_position, camera_position_flat, camera_position_height)
 
 	return 
 end
 local ai_units = {}
 FadeSystem.update_ai_units = function (self, camera_position, camera_position_flat, camera_position_height)
-	Profiler.start("update_ai_units")
-
 	local unit_extension_data = self.unit_extension_data
 	local faded_ai_units = self.faded_ai_units
 
@@ -160,8 +155,6 @@ FadeSystem.update_ai_units = function (self, camera_position, camera_position_fl
 			end
 		end
 	end
-
-	Profiler.stop("update_ai_units")
 
 	return 
 end

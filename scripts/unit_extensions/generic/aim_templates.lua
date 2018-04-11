@@ -507,8 +507,6 @@ AimTemplates.chaos_marauder = {
 			return 
 		end,
 		update = function (unit, t, dt, data)
-			Profiler.start("marauder_look_at")
-
 			local blackboard = data.blackboard
 			local ai_extension = data.ai_extension
 			local current_action = ai_extension.current_action_name(ai_extension)
@@ -548,8 +546,6 @@ AimTemplates.chaos_marauder = {
 
 				Unit.animation_event(unit, "look_at_off")
 			end
-
-			Profiler.stop("marauder_look_at")
 
 			return 
 		end,

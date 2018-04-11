@@ -149,8 +149,6 @@ function SET_BREED_DIFFICULTY()
 	return 
 end
 
-SET_BREED_DIFFICULTY()
-
 for name, consideration in pairs(UtilityConsiderations) do
 	consideration.name = name
 

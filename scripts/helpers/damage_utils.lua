@@ -1363,33 +1363,40 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 			slot14 = damage
 		end
 
-		status_extension = attacked_player and ScriptUnit.extension(attacked_unit, "status_system")
-		local is_knocked_down = status_extension and status_extension.is_knocked_down(status_extension)
+		status_extension = attacked_player and ScriptUnit.has_extension(attacked_unit, "status_system")
 
-		if is_knocked_down then
-			damage = (damage_type ~= "overcharge" and buff_extension.apply_buffs_to_value(buff_extension, damage, StatBuffIndex.DAMAGE_TAKEN_KD)) or 0
-		end
+		if status_extension then
+			local is_knocked_down = status_extension.is_knocked_down(status_extension)
 
-		local valid_damage_to_overheat = damage_source ~= "ground_impact" and damage_type ~= "overcharge" and damage_type ~= "temporary_health_degen"
+			if is_knocked_down then
+				damage = (damage_type ~= "overcharge" and buff_extension.apply_buffs_to_value(buff_extension, damage, StatBuffIndex.DAMAGE_TAKEN_KD)) or 0
+			end
 
-		if valid_damage_to_overheat and 0 < damage and not is_knocked_down then
-			local original_damage = damage
-			local new_damage = buff_extension.apply_buffs_to_value(buff_extension, damage, StatBuffIndex.DAMAGE_TAKEN_TO_OVERCHARGE)
+			local is_disabled = status_extension.is_disabled(status_extension)
 
-			if new_damage < original_damage then
-				local damage_to_overcharge = original_damage - new_damage
-				damage_to_overcharge = DamageUtils.networkify_damage(damage_to_overcharge)
+			if not is_disabled then
+				local valid_damage_to_overheat = damage_source ~= "ground_impact" and damage_type ~= "overcharge" and damage_type ~= "temporary_health_degen"
 
-				if attacked_player.remote then
-					local peer_id = attacked_player.peer_id
-					local unit_id = network_manager.unit_game_object_id(network_manager, attacked_unit)
+				if valid_damage_to_overheat and 0 < damage and not is_knocked_down then
+					local original_damage = damage
+					local new_damage = buff_extension.apply_buffs_to_value(buff_extension, damage, StatBuffIndex.DAMAGE_TAKEN_TO_OVERCHARGE)
 
-					RPC.rpc_damage_taken_overcharge(peer_id, unit_id, damage_to_overcharge)
-				else
-					DamageUtils.apply_damage_to_overcharge(attacked_unit, damage_to_overcharge)
+					if new_damage < original_damage then
+						local damage_to_overcharge = original_damage - new_damage
+						damage_to_overcharge = DamageUtils.networkify_damage(damage_to_overcharge)
+
+						if attacked_player.remote then
+							local peer_id = attacked_player.peer_id
+							local unit_id = network_manager.unit_game_object_id(network_manager, attacked_unit)
+
+							RPC.rpc_damage_taken_overcharge(peer_id, unit_id, damage_to_overcharge)
+						else
+							DamageUtils.apply_damage_to_overcharge(attacked_unit, damage_to_overcharge)
+						end
+
+						damage = new_damage
+					end
 				end
-
-				damage = new_damage
 			end
 		end
 
@@ -2041,7 +2048,7 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 						hit_zone_name = hit_zone_lookup[node]
 					end
 
-					if hit_zone_name == "head" and AiUtils.unit_alive(hit_unit) then
+					if not current_action.no_headshot_sound and hit_zone_name == "head" and AiUtils.unit_alive(hit_unit) then
 						local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 						first_person_extension.play_hud_sound_event(first_person_extension, "Play_hud_headshot", nil, false)
@@ -2187,7 +2194,7 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 						first_person_extension.play_hud_sound_event(first_person_extension, "hud_player_buff_headshot", nil, false)
 					end
 
-					if AiUtils.unit_alive(hit_unit) then
+					if not current_action.no_headshot_sound and AiUtils.unit_alive(hit_unit) then
 						first_person_extension.play_hud_sound_event(first_person_extension, "Play_hud_headshot", nil, false)
 					end
 				end

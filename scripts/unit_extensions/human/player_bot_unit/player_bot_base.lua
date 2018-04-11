@@ -301,8 +301,6 @@ PlayerBotBase.blackboard = function (self)
 	return self._blackboard
 end
 PlayerBotBase.update = function (self, unit, input, dt, context, t)
-	Profiler.start("PlayerBotBase")
-
 	local health_extension = self._health_extension
 	local status_extension = self._status_extension
 	local locomotion_extension = self._locomotion_extension
@@ -313,30 +311,14 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 	if is_alive and not is_ready_for_assisted_respawn and not is_linked_movement then
 		SELF_UNIT = unit
 
-		Profiler.start("update blackboard")
 		self._update_blackboard(self, dt, t)
-		Profiler.stop("update blackboard")
-		Profiler.start("update target enemy")
 		self._update_target_enemy(self, dt, t)
-		Profiler.stop("update target enemy")
-		Profiler.start("update target ally")
 		self._update_target_ally(self, dt, t)
-		Profiler.stop("update target ally")
-		Profiler.start("_update_liquid_escape")
 		self._update_liquid_escape(self)
-		Profiler.stop("_update_liquid_escape")
-		Profiler.start("_update_vortex_escape")
 		self._update_vortex_escape(self)
-		Profiler.stop("_update_vortex_escape")
-		Profiler.start("update pickups")
 		self._update_pickups(self, dt, t)
-		Profiler.stop("update pickups")
-		Profiler.start("update interactables")
 		self._update_interactables(self, dt, t)
-		Profiler.stop("update interactables")
-		Profiler.start("update brain")
 		self._brain:update(unit, t, dt)
-		Profiler.stop("update brain")
 
 		local moving_platform = locomotion_extension.get_moving_platform(locomotion_extension)
 		local is_disabled = status_extension.is_disabled(status_extension)
@@ -344,23 +326,11 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 		if is_disabled or moving_platform then
 			self._navigation_extension:teleport(POSITION_LOOKUP[unit])
 		elseif locomotion_extension.is_on_ground(locomotion_extension) then
-			Profiler.start("update movement target")
 			self._update_movement_target(self, dt, t)
-			Profiler.stop("update movement target")
 		end
 
-		Profiler.start("update_attack_request")
 		self._update_attack_request(self, t)
-		Profiler.stop("update_attack_request")
 	end
-
-	if script_data.ai_bots_debug then
-		Profiler.start("update debug draw")
-		self._debug_draw_update(self, dt)
-		Profiler.stop("update debug draw")
-	end
-
-	Profiler.stop("PlayerBotBase")
 
 	return 
 end
@@ -391,16 +361,10 @@ PlayerBotBase._update_blackboard = function (self, dt, t)
 	return 
 end
 PlayerBotBase._update_target_enemy = function (self, dt, t)
-	Profiler.start("update target enemy")
-
 	local pos = POSITION_LOOKUP[self._unit]
 
-	Profiler.start("update_slot_target")
 	self._update_slot_target(self, dt, t, pos)
-	Profiler.stop("update_slot_target")
-	Profiler.start("update_proximity_target")
 	self._update_proximity_target(self, dt, t, pos)
-	Profiler.stop("update_proximity_target")
 
 	local bb = self._blackboard
 	local old_target = bb.target_unit
@@ -420,47 +384,25 @@ PlayerBotBase._update_target_enemy = function (self, dt, t)
 
 	if priority_enemy and prio_enemy_dist < 3 then
 		bb.target_unit = priority_enemy
-
-		dtext("Bot Enemy Target: priority_enemy")
 	elseif urgent_enemy and urgent_enemy_dist < 3 then
 		bb.target_unit = urgent_enemy
-
-		dtext("Bot Enemy Target: urgent_enemy")
 	elseif opportunity_enemy and opp_enemy_dist < 3 then
 		bb.target_unit = opportunity_enemy
-
-		dtext("Bot Enemy Target: opportunity_enemy")
 	elseif slot_enemy and slot_enemy_dist < 3 then
 		bb.target_unit = slot_enemy
-
-		dtext("Bot Enemy Target: slot_enemy")
 	elseif prox_enemy and prox_enemy_dist < 2 then
 		bb.target_unit = prox_enemy
-
-		dtext("Bot Enemy Target: prox_enemy")
 	elseif priority_enemy then
 		bb.target_unit = priority_enemy
-
-		dtext("Bot Enemy Target: priority_enemy")
 	elseif urgent_enemy then
 		bb.target_unit = urgent_enemy
-
-		dtext("Bot Enemy Target: urgent_enemy")
 	elseif opportunity_enemy then
 		bb.target_unit = opportunity_enemy
-
-		dtext("Bot Enemy Target: opportunity_enemy")
 	elseif slot_enemy then
 		bb.target_unit = slot_enemy
-
-		dtext("Bot Enemy Target: slot_enemy")
 	elseif bb.target_unit then
 		bb.target_unit = nil
-
-		dtext("Bot Enemy Target: no_target")
 	end
-
-	Profiler.stop("update target enemy")
 
 	return 
 end
@@ -723,8 +665,6 @@ PlayerBotBase._find_target_position_on_nav_mesh = function (self, nav_world, wan
 	return 
 end
 PlayerBotBase._update_target_ally = function (self, dt, t)
-	Profiler.start("update target ally")
-
 	local unit = self._unit
 	local blackboard = self._blackboard
 	local breed = self._bot_profile
@@ -763,8 +703,6 @@ PlayerBotBase._update_target_ally = function (self, dt, t)
 
 		ai_bot_group_system.register_ally_needs_aid_priority(ai_bot_group_system, unit, blackboard.target_ally_unit)
 	end
-
-	Profiler.stop("update target ally")
 
 	return 
 end

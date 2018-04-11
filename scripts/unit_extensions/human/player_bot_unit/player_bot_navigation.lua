@@ -142,13 +142,9 @@ PlayerBotNavigation.stop = function (self)
 	return 
 end
 PlayerBotNavigation.is_path_safe_from_vortex = function (self, path_check_distance, min_allowed_vortex_distance)
-	Profiler.start("is_path_safe_from_vortex")
-
 	local path = self._path
 
 	if not path or self._final_goal_reached then
-		Profiler.stop("is_path_safe_from_vortex")
-
 		return true
 	end
 
@@ -199,8 +195,6 @@ PlayerBotNavigation.is_path_safe_from_vortex = function (self, path_check_distan
 			end
 
 			if result then
-				Profiler.stop("is_path_safe_from_vortex")
-
 				return false
 			end
 		end
@@ -212,8 +206,6 @@ PlayerBotNavigation.is_path_safe_from_vortex = function (self, path_check_distan
 		distance_checked = next_distance
 		previous_position = current_node
 	end
-
-	Profiler.stop("is_path_safe_from_vortex")
 
 	return true
 end
@@ -263,8 +255,6 @@ PlayerBotNavigation._update_path = function (self, t)
 			self._reevaluate_current_nav_transition(self, unit, position, current_goal, new_goal)
 		end
 	end
-
-	self._debug_draw_path(self, position, previous_goal, current_goal)
 
 	return 
 end
@@ -509,10 +499,6 @@ PlayerBotNavigation.position_when_destination_reached = function (self)
 
 	return 
 end
-local debug_drawer_info = {
-	mode = "immediate",
-	name = "PlayerBotNavigation"
-}
 PlayerBotNavigation._debug_draw_path = function (self, position, previous_goal, current_goal)
 	if script_data.ai_bots_debug then
 		local color = self._player.color:unbox()

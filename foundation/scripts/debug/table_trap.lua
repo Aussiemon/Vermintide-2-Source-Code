@@ -9,12 +9,6 @@ table_trap.callstack = function (operation, key, value)
 
 	return 
 end
-table_trap.assert = function (operation, key, value)
-	print(table_trap._trap_information(operation, key, value))
-	assert(false)
-
-	return 
-end
 table_trap.noop = function ()
 	return 
 end

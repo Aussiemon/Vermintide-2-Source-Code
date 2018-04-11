@@ -433,8 +433,6 @@ LevelAnalysis.inject_travel_dists = function (main_paths, overrride)
 	return 
 end
 LevelAnalysis.update_main_path_generation = function (self)
-	Profiler.start("update_main_path_generation")
-
 	local astar_list = self.astar_list
 	local size = #astar_list
 	local main_paths = self.main_paths
@@ -446,8 +444,6 @@ LevelAnalysis.update_main_path_generation = function (self)
 		local a_star = astar_list[i][1]
 		local result = GwNavAStar.processing_finished(a_star)
 	end
-
-	Profiler.stop("update_main_path_generation")
 
 	return 
 end
@@ -504,11 +500,6 @@ LevelAnalysis.boss_gizmo_spawned = function (self, unit)
 				map_section_index
 			}
 		end
-	end
-
-	if script_data.debug_ai_recycler then
-		QuickDrawerStay:sphere(Unit.local_position(unit, 0), 2, Color(map_section_index * 64, map_section_index % 4 * 64, map_section_index % 8 * 32))
-		QuickDrawerStay:sphere(Unit.local_position(unit, 0), 0.25, Color(200, 200, 200))
 	end
 
 	return 
@@ -1653,8 +1644,6 @@ end
 LevelAnalysis.debug = function (self, t)
 
 	-- decompilation error in this vicinity
-	Profiler.start("LevelAnalysis:debug")
-
 	local debug_text = Managers.state.debug_text
 
 	debug_text.clear_world_text(debug_text, "boss")
@@ -1716,22 +1705,12 @@ LevelAnalysis.debug = function (self, t)
 		end
 	end
 
-	Profiler.stop("LevelAnalysis:debug")
-
 	return 
 end
 LevelAnalysis.update = function (self, t)
-	Profiler.start("level_analysis")
-
-	if script_data.debug_ai_recycler and self.main_paths then
-		self.debug(self, t)
-	end
-
 	if self.stitching_path then
 		self.update_main_path_generation(self)
 	end
-
-	Profiler.stop("level_analysis")
 
 	return 
 end

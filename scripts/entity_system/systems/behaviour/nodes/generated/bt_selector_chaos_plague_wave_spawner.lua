@@ -22,8 +22,6 @@ BTSelector_chaos_plague_wave_spawner.leave = function (self, unit, blackboard, t
 	return 
 end
 BTSelector_chaos_plague_wave_spawner.run = function (self, unit, blackboard, t, dt)
-	local Profiler_start = Profiler.start
-	local Profiler_stop = Profiler.stop
 	local child_running = self.current_running_child(self, blackboard)
 	local children = self._children
 	local node_spawn = children[1]
@@ -31,11 +29,8 @@ BTSelector_chaos_plague_wave_spawner.run = function (self, unit, blackboard, t, 
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_spawn, "aborted")
-		Profiler_start("spawn")
 
 		local result, evaluate = node_spawn.run(node_spawn, unit, blackboard, t, dt)
-
-		Profiler_stop("spawn")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -53,11 +48,8 @@ BTSelector_chaos_plague_wave_spawner.run = function (self, unit, blackboard, t, 
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_in_combat, "aborted")
-		Profiler_start("in_combat")
 
 		local result, evaluate = node_in_combat.run(node_in_combat, unit, blackboard, t, dt)
-
-		Profiler_stop("in_combat")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)

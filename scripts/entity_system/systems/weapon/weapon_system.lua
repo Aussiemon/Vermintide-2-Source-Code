@@ -210,7 +210,6 @@ WeaponSystem.update = function (self, context, t)
 	self.update_synced_beam_particle_effects(self)
 	self.update_synced_geiser_particle_effects(self, context, t)
 	self.update_synced_flamethrower_particle_effects(self)
-	self._update_debug(self)
 
 	return 
 end

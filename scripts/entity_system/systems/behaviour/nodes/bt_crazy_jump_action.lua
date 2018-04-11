@@ -142,10 +142,7 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 
 				BTCrazyJumpAction:setup_jump(unit, blackboard, data)
 				locomotion.set_mover_displacement(locomotion, Vector3(0, 0, 0.5), 0.5)
-				debug3d(unit, "JumpAction push_off ok", "green")
 			else
-				debug3d(unit, "JumpAction push_off no angle", "red")
-
 				return "failed"
 			end
 		elseif data.state == "in_air" then
@@ -175,7 +172,6 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 					network_manager.anim_event(network_manager, unit, "jump_fail")
 					LocomotionUtils.set_animation_driven_movement(unit, true, false, false)
 					aiprint("fail already snapped!")
-					debug3d(unit, "JumpAction ai_air->pounce_down_fail pounced_down already", "red")
 
 					return "running"
 				end
@@ -190,8 +186,6 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 			local hit_player = self.check_colliding_players(self, unit, blackboard, pos)
 
 			if hit_player then
-				debug3d(unit, "JumpAction in_air accidental!", "green")
-
 				return "done"
 			end
 
@@ -202,10 +196,7 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 					data.state = "hit_obstacle"
 
 					self.update_anim_variable_done(self, unit, data)
-					debug3d(unit, "JumpAction in_air->hit_obstacle collides_sides", "red")
 				elseif Mover.collides_down(mover) and 0.1 < t - blackboard.last_jump then
-					debug3d(unit, "JumpAction in_air failed collides_down", "red")
-
 					blackboard.skulk_pos = nil
 					data.state = "landing"
 
@@ -218,8 +209,6 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 			local hit_player = self.check_colliding_players(self, unit, blackboard, pos)
 
 			if hit_player then
-				debug3d(unit, "JumpAction in_air_no_target accidental!", "green")
-
 				return "done"
 			end
 
@@ -229,10 +218,7 @@ BTCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 				data.state = "hit_obstacle"
 
 				self.update_anim_variable_done(self, unit, data)
-				debug3d(unit, "JumpAction in_air_no_target->hit_obstacle collides_sides", "red")
 			elseif Mover.collides_down(mover) and 0.1 < t - blackboard.last_jump then
-				debug3d(unit, "JumpAction in_air_no_target failed collides_down", "red")
-
 				blackboard.skulk_pos = nil
 				data.state = "landing"
 

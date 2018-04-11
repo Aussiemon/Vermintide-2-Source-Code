@@ -97,11 +97,7 @@ BTWarpfireThrowerShootAction.leave = function (self, unit, blackboard, t, reason
 	return 
 end
 BTWarpfireThrowerShootAction.run = function (self, unit, blackboard, t, dt)
-	Profiler.start("warpfire_thrower_shoot")
-
 	if blackboard.attack_aborted then
-		Profiler.stop("warpfire_thrower_shoot")
-
 		return "failed"
 	end
 
@@ -132,8 +128,6 @@ BTWarpfireThrowerShootAction.run = function (self, unit, blackboard, t, dt)
 			end
 		end
 
-		Profiler.stop("warpfire_thrower_shoot")
-
 		return "running"
 	elseif attack_pattern_data.state == "ready" then
 		local create_bot_threat_at_t = blackboard.create_bot_threat_at_t
@@ -162,8 +156,6 @@ BTWarpfireThrowerShootAction.run = function (self, unit, blackboard, t, dt)
 							blackboard.warpfire_face_timer = blackboard.warpfire_face_timer + math.abs(dot)
 						end
 					else
-						Profiler.stop("warpfire_thrower_shoot")
-
 						return "done"
 					end
 				else
@@ -180,25 +172,18 @@ BTWarpfireThrowerShootAction.run = function (self, unit, blackboard, t, dt)
 					end
 
 					if realign then
-						Profiler.stop("warpfire_thrower_shoot")
-
 						return "done"
 					end
 
 					self._move_warpfire_blob(self, unit, warpfire_data, blackboard, action, dt)
-					Profiler.stop("warpfire_thrower_shoot")
 
 					return "running"
 				end
 			else
-				Profiler.stop("warpfire_thrower_shoot")
-
 				return "done"
 			end
 		end
 	end
-
-	Profiler.stop("warpfire_thrower_shoot")
 
 	return "running"
 end

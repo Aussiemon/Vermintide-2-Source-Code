@@ -59,13 +59,6 @@ end
 HealthSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, self.NAME, extension_init_data)
 	self.unit_extensions[unit] = extension
-	local optional_data = extension_init_data.optional_data
-
-	if optional_data then
-		extension.zone_data = optional_data.zone_data
-		extension.replaced_breed = optional_data.replaced_breed
-		extension.debug_info = optional_data.debug_info
-	end
 
 	if extension_name == "PlayerUnitHealthExtension" then
 		self.player_unit_extensions[unit] = extension
@@ -116,10 +109,6 @@ HealthSystem.update = function (self, context, t)
 	for unit, extension in pairs(self.updateable_unit_extensions) do
 		extension.update(extension, dt, context, t)
 	end
-
-	Profiler.start("Debug Draw")
-	self.update_debug(self)
-	Profiler.stop("Debug Draw")
 
 	return 
 end
@@ -255,6 +244,7 @@ HealthSystem.update_debug = function (self)
 						local zone_data = health_extension.zone_data
 
 						if zone_data then
+							local hi_data = zone_data.hi_data
 							local text, col = nil
 							local replaced_breed = health_extension.replaced_breed
 
@@ -263,12 +253,15 @@ HealthSystem.update_debug = function (self)
 								text = string.format("%s R>%s", health_extension.debug_info or "Roaming", health_extension.replaced_breed)
 							else
 								col = head_color
-								text = string.format("%s", health_extension.debug_info or "Roaming")
+								text = string.format("%s SEG=%d", health_extension.debug_info or "Roaming", hi_data.id)
 							end
 
 							debug_text_manager.output_unit_text(debug_text_manager, text, 0.15, unit, head_node, offset_vector3, nil, "spawn_info", col, viewport_name)
 
-							text = string.format("%s - zone_id: %q", zone_data.pack_type or "?", zone_data.unique_zone_id)
+							local breed_name = BLACKBOARDS[unit].breed.name
+							local breed_count = hi_data and hi_data.breed_count and hi_data.breed_count[breed_name]
+							local count = (breed_count and breed_count.count) or " "
+							text = string.format("%s %s %q(%s)", (zone_data.island and "island_id:") or "zone_id:", zone_data.unique_zone_id, zone_data.pack_type or "?", count)
 
 							if zone_data.hi then
 								col = desc_color2

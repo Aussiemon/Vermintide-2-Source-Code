@@ -112,13 +112,13 @@ local buff_tweak_data = {
 		duration = 2,
 		multiplier = 0.4
 	},
-	markus_knight_improved_passive_defence_aura = {
-		multiplier = -0.2
+	markus_knight_improved_passive_defence_aura_buff = {
+		multiplier = -0.05
 	},
-	markus_knight_passive_stamina_aura = {
+	markus_knight_passive_stamina_aura_buff = {
 		bonus = 2
 	},
-	markus_knight_passive_movement_speed_aura = {
+	markus_knight_passive_movement_speed_aura_buff = {
 		multiplier = 1.05
 	},
 	markus_knight_activated_ability_damage_buff = {
@@ -404,7 +404,7 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_max_stamina = {
 		buffs = {
 			{
-				stat_buff = StatBuffIndex.TOTAL_AMMO
+				stat_buff = StatBuffIndex.MAX_FATIGUE
 			}
 		}
 	},
@@ -580,7 +580,8 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_passive = {
 		buffs = {
 			{
-				update_func = "markus_knight_proximity_buff_update"
+				buff_to_add = "markus_knight_passive_defence_aura",
+				update_func = "activate_buff_on_distance"
 			}
 		}
 	},
@@ -603,7 +604,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				max_stacks = 1,
 				icon = "markus_knight_passive",
-				dormant = true,
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
 			}
 		}
@@ -702,6 +702,15 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_improved_passive_defence_aura = {
 		buffs = {
 			{
+				buff_to_add = "markus_knight_improved_passive_defence_aura_buff",
+				update_func = "activate_buff_on_distance",
+				range = buff_tweak_data.markus_knight_passive.range
+			}
+		}
+	},
+	markus_knight_improved_passive_defence_aura_buff = {
+		buffs = {
+			{
 				max_stacks = 1,
 				stat_buff = StatBuffIndex.DAMAGE_TAKEN
 			}
@@ -710,8 +719,16 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_passive_stamina_aura = {
 		buffs = {
 			{
+				buff_to_add = "markus_knight_passive_stamina_aura_buff",
+				update_func = "activate_buff_on_distance",
+				range = buff_tweak_data.markus_knight_passive.range
+			}
+		}
+	},
+	markus_knight_passive_stamina_aura_buff = {
+		buffs = {
+			{
 				max_stacks = 1,
-				icon = "markus_knight_passive_stamina_aura",
 				stat_buff = StatBuffIndex.MAX_FATIGUE
 			}
 		}
@@ -719,7 +736,15 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_passive_movement_speed_aura = {
 		buffs = {
 			{
-				icon = "markus_knight_passive_movement_speed_aura",
+				buff_to_add = "markus_knight_passive_movement_speed_aura_buff",
+				update_func = "activate_buff_on_distance",
+				range = buff_tweak_data.markus_knight_passive.range
+			}
+		}
+	},
+	markus_knight_passive_movement_speed_aura_buff = {
+		buffs = {
+			{
 				max_stacks = 1,
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
@@ -1369,11 +1394,13 @@ Talents.empire_soldier = {
 		icon = "markus_knight_passive_stamina_aura",
 		description_values = {
 			{
-				value = buff_tweak_data.markus_knight_passive_stamina_aura.bonus
+				value = buff_tweak_data.markus_knight_passive_stamina_aura_buff.bonus
 			}
 		},
 		requirements = {},
-		buffs = {},
+		buffs = {
+			"markus_knight_passive_stamina_aura"
+		},
 		buff_data = {}
 	},
 	{
@@ -1385,11 +1412,13 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "baked_percent",
-				value = buff_tweak_data.markus_knight_passive_movement_speed_aura.multiplier
+				value = buff_tweak_data.markus_knight_passive_movement_speed_aura_buff.multiplier
 			}
 		},
 		requirements = {},
-		buffs = {},
+		buffs = {
+			"markus_knight_passive_movement_speed_aura"
+		},
 		buff_data = {}
 	},
 	{
@@ -1401,11 +1430,13 @@ Talents.empire_soldier = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.markus_knight_improved_passive_defence_aura.multiplier
+				value = buff_tweak_data.markus_knight_improved_passive_defence_aura_buff.multiplier
 			}
 		},
 		requirements = {},
-		buffs = {},
+		buffs = {
+			"markus_knight_improved_passive_defence_aura"
+		},
 		buff_data = {}
 	},
 	{

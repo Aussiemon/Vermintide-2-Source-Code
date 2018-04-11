@@ -27,16 +27,12 @@ RconUI.update = function (self, dt)
 		self._create_ui_elements(self)
 	end
 
-	Profiler.start("RconUI")
-
 	if self._input_manager ~= nil then
 		local input_service = self._input_manager:get_service("rcon_input")
 
 		self._update_input(self, dt, input_service)
 		self._draw_widgets(self, dt, input_service)
 	end
-
-	Profiler.stop("RconUI")
 
 	return 
 end

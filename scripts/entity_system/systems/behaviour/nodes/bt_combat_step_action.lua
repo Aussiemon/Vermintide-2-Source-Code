@@ -47,15 +47,9 @@ BTCombatStepAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	return 
 end
 BTCombatStepAction.run = function (self, unit, blackboard, t, dt)
-	Profiler.start("BTCombatStepAction")
-
 	if blackboard.start_finished then
-		Profiler.stop("BTCombatStepAction")
-
 		return "done"
 	end
-
-	Profiler.stop("BTCombatStepAction")
 
 	return "running"
 end

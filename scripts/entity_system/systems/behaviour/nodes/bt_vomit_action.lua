@@ -79,26 +79,6 @@ BTVomitAction._get_vomit_position = function (self, unit, blackboard)
 		puke_direction = Vector3.normalize(to_puke_pos)
 	end
 
-	local drawer = Managers.state.debug:drawer({
-		mode = "retained",
-		name = "BTVomitAction"
-	})
-
-	drawer.reset(drawer)
-
-	if script_data.debug_chaos_troll then
-		drawer.sphere(drawer, troll_head_pos, 0.25, Color(0, 255, 0))
-		drawer.vector(drawer, troll_head_pos, to_target, Color(0, 255, 0))
-
-		local debug_color = (puke_pos and Color(255, 255, 0)) or Color(255, 0, 0)
-
-		drawer.sphere(drawer, pos_to_test, 0.25, debug_color)
-
-		if puke_pos then
-			drawer.sphere(drawer, puke_pos, 0.35, Color(0, 255, 0))
-		end
-	end
-
 	return puke_pos, puke_distance_sq, puke_direction
 end
 BTVomitAction.init_attack = function (self, unit, blackboard, action, t)
@@ -125,7 +105,6 @@ BTVomitAction.init_attack = function (self, unit, blackboard, action, t)
 		vomit_animation = attack_anims.ranged_vomit
 	end
 
-	debug_print("PUKE_DISTANCE SQ", puke_distance_sq, "ANIMATION:", vomit_animation, "DIR:", puke_direction, "USE NEAR VOMIT:", use_near_vomit, "DOWN DOT:", down_dot)
 	Managers.state.network:anim_event(unit, vomit_animation)
 
 	blackboard.attack_started_at_t = t
@@ -288,10 +267,6 @@ BTVomitAction.player_vomit_hit_check = function (self, unit, blackboard)
 				end
 			end
 		end
-	end
-
-	if script_data.debug_chaos_troll then
-		QuickDrawer:line(troll_head_pos, troll_head_pos + to_puke, Color(255, 255, 0))
 	end
 
 	return 

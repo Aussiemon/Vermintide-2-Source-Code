@@ -35,10 +35,6 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	if health == -1 then
 		self.is_invincible = true
 		health = math.huge
-
-		if script_data.damage_debug then
-			printf("[GenericHealthExtension] No health information for unit %s", tostring(unit))
-		end
 	else
 		self.is_invincible = false
 	end
@@ -162,14 +158,6 @@ GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, att
 	temp_table[DamageDataIndex.CRITICAL_HIT] = is_critical_strike or false
 
 	pdArray.push_back10(damage_queue, unpack(temp_table))
-
-	if script_data.damage_debug then
-		if 0 <= damage_amount then
-			printf("[GenericHealthExtension] damage %.2f on zone '%s' to %s by %s", damage_amount, hit_zone_name, tostring(unit), tostring(attacker_unit))
-		else
-			printf("[GenericHealthExtension] heal %.2f to %s by %s", -damage_amount, tostring(unit), tostring(attacker_unit))
-		end
-	end
 
 	return temp_table
 end

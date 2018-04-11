@@ -350,17 +350,13 @@ BackendInterfaceItem.type = function (self)
 	return "backend"
 end
 BackendInterfaceItem.update = function (self)
-	Profiler.start("BackendInterfaceItem update")
 	self._backend_items:update()
-	Profiler.stop("BackendInterfaceItem update")
 
 	return 
 end
 BackendInterfaceItem.refresh_entities = function (self)
-	Profiler.start("BackendInterfaceItem refresh_entites")
 	self._backend_items:make_dirty()
 	self._backend_items:_refresh_entities_if_needed()
-	Profiler.stop("BackendInterfaceItem refresh_entites")
 
 	return 
 end

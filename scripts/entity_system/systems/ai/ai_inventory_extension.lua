@@ -371,10 +371,6 @@ AIInventoryExtension.unwield_set = function (self, item_set_index)
 			local item_unit = self.inventory_item_units[j]
 
 			link_unit(unwielded, self.world, item_unit, self.unit)
-
-			if script_data.ai_debug_inventory then
-				printf("[AIInventorySystem] unit[%s] unwielding %s", tostring(unit), tostring(item_unit))
-			end
 		end
 	end
 

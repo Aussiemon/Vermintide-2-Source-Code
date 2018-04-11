@@ -195,7 +195,6 @@ VoiceChatXboxOneManager.unmute_all_users = function (self)
 	return 
 end
 VoiceChatXboxOneManager.update = function (self, dt, t)
-	Profiler.start("VoiceChatXboxOneManager")
 	self._handle_popups(self)
 
 	if self._shutting_down then
@@ -252,8 +251,6 @@ VoiceChatXboxOneManager.update = function (self, dt, t)
 		end
 	end
 
-	Profiler.stop("VoiceChatXboxOneManager")
-
 	return 
 end
 VoiceChatXboxOneManager._handle_popups = function (self)
@@ -270,19 +267,12 @@ end
 local CURRENT_XUIDS = {}
 local TO_REMOVE = {}
 VoiceChatXboxOneManager._handle_updated_users = function (self, t)
-	Profiler.start("Update current users")
-
 	local my_xuid = Managers.account:xbox_user_id()
-
-	Profiler.start("Has remote users changed")
-
 	local num_changes = VoiceChat.remote_user_changes()
 
 	if 0 < num_changes then
 		self._users_have_changed = self._users_have_changed + num_changes
 	end
-
-	Profiler.stop("Has remote users changed")
 
 	if self._users_have_changed <= 0 then
 		return 
@@ -290,13 +280,8 @@ VoiceChatXboxOneManager._handle_updated_users = function (self, t)
 
 	table.clear(CURRENT_XUIDS)
 	table.clear(TO_REMOVE)
-	Profiler.start("Get current chat users")
 
 	local current_chat_users = VoiceChat.chat_users()
-
-	Profiler.stop("Get current chat users")
-	Profiler.start("Handle added users")
-
 	local tmp_xuid = nil
 
 	for idx, user_chat_data in ipairs(current_chat_users) do
@@ -315,9 +300,6 @@ VoiceChatXboxOneManager._handle_updated_users = function (self, t)
 		CURRENT_XUIDS[tmp_xuid] = true
 	end
 
-	Profiler.stop("Handle added users")
-	Profiler.start("Handle removed users")
-
 	for xuid, user_chat_data in pairs(self._current_chat_users) do
 		if not CURRENT_XUIDS[xuid] then
 			TO_REMOVE[xuid] = true
@@ -334,9 +316,6 @@ VoiceChatXboxOneManager._handle_updated_users = function (self, t)
 	for xuid, _ in pairs(TO_REMOVE) do
 		self._current_chat_users[xuid] = nil
 	end
-
-	Profiler.stop("Handle removed users")
-	Profiler.stop("Update current users")
 
 	if self._users_have_changed == 0 then
 		self.set_chat_volume(self, 1)

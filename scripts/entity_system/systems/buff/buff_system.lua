@@ -104,7 +104,6 @@ BuffSystem.on_freeze_extension = function (self, unit, extension_name)
 end
 BuffSystem.update = function (self, context, t)
 	BuffSystem.super.update(self, context, t)
-	self._update_debug(self, t)
 
 	return 
 end

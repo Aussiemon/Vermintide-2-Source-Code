@@ -124,8 +124,8 @@ local buff_tweak_data = {
 		bonus = 0.3
 	},
 	kerillian_waywatcher_passive = {
-		time_between_heals = 7,
-		heal_amount = 2
+		time_between_heals = 10,
+		heal_amount = 3
 	},
 	kerillian_waywatcher_passive_increased_ammunition = {
 		multiplier = 0.5

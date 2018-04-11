@@ -209,8 +209,6 @@ local function ai_chaos_tentacle_update(unit, dt, context, t, data, is_server)
 end
 
 local function update_wall_nail(unit, dt, t, data)
-	Profiler.start("update_wall_nail")
-
 	for hit_ragdoll_actor, nail_data in pairs(data.wall_nail_data) do
 		local actor = Unit.actor(unit, hit_ragdoll_actor)
 
@@ -259,8 +257,6 @@ local function update_wall_nail(unit, dt, t, data)
 			Unit.set_local_position(unit, node, Vector3.lerp(nail_data.position:unbox(), nail_data.target_position:unbox(), lerp_t))
 		end
 	end
-
-	Profiler.stop("update_wall_nail")
 
 	return 
 end

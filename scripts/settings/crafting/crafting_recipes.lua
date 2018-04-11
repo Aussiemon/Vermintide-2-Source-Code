@@ -14,7 +14,8 @@ local crafting_recipes = {
 			melee = true,
 			necklace = true,
 			trinket = true,
-			ranged = true
+			ranged = true,
+			hat = true
 		},
 		item_sort_func = function (item_1, item_2)
 			local item_data_1 = item_1.data

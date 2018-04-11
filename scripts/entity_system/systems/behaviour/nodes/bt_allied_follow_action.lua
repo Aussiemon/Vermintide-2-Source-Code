@@ -85,8 +85,6 @@ BTAlliedFollowAction._get_wanted_pos = function (self, unit, blackboard)
 	return 
 end
 BTAlliedFollowAction.follow = function (self, unit, t, dt, blackboard, locomotion_extension)
-	Profiler.start("allied_follow_action")
-
 	local action = blackboard.action
 	local navigation_extension = blackboard.navigation_extension
 
@@ -127,8 +125,6 @@ BTAlliedFollowAction.follow = function (self, unit, t, dt, blackboard, locomotio
 
 	local target_intensity = blackboard.target_status_extension and blackboard.target_status_extension:get_intensity()
 	blackboard.target_is_in_combat = target_intensity and 0 < target_intensity
-
-	Profiler.stop("allied_follow_action")
 
 	return 
 end

@@ -823,16 +823,6 @@ SpawnManager._update_available_profiles = function (self, profile_synchronizer, 
 		return (ProfilePriority[a] or math.huge) < (ProfilePriority[b] or math.huge)
 	end)
 
-	if script_data.wanted_bot_profile then
-		local wanted_bot_profile_index = FindProfileIndex(script_data.wanted_bot_profile)
-		local allowed_bots = math.min(NUM_PLAYERS - humans, (not script_data.ai_bots_disabled or 0) and (script_data.cap_num_bots or NUM_PLAYERS))
-		local bot_delta = allowed_bots - bots
-
-		if 0 < bot_delta and table.find(available_profile_order, wanted_bot_profile_index) and profile_synchronizer.owner_type(profile_synchronizer, wanted_bot_profile_index) == "available" then
-			self.set_forced_bot_profile_index(self, wanted_bot_profile_index)
-		end
-	end
-
 	if self._forced_bot_profile_index then
 		local forced_bot_profile_index = self._forced_bot_profile_index
 		local index = table.find(available_profile_order, forced_bot_profile_index)
@@ -983,19 +973,6 @@ SpawnManager._spawn_player = function (self, status)
 	local profile_index = status.profile_index
 	local position, rotation = self._find_spawn_point(self, status)
 	local is_initial_spawn = status.spawn_state == "is_initial_spawn"
-	local teleport_on_spawn = Development.parameter("teleport_on_spawn")
-
-	if teleport_on_spawn then
-		local boxed_pos = ConflictUtils.get_teleporter_portals()[teleport_on_spawn][1]
-		local boxed_rot = ConflictUtils.get_teleporter_portals()[teleport_on_spawn][2]
-
-		if boxed_pos and boxed_rot then
-			print("teleport_on_spawn -> teleporting the player to:", teleport_on_spawn)
-
-			position = boxed_pos.unbox(boxed_pos)
-			rotation = boxed_rot.unbox(boxed_rot)
-		end
-	end
 
 	netpack_consumables(status.consumables, CONSUMABLES_TEMP)
 

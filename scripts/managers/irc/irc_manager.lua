@@ -313,9 +313,6 @@ IRCManager._parse_names_list = function (self, channel, username, members, names
 	return 
 end
 IRCManager.update = function (self, dt)
-	Profiler.start("irc_manager")
-	IRCStates[self._state](self, dt)
-	Profiler.stop("irc_manager")
 	IRCStates[self._state](self, dt)
 
 	return 

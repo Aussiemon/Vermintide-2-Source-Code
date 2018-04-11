@@ -79,14 +79,10 @@ BTNode.run = function (self, unit, ai_data, t, dt)
 	return 
 end
 BTNode.set_running_child = function (self, unit, blackboard, t, node, reason, destroy)
-	Profiler.start("set_running_child")
-
 	local identifier = self._identifier
 	local old_node = blackboard.running_nodes[identifier]
 
 	if old_node == node then
-		Profiler.stop("set_running_child")
-
 		return 
 	end
 
@@ -102,8 +98,6 @@ BTNode.set_running_child = function (self, unit, blackboard, t, node, reason, de
 	if node then
 		node.enter(node, unit, blackboard, t)
 	end
-
-	Profiler.stop("set_running_child")
 
 	return 
 end

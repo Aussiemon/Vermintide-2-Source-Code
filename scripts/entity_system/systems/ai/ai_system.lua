@@ -526,13 +526,8 @@ AISystem.update = function (self, context, t)
 		self.create_all_trees(self)
 	end
 
-	Profiler.start("PlayerBotBase")
 	self.update_extension(self, "PlayerBotBase", dt, context, t)
-	Profiler.stop("PlayerBotBase")
-	Profiler.start("AiHuskBaseExtension")
 	self.update_extension(self, "AiHuskBaseExtension", dt, context, t)
-	Profiler.stop("AiHuskBaseExtension")
-	Profiler.start("NavCostMap Recomputation")
 
 	if self._should_recompute_nav_cost_maps and self._previous_nav_cost_map_recomputation_t + NAV_COST_MAP_RECOMPUTATION_INTERVAL < t then
 		self._recompute_nav_cost_maps(self)
@@ -541,8 +536,6 @@ AISystem.update = function (self, context, t)
 		self._previous_nav_cost_map_recomputation_t = t
 	end
 
-	Profiler.stop("NavCostMap Recomputation")
-	Profiler.start("AISimpleExtension")
 	self.update_alive(self)
 	self.update_perception(self, t, dt)
 	self.update_brains(self, t, dt)
@@ -550,13 +543,9 @@ AISystem.update = function (self, context, t)
 	self.update_broadphase(self)
 
 	if script_data.debug_enabled then
-		Profiler.start("update_debug")
 		self.update_debug_unit(self, t)
 		self.update_debug_draw(self, t)
-		Profiler.stop("update_debug")
 	end
-
-	Profiler.stop("AISimpleExtension")
 
 	for id, unit in pairs(self._units_to_destroy) do
 		local extension = self.ai_units_alive[unit]
@@ -571,16 +560,12 @@ end
 AISystem.physics_async_update = function (self, context, t)
 	local dt = context.dt
 
-	Profiler.start("update blackboards")
 	self.update_ai_blackboards_prioritized(self, t, dt)
 	self.update_ai_blackboards(self, t, dt)
-	Profiler.stop("update blackboards")
 
 	return 
 end
 AISystem.update_alive = function (self)
-	Profiler.start("update_alive")
-
 	for unit, extension in pairs(self.ai_units_alive) do
 		local is_alive = extension._health_extension == nil or extension._health_extension:is_alive()
 
@@ -591,8 +576,6 @@ AISystem.update_alive = function (self)
 			self.ai_units_perception_prioritized[unit] = nil
 		end
 	end
-
-	Profiler.stop("update_alive")
 
 	return 
 end
@@ -614,30 +597,19 @@ AISystem.update_perception = function (self, t, dt)
 		return 
 	end
 
-	Profiler.start("update_perception")
-
 	local PerceptionUtils = PerceptionUtils
 	local ai_units_perception = self.ai_units_perception
-
-	Profiler.start("continuous")
 
 	for unit, extension in pairs(self.ai_units_perception_continuous) do
 		local blackboard = extension._blackboard
 		local breed = extension._breed
 		local perception_continuous_name = breed.perception_continuous
 		local perception_function = PerceptionUtils[perception_continuous_name]
-
-		Profiler.start(perception_continuous_name)
-
 		local needs_perception = perception_function(unit, blackboard, breed, t, dt)
 		ai_units_perception[unit] = (needs_perception and extension) or nil
 
 		self._update_taunt(self, t, blackboard)
-		Profiler.stop(perception_continuous_name)
 	end
-
-	Profiler.stop("continuous")
-	Profiler.start("prioritized perception")
 
 	local ai_units_perception_prioritized = self.ai_units_perception_prioritized
 
@@ -649,16 +621,11 @@ AISystem.update_perception = function (self, t, dt)
 		local perception_function = PerceptionUtils[perception_func_name]
 		local target_selection_function = PerceptionUtils[target_selection_func_name]
 
-		Profiler.start(target_selection_func_name)
 		perception_function(unit, blackboard, breed, target_selection_function, t, dt)
 		self._update_taunt(self, t, blackboard)
-		Profiler.stop(target_selection_func_name)
 
 		ai_units_perception_prioritized[unit] = nil
 	end
-
-	Profiler.stop("prioritized perception")
-	Profiler.start("perception")
 
 	local current_perception_unit = self.current_perception_unit
 	current_perception_unit = (self.ai_units_perception[current_perception_unit] ~= nil and current_perception_unit) or nil
@@ -681,44 +648,17 @@ AISystem.update_perception = function (self, t, dt)
 		local perception_function = PerceptionUtils[perception_func_name]
 		local target_selection_function = PerceptionUtils[target_selection_func_name]
 
-		Profiler.start(target_selection_func_name)
 		perception_function(current_perception_unit, blackboard, breed, target_selection_function, t, dt)
 		self._update_taunt(self, t, blackboard)
-		Profiler.stop(target_selection_func_name)
 	end
-
-	Profiler.stop("perception")
 
 	self.current_perception_unit = current_perception_unit
-
-	if script_data.debug_ai_perception then
-		local debug_unit = script_data.debug_unit
-
-		if unit_alive(debug_unit) then
-			local gui = self.ai_debugger and self.ai_debugger.screen_gui
-			local ai_ext = self.ai_units_alive[debug_unit]
-
-			if ai_ext then
-				local y = PerceptionUtils.debug_ai_perception(debug_unit, ai_ext, ai_ext._blackboard, t, gui, 0, 0)
-
-				if self.ai_units_perception_continuous[debug_unit] then
-					PerceptionUtils.debug_rat_ogre_perception(gui, t, 0, y, ai_ext._blackboard)
-				end
-			end
-		end
-	end
-
-	Profiler.stop("update_perception")
 
 	return 
 end
 AISystem.update_brains = function (self, t, dt)
 	local number_ordinary_aggroed_enemies = 0
 	local number_special_aggored_enemies = 0
-	local Profiler_start = Profiler.start
-	local Profiler_stop = Profiler.stop
-
-	Profiler.start("update_brains")
 
 	for unit, extension in pairs(self.ai_units_alive) do
 		local bt = extension._brain._bt
@@ -735,16 +675,12 @@ AISystem.update_brains = function (self, t, dt)
 		end
 	end
 
-	Profiler.stop("update_brains")
-
 	self.number_ordinary_aggroed_enemies = number_ordinary_aggroed_enemies
 	self.number_special_aggored_enemies = number_special_aggored_enemies
 
 	return 
 end
 AISystem.update_game_objects = function (self)
-	Profiler.start("update_game_objects")
-
 	local game = Managers.state.network:game()
 	local NetworkLookup_bt_action_names = NetworkLookup.bt_action_names
 	local GameSession_set_game_object_field = GameSession.set_game_object_field
@@ -758,13 +694,9 @@ AISystem.update_game_objects = function (self)
 		GameSession_set_game_object_field(game, game_object_id, "bt_action_name", action_id)
 	end
 
-	Profiler.stop("update_game_objects")
-
 	return 
 end
 AISystem.update_broadphase = function (self)
-	Profiler.start("update_broadphase")
-
 	local POSITION_LOOKUP = POSITION_LOOKUP
 	local broadphase = self.broadphase
 
@@ -777,8 +709,6 @@ AISystem.update_broadphase = function (self)
 			Broadphase.move(broadphase, extension.broadphase_id, position)
 		end
 	end
-
-	Profiler.stop("update_broadphase")
 
 	return 
 end
@@ -1068,8 +998,6 @@ end
 
 local MAX_PRIO_UPDATES_PER_FRAME = (PLATFORM == "win32" and 40) or 20
 AISystem.update_ai_blackboards_prioritized = function (self, t, dt)
-	Profiler.start("prio")
-
 	local ai_blackboard_updates = self.ai_blackboard_updates
 	local num_normal = #ai_blackboard_updates
 	local prio_updates = self.ai_blackboard_prioritized_updates
@@ -1109,14 +1037,10 @@ AISystem.update_ai_blackboards_prioritized = function (self, t, dt)
 
 	self.start_prio_index = index
 
-	Profiler.stop("prio")
-
 	return 
 end
 local AI_UPDATES_PER_FRAME = 2
 AISystem.update_ai_blackboards = function (self, t, dt)
-	Profiler.start("nonprio")
-
 	local ai_blackboard_updates = self.ai_blackboard_updates
 	local ai_blackboard_updates_n = #ai_blackboard_updates
 	local ai_blackboard_prioritized_updates = self.ai_blackboard_prioritized_updates
@@ -1152,8 +1076,6 @@ AISystem.update_ai_blackboards = function (self, t, dt)
 	end
 
 	self.ai_update_index = index
-
-	Profiler.stop("nonprio")
 
 	return 
 end

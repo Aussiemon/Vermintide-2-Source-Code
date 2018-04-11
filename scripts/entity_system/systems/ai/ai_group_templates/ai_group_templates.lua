@@ -36,9 +36,6 @@ AIGroupTemplates.horde = {
 		local group_data = group and group.group_data
 
 		if group_data then
-			local wave = group_data.horde_wave
-
-			Debug.text(string.format("Horde size: %d/%d %s", group.members_n, group.size, wave))
 		end
 
 		return 
@@ -124,6 +121,52 @@ AIGroupTemplates.encampment = {
 		local breed = ai_simple._breed
 
 		ai_simple.set_perception(ai_simple, breed.perception, breed.target_selection)
+
+		return 
+	end
+}
+AIGroupTemplates.spawn_test = {
+	pre_unit_init = function (unit, group)
+		local blackboard = BLACKBOARDS[unit]
+		blackboard.far_off_despawn_immunity = true
+
+		return 
+	end,
+	init = function (world, nav_world, group, t)
+		group.kill_after_time = t + 2
+		group.check_size = group.num_spawned_members
+
+		return 
+	end,
+	setup_group = function (world, nav_world, group, first_unit)
+		return 
+	end,
+	update = function (world, nav_world, group, t)
+		if group.kill_after_time < t then
+			for unit, extension in pairs(group.members) do
+				local heath_extension = ScriptUnit.has_extension(unit, "health_system")
+
+				if heath_extension and heath_extension.is_alive(heath_extension) then
+					Managers.state.conflict:destroy_unit(unit, BLACKBOARDS[unit], "test")
+
+					group.check_size = group.check_size - 1
+				end
+			end
+
+			local spawner_system = Managers.state.entity:system("spawner_system")
+			spawner_system.tests_running = spawner_system.tests_running - 1
+		end
+
+		return 
+	end,
+	destroy = function (world, nav_world, group)
+		if group.check_size ~= 0 then
+			local spawner_unit = group.group_data.spawner_unit
+
+			print(string.format("### DESTROY Bad spawner: %s at %s", tostring(spawner_unit), tostring(Unit.local_position(spawner_unit, 0))))
+		else
+			print("spawner id ", group.id, "is ok!")
+		end
 
 		return 
 	end

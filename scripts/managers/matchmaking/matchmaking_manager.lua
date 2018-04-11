@@ -359,12 +359,7 @@ MatchmakingManager.update = function (self, dt, t)
 	if self._state then
 		self.debug.statename = self._state.NAME
 		local state_name = self._state.NAME
-
-		Profiler.start(state_name)
-
 		local new_state, state_context = self._state:update(dt, t)
-
-		Profiler.stop(state_name)
 
 		if new_state then
 			local new_state_name = new_state.NAME

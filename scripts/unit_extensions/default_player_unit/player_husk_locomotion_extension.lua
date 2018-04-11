@@ -111,11 +111,8 @@ PlayerHuskLocomotionExtension.set_disabled = function (self, disabled, run_func,
 	return 
 end
 PlayerHuskLocomotionExtension.update = function (self, unit, input, dt, context, t)
-	Profiler.start("PlayerHuskLocomotionExtension:update")
-
 	if self._disabled then
 		self._run_func(unit, dt, self)
-		Profiler.stop("PlayerHuskLocomotionExtension:update")
 
 		return 
 	end
@@ -138,7 +135,6 @@ PlayerHuskLocomotionExtension.update = function (self, unit, input, dt, context,
 	end
 
 	self._update_last_position_on_navmesh(self)
-	Profiler.stop("PlayerHuskLocomotionExtension:update")
 
 	return 
 end

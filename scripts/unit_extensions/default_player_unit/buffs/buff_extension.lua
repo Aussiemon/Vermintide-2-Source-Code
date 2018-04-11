@@ -1,7 +1,5 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 local bpc = dofile("scripts/settings/bpc")
 script_data.buff_debug = script_data.buff_debug or Development.parameter("buff_debug")
 BuffExtension = class(BuffExtension)
@@ -307,9 +305,7 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 	return index
 end
 BuffExtension.update = function (self, unit, input, dt, context, t)
-	Profiler.start("BuffExtension:update :: buffs")
 	self._update_buffs(self, dt, t)
-	Profiler.stop("BuffExtension:update :: buffs")
 
 	return 
 end
@@ -388,8 +384,6 @@ BuffExtension.remove_buff = function (self, id)
 	local buff_type_name = ""
 
 	while i <= num_buffs do
-
-		-- decompilation error in this vicinity
 		local buff = buffs[i]
 		local template = buff.template
 		buff_extension_function_params.bonus = buff.bonus
@@ -397,15 +391,14 @@ BuffExtension.remove_buff = function (self, id)
 		buff_extension_function_params.t = end_time
 		buff_extension_function_params.end_time = end_time
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
-	end
 
-	if script_data.buff_debug then
-		buff_id = id or "-"
+		if buff.id == id or buff.parent_id == id then
+			self._remove_sub_buff(self, buff, i, buff_extension_function_params)
 
-		if 1 < num_buffs_removed then
-			printf("### BuffExtension:remove_buff() removed more then one buff id: %d buffs: %s", buff_id, buff_type_name)
+			num_buffs = num_buffs - 1
+			num_buffs_removed = num_buffs_removed + 1
 		else
-			printf("### BuffExtension:remove_buff() couldnt find and remove buff id: %d", buff_id)
+			i = i + 1
 		end
 	end
 

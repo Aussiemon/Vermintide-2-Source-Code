@@ -13,8 +13,6 @@ BloodManager.init = function (self, world)
 end
 local debug_decals = false
 BloodManager.update = function (self, dt, t)
-	Profiler.start("Blood Manager Update")
-
 	local blood_enabled = Application.user_setting("blood_enabled")
 	BloodSettings.blood_decals.num_decals = Application.user_setting("num_blood_decals") or BloodSettings.blood_decals.num_decals
 
@@ -40,7 +38,6 @@ BloodManager.update = function (self, dt, t)
 	end
 
 	self._update_blood_effects(self)
-	Profiler.stop("Blood Manager Update")
 
 	return 
 end
@@ -53,8 +50,6 @@ BloodManager._enable_blood = function (self, enable)
 	return 
 end
 BloodManager._update_weapon_blood = function (self, dt, t)
-	Profiler.start("_update_weapon_blood")
-
 	for attacker_unit, blood_data in pairs(self._weapon_blood) do
 		for weapon, amount in pairs(blood_data) do
 			blood_data[weapon] = math.clamp(amount - BloodSettings.weapon_blood.dissolve_rate * dt, 0, BloodSettings.weapon_blood.max_value)
@@ -63,13 +58,9 @@ BloodManager._update_weapon_blood = function (self, dt, t)
 		end
 	end
 
-	Profiler.stop("_update_weapon_blood")
-
 	return 
 end
 BloodManager._update_blood_decals = function (self, dt, t)
-	Profiler.start("_update_blood_decals")
-
 	local to_remove = nil
 
 	for unit, time in pairs(self._blood_fades) do
@@ -91,8 +82,6 @@ BloodManager._update_blood_decals = function (self, dt, t)
 		end
 	end
 
-	Profiler.stop("_update_blood_decals")
-
 	return 
 end
 BloodManager._remove_blood_decal = function (self, unit)
@@ -107,8 +96,6 @@ BloodManager._remove_blood_decal = function (self, unit)
 	return 
 end
 BloodManager._handle_delayed_fade_units = function (self, dt, t)
-	Profiler.start("_handle_delayed_fade_units")
-
 	if self._delayed_fade_units then
 		for _, unit in pairs(self._delayed_fade_units) do
 			if Unit.alive(unit) then
@@ -119,13 +106,9 @@ BloodManager._handle_delayed_fade_units = function (self, dt, t)
 
 	self._delayed_fade_units = nil
 
-	Profiler.stop("_handle_delayed_fade_units")
-
 	return 
 end
 BloodManager._update_distance_fade = function (self, dt, t)
-	Profiler.start("_handle_delayed_fade_units")
-
 	local local_player = Managers.player:local_player()
 
 	if local_player then
@@ -149,8 +132,6 @@ BloodManager._update_distance_fade = function (self, dt, t)
 			end
 		end
 	end
-
-	Profiler.stop("_handle_delayed_fade_units")
 
 	return 
 end

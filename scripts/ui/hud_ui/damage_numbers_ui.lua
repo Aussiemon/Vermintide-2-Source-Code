@@ -138,8 +138,6 @@ DamageNumbersUI.create_ui_elements = function (self)
 	return 
 end
 DamageNumbersUI.draw = function (self, dt)
-	Profiler.start("Damage numbers begin_pass")
-
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("ingame_menu")
@@ -156,8 +154,6 @@ DamageNumbersUI.draw = function (self, dt)
 	local World_position = Unit.world_position
 	local easeOutCubic = math.easeOutCubic
 	local camera = self.camera
-
-	Profiler.stop("Damage numbers begin_pass")
 
 	for unit, unit_texts in pairs(self._unit_texts) do
 		if Unit.alive(unit) then

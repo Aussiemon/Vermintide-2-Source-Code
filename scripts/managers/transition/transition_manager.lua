@@ -247,14 +247,8 @@ TransitionManager.force_render = function (self, dt)
 	return 
 end
 TransitionManager.update = function (self, dt)
-	if PLATFORM == "win32" then
-		local state, reason = EAC.state()
-
-		if state ~= "trusted" then
-			local x, y = Application.resolution()
-
-			Gui.text(self._gui, "State is " .. state .. ". " .. reason, "core/editor_slave/gui/arial", 14, "core/editor_slave/gui/arial", Vector3(15, y - 10, 1000))
-		end
+	if Managers.eac ~= nil then
+		Managers.eac:draw_panel(self._gui, dt)
 	end
 
 	local is_loading_icon_active = self.loading_icon_active(self)

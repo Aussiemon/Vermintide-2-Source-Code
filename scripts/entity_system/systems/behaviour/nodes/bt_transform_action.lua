@@ -34,16 +34,11 @@ BTTransformAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	return 
 end
 BTTransformAction.run = function (self, unit, blackboard, t, dt)
-	Profiler.start("BTTransformAction")
-
-	if blackboard.transform_anim_finished then
+	if blackboard.transform_anim_finished and not blackboard.has_transformed then
 		self.transform(self, unit, blackboard)
-		Profiler.stop("BTTransformAction")
 
 		return "done"
 	end
-
-	Profiler.stop("BTTransformAction")
 
 	return "running"
 end
@@ -76,6 +71,8 @@ BTTransformAction.transform = function (self, unit, blackboard)
 
 	AiUtils.chaos_zombie_explosion(unit, action, blackboard, false)
 	conflict_director.destroy_unit(conflict_director, unit, blackboard, "boss_transformation")
+
+	blackboard.has_transformed = true
 
 	return 
 end

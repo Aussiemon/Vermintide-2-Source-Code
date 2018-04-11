@@ -358,7 +358,6 @@ IngameUI.event_dlc_status_changed = function (self)
 	return 
 end
 IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
-	Profiler.start("IngameUI")
 	self._update_fade_transition(self)
 
 	local views = self.views
@@ -383,8 +382,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		self.update_respawning(self)
 	end
 
-	Profiler.start("popup_handler")
-
 	if self.popup_id then
 		local popup_result = Managers.popup:query_result(self.popup_id)
 
@@ -392,8 +389,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 			self.handle_transition(self, popup_result)
 		end
 	end
-
-	Profiler.stop("popup_handler")
 
 	if self.survey_active then
 		self._survey_update(self, dt)
@@ -408,18 +403,14 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	self._update_hud_visibility(self, disable_ingame_ui, in_score_screen)
 
 	if is_in_inn then
-		Profiler.start("Mission Voting")
 		self.mission_voting_ui:update(self.menu_active, dt, t)
-		Profiler.stop("Mission Voting")
 	end
 
 	if not disable_ingame_ui then
 		if self.current_view then
 			local current_view = self.current_view
 
-			Profiler.start(current_view)
 			views[current_view]:update(dt, t)
-			Profiler.stop(current_view)
 		end
 
 		local gdc_build = Development.parameter("gdc")
@@ -431,8 +422,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		end
 
 		if not self.pending_transition(self) then
-			Profiler.start("hotkeys")
-
 			local local_player = Managers.player:local_player()
 			local player_unit = local_player and local_player.player_unit
 
@@ -441,40 +430,26 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 
 				self.handle_menu_hotkeys(self, dt, input_service, enable_hotkeys, self.menu_active)
 			end
-
-			Profiler.stop("hotkeys")
 		end
 
-		Profiler.start("Countdown UI")
 		countdown_ui.update(countdown_ui, dt)
-		Profiler.stop("Countdown UI")
-		Profiler.start("matchmaking")
 
 		local show_detailed_matchmaking_info = not self.menu_active and not player_list_active and self.current_view == nil
 
 		self.matchmaking_ui:update(dt, t, show_detailed_matchmaking_info)
-		Profiler.stop("matchmaking")
 
 		if self.popup_join_lobby_handler then
-			Profiler.start("popup_handler")
 			self.popup_join_lobby_handler:update(dt)
-			Profiler.stop("popup_handler")
 		end
 
-		Profiler.start("endscreen")
 		end_screen.update(end_screen, dt)
-		Profiler.stop("endscreen")
 
 		if self.help_screen then
-			Profiler.start("help_screen")
 			self.help_screen:update(dt)
-			Profiler.stop("help_screen")
 		end
 
 		if not end_of_level_ui and not end_screen_active then
-			Profiler.start("cutscene_ui")
 			self.cutscene_ui:update(dt)
-			Profiler.stop("cutscene_ui")
 			self._update_ingame_hud(self, self.hud_visible, dt, t)
 		end
 	end
@@ -483,7 +458,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	self._update_chat_ui(self, dt, t, input_service, end_of_level_ui)
 	self._render_debug_ui(self, dt, t)
 	self._update_fade_transition(self)
-	Profiler.stop("IngameUI")
 
 	return 
 end
@@ -567,9 +541,7 @@ IngameUI._update_ingame_hud = function (self, visible, dt, t)
 	end
 
 	if not active_cutscene then
-		Profiler.start("Ingame Voting")
 		self.ingame_voting_ui:update(self.menu_active, dt, t)
-		Profiler.stop("Ingame Voting")
 	end
 
 	return 
@@ -636,8 +608,6 @@ IngameUI._update_rcon_ui = function (self, dt, t, input_service)
 	return 
 end
 IngameUI._render_debug_ui = function (self, dt, t)
-	Profiler.start("debug_stuff")
-
 	if self.menu_active and GameSettingsDevelopment.show_version_info and not Development.parameter("hide_version_info") then
 		self._render_version_info(self)
 	end
@@ -645,8 +615,6 @@ IngameUI._render_debug_ui = function (self, dt, t)
 	if GameSettingsDevelopment.show_fps and not Development.parameter("hide_fps") then
 		self._render_fps(self, dt)
 	end
-
-	Profiler.stop("debug_stuff")
 
 	return 
 end

@@ -6,8 +6,6 @@ local detailed_profiler_start, detailed_profiler_stop = nil
 local DETAILED_PROFILING = true
 
 if DETAILED_PROFILING then
-	detailed_profiler_start = Profiler.start
-	detailed_profiler_start = Profiler.stop
 else
 	function detailed_profiler_start()
 		return 
@@ -35,33 +33,15 @@ LocomotionTemplates.AILocomotionExtension = {
 		return 
 	end,
 	update = function (data, t, dt)
-		Profiler.start("validate2")
 		LocomotionTemplates.AILocomotionExtension.validate2(data, t, dt)
-		Profiler.stop("validate2")
-		Profiler.start("update_alive")
 		LocomotionTemplates.AILocomotionExtension.update_alive(data, t, dt)
-		Profiler.stop("update_alive")
-		Profiler.start("update_velocity")
 		LocomotionTemplates.AILocomotionExtension.update_velocity(data, t, dt)
-		Profiler.stop("update_velocity")
-		Profiler.start("update_animation_driven_units")
 		LocomotionTemplates.AILocomotionExtension.update_animation_driven_units(data, t, dt)
-		Profiler.stop("update_animation_driven_units")
-		Profiler.start("update_gravity")
 		LocomotionTemplates.AILocomotionExtension.update_gravity(data, t, dt)
-		Profiler.stop("update_gravity")
-		Profiler.start("update_rotation")
 		LocomotionTemplates.AILocomotionExtension.update_rotation(data, t, dt)
-		Profiler.stop("update_rotation")
-		Profiler.start("update_position")
 		LocomotionTemplates.AILocomotionExtension.update_position(data, t, dt)
-		Profiler.stop("update_position")
-		Profiler.start("update_out_of_range")
 		LocomotionTemplates.AILocomotionExtension.update_out_of_range(data, t, dt)
-		Profiler.stop("update_out_of_range")
-		Profiler.start("update_network")
 		LocomotionTemplates.AILocomotionExtension.update_network(data, t, dt)
-		Profiler.stop("update_network")
 
 		return 
 	end,
@@ -115,8 +95,6 @@ LocomotionTemplates.AILocomotionExtension = {
 		return 
 	end,
 	update_animation_driven_units = function (data, t, dt)
-		Profiler.start("animation_update_units")
-
 		for unit, extension in pairs(data.animation_update_units) do
 			local wanted_pose = Unit.animation_wanted_root_pose(unit)
 			local wanted_position = Matrix4x4.translation(wanted_pose)
@@ -135,9 +113,6 @@ LocomotionTemplates.AILocomotionExtension = {
 			extension._wanted_rotation = wanted_rotation
 		end
 
-		Profiler.stop("animation_update_units")
-		Profiler.start("animation_and_script_update_units")
-
 		for unit, extension in pairs(data.animation_and_script_update_units) do
 			local wanted_pose = Unit.animation_wanted_root_pose(unit)
 			local wanted_position = Matrix4x4.translation(wanted_pose)
@@ -147,13 +122,9 @@ LocomotionTemplates.AILocomotionExtension = {
 			extension._wanted_velocity = wanted_velocity
 		end
 
-		Profiler.stop("animation_and_script_update_units")
-
 		return 
 	end,
 	update_rotation = function (data, t, dt)
-		Profiler.start("all_update_units")
-
 		local Vector3_length_squared = Vector3.length_squared
 		local Vector3_flat = Vector3.flat
 		local Quaternion_look = Quaternion.look
@@ -168,9 +139,6 @@ LocomotionTemplates.AILocomotionExtension = {
 			local wanted_velocity = extension._wanted_velocity
 			local wanted_rotation = extension._wanted_rotation
 		end
-
-		Profiler.stop("all_update_units")
-		Profiler.start("rotation_speed_modifier_update_units")
 
 		for unit, extension in pairs(data.rotation_speed_modifier_update_units) do
 			local lerp_total_time = extension._rotation_speed_modifier_lerp_end_time - extension._rotation_speed_modifier_lerp_start_time
@@ -188,8 +156,6 @@ LocomotionTemplates.AILocomotionExtension = {
 			end
 		end
 
-		Profiler.stop("all_update_units")
-
 		return 
 	end,
 	update_position = function (data, t, dt)
@@ -204,8 +170,6 @@ LocomotionTemplates.AILocomotionExtension = {
 			dt = 0.00016666666666666666
 		end
 
-		Profiler.start("script_driven_update_units")
-
 		for unit, extension in pairs(data.script_driven_update_units) do
 			local wanted_velocity = extension._wanted_velocity
 			local current_position = Unit_local_position(unit, 0)
@@ -214,9 +178,6 @@ LocomotionTemplates.AILocomotionExtension = {
 			extension._velocity:store(wanted_velocity)
 			Unit_set_local_position(unit, 0, final_position)
 		end
-
-		Profiler.stop("script_driven_update_units")
-		Profiler.start("get_to_navmesh_update_units")
 
 		for unit, extension in pairs(data.get_to_navmesh_update_units) do
 			local final_velocity, final_position = nil
@@ -258,9 +219,6 @@ LocomotionTemplates.AILocomotionExtension = {
 			end
 		end
 
-		Profiler.stop("get_to_navmesh_update_units")
-		Profiler.start("snap_to_navmesh_update_units")
-
 		local Vector3_length_squared = Vector3.length_squared
 		local GwNavQueries_move_on_navmesh = GwNavQueries.move_on_navmesh
 		local GwNavQueries_triangle_from_position = GwNavQueries.triangle_from_position
@@ -276,9 +234,6 @@ LocomotionTemplates.AILocomotionExtension = {
 			extension._velocity:store(final_velocity)
 			Unit_set_local_position(unit, 0, final_position)
 		end
-
-		Profiler.stop("snap_to_navmesh_update_units")
-		Profiler.start("mover constrained")
 
 		for unit, extension in pairs(data.mover_constrained_update_units) do
 			local mover_displacement = nil
@@ -330,9 +285,6 @@ LocomotionTemplates.AILocomotionExtension = {
 			Unit_set_local_position(unit, 0, final_position)
 		end
 
-		Profiler.stop("mover constrained")
-		Profiler.start("mover set position")
-
 		local Mover_set_position = Mover.set_position
 
 		for unit, extension in pairs(data.all_update_units) do
@@ -343,8 +295,6 @@ LocomotionTemplates.AILocomotionExtension = {
 				Mover_set_position(mover, Unit_local_position(unit, 0))
 			end
 		end
-
-		Profiler.stop("mover set position")
 
 		return 
 	end,

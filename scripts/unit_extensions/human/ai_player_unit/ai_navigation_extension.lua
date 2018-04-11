@@ -9,7 +9,6 @@ AINavigationExtension.init = function (self, extension_init_context, unit, exten
 	self._current_speed = 0
 	self._wanted_destination = Vector3Box(Unit.local_position(unit, 0))
 	self._destination = Vector3Box()
-	self._debug_position_when_starting_search = Vector3Box()
 	self._using_smartobject = false
 	self._next_smartobject_interval = GwNavSmartObjectInterval.create(self._nav_world)
 	self._backup_destination = Vector3Box()

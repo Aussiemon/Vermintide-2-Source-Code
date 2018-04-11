@@ -444,7 +444,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local multiplier_type = DamageUtils.get_breed_damage_multiplier_type(hit_unit, hit_zone_name)
 
-	if (multiplier_type == "headshot" or (multiplier_type == "weakspot" and not shield_blocked)) and AiUtils.unit_alive(hit_unit) then
+	if (multiplier_type == "headshot" or (multiplier_type == "weakspot" and not shield_blocked)) and not action.no_headshot_sound and AiUtils.unit_alive(hit_unit) then
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 		first_person_extension.play_hud_sound_event(first_person_extension, "Play_hud_headshot", nil, false)
@@ -788,10 +788,14 @@ PlayerProjectileUnitExtension.hit_damagable_prop = function (self, damage_profil
 			hit_zone_name = hit_zone_lookup[node]
 		end
 
-		if hit_zone_name == "head" and AiUtils.unit_alive(hit_unit) then
-			local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+		if hit_zone_name == "head" then
+			local action = self.current_action
 
-			first_person_extension.play_hud_sound_event(first_person_extension, "Play_hud_headshot", nil, false)
+			if not action.no_headshot_sound and AiUtils.unit_alive(hit_unit) then
+				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+
+				first_person_extension.play_hud_sound_event(first_person_extension, "Play_hud_headshot", nil, false)
+			end
 		end
 
 		DamageUtils.damage_dummy_unit(hit_unit, owner_unit, hit_zone_name, power_level, ranged_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, hit_direction, damage_source)

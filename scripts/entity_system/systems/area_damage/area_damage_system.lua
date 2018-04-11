@@ -118,8 +118,6 @@ AreaDamageSystem.enable_area_damage = function (self, unit, enable)
 	return 
 end
 AreaDamageSystem.is_position_in_liquid = function (self, position, nav_cost_map_table)
-	Profiler.start("AreaDamageSystem:is_position_in_liquid")
-
 	local liquid_extensions = self.liquid_extensions
 	local num_liquid_extensions = self.num_liquid_extensions
 	local result = false
@@ -132,8 +130,6 @@ AreaDamageSystem.is_position_in_liquid = function (self, position, nav_cost_map_
 			break
 		end
 	end
-
-	Profiler.stop("AreaDamageSystem:is_position_in_liquid")
 
 	return result
 end

@@ -22,8 +22,20 @@ end
 BackendInterfaceCraftingBase.get_recipes_lookup = function (self)
 	return self._crafting_recipes_lookup
 end
-BackendInterfaceCraftingBase._get_valid_recipe = function (self, item_backend_ids)
+BackendInterfaceCraftingBase._get_valid_recipe = function (self, item_backend_ids, recipe_override)
 	local crafting_recipes = self._crafting_recipes
+
+	if recipe_override then
+		local recipe = crafting_recipes_by_name[recipe_override]
+		local validation_function = recipe.validation_function
+		local valid, item_backend_ids_and_amounts = self[validation_function](self, recipe, item_backend_ids)
+
+		if valid then
+			return recipe, item_backend_ids_and_amounts
+		end
+
+		return 
+	end
 
 	for i = 1, #crafting_recipes, 1 do
 		local recipe = crafting_recipes[i]

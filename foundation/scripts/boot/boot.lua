@@ -35,14 +35,6 @@ end
 if not PROFILER_SCOPES_INITED then
 	local ProfilerScopes = {}
 	PROFILER_SCOPES_INITED = true
-	local profiler_start = Profiler.start
-	Profiler.start = function (scope_name)
-		ProfilerScopes[scope_name] = true
-
-		profiler_start(scope_name)
-
-		return 
-	end
 end
 
 GLOBAL_FRAME_INDEX = GLOBAL_FRAME_INDEX or 0
@@ -156,23 +148,17 @@ Boot._init_package_manager = function (self)
 	return 
 end
 Boot._require_scripts = function (self)
-	Profiler.start("Boot:_require_scripts()")
 	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path")
 	base_require("debug", "table_trap")
 	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager")
-	Profiler.stop("Boot:_require_scripts()")
 
 	return 
 end
 Boot._init_managers = function (self)
-	Profiler.start("Boot:_init_managers()")
-
 	Managers.time = TimeManager:new()
 	Managers.world = WorldManager:new()
 	Managers.token = TokenManager:new()
 	Managers.state_machine = StateMachineManager:new()
-
-	Profiler.stop("Boot:_init_managers()")
 
 	return 
 end
@@ -186,22 +172,12 @@ Boot.update = function (self, dt)
 
 	local t = Managers.time:time("main")
 
-	Profiler.start("Lua machine pre-update")
 	self._machine:pre_update(dt, t)
-	Profiler.stop("Lua machine pre-update")
 	Managers.package:update(dt, t)
-	Profiler.start("Lua token update")
 	Managers.token:update(dt, t)
-	Profiler.stop("Lua token update")
-	Profiler.start("Lua machine update")
 	self._machine:update(dt, t)
-	Profiler.stop("Lua machine update")
-	Profiler.start("Visual state machine update")
 	Managers.state_machine:update(dt)
-	Profiler.stop("Visual state machine update")
-	Profiler.start("Lua world update")
 	Managers.world:update(dt, t)
-	Profiler.stop("Lua world update")
 
 	if self.quit_game then
 		controlled_exit = true
@@ -234,11 +210,7 @@ Boot.render = function (self)
 	return 
 end
 Boot._setup_statemachine = function (self, start_state, params)
-	Profiler.start("Boot:_setup_statemachine()")
-
 	self._machine = StateMachine:new(self, start_state, params, true)
-
-	Profiler.stop("Boot:_setup_statemachine()")
 
 	return 
 end
@@ -259,15 +231,9 @@ end
 function update(dt)
 	local dt = Managers.time:scaled_delta_time(dt)
 
-	Profiler.start("LUA pre_update")
 	pre_update(dt)
-	Profiler.stop("LUA pre_update")
-	Profiler.start("LUA update")
 	Boot:update(dt)
-	Profiler.stop("LUA update")
-	Profiler.start("LUA post_update")
 	Boot:post_update(dt)
-	Profiler.stop("LUA post_update")
 
 	return 
 end

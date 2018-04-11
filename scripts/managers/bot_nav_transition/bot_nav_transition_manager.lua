@@ -210,16 +210,6 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 
 			debug_print("fallback success")
 		else
-			if script_data.ai_bots_debug or script_data.ai_bot_transition_debug then
-				local drawer = QuickDrawerStay
-				local color = Color(150, 50, 50)
-
-				drawer.line(drawer, from, old_wanted_to, color)
-				drawer.sphere(drawer, from, 0.3, color)
-				drawer.cone(drawer, old_wanted_to - Vector3.normalize(from - old_wanted_to) * 0.25, old_wanted_to, 0.3, color, 9, 9)
-				drawer.cylinder(drawer, old_wanted_to - Vector3(0, 0, beneath), old_wanted_to + Vector3(0, 0, above), lateral, Color(100, 255, 0, 0), 20)
-			end
-
 			debug_print("fallback failed")
 
 			return false
@@ -229,16 +219,6 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 	local to = Vector3(wanted_to.x, wanted_to.y, z)
 
 	if GwNavQueries.raycango(nav_world, from, to, self._traverse_logic) then
-		if script_data.ai_bots_debug or script_data.ai_bot_transition_debug then
-			local drawer = QuickDrawerStay
-			local color = Color(255, 50, 0, 255)
-
-			drawer.line(drawer, from, to, color)
-			drawer.sphere(drawer, from, 0.3, color)
-			drawer.sphere(drawer, to, 0.3, color)
-			drawer.cone(drawer, to - Vector3.normalize(from - to) * 0.25, to, 0.3, color, 9, 9)
-		end
-
 		debug_print("area was already traversable")
 
 		return false

@@ -167,20 +167,14 @@ LocomotionSystem.update = function (self, context, t)
 	self.update_extensions(self, context, t)
 	self.update_animation_lods(self)
 	self.update_actor_proximity_shapes(self)
-	self.debug_draw(self)
 
 	return 
 end
 LocomotionSystem.update_extensions = function (self, context, t)
 	local dt = context.dt
 
-	Profiler.start("PlayerHuskLocomotionExtension")
 	self.update_extension(self, "PlayerHuskLocomotionExtension", dt, context, t)
-	Profiler.stop("PlayerHuskLocomotionExtension")
-	Profiler.start("PlayerUnitLocomotionExtension")
 	self.update_extension(self, "PlayerUnitLocomotionExtension", dt, context, t)
-	Profiler.stop("PlayerUnitLocomotionExtension")
-	Profiler.start("extension templates")
 
 	if GameSettingsDevelopment.use_engine_optimized_ai_locomotion then
 		if self.is_server then
@@ -196,16 +190,11 @@ LocomotionSystem.update_extensions = function (self, context, t)
 		LocomotionTemplates.PlayerUnitLocomotionExtension.update(data, t, dt)
 	else
 		for template_name, data in pairs(self.template_data) do
-			Profiler.start(template_name)
-
 			local template = LocomotionTemplates[template_name]
 
 			template.update(data, t, dt)
-			Profiler.stop(template_name)
 		end
 	end
-
-	Profiler.stop("extension templates")
 
 	return 
 end
@@ -229,8 +218,6 @@ LocomotionSystem.update_animation_lods = function (self)
 	return 
 end
 LocomotionSystem.update_actor_proximity_shapes = function (self)
-	Profiler.start("update_actor_proximity_shapes")
-
 	local POSITION_LOOKUP = POSITION_LOOKUP
 	local player_manager = Managers.player
 	local physics_world = World.get_data(self.world, "physics_world")
@@ -260,13 +247,9 @@ LocomotionSystem.update_actor_proximity_shapes = function (self)
 				end
 			end
 
-			Profiler.start("commit_actor_proximity_shape")
 			PhysicsWorld.commit_actor_proximity_shape(physics_world, position, direction, 36, angle, true)
-			Profiler.stop("commit_actor_proximity_shape")
 		end
 	end
-
-	Profiler.stop("update_actor_proximity_shapes")
 
 	return 
 end
@@ -314,12 +297,10 @@ LocomotionSystem.debug_draw = function (self)
 		return 
 	end
 
-	Profiler.start("Debug Draw")
 	Debug.text("AI LOCOMOTION DEBUG")
 	Debug.text("  movement_type = %s", locomotion_extension.movement_type)
 	Debug.text("  is_falling = %s", tostring((locomotion_extension.is_falling == nil and "?") or locomotion_extension.is_falling(locomotion_extension)))
 	Debug.text("  current_velocity = %s", tostring(locomotion_extension.current_velocity(locomotion_extension)))
-	Profiler.stop("Debug Draw")
 
 	return 
 end

@@ -827,30 +827,19 @@ UnitFramesHandler.update = function (self, dt, t, ignore_own_player)
 
 	local gamepad_active = self.input_manager:is_device_active("gamepad")
 
-	Profiler.start("handle_unit_frame_assigning")
 	self._handle_unit_frame_assigning(self)
-	Profiler.stop("handle_unit_frame_assigning")
-	Profiler.start("sync")
 	self._sync_player_stats(self, self._unit_frames[self._current_frame_index])
 
 	self._current_frame_index = 1 + self._current_frame_index % #self._unit_frames
 
-	Profiler.stop("sync")
-
 	for index, unit_frame in ipairs(self._unit_frames) do
 		if index ~= 1 or not ignore_own_player then
-			Profiler.start("unit_frame_update")
 			unit_frame.widget:update(dt, t)
-			Profiler.stop("unit_frame_update")
 		end
 	end
 
-	Profiler.start("handle_resolution_modified")
 	self._handle_resolution_modified(self)
-	Profiler.stop("handle_resolution_modified")
-	Profiler.start("draw")
 	self._draw(self, dt)
-	Profiler.stop("draw")
 
 	if DO_RELOAD then
 		DO_RELOAD = false

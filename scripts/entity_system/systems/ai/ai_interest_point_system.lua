@@ -213,8 +213,6 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 			extension.num_valid_to_spawn = num_valid_to_spawn
 
 			if num_valid_to_spawn == 0 then
-				print(string.format("Invalid placed interest-point '%s'. Is outside of nav-mesh. Found at pos: %s", tostring(unit), tostring(Unit.local_position(unit, 0))))
-
 				extension.points_n = 0
 			else
 				extension.points_n = point_i
@@ -358,26 +356,13 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 						if data then
 							data.count = data.count + 1
 
-							if script_data.debug_zone_baker then
-								self.debug_draw_baker_data(self, hi_data, data, breed.name, point)
-							end
-
 							if data.max_amount < data.count then
-								optional_data = {
-									debug_info = "Roaming",
-									zone_data = zone_data,
-									replaced_breed = breed.name
-								}
 								breed = data.switch_breed
 								data.switch_count = data.switch_count + 1
 							end
 						end
 					end
 				end
-
-				optional_data = optional_data or {
-					zone_data = zone_data
-				}
 
 				if breed_override_lookup and breed_override_lookup[breed.name] then
 					breed = Breeds[breed_override_lookup[breed.name]]
@@ -581,8 +566,6 @@ AIInterestPointSystem.resolve_requests = function (self)
 		return 
 	end
 
-	Profiler.start("resolve_requests")
-
 	local request, request_index = _get_next_request(self.requests, self.current_request_index, self.last_request_index)
 
 	if request ~= nil then
@@ -596,16 +579,22 @@ AIInterestPointSystem.resolve_requests = function (self)
 
 		if not processing_astar then
 			local perform_astar = false
-			local claim_unit_position = POSITION_LOOKUP[request.claim_unit]
-			best_unit, best_point, best_point_extension, path_found, perform_astar = _get_best_interest_point(self.broadphase, request, claim_unit_position, current_request_point_unit, self.reachable_interest_points)
+			local claim_unit = request.claim_unit
+			local claim_unit_position = POSITION_LOOKUP[claim_unit]
 
-			if best_point and perform_astar then
-				local start_position = claim_unit_position
-				local end_position = Vector3Aux.unbox(best_point.position)
+			if claim_unit_position then
+				best_unit, best_point, best_point_extension, path_found, perform_astar = _get_best_interest_point(self.broadphase, request, claim_unit_position, current_request_point_unit, self.reachable_interest_points)
 
-				self._start_astar_query(self, astar, start_position, end_position, self.nav_world, self.traverse_logic, best_unit, best_point, best_point_extension)
+				if best_point and perform_astar then
+					local start_position = claim_unit_position
+					local end_position = Vector3Aux.unbox(best_point.position)
 
-				path_check_done = false
+					self._start_astar_query(self, astar, start_position, end_position, self.nav_world, self.traverse_logic, best_unit, best_point, best_point_extension)
+
+					path_check_done = false
+				else
+					path_check_done = true
+				end
 			else
 				path_check_done = true
 			end
@@ -625,8 +614,6 @@ AIInterestPointSystem.resolve_requests = function (self)
 			end
 		end
 	end
-
-	Profiler.stop("resolve_requests")
 
 	return 
 end

@@ -25,6 +25,11 @@ end
 BTTargetUnreachableAction.run = function (self, unit, blackboard, t, dt)
 	local position = POSITION_LOOKUP[unit]
 	local target_unit = blackboard.target_unit
+
+	if not target_unit then
+		return "done"
+	end
+
 	local target_position = POSITION_LOOKUP[target_unit]
 	local distance_target_sq = Vector3.distance_squared(target_position, position)
 	local position_list, target_on_mesh = nil
@@ -106,8 +111,6 @@ BTTargetUnreachableAction.move_closer = function (self, unit, blackboard, locomo
 
 		locomotion_extension.set_wanted_rotation(locomotion_extension, rot)
 	end
-
-	self._debug_distance_text(self, unit, navigation_extension)
 
 	return 
 end

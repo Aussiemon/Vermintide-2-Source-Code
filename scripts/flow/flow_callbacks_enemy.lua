@@ -25,23 +25,15 @@ local function enemy_variation_tint_part(unit, variation, material_result)
 	local meshes = variation.meshes
 
 	if not meshes then
-		Profiler.start("enemy_variation_tint_part_no_meshlist")
-
 		for j = 1, #variation.variables, 1 do
 			Unit.set_scalar_for_material_table(unit, variation.materials, variation.variables[j], variable_value)
 		end
-
-		Profiler.stop("enemy_variation_tint_part_no_meshlist")
 	else
-		Profiler.start("enemy_variation_tint_part_meshlist")
-
 		for i = 1, #variation.materials, 1 do
 			for j = 1, #variation.variables, 1 do
 				enemy_variation_tint_meshes(unit, meshes, variation.materials[i], variation.variables[j], variable_value)
 			end
 		end
-
-		Profiler.stop("enemy_variation_tint_part_meshlist")
 	end
 
 	for i = 1, #variation.materials, 1 do
@@ -146,8 +138,6 @@ function flow_callback_enemy_variation(params)
 		return {}
 	end
 
-	Profiler.start("enemy_variation")
-
 	local variationsettings = UnitVariationSettings[breed_type]
 	local variation_result = {}
 	local material_result = {}
@@ -155,33 +145,25 @@ function flow_callback_enemy_variation(params)
 	local scaling_result = {}
 
 	if variationsettings.materials_enabled_from_start ~= nil then
-		Profiler.start("enemy_variation_materials")
 		enemy_variation_tint_materials(unit, variationsettings, variationsettings.materials_enabled_from_start, material_result)
-		Profiler.stop("enemy_variation_materials")
 	end
 
 	if variationsettings.enabled_from_start ~= nil then
-		Profiler.start("enemy_variation_parts")
-
 		if Unit.has_visibility_group(unit, "all") then
 			Unit.set_visibility(unit, "all", false)
 		end
 
 		enemy_variation_enable_parts(unit, variationsettings, variationsettings.enabled_from_start, group_result, material_result)
-		Profiler.stop("enemy_variation_parts")
 	end
 
 	if variationsettings.scale_variation ~= nil then
-		Profiler.start("enemy_variation_scale")
 		enemy_variation_scale_nodes(unit, variationsettings, scaling_result)
-		Profiler.stop("enemy_variation_scale")
 	end
 
 	variation_result.groups = group_result
 	variation_result.materials = material_result
 	variation_result.scaling = scaling_result
 
-	Profiler.stop("enemy_variation")
 	Unit.set_data(unit, "variation_data", variation_result)
 
 	return {}
@@ -387,8 +369,6 @@ local function enemy_dismember(params, spawn_gib)
 		return 
 	end
 
-	Profiler.start("enemy_gib_" .. bodypart)
-
 	local gibsettings = UnitGibSettings[breed_type].parts[bodypart]
 	local world = Unit.world(unit)
 	local node_id, unit_inventory_extension, unit_ai_system_extension = nil
@@ -470,8 +450,6 @@ local function enemy_dismember(params, spawn_gib)
 		unit_inventory_extension.stump_items = stump_items
 	end
 
-	Profiler.stop("enemy_gib_" .. bodypart)
-
 	return 
 end
 
@@ -514,8 +492,6 @@ function enemy_explode(params)
 		return 
 	end
 
-	Profiler.start("enemy_explode_" .. breed_type)
-
 	local world = Unit.world(unit)
 	local unit_inventory_extension = nil
 
@@ -549,7 +525,6 @@ function enemy_explode(params)
 
 	Unit.set_unit_visibility(unit, false)
 	Unit.disable_physics(unit)
-	Profiler.stop("enemy_explode_" .. breed_type)
 
 	return 
 end

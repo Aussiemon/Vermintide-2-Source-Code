@@ -16,11 +16,6 @@ GenericDeathExtension.init = function (self, extension_init_context, unit, exten
 
 	fassert(self.death_reaction_template, "Missing death reaction template in unit data or extension init data.")
 
-	profiler_names[self.death_reaction_template] = profiler_names[self.death_reaction_template] or {
-		"start_" .. self.death_reaction_template,
-		"update_" .. self.death_reaction_template
-	}
-
 	return 
 end
 GenericDeathExtension.force_end = function (self)

@@ -186,8 +186,6 @@ LevelTransitionHandler.all_packages_loaded = function (self)
 	return self.has_loaded_all_packages
 end
 LevelTransitionHandler.update = function (self)
-	Profiler.start("LevelTransitionHandler:update()")
-
 	local package_manager = Managers.package
 	local has_loading_packages = false
 
@@ -211,8 +209,6 @@ LevelTransitionHandler.update = function (self)
 			Debug.text("Level %q is_loaded: %s", level_name, tostring(is_loaded))
 		end
 	end
-
-	Profiler.stop("LevelTransitionHandler:update()")
 
 	return 
 end

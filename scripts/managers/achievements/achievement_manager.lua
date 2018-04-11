@@ -371,11 +371,7 @@ AchievementManager.update = function (self, dt)
 			local should_evaluate = not completed_achievements[name] and not in_progress[name] and in_context
 
 			if should_evaluate then
-				Profiler.start(name)
-
 				local result = template.evaluate(statistics_db, stats_id)
-
-				Profiler.stop(name)
 
 				if result then
 					local token, error_msg = platform_functions.unlock(platform_id, template)

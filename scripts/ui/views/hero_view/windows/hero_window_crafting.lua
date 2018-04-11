@@ -487,8 +487,8 @@ HeroWindowCrafting._update_craft_end_time = function (self, dt, t)
 
 	return 
 end
-HeroWindowCrafting.craft = function (self, items)
-	local craft_id = self.crafting_manager:craft(items)
+HeroWindowCrafting.craft = function (self, items, recipe_override)
+	local craft_id = self.crafting_manager:craft(items, recipe_override)
 
 	if craft_id then
 		self._waiting_for_craft = true

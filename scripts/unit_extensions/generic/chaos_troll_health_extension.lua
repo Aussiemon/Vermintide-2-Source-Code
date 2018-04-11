@@ -80,10 +80,6 @@ ChaosTrollHealthExtension.update = function (self, dt, context, t)
 		end
 	end
 
-	if script_data.show_ai_health then
-		Debug.text("TROLL HEALTH [%s] hp=%.1f dmg=%.1f hpmax=%.1f hpmin=%.1f go_down=%.1f", self.state, self.current_health(self), self.damage, self.respawn_hp_max, self.respawn_hp_min, self.go_down_health)
-	end
-
 	return 
 end
 ChaosTrollHealthExtension._should_die = function (self)

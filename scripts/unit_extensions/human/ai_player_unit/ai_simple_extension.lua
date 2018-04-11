@@ -311,7 +311,7 @@ AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
 	local unit = self._unit
 	local blackboard = self._blackboard
 	attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
-	local attacker_is_player = table.find(PLAYER_AND_BOT_UNITS, attacker_unit)
+	local attacker_is_player = VALID_PLAYERS_AND_BOTS[attacker_unit]
 
 	if attacker_is_player then
 		if damage_hit and blackboard.confirmed_player_sighting and blackboard.target_unit == nil then

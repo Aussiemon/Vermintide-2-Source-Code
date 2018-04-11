@@ -22,8 +22,6 @@ BTSelector_storm_vermin_warlord.leave = function (self, unit, blackboard, t, rea
 	return 
 end
 BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
-	local Profiler_start = Profiler.start
-	local Profiler_stop = Profiler.stop
 	local child_running = self.current_running_child(self, blackboard)
 	local children = self._children
 	local node_spawn = children[1]
@@ -31,11 +29,8 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_spawn, "aborted")
-		Profiler_start("spawn")
 
 		local result, evaluate = node_spawn.run(node_spawn, unit, blackboard, t, dt)
-
-		Profiler_stop("spawn")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -54,11 +49,8 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_intro_sequence, "aborted")
-		Profiler_start("intro_sequence")
 
 		local result, evaluate = node_intro_sequence.run(node_intro_sequence, unit, blackboard, t, dt)
-
-		Profiler_stop("intro_sequence")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -76,11 +68,8 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_jump_to_position, "aborted")
-		Profiler_start("jump_to_position")
 
 		local result, evaluate = node_jump_to_position.run(node_jump_to_position, unit, blackboard, t, dt)
-
-		Profiler_stop("jump_to_position")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -98,11 +87,8 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_falling, "aborted")
-		Profiler_start("falling")
 
 		local result, evaluate = node_falling.run(node_falling, unit, blackboard, t, dt)
-
-		Profiler_stop("falling")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -124,11 +110,8 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_smartobject, "aborted")
-		Profiler_start("smartobject")
 
 		local result, evaluate = node_smartobject.run(node_smartobject, unit, blackboard, t, dt)
-
-		Profiler_stop("smartobject")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -150,11 +133,8 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_stagger, "aborted")
-		Profiler_start("stagger")
 
 		local result, evaluate = node_stagger.run(node_stagger, unit, blackboard, t, dt)
-
-		Profiler_stop("stagger")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -174,11 +154,8 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_defensive_idle, "aborted")
-		Profiler_start("defensive_idle")
 
 		local result, evaluate = node_defensive_idle.run(node_defensive_idle, unit, blackboard, t, dt)
-
-		Profiler_stop("defensive_idle")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -196,11 +173,8 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_switch_weapons, "aborted")
-		Profiler_start("switch_weapons")
 
 		local result, evaluate = node_switch_weapons.run(node_switch_weapons, unit, blackboard, t, dt)
-
-		Profiler_stop("switch_weapons")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -218,11 +192,8 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_has_target, "aborted")
-		Profiler_start("has_target")
 
 		local result, evaluate = node_has_target.run(node_has_target, unit, blackboard, t, dt)
-
-		Profiler_stop("has_target")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -238,11 +209,8 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 	local node_idle = children[10]
 
 	self.set_running_child(self, unit, blackboard, t, node_idle, "aborted")
-	Profiler_start("idle")
 
 	local result, evaluate = node_idle.run(node_idle, unit, blackboard, t, dt)
-
-	Profiler_stop("idle")
 
 	if result ~= "running" then
 		self.set_running_child(self, unit, blackboard, t, nil, result)

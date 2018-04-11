@@ -383,7 +383,6 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 	local padding = damage_data.depth_padding
 	local half_width = 0.5 * damage_data.width
 	local half_height = 0.5 * damage_data.height
-	local debug = false
 	local new_pos = POSITION_LOOKUP[unit]
 	local old_pos = self._last_position:unbox()
 	local delta_move = new_pos - old_pos
@@ -395,11 +394,6 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 	local size = Vector3(half_width, half_length, half_height)
 	local collision_filter = damage_data.collision_filter
 	local actors, num_actors = PhysicsWorld.immediate_overlap(self.physics_world, "shape", "oobb", "position", mid_pos, "rotation", rot, "size", size, "collision_filter", collision_filter, "use_global_table")
-
-	if debug then
-		QuickDrawerStay:oobb_overlap(mid_pos, size, rot, Color(255, 255, 255))
-	end
-
 	local hit_units = self._hit_units
 	local buff_extension = self.buff_extension
 	local network_manager = Managers.state.network
@@ -413,12 +407,6 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 
 		if not hit_units[hit_unit] then
 			hit_units[hit_unit] = true
-
-			if debug then
-				print("HIT", hit_unit)
-				QuickDrawerStay:sphere(Actor.position(hit_actor), 0.25, Color(255, 0, 0))
-			end
-
 			local hit_unit_id = network_manager.unit_game_object_id(network_manager, hit_unit)
 			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 			local shield_blocked = false

@@ -70,7 +70,6 @@ PlayerBotInput.update = function (self, unit, input, dt, context, t)
 	table.clear(self._input)
 	self._update_movement(self, dt, t)
 	self._update_actions(self)
-	self._update_debug_text(self, unit, self._input)
 
 	return 
 end
@@ -434,16 +433,6 @@ PlayerBotInput._update_movement = function (self, dt, t)
 	local look = self.look
 	look.x = math.half_pi - math.atan2(needed_delta_rotation_forward.y, needed_delta_rotation_forward.x)
 	look.y = math.asin(math.clamp(needed_delta_rotation_forward.z, -1, 1))
-
-	if script_data.ai_bots_debug then
-		local drawer = Managers.state.debug:drawer({
-			mode = "immediate",
-			name = "playerbotinput"
-		})
-
-		drawer.quaternion(drawer, camera_position, rotation)
-	end
-
 	local goal_vector, flat_goal_vector, goal_direction = nil
 
 	if current_goal then
@@ -501,22 +490,6 @@ PlayerBotInput._update_movement = function (self, dt, t)
 
 			if not self._input.jump_only and transition_jump then
 				self._input.jump_only = true
-			end
-
-			if script_data.ai_bots_debug then
-				local drawer = Managers.state.debug:drawer({
-					mode = "immediate",
-					name = "playerbotinput"
-				})
-				local lower_pose = Matrix4x4.from_quaternion_position(rotation, lower_check_pos)
-				local lower_color = (lower_hit and Color(125, 255, 125)) or Color(0, 255, 0)
-
-				drawer.box(drawer, lower_pose, lower_extents, lower_color)
-
-				local upper_pose = Matrix4x4.from_quaternion_position(rotation, upper_check_pos)
-				local upper_color = (upper_hit and Color(255, 0, 0)) or (upper_hit == false and Color(255, 125, 125)) or Color(125, 125, 125)
-
-				drawer.box(drawer, upper_pose, upper_extents, upper_color)
 			end
 		end
 	end

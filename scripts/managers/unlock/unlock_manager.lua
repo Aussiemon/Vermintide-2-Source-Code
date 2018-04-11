@@ -122,13 +122,10 @@ UnlockManager.dlc_status_changed = function (self)
 	return self._dlc_status_changed
 end
 UnlockManager._update_backend_unlocks = function (self)
-	Profiler.start("UnlockManager:_update_backend_unlocks()")
-
 	if self._state == "poll_update_required_popup" then
 		local result = Managers.popup:query_result(self._update_required_popup_id)
 
 		if result then
-			Profiler.stop("UnlockManager:_update_backend_unlocks()")
 			Application.quit()
 		end
 	elseif self._state == "query_unlocked" then
@@ -137,8 +134,6 @@ UnlockManager._update_backend_unlocks = function (self)
 		if backend_manager.profiles_loaded(backend_manager) then
 			if not backend_manager.available(backend_manager) then
 				self._state = "backend_not_available"
-
-				Profiler.stop("UnlockManager:_update_backend_unlocks()")
 
 				return 
 			end
@@ -179,8 +174,6 @@ UnlockManager._update_backend_unlocks = function (self)
 
 			if #self._unlocks_indexed < index then
 				self._state = "done"
-
-				Profiler.stop("UnlockManager:_update_backend_unlocks()")
 
 				return 
 			end
@@ -280,8 +273,6 @@ UnlockManager._update_backend_unlocks = function (self)
 	elseif self._state == "backend_not_available" and Managers.backend:available() then
 		self._state = "query_unlocked"
 	end
-
-	Profiler.stop("UnlockManager:_update_backend_unlocks()")
 
 	return 
 end

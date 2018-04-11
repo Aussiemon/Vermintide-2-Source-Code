@@ -121,17 +121,6 @@ BTVortexFlyAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	if script_data.ai_debug_smartobject then
-		local drawer = Managers.state.debug:drawer({
-			mode = "immediate",
-			name = "BTVortexFlyAction"
-		})
-
-		drawer.sphere(drawer, blackboard.fly_entrance_pos:unbox(), 0.3, Colors.get("green"))
-		drawer.sphere(drawer, unit_position, 0.3, Colors.get("blue"))
-		drawer.sphere(drawer, blackboard.fly_exit_pos:unbox(), 0.3, Colors.get("red"))
-	end
-
 	if blackboard.fly_state == "done" then
 		return "done"
 	else

@@ -278,8 +278,6 @@ GameModeManager.flow_cb_set_flow_object_set_enabled = function (self, set_name, 
 	return 
 end
 GameModeManager.register_object_sets = function (self, object_sets)
-	Profiler.start("register_object_sets")
-
 	self._object_sets = {}
 	self._object_set_names = {}
 
@@ -291,8 +289,6 @@ GameModeManager.register_object_sets = function (self, object_sets)
 			self._set_flow_object_set_enabled(self, set, false, set_name)
 		end
 	end
-
-	Profiler.stop("register_object_sets")
 
 	return 
 end

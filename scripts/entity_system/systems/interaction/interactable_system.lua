@@ -25,8 +25,6 @@ InteractableSystem.destroy = function (self)
 	return 
 end
 InteractableSystem.update = function (self, context, t)
-	Profiler.start("InteractableSystem")
-
 	local dt = context.dt
 
 	if script_data.debug_interactions then
@@ -36,8 +34,6 @@ InteractableSystem.update = function (self, context, t)
 			QuickDrawer:box(pose, half_extents)
 		end
 	end
-
-	Profiler.stop("InteractableSystem")
 
 	return 
 end

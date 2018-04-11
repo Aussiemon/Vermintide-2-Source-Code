@@ -22,8 +22,6 @@ BTSelector_grey_seer.leave = function (self, unit, blackboard, t, reason)
 	return 
 end
 BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
-	local Profiler_start = Profiler.start
-	local Profiler_stop = Profiler.stop
 	local child_running = self.current_running_child(self, blackboard)
 	local children = self._children
 	local node_spawn = children[1]
@@ -31,11 +29,8 @@ BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_spawn, "aborted")
-		Profiler_start("spawn")
 
 		local result, evaluate = node_spawn.run(node_spawn, unit, blackboard, t, dt)
-
-		Profiler_stop("spawn")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -54,11 +49,8 @@ BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_intro_sequence, "aborted")
-		Profiler_start("intro_sequence")
 
 		local result, evaluate = node_intro_sequence.run(node_intro_sequence, unit, blackboard, t, dt)
-
-		Profiler_stop("intro_sequence")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -76,11 +68,8 @@ BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_mount_unit, "aborted")
-		Profiler_start("mount_unit")
 
 		local result, evaluate = node_mount_unit.run(node_mount_unit, unit, blackboard, t, dt)
-
-		Profiler_stop("mount_unit")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -98,11 +87,8 @@ BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_mounted_combat, "aborted")
-		Profiler_start("mounted_combat")
 
 		local result, evaluate = node_mounted_combat.run(node_mounted_combat, unit, blackboard, t, dt)
-
-		Profiler_stop("mounted_combat")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -120,11 +106,8 @@ BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_wounded_idle, "aborted")
-		Profiler_start("wounded_idle")
 
 		local result, evaluate = node_wounded_idle.run(node_wounded_idle, unit, blackboard, t, dt)
-
-		Profiler_stop("wounded_idle")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -142,11 +125,8 @@ BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_grey_seer_death_sequence, "aborted")
-		Profiler_start("grey_seer_death_sequence")
 
 		local result, evaluate = node_grey_seer_death_sequence.run(node_grey_seer_death_sequence, unit, blackboard, t, dt)
-
-		Profiler_stop("grey_seer_death_sequence")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -172,11 +152,8 @@ BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_stagger, "aborted")
-		Profiler_start("stagger")
 
 		local result, evaluate = node_stagger.run(node_stagger, unit, blackboard, t, dt)
-
-		Profiler_stop("stagger")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -194,11 +171,8 @@ BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_spell_casting, "aborted")
-		Profiler_start("spell_casting")
 
 		local result, evaluate = node_spell_casting.run(node_spell_casting, unit, blackboard, t, dt)
-
-		Profiler_stop("spell_casting")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -216,11 +190,8 @@ BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_ground_combat, "aborted")
-		Profiler_start("ground_combat")
 
 		local result, evaluate = node_ground_combat.run(node_ground_combat, unit, blackboard, t, dt)
-
-		Profiler_stop("ground_combat")
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -236,11 +207,8 @@ BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
 	local node_defensive_idle = children[10]
 
 	self.set_running_child(self, unit, blackboard, t, node_defensive_idle, "aborted")
-	Profiler_start("defensive_idle")
 
 	local result, evaluate = node_defensive_idle.run(node_defensive_idle, unit, blackboard, t, dt)
-
-	Profiler_stop("defensive_idle")
 
 	if result ~= "running" then
 		self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -253,11 +221,8 @@ BTSelector_grey_seer.run = function (self, unit, blackboard, t, dt)
 	local node_idle = children[11]
 
 	self.set_running_child(self, unit, blackboard, t, node_idle, "aborted")
-	Profiler_start("idle")
 
 	local result, evaluate = node_idle.run(node_idle, unit, blackboard, t, dt)
-
-	Profiler_stop("idle")
 
 	if result ~= "running" then
 		self.set_running_child(self, unit, blackboard, t, nil, result)

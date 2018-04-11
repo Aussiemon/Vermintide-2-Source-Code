@@ -38,8 +38,6 @@ BTTargetRageAction.enter = function (self, unit, blackboard, t)
 	if rage_anim == nil then
 		blackboard.anim_locked = 0
 
-		debug3d(unit, "no_rage_animation", "red")
-
 		return 
 	end
 
@@ -63,11 +61,6 @@ BTTargetRageAction.enter = function (self, unit, blackboard, t)
 
 	network_manager.anim_event(network_manager, unit, "to_combat")
 	network_manager.anim_event(network_manager, unit, rage_anim)
-
-	if script_data.debug_ai_movement then
-		debug3d(unit, rage_anim .. " " .. ((anim_driven and "(ANIM DRIVEN)") or ""), "purple")
-		QuickDrawerStay:vector(POSITION_LOOKUP[unit] + Vector3.up(), Quaternion.forward(Unit.local_rotation(unit, 0)) * 3, Color(140, 0, 220))
-	end
 
 	if 7 < blackboard.target_dist then
 		blackboard.chasing_timer = 25

@@ -26,11 +26,12 @@ Development._hardcoded_dev_params = {
 }
 Development._hardcoded_benchmark_mode_params = {
 	attract_benchmark = true,
-	disable_pack_master = true,
+	use_local_backend = true,
 	disable_tutorial_at_start = true,
 	disable_gutter_runner = true,
-	show_fps = true,
+	disable_pack_master = true,
 	screen_space_player_camera_reactions = false,
+	show_fps = true,
 	hide_fps = false,
 	use_lan_backend = true,
 	disable_debug_draw = true,

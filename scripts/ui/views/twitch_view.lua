@@ -59,8 +59,6 @@ TwitchView.on_enter = function (self)
 end
 local DO_RELOAD = true
 TwitchView.update = function (self, dt, t, is_sub_menu)
-	Profiler.start("twitch_view")
-
 	if DO_RELOAD then
 		DO_RELOAD = false
 
@@ -68,8 +66,6 @@ TwitchView.update = function (self, dt, t, is_sub_menu)
 	end
 
 	if self._suspended or not self._active then
-		Profiler.stop("twitch_view")
-
 		return 
 	end
 
@@ -78,7 +74,6 @@ TwitchView.update = function (self, dt, t, is_sub_menu)
 	self._draw(self, dt, t)
 	self._update_input(self, dt, t)
 	self._update_error(self, dt, t)
-	Profiler.stop("twitch_view")
 
 	return 
 end
