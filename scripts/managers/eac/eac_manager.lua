@@ -5,7 +5,7 @@ local function means_true(value)
 end
 
 EacManager.init = function (self)
-	local is_steam_build = means_true(script_data.settings.packaged_build)
+	local is_steam_build = means_true(script_data.packaged_build)
 	self._suppress_message = means_true(script_data["eac-untrusted"]) or not is_steam_build
 	self._file_related_violations = {
 		hash_catalogue_error = true,
