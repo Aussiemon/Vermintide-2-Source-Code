@@ -2983,6 +2983,26 @@ UtilityConsiderations = {
 			blackboard_input = "has_line_of_sight"
 		}
 	},
+	storm_vermin_champion_special_attack_defensive = {
+		distance_to_target = {
+			max_value = 10,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				0,
+				0.21666666666666667,
+				1,
+				0.3,
+				1,
+				0.5,
+				0
+			}
+		},
+		has_line_of_sight = {
+			is_condition = true,
+			blackboard_input = "has_line_of_sight"
+		}
+	},
 	storm_vermin_champion_running_attack = {
 		distance_to_target = {
 			max_value = 4.5,
@@ -3516,16 +3536,12 @@ UtilityConsiderations = {
 			blackboard_input = "defensive_mode_duration"
 		},
 		time_since_last = {
-			max_value = 10,
+			max_value = 4,
 			blackboard_input = "time_since_last",
 			spline = {
 				0,
 				0,
 				0.5,
-				0,
-				0.66,
-				0.2,
-				1,
 				1
 			}
 		},

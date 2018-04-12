@@ -11489,21 +11489,23 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwh_gameplay_healing_dwarf_ranger = {
-			sound_events_n = 6,
+			sound_events_n = 7,
 			randomize_indexes_n = 0,
-			face_animations_n = 6,
+			face_animations_n = 7,
 			database = "witch_hunter_honduras",
 			category = "player_feedback",
-			dialogue_animations_n = 6,
+			dialogue_animations_n = 7,
 			sound_events = {
 				"pwh_gameplay_healing_dwarf_ranger_03",
 				"pwh_gameplay_healing_dwarf_ranger_04",
 				"pwh_gameplay_healing_dwarf_ranger_05",
 				"pwh_gameplay_healing_dwarf_ranger_06",
 				"pwh_gameplay_healing_dwarf_ranger_07",
-				"pwh_gameplay_healing_witch_hunter_06"
+				"pwh_gameplay_healing_dwarf_ranger_08",
+				"pwh_gameplay_healing_dwarf_ranger_09"
 			},
 			dialogue_animations = {
+				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
@@ -11517,6 +11519,7 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
+				"face_neutral",
 				"face_neutral"
 			},
 			localization_strings = {
@@ -11525,7 +11528,8 @@ return function ()
 				"pwh_gameplay_healing_dwarf_ranger_05",
 				"pwh_gameplay_healing_dwarf_ranger_06",
 				"pwh_gameplay_healing_dwarf_ranger_07",
-				"pwh_gameplay_healing_witch_hunter_06"
+				"pwh_gameplay_healing_dwarf_ranger_08",
+				"pwh_gameplay_healing_dwarf_ranger_09"
 			},
 			randomize_indexes = {}
 		},
@@ -11885,12 +11889,12 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwh_gameplay_spots_health = {
-			sound_events_n = 13,
+			sound_events_n = 14,
 			randomize_indexes_n = 0,
-			face_animations_n = 13,
+			face_animations_n = 14,
 			database = "witch_hunter_honduras",
 			category = "seen_items",
-			dialogue_animations_n = 13,
+			dialogue_animations_n = 14,
 			sound_events = {
 				"pwh_gameplay_spots_health_01",
 				"pwh_gameplay_spots_health_06",
@@ -11901,12 +11905,14 @@ return function ()
 				"pwh_gameplay_spots_health_11",
 				"pwh_gameplay_spots_health_12",
 				"pwh_gameplay_spots_health_13",
-				"pwh_gameplay_spots_health_14",
-				"pwh_gameplay_spots_health_15",
-				"pwh_gameplay_spots_health_16",
-				"pwh_gameplay_spots_health_17"
+				"pwh_gameplay_spots_health_18",
+				"pwh_gameplay_spots_health_19",
+				"pwh_gameplay_spots_health_20",
+				"pwh_gameplay_spots_health_21",
+				"pwh_gameplay_spots_health_22"
 			},
 			dialogue_animations = {
+				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -11934,6 +11940,7 @@ return function ()
 				"face_happy",
 				"face_happy",
 				"face_happy",
+				"face_happy",
 				"face_happy"
 			},
 			localization_strings = {
@@ -11946,10 +11953,11 @@ return function ()
 				"pwh_gameplay_spots_health_11",
 				"pwh_gameplay_spots_health_12",
 				"pwh_gameplay_spots_health_13",
-				"pwh_gameplay_spots_health_14",
-				"pwh_gameplay_spots_health_15",
-				"pwh_gameplay_spots_health_16",
-				"pwh_gameplay_spots_health_17"
+				"pwh_gameplay_spots_health_18",
+				"pwh_gameplay_spots_health_19",
+				"pwh_gameplay_spots_health_20",
+				"pwh_gameplay_spots_health_21",
+				"pwh_gameplay_spots_health_22"
 			},
 			randomize_indexes = {}
 		},
@@ -14347,29 +14355,21 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwh_gameplay_friendly_fire_bright_wizard = {
-			sound_events_n = 10,
+			sound_events_n = 6,
 			randomize_indexes_n = 0,
-			face_animations_n = 10,
+			face_animations_n = 6,
 			database = "witch_hunter_honduras",
 			category = "player_feedback",
-			dialogue_animations_n = 10,
+			dialogue_animations_n = 6,
 			sound_events = {
 				"pwh_gameplay_friendly_fire_bright_wizard_02",
 				"pwh_gameplay_friendly_fire_bright_wizard_05",
 				"pwh_gameplay_friendly_fire_bright_wizard_06",
 				"pwh_gameplay_friendly_fire_bright_wizard_07",
 				"pwh_gameplay_friendly_fire_bright_wizard_08",
-				"pwh_gameplay_friendly_fire_dwarf_ranger_05",
-				"pwh_gameplay_friendly_fire_dwarf_ranger_06",
-				"pwh_gameplay_friendly_fire_dwarf_ranger_07",
-				"pwh_gameplay_friendly_fire_dwarf_ranger_08",
-				"pwh_gameplay_friendly_fire_dwarf_ranger_09"
+				"pwh_gameplay_friendly_fire_bright_wizard_09"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -14383,10 +14383,6 @@ return function ()
 				"face_angry",
 				"face_angry",
 				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
 				"face_angry"
 			},
 			localization_strings = {
@@ -14395,11 +14391,7 @@ return function ()
 				"pwh_gameplay_friendly_fire_bright_wizard_06",
 				"pwh_gameplay_friendly_fire_bright_wizard_07",
 				"pwh_gameplay_friendly_fire_bright_wizard_08",
-				"pwh_gameplay_friendly_fire_dwarf_ranger_05",
-				"pwh_gameplay_friendly_fire_dwarf_ranger_06",
-				"pwh_gameplay_friendly_fire_dwarf_ranger_07",
-				"pwh_gameplay_friendly_fire_dwarf_ranger_08",
-				"pwh_gameplay_friendly_fire_dwarf_ranger_09"
+				"pwh_gameplay_friendly_fire_bright_wizard_09"
 			},
 			randomize_indexes = {}
 		},
@@ -16639,20 +16631,22 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwh_gameplay_self_heal = {
-			sound_events_n = 5,
+			sound_events_n = 6,
 			randomize_indexes_n = 0,
-			face_animations_n = 5,
+			face_animations_n = 6,
 			database = "witch_hunter_honduras",
 			category = "player_feedback",
-			dialogue_animations_n = 5,
+			dialogue_animations_n = 6,
 			sound_events = {
 				"pwh_gameplay_self_heal_06",
+				"pwh_gameplay_self_heal_02",
 				"pwh_gameplay_self_heal_07",
 				"pwh_gameplay_self_heal_08",
 				"pwh_gameplay_self_heal_09",
 				"pwh_gameplay_self_heal_10"
 			},
 			dialogue_animations = {
+				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
@@ -16664,10 +16658,12 @@ return function ()
 				"face_exhausted",
 				"face_exhausted",
 				"face_exhausted",
+				"face_exhausted",
 				"face_exhausted"
 			},
 			localization_strings = {
 				"pwh_gameplay_self_heal_06",
+				"pwh_gameplay_self_heal_02",
 				"pwh_gameplay_self_heal_07",
 				"pwh_gameplay_self_heal_08",
 				"pwh_gameplay_self_heal_09",

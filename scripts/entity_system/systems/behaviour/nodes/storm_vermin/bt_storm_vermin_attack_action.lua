@@ -48,10 +48,14 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.spawn_to_running = nil
+	local is_behind_player = AiUtils.unit_is_behind_player(unit, target_unit)
 	local breed = blackboard.breed
+	local should_backstab = breed.use_backstab_vo and blackboard.total_slots_count < 5 and is_behind_player
 
-	if breed.attack_player_sound_event and not breed.uses_attack_sfx_callback then
-		self.trigger_attack_sound(self, action, unit, target_unit, blackboard, blackboard.target_unit_status_extension)
+	if should_backstab then
+		DialogueSystem:TriggerBackstab(target_unit, unit, blackboard)
+
+		blackboard.backstab_attack_trigger = true
 	end
 
 	local attack_intensity = (blackboard.moving_attack and action.moving_attack_intensity) or action.attack_intensity or 0.75
@@ -229,21 +233,11 @@ BTStormVerminAttackAction._create_bot_threat = function (self, unit, blackboard)
 	return 
 end
 BTStormVerminAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
-	if blackboard.target_unit_status_extension then
-		self.trigger_attack_sound(self, blackboard.action, unit, blackboard.target_unit, blackboard, blackboard.target_unit_status_extension)
-	end
+	local network_manager = Managers.state.network
+	local game = network_manager.game(network_manager)
 
-	return 
-end
-BTStormVerminAttackAction.trigger_attack_sound = function (self, action, unit, target_unit, blackboard)
-	local breed = blackboard.breed
-	local is_behind_player = AiUtils.unit_is_behind_player(unit, target_unit)
-	local should_backstab = breed.use_backstab_vo and blackboard.total_slots_count < 5 and is_behind_player
-
-	DialogueSystem:TriggerAttack(target_unit, unit, should_backstab, blackboard)
-
-	if should_backstab then
-		blackboard.backstab_attack_trigger = true
+	if game and blackboard.target_unit_status_extension then
+		DialogueSystem:TriggerAttack(blackboard.target_unit, unit, false, blackboard)
 	end
 
 	return 

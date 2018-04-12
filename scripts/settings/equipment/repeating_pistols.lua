@@ -29,7 +29,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.1,
+					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
 				},
@@ -71,7 +71,7 @@ weapon_template.actions = {
 			damage_window_start = 0.1,
 			use_ammo_at_time = 0.3,
 			fire_at_gaze_setting = "tobii_fire_at_gaze_repeating_pistol",
-			damage_profile = "shot_machinegun",
+			damage_profile = "shot_machinegun_shotgun",
 			kind = "shotgun",
 			max_penetrations = 1,
 			num_layers_spread = 1,
@@ -98,7 +98,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.3,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -151,7 +151,7 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
-					start_time = 0,
+					start_time = 0.2,
 					action = "action_wield",
 					input = "action_wield"
 				},
@@ -188,10 +188,10 @@ weapon_template.actions = {
 weapon_template.ammo_data = {
 	ammo_hand = "right",
 	ammo_per_reload = 8,
-	max_ammo = 50,
+	max_ammo = 40,
 	ammo_per_clip = 8,
 	play_reload_anim_on_wield_reload = true,
-	reload_time = 1,
+	reload_time = 1.5,
 	reload_on_ammo_pickup = true
 }
 weapon_template.default_spread_template = "repeating_pistol"

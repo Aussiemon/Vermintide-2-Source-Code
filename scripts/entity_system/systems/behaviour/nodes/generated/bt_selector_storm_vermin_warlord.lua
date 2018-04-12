@@ -63,7 +63,26 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 		self.set_running_child(self, unit, blackboard, t, nil, "failed")
 	end
 
-	local node_jump_to_position = children[3]
+	local node_switch_weapons = children[3]
+	local condition_result = blackboard.switching_weapons and not blackboard.defensive_mode_duration
+
+	if condition_result then
+		self.set_running_child(self, unit, blackboard, t, node_switch_weapons, "aborted")
+
+		local result, evaluate = node_switch_weapons.run(node_switch_weapons, unit, blackboard, t, dt)
+
+		if result ~= "running" then
+			self.set_running_child(self, unit, blackboard, t, nil, result)
+		end
+
+		if result ~= "failed" then
+			return result, evaluate
+		end
+	elseif node_switch_weapons == child_running then
+		self.set_running_child(self, unit, blackboard, t, nil, "failed")
+	end
+
+	local node_jump_to_position = children[4]
 	local condition_result = blackboard.jump_from_pos
 
 	if condition_result then
@@ -82,7 +101,7 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 		self.set_running_child(self, unit, blackboard, t, nil, "failed")
 	end
 
-	local node_falling = children[4]
+	local node_falling = children[5]
 	local condition_result = blackboard.is_falling or blackboard.fall_state ~= nil
 
 	if condition_result then
@@ -101,7 +120,7 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 		self.set_running_child(self, unit, blackboard, t, nil, "failed")
 	end
 
-	local node_smartobject = children[5]
+	local node_smartobject = children[6]
 	local smartobject_is_next = blackboard.next_smart_object_data.next_smart_object_id ~= nil
 	local is_in_smartobject_range = blackboard.is_in_smartobject_range
 	local is_smart_objecting = blackboard.is_smart_objecting
@@ -124,7 +143,7 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 		self.set_running_child(self, unit, blackboard, t, nil, "failed")
 	end
 
-	local node_stagger = children[6]
+	local node_stagger = children[7]
 	local condition_result = nil
 
 	if blackboard.stagger then
@@ -147,15 +166,13 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 		self.set_running_child(self, unit, blackboard, t, nil, "failed")
 	end
 
-	local node_defensive_idle = children[7]
-	local t = Managers.time:time("game")
-	local time_since_surrounding_players = t - blackboard.surrounding_players_last
-	local condition_result = blackboard.defensive_mode_duration and 3 <= time_since_surrounding_players
+	local node_in_defensive = children[8]
+	local condition_result = blackboard.defensive_mode_duration
 
 	if condition_result then
-		self.set_running_child(self, unit, blackboard, t, node_defensive_idle, "aborted")
+		self.set_running_child(self, unit, blackboard, t, node_in_defensive, "aborted")
 
-		local result, evaluate = node_defensive_idle.run(node_defensive_idle, unit, blackboard, t, dt)
+		local result, evaluate = node_in_defensive.run(node_in_defensive, unit, blackboard, t, dt)
 
 		if result ~= "running" then
 			self.set_running_child(self, unit, blackboard, t, nil, result)
@@ -164,31 +181,12 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 		if result ~= "failed" then
 			return result, evaluate
 		end
-	elseif node_defensive_idle == child_running then
-		self.set_running_child(self, unit, blackboard, t, nil, "failed")
-	end
-
-	local node_switch_weapons = children[8]
-	local condition_result = blackboard.switching_weapons and not blackboard.defensive_mode_duration
-
-	if condition_result then
-		self.set_running_child(self, unit, blackboard, t, node_switch_weapons, "aborted")
-
-		local result, evaluate = node_switch_weapons.run(node_switch_weapons, unit, blackboard, t, dt)
-
-		if result ~= "running" then
-			self.set_running_child(self, unit, blackboard, t, nil, result)
-		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_switch_weapons == child_running then
+	elseif node_in_defensive == child_running then
 		self.set_running_child(self, unit, blackboard, t, nil, "failed")
 	end
 
 	local node_has_target = children[9]
-	local condition_result = unit_alive(blackboard.target_unit)
+	local condition_result = unit_alive(blackboard.target_unit) and not blackboard.defensive_mode_duration
 
 	if condition_result then
 		self.set_running_child(self, unit, blackboard, t, node_has_target, "aborted")
@@ -206,7 +204,21 @@ BTSelector_storm_vermin_warlord.run = function (self, unit, blackboard, t, dt)
 		self.set_running_child(self, unit, blackboard, t, nil, "failed")
 	end
 
-	local node_idle = children[10]
+	local node_defensive_idle = children[10]
+
+	self.set_running_child(self, unit, blackboard, t, node_defensive_idle, "aborted")
+
+	local result, evaluate = node_defensive_idle.run(node_defensive_idle, unit, blackboard, t, dt)
+
+	if result ~= "running" then
+		self.set_running_child(self, unit, blackboard, t, nil, result)
+	end
+
+	if result ~= "failed" then
+		return result, evaluate
+	end
+
+	local node_idle = children[11]
 
 	self.set_running_child(self, unit, blackboard, t, node_idle, "aborted")
 

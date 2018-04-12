@@ -9,6 +9,7 @@ end
 BTStormfiendDualShootAction.name = "BTStormfiendDualShootAction"
 local SPHERE_CAST_RADIUS = 0.4
 local SPHERE_CAST_MAX_NUM_HITS = 10
+local unit_alive = Unit.alive
 BTStormfiendDualShootAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local world = blackboard.world
@@ -57,7 +58,7 @@ BTStormfiendDualShootAction.leave = function (self, unit, blackboard, t, reason,
 	return 
 end
 BTStormfiendDualShootAction.run = function (self, unit, blackboard, t, dt)
-	if blackboard.attack_aborted then
+	if blackboard.attack_aborted or not unit_alive(blackboard.target_unit) then
 		return "failed"
 	end
 

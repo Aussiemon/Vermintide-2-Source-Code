@@ -253,7 +253,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0.2,
-					external_multiplier = 0.2,
+					external_multiplier = 0.5,
 					end_time = 1,
 					buff_name = "planted_charging_decrease_movement"
 				}
@@ -261,14 +261,14 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_right",
-					start_time = 0.95,
+					start_time = 0.75,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default_right",
-					start_time = 0.95,
+					start_time = 0.75,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
@@ -321,7 +321,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0.2,
-					external_multiplier = 0.2,
+					external_multiplier = 0.5,
 					end_time = 1,
 					buff_name = "planted_charging_decrease_movement"
 				}
@@ -329,14 +329,14 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_left",
-					start_time = 0.95,
+					start_time = 0.75,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default_left",
-					start_time = 0.95,
+					start_time = 0.75,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"

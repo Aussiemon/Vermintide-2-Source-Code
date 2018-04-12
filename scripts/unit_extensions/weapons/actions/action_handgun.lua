@@ -23,7 +23,7 @@ ActionHandgun.client_owner_start_action = function (self, new_action, t, chain_a
 	self.power_level = power_level
 
 	if new_action.use_beam_consecutive_hits and chain_action_data and chain_action_data.beam_consecutive_hits then
-		self.charge_multiplier = 0.5 + 0.5 * math.clamp(chain_action_data.beam_consecutive_hits / 3, 0, 1)
+		self.charge_multiplier = 0.3 + 0.7 * math.clamp(chain_action_data.beam_consecutive_hits / 3, 0, 1)
 		self.power_level = self.power_level * self.charge_multiplier
 	end
 

@@ -1,4 +1,119 @@
 local ACTIONS = BreedActions.skaven_storm_vermin_warlord
+local WARLORD_DEFENSIVE = {
+	"BTUtilityNode",
+	{
+		"BTChampionAttackAction",
+		name = "defensive_mode_spin",
+		action_data = ACTIONS.defensive_mode_spin
+	},
+	condition = "should_be_defensive",
+	name = "in_defensive"
+}
+local WARLORD_OFFENSIVE = {
+	"BTSelector",
+	{
+		"BTUtilityNode",
+		{
+			"BTBossFollowAction",
+			name = "follow",
+			action_data = ACTIONS.follow
+		},
+		{
+			"BTMeleeOverlapAttackAction",
+			enter_hook = "on_warlord_disable_blocking",
+			name = "dual_combo_attack2",
+			action_data = ACTIONS.dual_combo_attack2
+		},
+		{
+			"BTChampionAttackAction",
+			enter_hook = "on_warlord_disable_blocking",
+			name = "dual_attack_cleave",
+			action_data = ACTIONS.dual_attack_cleave
+		},
+		{
+			"BTChampionAttackAction",
+			enter_hook = "on_warlord_disable_blocking",
+			name = "dual_lunge_attack",
+			action_data = ACTIONS.dual_lunge_attack
+		},
+		name = "dual_wield_combat",
+		condition = "warlord_dual_wielding",
+		enter_hook = "on_warlord_dual_wield"
+	},
+	{
+		"BTUtilityNode",
+		{
+			"BTSequence",
+			{
+				"BTChampionAttackAction",
+				name = "special_attack_spin_pre_spawn",
+				action_data = ACTIONS.special_attack_spin
+			},
+			{
+				"BTSpawnAllies",
+				name = "spawn",
+				action_data = ACTIONS.spawn_allies
+			},
+			enter_hook = "warlord_defensive_on_enter",
+			name = "spawn_sequence",
+			action_data = ACTIONS.spawn_sequence
+		},
+		{
+			"BTTargetRageAction",
+			name = "turn_to_face_target",
+			condition = "target_changed",
+			action_data = ACTIONS.turn_to_face_target
+		},
+		{
+			"BTBossFollowAction",
+			name = "follow",
+			action_data = ACTIONS.follow
+		},
+		{
+			"BTChampionAttackAction",
+			name = "special_running_attack",
+			action_data = ACTIONS.special_running_attack
+		},
+		{
+			"BTChampionAttackAction",
+			name = "special_lunge_attack",
+			action_data = ACTIONS.special_lunge_attack
+		},
+		{
+			"BTRandom",
+			{
+				"BTChampionAttackAction",
+				name = "special_attack_cleave",
+				weight = 1,
+				action_data = ACTIONS.special_attack_cleave
+			},
+			{
+				"BTChampionAttackAction",
+				name = "special_attack_sweep_left",
+				weight = 0.5,
+				action_data = ACTIONS.special_attack_sweep_left
+			},
+			{
+				"BTChampionAttackAction",
+				name = "special_attack_sweep_right",
+				weight = 0.5,
+				action_data = ACTIONS.special_attack_sweep_right
+			},
+			name = "special_attack_champion",
+			action_data = ACTIONS.special_attack_champion
+		},
+		{
+			"BTChampionAttackAction",
+			name = "special_attack_spin",
+			action_data = ACTIONS.special_attack_spin
+		},
+		name = "halberd_combat",
+		condition = "warlord_halberding",
+		enter_hook = "on_warlord_halberd"
+	},
+	condition = "can_see_player",
+	name = "has_target"
+}
 BreedBehaviors.storm_vermin_warlord = {
 	"BTSelector",
 	{
@@ -25,6 +140,12 @@ BreedBehaviors.storm_vermin_warlord = {
 		condition = "lord_intro",
 		enter_hook = "on_skaven_warlord_intro_enter",
 		action_data = ACTIONS.intro_sequence
+	},
+	{
+		"BTSwitchWeaponsAction",
+		name = "switch_weapons",
+		condition = "switching_weapons",
+		action_data = ACTIONS.switch_weapons
 	},
 	{
 		"BTJumpToPositionAction",
@@ -69,127 +190,12 @@ BreedBehaviors.storm_vermin_warlord = {
 		condition = "stagger",
 		action_data = ACTIONS.stagger
 	},
+	WARLORD_DEFENSIVE,
+	WARLORD_OFFENSIVE,
 	{
 		"BTIdleAction",
 		name = "defensive_idle",
-		condition = "should_defensive_idle",
 		action_data = ACTIONS.defensive_idle
-	},
-	{
-		"BTSwitchWeaponsAction",
-		name = "switch_weapons",
-		condition = "switching_weapons",
-		action_data = ACTIONS.switch_weapons
-	},
-	{
-		"BTSelector",
-		{
-			"BTUtilityNode",
-			{
-				"BTBossFollowAction",
-				name = "follow",
-				action_data = ACTIONS.follow
-			},
-			{
-				"BTMeleeOverlapAttackAction",
-				enter_hook = "on_warlord_disable_blocking",
-				name = "dual_combo_attack2",
-				action_data = ACTIONS.dual_combo_attack2
-			},
-			{
-				"BTChampionAttackAction",
-				enter_hook = "on_warlord_disable_blocking",
-				name = "dual_attack_cleave",
-				action_data = ACTIONS.dual_attack_cleave
-			},
-			{
-				"BTChampionAttackAction",
-				enter_hook = "on_warlord_disable_blocking",
-				name = "dual_lunge_attack",
-				action_data = ACTIONS.dual_lunge_attack
-			},
-			name = "dual_wield_combat",
-			condition = "warlord_dual_wielding",
-			enter_hook = "on_warlord_dual_wield"
-		},
-		{
-			"BTUtilityNode",
-			{
-				"BTTargetRageAction",
-				name = "turn_to_face_target",
-				condition = "target_changed",
-				action_data = ACTIONS.turn_to_face_target
-			},
-			{
-				"BTSequence",
-				{
-					"BTChampionAttackAction",
-					name = "special_attack_spin_pre_spawn",
-					action_data = ACTIONS.special_attack_spin
-				},
-				{
-					"BTSpawnAllies",
-					name = "spawn",
-					action_data = ACTIONS.spawn_allies
-				},
-				enter_hook = "warlord_defensive_on_enter",
-				name = "spawn_sequence",
-				action_data = ACTIONS.spawn_sequence
-			},
-			{
-				"BTBossFollowAction",
-				name = "follow",
-				action_data = ACTIONS.follow
-			},
-			{
-				"BTChampionAttackAction",
-				name = "special_running_attack",
-				action_data = ACTIONS.special_running_attack
-			},
-			{
-				"BTChampionAttackAction",
-				name = "special_lunge_attack",
-				action_data = ACTIONS.special_lunge_attack
-			},
-			{
-				"BTRandom",
-				{
-					"BTChampionAttackAction",
-					name = "special_attack_cleave",
-					weight = 1,
-					action_data = ACTIONS.special_attack_cleave
-				},
-				{
-					"BTChampionAttackAction",
-					name = "special_attack_sweep_left",
-					weight = 0.5,
-					action_data = ACTIONS.special_attack_sweep_left
-				},
-				{
-					"BTChampionAttackAction",
-					name = "special_attack_sweep_right",
-					weight = 0.5,
-					action_data = ACTIONS.special_attack_sweep_right
-				},
-				name = "special_attack_champion",
-				action_data = ACTIONS.special_attack_champion
-			},
-			{
-				"BTChampionAttackAction",
-				name = "special_attack_spin",
-				action_data = ACTIONS.special_attack_spin
-			},
-			{
-				"BTChampionAttackAction",
-				name = "defensive_mode_spin",
-				action_data = ACTIONS.defensive_mode_spin
-			},
-			name = "halberd_combat",
-			condition = "warlord_halberding",
-			enter_hook = "on_warlord_halberd"
-		},
-		condition = "can_see_player",
-		name = "has_target"
 	},
 	{
 		"BTIdleAction",

@@ -164,7 +164,7 @@ local breed_data = {
 	run_on_spawn = AiBreedSnippets.on_chaos_warrior_spawn,
 	run_on_update = AiBreedSnippets.on_chaos_warrior_update,
 	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
-		if blackboard.stagger_type == 3 then
+		if blackboard.stagger_type == 3 or blackboard.stagger_type == 6 then
 			if stagger == 3 and blackboard.heavy_stagger_immune_time then
 				stagger = 0
 				duration = 0
@@ -392,7 +392,7 @@ local action_data = {
 	special_attack_cleave = {
 		step_attack_target_speed_away = 1.5,
 		height = 2,
-		range = 3.5,
+		range = 3,
 		fatigue_type = "complete",
 		offset_forward = 0,
 		rotation_time = 1.5,
@@ -472,26 +472,11 @@ local action_data = {
 			}
 		},
 		ignore_staggers = {
-			{
-				delay = 0.1,
-				type = "reset_attack"
-			},
-			{
-				delay = 0.15,
-				type = "reset_attack"
-			},
-			{
-				delay = 0.2,
-				type = "reset_attack"
-			},
-			{
-				delay = 0.1,
-				type = "reset_attack"
-			},
-			{
-				delay = 0.1,
-				type = "reset_attack"
-			},
+			true,
+			true,
+			false,
+			true,
+			true,
 			false
 		}
 	},

@@ -78,9 +78,6 @@ end
 ScriptBackendPlayFab.login_request_cb = function (self, result)
 	self._signin_result = result
 
-	print("Signed In")
-	table.dump(result, nil, 4)
-
 	if result.error then
 		self._signin_result_error = result
 	else

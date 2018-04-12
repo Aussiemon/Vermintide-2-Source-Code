@@ -357,7 +357,7 @@ local action_data = {
 		push_speed_z = 6,
 		action_weight = 4,
 		rotation_speed = 20,
-		throw_unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_chaos_2h_axe_03_boss",
+		throw_unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_chaos_2h_axe_03",
 		hit_targets_on_return = false,
 		running_sound_id = "Play_enemy_champion_throw_axe",
 		push_speed = 10,
@@ -472,6 +472,16 @@ local action_data = {
 				dir = -1,
 				rad = math.pi / 2
 			}
+		},
+		ignore_staggers = {
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true
 		}
 	},
 	special_attack_cleave = {
@@ -804,7 +814,9 @@ local action_data = {
 			true,
 			true,
 			true,
-			false
+			true,
+			true,
+			true
 		}
 	},
 	special_attack_launch = {

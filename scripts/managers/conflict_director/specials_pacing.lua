@@ -136,9 +136,12 @@ SpecialsPacing.select_breed_functions = {
 			count[slot.breed] = (count[slot.breed] or 0) + 1
 		end
 
-		local max_tries = 20
+		local max_tries = 30
 		local breed = nil
 		local i = 0
+		local reached_max_tries = false
+		local has_max_of_same = false
+		local is_counted_for = false
 
 		repeat
 			local pick_index = Math.random(1, #breeds)
@@ -187,7 +190,20 @@ SpecialsPacing.specials_by_slots = function (self, t, specials_settings, method_
 		if do_coordinated then
 			print("Coordinated attack!")
 
-			local coordinated_time = t + 10
+			local coordinated_time = t + 40
+			local average_slot_time = 0
+			local coordinated_attack_cooldown_multiplier = method_data.coordinated_attack_cooldown_multiplier or 0.5
+
+			for i = 1, num_slots, 1 do
+				local slot = slots[i]
+				local slot_time = slot.time
+				average_slot_time = average_slot_time + slot_time
+			end
+
+			if 0 < average_slot_time then
+				average_slot_time = average_slot_time / num_slots
+				coordinated_time = t + (average_slot_time - t) * coordinated_attack_cooldown_multiplier
+			end
 
 			for i = 1, num_slots, 1 do
 				local slot = slots[i]
@@ -299,10 +315,6 @@ SpecialsPacing.update = function (self, t, alive_specials, specials_population, 
 	end
 
 	if self._disabled then
-		if script_data.debug_ai_pacing then
-			Debug.text("Specials disabled by terror event")
-		end
-
 		return 
 	end
 
@@ -334,14 +346,26 @@ SpecialsPacing.update = function (self, t, alive_specials, specials_population, 
 			alive_specials[#alive_specials + 1] = new_special
 			specials_spawn_queue[#specials_spawn_queue] = nil
 			self._specials_timer = t + 0.5
-
-			if script_data.debug_player_intensity then
-				Managers.state.conflict.pacing:annotate_graph(slot.breed, "purple")
-			end
 		end
 	end
 
-	self.debug(self, t, alive_specials, specials_population, self._specials_slots)
+	return 
+end
+SpecialsPacing.lord_reset_spawning = function (self, t, delay)
+	self._specials_timer = t + delay
+	local slots = self._specials_slots
+
+	for i = 1, #slots, 1 do
+		local slot = slots[i]
+		slot.time = t + delay
+		slot.state = "waiting"
+	end
+
+	local specials_spawn_queue = self._specials_spawn_queue
+
+	for i = 1, #specials_spawn_queue, 1 do
+		specials_spawn_queue[i] = nil
+	end
 
 	return 
 end

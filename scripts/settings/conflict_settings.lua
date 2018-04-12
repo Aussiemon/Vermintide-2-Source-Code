@@ -298,6 +298,7 @@ local SpecialDifficultyOverrides = {
 		methods = {
 			specials_by_slots = {
 				max_of_same = 2,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -375,6 +376,7 @@ local SpecialDifficultyOverrides_skaven = {
 		methods = {
 			specials_by_slots = {
 				max_of_same = 2,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -461,6 +463,7 @@ local SpecialDifficultyOverrides_chaos = {
 		methods = {
 			specials_by_slots = {
 				max_of_same = 2,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0.5,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -492,6 +495,7 @@ SpecialsSettings = {
 		methods = {
 			specials_by_slots = {
 				max_of_same = 1,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -545,6 +549,7 @@ SpecialsSettings = {
 		methods = {
 			specials_by_slots = {
 				max_of_same = 1,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -596,6 +601,7 @@ SpecialsSettings = {
 		methods = {
 			specials_by_slots = {
 				max_of_same = 1,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -647,6 +653,7 @@ SpecialsSettings = {
 		methods = {
 			specials_by_slots = {
 				max_of_same = 1,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -708,6 +715,7 @@ SpecialsSettings = {
 			},
 			specials_by_slots = {
 				max_of_same = 2,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -764,6 +772,7 @@ SpecialsSettings = {
 			},
 			specials_by_slots = {
 				max_of_same = 2,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -820,6 +829,7 @@ SpecialsSettings = {
 			},
 			specials_by_slots = {
 				max_of_same = 2,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -880,6 +890,7 @@ SpecialsSettings = {
 			},
 			specials_by_slots = {
 				max_of_same = 1,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -941,6 +952,7 @@ SpecialsSettings = {
 			},
 			specials_by_slots = {
 				max_of_same = 1,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -1000,6 +1012,7 @@ SpecialsSettings = {
 			},
 			specials_by_slots = {
 				max_of_same = 2,
+				coordinated_attack_cooldown_multiplier = 0.5,
 				chance_of_coordinated_attack = 0,
 				select_next_breed = "get_random_breed",
 				after_safe_zone_delay = {
@@ -1058,6 +1071,7 @@ SpecialsSettings = {
 			},
 			specials_by_slots = {
 				select_next_breed = "get_random_breed",
+				coordinated_attack_cooldown_multiplier = 0.5,
 				max_of_same = 2,
 				spawn_interval = {
 					30,
@@ -1423,13 +1437,16 @@ IntensitySettings = {
 		disabled = false,
 		difficulty_overrides = {
 			hard = {
+				intensity_add_per_percent_dmg_taken = 1.5,
 				decay_per_second = 3
 			},
 			harder = {
+				intensity_add_per_percent_dmg_taken = 1,
 				decay_per_second = 3
 			},
 			hardest = {
-				decay_per_second = 5
+				intensity_add_per_percent_dmg_taken = 0.5,
+				decay_per_second = 4
 			}
 		}
 	},
@@ -1444,12 +1461,6 @@ IntensitySettings = {
 		max_intensity = 100
 	}
 }
-local difficulty_overrides = IntensitySettings.default.difficulty_overrides
-
-for difficulty_name, settings in pairs(DifficultySettings) do
-	difficulty_overrides[difficulty_name] = settings.intensity_overrides
-end
-
 PacingSettings = {
 	default = {
 		horde_in_relax_if_rushing = false,
@@ -1521,6 +1532,7 @@ PacingSettings = {
 		difficulty_overrides = {
 			hard = {
 				multiple_hordes = 3,
+				peak_intensity_threshold = 50,
 				horde_frequency = {
 					60,
 					110
@@ -1536,6 +1548,7 @@ PacingSettings = {
 			},
 			harder = {
 				multiple_hordes = 3,
+				peak_intensity_threshold = 55,
 				horde_frequency = {
 					50,
 					100
@@ -1551,6 +1564,7 @@ PacingSettings = {
 			},
 			hardest = {
 				multiple_hordes = 3,
+				peak_intensity_threshold = 70,
 				horde_frequency = {
 					50,
 					100
@@ -1636,6 +1650,7 @@ PacingSettings = {
 		difficulty_overrides = {
 			hard = {
 				multiple_hordes = 3,
+				peak_intensity_threshold = 50,
 				horde_frequency = {
 					60,
 					110
@@ -1651,6 +1666,7 @@ PacingSettings = {
 			},
 			harder = {
 				multiple_hordes = 3,
+				peak_intensity_threshold = 55,
 				horde_frequency = {
 					50,
 					100
@@ -1666,6 +1682,7 @@ PacingSettings = {
 			},
 			hardest = {
 				multiple_hordes = 3,
+				peak_intensity_threshold = 70,
 				horde_frequency = {
 					50,
 					100
@@ -2246,12 +2263,6 @@ PackSpawningSettings = {
 		roaming_set = {}
 	}
 }
-local difficulty_overrides = PacingSettings.default.difficulty_overrides
-
-for difficulty_name, settings in pairs(DifficultySettings) do
-	difficulty_overrides[difficulty_name] = settings.pacing_overrides
-end
-
 ConflictDirectorSets = {
 	random = {
 		pick_random = {

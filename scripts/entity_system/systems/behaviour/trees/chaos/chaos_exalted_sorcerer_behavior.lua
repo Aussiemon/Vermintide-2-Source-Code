@@ -70,12 +70,6 @@ BreedBehaviors.chaos_exalted_sorcerer = {
 	{
 		"BTSequence",
 		{
-			"BTSpawnAllies",
-			enter_hook = "sorcerer_spawn_horde",
-			name = "sorcerer_spawn_horde",
-			action_data = ACTIONS.spawn_allies_horde
-		},
-		{
 			"BTQuickTeleportAction",
 			name = "defensive_teleport",
 			action_data = ACTIONS.defensive_teleport

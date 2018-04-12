@@ -58,14 +58,14 @@ PlayerUnitStatusSettings.charge_values_defensive = {
 }
 PlayerUnitStatusSettings.overcharge_values = {
 	drakegun_basic = 2,
-	beam_staff_alternate = 0.6,
-	beam_staff_shotgun = 6,
+	beam_staff_alternate = 0.85,
+	beam_staff_shotgun = 7,
 	brace_of_drake_pistols_basic = 2.5,
 	overcharge_debug_value = 2,
 	fireball_charged = 7,
 	charging = 0.2,
 	spear_2 = 6,
-	beam_staff_sniper = 5,
+	beam_staff_sniper = 8,
 	flamethrower = 1.5,
 	fireball_basic = 2.5,
 	spear = 4,

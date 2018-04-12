@@ -7445,13 +7445,13 @@ return function ()
 				"query_context",
 				"killer_name",
 				OP.EQ,
-				"bright_wizard"
+				"empire_soldier"
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"bright_wizard"
 			},
 			{
 				"faction_memory",
@@ -9383,7 +9383,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"wood_elf"
 			}
 		}
 	})
@@ -27749,12 +27749,12 @@ return function ()
 			}
 		},
 		pwh_gameplay_spots_health_ping = {
-			sound_events_n = 22,
+			sound_events_n = 18,
 			randomize_indexes_n = 0,
-			face_animations_n = 22,
+			face_animations_n = 18,
 			database = "special_occasions_honduras",
 			category = "seen_items",
-			dialogue_animations_n = 22,
+			dialogue_animations_n = 18,
 			sound_events = {
 				"pwh_gameplay_spots_health_01",
 				"pwh_gameplay_spots_health_02",
@@ -27769,10 +27769,6 @@ return function ()
 				"pwh_gameplay_spots_health_11",
 				"pwh_gameplay_spots_health_12",
 				"pwh_gameplay_spots_health_13",
-				"pwh_gameplay_spots_health_14",
-				"pwh_gameplay_spots_health_15",
-				"pwh_gameplay_spots_health_16",
-				"pwh_gameplay_spots_health_17",
 				"pwh_gameplay_spots_health_18",
 				"pwh_gameplay_spots_health_19",
 				"pwh_gameplay_spots_health_20",
@@ -27780,10 +27776,6 @@ return function ()
 				"pwh_gameplay_spots_health_22"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -27821,10 +27813,6 @@ return function ()
 				"face_happy",
 				"face_happy",
 				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
 				"face_happy"
 			},
 			localization_strings = {
@@ -27841,10 +27829,6 @@ return function ()
 				"pwh_gameplay_spots_health_11",
 				"pwh_gameplay_spots_health_12",
 				"pwh_gameplay_spots_health_13",
-				"pwh_gameplay_spots_health_14",
-				"pwh_gameplay_spots_health_15",
-				"pwh_gameplay_spots_health_16",
-				"pwh_gameplay_spots_health_17",
 				"pwh_gameplay_spots_health_18",
 				"pwh_gameplay_spots_health_19",
 				"pwh_gameplay_spots_health_20",

@@ -36,7 +36,7 @@ ActionHealingDraught.finish = function (self, reason)
 
 		dialogue_input.trigger_networked_dialogue_event(dialogue_input, current_action.dialogue_event, event_data)
 
-		if 50 < ScriptUnit.extension(owner_unit, "health_system"):current_health() then
+		if 80 < ScriptUnit.extension(owner_unit, "health_system"):current_health() then
 			local target_name = ScriptUnit.extension(owner_unit, "dialogue_system").context.player_profile
 
 			SurroundingAwareSystem.add_event(owner_unit, "early_healing_draught", DialogueSettings.default_view_distance, "target_name", target_name)

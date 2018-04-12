@@ -249,7 +249,6 @@ Breeds.skaven_grey_seer = table.create_copy(Breeds.skaven_grey_seer, breed_data)
 local action_data = {
 	ground_combat = {
 		spawn_allies_cooldown = 20,
-		special_spawn_cooldown = 30,
 		use_fallback_spawners = true,
 		final_phase_teleport_cooldown = 35,
 		staggers_until_teleport = 5,
@@ -273,12 +272,6 @@ local action_data = {
 			8,
 			6,
 			6
-		},
-		special_spawns = {
-			"skaven_ratling_gunner",
-			"skaven_warpfire_thrower",
-			"skaven_pack_master",
-			"skaven_poison_wind_globadier"
 		},
 		override_spawn_groups = {
 			"grey_seer_spawner_1",

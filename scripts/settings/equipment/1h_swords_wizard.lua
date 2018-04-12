@@ -468,6 +468,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "fire_hit_armour",
 			headshot_multiplier = 2,
 			additional_critical_strike_chance = 0,
+			damage_profile = "light_slashing_linesman",
 			hit_effect = "melee_hit_sword_1h",
 			damage_window_end = 0.52,
 			impact_sound_event = "fire_hit",
@@ -515,12 +516,7 @@ weapon_template.actions = {
 					action = "action_wield",
 					input = "action_wield"
 				}
-			},
-			critical_strike = critical_strike_linesman_L,
-			cleave_distribution = cleave_distribution_linesman_L,
-			armour_modifier = armour_modifie_linesman_Lr,
-			default_target = default_target_linesman_L,
-			targets = targets_linesman_L
+			}
 		},
 		light_attack_right = {
 			damage_window_start = 0.38,

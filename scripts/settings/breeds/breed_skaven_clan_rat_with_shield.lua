@@ -48,6 +48,7 @@ local breed_data = {
 	player_locomotion_constrain_radius = 0.7,
 	weapon_reach = 2,
 	horde_target_selection = "horde_pick_closest_target_with_spillover",
+	use_backstab_vo = true,
 	patrol_passive_perception = "perception_regular",
 	vortexable = true,
 	death_squad_detection_radius = 8,

@@ -338,18 +338,10 @@ DialogueSystem.extensions_ready = function (self, world, unit)
 			end
 		end
 
-		local profile_index = FindProfileIndex(player_profile)
-
-		if profile_index then
-			local profile = SPProfiles[profile_index]
-			local hero_attributes = Managers.backend:get_interface("hero_attributes")
-			local career_index = hero_attributes.get(hero_attributes, profile.display_name, "career") or 1
-			local careers = profile.careers
-			local career = careers[career_index]
-			local career_name = career.name
-			self.global_context[career_name] = true
-			context.player_career = career_name
-		end
+		local career_ext = ScriptUnit.extension(unit, "career_system")
+		local career_name = career_ext.career_name(career_ext)
+		self.global_context[career_name] = true
+		context.player_career = career_name
 	elseif player_profile == nil then
 		context.player_profile = Unit.get_data(unit, "dialogue_profile")
 	end
@@ -1395,6 +1387,45 @@ DialogueSystem.TriggerAttack = function (self, player_unit, enemy_unit, should_b
 			local general_event_id = NetworkLookup.sound_events[general_event]
 
 			network_manager.network_transmit:send_rpc_clients_except("rpc_server_audio_unit_dialogue_event", owner.peer_id, general_event_id, unit_id, 0)
+		end
+	end
+
+	return 
+end
+DialogueSystem.TriggerBackstab = function (self, player_unit, enemy_unit, blackboard)
+	local player_manager = Managers.player
+	local owner = player_manager.unit_owner(player_manager, player_unit)
+
+	if Unit.alive(player_unit) and owner and Unit.alive(enemy_unit) then
+		local event_data = FrameTable.alloc_table()
+		event_data.target_name = ScriptUnit.extension(player_unit, "dialogue_system").context.player_profile
+		local dialogue_extension = ScriptUnit.extension(enemy_unit, "dialogue_system")
+		local switch_group = dialogue_extension.wwise_voice_switch_group
+		local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(blackboard.world, enemy_unit, dialogue_extension.voice_node)
+
+		if switch_group then
+			local switch_value = dialogue_extension.wwise_voice_switch_value
+
+			WwiseWorld.set_switch(wwise_world, switch_group, switch_value, wwise_source)
+		end
+
+		if not owner.bot_player then
+			local breed = blackboard.breed
+			local network_manager = Managers.state.network
+			local sound_event = breed.backstab_player_sound_event
+			local player_data = Managers.player:owner(player_unit)
+			local unit_id = NetworkUnit.game_object_id(enemy_unit)
+			local general_event = breed.attack_general_sound_event
+
+			if player_data.local_player and sound_event then
+				local audio_system_extension = Managers.state.entity:system("audio_system")
+
+				audio_system_extension._play_event_with_source(audio_system_extension, wwise_world, sound_event, wwise_source)
+			elseif sound_event then
+				local sound_event_id = NetworkLookup.sound_events[sound_event]
+
+				RPC.rpc_server_audio_unit_event(owner.peer_id, sound_event_id, unit_id, 0)
+			end
 		end
 	end
 

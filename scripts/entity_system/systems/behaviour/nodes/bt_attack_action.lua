@@ -59,8 +59,20 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local unit_id = network_manager.unit_game_object_id(network_manager, unit)
 
-	if not blackboard.breed.uses_attack_sfx_callback then
-		self.trigger_attack_sound(self, action, unit, target_unit, blackboard, target_unit_status_extension)
+	if blackboard.attack_token and target_unit_status_extension then
+		local attack_intensity = (blackboard.moving_attack and action.moving_attack_intensity) or action.attack_intensity or 0.75
+
+		target_unit_status_extension.add_attack_intensity(target_unit_status_extension, attack_intensity * (0.75 + 0.5 * math.random()))
+
+		local is_behind_player = AiUtils.unit_is_behind_player(unit, target_unit)
+		local breed = blackboard.breed
+		local should_backstab = breed.use_backstab_vo and blackboard.total_slots_count < 5 and is_behind_player
+
+		if should_backstab then
+			DialogueSystem:TriggerBackstab(target_unit, unit, blackboard)
+
+			blackboard.backstab_attack_trigger = true
+		end
 	end
 
 	blackboard.target_unit_status_extension = target_unit_status_extension
@@ -93,19 +105,7 @@ BTAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
 end
 BTAttackAction.trigger_attack_sound = function (self, action, unit, target_unit, blackboard, target_unit_status_extension)
 	if blackboard.attack_token and target_unit_status_extension then
-		local attack_intensity = (blackboard.moving_attack and action.moving_attack_intensity) or action.attack_intensity or 0.75
-
-		target_unit_status_extension.add_attack_intensity(target_unit_status_extension, attack_intensity * (0.75 + 0.5 * math.random()))
-
-		local breed = blackboard.breed
-		local is_behind_player = AiUtils.unit_is_behind_player(unit, target_unit)
-		local should_backstab = breed.use_backstab_vo and blackboard.total_slots_count < 5 and is_behind_player
-
-		DialogueSystem:TriggerAttack(target_unit, unit, should_backstab, blackboard)
-
-		if should_backstab then
-			blackboard.backstab_attack_trigger = true
-		end
+		DialogueSystem:TriggerAttack(target_unit, unit, false, blackboard)
 	end
 
 	return 

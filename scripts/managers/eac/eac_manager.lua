@@ -6,7 +6,9 @@ end
 
 EacManager.init = function (self)
 	local is_steam_build = means_true(script_data.packaged_build)
-	self._suppress_message = means_true(script_data["eac-untrusted"]) or not is_steam_build
+	local suppress_messages = means_true(script_data["eac-untrusted"]) or not is_steam_build
+	self._suppress_popup = suppress_messages
+	self._suppress_panel = suppress_messages
 	self._file_related_violations = {
 		hash_catalogue_error = true,
 		hash_catalogue_file_not_found = true,
@@ -27,7 +29,7 @@ EacManager.update = function (self, dt, t)
 		Application.quit()
 	end
 
-	if self._suppress_message then
+	if self._suppress_popup then
 		return 
 	end
 
@@ -43,13 +45,13 @@ EacManager.update = function (self, dt, t)
 		local topic = Localize("eac_file_corruption_topic")
 		local quit_button_text = Localize("menu_quit")
 		self._popup_id = popup_manager.queue_popup(popup_manager, text, topic, "quit", quit_button_text)
-		self._suppress_message = true
+		self._suppress_popup = true
 	end
 
 	return 
 end
 EacManager.draw_panel = function (self, gui, dt)
-	if self._suppress_message then
+	if self._suppress_panel then
 		return 
 	end
 
@@ -80,10 +82,10 @@ end
 EacManager._draw_indicator = function (self, gui, dt, state_text, violation_text, cause_text, explanation_text, reason_text)
 	local margin = 8
 	local w, h = Application.resolution()
-	local font = "core/editor_slave/gui/arial"
-	local font_material = "core/editor_slave/gui/arial"
-	local font_size = 16
-	local row_margin = 2
+	local font = "materials/fonts/gw_arial_16"
+	local font_material = "gw_arial_16"
+	local font_size = 12
+	local row_margin = -4
 	local text_adjustment = -10
 	local border_thickness = 2
 	local border_color = Color(255, 192, 91, 36)

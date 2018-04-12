@@ -446,11 +446,9 @@ PerceptionUtils.horde_pick_closest_target_with_spillover = function (ai_unit, bl
 	local override_targets = blackboard.override_targets
 
 	for target_unit, end_of_override_t in pairs(override_targets) do
-		local target_unit_alive = unit_alive(target_unit)
-		local status_extension = target_unit_alive and ScriptUnit.extension(target_unit, "status_system")
-		local is_incapacitated = target_unit_alive and status_extension.is_disabled(status_extension)
+		local target_unit_valid = VALID_TARGETS_PLAYERS_AND_BOTS[target_unit]
 
-		if not target_unit_alive or end_of_override_t < t or is_incapacitated then
+		if not target_unit_valid or end_of_override_t < t or ScriptUnit.extension(target_unit, "status_system"):is_disabled() then
 			override_targets[target_unit] = nil
 		else
 			local score, distance_sq = _calculate_horde_pick_closest_target_with_spillover_score(target_unit, target_current, previous_attacker, ai_unit_position, breed, perception_previous_attacker_stickyness_value)

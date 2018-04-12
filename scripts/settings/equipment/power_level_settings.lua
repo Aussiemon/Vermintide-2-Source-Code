@@ -254,7 +254,7 @@ PowerLevelMaximums = {
 	jewellery = 300
 }
 PowerLevelFromLevelSettings = {
-	starting_power_level = 180,
+	starting_power_level = 185,
 	power_level_per_level = 10
 }
 

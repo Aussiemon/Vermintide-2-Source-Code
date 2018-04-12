@@ -106,7 +106,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.25,
+					external_multiplier = 0.5,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},

@@ -121,7 +121,7 @@ BTEnterHooks.grey_seer_call_stormfiend_enter = function (unit, blackboard, t)
 
 	local projected_wanted_pos = LocomotionUtils.pos_on_mesh(blackboard.nav_world, wanted_pos, 1, 1)
 	mount_blackboard.goal_destination = Vector3Box(projected_wanted_pos)
-	mount_blackboard.anim_cb_move = true
+	mount_blackboard.start_anim_done = true
 	local event_data = FrameTable.alloc_table()
 
 	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_calls_mount_battle", event_data)

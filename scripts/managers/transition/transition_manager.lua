@@ -70,7 +70,7 @@ TransitionManager._setup_world = function (self)
 
 	self._loading_icon_viewport = ScriptWorld.create_viewport(world, "top_ingame_view_viewport", "overlay", 1)
 	self._world = world
-	self._gui = World.create_screen_gui(self._world, "immediate")
+	self._gui = World.create_screen_gui(self._world, "material", "materials/fonts/gw_fonts", "immediate")
 
 	return 
 end

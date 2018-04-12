@@ -412,7 +412,7 @@ local action_data = {
 		damage_type = "cutting",
 		offset_up = 0,
 		attack_anim = "attack_cleave",
-		range = 3.5,
+		range = 3,
 		bot_threat_duration = 0.7,
 		action_weight = 10,
 		move_anim = "move_fwd",
@@ -490,7 +490,7 @@ local action_data = {
 		no_block_stagger = true,
 		damage_type = "cutting",
 		offset_up = 0,
-		range = 3.1,
+		range = 2.25,
 		bot_threat_duration = 0.7,
 		bot_threat_start_time_step = 1.6,
 		move_anim = "move_fwd",
@@ -559,7 +559,7 @@ local action_data = {
 		}
 	},
 	special_attack_sweep = {
-		range = 3.2,
+		range = 2.8,
 		height = 0.1,
 		width = 2,
 		cooldown = 1,

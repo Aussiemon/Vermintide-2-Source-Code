@@ -4455,7 +4455,7 @@ BuffTemplates = {
 				fatigue_type = "vomit_face",
 				remove_buff_func = "remove_plague_wave_in_face",
 				apply_buff_func = "apply_plague_wave_in_face",
-				duration = 3.5,
+				duration = 2,
 				time_between_dot_damages = 0.65,
 				refresh_durations = true,
 				damage_type = "plague_face",
@@ -4524,7 +4524,7 @@ BuffTemplates = {
 			{
 				name = "decrease_jump_speed",
 				multiplier = 0.7,
-				duration = 3.5,
+				duration = 2,
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
@@ -4535,7 +4535,7 @@ BuffTemplates = {
 			{
 				name = "decrease_dodge_speed",
 				multiplier = 0.7,
-				duration = 3.5,
+				duration = 2,
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {
@@ -4546,7 +4546,7 @@ BuffTemplates = {
 			{
 				name = "decrease_dodge_distance",
 				multiplier = 0.7,
-				duration = 3.5,
+				duration = 2,
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				path_to_movement_setting_to_modify = {

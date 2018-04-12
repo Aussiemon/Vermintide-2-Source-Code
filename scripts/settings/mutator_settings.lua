@@ -189,10 +189,19 @@ local mutator_settings = {
 		server_stop_function = function (context, data)
 			local vanilla_horde_compositions = data.vanilla_horde_compositions
 
-			for name, composition in pairs(vanilla_horde_compositions) do
-				mutator_dprint("Switching horde composition(%s) back to vanilla state", name)
+			for name, composition in pairs(HordeCompositions) do
+				local vanilla_composition = vanilla_horde_compositions[name]
+				local i = 1
 
-				HordeCompositions[name] = composition
+				while composition[i] ~= nil do
+					local variant = composition[i]
+					local breeds = variant.breeds
+					local num_breeds = #breeds
+					variant.breeds = vanilla_composition[i].breeds
+					i = i + 1
+				end
+
+				mutator_dprint("Switching back horde composition for %s", name)
 			end
 
 			return 
@@ -261,42 +270,106 @@ local mutator_settings = {
 		server_stop_function = function (context, data)
 			local vanilla_specials_settings = data.vanilla_specials_settings
 
-			for name, settings in pairs(vanilla_specials_settings) do
-				mutator_dprint("Switching specials setting(%s) back to vanilla state", name)
+			for name, settings in pairs(SpecialsSettings) do
+				local vanilla_settings = vanilla_specials_settings[name]
 
-				SpecialsSettings[name] = settings
+				if not settings.disabled then
+					mutator_dprint("Switching back special settings to vanilla state - %s", name)
+
+					if settings.max_specials then
+						settings.max_specials = vanilla_settings.max_specials
+
+						mutator_dprint("Max Specials - %s", settings.max_specials)
+					end
+
+					mutator_dprint("Methods")
+
+					for method_name, method_settings in pairs(settings.methods) do
+						local vanilla_method_settings = vanilla_settings.methods[method_name]
+
+						if method_name == "specials_by_time_window" then
+							method_settings.spawn_interval[1] = vanilla_method_settings.spawn_interval[1]
+							method_settings.spawn_interval[2] = vanilla_method_settings.spawn_interval[2]
+
+							mutator_dprint("({%s, %s}) - %s", method_settings.spawn_interval[1], method_settings.spawn_interval[2], method_name)
+						end
+
+						if method_name == "specials_by_slots" then
+							method_settings.spawn_cooldown[1] = vanilla_method_settings.spawn_cooldown[1]
+							method_settings.spawn_cooldown[2] = vanilla_method_settings.spawn_cooldown[2]
+
+							mutator_dprint("({%s, %s}) - %s", method_settings.spawn_cooldown[1], method_settings.spawn_cooldown[2], method_name)
+						end
+					end
+				end
 			end
 
 			return 
 		end
 	},
 	hordes_galore = {
-		description = "description_mutator_hordes_galore",
-		display_name = "display_name_mutator_hordes_galore",
+		relax_duration_modifier = 0.7,
 		horde_frequency_modifier = 0.9,
+		display_name = "display_name_mutator_hordes_galore",
+		description = "description_mutator_hordes_galore",
 		horde_startup_time_modifier = 0.9,
+		max_delay_modifier = 0.7,
 		icon = "mutator_icon_hordes_galore",
 		server_start_function = function (context, data)
+			local function modify_time_table(time_table, modifier, dprint_string)
+				local tt_1 = time_table[1]
+				local tt_2 = time_table[2]
+				time_table[1] = tt_1 - tt_1 * modifier
+				time_table[2] = tt_2 - tt_2 * modifier
+
+				mutator_dprint(dprint_string, tt_1, tt_2, time_table[1], time_table[2], modifier)
+
+				return 
+			end
+
 			local template = data.template
 			local horde_frequency_modifier = template.horde_frequency_modifier
 			local horde_startup_time_modifier = template.horde_startup_time_modifier
+			local relax_duration_modifier = template.relax_duration_modifier
+			local max_delay_modifier = template.max_delay_modifier
 			local vanilla_pacing_settings = {}
 
 			for name, pacing_settings in pairs(PacingSettings) do
 				vanilla_pacing_settings[name] = table.clone(pacing_settings)
 
 				if not pacing_settings.disabled then
-					local horde_frequency_1 = pacing_settings.horde_frequency[1]
-					local horde_frequency_2 = pacing_settings.horde_frequency[2]
-					pacing_settings.horde_frequency[1] = horde_frequency_1 - horde_frequency_1 * horde_frequency_modifier
-					pacing_settings.horde_frequency[2] = horde_frequency_2 - horde_frequency_2 * horde_frequency_modifier
-					local horde_startup_time_1 = pacing_settings.horde_startup_time[1]
-					local horde_startup_time_2 = pacing_settings.horde_startup_time[2]
-					pacing_settings.horde_startup_time[1] = horde_startup_time_1 - horde_startup_time_1 * horde_startup_time_modifier
-					pacing_settings.horde_startup_time[2] = horde_startup_time_2 - horde_startup_time_2 * horde_startup_time_modifier
+					mutator_dprint("Modifying pacing settings - %s", name)
+					modify_time_table(pacing_settings.horde_frequency, horde_frequency_modifier, "Changed horde frequency from ({%s, %s}) to ({%s, %s}), modifier: %s - original")
+					modify_time_table(pacing_settings.horde_startup_time, horde_startup_time_modifier, "Changed horde startup time from ({%s, %s}) to ({%s, %s}), modifier: %s - original")
+					modify_time_table(pacing_settings.relax_duration, relax_duration_modifier, "Changed relax duration from ({%s, %s}) to ({%s, %s}), modifier: %s - original")
 
-					mutator_dprint("Changed horde frequency for pacing setting (%s) from ({%s, %s}) to ({%s,%s}), (%s))", name, horde_frequency_1, horde_frequency_2, pacing_settings.horde_frequency[1], pacing_settings.horde_frequency[2], horde_frequency_modifier)
-					mutator_dprint("Changed horde startup time for pacing setting (%s) from ({%s, %s}) to ({%s,%s}), (%s))", name, horde_startup_time_1, horde_startup_time_2, pacing_settings.horde_startup_time[1], pacing_settings.horde_startup_time[2], horde_startup_time_modifier)
+					if pacing_settings.max_delay_until_next_horde then
+						modify_time_table(pacing_settings.max_delay_until_next_horde, max_delay_modifier, "Changed max_delay_until_next_horde from ({%s, %s}) to ({%s, %s}), modifier: %s - original")
+					end
+
+					local difficulty_overrides = pacing_settings.difficulty_overrides
+
+					if difficulty_overrides then
+						mutator_dprint("DIFFICULTY OVERRIDES")
+
+						for difficulty, overrides in pairs(difficulty_overrides) do
+							if overrides.horde_frequency then
+								modify_time_table(overrides.horde_frequency, horde_frequency_modifier, "Changed horde frequency from ({%s, %s}) to ({%s, %s}), modifier: %s - " .. difficulty)
+							end
+
+							if overrides.horde_startup_time then
+								modify_time_table(overrides.horde_startup_time, horde_startup_time_modifier, "Changed horde startup time from ({%s, %s}) to ({%s, %s}), modifier: %s - " .. difficulty)
+							end
+
+							if overrides.relax_duration then
+								modify_time_table(overrides.relax_duration, relax_duration_modifier, "Changed relax duration from ({%s, %s}) to ({%s, %s}), modifier: %s - " .. difficulty)
+							end
+
+							if overrides.max_delay_until_next_horde then
+								modify_time_table(overrides.max_delay_until_next_horde, max_delay_modifier, "Changed max_delay_until_next_horde from ({%s, %s}) to ({%s, %s}), modifier: %s - original")
+							end
+						end
+					end
 				end
 			end
 
@@ -305,12 +378,66 @@ local mutator_settings = {
 			return 
 		end,
 		server_stop_function = function (context, data)
-			local vanilla_pacing_settings = data.vanilla_pacing_settings
+			local function reset_time_table(time_table, vanilla_time_table, dprint_string)
+				local tt_1 = time_table[1]
+				local tt_2 = time_table[2]
+				local vanilla_tt_1 = vanilla_time_table[1]
+				local vanilla_tt_2 = vanilla_time_table[2]
+				time_table[1] = vanilla_tt_1
+				time_table[2] = vanilla_tt_2
+				local s = sprintf("Resetting time table from ({%s, %s}) to ({%s, %s}) - %s", tt_1, tt_2, vanilla_tt_1, vanilla_tt_2, dprint_string)
 
-			for name, horde_setting in pairs(vanilla_pacing_settings) do
-				mutator_dprint("Switching pace setting(%s) back to vanilla state", name)
+				mutator_dprint(s)
 
-				PacingSettings[name] = horde_setting
+				return 
+			end
+
+			for name, pacing_settings in pairs(PacingSettings) do
+				local vanilla_pacing_settings = data.vanilla_pacing_settings[name]
+
+				if not pacing_settings.disabled then
+					mutator_dprint("Switching back pace setting to vanilla state - %s", name)
+
+					local vanilla_horde_frequency = vanilla_pacing_settings.horde_frequency
+
+					reset_time_table(pacing_settings.horde_frequency, vanilla_horde_frequency, "horde_frequency - original")
+
+					local vanilla_horde_startup_time = vanilla_pacing_settings.horde_startup_time
+
+					reset_time_table(pacing_settings.horde_startup_time, vanilla_horde_startup_time, "horde_startup_time - original")
+
+					local vanilla_relax_duration = vanilla_pacing_settings.relax_duration
+
+					reset_time_table(pacing_settings.relax_duration, vanilla_relax_duration, "relax_duration - original")
+
+					if pacing_settings.max_delay_until_next_horde then
+						local vanilla_max_delay_until_next_horde = vanilla_pacing_settings.max_delay_until_next_horde
+
+						reset_time_table(pacing_settings.max_delay_until_next_horde, vanilla_max_delay_until_next_horde, "max_delay_until_next_horde - original")
+					end
+
+					if pacing_settings.difficulty_overrides then
+						for difficulty, overrides in pairs(pacing_settings.difficulty_overrides) do
+							local vanilla_difficulty_overrides = vanilla_pacing_settings.difficulty_overrides[difficulty]
+
+							if overrides.horde_frequency then
+								reset_time_table(overrides.horde_frequency, vanilla_difficulty_overrides.horde_frequency, "horde_frequency - " .. difficulty)
+							end
+
+							if overrides.horde_startup_time then
+								reset_time_table(overrides.horde_startup_time, vanilla_difficulty_overrides.horde_startup_time, "horde_startup_time - " .. difficulty)
+							end
+
+							if overrides.relax_duration then
+								reset_time_table(overrides.relax_duration, vanilla_difficulty_overrides.relax_duration, "relax_duration - " .. difficulty)
+							end
+
+							if overrides.max_delay_until_next_horde then
+								reset_time_table(overrides.max_delay_until_next_horde, vanilla_difficulty_overrides.max_delay_until_next_horde, "max_delay_until_next_horde - " .. difficulty)
+							end
+						end
+					end
+				end
 			end
 
 			return 

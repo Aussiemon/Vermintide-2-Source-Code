@@ -434,7 +434,9 @@ AiBreedSnippets.on_storm_vermin_champion_spawn = function (unit, blackboard)
 	blackboard.surrounding_players_last = -math.huge
 	blackboard.run_speed = breed.run_speed
 	blackboard.inventory_item_set = 1
-	blackboard.dual_wield_timer = Managers.time:time("game") + 1
+	blackboard.switching_weapons = 2
+	blackboard.dual_wield_timer = Managers.time:time("game") + 30
+	blackboard.dual_wield_mode = true
 
 	if breed.displace_players_data then
 		blackboard.displaced_units = {}
@@ -585,9 +587,15 @@ AiBreedSnippets.on_storm_vermin_champion_death = function (unit, blackboard)
 	conflict_director.freeze_intensity_decay(conflict_director, 1)
 	conflict_director.remove_unit_from_bosses(conflict_director, unit)
 
+	local t = Managers.time:time("game")
+
+	Managers.state.conflict.specials_pacing:lord_reset_spawning(t, 40)
+
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)
 	end
+
+	AiBreedSnippets.kill_lord_reward(2, Vector3(166.5, -46, 38))
 
 	return 
 end
@@ -1042,14 +1050,43 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_update = function (unit, blackboard, t
 
 	return 
 end
+AiBreedSnippets.kill_lord_reward = function (num_die, pos)
+	local pickup_name = "loot_die"
+
+	for i = 1, num_die, 1 do
+		local extension_init_data = {
+			pickup_system = {
+				has_physics = true,
+				spawn_type = "loot",
+				pickup_name = pickup_name
+			}
+		}
+		local pickup_settings = AllPickups[pickup_name]
+		local unit_name = pickup_settings.unit_name
+		local unit_template_name = pickup_settings.unit_template_name or "pickup_unit"
+		local angle = i / num_die * 2 * math.pi
+		local position = pos + Vector3(math.cos(angle), math.sin(angle), 0)
+		local rotation = Quaternion(Vector3.right(), math.random() * 2 * math.pi)
+
+		Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
+	end
+
+	return 
+end
 AiBreedSnippets.on_chaos_exalted_sorcerer_death = function (unit, blackboard)
 	local conflict_director = Managers.state.conflict
 
 	conflict_director.remove_unit_from_bosses(conflict_director, unit)
 
+	local t = Managers.time:time("game")
+
+	Managers.state.conflict.specials_pacing:lord_reset_spawning(t, 40)
+
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)
 	end
+
+	AiBreedSnippets.kill_lord_reward(2, Vector3(362.5, 51.6, -9.1))
 
 	return 
 end
@@ -1176,10 +1213,14 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 		blackboard.current_phase = 3
 	end
 
+	local conflict_director = Managers.state.conflict
+
 	if blackboard.defensive_mode_duration then
 		local remaining = blackboard.defensive_mode_duration - dt
 
-		if remaining <= 0 or (remaining <= 10 and Managers.state.conflict:spawned_during_event() <= 2) then
+		if remaining <= 0 or (remaining <= 10 and conflict_director.spawned_during_event(conflict_director) <= 2) then
+			blackboard.defensive_mode_duration = nil
+		elseif remaining <= 10 and conflict_director.count_units_by_breed(conflict_director, "chaos_marauder") < 2 then
 			blackboard.defensive_mode_duration = nil
 		else
 			blackboard.defensive_mode_duration = remaining
@@ -1187,7 +1228,6 @@ AiBreedSnippets.on_chaos_exalted_champion_update = function (unit, blackboard, t
 	end
 
 	if 0.05 < hp and blackboard.trickle_timer and blackboard.trickle_timer < t and not blackboard.defensive_mode_duration then
-		local conflict_director = Managers.state.conflict
 		local timer = hp * 15
 		timer = math.max(timer, 5)
 
@@ -1280,7 +1320,6 @@ end
 AiBreedSnippets.on_chaos_exalted_champion_death = function (unit, blackboard)
 	local conflict_director = Managers.state.conflict
 
-	conflict_director.freeze_intensity_decay(conflict_director, 1)
 	conflict_director.remove_unit_from_bosses(conflict_director, unit)
 
 	local wwise_world = Managers.world:wwise_world(blackboard.world)
@@ -1289,10 +1328,15 @@ AiBreedSnippets.on_chaos_exalted_champion_death = function (unit, blackboard)
 	WwiseWorld.set_global_parameter(wwise_world, "champion_crowd_voices", 1)
 
 	blackboard.override_spawn_allies_call_position = nil
+	local t = Managers.time:time("game")
+
+	Managers.state.conflict.specials_pacing:lord_reset_spawning(t, 40)
 
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)
 	end
+
+	AiBreedSnippets.kill_lord_reward(2, Vector3(231, -75, 45))
 
 	return 
 end
@@ -1301,6 +1345,10 @@ AiBreedSnippets.on_chaos_exalted_champion_norsca_death = function (unit, blackbo
 
 	conflict_director.freeze_intensity_decay(conflict_director, 1)
 	conflict_director.remove_unit_from_bosses(conflict_director, unit)
+
+	local t = Managers.time:time("game")
+
+	Managers.state.conflict.specials_pacing:lord_reset_spawning(t, 40)
 
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)
@@ -1311,7 +1359,6 @@ end
 AiBreedSnippets.on_chaos_exalted_champion_despawn = function (unit, blackboard)
 	local conflict_director = Managers.state.conflict
 
-	conflict_director.freeze_intensity_decay(conflict_director, 1)
 	conflict_director.remove_unit_from_bosses(conflict_director, unit)
 
 	if blackboard.is_angry then
@@ -1635,9 +1682,15 @@ AiBreedSnippets.on_grey_seer_death = function (unit, blackboard, t)
 
 	conflict_director.remove_unit_from_bosses(conflict_director, unit)
 
+	local t = Managers.time:time("game")
+
+	Managers.state.conflict.specials_pacing:lord_reset_spawning(t, 40)
+
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)
 	end
+
+	AiBreedSnippets.kill_lord_reward(3, Vector3(-308, -364, -126))
 
 	return 
 end

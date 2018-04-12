@@ -762,14 +762,14 @@ local action_data = {
 		find_spawn_points = false,
 		animation = "idle_guard",
 		difficulty_spawn = {
-			harder = "sorcerer_boss_event_defensive_harder",
-			normal = "sorcerer_boss_event_defensive_normal",
-			hard = "sorcerer_boss_event_defensive_hard",
-			survival_hard = "sorcerer_boss_event_defensive_hard",
-			survival_harder = "sorcerer_boss_event_defensive_harder",
-			hardest = "sorcerer_boss_event_defensive_hardest",
-			survival_hardest = "sorcerer_boss_event_defensive_hardest",
-			easy = "sorcerer_boss_event_defensive_easy"
+			harder = "sorcerer_extra_spawn_harder",
+			normal = "sorcerer_extra_spawn_normal",
+			hard = "sorcerer_extra_spawn_hard",
+			survival_hard = "sorcerer_extra_spawn_hard",
+			survival_harder = "sorcerer_extra_spawn_harder",
+			hardest = "sorcerer_extra_spawn_hardest",
+			survival_hardest = "sorcerer_extra_spawn_hardest",
+			easy = "sorcerer_extra_spawn_normal"
 		}
 	},
 	stagger = {

@@ -1986,7 +1986,9 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 		max_targets_attack = owner_buff_extension.apply_buffs_to_value(owner_buff_extension, max_targets_attack, StatBuffIndex.PENETRATING_SHOT_PROC)
 		max_targets_impact = owner_buff_extension.apply_buffs_to_value(owner_buff_extension, max_targets_impact, StatBuffIndex.PENETRATING_SHOT_PROC)
 
-		owner_buff_extension.trigger_procs(owner_buff_extension, "on_ranged_hit")
+		if not override_damage_profile or not override_damage_profile.no_procs then
+			owner_buff_extension.trigger_procs(owner_buff_extension, "on_ranged_hit")
+		end
 	end
 
 	local has_ranged_boost, boost_curve_multiplier = nil

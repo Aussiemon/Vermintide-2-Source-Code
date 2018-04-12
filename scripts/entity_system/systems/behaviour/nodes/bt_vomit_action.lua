@@ -183,23 +183,18 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 			if blackboard.check_puke_time < t then
 				self.player_vomit_hit_check(self, unit, blackboard)
 			end
-		elseif t < blackboard.rotation_time and not target_unit_status_extension.get_is_dodging(target_unit_status_extension) and not target_unit_status_extension.is_invisible(target_unit_status_extension) then
-			local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
-			local locomotion = blackboard.locomotion_extension
+		elseif t < blackboard.rotation_time and not target_unit_status_extension.get_is_dodging(target_unit_status_extension) and not target_unit_status_extension.is_invisible(target_unit_status_extension) and blackboard.update_puke_pos_at_t < t then
+			local puke_position, puke_distance_sq, puke_direction = self._get_vomit_position(self, unit, blackboard)
 
-			locomotion.set_wanted_rotation(locomotion, rotation)
-
-			if blackboard.update_puke_pos_at_t < t then
-				local puke_position, puke_distance_sq, puke_direction = self._get_vomit_position(self, unit, blackboard)
-
-				if puke_position and puke_direction then
-					blackboard.puke_position:store(puke_position)
-					blackboard.puke_direction:store(puke_direction)
-				end
-
-				blackboard.update_puke_pos_at_t = t + 0.2
+			if puke_position and puke_direction then
+				blackboard.puke_position:store(puke_position)
+				blackboard.puke_direction:store(puke_direction)
 			end
-		else
+
+			blackboard.update_puke_pos_at_t = t + 0.2
+		end
+
+		if blackboard.puke_direction then
 			local puke_direction_box = blackboard.puke_direction
 			local puke_direction_flat = Vector3(puke_direction_box.x, puke_direction_box.y, 0)
 			local rotation = Quaternion.look(puke_direction_flat)

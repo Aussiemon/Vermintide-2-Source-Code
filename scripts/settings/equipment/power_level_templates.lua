@@ -239,7 +239,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			1.5,
 			1,
 			1
 		},
@@ -259,7 +259,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1,
+			1.5,
 			1,
 			1
 		},
@@ -281,8 +281,9 @@ PowerLevelTemplates = {
 	},
 	targets_linesman_L = {
 		{
-			boost_curve_type = "linesman_curve",
 			boost_curve_coefficient_headshot = 1,
+			boost_curve_type = "linesman_curve",
+			boost_curve_coefficient = 2,
 			attack_template = "light_slashing_linesman_hs",
 			power_distribution = {
 				attack = 0.135,
@@ -303,7 +304,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			1.5,
 			1,
 			1
 		},
@@ -330,6 +331,22 @@ PowerLevelTemplates = {
 		impact = {
 			1,
 			0.3,
+			0.5,
+			1,
+			1
+		}
+	},
+	armor_modifier_linesman_fencer_dual = {
+		attack = {
+			1,
+			0.25,
+			1,
+			1,
+			1
+		},
+		impact = {
+			1,
+			0.25,
 			0.5,
 			1,
 			1
@@ -399,22 +416,6 @@ PowerLevelTemplates = {
 			1
 		}
 	},
-	armor_modifier_linesman_fencer_dual = {
-		attack = {
-			1,
-			0.25,
-			1,
-			1,
-			1
-		},
-		impact = {
-			1,
-			0.25,
-			0.5,
-			1,
-			1
-		}
-	},
 	default_target_linesman_fencer_L = {
 		boost_curve_type = "linesman_curve",
 		attack_template = "light_slashing_linesman_hs",
@@ -438,7 +439,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			1.5,
 			1,
 			0.75
 		},
@@ -458,7 +459,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0,
-			1,
+			1.5,
 			1,
 			1
 		},
@@ -481,8 +482,9 @@ PowerLevelTemplates = {
 	},
 	targets_linesman_M = {
 		{
-			boost_curve_type = "linesman_curve",
 			boost_curve_coefficient_headshot = 1,
+			boost_curve_type = "linesman_curve",
+			boost_curve_coefficient = 2,
 			attack_template = "slashing_linesman",
 			power_distribution = {
 				attack = 0.225,
@@ -595,7 +597,7 @@ PowerLevelTemplates = {
 		attack_armor_power_modifer = {
 			1,
 			0.5,
-			1,
+			1.5,
 			1,
 			0.75
 		},
@@ -615,7 +617,7 @@ PowerLevelTemplates = {
 		attack = {
 			1,
 			0.3,
-			1,
+			2,
 			1,
 			1
 		},
@@ -637,6 +639,43 @@ PowerLevelTemplates = {
 		}
 	},
 	targets_linesman_H = {
+		{
+			boost_curve_coefficient_headshot = 1,
+			boost_curve_type = "linesman_curve",
+			boost_curve_coefficient = 2,
+			attack_template = "heavy_slashing_linesman",
+			power_distribution = {
+				attack = 0.45,
+				impact = 0.275
+			}
+		},
+		{
+			boost_curve_type = "linesman_curve",
+			boost_curve_coefficient_headshot = 1,
+			attack_template = "heavy_slashing_linesman",
+			power_distribution = {
+				attack = 0.25,
+				impact = 0.15
+			}
+		},
+		{
+			boost_curve_type = "linesman_curve",
+			attack_template = "slashing_linesman",
+			power_distribution = {
+				attack = 0.15,
+				impact = 0.1
+			}
+		},
+		{
+			boost_curve_type = "linesman_curve",
+			attack_template = "slashing_linesman",
+			power_distribution = {
+				attack = 0.125,
+				impact = 0.075
+			}
+		}
+	},
+	targets_linesman_polearm_H = {
 		{
 			boost_curve_type = "linesman_curve",
 			boost_curve_coefficient_headshot = 1,
@@ -852,9 +891,11 @@ PowerLevelTemplates = {
 			0.5,
 			1.5,
 			1,
-			1
+			1,
+			0.5
 		},
 		impact_armor_power_modifer = {
+			1,
 			1,
 			1,
 			1,
@@ -872,14 +913,16 @@ PowerLevelTemplates = {
 			0,
 			1.5,
 			1,
-			0.75
+			0.75,
+			0
 		},
 		impact = {
 			0.9,
 			0.5,
 			1,
 			1,
-			0.75
+			0.75,
+			0.25
 		}
 	},
 	default_target_axe_linesman_H = {
@@ -897,14 +940,14 @@ PowerLevelTemplates = {
 			boost_curve_type = "linesman_curve",
 			attack_template = "heavy_slashing_linesman",
 			power_distribution = {
-				attack = 0.35,
-				impact = 0.25
+				attack = 0.45,
+				impact = 0.3
 			},
 			armor_modifier = {
 				attack = {
 					0.9,
 					0.5,
-					1.5,
+					2,
 					1,
 					0.75
 				},
@@ -1203,6 +1246,17 @@ PowerLevelTemplates = {
 	},
 	default_target_stab_smiter_L = {
 		boost_curve_coefficient_headshot = 2,
+		boost_curve_type = "smiter_curve",
+		boost_curve_coefficient = 0.75,
+		attack_template = "stab_smiter",
+		power_distribution = {
+			attack = 0.2,
+			impact = 0.1
+		}
+	},
+	default_target_burning_stab_smiter_L = {
+		boost_curve_coefficient_headshot = 2,
+		dot_template_name = "burning_1W_dot",
 		boost_curve_type = "smiter_curve",
 		boost_curve_coefficient = 0.75,
 		attack_template = "stab_smiter",

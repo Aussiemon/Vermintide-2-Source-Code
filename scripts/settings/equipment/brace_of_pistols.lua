@@ -212,7 +212,7 @@ weapon_template.actions = {
 weapon_template.ammo_data = {
 	ammo_hand = "right",
 	ammo_immediately_available = true,
-	max_ammo = 20,
+	max_ammo = 25,
 	reload_time = 1.25,
 	single_clip = true
 }

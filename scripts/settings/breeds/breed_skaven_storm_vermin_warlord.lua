@@ -23,50 +23,48 @@ local WARLORD_ALLOWED_STAGGERS = {
 	true,
 	true,
 	true,
-	false,
+	true,
 	true
 }
 local breed_data = {
-	is_bot_aid_threat = true,
+	bot_hitbox_radius_approximation = 1,
 	walk_speed = 2.545454545454545,
-	unbreakable_shield = true,
+	is_bot_aid_threat = true,
+	angry_run_speed = 6,
+	poison_resistance = 100,
 	behavior = "storm_vermin_warlord",
 	smart_targeting_height_multiplier = 2.5,
-	aoe_radius = 0.6,
 	disable_crowd_dispersion = true,
 	target_selection = "pick_rat_ogre_target_with_weights",
-	animation_sync_rpc = "rpc_sync_anim_state_6",
 	no_effects_on_shield_block = true,
-	bot_hitbox_radius_approximation = 1,
-	death_reaction = "storm_vermin_champion",
+	aoe_radius = 0.6,
 	bots_should_flank = true,
-	death_sound_event = "Play_stormvermin_die_vce",
-	shield_slashing_block_sound = "weapon_stormvermin_champion_sword_block",
+	death_reaction = "storm_vermin_champion",
+	base_unit = "units/beings/enemies/skaven_stormvermin_champion/chr_skaven_stormvermin_warlord",
 	shield_stab_block_sound = "weapon_stormvermin_champion_sword_block",
-	shield_blunt_block_sound = "weapon_stormvermin_champion_sword_block",
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	shield_blunt_block_sound = "weapon_stormvermin_champion_sword_block",
+	threat_value = 32,
 	bot_opportunity_target_melee_range = 7,
 	wield_inventory_on_spawn = true,
 	default_inventory_template = "warlord_dual_setups",
 	stagger_resistance = 1,
 	dialogue_source_name = "skaven_storm_vermin_warlord",
-	threat_value = 32,
+	awards_positive_reinforcement_message = true,
 	boss_staggers = false,
 	primary_armor_category = 6,
-	awards_positive_reinforcement_message = true,
-	radius = 1,
 	server_controlled_health_bar = true,
+	radius = 1,
 	boss = true,
-	stagger_threshold_explosion = 80,
 	bone_lod_level = 1,
 	smart_object_template = "special",
+	animation_sync_rpc = "rpc_sync_anim_state_6",
 	race = "skaven",
 	disable_second_hit_ragdoll = true,
 	proximity_system_check = true,
-	poison_resistance = 100,
+	unbreakable_shield = true,
 	armor_category = 2,
-	stagger_threshold_medium = 2,
-	angry_run_speed = 6,
+	death_sound_event = "Play_stormvermin_die_vce",
 	smart_targeting_width = 0.2,
 	perception_continuous = "perception_continuous_rat_ogre",
 	initial_is_passive = false,
@@ -74,10 +72,8 @@ local breed_data = {
 	has_inventory = true,
 	run_speed = 6.109090909090908,
 	exchange_order = 1,
-	stagger_threshold_heavy = 3,
 	shield_stagger_mod = 1,
 	combat_music_state = "champion_skaven_stormvermin_warlord",
-	stagger_threshold_light = 0.75,
 	hit_reaction = "ai_default",
 	passive_in_patrol = false,
 	can_dodge = true,
@@ -93,7 +89,7 @@ local breed_data = {
 	weapon_reach = 2,
 	far_off_despawn_immunity = true,
 	override_mover_move_distance = 1.5,
-	base_unit = "units/beings/enemies/skaven_stormvermin_champion/chr_skaven_stormvermin_warlord",
+	shield_slashing_block_sound = "weapon_stormvermin_champion_sword_block",
 	aoe_height = 1.7,
 	displace_players_data = pushed_data,
 	detection_radius = math.huge,
@@ -412,6 +408,10 @@ local action_data = {
 		action_weight = 1,
 		considerations = UtilityConsiderations.storm_vermin_champion_special_attack
 	},
+	special_attack_champion_defensive = {
+		action_weight = 2,
+		considerations = UtilityConsiderations.storm_vermin_champion_special_attack_defensive
+	},
 	special_attack_cleave = {
 		damage_type = "cutting",
 		offset_forward = 0,
@@ -532,70 +532,23 @@ local action_data = {
 		}
 	},
 	dual_attack_cleave = {
+		damage_type = "cutting",
 		offset_forward = 0.5,
 		height = 3,
-		hit_react_type = "medium",
-		rotation_time = 1,
-		fatigue_type = "blocked_sv_cleave",
+		fatigue_type = "blocked_sv_sweep",
 		player_push_speed = 10,
-		increment_stat_on_attack_dodged = "dodged_storm_vermin_champion",
-		damage_type = "cutting",
+		rotation_time = 1,
+		hit_react_type = "medium",
 		offset_up = 0,
 		attack_anim = "attack_pounce",
 		range = 3.2,
 		bot_threat_duration = 1,
 		action_weight = 1,
+		increment_stat_on_attack_dodged = "dodged_storm_vermin_champion",
 		player_push_speed_blocked = 8,
-		width = 2.5,
+		width = 2.25,
 		throw_dialogue_system_event_on_dodged_attack = true,
 		considerations = UtilityConsiderations.storm_vermin_champion_special_attack,
-		blocked_damage = {
-			0,
-			0,
-			0
-		},
-		blocked_difficulty_damage = {
-			easy = {
-				0,
-				0,
-				0
-			},
-			normal = {
-				0,
-				0,
-				0
-			},
-			hard = {
-				2,
-				2,
-				2
-			},
-			survival_hard = {
-				2,
-				2,
-				2
-			},
-			harder = {
-				5,
-				5,
-				5
-			},
-			survival_harder = {
-				5,
-				5,
-				5
-			},
-			hardest = {
-				10,
-				10,
-				10
-			},
-			survival_hardest = {
-				10,
-				10,
-				10
-			}
-		},
 		damage = {
 			30,
 			25,
@@ -656,7 +609,7 @@ local action_data = {
 		height = 4,
 		offset_forward = -4,
 		hit_react_type = "heavy",
-		radius = 4.5,
+		radius = 4.25,
 		collision_type = "cylinder",
 		rotation_time = 0,
 		fatigue_type = "blocked_slam",
@@ -787,7 +740,7 @@ local action_data = {
 		height = 4,
 		offset_forward = -4,
 		hit_react_type = "heavy",
-		radius = 6,
+		radius = 4.25,
 		collision_type = "cylinder",
 		rotation_time = 0,
 		fatigue_type = "blocked_slam",
@@ -1207,13 +1160,13 @@ local action_data = {
 		animation_driven = true,
 		height = 2,
 		fatigue_type = "blocked_attack",
-		overlap_start_time = 0.7333333333333333,
-		overlap_end_time = 1.3666666666666667,
+		overlap_start_time = 0.5641025641025641,
+		overlap_end_time = 1.0512820512820513,
 		rotation_time = 1.2,
 		hit_react_type = "medium",
 		offset_forward = 0.8,
 		mode = "continuous_overlap",
-		player_push_speed = 12,
+		player_push_speed = 16,
 		damage_type = "cutting",
 		offset_up = 0,
 		range = 2,
@@ -1228,7 +1181,7 @@ local action_data = {
 			},
 			{
 				attack_anim = "attack_run_2",
-				at = 0.16666666666666666
+				at = 0.1282051282051282
 			}
 		},
 		damage = {
@@ -1676,19 +1629,19 @@ local action_data = {
 			},
 			{
 				fwd = {
-					"stagger_bwd_block"
+					"stagger_fwd_exp"
 				},
 				bwd = {
-					"stagger_bwd_block"
+					"stagger_bwd_exp"
 				},
 				left = {
-					"stagger_left_block"
+					"stagger_left_exp"
 				},
 				right = {
-					"stagger_right_block"
+					"stagger_right_exp"
 				},
 				dwn = {
-					"stagger_bwd_block"
+					"stagger_bwd_exp"
 				}
 			},
 			{
@@ -2061,7 +2014,7 @@ local action_data = {
 			harder = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin",
-				"skaven_storm_vermin_with_shield"
+				"skaven_storm_vermin"
 			},
 			survival_harder = {
 				"skaven_storm_vermin",
@@ -2071,7 +2024,7 @@ local action_data = {
 				"skaven_storm_vermin",
 				"skaven_storm_vermin",
 				"skaven_storm_vermin",
-				"skaven_storm_vermin_with_shield"
+				"skaven_storm_vermin"
 			},
 			survival_hardest = {
 				"skaven_storm_vermin",
@@ -2112,11 +2065,21 @@ local action_data = {
 				dir = -1,
 				rad = math.pi / 2
 			}
+		},
+		ignore_staggers = {
+			true,
+			true,
+			true,
+			true,
+			true,
+			true
 		}
 	},
 	defensive_idle = {
-		force_idle_animation = true,
-		idle_animation = "defensive_idle"
+		action_weight = 1,
+		idle_animation = "defensive_idle",
+		force_idle_animation = false,
+		considerations = UtilityConsiderations.chaos_exalted_defensive_idle
 	},
 	intro_idle = {
 		action_weight = 0.5,
@@ -2137,7 +2100,7 @@ local action_data = {
 		unblockable = false,
 		player_push_speed_blocked = 6,
 		player_push_speed = 10,
-		fatigue_type = "complete",
+		fatigue_type = "blocked_sv_sweep",
 		action_weight = 4,
 		is_combo_attack = true,
 		damage_type = "cutting",
@@ -2150,13 +2113,13 @@ local action_data = {
 				next_combo_index = 2,
 				height = 2.5,
 				anim_driven = true,
-				rotation_speed = 20,
+				rotation_speed = 10,
 				offset_forward = 0,
 				rotation_time = 4,
 				offset_up = 0,
 				range = 2.5,
 				player_push_speed = 10,
-				hit_multiple_targets = true,
+				hit_multiple_targets = false,
 				player_push_speed_blocked = 8,
 				push_close_units_during_attack = true,
 				attack_time = 3,
@@ -2171,13 +2134,13 @@ local action_data = {
 				next_combo_index = 3,
 				height = 1.75,
 				anim_driven = true,
-				rotation_speed = 20,
+				rotation_speed = 10,
 				offset_forward = 0.5,
 				rotation_time = 3,
 				offset_up = 1,
 				range = 2.5,
 				player_push_speed = 10,
-				hit_multiple_targets = true,
+				hit_multiple_targets = false,
 				player_push_speed_blocked = 8,
 				push_close_units_during_attack = true,
 				attack_time = 3,
@@ -2198,7 +2161,7 @@ local action_data = {
 				range = 2.5,
 				player_push_speed = 10,
 				damage_done_time = 0.5333333333333333,
-				hit_multiple_targets = true,
+				hit_multiple_targets = false,
 				player_push_speed_blocked = 8,
 				push_close_units_during_attack = true,
 				attack_time = 3,

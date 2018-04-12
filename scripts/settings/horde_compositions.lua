@@ -345,7 +345,7 @@ HordeCompositions = {
 				"skaven_plague_monk",
 				{
 					1,
-					2
+					1
 				}
 			}
 		}
@@ -373,13 +373,8 @@ HordeCompositions = {
 			breeds = {
 				"skaven_clan_rat",
 				{
-					12,
-					14
-				},
-				"skaven_plague_monk",
-				{
-					2,
-					3
+					10,
+					12
 				}
 			}
 		}
@@ -391,13 +386,13 @@ HordeCompositions = {
 			breeds = {
 				"skaven_slave",
 				{
-					15,
-					17
+					12,
+					14
 				},
 				"skaven_clan_rat",
 				{
-					10,
-					14
+					8,
+					10
 				}
 			}
 		},
@@ -407,13 +402,8 @@ HordeCompositions = {
 			breeds = {
 				"skaven_clan_rat",
 				{
-					14,
-					16
-				},
-				"skaven_plague_monk",
-				{
-					3,
-					4
+					12,
+					14
 				}
 			}
 		}
@@ -1109,8 +1099,8 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					10,
-					12
+					8,
+					10
 				}
 			}
 		},
@@ -1125,8 +1115,8 @@ HordeCompositions = {
 				},
 				"chaos_marauder",
 				{
-					4,
-					5
+					3,
+					4
 				}
 			}
 		},
@@ -1155,8 +1145,8 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					12,
-					14
+					10,
+					12
 				}
 			}
 		},
@@ -1171,8 +1161,8 @@ HordeCompositions = {
 				},
 				"chaos_marauder",
 				{
-					5,
-					6
+					4,
+					5
 				}
 			}
 		},
@@ -1186,10 +1176,7 @@ HordeCompositions = {
 					7
 				},
 				"chaos_raider",
-				{
-					1,
-					2
-				}
+				1
 			}
 		},
 		{
@@ -1214,8 +1201,8 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					14,
-					16
+					12,
+					14
 				}
 			}
 		},
@@ -1230,8 +1217,8 @@ HordeCompositions = {
 				},
 				"chaos_marauder",
 				{
-					6,
-					8
+					5,
+					6
 				}
 			}
 		},
@@ -1254,14 +1241,11 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					8,
-					10
+					7,
+					8
 				},
 				"chaos_raider",
-				{
-					2,
-					3
-				}
+				2
 			}
 		},
 		{
@@ -1286,8 +1270,8 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					16,
-					20
+					14,
+					16
 				}
 			}
 		},
@@ -1297,13 +1281,13 @@ HordeCompositions = {
 			breeds = {
 				"chaos_fanatic",
 				{
-					6,
-					7
+					10,
+					12
 				},
 				"chaos_marauder",
 				{
-					8,
-					10
+					6,
+					9
 				}
 			}
 		},
@@ -1317,7 +1301,7 @@ HordeCompositions = {
 					8
 				},
 				"chaos_warrior",
-				2
+				1
 			}
 		},
 		{
@@ -1327,13 +1311,10 @@ HordeCompositions = {
 				"chaos_fanatic",
 				{
 					8,
-					10
+					9
 				},
 				"chaos_raider",
-				{
-					2,
-					3
-				}
+				2
 			}
 		},
 		{
@@ -1350,6 +1331,58 @@ HordeCompositions = {
 			}
 		},
 		start_time = 0
+	},
+	sorcerer_extra_spawn_normal = {
+		{
+			name = "extra_a",
+			weight = 6,
+			breeds = {
+				"chaos_fanatic",
+				{
+					2,
+					3
+				}
+			}
+		}
+	},
+	sorcerer_extra_spawn_hard = {
+		{
+			name = "extra_a",
+			weight = 6,
+			breeds = {
+				"chaos_fanatic",
+				{
+					3,
+					4
+				}
+			}
+		}
+	},
+	sorcerer_extra_spawn_harder = {
+		{
+			name = "extra_a",
+			weight = 6,
+			breeds = {
+				"chaos_fanatic",
+				{
+					5,
+					7
+				}
+			}
+		}
+	},
+	sorcerer_extra_spawn_hardest = {
+		{
+			name = "extra_a",
+			weight = 6,
+			breeds = {
+				"chaos_fanatic",
+				{
+					7,
+					9
+				}
+			}
+		}
 	},
 	event_courtyard_extra_spice = {
 		{

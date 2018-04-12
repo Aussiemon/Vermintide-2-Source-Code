@@ -35,7 +35,6 @@ BTGreySeerGroundCombatAction.enter = function (self, unit, blackboard, t)
 	final_phase_data.num_teleports = final_phase_data.num_teleports or 1
 	final_phase_data.spawn_allies_timer = final_phase_data.spawn_allies_timer or t + 3
 	final_phase_data.teleport_timer = final_phase_data.teleport_timer or t
-	final_phase_data.special_spawn_timer = final_phase_data.special_spawn_timer or t + action.special_spawn_cooldown
 
 	return 
 end
@@ -68,7 +67,6 @@ BTGreySeerGroundCombatAction.update_spells = function (self, unit, blackboard, t
 
 	self.update_warp_lightning_spell(self, unit, blackboard, t, position, target_unit_direction)
 	self.update_vermintide_spell(self, unit, blackboard, t, position, target_unit_direction)
-	self.update_teleport_spell(self, unit, blackboard, t, position)
 
 	if current_phase < 4 then
 		ready_to_summon = self.update_regular_spells(self, unit, blackboard, t)
@@ -107,16 +105,6 @@ BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboa
 		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_teleport_away", event_data)
 
 		return true
-	end
-
-	if special_spawn_timer < t then
-		local conflict_director = Managers.state.conflict
-		local specials = action.special_spawns
-		local special_breed = specials[math.random(1, #specials)]
-
-		conflict_director.spawn_one(conflict_director, Breeds[special_breed])
-
-		final_phase_data.special_spawn_timer = t + action.special_spawn_cooldown
 	end
 
 	local spawn_allies_timer = final_phase_data.spawn_allies_timer

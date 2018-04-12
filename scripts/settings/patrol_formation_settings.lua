@@ -126,7 +126,7 @@ PatrolFormationSettings.chaos_warrior_default = {
 	},
 	hardest = {
 		{
-			"chaos_warrior"
+			"chaos_raider"
 		},
 		{
 			"chaos_marauder_with_shield",
@@ -141,8 +141,8 @@ PatrolFormationSettings.chaos_warrior_default = {
 			"chaos_marauder_with_shield"
 		},
 		{
-			"chaos_warrior",
-			"chaos_warrior"
+			"chaos_raider",
+			"chaos_raider"
 		},
 		{
 			"chaos_warrior",
@@ -159,9 +159,6 @@ PatrolFormationSettings.chaos_warrior_default = {
 		{
 			"chaos_marauder_with_shield",
 			"chaos_marauder_with_shield"
-		},
-		{
-			"chaos_warrior"
 		}
 	}
 }

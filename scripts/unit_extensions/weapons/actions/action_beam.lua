@@ -224,7 +224,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 						else
 							self.consecutive_hits = self.consecutive_hits + 1
 
-							if self.consecutive_hits < 2 then
+							if self.consecutive_hits < 3 then
 								override_damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
 							end
 						end
@@ -308,7 +308,7 @@ ActionBeam.finish = function (self, reason)
 	end
 
 	return {
-		beam_consecutive_hits = self.consecutive_hits
+		beam_consecutive_hits = math.max(self.consecutive_hits - 1, 0)
 	}
 end
 ActionBeam.destroy = function (self)

@@ -174,7 +174,7 @@ weapon_template.actions = {
 		},
 		heavy_attack_left = {
 			damage_window_start = 0.18,
-			range_mod = 1.4,
+			range_mod = 1.45,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
@@ -243,7 +243,7 @@ weapon_template.actions = {
 		},
 		heavy_attack_right = {
 			damage_window_start = 0.18,
-			range_mod = 1.4,
+			range_mod = 1.45,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
@@ -336,7 +336,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.6,
+					external_multiplier = 0.8,
 					end_time = 0.6,
 					buff_name = "planted_decrease_movement"
 				}
@@ -403,7 +403,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.6,
+					external_multiplier = 0.8,
 					end_time = 0.6,
 					buff_name = "planted_decrease_movement"
 				}
@@ -471,7 +471,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.6,
+					external_multiplier = 0.8,
 					end_time = 0.6,
 					buff_name = "planted_decrease_movement"
 				}
