@@ -10,12 +10,6 @@ return function ()
 				"story_trigger"
 			},
 			{
-				"query_context",
-				"is_forced",
-				OP.EQ,
-				0
-			},
-			{
 				"user_context",
 				"enemies_close",
 				OP.EQ,
@@ -780,7 +774,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -811,7 +805,7 @@ return function ()
 				"last_saw_ammo",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -860,7 +854,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -873,7 +867,7 @@ return function ()
 				"last_saw_health",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -922,7 +916,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -935,7 +929,7 @@ return function ()
 				"last_saw_health",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -984,7 +978,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -997,7 +991,7 @@ return function ()
 				"last_saw_potion",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -1046,7 +1040,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -1059,7 +1053,7 @@ return function ()
 				"last_saw_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -1557,11 +1551,17 @@ return function ()
 				"empire_soldier"
 			},
 			{
+				"global_context",
+				"level_time ",
+				OP.GT,
+				600
+			},
+			{
 				"faction_memory",
 				"time_since_casual_quotes",
 				OP.TIMEDIFF,
 				OP.GT,
-				180
+				600
 			}
 		},
 		on_done = {
@@ -1605,7 +1605,7 @@ return function ()
 				"time_since_last_special_kill_melee",
 				OP.TIMEDIFF,
 				OP.GT,
-				220
+				600
 			}
 		},
 		on_done = {
@@ -1649,7 +1649,7 @@ return function ()
 				"time_since_last_special_kill_ranged",
 				OP.TIMEDIFF,
 				OP.GT,
-				220
+				600
 			}
 		},
 		on_done = {
@@ -1693,7 +1693,7 @@ return function ()
 				"time_since_last_frenzy_witch_hunter",
 				OP.TIMEDIFF,
 				OP.GT,
-				90
+				600
 			}
 		},
 		on_done = {
@@ -1737,7 +1737,7 @@ return function ()
 				"time_since_last_frenzy_bright_wizard",
 				OP.TIMEDIFF,
 				OP.GT,
-				90
+				600
 			}
 		},
 		on_done = {
@@ -1781,7 +1781,7 @@ return function ()
 				"time_since_last_frenzy_wood_elf",
 				OP.TIMEDIFF,
 				OP.GT,
-				90
+				600
 			}
 		},
 		on_done = {
@@ -1825,7 +1825,7 @@ return function ()
 				"time_since_last_frenzy_dwarf_ranger",
 				OP.TIMEDIFF,
 				OP.GT,
-				90
+				600
 			}
 		},
 		on_done = {
@@ -1875,7 +1875,7 @@ return function ()
 				"time_since_last_armor_hit",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				600
 			}
 		},
 		on_done = {
@@ -1925,7 +1925,7 @@ return function ()
 				"time_since_last_armor_hit",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				600
 			}
 		},
 		on_done = {
@@ -1975,7 +1975,7 @@ return function ()
 				"time_since_last_armor_hit",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				600
 			}
 		},
 		on_done = {
@@ -2025,7 +2025,7 @@ return function ()
 				"time_since_last_armor_hit",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				600
 			}
 		},
 		on_done = {
@@ -5528,7 +5528,7 @@ return function ()
 				"query_context",
 				"num_units",
 				OP.GT,
-				5
+				10
 			},
 			{
 				"global_context",
@@ -5559,7 +5559,7 @@ return function ()
 				"time_since_casual_quotes",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				600
 			}
 		},
 		on_done = {
@@ -10470,14 +10470,13 @@ return function ()
 			randomize_indexes = {}
 		},
 		pes_gameplay_casual_quotes = {
-			sound_events_n = 30,
+			sound_events_n = 29,
 			randomize_indexes_n = 0,
-			face_animations_n = 30,
+			face_animations_n = 29,
 			database = "empire_soldier_honduras",
 			category = "casual_talk",
-			dialogue_animations_n = 30,
+			dialogue_animations_n = 29,
 			sound_events = {
-				"pes_gameplay_casual_quotes_03",
 				"pes_gameplay_casual_quotes_11",
 				"pes_gameplay_casual_quotes_12",
 				"pes_gameplay_casual_quotes_13",
@@ -10511,7 +10510,6 @@ return function ()
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk",
 				"dialogue_shout",
 				"dialogue_talk",
 				"dialogue_talk",
@@ -10543,7 +10541,6 @@ return function ()
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
-				"face_neutral",
 				"face_contempt",
 				"face_concerned",
 				"face_concerned",
@@ -10573,7 +10570,6 @@ return function ()
 				"face_concerned"
 			},
 			localization_strings = {
-				"pes_gameplay_casual_quotes_03",
 				"pes_gameplay_casual_quotes_11",
 				"pes_gameplay_casual_quotes_12",
 				"pes_gameplay_casual_quotes_13",

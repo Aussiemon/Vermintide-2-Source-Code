@@ -2202,82 +2202,7 @@ return function ()
 				"time_since_casual_quotes",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMEDIFF,
-				OP.GT,
-				30
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_casual_quotes",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pbw_gameplay_casual_quotes_city_01",
-		response = "pbw_gameplay_casual_quotes_city_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"story_trigger"
-			},
-			{
-				"query_context",
-				"is_forced",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"enemies_distant",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"friends_close",
-				OP.GT,
-				1
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"magnus"
-			},
-			{
-				"faction_memory",
-				"time_since_casual_quotes",
-				OP.TIMEDIFF,
-				OP.GT,
-				120
+				600
 			},
 			{
 				"faction_memory",
@@ -3001,7 +2926,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -3032,7 +2957,7 @@ return function ()
 				"last_saw_ammo",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -3081,7 +3006,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -3094,7 +3019,7 @@ return function ()
 				"last_saw_health",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -3143,7 +3068,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -3156,7 +3081,7 @@ return function ()
 				"last_saw_health",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -3205,7 +3130,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -3218,7 +3143,7 @@ return function ()
 				"last_saw_potion",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -3267,7 +3192,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -3280,7 +3205,7 @@ return function ()
 				"last_saw_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -3732,7 +3657,7 @@ return function ()
 				"time_since_casual_quotes",
 				OP.TIMEDIFF,
 				OP.GT,
-				180
+				600
 			}
 		},
 		on_done = {
@@ -3776,7 +3701,7 @@ return function ()
 				"time_since_last_special_kill_melee",
 				OP.TIMEDIFF,
 				OP.GT,
-				220
+				600
 			}
 		},
 		on_done = {
@@ -3820,7 +3745,7 @@ return function ()
 				"time_since_last_special_kill_ranged",
 				OP.TIMEDIFF,
 				OP.GT,
-				220
+				600
 			}
 		},
 		on_done = {
@@ -3864,7 +3789,7 @@ return function ()
 				"time_since_last_frenzy_empire_soldier",
 				OP.TIMEDIFF,
 				OP.GT,
-				90
+				600
 			}
 		},
 		on_done = {
@@ -3908,7 +3833,7 @@ return function ()
 				"time_since_last_frenzy_witch_hunter",
 				OP.TIMEDIFF,
 				OP.GT,
-				90
+				600
 			}
 		},
 		on_done = {
@@ -3952,7 +3877,7 @@ return function ()
 				"time_since_last_frenzy_wood_elf",
 				OP.TIMEDIFF,
 				OP.GT,
-				90
+				600
 			}
 		},
 		on_done = {
@@ -3996,7 +3921,7 @@ return function ()
 				"time_since_last_frenzy_dwarf_ranger",
 				OP.TIMEDIFF,
 				OP.GT,
-				90
+				600
 			}
 		},
 		on_done = {
@@ -5422,7 +5347,7 @@ return function ()
 				"query_context",
 				"num_units",
 				OP.GT,
-				5
+				10
 			},
 			{
 				"global_context",
@@ -9426,16 +9351,46 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_gameplay_casual_quotes_city_01 = {
-			sound_events_n = 0,
-			face_animations_n = 0,
+		pbw_activate_ability_battle_wizard = {
+			sound_events_n = 6,
+			randomize_indexes_n = 0,
+			face_animations_n = 6,
 			database = "bright_wizard_honduras",
-			category = "casual_talk",
-			dialogue_animations_n = 0,
-			sound_events = {},
-			dialogue_animations = {},
-			face_animations = {},
-			localization_strings = {}
+			category = "activate_ability",
+			dialogue_animations_n = 6,
+			sound_events = {
+				"pbw_activate_ability_battle_wizard_01",
+				"pbw_activate_ability_battle_wizard_02",
+				"pbw_activate_ability_battle_wizard_03",
+				"pbw_activate_ability_battle_wizard_04",
+				"pbw_activate_ability_battle_wizard_05",
+				"pbw_activate_ability_battle_wizard_06"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy"
+			},
+			localization_strings = {
+				"pbw_activate_ability_battle_wizard_01",
+				"pbw_activate_ability_battle_wizard_02",
+				"pbw_activate_ability_battle_wizard_03",
+				"pbw_activate_ability_battle_wizard_04",
+				"pbw_activate_ability_battle_wizard_05",
+				"pbw_activate_ability_battle_wizard_06"
+			},
+			randomize_indexes = {}
 		},
 		pbw_objective_correct_path_alley = {
 			sound_events_n = 4,
@@ -10352,30 +10307,20 @@ return function ()
 			randomize_indexes = {}
 		},
 		pbw_gameplay_hearing_a_skaven_ratling_gun = {
-			sound_events_n = 10,
+			sound_events_n = 5,
 			randomize_indexes_n = 0,
-			face_animations_n = 10,
+			face_animations_n = 5,
 			database = "bright_wizard_honduras",
 			category = "enemy_alerts",
-			dialogue_animations_n = 10,
+			dialogue_animations_n = 5,
 			sound_events = {
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_08",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_09",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_10",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_11",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_12",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_13",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_14",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_15",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_16",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_17"
+				"pbw_gameplay_hearing_a_Skaven_ratling_gun_combat_04",
+				"pbw_gameplay_hearing_a_Skaven_ratling_gun_combat_05",
+				"pbw_gameplay_hearing_a_Skaven_ratling_gun_combat_06",
+				"pbw_gameplay_hearing_a_Skaven_ratling_gun_combat_07",
+				"pbw_gameplay_hearing_a_Skaven_ratling_gun_combat_08"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
@@ -10387,24 +10332,14 @@ return function ()
 				"face_concerned",
 				"face_concerned",
 				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
 				"face_concerned"
 			},
 			localization_strings = {
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_08",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_09",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_10",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_11",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_12",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_13",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_14",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_15",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_16",
-				"pbw_gameplay_hearing_a_Skaven_ratling_gun_17"
+				"pbw_gameplay_hearing_a_Skaven_ratling_gun_combat_04",
+				"pbw_gameplay_hearing_a_Skaven_ratling_gun_combat_05",
+				"pbw_gameplay_hearing_a_Skaven_ratling_gun_combat_06",
+				"pbw_gameplay_hearing_a_Skaven_ratling_gun_combat_07",
+				"pbw_gameplay_hearing_a_Skaven_ratling_gun_combat_08"
 			},
 			randomize_indexes = {}
 		},
@@ -12091,75 +12026,22 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_gameplay_low_on_health = {
-			sound_events_n = 8,
+		pbw_gameplay_player_pounced = {
+			sound_events_n = 6,
 			randomize_indexes_n = 0,
-			face_animations_n = 8,
+			face_animations_n = 6,
 			database = "bright_wizard_honduras",
-			category = "player_feedback",
-			dialogue_animations_n = 8,
+			category = "player_alerts",
+			dialogue_animations_n = 6,
 			sound_events = {
-				"pbw_gameplay_low_on_health_05",
-				"pbw_gameplay_low_on_health_09",
-				"pbw_gameplay_low_on_health_10",
-				"pbw_gameplay_low_on_health_11",
-				"pbw_gameplay_low_on_health_12",
-				"pbw_gameplay_low_on_health_13",
-				"pbw_gameplay_low_on_health_14",
-				"pbw_gameplay_low_on_health_15"
+				"pbw_gameplay_player_pounced_01",
+				"pbw_gameplay_player_pounced_02",
+				"pbw_gameplay_player_pounced_03",
+				"pbw_gameplay_player_pounced_04",
+				"pbw_gameplay_player_pounced_05",
+				"pbw_gameplay_player_pounced_06"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_exhausted",
-				"face_exhausted",
-				"face_exhausted",
-				"face_exhausted",
-				"face_exhausted",
-				"face_exhausted",
-				"face_exhausted",
-				"face_exhausted"
-			},
-			localization_strings = {
-				"pbw_gameplay_low_on_health_05",
-				"pbw_gameplay_low_on_health_09",
-				"pbw_gameplay_low_on_health_10",
-				"pbw_gameplay_low_on_health_11",
-				"pbw_gameplay_low_on_health_12",
-				"pbw_gameplay_low_on_health_13",
-				"pbw_gameplay_low_on_health_14",
-				"pbw_gameplay_low_on_health_15"
-			},
-			randomize_indexes = {}
-		},
-		pbw_gameplay_seeing_a_stormfiend = {
-			sound_events_n = 8,
-			randomize_indexes_n = 0,
-			face_animations_n = 8,
-			database = "bright_wizard_honduras",
-			category = "enemy_alerts_boss",
-			dialogue_animations_n = 8,
-			sound_events = {
-				"pbw_gameplay_seeing_a_stormfiend_01",
-				"pbw_gameplay_seeing_a_stormfiend_02",
-				"pbw_gameplay_seeing_a_stormfiend_03",
-				"pbw_gameplay_seeing_a_stormfiend_04",
-				"pbw_gameplay_seeing_a_stormfiend_05",
-				"pbw_gameplay_seeing_a_stormfiend_06",
-				"pbw_gameplay_seeing_a_stormfiend_07",
-				"pbw_gameplay_seeing_a_stormfiend_08"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
@@ -12168,73 +12050,61 @@ return function ()
 				"dialogue_shout"
 			},
 			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear",
+				"face_angry",
+				"face_angry",
+				"face_angry",
 				"face_fear",
 				"face_fear",
 				"face_fear"
 			},
 			localization_strings = {
-				"pbw_gameplay_seeing_a_stormfiend_01",
-				"pbw_gameplay_seeing_a_stormfiend_02",
-				"pbw_gameplay_seeing_a_stormfiend_03",
-				"pbw_gameplay_seeing_a_stormfiend_04",
-				"pbw_gameplay_seeing_a_stormfiend_05",
-				"pbw_gameplay_seeing_a_stormfiend_06",
-				"pbw_gameplay_seeing_a_stormfiend_07",
-				"pbw_gameplay_seeing_a_stormfiend_08"
+				"pbw_gameplay_player_pounced_01",
+				"pbw_gameplay_player_pounced_02",
+				"pbw_gameplay_player_pounced_03",
+				"pbw_gameplay_player_pounced_04",
+				"pbw_gameplay_player_pounced_05",
+				"pbw_gameplay_player_pounced_06"
 			},
 			randomize_indexes = {}
 		},
-		pbw_gameplay_armoured_enemy_witch_hunter = {
-			sound_events_n = 8,
+		pbw_gameplay_hit_by_goo = {
+			sound_events_n = 6,
 			randomize_indexes_n = 0,
-			face_animations_n = 8,
+			face_animations_n = 6,
 			database = "bright_wizard_honduras",
-			category = "player_feedback",
-			dialogue_animations_n = 8,
+			category = "player_alerts",
+			dialogue_animations_n = 6,
 			sound_events = {
-				"pbw_gameplay_armoured_enemy_witch_hunter_04",
-				"pbw_gameplay_armoured_enemy_witch_hunter_05",
-				"pbw_gameplay_armoured_enemy_witch_hunter_06",
-				"pbw_gameplay_armoured_enemy_witch_hunter_07",
-				"pbw_gameplay_armoured_enemy_witch_hunter_08",
-				"pbw_gameplay_armoured_enemy_witch_hunter_09",
-				"pbw_gameplay_armoured_enemy_witch_hunter_10",
-				"pbw_gameplay_armoured_enemy_witch_hunter_11"
+				"pbw_gameplay_hit_by_goo_01",
+				"pbw_gameplay_hit_by_goo_02",
+				"pbw_gameplay_hit_by_goo_03",
+				"pbw_gameplay_hit_by_goo_04",
+				"pbw_gameplay_hit_by_goo_05",
+				"pbw_gameplay_hit_by_goo_06"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				"face_surprise",
+				"face_surprise",
+				"face_surprise",
+				"face_surprise",
+				"face_surprise",
+				"face_surprise"
 			},
 			localization_strings = {
-				"pbw_gameplay_armoured_enemy_witch_hunter_04",
-				"pbw_gameplay_armoured_enemy_witch_hunter_05",
-				"pbw_gameplay_armoured_enemy_witch_hunter_06",
-				"pbw_gameplay_armoured_enemy_witch_hunter_07",
-				"pbw_gameplay_armoured_enemy_witch_hunter_08",
-				"pbw_gameplay_armoured_enemy_witch_hunter_09",
-				"pbw_gameplay_armoured_enemy_witch_hunter_10",
-				"pbw_gameplay_armoured_enemy_witch_hunter_11"
+				"pbw_gameplay_hit_by_goo_01",
+				"pbw_gameplay_hit_by_goo_02",
+				"pbw_gameplay_hit_by_goo_03",
+				"pbw_gameplay_hit_by_goo_04",
+				"pbw_gameplay_hit_by_goo_05",
+				"pbw_gameplay_hit_by_goo_06"
 			},
 			randomize_indexes = {}
 		},
@@ -12309,6 +12179,55 @@ return function ()
 				"pbw_objective_correct_path_bridge_18",
 				"pbw_objective_correct_path_bridge_19",
 				"pbw_objective_correct_path_bridge_20"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_seeing_a_stormfiend = {
+			sound_events_n = 8,
+			randomize_indexes_n = 0,
+			face_animations_n = 8,
+			database = "bright_wizard_honduras",
+			category = "enemy_alerts_boss",
+			dialogue_animations_n = 8,
+			sound_events = {
+				"pbw_gameplay_seeing_a_stormfiend_01",
+				"pbw_gameplay_seeing_a_stormfiend_02",
+				"pbw_gameplay_seeing_a_stormfiend_03",
+				"pbw_gameplay_seeing_a_stormfiend_04",
+				"pbw_gameplay_seeing_a_stormfiend_05",
+				"pbw_gameplay_seeing_a_stormfiend_06",
+				"pbw_gameplay_seeing_a_stormfiend_07",
+				"pbw_gameplay_seeing_a_stormfiend_08"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pbw_gameplay_seeing_a_stormfiend_01",
+				"pbw_gameplay_seeing_a_stormfiend_02",
+				"pbw_gameplay_seeing_a_stormfiend_03",
+				"pbw_gameplay_seeing_a_stormfiend_04",
+				"pbw_gameplay_seeing_a_stormfiend_05",
+				"pbw_gameplay_seeing_a_stormfiend_06",
+				"pbw_gameplay_seeing_a_stormfiend_07",
+				"pbw_gameplay_seeing_a_stormfiend_08"
 			},
 			randomize_indexes = {}
 		},
@@ -12391,55 +12310,6 @@ return function ()
 				"pbw_gameplay_seeing_a_chaos_wizard_plague_02",
 				"pbw_gameplay_seeing_a_chaos_wizard_plague_03",
 				"pbw_gameplay_seeing_a_chaos_wizard_plague_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_gameplay_killing_a_troll = {
-			sound_events_n = 8,
-			randomize_indexes_n = 0,
-			face_animations_n = 8,
-			database = "bright_wizard_honduras",
-			category = "enemy_alerts",
-			dialogue_animations_n = 8,
-			sound_events = {
-				"pbw_gameplay_killing_a_troll_01",
-				"pbw_gameplay_killing_a_troll_02",
-				"pbw_gameplay_killing_a_troll_03",
-				"pbw_gameplay_killing_a_troll_04",
-				"pbw_gameplay_killing_a_troll_05",
-				"pbw_gameplay_killing_a_troll_06",
-				"pbw_gameplay_killing_a_troll_07",
-				"pbw_gameplay_killing_a_troll_08"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pbw_gameplay_killing_a_troll_01",
-				"pbw_gameplay_killing_a_troll_02",
-				"pbw_gameplay_killing_a_troll_03",
-				"pbw_gameplay_killing_a_troll_04",
-				"pbw_gameplay_killing_a_troll_05",
-				"pbw_gameplay_killing_a_troll_06",
-				"pbw_gameplay_killing_a_troll_07",
-				"pbw_gameplay_killing_a_troll_08"
 			},
 			randomize_indexes = {}
 		},
@@ -12566,6 +12436,55 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_gameplay_killing_a_troll = {
+			sound_events_n = 8,
+			randomize_indexes_n = 0,
+			face_animations_n = 8,
+			database = "bright_wizard_honduras",
+			category = "enemy_alerts",
+			dialogue_animations_n = 8,
+			sound_events = {
+				"pbw_gameplay_killing_a_troll_01",
+				"pbw_gameplay_killing_a_troll_02",
+				"pbw_gameplay_killing_a_troll_03",
+				"pbw_gameplay_killing_a_troll_04",
+				"pbw_gameplay_killing_a_troll_05",
+				"pbw_gameplay_killing_a_troll_06",
+				"pbw_gameplay_killing_a_troll_07",
+				"pbw_gameplay_killing_a_troll_08"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_gameplay_killing_a_troll_01",
+				"pbw_gameplay_killing_a_troll_02",
+				"pbw_gameplay_killing_a_troll_03",
+				"pbw_gameplay_killing_a_troll_04",
+				"pbw_gameplay_killing_a_troll_05",
+				"pbw_gameplay_killing_a_troll_06",
+				"pbw_gameplay_killing_a_troll_07",
+				"pbw_gameplay_killing_a_troll_08"
+			},
+			randomize_indexes = {}
+		},
 		pbw_gameplay_killing_a_chaos_wizard_plague = {
 			sound_events_n = 6,
 			randomize_indexes_n = 0,
@@ -12604,55 +12523,6 @@ return function ()
 				"pbw_gameplay_killing_a_chaos_wizard_plague_04",
 				"pbw_gameplay_killing_a_chaos_wizard_plague_05",
 				"pbw_gameplay_killing_a_chaos_wizard_plague_06"
-			},
-			randomize_indexes = {}
-		},
-		pbw_gameplay_killing_a_chaos_warrior = {
-			sound_events_n = 8,
-			randomize_indexes_n = 0,
-			face_animations_n = 8,
-			database = "bright_wizard_honduras",
-			category = "enemy_alerts",
-			dialogue_animations_n = 8,
-			sound_events = {
-				"pbw_gameplay_killing_a_chaos_warrior_01",
-				"pbw_gameplay_killing_a_chaos_warrior_02",
-				"pbw_gameplay_killing_a_chaos_warrior_03",
-				"pbw_gameplay_killing_a_chaos_warrior_04",
-				"pbw_gameplay_killing_a_chaos_warrior_05",
-				"pbw_gameplay_killing_a_chaos_warrior_06",
-				"pbw_gameplay_killing_a_chaos_warrior_07",
-				"pbw_gameplay_killing_a_chaos_warrior_08"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pbw_gameplay_killing_a_chaos_warrior_01",
-				"pbw_gameplay_killing_a_chaos_warrior_02",
-				"pbw_gameplay_killing_a_chaos_warrior_03",
-				"pbw_gameplay_killing_a_chaos_warrior_04",
-				"pbw_gameplay_killing_a_chaos_warrior_05",
-				"pbw_gameplay_killing_a_chaos_warrior_06",
-				"pbw_gameplay_killing_a_chaos_warrior_07",
-				"pbw_gameplay_killing_a_chaos_warrior_08"
 			},
 			randomize_indexes = {}
 		},
@@ -12702,6 +12572,55 @@ return function ()
 				"pbw_gameplay_globadier_guck_10",
 				"pbw_gameplay_globadier_guck_11",
 				"pbw_gameplay_globadier_guck_12"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_killing_a_chaos_warrior = {
+			sound_events_n = 8,
+			randomize_indexes_n = 0,
+			face_animations_n = 8,
+			database = "bright_wizard_honduras",
+			category = "enemy_alerts",
+			dialogue_animations_n = 8,
+			sound_events = {
+				"pbw_gameplay_killing_a_chaos_warrior_01",
+				"pbw_gameplay_killing_a_chaos_warrior_02",
+				"pbw_gameplay_killing_a_chaos_warrior_03",
+				"pbw_gameplay_killing_a_chaos_warrior_04",
+				"pbw_gameplay_killing_a_chaos_warrior_05",
+				"pbw_gameplay_killing_a_chaos_warrior_06",
+				"pbw_gameplay_killing_a_chaos_warrior_07",
+				"pbw_gameplay_killing_a_chaos_warrior_08"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_gameplay_killing_a_chaos_warrior_01",
+				"pbw_gameplay_killing_a_chaos_warrior_02",
+				"pbw_gameplay_killing_a_chaos_warrior_03",
+				"pbw_gameplay_killing_a_chaos_warrior_04",
+				"pbw_gameplay_killing_a_chaos_warrior_05",
+				"pbw_gameplay_killing_a_chaos_warrior_06",
+				"pbw_gameplay_killing_a_chaos_warrior_07",
+				"pbw_gameplay_killing_a_chaos_warrior_08"
 			},
 			randomize_indexes = {}
 		},
@@ -12913,6 +12832,39 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_gameplay_healing_wood_elf = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "bright_wizard_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_gameplay_healing_wood_elf_01",
+				"pbw_gameplay_healing_wood_elf_02",
+				"pbw_gameplay_healing_wood_elf_03",
+				"pbw_gameplay_healing_wood_elf_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_gameplay_healing_wood_elf_01",
+				"pbw_gameplay_healing_wood_elf_02",
+				"pbw_gameplay_healing_wood_elf_03",
+				"pbw_gameplay_healing_wood_elf_04"
+			},
+			randomize_indexes = {}
+		},
 		pbw_gameplay_hearing_a_chaos_warrior_combat = {
 			sound_events_n = 8,
 			randomize_indexes_n = 0,
@@ -12959,39 +12911,6 @@ return function ()
 				"pbw_gameplay_hearing_a_chaos_warrior_combat_06",
 				"pbw_gameplay_hearing_a_chaos_warrior_combat_07",
 				"pbw_gameplay_hearing_a_chaos_warrior_combat_08"
-			},
-			randomize_indexes = {}
-		},
-		pbw_gameplay_healing_wood_elf = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_honduras",
-			category = "player_feedback",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_gameplay_healing_wood_elf_01",
-				"pbw_gameplay_healing_wood_elf_02",
-				"pbw_gameplay_healing_wood_elf_03",
-				"pbw_gameplay_healing_wood_elf_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pbw_gameplay_healing_wood_elf_01",
-				"pbw_gameplay_healing_wood_elf_02",
-				"pbw_gameplay_healing_wood_elf_03",
-				"pbw_gameplay_healing_wood_elf_04"
 			},
 			randomize_indexes = {}
 		},
@@ -13074,43 +12993,6 @@ return function ()
 				"pbw_objective_correct_path_ladder_up_02",
 				"pbw_objective_correct_path_ladder_up_03",
 				"pbw_objective_correct_path_ladder_up_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_gameplay_dead_body = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
-			database = "bright_wizard_honduras",
-			category = "default",
-			dialogue_animations_n = 5,
-			sound_events = {
-				"pbw_gameplay_dead_body_06",
-				"pbw_gameplay_dead_body_07",
-				"pbw_gameplay_dead_body_08",
-				"pbw_gameplay_dead_body_09",
-				"pbw_gameplay_dead_body_10"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pbw_gameplay_dead_body_06",
-				"pbw_gameplay_dead_body_07",
-				"pbw_gameplay_dead_body_08",
-				"pbw_gameplay_dead_body_09",
-				"pbw_gameplay_dead_body_10"
 			},
 			randomize_indexes = {}
 		},
@@ -13306,6 +13188,43 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_gameplay_dead_body = {
+			sound_events_n = 5,
+			randomize_indexes_n = 0,
+			face_animations_n = 5,
+			database = "bright_wizard_honduras",
+			category = "default",
+			dialogue_animations_n = 5,
+			sound_events = {
+				"pbw_gameplay_dead_body_06",
+				"pbw_gameplay_dead_body_07",
+				"pbw_gameplay_dead_body_08",
+				"pbw_gameplay_dead_body_09",
+				"pbw_gameplay_dead_body_10"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_gameplay_dead_body_06",
+				"pbw_gameplay_dead_body_07",
+				"pbw_gameplay_dead_body_08",
+				"pbw_gameplay_dead_body_09",
+				"pbw_gameplay_dead_body_10"
+			},
+			randomize_indexes = {}
+		},
 		pbw_gameplay_seeing_a_scr = {
 			sound_events_n = 15,
 			randomize_indexes_n = 0,
@@ -13383,77 +13302,84 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_gameplay_seeing_a_globadier = {
-			sound_events_n = 6,
+		pbw_gameplay_tension_no_enemies = {
+			sound_events_n = 16,
 			randomize_indexes_n = 0,
-			face_animations_n = 6,
+			face_animations_n = 16,
 			database = "bright_wizard_honduras",
-			category = "enemy_alerts",
-			dialogue_animations_n = 6,
+			category = "casual_talk",
+			dialogue_animations_n = 16,
 			sound_events = {
-				"pbw_gameplay_seeing_a_globadier_01",
-				"pbw_gameplay_seeing_a_globadier_02",
-				"pbw_gameplay_seeing_a_globadier_03",
-				"pbw_gameplay_seeing_a_globadier_06",
-				"pbw_gameplay_seeing_a_globadier_07",
-				"pbw_gameplay_seeing_a_globadier_08"
+				"pbw_gameplay_tension_no_enemies_09",
+				"pbw_gameplay_tension_no_enemies_10",
+				"pbw_gameplay_tension_no_enemies_11",
+				"pbw_gameplay_tension_no_enemies_12",
+				"pbw_gameplay_tension_no_enemies_13",
+				"pbw_gameplay_tension_no_enemies_14",
+				"pbw_gameplay_tension_no_enemies_15",
+				"pbw_gameplay_tension_no_enemies_16",
+				"pbw_gameplay_tension_no_enemies_17",
+				"pbw_gameplay_tension_no_enemies_18",
+				"pbw_gameplay_tension_no_enemies_19",
+				"pbw_gameplay_tension_no_enemies_20",
+				"pbw_gameplay_tension_no_enemies_21",
+				"pbw_gameplay_tension_no_enemies_22",
+				"pbw_gameplay_tension_no_enemies_23",
+				"pbw_gameplay_tension_no_enemies_24"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
 				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
 			},
 			localization_strings = {
-				"pbw_gameplay_seeing_a_globadier_01",
-				"pbw_gameplay_seeing_a_globadier_02",
-				"pbw_gameplay_seeing_a_globadier_03",
-				"pbw_gameplay_seeing_a_globadier_06",
-				"pbw_gameplay_seeing_a_globadier_07",
-				"pbw_gameplay_seeing_a_globadier_08"
-			},
-			randomize_indexes = {}
-		},
-		pbw_gameplay_friendly_fire_wood_elf = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_honduras",
-			category = "player_feedback",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_gameplay_friendly_fire_wood_elf_01",
-				"pbw_gameplay_friendly_fire_wood_elf_03",
-				"pbw_gameplay_friendly_fire_wood_elf_05",
-				"pbw_gameplay_friendly_fire_wood_elf_06"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"pbw_gameplay_friendly_fire_wood_elf_01",
-				"pbw_gameplay_friendly_fire_wood_elf_03",
-				"pbw_gameplay_friendly_fire_wood_elf_05",
-				"pbw_gameplay_friendly_fire_wood_elf_06"
+				"pbw_gameplay_tension_no_enemies_09",
+				"pbw_gameplay_tension_no_enemies_10",
+				"pbw_gameplay_tension_no_enemies_11",
+				"pbw_gameplay_tension_no_enemies_12",
+				"pbw_gameplay_tension_no_enemies_13",
+				"pbw_gameplay_tension_no_enemies_14",
+				"pbw_gameplay_tension_no_enemies_15",
+				"pbw_gameplay_tension_no_enemies_16",
+				"pbw_gameplay_tension_no_enemies_17",
+				"pbw_gameplay_tension_no_enemies_18",
+				"pbw_gameplay_tension_no_enemies_19",
+				"pbw_gameplay_tension_no_enemies_20",
+				"pbw_gameplay_tension_no_enemies_21",
+				"pbw_gameplay_tension_no_enemies_22",
+				"pbw_gameplay_tension_no_enemies_23",
+				"pbw_gameplay_tension_no_enemies_24"
 			},
 			randomize_indexes = {}
 		},
@@ -13564,40 +13490,36 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_gameplay_wood_elf_on_a_frenzy = {
-			sound_events_n = 5,
+		pbw_gameplay_parry_empire_soldier = {
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
-			face_animations_n = 5,
+			face_animations_n = 4,
 			database = "bright_wizard_honduras",
 			category = "player_feedback",
-			dialogue_animations_n = 5,
+			dialogue_animations_n = 4,
 			sound_events = {
-				"pbw_gameplay_wood_elf_on_a_frenzy_05",
-				"pbw_gameplay_wood_elf_on_a_frenzy_06",
-				"pbw_gameplay_wood_elf_on_a_frenzy_07",
-				"pbw_gameplay_wood_elf_on_a_frenzy_08",
-				"pbw_gameplay_wood_elf_on_a_frenzy_09"
+				"pbw_gameplay_parry_empire_soldier_01",
+				"pbw_gameplay_parry_empire_soldier_02",
+				"pbw_gameplay_parry_empire_soldier_03",
+				"pbw_gameplay_parry_empire_soldier_04"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				"face_surprise",
+				"face_surprise",
+				"face_surprise",
+				"face_surprise"
 			},
 			localization_strings = {
-				"pbw_gameplay_wood_elf_on_a_frenzy_05",
-				"pbw_gameplay_wood_elf_on_a_frenzy_06",
-				"pbw_gameplay_wood_elf_on_a_frenzy_07",
-				"pbw_gameplay_wood_elf_on_a_frenzy_08",
-				"pbw_gameplay_wood_elf_on_a_frenzy_09"
+				"pbw_gameplay_parry_empire_soldier_01",
+				"pbw_gameplay_parry_empire_soldier_02",
+				"pbw_gameplay_parry_empire_soldier_03",
+				"pbw_gameplay_parry_empire_soldier_04"
 			},
 			randomize_indexes = {}
 		},
@@ -13671,72 +13593,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_gameplay_parry_empire_soldier = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_honduras",
-			category = "player_feedback",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_gameplay_parry_empire_soldier_01",
-				"pbw_gameplay_parry_empire_soldier_02",
-				"pbw_gameplay_parry_empire_soldier_03",
-				"pbw_gameplay_parry_empire_soldier_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_surprise",
-				"face_surprise",
-				"face_surprise",
-				"face_surprise"
-			},
-			localization_strings = {
-				"pbw_gameplay_parry_empire_soldier_01",
-				"pbw_gameplay_parry_empire_soldier_02",
-				"pbw_gameplay_parry_empire_soldier_03",
-				"pbw_gameplay_parry_empire_soldier_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_gameplay_killing_lootrat = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_honduras",
-			category = "enemy_alerts",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_gameplay_killing_lootrat_05",
-				"pbw_gameplay_killing_lootrat_06",
-				"pbw_gameplay_killing_lootrat_07",
-				"pbw_gameplay_killing_lootrat_08"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pbw_gameplay_killing_lootrat_05",
-				"pbw_gameplay_killing_lootrat_06",
-				"pbw_gameplay_killing_lootrat_07",
-				"pbw_gameplay_killing_lootrat_08"
-			},
-			randomize_indexes = {}
-		},
 		pbw_gameplay_witch_hunter_low_on_health = {
 			sound_events_n = 5,
 			randomize_indexes_n = 0,
@@ -13774,40 +13630,127 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_gameplay_tension_no_enemies = {
-			sound_events_n = 16,
+		pbw_gameplay_killing_lootrat = {
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
-			face_animations_n = 16,
+			face_animations_n = 4,
 			database = "bright_wizard_honduras",
-			category = "casual_talk",
-			dialogue_animations_n = 16,
+			category = "enemy_alerts",
+			dialogue_animations_n = 4,
 			sound_events = {
-				"pbw_gameplay_tension_no_enemies_09",
-				"pbw_gameplay_tension_no_enemies_10",
-				"pbw_gameplay_tension_no_enemies_11",
-				"pbw_gameplay_tension_no_enemies_12",
-				"pbw_gameplay_tension_no_enemies_13",
-				"pbw_gameplay_tension_no_enemies_14",
-				"pbw_gameplay_tension_no_enemies_15",
-				"pbw_gameplay_tension_no_enemies_16",
-				"pbw_gameplay_tension_no_enemies_17",
-				"pbw_gameplay_tension_no_enemies_18",
-				"pbw_gameplay_tension_no_enemies_19",
-				"pbw_gameplay_tension_no_enemies_20",
-				"pbw_gameplay_tension_no_enemies_21",
-				"pbw_gameplay_tension_no_enemies_22",
-				"pbw_gameplay_tension_no_enemies_23",
-				"pbw_gameplay_tension_no_enemies_24"
+				"pbw_gameplay_killing_lootrat_05",
+				"pbw_gameplay_killing_lootrat_06",
+				"pbw_gameplay_killing_lootrat_07",
+				"pbw_gameplay_killing_lootrat_08"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_gameplay_killing_lootrat_05",
+				"pbw_gameplay_killing_lootrat_06",
+				"pbw_gameplay_killing_lootrat_07",
+				"pbw_gameplay_killing_lootrat_08"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_wood_elf_on_a_frenzy = {
+			sound_events_n = 5,
+			randomize_indexes_n = 0,
+			face_animations_n = 5,
+			database = "bright_wizard_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 5,
+			sound_events = {
+				"pbw_gameplay_wood_elf_on_a_frenzy_05",
+				"pbw_gameplay_wood_elf_on_a_frenzy_06",
+				"pbw_gameplay_wood_elf_on_a_frenzy_07",
+				"pbw_gameplay_wood_elf_on_a_frenzy_08",
+				"pbw_gameplay_wood_elf_on_a_frenzy_09"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_gameplay_wood_elf_on_a_frenzy_05",
+				"pbw_gameplay_wood_elf_on_a_frenzy_06",
+				"pbw_gameplay_wood_elf_on_a_frenzy_07",
+				"pbw_gameplay_wood_elf_on_a_frenzy_08",
+				"pbw_gameplay_wood_elf_on_a_frenzy_09"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_friendly_fire_wood_elf = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "bright_wizard_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_gameplay_friendly_fire_wood_elf_01",
+				"pbw_gameplay_friendly_fire_wood_elf_03",
+				"pbw_gameplay_friendly_fire_wood_elf_05",
+				"pbw_gameplay_friendly_fire_wood_elf_06"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
+			},
+			localization_strings = {
+				"pbw_gameplay_friendly_fire_wood_elf_01",
+				"pbw_gameplay_friendly_fire_wood_elf_03",
+				"pbw_gameplay_friendly_fire_wood_elf_05",
+				"pbw_gameplay_friendly_fire_wood_elf_06"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_low_on_health = {
+			sound_events_n = 8,
+			randomize_indexes_n = 0,
+			face_animations_n = 8,
+			database = "bright_wizard_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 8,
+			sound_events = {
+				"pbw_gameplay_low_on_health_05",
+				"pbw_gameplay_low_on_health_09",
+				"pbw_gameplay_low_on_health_10",
+				"pbw_gameplay_low_on_health_11",
+				"pbw_gameplay_low_on_health_12",
+				"pbw_gameplay_low_on_health_13",
+				"pbw_gameplay_low_on_health_14",
+				"pbw_gameplay_low_on_health_15"
+			},
+			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
@@ -13818,81 +13761,24 @@ return function ()
 				"dialogue_talk"
 			},
 			face_animations = {
-				"face_angry",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
+				"face_exhausted",
+				"face_exhausted",
+				"face_exhausted",
+				"face_exhausted",
+				"face_exhausted",
+				"face_exhausted",
+				"face_exhausted",
+				"face_exhausted"
 			},
 			localization_strings = {
-				"pbw_gameplay_tension_no_enemies_09",
-				"pbw_gameplay_tension_no_enemies_10",
-				"pbw_gameplay_tension_no_enemies_11",
-				"pbw_gameplay_tension_no_enemies_12",
-				"pbw_gameplay_tension_no_enemies_13",
-				"pbw_gameplay_tension_no_enemies_14",
-				"pbw_gameplay_tension_no_enemies_15",
-				"pbw_gameplay_tension_no_enemies_16",
-				"pbw_gameplay_tension_no_enemies_17",
-				"pbw_gameplay_tension_no_enemies_18",
-				"pbw_gameplay_tension_no_enemies_19",
-				"pbw_gameplay_tension_no_enemies_20",
-				"pbw_gameplay_tension_no_enemies_21",
-				"pbw_gameplay_tension_no_enemies_22",
-				"pbw_gameplay_tension_no_enemies_23",
-				"pbw_gameplay_tension_no_enemies_24"
-			},
-			randomize_indexes = {}
-		},
-		pbw_gameplay_player_pounced = {
-			sound_events_n = 6,
-			randomize_indexes_n = 0,
-			face_animations_n = 6,
-			database = "bright_wizard_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 6,
-			sound_events = {
-				"pbw_gameplay_player_pounced_01",
-				"pbw_gameplay_player_pounced_02",
-				"pbw_gameplay_player_pounced_03",
-				"pbw_gameplay_player_pounced_04",
-				"pbw_gameplay_player_pounced_05",
-				"pbw_gameplay_player_pounced_06"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pbw_gameplay_player_pounced_01",
-				"pbw_gameplay_player_pounced_02",
-				"pbw_gameplay_player_pounced_03",
-				"pbw_gameplay_player_pounced_04",
-				"pbw_gameplay_player_pounced_05",
-				"pbw_gameplay_player_pounced_06"
+				"pbw_gameplay_low_on_health_05",
+				"pbw_gameplay_low_on_health_09",
+				"pbw_gameplay_low_on_health_10",
+				"pbw_gameplay_low_on_health_11",
+				"pbw_gameplay_low_on_health_12",
+				"pbw_gameplay_low_on_health_13",
+				"pbw_gameplay_low_on_health_14",
+				"pbw_gameplay_low_on_health_15"
 			},
 			randomize_indexes = {}
 		},
@@ -14116,6 +14002,47 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_objective_goal_achieved_escape = {
+			sound_events_n = 6,
+			randomize_indexes_n = 0,
+			face_animations_n = 6,
+			database = "bright_wizard_honduras",
+			category = "default",
+			dialogue_animations_n = 6,
+			sound_events = {
+				"pbw_objective_goal_achieved_escape_02",
+				"pbw_objective_goal_achieved_escape_04",
+				"pbw_objective_goal_achieved_escape_05",
+				"pbw_objective_goal_achieved_escape_06",
+				"pbw_objective_goal_achieved_escape_07",
+				"pbw_objective_goal_achieved_escape_08"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_objective_goal_achieved_escape_02",
+				"pbw_objective_goal_achieved_escape_04",
+				"pbw_objective_goal_achieved_escape_05",
+				"pbw_objective_goal_achieved_escape_06",
+				"pbw_objective_goal_achieved_escape_07",
+				"pbw_objective_goal_achieved_escape_08"
+			},
+			randomize_indexes = {}
+		},
 		pbw_gameplay_seeing_a_skaven_rat_ogre = {
 			sound_events_n = 7,
 			randomize_indexes_n = 0,
@@ -14161,47 +14088,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_objective_goal_achieved_escape = {
-			sound_events_n = 6,
-			randomize_indexes_n = 0,
-			face_animations_n = 6,
-			database = "bright_wizard_honduras",
-			category = "default",
-			dialogue_animations_n = 6,
-			sound_events = {
-				"pbw_objective_goal_achieved_escape_02",
-				"pbw_objective_goal_achieved_escape_04",
-				"pbw_objective_goal_achieved_escape_05",
-				"pbw_objective_goal_achieved_escape_06",
-				"pbw_objective_goal_achieved_escape_07",
-				"pbw_objective_goal_achieved_escape_08"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pbw_objective_goal_achieved_escape_02",
-				"pbw_objective_goal_achieved_escape_04",
-				"pbw_objective_goal_achieved_escape_05",
-				"pbw_objective_goal_achieved_escape_06",
-				"pbw_objective_goal_achieved_escape_07",
-				"pbw_objective_goal_achieved_escape_08"
-			},
-			randomize_indexes = {}
-		},
 		pbw_objective_nearing_objective_deadline = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -14235,7 +14121,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_gameplay_hearing_a_gutter_runner = {
+		pbw_gameplay_seeing_a_globadier = {
 			sound_events_n = 6,
 			randomize_indexes_n = 0,
 			face_animations_n = 6,
@@ -14243,12 +14129,12 @@ return function ()
 			category = "enemy_alerts",
 			dialogue_animations_n = 6,
 			sound_events = {
-				"pbw_gameplay_hearing_a_gutter_runner_01",
-				"pbw_gameplay_hearing_a_gutter_runner_03",
-				"pbw_gameplay_hearing_a_gutter_runner_07",
-				"pbw_gameplay_hearing_a_gutter_runner_08",
-				"pbw_gameplay_hearing_a_gutter_runner_09",
-				"pbw_gameplay_hearing_a_gutter_runner_10"
+				"pbw_gameplay_seeing_a_globadier_01",
+				"pbw_gameplay_seeing_a_globadier_02",
+				"pbw_gameplay_seeing_a_globadier_03",
+				"pbw_gameplay_seeing_a_globadier_06",
+				"pbw_gameplay_seeing_a_globadier_07",
+				"pbw_gameplay_seeing_a_globadier_08"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -14259,7 +14145,45 @@ return function ()
 				"dialogue_shout"
 			},
 			face_animations = {
-				"face_contempt",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
+			},
+			localization_strings = {
+				"pbw_gameplay_seeing_a_globadier_01",
+				"pbw_gameplay_seeing_a_globadier_02",
+				"pbw_gameplay_seeing_a_globadier_03",
+				"pbw_gameplay_seeing_a_globadier_06",
+				"pbw_gameplay_seeing_a_globadier_07",
+				"pbw_gameplay_seeing_a_globadier_08"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_hearing_a_gutter_runner = {
+			sound_events_n = 5,
+			randomize_indexes_n = 0,
+			face_animations_n = 5,
+			database = "bright_wizard_honduras",
+			category = "enemy_alerts",
+			dialogue_animations_n = 5,
+			sound_events = {
+				"pbw_gameplay_hearing_a_gutter_runner_01",
+				"pbw_gameplay_hearing_a_gutter_runner_03",
+				"pbw_gameplay_hearing_a_gutter_runner_07",
+				"pbw_gameplay_hearing_a_gutter_runner_08",
+				"pbw_gameplay_hearing_a_gutter_runner_10"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
 				"face_contempt",
 				"face_contempt",
 				"face_contempt",
@@ -14271,49 +14195,7 @@ return function ()
 				"pbw_gameplay_hearing_a_gutter_runner_03",
 				"pbw_gameplay_hearing_a_gutter_runner_07",
 				"pbw_gameplay_hearing_a_gutter_runner_08",
-				"pbw_gameplay_hearing_a_gutter_runner_09",
 				"pbw_gameplay_hearing_a_gutter_runner_10"
-			},
-			randomize_indexes = {}
-		},
-		pbw_activate_ability_battle_wizard = {
-			sound_events_n = 6,
-			randomize_indexes_n = 0,
-			face_animations_n = 6,
-			database = "bright_wizard_honduras",
-			category = "activate_ability",
-			dialogue_animations_n = 6,
-			sound_events = {
-				"pbw_activate_ability_battle_wizard_01",
-				"pbw_activate_ability_battle_wizard_02",
-				"pbw_activate_ability_battle_wizard_03",
-				"pbw_activate_ability_battle_wizard_04",
-				"pbw_activate_ability_battle_wizard_05",
-				"pbw_activate_ability_battle_wizard_06"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy"
-			},
-			localization_strings = {
-				"pbw_activate_ability_battle_wizard_01",
-				"pbw_activate_ability_battle_wizard_02",
-				"pbw_activate_ability_battle_wizard_03",
-				"pbw_activate_ability_battle_wizard_04",
-				"pbw_activate_ability_battle_wizard_05",
-				"pbw_activate_ability_battle_wizard_06"
 			},
 			randomize_indexes = {}
 		},
@@ -14632,44 +14514,52 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_gameplay_hit_by_goo = {
-			sound_events_n = 6,
+		pbw_gameplay_armoured_enemy_witch_hunter = {
+			sound_events_n = 8,
 			randomize_indexes_n = 0,
-			face_animations_n = 6,
+			face_animations_n = 8,
 			database = "bright_wizard_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 6,
+			category = "player_feedback",
+			dialogue_animations_n = 8,
 			sound_events = {
-				"pbw_gameplay_hit_by_goo_01",
-				"pbw_gameplay_hit_by_goo_02",
-				"pbw_gameplay_hit_by_goo_03",
-				"pbw_gameplay_hit_by_goo_04",
-				"pbw_gameplay_hit_by_goo_05",
-				"pbw_gameplay_hit_by_goo_06"
+				"pbw_gameplay_armoured_enemy_witch_hunter_04",
+				"pbw_gameplay_armoured_enemy_witch_hunter_05",
+				"pbw_gameplay_armoured_enemy_witch_hunter_06",
+				"pbw_gameplay_armoured_enemy_witch_hunter_07",
+				"pbw_gameplay_armoured_enemy_witch_hunter_08",
+				"pbw_gameplay_armoured_enemy_witch_hunter_09",
+				"pbw_gameplay_armoured_enemy_witch_hunter_10",
+				"pbw_gameplay_armoured_enemy_witch_hunter_11"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
-				"face_surprise",
-				"face_surprise",
-				"face_surprise",
-				"face_surprise",
-				"face_surprise",
-				"face_surprise"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				"pbw_gameplay_hit_by_goo_01",
-				"pbw_gameplay_hit_by_goo_02",
-				"pbw_gameplay_hit_by_goo_03",
-				"pbw_gameplay_hit_by_goo_04",
-				"pbw_gameplay_hit_by_goo_05",
-				"pbw_gameplay_hit_by_goo_06"
+				"pbw_gameplay_armoured_enemy_witch_hunter_04",
+				"pbw_gameplay_armoured_enemy_witch_hunter_05",
+				"pbw_gameplay_armoured_enemy_witch_hunter_06",
+				"pbw_gameplay_armoured_enemy_witch_hunter_07",
+				"pbw_gameplay_armoured_enemy_witch_hunter_08",
+				"pbw_gameplay_armoured_enemy_witch_hunter_09",
+				"pbw_gameplay_armoured_enemy_witch_hunter_10",
+				"pbw_gameplay_armoured_enemy_witch_hunter_11"
 			},
 			randomize_indexes = {}
 		},

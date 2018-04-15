@@ -1120,7 +1120,7 @@ return function ()
 				"time_since_casual_quotes",
 				OP.TIMEDIFF,
 				OP.GT,
-				120
+				600
 			},
 			{
 				"faction_memory",
@@ -1844,7 +1844,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -1875,7 +1875,7 @@ return function ()
 				"last_saw_ammo",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -1924,7 +1924,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -1937,7 +1937,7 @@ return function ()
 				"last_saw_health",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -1986,7 +1986,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -1999,7 +1999,7 @@ return function ()
 				"last_saw_health",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -2048,7 +2048,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -2061,7 +2061,7 @@ return function ()
 				"last_saw_potion",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -2110,7 +2110,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				25
+				17
 			},
 			{
 				"user_context",
@@ -2123,7 +2123,7 @@ return function ()
 				"last_saw_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -2625,7 +2625,7 @@ return function ()
 				"time_since_casual_quotes",
 				OP.TIMEDIFF,
 				OP.GT,
-				180
+				600
 			}
 		},
 		on_done = {
@@ -2669,7 +2669,7 @@ return function ()
 				"time_since_last_special_kill_melee",
 				OP.TIMEDIFF,
 				OP.GT,
-				220
+				600
 			}
 		},
 		on_done = {
@@ -2713,7 +2713,7 @@ return function ()
 				"time_since_last_special_kill_ranged",
 				OP.TIMEDIFF,
 				OP.GT,
-				220
+				600
 			}
 		},
 		on_done = {
@@ -2738,7 +2738,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				90
+				7
 			},
 			{
 				"query_context",
@@ -2757,7 +2757,7 @@ return function ()
 				"time_since_last_frenzy_empire_soldier",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				600
 			}
 		},
 		on_done = {
@@ -2782,7 +2782,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				90
+				7
 			},
 			{
 				"query_context",
@@ -2801,7 +2801,7 @@ return function ()
 				"time_since_last_frenzy_witch_hunter",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				600
 			}
 		},
 		on_done = {
@@ -2826,7 +2826,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				90
+				7
 			},
 			{
 				"query_context",
@@ -2845,7 +2845,7 @@ return function ()
 				"time_since_last_frenzy_wood_elf",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				600
 			}
 		},
 		on_done = {
@@ -2870,7 +2870,7 @@ return function ()
 				"query_context",
 				"number_of_kills",
 				OP.EQ,
-				90
+				7
 			},
 			{
 				"query_context",
@@ -2889,7 +2889,7 @@ return function ()
 				"time_since_last_frenzy_bright_wizard",
 				OP.TIMEDIFF,
 				OP.GT,
-				240
+				600
 			}
 		},
 		on_done = {
@@ -2933,7 +2933,7 @@ return function ()
 				"time_since_last_armor_hit",
 				OP.TIMEDIFF,
 				OP.GT,
-				900
+				600
 			}
 		},
 		on_done = {
@@ -2977,7 +2977,7 @@ return function ()
 				"time_since_last_armor_hit",
 				OP.TIMEDIFF,
 				OP.GT,
-				900
+				600
 			}
 		},
 		on_done = {
@@ -3021,7 +3021,7 @@ return function ()
 				"time_since_last_armor_hit",
 				OP.TIMEDIFF,
 				OP.GT,
-				900
+				600
 			}
 		},
 		on_done = {
@@ -3065,7 +3065,7 @@ return function ()
 				"time_since_last_armor_hit",
 				OP.TIMEDIFF,
 				OP.GT,
-				900
+				600
 			}
 		},
 		on_done = {
@@ -5666,7 +5666,7 @@ return function ()
 				"query_context",
 				"num_units",
 				OP.GT,
-				5
+				10
 			},
 			{
 				"global_context",
