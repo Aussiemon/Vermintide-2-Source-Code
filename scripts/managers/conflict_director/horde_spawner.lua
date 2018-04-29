@@ -820,10 +820,12 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 
 	return 
 end
-HordeSpawner.get_pos_ahead_or_behind_players_on_mainpath = function (self, check_ahead, dist)
+HordeSpawner.get_pos_ahead_or_behind_players_on_mainpath = function (self, check_ahead, dist, raw_dist)
 	local conflict_director = Managers.state.conflict
 	local main_path_info = conflict_director.main_path_info
 	local player_unit = (check_ahead and main_path_info.ahead_unit) or main_path_info.behind_unit
+	local wanted_pos, to_player_dir = nil
+	local hidden = true
 
 	if player_unit then
 		local player_info = conflict_director.main_path_player_info[player_unit]
@@ -836,27 +838,69 @@ HordeSpawner.get_pos_ahead_or_behind_players_on_mainpath = function (self, check
 		local path_pos, path_index = MainPathUtils.point_on_mainpath(nil, dist)
 
 		if path_pos then
-			local to_player_dir = POSITION_LOOKUP[player_unit] - path_pos
-
-			return true, path_pos, to_player_dir
+			local dir = POSITION_LOOKUP[player_unit] - path_pos
+			wanted_pos = path_pos
+			to_player_dir = dir
 		end
 	end
 
-	return false
+	if wanted_pos then
+		local ignore_umbra = not World.umbra_available(self.world)
+		local h = Vector3(0, 0, 1)
+
+		for j = 1, #player_positions, 1 do
+			local avoid_pos = player_positions[j]
+			local to_vec = wanted_pos - avoid_pos
+			local los = ignore_umbra or World.umbra_has_line_of_sight(self.world, wanted_pos + h, avoid_pos + h)
+
+			if los then
+				hidden = false
+
+				print("Horde spawn position is within line of sight of players, aborting")
+
+				break
+			end
+		end
+	end
+
+	local is_within_raw_distance = false
+
+	if hidden and to_player_dir then
+		local distance = Vector3.length(to_player_dir)
+
+		if raw_dist < distance then
+			is_within_raw_distance = true
+		end
+	end
+
+	if hidden and is_within_raw_distance then
+		return true, wanted_pos, to_player_dir
+	else
+		return false
+	end
+
+	return 
 end
 HordeSpawner.execute_vector_blob_horde = function (self, extra_data, fallback)
 	local settings = CurrentHordeSettings.vector_blob
 	local roll = math.random()
 	local spawn_horde_ahead = roll <= settings.main_path_chance_spawning_ahead
 
-	print("wants to spawn " .. ((spawn_horde_ahead and "ahead") or "behind"))
+	print("wants to spawn " .. ((spawn_horde_ahead and "ahead") or "behind") .. " within distance: ", settings.main_path_dist_from_players)
 
-	local success, blob_pos, to_player_dir = self.get_pos_ahead_or_behind_players_on_mainpath(self, spawn_horde_ahead, settings.main_path_dist_from_players)
+	local success, blob_pos, to_player_dir = self.get_pos_ahead_or_behind_players_on_mainpath(self, spawn_horde_ahead, settings.main_path_dist_from_players, settings.raw_dist_from_players)
 
 	if not success then
 		print("\tcould not, tries to spawn" .. ((not spawn_horde_ahead and "ahead") or "behind"))
 
-		success, blob_pos, to_player_dir = self.get_pos_ahead_or_behind_players_on_mainpath(self, not spawn_horde_ahead, settings.main_path_dist_from_players)
+		success, blob_pos, to_player_dir = self.get_pos_ahead_or_behind_players_on_mainpath(self, not spawn_horde_ahead, settings.main_path_dist_from_players, settings.raw_dist_from_players)
+
+		if not success then
+			local roll = math.random()
+			local spawn_horde_ahead = roll <= settings.main_path_chance_spawning_ahead
+			local distance_bonus = 20
+			success, blob_pos, to_player_dir = self.get_pos_ahead_or_behind_players_on_mainpath(self, spawn_horde_ahead, settings.main_path_dist_from_players + distance_bonus, settings.raw_dist_from_players)
+		end
 	end
 
 	if not blob_pos then

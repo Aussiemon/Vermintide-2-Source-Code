@@ -589,7 +589,7 @@ AiBreedSnippets.on_storm_vermin_champion_death = function (unit, blackboard)
 
 	local t = Managers.time:time("game")
 
-	Managers.state.conflict.specials_pacing:lord_reset_spawning(t, 40)
+	Managers.state.conflict.specials_pacing:delay_spawning(t, 160, 20)
 
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)
@@ -1080,7 +1080,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_death = function (unit, blackboard)
 
 	local t = Managers.time:time("game")
 
-	Managers.state.conflict.specials_pacing:lord_reset_spawning(t, 40)
+	Managers.state.conflict.specials_pacing:delay_spawning(t, 120, 20)
 
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)
@@ -1330,7 +1330,7 @@ AiBreedSnippets.on_chaos_exalted_champion_death = function (unit, blackboard)
 	blackboard.override_spawn_allies_call_position = nil
 	local t = Managers.time:time("game")
 
-	Managers.state.conflict.specials_pacing:lord_reset_spawning(t, 40)
+	Managers.state.conflict.specials_pacing:delay_spawning(t, 120, 20)
 
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)
@@ -1348,7 +1348,7 @@ AiBreedSnippets.on_chaos_exalted_champion_norsca_death = function (unit, blackbo
 
 	local t = Managers.time:time("game")
 
-	Managers.state.conflict.specials_pacing:lord_reset_spawning(t, 40)
+	Managers.state.conflict.specials_pacing:delay_spawning(t, 40)
 
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)
@@ -1684,7 +1684,7 @@ AiBreedSnippets.on_grey_seer_death = function (unit, blackboard, t)
 
 	local t = Managers.time:time("game")
 
-	Managers.state.conflict.specials_pacing:lord_reset_spawning(t, 40)
+	Managers.state.conflict.specials_pacing:delay_spawning(t, 120, 20)
 
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)

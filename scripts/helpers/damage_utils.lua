@@ -933,8 +933,10 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 								scaled_power_level = math.lerp(power_level_min, power_level_max, scale)
 							end
 
-							if scaled_power_level and distance_factor then
-								scaled_power_level = scaled_power_level * distance_factor
+							local actual_power_level = (glancing_hit and power_level_glance) or scaled_power_level or power_level
+
+							if actual_power_level and distance_factor then
+								actual_power_level = actual_power_level * distance_factor
 							end
 
 							local damage_profile_name = (glancing_hit and explosion_data.damage_profile_glance) or explosion_data.damage_profile or "default"
@@ -943,7 +945,6 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 								damage_profile_name = damage_profile_name .. "_no_damage"
 							end
 
-							local actual_power_level = (glancing_hit and power_level_glance) or scaled_power_level or power_level
 							local t = Managers.time:time("game")
 							local damage_profile = DamageProfileTemplates[damage_profile_name]
 							local target_index = nil
@@ -2166,7 +2167,7 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 					hit_zone_name = hit_zone.name
 
 					if hit_zone_name ~= "afro" then
-						shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit)
+						shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit) and not current_action.ignore_armour_hit
 
 						if shield_blocked then
 							hit_data.blocked_by_unit = hit_unit
@@ -2581,6 +2582,7 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 			added_dot = DamageUtils.apply_dot(damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
 		end
 
+		print("server_apply_hit boost_curve_multiplier", boost_curve_multiplier)
 		DamageUtils.add_damage_network_player(damage_profile, target_index, attack_power_level, target_unit, attacker_unit, hit_zone_name, attack_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, backstab_multiplier, added_dot)
 	elseif shield_breaking_hit then
 		local shield_extension = ScriptUnit.has_extension(target_unit, "ai_shield_system")

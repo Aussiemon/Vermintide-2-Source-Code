@@ -5,6 +5,8 @@ Versions 'Closed-Beta Phase 2' to 1.0.6.1 and Associated Bundles
 
 Date      |  Patch  | Notes
 --------: | :-----: | :--------------
+4-26-18   |  1.0.7  | .Patch_009
+4-16-18   |  1.0.6.2  | No code changes
 4-13-18   |  1.0.6.1  | .Patch_009
 4-12-18   |  1.0.6  | .Patch_008
 4-10-18   |  1.0.5.1  | .Patch_008

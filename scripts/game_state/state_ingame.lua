@@ -244,11 +244,6 @@ StateIngame.on_enter = function (self)
 	end
 
 	Managers.deed:register_rpcs(network_event_delegate)
-
-	if self.is_in_inn then
-		Managers.deed:reset()
-	end
-
 	self._setup_state_context(self, world, is_server, network_event_delegate)
 	self.level_transition_handler:register_rpcs(network_event_delegate)
 
@@ -1331,6 +1326,10 @@ StateIngame._check_exit = function (self, t)
 
 		if self.is_in_tutorial then
 			Managers.backend:stop_tutorial()
+		end
+
+		if Managers.deed:has_deed() and not self.is_in_inn then
+			Managers.deed:reset()
 		end
 
 		if exit_type == "join_lobby_failed" or exit_type == "left_game" or exit_type == "lobby_state_failed" or exit_type == "kicked_by_server" or exit_type == "afk_kick" then

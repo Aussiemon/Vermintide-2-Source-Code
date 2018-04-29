@@ -166,13 +166,11 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 		end
 	end
 
-	local position = POSITION_LOOKUP[owner_unit]
-
 	if local_player then
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension.animation_event(first_person_extension, "ability_shout")
-		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_mercenary_shout_out", position)
+		WwiseUtils.trigger_unit_event(self._world, "Play_career_ability_mercenary_shout_out", owner_unit, 0)
 	end
 
 	local explosion_template_name = "kruber_mercenary_activated_ability_stagger"
@@ -198,6 +196,7 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 	self._play_vfx(self)
 	career_extension.start_activated_ability_cooldown(career_extension)
 
+	local position = POSITION_LOOKUP[owner_unit]
 	local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 

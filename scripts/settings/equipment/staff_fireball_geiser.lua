@@ -59,7 +59,7 @@ weapon_template.actions = {
 				damage_profile = "staff_fireball"
 			},
 			timed_data = {
-				life_time = 1,
+				life_time = 1.5,
 				aoe = ExplosionTemplates.fireball
 			},
 			recoil_settings = {

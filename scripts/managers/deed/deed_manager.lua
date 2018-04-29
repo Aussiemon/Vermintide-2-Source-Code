@@ -96,6 +96,8 @@ DeedManager.is_session_faulty = function (self)
 	return self._deed_session_faulty
 end
 DeedManager.consume_deed = function (self, reward_callback)
+	print("[DeedManager]:consume_deed()")
+
 	if self._owner_peer_id == self._peer_id then
 		if self._is_server then
 			self._send_rpc_to_clients(self, "rpc_deed_consumed")
@@ -195,6 +197,12 @@ DeedManager.rpc_deed_consumed = function (self, sender)
 	return 
 end
 DeedManager.rpc_reset_deed = function (self, sender)
+	if sender ~= self._server_peer_id then
+		print("[DeedManager] Skipping rpc_reset_deed, not sent from current server")
+
+		return 
+	end
+
 	self._selected_deed_data = nil
 	self._selected_deed_id = nil
 	self._owner_peer_id = nil

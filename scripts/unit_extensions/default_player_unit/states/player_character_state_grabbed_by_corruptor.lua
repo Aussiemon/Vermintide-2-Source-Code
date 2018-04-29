@@ -20,7 +20,11 @@ PlayerCharacterStateGrabbedByCorruptor.on_enter = function (self, unit, input, d
 
 	if self.ai_extension == nil then
 		local wwise_world = Managers.world:wwise_world(self.world)
-		slot11, slot12 = WwiseWorld.trigger_event(wwise_world, "start_strangled_state", first_person_extension.get_first_person_unit(first_person_extension))
+		local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, "start_strangled_state", first_person_extension.get_first_person_unit(first_person_extension))
+		self.grabbed_by_corruptor_start_sound_event = "chaos_corruptor_corrupting"
+		self.grabbed_by_corruptor_stop_sound_event = "chaos_corruptor_corrupting_stop"
+
+		WwiseUtils.trigger_unit_event(self.world, self.grabbed_by_corruptor_start_sound_event, unit, 0)
 	end
 
 	local status_extension = self.status_extension
@@ -53,7 +57,9 @@ PlayerCharacterStateGrabbedByCorruptor.on_exit = function (self, unit, input, dt
 
 	if self.ai_extension == nil then
 		local wwise_world = Managers.world:wwise_world(self.world)
-		slot11, slot12 = WwiseWorld.trigger_event(wwise_world, "stop_strangled_state", first_person_extension.get_first_person_unit(first_person_extension))
+		local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, "stop_strangled_state", first_person_extension.get_first_person_unit(first_person_extension))
+
+		WwiseUtils.trigger_unit_event(self.world, self.grabbed_by_corruptor_stop_sound_event, unit, 0)
 	end
 
 	local inventory_extension = self.inventory_extension

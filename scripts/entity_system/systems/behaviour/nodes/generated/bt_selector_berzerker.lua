@@ -167,7 +167,8 @@ BTSelector_berzerker.run = function (self, unit, blackboard, t, dt)
 
 	local node_hesitate = children[8]
 	local alerted = unit_alive(blackboard.target_unit) and blackboard.is_alerted and (not blackboard.confirmed_player_sighting or blackboard.hesitating)
-	local taunt_hesitate = blackboard.taunt_unit and not blackboard.taunt_hesitate_finished and not blackboard.no_taunt_hesitate
+	local is_taunted = unit_alive(blackboard.taunt_unit)
+	local taunt_hesitate = is_taunted and not blackboard.taunt_hesitate_finished and not blackboard.no_taunt_hesitate
 	local condition_result = alerted or taunt_hesitate
 
 	if condition_result then

@@ -51,6 +51,18 @@ UtilityConsiderations = {
 			invert = true,
 			blackboard_input = "walking"
 		},
+		max_occupied_slots = {
+			max_value = 3,
+			blackboard_input = "total_occupied_slots",
+			spline = {
+				0,
+				1,
+				0.5033333333333333,
+				1,
+				1,
+				0
+			}
+		},
 		have_slot = {
 			max_value = 1,
 			blackboard_input = "have_slot",
@@ -1663,6 +1675,22 @@ UtilityConsiderations = {
 				0
 			}
 		},
+		distance_to_destination = {
+			max_value = 10,
+			blackboard_input = "destination_dist",
+			spline = {
+				0,
+				0,
+				0.2,
+				0,
+				0.21,
+				1,
+				0.75,
+				0,
+				1,
+				0
+			}
+		},
 		have_slot = {
 			max_value = 1,
 			blackboard_input = "have_slot",
@@ -1687,6 +1715,18 @@ UtilityConsiderations = {
 				1,
 				1,
 				0.9966666666666667
+			}
+		},
+		max_occupied_slots = {
+			max_value = 3,
+			blackboard_input = "total_occupied_slots",
+			spline = {
+				0,
+				1,
+				0.5033333333333333,
+				1,
+				1,
+				0
 			}
 		},
 		time_since_last = {
@@ -1723,6 +1763,22 @@ UtilityConsiderations = {
 				0
 			}
 		},
+		distance_to_destination = {
+			max_value = 10,
+			blackboard_input = "destination_dist",
+			spline = {
+				0,
+				0,
+				0.2,
+				0,
+				0.21,
+				1,
+				0.75,
+				0,
+				1,
+				0
+			}
+		},
 		have_slot = {
 			max_value = 1,
 			blackboard_input = "have_slot",
@@ -1733,6 +1789,18 @@ UtilityConsiderations = {
 				0,
 				1,
 				1
+			}
+		},
+		max_occupied_slots = {
+			max_value = 3,
+			blackboard_input = "total_occupied_slots",
+			spline = {
+				0,
+				1,
+				0.5033333333333333,
+				1,
+				1,
+				0
 			}
 		},
 		target_move_speed = {

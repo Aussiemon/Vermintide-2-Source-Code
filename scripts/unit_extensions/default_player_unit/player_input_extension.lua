@@ -20,7 +20,7 @@ PlayerInputExtension.init = function (self, extension_init_context, unit, extens
 	self.player = extension_init_data.player
 	self.input_service = self.player.input_source
 	self.enabled = true
-	self.has_released_input = false
+	self.has_released_input = {}
 	self.input_buffer_timer = nil
 	self.buffer_key = nil
 	self.input_buffer = nil
@@ -147,20 +147,22 @@ PlayerInputExtension.set_last_scroll_value = function (self, scroll_value)
 	return 
 end
 PlayerInputExtension.released_input = function (self, input)
-	if self.has_released_input then
+	if self.has_released_input[input] then
 		return true
 	end
 
 	local get_input_release = self.input_service:get(input)
 
 	if not get_input_release then
-		self.has_released_input = true
+		self.has_released_input[input] = true
 	end
 
-	return self.has_released_input
+	return self.has_released_input[input]
 end
 PlayerInputExtension.reset_release_input = function (self)
-	self.has_released_input = false
+	for input, key in pairs(self.has_released_input) do
+		self.has_released_input[input] = false
+	end
 
 	return true
 end
@@ -218,13 +220,17 @@ PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window)
 end
 PlayerInputExtension.add_stun_buffer = function (self, input_key)
 	self.added_stun_buffer = true
-	self.input_buffer_timer = 10
+	self.input_buffer_timer = 1
 	self.input_buffer = 1
 	self.buffer_key = input_key
 
 	return 
 end
 PlayerInputExtension.reset_input_buffer = function (self)
+	if self.priority_input[self.buffer_key] then
+		return 
+	end
+
 	if self.buffer_key == "action_one" and not self.input_service:get("action_one_hold") then
 		self.buffer_key = "action_one_release"
 		self.input_buffer_timer = 0.5
@@ -235,12 +241,6 @@ PlayerInputExtension.reset_input_buffer = function (self)
 	if self.added_stun_buffer then
 		self.added_stun_buffer = false
 
-		if self.priority_input[self.buffer_key] then
-			self.input_buffer_timer = 0
-			self.input_buffer = nil
-			self.buffer_key = nil
-		end
-
 		return 
 	else
 		self.input_buffer_timer = 0
@@ -250,7 +250,11 @@ PlayerInputExtension.reset_input_buffer = function (self)
 
 	return 
 end
-PlayerInputExtension.clear_input_buffer = function (self)
+PlayerInputExtension.clear_input_buffer = function (self, clear_from_wield)
+	if not clear_from_wield and self.priority_input[self.buffer_key] then
+		return 
+	end
+
 	self.input_buffer_reset = true
 	self.input_buffer_timer = 0
 	self.input_buffer = nil

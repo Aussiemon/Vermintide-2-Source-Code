@@ -1149,9 +1149,10 @@ local action_data = {
 			local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 			local stagger_anims, idle_event = nil
 			local blocked_stagger = false
+			local blocked_previous_attack = ai_shield_extension.blocked_previous_attack
 			local using_shield = not ai_shield_extension.shield_broken
 
-			if using_shield and not blackboard.stagger_immune_time then
+			if using_shield and not blackboard.stagger_immune_time and blocked_previous_attack then
 				local is_blocking = blackboard.stagger <= 2
 
 				ai_shield_extension.set_is_blocking(ai_shield_extension, is_blocking)
@@ -1187,6 +1188,10 @@ local action_data = {
 					blackboard.stagger_immune_time = t + 3.5
 					blackboard.heavy_stagger_immune_time = t + 3
 				end
+			end
+
+			if blocked_previous_attack then
+				ai_shield_extension.blocked_previous_attack = false
 			end
 
 			return stagger_anims, idle_event

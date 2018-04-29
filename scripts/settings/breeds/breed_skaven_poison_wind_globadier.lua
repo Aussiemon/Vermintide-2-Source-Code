@@ -223,8 +223,8 @@ local action_data = {
 		slot_count_time_modifier = -0.5,
 		time_before_throw_distance_modifier = 2,
 		time_until_first_throw = {
-			0,
-			1
+			4,
+			6
 		},
 		keep_target_distance = {
 			15,
@@ -246,11 +246,12 @@ local action_data = {
 		radius = GLOBE_RADIUS
 	},
 	throw_poison_globe = {
-		duration = 8,
 		aoe_dot_damage_interval = 1,
+		duration = 8,
 		barrage_count = 2,
 		nav_tag_volume_layer = "bot_poison_wind",
 		create_nav_tag_volume = true,
+		initial_radius = 2,
 		damage_type = "poison",
 		weapon_node_name = "j_rightweaponattach",
 		attack_time = 1.44,

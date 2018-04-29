@@ -224,8 +224,10 @@ Rewards.rewards_generated = function (self)
 		if loot_generated then
 			local deed_manager = Managers.deed
 
-			if deed_manager.has_deed(deed_manager) and deed_manager.is_deed_owner(deed_manager) then
+			if deed_manager.has_deed(deed_manager) and deed_manager.is_deed_owner(deed_manager) and not self._sent_consuming_deed then
 				deed_manager.consume_deed(deed_manager)
+
+				self._sent_consuming_deed = true
 			end
 		end
 

@@ -284,6 +284,12 @@ BTChampionAttackAction.leave = function (self, unit, blackboard, t, reason, dest
 	return 
 end
 BTChampionAttackAction.run = function (self, unit, blackboard, t, dt)
+	local target_unit = blackboard.special_attacking_target
+
+	if not Unit.alive(target_unit) then
+		return "done"
+	end
+
 	self._update_rotation(self, unit, t, dt, blackboard)
 
 	local action = blackboard.action

@@ -232,20 +232,20 @@ SpreadTemplates = {
 	crossbow = {
 		continuous = {
 			still = {
-				max_yaw = 2,
-				max_pitch = 2
+				max_yaw = 0.75,
+				max_pitch = 0.75
 			},
 			moving = {
-				max_yaw = 4,
-				max_pitch = 4
+				max_yaw = 1.25,
+				max_pitch = 1.25
 			},
 			crouch_still = {
-				max_yaw = 0.25,
-				max_pitch = 0.25
+				max_yaw = 0.5,
+				max_pitch = 0.5
 			},
 			crouch_moving = {
-				max_yaw = 2,
-				max_pitch = 2
+				max_yaw = 1.5,
+				max_pitch = 1.5
 			},
 			zoomed_still = {
 				max_yaw = 0.15,
@@ -370,12 +370,12 @@ SpreadTemplates = {
 	handgun = {
 		continuous = {
 			still = {
-				max_yaw = 2,
-				max_pitch = 2
+				max_yaw = 1.5,
+				max_pitch = 1.5
 			},
 			moving = {
-				max_yaw = 4,
-				max_pitch = 4
+				max_yaw = 2.25,
+				max_pitch = 2.25
 			},
 			crouch_still = {
 				max_yaw = 1.75,
@@ -386,16 +386,16 @@ SpreadTemplates = {
 				max_pitch = 2
 			},
 			zoomed_still = {
+				max_yaw = 0.05,
+				max_pitch = 0.05
+			},
+			zoomed_moving = {
 				max_yaw = 0.1,
 				max_pitch = 0.1
 			},
-			zoomed_moving = {
-				max_yaw = 0.5,
-				max_pitch = 0.5
-			},
 			zoomed_crouch_still = {
-				max_yaw = 0.5,
-				max_pitch = 0.5
+				max_yaw = 0.05,
+				max_pitch = 0.05
 			},
 			zoomed_crouch_moving = {
 				max_yaw = 0.8,

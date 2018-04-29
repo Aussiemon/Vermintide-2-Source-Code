@@ -247,73 +247,101 @@ ExplosionTemplates = {
 	},
 	explosive_barrel = {
 		explosion = {
-			always_hurt_players = true,
-			radius = 4,
-			max_damage_radius = 3,
+			radius = 6,
+			dot_template_name = "burning_1W_dot",
+			max_damage_radius = 1.75,
 			sound_event_name = "player_combat_weapon_grenade_explosion",
 			damage_type_glance = "grenade_glance",
-			attack_template = "drakegun",
 			alert_enemies = true,
+			attack_template = "drakegun",
 			alert_enemies_radius = 10,
-			dot_template_name = "burning_1W_dot",
+			always_hurt_players = true,
 			damage_type = "grenade",
-			power_level = 500,
+			damage_profile = "explosive_barrel",
 			effect_name = "fx/wpnfx_barrel_explosion",
-			armour_modifier = {
-				attack = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
+			difficulty_power_level = {
+				easy = {
+					power_level_glance = 100,
+					power_level = 200
 				},
-				impact = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
+				normal = {
+					power_level_glance = 200,
+					power_level = 400
+				},
+				hard = {
+					power_level_glance = 300,
+					power_level = 600
+				},
+				harder = {
+					power_level_glance = 400,
+					power_level = 800
+				},
+				hardest = {
+					power_level_glance = 500,
+					power_level = 1000
+				},
+				survival_hard = {
+					power_level_glance = 300,
+					power_level = 600
+				},
+				survival_harder = {
+					power_level_glance = 400,
+					power_level = 800
+				},
+				survival_hardest = {
+					power_level_glance = 500,
+					power_level = 1000
 				}
-			},
-			power_distribution = {
-				attack = 0.5,
-				impact = 0.5
 			}
 		}
 	},
 	lamp_oil = {
 		explosion = {
-			always_hurt_players = true,
-			radius = 6,
-			max_damage_radius = 2.5,
+			radius = 3,
+			dot_template_name = "burning_3W_dot",
+			max_damage_radius = 1.5,
 			alert_enemies = true,
 			damage_type_glance = "fire_grenade_glance",
-			attack_template = "fire_grenade_explosion",
 			alert_enemies_radius = 15,
+			attack_template = "fire_grenade_explosion",
 			sound_event_name = "fireball_big_hit",
-			dot_template_name = "burning_3W_dot",
+			always_hurt_players = true,
 			damage_type = "fire_grenade",
-			power_level = 500,
+			damage_profile = "explosive_barrel",
 			effect_name = "fx/wpnfx_fire_grenade_impact",
-			armour_modifier = {
-				attack = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
+			difficulty_power_level = {
+				easy = {
+					power_level_glance = 50,
+					power_level = 100
 				},
-				impact = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
+				normal = {
+					power_level_glance = 100,
+					power_level = 200
+				},
+				hard = {
+					power_level_glance = 150,
+					power_level = 300
+				},
+				harder = {
+					power_level_glance = 200,
+					power_level = 400
+				},
+				hardest = {
+					power_level_glance = 250,
+					power_level = 500
+				},
+				survival_hard = {
+					power_level_glance = 150,
+					power_level = 300
+				},
+				survival_harder = {
+					power_level_glance = 200,
+					power_level = 400
+				},
+				survival_hardest = {
+					power_level_glance = 250,
+					power_level = 500
 				}
-			},
-			power_distribution = {
-				attack = 0.5,
-				impact = 0.5
 			}
 		},
 		aoe = {
@@ -449,36 +477,49 @@ ExplosionTemplates = {
 	fire_grenade = {
 		is_grenade = true,
 		explosion = {
-			dot_template_name = "burning_3W_dot",
-			radius = 6,
-			max_damage_radius = 2.5,
-			alert_enemies = true,
-			damage_type_glance = "fire_grenade_glance",
-			attack_template = "fire_grenade_explosion",
-			alert_enemies_radius = 15,
-			sound_event_name = "fireball_big_hit",
+			radius = 3,
 			damage_type = "fire_grenade",
-			power_level = 500,
+			max_damage_radius = 1.5,
+			alert_enemies_radius = 15,
+			damage_type_glance = "fire_grenade_glance",
+			sound_event_name = "fireball_big_hit",
+			dot_template_name = "burning_3W_dot",
+			alert_enemies = true,
+			damage_profile = "explosive_barrel",
 			effect_name = "fx/wpnfx_staff_geiser_fire_large",
-			armour_modifier = {
-				attack = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
+			difficulty_power_level = {
+				easy = {
+					power_level_glance = 50,
+					power_level = 100
 				},
-				impact = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
+				normal = {
+					power_level_glance = 50,
+					power_level = 100
+				},
+				hard = {
+					power_level_glance = 75,
+					power_level = 150
+				},
+				harder = {
+					power_level_glance = 100,
+					power_level = 200
+				},
+				hardest = {
+					power_level_glance = 150,
+					power_level = 300
+				},
+				survival_hard = {
+					power_level_glance = 150,
+					power_level = 300
+				},
+				survival_harder = {
+					power_level_glance = 200,
+					power_level = 400
+				},
+				survival_hardest = {
+					power_level_glance = 250,
+					power_level = 500
 				}
-			},
-			power_distribution = {
-				attack = 0.5,
-				impact = 0.5
 			}
 		},
 		aoe = {

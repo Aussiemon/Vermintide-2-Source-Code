@@ -4,8 +4,6 @@ ModManager = class(ModManager)
 ModManager.init = function (self)
 	self._loaded_packages = {}
 
-	self._start_scan(self)
-
 	return 
 end
 ModManager.update = function (self, dt)

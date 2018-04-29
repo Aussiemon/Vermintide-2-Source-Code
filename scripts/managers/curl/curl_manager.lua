@@ -49,9 +49,13 @@ local Request = {
 	end
 }
 CurlManager.update = function (self, handle_callbacks)
+	Deadlock.pause()
+
 	if 0 < self._multi:perform() then
 		self._multi:wait(0)
 	end
+
+	Deadlock.unpause()
 
 	local handle, ok, err = self._multi:info_read()
 

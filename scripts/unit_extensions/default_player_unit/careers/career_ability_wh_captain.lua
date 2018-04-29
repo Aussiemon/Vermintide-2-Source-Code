@@ -118,7 +118,7 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 	local buff_system = Managers.state.entity:system("buff_system")
 	local buff_to_add = "victor_witchhunter_activated_ability_crit_buff"
 
-	if talent_extension.has_talent(talent_extension, "victor_witchhunter_activated_ability_radius", "witch_hunter", true) then
+	if talent_extension.has_talent(talent_extension, "victor_witchhunter_activated_ability_duration", "witch_hunter", true) then
 		buff_to_add = "victor_witchhunter_activated_ability_duration"
 	end
 
@@ -171,7 +171,7 @@ CareerAbilityWHCaptain._run_ability = function (self, new_initial_speed)
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension.animation_event(first_person_extension, "ability_shout")
-		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_captain_shout_out", position)
+		WwiseUtils.trigger_unit_event(self._world, "Play_career_ability_captain_shout_out", owner_unit, 0)
 	end
 
 	self._play_vo(self)

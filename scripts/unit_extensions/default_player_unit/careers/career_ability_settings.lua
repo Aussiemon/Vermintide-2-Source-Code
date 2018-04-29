@@ -284,7 +284,6 @@ PassiveAbilitySettings = {
 			"kerillian_maidenguard_passive_dodge_speed",
 			"kerillian_maidenguard_passive_stamina_regen_aura",
 			"kerillian_maidenguard_passive_increased_stamina",
-			"kerillian_maidenguard_passive_damage_reduction",
 			"kerillian_maidenguard_passive_uninterruptible_revive",
 			"kerillian_maidenguard_ability_cooldown_on_hit",
 			"kerillian_maidenguard_ability_cooldown_on_damage_taken"

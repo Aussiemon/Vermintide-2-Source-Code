@@ -160,7 +160,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension.animation_event(first_person_extension, "unchained_ability_explosion")
-		WwiseUtils.trigger_position_event(self._world, "Play_career_ability_unchained_fire", position)
+		WwiseUtils.trigger_unit_event(self._world, "Play_career_ability_unchained_fire", owner_unit, 0)
 	end
 
 	self._play_vo(self)

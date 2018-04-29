@@ -14,18 +14,20 @@ HordeSettingsBasics = {
 	vector = {
 		max_size,
 		max_horde_spawner_dist = 15,
+		start_delay = 8,
+		max_hidden_spawner_dist = 20,
 		min_hidden_spawner_dist = 0,
 		main_path_dist_from_players = 30,
-		start_delay = 8,
 		max_spawners = 6,
-		max_hidden_spawner_dist = 20,
 		main_path_chance_spawning_ahead = 0.67,
+		raw_dist_from_players = 20,
 		min_horde_spawner_dist = 0
 	},
 	vector_blob = {
 		max_size,
 		start_delay = 1,
 		main_path_chance_spawning_ahead = 0.67,
+		raw_dist_from_players = 20,
 		main_path_dist_from_players = 60
 	}
 }
@@ -2659,9 +2661,10 @@ DebugBreedSpawns[#DebugBreedSpawns + 1] = {
 			chaos_exalted_sorcerer = true,
 			skaven_storm_vermin_warlord = true,
 			skaven_dummy_clan_rat = true,
-			chaos_plague_sorcerer = true,
+			chaos_plague_wave_spawner = true,
 			skaven_dummy_slave = true,
 			chaos_exalted_champion_norsca = true,
+			chaos_plague_sorcerer = true,
 			chaos_tentacle = true,
 			chaos_spawn_exalted_champion_norsca = true,
 			skaven_stormfiend_demo = true,

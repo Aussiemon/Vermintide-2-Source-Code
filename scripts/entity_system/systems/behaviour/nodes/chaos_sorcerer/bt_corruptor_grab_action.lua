@@ -30,9 +30,6 @@ BTCorruptorGrabAction.enter = function (self, unit, blackboard, t)
 end
 BTCorruptorGrabAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local sound_event = blackboard.action.grabbed_sound_event_2d_stop
-
-	self.play_grabbed_2d_sound(self, unit, blackboard, sound_event)
-
 	blackboard.move_state = nil
 
 	blackboard.navigation_extension:set_enabled(true)
@@ -243,9 +240,7 @@ BTCorruptorGrabAction.grab_player = function (self, unit, blackboard)
 		end
 
 		blackboard.grabbed_unit = blackboard.corruptor_target
-		local sound_event = blackboard.action.grabbed_sound_event_2d
-
-		self.play_grabbed_2d_sound(self, unit, blackboard, sound_event)
+		slot13 = blackboard.action.grabbed_sound_event_2d
 	else
 		blackboard.attack_aborted = true
 	end
@@ -259,24 +254,6 @@ BTCorruptorGrabAction.set_beam_state = function (self, unit, blackboard, state)
 
 	if unit_id then
 		Managers.state.network.network_transmit:send_rpc_all("rpc_set_corruptor_beam_state", unit_id, state, target_unit_id or unit_id)
-	end
-
-	return 
-end
-BTCorruptorGrabAction.play_grabbed_2d_sound = function (self, unit, blackboard, sound_event)
-	local player_unit = blackboard.corruptor_target
-	local player = Managers.player:unit_owner(player_unit)
-
-	if Unit.alive(player_unit) and player and not player.bot_player then
-		local audio_system_extension = Managers.state.entity:system("audio_system")
-		local sound_event_id = NetworkLookup.sound_events[sound_event]
-		local unit_id = NetworkUnit.game_object_id(player_unit)
-
-		if player.local_player then
-			WwiseUtils.trigger_unit_event(audio_system_extension.world, sound_event, player_unit, 0)
-		elseif unit_id then
-			Managers.state.network.network_transmit:send_rpc("rpc_server_audio_unit_event", player.peer_id, sound_event_id, unit_id, 0)
-		end
 	end
 
 	return 

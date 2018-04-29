@@ -767,14 +767,15 @@ PowerLevelTemplates = {
 			armor_modifier = {
 				attack = {
 					1,
-					0.5,
+					0.25,
 					1.5,
 					1,
-					0.75
+					0.75,
+					0
 				},
 				impact = {
 					0.9,
-					0.5,
+					0.25,
 					1,
 					1,
 					0.75
@@ -980,8 +981,8 @@ PowerLevelTemplates = {
 		}
 	},
 	cleave_distribution_smiter_default = {
-		attack = 0.075,
-		impact = 0.075
+		attack = 0.09,
+		impact = 0.09
 	},
 	critical_strike_smiter_L = {
 		attack_armor_power_modifer = {
@@ -1071,7 +1072,32 @@ PowerLevelTemplates = {
 			impact = 0.075
 		}
 	},
-	targets_smiter_L = {},
+	targets_smiter_L = {
+		[2] = {
+			boost_curve_type = "smiter_curve",
+			attack_template = "slashing_smiter",
+			armor_modifier = {
+				attack = {
+					1,
+					0.25,
+					1,
+					1,
+					0.75
+				},
+				impact = {
+					0.75,
+					0.25,
+					1,
+					1,
+					0.75
+				}
+			},
+			power_distribution = {
+				attack = 0.15,
+				impact = 0.1
+			}
+		}
+	},
 	critical_strike_smiter_M = {
 		attack_armor_power_modifer = {
 			1,
@@ -1582,6 +1608,22 @@ PowerLevelTemplates = {
 	cleave_distribution_tank_spiked_L = {
 		attack = 0.25,
 		impact = 0.25
+	},
+	armor_modifier_tank_spiked_L = {
+		attack = {
+			1,
+			0.25,
+			1,
+			1,
+			1
+		},
+		impact = {
+			1,
+			1,
+			0.5,
+			1,
+			1
+		}
 	},
 	default_target_tank_spiked_L = {
 		boost_curve_type = "tank_curve",

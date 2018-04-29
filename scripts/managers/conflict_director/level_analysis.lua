@@ -847,7 +847,9 @@ LevelAnalysis.give_events = function (self, main_paths, terror_spawners, num_sec
 			if event_settings.terror_events_using_packs then
 				self.enemy_recycler:add_terror_event_in_area(boxed_pos, terror_event_name, event_data)
 			else
-				self.enemy_recycler:add_main_path_terror_event(boxed_pos, terror_event_name, 45, event_data)
+				local activation_distance = (terror_event_kind == "event_patrol" and 65) or 45
+
+				self.enemy_recycler:add_main_path_terror_event(boxed_pos, terror_event_name, activation_distance, event_data)
 			end
 		end
 

@@ -83,7 +83,7 @@ BTConditions.target_changed_and_distant = function (blackboard)
 		elseif blackboard.target_dist and 15 < blackboard.target_dist then
 			local t = Managers.time:time("game")
 
-			return blackboard.next_rage_time < t
+			return blackboard.next_rage_time and blackboard.next_rage_time < t
 		else
 			blackboard.target_changed = nil
 		end
@@ -286,7 +286,8 @@ BTConditions.reset_utility = function (blackboard)
 end
 BTConditions.is_alerted = function (blackboard)
 	local alerted = unit_alive(blackboard.target_unit) and blackboard.is_alerted and (not blackboard.confirmed_player_sighting or blackboard.hesitating)
-	local taunt_hesitate = blackboard.taunt_unit and not blackboard.taunt_hesitate_finished and not blackboard.no_taunt_hesitate
+	local is_taunted = unit_alive(blackboard.taunt_unit)
+	local taunt_hesitate = is_taunted and not blackboard.taunt_hesitate_finished and not blackboard.no_taunt_hesitate
 
 	return alerted or taunt_hesitate
 end

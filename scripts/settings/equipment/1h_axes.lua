@@ -273,27 +273,27 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_right",
-					start_time = 0.65,
+					start_time = 0.55,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default_right",
-					start_time = 0.65,
+					start_time = 0.55,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.4,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -337,27 +337,27 @@ weapon_template.actions = {
 			allowed_chain_actions = {
 				{
 					sub_action = "default_left",
-					start_time = 0.65,
+					start_time = 0.55,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one"
 				},
 				{
 					sub_action = "default_left",
-					start_time = 0.65,
+					start_time = 0.55,
 					action = "action_one",
 					release_required = "action_one_hold",
 					input = "action_one_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.4,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.5,
+					start_time = 0.4,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -648,7 +648,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
-			anim_time_scale = time_mod * 1.1,
+			anim_time_scale = time_mod * 1.25,
 			buff_data = {
 				{
 					start_time = 0,
@@ -666,20 +666,20 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.65,
+					start_time = 0,
 					action = "action_two",
 					release_required = "action_two_hold",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.65,
+					start_time = 0.48,
 					action = "action_two",
 					input = "action_two_hold"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.65,
+					start_time = 0.48,
 					action = "action_wield",
 					input = "action_wield"
 				}
@@ -735,7 +735,7 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "light_attack_bopp",
-					start_time = 0.3,
+					start_time = 0.2,
 					action = "action_one",
 					doubleclick_window = 0,
 					end_time = 0.8,

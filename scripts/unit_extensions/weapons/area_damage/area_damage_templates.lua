@@ -12,7 +12,7 @@ AreaDamageTemplates.templates = {
 
 				local area_damage_position = Unit.local_position(unit, 0)
 
-				if 0 < damage_timer and damage_timer < damage_interval then
+				if 0 <= damage_timer and damage_timer < damage_interval then
 					return false
 				end
 

@@ -1728,7 +1728,9 @@ HitEffectsChaosMarauder = {
 		extra_conditions = {
 			hit_zone = {
 				"left_arm",
-				"right_arm"
+				"right_arm",
+				"left_leg",
+				"right_leg"
 			}
 		},
 		animations = {

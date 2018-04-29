@@ -4,6 +4,7 @@ local WARLORD_DEFENSIVE = {
 	{
 		"BTChampionAttackAction",
 		name = "defensive_mode_spin",
+		condition = "can_see_player",
 		action_data = ACTIONS.defensive_mode_spin
 	},
 	condition = "should_be_defensive",

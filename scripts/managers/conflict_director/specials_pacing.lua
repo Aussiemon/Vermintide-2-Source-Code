@@ -208,7 +208,7 @@ SpecialsPacing.specials_by_slots = function (self, t, specials_settings, method_
 			for i = 1, num_slots, 1 do
 				local slot = slots[i]
 				local breed_name = SpecialsPacing.select_breed_functions[method_data.select_next_breed](slots, specials_settings.breeds, method_data)
-				slot.time = coordinated_time + i
+				slot.time = coordinated_time + i * 2
 				slot.breed = breed_name
 				slot.unit = nil
 				slot.state = "waiting"
@@ -332,32 +332,34 @@ SpecialsPacing.update = function (self, t, alive_specials, specials_population, 
 
 			SpecialsPacing[self.method_name](self, t, specials_settings, method_data, self._specials_slots, specials_spawn_queue, alive_specials)
 		end
-	end
 
-	if 0 < #specials_spawn_queue then
-		local slot = specials_spawn_queue[#specials_spawn_queue]
-		local breed = Breeds[slot.breed]
-		local spawn_pos = self.get_special_spawn_pos(self, breed.spawning_rule)
+		if 0 < #specials_spawn_queue then
+			local slot = specials_spawn_queue[#specials_spawn_queue]
+			local breed = Breeds[slot.breed]
+			local spawn_pos = self.get_special_spawn_pos(self, breed.spawning_rule)
 
-		if spawn_pos then
-			local new_special = Managers.state.conflict:spawn_unit(breed, spawn_pos, Quaternion(Vector3.up(), 0), "specials_pacing")
-			slot.unit = new_special
-			slot.state = "alive"
-			alive_specials[#alive_specials + 1] = new_special
-			specials_spawn_queue[#specials_spawn_queue] = nil
-			self._specials_timer = t + 0.5
+			if spawn_pos then
+				local new_special = Managers.state.conflict:spawn_unit(breed, spawn_pos, Quaternion(Vector3.up(), 0), "specials_pacing")
+				slot.unit = new_special
+				slot.state = "alive"
+				alive_specials[#alive_specials + 1] = new_special
+				specials_spawn_queue[#specials_spawn_queue] = nil
+				self._specials_timer = t + 0.5
+			else
+				self._specials_timer = t + 1
+			end
 		end
 	end
 
 	return 
 end
-SpecialsPacing.lord_reset_spawning = function (self, t, delay)
+SpecialsPacing.delay_spawning = function (self, t, delay, per_unit_delay)
 	self._specials_timer = t + delay
 	local slots = self._specials_slots
 
 	for i = 1, #slots, 1 do
 		local slot = slots[i]
-		slot.time = t + delay
+		slot.time = t + delay + per_unit_delay * i
 		slot.state = "waiting"
 	end
 
@@ -451,22 +453,9 @@ SpecialsPacing.get_special_spawn_pos = function (self, spawning_rule)
 	print(debug_string)
 
 	if not pos then
-		print("FAIL: Special spawn no hidden pos found :/ using main-path 40m ahead fall back")
+		print("FAIL: Special spawn no hidden pos found :/ ")
 
-		if ahead_unit then
-			local fail = nil
-			pos, fail = self.get_relative_main_path_pos(self, main_paths, main_path_player_info[ahead_unit], 40)
-
-			if fail then
-				pos = ConflictUtils.get_spawn_pos_on_circle(self.nav_world, epicenter, 30, 10, 20)
-
-				if not pos then
-					print("\t--> fail to find random spawn pos")
-
-					return 
-				end
-			end
-		end
+		return 
 	end
 
 	return pos
