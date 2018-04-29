@@ -1348,7 +1348,7 @@ AiBreedSnippets.on_chaos_exalted_champion_norsca_death = function (unit, blackbo
 
 	local t = Managers.time:time("game")
 
-	Managers.state.conflict.specials_pacing:delay_spawning(t, 40)
+	Managers.state.conflict.specials_pacing:delay_spawning(t, 40, 20)
 
 	if blackboard.is_angry then
 		conflict_director.add_angry_boss(conflict_director, -1)
