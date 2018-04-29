@@ -1,7 +1,5 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 LevelAnalysis = class(LevelAnalysis)
 
 require("scripts/utils/util")
@@ -440,7 +438,7 @@ LevelAnalysis.update_main_path_generation = function (self)
 
 	while i <= size do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		local a_star = astar_list[i][1]
 		local result = GwNavAStar.processing_finished(a_star)
 	end
@@ -1642,11 +1640,42 @@ for i = 1, 16, 1 do
 end
 
 LevelAnalysis.debug = function (self, t)
-
-	-- decompilation error in this vicinity
 	local debug_text = Managers.state.debug_text
 
 	debug_text.clear_world_text(debug_text, "boss")
+
+	if false and not self._debug_boss_spawning then
+		local terror_spawners = self.terror_spawners
+		local h = Vector3(0, 0, 22)
+		local th = 0
+
+		for name, data in pairs(terror_spawners) do
+			local h = Vector3(0, 0, 22 + th)
+			local spawners = data.spawners
+
+			for i = 1, #spawners, 1 do
+				local spawner = spawners[i]
+				local unit = spawner[1]
+				local map_section_index = spawner[3]
+				local pos1 = Unit.local_position(unit, 0)
+				local pos2 = pos1 + h
+				local c = Colors.distinct_colors_lookup[(map_section_index + 3) % 10]
+				local color = Color(c[1], c[2], c[3])
+
+				QuickDrawerStay:line(pos1, pos2, color)
+				debug_text.output_world_text(debug_text, name, 0.5, pos2, nil, "boss_spawning", Vector3(c[1], c[2], c[3]), "player_1")
+
+				local wanted_distance = spawner[2]
+				local main_path_pos = MainPathUtils.point_on_mainpath(self.main_paths, wanted_distance)
+
+				QuickDrawerStay:line(pos2, main_path_pos, color)
+			end
+
+			th = th + 0.5
+		end
+
+		self._debug_boss_spawning = true
+	end
 
 	if self.path_markers then
 		for i = 1, #self.path_markers, 1 do

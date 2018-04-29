@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 LocalizationManager = class(LocalizationManager)
 LocalizationManager.init = function (self, path)
 	self.path = path
@@ -90,9 +88,8 @@ local function change_locale(locale)
 end
 
 local function update_locale_cycling(dt)
-
-	-- decompilation error in this vicinity
 	local pressed = false
+	pressed = (true or not DebugKeyHandler.enabled or DebugKeyHandler.key_pressed("k", "cycle locale", "gui", "left shift")) and cycle and shift
 
 	if not cycle_last_frame and pressed then
 		current_locale = current_locale + 1

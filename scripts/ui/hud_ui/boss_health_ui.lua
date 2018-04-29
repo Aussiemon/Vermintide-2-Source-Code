@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 local definitions = local_require("scripts/ui/hud_ui/boss_health_ui_definitions")
 local bar_length = definitions.bar_length
 local portrait_scale = 1
@@ -161,6 +159,35 @@ BossHealthUI.event_show_boss_health_bar = function (self, unit)
 	if unit and AiUtils.unit_alive(unit) then
 		local breed = Unit.get_data(unit, "breed")
 		local should_show_health_bar = false
+
+		if breed and breed.server_controlled_health_bar then
+			local game = Managers.state.network:game()
+			local go_id = Managers.state.unit_storage:go_id(unit)
+			local show_health_bar_field = go_id and GameSession.game_object_field(game, go_id, "show_health_bar")
+
+			if show_health_bar_field then
+				should_show_health_bar = true
+			end
+		else
+			should_show_health_bar = breed and breed.boss
+		end
+
+		if should_show_health_bar then
+			local breed_name = breed.name
+			self._switch_healthbars = self._boss_unit and unit ~= self._boss_unit
+			self._breed_name = breed_name
+
+			self._set_portrait_by_breed(self, breed_name)
+
+			self.render_settings.alpha_multiplier = (not self._boss_unit and 0) or self.render_settings.alpha_multiplier
+			self._boss_unit = unit
+
+			self._set_healing_amount(self, 0, 0)
+			self._set_health_effect_alpha(self, 0)
+
+			self._freeze_healing = false
+			self._next_update_is_instant = true
+		end
 	end
 
 	return 

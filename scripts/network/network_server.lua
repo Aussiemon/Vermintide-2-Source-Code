@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/network/peer_state_machine")
 require("scripts/network/connection_handler")
 require("scripts/network/voip")
@@ -96,10 +94,9 @@ NetworkServer.num_active_peers = function (self)
 end
 NetworkServer.rpc_notify_connected = function (self, sender)
 	if sender == self.my_peer_id then
-
-		-- decompilation error in this vicinity
 		local profile_index = nil
 		local level_settings = self.level_key and LevelSettings[self.level_key]
+		profile_index = (not level_settings or level_settings.game_mode ~= "tutorial" or self.wanted_profile_index) and (wanted_profile_index or self.profile_synchronizer:get_first_free_profile())
 
 		self.peer_state_machines[sender].rpc_notify_lobby_joined(profile_index)
 	end

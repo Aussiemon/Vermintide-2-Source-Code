@@ -1293,7 +1293,7 @@ TutorialUI._get_next_verified = function (self, queue, t)
 
 	while true do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		local entry_id, entry = next(queue)
 
 		if not entry_id then

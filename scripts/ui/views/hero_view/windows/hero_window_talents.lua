@@ -329,7 +329,7 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 
 		for j = 1, NumTalentColumns, 1 do
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			local is_selected = selected_column == j
 			local talent_name = tree[i][j]
 			local id = TalentIDLookup[talent_name]

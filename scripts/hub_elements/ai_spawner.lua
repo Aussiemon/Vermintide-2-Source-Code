@@ -1,13 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/settings/breeds")
 
 AISpawner = class(AISpawner)
@@ -27,6 +17,14 @@ AISpawner.init = function (self, world, unit)
 			local terror_event_id = Unit.get_data(unit, "terror_event_id")
 
 			if terror_event_id then
+				if terror_event_id ~= "" then
+				else
+					terror_event_id = false
+
+					if false then
+						terror_event_id = true
+					end
+				end
 			end
 
 			local hidden = Unit.get_data(unit, "hidden")
@@ -37,8 +35,6 @@ AISpawner.init = function (self, world, unit)
 			local animation_events = {}
 
 			while Unit.has_data(unit, "spawner_settings", spawner_name, "animation_events", i) do
-
-				-- decompilation error in this vicinity
 				animation_events[#animation_events + 1] = Unit.get_data(unit, "spawner_settings", spawner_name, "animation_events", i)
 				i = i + 1
 			end
@@ -52,9 +48,18 @@ AISpawner.init = function (self, world, unit)
 			self._next_spawn = 0
 		end
 	else
-
-		-- decompilation error in this vicinity
 		local terror_event_id = Unit.get_data(self._unit, "terror_event_id")
+
+		if terror_event_id then
+			if terror_event_id ~= "" then
+			else
+				terror_event_id = false
+
+				if false then
+					terror_event_id = true
+				end
+			end
+		end
 
 		self._spawner_system:register_raw_spawner(self._unit, terror_event_id)
 	end

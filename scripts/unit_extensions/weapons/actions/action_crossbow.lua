@@ -86,7 +86,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 						end
 					elseif 1 < self.num_projectiles_shot and not current_action.burst then
 						local spread_horizontal_angle = math.pi * (self.num_projectiles_shot % 2 + 0.5)
-						local shot_count_offset = (self.num_projectiles_shot ~= 1 or 0) and math.round((self.num_projectiles_shot - 1) / 2, 0)
+						local shot_count_offset = (self.num_projectiles_shot == 1 and 0) or math.round((self.num_projectiles_shot - 1) / 2, 0)
 						local angle_offset = self.multi_projectile_spread * shot_count_offset
 						fire_rotation = spread_extension.combine_spread_rotations(spread_extension, spread_horizontal_angle, angle_offset, fire_rotation)
 					end

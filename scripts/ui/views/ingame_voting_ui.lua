@@ -424,7 +424,7 @@ IngameVotingUI.update_pulse_animations = function (self, dt, hold_input_pressed)
 	local menu_active = self.menu_active
 	local speed_multiplier = (menu_active and 5) or 8
 	local time_since_launch = Application.time_since_launch()
-	local progress = (not menu_active or not hold_input_pressed or 0) and 0.5 + math.sin(time_since_launch * speed_multiplier) * 0.5
+	local progress = (menu_active and hold_input_pressed and 0) or 0.5 + math.sin(time_since_launch * speed_multiplier) * 0.5
 
 	if menu_active then
 		slot7 = 50 + progress * 50

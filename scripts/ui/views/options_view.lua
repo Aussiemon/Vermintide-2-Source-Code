@@ -2300,7 +2300,7 @@ OptionsView.handle_exit_button_popup_results = function (self, result)
 end
 OptionsView.update_apply_button = function (self)
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	local widget = self.apply_button
 
 	if self.changes_been_made(self) then

@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 HordeSpawner = class(HordeSpawner)
 local player_and_bot_positions = PLAYER_AND_BOT_POSITIONS
 local horde_sectors = {
@@ -1414,12 +1412,16 @@ HordeSpawner.filter_angle = function (self, center_pos, pos_list, dot_angle)
 	return 
 end
 HordeSpawner.get_point_on_main_path = function (self, pos, distance, confirm_with_far_astar)
-
-	-- decompilation error in this vicinity
 	local level_analysis = self.conflict_director.level_analysis
 	local main_paths = level_analysis.get_main_paths(level_analysis)
 	local path_pos, travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, pos)
 	local behind_pos = MainPathUtils.point_on_mainpath(main_paths, travel_dist + distance)
+
+	if false and confirm_with_far_astar then
+		local path_found = Managers.state.conflict.navigation_group_manager:a_star_cached_between_positions(pos, behind_pos)
+
+		return path_found and behind_pos
+	end
 
 	return behind_pos
 end

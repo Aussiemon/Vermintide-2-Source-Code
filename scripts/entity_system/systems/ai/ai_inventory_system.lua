@@ -151,7 +151,7 @@ AIInventorySystem.update = function (self, context, t, dt)
 		extension.wielded = true
 		local inventory_item_definitions = extension.inventory_item_definitions
 		local inventory_item_units = extension.inventory_item_units
-		local inventory_items_n = (not extension.dropped or 0) and extension.inventory_items_n
+		local inventory_items_n = (extension.dropped and 0) or extension.inventory_items_n
 
 		if script_data.ai_debug_inventory and extension.dropped then
 			printf("[AIInventorySystem] unit[%s] wants to wield items, but have already been told to drop everything", tostring(unit))

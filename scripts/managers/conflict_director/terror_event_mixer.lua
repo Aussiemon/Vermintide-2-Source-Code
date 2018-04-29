@@ -1,7 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/settings/terror_event_blueprints")
 
 TerrorEventMixer = TerrorEventMixer or {}
@@ -350,8 +346,6 @@ TerrorEventMixer.run_functions = {
 
 			conflict_director.spawn_group(conflict_director, patrol_template, position, patrol_data)
 		else
-
-			-- decompilation error in this vicinity
 			formations = (data and data.formations) or element.formations
 			local num_formations = #formations
 			local random_index = (1 < num_formations and math.random(num_formations)) or 1
@@ -361,9 +355,15 @@ TerrorEventMixer.run_functions = {
 
 			local spline_name = nil
 			local splines = element.splines
-			local num_splines = #splines
-			local random_index = (1 < num_splines and math.random(num_splines)) or 1
-			spline_name = splines[random_index] and data and data.spline_id
+
+			if splines then
+				local num_splines = #splines
+				local random_index = (1 < num_splines and math.random(num_splines)) or 1
+				spline_name = splines[random_index]
+			else
+				spline_name = data and data.spline_id
+			end
+
 			local ai_group_system = Managers.state.entity:system("ai_group_system")
 			local spline_start_position = nil
 			local difficulty = Managers.state.difficulty:get_difficulty()

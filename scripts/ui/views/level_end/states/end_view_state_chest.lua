@@ -842,7 +842,7 @@ EndViewStateChest._animate_score_progress = function (self, dt, t)
 
 		if current_entry_display_index == num_score_entries then
 			local wait_with_zoom = animation_progress == 1
-			self._chest_zoom_wait_duration = (not wait_with_zoom or 0) and CHEST_PRESENTATION_ZOOM_WAIT_TIME
+			self._chest_zoom_wait_duration = (wait_with_zoom and 0) or CHEST_PRESENTATION_ZOOM_WAIT_TIME
 		else
 			self._display_next_score_entry(self)
 		end

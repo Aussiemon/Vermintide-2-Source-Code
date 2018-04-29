@@ -199,7 +199,7 @@ SimpleInventoryExtension.add_equipment_by_category = function (self, category)
 
 	for i = 1, num_slots, 1 do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		local slot = category_slots[i]
 		local slot_name = slot.name
 		local item = BackendUtils.get_loadout_item(career_name, slot_name)

@@ -332,11 +332,11 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 				temporary_damage_amount = (current_temporary_health < damage_amount and current_temporary_health) or damage_amount
 			end
 
-			local new_health = (current_health >= permanent_damage_amount or 0) and current_health - permanent_damage_amount
+			local new_health = (current_health < permanent_damage_amount and 0) or current_health - permanent_damage_amount
 
 			GameSession.set_game_object_field(game, game_object_id, "current_health", new_health)
 
-			local new_temporary_health = (current_temporary_health >= temporary_damage_amount or 0) and current_temporary_health - temporary_damage_amount
+			local new_temporary_health = (current_temporary_health < temporary_damage_amount and 0) or current_temporary_health - temporary_damage_amount
 
 			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
 
@@ -378,7 +378,7 @@ PlayerUnitHealthExtension.add_heal = function (self, healer_unit, heal_amount, h
 		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
 		if self.status_extension:is_permanent_heal(heal_type) and not self.status_extension:is_knocked_down() then
-			local new_temporary_health = (current_temporary_health >= heal_amount or 0) and current_temporary_health - heal_amount
+			local new_temporary_health = (current_temporary_health < heal_amount and 0) or current_temporary_health - heal_amount
 
 			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
 

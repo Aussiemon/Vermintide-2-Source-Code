@@ -91,7 +91,7 @@ BTConditions.can_activate.dr_ranger = function (blackboard)
 	local threat_threshold = (is_prioritized and ally_distance < 5 and 5) or 12
 	local current_health_percent = blackboard.health_extension:current_health_percent()
 	local is_wounded = blackboard.status_extension:is_wounded()
-	local health_multiplier = 2 - ((not is_wounded or 0) and current_health_percent)
+	local health_multiplier = 2 - ((is_wounded and 0) or current_health_percent)
 
 	for i = 1, num_proximite_enemies, 1 do
 		local enemy_unit = proximite_enemies[i]
@@ -146,7 +146,7 @@ BTConditions.can_activate.es_mercenary = function (blackboard)
 	local threat_threshold = math.max(20 * (1 - near_players_percentage), 8)
 	local current_health_percent = blackboard.health_extension:current_health_percent()
 	local is_wounded = blackboard.status_extension:is_wounded()
-	local health_multiplier = 2 - ((not is_wounded or 0) and current_health_percent)
+	local health_multiplier = 2 - ((is_wounded and 0) or current_health_percent)
 
 	for i = 1, num_proximite_enemies, 1 do
 		local enemy_unit = proximite_enemies[i]
@@ -376,7 +376,7 @@ BTConditions.can_activate.wh_captain = function (blackboard)
 	local threat_threshold = math.max(20 * (1 - near_players_percentage), 8)
 	local current_health_percent = blackboard.health_extension:current_health_percent()
 	local is_wounded = blackboard.status_extension:is_wounded()
-	local health_multiplier = 2 - ((not is_wounded or 0) and current_health_percent)
+	local health_multiplier = 2 - ((is_wounded and 0) or current_health_percent)
 
 	for i = 1, num_proximite_enemies, 1 do
 		local enemy_unit = proximite_enemies[i]

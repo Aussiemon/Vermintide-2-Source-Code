@@ -1658,7 +1658,7 @@ ConflictDirector.destroy_close_units = function (self, except_unit, dist_squared
 
 	while i <= list_size do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		local unit = spawned[i]
 		local remove_unit = nil
 

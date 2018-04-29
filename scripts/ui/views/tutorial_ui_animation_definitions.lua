@@ -23,7 +23,7 @@ local info_slate_enter = {
 
 			for name, style_data in pairs(widget.style) do
 				if style_data.color then
-					style_data.color[1] = (not style_data.background_component or 0) and style_data.default_alpha
+					style_data.color[1] = (style_data.background_component and 0) or style_data.default_alpha
 				end
 			end
 

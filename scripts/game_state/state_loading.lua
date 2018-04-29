@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/game_state/loading_sub_states/win32/state_loading_running")
 require("scripts/game_state/loading_sub_states/win32/state_loading_restart_network")
 require("scripts/game_state/loading_sub_states/win32/state_loading_migrate_host")
@@ -165,11 +163,20 @@ StateLoading._setup_world = function (self)
 	return 
 end
 StateLoading._setup_init_network_view = function (self)
+	if Development.parameter("goto_endoflevel") and false then
+		require("scripts/game_state/state_loading")
 
-	-- decompilation error in this vicinity
-	require("scripts/game_state/state_ingame")
+		local async = false
 
-	self._wanted_state = StateIngame
+		Managers.package:load("resource_packages/levels/dicegame", "state_loading", nil, async)
+
+		self.parent.loading_context.play_end_of_level_game = true
+		self._wanted_state = StateLoading
+	else
+		require("scripts/game_state/state_ingame")
+
+		self._wanted_state = StateIngame
+	end
 
 	return 
 end

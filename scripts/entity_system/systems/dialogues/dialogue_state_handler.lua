@@ -55,7 +55,7 @@ DialogueStateHandler.update = function (self, t)
 		self._current_index = 1 + self._current_index % #self._playing_dialogues
 		num_checks = num_checks + 1
 
-		if self._current_index ~= start_index and MAX_DIALOGUE_CHECKS_PER_FRAME <= num_checks then
+		if self._current_index == start_index or MAX_DIALOGUE_CHECKS_PER_FRAME <= num_checks then
 			break
 		end
 	end

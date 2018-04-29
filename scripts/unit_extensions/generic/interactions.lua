@@ -286,7 +286,7 @@ InteractionDefinitions.revive = {
 				return 0
 			end
 
-			return (data.start_time ~= nil or 0) and math.min(1, (t - data.start_time) / duration)
+			return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / duration)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
 			local status_extension = ScriptUnit.extension(interactable_unit, "status_system")
@@ -314,7 +314,7 @@ InteractionDefinitions.revive = {
 				end
 
 				local t = Managers.time:time("game")
-				local interaction_progress = (not config.duration or data.start_time ~= nil or 0) and math.min(1, (t - data.start_time) / config.duration)
+				local interaction_progress = (config.duration and data.start_time == nil and 0) or math.min(1, (t - data.start_time) / config.duration)
 				local is_interacting = interaction_progress and 0 < interaction_progress
 				local interaction_action_description = (is_interacting and "interaction_action_reviving") or "interaction_action_revive"
 
@@ -429,7 +429,7 @@ InteractionDefinitions.pull_up = {
 				return 0
 			end
 
-			return (data.start_time ~= nil or 0) and math.min(1, (t - data.start_time) / config.duration)
+			return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / config.duration)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
 			local status_extension = ScriptUnit.extension(interactable_unit, "status_system")
@@ -528,7 +528,7 @@ InteractionDefinitions.release_from_hook = {
 				return 0
 			end
 
-			return (data.start_time ~= nil or 0) and math.min(1, (t - data.start_time) / config.duration)
+			return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / config.duration)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
 			local status_extension = ScriptUnit.extension(interactable_unit, "status_system")
@@ -632,7 +632,7 @@ InteractionDefinitions.assisted_respawn = {
 				return 0
 			end
 
-			return (data.start_time ~= nil or 0) and math.min(1, (t - data.start_time) / config.duration)
+			return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / config.duration)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
 			local status_extension = ScriptUnit.extension(interactable_unit, "status_system")
@@ -770,7 +770,7 @@ InteractionDefinitions.smartobject = {
 				return 0
 			end
 
-			return (data.start_time ~= nil or 0) and math.min(1, (t - data.start_time) / data.duration)
+			return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / data.duration)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
 			local used = Unit.get_data(interactable_unit, "interaction_data", "used")
@@ -1198,7 +1198,7 @@ InteractionDefinitions.pickup_object = {
 				return nil
 			end
 
-			return (data.start_time ~= nil or 0) and math.min(1, (t - data.start_time) / data.duration)
+			return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / data.duration)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config, world)
 			local return_value = not Unit.get_data(interactable_unit, "interaction_data", "used")
@@ -1404,7 +1404,7 @@ InteractionDefinitions.give_item = {
 				return 0
 			end
 
-			return (data.start_time ~= nil or 0) and math.min(1, (t - data.start_time) / config.duration)
+			return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / config.duration)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
 			if not ScriptUnit.has_extension(interactable_unit, "health_system") then
@@ -1616,7 +1616,7 @@ InteractionDefinitions.heal = {
 				return 0
 			end
 
-			return (data.start_time ~= nil or 0) and math.min(1, (t - data.start_time) / config.duration)
+			return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / config.duration)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
 			if not ScriptUnit.has_extension(interactable_unit, "health_system") then
@@ -1667,7 +1667,7 @@ InteractionDefinitions.heal = {
 				end
 
 				local t = Managers.time:time("game")
-				local interaction_progress = (not config.duration or data.start_time ~= nil or 0) and math.min(1, (t - data.start_time) / config.duration)
+				local interaction_progress = (config.duration and data.start_time == nil and 0) or math.min(1, (t - data.start_time) / config.duration)
 				local is_interacting = interaction_progress and 0 < interaction_progress
 				local interaction_action_description = (is_interacting and "interaction_action_healing") or "interaction_action_heal"
 

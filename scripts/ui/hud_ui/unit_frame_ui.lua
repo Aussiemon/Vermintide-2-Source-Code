@@ -942,7 +942,7 @@ UnitFrameUI._on_player_health_changed = function (self, name, widget, health_per
 		end
 
 		local animate_damage_highlight = (not is_knocked_down and health_percent < (health_percent_current or 1)) or false
-		bar_animation.animate_damage_highlight = (not animate_damage_highlight or 0) and bar_animation.animate_damage_highlight
+		bar_animation.animate_damage_highlight = (animate_damage_highlight and 0) or bar_animation.animate_damage_highlight
 		bar_animation.animate = true
 		bar_animation.new_value = health_percent
 		bar_animation.previous_value = current_bar_health
@@ -977,7 +977,7 @@ UnitFrameUI._on_player_total_health_changed = function (self, name, widget, tota
 		end
 
 		local animate_bar_flash = (not is_knocked_down and total_health_percent < (total_health_percent_current or 1)) or false
-		bar_animation.animate_bar_flash = (not animate_bar_flash or 0) and bar_animation.animate_bar_flash
+		bar_animation.animate_bar_flash = (animate_bar_flash and 0) or bar_animation.animate_bar_flash
 		bar_animation.animate = true
 		bar_animation.new_value = total_health_percent
 		bar_animation.previous_value = current_bar_total_health

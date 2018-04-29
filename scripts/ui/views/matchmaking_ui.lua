@@ -468,7 +468,7 @@ MatchmakingUI.update_debug = function (self)
 end
 MatchmakingUI.update_debug_lobbies = function (self)
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	local matchmaking_manager = Managers.matchmaking
 	local search_data = matchmaking_manager.state_context.game_search_data
 	self.debug_lobbies_widget.content.debug_text = string.lower(debug_text)

@@ -21,7 +21,7 @@ Path.path_from_string = function (string_path)
 		path_n = path_n + 1
 		path[path_n] = path_part
 
-		if next_slash_index ~= nil and next_slash_index == string_path_len then
+		if next_slash_index == nil or next_slash_index == string_path_len then
 			break
 		end
 

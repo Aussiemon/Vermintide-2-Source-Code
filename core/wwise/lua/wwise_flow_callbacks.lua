@@ -1,13 +1,5 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 local WwiseVisualization = require("core/wwise/lua/wwise_visualization")
 local WwiseBankReference = require("core/wwise/lua/wwise_bank_reference")
 WwiseFlowCallbacks = WwiseFlowCallbacks or {}
@@ -191,11 +183,22 @@ M.wwise_trigger_event = function (t)
 end
 
 local function make_source(t, wwise_world_function)
-
-	-- decompilation error in this vicinity
 	local unit = t.Unit or t.unit
 	local r1 = nil
 	local wwise_world = Wwise.wwise_world(Application.flow_callback_context_world())
+
+	if unit then
+		local unit_node_index = Script.index_offset()
+
+		if t.Unit_Node or t.unit_node then
+			unit_node_index = Unit.node(unit, t.Unit_Node or t.unit_node)
+		end
+
+		r1 = wwise_world_function(wwise_world, unit, unit_node_index)
+	else
+		position = t.Position or t.position
+		r1 = (not position or wwise_world_function(wwise_world, position)) and (not source_id or wwise_world_function(wwise_world, source_id)) and wwise_world_function(wwise_world)
+	end
 
 	return r1
 end
@@ -373,7 +376,7 @@ M.wwise_add_soundscape_source = function (t)
 
 	if unit then
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		local positioning_map = {
 			closest = Wwise.POSITIONING_CLOSEST_TO_LISTENER,
 			["random in shape"] = Wwise.POSITIONING_RANDOM_IN_SHAPE,

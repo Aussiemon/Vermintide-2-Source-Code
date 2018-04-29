@@ -532,7 +532,7 @@ ProximitySystem._update_nearby_enemies = function (self)
 
 			while higher_index <= list_len do
 
-				-- decompilation error in this vicinity
+				-- Decompilation error in this vicinity:
 				lower_index = higher_index
 				higher_index = higher_index + 1
 				local lower_unit = higher_unit

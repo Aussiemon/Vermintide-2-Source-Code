@@ -1,13 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 ActionUtils = ActionUtils or {}
 script_data.no_critical_strikes = script_data.no_critical_strikes or Development.parameter("no_critical_strikes")
 script_data.always_critical_strikes = script_data.always_critical_strikes or Development.parameter("always_critical_strikes")
@@ -91,12 +81,12 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 
 	if critical_armor_power_modifier and critical_armor_power_modifier[target_unit_armor] then
 		armor_power_modifier = (target_unit_primary_armor and critical_armor_power_modifier[target_unit_primary_armor]) or critical_armor_power_modifier[target_unit_armor]
-	else
-
-		-- decompilation error in this vicinity
+	elseif armor_modifier_near and armor_modifier_far and dropoff_scalar then
 		local armor_power_modifier_near = (target_unit_primary_armor and armor_modifier_near[power_type][target_unit_primary_armor]) or armor_modifier_near[power_type][target_unit_armor] or 1
 		local armor_power_modifier_far = (target_unit_primary_armor and armor_modifier_far[power_type][target_unit_primary_armor]) or armor_modifier_far[power_type][target_unit_armor] or 1
-		armor_power_modifier = math.lerp(armor_power_modifier_near, armor_power_modifier_far, dropoff_scalar) and ((target_unit_primary_armor and armor_modifier[power_type][target_unit_primary_armor]) or armor_modifier[power_type][target_unit_armor] or 1)
+		armor_power_modifier = math.lerp(armor_power_modifier_near, armor_power_modifier_far, dropoff_scalar)
+	else
+		armor_power_modifier = (target_unit_primary_armor and armor_modifier[power_type][target_unit_primary_armor]) or armor_modifier[power_type][target_unit_armor] or 1
 	end
 
 	return armor_power_modifier
@@ -151,14 +141,13 @@ ActionUtils.scale_powerlevels = function (power_level, power_type, attacker_unit
 	return scaled_powerlevel
 end
 ActionUtils.get_power_level = function (power_type, power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit)
-
-	-- decompilation error in this vicinity
 	local power_distribution = target_settings.power_distribution or damage_profile.power_distribution or DefaultPowerDistribution
 	local power_distribution_near = target_settings.power_distribution_near or damage_profile.power_distribution_near
 	local power_distribution_far = target_settings.power_distribution_far or damage_profile.power_distribution_far
 	local power_multiplier = nil
 
-	if power_distribution_near and power_distribution_far and dropoff_scalar then
+	if critical_strike_settings and false then
+	elseif power_distribution_near and power_distribution_far and dropoff_scalar then
 		local power_near = power_distribution_near[power_type]
 		local power_far = power_distribution_far[power_type]
 		power_multiplier = math.lerp(power_near, power_far, dropoff_scalar)

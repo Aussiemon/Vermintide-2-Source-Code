@@ -72,7 +72,7 @@ ModManager._load_mod = function (self, index)
 		print(info)
 
 		local mod_data = 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		loadstring(info)()
 		self._mod_index = index
 		self._mod = mod

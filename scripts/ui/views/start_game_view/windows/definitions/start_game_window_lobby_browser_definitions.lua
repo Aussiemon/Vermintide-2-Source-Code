@@ -923,8 +923,8 @@ local function sort_level_list(a, b)
 	local level_settings = LevelSettings
 	local a_map_settings = level_settings[a].map_settings
 	local b_map_settings = level_settings[b].map_settings
-	local a_sorting_index = (not a_map_settings or (not a_map_settings.sorting and 0)) and 0
-	local b_sorting_index = (not b_map_settings or (not b_map_settings.sorting and 0)) and 0
+	local a_sorting_index = (a_map_settings and (a_map_settings.sorting or 0)) or 0
+	local b_sorting_index = (b_map_settings and (b_map_settings.sorting or 0)) or 0
 
 	return a_sorting_index < b_sorting_index
 end

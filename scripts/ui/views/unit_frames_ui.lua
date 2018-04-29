@@ -786,7 +786,7 @@ UnitFramesUI.on_player_health_changed = function (self, name, widget, health_per
 		end
 
 		local animate_highlight = (not is_knocked_down and health_percent < (health_percent_current or 1)) or false
-		widget_animation_data.animate_highlight = (not animate_highlight or 0) and widget_animation_data.animate_highlight
+		widget_animation_data.animate_highlight = (animate_highlight and 0) or widget_animation_data.animate_highlight
 		widget_animation_data.animate = true
 		widget_animation_data.new_health = health_percent
 		widget_animation_data.previous_health = current_bar_health

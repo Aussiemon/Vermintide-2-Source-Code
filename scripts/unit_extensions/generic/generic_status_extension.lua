@@ -1,7 +1,5 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 GenericStatusExtension = class(GenericStatusExtension)
 script_data.debug_draw_block_arcs = script_data.debug_draw_block_arcs or Development.parameter("debug_draw_block_arcs")
 script_data.debug_draw_push_arcs = script_data.debug_draw_push_arcs or Development.parameter("debug_draw_push_arcs")
@@ -251,7 +249,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		degen_delay = degen_delay / self.buff_extension:apply_buffs_to_value(1, StatBuffIndex.FATIGUE_REGEN)
 
 		if previous_max_fatigue_points ~= max_fatigue_points then
-			self.fatigue = (max_fatigue_points ~= 0 or 0) and previous_max_fatigue_points / max_fatigue_points * self.fatigue
+			self.fatigue = (max_fatigue_points == 0 and 0) or previous_max_fatigue_points / max_fatigue_points * self.fatigue
 		end
 
 		if 0 < num_damages and 50 <= self.fatigue then
@@ -265,7 +263,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		if self.last_fatigue_gain_time + degen_delay <= t then
 			self.action_stun_push = false
 			self.show_fatigue_gui = false
-			local degen_amount = (max_fatigue_points ~= 0 or 0) and PlayerUnitStatusSettings.FATIGUE_POINTS_DEGEN_AMOUNT / max_fatigue_points * PlayerUnitStatusSettings.MAX_FATIGUE
+			local degen_amount = (max_fatigue_points == 0 and 0) or PlayerUnitStatusSettings.FATIGUE_POINTS_DEGEN_AMOUNT / max_fatigue_points * PlayerUnitStatusSettings.MAX_FATIGUE
 			local new_degen_amount = self.buff_extension:apply_buffs_to_value(degen_amount, StatBuffIndex.FATIGUE_REGEN)
 
 			if degen_amount < new_degen_amount then
@@ -669,7 +667,7 @@ GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_
 	if player then
 		if not player.remote then
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local first_person_unit = first_person_extension.get_first_person_unit(first_person_extension)
 			local t = Managers.time:time("game")
@@ -903,7 +901,7 @@ GenericStatusExtension.current_fatigue_points = function (self)
 	local max_fatigue = PlayerUnitStatusSettings.MAX_FATIGUE
 	local max_fatigue_points = self.max_fatigue_points
 
-	return (max_fatigue_points ~= 0 or 0) and math.ceil(self.fatigue / max_fatigue / max_fatigue_points), max_fatigue_points
+	return (max_fatigue_points == 0 and 0) or math.ceil(self.fatigue / max_fatigue / max_fatigue_points), max_fatigue_points
 end
 GenericStatusExtension.set_pushed = function (self, pushed, t)
 	if pushed and self.push_cooldown then

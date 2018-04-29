@@ -75,7 +75,7 @@ StartGameWindowMutatorList.on_enter = function (self, params, offset)
 end
 StartGameWindowMutatorList.create_ui_elements = function (self, params, offset)
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
 	local widgets_by_name = {}

@@ -326,8 +326,8 @@ InputFilters.gamepad_cursor = {
 			local dt = 0.03333333333333333
 			local new_x = filter_data.pos_x + x * dt * filter_data.multiplier
 			local new_y = filter_data.pos_y + y * dt * filter_data.multiplier
-			filter_data.pos_x = (res_x < new_x and res_x) or ((new_x >= 0 or 0) and new_x)
-			filter_data.pos_y = (res_y < new_y and res_y) or ((new_y >= 0 or 0) and new_y)
+			filter_data.pos_x = (res_x < new_x and res_x) or (new_x < 0 and 0) or new_x
+			filter_data.pos_y = (res_y < new_y and res_y) or (new_y < 0 and 0) or new_y
 			filter_data.frame_index = GLOBAL_FRAME_INDEX
 		end
 

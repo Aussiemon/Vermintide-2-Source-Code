@@ -329,12 +329,12 @@ ObserverUI.on_player_health_changed = function (self, name, widget, health_perce
 		end
 
 		local animate_highlight = (not is_knocked_down and health_percent < (health_percent_current or 1)) or false
-		widget_animation_data.animate_highlight = (not animate_highlight or 0) and widget_animation_data.animate_highlight
+		widget_animation_data.animate_highlight = (animate_highlight and 0) or widget_animation_data.animate_highlight
 		widget_animation_data.animate = true
 		widget_animation_data.new_health = health_percent
 		widget_animation_data.previous_health = current_bar_health
 		widget_animation_data.time = 0
-		widget_animation_data.total_time = (not self._skip_bar_animation or 0) and anim_time
+		widget_animation_data.total_time = (self._skip_bar_animation and 0) or anim_time
 		widget_animation_data.widget = widget
 		widget_animation_data.bar = widget.content.hp_bar
 
@@ -366,7 +366,7 @@ ObserverUI.on_num_grimoires_changed = function (self, name, widget, health_debuf
 		widget_animation_data.new_health = health_debuff_percent
 		widget_animation_data.previous_health = current_bar_health_debuff
 		widget_animation_data.time = 0
-		widget_animation_data.total_time = (not self._skip_bar_animation or 0) and anim_time
+		widget_animation_data.total_time = (self._skip_bar_animation and 0) or anim_time
 		widget_animation_data.widget = widget
 		widget_animation_data.bar = widget.content.hp_bar_grimoire_debuff
 	end
@@ -439,7 +439,7 @@ ObserverUI.update_player_bar_animation = function (self, widget, bar, time, tota
 	return nil
 end
 ObserverUI.update_damage_highlight = function (self, widget, time, dt)
-	local total_time = (not self._skip_bar_animation or 0) and 0.2
+	local total_time = (self._skip_bar_animation and 0) or 0.2
 	time = time + dt
 
 	if 0 < total_time then

@@ -433,7 +433,7 @@ BTChaosSorcererSkulkApproachAction.update_portal_search = function (self, unit, 
 		elseif portal_data.portal_search_timer < t and not blackboard.portal_unit then
 			local target_position = POSITION_LOOKUP[blackboard.target_unit]
 			local success = BTChaosSorcererSkulkApproachAction.get_portal_location_list(portal_data, target_position)
-			portal_data.search_counter = (not success or 0) and portal_data.search_counter + 1
+			portal_data.search_counter = (success and 0) or portal_data.search_counter + 1
 			portal_data.portal_search_active = success
 			portal_data.portal_search_timer = t + 1
 		end

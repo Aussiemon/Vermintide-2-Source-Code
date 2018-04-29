@@ -723,7 +723,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 		for j = 1, #initial_positions, 1 do
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #0 50-50, warpins: 3 ---
 			--- END OF BLOCK #0 ---
 
@@ -731,11 +731,11 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #1 51-58, warpins: 1 ---
 			if Vector3.length(initial_position - initial_positions[j]) < 2 then
 
-				-- decompilation error in this vicinity
+				-- Decompilation error in this vicinity:
 				--- BLOCK #2 59-77, warpins: 1 ---
 				valid_pos = false
 				initial_position = initial_position + Vector3(math.random(-1, 1) / 20, math.random(-1, 1) / 20, 0) * 50
@@ -745,7 +745,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 			else
 
-				-- decompilation error in this vicinity
+				-- Decompilation error in this vicinity:
 				--- BLOCK #3 78-78, warpins: 1 ---
 				valid_pos = true
 				--- END OF BLOCK #3 ---
@@ -760,7 +760,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #2 59-77, warpins: 1 ---
 			valid_pos = false
 			initial_position = initial_position + Vector3(math.random(-1, 1) / 20, math.random(-1, 1) / 20, 0) * 50
@@ -769,7 +769,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #3 78-78, warpins: 1 ---
 			valid_pos = true
 			--- END OF BLOCK #3 ---
@@ -777,7 +777,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #4 79-80, warpins: 2 ---
 			--- END OF BLOCK #4 ---
 
@@ -789,7 +789,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #5 81-81, warpins: 1 ---
 			--- END OF BLOCK #5 ---
 
@@ -802,7 +802,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 	for i = 1, num_dice, 1 do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #0 88-146, warpins: 2 ---
 		local simulation_settings = dice_simulation_settings[i]
 		local dice_type = simulation_settings.dice_type
@@ -829,7 +829,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #1 147-154, warpins: 1 ---
 		--- END OF BLOCK #1 ---
 
@@ -843,7 +843,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #2 155-161, warpins: 2 ---
 		local wanted_dice_result = math.random(1, dice_type_success_amounts[dice_type] - 1)
 		--- END OF BLOCK #2 ---
@@ -852,7 +852,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #3 162-180, warpins: 2 ---
 		dice_simulation_settings[i] = {
 			dice_result = 0,
@@ -875,7 +875,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 	if simulation_successful then
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #7 187-195, warpins: 1 ---
 		self.calculate_results(self, dice_simulation_settings)
 		self.alter_rotations(self, dice_simulation_settings)
@@ -891,7 +891,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 	for i = 1, dice_amount, 1 do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #0 201-209, warpins: 2 ---
 		local data = dice_simulation_settings[i]
 
@@ -908,7 +908,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 end
 DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #0 1-9, warpins: 1 ---
 	fassert(self._got_backend_result, "Trying to roll dice before response from backend")
 
@@ -924,7 +924,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #1 10-11, warpins: 2 ---
 	--- END OF BLOCK #1 ---
 
@@ -932,11 +932,11 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #2 12-109, warpins: 0 ---
 	while not finished do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #0 12-12, warpins: 1 ---
 		--- END OF BLOCK #0 ---
 
@@ -944,7 +944,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #1 13-32, warpins: 1 ---
 		local a, b, c = Script.temp_count()
 
@@ -960,11 +960,11 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #2 33-85, warpins: 0 ---
 		for i = 1, dice_amount, 1 do
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #0 33-71, warpins: 2 ---
 			local data = dice_simulation_settings[i]
 			local unit = data.unit
@@ -986,7 +986,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #1 72-79, warpins: 1 ---
 			finished_dice = finished_dice + 1
 			local result = self.get_dice_result(self, unit, data.dice_type)
@@ -1000,7 +1000,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #2 80-80, warpins: 1 ---
 			has_rerolls = true
 			--- END OF BLOCK #2 ---
@@ -1009,7 +1009,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #3 81-83, warpins: 2 ---
 			--- END OF BLOCK #3 ---
 
@@ -1021,7 +1021,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #4 84-84, warpins: 1 ---
 			data.completed_index = index
 			--- END OF BLOCK #4 ---
@@ -1030,7 +1030,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #5 85-85, warpins: 3 ---
 			--- END OF BLOCK #5 ---
 
@@ -1044,7 +1044,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #3 86-87, warpins: 1 ---
 		--- END OF BLOCK #3 ---
 
@@ -1056,7 +1056,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #4 88-89, warpins: 1 ---
 		finished = true
 		successful = true
@@ -1066,7 +1066,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #5 90-92, warpins: 2 ---
 		frame_count = frame_count + 1
 
@@ -1080,7 +1080,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #6 93-94, warpins: 1 ---
 		--- END OF BLOCK #6 ---
 
@@ -1092,7 +1092,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #7 95-96, warpins: 1 ---
 		--- END OF BLOCK #7 ---
 
@@ -1104,7 +1104,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #8 97-101, warpins: 2 ---
 		print("dice game broke, rerunning")
 
@@ -1117,7 +1117,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #9 102-108, warpins: 3 ---
 		Script.set_temp_count(a, b, c)
 		--- END OF BLOCK #9 ---
@@ -1126,7 +1126,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #10 109-109, warpins: 3 ---
 		--- END OF BLOCK #10 ---
 
@@ -1140,7 +1140,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #3 109-109, warpins: 1 ---
 	return successful
 	--- END OF BLOCK #3 ---
@@ -1150,7 +1150,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 end
 DiceRoller.calculate_results = function (self, dice_simulation_settings)
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #0 1-5, warpins: 1 ---
 	local amount = #dice_simulation_settings
 
@@ -1160,11 +1160,11 @@ DiceRoller.calculate_results = function (self, dice_simulation_settings)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #1 6-14, warpins: 0 ---
 	for i = 1, amount, 1 do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #0 6-14, warpins: 2 ---
 		local data = dice_simulation_settings[i]
 		local unit = data.unit
@@ -1182,7 +1182,7 @@ DiceRoller.calculate_results = function (self, dice_simulation_settings)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #2 15-15, warpins: 1 ---
 	return 
 	--- END OF BLOCK #2 ---
@@ -1192,7 +1192,7 @@ DiceRoller.calculate_results = function (self, dice_simulation_settings)
 end
 DiceRoller.get_dice_result = function (self, unit, dice_type)
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #0 1-33, warpins: 1 ---
 	local world_pose = Unit.world_pose(unit, 0)
 	local up_vec = Matrix4x4.up(world_pose)
@@ -1213,7 +1213,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #1 34-35, warpins: 1 ---
 	dice_result = 1
 	--- END OF BLOCK #1 ---
@@ -1222,7 +1222,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #2 36-38, warpins: 1 ---
 	--- END OF BLOCK #2 ---
 
@@ -1234,7 +1234,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #3 39-40, warpins: 1 ---
 	dice_result = 2
 	--- END OF BLOCK #3 ---
@@ -1243,7 +1243,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #4 41-43, warpins: 1 ---
 	--- END OF BLOCK #4 ---
 
@@ -1255,7 +1255,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #5 44-45, warpins: 1 ---
 	dice_result = 4
 	--- END OF BLOCK #5 ---
@@ -1264,7 +1264,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #6 46-48, warpins: 1 ---
 	--- END OF BLOCK #6 ---
 
@@ -1276,7 +1276,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #7 49-50, warpins: 1 ---
 	dice_result = 6
 	--- END OF BLOCK #7 ---
@@ -1285,7 +1285,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #8 51-53, warpins: 1 ---
 	--- END OF BLOCK #8 ---
 
@@ -1297,7 +1297,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #9 54-55, warpins: 1 ---
 	dice_result = 3
 	--- END OF BLOCK #9 ---
@@ -1306,7 +1306,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #10 56-58, warpins: 1 ---
 	--- END OF BLOCK #10 ---
 
@@ -1318,7 +1318,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #11 59-59, warpins: 1 ---
 	dice_result = 5
 
@@ -1328,7 +1328,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #12 60-69, warpins: 7 ---
 	--- END OF BLOCK #12 ---
 
@@ -1342,7 +1342,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #13 70-70, warpins: 1 ---
 	dice_result = 0
 
@@ -1352,7 +1352,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #14 71-71, warpins: 2 ---
 	return dice_result
 	--- END OF BLOCK #14 ---
@@ -1362,7 +1362,7 @@ DiceRoller.get_dice_result = function (self, unit, dice_type)
 end
 DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #0 1-5, warpins: 1 ---
 	local amount = #dice_simulation_settings
 
@@ -1372,11 +1372,11 @@ DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #1 6-62, warpins: 0 ---
 	for i = 1, amount, 1 do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #0 6-6, warpins: 2 ---
 		--- END OF BLOCK #0 ---
 
@@ -1384,7 +1384,7 @@ DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #1 7-15, warpins: 1 ---
 		local data = dice_simulation_settings[i]
 		local wanted_result = data.wanted_dice_result
@@ -1400,7 +1400,7 @@ DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #2 16-16, warpins: 1 ---
 		--- END OF BLOCK #2 ---
 
@@ -1408,7 +1408,7 @@ DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #3 17-47, warpins: 1 ---
 		local direction_id = rotation_mappings[result][wanted_result]
 		local direction = directions[direction_id]
@@ -1427,11 +1427,11 @@ DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #4 48-61, warpins: 0 ---
 		for i = 1, num_rotations, 1 do
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #0 48-61, warpins: 2 ---
 			local current_rotation = rotations[i]:unbox()
 			local new_rotation = Quaternion.multiply(current_rotation, rotation_to_apply)
@@ -1447,7 +1447,7 @@ DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #5 62-62, warpins: 2 ---
 		--- END OF BLOCK #5 ---
 
@@ -1461,7 +1461,7 @@ DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #2 63-63, warpins: 1 ---
 	return 
 	--- END OF BLOCK #2 ---
@@ -1471,7 +1471,7 @@ DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 end
 DiceRoller.get_dice_results = function (self)
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #0 1-2, warpins: 1 ---
 	return self.num_successes
 	--- END OF BLOCK #0 ---
@@ -1481,7 +1481,7 @@ DiceRoller.get_dice_results = function (self)
 end
 DiceRoller.update = function (self, dt)
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #0 1-3, warpins: 1 ---
 	--- END OF BLOCK #0 ---
 
@@ -1493,7 +1493,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #1 4-4, warpins: 1 ---
 	return 
 
@@ -1503,7 +1503,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #2 5-16, warpins: 2 ---
 	local roll_time = self.roll_time + dt
 	local dice_units = self.dice_units
@@ -1516,11 +1516,11 @@ DiceRoller.update = function (self, dt)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #3 17-127, warpins: 0 ---
 	for dice_unit, data in pairs(dice_units) do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #0 17-98, warpins: 1 ---
 		local positions = data.positions
 		local rotations = data.rotations
@@ -1550,7 +1550,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #1 99-101, warpins: 1 ---
 		--- END OF BLOCK #1 ---
 
@@ -1562,7 +1562,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #2 102-104, warpins: 1 ---
 		--- END OF BLOCK #2 ---
 
@@ -1574,7 +1574,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #3 105-110, warpins: 1 ---
 		self._add_to_glow_list(self, dice_unit)
 
@@ -1585,7 +1585,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #4 111-114, warpins: 4 ---
 		local sound_event = self._sound_events[lower_index]
 
@@ -1599,7 +1599,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #5 115-122, warpins: 1 ---
 		WwiseWorld.trigger_event(self.wwise_world, sound_event)
 
@@ -1610,7 +1610,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #6 123-124, warpins: 2 ---
 		--- END OF BLOCK #6 ---
 
@@ -1622,7 +1622,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #7 125-125, warpins: 1 ---
 		finished_dice = finished_dice + 1
 		--- END OF BLOCK #7 ---
@@ -1631,7 +1631,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #8 126-127, warpins: 3 ---
 		--- END OF BLOCK #8 ---
 
@@ -1645,7 +1645,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #4 128-137, warpins: 1 ---
 	self._update_glow(self, dt)
 	--- END OF BLOCK #4 ---
@@ -1660,7 +1660,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #5 138-140, warpins: 1 ---
 	--- END OF BLOCK #5 ---
 
@@ -1672,7 +1672,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #6 141-143, warpins: 1 ---
 	self.grace_time = 0
 	--- END OF BLOCK #6 ---
@@ -1681,7 +1681,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #7 144-147, warpins: 1 ---
 	--- END OF BLOCK #7 ---
 
@@ -1693,7 +1693,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #8 148-156, warpins: 1 ---
 	self.rolling = false
 	self.rolling_finished = self.cleanup_post_roll(self)
@@ -1704,7 +1704,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #9 157-159, warpins: 1 ---
 	self.grace_time = self.grace_time + dt
 	--- END OF BLOCK #9 ---
@@ -1713,7 +1713,7 @@ DiceRoller.update = function (self, dt)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #10 160-161, warpins: 4 ---
 	self.roll_time = roll_time
 
@@ -1725,7 +1725,7 @@ DiceRoller.update = function (self, dt)
 end
 DiceRoller.cleanup_post_roll = function (self)
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #0 1-9, warpins: 1 ---
 	local dice_units = self.dice_units
 	local dice_units_to_remove = {}
@@ -1738,11 +1738,11 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #1 10-46, warpins: 0 ---
 	for dice_unit, data in pairs(dice_units) do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #0 10-15, warpins: 1 ---
 		dice_units_to_remove[#dice_units_to_remove + 1] = dice_unit
 		--- END OF BLOCK #0 ---
@@ -1755,7 +1755,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #1 16-24, warpins: 1 ---
 		self.remaining_dice[data.dice_type] = self.remaining_dice[data.dice_type] - 1
 		finished_dice = finished_dice + 1
@@ -1765,7 +1765,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #2 25-30, warpins: 1 ---
 		--- END OF BLOCK #2 ---
 
@@ -1777,7 +1777,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #3 31-31, warpins: 1 ---
 		local num_successes_per_type = 0
 		--- END OF BLOCK #3 ---
@@ -1786,7 +1786,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #4 32-37, warpins: 2 ---
 		slot10 = self.remaining_dice[data.dice_type]
 		--- END OF BLOCK #4 ---
@@ -1799,7 +1799,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #5 38-40, warpins: 1 ---
 		--- END OF BLOCK #5 ---
 
@@ -1811,7 +1811,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #6 41-41, warpins: 2 ---
 		slot11 = num_successes_per_type
 		--- END OF BLOCK #6 ---
@@ -1820,7 +1820,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #7 42-44, warpins: 2 ---
 		slot10.successes = slot11
 		self.needs_rerolls = true
@@ -1830,7 +1830,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #8 45-46, warpins: 3 ---
 		--- END OF BLOCK #8 ---
 
@@ -1844,7 +1844,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #2 47-50, warpins: 1 ---
 	local num_dice_units_to_remove = #dice_units_to_remove
 
@@ -1858,7 +1858,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #3 51-54, warpins: 1 ---
 	--- END OF BLOCK #3 ---
 
@@ -1866,11 +1866,11 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #4 55-64, warpins: 0 ---
 	for i = 1, num_dice_units_to_remove, 1 do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #0 55-64, warpins: 2 ---
 		local unit = dice_units_to_remove[i]
 		self.dice_units[unit] = nil
@@ -1888,7 +1888,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #5 65-74, warpins: 2 ---
 	Managers.world:destroy_world(self.simulation_world)
 
@@ -1903,7 +1903,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #6 75-76, warpins: 1 ---
 	slot5 = false
 	--- END OF BLOCK #6 ---
@@ -1912,7 +1912,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #7 77-77, warpins: 1 ---
 	slot5 = true
 
@@ -1922,7 +1922,7 @@ DiceRoller.cleanup_post_roll = function (self)
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #8 78-78, warpins: 2 ---
 	return slot5
 	--- END OF BLOCK #8 ---
@@ -1933,7 +1933,7 @@ end
 
 if Development.parameter("dice_chance_simulation") then
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #1 185-264, warpins: 1 ---
 	local dice_configurations = {}
 	dice_configurations[1] = {
@@ -2167,11 +2167,11 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-	-- decompilation error in this vicinity
+	-- Decompilation error in this vicinity:
 	--- BLOCK #2 265-324, warpins: 0 ---
 	for i = 1, #dice_configurations, 1 do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #0 265-270, warpins: 2 ---
 		local config = dice_configurations[i]
 		local successes = {}
@@ -2182,11 +2182,11 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #1 271-298, warpins: 0 ---
 		for j = 1, num_simulations, 1 do
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #0 271-275, warpins: 2 ---
 			local num_successes = 0
 
@@ -2196,11 +2196,11 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #1 276-289, warpins: 0 ---
 			for k = 1, 4, 1 do
 
-				-- decompilation error in this vicinity
+				-- Decompilation error in this vicinity:
 				--- BLOCK #0 276-281, warpins: 2 ---
 				local die_amount = config[k]
 				local probability = probabilities[k]
@@ -2211,11 +2211,11 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-				-- decompilation error in this vicinity
+				-- Decompilation error in this vicinity:
 				--- BLOCK #1 282-288, warpins: 0 ---
 				for l = 1, die_amount, 1 do
 
-					-- decompilation error in this vicinity
+					-- Decompilation error in this vicinity:
 					--- BLOCK #0 282-286, warpins: 2 ---
 					--- END OF BLOCK #0 ---
 
@@ -2229,7 +2229,7 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-					-- decompilation error in this vicinity
+					-- Decompilation error in this vicinity:
 					--- BLOCK #1 287-287, warpins: 1 ---
 					num_successes = num_successes + 1
 					--- END OF BLOCK #1 ---
@@ -2238,7 +2238,7 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-					-- decompilation error in this vicinity
+					-- Decompilation error in this vicinity:
 					--- BLOCK #2 288-288, warpins: 2 ---
 					--- END OF BLOCK #2 ---
 
@@ -2251,7 +2251,7 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-				-- decompilation error in this vicinity
+				-- Decompilation error in this vicinity:
 				--- BLOCK #2 289-289, warpins: 1 ---
 				--- END OF BLOCK #2 ---
 
@@ -2265,7 +2265,7 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #2 290-292, warpins: 1 ---
 			--- END OF BLOCK #2 ---
 
@@ -2277,7 +2277,7 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #3 293-294, warpins: 1 ---
 			successes[num_successes] = 0
 			--- END OF BLOCK #3 ---
@@ -2286,7 +2286,7 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #4 295-298, warpins: 2 ---
 			successes[num_successes] = successes[num_successes] + 1
 			--- END OF BLOCK #4 ---
@@ -2301,7 +2301,7 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #2 299-302, warpins: 1 ---
 		--- END OF BLOCK #2 ---
 
@@ -2309,11 +2309,11 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #3 303-316, warpins: 0 ---
 		for i = 0, 7, 1 do
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #0 303-305, warpins: 2 ---
 			--- END OF BLOCK #0 ---
 
@@ -2325,7 +2325,7 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #1 306-315, warpins: 1 ---
 			successes[i] = math.round_with_precision(successes[i] / num_simulations * 100, 3) .. "%"
 			--- END OF BLOCK #1 ---
@@ -2334,7 +2334,7 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-			-- decompilation error in this vicinity
+			-- Decompilation error in this vicinity:
 			--- BLOCK #2 316-316, warpins: 2 ---
 			--- END OF BLOCK #2 ---
 
@@ -2348,7 +2348,7 @@ if Development.parameter("dice_chance_simulation") then
 
 
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		--- BLOCK #4 317-324, warpins: 1 ---
 		print("-----")
 		table.dump(successes)

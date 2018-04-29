@@ -309,7 +309,7 @@ TutorialSystem.iterate_tooltips = function (self, t, unit, extension, raycast_un
 
 	for i = 1, tooltip_templates_n, 1 do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		local template = tooltip_templates[i]
 		local name = template.name
 	end

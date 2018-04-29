@@ -953,7 +953,7 @@ local function update_slot_anchor_weight(slot, target_unit, unit_extension_data)
 		local slot_released = slot_right.released
 		local ai_unit = slot_right.ai_unit
 
-		if not slot_disabled and not ai_unit then
+		if slot_disabled or not ai_unit then
 			break
 		end
 
@@ -977,7 +977,7 @@ local function update_slot_anchor_weight(slot, target_unit, unit_extension_data)
 		local slot_released = slot_left.released
 		local ai_unit = slot_left.ai_unit
 
-		if not slot_disabled and not ai_unit then
+		if slot_disabled or not ai_unit then
 			break
 		end
 

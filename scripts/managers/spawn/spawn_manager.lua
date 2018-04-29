@@ -574,7 +574,7 @@ SpawnManager._update_bot_spawns = function (self, dt, t)
 		end
 	end
 
-	local allowed_bots = math.min(NUM_PLAYERS - humans, (not script_data.ai_bots_disabled or 0) and (script_data.cap_num_bots or NUM_PLAYERS))
+	local allowed_bots = math.min(NUM_PLAYERS - humans, (script_data.ai_bots_disabled and 0) or script_data.cap_num_bots or NUM_PLAYERS)
 	local bot_delta = allowed_bots - bots
 	local local_peer_id = Network.peer_id()
 

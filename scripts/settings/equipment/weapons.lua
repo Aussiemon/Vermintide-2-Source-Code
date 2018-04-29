@@ -1,7 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/settings/attachment_node_linking")
 require("scripts/unit_extensions/generic/interactions")
 require("scripts/utils/action_assert_funcs")
@@ -144,6 +140,7 @@ Dots = {
 	end,
 	burning_dot = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
 		if damage_profile then
+			dot_template_name = dot_template_name or target_settings.dot_template_name or damage_profile.dot_template_name
 		end
 
 		if not dot_template_name then
@@ -156,6 +153,7 @@ Dots = {
 	end,
 	slow_debuff = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike)
 		if damage_profile then
+			dot_template_name = dot_template_name or target_settings.dot_template_name or damage_profile.dot_template_name
 		end
 
 		if not dot_template_name then

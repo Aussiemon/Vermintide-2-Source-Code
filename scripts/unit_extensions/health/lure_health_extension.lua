@@ -44,7 +44,7 @@ LureHealthExtension.is_alive = function (self)
 	return not self._is_dead
 end
 LureHealthExtension.current_health_percent = function (self)
-	return (not self._is_dead or 0) and 1
+	return (self._is_dead and 0) or 1
 end
 LureHealthExtension.current_health = function (self)
 	return 1

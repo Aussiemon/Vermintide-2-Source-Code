@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 InputService = class(InputService)
 InputService.init = function (self, input_service_name, keymaps_name, filters_name, block_reasons)
 	self.platform = PLATFORM
@@ -69,8 +67,6 @@ InputService.get = function (self, input_data_name, consume)
 					local device_list = mapped_devices[device_type]
 
 					if device_list and device_list.n then
-
-						-- decompilation error in this vicinity
 						for k = 1, device_list.n, 1 do
 							local input_device = device_list[k]
 							local input_device_data = input_devices_data[input_device]
@@ -91,6 +87,8 @@ InputService.get = function (self, input_data_name, consume)
 								break
 							end
 						end
+
+						action_value = (0 < device_list.n and action_value) or nil
 
 						if not action_value then
 							break

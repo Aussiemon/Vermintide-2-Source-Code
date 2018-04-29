@@ -4,7 +4,7 @@ LobbyAux.create_network_hash = function (config_file_name, project_hash)
 	local settings = Application.settings()
 	local trunk_revision = settings and settings.content_revision
 	local ignore_engine_revision = Development.parameter("ignore_engine_revision_in_network_hash")
-	local engine_revision = (not ignore_engine_revision or 0) and Application.build_identifier()
+	local engine_revision = (ignore_engine_revision and 0) or Application.build_identifier()
 	local combined_hash = nil
 	local use_trunk_revision = GameSettingsDevelopment.network_revision_check_enabled or (trunk_revision ~= nil and trunk_revision ~= "")
 

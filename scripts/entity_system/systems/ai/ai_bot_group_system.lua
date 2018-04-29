@@ -701,7 +701,7 @@ AIBotGroupSystem._find_points = function (self, nav_world, origin_point, rotatio
 
 	while (left_index < #left_vectors or right_index < #right_vectors) and found_points_left + found_points_right < needed_points do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		right_index = right_index + 1
 		local distance, hit_pos = self._raycast(self, nav_world, origin_point, Quaternion.rotate(rotation, right_vectors[right_index]:unbox()), range)
 		local num_points = math.floor(distance / space_per_player)

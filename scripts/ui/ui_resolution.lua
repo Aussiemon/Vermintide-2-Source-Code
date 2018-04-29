@@ -285,7 +285,7 @@ function EnumDisplayModes()
 
 			for mode = 0, num_modes - 1, 1 do
 
-				-- decompilation error in this vicinity
+				-- Decompilation error in this vicinity:
 				local width, height = DisplayAdapter.mode(adapter, output, mode)
 				local aspect_ratio = AspectRatio.calculate(width, height)
 
@@ -393,7 +393,7 @@ function InitVideo()
 		while true do
 			local x, y = unpack(resolutions[i])
 
-			if MAX_RESOLUTIONS >= i and native_screen_width >= x and native_screen_height < y then
+			if MAX_RESOLUTIONS < i or native_screen_width < x or native_screen_height < y then
 				break
 			end
 

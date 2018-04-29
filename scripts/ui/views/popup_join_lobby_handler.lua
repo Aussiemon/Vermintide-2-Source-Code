@@ -1003,7 +1003,7 @@ PopupJoinLobbyHandler.disable_career_selection = function (self)
 
 	for i = 1, amount, 1 do
 
-		-- decompilation error in this vicinity
+		-- Decompilation error in this vicinity:
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = content[hotspot_name]

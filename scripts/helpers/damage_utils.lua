@@ -136,7 +136,7 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 			power_boost_armor = target_unit_armor
 		end
 
-		local power_boost_target_damages = damage_output[power_boost_armor] or ((power_boost_armor ~= 0 or 0) and damage_output[1])
+		local power_boost_target_damages = damage_output[power_boost_armor] or (power_boost_armor == 0 and 0) or damage_output[1]
 
 		if type(power_boost_target_damages) == "table" then
 			local power_boost_damage_range = power_boost_target_damages.max - power_boost_target_damages.min
@@ -149,7 +149,7 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 	end
 
 	local damage = 0
-	local target_damages = damage_output[target_unit_armor] or ((target_unit_armor ~= 0 or 0) and damage_output[1])
+	local target_damages = damage_output[target_unit_armor] or (target_unit_armor == 0 and 0) or damage_output[1]
 
 	if type(target_damages) == "table" then
 		local damage_range = target_damages.max - target_damages.min

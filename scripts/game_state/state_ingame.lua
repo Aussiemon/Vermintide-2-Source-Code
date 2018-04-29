@@ -211,7 +211,7 @@ StateIngame.on_enter = function (self)
 	Managers.state.difficulty:set_difficulty(difficulty)
 
 	loading_context.difficulty = difficulty
-	local num_players = (not DEDICATED_SERVER or 0) and 1
+	local num_players = (DEDICATED_SERVER and 0) or 1
 	self.num_local_human_players = num_players
 
 	if Managers.matchmaking then
