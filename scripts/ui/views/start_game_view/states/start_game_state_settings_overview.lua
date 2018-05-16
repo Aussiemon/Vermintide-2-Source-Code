@@ -443,29 +443,54 @@ StartGameStateSettingsOverview._handle_input = function (self, dt, t)
 	end
 end
 
-StartGameStateSettingsOverview.play = function (self, t)
-	local layout_setting = self:_get_layout_setting(self._selected_game_mode_index)
-	local windows = layout_setting.windows
+StartGameStateSettingsOverview.play = function (self, t, game_mode_type)
+	printf("[StartGameStateSettingsOverview:play() - game_mode_type(%s)", game_mode_type)
 
-	for window_name, _ in pairs(windows) do
-		if window_name == "adventure" then
-			self:set_selected_level_id(nil)
-		end
+	if game_mode_type == "adventure" then
+		local level_key = nil
+		local difficulty = self._selected_difficulty_key
+		local is_private = false
+		local quick_game = true
+		local always_host = false
+		local strict_matchmaking = false
+		local deed_backend_id = nil
+
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
+	elseif game_mode_type == "custom" then
+		local network_lobby = self._network_lobby
+		local num_members = #network_lobby:members():get_members()
+		local is_alone = num_members == 1
+		local level_key = self:get_selected_level_id()
+		local difficulty = self._selected_difficulty_key
+		local is_private = self:is_private_option_enabled()
+		local quick_game = false
+		local always_host = is_private or self:is_always_host_option_enabled()
+		local strict_matchmaking = is_alone and not is_private and not always_host and self:is_strict_matchmaking_option_enabled()
+		local deed_backend_id = nil
+
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
+	elseif game_mode_type == "deed" then
+		local level_key, difficulty = nil
+		local is_private = true
+		local quick_game = false
+		local always_host = true
+		local strict_matchmaking = false
+		local deed_backend_id = self:get_selected_heroic_deed_backend_id()
+
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
+	elseif game_mode_type == "twitch" then
+		local level_key = self:get_selected_level_id()
+		local difficulty = self._selected_difficulty_key
+		local is_private = true
+		local quick_game = false
+		local always_host = true
+		local strict_matchmaking = false
+		local deed_backend_id = nil
+
+		self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
+	else
+		ferror("Unknown game_mode_type(%s)", game_mode_type)
 	end
-
-	local twitch_active = Managers.twitch and Managers.twitch:is_connected()
-	local network_lobby = self._network_lobby
-	local num_members = #network_lobby:members():get_members()
-	local is_alone = num_members == 1
-	local level_key = self:get_selected_level_id()
-	local difficulty = self._selected_difficulty_key
-	local quick_game = level_key == nil
-	local is_private = not quick_game and (twitch_active or self:is_private_option_enabled())
-	local always_host = not quick_game and (twitch_active or not is_alone or is_private or self:is_always_host_option_enabled())
-	local strict_matchmaking = not quick_game and not twitch_active and is_alone and not is_private and not always_host and self:is_strict_matchmaking_option_enabled()
-	local deed_backend_id = self:get_selected_heroic_deed_backend_id()
-
-	self.parent:start_game(level_key, difficulty, is_private, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
 end
 
 StartGameStateSettingsOverview.is_confirm_putton_pressed = function (self)

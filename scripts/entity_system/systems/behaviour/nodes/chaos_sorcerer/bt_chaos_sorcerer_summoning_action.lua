@@ -348,6 +348,7 @@ BTChaosSorcererSummoningAction._spawn_vortex = function (self, unit, blackboard,
 	local vortex_template = VortexTemplates[vortex_template_name]
 	local breed = vortex_template.breed
 	local vortex_units = vortex_data.vortex_units
+	local queued_vortex = vortex_data.queued_vortex
 	local spawn_category = "vortex"
 	local link_decal_units = action.link_decal_units_to_vortex
 	local inner_decal_unit = vortex_data.inner_decal_unit
@@ -361,6 +362,8 @@ BTChaosSorcererSummoningAction._spawn_vortex = function (self, unit, blackboard,
 			}
 		end,
 		spawned_func = function (vortex_unit, breed, optional_data)
+			local spawn_queue_index = optional_data.spawn_queue_index
+			queued_vortex[spawn_queue_index] = nil
 			vortex_units[#vortex_units + 1] = vortex_unit
 			local vortex_blackboard = BLACKBOARDS[vortex_unit]
 			vortex_blackboard.master_unit = unit
@@ -368,8 +371,11 @@ BTChaosSorcererSummoningAction._spawn_vortex = function (self, unit, blackboard,
 			Managers.state.entity:system("surrounding_aware_system"):add_system_event(vortex_unit, "enemy_attack", DialogueSettings.see_vortex_distance, "attack_tag", "chaos_vortex_spawned")
 		end
 	}
-
-	Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(vortex_pos), QuaternionBox(Quaternion.identity()), spawn_category, nil, nil, optional_data)
+	local vortex_queue_id = Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(vortex_pos), QuaternionBox(Quaternion.identity()), spawn_category, nil, nil, optional_data)
+	vortex_data.queued_vortex[vortex_queue_id] = {
+		inner_decal_unit = link_decal_units and inner_decal_unit,
+		outer_decal_unit = link_decal_units and outer_decal_unit
+	}
 
 	if link_decal_units then
 		vortex_data.inner_decal_unit = nil

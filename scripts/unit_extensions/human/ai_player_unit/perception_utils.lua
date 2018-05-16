@@ -439,7 +439,7 @@ local function _calculate_horde_pick_closest_target_with_spillover_score(target_
 end
 
 PerceptionUtils.horde_pick_closest_target_with_spillover = function (ai_unit, blackboard, breed, t)
-	assert(ScriptUnit.has_extension(ai_unit, "ai_slot_system"))
+	fassert(ScriptUnit.has_extension(ai_unit, "ai_slot_system"), "Error! Trying to use slot_system perception for non-slot system unit!")
 
 	local ai_unit_position = POSITION_LOOKUP[ai_unit]
 	local target_current = blackboard.target_unit
@@ -496,7 +496,30 @@ local raycast_points = {
 	"j_head"
 }
 
-local function _calculate_closest_target_with_spillover_score(target_unit, target_current, previous_attacker, ai_unit_position, raycast_pos, breed, detection_radius_sq, perception_previous_attacker_stickyness_value, is_horde)
+local function _line_of_sight_from_random_point(raycast_pos, target_unit)
+	local random_point = raycast_points[Math.random(1, #raycast_points)]
+	local has_node = Unit.has_node(target_unit, random_point)
+
+	if has_node then
+		local node = Unit.node(target_unit, random_point)
+		local physics_world = World.get_data(Unit.world(target_unit), "physics_world")
+		local target_pos = Unit.world_position(target_unit, node)
+		local distance = Vector3.distance(raycast_pos, target_pos)
+
+		if HEAR_DISTANCE < distance then
+			local direction = (target_pos - raycast_pos) / distance
+			local result, pos = PhysicsWorld.immediate_raycast(physics_world, raycast_pos, direction, distance, "closest", "types", "statics", "collision_filter", "filter_ai_line_of_sight_check")
+
+			if result then
+				return false
+			end
+		end
+	end
+
+	return true
+end
+
+local function _calculate_closest_target_with_spillover_score(target_unit, target_current, previous_attacker, ai_unit_position, raycast_pos, breed, detection_radius_sq, perception_previous_attacker_stickyness_value, is_horde, group_targets)
 	local target_type = Unit.get_data(target_unit, "target_type")
 	local exceptions = target_type and breed.perception_exceptions and breed.perception_exceptions[target_type]
 
@@ -506,28 +529,18 @@ local function _calculate_closest_target_with_spillover_score(target_unit, targe
 
 	local target_unit_position = POSITION_LOOKUP[target_unit]
 	local distance_sq = Vector3.distance_squared(ai_unit_position, target_unit_position)
+	local should_check_los = not target_current or (group_targets and not group_targets[target_unit])
 
-	if not target_current then
+	if should_check_los then
 		if target_unit ~= target_current and detection_radius_sq < distance_sq then
 			return
 		end
 
-		local random_point = raycast_points[Math.random(1, #raycast_points)]
-		local has_node = Unit.has_node(target_unit, random_point)
+		if not is_horde then
+			local has_los = _line_of_sight_from_random_point(raycast_pos, target_unit)
 
-		if has_node then
-			local node = Unit.node(target_unit, random_point)
-			local physics_world = World.get_data(Unit.world(target_unit), "physics_world")
-			local target_pos = Unit.world_position(target_unit, node)
-			local distance = Vector3.distance(raycast_pos, target_pos)
-
-			if HEAR_DISTANCE < distance and not is_horde then
-				local direction = (target_pos - raycast_pos) / distance
-				local result, pos = PhysicsWorld.immediate_raycast(physics_world, raycast_pos, direction, distance, "closest", "types", "statics", "collision_filter", "filter_ai_line_of_sight_check")
-
-				if result then
-					return
-				end
+			if not has_los then
+				return
 			end
 		end
 	end
@@ -591,7 +604,7 @@ local function _calculate_closest_target_with_spillover_score(target_unit, targe
 end
 
 PerceptionUtils.pick_closest_target_with_spillover = function (ai_unit, blackboard, breed, t)
-	assert(ScriptUnit.has_extension(ai_unit, "ai_slot_system"))
+	fassert(ScriptUnit.has_extension(ai_unit, "ai_slot_system"), "Error! Trying to use slot_system perception for non-slot system unit!")
 
 	local detection_radius = nil
 	local during_horde_detection_radius = breed.during_horde_detection_radius
@@ -638,8 +651,18 @@ PerceptionUtils.pick_closest_target_with_spillover = function (ai_unit, blackboa
 	blackboard.using_override_target = using_override_target
 
 	if not using_override_target then
-		for i_target, target_unit in ipairs(targets) do
-			local score, distance_sq = _calculate_closest_target_with_spillover_score(target_unit, target_current, previous_attacker, ai_unit_position, raycast_pos, breed, detection_radius_sq, perception_previous_attacker_stickyness_value, is_horde)
+		local num_targets = #targets
+		local group_extension = ScriptUnit.has_extension(ai_unit, "ai_group_system")
+		local group_targets = nil
+
+		if group_extension and group_extension.use_patrol_perception then
+			local group = group_extension.group
+			group_targets = group.target_units
+		end
+
+		for i = 1, num_targets, 1 do
+			local target_unit = targets[i]
+			local score, distance_sq = _calculate_closest_target_with_spillover_score(target_unit, target_current, previous_attacker, ai_unit_position, raycast_pos, breed, detection_radius_sq, perception_previous_attacker_stickyness_value, is_horde, group_targets)
 			local is_unwanted = AiUtils.is_unwanted_target(target_unit)
 			local is_best_target = not is_unwanted and score and score < best_score
 
@@ -665,6 +688,7 @@ PerceptionUtils.patrol_passive_target_selection = function (ai_unit, blackboard,
 	local best_score = math.huge
 	local distance_to_target_sq = 0
 	local global_targets = PLAYER_AND_BOT_UNITS
+	local num_global_targets = #global_targets
 	local group_extension = ScriptUnit.extension(ai_unit, "ai_group_system")
 	local group = group_extension.group
 	local group_targets = group.target_units
@@ -673,8 +697,10 @@ PerceptionUtils.patrol_passive_target_selection = function (ai_unit, blackboard,
 		group_targets[blackboard_target] = true
 		local attacker_pos = POSITION_LOOKUP[blackboard_target]
 
-		for _, target_unit in pairs(global_targets) do
+		for i = 1, num_global_targets, 1 do
 			repeat
+				local target_unit = global_targets[i]
+
 				if not AiUtils_unit_alive(target_unit) then
 					break
 				end
@@ -699,8 +725,10 @@ PerceptionUtils.patrol_passive_target_selection = function (ai_unit, blackboard,
 		end
 	end
 
-	for _, target_unit in ipairs(global_targets) do
+	for i = 1, num_global_targets, 1 do
 		repeat
+			local target_unit = global_targets[i]
+
 			if not AiUtils_unit_alive(target_unit) then
 				break
 			end
@@ -745,17 +773,11 @@ PerceptionUtils.patrol_passive_target_selection = function (ai_unit, blackboard,
 end
 
 PerceptionUtils.storm_patrol_death_squad_target_selection = function (ai_unit, blackboard, breed)
-	assert(ScriptUnit.has_extension(ai_unit, "ai_slot_system"))
+	fassert(ScriptUnit.has_extension(ai_unit, "ai_slot_system"), "Error! Trying to use slot_system perception for non-slot system unit!")
 
-	if script_data.debug_storm_vermin_patrol then
-		Managers.state.debug:drawer({
-			mode = "retained",
-			name = "storm_vermin_patrol_targeting_retained"
-		}):reset()
-	end
-
-	local detection_radius = breed.death_squad_detection_radius
+	local detection_radius = breed.detection_radius
 	local ai_unit_position = POSITION_LOOKUP[ai_unit]
+	local raycast_pos = Unit.world_position(ai_unit, Unit.node(ai_unit, "j_head"))
 	local target_current = blackboard.target_unit
 	local last_attacker = blackboard.previous_attacker
 	local best_target_unit = nil
@@ -772,15 +794,19 @@ PerceptionUtils.storm_patrol_death_squad_target_selection = function (ai_unit, b
 		group_targets[last_attacker] = true
 	end
 
-	for target_i, target_unit in ipairs(global_targets) do
-		if not group_targets[target_unit] and ScriptUnit.has_extension(target_unit, "ai_slot_system") then
-			local target_slot_extension = ScriptUnit.extension(target_unit, "ai_slot_system")
+	local num_global_targets = #global_targets
 
-			if target_slot_extension.valid_target then
+	for i = 1, num_global_targets, 1 do
+		local target_unit = global_targets[i]
+
+		if not group_targets[target_unit] then
+			local target_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
+
+			if target_slot_extension and target_slot_extension.valid_target then
 				local target_unit_position = POSITION_LOOKUP[target_unit]
 				local distance_sq = Vector3.distance_squared(ai_unit_position, target_unit_position)
 
-				if distance_sq < detection_radius * detection_radius then
+				if distance_sq < detection_radius * detection_radius and _line_of_sight_from_random_point(raycast_pos, target_unit) then
 					group_targets[target_unit] = true
 				end
 			end

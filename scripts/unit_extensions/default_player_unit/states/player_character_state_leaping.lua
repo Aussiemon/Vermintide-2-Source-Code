@@ -49,6 +49,7 @@ PlayerCharacterStateLeaping.on_enter = function (self, unit, input, dt, context,
 
 	status_extension:set_falling_height(start_jump_height)
 
+	self._time_slided = 0
 	self._played_landing_event = nil
 end
 
@@ -125,7 +126,7 @@ PlayerCharacterStateLeaping.update = function (self, unit, input, dt, context, t
 	if self:_update_movement(unit, dt, t) then
 		self:_finish(unit, t)
 
-		if locomotion_extension:is_on_ground() then
+		if CharacterStateHelper.is_colliding_down(unit) then
 			csm:change_state("walking", self.temp_params)
 			first_person_extension:change_state("walking")
 
@@ -133,7 +134,6 @@ PlayerCharacterStateLeaping.update = function (self, unit, input, dt, context, t
 		end
 
 		if not self.csm.state_next and locomotion_extension:current_velocity().z <= 0 then
-			self:_finish(unit, t, false)
 			csm:change_state("falling", self.temp_params)
 			first_person_extension:change_state("falling")
 
@@ -175,7 +175,13 @@ PlayerCharacterStateLeaping._update_movement = function (self, unit, dt, t)
 		movement_settings_table.gravity_acceleration = PlayerUnitMovementSettings.gravity_acceleration * 1.25
 	end
 
-	local colliding_down = CharacterStateHelper.is_colliding_down(unit)
+	local colliding_down = false
+
+	if self._time_slided <= 0.1 then
+		colliding_down = CharacterStateHelper.is_colliding_down(unit)
+	end
+
+	self._time_slided = self._time_slided + dt
 
 	return leap_done or colliding_down
 end

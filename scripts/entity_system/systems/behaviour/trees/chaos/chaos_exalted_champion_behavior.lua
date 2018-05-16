@@ -193,13 +193,13 @@ BreedBehaviors.chaos_exalted_champion_warcamp = {
 		condition = "is_falling",
 		name = "falling"
 	},
+	CHAOS_EXALTED_CHAMPION_SMART_OBJECT,
 	{
 		"BTStaggerAction",
 		name = "stagger",
 		condition = "stagger",
 		action_data = ACTIONS.stagger
 	},
-	CHAOS_EXALTED_CHAMPION_SMART_OBJECT,
 	CHAOS_EXALTED_CHAMPION_WARCAMP_DEFENSIVE,
 	CHAOS_EXALTED_CHAMPION_WARCAMP_COMBAT,
 	{
@@ -236,13 +236,13 @@ BreedBehaviors.chaos_exalted_champion_norsca = {
 		condition = "boss_phase_two",
 		action_data = ACTIONS.transform
 	},
+	CHAOS_EXALTED_CHAMPION_SMART_OBJECT,
 	{
 		"BTStaggerAction",
 		name = "stagger",
 		condition = "stagger",
 		action_data = ACTIONS.stagger
 	},
-	CHAOS_EXALTED_CHAMPION_SMART_OBJECT,
 	CHAOS_EXALTED_CHAMPION_NORSCA_COMBAT,
 	{
 		"BTIdleAction",

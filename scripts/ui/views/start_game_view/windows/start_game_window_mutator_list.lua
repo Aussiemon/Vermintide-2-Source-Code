@@ -216,7 +216,7 @@ StartGameWindowMutatorList._handle_input = function (self, dt, t)
 	if self:_is_button_pressed(widgets_by_name.overlay_button) then
 		self.parent:set_layout(7)
 	elseif (self:_is_button_pressed(widgets_by_name.play_button) or play_pressed) and self._selected_backend_id then
-		self.parent:play(t)
+		self.parent:play(t, "deed")
 	end
 end
 

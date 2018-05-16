@@ -296,7 +296,7 @@ PlayerBotUnitFirstPerson.play_sound_event = function (self, event, position)
 	WwiseWorld.trigger_event(wwise_world, event, wwise_source_id)
 end
 
-PlayerUnitFirstPerson.play_unit_sound_event = function (self, event, unit, node_id, play_on_husk)
+PlayerBotUnitFirstPerson.play_unit_sound_event = function (self, event, unit, node_id, play_on_husk)
 	local event_id = NetworkLookup.sound_events[event]
 	local wwise_source_id, wwise_world = WwiseUtils.make_unit_auto_source(self.world, unit, node_id)
 

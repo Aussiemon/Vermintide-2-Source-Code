@@ -128,7 +128,7 @@ DamageProfileTemplates.light_slashing_linesman_fencer = {
 	targets = PowerLevelTemplates.targets_linesman_fencer_L
 }
 
-new_template("light_slashing_linesman", "_flat", nil, nil, "light_slashing_tank", "slashing_tank")
+new_template("light_slashing_linesman", "_flat", nil, nil, "light_slashing_tank", "light_slashing_tank")
 
 DamageProfileTemplates.medium_slashing_linesman = {
 	charge_value = "light_attack",
@@ -303,7 +303,6 @@ DamageProfileTemplates.light_slashing_smiter_stab = {
 	targets = PowerLevelTemplates.targets_stab_smiter_L
 }
 
-new_template("light_slashing_smiter_stab", "_dual", nil, "heavy_attack")
 new_template("light_slashing_smiter_stab", "_H", nil, "heavy_attack")
 new_template("light_slashing_smiter_stab", "_burn", nil, nil)
 
@@ -327,6 +326,9 @@ DamageProfileTemplates.medium_slashing_smiter_stab_1h = {
 	default_target = PowerLevelTemplates.default_target_stab_smiter_M_1h,
 	targets = PowerLevelTemplates.targets_stab_smiter_M_1h
 }
+
+new_template("medium_slashing_smiter_stab_1h", nil, "light_slashing_smiter_stab_dual", "heavy_attack")
+
 DamageProfileTemplates.heavy_slashing_smiter_stab = {
 	charge_value = "heavy_attack",
 	critical_strike = PowerLevelTemplates.critical_strike_stab_smiter_H,
@@ -438,6 +440,7 @@ DamageProfileTemplates.heavy_push = {
 DamageProfileTemplates.ability_push = {
 	is_explosion = true,
 	charge_value = "action_push",
+	no_friendly_fire = true,
 	no_damage = true,
 	armor_modifier = PowerLevelTemplates.armor_modifier_push_Ability,
 	cleave_distribution = PowerLevelTemplates.cleave_distribution_push_default,
@@ -3204,7 +3207,7 @@ DamageProfileTemplates.elven_ruins_finish = {
 		attack_template = "arrow_poison_aoe",
 		damage_type = "elven_magic",
 		power_distribution = {
-			attack = 0.5,
+			attack = 5,
 			impact = 0.5
 		}
 	}

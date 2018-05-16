@@ -147,6 +147,9 @@ BTClimbAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	slot10 = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
 end
 
+local CLIMB_HEIGHT_OFFSET_THRESHOLD = 2.1
+local CLIMB_HEIGHT_OFFSET = 0.125
+
 BTClimbAction.run = function (self, unit, blackboard, t, dt)
 	local navigation_extension = blackboard.navigation_extension
 	local locomotion_extension = blackboard.locomotion_extension
@@ -310,7 +313,16 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 				blackboard.spawn_to_running = true
 
 				locomotion_extension:teleport_to(move_target)
-				navigation_extension:set_navbot_position(move_target)
+
+				local entrance_pos = blackboard.climb_entrance_pos:unbox()
+				local climb_jump_height = move_target.z - entrance_pos.z
+
+				if climb_jump_height < CLIMB_HEIGHT_OFFSET_THRESHOLD then
+					navigation_extension:set_navbot_position(move_target + Vector3.up() * CLIMB_HEIGHT_OFFSET)
+				else
+					navigation_extension:set_navbot_position(move_target)
+				end
+
 				locomotion_extension:set_wanted_velocity(Vector3.zero())
 				LocomotionUtils.set_animation_driven_movement(unit, false)
 
@@ -433,7 +445,15 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 					move_target.z = altitude
 				end
 
-				navigation_extension:set_navbot_position(move_target)
+				local entrance_pos = blackboard.climb_entrance_pos:unbox()
+				local climb_jump_height = math.abs(move_target.z - entrance_pos.z)
+
+				if climb_jump_height < CLIMB_HEIGHT_OFFSET_THRESHOLD then
+					navigation_extension:set_navbot_position(move_target + Vector3.up() * CLIMB_HEIGHT_OFFSET)
+				else
+					navigation_extension:set_navbot_position(move_target)
+				end
+
 				locomotion_extension:teleport_to(move_target)
 				locomotion_extension:set_wanted_velocity(Vector3.zero())
 

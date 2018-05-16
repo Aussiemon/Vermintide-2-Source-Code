@@ -20,6 +20,7 @@ dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_stormfiend_d
 dofile("scripts/entity_system/systems/behaviour/trees/skaven/skaven_warpfire_thrower_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_berzerker_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_marauder_behavior")
+dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_fanatic_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_raider_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_shield_marauder_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_spawn_behavior")

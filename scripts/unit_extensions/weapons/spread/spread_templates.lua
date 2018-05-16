@@ -524,8 +524,8 @@ SpreadTemplates = {
 				max_pitch = 2
 			},
 			zoomed_still = {
-				max_yaw = 1.5,
-				max_pitch = 1.5
+				max_yaw = 1,
+				max_pitch = 1
 			},
 			zoomed_moving = {
 				max_yaw = 3.5,

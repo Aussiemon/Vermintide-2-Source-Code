@@ -2507,8 +2507,16 @@ UtilityConsiderations = {
 			}
 		},
 		have_slot = {
+			max_value = 1,
 			blackboard_input = "have_slot",
-			is_condition = true
+			spline = {
+				0,
+				0,
+				0.5033333333333333,
+				0,
+				1,
+				1
+			}
 		},
 		not_following_target = {
 			is_condition = true,
@@ -2572,8 +2580,16 @@ UtilityConsiderations = {
 			}
 		},
 		have_slot = {
+			max_value = 1,
 			blackboard_input = "have_slot",
-			is_condition = true
+			spline = {
+				0,
+				0,
+				0.5033333333333333,
+				0,
+				1,
+				1
+			}
 		},
 		not_following_target = {
 			is_condition = true,

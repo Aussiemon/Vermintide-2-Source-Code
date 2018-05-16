@@ -341,7 +341,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return content.toggled and button_hotspot.is_hover and not button_hotspot.is_clicked ~= 0
+					return content.toggled and button_hotspot.is_hover and button_hotspot.is_clicked == 0
 				end
 			}
 		}

@@ -99,6 +99,12 @@ local function profile_packages(profile_index, career_index, packages_list, is_f
 						packages_list[item_units.unit] = false
 					end
 
+					local material_changes = item_template.character_material_changes
+
+					if material_changes then
+						packages_list[material_changes.package_name] = false
+					end
+
 					break
 				end
 
@@ -115,7 +121,7 @@ local function profile_packages(profile_index, career_index, packages_list, is_f
 	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
 	local skin_name = (skin_item and skin_item.data.name) or base_skin_name
 	local skin_data = Cosmetics[skin_name]
-	local skin_materials = skin_data.material_changes
+	local material_changes = skin_data.material_changes
 
 	if is_first_person then
 		packages_list[skin_data.first_person] = false
@@ -127,8 +133,8 @@ local function profile_packages(profile_index, career_index, packages_list, is_f
 		packages_list[skin_data.third_person_husk] = false
 	end
 
-	if skin_materials then
-		packages_list[skin_materials.package_name] = false
+	if material_changes then
+		packages_list[material_changes.package_name] = false
 	end
 
 	packages_list[career.package_name] = false

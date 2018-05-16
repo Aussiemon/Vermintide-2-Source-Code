@@ -2451,12 +2451,13 @@ BuffFunctionTemplates.functions = {
 
 		if is_local(unit) or (is_server() and is_bot(unit)) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+
+			career_extension:set_state("default")
 
 			if status_extension:is_invisible() then
-				local career_extension = ScriptUnit.extension(unit, "career_system")
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-				career_extension:set_state("default")
 				status_extension:set_invisible(false)
 				first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_exit")
 				first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
@@ -2481,6 +2482,8 @@ BuffFunctionTemplates.functions = {
 					end
 				end
 			end
+
+			career_extension:set_state("default")
 		end
 	end,
 	end_slayer_activated_ability = function (unit, buff, params)

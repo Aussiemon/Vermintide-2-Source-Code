@@ -14,7 +14,6 @@ local TURN_SPEED = math.pi * 0.7
 local CONTROLLED_ADVANCE_SPEED = 2.77
 local CONTROLLED_ADVANCE_TIME_LIMIT = 5
 local COMBAT_RANGE = 25
-local PLAYER_ESCAPE_RANGE = 625
 local NAV_TAG_ALLOWED_LAYERS = {
 	planks = 10,
 	ledges_with_fence = 10,
@@ -35,7 +34,7 @@ local NAV_COST_MAP_ALLOWED_LAYERS = {
 local FORMATION_MAX_TIME = 20
 local valid_players_and_bots = VALID_TARGETS_PLAYERS_AND_BOTS
 local CIRCULAR_SPLINE_THRESHOLD = 5
-local play_sound, pick_sound_source_unit, update_animation_triggered_sounds, init_group, set_state, remove_dead_units, calculate_group_middle_position, member_sorting_func, change_path_direction, unit_animation_event, set_patrol_path_broken, enter_state_find_path_entry, pick_entry_node, set_path_direction, enter_state_forming, enter_formation, set_forming_positions, debug_draw_formation, check_is_in_formation, update_units, find_position_on_navmesh, enter_state_patrolling, update_anchor_position, update_spline_anchor_points, update_anchor_positions, update_anchor_direction, is_valid_target_unit, check_for_players, check_for_doors, enter_state_opening_door, update_state_opening_door, enter_state_controlled_advance, acquire_targets, controlled_advance, enter_state_combat, check_if_players_dead, switch_perception, create_spline_path = nil
+local play_sound, pick_sound_source_unit, update_animation_triggered_sounds, init_group, set_state, remove_dead_units, calculate_group_middle_position, member_sorting_func, change_path_direction, unit_animation_event, set_patrol_path_broken, enter_state_find_path_entry, pick_entry_node, set_path_direction, enter_state_forming, enter_formation, set_forming_positions, debug_draw_formation, check_is_in_formation, update_units, find_position_on_navmesh, enter_state_patrolling, update_anchor_position, update_spline_anchor_points, update_anchor_positions, update_anchor_direction, check_for_players, check_for_doors, check_prepare_for_combat, enter_state_opening_door, update_state_opening_door, enter_state_controlled_advance, acquire_targets, controlled_advance, prepare_for_combat, cleanup_after_combat, enter_state_combat, create_spline_path = nil
 AIGroupTemplates = AIGroupTemplates or {}
 AIGroupTemplates.spline_patrol = {
 	in_patrol = true,
@@ -71,13 +70,10 @@ AIGroupTemplates.spline_patrol = {
 	end,
 	update = function (world, nav_world, group, t, dt)
 		remove_dead_units(group)
+		check_for_players(group, nav_world, t, dt)
 
 		if group.num_indexed_members == 0 or group.patrol_path_broken then
 			return
-		end
-
-		if script_data.debug_storm_vermin_patrol then
-			Debug.text("patrol runs done: %d", Debug.storm_vermin_patrols_done or 0)
 		end
 
 		local state = group.state
@@ -87,7 +83,7 @@ AIGroupTemplates.spline_patrol = {
 			update_units(nav_world, group, t, dt)
 			update_animation_triggered_sounds(group)
 			check_is_in_formation(group, dt)
-			check_for_players(nav_world, group, t, dt)
+			check_prepare_for_combat(group, t)
 		elseif state == "patrolling" then
 			local door_found = check_for_doors(group)
 
@@ -100,14 +96,13 @@ AIGroupTemplates.spline_patrol = {
 			update_anchor_positions(nav_world, group, dt)
 			update_units(nav_world, group, t, dt)
 			update_animation_triggered_sounds(group)
-			check_for_players(nav_world, group, t, dt)
+			check_prepare_for_combat(group, t)
 		elseif state == "opening_door" then
 			update_state_opening_door(group)
 		elseif state == "controlled_advance" then
 			update_animation_triggered_sounds(group)
 			controlled_advance(nav_world, group, t, dt)
 		elseif state == "in_combat" then
-			check_if_players_dead(nav_world, group, t, dt)
 		end
 	end,
 	setup_group = function (world, nav_world, group, first_unit)
@@ -243,14 +238,6 @@ function remove_dead_units(group)
 
 	for unit, _ in pairs(dead_units) do
 		dead_units[unit] = nil
-	end
-
-	local group_targets = group.target_units
-
-	for target_unit, _ in pairs(group_targets) do
-		if not is_valid_target_unit(target_unit) then
-			group_targets[target_unit] = nil
-		end
 	end
 end
 
@@ -450,6 +437,10 @@ function init_group(nav_world, group, world)
 			}
 			num_indexed_members = num_indexed_members + 1
 			indexed_members[num_indexed_members] = unit
+			blackboard.preferred_door_action = "open"
+
+			navigation_extension:allow_layer("planks", false)
+			GwNavTagLayerCostTable.forbid_layer(group.nav_data.navtag_layer_cost_table, LAYER_ID_MAPPING.planks)
 		end
 	end
 
@@ -516,7 +507,11 @@ function enter_state_find_path_entry(nav_world, group)
 
 	debug_print("[Patrol] group_start_position", group_start_position)
 
-	for i, anchor in ipairs(group.anchors) do
+	local anchors = group.anchors
+	local num_anchors = #anchors
+
+	for i = 1, num_anchors, 1 do
+		local anchor = anchors[i]
 		local spline = anchor.spline
 		local closest_spline_index = NavigationUtils.get_closest_index_on_spline(spline, group_start_position)
 		local movement = spline:movement()
@@ -614,16 +609,6 @@ function set_path_direction(group, direction, current_direction)
 end
 
 function enter_state_forming(nav_world, group)
-	if script_data.debug_storm_vermin_patrol then
-		local drawer = Managers.state.debug:drawer({
-			mode = "retained",
-			name = "storm_vermin_patrol_retained"
-		})
-
-		drawer:reset()
-		Managers.state.debug_text:clear_world_text("storm_vermin_patrol_world_text")
-	end
-
 	set_state(group, "forming")
 
 	local nav_data = group.nav_data
@@ -632,25 +617,11 @@ function enter_state_forming(nav_world, group)
 	local success, altitude = GwNavQueries.triangle_from_position(nav_world, goal_destination, 3, 3)
 
 	if not success then
-		debug_print("[StormVerminPatrol] WARNING: Spawned patrol with invalid path marker in level")
-		Debug.sticky_text("WARNING: Spawned patrol with invalid path marker in level")
-
-		if script_data.debug_storm_vermin_patrol then
-			local drawer = Managers.state.debug:drawer({
-				mode = "retained",
-				name = "storm_vermin_patrol_retained"
-			})
-
-			drawer:sphere(goal_destination, 0.5, Colors.get("yellow"))
-			drawer:sphere(goal_destination, 0.4, Colors.get("red"))
-		end
-
 		return
 	end
 
 	goal_destination.z = altitude
 	group.destination = Vector3Box(goal_destination)
-	local network_manager = Managers.state.network
 	local indexed_members = group.indexed_members
 	local num_indexed_members = group.num_indexed_members
 
@@ -662,67 +633,13 @@ function enter_state_forming(nav_world, group)
 
 		navigation_extension:set_max_speed(walk_speed)
 
-		if ScriptUnit.has_extension(unit, "ai_slot_system") then
-			local ai_slot_system = Managers.state.entity:system("ai_slot_system")
-
-			ai_slot_system:do_slot_search(unit, false)
-		end
-
-		local ai_group_extension = ScriptUnit.extension(unit, "ai_group_system")
-		local use_patrol_perception = ai_group_extension.use_patrol_perception
-
-		if use_patrol_perception then
-			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local breed = ai_extension:breed()
-			local perception_func_name = breed.patrol_passive_perception
-			local target_selection_func_name = breed.patrol_passive_target_selection
-
-			ai_extension:set_perception(perception_func_name, target_selection_func_name)
-		end
-
 		blackboard.SVP_target_unit = nil
-		local member_goal_destination = goal_destination
-		local success, altitude = GwNavQueries.triangle_from_position(nav_world, member_goal_destination, 3, 3)
-
-		if success then
-			member_goal_destination.z = altitude
-		else
-			local nav_pos = GwNavQueries.inside_position_from_outside_position(nav_world, member_goal_destination, 1, 1, 3, 0.38)
-
-			if nav_pos then
-				member_goal_destination = nav_pos
-			end
-		end
-
-		blackboard.goal_destination = Vector3Box(member_goal_destination)
-		blackboard.preferred_door_action = "open"
-
-		navigation_extension:allow_layer("planks", false)
-		GwNavTagLayerCostTable.forbid_layer(group.nav_data.navtag_layer_cost_table, LAYER_ID_MAPPING.planks)
-
-		if script_data.debug_storm_vermin_patrol then
-			local drawer = Managers.state.debug:drawer({
-				mode = "retained",
-				name = "storm_vermin_patrol_retained"
-			})
-
-			drawer:sphere(member_goal_destination, 0.5, Colors.get("yellow"))
-			drawer:sphere(member_goal_destination, 0.4, Colors.get("green"))
-		end
+		blackboard.goal_destination = Vector3Box(goal_destination)
 	end
 
 	set_forming_positions(nav_world, group)
-
-	local sound_settings = group.formation_settings.sounds
-	local formate_sound = sound_settings.formate
-	local forming_sound = sound_settings.forming
-
 	play_sound(group, "FORMATE")
 	play_sound(group, "FORMING")
-
-	if script_data.debug_storm_vermin_patrol then
-		debug_draw_formation(group)
-	end
 end
 
 function debug_draw_formation(group)
@@ -1277,15 +1194,10 @@ function update_anchor_direction(nav_world, group, dt)
 	end
 end
 
-function is_valid_target_unit(target_unit)
-	return valid_players_and_bots[target_unit]
-end
-
-function check_for_players(nav_world, group, t, dt)
+function check_for_players(group, nav_world, t, dt)
 	local group_targets = group.target_units
 	local indexed_members = group.indexed_members
 	local num_indexed_members = group.num_indexed_members
-	local is_roaming_patrol = group.group_type == "roaming_patrol"
 	local use_controlled_advance = group.use_controlled_advance
 	local someone_is_climbing = false
 
@@ -1298,12 +1210,10 @@ function check_for_players(nav_world, group, t, dt)
 			someone_is_climbing = true
 		end
 
-		local valid_players = valid_players_and_bots
-		local valid_player = valid_players[target_unit]
+		local valid_player = valid_players_and_bots[target_unit]
 
 		if valid_player then
 			group_targets[target_unit] = true
-			blackboard.target_unit = nil
 		elseif target_unit then
 			group_targets[target_unit] = nil
 			blackboard.target_unit = nil
@@ -1312,13 +1222,26 @@ function check_for_players(nav_world, group, t, dt)
 
 	local has_targets = next(group_targets) ~= nil
 
-	if has_targets then
-		if use_controlled_advance and not is_roaming_patrol and not someone_is_climbing then
-			enter_state_controlled_advance(nav_world, group, t)
+	if group.has_targets and not has_targets then
+		cleanup_after_combat(group)
+		enter_state_find_path_entry(nav_world, group)
+	end
+
+	group.someone_is_climbing = someone_is_climbing
+	group.has_targets = has_targets
+end
+
+function check_prepare_for_combat(group, t)
+	if group.has_targets then
+		prepare_for_combat(group)
+
+		local is_roaming_patrol = group.group_type == "roaming_patrol"
+		local use_controlled_advance = group.use_controlled_advance
+
+		if use_controlled_advance and not is_roaming_patrol and not group.someone_is_climbing then
+			enter_state_controlled_advance(group, t)
 		else
-			switch_perception(group, "patrol_active_perception", "patrol_active_target_selection")
-			acquire_targets(group)
-			enter_state_combat(group)
+			enter_state_combat(group, t)
 		end
 	end
 end
@@ -1411,12 +1334,11 @@ function update_state_opening_door(group)
 	end
 end
 
-function enter_state_controlled_advance(nav_world, group, t)
-	acquire_targets(group)
-
+function enter_state_controlled_advance(group, t)
 	group.attack_latest_t = t + CONTROLLED_ADVANCE_TIME_LIMIT
 	local indexed_members = group.indexed_members
 	local num_indexed_members = group.num_indexed_members
+	local network_manager = Managers.state.network
 
 	for i = 1, num_indexed_members, 1 do
 		local unit = indexed_members[i]
@@ -1424,40 +1346,7 @@ function enter_state_controlled_advance(nav_world, group, t)
 		local navigation_extension = blackboard.navigation_extension
 
 		navigation_extension:set_max_speed(CONTROLLED_ADVANCE_SPEED)
-
-		local SVP_target_unit = blackboard.SVP_target_unit
-		local target_position = POSITION_LOOKUP[SVP_target_unit]
-		local goal_destination = target_position + Vector3(0, 0, 0)
-		local success, altitude = GwNavQueries.triangle_from_position(nav_world, target_position, 3, 3)
-
-		if success then
-			goal_destination.z = altitude
-		else
-			goal_destination = nil
-		end
-
-		if ScriptUnit.has_extension(unit, "ai_slot_system") then
-			local ai_slot_system = Managers.state.entity:system("ai_slot_system")
-
-			ai_slot_system:do_slot_search(unit, true)
-		end
-
-		local ai_group_extension = ScriptUnit.extension(unit, "ai_group_system")
-		local use_patrol_perception = ai_group_extension.use_patrol_perception
-
-		if use_patrol_perception then
-			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local breed = ai_extension:breed()
-			local perception_func_name = breed.patrol_active_perception
-			local target_selection_func_name = breed.patrol_active_target_selection
-
-			ai_extension:set_perception(perception_func_name, target_selection_func_name)
-		end
-
-		blackboard.preferred_door_action = "smash"
-
-		navigation_extension:allow_layer("planks", true)
-		GwNavTagLayerCostTable.allow_layer(group.nav_data.navtag_layer_cost_table, LAYER_ID_MAPPING.planks)
+		network_manager:anim_event(unit, "to_combat")
 	end
 
 	set_state(group, "controlled_advance")
@@ -1520,9 +1409,9 @@ function controlled_advance(nav_world, group, t, dt)
 			for target_unit, _ in pairs(group_targets) do
 				if AiUtils.unit_alive(target_unit) then
 					local target_pos = POSITION_LOOKUP[target_unit]
-					local distance2 = Vector3.distance_squared(unit_pos, target_pos)
+					local distance_sq = Vector3.distance_squared(unit_pos, target_pos)
 
-					if distance2 < COMBAT_RANGE then
+					if distance_sq < COMBAT_RANGE then
 						should_attack = true
 
 						break
@@ -1539,17 +1428,20 @@ function controlled_advance(nav_world, group, t, dt)
 	end
 
 	if should_attack or group.attack_latest_t < t then
-		enter_state_combat(group)
+		enter_state_combat(group, t)
 	end
 end
 
-function switch_perception(group, breed_perception_name, breed_target_selection_name)
+function prepare_for_combat(group)
+	acquire_targets(group)
+
 	local network_manager = Managers.state.network
 	local indexed_members = group.indexed_members
 	local num_indexed_members = group.num_indexed_members
 
 	for i = 1, num_indexed_members, 1 do
 		local unit = indexed_members[i]
+		local blackboard = BLACKBOARDS[unit]
 
 		if ScriptUnit.has_extension(unit, "ai_inventory_system") then
 			local unit_id = network_manager:unit_game_object_id(unit)
@@ -1557,17 +1449,69 @@ function switch_perception(group, breed_perception_name, breed_target_selection_
 			network_manager.network_transmit:send_rpc_all("rpc_ai_inventory_wield", unit_id, 1)
 		end
 
-		local blackboard = BLACKBOARDS[unit]
-		local breed = blackboard.breed
-		local perception_name = breed[breed_perception_name]
-		local target_selection_name = breed[breed_target_selection_name]
-		local ai_extension = ScriptUnit.extension(unit, "ai_system")
+		if ScriptUnit.has_extension(unit, "ai_slot_system") then
+			local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
-		ai_extension:set_perception(perception_name, target_selection_name)
+			ai_slot_system:do_slot_search(unit, true)
+		end
+
+		local ai_group_extension = ScriptUnit.extension(unit, "ai_group_system")
+		local use_patrol_perception = ai_group_extension.use_patrol_perception
+
+		if use_patrol_perception then
+			local ai_extension = ScriptUnit.extension(unit, "ai_system")
+			local breed = blackboard.breed
+			local perception_func_name = breed.patrol_active_perception
+			local target_selection_func_name = breed.patrol_active_target_selection
+
+			ai_extension:set_perception(perception_func_name, target_selection_func_name)
+		end
+
+		blackboard.preferred_door_action = "smash"
+
+		blackboard.navigation_extension:allow_layer("planks", true)
+		GwNavTagLayerCostTable.allow_layer(group.nav_data.navtag_layer_cost_table, LAYER_ID_MAPPING.planks)
 	end
 end
 
-function enter_state_combat(group)
+function cleanup_after_combat(group)
+	local indexed_members = group.indexed_members
+	local num_indexed_members = group.num_indexed_members
+
+	for i = 1, num_indexed_members, 1 do
+		local unit = indexed_members[i]
+		local blackboard = BLACKBOARDS[unit]
+
+		AiUtils.deactivate_unit(blackboard)
+
+		if ScriptUnit.has_extension(unit, "ai_slot_system") then
+			local ai_slot_system = Managers.state.entity:system("ai_slot_system")
+
+			ai_slot_system:do_slot_search(unit, false)
+		end
+
+		local ai_group_extension = ScriptUnit.extension(unit, "ai_group_system")
+		local use_patrol_perception = ai_group_extension.use_patrol_perception
+
+		if use_patrol_perception then
+			local ai_extension = ScriptUnit.extension(unit, "ai_system")
+			local breed = blackboard.breed
+			local perception_func_name = breed.patrol_passive_perception
+			local target_selection_func_name = breed.patrol_passive_target_selection
+
+			ai_extension:set_perception(perception_func_name, target_selection_func_name)
+		end
+
+		blackboard.preferred_door_action = "open"
+
+		blackboard.navigation_extension:allow_layer("planks", false)
+		GwNavTagLayerCostTable.forbid_layer(group.nav_data.navtag_layer_cost_table, LAYER_ID_MAPPING.planks)
+	end
+
+	group.patrol_in_combat = false
+end
+
+function enter_state_combat(group, t)
 	set_state(group, "in_combat")
 
 	group.patrol_in_combat = true
@@ -1587,16 +1531,10 @@ function enter_state_combat(group)
 				local blackboard = BLACKBOARDS[unit]
 				blackboard.goal_destination = nil
 				blackboard.target_unit = target_unit
-				blackboard.target_unit_found_time = Managers.time:time("game")
+				blackboard.target_unit_found_time = t
 
 				AiUtils.activate_unit(blackboard)
 				debug_print("\tactivated", j)
-
-				if ScriptUnit.has_extension(unit, "ai_slot_system") then
-					local ai_slot_system = Managers.state.entity:system("ai_slot_system")
-
-					ai_slot_system:do_slot_search(unit, true)
-				end
 			end
 		end
 
@@ -1607,47 +1545,6 @@ function enter_state_combat(group)
 
 	if group.has_extra_breed then
 		play_sound(group, "CHARGE_EXTRA")
-	end
-end
-
-function check_if_players_dead(nav_world, group, t, dt)
-	if group.controlled_advance_distance_check_t < t then
-		local indexed_members = group.indexed_members
-		local num_indexed_members = group.num_indexed_members
-		local all_dead = true
-		local group_targets = group.target_units
-		group.controlled_advance_distance_check_t = t + 0.5
-
-		for target_unit, _ in pairs(group_targets) do
-			local target_escaped = true
-
-			if AiUtils.unit_alive(target_unit) then
-				all_dead = false
-				local target_pos = POSITION_LOOKUP[target_unit]
-
-				for i = 1, num_indexed_members, 1 do
-					local unit = indexed_members[i]
-					local unit_pos = POSITION_LOOKUP[unit]
-					local distance2 = Vector3.distance_squared(unit_pos, target_pos)
-
-					if distance2 < PLAYER_ESCAPE_RANGE then
-						target_escaped = false
-
-						break
-					end
-				end
-			end
-
-			if target_escaped then
-				group_targets[target_unit] = nil
-			end
-		end
-
-		if all_dead then
-			enter_state_find_path_entry(nav_world, group)
-
-			group.patrol_in_combat = false
-		end
 	end
 end
 

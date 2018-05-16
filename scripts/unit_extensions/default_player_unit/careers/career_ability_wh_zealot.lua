@@ -184,6 +184,7 @@ CareerAbilityWHZealot._run_ability = function (self)
 		first_person_animation_end_event = "dodge_bwd",
 		first_person_hit_animation_event = "charge_react",
 		falloff_to_speed = 8,
+		dodge = true,
 		first_person_animation_event = "shade_stealth_ability",
 		first_person_animation_end_event_hit = "dodge_bwd",
 		duration = 0.75,

@@ -888,6 +888,12 @@ local action_data = {
 			"alerted_3"
 		}
 	},
+	combat_shout = {
+		cooldown = -1,
+		shout_anim = "shout",
+		action_weight = 1,
+		considerations = UtilityConsiderations.clan_rat_shout
+	},
 	alerted = {
 		alerted_anims = {
 			"alerted",

@@ -79,6 +79,15 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 		self.max_targets_impact = max_targets_impact
 		self.max_targets = (max_targets_impact < max_targets_attack and max_targets_attack) or max_targets_impact
 	end
+
+	if lunge_data.dodge then
+		status_extension:set_is_dodging(true)
+
+		local network_manager = Managers.state.network
+		local unit_id = network_manager:unit_game_object_id(unit)
+
+		network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, true, unit_id, 0)
+	end
 end
 
 PlayerCharacterStateLunging.on_exit = function (self, unit, input, dt, context, t, next_state)
@@ -113,6 +122,15 @@ PlayerCharacterStateLunging.on_exit = function (self, unit, input, dt, context, 
 
 	if data.lunge_finish then
 		data.lunge_finish(unit)
+	end
+
+	if data.dodge then
+		self.status_extension:set_is_dodging(false)
+
+		local network_manager = Managers.state.network
+		local unit_id = network_manager:unit_game_object_id(unit)
+
+		network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, false, unit_id, 0)
 	end
 
 	if self._falling and next_state ~= "falling" then

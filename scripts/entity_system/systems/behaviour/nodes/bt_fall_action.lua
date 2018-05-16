@@ -52,6 +52,12 @@ BTFallAction.enter = function (self, unit, blackboard, t)
 	local event_data = FrameTable.alloc_table()
 
 	dialogue_input:trigger_networked_dialogue_event("falling", event_data)
+
+	local shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system")
+
+	if shield_extension then
+		shield_extension:set_is_blocking(false)
+	end
 end
 
 BTFallAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -68,6 +74,11 @@ BTFallAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	blackboard.jump_climb_finished = nil
 	blackboard.fall_state = nil
+	local shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system")
+
+	if shield_extension then
+		shield_extension:set_is_blocking(true)
+	end
 end
 
 BTFallAction.run = function (self, unit, blackboard, t, dt)

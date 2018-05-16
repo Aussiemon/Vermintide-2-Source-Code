@@ -175,6 +175,7 @@ local skin_dr_slayer_axe = {
 	material_changes = {
 		package_name = "units/beings/player/dwarf_ranger_slayer/skins/axe/chr_dwarf_ranger_slayer_axe",
 		third_person = {
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/axe/mtr_outfit_axe",
 			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/axe/mtr_body_axe"
 		},
 		first_person = {
@@ -198,6 +199,7 @@ local skin_dr_slayer_dragon = {
 	material_changes = {
 		package_name = "units/beings/player/dwarf_ranger_slayer/skins/dragon/chr_dwarf_ranger_slayer_dragon",
 		third_person = {
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/dragon/mtr_outfit_dragon",
 			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/dragon/mtr_body_dragon"
 		},
 		first_person = {
@@ -221,6 +223,7 @@ local skin_dr_slayer_skaven = {
 	material_changes = {
 		package_name = "units/beings/player/dwarf_ranger_slayer/skins/skaven/chr_dwarf_ranger_slayer_skaven",
 		third_person = {
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/skaven/mtr_outfit_skaven",
 			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/skaven/mtr_body_skaven"
 		},
 		first_person = {
@@ -244,6 +247,7 @@ local skin_dr_slayer_runes = {
 	material_changes = {
 		package_name = "units/beings/player/dwarf_ranger_slayer/skins/runes/chr_dwarf_ranger_slayer_runes",
 		third_person = {
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/runes/mtr_outfit_runes",
 			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/runes/mtr_body_runes"
 		},
 		first_person = {
@@ -267,6 +271,7 @@ local skin_dr_slayer_wing = {
 	material_changes = {
 		package_name = "units/beings/player/dwarf_ranger_slayer/skins/wing/chr_dwarf_ranger_slayer_wing",
 		third_person = {
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/wing/mtr_outfit_wing",
 			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/wing/mtr_body_wing"
 		},
 		first_person = {

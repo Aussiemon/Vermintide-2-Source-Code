@@ -20,7 +20,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.65,
+					external_multiplier = 0.75,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -78,7 +78,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.65,
+					external_multiplier = 0.75,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -136,7 +136,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.65,
+					external_multiplier = 0.75,
 					buff_name = "planted_charging_decrease_movement"
 				}
 			},
@@ -348,7 +348,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.7,
+					external_multiplier = 0.9,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -406,7 +406,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.7,
+					external_multiplier = 0.9,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}
@@ -517,7 +517,7 @@ weapon_template.actions = {
 			buff_data = {
 				{
 					start_time = 0,
-					external_multiplier = 0.7,
+					external_multiplier = 1.1,
 					end_time = 0.5,
 					buff_name = "planted_decrease_movement"
 				}

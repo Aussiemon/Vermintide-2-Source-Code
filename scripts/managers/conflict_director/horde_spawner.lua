@@ -379,6 +379,7 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, fallback, overri
 	local spawner_count = 0
 	local last_spawner_count = -1
 	local sector_index = 1
+	local test_count1 = 0
 
 	while last_spawner_count ~= spawner_count and spawner_count < num_to_spawn do
 		last_spawner_count = spawner_count
@@ -427,6 +428,13 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, fallback, overri
 		end
 
 		sector_index = sector_index + 1
+		test_count1 = test_count1 + 1
+
+		if test_count1 > 1000 then
+			self:execute_fallback("ambush", fallback, "Ambush horde spawn failed A - no matching spawners found!")
+
+			return
+		end
 	end
 
 	if spawner_count < num_to_spawn then
@@ -435,6 +443,7 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, fallback, overri
 		local num_horde_spawns = (horde.horde_spawns and #horde.horde_spawns) or 0
 		local num_cover_spawns = (horde.cover_spawns and #horde.cover_spawns) or 0
 		local hidden_spawner_index = 1
+		local test_count = 0
 
 		while missing > 0 do
 			local spawner, breed_name = nil
@@ -472,6 +481,14 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, fallback, overri
 					end
 				end
 			end
+
+			test_count = test_count + 1
+
+			if test_count > 1000 then
+				self:execute_fallback("ambush", fallback, "Ambush horde spawn failed B - no matching spawners found!")
+
+				return
+			end
 		end
 	end
 
@@ -484,6 +501,8 @@ HordeSpawner.execute_ambush_horde = function (self, extra_data, fallback, overri
 	hordes[id] = horde
 	self.last_paced_horde_type = "ambush"
 	self.num_paced_hordes = self.num_paced_hordes + 1
+
+	print("ambush horde has started")
 end
 
 HordeSpawner.replace_hidden_spawners = function (self, hidden_spawners, spawner_in_sight, offending_player_pos)
@@ -754,6 +773,8 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 		spawn_time = spawn_time + 0.1
 	end
 
+	local test_count = 0
+
 	while spawn_counter < num_to_spawn do
 		for i = 1, n_horde_spawners, 1 do
 			local spawn = horde_spawns[i]
@@ -785,7 +806,7 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 
 		if spawn_counter == last_spawn_counter then
 			if spawn_counter == 0 then
-				self:execute_fallback("vector", fallback, "Vector horde spawn failed - no matching spawners found!")
+				self:execute_fallback("vector", fallback, "Vector horde spawn failed A - no matching spawners found!")
 
 				return
 			end
@@ -794,6 +815,13 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 		end
 
 		last_spawn_counter = spawn_counter
+		test_count = test_count + 1
+
+		if test_count > 1000 then
+			self:execute_fallback("vector", fallback, "Vector horde spawn failed B - no matching spawners found!")
+
+			return
+		end
 	end
 
 	local conflict_director = self.conflict_director
@@ -815,6 +843,8 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 
 	self.last_paced_horde_type = "vector"
 	self.num_paced_hordes = self.num_paced_hordes + 1
+
+	print("vector horde has started")
 end
 
 HordeSpawner.get_pos_ahead_or_behind_players_on_mainpath = function (self, check_ahead, dist, raw_dist)
@@ -987,6 +1017,8 @@ HordeSpawner.execute_vector_blob_horde = function (self, extra_data, fallback)
 	hordes[id] = horde
 	self.last_paced_horde_type = "vector_blob"
 	self.num_paced_hordes = self.num_paced_hordes + 1
+
+	print("vector blob horde has started")
 end
 
 HordeSpawner.spawn_unit = function (self, hidden_spawn, breed_name, goal_pos, horde)

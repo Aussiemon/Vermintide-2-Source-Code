@@ -74,6 +74,16 @@ AiUtils.activate_unit = function (blackboard)
 	end
 end
 
+AiUtils.deactivate_unit = function (blackboard)
+	if blackboard.confirmed_player_sighting then
+		local breed = blackboard.breed
+
+		Managers.state.event:trigger("ai_unit_deactivated", breed.name)
+
+		blackboard.confirmed_player_sighting = false
+	end
+end
+
 AiUtils.stormvermin_champion_hack_check_ward = function (unit, blackboard)
 	if blackboard.ward_active and not blackboard.defensive_mode_duration then
 		blackboard.ward_active = false

@@ -95,10 +95,14 @@ DeedManager.consume_deed = function (self, reward_callback)
 	print("[DeedManager]:consume_deed()")
 
 	if self._owner_peer_id == self._peer_id then
-		if self._is_server then
-			self:_send_rpc_to_clients("rpc_deed_consumed")
-		else
-			self:_send_rpc_to_server("rpc_deed_consumed")
+		local network_manager = Managers.state.network
+
+		if network_manager and network_manager:game() then
+			if self._is_server then
+				self:_send_rpc_to_clients("rpc_deed_consumed")
+			else
+				self:_send_rpc_to_server("rpc_deed_consumed")
+			end
 		end
 	elseif self._has_consumed_deed then
 		self._has_consumed_deed = nil
@@ -124,12 +128,16 @@ DeedManager.select_deed = function (self, backend_id, peer_id)
 	self._selected_deed_id = backend_id
 	self._owner_peer_id = peer_id
 	self._deed_session_faulty = false
-	local item_name_id = NetworkLookup.item_names[item_data.name]
+	local network_manager = Managers.state.network
 
-	if self._is_server then
-		self:_send_rpc_to_clients("rpc_select_deed", item_name_id, peer_id)
-	else
-		self:_send_rpc_to_server("rpc_select_deed", item_name_id, peer_id)
+	if network_manager and network_manager:game() then
+		local item_name_id = NetworkLookup.item_names[item_data.name]
+
+		if self._is_server then
+			self:_send_rpc_to_clients("rpc_select_deed", item_name_id, peer_id)
+		else
+			self:_send_rpc_to_server("rpc_select_deed", item_name_id, peer_id)
+		end
 	end
 end
 
@@ -164,8 +172,9 @@ DeedManager.rpc_select_deed = function (self, sender, item_name_id, owner_peer_i
 	self._selected_deed_data = item_data
 	self._selected_deed_id = nil
 	self._owner_peer_id = owner_peer_id
+	local network_manager = Managers.state.network
 
-	if self._is_server then
+	if self._is_server and network_manager and network_manager:game() then
 		self:_send_rpc_to_clients_except("rpc_select_deed", sender, item_name_id, owner_peer_id)
 	end
 end
@@ -179,7 +188,9 @@ DeedManager.rpc_deed_consumed = function (self, sender)
 		self:_use_reward_callback()
 	end
 
-	if self._is_server then
+	local network_manager = Managers.state.network
+
+	if self._is_server and network_manager and network_manager:game() then
 		print("Sending to the other clients to act on deed consume")
 		self:_send_rpc_to_clients_except("rpc_deed_consumed", sender)
 	end

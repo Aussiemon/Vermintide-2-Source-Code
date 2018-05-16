@@ -870,8 +870,11 @@ DamageUtils.create_explosion = function (world, attacker_unit, position, rotatio
 		local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 		local attacker_player = Managers.player:owner(attacker_unit)
 		local attacker_is_player = attacker_player ~= nil
+		local friendly_fire_disabled = explosion_data.no_friendly_fire
+		local friendly_fire_allowed = attacker_is_player and DamageUtils.allow_friendly_fire_ranged(difficulty_settings, attacker_player)
+		local forced_friendly_fire = explosion_data.always_hurt_players
 
-		if (attacker_is_player and DamageUtils.allow_friendly_fire_ranged(difficulty_settings, attacker_player)) or explosion_data.always_hurt_players then
+		if forced_friendly_fire or (friendly_fire_allowed and not friendly_fire_disabled) then
 			collision_filter = "filter_explosion_overlap"
 		end
 
@@ -1113,7 +1116,11 @@ DamageUtils.create_aoe = function (world, attacker_unit, position, damage_source
 
 	if attacker_player ~= nil then
 		local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
-		damage_players = DamageUtils.allow_friendly_fire_ranged(difficulty_settings, attacker_player)
+		local aoe_data = explosion_template.aoe
+		local friendly_fire_disabled = aoe_data.no_friendly_fire
+		local friendly_fire_allowed = DamageUtils.allow_friendly_fire_ranged(difficulty_settings, attacker_player)
+		local forced_friendly_fire = aoe_data.always_hurt_players
+		damage_players = forced_friendly_fire or (friendly_fire_allowed and not friendly_fire_disabled)
 	end
 
 	local extension_init_data = {
@@ -2069,6 +2076,8 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 	local num_hits = #raycast_result
 	hit_data.hits = num_penetrations
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+	local friendly_fire_disabled = damage_profile.no_friendly_fire
+	local forced_friendly_fire = damage_profile.always_hurt_players
 
 	for i = 1, num_hits, 1 do
 		local hit = raycast_result[i]
@@ -2219,7 +2228,7 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 						return hit_data
 					end
 				end
-			elseif not hit_units[hit_unit] and is_target and ((is_player and (not owner_is_player or DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_is_player))) or breed) then
+			elseif not hit_units[hit_unit] and is_target and ((is_player and (not owner_is_player or forced_friendly_fire or (not friendly_fire_disabled and DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_is_player)))) or breed) then
 				local network_manager = Managers.state.network
 				local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
 				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)

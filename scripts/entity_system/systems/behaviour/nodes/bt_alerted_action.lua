@@ -179,7 +179,6 @@ BTAlertedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.navigation_extension:set_enabled(true)
 
 	blackboard.action = nil
-	blackboard.detection_radius = 99999
 	blackboard.update_timer = 0
 	blackboard.in_alerted_state = false
 	blackboard.move_animation_name = nil

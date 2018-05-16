@@ -20,7 +20,7 @@ GLOBAL_MUSIC_WORLD = true
 
 if GLOBAL_MUSIC_WORLD then
 	MUSIC_WORLD = Application.new_world("music_world", Application.DISABLE_PHYSICS, Application.DISABLE_RENDERING)
-	MUSIC_WWISE_WORLD = Wwise.wwise_world(MUSIC_WORLD)
+	MUSIC_WWISE_WORLD = Wwise.wwise_world(MUSIC_WORLD) or "dedicated_server_no_wwise_dummy"
 end
 
 BUILD = Application.build()
@@ -58,7 +58,10 @@ if not PROFILER_SCOPES_INITED then
 end
 
 GLOBAL_FRAME_INDEX = GLOBAL_FRAME_INDEX or 0
-script_data = script_data or {}
+script_data = script_data or {
+	settings = Application.settings(),
+	build_identifier = Application.build_identifier()
+}
 
 if LEVEL_EDITOR_TEST then
 	GlobalResources = GlobalResources or {

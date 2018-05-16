@@ -157,8 +157,8 @@ AIGroupSystem.on_add_extension = function (self, world, unit, extension_name, ex
 			end
 		end
 
-		assert(group.size, "Created group without size!")
-		assert(template, "Created group without template!")
+		fassert(group.size, "Created group without size!")
+		fassert(template, "Created group without template!")
 
 		self.groups[id] = group
 		self.groups_to_initialize[id] = group
@@ -196,7 +196,7 @@ AIGroupSystem.on_add_extension = function (self, world, unit, extension_name, ex
 	extension.in_patrol = in_patrol
 	extension.use_patrol_perception = extension_init_data.group_type == "spline_patrol"
 
-	assert(group.num_spawned_members <= group.size, "An AI group was initialized with size=%d but %d AIs was assigned to it.", group.size, group.num_spawned_members)
+	fassert(group.num_spawned_members <= group.size, "An AI group was initialized with size=%d but %d AIs was assigned to it.", group.size, group.num_spawned_members)
 	ScriptUnit.set_extension(unit, "ai_group_system", extension, dummy_input)
 
 	self.unit_extension_data[unit] = extension

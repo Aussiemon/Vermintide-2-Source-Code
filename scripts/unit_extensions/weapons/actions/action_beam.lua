@@ -56,11 +56,7 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 	end
 
 	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
-
-	if not status_extension:is_zooming() then
-		status_extension:set_zooming(true)
-	end
-
+	self.status_extension = status_extension
 	local overcharge_type = current_action.overcharge_type
 
 	if overcharge_type then
@@ -97,7 +93,11 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local is_server = self.is_server
 	local input_extension = ScriptUnit.extension(self.owner_unit, "input_system")
 	local buff_extension = self.owner_buff_extension
-	local status_extension = ScriptUnit.extension(self.owner_unit, "status_system")
+	local status_extension = self.status_extension
+
+	if not status_extension:is_zooming() then
+		status_extension:set_zooming(true)
+	end
 
 	if buff_extension:has_buff_type("increased_zoom") and status_extension:is_zooming() and input_extension:get("action_three") then
 		status_extension:switch_variable_zoom(current_action.buffed_zoom_thresholds)

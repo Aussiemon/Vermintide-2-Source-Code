@@ -212,7 +212,7 @@ AttackTemplates = {
 	},
 	slashing_tank = {
 		stagger_value = 2,
-		sound_type = "heavy",
+		sound_type = "medium",
 		damage_type = "slashing_tank"
 	},
 	slashing_tank_hs = {

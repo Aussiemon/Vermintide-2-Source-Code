@@ -103,19 +103,24 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 
 				ActionUtils.spawn_player_projectile(owner_unit, position, fire_rotation, 0, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, self._is_critical_strike, self.power_level)
 
-				local fire_sound_event = self.current_action.fire_sound_event
-				local unit_fire_sound_event = self.current_action.unit_fire_sound_event
+				local fire_sound_event = current_action.fire_sound_event
 
 				if fire_sound_event then
-					local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
 					first_person_extension:play_hud_sound_event(fire_sound_event)
 				end
 
-				if unit_fire_sound_event then
-					local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+				local unit_fire_sound_event = current_action.unit_fire_sound_event
 
-					first_person_extension:play_sound_event(unit_fire_sound_event)
+				if unit_fire_sound_event then
+					local unit_fire_sound_source_node = current_action.unit_fire_sound_source_node
+					local weapon_unit = self.weapon_unit
+					local node_id = 0
+
+					if Unit.has_node(weapon_unit, unit_fire_sound_source_node) then
+						node_id = Unit.node(weapon_unit, unit_fire_sound_source_node)
+					end
+
+					first_person_extension:play_unit_sound_event(unit_fire_sound_event, weapon_unit, node_id, false)
 				end
 
 				if self.ammo_extension and not self.extra_buff_shot then

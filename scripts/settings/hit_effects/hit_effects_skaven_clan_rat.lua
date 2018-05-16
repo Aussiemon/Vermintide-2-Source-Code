@@ -747,8 +747,8 @@ HitEffectsSkavenClanRat = {
 		},
 		push = {
 			distal_force = 20,
-			vertical_force = 0,
-			lateral_force = 40
+			vertical_force = -50,
+			lateral_force = 0
 		}
 	},
 	burning_smiter_death_head = {
@@ -2258,8 +2258,8 @@ HitEffectsSkavenClanRat = {
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"burninating",
-				"burn_death"
+				"burn",
+				"burninating"
 			}
 		},
 		animations = {
@@ -2641,7 +2641,9 @@ HitEffectsSkavenClanRat = {
 		inherits = "default",
 		flow_event = "burn",
 		extra_conditions = {
-			damage_type = "drakegun_glance"
+			damage_type = {
+				"drakegun_glance"
+			}
 		}
 	},
 	drakegun_glance_death = {
@@ -2881,16 +2883,24 @@ HitEffectsSkavenClanRat = {
 }
 
 for hit_effect_name, hit_effect_data in pairs(HitEffectsSkavenClanRat) do
-	if hit_effect_data.flow_event and hit_effect_data.flow_event == "burn_death" then
-		local new_hit_effect_name = hit_effect_name .. "_critical"
-		local new_hit_effect_data = {
-			flow_event = "burn_death_critical",
-			inherits = hit_effect_name,
-			extra_conditions = {
-				is_critical_strike = true
+	local hit_effect_flow_event = hit_effect_data.flow_event or (hit_effect_data.inherits and HitEffectsSkavenClanRat[hit_effect_data.inherits].flow_event)
+
+	if hit_effect_flow_event then
+		local is_table = type(hit_effect_flow_event) == "table"
+
+		if (is_table and table.contains(hit_effect_flow_event, "burn_death")) or hit_effect_flow_event == "burn_death" then
+			local new_hit_effect_name = hit_effect_name .. "_critical"
+			local new_hit_effect_data = {
+				flow_event = "burn_death_critical",
+				do_dismember = false,
+				do_diagonal_dismemberments = false,
+				inherits = hit_effect_name,
+				extra_conditions = {
+					is_critical_strike = true
+				}
 			}
-		}
-		HitEffectsSkavenClanRat[new_hit_effect_name] = new_hit_effect_data
+			HitEffectsSkavenClanRat[new_hit_effect_name] = new_hit_effect_data
+		end
 	end
 end
 

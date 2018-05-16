@@ -90,6 +90,7 @@ Boot.setup = function (self)
 	print("Boot:setup() entered. time: ", 0, "os-clock: ", os.clock())
 
 	Boot.startup_timer = 0
+	Boot.startup_state = "loading"
 
 	if PLATFORM == "win32" then
 		Window.set_focus()
@@ -262,7 +263,7 @@ Boot.booting_update = function (self, dt)
 		end
 	end
 
-	if has_loaded_packages then
+	if has_loaded_packages and Boot.startup_state == "loading" then
 		local script_init_start_time = os.clock()
 
 		print("Boot:booting_update() reports boot packages loaded, initializing scripts. time: ", Boot.startup_timer, "os-clock: ", script_init_start_time)
@@ -289,11 +290,43 @@ Boot.booting_update = function (self, dt)
 			Window.set_title(window_title)
 		end
 
+		for dlc_name, dlc in pairs(DLCSettings) do
+			local package_name = dlc.package_name
+
+			if package_name then
+				Managers.package:load(package_name, "boot", nil, true)
+			end
+		end
+
 		local require_start = os.clock()
 
-		self:_require_scripts()
+		self:_require_foundation_scripts()
 
-		local require_end = os.clock()
+		Boot.startup_state = "loading_dlcs"
+	elseif Boot.startup_state == "loading_dlcs" then
+		local done = Managers.package:update()
+
+		if done then
+			Game:require_game_scripts()
+
+			local require_end = os.clock()
+
+			if PLATFORM == "win32" then
+				game_require("managers", "mod/mod_manager")
+
+				Managers.mod = ModManager:new()
+				Boot.startup_state = "loading_mods"
+			else
+				Boot.startup_state = "ready"
+			end
+		end
+	elseif Boot.startup_state == "loading_mods" then
+		Managers.mod:update(dt)
+
+		if Managers.mod:all_mods_loaded() then
+			Boot.startup_state = "ready"
+		end
+	elseif Boot.startup_state == "ready" then
 		local frame_table_start = os.clock()
 
 		FrameTable.init()
@@ -305,7 +338,11 @@ Boot.booting_update = function (self, dt)
 
 		local managers_end = os.clock()
 		local project_setup_start = os.clock()
-		local start_state, params = project_setup()
+
+		Game:setup()
+
+		local start_state, params = Game:select_starting_state()
+		params.notify_mod_manager = true
 		local project_setup_end = os.clock()
 		local state_machine_start = os.clock()
 
@@ -313,24 +350,15 @@ Boot.booting_update = function (self, dt)
 
 		local state_machine_end = os.clock()
 		local script_init_end_time = os.clock()
-
-		print("Boot:booting_update() reports scripts initialized. time: ", Boot.startup_timer, "os-clock: ", script_init_end_time)
-		print("\t script initialization took ", script_init_end_time - script_init_start_time)
-		print("\t\t require scripts: ", require_end - require_start)
-		print("\t\t frame table init: ", frame_table_end - frame_table_start)
-		print("\t\t managers init: ", managers_end - managers_start)
-		print("\t\t project setup: ", project_setup_end - project_setup_start)
-		print("\t\t state machine setup: ", state_machine_end - state_machine_start)
-
 		Boot.render = Boot.game_render
 		Boot.has_booted = true
 
 		destroy_startup_world()
 
 		return true
-	else
-		update_startup_world(dt)
 	end
+
+	update_startup_world(dt)
 
 	return false
 end
@@ -339,10 +367,11 @@ Boot.booting_render = function (self)
 	render_startup_world()
 end
 
-Boot._require_scripts = function (self)
+Boot._require_foundation_scripts = function (self)
 	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path")
 	base_require("debug", "table_trap")
 	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager")
+	base_require("managers", "localization/localization_manager", "event/event_manager")
 end
 
 Boot._init_managers = function (self)
@@ -616,16 +645,10 @@ Boot.shutdown = function (self, dt)
 	end
 end
 
-Bulldozer = Bulldozer or {}
+Game = Game or {}
 
-function project_setup()
-	Bulldozer:setup()
-
-	return Bulldozer.entrypoint()
-end
-
-Bulldozer.setup = function (self)
-	local p = profile_start("Bulldozer:setup()")
+Game.setup = function (self)
+	local p = profile_start("Game:setup()")
 	local is_dev_debug = BUILD == "dev" or BUILD == "debug"
 
 	if PLATFORM == "xb1" then
@@ -635,27 +658,6 @@ Bulldozer.setup = function (self)
 	profile(p, "handle rev info")
 	self:_handle_revision_info()
 	profile(p, "handle rev info")
-	profile(p, "dlc")
-
-	local dlc_load_times = {}
-
-	for dlc_name, dlc in pairs(DLCSettings) do
-		local package_name = dlc.package_name
-
-		if package_name then
-			local start_time = os.clock()
-
-			Managers.package:load(package_name, "boot")
-
-			local end_time = os.clock()
-			dlc_load_times[dlc_name] = end_time - start_time
-		end
-	end
-
-	profile(p, "dlc")
-	profile(p, "require")
-	self:_require_scripts()
-	profile(p, "require")
 
 	if script_data.honduras_demo then
 		self:_demo_setup()
@@ -726,22 +728,13 @@ Bulldozer.setup = function (self)
 	profile(p, "init random")
 	self:_init_random()
 	profile(p, "init random")
-
-	if PLATFORM == "win32" and rawget(_G, "Steam") then
-		profile(p, "mod manager")
-
-		Managers.mod = ModManager:new()
-
-		profile(p, "mod manager")
-	end
-
 	profile(p, "managers")
 	self:_init_managers()
 	profile(p, "managers")
 	profile_end(p)
 end
 
-Bulldozer._set_ps4_content_restrictions = function (self)
+Game._set_ps4_content_restrictions = function (self)
 	local t_us = {
 		{
 			country = "at",
@@ -1030,9 +1023,7 @@ Bulldozer._set_ps4_content_restrictions = function (self)
 	end
 end
 
-Bulldozer._handle_revision_info = function (self)
-	script_data.settings = Application.settings()
-	script_data.build_identifier = Application.build_identifier()
+Game._handle_revision_info = function (self)
 	script_data.honduras_demo = script_data.settings.honduras_demo or script_data["honduras-demo"]
 	local content_revision = script_data.settings.content_revision
 	local no_revision = content_revision == nil or content_revision == ""
@@ -1125,8 +1116,7 @@ Bulldozer._handle_revision_info = function (self)
 	end
 end
 
-Bulldozer._require_scripts = function (self)
-	foundation_require("managers", "localization/localization_manager", "event/event_manager")
+Game.require_game_scripts = function (self)
 	foundation_require("util", "local_require")
 	game_require("utils", "patches", "colors", "random_table", "global_utils", "function_call_stats", "util", "loaded_dice", "script_application", "benchmark/benchmark_handler")
 	game_require("ui", "views/show_cursor_stack", "ui_fonts")
@@ -1136,17 +1126,22 @@ Bulldozer._require_scripts = function (self)
 	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "transition/transition_manager", "smoketest/smoketest_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "mutators/mutator_manager", "deed/deed_manager", "telemetry/telemetry_create")
 
 	if PLATFORM == "win32" then
-		game_require("managers", "mod/mod_manager", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
+		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
 	elseif PLATFORM == "xb1" then
 		game_require("managers", "events/xbox_event_manager", "rest_transport/rest_transport_manager")
 	end
 
 	game_require("helpers", "effect_helper", "weapon_helper", "item_helper", "lorebook_helper", "ui_atlas_helper", "scoreboard_helper")
 	game_require("network", "unit_spawner", "unit_storage", "network_unit")
+	self:_init_localization_manager()
+	require("scripts/ui/views/ingame_ui")
+	require("scripts/ui/views/level_end/level_end_view")
+	require("scripts/ui/views/title_loading_ui")
+	require("scripts/network_lookup/network_lookup")
 end
 
-Bulldozer._handle_win32_graphics_quality = function (self)
-	local p = profile_start("Bulldozer:_handle_win32_graphics_quality()")
+Game._handle_win32_graphics_quality = function (self)
+	local p = profile_start("Game:_handle_win32_graphics_quality()")
 	local graphics_quality = Application.user_setting("graphics_quality")
 
 	local function is_same(current, new)
@@ -1282,24 +1277,19 @@ Bulldozer._handle_win32_graphics_quality = function (self)
 	profile_end(p)
 end
 
-Bulldozer._init_random = function (self)
+Game._init_random = function (self)
 	local seed = (os.clock() * 10000) % 1000
 
 	math.randomseed(seed)
 	math.random(5, 30000)
 end
 
-Bulldozer._init_mouse = function (self)
+Game._init_mouse = function (self)
 	Window.set_cursor("gui/cursors/mouse_cursor")
 	Window.set_clip_cursor(true)
 end
 
-Bulldozer._init_managers = function (self)
-	self:_init_localization_manager()
-	require("scripts/ui/views/ingame_ui")
-	require("scripts/ui/views/level_end/level_end_view")
-	require("scripts/ui/views/title_loading_ui")
-	require("scripts/network_lookup/network_lookup")
+Game._init_managers = function (self)
 	parse_item_master_list()
 
 	Managers.save = SaveManager:new(script_data.settings.disable_cloud_save)
@@ -1309,6 +1299,8 @@ Bulldozer._init_managers = function (self)
 	else
 		self:_init_backend()
 	end
+
+	self:_init_localization_manager()
 
 	Managers.admin = AdminManager:new()
 	Managers.perfhud = PerfhudManager:new()
@@ -1343,7 +1335,7 @@ Bulldozer._init_managers = function (self)
 	end
 end
 
-Bulldozer._init_backend = function (self)
+Game._init_backend = function (self)
 	local backend = "ScriptBackendPlayFab"
 	local mirror = "PlayFabMirror"
 
@@ -1355,13 +1347,13 @@ Bulldozer._init_backend = function (self)
 	Managers.backend = BackendManagerPlayFab:new(backend, mirror, "DataServerQueue")
 end
 
-Bulldozer._init_backend_xbox = function (self)
+Game._init_backend_xbox = function (self)
 	local backend = "ScriptBackendPlayFabXbox"
 	local mirror = "PlayFabMirror"
 	Managers.backend = BackendManagerPlayFab:new(backend, mirror, "DataServerQueue")
 end
 
-Bulldozer._load_win32_user_settings = function (self)
+Game._load_win32_user_settings = function (self)
 	local max_fps = Application.user_setting("max_fps")
 
 	if max_fps then
@@ -1379,7 +1371,7 @@ Bulldozer._load_win32_user_settings = function (self)
 	end
 end
 
-Bulldozer._demo_setup = function (self)
+Game._demo_setup = function (self)
 	Application.save_user_settings = function ()
 		return
 	end
@@ -1393,7 +1385,7 @@ Bulldozer._demo_setup = function (self)
 	Managers.package:load("resource_packages/demo", "boot")
 end
 
-Bulldozer._init_localization_manager = function (self)
+Game._init_localization_manager = function (self)
 	Managers.localizer = LocalizationManager:new("localization/game")
 
 	local function tweak_parser(tweak_name)
@@ -1442,14 +1434,14 @@ Bulldozer._init_localization_manager = function (self)
 	Managers.localizer:add_macro("KEY", key_parser)
 end
 
-Bulldozer.entrypoint = function (self)
+Game.select_starting_state = function (self)
 	local args = {
 		Application.argv()
 	}
 
 	for i = 1, #args, 1 do
 		if args[i] == "safe-mode" then
-			Bulldozer.safe_mode = true
+			Game.safe_mode = true
 
 			assert(false)
 		end

@@ -10,6 +10,7 @@ InteractionHelper.interactions = {
 	release_from_hook = {},
 	give_item = {},
 	smartobject = {},
+	control_panel = {},
 	pickup_object = {},
 	chest = {},
 	inventory_access = {},

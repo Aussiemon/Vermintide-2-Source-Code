@@ -706,6 +706,44 @@ HitEffectsSkavenSlave = {
 			"death_decapitate_6"
 		}
 	},
+	burning_smiter_death = {
+		inherits = "default_death",
+		flow_event = "burn_death",
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"burning_smiter"
+			}
+		},
+		animations = {
+			"ragdoll",
+			"death_burn",
+			"death_burn_2"
+		},
+		push = {
+			distal_force = 20,
+			vertical_force = -50,
+			lateral_force = 0
+		}
+	},
+	burning_smiter_death_head = {
+		inherits = "burning_smiter_death",
+		extra_conditions = {
+			hit_zone = {
+				"neck",
+				"head"
+			}
+		},
+		animations = {
+			"ragdoll",
+			"death_decapitate",
+			"death_decapitate_2",
+			"death_decapitate_3",
+			"death_decapitate_4",
+			"death_decapitate_5",
+			"death_decapitate_6"
+		}
+	},
 	heavy_blunt_smiter_death = {
 		inherits = "default_death",
 		do_dismember = false,
@@ -2078,8 +2116,8 @@ HitEffectsSkavenSlave = {
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"burninating",
-				"burn_death"
+				"burn",
+				"burninating"
 			}
 		},
 		animations = {
@@ -2454,7 +2492,9 @@ HitEffectsSkavenSlave = {
 		inherits = "default",
 		flow_event = "burn",
 		extra_conditions = {
-			damage_type = "drakegun_glance"
+			damage_type = {
+				"drakegun_glance"
+			}
 		}
 	},
 	drakegun_glance_death = {
@@ -2694,16 +2734,24 @@ HitEffectsSkavenSlave = {
 }
 
 for hit_effect_name, hit_effect_data in pairs(HitEffectsSkavenSlave) do
-	if hit_effect_data.flow_event and hit_effect_data.flow_event == "burn_death" then
-		local new_hit_effect_name = hit_effect_name .. "_critical"
-		local new_hit_effect_data = {
-			flow_event = "burn_death_critical",
-			inherits = hit_effect_name,
-			extra_conditions = {
-				is_critical_strike = true
+	local hit_effect_flow_event = hit_effect_data.flow_event or (hit_effect_data.inherits and HitEffectsSkavenSlave[hit_effect_data.inherits].flow_event)
+
+	if hit_effect_flow_event then
+		local is_table = type(hit_effect_flow_event) == "table"
+
+		if (is_table and table.contains(hit_effect_flow_event, "burn_death")) or hit_effect_flow_event == "burn_death" then
+			local new_hit_effect_name = hit_effect_name .. "_critical"
+			local new_hit_effect_data = {
+				flow_event = "burn_death_critical",
+				do_dismember = false,
+				do_diagonal_dismemberments = false,
+				inherits = hit_effect_name,
+				extra_conditions = {
+					is_critical_strike = true
+				}
 			}
-		}
-		HitEffectsSkavenSlave[new_hit_effect_name] = new_hit_effect_data
+			HitEffectsSkavenSlave[new_hit_effect_name] = new_hit_effect_data
+		end
 	end
 end
 

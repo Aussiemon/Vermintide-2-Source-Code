@@ -2200,14 +2200,13 @@ return function ()
 			randomize_indexes = {}
 		},
 		pes_level_skittergate_searching_gatekeeper_01 = {
-			sound_events_n = 4,
+			sound_events_n = 3,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 3,
 			database = "empire_soldier_skittergate",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 3,
 			sound_events = {
-				"pes_level_skittergate_searching_gatekeeper_01",
 				"pes_level_skittergate_searching_gatekeeper_02",
 				"pes_level_skittergate_searching_gatekeeper_03",
 				"pes_level_skittergate_searching_gatekeeper_04"
@@ -2215,17 +2214,14 @@ return function ()
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
-				"dialogue_shout",
 				"dialogue_shout"
 			},
 			face_animations = {
 				"face_fear",
 				"face_fear",
-				"face_fear",
 				"face_fear"
 			},
 			localization_strings = {
-				"pes_level_skittergate_searching_gatekeeper_01",
 				"pes_level_skittergate_searching_gatekeeper_02",
 				"pes_level_skittergate_searching_gatekeeper_03",
 				"pes_level_skittergate_searching_gatekeeper_04"

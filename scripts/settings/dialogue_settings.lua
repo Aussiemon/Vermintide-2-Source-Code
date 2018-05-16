@@ -695,6 +695,13 @@ DialogueSettings.dialogue_category_config = {
 			enemy_basic_prio = true
 		}
 	},
+	story_talk_keep = {
+		mutually_exclusive = true,
+		interrupted_by = {},
+		playable_during_category = {
+			npc_talk = true
+		}
+	},
 	knocked_down_override = {
 		interrupted_by = {
 			level_talk_tutorial = true,
@@ -903,7 +910,10 @@ DialogueSettings.dialogue_category_config = {
 	}
 }
 DialogueSettings.breed_types_trigger_on_spawn = {
-	skaven_rat_ogre = true
+	chaos_troll = true,
+	skaven_rat_ogre = true,
+	chaos_spawn = true,
+	skaven_stormfiend = true
 }
 DialogueSettings.bunny_jumping = {
 	tick_time = 5,

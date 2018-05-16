@@ -197,7 +197,12 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 		end
 	end
 
+	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
+end
+
+GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id, is_level_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot)
 	if self.is_server and unit_id then
+		local network_manager = Managers.state.network
 		local attacker_unit_id, attacker_is_level_unit = network_manager:game_object_or_level_id(attacker_unit)
 		local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 		local damage_type_id = NetworkLookup.damage_types[damage_type]

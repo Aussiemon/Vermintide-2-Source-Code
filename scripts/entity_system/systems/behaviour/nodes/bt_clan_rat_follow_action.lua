@@ -116,6 +116,12 @@ BTClanRatFollowAction.leave = function (self, unit, blackboard, t, reason, destr
 		self:set_start_move_animation_lock(unit, blackboard, false)
 	end
 
+	if blackboard.is_turning then
+		LocomotionUtils.reset_turning(unit, blackboard)
+
+		blackboard.is_turning = nil
+	end
+
 	blackboard.start_anim_locked = nil
 	blackboard.anim_cb_rotation_start = nil
 	blackboard.anim_cb_move = nil

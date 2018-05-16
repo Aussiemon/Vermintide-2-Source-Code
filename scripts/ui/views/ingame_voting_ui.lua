@@ -102,19 +102,6 @@ IngameVotingUI.start_vote = function (self, active_voting)
 	self:clear_input_progress()
 
 	local vote_template = active_voting.template
-
-	if vote_template.can_start_vote then
-		local can_start_vote = vote_template.can_start_vote(active_voting.data)
-
-		if not can_start_vote then
-			local text = vote_template.text or "Unknown vote"
-
-			print(string.format("[IngameVotingUI] - Terminating vote request (%s) due to the requirements to start was not fulfilled.", text))
-
-			return
-		end
-	end
-
 	local title_text = vote_template.text
 
 	if vote_template.modify_title_text then

@@ -1457,6 +1457,7 @@ NetworkLookup.sound_events = {
 	"Play_enemy_plague_monk_death_new_vce",
 	"Play_hud_matchmaking_countdown",
 	"Play_hud_enemy_attack_back_hit",
+	"player_combat_weapon_repeating_crossbow_elf_fire",
 	"player_combat_weapon_staff_charge_husk",
 	"stop_player_combat_weapon_staff_charge_husk",
 	"player_combat_weapon_staff_fire_beam_husk",

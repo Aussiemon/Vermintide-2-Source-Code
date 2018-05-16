@@ -521,11 +521,21 @@ TalentBuffTemplates.dwarf_ranger = {
 			}
 		}
 	},
+	bardin_slayer_movement_speed_on_last_standing = {
+		buffs = {
+			{
+				buff_to_add = "bardin_slayer_movement_speed",
+				update_func = "activate_buff_on_last_standing"
+			}
+		}
+	},
 	bardin_slayer_movement_speed = {
 		buffs = {
 			{
-				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
+				remove_buff_func = "remove_movement_buff",
+				max_stacks = 1,
+				icon = "bardin_slayer_movement_speed",
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				}
@@ -1152,7 +1162,7 @@ Talents.dwarf_ranger = {
 		},
 		requirements = {},
 		buffs = {
-			"bardin_slayer_movement_speed"
+			"bardin_slayer_movement_speed_on_last_standing"
 		},
 		buff_data = {}
 	},

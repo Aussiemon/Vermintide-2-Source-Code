@@ -81,30 +81,7 @@ BTSelector_chaos_exalted_champion_warcamp.run = function (self, unit, blackboard
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
-	local node_stagger = children[4]
-	local condition_result = nil
-
-	if blackboard.stagger then
-		condition_result = not blackboard.stagger_prohibited
-	end
-
-	if condition_result then
-		self:set_running_child(unit, blackboard, t, node_stagger, "aborted")
-
-		local result, evaluate = node_stagger:run(unit, blackboard, t, dt)
-
-		if result ~= "running" then
-			self:set_running_child(unit, blackboard, t, nil, result)
-		end
-
-		if result ~= "failed" then
-			return result, evaluate
-		end
-	elseif node_stagger == child_running then
-		self:set_running_child(unit, blackboard, t, nil, "failed")
-	end
-
-	local node_smartobject = children[5]
+	local node_smartobject = children[4]
 	local smartobject_is_next = blackboard.next_smart_object_data.next_smart_object_id ~= nil
 	local is_in_smartobject_range = blackboard.is_in_smartobject_range
 	local is_smart_objecting = blackboard.is_smart_objecting
@@ -124,6 +101,29 @@ BTSelector_chaos_exalted_champion_warcamp.run = function (self, unit, blackboard
 			return result, evaluate
 		end
 	elseif node_smartobject == child_running then
+		self:set_running_child(unit, blackboard, t, nil, "failed")
+	end
+
+	local node_stagger = children[5]
+	local condition_result = nil
+
+	if blackboard.stagger then
+		condition_result = not blackboard.stagger_prohibited
+	end
+
+	if condition_result then
+		self:set_running_child(unit, blackboard, t, node_stagger, "aborted")
+
+		local result, evaluate = node_stagger:run(unit, blackboard, t, dt)
+
+		if result ~= "running" then
+			self:set_running_child(unit, blackboard, t, nil, result)
+		end
+
+		if result ~= "failed" then
+			return result, evaluate
+		end
+	elseif node_stagger == child_running then
 		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 

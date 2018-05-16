@@ -247,8 +247,8 @@ FriendsUIComponent._animate_refresh_button = function (self, widget)
 end
 
 local _update_list_temp_pos_table = {
-	x = 0,
-	y = 0
+	0,
+	0
 }
 
 FriendsUIComponent._update_list = function (self, active_tab)
@@ -265,12 +265,12 @@ FriendsUIComponent._update_list = function (self, active_tab)
 		local style = item_styles[i]
 		local size = style.size
 		local offset = style.list_member_offset
-		_update_list_temp_pos_table.x = list_pos[1] + offset[1] * i + size[1] / 2
-		_update_list_temp_pos_table.y = list_pos[2] + list_size[2] + offset[2] * i
+		_update_list_temp_pos_table[1] = list_pos[1] + offset[1] * i + size[1] / 2
+		_update_list_temp_pos_table[2] = list_pos[2] + list_size[2] + offset[2] * i
 		local lower_visible = math.point_is_inside_2d_box(_update_list_temp_pos_table, mask_pos, mask_size)
-		_update_list_temp_pos_table.y = _update_list_temp_pos_table.y + size[2] / 2
+		_update_list_temp_pos_table[2] = _update_list_temp_pos_table[2] + size[2] / 2
 		local middle_visible = math.point_is_inside_2d_box(_update_list_temp_pos_table, mask_pos, mask_size)
-		_update_list_temp_pos_table.y = _update_list_temp_pos_table.y + size[2] / 2
+		_update_list_temp_pos_table[2] = _update_list_temp_pos_table[2] + size[2] / 2
 		local top_visible = math.point_is_inside_2d_box(_update_list_temp_pos_table, mask_pos, mask_size)
 		local visible = lower_visible or top_visible
 		content.visible = visible

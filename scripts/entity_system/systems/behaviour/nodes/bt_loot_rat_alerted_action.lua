@@ -71,7 +71,6 @@ BTLootRatAlertedAction.leave = function (self, unit, blackboard, t, reason, dest
 	blackboard.navigation_extension:set_enabled(true)
 	AiUtils.activate_unit(blackboard)
 
-	blackboard.detection_radius = math.huge
 	blackboard.spawn_to_running = true
 	blackboard.update_timer = 0
 end

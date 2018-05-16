@@ -162,6 +162,10 @@ StateTitleScreen._setup_world = function (self)
 		self._viewport = ScriptWorld.create_viewport(self._world, self._viewport_name, "default", 1)
 	else
 		self._viewport = ScriptWorld.create_viewport(self._world, self._viewport_name, "overlay", 1)
+		self._gui = World.create_screen_gui(self._world)
+		local w, h = Application.resolution()
+
+		Gui.rect(self._gui, Vector3(0, 0, 0), Vector2(w, h), Color(255, 0, 0, 0))
 	end
 
 	local camera = ScriptViewport.camera(self._viewport)

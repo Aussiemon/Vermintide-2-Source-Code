@@ -4,6 +4,22 @@ local function mod_name(mod)
 	return mod.name
 end
 
+local function is_bundled()
+	local args = {
+		Application.argv()
+	}
+
+	for i, arg in ipairs(args) do
+		local match_result = string.match(arg:gsub("[%-]", ""), "bundledir")
+
+		if match_result ~= nil then
+			return true
+		end
+	end
+
+	return false
+end
+
 local LOG_LEVELS = {
 	[0] = {},
 	{
@@ -28,7 +44,7 @@ local LOG_LEVELS = {
 
 ModManager.print = function (self, level, str, ...)
 	if LOG_LEVELS[self._settings.log_level][level] then
-		local concat_str = sprintf("[MOD MANAGER] [" .. level .. "] " .. str, ...)
+		local concat_str = sprintf("[ModManager][" .. level .. "] " .. str, ...)
 
 		print(concat_str)
 
@@ -51,7 +67,7 @@ ModManager.init = function (self)
 	self._settings = settings
 	self._print_cache = {}
 
-	if (settings.developer_mode or self:_has_enabled_mods()) and ScriptApplication.is_bundled() then
+	if (settings.developer_mode or self:_has_enabled_mods()) and is_bundled() then
 		self:_start_scan()
 	else
 		self._state = "done"
@@ -172,11 +188,11 @@ ModManager.destroy = function (self)
 end
 
 ModManager._start_scan = function (self)
-	Mod.start_scan()
+	self:print("info", "scanning")
 
 	self._state = "scanning"
 
-	self:print("info", "scanning")
+	Mod.start_scan()
 end
 
 ModManager._load_mod = function (self, index)
@@ -226,7 +242,7 @@ ModManager._build_mod_table = function (self, mod_handles)
 	local index = 0
 	local parsed_mods = {}
 
-	local function add_mod(handle, id, enabled, name, version)
+	local function add_mod(handle, id, enabled, name, version, user_settings_index)
 		index = index + 1
 		self._mods[index] = {
 			state = "not_loaded",
@@ -235,21 +251,22 @@ ModManager._build_mod_table = function (self, mod_handles)
 			id = id,
 			handle = handle,
 			enabled = enabled,
-			loaded_packages = {}
+			loaded_packages = {},
+			user_settings_index = user_settings_index
 		}
 	end
 
-	local mod_settings = Application.user_setting("mods") or {}
+	local user_settings_mod_list = Application.user_setting("mods") or {}
 
-	table.dump(mod_settings, "mod settings", 3)
+	table.dump(user_settings_mod_list, "mod settings", 3)
 	table.dump(mod_handles, "mod_handles", 3)
 
-	for i, mod_data in ipairs(mod_settings) do
+	for i, mod_data in ipairs(user_settings_mod_list) do
 		local id = mod_data.id
 		local handle = mod_handles[id]
 
 		if handle then
-			add_mod(handle, id, mod_data.enabled, mod_data.name, mod_data.version)
+			add_mod(handle, id, mod_data.enabled, mod_data.name, mod_data.version, i)
 
 			parsed_mods[handle] = true
 		else
@@ -271,12 +288,20 @@ ModManager._build_mod_table = function (self, mod_handles)
 
 	for i = 1, self._num_mods, 1 do
 		local mod = self._mods[i]
-		new_settings_table[i] = {
-			name = mod.name,
-			id = mod.id,
-			version = mod.version,
-			enabled = mod.enabled or false
-		}
+		local mod_data = nil
+
+		if mod.user_settings_index then
+			mod_data = user_settings_mod_list[mod.user_settings_index]
+		else
+			mod_data = {
+				name = mod.name,
+				id = mod.id,
+				version = mod.version,
+				enabled = mod.enabled or false
+			}
+		end
+
+		new_settings_table[i] = mod_data
 	end
 
 	Application.set_user_setting("mods", new_settings_table)

@@ -51,7 +51,6 @@ local breed_data = {
 	use_backstab_vo = true,
 	patrol_passive_perception = "perception_regular",
 	vortexable = true,
-	death_squad_detection_radius = 8,
 	allow_aoe_push = true,
 	base_unit = "units/beings/enemies/skaven_clan_rat/chr_skaven_clan_rat",
 	aoe_height = 1.4,

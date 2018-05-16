@@ -372,12 +372,12 @@ UISettings = {
 			display_name = "display_name_default_empire_soldier_es_longbow"
 		},
 		es_blunderbuss = {
-			inventory_icon = "icon_wpn_empire_blunderbuss_02_t1",
+			inventory_icon = "icon_wpn_empire_blunderbuss_t1",
 			description = "description_default_empire_soldier_es_blunderbuss",
 			display_name = "display_name_default_empire_soldier_es_blunderbuss"
 		},
 		es_handgun = {
-			inventory_icon = "icon_wpn_empire_handgun_02_t1",
+			inventory_icon = "icon_wpn_empire_handgun_t1",
 			description = "description_default_empire_soldier_es_handgun",
 			display_name = "display_name_default_empire_soldier_es_handgun"
 		},

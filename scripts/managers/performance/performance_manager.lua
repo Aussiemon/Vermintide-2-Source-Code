@@ -48,7 +48,8 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 		ai_unit_activated = "event_ai_unit_activated",
 		ai_unit_despawned = "event_ai_unit_despawned",
 		ai_units_all_destroyed = "event_ai_units_all_destroyed",
-		ai_unit_spawned = "event_ai_unit_spawned"
+		ai_unit_spawned = "event_ai_unit_spawned",
+		ai_unit_deactivated = "event_ai_unit_deactivated"
 	}
 	local event_manager = Managers.state.event
 
@@ -116,6 +117,10 @@ PerformanceManager.event_ai_unit_activated = function (self, breed_name, event_s
 	if event_spawned then
 		self._num_event_ai_active = self._num_event_ai_active + 1
 	end
+end
+
+PerformanceManager.event_ai_unit_deactivated = function (self, breed_name)
+	self._activated_per_breed[breed_name] = math.clamp(self._activated_per_breed[breed_name] - 1, 0, 999999)
 end
 
 PerformanceManager.event_ai_unit_despawned = function (self, breed_name, active, event_spawned)

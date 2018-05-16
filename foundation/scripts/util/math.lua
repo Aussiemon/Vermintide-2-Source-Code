@@ -85,8 +85,8 @@ end
 math.half_pi = math.pi * 0.5
 math.inverse_sqrt_2 = 1 / math.sqrt(2)
 
-math.point_is_inside_2d_box = function (pos, llc, extent)
-	if llc[1] < pos.x and pos.x < llc[1] + extent[1] and llc[2] < pos.y and pos.y < llc[2] + extent[2] then
+math.point_is_inside_2d_box = function (pos, lower_left_corner, size)
+	if lower_left_corner[1] < pos[1] and pos[1] < lower_left_corner[1] + size[1] and lower_left_corner[2] < pos[2] and pos[2] < lower_left_corner[2] + size[2] then
 		return true
 	else
 		return false

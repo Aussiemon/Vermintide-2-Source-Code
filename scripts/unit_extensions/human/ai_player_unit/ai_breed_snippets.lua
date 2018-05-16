@@ -664,11 +664,10 @@ end
 
 AiBreedSnippets.on_chaos_vortex_sorcerer_death = function (unit, blackboard)
 	local vortex_data = blackboard.vortex_data
+	local conflict_director = Managers.state.conflict
 	local vortex_units = vortex_data and vortex_data.vortex_units
 
 	if vortex_units then
-		local conflict_director = Managers.state.conflict
-
 		for _, vortex_unit in ipairs(vortex_units) do
 			if Unit.alive(vortex_unit) then
 				local vortex_blackboard = BLACKBOARDS[vortex_unit]
@@ -677,20 +676,63 @@ AiBreedSnippets.on_chaos_vortex_sorcerer_death = function (unit, blackboard)
 			end
 		end
 	end
+
+	local queued_vortex = vortex_data and vortex_data.queued_vortex
+
+	if queued_vortex then
+		local unit_spawner = Managers.state.unit_spawner
+
+		for id, queue_data in pairs(queued_vortex) do
+			conflict_director:remove_queued_unit(id)
+
+			local inner_decal_unit = queue_data.inner_decal_unit
+
+			if Unit.alive(inner_decal_unit) then
+				unit_spawner:mark_for_deletion(inner_decal_unit)
+			end
+
+			local outer_decal_unit = queue_data.outer_decal_unit
+
+			if Unit.alive(outer_decal_unit) then
+				unit_spawner:mark_for_deletion(outer_decal_unit)
+			end
+		end
+	end
 end
 
 AiBreedSnippets.on_chaos_vortex_sorcerer_despawn = function (unit, blackboard)
 	local vortex_data = blackboard.vortex_data
+	local conflict_director = Managers.state.conflict
 	local vortex_units = vortex_data and vortex_data.vortex_units
 
 	if vortex_units then
-		local conflict_director = Managers.state.conflict
-
 		for _, vortex_unit in ipairs(vortex_units) do
 			if Unit.alive(vortex_unit) then
 				local vortex_blackboard = BLACKBOARDS[vortex_unit]
 
 				conflict_director:destroy_unit(vortex_unit, vortex_blackboard, "vortex")
+			end
+		end
+	end
+
+	local queued_vortex = vortex_data and vortex_data.queued_vortex
+
+	if queued_vortex then
+		local unit_spawner = Managers.state.unit_spawner
+
+		for id, queue_data in pairs(queued_vortex) do
+			conflict_director:remove_queued_unit(id)
+
+			local inner_decal_unit = queue_data.inner_decal_unit
+
+			if Unit.alive(inner_decal_unit) then
+				unit_spawner:mark_for_deletion(inner_decal_unit)
+			end
+
+			local outer_decal_unit = queue_data.outer_decal_unit
+
+			if Unit.alive(outer_decal_unit) then
+				unit_spawner:mark_for_deletion(outer_decal_unit)
 			end
 		end
 	end
@@ -724,6 +766,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_spawn = function (unit, blackboard)
 		name = "vortex",
 		physics_world = physics_world,
 		vortex_units = {},
+		queued_vortex = {},
 		vortex_spawn_pos = Vector3Box(),
 		search_func = BTChaosSorcererSkulkApproachAction._update_vortex_search,
 		spawn_func = BTChaosSorcererSummoningAction._spawn_vortex
@@ -736,6 +779,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_spawn = function (unit, blackboard)
 		spawn_timer = 3,
 		physics_world = physics_world,
 		vortex_units = {},
+		queued_vortex = {},
 		vortex_spawn_pos = Vector3Box(),
 		spawn_func = BTChaosSorcererSummoningAction._spawn_boss_vortex
 	}

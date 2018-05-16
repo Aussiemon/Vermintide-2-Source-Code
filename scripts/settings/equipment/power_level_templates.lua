@@ -942,19 +942,19 @@ PowerLevelTemplates = {
 			attack_template = "heavy_slashing_linesman",
 			power_distribution = {
 				attack = 0.45,
-				impact = 0.3
+				impact = 0.5
 			},
 			armor_modifier = {
 				attack = {
 					0.9,
-					0.5,
+					0.75,
 					2,
 					1,
 					0.75
 				},
 				impact = {
 					0.9,
-					0.5,
+					0.75,
 					1,
 					1,
 					0.75
@@ -1218,7 +1218,7 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_smiter_executioner_H = {
-		boost_curve_coefficient_headshot = 2,
+		boost_curve_coefficient_headshot = 1,
 		boost_curve_type = "ninja_curve",
 		boost_curve_coefficient = 0.75,
 		attack_template = "heavy_slashing_smiter_hs",
@@ -1336,14 +1336,14 @@ PowerLevelTemplates = {
 	armor_modifier_stab_smiter_M_1h = {
 		attack = {
 			1,
-			0.25,
+			0.5,
 			1.5,
 			1,
 			0.75
 		},
 		impact = {
 			1,
-			0.25,
+			0.5,
 			1,
 			1,
 			0.75

@@ -174,10 +174,10 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 
 	if self.is_server then
 		if self.state == "alive" then
-			if not self:is_alive() and not status_extension:is_knocked_down() then
+			if not self:_is_alive() and not status_extension:is_knocked_down() then
 				self:_knock_down(unit)
 			end
-		elseif self.state == "knocked_down" and self:is_alive() and status_extension:is_revived() then
+		elseif self.state == "knocked_down" and self:_is_alive() and status_extension:is_revived() then
 			self:_revive(unit, t)
 		end
 
@@ -255,6 +255,12 @@ local FORCED_PERMANENT_DAMAGE_TYPES = {}
 
 PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
 	if DamageUtils.is_in_inn then
+		return
+	end
+
+	local status_extension = self.status_extension
+
+	if status_extension:is_ready_for_assisted_respawn() then
 		return
 	end
 
@@ -341,7 +347,6 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 
 			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
 
-			local status_extension = self.status_extension
 			local is_dead = new_health + new_temporary_health <= 0 and (self.state ~= "alive" or not status_extension:has_wounds_remaining())
 
 			if is_dead and self.state ~= "dead" then
@@ -462,6 +467,10 @@ PlayerUnitHealthExtension.reset = function (self)
 end
 
 PlayerUnitHealthExtension.is_alive = function (self)
+	return self.state ~= "dead"
+end
+
+PlayerUnitHealthExtension._is_alive = function (self)
 	local game = self.game
 	local game_object_id = self.health_game_object_id
 

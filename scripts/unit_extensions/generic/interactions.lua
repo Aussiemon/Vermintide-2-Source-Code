@@ -733,6 +733,9 @@ InteractionDefinitions.smartobject = {
 		end
 	}
 }
+InteractionDefinitions.control_panel = InteractionDefinitions.control_panel or table.clone(InteractionDefinitions.smartobject)
+InteractionDefinitions.control_panel.config.swap_to_3p = true
+InteractionDefinitions.control_panel.config.show_weapons = false
 InteractionDefinitions.pickup_object = {
 	config = {
 		allow_movement = true,

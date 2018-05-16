@@ -303,7 +303,7 @@ StartGameWindowSettings._handle_input = function (self, dt, t)
 	local play_pressed = gamepad_active and self._enable_play and input_service:get("refresh_press")
 
 	if self:_is_button_released(widgets_by_name.play_button) or play_pressed then
-		parent:play(t)
+		parent:play(t, "custom")
 	end
 end
 

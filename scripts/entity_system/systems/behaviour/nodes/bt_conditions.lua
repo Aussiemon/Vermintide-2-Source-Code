@@ -116,13 +116,13 @@ BTConditions.ratogre_target_reachable = function (blackboard)
 end
 
 BTConditions.chaos_spawn_grabbed_combat = function (blackboard)
-	return not AiUtils.unit_knocked_down(blackboard.victim_grabbed) and not blackboard.wants_to_throw
+	return AiUtils.unit_alive(blackboard.victim_grabbed) and not AiUtils.unit_knocked_down(blackboard.victim_grabbed) and not blackboard.wants_to_throw
 end
 
 BTConditions.chaos_spawn_grabbed_throw = function (blackboard)
 	local knocked_down = AiUtils.unit_knocked_down(blackboard.victim_grabbed)
 
-	return knocked_down or blackboard.wants_to_throw
+	return AiUtils.unit_alive(blackboard.victim_grabbed) and (knocked_down or blackboard.wants_to_throw)
 end
 
 BTConditions.path_found = function (blackboard)

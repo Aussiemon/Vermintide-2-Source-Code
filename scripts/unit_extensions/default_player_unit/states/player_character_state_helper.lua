@@ -739,7 +739,7 @@ CharacterStateHelper.get_current_action_data = function (left_hand_weapon_extens
 		if left_current_action_settings then
 			current_action_settings = left_current_action_settings
 			current_action_extension = left_hand_weapon_extension
-			current_action_hand = "left"
+			current_action_hand = current_action_settings.weapon_action_hand or "left"
 		end
 	end
 
@@ -749,45 +749,7 @@ CharacterStateHelper.get_current_action_data = function (left_hand_weapon_extens
 		if right_current_action_settings then
 			current_action_settings = right_current_action_settings
 			current_action_extension = right_hand_weapon_extension
-			current_action_hand = "right"
-		end
-	end
-
-	return current_action_settings, current_action_extension, current_action_hand
-end
-
-CharacterStateHelper._get_current_action_data_chain_action_end = function (left_hand_weapon_extension, right_hand_weapon_extension, current_weapon_extension)
-	local current_action_settings, current_action_extension, current_action_hand = nil
-
-	if left_hand_weapon_extension then
-		local left_current_action_settings = nil
-
-		if left_hand_weapon_extension == current_weapon_extension then
-			left_current_action_settings = left_hand_weapon_extension.temporary_action_settings
-		else
-			left_current_action_settings = left_hand_weapon_extension.current_action_settings
-		end
-
-		if left_current_action_settings then
-			current_action_settings = left_current_action_settings
-			current_action_extension = left_hand_weapon_extension
-			current_action_hand = "left"
-		end
-	end
-
-	if right_hand_weapon_extension then
-		local right_current_action_settings = nil
-
-		if right_hand_weapon_extension == current_weapon_extension then
-			right_current_action_settings = right_hand_weapon_extension.temporary_action_settings
-		else
-			right_current_action_settings = right_hand_weapon_extension.current_action_settings
-		end
-
-		if right_current_action_settings then
-			current_action_settings = right_current_action_settings
-			current_action_extension = right_hand_weapon_extension
-			current_action_hand = "right"
+			current_action_hand = current_action_settings.weapon_action_hand or "right"
 		end
 	end
 
@@ -1134,9 +1096,10 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 			if current_action_hand == "left" then
 				left_hand_weapon_extension:stop_action("new_interupting_action", interupting_action_data)
-			end
-
-			if current_action_hand == "right" then
+			elseif current_action_hand == "right" then
+				right_hand_weapon_extension:stop_action("new_interupting_action", interupting_action_data)
+			elseif current_action_hand == "both" then
+				left_hand_weapon_extension:stop_action("new_interupting_action", interupting_action_data)
 				right_hand_weapon_extension:stop_action("new_interupting_action", interupting_action_data)
 			end
 
@@ -1170,6 +1133,9 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 			if current_action_hand == "right" then
 				right_hand_weapon_extension:stop_action("new_interupting_action", interupting_action_data)
+			elseif current_action_hand == "both" then
+				left_hand_weapon_extension:stop_action("new_interupting_action", interupting_action_data)
+				right_hand_weapon_extension:stop_action("new_interupting_action", interupting_action_data)
 			end
 
 			left_hand_weapon_extension:start_action(new_action, new_sub_action, item_template.actions, t, power_level, next_action_init_data)
@@ -1181,6 +1147,9 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 		if current_action_hand == "left" then
 			left_hand_weapon_extension:stop_action("new_interupting_action", interupting_action_data)
+		elseif current_action_hand == "both" then
+			left_hand_weapon_extension:stop_action("new_interupting_action", interupting_action_data)
+			right_hand_weapon_extension:stop_action("new_interupting_action", interupting_action_data)
 		end
 
 		right_hand_weapon_extension:start_action(new_action, new_sub_action, item_template.actions, t, power_level, next_action_init_data)

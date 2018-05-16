@@ -192,8 +192,8 @@ AISimpleExtension.init_perception = function (self, breed, is_horde)
 		local use_patrol_perception = ai_group_extension.use_patrol_perception
 
 		if use_patrol_perception then
-			assert(breed.patrol_passive_perception)
-			assert(breed.patrol_passive_target_selection)
+			fassert(breed.patrol_passive_perception, "Missing patrol passive perception!")
+			fassert(breed.patrol_passive_target_selection, "Missing patrol passive target selection!")
 
 			self._perception_func_name = breed.patrol_passive_perception
 			self._target_selection_func_name = breed.patrol_passive_target_selection

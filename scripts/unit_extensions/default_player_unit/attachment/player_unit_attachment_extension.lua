@@ -89,9 +89,9 @@ PlayerUnitAttachmentExtension.create_attachment = function (self, slot_name, ite
 	local slot_data = AttachmentUtils.create_attachment(self._world, unit, attachments, slot_name, item_data, false)
 	attachments.slots[slot_name] = slot_data
 	local item_data = slot_data.item_data
+	local item_template = BackendUtils.get_item_template(item_data)
 
 	if not ScriptUnit.extension(unit, "first_person_system").first_person_mode then
-		local item_template = BackendUtils.get_item_template(item_data)
 		local show_attachments_event = item_template.show_attachments_event
 
 		if show_attachments_event then
@@ -103,6 +103,16 @@ PlayerUnitAttachmentExtension.create_attachment = function (self, slot_name, ite
 	local buffs = self:_get_property_and_trait_buffs(backend_id)
 
 	self:_apply_buffs(buffs, item_data.name, slot_name, item_data.name)
+
+	local cosmetic_extension = ScriptUnit.has_extension(unit, "cosmetic_system")
+
+	if cosmetic_extension and slot_name == "slot_hat" then
+		local character_material_changes = item_template.character_material_changes
+
+		if character_material_changes then
+			cosmetic_extension:change_skin_materials(character_material_changes)
+		end
+	end
 end
 
 PlayerUnitAttachmentExtension.remove_attachment = function (self, slot_name)

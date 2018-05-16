@@ -306,6 +306,7 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				name = "markus_huntsman_activated_ability_increased_reload_speed",
+				max_stacks = 1,
 				stat_buff = StatBuffIndex.RELOAD_SPEED,
 				multiplier = buff_tweak_data.markus_huntsman_activated_ability.reload_speed_multiplier,
 				duration = buff_tweak_data.markus_huntsman_activated_ability.duration

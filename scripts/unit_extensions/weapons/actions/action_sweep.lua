@@ -51,9 +51,11 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	local career_extension = ScriptUnit.extension(owner_unit, "career_system")
 	local anim_time_scale = new_action.anim_time_scale or 1
 	self.anim_time_scale = ActionUtils.apply_attack_speed_buff(anim_time_scale, owner_unit)
+	local has_melee_boost, _ = ActionUtils.get_melee_boost(owner_unit)
+	self._has_starting_melee_boost = has_melee_boost
 	self.owner_buff_extension = buff_extension
 	self.owner_career_extension = career_extension
-	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
+	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t) or has_melee_boost
 	local action_hand = action_init_data and action_init_data.action_hand
 	local damage_profile_name = (action_hand and new_action["damage_profile_" .. action_hand]) or new_action.damage_profile or "default"
 	self.action_hand = action_hand
@@ -582,7 +584,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 					if breed and not is_dodging then
 						local has_melee_boost, melee_boost_curve_multiplier = ActionUtils.get_melee_boost(owner_unit)
 						local power_level = self.power_level
-						local is_critical_strike = self._is_critical_strike or has_melee_boost
+						local is_critical_strike = self._is_critical_strike or has_melee_boost or self._has_starting_melee_boost
 
 						self:_play_character_impact(is_server, owner_unit, hit_unit, breed, hit_position, hit_zone_name, current_action, damage_profile, actual_hit_target_index, power_level, attack_direction, shield_blocked, melee_boost_curve_multiplier, is_critical_strike, backstab_multiplier)
 					end
@@ -611,7 +613,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 					local has_melee_boost, melee_boost_curve_multiplier = ActionUtils.get_melee_boost(owner_unit)
 					local power_level = self.power_level
-					local is_critical_strike = self._is_critical_strike or has_melee_boost
+					local is_critical_strike = self._is_critical_strike or has_melee_boost or self._has_starting_melee_boost
 					local charge_value = damage_profile.charge_value
 					local shield_break_procc = false
 					local buff_result = "no_buff"
@@ -716,7 +718,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 						local damage_profile_id = self.damage_profile_id
 						local has_melee_boost, melee_boost_curve_multiplier = ActionUtils.get_melee_boost(owner_unit)
 						local power_level = self.power_level
-						local is_critical_strike = self._is_critical_strike or has_melee_boost
+						local is_critical_strike = self._is_critical_strike or has_melee_boost or self._has_starting_melee_boost
 
 						weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_hit_target_index, "boost_curve_multiplier", melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike)
 
@@ -1016,7 +1018,7 @@ ActionSweep.hit_level_object = function (self, hit_units, hit_unit, owner_unit, 
 		local damage_source = self.item_name
 		local has_melee_boost, melee_boost_curve_multiplier = ActionUtils.get_melee_boost(owner_unit)
 		local power_level = self.power_level
-		local is_critical_strike = self._is_critical_strike or has_melee_boost
+		local is_critical_strike = self._is_critical_strike or has_melee_boost or self._has_starting_melee_boost
 
 		if is_dummy_unit then
 			local node = Actor.node(hit_actor)
@@ -1085,14 +1087,14 @@ ActionSweep.finish = function (self, reason, data)
 	local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
 	local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 	local has_melee_boost, melee_boost_curve_multiplier = ActionUtils.get_melee_boost(owner_unit)
-	local power_level = self.power_level
-	local is_critical_strike = self._is_critical_strike or has_melee_boost
-	local target_settings = damage_profile.default_target
+	local is_critical_strike = self._is_critical_strike or has_melee_boost or self._has_starting_melee_boost
 	local damage_profile_id = self.damage_profile_id
+	local power_level = self.power_level
+	local hit_target_index = nil
 	local shield_blocked = false
 	local shield_break_procc = false
+	local charge_value = self.damage_profile.charge_value
 	local send_to_server = true
-	local charge_value = damage_profile.charge_value
 
 	DamageUtils.buff_on_attack(owner_unit, target_breed_unit, charge_value, is_critical_strike, hit_zone_name, self.number_of_hit_enemies + 1, send_to_server)
 	weapon_system:send_rpc_attack_hit(NetworkLookup.damage_sources[self.item_name], attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", hit_target_index, "blocking", shield_blocked, "shield_break_procced", shield_break_procc, "boost_curve_multiplier", melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike)

@@ -483,6 +483,12 @@ MenuWorldPreviewer._poll_hero_package_loading = function (self)
 		return
 	end
 
+	local requested_hero_spawn_data = self._requested_hero_spawn_data
+
+	if requested_hero_spawn_data then
+		return
+	end
+
 	local reference_name = self:_reference_name()
 	local package_manager = Managers.package
 	local package_names = data.package_names
@@ -661,13 +667,19 @@ MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
 			end
 
 			local attachment_slot_name = item_template.slots[attachment_slot_lookup_index]
+			local character_material_changes = item_template.character_material_changes
 			spawn_data[#spawn_data + 1] = {
 				unit_name = unit,
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
-				unit_attachment_node_linking = item_template.attachment_node_linking[attachment_slot_name]
+				unit_attachment_node_linking = item_template.attachment_node_linking[attachment_slot_name],
+				character_material_changes = character_material_changes
 			}
 			package_names[#package_names + 1] = unit
+
+			if character_material_changes then
+				package_names[#package_names + 1] = character_material_changes.package_name
+			end
 		end
 	end
 
@@ -695,6 +707,12 @@ MenuWorldPreviewer._poll_item_package_loading = function (self)
 	local character_unit = self.character_unit
 
 	if not Unit.alive(character_unit) then
+		return
+	end
+
+	local requested_hero_spawn_data = self._requested_hero_spawn_data
+
+	if requested_hero_spawn_data then
 		return
 	end
 
@@ -756,6 +774,7 @@ MenuWorldPreviewer._spawn_item = function (self, item_name, spawn_data)
 		local item_slot_type = unit_spawn_data.item_slot_type
 		local slot_index = unit_spawn_data.slot_index
 		local unit_attachment_node_linking = unit_spawn_data.unit_attachment_node_linking
+		local character_material_changes = unit_spawn_data.character_material_changes
 
 		if item_slot_type == "melee" or item_slot_type == "ranged" then
 			local unit = World.spawn_unit(world, unit_name)
@@ -778,6 +797,19 @@ MenuWorldPreviewer._spawn_item = function (self, item_name, spawn_data)
 
 		if show_attachments_event then
 			Unit.flow_event(character_unit, show_attachments_event)
+		end
+
+		if character_material_changes then
+			local third_person_changes = character_material_changes.third_person
+			local flow_unit_attachments = Unit.get_data(self.character_unit, "flow_unit_attachments") or {}
+
+			for slot_name, material_name in pairs(third_person_changes) do
+				for _, unit in pairs(flow_unit_attachments) do
+					Unit.set_material(unit, slot_name, material_name)
+				end
+
+				Unit.set_material(character_unit, slot_name, material_name)
+			end
 		end
 	end
 end

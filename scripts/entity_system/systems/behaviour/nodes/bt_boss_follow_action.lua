@@ -38,8 +38,13 @@ BTBossFollowAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	navigation_extension:set_max_speed(default_move_speed)
 
+	if blackboard.is_turning then
+		LocomotionUtils.reset_turning(unit, blackboard)
+
+		blackboard.is_turning = nil
+	end
+
 	blackboard.move_animation_name = nil
-	blackboard.is_turning = nil
 	blackboard.animation_rotation_lock = nil
 	blackboard.rotate_towards_position = nil
 	blackboard.next_turn_at = nil

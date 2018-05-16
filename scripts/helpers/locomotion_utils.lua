@@ -192,7 +192,7 @@ LocomotionUtils.rotation_towards_unit = function (unit, target_unit)
 	local pos_unit = unit_local_position(unit, 0)
 	local pos_target_unit = unit_local_position(target_unit, 0)
 	local direction = Vector3.normalize(pos_target_unit - pos_unit)
-	local rotation = Quaternion.look(direction)
+	local rotation = quaternion_look(direction)
 
 	return rotation
 end
@@ -203,7 +203,7 @@ LocomotionUtils.rotation_towards_unit_flat = function (unit, target_unit)
 	local to_dir = pos_target_unit - pos_unit
 	to_dir.z = 0
 	local direction = Vector3.normalize(to_dir)
-	local flat_rotation = Quaternion.look(direction)
+	local flat_rotation = quaternion_look(direction)
 
 	return flat_rotation
 end
@@ -1280,11 +1280,16 @@ LocomotionUtils.update_turning = function (unit, t, dt, blackboard)
 
 	if blackboard.anim_cb_move then
 		blackboard.anim_cb_move = nil
-		blackboard.is_turning = false
 
-		LocomotionUtils.set_animation_driven_movement(unit, false)
-		LocomotionUtils.set_animation_rotation_scale(unit, 1)
+		LocomotionUtils.reset_turning(unit, blackboard)
 	end
+end
+
+LocomotionUtils.reset_turning = function (unit, blackboard)
+	blackboard.is_turning = false
+
+	LocomotionUtils.set_animation_driven_movement(unit, false)
+	LocomotionUtils.set_animation_rotation_scale(unit, 1)
 end
 
 return

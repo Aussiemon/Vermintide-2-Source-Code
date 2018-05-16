@@ -191,6 +191,7 @@ CareerAbilityESKnight._run_ability = function (self)
 		allow_rotation = false,
 		first_person_animation_end_event = "foot_knight_ability_charge_hit",
 		falloff_to_speed = 5,
+		dodge = true,
 		first_person_animation_event = "foot_knight_ability_charge_start",
 		first_person_hit_animation_event = "charge_react",
 		damage_start_time = 0.3,

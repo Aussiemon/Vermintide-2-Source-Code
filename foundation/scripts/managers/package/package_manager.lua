@@ -289,6 +289,8 @@ PackageManager.update = function (self)
 			break
 		end
 	end
+
+	return next(self._asynch_packages) == nil
 end
 
 PackageManager.dump_reference_counter = function (self, reference_name)

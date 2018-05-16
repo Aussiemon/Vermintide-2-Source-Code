@@ -153,6 +153,7 @@ require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_sto
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_storm_vermin_commander")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_skaven_warpfire_thrower")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_marauder")
+require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_fanatic")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_marauder_tutorial")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_shield_marauder")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_berzerker")

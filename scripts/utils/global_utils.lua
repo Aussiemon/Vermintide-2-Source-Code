@@ -160,8 +160,6 @@ function REMOVE_PLAYER_UNIT_FROM_LISTS(player_unit)
 	VALID_TARGETS_PLAYERS_AND_BOTS[player_unit] = nil
 	local player_and_bot_units = PLAYER_AND_BOT_UNITS
 	local player_and_bot_positions = PLAYER_AND_BOT_POSITIONS
-	local ai_target_units = AI_TARGET_UNITS
-	local ai_target_units_size = #ai_target_units
 	size = #player_and_bot_units
 
 	for i = 1, size, 1 do
@@ -170,12 +168,12 @@ function REMOVE_PLAYER_UNIT_FROM_LISTS(player_unit)
 			player_and_bot_units[size] = nil
 			player_and_bot_positions[i] = player_and_bot_positions[size]
 			player_and_bot_positions[size] = nil
-			ai_target_units[i] = ai_target_units[ai_target_units_size]
-			ai_target_units[ai_target_units_size] = nil
 
 			break
 		end
 	end
+
+	REMOVE_AGGRO_UNITS(player_unit)
 end
 
 function REMOVE_AGGRO_UNITS(aggro_unit)

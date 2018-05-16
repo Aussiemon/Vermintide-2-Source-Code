@@ -40,6 +40,7 @@ PlayerHuskAttachmentExtension.create_attachment = function (self, slot_name, ite
 		return
 	end
 
+	local unit = self._unit
 	local attachments = self._attachments
 	local old_slot_data = attachments.slots[slot_name]
 
@@ -47,20 +48,30 @@ PlayerHuskAttachmentExtension.create_attachment = function (self, slot_name, ite
 		self:remove_attachment(slot_name)
 	end
 
-	local slot_data = AttachmentUtils.create_attachment(self._world, self._unit, attachments, slot_name, item_data, true)
+	local slot_data = AttachmentUtils.create_attachment(self._world, unit, attachments, slot_name, item_data, true)
 	local item_template = BackendUtils.get_item_template(item_data)
 	local show_attachments_event = item_template.show_attachments_event
 
 	if show_attachments_event then
-		Unit.flow_event(self._unit, show_attachments_event)
+		Unit.flow_event(unit, show_attachments_event)
 	end
 
 	self:_show_attachment(slot_name, slot_data, true)
 
 	attachments.slots[slot_name] = slot_data
-	local outline_extension = ScriptUnit.extension(self._unit, "outline_system")
+	local outline_extension = ScriptUnit.extension(unit, "outline_system")
 
 	outline_extension:reapply_outline()
+
+	local cosmetic_extension = ScriptUnit.has_extension(unit, "cosmetic_system")
+
+	if cosmetic_extension and slot_name == "slot_hat" then
+		local character_material_changes = item_template.character_material_changes
+
+		if character_material_changes then
+			cosmetic_extension:change_skin_materials(character_material_changes)
+		end
+	end
 end
 
 PlayerHuskAttachmentExtension.remove_attachment = function (self, slot_name)

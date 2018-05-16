@@ -136,12 +136,12 @@ end
 
 ActionCareerDRRanger.finish = function (self, reason)
 	ActionCareerDRRanger.super.finish(self, reason)
+	self.inventory_extension:wield_previous_weapon()
 
 	if reason ~= "action_complete" then
 		return
 	end
 
-	self.inventory_extension:wield_previous_weapon()
 	self.career_extension:start_activated_ability_cooldown()
 end
 

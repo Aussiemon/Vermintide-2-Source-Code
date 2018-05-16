@@ -421,6 +421,22 @@ TextureQuality = {
 			{
 				mip_level = 2,
 				texture_setting = "texture_categories/environment_hma"
+			},
+			{
+				mip_level = 2,
+				texture_setting = "texture_categories/environment_streamable_df"
+			},
+			{
+				mip_level = 2,
+				texture_setting = "texture_categories/environment_streamable_dfa"
+			},
+			{
+				mip_level = 2,
+				texture_setting = "texture_categories/environment_streamable_nm"
+			},
+			{
+				mip_level = 2,
+				texture_setting = "texture_categories/environment_streamable_ma"
 			}
 		},
 		medium = {
@@ -451,6 +467,22 @@ TextureQuality = {
 			{
 				mip_level = 1,
 				texture_setting = "texture_categories/environment_hma"
+			},
+			{
+				mip_level = 1,
+				texture_setting = "texture_categories/environment_streamable_df"
+			},
+			{
+				mip_level = 1,
+				texture_setting = "texture_categories/environment_streamable_dfa"
+			},
+			{
+				mip_level = 1,
+				texture_setting = "texture_categories/environment_streamable_nm"
+			},
+			{
+				mip_level = 1,
+				texture_setting = "texture_categories/environment_streamable_ma"
 			}
 		},
 		high = {
@@ -481,6 +513,22 @@ TextureQuality = {
 			{
 				mip_level = 0,
 				texture_setting = "texture_categories/environment_hma"
+			},
+			{
+				mip_level = 0,
+				texture_setting = "texture_categories/environment_streamable_df"
+			},
+			{
+				mip_level = 0,
+				texture_setting = "texture_categories/environment_streamable_dfa"
+			},
+			{
+				mip_level = 0,
+				texture_setting = "texture_categories/environment_streamable_nm"
+			},
+			{
+				mip_level = 0,
+				texture_setting = "texture_categories/environment_streamable_ma"
 			}
 		}
 	}

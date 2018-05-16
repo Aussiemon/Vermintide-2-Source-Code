@@ -191,7 +191,7 @@ StartGameWindowAdventureSettings._handle_input = function (self, dt, t)
 
 	if self:_is_button_released(widgets_by_name.play_button) or play_pressed then
 		parent:set_private_option_enabled(false)
-		parent:play(t)
+		parent:play(t, "adventure")
 	end
 end
 

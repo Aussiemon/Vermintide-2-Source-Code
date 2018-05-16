@@ -2541,8 +2541,8 @@ OptionsView.draw_widgets = function (self, dt, disable_all_input)
 end
 
 local temp_pos_table = {
-	x = 0,
-	y = 0
+	0,
+	0
 }
 
 OptionsView.update_settings_list = function (self, settings_list, ui_renderer, ui_scenegraph, input_service, dt, disable_all_input)
@@ -2574,12 +2574,12 @@ OptionsView.update_settings_list = function (self, settings_list, ui_renderer, u
 		local widget_name = widget.name
 		local size = style.size
 		local offset = style.offset
-		temp_pos_table.x = list_position[1] + offset[1]
-		temp_pos_table.y = list_position[2] + offset[2]
+		temp_pos_table[1] = list_position[1] + offset[1]
+		temp_pos_table[2] = list_position[2] + offset[2]
 		local lower_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
-		temp_pos_table.y = temp_pos_table.y + size[2] / 2
+		temp_pos_table[2] = temp_pos_table[2] + size[2] / 2
 		local middle_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
-		temp_pos_table.y = temp_pos_table.y + size[2] / 2
+		temp_pos_table[2] = temp_pos_table[2] + size[2] / 2
 		local top_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
 		local visible = lower_visible or top_visible
 		widget.content.visible = visible
@@ -3182,10 +3182,10 @@ OptionsView.move_scrollbar_based_on_selection = function (self, index)
 			local selected_widget = widgets[selected_list_index]
 			local selected_widget_offset = selected_widget.style.offset
 			local selected_widget_size = selected_widget.style.size
-			temp_pos_table.x = list_position[1] + selected_widget_offset[1]
-			temp_pos_table.y = list_position[2] + selected_widget_offset[2]
+			temp_pos_table[1] = list_position[1] + selected_widget_offset[1]
+			temp_pos_table[2] = list_position[2] + selected_widget_offset[2]
 			local selected_widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
-			temp_pos_table.y = temp_pos_table.y + selected_widget_size[2]
+			temp_pos_table[2] = temp_pos_table[2] + selected_widget_size[2]
 			selected_widget_visible = selected_widget_visible and math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
 
 			if not selected_widget_visible then
@@ -3207,10 +3207,10 @@ OptionsView.move_scrollbar_based_on_selection = function (self, index)
 		local base_widget_style = base_widget.style
 		local base_widget_size = base_widget_style.size
 		local base_widget_offset = base_widget_style.offset
-		temp_pos_table.x = list_position[1] + base_widget_offset[1]
-		temp_pos_table.y = list_position[2] + base_widget_offset[2]
+		temp_pos_table[1] = list_position[1] + base_widget_offset[1]
+		temp_pos_table[2] = list_position[2] + base_widget_offset[2]
 		local widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
-		temp_pos_table.y = temp_pos_table.y + base_widget_size[2]
+		temp_pos_table[2] = temp_pos_table[2] + base_widget_size[2]
 		widget_visible = widget_visible and math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
 
 		if not widget_visible then
@@ -3223,7 +3223,7 @@ OptionsView.move_scrollbar_based_on_selection = function (self, index)
 				step = diff / max_offset_y
 			else
 				local mask_upper_pos_y = mask_pos[2] + mask_size[2]
-				local widget_upper_pos_y = temp_pos_table.y
+				local widget_upper_pos_y = temp_pos_table[2]
 				local diff = math.abs(mask_upper_pos_y - widget_upper_pos_y)
 				step = -(diff / max_offset_y)
 			end

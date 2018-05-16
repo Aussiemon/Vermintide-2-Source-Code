@@ -234,9 +234,10 @@ ActionGeiser._update_damage = function (self, current_action)
 			end
 
 			if check_buffs then
+				local is_critical_strike = self._is_critical_strike
 				local send_to_server = true
 
-				DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", false, hit_zone_name, #damage_buffer, send_to_server)
+				DamageUtils.buff_on_attack(owner_unit, hit_unit, "aoe", is_critical_strike, hit_zone_name, #damage_buffer, send_to_server)
 
 				self._check_buffs = false
 			end

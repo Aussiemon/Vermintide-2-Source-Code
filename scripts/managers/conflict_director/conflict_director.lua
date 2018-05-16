@@ -1316,7 +1316,7 @@ ConflictDirector.update_spawn_queue = function (self, t)
 		local breed = d[1]
 
 		if enemy_package_loader.breed_loaded_on_all_peers[breed.name] then
-			local unit = self:_spawn_unit(d[1], d[2]:unbox(), d[3]:unbox(), d[4], d[5], d[6], d[7], d[8])
+			local unit = self:_spawn_unit(d[1], d[2]:unbox(), d[3]:unbox(), d[4], d[5], d[6], d[7], d[8], d[10])
 			first_spawn_index = first_spawn_index + 1
 			self.spawn_queue_size = self.spawn_queue_size - 1
 			local unit_data = d[9]
@@ -1338,13 +1338,14 @@ local dialogue_system_init_data = {
 	faction = "enemy"
 }
 
-ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spawn_category, spawn_animation, spawn_type, optional_data, group_data)
+ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spawn_category, spawn_animation, spawn_type, optional_data, group_data, spawn_index)
 	local breed_unit_field = (script_data.use_optimized_breed_units and breed.opt_base_unit) or breed.base_unit
 	local base_unit_name = (type(breed_unit_field) == "string" and breed_unit_field) or breed_unit_field[Math.random(#breed_unit_field)]
 	local unit_template = breed.unit_template
 	local entity_manager = Managers.state.entity
 	local nav_world = entity_manager:system("ai_system"):nav_world()
 	optional_data = optional_data or {}
+	optional_data.spawn_queue_index = spawn_index
 	local inventory_init_data = nil
 
 	if breed.has_inventory then

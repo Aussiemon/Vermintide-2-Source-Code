@@ -90,6 +90,7 @@ BTChaosSorcererSkulkApproachAction._initialize_vortex_data = function (self, bla
 		physics_world = World.get_data(blackboard.world, "physics_world"),
 		vortex_spawn_pos = Vector3Box(),
 		vortex_units = {},
+		queued_vortex = {},
 		radius_check_directions = check_directions,
 		vortex_template = vortex_template
 	}

@@ -5340,7 +5340,7 @@ return function ()
 				"time_since_dwarf_picks_up_a_bomb",
 				OP.TIMEDIFF,
 				OP.GT,
-				480
+				1800
 			}
 		},
 		on_done = {
@@ -6307,7 +6307,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"dwarf_ranger"
 			},
 			{
 				"faction_memory",
@@ -6387,7 +6387,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"empire_soldier"
 			}
 		}
 	})
@@ -6717,13 +6717,13 @@ return function ()
 				"query_context",
 				"killer_name",
 				OP.EQ,
-				"bright_wizard"
+				"witch_hunter"
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"empire_soldier"
+				"wood_elf"
 			},
 			{
 				"faction_memory",
@@ -7445,13 +7445,13 @@ return function ()
 				"query_context",
 				"killer_name",
 				OP.EQ,
-				"empire_soldier"
+				"bright_wizard"
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"witch_hunter"
 			},
 			{
 				"faction_memory",
@@ -7751,7 +7751,7 @@ return function ()
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"bright_wizard"
+				"dwarf_ranger"
 			},
 			{
 				"faction_memory",
@@ -7763,7 +7763,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"dwarf_ranger"
 			}
 		},
 		on_done = {
@@ -20316,6 +20316,11736 @@ return function ()
 		}
 	})
 	define_rule({
+		response = "pbw_gameplay_elf_killing_spawn_melee_01",
+		name = "pbw_gameplay_elf_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_185",
+		name = "pwe_gameplay_response_185",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_elf_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_183",
+		name = "pwh_gameplay_response_183",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_185"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_elf_killing_spawn_melee_01",
+		name = "pdr_gameplay_elf_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_180",
+		name = "pwe_gameplay_response_180",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_elf_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_177",
+		name = "pwh_gameplay_response_177",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_180"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_elf_killing_spawn_melee_01",
+		name = "pes_gameplay_elf_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_182",
+		name = "pwe_gameplay_response_182",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_elf_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_181",
+		name = "pdr_gameplay_response_181",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_182"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_elf_killing_spawn_melee_01",
+		name = "pwh_gameplay_elf_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_187",
+		name = "pwe_gameplay_response_187",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_elf_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_175",
+		name = "pes_gameplay_response_175",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_187"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_hunter_killing_spawn_melee_01",
+		name = "pbw_gameplay_hunter_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_184",
+		name = "pwh_gameplay_response_184",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_hunter_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_185",
+		name = "pdr_gameplay_response_185",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_184"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_hunter_killing_spawn_melee_01",
+		name = "pdr_gameplay_hunter_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_178",
+		name = "pwh_gameplay_response_178",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_hunter_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_168",
+		name = "pes_gameplay_response_168",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_178"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_hunter_killing_spawn_melee_01",
+		name = "pes_gameplay_hunter_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_180",
+		name = "pwh_gameplay_response_180",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_hunter_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_177",
+		name = "pbw_gameplay_response_177",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_180"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_hunter_killing_spawn_melee_01",
+		name = "pwe_gameplay_hunter_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_182",
+		name = "pwh_gameplay_response_182",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_hunter_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_171",
+		name = "pes_gameplay_response_171",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_182"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_ranger_killing_spawn_melee_01",
+		name = "pbw_gameplay_ranger_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_184",
+		name = "pdr_gameplay_response_184",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_ranger_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_172",
+		name = "pes_gameplay_response_172",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_184"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_ranger_killing_spawn_melee_01",
+		name = "pes_gameplay_ranger_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_180",
+		name = "pdr_gameplay_response_180",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_ranger_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_179",
+		name = "pwh_gameplay_response_179",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_180"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_ranger_killing_spawn_melee_01",
+		name = "pwe_gameplay_ranger_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_182",
+		name = "pdr_gameplay_response_182",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_ranger_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_169",
+		name = "pes_gameplay_response_169",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_182"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_ranger_killing_spawn_melee_01",
+		name = "pwh_gameplay_ranger_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_186",
+		name = "pdr_gameplay_response_186",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_ranger_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_179",
+		name = "pbw_gameplay_response_179",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_186"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_soldier_killing_spawn_melee_01",
+		name = "pbw_gameplay_soldier_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_173",
+		name = "pes_gameplay_response_173",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_soldier_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_184",
+		name = "pwe_gameplay_response_184",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_173"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_soldier_killing_spawn_melee_01",
+		name = "pdr_gameplay_soldier_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_167",
+		name = "pes_gameplay_response_167",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_soldier_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_174",
+		name = "pbw_gameplay_response_174",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_167"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_soldier_killing_spawn_melee_01",
+		name = "pwe_gameplay_soldier_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_170",
+		name = "pes_gameplay_response_170",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_soldier_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_181",
+		name = "pwh_gameplay_response_181",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_170"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_soldier_killing_spawn_melee_01",
+		name = "pwh_gameplay_soldier_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_174",
+		name = "pes_gameplay_response_174",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_soldier_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_186",
+		name = "pwe_gameplay_response_186",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_174"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_wizard_killing_spawn_melee_01",
+		name = "pdr_gameplay_wizard_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_175",
+		name = "pbw_gameplay_response_175",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wizard_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_181",
+		name = "pwe_gameplay_response_181",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_175"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_wizard_killing_spawn_melee_01",
+		name = "pes_gameplay_wizard_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_176",
+		name = "pbw_gameplay_response_176",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_wizard_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_183",
+		name = "pwe_gameplay_response_183",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_176"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_wizard_killing_spawn_melee_01",
+		name = "pwe_gameplay_wizard_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_178",
+		name = "pbw_gameplay_response_178",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_wizard_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_183",
+		name = "pdr_gameplay_response_183",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_178"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_wizard_killing_spawn_melee_01",
+		name = "pwh_gameplay_wizard_killing_spawn_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_180",
+		name = "pbw_gameplay_response_180",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_wizard_killing_spawn_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_187",
+		name = "pdr_gameplay_response_187",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_180"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_elf_killing_spawn_ranged_01",
+		name = "pbw_gameplay_elf_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_192",
+		name = "pwe_gameplay_response_192",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_elf_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_193",
+		name = "pdr_gameplay_response_193",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_192"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_elf_killing_spawn_ranged_01",
+		name = "pdr_gameplay_elf_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_188",
+		name = "pwe_gameplay_response_188",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_elf_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_177",
+		name = "pes_gameplay_response_177",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_188"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_elf_killing_spawn_ranged_01",
+		name = "pes_gameplay_elf_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_191",
+		name = "pwe_gameplay_response_191",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_elf_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_187",
+		name = "pwh_gameplay_response_187",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_191"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_elf_killing_spawn_ranged_01",
+		name = "pwh_gameplay_elf_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_195",
+		name = "pwe_gameplay_response_195",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_elf_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_187",
+		name = "pbw_gameplay_response_187",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_195"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_hunter_killing_spawn_ranged_01",
+		name = "pbw_gameplay_hunter_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_192",
+		name = "pwh_gameplay_response_192",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_hunter_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_193",
+		name = "pwe_gameplay_response_193",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_192"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_hunter_killing_spawn_ranged_01",
+		name = "pdr_gameplay_hunter_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_186",
+		name = "pwh_gameplay_response_186",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_hunter_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_189",
+		name = "pwe_gameplay_response_189",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_186"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_hunter_killing_spawn_ranged_01",
+		name = "pes_gameplay_hunter_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_188",
+		name = "pwh_gameplay_response_188",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_hunter_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_184",
+		name = "pbw_gameplay_response_184",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_188"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_hunter_killing_spawn_ranged_01",
+		name = "pwe_gameplay_hunter_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_190",
+		name = "pwh_gameplay_response_190",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_hunter_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_186",
+		name = "pbw_gameplay_response_186",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_190"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_ranger_killing_spawn_ranged_01",
+		name = "pbw_gameplay_ranger_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_192",
+		name = "pdr_gameplay_response_192",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_ranger_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_180",
+		name = "pes_gameplay_response_180",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_192"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_ranger_killing_spawn_ranged_01",
+		name = "pes_gameplay_ranger_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_188",
+		name = "pdr_gameplay_response_188",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_ranger_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_190",
+		name = "pwe_gameplay_response_190",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_188"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_ranger_killing_spawn_ranged_01",
+		name = "pwe_gameplay_ranger_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_190",
+		name = "pdr_gameplay_response_190",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_ranger_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_189",
+		name = "pwh_gameplay_response_189",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_190"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_ranger_killing_spawn_ranged_01",
+		name = "pwh_gameplay_ranger_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_194",
+		name = "pdr_gameplay_response_194",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_ranger_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_182",
+		name = "pes_gameplay_response_182",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_194"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_soldier_killing_spawn_ranged_01",
+		name = "pbw_gameplay_soldier_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_181",
+		name = "pes_gameplay_response_181",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_soldier_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_191",
+		name = "pwh_gameplay_response_191",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_181"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_soldier_killing_spawn_ranged_01",
+		name = "pdr_gameplay_soldier_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_176",
+		name = "pes_gameplay_response_176",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_soldier_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_181",
+		name = "pbw_gameplay_response_181",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_176"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_soldier_killing_spawn_ranged_01",
+		name = "pwe_gameplay_soldier_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_178",
+		name = "pes_gameplay_response_178",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_soldier_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_191",
+		name = "pdr_gameplay_response_191",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_178"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_soldier_killing_spawn_ranged_01",
+		name = "pwh_gameplay_soldier_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_183",
+		name = "pes_gameplay_response_183",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_soldier_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_194",
+		name = "pwe_gameplay_response_194",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_183"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_wizard_killing_spawn_ranged_01",
+		name = "pdr_gameplay_wizard_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_182",
+		name = "pbw_gameplay_response_182",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wizard_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_185",
+		name = "pwh_gameplay_response_185",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_182"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_wizard_killing_spawn_ranged_01",
+		name = "pes_gameplay_wizard_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_183",
+		name = "pbw_gameplay_response_183",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_wizard_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_189",
+		name = "pdr_gameplay_response_189",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_183"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_wizard_killing_spawn_ranged_01",
+		name = "pwe_gameplay_wizard_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_185",
+		name = "pbw_gameplay_response_185",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_wizard_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_179",
+		name = "pes_gameplay_response_179",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_185"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_wizard_killing_spawn_ranged_01",
+		name = "pwh_gameplay_wizard_killing_spawn_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_spawn"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_spawn",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_188",
+		name = "pbw_gameplay_response_188",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_wizard_killing_spawn_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_195",
+		name = "pdr_gameplay_response_195",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_188"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_elf_killing_troll_melee_01",
+		name = "pbw_gameplay_elf_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_152",
+		name = "pwe_gameplay_response_152",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_elf_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_151",
+		name = "pwh_gameplay_response_151",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_152"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_elf_killing_troll_melee_01",
+		name = "pdr_gameplay_elf_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_147",
+		name = "pwe_gameplay_response_147",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_elf_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_137",
+		name = "pes_gameplay_response_137",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_147"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_elf_killing_troll_melee_01",
+		name = "pes_gameplay_elf_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_149",
+		name = "pwe_gameplay_response_149",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_elf_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_150",
+		name = "pdr_gameplay_response_150",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_149"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_elf_killing_troll_melee_01",
+		name = "pwh_gameplay_elf_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_154",
+		name = "pwe_gameplay_response_154",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_elf_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_147",
+		name = "pbw_gameplay_response_147",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_149"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_hunter_killing_troll_melee_01",
+		name = "pbw_gameplay_hunter_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_152",
+		name = "pwh_gameplay_response_152",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_hunter_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_154",
+		name = "pdr_gameplay_response_154",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_149"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_hunter_killing_troll_melee_01",
+		name = "pdr_gameplay_hunter_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_146",
+		name = "pwh_gameplay_response_146",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_hunter_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_142",
+		name = "pbw_gameplay_response_142",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_146"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_hunter_killing_troll_melee_01",
+		name = "pes_gameplay_hunter_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_148",
+		name = "pwh_gameplay_response_148",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_hunter_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_150",
+		name = "pwe_gameplay_response_150",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_148"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_hunter_killing_troll_melee_01",
+		name = "pwe_gameplay_hunter_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_150",
+		name = "pwh_gameplay_response_150",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_hunter_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_152",
+		name = "pdr_gameplay_response_152",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_150"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_ranger_killing_troll_melee_01",
+		name = "pbw_gameplay_ranger_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_153",
+		name = "pdr_gameplay_response_153",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_ranger_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_140",
+		name = "pes_gameplay_response_140",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_153"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_ranger_killing_troll_melee_01",
+		name = "pwe_gameplay_ranger_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_151",
+		name = "pdr_gameplay_response_151",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_ranger_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_149",
+		name = "pwh_gameplay_response_149",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_151"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_ranger_killing_troll_melee_01",
+		name = "pwh_gameplay_ranger_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_155",
+		name = "pdr_gameplay_response_155",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_ranger_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_142",
+		name = "pes_gameplay_response_142",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_155"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_soldier_killing_troll_melee_01",
+		name = "pbw_gameplay_soldier_killing_troll_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_141",
+		name = "pes_gameplay_response_141",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_soldier_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_151",
+		name = "pwe_gameplay_response_151",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_141"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_136",
+		name = "pes_gameplay_response_136",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_soldier_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_145",
+		name = "pwh_gameplay_response_145",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_136"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_138",
+		name = "pes_gameplay_response_138",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_soldier_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_145",
+		name = "pbw_gameplay_response_145",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_138"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_143",
+		name = "pes_gameplay_response_143",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_soldier_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_199",
+		name = "pbw_gameplay_response_199",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_143"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_141",
+		name = "pbw_gameplay_response_141",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wizard_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_148",
+		name = "pwe_gameplay_response_148",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_141"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_144",
+		name = "pbw_gameplay_response_144",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_wizard_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_147",
+		name = "pwh_gameplay_response_147",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_144"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_146",
+		name = "pbw_gameplay_response_146",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_wizard_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_139",
+		name = "pes_gameplay_response_139",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_146"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_148",
+		name = "pbw_gameplay_response_148",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_wizard_killing_troll_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_144",
+		name = "pes_gameplay_response_144",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_148"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_159",
+		name = "pwe_gameplay_response_159",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_elf_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_161",
+		name = "pdr_gameplay_response_161",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_159"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_155",
+		name = "pwe_gameplay_response_155",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_elf_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_146",
+		name = "pes_gameplay_response_146",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_155"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_157",
+		name = "pwe_gameplay_response_157",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_elf_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_155",
+		name = "pwh_gameplay_response_155",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_157"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_162",
+		name = "pwe_gameplay_response_162",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_elf_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_156",
+		name = "pbw_gameplay_response_156",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_162"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_160",
+		name = "pwh_gameplay_response_160",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_hunter_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_160",
+		name = "pwe_gameplay_response_160",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_160"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_154",
+		name = "pwh_gameplay_response_154",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_hunter_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_150",
+		name = "pbw_gameplay_response_150",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_154"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_156",
+		name = "pwh_gameplay_response_156",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_hunter_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_157",
+		name = "pdr_gameplay_response_157",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_156"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_158",
+		name = "pwh_gameplay_response_158",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_hunter_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_148",
+		name = "pes_gameplay_response_148",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_158"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_160",
+		name = "pdr_gameplay_response_160",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_ranger_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_149",
+		name = "pes_gameplay_response_149",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_160"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_156",
+		name = "pdr_gameplay_response_156",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_ranger_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_151",
+		name = "pbw_gameplay_response_151",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_156"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_158",
+		name = "pdr_gameplay_response_158",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_ranger_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_157",
+		name = "pwh_gameplay_response_157",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_158"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_162",
+		name = "pdr_gameplay_response_162",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_ranger_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_155",
+		name = "pbw_gameplay_response_155",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_162"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_150",
+		name = "pes_gameplay_response_150",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_soldier_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_159",
+		name = "pwh_gameplay_response_159",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_150"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_145",
+		name = "pes_gameplay_response_145",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_soldier_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_153",
+		name = "pwh_gameplay_response_153",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_145"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_147",
+		name = "pes_gameplay_response_147",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_soldier_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_153",
+		name = "pbw_gameplay_response_153",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_147"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_151",
+		name = "pes_gameplay_response_151",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_soldier_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_161",
+		name = "pwe_gameplay_response_161",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_151"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_149",
+		name = "pbw_gameplay_response_149",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wizard_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_156",
+		name = "pwe_gameplay_response_156",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_149"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_152",
+		name = "pbw_gameplay_response_152",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_wizard_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_158",
+		name = "pwe_gameplay_response_158",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_152"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_159",
+		name = "pdr_gameplay_response_159",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_wizard_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_154",
+		name = "pbw_gameplay_response_154",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_159"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"chaos_troll"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_chaos_troll",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_157",
+		name = "pbw_gameplay_response_157",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_wizard_killing_troll_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_163",
+		name = "pdr_gameplay_response_163",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_157"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_killing_rat_ogre_01",
+		name = "pbw_gameplay_killing_rat_ogre_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"enemy_kill"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_04",
+		name = "pes_gameplay_response_04",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_killing_rat_ogre_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_killing_rat_ogre_01",
+		name = "pes_gameplay_killing_rat_ogre_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"enemy_kill"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_07",
+		name = "pdr_gameplay_response_07",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_killing_rat_ogre_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_hunter_shoots_rat_ogre_01",
+		name = "pdr_hunter_shoots_rat_ogre_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_08",
+		name = "pwh_gameplay_response_08",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_hunter_shoots_rat_ogre_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_08",
+		name = "pbw_gameplay_response_08",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_08"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_killing_a_rat_ogre_01",
+		name = "pwh_gameplay_killing_a_rat_ogre_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"enemy_kill"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_08",
+		name = "pwe_gameplay_response_08",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_killing_a_rat_ogre_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_elf_shoots_a_rat_ogre_01",
+		name = "pes_gameplay_elf_shoots_a_rat_ogre_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_09",
+		name = "pwe_gameplay_response_09",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_elf_shoots_a_rat_ogre_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_killing_a_rat_ogre_01",
+		name = "pwe_gameplay_killing_a_rat_ogre_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"enemy_kill"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_05",
+		name = "pes_gameplay_response_05",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_killing_a_rat_ogre_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_killing_a_rat_ogre_crossbow_01",
+		name = "pdr_gameplay_killing_a_rat_ogre_crossbow_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"enemy_kill"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_type",
+				OP.EQ,
+				"dr_crossbow"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_07",
+		name = "pwe_gameplay_response_07",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_killing_a_rat_ogre_crossbow_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_wizard_fires_a_rat_ogre_01",
+		name = "pdr_gameplay_wizard_fires_a_rat_ogre_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"dot_type",
+				OP.EQ,
+				"burning_dot"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"global_context",
+				"bright_wizard",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"witch_hunter",
+				OP.EQ,
+				1
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_06",
+		name = "pwh_gameplay_response_06",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wizard_fires_a_rat_ogre_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_07_b",
+		name = "pbw_gameplay_response_07_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_response_06"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_elf_killing_rat_ogre_melee_01",
+		name = "pbw_gameplay_elf_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_01",
+		name = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_elf_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_elf_killing_rat_ogre_melee_01_reply_01",
+		name = "pwh_gameplay_elf_killing_rat_ogre_melee_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_07"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_hunter_killing_rat_ogre_melee_01",
+		name = "pbw_gameplay_hunter_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_01",
+		name = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_hunter_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_hunter_killing_rat_ogre_melee_01_reply_01",
+		name = "pdr_gameplay_hunter_killing_rat_ogre_melee_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_ranger_killing_rat_ogre_melee_01",
+		name = "pbw_gameplay_ranger_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_01",
+		name = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_ranger_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_ranger_killing_rat_ogre_melee_reply_01",
+		name = "pbw_gameplay_ranger_killing_rat_ogre_melee_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_soldier_killing_rat_ogre_melee_01",
+		name = "pbw_gameplay_soldier_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_01",
+		name = "pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_soldier_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_soldier_killing_rat_ogre_melee_01_reply_01",
+		name = "pwe_gameplay_soldier_killing_rat_ogre_melee_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_elf_killing_rat_ogre_melee_01",
+		name = "pdr_gameplay_elf_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_02",
+		name = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_elf_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_elf_killing_rat_ogre_melee_01_reply_02",
+		name = "pwh_gameplay_elf_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_02"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_hunter_killing_rat_ogre_melee_01",
+		name = "pdr_gameplay_hunter_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_02",
+		name = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_hunter_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_hunter_killing_rat_ogre_melee_01_reply_02",
+		name = "pwe_gameplay_hunter_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_02"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_soldier_killing_rat_ogre_melee_01",
+		name = "pdr_gameplay_soldier_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_02",
+		name = "pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_soldier_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_soldier_killing_rat_ogre_melee_01_reply_01",
+		name = "pdr_gameplay_soldier_killing_rat_ogre_melee_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_02"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_wizard_killing_rat_ogre_melee_01",
+		name = "pdr_gameplay_wizard_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_01",
+		name = "pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wizard_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_wizard_killing_rat_ogre_melee_01_reply_01",
+		name = "pes_gameplay_wizard_killing_rat_ogre_melee_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_elf_killing_rat_ogre_melee_01",
+		name = "pes_gameplay_elf_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_03",
+		name = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_elf_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_elf_killing_rat_ogre_melee_01_reply_01",
+		name = "pbw_gameplay_elf_killing_rat_ogre_melee_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_03"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_ranger_killing_rat_ogre_melee_01",
+		name = "pes_gameplay_ranger_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_02",
+		name = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_ranger_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_ranger_killing_rat_ogre_melee_reply_02",
+		name = "pwe_gameplay_ranger_killing_rat_ogre_melee_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_02"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_wizard_killing_rat_ogre_melee_01",
+		name = "pes_gameplay_wizard_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_wizard_killing_rat_ogre_melee_01",
+		name = "pbw_gameplay_wizard_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_wizard_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_hunter_killing_rat_ogre_melee_01",
+		name = "pwe_gameplay_hunter_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_04",
+		name = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_04",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_hunter_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_hunter_killing_rat_ogre_melee_01_reply_02",
+		name = "pdr_gameplay_hunter_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_04"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_ranger_killing_rat_ogre_melee_01",
+		name = "pwe_gameplay_ranger_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_03",
+		name = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_ranger_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_ranger_killing_rat_ogre_melee_01_reply_02",
+		name = "pwe_gameplay_ranger_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_03"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_soldier_killing_rat_ogre_melee_01",
+		name = "pwe_gameplay_soldier_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_soldier_killing_rat_ogre_melee_01_reply_02",
+		name = "pwe_gameplay_soldier_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_soldier_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_soldier_killing_rat_ogre_melee_01_reply_02",
+		name = "pdr_gameplay_soldier_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_soldier_killing_rat_ogre_melee_01_reply_02"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_wizard_killing_rat_ogre_melee_01",
+		name = "pwe_gameplay_wizard_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_02",
+		name = "pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_wizard_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_wizard_killing_rat_ogre_melee_01_reply_02",
+		name = "pes_gameplay_wizard_killing_rat_ogre_melee_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_02"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_elf_killing_rat_ogre_melee_01",
+		name = "pwh_gameplay_elf_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_082",
+		name = "pwe_gameplay_response_082",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_elf_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_078",
+		name = "pbw_gameplay_response_078",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_response_082"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_ranger_killing_rat_ogre_melee_01",
+		name = "pwh_gameplay_ranger_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_079",
+		name = "pdr_gameplay_response_079",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_ranger_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_response_079",
+		name = "pwh_gameplay_response_079",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_response_079"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_soldier_killing_rat_ogre_melee_01",
+		name = "pwh_gameplay_soldier_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_response_071",
+		name = "pes_gameplay_response_071",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_soldier_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_response_081",
+		name = "pwe_gameplay_response_081",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_response_071"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_wizard_killing_rat_ogre_melee_01",
+		name = "pwh_gameplay_wizard_killing_rat_ogre_melee_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_melee"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_response_079",
+		name = "pbw_gameplay_response_079",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_wizard_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_response_080",
+		name = "pdr_gameplay_response_080",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_079"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_elf_killing_rat_ogre_ranged_01",
+		name = "pbw_gameplay_elf_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_01",
+		name = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_wizard_killing_rat_ogre_melee_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_elf_killing_rat_ogre_ranged_01_reply_01",
+		name = "pdr_gameplay_elf_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_response_079"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_hunter_killing_rat_ogre_ranged_01",
+		name = "pbw_gameplay_hunter_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01",
+		name = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_hunter_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01",
+		name = "pes_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_ranger_killing_rat_ogre_ranged_01",
+		name = "pbw_gameplay_ranger_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01",
+		name = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_ranger_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01",
+		name = "pbw_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_soldier_killing_rat_ogre_ranged_01",
+		name = "pbw_gameplay_soldier_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01",
+		name = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_soldier_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01",
+		name = "pwe_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_elf_killing_rat_ogre_ranged_01",
+		name = "pdr_gameplay_elf_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_02",
+		name = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_elf_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_elf_killing_rat_ogre_ranged_01_reply_01",
+		name = "pes_gameplay_elf_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_02"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_hunter_killing_rat_ogre_ranged_01",
+		name = "pdr_gameplay_hunter_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02",
+		name = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_hunter_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01",
+		name = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01",
+		name = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02",
+		name = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_soldier_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01",
+		name = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_wizard_killing_rat_ogre_ranged_01",
+		name = "pdr_gameplay_wizard_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_01",
+		name = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_wizard_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_wizard_killing_rat_ogre_ranged_reply_01",
+		name = "pwh_gameplay_wizard_killing_rat_ogre_ranged_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_elf_killing_rat_ogre_ranged_01",
+		name = "pes_gameplay_elf_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_03",
+		name = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_elf_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_elf_killing_rat_ogre_ranged_01_reply_01",
+		name = "pbw_gameplay_elf_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_03"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_hunter_killing_rat_ogre_ranged_01",
+		name = "pes_gameplay_hunter_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01",
+		name = "pdr_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_hunter_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02",
+		name = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_ranger_killing_rat_ogre_ranged_01",
+		name = "pes_gameplay_ranger_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01",
+		name = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_ranger_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01",
+		name = "pes_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_wizard_killing_rat_ogre_ranged_01",
+		name = "pes_gameplay_wizard_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_02",
+		name = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_wizard_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01_reply_02",
+		name = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_02"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01",
+		name = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_03",
+		name = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_hunter_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02",
+		name = "pes_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_03"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_ranger_killing_rat_ogre_ranged_01",
+		name = "pwe_gameplay_ranger_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_02",
+		name = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_ranger_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01",
+		name = "pwe_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_02"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_soldier_killing_rat_ogre_ranged_01",
+		name = "pwe_gameplay_soldier_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_03",
+		name = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_soldier_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02",
+		name = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_03"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_wizard_killing_rat_ogre_ranged_01",
+		name = "pwe_gameplay_wizard_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_03",
+		name = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_wizard_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01_reply_04",
+		name = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01_reply_04",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_03"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_elf_killing_rat_ogre_ranged_01",
+		name = "pwh_gameplay_elf_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_04",
+		name = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_04",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_elf_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_elf_killing_rat_ogre_ranged_01_reply_02",
+		name = "pes_gameplay_elf_killing_rat_ogre_ranged_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_04"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01",
+		name = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_03",
+		name = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_ranger_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01_reply_03",
+		name = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01_reply_03",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_03"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_soldier_killing_rat_ogre_ranged_01",
+		name = "pwh_gameplay_soldier_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_04",
+		name = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_04",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_soldier_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02",
+		name = "pbw_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_04"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01",
+		name = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"killed_enemy"
+			},
+			{
+				"query_context",
+				"enemy_tag",
+				OP.EQ,
+				"skaven_rat_ogre"
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GTEQ,
+				1
+			},
+			{
+				"query_context",
+				"killer_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"query_context",
+				"weapon_slot",
+				OP.EQ,
+				"slot_ranged"
+			},
+			{
+				"user_memory",
+				"times_killed_rat_ogre",
+				OP.NEQ,
+				2
+			}
+		}
+	})
+	define_rule({
+		response = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_05",
+		name = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_05",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_gameplay_wizard_killing_rat_ogre_ranged_01"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
+		response = "pdr_gameplay_wizard_killing_rat_ogre_ranged_01_reply_05",
+		name = "pdr_gameplay_wizard_killing_rat_ogre_ranged_01_reply_05",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_05"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		}
+	})
+	define_rule({
 		response = "pbw_gameplay_hanging_help_ping",
 		name = "pbw_gameplay_hanging_help_ping",
 		criterias = {
@@ -21218,6 +32948,25 @@ return function ()
 				[1.0] = "pwe_gameplay_soldier_potions_above_half_health_02"
 			}
 		},
+		pwh_gameplay_wizard_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_wizard_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_wizard_killing_rat_ogre_melee_01"
+			}
+		},
 		pdr_gameplay_killing_a_second_rat_ogre_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -21332,6 +33081,25 @@ return function ()
 				[1.0] = "pdr_gameplay_soldier_potions_above_half_health_02"
 			}
 		},
+		pwe_gameplay_wizard_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_wizard_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_wizard_killing_rat_ogre_melee_01"
+			}
+		},
 		pwe_gameplay_response_40 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -21370,6 +33138,25 @@ return function ()
 				[1.0] = "pwe_gameplay_response_125"
 			}
 		},
+		pes_gameplay_response_174 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_174"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_174"
+			}
+		},
 		pbw_gameplay_ranger_potions_above_half_health_03_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -21406,6 +33193,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pbw_gameplay_soldier_potions_above_half_health_01"
+			}
+		},
+		pwh_gameplay_response_160 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_160"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_160"
 			}
 		},
 		pes_gameplay_soldier_3_special_kills_in_a_row_01_reply_02 = {
@@ -21503,6 +33309,44 @@ return function ()
 				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_04_reply_01"
 			}
 		},
+		pdr_gameplay_wizard_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_wizard_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_wizard_killing_rat_ogre_melee_01"
+			}
+		},
+		pes_gameplay_wizard_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_wizard_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_wizard_killing_rat_ogre_melee_01"
+			}
+		},
 		pwe_gameplay_elf_potions_above_half_health_02_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -21562,6 +33406,25 @@ return function ()
 				"pes_gameplay_wood_elf_grabbed_06"
 			},
 			randomize_indexes = {}
+		},
+		pdr_gameplay_response_188 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_188"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_188"
+			}
 		},
 		pdr_gameplay_hunter_downed_3_times_09 = {
 			sound_events_n = 1,
@@ -21669,6 +33532,25 @@ return function ()
 				[1.0] = "pes_gameplay_elf_potions_above_half_health_01_reply_02"
 			}
 		},
+		pbw_gameplay_soldier_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_soldier_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_soldier_killing_spawn_melee_01"
+			}
+		},
 		pdr_gameplay_soldier_caught_by_slaver_3_times_two = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -21686,6 +33568,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_soldier_caught_by_slaver_3_times_two"
+			}
+		},
+		pdr_gameplay_soldier_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_soldier_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_soldier_killing_spawn_melee_01"
 			}
 		},
 		pes_gameplay_hunter_downed_3_times_07_reply_01 = {
@@ -21802,6 +33703,107 @@ return function ()
 				[1.0] = "pes_gameplay_ranger_potions_above_half_health_03"
 			}
 		},
+		pwe_gameplay_response_191 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_191"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_191"
+			}
+		},
+		pwe_gameplay_response_08 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_08"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_08"
+			}
+		},
+		pwe_gameplay_response_161 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_161",
+				[2.0] = "pdr_gameplay_wizard_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_161",
+				[2.0] = "pdr_gameplay_wizard_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pes_gameplay_elf_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_elf_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_elf_killing_rat_ogre_ranged_01"
+			}
+		},
+		pdr_gameplay_elf_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_elf_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_elf_killing_rat_ogre_ranged_01"
+			}
+		},
 		pes_gameplay_heard_bright_wizard_in_trouble_ping = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -21876,6 +33878,25 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_gameplay_elf_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_elf_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_elf_killing_rat_ogre_ranged_01"
+			}
+		},
 		pwh_gameplay_knocked_down_ping = {
 			sound_events_n = 6,
 			randomize_indexes_n = 0,
@@ -21916,6 +33937,88 @@ return function ()
 				"pwh_gameplay_knocked_down_06"
 			},
 			randomize_indexes = {}
+		},
+		pes_gameplay_response_05 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_05"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_05"
+			}
+		},
+		pdr_gameplay_response_161 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_161",
+				[2.0] = "pdr_gameplay_elf_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_161",
+				[2.0] = "pdr_gameplay_elf_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_response_174 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_174"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_174"
+			}
+		},
+		pbw_gameplay_ranger_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_ranger_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_ranger_killing_spawn_melee_01"
+			}
 		},
 		pwh_gameplay_seeing_a_globadier_ping = {
 			sound_events_n = 6,
@@ -22045,6 +34148,50 @@ return function ()
 				[1.0] = "pbw_gameplay_soldier_potions_above_half_health_reply_01"
 			}
 		},
+		pes_gameplay_response_148 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_148",
+				[2.0] = "pbw_gameplay_ranger_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_148",
+				[2.0] = "pbw_gameplay_ranger_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pdr_gameplay_response_162 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_162"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_162"
+			}
+		},
 		pes_gameplay_healing_draught_ping = {
 			sound_events_n = 8,
 			randomize_indexes_n = 0,
@@ -22150,6 +34297,31 @@ return function ()
 			localization_strings = {
 				[1.0] = "pdr_gameplay_elf_potions_above_half_health_03"
 			}
+		},
+		pwh_gameplay_response_155 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_155",
+				[2.0] = "pwh_gameplay_elf_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_155",
+				[2.0] = "pwh_gameplay_elf_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
 		},
 		pwe_gameplay_soldier_3_special_kills_in_a_row_01_reply_02 = {
 			sound_events_n = 1,
@@ -22306,6 +34478,31 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pes_gameplay_response_139 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_139",
+				[2.0] = "pwh_gameplay_wizard_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_139",
+				[2.0] = "pwh_gameplay_wizard_killing_troll_melee_01"
+			},
+			randomize_indexes = {}
+		},
 		pwh_gameplay_elf_3_special_kills_in_a_row_01_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -22344,6 +34541,74 @@ return function ()
 				[1.0] = "pwe_gameplay_elf_3_special_kills_in_a_row_01_reply_01"
 			}
 		},
+		pwh_gameplay_killing_a_second_rat_ogre_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "default",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_killing_a_second_rat_ogre_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_killing_a_second_rat_ogre_02"
+			}
+		},
+		pbw_gameplay_seeing_a_skaven_slaver_ping = {
+			sound_events_n = 8,
+			randomize_indexes_n = 0,
+			face_animations_n = 8,
+			database = "special_occasions_honduras",
+			category = "enemy_alerts",
+			dialogue_animations_n = 8,
+			sound_events = {
+				"pbw_gameplay_seeing_a_skaven_slaver_01",
+				"pbw_gameplay_seeing_a_skaven_slaver_02",
+				"pbw_gameplay_seeing_a_skaven_slaver_07",
+				"pbw_gameplay_seeing_a_skaven_slaver_03",
+				"pbw_gameplay_seeing_a_skaven_slaver_04",
+				"pbw_gameplay_seeing_a_skaven_slaver_05",
+				"pbw_gameplay_seeing_a_skaven_slaver_06",
+				"pbw_gameplay_seeing_a_skaven_slaver_08"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			localization_strings = {
+				"pbw_gameplay_seeing_a_skaven_slaver_01",
+				"pbw_gameplay_seeing_a_skaven_slaver_02",
+				"pbw_gameplay_seeing_a_skaven_slaver_07",
+				"pbw_gameplay_seeing_a_skaven_slaver_03",
+				"pbw_gameplay_seeing_a_skaven_slaver_04",
+				"pbw_gameplay_seeing_a_skaven_slaver_05",
+				"pbw_gameplay_seeing_a_skaven_slaver_06",
+				"pbw_gameplay_seeing_a_skaven_slaver_08"
+			},
+			randomize_indexes = {}
+		},
 		pwh_gameplay_elf_downed_3_times_03_azsd = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -22361,6 +34626,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwh_gameplay_elf_downed_3_times_03_azsd"
+			}
+		},
+		pdr_gameplay_ranger_3_special_kills_in_a_row_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_3_special_kills_in_a_row_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_happy"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_3_special_kills_in_a_row_reply_01"
 			}
 		},
 		pbw_gameplay_soldier_potions_above_half_health_02 = {
@@ -22382,6 +34666,66 @@ return function ()
 				[1.0] = "pbw_gameplay_soldier_potions_above_half_health_02"
 			}
 		},
+		pbw_gameplay_seeing_a_skaven_rat_ogre_ping = {
+			sound_events_n = 6,
+			randomize_indexes_n = 0,
+			face_animations_n = 6,
+			database = "special_occasions_honduras",
+			category = "enemy_alerts",
+			dialogue_animations_n = 6,
+			sound_events = {
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_01",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_04",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_06",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_02",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_03",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_05"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_01",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_04",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_06",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_02",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_03",
+				"pbw_gameplay_seeing_a_skaven_rat_ogre_05"
+			},
+			randomize_indexes = {}
+		},
+		pwh_gameplay_wizard_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01"
+			}
+		},
 		pwh_gameplay_response_126 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -22401,6 +34745,137 @@ return function ()
 				[1.0] = "pwh_gameplay_response_126"
 			}
 		},
+		pdr_gameplay_hunter_killing_rat_ogre_melee_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_hunter_killing_rat_ogre_melee_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_hunter_killing_rat_ogre_melee_01_reply_01"
+			}
+		},
+		pwe_gameplay_response_190 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_190"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_190"
+			}
+		},
+		pbw_gameplay_spots_bomb_ping = {
+			sound_events_n = 5,
+			randomize_indexes_n = 0,
+			face_animations_n = 5,
+			database = "special_occasions_honduras",
+			category = "seen_items",
+			dialogue_animations_n = 5,
+			sound_events = {
+				"pbw_gameplay_spots_bomb_01",
+				"pbw_gameplay_spots_bomb_02",
+				"pbw_gameplay_spots_bomb_03",
+				"pbw_gameplay_spots_bomb_04",
+				"pbw_gameplay_spots_bomb_05"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy"
+			},
+			localization_strings = {
+				"pbw_gameplay_spots_bomb_01",
+				"pbw_gameplay_spots_bomb_02",
+				"pbw_gameplay_spots_bomb_03",
+				"pbw_gameplay_spots_bomb_04",
+				"pbw_gameplay_spots_bomb_05"
+			},
+			randomize_indexes = {}
+		},
+		pdr_gameplay_ranger_downed_3_times_03_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_downed_3_times_03_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_downed_3_times_03_reply_01"
+			}
+		},
+		pbw_gameplay_spots_health_ping = {
+			sound_events_n = 5,
+			randomize_indexes_n = 0,
+			face_animations_n = 5,
+			database = "special_occasions_honduras",
+			category = "seen_items",
+			dialogue_animations_n = 5,
+			sound_events = {
+				"pbw_gameplay_spots_health_01",
+				"pbw_gameplay_spots_health_02",
+				"pbw_gameplay_spots_health_03",
+				"pbw_gameplay_spots_health_04",
+				"pbw_gameplay_spots_health_05"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy"
+			},
+			localization_strings = {
+				"pbw_gameplay_spots_health_01",
+				"pbw_gameplay_spots_health_02",
+				"pbw_gameplay_spots_health_03",
+				"pbw_gameplay_spots_health_04",
+				"pbw_gameplay_spots_health_05"
+			},
+			randomize_indexes = {}
+		},
 		pbw_gameplay_elf_3_special_kills_in_a_row_01_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -22419,6 +34894,128 @@ return function ()
 			localization_strings = {
 				[1.0] = "pbw_gameplay_elf_3_special_kills_in_a_row_01_reply_01"
 			}
+		},
+		pbw_gameplay_spots_ammo_ping = {
+			sound_events_n = 5,
+			randomize_indexes_n = 0,
+			face_animations_n = 5,
+			database = "special_occasions_honduras",
+			category = "seen_items",
+			dialogue_animations_n = 5,
+			sound_events = {
+				"pbw_gameplay_spots_ammo_01",
+				"pbw_gameplay_spots_ammo_02",
+				"pbw_gameplay_spots_ammo_03",
+				"pbw_gameplay_spots_ammo_04",
+				"pbw_gameplay_spots_ammo_05"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy"
+			},
+			localization_strings = {
+				"pbw_gameplay_spots_ammo_01",
+				"pbw_gameplay_spots_ammo_02",
+				"pbw_gameplay_spots_ammo_03",
+				"pbw_gameplay_spots_ammo_04",
+				"pbw_gameplay_spots_ammo_05"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_heard_dwarf_ranger_in_trouble_ping = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "special_occasions_honduras",
+			category = "player_alerts",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_gameplay_heard_dwarf_ranger_in_trouble_02",
+				"pbw_gameplay_heard_dwarf_ranger_in_trouble_05",
+				"pbw_gameplay_heard_dwarf_ranger_in_trouble_06",
+				"pbw_gameplay_heard_dwarf_ranger_in_trouble_07"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_gameplay_heard_dwarf_ranger_in_trouble_02",
+				"pbw_gameplay_heard_dwarf_ranger_in_trouble_05",
+				"pbw_gameplay_heard_dwarf_ranger_in_trouble_06",
+				"pbw_gameplay_heard_dwarf_ranger_in_trouble_07"
+			},
+			randomize_indexes = {}
+		},
+		pwh_gameplay_response_06 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_06"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_06"
+			}
+		},
+		pbw_gameplay_heard_wood_elf_in_trouble_ping = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "special_occasions_honduras",
+			category = "player_alerts",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_gameplay_heard_wood_elf_in_trouble_01",
+				"pbw_gameplay_heard_wood_elf_in_trouble_03",
+				"pbw_gameplay_heard_wood_elf_in_trouble_05",
+				"pbw_gameplay_heard_wood_elf_in_trouble_06"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			localization_strings = {
+				"pbw_gameplay_heard_wood_elf_in_trouble_01",
+				"pbw_gameplay_heard_wood_elf_in_trouble_03",
+				"pbw_gameplay_heard_wood_elf_in_trouble_05",
+				"pbw_gameplay_heard_wood_elf_in_trouble_06"
+			},
+			randomize_indexes = {}
 		},
 		pbw_gameplay_another_is_bunnyjumping_01 = {
 			sound_events_n = 1,
@@ -22475,6 +35072,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_ranger_hit_by_goo_thrice_02_reply_02"
+			}
+		},
+		pwe_gameplay_ranger_potions_above_half_health_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_ranger_potions_above_half_health_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_smug"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_ranger_potions_above_half_health_03"
 			}
 		},
 		pbw_gameplay_elf_downed_3_times_02 = {
@@ -22629,6 +35245,25 @@ return function ()
 				[1.0] = "pwe_gameplay_wizard_caught_by_slaver_3_times_02"
 			}
 		},
+		pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_03"
+			}
+		},
 		pbw_gameplay_response_39 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -22667,6 +35302,25 @@ return function ()
 				[1.0] = "pwh_gameplay_ranger_downed_3_times_04"
 			}
 		},
+		pbw_gameplay_soldier_downed_3_times_07_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_soldier_downed_3_times_07_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_soldier_downed_3_times_07_reply_01"
+			}
+		},
 		pwh_gameplay_wizard_caught_by_slaver_3_times_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -22684,6 +35338,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwh_gameplay_wizard_caught_by_slaver_3_times_02"
+			}
+		},
+		pbw_gameplay_elf_downed_3_times_06_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_elf_downed_3_times_06_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_elf_downed_3_times_06_reply_01"
 			}
 		},
 		pwe_gameplay_wizard_downed_3_times_12 = {
@@ -22705,6 +35378,25 @@ return function ()
 				[1.0] = "pwe_gameplay_wizard_downed_3_times_12"
 			}
 		},
+		pdr_gameplay_ranger_potions_above_half_health_02_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_02_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_02_reply_02"
+			}
+		},
 		pwe_gameplay_wizard_downed_3_times_11_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -22722,6 +35414,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_gameplay_wizard_downed_3_times_11_reply_01"
+			}
+		},
+		pbw_gameplay_wizard_potions_above_half_health_03_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_wizard_potions_above_half_health_03_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_wizard_potions_above_half_health_03_reply_02"
 			}
 		},
 		pwh_gameplay_player_pounced_ping = {
@@ -22777,6 +35488,47 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_gameplay_empire_soldier_grabbed_ping = {
+			sound_events_n = 6,
+			randomize_indexes_n = 0,
+			face_animations_n = 6,
+			database = "special_occasions_honduras",
+			category = "player_alerts",
+			dialogue_animations_n = 6,
+			sound_events = {
+				"pbw_gameplay_empire_soldier_grabbed_01",
+				"pbw_gameplay_empire_soldier_grabbed_02",
+				"pbw_gameplay_empire_soldier_grabbed_03",
+				"pbw_gameplay_empire_soldier_grabbed_04",
+				"pbw_gameplay_empire_soldier_grabbed_05",
+				"pbw_gameplay_empire_soldier_grabbed_06"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_gameplay_empire_soldier_grabbed_01",
+				"pbw_gameplay_empire_soldier_grabbed_02",
+				"pbw_gameplay_empire_soldier_grabbed_03",
+				"pbw_gameplay_empire_soldier_grabbed_04",
+				"pbw_gameplay_empire_soldier_grabbed_05",
+				"pbw_gameplay_empire_soldier_grabbed_06"
+			},
+			randomize_indexes = {}
+		},
 		pwe_gameplay_another_is_bunnyjumping_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -22794,6 +35546,74 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_gameplay_another_is_bunnyjumping_01"
+			}
+		},
+		pbw_gameplay_player_pounced_ping = {
+			sound_events_n = 8,
+			randomize_indexes_n = 0,
+			face_animations_n = 8,
+			database = "special_occasions_honduras",
+			category = "player_alerts",
+			dialogue_animations_n = 8,
+			sound_events = {
+				"pbw_gameplay_player_pounced_05",
+				"pbw_gameplay_player_pounced_07",
+				"pbw_gameplay_player_pounced_08",
+				"pbw_gameplay_player_pounced_09",
+				"pbw_gameplay_player_pounced_10",
+				"pbw_gameplay_player_pounced_11",
+				"pbw_gameplay_player_pounced_12",
+				"pbw_gameplay_player_pounced_13"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pbw_gameplay_player_pounced_05",
+				"pbw_gameplay_player_pounced_07",
+				"pbw_gameplay_player_pounced_08",
+				"pbw_gameplay_player_pounced_09",
+				"pbw_gameplay_player_pounced_10",
+				"pbw_gameplay_player_pounced_11",
+				"pbw_gameplay_player_pounced_12",
+				"pbw_gameplay_player_pounced_13"
+			},
+			randomize_indexes = {}
+		},
+		pdr_gameplay_ranger_downed_3_times_04_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_downed_3_times_04_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_downed_3_times_04_reply_01"
 			}
 		},
 		pdr_gameplay_another_is_bunnyjumping_01 = {
@@ -22815,6 +35635,63 @@ return function ()
 				[1.0] = "pdr_gameplay_another_is_bunnyjumping_01"
 			}
 		},
+		pwh_gameplay_soldier_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_soldier_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_soldier_killing_spawn_ranged_01"
+			}
+		},
+		pdr_gameplay_wizard_killing_rat_ogre_ranged_01_reply_05 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_wizard_killing_rat_ogre_ranged_01_reply_05"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_wizard_killing_rat_ogre_ranged_01_reply_05"
+			}
+		},
+		pwe_gameplay_response_182 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_182"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_182"
+			}
+		},
 		pwh_gameplay_wizard_downed_3_times_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -22832,6 +35709,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_02"
+			}
+		},
+		pwh_gameplay_response_156 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_156"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_156"
+			}
+		},
+		pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_05 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_05"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_05"
 			}
 		},
 		pbw_gameplay_seeing_a_globadier_ping = {
@@ -22961,6 +35876,44 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pwe_gameplay_response_149 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_149"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_149"
+			}
+		},
+		pwe_gameplay_hunter_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_hunter_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_hunter_killing_spawn_melee_01"
+			}
+		},
 		pwh_gameplay_heard_bright_wizard_in_trouble_ping = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -22994,6 +35947,120 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_gameplay_response_141 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_141"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_141"
+			}
+		},
+		pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_04 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_04"
+			}
+		},
+		pwe_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pdr_gameplay_response_194 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_194"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_194"
+			}
+		},
+		pwh_gameplay_elf_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_elf_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_elf_killing_rat_ogre_melee_01"
+			}
+		},
+		pwh_gameplay_soldier_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_soldier_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_soldier_killing_rat_ogre_ranged_01"
+			}
+		},
 		pdr_gameplay_response_39 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -23011,6 +36078,120 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_response_39"
+			}
+		},
+		pwh_gameplay_ranger_killing_rat_ogre_ranged_01_reply_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01_reply_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01_reply_03"
+			}
+		},
+		pwh_gameplay_ranger_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01"
+			}
+		},
+		pbw_gameplay_elf_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_elf_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_elf_killing_rat_ogre_melee_01"
+			}
+		},
+		pes_gameplay_elf_killing_rat_ogre_ranged_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_elf_killing_rat_ogre_ranged_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_elf_killing_rat_ogre_ranged_01_reply_02"
+			}
+		},
+		pdr_gameplay_ranger_potions_above_half_health_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_01_reply_02"
+			}
+		},
+		pdr_gameplay_response_151 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_151"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_151"
 			}
 		},
 		pes_gameplay_wizard_caught_by_slaver_3_times_02 = {
@@ -23051,6 +36232,139 @@ return function ()
 				[1.0] = "pdr_gameplay_wizard_caught_by_slaver_3_times_02"
 			}
 		},
+		pes_gameplay_response_150 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_150"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_150"
+			}
+		},
+		pwh_gameplay_elf_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_elf_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_elf_killing_rat_ogre_ranged_01"
+			}
+		},
+		pwe_gameplay_response_155 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_155"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_155"
+			}
+		},
+		pwh_gameplay_response_191 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_191"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_191"
+			}
+		},
+		pdr_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pes_gameplay_response_138 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_138"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_138"
+			}
+		},
+		pes_gameplay_response_04 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_04"
+			}
+		},
 		pes_gameplay_hunter_kills_3_specials_in_a_row_02_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -23087,6 +36401,145 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pes_gameplay_response_116"
+			}
+		},
+		pwh_gameplay_response_124 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "default",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_124"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_124"
+			}
+		},
+		pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_03"
+			}
+		},
+		pdr_gameplay_response_159 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_159"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_159"
+			}
+		},
+		pbw_gameplay_response_155 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_155",
+				[2.0] = "pbw_gameplay_soldier_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_155",
+				[2.0] = "pbw_gameplay_soldier_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pdr_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02"
+			}
+		},
+		pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_03"
+			}
+		},
+		pwe_gameplay_soldier_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_soldier_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_soldier_killing_rat_ogre_ranged_01"
 			}
 		},
 		pwh_gameplay_spots_potion_ping = {
@@ -23166,6 +36619,25 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pes_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
 		pdr_gameplay_soldier_potions_above_half_health_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -23185,54 +36657,43 @@ return function ()
 				[1.0] = "pdr_gameplay_soldier_potions_above_half_health_03"
 			}
 		},
-		pbw_gameplay_seeing_a_skaven_slaver_ping = {
-			sound_events_n = 8,
-			randomize_indexes_n = 0,
-			face_animations_n = 8,
+		pdr_gameplay_wizard_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "enemy_alerts",
-			dialogue_animations_n = 8,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pbw_gameplay_seeing_a_skaven_slaver_01",
-				"pbw_gameplay_seeing_a_skaven_slaver_02",
-				"pbw_gameplay_seeing_a_skaven_slaver_07",
-				"pbw_gameplay_seeing_a_skaven_slaver_03",
-				"pbw_gameplay_seeing_a_skaven_slaver_04",
-				"pbw_gameplay_seeing_a_skaven_slaver_05",
-				"pbw_gameplay_seeing_a_skaven_slaver_06",
-				"pbw_gameplay_seeing_a_skaven_slaver_08"
+				[1.0] = "pdr_gameplay_wizard_killing_spawn_ranged_01"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pbw_gameplay_seeing_a_skaven_slaver_01",
-				"pbw_gameplay_seeing_a_skaven_slaver_02",
-				"pbw_gameplay_seeing_a_skaven_slaver_07",
-				"pbw_gameplay_seeing_a_skaven_slaver_03",
-				"pbw_gameplay_seeing_a_skaven_slaver_04",
-				"pbw_gameplay_seeing_a_skaven_slaver_05",
-				"pbw_gameplay_seeing_a_skaven_slaver_06",
-				"pbw_gameplay_seeing_a_skaven_slaver_08"
+				[1.0] = "pdr_gameplay_wizard_killing_spawn_ranged_01"
+			}
+		},
+		pdr_gameplay_soldier_killing_rat_ogre_melee_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_melee_01_reply_02"
 			},
-			randomize_indexes = {}
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_melee_01_reply_02"
+			}
 		},
 		pwh_gameplay_soldier_3_special_kills_in_a_row_01 = {
 			sound_events_n = 1,
@@ -23389,6 +36850,82 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_02"
+			}
+		},
+		pwe_gameplay_ranger_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_ranger_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_ranger_killing_rat_ogre_ranged_01"
+			}
+		},
+		pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pes_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02"
+			}
+		},
 		pwe_gameplay_spots_potion_ping = {
 			sound_events_n = 11,
 			randomize_indexes_n = 0,
@@ -23507,6 +37044,44 @@ return function ()
 				[1.0] = "pdr_gameplay_wizard_potions_above_half_health_04"
 			}
 		},
+		pbw_gameplay_response_180 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_180"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_180"
+			}
+		},
+		pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_03"
+			}
+		},
 		pes_gameplay_ranger_potions_above_half_health_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -23594,6 +37169,31 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pwh_gameplay_response_159 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_159",
+				[2.0] = "pdr_gameplay_soldier_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_159",
+				[2.0] = "pdr_gameplay_soldier_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
 		pdr_gameplay_response_053 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -23611,6 +37211,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_response_053"
+			}
+		},
+		pwh_gameplay_wizard_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_wizard_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_wizard_killing_spawn_ranged_01"
+			}
+		},
+		pwh_gameplay_wizard_killing_rat_ogre_ranged_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_wizard_killing_rat_ogre_ranged_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_wizard_killing_rat_ogre_ranged_reply_01"
 			}
 		},
 		pes_gameplay_wizard_downed_3_times_12_reply_01 = {
@@ -23632,6 +37270,44 @@ return function ()
 				[1.0] = "pes_gameplay_wizard_downed_3_times_12_reply_01"
 			}
 		},
+		pes_gameplay_response_172 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_172"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_172"
+			}
+		},
+		pwe_gameplay_hunter_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01"
+			}
+		},
 		pbw_gameplay_wizard_downed_3_times_11_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -23651,6 +37327,176 @@ return function ()
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_11_reply_01"
 			}
 		},
+		pwh_gameplay_wizard_killing_rat_ogre_ranged_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01_reply_02"
+			}
+		},
+		pwe_gameplay_seeing_a_globadier_ping = {
+			sound_events_n = 5,
+			randomize_indexes_n = 0,
+			face_animations_n = 5,
+			database = "special_occasions_honduras",
+			category = "enemy_alerts",
+			dialogue_animations_n = 5,
+			sound_events = {
+				"pwe_gameplay_seeing_a_globadier_01",
+				"pwe_gameplay_seeing_a_globadier_03",
+				"pwe_gameplay_seeing_a_globadier_02",
+				"pwe_gameplay_seeing_a_globadier_05",
+				"pwe_gameplay_seeing_a_globadier_06"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+				"face_contempt"
+			},
+			localization_strings = {
+				"pwe_gameplay_seeing_a_globadier_01",
+				"pwe_gameplay_seeing_a_globadier_03",
+				"pwe_gameplay_seeing_a_globadier_02",
+				"pwe_gameplay_seeing_a_globadier_05",
+				"pwe_gameplay_seeing_a_globadier_06"
+			},
+			randomize_indexes = {}
+		},
+		pes_gameplay_wizard_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_wizard_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_wizard_killing_rat_ogre_ranged_01"
+			}
+		},
+		pwe_gameplay_ranger_killing_rat_ogre_melee_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_ranger_killing_rat_ogre_melee_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_ranger_killing_rat_ogre_melee_reply_02"
+			}
+		},
+		pwh_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pes_gameplay_ranger_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_ranger_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_ranger_killing_rat_ogre_ranged_01"
+			}
+		},
+		pbw_gameplay_response_184 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_184"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_184"
+			}
+		},
+		pwe_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02"
+			}
+		},
 		pwe_gameplay_elf_hit_by_goo_thrice_02_reply_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -23668,6 +37514,278 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_gameplay_elf_hit_by_goo_thrice_02_reply_03"
+			}
+		},
+		pdr_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pes_gameplay_hunter_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_hunter_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_hunter_killing_rat_ogre_ranged_01"
+			}
+		},
+		pbw_gameplay_elf_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_elf_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_elf_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pwh_gameplay_response_177 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_177"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_177"
+			}
+		},
+		pdr_gameplay_elf_downed_3_times_12 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_elf_downed_3_times_12"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_elf_downed_3_times_12"
+			}
+		},
+		pes_gameplay_response_149 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_149",
+				[2.0] = "pes_gameplay_ranger_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_149",
+				[2.0] = "pes_gameplay_ranger_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pdr_gameplay_response_184 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_184"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_184"
+			}
+		},
+		pdr_gameplay_soldier_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_ranged_01"
+			}
+		},
+		pwe_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_hunter_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pwh_gameplay_wizard_killing_rat_ogre_ranged_01_reply_04 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01_reply_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_wizard_killing_rat_ogre_ranged_01_reply_04"
+			}
+		},
+		pes_gameplay_wizard_kills_3_specials_in_a_row_02_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_wizard_kills_3_specials_in_a_row_02_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_happy"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_wizard_kills_3_specials_in_a_row_02_reply_01"
+			}
+		},
+		pes_gameplay_elf_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_elf_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_elf_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_02"
+			}
+		},
+		pwh_gameplay_response_178 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_178"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_178"
 			}
 		},
 		pdr_gameplay_soldier_downed_3_times_11 = {
@@ -23708,6 +37826,82 @@ return function ()
 				[1.0] = "pwe_gameplay_response_124"
 			}
 		},
+		pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pbw_gameplay_soldier_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_soldier_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_soldier_killing_rat_ogre_ranged_01"
+			}
+		},
+		pwh_gameplay_response_179 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_179"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_179"
+			}
+		},
+		pwe_gameplay_hunter_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_hunter_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_hunter_killing_rat_ogre_melee_01"
+			}
+		},
 		pbw_gameplay_soldier_hit_by_goo_thrice_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -23725,6 +37919,101 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pbw_gameplay_soldier_hit_by_goo_thrice_02"
+			}
+		},
+		pwh_gameplay_response_183 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_183"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_183"
+			}
+		},
+		pwe_gameplay_elf_downed_3_times_06_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_elf_downed_3_times_06_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_elf_downed_3_times_06_reply_01"
+			}
+		},
+		pbw_gameplay_ranger_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_ranger_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_ranger_killing_rat_ogre_ranged_01"
+			}
+		},
+		pbw_gameplay_hunter_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_hunter_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_hunter_killing_rat_ogre_ranged_01"
+			}
+		},
+		pdr_gameplay_elf_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_elf_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_elf_killing_rat_ogre_ranged_01_reply_01"
 			}
 		},
 		pwh_gameplay_hanging_help = {
@@ -23877,6 +38166,115 @@ return function ()
 				[1.0] = "pbw_gameplay_wizard_hit_by_goo_thrice_02_reply_03"
 			}
 		},
+		pwe_gameplay_wizard_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_wizard_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_wizard_killing_spawn_melee_01"
+			}
+		},
+		pes_gameplay_wizard_potions_above_half_health_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_wizard_potions_above_half_health_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_smug"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_wizard_potions_above_half_health_02"
+			}
+		},
+		pbw_gameplay_response_079 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_079"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_079"
+			}
+		},
+		pwe_gameplay_response_081 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_081"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_081"
+			}
+		},
+		pes_gameplay_heard_wood_elf_in_trouble_ping = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "special_occasions_honduras",
+			category = "player_alerts",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pes_gameplay_heard_wood_elf_in_trouble_01",
+				"pes_gameplay_heard_wood_elf_in_trouble_02",
+				"pes_gameplay_heard_wood_elf_in_trouble_03",
+				"pes_gameplay_heard_wood_elf_in_trouble_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			localization_strings = {
+				"pes_gameplay_heard_wood_elf_in_trouble_01",
+				"pes_gameplay_heard_wood_elf_in_trouble_02",
+				"pes_gameplay_heard_wood_elf_in_trouble_03",
+				"pes_gameplay_heard_wood_elf_in_trouble_04"
+			},
+			randomize_indexes = {}
+		},
 		pwh_gameplay_soldier_hit_by_goo_thrice_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -23913,6 +38311,69 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_response_044"
+			}
+		},
+		pwh_gameplay_soldier_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_soldier_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_soldier_killing_rat_ogre_melee_01"
+			}
+		},
+		pbw_gameplay_response_150 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_150",
+				[2.0] = "pes_gameplay_hunter_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_150",
+				[2.0] = "pes_gameplay_hunter_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pdr_gameplay_response_079 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_079"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_079"
 			}
 		},
 		pwh_gameplay_hunter_3_special_kills_in_a_row_01_reply_01 = {
@@ -23986,6 +38447,44 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pes_gameplay_response_167 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_167"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_167"
+			}
+		},
+		pwe_gameplay_hunter_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_hunter_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_hunter_killing_troll_melee_01"
+			}
+		},
 		pdr_gameplay_soldier_3_special_kills_in_a_row_01_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24024,6 +38523,150 @@ return function ()
 				[1.0] = "pes_gameplay_soldier_3_special_kills_in_a_row_01_reply_01"
 			}
 		},
+		pwe_gameplay_seeing_a_stormvermin_ping = {
+			sound_events_n = 8,
+			randomize_indexes_n = 0,
+			face_animations_n = 8,
+			database = "special_occasions_honduras",
+			category = "enemy_alerts",
+			dialogue_animations_n = 8,
+			sound_events = {
+				"pwe_gameplay_seeing_a_stormvermin_01",
+				"pwe_gameplay_seeing_a_stormvermin_02",
+				"pwe_gameplay_seeing_a_stormvermin_03",
+				"pwe_gameplay_seeing_a_stormvermin_04",
+				"pwe_gameplay_seeing_a_stormvermin_05",
+				"pwe_gameplay_seeing_a_stormvermin_06",
+				"pwe_gameplay_seeing_a_stormvermin_07",
+				"pwe_gameplay_seeing_a_stormvermin_08"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+				"face_neutral",
+				"face_neutral",
+				"face_contempt",
+				"face_neutral",
+				"face_angry"
+			},
+			localization_strings = {
+				"pwe_gameplay_seeing_a_stormvermin_01",
+				"pwe_gameplay_seeing_a_stormvermin_02",
+				"pwe_gameplay_seeing_a_stormvermin_03",
+				"pwe_gameplay_seeing_a_stormvermin_04",
+				"pwe_gameplay_seeing_a_stormvermin_05",
+				"pwe_gameplay_seeing_a_stormvermin_06",
+				"pwe_gameplay_seeing_a_stormvermin_07",
+				"pwe_gameplay_seeing_a_stormvermin_08"
+			},
+			randomize_indexes = {}
+		},
+		pwe_gameplay_response_082 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_082"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_082"
+			}
+		},
+		pbw_gameplay_response_177 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_177"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_177"
+			}
+		},
+		pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_02"
+			}
+		},
+		pdr_gameplay_wizard_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_wizard_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_wizard_killing_spawn_melee_01"
+			}
+		},
+		pwh_gameplay_response_192 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_192"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_192"
+			}
+		},
 		pwe_gameplay_hunter_downed_3_times_11 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24041,6 +38684,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_gameplay_hunter_downed_3_times_11"
+			}
+		},
+		pwe_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pwh_gameplay_hunter_downed_3_times_08_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_hunter_downed_3_times_08_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_hunter_downed_3_times_08_reply_01"
 			}
 		},
 		pwe_gameplay_soldier_3_special_kills_in_a_row_01_reply_01 = {
@@ -24062,6 +38743,82 @@ return function ()
 				[1.0] = "pwe_gameplay_soldier_3_special_kills_in_a_row_01_reply_01"
 			}
 		},
+		pwh_gameplay_hunter_potions_above_half_health_03_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_hunter_potions_above_half_health_03_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_hunter_potions_above_half_health_03_reply_01"
+			}
+		},
+		pbw_gameplay_response_187 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_187"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_187"
+			}
+		},
+		pwe_gameplay_response_126 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "default",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_126"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_126"
+			}
+		},
+		pwh_gameplay_hunter_downed_3_times_06_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_hunter_downed_3_times_06_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_hunter_downed_3_times_06_reply_01"
+			}
+		},
 		pbw_gameplay_hunter_kills_3_specials_in_a_row_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24079,6 +38836,139 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pbw_gameplay_hunter_kills_3_specials_in_a_row_02"
+			}
+		},
+		pwe_gameplay_ranger_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_ranger_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_ranger_killing_rat_ogre_melee_01"
+			}
+		},
+		pwe_gameplay_elf_downed_3_times_04_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_elf_downed_3_times_04_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_elf_downed_3_times_04_reply_01"
+			}
+		},
+		pwe_gameplay_soldier_hit_by_goo_thrice_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_soldier_hit_by_goo_thrice_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_soldier_hit_by_goo_thrice_02"
+			}
+		},
+		pbw_gameplay_hunter_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_hunter_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_hunter_killing_troll_melee_01"
+			}
+		},
+		pes_gameplay_hunter_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_hunter_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_hunter_killing_troll_melee_01"
+			}
+		},
+		pdr_gameplay_hunter_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_hunter_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_hunter_killing_troll_melee_01"
+			}
+		},
+		pbw_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
 			}
 		},
 		pwe_gameplay_spots_health_ping = {
@@ -24134,6 +39024,158 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pwh_gameplay_elf_killing_rat_ogre_melee_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_elf_killing_rat_ogre_melee_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_elf_killing_rat_ogre_melee_01_reply_02"
+			}
+		},
+		pbw_gameplay_wizard_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_melee_01"
+			}
+		},
+		pes_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pbw_gameplay_response_043 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_043"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_043"
+			}
+		},
+		pes_gameplay_ranger_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_ranger_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_ranger_killing_rat_ogre_melee_01"
+			}
+		},
+		pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_ranged_01_reply_01"
+			}
+		},
+		pes_gameplay_wizard_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_wizard_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_wizard_killing_spawn_melee_01"
+			}
+		},
+		pdr_gameplay_response_189 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_189"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_189"
+			}
+		},
 		pbw_gameplay_hunter_3_special_kills_in_a_row_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24151,6 +39193,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pbw_gameplay_hunter_3_special_kills_in_a_row_reply_01"
+			}
+		},
+		pes_gameplay_elf_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_elf_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_elf_killing_rat_ogre_melee_01"
 			}
 		},
 		pes_gameplay_hunter_3_special_kills_in_a_row_01 = {
@@ -24172,6 +39233,44 @@ return function ()
 				[1.0] = "pes_gameplay_hunter_3_special_kills_in_a_row_01"
 			}
 		},
+		pes_gameplay_response_177 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_177"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_177"
+			}
+		},
+		pes_gameplay_wizard_killing_rat_ogre_melee_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_wizard_killing_rat_ogre_melee_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_wizard_killing_rat_ogre_melee_01_reply_01"
+			}
+		},
 		pdr_gameplay_hunter_3_special_kills_in_a_row_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24189,6 +39288,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_hunter_3_special_kills_in_a_row_01"
+			}
+		},
+		pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_melee_01_reply_01"
 			}
 		},
 		pwh_gameplay_hanging_help_ping = {
@@ -24232,6 +39350,107 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pwh_gameplay_response_157 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_157",
+				[2.0] = "pwh_gameplay_ranger_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_157",
+				[2.0] = "pwh_gameplay_ranger_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pes_gameplay_response_141 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_141"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_141"
+			}
+		},
+		pdr_gameplay_soldier_killing_rat_ogre_melee_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_melee_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_melee_01_reply_01"
+			}
+		},
+		pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_02"
+			}
+		},
+		pdr_gameplay_soldier_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_soldier_killing_rat_ogre_melee_01"
+			}
+		},
 		pwe_gameplay_soldier_downed_3_times_08_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24249,6 +39468,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_08_reply_01"
+			}
+		},
+		pwh_gameplay_response_158 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_158"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_158"
 			}
 		},
 		pwh_gameplay_hunter_3_special_kills_in_a_row_01 = {
@@ -24287,6 +39525,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_gameplay_hunter_3_special_kills_in_a_row_01"
+			}
+		},
+		pwe_gameplay_hunter_killing_rat_ogre_melee_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_hunter_killing_rat_ogre_melee_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_hunter_killing_rat_ogre_melee_01_reply_02"
+			}
+		},
+		pdr_gameplay_hunter_downed_3_times_10 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_hunter_downed_3_times_10"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_hunter_downed_3_times_10"
 			}
 		},
 		pes_gameplay_elf_caught_by_slaver_3_times_02 = {
@@ -24365,6 +39641,25 @@ return function ()
 				[1.0] = "pbw_gameplay_elf_caught_by_slaver_3_times_02"
 			}
 		},
+		pwh_gameplay_soldier_caught_by_slaver_3_times_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "help_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_soldier_caught_by_slaver_3_times_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_soldier_caught_by_slaver_3_times_02"
+			}
+		},
 		pdr_gameplay_elf_caught_by_slaver_3_times_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24382,6 +39677,107 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_elf_caught_by_slaver_3_times_02"
+			}
+		},
+		pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_02"
+			}
+		},
+		pdr_gameplay_elf_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_elf_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_elf_killing_rat_ogre_melee_01"
+			}
+		},
+		pes_gameplay_response_144 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_144",
+				[2.0] = "pbw_gameplay_elf_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_144",
+				[2.0] = "pbw_gameplay_elf_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pdr_gameplay_ranger_downed_3_times_02_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_downed_3_times_02_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_downed_3_times_02_reply_01"
+			}
+		},
+		pbw_gameplay_soldier_downed_3_times_07 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_soldier_downed_3_times_07"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_soldier_downed_3_times_07"
 			}
 		},
 		pbw_gameplay_hunter_3_special_kills_in_a_row_01 = {
@@ -24403,6 +39799,66 @@ return function ()
 				[1.0] = "pbw_gameplay_hunter_3_special_kills_in_a_row_01"
 			}
 		},
+		pwe_gameplay_response_130 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "default",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_130"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_130"
+			}
+		},
+		pdr_gameplay_player_pounced_ping = {
+			sound_events_n = 6,
+			randomize_indexes_n = 0,
+			face_animations_n = 6,
+			database = "special_occasions_honduras",
+			category = "player_alerts",
+			dialogue_animations_n = 6,
+			sound_events = {
+				"pdr_gameplay_player_pounced_01",
+				"pdr_gameplay_player_pounced_02",
+				"pdr_gameplay_player_pounced_03",
+				"pdr_gameplay_player_pounced_04",
+				"pdr_gameplay_player_pounced_05",
+				"pdr_gameplay_player_pounced_06"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pdr_gameplay_player_pounced_01",
+				"pdr_gameplay_player_pounced_02",
+				"pdr_gameplay_player_pounced_03",
+				"pdr_gameplay_player_pounced_04",
+				"pdr_gameplay_player_pounced_05",
+				"pdr_gameplay_player_pounced_06"
+			},
+			randomize_indexes = {}
+		},
 		pes_gameplay_hunter_downed_3_times_05 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24420,6 +39876,69 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pes_gameplay_hunter_downed_3_times_05"
+			}
+		},
+		pwe_gameplay_response_156 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_156",
+				[2.0] = "pes_gameplay_wizard_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_156",
+				[2.0] = "pes_gameplay_wizard_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pwh_gameplay_wizard_hit_by_goo_thrice_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_wizard_hit_by_goo_thrice_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_wizard_hit_by_goo_thrice_02"
+			}
+		},
+		pbw_gameplay_ranger_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_ranger_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_ranger_killing_rat_ogre_melee_01"
 			}
 		},
 		pbw_gameplay_seeing_a_gutter_runner_ping = {
@@ -24463,6 +39982,120 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_04 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_04"
+			}
+		},
+		pbw_gameplay_hunter_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_hunter_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_hunter_killing_rat_ogre_melee_01"
+			}
+		},
+		pwh_gameplay_elf_killing_rat_ogre_melee_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_elf_killing_rat_ogre_melee_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_elf_killing_rat_ogre_melee_01_reply_01"
+			}
+		},
+		pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_01"
+			}
+		},
+		pbw_gameplay_response_07_b = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_07_b"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_07_b"
+			}
+		},
+		pdr_gameplay_wizard_fires_a_rat_ogre_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_wizard_fires_a_rat_ogre_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_wizard_fires_a_rat_ogre_01"
+			}
+		},
 		pwe_gameplay_ranger_downed_3_times_12 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24480,6 +40113,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_gameplay_ranger_downed_3_times_12"
+			}
+		},
+		pwe_gameplay_response_07 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_07"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_07"
+			}
+		},
+		pwe_gameplay_elf_potions_above_half_health_06_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_elf_potions_above_half_health_06_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_elf_potions_above_half_health_06_reply_01"
 			}
 		},
 		pdr_gameplay_hunter_3_special_kills_in_a_row_01_reply_01 = {
@@ -24520,6 +40191,25 @@ return function ()
 				[1.0] = "pes_gameplay_hunter_3_special_kills_in_a_row_01_reply_01"
 			}
 		},
+		pwe_gameplay_killing_a_rat_ogre_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_killing_a_rat_ogre_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_killing_a_rat_ogre_01"
+			}
+		},
 		pdr_gameplay_response_126 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24537,6 +40227,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_response_126"
+			}
+		},
+		pwe_gameplay_response_09 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_09"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_09"
+			}
+		},
+		pes_gameplay_elf_shoots_a_rat_ogre_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_elf_shoots_a_rat_ogre_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_elf_shoots_a_rat_ogre_01"
 			}
 		},
 		pbw_gameplay_ranger_downed_3_times_09 = {
@@ -24558,6 +40286,25 @@ return function ()
 				[1.0] = "pbw_gameplay_ranger_downed_3_times_09"
 			}
 		},
+		pwh_gameplay_killing_a_rat_ogre_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_killing_a_rat_ogre_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_killing_a_rat_ogre_01"
+			}
+		},
 		pes_gameplay_soldier_downed_3_times_08_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24575,6 +40322,63 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pes_gameplay_soldier_downed_3_times_08_reply_01"
+			}
+		},
+		pbw_gameplay_response_08 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_08"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_08"
+			}
+		},
+		pwh_gameplay_response_08 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_08"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_08"
+			}
+		},
+		pwh_gameplay_wizard_downed_3_times_04 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_wizard_downed_3_times_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_wizard_downed_3_times_04"
 			}
 		},
 		pdr_gameplay_wizard_kills_3_specials_in_a_row_02 = {
@@ -24595,6 +40399,66 @@ return function ()
 			localization_strings = {
 				[1.0] = "pdr_gameplay_wizard_kills_3_specials_in_a_row_02"
 			}
+		},
+		pwe_gameplay_soldier_downed_3_times_12 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_soldier_downed_3_times_12"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_soldier_downed_3_times_12"
+			}
+		},
+		pdr_gameplay_seeing_a_gutter_runner_ping = {
+			sound_events_n = 6,
+			randomize_indexes_n = 0,
+			face_animations_n = 6,
+			database = "special_occasions_honduras",
+			category = "enemy_alerts",
+			dialogue_animations_n = 6,
+			sound_events = {
+				"pdr_gameplay_seeing_a_gutter_runner_01",
+				"pdr_gameplay_seeing_a_gutter_runner_02",
+				"pdr_gameplay_seeing_a_gutter_runner_03",
+				"pdr_gameplay_seeing_a_gutter_runner_04",
+				"pdr_gameplay_seeing_a_gutter_runner_05",
+				"pdr_gameplay_seeing_a_gutter_runner_06"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_surprise",
+				"face_contempt",
+				"face_contempt",
+				"face_contempt",
+				"face_contempt"
+			},
+			localization_strings = {
+				"pdr_gameplay_seeing_a_gutter_runner_01",
+				"pdr_gameplay_seeing_a_gutter_runner_02",
+				"pdr_gameplay_seeing_a_gutter_runner_03",
+				"pdr_gameplay_seeing_a_gutter_runner_04",
+				"pdr_gameplay_seeing_a_gutter_runner_05",
+				"pdr_gameplay_seeing_a_gutter_runner_06"
+			},
+			randomize_indexes = {}
 		},
 		pwe_gameplay_soldier_potions_above_half_health_02_reply_01 = {
 			sound_events_n = 1,
@@ -24656,6 +40520,126 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pwe_gameplay_response_157 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_157"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_157"
+			}
+		},
+		pbw_gameplay_killing_rat_ogre_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_killing_rat_ogre_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_killing_rat_ogre_01"
+			}
+		},
+		pes_gameplay_response_137 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_137"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_137"
+			}
+		},
+		pwe_gameplay_response_185 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_185"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_185"
+			}
+		},
+		pwh_gameplay_response_145 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_145",
+				[2.0] = "pwe_gameplay_soldier_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_145",
+				[2.0] = "pwe_gameplay_soldier_killing_troll_melee_01"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_wizard_downed_3_times_08_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_wizard_downed_3_times_08_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_wizard_downed_3_times_08_reply_01"
+			}
+		},
 		pwe_gameplay_hunter_potions_above_half_health_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24675,6 +40659,25 @@ return function ()
 				[1.0] = "pwe_gameplay_hunter_potions_above_half_health_02"
 			}
 		},
+		pbw_gameplay_wizard_downed_3_times_03_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_wizard_downed_3_times_03_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_wizard_downed_3_times_03_reply_01"
+			}
+		},
 		pwe_gameplay_dwarf_picks_up_a_bomb = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24692,6 +40695,94 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_gameplay_dwarf_picks_up_a_bomb_01"
+			}
+		},
+		pbw_gameplay_response_154 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_154",
+				[2.0] = "pwh_gameplay_wizard_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_154",
+				[2.0] = "pwh_gameplay_wizard_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pwe_gameplay_wizard_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_wizard_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_wizard_killing_rat_ogre_ranged_01"
+			}
+		},
+		pwe_gameplay_response_158 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_158",
+				[2.0] = "pwe_gameplay_wizard_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_158",
+				[2.0] = "pwe_gameplay_wizard_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_response_152 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_152"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_152"
 			}
 		},
 		pes_gameplay_wizard_downed_3_times_07 = {
@@ -24732,6 +40823,252 @@ return function ()
 				[1.0] = "pbw_gameplay_hunter_downed_3_times_02"
 			}
 		},
+		pes_gameplay_response_140 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_140"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_140"
+			}
+		},
+		pbw_gameplay_response_149 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_149"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_149"
+			}
+		},
+		pwe_gameplay_soldier_caught_by_slaver_3_times_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "help_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_soldier_caught_by_slaver_3_times_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_soldier_caught_by_slaver_3_times_02"
+			}
+		},
+		pwh_gameplay_elf_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_elf_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_elf_killing_spawn_melee_01"
+			}
+		},
+		pbw_gameplay_response_153 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_153",
+				[2.0] = "pwh_gameplay_soldier_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_153",
+				[2.0] = "pwh_gameplay_soldier_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pwh_gameplay_hunter_potions_above_half_health_02_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_hunter_potions_above_half_health_02_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_hunter_potions_above_half_health_02_reply_01"
+			}
+		},
+		pwh_gameplay_response_153 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_153",
+				[2.0] = "pwe_gameplay_soldier_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_153",
+				[2.0] = "pwe_gameplay_soldier_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pes_gameplay_response_145 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_145"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_145"
+			}
+		},
+		pdr_gameplay_ranger_potions_above_half_health_03_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_03_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_03_reply_01"
+			}
+		},
+		pes_gameplay_response_183 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_183"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_183"
+			}
+		},
+		pwe_gameplay_response_159 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_159"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_159"
+			}
+		},
+		pbw_gameplay_response_151 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_151",
+				[2.0] = "pwe_gameplay_ranger_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_151",
+				[2.0] = "pwe_gameplay_ranger_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
 		pdr_gameplay_response_132 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24770,6 +41107,25 @@ return function ()
 				[1.0] = "pwe_gameplay_hunter_downed_3_times_12"
 			}
 		},
+		pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_03"
+			}
+		},
 		pwh_gameplay_ranger_3_special_kills_in_a_row_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24788,6 +41144,99 @@ return function ()
 			localization_strings = {
 				[1.0] = "pwh_gameplay_ranger_3_special_kills_in_a_row_reply_01"
 			}
+		},
+		pdr_gameplay_wizard_killing_rat_ogre_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_wizard_killing_rat_ogre_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_wizard_killing_rat_ogre_ranged_01"
+			}
+		},
+		pwe_gameplay_player_pounced_ping = {
+			sound_events_n = 8,
+			randomize_indexes_n = 0,
+			face_animations_n = 8,
+			database = "special_occasions_honduras",
+			category = "player_alerts",
+			dialogue_animations_n = 8,
+			sound_events = {
+				"pwe_gameplay_player_pounced_07",
+				"pwe_gameplay_player_pounced_08",
+				"pwe_gameplay_player_pounced_09",
+				"pwe_gameplay_player_pounced_10",
+				"pwe_gameplay_player_pounced_11",
+				"pwe_gameplay_player_pounced_12",
+				"pwe_gameplay_player_pounced_13",
+				"pwe_gameplay_player_pounced_14"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pwe_gameplay_player_pounced_07",
+				"pwe_gameplay_player_pounced_08",
+				"pwe_gameplay_player_pounced_09",
+				"pwe_gameplay_player_pounced_10",
+				"pwe_gameplay_player_pounced_11",
+				"pwe_gameplay_player_pounced_12",
+				"pwe_gameplay_player_pounced_13",
+				"pwe_gameplay_player_pounced_14"
+			},
+			randomize_indexes = {}
+		},
+		pdr_gameplay_response_157 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_157",
+				[2.0] = "pwe_gameplay_hunter_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_157",
+				[2.0] = "pwe_gameplay_hunter_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
 		},
 		pes_gameplay_wizard_downed_3_times_05 = {
 			sound_events_n = 1,
@@ -24827,6 +41276,25 @@ return function ()
 				[1.0] = "pes_gameplay_hunter_3_special_kills_in_a_row_01_reply_02"
 			}
 		},
+		pwh_gameplay_response_079 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_079"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_079"
+			}
+		},
 		pwh_gameplay_elf_hit_by_goo_thrice_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24846,6 +41314,44 @@ return function ()
 				[1.0] = "pwh_gameplay_elf_hit_by_goo_thrice_02"
 			}
 		},
+		pwh_gameplay_hunter_downed_3_times_10_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_hunter_downed_3_times_10_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_hunter_downed_3_times_10_reply_01"
+			}
+		},
+		pdr_gameplay_soldier_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_soldier_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_soldier_killing_spawn_ranged_01"
+			}
+		},
 		pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24863,6 +41369,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_02"
+			}
+		},
+		pes_gameplay_response_170 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_170"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_170"
 			}
 		},
 		pwe_gameplay_hanging_help = {
@@ -24944,6 +41469,31 @@ return function ()
 				[1.0] = "pes_gameplay_hunter_potions_above_half_health_02"
 			}
 		},
+		pwe_gameplay_response_160 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_160",
+				[2.0] = "pdr_gameplay_hunter_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_160",
+				[2.0] = "pdr_gameplay_hunter_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
 		pbw_gameplay_elf_hit_by_goo_thrice_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -24961,6 +41511,292 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pbw_gameplay_elf_hit_by_goo_thrice_02"
+			}
+		},
+		pdr_gameplay_heard_witch_hunter_in_trouble_ping = {
+			sound_events_n = 8,
+			randomize_indexes_n = 0,
+			face_animations_n = 8,
+			database = "special_occasions_honduras",
+			category = "player_alerts",
+			dialogue_animations_n = 8,
+			sound_events = {
+				"pdr_gameplay_heard_witch_hunter_in_trouble_01",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_02",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_03",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_04",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_05",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_06",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_07",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_08"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pdr_gameplay_heard_witch_hunter_in_trouble_01",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_02",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_03",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_04",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_05",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_06",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_07",
+				"pdr_gameplay_heard_witch_hunter_in_trouble_08"
+			},
+			randomize_indexes = {}
+		},
+		pdr_gameplay_elf_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_elf_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_elf_killing_spawn_melee_01"
+			}
+		},
+		pes_gameplay_elf_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_elf_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_elf_killing_spawn_melee_01"
+			}
+		},
+		pwe_gameplay_response_162 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_162"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_162"
+			}
+		},
+		pbw_gameplay_response_175 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_175"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_175"
+			}
+		},
+		pes_gameplay_response_146 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_146",
+				[2.0] = "pes_gameplay_elf_killing_troll_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_146",
+				[2.0] = "pes_gameplay_elf_killing_troll_ranged_01"
+			},
+			randomize_indexes = {}
+		},
+		pbw_gameplay_response_148 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_148"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_148"
+			}
+		},
+		pbw_gameplay_response_186 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_186"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_186"
+			}
+		},
+		pdr_gameplay_response_182 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_182"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_182"
+			}
+		},
+		pwe_gameplay_soldier_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_soldier_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_soldier_killing_spawn_ranged_01"
+			}
+		},
+		pwh_gameplay_grabbed_ping = {
+			sound_events_n = 6,
+			randomize_indexes_n = 0,
+			face_animations_n = 6,
+			database = "special_occasions_honduras",
+			category = "player_alerts",
+			dialogue_animations_n = 6,
+			sound_events = {
+				"pwh_gameplay_knocked_down_01",
+				"pwh_gameplay_knocked_down_02",
+				"pwh_gameplay_knocked_down_03",
+				"pwh_gameplay_knocked_down_04",
+				"pwh_gameplay_knocked_down_05",
+				"pwh_gameplay_knocked_down_06"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_fear",
+				"face_fear",
+				"face_exhausted"
+			},
+			localization_strings = {
+				"pwh_gameplay_knocked_down_01",
+				"pwh_gameplay_knocked_down_02",
+				"pwh_gameplay_knocked_down_03",
+				"pwh_gameplay_knocked_down_04",
+				"pwh_gameplay_knocked_down_05",
+				"pwh_gameplay_knocked_down_06"
+			},
+			randomize_indexes = {}
+		},
+		pwe_gameplay_elf_downed_3_times_11_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_elf_downed_3_times_11_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_elf_downed_3_times_11_reply_01"
 			}
 		},
 		pdr_gameplay_hunter_downed_3_times_08 = {
@@ -24982,6 +41818,44 @@ return function ()
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_08"
 			}
 		},
+		pwh_gameplay_elf_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_elf_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_elf_killing_spawn_ranged_01"
+			}
+		},
+		pbw_gameplay_ranger_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_ranger_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_ranger_killing_spawn_ranged_01"
+			}
+		},
 		pwh_gameplay_response_123 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -25000,6 +41874,31 @@ return function ()
 			localization_strings = {
 				[1.0] = "pwh_gameplay_response_123"
 			}
+		},
+		pwe_gameplay_response_148 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_148",
+				[2.0] = "pes_gameplay_wizard_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_148",
+				[2.0] = "pes_gameplay_wizard_killing_troll_melee_01"
+			},
+			randomize_indexes = {}
 		},
 		pwh_gameplay_seeing_a_skaven_rat_ogre_ping = {
 			sound_events_n = 6,
@@ -25041,6 +41940,25 @@ return function ()
 				"pwh_gameplay_seeing_a_skaven_rat_ogre_05"
 			},
 			randomize_indexes = {}
+		},
+		pes_gameplay_ranger_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_ranger_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_ranger_killing_spawn_ranged_01"
+			}
 		},
 		pwe_gameplay_spots_bomb_ping = {
 			sound_events_n = 9,
@@ -25094,6 +42012,50 @@ return function ()
 				"pwe_gameplay_spots_bomb_05"
 			},
 			randomize_indexes = {}
+		},
+		pbw_gameplay_response_199 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_199",
+				[2.0] = "pdr_gameplay_wizard_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_199",
+				[2.0] = "pdr_gameplay_wizard_killing_troll_melee_01"
+			},
+			randomize_indexes = {}
+		},
+		pes_gameplay_response_143 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_143"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_143"
+			}
 		},
 		pbw_gameplay_heard_empire_soldier_in_trouble_ping = {
 			sound_events_n = 4,
@@ -25177,6 +42139,145 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_gameplay_response_38 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "default",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_38"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_angry"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_38"
+			}
+		},
+		pes_gameplay_another_is_bunnyjumping_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "default",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_another_is_bunnyjumping_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_another_is_bunnyjumping_01"
+			}
+		},
+		pwe_gameplay_empire_soldier_grabbed_ping = {
+			sound_events_n = 6,
+			randomize_indexes_n = 0,
+			face_animations_n = 6,
+			database = "special_occasions_honduras",
+			category = "player_alerts",
+			dialogue_animations_n = 6,
+			sound_events = {
+				"pwe_gameplay_empire_soldier_grabbed_01",
+				"pwe_gameplay_empire_soldier_grabbed_02",
+				"pwe_gameplay_empire_soldier_grabbed_03",
+				"pwe_gameplay_empire_soldier_grabbed_04",
+				"pwe_gameplay_empire_soldier_grabbed_05",
+				"pwe_gameplay_empire_soldier_grabbed_06"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pwe_gameplay_empire_soldier_grabbed_01",
+				"pwe_gameplay_empire_soldier_grabbed_02",
+				"pwe_gameplay_empire_soldier_grabbed_03",
+				"pwe_gameplay_empire_soldier_grabbed_04",
+				"pwe_gameplay_empire_soldier_grabbed_05",
+				"pwe_gameplay_empire_soldier_grabbed_06"
+			},
+			randomize_indexes = {}
+		},
+		pes_gameplay_hanging_help_ping = {
+			sound_events_n = 6,
+			randomize_indexes_n = 0,
+			face_animations_n = 6,
+			database = "special_occasions_honduras",
+			category = "player_alerts",
+			dialogue_animations_n = 6,
+			sound_events = {
+				"pes_gameplay_hanging_help_01",
+				"pes_gameplay_hanging_help_02",
+				"pes_gameplay_hanging_help_03",
+				"pes_gameplay_hanging_help_04",
+				"pes_gameplay_hanging_help_05",
+				"pes_gameplay_hanging_help_06"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pes_gameplay_hanging_help_01",
+				"pes_gameplay_hanging_help_02",
+				"pes_gameplay_hanging_help_03",
+				"pes_gameplay_hanging_help_04",
+				"pes_gameplay_hanging_help_05",
+				"pes_gameplay_hanging_help_06"
+			},
+			randomize_indexes = {}
+		},
+		pdr_gameplay_response_155 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_155"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_155"
+			}
+		},
 		pdr_gameplay_hunter_downed_3_times_11_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -25196,6 +42297,44 @@ return function ()
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_11_reply_02"
 			}
 		},
+		pwh_gameplay_ranger_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_ranger_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_ranger_killing_troll_melee_01"
+			}
+		},
+		pes_gameplay_response_179 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_179"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_179"
+			}
+		},
 		pwh_gameplay_hunter_3_special_kills_in_a_row_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -25213,6 +42352,63 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwh_gameplay_hunter_3_special_kills_in_a_row_reply_01"
+			}
+		},
+		pwe_gameplay_ranger_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_ranger_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_ranger_killing_troll_melee_01"
+			}
+		},
+		pdr_gameplay_response_153 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_153"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_153"
+			}
+		},
+		pbw_gameplay_ranger_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_ranger_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_ranger_killing_troll_melee_01"
 			}
 		},
 		pwe_gameplay_heard_empire_soldier_in_trouble_ping = {
@@ -25281,6 +42477,63 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pdr_gameplay_response_152 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_152"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_152"
+			}
+		},
+		pwh_gameplay_response_150 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_150"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_150"
+			}
+		},
+		pwe_gameplay_response_181 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_181"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_181"
+			}
+		},
 		pes_gameplay_hunter_downed_3_times_07 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -25298,6 +42551,101 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pes_gameplay_hunter_downed_3_times_07"
+			}
+		},
+		pwh_gameplay_ranger_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_ranger_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_ranger_killing_rat_ogre_melee_01"
+			}
+		},
+		pwe_gameplay_response_150 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_150"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_150"
+			}
+		},
+		pwh_gameplay_response_148 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_148"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_148"
+			}
+		},
+		pbw_gameplay_response_142 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_142"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_142"
+			}
+		},
+		pes_gameplay_hunter_caught_by_slaver_3_times_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "help_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_hunter_caught_by_slaver_3_times_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_hunter_caught_by_slaver_3_times_02"
 			}
 		},
 		pes_gameplay_spots_ammo_ping = {
@@ -25336,6 +42684,101 @@ return function ()
 				"pes_gameplay_spots_ammo_05"
 			},
 			randomize_indexes = {}
+		},
+		pdr_gameplay_response_154 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_154"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_154"
+			}
+		},
+		pwh_gameplay_response_152 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_152"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_152"
+			}
+		},
+		pwh_gameplay_hunter_downed_3_times_03_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_hunter_downed_3_times_03_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_hunter_downed_3_times_03_reply_01"
+			}
+		},
+		pbw_gameplay_wizard_downed_3_times_07_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_wizard_downed_3_times_07_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_wizard_downed_3_times_07_reply_01"
+			}
+		},
+		pwh_gameplay_elf_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_elf_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_elf_killing_troll_melee_01"
+			}
 		},
 		pbw_gameplay_hunter_downed_3_times_03 = {
 			sound_events_n = 1,
@@ -25416,6 +42859,25 @@ return function ()
 				[1.0] = "pbw_gameplay_wizard_3_special_kills_in_a_row_01_reply_02"
 			}
 		},
+		pdr_gameplay_response_190 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_190"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_190"
+			}
+		},
 		pdr_gameplay_spots_ammo_ping = {
 			sound_events_n = 5,
 			randomize_indexes_n = 0,
@@ -25472,6 +42934,25 @@ return function ()
 				[1.0] = "pdr_gameplay_response_045"
 			}
 		},
+		pdr_gameplay_response_150 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_150"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_150"
+			}
+		},
 		pdr_gameplay_grabbed_ping = {
 			sound_events_n = 9,
 			randomize_indexes_n = 0,
@@ -25525,6 +43006,101 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pes_gameplay_response_182 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_182"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_182"
+			}
+		},
+		pes_gameplay_elf_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_elf_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_elf_killing_troll_melee_01"
+			}
+		},
+		pwe_gameplay_response_147 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_147"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_147"
+			}
+		},
+		pdr_gameplay_elf_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_elf_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_elf_killing_troll_melee_01"
+			}
+		},
+		pwh_gameplay_response_151 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_151"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_151"
+			}
+		},
 		pdr_gameplay_elf_downed_3_times_13 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -25542,6 +43118,82 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_elf_downed_3_times_13"
+			}
+		},
+		pwe_gameplay_response_152 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_152"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_152"
+			}
+		},
+		pbw_gameplay_elf_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_elf_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_elf_killing_troll_melee_01"
+			}
+		},
+		pdr_gameplay_response_195 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_195"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_195"
+			}
+		},
+		pbw_gameplay_response_188 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_188"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_188"
 			}
 		},
 		pwe_gameplay_hunter_downed_3_times_13 = {
@@ -25582,6 +43234,25 @@ return function ()
 				[1.0] = "pbw_gameplay_soldier_downed_3_times_08"
 			}
 		},
+		pwh_gameplay_response_149 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_149"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_149"
+			}
+		},
 		pes_gameplay_wizard_downed_3_times_06 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -25601,6 +43272,25 @@ return function ()
 				[1.0] = "pes_gameplay_wizard_downed_3_times_06"
 			}
 		},
+		pbw_gameplay_response_185 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_185"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_185"
+			}
+		},
 		pdr_gameplay_wizard_downed_3_times_10 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -25618,6 +43308,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_wizard_downed_3_times_10"
+			}
+		},
+		pwe_gameplay_wizard_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_wizard_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_wizard_killing_spawn_ranged_01"
+			}
+		},
+		pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_melee_01_reply_03"
 			}
 		},
 		pbw_gameplay_response_37 = {
@@ -25656,6 +43384,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwh_gameplay_response_044"
+			}
+		},
+		pbw_gameplay_response_183 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_183"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_183"
+			}
+		},
+		pes_gameplay_wizard_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_wizard_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_wizard_killing_spawn_ranged_01"
 			}
 		},
 		pdr_gameplay_ranger_downed_3_times_08_reply_01 = {
@@ -25715,6 +43481,25 @@ return function ()
 				[1.0] = "pbw_gameplay_ranger_downed_3_times_07_reply_01"
 			}
 		},
+		pwh_gameplay_response_185 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_185"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_185"
+			}
+		},
 		pwe_gameplay_response_054 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -25732,6 +43517,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_gameplay_response_054"
+			}
+		},
+		pbw_gameplay_response_182 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_182"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_182"
+			}
+		},
+		pwe_gameplay_response_194 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_194"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_194"
 			}
 		},
 		pbw_gameplay_hanging_help_ping = {
@@ -25794,6 +43617,44 @@ return function ()
 				[1.0] = "pwh_gameplay_hunter_potions_above_half_health_02_reply_02"
 			}
 		},
+		pdr_gameplay_response_191 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_191"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_191"
+			}
+		},
+		pes_gameplay_response_178 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_178"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_178"
+			}
+		},
 		pwh_gameplay_seeing_a_stormvermin_ping = {
 			sound_events_n = 8,
 			randomize_indexes_n = 0,
@@ -25843,6 +43704,101 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_happy"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_01"
+			}
+		},
+		pes_gameplay_response_176 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_176"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_176"
+			}
+		},
+		pes_gameplay_response_181 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_181"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_181"
+			}
+		},
+		pbw_gameplay_soldier_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_soldier_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_soldier_killing_spawn_ranged_01"
+			}
+		},
+		pwh_gameplay_ranger_killing_3_specials_in_a_row_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_ranger_killing_3_specials_in_a_row_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_ranger_killing_3_specials_in_a_row_02"
+			}
+		},
 		pdr_gameplay_wizard_potions_above_half_health_03_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -25860,6 +43816,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_wizard_potions_above_half_health_03_reply_02"
+			}
+		},
+		pes_gameplay_hunter_potions_above_half_health_03_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_hunter_potions_above_half_health_03_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_hunter_potions_above_half_health_03_reply_01"
+			}
+		},
+		pwh_gameplay_wizard_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_wizard_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_wizard_killing_spawn_melee_01"
 			}
 		},
 		pbw_gameplay_wizard_potions_above_half_health_01_reply_02 = {
@@ -25948,6 +43942,25 @@ return function ()
 				"pbw_gameplay_seeing_a_stormvermin_08"
 			},
 			randomize_indexes = {}
+		},
+		pes_gameplay_response_180 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_180"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_180"
+			}
 		},
 		pbw_gameplay_wizard_3_special_kills_in_a_row_01_reply_01 = {
 			sound_events_n = 1,
@@ -26092,6 +44105,25 @@ return function ()
 				[1.0] = "pbw_gameplay_response_116"
 			}
 		},
+		pwh_gameplay_response_190 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_190"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_190"
+			}
+		},
 		pwe_gameplay_hunter_potions_above_half_health_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26130,6 +44162,25 @@ return function ()
 				[1.0] = "pdr_gameplay_hunter_potions_above_half_health_04"
 			}
 		},
+		pbw_gameplay_hunter_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_hunter_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_hunter_killing_spawn_ranged_01"
+			}
+		},
 		pwe_gameplay_ranger_potions_above_half_health_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26149,6 +44200,25 @@ return function ()
 				[1.0] = "pwe_gameplay_ranger_potions_above_half_health_02"
 			}
 		},
+		pwe_gameplay_hunter_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_hunter_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_hunter_killing_spawn_ranged_01"
+			}
+		},
 		pdr_gameplay_soldier_downed_3_times_09 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26166,6 +44236,63 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pdr_gameplay_soldier_downed_3_times_09"
+			}
+		},
+		pes_gameplay_hunter_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_hunter_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_hunter_killing_spawn_ranged_01"
+			}
+		},
+		pwh_gameplay_response_188 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_188"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_188"
+			}
+		},
+		pwe_gameplay_response_189 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_189"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_189"
 			}
 		},
 		pwh_gameplay_wizard_3_special_kills_in_a_row_01_reply_01 = {
@@ -26281,6 +44408,25 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pwh_gameplay_response_186 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_186"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_186"
+			}
+		},
 		pwe_gameplay_soldier_downed_3_times_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26298,6 +44444,25 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_02"
+			}
+		},
+		pdr_gameplay_response_186 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_186"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_186"
 			}
 		},
 		pes_gameplay_response_114 = {
@@ -26357,6 +44522,25 @@ return function ()
 				[1.0] = "pbw_gameplay_wizard_kills_3_specials_in_a_row_02_reply_01"
 			}
 		},
+		pdr_gameplay_hunter_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_hunter_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_hunter_killing_spawn_ranged_01"
+			}
+		},
 		pes_gameplay_ranger_potions_above_half_health_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26374,6 +44558,44 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pes_gameplay_ranger_potions_above_half_health_02"
+			}
+		},
+		pbw_gameplay_soldier_caught_by_slaver_3_times_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "help_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_soldier_caught_by_slaver_3_times_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_soldier_caught_by_slaver_3_times_02"
+			}
+		},
+		pwe_gameplay_response_195 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_195"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_195"
 			}
 		},
 		pdr_gameplay_hunter_hit_by_goo_thrice_02 = {
@@ -26433,6 +44655,25 @@ return function ()
 				[1.0] = "pes_gameplay_soldier_downed_3_times_11_reply_01"
 			}
 		},
+		pbw_gameplay_response_144 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_144"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_144"
+			}
+		},
 		pbw_gameplay_elf_potions_above_half_health_06 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26471,6 +44712,25 @@ return function ()
 				[1.0] = "pbw_gameplay_soldier_downed_3_times_06"
 			}
 		},
+		pwh_gameplay_response_187 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_187"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_187"
+			}
+		},
 		pwh_gameplay_hunter_downed_3_times_11_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26490,6 +44750,44 @@ return function ()
 				[1.0] = "pwh_gameplay_hunter_downed_3_times_11_reply_02"
 			}
 		},
+		pbw_gameplay_soldier_killing_troll_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_soldier_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_soldier_killing_troll_melee_01"
+			}
+		},
+		pwh_gameplay_response_184 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_response_184"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_response_184"
+			}
+		},
 		pwe_gameplay_response_056 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26507,6 +44805,82 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pwe_gameplay_response_056"
+			}
+		},
+		pdr_gameplay_response_160 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_160"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_160"
+			}
+		},
+		pdr_gameplay_response_193 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_193"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_193"
+			}
+		},
+		pwe_gameplay_response_192 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_192"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_192"
+			}
+		},
+		pwh_gameplay_ranger_hit_by_goo_thrice_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_ranger_hit_by_goo_thrice_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_ranger_hit_by_goo_thrice_02"
 			}
 		},
 		pdr_gameplay_wizard_downed_3_times_08 = {
@@ -26547,6 +44921,25 @@ return function ()
 				[1.0] = "pes_gameplay_elf_downed_3_times_10"
 			}
 		},
+		pdr_gameplay_response_187 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_187"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_187"
+			}
+		},
 		pbw_gameplay_wizard_hit_by_goo_thrice_02_reply_04 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26566,6 +44959,63 @@ return function ()
 				[1.0] = "pbw_gameplay_wizard_hit_by_goo_thrice_02_reply_04"
 			}
 		},
+		pwe_gameplay_ranger_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_ranger_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_ranger_killing_spawn_ranged_01"
+			}
+		},
+		pwh_gameplay_ranger_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_ranger_killing_spawn_ranged_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_ranger_killing_spawn_ranged_01"
+			}
+		},
+		pbw_gameplay_wizard_downed_3_times_09_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "knocked_down_override",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_wizard_downed_3_times_09_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_wizard_downed_3_times_09_reply_01"
+			}
+		},
 		pbw_gameplay_ranger_potions_above_half_health_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26583,6 +45033,101 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pbw_gameplay_ranger_potions_above_half_health_02"
+			}
+		},
+		pbw_gameplay_soldier_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_soldier_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_soldier_killing_rat_ogre_melee_01"
+			}
+		},
+		pbw_gameplay_response_176 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_176"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_176"
+			}
+		},
+		pes_gameplay_response_175 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_175"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_175"
+			}
+		},
+		pwe_gameplay_soldier_killing_rat_ogre_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_soldier_killing_rat_ogre_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_soldier_killing_rat_ogre_melee_01"
+			}
+		},
+		pwh_gameplay_soldier_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_soldier_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_soldier_killing_spawn_melee_01"
 			}
 		},
 		pbw_gameplay_hunter_downed_3_times_04 = {
@@ -26633,6 +45178,63 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_gameplay_response_146 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_response_146"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_response_146"
+			}
+		},
+		pwe_gameplay_soldier_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_soldier_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_soldier_killing_spawn_melee_01"
+			}
+		},
+		pwe_gameplay_response_184 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_184"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_184"
+			}
+		},
 		pwh_gameplay_hunter_hit_by_goo_thrice_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26652,6 +45254,107 @@ return function ()
 				[1.0] = "pwh_gameplay_hunter_hit_by_goo_thrice_reply_01"
 			}
 		},
+		pes_gameplay_response_173 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_173"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_173"
+			}
+		},
+		pwe_gameplay_response_151 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_151",
+				[2.0] = "pdr_gameplay_soldier_killing_troll_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_151",
+				[2.0] = "pdr_gameplay_soldier_killing_troll_melee_01"
+			},
+			randomize_indexes = {}
+		},
+		pwh_gameplay_ranger_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_gameplay_ranger_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_gameplay_ranger_killing_spawn_melee_01"
+			}
+		},
+		pdr_gameplay_ranger_killing_3_specials_in_a_row_02_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "casual_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_ranger_killing_3_specials_in_a_row_02_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_happy"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_ranger_killing_3_specials_in_a_row_02_reply_01"
+			}
+		},
+		pwe_gameplay_ranger_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_ranger_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_ranger_killing_spawn_melee_01"
+			}
+		},
 		pes_gameplay_soldier_hit_by_goo_thrice_02_reply_04 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -26669,6 +45372,82 @@ return function ()
 			},
 			localization_strings = {
 				[1.0] = "pes_gameplay_soldier_hit_by_goo_thrice_02_reply_04"
+			}
+		},
+		pdr_gameplay_response_180 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_180"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_gameplay_response_180"
+			}
+		},
+		pes_gameplay_ranger_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_ranger_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_ranger_killing_spawn_melee_01"
+			}
+		},
+		pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02"
+			}
+		},
+		pes_gameplay_response_171 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gameplay_response_171"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gameplay_response_171"
 			}
 		},
 		pwe_gameplay_wizard_potions_above_half_health_03_reply_02 = {
@@ -26709,14 +45488,33 @@ return function ()
 				[1.0] = "pes_gameplay_response_117"
 			}
 		},
-		pwh_gameplay_killing_a_second_rat_ogre_02 = {
+		pwe_gameplay_wizard_potions_above_half_health_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_killing_a_second_rat_ogre_02"
+				[1.0] = "pwe_gameplay_wizard_potions_above_half_health_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_smug"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_wizard_potions_above_half_health_03"
+			}
+		},
+		pbw_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -26725,7 +45523,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_killing_a_second_rat_ogre_02"
+				[1.0] = "pbw_gameplay_soldier_killing_rat_ogre_ranged_01_reply_02"
 			}
 		},
 		pdr_gameplay_knocked_down_ping = {
@@ -26812,102 +45610,62 @@ return function ()
 				[1.0] = "pwh_gameplay_wizard_potions_above_half_health_02_reply_02"
 			}
 		},
-		pdr_gameplay_ranger_3_special_kills_in_a_row_reply_01 = {
+		pes_gameplay_wizard_killing_rat_ogre_melee_01_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_gameplay_ranger_3_special_kills_in_a_row_reply_01"
+				[1.0] = "pes_gameplay_wizard_killing_rat_ogre_melee_01_reply_02"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_happy"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_gameplay_ranger_3_special_kills_in_a_row_reply_01"
+				[1.0] = "pes_gameplay_wizard_killing_rat_ogre_melee_01_reply_02"
 			}
 		},
-		pbw_gameplay_seeing_a_skaven_rat_ogre_ping = {
-			sound_events_n = 6,
-			randomize_indexes_n = 0,
-			face_animations_n = 6,
+		pdr_gameplay_response_07 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "enemy_alerts",
-			dialogue_animations_n = 6,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_01",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_04",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_06",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_02",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_03",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_05"
+				[1.0] = "pdr_gameplay_response_07"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_01",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_04",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_06",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_02",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_03",
-				"pbw_gameplay_seeing_a_skaven_rat_ogre_05"
-			},
-			randomize_indexes = {}
+				[1.0] = "pdr_gameplay_response_07"
+			}
 		},
-		pbw_gameplay_spots_bomb_ping = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
+		pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "seen_items",
-			dialogue_animations_n = 5,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pbw_gameplay_spots_bomb_01",
-				"pbw_gameplay_spots_bomb_02",
-				"pbw_gameplay_spots_bomb_03",
-				"pbw_gameplay_spots_bomb_04",
-				"pbw_gameplay_spots_bomb_05"
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_01"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pbw_gameplay_spots_bomb_01",
-				"pbw_gameplay_spots_bomb_02",
-				"pbw_gameplay_spots_bomb_03",
-				"pbw_gameplay_spots_bomb_04",
-				"pbw_gameplay_spots_bomb_05"
-			},
-			randomize_indexes = {}
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_01"
+			}
 		},
 		pbw_gameplay_response_117 = {
 			sound_events_n = 1,
@@ -26928,79 +45686,43 @@ return function ()
 				[1.0] = "pbw_gameplay_response_117"
 			}
 		},
-		pbw_gameplay_spots_health_ping = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
+		pes_gameplay_response_168 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "seen_items",
-			dialogue_animations_n = 5,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pbw_gameplay_spots_health_01",
-				"pbw_gameplay_spots_health_02",
-				"pbw_gameplay_spots_health_03",
-				"pbw_gameplay_spots_health_04",
-				"pbw_gameplay_spots_health_05"
+				[1.0] = "pes_gameplay_response_168"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pbw_gameplay_spots_health_01",
-				"pbw_gameplay_spots_health_02",
-				"pbw_gameplay_spots_health_03",
-				"pbw_gameplay_spots_health_04",
-				"pbw_gameplay_spots_health_05"
-			},
-			randomize_indexes = {}
+				[1.0] = "pes_gameplay_response_168"
+			}
 		},
-		pbw_gameplay_spots_ammo_ping = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
+		pdr_gameplay_hunter_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "seen_items",
-			dialogue_animations_n = 5,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pbw_gameplay_spots_ammo_01",
-				"pbw_gameplay_spots_ammo_02",
-				"pbw_gameplay_spots_ammo_03",
-				"pbw_gameplay_spots_ammo_04",
-				"pbw_gameplay_spots_ammo_05"
+				[1.0] = "pdr_gameplay_hunter_killing_spawn_melee_01"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pbw_gameplay_spots_ammo_01",
-				"pbw_gameplay_spots_ammo_02",
-				"pbw_gameplay_spots_ammo_03",
-				"pbw_gameplay_spots_ammo_04",
-				"pbw_gameplay_spots_ammo_05"
-			},
-			randomize_indexes = {}
+				[1.0] = "pdr_gameplay_hunter_killing_spawn_melee_01"
+			}
 		},
 		pes_gameplay_response_113 = {
 			sound_events_n = 1,
@@ -27021,38 +45743,24 @@ return function ()
 				[1.0] = "pes_gameplay_response_113"
 			}
 		},
-		pbw_gameplay_heard_dwarf_ranger_in_trouble_ping = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
+		pdr_gameplay_response_185 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 4,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pbw_gameplay_heard_dwarf_ranger_in_trouble_02",
-				"pbw_gameplay_heard_dwarf_ranger_in_trouble_05",
-				"pbw_gameplay_heard_dwarf_ranger_in_trouble_06",
-				"pbw_gameplay_heard_dwarf_ranger_in_trouble_07"
+				[1.0] = "pdr_gameplay_response_185"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pbw_gameplay_heard_dwarf_ranger_in_trouble_02",
-				"pbw_gameplay_heard_dwarf_ranger_in_trouble_05",
-				"pbw_gameplay_heard_dwarf_ranger_in_trouble_06",
-				"pbw_gameplay_heard_dwarf_ranger_in_trouble_07"
-			},
-			randomize_indexes = {}
+				[1.0] = "pdr_gameplay_response_185"
+			}
 		},
 		pwe_gameplay_response_127 = {
 			sound_events_n = 1,
@@ -27073,23 +45781,23 @@ return function ()
 				[1.0] = "pwe_gameplay_response_127"
 			}
 		},
-		pwe_gameplay_ranger_potions_above_half_health_03 = {
+		pwe_gameplay_response_188 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_gameplay_ranger_potions_above_half_health_03"
+				[1.0] = "pwe_gameplay_response_188"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_smug"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_gameplay_ranger_potions_above_half_health_03"
+				[1.0] = "pwe_gameplay_response_188"
 			}
 		},
 		pwh_gameplay_spots_ammo_ping = {
@@ -27129,33 +45837,14 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_gameplay_elf_downed_3_times_06_reply_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "special_occasions_honduras",
-			category = "knocked_down_override",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_gameplay_elf_downed_3_times_06_reply_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pbw_gameplay_elf_downed_3_times_06_reply_01"
-			}
-		},
-		pdr_gameplay_ranger_potions_above_half_health_02_reply_02 = {
+		pwh_gameplay_hunter_hit_by_goo_thrice_03_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
 			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_02_reply_02"
+				[1.0] = "pwh_gameplay_hunter_hit_by_goo_thrice_03_reply_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -27164,17 +45853,17 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_02_reply_02"
+				[1.0] = "pwh_gameplay_hunter_hit_by_goo_thrice_03_reply_01"
 			}
 		},
-		pbw_gameplay_wizard_potions_above_half_health_03_reply_02 = {
+		pbw_gameplay_wizard_hit_by_goo_thrice_02_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
 			category = "casual_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_gameplay_wizard_potions_above_half_health_03_reply_02"
+				[1.0] = "pbw_gameplay_wizard_hit_by_goo_thrice_02_reply_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -27183,107 +45872,36 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_wizard_potions_above_half_health_03_reply_02"
+				[1.0] = "pbw_gameplay_wizard_hit_by_goo_thrice_02_reply_01"
 			}
 		},
-		pbw_gameplay_empire_soldier_grabbed_ping = {
-			sound_events_n = 6,
-			randomize_indexes_n = 0,
-			face_animations_n = 6,
-			database = "special_occasions_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 6,
-			sound_events = {
-				"pbw_gameplay_empire_soldier_grabbed_01",
-				"pbw_gameplay_empire_soldier_grabbed_02",
-				"pbw_gameplay_empire_soldier_grabbed_03",
-				"pbw_gameplay_empire_soldier_grabbed_04",
-				"pbw_gameplay_empire_soldier_grabbed_05",
-				"pbw_gameplay_empire_soldier_grabbed_06"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pbw_gameplay_empire_soldier_grabbed_01",
-				"pbw_gameplay_empire_soldier_grabbed_02",
-				"pbw_gameplay_empire_soldier_grabbed_03",
-				"pbw_gameplay_empire_soldier_grabbed_04",
-				"pbw_gameplay_empire_soldier_grabbed_05",
-				"pbw_gameplay_empire_soldier_grabbed_06"
-			},
-			randomize_indexes = {}
-		},
-		pbw_gameplay_player_pounced_ping = {
-			sound_events_n = 8,
-			randomize_indexes_n = 0,
-			face_animations_n = 8,
-			database = "special_occasions_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 8,
-			sound_events = {
-				"pbw_gameplay_player_pounced_05",
-				"pbw_gameplay_player_pounced_07",
-				"pbw_gameplay_player_pounced_08",
-				"pbw_gameplay_player_pounced_09",
-				"pbw_gameplay_player_pounced_10",
-				"pbw_gameplay_player_pounced_11",
-				"pbw_gameplay_player_pounced_12",
-				"pbw_gameplay_player_pounced_13"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pbw_gameplay_player_pounced_05",
-				"pbw_gameplay_player_pounced_07",
-				"pbw_gameplay_player_pounced_08",
-				"pbw_gameplay_player_pounced_09",
-				"pbw_gameplay_player_pounced_10",
-				"pbw_gameplay_player_pounced_11",
-				"pbw_gameplay_player_pounced_12",
-				"pbw_gameplay_player_pounced_13"
-			},
-			randomize_indexes = {}
-		},
-		pdr_gameplay_ranger_downed_3_times_04_reply_01 = {
+		pbw_gameplay_ranger_downed_3_times_07 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
 			category = "knocked_down_override",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_gameplay_ranger_downed_3_times_04_reply_01"
+				[1.0] = "pbw_gameplay_ranger_downed_3_times_07"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_ranger_downed_3_times_07"
+			}
+		},
+		pdr_gameplay_response_156 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_gameplay_response_156"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -27292,7 +45910,45 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_gameplay_ranger_downed_3_times_04_reply_01"
+				[1.0] = "pdr_gameplay_response_156"
+			}
+		},
+		pwe_gameplay_response_180 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_gameplay_response_180"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_gameplay_response_180"
+			}
+		},
+		pbw_gameplay_elf_killing_spawn_melee_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "special_occasions_honduras",
+			category = "player_feedback",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_gameplay_elf_killing_spawn_melee_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_gameplay_elf_killing_spawn_melee_01"
 			}
 		},
 		pwh_gameplay_response_38 = {
@@ -27441,23 +46097,23 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_gameplay_wizard_potions_above_half_health_02 = {
+		pdr_gameplay_response_080 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_gameplay_wizard_potions_above_half_health_02"
+				[1.0] = "pdr_gameplay_response_080"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_smug"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_gameplay_wizard_potions_above_half_health_02"
+				[1.0] = "pdr_gameplay_response_080"
 			}
 		},
 		pdr_gameplay_response_38 = {
@@ -27549,38 +46205,24 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_gameplay_heard_wood_elf_in_trouble_ping = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
+		pes_gameplay_response_071 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 4,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pes_gameplay_heard_wood_elf_in_trouble_01",
-				"pes_gameplay_heard_wood_elf_in_trouble_02",
-				"pes_gameplay_heard_wood_elf_in_trouble_03",
-				"pes_gameplay_heard_wood_elf_in_trouble_04"
+				[1.0] = "pes_gameplay_response_071"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pes_gameplay_heard_wood_elf_in_trouble_01",
-				"pes_gameplay_heard_wood_elf_in_trouble_02",
-				"pes_gameplay_heard_wood_elf_in_trouble_03",
-				"pes_gameplay_heard_wood_elf_in_trouble_04"
-			},
-			randomize_indexes = {}
+				[1.0] = "pes_gameplay_response_071"
+			}
 		},
 		pes_gameplay_heard_witch_hunter_in_trouble_ping = {
 			sound_events_n = 4,
@@ -27729,23 +46371,23 @@ return function ()
 				[1.0] = "pbw_gameplay_hunter_caught_by_slaver_3_times_02"
 			}
 		},
-		pes_gameplay_wizard_kills_3_specials_in_a_row_02_reply_01 = {
+		pdr_gameplay_hunter_killing_rat_ogre_ranged_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_gameplay_wizard_kills_3_specials_in_a_row_02_reply_01"
+				[1.0] = "pdr_gameplay_hunter_killing_rat_ogre_ranged_01"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_happy"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_gameplay_wizard_kills_3_specials_in_a_row_02_reply_01"
+				[1.0] = "pdr_gameplay_hunter_killing_rat_ogre_ranged_01"
 			}
 		},
 		pwh_gameplay_spots_health_ping = {
@@ -27837,46 +46479,24 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_gameplay_hanging_help_ping = {
-			sound_events_n = 6,
-			randomize_indexes_n = 0,
-			face_animations_n = 6,
+		pes_gameplay_response_142 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 6,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pes_gameplay_hanging_help_01",
-				"pes_gameplay_hanging_help_02",
-				"pes_gameplay_hanging_help_03",
-				"pes_gameplay_hanging_help_04",
-				"pes_gameplay_hanging_help_05",
-				"pes_gameplay_hanging_help_06"
+				[1.0] = "pes_gameplay_response_142"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pes_gameplay_hanging_help_01",
-				"pes_gameplay_hanging_help_02",
-				"pes_gameplay_hanging_help_03",
-				"pes_gameplay_hanging_help_04",
-				"pes_gameplay_hanging_help_05",
-				"pes_gameplay_hanging_help_06"
-			},
-			randomize_indexes = {}
+				[1.0] = "pes_gameplay_response_142"
+			}
 		},
 		pwh_gameplay_elf_downed_3_times_05 = {
 			sound_events_n = 1,
@@ -28214,42 +46834,24 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwe_gameplay_seeing_a_globadier_ping = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
+		pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "enemy_alerts",
-			dialogue_animations_n = 5,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pwe_gameplay_seeing_a_globadier_01",
-				"pwe_gameplay_seeing_a_globadier_03",
-				"pwe_gameplay_seeing_a_globadier_02",
-				"pwe_gameplay_seeing_a_globadier_05",
-				"pwe_gameplay_seeing_a_globadier_06"
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_02"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_contempt",
-				"face_contempt",
-				"face_contempt",
-				"face_contempt",
-				"face_contempt"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pwe_gameplay_seeing_a_globadier_01",
-				"pwe_gameplay_seeing_a_globadier_03",
-				"pwe_gameplay_seeing_a_globadier_02",
-				"pwe_gameplay_seeing_a_globadier_05",
-				"pwe_gameplay_seeing_a_globadier_06"
-			},
-			randomize_indexes = {}
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_02"
+			}
 		},
 		pwe_gameplay_response_123 = {
 			sound_events_n = 1,
@@ -28387,54 +46989,24 @@ return function ()
 				[1.0] = "pdr_gameplay_response_128"
 			}
 		},
-		pwe_gameplay_seeing_a_stormvermin_ping = {
-			sound_events_n = 8,
-			randomize_indexes_n = 0,
-			face_animations_n = 8,
+		pbw_gameplay_response_078 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "enemy_alerts",
-			dialogue_animations_n = 8,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pwe_gameplay_seeing_a_stormvermin_01",
-				"pwe_gameplay_seeing_a_stormvermin_02",
-				"pwe_gameplay_seeing_a_stormvermin_03",
-				"pwe_gameplay_seeing_a_stormvermin_04",
-				"pwe_gameplay_seeing_a_stormvermin_05",
-				"pwe_gameplay_seeing_a_stormvermin_06",
-				"pwe_gameplay_seeing_a_stormvermin_07",
-				"pwe_gameplay_seeing_a_stormvermin_08"
+				[1.0] = "pbw_gameplay_response_078"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_contempt",
-				"face_contempt",
-				"face_contempt",
-				"face_neutral",
-				"face_neutral",
-				"face_contempt",
-				"face_neutral",
-				"face_angry"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pwe_gameplay_seeing_a_stormvermin_01",
-				"pwe_gameplay_seeing_a_stormvermin_02",
-				"pwe_gameplay_seeing_a_stormvermin_03",
-				"pwe_gameplay_seeing_a_stormvermin_04",
-				"pwe_gameplay_seeing_a_stormvermin_05",
-				"pwe_gameplay_seeing_a_stormvermin_06",
-				"pwe_gameplay_seeing_a_stormvermin_07",
-				"pwe_gameplay_seeing_a_stormvermin_08"
-			},
-			randomize_indexes = {}
+				[1.0] = "pbw_gameplay_response_078"
+			}
 		},
 		pes_gameplay_i_will_tank = {
 			sound_events_n = 12,
@@ -28811,114 +47383,62 @@ return function ()
 				[1.0] = "pwh_gameplay_response_122"
 			}
 		},
-		pwh_gameplay_ranger_hit_by_goo_thrice_02 = {
+		pbw_gameplay_elf_killing_spawn_ranged_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_ranger_hit_by_goo_thrice_02"
+				[1.0] = "pbw_gameplay_elf_killing_spawn_ranged_01"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_ranger_hit_by_goo_thrice_02"
+				[1.0] = "pbw_gameplay_elf_killing_spawn_ranged_01"
 			}
 		},
-		pwe_gameplay_empire_soldier_grabbed_ping = {
-			sound_events_n = 6,
-			randomize_indexes_n = 0,
-			face_animations_n = 6,
+		pes_gameplay_elf_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 6,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pwe_gameplay_empire_soldier_grabbed_01",
-				"pwe_gameplay_empire_soldier_grabbed_02",
-				"pwe_gameplay_empire_soldier_grabbed_03",
-				"pwe_gameplay_empire_soldier_grabbed_04",
-				"pwe_gameplay_empire_soldier_grabbed_05",
-				"pwe_gameplay_empire_soldier_grabbed_06"
+				[1.0] = "pes_gameplay_elf_killing_spawn_ranged_01"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pwe_gameplay_empire_soldier_grabbed_01",
-				"pwe_gameplay_empire_soldier_grabbed_02",
-				"pwe_gameplay_empire_soldier_grabbed_03",
-				"pwe_gameplay_empire_soldier_grabbed_04",
-				"pwe_gameplay_empire_soldier_grabbed_05",
-				"pwe_gameplay_empire_soldier_grabbed_06"
-			},
-			randomize_indexes = {}
+				[1.0] = "pes_gameplay_elf_killing_spawn_ranged_01"
+			}
 		},
-		pwe_gameplay_player_pounced_ping = {
-			sound_events_n = 8,
-			randomize_indexes_n = 0,
-			face_animations_n = 8,
+		pdr_gameplay_elf_killing_spawn_ranged_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 8,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pwe_gameplay_player_pounced_07",
-				"pwe_gameplay_player_pounced_08",
-				"pwe_gameplay_player_pounced_09",
-				"pwe_gameplay_player_pounced_10",
-				"pwe_gameplay_player_pounced_11",
-				"pwe_gameplay_player_pounced_12",
-				"pwe_gameplay_player_pounced_13",
-				"pwe_gameplay_player_pounced_14"
+				[1.0] = "pdr_gameplay_elf_killing_spawn_ranged_01"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pwe_gameplay_player_pounced_07",
-				"pwe_gameplay_player_pounced_08",
-				"pwe_gameplay_player_pounced_09",
-				"pwe_gameplay_player_pounced_10",
-				"pwe_gameplay_player_pounced_11",
-				"pwe_gameplay_player_pounced_12",
-				"pwe_gameplay_player_pounced_13",
-				"pwe_gameplay_player_pounced_14"
-			},
-			randomize_indexes = {}
+				[1.0] = "pdr_gameplay_elf_killing_spawn_ranged_01"
+			}
 		},
 		pes_gameplay_soldier_downed_3_times_13_reply_01 = {
 			sound_events_n = 1,
@@ -29044,46 +47564,24 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_gameplay_seeing_a_gutter_runner_ping = {
-			sound_events_n = 6,
-			randomize_indexes_n = 0,
-			face_animations_n = 6,
+		pes_gameplay_killing_rat_ogre_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "enemy_alerts",
-			dialogue_animations_n = 6,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pdr_gameplay_seeing_a_gutter_runner_01",
-				"pdr_gameplay_seeing_a_gutter_runner_02",
-				"pdr_gameplay_seeing_a_gutter_runner_03",
-				"pdr_gameplay_seeing_a_gutter_runner_04",
-				"pdr_gameplay_seeing_a_gutter_runner_05",
-				"pdr_gameplay_seeing_a_gutter_runner_06"
+				[1.0] = "pes_gameplay_killing_rat_ogre_01"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_surprise",
-				"face_contempt",
-				"face_contempt",
-				"face_contempt",
-				"face_contempt"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pdr_gameplay_seeing_a_gutter_runner_01",
-				"pdr_gameplay_seeing_a_gutter_runner_02",
-				"pdr_gameplay_seeing_a_gutter_runner_03",
-				"pdr_gameplay_seeing_a_gutter_runner_04",
-				"pdr_gameplay_seeing_a_gutter_runner_05",
-				"pdr_gameplay_seeing_a_gutter_runner_06"
-			},
-			randomize_indexes = {}
+				[1.0] = "pes_gameplay_killing_rat_ogre_01"
+			}
 		},
 		pdr_gameplay_seeing_a_stormvermin_ping = {
 			sound_events_n = 8,
@@ -29407,52 +47905,28 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_gameplay_heard_witch_hunter_in_trouble_ping = {
-			sound_events_n = 8,
+		pbw_gameplay_response_156 = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 8,
+			face_animations_n = 2,
 			database = "special_occasions_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 8,
+			category = "player_feedback",
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pdr_gameplay_heard_witch_hunter_in_trouble_01",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_02",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_03",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_04",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_05",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_06",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_07",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_08"
+				[1.0] = "pbw_gameplay_response_156",
+				[2.0] = "pbw_gameplay_hunter_killing_troll_ranged_01"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pdr_gameplay_heard_witch_hunter_in_trouble_01",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_02",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_03",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_04",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_05",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_06",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_07",
-				"pdr_gameplay_heard_witch_hunter_in_trouble_08"
+				[1.0] = "pbw_gameplay_response_156",
+				[2.0] = "pbw_gameplay_hunter_killing_troll_ranged_01"
 			},
 			randomize_indexes = {}
 		},
@@ -29573,46 +48047,24 @@ return function ()
 				[1.0] = "pwh_gameplay_response_39"
 			}
 		},
-		pdr_gameplay_player_pounced_ping = {
-			sound_events_n = 6,
-			randomize_indexes_n = 0,
-			face_animations_n = 6,
+		pbw_gameplay_ranger_killing_rat_ogre_melee_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 6,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pdr_gameplay_player_pounced_01",
-				"pdr_gameplay_player_pounced_02",
-				"pdr_gameplay_player_pounced_03",
-				"pdr_gameplay_player_pounced_04",
-				"pdr_gameplay_player_pounced_05",
-				"pdr_gameplay_player_pounced_06"
+				[1.0] = "pbw_gameplay_ranger_killing_rat_ogre_melee_reply_01"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_fear",
-				"face_fear",
-				"face_fear"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pdr_gameplay_player_pounced_01",
-				"pdr_gameplay_player_pounced_02",
-				"pdr_gameplay_player_pounced_03",
-				"pdr_gameplay_player_pounced_04",
-				"pdr_gameplay_player_pounced_05",
-				"pdr_gameplay_player_pounced_06"
-			},
-			randomize_indexes = {}
+				[1.0] = "pbw_gameplay_ranger_killing_rat_ogre_melee_reply_01"
+			}
 		},
 		pwh_gameplay_seeing_a_skaven_ratling_gun_ping = {
 			sound_events_n = 7,
@@ -29697,14 +48149,14 @@ return function ()
 				[1.0] = "pwh_gameplay_hunter_potions_above_half_health_01_reply_01"
 			}
 		},
-		pwh_gameplay_hunter_downed_3_times_10_reply_01 = {
+		pwh_gameplay_response_154 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_hunter_downed_3_times_10_reply_01"
+				[1.0] = "pwh_gameplay_response_154"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -29713,7 +48165,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_hunter_downed_3_times_10_reply_01"
+				[1.0] = "pwh_gameplay_response_154"
 			}
 		},
 		pbw_gameplay_response_124 = {
@@ -29956,46 +48408,24 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_gameplay_grabbed_ping = {
-			sound_events_n = 6,
-			randomize_indexes_n = 0,
-			face_animations_n = 6,
+		pwh_gameplay_response_181 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 6,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pwh_gameplay_knocked_down_01",
-				"pwh_gameplay_knocked_down_02",
-				"pwh_gameplay_knocked_down_03",
-				"pwh_gameplay_knocked_down_04",
-				"pwh_gameplay_knocked_down_05",
-				"pwh_gameplay_knocked_down_06"
+				[1.0] = "pwh_gameplay_response_181"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_fear",
-				"face_fear",
-				"face_exhausted"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pwh_gameplay_knocked_down_01",
-				"pwh_gameplay_knocked_down_02",
-				"pwh_gameplay_knocked_down_03",
-				"pwh_gameplay_knocked_down_04",
-				"pwh_gameplay_knocked_down_05",
-				"pwh_gameplay_knocked_down_06"
-			},
-			randomize_indexes = {}
+				[1.0] = "pwh_gameplay_response_181"
+			}
 		},
 		pes_gameplay_soldier_downed_3_times_reply_01 = {
 			sound_events_n = 1,
@@ -30262,14 +48692,14 @@ return function ()
 				[1.0] = "pwh_gameplay_another_is_bunnyjumping_01_alt1"
 			}
 		},
-		pes_gameplay_another_is_bunnyjumping_01 = {
+		pbw_gameplay_response_179 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_gameplay_another_is_bunnyjumping_01"
+				[1.0] = "pbw_gameplay_response_179"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -30278,7 +48708,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_gameplay_another_is_bunnyjumping_01"
+				[1.0] = "pbw_gameplay_response_179"
 			}
 		},
 		pwe_gameplay_wizard_potions_above_half_health_01 = {
@@ -30300,23 +48730,23 @@ return function ()
 				[1.0] = "pwe_gameplay_wizard_potions_above_half_health_01"
 			}
 		},
-		pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_01 = {
+		pbw_gameplay_response_181 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_01"
+				[1.0] = "pbw_gameplay_response_181"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_happy"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_01"
+				[1.0] = "pbw_gameplay_response_181"
 			}
 		},
 		pwh_gameplay_soldier_downed_3_times_reply_01 = {
@@ -30842,23 +49272,23 @@ return function ()
 				[1.0] = "pbw_gameplay_wizard_potions_above_half_health_01_reply_01"
 			}
 		},
-		pbw_gameplay_response_38 = {
+		pes_gameplay_response_136 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_gameplay_response_38"
+				[1.0] = "pes_gameplay_response_136"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_angry"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_response_38"
+				[1.0] = "pes_gameplay_response_136"
 			}
 		},
 		pes_pes_gameplay_wizard_potions_above_half_health_03_reply_01 = {
@@ -31258,14 +49688,14 @@ return function ()
 				[1.0] = "pdr_gameplay_soldier_downed_3_times_10"
 			}
 		},
-		pwh_gameplay_hunter_downed_3_times_08_reply_01 = {
+		pwe_gameplay_soldier_killing_rat_ogre_melee_01_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_hunter_downed_3_times_08_reply_01"
+				[1.0] = "pwe_gameplay_soldier_killing_rat_ogre_melee_01_reply_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -31274,7 +49704,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_hunter_downed_3_times_08_reply_01"
+				[1.0] = "pwe_gameplay_soldier_killing_rat_ogre_melee_01_reply_02"
 			}
 		},
 		pwe_gameplay_soldier_downed_3_times_09_reply_01 = {
@@ -31296,14 +49726,14 @@ return function ()
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_09_reply_01"
 			}
 		},
-		pwe_gameplay_response_126 = {
+		pwe_gameplay_ranger_killing_rat_ogre_melee_01_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_gameplay_response_126"
+				[1.0] = "pwe_gameplay_ranger_killing_rat_ogre_melee_01_reply_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -31312,41 +49742,27 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_gameplay_response_126"
+				[1.0] = "pwe_gameplay_ranger_killing_rat_ogre_melee_01_reply_02"
 			}
 		},
-		pbw_gameplay_heard_wood_elf_in_trouble_ping = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
+		pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "player_alerts",
-			dialogue_animations_n = 4,
+			category = "player_feedback",
+			dialogue_animations_n = 1,
 			sound_events = {
-				"pbw_gameplay_heard_wood_elf_in_trouble_01",
-				"pbw_gameplay_heard_wood_elf_in_trouble_03",
-				"pbw_gameplay_heard_wood_elf_in_trouble_05",
-				"pbw_gameplay_heard_wood_elf_in_trouble_06"
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_01"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pbw_gameplay_heard_wood_elf_in_trouble_01",
-				"pbw_gameplay_heard_wood_elf_in_trouble_03",
-				"pbw_gameplay_heard_wood_elf_in_trouble_05",
-				"pbw_gameplay_heard_wood_elf_in_trouble_06"
-			},
-			randomize_indexes = {}
+				[1.0] = "pwe_gameplay_elf_killing_rat_ogre_ranged_01_reply_01"
+			}
 		},
 		pdr_gameplay_hunter_potions_above_half_health_03 = {
 			sound_events_n = 1,
@@ -31405,23 +49821,23 @@ return function ()
 				[1.0] = "pwe_gameplay_kiling_a_second_rat_ogre_01"
 			}
 		},
-		pwe_gameplay_soldier_downed_3_times_12 = {
+		pwh_gameplay_response_180 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_gameplay_soldier_downed_3_times_12"
+				[1.0] = "pwh_gameplay_response_180"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_gameplay_soldier_downed_3_times_12"
+				[1.0] = "pwh_gameplay_response_180"
 			}
 		},
 		pes_gameplay_killing_a_second_rat_ogre_02 = {
@@ -31519,23 +49935,23 @@ return function ()
 				[1.0] = "pwe_gameplay_soldier_downed_3_times_10_reply_01"
 			}
 		},
-		pbw_gameplay_ranger_downed_3_times_07 = {
+		pdr_gameplay_response_181 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_gameplay_ranger_downed_3_times_07"
+				[1.0] = "pdr_gameplay_response_181"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_ranger_downed_3_times_07"
+				[1.0] = "pdr_gameplay_response_181"
 			}
 		},
 		pwe_gameplay_ranger_downed_3_times_04_reply_01 = {
@@ -31870,14 +50286,14 @@ return function ()
 				[1.0] = "pwe_gameplay_ranger_downed_3_times_10_reply_01"
 			}
 		},
-		pwh_gameplay_hunter_hit_by_goo_thrice_03_reply_01 = {
+		pbw_gameplay_hunter_killing_spawn_melee_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_hunter_hit_by_goo_thrice_03_reply_01"
+				[1.0] = "pbw_gameplay_hunter_killing_spawn_melee_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -31886,7 +50302,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_hunter_hit_by_goo_thrice_03_reply_01"
+				[1.0] = "pbw_gameplay_hunter_killing_spawn_melee_01"
 			}
 		},
 		pes_gameplay_soldier_hit_by_goo_thrice_02_reply_02 = {
@@ -32085,14 +50501,14 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_gameplay_soldier_caught_by_slaver_3_times_02 = {
+		pdr_gameplay_hunter_killing_rat_ogre_melee_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_soldier_caught_by_slaver_3_times_02"
+				[1.0] = "pdr_gameplay_hunter_killing_rat_ogre_melee_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -32101,7 +50517,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_soldier_caught_by_slaver_3_times_02"
+				[1.0] = "pdr_gameplay_hunter_killing_rat_ogre_melee_01"
 			}
 		},
 		pes_gameplay_elf_potions_above_half_health_01 = {
@@ -32142,14 +50558,14 @@ return function ()
 				[1.0] = "pwh_gameplay_response_125"
 			}
 		},
-		pwe_gameplay_soldier_caught_by_slaver_3_times_02 = {
+		pes_gameplay_response_151 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_gameplay_soldier_caught_by_slaver_3_times_02"
+				[1.0] = "pes_gameplay_response_151"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -32158,26 +50574,26 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_gameplay_soldier_caught_by_slaver_3_times_02"
+				[1.0] = "pes_gameplay_response_151"
 			}
 		},
-		pwh_gameplay_wizard_hit_by_goo_thrice_02 = {
+		pes_gameplay_hunter_killing_spawn_melee_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_wizard_hit_by_goo_thrice_02"
+				[1.0] = "pes_gameplay_hunter_killing_spawn_melee_01"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_wizard_hit_by_goo_thrice_02"
+				[1.0] = "pes_gameplay_hunter_killing_spawn_melee_01"
 			}
 		},
 		pbw_gameplay_elf_potions_above_half_health_01 = {
@@ -32294,14 +50710,14 @@ return function ()
 				[1.0] = "pes_gameplay_soldier_3_special_kills_in_a_row_02"
 			}
 		},
-		pbw_gameplay_soldier_caught_by_slaver_3_times_02 = {
+		pwe_gameplay_response_193 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_gameplay_soldier_caught_by_slaver_3_times_02"
+				[1.0] = "pwe_gameplay_response_193"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -32310,7 +50726,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_soldier_caught_by_slaver_3_times_02"
+				[1.0] = "pwe_gameplay_response_193"
 			}
 		},
 		pwe_gameplay_hunter_hit_by_goo_thrice_03 = {
@@ -32720,14 +51136,14 @@ return function ()
 				[1.0] = "pwh_gameplay_elf_downed_3_times_03_reply_01"
 			}
 		},
-		pwh_gameplay_response_124 = {
+		pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_response_124"
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -32736,17 +51152,17 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_response_124"
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_ranged_01_reply_02"
 			}
 		},
-		pes_gameplay_hunter_caught_by_slaver_3_times_02 = {
+		pwh_gameplay_response_146 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "help_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_gameplay_hunter_caught_by_slaver_3_times_02"
+				[1.0] = "pwh_gameplay_response_146"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -32755,7 +51171,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_gameplay_hunter_caught_by_slaver_3_times_02"
+				[1.0] = "pwh_gameplay_response_146"
 			}
 		},
 		pwh_gameplay_response_128 = {
@@ -32834,14 +51250,14 @@ return function ()
 				[1.0] = "pbw_gameplay_elf_3_special_kills_in_a_row_01_reply_02"
 			}
 		},
-		pwe_gameplay_response_130 = {
+		pwe_gameplay_response_183 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "default",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_gameplay_response_130"
+				[1.0] = "pwe_gameplay_response_183"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -32850,26 +51266,26 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_gameplay_response_130"
+				[1.0] = "pwe_gameplay_response_183"
 			}
 		},
-		pdr_gameplay_elf_downed_3_times_12 = {
+		pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_gameplay_elf_downed_3_times_12"
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_01"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_gameplay_elf_downed_3_times_12"
+				[1.0] = "pbw_gameplay_wizard_killing_rat_ogre_ranged_01_reply_01"
 			}
 		},
 		pdr_gameplay_hunter_downed_3_times_09_reply_01 = {
@@ -32948,23 +51364,23 @@ return function ()
 				[1.0] = "pes_ameplay_soldier_potions_above_half_health_01_reply_01"
 			}
 		},
-		pwh_gameplay_wizard_downed_3_times_04 = {
+		pdr_hunter_shoots_rat_ogre_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_wizard_downed_3_times_04"
+				[1.0] = "pdr_hunter_shoots_rat_ogre_01"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_wizard_downed_3_times_04"
+				[1.0] = "pdr_hunter_shoots_rat_ogre_01"
 			}
 		},
 		pes_gameplay_hunter_downed_3_times_06 = {
@@ -33043,23 +51459,23 @@ return function ()
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_02_reply_01"
 			}
 		},
-		pwe_gameplay_wizard_potions_above_half_health_03 = {
+		pwh_gameplay_response_182 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_gameplay_wizard_potions_above_half_health_03"
+				[1.0] = "pwh_gameplay_response_182"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_smug"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_gameplay_wizard_potions_above_half_health_03"
+				[1.0] = "pwh_gameplay_response_182"
 			}
 		},
 		pes_gameplay_wizard_downed_3_times_04_reply_01 = {
@@ -33100,14 +51516,14 @@ return function ()
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_03"
 			}
 		},
-		pbw_gameplay_wizard_downed_3_times_08_reply_01 = {
+		pdr_gameplay_response_163 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_gameplay_wizard_downed_3_times_08_reply_01"
+				[1.0] = "pdr_gameplay_response_163"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -33116,17 +51532,17 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_wizard_downed_3_times_08_reply_01"
+				[1.0] = "pdr_gameplay_response_163"
 			}
 		},
-		pbw_gameplay_wizard_hit_by_goo_thrice_02_reply_01 = {
+		pwe_gameplay_response_187 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_gameplay_wizard_hit_by_goo_thrice_02_reply_01"
+				[1.0] = "pwe_gameplay_response_187"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -33135,27 +51551,33 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_wizard_hit_by_goo_thrice_02_reply_01"
+				[1.0] = "pwe_gameplay_response_187"
 			}
 		},
-		pwe_gameplay_elf_downed_3_times_11_reply_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+		pwh_gameplay_response_147 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
-			dialogue_animations_n = 1,
+			category = "player_feedback",
+			dialogue_animations_n = 2,
 			sound_events = {
-				[1.0] = "pwe_gameplay_elf_downed_3_times_11_reply_01"
+				[1.0] = "pwh_gameplay_response_147",
+				[2.0] = "pwe_gameplay_wizard_killing_troll_melee_01"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_gameplay_elf_downed_3_times_11_reply_01"
-			}
+				[1.0] = "pwh_gameplay_response_147",
+				[2.0] = "pwe_gameplay_wizard_killing_troll_melee_01"
+			},
+			randomize_indexes = {}
 		},
 		pbw_ameplay_soldier_potions_above_half_health_01_reply_01 = {
 			sound_events_n = 1,
@@ -33271,23 +51693,23 @@ return function ()
 				[1.0] = "pes_gameplay_soldier_downed_3_times_07_reply_01"
 			}
 		},
-		pwe_gameplay_soldier_hit_by_goo_thrice_02 = {
+		pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_04 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_gameplay_soldier_hit_by_goo_thrice_02"
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_04"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_gameplay_soldier_hit_by_goo_thrice_02"
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_04"
 			}
 		},
 		pdr_gameplay_ranger_3_special_kills_in_a_row_01_reply_03 = {
@@ -33328,14 +51750,14 @@ return function ()
 				[1.0] = "pwe_gameplay_elf_3_special_kills_in_a_row_01_reply_02"
 			}
 		},
-		pwe_gameplay_elf_potions_above_half_health_06_reply_01 = {
+		pdr_gameplay_killing_a_rat_ogre_crossbow_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_gameplay_elf_potions_above_half_health_06_reply_01"
+				[1.0] = "pdr_gameplay_killing_a_rat_ogre_crossbow_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -33344,7 +51766,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_gameplay_elf_potions_above_half_health_06_reply_01"
+				[1.0] = "pdr_gameplay_killing_a_rat_ogre_crossbow_01"
 			}
 		},
 		pdr_gameplay_ranger_hit_by_goo_thrice_02_reply_03 = {
@@ -33537,14 +51959,14 @@ return function ()
 				[1.0] = "pdr_gameplay_response_125"
 			}
 		},
-		pwh_gameplay_hunter_potions_above_half_health_02_reply_01 = {
+		pes_gameplay_response_147 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_hunter_potions_above_half_health_02_reply_01"
+				[1.0] = "pes_gameplay_response_147"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -33553,7 +51975,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_hunter_potions_above_half_health_02_reply_01"
+				[1.0] = "pes_gameplay_response_147"
 			}
 		},
 		pwe_gameplay_elf_hit_by_goo_thrice_02_reply_01 = {
@@ -33632,14 +52054,14 @@ return function ()
 				[1.0] = "pwh_gameplay_wizard_downed_3_times_02_reply_01"
 			}
 		},
-		pes_gameplay_hunter_potions_above_half_health_03_reply_01 = {
+		pwh_gameplay_response_189 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_gameplay_hunter_potions_above_half_health_03_reply_01"
+				[1.0] = "pwh_gameplay_response_189"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -33648,7 +52070,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pes_gameplay_hunter_potions_above_half_health_03_reply_01"
+				[1.0] = "pwh_gameplay_response_189"
 			}
 		},
 		pwe_gameplay_soldier_3_special_kills_in_a_row_01 = {
@@ -33727,14 +52149,14 @@ return function ()
 				[1.0] = "pbw_gameplay_wizard_downed_3_times_06_reply_01"
 			}
 		},
-		pbw_gameplay_response_043 = {
+		pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_gameplay_response_043"
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -33743,17 +52165,17 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_response_043"
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_02"
 			}
 		},
-		pbw_gameplay_wizard_downed_3_times_03_reply_01 = {
+		pbw_gameplay_response_157 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_gameplay_wizard_downed_3_times_03_reply_01"
+				[1.0] = "pbw_gameplay_response_157"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -33762,7 +52184,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_wizard_downed_3_times_03_reply_01"
+				[1.0] = "pbw_gameplay_response_157"
 			}
 		},
 		pwh_gameplay_wizard_downed_3_times_10_reply_01 = {
@@ -33957,14 +52379,14 @@ return function ()
 				[1.0] = "pdr_gameplay_ranger_downed_3_times_11_reply_01"
 			}
 		},
-		pbw_gameplay_wizard_downed_3_times_07_reply_01 = {
+		pwe_gameplay_response_154 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_gameplay_wizard_downed_3_times_07_reply_01"
+				[1.0] = "pwe_gameplay_response_154"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -33973,7 +52395,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_wizard_downed_3_times_07_reply_01"
+				[1.0] = "pwe_gameplay_response_154"
 			}
 		},
 		pbw_gameplay_elf_potions_above_half_health_02 = {
@@ -34052,14 +52474,14 @@ return function ()
 				[1.0] = "pdr_gameplay_wizard_potions_above_half_health_03"
 			}
 		},
-		pbw_gameplay_wizard_downed_3_times_09_reply_01 = {
+		pbw_gameplay_response_178 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_gameplay_wizard_downed_3_times_09_reply_01"
+				[1.0] = "pbw_gameplay_response_178"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -34068,7 +52490,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_wizard_downed_3_times_09_reply_01"
+				[1.0] = "pbw_gameplay_response_178"
 			}
 		},
 		pwh_gameplay_wizard_downed_3_times_14_reply_01 = {
@@ -34491,24 +52913,30 @@ return function ()
 				[1.0] = "pes_gameplay_soldier_downed_3_times_06_reply_01"
 			}
 		},
-		pbw_gameplay_soldier_downed_3_times_07_reply_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+		pbw_gameplay_response_145 = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
-			dialogue_animations_n = 1,
+			category = "player_feedback",
+			dialogue_animations_n = 2,
 			sound_events = {
-				[1.0] = "pbw_gameplay_soldier_downed_3_times_07_reply_01"
+				[1.0] = "pbw_gameplay_response_145",
+				[2.0] = "pwh_gameplay_soldier_killing_troll_melee_01"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_soldier_downed_3_times_07_reply_01"
-			}
+				[1.0] = "pbw_gameplay_response_145",
+				[2.0] = "pwh_gameplay_soldier_killing_troll_melee_01"
+			},
+			randomize_indexes = {}
 		},
 		pes_gameplay_soldier_hit_by_goo_thrice_02_reply_03 = {
 			sound_events_n = 1,
@@ -34529,23 +52957,23 @@ return function ()
 				[1.0] = "pes_gameplay_soldier_hit_by_goo_thrice_02_reply_03"
 			}
 		},
-		pbw_gameplay_soldier_downed_3_times_07 = {
+		pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_gameplay_soldier_downed_3_times_07"
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_01"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pbw_gameplay_soldier_downed_3_times_07"
+				[1.0] = "pes_gameplay_soldier_killing_rat_ogre_melee_01_reply_01"
 			}
 		},
 		pwe_gameplay_soldier_3_special_kills_in_a_row_02_reply_1 = {
@@ -34871,14 +53299,14 @@ return function ()
 				[1.0] = "pwe_gameplay_ranger_caught_by_slaver_3_times_02"
 			}
 		},
-		pdr_gameplay_ranger_downed_3_times_02_reply_01 = {
+		pwe_gameplay_soldier_killing_rat_ogre_melee_01_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_gameplay_ranger_downed_3_times_02_reply_01"
+				[1.0] = "pwe_gameplay_soldier_killing_rat_ogre_melee_01_reply_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -34887,7 +53315,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_gameplay_ranger_downed_3_times_02_reply_01"
+				[1.0] = "pwe_gameplay_soldier_killing_rat_ogre_melee_01_reply_01"
 			}
 		},
 		pwe_gameplay_ranger_downed_3_times_12_reply_01 = {
@@ -35091,14 +53519,14 @@ return function ()
 				[1.0] = "pwh_gameplay_wizard_potions_above_half_health_03_reply_01"
 			}
 		},
-		pdr_gameplay_ranger_downed_3_times_03_reply_01 = {
+		pdr_gameplay_response_192 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_gameplay_ranger_downed_3_times_03_reply_01"
+				[1.0] = "pdr_gameplay_response_192"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -35107,7 +53535,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_gameplay_ranger_downed_3_times_03_reply_01"
+				[1.0] = "pdr_gameplay_response_192"
 			}
 		},
 		pdr_gameplay_ranger_downed_3_times_13_reply_01 = {
@@ -35208,23 +53636,23 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_gameplay_ranger_killing_3_specials_in_a_row_02_reply_01 = {
+		pes_gameplay_response_169 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_gameplay_ranger_killing_3_specials_in_a_row_02_reply_01"
+				[1.0] = "pes_gameplay_response_169"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_happy"
+				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_gameplay_ranger_killing_3_specials_in_a_row_02_reply_01"
+				[1.0] = "pes_gameplay_response_169"
 			}
 		},
 		pwh_gameplay_hunter_downed_3_times_02_reply_01 = {
@@ -35303,14 +53731,14 @@ return function ()
 				[1.0] = "pdr_gameplay_hunter_downed_3_times_03_reply_01"
 			}
 		},
-		pwh_gameplay_hunter_downed_3_times_03_reply_01 = {
+		pbw_gameplay_response_147 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_hunter_downed_3_times_03_reply_01"
+				[1.0] = "pbw_gameplay_response_147"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -35319,7 +53747,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_hunter_downed_3_times_03_reply_01"
+				[1.0] = "pbw_gameplay_response_147"
 			}
 		},
 		pes_gameplay_soldier_potions_above_half_health_03_reply_03 = {
@@ -35462,23 +53890,23 @@ return function ()
 				[1.0] = "pwe_gameplay_elf_3_special_kills_in_a_row_01"
 			}
 		},
-		pdr_gameplay_hunter_downed_3_times_10 = {
+		pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_gameplay_hunter_downed_3_times_10"
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_02"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_gameplay_hunter_downed_3_times_10"
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_02"
 			}
 		},
 		pes_gameplay_hunter_downed_3_times_06_reply_01 = {
@@ -35519,14 +53947,14 @@ return function ()
 				[1.0] = "pes_gameplay_response_30"
 			}
 		},
-		pwh_gameplay_hunter_downed_3_times_06_reply_01 = {
+		pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_hunter_downed_3_times_06_reply_01"
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -35535,7 +53963,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_hunter_downed_3_times_06_reply_01"
+				[1.0] = "pdr_gameplay_ranger_killing_rat_ogre_melee_01_reply_03"
 			}
 		},
 		pwh_gameplay_hunter_downed_3_times_07_reply_01 = {
@@ -35766,14 +54194,14 @@ return function ()
 				[1.0] = "pwe_gameplay_elf_downed_3_times_02_reply_01"
 			}
 		},
-		pdr_gameplay_ranger_potions_above_half_health_01_reply_02 = {
+		pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_01_reply_02"
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -35782,7 +54210,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_01_reply_02"
+				[1.0] = "pwh_gameplay_hunter_killing_rat_ogre_melee_01_reply_01"
 			}
 		},
 		pwe_gameplay_elf_downed_3_times_12_reply_01 = {
@@ -35804,14 +54232,14 @@ return function ()
 				[1.0] = "pwe_gameplay_elf_downed_3_times_12_reply_01"
 			}
 		},
-		pdr_gameplay_ranger_potions_above_half_health_03_reply_01 = {
+		pdr_gameplay_response_158 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_03_reply_01"
+				[1.0] = "pdr_gameplay_response_158"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -35820,7 +54248,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pdr_gameplay_ranger_potions_above_half_health_03_reply_01"
+				[1.0] = "pdr_gameplay_response_158"
 			}
 		},
 		pes_gameplay_elf_downed_3_times_08_reply_01 = {
@@ -35861,14 +54289,14 @@ return function ()
 				[1.0] = "pdr_gameplay_response_40"
 			}
 		},
-		pwe_gameplay_elf_downed_3_times_04_reply_01 = {
+		pdr_gameplay_hunter_killing_rat_ogre_melee_01_reply_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_gameplay_elf_downed_3_times_04_reply_01"
+				[1.0] = "pdr_gameplay_hunter_killing_rat_ogre_melee_01_reply_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -35877,7 +54305,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_gameplay_elf_downed_3_times_04_reply_01"
+				[1.0] = "pdr_gameplay_hunter_killing_rat_ogre_melee_01_reply_02"
 			}
 		},
 		pdr_gameplay_elf_potions_above_half_health_04 = {
@@ -35899,14 +54327,14 @@ return function ()
 				[1.0] = "pdr_gameplay_elf_potions_above_half_health_04"
 			}
 		},
-		pwe_gameplay_elf_downed_3_times_06_reply_01 = {
+		pbw_gameplay_elf_killing_rat_ogre_melee_01_reply_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "knocked_down_override",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_gameplay_elf_downed_3_times_06_reply_01"
+				[1.0] = "pbw_gameplay_elf_killing_rat_ogre_melee_01_reply_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -35915,7 +54343,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwe_gameplay_elf_downed_3_times_06_reply_01"
+				[1.0] = "pbw_gameplay_elf_killing_rat_ogre_melee_01_reply_01"
 			}
 		},
 		pes_gameplay_wizard_potions_above_half_health_02_reply_01 = {
@@ -36051,14 +54479,14 @@ return function ()
 				[1.0] = "pwh_gameplay_elf_downed_3_times_08_reply_01"
 			}
 		},
-		pwh_gameplay_hunter_potions_above_half_health_03_reply_01 = {
+		pwe_gameplay_response_186 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_hunter_potions_above_half_health_03_reply_01"
+				[1.0] = "pwe_gameplay_response_186"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -36067,26 +54495,26 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_hunter_potions_above_half_health_03_reply_01"
+				[1.0] = "pwe_gameplay_response_186"
 			}
 		},
-		pwh_gameplay_ranger_killing_3_specials_in_a_row_02 = {
+		pdr_gameplay_response_183 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "special_occasions_honduras",
-			category = "casual_talk",
+			category = "player_feedback",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_gameplay_ranger_killing_3_specials_in_a_row_02"
+				[1.0] = "pdr_gameplay_response_183"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "pwh_gameplay_ranger_killing_3_specials_in_a_row_02"
+				[1.0] = "pdr_gameplay_response_183"
 			}
 		},
 		pwe_gameplay_elf_downed_3_times_05_reply_01 = {

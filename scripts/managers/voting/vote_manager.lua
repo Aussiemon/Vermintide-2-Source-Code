@@ -4,8 +4,10 @@ VoteManager = class(VoteManager)
 local VOTING_RPCS = {
 	"rpc_server_request_start_vote_peer_id",
 	"rpc_server_request_start_vote_lookup",
+	"rpc_server_request_start_vote_deed",
 	"rpc_client_start_vote_peer_id",
 	"rpc_client_start_vote_lookup",
+	"rpc_client_start_vote_deed",
 	"rpc_client_add_vote",
 	"rpc_vote",
 	"rpc_client_complete_vote",
@@ -61,7 +63,7 @@ VoteManager.request_vote = function (self, name, vote_data, voter_peer_id)
 
 			return true
 		end
-	else
+	elseif Managers.state.network:game() then
 		local client_start_vote_rpc = vote_template.client_start_vote_rpc
 		local sync_data = vote_template.pack_sync_data(vote_data)
 
@@ -499,6 +501,10 @@ VoteManager.rpc_server_request_start_vote_lookup = function (self, peer_id, vote
 	self:rpc_server_request_start_vote_base(peer_id, vote_type_id, sync_data)
 end
 
+VoteManager.rpc_server_request_start_vote_deed = function (self, peer_id, vote_type_id, sync_data)
+	self:rpc_server_request_start_vote_base(peer_id, vote_type_id, sync_data)
+end
+
 VoteManager._start_vote_base = function (self, peer_id, vote_type_id, sync_data, voters)
 	local vote_type_name = NetworkLookup.voting_types[vote_type_id]
 	local vote_template = VoteTemplates[vote_type_name]
@@ -522,6 +528,10 @@ VoteManager.rpc_client_start_vote_peer_id = function (self, peer_id, vote_type_i
 end
 
 VoteManager.rpc_client_start_vote_lookup = function (self, peer_id, vote_type_id, sync_data, voters)
+	self:_start_vote_base(peer_id, vote_type_id, sync_data, voters)
+end
+
+VoteManager.rpc_client_start_vote_deed = function (self, peer_id, vote_type_id, sync_data, voters)
 	self:_start_vote_base(peer_id, vote_type_id, sync_data, voters)
 end
 
