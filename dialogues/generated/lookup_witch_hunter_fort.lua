@@ -20,7 +20,6 @@ assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 assert(DialogueLookup[DialogueLookup_n + 20] == nil)
 assert(DialogueLookup[DialogueLookup_n + 21] == nil)
 assert(DialogueLookup[DialogueLookup_n + 22] == nil)
-assert(DialogueLookup[DialogueLookup_n + 23] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pwh_level_fort_under_attack"
 DialogueLookup[DialogueLookup_n + 2] = "pwh_level_fort_river"
@@ -41,10 +40,9 @@ DialogueLookup[DialogueLookup_n + 16] = "pwh_level_fort_fire_cannon_fuse_is_lit"
 DialogueLookup[DialogueLookup_n + 17] = "pwh_level_fort_fire_cannon_first_hit"
 DialogueLookup[DialogueLookup_n + 18] = "pwh_level_fort_fire_cannon_second"
 DialogueLookup[DialogueLookup_n + 19] = "pwh_level_fort_fire_cannon_second_hit"
-DialogueLookup[DialogueLookup_n + 20] = "pwh_level_fort_fire_cannon_final"
-DialogueLookup[DialogueLookup_n + 21] = "pwh_level_fort_cannonballs"
-DialogueLookup[DialogueLookup_n + 22] = "pwh_level_fort_fire_cannon_final_hit"
-DialogueLookup[DialogueLookup_n + 23] = "pwh_level_fort_fire_cannon_final_fire"
-DialogueLookup_n = DialogueLookup_n + 23
+DialogueLookup[DialogueLookup_n + 20] = "pwh_level_fort_cannonballs"
+DialogueLookup[DialogueLookup_n + 21] = "pwh_level_fort_fire_cannon_final_hit"
+DialogueLookup[DialogueLookup_n + 22] = "pwh_level_fort_fire_cannon_final_fire"
+DialogueLookup_n = DialogueLookup_n + 22
 
-return 
+return

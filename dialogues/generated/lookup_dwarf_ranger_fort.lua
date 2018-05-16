@@ -21,8 +21,6 @@ assert(DialogueLookup[DialogueLookup_n + 20] == nil)
 assert(DialogueLookup[DialogueLookup_n + 21] == nil)
 assert(DialogueLookup[DialogueLookup_n + 22] == nil)
 assert(DialogueLookup[DialogueLookup_n + 23] == nil)
-assert(DialogueLookup[DialogueLookup_n + 24] == nil)
-assert(DialogueLookup[DialogueLookup_n + 25] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_level_fort_road"
 DialogueLookup[DialogueLookup_n + 2] = "pdr_level_fort_carriage"
@@ -39,16 +37,14 @@ DialogueLookup[DialogueLookup_n + 12] = "pdr_level_fort_use_cannons"
 DialogueLookup[DialogueLookup_n + 13] = "pdr_fort_intro_a"
 DialogueLookup[DialogueLookup_n + 14] = "pdr_fort_intro_b"
 DialogueLookup[DialogueLookup_n + 15] = "pdr_fort_intro_c"
-DialogueLookup[DialogueLookup_n + 16] = "pdr_level_fort_skaven_run"
-DialogueLookup[DialogueLookup_n + 17] = "pdr_level_fort_fire_cannon_first"
-DialogueLookup[DialogueLookup_n + 18] = "pdr_level_fort_fire_cannon_fuse_is_lit"
-DialogueLookup[DialogueLookup_n + 19] = "pdr_level_fort_fire_cannon_first_hit"
-DialogueLookup[DialogueLookup_n + 20] = "pdr_level_fort_fire_cannon_second"
-DialogueLookup[DialogueLookup_n + 21] = "pdr_level_fort_fire_cannon_second_hit"
-DialogueLookup[DialogueLookup_n + 22] = "pdr_level_fort_fire_cannon_final"
-DialogueLookup[DialogueLookup_n + 23] = "pdr_level_fort_cannonballs"
-DialogueLookup[DialogueLookup_n + 24] = "pdr_level_fort_fire_cannon_final_hit"
-DialogueLookup[DialogueLookup_n + 25] = "pdr_level_fort_fire_cannon_final_fire"
-DialogueLookup_n = DialogueLookup_n + 25
+DialogueLookup[DialogueLookup_n + 16] = "pdr_level_fort_fire_cannon_first"
+DialogueLookup[DialogueLookup_n + 17] = "pdr_level_fort_fire_cannon_fuse_is_lit"
+DialogueLookup[DialogueLookup_n + 18] = "pdr_level_fort_fire_cannon_first_hit"
+DialogueLookup[DialogueLookup_n + 19] = "pdr_level_fort_fire_cannon_second"
+DialogueLookup[DialogueLookup_n + 20] = "pdr_level_fort_fire_cannon_second_hit"
+DialogueLookup[DialogueLookup_n + 21] = "pdr_level_fort_cannonballs"
+DialogueLookup[DialogueLookup_n + 22] = "pdr_level_fort_fire_cannon_final_hit"
+DialogueLookup[DialogueLookup_n + 23] = "pdr_level_fort_fire_cannon_final_fire"
+DialogueLookup_n = DialogueLookup_n + 23
 
-return 
+return

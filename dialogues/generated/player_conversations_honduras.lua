@@ -22857,6 +22857,4 @@ return function ()
 			}
 		}
 	})
-
-	return 
 end

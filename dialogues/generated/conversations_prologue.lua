@@ -4465,6 +4465,4 @@ return function ()
 			}
 		}
 	})
-
-	return 
 end

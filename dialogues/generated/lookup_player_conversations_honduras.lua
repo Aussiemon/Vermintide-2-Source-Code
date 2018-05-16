@@ -809,4 +809,4 @@ DialogueLookup[DialogueLookup_n + 403] = "pbw_gameplay_ranger_misses_bomb_01"
 DialogueLookup[DialogueLookup_n + 404] = "pdr_gameplay_response_21"
 DialogueLookup_n = DialogueLookup_n + 404
 
-return 
+return

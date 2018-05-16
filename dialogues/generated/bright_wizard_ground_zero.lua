@@ -44,50 +44,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pbw_level_ground_zero_cargo_elevator",
-		response = "pbw_level_ground_zero_cargo_elevator",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_cargo_elevator"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_cargo_elevator",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_cargo_elevator",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pbw_level_ground_zero_corruption_everywhere",
 		response = "pbw_level_ground_zero_corruption_everywhere",
 		criterias = {
@@ -390,50 +346,6 @@ return function ()
 			{
 				"faction_memory",
 				"level_ground_zero_precarious",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pbw_level_ground_zero_draw_bridge",
-		response = "pbw_level_ground_zero_draw_bridge",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_draw_bridge"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_draw_bridge",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_draw_bridge",
 				OP.ADD,
 				1
 			}
@@ -769,18 +681,18 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_ground_zero_precarious = {
+		pbw_level_ground_zero_looking_for_elevator = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "bright_wizard_ground_zero",
-			category = "story_talk",
+			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pbw_level_ground_zero_precarious_01",
-				"pbw_level_ground_zero_precarious_02",
-				"pbw_level_ground_zero_precarious_03",
-				"pbw_level_ground_zero_precarious_04"
+				"pbw_level_ground_zero_looking_for_elevator_01",
+				"pbw_level_ground_zero_looking_for_elevator_02",
+				"pbw_level_ground_zero_looking_for_elevator_03",
+				"pbw_level_ground_zero_looking_for_elevator_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -795,10 +707,43 @@ return function ()
 				"face_fear"
 			},
 			localization_strings = {
-				"pbw_level_ground_zero_precarious_01",
-				"pbw_level_ground_zero_precarious_02",
-				"pbw_level_ground_zero_precarious_03",
-				"pbw_level_ground_zero_precarious_04"
+				"pbw_level_ground_zero_looking_for_elevator_01",
+				"pbw_level_ground_zero_looking_for_elevator_02",
+				"pbw_level_ground_zero_looking_for_elevator_03",
+				"pbw_level_ground_zero_looking_for_elevator_04"
+			},
+			randomize_indexes = {}
+		},
+		pbw_level_ground_zero_the_hole = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "bright_wizard_ground_zero",
+			category = "story_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_level_ground_zero_the_hole_01",
+				"pbw_level_ground_zero_the_hole_02",
+				"pbw_level_ground_zero_the_hole_03",
+				"pbw_level_ground_zero_the_hole_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pbw_level_ground_zero_the_hole_01",
+				"pbw_level_ground_zero_the_hole_02",
+				"pbw_level_ground_zero_the_hole_03",
+				"pbw_level_ground_zero_the_hole_04"
 			},
 			randomize_indexes = {}
 		},
@@ -868,6 +813,89 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_level_ground_zero_canal_crossing = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "bright_wizard_ground_zero",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_level_ground_zero_canal_crossing_01",
+				"pbw_level_ground_zero_canal_crossing_02",
+				"pbw_level_ground_zero_canal_crossing_03",
+				"pbw_level_ground_zero_canal_crossing_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pbw_level_ground_zero_canal_crossing_01",
+				"pbw_level_ground_zero_canal_crossing_02",
+				"pbw_level_ground_zero_canal_crossing_03",
+				"pbw_level_ground_zero_canal_crossing_04"
+			},
+			randomize_indexes = {}
+		},
+		pbw_ground_zero_intro_c = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "bright_wizard_ground_zero",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pbw_ground_zero_intro_c_01",
+				[2.0] = "pbw_ground_zero_intro_c_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_ground_zero_intro_c_01",
+				[2.0] = "pbw_ground_zero_intro_c_02"
+			},
+			randomize_indexes = {}
+		},
+		pbw_ground_zero_intro_b = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "bright_wizard_ground_zero",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pbw_ground_zero_intro_b_01",
+				[2.0] = "pbw_ground_zero_intro_b_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_ground_zero_intro_b_01",
+				[2.0] = "pbw_ground_zero_intro_b_02"
+			},
+			randomize_indexes = {}
+		},
 		pbw_level_ground_zero_corruption_everywhere = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -898,6 +926,39 @@ return function ()
 				"pbw_level_ground_zero_corruption_everywhere_02",
 				"pbw_level_ground_zero_corruption_everywhere_03",
 				"pbw_level_ground_zero_corruption_everywhere_04"
+			},
+			randomize_indexes = {}
+		},
+		pbw_level_ground_zero_precarious = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "bright_wizard_ground_zero",
+			category = "story_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_level_ground_zero_precarious_01",
+				"pbw_level_ground_zero_precarious_02",
+				"pbw_level_ground_zero_precarious_03",
+				"pbw_level_ground_zero_precarious_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pbw_level_ground_zero_precarious_01",
+				"pbw_level_ground_zero_precarious_02",
+				"pbw_level_ground_zero_precarious_03",
+				"pbw_level_ground_zero_precarious_04"
 			},
 			randomize_indexes = {}
 		},
@@ -934,98 +995,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_ground_zero_crumbling = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_ground_zero",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_ground_zero_crumbling_01",
-				"pbw_level_ground_zero_crumbling_02",
-				"pbw_level_ground_zero_crumbling_03",
-				"pbw_level_ground_zero_crumbling_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pbw_level_ground_zero_crumbling_01",
-				"pbw_level_ground_zero_crumbling_02",
-				"pbw_level_ground_zero_crumbling_03",
-				"pbw_level_ground_zero_crumbling_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_ground_zero_intro_b = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "bright_wizard_ground_zero",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pbw_ground_zero_intro_b_01",
-				[2.0] = "pbw_ground_zero_intro_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pbw_ground_zero_intro_b_01",
-				[2.0] = "pbw_ground_zero_intro_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_ground_zero_looking_for_elevator = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_ground_zero",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_ground_zero_looking_for_elevator_01",
-				"pbw_level_ground_zero_looking_for_elevator_02",
-				"pbw_level_ground_zero_looking_for_elevator_03",
-				"pbw_level_ground_zero_looking_for_elevator_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pbw_level_ground_zero_looking_for_elevator_01",
-				"pbw_level_ground_zero_looking_for_elevator_02",
-				"pbw_level_ground_zero_looking_for_elevator_03",
-				"pbw_level_ground_zero_looking_for_elevator_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_ground_zero_the_hole = {
+		pbw_level_ground_zero_welcoming_committee = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1033,10 +1003,10 @@ return function ()
 			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pbw_level_ground_zero_the_hole_01",
-				"pbw_level_ground_zero_the_hole_02",
-				"pbw_level_ground_zero_the_hole_03",
-				"pbw_level_ground_zero_the_hole_04"
+				"pbw_level_ground_zero_welcoming_committee_01",
+				"pbw_level_ground_zero_welcoming_committee_02",
+				"pbw_level_ground_zero_welcoming_committee_03",
+				"pbw_level_ground_zero_welcoming_committee_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -1051,10 +1021,10 @@ return function ()
 				"face_fear"
 			},
 			localization_strings = {
-				"pbw_level_ground_zero_the_hole_01",
-				"pbw_level_ground_zero_the_hole_02",
-				"pbw_level_ground_zero_the_hole_03",
-				"pbw_level_ground_zero_the_hole_04"
+				"pbw_level_ground_zero_welcoming_committee_01",
+				"pbw_level_ground_zero_welcoming_committee_02",
+				"pbw_level_ground_zero_welcoming_committee_03",
+				"pbw_level_ground_zero_welcoming_committee_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1091,138 +1061,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_ground_zero_canal_crossing = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_ground_zero",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_ground_zero_canal_crossing_01",
-				"pbw_level_ground_zero_canal_crossing_02",
-				"pbw_level_ground_zero_canal_crossing_03",
-				"pbw_level_ground_zero_canal_crossing_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pbw_level_ground_zero_canal_crossing_01",
-				"pbw_level_ground_zero_canal_crossing_02",
-				"pbw_level_ground_zero_canal_crossing_03",
-				"pbw_level_ground_zero_canal_crossing_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_ground_zero_draw_bridge = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_ground_zero",
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_ground_zero_draw_bridge_01",
-				"pbw_level_ground_zero_draw_bridge_02",
-				"pbw_level_ground_zero_draw_bridge_03",
-				"pbw_level_ground_zero_draw_bridge_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pbw_level_ground_zero_draw_bridge_01",
-				"pbw_level_ground_zero_draw_bridge_02",
-				"pbw_level_ground_zero_draw_bridge_03",
-				"pbw_level_ground_zero_draw_bridge_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_ground_zero_welcoming_committee = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_ground_zero",
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_ground_zero_welcoming_committee_01",
-				"pbw_level_ground_zero_welcoming_committee_02",
-				"pbw_level_ground_zero_welcoming_committee_03",
-				"pbw_level_ground_zero_welcoming_committee_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pbw_level_ground_zero_welcoming_committee_01",
-				"pbw_level_ground_zero_welcoming_committee_02",
-				"pbw_level_ground_zero_welcoming_committee_03",
-				"pbw_level_ground_zero_welcoming_committee_04"
-			},
-			randomize_indexes = {}
-		},
-		pbw_level_ground_zero_cargo_elevator = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "bright_wizard_ground_zero",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pbw_level_ground_zero_cargo_elevator_01",
-				"pbw_level_ground_zero_cargo_elevator_02",
-				"pbw_level_ground_zero_cargo_elevator_03",
-				"pbw_level_ground_zero_cargo_elevator_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_level_ground_zero_cargo_elevator_01",
-				"pbw_level_ground_zero_cargo_elevator_02",
-				"pbw_level_ground_zero_cargo_elevator_03",
-				"pbw_level_ground_zero_cargo_elevator_04"
-			},
-			randomize_indexes = {}
-		},
 		pbw_ground_zero_intro_a = {
 			sound_events_n = 2,
 			randomize_indexes_n = 0,
@@ -1248,32 +1086,38 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_ground_zero_intro_c = {
-			sound_events_n = 2,
+		pbw_level_ground_zero_crumbling = {
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
-			face_animations_n = 2,
+			face_animations_n = 4,
 			database = "bright_wizard_ground_zero",
 			category = "level_talk",
-			dialogue_animations_n = 2,
+			dialogue_animations_n = 4,
 			sound_events = {
-				[1.0] = "pbw_ground_zero_intro_c_01",
-				[2.0] = "pbw_ground_zero_intro_c_02"
+				"pbw_level_ground_zero_crumbling_01",
+				"pbw_level_ground_zero_crumbling_02",
+				"pbw_level_ground_zero_crumbling_03",
+				"pbw_level_ground_zero_crumbling_04"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			},
 			localization_strings = {
-				[1.0] = "pbw_ground_zero_intro_c_01",
-				[2.0] = "pbw_ground_zero_intro_c_02"
+				"pbw_level_ground_zero_crumbling_01",
+				"pbw_level_ground_zero_crumbling_02",
+				"pbw_level_ground_zero_crumbling_03",
+				"pbw_level_ground_zero_crumbling_04"
 			},
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

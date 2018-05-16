@@ -137,50 +137,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_level_fort_cross_here",
-		response = "pes_level_fort_cross_here",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_fort_cross_here"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_fort_cross_here",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_fort_cross_here",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pes_level_fort_getting_closer",
 		response = "pes_level_fort_getting_closer",
 		criterias = {
@@ -219,50 +175,6 @@ return function ()
 			{
 				"faction_memory",
 				"level_fort_getting_closer",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_fort_cannons_silenced",
-		response = "pes_level_fort_cannons_silenced",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_fort_cannons_silenced"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_fort_cannons_silenced",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_fort_cannons_silenced",
 				OP.ADD,
 				1
 			}
@@ -753,50 +665,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_level_fort_fire_cannon_final",
-		response = "pes_level_fort_fire_cannon_final",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_fort_fire_cannon_final"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_fort_fire_cannon_final",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_fort_fire_cannon_final",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pes_level_fort_cannonballs",
 		response = "pes_level_fort_cannonballs",
 		criterias = {
@@ -1204,31 +1072,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_level_fort_fire_cannon_final = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_fort",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_level_fort_fire_cannon_final_01",
-				[2.0] = "pes_level_fort_fire_cannon_final_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_fire_cannon_final_01",
-				[2.0] = "pes_level_fort_fire_cannon_final_02"
-			},
-			randomize_indexes = {}
-		},
 		pes_level_fort_fire_cannon_final_fire = {
 			sound_events_n = 2,
 			randomize_indexes_n = 0,
@@ -1254,31 +1097,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_level_fort_fire_cannon_final_hit = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_fort",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_level_fort_fire_cannon_final_hit_01",
-				[2.0] = "pes_level_fort_fire_cannon_final_hit_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_fire_cannon_final_hit_01",
-				[2.0] = "pes_level_fort_fire_cannon_final_hit_02"
-			},
-			randomize_indexes = {}
-		},
 		pes_level_fort_gate_fallen = {
 			sound_events_n = 2,
 			randomize_indexes_n = 0,
@@ -1301,31 +1119,6 @@ return function ()
 			localization_strings = {
 				[1.0] = "pes_level_fort_gate_fallen_01",
 				[2.0] = "pes_level_fort_gate_fallen_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_level_fort_cannonballs = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_fort",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_level_fort_cannonballs_01",
-				[2.0] = "pes_level_fort_cannonballs_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_cannonballs_01",
-				[2.0] = "pes_level_fort_cannonballs_02"
 			},
 			randomize_indexes = {}
 		},
@@ -1365,6 +1158,56 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pes_level_fort_fire_cannon_final_hit = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_fort",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_level_fort_fire_cannon_final_hit_01",
+				[2.0] = "pes_level_fort_fire_cannon_final_hit_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			},
+			localization_strings = {
+				[1.0] = "pes_level_fort_fire_cannon_final_hit_01",
+				[2.0] = "pes_level_fort_fire_cannon_final_hit_02"
+			},
+			randomize_indexes = {}
+		},
+		pes_level_fort_cannonballs = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_fort",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_level_fort_cannonballs_01",
+				[2.0] = "pes_level_fort_cannonballs_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			},
+			localization_strings = {
+				[1.0] = "pes_level_fort_cannonballs_01",
+				[2.0] = "pes_level_fort_cannonballs_02"
+			},
+			randomize_indexes = {}
+		},
 		pes_level_fort_fire_cannon_second = {
 			sound_events_n = 2,
 			randomize_indexes_n = 0,
@@ -1387,64 +1230,6 @@ return function ()
 			localization_strings = {
 				[1.0] = "pes_level_fort_fire_cannon_second_01",
 				[2.0] = "pes_level_fort_fire_cannon_second_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_level_fort_cross_here = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_fort",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_level_fort_cross_here_01",
-				[2.0] = "pes_level_fort_cross_here_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			localization_strings = {
-				[1.0] = "pes_level_fort_cross_here_01",
-				[2.0] = "pes_level_fort_cross_here_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_level_fort_cannons_silenced = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_fort",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_level_fort_cannons_silenced_01",
-				"pes_level_fort_cannons_silenced_02",
-				"pes_level_fort_cannons_silenced_03",
-				"pes_level_fort_cannons_silenced_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pes_level_fort_cannons_silenced_01",
-				"pes_level_fort_cannons_silenced_02",
-				"pes_level_fort_cannons_silenced_03",
-				"pes_level_fort_cannons_silenced_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1474,6 +1259,4 @@ return function ()
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

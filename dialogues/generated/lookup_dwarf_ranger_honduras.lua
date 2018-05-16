@@ -345,4 +345,4 @@ DialogueLookup[DialogueLookup_n + 171] = "pdr_gameplay_overcharge"
 DialogueLookup[DialogueLookup_n + 172] = "pdr_targeted_by_ratling"
 DialogueLookup_n = DialogueLookup_n + 172
 
-return 
+return

@@ -245,7 +245,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"skittergate_activate_gate"
+				"skittergate_activate_gate_helmgart"
 			},
 			{
 				"query_context",
@@ -261,7 +261,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_skittergate_activate_gate",
+				"skittergate_activate_gate_helmgart",
 				OP.EQ,
 				0
 			}
@@ -269,7 +269,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_skittergate_activate_gate",
+				"skittergate_activate_gate_helmgart",
 				OP.ADD,
 				1
 			}
@@ -910,50 +910,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pdr_level_skittergate_activate_gate_01a",
-		response = "pdr_level_skittergate_activate_gate_01a",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"skittergate_activate_gate"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"skittergate_activate_gate",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"skittergate_activate_gate",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pdr_level_skittergate_get_down_to_the_cooling_01",
 		response = "pdr_level_skittergate_get_down_to_the_cooling_01",
 		criterias = {
@@ -1470,498 +1426,6 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "egs_level_skittergate_rasknitt_appears",
-		name = "egs_level_skittergate_rasknitt_appears",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_intro"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_level_skittergate_rasknitt_calls_mount",
-		name = "egs_level_skittergate_rasknitt_calls_mount",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_call_mount"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_gameplay_shielded",
-		name = "egs_gameplay_shielded",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_shielded"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_gameplay_witchhunter_knock_down",
-		name = "egs_gameplay_witchhunter_knock_down",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"dialogue_name",
-				OP.EQ,
-				"pdr_gameplay_knocked_down"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_gameplay_brightwizard_knock_down",
-		name = "egs_gameplay_brightwizard_knock_down",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"dialogue_name",
-				OP.EQ,
-				"pbw_gameplay_knocked_down"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_gameplay_dwarfranger_knock_down",
-		name = "egs_gameplay_dwarfranger_knock_down",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"dialogue_name",
-				OP.EQ,
-				"pdr_gameplay_knocked_down"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_gameplay_woodelf_knock_down",
-		name = "egs_gameplay_woodelf_knock_down",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"dialogue_name",
-				OP.EQ,
-				"pwe_gameplay_knocked_down"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_gameplay_empiresoldier_knock_down",
-		name = "egs_gameplay_empiresoldier_knock_down",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"dialogue_name",
-				OP.EQ,
-				"pes_gameplay_knocked_down"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_gameplay_witchhunter_killed",
-		name = "egs_gameplay_witchhunter_killed",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"player_death"
-			},
-			{
-				"query_context",
-				"target_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_gameplay_brightwizard_killed",
-		name = "egs_gameplay_brightwizard_killed",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"player_death"
-			},
-			{
-				"query_context",
-				"target_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_gameplay_dwarfranger_killed",
-		name = "egs_gameplay_dwarfranger_killed",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"player_death"
-			},
-			{
-				"query_context",
-				"target_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_gameplay_woodelf_killed",
-		name = "egs_gameplay_woodelf_killed",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"player_death"
-			},
-			{
-				"query_context",
-				"target_name",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_gameplay_empiresoldier_killed",
-		name = "egs_gameplay_empiresoldier_killed",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"player_death"
-			},
-			{
-				"query_context",
-				"target_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_level_skittergate_rasknitt_mounting_stormfiend",
-		name = "egs_level_skittergate_rasknitt_mounting_stormfiend",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_mounting"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_level_skittergate_rasknitt_on_stormfiend",
-		name = "egs_level_skittergate_rasknitt_on_stormfiend",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_shooting"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_level_skittergate_rasknitt_dismounted",
-		name = "egs_level_skittergate_rasknitt_dismounted",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_rasknitt_dismounted"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_level_skittergate_rasknitt_calls_mount_battle",
-		name = "egs_level_skittergate_rasknitt_calls_mount_battle",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_calls_mount_battle"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_level_skittergate_stormfiend_dead",
-		name = "egs_level_skittergate_stormfiend_dead",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_stormfiend_dead"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_level_skittergate_summon_skaven",
-		name = "egs_level_skittergate_summon_skaven",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_summon"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_level_skittergate_cast_lightning",
-		name = "egs_level_skittergate_cast_lightning",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_cast_lightning"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_level_skittergate_cast_vermintide",
-		name = "egs_level_skittergate_cast_vermintide",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_cast_vermintide"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_level_skitter_gate_teleport_death",
-		name = "egs_level_skitter_gate_teleport_death",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_teleport_to_death"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_level_skittergate_teleport_away",
-		name = "egs_level_skittergate_teleport_away",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_teleport_away"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
-		response = "egs_death_scene_01",
-		name = "egs_death_scene_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"egs_death_scene"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"skaven_grey_seer"
-			}
-		}
-	})
-	define_rule({
 		response = "pdr_level_skittergate_rasknitt_gate_reply",
 		name = "pdr_level_skittergate_rasknitt_gate_reply",
 		criterias = {
@@ -1975,7 +1439,7 @@ return function ()
 				"query_context",
 				"dialogue_name",
 				OP.EQ,
-				"egs_level_skittergate_rasknitt_appears"
+				"egs_level_skittergate_rasknitt_calls_mount_intro"
 			},
 			{
 				"query_context",
@@ -2123,7 +1587,7 @@ return function ()
 				"query_context",
 				"killed_type",
 				OP.EQ,
-				"skaven_grey_seer"
+				"skaven_stormfiend_boss"
 			},
 			{
 				"query_context",
@@ -2153,40 +1617,95 @@ return function ()
 			}
 		}
 	})
-	add_dialogues({
-		egs_level_skittergate_rasknitt_mounting_stormfiend = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"egs_level_skittergate_rasknitt_mounting_stormfiend_01",
-				"egs_level_skittergate_rasknitt_mounting_stormfiend_02",
-				"egs_level_skittergate_rasknitt_mounting_stormfiend_03",
-				"egs_level_skittergate_rasknitt_mounting_stormfiend_04"
+	define_rule({
+		name = "pdr_level_skittergate_dead_seer",
+		response = "pdr_level_skittergate_dead_seer",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"enemy_kill"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			{
+				"query_context",
+				"killed_type",
+				OP.EQ,
+				"skaven_grey_seer"
 			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
 			},
-			localization_strings = {
-				"egs_level_skittergate_rasknitt_mounting_stormfiend_01",
-				"egs_level_skittergate_rasknitt_mounting_stormfiend_02",
-				"egs_level_skittergate_rasknitt_mounting_stormfiend_03",
-				"egs_level_skittergate_rasknitt_mounting_stormfiend_04"
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
 			},
-			randomize_indexes = {}
+			{
+				"faction_memory",
+				"skittergate_dead_seer",
+				OP.TIMEDIFF,
+				OP.GT,
+				3
+			}
 		},
+		on_done = {
+			{
+				"faction_memory",
+				"skittergate_dead_seer",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_skittergate_activate_gate_01a",
+		response = "pdr_level_skittergate_activate_gate_01a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"skittergate_activate_gate_norsca"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_skittergate_activate_gate_norsca",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_skittergate_activate_gate_norsca",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	add_dialogues({
 		pdr_level_skittergate_BOOM_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -2311,216 +1830,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		egs_level_skitter_gate_teleport_death = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "egs_level_skitter_gate_teleport_death"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_angry"
-			},
-			localization_strings = {
-				[1.0] = "egs_level_skitter_gate_teleport_death"
-			}
-		},
-		egs_level_skittergate_rasknitt_dismounted = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			sound_distance = 50,
-			category = "boss_talk_interrupt",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"egs_level_skittergate_rasknitt_dismounted_01",
-				"egs_level_skittergate_rasknitt_dismounted_02",
-				"egs_level_skittergate_rasknitt_dismounted_03",
-				"egs_level_skittergate_rasknitt_dismounted_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_level_skittergate_rasknitt_dismounted_01",
-				"egs_level_skittergate_rasknitt_dismounted_02",
-				"egs_level_skittergate_rasknitt_dismounted_03",
-				"egs_level_skittergate_rasknitt_dismounted_04"
-			},
-			randomize_indexes = {}
-		},
-		egs_level_skittergate_cast_vermintide = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"egs_level_skittergate_cast_vermintide_01",
-				"egs_level_skittergate_cast_vermintide_02",
-				"egs_level_skittergate_cast_vermintide_03",
-				"egs_level_skittergate_cast_vermintide_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_level_skittergate_cast_vermintide_01",
-				"egs_level_skittergate_cast_vermintide_02",
-				"egs_level_skittergate_cast_vermintide_03",
-				"egs_level_skittergate_cast_vermintide_04"
-			},
-			randomize_indexes = {}
-		},
-		egs_gameplay_shielded = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_reaction_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"egs_gameplay_shielded_01",
-				"egs_gameplay_shielded_02",
-				"egs_gameplay_shielded_03",
-				"egs_gameplay_shielded_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_gameplay_shielded_01",
-				"egs_gameplay_shielded_02",
-				"egs_gameplay_shielded_03",
-				"egs_gameplay_shielded_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_skittergate_rasknitt_stormfiend_dead = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "dwarf_ranger_skittergate",
-			category = "player_alerts_boss",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pdr_level_skittergate_rasknitt_stormfiend_dead_01",
-				[2.0] = "pdr_level_skittergate_rasknitt_stormfiend_dead_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_skittergate_rasknitt_stormfiend_dead_01",
-				[2.0] = "pdr_level_skittergate_rasknitt_stormfiend_dead_02"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_skittergate_cave_entrance_01 = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_skittergate_cave_entrance_01",
-				"pdr_level_skittergate_cave_entrance_02",
-				"pdr_level_skittergate_cave_entrance_03",
-				"pdr_level_skittergate_cave_entrance_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pdr_level_skittergate_cave_entrance_01",
-				"pdr_level_skittergate_cave_entrance_02",
-				"pdr_level_skittergate_cave_entrance_03",
-				"pdr_level_skittergate_cave_entrance_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_skittergate_leave_01 = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_skittergate_leave_01",
-				"pdr_level_skittergate_leave_02",
-				"pdr_level_skittergate_leave_03",
-				"pdr_level_skittergate_leave_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pdr_level_skittergate_leave_01",
-				"pdr_level_skittergate_leave_02",
-				"pdr_level_skittergate_leave_03",
-				"pdr_level_skittergate_leave_04"
-			},
-			randomize_indexes = {}
-		},
 		pdr_level_skittergate_rasknitt_interrupt_and_focus = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -2554,18 +1863,18 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_level_skittergate_rasknitt_death_rattler_invulnerable = {
+		pdr_level_skittergate_through_the_gate = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skittergate",
-			category = "player_alerts_boss",
+			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_01",
-				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_02",
-				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_03",
-				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_04"
+				"pdr_level_skittergate_through_the_gate_01",
+				"pdr_level_skittergate_through_the_gate_02",
+				"pdr_level_skittergate_through_the_gate_03",
+				"pdr_level_skittergate_through_the_gate_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -2574,16 +1883,49 @@ return function ()
 				"dialogue_shout"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			},
 			localization_strings = {
-				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_01",
-				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_02",
-				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_03",
-				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_04"
+				"pdr_level_skittergate_through_the_gate_01",
+				"pdr_level_skittergate_through_the_gate_02",
+				"pdr_level_skittergate_through_the_gate_03",
+				"pdr_level_skittergate_through_the_gate_04"
+			},
+			randomize_indexes = {}
+		},
+		pdr_level_skittergate_leave_01 = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_skittergate",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pdr_level_skittergate_leave_01",
+				"pdr_level_skittergate_leave_02",
+				"pdr_level_skittergate_leave_03",
+				"pdr_level_skittergate_leave_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pdr_level_skittergate_leave_01",
+				"pdr_level_skittergate_leave_02",
+				"pdr_level_skittergate_leave_03",
+				"pdr_level_skittergate_leave_04"
 			},
 			randomize_indexes = {}
 		},
@@ -2649,6 +1991,39 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pdr_level_skittergate_arrive_01 = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_skittergate",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pdr_level_skittergate_arrive_01",
+				"pdr_level_skittergate_arrive_02",
+				"pdr_level_skittergate_arrive_03",
+				"pdr_level_skittergate_arrive_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pdr_level_skittergate_arrive_01",
+				"pdr_level_skittergate_arrive_02",
+				"pdr_level_skittergate_arrive_03",
+				"pdr_level_skittergate_arrive_04"
+			},
+			randomize_indexes = {}
+		},
 		pdr_level_skittergate_rasknitt_dismounted_one = {
 			sound_events_n = 5,
 			randomize_indexes_n = 0,
@@ -2686,72 +2061,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_level_skittergate_arrive_01 = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_skittergate_arrive_01",
-				"pdr_level_skittergate_arrive_02",
-				"pdr_level_skittergate_arrive_03",
-				"pdr_level_skittergate_arrive_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pdr_level_skittergate_arrive_01",
-				"pdr_level_skittergate_arrive_02",
-				"pdr_level_skittergate_arrive_03",
-				"pdr_level_skittergate_arrive_04"
-			},
-			randomize_indexes = {}
-		},
-		egs_level_skittergate_cast_lightning = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"egs_level_skittergate_cast_lightning_01",
-				"egs_level_skittergate_cast_lightning_02",
-				"egs_level_skittergate_cast_lightning_03",
-				"egs_level_skittergate_cast_lightning_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_level_skittergate_cast_lightning_01",
-				"egs_level_skittergate_cast_lightning_02",
-				"egs_level_skittergate_cast_lightning_03",
-				"egs_level_skittergate_cast_lightning_04"
-			},
-			randomize_indexes = {}
-		},
 		pdr_level_skittergate_gate_activated_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -2782,31 +2091,6 @@ return function ()
 				"pdr_level_skittergate_gate_activated_02",
 				"pdr_level_skittergate_gate_activated_03",
 				"pdr_level_skittergate_gate_activated_04"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_skittergate_rasknitt_gate_reply = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "dwarf_ranger_skittergate",
-			category = "player_alerts_boss",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pdr_level_skittergate_rasknitt_gate_reply_01",
-				[2.0] = "pdr_level_skittergate_rasknitt_gate_reply_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pdr_level_skittergate_rasknitt_gate_reply_01",
-				[2.0] = "pdr_level_skittergate_rasknitt_gate_reply_02"
 			},
 			randomize_indexes = {}
 		},
@@ -2843,25 +2127,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		egs_death_scene_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk_interrupt",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "egs_death_scene_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_angry"
-			},
-			localization_strings = {
-				[1.0] = "egs_death_scene_01"
-			}
-		},
 		pdr_level_skittergate_get_down_to_the_cooling_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -2892,143 +2157,6 @@ return function ()
 				"pdr_level_skittergate_get_down_to_the_cooling_02",
 				"pdr_level_skittergate_get_down_to_the_cooling_03",
 				"pdr_level_skittergate_get_down_to_the_cooling_04"
-			},
-			randomize_indexes = {}
-		},
-		egs_level_skittergate_teleport_away = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			sound_distance = 50,
-			category = "boss_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"egs_level_skittergate_teleport_away_01",
-				"egs_level_skittergate_teleport_away_02",
-				"egs_level_skittergate_teleport_away_03",
-				"egs_level_skittergate_teleport_away_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_level_skittergate_teleport_away_01",
-				"egs_level_skittergate_teleport_away_02",
-				"egs_level_skittergate_teleport_away_03",
-				"egs_level_skittergate_teleport_away_04"
-			},
-			randomize_indexes = {}
-		},
-		egs_level_skittergate_summon_skaven = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"egs_level_skittergate_summon_skaven_01",
-				"egs_level_skittergate_summon_skaven_02",
-				"egs_level_skittergate_summon_skaven_03",
-				"egs_level_skittergate_summon_skaven_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_level_skittergate_summon_skaven_01",
-				"egs_level_skittergate_summon_skaven_02",
-				"egs_level_skittergate_summon_skaven_03",
-				"egs_level_skittergate_summon_skaven_04"
-			},
-			randomize_indexes = {}
-		},
-		egs_level_skittergate_stormfiend_dead = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"egs_level_skittergate_stormfiend_dead_01",
-				"egs_level_skittergate_stormfiend_dead_02",
-				"egs_level_skittergate_stormfiend_dead_03",
-				"egs_level_skittergate_stormfiend_dead_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_level_skittergate_stormfiend_dead_01",
-				"egs_level_skittergate_stormfiend_dead_02",
-				"egs_level_skittergate_stormfiend_dead_03",
-				"egs_level_skittergate_stormfiend_dead_04"
-			},
-			randomize_indexes = {}
-		},
-		egs_gameplay_brightwizard_killed = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 5,
-			sound_events = {
-				"egs_gameplay_brightwizard_killed_01",
-				"egs_gameplay_brightwizard_killed_02",
-				"egs_gameplay_brightwizard_killed_03",
-				"egs_gameplay_brightwizard_killed_04",
-				"egs_gameplay_brightwizard_killed_05"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_gameplay_brightwizard_killed_01",
-				"egs_gameplay_brightwizard_killed_02",
-				"egs_gameplay_brightwizard_killed_03",
-				"egs_gameplay_brightwizard_killed_04",
-				"egs_gameplay_brightwizard_killed_05"
 			},
 			randomize_indexes = {}
 		},
@@ -3065,76 +2193,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		egs_level_skittergate_rasknitt_calls_mount_battle = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk_interrupt",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"egs_level_skittergate_rasknitt_calls_mount_battle_01",
-				"egs_level_skittergate_rasknitt_calls_mount_battle_02",
-				"egs_level_skittergate_rasknitt_calls_mount_battle_03",
-				"egs_level_skittergate_rasknitt_calls_mount_battle_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_level_skittergate_rasknitt_calls_mount_battle_01",
-				"egs_level_skittergate_rasknitt_calls_mount_battle_02",
-				"egs_level_skittergate_rasknitt_calls_mount_battle_03",
-				"egs_level_skittergate_rasknitt_calls_mount_battle_04"
-			},
-			randomize_indexes = {}
-		},
-		egs_gameplay_dwarfranger_killed = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 5,
-			sound_events = {
-				"egs_gameplay_dwarfranger_killed_01",
-				"egs_gameplay_dwarfranger_killed_02",
-				"egs_gameplay_dwarfranger_killed_03",
-				"egs_gameplay_dwarfranger_killed_04",
-				"egs_gameplay_dwarfranger_killed_05"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_gameplay_dwarfranger_killed_01",
-				"egs_gameplay_dwarfranger_killed_02",
-				"egs_gameplay_dwarfranger_killed_03",
-				"egs_gameplay_dwarfranger_killed_04",
-				"egs_gameplay_dwarfranger_killed_05"
-			},
-			randomize_indexes = {}
-		},
 		pdr_level_skittergate_get_back_to_gate_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -3165,113 +2223,6 @@ return function ()
 				"pdr_level_skittergate_get_back_to_gate_02",
 				"pdr_level_skittergate_get_back_to_gate_03",
 				"pdr_level_skittergate_get_back_to_gate_04"
-			},
-			randomize_indexes = {}
-		},
-		egs_gameplay_woodelf_knock_down = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 5,
-			sound_events = {
-				"egs_gameplay_woodelf_knock_down_01",
-				"egs_gameplay_woodelf_knock_down_02",
-				"egs_gameplay_woodelf_knock_down_03",
-				"egs_gameplay_woodelf_knock_down_04",
-				"egs_gameplay_woodelf_knock_down_05"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_gameplay_woodelf_knock_down_01",
-				"egs_gameplay_woodelf_knock_down_02",
-				"egs_gameplay_woodelf_knock_down_03",
-				"egs_gameplay_woodelf_knock_down_04",
-				"egs_gameplay_woodelf_knock_down_05"
-			},
-			randomize_indexes = {}
-		},
-		egs_gameplay_empiresoldier_killed = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 5,
-			sound_events = {
-				"egs_gameplay_empiresoldier_killed_01",
-				"egs_gameplay_empiresoldier_killed_02",
-				"egs_gameplay_empiresoldier_killed_03",
-				"egs_gameplay_empiresoldier_killed_04",
-				"egs_gameplay_empiresoldier_killed_05"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_gameplay_empiresoldier_killed_01",
-				"egs_gameplay_empiresoldier_killed_02",
-				"egs_gameplay_empiresoldier_killed_03",
-				"egs_gameplay_empiresoldier_killed_04",
-				"egs_gameplay_empiresoldier_killed_05"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_skittergate_ships_01 = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_skittergate",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_skittergate_ships_01",
-				"pdr_level_skittergate_ships_02",
-				"pdr_level_skittergate_ships_03",
-				"pdr_level_skittergate_ships_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pdr_level_skittergate_ships_01",
-				"pdr_level_skittergate_ships_02",
-				"pdr_level_skittergate_ships_03",
-				"pdr_level_skittergate_ships_04"
 			},
 			randomize_indexes = {}
 		},
@@ -3308,197 +2259,36 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_level_skittergate_back_home_01 = {
+		pdr_level_skittergate_dead_seer = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skittergate",
-			category = "level_talk",
+			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pdr_level_skittergate_back_home_01",
-				"pdr_level_skittergate_back_home_02",
-				"pdr_level_skittergate_back_home_03",
-				"pdr_level_skittergate_back_home_04"
+				"pdr_level_skittergate_dead_seer_01",
+				"pdr_level_skittergate_dead_seer_02",
+				"pdr_level_skittergate_dead_seer_03",
+				"pdr_level_skittergate_dead_seer_04"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				"pdr_level_skittergate_back_home_01",
-				"pdr_level_skittergate_back_home_02",
-				"pdr_level_skittergate_back_home_03",
-				"pdr_level_skittergate_back_home_04"
-			},
-			randomize_indexes = {}
-		},
-		egs_gameplay_dwarfranger_knock_down = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 5,
-			sound_events = {
-				"egs_gameplay_dwarfranger_knock_down_01",
-				"egs_gameplay_dwarfranger_knock_down_02",
-				"egs_gameplay_dwarfranger_knock_down_03",
-				"egs_gameplay_dwarfranger_knock_down_04",
-				"egs_gameplay_dwarfranger_knock_down_05"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_gameplay_dwarfranger_knock_down_01",
-				"egs_gameplay_dwarfranger_knock_down_02",
-				"egs_gameplay_dwarfranger_knock_down_03",
-				"egs_gameplay_dwarfranger_knock_down_04",
-				"egs_gameplay_dwarfranger_knock_down_05"
-			},
-			randomize_indexes = {}
-		},
-		egs_gameplay_empiresoldier_knock_down = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 5,
-			sound_events = {
-				"egs_gameplay_empiresoldier_knock_down_01",
-				"egs_gameplay_empiresoldier_knock_down_02",
-				"egs_gameplay_empiresoldier_knock_down_03",
-				"egs_gameplay_empiresoldier_knock_down_04",
-				"egs_gameplay_empiresoldier_knock_down_05"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_gameplay_empiresoldier_knock_down_01",
-				"egs_gameplay_empiresoldier_knock_down_02",
-				"egs_gameplay_empiresoldier_knock_down_03",
-				"egs_gameplay_empiresoldier_knock_down_04",
-				"egs_gameplay_empiresoldier_knock_down_05"
-			},
-			randomize_indexes = {}
-		},
-		egs_level_skittergate_rasknitt_on_stormfiend = {
-			sound_events_n = 8,
-			randomize_indexes_n = 0,
-			face_animations_n = 8,
-			database = "dwarf_ranger_skittergate",
-			sound_distance = 50,
-			category = "boss_talk",
-			dialogue_animations_n = 8,
-			sound_events = {
-				"egs_level_skittergate_rasknitt_on_stormfiend_01",
-				"egs_level_skittergate_rasknitt_on_stormfiend_02",
-				"egs_level_skittergate_rasknitt_on_stormfiend_03",
-				"egs_level_skittergate_rasknitt_on_stormfiend_04",
-				"egs_shooting_01",
-				"egs_shooting_02",
-				"egs_shooting_03",
-				"egs_shooting_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_level_skittergate_rasknitt_on_stormfiend_01",
-				"egs_level_skittergate_rasknitt_on_stormfiend_02",
-				"egs_level_skittergate_rasknitt_on_stormfiend_03",
-				"egs_level_skittergate_rasknitt_on_stormfiend_04",
-				"egs_shooting_01",
-				"egs_shooting_02",
-				"egs_shooting_03",
-				"egs_shooting_04"
-			},
-			randomize_indexes = {}
-		},
-		egs_gameplay_brightwizard_knock_down = {
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			face_animations_n = 5,
-			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 5,
-			sound_events = {
-				"egs_gameplay_brightwizard_knock_down_01",
-				"egs_gameplay_brightwizard_knock_down_02",
-				"egs_gameplay_brightwizard_knock_down_03",
-				"egs_gameplay_brightwizard_knock_down_04",
-				"egs_gameplay_brightwizard_knock_down_05"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"egs_gameplay_brightwizard_knock_down_01",
-				"egs_gameplay_brightwizard_knock_down_02",
-				"egs_gameplay_brightwizard_knock_down_03",
-				"egs_gameplay_brightwizard_knock_down_04",
-				"egs_gameplay_brightwizard_knock_down_05"
+				"pdr_level_skittergate_dead_seer_01",
+				"pdr_level_skittergate_dead_seer_02",
+				"pdr_level_skittergate_dead_seer_03",
+				"pdr_level_skittergate_dead_seer_04"
 			},
 			randomize_indexes = {}
 		},
@@ -3535,40 +2325,28 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		egs_gameplay_witchhunter_knock_down = {
-			sound_events_n = 5,
+		pdr_level_skittergate_rasknitt_stormfiend_dead = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 5,
+			face_animations_n = 2,
 			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 5,
+			category = "player_alerts_boss",
+			dialogue_animations_n = 2,
 			sound_events = {
-				"egs_gameplay_witchhunter_knock_down_01",
-				"egs_gameplay_witchhunter_knock_down_02",
-				"egs_gameplay_witchhunter_knock_down_03",
-				"egs_gameplay_witchhunter_knock_down_04",
-				"egs_gameplay_witchhunter_knock_down_05"
+				[1.0] = "pdr_level_skittergate_rasknitt_stormfiend_dead_01",
+				[2.0] = "pdr_level_skittergate_rasknitt_stormfiend_dead_02"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"egs_gameplay_witchhunter_knock_down_01",
-				"egs_gameplay_witchhunter_knock_down_02",
-				"egs_gameplay_witchhunter_knock_down_03",
-				"egs_gameplay_witchhunter_knock_down_04",
-				"egs_gameplay_witchhunter_knock_down_05"
+				[1.0] = "pdr_level_skittergate_rasknitt_stormfiend_dead_01",
+				[2.0] = "pdr_level_skittergate_rasknitt_stormfiend_dead_02"
 			},
 			randomize_indexes = {}
 		},
@@ -3605,18 +2383,18 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		egs_level_skittergate_rasknitt_calls_mount = {
+		pdr_level_skittergate_rasknitt_death_rattler_invulnerable = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
+			category = "player_alerts_boss",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"egs_level_skittergate_rasknitt_calls_mount_01",
-				"egs_level_skittergate_rasknitt_calls_mount_02",
-				"egs_level_skittergate_rasknitt_calls_mount_03",
-				"egs_level_skittergate_rasknitt_calls_mount_04"
+				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_01",
+				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_02",
+				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_03",
+				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -3625,16 +2403,16 @@ return function ()
 				"dialogue_shout"
 			},
 			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				"egs_level_skittergate_rasknitt_calls_mount_01",
-				"egs_level_skittergate_rasknitt_calls_mount_02",
-				"egs_level_skittergate_rasknitt_calls_mount_03",
-				"egs_level_skittergate_rasknitt_calls_mount_04"
+				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_01",
+				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_02",
+				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_03",
+				"pdr_level_skittergate_rasknitt_death_rattler_invulnerable_04"
 			},
 			randomize_indexes = {}
 		},
@@ -3758,40 +2536,28 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		egs_gameplay_witchhunter_killed = {
-			sound_events_n = 5,
+		pdr_level_skittergate_rasknitt_gate_reply = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 5,
+			face_animations_n = 2,
 			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 5,
+			category = "player_alerts_boss",
+			dialogue_animations_n = 2,
 			sound_events = {
-				"egs_gameplay_witchhunter_killed_01",
-				"egs_gameplay_witchhunter_killed_02",
-				"egs_gameplay_witchhunter_killed_03",
-				"egs_gameplay_witchhunter_killed_04",
-				"egs_gameplay_witchhunter_killed_05"
+				[1.0] = "pdr_level_skittergate_rasknitt_gate_reply_01",
+				[2.0] = "pdr_level_skittergate_rasknitt_gate_reply_02"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
 			},
 			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"egs_gameplay_witchhunter_killed_01",
-				"egs_gameplay_witchhunter_killed_02",
-				"egs_gameplay_witchhunter_killed_03",
-				"egs_gameplay_witchhunter_killed_04",
-				"egs_gameplay_witchhunter_killed_05"
+				[1.0] = "pdr_level_skittergate_rasknitt_gate_reply_01",
+				[2.0] = "pdr_level_skittergate_rasknitt_gate_reply_02"
 			},
 			randomize_indexes = {}
 		},
@@ -3861,40 +2627,36 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		egs_gameplay_woodelf_killed = {
-			sound_events_n = 5,
+		pdr_level_skittergate_ships_01 = {
+			sound_events_n = 4,
 			randomize_indexes_n = 0,
-			face_animations_n = 5,
+			face_animations_n = 4,
 			database = "dwarf_ranger_skittergate",
-			category = "boss_talk",
-			dialogue_animations_n = 5,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			sound_events = {
-				"egs_gameplay_woodelf_killed_01",
-				"egs_gameplay_woodelf_killed_02",
-				"egs_gameplay_woodelf_killed_03",
-				"egs_gameplay_woodelf_killed_04",
-				"egs_gameplay_woodelf_killed_05"
+				"pdr_level_skittergate_ships_01",
+				"pdr_level_skittergate_ships_02",
+				"pdr_level_skittergate_ships_03",
+				"pdr_level_skittergate_ships_04"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
 			},
 			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			},
 			localization_strings = {
-				"egs_gameplay_woodelf_killed_01",
-				"egs_gameplay_woodelf_killed_02",
-				"egs_gameplay_woodelf_killed_03",
-				"egs_gameplay_woodelf_killed_04",
-				"egs_gameplay_woodelf_killed_05"
+				"pdr_level_skittergate_ships_01",
+				"pdr_level_skittergate_ships_02",
+				"pdr_level_skittergate_ships_03",
+				"pdr_level_skittergate_ships_04"
 			},
 			randomize_indexes = {}
 		},
@@ -3931,31 +2693,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_skittergate_intro_a = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "dwarf_ranger_skittergate",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pdr_skittergate_intro_a_01",
-				[2.0] = "pdr_skittergate_intro_a_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pdr_skittergate_intro_a_01",
-				[2.0] = "pdr_skittergate_intro_a_02"
-			},
-			randomize_indexes = {}
-		},
 		pdr_level_skittergate_spotting_docks_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -3986,6 +2723,31 @@ return function ()
 				"pdr_level_skittergate_spotting_docks_02",
 				"pdr_level_skittergate_spotting_docks_03",
 				"pdr_level_skittergate_spotting_docks_04"
+			},
+			randomize_indexes = {}
+		},
+		pdr_skittergate_intro_a = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "dwarf_ranger_skittergate",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pdr_skittergate_intro_a_01",
+				[2.0] = "pdr_skittergate_intro_a_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_skittergate_intro_a_01",
+				[2.0] = "pdr_skittergate_intro_a_02"
 			},
 			randomize_indexes = {}
 		},
@@ -4022,19 +2784,18 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		egs_level_skittergate_rasknitt_appears = {
+		pdr_level_skittergate_back_home_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_skittergate",
-			sound_distance = 50,
-			category = "boss_talk",
+			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"egs_level_skittergate_rasknitt_appears_01",
-				"egs_level_skittergate_rasknitt_appears_02",
-				"egs_level_skittergate_rasknitt_appears_03",
-				"egs_level_skittergate_rasknitt_appears_04"
+				"pdr_level_skittergate_back_home_01",
+				"pdr_level_skittergate_back_home_02",
+				"pdr_level_skittergate_back_home_03",
+				"pdr_level_skittergate_back_home_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -4043,16 +2804,16 @@ return function ()
 				"dialogue_shout"
 			},
 			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			},
 			localization_strings = {
-				"egs_level_skittergate_rasknitt_appears_01",
-				"egs_level_skittergate_rasknitt_appears_02",
-				"egs_level_skittergate_rasknitt_appears_03",
-				"egs_level_skittergate_rasknitt_appears_04"
+				"pdr_level_skittergate_back_home_01",
+				"pdr_level_skittergate_back_home_02",
+				"pdr_level_skittergate_back_home_03",
+				"pdr_level_skittergate_back_home_04"
 			},
 			randomize_indexes = {}
 		},
@@ -4122,7 +2883,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_level_skittergate_through_the_gate = {
+		pdr_level_skittergate_cave_entrance_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -4130,10 +2891,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pdr_level_skittergate_through_the_gate_01",
-				"pdr_level_skittergate_through_the_gate_02",
-				"pdr_level_skittergate_through_the_gate_03",
-				"pdr_level_skittergate_through_the_gate_04"
+				"pdr_level_skittergate_cave_entrance_01",
+				"pdr_level_skittergate_cave_entrance_02",
+				"pdr_level_skittergate_cave_entrance_03",
+				"pdr_level_skittergate_cave_entrance_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -4142,16 +2903,16 @@ return function ()
 				"dialogue_shout"
 			},
 			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
 			},
 			localization_strings = {
-				"pdr_level_skittergate_through_the_gate_01",
-				"pdr_level_skittergate_through_the_gate_02",
-				"pdr_level_skittergate_through_the_gate_03",
-				"pdr_level_skittergate_through_the_gate_04"
+				"pdr_level_skittergate_cave_entrance_01",
+				"pdr_level_skittergate_cave_entrance_02",
+				"pdr_level_skittergate_cave_entrance_03",
+				"pdr_level_skittergate_cave_entrance_04"
 			},
 			randomize_indexes = {}
 		},
@@ -4189,6 +2950,4 @@ return function ()
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

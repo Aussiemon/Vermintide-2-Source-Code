@@ -1610,6 +1610,4 @@ return function ()
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

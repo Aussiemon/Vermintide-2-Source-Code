@@ -51,4 +51,4 @@ DialogueLookup[DialogueLookup_n + 24] = "pdr_gameplay_chieftain_tips_special_att
 DialogueLookup[DialogueLookup_n + 25] = "pdr_gameplay_chieftain_tips_special_lunge_attack_2"
 DialogueLookup_n = DialogueLookup_n + 25
 
-return 
+return

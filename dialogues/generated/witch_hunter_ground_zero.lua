@@ -396,50 +396,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_level_ground_zero_draw_bridge",
-		response = "pwh_level_ground_zero_draw_bridge",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_draw_bridge"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_draw_bridge",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_draw_bridge",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pwh_level_ground_zero_landslide",
 		response = "pwh_level_ground_zero_landslide",
 		criterias = {
@@ -980,18 +936,18 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_level_ground_zero_looking_for_elevator = {
+		pwh_level_ground_zero_the_hole = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
-			category = "level_talk",
+			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pwh_level_ground_zero_looking_for_elevator_01",
-				"pwh_level_ground_zero_looking_for_elevator_02",
-				"pwh_level_ground_zero_looking_for_elevator_03",
-				"pwh_level_ground_zero_looking_for_elevator_04"
+				"pwh_level_ground_zero_the_hole_01",
+				"pwh_level_ground_zero_the_hole_02",
+				"pwh_level_ground_zero_the_hole_03",
+				"pwh_level_ground_zero_the_hole_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -1006,10 +962,10 @@ return function ()
 				"face_fear"
 			},
 			localization_strings = {
-				"pwh_level_ground_zero_looking_for_elevator_01",
-				"pwh_level_ground_zero_looking_for_elevator_02",
-				"pwh_level_ground_zero_looking_for_elevator_03",
-				"pwh_level_ground_zero_looking_for_elevator_04"
+				"pwh_level_ground_zero_the_hole_01",
+				"pwh_level_ground_zero_the_hole_02",
+				"pwh_level_ground_zero_the_hole_03",
+				"pwh_level_ground_zero_the_hole_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1261,39 +1217,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_level_ground_zero_the_hole = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "witch_hunter_ground_zero",
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwh_level_ground_zero_the_hole_01",
-				"pwh_level_ground_zero_the_hole_02",
-				"pwh_level_ground_zero_the_hole_03",
-				"pwh_level_ground_zero_the_hole_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pwh_level_ground_zero_the_hole_01",
-				"pwh_level_ground_zero_the_hole_02",
-				"pwh_level_ground_zero_the_hole_03",
-				"pwh_level_ground_zero_the_hole_04"
-			},
-			randomize_indexes = {}
-		},
 		pwh_level_ground_zero_crumbling = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -1352,18 +1275,18 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwh_level_ground_zero_draw_bridge = {
+		pwh_level_ground_zero_looking_for_elevator = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "witch_hunter_ground_zero",
-			category = "story_talk",
+			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pwh_level_ground_zero_draw_bridge_01",
-				"pwh_level_ground_zero_draw_bridge_02",
-				"pwh_level_ground_zero_draw_bridge_03",
-				"pwh_level_ground_zero_draw_bridge_04"
+				"pwh_level_ground_zero_looking_for_elevator_01",
+				"pwh_level_ground_zero_looking_for_elevator_02",
+				"pwh_level_ground_zero_looking_for_elevator_03",
+				"pwh_level_ground_zero_looking_for_elevator_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -1378,39 +1301,35 @@ return function ()
 				"face_fear"
 			},
 			localization_strings = {
-				"pwh_level_ground_zero_draw_bridge_01",
-				"pwh_level_ground_zero_draw_bridge_02",
-				"pwh_level_ground_zero_draw_bridge_03",
-				"pwh_level_ground_zero_draw_bridge_04"
+				"pwh_level_ground_zero_looking_for_elevator_01",
+				"pwh_level_ground_zero_looking_for_elevator_02",
+				"pwh_level_ground_zero_looking_for_elevator_03",
+				"pwh_level_ground_zero_looking_for_elevator_04"
 			},
 			randomize_indexes = {}
 		},
 		pwh_level_ground_zero_complete = {
-			sound_events_n = 3,
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 3,
+			face_animations_n = 2,
 			database = "witch_hunter_ground_zero",
 			category = "player_alerts_boss",
-			dialogue_animations_n = 3,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pwh_level_ground_zero_complete_01",
-				"pwh_level_ground_zero_complete_02",
-				"pwh_level_ground_zero_complete_03"
+				[1.0] = "pwh_level_ground_zero_complete_01",
+				[2.0] = "pwh_level_ground_zero_complete_02"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pwh_level_ground_zero_complete_01",
-				"pwh_level_ground_zero_complete_02",
-				"pwh_level_ground_zero_complete_03"
+				[1.0] = "pwh_level_ground_zero_complete_01",
+				[2.0] = "pwh_level_ground_zero_complete_02"
 			},
 			randomize_indexes = {}
 		},
@@ -1481,6 +1400,4 @@ return function ()
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

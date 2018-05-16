@@ -33,4 +33,4 @@ DialogueLookup[DialogueLookup_n + 15] = "pdr_forest_ambush_intro_b"
 DialogueLookup[DialogueLookup_n + 16] = "pdr_forest_ambush_intro_c"
 DialogueLookup_n = DialogueLookup_n + 16
 
-return 
+return

@@ -396,50 +396,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_level_ground_zero_draw_bridge",
-		response = "pes_level_ground_zero_draw_bridge",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_draw_bridge"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_draw_bridge",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_draw_bridge",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pes_level_ground_zero_landslide",
 		response = "pes_level_ground_zero_landslide",
 		criterias = {
@@ -1184,39 +1140,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_level_ground_zero_the_hole_second_view = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_ground_zero",
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_level_ground_zero_the_hole_second_view_01",
-				"pes_level_ground_zero_the_hole_second_view_02",
-				"pes_level_ground_zero_the_hole_second_view_03",
-				"pes_level_ground_zero_the_hole_second_view_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pes_level_ground_zero_the_hole_second_view_01",
-				"pes_level_ground_zero_the_hole_second_view_02",
-				"pes_level_ground_zero_the_hole_second_view_03",
-				"pes_level_ground_zero_the_hole_second_view_04"
-			},
-			randomize_indexes = {}
-		},
 		pes_level_ground_zero_smell = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -1250,6 +1173,39 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pes_level_ground_zero_the_hole_second_view = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_ground_zero",
+			category = "story_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pes_level_ground_zero_the_hole_second_view_01",
+				"pes_level_ground_zero_the_hole_second_view_02",
+				"pes_level_ground_zero_the_hole_second_view_03",
+				"pes_level_ground_zero_the_hole_second_view_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pes_level_ground_zero_the_hole_second_view_01",
+				"pes_level_ground_zero_the_hole_second_view_02",
+				"pes_level_ground_zero_the_hole_second_view_03",
+				"pes_level_ground_zero_the_hole_second_view_04"
+			},
+			randomize_indexes = {}
+		},
 		pes_level_ground_zero_complete = {
 			sound_events_n = 2,
 			randomize_indexes_n = 0,
@@ -1272,39 +1228,6 @@ return function ()
 			localization_strings = {
 				[1.0] = "pes_level_ground_zero_complete_01",
 				[2.0] = "pes_level_ground_zero_complete_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_level_ground_zero_draw_bridge = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_ground_zero",
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_level_ground_zero_draw_bridge_01",
-				"pes_level_ground_zero_draw_bridge_02",
-				"pes_level_ground_zero_draw_bridge_03",
-				"pes_level_ground_zero_draw_bridge_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pes_level_ground_zero_draw_bridge_01",
-				"pes_level_ground_zero_draw_bridge_02",
-				"pes_level_ground_zero_draw_bridge_03",
-				"pes_level_ground_zero_draw_bridge_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1396,6 +1319,4 @@ return function ()
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

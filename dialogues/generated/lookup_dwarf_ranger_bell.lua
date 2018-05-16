@@ -37,4 +37,4 @@ DialogueLookup[DialogueLookup_n + 17] = "pdr_level_bell_falling_01"
 DialogueLookup[DialogueLookup_n + 18] = "pdr_level_bell_effect_01"
 DialogueLookup_n = DialogueLookup_n + 18
 
-return 
+return

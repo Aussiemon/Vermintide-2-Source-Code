@@ -245,7 +245,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"skittergate_activate_gate"
+				"skittergate_activate_gate_helmgart"
 			},
 			{
 				"query_context",
@@ -261,7 +261,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_skittergate_activate_gate",
+				"skittergate_activate_gate_helmgart",
 				OP.EQ,
 				0
 			}
@@ -269,7 +269,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_skittergate_activate_gate",
+				"skittergate_activate_gate_helmgart",
 				OP.ADD,
 				1
 			}
@@ -289,7 +289,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"skittergate_gate_activated"
+				"level_skittergate_gate_activated"
 			},
 			{
 				"query_context",
@@ -866,50 +866,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pbw_level_skittergate_activate_gate_01a",
-		response = "pbw_level_skittergate_activate_gate_01a",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"skittergate_activate_gate"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"faction_memory",
-				"skittergate_activate_gate",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"skittergate_activate_gate",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pbw_level_skittergate_get_down_to_the_cooling_01",
 		response = "pbw_level_skittergate_get_down_to_the_cooling_01",
 		criterias = {
@@ -1439,7 +1395,7 @@ return function ()
 				"query_context",
 				"dialogue_name",
 				OP.EQ,
-				"egs_level_skittergate_rasknitt_appears"
+				"egs_level_skittergate_rasknitt_calls_mount_intro"
 			},
 			{
 				"query_context",
@@ -1587,7 +1543,7 @@ return function ()
 				"query_context",
 				"killed_type",
 				OP.EQ,
-				"skaven_grey_seer"
+				"skaven_stormfiend_boss"
 			},
 			{
 				"query_context",
@@ -1614,6 +1570,94 @@ return function ()
 				"faction_memory",
 				"rasknitt_stormfiend_dead",
 				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pbw_level_skittergate_dead_seer",
+		response = "pbw_level_skittergate_dead_seer",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"enemy_kill"
+			},
+			{
+				"query_context",
+				"killed_type",
+				OP.EQ,
+				"skaven_grey_seer"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"faction_memory",
+				"skittergate_dead_seer",
+				OP.TIMEDIFF,
+				OP.GT,
+				3
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"skittergate_dead_seer",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pbw_level_skittergate_activate_gate_01a",
+		response = "pbw_level_skittergate_activate_gate_01a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"skittergate_activate_gate_norsca"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			},
+			{
+				"faction_memory",
+				"level_skittergate_activate_gate_norsca",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_skittergate_activate_gate_norsca",
+				OP.ADD,
+				1
 			}
 		}
 	})
@@ -1882,7 +1926,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_skittergate_enter_gate_01 = {
+		pbw_level_skittergate_dead_seer_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1890,10 +1934,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pbw_level_skittergate_enter_gate_01",
-				"pbw_level_skittergate_enter_gate_02",
-				"pbw_level_skittergate_enter_gate_03",
-				"pbw_level_skittergate_enter_gate_04"
+				"pbw_level_skittergate_dead_seer_01",
+				"pbw_level_skittergate_dead_seer_02",
+				"pbw_level_skittergate_dead_seer_03",
+				"pbw_level_skittergate_dead_seer_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -1908,10 +1952,10 @@ return function ()
 				"face_fear"
 			},
 			localization_strings = {
-				"pbw_level_skittergate_enter_gate_01",
-				"pbw_level_skittergate_enter_gate_02",
-				"pbw_level_skittergate_enter_gate_03",
-				"pbw_level_skittergate_enter_gate_04"
+				"pbw_level_skittergate_dead_seer_01",
+				"pbw_level_skittergate_dead_seer_02",
+				"pbw_level_skittergate_dead_seer_03",
+				"pbw_level_skittergate_dead_seer_04"
 			},
 			randomize_indexes = {}
 		},
@@ -2489,6 +2533,39 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pbw_level_skittergate_dead_seer = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "bright_wizard_skittergate",
+			category = "player_alerts_boss",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pbw_level_skittergate_dead_seer_01",
+				"pbw_level_skittergate_dead_seer_02",
+				"pbw_level_skittergate_dead_seer_03",
+				"pbw_level_skittergate_dead_seer_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pbw_level_skittergate_dead_seer_01",
+				"pbw_level_skittergate_dead_seer_02",
+				"pbw_level_skittergate_dead_seer_03",
+				"pbw_level_skittergate_dead_seer_04"
+			},
+			randomize_indexes = {}
+		},
 		pbw_level_skittergate_docks_gate_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -2547,31 +2624,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_skittergate_intro_a = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "bright_wizard_skittergate",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pbw_skittergate_intro_a_01",
-				[2.0] = "pbw_skittergate_intro_a_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pbw_skittergate_intro_a_01",
-				[2.0] = "pbw_skittergate_intro_a_02"
-			},
-			randomize_indexes = {}
-		},
 		pbw_level_skittergate_ships_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -2602,6 +2654,31 @@ return function ()
 				"pbw_level_skittergate_ships_02",
 				"pbw_level_skittergate_ships_03",
 				"pbw_level_skittergate_ships_04"
+			},
+			randomize_indexes = {}
+		},
+		pbw_skittergate_intro_a = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "bright_wizard_skittergate",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pbw_skittergate_intro_a_01",
+				[2.0] = "pbw_skittergate_intro_a_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_skittergate_intro_a_01",
+				[2.0] = "pbw_skittergate_intro_a_02"
 			},
 			randomize_indexes = {}
 		},
@@ -2737,7 +2814,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pbw_level_skittergate_dead_seer_01 = {
+		pbw_level_skittergate_enter_gate_01 = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -2745,10 +2822,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pbw_level_skittergate_dead_seer_01",
-				"pbw_level_skittergate_dead_seer_02",
-				"pbw_level_skittergate_dead_seer_03",
-				"pbw_level_skittergate_dead_seer_04"
+				"pbw_level_skittergate_enter_gate_01",
+				"pbw_level_skittergate_enter_gate_02",
+				"pbw_level_skittergate_enter_gate_03",
+				"pbw_level_skittergate_enter_gate_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -2763,10 +2840,10 @@ return function ()
 				"face_fear"
 			},
 			localization_strings = {
-				"pbw_level_skittergate_dead_seer_01",
-				"pbw_level_skittergate_dead_seer_02",
-				"pbw_level_skittergate_dead_seer_03",
-				"pbw_level_skittergate_dead_seer_04"
+				"pbw_level_skittergate_enter_gate_01",
+				"pbw_level_skittergate_enter_gate_02",
+				"pbw_level_skittergate_enter_gate_03",
+				"pbw_level_skittergate_enter_gate_04"
 			},
 			randomize_indexes = {}
 		},
@@ -2804,6 +2881,4 @@ return function ()
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

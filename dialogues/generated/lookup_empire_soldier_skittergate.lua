@@ -33,9 +33,6 @@ assert(DialogueLookup[DialogueLookup_n + 32] == nil)
 assert(DialogueLookup[DialogueLookup_n + 33] == nil)
 assert(DialogueLookup[DialogueLookup_n + 34] == nil)
 assert(DialogueLookup[DialogueLookup_n + 35] == nil)
-assert(DialogueLookup[DialogueLookup_n + 36] == nil)
-assert(DialogueLookup[DialogueLookup_n + 37] == nil)
-assert(DialogueLookup[DialogueLookup_n + 38] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pes_level_skittergate_elevator_01"
 DialogueLookup[DialogueLookup_n + 2] = "pes_level_skittergate_crater_01"
@@ -57,24 +54,21 @@ DialogueLookup[DialogueLookup_n + 17] = "pes_level_skittergate_searching_gatekee
 DialogueLookup[DialogueLookup_n + 18] = "pes_level_skittergate_gatekeeper_appear_01"
 DialogueLookup[DialogueLookup_n + 19] = "pes_level_skittergate_gatekeeper_death_01"
 DialogueLookup[DialogueLookup_n + 20] = "pes_level_skittergate_get_back_to_gate_01"
-DialogueLookup[DialogueLookup_n + 21] = "pes_level_skittergate_activate_gate_01a"
-DialogueLookup[DialogueLookup_n + 22] = "pes_level_skittergate_get_down_to_the_cooling_01"
-DialogueLookup[DialogueLookup_n + 23] = "pes_level_skittergate_sabotage_cooling_01"
-DialogueLookup[DialogueLookup_n + 24] = "pes_level_skittergate_run_for_the_gate_01"
-DialogueLookup[DialogueLookup_n + 25] = "pes_level_skittergate_through the gate_01"
-DialogueLookup[DialogueLookup_n + 26] = "pes_level_skittergate_back_home_01"
-DialogueLookup[DialogueLookup_n + 27] = "pes_level_skittergate_dead_seer_01"
-DialogueLookup[DialogueLookup_n + 28] = "pes_level_skittergate_BOOM_01"
-DialogueLookup[DialogueLookup_n + 29] = "pes_level_skittergate_leave_01"
-DialogueLookup[DialogueLookup_n + 30] = "pes_level_skittergate_tunnel_collapses_01"
-DialogueLookup[DialogueLookup_n + 31] = "pes_skittergate_intro_a"
-DialogueLookup[DialogueLookup_n + 32] = "pes_skittergate_intro_b"
-DialogueLookup[DialogueLookup_n + 33] = "pes_skittergate_intro_c"
-DialogueLookup[DialogueLookup_n + 34] = "pes_level_skittergate_rasknitt_gate_reply"
-DialogueLookup[DialogueLookup_n + 35] = "pes_level_skittergate_rasknitt_dismounted_one"
-DialogueLookup[DialogueLookup_n + 36] = "pes_level_skittergate_rasknitt_death_rattler_invulnerable"
-DialogueLookup[DialogueLookup_n + 37] = "pes_level_skittergate_rasknitt_interrupt_and_focus"
-DialogueLookup[DialogueLookup_n + 38] = "pes_level_skittergate_rasknitt_stormfiend_dead"
-DialogueLookup_n = DialogueLookup_n + 38
+DialogueLookup[DialogueLookup_n + 21] = "pes_level_skittergate_get_down_to_the_cooling_01"
+DialogueLookup[DialogueLookup_n + 22] = "pes_level_skittergate_sabotage_cooling_01"
+DialogueLookup[DialogueLookup_n + 23] = "pes_level_skittergate_run_for_the_gate_01"
+DialogueLookup[DialogueLookup_n + 24] = "pes_level_skittergate_through_the_gate"
+DialogueLookup[DialogueLookup_n + 25] = "pes_level_skittergate_back_home_01"
+DialogueLookup[DialogueLookup_n + 26] = "pes_level_skittergate_BOOM_01"
+DialogueLookup[DialogueLookup_n + 27] = "pes_skittergate_intro_a"
+DialogueLookup[DialogueLookup_n + 28] = "pes_skittergate_intro_b"
+DialogueLookup[DialogueLookup_n + 29] = "pes_skittergate_intro_c"
+DialogueLookup[DialogueLookup_n + 30] = "pes_level_skittergate_rasknitt_gate_reply"
+DialogueLookup[DialogueLookup_n + 31] = "pes_level_skittergate_rasknitt_dismounted_one"
+DialogueLookup[DialogueLookup_n + 32] = "pes_level_skittergate_rasknitt_death_rattler_invulnerable"
+DialogueLookup[DialogueLookup_n + 33] = "pes_level_skittergate_rasknitt_interrupt_and_focus"
+DialogueLookup[DialogueLookup_n + 34] = "pes_level_skittergate_rasknitt_stormfiend_dead"
+DialogueLookup[DialogueLookup_n + 35] = "pes_level_skittergate_activate_gate_01a"
+DialogueLookup_n = DialogueLookup_n + 35
 
-return 
+return

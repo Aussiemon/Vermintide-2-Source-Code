@@ -55,4 +55,4 @@ DialogueLookup[DialogueLookup_n + 26] = "pes_chaos_war_camp_taunt_payback_reply"
 DialogueLookup[DialogueLookup_n + 27] = "pes_level_chaos_war_camp_dead_champion"
 DialogueLookup_n = DialogueLookup_n + 27
 
-return 
+return

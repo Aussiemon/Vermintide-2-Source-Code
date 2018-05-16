@@ -868,6 +868,4 @@ return function ()
 			}
 		}
 	})
-
-	return 
 end

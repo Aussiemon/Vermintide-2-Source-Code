@@ -1153,6 +1153,126 @@ return function ()
 			}
 		}
 	})
+	define_rule({
+		name = "pes_helmgart_military_a",
+		response = "pes_helmgart_military_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"helmgart_military_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"helmgart_military_a",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"helmgart_military_a",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_helmgart_military_b",
+		response = "pes_helmgart_military_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"helmgart_military_a"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"helmgart_military_b",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"helmgart_military_b",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pes_helmgart_military_c",
+		response = "pes_helmgart_military_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"helmgart_military_c"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"helmgart_military_c",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"helmgart_military_c",
+				OP.TIMESET
+			}
+		}
+	})
 	add_dialogues({
 		pes_level_helmgart_military_halfway_through_horde = {
 			sound_events_n = 4,
@@ -1187,6 +1307,56 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pes_helmgart_military_a = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_military",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_helmgart_military_intro_a_01",
+				[2.0] = "pes_helmgart_military_intro_a_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_helmgart_military_intro_a_01",
+				[2.0] = "pes_helmgart_military_intro_a_02"
+			},
+			randomize_indexes = {}
+		},
+		pes_helmgart_military_c = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_military",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_helmgart_military_intro_c_01",
+				[2.0] = "pes_helmgart_military_intro_c_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_helmgart_military_intro_c_01",
+				[2.0] = "pes_helmgart_military_intro_c_02"
+			},
+			randomize_indexes = {}
+		},
 		pes_level_helmgart_military_fort_massacre = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -1217,6 +1387,31 @@ return function ()
 				"pes_level_helmgart_military_fort_massacre_02",
 				"pes_level_helmgart_military_fort_massacre_03",
 				"pes_level_helmgart_military_fort_massacre_04"
+			},
+			randomize_indexes = {}
+		},
+		pes_helmgart_military_b = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_military",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_helmgart_military_intro_b_01",
+				[2.0] = "pes_helmgart_military_intro_b_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_helmgart_military_intro_b_01",
+				[2.0] = "pes_helmgart_military_intro_b_02"
 			},
 			randomize_indexes = {}
 		},
@@ -1980,6 +2175,4 @@ return function ()
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

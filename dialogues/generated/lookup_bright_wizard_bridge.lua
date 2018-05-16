@@ -17,4 +17,4 @@ DialogueLookup[DialogueLookup_n + 7] = "pbw_bridge_intro_b"
 DialogueLookup[DialogueLookup_n + 8] = "pbw_bridge_intro_c"
 DialogueLookup_n = DialogueLookup_n + 8
 
-return 
+return

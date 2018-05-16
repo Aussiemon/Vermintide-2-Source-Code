@@ -796,50 +796,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_level_elven_ruins_ruins_proper",
-		response = "pes_level_elven_ruins_ruins_proper",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"elven_ruins_ruins_proper"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"elven_ruins_ruins_proper",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"elven_ruins_ruins_proper",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pes_level_elven_ruins_exit",
 		response = "pes_level_elven_ruins_exit",
 		criterias = {
@@ -1285,39 +1241,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_level_elven_ruins_first_aligned_pleasant_feeling = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_elven_ruins",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_level_elven_ruins_first_aligned_pleasant_feeling_01",
-				"pes_level_elven_ruins_first_aligned_pleasant_feeling_02",
-				"pes_level_elven_ruins_first_aligned_pleasant_feeling_03",
-				"pes_level_elven_ruins_first_aligned_pleasant_feeling_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pes_level_elven_ruins_first_aligned_pleasant_feeling_01",
-				"pes_level_elven_ruins_first_aligned_pleasant_feeling_02",
-				"pes_level_elven_ruins_first_aligned_pleasant_feeling_03",
-				"pes_level_elven_ruins_first_aligned_pleasant_feeling_04"
-			},
-			randomize_indexes = {}
-		},
 		pes_level_elven_ruins_untouched = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -1351,7 +1274,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_level_elven_ruins_ruins_proper = {
+		pes_level_elven_ruins_first_aligned_pleasant_feeling = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1359,10 +1282,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pes_level_elven_ruins_ruins_proper_01",
-				"pes_level_elven_ruins_ruins_proper_02",
-				"pes_level_elven_ruins_ruins_proper_03",
-				"pes_level_elven_ruins_ruins_proper_04"
+				"pes_level_elven_ruins_first_aligned_pleasant_feeling_01",
+				"pes_level_elven_ruins_first_aligned_pleasant_feeling_02",
+				"pes_level_elven_ruins_first_aligned_pleasant_feeling_03",
+				"pes_level_elven_ruins_first_aligned_pleasant_feeling_04"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
@@ -1377,10 +1300,10 @@ return function ()
 				"face_neutral"
 			},
 			localization_strings = {
-				"pes_level_elven_ruins_ruins_proper_01",
-				"pes_level_elven_ruins_ruins_proper_02",
-				"pes_level_elven_ruins_ruins_proper_03",
-				"pes_level_elven_ruins_ruins_proper_04"
+				"pes_level_elven_ruins_first_aligned_pleasant_feeling_01",
+				"pes_level_elven_ruins_first_aligned_pleasant_feeling_02",
+				"pes_level_elven_ruins_first_aligned_pleasant_feeling_03",
+				"pes_level_elven_ruins_first_aligned_pleasant_feeling_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1740,6 +1663,4 @@ return function ()
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

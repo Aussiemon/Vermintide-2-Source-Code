@@ -132,50 +132,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwe_level_fort_plague_claw_shelling_alert",
-		response = "pwe_level_fort_plague_claw_shelling_alert",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_fort_plague_claw_shelling"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"faction_memory",
-				"level_fort_plague_claw_shelling",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_fort_plague_claw_shelling",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pwe_level_fort_plague_claw_shelling_move",
 		response = "pwe_level_fort_plague_claw_shelling_move",
 		criterias = {
@@ -712,8 +668,8 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
-				[1.0] = "pes_level_fort_fire_cannon_final_fire_01",
-				[2.0] = "pes_level_fort_fire_cannon_final_fire_02"
+				[1.0] = "pwe_level_fort_fire_cannon_final_fire_01",
+				[2.0] = "pwe_level_fort_fire_cannon_final_fire_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
@@ -724,33 +680,8 @@ return function ()
 				[2.0] = "face_fear"
 			},
 			localization_strings = {
-				[1.0] = "pes_level_fort_fire_cannon_final_fire_01",
-				[2.0] = "pes_level_fort_fire_cannon_final_fire_02"
-			},
-			randomize_indexes = {}
-		},
-		pwe_level_fort_fire_cannon_final_hit = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "wood_elf_fort",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwe_level_fort_fire_cannon_final_hit_01",
-				[2.0] = "pwe_level_fort_fire_cannon_final_hit_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_fort_fire_cannon_final_hit_01",
-				[2.0] = "pwe_level_fort_fire_cannon_final_hit_02"
+				[1.0] = "pwe_level_fort_fire_cannon_final_fire_01",
+				[2.0] = "pwe_level_fort_fire_cannon_final_fire_02"
 			},
 			randomize_indexes = {}
 		},
@@ -779,7 +710,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwe_level_fort_cannonballs = {
+		pwe_level_fort_fire_cannon_final_hit = {
 			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			face_animations_n = 2,
@@ -787,8 +718,8 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
-				[1.0] = "pwe_level_fort_cannonballs_01",
-				[2.0] = "pwe_level_fort_cannonballs_02"
+				[1.0] = "pwe_level_fort_fire_cannon_final_hit_01",
+				[2.0] = "pwe_level_fort_fire_cannon_final_hit_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
@@ -799,8 +730,8 @@ return function ()
 				[2.0] = "face_fear"
 			},
 			localization_strings = {
-				[1.0] = "pwe_level_fort_cannonballs_01",
-				[2.0] = "pwe_level_fort_cannonballs_02"
+				[1.0] = "pwe_level_fort_fire_cannon_final_hit_01",
+				[2.0] = "pwe_level_fort_fire_cannon_final_hit_02"
 			},
 			randomize_indexes = {}
 		},
@@ -966,7 +897,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pwe_level_fort_fire_cannon_second = {
+		pwe_level_fort_cannonballs = {
 			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			face_animations_n = 2,
@@ -974,8 +905,8 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
-				[1.0] = "pwe_level_fort_fire_cannon_second_01",
-				[2.0] = "pwe_level_fort_fire_cannon_second_02"
+				[1.0] = "pwe_level_fort_cannonballs_01",
+				[2.0] = "pwe_level_fort_cannonballs_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
@@ -986,8 +917,8 @@ return function ()
 				[2.0] = "face_fear"
 			},
 			localization_strings = {
-				[1.0] = "pwe_level_fort_fire_cannon_second_01",
-				[2.0] = "pwe_level_fort_fire_cannon_second_02"
+				[1.0] = "pwe_level_fort_cannonballs_01",
+				[2.0] = "pwe_level_fort_cannonballs_02"
 			},
 			randomize_indexes = {}
 		},
@@ -1066,6 +997,31 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pwe_level_fort_fire_cannon_second = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "wood_elf_fort",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwe_level_fort_fire_cannon_second_01",
+				[2.0] = "pwe_level_fort_fire_cannon_second_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_fort_fire_cannon_second_01",
+				[2.0] = "pwe_level_fort_fire_cannon_second_02"
+			},
+			randomize_indexes = {}
+		},
 		pwe_level_fort_fire_cannon_fuse_is_lit = {
 			sound_events_n = 2,
 			randomize_indexes_n = 0,
@@ -1090,33 +1046,6 @@ return function ()
 				[2.0] = "pwe_level_fort_fire_cannon_fuse_is_lit_02"
 			},
 			randomize_indexes = {}
-		},
-		pwe_level_fort_plague_claw_shelling_alert = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "wood_elf_fort",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pwe_level_fort_plague_claw_shelling_01",
-				[2.0] = "pwe_level_fort_plague_claw_shelling_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			localization_strings = {
-				[1.0] = "pwe_level_fort_plague_claw_shelling_01",
-				[2.0] = "pwe_level_fort_plague_claw_shelling_02"
-			},
-			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

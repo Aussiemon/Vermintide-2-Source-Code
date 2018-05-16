@@ -1281,4 +1281,4 @@ DialogueLookup[DialogueLookup_n + 639] = "pbw_gameplay_seeing_a_skaven_slaver_pi
 DialogueLookup[DialogueLookup_n + 640] = "pbw_gameplay_seeing_a_skaven_ratling_gun_ping"
 DialogueLookup_n = DialogueLookup_n + 640
 
-return 
+return

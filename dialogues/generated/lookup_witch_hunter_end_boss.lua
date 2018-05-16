@@ -29,4 +29,4 @@ DialogueLookup[DialogueLookup_n + 13] = "pwh_end_boss_intro_b"
 DialogueLookup[DialogueLookup_n + 14] = "pwh_end_boss_intro_c"
 DialogueLookup_n = DialogueLookup_n + 14
 
-return 
+return

@@ -57,4 +57,4 @@ DialogueLookup[DialogueLookup_n + 27] = "pdr_catacombs_intro_b"
 DialogueLookup[DialogueLookup_n + 28] = "pdr_catacombs_intro_c"
 DialogueLookup_n = DialogueLookup_n + 28
 
-return 
+return

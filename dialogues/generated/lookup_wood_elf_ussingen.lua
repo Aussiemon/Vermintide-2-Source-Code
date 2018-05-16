@@ -43,4 +43,4 @@ DialogueLookup[DialogueLookup_n + 20] = "pwe_level_ussingen_spotting_manor"
 DialogueLookup[DialogueLookup_n + 21] = "pwe_level_ussingen_find_way_around"
 DialogueLookup_n = DialogueLookup_n + 21
 
-return 
+return

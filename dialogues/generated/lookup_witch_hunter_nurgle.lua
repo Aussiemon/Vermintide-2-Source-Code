@@ -27,4 +27,4 @@ DialogueLookup[DialogueLookup_n + 12] = "pwh_nurgle_intro_a"
 DialogueLookup[DialogueLookup_n + 13] = "pwh_nurgle_intro_b"
 DialogueLookup_n = DialogueLookup_n + 13
 
-return 
+return

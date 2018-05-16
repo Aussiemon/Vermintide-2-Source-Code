@@ -193,4 +193,4 @@ DialogueLookup[DialogueLookup_n + 95] = "pes_level_prologue_got_bow"
 DialogueLookup[DialogueLookup_n + 96] = "pes_level_prologue_supply"
 DialogueLookup_n = DialogueLookup_n + 96
 
-return 
+return

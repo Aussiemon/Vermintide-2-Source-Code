@@ -535,8 +535,8 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 2,
 			sound_events = {
-				[1.0] = "pes_level_fort_fire_cannon_final_fire_01",
-				[2.0] = "pes_level_fort_fire_cannon_final_fire_02"
+				[1.0] = "pbw_level_fort_fire_cannon_final_fire_01",
+				[2.0] = "pbw_level_fort_fire_cannon_final_fire_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
@@ -547,12 +547,10 @@ return function ()
 				[2.0] = "face_fear"
 			},
 			localization_strings = {
-				[1.0] = "pes_level_fort_fire_cannon_final_fire_01",
-				[2.0] = "pes_level_fort_fire_cannon_final_fire_02"
+				[1.0] = "pbw_level_fort_fire_cannon_final_fire_01",
+				[2.0] = "pbw_level_fort_fire_cannon_final_fire_02"
 			},
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

@@ -132,50 +132,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwe_level_ground_zero_draw_bridge",
-		response = "pwe_level_ground_zero_draw_bridge",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_draw_bridge"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_draw_bridge",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_draw_bridge",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pwe_level_ground_zero_boss_spotted",
 		response = "pwe_level_ground_zero_boss_spotted",
 		criterias = {
@@ -383,7 +339,152 @@ return function ()
 			}
 		}
 	})
+	define_rule({
+		name = "pwe_ground_zero_intro_a",
+		response = "pwe_ground_zero_intro_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_intro_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"faction_memory",
+				"ground_zero_intro_a",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"ground_zero_intro_a",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pwe_ground_zero_intro_b",
+		response = "pwe_ground_zero_intro_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"ground_zero_intro_a"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"faction_memory",
+				"ground_zero_intro_b",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"ground_zero_intro_b",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwe_ground_zero_intro_c",
+		response = "pwe_ground_zero_intro_c",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"ground_zero_intro_c"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"faction_memory",
+				"ground_zero_intro_c",
+				OP.TIMEDIFF,
+				OP.GT,
+				1
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"ground_zero_intro_c",
+				OP.TIMESET
+			}
+		}
+	})
 	add_dialogues({
+		pwe_ground_zero_intro_b = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "wood_elf_ground_zero",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwe_ground_zero_intro_b_01",
+				[2.0] = "pwe_ground_zero_intro_b_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_ground_zero_intro_b_01",
+				[2.0] = "pwe_ground_zero_intro_b_02"
+			},
+			randomize_indexes = {}
+		},
 		pwe_level_ground_zero_cargo_elevator = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -442,6 +543,31 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
+		pwe_ground_zero_intro_c = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "wood_elf_ground_zero",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwe_ground_zero_intro_c_01",
+				[2.0] = "pwe_ground_zero_intro_c_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_ground_zero_intro_c_01",
+				[2.0] = "pwe_ground_zero_intro_c_02"
+			},
+			randomize_indexes = {}
+		},
 		pwe_level_ground_zero_looking_for_elevator = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -476,31 +602,77 @@ return function ()
 			randomize_indexes = {}
 		},
 		pwe_level_ground_zero_complete = {
-			sound_events_n = 3,
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 3,
+			face_animations_n = 2,
 			database = "wood_elf_ground_zero",
 			category = "player_alerts_boss",
-			dialogue_animations_n = 3,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pwe_level_ground_zero_complete_01",
-				"pwe_level_ground_zero_complete_02",
-				"pwe_level_ground_zero_complete_03"
+				[1.0] = "pwe_level_ground_zero_complete_01",
+				[2.0] = "pwe_level_ground_zero_complete_02"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pwe_level_ground_zero_complete_01",
-				"pwe_level_ground_zero_complete_02",
-				"pwe_level_ground_zero_complete_03"
+				[1.0] = "pwe_level_ground_zero_complete_01",
+				[2.0] = "pwe_level_ground_zero_complete_02"
+			},
+			randomize_indexes = {}
+		},
+		pwe_ground_zero_intro_a = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "wood_elf_ground_zero",
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwe_ground_zero_intro_a_01",
+				[2.0] = "pwe_ground_zero_intro_a_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_ground_zero_intro_a_01",
+				[2.0] = "pwe_ground_zero_intro_a_02"
+			},
+			randomize_indexes = {}
+		},
+		pwe_level_ground_zero_boss_spotted = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "wood_elf_ground_zero",
+			category = "player_alerts_boss",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pwe_level_ground_zero_boss_spotted_01",
+				[2.0] = "pwe_level_ground_zero_boss_spotted_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_ground_zero_boss_spotted_01",
+				[2.0] = "pwe_level_ground_zero_boss_spotted_02"
 			},
 			randomize_indexes = {}
 		},
@@ -534,68 +706,6 @@ return function ()
 				"pwe_level_ground_zero_canal_crossing_02",
 				"pwe_level_ground_zero_canal_crossing_03",
 				"pwe_level_ground_zero_canal_crossing_04"
-			},
-			randomize_indexes = {}
-		},
-		pwe_level_ground_zero_boss_spotted = {
-			sound_events_n = 3,
-			randomize_indexes_n = 0,
-			face_animations_n = 3,
-			database = "wood_elf_ground_zero",
-			category = "player_alerts_boss",
-			dialogue_animations_n = 3,
-			sound_events = {
-				"pwe_level_ground_zero_boss_spotted_01",
-				"pwe_level_ground_zero_boss_spotted_02",
-				"pwe_level_ground_zero_boss_spotted_03"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pwe_level_ground_zero_boss_spotted_01",
-				"pwe_level_ground_zero_boss_spotted_02",
-				"pwe_level_ground_zero_boss_spotted_03"
-			},
-			randomize_indexes = {}
-		},
-		pwe_level_ground_zero_draw_bridge = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "wood_elf_ground_zero",
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pwe_level_ground_zero_draw_bridge_01",
-				"pwe_level_ground_zero_draw_bridge_02",
-				"pwe_level_ground_zero_draw_bridge_03",
-				"pwe_level_ground_zero_draw_bridge_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pwe_level_ground_zero_draw_bridge_01",
-				"pwe_level_ground_zero_draw_bridge_02",
-				"pwe_level_ground_zero_draw_bridge_03",
-				"pwe_level_ground_zero_draw_bridge_04"
 			},
 			randomize_indexes = {}
 		},
@@ -662,6 +772,4 @@ return function ()
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

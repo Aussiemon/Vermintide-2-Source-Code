@@ -19,6 +19,9 @@ assert(DialogueLookup[DialogueLookup_n + 18] == nil)
 assert(DialogueLookup[DialogueLookup_n + 19] == nil)
 assert(DialogueLookup[DialogueLookup_n + 20] == nil)
 assert(DialogueLookup[DialogueLookup_n + 21] == nil)
+assert(DialogueLookup[DialogueLookup_n + 22] == nil)
+assert(DialogueLookup[DialogueLookup_n + 23] == nil)
+assert(DialogueLookup[DialogueLookup_n + 24] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pes_level_ussingen_at_last_end"
 DialogueLookup[DialogueLookup_n + 2] = "pes_level_ussingen_cart_full"
@@ -41,6 +44,9 @@ DialogueLookup[DialogueLookup_n + 18] = "pes_level_ussingen_wrong_way"
 DialogueLookup[DialogueLookup_n + 19] = "pes_level_ussingen_wine_cellar"
 DialogueLookup[DialogueLookup_n + 20] = "pes_level_ussingen_spotting_manor"
 DialogueLookup[DialogueLookup_n + 21] = "pes_level_ussingen_find_way_around"
-DialogueLookup_n = DialogueLookup_n + 21
+DialogueLookup[DialogueLookup_n + 22] = "pes_ussingen_intro_a"
+DialogueLookup[DialogueLookup_n + 23] = "pes_ussingen_intro_b"
+DialogueLookup[DialogueLookup_n + 24] = "pes_ussingen_intro_c"
+DialogueLookup_n = DialogueLookup_n + 24
 
-return 
+return

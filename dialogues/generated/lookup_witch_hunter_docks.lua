@@ -21,4 +21,4 @@ DialogueLookup[DialogueLookup_n + 9] = "pwh_docks_intro_b"
 DialogueLookup[DialogueLookup_n + 10] = "pwh_docks_intro_c"
 DialogueLookup_n = DialogueLookup_n + 10
 
-return 
+return

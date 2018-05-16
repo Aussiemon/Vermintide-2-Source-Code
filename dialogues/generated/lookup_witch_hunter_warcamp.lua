@@ -57,4 +57,4 @@ DialogueLookup[DialogueLookup_n + 27] = "pwh_level_chaos_war_camp_dead_champion"
 DialogueLookup[DialogueLookup_n + 28] = "pdr_level_ground_zero_cargo_elevator"
 DialogueLookup_n = DialogueLookup_n + 28
 
-return 
+return

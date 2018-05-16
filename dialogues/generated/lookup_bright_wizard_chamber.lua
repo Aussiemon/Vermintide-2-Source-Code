@@ -59,4 +59,4 @@ DialogueLookup[DialogueLookup_n + 28] = "pbw_objective_chamber_seer_d"
 DialogueLookup[DialogueLookup_n + 29] = "pbw_objective_chamber_seer_shield"
 DialogueLookup_n = DialogueLookup_n + 29
 
-return 
+return

@@ -198,6 +198,24 @@ return function ()
 		}
 	})
 	define_rule({
+		response = "nik_callout_unready_sienna",
+		name = "nik_callout_unready_sienna",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"unready_callout"
+			},
+			{
+				"query_context",
+				"target_name",
+				OP.EQ,
+				"bright_wizard"
+			}
+		}
+	})
+	define_rule({
 		response = "nik_hub_welcome",
 		name = "nik_hub_welcome",
 		criterias = {
@@ -344,6 +362,24 @@ return function ()
 				"item_tag",
 				OP.EQ,
 				"nik_greeting_night"
+			}
+		}
+	})
+	define_rule({
+		response = "nik_greeting_evening",
+		name = "nik_greeting_evening",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"nik_greeting_evening"
 			}
 		}
 	})
@@ -801,23 +837,33 @@ return function ()
 			randomize_indexes = {}
 		},
 		nik_greeting_night = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+			sound_events_n = 3,
+			randomize_indexes_n = 0,
+			face_animations_n = 3,
 			database = "hub_conversations",
 			category = "cut_scene",
-			dialogue_animations_n = 1,
+			dialogue_animations_n = 3,
 			sound_events = {
-				[1.0] = "nik_greeting_night"
+				"nik_hub_greeting_night_27",
+				"nik_hub_greeting_night_28",
+				"nik_hub_greeting_night_29"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_greeting_night"
-			}
+				"nik_hub_greeting_night_27",
+				"nik_hub_greeting_night_28",
+				"nik_hub_greeting_night_29"
+			},
+			randomize_indexes = {}
 		},
 		nfl_debrief_catacombs_01 = {
 			sound_events_n = 1,
@@ -895,6 +941,35 @@ return function ()
 				[1.0] = "nik_hub_welcome_01"
 			}
 		},
+		nik_callout_unready_sienna = {
+			sound_events_n = 3,
+			randomize_indexes_n = 0,
+			face_animations_n = 3,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 3,
+			sound_events = {
+				"nik_callout_unready_sienna_02",
+				"nik_callout_unready_sienna_03",
+				"nik_callout_unready_sienna_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"nik_callout_unready_sienna_02",
+				"nik_callout_unready_sienna_03",
+				"nik_callout_unready_sienna_04"
+			},
+			randomize_indexes = {}
+		},
 		nfl_debrief_fort_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -963,23 +1038,37 @@ return function ()
 			randomize_indexes = {}
 		},
 		nik_callout_unready_bardin = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
 			database = "hub_conversations",
 			category = "npc_talk",
-			dialogue_animations_n = 1,
+			dialogue_animations_n = 4,
 			sound_events = {
-				[1.0] = "nik_callout_unready_bardin"
+				"nik_callout_unready_bardin_01",
+				"nik_callout_unready_bardin_02",
+				"nik_callout_unready_bardin_03",
+				"nik_callout_unready_bardin_04"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_callout_unready_bardin"
-			}
+				"nik_callout_unready_bardin_01",
+				"nik_callout_unready_bardin_02",
+				"nik_callout_unready_bardin_03",
+				"nik_callout_unready_bardin_04"
+			},
+			randomize_indexes = {}
 		},
 		nik_intro_forge = {
 			sound_events_n = 1,
@@ -1065,11 +1154,11 @@ return function ()
 			category = "npc_talk",
 			dialogue_animations_n = 5,
 			sound_events = {
-				"nik_hub_idle_long_waiting_01",
-				"nik_hub_idle_long_waiting_02",
-				"nik_hub_idle_long_waiting_05",
-				"nik_hub_greeting_long_waiting_19",
-				"nik_hub_greeting_long_waiting_08"
+				"nik_hub_greeting_08",
+				"nik_hub_greeting_19",
+				"nik_hub_idle_01",
+				"nik_hub_idle_02",
+				"nik_hub_idle_05"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
@@ -1086,13 +1175,32 @@ return function ()
 				"face_neutral"
 			},
 			localization_strings = {
-				"nik_hub_idle_long_waiting_01",
-				"nik_hub_idle_long_waiting_02",
-				"nik_hub_idle_long_waiting_05",
-				"nik_hub_greeting_long_waiting_19",
-				"nik_hub_greeting_long_waiting_08"
+				"nik_hub_greeting_08",
+				"nik_hub_greeting_19",
+				"nik_hub_idle_01",
+				"nik_hub_idle_02",
+				"nik_hub_idle_05"
 			},
 			randomize_indexes = {}
+		},
+		nfl_hub_call_out = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "nfl_hub_call_out"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "nfl_hub_call_out"
+			}
 		},
 		nfl_debrief_skaven_stronghold_01 = {
 			sound_events_n = 1,
@@ -1113,14 +1221,14 @@ return function ()
 				[1.0] = "nfl_debrief_skaven_stronghold_01"
 			}
 		},
-		nfl_hub_call_out = {
+		nfl_hub_banter_kept_alive = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nfl_hub_call_out"
+				[1.0] = "nfl_hub_banter_kept_alive"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -1129,7 +1237,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nfl_hub_call_out"
+				[1.0] = "nfl_hub_banter_kept_alive"
 			}
 		},
 		nfl_debrief_mines_01 = {
@@ -1170,14 +1278,14 @@ return function ()
 				[1.0] = "nik_map_intro_01"
 			}
 		},
-		nfl_hub_banter_kept_alive = {
+		nfl_debrief_skittergate_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hub_conversations",
 			category = "npc_talk",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "nfl_hub_banter_kept_alive"
+				[1.0] = "nfl_debrief_skittergate_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -1186,7 +1294,7 @@ return function ()
 				[1.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nfl_hub_banter_kept_alive"
+				[1.0] = "nfl_debrief_skittergate_01"
 			}
 		},
 		nik_hub_the_plan = {
@@ -1208,44 +1316,6 @@ return function ()
 				[1.0] = "nik_hub_the_plan_01"
 			}
 		},
-		nfl_debrief_skittergate_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "nfl_debrief_skittergate_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "nfl_debrief_skittergate_01"
-			}
-		},
-		nik_greeting_sunny = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hub_conversations",
-			category = "cut_scene",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "nik_greeting_sunny"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "nik_greeting_sunny"
-			}
-		},
 		nfl_debrief_nurgle_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -1265,28 +1335,110 @@ return function ()
 				[1.0] = "nfl_debrief_nurgle_01"
 			}
 		},
-		nik_intro_forge_reminder = {
-			sound_events_n = 2,
+		nik_greeting_sunny = {
+			sound_events_n = 6,
 			randomize_indexes_n = 0,
-			face_animations_n = 2,
+			face_animations_n = 6,
 			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 2,
+			category = "cut_scene",
+			dialogue_animations_n = 6,
 			sound_events = {
-				[1.0] = "nik_intro_forge_reminder_01",
-				[2.0] = "nik_intro_forge_reminder_02"
+				"nik_hub_greeting_14",
+				"nik_hub_greeting_sunny_23",
+				"nik_hub_greeting_sunny_22",
+				"nik_hub_greeting_sunny_25",
+				"nik_hub_greeting_sunny_21",
+				"nik_hub_greeting_sunny_24"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_intro_forge_reminder_01",
-				[2.0] = "nik_intro_forge_reminder_02"
+				"nik_hub_greeting_14",
+				"nik_hub_greeting_sunny_23",
+				"nik_hub_greeting_sunny_22",
+				"nik_hub_greeting_sunny_25",
+				"nik_hub_greeting_sunny_21",
+				"nik_hub_greeting_sunny_24"
+			},
+			randomize_indexes = {}
+		},
+		nik_callout_unready_saltzpyre = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"nik_callout_unready_saltzpyre_01",
+				"nik_callout_unready_saltzpyre_02",
+				"nik_callout_unready_saltzpyre_03",
+				"nik_callout_unready_saltzpyre_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"nik_callout_unready_saltzpyre_01",
+				"nik_callout_unready_saltzpyre_02",
+				"nik_callout_unready_saltzpyre_03",
+				"nik_callout_unready_saltzpyre_04"
+			},
+			randomize_indexes = {}
+		},
+		nik_callout_unready_kruber = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "hub_conversations",
+			category = "npc_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"nik_callout_unready_kruber_01",
+				"nik_callout_unready_kruber_02",
+				"nik_callout_unready_kruber_03",
+				"nik_callout_unready_kruber_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"nik_callout_unready_kruber_01",
+				"nik_callout_unready_kruber_02",
+				"nik_callout_unready_kruber_03",
+				"nik_callout_unready_kruber_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1319,102 +1471,262 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		nik_callout_unready_saltzpyre = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+		nik_intro_forge_reminder = {
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
 			database = "hub_conversations",
 			category = "npc_talk",
-			dialogue_animations_n = 1,
+			dialogue_animations_n = 2,
 			sound_events = {
-				[1.0] = "nik_callout_unready_saltzpyre"
+				[1.0] = "nik_intro_forge_reminder_01",
+				[2.0] = "nik_intro_forge_reminder_02"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_callout_unready_saltzpyre"
-			}
+				[1.0] = "nik_intro_forge_reminder_01",
+				[2.0] = "nik_intro_forge_reminder_02"
+			},
+			randomize_indexes = {}
 		},
-		nik_callout_unready_kerillian = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+		nik_greeting_evening = {
+			sound_events_n = 3,
+			randomize_indexes_n = 0,
+			face_animations_n = 3,
 			database = "hub_conversations",
-			category = "npc_talk",
-			dialogue_animations_n = 1,
+			category = "cut_scene",
+			dialogue_animations_n = 3,
 			sound_events = {
-				[1.0] = "nik_callout_unready_kerillian"
+				"nik_hub_greeting_evening_30",
+				"nik_hub_greeting_evening_31",
+				"nik_hub_greeting_evening_32"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_callout_unready_kerillian"
-			}
+				"nik_hub_greeting_evening_30",
+				"nik_hub_greeting_evening_31",
+				"nik_hub_greeting_evening_32"
+			},
+			randomize_indexes = {}
 		},
 		nik_greeting_rainy = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+			sound_events_n = 3,
+			randomize_indexes_n = 0,
+			face_animations_n = 3,
 			database = "hub_conversations",
 			category = "cut_scene",
-			dialogue_animations_n = 1,
+			dialogue_animations_n = 3,
 			sound_events = {
-				[1.0] = "nik_greeting_rainy"
+				"nik_hub_greeting_rainy_24",
+				"nik_hub_greeting_rainy_25",
+				"nik_hub_greeting_rainy_26"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_greeting_rainy"
-			}
+				"nik_hub_greeting_rainy_24",
+				"nik_hub_greeting_rainy_25",
+				"nik_hub_greeting_rainy_26"
+			},
+			randomize_indexes = {}
 		},
-		nik_callout_unready_kruber = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+		nik_callout_unready_kerillian = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
 			database = "hub_conversations",
 			category = "npc_talk",
-			dialogue_animations_n = 1,
+			dialogue_animations_n = 4,
 			sound_events = {
-				[1.0] = "nik_callout_unready_kruber"
+				"nik_callout_unready_kerillian_01",
+				"nik_callout_unready_kerillian_02",
+				"nik_callout_unready_kerillian_03",
+				"nik_callout_unready_kerillian_04"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_callout_unready_kruber"
-			}
+				"nik_callout_unready_kerillian_01",
+				"nik_callout_unready_kerillian_02",
+				"nik_callout_unready_kerillian_03",
+				"nik_callout_unready_kerillian_04"
+			},
+			randomize_indexes = {}
 		},
 		nik_hub_backstory_interaction = {
-			sound_events_n = 1,
-			face_animations_n = 1,
+			sound_events_n = 31,
+			randomize_indexes_n = 0,
+			face_animations_n = 31,
 			database = "hub_conversations",
 			category = "cut_scene",
-			dialogue_animations_n = 1,
+			dialogue_animations_n = 31,
 			sound_events = {
-				[1.0] = "nik_backstory_interacting"
+				"nik_hub_backstory_03",
+				"nik_hub_backstory_04",
+				"nik_hub_backstory_05",
+				"nik_hub_backstory_06",
+				"nik_hub_backstory_07",
+				"nik_hub_backstory_08",
+				"nik_hub_backstory_09",
+				"nik_hub_backstory_10",
+				"nik_keep_idle_01",
+				"nik_keep_idle_02",
+				"nik_keep_idle_03",
+				"nik_keep_idle_04",
+				"nik_keep_idle_05",
+				"nik_keep_idle_06",
+				"nik_keep_idle_07",
+				"nik_keep_idle_08",
+				"nik_keep_idle_09",
+				"nik_keep_idle_10",
+				"nik_keep_idle_11",
+				"nik_keep_idle_12",
+				"nik_keep_idle_13",
+				"nik_keep_idle_14",
+				"nik_keep_idle_17",
+				"nik_keep_idle_18",
+				"nik_keep_idle_19",
+				"nik_keep_idle_20",
+				"nik_keep_idle_21",
+				"nik_keep_idle_22",
+				"nik_keep_idle_23",
+				"nik_keep_idle_24",
+				"nik_keep_idle_25"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_neutral"
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			localization_strings = {
-				[1.0] = "nik_backstory_interacting"
-			}
+				"nik_hub_backstory_03",
+				"nik_hub_backstory_04",
+				"nik_hub_backstory_05",
+				"nik_hub_backstory_06",
+				"nik_hub_backstory_07",
+				"nik_hub_backstory_08",
+				"nik_hub_backstory_09",
+				"nik_hub_backstory_10",
+				"nik_keep_idle_01",
+				"nik_keep_idle_02",
+				"nik_keep_idle_03",
+				"nik_keep_idle_04",
+				"nik_keep_idle_05",
+				"nik_keep_idle_06",
+				"nik_keep_idle_07",
+				"nik_keep_idle_08",
+				"nik_keep_idle_09",
+				"nik_keep_idle_10",
+				"nik_keep_idle_11",
+				"nik_keep_idle_12",
+				"nik_keep_idle_13",
+				"nik_keep_idle_14",
+				"nik_keep_idle_17",
+				"nik_keep_idle_18",
+				"nik_keep_idle_19",
+				"nik_keep_idle_20",
+				"nik_keep_idle_21",
+				"nik_keep_idle_22",
+				"nik_keep_idle_23",
+				"nik_keep_idle_24",
+				"nik_keep_idle_25"
+			},
+			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

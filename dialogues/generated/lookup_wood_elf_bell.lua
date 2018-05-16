@@ -19,4 +19,4 @@ DialogueLookup[DialogueLookup_n + 8] = "pwe_level_bell_effect_01"
 DialogueLookup[DialogueLookup_n + 9] = "pwe_level_bell_falling_01"
 DialogueLookup_n = DialogueLookup_n + 9
 
-return 
+return

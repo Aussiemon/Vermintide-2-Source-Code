@@ -36439,6 +36439,4 @@ return function ()
 			}
 		}
 	})
-
-	return 
 end

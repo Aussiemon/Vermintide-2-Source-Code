@@ -200,56 +200,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_level_catacombs_mist",
-		response = "pes_level_catacombs_mist",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"catacombs_mist"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"faction_memory",
-				"time_since_catacombs_mist",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_catacombs_mist",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pes_level_catacombs_switch_instructions",
 		response = "pes_level_catacombs_switch_instructions",
 		criterias = {
@@ -1423,32 +1373,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_catacombs_intro_c = {
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "empire_soldier_catacombs",
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			sound_events = {
-				[1.0] = "pes_catacombs_intro_c_01",
-				[2.0] = "pes_catacombs_intro_c_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pes_catacombs_intro_c_01",
-				[2.0] = "pes_catacombs_intro_c_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_level_catacombs_whoa_wrong_switch = {
+		pes_level_catacombs_correct_switch = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1456,14 +1381,14 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pes_level_catacombs_whoa_wrong_switch_01",
-				"pes_level_catacombs_whoa_wrong_switch_02",
-				"pes_level_catacombs_whoa_wrong_switch_03",
-				"pes_level_catacombs_whoa_wrong_switch_04"
+				"pes_level_catacombs_correct_switch_01",
+				"pes_level_catacombs_correct_switch_02",
+				"pes_level_catacombs_correct_switch_03",
+				"pes_level_catacombs_correct_switch_04"
 			},
 			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
+				"dialogue_talk",
+				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
 			},
@@ -1474,10 +1399,10 @@ return function ()
 				"face_neutral"
 			},
 			localization_strings = {
-				"pes_level_catacombs_whoa_wrong_switch_01",
-				"pes_level_catacombs_whoa_wrong_switch_02",
-				"pes_level_catacombs_whoa_wrong_switch_03",
-				"pes_level_catacombs_whoa_wrong_switch_04"
+				"pes_level_catacombs_correct_switch_01",
+				"pes_level_catacombs_correct_switch_02",
+				"pes_level_catacombs_correct_switch_03",
+				"pes_level_catacombs_correct_switch_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1514,40 +1439,32 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_level_catacombs_apothercary_room = {
-			sound_events_n = 4,
+		pes_catacombs_intro_c = {
+			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			face_animations_n = 4,
+			face_animations_n = 2,
 			database = "empire_soldier_catacombs",
 			category = "level_talk",
-			dialogue_animations_n = 4,
+			dialogue_animations_n = 2,
 			sound_events = {
-				"pes_level_catacombs_apothercary_room_01",
-				"pes_level_catacombs_apothercary_room_02",
-				"pes_level_catacombs_apothercary_room_03",
-				"pes_level_catacombs_apothercary_room_04"
+				[1.0] = "pes_catacombs_intro_c_01",
+				[2.0] = "pes_catacombs_intro_c_02"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			localization_strings = {
-				"pes_level_catacombs_apothercary_room_01",
-				"pes_level_catacombs_apothercary_room_02",
-				"pes_level_catacombs_apothercary_room_03",
-				"pes_level_catacombs_apothercary_room_04"
+				[1.0] = "pes_catacombs_intro_c_01",
+				[2.0] = "pes_catacombs_intro_c_02"
 			},
 			randomize_indexes = {}
 		},
-		pes_level_catacombs_sabotage_ritual = {
+		pes_level_catacombs_ritual_exit_through_portal = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1555,10 +1472,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pes_level_catacombs_sabotage_ritual_01",
-				"pes_level_catacombs_sabotage_ritual_02",
-				"pes_level_catacombs_sabotage_ritual_03",
-				"pes_level_catacombs_sabotage_ritual_04"
+				"pes_level_catacombs_ritual_exit_through_portal_01",
+				"pes_level_catacombs_ritual_exit_through_portal_02",
+				"pes_level_catacombs_ritual_exit_through_portal_03",
+				"pes_level_catacombs_ritual_exit_through_portal_04"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
@@ -1573,10 +1490,10 @@ return function ()
 				"face_neutral"
 			},
 			localization_strings = {
-				"pes_level_catacombs_sabotage_ritual_01",
-				"pes_level_catacombs_sabotage_ritual_02",
-				"pes_level_catacombs_sabotage_ritual_03",
-				"pes_level_catacombs_sabotage_ritual_04"
+				"pes_level_catacombs_ritual_exit_through_portal_01",
+				"pes_level_catacombs_ritual_exit_through_portal_02",
+				"pes_level_catacombs_ritual_exit_through_portal_03",
+				"pes_level_catacombs_ritual_exit_through_portal_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1613,7 +1530,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_level_catacombs_way_is_clear = {
+		pes_level_catacombs_jump_into_intestine_hole = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1621,10 +1538,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pes_level_catacombs_way_is_clear_01",
-				"pes_level_catacombs_way_is_clear_02",
-				"pes_level_catacombs_way_is_clear_03",
-				"pes_level_catacombs_way_is_clear_04"
+				"pes_level_catacombs_jump_into_intestine_hole_01",
+				"pes_level_catacombs_jump_into_intestine_hole_02",
+				"pes_level_catacombs_jump_into_intestine_hole_03",
+				"pes_level_catacombs_jump_into_intestine_hole_04"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
@@ -1639,10 +1556,10 @@ return function ()
 				"face_neutral"
 			},
 			localization_strings = {
-				"pes_level_catacombs_way_is_clear_01",
-				"pes_level_catacombs_way_is_clear_02",
-				"pes_level_catacombs_way_is_clear_03",
-				"pes_level_catacombs_way_is_clear_04"
+				"pes_level_catacombs_jump_into_intestine_hole_01",
+				"pes_level_catacombs_jump_into_intestine_hole_02",
+				"pes_level_catacombs_jump_into_intestine_hole_03",
+				"pes_level_catacombs_jump_into_intestine_hole_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1712,39 +1629,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_level_catacombs_slime_trail = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "empire_soldier_catacombs",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pes_level_catacombs_slime_trail_01",
-				"pes_level_catacombs_slime_trail_02",
-				"pes_level_catacombs_slime_trail_03",
-				"pes_level_catacombs_slime_trail_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pes_level_catacombs_slime_trail_01",
-				"pes_level_catacombs_slime_trail_02",
-				"pes_level_catacombs_slime_trail_03",
-				"pes_level_catacombs_slime_trail_04"
-			},
-			randomize_indexes = {}
-		},
 		pes_level_catacombs_cultist_door = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
@@ -1775,6 +1659,39 @@ return function ()
 				"pes_level_catacombs_cultist_door_02",
 				"pes_level_catacombs_cultist_door_03",
 				"pes_level_catacombs_cultist_door_04"
+			},
+			randomize_indexes = {}
+		},
+		pes_level_catacombs_slime_trail = {
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_catacombs",
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events = {
+				"pes_level_catacombs_slime_trail_01",
+				"pes_level_catacombs_slime_trail_02",
+				"pes_level_catacombs_slime_trail_03",
+				"pes_level_catacombs_slime_trail_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pes_level_catacombs_slime_trail_01",
+				"pes_level_catacombs_slime_trail_02",
+				"pes_level_catacombs_slime_trail_03",
+				"pes_level_catacombs_slime_trail_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1869,7 +1786,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_level_catacombs_ritual_exit_through_portal = {
+		pes_level_catacombs_sabotage_ritual = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1877,10 +1794,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pes_level_catacombs_ritual_exit_through_portal_01",
-				"pes_level_catacombs_ritual_exit_through_portal_02",
-				"pes_level_catacombs_ritual_exit_through_portal_03",
-				"pes_level_catacombs_ritual_exit_through_portal_04"
+				"pes_level_catacombs_sabotage_ritual_01",
+				"pes_level_catacombs_sabotage_ritual_02",
+				"pes_level_catacombs_sabotage_ritual_03",
+				"pes_level_catacombs_sabotage_ritual_04"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
@@ -1895,10 +1812,10 @@ return function ()
 				"face_neutral"
 			},
 			localization_strings = {
-				"pes_level_catacombs_ritual_exit_through_portal_01",
-				"pes_level_catacombs_ritual_exit_through_portal_02",
-				"pes_level_catacombs_ritual_exit_through_portal_03",
-				"pes_level_catacombs_ritual_exit_through_portal_04"
+				"pes_level_catacombs_sabotage_ritual_01",
+				"pes_level_catacombs_sabotage_ritual_02",
+				"pes_level_catacombs_sabotage_ritual_03",
+				"pes_level_catacombs_sabotage_ritual_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1927,7 +1844,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pes_level_catacombs_mist = {
+		pes_level_catacombs_apothercary_room = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1935,10 +1852,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pes_level_catacombs_mist_01",
-				"pes_level_catacombs_mist_02",
-				"pes_level_catacombs_mist_03",
-				"pes_level_catacombs_mist_04"
+				"pes_level_catacombs_apothercary_room_01",
+				"pes_level_catacombs_apothercary_room_02",
+				"pes_level_catacombs_apothercary_room_03",
+				"pes_level_catacombs_apothercary_room_04"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
@@ -1947,20 +1864,20 @@ return function ()
 				"dialogue_talk"
 			},
 			face_animations = {
-				"face_neutral",
-				"face_angry",
-				"face_angry",
-				"face_angry"
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
 			},
 			localization_strings = {
-				"pes_level_catacombs_mist_01",
-				"pes_level_catacombs_mist_02",
-				"pes_level_catacombs_mist_03",
-				"pes_level_catacombs_mist_04"
+				"pes_level_catacombs_apothercary_room_01",
+				"pes_level_catacombs_apothercary_room_02",
+				"pes_level_catacombs_apothercary_room_03",
+				"pes_level_catacombs_apothercary_room_04"
 			},
 			randomize_indexes = {}
 		},
-		pes_level_catacombs_jump_into_intestine_hole = {
+		pes_level_catacombs_way_is_clear = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1968,10 +1885,10 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pes_level_catacombs_jump_into_intestine_hole_01",
-				"pes_level_catacombs_jump_into_intestine_hole_02",
-				"pes_level_catacombs_jump_into_intestine_hole_03",
-				"pes_level_catacombs_jump_into_intestine_hole_04"
+				"pes_level_catacombs_way_is_clear_01",
+				"pes_level_catacombs_way_is_clear_02",
+				"pes_level_catacombs_way_is_clear_03",
+				"pes_level_catacombs_way_is_clear_04"
 			},
 			dialogue_animations = {
 				"dialogue_talk",
@@ -1986,14 +1903,14 @@ return function ()
 				"face_neutral"
 			},
 			localization_strings = {
-				"pes_level_catacombs_jump_into_intestine_hole_01",
-				"pes_level_catacombs_jump_into_intestine_hole_02",
-				"pes_level_catacombs_jump_into_intestine_hole_03",
-				"pes_level_catacombs_jump_into_intestine_hole_04"
+				"pes_level_catacombs_way_is_clear_01",
+				"pes_level_catacombs_way_is_clear_02",
+				"pes_level_catacombs_way_is_clear_03",
+				"pes_level_catacombs_way_is_clear_04"
 			},
 			randomize_indexes = {}
 		},
-		pes_level_catacombs_correct_switch = {
+		pes_level_catacombs_whoa_wrong_switch = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -2001,14 +1918,14 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pes_level_catacombs_correct_switch_01",
-				"pes_level_catacombs_correct_switch_02",
-				"pes_level_catacombs_correct_switch_03",
-				"pes_level_catacombs_correct_switch_04"
+				"pes_level_catacombs_whoa_wrong_switch_01",
+				"pes_level_catacombs_whoa_wrong_switch_02",
+				"pes_level_catacombs_whoa_wrong_switch_03",
+				"pes_level_catacombs_whoa_wrong_switch_04"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
+				"dialogue_shout",
+				"dialogue_shout",
 				"dialogue_talk",
 				"dialogue_talk"
 			},
@@ -2019,14 +1936,12 @@ return function ()
 				"face_neutral"
 			},
 			localization_strings = {
-				"pes_level_catacombs_correct_switch_01",
-				"pes_level_catacombs_correct_switch_02",
-				"pes_level_catacombs_correct_switch_03",
-				"pes_level_catacombs_correct_switch_04"
+				"pes_level_catacombs_whoa_wrong_switch_01",
+				"pes_level_catacombs_whoa_wrong_switch_02",
+				"pes_level_catacombs_whoa_wrong_switch_03",
+				"pes_level_catacombs_whoa_wrong_switch_04"
 			},
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end

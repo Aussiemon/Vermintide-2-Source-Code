@@ -44,50 +44,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pdr_level_ground_zero_canals_crossing",
-		response = "pdr_level_ground_zero_canals_crossing",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_canals_crossing"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_canals_crossing",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_canals_crossing",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pdr_level_ground_zero_corruption_everywhere",
 		response = "pdr_level_ground_zero_corruption_everywhere",
 		criterias = {
@@ -522,50 +478,6 @@ return function ()
 			{
 				"faction_memory",
 				"level_ground_zero_boss_near",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pdr_level_ground_zero_portal",
-		response = "pdr_level_ground_zero_portal",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_portal"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_portal",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_portal",
 				OP.ADD,
 				1
 			}
@@ -1408,39 +1320,6 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_level_ground_zero_portal = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_ground_zero_portal_01",
-				"pdr_level_ground_zero_portal_02",
-				"pdr_level_ground_zero_portal_03",
-				"pdr_level_ground_zero_portal_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			localization_strings = {
-				"pdr_level_ground_zero_portal_01",
-				"pdr_level_ground_zero_portal_02",
-				"pdr_level_ground_zero_portal_03",
-				"pdr_level_ground_zero_portal_04"
-			},
-			randomize_indexes = {}
-		},
 		pdr_level_ground_zero_boss_taunt_reply = {
 			sound_events_n = 3,
 			randomize_indexes_n = 0,
@@ -1470,52 +1349,18 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		ebh_level_ground_zero_lord_banter = {
+		pdr_level_ground_zero_welcoming_committee = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
-			sound_distance = 50,
-			category = "boss_talk",
+			category = "story_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"ebh_level_ground_zero_lord_banter_02",
-				"ebh_level_ground_zero_lord_banter_03",
-				"ebh_level_ground_zero_lord_banter_04",
-				"ebh_level_ground_zero_lord_banter_05"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			localization_strings = {
-				"ebh_level_ground_zero_lord_banter_02",
-				"ebh_level_ground_zero_lord_banter_03",
-				"ebh_level_ground_zero_lord_banter_04",
-				"ebh_level_ground_zero_lord_banter_05"
-			},
-			randomize_indexes = {}
-		},
-		pdr_level_ground_zero_smell = {
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			sound_events = {
-				"pdr_level_ground_zero_smell_01",
-				"pdr_level_ground_zero_smell_02",
-				"pdr_level_ground_zero_smell_03",
-				"pdr_level_ground_zero_smell_04"
+				"pdr_level_ground_zero_welcoming_committee_01",
+				"pdr_level_ground_zero_welcoming_committee_02",
+				"pdr_level_ground_zero_welcoming_committee_03",
+				"pdr_level_ground_zero_welcoming_committee_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -1530,10 +1375,10 @@ return function ()
 				"face_fear"
 			},
 			localization_strings = {
-				"pdr_level_ground_zero_smell_01",
-				"pdr_level_ground_zero_smell_02",
-				"pdr_level_ground_zero_smell_03",
-				"pdr_level_ground_zero_smell_04"
+				"pdr_level_ground_zero_welcoming_committee_01",
+				"pdr_level_ground_zero_welcoming_committee_02",
+				"pdr_level_ground_zero_welcoming_committee_03",
+				"pdr_level_ground_zero_welcoming_committee_04"
 			},
 			randomize_indexes = {}
 		},
@@ -1629,18 +1474,19 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_level_ground_zero_welcoming_committee = {
+		ebh_level_ground_zero_lord_banter = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
-			category = "story_talk",
+			sound_distance = 50,
+			category = "boss_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pdr_level_ground_zero_welcoming_committee_01",
-				"pdr_level_ground_zero_welcoming_committee_02",
-				"pdr_level_ground_zero_welcoming_committee_03",
-				"pdr_level_ground_zero_welcoming_committee_04"
+				"ebh_level_ground_zero_lord_banter_02",
+				"ebh_level_ground_zero_lord_banter_03",
+				"ebh_level_ground_zero_lord_banter_04",
+				"ebh_level_ground_zero_lord_banter_05"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -1649,16 +1495,16 @@ return function ()
 				"dialogue_shout"
 			},
 			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
 			},
 			localization_strings = {
-				"pdr_level_ground_zero_welcoming_committee_01",
-				"pdr_level_ground_zero_welcoming_committee_02",
-				"pdr_level_ground_zero_welcoming_committee_03",
-				"pdr_level_ground_zero_welcoming_committee_04"
+				"ebh_level_ground_zero_lord_banter_02",
+				"ebh_level_ground_zero_lord_banter_03",
+				"ebh_level_ground_zero_lord_banter_04",
+				"ebh_level_ground_zero_lord_banter_05"
 			},
 			randomize_indexes = {}
 		},
@@ -1695,7 +1541,7 @@ return function ()
 			},
 			randomize_indexes = {}
 		},
-		pdr_level_ground_zero_canals_crossing = {
+		pdr_level_ground_zero_smell = {
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			face_animations_n = 4,
@@ -1703,32 +1549,30 @@ return function ()
 			category = "level_talk",
 			dialogue_animations_n = 4,
 			sound_events = {
-				"pdr_level_ground_zero_canals_crossing_01",
-				"pdr_level_ground_zero_canals_crossing_02",
-				"pdr_level_ground_zero_canals_crossing_03",
-				"pdr_level_ground_zero_canals_crossing_04"
+				"pdr_level_ground_zero_smell_01",
+				"pdr_level_ground_zero_smell_02",
+				"pdr_level_ground_zero_smell_03",
+				"pdr_level_ground_zero_smell_04"
 			},
 			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			},
 			localization_strings = {
-				"pdr_level_ground_zero_canals_crossing_01",
-				"pdr_level_ground_zero_canals_crossing_02",
-				"pdr_level_ground_zero_canals_crossing_03",
-				"pdr_level_ground_zero_canals_crossing_04"
+				"pdr_level_ground_zero_smell_01",
+				"pdr_level_ground_zero_smell_02",
+				"pdr_level_ground_zero_smell_03",
+				"pdr_level_ground_zero_smell_04"
 			},
 			randomize_indexes = {}
 		}
 	})
-
-	return 
 end
