@@ -1,20 +1,19 @@
 GrowQueue = class(GrowQueue)
+
 GrowQueue.init = function (self)
 	self.queue = {}
 	self.first = 1
 	self.last = 0
-
-	return 
 end
+
 GrowQueue.push_back = function (self, item)
 	self.last = self.last + 1
 	self.queue[self.last] = item
-
-	return 
 end
+
 GrowQueue.pop_first = function (self)
 	if self.last < self.first then
-		return 
+		return
 	end
 
 	local item = self.queue[self.first]
@@ -29,6 +28,7 @@ GrowQueue.pop_first = function (self)
 
 	return item
 end
+
 GrowQueue.contains = function (self, item)
 	local first = self.first
 	local last = self.last
@@ -44,15 +44,19 @@ GrowQueue.contains = function (self, item)
 
 	return false
 end
+
 GrowQueue.size = function (self)
 	return self.last - self.first + 1
 end
+
 GrowQueue.get_first = function (self)
 	return self.queue[self.first]
 end
+
 GrowQueue.get_last = function (self)
 	return self.queue[self._last]
 end
+
 GrowQueue.print_items = function (self, s)
 	local s = (s or "") .. " queue: [" .. self.first .. "->" .. self.last .. "] --> "
 
@@ -61,8 +65,6 @@ GrowQueue.print_items = function (self, s)
 	end
 
 	print(s)
-
-	return 
 end
 
-return 
+return

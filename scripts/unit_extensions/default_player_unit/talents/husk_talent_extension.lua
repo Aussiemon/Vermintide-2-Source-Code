@@ -1,4 +1,5 @@
 HuskTalentExtension = class(HuskTalentExtension)
+
 HuskTalentExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
 	self.world = extension_init_context.world
@@ -13,9 +14,8 @@ HuskTalentExtension.init = function (self, extension_init_context, unit, extensi
 		0,
 		0
 	}
-
-	return 
 end
+
 HuskTalentExtension.extensions_ready = function (self, world, unit)
 	local career_extension = ScriptUnit.extension(unit, "career_system")
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
@@ -23,25 +23,24 @@ HuskTalentExtension.extensions_ready = function (self, world, unit)
 	local current_hero_index = self._profile_index
 	local current_hero = SPProfiles[current_hero_index]
 	local hero_name = current_hero.display_name
-	local career_name = career_extension.career_name(career_extension)
+	local career_name = career_extension:career_name()
 	self._hero_name = hero_name
 	self._career_name = career_name
-
-	return 
 end
+
 HuskTalentExtension.set_talent_ids = function (self, talent_ids)
 	self._talent_ids = talent_ids
-
-	return 
 end
+
 local params = {}
+
 HuskTalentExtension.apply_buffs_from_talents = function (self)
 	local talent_ids = self._talent_ids
 	local hero_name = self._hero_name
 	local buff_extension = self.buff_extension
 	local player = self.player
 
-	self._clear_buffs_from_talents(self)
+	self:_clear_buffs_from_talents()
 
 	local talent_buff_ids = self._talent_buff_ids
 
@@ -56,19 +55,18 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 			if (player.local_player and (not buffer or buffer == "client")) or (self.is_server and buffer == "server") or ((self.is_server or player.local_player) and buffer == "both") then
 				local num_buffs = (buffs and #buffs) or 0
 
-				if 0 < num_buffs then
+				if num_buffs > 0 then
 					for j = 1, num_buffs, 1 do
 						local buff_template = buffs[j]
-						local id = buff_extension.add_buff(buff_extension, buff_template)
+						local id = buff_extension:add_buff(buff_template)
 						talent_buff_ids[#talent_buff_ids + 1] = id
 					end
 				end
 			end
 		end
 	end
-
-	return 
 end
+
 HuskTalentExtension._clear_buffs_from_talents = function (self)
 	local buff_extension = self.buff_extension
 	local talent_buff_ids = self._talent_buff_ids
@@ -77,13 +75,12 @@ HuskTalentExtension._clear_buffs_from_talents = function (self)
 	for i = 1, num_talent_buff_ids, 1 do
 		local id = talent_buff_ids[i]
 
-		buff_extension.remove_buff(buff_extension, id)
+		buff_extension:remove_buff(id)
 	end
 
 	table.clear(self._talent_buff_ids)
-
-	return 
 end
+
 HuskTalentExtension.has_talent = function (self, talent_name)
 	local talent_ids = self._talent_ids
 	local wanted_talent_id = TalentIDLookup[talent_name]
@@ -98,6 +95,7 @@ HuskTalentExtension.has_talent = function (self, talent_name)
 
 	return false
 end
+
 HuskTalentExtension.get_talent_names = function (self)
 	local talent_ids = self._talent_ids
 	local talent_names = {}
@@ -114,8 +112,9 @@ HuskTalentExtension.get_talent_names = function (self)
 
 	return talent_names
 end
+
 HuskTalentExtension.destroy = function (self)
-	return 
+	return
 end
 
-return 
+return

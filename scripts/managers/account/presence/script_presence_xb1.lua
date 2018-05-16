@@ -1,20 +1,19 @@
 ScriptPresence = class(ScriptPresence)
 PRESENCE_LUT = {
 	playing = "update_playing",
-	inn = "update_inn",
 	menu = "update_menu",
 	none = "update_none"
 }
 ScriptPresence.PRESENCE_UPDATE_TIME = 5
 ScriptPresence.USE_ASYNC = true
+
 ScriptPresence.init = function (self)
 	self._presence_func = "update_menu"
 	self._current_presence_data = {}
 	self._current_presence_set = false
 	self._presence_update_timer = 0
-
-	return 
 end
+
 ScriptPresence.set_presence = function (self, presence)
 	if PRESENCE_LUT[presence] then
 		self._presence_func = PRESENCE_LUT[presence]
@@ -23,12 +22,11 @@ ScriptPresence.set_presence = function (self, presence)
 	else
 		Application.warning(string.format("[ScriptPresence] Trying to set presence '%s' which doesn't exist", presence))
 	end
-
-	return 
 end
+
 ScriptPresence.update = function (self, dt)
 	if Managers.account:user_detached() then
-		return 
+		return
 	end
 
 	self._presence_update_timer = (self._presence_update_timer or 0) - dt
@@ -40,64 +38,61 @@ ScriptPresence.update = function (self, dt)
 
 		self._presence_update_timer = ScriptPresence.PRESENCE_UPDATE_TIME
 	end
-
-	return 
 end
+
 ScriptPresence.update_none = function (self, user_id)
 	local presence_name = ""
 
 	if self._current_presence_set ~= presence_name then
-		self._set_presence(self, user_id, presence_name)
+		self:_set_presence(user_id, presence_name)
 
 		self._current_presence_set = presence_name
 	end
-
-	return 
 end
+
 ScriptPresence.update_menu = function (self, user_id)
-	local presence_name = "InnMenus"
+	local presence_name = "in_menus"
 
 	if self._current_presence_set ~= presence_name then
-		self._set_presence(self, user_id, presence_name)
+		self:_set_presence(user_id, presence_name)
 
 		self._current_presence_set = presence_name
 	end
-
-	return 
 end
+
+local ACTIVE_PRESENCE_DATA = {}
+
 ScriptPresence.update_playing = function (self, user_id)
 	local current_level = Managers.state.game_mode and Managers.state.game_mode:level_key()
 	local current_difficulty = Managers.state.difficulty and Managers.state.difficulty:get_difficulty()
 	local current_num_players = Managers.player and Managers.player:num_human_players()
-	local data = self._extract_stat_data(self, current_level, current_difficulty, current_num_players)
 
 	if not current_level or not current_difficulty or not current_num_players then
-		self.set_presence(self, "menu")
+		self:set_presence("menu")
 	else
-		local presence_name = ""
+		local prefix = ""
 
-		if self._has_new_data(self, data) then
-			if current_level == "inn_level" then
-				presence_name = "Inn"
-			elseif current_level == "tutorial" then
-				presence_name = "Tutorial"
-			elseif current_num_players == 4 then
-				presence_name = "Playing"
+		if self:_has_new_data(current_level, current_difficulty, current_num_players) then
+			if current_num_players == 4 then
+				prefix = "playing"
 			else
-				presence_name = "NeedsAssistance"
+				prefix = "needs_assistance"
 			end
 
-			self._setup_stat_data(self, data)
-			self._set_presence(self, user_id, presence_name)
+			self:_setup_stat_data(current_level, current_difficulty, current_num_players)
 
-			self._current_presence_set = presence_name
+			local presence_string = prefix .. "_" .. current_level .. "_" .. current_difficulty
+
+			self:_set_presence(user_id, presence_string)
+
+			self._current_presence_set = presence_string
 		end
 	end
-
-	return 
 end
+
 CURRENT_DIFFICULTY = "easy"
 CURRENT_LEVEL = "magnus"
+
 ScriptPresence._extract_stat_data = function (self, current_level, current_difficulty, current_num_players)
 	local data = {}
 
@@ -133,52 +128,46 @@ ScriptPresence._extract_stat_data = function (self, current_level, current_diffi
 
 	return data
 end
-ScriptPresence._has_new_data = function (self, data)
-	local has_new_data = false
 
-	for key, value in pairs(data) do
-		if self._current_presence_data[key] ~= value then
-			has_new_data = true
-
-			break
-		end
+ScriptPresence._has_new_data = function (self, current_level, current_difficulty, current_num_players)
+	if ACTIVE_PRESENCE_DATA.current_level ~= current_level then
+		return true
+	elseif ACTIVE_PRESENCE_DATA.current_difficulty ~= current_difficulty then
+		return true
+	elseif ACTIVE_PRESENCE_DATA.current_num_players ~= current_num_players then
+		return true
 	end
 
-	return has_new_data
+	return false
 end
-ScriptPresence._setup_stat_data = function (self, data)
-	self._current_presence_data = data
 
-	for name, value in pairs(data) do
-		print(string.format("### Presence stat update: %s - %s", name, value))
-		Managers.xbox_events:write(name, {
-			Managers.account:xbox_user_id(),
-			Managers.account:player_session_id(),
-			value
-		})
-	end
-
-	return 
+ScriptPresence._setup_stat_data = function (self, current_level, current_difficulty, current_num_players)
+	ACTIVE_PRESENCE_DATA.current_level = current_level
+	ACTIVE_PRESENCE_DATA.current_difficulty = current_difficulty
+	ACTIVE_PRESENCE_DATA.current_num_players = current_num_players
 end
+
 ScriptPresence.destroy = function (self)
 	local user_id = Managers.account and Managers.account:user_id()
 
 	if user_id then
-		self._set_presence(self, user_id, "")
+		self:_set_presence(user_id, "")
+	end
+end
+
+ScriptPresence._set_presence = function (self, user_id, presence_string)
+	if self._current_presence_set == presence_string then
+		return
 	end
 
-	return 
-end
-ScriptPresence._set_presence = function (self, user_id, presence_string)
 	if ScriptPresence.USE_ASYNC then
 		print("##### Presence:", presence_string)
 		Presence.set_async(user_id, presence_string)
 	else
 		Presence.set(user_id, presence_string)
 	end
-
-	return 
 end
+
 ScriptPresence.cb_async_presence_set = function (self, info)
 	local str = "Presence set: "
 
@@ -187,8 +176,6 @@ ScriptPresence.cb_async_presence_set = function (self, info)
 	else
 		str = str .. "SUCCESS"
 	end
-
-	return 
 end
 
-return 
+return

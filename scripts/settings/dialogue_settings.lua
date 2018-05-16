@@ -5,7 +5,6 @@ DialogueSettings.auto_load_files = {
 	"dialogues/generated/dwarf_ranger_honduras",
 	"dialogues/generated/wood_elf_honduras",
 	"dialogues/generated/empire_soldier_honduras",
-	"dialogues/generated/player_conversations_honduras",
 	"dialogues/generated/special_occasions_honduras",
 	"dialogues/generated/enemies"
 }
@@ -30,21 +29,24 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/empire_soldier_skittergate",
 		"dialogues/generated/bright_wizard_skittergate",
 		"dialogues/generated/dwarf_ranger_skittergate",
-		"dialogues/generated/witch_hunter_skittergate"
+		"dialogues/generated/witch_hunter_skittergate",
+		"dialogues/generated/grey_seer_skittergate"
 	},
 	elven_ruins = {
 		"dialogues/generated/empire_soldier_elven_ruins",
 		"dialogues/generated/wood_elf_elven_ruins",
 		"dialogues/generated/dwarf_ranger_elven_ruins",
 		"dialogues/generated/bright_wizard_elven_ruins",
-		"dialogues/generated/witch_hunter_elven_ruins"
+		"dialogues/generated/witch_hunter_elven_ruins",
+		"dialogues/generated/hero_conversations_elven_ruins"
 	},
 	catacombs = {
 		"dialogues/generated/empire_soldier_catacombs",
 		"dialogues/generated/wood_elf_catacombs",
 		"dialogues/generated/dwarf_ranger_catacombs",
 		"dialogues/generated/bright_wizard_catacombs",
-		"dialogues/generated/witch_hunter_catacombs"
+		"dialogues/generated/witch_hunter_catacombs",
+		"dialogues/generated/hero_conversations_catacombs"
 	},
 	military = {
 		"dialogues/generated/wood_elf_military",
@@ -69,14 +71,16 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/empire_soldier_ussingen",
 		"dialogues/generated/bright_wizard_ussingen",
 		"dialogues/generated/dwarf_ranger_ussingen",
-		"dialogues/generated/witch_hunter_ussingen"
+		"dialogues/generated/witch_hunter_ussingen",
+		"dialogues/generated/hero_conversations_ussingen"
 	},
 	fort = {
 		"dialogues/generated/bright_wizard_fort",
 		"dialogues/generated/dwarf_ranger_fort",
 		"dialogues/generated/witch_hunter_fort",
 		"dialogues/generated/empire_soldier_fort",
-		"dialogues/generated/wood_elf_fort"
+		"dialogues/generated/wood_elf_fort",
+		"dialogues/generated/hero_conversations_fort"
 	},
 	skaven_stronghold = {
 		"dialogues/generated/bright_wizard_skaven_stronghold",
@@ -105,21 +109,24 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/empire_soldier_warcamp",
 		"dialogues/generated/bright_wizard_warcamp",
 		"dialogues/generated/dwarf_ranger_warcamp",
-		"dialogues/generated/witch_hunter_warcamp"
+		"dialogues/generated/witch_hunter_warcamp",
+		"dialogues/generated/hero_conversations_war_camp"
 	},
 	farmlands = {
 		"dialogues/generated/wood_elf_farmland",
 		"dialogues/generated/empire_soldier_farmland",
 		"dialogues/generated/bright_wizard_farmland",
 		"dialogues/generated/dwarf_ranger_farmland",
-		"dialogues/generated/witch_hunter_farmland"
+		"dialogues/generated/witch_hunter_farmland",
+		"dialogues/generated/hero_conversations_farmlands"
 	},
 	skittergate = {
 		"dialogues/generated/wood_elf_skittergate",
 		"dialogues/generated/empire_soldier_skittergate",
 		"dialogues/generated/bright_wizard_skittergate",
 		"dialogues/generated/dwarf_ranger_skittergate",
-		"dialogues/generated/witch_hunter_skittergate"
+		"dialogues/generated/witch_hunter_skittergate",
+		"dialogues/generated/grey_seer_skittergate"
 	},
 	inn_level = {
 		"dialogues/generated/hub_conversations"
@@ -136,7 +143,24 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/empire_soldier_ground_zero",
 		"dialogues/generated/bright_wizard_ground_zero",
 		"dialogues/generated/dwarf_ranger_ground_zero",
-		"dialogues/generated/witch_hunter_ground_zero"
+		"dialogues/generated/witch_hunter_ground_zero",
+		"dialogues/generated/hero_conversations_ground_zero"
+	},
+	dlc_bogenhafen_slum = {
+		"dialogues/generated/witch_hunter_bogenhafen_slum",
+		"dialogues/generated/bright_wizard_bogenhafen_slum",
+		"dialogues/generated/dwarf_ranger_bogenhafen_slum",
+		"dialogues/generated/empire_soldier_bogenhafen_slum",
+		"dialogues/generated/wood_elf_bogenhafen_slum",
+		"dialogues/generated/hero_conversations_dlc_bogenhafen_slum"
+	},
+	dlc_bogenhafen_city = {
+		"dialogues/generated/witch_hunter_bogenhafen_city",
+		"dialogues/generated/bright_wizard_bogenhafen_city",
+		"dialogues/generated/dwarf_ranger_bogenhafen_city",
+		"dialogues/generated/empire_soldier_bogenhafen_city",
+		"dialogues/generated/wood_elf_bogenhafen_city",
+		"dialogues/generated/hero_conversations_dlc_bogenhafen_city"
 	}
 }
 DialogueSettings.blocked_auto_load_files = {
@@ -324,7 +348,8 @@ DialogueSettings.dialogue_category_config = {
 	},
 	activate_ability = {
 		interrupted_by = {
-			champion_opening = true
+			champion_opening = true,
+			boss_talk = true
 		},
 		playable_during_category = {
 			enemy_alerts = true,
@@ -349,11 +374,11 @@ DialogueSettings.dialogue_category_config = {
 	},
 	help_talk = {
 		interrupted_by = {
-			activate_ability = true,
-			player_alerts_boss = true,
+			level_talk_tutorial = true,
 			npc_talk_interrupt_special = true,
 			champion_opening = true,
-			level_talk_tutorial = true
+			player_alerts_boss = true,
+			boss_talk = true
 		},
 		playable_during_category = {
 			default = true,
@@ -453,17 +478,18 @@ DialogueSettings.dialogue_category_config = {
 			enemy_basic_prio = true,
 			help_talk = true,
 			boss_talk = true,
-			boss_talk_interrupt = true
+			boss_talk_interrupt = true,
+			activate_ability = true
 		}
 	},
 	player_alerts = {
 		interrupted_by = {
-			activate_ability = true,
-			champion_opening = true,
-			npc_talk_interrupt_special = true,
-			player_alerts_boss = true,
 			level_talk_tutorial_interrupt = true,
-			level_talk_tutorial = true
+			player_alerts_boss = true,
+			npc_talk_interrupt_special = true,
+			champion_opening = true,
+			level_talk_tutorial = true,
+			boss_talk = true
 		},
 		playable_during_category = {
 			default = true,
@@ -481,12 +507,12 @@ DialogueSettings.dialogue_category_config = {
 	},
 	player_feedback = {
 		interrupted_by = {
-			activate_ability = true,
-			champion_opening = true,
-			npc_talk_interrupt_special = true,
-			player_alerts_boss = true,
 			level_talk_tutorial_interrupt = true,
-			level_talk_tutorial = true
+			player_alerts_boss = true,
+			npc_talk_interrupt_special = true,
+			champion_opening = true,
+			level_talk_tutorial = true,
+			boss_talk = true
 		},
 		playable_during_category = {
 			default = true,
@@ -549,13 +575,11 @@ DialogueSettings.dialogue_category_config = {
 	guidance = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			activate_ability = true,
-			enemy_alerts_boss = true,
-			npc_talk_interrupt_special = true,
-			player_alerts_boss = true,
 			level_talk_tutorial_interrupt = true,
+			npc_talk_interrupt_special = true,
+			champion_opening = true,
 			level_talk_tutorial = true,
-			champion_opening = true
+			boss_talk = true
 		},
 		playable_during_category = {
 			default = true,
@@ -571,16 +595,17 @@ DialogueSettings.dialogue_category_config = {
 	enemy_alerts_boss = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			activate_ability = true,
+			champion_opening = true,
 			player_alerts_boss = true,
 			npc_talk_interrupt_special = true,
-			champion_opening = true
+			boss_talk = true
 		},
 		playable_during_category = {
 			default = true,
 			enemy_high_prio = true,
 			story_talk = true,
 			enemy_alerts = true,
+			activate_ability = true,
 			seen_items = true,
 			casual_talk = true,
 			player_feedback = true,
@@ -591,12 +616,12 @@ DialogueSettings.dialogue_category_config = {
 	enemy_alerts = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			activate_ability = true,
+			level_talk_tutorial = true,
 			enemy_alerts_boss = true,
 			npc_talk_interrupt_special = true,
-			player_alerts_boss = true,
 			champion_opening = true,
-			level_talk_tutorial = true
+			player_alerts_boss = true,
+			boss_talk = true
 		},
 		playable_during_category = {
 			default = true,
@@ -612,11 +637,10 @@ DialogueSettings.dialogue_category_config = {
 	seen_items = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			activate_ability = true,
-			player_alerts_boss = true,
-			npc_talk_interrupt_special = true,
 			champion_opening = true,
-			level_talk_tutorial = true
+			level_talk_tutorial = true,
+			npc_talk_interrupt_special = true,
+			player_alerts_boss = true
 		},
 		playable_during_category = {
 			default = true,
@@ -630,11 +654,11 @@ DialogueSettings.dialogue_category_config = {
 	level_talk = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			activate_ability = true,
-			player_alerts_boss = true,
+			level_talk_tutorial = true,
 			npc_talk_interrupt_special = true,
 			champion_opening = true,
-			level_talk_tutorial = true
+			player_alerts_boss = true,
+			boss_talk = true
 		},
 		playable_during_category = {
 			default = true,
@@ -646,11 +670,11 @@ DialogueSettings.dialogue_category_config = {
 	casual_talk = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			activate_ability = true,
-			player_alerts_boss = true,
+			level_talk_tutorial = true,
 			npc_talk_interrupt_special = true,
 			champion_opening = true,
-			level_talk_tutorial = true
+			player_alerts_boss = true,
+			boss_talk = true
 		},
 		playable_during_category = {
 			enemy_high_prio = true,
@@ -660,11 +684,11 @@ DialogueSettings.dialogue_category_config = {
 	story_talk = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			activate_ability = true,
-			player_alerts_boss = true,
+			level_talk_tutorial = true,
 			npc_talk_interrupt_special = true,
 			champion_opening = true,
-			level_talk_tutorial = true
+			player_alerts_boss = true,
+			boss_talk = true
 		},
 		playable_during_category = {
 			enemy_high_prio = true,
@@ -673,11 +697,11 @@ DialogueSettings.dialogue_category_config = {
 	},
 	knocked_down_override = {
 		interrupted_by = {
-			activate_ability = true,
-			player_alerts_boss = true,
+			level_talk_tutorial = true,
 			npc_talk_interrupt_special = true,
 			champion_opening = true,
-			level_talk_tutorial = true
+			player_alerts_boss = true,
+			boss_talk = true
 		},
 		playable_during_category = {
 			enemy_alerts = true,
@@ -750,31 +774,35 @@ DialogueSettings.dialogue_category_config = {
 		mutually_exclusive = true,
 		interrupted_by = {
 			champion_opening = true,
-			boss_talk_interrupt = true
+			boss_talk_interrupt = true,
+			boss_reaction_talk = true
 		},
 		playable_during_category = {
-			enemy_alerts = true,
-			enemy_alerts_boss = true,
-			help_talk = true,
-			guidance = true,
-			default = true,
+			activate_ability = true,
+			boss_reaction_talk = true,
 			story_talk = true,
-			seen_items = true,
+			default = true,
+			help_talk = true,
+			enemy_alerts_boss = true,
+			boss_talk = true,
 			casual_talk = true,
-			player_alerts = true,
+			enemy_alerts = true,
 			player_feedback = true,
 			level_talk = true,
-			boss_reaction_talk = true,
 			enemy_basic_prio = true,
 			knocked_down_override = true,
 			enemy_high_prio = true,
-			activate_ability = true
+			guidance = true,
+			seen_items = true,
+			player_alerts = true,
+			player_alerts_boss = true
 		}
 	},
 	boss_talk_interrupt = {
 		mutually_exclusive = true,
 		interrupted_by = {
-			champion_opening = true
+			champion_opening = true,
+			boss_reaction_talk = true
 		},
 		playable_during_category = {
 			activate_ability = true,
@@ -827,7 +855,8 @@ DialogueSettings.dialogue_category_config = {
 			npc_talk_interrupt_special = true,
 			player_alerts_boss = true,
 			champion_opening = true,
-			level_talk_tutorial = true
+			level_talk_tutorial = true,
+			boss_talk = true
 		},
 		playable_during_category = {
 			enemy_alerts = true,
@@ -851,7 +880,8 @@ DialogueSettings.dialogue_category_config = {
 			player_alerts_boss = true,
 			npc_talk_interrupt_special = true,
 			champion_opening = true,
-			level_talk_tutorial = true
+			level_talk_tutorial = true,
+			boss_talk = true
 		},
 		playable_during_category = {
 			enemy_alerts = true,
@@ -882,7 +912,7 @@ DialogueSettings.bunny_jumping = {
 DialogueSettings.raycast_enemy_check_interval = 0.25
 DialogueSettings.hear_enemy_check_interval = 10
 DialogueSettings.special_proximity_distance = 30
-DialogueSettings.special_proximity_distance_heard = 20
+DialogueSettings.special_proximity_distance_heard = 30
 HealthTriggerSettings = {
 	levels = {
 		0.2,
@@ -908,4 +938,4 @@ SpecialSubtitleEvents = {
 	}
 }
 
-return 
+return

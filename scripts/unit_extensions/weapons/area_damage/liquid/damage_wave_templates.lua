@@ -192,28 +192,33 @@ DamageWaveTemplates.templates.sienna_adept_ability_trail = {
 	wave_width = 1,
 	max_speed = 100,
 	fx_separation_dist = 0.15,
-	fx_name_running = "fx/wpnfx_lamp_oil_remains",
+	fx_name_running = "fx/brw_adept_skill_02",
 	acceleration = 100,
 	overflow_dist = 0,
-	fx_name_impact = "fx/wpnfx_lamp_oil_remains",
+	fx_name_impact = "fx/brw_adept_skill_02",
 	buff_template_name = "sienna_adept_ability_trail",
 	start_speed = 100,
 	particle_arrived_stop_mode = "stop",
-	fx_name_arrived = "fx/wpnfx_lamp_oil_remains",
+	fx_name_arrived = "fx/brw_adept_skill_02",
 	apply_buff_to_player = false,
 	blob_separation_dist = 0.2,
 	launch_wave_sound = "Play_sienna_adept_blink_ability",
 	apply_impact_buff_to_ai = false,
 	max_height = 0.5,
-	fx_name_filled = "fx/wpnfx_lamp_oil_remains",
+	fx_name_filled = "fx/brw_adept_skill_02",
 	apply_buff_to_ai = true,
 	time_of_life = 6,
 	buff_template_type = "burning dot",
 	apply_impact_buff_to_player = false,
-	fx_name_init = "fx/wpnfx_lamp_oil_remains",
+	fx_name_init = "fx/brw_adept_skill_02",
 	immune_breeds = {}
 }
 DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration = table.clone(DamageWaveTemplates.templates.sienna_adept_ability_trail)
 DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration.time_of_life = 10
+DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration.fx_name_init = "fx/brw_adept_skill_02_upgraded"
+DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration.fx_name_running = "fx/brw_adept_skill_02_upgraded"
+DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration.fx_name_impact = "fx/brw_adept_skill_02_upgraded"
+DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration.fx_name_filled = "fx/brw_adept_skill_02_upgraded"
+DamageWaveTemplates.templates.sienna_adept_ability_trail_increased_duration.fx_name_arrived = "fx/brw_adept_skill_02_upgraded"
 
-return 
+return

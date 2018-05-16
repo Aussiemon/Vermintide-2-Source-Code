@@ -2,80 +2,81 @@ SystemDialogManager = class(SystemDialogManager)
 
 local function dprint(...)
 	print("[SystemDialogManager]", ...)
-
-	return 
 end
 
 SystemDialogManager.init = function (self)
 	self._dialogs = {}
-
-	return 
 end
+
 SystemDialogManager.destroy = function (self)
-	return 
+	return
 end
-SystemDialogManager.update = function (self, dt)
-	self._handle_dialogs(self)
 
-	return 
+SystemDialogManager.update = function (self, dt)
+	self:_handle_dialogs()
 end
+
 SystemDialogManager.check_status = function (self, dialog_instance)
 	local data = nil
 
-	if 0 < #self._dialogs then
+	if #self._dialogs > 0 then
 		data = self._dialogs[1]
 	end
 
 	local status = nil
 
 	if data then
-		status = self._get_status(self, dialog_instance)
+		status = self:_get_status(dialog_instance)
 	end
 
 	return status
 end
+
 SystemDialogManager._get_status = function (self, dialog_instance)
 	local status = dialog_instance.update()
 
 	return status
 end
+
 SystemDialogManager._initialize = function (self, dialog_instance)
 	local result = dialog_instance.initialize()
 
 	if result ~= PS4.SCE_OK then
 		dprint("Failed to initialize " .. dialog_instance._name)
 
-		return 
+		return
 	end
 
 	return true
 end
+
 SystemDialogManager._terminate = function (self, dialog_instance)
 	local result = dialog_instance.terminate()
 
 	if result ~= PS4.SCE_OK then
 		dprint("Failed to terminate " .. dialog_instance._name)
 
-		return 
+		return
 	end
 
 	return true
 end
+
 SystemDialogManager._handle_dialogs = function (self)
 	local data = nil
 
-	if 0 < #self._dialogs then
+	if #self._dialogs > 0 then
 		data = self._dialogs[1]
 	end
 
 	if data then
 		local dialog_instance = data.dialog_instance
-		local status = self._get_status(self, dialog_instance)
+		local status = self:_get_status(dialog_instance)
 
 		if status == dialog_instance.NONE then
-			self._initialize(self, dialog_instance)
+			self:_initialize(dialog_instance)
 		elseif status == dialog_instance.INITIALIZED then
-			local result = data.open(data)
+			local result = data:open()
 
 			if result then
 				if result == PS4.SCE_OK then
@@ -90,14 +91,13 @@ SystemDialogManager._handle_dialogs = function (self)
 				data.callback(status)
 			end
 
-			if self._terminate(self, dialog_instance) then
+			if self:_terminate(dialog_instance) then
 				table.remove(self._dialogs, 1)
 			end
 		end
 	end
-
-	return 
 end
+
 SystemDialogManager.open_system_dialog = function (self, message, user_id)
 	local function open(data)
 		local dialog_instance = data.dialog_instance
@@ -116,9 +116,8 @@ SystemDialogManager.open_system_dialog = function (self, message, user_id)
 		params = params,
 		open = open
 	}
-
-	return 
 end
+
 SystemDialogManager.open_save_dialog = function (self, required_blocks)
 	local function open(data)
 		local dialog_instance = data.dialog_instance
@@ -133,9 +132,8 @@ SystemDialogManager.open_save_dialog = function (self, required_blocks)
 		required_blocks = required_blocks,
 		open = open
 	}
-
-	return 
 end
+
 SystemDialogManager.open_commerce_dialog = function (self, mode, user_id, targets)
 	local function open(data)
 		local dialog_instance = data.dialog_instance
@@ -153,9 +151,8 @@ SystemDialogManager.open_commerce_dialog = function (self, mode, user_id, target
 		targets = targets,
 		open = open
 	}
-
-	return 
 end
+
 SystemDialogManager.open_error_dialog = function (self, error_code, callback)
 	local function open(data)
 		local dialog_instance = data.dialog_instance
@@ -171,8 +168,6 @@ SystemDialogManager.open_error_dialog = function (self, error_code, callback)
 		open = open,
 		callback = callback
 	}
-
-	return 
 end
 
-return 
+return

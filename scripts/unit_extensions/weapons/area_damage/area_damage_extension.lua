@@ -1,5 +1,6 @@
 AreaDamageExtension = class(AreaDamageExtension)
 script_data.debug_area_damage = script_data.debug_area_damage or Development.parameter("debug_area_damage")
+
 AreaDamageExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.unit = unit
@@ -40,14 +41,13 @@ AreaDamageExtension.init = function (self, extension_init_context, unit, extensi
 	if self.invisible_unit then
 		Unit.set_unit_visibility(unit, false)
 	end
-
-	return 
 end
+
 AreaDamageExtension.destroy = function (self)
 	Unit.flow_event(self.unit, "lua_projectile_end")
 
 	if not self.area_damage_started then
-		return 
+		return
 	end
 
 	local world = self.world
@@ -88,16 +88,15 @@ AreaDamageExtension.destroy = function (self)
 	if self.nav_tag_volume_id then
 		local volume_system = Managers.state.entity:system("volume_system")
 
-		volume_system.destroy_nav_tag_volume(volume_system, self.nav_tag_volume_id)
+		volume_system:destroy_nav_tag_volume(self.nav_tag_volume_id)
 	end
-
-	return 
 end
+
 AreaDamageExtension.enable = function (self, enable)
 	if enable then
 		self.enabled = true
 
-		self.start(self)
+		self:start()
 	else
 		self.enabled = false
 		self.area_damage_started = false
@@ -126,9 +125,8 @@ AreaDamageExtension.enable = function (self, enable)
 
 		table.clear(self.player_unit_particles)
 	end
-
-	return 
 end
+
 AreaDamageExtension.start = function (self)
 	self.area_damage_started = true
 	local area_damage = AreaDamageTemplates.get_template(self.area_damage_template)
@@ -137,7 +135,7 @@ AreaDamageExtension.start = function (self)
 		local updated, damage_buffer = area_damage.server.update(self.damage_source, self.unit, self.initial_radius, self.aoe_init_damage, 0, 0, 0, 0, self.damage_players, self.explosion_template_name)
 
 		if updated then
-			self._add_to_damage_buffer(self, damage_buffer)
+			self:_add_to_damage_buffer(damage_buffer)
 		end
 	end
 
@@ -233,19 +231,18 @@ AreaDamageExtension.start = function (self)
 		if self.nav_tag_volume_layer then
 			local volume_system = Managers.state.entity:system("volume_system")
 			local pos = Unit.world_position(self.unit, 0)
-			self.nav_tag_volume_id = volume_system.create_nav_tag_volume_from_data(volume_system, pos, self.radius, self.nav_tag_volume_layer)
+			self.nav_tag_volume_id = volume_system:create_nav_tag_volume_from_data(pos, self.radius, self.nav_tag_volume_layer)
 		else
 			Application.warning(string.format("[AreaDamageExtension] create_nav_tag_volume is set but there are no nav_tag_volume_template set for unit %s", self.unit))
 		end
 	end
-
-	return 
 end
+
 AreaDamageExtension.update = function (self, unit, input, dt, context, t)
-	self._update_damage_buffer(self)
+	self:_update_damage_buffer()
 
 	if not self.area_damage_started then
-		return 
+		return
 	end
 
 	local area_damage = AreaDamageTemplates.get_template(self.area_damage_template)
@@ -254,7 +251,7 @@ AreaDamageExtension.update = function (self, unit, input, dt, context, t)
 		local updated, damage_buffer = area_damage.server.update(self.damage_source, self.unit, self.radius, self.aoe_dot_damage, self.life_time, self.life_timer, self.aoe_dot_damage_interval, self.damage_timer, self.damage_players, self.explosion_template_name)
 
 		if updated then
-			self._add_to_damage_buffer(self, damage_buffer)
+			self:_add_to_damage_buffer(damage_buffer)
 		end
 
 		if self.area_ai_random_death_template then
@@ -262,7 +259,7 @@ AreaDamageExtension.update = function (self, unit, input, dt, context, t)
 			local updated, damage_buffer = ai_random_die.server.update(self.damage_source, self.unit, self.radius, self.aoe_dot_damage_interval, self.damage_timer)
 
 			if updated then
-				self._add_to_damage_buffer(self, damage_buffer)
+				self:_add_to_damage_buffer(damage_buffer)
 			end
 		end
 
@@ -279,19 +276,19 @@ AreaDamageExtension.update = function (self, unit, input, dt, context, t)
 	if script_data.debug_area_damage then
 		QuickDrawer:sphere(Unit.local_position(self.unit, 0), self.radius, Colors.get("hot_pink"))
 	end
-
-	return 
 end
+
 local NUM_UNITS_PER_FRAME = 1
+
 AreaDamageExtension._update_damage_buffer = function (self)
 	if not self.is_server then
-		return 
+		return
 	end
 
 	local damage_buffer = self._damage_buffer
 
 	if #damage_buffer == 0 then
-		return 
+		return
 	end
 
 	local current_damage_buffer_index = self._current_damage_buffer_index
@@ -323,9 +320,8 @@ AreaDamageExtension._update_damage_buffer = function (self)
 	else
 		self._current_damage_buffer_index = num_units_this_frame + 1
 	end
-
-	return 
 end
+
 AreaDamageExtension._add_to_damage_buffer = function (self, temp_damage_buffer)
 	local damage_buffer = self._damage_buffer
 	local num_units_in_buffer = #self._damage_buffer
@@ -334,17 +330,14 @@ AreaDamageExtension._add_to_damage_buffer = function (self, temp_damage_buffer)
 	for i = 1, num_units_in_temp_buffer, 1 do
 		damage_buffer[num_units_in_buffer + i] = temp_damage_buffer[i]
 	end
-
-	return 
 end
+
 AreaDamageExtension.hot_join_sync = function (self, sender)
 	if self.enabled then
 		local level_index = Managers.state.network:level_object_id(self.unit)
 
 		RPC.rpc_enable_area_damage(sender, level_index, true)
 	end
-
-	return 
 end
 
-return 
+return

@@ -689,4 +689,4 @@ ItemMasterList.training_dummy_armored = {
 	}
 }
 
-return 
+return

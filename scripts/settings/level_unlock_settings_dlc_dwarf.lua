@@ -13,4 +13,4 @@ LengthTypeByLevel.dlc_dwarf_beacons = "short"
 LengthTypeByLevel.dlc_dwarf_exterior = "long"
 LengthTypeByLevel.dlc_dwarf_interior = "long"
 
-return 
+return

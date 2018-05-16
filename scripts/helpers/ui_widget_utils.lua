@@ -1,4 +1,5 @@
 UIWidgetUtils = UIWidgetUtils or {}
+
 UIWidgetUtils.animate_default_button = function (widget, dt)
 	local content = widget.content
 	local style = widget.style
@@ -43,7 +44,7 @@ UIWidgetUtils.animate_default_button = function (widget, dt)
 	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
 	local input_alpha = 255 * input_progress
 	style.clicked_rect.color[1] = 100 * input_progress
-	local hover_alpha = 255 * hover_progress
+	local hover_alpha = 255 * combined_progress
 	style.hover_glow.color[1] = hover_alpha
 	local text_disabled_style = style.title_text_disabled
 	local disabled_default_text_color = text_disabled_style.default_text_color
@@ -61,9 +62,8 @@ UIWidgetUtils.animate_default_button = function (widget, dt)
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress
-
-	return 
 end
+
 UIWidgetUtils.animate_default_icon_tabs = function (widget, dt)
 	local content = widget.content
 	local style = widget.style
@@ -129,9 +129,8 @@ UIWidgetUtils.animate_default_icon_tabs = function (widget, dt)
 		hotspot.input_progress = input_progress
 		hotspot.selection_progress = selection_progress
 	end
-
-	return 
 end
+
 UIWidgetUtils.animate_default_checkbox_button = function (widget, dt)
 	local content = widget.content
 	local style = widget.style
@@ -199,9 +198,8 @@ UIWidgetUtils.animate_default_checkbox_button = function (widget, dt)
 	hotspot.hover_progress = hover_progress
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress
-
-	return 
 end
+
 UIWidgetUtils.animate_default_text_tabs = function (widget, dt)
 	local content = widget.content
 	local style = widget.style
@@ -274,8 +272,84 @@ UIWidgetUtils.animate_default_text_tabs = function (widget, dt)
 		hotspot.input_progress = input_progress
 		hotspot.selection_progress = selection_progress
 	end
-
-	return 
 end
 
-return 
+UIWidgetUtils.animate_option_button = function (widget, dt)
+	local content = widget.content
+	local style = widget.style
+	local hotspot = content.button_hotspot
+	local is_hover = hotspot.is_hover
+	local is_selected = hotspot.is_selected
+	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
+	local input_progress = hotspot.input_progress or 0
+	local hover_progress = hotspot.hover_progress or 0
+	local selection_progress = hotspot.selection_progress or 0
+	local speed = 8
+	local input_speed = 20
+
+	if input_pressed then
+		input_progress = math.min(input_progress + dt * input_speed, 1)
+	else
+		input_progress = math.max(input_progress - dt * input_speed, 0)
+	end
+
+	local input_easing_out_progress = math.easeOutCubic(input_progress)
+	local input_easing_in_progress = math.easeInCubic(input_progress)
+
+	if is_hover then
+		hover_progress = math.min(hover_progress + dt * speed, 1)
+	else
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+	end
+
+	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
+	local hover_easing_in_progress = math.easeInCubic(hover_progress)
+
+	if is_selected then
+		selection_progress = math.min(selection_progress + dt * speed, 1)
+	else
+		selection_progress = math.max(selection_progress - dt * speed, 0)
+	end
+
+	local select_easing_out_progress = math.easeOutCubic(selection_progress)
+	local select_easing_in_progress = math.easeInCubic(selection_progress)
+	local combined_progress = math.max(hover_progress, selection_progress)
+	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
+	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
+	local input_alpha = 255 * input_progress
+	style.button_clicked_rect.color[1] = 100 * input_progress
+	style.hover_glow.color[1] = 255 * combined_progress
+	local select_alpha = 255 * selection_progress
+	style.select_glow.color[1] = select_alpha
+	style.icon_selected.color[1] = select_alpha
+	style.skull_select_glow.color[1] = select_alpha
+	style.icon_bg_glow.color[1] = select_alpha
+	local text_disabled_style = style.button_text_disabled
+	local disabled_default_text_color = text_disabled_style.default_text_color
+	local disabled_text_color = text_disabled_style.text_color
+	disabled_text_color[2] = disabled_default_text_color[2] * 0.4
+	disabled_text_color[3] = disabled_default_text_color[3] * 0.4
+	disabled_text_color[4] = disabled_default_text_color[4] * 0.4
+	local button_text_style = style.button_text
+	local button_text_color = button_text_style.text_color
+	local default_text_color = button_text_style.default_text_color
+	local select_text_color = button_text_style.select_text_color
+
+	Colors.lerp_color_tables(default_text_color, select_text_color, combined_progress, button_text_color)
+
+	local icon_color = style.icon.color
+	icon_color[2] = button_text_color[2]
+	icon_color[3] = button_text_color[3]
+	icon_color[4] = button_text_color[4]
+	local background_icon_style = style.background_icon
+	local background_icon_color = background_icon_style.color
+	local background_icon_default_color = background_icon_style.default_color
+	background_icon_color[2] = background_icon_default_color[2] + combined_progress * (255 - background_icon_default_color[2])
+	background_icon_color[3] = background_icon_default_color[3] + combined_progress * (255 - background_icon_default_color[3])
+	background_icon_color[4] = background_icon_default_color[4] + combined_progress * (255 - background_icon_default_color[4])
+	hotspot.hover_progress = hover_progress
+	hotspot.input_progress = input_progress
+	hotspot.selection_progress = selection_progress
+end
+
+return

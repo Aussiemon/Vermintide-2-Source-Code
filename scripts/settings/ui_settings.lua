@@ -12,12 +12,16 @@ UISettings = {
 	max_fatigue_shields = 20,
 	game_start_windows = {
 		frame = "menu_frame_09",
-		spacing = 25,
 		background = "menu_frame_bg_01",
+		spacing = 25,
 		large_window_frame = "menu_frame_08",
 		size = {
 			520,
 			820
+		},
+		large_window_size = {
+			1680,
+			900
 		}
 	},
 	mission_selection_map_size = {
@@ -1263,8 +1267,6 @@ function ButtonTextureByName(button_name, platform)
 	else
 		return (platform == "win32" and button_mapping[platform]) or button_mapping[platform][button_name]
 	end
-
-	return 
 end
 
 UISettings.get_gamepad_input_texture_data = function (input_service, input_action, gamepad_active, optional_alternative_input_service)
@@ -1277,7 +1279,7 @@ UISettings.get_gamepad_input_texture_data = function (input_service, input_actio
 	local button_texture_data = nil
 	local button_name = ""
 	local unassigned = false
-	local keymap_binding = input_service.get_keymapping(input_service, input_action, platform)
+	local keymap_binding = input_service:get_keymapping(input_action, platform)
 
 	if #keymap_binding < 3 then
 		return button_texture_data, button_name
@@ -1288,7 +1290,7 @@ UISettings.get_gamepad_input_texture_data = function (input_service, input_actio
 	local key_action_type = keymap_binding[3]
 
 	if key_index == UNASSIGNED_KEY and optional_alternative_input_service then
-		keymap_binding = optional_alternative_input_service.get_keymapping(optional_alternative_input_service, input_action, platform)
+		keymap_binding = optional_alternative_input_service:get_keymapping(input_action, platform)
 		device_type = keymap_binding[1]
 		key_index = keymap_binding[2]
 		key_action_type = keymap_binding[3]
@@ -1315,4 +1317,4 @@ UISettings.get_gamepad_input_texture_data = function (input_service, input_actio
 	return button_texture_data, button_name, keymap_binding, unassigned
 end
 
-return 
+return

@@ -46,8 +46,8 @@ local buff_tweak_data = {
 		bonus = 0.25
 	},
 	markus_huntsman_headshots_increase_reload_speed_buff = {
-		duration = 2,
-		multiplier = -0.35
+		duration = 5,
+		multiplier = -0.2
 	},
 	markus_huntsman_passive_improved = {
 		bonus = 2
@@ -245,7 +245,7 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				max_stacks = 1,
-				icon = "markus_huntsman_passive_crit_buff_on_headshot",
+				icon = "markus_huntsman_crit_aura",
 				stat_buff = StatBuffIndex.CRITICAL_STRIKE_CHANCE
 			}
 		}
@@ -1777,4 +1777,4 @@ end
 
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.empire_soldier, buff_tweak_data)
 
-return 
+return

@@ -8,6 +8,7 @@ local FRIEND_STATUS = {
 	"trading",
 	"looking_to_play"
 }
+
 SteamHelper.debug_friends = function ()
 	local number_of_friends = 5
 	local friends = {}
@@ -24,6 +25,7 @@ SteamHelper.debug_friends = function ()
 
 	return friends
 end
+
 SteamHelper.friends = function ()
 	local num_friends = Friends.num_friends()
 	local friends = {}
@@ -43,15 +45,15 @@ SteamHelper.friends = function ()
 
 	return friends
 end
+
 SteamHelper.is_dev = function ()
 	if rawget(_G, "Clans") then
 		return SteamHelper.is_in_clan("170000000a021fa")
 	else
 		return false
 	end
-
-	return 
 end
+
 SteamHelper.is_in_clan = function (clan_id)
 	local clan_count = Clans.clan_count()
 
@@ -65,6 +67,7 @@ SteamHelper.is_in_clan = function (clan_id)
 
 	return false
 end
+
 SteamHelper.clans_short = function ()
 	if rawget(_G, "Clans") then
 		local clan_count = Clans.clan_count()
@@ -80,9 +83,8 @@ SteamHelper.clans_short = function ()
 	else
 		return {}
 	end
-
-	return 
 end
+
 SteamHelper.clans = function ()
 	local clan_count = Clans.clan_count()
 	local clan_names = {}
@@ -96,4 +98,4 @@ SteamHelper.clans = function ()
 	return clan_names
 end
 
-return 
+return

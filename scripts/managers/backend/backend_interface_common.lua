@@ -1,10 +1,13 @@
 BackendInterfaceCommon = class(BackendInterfaceCommon)
+
 BackendInterfaceCommon.init = function (self)
-	return 
+	return
 end
+
 BackendInterfaceCommon.ready = function (self)
 	return true
 end
+
 BackendInterfaceCommon.can_wield = function (self, career_name, item_data)
 	local can_wield = item_data.can_wield
 
@@ -15,9 +18,8 @@ BackendInterfaceCommon.can_wield = function (self, career_name, item_data)
 			return true
 		end
 	end
-
-	return 
 end
+
 local filter_operators = {
 	not = {
 		4,
@@ -92,7 +94,7 @@ local filter_macros = {
 	item_rarity = function (item, backend_id)
 		local item_data = item.data
 		local backend_items = Managers.backend:get_interface("items")
-		local rarity = backend_items.get_item_rarity(backend_items, backend_id)
+		local rarity = backend_items:get_item_rarity(backend_id)
 
 		return rarity
 	end,
@@ -124,8 +126,6 @@ local filter_macros = {
 				end
 			end
 		end
-
-		return 
 	end,
 	equipped_by_current_career = function (item, backend_id, params)
 		local item_data = item.data
@@ -142,13 +142,13 @@ local filter_macros = {
 			return false
 		end
 
-		local profile_index = player.profile_index(player)
+		local profile_index = player:profile_index()
 
 		if not profile_index or profile_index == 0 then
 			return false
 		end
 
-		local career_index = player.career_index(player)
+		local career_index = player:career_index()
 
 		if not career_index or career_index == 0 then
 			return false
@@ -158,16 +158,16 @@ local filter_macros = {
 		local career_data = hero_data.careers[career_index]
 		local career_name = career_data.name
 		local backend_items = Managers.backend:get_interface("items")
-		local career_names = backend_items.equipped_by(backend_items, backend_id)
+		local career_names = backend_items:equipped_by(backend_id)
 
 		return table.contains(career_names, career_name)
 	end,
 	is_equipped = function (item, backend_id)
 		local item_data = item.data
 		local backend_items = Managers.backend:get_interface("items")
-		local career_names = backend_items.equipped_by(backend_items, backend_id)
+		local career_names = backend_items:equipped_by(backend_id)
 
-		if 0 < #career_names then
+		if #career_names > 0 then
 			return true
 		end
 
@@ -191,7 +191,7 @@ local filter_macros = {
 		local item_data = item.data
 		local profile_synchronizer = Managers.state.network.profile_synchronizer
 		local player = Managers.player:local_player()
-		local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, player.network_id(player), player.local_player_id(player))
+		local profile_index = profile_synchronizer:profile_by_peer(player:network_id(), player:local_player_id())
 		local hero_data = SPProfiles[profile_index]
 		local hero_name = hero_data.display_name
 
@@ -201,8 +201,8 @@ local filter_macros = {
 		local item_data = item.data
 		local profile_synchronizer = Managers.state.network.profile_synchronizer
 		local player = Managers.player:local_player()
-		local profile_index = player.profile_index(player)
-		local career_index = player.career_index(player)
+		local profile_index = player:profile_index()
+		local career_index = player:career_index()
 		local hero_data = SPProfiles[profile_index]
 		local career_data = hero_data.careers[career_index]
 		local career_name = career_data.name
@@ -214,8 +214,8 @@ local filter_macros = {
 		local item_data = item.data
 		local profile_synchronizer = Managers.state.network.profile_synchronizer
 		local player = Managers.player:local_player()
-		local profile_index = player.profile_index(player)
-		local career_index = player.career_index(player)
+		local profile_index = player:profile_index()
+		local career_index = player:career_index()
 		local hero_data = SPProfiles[profile_index]
 		local careers = hero_data.careers
 		local item_can_wield = item_data.can_wield
@@ -268,7 +268,7 @@ local filter_macros = {
 	player_owns_item_key = function (item, backend_id)
 		local item_data = item.data
 		local backend_items = Managers.backend:get_interface("items")
-		local all_items = backend_items.get_all_backend_items(backend_items)
+		local all_items = backend_items:get_all_backend_items()
 
 		for backend_id, config in pairs(all_items) do
 			if item_data.key == config.key then
@@ -284,10 +284,10 @@ local filter_macros = {
 
 		if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" or slot_type == "hat" then
 			local backend_items = Managers.backend:get_interface("items")
-			local rarity = backend_items.get_item_rarity(backend_items, backend_id)
+			local rarity = backend_items:get_item_rarity(backend_id)
 
 			if rarity ~= "default" then
-				local career_names = backend_items.equipped_by(backend_items, backend_id)
+				local career_names = backend_items:equipped_by(backend_id)
 
 				if #career_names == 0 then
 					return true
@@ -327,12 +327,12 @@ local filter_macros = {
 
 		if (slot_type == "ranged" or slot_type == "melee") and not item.skin then
 			local backend_items = Managers.backend:get_interface("items")
-			local career_names = backend_items.equipped_by(backend_items, backend_id)
+			local career_names = backend_items:equipped_by(backend_id)
 
 			if #career_names == 0 then
 				local weapon_skin_name = item_data.key .. "_skin"
 
-				return backend_items.has_item(backend_items, weapon_skin_name)
+				return backend_items:has_item(weapon_skin_name)
 			end
 		end
 
@@ -344,14 +344,12 @@ local filter_macros = {
 
 		if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
 			local backend_items = Managers.backend:get_interface("items")
-			local rarity = backend_items.get_item_rarity(backend_items, backend_id)
+			local rarity = backend_items:get_item_rarity(backend_id)
 
 			if rarity == "plentiful" or rarity == "common" or rarity == "rare" then
 				return true
 			end
 		end
-
-		return 
 	end,
 	can_craft_with = function (item, backend_id)
 		local item_data = item.data
@@ -359,23 +357,22 @@ local filter_macros = {
 
 		if slot_type == "ranged" or slot_type == "melee" or slot_type == "ring" or slot_type == "necklace" or slot_type == "trinket" then
 			local backend_items = Managers.backend:get_interface("items")
-			local rarity = backend_items.get_item_rarity(backend_items, backend_id)
+			local rarity = backend_items:get_item_rarity(backend_id)
 
 			if rarity == "default" then
 				return true
 			end
 		end
-
-		return 
 	end
 }
 BackendInterfaceCommon.filter_postfix_cache = BackendInterfaceCommon.filter_postfix_cache or {}
 local empty_params = {}
+
 BackendInterfaceCommon.filter_items = function (self, items, filter_infix, params)
 	local filter_postfix = BackendInterfaceCommon.filter_postfix_cache[filter_infix]
 
 	if not filter_postfix then
-		filter_postfix = self._infix_to_postfix_item_filter(self, filter_infix)
+		filter_postfix = self:_infix_to_postfix_item_filter(filter_infix)
 		BackendInterfaceCommon.filter_postfix_cache[filter_infix] = filter_postfix
 	end
 
@@ -422,13 +419,14 @@ BackendInterfaceCommon.filter_items = function (self, items, filter_infix, param
 
 	return passed
 end
+
 BackendInterfaceCommon._infix_to_postfix_item_filter = function (self, filter_infix)
 	local output = {}
 	local stack = {}
 
 	for token in string.gmatch(filter_infix, "%S+") do
 		if filter_operators[token] then
-			while 0 < #stack do
+			while #stack > 0 do
 				local top = stack[#stack]
 
 				if filter_operators[top] and filter_operators[token][1] <= filter_operators[top][1] then
@@ -442,7 +440,7 @@ BackendInterfaceCommon._infix_to_postfix_item_filter = function (self, filter_in
 		elseif token == "(" then
 			stack[#stack + 1] = "("
 		elseif token == ")" then
-			while 0 < #stack do
+			while #stack > 0 do
 				local top = stack[#stack]
 
 				if top ~= "(" then
@@ -458,7 +456,7 @@ BackendInterfaceCommon._infix_to_postfix_item_filter = function (self, filter_in
 		end
 	end
 
-	while 0 < #stack do
+	while #stack > 0 do
 		output[#output + 1] = table.remove(stack)
 	end
 
@@ -476,6 +474,7 @@ BackendInterfaceCommon._infix_to_postfix_item_filter = function (self, filter_in
 
 	return output
 end
+
 BackendInterfaceCommon.serialize_traits = function (self, traits)
 	local serialized_traits = ""
 
@@ -495,6 +494,7 @@ BackendInterfaceCommon.serialize_traits = function (self, traits)
 
 	return serialized_traits
 end
+
 BackendInterfaceCommon.serialize_runes = function (self, runes)
 	local serialized_runes = ""
 
@@ -508,4 +508,4 @@ BackendInterfaceCommon.serialize_runes = function (self, runes)
 	return serialized_runes
 end
 
-return 
+return

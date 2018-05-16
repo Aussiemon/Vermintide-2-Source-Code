@@ -11,16 +11,12 @@ local resolution_lookup = RESOLUTION_LOOKUP
 
 function CLEAR_POSITION_LOOKUP()
 	table.clear(position_lookup)
-
-	return 
 end
 
 local world_position = Unit.world_position
 
 function UPDATE_POSITION_LOOKUP()
 	EngineOptimized.update_position_lookup(position_lookup)
-
-	return 
 end
 
 function UPDATE_RESOLUTION_LOOKUP(force_update)
@@ -38,17 +34,15 @@ function UPDATE_RESOLUTION_LOOKUP(force_update)
 	end
 
 	resolution_lookup.modified = resolution_modified
-
-	return 
 end
 
-PLAYER_UNITS = {}
-PLAYER_POSITIONS = {}
-PLAYER_AND_BOT_UNITS = {}
-PLAYER_AND_BOT_POSITIONS = {}
-VALID_PLAYERS_AND_BOTS = {}
-VALID_TARGETS_PLAYERS_AND_BOTS = {}
-AI_TARGET_UNITS = {}
+PLAYER_UNITS = PLAYER_UNITS or {}
+PLAYER_POSITIONS = PLAYER_POSITIONS or {}
+PLAYER_AND_BOT_UNITS = PLAYER_AND_BOT_UNITS or {}
+PLAYER_AND_BOT_POSITIONS = PLAYER_AND_BOT_POSITIONS or {}
+VALID_PLAYERS_AND_BOTS = VALID_PLAYERS_AND_BOTS or {}
+VALID_TARGETS_PLAYERS_AND_BOTS = VALID_TARGETS_PLAYERS_AND_BOTS or {}
+AI_TARGET_UNITS = AI_TARGET_UNITS or {}
 
 local function is_valid(unit)
 	return unit_alive(unit) and not ScriptUnit.extension(unit, "status_system").ready_for_assisted_respawn
@@ -57,7 +51,7 @@ end
 local function is_valid_target(unit)
 	local status_ext = ScriptUnit.extension(unit, "status_system")
 
-	return not status_ext.is_in_end_zone(status_ext) and not status_ext.is_invisible(status_ext) and not status_ext.spawn_grace and ScriptUnit.extension(unit, "health_system"):is_alive()
+	return not status_ext:is_in_end_zone() and not status_ext:is_invisible() and not status_ext.spawn_grace and ScriptUnit.extension(unit, "health_system"):is_alive()
 end
 
 local function is_valid_aggro_target(unit)
@@ -68,7 +62,7 @@ local function is_valid_aggro_target(unit)
 	local status_ext = ScriptUnit.has_extension(unit, "status_system")
 
 	if status_ext then
-		return not status_ext.ready_for_assisted_respawn and not status_ext.is_in_end_zone(status_ext) and not status_ext.is_invisible(status_ext) and not status_ext.spawn_grace and ScriptUnit.extension(unit, "health_system"):is_alive()
+		return not status_ext.ready_for_assisted_respawn and not status_ext:is_in_end_zone() and not status_ext:is_invisible() and not status_ext.spawn_grace and ScriptUnit.extension(unit, "health_system"):is_alive()
 	end
 
 	return true
@@ -99,7 +93,7 @@ function UPDATE_PLAYER_LISTS()
 			human_and_bot_unit_positions[num_human_and_bot_units] = pos
 			valid_humans_and_bots[unit] = true
 
-			if player.is_player_controlled(player) then
+			if player:is_player_controlled() then
 				num_human_units = num_human_units + 1
 				human_units[num_human_units] = unit
 				human_unit_positions[num_human_units] = pos
@@ -143,8 +137,6 @@ function UPDATE_PLAYER_LISTS()
 		ai_target_units[j] = nil
 		j = j + 1
 	end
-
-	return 
 end
 
 function REMOVE_PLAYER_UNIT_FROM_LISTS(player_unit)
@@ -184,8 +176,6 @@ function REMOVE_PLAYER_UNIT_FROM_LISTS(player_unit)
 			break
 		end
 	end
-
-	return 
 end
 
 function REMOVE_AGGRO_UNITS(aggro_unit)
@@ -200,8 +190,6 @@ function REMOVE_AGGRO_UNITS(aggro_unit)
 			break
 		end
 	end
-
-	return 
 end
 
 function CLEAR_ALL_PLAYER_LISTS()
@@ -223,8 +211,6 @@ function CLEAR_ALL_PLAYER_LISTS()
 	table.clear(BLACKBOARDS)
 	assert(next(BLACKBOARDS) == nil)
 	CLEAR_POSITION_LOOKUP()
-
-	return 
 end
 
-return 
+return

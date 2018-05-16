@@ -29,4 +29,4 @@ loading_bg_docks_atlas = {
 	}
 }
 
-return 
+return

@@ -131,8 +131,6 @@ local function set_bot_threat_tweak_data(current_table, max_start_delay)
 	elseif current_table.bot_threat_duration then
 		current_table.bot_threat_max_start_delay = math.min(max_start_delay, current_table.bot_threat_duration * 0.9)
 	end
-
-	return 
 end
 
 local function find_and_set_bot_threat_tweak_data(current_table, current_difficulty)
@@ -172,8 +170,6 @@ local function find_and_set_bot_threat_tweak_data(current_table, current_difficu
 			end
 		end
 	end
-
-	return 
 end
 
 function SET_BREED_DIFFICULTY()
@@ -199,8 +195,6 @@ function SET_BREED_DIFFICULTY()
 			find_and_set_bot_threat_tweak_data(action_data, current_difficulty)
 		end
 	end
-
-	return 
 end
 
 for name, consideration in pairs(UtilityConsiderations) do
@@ -313,4 +307,4 @@ for name, breed in pairs(Breeds) do
 	end
 end
 
-return 
+return

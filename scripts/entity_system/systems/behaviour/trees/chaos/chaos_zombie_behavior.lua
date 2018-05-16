@@ -84,4 +84,4 @@ BreedBehaviors.chaos_zombie = {
 	name = "chaos_zombie"
 }
 
-return 
+return

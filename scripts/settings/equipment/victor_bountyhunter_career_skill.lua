@@ -132,7 +132,7 @@ weapon_template.actions = {
 			end,
 			allowed_chain_actions = {},
 			enter_function = function (attacker_unit, input_extension)
-				return 
+				return
 			end,
 			condition_func = function (user_unit)
 				return true
@@ -179,9 +179,9 @@ weapon_template.attack_meta_data = {
 	ignore_allies_for_obstruction = true,
 	minimum_charge_time = 0.38,
 	ignore_allies_for_obstruction_charged = true,
+	charge_against_armored_enemy = true,
 	charge_when_obstructed = true,
-	ignore_enemies_for_obstruction = true,
-	charge_against_armoured_enemy = true
+	ignore_enemies_for_obstruction = true
 }
 weapon_template.default_spread_template = "bounty_hunter_handgun"
 weapon_template.left_hand_unit = "units/weapons/player/wpn_emp_shotgun/wpn_emp_shotgun"
@@ -220,4 +220,4 @@ weapon_template.wwise_dep_left_hand = {
 Weapons = Weapons or {}
 Weapons.victor_bountyhunter_career_skill_weapon = table.create_copy(Weapons.victor_bountyhunter_career_skill_weapon, weapon_template)
 
-return 
+return

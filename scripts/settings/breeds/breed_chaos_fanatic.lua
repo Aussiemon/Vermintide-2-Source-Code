@@ -2,14 +2,14 @@ local breed_data = {
 	detection_radius = 12,
 	death_reaction = "ai_default",
 	walk_speed = 2.3,
-	leave_walk_distance = 5,
 	aoe_height = 1.4,
+	leave_walk_distance = 5,
 	patrol_active_target_selection = "pick_closest_target_with_spillover",
-	exchange_order = 4,
 	hesitation_timer = 7,
 	look_at_range = 30,
-	animation_sync_rpc = "rpc_sync_anim_state_7",
 	run_speed = 4.8,
+	animation_sync_rpc = "rpc_sync_anim_state_7",
+	aim_template = "chaos_marauder",
 	target_selection = "pick_closest_target_with_spillover",
 	wwise_voice_switch_group = "marauder_vce_variations",
 	uses_attack_sfx_callback = true,
@@ -39,7 +39,7 @@ local breed_data = {
 	has_inventory = true,
 	scale_death_push = 0.5,
 	follow_reach = 1,
-	aim_template = "chaos_marauder",
+	exchange_order = 4,
 	stagger_multiplier = 1,
 	dont_wield_weapon_on_patrol = true,
 	hit_reaction = "ai_default",
@@ -60,6 +60,11 @@ local breed_data = {
 	vortexable = true,
 	base_unit = "units/beings/enemies/chaos_fanatic/chr_chaos_fanatic",
 	enter_walk_distance = 3,
+	opt_base_unit = {
+		"units/beings/enemies/chaos_fanatic/chr_chaos_fanatic_baked_var1",
+		"units/beings/enemies/chaos_fanatic/chr_chaos_fanatic_baked_var2",
+		"units/beings/enemies/chaos_fanatic/chr_chaos_fanatic_baked_var3"
+	},
 	passive_in_patrol_start_anim = {
 		"move_fwd_4",
 		"move_fwd_5",
@@ -1470,4 +1475,4 @@ local action_data = {
 }
 BreedActions.chaos_fanatic = table.create_copy(BreedActions.chaos_fanatic, action_data)
 
-return 
+return

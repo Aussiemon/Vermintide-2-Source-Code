@@ -1,28 +1,29 @@
 PlayerHuskVisualEffectsExtension = class(PlayerHuskVisualEffectsExtension)
 local unit_set_flow_variable = Unit.set_flow_variable
 local unit_flow_event = Unit.flow_event
+
 PlayerHuskVisualEffectsExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.network_manager = Managers.state.network
 	self.world = extension_init_context.world
 	self.unit = unit
 	self.threshold_changed = true
-
-	return 
 end
+
 PlayerHuskVisualEffectsExtension.extensions_ready = function (self, world, unit)
-	return 
+	return
 end
+
 PlayerHuskVisualEffectsExtension.destroy = function (self)
-	return 
+	return
 end
+
 PlayerHuskVisualEffectsExtension.update = function (self, unit, input, dt, context, t)
-	local overcharge_percentage, overcharge_threshold_percentage = self._update_game_object_field(self)
+	local overcharge_percentage, overcharge_threshold_percentage = self:_update_game_object_field()
 
-	self._update_thresholds(self, overcharge_percentage, overcharge_threshold_percentage)
-	self._set_flow_values(self, overcharge_percentage)
-
-	return 
+	self:_update_thresholds(overcharge_percentage, overcharge_threshold_percentage)
+	self:_set_flow_values(overcharge_percentage)
 end
+
 PlayerHuskVisualEffectsExtension._update_thresholds = function (self, overcharge_percentage, overcharge_threshold_percentage)
 	if self.above_threshold and overcharge_percentage < overcharge_threshold_percentage then
 		self.above_threshold = false
@@ -33,13 +34,12 @@ PlayerHuskVisualEffectsExtension._update_thresholds = function (self, overcharge
 	else
 		self.threshold_changed = false
 	end
-
-	return 
 end
+
 PlayerHuskVisualEffectsExtension._update_game_object_field = function (self)
 	local network_manager = self.network_manager
 	local unit = self.unit
-	local game = network_manager.game(network_manager)
+	local game = network_manager:game()
 	local go_id = Managers.state.unit_storage:go_id(unit)
 
 	if game and go_id then
@@ -51,6 +51,7 @@ PlayerHuskVisualEffectsExtension._update_game_object_field = function (self)
 
 	return 0, 0
 end
+
 PlayerHuskVisualEffectsExtension._set_flow_values = function (self, overcharge_percentage)
 	local unit = self.unit
 
@@ -70,8 +71,6 @@ PlayerHuskVisualEffectsExtension._set_flow_values = function (self, overcharge_p
 			unit_flow_event(unit, event_name)
 		end
 	end
-
-	return 
 end
 
-return 
+return

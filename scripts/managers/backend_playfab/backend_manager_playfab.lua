@@ -6,14 +6,20 @@ require("scripts/managers/backend_playfab/tutorial_backend/backend_interface_ite
 require("scripts/managers/backend_playfab/tutorial_backend/backend_interface_hero_attributes_tutorial")
 require("scripts/managers/backend_playfab/backend_interface_loot_playfab")
 require("scripts/managers/backend_playfab/backend_interface_talents_playfab")
+require("scripts/managers/backend_playfab/backend_interface_quests_playfab")
 require("scripts/managers/backend_playfab/backend_interface_hero_attributes_playfab")
 require("scripts/managers/backend_playfab/backend_interface_statistics_playfab")
 require("scripts/managers/backend_playfab/backend_interface_keep_decorations_playfab")
 require("scripts/managers/backend/script_backend")
-require("scripts/managers/backend_playfab/script_backend_playfab")
-require("scripts/managers/backend_playfab/script_backend_playfab_dedicated")
 require("scripts/settings/equipment/item_master_list")
 require("backend/error_codes")
+
+if PLATFORM == "win32" then
+	require("scripts/managers/backend_playfab/script_backend_playfab_dedicated")
+	require("scripts/managers/backend_playfab/script_backend_playfab")
+elseif PLATFORM == "xb1" then
+	require("scripts/managers/backend_playfab/script_backend_playfab_xbox")
+end
 
 if GameSettingsDevelopment.backend_settings.allow_local then
 	require("backend/local_backend/local_backend")
@@ -22,6 +28,7 @@ end
 cjson = cjson.stingray_init()
 BackendManagerPlayFab = class(BackendManagerPlayFab)
 local TIMEOUT_SIGNIN = 20
+
 BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_queue_name)
 	local settings = GameSettingsDevelopment.backend_settings
 	local implementation = settings.implementation
@@ -31,7 +38,8 @@ BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_qu
 	self._server_queue = rawget(_G, server_queue_name)
 	self._interfaces = {}
 	self._errors = {}
-	self._button_retry = "button_ok"
+	self._button_retry = "button_retry"
+	self._button_ok = "button_ok"
 	self._button_quit = "button_quit"
 	self._button_local_backend = "button_local_backend"
 	self._button_disconnected = "button_disconnected"
@@ -40,29 +48,28 @@ BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_qu
 		local local_backend_data = (script_data.honduras_demo and DefaultDemoLocalBackendData) or DefaultLocalBackendData
 		local local_backend_save_version = (script_data.honduras_demo and DemoBackendSaveDataVersion) or BackendSaveDataVersion
 
-		fassert(self._verify_data(self, local_backend_data), "Mismatch between (local) default equipment and ItemMasterList")
+		fassert(self:_verify_data(local_backend_data), "Mismatch between (local) default equipment and ItemMasterList")
 
 		self._local_backend_file_name = "backend_local"
 
-		self._load_save_data(self, local_backend_data, local_backend_save_version)
+		self:_load_save_data(local_backend_data, local_backend_save_version)
 	end
-
-	return 
 end
+
 BackendManagerPlayFab.is_local = function (self)
 	return self._disable_backend
 end
+
 BackendManagerPlayFab.reset = function (self)
 	self._errors = {}
 	self._is_disconnected = false
 
-	self._destroy_backend(self)
-
-	return 
+	self:_destroy_backend()
 end
+
 BackendManagerPlayFab.signin = function (self, authentication_token)
-	local available = self.available(self)
-	local backend_plugin_loaded = self._backend_plugin_loaded(self)
+	local available = self:available()
+	local backend_plugin_loaded = self:_backend_plugin_loaded()
 	local allow_local = GameSettingsDevelopment.backend_settings.allow_local
 	local use_backend = GameSettingsDevelopment.use_backend
 
@@ -73,9 +80,9 @@ BackendManagerPlayFab.signin = function (self, authentication_token)
 					reason = BACKEND_LUA_ERRORS.ERR_PLATFORM_SPECIFIC_INTERFACE_MISSING
 				}
 
-				self._post_error(self, error_data)
+				self:_post_error(error_data)
 
-				return 
+				return
 			else
 				self._should_disable = true
 			end
@@ -84,30 +91,30 @@ BackendManagerPlayFab.signin = function (self, authentication_token)
 				reason = BACKEND_LUA_ERRORS.ERR_LOADING_PLUGIN
 			}
 
-			self._post_error(self, error_data)
+			self:_post_error(error_data)
 
-			return 
+			return
 		elseif not use_backend then
 			local error_data = {
 				reason = BACKEND_LUA_ERRORS.ERR_USE_LOCAL_BACKEND_NOT_ALLOWED
 			}
 
-			self._post_error(self, error_data)
+			self:_post_error(error_data)
 
-			return 
+			return
 		else
 			error("Bad backend combination")
 		end
 	end
 
 	if self._should_disable then
-		self.disable(self)
+		self:disable()
 
-		return 
+		return
 	end
 
 	if self._backend_signin then
-		self.reset(self)
+		self:reset()
 	end
 
 	print("[BackendManagerPlayFab] Backend Enabled")
@@ -115,15 +122,13 @@ BackendManagerPlayFab.signin = function (self, authentication_token)
 	self._backend_signin = self._signin:new(authentication_token)
 	self._need_signin = true
 	self._signin_timeout = os.time() + TIMEOUT_SIGNIN
-
-	return 
 end
+
 BackendManagerPlayFab.update_items = function (self, leader_peer_id)
 	self._backend_mirror:update_items(leader_peer_id)
-	self.dirtify_interfaces(self)
-
-	return 
+	self:dirtify_interfaces()
 end
+
 BackendManagerPlayFab._backend_plugin_loaded = function (self)
 	if self._backend_implementation == "fishtank" then
 		return rawget(_G, "Backend")
@@ -132,23 +137,22 @@ BackendManagerPlayFab._backend_plugin_loaded = function (self)
 	end
 
 	fassert(false, "unknown backend implementation set in backend settings")
-
-	return 
 end
+
 BackendManagerPlayFab._create_interfaces = function (self, force_local)
 	local settings = GameSettingsDevelopment.backend_settings
 
-	self._create_items_interface(self, settings, force_local)
-	self._create_crafting_interface(self, settings, force_local)
-	self._create_talents_interface(self, settings, force_local)
-	self._create_loot_interface(self, settings, force_local)
-	self._create_common_interface(self, settings, force_local)
-	self._create_hero_attributes_interface(self, settings, force_local)
-	self._create_statistics_interface(self, settings, force_local)
-	self._create_keep_decorations_interface(self, settings, force_local)
-
-	return 
+	self:_create_items_interface(settings, force_local)
+	self:_create_quests_interface(settings, force_local)
+	self:_create_crafting_interface(settings, force_local)
+	self:_create_talents_interface(settings, force_local)
+	self:_create_loot_interface(settings, force_local)
+	self:_create_common_interface(settings, force_local)
+	self:_create_hero_attributes_interface(settings, force_local)
+	self:_create_statistics_interface(settings, force_local)
+	self:_create_keep_decorations_interface(settings, force_local)
 end
+
 BackendManagerPlayFab._destroy_backend = function (self)
 	if self._backend_signin then
 		self._backend_signin:destroy()
@@ -161,49 +165,51 @@ BackendManagerPlayFab._destroy_backend = function (self)
 
 		self._backend_mirror = nil
 	end
-
-	return 
 end
+
 BackendManagerPlayFab.item_script_type = function (self)
 	return "backend"
 end
+
 BackendManagerPlayFab.get_interface = function (self, interface_name, player_id)
 	fassert(self._interfaces[interface_name], "Requesting unknown interface %q", interface_name)
 
 	return self._interfaces[interface_name]
 end
+
 BackendManagerPlayFab.dirtify_interfaces = function (self)
 	local interfaces = self._interfaces
 
 	for interface_name, interface in pairs(interfaces) do
 		if interface.make_dirty then
-			interface.make_dirty(interface)
+			interface:make_dirty()
 		end
 	end
-
-	return 
 end
+
 BackendManagerPlayFab.get_data_server_queue = function (self)
 	return self._data_server_queue
 end
+
 BackendManagerPlayFab.is_disconnected = function (self)
 	return self._is_disconnected
 end
+
 BackendManagerPlayFab.is_waiting_for_user_input = function (self)
 	return not not self._error_dialog
 end
+
 BackendManagerPlayFab.disable = function (self)
 	print("[BackendManagerPlayFab] Backend Disabled")
 
 	self._disable_backend = true
 
-	self._destroy_backend(self)
-	self._create_interfaces(self, true)
+	self:_destroy_backend()
+	self:_create_interfaces(true)
 
 	self._should_disable = false
-
-	return 
 end
+
 BackendManagerPlayFab.start_tutorial = function (self)
 	fassert(self._script_backend_items_backup == nil, "Tutorial already started")
 	fassert(self._script_backend_hero_attributes_backup == nil, "Tutorial already started")
@@ -212,9 +218,8 @@ BackendManagerPlayFab.start_tutorial = function (self)
 	self._interfaces.items = BackendInterfaceItemTutorial:new()
 	self._script_backend_hero_attributes_backup = self._interfaces.hero_attributes
 	self._interfaces.hero_attributes = BackendInterfaceHeroAttributesTutorial:new()
-
-	return 
 end
+
 BackendManagerPlayFab.stop_tutorial = function (self)
 	fassert(self._script_backend_items_backup ~= nil, "Stopping tutorial without starting it")
 	fassert(self._script_backend_hero_attributes_backup ~= nil, "Stopping tutorial without starting it")
@@ -223,31 +228,30 @@ BackendManagerPlayFab.stop_tutorial = function (self)
 	self._script_backend_items_backup = nil
 	self._interfaces.hero_attributes = self._script_backend_hero_attributes_backup
 	self._script_backend_hero_attributes_backup = nil
-
-	return 
 end
+
 BackendManagerPlayFab._update_state = function (self)
 	local settings = GameSettingsDevelopment.backend_settings
 	local signin = self._backend_signin
 
 	if (not settings.allow_backend or self._local_save_loaded) and self._need_signin then
-		local result_data = signin.update_signin(signin)
+		local result_data = signin:update_signin()
 
 		if result_data then
 			self._need_signin = false
 
-			self._post_error(self, result_data)
-		elseif signin.authenticated(signin) then
+			self:_post_error(result_data)
+		elseif signin:authenticated() then
 			local backend_mirror = self._backend_mirror
 
-			if backend_mirror and backend_mirror.ready(backend_mirror) then
+			if backend_mirror and backend_mirror:ready() then
 				self._need_signin = false
 				local queue = self._server_queue:new()
 				self._data_server_queue = queue
 
-				self._create_interfaces(self, false)
+				self:_create_interfaces(false)
 			elseif not backend_mirror then
-				local signin_result = signin.get_signin_result(signin)
+				local signin_result = signin:get_signin_result()
 				self._backend_mirror = self._mirror:new(signin_result)
 			end
 		elseif self._signin_timeout < os.time() then
@@ -256,17 +260,16 @@ BackendManagerPlayFab._update_state = function (self)
 				reason = BACKEND_LUA_ERRORS.ERR_SIGNIN_TIMEOUT
 			}
 
-			self._post_error(self, error_data)
+			self:_post_error(error_data)
 		end
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._update_error_handling = function (self, dt)
-	if 0 < #self._errors and not self._error_dialog and not self._is_disconnected then
+	if #self._errors > 0 and not self._error_dialog and not self._is_disconnected then
 		local error_data = table.remove(self._errors, 1)
 
-		self._show_error_dialog(self, error_data.reason, error_data.details)
+		self:_show_error_dialog(error_data.reason, error_data.details)
 	end
 
 	if self._error_dialog then
@@ -290,24 +293,22 @@ BackendManagerPlayFab._update_error_handling = function (self, dt)
 			end
 		end
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._update_interface = function (self, interface_name, dt)
 	local interface = self._interfaces[interface_name]
 	local backend_mirror = self._backend_mirror
 
 	if interface and interface.update and (backend_mirror or interface.is_local) then
-		interface.update(interface, dt)
+		interface:update(dt)
 	end
-
-	return 
 end
+
 BackendManagerPlayFab.update = function (self, dt)
 	if self._should_disable then
-		self.disable(self)
+		self:disable()
 
-		return 
+		return
 	end
 
 	local settings = GameSettingsDevelopment.backend_settings
@@ -317,69 +318,78 @@ BackendManagerPlayFab.update = function (self, dt)
 	local error_data = nil
 
 	if mirror then
-		error_data = mirror.update(mirror, dt)
+		error_data = mirror:update(dt)
 	end
 
 	if queue then
-		queue.update(queue)
+		queue:update()
 
-		error_data = error_data or queue.check_for_errors(queue)
+		error_data = error_data or queue:check_for_errors()
 	end
 
 	local interfaces = self._interfaces
 
 	if settings.enable_sessions then
-		self._update_interface(self, "session", dt)
+		self:_update_interface("session", dt)
 	end
 
-	self._update_interface(self, "items", dt)
-	self._update_interface(self, "crafting", dt)
-	self._update_interface(self, "talents", dt)
-	self._update_interface(self, "loot", dt)
+	self:_update_interface("items", dt)
+	self:_update_interface("crafting", dt)
+	self:_update_interface("talents", dt)
+	self:_update_interface("loot", dt)
 
 	if settings.quests_enabled then
-		self._update_interface(self, "boons", dt)
-		self._update_interface(self, "quests", dt)
+		self:_update_interface("boons", dt)
+		self:_update_interface("quests", dt)
 	end
 
 	if signin then
-		self._update_state(self)
+		self:_update_state()
 
 		if settings.enable_sessions then
 			error_data = error_data or interfaces.session:check_for_errors()
 		end
 
 		if error_data then
-			self._post_error(self, error_data)
+			self:_post_error(error_data)
 		end
 	end
 
-	self._update_error_handling(self, dt)
-
-	return 
+	self:_update_error_handling(dt)
 end
+
 BackendManagerPlayFab.playfab_api_error = function (self, result, error_override)
 	table.dump(result, nil, 10)
 
-	local error_code = self._get_playfab_error_code(self, result)
+	local error_code = self:_get_playfab_error_code(result)
 	local error_data = {
 		reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR,
 		details = error_override or error_code
 	}
 
-	self._post_error(self, error_data)
-
-	return 
+	self:_post_error(error_data)
 end
+
 BackendManagerPlayFab.playfab_eac_error = function (self)
+	local reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR
+	local details = nil
 	local error_data = {
-		reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR
+		reason = reason,
+		details = details
 	}
 
-	self._post_error(self, error_data)
-
-	return 
+	self:_post_error(error_data)
 end
+
+BackendManagerPlayFab.playfab_error = function (self, reason, details)
+	local error_data = {
+		reason = reason,
+		details = details
+	}
+
+	self:_post_error(error_data)
+end
+
 BackendManagerPlayFab._get_playfab_error_code = function (self, result)
 	if result.data and result.data.Error then
 		local logs = result.data.Logs
@@ -401,31 +411,32 @@ BackendManagerPlayFab._get_playfab_error_code = function (self, result)
 	elseif result.errorCode then
 		return result.errorCode
 	end
-
-	return 
 end
+
 BackendManagerPlayFab.signed_in = function (self)
 	local signin = self._backend_signin
 
-	if self.is_local(self) or (signin and signin.authenticated(signin)) then
+	if self:is_local() or (signin and signin:authenticated()) then
 		return true
 	end
 
 	return false
 end
+
 BackendManagerPlayFab.authenticated = function (self)
 	local signin = self._backend_signin
 	local mirror = self._backend_mirror
 
-	return signin and signin.authenticated(signin) and mirror and mirror.ready(mirror)
+	return signin and signin:authenticated() and mirror and mirror:ready()
 end
+
 BackendManagerPlayFab._post_error = function (self, error_data)
 	ScriptApplication.send_to_crashify("Backend_Error", "ERROR: %s", error_data.details)
 
 	local queue = self._data_server_queue
 
 	if queue then
-		queue.clear(queue)
+		queue:clear()
 	end
 
 	fassert(error_data.reason, "Posting error without reason, %q: %q", error_data.reason or "nil")
@@ -435,21 +446,20 @@ BackendManagerPlayFab._post_error = function (self, error_data)
 		if DEDICATED_SERVER then
 			cprint("Playfab error:", error_data.reason, error_data.details)
 		else
-			self._show_error_dialog(self, error_data.reason, error_data.details)
+			self:_show_error_dialog(error_data.reason, error_data.details)
 		end
 	else
 		self._errors[#self._errors + 1] = error_data
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._format_error_message_console = function (self, reason)
 	local button = {
 		id = self._button_retry,
 		text = Localize("button_ok")
 	}
 
-	if not self.profiles_loaded(self) then
+	if not self:profiles_loaded() then
 		if rawget(_G, "Backend") and reason == Backend.ERR_AUTH then
 			if PLATFORM == "xb1" then
 				return "backend_err_auth_xb1", button
@@ -464,13 +474,12 @@ BackendManagerPlayFab._format_error_message_console = function (self, reason)
 	else
 		return "backend_err_network", button
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._format_error_message_windows = function (self, reason)
 	local error_text, button_1, button_2 = nil
 
-	if not self.profiles_loaded(self) then
+	if not self:profiles_loaded() then
 		button_1 = {
 			id = self._button_quit,
 			text = Localize("menu_quit")
@@ -498,18 +507,18 @@ BackendManagerPlayFab._format_error_message_windows = function (self, reason)
 		else
 			error_text = "backend_err_connecting"
 		end
-	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR then
+	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR then
 		button_1 = {
 			id = self._button_quit,
 			text = Localize("menu_quit")
 		}
-		error_text = "backend_err_playfab"
-	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_EAC_ERROR then
+		error_text = ERROR_CODES[reason]
+	elseif reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED or reason == BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE then
 		button_1 = {
-			id = self._button_quit,
-			text = Localize("menu_quit")
+			id = self._button_ok,
+			text = Localize("button_ok")
 		}
-		error_text = "backend_err_playfab_eac"
+		error_text = ERROR_CODES[reason]
 	else
 		button_1 = {
 			id = self._button_disconnected,
@@ -520,6 +529,7 @@ BackendManagerPlayFab._format_error_message_windows = function (self, reason)
 
 	return error_text, button_1, button_2
 end
+
 BackendManagerPlayFab._show_error_dialog = function (self, reason, details_message)
 	print(string.format("[BackendManagerPlayFab] Showing error dialog: %q, %q", reason or "nil", details_message or "nil"))
 
@@ -527,9 +537,9 @@ BackendManagerPlayFab._show_error_dialog = function (self, reason, details_messa
 	local error_text, button_1, button_2 = nil
 
 	if PLATFORM == "xb1" or PLATFORM == "ps4" then
-		error_text, button_1 = self._format_error_message_console(self, reason)
+		error_text, button_1 = self:_format_error_message_console(reason)
 	else
-		error_text, button_1, button_2 = self._format_error_message_windows(self, reason)
+		error_text, button_1, button_2 = self:_format_error_message_windows(reason)
 	end
 
 	local localized_error_text = Localize(error_text)
@@ -543,44 +553,42 @@ BackendManagerPlayFab._show_error_dialog = function (self, reason, details_messa
 	else
 		self._error_dialog = Managers.popup:queue_popup(localized_error_text, error_topic, button_1.id, button_1.text)
 	end
-
-	return 
 end
+
 BackendManagerPlayFab.get_stats = function (self)
 	if self._backend_mirror then
 		return self._backend_mirror:get_stats()
 	else
 		return self._save_data.stats
 	end
-
-	return 
 end
+
 BackendManagerPlayFab.set_stats = function (self, stats)
 	if self._backend_mirror then
 		return self._backend_mirror:set_stats(stats)
 	else
 		self._save_data.stats = stats
 	end
-
-	return 
 end
+
 BackendManagerPlayFab.available = function (self)
 	local settings = GameSettingsDevelopment.backend_settings
 
 	if PLATFORM == "win32" then
 		return rawget(_G, "Steam") ~= nil or DEDICATED_SERVER
+	elseif PLATFORM == "xb1" then
+		return true
 	end
 
 	return false
 end
+
 BackendManagerPlayFab.commit = function (self, skip_queue)
 	if self._local_save_loaded then
 		local function save_callback(info)
 			if info.error then
 				Application.warning("save error %q", info.error)
 			end
-
-			return 
 		end
 
 		if PLATFORM == "win32" then
@@ -593,24 +601,25 @@ BackendManagerPlayFab.commit = function (self, skip_queue)
 	if self._backend_mirror then
 		return self._backend_mirror:commit(skip_queue)
 	end
-
-	return 
 end
+
 BackendManagerPlayFab.has_loaded = function (self)
 	return self._local_save_loaded
 end
+
 BackendManagerPlayFab.profiles_loaded = function (self)
 	local signin = self._backend_signin
 	local mirror = self._backend_mirror
-	local ready = (self._disable_backend or (signin and signin.authenticated(signin) and mirror and mirror.ready(mirror))) and self._interfaces_ready(self)
+	local ready = (self._disable_backend or (signin and signin:authenticated() and mirror and mirror:ready())) and self:_interfaces_ready()
 
 	return ready
 end
+
 BackendManagerPlayFab._interfaces_ready = function (self)
 	local interfaces = self._interfaces
 
 	for interface_name, interface in pairs(interfaces) do
-		local ready = interface.ready(interface)
+		local ready = interface:ready()
 
 		if not ready then
 			return false
@@ -619,21 +628,19 @@ BackendManagerPlayFab._interfaces_ready = function (self)
 
 	return true
 end
+
 BackendManagerPlayFab.refresh_log_level = function (self)
 	print("[BackendManagerPlayFab] No backend to set log level on!")
-
-	return 
 end
+
 BackendManagerPlayFab.logout = function (self)
 	error("[BackendManagerPlayFab] Not implemented yet")
-
-	return 
 end
+
 BackendManagerPlayFab.disconnect = function (self)
 	error("[BackendManagerPlayFab] Not implemented yet")
-
-	return 
 end
+
 BackendManagerPlayFab.destroy = function (self)
 	if self._interfaces.quests then
 		self._interfaces.quests:delete()
@@ -642,11 +649,10 @@ BackendManagerPlayFab.destroy = function (self)
 	local backend_mirror = self._backend_mirror
 
 	if backend_mirror then
-		backend_mirror.wait_for_shutdown(backend_mirror, 1)
+		backend_mirror:wait_for_shutdown(1)
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._load_save_data = function (self, local_backend_data, local_backend_save_version)
 	local platform = PLATFORM
 
@@ -667,8 +673,6 @@ BackendManagerPlayFab._load_save_data = function (self, local_backend_data, loca
 			end
 
 			self._local_save_loaded = true
-
-			return 
 		end
 
 		Managers.save:auto_load(self._local_backend_file_name, load_callback)
@@ -689,9 +693,8 @@ BackendManagerPlayFab._load_save_data = function (self, local_backend_data, loca
 		self._save_data = SaveData.local_backend_save
 		self._local_save_loaded = true
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._verify_data = function (self, data)
 	local valid = true
 
@@ -707,18 +710,19 @@ BackendManagerPlayFab._verify_data = function (self, data)
 
 	return valid
 end
+
 BackendManagerPlayFab.implementation = function (self)
 	return self._backend_implementation
 end
+
 BackendManagerPlayFab._create_session_interface = function (self, settings, force_local)
 	if force_local or not settings.enable_sessions then
 		self._interfaces.session = BackendInterfaceSessionLocal:new(self._save_data)
 	else
 		self._interfaces.session = BackendInterfaceSessionLocal:new(self._save_data)
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._create_items_interface = function (self, settings, force_local)
 	if force_local then
 		self._interfaces.items = BackendInterfaceItemLocal:new(self._save_data)
@@ -731,9 +735,8 @@ BackendManagerPlayFab._create_items_interface = function (self, settings, force_
 			self._interfaces.items = BackendInterfaceItem:new()
 		end
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._create_boons_interface = function (self, settings, force_local)
 	if settings.quests_enabled then
 		if force_local then
@@ -742,20 +745,22 @@ BackendManagerPlayFab._create_boons_interface = function (self, settings, force_
 			self._interfaces.boons = BackendInterfaceBoonsLocal:new(self._save_data)
 		end
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._create_quests_interface = function (self, settings, force_local)
-	if settings.quests_enabled then
-		if force_local then
-			self._interfaces.quests = BackendInterfaceQuestsLocal:new(self._save_data)
-		else
-			self._interfaces.quests = BackendInterfaceQuestsLocal:new(self._save_data)
+	if force_local then
+		self._interfaces.quests = BackendInterfaceQuestsLocal:new(self._save_data)
+	else
+		local implementation = self._backend_implementation
+
+		if implementation == "playfab" then
+			self._interfaces.quests = BackendInterfaceQuestsPlayfab:new(self._backend_mirror)
+		elseif implementation == "fishtank" then
+			self._interfaces.quests = BackendInterfaceQuests:new()
 		end
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._create_crafting_interface = function (self, settings, force_local)
 	if force_local then
 		self._interfaces.crafting = BackendInterfaceCraftingLocal:new(self._save_data)
@@ -768,9 +773,8 @@ BackendManagerPlayFab._create_crafting_interface = function (self, settings, for
 			self._interfaces.crafting = BackendInterfaceCrafting:new()
 		end
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._create_talents_interface = function (self, settings, force_local)
 	if force_local then
 		self._interfaces.talents = BackendInterfaceTalentsLocal:new(self._save_data)
@@ -783,9 +787,8 @@ BackendManagerPlayFab._create_talents_interface = function (self, settings, forc
 			self._interfaces.talents = BackendInterfaceTalents:new()
 		end
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._create_loot_interface = function (self, settings, force_local)
 	if force_local then
 		self._interfaces.loot = BackendInterfaceLootLocal:new(self._save_data)
@@ -798,27 +801,23 @@ BackendManagerPlayFab._create_loot_interface = function (self, settings, force_l
 			self._interfaces.loot = BackendInterfaceLootLocal:new(self._save_data)
 		end
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._create_profile_hash_interface = function (self, settings, force_local)
 	if force_local then
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._create_common_interface = function (self, settings, force_local)
 	self._interfaces.common = BackendInterfaceCommon:new()
-
-	return 
 end
+
 BackendManagerPlayFab._create_title_properties_interface = function (self, settings, force_local)
 	if force_local then
 		self._interfaces.title_properties = BackendInterfaceTitlePropertiesLocal:new(self._save_data)
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._create_hero_attributes_interface = function (self, settings, force_local)
 	if force_local then
 		self._interfaces.hero_attributes = BackendInterfaceHeroAttributesLocal:new(self._save_data)
@@ -831,26 +830,22 @@ BackendManagerPlayFab._create_hero_attributes_interface = function (self, settin
 			self._interfaces.hero_attributes = BackendInterfaceHeroAttributesLocal:new(self._save_data)
 		end
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._create_statistics_interface = function (self, settings, force_local)
 	if force_local then
 		self._interfaces.statistics = BackendInterfaceStatisticsLocal:new(self._save_data)
 	else
 		self._interfaces.statistics = BackendInterfaceStatisticsPlayFab:new(self._backend_mirror)
 	end
-
-	return 
 end
+
 BackendManagerPlayFab._create_keep_decorations_interface = function (self, settings, force_local)
 	if force_local then
 		self._interfaces.keep_decorations = BackendInterfaceKeepDecorationsLocal:new(self._save_data)
 	else
 		self._interfaces.keep_decorations = BackendInterfaceKeepDecorationsPlayFab:new(self._backend_mirror)
 	end
-
-	return 
 end
 
-return 
+return

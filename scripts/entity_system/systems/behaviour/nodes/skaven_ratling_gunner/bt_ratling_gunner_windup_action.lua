@@ -2,11 +2,11 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTRatlingGunnerWindUpAction = class(BTRatlingGunnerWindUpAction, BTNode)
 BTRatlingGunnerWindUpAction.name = "BTRatlingGunnerWindUpAction"
+
 BTRatlingGunnerWindUpAction.init = function (self, ...)
 	BTRatlingGunnerWindUpAction.super.init(self, ...)
-
-	return 
 end
+
 BTRatlingGunnerWindUpAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local data = blackboard.attack_pattern_data or {}
@@ -30,7 +30,7 @@ BTRatlingGunnerWindUpAction.enter = function (self, unit, blackboard, t)
 		blackboard.attack_pattern_data = data
 		blackboard.action = action
 
-		return 
+		return
 	end
 
 	data.wind_up_timer = AiUtils.random(action.wind_up_time[1], action.wind_up_time[2])
@@ -44,7 +44,7 @@ BTRatlingGunnerWindUpAction.enter = function (self, unit, blackboard, t)
 
 	local network_manager = Managers.state.network
 
-	network_manager.anim_event(network_manager, unit, "to_combat")
+	network_manager:anim_event(unit, "to_combat")
 
 	blackboard.move_state = "attacking"
 
@@ -56,14 +56,13 @@ BTRatlingGunnerWindUpAction.enter = function (self, unit, blackboard, t)
 
 	local inventory_template = blackboard.breed.default_inventory_template
 	local inventory_extension = ScriptUnit.extension(unit, "ai_inventory_system")
-	local ratling_gun_unit = inventory_extension.get_unit(inventory_extension, inventory_template)
+	local ratling_gun_unit = inventory_extension:get_unit(inventory_template)
 	data.ratling_gun_unit = ratling_gun_unit
 	local ai_navigation = blackboard.navigation_extension
 
-	ai_navigation.set_max_speed(ai_navigation, blackboard.breed.walk_speed)
-
-	return 
+	ai_navigation:set_max_speed(blackboard.breed.walk_speed)
 end
+
 BTRatlingGunnerWindUpAction._update_target = function (self, unit, blackboard, data, t)
 	local target_unit, node_name, old_target_visible = PerceptionUtils.pick_ratling_gun_target(unit, blackboard)
 
@@ -95,9 +94,8 @@ BTRatlingGunnerWindUpAction._update_target = function (self, unit, blackboard, d
 	else
 		data.target_check = t + 0.1 + Math.random() * 0.05
 	end
-
-	return 
 end
+
 BTRatlingGunnerWindUpAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	AiUtils.clear_temp_anim_event(unit)
 
@@ -105,15 +103,14 @@ BTRatlingGunnerWindUpAction.leave = function (self, unit, blackboard, t, reason,
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_enabled(navigation_extension, true)
-	navigation_extension.set_max_speed(navigation_extension, default_move_speed)
+	navigation_extension:set_enabled(true)
+	navigation_extension:set_max_speed(default_move_speed)
 
 	local data = blackboard.attack_pattern_data or {}
 
 	AiUtils.clear_anim_event(data)
-
-	return 
 end
+
 BTRatlingGunnerWindUpAction.run = function (self, unit, blackboard, t, dt)
 	local data = blackboard.attack_pattern_data
 
@@ -124,7 +121,7 @@ BTRatlingGunnerWindUpAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if not blackboard.first_shots_fired then
-		self._update_target(self, unit, blackboard, data, t)
+		self:_update_target(unit, blackboard, data, t)
 
 		return "done"
 	end
@@ -132,7 +129,7 @@ BTRatlingGunnerWindUpAction.run = function (self, unit, blackboard, t, dt)
 	data.wind_up_timer = data.wind_up_timer - dt
 
 	if data.target_check < t then
-		self._update_target(self, unit, blackboard, data, t)
+		self:_update_target(unit, blackboard, data, t)
 	end
 
 	local windup_start_finished = blackboard.anim_cb_attack_windup_start_finished
@@ -154,4 +151,4 @@ BTRatlingGunnerWindUpAction.run = function (self, unit, blackboard, t, dt)
 	return "running"
 end
 
-return 
+return

@@ -43,12 +43,11 @@ local function item_sort_func(item_1, item_2)
 	else
 		return item_1_rarity_order < item_2_rarity_order
 	end
-
-	return 
 end
 
 StartGameWindowMutatorGrid = class(StartGameWindowMutatorGrid)
 StartGameWindowMutatorGrid.NAME = "StartGameWindowMutatorGrid"
+
 StartGameWindowMutatorGrid.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowMutatorGrid")
 
@@ -61,26 +60,25 @@ StartGameWindowMutatorGrid.on_enter = function (self, params, offset)
 		snap_pixel_positions = true
 	}
 	local player_manager = Managers.player
-	local local_player = player_manager.local_player(player_manager)
-	self._stats_id = local_player.stats_id(local_player)
+	local local_player = player_manager:local_player()
+	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self._animations = {}
 
-	self.create_ui_elements(self, params, offset)
+	self:create_ui_elements(params, offset)
 
 	local hero_name = "empire_soldier"
 	local career_index = 1
 	local item_grid = ItemGridUI:new(grid_settings, self._widgets_by_name.item_grid, hero_name, career_index)
 
-	item_grid.change_category(item_grid, "heroic_deeds")
-	item_grid.disable_item_drag(item_grid)
-	item_grid.apply_item_sorting_function(item_grid, item_sort_func)
+	item_grid:change_category("heroic_deeds")
+	item_grid:disable_item_drag()
+	item_grid:apply_item_sorting_function(item_sort_func)
 
 	self._item_grid = item_grid
-
-	return 
 end
+
 StartGameWindowMutatorGrid.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
@@ -105,9 +103,8 @@ StartGameWindowMutatorGrid.create_ui_elements = function (self, params, offset)
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
-
-	return 
 end
+
 StartGameWindowMutatorGrid.on_exit = function (self, params)
 	print("[StartGameWindow] Exit Substate StartGameWindowMutatorGrid")
 
@@ -116,28 +113,27 @@ StartGameWindowMutatorGrid.on_exit = function (self, params)
 	self._item_grid:destroy()
 
 	self._item_grid = nil
-
-	return 
 end
+
 StartGameWindowMutatorGrid.update = function (self, dt, t)
 	if DO_RELOAD then
 		DO_RELOAD = false
 
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 	end
 
 	self._item_grid:update(dt, t)
-	self._update_animations(self, dt)
-	self._update_page_info(self)
-	self._update_selected_item_backend_id(self)
-	self._handle_input(self, dt, t)
-	self.draw(self, dt)
+	self:_update_animations(dt)
+	self:_update_page_info()
+	self:_update_selected_item_backend_id()
+	self:_handle_input(dt, t)
+	self:draw(dt)
+end
 
-	return 
-end
 StartGameWindowMutatorGrid.post_update = function (self, dt, t)
-	return 
+	return
 end
+
 StartGameWindowMutatorGrid._update_animations = function (self, dt)
 	self.ui_animator:update(dt)
 
@@ -145,17 +141,16 @@ StartGameWindowMutatorGrid._update_animations = function (self, dt)
 	local ui_animator = self.ui_animator
 
 	for animation_name, animation_id in pairs(animations) do
-		if ui_animator.is_animation_completed(ui_animator, animation_id) then
-			ui_animator.stop_animation(ui_animator, animation_id)
+		if ui_animator:is_animation_completed(animation_id) then
+			ui_animator:stop_animation(animation_id)
 
 			animations[animation_name] = nil
 		end
 	end
 
 	local widgets_by_name = self._widgets_by_name
-
-	return 
 end
+
 StartGameWindowMutatorGrid._is_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -165,9 +160,8 @@ StartGameWindowMutatorGrid._is_button_pressed = function (self, widget)
 
 		return true
 	end
-
-	return 
 end
+
 StartGameWindowMutatorGrid._is_button_hovered = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -175,21 +169,20 @@ StartGameWindowMutatorGrid._is_button_hovered = function (self, widget)
 	if hotspot.on_hover_enter then
 		return true
 	end
-
-	return 
 end
+
 StartGameWindowMutatorGrid._handle_input = function (self, dt, t)
 	local widgets_by_name = self._widgets_by_name
 	local item_grid = self._item_grid
 	local allow_single_press = true
-	local item = item_grid.is_item_pressed(item_grid, allow_single_press)
+	local item = item_grid:is_item_pressed(allow_single_press)
 
-	if item_grid.is_item_hovered(item_grid) then
-		self._play_sound(self, "play_gui_inventory_item_hover")
+	if item_grid:is_item_hovered() then
+		self:_play_sound("play_gui_inventory_item_hover")
 	end
 
 	if item then
-		self._play_sound(self, "play_gui_lobby_button_04_heroic_deed_inventory_click")
+		self:_play_sound("play_gui_lobby_button_04_heroic_deed_inventory_click")
 
 		local backend_id = item.backend_id
 
@@ -199,29 +192,27 @@ StartGameWindowMutatorGrid._handle_input = function (self, dt, t)
 	local page_button_next = widgets_by_name.page_button_next
 	local page_button_previous = widgets_by_name.page_button_previous
 
-	if self._is_button_hovered(self, page_button_next) or self._is_button_hovered(self, page_button_previous) then
-		self._play_sound(self, "play_gui_inventory_next_hover")
+	if self:_is_button_hovered(page_button_next) or self:_is_button_hovered(page_button_previous) then
+		self:_play_sound("play_gui_inventory_next_hover")
 	end
 
-	if self._is_button_pressed(self, page_button_next) then
+	if self:_is_button_pressed(page_button_next) then
 		local next_page_index = self._current_page + 1
 
-		item_grid.set_item_page(item_grid, next_page_index)
-		self._play_sound(self, "play_gui_equipment_inventory_next_click")
-	elseif self._is_button_pressed(self, page_button_previous) then
+		item_grid:set_item_page(next_page_index)
+		self:_play_sound("play_gui_equipment_inventory_next_click")
+	elseif self:_is_button_pressed(page_button_previous) then
 		local next_page_index = self._current_page - 1
 
-		item_grid.set_item_page(item_grid, next_page_index)
-		self._play_sound(self, "play_gui_equipment_inventory_next_click")
+		item_grid:set_item_page(next_page_index)
+		self:_play_sound("play_gui_equipment_inventory_next_click")
 	end
-
-	return 
 end
+
 StartGameWindowMutatorGrid._play_sound = function (self, event)
 	self.parent:play_sound(event)
-
-	return 
 end
+
 StartGameWindowMutatorGrid._update_selected_item_backend_id = function (self)
 	local backend_id = self.parent:get_selected_heroic_deed_backend_id()
 
@@ -236,15 +227,13 @@ StartGameWindowMutatorGrid._update_selected_item_backend_id = function (self)
 			self.parent:set_selected_heroic_deed_backend_id(first_item.backend_id)
 		end
 	end
-
-	return 
 end
+
 StartGameWindowMutatorGrid._exit = function (self, selected_level)
 	self.exit = true
 	self.exit_level_id = selected_level
-
-	return 
 end
+
 StartGameWindowMutatorGrid.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -265,14 +254,12 @@ StartGameWindowMutatorGrid.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 StartGameWindowMutatorGrid._play_sound = function (self, event)
 	self.parent:play_sound(event)
-
-	return 
 end
+
 StartGameWindowMutatorGrid._update_page_info = function (self)
 	local current_page, total_pages = self._item_grid:get_page_info()
 
@@ -287,8 +274,6 @@ StartGameWindowMutatorGrid._update_page_info = function (self)
 		widgets_by_name.page_button_next.content.button_hotspot.disable_button = current_page == total_pages
 		widgets_by_name.page_button_previous.content.button_hotspot.disable_button = current_page == 1
 	end
-
-	return 
 end
 
-return 
+return

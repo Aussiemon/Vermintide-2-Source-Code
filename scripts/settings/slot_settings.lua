@@ -28,4 +28,4 @@ SlotSettings = {
 	}
 }
 
-return 
+return

@@ -58,9 +58,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			hit_effect = ARROW_HIT_EFFECT,
 			projectile_info = Projectiles.true_flight_carbine,
@@ -213,9 +213,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			hit_effect = ARROW_HIT_EFFECT,
 			cleave_distribution = {
@@ -401,7 +401,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension.total_remaining_ammo(ammo_extension) <= 0 then
+				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
 					return false
 				end
 
@@ -478,35 +478,27 @@ weapon_template.tooltip_keywords = {
 	"keyword_2",
 	"keyword_3"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.6,
-			range = 0.6,
-			damage = 0.5,
-			targets = 0.2,
-			stagger = 0.4
-		},
-		heavy_attack = {
-			speed = 0.4,
-			range = 0.8,
-			damage = 0.75,
-			targets = 0.4,
-			stagger = 0.6
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	},
-	perks = {
-		light_attack = {
-			"head_shot",
-			"armor_penetration"
-		},
-		heavy_attack = {
-			"head_shot",
-			"armor_penetration"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "shoot_charged"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "shoot_charged"
 	}
 }
 Weapons = Weapons or {}
 Weapons.longbow_trueflight_template_1 = table.clone(weapon_template)
 
-return 
+return

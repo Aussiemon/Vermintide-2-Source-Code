@@ -16,19 +16,16 @@ Mods = {
 					for mod_name, hook in pairs(hook_functions) do
 						hook(hooked_function, ...)
 					end
-
-					return 
 				end
 
 				object[function_name] = func
 				hooked_functions[func] = hook_functions
 			end
-
-			return 
 		end
 	}
 }
 local mod_name = "SmoketestBots"
+
 BTConditions.has_to_teleport_to_next_segment_on_mainpath = function (blackboard)
 	local bb_follow = blackboard.follow
 	bb_follow.needs_target_position_refresh = false
@@ -47,24 +44,24 @@ BTConditions.has_to_teleport_to_next_segment_on_mainpath = function (blackboard)
 
 	return false
 end
+
 BTBotSmoketestMainpathNavigationAction = class(BTBotSmoketestMainpathNavigationAction, BTNode)
+
 BTBotSmoketestMainpathNavigationAction.init = function (self, ...)
 	BTBotSmoketestMainpathNavigationAction.super.init(self, ...)
-
-	return 
 end
+
 BTBotSmoketestMainpathNavigationAction.name = "BTBotSmoketestMainpathNavigationAction"
+
 BTBotSmoketestMainpathNavigationAction.enter = function (self, unit, blackboard, t)
 	blackboard.has_teleported = false
 	blackboard.follow.needs_target_position_refresh = false
-
-	return 
 end
+
 BTBotSmoketestMainpathNavigationAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.follow.goal_selection_func = nil
-
-	return 
 end
+
 BTBotSmoketestMainpathNavigationAction.run = function (self, unit, blackboard, t, dt)
 	local main_path_data = Managers.state.conflict:get_main_path_player_data(unit)
 
@@ -81,14 +78,15 @@ BTBotSmoketestMainpathNavigationAction.run = function (self, unit, blackboard, t
 
 	return "running", "evaluate"
 end
+
 BTBotSmoketestTeleportToNextMainpathSegmentAction = class(BTBotSmoketestTeleportToNextMainpathSegmentAction, BTNode)
 BTBotSmoketestTeleportToNextMainpathSegmentAction.name = "BTBotSmoketestTeleportToNextMainpathSegmentAction"
 local MAX_ALLOWED_TELEPORT_DISTANCE = 10
+
 BTBotSmoketestTeleportToNextMainpathSegmentAction.init = function (self, ...)
 	BTBotSmoketestTeleportToNextMainpathSegmentAction.super.init(self, ...)
-
-	return 
 end
+
 BTBotSmoketestTeleportToNextMainpathSegmentAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local a_star = blackboard.teleport.a_star
 	blackboard.teleport = nil
@@ -98,18 +96,16 @@ BTBotSmoketestTeleportToNextMainpathSegmentAction.leave = function (self, unit, 
 	end
 
 	GwNavAStar.destroy(a_star)
-
-	return 
 end
+
 BTBotSmoketestTeleportToNextMainpathSegmentAction.enter = function (self, unit, blackboard, t)
 	blackboard.teleport = {
 		state = "init",
 		position = Vector3Box(Vector3.invalid_vector()),
 		a_star = GwNavAStar.create()
 	}
-
-	return 
 end
+
 BTBotSmoketestTeleportToNextMainpathSegmentAction.run = function (self, unit, blackboard, t, dt)
 	local target_ally_unit = blackboard.target_ally_unit
 	local tp_bb = blackboard.teleport
@@ -130,12 +126,12 @@ BTBotSmoketestTeleportToNextMainpathSegmentAction.run = function (self, unit, bl
 			GwNavAStar.start(a_star, blackboard.nav_world, target_pos, pos, Managers.state.bot_nav_transition:traverse_logic())
 		end
 	elseif state == "a_star_search" and GwNavAStar.processing_finished(a_star) then
-		if GwNavAStar.path_found(a_star) and GwNavAStar.path_distance(a_star) < MAX_ALLOWED_TELEPORT_DISTANCE and 0 < GwNavAStar.node_count(a_star) then
+		if GwNavAStar.path_found(a_star) and GwNavAStar.path_distance(a_star) < MAX_ALLOWED_TELEPORT_DISTANCE and GwNavAStar.node_count(a_star) > 0 then
 			local node_count = GwNavAStar.node_count(a_star)
 			local destination = GwNavAStar.node_at_index(a_star, node_count)
 			local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
-			locomotion_extension.teleport_to(locomotion_extension, destination)
+			locomotion_extension:teleport_to(destination)
 
 			tp_bb.state = "done"
 			blackboard.has_teleported = true
@@ -164,12 +160,10 @@ local function find_and_replace(node_table, node_name, new_action_name, new_node
 			node_table.condition = new_condition or node_table.condition
 			node_table.condition_args = new_condition_args or node_table.condition_args
 			node_table.action_data = new_action_data or node_table.action_data
-		elseif 1 < i and type(current_node) == "table" then
+		elseif i > 1 and type(current_node) == "table" then
 			find_and_replace(current_node, node_name, new_action_name, new_node_name, new_condition, new_condition_args, new_action_data)
 		end
 	end
-
-	return 
 end
 
 find_and_replace(BotBehaviors.default, "teleport_no_path", "BTBotSmoketestTeleportToNextMainpathSegmentAction", nil, "has_to_teleport_to_next_segment_on_mainpath")
@@ -198,22 +192,22 @@ Mods.hook.set(mod_name, SmoketestManager, "update", function (func, self, dt)
 	if not game_mode_manager then
 		func(self, dt)
 
-		return 
+		return
 	end
 
 	if #Managers.player:bots() == 0 then
 		func(self, dt)
 
-		return 
+		return
 	end
 
 	local level_transition_handler = game_mode_manager.level_transition_handler
-	local packages_loaded = level_transition_handler.all_packages_loaded(level_transition_handler)
+	local packages_loaded = level_transition_handler:all_packages_loaded()
 
 	if not packages_loaded then
 		func(self, dt)
 
-		return 
+		return
 	end
 
 	local peer_id = Network:peer_id()
@@ -223,12 +217,12 @@ Mods.hook.set(mod_name, SmoketestManager, "update", function (func, self, dt)
 	if not Unit.alive(player_unit) then
 		func(self, dt)
 
-		return 
+		return
 	end
 
 	self.timer = self.timer + dt
 
-	if 1 < self.timer then
+	if self.timer > 1 then
 		self.timer = 0
 		local local_player = Managers.player.local_player(Managers.player)
 		local player_unit = local_player.player_unit
@@ -276,7 +270,7 @@ Mods.hook.set(mod_name, SmoketestManager, "update", function (func, self, dt)
 					local bot_pos = Mover.position(Unit.mover(bot_table[i].player_unit))
 
 					if Vector3.distance_squared(bot_stuck_data[1]:unbox(), bot_pos) < 2 then
-						if 10 < os.time() - bot_stuck_data[2] then
+						if os.time() - bot_stuck_data[2] > 10 then
 							local tp_pos = EngineOptimized.point_on_mainpath(bot_point + 16)
 
 							if tp_pos then
@@ -307,7 +301,7 @@ Mods.hook.set(mod_name, SmoketestManager, "update", function (func, self, dt)
 				target_position.z = target_position.z + 1
 
 				Mover.set_position(player_mover, target_position)
-			elseif mainpath_length - 10 <= player_point then
+			elseif player_point >= mainpath_length - 10 then
 				target_position = EngineOptimized.point_on_mainpath(EngineOptimized.main_path_total_length() - 1)
 
 				Mover.set_position(player_mover, target_position)
@@ -331,8 +325,6 @@ Mods.hook.set(mod_name, SmoketestManager, "update", function (func, self, dt)
 	end
 
 	func(self, dt)
-
-	return 
 end)
 
 function smoketest_change_items()
@@ -352,11 +344,9 @@ function smoketest_change_items()
 				if v == career then
 					table.remove(tab, k)
 
-					return 
+					return
 				end
 			end
-
-			return 
 		end
 
 		local careers = {
@@ -384,7 +374,7 @@ function smoketest_change_items()
 			local career_melee_weapon_slots = {}
 			local career_ranged_weapon_slots = {}
 			local backend_items_interface = Managers.backend:get_interface("items")
-			local backend_items = backend_items_interface.get_all_backend_items(backend_items_interface)
+			local backend_items = backend_items_interface:get_all_backend_items()
 
 			for _, item in pairs(backend_items) do
 				local item_key = item.key
@@ -410,16 +400,14 @@ function smoketest_change_items()
 
 			print(career_melee_weapon, career_ranged_weapon)
 			print(career_melee_weapon.key, career_ranged_weapon.key)
-			backend_items_interface.set_loadout_item(backend_items_interface, career_melee_weapon.backend_id, career, "slot_melee")
-			backend_items_interface.set_loadout_item(backend_items_interface, career_ranged_weapon.backend_id, career, "slot_ranged")
+			backend_items_interface:set_loadout_item(career_melee_weapon.backend_id, career, "slot_melee")
+			backend_items_interface:set_loadout_item(career_ranged_weapon.backend_id, career, "slot_ranged")
 			print(career)
 			print("-------------")
 		end
 	else
 		print("AUTO TEST : USING LOCAL BACKEND, NO CHANGES TO CAREER WEAPONS MADE")
 	end
-
-	return 
 end
 
 function smoketest_get_items(chosen_slot)
@@ -436,7 +424,7 @@ function smoketest_get_items(chosen_slot)
 	local items_hack_string = ""
 	local player_career = ScriptUnit.extension(Managers.player:local_player().player_unit, "career_system")._career_name
 	local backend_items_interface = Managers.backend:get_interface("items")
-	local backend_items = backend_items_interface.get_all_backend_items(backend_items_interface)
+	local backend_items = backend_items_interface:get_all_backend_items()
 
 	for id, item in pairs(backend_items) do
 		local item_key = item.key
@@ -455,22 +443,20 @@ function smoketest_give_hero_all_weapons()
 	local item_master_list = ItemMasterList
 	local item_interface = Managers.backend:get_interface("items")
 	local player_manager = Managers.player
-	local player = player_manager.local_player(player_manager, 1)
-	local profile_index = player.profile_index(player)
+	local player = player_manager:local_player(1)
+	local profile_index = player:profile_index()
 	local profile_settings = SPProfiles[profile_index]
 	local profile_name = profile_settings.display_name
-	local career_index = hero_attributes.get(hero_attributes, profile_name, "career")
+	local career_index = hero_attributes:get(profile_name, "career")
 	local specializations = profile_settings.specializations
 	local career_settings = specializations[career_index]
 	local name = career_settings.name
 
 	for key, item in pairs(item_master_list) do
-		if (item.slot_type == "melee" or item.slot_type == "ranged") and table.contains(item.can_wield, name) and not item_interface.has_item(item_interface, key) then
-			item_interface.award_item(item_interface, key)
+		if (item.slot_type == "melee" or item.slot_type == "ranged") and table.contains(item.can_wield, name) and not item_interface:has_item(key) then
+			item_interface:award_item(key)
 		end
 	end
-
-	return 
 end
 
-return 
+return

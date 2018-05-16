@@ -19,4 +19,4 @@ require("backend/local_backend/backend_tests/pray_for_loot_tester")
 require("backend/local_backend/test_scripts")
 require("backend/item_server/loot_scripts/fuse_data_4")
 
-return 
+return

@@ -68,4 +68,4 @@ HitEffectsDummySorcerer = {
 }
 HitEffectsDummySorcerer = table.create_copy(HitEffectsDummySorcerer, HitEffectsDummySorcerer)
 
-return 
+return

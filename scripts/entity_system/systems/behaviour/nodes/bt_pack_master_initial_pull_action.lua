@@ -1,19 +1,20 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterInitialPullAction = class(BTPackMasterInitialPullAction, BTNode)
+
 BTPackMasterInitialPullAction.init = function (self, ...)
 	BTPackMasterInitialPullAction.super.init(self, ...)
-
-	return 
 end
+
 BTPackMasterInitialPullAction.name = "BTPackMasterInitialPullAction"
+
 BTPackMasterInitialPullAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
 	local navigation_extension = blackboard.navigation_extension
 
 	AiUtils.allow_smart_object_layers(navigation_extension, false)
-	self._find_pull_position(self, unit, blackboard, t)
+	self:_find_pull_position(unit, blackboard, t)
 
 	if blackboard.pull_position_end then
 		Unit.set_local_rotation(unit, 0, Quaternion.look(blackboard.pull_position_start:unbox() - blackboard.pull_position_end:unbox(), Vector3.up()))
@@ -22,9 +23,8 @@ BTPackMasterInitialPullAction.enter = function (self, unit, blackboard, t)
 	end
 
 	AiUtils.show_polearm(unit, false)
-
-	return 
 end
+
 BTPackMasterInitialPullAction._find_pull_position = function (self, unit, blackboard, t)
 	local action = blackboard.action
 	local nav_world = blackboard.nav_world
@@ -34,7 +34,7 @@ BTPackMasterInitialPullAction._find_pull_position = function (self, unit, blackb
 	local direction_to_pull = Vector3.normalize(position - position_target)
 	local angle_towards_pull = math.atan2(direction_to_pull.y, direction_to_pull.x, 0)
 	local navigation_extension = blackboard.navigation_extension
-	local traverse_logic = navigation_extension.traverse_logic(navigation_extension)
+	local traverse_logic = navigation_extension:traverse_logic()
 	local num_segments = 10
 
 	for i = 1, num_segments, 1 do
@@ -68,9 +68,8 @@ BTPackMasterInitialPullAction._find_pull_position = function (self, unit, blackb
 
 	blackboard.pull_position_start = Vector3Box(position)
 	blackboard.pull_t_end = t + action.pull_time
-
-	return 
 end
+
 BTPackMasterInitialPullAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.pull_position_start = nil
 	blackboard.pull_position_end = nil
@@ -92,12 +91,11 @@ BTPackMasterInitialPullAction.leave = function (self, unit, blackboard, t, reaso
 
 	local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension.set_movement_type(locomotion_extension, "snap_to_navmesh")
+	locomotion_extension:set_movement_type("snap_to_navmesh")
 
 	blackboard.attack_cooldown = t + blackboard.action.cooldown
-
-	return 
 end
+
 BTPackMasterInitialPullAction.run = function (self, unit, blackboard, t, dt)
 	if not AiUtils.is_of_interest_to_packmaster(unit, blackboard.drag_target_unit) then
 		return "failed"
@@ -114,4 +112,4 @@ BTPackMasterInitialPullAction.run = function (self, unit, blackboard, t, dt)
 	return "running"
 end
 
-return 
+return

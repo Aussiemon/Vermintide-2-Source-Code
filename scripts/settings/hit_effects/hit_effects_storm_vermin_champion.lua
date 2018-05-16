@@ -173,4 +173,4 @@ HitEffectsStormVerminChampion = {
 	}
 }
 
-return 
+return

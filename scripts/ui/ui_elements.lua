@@ -17,7 +17,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and not button_hotspot.is_hover and 0 < button_hotspot.is_clicked and not button_hotspot.is_selected
+					return not button_hotspot.disabled and not button_hotspot.is_hover and button_hotspot.is_clicked > 0 and not button_hotspot.is_selected
 				end
 			},
 			{
@@ -27,7 +27,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and not button_hotspot.is_selected and button_hotspot.is_hover and 0 < button_hotspot.is_clicked
+					return not button_hotspot.disabled and not button_hotspot.is_selected and button_hotspot.is_hover and button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -47,7 +47,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and button_hotspot.is_selected and 0 < button_hotspot.is_clicked
+					return not button_hotspot.disabled and button_hotspot.is_selected and button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -67,7 +67,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and not button_hotspot.is_hover and not button_hotspot.is_selected and 0 < button_hotspot.is_clicked
+					return not button_hotspot.disabled and not button_hotspot.is_hover and not button_hotspot.is_selected and button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -77,7 +77,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and not button_hotspot.is_selected and button_hotspot.is_hover and 0 < button_hotspot.is_clicked
+					return not button_hotspot.disabled and not button_hotspot.is_selected and button_hotspot.is_hover and button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -117,7 +117,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and not button_hotspot.is_hover and 0 < button_hotspot.is_clicked and not button_hotspot.is_selected
+					return not button_hotspot.disabled and not button_hotspot.is_hover and button_hotspot.is_clicked > 0 and not button_hotspot.is_selected
 				end
 			},
 			{
@@ -126,7 +126,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and not button_hotspot.is_selected and button_hotspot.is_hover and 0 < button_hotspot.is_clicked
+					return not button_hotspot.disabled and not button_hotspot.is_selected and button_hotspot.is_hover and button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -144,7 +144,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and button_hotspot.is_selected and 0 < button_hotspot.is_clicked
+					return not button_hotspot.disabled and button_hotspot.is_selected and button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -163,7 +163,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and not button_hotspot.is_hover and not button_hotspot.is_selected and 0 < button_hotspot.is_clicked
+					return not button_hotspot.disabled and not button_hotspot.is_hover and not button_hotspot.is_selected and button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -173,7 +173,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and not button_hotspot.is_selected and button_hotspot.is_hover and 0 < button_hotspot.is_clicked
+					return not button_hotspot.disabled and not button_hotspot.is_selected and button_hotspot.is_hover and button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -203,7 +203,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and not button_hotspot.is_hover and not button_hotspot.is_selected and 0 < button_hotspot.is_clicked
+					return not button_hotspot.disabled and not button_hotspot.is_hover and not button_hotspot.is_selected and button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -213,7 +213,7 @@ UIElements = {
 				content_check_function = function (content)
 					local button_hotspot = content.button_hotspot
 
-					return not button_hotspot.disabled and not button_hotspot.is_selected and button_hotspot.is_hover and 0 < button_hotspot.is_clicked
+					return not button_hotspot.disabled and not button_hotspot.is_selected and button_hotspot.is_hover and button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -440,14 +440,14 @@ UIElements = {
 				pass_type = "texture",
 				texture_id = "texture_id",
 				content_check_function = function (content)
-					return not content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+					return not content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 				end
 			},
 			{
 				pass_type = "texture",
 				texture_id = "texture_hover_id",
 				content_check_function = function (content)
-					return content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+					return content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -469,14 +469,14 @@ UIElements = {
 				pass_type = "texture",
 				texture_id = "texture_id",
 				content_check_function = function (content)
-					return not content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+					return not content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 				end
 			},
 			{
 				pass_type = "texture",
 				texture_id = "texture_hover_id",
 				content_check_function = function (content)
-					return content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+					return content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -634,8 +634,6 @@ UIElements = {
 				click_check_content_id = "scrollbar_down_hotspot",
 				click_function = function (ui_scenegraph, ui_style, ui_content, input_service)
 					ui_content.internal_scroll_value = math.max(0, ui_content.internal_scroll_value - ui_content.scroll_step_size)
-
-					return 
 				end
 			},
 			{
@@ -643,8 +641,6 @@ UIElements = {
 				click_check_content_id = "scrollbar_up_hotspot",
 				click_function = function (ui_scenegraph, ui_style, ui_content, input_service)
 					ui_content.internal_scroll_value = math.min(1, ui_content.internal_scroll_value + ui_content.scroll_step_size)
-
-					return 
 				end
 			},
 			{
@@ -659,8 +655,6 @@ UIElements = {
 					local y_pos = math.min(min + (max - min) * ui_content.internal_scroll_value, max - bar_height)
 					local_position[2] = y_pos
 					ui_content.scroll_value = (y_pos - min) / (max - bar_height - min)
-
-					return 
 				end
 			},
 			{
@@ -675,7 +669,7 @@ UIElements = {
 				style_id = "background",
 				pass_type = "held",
 				held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-					local cursor = UIInverseScaleVectorToResolution(input_service.get(input_service, "cursor"))
+					local cursor = UIInverseScaleVectorToResolution(input_service:get("cursor"))
 					local scenegraph_id = ui_style.scenegraph_id
 					local world_position = UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)
 					local bar_height = ui_content.scroll_bar_height
@@ -691,8 +685,6 @@ UIElements = {
 					local current_position = math.clamp(current_offset_center_bar, 0, size[2])
 					local delta_value = math.min(current_position / size[2], 1)
 					ui_content.internal_scroll_value = delta_value
-
-					return 
 				end
 			}
 		}
@@ -809,14 +801,14 @@ UIElements = {
 				pass_type = "texture",
 				texture_id = "texture_id",
 				content_check_function = function (content)
-					return not content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+					return not content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 				end
 			},
 			{
 				pass_type = "texture",
 				texture_id = "texture_hover_id",
 				content_check_function = function (content)
-					return content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+					return content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -847,14 +839,14 @@ UIElements = {
 				pass_type = "texture",
 				texture_id = "texture_id",
 				content_check_function = function (content)
-					return not content.disabled and not content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+					return not content.disabled and not content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 				end
 			},
 			{
 				pass_type = "texture",
 				texture_id = "texture_hover_id",
 				content_check_function = function (content)
-					return not content.disabled and content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+					return not content.disabled and content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -899,14 +891,14 @@ UIElements = {
 				pass_type = "texture",
 				texture_id = "texture_id",
 				content_check_function = function (content)
-					return not content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+					return not content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 				end
 			},
 			{
 				pass_type = "texture",
 				texture_id = "texture_hover_id",
 				content_check_function = function (content)
-					return content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+					return content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 				end
 			},
 			{
@@ -940,14 +932,14 @@ UIElements = {
 					pass_type = "texture",
 					texture_id = "texture_id",
 					content_check_function = function (content)
-						return not content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked and 0 < content.gamepad_button.is_clicked
+						return not content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0 and content.gamepad_button.is_clicked > 0
 					end
 				},
 				{
 					pass_type = "texture",
 					texture_id = "texture_hover_id",
 					content_check_function = function (content)
-						return content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+						return content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 					end
 				},
 				{
@@ -977,4 +969,4 @@ UIElements = {
 	end
 }
 
-return 
+return

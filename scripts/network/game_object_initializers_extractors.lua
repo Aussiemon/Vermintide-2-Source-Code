@@ -22,7 +22,7 @@ go_type_table = {
 		player_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local player = ScriptUnit.extension(unit, "input_system").player
 			local mover = Unit.mover(unit)
-			local profile_id = player.profile_index(player)
+			local profile_id = player:profile_index()
 
 			assert(profile_id)
 
@@ -32,14 +32,14 @@ go_type_table = {
 
 			local hero_attributes = Managers.backend:get_interface("hero_attributes")
 			local career_extension = ScriptUnit.extension(unit, "career_system")
-			local career_index = career_extension.career_index(career_extension)
+			local career_index = career_extension:career_index()
 			local cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
-			local skin = cosmetic_extension.get_equipped_skin(cosmetic_extension)
+			local skin = cosmetic_extension:get_equipped_skin()
 			local skin_name = skin.name
-			local frame_name = cosmetic_extension.get_equipped_frame_name(cosmetic_extension)
+			local frame_name = cosmetic_extension:get_equipped_frame_name()
 			local husk_unit = Cosmetics[skin_name].third_person_husk
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-			local aim_position = first_person_extension.current_position(first_person_extension)
+			local aim_position = first_person_extension:current_position()
 			local rotation = Unit.local_rotation(unit, 0)
 			local experience = ExperienceSettings.get_experience(profile.display_name)
 			local level = ExperienceSettings.get_level(experience)
@@ -59,8 +59,8 @@ go_type_table = {
 				position = Mover.position(mover),
 				pitch = Quaternion.pitch(rotation),
 				yaw = Quaternion.yaw(rotation),
-				owner_peer_id = player.network_id(player),
-				local_player_id = player.local_player_id(player),
+				owner_peer_id = player:network_id(),
+				local_player_id = player:local_player_id(),
 				aim_direction = Vector3(1, 0, 0),
 				aim_position = aim_position,
 				velocity = Vector3(0, 0, 0),
@@ -74,7 +74,7 @@ go_type_table = {
 		player_bot_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local player = Managers.player:owner(unit)
 			local mover = Unit.mover(unit)
-			local profile_id = player.profile_index(player)
+			local profile_id = player:profile_index()
 
 			assert(profile_id)
 
@@ -83,13 +83,13 @@ go_type_table = {
 			assert(profile, "No such profile with index %s", tostring(profile_id))
 
 			local cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
-			local skin = cosmetic_extension.get_equipped_skin(cosmetic_extension)
+			local skin = cosmetic_extension:get_equipped_skin()
 			local skin_name = skin.name
-			local frame_name = cosmetic_extension.get_equipped_frame_name(cosmetic_extension)
+			local frame_name = cosmetic_extension:get_equipped_frame_name()
 			local husk_unit = Cosmetics[skin_name].third_person_husk
 			local max_wounds = ScriptUnit.extension(unit, "status_system"):max_wounds_network_safe()
 			local career_extension = ScriptUnit.extension(unit, "career_system")
-			local career_index = career_extension.career_index(career_extension)
+			local career_index = career_extension:career_index()
 			local rotation = Unit.local_rotation(unit, 0)
 			local data_table = {
 				ammo_percentage = 1,
@@ -107,8 +107,8 @@ go_type_table = {
 				yaw = Quaternion.yaw(rotation),
 				velocity = Vector3(0, 0, 0),
 				average_velocity = Vector3(0, 0, 0),
-				owner_peer_id = player.network_id(player),
-				local_player_id = player.local_player_id(player),
+				owner_peer_id = player:network_id(),
+				local_player_id = player:local_player_id(),
 				aim_direction = Vector3(1, 0, 0),
 				profile_id = profile_id,
 				career_id = career_index
@@ -120,7 +120,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local data_table = {
 				has_teleported = 1,
 				go_type = NetworkLookup.go_types.ai_unit,
@@ -140,7 +140,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local data_table = {
 				show_health_bar = false,
 				has_teleported = 1,
@@ -161,7 +161,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local tentacle_spline_extension = ScriptUnit.extension(unit, "ai_supplementary_system")
 			local portal_unit = tentacle_spline_extension.portal_unit
 			local data_table = {
@@ -187,7 +187,7 @@ go_type_table = {
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
 			local vortex_extension = ScriptUnit.extension(unit, "ai_supplementary_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inner_decal_unit = vortex_extension._inner_decal_unit
 			local inner_decal_unit_id = NetworkConstants.invalid_game_object_id
 
@@ -251,7 +251,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local data_table = {
 				has_teleported = 1,
@@ -273,7 +273,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 			local is_blocking = ai_shield_extension.is_blocking
@@ -298,7 +298,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 			local is_blocking = ai_shield_extension.is_blocking
@@ -323,7 +323,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 			local is_blocking = ai_shield_extension.is_blocking
@@ -351,7 +351,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local data_table = {
 				has_teleported = 1,
@@ -373,7 +373,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local data_table = {
 				show_health_bar = false,
@@ -396,7 +396,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local data_table = {
 				has_teleported = 1,
@@ -418,7 +418,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local data_table = {
 				has_teleported = 1,
@@ -441,7 +441,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local data_table = {
 				has_teleported = 1,
@@ -464,7 +464,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local data_table = {
 				attack_arm = 1,
@@ -488,7 +488,7 @@ go_type_table = {
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension.size_variation(ai_extension)
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
 			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
 			local data_table = {
 				show_health_bar = false,
@@ -519,7 +519,7 @@ go_type_table = {
 			local impact_extension = ScriptUnit.extension(unit, "projectile_impact_system")
 			local owner_unit = impact_extension.owner_unit
 			local locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
-			local position, flat_angle, lateral_speed, initial_forward_speed, distance_travelled = locomotion_extension.get_game_object_data(locomotion_extension)
+			local position, flat_angle, lateral_speed, initial_forward_speed, distance_travelled = locomotion_extension:get_game_object_data()
 			local data_table = {
 				go_type = NetworkLookup.go_types.flame_wave_projectile_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
@@ -774,7 +774,7 @@ go_type_table = {
 			local fuse_time = 0
 
 			if health_extension.ignited then
-				local data = health_extension.health_data(health_extension)
+				local data = health_extension:health_data()
 				explode_time = data.explode_time
 				fuse_time = data.fuse_time
 			end
@@ -821,7 +821,7 @@ go_type_table = {
 			local fuse_time = 0
 
 			if health_extension.ignited then
-				local data = health_extension.health_data(health_extension)
+				local data = health_extension:health_data()
 				explode_time = data.explode_time
 				fuse_time = data.fuse_time
 			end
@@ -1022,7 +1022,7 @@ go_type_table = {
 				initial_position = initial_position,
 				target_vector = target_vector,
 				trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name],
-				owner_unit = network_manager.unit_game_object_id(network_manager, owner_unit),
+				owner_unit = network_manager:unit_game_object_id(owner_unit),
 				collision_filter = NetworkLookup.collision_filters[collision_filter],
 				server_side_raycast = server_side_raycast,
 				impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
@@ -1059,7 +1059,7 @@ go_type_table = {
 				target_vector = target_vector,
 				trajectory_template_name = NetworkLookup.projectile_templates[trajectory_template_name],
 				impact_template_name = NetworkLookup.projectile_templates[impact_template_name],
-				owner_unit = network_manager.unit_game_object_id(network_manager, owner_unit)
+				owner_unit = network_manager:unit_game_object_id(owner_unit)
 			}
 
 			return data_table
@@ -1076,7 +1076,7 @@ go_type_table = {
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				damage_wave_template_name = NetworkLookup.damage_wave_templates[damage_wave_template_name],
-				source_unit = network_manager.unit_game_object_id(network_manager, source_unit)
+				source_unit = network_manager:unit_game_object_id(source_unit)
 			}
 
 			return data_table
@@ -1092,7 +1092,7 @@ go_type_table = {
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				damage_blob_template_name = NetworkLookup.damage_blob_templates[damage_blob_template_name],
-				source_unit = network_manager.unit_game_object_id(network_manager, source_unit)
+				source_unit = network_manager:unit_game_object_id(source_unit)
 			}
 
 			return data_table
@@ -1106,7 +1106,7 @@ go_type_table = {
 				go_type = NetworkLookup.go_types.liquid_aoe_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				liquid_area_damage_template = NetworkLookup.liquid_area_damage_templates[liquid_area_damage_template],
-				source_unit = network_manager.unit_game_object_id(network_manager, source_unit),
+				source_unit = network_manager:unit_game_object_id(source_unit),
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0)
 			}
@@ -1228,7 +1228,7 @@ go_type_table = {
 			local data_table = {
 				go_type = NetworkLookup.go_types.overpowering_blob_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
-				health = health_extension.get_max_health(health_extension)
+				health = health_extension:get_max_health()
 			}
 
 			return data_table
@@ -1372,7 +1372,7 @@ go_type_table = {
 				},
 				statistics_system = {
 					template = "player",
-					statistics_id = player.stats_id(player)
+					statistics_id = player:stats_id()
 				},
 				ai_slot_system = {
 					profile_index = profile_id
@@ -1490,7 +1490,7 @@ go_type_table = {
 				},
 				statistics_system = {
 					template = "player",
-					statistics_id = player.stats_id(player)
+					statistics_id = player:stats_id()
 				},
 				ai_slot_system = {
 					profile_index = profile_id
@@ -2953,8 +2953,6 @@ go_type_table = {
 		end,
 		sync_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			assert(false)
-
-			return 
 		end
 	},
 	unit_from_gameobject_creator_func = function (unit_spawner, game_session, go_id, go_template)
@@ -2998,27 +2996,30 @@ go_type_table = {
 
 				Matrix4x4.set_scale(spawn_pose, scale)
 
-				unit = unit_spawner.spawn_local_unit(unit_spawner, husk_unit, spawn_pose)
+				unit = unit_spawner:spawn_local_unit(husk_unit, spawn_pose)
 
 				return unit
 			end
 
-			unit = unit_spawner.spawn_local_unit(unit_spawner, husk_unit, position, rotation)
+			unit = unit_spawner:spawn_local_unit(husk_unit, position, rotation)
 		end
 
 		return unit
 	end
 }
 local initializers = go_type_table.initializers
+
 initializers.ai_true_flight_killable_projectile_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 	local data_table = initializers.ai_true_flight_projectile_unit(unit, unit_name, unit_template, gameobject_functor_context)
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
-	data_table.health = health_extension.get_max_health(health_extension)
+	data_table.health = health_extension:get_max_health()
 	data_table.go_type = NetworkLookup.go_types.ai_true_flight_killable_projectile_unit
 
 	return data_table
 end
+
 local extractors = go_type_table.extractors
+
 extractors.ai_true_flight_killable_projectile_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 	local _, extension_init_data, true_flight_template_name = extractors.ai_true_flight_projectile_unit(game_session, go_id, owner_id, unit, gameobject_functor_context)
 	local template = TrueFlightTemplates[true_flight_template_name]

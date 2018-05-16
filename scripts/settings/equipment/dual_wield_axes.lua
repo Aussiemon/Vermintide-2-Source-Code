@@ -580,7 +580,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			dual_hit_stop_anims = {
 				left = "attack_hit",
@@ -656,7 +656,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			dual_hit_stop_anims = {
 				left = "shake_hit",
@@ -732,7 +732,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			dual_hit_stop_anims = {
 				left = "shake_hit",
@@ -1259,7 +1259,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			dual_hit_stop_anims = {
 				left = "shake_hit",
@@ -1342,7 +1342,7 @@ weapon_template.actions = {
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
-				return not status_extension.fatigued(status_extension)
+				return not status_extension:fatigued()
 			end
 		}
 	},
@@ -1359,7 +1359,7 @@ weapon_template.actions = {
 			end,
 			total_time = math.huge,
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			buff_data = {
 				{
@@ -1457,26 +1457,28 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_fast_attacks",
 	"weapon_keyword_armour_piercing"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.7,
-			stagger = 0.2,
-			damage = 0.2916666666666667,
-			targets = 0.4
-		},
-		heavy_attack = {
-			speed = 0.6,
-			stagger = 0.4,
-			damage = 0.4125,
-			targets = 0.6
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "light_attack_left"
 	},
-	perks = {
-		light_attack = {},
-		heavy_attack = {
-			"armor_penetration"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "heavy_attack_2"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	push = {
+		action_name = "action_one",
+		sub_action_name = "push"
 	}
 }
 weapon_template.wwise_dep_left_hand = {
@@ -1491,4 +1493,4 @@ Weapons.dual_wield_axes_template_1_t3_un = table.clone(Weapons.dual_wield_axes_t
 Weapons.dual_wield_axes_template_1_t3_un.actions.action_inspect.default.anim_event = "inspect_start_2"
 Weapons.dual_wield_axes_template_1_t3_un.actions.action_inspect.default.anim_end_event = "inspect_end_2"
 
-return 
+return

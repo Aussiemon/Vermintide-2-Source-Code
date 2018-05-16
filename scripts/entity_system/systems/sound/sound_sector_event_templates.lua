@@ -28,10 +28,10 @@ SoundSectorEventTemplates.distant_horde = {
 
 		if unit then
 			local ai_base_extension = ScriptUnit.extension(unit, "ai_system")
-			local breed = ai_base_extension.breed(ai_base_extension)
+			local breed = ai_base_extension:breed()
 			local is_slave = breed.behavior == "pack_rat"
 
-			if is_slave and entities[unit].has_target and not death_extension.has_death_started(death_extension) then
+			if is_slave and entities[unit].has_target and not death_extension:has_death_started() then
 				local contains_this_unit = horde_units[unit]
 
 				if not contains_this_unit then
@@ -47,7 +47,7 @@ SoundSectorEventTemplates.distant_horde = {
 		for horde_unit, death_extension in pairs(horde_units) do
 			local position = horde_positions[horde_unit]:unbox()
 
-			if not Unit.alive(horde_unit) or death_extension.has_death_started(death_extension) or not sector[horde_unit] then
+			if not Unit.alive(horde_unit) or death_extension:has_death_started() or not sector[horde_unit] then
 				horde_units[horde_unit] = nil
 				horde_positions[horde_unit] = nil
 				num_horde_units = num_horde_units - 1
@@ -102,10 +102,10 @@ SoundSectorEventTemplates.distant_horde_marauder = {
 
 		if unit then
 			local ai_base_extension = ScriptUnit.extension(unit, "ai_system")
-			local breed = ai_base_extension.breed(ai_base_extension)
+			local breed = ai_base_extension:breed()
 			local is_marauder = breed.behavior == "marauder"
 
-			if is_marauder and entities[unit].has_target and not death_extension.has_death_started(death_extension) then
+			if is_marauder and entities[unit].has_target and not death_extension:has_death_started() then
 				local contains_this_unit = horde_units_marauder[unit]
 
 				if not contains_this_unit then
@@ -121,7 +121,7 @@ SoundSectorEventTemplates.distant_horde_marauder = {
 		for horde_unit, death_extension in pairs(horde_units_marauder) do
 			local position = horde_positions_marauder[horde_unit]:unbox()
 
-			if not Unit.alive(horde_unit) or death_extension.has_death_started(death_extension) or not sector[horde_unit] then
+			if not Unit.alive(horde_unit) or death_extension:has_death_started() or not sector[horde_unit] then
 				horde_units_marauder[horde_unit] = nil
 				horde_positions_marauder[horde_unit] = nil
 				num_horde_units_marauder = num_horde_units_marauder - 1
@@ -188,9 +188,9 @@ SoundSectorEventTemplates.marauder_mass_idle = {
 
 		if unit then
 			local ai_base_extension = ScriptUnit.extension(unit, "ai_system")
-			local breed = ai_base_extension.breed(ai_base_extension)
+			local breed = ai_base_extension:breed()
 
-			if breed.behavior == "marauder" and not death_extension.has_death_started(death_extension) then
+			if breed.behavior == "marauder" and not death_extension:has_death_started() then
 				local contains_this_unit = marauder_units[unit]
 
 				if not contains_this_unit then
@@ -215,7 +215,7 @@ SoundSectorEventTemplates.marauder_mass_idle = {
 		end
 
 		for marauder_unit, death_extension in pairs(marauder_units) do
-			if (death_extension and death_extension.has_death_started(death_extension)) or not Unit.alive(marauder_unit) or not sector[marauder_unit] then
+			if (death_extension and death_extension:has_death_started()) or not Unit.alive(marauder_unit) or not sector[marauder_unit] then
 				local position = POSITION_LOOKUP[marauder_unit]
 
 				if position then
@@ -267,4 +267,4 @@ SoundSectorEventTemplates.marauder_mass_idle = {
 	end
 }
 
-return 
+return

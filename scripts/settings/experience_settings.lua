@@ -40,7 +40,7 @@ end
 ExperienceSettings = {
 	get_player_level = function (player)
 		local network_manager = Managers.state.network
-		local network_game = network_manager.game(network_manager)
+		local network_game = network_manager:game()
 
 		if not network_game then
 			return nil
@@ -48,7 +48,7 @@ ExperienceSettings = {
 
 		local unit_storage = Managers.state.unit_storage
 		local unit = player.player_unit
-		local go_id = unit_storage.go_id(unit_storage, unit)
+		local go_id = unit_storage:go_id(unit)
 
 		if not go_id then
 			return nil
@@ -59,6 +59,7 @@ ExperienceSettings = {
 		return level
 	end
 }
+
 ExperienceSettings.get_account_level = function ()
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local best_class, best_xp = nil
@@ -66,15 +67,17 @@ ExperienceSettings.get_account_level = function ()
 
 	return level, best_xp, best_class
 end
+
 ExperienceSettings.get_experience = function (hero_name)
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 
-	return hero_attributes.get(hero_attributes, hero_name, "experience") or 0
+	return hero_attributes:get(hero_name, "experience") or 0
 end
+
 ExperienceSettings.get_level = function (experience)
 	experience = experience or 0
 
-	assert(0 <= experience, "Negative XP!??")
+	assert(experience >= 0, "Negative XP!??")
 
 	local exp_total = 0
 	local level = 0
@@ -107,6 +110,7 @@ ExperienceSettings.get_level = function (experience)
 
 	return level, progress, experience_into_level, 0
 end
+
 ExperienceSettings.get_experience_required_for_level = function (level)
 	local experience = 0
 
@@ -118,6 +122,7 @@ ExperienceSettings.get_experience_required_for_level = function (level)
 
 	return experience
 end
+
 ExperienceSettings.get_total_experience_required_for_level = function (level)
 	local experience = 0
 
@@ -128,6 +133,7 @@ ExperienceSettings.get_total_experience_required_for_level = function (level)
 
 	return experience
 end
+
 ExperienceSettings.get_highest_character_level = function ()
 	local highest_level = 0
 
@@ -144,6 +150,7 @@ ExperienceSettings.get_highest_character_level = function ()
 
 	return highest_level
 end
+
 ExperienceSettings.max_experience = total_experience_for_main_levels
 ExperienceSettings.max_level = #experience_levels_main
 ExperienceSettings.multiplier = 1
@@ -152,4 +159,4 @@ ExperienceSettings.level_length_experience_multiplier = {
 	long = 1
 }
 
-return 
+return

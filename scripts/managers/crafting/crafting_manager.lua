@@ -1,29 +1,34 @@
 CraftingManager = class(CraftingManager)
 CraftingManager.NAME = "CraftingManager"
+
 CraftingManager.init = function (self)
 	local crafting_interface = Managers.backend:get_interface("crafting")
 	self._crafting_interface = crafting_interface
+end
 
-	return 
-end
 CraftingManager.update = function (self, dt)
-	return 
+	return
 end
+
 CraftingManager.get_recipes = function (self)
 	return self._crafting_interface:get_recipes()
 end
+
 CraftingManager.get_recipes_lookup = function (self)
 	return self._crafting_interface:get_recipes_lookup()
 end
+
 CraftingManager.are_recipes_dirty = function (self)
 	local crafting_interface = self._crafting_interface
-	local dirty_reason = crafting_interface.are_recipes_dirty(crafting_interface)
+	local dirty_reason = crafting_interface:are_recipes_dirty()
 
 	return dirty_reason
 end
+
 CraftingManager.destroy = function (self)
-	return 
+	return
 end
+
 CraftingManager.craft = function (self, items, recipe_override)
 	local crafting_interface = self._crafting_interface
 	local item_backend_ids = {}
@@ -33,26 +38,26 @@ CraftingManager.craft = function (self, items, recipe_override)
 	end
 
 	local player_manager = Managers.player
-	local player = player_manager.local_player(player_manager)
-	local profile_index = player.profile_index(player)
+	local player = player_manager:local_player()
+	local profile_index = player:profile_index()
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
-	local career_index = player.career_index(player)
+	local career_index = player:career_index()
 	local career = careers[career_index]
 	local career_name = career.name
-	local craft_id, recipe = crafting_interface.craft(crafting_interface, career_name, item_backend_ids, recipe_override)
+	local craft_id, recipe = crafting_interface:craft(career_name, item_backend_ids, recipe_override)
 
 	if craft_id and recipe then
-		local stats_id = player.stats_id(player)
-		local statistics_db = player_manager.statistics_db(player_manager)
+		local stats_id = player:stats_id()
+		local statistics_db = player_manager:statistics_db()
 
 		if recipe.name == "salvage" then
-			local salvaged_items = statistics_db.get_persistent_stat(statistics_db, stats_id, "salvaged_items")
+			local salvaged_items = statistics_db:get_persistent_stat(stats_id, "salvaged_items")
 			salvaged_items = salvaged_items + #items
 
-			statistics_db.set_stat(statistics_db, stats_id, "salvaged_items", salvaged_items)
+			statistics_db:set_stat(stats_id, "salvaged_items", salvaged_items)
 		else
-			statistics_db.increment_stat(statistics_db, stats_id, "crafted_items")
+			statistics_db:increment_stat(stats_id, "crafted_items")
 		end
 
 		Managers.backend:commit()
@@ -60,29 +65,27 @@ CraftingManager.craft = function (self, items, recipe_override)
 
 	return craft_id
 end
+
 CraftingManager.debug_set_crafted_items_stat = function (self, value)
 	local player_manager = Managers.player
-	local player = player_manager.local_player(player_manager)
-	local stats_id = player.stats_id(player)
-	local statistics_db = player_manager.statistics_db(player_manager)
+	local player = player_manager:local_player()
+	local stats_id = player:stats_id()
+	local statistics_db = player_manager:statistics_db()
 
-	statistics_db.set_stat(statistics_db, stats_id, "crafted_items", value)
+	statistics_db:set_stat(stats_id, "crafted_items", value)
 	Managers.backend:commit()
 	print("Number of crafted items set to", value)
-
-	return 
 end
+
 CraftingManager.debug_set_salvaged_items_stat = function (self, value)
 	local player_manager = Managers.player
-	local player = player_manager.local_player(player_manager)
-	local stats_id = player.stats_id(player)
-	local statistics_db = player_manager.statistics_db(player_manager)
+	local player = player_manager:local_player()
+	local stats_id = player:stats_id()
+	local statistics_db = player_manager:statistics_db()
 
-	statistics_db.set_stat(statistics_db, stats_id, "salvaged_items", value)
+	statistics_db:set_stat(stats_id, "salvaged_items", value)
 	Managers.backend:commit()
 	print("Number of salvaged items set to", value)
-
-	return 
 end
 
-return 
+return

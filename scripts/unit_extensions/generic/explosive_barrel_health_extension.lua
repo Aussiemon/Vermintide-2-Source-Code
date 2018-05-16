@@ -1,4 +1,5 @@
 ExplosiveBarrelHealthExtension = class(ExplosiveBarrelHealthExtension, GenericHealthExtension)
+
 ExplosiveBarrelHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	ExplosiveBarrelHealthExtension.super.init(self, extension_init_context, unit, extension_init_data)
 
@@ -22,14 +23,13 @@ ExplosiveBarrelHealthExtension.init = function (self, extension_init_context, un
 		self.owner_unit_health_extension = ScriptUnit.extension(owner_unit, "health_system")
 		self.ignored_damage_types = extension_init_data.ignored_damage_types
 	end
-
-	return 
 end
+
 ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 	local owner_unit_health_extension = self.owner_unit_health_extension
 
 	if owner_unit_health_extension then
-		local recent_damages, num_damages = owner_unit_health_extension.recent_damages(owner_unit_health_extension)
+		local recent_damages, num_damages = owner_unit_health_extension:recent_damages()
 
 		for i = 1, num_damages / DamageDataIndex.STRIDE, 1 do
 			local j = (i - 1) * DamageDataIndex.STRIDE
@@ -40,13 +40,13 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 
 			if not ignore_damage_type then
 				if damage_type == "heal" then
-					self.add_heal(self, attacker_unit, -damage_amount, nil, "n/a")
+					self:add_heal(attacker_unit, -damage_amount, nil, "n/a")
 				else
 					local hit_zone_name = recent_damages[j + DamageDataIndex.HIT_ZONE]
 					local damage_direction = Vector3Aux.unbox(recent_damages[j + DamageDataIndex.DIRECTION])
 					local damage_source_name = recent_damages[j + DamageDataIndex.DAMAGE_SOURCE_NAME]
 
-					self.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name)
+					self:add_damage(attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name)
 				end
 			end
 		end
@@ -62,24 +62,19 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 		if self.explode_time <= network_time then
 			self.instaexplode = true
 
-			self.add_damage(self, self.unit, self.health, "full", "undefined", Vector3(0, 0, -1))
+			self:add_damage(self.unit, self.health, "full", "undefined", Vector3(0, 0, -1))
 		elseif not self.in_hand and not self.instaexplode and self.instaexplode_time <= network_time then
 			self.instaexplode = true
-		elseif not self.played_fuse_out and self.explode_time - 1.2 <= network_time then
+		elseif not self.played_fuse_out and network_time >= self.explode_time - 1.2 then
 			Unit.flow_event(self.unit, "exploding_barrel_fuse_out")
 
 			self.played_fuse_out = true
 		end
 	end
-
-	return 
 end
+
 ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
-	damage_amount = (self.instaexplode and damage_amount) or 0
-
-	ExplosiveBarrelHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
-
-	if self.damage < self.health and not self.ignited then
+	if damage_amount > 0 and self.damage < self.health and not self.ignited then
 		local unit = self.unit
 		local network_time = Managers.state.network:network_time()
 		local fuse_time = (Unit.has_data(unit, "fuse_time") and Unit.get_data(unit, "fuse_time")) or 4
@@ -101,8 +96,11 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 		end
 	end
 
-	return 
+	damage_amount = (self.instaexplode and damage_amount) or 0
+
+	ExplosiveBarrelHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 end
+
 ExplosiveBarrelHealthExtension.health_data = function (self)
 	local data = {
 		fuse_time = self.fuse_time,
@@ -112,4 +110,4 @@ ExplosiveBarrelHealthExtension.health_data = function (self)
 	return data
 end
 
-return 
+return

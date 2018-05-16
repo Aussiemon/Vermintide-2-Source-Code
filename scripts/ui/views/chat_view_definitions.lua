@@ -2579,8 +2579,6 @@ function create_command_entry(command, description, parameter, description_offse
 
 					return true
 				end
-
-				return 
 			end
 		},
 		{
@@ -2780,7 +2778,7 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 					style_id = "speech_bubble",
 					pass_type = "texture",
 					content_check_function = function (content, style)
-						return 0 < content.num_private_messages
+						return content.num_private_messages > 0
 					end
 				},
 				{
@@ -2794,7 +2792,7 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 							return false
 						end
 
-						if 10 < num_private_messages then
+						if num_private_messages > 10 then
 							content.message_number_text = "..."
 						else
 							content.message_number_text = tostring(num_private_messages)
@@ -3559,7 +3557,7 @@ local function create_channels_window(scenegraph_id, size)
 			texture_id = "search_icon_id",
 			content_check_function = function (content, style)
 				if content.text_field_active then
-					return 
+					return
 				end
 
 				if content.input_hotspot.is_hover then
@@ -3616,7 +3614,7 @@ local function create_channels_window(scenegraph_id, size)
 			text_id = "chat_text_id",
 			content_check_function = function (content, style)
 				if not content.text_field_active then
-					return 
+					return
 				end
 
 				local on = math.floor(Managers.time:time("main") * 2) % 2
@@ -4067,7 +4065,7 @@ local function create_create_channel_window(scenegraph_id, size)
 			text_id = "chat_text_id",
 			content_check_function = function (content, style)
 				if not content.text_field_active then
-					return 
+					return
 				end
 
 				local on = math.floor(Managers.time:time("main") * 2) % 2
@@ -4413,7 +4411,7 @@ local function create_send_invite_window(scenegraph_id, size)
 			text_id = "chat_text_id",
 			content_check_function = function (content, style)
 				if not content.text_field_active then
-					return 
+					return
 				end
 
 				local on = math.floor(Managers.time:time("main") * 2) % 2

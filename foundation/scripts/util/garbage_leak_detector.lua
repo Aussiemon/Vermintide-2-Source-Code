@@ -4,9 +4,10 @@ GarbageLeakDetector = GarbageLeakDetector or {
 		__mode = "k"
 	})
 }
+
 GarbageLeakDetector.register_object = function (object, object_name)
 	if GarbageLeakDetector.enabled == false then
-		return 
+		return
 	end
 
 	local callstack = Script.callstack()
@@ -14,9 +15,8 @@ GarbageLeakDetector.register_object = function (object, object_name)
 		count = 0,
 		callstack = string.format("OBJECT NAME: %s\n%s", object_name, callstack)
 	}
-
-	return 
 end
+
 local debug_search = nil
 
 local function debug_search_function(func, what, path, path_n)
@@ -52,8 +52,6 @@ local function debug_search_function(func, what, path, path_n)
 		path[path_n] = nil
 		up = up + 1
 	end
-
-	return 
 end
 
 local function debug_search_table(tablet, what, path, path_n)
@@ -88,8 +86,6 @@ local function debug_search_table(tablet, what, path, path_n)
 
 		path[path_n] = nil
 	end
-
-	return 
 end
 
 local seen_tables = nil
@@ -103,7 +99,7 @@ function debug_search(object, what, path, path_n)
 
 	if t_type == "function" then
 		if seen_tables[object] then
-			return 
+			return
 		end
 
 		seen_tables[object] = true
@@ -114,7 +110,7 @@ function debug_search(object, what, path, path_n)
 		path[path_n] = nil
 	elseif t_type == "table" then
 		if seen_tables[object] then
-			return 
+			return
 		end
 
 		seen_tables[object] = true
@@ -134,8 +130,6 @@ function debug_search(object, what, path, path_n)
 			path[path_n] = nil
 		end
 	end
-
-	return 
 end
 
 local function debug_search_stack(what, path, path_n)
@@ -179,11 +173,10 @@ local function debug_search_stack(what, path, path_n)
 		stack_level = stack_level + 1
 		path[path_n] = nil
 	end
-
-	return 
 end
 
 local has_run = nil
+
 GarbageLeakDetector.run_leak_detection = function (do_assert)
 	Script.configure_garbage_collection(Script.FORCE_FULL_COLLECT_GARBAGE_LEVEL, -1, Script.MAXIMUM_GARBAGE, 0, Script.MAXIMUM_COLLECT_TIME_MS, 10000)
 	collectgarbage()
@@ -259,8 +252,6 @@ GarbageLeakDetector.run_leak_detection = function (do_assert)
 			assert(false, "Leak detection ended with errors!")
 		end
 	end
-
-	return 
 end
 
-return 
+return

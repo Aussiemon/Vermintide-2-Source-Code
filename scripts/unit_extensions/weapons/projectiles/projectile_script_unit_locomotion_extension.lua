@@ -1,6 +1,7 @@
 require("scripts/helpers/network_utils")
 
 ProjectileScriptUnitLocomotionExtension = class(ProjectileScriptUnitLocomotionExtension)
+
 ProjectileScriptUnitLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
 	local world = extension_init_context.world
@@ -27,18 +28,18 @@ ProjectileScriptUnitLocomotionExtension.init = function (self, extension_init_co
 	self.moved = false
 
 	Unit.set_local_position(unit, 0, initial_position)
+end
 
-	return 
-end
 ProjectileScriptUnitLocomotionExtension.destroy = function (self)
-	return 
+	return
 end
+
 ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _, context, t)
 	self.dt = t - self.t
 	self.moved = false
 
 	if self.stopped then
-		return 
+		return
 	end
 
 	local position = POSITION_LOOKUP[unit]
@@ -56,17 +57,17 @@ ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _,
 	local length = Vector3.length(direction)
 
 	if not NetworkUtils.network_safe_position(new_position) then
-		self.stop(self)
+		self:stop()
 
 		if not self.is_husk then
 			Managers.state.unit_spawner:mark_for_deletion(self.unit)
 		end
 
-		return 
+		return
 	end
 
 	if length <= 0.001 then
-		return 
+		return
 	end
 
 	if script_data.debug_projectiles then
@@ -86,22 +87,22 @@ ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _,
 	self.velocity:store(direction)
 
 	self.moved = true
-
-	return 
 end
+
 ProjectileScriptUnitLocomotionExtension.moved_this_frame = function (self)
 	return self.moved
 end
+
 ProjectileScriptUnitLocomotionExtension.current_velocity = function (self)
 	return self.velocity:unbox()
 end
+
 ProjectileScriptUnitLocomotionExtension.stop = function (self)
 	self.stopped = true
-
-	return 
 end
+
 ProjectileScriptUnitLocomotionExtension.has_stopped = function (self)
 	return self.stopped
 end
 
-return 
+return

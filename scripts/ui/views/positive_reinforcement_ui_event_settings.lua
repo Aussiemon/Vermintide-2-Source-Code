@@ -1,13 +1,11 @@
 return {
 	save = {
 		text_function = function (amount, player_1_name, player_2_name)
-			if 1 < amount then
+			if amount > 1 then
 				return string.format(Localize("positive_reinforcement_player_saved_player_multiple"), player_1_name, player_2_name, amount)
 			else
 				return string.format(Localize("positive_reinforcement_player_saved_player"), player_1_name, player_2_name)
 			end
-
-			return 
 		end,
 		sound_function = function ()
 			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or (script_data.enable_reinforcement_ui_remote_sound and "hud_info")
@@ -18,13 +16,11 @@ return {
 	},
 	revive = {
 		text_function = function (amount, player_1_name, player_2_name)
-			if 1 < amount then
+			if amount > 1 then
 				return string.format(Localize("positive_reinforcement_player_revived_player_multiple"), player_1_name, player_2_name, amount)
 			else
 				return string.format(Localize("positive_reinforcement_player_revived_player"), player_1_name, player_2_name)
 			end
-
-			return 
 		end,
 		sound_function = function ()
 			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or (script_data.enable_reinforcement_ui_remote_sound and "hud_info")
@@ -35,13 +31,11 @@ return {
 	},
 	assisted_respawn = {
 		text_function = function (amount, player_1_name, player_2_name)
-			if 1 < amount then
+			if amount > 1 then
 				return string.format(Localize("positive_reinforcement_player_rescued_player_multiple"), player_1_name, player_2_name, amount)
 			else
 				return string.format(Localize("positive_reinforcement_player_rescued_player"), player_1_name, player_2_name)
 			end
-
-			return 
 		end,
 		sound_function = function ()
 			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or (script_data.enable_reinforcement_ui_remote_sound and "hud_info")
@@ -53,13 +47,11 @@ return {
 	aid = {},
 	killed_special = {
 		text_function = function (amount, player_name, breed_name)
-			if 1 < amount then
+			if amount > 1 then
 				return string.format(Localize("positive_reinforcement_player_killed_special_multiple"), player_name, Localize(breed_name), amount)
 			else
 				return string.format(Localize("positive_reinforcement_player_killed_special"), player_name, Localize(breed_name))
 			end
-
-			return 
 		end,
 		sound_function = function ()
 			return nil
@@ -70,13 +62,11 @@ return {
 	},
 	player_killed = {
 		text_function = function (amount, player_name, breed_name)
-			if 1 < amount then
+			if amount > 1 then
 				return string.format(Localize("positive_reinforcement_player_killed_special_multiple"), player_name, Localize(breed_name), amount)
 			else
 				return string.format(Localize("positive_reinforcement_player_killed_special"), player_name, Localize(breed_name))
 			end
-
-			return 
 		end,
 		sound_function = function ()
 			return nil
@@ -87,13 +77,11 @@ return {
 	},
 	player_knocked_down = {
 		text_function = function (amount, player_name, breed_name)
-			if 1 < amount then
+			if amount > 1 then
 				return string.format(Localize("positive_reinforcement_player_killed_special_multiple"), player_name, Localize(breed_name), amount)
 			else
 				return string.format(Localize("positive_reinforcement_player_killed_special"), player_name, Localize(breed_name))
 			end
-
-			return 
 		end,
 		sound_function = function ()
 			return nil

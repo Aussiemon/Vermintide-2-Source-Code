@@ -17,8 +17,6 @@ if USE_ERROR then
 		else
 			assert(false, "Failed to format text.")
 		end
-
-		return 
 	end
 else
 	local function console_print(level, message)
@@ -32,14 +30,10 @@ else
 		else
 			print(message)
 		end
-
-		return 
 	end
 
 	function error_func(...)
 		console_print("error", sprintf(...))
-
-		return 
 	end
 end
 
@@ -83,8 +77,6 @@ function MakeTableStrict(t)
 			end
 
 			rawset(t, k, v)
-
-			return 
 		end,
 		__index = function (t, k)
 			if not meta.__declared[k] and not rawget(t, k) then
@@ -94,8 +86,6 @@ function MakeTableStrict(t)
 					error_func("[ERROR] cannot index undeclared member variable %q, %s", tostring(k), debug_info_string(info))
 				end
 			end
-
-			return 
 		end
 	}
 
@@ -131,8 +121,6 @@ function MakeTableFrozen(t)
 			end
 
 			rawset(t, k, v)
-
-			return 
 		end
 	}
 
@@ -205,4 +193,4 @@ if not rawget(_G, "STRICT_ENUM_INITIATED") then
 	end
 end
 
-return 
+return

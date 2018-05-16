@@ -5,4 +5,4 @@ EndZoneSettings = {
 	activate_size = 20
 }
 
-return 
+return

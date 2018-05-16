@@ -69,4 +69,4 @@ BossFightMusicIntensity = {
 	}
 }
 
-return 
+return

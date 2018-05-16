@@ -27,7 +27,7 @@ local breed_data = {
 	far_off_despawn_immunity = true,
 	stagger_immune = true,
 	behavior = "dummy_sorcerer",
-	base_unit = "units/beings/enemies/chaos_sorcerer/chr_chaos_sorcerer",
+	base_unit = "units/beings/enemies/chaos_sorcerer_corruptor/chr_chaos_sorcerer_corruptor",
 	threat_value = 8,
 	max_health = {
 		1500,
@@ -170,4 +170,4 @@ local action_data = {
 }
 BreedActions.chaos_dummy_sorcerer = table.create_copy(BreedActions.chaos_dummy_sorcerer, action_data)
 
-return 
+return

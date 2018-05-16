@@ -136,7 +136,7 @@ weapon_template.actions = {
 			reset_aim_on_attack = true,
 			default_zoom = "zoom_in_trueflight",
 			spread_template_override = "spear",
-			hit_effect = "staff_spear",
+			hit_effect = "sienna_scholar_career_ability",
 			sphere_sweep_radius = 2,
 			charge_value = "light_attack",
 			fire_sound_on_husk = true,
@@ -198,7 +198,7 @@ weapon_template.actions = {
 			reset_aim_on_attack = true,
 			is_spell = true,
 			spread_template_override = "spear",
-			hit_effect = "staff_spear",
+			hit_effect = "sienna_scholar_career_ability",
 			sphere_sweep_radius = 2,
 			ammo_usage = 1,
 			fire_sound_on_husk = true,
@@ -276,9 +276,9 @@ weapon_template.attack_meta_data = {
 	ignore_allies_for_obstruction = true,
 	minimum_charge_time = 0.55,
 	ignore_allies_for_obstruction_charged = true,
+	charge_against_armored_enemy = true,
 	charge_when_obstructed = true,
-	ignore_enemies_for_obstruction = false,
-	charge_against_armoured_enemy = true
+	ignore_enemies_for_obstruction = false
 }
 weapon_template.default_spread_template = "sparks"
 weapon_template.right_hand_unit = "units/weapons/player/wpn_brw_skullstaff/wpn_brw_skullstaff"
@@ -318,4 +318,4 @@ weapon_template.wwise_dep_right_hand = {
 Weapons = Weapons or {}
 Weapons.sienna_scholar_career_skill_weapon = table.create_copy(Weapons.sienna_scholar_career_skill_weapon, weapon_template)
 
-return 
+return

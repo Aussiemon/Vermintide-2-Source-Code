@@ -12,4 +12,4 @@ WidgetDefinitions = {
 	back_button = back_button
 }
 
-return 
+return

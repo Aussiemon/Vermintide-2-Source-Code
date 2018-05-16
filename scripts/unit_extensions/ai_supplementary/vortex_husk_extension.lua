@@ -1,4 +1,5 @@
 VortexHuskExtension = class(VortexHuskExtension)
+
 VortexHuskExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
 	local game = Managers.state.network:game()
@@ -36,6 +37,7 @@ VortexHuskExtension.init = function (self, extension_init_context, unit, extensi
 	if inner_decal_unit then
 		World.link_unit(world, inner_decal_unit, unit, 0)
 		Unit.set_local_scale(inner_decal_unit, 0, Vector3(inner_scale_xy, inner_scale_xy, 1))
+		Unit.flow_event(inner_decal_unit, "vortex_spawned")
 
 		self._inner_decal_unit = inner_decal_unit
 	end
@@ -45,34 +47,45 @@ VortexHuskExtension.init = function (self, extension_init_context, unit, extensi
 	if outer_decal_unit then
 		World.link_unit(world, outer_decal_unit, unit, 0)
 		Unit.set_local_scale(outer_decal_unit, 0, Vector3(outer_scale_xy, outer_scale_xy, 1))
+		Unit.flow_event(outer_decal_unit, "vortex_spawned")
 
 		self._outer_decal_unit = outer_decal_unit
 	end
 
 	local unit_storage = Managers.state.unit_storage
-	local go_id = unit_storage.go_id(unit_storage, unit)
+	local go_id = unit_storage:go_id(unit)
 	self.current_height_lerp = GameSession.game_object_field(game, go_id, "height_percentage")
-
-	return 
 end
+
 VortexHuskExtension.extensions_ready = function (self, world, unit)
 	WwiseUtils.trigger_unit_event(world, "Play_enemy_sorcerer_vortex_loop", unit)
-
-	return 
 end
+
 VortexHuskExtension.destroy = function (self)
 	local world = self.world
 	local unit = self.unit
 
 	WwiseUtils.trigger_unit_event(world, "Stop_enemy_sorcerer_vortex_loop", unit)
 
-	return 
+	local inner_decal_unit = self._inner_decal_unit
+
+	if Unit.alive(inner_decal_unit) then
+		Unit.flow_event(inner_decal_unit, "vortex_despawned")
+	end
+
+	local outer_decal_unit = self._outer_decal_unit
+
+	if Unit.alive(outer_decal_unit) then
+		Unit.flow_event(outer_decal_unit, "vortex_despawned")
+	end
 end
+
 local HEIGHT_FX_LERP = 2
+
 VortexHuskExtension.update = function (self, unit, input, dt, context, t)
 	local game = self.game
 	local unit_storage = Managers.state.unit_storage
-	local go_id = unit_storage.go_id(unit_storage, unit)
+	local go_id = unit_storage:go_id(unit)
 	local fx_radius_percentage = GameSession.game_object_field(game, go_id, "fx_radius_percentage")
 	local height_percentage = GameSession.game_object_field(game, go_id, "height_percentage")
 	local current_height_lerp = self.current_height_lerp
@@ -83,12 +96,12 @@ VortexHuskExtension.update = function (self, unit, input, dt, context, t)
 	local scale_z = height_lerp * vortex_template.max_height
 
 	Unit.set_local_scale(unit, 0, Vector3(scale_xy, scale_xy, scale_z))
-
-	return 
 end
+
 local spiral = {}
 local spiral_segments = 8
 local spiral_lines = 10
+
 VortexHuskExtension.debug_render_vortex = function (self, t, dt, pos, fx_radius, inner_radius, outer_radius, spin_speed, height)
 	fx_radius = fx_radius + math.sin(t * 1.7) * 0.4
 	local step = (2 * math.pi) / 6
@@ -122,8 +135,6 @@ VortexHuskExtension.debug_render_vortex = function (self, t, dt, pos, fx_radius,
 
 	QuickDrawer:circle(pos, inner_radius, Vector3.up(), Colors.get("pink"))
 	QuickDrawer:circle(pos, outer_radius, Vector3.up(), Colors.get("lime_green"))
-
-	return 
 end
 
-return 
+return

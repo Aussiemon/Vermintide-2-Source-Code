@@ -2,6 +2,7 @@ require("scripts/utils/colors")
 
 UISceneGraph = {}
 local UISceneGraph = UISceneGraph
+
 UISceneGraph.init_scenegraph_cached = function (scenegraph)
 	local hierarchical_scenegraph = scenegraph.hierarchical_scenegraph
 
@@ -18,9 +19,8 @@ UISceneGraph.init_scenegraph_cached = function (scenegraph)
 			scenegraph_object.scene_graph_ref = scene_graph_ref
 		end
 	end
-
-	return 
 end
+
 UISceneGraph.init_scenegraph = function (scenegraph)
 	scenegraph = table.clone(scenegraph)
 	local hierarchical_scenegraph = {}
@@ -134,8 +134,6 @@ local function handle_alignment(position, data, width, height, parent_size_x, pa
 			Vector3.set_y(position, (Vector3.y(position) + parent_size_y) - height)
 		end
 	end
-
-	return 
 end
 
 UISceneGraph.get_size = function (scenegraph, scenegraph_object_name)
@@ -144,6 +142,7 @@ UISceneGraph.get_size = function (scenegraph, scenegraph_object_name)
 
 	return size
 end
+
 local Vector3Aux_unbox = Vector3Aux.unbox
 local UISceneGraph_get_size = UISceneGraph.get_size
 local Vector3_x = Vector3.x
@@ -184,11 +183,10 @@ local function update_children(world_position, children, num_children, size_x, s
 			update_children(child_world_position, child_children, child.num_children, child_size_x or size_x, child_size_y or size_y)
 		end
 	end
-
-	return 
 end
 
 local dummy_size = {}
+
 UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, scenegraph_id)
 	local w = RESOLUTION_LOOKUP.res_w
 	local h = RESOLUTION_LOOKUP.res_h
@@ -257,7 +255,7 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 			size_x = w
 			size_y = h
 
-			if 0.005 < math.abs(aspect_ratio - default_aspect_ratio) then
+			if math.abs(aspect_ratio - default_aspect_ratio) > 0.005 then
 				size_x = w
 				size_y = size_x / default_aspect_ratio
 
@@ -297,17 +295,18 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 			end
 		end
 	end
-
-	return 
 end
+
 UISceneGraph.get_world_position = function (scenegraph, scenegraph_object_name)
 	assert(rawget(scenegraph, scenegraph_object_name), "No such object name in scenegraph: %s", tostring(scenegraph_object_name))
 
 	return scenegraph[scenegraph_object_name].world_position
 end
+
 UISceneGraph.get_local_position = function (scenegraph, scenegraph_object_name)
 	return scenegraph[scenegraph_object_name].local_position
 end
+
 UISceneGraph.get_size_scaled = function (scenegraph, scenegraph_object_name, optional_scale)
 	local scenegraph_object = scenegraph[scenegraph_object_name]
 	local size = scenegraph_object.size
@@ -366,7 +365,7 @@ UISceneGraph.get_size_scaled = function (scenegraph, scenegraph_object_name, opt
 		size_x = w
 		size_y = h
 
-		if 0.005 < math.abs(aspect_ratio - default_aspect_ratio) then
+		if math.abs(aspect_ratio - default_aspect_ratio) > 0.005 then
 			size_x = w
 			size_y = size_x / default_aspect_ratio
 
@@ -387,17 +386,15 @@ UISceneGraph.get_size_scaled = function (scenegraph, scenegraph_object_name, opt
 
 		return Vector2(size[1], size[2])
 	end
-
-	return 
 end
+
 UISceneGraph.set_local_position = function (scenegraph, scenegraph_object_name, new_position)
 	local old_position = scenegraph[scenegraph_object_name].local_position
 	old_position[1] = new_position[1]
 	old_position[2] = new_position[2]
 	old_position[3] = new_position[3]
-
-	return 
 end
+
 UISceneGraph.screen_position_to_resolution_position = function (pos_x, pos_y, resolution_width, resolution_height)
 	local current_width, current_height = Application.resolution()
 	local new_x = resolution_width / current_width * pos_x
@@ -405,6 +402,7 @@ UISceneGraph.screen_position_to_resolution_position = function (pos_x, pos_y, re
 
 	return new_x, new_y
 end
+
 local default_size = {
 	5,
 	5
@@ -463,14 +461,10 @@ local function debug_render_scenegraph(ui_renderer, scenegraph, n_scenegraph)
 			debug_render_scenegraph(ui_renderer, children, #children)
 		end
 	end
-
-	return 
 end
 
 UISceneGraph.debug_render_scenegraph = function (ui_renderer, scenegraph)
 	debug_render_scenegraph(ui_renderer, scenegraph.hierarchical_scenegraph, scenegraph.n_hierarchical_scenegraph)
-
-	return 
 end
 
-return 
+return

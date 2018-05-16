@@ -82,7 +82,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			1
+			10
 		}
 	},
 	loadout_grid = {
@@ -617,17 +617,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -638,17 +634,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

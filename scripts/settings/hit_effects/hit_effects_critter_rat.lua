@@ -142,4 +142,4 @@ HitEffectsCritterRat = {
 	}
 }
 
-return 
+return

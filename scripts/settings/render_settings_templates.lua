@@ -58,16 +58,10 @@ ParticlesQuality = {
 }
 AmbientLightQuality = {
 	low = {
-		radiance_probes_enabled = false,
-		reflection_probes_enabled = false
-	},
-	medium = {
-		radiance_probes_enabled = false,
-		reflection_probes_enabled = true
+		local_probes_enabled = false
 	},
 	high = {
-		radiance_probes_enabled = true,
-		reflection_probes_enabled = true
+		local_probes_enabled = true
 	}
 }
 AmbientOcclusionQuality = {
@@ -153,38 +147,41 @@ LocalLightShadowQuality = {
 	}
 }
 VolumetricFogQuality = {
-	off = {
+	lowest = {
 		volumetric_extrapolation_high_quality = false,
 		volumetric_lighting_local_shadows = false,
 		volumetric_extrapolation_volumetric_shadows = false,
-		volumetric_lighting_enabled = false,
+		volumetric_volumes_enabled = false,
+		volumetric_reprojection_amount = 1,
 		volumetric_lighting_local_lights = false,
 		volumetric_data_size = {
-			8,
-			8,
-			8
+			64,
+			48,
+			96
 		}
 	},
 	low = {
 		volumetric_extrapolation_high_quality = false,
 		volumetric_lighting_local_shadows = false,
 		volumetric_extrapolation_volumetric_shadows = false,
-		volumetric_lighting_enabled = true,
+		volumetric_volumes_enabled = true,
+		volumetric_reprojection_amount = 0.875,
 		volumetric_lighting_local_lights = false,
 		volumetric_data_size = {
 			80,
-			48,
-			128
+			64,
+			96
 		}
 	},
 	medium = {
 		volumetric_extrapolation_high_quality = true,
 		volumetric_lighting_local_shadows = false,
 		volumetric_extrapolation_volumetric_shadows = false,
-		volumetric_lighting_enabled = true,
+		volumetric_volumes_enabled = true,
+		volumetric_reprojection_amount = 0.625,
 		volumetric_lighting_local_lights = true,
 		volumetric_data_size = {
-			128,
+			96,
 			80,
 			128
 		}
@@ -193,24 +190,26 @@ VolumetricFogQuality = {
 		volumetric_extrapolation_high_quality = true,
 		volumetric_lighting_local_shadows = true,
 		volumetric_extrapolation_volumetric_shadows = false,
-		volumetric_lighting_enabled = true,
+		volumetric_volumes_enabled = true,
+		volumetric_reprojection_amount = 0,
 		volumetric_lighting_local_lights = true,
 		volumetric_data_size = {
-			160,
+			128,
 			96,
-			128
+			160
 		}
 	},
 	extreme = {
 		volumetric_extrapolation_high_quality = true,
 		volumetric_lighting_local_shadows = true,
 		volumetric_extrapolation_volumetric_shadows = true,
-		volumetric_lighting_enabled = true,
+		volumetric_volumes_enabled = true,
+		volumetric_reprojection_amount = -0.875,
 		volumetric_lighting_local_lights = true,
 		volumetric_data_size = {
-			196,
-			128,
-			128
+			144,
+			112,
+			196
 		}
 	}
 }
@@ -493,7 +492,7 @@ GraphicsQuality = {
 			use_physic_debris = false,
 			use_high_quality_fur = false,
 			local_light_shadow_quality = "low",
-			volumetric_fog_quality = "low",
+			volumetric_fog_quality = "lowest",
 			num_blood_decals = 0,
 			animation_lod_distance_multiplier = 0,
 			ao_quality = "off",
@@ -673,4 +672,4 @@ GraphicsQuality = {
 	}
 }
 
-return 
+return

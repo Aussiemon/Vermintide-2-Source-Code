@@ -1,4 +1,5 @@
 CosmeticUtils = CosmeticUtils or {}
+
 CosmeticUtils.color_tint_unit = function (unit, hero_name, gradient_variation, gradient_value)
 	local material_name = "mtr_outfit"
 
@@ -21,8 +22,6 @@ CosmeticUtils.color_tint_unit = function (unit, hero_name, gradient_variation, g
 			Material.set_scalar(material, "tint_columns_pair", gradient_value)
 		end
 	end
-
-	return 
 end
 
-return 
+return

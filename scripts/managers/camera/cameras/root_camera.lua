@@ -1,6 +1,7 @@
 require("scripts/managers/camera/cameras/base_camera")
 
 RootCamera = class(RootCamera, BaseCamera)
+
 RootCamera.init = function (self)
 	BaseCamera.init(self, self)
 
@@ -9,9 +10,8 @@ RootCamera.init = function (self)
 	self._pitch_min = -math.huge
 	self._pitch_max = math.huge
 	self._environment_params = {}
-
-	return 
 end
+
 RootCamera.set_root_unit = function (self, unit, object, preserve_yaw)
 	BaseCamera.set_root_unit(self, unit, object)
 
@@ -27,14 +27,13 @@ RootCamera.set_root_unit = function (self, unit, object, preserve_yaw)
 				name = "spawn"
 			})
 
-			drawer.quaternion(drawer, Unit.world_position(unit, 0), Unit.world_rotation(unit, 0), 1)
+			drawer:quaternion(Unit.world_position(unit, 0), Unit.world_rotation(unit, 0), 1)
 		end
 
 		self._aim_yaw = -init_yaw
 	end
-
-	return 
 end
+
 RootCamera.parse_parameters = function (self, camera_settings, parent_node)
 	if camera_settings.name then
 		self._name = camera_settings.name
@@ -59,12 +58,11 @@ RootCamera.parse_parameters = function (self, camera_settings, parent_node)
 	if camera_settings.root_object_name then
 		self._object_name = camera_settings.root_object_name
 	end
-
-	return 
 end
+
 RootCamera.update = function (self, dt, data, pitch_speed, yaw_speed)
-	if not self.active(self) then
-		return 
+	if not self:active() then
+		return
 	end
 
 	local position, rotation = nil
@@ -83,9 +81,8 @@ RootCamera.update = function (self, dt, data, pitch_speed, yaw_speed)
 	end
 
 	BaseCamera.update(self, dt, position, rotation, data)
-
-	return 
 end
+
 RootCamera.update_pitch_yaw = function (self, dt, data, current_node)
 	local pitch_speed = data.pitch_speed or self._pitch_speed
 	local yaw_speed = data.yaw_speed or self._yaw_speed
@@ -105,7 +102,7 @@ RootCamera.update_pitch_yaw = function (self, dt, data, current_node)
 	if max_yaw_speed and yaw_speed then
 		self._accumulated_dt = self._accumulated_dt or 0
 
-		if 0 < math.abs(look_vec.x) then
+		if math.abs(look_vec.x) > 0 then
 			local total_dt = self._accumulated_dt + dt
 			local max_speed = max_yaw_speed * total_dt
 			yaw_delta_value = math.clamp(look_vec.x * yaw_speed * dyn_yaw_scale, -max_speed, max_speed)
@@ -114,7 +111,7 @@ RootCamera.update_pitch_yaw = function (self, dt, data, current_node)
 			yaw_delta_value = 0
 			self._accumulated_dt = self._accumulated_dt + dt
 
-			if 0.1 < self._accumulated_dt then
+			if self._accumulated_dt > 0.1 then
 				self._accumulated_dt = 0
 			end
 		end
@@ -124,7 +121,7 @@ RootCamera.update_pitch_yaw = function (self, dt, data, current_node)
 	end
 
 	local pitch_delta_value = look_vec.y * pitch_speed * dyn_pitch_scale
-	local constraint_function = current_node.constraint_function(current_node)
+	local constraint_function = current_node:constraint_function()
 
 	if constraint_function then
 		local rot = Unit.local_rotation(self._root_unit, 0)
@@ -152,24 +149,22 @@ RootCamera.update_pitch_yaw = function (self, dt, data, current_node)
 			self._aim_yaw = (self._aim_yaw - yaw_delta_value) % (2 * math.pi)
 		end
 	end
-
-	return 
 end
+
 RootCamera.aim_pitch = function (self)
 	return self._aim_pitch
 end
+
 RootCamera.aim_yaw = function (self)
 	return self._aim_yaw
 end
+
 RootCamera.set_aim_pitch = function (self, pitch)
 	self._aim_pitch = pitch
-
-	return 
 end
+
 RootCamera.set_aim_yaw = function (self, yaw)
 	self._aim_yaw = yaw
-
-	return 
 end
 
-return 
+return

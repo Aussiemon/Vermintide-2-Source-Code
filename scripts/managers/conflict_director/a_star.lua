@@ -7,7 +7,7 @@ function dist_between(pos_a, pos_b)
 end
 
 function dist_between_nodes(node_a, node_b)
-	return Vector3.distance(node_a.get_group_center(node_a):unbox(), node_b.get_group_center(node_b):unbox())
+	return Vector3.distance(node_a:get_group_center():unbox(), node_b:get_group_center():unbox())
 end
 
 function heuristic_cost_estimate(node1, node2)
@@ -36,7 +36,7 @@ function lowest_f_score_node(nodes, f_score)
 end
 
 function neighbour_nodes(source_node, nodes)
-	local neighbour_nodes = source_node.get_group_neighbours(source_node)
+	local neighbour_nodes = source_node:get_group_neighbours()
 	local array = {}
 
 	for node, _ in pairs(neighbour_nodes) do
@@ -69,8 +69,6 @@ function remove_node(nodes, node)
 			break
 		end
 	end
-
-	return 
 end
 
 function reconstruct_path(path, came_from, current_node)
@@ -81,8 +79,6 @@ function reconstruct_path(path, came_from, current_node)
 	else
 		return path
 	end
-
-	return 
 end
 
 LuaAStar.a_star_plain = function (nodes, node1, node2)
@@ -96,7 +92,7 @@ LuaAStar.a_star_plain = function (nodes, node1, node2)
 	g_score[node1] = 0
 	f_score[node1] = g_score[node1] + heuristic_cost_estimate(node1, node2)
 
-	while 0 < #open_set do
+	while #open_set > 0 do
 		local current = lowest_f_score_node(open_set, f_score)
 
 		if current == node2 then
@@ -132,11 +128,11 @@ LuaAStar.a_star_plain = function (nodes, node1, node2)
 
 	return nil
 end
+
 LuaAStar.clear_cached_paths = function ()
 	cached_paths = nil
-
-	return 
 end
+
 LuaAStar.a_star_cached = function (nodes, a1, a2)
 	if not cached_paths[a1] then
 		cached_paths[a1] = {}
@@ -155,4 +151,4 @@ LuaAStar.a_star_cached = function (nodes, a1, a2)
 	return path, length
 end
 
-return 
+return

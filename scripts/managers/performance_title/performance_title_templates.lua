@@ -47,7 +47,7 @@ local function get_stats(statistics_db, stats_id, stat_types)
 	local stat = 0
 
 	for i, stats in ipairs(stat_types) do
-		stat = stat + statistics_db.get_stat(statistics_db, stats_id, unpack(stats))
+		stat = stat + statistics_db:get_stat(stats_id, unpack(stats))
 	end
 
 	return stat
@@ -75,4 +75,4 @@ for title_name, settings in pairs(PerformanceTitles.titles) do
 	fassert(template, "Performance Titles %s failed, no evaluation_template called %s", title_name, tostring(evaluation_template))
 end
 
-return 
+return

@@ -729,4 +729,4 @@ Weapons.fire_grenade_t2.pickup_data.pickup_name = "fire_grenade_t2"
 Weapons.fire_grenade_t2.actions.action_one.throw.projectile_info = Projectiles.grenade_fire
 Weapons.fire_grenade_t2.actions.action_instant_throw_grenade.instant_throw.projectile_info = Projectiles.grenade_fire
 
-return 
+return

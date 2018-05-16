@@ -1,5 +1,6 @@
 ProjectilePhysicsUnitLocomotionExtension = class(ProjectilePhysicsUnitLocomotionExtension)
 script_data.debug_projectiles = script_data.debug_projectiles or Development.parameter("debug_projectiles")
+
 ProjectilePhysicsUnitLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
 	self.physics_world = World.get_data(extension_init_context.world, "physics_world")
@@ -13,7 +14,7 @@ ProjectilePhysicsUnitLocomotionExtension.init = function (self, extension_init_c
 	self.stopped = false
 	self.dropped = false
 	local network_manager = Managers.state.network
-	self.game = network_manager.game(network_manager)
+	self.game = network_manager:game()
 	self.network_manager = network_manager
 	local position = AiAnimUtils.position_network_scale(self.network_position)
 	local rotation = AiAnimUtils.rotation_network_scale(self.network_rotation)
@@ -36,23 +37,24 @@ ProjectilePhysicsUnitLocomotionExtension.init = function (self, extension_init_c
 			Actor.set_angular_velocity(actor, angular_velocity)
 		end
 	end
+end
 
-	return 
-end
 ProjectilePhysicsUnitLocomotionExtension.destroy = function (self)
-	return 
+	return
 end
+
 local STOP_VELOCITY_THRESHOLD = 0.1
 local STOP_TIME_THRESHOLD = 0.5
+
 ProjectilePhysicsUnitLocomotionExtension.update = function (self, unit, input, dt, context, t)
 	if self.stopped then
-		return 
+		return
 	end
 
 	if script_data.debug_projectiles then
 		local network_manager = self.network_manager
-		local go_id = network_manager.unit_game_object_id(network_manager, unit)
-		local game = network_manager.game(network_manager)
+		local go_id = network_manager:unit_game_object_id(unit)
+		local game = network_manager:game()
 
 		GameSession.set_game_object_field(game, go_id, "debug_pos", Unit.local_position(unit, 0))
 	end
@@ -64,7 +66,7 @@ ProjectilePhysicsUnitLocomotionExtension.update = function (self, unit, input, d
 	if current_velocity_length > STOP_VELOCITY_THRESHOLD then
 		self.stop_time = nil
 
-		return 
+		return
 	end
 
 	local stop_time = self.stop_time or 0
@@ -72,46 +74,43 @@ ProjectilePhysicsUnitLocomotionExtension.update = function (self, unit, input, d
 	self.stop_time = stop_time
 
 	if STOP_TIME_THRESHOLD <= stop_time then
-		self.stop(self)
+		self:stop()
 	end
-
-	return 
 end
+
 local BOUNCE_FORCE_THRESHOLD = 1
+
 ProjectilePhysicsUnitLocomotionExtension.bounce = function (self, touching_unit, position, normal, separation_distance, impulse_force)
 	local length = Vector3.length(impulse_force)
 
 	if BOUNCE_FORCE_THRESHOLD < length then
 	end
-
-	return 
 end
+
 ProjectilePhysicsUnitLocomotionExtension.stop = function (self)
 	self.stopped = true
 
 	Actor.put_to_sleep(self.physics_actor)
 
 	local network_manager = self.network_manager
-	local go_id = network_manager.unit_game_object_id(network_manager, self.unit)
+	local go_id = network_manager:unit_game_object_id(self.unit)
 
 	network_manager.network_transmit:send_rpc_clients("rpc_projectile_stopped", go_id)
-
-	return 
 end
+
 ProjectilePhysicsUnitLocomotionExtension.drop = function (self)
 	self.dropped = true
 
 	Actor.set_velocity(self.physics_actor, Vector3(0, 0, 0))
 
 	local network_manager = self.network_manager
-	local go_id = network_manager.unit_game_object_id(network_manager, self.unit)
+	local go_id = network_manager:unit_game_object_id(self.unit)
 
 	network_manager.network_transmit:send_rpc_clients("rpc_drop_projectile", go_id)
-
-	return 
 end
+
 ProjectilePhysicsUnitLocomotionExtension.has_stopped = function (self)
 	return self.stopped
 end
 
-return 
+return

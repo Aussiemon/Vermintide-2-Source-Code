@@ -3,14 +3,14 @@ StateMachineManager.DEBUG = false
 StateMachineManager.FONT = "foundation/fonts/debug"
 StateMachineManager.FONT_MATERIAL = "debug"
 StateMachineManager.FONT_SIZE = 14
+
 StateMachineManager.init = function (self)
 	self._state_machines = {}
 	self._world = nil
 	self._gui = nil
 	self._column1_width = 0
-
-	return 
 end
+
 StateMachineManager.update = function (self, dt)
 	if StateMachineManager.DEBUG then
 		if self._world == nil then
@@ -22,34 +22,30 @@ StateMachineManager.update = function (self, dt)
 		end
 
 		if self._gui then
-			self._draw_panel(self)
+			self:_draw_panel()
 		end
 	end
-
-	return 
 end
+
 StateMachineManager.destroy = function (self)
 	if StateMachineManager.DEBUG and self._gui ~= nil then
 		World.destroy_gui(self._world, self._gui)
 
 		self._gui = nil
 	end
-
-	return 
 end
+
 StateMachineManager._register_state_machine = function (self, state_machine)
 	self._state_machines[#self._state_machines + 1] = state_machine
-
-	return 
 end
+
 StateMachineManager._unregister_state_machine = function (self, state_machine)
 	local index = table.find(self._state_machines, state_machine)
 
 	assert(index, "unregister a state machine " .. state_machine._name .. " that was not registered")
 	table.remove(self._state_machines, index)
-
-	return 
 end
+
 StateMachineManager._root_state_machines = function (self)
 	local result = {}
 
@@ -61,6 +57,7 @@ StateMachineManager._root_state_machines = function (self)
 
 	return result
 end
+
 StateMachineManager._state_machines_column_width = function (self, state_machines)
 	local width = 0
 
@@ -72,12 +69,13 @@ StateMachineManager._state_machines_column_width = function (self, state_machine
 
 	return width
 end
+
 StateMachineManager._draw_panel = function (self)
 	local width, height = Gui.resolution()
 	local column_margin = 16
 	local text_margin = 4
-	local root_state_machines = self._root_state_machines(self)
-	local column1_width = self._state_machines_column_width(self, root_state_machines) + 2 * text_margin
+	local root_state_machines = self:_root_state_machines()
+	local column1_width = self:_state_machines_column_width(root_state_machines) + 2 * text_margin
 	self._column1_width = math.max(column1_width, self._column1_width)
 
 	Gui.rect(self._gui, Vector2(column_margin, column_margin), Vector2(self._column1_width, height - 2 * column_margin), Color(64, 0, 0, 0))
@@ -90,8 +88,6 @@ StateMachineManager._draw_panel = function (self)
 
 		y = y - StateMachineManager.FONT_SIZE
 	end
-
-	return 
 end
 
-return 
+return

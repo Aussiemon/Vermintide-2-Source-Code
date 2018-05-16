@@ -2328,4 +2328,4 @@ HitEffectsRatlingGunner = {
 	}
 }
 
-return 
+return

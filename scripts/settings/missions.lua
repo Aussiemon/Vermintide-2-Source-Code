@@ -1379,6 +1379,10 @@ Missions.military_arena_survive = {
 	mission_template_name = "goal",
 	text = "mission_military_arena_survive"
 }
+Missions.military_ride_elevator = {
+	mission_template_name = "goal",
+	text = "mission_military_ride_elevator"
+}
 Missions.military_ascend_wall = {
 	mission_template_name = "goal",
 	text = "mission_military_ascend_wall"
@@ -1534,7 +1538,7 @@ Missions.prologue_dodge = {
 		{
 			suffix = "",
 			prefix = "",
-			action = "dodge_hold"
+			action = "dodge_1"
 		}
 	}
 }
@@ -1849,4 +1853,4 @@ for name, data in pairs(Missions) do
 	data.name = name
 end
 
-return 
+return

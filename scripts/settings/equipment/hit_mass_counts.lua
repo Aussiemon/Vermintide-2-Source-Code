@@ -59,4 +59,4 @@ FALIL_HIT_MASS_COUNT = {
 	chaos_marauder = 0.75
 }
 
-return 
+return

@@ -2,8 +2,6 @@ require("foundation/scripts/util/spline")
 
 function printf(f, ...)
 	print(string.format(f, ...))
-
-	return 
 end
 
 function sprintf(f, ...)
@@ -48,11 +46,10 @@ function T(v1, v2)
 	else
 		return v2
 	end
-
-	return 
 end
 
 varargs = varargs or {}
+
 varargs.to_table = function (...)
 	local values = {}
 	local num_args = select("#", ...)
@@ -65,6 +62,7 @@ varargs.to_table = function (...)
 
 	return values, #values
 end
+
 varargs.join = function (delimiter, ...)
 	local output = ""
 	local num_args = select("#", ...)
@@ -80,7 +78,7 @@ end
 function split_string(s)
 	local parts = {}
 
-	for part in s.gmatch(s, "(%S+)") do
+	for part in s:gmatch("(%S+)") do
 		parts[#parts + 1] = part
 	end
 
@@ -100,7 +98,7 @@ function ituple_iterator(t, k)
 	local val1 = t[k1]
 
 	if val1 == nil then
-		return 
+		return
 	end
 
 	return k1, val1, t[k + 3]
@@ -108,4 +106,4 @@ end
 
 ColorBox = QuaternionBox
 
-return 
+return

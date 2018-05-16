@@ -88,13 +88,14 @@ local action_data = {
 		}
 	},
 	spawn_vortex = {
-		outer_decal_unit_name = "units/decals/decal_vortex_circle_inner",
-		vortex_template_name = "standard",
-		missile_speed = 20,
 		missile_life_time = 2.25,
-		missile_effect_unit_name = "units/weapons/projectile/vortex_rune/vortex_rune",
-		summoning_time = 2.5,
+		missile_speed = 20,
 		missile_cast_interval = 0.2,
+		missile_effect_unit_name = "units/weapons/projectile/vortex_rune/vortex_rune",
+		vortex_template_name = "standard",
+		summoning_time = 2.5,
+		inner_decal_unit_name = "units/decals/decal_vortex_circle_inner",
+		outer_decal_unit_name = "units/decals/decal_vortex_circle_outer",
 		attack_anim = "attack_cast_spell_loop",
 		num_missiles = 5,
 		spawn_func_name = "_spawn_vortex",
@@ -102,7 +103,7 @@ local action_data = {
 		init_func_name = "_start_vortex_summoning",
 		update_func_name = "_update_vortex_summoning",
 		cleanup_func_name = "_clean_up_vortex_summoning",
-		link_decal_units_to_vortex = false,
+		link_decal_units_to_vortex = true,
 		missile_launch_angle = math.pi / 4,
 		ignore_staggers = {
 			true,
@@ -238,4 +239,4 @@ local action_data = {
 }
 BreedActions.chaos_vortex_sorcerer = table.create_copy(BreedActions.chaos_vortex_sorcerer, action_data)
 
-return 
+return

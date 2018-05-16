@@ -14,21 +14,21 @@ local extensions = {
 	"BossDoorExtension",
 	"BigBoyDestructibleExtension"
 }
+
 DoorSystem.init = function (self, entity_system_creation_context, system_name)
 	DoorSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
 	self.network_event_delegate = network_event_delegate
 
-	network_event_delegate.register(network_event_delegate, self, unpack(RPCS))
+	network_event_delegate:register(self, unpack(RPCS))
 
 	self.unit_extension_data = {}
 	self._broadphase = Broadphase(127, 1.5)
 	self._boss_doors = {}
 	self._active_groups = {}
-
-	return 
 end
+
 DoorSystem.on_add_extension = function (self, world, unit, extension_name, ...)
 	local door_extension = DoorSystem.super.on_add_extension(self, world, unit, extension_name)
 	self.unit_extension_data[unit] = door_extension
@@ -39,25 +39,28 @@ DoorSystem.on_add_extension = function (self, world, unit, extension_name, ...)
 		local boss_doors = self._boss_doors
 
 		for i = 0, 2, 1 do
-			local map_section = Unit.get_data(unit, "map_sections", i)
+			repeat
+				local map_section = Unit.get_data(unit, "map_sections", i)
 
-			if map_section then
-				if map_section == 0 then
-				else
-					if not boss_doors[map_section] then
-						boss_doors[map_section] = {}
-					end
-
-					local boss_doors_in_section = boss_doors[map_section]
-					boss_doors_in_section[#boss_doors_in_section + 1] = unit
+				if not map_section or map_section == 0 then
+					break
 				end
-			end
+
+				if not boss_doors[map_section] then
+					boss_doors[map_section] = {}
+				end
+
+				local boss_doors_in_section = boss_doors[map_section]
+				boss_doors_in_section[#boss_doors_in_section + 1] = unit
+			until true
 		end
 	end
 
 	return door_extension
 end
+
 local sections_to_open = {}
+
 DoorSystem.update = function (self, context, t)
 	DoorSystem.super.update(self, context, t)
 
@@ -74,7 +77,7 @@ DoorSystem.update = function (self, context, t)
 				local data = groups[i]
 				local group_id = data.group_id
 				local active = data.active
-				local group = ai_group_system.get_ai_group(ai_group_system, group_id)
+				local group = ai_group_system:get_ai_group(group_id)
 
 				if group and not active then
 					data.active = true
@@ -87,7 +90,7 @@ DoorSystem.update = function (self, context, t)
 					for unit, extension in pairs(members) do
 						local heath_extension = ScriptUnit.has_extension(unit, "health_system")
 
-						if heath_extension and heath_extension.is_alive(heath_extension) then
+						if heath_extension and heath_extension:is_alive() then
 							should_open = false
 
 							break
@@ -108,17 +111,17 @@ DoorSystem.update = function (self, context, t)
 		for i = 1, #sections_to_open, 1 do
 			local map_section = sections_to_open[i]
 
-			self.open_boss_doors(self, map_section)
+			self:open_boss_doors(map_section)
 
 			self._active_groups[map_section] = nil
 		end
 	end
-
-	return 
 end
+
 DoorSystem.get_doors = function (self, position, radius, result)
 	return Broadphase.query(self._broadphase, position, radius, result)
 end
+
 DoorSystem.on_remove_extension = function (self, unit, extension_name)
 	DoorSystem.super.on_remove_extension(self, unit, extension_name)
 
@@ -127,18 +130,16 @@ DoorSystem.on_remove_extension = function (self, unit, extension_name)
 	Broadphase.remove(self._broadphase, extension.__broadphase_id)
 
 	self.unit_extension_data[unit] = nil
-
-	return 
 end
+
 DoorSystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
 
 	self.network_event_delegate = nil
 	self.unit_extension_data = nil
 	self._broadphase = nil
-
-	return 
 end
+
 DoorSystem.close_boss_doors = function (self, map_section, group_id, breed_name)
 	local boss_doors = self._boss_doors[map_section]
 	local network_manager = Managers.state.network
@@ -149,14 +150,14 @@ DoorSystem.close_boss_doors = function (self, map_section, group_id, breed_name)
 			local boss_door_unit = boss_doors[i]
 			local extension = ScriptUnit.extension(boss_door_unit, "door_system")
 
-			extension.set_door_state(extension, "closed", breed_name)
+			extension:set_door_state("closed", breed_name)
 
 			local level = LevelHelper:current_level(self.world)
 			local level_index = Level.unit_index(level, boss_door_unit)
 			local door_state_id = NetworkLookup.door_states.closed
 			local breed_id = (breed_name and NetworkLookup.breeds[breed_name]) or NetworkLookup.breeds["n/a"]
 
-			network_transmit.send_rpc_clients(network_transmit, "rpc_sync_boss_door_state", level_index, door_state_id, breed_id)
+			network_transmit:send_rpc_clients("rpc_sync_boss_door_state", level_index, door_state_id, breed_id)
 		end
 
 		if not self._active_groups[map_section] then
@@ -169,9 +170,8 @@ DoorSystem.close_boss_doors = function (self, map_section, group_id, breed_name)
 			group_id = group_id
 		}
 	end
-
-	return 
 end
+
 DoorSystem.open_boss_doors = function (self, map_section)
 	local boss_doors = self._boss_doors[map_section]
 	local network_manager = Managers.state.network
@@ -181,18 +181,17 @@ DoorSystem.open_boss_doors = function (self, map_section)
 		local boss_door_unit = boss_doors[i]
 		local extension = ScriptUnit.extension(boss_door_unit, "door_system")
 
-		extension.set_door_state(extension, "open")
+		extension:set_door_state("open")
 
 		local level = LevelHelper:current_level(self.world)
 		local level_index = Level.unit_index(level, boss_door_unit)
 		local door_state_id = NetworkLookup.door_states.open
 		local breed_id = NetworkLookup.breeds["n/a"]
 
-		network_transmit.send_rpc_clients(network_transmit, "rpc_sync_boss_door_state", level_index, door_state_id, breed_id)
+		network_transmit:send_rpc_clients("rpc_sync_boss_door_state", level_index, door_state_id, breed_id)
 	end
-
-	return 
 end
+
 DoorSystem.rpc_sync_door_state = function (self, sender, level_object_id, door_state_id)
 	local level = LevelHelper:current_level(self.world)
 	local door_unit = Level.unit_by_index(level, level_object_id)
@@ -201,13 +200,12 @@ DoorSystem.rpc_sync_door_state = function (self, sender, level_object_id, door_s
 	if door_extension then
 		local new_state = NetworkLookup.door_states[door_state_id]
 
-		door_extension.set_door_state(door_extension, new_state)
+		door_extension:set_door_state(new_state)
 	else
 		Application.warning(string.format("[DoorSystem:rpc_sync_door_state] The synced level_object_id (%s) doesn't correspond to a unit with a 'door_system' extension. Unit: %s", level_object_id, tostring(door_unit)))
 	end
-
-	return 
 end
+
 DoorSystem.rpc_sync_boss_door_state = function (self, sender, level_object_id, door_state_id, breed_id)
 	local level = LevelHelper:current_level(self.world)
 	local door_unit = Level.unit_by_index(level, level_object_id)
@@ -217,12 +215,10 @@ DoorSystem.rpc_sync_boss_door_state = function (self, sender, level_object_id, d
 		local new_state = NetworkLookup.door_states[door_state_id]
 		local breed_name = NetworkLookup.breeds[breed_id]
 
-		door_extension.set_door_state(door_extension, new_state, breed_name)
+		door_extension:set_door_state(new_state, breed_name)
 	else
 		Application.warning(string.format("[DoorSystem:rpc_sync_boss_door_state] The synced level_object_id (%s) doesn't correspond to a unit with a 'door_system' extension. Unit: %s", level_object_id, tostring(door_unit)))
 	end
-
-	return 
 end
 
-return 
+return

@@ -1,12 +1,11 @@
 InputService = class(InputService)
+
 InputService.init = function (self, input_service_name, keymaps_name, filters_name, block_reasons)
 	self.platform = PLATFORM
 	self.mapped_devices = {
 		gamepad = {},
 		mouse = {},
 		keyboard = {},
-		synergy_mouse = {},
-		synergy_keyboard = {},
 		network = {},
 		recording = {}
 	}
@@ -17,17 +16,15 @@ InputService.init = function (self, input_service_name, keymaps_name, filters_na
 	self.keymaps_name = keymaps_name
 	self.filters_name = filters_name
 	self.input_manager = Managers.input
-
-	return 
 end
+
 InputService.map_device = function (self, input_device_type, input_device, input_device_data)
 	local input_device_type_list = self.mapped_devices[input_device_type]
 	input_device_type_list[#input_device_type_list + 1] = input_device
 	input_device_type_list.n = #input_device_type_list
 	self.input_devices_data[input_device] = input_device_data
-
-	return 
 end
+
 InputService.unmap_device = function (self, input_device_type, input_device)
 	local input_device_type_list = self.mapped_devices[input_device_type]
 	local index = table.find(input_device_type_list, input_device)
@@ -35,19 +32,18 @@ InputService.unmap_device = function (self, input_device_type, input_device)
 	if not index then
 		Application.error("[InputService] No mapped input called %s for input service %s", input_device.name(), self.name)
 
-		return 
+		return
 	end
 
 	table.remove(input_device_type_list, index)
 
 	input_device_type_list.n = #input_device_type_list
-
-	return 
 end
+
 InputService.get = function (self, input_data_name, consume)
-	local keymaps, default_data_types = self.get_active_keymaps(self)
+	local keymaps, default_data_types = self:get_active_keymaps()
 	local keymap_binding = keymaps[input_data_name]
-	local input_filters = self.get_active_filters(self)
+	local input_filters = self:get_active_filters()
 	local filter_binding = input_filters and input_filters[input_data_name]
 
 	if keymap_binding then
@@ -71,7 +67,7 @@ InputService.get = function (self, input_data_name, consume)
 							local input_device = device_list[k]
 							local input_device_data = input_devices_data[input_device]
 
-							if input_device.active(input_device) and not input_device_data.blocked_access[name] then
+							if input_device:active() and not input_device_data.blocked_access[name] then
 								action_value = action_value or input_device_data[key_action_type][key_index]
 
 								if action_value == true then
@@ -81,14 +77,14 @@ InputService.get = function (self, input_data_name, consume)
 										input_device_data.consumed_input[key_index] = true
 									end
 								end
-							elseif input_device.active(input_device) then
+							elseif input_device:active() then
 								action_value = nil
 
 								break
 							end
 						end
 
-						action_value = (0 < device_list.n and action_value) or nil
+						action_value = (device_list.n > 0 and action_value) or nil
 
 						if not action_value then
 							break
@@ -109,17 +105,16 @@ InputService.get = function (self, input_data_name, consume)
 
 		return value
 	end
-
-	return 
 end
+
 InputService.get_controller_cursor_position = function (self)
 	return self.controller_select:unbox()
 end
+
 InputService.set_controller_cursor_position = function (self, x, y, z)
 	self.controller_select:store(x, y, z)
-
-	return 
 end
+
 InputService.get_active_keymaps = function (self, optional_platform)
 	local platform = optional_platform or self.platform
 
@@ -133,11 +128,12 @@ InputService.get_active_keymaps = function (self, optional_platform)
 
 	return data.keymaps, data.default_data_types
 end
+
 InputService.get_active_filters = function (self, optional_platform)
 	local filters_name = self.filters_name
 
 	if not filters_name then
-		return 
+		return
 	end
 
 	local platform = optional_platform or self.platform
@@ -151,13 +147,15 @@ InputService.get_active_filters = function (self, optional_platform)
 
 	return filters
 end
+
 InputService.get_keymapping = function (self, keymap_name, optional_platform)
-	local keymaps = self.get_active_keymaps(self, optional_platform)
+	local keymaps = self:get_active_keymaps(optional_platform)
 
 	return keymaps[keymap_name]
 end
+
 InputService.add_keymap = function (self, keymap_name)
-	local keymaps = self.get_active_keymaps(self)
+	local keymaps = self:get_active_keymaps()
 	local keymapping = not keymaps[keymap_name]
 
 	assert(keymapping, "Keymap already exists: name %s in service %s", keymap_name, input_service_name)
@@ -167,22 +165,20 @@ InputService.add_keymap = function (self, keymap_name)
 			n = 0
 		}
 	}
-
-	return 
 end
+
 InputService.remove_keymap = function (self, keymap_name)
-	local keymaps = self.get_active_keymaps(self)
+	local keymaps = self:get_active_keymaps()
 	local keymapping = keymaps[keymap_name]
 
 	assert(keymapping, "No such keymap name %s in service %s", keymap_name, self.name)
 
 	keymaps[keymap_name] = nil
-
-	return 
 end
+
 InputService.generate_keybinding_setting = function (self)
 	local new_keymaps = {}
-	local keymaps = self.get_active_keymaps(self)
+	local keymaps = self:get_active_keymaps()
 
 	for keymap_name, keymap_data in pairs(keymaps) do
 		local new_keymap_data = {}
@@ -218,9 +214,10 @@ InputService.generate_keybinding_setting = function (self)
 
 	return new_keymaps
 end
+
 InputService.generate_filters_setting = function (self)
 	local new_filters = {}
-	local input_filters = self.get_active_filters(self)
+	local input_filters = self:get_active_filters()
 
 	if input_filters then
 		for filter_output, filter_data in pairs(input_filters) do
@@ -232,27 +229,28 @@ InputService.generate_filters_setting = function (self)
 
 	return new_filters
 end
+
 InputService.has = function (self, keymap_name)
-	local keymaps = self.get_active_keymaps(self)
-	local input_filters = self.get_active_filters(self)
+	local keymaps = self:get_active_keymaps()
+	local input_filters = self:get_active_filters()
 
 	return keymaps[keymap_name] or (input_filters and input_filters[keymap_name] and true) or false
 end
+
 InputService.is_blocked = function (self)
 	return self.service_is_blocked
 end
+
 InputService.set_blocked = function (self, is_blocked)
 	self.service_is_blocked = is_blocked
-
-	return 
 end
+
 InputService.set_hover = function (self, hover)
 	self.hovering = self.hovering or hover
-
-	return 
 end
+
 InputService.is_hovering = function (self)
 	return self.hovering
 end
 
-return 
+return

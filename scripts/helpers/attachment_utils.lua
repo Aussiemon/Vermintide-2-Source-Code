@@ -1,4 +1,5 @@
 AttachmentUtils = {}
+
 AttachmentUtils.create_attachment = function (world, owner_unit, attachments, slot_name, item_data, show)
 	assert(attachments.slots[slot_name] == nil, "Slot is not empty, remove attachment before creating a new one.")
 
@@ -10,7 +11,7 @@ AttachmentUtils.create_attachment = function (world, owner_unit, attachments, sl
 		local unit_spawner = Managers.state.unit_spawner
 
 		if item_units.unit and item_units.unit ~= "" then
-			unit = unit_spawner.spawn_local_unit(unit_spawner, item_units.unit)
+			unit = unit_spawner:spawn_local_unit(item_units.unit)
 
 			Unit.set_unit_visibility(unit, show)
 
@@ -40,24 +41,25 @@ AttachmentUtils.create_attachment = function (world, owner_unit, attachments, sl
 
 	return slot_data
 end
+
 AttachmentUtils.create_weapon_visual_attachment = function (world, owner_unit, unit_to_spawn, attachment_node_linking)
 	local unit_spawner = Managers.state.unit_spawner
-	local unit = unit_spawner.spawn_local_unit(unit_spawner, unit_to_spawn)
+	local unit = unit_spawner:spawn_local_unit(unit_to_spawn)
 
 	AttachmentUtils.link(world, owner_unit, unit, attachment_node_linking)
 
 	return unit
 end
+
 AttachmentUtils.destroy_attachment = function (world, owner_unit, slot_data)
 	local unit = slot_data.unit
 	local unit_spawner = Managers.state.unit_spawner
 
 	if unit then
-		unit_spawner.mark_for_deletion(unit_spawner, unit)
+		unit_spawner:mark_for_deletion(unit)
 	end
-
-	return 
 end
+
 AttachmentUtils.link = function (world, source, target, node_linking)
 	for _, link_data in ipairs(node_linking) do
 		local source_node = link_data.source
@@ -67,25 +69,25 @@ AttachmentUtils.link = function (world, source, target, node_linking)
 
 		World.link_unit(world, target, target_node_index, source, source_node_index)
 	end
-
-	return 
 end
+
 AttachmentUtils.hot_join_sync = function (sender, unit, slots)
 	local unit_go_id = Managers.state.unit_storage:go_id(unit)
 
 	for slot_name, slot_data in pairs(slots) do
-		local slot = InventorySettings.slots_by_name[slot_name]
+		repeat
+			local slot = InventorySettings.slots_by_name[slot_name]
 
-		if slot.category ~= "attachment" then
-		else
+			if slot.category ~= "attachment" then
+				break
+			end
+
 			local slot_id = NetworkLookup.equipment_slots[slot_name]
 			local attachment_id = NetworkLookup.item_names[slot_data.name]
 
 			RPC.rpc_create_attachment(sender, unit_go_id, slot_id, attachment_id)
-		end
+		until true
 	end
-
-	return 
 end
 
-return 
+return

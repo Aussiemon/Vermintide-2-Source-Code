@@ -1,6 +1,7 @@
 local NAVIGATION_NAVMESH_RADIUS = 0.38
 script_data.debug_ai_movement = script_data.debug_ai_movement or Development.parameter("debug_ai_movement")
 AINavigationExtension = class(AINavigationExtension)
+
 AINavigationExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._nav_world = extension_init_data.nav_world
 	self._unit = unit
@@ -23,9 +24,8 @@ AINavigationExtension.init = function (self, extension_init_context, unit, exten
 	self._num_movement_modifiers = 0
 	self._movement_modifier_table_size = modifier_table_size
 	self._last_movement_modifier_index = 1
-
-	return 
 end
+
 AINavigationExtension.extensions_ready = function (self)
 	local blackboard = BLACKBOARDS[self._unit]
 	self._blackboard = blackboard
@@ -34,20 +34,17 @@ AINavigationExtension.extensions_ready = function (self)
 		exit_pos = Vector3Box()
 	}
 	self._far_pathing_allowed = blackboard.breed.cannot_far_path ~= true
-
-	return 
 end
+
 AINavigationExtension.destroy = function (self)
-	self.release_bot(self)
+	self:release_bot()
 	GwNavSmartObjectInterval.destroy(self._next_smartobject_interval)
-
-	return 
 end
+
 AINavigationExtension.set_far_pathing_allowed = function (self, far_pathing_allowed)
 	self._far_pathing_allowed = far_pathing_allowed
-
-	return 
 end
+
 AINavigationExtension.release_bot = function (self)
 	if self._navtag_layer_cost_table then
 		GwNavTagLayerCostTable.destroy(self._navtag_layer_cost_table)
@@ -68,9 +65,8 @@ AINavigationExtension.release_bot = function (self)
 	end
 
 	self._traverse_logic = nil
-
-	return 
 end
+
 AINavigationExtension.init_position = function (self)
 	local unit = self._unit
 	local nav_world = self._nav_world
@@ -146,21 +142,23 @@ AINavigationExtension.init_position = function (self)
 		GwNavBot.set_spline_trajectory_configuration(nav_bot, SCRIPT_DRIVEN, MAX_DISTANCE_TO_SPLINE_POSITION, SPLINE_LENGTH, SPLINE_DISTANCE_TO_BORDERS, SPLINE_RECOMPUTION_RATIO, TARGET_ON_SPLINE_DISTANCE)
 		GwNavBot.set_use_channel(nav_bot, true)
 	end
-
-	return 
 end
+
 AINavigationExtension.traverse_logic = function (self)
 	return self._traverse_logic
 end
+
 AINavigationExtension.nav_world = function (self)
 	return self._nav_world
 end
+
 AINavigationExtension.desired_velocity = function (self)
 	return GwNavBot.output_velocity(self._nav_bot)
 end
+
 AINavigationExtension.set_enabled = function (self, enabled)
 	if self._nav_bot == nil then
-		return 
+		return
 	end
 
 	local old_status = self._enabled
@@ -175,20 +173,18 @@ AINavigationExtension.set_enabled = function (self, enabled)
 
 		GwNavBot.update_position(self._nav_bot, position)
 	end
-
-	return 
 end
+
 AINavigationExtension.set_avoidance_enabled = function (self, enabled)
 	if self._nav_bot == nil then
-		return 
+		return
 	end
 
 	self._is_avoiding = enabled
 
 	GwNavBot.set_use_avoidance(self._nav_bot, enabled)
-
-	return 
 end
+
 AINavigationExtension.add_movement_modifier = function (self, new_modifier)
 	fassert(new_modifier, "[AINavigationExtension] Trying to set invalid modifier")
 
@@ -218,10 +214,11 @@ AINavigationExtension.add_movement_modifier = function (self, new_modifier)
 	self._num_movement_modifiers = current_amount + 1
 	self._last_movement_modifier_index = id
 
-	self._recalculate_max_speed(self)
+	self:_recalculate_max_speed()
 
 	return id
 end
+
 AINavigationExtension.remove_movement_modifier = function (self, id)
 	local modifiers = self._movement_modifiers
 
@@ -230,13 +227,12 @@ AINavigationExtension.remove_movement_modifier = function (self, id)
 	modifiers[id] = nil
 	self._num_movement_modifiers = self._num_movement_modifiers - 1
 
-	self._recalculate_max_speed(self)
-
-	return 
+	self:_recalculate_max_speed()
 end
+
 AINavigationExtension._recalculate_max_speed = function (self)
 	if self._nav_bot == nil then
-		return 
+		return
 	end
 
 	local aggregate_mod = 1
@@ -251,45 +247,42 @@ AINavigationExtension._recalculate_max_speed = function (self)
 	end
 
 	GwNavBot.set_max_desired_linear_speed(self._nav_bot, aggregate_mod * self._max_speed)
-
-	return 
 end
+
 AINavigationExtension.set_max_speed = function (self, speed)
 	if self._max_speed == speed then
-		return 
+		return
 	end
 
 	self._max_speed = speed
 
-	self._recalculate_max_speed(self)
-
-	return 
+	self:_recalculate_max_speed()
 end
+
 AINavigationExtension.get_max_speed = function (self)
 	return self._max_speed
 end
+
 AINavigationExtension.set_navbot_position = function (self, position)
 	GwNavBot.update_position(self._nav_bot, position)
-
-	return 
 end
+
 AINavigationExtension.move_to = function (self, pos)
 	if self._nav_bot == nil then
-		return 
+		return
 	end
 
 	if self._blackboard.far_path then
 		self._backup_destination:store(pos)
 
-		return 
+		return
 	end
 
 	self._wanted_destination:store(pos)
 
 	self._failed_move_attempts = 0
-
-	return 
 end
+
 AINavigationExtension.stop = function (self)
 	local unit = self._unit
 	local position = POSITION_LOOKUP[unit]
@@ -310,21 +303,23 @@ AINavigationExtension.stop = function (self)
 	end
 
 	GwNavBot.clear_followed_path(nav_bot)
-
-	return 
 end
+
 AINavigationExtension.number_failed_move_attempts = function (self)
 	return self._failed_move_attempts
 end
+
 AINavigationExtension.is_following_path = function (self)
 	return self._is_navbot_following_path
 end
+
 AINavigationExtension.is_computing_path = function (self)
 	return self._is_computing_path
 end
+
 AINavigationExtension.reset_destination = function (self, override_destination)
 	if self._nav_bot == nil then
-		return 
+		return
 	end
 
 	local unit = self._unit
@@ -340,9 +335,8 @@ AINavigationExtension.reset_destination = function (self, override_destination)
 	blackboard.num_far_path_nodes = nil
 
 	GwNavBot.compute_new_path(self._nav_bot, position)
-
-	return 
 end
+
 AINavigationExtension.destination = function (self)
 	local blackboard = self._blackboard
 
@@ -351,34 +345,38 @@ AINavigationExtension.destination = function (self)
 	else
 		return self._wanted_destination:unbox()
 	end
-
-	return 
 end
+
 AINavigationExtension.distance_to_destination = function (self, position)
 	position = position or Unit.local_position(self._unit, 0)
-	local destination = self.destination(self)
+	local destination = self:destination()
 
 	return Vector3.distance(position, destination)
 end
+
 AINavigationExtension.distance_to_destination_sq = function (self, position)
 	position = position or Unit.local_position(self._unit, 0)
-	local destination = self.destination(self)
+	local destination = self:destination()
 
 	return Vector3.distance_squared(position, destination)
 end
+
 local navigation_stop_distance_before_destination = 0.3
+
 AINavigationExtension.has_reached_destination = function (self, reach_distance)
 	local reach_distance_sq = (reach_distance or navigation_stop_distance_before_destination)^2
-	local distance_sq = self.distance_to_destination_sq(self)
+	local distance_sq = self:distance_to_destination_sq()
 
 	return distance_sq < reach_distance_sq
 end
+
 AINavigationExtension.next_smart_object_data = function (self)
 	return self._next_smart_object_data
 end
+
 AINavigationExtension.use_smart_object = function (self, do_use)
 	if self._nav_bot == nil then
-		return 
+		return
 	end
 
 	local success = nil
@@ -405,12 +403,14 @@ AINavigationExtension.use_smart_object = function (self, do_use)
 
 	return success
 end
+
 AINavigationExtension.is_using_smart_object = function (self)
 	return self._using_smartobject
 end
+
 AINavigationExtension.allow_layer = function (self, layer_name, layer_allowed)
 	if self._nav_bot == nil then
-		return 
+		return
 	end
 
 	local layer_id = LAYER_ID_MAPPING[layer_name]
@@ -420,20 +420,18 @@ AINavigationExtension.allow_layer = function (self, layer_name, layer_allowed)
 	else
 		GwNavTagLayerCostTable.forbid_layer(self._navtag_layer_cost_table, layer_id)
 	end
-
-	return 
 end
+
 AINavigationExtension.set_layer_cost = function (self, layer_name, layer_cost)
 	if self._nav_bot == nil then
-		return 
+		return
 	end
 
 	local layer_id = LAYER_ID_MAPPING[layer_name]
 
 	GwNavTagLayerCostTable.set_layer_cost_multiplier(self._navtag_layer_cost_table, layer_id, layer_cost)
-
-	return 
 end
+
 AINavigationExtension.get_current_and_next_node_positions_in_nav_path = function (self)
 	local nav_bot = self._nav_bot
 
@@ -472,6 +470,7 @@ AINavigationExtension.get_current_and_next_node_positions_in_nav_path = function
 
 	return current_node_position, next_node_1_position, next_node_2_position
 end
+
 AINavigationExtension.get_path_node_count = function (self)
 	local nav_bot = self._nav_bot
 
@@ -489,17 +488,18 @@ AINavigationExtension.get_path_node_count = function (self)
 
 	return node_count
 end
+
 AINavigationExtension.get_remaining_distance_from_progress_to_end_of_path = function (self)
 	local nav_bot = self._nav_bot
 
 	if nav_bot == nil then
-		return 
+		return
 	end
 
 	local following_path = self._is_navbot_following_path
 
 	if not following_path then
-		return 
+		return
 	end
 
 	local distance = GwNavBot.get_remaining_distance_from_progress_to_end_of_path(nav_bot)
@@ -507,4 +507,4 @@ AINavigationExtension.get_remaining_distance_from_progress_to_end_of_path = func
 	return distance
 end
 
-return 
+return

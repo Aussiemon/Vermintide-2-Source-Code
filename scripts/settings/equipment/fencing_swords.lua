@@ -307,7 +307,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			impact_axis = Vector3Box(0, 0, 1)
 		},
@@ -397,7 +397,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			impact_axis = Vector3Box(0, 0, 1)
 		},
@@ -662,7 +662,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		},
 		push = {
@@ -741,7 +741,7 @@ weapon_template.actions = {
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
-				return not status_extension.fatigued(status_extension)
+				return not status_extension:fatigued()
 			end
 		}
 	},
@@ -758,7 +758,7 @@ weapon_template.actions = {
 			end,
 			total_time = math.huge,
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			buff_data = {
 				{
@@ -941,29 +941,28 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_headshotting",
 	"weapon_keyword_versatile"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.8,
-			stagger = 0.15,
-			damage = 0.16666666666666666,
-			targets = 0.4
-		},
-		heavy_attack = {
-			speed = 0.6,
-			stagger = 0.4,
-			damage = 0.375,
-			targets = 0.4
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "light_attack_left"
 	},
-	perks = {
-		light_attack = {
-			"head_shot"
-		},
-		heavy_attack = {
-			"head_shot",
-			"armor_penetration"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "heavy_attack"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	push = {
+		action_name = "action_one",
+		sub_action_name = "push"
 	}
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_fencingsword_t1/wpn_fencingsword_t1"
@@ -998,4 +997,4 @@ Weapons.fencing_sword_template_1_t3_un = table.create_copy(Weapons.fencing_sword
 Weapons.fencing_sword_template_1_t3_un.actions.action_inspect.action_inspect_hold.anim_event = "inspect_start_2"
 Weapons.fencing_sword_template_1_t3_un.actions.action_inspect.action_inspect_hold.anim_end_event = "inspect_end_2"
 
-return 
+return

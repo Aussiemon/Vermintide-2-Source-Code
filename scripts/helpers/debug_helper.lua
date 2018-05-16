@@ -1,32 +1,39 @@
 DebugHelper = DebugHelper or {}
+
 DebugHelper.remove_debug_stuff = function ()
 	Commands.script = function ()
-		return 
-	end
-	Commands.console = function ()
-		return 
-	end
-	Commands.game_speed = function ()
-		return 
-	end
-	Commands.fov = function ()
-		return 
-	end
-	Commands.free_flight_settings = function ()
-		return 
-	end
-	Commands.lag = function ()
-		return 
-	end
-	Commands.location = function ()
-		return 
-	end
-	Commands.next_level = function ()
-		return 
+		return
 	end
 
-	return 
+	Commands.console = function ()
+		return
+	end
+
+	Commands.game_speed = function ()
+		return
+	end
+
+	Commands.fov = function ()
+		return
+	end
+
+	Commands.free_flight_settings = function ()
+		return
+	end
+
+	Commands.lag = function ()
+		return
+	end
+
+	Commands.location = function ()
+		return
+	end
+
+	Commands.next_level = function ()
+		return
+	end
 end
+
 DebugHelper.enable_physics_dump = function ()
 	local physics_namespaces = {
 		"PhysicsWorld",
@@ -49,8 +56,6 @@ DebugHelper.enable_physics_dump = function ()
 			end
 		end
 	end
-
-	return 
 end
 
-return 
+return

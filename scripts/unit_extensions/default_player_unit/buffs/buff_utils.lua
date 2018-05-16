@@ -1,5 +1,6 @@
 BuffUtils = BuffUtils or {}
 script_data.debug_legendary_traits = script_data.debug_legendary_traits or Development.parameter("debug_legendary_traits")
+
 BuffUtils.apply_buff_tweak_data = function (buffs, tweak_data)
 	for name, buff_data in pairs(buffs) do
 		local data = tweak_data[name]
@@ -12,8 +13,6 @@ BuffUtils.apply_buff_tweak_data = function (buffs, tweak_data)
 			end
 		end
 	end
-
-	return 
 end
 
-return 
+return

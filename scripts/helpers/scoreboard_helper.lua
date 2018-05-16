@@ -189,12 +189,10 @@ ScoreboardHelper.scoreboard_grouped_topic_stats = {
 
 local function get_score(statistics_db, stats_id, stat_type)
 	if type(stat_type) == "table" then
-		return statistics_db.get_stat(statistics_db, stats_id, unpack(stat_type))
+		return statistics_db:get_stat(stats_id, unpack(stat_type))
 	else
-		return statistics_db.get_stat(statistics_db, stats_id, stat_type)
+		return statistics_db:get_stat(stats_id, stat_type)
 	end
-
-	return 
 end
 
 local function get_score_by_name(statistics_db, stats_id, stat_name)
@@ -248,15 +246,15 @@ ScoreboardHelper.get_sorted_topic_statistics = function (statistics_db, profile_
 
 	for _, player in pairs(bots_and_players) do
 		local is_local_player = player.local_player
-		local player_peer_id = player.network_id(player)
-		local player_name = player.name(player)
-		local stats_id = player.stats_id(player)
-		local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, player_peer_id, player.local_player_id(player))
-		local is_player_controlled = player.is_player_controlled(player)
+		local player_peer_id = player:network_id()
+		local player_name = player:name()
+		local stats_id = player:stats_id()
+		local profile_index = profile_synchronizer:profile_by_peer(player_peer_id, player:local_player_id())
+		local is_player_controlled = player:is_player_controlled()
 		player_list[stats_id] = {
 			name = player_name,
 			peer_id = player_peer_id,
-			local_player_id = player.local_player_id(player),
+			local_player_id = player:local_player_id(),
 			stats_id = stats_id,
 			profile_index = profile_index,
 			is_player_controlled = is_player_controlled
@@ -341,6 +339,7 @@ ScoreboardHelper.get_sorted_topic_statistics = function (statistics_db, profile_
 		player_list
 	}
 end
+
 ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile_synchronizer)
 	assert(statistics_db, "Missing statistics_database reference.")
 	assert(profile_synchronizer, "Missing profile_synchronizer reference.")
@@ -352,20 +351,20 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 
 	for _, player in pairs(bots_and_players) do
 		local is_local_player = player.local_player
-		local player_peer_id = player.network_id(player)
-		local player_name = player.name(player)
-		local stats_id = player.stats_id(player)
-		local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, player_peer_id, player.local_player_id(player))
+		local player_peer_id = player:network_id()
+		local player_name = player:name()
+		local stats_id = player:stats_id()
+		local profile_index = profile_synchronizer:profile_by_peer(player_peer_id, player:local_player_id())
 		local player_unit = player.player_unit
 		local career_extension = Unit.alive(player_unit) and ScriptUnit.extension(player_unit, "career_system")
-		local career_index = (career_extension and career_extension.career_index(career_extension)) or player.career_index(player)
-		local is_player_controlled = player.is_player_controlled(player)
-		local portrait_frame = cosmetic_system.get_equipped_frame(cosmetic_system, player_unit)
+		local career_index = (career_extension and career_extension:career_index()) or player:career_index()
+		local is_player_controlled = player:is_player_controlled()
+		local portrait_frame = cosmetic_system:get_equipped_frame(player_unit)
 		local player_level = ExperienceSettings.get_player_level(player)
 		player_list[stats_id] = {
 			name = player_name,
 			peer_id = player_peer_id,
-			local_player_id = player.local_player_id(player),
+			local_player_id = player:local_player_id(),
 			career_index = career_index,
 			stats_id = stats_id,
 			profile_index = profile_index,
@@ -399,6 +398,7 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 
 	return player_list
 end
+
 ScoreboardHelper.debug_get_sorted_topic_statistics = function ()
 	local player_list = {}
 
@@ -462,6 +462,7 @@ ScoreboardHelper.debug_get_sorted_topic_statistics = function ()
 		player_list
 	}
 end
+
 ScoreboardHelper.debug_get_grouped_topic_statistics = function ()
 	local player_list = {}
 
@@ -504,4 +505,4 @@ ScoreboardHelper.debug_get_grouped_topic_statistics = function ()
 	return player_list
 end
 
-return 
+return

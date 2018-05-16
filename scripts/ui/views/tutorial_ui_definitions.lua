@@ -185,7 +185,7 @@ local widget_definitions = {
 					style_id = "arrow",
 					pass_type = "rotated_texture",
 					content_check_function = function (content, style)
-						return 0 < style.color[1]
+						return style.color[1] > 0
 					end
 				},
 				{
@@ -972,7 +972,7 @@ local function create_objective_tooltip_definitions(num_objective_tooltips)
 						style_id = "arrow",
 						pass_type = "rotated_texture",
 						content_check_function = function (content, style)
-							return 0 < style.color[1]
+							return style.color[1] > 0
 						end
 					},
 					{

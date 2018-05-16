@@ -124,4 +124,4 @@ EnvironmentalHazards = {
 	}
 }
 
-return 
+return

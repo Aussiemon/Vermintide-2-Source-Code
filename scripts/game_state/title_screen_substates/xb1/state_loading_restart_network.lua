@@ -9,20 +9,19 @@ require("scripts/network/network_transmit")
 
 StateLoadingRestartNetwork = class(StateLoadingRestartNetwork)
 StateLoadingRestartNetwork.NAME = "StateLoadingRestartNetwork"
+
 StateLoadingRestartNetwork.on_enter = function (self, params)
 	print("[Gamestate] Enter Substate StateLoadingRestartNetwork")
-	self._init_params(self, params)
-	self._init_network(self)
-
-	return 
+	self:_init_params(params)
+	self:_init_network()
 end
+
 StateLoadingRestartNetwork._init_params = function (self, params)
 	self._world = params.world
 	self._viewport = params.viewport
 	self._loading_view = params.loading_view
-
-	return 
 end
+
 StateLoadingRestartNetwork._init_network = function (self)
 	local loading_context = self.parent.parent.loading_context
 
@@ -51,8 +50,6 @@ StateLoadingRestartNetwork._init_network = function (self)
 
 		self.parent:create_popup(previous_session_error, nil, "continue")
 	end
-
-	return 
 end
 
-return 
+return

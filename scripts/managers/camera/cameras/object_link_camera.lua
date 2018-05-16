@@ -1,21 +1,20 @@
 require("scripts/managers/camera/cameras/base_camera")
 
 ObjectLinkCamera = class(ObjectLinkCamera, BaseCamera)
+
 ObjectLinkCamera.init = function (self, root_node)
 	BaseCamera.init(self, root_node)
 
 	self._curve_params = {}
-
-	return 
 end
+
 ObjectLinkCamera.parse_parameters = function (self, camera_settings, parent_node)
 	ObjectLinkCamera.super.parse_parameters(self, camera_settings, parent_node)
 
 	self._object_name = camera_settings.root_object_name
 	self._curve_data_parameter_name = camera_settings.animation_curve_parameter_name
-
-	return 
 end
+
 ObjectLinkCamera.update = function (self, dt, position, rotation, data)
 	local new_position, new_rotation = nil
 	local root_unit = self._root_unit
@@ -44,26 +43,28 @@ ObjectLinkCamera.update = function (self, dt, position, rotation, data)
 	end
 
 	BaseCamera.update(self, dt, new_position, new_rotation, data)
-
-	return 
 end
+
 ObjectLinkCamera.near_range = function (self)
 	local near_clip = self._curve_params.near_clip
 
 	return near_clip or ObjectLinkCamera.super.near_range(self)
 end
+
 ObjectLinkCamera.far_range = function (self)
 	local far_clip = self._curve_params.far_clip
 
 	return far_clip or ObjectLinkCamera.super.far_range(self)
 end
+
 ObjectLinkCamera.fade_to_black = function (self)
 	return self._curve_params.fade_to_black or ObjectLinkCamera.super.fade_to_black(self)
 end
+
 ObjectLinkCamera.vertical_fov = function (self)
 	local yfov = self._curve_params.yfov
 
 	return (yfov and yfov * math.pi / 180) or ObjectLinkCamera.super.vertical_fov(self)
 end
 
-return 
+return

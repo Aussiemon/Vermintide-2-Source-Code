@@ -68,4 +68,4 @@ for name, template in pairs(TwitchVoteTemplates) do
 	end
 end
 
-return 
+return

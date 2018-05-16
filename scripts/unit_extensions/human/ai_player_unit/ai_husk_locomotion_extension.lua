@@ -2,6 +2,7 @@ require("scripts/helpers/mover_helper")
 
 local ALLOWED_MOVER_MOVE_DISTANCE = 0.5
 AiHuskLocomotionExtension = class(AiHuskLocomotionExtension)
+
 AiHuskLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
 	self._system_data = extension_init_data.system_data
@@ -13,8 +14,8 @@ AiHuskLocomotionExtension.init = function (self, extension_init_context, unit, e
 	self._velocity = Vector3Box(0, 0, 0)
 	self._breed = extension_init_data.breed
 	local ai_system = Managers.state.entity:system("ai_system")
-	local client_traverse_logic = ai_system.client_traverse_logic(ai_system)
-	self._nav_world = ai_system.nav_world(ai_system)
+	local client_traverse_logic = ai_system:client_traverse_logic()
+	self._nav_world = ai_system:nav_world()
 	self._world = extension_init_context.world
 	self._traverse_logic = client_traverse_logic
 	self._move_speed_anim_var = Unit.animation_find_variable(unit, "move_speed")
@@ -55,7 +56,7 @@ AiHuskLocomotionExtension.init = function (self, extension_init_context, unit, e
 	end
 
 	MoverHelper.set_active_mover(unit, self._mover_state, "mover")
-	self.set_mover_disable_reason(self, "not_constrained_by_mover", true)
+	self:set_mover_disable_reason("not_constrained_by_mover", true)
 
 	self._system_data.all_update_units[unit] = self
 	self._system_data.pure_network_update_units[unit] = self
@@ -68,9 +69,8 @@ AiHuskLocomotionExtension.init = function (self, extension_init_context, unit, e
 	EngineOptimizedExtensions.ai_husk_locomotion_set_is_network_driven(self._engine_extension_id, true)
 
 	self.is_network_driven = true
-
-	return 
 end
+
 AiHuskLocomotionExtension.destroy = function (self)
 	local unit = self._unit
 	self._system_data.all_update_units[unit] = nil
@@ -82,39 +82,35 @@ AiHuskLocomotionExtension.destroy = function (self)
 
 		self._engine_extension_id = nil
 	end
-
-	return 
 end
+
 AiHuskLocomotionExtension.set_animation_translation_scale = function (self, animation_translation_scale)
 	self._animation_translation_scale = Vector3Box(animation_translation_scale)
 
 	if self._engine_extension_id then
 		EngineOptimizedExtensions.ai_husk_locomotion_set_animation_translation_scale(self._engine_extension_id, animation_translation_scale)
 	end
-
-	return 
 end
+
 AiHuskLocomotionExtension.set_animation_rotation_scale = function (self, animation_rotation_scale)
 	self._animation_rotation_scale = animation_rotation_scale
 
 	if self._engine_extension_id then
 		EngineOptimizedExtensions.ai_husk_locomotion_set_animation_rotation_scale(self._engine_extension_id, animation_rotation_scale)
 	end
-
-	return 
 end
+
 AiHuskLocomotionExtension.set_affected_by_gravity = function (self, affected)
 	self.is_affected_by_gravity = affected
 
 	if self._engine_extension_id then
 		EngineOptimizedExtensions.ai_husk_locomotion_set_is_affected_by_gravity(self._engine_extension_id, affected)
 	end
-
-	return 
 end
+
 AiHuskLocomotionExtension.set_animation_driven = function (self, is_animation_driven, is_affected_by_gravity, has_script_driven_rotation)
 	if not self._engine_extension_id then
-		return 
+		return
 	end
 
 	is_affected_by_gravity = not not is_affected_by_gravity
@@ -125,7 +121,7 @@ AiHuskLocomotionExtension.set_animation_driven = function (self, is_animation_dr
 	local network_driven = not is_animation_driven or not is_affected_by_gravity
 	self.is_network_driven = network_driven
 
-	self.set_mover_disable_reason(self, "not_constrained_by_mover", true)
+	self:set_mover_disable_reason("not_constrained_by_mover", true)
 
 	local system_data = self._system_data
 
@@ -140,17 +136,15 @@ AiHuskLocomotionExtension.set_animation_driven = function (self, is_animation_dr
 	EngineOptimizedExtensions.ai_husk_locomotion_set_has_network_driven_rotation(self._engine_extension_id, has_script_driven_rotation)
 	EngineOptimizedExtensions.ai_husk_locomotion_set_is_network_driven(self._engine_extension_id, network_driven)
 	EngineOptimizedExtensions.ai_husk_locomotion_set_is_affected_by_gravity(self._engine_extension_id, is_affected_by_gravity)
-
-	return 
 end
+
 AiHuskLocomotionExtension.set_mover_disable_reason = function (self, reason, state)
 	MoverHelper.set_disable_reason(self._unit, self._mover_state, reason, state)
-
-	return 
 end
+
 AiHuskLocomotionExtension.set_constrained = function (self, constrain, min, max)
 	if not self._engine_extension_id then
-		return 
+		return
 	end
 
 	self.is_constrained = constrain
@@ -161,12 +155,11 @@ AiHuskLocomotionExtension.set_constrained = function (self, constrain, min, max)
 	end
 
 	EngineOptimizedExtensions.ai_husk_locomotion_set_is_constrained(self._engine_extension_id, constrain, min, max)
-
-	return 
 end
+
 AiHuskLocomotionExtension.teleport_to = function (self, position, rotation, velocity, dontseparate)
 	if not self._engine_extension_id then
-		return 
+		return
 	end
 
 	self.hit_wall = false
@@ -192,26 +185,24 @@ AiHuskLocomotionExtension.teleport_to = function (self, position, rotation, velo
 	self._pos_lerp_time = 0
 
 	EngineOptimizedExtensions.ai_husk_locomotion_teleport_to(self._engine_extension_id, position, rotation, velocity)
-
-	return 
 end
+
 AiHuskLocomotionExtension.set_collision_disabled = function (self, reason, state)
 	if self._collision_state then
 		MoverHelper.set_collision_disable_reason(self._unit, self._collision_state, reason, state)
 	end
-
-	return 
 end
+
 AiHuskLocomotionExtension.current_velocity = function (self)
 	return self._velocity:unbox()
 end
+
 AiHuskLocomotionExtension.traverse_logic = function (self)
 	return self._traverse_logic
 end
+
 AiHuskLocomotionExtension.hot_join_sync = function (self, sender)
 	assert(false, "ai is never husk on server")
-
-	return 
 end
 
-return 
+return

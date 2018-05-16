@@ -243,8 +243,6 @@ local animations = {
 				widgets.shine_1.style.texture_id.color[1] = 0
 				widgets.shine_2.style.texture_id.color[1] = 0
 				params.draw_flags.banner_alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
@@ -254,11 +252,9 @@ local animations = {
 				local banner_default_size = scenegraph_definition.end_screen_banner_victory.size
 				ui_scenegraph.end_screen_banner_victory.size[1] = banner_default_size[1] + banner_default_size[1] * 3 * anim_size_fraction
 				ui_scenegraph.end_screen_banner_victory.size[2] = banner_default_size[2] + banner_default_size[2] * 3 * anim_size_fraction
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -266,7 +262,7 @@ local animations = {
 			start_progress = 1.4,
 			end_progress = 1.6,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
@@ -279,11 +275,9 @@ local animations = {
 				local new_text_size = 100 + 100 * anim_font_size_fraction
 				text_style.font_size = new_text_size
 				text_shadow_style.font_size = new_text_size
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -291,7 +285,7 @@ local animations = {
 			start_progress = 1.5,
 			end_progress = 2.2,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeOutCubic(progress)
@@ -300,11 +294,9 @@ local animations = {
 				widgets.shine_1.style.texture_id.color[1] = alpha
 				local degrees = 90
 				widgets.shine_1.style.texture_id.angle = math.degrees_to_radians(degrees * anim_fraction)
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -312,7 +304,7 @@ local animations = {
 			start_progress = 1.4,
 			end_progress = 1.8,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeOutCubic(progress)
@@ -321,11 +313,9 @@ local animations = {
 				widgets.shine_2.style.texture_id.color[1] = alpha
 				local degrees = -90
 				widgets.shine_2.style.texture_id.angle = math.degrees_to_radians(75 + degrees * anim_fraction)
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -333,18 +323,16 @@ local animations = {
 			start_progress = 1.4,
 			end_progress = 2,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeOutCubic(progress)
 				local alpha = 255 * anim_fraction
 				widgets.effect_1.style.texture_id.color[1] = alpha
 				widgets.effect_2.style.texture_id.color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -352,16 +340,14 @@ local animations = {
 			start_progress = 6,
 			end_progress = 6.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
 				params.draw_flags.banner_alpha_multiplier = 1 - anim_fraction
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -377,8 +363,6 @@ local animations = {
 				widgets.title_text.style.text.text_color[1] = 0
 				widgets.title_text.style.text_shadow.text_color[1] = 0
 				params.draw_flags.banner_alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
@@ -388,11 +372,9 @@ local animations = {
 				local banner_default_size = scenegraph_definition.end_screen_banner_defeat.size
 				ui_scenegraph.end_screen_banner_defeat.size[1] = banner_default_size[1] + banner_default_size[1] * 3 * anim_size_fraction
 				ui_scenegraph.end_screen_banner_defeat.size[2] = banner_default_size[2] + banner_default_size[2] * 3 * anim_size_fraction
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -400,7 +382,7 @@ local animations = {
 			start_progress = 1.8,
 			end_progress = 2.2,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
@@ -413,11 +395,9 @@ local animations = {
 				local new_text_size = 100 + 100 * anim_font_size_fraction
 				text_style.font_size = new_text_size
 				text_shadow_style.font_size = new_text_size
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -425,17 +405,15 @@ local animations = {
 			start_progress = 1,
 			end_progress = 1.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
 				local alpha = 255 * anim_fraction
 				widgets.effect_1.style.texture_id.color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -443,17 +421,15 @@ local animations = {
 			start_progress = 1.7,
 			end_progress = 3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.ease_out_quad(progress)
 				local alpha = 255 * anim_fraction
 				widgets.effect_2.style.texture_id.color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -461,16 +437,14 @@ local animations = {
 			start_progress = 6,
 			end_progress = 6.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
 				params.draw_flags.banner_alpha_multiplier = 1 - anim_fraction
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -481,8 +455,6 @@ local animations = {
 			end_progress = 0.2,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.draw_background = true
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
 				local anim_fraction = math.easeOutCubic(local_progress)
@@ -490,11 +462,9 @@ local animations = {
 				local color = widget.style.rect.color
 				local alpha = 255 * anim_fraction
 				color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -504,7 +474,7 @@ local animations = {
 			start_progress = 0,
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
 				local anim_fraction = math.easeOutCubic(local_progress)
@@ -512,13 +482,9 @@ local animations = {
 				local color = widget.style.rect.color
 				local alpha = 255 - anim_fraction * 255
 				color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.draw_background = false
-
-				return 
 			end
 		}
 	},
@@ -528,7 +494,7 @@ local animations = {
 			start_progress = 0,
 			end_progress = 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
 				params.draw_flags.draw_text = true
@@ -536,11 +502,9 @@ local animations = {
 				local widget = widgets[1]
 				widget.style.banner_effect_texture.color[1] = anim_fraction * 255
 				widget.style.banner_texture.color[1] = anim_fraction * 255
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -548,20 +512,16 @@ local animations = {
 			start_progress = 4,
 			end_progress = 4.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
 				local anim_fraction = math.easeOutCubic(local_progress)
 				local widget = widgets[1]
 				widget.style.banner_effect_texture.color[1] = (1 - anim_fraction) * 255
 				widget.style.banner_texture.color[1] = (1 - anim_fraction) * 255
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.draw_text = false
-
-				return 
 			end
 		}
 	}

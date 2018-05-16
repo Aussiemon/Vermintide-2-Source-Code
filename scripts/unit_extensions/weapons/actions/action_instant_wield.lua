@@ -1,4 +1,5 @@
 ActionInstantWield = class(ActionInstantWield)
+
 ActionInstantWield.init = function (self, world, item_name, is_server, owner_unit, weapon_unit)
 	self.world = world
 	self.owner_unit = owner_unit
@@ -11,9 +12,8 @@ ActionInstantWield.init = function (self, world, item_name, is_server, owner_uni
 	local network_manager = Managers.state.network
 	self.network_manager = network_manager
 	self.network_transmit = network_manager.network_transmit
-
-	return 
 end
+
 ActionInstantWield.client_owner_start_action = function (self, new_action, t, chain_attack_data)
 	local slot = new_action.slot_to_wield
 	local action_on_wield = new_action.action_on_wield
@@ -25,14 +25,14 @@ ActionInstantWield.client_owner_start_action = function (self, new_action, t, ch
 
 	self.inventory_extension:wield(slot)
 	self.input_extension:add_wield_cooldown(t)
-
-	return 
 end
+
 ActionInstantWield.client_owner_post_update = function (self, dt, t, world, can_damage)
-	return 
-end
-ActionInstantWield.finish = function (self)
-	return 
+	return
 end
 
-return 
+ActionInstantWield.finish = function (self)
+	return
+end
+
+return

@@ -1,5 +1,6 @@
 script_data.visual_assert_log_enabled = script_data.visual_assert_log_enabled or Development.parameter("visual_assert_log_enabled")
 VisualAssertLog = VisualAssertLog or {}
+
 VisualAssertLog.setup = function (world)
 	local VAL = VisualAssertLog
 	VAL.world = world
@@ -15,9 +16,8 @@ VisualAssertLog.setup = function (world)
 	VAL.n_asserts = VisualAssertLog.n_asserts or 0
 	VAL.current_visualized_assert = 1
 	VAL.display_asserts = false
-
-	return 
 end
+
 VisualAssertLog.cleanup = function ()
 	local VAL = VisualAssertLog
 
@@ -27,14 +27,14 @@ VisualAssertLog.cleanup = function ()
 		VisualAssertLog.world = nil
 		VisualAssertLog.gui = nil
 	end
-
-	return 
 end
+
 local font_size = 16
 local font = "gw_arial_16"
 local font_mtrl = "materials/fonts/" .. font
+
 VisualAssertLog.update = function ()
-	if 0 < VisualAssertLog.n_asserts then
+	if VisualAssertLog.n_asserts > 0 then
 		local gui = VisualAssertLog.gui
 		local screen_width = RESOLUTION_LOOKUP.res_w
 		local screen_height = RESOLUTION_LOOKUP.res_h
@@ -101,8 +101,6 @@ VisualAssertLog.update = function ()
 			end
 		end
 	end
-
-	return 
 end
 
 local function fixup_callstack(callstack_table)
@@ -153,4 +151,4 @@ function visual_assert(condition, message, ...)
 	return condition
 end
 
-return 
+return

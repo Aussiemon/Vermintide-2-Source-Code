@@ -1,6 +1,7 @@
 require("scripts/utils/benchmark/benchmark_settings")
 
 BenchmarkHandler = class(BenchmarkHandler)
+
 BenchmarkHandler.init = function (self, ingame_ui, world)
 	self._cycle_time = BenchmarkSettings.initial_cycle_time
 	self._cycle_views = BenchmarkSettings.cycle_views
@@ -35,20 +36,18 @@ BenchmarkHandler.init = function (self, ingame_ui, world)
 	if BenchmarkSettings.bot_damage_multiplier then
 		local old_add_damage_func = GenericHealthExtension.add_damage
 		local dmg_mult = BenchmarkSettings.bot_damage_multiplier
+
 		GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type)
 			damage_amount = damage_amount * dmg_mult
 
 			old_add_damage_func(self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type)
-
-			return 
 		end
 	end
 
 	PlayerBotUnitFirstPerson.animation_event = function (s, event)
 		Unit.animation_event(s.first_person_unit, event)
-
-		return 
 	end
+
 	script_data.recycler_in_cutscene = true
 	script_data.recycler_in_freeflight = true
 	script_data.ai_bots_disabled = false
@@ -60,15 +59,37 @@ BenchmarkHandler.init = function (self, ingame_ui, world)
 
 	Development.set_parameter("disable_loading_icon", true)
 
-	return 
+	if PLATFORM == "win32" then
+		local package_name = "resource_packages/breeds/chaos_troll"
+		local async = true
+		local prioritize = false
+
+		Managers.package:load(package_name, "global", nil, async, prioritize)
+	end
 end
+
+BenchmarkHandler.story_spawn_and_animate_troll = function (self, element, t)
+	local level_analysis = Managers.state.conflict.level_analysis
+	local node_units = level_analysis.generic_ai_node_units[element.ai_node_id]
+	local position = Unit.local_position(node_units[1], 0)
+	local rotation = Unit.local_rotation(node_units[1], 0)
+	local unit_name = "units/beings/enemies/chaos_troll/chr_chaos_troll"
+	local troll_unit = World.spawn_unit(self._world, unit_name, position, rotation)
+	local wpn_unit_name = "units/weapons/enemy/wpn_chaos_troll/wpn_chaos_troll_01"
+	local wpn_unit = World.spawn_unit(self._world, wpn_unit_name, position, rotation)
+	local troll_node_index = Unit.node(troll_unit, "j_leftweaponattach")
+	local wpn_node_index = 0
+
+	World.link_unit(self._world, wpn_unit, wpn_node_index, troll_unit, troll_node_index)
+	Unit.animation_event(troll_unit, "benchmark_attack")
+end
+
 BenchmarkHandler.story_destroy_close_units = function (self, element, t)
 	local radius_squared = element.radius_squared or 900
 
 	Managers.state.conflict:destroy_close_units(nil, radius_squared)
-
-	return 
 end
+
 BenchmarkHandler.story_teleport_party = function (self, element, t)
 	local portals = ConflictUtils.get_teleporter_portals()
 	local portal_id = element.portal_id
@@ -84,32 +105,40 @@ BenchmarkHandler.story_teleport_party = function (self, element, t)
 			local world = Managers.world:world("level_world")
 
 			LevelHelper:flow_event(world, "teleport_" .. portal_id)
-			locomotion.teleport_to(locomotion, pos, rot)
+			locomotion:teleport_to(pos, rot)
 		end
 	end
 
 	local function f(unit, blackboard)
 		blackboard.locomotion_extension:teleport_to(pos)
-
-		return 
 	end
 
-	self.run_func_on_bots(self, f)
-
-	return 
+	self:run_func_on_bots(f)
 end
+
+BenchmarkHandler.recycler_spawn_at = function (self, element, t)
+	local p = element.position
+	local position = Vector3Box(p[1], p[2], p[3])
+	local ends_at = t + element.duration
+
+	Managers.state.conflict:set_recycler_extra_pos(position, ends_at)
+end
+
+BenchmarkHandler.story_troll_sound = function (self, element, t)
+	WwiseUtils.trigger_position_event(self._world, "Play_military_benchmark_troll", Vector3(0, 0, 0))
+end
+
 BenchmarkHandler.story_end_benchmark = function (self, element, t)
 	self._ingame_ui.leave_game = true
 	self._disabled = true
 
 	if BenchmarkSettings.attract_benchmark then
-		self.write_data(self)
+		self:write_data()
 
 		Boot.quit_game = true
 	end
-
-	return 
 end
+
 BenchmarkHandler._setup_initial_values = function (self, t)
 	self._paths = Managers.state.conflict.level_analysis:get_main_paths()
 
@@ -122,19 +151,18 @@ BenchmarkHandler._setup_initial_values = function (self, t)
 	self._local_player_unit = player_unit
 	local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
-	status_extension.set_invisible(status_extension, true)
+	status_extension:set_invisible(true)
 
 	self._overview_timer = t + BenchmarkSettings.initial_overview_time
 	self._overview = false
 
 	if BenchmarkSettings.is_story_based then
-		self._disable_third_person(self)
+		self:_disable_third_person()
 	end
 
 	self._initialized = true
-
-	return 
 end
+
 BenchmarkHandler.run_func_on_bots = function (self, f, ...)
 	for _, bot_unit in ipairs(PLAYER_AND_BOT_UNITS) do
 		local blackboard = BLACKBOARDS[bot_unit]
@@ -147,55 +175,52 @@ BenchmarkHandler.run_func_on_bots = function (self, f, ...)
 			end
 		end
 	end
-
-	return 
 end
+
 BenchmarkHandler.gather_performance_data = function (self, dt, t)
 	self._performance_data[#self._performance_data + 1] = {
 		dt,
 		t
 	}
-
-	return 
 end
+
 BenchmarkHandler.write_data = function (self)
 	local d = os.date("*t")
 	local date_string = string.format("%d%d%d_%d%d%d", d.year, d.month, d.day, d.hour, d.min, d.sec)
 	local file_name = string.format("benchmark_data_%s.txt", date_string)
 	local file = io.open(file_name, "w")
 
-	file.write(file, string.format("Perfomance Data, recorded: %s\n", os.date()))
-	file.write(file, Application.sysinfo())
-	file.write(file, "\n---\n")
-	file.write(file, string.format("Build type: %s\n", BUILD))
-	file.write(file, string.format("Build identifier: %s\n", Application.build_identifier()))
-	file.write(file, "---\n")
-	file.write(file, "[t, dt]\n")
+	file:write(string.format("Perfomance Data, recorded: %s\n", os.date()))
+	file:write(Application.sysinfo())
+	file:write("\n---\n")
+	file:write(string.format("Build type: %s\n", BUILD))
+	file:write(string.format("Build identifier: %s\n", Application.build_identifier()))
+	file:write("---\n")
+	file:write("[t, dt]\n")
 
 	for i, data in ipairs(self._performance_data) do
 		local dt = data[1]
 		local t = data[2]
 
-		file.write(file, string.format("%f, %f\n", t, dt))
+		file:write(string.format("%f, %f\n", t, dt))
 	end
 
-	file.close(file)
+	file:close()
 
 	self._performance_data = {}
-
-	return 
 end
+
 BenchmarkHandler.update = function (self, dt, t)
 	if BenchmarkSettings.attract_benchmark then
-		self.gather_performance_data(self, dt, t)
+		self:gather_performance_data(dt, t)
 	end
 
-	if self._handle_early_out(self, t) or self._disabled then
-		return 
+	if self:_handle_early_out(t) or self._disabled then
+		return
 	end
 
 	if BenchmarkSettings.is_story_based then
-		return 
+		return
 	end
 
 	local sum = 0
@@ -209,15 +234,13 @@ BenchmarkHandler.update = function (self, dt, t)
 	end
 
 	if self._overview then
-		self._update_overview(self, dt, t)
+		self:_update_overview(dt, t)
 	else
-		self._update_selected_bot(self, dt, t)
-		self._update_bot_view(self, dt, t)
+		self:_update_selected_bot(dt, t)
+		self:_update_bot_view(dt, t)
 	end
 
-	self._update_main_path(self, dt, t, sum)
-
-	return 
+	self:_update_main_path(dt, t, sum)
 end
 
 function get_local_player_unit()
@@ -229,7 +252,7 @@ end
 
 BenchmarkHandler._handle_early_out = function (self, t)
 	if self._initialized then
-		return 
+		return
 	end
 
 	if not Managers.state.entity then
@@ -243,48 +266,45 @@ BenchmarkHandler._handle_early_out = function (self, t)
 		if get_local_player_unit() then
 			setup = true
 		end
-	elseif cutscene_system.has_intro_cutscene_finished_playing(cutscene_system) then
+	elseif cutscene_system:has_intro_cutscene_finished_playing() then
 		setup = true
 	end
 
 	if setup then
-		self._setup_initial_values(self, t)
+		self:_setup_initial_values(t)
 	else
 		return true
 	end
-
-	return 
 end
+
 BenchmarkHandler._disable_third_person = function (self, override)
 	if self._third_person_disabled and not override then
-		return 
+		return
 	end
 
 	local local_player = Managers.player:local_player()
 	local player_unit = local_player.player_unit
 	local first_person_ext = ScriptUnit.extension(player_unit, "first_person_system")
 
-	first_person_ext.show_third_person_units(first_person_ext, false)
+	first_person_ext:show_third_person_units(false)
 
 	self._third_person_disabled = true
-
-	return 
 end
+
 BenchmarkHandler._camera_follow_bot = function (self)
 	local entity_manager = Managers.state.entity
-	local camera_system = entity_manager.system(entity_manager, "camera_system")
+	local camera_system = entity_manager:system("camera_system")
 	local player = Managers.player:local_player()
 	local follow_unit = self._current_bot
 	local follow_node_name = "j_spine"
 
-	camera_system.set_follow_unit(camera_system, player, follow_unit, follow_node_name)
-
-	return 
+	camera_system:set_follow_unit(player, follow_unit, follow_node_name)
 end
+
 BenchmarkHandler._set_overview_camera = function (self, t)
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
-	ai_bot_group_system.first_person_debug(ai_bot_group_system, nil)
+	ai_bot_group_system:first_person_debug(nil)
 
 	script_data.attract_mode_spectate = true
 
@@ -292,50 +312,47 @@ BenchmarkHandler._set_overview_camera = function (self, t)
 
 	local first_person_ext = ScriptUnit.extension(self._local_player_unit, "first_person_system")
 
-	first_person_ext.set_first_person_mode(first_person_ext, false, true)
-	self._disable_third_person(self, true)
+	first_person_ext:set_first_person_mode(false, true)
+	self:_disable_third_person(true)
 
 	self._bot_name = nil
 	self._last_bot_view = nil
 	self._overview_timer = t + BenchmarkSettings.overview_duration
 	self._overview = true
-
-	return 
 end
+
 BenchmarkHandler._disable_overview_camera = function (self)
 	CharacterStateHelper.change_camera_state(Managers.player:local_player(), "idle")
-	self._disable_third_person(self, true)
+	self:_disable_third_person(true)
 
 	script_data.attract_mode_spectate = false
-
-	return 
 end
+
 BenchmarkHandler._update_overview = function (self, dt, t)
 	if self._overview_timer < t then
-		self._disable_overview_camera(self)
+		self:_disable_overview_camera()
 
 		self._overview = false
 		self._overview_timer = t + BenchmarkSettings.overview_downtime
 		self._bot_selection_timer = 0
 
-		self._update_selected_bot(self, dt, t)
+		self:_update_selected_bot(dt, t)
 
-		return 
+		return
 	end
-
-	return 
 end
+
 BenchmarkHandler._update_selected_bot = function (self, dt, t)
 	self._bot_selection_timer = self._bot_selection_timer - dt
 
-	if 0 < self._bot_selection_timer then
-		return 
+	if self._bot_selection_timer > 0 then
+		return
 	end
 
 	if self._overview_timer < t then
-		self._set_overview_camera(self, t)
+		self:_set_overview_camera(t)
 
-		return 
+		return
 	end
 
 	self._bot_selection_timer = BenchmarkSettings.bot_selection_timer
@@ -349,9 +366,9 @@ BenchmarkHandler._update_selected_bot = function (self, dt, t)
 		if Unit.alive(bot_unit) then
 			local blackboard = BLACKBOARDS[bot_unit]
 
-			if blackboard and 0 < #blackboard.proximite_enemies then
+			if blackboard and #blackboard.proximite_enemies > 0 then
 				if bot_index == self._current_bot_view then
-					return 
+					return
 				else
 					potential_bot_index = bot_index
 				end
@@ -360,12 +377,11 @@ BenchmarkHandler._update_selected_bot = function (self, dt, t)
 	end
 
 	self._current_bot_view = potential_bot_index or self._current_bot_view or 3
-
-	return 
 end
+
 BenchmarkHandler._update_bot_view = function (self, dt, t)
 	if self._overview then
-		return 
+		return
 	end
 
 	local current_bot_in_view = self._current_bot_view
@@ -379,31 +395,31 @@ BenchmarkHandler._update_bot_view = function (self, dt, t)
 		if self._current_bot then
 			local input_ext = ScriptUnit.has_extension(self._current_bot, "input_system")
 
-			input_ext.set_bot_in_attract_mode_focus(input_ext, false)
+			input_ext:set_bot_in_attract_mode_focus(false)
 
 			local first_person_ext = ScriptUnit.extension(self._current_bot, "first_person_system")
 
-			first_person_ext.set_first_person_mode(first_person_ext, false)
+			first_person_ext:set_first_person_mode(false)
 		end
 
 		self._current_bot = bot_player.player_unit
 		local input_ext = ScriptUnit.has_extension(self._current_bot, "input_system")
 
-		input_ext.set_bot_in_attract_mode_focus(input_ext, true)
-		ai_bot_group_system.first_person_debug(ai_bot_group_system, current_bot_in_view)
-		fade_system.local_player_created(fade_system, bot_player)
-		locomotion_system.set_override_player(locomotion_system, bot_player)
+		input_ext:set_bot_in_attract_mode_focus(true)
+		ai_bot_group_system:first_person_debug(current_bot_in_view)
+		fade_system:local_player_created(bot_player)
+		locomotion_system:set_override_player(bot_player)
 
 		local first_person_ext = ScriptUnit.extension(self._current_bot, "first_person_system")
 
-		first_person_ext.set_first_person_mode(first_person_ext, true)
+		first_person_ext:set_first_person_mode(true)
 
 		self._last_bot_view = current_bot_in_view
 	end
-
-	return 
 end
+
 local PLAYER_DISTANCE_SQR = {}
+
 BenchmarkHandler._update_main_path = function (self, dt, t, total_proximate_enemies)
 	self._time_since_last_teleport = self._time_since_last_teleport + dt
 
@@ -460,27 +476,25 @@ BenchmarkHandler._update_main_path = function (self, dt, t, total_proximate_enem
 					local pos = POSITION_LOOKUP[ally_in_need]
 					local locomotion = ScriptUnit.has_extension(player_unit, "locomotion_system")
 
-					locomotion.teleport_to(locomotion, pos)
+					locomotion:teleport_to(pos)
 					print("One bot is close to player, with no enemis around, but other bot is off fighting, teleport and help him")
 
-					return 
+					return
 				end
 			else
 				local function f(unit, blackboard)
 					if Unit.alive(blackboard.target_unit) then
 						return unit
 					end
-
-					return 
 				end
 
-				local bot_in_need_unit = self.run_func_on_bots(self, f)
+				local bot_in_need_unit = self:run_func_on_bots(f)
 
-				if bot_in_need_unit and 2 < PLAYER_DISTANCE_SQR[bot_in_need_unit] then
+				if bot_in_need_unit and PLAYER_DISTANCE_SQR[bot_in_need_unit] > 2 then
 					local pos = POSITION_LOOKUP[bot_in_need_unit]
 					local locomotion = ScriptUnit.has_extension(player_unit, "locomotion_system")
 
-					locomotion.teleport_to(locomotion, pos)
+					locomotion:teleport_to(pos)
 					print("Bot in need of help, teleporting to him")
 				end
 			end
@@ -494,11 +508,9 @@ BenchmarkHandler._update_main_path = function (self, dt, t, total_proximate_enem
 	if bot_path_info.path_index ~= player_path_info.path_index then
 		local function f(unit, blackboard)
 			blackboard.locomotion_extension:teleport_to(player_pos)
-
-			return 
 		end
 
-		self.run_func_on_bots(self, f)
+		self:run_func_on_bots(f)
 	end
 
 	self._next_teleport_time = self._next_teleport_time - dt
@@ -508,52 +520,50 @@ BenchmarkHandler._update_main_path = function (self, dt, t, total_proximate_enem
 		local pos = current_path_nodes[self._current_node_index]:unbox()
 
 		if not Unit.alive(player_unit) then
-			return 
+			return
 		end
 
 		local locomotion = ScriptUnit.has_extension(player_unit, "locomotion_system")
 
 		if not locomotion then
-			return 
+			return
 		end
 
-		locomotion.teleport_to(locomotion, pos)
+		locomotion:teleport_to(pos)
 
 		self._next_teleport_time = BenchmarkSettings.main_path_teleport_time
 		self._time_since_last_teleport = 0
 
-		self._disable_third_person(self)
+		self:_disable_third_person()
 		print("Teleporting to", pos, self._current_path, self._current_node_index)
 
 		self._current_node_index = self._current_node_index + 1
 
-		if #current_path_nodes < self._current_node_index then
+		if self._current_node_index > #current_path_nodes then
 			self._current_node_index = 1
 			self._current_path = self._current_path + 1
 
-			if #self._paths < self._current_path then
+			if self._current_path > #self._paths then
 				self._ingame_ui.leave_game = true
 				self._disabled = true
 
 				if BenchmarkSettings.attract_benchmark then
-					self.write_data(self)
+					self:write_data()
 
 					Boot.quit_game = true
 				end
 			end
 		end
 	end
-
-	return 
 end
+
 BenchmarkHandler.destroy = function (self)
 	Managers.input:device_unblock_all_services("keyboard")
 	Managers.input:device_unblock_all_services("mouse")
 	Managers.input:device_unblock_all_services("gamepad")
 	Development.set_parameter("disable_loading_icon", false)
-
-	return 
 end
+
 BenchmarkHandler._get_teleporter_portals = function (self)
 	local level_key = Managers.state.game_mode:level_key()
 	local level_name = LevelSettings[level_key].level_name
@@ -571,6 +581,7 @@ BenchmarkHandler._get_teleporter_portals = function (self)
 
 	return portals
 end
+
 BenchmarkHandler._update_info = function (self)
 	Debug.text("Press 'TAB' to cycle through views")
 
@@ -579,12 +590,11 @@ BenchmarkHandler._update_info = function (self)
 	else
 		Debug.text("Current View: Spectate")
 	end
-
-	return 
 end
+
 BenchmarkHandler._handle_views = function (self, dt, t)
 	if not self._cycle_views then
-		return 
+		return
 	end
 
 	self._cycle_view_time = self._cycle_view_time - dt
@@ -593,11 +603,10 @@ BenchmarkHandler._handle_views = function (self, dt, t)
 		self._trigger_cycle_view = true
 		self._cycle_view_time = BenchmarkSettings.cycle_view_time
 	end
-
-	return 
 end
+
 BenchmarkHandler._update_input = function (self, dt, t)
-	self._update_info(self)
+	self:_update_info()
 	Managers.input:block_device_except_service("benchmark", "keyboard", 1)
 	Managers.input:block_device_except_service("benchmark", "mouse", 1)
 	Managers.input:block_device_except_service("benchmark", "gamepad", 1)
@@ -605,14 +614,14 @@ BenchmarkHandler._update_input = function (self, dt, t)
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 	local input_service = Managers.input:get_service("benchmark")
 
-	if input_service.get(input_service, "cycle_through_views") or self._trigger_cycle_view then
+	if input_service:get("cycle_through_views") or self._trigger_cycle_view then
 		self._trigger_cycle_view = false
 		local bots = Managers.player:bots()
 		local num_bots = #bots
 		self._current_bot_view = 1 + (self._current_bot_view or 0) % num_bots
 
-		if 0 < self._current_bot_view then
-			ai_bot_group_system.first_person_debug(ai_bot_group_system, self._current_bot_view)
+		if self._current_bot_view > 0 then
+			ai_bot_group_system:first_person_debug(self._current_bot_view)
 			CharacterStateHelper.change_camera_state(Managers.player:local_player(), "idle")
 			Development.set_parameter("attract_mode_spectate", false)
 
@@ -626,23 +635,22 @@ BenchmarkHandler._update_input = function (self, dt, t)
 				end
 			end
 		else
-			ai_bot_group_system.first_person_debug(ai_bot_group_system, nil)
+			ai_bot_group_system:first_person_debug(nil)
 			Development.set_parameter("attract_mode_spectate", true)
 			CharacterStateHelper.change_camera_state(Managers.player:local_player(), "attract")
 
 			local first_person_ext = ScriptUnit.extension(self._local_player_unit, "first_person_system")
 
-			first_person_ext.set_first_person_mode(first_person_ext, false, true)
+			first_person_ext:set_first_person_mode(false, true)
 
 			self._bot_name = nil
 		end
 	end
-
-	return 
 end
+
 BenchmarkHandler._handle_teleport = function (self, dt, t)
 	if self._teleporting then
-		return 
+		return
 	end
 
 	self._cycle_time = self._cycle_time - dt
@@ -653,7 +661,7 @@ BenchmarkHandler._handle_teleport = function (self, dt, t)
 		if portal_data then
 			local conflict_director = Managers.state.conflict
 
-			conflict_director.destroy_all_units(conflict_director, true)
+			conflict_director:destroy_all_units(true)
 			Managers.transition:fade_in(2, callback(self, "cb_fade_in_done", portal_data))
 
 			self._teleporting = true
@@ -662,9 +670,8 @@ BenchmarkHandler._handle_teleport = function (self, dt, t)
 		self._cycle_time = BenchmarkSettings.cycle_time
 		self._portal_index = 1 + self._portal_index % #self._portals
 	end
-
-	return 
 end
+
 BenchmarkHandler.cb_fade_in_done = function (self, portal_data)
 	local pos = portal_data.boxed_pos:unbox()
 	local local_player = Managers.player:local_player()
@@ -673,15 +680,12 @@ BenchmarkHandler.cb_fade_in_done = function (self, portal_data)
 	local world = Managers.world:world("level_world")
 
 	LevelHelper:flow_event(world, "teleport_" .. portal_data.key)
-	locomotion.teleport_to(locomotion, pos)
+	locomotion:teleport_to(pos)
 	Managers.transition:fade_out(0.5, callback(self, "cb_fade_out_done"))
-
-	return 
 end
+
 BenchmarkHandler.cb_fade_out_done = function (self)
 	self._teleporting = nil
-
-	return 
 end
 
-return 
+return

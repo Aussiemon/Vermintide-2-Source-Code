@@ -178,6 +178,7 @@ local template_settings = {
 }
 local DO_RELOAD = true
 TutorialIntroUI = class(TutorialIntroUI)
+
 TutorialIntroUI.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
@@ -186,10 +187,9 @@ TutorialIntroUI.init = function (self, ingame_ui_context)
 	self.wwise_world = Managers.world:wwise_world(world)
 
 	Managers.state.event:register(self, "event_start_tutorial_intro_text", "event_start_tutorial_intro_text")
-	self.create_ui_elements(self)
-
-	return 
+	self:create_ui_elements()
 end
+
 TutorialIntroUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self.active_template_lists = {}
@@ -208,23 +208,20 @@ TutorialIntroUI.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	DO_RELOAD = false
-
-	return 
 end
+
 TutorialIntroUI.destroy = function (self)
 	if Managers.state.event then
 		Managers.state.event:unregister("event_start_tutorial_intro_text", self)
 	end
-
-	return 
 end
+
 TutorialIntroUI.event_start_tutorial_intro_text = function (self)
-	self.start_template_by_index(self, "template_1", 1)
-	self.start_template_by_index(self, "template_2", 1)
-	self.start_template_by_index(self, "template_3", 1)
-
-	return 
+	self:start_template_by_index("template_1", 1)
+	self:start_template_by_index("template_2", 1)
+	self:start_template_by_index("template_3", 1)
 end
+
 TutorialIntroUI.start_template_by_index = function (self, template_list_name, index)
 	local template_list_data = self.active_template_lists[template_list_name] or {}
 	self.active_template_lists[template_list_name] = template_list_data
@@ -297,13 +294,12 @@ TutorialIntroUI.start_template_by_index = function (self, template_list_name, in
 		default_fade_out_duration = fade_out_duration
 	}
 	template_list_data.next_entry_index = (index < #template_list and index + 1) or nil
-
-	return 
 end
+
 TutorialIntroUI.update = function (self, dt)
 	if DO_RELOAD then
-		self.create_ui_elements(self)
-		self.event_start_tutorial_intro_text(self)
+		self:create_ui_elements()
+		self:event_start_tutorial_intro_text()
 	end
 
 	for name, template_list_data in pairs(self.active_template_lists) do
@@ -338,7 +334,7 @@ TutorialIntroUI.update = function (self, dt)
 				local default_fade_in_duration = active_entry.default_fade_in_duration
 				local progress = 1 - fade_in_duration / default_fade_in_duration
 
-				self.fade(self, widget, progress)
+				self:fade(widget, progress)
 
 				if fade_in_duration == 0 then
 					active_entry.fade_in_duration = nil
@@ -359,11 +355,11 @@ TutorialIntroUI.update = function (self, dt)
 				local default_fade_out_duration = active_entry.default_fade_out_duration
 				local progress = fade_out_duration / default_fade_out_duration
 
-				self.fade(self, widget, progress)
+				self:fade(widget, progress)
 
 				if fade_out_duration == 0 then
 					if template_list_data.next_entry_index then
-						self.start_template_by_index(self, name, template_list_data.next_entry_index)
+						self:start_template_by_index(name, template_list_data.next_entry_index)
 					else
 						template_list_data.active_entry = nil
 					end
@@ -372,12 +368,11 @@ TutorialIntroUI.update = function (self, dt)
 				end
 			end
 
-			self.draw(self, widget, dt)
+			self:draw(widget, dt)
 		end
 	end
-
-	return 
 end
+
 TutorialIntroUI.fade = function (self, widget, progress)
 	local alpha = progress * 255
 	local style = widget.style
@@ -391,9 +386,8 @@ TutorialIntroUI.fade = function (self, widget, progress)
 		local color = style.texture_id.color
 		color[1] = alpha
 	end
-
-	return 
 end
+
 TutorialIntroUI.draw = function (self, widget, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -402,8 +396,6 @@ TutorialIntroUI.draw = function (self, widget, dt)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 	UIRenderer.draw_widget(ui_renderer, widget)
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
 
-return 
+return

@@ -1,4 +1,5 @@
 ProjectileRaycastImpactUnitExtension = class(ProjectileRaycastImpactUnitExtension, ProjectileBaseImpactUnitExtension)
+
 ProjectileRaycastImpactUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	ProjectileRaycastImpactUnitExtension.super.init(self, extension_init_context, unit, extension_init_data)
 
@@ -11,33 +12,32 @@ ProjectileRaycastImpactUnitExtension.init = function (self, extension_init_conte
 	self.server_side_raycast = extension_init_data.server_side_raycast
 	self.is_server = Managers.player.is_server
 	self.last_position = nil
-
-	return 
 end
+
 ProjectileRaycastImpactUnitExtension.extensions_ready = function (self, world, unit)
 	self.locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
-
-	return 
 end
+
 local INDEX_POSITION = 1
 local INDEX_DISTANCE = 2
 local INDEX_NORMAL = 3
 local INDEX_ACTOR = 4
+
 ProjectileRaycastImpactUnitExtension.update = function (self, unit, input, dt, context, t)
 	ProjectileRaycastImpactUnitExtension.super.update(self, unit, input, dt, context, t)
 
 	if self.server_side_raycast and not self.is_server then
-		return 
+		return
 	end
 
 	if not self.server_side_raycast and not self.owner_is_local then
-		return 
+		return
 	end
 
 	local locomotion_extension = self.locomotion_extension
 
-	if not locomotion_extension.moved_this_frame(locomotion_extension) then
-		return 
+	if not locomotion_extension:moved_this_frame() then
+		return
 	end
 
 	local physics_world = self.physics_world
@@ -46,7 +46,7 @@ ProjectileRaycastImpactUnitExtension.update = function (self, unit, input, dt, c
 	local current_position = Unit.local_position(unit, 0)
 
 	if self.last_position then
-		self._do_raycast(self, unit, self.last_position:unbox(), current_position, physics_world, collision_filter)
+		self:_do_raycast(unit, self.last_position:unbox(), current_position, physics_world, collision_filter)
 	else
 		self.last_position = Vector3Box()
 	end
@@ -54,11 +54,10 @@ ProjectileRaycastImpactUnitExtension.update = function (self, unit, input, dt, c
 	self.last_position:store(previous_position)
 
 	if not self.has_hit then
-		self._do_raycast(self, unit, previous_position, current_position, physics_world, collision_filter)
+		self:_do_raycast(unit, previous_position, current_position, physics_world, collision_filter)
 	end
-
-	return 
 end
+
 ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, to, physics_world, collision_filter)
 	local direction = to - from
 	local length = Vector3.length(direction)
@@ -77,7 +76,7 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 	local result = PhysicsWorld.immediate_raycast(physics_world, from, direction, length, "all", "collision_filter", collision_filter)
 
 	if not result then
-		return 
+		return
 	end
 
 	local owner_unit = self.owner_unit
@@ -110,11 +109,9 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 
 			self.has_hit = true
 
-			self.impact(self, hit_unit, hit_position, direction, hit_normal, actor_index)
+			self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
 		end
 	end
-
-	return 
 end
 
-return 
+return

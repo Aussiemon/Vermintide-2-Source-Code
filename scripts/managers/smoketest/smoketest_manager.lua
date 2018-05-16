@@ -1,4 +1,5 @@
 SmoketestManager = class(SmoketestManager)
+
 SmoketestManager.init = function (self)
 	local enabled = Development.parameter("smoke-test")
 	self.disabled = not enabled
@@ -8,19 +9,17 @@ SmoketestManager.init = function (self)
 	else
 		print("[SmokeTest] Disabled")
 	end
-
-	return 
 end
+
 SmoketestManager.update = function (self, dt)
 	if self.disabled then
-		return 
+		return
 	end
-
-	return 
 end
+
 SmoketestManager.report = function (self, report)
 	if self.disabled then
-		return 
+		return
 	end
 
 	if report == "enter_ingame" then
@@ -29,11 +28,10 @@ SmoketestManager.report = function (self, report)
 	else
 		print("[SmokeTest] Unknown report:" .. tostring(report))
 	end
-
-	return 
 end
+
 SmoketestManager.quit = function (self)
-	return 
+	return
 end
 
-return 
+return

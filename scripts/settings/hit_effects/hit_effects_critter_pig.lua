@@ -142,4 +142,4 @@ HitEffectsCritterPig = {
 	}
 }
 
-return 
+return

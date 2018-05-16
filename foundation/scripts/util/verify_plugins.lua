@@ -31,10 +31,10 @@ if false and PLATFORM == "win32" and BUILD == "release" then
 		end
 	end
 
-	if 0 < num_missing then
+	if num_missing > 0 then
 		local error_string = nil
 
-		if 1 < num_missing then
+		if num_missing > 1 then
 			error_string = string.format("Game could not load the following plugins: %s. Missing files. Please verify game integrity of game cache in steam, or delete local content and download game again.", missing_plugins)
 		else
 			error_string = string.format("Game could not load %s plugin. Missing files. Please verify game integrity of game cache in steam, or delete local content and download game again.", missing_plugins)
@@ -53,4 +53,4 @@ if false and PLATFORM == "win32" and BUILD == "release" then
 	end
 end
 
-return 
+return

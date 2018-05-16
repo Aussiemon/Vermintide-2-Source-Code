@@ -1,9 +1,9 @@
 PlayerCharacterStateDead = class(PlayerCharacterStateDead, PlayerCharacterState)
+
 PlayerCharacterStateDead.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "dead")
-
-	return 
 end
+
 PlayerCharacterStateDead.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	self.despawn_time_start = t
 	self.despawned = false
@@ -15,8 +15,8 @@ PlayerCharacterStateDead.on_enter = function (self, unit, input, dt, context, t,
 
 	local first_person_extension = self.first_person_extension
 
-	first_person_extension.set_wanted_player_height(first_person_extension, "knocked_down", t)
-	first_person_extension.set_first_person_mode(first_person_extension, false)
+	first_person_extension:set_wanted_player_height("knocked_down", t)
+	first_person_extension:set_first_person_mode(false)
 
 	local include_local_player = true
 
@@ -33,15 +33,13 @@ PlayerCharacterStateDead.on_enter = function (self, unit, input, dt, context, t,
 	local override_item_drop_direction = (params and params.override_item_drop_direction) or nil
 	self.override_item_drop_position = (override_item_drop_position and Vector3Box(override_item_drop_position)) or nil
 	self.override_item_drop_direction = (override_item_drop_direction and Vector3Box(override_item_drop_direction)) or nil
-
-	return 
 end
+
 PlayerCharacterStateDead.on_exit = function (self, unit, input, dt, context, t, next_state)
 	self.override_item_drop_position = nil
 	self.override_item_drop_direction = nil
-
-	return 
 end
+
 PlayerCharacterStateDead.update = function (self, unit, input, dt, context, t)
 	local time_since_death = t - self.despawn_time_start
 
@@ -56,7 +54,7 @@ PlayerCharacterStateDead.update = function (self, unit, input, dt, context, t)
 		local override_item_drop_direction = self.override_item_drop_direction and self.override_item_drop_direction:unbox()
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 
-		inventory_extension.check_and_drop_pickups(inventory_extension, "death", override_item_drop_position, override_item_drop_direction)
+		inventory_extension:check_and_drop_pickups("death", override_item_drop_position, override_item_drop_direction)
 
 		self.items_dropped = true
 	end
@@ -71,8 +69,6 @@ PlayerCharacterStateDead.update = function (self, unit, input, dt, context, t)
 		MOOD_BLACKBOARD.wounded = false
 		MOOD_BLACKBOARD.bleeding_out = false
 	end
-
-	return 
 end
 
-return 
+return

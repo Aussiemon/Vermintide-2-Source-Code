@@ -1,4 +1,5 @@
 UIElement = UIElement or {}
+
 UIElement.init = function (element_definition, content, style, style_global)
 	local pass_data = {}
 
@@ -36,6 +37,7 @@ UIElement.init = function (element_definition, content, style, style_global)
 		passes = element_definition.passes
 	}
 end
+
 UIElement.destroy = function (ui_renderer, element)
 	for i, pass in ipairs(element.passes) do
 		local pass_type = pass.pass_type
@@ -52,10 +54,10 @@ UIElement.destroy = function (ui_renderer, element)
 			ui_pass.destroy(ui_renderer, pass_data, pass)
 		end
 	end
-
-	return 
 end
+
 UIWidget = UIWidget or {}
+
 UIWidget.init = function (widget_definition)
 	local content = table.clone(widget_definition.content)
 	local style = table.clone(widget_definition.style or {})
@@ -72,24 +74,23 @@ UIWidget.init = function (widget_definition)
 		animations = {}
 	}
 end
+
 UIWidget.destroy = function (ui_renderer, widget)
 	UIElement.destroy(ui_renderer, widget.element)
-
-	return 
 end
+
 UIWidget.animate = function (widget, animation)
 	widget.animations[animation] = true
-
-	return 
 end
+
 UIWidget.stop_animations = function (widget)
 	table.clear(widget.animations)
-
-	return 
 end
+
 UIWidget.has_animation = function (widget)
 	return (next(widget.animations) and true) or false
 end
+
 MenuGuiSettings = {
 	button_default = {
 		1,
@@ -163,8 +164,6 @@ local function convert(value)
 	value[2] = (value[2] % 360 * 256) / 360
 	value[3] = (value[3] * 255) / 4
 	value[4] = (value[4] * 255) / 4
-
-	return 
 end
 
 convert(MenuGuiSettings.button_default)
@@ -173,4 +172,4 @@ convert(MenuGuiSettings.button_mouse_down)
 convert(MenuGuiSettings.button_disabled)
 convert(MenuGuiSettings.button_disabled_dark)
 
-return 
+return

@@ -4,45 +4,41 @@ local function cleanup_print(...)
 	if debug then
 		print("[SmartMatchCleaner]", string.format(...))
 	end
-
-	return 
 end
 
 SmartMatchCleaner = class(SmartMatchCleaner)
-SmartMatchCleaner.init = function (self)
-	self.reset(self)
 
-	return 
+SmartMatchCleaner.init = function (self)
+	self:reset()
 end
+
 SmartMatchCleaner.reset = function (self)
 	self._sessions_to_clean = {}
-
-	return 
 end
+
 SmartMatchCleaner.ready = function (self)
 	return #self._sessions_to_clean == 0
 end
+
 SmartMatchCleaner.add_session = function (self, session_data)
 	self._sessions_to_clean[#self._sessions_to_clean + 1] = session_data
-
-	return 
 end
+
 local ENTRIES_TO_REMOVE = ENTRIES_TO_REMOVE or {}
-SmartMatchCleaner.update = function (self, dt)
-	self._update_cleanup(self, dt)
-	self._update_remove(self, dt)
 
-	return 
+SmartMatchCleaner.update = function (self, dt)
+	self:_update_cleanup(dt)
+	self:_update_remove(dt)
 end
+
 SmartMatchCleaner._update_cleanup = function (self, dt)
 	for i = 1, #self._sessions_to_clean, 1 do
 		local session_data = self._sessions_to_clean[i]
 
 		self[session_data.state](self, dt, i, session_data)
 	end
-
-	return 
 end
+
 SmartMatchCleaner._update_remove = function (self, dt)
 	for idx, session_data in ipairs(self._sessions_to_clean) do
 		if session_data.state == "_do_remove" then
@@ -60,9 +56,8 @@ SmartMatchCleaner._update_remove = function (self, dt)
 	end
 
 	table.clear(ENTRIES_TO_REMOVE)
-
-	return 
 end
+
 SmartMatchCleaner._change_state = function (self, session_data, state)
 	if state and self[state] then
 		cleanup_print("Changed state from: %s to: %s", session_data.state, state)
@@ -71,9 +66,8 @@ SmartMatchCleaner._change_state = function (self, session_data, state)
 	else
 		fassert("[SmartMatchCleaner:_change_state] There is no state called %s", state)
 	end
-
-	return 
 end
+
 SmartMatchCleaner._cleanup_ticket = function (self, dt, index, session_data)
 	local session_id = session_data.session_id
 	local session_name = session_data.session_name
@@ -84,7 +78,7 @@ SmartMatchCleaner._cleanup_ticket = function (self, dt, index, session_data)
 	local status = MultiplayerSession.status(session_id)
 
 	if status == MultiplayerSession.WORKING then
-		return 
+		return
 	end
 
 	local ticket_id = MultiplayerSession.start_smartmatch_result(session_id)
@@ -105,14 +99,13 @@ SmartMatchCleaner._cleanup_ticket = function (self, dt, index, session_data)
 	end
 
 	if destroy_session then
-		self._change_state(self, session_data, "_cleanup_session")
+		self:_change_state(session_data, "_cleanup_session")
 	else
 		cleanup_print("KEEP SESSION ALIVE --> session_id: %s - session_name: %s", session_id, session_name)
-		self._change_state(self, session_data, "_do_remove")
+		self:_change_state(session_data, "_do_remove")
 	end
-
-	return 
 end
+
 SmartMatchCleaner._cleanup_session = function (self, dt, index, session_data)
 	local session_id = session_data.session_id
 	local session_name = session_data.session_name
@@ -123,13 +116,12 @@ SmartMatchCleaner._cleanup_session = function (self, dt, index, session_data)
 	if status == MultiplayerSession.READY or status == MultiplayerSession.BROKEN then
 		cleanup_print("Leaving session --> session_id: %s - session_name: %s", session_id, session_name)
 		MultiplayerSession.leave(session_id)
-		self._change_state(self, session_data, "_free_session")
+		self:_change_state(session_data, "_free_session")
 	elseif status == MultiplayerSession.SHUTDOWN then
-		self._change_state(self, session_data, "_free_session")
+		self:_change_state(session_data, "_free_session")
 	end
-
-	return 
 end
+
 SmartMatchCleaner._free_session = function (self, dt, index, session_data)
 	local session_id = session_data.session_id
 	local session_name = session_data.session_name
@@ -138,13 +130,12 @@ SmartMatchCleaner._free_session = function (self, dt, index, session_data)
 	if status == MultiplayerSession.SHUTDOWN then
 		cleanup_print("Freeing session --> session_id: %s - session_name: %s", session_id, session_name)
 		Network.free_multiplayer_session(session_id)
-		self._change_state(self, session_data, "_do_remove")
+		self:_change_state(session_data, "_do_remove")
 	end
-
-	return 
 end
+
 SmartMatchCleaner._do_remove = function (self)
-	return 
+	return
 end
 
-return 
+return

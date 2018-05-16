@@ -551,4 +551,4 @@ UIFrameSettings = {
 	}
 }
 
-return 
+return

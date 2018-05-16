@@ -1,15 +1,15 @@
 LevelEndViewWrapper = class(LevelEndViewWrapper)
+
 LevelEndViewWrapper.init = function (self, level_end_view_context)
 	self._level_end_view_context = level_end_view_context
 
-	self._create_world(self)
-	self._create_ui_renderer(self, self._world)
-	self._create_input_service(self)
+	self:_create_world()
+	self:_create_ui_renderer(self._world)
+	self:_create_input_service()
 
 	self._level_end_view = LevelEndView:new(level_end_view_context)
-
-	return 
 end
+
 LevelEndViewWrapper._create_world = function (self)
 	local flags = {
 		Application.DISABLE_SOUND,
@@ -54,9 +54,8 @@ LevelEndViewWrapper._create_world = function (self)
 	self._top_world = Managers.world:world("top_ingame_view")
 	self._level_end_view_context.world = world
 	self._level_end_view_context.world_viewport = viewport
-
-	return 
 end
+
 LevelEndViewWrapper._create_ui_renderer = function (self, world)
 	local materials = {
 		"material",
@@ -76,31 +75,29 @@ LevelEndViewWrapper._create_ui_renderer = function (self, world)
 	self._ui_top_renderer = UIRenderer.create(self._top_world, unpack(materials))
 	self._level_end_view_context.ui_renderer = self._ui_renderer
 	self._level_end_view_context.ui_top_renderer = self._ui_top_renderer
-
-	return 
 end
+
 LevelEndViewWrapper._create_input_service = function (self)
 	local input_manager = Managers.input
 
-	input_manager.create_input_service(input_manager, "end_of_level", "IngameMenuKeymaps", "IngameMenuFilters")
-	input_manager.map_device_to_service(input_manager, "end_of_level", "keyboard")
-	input_manager.map_device_to_service(input_manager, "end_of_level", "mouse")
-	input_manager.map_device_to_service(input_manager, "end_of_level", "gamepad")
-	input_manager.block_device_except_service(input_manager, "end_of_level", "keyboard", 1)
-	input_manager.block_device_except_service(input_manager, "end_of_level", "mouse", 1)
-	input_manager.block_device_except_service(input_manager, "end_of_level", "gamepad", 1)
+	input_manager:create_input_service("end_of_level", "IngameMenuKeymaps", "IngameMenuFilters")
+	input_manager:map_device_to_service("end_of_level", "keyboard")
+	input_manager:map_device_to_service("end_of_level", "mouse")
+	input_manager:map_device_to_service("end_of_level", "gamepad")
+	input_manager:block_device_except_service("end_of_level", "keyboard", 1)
+	input_manager:block_device_except_service("end_of_level", "mouse", 1)
+	input_manager:block_device_except_service("end_of_level", "gamepad", 1)
 
 	self._level_end_view_context.input_manager = input_manager
-
-	return 
 end
+
 LevelEndViewWrapper.destroy = function (self)
 	if not Managers.chat:chat_is_focused() then
 		local input_manager = Managers.input
 
-		input_manager.device_unblock_all_services(input_manager, "keyboard")
-		input_manager.device_unblock_all_services(input_manager, "mouse")
-		input_manager.device_unblock_all_services(input_manager, "gamepad")
+		input_manager:device_unblock_all_services("keyboard")
+		input_manager:device_unblock_all_services("mouse")
+		input_manager:device_unblock_all_services("gamepad")
 	end
 
 	self._level_end_view:destroy()
@@ -120,49 +117,43 @@ LevelEndViewWrapper.destroy = function (self)
 	self._world = nil
 	self._top_world = nil
 	self._level_end_view_context = nil
-
-	return 
 end
+
 LevelEndViewWrapper.game_state_changed = function (self)
-	self._create_input_service(self)
+	self:_create_input_service()
 
 	local input_manager = Managers.input
 	self._level_end_view_context.input_manager = input_manager
 
 	self._level_end_view:set_input_manager(input_manager)
-
-	return 
 end
+
 LevelEndViewWrapper.start = function (self)
 	self._level_end_view:start()
-
-	return 
 end
+
 LevelEndViewWrapper.done = function (self)
 	return self._level_end_view:done()
 end
+
 LevelEndViewWrapper.register_rpcs = function (self, network_event_delegate)
 	self._level_end_view:register_rpcs(network_event_delegate)
-
-	return 
 end
+
 LevelEndViewWrapper.unregister_rpcs = function (self)
 	self._level_end_view:unregister_rpcs()
-
-	return 
 end
+
 LevelEndViewWrapper.left_lobby = function (self)
 	self._level_end_view:left_lobby()
-
-	return 
 end
+
 LevelEndViewWrapper.level_end_view = function (self)
 	return self._level_end_view
 end
+
 LevelEndViewWrapper.update = function (self, dt, t)
 	self._level_end_view:update(dt, t)
-
-	return 
 end
 
-return 
+return

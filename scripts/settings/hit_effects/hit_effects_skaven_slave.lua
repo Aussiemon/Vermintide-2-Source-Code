@@ -2709,4 +2709,4 @@ end
 
 HitEffectsSkavenSlave = table.create_copy(HitEffectsSkavenSlave, HitEffectsSkavenSlave)
 
-return 
+return

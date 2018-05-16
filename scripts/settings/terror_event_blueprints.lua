@@ -668,6 +668,30 @@ TerrorEventBlueprints = {
 			"spawn_at_raw",
 			spawner_id = "grey_seer_stormfiend_spawner",
 			breed_name = "skaven_grey_seer"
+		},
+		{
+			"delay",
+			duration = 20
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_breed("skaven_stormfiend_boss") < 1
+			end
+		},
+		{
+			"set_time_challenge",
+			time_challenge_name = "skittergate_speed_event"
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_breed("skaven_grey_seer") < 1
+			end
+		},
+		{
+			"has_completed_time_challenge",
+			time_challenge_name = "skittergate_speed_event"
 		}
 	},
 	test_spawn_exalted_sorcerer = {
@@ -900,6 +924,84 @@ TerrorEventBlueprints = {
 			breed_name = "skaven_rat_ogre"
 		}
 	},
+	military_benchmark_cut_1 = {
+		{
+			"run_benchmark_func",
+			func_name = "recycler_spawn_at",
+			duration = 2,
+			position = {
+				122.242,
+				120.009,
+				-13.67
+			}
+		}
+	},
+	military_benchmark_cut_2 = {
+		{
+			"run_benchmark_func",
+			func_name = "recycler_spawn_at",
+			duration = 2,
+			position = {
+				134.609,
+				72.881,
+				-11.826
+			}
+		}
+	},
+	military_benchmark_cut_3 = {
+		{
+			"run_benchmark_func",
+			func_name = "recycler_spawn_at",
+			duration = 2,
+			position = {
+				149.89,
+				26.701,
+				59.579
+			}
+		}
+	},
+	military_benchmark_cut_4 = {
+		{
+			"run_benchmark_func",
+			func_name = "recycler_spawn_at",
+			duration = 2,
+			position = {
+				96.911,
+				46.139,
+				67.782
+			}
+		}
+	},
+	military_benchmark_cut_5 = {
+		{
+			"run_benchmark_func",
+			func_name = "recycler_spawn_at",
+			duration = 2,
+			position = {
+				-78.803,
+				-76.952,
+				66.482
+			}
+		}
+	},
+	military_benchmark_cut_6 = {
+		{
+			"run_benchmark_func",
+			func_name = "recycler_spawn_at",
+			duration = 2,
+			position = {
+				-131.688,
+				-85.017,
+				66.583
+			}
+		}
+	},
+	military_benchmark_troll_sound = {
+		{
+			"run_benchmark_func",
+			func_name = "story_troll_sound"
+		}
+	},
 	military_benchmark_1 = {
 		{
 			"run_benchmark_func",
@@ -994,6 +1096,13 @@ TerrorEventBlueprints = {
 			"run_benchmark_func",
 			portal_id = "Start",
 			func_name = "story_teleport_party"
+		}
+	},
+	military_benchmark_troll = {
+		{
+			"run_benchmark_func",
+			ai_node_id = "benchmark_troll",
+			func_name = "story_spawn_and_animate_troll"
 		}
 	},
 	military_benchmark_end = {
@@ -1906,6 +2015,13 @@ TerrorEventBlueprints = {
 			flow_event_name = "catacombs_end_event_specials_done"
 		}
 	},
+	catacombs_end_event_pool_challenge = {
+		{
+			"do_volume_challenge",
+			increment_stat_name = "catacombs_added_souls",
+			volume_name = "volume_corpse_pit_damage"
+		}
+	},
 	catacombs_plague_wave = {
 		{
 			"set_master_event_running",
@@ -1948,6 +2064,10 @@ TerrorEventBlueprints = {
 		{
 			"set_freeze_condition",
 			max_active_enemies = 100
+		},
+		{
+			"set_time_challenge",
+			time_challenge_name = "elven_ruins_speed_event"
 		},
 		{
 			"set_master_event_running",
@@ -2477,6 +2597,10 @@ TerrorEventBlueprints = {
 			max_active_enemies = 100
 		},
 		{
+			"has_completed_time_challenge",
+			time_challenge_name = "elven_ruins_speed_event"
+		},
+		{
 			"play_stinger",
 			stinger_name = "enemy_horde_stinger"
 		},
@@ -2584,6 +2708,10 @@ TerrorEventBlueprints = {
 		{
 			"set_freeze_condition",
 			max_active_enemies = 100
+		},
+		{
+			"set_time_challenge",
+			time_challenge_name = "farmlands_speed_event"
 		},
 		{
 			"disable_kick"
@@ -3084,6 +3212,10 @@ TerrorEventBlueprints = {
 			max_active_enemies = 100
 		},
 		{
+			"has_completed_time_challenge",
+			time_challenge_name = "farmlands_speed_event"
+		},
+		{
 			"control_pacing",
 			enable = false
 		},
@@ -3368,117 +3500,8 @@ TerrorEventBlueprints = {
 			duration = 5
 		},
 		{
-			"spawn",
-			{
-				1,
-				2
-			},
-			breed_name = "skaven_poison_wind_globadier"
-		},
-		{
-			"delay",
-			duration = 3
-		},
-		{
 			"control_specials",
 			enable = true
-		},
-		{
-			"event_horde",
-			limit_spawners = 4,
-			spawner_id = "ussingen_payload_square",
-			composition_type = "event_small_chaos"
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("chaos_berzerker") < 3 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 2,
-			spawner_id = "ussingen_payload_square",
-			composition_type = "event_small_chaos"
-		},
-		{
-			"delay",
-			duration = 4
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("chaos_berzerker") < 3 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2
-			end
-		},
-		{
-			"event_horde",
-			spawner_id = "ussingen_payload_square",
-			composition_type = "event_small_chaos"
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("chaos_berzerker") < 3 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2
-			end
-		},
-		{
-			"delay",
-			duration = 5
-		},
-		{
-			"event_horde",
-			limit_spawners = 2,
-			spawner_id = "ussingen_payload_square",
-			composition_type = "event_small_chaos"
-		},
-		{
-			"delay",
-			duration = 5
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("chaos_berzerker") < 3 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 2,
-			spawner_id = "ussingen_payload_square",
-			composition_type = "event_small_chaos"
-		},
-		{
-			"delay",
-			duration = 5
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("chaos_berzerker") < 3 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2
-			end
-		},
-		{
-			"event_horde",
-			limit_spawners = 2,
-			spawner_id = "ussingen_payload_square",
-			composition_type = "event_small_chaos"
-		},
-		{
-			"delay",
-			duration = 5
-		},
-		{
-			"continue_when",
-			duration = 80,
-			condition = function (t)
-				return count_event_breed("chaos_berzerker") < 3 and count_event_breed("chaos_raider") < 3 and count_event_breed("chaos_marauder") < 3 and count_event_breed("chaos_marauder_with_shield") < 2
-			end
 		}
 	},
 	ussingen_payload_event_03 = {
@@ -3931,6 +3954,14 @@ TerrorEventBlueprints = {
 	},
 	stronghold_boss = {
 		{
+			"control_pacing",
+			enable = false
+		},
+		{
+			"control_specials",
+			enable = false
+		},
+		{
 			"disable_kick"
 		},
 		{
@@ -3941,6 +3972,12 @@ TerrorEventBlueprints = {
 			"spawn_at_raw",
 			spawner_id = "stronghold_boss",
 			breed_name = "skaven_storm_vermin_warlord"
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("skaven_storm_vermin_warlord") == 1
+			end
 		},
 		{
 			"continue_when",
@@ -4038,7 +4075,13 @@ TerrorEventBlueprints = {
 		{
 			"continue_when",
 			condition = function (t)
-				return count_event_breed("chaos_exalted_champion_norsca") < 1
+				return count_event_breed("chaos_exalted_champion_norsca") == 1
+			end
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("chaos_exalted_champion_norsca") < 1 and count_event_breed("chaos_spawn_exalted_champion_norsca") < 1
 			end
 		},
 		{
@@ -4084,7 +4127,7 @@ TerrorEventBlueprints = {
 		{
 			"event_horde",
 			spawner_id = "terror_event_02",
-			composition_type = "event_small"
+			composition_type = "event_medium"
 		},
 		{
 			"delay",
@@ -4120,10 +4163,28 @@ TerrorEventBlueprints = {
 			breed_name = "skaven_grey_seer"
 		},
 		{
+			"delay",
+			duration = 20
+		},
+		{
 			"continue_when",
 			condition = function (t)
-				return count_event_breed("skaven_stormfiend_boss") < 1 and count_event_breed("skaven_grey_seer") < 1
+				return count_breed("skaven_stormfiend_boss") < 1
 			end
+		},
+		{
+			"set_time_challenge",
+			time_challenge_name = "skittergate_speed_event"
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_breed("skaven_grey_seer") < 1
+			end
+		},
+		{
+			"has_completed_time_challenge",
+			time_challenge_name = "skittergate_speed_event"
 		},
 		{
 			"flow_event",
@@ -4157,6 +4218,10 @@ TerrorEventBlueprints = {
 		{
 			"set_master_event_running",
 			name = "canyon_bell_event"
+		},
+		{
+			"set_time_challenge",
+			time_challenge_name = "bell_speed_event"
 		},
 		{
 			"disable_kick"
@@ -4235,6 +4300,10 @@ TerrorEventBlueprints = {
 		{
 			"flow_event",
 			flow_event_name = "canyon_escape_event_done"
+		},
+		{
+			"has_completed_time_challenge",
+			time_challenge_name = "bell_speed_event"
 		}
 	},
 	gz_end_event = {
@@ -4582,7 +4651,12 @@ TerrorEventBlueprints = {
 		},
 		{
 			"continue_when",
-			duration = 600,
+			condition = function (t)
+				return count_event_breed("chaos_exalted_sorcerer") == 1
+			end
+		},
+		{
+			"continue_when",
 			condition = function (t)
 				return count_event_breed("chaos_exalted_sorcerer") < 1
 			end
@@ -5112,6 +5186,10 @@ TerrorEventBlueprints = {
 			breed_name = "chaos_troll"
 		},
 		{
+			"set_time_challenge",
+			time_challenge_name = "mines_speed_event"
+		},
+		{
 			"continue_when",
 			duration = 10000,
 			condition = function (t)
@@ -5121,6 +5199,10 @@ TerrorEventBlueprints = {
 		{
 			"flow_event",
 			flow_event_name = "mines_troll_boss_done"
+		},
+		{
+			"has_completed_time_challenge",
+			time_challenge_name = "mines_speed_event"
 		}
 	},
 	mines_enable_specials = {
@@ -8863,7 +8945,13 @@ TerrorEventBlueprints = {
 		{
 			"continue_when",
 			condition = function (t)
-				return count_event_breed("chaos_exalted_champion_warcamp") < 1 and count_event_breed("chaos_spawn") < 1
+				return count_event_breed("chaos_exalted_champion_warcamp") == 1
+			end
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("chaos_exalted_champion_warcamp") < 1
 			end
 		},
 		{
@@ -8968,6 +9056,10 @@ TerrorEventBlueprints = {
 			duration = 10
 		},
 		{
+			"control_specials",
+			enable = false
+		},
+		{
 			"continue_when",
 			duration = 80,
 			condition = function (t)
@@ -9013,4 +9105,4 @@ for chunk_name, chunk in pairs(WeightedRandomTerrorEvents) do
 	chunk.loaded_probability_table = LoadedDice.create_from_mixed(chunk)
 end
 
-return 
+return

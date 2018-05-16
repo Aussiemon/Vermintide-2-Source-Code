@@ -110,4 +110,4 @@ BreedBehaviors.berzerker = {
 	name = "berzerker"
 }
 
-return 
+return

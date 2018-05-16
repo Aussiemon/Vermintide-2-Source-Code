@@ -1,5 +1,6 @@
-local PLAYER_NAME_MAX_LENGTH = 16
+local PLAYER_NAME_MAX_LENGTH = 10
 UnitFrameUI = class(UnitFrameUI)
+
 UnitFrameUI.init = function (self, ingame_ui_context, definitions, data, frame_index)
 	self.definitions = definitions
 	self.features_list = definitions.features_list
@@ -19,11 +20,10 @@ UnitFrameUI.init = function (self, ingame_ui_context, definitions, data, frame_i
 	self.ui_animations = {}
 	self.data = data
 
-	self._create_ui_elements(self, frame_index)
+	self:_create_ui_elements(frame_index)
 	rawset(_G, "unit_frame_ui", self)
-
-	return 
 end
+
 UnitFrameUI._create_ui_elements = function (self, frame_index)
 	local definitions = self.definitions
 	local scenegraph_definition = self.definitions.scenegraph_definition
@@ -58,45 +58,44 @@ UnitFrameUI._create_ui_elements = function (self, frame_index)
 	self.slot_equip_animations = {}
 	self.bar_animations = {}
 
-	self.reset(self)
+	self:reset()
 
 	if frame_index then
-		self._widget_by_name(self, "health_dynamic").content.hp_bar.texture_id = "teammate_hp_bar_color_tint_" .. frame_index
-		self._widget_by_name(self, "health_dynamic").content.total_health_bar.texture_id = "teammate_hp_bar_" .. frame_index
+		self:_widget_by_name("health_dynamic").content.hp_bar.texture_id = "teammate_hp_bar_color_tint_" .. frame_index
+		self:_widget_by_name("health_dynamic").content.total_health_bar.texture_id = "teammate_hp_bar_" .. frame_index
 	end
 
-	self.set_visible(self, false)
-	self.set_dirty(self)
-
-	return 
+	self:set_visible(false)
+	self:set_dirty()
 end
+
 UnitFrameUI._widget_by_name = function (self, name)
 	return self._widgets[name]
 end
+
 UnitFrameUI._widget_by_feature = function (self, feature_name, list_name)
 	local widget_name = self.widget_name_by_feature[list_name][feature_name]
 
-	return self._widget_by_name(self, widget_name)
+	return self:_widget_by_name(widget_name)
 end
+
 UnitFrameUI.set_position = function (self, x, y)
 	local position = self.ui_scenegraph.pivot.local_position
 	position[1] = x
 	position[2] = y
 
 	for _, widget in pairs(self._widgets) do
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 	end
 
-	self.set_dirty(self)
-
-	return 
+	self:set_dirty()
 end
+
 UnitFrameUI.destroy = function (self)
-	self.set_visible(self, false)
+	self:set_visible(false)
 	rawset(_G, "unit_frame_ui", nil)
-
-	return 
 end
+
 UnitFrameUI.set_visible = function (self, visible)
 	self._is_visible = visible
 	local ui_renderer = self.ui_renderer
@@ -105,76 +104,69 @@ UnitFrameUI.set_visible = function (self, visible)
 		UIRenderer.set_element_visible(ui_renderer, widget.element, visible)
 	end
 
-	self.set_dirty(self)
-
-	return 
+	self:set_dirty()
 end
+
 UnitFrameUI.set_alpha = function (self, alpha)
 	self.render_settings.alpha_multiplier = alpha
 
 	for _, widget in pairs(self._widgets) do
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 	end
 
-	self.set_dirty(self)
-
-	return 
+	self:set_dirty()
 end
+
 UnitFrameUI.set_default_alpha = function (self, alpha)
 	self._default_alpha_multiplier = alpha
 
 	for _, widget in pairs(self._default_widgets) do
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 	end
 
-	self.set_dirty(self)
-
-	return 
+	self:set_dirty()
 end
+
 UnitFrameUI.set_portrait_alpha = function (self, alpha)
 	self._portrait_alpha_multiplier = alpha
 
 	for _, widget in pairs(self._portrait_widgets) do
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 	end
 
-	self.set_dirty(self)
-
-	return 
+	self:set_dirty()
 end
+
 UnitFrameUI.set_equipment_alpha = function (self, alpha)
 	self._equipment_alpha_multiplier = alpha
 
 	for _, widget in pairs(self._equipment_widgets) do
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 	end
 
-	self.set_dirty(self)
-
-	return 
+	self:set_dirty()
 end
+
 UnitFrameUI.set_health_alpha = function (self, alpha)
 	self._health_alpha_multiplier = alpha
 
 	for _, widget in pairs(self._health_widgets) do
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 	end
 
-	self.set_dirty(self)
-
-	return 
+	self:set_dirty()
 end
+
 UnitFrameUI.set_ability_alpha = function (self, alpha)
 	self._ability_alpha_multiplier = alpha
 
 	for _, widget in pairs(self._ability_widgets) do
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 	end
 
-	self.set_dirty(self)
-
-	return 
+	self:set_dirty()
 end
+
 UnitFrameUI.update = function (self, dt, t)
 	local features_list = self.features_list
 	local update_ability = features_list.ability
@@ -190,56 +182,54 @@ UnitFrameUI.update = function (self, dt, t)
 	local show_overlay = data.show_overlay
 	self.overlay_time = (self.overlay_time or 0) + dt * 1.4
 
-	if self._update_portrait_opacity(self, is_dead, is_knocked_down, needs_help, assisted_respawn) then
+	if self:_update_portrait_opacity(is_dead, is_knocked_down, needs_help, assisted_respawn) then
 		dirty = true
 	end
 
-	if self._update_bar_animations(self, dt, t) then
+	if self:_update_bar_animations(dt, t) then
 		dirty = true
 	end
 
-	if self._update_health_bar_animation(self, dt, t) then
+	if self:_update_health_bar_animation(dt, t) then
 		dirty = true
 	end
 
-	if self._update_total_health_bar_animation(self, dt, t) then
+	if self:_update_total_health_bar_animation(dt, t) then
 		dirty = true
 	end
 
-	if update_weapons and self._update_overcharge_animation(self, dt, t) then
+	if update_weapons and self:_update_overcharge_animation(dt, t) then
 		dirty = true
 	end
 
-	if update_equipment and self._update_slot_equip_animations(self, dt, t) then
+	if update_equipment and self:_update_slot_equip_animations(dt, t) then
 		dirty = true
 	end
 
-	if self._update_connection_animation(self, dt, t) then
+	if self:_update_connection_animation(dt, t) then
 		dirty = true
 	end
 
 	if dirty then
-		self.set_dirty(self)
+		self:set_dirty()
 	end
-
-	return 
 end
+
 UnitFrameUI.on_resolution_modified = function (self)
 	for _, widget in pairs(self._widgets) do
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 	end
 
-	self.set_dirty(self)
-
-	return 
+	self:set_dirty()
 end
+
 UnitFrameUI.draw = function (self, dt)
 	if not self._is_visible then
-		return 
+		return
 	end
 
 	if not self._dirty then
-		return 
+		return
 	end
 
 	local ui_renderer = self.ui_renderer
@@ -283,48 +273,44 @@ UnitFrameUI.draw = function (self, dt)
 	UIRenderer.end_pass(ui_renderer)
 
 	self._dirty = false
-
-	return 
 end
+
 UnitFrameUI.set_dirty = function (self)
 	self._dirty = true
-
-	return 
 end
+
 UnitFrameUI._set_widget_dirty = function (self, widget)
 	widget.element.dirty = true
-
-	return 
 end
+
 UnitFrameUI.reset = function (self)
-	self.set_player_name(self, "")
-	self.set_talking(self, false)
-	self.set_icon_visibility(self, false)
-	self.set_connecting_status(self, true)
+	self:set_player_name("")
+	self:set_talking(false)
+	self:set_icon_visibility(false)
+	self:set_connecting_status(true)
 
 	local show_health_bar = true
 	local is_knocked_down = false
 	local is_wounded = false
 
-	self.set_health_bar_status(self, show_health_bar, is_knocked_down, is_wounded)
+	self:set_health_bar_status(show_health_bar, is_knocked_down, is_wounded)
 
 	if self.features_list.equipment then
 		for slot_name, _ in pairs(self.inventory_index_by_slot) do
-			self.set_inventory_slot_data(self, slot_name, false)
+			self:set_inventory_slot_data(slot_name, false)
 		end
 	end
 
-	self.set_dirty(self)
-
-	return 
+	self:set_dirty()
 end
+
 UnitFrameUI.set_portrait_frame = function (self, frame_settings_name, level_text)
 	local widgets = self._widgets
 	local portrait_widgets = self._portrait_widgets
 	local previous_widget = widgets.portrait_static
 
 	if previous_widget.content.frame_settings_name == frame_settings_name and previous_widget.content.level_text == level_text then
-		return 
+		return
 	end
 
 	local scale = previous_widget.content.scale or 1
@@ -340,68 +326,61 @@ UnitFrameUI.set_portrait_frame = function (self, frame_settings_name, level_text
 	widget_content.frame_settings_name = frame_settings_name
 	widget_content.level_text = level_text
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_portrait = function (self, portrait_texture)
-	local widget = self._widget_by_feature(self, "default", "static")
+	local widget = self:_widget_by_feature("default", "static")
 	local widget_content = widget.content
 	widget_content.character_portrait = portrait_texture
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_host_status = function (self, is_host)
-	local widget = self._widget_by_feature(self, "default", "static")
+	local widget = self:_widget_by_feature("default", "static")
 	local widget_content = widget.content
 	widget_content.is_host = is_host
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_talking = function (self, is_talking)
-	local widget = self._widget_by_feature(self, "default", "dynamic")
+	local widget = self:_widget_by_feature("default", "dynamic")
 	local widget_content = widget.content
 	widget_content.is_talking = is_talking
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_status_icon = function (self, icon_texture, alpha)
-	local widget = self._widget_by_feature(self, "status_icon", "dynamic")
+	local widget = self:_widget_by_feature("status_icon", "dynamic")
 	local widget_content = widget.content
 	local widget_style = widget.style
 	widget_content.portrait_icon = icon_texture
 	widget_style.portrait_icon.color[1] = alpha or 255
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_connecting_status = function (self, is_connecting)
-	local widget = self._widget_by_feature(self, "default", "dynamic")
+	local widget = self:_widget_by_feature("default", "dynamic")
 	local widget_content = widget.content
 	widget_content.connecting = is_connecting
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_icon_visibility = function (self, show_icon)
-	local widget = self._widget_by_feature(self, "status_icon", "dynamic")
+	local widget = self:_widget_by_feature("status_icon", "dynamic")
 	local widget_content = widget.content
 	widget_content.display_portrait_icon = show_icon
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_portrait_status = function (self, is_knocked_down, needs_help, is_dead, assisted_respawn)
-	local widget = self._widget_by_feature(self, "default", "static")
+	local widget = self:_widget_by_feature("default", "static")
 	local portrait_texture = widget.content.character_portrait
 	local gui = self.ui_renderer.gui_retained
 	local gui_material = Gui.material(gui, portrait_texture)
@@ -413,34 +392,32 @@ UnitFrameUI.set_portrait_status = function (self, is_knocked_down, needs_help, i
 	end
 
 	if needs_help then
-		self.set_status_icon(self, "status_icon_needs_assist", 150)
+		self:set_status_icon("status_icon_needs_assist", 150)
 	elseif assisted_respawn then
-		self.set_status_icon(self, "status_icon_respawn", 150)
+		self:set_status_icon("status_icon_respawn", 150)
 	elseif is_dead then
-		self.set_status_icon(self, "status_icon_dead", 255)
+		self:set_status_icon("status_icon_dead", 255)
 	end
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_player_name = function (self, name_text)
-	local widget = self._widget_by_feature(self, "player_name", "static")
+	local widget = self:_widget_by_feature("player_name", "static")
 
 	if widget then
 		local widget_content = widget.content
-		local display_name = (widget.style.player_name and PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name_text) and UIRenderer.crop_text_width(self.ui_renderer, name_text, 180, widget.style.player_name)) or name_text
+		local display_name = (widget.style.player_name and PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name_text) and UIRenderer.crop_text_width(self.ui_renderer, name_text, 150, widget.style.player_name)) or name_text
 		widget_content.player_name = display_name
 
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 	end
-
-	return 
 end
+
 UnitFrameUI.set_inventory_slot_data = function (self, slot_name, slot_visible, item_data)
 	local item_name = slot_visible and item_data.name
 	local hud_icon = slot_visible and item_data.hud_icon
-	local widget = self._widget_by_feature(self, "equipment", "dynamic")
+	local widget = self:_widget_by_feature("equipment", "dynamic")
 	local widget_content = widget.content
 	local widget_style = widget.style
 	local inventory_consumable_slot_colors = UISettings.inventory_consumable_slot_colors
@@ -467,16 +444,15 @@ UnitFrameUI.set_inventory_slot_data = function (self, slot_name, slot_visible, i
 		end
 
 		if slot_visible then
-			self._add_slot_equip_animation(self, slot_name .. "_equip_anim", widget, widget_style["item_slot_highlight_" .. slot_index])
+			self:_add_slot_equip_animation(slot_name .. "_equip_anim", widget, widget_style["item_slot_highlight_" .. slot_index])
 		end
 	end
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_equipped_weapon_info = function (self, slot_name, wielded, item_name, hud_icon)
-	local widget = self._widget_by_feature(self, "weapons", "dynamic")
+	local widget = self:_widget_by_feature("weapons", "dynamic")
 	local widget_content = widget.content
 	local widget_style = widget.style
 
@@ -497,13 +473,13 @@ UnitFrameUI.set_equipped_weapon_info = function (self, slot_name, wielded, item_
 		end
 	end
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 local ammo_prefix = " "
+
 UnitFrameUI.set_ammo_for_slot = function (self, slot_name, ammo_count, remaining_ammo, using_single_clip)
-	local widget = self._widget_by_feature(self, "weapons", "dynamic")
+	local widget = self:_widget_by_feature("weapons", "dynamic")
 	local widget_content = widget.content
 	local widget_style = widget.style
 	local text_field_name = self.weapon_slot_widget_settings.ammo_fields[slot_name]
@@ -518,81 +494,74 @@ UnitFrameUI.set_ammo_for_slot = function (self, slot_name, ammo_count, remaining
 		widget_content[text_field_name .. "_3"] = (using_single_clip and ammo_prefix) or tostring(remaining_ammo)
 	end
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_ammo_percentage = function (self, ammo_percent)
-	local widget = self._widget_by_feature(self, "ammo", "dynamic")
+	local widget = self:_widget_by_feature("ammo", "dynamic")
 	local widget_style = widget.style
 	local widget_content = widget.content
 	widget_content.ammo_percent = ammo_percent
 
-	self._set_widget_dirty(self, widget)
-	self.set_dirty(self)
-
-	return 
+	self:_set_widget_dirty(widget)
+	self:set_dirty()
 end
+
 UnitFrameUI.set_ability_percentage = function (self, ability_percent)
-	local widget = self._widget_by_feature(self, "ability", "dynamic")
+	local widget = self:_widget_by_feature("ability", "dynamic")
 	local widget_style = widget.style
 	local widget_content = widget.content
 	widget_content.actual_ability_percent = ability_percent
 
-	self._on_player_ability_changed(self, "ability", widget, ability_percent)
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_on_player_ability_changed("ability", widget, ability_percent)
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_overcharge_percentage = function (self, has_overcharge, overcharge_percent)
-	local widget = self._widget_by_feature(self, "weapons", "dynamic")
+	local widget = self:_widget_by_feature("weapons", "dynamic")
 	local widget_content = widget.content
 	local widget_style = widget.style
 	widget_content.has_overcharge = has_overcharge
 	widget_content.overcharge_fill.has_overcharge = has_overcharge
 	widget_content.overcharge_fill.overcharge_percent = overcharge_percent or 0
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_active_percentage = function (self, active_percentage)
-	local widget = self._widget_by_feature(self, "health", "dynamic")
+	local widget = self:_widget_by_feature("health", "dynamic")
 	local widget_style = widget.style
 	local widget_content = widget.content
 	local hp_bar_content = widget_content.hp_bar
 	widget_content.actual_active_percentage = active_percentage
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_health_percentage = function (self, health_percentage, health_multiplier)
-	local widget = self._widget_by_feature(self, "health", "dynamic")
+	local widget = self:_widget_by_feature("health", "dynamic")
 	local widget_style = widget.style
 	local widget_content = widget.content
 	local hp_bar_content = widget_content.hp_bar
 	widget_content.actual_health_percent = health_percentage
 
-	self._on_player_health_changed(self, "health", widget, health_percentage * health_multiplier)
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_on_player_health_changed("health", widget, health_percentage * health_multiplier)
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_total_health_percentage = function (self, total_health_percentage, health_multiplier)
-	local widget = self._widget_by_feature(self, "health", "dynamic")
+	local widget = self:_widget_by_feature("health", "dynamic")
 	local widget_style = widget.style
 	local widget_content = widget.content
 	local total_health_bar_content = widget_content.total_health_bar
 	widget_content.actual_total_health_percent = total_health_percentage
 
-	self._on_player_total_health_changed(self, "total_health", widget, total_health_percentage * health_multiplier)
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_on_player_total_health_changed("total_health", widget, total_health_percentage * health_multiplier)
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_health_bar_status = function (self, show_health_bar, is_knocked_down, is_wounded)
-	local widget = self._widget_by_feature(self, "health", "dynamic")
+	local widget = self:_widget_by_feature("health", "dynamic")
 	local widget_style = widget.style
 	local widget_content = widget.content
 	local total_health_bar_content = widget_content.total_health_bar
@@ -604,7 +573,7 @@ UnitFrameUI.set_health_bar_status = function (self, show_health_bar, is_knocked_
 	local update_equipment = features_list.equipment
 
 	if update_equipment then
-		local widget = self._widget_by_feature(self, "equipment", "dynamic")
+		local widget = self:_widget_by_feature("equipment", "dynamic")
 		widget.content.draw_health_bar = show_health_bar
 	end
 
@@ -620,22 +589,20 @@ UnitFrameUI.set_health_bar_status = function (self, show_health_bar, is_knocked_
 		color[4] = 255
 	end
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI.set_health_bar_divider_amount = function (self, health_bar_divider_count)
-	local widget = self._widget_by_feature(self, "health", "dynamic")
+	local widget = self:_widget_by_feature("health", "dynamic")
 	local widget_style = widget.style
 	widget_style.hp_bar_divider.texture_amount = health_bar_divider_count
 
-	self._set_widget_dirty(self, widget)
-
-	return 
+	self:_set_widget_dirty(widget)
 end
+
 UnitFrameUI._update_portrait_opacity = function (self, is_dead, is_knocked_down, needs_help, assisted_respawn)
 	local alpha = nil
-	local widget = self._widget_by_feature(self, "default", "static")
+	local widget = self:_widget_by_feature("default", "static")
 	local widget_content = widget.content
 	local color = widget.style.character_portrait.color
 
@@ -651,15 +618,14 @@ UnitFrameUI._update_portrait_opacity = function (self, is_dead, is_knocked_down,
 	if alpha then
 		color[1] = alpha
 
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 
 		return true
 	end
-
-	return 
 end
+
 UnitFrameUI._update_voice_animation = function (self, dt, t, is_talking)
-	local widget = self._widget_by_feature(self, "default", "dynamic")
+	local widget = self:_widget_by_feature("default", "dynamic")
 	local highlight_style = widget.style.talk_indicator_highlight
 	local color = highlight_style.color
 	local size = highlight_style.size
@@ -676,15 +642,14 @@ UnitFrameUI._update_voice_animation = function (self, dt, t, is_talking)
 	if old_alpha ~= color[1] then
 		color[1] = old_alpha
 
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 
 		return true
 	end
-
-	return 
 end
+
 UnitFrameUI._update_health_bar_animation = function (self, dt, t)
-	local widget = self._widget_by_feature(self, "health", "dynamic")
+	local widget = self:_widget_by_feature("health", "dynamic")
 	local widget_content = widget.content
 	local content = widget_content.hp_bar
 	local bar_value = content.bar_value
@@ -706,11 +671,10 @@ UnitFrameUI._update_health_bar_animation = function (self, dt, t)
 
 		return true
 	end
-
-	return 
 end
+
 UnitFrameUI._update_total_health_bar_animation = function (self, dt, t)
-	local widget = self._widget_by_feature(self, "health", "dynamic")
+	local widget = self:_widget_by_feature("health", "dynamic")
 	local widget_content = widget.content
 	local content = widget_content.total_health_bar
 	local bar_value = content.bar_value
@@ -732,16 +696,15 @@ UnitFrameUI._update_total_health_bar_animation = function (self, dt, t)
 
 		return true
 	end
-
-	return 
 end
+
 UnitFrameUI._update_overcharge_animation = function (self, dt, t)
-	local widget = self._widget_by_feature(self, "weapons", "dynamic")
+	local widget = self:_widget_by_feature("weapons", "dynamic")
 	local widget_content = widget.content
 	local widget_style = widget.style
 
 	if not widget_content.has_overcharge then
-		return 
+		return
 	end
 
 	local style = widget_style.overcharge_fill
@@ -780,9 +743,8 @@ UnitFrameUI._update_overcharge_animation = function (self, dt, t)
 
 		return true
 	end
-
-	return 
 end
+
 UnitFrameUI._on_num_grimoires_changed = function (self, name, widget, health_debuff_percent)
 	if not self.bar_animations then
 		self.bar_animations = {}
@@ -820,9 +782,8 @@ UnitFrameUI._on_num_grimoires_changed = function (self, name, widget, health_deb
 
 	bar_animation.current_health_debuff = health_debuff_percent
 	self.bar_animations[name] = bar_animation
-
-	return 
 end
+
 UnitFrameUI._on_overcharge_changed = function (self, name, widget, overcharge_percent)
 	if not self.bar_animations then
 		self.bar_animations = {}
@@ -853,9 +814,8 @@ UnitFrameUI._on_overcharge_changed = function (self, name, widget, overcharge_pe
 
 	bar_animation.current_overcharge_percent = overcharge_percent
 	self.bar_animations[name] = bar_animation
-
-	return 
 end
+
 UnitFrameUI._on_player_ammo_changed = function (self, name, widget, ammo_percent)
 	local unit_frames_settings = UISettings.unit_frames
 	local bar_animation = self.bar_animations[name] or {}
@@ -886,9 +846,8 @@ UnitFrameUI._on_player_ammo_changed = function (self, name, widget, ammo_percent
 
 		return true
 	end
-
-	return 
 end
+
 UnitFrameUI._on_player_ability_changed = function (self, name, widget, ability_percent)
 	local unit_frames_settings = UISettings.unit_frames
 	local bar_animation = self.bar_animations[name] or {}
@@ -919,9 +878,8 @@ UnitFrameUI._on_player_ability_changed = function (self, name, widget, ability_p
 
 		return true
 	end
-
-	return 
 end
+
 UnitFrameUI._on_player_health_changed = function (self, name, widget, health_percent)
 	local unit_frames_settings = UISettings.unit_frames
 	local bar_animation = self.bar_animations[name] or {}
@@ -954,9 +912,8 @@ UnitFrameUI._on_player_health_changed = function (self, name, widget, health_per
 
 		return true
 	end
-
-	return 
 end
+
 UnitFrameUI._on_player_total_health_changed = function (self, name, widget, total_health_percent)
 	local unit_frames_settings = UISettings.unit_frames
 	local bar_animation = self.bar_animations[name] or {}
@@ -989,9 +946,8 @@ UnitFrameUI._on_player_total_health_changed = function (self, name, widget, tota
 
 		return true
 	end
-
-	return 
 end
+
 UnitFrameUI._update_bar_animations = function (self, dt)
 	local dirty = false
 	local bar_animations = self.bar_animations
@@ -1011,13 +967,13 @@ UnitFrameUI._update_bar_animations = function (self, dt)
 			end
 
 			if animation_data.animate_damage_highlight then
-				animation_data.animate_damage_highlight = self._update_damage_highlight(self, widget, animation_data.animate_damage_highlight, dt)
+				animation_data.animate_damage_highlight = self:_update_damage_highlight(widget, animation_data.animate_damage_highlight, dt)
 				dirty = true
 				widget_dirty = true
 			end
 
 			if animation_data.animate_bar_flash then
-				animation_data.animate_bar_flash = self._update_bar_flash(self, widget, style, animation_data.animate_bar_flash, dt)
+				animation_data.animate_bar_flash = self:_update_bar_flash(widget, style, animation_data.animate_bar_flash, dt)
 				dirty = true
 				widget_dirty = true
 			end
@@ -1027,7 +983,7 @@ UnitFrameUI._update_bar_animations = function (self, dt)
 				local total_time = animation_data.total_time
 				local new_value = animation_data.new_value
 				local previous_value = animation_data.previous_value
-				local time_left = self._update_player_bar_animation(self, content, style, time, total_time, previous_value, new_value, dt)
+				local time_left = self:_update_player_bar_animation(content, style, time, total_time, previous_value, new_value, dt)
 				widget_dirty = true
 
 				if time_left then
@@ -1040,52 +996,55 @@ UnitFrameUI._update_bar_animations = function (self, dt)
 			end
 
 			if widget_dirty then
-				self._set_widget_dirty(self, widget)
+				self:_set_widget_dirty(widget)
 			end
 		end
 	end
 
 	return dirty
 end
+
 UnitFrameUI._update_bar_flash = function (self, widget, style, time, dt)
 	local total_time = 0.3
 	time = time + dt
 
-	if 0 < total_time then
+	if total_time > 0 then
 		local progress = math.min(time / total_time, 1)
 		local anim_progress = math.max(1 - math.ease_pulse(progress), 0)
 		local highlight_alpha = 155 + 100 * anim_progress
 		style.color[1] = highlight_alpha
 
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 
 		return (progress < 1 and time) or nil
 	end
 
 	return nil
 end
+
 UnitFrameUI._update_damage_highlight = function (self, widget, time, dt)
 	local total_time = 0.2
 	time = time + dt
 
-	if 0 < total_time then
+	if total_time > 0 then
 		local style = widget.style
 		local progress = math.min(time / total_time, 1)
 		local catmullrom_value = math.catmullrom(progress, -8, 0, 0, -8)
 		local highlight_alpha = 255 * catmullrom_value
 		style.hp_bar_highlight.color[1] = highlight_alpha
 
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 
 		return (progress < 1 and time) or nil
 	end
 
 	return nil
 end
+
 UnitFrameUI._update_player_bar_animation = function (self, content, style, time, total_time, anim_start_value, anim_end_value, dt)
 	time = time + dt
 
-	if 0 < total_time then
+	if total_time > 0 then
 		local progress = math.min(time / total_time, 1)
 		local catmullrom_value = math.catmullrom(progress, -14, 0, 0, 0)
 		local weight = 7
@@ -1111,6 +1070,7 @@ UnitFrameUI._update_player_bar_animation = function (self, content, style, time,
 
 	return nil
 end
+
 UnitFrameUI._add_slot_equip_animation = function (self, name, widget, style)
 	local animations = self.slot_equip_animations
 	local inventory_hud_settings = UISettings.inventory_hud
@@ -1128,9 +1088,8 @@ UnitFrameUI._add_slot_equip_animation = function (self, name, widget, style)
 			widget = widget
 		}
 	end
-
-	return 
 end
+
 UnitFrameUI._animate_slot_equip = function (self, animation_data, dt)
 	local style = animation_data.style
 	local total_time = animation_data.total_time
@@ -1143,27 +1102,29 @@ UnitFrameUI._animate_slot_equip = function (self, animation_data, dt)
 
 	return (progress < 1 and animation_data) or nil
 end
+
 UnitFrameUI._update_slot_equip_animations = function (self, dt)
 	local animations = self.slot_equip_animations
 	local dirty = false
 
 	for name, animation_data in pairs(animations) do
-		animations[name] = self._animate_slot_equip(self, animation_data, dt)
+		animations[name] = self:_animate_slot_equip(animation_data, dt)
 		local widget = animation_data.widget
 
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 
 		dirty = true
 	end
 
 	return dirty
 end
+
 UnitFrameUI._update_connection_animation = function (self, dt)
 	if not self._is_visible then
 		return false
 	end
 
-	local widget = self._widget_by_feature(self, "default", "dynamic")
+	local widget = self:_widget_by_feature("default", "dynamic")
 	local widget_content = widget.content
 
 	if widget_content.connecting then
@@ -1173,12 +1134,10 @@ UnitFrameUI._update_connection_animation = function (self, dt)
 		local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
 		connecting_icon_style.angle = connecting_icon_style.angle + connecting_radians
 
-		self._set_widget_dirty(self, widget)
+		self:_set_widget_dirty(widget)
 
 		return true
 	end
-
-	return 
 end
 
-return 
+return

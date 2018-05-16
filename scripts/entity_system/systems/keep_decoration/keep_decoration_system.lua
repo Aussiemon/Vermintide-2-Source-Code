@@ -4,6 +4,7 @@ KeepDecorationSystem = class(KeepDecorationSystem, ExtensionSystemBase)
 local extensions = {
 	"KeepDecorationPaintingExtension"
 }
+
 KeepDecorationSystem.init = function (self, entity_system_creation_context, system_name)
 	KeepDecorationSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
@@ -13,13 +14,12 @@ KeepDecorationSystem.init = function (self, entity_system_creation_context, syst
 	self._used_backend_keys = {}
 	self._update_index = 0
 
-	self._get_owned_paintings(self)
-
-	return 
+	self:_get_owned_paintings()
 end
+
 KeepDecorationSystem._get_owned_paintings = function (self)
 	local item_interface = Managers.backend:get_interface("items")
-	local painting_items = item_interface.get_filtered_items(item_interface, "item_type == keep_decoration_painting")
+	local painting_items = item_interface:get_filtered_items("item_type == keep_decoration_painting")
 	local owned_paintings = {}
 
 	for _, item in pairs(painting_items) do
@@ -29,16 +29,14 @@ KeepDecorationSystem._get_owned_paintings = function (self)
 	end
 
 	self._owned_paintings = owned_paintings
-
-	return 
 end
+
 KeepDecorationSystem.destroy = function (self)
 	self._extensions = nil
 	self._unit_extensions = nil
 	self._owned_paintings = nil
-
-	return 
 end
+
 KeepDecorationSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data, ...)
 	local settings_key = Unit.get_data(unit, "decoration_settings_key")
 	local used_settings_keys = self._used_settings_keys
@@ -57,7 +55,7 @@ KeepDecorationSystem.on_add_extension = function (self, world, unit, extension_n
 	local extension = KeepDecorationSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data, ...)
 
 	if extension_name == "KeepDecorationPaintingExtension" then
-		extension.setup(extension, settings, self._owned_paintings)
+		extension:setup(settings, self._owned_paintings)
 	end
 
 	self._extensions[#self._extensions + 1] = extension
@@ -67,12 +65,13 @@ KeepDecorationSystem.on_add_extension = function (self, world, unit, extension_n
 
 	return extension
 end
+
 KeepDecorationSystem.update = function (self, context, t)
 	local extensions = self._extensions
 	local num_extensions = #extensions
 
 	if num_extensions == 0 then
-		return 
+		return
 	end
 
 	local update_index = self._update_index + 1
@@ -83,42 +82,39 @@ KeepDecorationSystem.update = function (self, context, t)
 
 	local extension_to_update = extensions[update_index]
 
-	extension_to_update.distributed_update(extension_to_update)
+	extension_to_update:distributed_update()
 
 	self._update_index = update_index
-
-	return 
 end
+
 KeepDecorationSystem.on_game_object_created = function (self, unit, game_object_id)
 	local extension = self._unit_extensions[unit]
 
-	extension.on_game_object_created(extension, game_object_id)
-
-	return 
+	extension:on_game_object_created(game_object_id)
 end
+
 KeepDecorationSystem.on_game_object_destroyed = function (self, unit)
 	local extension = self._unit_extensions[unit]
 
-	extension.on_game_object_destroyed(extension)
-
-	return 
+	extension:on_game_object_destroyed()
 end
+
 KeepDecorationSystem.interacted_with = function (self, unit)
 	local extension = self._unit_extensions[unit]
 
-	if extension.can_interact(extension) then
-		extension.interacted_with(extension)
+	if extension:can_interact() then
+		extension:interacted_with()
 	end
-
-	return 
 end
+
 KeepDecorationSystem.can_interact = function (self, unit)
 	local extension = self._unit_extensions[unit]
 
-	return extension.can_interact(extension)
-end
-KeepDecorationSystem.hot_join_sync = function (self)
-	return 
+	return extension:can_interact()
 end
 
-return 
+KeepDecorationSystem.hot_join_sync = function (self)
+	return
+end
+
+return

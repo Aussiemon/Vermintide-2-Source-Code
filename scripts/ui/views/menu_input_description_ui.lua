@@ -31,18 +31,53 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		position = {
 			0,
-			30,
-			1
+			0,
+			2
 		},
 		size = {
 			1800,
 			80
 		}
+	},
+	background = {
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "center"
 	}
 }
 
 local function sort_input_actions(a, b)
 	return a.priority < b.priority
+end
+
+local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name("tab_menu_bg_02")
+
+function create_background_widget(num_elements)
+	return {
+		scenegraph_id = "background",
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "background",
+					texture_id = "background_id"
+				}
+			}
+		},
+		content = {
+			background_id = "tab_menu_bg_02"
+		},
+		style = {
+			background = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "center",
+				texture_size = {
+					texture_settings.size[1] * num_elements,
+					texture_settings.size[2] * 1.2
+				}
+			}
+		}
+	}
 end
 
 local function create_input_description_widgets(amount)
@@ -158,8 +193,9 @@ local function create_input_description_widgets(amount)
 end
 
 MenuInputDescriptionUI = class(MenuInputDescriptionUI)
+
 MenuInputDescriptionUI.init = function (self, ingame_ui_context, ui_renderer, input_service, number_of_elements, layer, generic_actions)
-	self.clear_input_descriptions(self)
+	self:clear_input_descriptions()
 
 	self.input_service = input_service
 	self.ui_renderer = ui_renderer
@@ -169,18 +205,17 @@ MenuInputDescriptionUI.init = function (self, ingame_ui_context, ui_renderer, in
 	}
 	scenegraph_definition.root.position[3] = layer + 10 or UILayer.controller_description
 
-	self.create_ui_elements(self, ui_renderer, number_of_elements)
-
-	return 
+	self:create_ui_elements(ui_renderer, number_of_elements)
 end
+
 MenuInputDescriptionUI.create_ui_elements = function (self, ui_renderer, number_of_elements)
-	self.console_input_description_widgets = create_input_description_widgets(number_of_elements or 4)
+	self.console_input_description_widgets = create_input_description_widgets(number_of_elements or 5)
+	self.background_widget = UIWidget.init(create_background_widget(number_of_elements or 3))
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 
 	UIRenderer.clear_scenegraph_queue(ui_renderer)
-
-	return 
 end
+
 MenuInputDescriptionUI.draw = function (self, ui_renderer, dt)
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_service
@@ -195,22 +230,23 @@ MenuInputDescriptionUI.draw = function (self, ui_renderer, dt)
 		for i = 1, number_of_descriptions_in_use, 1 do
 			UIRenderer.draw_widget(ui_renderer, console_description_widgets[i])
 		end
+
+		UIRenderer.draw_widget(ui_renderer, self.background_widget)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
+end
 
-	return 
-end
 MenuInputDescriptionUI.destroy = function (self)
-	return 
+	return
 end
+
 MenuInputDescriptionUI.change_generic_actions = function (self, new_generic_actions)
 	self.generic_actions = new_generic_actions
 
-	self.set_input_description(self, self.current_console_selection_data)
-
-	return 
+	self:set_input_description(self.current_console_selection_data)
 end
+
 MenuInputDescriptionUI.setup_console_widget_selections = function (self)
 	local steppers = self.steppers
 	local console_widget_selections = {
@@ -293,8 +329,9 @@ MenuInputDescriptionUI.setup_console_widget_selections = function (self)
 
 	return console_widget_selections
 end
+
 MenuInputDescriptionUI.set_input_description = function (self, console_selection_data)
-	self.clear_input_descriptions(self)
+	self:clear_input_descriptions()
 
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -328,7 +365,7 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 		if description_text then
 			widget_use_index = widget_use_index + 1
 			description_text = Localize(description_text)
-			local action_texture_data = self.get_gamepad_input_texture_data(self, input_action, ignore_keybinding)
+			local action_texture_data = self:get_gamepad_input_texture_data(input_action, ignore_keybinding)
 			local description_widget = console_input_description_widgets[widget_use_index]
 			local widget_content = description_widget.content
 			local widget_style = description_widget.style
@@ -364,14 +401,12 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 	end
 
 	self.number_of_descriptions_in_use = (widget_use_index ~= 0 and widget_use_index) or nil
-
-	return 
 end
+
 MenuInputDescriptionUI.clear_input_descriptions = function (self)
 	self.number_of_descriptions_in_use = nil
-
-	return 
 end
+
 MenuInputDescriptionUI.get_gamepad_input_texture_data = function (self, input_action, ignore_keybinding)
 	local platform = PLATFORM
 
@@ -386,8 +421,6 @@ MenuInputDescriptionUI.get_gamepad_input_texture_data = function (self, input_ac
 
 		return UISettings.get_gamepad_input_texture_data(input_service, input_action, true)
 	end
-
-	return 
 end
 
-return 
+return

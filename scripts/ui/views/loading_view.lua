@@ -23,12 +23,13 @@ local tip_type_list = {
 LoadingView = class(LoadingView)
 local fake_input_service = {
 	get = function ()
-		return 
+		return
 	end,
 	has = function ()
-		return 
+		return
 	end
 }
+
 LoadingView.init = function (self, ui_context)
 	local world = ui_context.world
 	self.input_manager = ui_context.input_manager
@@ -49,19 +50,18 @@ LoadingView.init = function (self, ui_context)
 
 	VisualAssertLog.setup(world)
 
-	self.ui_renderer = UIRenderer.create(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_popup", "material", "materials/ui/ui_1080p_chat")
+	self.ui_renderer = UIRenderer.create(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
 
-	self.create_ui_elements(self)
+	self:create_ui_elements()
 
 	self._gamepad_active = Managers.input:is_device_active("gamepad")
 	DO_RELOAD = false
 	self.active = true
-
-	return 
 end
+
 LoadingView.texture_resource_loaded = function (self, level_key, act_progression_index, game_difficulty)
 	if self.return_to_pc_menu then
-		return 
+		return
 	end
 
 	UIRenderer.destroy(self.ui_renderer, self.world)
@@ -73,37 +73,34 @@ LoadingView.texture_resource_loaded = function (self, level_key, act_progression
 	local loading_ui_package_name = level_settings.loading_ui_package_name
 	local game_mode = level_settings.game_mode or "adventure"
 	local bg_material = "materials/ui/loading_screens/" .. (loading_ui_package_name or self.default_loading_screen)
-	self.ui_renderer = UIRenderer.create(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_popup", "material", "materials/ui/ui_1080p_chat")
+	self.ui_renderer = UIRenderer.create(self.world, "material", "materials/ui/loading_screens/" .. self.default_loading_screen, "material", bg_material, "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", "materials/ui/ui_1080p_hud_atlas_textures", "material", "materials/ui/ui_1080p_chat")
 	self.bg_widget.content.bg_texture = "loading_screen"
 
 	if level_key ~= "inn_level" and level_settings.level_type ~= "survival" then
-		self.setup_act_text(self, level_key)
-		self.setup_difficulty_text(self, game_difficulty)
+		self:setup_act_text(level_key)
+		self:setup_difficulty_text(game_difficulty)
 	end
 
-	self.setup_level_text(self, level_key)
-	self.setup_tip_text(self, act_progression_index, game_mode)
-
-	return 
+	self:setup_level_text(level_key)
+	self:setup_tip_text(act_progression_index, game_mode)
 end
+
 LoadingView.deactivate = function (self)
 	self.active = false
-
-	return 
 end
+
 LoadingView.activate = function (self)
 	self.active = true
-
-	return 
 end
+
 LoadingView.showing_press_to_continue = function (self)
 	return self._show_press_to_continue
 end
+
 LoadingView.show_press_to_continue = function (self, show)
 	self._show_press_to_continue = show
-
-	return 
 end
+
 LoadingView.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self.bg_widget = UIWidget.init(definitions.background_image)
@@ -165,18 +162,16 @@ LoadingView.create_ui_elements = function (self)
 	local level_settings = self.level_key and LevelSettings[self.level_key]
 	local game_mode = (level_settings and level_settings.game_mode) or "adventure"
 
-	self.setup_tip_text(self, self.act_progression_index, game_mode, self._tip_localization_key)
+	self:setup_tip_text(self.act_progression_index, game_mode, self._tip_localization_key)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
-
-	return 
 end
+
 LoadingView.trigger_subtitles = function (self, wwise_event, t)
 	if wwise_event and not self.subtitle_timed_gui and Application.user_setting("use_subtitles") then
 		self.subtitle_timed_gui = SubtitleTimedGui:new(wwise_event, self._subtitle_row_widgets)
 	end
-
-	return 
 end
+
 LoadingView.reset_tip_text = function (self)
 	self.tip_text_prefix_widget.content.text = ""
 	self.tip_text_suffix_widget.content.text = ""
@@ -210,9 +205,8 @@ LoadingView.reset_tip_text = function (self)
 	self.ui_scenegraph.second_row_tip_text_suffix.size[1] = definitions.MAXIMUM_TIP_WIDTH
 	self.ui_scenegraph.second_row_gamepad_input_icon.size = definitions.ICON_SIZE
 	self.ui_scenegraph.second_row_second_gamepad_input_icon.size = definitions.ICON_SIZE
-
-	return 
 end
+
 LoadingView.fit_title = function (self)
 	local style = self.tip_title_widget.style.text
 	local text = Localize("loading_screen_tip_title")
@@ -231,10 +225,10 @@ LoadingView.fit_title = function (self)
 			style.font_size = style.font_size - 1
 		end
 	until not continue
-
-	return 
 end
+
 local DEFAULT_SECOND_ICON_DATA = {}
+
 LoadingView._find_second_input_texture = function (self, suffix_text, macro_replacement, input_action, font, scaled_font_size)
 	table.clear(DEFAULT_SECOND_ICON_DATA)
 
@@ -248,17 +242,19 @@ LoadingView._find_second_input_texture = function (self, suffix_text, macro_repl
 
 	return second_input_texture_data, suffix_text
 end
+
 local DEFAULT_SECOND_ICON_TABLE = {}
 local DEFAULT_ICON_SIZE_TABLE = {
 	0,
 	0
 }
+
 LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, tip_localization_key)
-	self.fit_title(self)
-	self.reset_tip_text(self)
+	self:fit_title()
+	self:reset_tip_text()
 
 	if script_data.no_loading_screen_tip_texts then
-		return 
+		return
 	end
 
 	table.clear(DEFAULT_SECOND_ICON_TABLE)
@@ -298,14 +294,14 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 
 		self._tip_localization_key = tip_localization_key
 		local input_manager = self.input_manager
-		local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
+		local gamepad_active = input_manager:is_device_active("gamepad")
 		local localized_tip = nil
 
 		if gamepad_active then
 			local input_action, input_actions = Managers.localizer:get_input_action(tip_localization_key)
 
 			if input_action then
-				local button_texture_data = UISettings.get_gamepad_input_texture_data(input_manager.get_service(input_manager, "Player"), input_action, gamepad_active)
+				local button_texture_data = UISettings.get_gamepad_input_texture_data(input_manager:get_service("Player"), input_action, gamepad_active)
 
 				if button_texture_data then
 					local button_texture_size = button_texture_data.size
@@ -331,7 +327,7 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 					local second_input_texture_data = DEFAULT_SECOND_ICON_TABLE
 
 					if input_actions and input_actions[2] then
-						second_input_texture_data, suffix_text = self._find_second_input_texture(self, suffix_text, macro_replacement, input_actions[2], font, scaled_font_size)
+						second_input_texture_data, suffix_text = self:_find_second_input_texture(suffix_text, macro_replacement, input_actions[2], font, scaled_font_size)
 					end
 
 					local second_icon_size = (second_input_texture_data.button_texture_data and second_input_texture_data.button_texture_data.size) or DEFAULT_ICON_SIZE_TABLE
@@ -429,9 +425,8 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 			self.tip_text_prefix_widget.style.text.word_wrap = true
 		end
 	end
-
-	return 
 end
+
 LoadingView.setup_act_text = function (self, level_key)
 	if level_key then
 		local level_settings = LevelSettings[level_key]
@@ -444,9 +439,8 @@ LoadingView.setup_act_text = function (self, level_key)
 			self.act_name_bg_widget.content.text = act_text
 		end
 	end
-
-	return 
 end
+
 LoadingView.setup_level_text = function (self, level_key)
 	if level_key then
 		local level_settings = LevelSettings[level_key]
@@ -458,9 +452,8 @@ LoadingView.setup_level_text = function (self, level_key)
 			self.level_name_bg_widget.content.text = level_text
 		end
 	end
-
-	return 
 end
+
 LoadingView.setup_difficulty_text = function (self, game_difficulty)
 	if game_difficulty then
 		local difficulty_settings = DifficultySettings[game_difficulty]
@@ -469,9 +462,8 @@ LoadingView.setup_difficulty_text = function (self, game_difficulty)
 		self.game_difficulty_widget.content.text = difficulty_text
 		self.game_difficulty_bg_widget.content.text = difficulty_text
 	end
-
-	return 
 end
+
 LoadingView.setup_news_ticker = function (self, text)
 	local widget = self.news_ticker_text_widget
 	local widget_content = widget.content
@@ -484,20 +476,20 @@ LoadingView.setup_news_ticker = function (self, text)
 	local text_width, text_height, min = UIRenderer.text_size(self.ui_renderer, text, font[1], scaled_font_size)
 	self.news_ticker_text_width = text_width
 	self.news_ticker_started = true
-
-	return 
 end
+
 local DO_RELOAD = false
+
 LoadingView.update = function (self, dt)
 	if DO_RELOAD then
 		print("reload")
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 
 		DO_RELOAD = false
 	end
 
 	if not self.active then
-		return 
+		return
 	end
 
 	VisualAssertLog.update(dt)
@@ -508,7 +500,7 @@ LoadingView.update = function (self, dt)
 		local level_settings = self.level_key and LevelSettings[self.level_key]
 		local game_mode = (level_settings and level_settings.game_mode) or "adventure"
 
-		self.setup_tip_text(self, self.act_progression_index, game_mode, self._tip_localization_key)
+		self:setup_tip_text(self.act_progression_index, game_mode, self._tip_localization_key)
 
 		self._gamepad_active = gamepad_active
 	end
@@ -520,7 +512,7 @@ LoadingView.update = function (self, dt)
 			local news_ticker_text = self.news_ticker_manager:loading_screen_text()
 
 			if news_ticker_text then
-				self.setup_news_ticker(self, news_ticker_text)
+				self:setup_news_ticker(news_ticker_text)
 			end
 		end
 	end
@@ -529,10 +521,9 @@ LoadingView.update = function (self, dt)
 		self.subtitle_timed_gui:update(dt)
 	end
 
-	self.draw(self, dt)
-
-	return 
+	self:draw(dt)
 end
+
 LoadingView.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -562,17 +553,15 @@ LoadingView.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 LoadingView.destroy = function (self)
 	VisualAssertLog.cleanup()
 	UIRenderer.destroy(self.ui_renderer, self.world)
-
-	return 
 end
+
 LoadingView.is_done = function (self)
 	return true
 end
 
-return 
+return

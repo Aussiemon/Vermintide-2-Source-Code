@@ -1,7 +1,9 @@
 BackendInterfaceProfileHash = class(BackendInterfaceProfileHash)
+
 BackendInterfaceProfileHash.init = function (self)
-	return 
+	return
 end
+
 BackendInterfaceProfileHash.on_authenticated = function (self)
 	local hash = Backend.get_hashed_profile_id()
 
@@ -12,8 +14,6 @@ BackendInterfaceProfileHash.on_authenticated = function (self)
 			Managers.save:auto_save(SaveFileName, SaveData, nil)
 		end
 	end
-
-	return 
 end
 
-return 
+return

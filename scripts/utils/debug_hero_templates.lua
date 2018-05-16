@@ -263,4 +263,4 @@ for name, debug_hero_data in pairs(DebugHeroTemplates) do
 	debug_hero_data.name = name
 end
 
-return 
+return

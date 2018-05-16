@@ -472,4 +472,4 @@ for career, data in pairs(ActivatedAbilitySettings) do
 	fassert(data.action_name or data.ability_class, "Activated ability for \"%s\" must have either a weapon action or an ability class", career)
 end
 
-return 
+return

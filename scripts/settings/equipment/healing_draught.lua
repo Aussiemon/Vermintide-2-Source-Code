@@ -16,15 +16,19 @@ weapon_template.actions = {
 			allowed_chain_actions = {},
 			condition_func = function (user_unit)
 				local health_extension = ScriptUnit.extension(user_unit, "health_system")
-				local health_percent = health_extension.current_permanent_health_percent(health_extension)
+				local buff_extension = ScriptUnit.extension(user_unit, "buff_system")
+				local full_health = health_extension:current_permanent_health_percent() >= 1
+				local trinket_prevents_healing = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
 
-				return health_percent < 1
+				return not full_health and not trinket_prevents_healing
 			end,
 			chain_condition_func = function (user_unit)
 				local health_extension = ScriptUnit.extension(user_unit, "health_system")
-				local health_percent = health_extension.current_permanent_health_percent(health_extension)
+				local buff_extension = ScriptUnit.extension(user_unit, "buff_system")
+				local full_health = health_extension:current_permanent_health_percent() >= 1
+				local trinket_prevents_healing = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
 
-				return health_percent < 1
+				return not full_health and not trinket_prevents_healing
 			end
 		}
 	},
@@ -54,13 +58,13 @@ weapon_template.actions = {
 			allowed_chain_actions = {},
 			condition_func = function (user_unit)
 				local health_extension = ScriptUnit.extension(user_unit, "health_system")
-				local health_percent = health_extension.current_permanent_health_percent(health_extension)
+				local health_percent = health_extension:current_permanent_health_percent()
 
 				return health_percent < 1
 			end,
 			chain_condition_func = function (user_unit)
 				local health_extension = ScriptUnit.extension(user_unit, "health_system")
-				local health_percent = health_extension.current_permanent_health_percent(health_extension)
+				local health_percent = health_extension:current_permanent_health_percent()
 
 				return health_percent < 1
 			end
@@ -121,6 +125,7 @@ weapon_template.buffs = {
 		external_optional_multiplier = 1
 	}
 }
-Weapons.healing_draught = Weapons.healing_draught or table.clone(weapon_template)
+Weapons = Weapons or {}
+Weapons.healing_draught = table.clone(weapon_template)
 
-return 
+return

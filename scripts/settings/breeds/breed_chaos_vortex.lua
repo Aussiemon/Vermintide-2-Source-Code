@@ -52,8 +52,6 @@ local breed_data = {
 			extension_init_data.ai_supplementary_system = {
 				vortex_template_name = "standard"
 			}
-
-			return 
 		end
 	}
 }
@@ -67,4 +65,4 @@ local action_data = {
 }
 BreedActions.chaos_vortex = table.create_copy(BreedActions.chaos_vortex, action_data)
 
-return 
+return

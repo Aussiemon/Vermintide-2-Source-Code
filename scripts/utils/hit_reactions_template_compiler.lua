@@ -41,7 +41,7 @@ AdditionalHitReactions = {
 
 local function setup_dismemberment_table(breed_name, hit_zones)
 	if not hit_zones then
-		return 
+		return
 	end
 
 	local events = {}
@@ -53,8 +53,6 @@ local function setup_dismemberment_table(breed_name, hit_zones)
 	end
 
 	Dismemberments[breed_name] = events
-
-	return 
 end
 
 local function add_to_sound_events_table(sound_event)
@@ -65,8 +63,6 @@ local function add_to_sound_events_table(sound_event)
 		}
 		SoundEvents[sound_event] = events
 	end
-
-	return 
 end
 
 local function get_inheritence_list(template_list, last_template)
@@ -130,13 +126,11 @@ local function insert_sorted(t, template_rule)
 			t[i] = t[i - 1]
 		end
 	end
-
-	return 
 end
 
 local function compile_effects_templates(template)
 	if not template or HitTemplates[template] then
-		return 
+		return
 	end
 
 	local new_templates = {}
@@ -166,8 +160,6 @@ local function compile_effects_templates(template)
 	end
 
 	HitTemplates[template] = new_templates
-
-	return 
 end
 
 local function setup_hit_reactions()
@@ -179,10 +171,8 @@ local function setup_hit_reactions()
 	for _, hit_effect_template in pairs(AdditionalHitReactions) do
 		compile_effects_templates(hit_effect_template)
 	end
-
-	return 
 end
 
 setup_hit_reactions()
 
-return 
+return

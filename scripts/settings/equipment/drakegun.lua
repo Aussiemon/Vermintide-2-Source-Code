@@ -73,9 +73,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		},
 		shoot_charged = {
@@ -135,9 +135,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		}
 	},
@@ -148,14 +148,13 @@ weapon_template.actions = {
 			charge_ready_sound_event = "weapon_drakegun_charge_ready",
 			charge_effect_material_variable_name = "intensity",
 			kind = "charge",
-			charge_time = 3,
 			remove_overcharge_on_interrupt = true,
 			overcharge_interval = 0.3,
 			charge_effect_material_name = "Fire",
 			minimum_hold_time = 0.2,
 			overcharge_type = "flamethrower",
 			charge_sound_switch = "projectile_charge_sound",
-			charge_effect_name = "fx/wpnfx_drake_gun_charge",
+			charge_time = 3,
 			hold_input = "action_two_hold",
 			anim_event = "attack_charge",
 			charge_sound_name = "player_combat_weapon_drakegun_charge",
@@ -240,12 +239,12 @@ weapon_template.actions = {
 			condition_func = function (action_user, input_extension)
 				local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
 
-				return overcharge_extension.get_overcharge_value(overcharge_extension) ~= 0
+				return overcharge_extension:get_overcharge_value() ~= 0
 			end,
 			chain_condition_func = function (action_user, input_extension)
 				local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
 
-				return overcharge_extension.get_overcharge_value(overcharge_extension) ~= 0
+				return overcharge_extension:get_overcharge_value() ~= 0
 			end
 		}
 	},
@@ -302,43 +301,36 @@ weapon_template.buffs = {
 		external_optional_multiplier = 0.85
 	}
 }
-weapon_template.wwise_dep_right_hand = {
-	"wwise/drakegun",
-	"wwise/flamethrower"
-}
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_crowd_control",
 	"weapon_keyword_close_range",
 	"weapon_keyword_overheat"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.3,
-			range = 0.6,
-			damage = 0.5,
-			targets = 0.2,
-			stagger = 0.6
-		},
-		heavy_attack = {
-			speed = 0.2,
-			range = 0.5,
-			damage = 0.625,
-			targets = 0.8,
-			stagger = 0.8
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	},
-	perks = {
-		light_attack = {
-			"armor_penetration"
-		},
-		heavy_attack = {
-			"armor_penetration",
-			"burn"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "shoot_charged"
 	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "shoot_charged"
+	}
+}
+weapon_template.wwise_dep_right_hand = {
+	"wwise/drakegun",
+	"wwise/flamethrower"
 }
 Weapons = Weapons or {}
 Weapons.drakegun_template_1 = table.clone(weapon_template)
 
-return 
+return

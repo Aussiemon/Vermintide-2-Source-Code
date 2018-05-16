@@ -3,10 +3,11 @@ local extensions = {
 	"AIInventoryItemExtension"
 }
 AIInventoryItemSystem = class(AIInventoryItemSystem, ExtensionSystemBase)
+
 AIInventoryItemSystem.init = function (self, context, system_name)
 	local entity_manager = context.entity_manager
 
-	entity_manager.register_system(entity_manager, self, system_name, extensions)
+	entity_manager:register_system(self, system_name, extensions)
 
 	self.entity_manager = entity_manager
 	self.is_server = context.is_server
@@ -15,18 +16,17 @@ AIInventoryItemSystem.init = function (self, context, system_name)
 	local network_event_delegate = context.network_event_delegate
 	self.network_event_delegate = network_event_delegate
 
-	network_event_delegate.register(network_event_delegate, self, unpack(RPCS))
+	network_event_delegate:register(self, unpack(RPCS))
 
 	self.entities = {}
-
-	return 
 end
+
 AIInventoryItemSystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
-
-	return 
 end
+
 local dummy_input = {}
+
 AIInventoryItemSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {}
 
@@ -39,18 +39,19 @@ AIInventoryItemSystem.on_add_extension = function (self, world, unit, extension_
 
 	return extension
 end
+
 AIInventoryItemSystem.on_remove_extension = function (self, unit, extension_name)
 	self.entities[unit] = nil
 
 	ScriptUnit.remove_extension(unit, self.NAME)
-
-	return 
 end
+
 AIInventoryItemSystem.hot_join_sync = function (self, sender)
-	return 
-end
-AIInventoryItemSystem.update = function (self, context, t, dt)
-	return 
+	return
 end
 
-return 
+AIInventoryItemSystem.update = function (self, context, t, dt)
+	return
+end
+
+return

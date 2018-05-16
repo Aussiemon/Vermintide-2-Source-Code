@@ -2,8 +2,6 @@ local function debug_print(message, ...)
 	if DEBUG_TWITCH then
 		print("[Twitch] " .. string.format(message, ...))
 	end
-
-	return 
 end
 
 TwitchVoteTemplates = TwitchVoteTemplates or {}
@@ -25,8 +23,6 @@ TwitchVoteTemplates.twitch_spawn_rat_ogre = {
 				max_health_modifier = 0.85
 			})
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_stormfiend = {
@@ -47,8 +43,6 @@ TwitchVoteTemplates.twitch_spawn_stormfiend = {
 				max_health_modifier = 0.85
 			})
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_chaos_troll = {
@@ -69,8 +63,6 @@ TwitchVoteTemplates.twitch_spawn_chaos_troll = {
 				max_health_modifier = 0.85
 			})
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_chaos_spawn = {
@@ -91,8 +83,6 @@ TwitchVoteTemplates.twitch_spawn_chaos_spawn = {
 				max_health_modifier = 0.85
 			})
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_corruptor_sorcerer = {
@@ -115,8 +105,6 @@ TwitchVoteTemplates.twitch_spawn_corruptor_sorcerer = {
 				Managers.state.conflict:spawn_one(breed)
 			end
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_vortex_sorcerer = {
@@ -139,8 +127,6 @@ TwitchVoteTemplates.twitch_spawn_vortex_sorcerer = {
 				Managers.state.conflict:spawn_one(breed)
 			end
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_gutter_runner = {
@@ -163,8 +149,6 @@ TwitchVoteTemplates.twitch_spawn_gutter_runner = {
 				Managers.state.conflict:spawn_one(breed)
 			end
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_pack_master = {
@@ -187,8 +171,6 @@ TwitchVoteTemplates.twitch_spawn_pack_master = {
 				Managers.state.conflict:spawn_one(breed)
 			end
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_poison_wind_globadier = {
@@ -211,8 +193,6 @@ TwitchVoteTemplates.twitch_spawn_poison_wind_globadier = {
 				Managers.state.conflict:spawn_one(breed)
 			end
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_ratling_gunner = {
@@ -235,8 +215,6 @@ TwitchVoteTemplates.twitch_spawn_ratling_gunner = {
 				Managers.state.conflict:spawn_one(breed)
 			end
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_warpfire_thrower = {
@@ -259,8 +237,6 @@ TwitchVoteTemplates.twitch_spawn_warpfire_thrower = {
 				Managers.state.conflict:spawn_one(breed)
 			end
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_horde_vector_blob = {
@@ -282,8 +258,6 @@ TwitchVoteTemplates.twitch_spawn_horde_vector_blob = {
 				Managers.state.conflict.horde_spawner:horde(horde_type)
 			end
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_death_squad_storm_vermin = {
@@ -306,8 +280,6 @@ TwitchVoteTemplates.twitch_spawn_death_squad_storm_vermin = {
 				Managers.state.conflict:spawn_one(breed)
 			end
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_death_squad_chaos_warrior = {
@@ -330,8 +302,6 @@ TwitchVoteTemplates.twitch_spawn_death_squad_chaos_warrior = {
 				Managers.state.conflict:spawn_one(breed)
 			end
 		end
-
-		return 
 	end
 }
 TwitchVoteTemplates.twitch_spawn_loot_rat_fiesta = {
@@ -354,9 +324,7 @@ TwitchVoteTemplates.twitch_spawn_loot_rat_fiesta = {
 				Managers.state.conflict:spawn_one(breed)
 			end
 		end
-
-		return 
 	end
 }
 
-return 
+return

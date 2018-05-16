@@ -2,11 +2,11 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterEscortRatOgreAction = class(BTPackMasterEscortRatOgreAction, BTNode)
 BTPackMasterEscortRatOgreAction.name = "BTPackMasterEscortRatOgreAction"
+
 BTPackMasterEscortRatOgreAction.init = function (self, ...)
 	BTPackMasterEscortRatOgreAction.super.init(self, ...)
-
-	return 
 end
+
 BTPackMasterEscortRatOgreAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = self._tree_node.action_data
 
@@ -14,26 +14,24 @@ BTPackMasterEscortRatOgreAction.enter = function (self, unit, blackboard, t)
 
 	local network_manager = Managers.state.network
 
-	network_manager.anim_event(network_manager, unit, "to_combat")
-	network_manager.anim_event(network_manager, unit, "combat_walk")
+	network_manager:anim_event(unit, "to_combat")
+	network_manager:anim_event(unit, "combat_walk")
 
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_max_speed(navigation_extension, blackboard.breed.walk_speed)
+	navigation_extension:set_max_speed(blackboard.breed.walk_speed)
 
 	local locomotion = blackboard.locomotion_extension
 
-	locomotion.set_rotation_speed(locomotion, 5)
+	locomotion:set_rotation_speed(5)
 
 	blackboard.attack_cooldown = blackboard.attack_cooldown or 0
-
-	return 
 end
+
 BTPackMasterEscortRatOgreAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	Managers.state.network:anim_event(unit, "move_fwd")
-
-	return 
 end
+
 BTPackMasterEscortRatOgreAction.run = function (self, unit, blackboard, t, dt)
 	local escort_slot = blackboard.my_escort_slot
 
@@ -50,8 +48,8 @@ BTPackMasterEscortRatOgreAction.run = function (self, unit, blackboard, t, dt)
 			blackboard.escorting_wait_for_rat_ogre = false
 			local network_manager = Managers.state.network
 
-			network_manager.anim_event(network_manager, unit, "to_combat")
-			network_manager.anim_event(network_manager, unit, "combat_walk")
+			network_manager:anim_event(unit, "to_combat")
+			network_manager:anim_event(unit, "combat_walk")
 		end
 	end
 
@@ -75,7 +73,7 @@ BTPackMasterEscortRatOgreAction.run = function (self, unit, blackboard, t, dt)
 		local breed = blackboard.breed
 		local ai_simple = ScriptUnit.extension(unit, "ai_system")
 
-		ai_simple.set_perception(ai_simple, breed.perception, breed.target_selection)
+		ai_simple:set_perception(breed.perception, breed.target_selection)
 
 		blackboard.escorting_rat_ogre = false
 		blackboard.far_off_despawn_immunity = false
@@ -88,12 +86,12 @@ BTPackMasterEscortRatOgreAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.escorting_wait_for_rat_ogre = true
 		local network_manager = Managers.state.network
 
-		network_manager.anim_event(network_manager, unit, "to_passive")
-		network_manager.anim_event(network_manager, unit, "idle")
+		network_manager:anim_event(unit, "to_passive")
+		network_manager:anim_event(unit, "idle")
 		blackboard.navigation_extension:stop()
 	end
 
 	return "running"
 end
 
-return 
+return

@@ -173,4 +173,4 @@ HitEffectsStormfiend = {
 	}
 }
 
-return 
+return

@@ -289,7 +289,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		},
 		heavy_attack_left = {
@@ -355,7 +355,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
@@ -422,7 +422,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			hit_mass_count = TANK_HIT_MASS_COUNT
 		},
@@ -812,7 +812,7 @@ weapon_template.actions = {
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
-				return not status_extension.fatigued(status_extension)
+				return not status_extension:fatigued()
 			end
 		}
 	},
@@ -829,7 +829,7 @@ weapon_template.actions = {
 			end,
 			total_time = math.huge,
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			buff_data = {
 				{
@@ -882,27 +882,28 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_damage_over_time",
 	"weapon_keyword_wide_sweeps"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.6,
-			stagger = 0.5,
-			damage = 0.28125,
-			targets = 0.4
-		},
-		heavy_attack = {
-			speed = 0.4,
-			stagger = 0.4,
-			damage = 0.625,
-			targets = 0.2
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "light_attack_last"
 	},
-	perks = {
-		light_attack = {},
-		heavy_attack = {
-			"head_shot",
-			"armor_penetration"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "heavy_attack"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	push = {
+		action_name = "action_one",
+		sub_action_name = "push"
 	}
 }
 weapon_template.attack_meta_data = {
@@ -928,7 +929,7 @@ weapon_template.aim_assist_settings = {
 	}
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/wpn_empire_short_sword"
-weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
+weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.brw_hammer
 weapon_template.display_unit = "units/weapons/weapon_display/display_1h_weapon"
 weapon_template.wield_anim = "to_brw_hammer"
 weapon_template.buff_type = "MELEE_1H"
@@ -956,4 +957,4 @@ Weapons.one_handed_hammer_wizard_template_1_t3_un = table.clone(weapon_template)
 Weapons.one_handed_hammer_wizard_template_1_t3_un.actions.action_inspect.action_inspect_hold.anim_event = "inspect_start_2"
 Weapons.one_handed_hammer_wizard_template_1_t3_un.actions.action_inspect.action_inspect_hold.anim_end_event = "inspect_end_2"
 
-return 
+return

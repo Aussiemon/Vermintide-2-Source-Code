@@ -32,21 +32,22 @@ local camera_position_by_character = {
 		y = 1
 	}
 }
+
 MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_character_positions, unique_id)
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.input_manager = ingame_ui_context.input_manager
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.character_unit = nil
 	self._character_camera_positions = optional_camera_character_positions or camera_position_by_character
-	self.item_info_by_slot = {}
-	self.equipment_units = {}
+	self._item_info_by_slot = {}
+	self._equipment_units = {}
 	self._hidden_units = {}
 	local player_manager = Managers.player
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self.unique_id = unique_id
-	self.equipment_units[InventorySettings.slots_by_name.slot_melee.slot_index] = {}
-	self.equipment_units[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
+	self._equipment_units[InventorySettings.slots_by_name.slot_melee.slot_index] = {}
+	self._equipment_units[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
 	self._camera_default_position = {
 		z = 0.9,
 		x = 0,
@@ -71,25 +72,20 @@ MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_cha
 		0,
 		0
 	}
-
-	return 
 end
+
 MenuWorldPreviewer.destroy = function (self)
 	self._session_id = self._session_id + 1
 
 	GarbageLeakDetector.register_object(self, "MenuWorldPreviewer")
-
-	return 
 end
+
 MenuWorldPreviewer.on_enter = function (self, viewport_widget, hero_name)
 	self.viewport_widget = viewport_widget
 	local preview_pass_data = self.viewport_widget.element.pass_data[1]
 	self.world = preview_pass_data.world
 	self.viewport = preview_pass_data.viewport
 	self.camera = ScriptViewport.camera(self.viewport)
-	self.item_spawn_data = {}
-	self.loaded_packages = {}
-	self.packages_to_load = {}
 	self.character_camera_position_adjustments = {}
 	self.hero_name = hero_name
 	self.character_look_current = {
@@ -108,53 +104,33 @@ MenuWorldPreviewer.on_enter = function (self, viewport_widget, hero_name)
 	self.camera_xy_angle_current = DEFAULT_ANGLE
 	self.camera_xy_angle_target = DEFAULT_ANGLE
 	self._session_id = self._session_id or 0
-
-	return 
 end
+
 MenuWorldPreviewer.has_units_spawned = function (self)
 	return self.character_unit ~= nil
 end
-MenuWorldPreviewer.prepare_exit = function (self)
-	self.clear_units(self)
 
-	return 
+MenuWorldPreviewer.prepare_exit = function (self)
+	self:clear_units()
 end
+
 MenuWorldPreviewer.on_exit = function (self)
+	self:_unload_all_packages()
+
+	self._hero_loading_package_data = nil
 	local max_shadow_casting_lights = Application.user_setting("render_settings", "max_shadow_casting_lights")
 
 	Application.set_render_setting("max_shadow_casting_lights", max_shadow_casting_lights)
 
 	local inventory_package_synchronizer = self.profile_synchronizer:inventory_package_synchronizer()
-	local loaded_packages = self.loaded_packages
-	local package_manager = Managers.package
-	local reference_name = "MenuWorldPreviewer"
-
-	if self.unique_id then
-		reference_name = reference_name .. tostring(self.unique_id)
-	end
-
-	for package_name, _ in pairs(self.packages_to_load) do
-		package_manager.unload(package_manager, package_name, reference_name)
-
-		self.packages_to_load[package_name] = nil
-	end
-
-	for package_name, _ in pairs(self.loaded_packages) do
-		package_manager.unload(package_manager, package_name, reference_name)
-
-		self.loaded_packages[package_name] = nil
-	end
-
-	self.items_loaded = nil
 	self._session_id = self._session_id + 1
-
-	return 
 end
-MenuWorldPreviewer.update = function (self, dt)
+
+MenuWorldPreviewer.update = function (self, dt, t, input_disabled)
 	local character_unit = self.character_unit
 
 	if character_unit then
-		if math.pi * 2 < self.camera_xy_angle_target then
+		if self.camera_xy_angle_target > math.pi * 2 then
 			self.camera_xy_angle_current = self.camera_xy_angle_current - math.pi * 2
 			self.camera_xy_angle_target = self.camera_xy_angle_target - math.pi * 2
 		end
@@ -172,9 +148,9 @@ MenuWorldPreviewer.update = function (self, dt)
 		Unit.animation_set_constraint_target(character_unit, aim_constraint_anim_var, rotated_constraint_position)
 	end
 
-	self._update_camera_animation_data(self, self._camera_position_animation_data, dt)
-	self._update_camera_animation_data(self, self._camera_rotation_animation_data, dt)
-	self._update_camera_animation_data(self, self._camera_character_position_animation_data, dt)
+	self:_update_camera_animation_data(self._camera_position_animation_data, dt)
+	self:_update_camera_animation_data(self._camera_rotation_animation_data, dt)
+	self:_update_camera_animation_data(self._camera_character_position_animation_data, dt)
 
 	local camera_default_position = self._camera_default_position
 	local camera_position_new = Vector3.zero()
@@ -202,36 +178,37 @@ MenuWorldPreviewer.update = function (self, dt)
 
 	local input_service = self.input_manager:get_service("hero_view")
 
-	self.handle_mouse_input(self, input_service, dt)
-	self.handle_controller_input(self, input_service, dt)
-
-	return 
+	if not input_disabled then
+		self:handle_mouse_input(input_service, dt)
+		self:handle_controller_input(input_service, dt)
+	end
 end
+
 MenuWorldPreviewer.post_update = function (self, dt)
-	self._update_units_visibility(self, dt)
-
-	return 
+	self:_update_units_visibility(dt)
+	self:_handle_hero_spawn_request()
+	self:_poll_hero_package_loading()
+	self:_poll_item_package_loading()
 end
+
 MenuWorldPreviewer.force_unhide_character = function (self)
 	self._force_unhide_character = true
-
-	return 
 end
+
 MenuWorldPreviewer.wait_for_force_unhide = function (self)
 	self._wait_for_force_unhide = true
-
-	return 
 end
-MenuWorldPreviewer._update_units_visibility = function (self, dt)
-	self.items_loaded = self.update_package_loaded_status(self)
 
-	if self.items_loaded and Unit.alive(self.character_unit) and (not self._wait_for_force_unhide or self._force_unhide_character) then
+MenuWorldPreviewer._update_units_visibility = function (self, dt)
+	local items_loaded = self:_is_all_items_loaded()
+
+	if items_loaded and Unit.alive(self.character_unit) and (not self._wait_for_force_unhide or self._force_unhide_character) then
 		local unit_visibility_frame_delay = self.unit_visibility_frame_delay
 
-		if unit_visibility_frame_delay and 0 < unit_visibility_frame_delay then
+		if unit_visibility_frame_delay and unit_visibility_frame_delay > 0 then
 			self.unit_visibility_frame_delay = unit_visibility_frame_delay - 1
 
-			return 
+			return
 		end
 
 		local peer_id = self.peer_id
@@ -267,9 +244,8 @@ MenuWorldPreviewer._update_units_visibility = function (self, dt)
 
 		self._force_unhide_character = false
 	end
-
-	return 
 end
+
 MenuWorldPreviewer._update_camera_animation_data = function (self, animation_data, dt)
 	for axis, data in pairs(animation_data) do
 		if data.total_time then
@@ -284,9 +260,8 @@ MenuWorldPreviewer._update_camera_animation_data = function (self, animation_dat
 			end
 		end
 	end
-
-	return 
 end
+
 MenuWorldPreviewer.set_camera_axis_offset = function (self, axis, value, animation_time, func_ptr, fixed_position)
 	local data = self._camera_position_animation_data[axis]
 	local camera_default_position = self._camera_default_position
@@ -296,14 +271,12 @@ MenuWorldPreviewer.set_camera_axis_offset = function (self, axis, value, animati
 	data.time = 0
 	data.func = func_ptr
 	data.value = data.from
-
-	return 
 end
+
 MenuWorldPreviewer.set_camera_gamepad_offset = function (self, value)
 	self._camera_gamepad_offset_data = value
-
-	return 
 end
+
 MenuWorldPreviewer.set_camera_rotation_axis_offset = function (self, axis, value, animation_time, func_ptr)
 	local data = self._camera_rotation_animation_data[axis]
 	data.from = (animation_time and data.value) or value
@@ -312,9 +285,8 @@ MenuWorldPreviewer.set_camera_rotation_axis_offset = function (self, axis, value
 	data.time = 0
 	data.func = func_ptr
 	data.value = data.from
-
-	return 
 end
+
 MenuWorldPreviewer.set_character_axis_offset = function (self, axis, value, animation_time, func_ptr)
 	local data = self._camera_character_position_animation_data[axis]
 	data.from = (animation_time and data.value) or value
@@ -323,25 +295,25 @@ MenuWorldPreviewer.set_character_axis_offset = function (self, axis, value, anim
 	data.time = 0
 	data.func = func_ptr
 	data.value = data.from
-
-	return 
 end
+
 local mouse_pos_temp = {}
+
 MenuWorldPreviewer.handle_mouse_input = function (self, input_service, dt)
 	local character_unit = self.character_unit
 
 	if character_unit == nil or self.character_unit_hidden then
-		return 
+		return
 	end
 
 	if not self.input_manager:is_device_active("mouse") then
-		return 
+		return
 	end
 
-	local mouse = input_service.get(input_service, "cursor")
+	local mouse = input_service:get("cursor")
 
 	if not mouse then
-		return 
+		return
 	end
 
 	local viewport_widget = self.viewport_widget
@@ -350,16 +322,16 @@ MenuWorldPreviewer.handle_mouse_input = function (self, input_service, dt)
 	local is_hover = button_hotspot and button_hotspot.is_hover
 
 	if is_hover then
-		if input_service.get(input_service, "left_press") then
+		if input_service:get("left_press") then
 			self.is_moving_camera = true
 			self.last_mouse_position = nil
-		elseif input_service.get(input_service, "right_press") then
+		elseif input_service:get("right_press") then
 			self.camera_xy_angle_target = DEFAULT_ANGLE
 		end
 	end
 
 	local is_moving_camera = self.is_moving_camera
-	local mouse_hold = input_service.get(input_service, "left_hold")
+	local mouse_hold = input_service:get("left_hold")
 
 	if is_moving_camera and mouse_hold then
 		if self.last_mouse_position then
@@ -372,64 +344,96 @@ MenuWorldPreviewer.handle_mouse_input = function (self, input_service, dt)
 	elseif is_moving_camera then
 		self.is_moving_camera = false
 	end
-
-	return 
 end
+
 MenuWorldPreviewer.handle_controller_input = function (self, input_service, dt)
 	local character_unit = self.character_unit
 
 	if character_unit == nil then
-		return 
+		return
 	end
 
 	if not self.input_manager:is_device_active("gamepad") then
-		return 
+		return
 	end
 
-	local camera_move = input_service.get(input_service, "gamepad_right_axis")
+	local camera_move = input_service:get("gamepad_right_axis")
 
-	if camera_move and 0.01 < Vector3.length(camera_move) then
+	if camera_move and Vector3.length(camera_move) > 0.01 then
 		self.camera_xy_angle_target = self.camera_xy_angle_target + -camera_move.x * dt * 5
 	end
-
-	return 
 end
+
 MenuWorldPreviewer.start_character_rotation = function (self, direction)
 	if direction then
 		self.rotation_direction = direction
 	end
-
-	return 
 end
+
 MenuWorldPreviewer.end_character_rotation = function (self)
 	print("end_character_rotation", self.rotation_direction)
-
-	return 
 end
+
 MenuWorldPreviewer.play_character_animation = function (self, animation_event)
 	local character_unit = self.character_unit
 
 	if character_unit == nil then
-		return 
+		return
 	end
 
 	Unit.animation_event(character_unit, animation_event)
-
-	return 
 end
-MenuWorldPreviewer.spawn_hero_unit = function (self, profile_name, career_index, state_character, callback, optional_scale, camera_move_duration, optional_skin)
-	self.camera_xy_angle_target = DEFAULT_ANGLE
-	local ignore_camera_reset = true
 
-	self.clear_units(self, ignore_camera_reset)
+MenuWorldPreviewer.request_spawn_hero_unit = function (self, profile_name, career_index, state_character, callback, optional_scale, camera_move_duration, optional_skin, reset_camera)
+	self._requested_hero_spawn_data = {
+		frame_delay = 1,
+		profile_name = profile_name,
+		career_index = career_index,
+		state_character = state_character,
+		callback = callback,
+		optional_scale = optional_scale,
+		camera_move_duration = camera_move_duration,
+		optional_skin = optional_skin
+	}
+
+	self:clear_units(reset_camera)
+end
+
+MenuWorldPreviewer._handle_hero_spawn_request = function (self)
+	if self._requested_hero_spawn_data then
+		local requested_hero_spawn_data = self._requested_hero_spawn_data
+		local frame_delay = requested_hero_spawn_data.frame_delay
+
+		if frame_delay == 0 then
+			local profile_name = requested_hero_spawn_data.profile_name
+			local career_index = requested_hero_spawn_data.career_index
+			local state_character = requested_hero_spawn_data.state_character
+			local callback = requested_hero_spawn_data.callback
+			local optional_scale = requested_hero_spawn_data.optional_scale
+			local camera_move_duration = requested_hero_spawn_data.camera_move_duration
+			local optional_skin = requested_hero_spawn_data.optional_skin
+
+			self:_load_hero_unit(profile_name, career_index, state_character, callback, optional_scale, camera_move_duration, optional_skin)
+
+			self._requested_hero_spawn_data = nil
+		else
+			requested_hero_spawn_data.frame_delay = frame_delay - 1
+		end
+	end
+end
+
+MenuWorldPreviewer._load_hero_unit = function (self, profile_name, career_index, state_character, callback, optional_scale, camera_move_duration, optional_skin)
+	self.camera_xy_angle_target = DEFAULT_ANGLE
+
+	self:_unload_all_packages()
 
 	camera_move_duration = camera_move_duration or 0.01
 	local character_camera_positions = self._character_camera_positions
 	local new_character_position = character_camera_positions[profile_name]
 
-	self.set_character_axis_offset(self, "x", new_character_position.x, camera_move_duration, math.easeOutCubic)
-	self.set_character_axis_offset(self, "y", new_character_position.y, camera_move_duration, math.easeOutCubic)
-	self.set_character_axis_offset(self, "z", new_character_position.z, camera_move_duration, math.easeOutCubic)
+	self:set_character_axis_offset("x", new_character_position.x, camera_move_duration, math.easeOutCubic)
+	self:set_character_axis_offset("y", new_character_position.y, camera_move_duration, math.easeOutCubic)
+	self:set_character_axis_offset("z", new_character_position.z, camera_move_duration, math.easeOutCubic)
 
 	local world = self.world
 	local profile_index = FindProfileIndex(profile_name)
@@ -467,10 +471,51 @@ MenuWorldPreviewer.spawn_hero_unit = function (self, profile_name, career_index,
 		callback = callback
 	}
 
-	self.load_hero_packages(self, package_names, data)
+	self:_load_packages(package_names)
 
-	return 
+	self._hero_loading_package_data = data
 end
+
+MenuWorldPreviewer._poll_hero_package_loading = function (self)
+	local data = self._hero_loading_package_data
+
+	if not data or data.loaded then
+		return
+	end
+
+	local reference_name = self:_reference_name()
+	local package_manager = Managers.package
+	local package_names = data.package_names
+	local all_packages_loaded = true
+
+	for i = 1, #package_names, 1 do
+		local package_name = package_names[i]
+
+		if not package_manager:has_loaded(package_name, reference_name) then
+			all_packages_loaded = false
+
+			break
+		end
+	end
+
+	local career_name = data.career_name
+
+	if all_packages_loaded then
+		local skin_data = data.skin_data
+		local optional_scale = data.optional_scale
+
+		self:_spawn_hero_unit(skin_data, optional_scale)
+
+		local callback = data.callback
+
+		if callback then
+			callback()
+		end
+
+		data.loaded = true
+	end
+end
+
 MenuWorldPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale)
 	local world = self.world
 	local unit_name = skin_data.third_person
@@ -535,80 +580,14 @@ MenuWorldPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale)
 
 		Unit.set_local_scale(character_unit, 0, scale)
 	end
-
-	return 
 end
+
 MenuWorldPreviewer.respawn_hero_unit = function (self, profile_name, career_index, state_character, callback)
-	self.clear_units(self)
-	self.spawn_hero_unit(self, profile_name, career_index, state_character, callback)
+	local reset_camera = true
 
-	return 
+	self:request_spawn_hero_unit(profile_name, career_index, state_character, callback, nil, nil, nil, reset_camera)
 end
-MenuWorldPreviewer.wield_weapon_slot = function (self, slot_type)
-	self._wielded_slot_type = slot_type
-	local melee_slot_info = self.item_info_by_slot.melee
 
-	if melee_slot_info then
-		local item_name = melee_slot_info.name
-		local backend_id = melee_slot_info.backend_id
-
-		self.equip_item(self, item_name, InventorySettings.slots_by_name.slot_melee, backend_id)
-	elseif slot_type == "melee" then
-	end
-
-	local ranged_slot_info = self.item_info_by_slot.ranged
-
-	if ranged_slot_info then
-		local item_name = ranged_slot_info.name
-		local backend_id = ranged_slot_info.backend_id
-
-		self.equip_item(self, item_name, InventorySettings.slots_by_name.slot_ranged, backend_id)
-	elseif slot_type == "ranged" then
-	end
-
-	return 
-end
-MenuWorldPreviewer.item_name_by_slot_type = function (self, item_slot_type)
-	local item_info = self.item_info_by_slot[item_slot_type]
-
-	return item_info and item_info.name
-end
-MenuWorldPreviewer.wielded_slot_type = function (self)
-	return self._wielded_slot_type
-end
-MenuWorldPreviewer.unequip_item_in_slot = function (self, item_slot_type, slot_index)
-	local world = self.world
-
-	if item_slot_type == "melee" or item_slot_type == "ranged" then
-		local old_unit_right = self.equipment_units[slot_index].right
-
-		if old_unit_right ~= nil then
-			World.destroy_unit(world, old_unit_right)
-
-			self.equipment_units[slot_index].right = nil
-		end
-
-		local old_unit_left = self.equipment_units[slot_index].left
-
-		if old_unit_left ~= nil then
-			World.destroy_unit(world, old_unit_left)
-
-			self.equipment_units[slot_index].left = nil
-		end
-	else
-		local old_unit = self.equipment_units[slot_index]
-
-		if old_unit ~= nil then
-			World.destroy_unit(world, old_unit)
-
-			self.equipment_units[slot_index] = nil
-		end
-	end
-
-	self.item_info_by_slot[item_slot_type] = nil
-
-	return 
-end
 MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
 	local skin_data = self.character_unit_skin_data
 
@@ -626,17 +605,16 @@ MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
 		end
 
 		if hide_slot then
-			return 
+			return
 		end
 	end
 
-	self.items_loaded = nil
 	local item_slot_type = slot.type
 	local slot_index = slot.slot_index
 	local item_data = ItemMasterList[item_name]
 	local item_units = BackendUtils.get_item_units(item_data, backend_id)
 	local item_template = ItemHelper.get_template_by_item_name(item_name)
-	local units_to_spawn_data = {}
+	local spawn_data = {}
 	local package_names = {}
 
 	if item_slot_type == "melee" or item_slot_type == "ranged" then
@@ -646,7 +624,7 @@ MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
 
 		if left_hand_unit then
 			local left_unit = left_hand_unit .. "_3p"
-			units_to_spawn_data[#units_to_spawn_data + 1] = {
+			spawn_data[#spawn_data + 1] = {
 				left_hand = true,
 				despawn_both_hands_units = despawn_both_hands_units,
 				unit_name = left_unit,
@@ -659,7 +637,7 @@ MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
 
 		if right_hand_unit then
 			local right_unit = right_hand_unit .. "_3p"
-			units_to_spawn_data[#units_to_spawn_data + 1] = {
+			spawn_data[#spawn_data + 1] = {
 				right_hand = true,
 				despawn_both_hands_units = despawn_both_hands_units,
 				unit_name = right_unit,
@@ -683,7 +661,7 @@ MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
 			end
 
 			local attachment_slot_name = item_template.slots[attachment_slot_lookup_index]
-			units_to_spawn_data[#units_to_spawn_data + 1] = {
+			spawn_data[#spawn_data + 1] = {
 				unit_name = unit,
 				item_slot_type = item_slot_type,
 				slot_index = slot_index,
@@ -693,218 +671,118 @@ MenuWorldPreviewer.equip_item = function (self, item_name, slot, backend_id)
 		end
 	end
 
-	if 0 < #package_names then
-		self.item_spawn_data[item_name] = units_to_spawn_data
-		self.item_info_by_slot[item_slot_type] = {
+	if #package_names > 0 then
+		local item_info_by_slot = self._item_info_by_slot
+		local previous_slot_data = item_info_by_slot[item_slot_type]
+
+		if previous_slot_data then
+			self:_destroy_item_units_by_slot(item_slot_type)
+			self:_unload_item_packages_by_slot(item_slot_type)
+		end
+
+		item_info_by_slot[item_slot_type] = {
 			name = item_name,
-			backend_id = backend_id
+			backend_id = backend_id,
+			package_names = package_names,
+			spawn_data = spawn_data
 		}
 
-		self.load_item_packages(self, package_names, item_name)
+		self:_load_packages(package_names)
+	end
+end
+
+MenuWorldPreviewer._poll_item_package_loading = function (self)
+	local character_unit = self.character_unit
+
+	if not Unit.alive(character_unit) then
+		return
 	end
 
-	return 
-end
-MenuWorldPreviewer.load_hero_packages = function (self, package_names, data)
-	local package_names_to_load = {}
+	local reference_name = self:_reference_name()
+	local package_manager = Managers.package
+	local item_info_by_slot = self._item_info_by_slot
 
-	for index, package_name in ipairs(package_names) do
-		if not self.packages_to_load[package_name] then
-			self.packages_to_load[package_name] = true
-			package_names_to_load[#package_names_to_load + 1] = package_name
+	for slot_name, data in pairs(item_info_by_slot) do
+		if not data.loaded then
+			local package_names = data.package_names
+			local all_packages_loaded = true
+
+			for i = 1, #package_names, 1 do
+				local package_name = package_names[i]
+
+				if not package_manager:has_loaded(package_name, reference_name) then
+					all_packages_loaded = false
+
+					break
+				end
+			end
+
+			if all_packages_loaded then
+				data.loaded = true
+				local item_name = data.name
+				local spawn_data = data.spawn_data
+
+				self:_spawn_item(item_name, spawn_data)
+			end
+		end
+	end
+end
+
+MenuWorldPreviewer._is_all_items_loaded = function (self)
+	local item_info_by_slot = self._item_info_by_slot
+	local all_loaded = true
+
+	for slot_name, data in pairs(item_info_by_slot) do
+		if not data.loaded then
+			all_loaded = false
+
+			break
 		end
 	end
 
-	local reference_name = "MenuWorldPreviewer"
-
-	if self.unique_id then
-		reference_name = reference_name .. tostring(self.unique_id)
-	end
-
-	for index, package_name in ipairs(package_names_to_load) do
-		local package_manager = Managers.package
-		local cb = callback(self, "on_hero_load_complete", package_name, data, self._session_id)
-
-		package_manager.load(package_manager, package_name, reference_name, cb, true)
-	end
-
-	return 
+	return all_loaded
 end
-MenuWorldPreviewer.on_hero_load_complete = function (self, package_name, data, session_id)
-	if session_id ~= self._session_id then
-		return 
-	end
 
-	local loaded_packages = self.loaded_packages
-	loaded_packages[package_name] = true
-	self.packages_to_load[package_name] = nil
-	local package_names = data.package_names
-
-	for i = 1, #package_names, 1 do
-		local package_name = package_names[i]
-
-		if not loaded_packages[package_name] then
-			return 
-		end
-
-		data.num_loaded_packages = data.num_loaded_packages + 1
-
-		if data.num_loaded_packages < data.num_packages then
-			return 
-		end
-	end
-
-	local career_name = data.career_name
-
-	if career_name == self._current_career_name then
-		local skin_data = data.skin_data
-		local optional_scale = data.optional_scale
-
-		self._spawn_hero_unit(self, skin_data, optional_scale)
-
-		local callback = data.callback
-
-		if callback then
-			callback()
-		end
-	end
-
-	return 
-end
-MenuWorldPreviewer.load_item_packages = function (self, package_names, item_name)
-	local package_names_to_load = {}
-
-	for index, package_name in ipairs(package_names) do
-		if not self.packages_to_load[package_name] then
-			self.packages_to_load[package_name] = true
-			package_names_to_load[#package_names_to_load + 1] = package_name
-		end
-	end
-
-	local reference_name = "MenuWorldPreviewer"
-
-	if self.unique_id then
-		reference_name = reference_name .. tostring(self.unique_id)
-	end
-
-	for index, package_name in ipairs(package_names_to_load) do
-		local package_manager = Managers.package
-		local cb = callback(self, "on_item_load_complete", package_name, item_name)
-
-		package_manager.load(package_manager, package_name, reference_name, cb, true)
-	end
-
-	return 
-end
-MenuWorldPreviewer.on_item_load_complete = function (self, package_name, item_name)
-	local loaded_packages = self.loaded_packages
-	loaded_packages[package_name] = true
-	self.packages_to_load[package_name] = nil
-	local item_info_by_slot = self.item_info_by_slot
-	local spawn_data = self.item_spawn_data[item_name]
-
-	for _, unit_spawn_data in ipairs(spawn_data) do
-		local item_slot_type = unit_spawn_data.item_slot_type
-		local item_info = item_info_by_slot[item_slot_type]
-
-		if not item_info or item_info.name ~= item_name then
-			return 
-		end
-
-		local unit_name = unit_spawn_data.unit_name
-
-		if not loaded_packages[unit_name] then
-			return 
-		end
-	end
-
-	self._spawn_item(self, item_name)
-
-	return 
-end
-MenuWorldPreviewer.update_package_loaded_status = function (self)
-	for package_name, _ in pairs(self.packages_to_load) do
-		return 
-	end
-
-	return true
-end
-MenuWorldPreviewer.items_spawned = function (self)
-	return self.items_loaded
-end
-MenuWorldPreviewer._spawn_item = function (self, item_name)
+MenuWorldPreviewer._spawn_item = function (self, item_name, spawn_data)
 	local world = self.world
 	local character_unit = self.character_unit
 	local scene_graph_links = {}
 	local item_data = ItemMasterList[item_name]
 	local item_units = BackendUtils.get_item_units(item_data)
 	local item_template = ItemHelper.get_template_by_item_name(item_name)
-	local item_spawn_data = self.item_spawn_data
-	local spawn_data = item_spawn_data[item_name]
 
-	if spawn_data then
-		for _, unit_spawn_data in ipairs(spawn_data) do
-			local unit_name = unit_spawn_data.unit_name
-			local item_slot_type = unit_spawn_data.item_slot_type
-			local slot_index = unit_spawn_data.slot_index
-			local unit_attachment_node_linking = unit_spawn_data.unit_attachment_node_linking
+	for _, unit_spawn_data in ipairs(spawn_data) do
+		local unit_name = unit_spawn_data.unit_name
+		local item_slot_type = unit_spawn_data.item_slot_type
+		local slot_index = unit_spawn_data.slot_index
+		local unit_attachment_node_linking = unit_spawn_data.unit_attachment_node_linking
 
-			if item_slot_type == "melee" or item_slot_type == "ranged" then
-				if unit_spawn_data.right_hand or unit_spawn_data.despawn_both_hands_units then
-					local old_unit_right = self.equipment_units[slot_index].right
+		if item_slot_type == "melee" or item_slot_type == "ranged" then
+			local unit = World.spawn_unit(world, unit_name)
 
-					if old_unit_right ~= nil then
-						World.destroy_unit(world, old_unit_right)
+			self:_spawn_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
 
-						self.equipment_units[slot_index].right = nil
-					end
-				end
-
-				if unit_spawn_data.left_hand or unit_spawn_data.despawn_both_hands_units then
-					local old_unit_left = self.equipment_units[slot_index].left
-
-					if old_unit_left ~= nil then
-						World.destroy_unit(world, old_unit_left)
-
-						self.equipment_units[slot_index].left = nil
-					end
-				end
-
-				local unit = World.spawn_unit(world, unit_name)
-
-				self.equip_item_unit(self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
-
-				if unit_spawn_data.right_hand then
-					self.equipment_units[slot_index].right = unit
-				elseif unit_spawn_data.left_hand then
-					self.equipment_units[slot_index].left = unit
-				end
-			else
-				local old_unit = self.equipment_units[slot_index]
-
-				if old_unit ~= nil then
-					World.destroy_unit(world, old_unit)
-
-					self.equipment_units[slot_index] = nil
-				end
-
-				local unit = World.spawn_unit(world, unit_name)
-				self.equipment_units[slot_index] = unit
-
-				self.equip_item_unit(self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
+			if unit_spawn_data.right_hand then
+				self._equipment_units[slot_index].right = unit
+			elseif unit_spawn_data.left_hand then
+				self._equipment_units[slot_index].left = unit
 			end
+		else
+			local unit = World.spawn_unit(world, unit_name)
+			self._equipment_units[slot_index] = unit
 
-			local show_attachments_event = item_template.show_attachments_event
+			self:_spawn_item_unit(unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
+		end
 
-			if show_attachments_event then
-				Unit.flow_event(character_unit, show_attachments_event)
-			end
+		local show_attachments_event = item_template.show_attachments_event
+
+		if show_attachments_event then
+			Unit.flow_event(character_unit, show_attachments_event)
 		end
 	end
-
-	return 
 end
-MenuWorldPreviewer.equip_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
+
+MenuWorldPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links)
 	local world = self.world
 	local character_unit = self.character_unit
 
@@ -937,56 +815,194 @@ MenuWorldPreviewer.equip_item_unit = function (self, unit, item_slot_type, item_
 	end
 
 	GearUtils.link(world, unit_attachment_node_linking, scene_graph_links, character_unit, unit)
-
-	return 
 end
-MenuWorldPreviewer.clear_units = function (self, ignore_camera_reset)
+
+MenuWorldPreviewer._destroy_item_units_by_slot = function (self, slot_type)
+	local world = self.world
+	local item_info_by_slot = self._item_info_by_slot
+	local data = item_info_by_slot[slot_type]
+	local spawn_data = data.spawn_data
+
+	if spawn_data then
+		for _, unit_spawn_data in ipairs(spawn_data) do
+			local item_slot_type = unit_spawn_data.item_slot_type
+			local slot_index = unit_spawn_data.slot_index
+
+			if item_slot_type == "melee" or item_slot_type == "ranged" then
+				if unit_spawn_data.right_hand or unit_spawn_data.despawn_both_hands_units then
+					local old_unit_right = self._equipment_units[slot_index].right
+
+					if old_unit_right ~= nil then
+						World.destroy_unit(world, old_unit_right)
+
+						self._equipment_units[slot_index].right = nil
+					end
+				end
+
+				if unit_spawn_data.left_hand or unit_spawn_data.despawn_both_hands_units then
+					local old_unit_left = self._equipment_units[slot_index].left
+
+					if old_unit_left ~= nil then
+						World.destroy_unit(world, old_unit_left)
+
+						self._equipment_units[slot_index].left = nil
+					end
+				end
+			else
+				local old_unit = self._equipment_units[slot_index]
+
+				if old_unit ~= nil then
+					World.destroy_unit(world, old_unit)
+
+					self._equipment_units[slot_index] = nil
+				end
+			end
+		end
+	end
+end
+
+MenuWorldPreviewer.wield_weapon_slot = function (self, slot_type)
+	self._wielded_slot_type = slot_type
+	local melee_slot_info = self._item_info_by_slot.melee
+
+	if melee_slot_info then
+		local item_name = melee_slot_info.name
+		local backend_id = melee_slot_info.backend_id
+
+		self:equip_item(item_name, InventorySettings.slots_by_name.slot_melee, backend_id)
+	elseif slot_type == "melee" then
+	end
+
+	local ranged_slot_info = self._item_info_by_slot.ranged
+
+	if ranged_slot_info then
+		local item_name = ranged_slot_info.name
+		local backend_id = ranged_slot_info.backend_id
+
+		self:equip_item(item_name, InventorySettings.slots_by_name.slot_ranged, backend_id)
+	elseif slot_type == "ranged" then
+	end
+end
+
+MenuWorldPreviewer.item_name_by_slot_type = function (self, item_slot_type)
+	local item_info = self._item_info_by_slot[item_slot_type]
+
+	return item_info and item_info.name
+end
+
+MenuWorldPreviewer.wielded_slot_type = function (self)
+	return self._wielded_slot_type
+end
+
+MenuWorldPreviewer._reference_name = function (self)
+	local reference_name = "MenuWorldPreviewer"
+
+	if self.unique_id then
+		reference_name = reference_name .. tostring(self.unique_id)
+	end
+
+	return reference_name
+end
+
+MenuWorldPreviewer._load_packages = function (self, package_names)
+	local reference_name = self:_reference_name()
+	local package_manager = Managers.package
+
+	for index, package_name in ipairs(package_names) do
+		package_manager:load(package_name, reference_name, nil, true)
+	end
+end
+
+MenuWorldPreviewer._unload_all_packages = function (self)
+	self:_unload_hero_packages()
+	self:_unload_all_items()
+end
+
+MenuWorldPreviewer._unload_hero_packages = function (self)
+	local data = self._hero_loading_package_data
+
+	if not data then
+		return
+	end
+
+	local package_names = data.package_names
+	local package_manager = Managers.package
+	local reference_name = self:_reference_name()
+
+	for _, package_name in pairs(package_names) do
+		package_manager:unload(package_name, reference_name)
+	end
+
+	self._hero_loading_package_data = nil
+end
+
+MenuWorldPreviewer._unload_all_items = function (self)
+	local item_info_by_slot = self._item_info_by_slot
+
+	for slot_type, data in pairs(item_info_by_slot) do
+		self:_unload_item_packages_by_slot(slot_type)
+	end
+end
+
+MenuWorldPreviewer._unload_item_packages_by_slot = function (self, slot_type)
+	local item_info_by_slot = self._item_info_by_slot
+
+	if item_info_by_slot[slot_type] then
+		local slot_type_data = item_info_by_slot[slot_type]
+		local package_names = slot_type_data.package_names
+		local package_manager = Managers.package
+		local reference_name = self:_reference_name()
+
+		for _, package_name in ipairs(package_names) do
+			package_manager:unload(package_name, reference_name)
+		end
+
+		item_info_by_slot[slot_type] = nil
+	end
+end
+
+MenuWorldPreviewer.clear_units = function (self, reset_camera)
 	local world = self.world
 
 	for i = 1, 6, 1 do
-		if type(self.equipment_units[i]) == "table" then
-			if self.equipment_units[i].left then
-				World.destroy_unit(world, self.equipment_units[i].left)
+		if type(self._equipment_units[i]) == "table" then
+			if self._equipment_units[i].left then
+				World.destroy_unit(world, self._equipment_units[i].left)
 
-				self.equipment_units[i].left = nil
+				self._equipment_units[i].left = nil
 			end
 
-			if self.equipment_units[i].right then
-				World.destroy_unit(world, self.equipment_units[i].right)
+			if self._equipment_units[i].right then
+				World.destroy_unit(world, self._equipment_units[i].right)
 
-				self.equipment_units[i].right = nil
+				self._equipment_units[i].right = nil
 			end
-		elseif self.equipment_units[i] then
-			World.destroy_unit(world, self.equipment_units[i])
+		elseif self._equipment_units[i] then
+			World.destroy_unit(world, self._equipment_units[i])
 
-			self.equipment_units[i] = nil
+			self._equipment_units[i] = nil
 		end
 	end
-
-	table.clear(self.item_info_by_slot)
 
 	if self.character_unit ~= nil then
 		World.destroy_unit(world, self.character_unit)
 
 		self.character_unit = nil
 
-		if not ignore_camera_reset then
+		if reset_camera then
 			local default_animation_data = self._default_animation_data
 
-			self.set_character_axis_offset(self, "x", default_animation_data.x.value, 0.5, math.easeOutCubic)
-			self.set_character_axis_offset(self, "y", default_animation_data.y.value, 0.5, math.easeOutCubic)
-			self.set_character_axis_offset(self, "z", default_animation_data.z.value, 0.5, math.easeOutCubic)
+			self:set_character_axis_offset("x", default_animation_data.x.value, 0.5, math.easeOutCubic)
+			self:set_character_axis_offset("y", default_animation_data.y.value, 0.5, math.easeOutCubic)
+			self:set_character_axis_offset("z", default_animation_data.z.value, 0.5, math.easeOutCubic)
 		end
 	end
-
-	return 
 end
+
 MenuWorldPreviewer.trigger_unit_flow_event = function (self, unit, event_name)
 	if unit and Unit.alive(unit) then
 		Unit.flow_event(unit, event_name)
 	end
-
-	return 
 end
 
-return 
+return

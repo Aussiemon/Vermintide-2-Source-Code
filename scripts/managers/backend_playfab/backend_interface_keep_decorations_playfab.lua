@@ -3,6 +3,7 @@ require("scripts/settings/keep_decoration_settings")
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
 BackendInterfaceKeepDecorationsPlayFab = class(BackendInterfaceKeepDecorationsPlayFab)
 local BACKEND_PREFIX = "keep_decoration_"
+
 BackendInterfaceKeepDecorationsPlayFab.init = function (self, backend_mirror)
 	self._decoration_data = {}
 	self._decoration_data_to_save = {}
@@ -54,8 +55,6 @@ BackendInterfaceKeepDecorationsPlayFab.init = function (self, backend_mirror)
 				print("Keep decoration player data loaded!")
 			end
 		end
-
-		return 
 	end
 
 	for i = 1, num_requests, 1 do
@@ -63,20 +62,22 @@ BackendInterfaceKeepDecorationsPlayFab.init = function (self, backend_mirror)
 
 		PlayFabClientApi.GetUserReadOnlyData(request, on_complete)
 	end
-
-	return 
 end
+
 BackendInterfaceKeepDecorationsPlayFab.ready = function (self)
 	return self._initialized
 end
+
 BackendInterfaceKeepDecorationsPlayFab.update = function (self, dt)
-	return 
+	return
 end
+
 BackendInterfaceKeepDecorationsPlayFab.get = function (self, key)
 	local prefixed_key = BACKEND_PREFIX .. key
 
 	return self._decoration_data[prefixed_key]
 end
+
 BackendInterfaceKeepDecorationsPlayFab.set = function (self, key, value)
 	fassert(value ~= nil, "Trying to set a keep decoration to nil, don't do this")
 
@@ -84,14 +85,13 @@ BackendInterfaceKeepDecorationsPlayFab.set = function (self, key, value)
 	local current_value = self._decoration_data[prefixed_key]
 
 	if current_value == value then
-		return 
+		return
 	end
 
 	self._decoration_data[prefixed_key] = value
 	self._decoration_data_to_save[prefixed_key] = value
-
-	return 
 end
+
 BackendInterfaceKeepDecorationsPlayFab.save = function (self, save_callback)
 	local data_to_save = self._decoration_data_to_save
 
@@ -118,18 +118,14 @@ BackendInterfaceKeepDecorationsPlayFab.save = function (self, save_callback)
 			table.clear(data_to_save)
 			save_callback(on_complete, true)
 		end
-
-		return 
 	end
 
 	return {
 		payload = table.clone(request),
 		callback = function (payload, on_complete)
 			PlayFabClientApi.ExecuteCloudScript(payload, callback(request_callback, on_complete), callback(request_callback, on_complete))
-
-			return 
 		end
 	}
 end
 
-return 
+return

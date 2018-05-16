@@ -2,8 +2,6 @@ function mm_printf_force(format_text, ...)
 	format_text = "[Matchmaking] " .. format_text
 
 	printf(format_text, ...)
-
-	return 
 end
 
 function mm_printf(format_text, ...)
@@ -12,8 +10,6 @@ function mm_printf(format_text, ...)
 
 		printf(format_text, ...)
 	end
-
-	return 
 end
 
 script_data.matchmaking_debug = true
@@ -47,4 +43,4 @@ NetworkUtils = {
 	end
 }
 
-return 
+return

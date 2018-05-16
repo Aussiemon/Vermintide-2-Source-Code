@@ -6,17 +6,17 @@ DefaultAnimationFunctions = {
 		local player_unit = player.player_unit
 		local player_input = ScriptUnit.extension(player_unit, "input_system")
 		this.player_input_enabled = player_input.enabled
-		this.allowed_input = player_input.allowed_input_table(player_input)
-		this.disallowed_input = player_input.disallowed_input_table(player_input)
+		this.allowed_input = player_input:allowed_input_table()
+		this.disallowed_input = player_input:disallowed_input_table()
 		local allowed_input = {}
 
 		for _, input in pairs(this.allowed_input) do
 			allowed_input[input] = true
 		end
 
-		player_input.set_enabled(player_input, false)
-		player_input.set_allowed_inputs(player_input, allowed_input)
-		player_input.set_disallowed_inputs(player_input)
+		player_input:set_enabled(false)
+		player_input:set_allowed_inputs(allowed_input)
+		player_input:set_disallowed_inputs()
 		Managers.state.event:trigger("close_ingame_menu")
 		Managers.input:device_block_service("gamepad", 1, "ingame_menu")
 		Managers.input:device_block_service("keyboard", 1, "ingame_menu")
@@ -28,7 +28,7 @@ DefaultAnimationFunctions = {
 		local dir = enemy_head_pos - player_head_pos
 		local rotation = Quaternion.look(dir, Vector3.up())
 
-		first_person_ext.force_look_rotation(first_person_ext, rotation, 10)
+		first_person_ext:force_look_rotation(rotation, 10)
 
 		local level = LevelHelper:current_level(this.world)
 
@@ -43,11 +43,9 @@ DefaultAnimationFunctions = {
 			else
 				local mission_system = Managers.state.entity:system("mission_system")
 
-				mission_system.flow_callback_start_mission(mission_system, mission_name)
+				mission_system:flow_callback_start_mission(mission_name)
 			end
 		end
-
-		return 
 	end,
 	update_input = function (this, t)
 		if not this.activated then
@@ -72,7 +70,7 @@ DefaultAnimationFunctions = {
 		else
 			stop_delay = this.stop_delay or 0.15
 
-			if this.stop_timer and this.stop_timer + stop_delay < t then
+			if this.stop_timer and t > this.stop_timer + stop_delay then
 				Managers.time:set_global_time_scale(0)
 
 				this.stop_timer = nil
@@ -89,12 +87,12 @@ DefaultAnimationFunctions = {
 
 				for _, input in ipairs(inputs) do
 					local result = nil
-					local keymap_data = not gamepad_active and input_service.get_keymapping(input_service, input)
+					local keymap_data = not gamepad_active and input_service:get_keymapping(input)
 
 					if not keymap_data or keymap_data[2] == UNASSIGNED_KEY then
-						result = alternate_input_service.get(alternate_input_service, input)
+						result = alternate_input_service:get(input)
 					else
-						result = input_service.get(input_service, input)
+						result = input_service:get(input)
 					end
 
 					if type(result) == "number" and result == 0 then
@@ -121,12 +119,12 @@ DefaultAnimationFunctions = {
 
 					for _, input in ipairs(inputs) do
 						local result = nil
-						local keymap_data = not gamepad_active and input_service.get_keymapping(input_service, input)
+						local keymap_data = not gamepad_active and input_service:get_keymapping(input)
 
 						if not keymap_data or keymap_data[2] == UNASSIGNED_KEY then
-							result = alternate_input_service.get(alternate_input_service, input)
+							result = alternate_input_service:get(input)
 						else
-							result = input_service.get(input_service, input)
+							result = input_service:get(input)
 						end
 
 						if type(result) == "number" and result == 0 then
@@ -168,7 +166,7 @@ DefaultAnimationFunctions = {
 		else
 			local stop_delay = this.stop_delay or 0.15
 
-			if this.stop_timer and this.stop_timer + stop_delay < t then
+			if this.stop_timer and t > this.stop_timer + stop_delay then
 				Managers.time:set_global_time_scale(0)
 
 				this.stop_timer = nil
@@ -192,9 +190,9 @@ DefaultAnimationFunctions = {
 		local player_unit = player.player_unit
 		local player_input = ScriptUnit.extension(player_unit, "input_system")
 
-		player_input.set_enabled(player_input, this.player_input_enabled)
-		player_input.set_allowed_inputs(player_input, this.allowed_input)
-		player_input.set_disallowed_inputs(player_input, this.disallowed_input)
+		player_input:set_enabled(this.player_input_enabled)
+		player_input:set_allowed_inputs(this.allowed_input)
+		player_input:set_disallowed_inputs(this.disallowed_input)
 		Managers.input:device_unblock_service("gamepad", 1, "ingame_menu")
 		Managers.input:device_unblock_service("keyboard", 1, "ingame_menu")
 		Managers.input:device_unblock_service("mouse", 1, "ingame_menu")
@@ -212,32 +210,30 @@ DefaultAnimationFunctions = {
 			else
 				local mission_system = Managers.state.entity:system("mission_system")
 
-				mission_system.end_mission(mission_system, mission_name)
+				mission_system:end_mission(mission_name)
 			end
 		end
 
 		local level = LevelHelper:current_level(this.world)
 
 		Level.trigger_event(level, "lua_" .. this.name .. "_done")
-
-		return 
 	end,
 	default_prerequisites = function (this)
 		local player = Managers.player:local_player()
 		local player_unit = player.player_unit
 		local status_ext = ScriptUnit.extension(player_unit, "status_system")
 
-		if status_ext.dodge_locked(status_ext) or status_ext.get_is_dodging(status_ext) then
+		if status_ext:dodge_locked() or status_ext:get_is_dodging() then
 			return false
 		end
 
 		local character_state_machine_ext = ScriptUnit.extension(player_unit, "character_state_machine_system")
 
-		if character_state_machine_ext.current_state(character_state_machine_ext) ~= "standing" and character_state_machine_ext.current_state(character_state_machine_ext) ~= "walking" then
+		if character_state_machine_ext:current_state() ~= "standing" and character_state_machine_ext:current_state() ~= "walking" then
 			return false
 		end
 
-		if status_ext.is_blocking(status_ext) then
+		if status_ext:is_blocking() then
 			return false
 		end
 
@@ -382,4 +378,4 @@ for idx, pause_event in ipairs(PauseEvents.pause_events) do
 	PauseEvents.pause_events[pause_event.name] = pause_event
 end
 
-return 
+return

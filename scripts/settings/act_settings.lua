@@ -25,4 +25,4 @@ ActSettings.act_4 = {
 	display_name = "act_4_display_name"
 }
 
-return 
+return

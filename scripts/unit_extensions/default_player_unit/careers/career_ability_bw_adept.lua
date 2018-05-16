@@ -5,8 +5,6 @@ local function dprint(...)
 	if DEBUG then
 		printf(...)
 	end
-
-	return 
 end
 
 CareerAbilityBWAdept._ballistic_raycast = function (self, physics_world, max_steps, max_time, position, velocity, gravity, collision_filter)
@@ -62,9 +60,8 @@ CareerAbilityBWAdept.init = function (self, extension_init_context, unit, extens
 	self.input_manager = Managers.input
 	self.effect_id = nil
 	self.effect_name = "fx/wpnfx_staff_geiser_charge"
-
-	return 
 end
+
 CareerAbilityBWAdept.extensions_ready = function (self, world, unit)
 	self.first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 	self.status_extension = ScriptUnit.extension(unit, "status_system")
@@ -76,49 +73,49 @@ CareerAbilityBWAdept.extensions_ready = function (self, world, unit)
 	if self.first_person_extension then
 		self.first_person_unit = self.first_person_extension:get_first_person_unit()
 	end
+end
 
-	return 
-end
 CareerAbilityBWAdept.destroy = function (self)
-	return 
+	return
 end
+
 CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
-	if not self._ability_available(self) then
-		return 
+	if not self:_ability_available() then
+		return
 	end
 
 	local input_extension = self._input_extension
 
 	if not input_extension then
-		return 
+		return
 	end
 
 	if not self.is_priming then
-		if input_extension.get(input_extension, "action_career") then
-			self._start_priming(self)
+		if input_extension:get("action_career") then
+			self:_start_priming()
 		end
 	elseif self.is_priming then
-		local end_position = self._update_priming(self, dt, t)
+		local end_position = self:_update_priming(dt, t)
 
-		if input_extension.get(input_extension, "action_two") or input_extension.get(input_extension, "jump") or input_extension.get(input_extension, "jump_only") then
-			self._stop_priming(self)
+		if input_extension:get("action_two") or input_extension:get("jump") or input_extension:get("jump_only") then
+			self:_stop_priming()
 
-			return 
+			return
 		end
 
-		if input_extension.get(input_extension, "action_career_release") then
-			self._run_ability(self, end_position)
+		if input_extension:get("action_career_release") then
+			self:_run_ability(end_position)
 		end
 	end
-
-	return 
 end
+
 CareerAbilityBWAdept._ability_available = function (self)
 	local career_extension = self.career_extension
 	local status_extension = self.status_extension
 
-	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
+	return career_extension:can_use_activated_ability() and not status_extension:is_disabled()
 end
+
 CareerAbilityBWAdept._start_priming = function (self)
 	if self.local_player then
 		local world = self.world
@@ -128,9 +125,8 @@ CareerAbilityBWAdept._start_priming = function (self)
 
 	self._last_valid_position = nil
 	self.is_priming = true
-
-	return 
 end
+
 CareerAbilityBWAdept._landing_postion_valid = function (self, start_pos, end_pos, data, t)
 	local valid_pos = false
 	local astar = data.astar
@@ -174,6 +170,7 @@ CareerAbilityBWAdept._landing_postion_valid = function (self, start_pos, end_pos
 
 	return valid_pos
 end
+
 CareerAbilityBWAdept._update_priming = function (self, dt, t)
 	local effect_id = self.effect_id
 	local owner_unit = self.owner_unit
@@ -181,7 +178,7 @@ CareerAbilityBWAdept._update_priming = function (self, dt, t)
 	local game = Managers.state.network:game()
 	local network_manager = Managers.state.network
 	local physics_world = World.get_data(world, "physics_world")
-	local unit_id = network_manager.unit_game_object_id(network_manager, owner_unit)
+	local unit_id = network_manager:unit_game_object_id(owner_unit)
 	local player_position = GameSession.game_object_field(game, unit_id, "aim_position")
 	local up = Vector3(0, 0, 1)
 	local player_rotation = Quaternion.look(GameSession.game_object_field(game, unit_id, "aim_direction"), up)
@@ -192,7 +189,7 @@ CareerAbilityBWAdept._update_priming = function (self, dt, t)
 	local velocity = Quaternion.forward(Quaternion.multiply(player_rotation, Quaternion(Vector3.right(), angle))) * speed
 	local gravity = Vector3(0, 0, -2)
 	local collision_filter = "filter_adept_teleport"
-	local result, hit_position, hit_distance, normal = self._ballistic_raycast(self, physics_world, max_steps, max_time, player_position, velocity, gravity, collision_filter, false)
+	local result, hit_position, hit_distance, normal = self:_ballistic_raycast(physics_world, max_steps, max_time, player_position, velocity, gravity, collision_filter, false)
 
 	if result and Vector3.dot(normal, Vector3.up()) < 0.75 then
 		local step_back = Vector3.normalize(hit_position - player_position) * 1.5
@@ -222,7 +219,7 @@ CareerAbilityBWAdept._update_priming = function (self, dt, t)
 		self._astar_data = data
 	end
 
-	local valid_pos = self._landing_postion_valid(self, player_position, hit_position, data, t)
+	local valid_pos = self:_landing_postion_valid(player_position, hit_position, data, t)
 
 	if valid_pos then
 		if effect_id then
@@ -237,9 +234,8 @@ CareerAbilityBWAdept._update_priming = function (self, dt, t)
 			self._last_valid_position = Vector3Box(hit_position)
 		end
 	end
-
-	return 
 end
+
 CareerAbilityBWAdept._stop_priming = function (self)
 	if self.effect_id then
 		World.destroy_particles(self.world, self.effect_id)
@@ -268,19 +264,18 @@ CareerAbilityBWAdept._stop_priming = function (self)
 	end
 
 	self.is_priming = false
-
-	return 
 end
+
 CareerAbilityBWAdept._run_ability = function (self)
 	dprint("_run_ability")
-	self._stop_priming(self)
+	self:_stop_priming()
 
 	local end_position = self._last_valid_position and self._last_valid_position:unbox()
 
 	if not end_position then
 		dprint("no end_position")
 
-		return 
+		return
 	end
 
 	local world = self.world
@@ -296,7 +291,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
 	if local_player or (is_server and bot_player) then
-		local game = network_manager.game(network_manager)
+		local game = network_manager:game()
 		local start_pos = POSITION_LOOKUP[owner_unit]
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 		local projected_start_pos = LocomotionUtils.pos_on_mesh(nav_world, start_pos, 2, 30)
@@ -304,7 +299,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 		if projected_start_pos then
 			local damage_wave_template_name = "sienna_adept_ability_trail"
 
-			if talent_extension.has_talent(talent_extension, "sienna_adept_ability_trail_increased_duration", "bright_wizard", true) then
+			if talent_extension:has_talent("sienna_adept_ability_trail_increased_duration", "bright_wizard", true) then
 				damage_wave_template_name = "sienna_adept_ability_trail_increased_duration"
 			end
 
@@ -319,45 +314,42 @@ CareerAbilityBWAdept._run_ability = function (self)
 	if local_player then
 		local first_person_extension = self.first_person_extension
 
-		first_person_extension.animation_event(first_person_extension, "battle_wizard_active_ability_blink")
+		first_person_extension:animation_event("battle_wizard_active_ability_blink")
 
 		MOOD_BLACKBOARD.skill_adept = true
 
-		career_extension.set_state(career_extension, "sienna_activate_adept")
+		career_extension:set_state("sienna_activate_adept")
 	end
 
 	local locomotion_extension = self.locomotion_extension
 
-	locomotion_extension.teleport_to(locomotion_extension, end_position)
+	locomotion_extension:teleport_to(end_position)
 
 	local position = end_position
 	local rotation = Unit.local_rotation(owner_unit, 0)
 	local explosion_template = "sienna_adept_activated_ability_end_stagger"
 	local scale = 1
-	local career_power_level = career_extension.get_career_power_level(career_extension)
+	local career_power_level = career_extension:get_career_power_level()
 	local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-	area_damage_system.create_explosion(area_damage_system, owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level)
+	area_damage_system:create_explosion(owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level)
 
-	if talent_extension.has_talent(talent_extension, "sienna_adept_activated_ability_dump_overcharge", "bright_wizard", true) and (local_player or (is_server and bot_player)) then
+	if talent_extension:has_talent("sienna_adept_activated_ability_dump_overcharge", "bright_wizard", true) and (local_player or (is_server and bot_player)) then
 		local overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 
-		overcharge_extension.reset(overcharge_extension)
+		overcharge_extension:reset()
 	end
 
-	career_extension.start_activated_ability_cooldown(career_extension)
-	self._play_vo(self)
-
-	return 
+	career_extension:start_activated_ability_cooldown()
+	self:_play_vo()
 end
+
 CareerAbilityBWAdept._play_vo = function (self)
 	local owner_unit = self.owner_unit
 	local dialogue_input = ScriptUnit.extension_input(owner_unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
 
-	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "activate_ability", event_data)
-
-	return 
+	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
 
-return 
+return

@@ -1120,4 +1120,4 @@ AttackTemplates = {
 	payload_wagon = {}
 }
 
-return 
+return

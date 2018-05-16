@@ -1,4 +1,5 @@
 VolumetricsFlowCallbacks = VolumetricsFlowCallbacks or {}
+
 VolumetricsFlowCallbacks.register_fog_volume = function (params)
 	local unit = params.unit
 	local albedo_r = stingray.Unit.get_data(unit, "FogProperties", "albedo", 0)
@@ -15,17 +16,14 @@ VolumetricsFlowCallbacks.register_fog_volume = function (params)
 	if unit then
 		stingray.Volumetrics.register_volume(unit, albedo, extinction, phase, falloff)
 	end
-
-	return 
 end
+
 VolumetricsFlowCallbacks.unregister_fog_volume = function (params)
 	local unit = params.unit
 
 	if unit then
 		stingray.Volumetrics.unregister_volume(unit)
 	end
-
-	return 
 end
 
-return 
+return

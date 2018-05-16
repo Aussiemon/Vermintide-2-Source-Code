@@ -1,39 +1,5 @@
 InputAux = InputAux or {}
 local InputAux = InputAux
-
-local function synergy_wrapper(device_name)
-	local wrapper = {}
-	local device = rawget(_G, device_name)
-
-	if not device then
-		return nil
-	end
-
-	for k, v in pairs(device) do
-		wrapper[k] = v
-	end
-
-	wrapper.button_index = function (key)
-		local index = device.button_index(key)
-
-		if index == nil then
-			index = 1
-		end
-
-		return index
-	end
-	wrapper.pressed = function (key)
-		local pressed = device.pressed(key)
-
-		if pressed and key ~= 0 and key ~= 22 then
-		end
-
-		return pressed
-	end
-
-	return wrapper
-end
-
 InputAux.input_device_mapping = InputAux.input_device_mapping or {
 	gamepad = {
 		rawget(_G, "Pad1"),
@@ -56,12 +22,6 @@ InputAux.input_device_mapping = InputAux.input_device_mapping or {
 	},
 	recording = {
 		PlayRecordingInputDevice
-	},
-	synergy_mouse = {
-		rawget(_G, "SynergyMouse")
-	},
-	synergy_keyboard = {
-		synergy_wrapper("SynergyKeyboard")
 	}
 }
 
@@ -82,22 +42,22 @@ InputAux.input_map_types = {
 	pressed = "boolean",
 	held = "boolean"
 }
+
 InputAux.get_device_type = function (device)
 	return InputAux.input_device_type_lookup[device]
 end
+
 InputAux.remove_device = function (input_device_type, input_device)
 	local index = table.find(InputAux.input_device_mapping[input_device_type], input_device)
 
 	fassert(index, "[InputAux] There is no controller with the name %s available", input_device.name())
 	table.remove(InputAux.input_device_mapping[input_device_type], index)
-
-	return 
 end
+
 InputAux.add_device = function (input_device_type, input_device)
 	InputAux.input_device_mapping[input_device_type][#InputAux.input_device_mapping[input_device_type] + 1] = input_device
-
-	return 
 end
+
 InputAux.combination_functions = {
 	max = math.max,
 	min = math.min,
@@ -201,4 +161,4 @@ TestFilters = {
 	}
 }
 
-return 
+return

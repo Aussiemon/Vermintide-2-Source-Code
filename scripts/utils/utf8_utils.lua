@@ -1,4 +1,5 @@
 UTF8Utils = UTF8Utils or {}
+
 UTF8Utils.string_length = function (text)
 	local length = string.len(text)
 	local index = 1
@@ -12,6 +13,7 @@ UTF8Utils.string_length = function (text)
 
 	return num_chars
 end
+
 UTF8Utils.sub_string = function (text, from, to)
 	if to == 0 or text == "" then
 		return ""
@@ -22,7 +24,7 @@ UTF8Utils.sub_string = function (text, from, to)
 	local index = 1
 	local i = 1
 
-	while i <= length do
+	while length >= i do
 		tmp_byte_from, tmp_byte_to = Utf8.location(text, i)
 
 		if index == from then
@@ -44,8 +46,6 @@ UTF8Utils.sub_string = function (text, from, to)
 	else
 		return ""
 	end
-
-	return 
 end
 
-return 
+return

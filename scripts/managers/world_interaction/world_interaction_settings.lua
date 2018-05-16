@@ -49,4 +49,4 @@ WorldInteractionSettings = {
 	}
 }
 
-return 
+return

@@ -1,18 +1,17 @@
 require("scripts/managers/camera/cameras/base_camera")
 
 OffsetCamera = class(OffsetCamera, BaseCamera)
+
 OffsetCamera.init = function (self, root_node)
 	BaseCamera.init(self, root_node)
 
 	self._offset_position = Vector3(0, 0, 0)
-
-	return 
 end
+
 OffsetCamera.parse_parameters = function (self, camera_settings, parent_node)
 	BaseCamera.parse_parameters(self, camera_settings, parent_node)
-
-	return 
 end
+
 OffsetCamera.update = function (self, dt, position, rotation, data)
 	local offset_position = data.offset_position or Vector3(0, 0, 0)
 	local offset_x = offset_position.x * Quaternion.right(rotation)
@@ -21,8 +20,6 @@ OffsetCamera.update = function (self, dt, position, rotation, data)
 	position = position + offset_x + offset_y + offset_z
 
 	BaseCamera.update(self, dt, position, rotation, data)
-
-	return 
 end
 
-return 
+return

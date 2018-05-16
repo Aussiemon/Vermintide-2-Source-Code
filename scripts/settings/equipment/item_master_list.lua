@@ -24,8 +24,6 @@ local function aggregate(list)
 			error("unknown type " .. type(item))
 		end
 	end
-
-	return 
 end
 
 function parse_item_master_list()
@@ -44,8 +42,6 @@ function parse_item_master_list()
 			all_item_types[item.item_type] = true
 		end
 	end
-
-	return 
 end
 
 if Managers.localizer then
@@ -53,13 +49,12 @@ if Managers.localizer then
 end
 
 ItemMasterListMeta = ItemMasterListMeta or {}
+
 ItemMasterListMeta.__index = function (table, key)
 	error(string.format("ItemMasterList has no item %q", tostring(key)))
 	error(string.format("IMPORTANT: This error might be caused by old data in local save files. Clear local data by deleting backend_local.sav"))
-
-	return 
 end
 
 setmetatable(ItemMasterList, ItemMasterListMeta)
 
-return 
+return

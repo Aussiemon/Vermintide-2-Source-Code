@@ -9,13 +9,14 @@ DeathReactions_profiler_names = DeathReactions_profiler_names or {
 }
 local profiler_names = DeathReactions_profiler_names
 local BLACKBOARDS = BLACKBOARDS
+
 DeathSystem.init = function (self, entity_system_creation_context, system_name)
 	DeathSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
 	self.network_event_delegate = network_event_delegate
 
-	network_event_delegate.register(network_event_delegate, self, unpack(RPCS))
+	network_event_delegate:register(self, unpack(RPCS))
 
 	self.unit_extensions = {}
 	self.death_reactions_to_start = {}
@@ -23,14 +24,12 @@ DeathSystem.init = function (self, entity_system_creation_context, system_name)
 		unit = {},
 		husk = {}
 	}
-
-	return 
 end
+
 DeathSystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
-
-	return 
 end
+
 DeathSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, self.NAME, extension_init_data)
 	self.unit_extensions[unit] = extension
@@ -49,13 +48,13 @@ DeathSystem.on_add_extension = function (self, world, unit, extension_name, exte
 
 	return extension
 end
+
 DeathSystem.extensions_ready = function (self, world, unit, extension_name)
 	local extension = self.unit_extensions[unit]
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 	extension.health_extension = health_extension
-
-	return 
 end
+
 DeathSystem.on_remove_extension = function (self, unit, extension_name)
 	fassert(ScriptUnit.has_extension(unit, self.NAME), "Trying to remove non-existing extension %q from unit %s", extension_name, unit)
 	ScriptUnit.remove_extension(unit, self.NAME)
@@ -64,11 +63,10 @@ DeathSystem.on_remove_extension = function (self, unit, extension_name)
 	self.unit_extensions[unit] = nil
 	self.death_reactions_to_start[unit] = nil
 	self.active_reactions[extension.network_type][extension.death_reaction_template][unit] = nil
-
-	return 
 end
+
 DeathSystem.hot_join_sync = function (self, sender)
-	return 
+	return
 end
 
 local function start_death_reaction(unit, death_extension, killing_blow, active_reactions, t, context, is_server)
@@ -95,8 +93,6 @@ local function start_death_reaction(unit, death_extension, killing_blow, active_
 			breed.run_on_death(unit, blackboard)
 		end
 	end
-
-	return 
 end
 
 DeathSystem.update = function (self, context, t)
@@ -131,8 +127,6 @@ DeathSystem.update = function (self, context, t)
 			end
 		end
 	end
-
-	return 
 end
 
 local function is_hot_join_sync(killing_blow)
@@ -145,18 +139,18 @@ DeathSystem.kill_unit = function (self, unit, killing_blow)
 	local extension = self.unit_extensions[unit]
 
 	if not extension then
-		return 
+		return
 	end
 
 	if self.is_server then
 		local ping_system = Managers.state.entity:system("ping_system")
 
-		ping_system.remove_ping_from_unit(ping_system, unit)
+		ping_system:remove_ping_from_unit(unit)
 	end
 
 	local health_extension = extension.health_extension
 
-	health_extension.set_dead(health_extension)
+	health_extension:set_dead()
 
 	if is_hot_join_sync(killing_blow) then
 		extension.death_has_started = true
@@ -164,8 +158,6 @@ DeathSystem.kill_unit = function (self, unit, killing_blow)
 
 	local death_reactions_to_start = self.death_reactions_to_start
 	death_reactions_to_start[unit] = killing_blow
-
-	return 
 end
 
-return 
+return

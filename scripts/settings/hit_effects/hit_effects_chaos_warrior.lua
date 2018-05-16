@@ -2211,4 +2211,4 @@ HitEffectsChaosWarrior = {
 	}
 }
 
-return 
+return

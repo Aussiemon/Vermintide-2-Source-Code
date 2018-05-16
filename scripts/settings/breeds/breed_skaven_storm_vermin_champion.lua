@@ -610,7 +610,7 @@ local action_data = {
 				ready_function = function (unit, blackboard, t)
 					local charge_t = t - blackboard.attack_sequence_start_time
 
-					return (1.5 < charge_t and 0 < blackboard.surrounding_players) or 2.5 < charge_t
+					return (charge_t > 1.5 and blackboard.surrounding_players > 0) or charge_t > 2.5
 				end
 			}
 		},
@@ -1153,8 +1153,6 @@ local action_data = {
 
 				return math.lerp(0.4, 2.95, scaled_t)
 			end
-
-			return 
 		end
 	},
 	special_attack_shatter = {
@@ -1670,4 +1668,4 @@ local action_data = {
 }
 BreedActions.skaven_storm_vermin_champion = table.create_copy(BreedActions.skaven_storm_vermin_champion, action_data)
 
-return 
+return

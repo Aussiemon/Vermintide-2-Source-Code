@@ -5,26 +5,24 @@ local extensions = {
 	"GenericUnitAimExtension"
 }
 AimSystem = class(AimSystem, ExtensionSystemBase)
+
 AimSystem.init = function (self, context, system_name)
 	AimSystem.super.init(self, context, system_name, extensions)
+end
 
-	return 
-end
 AimSystem.destroy = function (self)
-	return 
+	return
 end
+
 AimSystem.on_freeze_extension = function (self, unit, extension_name)
 	ScriptUnit.destroy_extension(unit, self.NAME)
-	self.on_remove_extension(self, unit, extension_name)
-
-	return 
+	self:on_remove_extension(unit, extension_name)
 end
+
 AimSystem.update = function (self, context, t)
 	local dt = context.dt
 
-	self.update_extension(self, "GenericUnitAimExtension", dt, context, t)
-
-	return 
+	self:update_extension("GenericUnitAimExtension", dt, context, t)
 end
 
-return 
+return

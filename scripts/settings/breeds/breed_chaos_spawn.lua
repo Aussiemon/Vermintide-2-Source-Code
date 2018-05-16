@@ -865,18 +865,16 @@ local action_data = {
 				hit_player_func = function (unit, blackboard, hit_unit, action, attack)
 					local status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
 
-					if not status_extension.is_disabled(status_extension) and not status_extension.is_invisible(status_extension) then
+					if not status_extension:is_disabled() and not status_extension:is_invisible() then
 						blackboard.victim_grabbed = hit_unit
 						local network_manager = Managers.state.network
 
-						network_manager.anim_event(network_manager, unit, "attack_grab_player")
+						network_manager:anim_event(unit, "attack_grab_player")
 						StatusUtils.set_grabbed_by_chaos_spawn_network(hit_unit, true, unit)
 
 						blackboard.grabbed_time = 0
 						blackboard.grabbed_state = "tentacle_grab"
 					end
-
-					return 
 				end,
 				extra_space_directions = {
 					bwd = true,
@@ -1207,4 +1205,4 @@ local action_data = {
 }
 BreedActions.chaos_spawn = table.create_copy(BreedActions.chaos_spawn, action_data)
 
-return 
+return

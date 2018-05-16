@@ -2,14 +2,10 @@ local function voip_info_print(...)
 	if script_data.debug_voip then
 		printf(...)
 	end
-
-	return 
 end
 
 local function voip_warning_print(...)
 	Application.warning(...)
-
-	return 
 end
 
 Voip = class(Voip)
@@ -77,9 +73,8 @@ if has_steam and not disable_voip then
 			else
 				voip_info_print("[VOIP] Trying to remove member from bad room: %q, current room id: %q", room_id, self.room_id)
 			end
-
-			return 
 		end
+
 		self.room_member_added = function (room_id, peer_id)
 			voip_info_print("[VOIP] Peer %s joined room %s (my room id %q)", peer_id, tostring(room_id), tostring(self.room_id))
 
@@ -91,59 +86,55 @@ if has_steam and not disable_voip then
 
 			return self.timpani_world, "temp_voip_event"
 		end
+	end
 
-		return 
-	end
 	Voip.set_input_manager = function (self, input_manager)
-		return 
+		return
 	end
+
 	Voip.register_rpcs = function (self, network_event_delegate, network_transmit)
 		self.network_transmit = network_transmit
 		self.network_event_delegate = network_event_delegate
 
-		network_event_delegate.register(network_event_delegate, self, "rpc_voip_room_to_join", "rpc_voip_room_request", "rpc_notify_connected")
-
-		return 
+		network_event_delegate:register(self, "rpc_voip_room_to_join", "rpc_voip_room_request", "rpc_notify_connected")
 	end
+
 	Voip.unregister_rpcs = function (self)
 		self.network_event_delegate:unregister(self)
 
 		self.network_event_delegate = nil
 		self.network_transmit = nil
-
-		return 
 	end
+
 	Voip.rpc_notify_connected = function (self, sender)
 		if self.enabled and not self.is_server then
 			self.requesting_room = true
 
 			self.network_transmit:send_rpc_server("rpc_voip_room_request", true)
 		end
-
-		return 
 	end
+
 	Voip.rpc_voip_room_request = function (self, sender, enter)
 		local room_id = self.room_id
 
 		if not self.is_server then
 			voip_warning_print("[VOIP] Got request from %s to %s but is not server", sender, (enter and "enter") or "leave")
 
-			return 
+			return
 		end
 
 		local room_members = SteamVoipRoom.members(room_id)
 		local member_is_in_room = table.find(room_members, sender)
 
 		if enter and not member_is_in_room then
-			self.add_voip_member(self, sender)
+			self:add_voip_member(sender)
 		elseif not enter and member_is_in_room then
-			self.remove_member(self, sender)
+			self:remove_member(sender)
 		else
 			voip_warning_print("[VOIP] Got request from %s to %s room %s but member_is_in_room was %s", sender, (enter and "enter") or "leave", self.room_id, member_is_in_room)
 		end
-
-		return 
 	end
+
 	Voip.rpc_voip_room_to_join = function (self, sender, room_id)
 		self.requesting_room = false
 
@@ -157,15 +148,14 @@ if has_steam and not disable_voip then
 			local voip_client = SteamVoip.join_room(sender, room_id)
 			self.voip_client = voip_client
 		end
-
-		return 
 	end
+
 	Voip.destroy = function (self)
 		voip_info_print("[VOIP] Destroying VOIP.")
 
 		if self.room_id then
 			if self.voip_client then
-				self.leave_voip_room(self)
+				self:leave_voip_room()
 			end
 
 			if self.is_server then
@@ -180,20 +170,19 @@ if has_steam and not disable_voip then
 		self.room_member_removed = nil
 		self.room_member_added = nil
 		self.member_list = nil
-
-		return 
 	end
+
 	Voip.update = function (self, dt)
 		SteamVoip.update(self)
 
 		if self.voip_client then
 			if SteamVoipClient.broken_host(self.voip_client) then
 				voip_warning_print("[STEAM VOIP]: Connection to host %q broken. Leaving room.", tostring(self.room_host))
-				self.leave_voip_room(self)
+				self:leave_voip_room()
 			else
 				for peer_id, _ in pairs(self.added_members) do
 					if not self.muted_peers[peer_id] then
-						self.unmute_member(self, peer_id)
+						self:unmute_member(peer_id)
 					end
 
 					local mute_out = self.push_to_talk and not self.push_to_talk_active
@@ -209,7 +198,7 @@ if has_steam and not disable_voip then
 
 			if self.push_to_talk then
 				local input_service = Managers.input:get_service("Player")
-				local push_to_talk_active = input_service.get(input_service, "voip_push_to_talk")
+				local push_to_talk_active = input_service:get("voip_push_to_talk")
 
 				if push_to_talk_active and not self.push_to_talk_active then
 					self.push_to_talk_active = true
@@ -282,9 +271,8 @@ if has_steam and not disable_voip then
 				Debug.text("VoIP - disabled")
 			end
 		end
-
-		return 
 	end
+
 	Voip.add_voip_member = function (self, member)
 		voip_info_print("[VOIP] Adding voip member: %q", tostring(member))
 
@@ -293,9 +281,8 @@ if has_steam and not disable_voip then
 		assert(voip_room, "Trying to add a member to a none existing voip room.")
 		SteamVoipRoom.add_member(voip_room, member)
 		self.network_transmit:send_rpc("rpc_voip_room_to_join", member, tostring(self.room_id))
-
-		return 
 	end
+
 	Voip.remove_member = function (self, member)
 		voip_info_print("[VOIP] Removing voip member: %q", tostring(member))
 
@@ -303,12 +290,11 @@ if has_steam and not disable_voip then
 
 		assert(voip_room, "Trying to remove a member from a none existing voip room.")
 		SteamVoipRoom.remove_member(voip_room, member)
-
-		return 
 	end
+
 	Voip.mute_member = function (self, member)
 		if self.voip_client == nil then
-			return 
+			return
 		end
 
 		self.muted_peers[member] = true
@@ -316,18 +302,17 @@ if has_steam and not disable_voip then
 		if self.member_list[member] == nil then
 			voip_info_print("[VOIP] Muting voip member: %q even though it's not in the room (yet).", tostring(member))
 
-			return 
+			return
 		end
 
 		voip_info_print("[VOIP] Muting voip member: %q", tostring(member))
 		SteamVoipClient.select_out(self.voip_client, false, member)
 		SteamVoipClient.select_in(self.voip_client, false, member)
-
-		return 
 	end
+
 	Voip.unmute_member = function (self, member)
 		if self.voip_client == nil then
-			return 
+			return
 		end
 
 		self.muted_peers[member] = nil
@@ -335,18 +320,18 @@ if has_steam and not disable_voip then
 		if self.member_list[member] == nil then
 			voip_info_print("[VOIP] Unmuting voip member: %q even though it's not in the room (yet).", tostring(member))
 
-			return 
+			return
 		end
 
 		voip_info_print("[VOIP] Unmuting voip member: %q", tostring(member))
 		SteamVoipClient.select_out(self.voip_client, true, member)
 		SteamVoipClient.select_in(self.voip_client, true, member)
-
-		return 
 	end
+
 	Voip.peer_muted = function (self, peer_id)
 		return self.muted_peers[peer_id]
 	end
+
 	Voip.leave_voip_room = function (self)
 		voip_info_print("[VOIP] Leaving VOIP room.")
 		assert(self.room_id, "Trying to leave when we're not in any room.")
@@ -359,19 +344,17 @@ if has_steam and not disable_voip then
 		if not self.is_server then
 			self.room_id = nil
 		end
-
-		return 
 	end
+
 	Voip.set_volume = function (self, voip_bus_volume)
-		assert(0 <= voip_bus_volume and voip_bus_volume <= 100)
+		assert(voip_bus_volume >= 0 and voip_bus_volume <= 100)
 
 		voip_bus_volume = voip_bus_volume * 0.5 - 50
 
 		Timpani.set_bus_volume("voip", voip_bus_volume)
 		Timpani.set_bus_volume("Master Bus", voip_bus_volume)
-
-		return 
 	end
+
 	Voip.set_enabled = function (self, enabled)
 		self.enabled = enabled
 
@@ -394,12 +377,11 @@ if has_steam and not disable_voip then
 			self.network_transmit:send_rpc_server("rpc_voip_room_request", true)
 		elseif not enabled and self.voip_client then
 			voip_info_print("[VOIP] Enabling, requesting to leave room")
-			self.leave_voip_room(self)
+			self:leave_voip_room()
 			self.network_transmit:send_rpc_server("rpc_voip_room_request", false)
 		end
-
-		return 
 	end
+
 	Voip.set_push_to_talk = function (self, push_to_talk)
 		self.push_to_talk = push_to_talk
 
@@ -408,58 +390,71 @@ if has_steam and not disable_voip then
 				SteamVoipClient.select_out(self.voip_client, not push_to_talk, member_peer_id)
 			end
 		end
-
-		return 
 	end
+
 	Voip.is_talking = function (self, peer_id)
 		return false
 	end
 else
 	Voip.init = function (self)
-		return 
+		return
 	end
+
 	Voip.set_input_manager = function (self, input_manager)
-		return 
+		return
 	end
+
 	Voip.destroy = function (self)
-		return 
+		return
 	end
+
 	Voip.destroy_voip_system = function (self)
-		return 
+		return
 	end
+
 	Voip.register_rpcs = function (self)
-		return 
+		return
 	end
+
 	Voip.unregister_rpcs = function (self)
-		return 
+		return
 	end
+
 	Voip.add_voip_member = function (self)
-		return 
+		return
 	end
+
 	Voip.mute_member = function (self)
-		return 
+		return
 	end
+
 	Voip.unmute_member = function (self)
-		return 
+		return
 	end
+
 	Voip.update = function (self)
-		return 
+		return
 	end
+
 	Voip.peer_muted = function (self)
-		return 
+		return
 	end
+
 	Voip.set_volume = function (self)
-		return 
+		return
 	end
+
 	Voip.set_enabled = function (self)
-		return 
+		return
 	end
+
 	Voip.set_push_to_talk = function (self)
-		return 
+		return
 	end
+
 	Voip.is_talking = function (self)
-		return 
+		return
 	end
 end
 
-return 
+return

@@ -3,12 +3,13 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 BTGreySeerGroundCombatAction = class(BTGreySeerGroundCombatAction, BTNode)
 local PLAYER_POSITIONS = PLAYER_POSITIONS
 local PLAYER_UNITS = PLAYER_UNITS
+
 BTGreySeerGroundCombatAction.init = function (self, ...)
 	BTGreySeerGroundCombatAction.super.init(self, ...)
-
-	return 
 end
+
 BTGreySeerGroundCombatAction.name = "BTGreySeerGroundCombatAction"
+
 BTGreySeerGroundCombatAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -35,19 +36,18 @@ BTGreySeerGroundCombatAction.enter = function (self, unit, blackboard, t)
 	final_phase_data.num_teleports = final_phase_data.num_teleports or 1
 	final_phase_data.spawn_allies_timer = final_phase_data.spawn_allies_timer or t + 3
 	final_phase_data.teleport_timer = final_phase_data.teleport_timer or t
-
-	return 
 end
+
 BTGreySeerGroundCombatAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.action = nil
 
 	blackboard.navigation_extension:set_enabled(true)
-
-	return 
 end
+
 local Unit_alive = Unit.alive
+
 BTGreySeerGroundCombatAction.run = function (self, unit, blackboard, t, dt)
-	local ready_to_cast = self.update_spells(self, unit, blackboard, t)
+	local ready_to_cast = self:update_spells(unit, blackboard, t)
 
 	if ready_to_cast then
 		blackboard.ready_to_summon = true
@@ -56,26 +56,26 @@ BTGreySeerGroundCombatAction.run = function (self, unit, blackboard, t, dt)
 	else
 		return "running"
 	end
-
-	return 
 end
+
 BTGreySeerGroundCombatAction.update_spells = function (self, unit, blackboard, t)
 	local current_phase = blackboard.current_phase
 	local ready_to_summon = false
 	local position = POSITION_LOOKUP[unit]
 	local target_unit_direction = blackboard.target_unit and position - POSITION_LOOKUP[blackboard.target_unit]
 
-	self.update_warp_lightning_spell(self, unit, blackboard, t, position, target_unit_direction)
-	self.update_vermintide_spell(self, unit, blackboard, t, position, target_unit_direction)
+	self:update_warp_lightning_spell(unit, blackboard, t, position, target_unit_direction)
+	self:update_vermintide_spell(unit, blackboard, t, position, target_unit_direction)
 
 	if current_phase < 4 then
-		ready_to_summon = self.update_regular_spells(self, unit, blackboard, t)
+		ready_to_summon = self:update_regular_spells(unit, blackboard, t)
 	elseif current_phase == 4 then
-		ready_to_summon = self.update_final_phase(self, unit, blackboard, t)
+		ready_to_summon = self:update_final_phase(unit, blackboard, t)
 	end
 
 	return ready_to_summon
 end
+
 BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboard, t)
 	local action = blackboard.action
 	local ready_to_summon = nil
@@ -96,13 +96,13 @@ BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboa
 		blackboard.stagger_count = 0
 		final_phase_data.num_teleports = (final_phase_data.num_teleports and final_phase_data.num_teleports + 1) or 1
 
-		if 4 < final_phase_data.num_teleports then
+		if final_phase_data.num_teleports > 4 then
 			final_phase_data.num_teleports = 1
 		end
 
 		local event_data = FrameTable.alloc_table()
 
-		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_teleport_away", event_data)
+		dialogue_input:trigger_networked_dialogue_event("egs_teleport_away", event_data)
 
 		return true
 	end
@@ -110,7 +110,7 @@ BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboa
 	local spawn_allies_timer = final_phase_data.spawn_allies_timer
 
 	if spawn_allies_timer < t then
-		self.spawn_allies(self, unit, blackboard, t)
+		self:spawn_allies(unit, blackboard, t)
 
 		final_phase_data.spawn_allies_timer = t + action.spawn_allies_cooldown
 
@@ -118,13 +118,14 @@ BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboa
 
 		local event_data = FrameTable.alloc_table()
 
-		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_cast_vermintide", event_data)
+		dialogue_input:trigger_networked_dialogue_event("egs_cast_vermintide", event_data)
 	end
 
-	ready_to_summon = self.update_regular_spells(self, unit, blackboard, t)
+	ready_to_summon = self:update_regular_spells(unit, blackboard, t)
 
 	return ready_to_summon
 end
+
 BTGreySeerGroundCombatAction.update_regular_spells = function (self, unit, blackboard, t)
 	local spell_data = blackboard.spell_data
 	local ready_to_summon = nil
@@ -140,18 +141,19 @@ BTGreySeerGroundCombatAction.update_regular_spells = function (self, unit, black
 		spell_data.warp_lightning_spell_timer = t + spell_data.warp_lightning_spell_cooldown
 		local event_data = FrameTable.alloc_table()
 
-		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_cast_lightning", event_data)
+		dialogue_input:trigger_networked_dialogue_event("egs_cast_lightning", event_data)
 	elseif vemintide_timer < t then
 		blackboard.current_spell_name = "vermintide"
 		ready_to_summon = true
 		spell_data.vermintide_spell_timer = t + spell_data.vermintide_spell_cooldown
 		local event_data = FrameTable.alloc_table()
 
-		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_cast_vermintide", event_data)
+		dialogue_input:trigger_networked_dialogue_event("egs_cast_vermintide", event_data)
 	end
 
 	return ready_to_summon
 end
+
 BTGreySeerGroundCombatAction.update_warp_lightning_spell = function (self, unit, blackboard, t, position, target_unit_direction)
 	local magic_missile_spell = blackboard.magic_missile_data
 
@@ -160,9 +162,8 @@ BTGreySeerGroundCombatAction.update_warp_lightning_spell = function (self, unit,
 	if target_unit_direction then
 		magic_missile_spell.target_direction:store(target_unit_direction)
 	end
-
-	return 
 end
+
 BTGreySeerGroundCombatAction.update_vermintide_spell = function (self, unit, blackboard, t, position, target_unit_direction)
 	local plague_wave_spell = blackboard.plague_wave_data
 
@@ -171,9 +172,8 @@ BTGreySeerGroundCombatAction.update_vermintide_spell = function (self, unit, bla
 	if target_unit_direction then
 		plague_wave_spell.plague_wave_rot:store(Quaternion.look(target_unit_direction))
 	end
-
-	return 
 end
+
 BTGreySeerGroundCombatAction.update_teleport_spell = function (self, unit, blackboard, t, position)
 	local quick_teleport_timer = blackboard.quick_teleport_timer or t
 	blackboard.quick_teleport_timer = quick_teleport_timer
@@ -192,9 +192,8 @@ BTGreySeerGroundCombatAction.update_teleport_spell = function (self, unit, black
 			blackboard.quick_teleport_timer = t + 2.5
 		end
 	end
-
-	return 
 end
+
 BTGreySeerGroundCombatAction.spawn_allies = function (self, unit, blackboard, t)
 	local difficulty = Managers.state.difficulty:get_difficulty()
 	local action = blackboard.action
@@ -206,8 +205,6 @@ BTGreySeerGroundCombatAction.spawn_allies = function (self, unit, blackboard, t)
 	local conflict_director = Managers.state.conflict
 
 	conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
-
-	return 
 end
 
-return 
+return

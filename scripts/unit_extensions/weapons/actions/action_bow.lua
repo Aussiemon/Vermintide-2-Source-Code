@@ -1,4 +1,5 @@
 ActionBow = class(ActionBow)
+
 ActionBow.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.owner_unit = owner_unit
 	self.weapon_unit = weapon_unit
@@ -13,9 +14,8 @@ ActionBow.init = function (self, world, item_name, is_server, owner_unit, damage
 
 	self.spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
 	self._is_critical_strike = false
-
-	return 
 end
+
 ActionBow.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
 	local owner_unit = self.owner_unit
 	local weapon_unit = self.weapon_unit
@@ -28,7 +28,7 @@ ActionBow.client_owner_start_action = function (self, new_action, t, chain_actio
 	self.power_level = power_level
 	local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 
-	input_extension.reset_input_buffer(input_extension)
+	input_extension:reset_input_buffer()
 
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + (new_action.fire_time or 0)
@@ -47,9 +47,8 @@ ActionBow.client_owner_start_action = function (self, new_action, t, chain_actio
 	end
 
 	self._is_critical_strike = is_critical_strike
-
-	return 
 end
+
 ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 
@@ -57,7 +56,7 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 		local owner_unit = self.owner_unit
 		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 
-		status_extension.set_zooming(status_extension, false)
+		status_extension:set_zooming(false)
 	end
 
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
@@ -66,7 +65,7 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 	if self.state == "shooting" then
 		local buff_extension = self.owner_buff_extension
-		local _, procced = buff_extension.apply_buffs_to_value(buff_extension, 0, StatBuffIndex.EXTRA_SHOT)
+		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
 		local add_spread = not self.extra_buff_shot
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
@@ -75,7 +74,7 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 			})
 		end
 
-		self.fire(self, current_action, add_spread)
+		self:fire(current_action, add_spread)
 
 		if procced and not self.extra_buff_shot then
 			self.state = "waiting_to_shoot"
@@ -88,24 +87,23 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 		local first_person_extension = ScriptUnit.extension(self.owner_unit, "first_person_system")
 
 		if self.current_action.reset_aim_on_attack then
-			first_person_extension.reset_aim_assist_multiplier(first_person_extension)
+			first_person_extension:reset_aim_assist_multiplier()
 		end
 
 		local fire_sound_event = self.current_action.fire_sound_event
 
 		if fire_sound_event then
-			first_person_extension.play_hud_sound_event(first_person_extension, fire_sound_event)
+			first_person_extension:play_hud_sound_event(fire_sound_event)
 		end
 	end
-
-	return 
 end
+
 ActionBow.finish = function (self, reason, data)
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
 
 	if self.state == "waiting_to_shoot" then
-		self.fire(self, current_action)
+		self:fire(current_action)
 
 		self.state = "shot"
 	end
@@ -113,7 +111,7 @@ ActionBow.finish = function (self, reason, data)
 	if not data or data.new_action ~= "action_two" or data.new_sub_action ~= "default" then
 		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 
-		status_extension.set_zooming(status_extension, false)
+		status_extension:set_zooming(false)
 	end
 
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
@@ -121,28 +119,27 @@ ActionBow.finish = function (self, reason, data)
 	if hud_extension then
 		hud_extension.show_critical_indication = false
 	end
-
-	return 
 end
+
 ActionBow.fire = function (self, current_action, add_spread)
 	local owner_unit = self.owner_unit
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	local speed = current_action.speed
-	local rotation = first_person_extension.current_rotation(first_person_extension)
-	local position = first_person_extension.current_position(first_person_extension)
+	local rotation = first_person_extension:current_rotation()
+	local position = first_person_extension:current_position()
 	local auto_hit_chance = current_action.aim_assist_auto_hit_chance or 0
 	local spread_extension = self.spread_extension
 
 	if spread_extension then
-		rotation = spread_extension.get_randomised_spread(spread_extension, rotation)
+		rotation = spread_extension:get_randomised_spread(rotation)
 
 		if add_spread then
-			spread_extension.set_shooting(spread_extension)
+			spread_extension:set_shooting()
 		end
 	end
 
-	local angle = DamageUtils.pitch_from_rotation(rotation)
-	local position = first_person_extension.current_position(first_person_extension)
+	local angle = ActionUtils.pitch_from_rotation(rotation)
+	local position = first_person_extension:current_position()
 	local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 	local projectile_info = current_action.projectile_info
 	local lookup_data = current_action.lookup_data
@@ -164,8 +161,6 @@ ActionBow.fire = function (self, current_action, add_spread)
 	if current_action.alert_sound_range_fire then
 		Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
 	end
-
-	return 
 end
 
-return 
+return

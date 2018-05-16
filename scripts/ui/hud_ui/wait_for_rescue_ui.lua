@@ -53,41 +53,41 @@ local text_definition = {
 }
 local RELOAD_UI = true
 WaitForRescueUI = class(WaitForRescueUI)
+
 WaitForRescueUI.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
 	self.local_player = Managers.player:local_player()
 
-	self.create_ui_elements(self)
-
-	return 
+	self:create_ui_elements()
 end
+
 WaitForRescueUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.waiting_for_rescue_text = UIWidget.init(text_definition)
 	RELOAD_UI = false
+end
 
-	return 
-end
 WaitForRescueUI.destroy = function (self)
-	return 
+	return
 end
+
 WaitForRescueUI.update = function (self, dt, t)
 	if RELOAD_UI then
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 	end
 
 	local player_unit = self.local_player.player_unit
 
 	if not Unit.alive(player_unit) then
-		return 
+		return
 	end
 
 	local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
-	if not status_extension.is_ready_for_assisted_respawn(status_extension, player_unit) then
-		return 
+	if not status_extension:is_ready_for_assisted_respawn(player_unit) then
+		return
 	end
 
 	local alpha = math.sirp(0, 255, t)
@@ -99,8 +99,6 @@ WaitForRescueUI.update = function (self, dt, t)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 	UIRenderer.draw_widget(ui_renderer, self.waiting_for_rescue_text)
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
 
-return 
+return

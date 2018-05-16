@@ -2,14 +2,14 @@ local breed_data = {
 	detection_radius = 12,
 	death_reaction = "ai_default",
 	walk_speed = 2.3,
-	look_at_range = 30,
 	aoe_height = 1.4,
+	leave_walk_distance = 5,
 	patrol_active_target_selection = "pick_closest_target_with_spillover",
-	exchange_order = 4,
 	hesitation_timer = 7,
-	has_running_attack = true,
-	animation_sync_rpc = "rpc_sync_anim_state_7",
+	look_at_range = 30,
 	run_speed = 4.8,
+	animation_sync_rpc = "rpc_sync_anim_state_7",
+	aim_template = "chaos_marauder",
 	target_selection = "pick_closest_target_with_spillover",
 	wwise_voice_switch_group = "marauder_vce_variations",
 	dialogue_source_name = "chaos_marauder",
@@ -40,7 +40,7 @@ local breed_data = {
 	has_inventory = true,
 	scale_death_push = 0.65,
 	follow_reach = 1,
-	aim_template = "chaos_marauder",
+	exchange_order = 4,
 	stagger_multiplier = 0.45,
 	dont_wield_weapon_on_patrol = true,
 	hit_reaction = "ai_default",
@@ -52,7 +52,7 @@ local breed_data = {
 	horde_behavior = "marauder",
 	unit_template = "ai_unit_marauder",
 	stagger_reduction = 0.5,
-	leave_walk_distance = 5,
+	has_running_attack = true,
 	perception = "perception_regular",
 	player_locomotion_constrain_radius = 0.7,
 	weapon_reach = 2.5,
@@ -62,6 +62,12 @@ local breed_data = {
 	vortexable = true,
 	base_unit = "units/beings/enemies/chaos_marauder/chr_chaos_marauder",
 	enter_walk_distance = 2.5,
+	opt_base_unit = {
+		"units/beings/enemies/chaos_marauder/chr_chaos_marauder_baked_var1",
+		"units/beings/enemies/chaos_marauder/chr_chaos_marauder_baked_var2",
+		"units/beings/enemies/chaos_marauder/chr_chaos_marauder_baked_var3",
+		"units/beings/enemies/chaos_marauder/chr_chaos_marauder_baked_var4"
+	},
 	passive_in_patrol_start_anim = {
 		"move_fwd_4",
 		"move_fwd_5",
@@ -138,7 +144,7 @@ local breed_data = {
 			if direction then
 				local unit_dir = Quaternion.forward(Unit.local_rotation(blackboard.unit, 0))
 				local angle = Vector3.dot(Vector3.normalize(direction), Vector3.normalize(unit_dir))
-				local direction_allowed = -0.35 <= angle and angle <= 1
+				local direction_allowed = angle >= -0.35 and angle <= 1
 
 				if direction_allowed then
 					local t = Managers.time:time("game")
@@ -1569,4 +1575,4 @@ local action_data = {
 }
 BreedActions.chaos_marauder = table.create_copy(BreedActions.chaos_marauder, action_data)
 
-return 
+return

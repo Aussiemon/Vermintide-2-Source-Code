@@ -162,7 +162,7 @@ local scenegraph_definition = {
 		parent = "passive_window",
 		horizontal_alignment = "left",
 		size = {
-			career_info_size[1] - 90,
+			career_info_size[1] * 0.6,
 			50
 		},
 		position = {
@@ -190,7 +190,7 @@ local scenegraph_definition = {
 		parent = "passive_window",
 		horizontal_alignment = "right",
 		size = {
-			career_info_size[1] - 90,
+			career_info_size[1] * 0.3,
 			50
 		},
 		position = {
@@ -257,7 +257,7 @@ local scenegraph_definition = {
 		parent = "active_window",
 		horizontal_alignment = "left",
 		size = {
-			career_info_size[1] - 90,
+			career_info_size[1] * 0.6,
 			50
 		},
 		position = {
@@ -285,7 +285,7 @@ local scenegraph_definition = {
 		parent = "active_window",
 		horizontal_alignment = "right",
 		size = {
-			career_info_size[1] - 90,
+			career_info_size[1] * 0.3,
 			50
 		},
 		position = {
@@ -509,11 +509,12 @@ local description_text_style = {
 }
 local type_title_text_style = {
 	word_wrap = true,
-	font_size = 18,
-	localize = false,
 	use_shadow = true,
+	localize = false,
+	font_size = 18,
 	horizontal_alignment = "right",
 	vertical_alignment = "top",
+	dynamic_font_size = true,
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("gray", 200),
 	offset = {
@@ -530,6 +531,7 @@ local sub_title_text_style = {
 	word_wrap = true,
 	horizontal_alignment = "left",
 	vertical_alignment = "top",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
@@ -1728,7 +1730,9 @@ local function create_career_perk_text(text, scenegraph_id)
 		},
 		content = {
 			text = text,
-			button_hotspot = {}
+			button_hotspot = {
+				allow_multi_hover = true
+			}
 		},
 		style = {
 			text = {
@@ -1738,6 +1742,7 @@ local function create_career_perk_text(text, scenegraph_id)
 				font_size = 20,
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
+				dynamic_font_size = true,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				offset = {
@@ -1753,6 +1758,7 @@ local function create_career_perk_text(text, scenegraph_id)
 				font_size = 20,
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
+				dynamic_font_size = true,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
@@ -1768,6 +1774,7 @@ local function create_career_perk_text(text, scenegraph_id)
 				font_size = 20,
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
+				dynamic_font_size = true,
 				font_type = "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
@@ -1839,6 +1846,26 @@ local widgets = {
 	active_icon = UIWidgets.create_simple_texture("icons_placeholder", "active_icon"),
 	active_icon_frame = UIWidgets.create_simple_texture("talent_frame", "active_icon_frame")
 }
+local generic_input_actions = {
+	default = {
+		{
+			input_action = "d_vertical",
+			priority = 1,
+			description_text = "input_description_navigate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "confirm",
+			priority = 2,
+			description_text = "input_description_select"
+		},
+		{
+			input_action = "back",
+			priority = 3,
+			description_text = "input_description_close"
+		}
+	}
+}
 local animation_definitions = {
 	on_enter = {
 		{
@@ -1847,17 +1874,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -1868,17 +1891,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}
@@ -1888,5 +1907,6 @@ return {
 	widgets = widgets,
 	node_widgets = node_widgets,
 	scenegraph_definition = scenegraph_definition,
-	animation_definitions = animation_definitions
+	animation_definitions = animation_definitions,
+	generic_input_actions = generic_input_actions
 }

@@ -655,4 +655,4 @@ SmartObjectSettings.templates.chaos_zombie = {
 	}
 }
 
-return 
+return

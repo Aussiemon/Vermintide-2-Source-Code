@@ -1524,4 +1524,4 @@ end
 
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.dwarf_ranger, buff_tweak_data)
 
-return 
+return

@@ -3094,14 +3094,15 @@ PatrolFormationSettings.prologue_marauder = {
 		}
 	}
 }
+
 PatrolFormationSettings.random_roaming_formation = function (breed_pack)
 	local members = breed_pack.members
 	local num_members = #members
 	local formation_name = nil
 
-	if 9 < num_members then
+	if num_members > 9 then
 		formation_name = "roaming_size_25"
-	elseif 4 < num_members then
+	elseif num_members > 4 then
 		formation_name = "roaming_size_16"
 	else
 		formation_name = "roaming_size_9"
@@ -3151,4 +3152,4 @@ PatrolFormationSettings.random_roaming_formation = function (breed_pack)
 	return formation
 end
 
-return 
+return

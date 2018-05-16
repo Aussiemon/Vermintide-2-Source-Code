@@ -296,7 +296,7 @@ local scenegraph_definition = {
 		parent = "score_entry_window",
 		horizontal_alignment = "left",
 		size = {
-			600,
+			300,
 			100
 		},
 		position = {
@@ -370,7 +370,7 @@ local widgets = {
 		255,
 		255
 	}),
-	upgrade_text = UIWidgets.create_simple_text("chest upgrade", "upgrade_background", nil, nil, upgrade_text_style),
+	upgrade_text = UIWidgets.create_simple_text(Localize("end_screen_chest_upgrade"), "upgrade_background", nil, nil, upgrade_text_style),
 	score_window_top_divider = UIWidgets.create_simple_texture("divider_01_top", "score_window_top_divider"),
 	score_entry_window = UIWidgets.create_simple_texture("info_window_background", "score_entry_window"),
 	score_entry_texture = UIWidgets.create_simple_texture("icons_placeholder", "score_entry_texture"),
@@ -462,18 +462,14 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
 				ui_scenegraph.score_entry_window.local_position[1] = 50 - 400 * (1 - anim_progress)
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -484,19 +480,15 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
 				ui_scenegraph.score_entry_window.local_position[1] = 50 - 400 * anim_progress
 				ui_scenegraph.chest_title.local_position[2] = -100 + 100 * anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -510,8 +502,6 @@ local animation_definitions = {
 				local icon_style = widget.style.texture_id
 				icon_style.color[1] = 0
 				params.enter_sound_played = false
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				if not params.enter_sound_played then
@@ -532,11 +522,9 @@ local animation_definitions = {
 				local marker_color = style.marker.color
 
 				Colors.lerp_color_tables(marker_color_from, marker_color_to, anim_progress, marker_color)
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -544,7 +532,7 @@ local animation_definitions = {
 			start_progress = 0.3,
 			end_progress = 0.6,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.ease_pulse(progress)
@@ -557,34 +545,9 @@ local animation_definitions = {
 				size[1] = default_size[1] + size_increase * anim_progress
 				size[2] = default_size[2] + size_increase * anim_progress
 				offset[1] = -(size[1] - default_size[1]) * 0.5
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
-			end
-		},
-		{
-			name = "text_bump",
-			start_progress = 0.3,
-			end_progress = 0.6,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.ease_pulse(progress)
-				local font_size = 20
-				local max_font_size = 26
-				local new_font_size = font_size + (max_font_size - font_size) * anim_progress
-				local widget = params.widget
-				widget.style.text.font_size = new_font_size
-				widget.style.text_shadow.font_size = new_font_size
-				widget.style.text_disabled.font_size = new_font_size
-
-				return 
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -595,8 +558,6 @@ local animation_definitions = {
 			end_progress = 0.8,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.enter_sound_played = false
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				if not params.enter_sound_played then
@@ -621,11 +582,9 @@ local animation_definitions = {
 
 				offset[1] = anim_progress * 20
 				style.marker.offset[1] = -10 + -offset[1]
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -635,7 +594,7 @@ local animation_definitions = {
 			start_progress = 0,
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local widget = params.widget
@@ -659,11 +618,9 @@ local animation_definitions = {
 
 				offset[1] = 20 - anim_progress * 20
 				style.marker.offset[1] = -10 + -offset[1]
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -672,8 +629,6 @@ local animation_definitions = {
 			end_progress = 0.6,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.checkbox_sound_played = false
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				if not params.checkbox_sound_played then
@@ -694,11 +649,9 @@ local animation_definitions = {
 				local default_height = 31
 				size[1] = default_width + (1 - anim_progress) * default_width * 2
 				size[2] = default_height + (1 - anim_progress) * default_height * 2
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -708,7 +661,7 @@ local animation_definitions = {
 			start_progress = 0.5,
 			end_progress = 0.9,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
@@ -717,11 +670,9 @@ local animation_definitions = {
 				widgets.chest_title.style.text_shadow.text_color[1] = alpha
 				widgets.chest_sub_title.style.text.text_color[1] = alpha
 				widgets.chest_sub_title.style.text_shadow.text_color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -733,8 +684,6 @@ local animation_definitions = {
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				local alpha = 0
 				widgets.upgrade_background.style.texture_id.color[1] = alpha
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
@@ -745,11 +694,9 @@ local animation_definitions = {
 				local size = ui_scenegraph[scenegraph_id].size
 				size[1] = default_size[1] + default_size[1] * (1 - anim_progress)
 				size[2] = default_size[2] + default_size[2] * (1 - anim_progress)
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -760,8 +707,6 @@ local animation_definitions = {
 				local alpha = 0
 				widgets.upgrade_text.style.text.text_color[1] = alpha
 				widgets.upgrade_text.style.text_shadow.text_color[1] = alpha
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
@@ -774,11 +719,9 @@ local animation_definitions = {
 				local new_font_size = font_size + (max_font_size - font_size) * (1 - anim_progress)
 				widget.style.text.font_size = new_font_size
 				widget.style.text_shadow.font_size = new_font_size
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -786,17 +729,15 @@ local animation_definitions = {
 			start_progress = 0.8,
 			end_progress = 1.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
 				local alpha = 255 - anim_progress * 255
 				widgets.upgrade_background.style.texture_id.color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -804,18 +745,16 @@ local animation_definitions = {
 			start_progress = 0.9,
 			end_progress = 1.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
 				local alpha = 255 - anim_progress * 255
 				widgets.upgrade_text.style.text.text_color[1] = alpha
 				widgets.upgrade_text.style.text_shadow.text_color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -828,8 +767,6 @@ local animation_definitions = {
 				widgets.chest_title.style.text_shadow.text_color[1] = alpha
 				widgets.chest_sub_title.style.text.text_color[1] = alpha
 				widgets.chest_sub_title.style.text_shadow.text_color[1] = alpha
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
@@ -838,11 +775,9 @@ local animation_definitions = {
 				widgets.chest_title.style.text_shadow.text_color[1] = alpha
 				widgets.chest_sub_title.style.text.text_color[1] = alpha
 				widgets.chest_sub_title.style.text_shadow.text_color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

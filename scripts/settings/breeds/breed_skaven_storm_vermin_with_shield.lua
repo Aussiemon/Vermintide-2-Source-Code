@@ -727,7 +727,7 @@ local action_data = {
 					blackboard.stagger_time = blackboard.stagger_time + math.max(0.5, stagger / block_count) * breed.block_stagger_mod
 					stagger_anims = action.shield_block_anims[stagger_type]
 
-					ai_shield_extension.set_is_blocking(ai_shield_extension, true)
+					ai_shield_extension:set_is_blocking(true)
 
 					idle_event = "idle_shield_up"
 				elseif not blocked and is_blocking and block_count < stagger and action.shield_stagger_anims then
@@ -739,15 +739,15 @@ local action_data = {
 					}
 					idle_event = anim_table[index]
 
-					ai_shield_extension.set_is_blocking(ai_shield_extension, false)
+					ai_shield_extension:set_is_blocking(false)
 
 					blackboard.wake_up_push = math.huge
 					stagger_anims = action.stagger_anims[stagger_type]
-				elseif block_count + 3 < stagger and action.shield_block_anims then
+				elseif stagger > block_count + 3 and action.shield_block_anims then
 					blackboard.stagger_time = 0
 					blackboard.stagger = 0
 
-					ai_shield_extension.set_is_blocking(ai_shield_extension, true)
+					ai_shield_extension:set_is_blocking(true)
 
 					stagger_anims = action.stagger_anims[stagger_type]
 					blackboard.stagger_time = 0.2
@@ -762,7 +762,7 @@ local action_data = {
 					}
 					idle_event = anim_table[index]
 
-					ai_shield_extension.set_is_blocking(ai_shield_extension, false)
+					ai_shield_extension:set_is_blocking(false)
 				end
 			else
 				stagger_anims = action.stagger_anims[stagger_type]
@@ -773,22 +773,37 @@ local action_data = {
 		end,
 		custom_exit_function = function (unit, blackboard, t)
 			ai_shield_extension:set_is_blocking(true)
-
-			return 
 		end,
 		stagger_anims = {
 			{
 				fwd = {
-					"stagger_bwd_open"
+					"stun_fwd_open"
+				},
+				bwd = {
+					"stun_bwd_open"
+				},
+				left = {
+					"stun_left_open"
+				},
+				right = {
+					"stun_right_open"
+				},
+				dwn = {
+					"stun_bwd_open"
+				}
+			},
+			{
+				fwd = {
+					"stagger_fwd_open"
 				},
 				bwd = {
 					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_bwd_open"
+					"stagger_left_open"
 				},
 				right = {
-					"stagger_bwd_open"
+					"stagger_right_open"
 				},
 				dwn = {
 					"stagger_bwd_open"
@@ -796,61 +811,44 @@ local action_data = {
 			},
 			{
 				fwd = {
-					"stagger_bwd_open"
+					"stagger_fwd_open"
 				},
 				bwd = {
 					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_bwd_open"
+					"stagger_left_open"
 				},
 				right = {
-					"stagger_bwd_open"
-				},
-				dwn = {
-					"stagger_bwd_open"
+					"stagger_right_open"
 				}
 			},
 			{
 				fwd = {
-					"stagger_bwd_open"
+					"stun_fwd_open"
 				},
 				bwd = {
-					"stagger_bwd_open"
+					"stun_bwd_open"
 				},
 				left = {
-					"stagger_bwd_open"
+					"stun_left_open"
 				},
 				right = {
-					"stagger_bwd_open"
+					"stun_right_open"
 				}
 			},
 			{
 				fwd = {
-					"stagger_bwd_open"
+					"stagger_fwd_open"
 				},
 				bwd = {
 					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_bwd_open"
+					"stagger_left_open"
 				},
 				right = {
-					"stagger_bwd_open"
-				}
-			},
-			{
-				fwd = {
-					"stagger_bwd_open"
-				},
-				bwd = {
-					"stagger_bwd_open"
-				},
-				left = {
-					"stagger_bwd_open"
-				},
-				right = {
-					"stagger_bwd_open"
+					"stagger_right_open"
 				}
 			},
 			{
@@ -869,16 +867,16 @@ local action_data = {
 			},
 			{
 				fwd = {
-					"stagger_bwd_open"
+					"stagger_fwd_open"
 				},
 				bwd = {
 					"stagger_bwd_open"
 				},
 				left = {
-					"stagger_bwd_open"
+					"stagger_left_open"
 				},
 				right = {
-					"stagger_bwd_open"
+					"stagger_right_open"
 				}
 			}
 		},
@@ -1280,4 +1278,4 @@ action_data.frenzy_attack_ranged.combo_attacks.attack_1 = {
 }
 BreedActions.skaven_storm_vermin_with_shield = table.create_copy(BreedActions.skaven_storm_vermin_with_shield, action_data)
 
-return 
+return

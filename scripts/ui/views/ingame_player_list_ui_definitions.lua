@@ -1733,7 +1733,7 @@ local function player_widget_definition(index)
 				horizontal_alignment = "center",
 				vertical_alignment = "bottom",
 				dynamic_font_size = true,
-				font_type = "hell_shark",
+				font_type = "arial",
 				size = {
 					size[1] - 20,
 					size[2]
@@ -1750,7 +1750,7 @@ local function player_widget_definition(index)
 			name_shadow = {
 				vertical_alignment = "bottom",
 				horizontal_alignment = "center",
-				font_type = "hell_shark",
+				font_type = "arial",
 				dynamic_font_size = true,
 				font_size = 26,
 				size = {

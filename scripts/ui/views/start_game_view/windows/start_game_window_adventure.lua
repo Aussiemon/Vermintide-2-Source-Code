@@ -5,6 +5,7 @@ local animation_definitions = definitions.animation_definitions
 local DO_RELOAD = false
 StartGameWindowAdventure = class(StartGameWindowAdventure)
 StartGameWindowAdventure.NAME = "StartGameWindowAdventure"
+
 StartGameWindowAdventure.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowAdventure")
 
@@ -17,17 +18,16 @@ StartGameWindowAdventure.on_enter = function (self, params, offset)
 		snap_pixel_positions = true
 	}
 	local player_manager = Managers.player
-	local local_player = player_manager.local_player(player_manager)
-	self._stats_id = local_player.stats_id(local_player)
+	local local_player = player_manager:local_player()
+	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self._animations = {}
 
-	self.create_ui_elements(self, params, offset)
+	self:create_ui_elements(params, offset)
 	self.parent:set_play_button_enabled(true)
-
-	return 
 end
+
 StartGameWindowAdventure.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
@@ -52,32 +52,30 @@ StartGameWindowAdventure.create_ui_elements = function (self, params, offset)
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
-
-	return 
 end
+
 StartGameWindowAdventure.on_exit = function (self, params)
 	print("[StartGameWindow] Exit Substate StartGameWindowAdventure")
 
 	self.ui_animator = nil
-
-	return 
 end
+
 StartGameWindowAdventure.update = function (self, dt, t)
 	if DO_RELOAD then
 		DO_RELOAD = false
 
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 	end
 
-	self._update_animations(self, dt)
-	self._handle_input(self, dt, t)
-	self.draw(self, dt)
+	self:_update_animations(dt)
+	self:_handle_input(dt, t)
+	self:draw(dt)
+end
 
-	return 
-end
 StartGameWindowAdventure.post_update = function (self, dt, t)
-	return 
+	return
 end
+
 StartGameWindowAdventure._update_animations = function (self, dt)
 	self.ui_animator:update(dt)
 
@@ -85,17 +83,16 @@ StartGameWindowAdventure._update_animations = function (self, dt)
 	local ui_animator = self.ui_animator
 
 	for animation_name, animation_id in pairs(animations) do
-		if ui_animator.is_animation_completed(ui_animator, animation_id) then
-			ui_animator.stop_animation(ui_animator, animation_id)
+		if ui_animator:is_animation_completed(animation_id) then
+			ui_animator:stop_animation(animation_id)
 
 			animations[animation_name] = nil
 		end
 	end
 
 	local widgets_by_name = self._widgets_by_name
-
-	return 
 end
+
 StartGameWindowAdventure._is_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -105,9 +102,8 @@ StartGameWindowAdventure._is_button_pressed = function (self, widget)
 
 		return true
 	end
-
-	return 
 end
+
 StartGameWindowAdventure._is_stepper_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot_left = content.button_hotspot_left
@@ -122,18 +118,17 @@ StartGameWindowAdventure._is_stepper_button_pressed = function (self, widget)
 
 		return true, 1
 	end
+end
 
-	return 
-end
 StartGameWindowAdventure._handle_input = function (self, dt, t)
-	return 
+	return
 end
+
 StartGameWindowAdventure._exit = function (self, selected_level)
 	self.exit = true
 	self.exit_level_id = selected_level
-
-	return 
 end
+
 StartGameWindowAdventure.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -154,13 +149,10 @@ StartGameWindowAdventure.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 StartGameWindowAdventure._play_sound = function (self, event)
 	self.parent:play_sound(event)
-
-	return 
 end
 
-return 
+return

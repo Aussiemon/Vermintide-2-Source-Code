@@ -7204,4 +7204,4 @@ LootChestData.items_new = {
 	}
 }
 
-return 
+return

@@ -67,9 +67,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_texture_name = data.frame_name
 			local frame_settings = UIFrameSettings[frame_texture_name]
 			local edge_height = frame_settings.texture_sizes.horizontal[2]
@@ -136,9 +136,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_texture_name = data.frame_name
 			local frame_settings = UIFrameSettings[frame_texture_name]
 			local edge_height = frame_settings.texture_sizes.horizontal[2]
@@ -271,9 +271,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
 			local slot_type = item_data.slot_type
@@ -505,9 +505,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local bottom_spacing = 20
 			local frame_margin = data.frame_margin or 0
 			local backend_id = item.backend_id
@@ -611,7 +611,7 @@ UITooltipPasses = {
 				},
 				content = {
 					icon = "tooltip_marker",
-					title = "Properties:"
+					title = Localize("tooltips_properties") .. ":"
 				},
 				style = {
 					property_title = {
@@ -663,9 +663,19 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if false then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if is_weapon then
+					return 0
+				end
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local bottom_spacing = 20
 			local frame_margin = data.frame_margin or 0
 			local properties = item.properties
@@ -678,7 +688,7 @@ UITooltipPasses = {
 			position[3] = start_layer + 2
 			position[2] = position[2]
 			local loop_func = pairs
-			local show_advanced_description = input_service.get(input_service, "debug_pixeldistance_1")
+			local show_advanced_description = input_service:get("item_compare") or input_service:get("item_detail")
 
 			if properties then
 				position[1] = position[1] + frame_margin
@@ -715,19 +725,13 @@ UITooltipPasses = {
 					local property_name = property_data.display_name
 					local property_advanced_description = property_data.advanced_description
 					local text, advanced_description = UIUtils.get_property_description(property_key, property_value)
-
-					if show_advanced_description then
-						local additional_text_length = (advanced_description and UTF8Utils.string_length(advanced_description)) or 0
-						local default_text_length = (text and UTF8Utils.string_length(text)) or 0
-						text = text .. advanced_description
-						local color_override_table = text_style.color_override_table
-						color_override_table.start_index = default_text_length + 1
-						color_override_table.end_index = default_text_length + additional_text_length
-						text_style.color_override[1] = color_override_table
-					else
-						text_style.color_override[1] = nil
-					end
-
+					local additional_text_length = (advanced_description and UTF8Utils.string_length(advanced_description)) or 0
+					local default_text_length = (text and UTF8Utils.string_length(text)) or 0
+					text = text .. advanced_description
+					local color_override_table = text_style.color_override_table
+					color_override_table.start_index = default_text_length + 1
+					color_override_table.end_index = default_text_length + additional_text_length
+					text_style.color_override[1] = color_override_table
 					local text_size = data.text_size
 					text_size[2] = 0
 					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
@@ -880,9 +884,19 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if false then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if is_weapon then
+					return 0
+				end
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local bottom_spacing = 20
 			local top_spacing = 20
 			local frame_margin = data.frame_margin or 0
@@ -924,7 +938,7 @@ UITooltipPasses = {
 
 					local text = title_text .. "\n" .. description_text
 					local text_size = data.text_size
-					text_size[1] = size[1] - frame_margin * 2 - icon_size[1]
+					text_size[1] = size[1] - frame_margin * 3 - icon_size[1]
 					text_size[2] = 0
 					local text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
 					text_size[2] = text_height
@@ -948,7 +962,7 @@ UITooltipPasses = {
 						line_colors[1][1] = alpha
 						line_colors[2][1] = alpha
 
-						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
 					end
 
 					total_height = total_height + text_height
@@ -973,6 +987,9 @@ UITooltipPasses = {
 		setup_data = function ()
 			local frame_name = "item_tooltip_frame_01"
 			local frame_settings = UIFrameSettings[frame_name]
+			local gamepad_active = Managers.input:is_device_active("gamepad")
+			local macro_replacement = "       "
+			local text_gamepad = string.gsub(Localize("item_advanced_information_tooltip_input"), "%[%a*%]", macro_replacement)
 			local data = {
 				frame_name = "item_tooltip_frame_01",
 				background_color = {
@@ -985,6 +1002,16 @@ UITooltipPasses = {
 					text_id = "text"
 				},
 				text_size = {},
+				texture_pass_data = {},
+				texture_pass_definition = {
+					texture_id = "texture_id",
+					style_id = "input_button"
+				},
+				texture_size = {
+					0,
+					0
+				},
+				macro_replacement = macro_replacement,
 				frame_pass_data = {},
 				frame_pass_definition = {
 					texture_id = "frame",
@@ -995,8 +1022,12 @@ UITooltipPasses = {
 					0
 				},
 				content = {
-					text = Localize("item_advanced_information_tooltip_input"),
-					frame = frame_settings.texture
+					text = "",
+					default_text = Localize("item_advanced_information_tooltip_input"),
+					text_gamepad = text_gamepad,
+					frame = frame_settings.texture,
+					texture_id = frame_settings.texture,
+					input_button_visible = gamepad_active
 				},
 				style = {
 					frame = {
@@ -1022,6 +1053,25 @@ UITooltipPasses = {
 						font_type = "hell_shark",
 						text_color = Colors.get_color_table_with_alpha("font_title", 255)
 					},
+					input_button = {
+						vertical_alignment = "center",
+						horizontal_alignment = "center",
+						texture_size = {
+							0,
+							0
+						},
+						offset = {
+							0,
+							0,
+							0
+						},
+						color = {
+							255,
+							255,
+							255,
+							255
+						}
+					},
 					background = {
 						color = {
 							255,
@@ -1041,9 +1091,21 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if not input_service:get("item_compare") and not input_service:get("item_detail") then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if not is_weapon then
+					return 0
+				end
+			else
+				return 0
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local properties = item.properties
 			local style = data.style
@@ -1053,11 +1115,18 @@ UITooltipPasses = {
 			local position_z = position[3]
 			local total_height = 0
 			position[3] = start_layer - 6
-			local show_advanced_description = input_service.get(input_service, "debug_pixeldistance_1")
 
-			if properties and next(properties) and not show_advanced_description then
+			if properties and next(properties) then
 				local text_style = style.text
 				local text_pass_data = data.text_pass_data
+				local gamepad_active = Managers.input:is_device_active("gamepad")
+
+				if gamepad_active then
+					content.text = content.text_gamepad
+				else
+					content.text = content.default_text
+				end
+
 				local text = content.text
 				local text_size = data.text_size
 				text_size[1] = size[1] - frame_margin * 2
@@ -1101,6 +1170,32 @@ UITooltipPasses = {
 					text_color[1] = alpha
 
 					UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
+				end
+
+				if draw then
+					local texture_style = style.input_button
+					local texture_pass_data = data.texture_pass_data
+					local texture_pass_definition = data.texture_pass_definition
+					local texture_size = data.texture_size
+					local macro_replacement = data.macro_replacement
+
+					if gamepad_active then
+						local button_texture_data = UISettings.get_gamepad_input_texture_data(input_service, "debug_pixeldistance_1", true)
+						texture_style.texture_size[1] = button_texture_data.size[1] * 0.8
+						texture_style.texture_size[2] = button_texture_data.size[2] * 0.8
+						content.texture_id = button_texture_data.texture
+						local position = position
+						local text = content.text
+						local start_index, end_index = string.find(text, macro_replacement)
+						local prefix = string.sub(text, 1, (start_index or 1) + 1)
+						local font, scaled_font_size = UIFontByResolution(text_style)
+						local text_width = UIRenderer.text_size(ui_renderer, text, font[1], scaled_font_size)
+						local prefix_width = UIRenderer.text_size(ui_renderer, prefix, font[1], scaled_font_size)
+						position[1] = position[1] - text_width * 0.5 + prefix_width + button_texture_data.size[1] * 0.5
+						position[2] = position[2] - frame_margin * 0.5
+
+						UIPasses.texture.draw(ui_renderer, texture_pass_data, ui_scenegraph, texture_pass_definition, texture_style, content, position, text_size, input_service, dt, ui_style_global)
+					end
 				end
 			end
 
@@ -1195,12 +1290,7 @@ UITooltipPasses = {
 					local player = pass_data.player
 
 					if player then
-						local backend_items = Managers.backend:get_interface("items")
-						local item_filter = "equipped_by_current_career and slot_type == " .. slot_type
-						local params = {
-							player = player
-						}
-						local equipped_items = backend_items.get_filtered_items(backend_items, item_filter, params)
+						local equipped_items = pass_data.equipped_items
 						local is_equipped = false
 
 						for _, item in ipairs(equipped_items) do
@@ -1224,9 +1314,9 @@ UITooltipPasses = {
 				return 0
 			end
 
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local style = data.style
 			local content = data.content
@@ -1402,9 +1492,19 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if false then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if is_weapon then
+					return 0
+				end
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
 			local slot_type = item_data.slot_type
@@ -1538,8 +1638,8 @@ UITooltipPasses = {
 				},
 				content = {
 					text = "",
-					title = "Ammunition",
-					icon = "tooltip_icon_overheat"
+					icon = "tooltip_icon_overheat",
+					title = Localize("tooltips_ammunition")
 				},
 				style = {
 					icon = {
@@ -1577,9 +1677,19 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if false then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if is_weapon then
+					return 0
+				end
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
 			local slot_type = item_data.slot_type
@@ -1703,9 +1813,19 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if false then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if is_weapon then
+					return 0
+				end
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local bottom_spacing = 20
 			local frame_margin = data.frame_margin or 0
 			local text_styles = data.text_styles
@@ -1944,9 +2064,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
 			local rarity = item.rarity or item_data.rarity
@@ -1970,7 +2090,7 @@ UITooltipPasses = {
 			local player = pass_data.player
 
 			if player then
-				local career_name = player.career_name(player)
+				local career_name = player:career_name()
 				local can_wield_table = item_data and item_data.can_wield
 				local can_wield = can_wield_table and table.contains(can_wield_table, career_name)
 
@@ -2179,9 +2299,19 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if false then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if is_weapon then
+					return 0
+				end
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local text_styles = data.text_styles
 			local text_content = data.text_content
@@ -2296,9 +2426,19 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if false then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if is_weapon then
+					return 0
+				end
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
 			local style = data.style
@@ -2306,7 +2446,7 @@ UITooltipPasses = {
 			local player = pass_data.player
 
 			if player then
-				local career_name = player.career_name(player)
+				local career_name = player:career_name()
 				local can_wield_table = item_data and item_data.can_wield
 				local can_wield = can_wield_table and table.contains(can_wield_table, career_name)
 
@@ -2322,7 +2462,7 @@ UITooltipPasses = {
 						text = text .. Localize(display_name)
 						entry_count = entry_count - 1
 
-						if 0 < entry_count then
+						if entry_count > 0 then
 							text = text .. ", "
 						end
 					end
@@ -2359,8 +2499,6 @@ UITooltipPasses = {
 			else
 				return 0
 			end
-
-			return 
 		end
 	},
 	skin_applied = {
@@ -2390,9 +2528,19 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if false then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if is_weapon then
+					return 0
+				end
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
 			local style = data.style
@@ -2430,8 +2578,6 @@ UITooltipPasses = {
 			else
 				return 0
 			end
-
-			return 
 		end
 	},
 	item_description = {
@@ -2524,9 +2670,19 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if false then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if is_weapon then
+					return 0
+				end
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
 			local style = data.style
@@ -2666,19 +2822,47 @@ UITooltipPasses = {
 					text_color = Colors.get_color_table_with_alpha("green", 255)
 				}
 			}
+			local texture_styles = {
+				information = {
+					vertical_alignment = "center",
+					horizontal_alignment = "left",
+					texture_size = {
+						0,
+						0
+					},
+					offset = {
+						0,
+						0,
+						0
+					},
+					color = {
+						255,
+						255,
+						255,
+						255
+					}
+				}
+			}
 			local data = {
 				text_styles = text_styles,
-				text_content = {},
-				text_pass_data = {},
-				text_pass_size = {}
+				texture_styles = texture_styles
+			}
+			local gamepad_active = Managers.input:is_device_active("gamepad")
+			data.text_content = {}
+			data.text_pass_data = {}
+			data.text_pass_size = {}
+			data.texture_pass_data = {}
+			data.texture_pass_definition = {
+				texture_id = "texture_id",
+				style_id = "information"
 			}
 
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, talent, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local text_styles = data.text_styles
 			local text_content = data.text_content
@@ -2693,7 +2877,7 @@ UITooltipPasses = {
 			if disabled then
 				requirement_text = Localize("talent_locked_desc")
 			elseif not is_selected then
-				information_text = Localize("talent_can_select_desc")
+				information_text = (ui_content.gamepad_active and Localize("menu_select")) or Localize("talent_can_select_desc")
 			end
 
 			text_content.requirement = requirement_text
@@ -2717,6 +2901,25 @@ UITooltipPasses = {
 				text_style.vertical_alignment = (draw_downwards and "top") or "bottom"
 				local style_name = text_style.name
 				local text = text_content[style_name]
+				local texture_style = data.texture_styles[style_name]
+
+				if draw and text and texture_style and ui_content.gamepad_active then
+					local texture_pass_data = data.texture_pass_data
+					local texture_size = data.texture_size
+					local texture_pass_definition = data.texture_pass_definition
+					local button_texture_data = UISettings.get_gamepad_input_texture_data(input_service, "confirm", true)
+					texture_style.texture_size[1] = button_texture_data.size[1] * 0.8
+					texture_style.texture_size[2] = button_texture_data.size[2] * 0.8
+					texture_style.color[1] = alpha
+					ui_content.texture_id = button_texture_data.texture
+					local old_pos_y = position[2]
+					position[2] = position[2] - frame_margin
+
+					UIPasses.texture.draw(ui_renderer, texture_pass_data, ui_scenegraph, texture_pass_definition, texture_style, ui_content, position, text_size, input_service, dt, ui_style_global)
+
+					position[1] = position[1] + texture_style.texture_size[1] + frame_margin * 0.5
+					position[2] = old_pos_y
+				end
 
 				if text == true then
 					text = text_style.text
@@ -2806,9 +3009,9 @@ UITooltipPasses = {
 				return 0
 			end
 
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local style = data.style
 			local content = data.content
@@ -2914,9 +3117,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, level_data, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local style = data.style
 			local content = data.content
@@ -3039,9 +3242,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, additional_option_data, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local style = data.style
 			local content = data.content
@@ -3186,9 +3389,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
 			local item_type = item_data.item_type
@@ -3335,9 +3538,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
 			local item_type = item_data.item_type
@@ -3468,7 +3671,7 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
 			local item_data = item.data
 			local item_type = item_data.item_type
@@ -3481,7 +3684,7 @@ UITooltipPasses = {
 			local top_spacing = 20
 			local bottom_spacing = 20
 			local total_height = top_spacing
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 
 			if mutators then
@@ -3576,7 +3779,6 @@ UITooltipPasses = {
 					80,
 					80
 				},
-				tooltip_pass_data = {},
 				tooltip_pass_definition = {
 					item_id = "item"
 				},
@@ -3657,9 +3859,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
 			local item_type = item_data.item_type
@@ -3753,12 +3955,13 @@ UITooltipPasses = {
 							content.item.data = reward_item_data
 						end
 
-						local tooltip_pass_data = data.tooltip_pass_data
 						local tooltip_pass_definition = data.tooltip_pass_definition
 
-						if not tooltip_pass_definition.items then
-							UIPasses.item_tooltip.init(tooltip_pass_definition, content, style, ui_style_global)
+						if not data.tooltip_pass_data then
+							data.tooltip_pass_data = UIPasses.item_tooltip.init(tooltip_pass_definition, content, style, ui_style_global)
 						end
+
+						local tooltip_pass_data = data.tooltip_pass_data
 
 						UIPasses.item_tooltip.draw(ui_renderer, tooltip_pass_data, ui_scenegraph, tooltip_pass_definition, style, content, position, item_size, input_service, dt, ui_style_global)
 					end
@@ -3829,9 +4032,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
 			local item_type = item_data.item_type
@@ -3929,9 +4132,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
 			local item_type = item_data.item_type
@@ -4037,9 +4240,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
 			local item_type = item_data.item_type
@@ -4144,9 +4347,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local item_data = item.data
 			local item_type = item_data.item_type
@@ -4228,9 +4431,19 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if false then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if is_weapon then
+					return 0
+				end
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
 			local style = data.style
@@ -4273,8 +4486,6 @@ UITooltipPasses = {
 			else
 				return 0
 			end
-
-			return 
 		end
 	},
 	keywords = {
@@ -4367,9 +4578,19 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			if false then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if is_weapon then
+					return 0
+				end
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
 			local style = data.style
@@ -4393,7 +4614,7 @@ UITooltipPasses = {
 					text = text .. Localize(keyword)
 					key_word_count = key_word_count - 1
 
-					if 0 < key_word_count then
+					if key_word_count > 0 then
 						text = text .. ", "
 					end
 				end
@@ -4559,15 +4780,15 @@ UITooltipPasses = {
 			local hero_name, career_name = nil
 
 			if player then
-				hero_name = player.profile_display_name(player)
-				career_name = player.career_name(player)
+				hero_name = player:profile_display_name()
+				career_name = player:career_name()
 
 				if not hero_name or not career_name then
 					return 0
 				end
 			end
 
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local bottom_spacing = 0
 			local frame_margin = data.frame_margin or 0
 			local style = data.style
@@ -4579,7 +4800,7 @@ UITooltipPasses = {
 			local power_level_list = content.power_level_list
 			power_level_list.hero = math.floor(hero_power_level)
 			power_level_list.item = math.floor(item_power_level)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
 			local position_x = position[1]
 			local position_y = position[2]
@@ -4752,12 +4973,12 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local bottom_spacing = 0
 			local frame_margin = data.frame_margin or 0
 			local style = data.style
 			local content = data.content
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
 			local position_x = position[1]
 			local position_y = position[2]
@@ -4905,9 +5126,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
 			local style = data.style
@@ -4996,9 +5217,9 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, data, draw_downwards)
-			local alpha_multiplier = pass_definition.alpha_multiplier
+			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
-			local start_layer = pass_definition.start_layer or DEFAULT_START_LAYER
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin or 0
 			local content = data.content
 			local style = data.style
@@ -5029,7 +5250,1819 @@ UITooltipPasses = {
 
 			return text_height
 		end
+	},
+	light_attack_stats = {
+		setup_data = function ()
+			local data = {
+				frame_name = "item_tooltip_frame_01",
+				background_color = {
+					240,
+					3,
+					3,
+					3
+				},
+				background_size = {
+					0,
+					50
+				},
+				title_text_pass_data = {
+					text_id = "title"
+				},
+				text_pass_data = {},
+				text_size = {
+					0,
+					0
+				},
+				content = {
+					icon = "tooltip_marker",
+					title = Localize("tutorial_tooltip_normal_attack")
+				},
+				style = {
+					title = {
+						vertical_alignment = "center",
+						font_size = 18,
+						horizontal_alignment = "center",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+					},
+					stat_text = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "left",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					stat_value = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "right",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					background = {
+						color = {
+							150,
+							20,
+							20,
+							20
+						},
+						offset = {
+							0,
+							0,
+							-1
+						}
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			if input_service:get("item_compare") then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if not is_weapon then
+					return 0
+				end
+			else
+				return 0
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
+			local alpha = 255 * alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local bottom_spacing = 20
+			local frame_margin = data.frame_margin or 0
+			local style = data.style
+			local content = data.content
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local total_height = 0
+			position[3] = start_layer + 2
+			position[2] = position[2]
+			local stats = {
+				{
+					charge_type = "light",
+					description = Localize("tooltip_item_damage"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						1
+					}
+				},
+				{
+					charge_type = "light",
+					description = Localize("tooltip_item_damage_armor"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						2
+					}
+				},
+				{
+					empty = true
+				},
+				{
+					charge_type = "light",
+					description = Localize("tooltip_item_cleave"),
+					value_function = UIUtils.get_tooltip_max_targets
+				},
+				{
+					charge_type = "light",
+					description = Localize("tooltip_item_stagger_strength"),
+					value_function = UIUtils.get_tooltip_stagger_strength
+				},
+				{
+					empty = true
+				},
+				{
+					charge_type = "light",
+					description = Localize("tooltip_item_crit_hit_chance"),
+					value_function = UIUtils.get_tooltip_critical_hit_chance
+				},
+				{
+					charge_type = "light",
+					description = Localize("tooltip_item_boost"),
+					value_function = UIUtils.get_tooltip_boost_coefficient
+				},
+				{
+					charge_type = "light",
+					description = Localize("tooltip_item_boost_headshot"),
+					value_function = UIUtils.get_tooltip_headshot_boost_coefficient
+				}
+			}
+
+			if stats then
+				local text_style = style.title
+				local title_text_pass_data = data.title_text_pass_data
+				local title_text = content.title
+				local text_size = data.text_size
+				text_size[1] = size[1] / 2 - frame_margin * 2
+				text_size[2] = 0
+				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				text_size[2] = title_text_height
+				position[2] = position[2] - title_text_height
+				total_height = total_height + title_text_height
+
+				if draw then
+					local text_color = text_style.text_color
+					text_color[1] = alpha
+					position[1] = position[1] + frame_margin
+
+					UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
+
+					position[1] = position[1] - frame_margin
+				end
+
+				local title_spacing = 10
+				position[2] = position[2] - title_spacing
+				total_height = total_height + title_spacing
+				local index = 1
+				local text_style = style.stat_text
+				local value_style = style.stat_value
+
+				for _, stat_descriptor in pairs(stats) do
+					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local player = Managers.player:local_player()
+					local player_unit = player.player_unit
+					local value = (not stat_descriptor.empty and stat_descriptor.value_function(player_unit, item, stat_descriptor)) or ""
+					local text_size = data.text_size
+					local text_height = nil
+
+					if not stat_descriptor.empty then
+						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					else
+						text_height = text_style.font_size
+					end
+
+					text_size[2] = text_height
+					position[2] = position[2] - text_height
+					local old_y_position = position[2]
+					local old_x_position = position[1]
+
+					if draw then
+						local text_id = "stat_" .. index
+						position[2] = old_y_position
+
+						if index % 2 == 0 then
+							local background_size = data.background_size
+							local background_style = style.background
+							local background_color = background_style.color
+							background_color[1] = alpha
+							background_size[2] = text_height
+							background_size[1] = size[1] / 2
+							position[2] = old_y_position
+
+							UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
+						end
+
+						position[1] = old_x_position + frame_margin
+						position[2] = old_y_position
+						position[3] = start_layer + 3
+						local text_pass_data = data.text_pass_data
+						content[text_id] = text
+						text_pass_data.text_id = text_id
+						text_style.text_color[1] = alpha
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						content[text_id] = value
+						value_style.text_color[1] = alpha
+						position[1] = position[1] + frame_margin / 3
+						position[2] = old_y_position
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, value_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						position[3] = start_layer + 2
+						position[1] = old_x_position
+					end
+
+					total_height = total_height + text_height
+					position[2] = old_y_position
+
+					if not stat_descriptor.empty then
+						index = index + 1
+					end
+				end
+
+				total_height = total_height + bottom_spacing
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return 0
+		end
+	},
+	heavy_attack_stats = {
+		setup_data = function ()
+			local data = {
+				frame_name = "item_tooltip_frame_01",
+				background_color = {
+					240,
+					3,
+					3,
+					3
+				},
+				background_size = {
+					0,
+					50
+				},
+				title_text_pass_data = {
+					text_id = "title"
+				},
+				text_pass_data = {},
+				text_size = {
+					0,
+					0
+				},
+				edge_size = {
+					5,
+					0
+				},
+				edge_holder_size = {
+					17,
+					9
+				},
+				content = {
+					edge_texture = "menu_frame_12_divider_vertical",
+					edge_holder_bottom = "menu_frame_12_divider_bottom",
+					edge_holder_top = "menu_frame_12_divider_top",
+					title = Localize("tutorial_tooltip_alternative_attack")
+				},
+				style = {
+					title = {
+						vertical_alignment = "center",
+						font_size = 18,
+						horizontal_alignment = "center",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+					},
+					stat_text = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "left",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					stat_value = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "right",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					background = {
+						color = {
+							150,
+							20,
+							20,
+							20
+						},
+						offset = {
+							0,
+							0,
+							-1
+						}
+					},
+					edge = {
+						texture_size = {
+							5,
+							1
+						},
+						color = {
+							255,
+							255,
+							255,
+							255
+						},
+						offset = {
+							0,
+							0,
+							1
+						}
+					},
+					edge_holder = {
+						color = {
+							255,
+							255,
+							255,
+							255
+						},
+						offset = {
+							0,
+							0,
+							1
+						}
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			if input_service:get("item_compare") then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+
+				if not is_weapon then
+					return 0
+				end
+			else
+				return 0
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
+			local alpha = 255 * alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local bottom_spacing = 20
+			local frame_margin = data.frame_margin or 0
+			local style = data.style
+			local content = data.content
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local total_height = 0
+			position[3] = start_layer + 2
+			position[2] = position[2]
+			local stats = {
+				{
+					charge_type = "heavy",
+					description = Localize("tooltip_item_damage"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						1
+					}
+				},
+				{
+					charge_type = "heavy",
+					description = Localize("tooltip_item_damage_armor"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						2
+					}
+				},
+				{
+					empty = true
+				},
+				{
+					charge_type = "heavy",
+					description = Localize("tooltip_item_cleave"),
+					value_function = UIUtils.get_tooltip_max_targets
+				},
+				{
+					charge_type = "heavy",
+					description = Localize("tooltip_item_stagger_strength"),
+					value_function = UIUtils.get_tooltip_stagger_strength
+				},
+				{
+					empty = true
+				},
+				{
+					charge_type = "heavy",
+					description = Localize("tooltip_item_crit_hit_chance"),
+					value_function = UIUtils.get_tooltip_critical_hit_chance
+				},
+				{
+					charge_type = "heavy",
+					description = Localize("tooltip_item_boost"),
+					value_function = UIUtils.get_tooltip_boost_coefficient
+				},
+				{
+					charge_type = "heavy",
+					description = Localize("tooltip_item_boost_headshot"),
+					value_function = UIUtils.get_tooltip_headshot_boost_coefficient
+				}
+			}
+
+			if stats then
+				local text_style = style.title
+				local title_text_pass_data = data.title_text_pass_data
+				local title_text = content.title
+				local text_size = data.text_size
+				text_size[1] = size[1] / 2 - frame_margin * 2
+				text_size[2] = 0
+				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				text_size[2] = title_text_height
+				position[1] = position[1] + size[1] / 2
+				position[2] = position[2] - title_text_height
+				total_height = total_height + title_text_height
+
+				if draw then
+					local text_color = text_style.text_color
+					text_color[1] = alpha
+					position[1] = position[1] + frame_margin
+
+					UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
+
+					position[1] = position[1] - frame_margin
+				end
+
+				local title_spacing = 10
+				position[2] = position[2] - title_spacing
+				total_height = total_height + title_spacing
+				local index = 1
+				local text_style = style.stat_text
+				local value_style = style.stat_value
+
+				for _, stat_descriptor in pairs(stats) do
+					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local player = Managers.player:local_player()
+					local player_unit = player.player_unit
+					local value = (not stat_descriptor.empty and stat_descriptor.value_function(player_unit, item, stat_descriptor)) or ""
+					local text_size = data.text_size
+					local text_height = nil
+
+					if not stat_descriptor.empty then
+						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					else
+						text_height = text_style.font_size
+					end
+
+					text_size[2] = text_height
+					position[2] = position[2] - text_height
+					local old_y_position = position[2]
+					local old_x_position = position[1]
+
+					if draw then
+						local text_id = "stat_" .. index
+						position[2] = old_y_position
+
+						if index % 2 == 0 then
+							local background_size = data.background_size
+							local background_style = style.background
+							local background_color = background_style.color
+							background_color[1] = alpha
+							background_size[2] = text_height
+							background_size[1] = size[1] / 2
+							position[2] = old_y_position
+
+							UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
+						end
+
+						position[1] = old_x_position + frame_margin
+						position[2] = old_y_position
+						position[3] = start_layer + 3
+						local text_pass_data = data.text_pass_data
+						content[text_id] = text
+						text_pass_data.text_id = text_id
+						text_style.text_color[1] = alpha
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						content[text_id] = value
+						value_style.text_color[1] = alpha
+						position[2] = old_y_position
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, value_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						position[3] = start_layer + 2
+						position[1] = old_x_position
+					end
+
+					total_height = total_height + text_height
+					position[2] = old_y_position
+
+					if not stat_descriptor.empty then
+						index = index + 1
+					end
+				end
+
+				if draw then
+					position[1] = position_x + size[1] / 2
+					local edge_size = data.edge_size
+					edge_size[2] = total_height
+					local edge_texture = content.edge_texture
+					local edge_style = style.edge
+					local edge_color = edge_style.color
+					local edge_texture_size = edge_style.texture_size
+					edge_texture_size[2] = total_height
+					edge_color[1] = alpha
+					position[1] = position[1] - edge_texture_size[1] / 2
+					position[2] = position[2] - frame_margin * 0.5
+					position[3] = start_layer + 4
+
+					UIRenderer.draw_tiled_texture(ui_renderer, edge_texture, position, edge_size, edge_texture_size, edge_color)
+
+					local edge_holder_style = style.edge_holder
+					local edge_holder_size = data.edge_holder_size
+					local edge_holder_color = edge_holder_style.color
+					local edge_holder_top_texture = content.edge_holder_top
+					local edge_holder_bottom_texture = content.edge_holder_bottom
+					edge_holder_color[1] = alpha
+					position[1] = position[1] - edge_holder_size[1] / 2 + 3
+					position[3] = start_layer + 6
+					position[2] = position[2] - 2
+
+					UIRenderer.draw_texture(ui_renderer, edge_holder_bottom_texture, position, edge_holder_size, edge_holder_color)
+
+					position[2] = position[2] + total_height
+
+					UIRenderer.draw_texture(ui_renderer, edge_holder_top_texture, position, edge_holder_size, edge_holder_color)
+				end
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return total_height
+		end
+	},
+	detailed_stats_light = {
+		setup_data = function ()
+			local data = {
+				frame_name = "item_tooltip_frame_01",
+				background_color = {
+					240,
+					3,
+					3,
+					3
+				},
+				background_size = {
+					0,
+					50
+				},
+				title_text_pass_data = {
+					text_id = "title"
+				},
+				text_pass_data = {},
+				text_size = {
+					0,
+					0
+				},
+				content = {
+					icon = "tooltip_marker",
+					title = Localize("tutorial_tooltip_normal_attack")
+				},
+				style = {
+					title = {
+						vertical_alignment = "center",
+						font_size = 18,
+						horizontal_alignment = "center",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+					},
+					stat_text = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "left",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					stat_value = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "right",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					background = {
+						color = {
+							150,
+							20,
+							20,
+							20
+						},
+						offset = {
+							0,
+							0,
+							-1
+						}
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			if input_service:get("item_detail") then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_melee = slot_type == "melee"
+
+				if not is_melee then
+					return 0
+				end
+			else
+				return 0
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
+			local alpha = 255 * alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local bottom_spacing = 20
+			local frame_margin = data.frame_margin or 0
+			local style = data.style
+			local content = data.content
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local total_height = 0
+			position[3] = start_layer + 2
+			position[2] = position[2]
+			local stats = {
+				{
+					charge_type = "light",
+					detailed = true,
+					description = Localize("tooltip_item_damage"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						1
+					}
+				},
+				{
+					charge_type = "light",
+					detailed = true,
+					description = Localize("tooltip_item_damage_armor"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						2
+					}
+				},
+				{
+					empty = true
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_cleave"),
+					value_function = UIUtils.get_tooltip_max_targets
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_stagger_strength"),
+					value_function = UIUtils.get_tooltip_stagger_strength
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_time_between_damage"),
+					value_function = UIUtils.get_tooltip_time_between_damage
+				},
+				{
+					empty = true
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_crit_hit_chance"),
+					value_function = UIUtils.get_tooltip_critical_hit_chance
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_boost"),
+					value_function = UIUtils.get_tooltip_boost_coefficient
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_boost_headshot"),
+					value_function = UIUtils.get_tooltip_headshot_boost_coefficient
+				}
+			}
+
+			if stats then
+				local text_style = style.title
+				local title_text_pass_data = data.title_text_pass_data
+				local title_text = content.title
+				local text_size = data.text_size
+				text_size[1] = size[1] - frame_margin * 2
+				text_size[2] = 0
+				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				text_size[2] = title_text_height
+				position[2] = position[2] - title_text_height
+				total_height = total_height + title_text_height
+
+				if draw then
+					local text_color = text_style.text_color
+					text_color[1] = alpha
+					position[1] = position[1] + frame_margin
+
+					UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
+
+					position[1] = position[1] - frame_margin
+				end
+
+				local title_spacing = 10
+				position[2] = position[2] - title_spacing
+				total_height = total_height + title_spacing
+				local index = 1
+				local text_style = style.stat_text
+				local value_style = style.stat_value
+
+				for _, stat_descriptor in pairs(stats) do
+					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local player = Managers.player:local_player()
+					local player_unit = player.player_unit
+					local value = (not stat_descriptor.empty and stat_descriptor.value_function(player_unit, item, stat_descriptor)) or ""
+					local text_size = data.text_size
+					local text_height = nil
+
+					if not stat_descriptor.empty then
+						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					else
+						text_height = text_style.font_size
+					end
+
+					text_size[2] = text_height
+					position[2] = position[2] - text_height
+					local old_y_position = position[2]
+					local old_x_position = position[1]
+
+					if draw then
+						local text_id = "stat_" .. index
+						position[2] = old_y_position
+
+						if index % 2 == 0 then
+							local background_size = data.background_size
+							local background_style = style.background
+							local background_color = background_style.color
+							background_color[1] = alpha
+							background_size[2] = text_height
+							background_size[1] = size[1]
+							position[2] = old_y_position
+
+							UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
+						end
+
+						position[1] = old_x_position + frame_margin
+						position[2] = old_y_position
+						position[3] = start_layer + 3
+						local text_pass_data = data.text_pass_data
+						content[text_id] = text
+						text_pass_data.text_id = text_id
+						text_style.text_color[1] = alpha
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						content[text_id] = value
+						value_style.text_color[1] = alpha
+						position[1] = position[1] + frame_margin / 3
+						position[2] = old_y_position
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, value_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						position[3] = start_layer + 2
+						position[1] = old_x_position
+					end
+
+					total_height = total_height + text_height
+					position[2] = old_y_position
+
+					if not stat_descriptor.empty then
+						index = index + 1
+					end
+				end
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return total_height
+		end
+	},
+	detailed_stats_heavy = {
+		setup_data = function ()
+			local data = {
+				frame_name = "item_tooltip_frame_01",
+				background_color = {
+					240,
+					3,
+					3,
+					3
+				},
+				background_size = {
+					0,
+					50
+				},
+				title_text_pass_data = {
+					text_id = "title"
+				},
+				text_pass_data = {},
+				text_size = {
+					0,
+					0
+				},
+				content = {
+					icon = "tooltip_marker",
+					title = Localize("tutorial_tooltip_alternative_attack")
+				},
+				style = {
+					title = {
+						vertical_alignment = "center",
+						font_size = 18,
+						horizontal_alignment = "center",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+					},
+					stat_text = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "left",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					stat_value = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "right",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					background = {
+						color = {
+							150,
+							20,
+							20,
+							20
+						},
+						offset = {
+							0,
+							0,
+							-1
+						}
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			if input_service:get("item_detail") then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_melee = slot_type == "melee"
+
+				if not is_melee then
+					return 0
+				end
+			else
+				return 0
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
+			local alpha = 255 * alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local bottom_spacing = 20
+			local frame_margin = data.frame_margin or 0
+			local style = data.style
+			local content = data.content
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local total_height = 0
+			position[3] = start_layer + 2
+			position[2] = position[2]
+			local stats = {
+				{
+					charge_type = "heavy",
+					detailed = true,
+					description = Localize("tooltip_item_damage"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						1
+					}
+				},
+				{
+					charge_type = "heavy",
+					detailed = true,
+					description = Localize("tooltip_item_damage_armor"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						2
+					}
+				},
+				{
+					empty = true
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_cleave"),
+					value_function = UIUtils.get_tooltip_max_targets
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_stagger_strength"),
+					value_function = UIUtils.get_tooltip_stagger_strength
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_time_between_damage"),
+					value_function = UIUtils.get_tooltip_time_between_damage
+				},
+				{
+					empty = true
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_crit_hit_chance"),
+					value_function = UIUtils.get_tooltip_critical_hit_chance
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_boost"),
+					value_function = UIUtils.get_tooltip_boost_coefficient
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_boost_headshot"),
+					value_function = UIUtils.get_tooltip_headshot_boost_coefficient
+				}
+			}
+
+			if stats then
+				local text_style = style.title
+				local title_text_pass_data = data.title_text_pass_data
+				local title_text = content.title
+				local text_size = data.text_size
+				text_size[1] = size[1] - frame_margin * 2
+				text_size[2] = 0
+				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				text_size[2] = title_text_height
+				position[2] = position[2] - title_text_height
+				total_height = total_height + title_text_height
+
+				if draw then
+					local text_color = text_style.text_color
+					text_color[1] = alpha
+					position[1] = position[1] + frame_margin
+
+					UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
+
+					position[1] = position[1] - frame_margin
+				end
+
+				local title_spacing = 10
+				position[2] = position[2] - title_spacing
+				total_height = total_height + title_spacing
+				local index = 1
+				local text_style = style.stat_text
+				local value_style = style.stat_value
+
+				for _, stat_descriptor in pairs(stats) do
+					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local player = Managers.player:local_player()
+					local player_unit = player.player_unit
+					local value = (not stat_descriptor.empty and stat_descriptor.value_function(player_unit, item, stat_descriptor)) or ""
+					local text_size = data.text_size
+					local text_height = nil
+
+					if not stat_descriptor.empty then
+						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					else
+						text_height = text_style.font_size
+					end
+
+					text_size[2] = text_height
+					position[2] = position[2] - text_height
+					local old_y_position = position[2]
+					local old_x_position = position[1]
+
+					if draw then
+						local text_id = "stat_" .. index
+						position[2] = old_y_position
+
+						if index % 2 == 0 then
+							local background_size = data.background_size
+							local background_style = style.background
+							local background_color = background_style.color
+							background_color[1] = alpha
+							background_size[2] = text_height
+							background_size[1] = size[1]
+							position[2] = old_y_position
+
+							UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
+						end
+
+						position[1] = old_x_position + frame_margin
+						position[2] = old_y_position
+						position[3] = start_layer + 3
+						local text_pass_data = data.text_pass_data
+						content[text_id] = text
+						text_pass_data.text_id = text_id
+						text_style.text_color[1] = alpha
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						content[text_id] = value
+						value_style.text_color[1] = alpha
+						position[1] = position[1] + frame_margin / 3
+						position[2] = old_y_position
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, value_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						position[3] = start_layer + 2
+						position[1] = old_x_position
+					end
+
+					total_height = total_height + text_height
+					position[2] = old_y_position
+
+					if not stat_descriptor.empty then
+						index = index + 1
+					end
+				end
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return total_height
+		end
+	},
+	detailed_stats_push = {
+		setup_data = function ()
+			local data = {
+				frame_name = "item_tooltip_frame_01",
+				background_color = {
+					240,
+					3,
+					3,
+					3
+				},
+				background_size = {
+					0,
+					50
+				},
+				title_text_pass_data = {
+					text_id = "title"
+				},
+				text_pass_data = {},
+				text_size = {
+					0,
+					0
+				},
+				content = {
+					icon = "tooltip_marker",
+					title = Localize("tutorial_tooltip_push")
+				},
+				style = {
+					title = {
+						vertical_alignment = "center",
+						font_size = 18,
+						horizontal_alignment = "center",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+					},
+					stat_text = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "left",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					stat_value = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "right",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					background = {
+						color = {
+							150,
+							20,
+							20,
+							20
+						},
+						offset = {
+							0,
+							0,
+							-1
+						}
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			if input_service:get("item_detail") then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_melee = slot_type == "melee"
+
+				if not is_melee then
+					return 0
+				end
+			else
+				return 0
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
+			local alpha = 255 * alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local bottom_spacing = 20
+			local frame_margin = data.frame_margin or 0
+			local style = data.style
+			local content = data.content
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local total_height = 0
+			position[3] = start_layer + 2
+			position[2] = position[2]
+			local stats = {
+				{
+					charge_type = "push",
+					description = Localize("tooltip_item_push_angles"),
+					value_function = UIUtils.get_tooltip_push_angles
+				},
+				{
+					charge_type = "push",
+					description = Localize("tooltip_item_stagger_strength"),
+					value_function = UIUtils.get_tooltip_push_stagger_strengths
+				}
+			}
+
+			if stats then
+				local text_style = style.title
+				local title_text_pass_data = data.title_text_pass_data
+				local title_text = content.title
+				local text_size = data.text_size
+				text_size[1] = size[1] - frame_margin * 2
+				text_size[2] = 0
+				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				text_size[2] = title_text_height
+				position[2] = position[2] - title_text_height
+				total_height = total_height + title_text_height
+
+				if draw then
+					local text_color = text_style.text_color
+					text_color[1] = alpha
+					position[1] = position[1] + frame_margin
+
+					UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
+
+					position[1] = position[1] - frame_margin
+				end
+
+				local title_spacing = 10
+				position[2] = position[2] - title_spacing
+				total_height = total_height + title_spacing
+				local index = 1
+				local text_style = style.stat_text
+				local value_style = style.stat_value
+
+				for _, stat_descriptor in pairs(stats) do
+					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local player = Managers.player:local_player()
+					local player_unit = player.player_unit
+					local value = (not stat_descriptor.empty and stat_descriptor.value_function(player_unit, item, stat_descriptor)) or ""
+					local text_size = data.text_size
+					local text_height = nil
+
+					if not stat_descriptor.empty then
+						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					else
+						text_height = text_style.font_size
+					end
+
+					text_size[2] = text_height
+					position[2] = position[2] - text_height
+					local old_y_position = position[2]
+					local old_x_position = position[1]
+
+					if draw then
+						local text_id = "stat_" .. index
+						position[2] = old_y_position
+
+						if index % 2 == 0 then
+							local background_size = data.background_size
+							local background_style = style.background
+							local background_color = background_style.color
+							background_color[1] = alpha
+							background_size[2] = text_height
+							background_size[1] = size[1]
+							position[2] = old_y_position
+
+							UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
+						end
+
+						position[1] = old_x_position + frame_margin
+						position[2] = old_y_position
+						position[3] = start_layer + 3
+						local text_pass_data = data.text_pass_data
+						content[text_id] = text
+						text_pass_data.text_id = text_id
+						text_style.text_color[1] = alpha
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						content[text_id] = value
+						value_style.text_color[1] = alpha
+						position[1] = position[1] + frame_margin / 3
+						position[2] = old_y_position
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, value_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						position[3] = start_layer + 2
+						position[1] = old_x_position
+					end
+
+					total_height = total_height + text_height
+					position[2] = old_y_position
+
+					if not stat_descriptor.empty then
+						index = index + 1
+					end
+				end
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return total_height
+		end
+	},
+	detailed_stats_ranged_light = {
+		setup_data = function ()
+			local data = {
+				frame_name = "item_tooltip_frame_01",
+				background_color = {
+					240,
+					3,
+					3,
+					3
+				},
+				background_size = {
+					0,
+					50
+				},
+				title_text_pass_data = {
+					text_id = "title"
+				},
+				text_pass_data = {},
+				text_size = {
+					0,
+					0
+				},
+				content = {
+					icon = "tooltip_marker",
+					title = Localize("tutorial_tooltip_normal_attack")
+				},
+				style = {
+					title = {
+						vertical_alignment = "center",
+						font_size = 18,
+						horizontal_alignment = "center",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+					},
+					stat_text = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "left",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					stat_value = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "right",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					background = {
+						color = {
+							150,
+							20,
+							20,
+							20
+						},
+						offset = {
+							0,
+							0,
+							-1
+						}
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			if input_service:get("item_detail") then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_ranged = slot_type == "ranged"
+
+				if not is_ranged then
+					return 0
+				end
+			else
+				return 0
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
+			local alpha = 255 * alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local bottom_spacing = 20
+			local frame_margin = data.frame_margin or 0
+			local style = data.style
+			local content = data.content
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local total_height = 0
+			position[3] = start_layer + 2
+			position[2] = position[2]
+			local stats = {
+				{
+					charge_type = "light",
+					detailed = true,
+					description = Localize("tooltip_item_damage"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						1
+					}
+				},
+				{
+					charge_type = "light",
+					detailed = true,
+					description = Localize("tooltip_item_damage_armor"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						2
+					}
+				},
+				{
+					empty = true
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_cleave"),
+					value_function = UIUtils.get_tooltip_max_targets
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_stagger_strength"),
+					value_function = UIUtils.get_tooltip_stagger_strength
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_time_between_damage"),
+					value_function = UIUtils.get_tooltip_time_between_damage
+				},
+				{
+					empty = true
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_crit_hit_chance"),
+					value_function = UIUtils.get_tooltip_critical_hit_chance
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_boost"),
+					value_function = UIUtils.get_tooltip_boost_coefficient
+				},
+				{
+					detailed = true,
+					charge_type = "light",
+					description = Localize("tooltip_item_boost_headshot"),
+					value_function = UIUtils.get_tooltip_headshot_boost_coefficient
+				}
+			}
+
+			if stats then
+				local text_style = style.title
+				local title_text_pass_data = data.title_text_pass_data
+				local title_text = content.title
+				local text_size = data.text_size
+				text_size[1] = size[1] - frame_margin * 2
+				text_size[2] = 0
+				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				text_size[2] = title_text_height
+				position[2] = position[2] - title_text_height
+				total_height = total_height + title_text_height
+
+				if draw then
+					local text_color = text_style.text_color
+					text_color[1] = alpha
+					position[1] = position[1] + frame_margin
+
+					UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
+
+					position[1] = position[1] - frame_margin
+				end
+
+				local title_spacing = 10
+				position[2] = position[2] - title_spacing
+				total_height = total_height + title_spacing
+				local index = 1
+				local text_style = style.stat_text
+				local value_style = style.stat_value
+
+				for _, stat_descriptor in pairs(stats) do
+					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local player = Managers.player:local_player()
+					local player_unit = player.player_unit
+					local value = (not stat_descriptor.empty and stat_descriptor.value_function(player_unit, item, stat_descriptor)) or ""
+					local text_size = data.text_size
+					local text_height = nil
+
+					if not stat_descriptor.empty then
+						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					else
+						text_height = text_style.font_size
+					end
+
+					text_size[2] = text_height
+					position[2] = position[2] - text_height
+					local old_y_position = position[2]
+					local old_x_position = position[1]
+
+					if draw then
+						local text_id = "stat_" .. index
+						position[2] = old_y_position
+
+						if index % 2 == 0 then
+							local background_size = data.background_size
+							local background_style = style.background
+							local background_color = background_style.color
+							background_color[1] = alpha
+							background_size[2] = text_height
+							background_size[1] = size[1]
+							position[2] = old_y_position
+
+							UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
+						end
+
+						position[1] = old_x_position + frame_margin
+						position[2] = old_y_position
+						position[3] = start_layer + 3
+						local text_pass_data = data.text_pass_data
+						content[text_id] = text
+						text_pass_data.text_id = text_id
+						text_style.text_color[1] = alpha
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						content[text_id] = value
+						value_style.text_color[1] = alpha
+						position[1] = position[1] + frame_margin / 3
+						position[2] = old_y_position
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, value_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						position[3] = start_layer + 2
+						position[1] = old_x_position
+					end
+
+					total_height = total_height + text_height
+					position[2] = old_y_position
+
+					if not stat_descriptor.empty then
+						index = index + 1
+					end
+				end
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return total_height
+		end
+	},
+	detailed_stats_ranged_heavy = {
+		setup_data = function ()
+			local data = {
+				frame_name = "item_tooltip_frame_01",
+				background_color = {
+					240,
+					3,
+					3,
+					3
+				},
+				background_size = {
+					0,
+					50
+				},
+				title_text_pass_data = {
+					text_id = "title"
+				},
+				text_pass_data = {},
+				text_size = {
+					0,
+					0
+				},
+				content = {
+					icon = "tooltip_marker",
+					title = Localize("tutorial_tooltip_alternative_attack")
+				},
+				style = {
+					title = {
+						vertical_alignment = "center",
+						font_size = 18,
+						horizontal_alignment = "center",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_title", 255)
+					},
+					stat_text = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "left",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					stat_value = {
+						vertical_alignment = "center",
+						font_size = 16,
+						horizontal_alignment = "right",
+						word_wrap = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255)
+					},
+					background = {
+						color = {
+							150,
+							20,
+							20,
+							20
+						},
+						offset = {
+							0,
+							0,
+							-1
+						}
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
+			if input_service:get("item_detail") then
+				local item_data = item.data
+				local slot_type = item_data.slot_type
+				local is_ranged = slot_type == "ranged"
+
+				if not is_ranged then
+					return 0
+				end
+			else
+				return 0
+			end
+
+			local alpha_multiplier = pass_data.alpha_multiplier
+			local alpha = 255 * alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local bottom_spacing = 20
+			local frame_margin = data.frame_margin or 0
+			local style = data.style
+			local content = data.content
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local total_height = 0
+			position[3] = start_layer + 2
+			position[2] = position[2]
+			local stats = {
+				{
+					charge_type = "heavy",
+					detailed = true,
+					description = Localize("tooltip_item_damage"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						1
+					}
+				},
+				{
+					charge_type = "heavy",
+					detailed = true,
+					description = Localize("tooltip_item_damage_armor"),
+					value_function = UIUtils.get_tooltip_damage,
+					armor_types = {
+						2
+					}
+				},
+				{
+					empty = true
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_cleave"),
+					value_function = UIUtils.get_tooltip_max_targets
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_stagger_strength"),
+					value_function = UIUtils.get_tooltip_stagger_strength
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_time_between_damage"),
+					value_function = UIUtils.get_tooltip_time_between_damage
+				},
+				{
+					empty = true
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_crit_hit_chance"),
+					value_function = UIUtils.get_tooltip_critical_hit_chance
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_boost"),
+					value_function = UIUtils.get_tooltip_boost_coefficient
+				},
+				{
+					detailed = true,
+					charge_type = "heavy",
+					description = Localize("tooltip_item_boost_headshot"),
+					value_function = UIUtils.get_tooltip_headshot_boost_coefficient
+				}
+			}
+
+			if stats then
+				local text_style = style.title
+				local title_text_pass_data = data.title_text_pass_data
+				local title_text = content.title
+				local text_size = data.text_size
+				text_size[1] = size[1] - frame_margin * 2
+				text_size[2] = 0
+				local title_text_height = get_text_height(ui_renderer, text_size, text_style, content, title_text, ui_style_global)
+				text_size[2] = title_text_height
+				position[2] = position[2] - title_text_height
+				total_height = total_height + title_text_height
+
+				if draw then
+					local text_color = text_style.text_color
+					text_color[1] = alpha
+					position[1] = position[1] + frame_margin
+
+					UIPasses.text.draw(ui_renderer, title_text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
+
+					position[1] = position[1] - frame_margin
+				end
+
+				local title_spacing = 10
+				position[2] = position[2] - title_spacing
+				total_height = total_height + title_spacing
+				local index = 1
+				local text_style = style.stat_text
+				local value_style = style.stat_value
+
+				for _, stat_descriptor in pairs(stats) do
+					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local player = Managers.player:local_player()
+					local player_unit = player.player_unit
+					local value = (not stat_descriptor.empty and stat_descriptor.value_function(player_unit, item, stat_descriptor)) or ""
+					local text_size = data.text_size
+					local text_height = nil
+
+					if not stat_descriptor.empty then
+						text_height = get_text_height(ui_renderer, text_size, text_style, content, text, ui_style_global)
+					else
+						text_height = text_style.font_size
+					end
+
+					text_size[2] = text_height
+					position[2] = position[2] - text_height
+					local old_y_position = position[2]
+					local old_x_position = position[1]
+
+					if draw then
+						local text_id = "stat_" .. index
+						position[2] = old_y_position
+
+						if index % 2 == 0 then
+							local background_size = data.background_size
+							local background_style = style.background
+							local background_color = background_style.color
+							background_color[1] = alpha
+							background_size[2] = text_height
+							background_size[1] = size[1]
+							position[2] = old_y_position
+
+							UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
+						end
+
+						position[1] = old_x_position + frame_margin
+						position[2] = old_y_position
+						position[3] = start_layer + 3
+						local text_pass_data = data.text_pass_data
+						content[text_id] = text
+						text_pass_data.text_id = text_id
+						text_style.text_color[1] = alpha
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						content[text_id] = value
+						value_style.text_color[1] = alpha
+						position[1] = position[1] + frame_margin / 3
+						position[2] = old_y_position
+
+						UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, value_style, content, position, data.text_size, input_service, dt, ui_style_global)
+
+						position[3] = start_layer + 2
+						position[1] = old_x_position
+					end
+
+					total_height = total_height + text_height
+					position[2] = old_y_position
+
+					if not stat_descriptor.empty then
+						index = index + 1
+					end
+				end
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return total_height
+		end
 	}
 }
 
-return 
+return

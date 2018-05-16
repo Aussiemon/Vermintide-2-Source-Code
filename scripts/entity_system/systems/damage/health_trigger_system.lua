@@ -4,20 +4,19 @@ HealthTriggerSystem = class(HealthTriggerSystem, ExtensionSystemBase)
 local extensions = {
 	"HealthTriggerExtension"
 }
+
 HealthTriggerSystem.init = function (self, entity_system_creation_context, system_name)
 	HealthTriggerSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
 	self.unit_extensions = {}
-
-	return 
 end
+
 HealthTriggerSystem.destroy = function (self)
 	assert(not next(self.unit_extensions), "Found at least one unit that hasn't been unregistered for health trigger system.")
 
 	self.unit_extensions = nil
-
-	return 
 end
+
 HealthTriggerSystem.on_add_extension = function (self, world, unit, extension_name, ...)
 	local extension = {}
 
@@ -37,21 +36,22 @@ HealthTriggerSystem.on_add_extension = function (self, world, unit, extension_na
 
 	return extension
 end
+
 HealthTriggerSystem.on_remove_extension = function (self, unit, extension_name)
 	assert(ScriptUnit.has_extension(unit, "health_trigger_system"), "Trying to remove non-existing extension %q from unit %s", extension_name, unit)
 	ScriptUnit.remove_extension(unit, "health_trigger_system")
 
 	self.unit_extensions[unit] = nil
-
-	return 
 end
+
 local health_trigger_levels = HealthTriggerSettings.levels
 local rapid_health_loss = HealthTriggerSettings.rapid_health_loss
+
 HealthTriggerSystem.update = function (self, context, t)
 	for unit, extension in pairs(self.unit_extensions) do
 		local last_health_percent = extension.last_health_percent
 		local health_extension = extension.health_extension
-		local current_health_percent = health_extension.current_health_percent(health_extension)
+		local current_health_percent = health_extension:current_health_percent()
 
 		if last_health_percent ~= current_health_percent then
 			extension.last_health_percent = current_health_percent
@@ -83,7 +83,7 @@ HealthTriggerSystem.update = function (self, context, t)
 			end
 		end
 
-		if extension.tick_time + rapid_health_loss.tick_time < t then
+		if t > extension.tick_time + rapid_health_loss.tick_time then
 			extension.tick_time = t
 			local last_health_tick_percent = extension.last_health_tick_percent
 			extension.last_health_tick_percent = current_health_percent
@@ -91,7 +91,7 @@ HealthTriggerSystem.update = function (self, context, t)
 			local health_loss_threshold = rapid_health_loss.tick_loss_threshold
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 
-			if health_loss_threshold < health_loss and not status_extension.is_wounded(status_extension) then
+			if health_loss_threshold < health_loss and not status_extension:is_wounded() then
 				local target_name = ScriptUnit.extension(unit, "dialogue_system").context.player_profile
 				local event_data = FrameTable.alloc_table()
 				event_data.trigger_type = "losing_rapidly"
@@ -105,8 +105,6 @@ HealthTriggerSystem.update = function (self, context, t)
 			end
 		end
 	end
-
-	return 
 end
 
-return 
+return

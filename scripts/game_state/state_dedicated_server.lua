@@ -17,32 +17,31 @@ require("scripts/utils/visual_assert_log")
 StateDedicatedServer = class(StateDedicatedServer)
 StateDedicatedServer.NAME = "StateDedicatedServer"
 StateDedicatedServer.packages_to_load = {}
+
 StateDedicatedServer.on_enter = function (self, params)
 	VisualAssertLog.setup(nil)
-	self._setup_garbage_collection(self)
-	self._setup_level_transition(self)
-	self._setup_network(self)
-	self._setup_state_machine(self)
-	self._setup_popup_manager(self)
-	self._setup_chat_manager(self)
-	self._setup_account_manager(self)
+	self:_setup_garbage_collection()
+	self:_setup_level_transition()
+	self:_setup_network()
+	self:_setup_state_machine()
+	self:_setup_popup_manager()
+	self:_setup_chat_manager()
+	self:_setup_account_manager()
 
 	if self.parent.loading_context.reload_packages then
-		self._unload_packages(self)
+		self:_unload_packages()
 	end
 
-	self._load_packages(self)
-
-	return 
+	self:_load_packages()
 end
+
 StateDedicatedServer._setup_garbage_collection = function (self)
 	local assert_on_leak = true
 
 	GarbageLeakDetector.run_leak_detection(assert_on_leak)
 	GarbageLeakDetector.register_object(self, "StateDedicatedServer")
-
-	return 
 end
+
 StateDedicatedServer._setup_level_transition = function (self)
 	local loading_context = self.parent.loading_context
 
@@ -53,74 +52,66 @@ StateDedicatedServer._setup_level_transition = function (self)
 
 		self._level_transition_handler:set_next_level(self._level_transition_handler:default_level_key())
 	end
-
-	return 
 end
+
 StateDedicatedServer._init_input = function (self)
 	self._input_manager = InputManager:new()
 	local input_manager = self._input_manager
 	Managers.input = input_manager
 
-	input_manager.initialize_device(input_manager, "keyboard", 1)
-	input_manager.initialize_device(input_manager, "mouse", 1)
-	input_manager.initialize_device(input_manager, "gamepad")
-
-	return 
+	input_manager:initialize_device("keyboard", 1)
+	input_manager:initialize_device("mouse", 1)
+	input_manager:initialize_device("gamepad")
 end
+
 StateDedicatedServer._setup_network = function (self)
 	self._network_event_delegate = NetworkEventDelegate:new()
-
-	return 
 end
+
 StateDedicatedServer._setup_state_machine = function (self)
 	local params = {}
-	self._machine = StateMachine:new(self, StateDedicatedServerInit, params, true)
-
-	return 
+	self._machine = GameStateMachine:new(self, StateDedicatedServerInit, params, true)
 end
+
 StateDedicatedServer._setup_popup_manager = function (self)
 	Managers.popup = PopupManager:new()
 	Managers.simple_popup = SimplePopup:new()
-
-	return 
 end
+
 StateDedicatedServer._setup_chat_manager = function (self)
 	Managers.chat = Managers.chat or ChatManager:new()
-
-	return 
 end
+
 StateDedicatedServer._setup_account_manager = function (self)
 	Managers.account = Managers.account or AccountManager:new()
-
-	return 
 end
+
 StateDedicatedServer._load_packages = function (self)
 	local package_manager = Managers.package
 
 	for i, name in ipairs(StateDedicatedServer.packages_to_load) do
-		if not package_manager.has_loaded(package_manager, name, "state_dedicated_server") then
-			package_manager.load(package_manager, name, "state_dedicated_server", nil, true)
+		if not package_manager:has_loaded(name, "state_dedicated_server") then
+			package_manager:load(name, "state_dedicated_server", nil, true)
 		end
 	end
 
 	if not GlobalResources.loaded then
 		for i, name in ipairs(GlobalResources) do
-			if not package_manager.has_loaded(package_manager, name) then
-				package_manager.load(package_manager, name, "global", nil, true)
+			if not package_manager:has_loaded(name) then
+				package_manager:load(name, "global", nil, true)
 			end
 		end
 
 		GlobalResources.loaded = true
 	end
-
-	return 
 end
+
 StateDedicatedServer._unload_packages = function (self)
 	local package_manager = Managers.package
 
 	for i, name in ipairs(StateDedicatedServer.packages_to_load) do
-		if package_manager.has_loaded(package_manager, name, "state_dedicated_server") then
-			package_manager.unload(package_manager, name, "state_dedicated_server")
+		if package_manager:has_loaded(name, "state_dedicated_server") then
+			package_manager:unload(name, "state_dedicated_server")
 		end
 	end
 
@@ -128,27 +119,27 @@ StateDedicatedServer._unload_packages = function (self)
 		GlobalResources.loaded = nil
 
 		for i, name in ipairs(GlobalResources) do
-			package_manager.unload(package_manager, name, "global")
+			package_manager:unload(name, "global")
 		end
 	end
-
-	return 
 end
+
 StateDedicatedServer._packages_loaded = function (self)
 	local package_manager = Managers.package
 
 	for i, name in ipairs(StateDedicatedServer.packages_to_load) do
-		if not package_manager.has_loaded(package_manager, name) then
+		if not package_manager:has_loaded(name) then
 			return false
 		end
 	end
 
 	return true
 end
+
 StateDedicatedServer.update = function (self, dt, t)
 	Network.update_receive(dt, self._network_event_delegate.event_table)
 	self._machine:update(dt, t)
-	self._update_network(self, dt)
+	self:_update_network(dt)
 
 	if script_data.debug_enabled then
 		VisualAssertLog.update(dt)
@@ -171,25 +162,24 @@ StateDedicatedServer.update = function (self, dt, t)
 			self._wanted_state = StateLoading
 		end
 
-		self._update_wanted_state(self)
+		self:_update_wanted_state()
 	end
 
 	Network.update_transmit(dt)
 
-	if self._packages_loaded(self) then
+	if self:_packages_loaded() then
 		return self._wanted_state
 	end
-
-	return 
 end
+
 StateDedicatedServer.setup_network_options = function (self)
 	if not self._network_options then
 		local server_port = script_data.server_port or script_data.settings.server_port or GameSettingsDevelopment.network_port
 		local query_port = script_data.query_port or script_data.settings.query_port
 		local steam_port = script_data.steam_port or script_data.settings.steam_port
-		local ip_address = script_data.ip_address or script_data.settings.ip_address
+		local ip_address = Network.default_network_address()
 		local network_options = {
-			map = "game",
+			map = "None",
 			max_members = 4,
 			config_file_name = "global",
 			project_hash = "bulldozer",
@@ -200,9 +190,8 @@ StateDedicatedServer.setup_network_options = function (self)
 		}
 		self._network_options = network_options
 	end
-
-	return 
 end
+
 StateDedicatedServer.setup_network_server = function (self, game_server)
 	self._game_server = game_server
 	local initial_level = self._level_transition_handler:default_level_key()
@@ -249,9 +238,8 @@ StateDedicatedServer.setup_network_server = function (self, game_server)
 	self._network_server:set_current_level(initial_level)
 	self._level_transition_handler:set_next_level(initial_level)
 	self._level_transition_handler:load_next_level()
-
-	return 
 end
+
 StateDedicatedServer.setup_chat_manager = function (self, game_server)
 	local peer_id = Network.peer_id()
 	local network_context = {
@@ -267,28 +255,32 @@ StateDedicatedServer.setup_chat_manager = function (self, game_server)
 	end
 
 	Managers.chat:register_channel(1, member_func)
-
-	return 
 end
+
+StateDedicatedServer.setup_enemy_package_loader = function (self, game_server)
+	local peer_id = Network.peer_id()
+
+	self._level_transition_handler.enemy_package_loader:network_context_created(game_server, peer_id, peer_id)
+end
+
 StateDedicatedServer.network_options = function (self)
 	return self._network_options
 end
+
 StateDedicatedServer._update_network = function (self, dt)
 	if self._network_server then
 		self._network_server:update(dt)
 	end
-
-	return 
 end
+
 StateDedicatedServer._update_wanted_state = function (self)
 	local current_state_name = self._machine:state().NAME
 
 	if current_state_name == "StateDedicatedServerRunning" then
 		self._wanted_state = StateLoading
 	end
-
-	return 
 end
+
 StateDedicatedServer._destroy_network = function (self)
 	if self._network_server then
 		self._network_server:destroy()
@@ -311,9 +303,8 @@ StateDedicatedServer._destroy_network = function (self)
 
 		self._network_transmit = nil
 	end
-
-	return 
 end
+
 StateDedicatedServer.on_exit = function (self, application_shutdown)
 	if self._network_server then
 		self._network_server:unregister_rpcs()
@@ -328,7 +319,7 @@ StateDedicatedServer.on_exit = function (self, application_shutdown)
 	end
 
 	if application_shutdown then
-		self._destroy_network(self)
+		self:_destroy_network()
 	else
 		local loading_context = self.parent.loading_context
 		loading_context.network_server = self._network_server
@@ -340,8 +331,6 @@ StateDedicatedServer.on_exit = function (self, application_shutdown)
 	self._network_event_delegate:destroy()
 
 	self._network_event_delegate = nil
-
-	return 
 end
 
-return 
+return

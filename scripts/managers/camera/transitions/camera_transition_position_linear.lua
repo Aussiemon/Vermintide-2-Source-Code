@@ -1,20 +1,20 @@
 require("scripts/managers/camera/transitions/camera_transition_base")
 
 CameraTransitionPositionLinear = class(CameraTransitionPositionLinear, CameraTransitionBase)
+
 CameraTransitionPositionLinear.init = function (self, node_1, node_2, duration, speed, settings)
 	CameraTransitionBase.init(self, node_1, node_2, duration, speed, settings)
 
 	self._freeze_node_1 = settings.freeze_start_node
 
 	if self._freeze_node_1 then
-		local node_1_pos = node_1.position(node_1)
+		local node_1_pos = node_1:position()
 		self._node_1_pos_table = Vector3Box(node_1_pos)
 	end
 
 	self._transition_func = settings.transition_func
-
-	return 
 end
+
 CameraTransitionPositionLinear.update = function (self, dt, position, update_time)
 	CameraTransitionBase.update(self, dt, update_time)
 
@@ -40,7 +40,7 @@ CameraTransitionPositionLinear.update = function (self, dt, position, update_tim
 			pos = node_1_position + dir * dist_moved
 		end
 	elseif duration then
-		assert(0 < duration, "CameraTransitionPositionLinear has a zero duration")
+		assert(duration > 0, "CameraTransitionPositionLinear has a zero duration")
 
 		local t = time / duration
 		t = math.min(t, 1)
@@ -58,4 +58,4 @@ CameraTransitionPositionLinear.update = function (self, dt, position, update_tim
 	return pos, done
 end
 
-return 
+return

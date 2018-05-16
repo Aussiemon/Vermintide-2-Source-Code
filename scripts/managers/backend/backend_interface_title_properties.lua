@@ -1,7 +1,9 @@
 BackendInterfaceTitleProperties = class(BackendInterfaceTitleProperties)
+
 BackendInterfaceTitleProperties.init = function (self)
-	return 
+	return
 end
+
 BackendInterfaceTitleProperties._refresh_if_needed = function (self)
 	if not self._properties then
 		local data = Backend.get_title_properties()
@@ -13,16 +15,16 @@ BackendInterfaceTitleProperties._refresh_if_needed = function (self)
 
 		self._properties = properties
 	end
-
-	return 
 end
+
 BackendInterfaceTitleProperties.get = function (self)
-	self._refresh_if_needed(self)
+	self:_refresh_if_needed()
 
 	return self._properties
 end
+
 BackendInterfaceTitleProperties.get_value = function (self, key)
-	self._refresh_if_needed(self)
+	self:_refresh_if_needed()
 
 	local value = self._properties[key]
 
@@ -33,4 +35,4 @@ BackendInterfaceTitleProperties.get_value = function (self, key)
 	return decoded
 end
 
-return 
+return

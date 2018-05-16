@@ -1,28 +1,29 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTZombieExplodeAction = class(BTZombieExplodeAction, BTNode)
+
 BTZombieExplodeAction.init = function (self, ...)
 	BTZombieExplodeAction.super.init(self, ...)
-
-	return 
 end
+
 BTZombieExplodeAction.name = "BTZombieExplodeAction"
+
 BTZombieExplodeAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
 	local explode_animation = action.explode_animation
 	local network_manager = Managers.state.network
 
-	network_manager.anim_event(network_manager, unit, explode_animation)
+	network_manager:anim_event(unit, explode_animation)
 
 	blackboard.explosion_timer = t + action.explosion_at_time
 	blackboard.bot_threat_timer = t + action.explosion_at_time * 0.75
+end
 
-	return 
-end
 BTZombieExplodeAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	return 
+	return
 end
+
 BTZombieExplodeAction.run = function (self, unit, blackboard, t, dt)
 	if blackboard.bot_threat_timer and blackboard.bot_threat_timer < t then
 		local action = blackboard.action
@@ -36,21 +37,20 @@ BTZombieExplodeAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if blackboard.explosion_timer < t then
-		self.explode(self, unit, blackboard, t)
+		self:explode(unit, blackboard, t)
 
 		return "done"
 	end
 
 	return "running"
 end
+
 BTZombieExplodeAction.explode = function (self, unit, blackboard, t)
 	local damage_type = "kinetic"
 	local damage_direction = Vector3(0, 0, -1)
 	blackboard.explosion_finished = true
 
 	AiUtils.kill_unit(unit, nil, nil, damage_type, damage_direction)
-
-	return 
 end
 
-return 
+return

@@ -1,12 +1,13 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTAlertedAction = class(BTAlertedAction, BTNode)
+
 BTAlertedAction.init = function (self, ...)
 	BTAlertedAction.super.init(self, ...)
-
-	return 
 end
+
 BTAlertedAction.name = "BTAlertedAction"
+
 BTAlertedAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -17,10 +18,10 @@ BTAlertedAction.enter = function (self, unit, blackboard, t)
 	blackboard.alerted_deadline_reached = false
 	blackboard.alerted_deadline_reached_and_sighted_enemy = false
 
-	self.should_hesitate(self, unit, blackboard, action)
-	self.decide_deadline(self, unit, blackboard, t)
+	self:should_hesitate(unit, blackboard, action)
+	self:decide_deadline(unit, blackboard, t)
 
-	local should_be_alerted = self.init_alerted(self, unit, blackboard, t)
+	local should_be_alerted = self:init_alerted(unit, blackboard, t)
 	blackboard.no_alert = not should_be_alerted
 
 	blackboard.navigation_extension:set_enabled(false)
@@ -28,12 +29,11 @@ BTAlertedAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.in_alerted_state = true
 	blackboard.move_state = "idle"
-
-	return 
 end
+
 BTAlertedAction.init_alerted = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
-	local unit_id = network_manager.unit_game_object_id(network_manager, unit)
+	local unit_id = network_manager:unit_game_object_id(unit)
 
 	if script_data.enable_alert_icon then
 		local category_name = "detect"
@@ -56,15 +56,15 @@ BTAlertedAction.init_alerted = function (self, unit, blackboard, t)
 	local current_pos = POSITION_LOOKUP[unit]
 	local target_dist = Vector3.distance(target_pos, current_pos)
 
-	if 6 < target_dist or blackboard.action.close_range_alert_idle then
+	if target_dist > 6 or blackboard.action.close_range_alert_idle then
 		local alerted_anims = blackboard.action.alerted_anims
 
 		if alerted_anims then
 			local alerted_anim = alerted_anims[math.random(1, #alerted_anims)]
 
-			network_manager.anim_event(network_manager, unit, alerted_anim)
+			network_manager:anim_event(unit, alerted_anim)
 		else
-			network_manager.anim_event(network_manager, unit, "alerted")
+			network_manager:anim_event(unit, "alerted")
 		end
 	end
 
@@ -81,10 +81,11 @@ BTAlertedAction.init_alerted = function (self, unit, blackboard, t)
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
 
-	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "startled", event_data)
+	dialogue_input:trigger_networked_dialogue_event("startled", event_data)
 
 	return true
 end
+
 BTAlertedAction.decide_deadline = function (self, unit, blackboard, t)
 	local target_unit = blackboard.target_unit
 	local current_pos = POSITION_LOOKUP[unit]
@@ -93,7 +94,7 @@ BTAlertedAction.decide_deadline = function (self, unit, blackboard, t)
 	local rotation = Unit.local_rotation(unit, 0)
 	local forward_vector_flat = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 	local dot_product = Vector3.dot(forward_vector_flat, target_vector_flat)
-	local min_deadline = (0.25 < dot_product and 0.5) or 1
+	local min_deadline = (dot_product > 0.25 and 0.5) or 1
 	local max_deadline = math.max(min_deadline, 2 - dot_product * 2)
 	local time_alerted = Math.random(min_deadline, max_deadline)
 	local breed = blackboard.breed
@@ -106,9 +107,8 @@ BTAlertedAction.decide_deadline = function (self, unit, blackboard, t)
 	end
 
 	blackboard.alerted_action.deadline = time_alerted + t
-
-	return 
 end
+
 BTAlertedAction.should_hesitate = function (self, unit, blackboard, action)
 	if action.no_hesitation then
 		blackboard.no_hesitation = true
@@ -129,15 +129,14 @@ BTAlertedAction.should_hesitate = function (self, unit, blackboard, action)
 				local success_target, ray_pos_target = GwNavQueries.raycast(nav_world, to_pos, from_pos)
 				local diff = ray_pos_self - ray_pos_target
 				local height_diff = diff.z
-				blackboard.no_hesitation = 2 < height_diff and math.pi / 3 < math.asin(height_diff / Vector3.length(diff))
+				blackboard.no_hesitation = height_diff > 2 and math.asin(height_diff / Vector3.length(diff)) > math.pi / 3
 			end
 		else
 			blackboard.no_hesitation = true
 		end
 	end
-
-	return 
 end
+
 BTAlertedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local network_manager = Managers.state.network
 
@@ -146,7 +145,7 @@ BTAlertedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 		Managers.state.debug_text:clear_unit_text(unit, category_name)
 
-		local unit_id = network_manager.unit_game_object_id(network_manager, unit)
+		local unit_id = network_manager:unit_game_object_id(unit)
 
 		network_manager.network_transmit:send_rpc_clients("rpc_enemy_is_alerted", unit_id, false)
 	end
@@ -156,12 +155,12 @@ BTAlertedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 		local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
-		ai_slot_system.do_slot_search(ai_slot_system, unit, true)
+		ai_slot_system:do_slot_search(unit, true)
 
 		if blackboard.move_animation_name then
 			local locomotion_extension = blackboard.locomotion_extension
 
-			locomotion_extension.use_lerp_rotation(locomotion_extension, true)
+			locomotion_extension:use_lerp_rotation(true)
 			LocomotionUtils.set_animation_driven_movement(unit, false)
 			LocomotionUtils.set_animation_rotation_scale(unit, 1)
 
@@ -170,7 +169,7 @@ BTAlertedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 				blackboard.anim_locked = 0
 				blackboard.spawn_to_running = true
 
-				network_manager.anim_event(network_manager, unit, "move_fwd")
+				network_manager:anim_event(unit, "move_fwd")
 			end
 		end
 	end
@@ -190,14 +189,12 @@ BTAlertedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	if ScriptUnit.has_extension(unit, "ai_shield_system") then
 		local shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
 
-		shield_extension.set_is_blocking(shield_extension, true)
+		shield_extension:set_is_blocking(true)
 	end
 
 	if not blackboard.confirmed_player_sighting then
 		Managers.state.network:anim_event(unit, "to_passive")
 	end
-
-	return 
 end
 
 local function contains(wanted_event, event)
@@ -206,8 +203,6 @@ local function contains(wanted_event, event)
 	else
 		return wanted_event == event
 	end
-
-	return 
 end
 
 BTAlertedAction.check_if_should_start_moving = function (self, unit, blackboard)
@@ -220,12 +215,12 @@ BTAlertedAction.check_if_should_start_moving = function (self, unit, blackboard)
 	if deadline_reached and not has_started_animation then
 		local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
-		ai_slot_system.do_slot_search(ai_slot_system, unit, true)
+		ai_slot_system:do_slot_search(unit, true)
 		blackboard.navigation_extension:set_enabled(true)
 
 		local locomotion_extension = blackboard.locomotion_extension
 
-		locomotion_extension.use_lerp_rotation(locomotion_extension, false)
+		locomotion_extension:use_lerp_rotation(false)
 		LocomotionUtils.set_animation_driven_movement(unit, true, false, false)
 
 		local animation_name = AiAnimUtils.get_start_move_animation(unit, target_pos, action.start_anims_name)
@@ -244,12 +239,12 @@ BTAlertedAction.check_if_should_start_moving = function (self, unit, blackboard)
 		if is_fwd_animation then
 			local locomotion_extension = blackboard.locomotion_extension
 
-			locomotion_extension.use_lerp_rotation(locomotion_extension, true)
+			locomotion_extension:use_lerp_rotation(true)
 			LocomotionUtils.set_animation_driven_movement(unit, false)
 
 			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 
-			locomotion_extension.set_wanted_rotation(locomotion_extension, rot)
+			locomotion_extension:set_wanted_rotation(rot)
 		elseif move_animation_name then
 			blackboard.anim_cb_rotation_start = false
 			local rot_scale = AiAnimUtils.get_animation_rotation_scale(unit, target_pos, move_animation_name, action.start_anims_data)
@@ -257,9 +252,8 @@ BTAlertedAction.check_if_should_start_moving = function (self, unit, blackboard)
 			LocomotionUtils.set_animation_rotation_scale(unit, rot_scale)
 		end
 	end
-
-	return 
 end
+
 BTAlertedAction.run = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
 	local target_unit = blackboard.target_unit
@@ -304,7 +298,7 @@ BTAlertedAction.run = function (self, unit, blackboard, t, dt)
 			local ai_unit_to_target_dir = Vector3.normalize(target_pos - current_pos)
 			local dot = Vector3.dot(ai_unit_to_target_dir, ai_unit_direction)
 
-			if -0.5 < dot or target_dist_sq < 36 then
+			if dot > -0.5 or target_dist_sq < 36 then
 				blackboard.no_hesitation = true
 
 				return "done"
@@ -313,7 +307,7 @@ BTAlertedAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if action.no_hesitation then
-		self.check_if_should_start_moving(self, unit, blackboard)
+		self:check_if_should_start_moving(unit, blackboard)
 
 		if blackboard.anim_cb_move and blackboard.move_animation_name then
 			blackboard.move_state = "moving"
@@ -329,8 +323,6 @@ BTAlertedAction.run = function (self, unit, blackboard, t, dt)
 	else
 		return "running"
 	end
-
-	return 
 end
 
-return 
+return

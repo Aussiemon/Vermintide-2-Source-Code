@@ -19,35 +19,32 @@ PerformanceTitleManager.init = function (self, network_transmit, statistics_db, 
 	self._statistics_db = statistics_db
 	self._is_server = is_server
 	self._assigned_titles = {}
-
-	return 
 end
+
 PerformanceTitleManager.register_rpcs = function (self, network_event_delegate)
-	network_event_delegate.register(network_event_delegate, self, unpack(RPCS))
+	network_event_delegate:register(self, unpack(RPCS))
 
 	self._network_event_delegate = network_event_delegate
-
-	return 
 end
+
 PerformanceTitleManager.unregister_rpcs = function (self)
 	self._network_event_delegate:unregister(self)
 
 	self._network_event_delegate = nil
-
-	return 
 end
+
 PerformanceTitleManager.destroy = function (self)
 	self._statistics_db = nil
 	self._network_transmit = nil
-
-	return 
 end
+
 PerformanceTitleManager.assigned_titles = function (self)
 	return self._assigned_titles
 end
+
 PerformanceTitleManager._evaluate_player_titles = function (self, player, eligible_titles)
 	local statistics_db = self._statistics_db
-	local stats_id = player.stats_id(player)
+	local stats_id = player:stats_id()
 	local titles = PerformanceTitles.titles
 	local title_templates = PerformanceTitles.templates
 	local found_any_title = false
@@ -64,6 +61,7 @@ PerformanceTitleManager._evaluate_player_titles = function (self, player, eligib
 
 	return found_any_title
 end
+
 PerformanceTitleManager._get_title_list_from_player_titles = function (self, player_titles)
 	local title_list = {}
 
@@ -77,6 +75,7 @@ PerformanceTitleManager._get_title_list_from_player_titles = function (self, pla
 
 	return title_list
 end
+
 PerformanceTitleManager._find_individually_achieved_title = function (self, player_titles, title_name)
 	local found_player = nil
 	local player_amount = 0
@@ -94,52 +93,50 @@ PerformanceTitleManager._find_individually_achieved_title = function (self, play
 
 	return found_player
 end
+
 PerformanceTitleManager._assign_title = function (self, assigned_titles, player_titles, player, title_name)
 	local achieved_titles = player_titles[player]
 	local amount = achieved_titles[title_name]
-	local peer_id = player.network_id(player)
-	local local_player_id = player.local_player_id(player)
+	local peer_id = player:network_id()
+	local local_player_id = player:local_player_id()
 	assigned_titles[#assigned_titles + 1] = {
 		peer_id = peer_id,
 		local_player_id = local_player_id,
 		title = title_name,
 		amount = amount
 	}
-
-	return 
 end
+
 PerformanceTitleManager._remove_title_from_player_titles = function (self, player_titles, title_name)
 	for _, titles in pairs(player_titles) do
 		titles[title_name] = nil
 	end
-
-	return 
 end
+
 PerformanceTitleManager._assign_individual_titles = function (self, player_titles, assigned_titles)
-	local title_list = self._get_title_list_from_player_titles(self, player_titles)
+	local title_list = self:_get_title_list_from_player_titles(player_titles)
 	local i = 1
 
 	while title_list[i] ~= nil do
 		local title_name = title_list[i]
-		local player = self._find_individually_achieved_title(self, player_titles, title_name)
+		local player = self:_find_individually_achieved_title(player_titles, title_name)
 
 		if player then
-			self._assign_title(self, assigned_titles, player_titles, player, title_name)
+			self:_assign_title(assigned_titles, player_titles, player, title_name)
 
 			player_titles[player] = nil
 
-			self._remove_title_from_player_titles(self, player_titles, title_name)
+			self:_remove_title_from_player_titles(player_titles, title_name)
 
 			i = 1
 		else
 			i = i + 1
 		end
 	end
-
-	return 
 end
+
 PerformanceTitleManager._assign_compared_titles = function (self, player_titles, assigned_titles)
-	local title_list = self._get_title_list_from_player_titles(self, player_titles)
+	local title_list = self:_get_title_list_from_player_titles(player_titles)
 	local title_settings = PerformanceTitles.titles
 	local title_templates = PerformanceTitles.templates
 
@@ -159,14 +156,13 @@ PerformanceTitleManager._assign_compared_titles = function (self, player_titles,
 		end
 
 		if winner_player then
-			self._assign_title(self, assigned_titles, player_titles, winner_player, title_name)
+			self:_assign_title(assigned_titles, player_titles, winner_player, title_name)
 
 			player_titles[winner_player] = nil
 		end
 	end
-
-	return 
 end
+
 PerformanceTitleManager._sync_assigned_titles = function (self, assigned_titles)
 	local peer_ids = {}
 	local local_player_ids = {}
@@ -190,9 +186,8 @@ PerformanceTitleManager._sync_assigned_titles = function (self, assigned_titles)
 	end
 
 	self._network_transmit:send_rpc_clients("rpc_sync_performance_titles", peer_ids, local_player_ids, title_ids, amounts)
-
-	return 
 end
+
 PerformanceTitleManager.evaluate_titles = function (self, players)
 	fassert(self._is_server, "Should only be server calling this")
 
@@ -200,7 +195,7 @@ PerformanceTitleManager.evaluate_titles = function (self, players)
 
 	for unique_id, player in pairs(players) do
 		local eligible_titles = {}
-		local success = self._evaluate_player_titles(self, player, eligible_titles)
+		local success = self:_evaluate_player_titles(player, eligible_titles)
 
 		if success then
 			player_titles[player] = eligible_titles
@@ -209,18 +204,17 @@ PerformanceTitleManager.evaluate_titles = function (self, players)
 
 	local assigned_titles = {}
 
-	self._assign_individual_titles(self, player_titles, assigned_titles)
+	self:_assign_individual_titles(player_titles, assigned_titles)
 
-	if 0 < table.size(player_titles) then
-		self._assign_compared_titles(self, player_titles, assigned_titles)
+	if table.size(player_titles) > 0 then
+		self:_assign_compared_titles(player_titles, assigned_titles)
 	end
 
 	self._assigned_titles = assigned_titles
 
-	self._sync_assigned_titles(self, assigned_titles)
-
-	return 
+	self:_sync_assigned_titles(assigned_titles)
 end
+
 PerformanceTitleManager._translate_title_assignment = function (self, peer_id, local_player_id, title_id, amount)
 	if peer_id == INVALID_PEER then
 		return nil
@@ -235,6 +229,7 @@ PerformanceTitleManager._translate_title_assignment = function (self, peer_id, l
 
 	return title_assignment
 end
+
 PerformanceTitleManager.rpc_sync_performance_titles = function (self, sender, peer_ids, local_player_ids, title_ids, amounts)
 	local assigned_titles = {}
 
@@ -255,8 +250,6 @@ PerformanceTitleManager.rpc_sync_performance_titles = function (self, sender, pe
 	end
 
 	self._assigned_titles = assigned_titles
-
-	return 
 end
 
-return 
+return

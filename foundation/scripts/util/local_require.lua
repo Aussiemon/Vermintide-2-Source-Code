@@ -13,4 +13,4 @@ function local_require(filename)
 	return require(filename)
 end
 
-return 
+return

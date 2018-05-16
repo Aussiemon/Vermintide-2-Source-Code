@@ -15,6 +15,7 @@ local private_settings = {
 }
 StartGameWindowSettings = class(StartGameWindowSettings)
 StartGameWindowSettings.NAME = "StartGameWindowSettings"
+
 StartGameWindowSettings.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowSettings")
 
@@ -28,18 +29,17 @@ StartGameWindowSettings.on_enter = function (self, params, offset)
 	}
 	self._network_lobby = ingame_ui_context.network_lobby
 	local player_manager = Managers.player
-	local local_player = player_manager.local_player(player_manager)
-	self._stats_id = local_player.stats_id(local_player)
+	local local_player = player_manager:local_player()
+	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self._animations = {}
 	self._ui_animations = {}
 
-	self.create_ui_elements(self, params, offset)
-	self._update_difficulty_option(self)
-
-	return 
+	self:create_ui_elements(params, offset)
+	self:_update_difficulty_option()
 end
+
 StartGameWindowSettings.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
@@ -68,20 +68,19 @@ StartGameWindowSettings.create_ui_elements = function (self, params, offset)
 	widgets_by_name.play_button.content.button_hotspot.disable_button = true
 	widgets_by_name.game_option_2.content.button_hotspot.disable_button = true
 
-	self._set_additional_options_enabled_state(self, false)
+	self:_set_additional_options_enabled_state(false)
 
 	local game_option_1 = widgets_by_name.game_option_1
-	local anim = self._animate_pulse(self, game_option_1.style.glow_frame.color, 1, 255, 100, 2)
+	local anim = self:_animate_pulse(game_option_1.style.glow_frame.color, 1, 255, 100, 2)
 
 	UIWidget.animate(game_option_1, anim)
 
 	local game_option_2 = widgets_by_name.game_option_2
-	local anim = self._animate_pulse(self, game_option_2.style.glow_frame.color, 1, 255, 100, 2)
+	local anim = self:_animate_pulse(game_option_2.style.glow_frame.color, 1, 255, 100, 2)
 
 	UIWidget.animate(game_option_2, anim)
-
-	return 
 end
+
 StartGameWindowSettings._set_additional_options_enabled_state = function (self, enabled)
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.additional_option.content.button_hotspot.disable_button = not enabled
@@ -92,41 +91,39 @@ StartGameWindowSettings._set_additional_options_enabled_state = function (self, 
 	local strict_matchmaking_button = widgets_by_name.strict_matchmaking_button
 	strict_matchmaking_button.content.button_hotspot.disable_button = not enabled
 	self._additional_option_enabled = enabled
-
-	return 
 end
+
 StartGameWindowSettings.on_exit = function (self, params)
 	print("[StartGameWindow] Exit Substate StartGameWindowSettings")
 
 	self.ui_animator = nil
-
-	return 
 end
+
 StartGameWindowSettings.update = function (self, dt, t)
 	if DO_RELOAD then
 		DO_RELOAD = false
 
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 	end
 
-	self._update_mission_selection(self)
+	self:_update_mission_selection()
 
 	if self._additional_option_enabled then
-		self._update_additional_options(self)
+		self:_update_additional_options()
 	end
 
-	self._update_difficulty_option(self)
-	self._update_animations(self, dt)
-	self._handle_input(self, dt, t)
-	self.draw(self, dt)
+	self:_update_difficulty_option()
+	self:_update_animations(dt)
+	self:_handle_input(dt, t)
+	self:draw(dt)
+end
 
-	return 
-end
 StartGameWindowSettings.post_update = function (self, dt, t)
-	return 
+	return
 end
+
 StartGameWindowSettings._update_animations = function (self, dt)
-	self._update_game_options_hover_effect(self)
+	self:_update_game_options_hover_effect()
 
 	local ui_animations = self._ui_animations
 	local animations = self._animations
@@ -140,20 +137,19 @@ StartGameWindowSettings._update_animations = function (self, dt)
 		end
 	end
 
-	ui_animator.update(ui_animator, dt)
+	ui_animator:update(dt)
 
 	for animation_name, animation_id in pairs(animations) do
-		if ui_animator.is_animation_completed(ui_animator, animation_id) then
-			ui_animator.stop_animation(ui_animator, animation_id)
+		if ui_animator:is_animation_completed(animation_id) then
+			ui_animator:stop_animation(animation_id)
 
 			animations[animation_name] = nil
 		end
 	end
 
 	local widgets_by_name = self._widgets_by_name
-
-	return 
 end
+
 StartGameWindowSettings._is_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -163,9 +159,8 @@ StartGameWindowSettings._is_button_pressed = function (self, widget)
 
 		return true
 	end
-
-	return 
 end
+
 StartGameWindowSettings._is_button_released = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -175,9 +170,8 @@ StartGameWindowSettings._is_button_released = function (self, widget)
 
 		return true
 	end
-
-	return 
 end
+
 StartGameWindowSettings._is_stepper_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot_left = content.button_hotspot_left
@@ -192,9 +186,8 @@ StartGameWindowSettings._is_stepper_button_pressed = function (self, widget)
 
 		return true, 1
 	end
-
-	return 
 end
+
 StartGameWindowSettings._is_tab_pressed = function (self, widget)
 	local widget_content = widget.content
 	local amount = widget_content.amount
@@ -208,9 +201,8 @@ StartGameWindowSettings._is_tab_pressed = function (self, widget)
 			return i
 		end
 	end
-
-	return 
 end
+
 StartGameWindowSettings._select_tab_by_index = function (self, widget, index)
 	local widget_content = widget.content
 	local amount = widget_content.amount
@@ -221,35 +213,37 @@ StartGameWindowSettings._select_tab_by_index = function (self, widget, index)
 		local hotspot_content = widget_content[hotspot_name]
 		hotspot_content.is_selected = i == index
 	end
-
-	return 
 end
+
 StartGameWindowSettings._is_button_hover_enter = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
 
 	return hotspot.on_hover_enter
 end
+
 StartGameWindowSettings._is_button_hover_exit = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
 
 	return hotspot.on_hover_exit
 end
+
 StartGameWindowSettings._is_button_selected = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
 
 	return hotspot.is_selected
 end
+
 StartGameWindowSettings._is_other_option_button_selected = function (self, widget, current_option)
-	if self._is_button_released(self, widget) then
+	if self:_is_button_released(widget) then
 		local is_selected = not current_option
 
 		if is_selected then
-			self._play_sound(self, "play_gui_lobby_button_03_private")
+			self:_play_sound("play_gui_lobby_button_03_private")
 		else
-			self._play_sound(self, "play_gui_lobby_button_03_public")
+			self:_play_sound("play_gui_lobby_button_03_public")
 		end
 
 		return is_selected
@@ -257,9 +251,12 @@ StartGameWindowSettings._is_other_option_button_selected = function (self, widge
 
 	return nil
 end
+
 StartGameWindowSettings._handle_input = function (self, dt, t)
 	local parent = self.parent
 	local widgets_by_name = self._widgets_by_name
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local input_service = self.parent:window_input_service()
 
 	if self._additional_option_enabled then
 		local host_button = widgets_by_name.host_button
@@ -270,50 +267,50 @@ StartGameWindowSettings._handle_input = function (self, dt, t)
 		UIWidgetUtils.animate_default_checkbox_button(host_button, dt)
 		UIWidgetUtils.animate_default_checkbox_button(strict_matchmaking_button, dt)
 
-		if self._is_button_hover_enter(self, widgets_by_name.game_option_1) or self._is_button_hover_enter(self, widgets_by_name.game_option_2) or self._is_button_hover_enter(self, widgets_by_name.play_button) then
-			self._play_sound(self, "play_gui_lobby_button_01_difficulty_confirm_hover")
+		if self:_is_button_hover_enter(widgets_by_name.game_option_1) or self:_is_button_hover_enter(widgets_by_name.game_option_2) or self:_is_button_hover_enter(widgets_by_name.play_button) then
+			self:_play_sound("play_gui_lobby_button_01_difficulty_confirm_hover")
 		end
 
-		if self._is_button_hover_enter(self, private_button) or self._is_button_hover_enter(self, host_button) or self._is_button_hover_enter(self, strict_matchmaking_button) then
-			self._play_sound(self, "play_gui_lobby_button_01_difficulty_confirm_hover")
+		if self:_is_button_hover_enter(private_button) or self:_is_button_hover_enter(host_button) or self:_is_button_hover_enter(strict_matchmaking_button) then
+			self:_play_sound("play_gui_lobby_button_01_difficulty_confirm_hover")
 		end
 
-		local changed_selection = self._is_other_option_button_selected(self, private_button, self._private_enabled)
+		local changed_selection = self:_is_other_option_button_selected(private_button, self._private_enabled)
 
 		if changed_selection ~= nil then
-			parent.set_private_option_enabled(parent, changed_selection)
+			parent:set_private_option_enabled(changed_selection)
 		end
 
-		changed_selection = self._is_other_option_button_selected(self, host_button, self._always_host_enabled)
+		changed_selection = self:_is_other_option_button_selected(host_button, self._always_host_enabled)
 
 		if changed_selection ~= nil then
-			parent.set_always_host_option_enabled(parent, changed_selection)
+			parent:set_always_host_option_enabled(changed_selection)
 		end
 
-		changed_selection = self._is_other_option_button_selected(self, strict_matchmaking_button, self._strict_matchmaking_enabled)
+		changed_selection = self:_is_other_option_button_selected(strict_matchmaking_button, self._strict_matchmaking_enabled)
 
 		if changed_selection ~= nil then
-			parent.set_strict_matchmaking_option_enabled(parent, changed_selection)
+			parent:set_strict_matchmaking_option_enabled(changed_selection)
 		end
 	end
 
-	if self._is_button_released(self, widgets_by_name.game_option_2) then
-		parent.set_layout(parent, 5)
-	elseif self._is_button_released(self, widgets_by_name.game_option_1) then
-		parent.set_layout(parent, 6)
+	if self:_is_button_released(widgets_by_name.game_option_2) then
+		parent:set_layout(5)
+	elseif self:_is_button_released(widgets_by_name.game_option_1) then
+		parent:set_layout(6)
 	end
 
-	if self._is_button_released(self, widgets_by_name.play_button) then
-		parent.play(parent, t)
-	end
+	local play_pressed = gamepad_active and self._enable_play and input_service:get("refresh_press")
 
-	return 
+	if self:_is_button_released(widgets_by_name.play_button) or play_pressed then
+		parent:play(t)
+	end
 end
+
 StartGameWindowSettings._play_sound = function (self, event)
 	self.parent:play_sound(event)
-
-	return 
 end
+
 StartGameWindowSettings._update_game_options_hover_effect = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local widget_prefix = "game_option_"
@@ -322,45 +319,42 @@ StartGameWindowSettings._update_game_options_hover_effect = function (self)
 		local widget_name = widget_prefix .. i
 		local widget = widgets_by_name[widget_name]
 
-		if self._is_button_hover_enter(self, widget) then
-			self._on_option_button_hover_enter(self, i)
-		elseif self._is_button_hover_exit(self, widget) then
-			self._on_option_button_hover_exit(self, i)
+		if self:_is_button_hover_enter(widget) then
+			self:_on_option_button_hover_enter(i)
+		elseif self:_is_button_hover_exit(widget) then
+			self:_on_option_button_hover_exit(i)
 		end
 	end
-
-	return 
 end
+
 StartGameWindowSettings._on_option_button_hover_enter = function (self, index, instant)
 	local widgets_by_name = self._widgets_by_name
 	local widget_name = "game_option_" .. index
 	local widget = widgets_by_name[widget_name]
 
-	self._create_style_animation_enter(self, widget, 255, "glow", index, instant)
-	self._create_style_animation_enter(self, widget, 255, "icon_glow", index, instant)
-	self._create_style_animation_exit(self, widget, 0, "button_hover_rect", index, instant)
-
-	return 
+	self:_create_style_animation_enter(widget, 255, "glow", index, instant)
+	self:_create_style_animation_enter(widget, 255, "icon_glow", index, instant)
+	self:_create_style_animation_exit(widget, 0, "button_hover_rect", index, instant)
 end
+
 StartGameWindowSettings._on_option_button_hover_exit = function (self, index, instant)
 	local widgets_by_name = self._widgets_by_name
 	local widget_name = "game_option_" .. index
 	local widget = widgets_by_name[widget_name]
 
-	self._create_style_animation_exit(self, widget, 0, "glow", index, instant)
-	self._create_style_animation_exit(self, widget, 0, "icon_glow", index, instant)
-	self._create_style_animation_enter(self, widget, 30, "button_hover_rect", index, instant)
-
-	return 
+	self:_create_style_animation_exit(widget, 0, "glow", index, instant)
+	self:_create_style_animation_exit(widget, 0, "icon_glow", index, instant)
+	self:_create_style_animation_enter(widget, 30, "button_hover_rect", index, instant)
 end
+
 StartGameWindowSettings._update_additional_options = function (self)
 	local parent = self.parent
-	local private_enabled = parent.is_private_option_enabled(parent)
-	local always_host_enabled = parent.is_always_host_option_enabled(parent)
-	local strict_matchmaking_enabled = parent.is_strict_matchmaking_option_enabled(parent)
+	local private_enabled = parent:is_private_option_enabled()
+	local always_host_enabled = parent:is_always_host_option_enabled()
+	local strict_matchmaking_enabled = parent:is_strict_matchmaking_option_enabled()
 	local twitch_active = Managers.twitch and Managers.twitch:is_connected()
 	local lobby = self._network_lobby
-	local num_members = #lobby.members(lobby):get_members()
+	local num_members = #lobby:members():get_members()
 	local is_alone = num_members == 1
 
 	if is_alone ~= self._is_alone or private_enabled ~= self._private_enabled or always_host_enabled ~= self._always_host_enabled or strict_matchmaking_enabled ~= self._strict_matchmaking_enabled or twitch_active ~= self._twitch_active then
@@ -386,27 +380,31 @@ StartGameWindowSettings._update_additional_options = function (self)
 		self._twitch_active = twitch_active
 		self._is_alone = is_alone
 	end
-
-	return 
 end
+
 StartGameWindowSettings._update_difficulty_option = function (self)
 	local parent = self.parent
-	local difficulty_key = parent.get_difficulty_option(parent)
+	local difficulty_key = parent:get_difficulty_option()
 
 	if difficulty_key ~= self._difficulty_key then
-		self._set_difficulty_option(self, difficulty_key)
+		self:_set_difficulty_option(difficulty_key)
 
 		self._difficulty_key = difficulty_key
 
-		self._set_additional_options_enabled_state(self, true)
+		self:_set_additional_options_enabled_state(true)
 
 		local widgets_by_name = self._widgets_by_name
-		local enable_play = DifficultySettings[difficulty_key] ~= nil
-		widgets_by_name.play_button.content.button_hotspot.disable_button = not enable_play
-	end
+		self._enable_play = DifficultySettings[difficulty_key] ~= nil
+		widgets_by_name.play_button.content.button_hotspot.disable_button = not self._enable_play
 
-	return 
+		if self._enable_play then
+			self.parent.parent:set_input_description("play_available")
+		else
+			self.parent.parent:set_input_description(nil)
+		end
+	end
 end
+
 StartGameWindowSettings._set_difficulty_option = function (self, difficulty_key)
 	local widgets_by_name = self._widgets_by_name
 	local difficulty_settings = DifficultySettings[difficulty_key]
@@ -416,23 +414,21 @@ StartGameWindowSettings._set_difficulty_option = function (self, difficulty_key)
 	widgets_by_name.game_option_2.content.option_text = (display_name and Localize(display_name)) or ""
 	widgets_by_name.game_option_2.content.icon = display_image or nil
 	widgets_by_name.game_option_2.content.icon_frame = completed_frame_texture
-
-	return 
 end
+
 StartGameWindowSettings._update_mission_selection = function (self)
 	local parent = self.parent
-	local selected_level_id = parent.get_selected_level_id(parent)
+	local selected_level_id = parent:get_selected_level_id()
 
 	if selected_level_id ~= self._selected_level_id then
-		self._set_selected_level(self, selected_level_id)
+		self:_set_selected_level(selected_level_id)
 
 		self._selected_level_id = selected_level_id
 		local widgets_by_name = self._widgets_by_name
 		widgets_by_name.game_option_2.content.button_hotspot.disable_button = selected_level_id == nil
 	end
-
-	return 
 end
+
 StartGameWindowSettings._set_selected_level = function (self, level_id)
 	local widget = self._widgets_by_name.game_option_1
 	local text = "n/a"
@@ -448,18 +444,17 @@ StartGameWindowSettings._set_selected_level = function (self, level_id)
 		texture_size[2] = icon_texture_settings.size[2]
 		widget.content.icon = level_image
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self.statistics_db, self._stats_id, level_id) or 0
-		local level_frame = self._get_selection_frame_by_difficulty_index(self, completed_difficulty_index)
+		local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
 		widget.content.icon_frame = level_frame
 	end
 
 	widget.content.option_text = text
-
-	return 
 end
+
 StartGameWindowSettings._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
 	local completed_frame_texture = "map_frame_00"
 
-	if 0 < difficulty_index then
+	if difficulty_index > 0 then
 		local difficulty_key = DefaultDifficulties[difficulty_index]
 		local difficulty_manager = Managers.state.difficulty
 		local settings = DifficultySettings[difficulty_key]
@@ -468,12 +463,12 @@ StartGameWindowSettings._get_selection_frame_by_difficulty_index = function (sel
 
 	return completed_frame_texture
 end
+
 StartGameWindowSettings._exit = function (self, selected_level)
 	self.exit = true
 	self.exit_level_id = selected_level
-
-	return 
 end
+
 StartGameWindowSettings.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -494,9 +489,8 @@ StartGameWindowSettings.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 StartGameWindowSettings._create_style_animation_enter = function (self, widget, target_value, style_id, widget_index, instant)
 	local ui_animations = self._ui_animations
 	local animation_name = "game_option_" .. style_id
@@ -504,7 +498,7 @@ StartGameWindowSettings._create_style_animation_enter = function (self, widget, 
 	local pass_style = widget_style[style_id]
 
 	if not pass_style then
-		return 
+		return
 	end
 
 	local current_color_value = pass_style.color[1]
@@ -512,14 +506,13 @@ StartGameWindowSettings._create_style_animation_enter = function (self, widget, 
 	local total_time = 0.2
 	local animation_duration = (1 - current_color_value / target_color_value) * total_time
 
-	if 0 < animation_duration and not instant then
-		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)
+	if animation_duration > 0 and not instant then
+		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
 	else
 		pass_style.color[1] = target_color_value
 	end
-
-	return 
 end
+
 StartGameWindowSettings._create_style_animation_exit = function (self, widget, target_value, style_id, widget_index, instant)
 	local ui_animations = self._ui_animations
 	local animation_name = "game_option_" .. style_id
@@ -527,7 +520,7 @@ StartGameWindowSettings._create_style_animation_exit = function (self, widget, t
 	local pass_style = widget_style[style_id]
 
 	if not pass_style then
-		return 
+		return
 	end
 
 	local current_color_value = pass_style.color[1]
@@ -535,28 +528,29 @@ StartGameWindowSettings._create_style_animation_exit = function (self, widget, t
 	local total_time = 0.2
 	local animation_duration = current_color_value / 255 * total_time
 
-	if 0 < animation_duration and not instant then
-		ui_animations[animation_name .. "_hover_" .. widget_index] = self._animate_element_by_time(self, pass_style.color, 1, current_color_value, target_color_value, animation_duration)
+	if animation_duration > 0 and not instant then
+		ui_animations[animation_name .. "_hover_" .. widget_index] = self:_animate_element_by_time(pass_style.color, 1, current_color_value, target_color_value, animation_duration)
 	else
 		pass_style.color[1] = target_color_value
 	end
-
-	return 
 end
+
 StartGameWindowSettings._animate_pulse = function (self, target, target_index, from, to, speed)
 	local new_animation = UIAnimation.init(UIAnimation.pulse_animation, target, target_index, from, to, speed)
 
 	return new_animation
 end
+
 StartGameWindowSettings._animate_element_by_time = function (self, target, target_index, from, to, time)
 	local new_animation = UIAnimation.init(UIAnimation.function_by_time, target, target_index, from, to, time, math.ease_out_quad)
 
 	return new_animation
 end
+
 StartGameWindowSettings._animate_element_by_catmullrom = function (self, target, target_index, target_value, p0, p1, p2, p3, time)
 	local new_animation = UIAnimation.init(UIAnimation.catmullrom, target, target_index, target_value, p0, p1, p2, p3, time)
 
 	return new_animation
 end
 
-return 
+return

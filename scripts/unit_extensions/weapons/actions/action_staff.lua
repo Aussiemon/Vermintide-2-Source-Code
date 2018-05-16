@@ -1,4 +1,5 @@
 ActionStaff = class(ActionStaff)
+
 ActionStaff.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.owner_unit = owner_unit
 	self.weapon_unit = weapon_unit
@@ -17,9 +18,8 @@ ActionStaff.init = function (self, world, item_name, is_server, owner_unit, dama
 
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self._is_critical_strike = false
-
-	return 
 end
+
 ActionStaff.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
 	self.current_action = new_action
 	local weapon_unit = self.weapon_unit
@@ -43,9 +43,8 @@ ActionStaff.client_owner_start_action = function (self, new_action, t, chain_act
 	end
 
 	self._is_critical_strike = is_critical_strike
-
-	return 
 end
+
 ActionStaff.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 
@@ -54,38 +53,36 @@ ActionStaff.client_owner_post_update = function (self, dt, t, world, can_damage)
 	end
 
 	if self.state == "shooting" then
-		self.fire(self)
+		self:fire()
 
 		self.state = "shot"
 	end
-
-	return 
 end
+
 ActionStaff.finish = function (self, reason)
 	local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
 
 	if hud_extension then
 		hud_extension.show_critical_indication = false
 	end
-
-	return 
 end
+
 ActionStaff.fire = function (self, reason)
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-	local rotation = first_person_extension.current_rotation(first_person_extension)
+	local rotation = first_person_extension:current_rotation()
 	local spread_extension = self.spread_extension
 
 	if spread_extension then
-		rotation = spread_extension.get_randomised_spread(spread_extension, rotation)
+		rotation = spread_extension:get_randomised_spread(rotation)
 
-		spread_extension.set_shooting(spread_extension)
+		spread_extension:set_shooting()
 	end
 
-	local angle = DamageUtils.pitch_from_rotation(rotation)
+	local angle = ActionUtils.pitch_from_rotation(rotation)
 	local speed = current_action.speed
-	local position = first_person_extension.current_position(first_person_extension)
+	local position = first_person_extension:current_position()
 	local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 	local projectile_info = current_action.projectile_info
 	local lookup_data = current_action.lookup_data
@@ -117,8 +114,6 @@ ActionStaff.fire = function (self, reason)
 	if fire_sound_event then
 		WwiseUtils.trigger_unit_event(self.world, fire_sound_event, self.weapon_unit)
 	end
-
-	return 
 end
 
-return 
+return

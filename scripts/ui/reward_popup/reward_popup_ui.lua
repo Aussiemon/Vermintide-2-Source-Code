@@ -3,21 +3,22 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations
 RewardPopupUI = class(RewardPopupUI)
 local DO_RELOAD = true
+
 RewardPopupUI.init = function (self, level_end_view_context)
 	self.ui_renderer = level_end_view_context.ui_renderer
 	self.ui_top_renderer = level_end_view_context.ui_top_renderer
 	self.input_manager = level_end_view_context.input_manager
 	self.world = level_end_view_context.world
-	self.wwise_world = Managers.world:wwise_world(self.world)
+	local wwise_world = level_end_view_context.wwise_world
+	self.wwise_world = wwise_world or Managers.world:wwise_world(self.world)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
 
-	self.create_ui_elements(self)
+	self:create_ui_elements()
 	rawset(_G, "reward_popup_ui", self)
-
-	return 
 end
+
 RewardPopupUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widget_definitions = definitions.widget_definitions
@@ -33,46 +34,42 @@ RewardPopupUI.create_ui_elements = function (self)
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 	self._animations = {}
 	self.is_visible = true
-
-	return 
 end
+
 RewardPopupUI.set_input_manager = function (self, input_manager)
 	self.input_manager = input_manager
-
-	return 
 end
+
 RewardPopupUI.destroy = function (self)
 	self.ui_animator = nil
 
-	self.set_visible(self, false)
+	self:set_visible(false)
 
 	if self._fullscreen_effect_enabled then
-		self.set_fullscreen_effect_enable_state(self, false)
+		self:set_fullscreen_effect_enable_state(false)
 	end
 
 	rawset(_G, "reward_popup_ui", nil)
-
-	return 
 end
+
 RewardPopupUI.set_visible = function (self, visible)
 	self.is_visible = visible
-
-	return 
 end
+
 RewardPopupUI.update = function (self, dt)
 	if DO_RELOAD then
 		DO_RELOAD = false
 
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 	end
 
 	if not self.is_visible or not self.draw_widgets then
-		return 
+		return
 	end
 
-	local is_dirty = self._update_presentation_animation(self, dt)
+	local is_dirty = self:_update_presentation_animation(dt)
 
-	if self._update_animations(self, dt) then
+	if self:_update_animations(dt) then
 		is_dirty = true
 	end
 
@@ -89,24 +86,23 @@ RewardPopupUI.update = function (self, dt)
 	if animation_params then
 		local blur_progress = animation_params.blur_progress or 1
 
-		self.set_fullscreen_effect_enable_state(self, true, blur_progress)
+		self:set_fullscreen_effect_enable_state(true, blur_progress)
 	end
 
-	self.draw(self, dt)
-
-	return 
+	self:draw(dt)
 end
+
 RewardPopupUI._update_animations = function (self, dt)
 	local animations = self._animations
 	local ui_animator = self.ui_animator
 
-	ui_animator.update(ui_animator, dt)
+	ui_animator:update(dt)
 
 	local animations_running = false
 
 	for animation_key, animation_id in pairs(animations) do
-		if ui_animator.is_animation_completed(ui_animator, animation_id) then
-			ui_animator.stop_animation(ui_animator, animation_id)
+		if ui_animator:is_animation_completed(animation_id) then
+			ui_animator:stop_animation(animation_id)
 
 			animations[animation_key] = nil
 		end
@@ -116,6 +112,7 @@ RewardPopupUI._update_animations = function (self, dt)
 
 	return animations_running
 end
+
 RewardPopupUI.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
@@ -154,39 +151,38 @@ RewardPopupUI.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
-
-	return 
 end
+
 RewardPopupUI.display_presentation = function (self, data)
 	self.draw_widgets = true
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 	self._animations = {}
-	local animation_presentation_data = self._setup_presentation(self, data)
+	local animation_presentation_data = self:_setup_presentation(data)
 	self._animation_presentation_data = animation_presentation_data
 
-	self.set_visible(self, true)
+	self:set_visible(true)
 
 	self._presentation_complete = false
-
-	return 
 end
+
 RewardPopupUI.is_presentation_active = function (self)
 	return self._animation_presentation_data ~= nil
 end
+
 RewardPopupUI.is_presentation_complete = function (self)
 	return self._presentation_complete
 end
+
 RewardPopupUI.on_presentation_complete = function (self)
 	self._presentation_complete = true
 	self.draw_widgets = false
 
-	self.set_visible(self, false)
-	self.set_fullscreen_effect_enable_state(self, false)
+	self:set_visible(false)
+	self:set_fullscreen_effect_enable_state(false)
 
 	self._animation_presentation_data = nil
-
-	return 
 end
+
 RewardPopupUI.start_presentation_animation = function (self, animation_name, widgets)
 	local params = {
 		wwise_world = self.wwise_world
@@ -209,6 +205,7 @@ RewardPopupUI.start_presentation_animation = function (self, animation_name, wid
 
 	return animation_key
 end
+
 RewardPopupUI._get_widget_by_type = function (self, widget_type, value)
 	local widget_definitions = definitions.widget_definitions
 	local widget = UIWidget.init(widget_definitions[widget_type])
@@ -224,15 +221,15 @@ RewardPopupUI._get_widget_by_type = function (self, widget_type, value)
 	if widget_type == "title" or widget_type == "level" then
 		widget.content.text = value
 		local style = widget.style.text
-		widget_size[2] = self._get_text_height(self, self.ui_renderer, widget_scenegraph_size, style, value)
+		widget_size[2] = self:_get_text_height(self.ui_renderer, widget_scenegraph_size, style, value)
 		widget_height = widget_size[2]
 	elseif widget_type == "description" then
 		widget.content.title_text = value[1]
 		widget.content.text = value[2]
 		local text_style = widget.style.text
 		local title_text_style = widget.style.title_text
-		local text_height = self._get_text_height(self, self.ui_renderer, widget_scenegraph_size, text_style, value[1])
-		local title_text_height = self._get_text_height(self, self.ui_renderer, widget_scenegraph_size, title_text_style, value[2])
+		local text_height = self:_get_text_height(self.ui_renderer, widget_scenegraph_size, text_style, value[1])
+		local title_text_height = self:_get_text_height(self.ui_renderer, widget_scenegraph_size, title_text_style, value[2])
 		widget_size[2] = text_height + title_text_height
 		widget_height = widget_size[2]
 	elseif widget_type == "texture" or widget_type == "icon" then
@@ -252,7 +249,7 @@ RewardPopupUI._get_widget_by_type = function (self, widget_type, value)
 	elseif widget_type == "item" then
 		local backend_id = value.backend_id
 		local item_interface = Managers.backend:get_interface("items")
-		local item = item_interface.get_item_from_id(item_interface, backend_id)
+		local item = item_interface:get_item_from_id(backend_id)
 		local rarity = item.rarity
 		local inventory_icon, _, _ = UIUtils.get_ui_information_from_item(item)
 		local style = widget.style.texture_id
@@ -274,6 +271,7 @@ RewardPopupUI._get_widget_by_type = function (self, widget_type, value)
 
 	return widget, widget_height
 end
+
 RewardPopupUI._setup_presentation = function (self, presentation_data)
 	local amount = #presentation_data
 	local entries = {}
@@ -306,7 +304,7 @@ RewardPopupUI._setup_presentation = function (self, presentation_data)
 		for j, presentation_entry in ipairs(presentation_entries) do
 			local value = presentation_entry.value
 			local widget_type = presentation_entry.widget_type
-			local widget, height = self._get_widget_by_type(self, widget_type, value)
+			local widget, height = self:_get_widget_by_type(widget_type, value)
 			widgets_data[j] = {
 				alpha_multiplier = 0,
 				widget = widget,
@@ -329,6 +327,7 @@ RewardPopupUI._setup_presentation = function (self, presentation_data)
 
 	return animation_data
 end
+
 RewardPopupUI._align_presentation_widgets = function (self, widgets_data, total_widgets_height)
 	local start_height_position = total_widgets_height / 2
 	local ui_scenegraph = self.ui_scenegraph
@@ -342,14 +341,13 @@ RewardPopupUI._align_presentation_widgets = function (self, widgets_data, total_
 		widget_position[2] = 0
 		start_height_position = widget_position[2] - height / 2
 	end
-
-	return 
 end
+
 RewardPopupUI._update_presentation_animation = function (self, dt)
 	local animation_data = self._animation_presentation_data
 
 	if not animation_data or animation_data.complete then
-		return 
+		return
 	end
 
 	local running_animations = self._animations
@@ -357,16 +355,16 @@ RewardPopupUI._update_presentation_animation = function (self, dt)
 	if animation_data.entries_done then
 		if not animation_data.end_animation_key then
 			local end_animation = animation_data.end_animation
-			animation_data.end_animation_key = self.start_presentation_animation(self, end_animation)
+			animation_data.end_animation_key = self:start_presentation_animation(end_animation)
 		elseif not running_animations[animation_data.end_animation_key] then
 			animation_data.end_animation_key = nil
 			animation_data.complete = true
 
-			self.on_presentation_complete(self)
+			self:on_presentation_complete()
 		end
 	elseif not animation_data.started then
 		local start_animation = animation_data.start_animation
-		animation_data.start_animation_key = self.start_presentation_animation(self, start_animation)
+		animation_data.start_animation_key = self:start_presentation_animation(start_animation)
 		animation_data.started = true
 	elseif animation_data.start_animation_key then
 		if not running_animations[animation_data.start_animation_key] then
@@ -391,7 +389,7 @@ RewardPopupUI._update_presentation_animation = function (self, dt)
 							animation_data.entries_done = true
 							animation_data.animation_time = 0
 
-							return 
+							return
 						end
 					end
 				end
@@ -408,21 +406,21 @@ RewardPopupUI._update_presentation_animation = function (self, dt)
 							if entry_play_index == num_entries then
 								animation_data.all_entries_started = true
 
-								return 
+								return
 							else
 								animation_data.entry_play_index = entry_play_index + 1
 
-								return 
+								return
 							end
 						else
 							entry.animations_played = entry.animations_played + 1
 
 							if entry.animations_played == num_animations then
-								return 
+								return
 							end
 						end
 					else
-						return 
+						return
 					end
 				end
 
@@ -433,14 +431,14 @@ RewardPopupUI._update_presentation_animation = function (self, dt)
 				local animation_to_play = animations_list[animation_play_index]
 
 				if animations_played == 0 then
-					self._align_presentation_widgets(self, widgets_data, total_widgets_height)
+					self:_align_presentation_widgets(widgets_data, total_widgets_height)
 				end
 
-				animation_key = self.start_presentation_animation(self, animation_to_play, widgets_data)
+				animation_key = self:start_presentation_animation(animation_to_play, widgets_data)
 				entry.animation_key = animation_key
 				animation_data.animation_time = animation_data.animation_wait_time
 
-				return 
+				return
 			end
 		else
 			animation_time = math.max(animation_time - dt, 0)
@@ -450,6 +448,7 @@ RewardPopupUI._update_presentation_animation = function (self, dt)
 
 	return true
 end
+
 RewardPopupUI._get_text_height = function (self, ui_renderer, size, ui_style, text, ui_style_global)
 	local widget_scale = nil
 
@@ -489,6 +488,7 @@ RewardPopupUI._get_text_height = function (self, ui_renderer, size, ui_style, te
 
 	return full_font_height
 end
+
 RewardPopupUI.set_fullscreen_effect_enable_state = function (self, enabled, progress)
 	local world = self.ui_renderer.world
 	local shading_env = World.get_data(world, "shading_environment")
@@ -503,8 +503,6 @@ RewardPopupUI.set_fullscreen_effect_enable_state = function (self, enabled, prog
 	end
 
 	self._fullscreen_effect_enabled = enabled
-
-	return 
 end
 
-return 
+return

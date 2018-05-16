@@ -39,6 +39,7 @@ ExplosionTemplates = {
 			sound_event_name = "arrow_hit_poison_cloud",
 			no_friendly_fire = true,
 			attack_template = "arrow_poison_aoe",
+			no_prop_damage = true,
 			damage_type = "poison",
 			effect_name = "fx/wpnfx_poison_arrow_impact_sniper",
 			armour_modifier = {
@@ -71,6 +72,7 @@ ExplosionTemplates = {
 			sound_event_name = "arrow_hit_poison_cloud",
 			no_friendly_fire = true,
 			attack_template = "arrow_poison_aoe",
+			no_prop_damage = true,
 			damage_type = "poison",
 			effect_name = "fx/wpnfx_poison_arrow_impact_machinegun",
 			armour_modifier = {
@@ -99,6 +101,7 @@ ExplosionTemplates = {
 		explosion = {
 			use_attacker_power_level = true,
 			radius = 2,
+			no_prop_damage = true,
 			sound_event_name = "arrow_hit_poison_cloud",
 			damage_profile = "poison_aoe",
 			effect_name = "fx/wpnfx_poison_arrow_impact_carbine"
@@ -482,11 +485,12 @@ ExplosionTemplates = {
 			max_damage_radius = 1.5,
 			alert_enemies_radius = 15,
 			damage_type_glance = "fire_grenade_glance",
-			sound_event_name = "fireball_big_hit",
+			dont_rotate_fx = true,
 			dot_template_name = "burning_3W_dot",
+			sound_event_name = "fireball_big_hit",
 			alert_enemies = true,
 			damage_profile = "explosive_barrel",
-			effect_name = "fx/wpnfx_staff_geiser_fire_large",
+			effect_name = "fx/wpnfx_fire_grenade_impact",
 			difficulty_power_level = {
 				easy = {
 					power_level_glance = 50,
@@ -718,30 +722,26 @@ ExplosionTemplates = {
 		explosion = {
 			always_hurt_players = false,
 			radius = 50,
-			sound_event_name = "arrow_hit_poison_cloud",
 			max_damage_radius = 40,
-			level_unit_damage = true,
 			player_push_speed = 5,
 			damage_profile_glance = "elven_ruins_finish_glance",
 			alert_enemies = false,
 			damage_profile = "elven_ruins_finish",
 			power_level = 1000,
-			effect_name = "fx/wpnfx_poison_arrow_impact_carbine"
+			level_unit_damage = true
 		}
 	},
 	military_finish = {
 		explosion = {
 			always_hurt_players = false,
 			radius = 300,
-			sound_event_name = "arrow_hit_poison_cloud",
 			max_damage_radius = 200,
-			level_unit_damage = true,
 			player_push_speed = 5,
-			damage_profile_glance = "frag_grenade_glance",
+			damage_profile_glance = "military_finish",
 			alert_enemies = false,
-			damage_profile = "frag_grenade",
+			damage_profile = "military_finish",
 			power_level = 1000,
-			effect_name = "fx/wpnfx_poison_arrow_impact_carbine"
+			level_unit_damage = true
 		}
 	},
 	exploding_bolt = {
@@ -784,12 +784,15 @@ ExplosionTemplates = {
 			use_attacker_power_level = true,
 			radius = 4,
 			max_damage_radius = 2,
-			alert_enemies = true,
+			no_prop_damage = true,
 			attacker_power_level_offset = 0.25,
 			attack_template = "drakegun",
+			always_hurt_players = false,
+			alert_enemies = true,
 			alert_enemies_radius = 15,
 			damage_type = "grenade",
 			damage_profile = "heavy_push",
+			ignore_attacker_unit = true,
 			armour_modifier = {
 				attack = {
 					1,
@@ -812,17 +815,89 @@ ExplosionTemplates = {
 			}
 		}
 	},
+	cannon_ball_throw = {
+		explosion = {
+			no_prop_damage = true,
+			radius = 4,
+			max_damage_radius = 2,
+			always_hurt_players = false,
+			effect_name = "fx/wpnfx_frag_grenade_impact",
+			attack_template = "drakegun",
+			sound_event_name = "player_combat_weapon_grenade_explosion",
+			damage_type = "grenade",
+			damage_profile = "cannonball_impact",
+			power_level = 300,
+			ignore_attacker_unit = true,
+			level_unit_damage = true,
+			armour_modifier = {
+				attack = {
+					1,
+					1.5,
+					1.5,
+					1,
+					1.5
+				},
+				impact = {
+					1,
+					1.5,
+					1.5,
+					1,
+					1.5
+				}
+			},
+			power_distribution = {
+				attack = 0,
+				impact = 1
+			},
+			camera_effect = {
+				near_distance = 5,
+				near_scale = 1,
+				shake_name = "frag_grenade_explosion",
+				far_scale = 0.15,
+				far_distance = 20
+			},
+			on_death_func = function (hit_unit)
+				local stat_name = "forest_fort_kill_cannonball"
+				local current_difficulty = Managers.state.difficulty:get_difficulty()
+				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
+				local allowed_difficulty = allowed_difficulties[current_difficulty]
+				local achievements_enabled = Development.parameter("v2_achievements")
+				local death_extension = ScriptUnit.extension(hit_unit, "death_system")
+
+				if achievements_enabled and allowed_difficulty and not death_extension:has_death_started() then
+					local local_player = Managers.player:local_player()
+					local status_extension = ScriptUnit.extension(local_player.player_unit, "status_system")
+
+					if not status_extension.completed_cannonball_challenge then
+						status_extension.num_cannonball_kills = (status_extension.num_cannonball_kills and status_extension.num_cannonball_kills + 1) or 1
+
+						if QuestSettings.forest_fort_kill_cannonball <= status_extension.num_cannonball_kills then
+							local statistics_db = Managers.player:statistics_db()
+
+							statistics_db:increment_stat_and_sync_to_clients(stat_name)
+
+							status_extension.num_cannonball_kills = nil
+							status_extension.completed_cannonball_challenge = true
+						end
+					end
+				end
+			end
+		}
+	},
 	victor_captain_activated_ability_stagger = {
 		explosion = {
 			use_attacker_power_level = true,
 			radius = 10,
 			max_damage_radius = 2,
-			alert_enemies = true,
+			no_prop_damage = true,
 			attacker_power_level_offset = 0.25,
 			attack_template = "drakegun",
+			always_hurt_players = false,
+			alert_enemies = true,
 			alert_enemies_radius = 15,
 			damage_type = "grenade",
 			damage_profile = "ability_push",
+			ignore_attacker_unit = true,
 			armour_modifier = {
 				attack = {
 					1,
@@ -853,11 +928,13 @@ ExplosionTemplates = {
 			dot_template_name = "burning_1W_dot",
 			attacker_power_level_offset = 0.25,
 			attack_template = "drakegun",
+			always_hurt_players = false,
 			alert_enemies = true,
 			alert_enemies_radius = 15,
 			damage_type = "grenade",
-			damage_profile = "heavy_push",
-			effect_name = "fx/wpnfx_staff_geiser_fire_large",
+			damage_profile = "ability_push",
+			ignore_attacker_unit = true,
+			effect_name = "fx/brw_adept_skill_01",
 			armour_modifier = {
 				attack = {
 					1,
@@ -882,46 +959,15 @@ ExplosionTemplates = {
 	},
 	kruber_mercenary_activated_ability_stagger = {
 		explosion = {
-			use_attacker_power_level = true,
+			always_hurt_players = false,
 			radius = 10,
-			alert_enemies = true,
+			no_prop_damage = true,
 			max_damage_radius = 3,
-			damage_profile = "ability_push",
+			use_attacker_power_level = true,
 			attacker_power_level_offset = 0.01,
-			alert_enemies_radius = 15
-		}
-	},
-	markus_huntsman_activated_ability_stagger = {
-		explosion = {
-			radius = 10,
-			damage_type = "grenade",
-			max_damage_radius = 2,
-			alert_enemies = true,
 			alert_enemies_radius = 15,
-			attack_template = "drakegun",
-			sound_event_name = "Play_bardin_ranger_smoke_grenade_ability",
-			power_level = 100,
-			effect_name = "fx/wpnfx_smoke_grenade_impact",
-			armour_modifier = {
-				attack = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
-				},
-				impact = {
-					1,
-					0.5,
-					2.5,
-					1,
-					1.5
-				}
-			},
-			power_distribution = {
-				attack = 0,
-				impact = 1
-			}
+			alert_enemies = true,
+			damage_profile = "ability_push"
 		}
 	},
 	bardin_ranger_activated_ability_stagger = {
@@ -930,10 +976,13 @@ ExplosionTemplates = {
 			radius = 7,
 			max_damage_radius = 2,
 			damage_type = "grenade",
-			alert_enemies = true,
+			no_prop_damage = true,
 			attack_template = "drakegun",
+			always_hurt_players = false,
+			alert_enemies = true,
 			alert_enemies_radius = 15,
 			sound_event_name = "Play_bardin_ranger_smoke_grenade_ability",
+			damage_profile = "ability_push",
 			effect_name = "fx/wpnfx_smoke_grenade_impact",
 			armour_modifier = {
 				attack = {
@@ -963,10 +1012,13 @@ ExplosionTemplates = {
 			radius = 7,
 			max_damage_radius = 2,
 			damage_type = "grenade",
-			alert_enemies = true,
+			no_prop_damage = true,
 			attack_template = "drakegun",
+			always_hurt_players = false,
+			alert_enemies = true,
 			alert_enemies_radius = 15,
 			sound_event_name = "Play_bardin_ranger_smoke_grenade_ability",
+			damage_profile = "ability_push",
 			effect_name = "fx/wpnfx_smoke_grenade_impact_Upgraded",
 			armour_modifier = {
 				attack = {
@@ -996,7 +1048,7 @@ ExplosionTemplates = {
 			radius = 3.2,
 			alert_enemies = true,
 			alert_enemies_radius = 20,
-			sound_event_name = "Play_enemy_plague_walker_explosion",
+			sound_event_name = "Play_enemy_chaos_warrior_transform_explode",
 			damage_type_glance = "fire_grenade_glance",
 			max_damage_radius_min = 0.5,
 			attack_template = "chaos_zombie_explosion",
@@ -1016,8 +1068,7 @@ ExplosionTemplates = {
 		explosion = {
 			always_hurt_players = true,
 			radius = 3.2,
-			alert_enemies = true,
-			alert_enemies_radius = 20,
+			alert_enemies = false,
 			sound_event_name = "fireball_big_hit",
 			damage_type_glance = "fire_grenade_glance",
 			max_damage_radius_min = 0.5,
@@ -1038,8 +1089,7 @@ ExplosionTemplates = {
 		explosion = {
 			always_hurt_players = true,
 			radius = 3.2,
-			alert_enemies = true,
-			alert_enemies_radius = 20,
+			alert_enemies = false,
 			sound_event_name = "fireball_big_hit",
 			damage_type_glance = "fire_grenade_glance",
 			max_damage_radius_min = 0.5,
@@ -1061,8 +1111,7 @@ ExplosionTemplates = {
 		explosion = {
 			always_hurt_players = true,
 			radius = 3.2,
-			alert_enemies = true,
-			alert_enemies_radius = 20,
+			alert_enemies = false,
 			sound_event_name = "Play_enemy_boss_sorcerer_slow_bomb_hit",
 			damage_type_glance = "fire_grenade_glance",
 			max_damage_radius_min = 0.5,
@@ -1071,7 +1120,7 @@ ExplosionTemplates = {
 			damage_type = "grenade",
 			damage_interval = 0,
 			power_level = 500,
-			effect_name = "fx/wpn_chaos_sorcerer_boss_bomb_03",
+			effect_name = "fx/chr_chaos_sorcerer_boss_projectile_flies_impact",
 			immune_breeds = {
 				chaos_zombie = true,
 				chaos_spawn = true,
@@ -1083,8 +1132,7 @@ ExplosionTemplates = {
 		explosion = {
 			always_hurt_players = true,
 			radius = 3.2,
-			alert_enemies = true,
-			alert_enemies_radius = 20,
+			alert_enemies = false,
 			sound_event_name = "fireball_big_hit",
 			max_damage_radius_min = 0.5,
 			attack_template = "chaos_magic_missile",
@@ -1109,7 +1157,7 @@ ExplosionTemplates.chaos_slow_bomb_missile = {
 		if VALID_PLAYERS_AND_BOTS[hit_unit] then
 			local status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
 
-			if status_extension and not status_extension.is_disabled(status_extension) then
+			if status_extension and not status_extension:is_disabled() then
 				hit_player = true
 			end
 		end
@@ -1128,8 +1176,6 @@ ExplosionTemplates.chaos_slow_bomb_missile = {
 
 			AiUtils.ai_explosion(projectile_unit, owner_unit, blackboard, damage_source, explosion_template)
 		end
-
-		return 
 	end
 }
 ExplosionTemplates.chaos_vortex_dummy_missile = {
@@ -1190,4 +1236,4 @@ for name, templates in pairs(ExplosionTemplates) do
 	templates.name = name
 end
 
-return 
+return

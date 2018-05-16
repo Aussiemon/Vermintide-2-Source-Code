@@ -1,12 +1,13 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTTriggerMoveToAction = class(BTTriggerMoveToAction, BTNode)
+
 BTTriggerMoveToAction.init = function (self, ...)
 	BTTriggerMoveToAction.super.init(self, ...)
-
-	return 
 end
+
 BTTriggerMoveToAction.name = "BTTriggerMoveToAction"
+
 BTTriggerMoveToAction.enter = function (self, unit, blackboard, t)
 	blackboard.trigger_index = blackboard.trigger_index or 0
 
@@ -14,14 +15,12 @@ BTTriggerMoveToAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.skulk_pos = nil
 	blackboard.skulk_around_dir = nil
-
-	return 
 end
+
 BTTriggerMoveToAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.navigation_extension:set_enabled(true)
-
-	return 
 end
+
 BTTriggerMoveToAction.run = function (self, unit, blackboard, t, dt)
 	blackboard.trigger_index = (blackboard.trigger_index + 1) % 8
 	local trigger_index = blackboard.trigger_index
@@ -46,8 +45,6 @@ BTTriggerMoveToAction.run = function (self, unit, blackboard, t, dt)
 
 		return "done"
 	end
-
-	return 
 end
 
-return 
+return

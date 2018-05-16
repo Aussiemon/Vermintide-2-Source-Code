@@ -1,4 +1,3 @@
-local push_radius = 2
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
@@ -50,9 +49,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			projectile_info = Projectiles.fireball,
 			impact_data = {
@@ -120,9 +119,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			projectile_info = Projectiles.fireball_charged,
 			impact_data = {
@@ -151,7 +150,7 @@ weapon_template.actions = {
 			kind = "charge",
 			charge_sound_parameter_name = "drakegun_charge_fire",
 			anim_time_scale = 1.5,
-			charge_ready_sound_event = "weapon_staff_charge_ready",
+			charge_ready_sound_event = "hud_gameplay_stance_deactivate",
 			charge_sound_husk_stop_event = "stop_player_combat_weapon_staff_charge_husk",
 			overcharge_interval = 0.3,
 			charge_sound_husk_name = "player_combat_weapon_staff_charge_husk",
@@ -219,10 +218,8 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.reset_release_input(input_extension)
-				input_extension.clear_input_buffer(input_extension)
-
-				return 
+				input_extension:reset_release_input()
+				input_extension:clear_input_buffer()
 			end,
 			allowed_chain_actions = {
 				{
@@ -235,12 +232,12 @@ weapon_template.actions = {
 			condition_func = function (action_user, input_extension)
 				local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
 
-				return overcharge_extension.get_overcharge_value(overcharge_extension) ~= 0
+				return overcharge_extension:get_overcharge_value() ~= 0
 			end,
 			chain_condition_func = function (action_user, input_extension)
 				local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
 
-				return overcharge_extension.get_overcharge_value(overcharge_extension) ~= 0
+				return overcharge_extension:get_overcharge_value() ~= 0
 			end
 		}
 	},
@@ -260,21 +257,18 @@ weapon_template.overcharge_data = {
 	overcharge_threshold = 10,
 	hit_overcharge_threshold_sound = "ui_special_attack_ready",
 	time_until_overcharge_decreases = 0.5,
-	overcharge_value_decrease_rate = 1,
-	overcharge_critical_buff = {
-		{
-			start_time = 0,
-			buff_name = "overcharged_critical",
-			end_time = math.huge
-		}
-	},
-	overcharge_buff = {
-		{
-			start_time = 0,
-			buff_name = "overcharged",
-			end_time = math.huge
-		}
-	}
+	overcharge_value_decrease_rate = 1
+}
+weapon_template.attack_meta_data = {
+	aim_at_node = "j_head",
+	obstruction_fuzzyness_range_charged = 3,
+	charged_attack_action_name = "shoot_charged",
+	can_charge_shot = true,
+	minimum_charge_time = 0.21,
+	aim_at_node_charged = "j_spine1",
+	ignore_enemies_for_obstruction_charged = false,
+	charge_when_obstructed = true,
+	ignore_enemies_for_obstruction = false
 }
 local action = weapon_template.actions.action_one.default
 weapon_template.default_loaded_projectile_settings = {
@@ -322,35 +316,27 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_damage_over_time",
 	"weapon_keyword_overheat"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.3,
-			range = 0.6,
-			damage = 0.5,
-			targets = 0.2,
-			stagger = 0.6
-		},
-		heavy_attack = {
-			speed = 0.2,
-			range = 0.5,
-			damage = 0.625,
-			targets = 0.8,
-			stagger = 0.8
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	},
-	perks = {
-		light_attack = {
-			"head_shot",
-			"armor_penetration"
-		},
-		heavy_attack = {
-			"armor_penetration",
-			"burn"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "shoot_charged"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "shoot_charged"
 	}
 }
 Weapons = Weapons or {}
-Weapons.staff_fireball_fireball_template_1 = table.clone(weapon_template)
+Weapons.staff_fireball_fireball_template_1 = table.create_copy(Weapons.staff_fireball_fireball_template_1, weapon_template)
 
-return 
+return

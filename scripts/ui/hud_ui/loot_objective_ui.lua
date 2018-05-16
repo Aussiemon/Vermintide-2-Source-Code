@@ -15,6 +15,7 @@ local settings = {
 		texture = "loot_objective_icon_01"
 	}
 }
+
 LootObjectiveUI.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
@@ -30,12 +31,12 @@ LootObjectiveUI.init = function (self, ingame_ui_context)
 	self._animations = {}
 	self._event_queue = {}
 
-	self.create_ui_elements(self)
+	self:create_ui_elements()
 	rawset(_G, "loot_objective_ui", self)
-
-	return 
 end
+
 local DO_RELOAD = true
+
 LootObjectiveUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	local widgets_by_name = {}
@@ -64,36 +65,33 @@ LootObjectiveUI.create_ui_elements = function (self)
 
 	DO_RELOAD = false
 
-	self._sync_missions(self, true)
-
-	return 
+	self:_sync_missions(true)
 end
+
 LootObjectiveUI.destroy = function (self)
 	rawset(_G, "loot_objective_ui", nil)
 	GarbageLeakDetector.register_object(self, "loot_objective_ui")
-
-	return 
 end
+
 LootObjectiveUI.update = function (self, dt, t)
 	if DO_RELOAD then
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 	end
 
-	self._sync_missions(self)
+	self:_sync_missions()
 
-	self._active_presentation_widget = self._update_active_presentation(self, dt, t)
+	self._active_presentation_widget = self:_update_active_presentation(dt, t)
 
-	self._update_animations(self, dt)
-	self.draw(self, dt)
-
-	return 
+	self:_update_animations(dt)
+	self:draw(dt)
 end
+
 LootObjectiveUI._sync_missions = function (self, initialize)
 	local settings_data = self._settings_data
 
 	for _, data in pairs(settings_data) do
 		local mission_name = data.mission_name
-		local amount = self._get_item_amount_by_mission_name(self, mission_name) or 0
+		local amount = self:_get_item_amount_by_mission_name(mission_name) or 0
 
 		if not data.amount then
 			data.amount = amount or 0
@@ -107,25 +105,24 @@ LootObjectiveUI._sync_missions = function (self, initialize)
 			local widget = data.widget
 
 			if not initialize then
-				self._add_presentation_event(self, widget, data.previous_amount, amount)
+				self:_add_presentation_event(widget, data.previous_amount, amount)
 			end
 		end
 	end
-
-	return 
 end
+
 LootObjectiveUI._assign_amount_to_widget = function (self, widget, amount)
 	widget.content.draw_count = amount
-
-	return 
 end
+
 LootObjectiveUI._get_item_amount_by_mission_name = function (self, mission_name)
 	local mission_system = self._mission_system
-	local data = mission_system.get_level_end_mission_data(mission_system, mission_name)
+	local data = mission_system:get_level_end_mission_data(mission_name)
 	local current_amount = data and data.current_amount
 
 	return current_amount
 end
+
 LootObjectiveUI._add_presentation_event = function (self, widget, previous_amount, amount)
 	local event_queue = self._event_queue
 	local stack_count = #event_queue
@@ -134,15 +131,14 @@ LootObjectiveUI._add_presentation_event = function (self, widget, previous_amoun
 		previous_amount = previous_amount,
 		widget = widget
 	}
-
-	return 
 end
+
 LootObjectiveUI._update_active_presentation = function (self, dt, t)
 	local event_queue = self._event_queue
 	local stack_count = #event_queue
 
 	if stack_count == 0 then
-		return 
+		return
 	end
 
 	local presentation_data = event_queue[1]
@@ -151,18 +147,18 @@ LootObjectiveUI._update_active_presentation = function (self, dt, t)
 	local previous_amount = presentation_data.previous_amount
 
 	if not presentation_data.started then
-		self._assign_amount_to_widget(self, widget, amount)
+		self:_assign_amount_to_widget(widget, amount)
 
 		presentation_data.started = true
 		local life_time = 2.5
-		local duration = self._animate_in(self, widget, previous_amount)
+		local duration = self:_animate_in(widget, previous_amount)
 		presentation_data.end_time = t + duration + life_time
 	end
 
 	if presentation_data.end_time < t then
 		if not presentation_data.end_started then
 			presentation_data.end_started = true
-			local duration = self._animate_out(self, widget)
+			local duration = self:_animate_out(widget)
 			presentation_data.end_time = t + duration
 		else
 			table.remove(event_queue, 1)
@@ -171,6 +167,7 @@ LootObjectiveUI._update_active_presentation = function (self, dt, t)
 
 	return widget
 end
+
 LootObjectiveUI._animate_in = function (self, widget, previous_draw_count)
 	local animations = self._animations
 	local target = 1
@@ -215,6 +212,7 @@ LootObjectiveUI._animate_in = function (self, widget, previous_draw_count)
 
 	return duration
 end
+
 LootObjectiveUI._animate_out = function (self, widget)
 	local animations = self._animations
 	local target = 1
@@ -243,6 +241,7 @@ LootObjectiveUI._animate_out = function (self, widget)
 
 	return duration
 end
+
 LootObjectiveUI._update_animations = function (self, dt)
 	local animations = self._animations
 
@@ -253,9 +252,8 @@ LootObjectiveUI._update_animations = function (self, dt)
 			animations[anmation_name] = nil
 		end
 	end
-
-	return 
 end
+
 LootObjectiveUI.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -270,8 +268,6 @@ LootObjectiveUI.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
 
-return 
+return

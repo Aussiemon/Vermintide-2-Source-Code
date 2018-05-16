@@ -1,10 +1,10 @@
 local Items = class(Items)
+
 Items.init = function (self)
 	self._dirty = true
 	self._debug_end_of_round_timeout = false
-
-	return 
 end
+
 local CLEARABLE_SLOTS = {
 	slot_trinket_2 = true,
 	slot_trinket_3 = true,
@@ -56,8 +56,6 @@ local function find_item_for_slot(items, profile_name, slot)
 			end
 		end
 	end
-
-	return 
 end
 
 local function clean_inventory(items, loadout, whitelist)
@@ -142,8 +140,6 @@ local function clean_inventory(items, loadout, whitelist)
 	end
 
 	fassert(table.is_empty(empty_must_have_slots), "[BackendInterfaceItem] Your backend save is broken, ask for help resetting it")
-
-	return 
 end
 
 Items.set_item_whitelist = function (self, item_keys)
@@ -156,9 +152,8 @@ Items.set_item_whitelist = function (self, item_keys)
 
 	self._item_whitelist = whitelist
 	self._dirty = true
-
-	return 
 end
+
 Items._refresh_entities_if_needed = function (self)
 	if self._dirty then
 		local items, loadout = BackendItem.get_items()
@@ -170,34 +165,37 @@ Items._refresh_entities_if_needed = function (self)
 		self._profile_cache = {}
 		self._dirty = false
 	end
-
-	return 
 end
+
 Items.get_all_backend_items = function (self)
-	self._refresh_entities_if_needed(self)
+	self:_refresh_entities_if_needed()
 
 	return self._items
 end
+
 local empty_params = {}
+
 Items.get_filtered_items = function (self, filter, params)
-	local all_items = self.get_all_backend_items(self)
+	local all_items = self:get_all_backend_items()
 	local backend_common = Managers.backend:get_interface("common")
-	local items = backend_common.filter_items(backend_common, all_items, filter, params or empty_params)
+	local items = backend_common:filter_items(all_items, filter, params or empty_params)
 
 	return items
 end
+
 Items.set_error = function (self, error_data)
 	self._error_data = error_data
-
-	return 
 end
+
 Items.check_for_errors = function (self)
 	local error_data = self._error_data
 	self._error_data = nil
 
 	return error_data
 end
+
 local DO_RELOAD = true
+
 Items.update = function (self, dt)
 	if DO_RELOAD then
 		self._modified_templates = {}
@@ -206,7 +204,7 @@ Items.update = function (self, dt)
 
 	if self._dice_game_data then
 		local backend_session = Managers.backend:get_interface("session")
-		local session_ready = not self._debug_end_of_round_timeout and backend_session.get_state(backend_session) == "END_OF_ROUND"
+		local session_ready = not self._debug_end_of_round_timeout and backend_session:get_state() == "END_OF_ROUND"
 		local sessions_disabled = not GameSettingsDevelopment.backend_settings.enable_sessions
 
 		if session_ready or sessions_disabled then
@@ -223,13 +221,13 @@ Items.update = function (self, dt)
 		elseif self._dice_game_data.time_out < Managers.time:time("main") then
 			self._dice_game_data = nil
 
-			self.set_error(self, {
+			self:set_error({
 				reason = BACKEND_LUA_ERRORS.ERR_DICE_TIMEOUT1
 			})
 		end
 	elseif self._upgrades_failed_game_data then
 		local backend_session = Managers.backend:get_interface("session")
-		local session_ready = not self._debug_end_of_round_timeout and backend_session.get_state(backend_session) == "END_OF_ROUND"
+		local session_ready = not self._debug_end_of_round_timeout and backend_session:get_state() == "END_OF_ROUND"
 		local sessions_disabled = not GameSettingsDevelopment.backend_settings.enable_sessions
 
 		if session_ready or sessions_disabled then
@@ -247,38 +245,37 @@ Items.update = function (self, dt)
 		elseif self._upgrades_failed_game_data.time_out < Managers.time:time("main") then
 			self._upgrades_failed_game_data = nil
 
-			self.set_error(self, {
+			self:set_error({
 				reason = BACKEND_LUA_ERRORS.ERR_UPGRADES_TIMEOUT
 			})
 		end
 	end
-
-	return 
 end
+
 Items.reset_dice_game_item = function (self)
 	self._dice_item = nil
-
-	return 
 end
+
 Items.dice_game_item = function (self)
 	return self._dice_item
 end
+
 Items.poll_upgrades = function (self)
 	local upgrades_item = self._upgrades_item
 
-	if upgrades_item and upgrades_item.is_done(upgrades_item) then
+	if upgrades_item and upgrades_item:is_done() then
 		self._upgrades_item = nil
 
-		return upgrades_item.items(upgrades_item)
+		return upgrades_item:items()
 	end
-
-	return 
 end
+
 Items.get_loadout = function (self)
-	self._refresh_entities_if_needed(self)
+	self:_refresh_entities_if_needed()
 
 	return self._loadout
 end
+
 Items.generate_item_server_loot = function (self, dice, difficulty, start_level, end_level, hero_name, dlc_name)
 	fassert(not self._dice_game_data and not self._upgrades_failed_game_data, "Trying to do two item server scripts at once. DiceGame: %s, UpgradesFailedGame: %s", self._dice_game_data and "true", self._upgrades_failed_game_data and "true")
 
@@ -308,9 +305,8 @@ Items.generate_item_server_loot = function (self, dice, difficulty, start_level,
 		time_out = time_out,
 		parameters = parameters
 	}
-
-	return 
 end
+
 Items.upgrades_failed_game = function (self, start_level, end_level)
 	fassert(not self._dice_game_data and not self._upgrades_failed_game_data, "Trying to do two item server scripts at once. DiceGame: %s, UpgradesFailedGame: %s", self._dice_game_data and "true", self._upgrades_failed_game_data and "true")
 
@@ -320,57 +316,56 @@ Items.upgrades_failed_game = function (self, start_level, end_level)
 		start_level = start_level,
 		end_level = end_level
 	}
-
-	return 
 end
+
 Items.num_current_item_server_requests = function (self)
 	return self._queue:num_current_requests()
 end
+
 Items.make_dirty = function (self)
 	self._dirty = true
-
-	return 
 end
+
 Items.set_data_server_queue = function (self, queue)
 	self._queue = queue
-
-	return 
 end
+
 Items.data_server_queue = function (self)
 	return self._queue
 end
+
 BackendInterfaceItem = class(BackendInterfaceItem)
+
 BackendInterfaceItem.init = function (self)
 	self._backend_items = Items:new()
 	self._modified_templates = {}
-
-	return 
 end
+
 BackendInterfaceItem.type = function (self)
 	return "backend"
 end
+
 BackendInterfaceItem.update = function (self)
 	self._backend_items:update()
-
-	return 
 end
+
 BackendInterfaceItem.refresh_entities = function (self)
 	self._backend_items:make_dirty()
 	self._backend_items:_refresh_entities_if_needed()
-
-	return 
 end
+
 BackendInterfaceItem.check_for_errors = function (self)
 	return self._backend_items:check_for_errors()
 end
+
 BackendInterfaceItem.num_current_item_server_requests = function (self)
 	return self._backend_items:num_current_item_server_requests()
 end
+
 BackendInterfaceItem.set_properties_serialized = function (self, backend_id, properties)
 	local error_code = BackendItem.set_traits(backend_id, properties)
-
-	return 
 end
+
 BackendInterfaceItem.get_properties = function (self, backend_id)
 	local serialized_properties = BackendItem.get_traits(backend_id)
 
@@ -392,8 +387,9 @@ BackendInterfaceItem.get_properties = function (self, backend_id)
 
 	return properties
 end
+
 BackendInterfaceItem.get_traits = function (self, backend_id)
-	local item = self.get_item_from_id(self, backend_id)
+	local item = self:get_item_from_id(backend_id)
 
 	if item then
 		return item.traits
@@ -401,21 +397,22 @@ BackendInterfaceItem.get_traits = function (self, backend_id)
 
 	return nil
 end
+
 BackendInterfaceItem.set_runes = function (self, backend_id, runes)
 	local rune_interface = Managers.backend:get_interface("runes")
 
 	for _, rune in pairs(runes) do
-		rune_interface.set(rune_interface, backend_id, rune)
+		rune_interface:set(backend_id, rune)
 	end
-
-	return 
 end
+
 BackendInterfaceItem.get_runes = function (self, backend_id)
 	local rune_interface = Managers.backend:get_interface("runes")
-	local runes = rune_interface.get(rune_interface, backend_id)
+	local runes = rune_interface:get(backend_id)
 
 	return runes
 end
+
 BackendInterfaceItem.get_key = function (self, backend_id)
 	local items = self._backend_items:get_all_backend_items()
 	local item = items[backend_id]
@@ -423,9 +420,8 @@ BackendInterfaceItem.get_key = function (self, backend_id)
 	if item then
 		return item.key
 	end
-
-	return 
 end
+
 BackendInterfaceItem.get_item_from_id = function (self, backend_id)
 	if backend_id == 0 then
 		ScriptApplication.send_to_crashify("BackendInterfaceItem", "Tried to get item from backend_id 0")
@@ -435,23 +431,28 @@ BackendInterfaceItem.get_item_from_id = function (self, backend_id)
 
 	return items[backend_id]
 end
+
 BackendInterfaceItem.get_all_backend_items = function (self)
 	return self._backend_items:get_all_backend_items()
 end
+
 BackendInterfaceItem.get_loadout = function (self)
 	return self._backend_items:get_loadout()
 end
+
 BackendInterfaceItem.get_loadout_item_id = function (self, career_name, slot)
 	local loadout = self._backend_items:get_loadout()
 	local backend_id = loadout[career_name][slot]
 
 	return backend_id
 end
+
 BackendInterfaceItem.get_filtered_items = function (self, filter)
 	local items = self._backend_items:get_filtered_items(filter)
 
 	return items
 end
+
 BackendInterfaceItem.set_loadout_item = function (self, item_id, profile, slot)
 	local items = self._backend_items:get_all_backend_items()
 
@@ -465,9 +466,8 @@ BackendInterfaceItem.set_loadout_item = function (self, item_id, profile, slot)
 	print("SLOT " .. slot)
 	BackendItem.set_loadout_item(item_id, profile_id, slot)
 	self._backend_items:make_dirty()
-
-	return 
 end
+
 BackendInterfaceItem.remove_item = function (self, backend_id, ignore_equipped)
 	if not ignore_equipped then
 		local loadout = self._backend_items:get_loadout()
@@ -487,23 +487,23 @@ BackendInterfaceItem.remove_item = function (self, backend_id, ignore_equipped)
 
 	return result
 end
+
 BackendInterfaceItem.award_item = function (self, item_key)
 	BackendItem.award_item(item_key)
 	self._backend_items:make_dirty()
-
-	return 
 end
+
 BackendInterfaceItem.data_server_script = function (self, script_name, ...)
 	local queue = self._backend_items:data_server_queue()
-	local request = queue.add_item(queue, script_name, ...)
+	local request = queue:add_item(script_name, ...)
 
 	return request
 end
+
 BackendInterfaceItem.upgrades_failed_game = function (self, level_start, level_end)
 	self._backend_items:upgrades_failed_game(level_start, level_end)
-
-	return 
 end
+
 BackendInterfaceItem.generate_item_server_loot = function (self, dice, difficulty, start_level, end_level, hero_name, dlc_name)
 	local dice_string = ""
 
@@ -512,20 +512,19 @@ BackendInterfaceItem.generate_item_server_loot = function (self, dice, difficult
 	end
 
 	self._backend_items:generate_item_server_loot(dice_string, difficulty, start_level, end_level, hero_name, dlc_name)
-
-	return 
 end
+
 BackendInterfaceItem.check_for_loot = function (self)
 	local dice_item = self._backend_items:dice_game_item()
 
-	if dice_item and dice_item.is_done(dice_item) then
-		local error_message = dice_item.error_message(dice_item)
+	if dice_item and dice_item:is_done() then
+		local error_message = dice_item:error_message()
 
 		if error_message then
 			self._backend_items:set_error(error_message)
-		elseif dice_item.items(dice_item) then
-			local parameters = dice_item.parameters(dice_item)
-			local items = dice_item.items(dice_item)
+		elseif dice_item:items() then
+			local parameters = dice_item:parameters()
+			local items = dice_item:items()
 			local successes = {}
 			local total_successes = 1
 			local successes_string = parameters.successes
@@ -558,16 +557,15 @@ BackendInterfaceItem.check_for_loot = function (self)
 
 			local backend_session = Managers.backend:get_interface("session")
 
-			backend_session.received_dice_game_loot(backend_session)
+			backend_session:received_dice_game_loot()
 			self._backend_items:reset_dice_game_item()
 			self._backend_items:make_dirty()
 
 			return successes, win_list, dice_win_id, level_rewards
 		end
 	end
-
-	return 
 end
+
 BackendInterfaceItem.equipped_by = function (self, backend_id)
 	local equipped_heroes = {}
 	local loadout = self._backend_items:get_loadout()
@@ -582,6 +580,7 @@ BackendInterfaceItem.equipped_by = function (self, backend_id)
 
 	return equipped_heroes
 end
+
 BackendInterfaceItem.is_equipped = function (self, backend_id, profile_name)
 	local loadout = self._backend_items:get_loadout()
 
@@ -597,6 +596,7 @@ BackendInterfaceItem.is_equipped = function (self, backend_id, profile_name)
 
 	return false
 end
+
 local SalvageableSlotTypes = {
 	ranged = true,
 	melee = true,
@@ -610,8 +610,9 @@ local SalvageableRarities = {
 	rare = true,
 	unique = true
 }
+
 BackendInterfaceItem.is_salvageable = function (self, backend_id)
-	local unequipped = not self.is_equipped(self, backend_id)
+	local unequipped = not self:is_equipped(backend_id)
 	local items = self._backend_items:get_all_backend_items()
 	local item = items[backend_id]
 	local item_config = ItemMasterList[item.key]
@@ -620,6 +621,7 @@ BackendInterfaceItem.is_salvageable = function (self, backend_id)
 
 	return unequipped and salvageable_slot_type and salvageable_rarity
 end
+
 local FuseableSlotTypes = {
 	melee = true,
 	ranged = true
@@ -629,8 +631,9 @@ local FuseableRarities = {
 	plentiful = true,
 	rare = true
 }
+
 BackendInterfaceItem.is_fuseable = function (self, backend_id)
-	local unequipped = not self.is_equipped(self, backend_id)
+	local unequipped = not self:is_equipped(backend_id)
 	local items = self._backend_items:get_all_backend_items()
 	local item = items[backend_id]
 	local item_config = ItemMasterList[item.key]
@@ -639,23 +642,22 @@ BackendInterfaceItem.is_fuseable = function (self, backend_id)
 
 	return unequipped and fuseable_slot_type and fuseable_rarity
 end
+
 BackendInterfaceItem.set_data_server_queue = function (self, queue)
 	self._backend_items:set_data_server_queue(queue)
 
 	local item_whitelist_script = GameSettingsDevelopment.backend_settings.item_whitelist
 
 	if item_whitelist_script then
-		queue.register_executor(queue, "item_whitelist", callback(self, "_command_item_whitelist"))
-		queue.add_item(queue, item_whitelist_script)
+		queue:register_executor("item_whitelist", callback(self, "_command_item_whitelist"))
+		queue:add_item(item_whitelist_script)
 	end
-
-	return 
 end
+
 BackendInterfaceItem.__dirtify = function (self)
 	self._backend_items:make_dirty()
-
-	return 
 end
+
 BackendInterfaceItem.has_item = function (self, item_key)
 	local items, loadout = BackendItem.get_items()
 
@@ -667,6 +669,7 @@ BackendInterfaceItem.has_item = function (self, item_key)
 
 	return false
 end
+
 BackendInterfaceItem.clean_inventory_for_prestige = function (self, profile_index, unit)
 	local items, loadout = BackendItem.get_items()
 	local missing_items = nil
@@ -734,16 +737,16 @@ BackendInterfaceItem.clean_inventory_for_prestige = function (self, profile_inde
 			if slot_type == "melee" or slot_type == "ranged" then
 				local slot = (slot_type == "melee" and "slot_melee") or "slot_ranged"
 
-				inventory_extension.create_equipment_in_slot(inventory_extension, slot, backend_id)
-				inventory_extension.wield(inventory_extension, slot)
+				inventory_extension:create_equipment_in_slot(slot, backend_id)
+				inventory_extension:wield(slot)
 			elseif slot_type == "hat" then
 				local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
 
-				attachment_extension.create_attachment_in_slot(attachment_extension, slot, backend_id)
+				attachment_extension:create_attachment_in_slot(slot, backend_id)
 			elseif slot_type == "trinket" then
 				local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
 
-				attachment_extension.create_attachment_in_slot(attachment_extension, slot, backend_id)
+				attachment_extension:create_attachment_in_slot(slot, backend_id)
 			end
 
 			ScriptApplication.send_to_crashify("BackendInterfaceItem", "Slot %q was empty, putting item %d in it", slot, backend_id)
@@ -765,13 +768,12 @@ BackendInterfaceItem.clean_inventory_for_prestige = function (self, profile_inde
 	self._dirty = true
 
 	for _, backend_id in ipairs(items_to_remove) do
-		self.remove_item(self, backend_id)
+		self:remove_item(backend_id)
 	end
-
-	return 
 end
+
 BackendInterfaceItem.get_runes = function (self, item_id)
-	local item = self.get_item_from_id(self, item_id)
+	local item = self:get_item_from_id(item_id)
 
 	if item then
 		local runes = item.runes
@@ -781,9 +783,11 @@ BackendInterfaceItem.get_runes = function (self, item_id)
 
 	return nil
 end
+
 BackendInterfaceItem._slot_item_rune = function (self, item_data, rune_to_insert)
-	return 
+	return
 end
+
 BackendInterfaceItem.get_item_template = function (self, item_data, backend_id)
 	local template_name = item_data.temporary_template or item_data.template
 	local item_template = Weapons[template_name]
@@ -815,21 +819,18 @@ BackendInterfaceItem.get_item_template = function (self, item_data, backend_id)
 	end
 
 	fassert(false, "no item_template for item: " .. item_data.key .. ", template name = " .. template_name)
-
-	return 
 end
+
 BackendInterfaceItem._command_item_whitelist = function (self, data)
 	local backend_items = self._backend_items
 
 	if data.enabled then
-		backend_items.set_item_whitelist(backend_items, data.items)
+		backend_items:set_item_whitelist(data.items)
 	end
 
-	local queue = backend_items.data_server_queue(backend_items)
+	local queue = backend_items:data_server_queue()
 
-	queue.unregister_executor(queue, "item_whitelist")
-
-	return 
+	queue:unregister_executor("item_whitelist")
 end
 
-return 
+return

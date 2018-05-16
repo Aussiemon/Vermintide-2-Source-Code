@@ -120,4 +120,4 @@ KeepDecorationSettings = {
 	}
 }
 
-return 
+return

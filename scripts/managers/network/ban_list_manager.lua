@@ -1,37 +1,31 @@
 BanListManager = class(BanListManager)
 local SAVE_FILE = "ban_list"
+
 BanListManager.init = function (self)
 	self._bans = {}
 
-	self._load_bans(self)
-
-	return 
+	self:_load_bans()
 end
+
 BanListManager.ban = function (self, peer_id, name, until_time_stamp)
 	self._bans[peer_id] = {
 		name = name,
 		ban_end = until_time_stamp
 	}
-
-	return 
 end
+
 BanListManager.unban = function (self, peer_id)
 	self._bans[peer_id] = nil
-
-	return 
 end
+
 BanListManager.save = function (self, callback)
 	local function cb(result)
 		self:_save_done_callback(result, callback)
-
-		return 
 	end
 
 	local force_local_save = true
 
 	Managers.save:auto_save(SAVE_FILE, self._bans, cb, force_local_save)
-
-	return 
 end
 
 local function in_ban_range(ban_info)
@@ -50,6 +44,7 @@ BanListManager.is_banned = function (self, peer_id)
 
 	return in_ban_range(ban_info)
 end
+
 BanListManager.ban_list = function (self)
 	local result = {}
 
@@ -74,6 +69,7 @@ BanListManager.ban_list = function (self)
 
 	return result
 end
+
 BanListManager.banned_peers = function (self)
 	local result = {}
 
@@ -83,43 +79,39 @@ BanListManager.banned_peers = function (self)
 
 	return result
 end
+
 BanListManager._load_bans = function (self)
 	local function callback(result)
 		self:_load_done_callback(result)
-
-		return 
 	end
 
 	local force_local_load = true
 
 	Managers.save:auto_load(SAVE_FILE, callback, force_local_load)
-
-	return 
 end
+
 BanListManager._load_done_callback = function (self, result)
 	if result.error ~= nil then
 		print(string.format("Failed to load the ban list (%s). It will be empty.", result.error))
 
-		return 
+		return
 	end
 
 	table.merge(self._bans, result.data)
-	self._remove_old_bans(self)
-
-	return 
+	self:_remove_old_bans()
 end
+
 BanListManager._save_done_callback = function (self, result, callback)
 	if result.error ~= nil then
 		print(string.format("Failed to save the ban list (%s).", result.error))
 		callback(result.error)
 
-		return 
+		return
 	end
 
 	callback()
-
-	return 
 end
+
 BanListManager._remove_old_bans = function (self)
 	local new_bans = {}
 
@@ -130,8 +122,6 @@ BanListManager._remove_old_bans = function (self)
 	end
 
 	self._bans = new_bans
-
-	return 
 end
 
-return 
+return

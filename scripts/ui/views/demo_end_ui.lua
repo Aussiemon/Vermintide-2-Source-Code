@@ -5,6 +5,7 @@ local widget_definitions = definitions.widget_definitions
 local demo_video = definitions.demo_video
 local DO_RELOAD = false
 DemoEndUI = class(DemoEndUI)
+
 DemoEndUI.init = function (self, world)
 	self._world = world
 	local platform = PLATFORM
@@ -22,10 +23,9 @@ DemoEndUI.init = function (self, world)
 	self.input_manager:map_device_to_service("demo", "gamepad")
 	self.input_manager:map_device_to_service("demo", "keyboard")
 	self.input_manager:map_device_to_service("demo", "mouse")
-	self._create_ui_elements(self)
-
-	return 
+	self:_create_ui_elements()
 end
+
 DemoEndUI._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._demo_video = UIWidget.init(UIWidgets.create_splash_video(demo_video))
@@ -40,14 +40,12 @@ DemoEndUI._create_ui_elements = function (self)
 	for widget_name, widget_definition in pairs(background_widget_definitions) do
 		self._background_widgets[widget_name] = UIWidget.init(widget_definition)
 	end
-
-	return 
 end
+
 DemoEndUI.update = function (self, dt, t)
-	self._draw(self, dt, t)
-
-	return 
+	self:_draw(dt, t)
 end
+
 DemoEndUI._draw = function (self, dt, t)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
@@ -88,16 +86,14 @@ DemoEndUI._draw = function (self, dt, t)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 DemoEndUI.completed = function (self)
 	return self._demo_video.content.video_content.video_completed
 end
+
 DemoEndUI.destroy = function (self)
 	UIRenderer.destroy(self._ui_renderer, self._world)
-
-	return 
 end
 
-return 
+return

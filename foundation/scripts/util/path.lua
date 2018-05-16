@@ -1,11 +1,12 @@
 Path = {
 	normalize_path = function (string_path)
-		string_path = string_path.gsub(string_path, "\\", "/")
-		string_path = string_path.gsub(string_path, "//", "/")
+		string_path = string_path:gsub("\\", "/")
+		string_path = string_path:gsub("//", "/")
 
 		return string_path
 	end
 }
+
 Path.path_from_string = function (string_path)
 	string_path = Path.normalize_path(string_path)
 	local path = {
@@ -16,8 +17,8 @@ Path.path_from_string = function (string_path)
 	local index = 0
 
 	while index ~= nil do
-		local next_slash_index = string_path.find(string_path, "/", index)
-		local path_part = string_path.sub(string_path, index, (next_slash_index and next_slash_index - 1) or nil)
+		local next_slash_index = string_path:find("/", index)
+		local path_part = string_path:sub(index, (next_slash_index and next_slash_index - 1) or nil)
 		path_n = path_n + 1
 		path[path_n] = path_part
 
@@ -32,6 +33,7 @@ Path.path_from_string = function (string_path)
 
 	return path
 end
+
 Path.path_from_parts = function (...)
 	local path_n = select("#", ...)
 	local path = {
@@ -45,6 +47,7 @@ Path.path_from_parts = function (...)
 
 	return path
 end
+
 Path.copy = function (path)
 	local path_new = {
 		size = path.size
@@ -56,19 +59,18 @@ Path.copy = function (path)
 
 	return path_new
 end
+
 Path.change_dir_up = function (path)
-	assert(0 < path.size)
+	assert(path.size > 0)
 
 	path.size = path.size - 1
-
-	return 
 end
+
 Path.add_path_part = function (path, path_part)
 	path.size = path.size + 1
 	path[path.size] = path_part
-
-	return 
 end
+
 Path.join = function (path1, path2, result)
 	result = result or {}
 	result.size = 0
@@ -85,6 +87,7 @@ Path.join = function (path1, path2, result)
 
 	return result
 end
+
 Path.tostring = function (path, separator)
 	separator = separator or "/"
 	local string_path = ""
@@ -97,6 +100,7 @@ Path.tostring = function (path, separator)
 
 	return string_path
 end
+
 local UNIT_TEST = true
 
 if UNIT_TEST then
@@ -144,4 +148,4 @@ if UNIT_TEST then
 	assert(p6_string_path == "C:/trunk/lols")
 end
 
-return 
+return

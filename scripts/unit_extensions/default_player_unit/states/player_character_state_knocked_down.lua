@@ -1,11 +1,11 @@
 PlayerCharacterStateKnockedDown = class(PlayerCharacterStateKnockedDown, PlayerCharacterState)
+
 PlayerCharacterStateKnockedDown.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "knocked_down")
 
 	local context = character_state_init_context
-
-	return 
 end
+
 PlayerCharacterStateKnockedDown.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "knocked_down")
 
@@ -28,14 +28,14 @@ PlayerCharacterStateKnockedDown.on_enter = function (self, unit, input, dt, cont
 
 	local first_person_extension = self.first_person_extension
 
-	first_person_extension.set_wanted_player_height(first_person_extension, "knocked_down", t)
-	first_person_extension.animation_event(first_person_extension, "knocked_down")
-	first_person_extension.animation_set_variable(first_person_extension, "knockdown_blend", 0)
+	first_person_extension:set_wanted_player_height("knocked_down", t)
+	first_person_extension:animation_event("knocked_down")
+	first_person_extension:animation_set_variable("knockdown_blend", 0)
 
 	self.start_time = t
 
 	CharacterStateHelper.change_camera_state(self.player, "follow_third_person")
-	first_person_extension.set_first_person_mode(first_person_extension, false)
+	first_person_extension:set_first_person_mode(false)
 
 	local status_extension = ScriptUnit.extension(unit, "status_system")
 	self.pounced_down = previous_state == "pounced_down"
@@ -55,11 +55,10 @@ PlayerCharacterStateKnockedDown.on_enter = function (self, unit, input, dt, cont
 
 	local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 
-	inventory_extension.check_and_drop_pickups(inventory_extension, "knocked_down")
-	status_extension.set_catapulted(status_extension, false)
-
-	return 
+	inventory_extension:check_and_drop_pickups("knocked_down")
+	status_extension:set_catapulted(false)
 end
+
 PlayerCharacterStateKnockedDown.on_exit = function (self, unit, input, dt, context, t, next_state)
 	local first_person_extension = self.first_person_extension
 
@@ -72,29 +71,28 @@ PlayerCharacterStateKnockedDown.on_exit = function (self, unit, input, dt, conte
 		self.first_person_extension:toggle_visibility(CameraTransitionSettings.perspective_transition_time)
 	end
 
-	first_person_extension.set_wanted_player_height(first_person_extension, "stand", t)
-
-	return 
+	first_person_extension:set_wanted_player_height("stand", t)
 end
+
 PlayerCharacterStateKnockedDown.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local unit = self.unit
 	local locomotion_extension = self.locomotion_extension
 
-	if locomotion_extension.is_on_ground(locomotion_extension) then
+	if locomotion_extension:is_on_ground() then
 		ScriptUnit.extension(unit, "whereabouts_system"):set_is_onground()
 	end
 
 	local status_extension = self.status_extension
 
 	if CharacterStateHelper.is_dead(status_extension) then
-		csm.change_state(csm, "dead")
+		csm:change_state("dead")
 
-		return 
+		return
 	end
 
 	if self.pounced_down and not CharacterStateHelper.is_pounced_down(status_extension) then
-		locomotion_extension.set_disabled(locomotion_extension, false, LocomotionUtils.update_local_animation_driven_movement_with_parent)
+		locomotion_extension:set_disabled(false, LocomotionUtils.update_local_animation_driven_movement_with_parent)
 
 		local animation_event = "knockdown"
 
@@ -104,8 +102,8 @@ PlayerCharacterStateKnockedDown.update = function (self, unit, input, dt, contex
 	end
 
 	if self.grabbed_by_pack_master and not CharacterStateHelper.is_grabbed_by_pack_master(status_extension) then
-		locomotion_extension.enable_script_driven_movement(locomotion_extension)
-		locomotion_extension.enable_rotation_towards_velocity(locomotion_extension, true)
+		locomotion_extension:enable_script_driven_movement()
+		locomotion_extension:enable_rotation_towards_velocity(true)
 
 		self.grabbed_by_pack_master = false
 	end
@@ -114,26 +112,24 @@ PlayerCharacterStateKnockedDown.update = function (self, unit, input, dt, contex
 		local params = self.temp_params
 		params.is_crouching = false
 
-		csm.change_state(csm, "standing")
+		csm:change_state("standing")
 
-		return 
+		return
 	end
 
 	local time_since_start = t - self.start_time
 	local first_person_extension = self.first_person_extension
 
 	if time_since_start <= 1 then
-		first_person_extension.animation_set_variable(first_person_extension, "knockdown_blend", time_since_start)
+		first_person_extension:animation_set_variable("knockdown_blend", time_since_start)
 	else
-		first_person_extension.animation_set_variable(first_person_extension, "knockdown_blend", 1)
+		first_person_extension:animation_set_variable("knockdown_blend", 1)
 	end
 
 	local input_extension = self.input_extension
 
-	locomotion_extension.set_disable_rotation_update(locomotion_extension)
+	locomotion_extension:set_disable_rotation_update()
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension)
-
-	return 
 end
 
-return 
+return

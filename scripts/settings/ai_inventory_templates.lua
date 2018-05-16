@@ -371,22 +371,17 @@ local items = {
 	wpn_chaos_2h_axe_1 = {
 		drop_on_hit = true,
 		unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_chaos_2h_axe_01",
-		attachment_node_linking = AttachmentNodeLinking.ai_axe
+		attachment_node_linking = AttachmentNodeLinking.ai_2h
 	},
 	wpn_chaos_2h_axe_2 = {
 		drop_on_hit = true,
 		unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_chaos_2h_axe_02",
-		attachment_node_linking = AttachmentNodeLinking.ai_axe
+		attachment_node_linking = AttachmentNodeLinking.ai_2h
 	},
 	wpn_chaos_2h_axe_3 = {
 		drop_on_hit = true,
 		unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_chaos_2h_axe_03",
-		attachment_node_linking = AttachmentNodeLinking.ai_axe
-	},
-	wpn_chaos_2h_axe_3_boss = {
-		drop_on_hit = true,
-		unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_chaos_2h_axe_03_boss",
-		attachment_node_linking = AttachmentNodeLinking.ai_axe
+		attachment_node_linking = AttachmentNodeLinking.ai_2h
 	},
 	wpn_chaos_2h_axe_1_moc = {
 		drop_on_hit = true,
@@ -420,14 +415,6 @@ local items = {
 	},
 	wpn_moc_mace_02 = {
 		unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_moc_mace_02",
-		attachment_node_linking = AttachmentNodeLinking.ai_mace
-	},
-	wpn_moc_axe_01 = {
-		unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_moc_axe_01",
-		attachment_node_linking = AttachmentNodeLinking.ai_mace
-	},
-	wpn_moc_axe_02 = {
-		unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_moc_axe_02",
 		attachment_node_linking = AttachmentNodeLinking.ai_mace
 	},
 	wpn_moc_axe_01_right = {
@@ -493,10 +480,6 @@ local items = {
 	},
 	wpn_chaos_sorcerer_stick = {
 		unit_name = "units/weapons/enemy/wpn_chaos_sorcerer_stick/wpn_sorcerer_stick",
-		attachment_node_linking = AttachmentNodeLinking.ai_chaos_sorcerer_stick
-	},
-	wpn_chaos_sorcerer_stick_boss = {
-		unit_name = "units/weapons/enemy/wpn_chaos_sorcerer_stick/wpn_sorcerer_stick_boss",
 		attachment_node_linking = AttachmentNodeLinking.ai_chaos_sorcerer_stick
 	},
 	wpn_chaos_sorcerer_book = {
@@ -601,11 +584,6 @@ local items = {
 	woc_helmet_05 = {
 		unit_extension_template = "ai_helmet_unit",
 		unit_name = "units/beings/enemies/addons/chaos_warrior/woc_helmet_05/woc_helmet_05",
-		attachment_node_linking = AttachmentNodeLinking.ai_helmet
-	},
-	woc_helmet_05_boss = {
-		unit_extension_template = "ai_helmet_unit",
-		unit_name = "units/beings/enemies/addons/chaos_warrior/woc_helmet_05_boss/woc_helmet_05_boss",
 		attachment_node_linking = AttachmentNodeLinking.ai_helmet
 	},
 	zombie_blob_01 = {
@@ -744,14 +722,8 @@ local item_categories = {
 	exalted_axe = {
 		items.wpn_chaos_2h_axe_3
 	},
-	exalted_boss_axe = {
-		items.wpn_chaos_2h_axe_3_boss
-	},
 	exalted_helmet = {
 		items.woc_helmet_05
-	},
-	exalted_boss_helmet = {
-		items.woc_helmet_05_boss
 	},
 	marauder_helmet = {
 		items.moc_helmet_01,
@@ -762,7 +734,6 @@ local item_categories = {
 		items.moc_helmet_08,
 		items.moc_helmet_09,
 		items.moc_helmet_10,
-		items.moc_helmet_11,
 		items.moc_helmet_12,
 		items.moc_helmet_03,
 		items.moc_helmet_04a,
@@ -776,9 +747,7 @@ local item_categories = {
 		items.zombie_blob_03,
 		items.zombie_blob_04
 	},
-	berzerker_helmet = {
-		items.moc_helmet_11
-	},
+	berzerker_helmet = {},
 	berzerker_right = {
 		items.wpn_moc_axe_01_right,
 		items.wpn_moc_axe_02_right
@@ -837,9 +806,6 @@ local item_categories = {
 	},
 	chaos_sorcerer_stick = {
 		items.wpn_chaos_sorcerer_stick
-	},
-	chaos_sorcerer_stick_boss = {
-		items.wpn_chaos_sorcerer_stick_boss
 	},
 	chaos_sorcerer_book = {
 		items.wpn_chaos_sorcerer_book
@@ -942,12 +908,11 @@ InventoryConfigurations = {
 			item_categories.exalted_helmet
 		}
 	},
-	exalted_boss_axe = {
+	exalted_spawn_axe = {
 		enemy_hit_sound = "sword",
 		anim_state_event = "to_spear",
 		items = {
-			item_categories.exalted_boss_axe,
-			item_categories.exalted_boss_helmet
+			item_categories.axe
 		}
 	},
 	sword_and_shield = {
@@ -1091,12 +1056,14 @@ local melee_configurations = {
 	"sword",
 	"spear"
 }
+
 AIInventoryTemplates.random_melee = function ()
 	local index = math.random(1, #melee_configurations)
 	local config_name = melee_configurations[index]
 
 	return config_name
 end
+
 AIInventoryTemplates.default = function ()
 	return AIInventoryTemplates.random_melee()
 end
@@ -1114,6 +1081,7 @@ for config_name, config in pairs(InventoryConfigurations) do
 	AIInventoryTemplates[config_name] = function ()
 		return config_name
 	end
+
 	local multiple_configurations = config.multiple_configurations
 
 	if multiple_configurations then
@@ -1126,4 +1094,4 @@ for config_name, config in pairs(InventoryConfigurations) do
 	end
 end
 
-return 
+return

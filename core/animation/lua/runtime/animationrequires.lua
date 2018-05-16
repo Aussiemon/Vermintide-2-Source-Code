@@ -4,4 +4,4 @@ if not ANIM_REQUIRES then
 	ANIM_REQUIRES = true
 end
 
-return 
+return

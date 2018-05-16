@@ -6,11 +6,10 @@ function mutator_dprint(text, ...)
 
 		printf("[Mutator] %s", s)
 	end
-
-	return 
 end
 
 MutatorHandler = class(MutatorHandler)
+
 MutatorHandler.init = function (self, mutators, is_server, has_local_client)
 	self._mutators_by_name = {}
 
@@ -23,21 +22,19 @@ MutatorHandler.init = function (self, mutators, is_server, has_local_client)
 	self._is_server = is_server
 	self._has_local_client = has_local_client
 
-	self._activate_mutators(self, mutators)
-
-	return 
+	self:_activate_mutators(mutators)
 end
+
 MutatorHandler.destroy = function (self)
 	local active_mutators = self._active_mutators
 
 	for name, mutator_data in pairs(active_mutators) do
-		self._deactivate_mutator(self, name, active_mutators, self._mutator_context)
+		self:_deactivate_mutator(name, active_mutators, self._mutator_context)
 	end
 
 	self._active_mutators = nil
-
-	return 
 end
+
 MutatorHandler.update = function (self, dt, t)
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
@@ -54,12 +51,12 @@ MutatorHandler.update = function (self, dt, t)
 			template.client.update(mutator_context, mutator_data, dt, t)
 		end
 	end
-
-	return 
 end
+
 MutatorHandler.has_mutator = function (self, name)
 	return self._mutators_by_name[name] ~= nil
 end
+
 MutatorHandler.setup_done = function (self)
 	local mutator_context = self._mutator_context
 	local active_mutators = self._active_mutators
@@ -77,22 +74,21 @@ MutatorHandler.setup_done = function (self)
 			template.client.start_game_mode_function(mutator_context, mutator_data)
 		end
 	end
-
-	return 
 end
+
 MutatorHandler._activate_mutators = function (self, mutators)
 	local mutator_context = self._mutator_context
 	local active_mutators = self._active_mutators
 
 	for i, name in ipairs(mutators) do
-		self._activate_mutator(self, name, active_mutators, mutator_context)
+		self:_activate_mutator(name, active_mutators, mutator_context)
 	end
-
-	return 
 end
+
 MutatorHandler._activate_mutator = function (self, name, active_mutators, mutator_context)
 	fassert(active_mutators[name] == nil, "Can't have multiple of same mutator running at the same time (%s)", name)
 	fassert(MutatorTemplates[name], "No such template (%s)", name)
+	mutator_dprint("Activating mutator '%s'", name)
 
 	local template = MutatorTemplates[name]
 	local mutator_data = {
@@ -116,11 +112,11 @@ MutatorHandler._activate_mutator = function (self, name, active_mutators, mutato
 	end
 
 	active_mutators[name] = mutator_data
-
-	return 
 end
+
 MutatorHandler._deactivate_mutator = function (self, name, active_mutators, mutator_context)
 	fassert(active_mutators[name], "Trying to deactivate mutator (%s) but it isn't active", name)
+	mutator_dprint("Deactivating mutator '%s'", name)
 
 	local template = MutatorTemplates[name]
 	local mutator_data = active_mutators[name]
@@ -142,8 +138,6 @@ MutatorHandler._deactivate_mutator = function (self, name, active_mutators, muta
 	end
 
 	active_mutators[name] = nil
-
-	return 
 end
 
-return 
+return

@@ -37,42 +37,45 @@ LobbyInternal.distance_filters = {
 	[LobbyDistanceFilter.FAR] = SteamLobbyBrowser.FAR,
 	[LobbyDistanceFilter.WORLD] = SteamLobbyBrowser.WORLD
 }
+
 LobbyInternal.create_lobby = function (network_options)
 	local privacy = network_options.privacy or LobbyPrivacy.PUBLIC
 	local use_eac = true
 
 	return Network.create_steam_lobby(LobbyInternal.privacy_map[privacy], network_options.max_members, use_eac)
 end
+
 LobbyInternal.network_initialized = function ()
 	return not not LobbyInternal.client
 end
+
 LobbyInternal.leave_lobby = Network.leave_steam_lobby
+
 LobbyInternal.join_lobby = function (lobby_data)
 	local use_eac = true
 
 	return Network.join_steam_lobby(lobby_data.id, use_eac)
 end
+
 LobbyInternal.init_client = function (network_options)
 	Network.set_explicit_connections()
 
 	LobbyInternal.client = Network.init_steam_client(network_options.config_file_name)
 
 	GameSettingsDevelopment.set_ignored_rpc_logs()
-
-	return 
 end
+
 LobbyInternal.shutdown_client = function ()
 	Network.shutdown_steam_client(LobbyInternal.client)
 
 	LobbyInternal.client = nil
 
 	GameServerInternal.forget_server_browser()
-
-	return 
 end
+
 LobbyInternal.get_lobby = function (lobby_browser, index)
-	local lobby_data = lobby_browser.lobby(lobby_browser, index)
-	local lobby_data_all = lobby_browser.data_all(lobby_browser, index)
+	local lobby_data = lobby_browser:lobby(index)
+	local lobby_data_all = lobby_browser:data_all(index)
 	lobby_data_all.id = lobby_data.id
 
 	if lobby_data_all.Host then
@@ -82,9 +85,11 @@ LobbyInternal.get_lobby = function (lobby_browser, index)
 
 	return lobby_data_all
 end
+
 LobbyInternal.lobby_browser = function ()
 	return LobbyInternal.client:lobby_browser()
 end
+
 LobbyInternal.get_lobby_data_from_id = function (id)
 	SteamLobby.request_lobby_data(id)
 
@@ -92,18 +97,19 @@ LobbyInternal.get_lobby_data_from_id = function (id)
 
 	return data
 end
+
 LobbyInternal.get_lobby_data_from_id_by_key = function (id, key)
 	local data = SteamMisc.get_lobby_data_by_key(id, key)
 
 	return (data ~= "" and data) or nil
 end
+
 LobbyInternal.clear_filter_requirements = function ()
 	local lobby_browser = LobbyInternal.client:lobby_browser()
 
 	SteamLobbyBrowser.clear_filters(lobby_browser)
-
-	return 
 end
+
 LobbyInternal.add_filter_requirements = function (requirements)
 	local lobby_browser = LobbyInternal.client:lobby_browser()
 
@@ -132,17 +138,18 @@ LobbyInternal.add_filter_requirements = function (requirements)
 		SteamLobbyBrowser.add_near_filter(lobby_browser, key, value)
 		mm_printf("Near Filter: %s, value=%s", tostring(key), tostring(value))
 	end
-
-	return 
 end
+
 LobbyInternal.user_name = function (user)
 	return Steam.user_name(user)
 end
+
 LobbyInternal.lobby_id = function (lobby)
-	return lobby.id(lobby)
+	return lobby:id()
 end
+
 LobbyInternal.is_friend = function (peer_id)
 	return Friends.in_category(peer_id, Friends.FRIEND_FLAG)
 end
 
-return 
+return

@@ -341,11 +341,6 @@ end
 local widgets = {
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window"),
 	window = UIWidgets.create_frame("window", window_size, window_frame, 20),
-	game_option_1 = UIWidgets.create_window_category_button("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_adventure_title"), "options_button_icon_quickplay", "menu_options_button_image_02"),
-	game_option_2 = UIWidgets.create_window_category_button("game_option_2", scenegraph_definition.game_option_2.size, Localize("start_game_window_specific_title"), "options_button_icon_custom", "menu_options_button_image_04"),
-	game_option_3 = UIWidgets.create_window_category_button("game_option_3", scenegraph_definition.game_option_3.size, Localize("start_game_window_mutator_title"), "options_button_icon_deed", "menu_options_button_image_05"),
-	game_option_4 = UIWidgets.create_window_category_button("game_option_4", scenegraph_definition.game_option_4.size, Localize("start_game_window_twitch"), "options_button_icon_twitch"),
-	game_option_5 = UIWidgets.create_default_image_button("game_option_5", scenegraph_definition.game_option_5.size, nil, nil, Localize("start_game_window_lobby_browser"), 28, "lobby_browser_icon"),
 	game_options_left_chain = UIWidgets.create_tiled_texture("game_options_left_chain", "chain_link_01", {
 		16,
 		19
@@ -357,6 +352,17 @@ local widgets = {
 	game_options_right_chain_end = UIWidgets.create_simple_texture("chain_link_02", "game_options_right_chain_end"),
 	game_options_left_chain_end = UIWidgets.create_simple_texture("chain_link_02", "game_options_left_chain_end")
 }
+local game_option_widgets = {
+	game_option_1 = UIWidgets.create_window_category_button("game_option_1", scenegraph_definition.game_option_1.size, Localize("start_game_window_adventure_title"), "options_button_icon_quickplay", "menu_options_button_image_02"),
+	game_option_2 = UIWidgets.create_window_category_button("game_option_2", scenegraph_definition.game_option_2.size, Localize("start_game_window_specific_title"), "options_button_icon_custom", "menu_options_button_image_04"),
+	game_option_3 = UIWidgets.create_window_category_button("game_option_3", scenegraph_definition.game_option_3.size, Localize("start_game_window_mutator_title"), "options_button_icon_deed", "menu_options_button_image_05"),
+	game_option_4 = UIWidgets.create_window_category_button("game_option_4", scenegraph_definition.game_option_4.size, Localize("start_game_window_twitch"), "options_button_icon_twitch")
+}
+
+if PLATFORM ~= "xb1" then
+	game_option_widgets.game_option_5 = UIWidgets.create_default_image_button("game_option_5", scenegraph_definition.game_option_5.size, nil, nil, Localize("start_game_window_lobby_browser"), 28, "lobby_browser_icon")
+end
+
 local animation_definitions = {
 	on_enter = {
 		{
@@ -365,17 +371,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -386,17 +388,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}
@@ -404,6 +402,7 @@ local animation_definitions = {
 
 return {
 	widgets = widgets,
+	game_option_widgets = game_option_widgets,
 	node_widgets = node_widgets,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions

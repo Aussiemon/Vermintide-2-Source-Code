@@ -153,7 +153,7 @@ local function create_entry(index)
 					texture_id = "texture_divider",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return 0 < style.texture_amount
+						return style.texture_amount > 0
 					end
 				},
 				{
@@ -180,7 +180,7 @@ local function create_entry(index)
 					text_id = "task_text_1",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return 0 < content.task_amount and not content.texture_task_icon_1
+						return content.task_amount > 0 and not content.texture_task_icon_1
 					end
 				},
 				{
@@ -189,7 +189,7 @@ local function create_entry(index)
 					text_id = "task_value_1",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return 0 < content.task_amount
+						return content.task_amount > 0
 					end
 				},
 				{
@@ -198,7 +198,7 @@ local function create_entry(index)
 					texture_id = "texture_task_icon_1",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return content.texture_task_icon_1 and 0 < content.task_amount
+						return content.texture_task_icon_1 and content.task_amount > 0
 					end
 				},
 				{
@@ -207,7 +207,7 @@ local function create_entry(index)
 					texture_id = "texture_task_marker_1",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return content.task_completed_1 and 0 < content.task_amount
+						return content.task_completed_1 and content.task_amount > 0
 					end
 				},
 				{
@@ -216,7 +216,7 @@ local function create_entry(index)
 					texture_id = "texture_task_glow",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return 0 < content.task_amount
+						return content.task_amount > 0
 					end
 				},
 				{
@@ -227,7 +227,7 @@ local function create_entry(index)
 					content_check_function = function (content, style)
 						local task_amount = content.task_amount
 
-						return 1 < task_amount and not content.texture_task_icon_2
+						return task_amount > 1 and not content.texture_task_icon_2
 					end
 				},
 				{
@@ -238,7 +238,7 @@ local function create_entry(index)
 					content_check_function = function (content, style)
 						local task_amount = content.task_amount
 
-						return 1 < task_amount
+						return task_amount > 1
 					end
 				},
 				{
@@ -247,7 +247,7 @@ local function create_entry(index)
 					texture_id = "texture_task_icon_2",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return content.texture_task_icon_2 and 1 < content.task_amount
+						return content.texture_task_icon_2 and content.task_amount > 1
 					end
 				},
 				{
@@ -258,7 +258,7 @@ local function create_entry(index)
 					content_check_function = function (content, style)
 						local task_amount = content.task_amount
 
-						return content.task_completed_2 and 1 < task_amount
+						return content.task_completed_2 and task_amount > 1
 					end
 				},
 				{
@@ -267,7 +267,7 @@ local function create_entry(index)
 					texture_id = "texture_task_glow",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return 1 < content.task_amount
+						return content.task_amount > 1
 					end
 				},
 				{
@@ -278,7 +278,7 @@ local function create_entry(index)
 					content_check_function = function (content, style)
 						local task_amount = content.task_amount
 
-						return 2 < task_amount and not content.texture_task_icon_3
+						return task_amount > 2 and not content.texture_task_icon_3
 					end
 				},
 				{
@@ -289,7 +289,7 @@ local function create_entry(index)
 					content_check_function = function (content, style)
 						local task_amount = content.task_amount
 
-						return 2 < task_amount
+						return task_amount > 2
 					end
 				},
 				{
@@ -298,7 +298,7 @@ local function create_entry(index)
 					texture_id = "texture_task_icon_3",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return content.texture_task_icon_3 and 2 < content.task_amount
+						return content.texture_task_icon_3 and content.task_amount > 2
 					end
 				},
 				{
@@ -309,7 +309,7 @@ local function create_entry(index)
 					content_check_function = function (content, style)
 						local task_amount = content.task_amount
 
-						return content.task_completed_3 and 2 < task_amount
+						return content.task_completed_3 and task_amount > 2
 					end
 				},
 				{
@@ -318,7 +318,7 @@ local function create_entry(index)
 					texture_id = "texture_task_glow",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return 2 < content.task_amount
+						return content.task_amount > 2
 					end
 				}
 			}
@@ -838,14 +838,12 @@ local animation_definitions = {
 				local scenegraph_id = "entry_" .. widget_index
 				local position = ui_scenegraph[scenegraph_id].local_position
 				position[2] = scenegraph_definition[scenegraph_id].position[2]
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return 
+				return
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -854,8 +852,6 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				WwiseWorld.trigger_event(params.wwise_world, "Play_hud_quest_menu_select_quest")
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local alpha = math.easeCubic(progress) * 255
@@ -880,11 +876,9 @@ local animation_definitions = {
 				widget_style.task_value_1.text_color[1] = text_alpha
 				widget_style.task_value_2.text_color[1] = text_alpha
 				widget_style.task_value_3.text_color[1] = text_alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -907,8 +901,6 @@ local animation_definitions = {
 				params.start_heights = start_heights
 
 				WwiseWorld.trigger_event(params.wwise_world, "Play_hud_shift")
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local widget_index = params.widget_index
@@ -923,11 +915,9 @@ local animation_definitions = {
 					local distance_per_entry = 260
 					position[2] = start_height - distance_per_entry * math.easeOutCubic(progress)
 				end
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -937,7 +927,7 @@ local animation_definitions = {
 			start_progress = 0,
 			end_progress = 0.15,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local alpha = math.easeOutCubic(progress) * 255
@@ -947,11 +937,9 @@ local animation_definitions = {
 				local widget_style = widget.style
 				local texture_task_glow_style = widget_style["texture_task_glow_" .. task_index]
 				texture_task_glow_style.color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -959,7 +947,7 @@ local animation_definitions = {
 			start_progress = 0.1,
 			end_progress = 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local widget_index = params.widget_index
@@ -973,11 +961,9 @@ local animation_definitions = {
 					local name = "task_value_" .. task_index
 					widget_style[name].font_size = 32 * math.catmullrom(progress, -0.5, 1, 1, -0.5)
 				end
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -985,7 +971,7 @@ local animation_definitions = {
 			start_progress = 0.2,
 			end_progress = 0.4,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local widget_index = params.widget_index
@@ -1008,11 +994,9 @@ local animation_definitions = {
 						params.task_completed = true
 					end
 				end
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -1023,8 +1007,6 @@ local animation_definitions = {
 				if params.task_completed then
 					WwiseWorld.trigger_event(params.wwise_world, "Play_hud_quest_menu_finish_quest_end_screen")
 				end
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				if params.task_completed then
@@ -1040,11 +1022,9 @@ local animation_definitions = {
 					marker_color[1] = 255
 					marker_style.gradient_threshold = anim_progress
 				end
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -1052,7 +1032,7 @@ local animation_definitions = {
 			start_progress = 0.6,
 			end_progress = 0.75,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local alpha = 255 - math.easeOutCubic(progress) * 255
@@ -1062,11 +1042,9 @@ local animation_definitions = {
 				local widget_style = widget.style
 				local texture_task_glow_style = widget_style["texture_task_glow_" .. task_index]
 				texture_task_glow_style.color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -1077,8 +1055,6 @@ local animation_definitions = {
 			end_progress = 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				WwiseWorld.trigger_event(params.wwise_world, "Play_hud_quest_menu_finish_quest_end_screen_progress")
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local widget_index = params.widget_index
@@ -1100,11 +1076,9 @@ local animation_definitions = {
 				bar_progress = math.floor(bar_progress * 100, 0)
 				local text = Localize("dlc1_3_1_contract_presentation_progress_prefix")
 				widget_content.bar_text = text .. ": " .. tostring(bar_progress) .. "%"
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -1113,8 +1087,6 @@ local animation_definitions = {
 			end_progress = 0.7,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				WwiseWorld.trigger_event(params.wwise_world, "Play_hud_quest_menu_finish_quest_end_screen_completed")
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				if params.play_completed then
@@ -1139,11 +1111,9 @@ local animation_definitions = {
 					offset[1] = default_offset_x - (size[1] - default_width) * 0.5
 					offset[2] = default_offset_y - (size[2] - default_height) * 0.5
 				end
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -1151,13 +1121,13 @@ local animation_definitions = {
 			start_progress = 0.7,
 			end_progress = 0.8,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return 
+				return
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -1167,7 +1137,7 @@ local animation_definitions = {
 			start_progress = 0,
 			end_progress = 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local alpha = math.easeOutCubic(progress) * 50
@@ -1177,11 +1147,9 @@ local animation_definitions = {
 				local widget_style = widget.style
 				local overlay_style = widget_style.overlay
 				overlay_style.color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -1191,7 +1159,7 @@ local animation_definitions = {
 			start_progress = 0,
 			end_progress = 0.6,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local alpha = 255 - math.easeCubic(progress) * 255
@@ -1230,11 +1198,9 @@ local animation_definitions = {
 					widget_style.task_value_2.text_color[1] = text_alpha
 					widget_style.task_value_3.text_color[1] = text_alpha
 				end
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

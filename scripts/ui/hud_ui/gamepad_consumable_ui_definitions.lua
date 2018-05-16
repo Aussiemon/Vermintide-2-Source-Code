@@ -258,7 +258,7 @@ local animations = {
 			start_progress = 0,
 			end_progress = 1,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
@@ -266,11 +266,9 @@ local animations = {
 				local highlight_color = widget.style.texture_highlight.color
 				local alpha = 255 * anim_fraction
 				highlight_color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

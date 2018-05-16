@@ -49,12 +49,15 @@ end
 Development.parameter = function (param)
 	return hardcoded_dev_params[param]
 end
+
 Development.clear_param_cache = function (param)
-	return 
+	return
 end
+
 Development.set_parameter = function (param, value)
-	return 
+	return
 end
+
 Development.init_parameters = function ()
 	for param, value in pairs(hardcoded_dev_params) do
 		script_data[param] = value
@@ -63,8 +66,8 @@ Development.init_parameters = function ()
 	new_params = {}
 
 	for param, value in pairs(hardcoded_dev_params) do
-		if param.find(param, "_") then
-			new_param = param.gsub(param, "_", "-")
+		if param:find("_") then
+			new_param = param:gsub("_", "-")
 			new_params[new_param] = value
 		end
 	end
@@ -72,8 +75,6 @@ Development.init_parameters = function ()
 	for param, value in pairs(new_params) do
 		hardcoded_dev_params[param] = value
 	end
-
-	return 
 end
 
-return 
+return

@@ -1,17 +1,17 @@
 XboxEventManager = class(XboxEventManager)
 local TIME_BETWEEN_EVENTS = 2
+
 XboxEventManager.init = function (self)
 	self._events_to_write_queue = {}
 	self._priority_events_queue = {}
 	self._immediate_queue = {}
 	self._timer = TIME_BETWEEN_EVENTS
-
-	return 
 end
+
 XboxEventManager.write = function (self, event, event_data, debug_string, debug_print_func, prioritize, skip_wait_time)
 	Application.warning("[XboxEventManager:write] No Stats are implemented yet")
 
-	return 
+	return
 
 	Application.error(string.format("Adding%sEvent: %s", (prioritize and " prioritized ") or " ", event))
 
@@ -37,28 +37,26 @@ XboxEventManager.write = function (self, event, event_data, debug_string, debug_
 			debug_print_func = debug_print_func
 		}
 	end
-
-	return 
 end
+
 XboxEventManager.update = function (self, dt)
 	local priority_event = self._priority_events_queue[1]
 
-	if not priority_event and 0 < self._timer then
-		self._handle_immediate_event(self)
+	if not priority_event and self._timer > 0 then
+		self:_handle_immediate_event()
 	elseif self._timer <= 0 then
 		if priority_event then
-			self._handle_priority_event(self, priority_event)
+			self:_handle_priority_event(priority_event)
 		else
-			self._handle_event(self)
+			self:_handle_event()
 		end
 
 		self._timer = TIME_BETWEEN_EVENTS
 	end
 
 	self._timer = self._timer - dt
-
-	return 
 end
+
 XboxEventManager._handle_priority_event = function (self, priority_event)
 	Application.error(string.format("Writing Prioritized Event: %s", priority_event.event))
 	Events.write(priority_event.event, priority_event.event_data)
@@ -70,9 +68,8 @@ XboxEventManager._handle_priority_event = function (self, priority_event)
 	end
 
 	table.remove(self._priority_events_queue, 1)
-
-	return 
 end
+
 XboxEventManager._handle_event = function (self)
 	local current_event = self._events_to_write_queue[1]
 
@@ -88,9 +85,8 @@ XboxEventManager._handle_event = function (self)
 
 		table.remove(self._events_to_write_queue, 1)
 	end
-
-	return 
 end
+
 XboxEventManager._handle_immediate_event = function (self)
 	local immediate_event = self._immediate_queue[1]
 
@@ -106,13 +102,12 @@ XboxEventManager._handle_immediate_event = function (self)
 
 		table.remove(self._immediate_queue, 1)
 	end
-
-	return 
 end
+
 XboxEventManager.flush = function (self)
 	Application.warning("[XboxEventManager:flush] No Stats are implemented yet")
 
-	return 
+	return
 
 	for _, current_priority_event in pairs(self._priority_events_queue) do
 		Application.error(string.format("Writing Event: %s", current_priority_event.event))
@@ -150,11 +145,10 @@ XboxEventManager.flush = function (self)
 	table.clear(self._events_to_write_queue)
 	table.clear(self._priority_events_queue)
 	table.clear(self._immediate_queue)
-
-	return 
 end
+
 XboxEventManager.destroy = function (self)
-	return 
+	return
 end
 
-return 
+return

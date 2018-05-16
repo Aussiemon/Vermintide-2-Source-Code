@@ -1364,6 +1364,5 @@ local action_data = {
 	}
 }
 BreedActions.skaven_clan_rat = table.create_copy(BreedActions.skaven_clan_rat, action_data)
-BreedActions.skaven_clan_rat = table.create_copy(BreedActions.skaven_clan_rat, action_data)
 
-return 
+return

@@ -5,16 +5,14 @@ local IPlayFabHttps = {
 		if httpInterface then
 			IPlayFabHttps._internalHttp = httpInterface
 
-			return 
+			return
 		end
 
 		if IPlayFabHttps._defaultHttpsFile then
 			IPlayFabHttps._internalHttp = require(IPlayFabHttps._defaultHttpsFile)
 
-			return 
+			return
 		end
-
-		return 
 	end,
 	MakePlayFabApiCall = function (urlPath, request, authKey, authValue, onSuccess, onError)
 		if IPlayFabHttps._internalHttp == nil then
@@ -26,8 +24,6 @@ local IPlayFabHttps = {
 		end
 
 		IPlayFabHttps._internalHttp.MakePlayFabApiCall(urlPath, request, authKey, authValue, onSuccess, onError)
-
-		return 
 	end
 }
 

@@ -1,6 +1,7 @@
 local definitions = local_require("scripts/ui/views/character_inspect_ui_definitions")
 local create_loot_widget = definitions.create_loot_widget
 CharacterInspectUI = class(CharacterInspectUI)
+
 CharacterInspectUI.init = function (self, ingame_ui_context)
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -10,12 +11,12 @@ CharacterInspectUI.init = function (self, ingame_ui_context)
 	self.wwise_world = Managers.world:wwise_world(world)
 	self._animations = {}
 
-	self.create_ui_elements(self)
+	self:create_ui_elements()
 	rawset(_G, "character_inspect_ui", self)
-
-	return 
 end
+
 local DO_RELOAD = true
+
 CharacterInspectUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	local widgets = {}
@@ -34,25 +35,22 @@ CharacterInspectUI.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	DO_RELOAD = false
-
-	return 
 end
+
 CharacterInspectUI.destroy = function (self)
 	rawset(_G, "character_inspect_ui", nil)
 	GarbageLeakDetector.register_object(self, "character_inspect_ui")
-
-	return 
 end
+
 CharacterInspectUI.update = function (self, dt)
 	if DO_RELOAD then
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 	end
 
-	self._update_animations(self, dt)
-	self.draw(self, dt)
-
-	return 
+	self:_update_animations(dt)
+	self:draw(dt)
 end
+
 CharacterInspectUI._update_animations = function (self, dt)
 	local animations = self._animations
 
@@ -63,9 +61,8 @@ CharacterInspectUI._update_animations = function (self, dt)
 			animations[anmation_name] = nil
 		end
 	end
-
-	return 
 end
+
 CharacterInspectUI.draw = function (self, dt)
 	local ui_top_renderer = self.ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -79,15 +76,12 @@ CharacterInspectUI.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
-
-	return 
 end
+
 CharacterInspectUI.set_position = function (self, x, y)
 	local position = self.ui_scenegraph.background.local_position
 	position[1] = x
 	position[2] = y
-
-	return 
 end
 
-return 
+return

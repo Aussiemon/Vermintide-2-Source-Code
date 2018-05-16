@@ -1,5 +1,6 @@
 ChaosTrollHuskHealthExtension = class(ChaosTrollHuskHealthExtension, GenericHealthExtension)
 local set_material_property = AiUtils.set_material_property
+
 ChaosTrollHuskHealthExtension.init = function (self, extension_init_context, unit, ...)
 	ChaosTrollHuskHealthExtension.super.init(self, extension_init_context, unit, ...)
 
@@ -16,15 +17,15 @@ ChaosTrollHuskHealthExtension.init = function (self, extension_init_context, uni
 	self.downed_pulse_intensity = breed.downed_pulse_intensity
 	self.action = action
 	self.original_health = self.health
-
-	return 
 end
+
 ChaosTrollHuskHealthExtension.current_max_health_percent = function (self)
 	return self.health / self.original_health
 end
+
 ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
 	if self.state == "dead" then
-		return 
+		return
 	end
 
 	if self.state == "down" then
@@ -44,12 +45,11 @@ ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
 			self.pulse_time = 0
 		end
 	end
-
-	return 
 end
+
 ChaosTrollHuskHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot)
 	local unit = self.unit
-	local damage_table = self._add_to_damage_history_buffer(self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
+	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike)
 
 	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	fassert(damage_type, "No damage_type!")
@@ -60,21 +60,19 @@ ChaosTrollHuskHealthExtension.add_damage = function (self, attacker_unit, damage
 	if ScriptUnit.has_extension(attacker_unit, "hud_system") then
 		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
 	end
-
-	return 
 end
+
 ChaosTrollHuskHealthExtension.add_heal = function (self, healer_unit, heal_amount, heal_source_name, heal_type)
 	local unit = self.unit
 
-	self._add_to_damage_history_buffer(self, unit, healer_unit, -heal_amount, nil, "heal", nil, heal_source_name, nil, nil, nil, nil)
-
-	return 
+	self:_add_to_damage_history_buffer(unit, healer_unit, -heal_amount, nil, "heal", nil, heal_source_name, nil, nil, nil, nil)
 end
+
 ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_max_health, state)
 	if set_max_health then
-		self.set_max_health(self, damage)
+		self:set_max_health(damage)
 
-		return 
+		return
 	end
 
 	self.damage = damage
@@ -102,8 +100,6 @@ ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_ma
 
 		set_material_property(self.unit, "damage_value", "mtr_skin", percent_damage, true)
 	end
-
-	return 
 end
 
-return 
+return

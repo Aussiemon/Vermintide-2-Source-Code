@@ -4,10 +4,9 @@ local player_positions = PLAYER_POSITIONS
 local player_units = PLAYER_UNITS
 local players_and_bot_units = PLAYER_AND_BOT_UNITS
 local utility_comparison = false
+
 ConflictDirectorTests.start_utility_comparison = function ()
 	utility_comparison = true
-
-	return 
 end
 
 local function compare_utility()
@@ -26,8 +25,6 @@ local function compare_utility()
 	for ii = 1, 1000, 1 do
 		utility = f2(consideration.spline, norm_value)
 	end
-
-	return 
 end
 
 local function test_pointx(nodes, p)
@@ -58,11 +55,12 @@ end
 
 local test_points = false
 local last_data = false
+
 ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 	local main_paths = self.main_path_info.main_paths
 
 	if not main_paths then
-		return 
+		return
 	end
 
 	local num_points = 100
@@ -138,8 +136,6 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 	QuickDrawer:line(nodes[1]:unbox(), nodes[2]:unbox(), Color(100, 255, 0))
 
 	local lol = math.random()
-
-	return 
 end
 
 function test_spawn_pos_ahead_half_sphere(self)
@@ -163,15 +159,13 @@ function test_spawn_pos_ahead_half_sphere(self)
 			end
 		end
 	end
-
-	return 
 end
 
 function test_umbra_los(self)
 	local world = self._world
 
 	if not World.umbra_available(world) then
-		return 
+		return
 	end
 
 	local main_path_info = self.main_path_info
@@ -190,8 +184,6 @@ function test_umbra_los(self)
 			QuickDrawer:line(player_pos + h, behind_pos + h, Color(255, 0, 0))
 		end
 	end
-
-	return 
 end
 
 function debug_bot_transitions(self, t)
@@ -199,8 +191,6 @@ function debug_bot_transitions(self, t)
 	local gui = ai_system.ai_debugger and ai_system.ai_debugger.screen_gui
 
 	AiUtils.debug_bot_transitions(gui, t, 0, 0)
-
-	return 
 end
 
 function test_player_path_pos_and_50m_ahead(self)
@@ -218,8 +208,6 @@ function test_player_path_pos_and_50m_ahead(self)
 	if end_pos then
 		QuickDrawer:sphere(end_pos, 2.5, Color(255, 120, 0, 0))
 	end
-
-	return 
 end
 
 function test_angled_trajectory(self)
@@ -234,8 +222,6 @@ function test_angled_trajectory(self)
 	QuickDrawer:sphere(p1, 1)
 	QuickDrawer:sphere(p2, 1)
 	Debug.text("Trajectory Success: " .. tostring(success))
-
-	return 
 end
 
 function setup_reachable_coverpoints_test(self)
@@ -252,8 +238,6 @@ function setup_reachable_coverpoints_test(self)
 	})
 
 	print("Points to test:", num_found)
-
-	return 
 end
 
 function process_reachable_coverpoints_test(self)
@@ -266,8 +250,6 @@ function process_reachable_coverpoints_test(self)
 			print("astar connect complete")
 		end
 	end
-
-	return 
 end
 
 function setup_reachable_navgraph_test(self)
@@ -287,8 +269,6 @@ function setup_reachable_navgraph_test(self)
 	})
 
 	print("Points to test:", #point_list)
-
-	return 
 end
 
 function process_reachable_navgraph_test(self)
@@ -301,12 +281,10 @@ function process_reachable_navgraph_test(self)
 			print("astar connect complete")
 		end
 	end
-
-	return 
 end
 
 ConflictDirectorTests.update = function (conflict_director, t, dt)
-	return 
+	return
 end
 
-return 
+return

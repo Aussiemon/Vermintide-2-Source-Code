@@ -5,6 +5,7 @@ require("scripts/ui/atlas_settings/gui_menu_buttons_atlas")
 require("scripts/ui/atlas_settings/gui_popup_atlas")
 require("scripts/ui/atlas_settings/gui_splash_atlas")
 require("scripts/ui/atlas_settings/gui_items_atlas")
+require("scripts/ui/atlas_settings/gui_achievement_icons_atlas")
 require("scripts/ui/atlas_settings/gui_icons_atlas")
 require("scripts/ui/atlas_settings/gui_chat_atlas")
 require("scripts/ui/atlas_settings/gui_voice_chat_atlas")
@@ -50,7 +51,7 @@ local none_atlas_textures = {
 	vermintide_2_logo_tutorial = true,
 	unit_frame_portrait_sienna_scholar_masked = true,
 	charge_bar_flames = true,
-	charge_bar_flames_mask = true,
+	achievement_book_glow_02 = true,
 	controller_image_ps4 = true,
 	loading_screen_default = true,
 	vote_a = true,
@@ -94,7 +95,7 @@ local none_atlas_textures = {
 	unit_frame_portrait_victor_captain_twitch = true,
 	end_screen_effect_defeat_2 = true,
 	twitch_icon_damage = true,
-	end_screen_banner_victory = true,
+	loading_title_divider = true,
 	fuzzy_circle = true,
 	end_screen_effect_victory_1 = true,
 	unit_frame_portrait_kerillian_shade_twitch_icon = true,
@@ -161,7 +162,7 @@ local none_atlas_textures = {
 	end_screen_effect_victory_2 = true,
 	gamma_settings_image_01 = true,
 	journal_gradient_02 = true,
-	unit_frame_portrait_kruber_huntsman_masked = true,
+	achievement_book_ribbon_01 = true,
 	fatigue_icon_glow = true,
 	mission_objective_top = true,
 	unit_frame_portrait_victor_bountyhunter_twitch = true,
@@ -190,13 +191,20 @@ local none_atlas_textures = {
 	teammate_hp_bar_color_tint_3 = true,
 	game_mode_selection_glow_02 = true,
 	crafting_button_fill = true,
+	unit_frame_portrait_kruber_huntsman_masked = true,
 	twitch_special_group_2 = true,
 	options_menu_divider_glow_02 = true,
 	mask_circular = true,
+	achievement_book_ribbon_02 = true,
 	unit_frame_portrait_kruber_huntsman = true,
+	achievement_book_glow_01 = true,
 	twitch_icon_heal = true,
 	chest_reward_bar_progress = true,
+	charge_bar_flames_mask = true,
+	achievement_book_glow_03 = true,
+	achievement_book_glow_04 = true,
 	journal_gradient_03 = true,
+	end_screen_banner_victory = true,
 	twitch_small_logo = true,
 	end_screen_effect_defeat_1 = true,
 	hud_panel_banner = true,
@@ -246,6 +254,7 @@ local none_atlas_textures = {
 	player_hp_bar_color_tint = true
 }
 local ui_atlas_setting_tables = {
+	gui_achievement_icons_atlas = achievement_icons_atlas,
 	gui_startup_settings_atlas = startup_settings_atlas,
 	gui_items_atlas = items_atlas,
 	gui_icons_atlas = icons_atlas,
@@ -265,24 +274,29 @@ local ui_atlas_setting_tables = {
 	gui_level_images_atlas = level_images_atlas
 }
 local masked_materials = {
-	gui_menus_atlas = "gui_menus_atlas_masked",
+	gui_menu_buttons_atlas = "gui_menu_buttons_atlas_masked",
 	gui_settings_atlas = "gui_settings_atlas_masked",
-	gui_frames_atlas = "gui_frames_atlas_masked",
+	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_masked",
 	gui_hud_atlas = "gui_hud_atlas_masked",
 	gui_start_screen_atlas = "gui_start_screen_atlas_masked",
+	gui_frames_atlas = "gui_frames_atlas_masked",
+	gui_map_locations_atlas = "gui_map_locations_atlas_masked",
+	gui_menus_atlas = "gui_menus_atlas_masked",
 	gui_icons_atlas = "gui_icons_atlas_masked",
-	gui_items_atlas = "gui_items_atlas_masked",
-	gui_map_locations_atlas = "gui_map_locations_atlas_masked"
+	gui_items_atlas = "gui_items_atlas_masked"
 }
 local saturated_materials = {
 	gui_menus_atlas = "gui_menus_atlas_saturated",
 	gui_level_images_atlas = "gui_level_images_atlas_saturated",
+	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_saturated",
 	gui_icons_atlas = "gui_icons_atlas_saturated",
 	gui_items_atlas = "gui_items_atlas_saturated",
 	gui_menu_buttons_atlas = "gui_menu_buttons_atlas_saturated"
 }
 local masked_saturated_materials = {
-	gui_icons_atlas = "gui_icons_atlas_masked_saturated"
+	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_masked_saturated",
+	gui_icons_atlas = "gui_icons_atlas_masked_saturated",
+	gui_items_atlas = "gui_items_atlas_masked_saturated"
 }
 
 if platform ~= "win32" then
@@ -290,14 +304,15 @@ if platform ~= "win32" then
 end
 
 local masked_point_sample_materials = {
-	gui_menus_atlas = "gui_menus_atlas_point_sample_masked",
+	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_point_sample_masked",
 	gui_settings_atlas = "gui_settings_atlas_point_sample_masked",
-	gui_frames_atlas = "gui_frames_atlas_point_sample_masked",
 	gui_hud_atlas = "gui_hud_atlas_point_sample_masked",
 	gui_start_screen_atlas = "gui_start_screen_atlas_point_sample_masked",
+	gui_frames_atlas = "gui_frames_atlas_point_sample_masked",
+	gui_map_locations_atlas = "gui_map_locations_atlas_point_sample_masked",
+	gui_menus_atlas = "gui_menus_atlas_point_sample_masked",
 	gui_icons_atlas = "gui_icons_atlas_point_sample_masked",
-	gui_items_atlas = "gui_items_atlas_point_sample_masked",
-	gui_map_locations_atlas = "gui_map_locations_atlas_point_sample_masked"
+	gui_items_atlas = "gui_items_atlas_point_sample_masked"
 }
 local masked_saturated_point_sample_materials = {
 	gui_icons_atlas = "gui_icons_atlas_point_sample_masked_saturated"
@@ -309,14 +324,15 @@ local point_sample_materials = {
 	overchargecircle_fill = "overchargecircle_fill_point_sample",
 	gui_start_screen_atlas = "gui_start_screen_atlas_point_sample",
 	gui_map_locations_atlas = "gui_map_locations_atlas_point_sample",
-	gui_menus_atlas = "gui_menus_atlas_point_sample",
+	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_point_sample",
 	gui_game_logos_atlas = "gui_game_logos_atlas_point_sample",
+	gui_menus_atlas = "gui_menus_atlas_point_sample",
 	gui_level_images_atlas = "gui_level_images_atlas_point_sample",
-	loading_screen_default = "loading_screen_default_point_sample",
 	overchargecircle_sidefade = "overchargecircle_fill_point_sample",
 	loading_screen = "loading_screen_point_sample",
-	end_screen_banner_victory = "end_screen_banner_victory_point_sample",
+	loading_screen_default = "loading_screen_default_point_sample",
 	gui_icons_atlas = "gui_icons_atlas_point_sample",
+	end_screen_banner_victory = "end_screen_banner_victory_point_sample",
 	end_screen_effect_victory_1 = "end_screen_effect_victory_1_point_sample",
 	end_screen_effect_victory_2 = "end_screen_effect_victory_2_point_sample",
 	end_screen_banner_defeat = "end_screen_banner_defeat_point_sample",
@@ -393,19 +409,21 @@ end
 UIAtlasHelper.has_atlas_settings_by_texture_name = function (texture_name)
 	return (ui_atlas_settings[texture_name] and true) or false
 end
+
 UIAtlasHelper.get_atlas_settings_by_texture_name = function (texture_name)
 	assert(texture_name, "[UIAtlasHelper] - Trying to access atlas settings for a texture without a name")
 
 	if none_atlas_textures[texture_name] then
-		return 
+		return
 	end
 
 	local texture_settings = ui_atlas_settings[texture_name]
 
-	assert(texture_settings, "[UIAtlasHelper] - Atlas texture settings for (%s) does not exist.", texture_name)
+	fassert(texture_settings, "[UIAtlasHelper] - Atlas texture settings for (%s) does not exist.", texture_name)
 
 	return texture_settings
 end
+
 UIAtlasHelper.has_texture_by_name = function (texture_name)
 	if none_atlas_textures[texture_name] or ui_atlas_settings[texture_name] then
 		return true
@@ -414,4 +432,4 @@ UIAtlasHelper.has_texture_by_name = function (texture_name)
 	return false
 end
 
-return 
+return

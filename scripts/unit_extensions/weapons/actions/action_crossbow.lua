@@ -1,4 +1,5 @@
 ActionCrossbow = class(ActionCrossbow)
+
 ActionCrossbow.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.owner_unit = owner_unit
 	self.weapon_unit = weapon_unit
@@ -13,9 +14,8 @@ ActionCrossbow.init = function (self, world, item_name, is_server, owner_unit, d
 
 	self.spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
 	self._is_critical_strike = false
-
-	return 
 end
+
 ActionCrossbow.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
 	local weapon_unit = self.weapon_unit
 	local owner_unit = self.owner_unit
@@ -50,9 +50,8 @@ ActionCrossbow.client_owner_start_action = function (self, new_action, t, chain_
 	end
 
 	self._is_critical_strike = is_critical_strike
-
-	return 
 end
+
 ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_damage)
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
 		self.state = "shooting"
@@ -69,7 +68,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 		end
 
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-		local rotation = first_person_extension.current_rotation(first_person_extension)
+		local rotation = first_person_extension:current_rotation()
 		local spread_extension = self.spread_extension
 		local current_action = self.current_action
 
@@ -82,22 +81,22 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 				if spread_extension then
 					if current_action.burst and not current_action.no_burst_spread then
 						if spread_extension then
-							fire_rotation = spread_extension.get_randomised_spread(spread_extension, rotation)
+							fire_rotation = spread_extension:get_randomised_spread(rotation)
 						end
-					elseif 1 < self.num_projectiles_shot and not current_action.burst then
+					elseif self.num_projectiles_shot > 1 and not current_action.burst then
 						local spread_horizontal_angle = math.pi * (self.num_projectiles_shot % 2 + 0.5)
 						local shot_count_offset = (self.num_projectiles_shot == 1 and 0) or math.round((self.num_projectiles_shot - 1) / 2, 0)
 						local angle_offset = self.multi_projectile_spread * shot_count_offset
-						fire_rotation = spread_extension.combine_spread_rotations(spread_extension, spread_horizontal_angle, angle_offset, fire_rotation)
+						fire_rotation = spread_extension:combine_spread_rotations(spread_horizontal_angle, angle_offset, fire_rotation)
 					end
 
 					if add_spread then
-						spread_extension.set_shooting(spread_extension)
+						spread_extension:set_shooting()
 					end
 				end
 
-				local angle = DamageUtils.pitch_from_rotation(fire_rotation)
-				local position = first_person_extension.current_position(first_person_extension)
+				local angle = ActionUtils.pitch_from_rotation(fire_rotation)
+				local position = first_person_extension:current_position()
 				local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(fire_rotation)))
 				local projectile_info = current_action.projectile_info
 				local lookup_data = current_action.lookup_data
@@ -110,13 +109,13 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 				if fire_sound_event then
 					local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-					first_person_extension.play_hud_sound_event(first_person_extension, fire_sound_event)
+					first_person_extension:play_hud_sound_event(fire_sound_event)
 				end
 
 				if unit_fire_sound_event then
 					local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-					first_person_extension.play_sound_event(first_person_extension, unit_fire_sound_event)
+					first_person_extension:play_sound_event(unit_fire_sound_event)
 				end
 
 				if self.ammo_extension and not self.extra_buff_shot then
@@ -133,17 +132,17 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 			end
 		else
 			if spread_extension then
-				rotation = spread_extension.get_randomised_spread(spread_extension, rotation)
+				rotation = spread_extension:get_randomised_spread(rotation)
 
 				if add_spread then
-					spread_extension.set_shooting(spread_extension)
+					spread_extension:set_shooting()
 				end
 			end
 
-			local angle = DamageUtils.pitch_from_rotation(rotation)
+			local angle = ActionUtils.pitch_from_rotation(rotation)
 			local current_action = self.current_action
 			local speed = current_action.speed
-			local position = first_person_extension.current_position(first_person_extension)
+			local position = first_person_extension:current_position()
 			local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 			local projectile_info = current_action.projectile_info
 			local lookup_data = current_action.lookup_data
@@ -155,7 +154,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 			if fire_sound_event then
 				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-				first_person_extension.play_hud_sound_event(first_person_extension, fire_sound_event)
+				first_person_extension:play_hud_sound_event(fire_sound_event)
 			end
 
 			if self.ammo_extension and not self.extra_buff_shot then
@@ -166,17 +165,17 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 		end
 
 		local buff_extension = self.owner_buff_extension
-		local _, procced = buff_extension.apply_buffs_to_value(buff_extension, 0, StatBuffIndex.EXTRA_SHOT)
+		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
 
 		if current_action.apply_burst_recoil then
 			local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 			if self.num_projectiles_shot == 2 then
-				first_person_extension.apply_recoil(first_person_extension)
-				first_person_extension.play_camera_recoil(first_person_extension, current_action.first_recoil_settings, t)
+				first_person_extension:apply_recoil()
+				first_person_extension:play_camera_recoil(current_action.first_recoil_settings, t)
 			else
-				first_person_extension.apply_recoil(first_person_extension)
-				first_person_extension.play_camera_recoil(first_person_extension, current_action.recoil_settings, t)
+				first_person_extension:apply_recoil()
+				first_person_extension:play_camera_recoil(current_action.recoil_settings, t)
 			end
 		end
 
@@ -191,7 +190,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 			self.state = "shot"
 		end
 
-		first_person_extension.reset_aim_assist_multiplier(first_person_extension)
+		first_person_extension:reset_aim_assist_multiplier()
 	end
 
 	if self.state == "shot" and self.active_reload_time then
@@ -201,22 +200,21 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 		if self.active_reload_time < t then
 			local ammo_extension = self.ammo_extension
 
-			if (input_extension.get(input_extension, "weapon_reload") or input_extension.get_buffer(input_extension, "weapon_reload")) and ammo_extension.can_reload(ammo_extension) then
+			if (input_extension:get("weapon_reload") or input_extension:get_buffer("weapon_reload")) and ammo_extension:can_reload() then
 				local status_extension = ScriptUnit.extension(self.owner_unit, "status_system")
 
-				status_extension.set_zooming(status_extension, false)
+				status_extension:set_zooming(false)
 
 				local weapon_extension = ScriptUnit.extension(self.weapon_unit, "weapon_system")
 
-				weapon_extension.stop_action(weapon_extension, "reload")
+				weapon_extension:stop_action("reload")
 			end
-		elseif input_extension.get(input_extension, "weapon_reload") then
-			input_extension.add_buffer(input_extension, "weapon_reload", 0)
+		elseif input_extension:get("weapon_reload") then
+			input_extension:add_buffer("weapon_reload", 0)
 		end
 	end
-
-	return 
 end
+
 ActionCrossbow.finish = function (self, reason)
 	local ammo_extension = self.ammo_extension
 	local current_action = self.current_action
@@ -225,17 +223,17 @@ ActionCrossbow.finish = function (self, reason)
 	if reason ~= "new_interupting_action" then
 		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 
-		status_extension.set_zooming(status_extension, false)
+		status_extension:set_zooming(false)
 
-		if ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension.ammo_count(ammo_extension) == 0 and ammo_extension.can_reload(ammo_extension) then
+		if ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			local play_reload_animation = true
 
-			ammo_extension.start_reload(ammo_extension, play_reload_animation)
+			ammo_extension:start_reload(play_reload_animation)
 		end
 
 		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 
-		status_extension.set_zooming(status_extension, false)
+		status_extension:set_zooming(false)
 	end
 
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
@@ -243,8 +241,6 @@ ActionCrossbow.finish = function (self, reason)
 	if hud_extension then
 		hud_extension.show_critical_indication = false
 	end
-
-	return 
 end
 
-return 
+return

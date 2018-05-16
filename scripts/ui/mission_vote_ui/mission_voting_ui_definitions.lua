@@ -30,6 +30,20 @@ local scenegraph_definition = {
 			UILayer.default
 		}
 	},
+	console_cursor = {
+		vertical_alignment = "center",
+		parent = "root",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			-10
+		}
+	},
 	menu_root = {
 		vertical_alignment = "center",
 		parent = "root",
@@ -1239,5 +1253,6 @@ return {
 	adventure_game_widgets = adventure_game_widgets,
 	custom_game_widgets = custom_game_widgets,
 	deed_game_widgets = deed_game_widgets,
-	widgets = widgets
+	widgets = widgets,
+	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor")
 }

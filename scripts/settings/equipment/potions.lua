@@ -116,4 +116,4 @@ Weapons.cooldown_reduction_potion.pickup_data = {
 	pickup_name = "cooldown_reduction_potion"
 }
 
-return 
+return

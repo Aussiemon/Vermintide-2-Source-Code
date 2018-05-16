@@ -147,4 +147,4 @@ HitEffectsChaosZombie = {
 	}
 }
 
-return 
+return

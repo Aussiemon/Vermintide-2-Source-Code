@@ -2,11 +2,11 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTSkulkIdleAction = class(BTSkulkIdleAction, BTNode)
 BTSkulkIdleAction.name = "BTSkulkIdleAction"
+
 BTSkulkIdleAction.init = function (self, ...)
 	BTSkulkIdleAction.super.init(self, ...)
-
-	return 
 end
+
 BTSkulkIdleAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -19,14 +19,13 @@ BTSkulkIdleAction.enter = function (self, unit, blackboard, t)
 
 	local ai_simple_extension = ScriptUnit.extension(unit, "ai_system")
 
-	ai_simple_extension.set_perception(ai_simple_extension, "perception_all_seeing_re_evaluate", "pick_ninja_skulking_target")
+	ai_simple_extension:set_perception("perception_all_seeing_re_evaluate", "pick_ninja_skulking_target")
 
 	if not skulk_data.attack_timer or skulk_data.attack_timer < t then
 		skulk_data.attack_timer = t + math.random(25, 30)
 	end
-
-	return 
 end
+
 BTSkulkIdleAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	Managers.state.network:anim_event(unit, "to_upright")
 
@@ -36,11 +35,11 @@ BTSkulkIdleAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	end
 
 	blackboard.navigation_extension:set_enabled(true)
-
-	return 
 end
+
 local found_units = {}
 local move_distance_squared = 400
+
 BTSkulkIdleAction.run = function (self, unit, blackboard, t, dt)
 	local skulk_data = blackboard.skulk_data
 
@@ -52,7 +51,7 @@ BTSkulkIdleAction.run = function (self, unit, blackboard, t, dt)
 
 	local urgency_to_engage = PerceptionUtils.special_opportunity(unit, blackboard)
 
-	if 0 < urgency_to_engage then
+	if urgency_to_engage > 0 then
 		blackboard.approach_target = true
 
 		return "failed"
@@ -74,8 +73,9 @@ BTSkulkIdleAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
+
 BTSkulkIdleAction.pick_new_hiding_place = function (self, unit, blackboard, t, dt)
-	return 
+	return
 end
 
-return 
+return

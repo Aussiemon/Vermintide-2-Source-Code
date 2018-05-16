@@ -103,7 +103,7 @@ local function create_buff_widget(index)
 					content_check_function = function (content)
 						local stack_count = content.stack_count
 
-						return stack_count and 1 < stack_count
+						return stack_count and stack_count > 1
 					end
 				},
 				{
@@ -114,7 +114,7 @@ local function create_buff_widget(index)
 					content_check_function = function (content)
 						local stack_count = content.stack_count
 
-						return stack_count and 1 < stack_count
+						return stack_count and stack_count > 1
 					end
 				},
 				{

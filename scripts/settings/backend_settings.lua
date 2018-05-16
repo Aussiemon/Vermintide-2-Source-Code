@@ -30,9 +30,9 @@ BackendSettings.stage_xbone = {
 	enable_sessions = false,
 	allow_tutorial = true,
 	implementation = "playfab",
-	title_id = "6599",
+	title_id = "4d1e",
 	environment = rawget(_G, "Backend") and Backend.ENV_STAGE,
 	allow_local = local_backend_available
 }
 
-return 
+return

@@ -15,4 +15,4 @@ game_logos_atlas = {
 	}
 }
 
-return 
+return

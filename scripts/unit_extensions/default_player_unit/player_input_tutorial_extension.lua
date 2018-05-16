@@ -2,6 +2,7 @@ require("scripts/unit_extensions/generic/generic_state_machine")
 
 local is_windows_platform = PLATFORM == "win32"
 PlayerInputTutorialExtension = class(PlayerInputTutorialExtension)
+
 PlayerInputTutorialExtension.get_window_is_in_focus = function ()
 	local is_in_focus = false
 
@@ -15,6 +16,7 @@ PlayerInputTutorialExtension.get_window_is_in_focus = function ()
 
 	return is_in_focus
 end
+
 PlayerInputTutorialExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
 	self.player = extension_init_data.player
@@ -54,15 +56,16 @@ PlayerInputTutorialExtension.init = function (self, extension_init_context, unit
 		wield_4 = true,
 		wield_switch = true
 	}
+end
 
-	return 
-end
 PlayerInputTutorialExtension.destroy = function (self)
-	return 
+	return
 end
+
 PlayerInputTutorialExtension.reset = function (self)
-	return 
+	return
 end
+
 PlayerInputTutorialExtension.update = function (self, unit, input, dt, context, t)
 	if self.buffer_key then
 	end
@@ -73,7 +76,7 @@ PlayerInputTutorialExtension.update = function (self, unit, input, dt, context, 
 	end
 
 	if self.new_input_buffer then
-		if self.last_added_buffer_time + (self.new_buffer_key_doubleclick_window or 0.2) < t then
+		if t > self.last_added_buffer_time + (self.new_buffer_key_doubleclick_window or 0.2) then
 			self.input_buffer_timer = self.new_input_buffer_timer
 			self.input_buffer = self.new_input_buffer
 			self.buffer_key = self.new_buffer_key
@@ -103,24 +106,22 @@ PlayerInputTutorialExtension.update = function (self, unit, input, dt, context, 
 			self.wield_cooldown_timer_clock = self.wield_cooldown_timer_clock + dt
 		end
 	end
-
-	return 
 end
+
 PlayerInputTutorialExtension.start_double_tap = function (self, input_key, t)
 	self.double_tap_timers[input_key] = t
-
-	return 
 end
+
 PlayerInputTutorialExtension.clear_double_tap = function (self, input_key)
 	self.double_tap_timers[input_key] = nil
-
-	return 
 end
+
 PlayerInputTutorialExtension.was_double_tap = function (self, input_key, t, max_duration)
 	local last_double_tap = self.double_tap_timers[input_key]
 
 	return last_double_tap and t < last_double_tap + max_duration
 end
+
 PlayerInputTutorialExtension.get = function (self, input_key, consume)
 	local value = self.input_service:get(input_key, consume)
 
@@ -148,35 +149,35 @@ PlayerInputTutorialExtension.get = function (self, input_key, consume)
 
 	return value
 end
+
 PlayerInputTutorialExtension.set_enabled = function (self, enabled)
 	self.enabled = enabled
-
-	return 
 end
+
 PlayerInputTutorialExtension.set_allowed_inputs = function (self, allowed_table)
 	self.allowed_table = allowed_table or {}
-
-	return 
 end
+
 PlayerInputTutorialExtension.set_disallowed_inputs = function (self, disallowed_table)
 	self.disallowed_table = disallowed_table or {}
-
-	return 
 end
+
 PlayerInputTutorialExtension.allowed_input_table = function (self)
 	return self.allowed_table
 end
+
 PlayerInputTutorialExtension.disallowed_input_table = function (self)
 	return self.disallowed_table
 end
+
 PlayerInputTutorialExtension.get_last_scroll_value = function (self)
 	return self.wield_scroll_value
 end
+
 PlayerInputTutorialExtension.set_last_scroll_value = function (self, scroll_value)
 	self.wield_scroll_value = scroll_value
-
-	return 
 end
+
 PlayerInputTutorialExtension.released_input = function (self, input)
 	if self.has_released_input then
 		return true
@@ -190,11 +191,13 @@ PlayerInputTutorialExtension.released_input = function (self, input)
 
 	return self.has_released_input
 end
+
 PlayerInputTutorialExtension.reset_release_input = function (self)
 	self.has_released_input = false
 
 	return true
 end
+
 PlayerInputTutorialExtension.get_wield_cooldown = function (self, override_cooldown_time)
 	if override_cooldown_time then
 		if override_cooldown_time < self.wield_cooldown_timer_clock then
@@ -210,12 +213,12 @@ PlayerInputTutorialExtension.get_wield_cooldown = function (self, override_coold
 
 	return false
 end
+
 PlayerInputTutorialExtension.add_wield_cooldown = function (self, cooldown_time)
 	self.wield_cooldown = true
 	self.wield_cooldown_timer = cooldown_time
-
-	return 
 end
+
 PlayerInputTutorialExtension.get_buffer = function (self, input_key)
 	if self.input_buffer_timer and self.buffer_key == input_key then
 		return self.input_buffer
@@ -223,11 +226,12 @@ PlayerInputTutorialExtension.get_buffer = function (self, input_key)
 
 	return nil
 end
+
 PlayerInputTutorialExtension.add_buffer = function (self, input_key, doubleclick_window)
 	if input_key == "action_one_hold" or (self.priority_input[self.buffer_key] and not self.priority_input[input_key]) then
-		return 
+		return
 	elseif input_key == "action_two_hold" then
-		return 
+		return
 	end
 
 	local value = self.input_service:get(input_key)
@@ -244,23 +248,21 @@ PlayerInputTutorialExtension.add_buffer = function (self, input_key, doubleclick
 			self.new_buffer_key_doubleclick_window = doubleclick_window
 		end
 	end
-
-	return 
 end
+
 PlayerInputTutorialExtension.add_stun_buffer = function (self, input_key)
 	self.added_stun_buffer = true
 	self.input_buffer_timer = 10
 	self.input_buffer = 1
 	self.buffer_key = input_key
-
-	return 
 end
+
 PlayerInputTutorialExtension.reset_input_buffer = function (self)
 	if self.buffer_key == "action_one" and not self.input_service:get("action_one_hold") then
 		self.buffer_key = "action_one_release"
 		self.input_buffer_timer = 0.5
 
-		return 
+		return
 	end
 
 	if self.added_stun_buffer then
@@ -272,15 +274,14 @@ PlayerInputTutorialExtension.reset_input_buffer = function (self)
 			self.buffer_key = nil
 		end
 
-		return 
+		return
 	else
 		self.input_buffer_timer = 0
 		self.input_buffer = nil
 		self.buffer_key = nil
 	end
-
-	return 
 end
+
 PlayerInputTutorialExtension.clear_input_buffer = function (self)
 	self.input_buffer_reset = true
 	self.input_buffer_timer = 0
@@ -289,8 +290,6 @@ PlayerInputTutorialExtension.clear_input_buffer = function (self)
 	self.new_input_buffer_timer = 0
 	self.new_input_buffer = nil
 	self.new_buffer_key = nil
-
-	return 
 end
 
-return 
+return

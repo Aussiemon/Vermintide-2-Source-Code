@@ -1,4 +1,5 @@
 ActionAim = class(ActionAim)
+
 ActionAim.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.owner_unit = owner_unit
 	self.weapon_unit = weapon_unit
@@ -15,9 +16,8 @@ ActionAim.init = function (self, world, item_name, is_server, owner_unit, damage
 	if ScriptUnit.has_extension(weapon_unit, "spread_system") then
 		self.spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
 	end
-
-	return 
 end
+
 ActionAim.client_owner_start_action = function (self, new_action, t)
 	local owner_unit = self.owner_unit
 	self.current_action = new_action
@@ -29,8 +29,8 @@ ActionAim.client_owner_start_action = function (self, new_action, t)
 	self.heavy_aim_flow_time = t + (new_action.heavy_aim_flow_delay or 0)
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-	first_person_extension.disable_rig_movement(first_person_extension)
-	first_person_extension.enable_rig_offset(first_person_extension)
+	first_person_extension:disable_rig_movement()
+	first_person_extension:enable_rig_offset()
 
 	local spread_template_override = new_action.spread_template_override
 
@@ -43,7 +43,7 @@ ActionAim.client_owner_start_action = function (self, new_action, t)
 	if loaded_projectile_settings then
 		local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 
-		inventory_extension.set_loaded_projectile_override(inventory_extension, loaded_projectile_settings)
+		inventory_extension:set_loaded_projectile_override(loaded_projectile_settings)
 	end
 
 	self.charge_ready_sound_event = self.current_action.charge_ready_sound_event
@@ -66,9 +66,8 @@ ActionAim.client_owner_start_action = function (self, new_action, t)
 	if charge_sound_husk_name then
 		ActionUtils.play_husk_sound_event(charge_sound_husk_name, owner_unit)
 	end
-
-	return 
 end
+
 ActionAim.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
@@ -76,16 +75,16 @@ ActionAim.client_owner_post_update = function (self, dt, t, world, can_damage)
 	if Application.user_setting("tobii_eyetracking") and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
 		local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
 
-		if eyetracking_extension.get_is_feature_enabled(eyetracking_extension, "tobii_aim_at_gaze") and not eyetracking_extension.get_aim_at_gaze_cancelled(eyetracking_extension) then
+		if eyetracking_extension:get_is_feature_enabled("tobii_aim_at_gaze") and not eyetracking_extension:get_aim_at_gaze_cancelled() then
 			local input_extension = ScriptUnit.extension(owner_unit, "input_system")
-			local move_input = input_extension.get(input_extension, "look_raw") or Vector3(0, 0, 0)
-			local move_input_controller = input_extension.get(input_extension, "look_raw_controller") or Vector3(0, 0, 0)
+			local move_input = input_extension:get("look_raw") or Vector3(0, 0, 0)
+			local move_input_controller = input_extension:get("look_raw_controller") or Vector3(0, 0, 0)
 
-			if 0.01 < Vector3.length(move_input) or 0.01 < Vector3.length(move_input_controller) then
+			if Vector3.length(move_input) > 0.01 or Vector3.length(move_input_controller) > 0.01 then
 				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-				first_person_extension.stop_force_look_rotation(first_person_extension)
-				eyetracking_extension.set_aim_at_gaze_cancelled(eyetracking_extension, true)
+				first_person_extension:stop_force_look_rotation()
+				eyetracking_extension:set_aim_at_gaze_cancelled(true)
 			end
 		end
 	end
@@ -95,12 +94,12 @@ ActionAim.client_owner_post_update = function (self, dt, t, world, can_damage)
 		local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
-		if not status_extension.is_zooming(status_extension) and self.aim_zoom_time <= t then
-			status_extension.set_zooming(status_extension, true, current_action.default_zoom)
+		if not status_extension:is_zooming() and self.aim_zoom_time <= t then
+			status_extension:set_zooming(true, current_action.default_zoom)
 		end
 
-		if buff_extension.has_buff_perk(buff_extension, "increased_zoom") and status_extension.is_zooming(status_extension) and input_extension.get(input_extension, "action_three") then
-			status_extension.switch_variable_zoom(status_extension, current_action.buffed_zoom_thresholds)
+		if buff_extension:has_buff_perk("increased_zoom") and status_extension:is_zooming() and input_extension:get("action_three") then
+			status_extension:switch_variable_zoom(current_action.buffed_zoom_thresholds)
 		end
 	end
 
@@ -141,9 +140,8 @@ ActionAim.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 		self.heavy_aim_flow_done = true
 	end
-
-	return 
 end
+
 ActionAim.finish = function (self, reason)
 	local current_action = self.current_action
 	local ammo_extension = self.ammo_extension
@@ -153,18 +151,18 @@ ActionAim.finish = function (self, reason)
 	if not unzoom_condition_function or unzoom_condition_function(reason) then
 		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 
-		status_extension.set_zooming(status_extension, false)
+		status_extension:set_zooming(false)
 	end
 
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-	first_person_extension.enable_rig_movement(first_person_extension)
-	first_person_extension.disable_rig_offset(first_person_extension)
+	first_person_extension:enable_rig_movement()
+	first_person_extension:disable_rig_offset()
 
-	if ammo_extension and ammo_extension.can_reload(ammo_extension) and ammo_extension.ammo_count(ammo_extension) == 0 and current_action.reload_when_out_of_ammo then
+	if ammo_extension and ammo_extension:can_reload() and ammo_extension:ammo_count() == 0 and current_action.reload_when_out_of_ammo then
 		local play_reload_animation = true
 
-		ammo_extension.start_reload(ammo_extension, play_reload_animation)
+		ammo_extension:start_reload(play_reload_animation)
 	end
 
 	if self.spread_extension then
@@ -181,7 +179,7 @@ ActionAim.finish = function (self, reason)
 
 	local owner = Managers.player:owner(self.owner_unit)
 
-	if owner.is_player_controlled(owner) then
+	if owner:is_player_controlled() then
 	end
 
 	if not Managers.player:owner(self.owner_unit).bot_player then
@@ -193,12 +191,12 @@ ActionAim.finish = function (self, reason)
 	if current_action.reset_aim_assist_on_exit then
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-		first_person_extension.reset_aim_assist_multiplier(first_person_extension)
+		first_person_extension:reset_aim_assist_multiplier()
 	end
 
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
-	inventory_extension.set_loaded_projectile_override(inventory_extension, nil)
+	inventory_extension:set_loaded_projectile_override(nil)
 
 	local charging_sound_id = self.charging_sound_id
 
@@ -214,8 +212,6 @@ ActionAim.finish = function (self, reason)
 	if charge_sound_husk_stop_event then
 		ActionUtils.play_husk_sound_event(charge_sound_husk_stop_event, owner_unit)
 	end
-
-	return 
 end
 
-return 
+return

@@ -78,6 +78,7 @@ SoundQualitySettings.get_quality_template = function (sound_quality)
 
 	return quality_template
 end
+
 SoundQualitySettings.set_sound_quality = function (wwise_world, sound_quality)
 	local quality_template = SoundQualitySettings.get_quality_template(sound_quality)
 	local sound_performance = quality_template.sound_performance
@@ -89,8 +90,6 @@ SoundQualitySettings.set_sound_quality = function (wwise_world, sound_quality)
 	Wwise.set_max_num_voices(max_num_voices)
 
 	local occlusion = quality_template.occlusion
-
-	return 
 end
 
-return 
+return

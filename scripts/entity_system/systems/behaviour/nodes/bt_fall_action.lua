@@ -2,7 +2,7 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 local function get_fall_animation(unit, blackboard)
 	local locomotion_extension = blackboard.locomotion_extension
-	local velocity = locomotion_extension.current_velocity(locomotion_extension)
+	local velocity = locomotion_extension:current_velocity()
 	local vel_x = velocity.x
 	local vel_y = velocity.y
 
@@ -14,7 +14,7 @@ local function get_fall_animation(unit, blackboard)
 	local unit_direction = Quaternion.forward(unit_rotation)
 	local flat_dot = vel_x * unit_direction.x + vel_y * unit_direction.y
 
-	if 0 <= flat_dot then
+	if flat_dot >= 0 then
 		return "falling_fwd"
 	end
 
@@ -22,12 +22,13 @@ local function get_fall_animation(unit, blackboard)
 end
 
 BTFallAction = class(BTFallAction, BTNode)
+
 BTFallAction.init = function (self, ...)
 	BTFallAction.super.init(self, ...)
-
-	return 
 end
+
 BTFallAction.name = "BTFallAction"
+
 BTFallAction.enter = function (self, unit, blackboard, t)
 	local fall_animation = get_fall_animation(unit, blackboard)
 
@@ -38,39 +39,37 @@ BTFallAction.enter = function (self, unit, blackboard, t)
 	local override_mover_move_distance = breed.override_mover_move_distance
 	local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension.set_affected_by_gravity(locomotion_extension, true)
-	locomotion_extension.set_movement_type(locomotion_extension, "constrained_by_mover", override_mover_move_distance)
+	locomotion_extension:set_affected_by_gravity(true)
+	locomotion_extension:set_movement_type("constrained_by_mover", override_mover_move_distance)
 
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_enabled(navigation_extension, false)
+	navigation_extension:set_enabled(false)
 
 	blackboard.fall_state = "waiting_to_stop_freefall"
 	blackboard.fall_failsafe_timer = t + 0
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
 
-	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "falling", event_data)
-
-	return 
+	dialogue_input:trigger_networked_dialogue_event("falling", event_data)
 end
+
 BTFallAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	LocomotionUtils.set_animation_driven_movement(unit, false)
 
 	local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension.set_affected_by_gravity(locomotion_extension, false)
-	locomotion_extension.set_movement_type(locomotion_extension, "snap_to_navmesh")
+	locomotion_extension:set_affected_by_gravity(false)
+	locomotion_extension:set_movement_type("snap_to_navmesh")
 
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_enabled(navigation_extension, true)
+	navigation_extension:set_enabled(true)
 
 	blackboard.jump_climb_finished = nil
 	blackboard.fall_state = nil
-
-	return 
 end
+
 BTFallAction.run = function (self, unit, blackboard, t, dt)
 	if blackboard.fall_state == "waiting_to_stop_freefall" then
 		local is_in_freefall = blackboard.locomotion_extension:is_falling()
@@ -111,7 +110,7 @@ BTFallAction.run = function (self, unit, blackboard, t, dt)
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 
-			dialogue_input.trigger_networked_dialogue_event(dialogue_input, "landing", event_data)
+			dialogue_input:trigger_networked_dialogue_event("landing", event_data)
 		end
 	elseif blackboard.fall_state == "waiting_to_land" and blackboard.jump_climb_finished then
 		return "done"
@@ -120,4 +119,4 @@ BTFallAction.run = function (self, unit, blackboard, t, dt)
 	return "running"
 end
 
-return 
+return

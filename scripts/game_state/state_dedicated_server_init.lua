@@ -3,11 +3,11 @@ require("scripts/network/network_server")
 
 StateDedicatedServerInit = class(StateDedicatedServerInit)
 StateDedicatedServerInit.NAME = "StateDedicatedServerInit"
-StateDedicatedServerInit.on_enter = function (self, params)
-	self._init_network(self)
 
-	return 
+StateDedicatedServerInit.on_enter = function (self, params)
+	self:_init_network()
 end
+
 StateDedicatedServerInit._init_network = function (self)
 	self.parent:setup_network_options()
 
@@ -42,27 +42,50 @@ StateDedicatedServerInit._init_network = function (self)
 	self._game_server = GameServer:new(network_options, game_server_name)
 
 	Managers.party:set_leader(nil)
+	self:_load_save_data()
 
 	self._state = "waiting_for_backend"
 	Managers.ban_list = Managers.ban_list or BanListManager:new()
-
-	return 
 end
+
+StateDedicatedServerInit._load_save_data = function (self)
+	print("[StateDedicatedServerInit] SaveFileName", SaveFileName)
+	Managers.save:auto_load(SaveFileName, callback(self, "cb_save_data_loaded"))
+
+	self._save_data_loaded = false
+end
+
+StateDedicatedServerInit.cb_save_data_loaded = function (self, info)
+	if info.error then
+		Application.warning("Load error %q", info.error)
+	else
+		populate_save_data(info.data)
+	end
+
+	self._save_data_loaded = true
+	GameSettingsDevelopment.trunk_path = Development.parameter("trunk_path")
+end
+
 StateDedicatedServerInit.update = function (self, dt, t)
 	local game_server = self._game_server
-	local server_state = game_server.update(game_server, dt, t)
+	local server_state = game_server:update(dt, t)
 	local state = self._state
 
-	if self._state == "waiting_for_backend" then
+	if state == "waiting_for_backend" then
 		if Managers.backend:has_loaded() then
 			Managers.backend:signin()
 
+			self._state = "load_save"
+		end
+	elseif state == "load_save" then
+		if self._save_data_loaded then
 			self._state = "wait_for_connect"
 		end
 	elseif state == "wait_for_connect" then
 		if server_state == GameServerState.CONNECTED then
 			self.parent:setup_network_server(game_server)
 			self.parent:setup_chat_manager(game_server)
+			self.parent:setup_enemy_package_loader(game_server)
 
 			return StateDedicatedServerRunning
 		elseif server_state == GameServerState.DISCONNECTED then
@@ -73,8 +96,9 @@ StateDedicatedServerInit.update = function (self, dt, t)
 
 	return nil
 end
+
 StateDedicatedServerInit.on_exit = function (self)
-	return 
+	return
 end
 
-return 
+return

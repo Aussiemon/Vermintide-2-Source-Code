@@ -1,4 +1,3 @@
-local push_radius = 2
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
@@ -63,9 +62,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
-
-				return 
+				input_extension:clear_input_buffer()
 			end,
 			cleave_distribution = {
 				attack = 0.15,
@@ -153,9 +150,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
-
-				return 
+				input_extension:clear_input_buffer()
 			end,
 			cleave_distribution = {
 				attack = 0.15,
@@ -254,10 +249,8 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.reset_release_input(input_extension)
-				input_extension.clear_input_buffer(input_extension)
-
-				return 
+				input_extension:reset_release_input()
+				input_extension:clear_input_buffer()
 			end,
 			projectile_info = Projectiles.spear,
 			impact_data = {
@@ -342,10 +335,8 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.reset_release_input(input_extension)
-				input_extension.clear_input_buffer(input_extension)
-
-				return 
+				input_extension:reset_release_input()
+				input_extension:clear_input_buffer()
 			end,
 			cleave_distribution = {
 				attack = 0.25,
@@ -433,10 +424,8 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.reset_release_input(input_extension)
-				input_extension.clear_input_buffer(input_extension)
-
-				return 
+				input_extension:reset_release_input()
+				input_extension:clear_input_buffer()
 			end,
 			projectile_info = Projectiles.spear,
 			impact_data = {
@@ -557,10 +546,8 @@ weapon_template.actions = {
 			end,
 			total_time = math.huge,
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.reset_release_input(input_extension)
-				input_extension.clear_input_buffer(input_extension)
-
-				return 
+				input_extension:reset_release_input()
+				input_extension:clear_input_buffer()
 			end,
 			buff_data = {
 				{
@@ -581,12 +568,12 @@ weapon_template.actions = {
 			condition_func = function (action_user, input_extension)
 				local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
 
-				return overcharge_extension.get_overcharge_value(overcharge_extension) ~= 0
+				return overcharge_extension:get_overcharge_value() ~= 0
 			end,
 			chain_condition_func = function (action_user, input_extension)
 				local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
 
-				return overcharge_extension.get_overcharge_value(overcharge_extension) ~= 0
+				return overcharge_extension:get_overcharge_value() ~= 0
 			end
 		}
 	},
@@ -611,14 +598,26 @@ weapon_template.overcharge_data = {
 }
 weapon_template.attack_meta_data = {
 	aim_at_node = "j_spine1",
+	can_charge_shot = true,
 	charged_attack_action_name = "shoot_charged",
 	ignore_enemies_for_obstruction_charged = true,
-	can_charge_shot = true,
 	aim_at_node_charged = "j_head",
 	minimum_charge_time = 0.55,
+	charge_against_armored_enemy = true,
 	charge_when_obstructed = true,
 	ignore_enemies_for_obstruction = true,
-	charge_against_armoured_enemy = true
+	aim_data = {
+		min_radius_pseudo_random_c = 0.3021,
+		max_radius_pseudo_random_c = 0.0557,
+		min_radius = math.pi / 72,
+		max_radius = math.pi / 16
+	},
+	aim_data_charged = {
+		min_radius_pseudo_random_c = 0.0557,
+		max_radius_pseudo_random_c = 0.01475,
+		min_radius = math.pi / 72,
+		max_radius = math.pi / 16
+	}
 }
 weapon_template.aim_assist_settings = {
 	max_range = 22,
@@ -660,35 +659,41 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_headshotting",
 	"weapon_keyword_sniper"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.85,
-			range = 0.7,
-			damage = 0.1875,
-			targets = 0.2,
-			stagger = 0.4
-		},
-		heavy_attack = {
-			speed = 0.3,
-			range = 0.9,
-			damage = 0.75,
-			targets = 0.8,
-			stagger = 0.4
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "rapid_left"
 	},
-	perks = {
-		light_attack = {
-			"head_shot",
-			"armor_penetration"
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "shoot_charged"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		{
+			action_name = "action_one",
+			chain_start_time = 0.4,
+			sub_action_name = "shoot_charged"
 		},
-		heavy_attack = {
-			"head_shot",
-			"armor_penetration"
-		}
+		{
+			action_name = "action_one",
+			chain_start_time = 0.6,
+			sub_action_name = "shoot_charged_2"
+		},
+		{
+			action_name = "action_one",
+			chain_start_time = 1.25,
+			sub_action_name = "shoot_charged_3"
+		},
+		custom_chain = true
 	}
 }
 Weapons = Weapons or {}
 Weapons.staff_spark_spear_template_1 = table.clone(weapon_template)
 
-return 
+return

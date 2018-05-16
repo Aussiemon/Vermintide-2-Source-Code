@@ -1,4 +1,5 @@
 LobbyAux = LobbyAux or {}
+
 LobbyAux.create_network_hash = function (config_file_name, project_hash)
 	local network_hash = Network.config_hash(config_file_name)
 	local settings = Application.settings()
@@ -22,6 +23,7 @@ LobbyAux.create_network_hash = function (config_file_name, project_hash)
 
 	return combined_hash
 end
+
 LobbyFinderState = LobbyFinderState or {}
 LobbyFinderState.SEARCHING = "searching"
 LobbyFinderState.IDLE = "idle"
@@ -62,6 +64,7 @@ LobbyDistanceFilter.CLOSE = "close"
 LobbyDistanceFilter.MEDIUM = "medium"
 LobbyDistanceFilter.FAR = "far"
 LobbyDistanceFilter.WORLD = "world"
+
 LobbyDistanceFilter.get_next = function (current_filter, max_filter)
 	if current_filter == LobbyDistanceFilter.CLOSE and max_filter ~= LobbyDistanceFilter.CLOSE then
 		return LobbyDistanceFilter.MEDIUM
@@ -70,9 +73,8 @@ LobbyDistanceFilter.get_next = function (current_filter, max_filter)
 	elseif current_filter == LobbyDistanceFilter.FAR and max_filter ~= LobbyDistanceFilter.FAR then
 		return LobbyDistanceFilter.WORLD
 	end
-
-	return 
 end
+
 LobbyAux.get_unique_server_name = function ()
 	local unique_name = Development.parameter("unique_server_name")
 
@@ -115,4 +117,4 @@ LobbyAux.verify_lobby_data = function (lobby)
 	return true
 end
 
-return 
+return

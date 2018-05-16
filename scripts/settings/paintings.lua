@@ -71,4 +71,4 @@ Paintings = {
 	}
 }
 
-return 
+return

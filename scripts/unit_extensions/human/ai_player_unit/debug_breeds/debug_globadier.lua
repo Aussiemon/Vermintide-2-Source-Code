@@ -1,9 +1,10 @@
 DebugGlobadier = DebugGlobadier or {}
+
 DebugGlobadier.update = function (unit, blackboard, t)
 	local target_unit = blackboard.target_unit
 
 	if not target_unit then
-		return 
+		return
 	end
 
 	local target_position = POSITION_LOOKUP[target_unit]
@@ -78,7 +79,7 @@ DebugGlobadier.update = function (unit, blackboard, t)
 
 	if ai_node == "skulk_approach" then
 		state = "lurking"
-	elseif ai_node == "advance_towards_players" and 0 < time_until_first_throw then
+	elseif ai_node == "advance_towards_players" and time_until_first_throw > 0 then
 		state = "approach"
 	elseif ai_node == "advance_towards_players" or ai_node == "throw_poison_globe" or ai_node == "observe_poison_wind" or ai_node == "suicide_run" then
 		state = "combat"
@@ -95,13 +96,13 @@ DebugGlobadier.update = function (unit, blackboard, t)
 	DebugGlobadier.debug_hud_print("time_until_next_throw:", time_until_next_throw, 10, time_until_next_throw == 0 or time_until_next_throw == "-")
 	DebugGlobadier.debug_hud_print("distance_until_throw:", distance_until_throw, 11, distance_until_throw == 0 or distance_until_throw == "-")
 	DebugGlobadier.debug_hud_background(11)
-
-	return 
 end
+
 local font_size = 16
 local font = "gw_arial_16"
 local font_mtrl = "materials/fonts/" .. font
 local row_height = 17
+
 DebugGlobadier.debug_hud_print = function (caption, value, index, valid)
 	local gui = Debug.gui
 	local y = 220 - index * row_height
@@ -111,7 +112,7 @@ DebugGlobadier.debug_hud_print = function (caption, value, index, valid)
 	Gui.text(gui, caption, font_mtrl, font_size, font, caption_pos, caption_color)
 
 	if not value then
-		return 
+		return
 	end
 
 	local text_color = Colors.get("light_green")
@@ -126,9 +127,8 @@ DebugGlobadier.debug_hud_print = function (caption, value, index, valid)
 	local pos = Vector3(160, y, 100)
 
 	Gui.text(gui, value, font_mtrl, font_size, font, pos, text_color)
-
-	return 
 end
+
 DebugGlobadier.debug_hud_background = function (max_index)
 	local gui = Debug.gui
 	local width = 300
@@ -139,8 +139,6 @@ DebugGlobadier.debug_hud_background = function (max_index)
 	local color = Colors.get_color_with_alpha("black", 150)
 
 	Gui.rect(gui, pos, size, color)
-
-	return 
 end
 
-return 
+return

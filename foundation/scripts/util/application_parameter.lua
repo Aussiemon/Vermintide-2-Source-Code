@@ -1,18 +1,17 @@
 script_data = script_data or {}
 Development = Development or {}
 Development.application_parameter = {}
+
 Development.init_application_parameters = function (args, do_pretty_print_args)
 	Development.application_parameter = {}
 	local application_parameters = Development.application_parameter
 
 	local function printf(...)
 		print(string.format(...))
-
-		return 
 	end
 
 	local function first_char(s)
-		return s.sub(s, 1, 1)
+		return s:sub(1, 1)
 	end
 
 	local function is_parameter(s)
@@ -20,7 +19,7 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 	end
 
 	local function parameter(s)
-		return s.sub(s, 2)
+		return s:sub(2)
 	end
 
 	local num_args = #args
@@ -31,13 +30,11 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 	end
 
 	local function has_more_args_after_current()
-		return i + 1 <= num_args
+		return num_args >= i + 1
 	end
 
 	local function step_to_next_arg()
 		i = i + 1
-
-		return 
 	end
 
 	local function current_arg()
@@ -64,8 +61,6 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 		end
 
 		printf("[parse_application_parameters] multiple defintions of '%s' using [%s]. old value [%s]", parameter_name, table.concat(t, ", "), table.concat(old, ", "))
-
-		return 
 	end
 
 	local function copy_parameter_value(parameter_name)
@@ -155,8 +150,6 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 			script_data[param] = value
 		end
 	end
-
-	return 
 end
 
-return 
+return

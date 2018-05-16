@@ -1,12 +1,13 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTVortexFlyAction = class(BTVortexFlyAction, BTNode)
+
 BTVortexFlyAction.init = function (self, ...)
 	BTVortexFlyAction.super.init(self, ...)
-
-	return 
 end
+
 BTVortexFlyAction.name = "BTVortexFlyAction"
+
 BTVortexFlyAction.enter = function (self, unit, blackboard, t)
 	local next_smart_object_data = blackboard.next_smart_object_data
 	local entrance_pos = next_smart_object_data.entrance_pos:unbox()
@@ -21,9 +22,8 @@ BTVortexFlyAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.fly_state = "moving_to_within_smartobject_range"
-
-	return 
 end
+
 BTVortexFlyAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.fly_entrance_pos = nil
 	blackboard.fly_middle_pos = nil
@@ -33,21 +33,20 @@ BTVortexFlyAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.is_flying = nil
 	local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension.set_movement_type(locomotion_extension, "snap_to_navmesh")
+	locomotion_extension:set_movement_type("snap_to_navmesh")
 
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_enabled(navigation_extension, true)
+	navigation_extension:set_enabled(true)
 
-	slot8 = navigation_extension.is_using_smart_object(navigation_extension) and navigation_extension.use_smart_object(navigation_extension, false)
-
-	return 
+	slot8 = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
 end
+
 BTVortexFlyAction._move_to_destination = function (self, current_position, destination, locomotion_extension, dt, max_speed)
 	local destination_vector = destination - current_position
 	local destination_distance = Vector3.length(destination_vector)
 
-	if 0.1 < destination_distance then
+	if destination_distance > 0.1 then
 		local speed = max_speed
 
 		if destination_distance < speed * dt then
@@ -57,17 +56,16 @@ BTVortexFlyAction._move_to_destination = function (self, current_position, desti
 		local destination_direction = Vector3.normalize(destination_vector)
 		local wanted_velocity = destination_direction * speed
 
-		locomotion_extension.set_wanted_velocity(locomotion_extension, wanted_velocity)
+		locomotion_extension:set_wanted_velocity(wanted_velocity)
 
 		return false
 	else
-		locomotion_extension.teleport_to(locomotion_extension, destination)
+		locomotion_extension:teleport_to(destination)
 
 		return true
 	end
-
-	return 
 end
+
 BTVortexFlyAction.run = function (self, unit, blackboard, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
 	local max_speed = blackboard.breed.run_speed
@@ -77,14 +75,14 @@ BTVortexFlyAction.run = function (self, unit, blackboard, t, dt)
 		local entrance_position = blackboard.fly_entrance_pos:unbox()
 
 		if Vector3.distance_squared(entrance_position, unit_position) < 1 then
-			locomotion_extension.set_wanted_velocity(locomotion_extension, Vector3.zero())
-			locomotion_extension.set_movement_type(locomotion_extension, "script_driven")
+			locomotion_extension:set_wanted_velocity(Vector3.zero())
+			locomotion_extension:set_movement_type("script_driven")
 
 			local navigation_extension = blackboard.navigation_extension
 
-			navigation_extension.set_enabled(navigation_extension, false)
+			navigation_extension:set_enabled(false)
 
-			if navigation_extension.use_smart_object(navigation_extension, true) then
+			if navigation_extension:use_smart_object(true) then
 				blackboard.is_smart_objecting = true
 				blackboard.is_flying = true
 				blackboard.fly_state = "moving_towards_entrance_pos"
@@ -96,7 +94,7 @@ BTVortexFlyAction.run = function (self, unit, blackboard, t, dt)
 		end
 	elseif blackboard.fly_state == "moving_towards_entrance_pos" then
 		local entrance_position = blackboard.fly_entrance_pos:unbox()
-		local destination_reached = self._move_to_destination(self, unit_position, entrance_position, locomotion_extension, dt, max_speed)
+		local destination_reached = self:_move_to_destination(unit_position, entrance_position, locomotion_extension, dt, max_speed)
 
 		if destination_reached then
 			if blackboard.fly_middle_pos then
@@ -107,14 +105,14 @@ BTVortexFlyAction.run = function (self, unit, blackboard, t, dt)
 		end
 	elseif blackboard.fly_state == "moving_towards_middle_pos" then
 		local middle_position = blackboard.fly_middle_pos:unbox()
-		local destination_reached = self._move_to_destination(self, unit_position, middle_position, locomotion_extension, dt, max_speed)
+		local destination_reached = self:_move_to_destination(unit_position, middle_position, locomotion_extension, dt, max_speed)
 
 		if destination_reached then
 			blackboard.fly_state = "moving_towards_exit_pos"
 		end
 	elseif blackboard.fly_state == "moving_towards_exit_pos" then
 		local exit_position = blackboard.fly_exit_pos:unbox()
-		local destination_reached = self._move_to_destination(self, unit_position, exit_position, locomotion_extension, dt, max_speed)
+		local destination_reached = self:_move_to_destination(unit_position, exit_position, locomotion_extension, dt, max_speed)
 
 		if destination_reached then
 			blackboard.fly_state = "done"
@@ -126,8 +124,6 @@ BTVortexFlyAction.run = function (self, unit, blackboard, t, dt)
 	else
 		return "running"
 	end
-
-	return 
 end
 
-return 
+return

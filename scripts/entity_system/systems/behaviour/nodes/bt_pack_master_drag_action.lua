@@ -5,14 +5,15 @@ local DRAG_DESTINATIONS_N = 10
 local DESTINATION_POS_I = 1
 local DESTINATION_SCORE_I = 2
 local script_data = script_data
+
 BTPackMasterDragAction.init = function (self, ...)
 	BTPackMasterDragAction.super.init(self, ...)
 
 	self.navigation_group_manager = Managers.state.conflict.navigation_group_manager
-
-	return 
 end
+
 BTPackMasterDragAction.name = "BTPackMasterDragAction"
+
 BTPackMasterDragAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -31,7 +32,7 @@ BTPackMasterDragAction.enter = function (self, unit, blackboard, t)
 	local walk_speed = blackboard.breed.walk_speed
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_max_speed(navigation_extension, walk_speed)
+	navigation_extension:set_max_speed(walk_speed)
 	AiUtils.allow_smart_object_layers(navigation_extension, false)
 
 	blackboard.destination_test_astar = GwNavAStar.create()
@@ -42,14 +43,13 @@ BTPackMasterDragAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.last_path_direction = Vector3Box(Vector3.normalize(POSITION_LOOKUP[unit] - POSITION_LOOKUP[blackboard.drag_target_unit]))
-	local success, destination = self.find_escape_destination(self, unit, blackboard)
+	local success, destination = self:find_escape_destination(unit, blackboard)
 
 	if success then
-		navigation_extension.move_to(navigation_extension, destination)
+		navigation_extension:move_to(destination)
 	end
-
-	return 
 end
+
 BTPackMasterDragAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.drag_check_radius = nil
 	blackboard.drag_check_index = nil
@@ -76,7 +76,7 @@ BTPackMasterDragAction.leave = function (self, unit, blackboard, t, reason, dest
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_max_speed(navigation_extension, default_move_speed)
+	navigation_extension:set_max_speed(default_move_speed)
 	AiUtils.allow_smart_object_layers(navigation_extension, true)
 
 	blackboard.attack_cooldown = t + blackboard.action.cooldown
@@ -86,8 +86,6 @@ BTPackMasterDragAction.leave = function (self, unit, blackboard, t, reason, dest
 	end
 
 	GwNavAStar.destroy(blackboard.destination_test_astar)
-
-	return 
 end
 
 local function validate_pos(nav_world, pos)
@@ -96,11 +94,10 @@ local function validate_pos(nav_world, pos)
 	if success then
 		return Vector3(pos.x, pos.y, altitude)
 	end
-
-	return 
 end
 
 local DELTA_ANGLE = math.pi / 9
+
 BTPackMasterDragAction.find_hoist_pos = function (self, nav_world, unit, blackboard)
 	local rat_pos = POSITION_LOOKUP[unit]
 	local player_pos = POSITION_LOOKUP[blackboard.drag_target_unit]
@@ -132,6 +129,7 @@ BTPackMasterDragAction.find_hoist_pos = function (self, nav_world, unit, blackbo
 
 	return new_pos
 end
+
 BTPackMasterDragAction.can_hoist = function (self, unit, blackboard)
 	local max_height_differance = blackboard.action.safe_hoist_max_height_differance
 	local rat_pos = POSITION_LOOKUP[unit]
@@ -141,6 +139,7 @@ BTPackMasterDragAction.can_hoist = function (self, unit, blackboard)
 
 	return result
 end
+
 BTPackMasterDragAction.safe_to_hoist = function (self, unit, blackboard)
 	local rat_pos = POSITION_LOOKUP[unit]
 	local vector3_distance_squared = Vector3.distance_squared
@@ -161,6 +160,7 @@ BTPackMasterDragAction.safe_to_hoist = function (self, unit, blackboard)
 
 	return true
 end
+
 BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 	local drag_target_unit = blackboard.drag_target_unit
 
@@ -176,22 +176,22 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 
 	local target_status_extension = ScriptUnit.extension(drag_target_unit, "status_system")
 
-	if not target_status_extension.is_grabbed_by_pack_master(target_status_extension) then
+	if not target_status_extension:is_grabbed_by_pack_master() then
 		return "failed"
 	end
 
-	if target_status_extension.is_dead(target_status_extension) then
+	if target_status_extension:is_dead() then
 		return "failed"
 	end
 
-	if target_status_extension.is_knocked_down(target_status_extension) then
+	if target_status_extension:is_knocked_down() then
 		blackboard.hoist_time = 0
 	end
 
 	local position = POSITION_LOOKUP[unit]
 	local nav_world = blackboard.nav_world
 
-	if blackboard.hoist_time < t and self.can_hoist(self, unit, blackboard) and self.safe_to_hoist(self, unit, blackboard) then
+	if blackboard.hoist_time < t and self:can_hoist(unit, blackboard) and self:safe_to_hoist(unit, blackboard) then
 		if blackboard.hoist_pos then
 			if Vector3.distance_squared(position, blackboard.hoist_pos:unbox()) < 0.1 then
 				return "done"
@@ -199,7 +199,7 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 
 			return "running"
 		else
-			local hoist_pos = self.find_hoist_pos(self, nav_world, unit, blackboard)
+			local hoist_pos = self:find_hoist_pos(nav_world, unit, blackboard)
 
 			if hoist_pos then
 				blackboard.hoist_pos = Vector3Box(hoist_pos)
@@ -210,7 +210,7 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local locomotion_extension = blackboard.locomotion_extension
-	local vel = Vector3.flat(-locomotion_extension.current_velocity(locomotion_extension))
+	local vel = Vector3.flat(-locomotion_extension:current_velocity())
 	local rotation = Quaternion.look(vel, Vector3(0, 0, 1))
 
 	blackboard.locomotion_extension:set_wanted_rotation(rotation)
@@ -224,7 +224,7 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if blackboard.test_destinations then
-		local valid_destinations = self.test_destinations(self, unit, blackboard)
+		local valid_destinations = self:test_destinations(unit, blackboard)
 
 		if not valid_destinations then
 		end
@@ -259,12 +259,13 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.threatened = find_position_to_avoid(unit, blackboard)
 	end
 
-	self.find_destinations(self, unit, blackboard, t, dt)
+	self:find_destinations(unit, blackboard, t, dt)
 
 	blackboard.find_destination = false
 
 	return "running"
 end
+
 BTPackMasterDragAction.find_destinations = function (self, unit, blackboard, t, dt)
 	local position = POSITION_LOOKUP[unit]
 	local found_interest_points = false
@@ -274,10 +275,10 @@ BTPackMasterDragAction.find_destinations = function (self, unit, blackboard, t, 
 	local take_cover = blackboard.threatened
 
 	if not take_cover then
-		found_interest_points = self.find_valid_interest_points(self, position, blackboard.packmaster_destinations, wanted_direction)
+		found_interest_points = self:find_valid_interest_points(position, blackboard.packmaster_destinations, wanted_direction)
 
 		if not found_interest_points then
-			found_nav_group_destination = self.find_nav_group_neighbour(self, blackboard, position, wanted_direction, threat_pos)
+			found_nav_group_destination = self:find_nav_group_neighbour(blackboard, position, wanted_direction, threat_pos)
 
 			if not found_nav_group_destination then
 				take_cover = true
@@ -286,17 +287,15 @@ BTPackMasterDragAction.find_destinations = function (self, unit, blackboard, t, 
 	end
 
 	if take_cover then
-		self.find_valid_covers(self, position, blackboard.packmaster_destinations, wanted_direction, threat_pos)
+		self:find_valid_covers(position, blackboard.packmaster_destinations, wanted_direction, threat_pos)
 	end
 
-	self.setup_destination_test(self, unit, blackboard)
+	self:setup_destination_test(unit, blackboard)
 
 	if script_data.debug_ai_movement then
 		QuickDrawerStay:vector(position, blackboard.last_path_direction:unbox() * 2, Colors.get("purple"))
 		QuickDrawerStay:sphere(position + Vector3.up() * 1.7, 0.5, (blackboard.threatened and Colors.get("red")) or Colors.get("yellow"))
 	end
-
-	return 
 end
 
 function find_position_to_avoid(unit, blackboard, test)
@@ -311,7 +310,7 @@ function find_position_to_avoid(unit, blackboard, test)
 			local enemy_pos = PLAYER_AND_BOT_POSITIONS[idx]
 			local distance_sq = Vector3.distance_squared(enemy_pos, position)
 
-			if 0 < distance_sq and distance_sq < max_distance_sq then
+			if distance_sq > 0 and distance_sq < max_distance_sq then
 				local dir = enemy_pos - position
 				local normalized_dir = Vector3.normalize(dir)
 				normalized_dir = normalized_dir / math.sqrt(distance_sq)
@@ -326,7 +325,7 @@ function find_position_to_avoid(unit, blackboard, test)
 		QuickDrawer:sphere(position - threat_vec * 4, 1, Color(0, 255, 0))
 	end
 
-	return 0 < threatening_players_n
+	return threatening_players_n > 0
 end
 
 local function sorting_function(a, b)
@@ -391,9 +390,8 @@ BTPackMasterDragAction.find_valid_covers = function (self, position, destination
 	for i = cover_index, DRAG_DESTINATIONS_N, 1 do
 		destinations[i][2] = -math.huge
 	end
-
-	return 
 end
+
 BTPackMasterDragAction.find_valid_interest_points = function (self, position, destinations, wanted_direction)
 	local found_interest_points = {}
 	local max_rad = 19
@@ -415,7 +413,7 @@ BTPackMasterDragAction.find_valid_interest_points = function (self, position, de
 			if enabled then
 				local interest_point_extension = ScriptUnit.extension(interest_point_unit, "ai_interest_point_system")
 
-				if 0 < interest_point_extension.num_claimed_points then
+				if interest_point_extension.num_claimed_points > 0 then
 					local ip_pos = unit_position(interest_point_unit, 0)
 					local dist = distance(ip_pos, position)
 
@@ -447,12 +445,13 @@ BTPackMasterDragAction.find_valid_interest_points = function (self, position, de
 		destinations[i][2] = -math.huge
 	end
 
-	return 1 < ip_index
+	return ip_index > 1
 end
+
 BTPackMasterDragAction.find_nav_group_neighbour = function (self, blackboard, position, wanted_direction, avoid_pos)
 	local destinations = blackboard.packmaster_destinations
 	local navigation_group_manager = Managers.state.conflict.navigation_group_manager
-	local nav_group = navigation_group_manager.get_group_from_position(navigation_group_manager, position)
+	local nav_group = navigation_group_manager:get_group_from_position(position)
 
 	if not nav_group then
 		print("Packmaster was not on nav_group")
@@ -464,22 +463,22 @@ BTPackMasterDragAction.find_nav_group_neighbour = function (self, blackboard, po
 		return false
 	end
 
-	local neighbours = nav_group.get_group_neighbours(nav_group)
+	local neighbours = nav_group:get_group_neighbours()
 	local destination_index = 1
 
 	for neighbour, _ in pairs(neighbours) do
-		local nav_group_position = neighbour.get_group_center(neighbour):unbox()
+		local nav_group_position = neighbour:get_group_center():unbox()
 		local diff = nav_group_position - position
 		local dir = Vector3.normalize(diff)
 		local dir_dot = Vector3.dot(dir, wanted_direction)
 		local dir_score_modifier = math.max(0, dir_dot)
 
 		if script_data.debug_ai_movement then
-			QuickDrawerStay:sphere(nav_group_position, 3, (-0.25 < dir_dot and Colors.get("yellow")) or Colors.get("red"))
-			QuickDrawerStay:line(nav_group_position, position, (-0.25 < dir_dot and Colors.get("yellow")) or Colors.get("red"))
+			QuickDrawerStay:sphere(nav_group_position, 3, (dir_dot > -0.25 and Colors.get("yellow")) or Colors.get("red"))
+			QuickDrawerStay:line(nav_group_position, position, (dir_dot > -0.25 and Colors.get("yellow")) or Colors.get("red"))
 		end
 
-		if -0.25 < dir_dot then
+		if dir_dot > -0.25 then
 			local distance = Vector3.distance_squared(avoid_pos, nav_group_position)
 			local score = distance * dir_score_modifier
 			local success, altitude = GwNavQueries.triangle_from_position(blackboard.nav_world, nav_group_position, 1.5, 1.5)
@@ -511,8 +510,9 @@ BTPackMasterDragAction.find_nav_group_neighbour = function (self, blackboard, po
 		destinations[i][DESTINATION_SCORE_I] = -math.huge
 	end
 
-	return 1 < destination_index
+	return destination_index > 1
 end
+
 BTPackMasterDragAction.find_escape_destination = function (self, unit, blackboard)
 	local last_path_direction = blackboard.last_path_direction:unbox()
 	local escape_point = POSITION_LOOKUP[unit] + Vector3(0, 0, 0.5)
@@ -522,7 +522,7 @@ BTPackMasterDragAction.find_escape_destination = function (self, unit, blackboar
 	local num_segments = 5
 	local angle_per_segment = math.pi / (num_segments - 1)
 	local navigation_extension = blackboard.navigation_extension
-	local traverse_logic = navigation_extension.traverse_logic(navigation_extension)
+	local traverse_logic = navigation_extension:traverse_logic()
 	local nav_world = blackboard.nav_world
 
 	for i = 1, num_segments, 1 do
@@ -568,6 +568,7 @@ BTPackMasterDragAction.find_escape_destination = function (self, unit, blackboar
 
 	return found_destination_point, destination
 end
+
 BTPackMasterDragAction.setup_destination_test = function (self, unit, blackboard)
 	blackboard.destination_test_index = 0
 	blackboard.test_destinations = true
@@ -579,9 +580,8 @@ BTPackMasterDragAction.setup_destination_test = function (self, unit, blackboard
 
 	local last_path_direction = Vector3.normalize(POSITION_LOOKUP[unit] - POSITION_LOOKUP[blackboard.drag_target_unit])
 	blackboard.last_path_direction = Vector3Box(last_path_direction)
-
-	return 
 end
+
 BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 	local astar = blackboard.destination_test_astar
 	local nav_world = blackboard.nav_world
@@ -591,7 +591,7 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 	local packmaster_position = POSITION_LOOKUP[unit]
 	local last_path_direction = Vector3Box.unbox(blackboard.last_path_direction)
 	local navigation_extension = blackboard.navigation_extension
-	local traverse_logic = navigation_extension.traverse_logic(navigation_extension)
+	local traverse_logic = navigation_extension:traverse_logic()
 
 	if test_next_destination then
 		destination_test_index = destination_test_index + 1
@@ -609,7 +609,7 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 
 			if best_score < 0.01 then
 				local escape_destination = nil
-				found_destination, escape_destination = self.find_escape_destination(self, unit, blackboard)
+				found_destination, escape_destination = self:find_escape_destination(unit, blackboard)
 
 				if found_destination then
 					blackboard.best_destination = Vector3Box(escape_destination)
@@ -620,7 +620,7 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 				return false
 			end
 
-			navigation_extension.move_to(navigation_extension, blackboard.best_destination:unbox())
+			navigation_extension:move_to(blackboard.best_destination:unbox())
 
 			return true
 		end
@@ -630,7 +630,7 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 		if GwNavAStar.path_found(astar) then
 			local path_length = GwNavAStar.path_distance(astar)
 
-			fassert(0 < path_length, "Path length is 0, this will cause div by 0")
+			fassert(path_length > 0, "Path length is 0, this will cause div by 0")
 
 			path_length = path_length * path_length
 			local current_destination = destinations[destination_test_index][1]:unbox()
@@ -645,7 +645,7 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 			local final_score = path_length_ratio * reverse_score_modifier
 			local new_destination_score = destination_score * final_score
 			destinations[destination_test_index][2] = new_destination_score
-			local good_path = 0.4444444444444444 < path_length_ratio and 0 < reverse_score_modifier
+			local good_path = path_length_ratio > 0.4444444444444444 and reverse_score_modifier > 0
 
 			if good_path then
 				for i = 2, GwNavAStar.node_count(astar), 1 do
@@ -665,7 +665,7 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 				blackboard.test_destinations = false
 				blackboard.test_next_destination = false
 
-				navigation_extension.move_to(navigation_extension, current_destination)
+				navigation_extension:move_to(current_destination)
 			else
 				blackboard.test_next_destination = true
 
@@ -700,4 +700,4 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 	return true
 end
 
-return 
+return

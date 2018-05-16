@@ -4,8 +4,6 @@ local function assigned(a, b)
 	else
 		return a
 	end
-
-	return 
 end
 
 local function set_function(self, user_setting_name, content, value_set_function)
@@ -15,8 +13,6 @@ local function set_function(self, user_setting_name, content, value_set_function
 	self.changed_user_settings[user_setting_name] = new_value
 
 	value_set_function(new_value)
-
-	return 
 end
 
 local function setup_function(self, user_setting_name, options)
@@ -65,8 +61,6 @@ local function saved_value_function(self, user_setting_name, widget)
 	end
 
 	content.current_selection = saved_index or default_index
-
-	return 
 end
 
 local video_settings_definition = {
@@ -254,6 +248,13 @@ local video_settings_definition = {
 		callback = "cb_high_quality_fur",
 		tooltip_text = "tooltip_high_quality_fur",
 		widget_type = "stepper"
+	},
+	{
+		setup = "cb_auto_exposure_speed_setup",
+		saved_value = "cb_auto_exposure_speed_saved_value",
+		callback = "cb_auto_exposure_speed",
+		tooltip_text = "tooltip_auto_exposure",
+		widget_type = "slider"
 	},
 	{
 		size_y = 30,
@@ -642,26 +643,30 @@ function generate_settings(settings_definition)
 			local prefix = "cb_" .. setting_name
 			local callback_name = prefix
 			definition.callback = prefix
+
 			OptionsView[callback_name] = function (self, content)
 				return set_function(self, setting_name, content, definition.value_set_function or function ()
-					return 
+					return
 				end)
 			end
+
 			local setup_function_name = prefix .. "_setup"
 			definition.setup = setup_function_name
+
 			OptionsView[setup_function_name] = function (self)
 				return setup_function(self, setting_name, definition.options)
 			end
+
 			local saved_value_function_name = prefix .. "_saved_value"
 			definition.saved_value = saved_value_function_name
+
 			OptionsView[saved_value_function_name] = function (self, widget)
 				return saved_value_function(self, setting_name, widget)
 			end
+
 			definition.tooltip_text = "tooltip_" .. setting_name
 		end
 	end
-
-	return 
 end
 
 generate_settings(gameplay_settings_definition)
@@ -1143,8 +1148,6 @@ if rawget(_G, "Tobii") then
 			saved_value = "cb_" .. name .. "_saved_value",
 			tooltip_text = tooltip_text
 		}
-
-		return 
 	end
 
 	local function add_slider(name, tooltip_text)
@@ -1155,8 +1158,6 @@ if rawget(_G, "Tobii") then
 			saved_value = "cb_" .. name .. "_saved_value",
 			tooltip_text = tooltip_text
 		}
-
-		return 
 	end
 
 	tobii_settings_definition[#tobii_settings_definition + 1] = {
@@ -1199,6 +1200,13 @@ local network_settings_definition = {
 		callback = "cb_max_upload_speed",
 		tooltip_text = "tooltip_max_upload_speed",
 		widget_type = "drop_down"
+	},
+	{
+		setup = "cb_small_network_packets_setup",
+		saved_value = "cb_small_network_packets_saved_value",
+		callback = "cb_small_network_packets",
+		tooltip_text = "tooltip_small_network_packets",
+		widget_type = "stepper"
 	}
 }
 local needs_reload_settings = {
@@ -1232,8 +1240,7 @@ local needs_reload_settings = {
 	"ambient_light_quality",
 	"particles_quality",
 	"ao_quality",
-	"reflection_probes_enabled",
-	"radiance_probes_enabled",
+	"local_probes_enabled",
 	"volumetric_fog_quality"
 }
 local needs_restart_settings = {

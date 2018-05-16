@@ -205,4 +205,4 @@ BreedBehaviors.storm_vermin_warlord = {
 	name = "storm_vermin_warlord"
 }
 
-return 
+return

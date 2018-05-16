@@ -135,4 +135,4 @@ DecalSettings = {
 	}
 }
 
-return 
+return

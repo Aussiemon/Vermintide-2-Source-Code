@@ -30,7 +30,7 @@ local breed_data = {
 	unit_template = "ai_unit_gutter_runner",
 	debug_flag = "ai_gutter_runner_behavior",
 	bone_lod_level = 1,
-	combat_spawn_stinger = "enemy_gutterrunner_stinger",
+	special_spawn_stinger = "enemy_gutterrunner_stinger",
 	race = "skaven",
 	smart_object_template = "special",
 	proximity_system_check = true,
@@ -403,4 +403,4 @@ local action_data = {
 }
 BreedActions.skaven_gutter_runner = table.create_copy(BreedActions.skaven_gutter_runner, action_data)
 
-return 
+return

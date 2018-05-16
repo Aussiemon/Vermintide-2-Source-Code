@@ -1,12 +1,12 @@
 UIAnimator = class(UIAnimator)
+
 UIAnimator.init = function (self, ui_scenegraph, animation_definitions)
 	self.ui_scenegraph = ui_scenegraph
 	self.animation_definitions = animation_definitions
 	self.active_animations = {}
 	self.animation_id = 0
-
-	return 
 end
+
 UIAnimator.start_animation = function (self, animation_sequence_name, widget, scenegraph_definition, params, speed)
 	local animation_sequence = self.animation_definitions[animation_sequence_name]
 	local ui_scenegraph = self.ui_scenegraph
@@ -62,11 +62,11 @@ UIAnimator.start_animation = function (self, animation_sequence_name, widget, sc
 
 	return animation_id
 end
+
 UIAnimator.stop_animation = function (self, animation_id)
 	self.active_animations[animation_id] = nil
-
-	return 
 end
+
 UIAnimator.update = function (self, dt)
 	local ui_scenegraph = self.ui_scenegraph
 
@@ -96,7 +96,7 @@ UIAnimator.update = function (self, dt)
 				if start_progress < time and not completed_animations[animation.name] then
 					local local_progress = (time - start_progress) / (end_progress - start_progress)
 
-					if 1 <= local_progress then
+					if local_progress >= 1 then
 						local_progress = 1
 					end
 
@@ -115,11 +115,10 @@ UIAnimator.update = function (self, dt)
 			end
 		end
 	end
-
-	return 
 end
+
 UIAnimator.is_animation_completed = function (self, animation_id)
 	return self.active_animations[animation_id] == nil
 end
 
-return 
+return

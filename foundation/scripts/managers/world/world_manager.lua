@@ -1,6 +1,7 @@
 require("foundation/scripts/util/script_world")
 
 WorldManager = class(WorldManager)
+
 WorldManager.init = function (self)
 	self._worlds = {}
 	self._disabled_worlds = {}
@@ -9,9 +10,8 @@ WorldManager.init = function (self)
 	self._scene_update_callbacks = {}
 	self._queued_worlds_to_release = {}
 	self._wwise_worlds = {}
-
-	return 
 end
+
 WorldManager.create_world = function (self, name, shading_environment, shading_callback, layer, ...)
 	fassert(self._worlds[name] == nil, "World %q already exists", name)
 
@@ -49,18 +49,20 @@ WorldManager.create_world = function (self, name, shading_environment, shading_c
 	self._worlds[name] = world
 	self._wwise_worlds[world] = Wwise.wwise_world(world)
 
-	self._sort_update_queue(self)
+	self:_sort_update_queue()
 
 	return world
 end
+
 WorldManager.wwise_world = function (self, world)
 	return self._wwise_worlds[world]
 end
+
 WorldManager.destroy_world = function (self, world_or_name)
 	if self.locked then
 		self._queued_worlds_to_release[world_or_name] = true
 
-		return 
+		return
 	end
 
 	local name = nil
@@ -95,18 +97,19 @@ WorldManager.destroy_world = function (self, world_or_name)
 	self._scene_update_callbacks[world] = nil
 	self._wwise_worlds[world] = nil
 
-	self._sort_update_queue(self)
-
-	return 
+	self:_sort_update_queue()
 end
+
 WorldManager.has_world = function (self, name)
 	return self._worlds and self._worlds[name] ~= nil
 end
+
 WorldManager.world = function (self, name)
 	fassert(self._worlds[name], "World %q doesn't exist", name)
 
 	return self._worlds[name]
 end
+
 WorldManager.update = function (self, dt, t)
 	self.locked = true
 
@@ -117,20 +120,18 @@ WorldManager.update = function (self, dt, t)
 	self.locked = false
 
 	for world_or_name, _ in pairs(self._queued_worlds_to_release) do
-		self.destroy_world(self, world_or_name)
+		self:destroy_world(world_or_name)
 
 		self._queued_worlds_to_release[world_or_name] = nil
 	end
-
-	return 
 end
+
 WorldManager.render = function (self)
 	for _, world in ipairs(self._update_queue) do
 		ScriptWorld.render(world)
 	end
-
-	return 
 end
+
 WorldManager.enable_world = function (self, name, enabled)
 	if enabled then
 		local world = self._disabled_worlds[name]
@@ -148,17 +149,15 @@ WorldManager.enable_world = function (self, name, enabled)
 		self._worlds[name] = nil
 	end
 
-	self._sort_update_queue(self)
-
-	return 
+	self:_sort_update_queue()
 end
+
 WorldManager.destroy = function (self)
 	for name, _ in pairs(self._worlds) do
-		self.destroy_world(self, name)
+		self:destroy_world(name)
 	end
-
-	return 
 end
+
 WorldManager._sort_update_queue = function (self)
 	self._update_queue = {}
 
@@ -171,18 +170,14 @@ WorldManager._sort_update_queue = function (self)
 	end
 
 	table.sort(self._update_queue, comparator)
-
-	return 
 end
+
 WorldManager.set_anim_update_callback = function (self, world, callback)
 	self._anim_update_callbacks[world] = callback
-
-	return 
 end
+
 WorldManager.set_scene_update_callback = function (self, world, callback)
 	self._scene_update_callbacks[world] = callback
-
-	return 
 end
 
-return 
+return

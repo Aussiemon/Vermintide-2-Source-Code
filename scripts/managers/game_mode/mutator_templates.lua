@@ -22,8 +22,6 @@ local function modify_breed_health_start(context, data)
 
 		data.vanilla_breed_health = vanilla_breed_health
 	end
-
-	return 
 end
 
 local function modify_breed_health_stop(context, data)
@@ -34,20 +32,14 @@ local function modify_breed_health_stop(context, data)
 			mutator_dprint("Resettings breeds(%s) health", breed_name)
 		end
 	end
-
-	return 
 end
 
 local function default_start_function_server(context, data)
 	modify_breed_health_start(context, data)
-
-	return 
 end
 
 local function default_stop_function_server(context, data)
 	modify_breed_health_stop(context, data)
-
-	return 
 end
 
 local function default_start_game_mode_function_server(context, data)
@@ -64,7 +56,7 @@ local function default_start_game_mode_function_server(context, data)
 		local pickup_units = Managers.state.entity:get_entities("PickupUnitExtension")
 
 		for unit, extension in pairs(pickup_units) do
-			local pickup_settings = extension.get_pickup_settings(extension)
+			local pickup_settings = extension:get_pickup_settings()
 
 			if pickup_types.all or pickup_types[pickup_settings.type] then
 				mutator_dprint("Removing pickup with type(%s)", pickup_settings.type)
@@ -72,20 +64,18 @@ local function default_start_game_mode_function_server(context, data)
 			end
 		end
 	end
-
-	return 
 end
 
 local function default_start_game_mode_function_client(context, data)
-	return 
+	return
 end
 
 local function default_start_function_client(context, data)
-	return 
+	return
 end
 
 local function default_stop_function_client(context, data)
-	return 
+	return
 end
 
 MutatorTemplates = {}
@@ -105,8 +95,6 @@ for name, template in pairs(mutator_settings) do
 		local function start_function(context, data)
 			default_start_function_server(context, data)
 			template.server_start_function(context, data)
-
-			return 
 		end
 
 		template.server.start_function = start_function
@@ -118,8 +106,6 @@ for name, template in pairs(mutator_settings) do
 		local function stop_function(context, data)
 			default_stop_function_server(context, data)
 			template.server_stop_function(context, data)
-
-			return 
 		end
 
 		template.server.stop_function = stop_function
@@ -131,8 +117,6 @@ for name, template in pairs(mutator_settings) do
 		local function start_game_mode_function(context, data)
 			default_start_game_mode_function_server(context, data)
 			template.server_start_game_mode_function(context, data)
-
-			return 
 		end
 
 		template.server.start_game_mode_function = start_game_mode_function
@@ -144,8 +128,6 @@ for name, template in pairs(mutator_settings) do
 		local function start_function(context, data)
 			default_start_function_client(context, data)
 			template.client_start_function(context, data)
-
-			return 
 		end
 
 		template.client.start_function = start_function
@@ -157,8 +139,6 @@ for name, template in pairs(mutator_settings) do
 		local function stop_function(context, data)
 			default_stop_function_client(context, data)
 			template.client_stop_function(context, data)
-
-			return 
 		end
 
 		template.client.stop_function = stop_function
@@ -170,8 +150,6 @@ for name, template in pairs(mutator_settings) do
 		local function start_game_mode_function(context, data)
 			default_start_game_mode_function_client(context, data)
 			template.client_start_game_mode_function(context, data)
-
-			return 
 		end
 
 		template.client.start_game_mode_function = start_game_mode_function
@@ -190,4 +168,4 @@ for name, template in pairs(mutator_settings) do
 	MutatorTemplates[name] = template
 end
 
-return 
+return

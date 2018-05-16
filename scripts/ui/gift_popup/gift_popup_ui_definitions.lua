@@ -389,8 +389,6 @@ local animation_definitions = {
 				widgets.popup_bg.style.texture_id.color[1] = 0
 				local chest_unit = params.chest_unit
 				params.rotation_value = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local chest_unit = params.chest_unit
@@ -403,11 +401,9 @@ local animation_definitions = {
 
 					Unit.set_local_rotation(chest_unit, 0, unit_rotation)
 				end
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -447,8 +443,6 @@ local animation_definitions = {
 						end
 					end
 				end
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local chest_unit = params.chest_unit
@@ -465,11 +459,9 @@ local animation_definitions = {
 
 					Unit.set_local_scale(chest_unit, 0, scale)
 				end
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -477,7 +469,7 @@ local animation_definitions = {
 			start_progress = 0.01,
 			end_progress = 0.7,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local chest_unit = params.chest_unit
@@ -501,11 +493,9 @@ local animation_definitions = {
 
 					Unit.set_local_position(chest_unit, 0, display_position)
 				end
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -513,7 +503,7 @@ local animation_definitions = {
 			start_progress = 0.6,
 			end_progress = 1,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
@@ -526,11 +516,9 @@ local animation_definitions = {
 				popup_bg.style.texture_id.color[1] = alpha
 				title_text.style.text.text_color[1] = alpha
 				description_text.style.text.text_color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -538,7 +526,7 @@ local animation_definitions = {
 			start_progress = 1.4,
 			end_progress = 1.71,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeInCubic(progress)
@@ -549,11 +537,9 @@ local animation_definitions = {
 				claim_button.style.text_hover.text_color[1] = alpha
 				claim_button.style.text_selected.text_color[1] = alpha
 				claim_button.style.text_disabled.text_color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -561,10 +547,10 @@ local animation_definitions = {
 			start_progress = 0.65,
 			end_progress = 0.71,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return 
+				return
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				local chest_unit = params.chest_unit
@@ -572,8 +558,6 @@ local animation_definitions = {
 				if chest_unit and Unit.alive(chest_unit) then
 					Unit.flow_event(chest_unit, "loot_chest_fall")
 				end
-
-				return 
 			end
 		},
 		{
@@ -581,15 +565,13 @@ local animation_definitions = {
 			start_progress = 0.71,
 			end_progress = 1,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return 
+				return
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				WwiseWorld.trigger_event(params.wwise_world, "hud_reward_chest_land")
-
-				return 
 			end
 		},
 		{
@@ -597,13 +579,13 @@ local animation_definitions = {
 			start_progress = 0.71,
 			end_progress = 1.71,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return 
+				return
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -618,14 +600,12 @@ local animation_definitions = {
 				if chest_unit and Unit.alive(chest_unit) then
 					Unit.flow_event(chest_unit, "loot_chest_open")
 				end
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return 
+				return
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -661,8 +641,6 @@ local animation_definitions = {
 						end
 					end
 				end
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local chest_unit = params.chest_unit
@@ -675,11 +653,9 @@ local animation_definitions = {
 
 					Unit.set_local_scale(chest_unit, 0, scale)
 				end
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -689,18 +665,16 @@ local animation_definitions = {
 			start_progress = 0,
 			end_progress = 1,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local thumb_widgets = widgets.thumb_widgets
 
 				for slot9, slot10 in ipairs(thumb_widgets) do
 				end
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

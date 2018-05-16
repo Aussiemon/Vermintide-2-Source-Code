@@ -1,4 +1,5 @@
 PlayerCharacterStateWalking = class(PlayerCharacterStateWalking, PlayerCharacterState)
+
 PlayerCharacterStateWalking.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "walking")
 
@@ -6,9 +7,8 @@ PlayerCharacterStateWalking.init = function (self, character_state_init_context)
 	self.current_movement_speed_scale = 0
 	self.latest_valid_navmesh_position = Vector3Box(math.huge, math.huge, math.huge)
 	self.last_input_direction = Vector3Box(0, 0, 0)
-
-	return 
 end
+
 PlayerCharacterStateWalking.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	local unit = self.unit
 	local input_extension = self.input_extension
@@ -17,7 +17,7 @@ PlayerCharacterStateWalking.on_enter = function (self, unit, input, dt, context,
 	local inventory_extension = self.inventory_extension
 	local health_extension = self.health_extension
 	local locomotion_extension = self.locomotion_extension
-	local current_velocity = locomotion_extension.current_velocity(locomotion_extension)
+	local current_velocity = locomotion_extension:current_velocity()
 	local player = Managers.player:owner(unit)
 	local is_bot = player and player.bot_player
 
@@ -33,7 +33,7 @@ PlayerCharacterStateWalking.on_enter = function (self, unit, input, dt, context,
 
 	if not is_bot then
 		local dir = Vector3.normalize(Vector3.flat(current_velocity))
-		local look_rot = first_person_extension.current_rotation(first_person_extension)
+		local look_rot = first_person_extension:current_rotation()
 		local x = Vector3.dot(Quaternion.right(look_rot), dir)
 		local y = Vector3.dot(Vector3.normalize(Vector3.flat(Quaternion.forward(look_rot))), dir)
 		local local_move_vector = Vector3(x, y, 0)
@@ -52,12 +52,12 @@ PlayerCharacterStateWalking.on_enter = function (self, unit, input, dt, context,
 
 	self.walking = false
 	self.is_bot = is_bot
+end
 
-	return 
-end
 PlayerCharacterStateWalking.on_exit = function (self, unit, input, dt, context, t, next_state)
-	return 
+	return
 end
+
 PlayerCharacterStateWalking._handle_ladder_collision = function (self, t, movement_settings_table)
 	local unit = self.unit
 	local status_extension = self.status_extension
@@ -76,7 +76,7 @@ PlayerCharacterStateWalking._handle_ladder_collision = function (self, t, moveme
 		local facing_correctly = false
 		local close_enough = false
 		local ladder_forward = Quaternion.forward(Unit.local_rotation(ladder_unit, 0))
-		local facing = Quaternion.forward(first_person_extension.current_rotation(first_person_extension))
+		local facing = Quaternion.forward(first_person_extension:current_rotation())
 		local facing_ladder = Vector3.dot(facing, ladder_forward) < 0
 		local movement_in_ladder_direction = Vector3.dot(locomotion_extension.velocity_current:unbox(), ladder_forward)
 		local top_node = Unit.node(ladder_unit, "c_platform")
@@ -88,18 +88,18 @@ PlayerCharacterStateWalking._handle_ladder_collision = function (self, t, moveme
 			local looking_down = not looking_up
 
 			if looking_down and facing_ladder and movement_in_ladder_direction < 0 then
-				close_enough = 0.5 < distance
+				close_enough = distance > 0.5
 				facing_correctly = true
-			elseif looking_down and 0 < distance and not facing_ladder and 0.5 < movement_in_ladder_direction then
-				close_enough = 0.25 < distance
+			elseif looking_down and distance > 0 and not facing_ladder and movement_in_ladder_direction > 0.5 then
+				close_enough = distance > 0.25
 				facing_correctly = true
 			end
 
 			above_align_cube = true
 		else
 			local epsilon = 0.02
-			close_enough = distance < 0.7 + epsilon and 0 < distance
-			facing_correctly = looking_up and not facing_ladder and 0 < movement_in_ladder_direction
+			close_enough = distance < 0.7 + epsilon and distance > 0
+			facing_correctly = looking_up and not facing_ladder and movement_in_ladder_direction > 0
 		end
 
 		if facing_correctly and not recently_left_ladder and close_enough then
@@ -113,9 +113,8 @@ PlayerCharacterStateWalking._handle_ladder_collision = function (self, t, moveme
 			end
 		end
 	end
-
-	return 
 end
+
 PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local world = self.world
@@ -131,57 +130,63 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	local current_movement_speed_scale = self.current_movement_speed_scale
 	local CharacterStateHelper = CharacterStateHelper
 
-	if locomotion_extension.is_on_ground(locomotion_extension) then
+	if locomotion_extension:is_on_ground() then
 		ScriptUnit.extension(unit, "whereabouts_system"):set_is_onground()
 	end
 
 	if CharacterStateHelper.do_common_state_transitions(status_extension, csm) then
-		return 
+		return
 	end
 
 	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
-		csm.change_state(csm, "ledge_hanging", self.temp_params)
+		csm:change_state("ledge_hanging", self.temp_params)
 
-		return 
+		return
 	end
 
 	if CharacterStateHelper.is_overcharge_exploding(status_extension) then
-		csm.change_state(csm, "overcharge_exploding")
+		csm:change_state("overcharge_exploding")
 
-		return 
+		return
 	end
 
 	if CharacterStateHelper.is_using_transport(status_extension) then
-		csm.change_state(csm, "using_transport")
+		csm:change_state("using_transport")
 
-		return 
+		return
 	end
 
 	if CharacterStateHelper.is_pushed(status_extension) then
-		status_extension.set_pushed(status_extension, false)
+		status_extension:set_pushed(false)
 
 		local params = movement_settings_table.stun_settings.pushed
-		local hit_react_type = status_extension.hit_react_type(status_extension)
+		local hit_react_type = status_extension:hit_react_type()
 		params.hit_react_type = hit_react_type .. "_push"
 
-		csm.change_state(csm, "stunned", params)
+		csm:change_state("stunned", params)
 
-		return 
+		return
 	end
 
 	if CharacterStateHelper.is_block_broken(status_extension) then
-		status_extension.set_block_broken(status_extension, false)
+		status_extension:set_block_broken(false)
 
 		local params = movement_settings_table.stun_settings.parry_broken
 		params.hit_react_type = "medium_push"
 
-		csm.change_state(csm, "stunned", params)
+		csm:change_state("stunned", params)
 
-		return 
+		return
 	end
 
-	if locomotion_extension.is_animation_driven(locomotion_extension) then
-		return 
+	if locomotion_extension:is_animation_driven() then
+		return
+	end
+
+	if not csm.state_next and status_extension.do_leap then
+		csm:change_state("leaping")
+
+		return
 	end
 
 	CharacterStateHelper.update_dodge_lock(unit, input_extension, status_extension)
@@ -192,32 +197,32 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 		local params = self.temp_params
 		params.dodge_direction = dodge_direction
 
-		csm.change_state(csm, "dodging", params)
+		csm:change_state("dodging", params)
 
-		return 
+		return
 	end
 
 	local gamepad_active = Managers.input:is_device_active("gamepad")
-	local is_crouching = status_extension.is_crouching(status_extension)
+	local is_crouching = status_extension:is_crouching()
 
-	if not csm.state_next and (input_extension.get(input_extension, "jump") or input_extension.get(input_extension, "jump_only")) and (not is_crouching or CharacterStateHelper.can_uncrouch(unit)) and locomotion_extension.jump_allowed(locomotion_extension) then
+	if not csm.state_next and (input_extension:get("jump") or input_extension:get("jump_only")) and (not is_crouching or CharacterStateHelper.can_uncrouch(unit)) and locomotion_extension:jump_allowed() then
 		local movement_input = CharacterStateHelper.get_movement_input(input_extension)
 
 		if is_crouching then
 			CharacterStateHelper.uncrouch(unit, t, first_person_extension, status_extension)
 		end
 
-		if (not input_extension.get(input_extension, "jump") and not gamepad_active) or status_extension.can_override_dodge_with_jump(status_extension, t) or 0 <= Vector3.y(movement_input) or Vector3.length(movement_input) <= input_extension.minimum_dodge_input then
+		if (not input_extension:get("jump") and not gamepad_active) or status_extension:can_override_dodge_with_jump(t) or Vector3.y(movement_input) >= 0 or Vector3.length(movement_input) <= input_extension.minimum_dodge_input then
 			if Vector3.y(CharacterStateHelper.get_movement_input(input_extension)) < 0 then
 				self.temp_params.backward_jump = true
 			else
 				self.temp_params.backward_jump = false
 			end
 
-			csm.change_state(csm, "jumping", self.temp_params)
-			first_person_extension.change_state(first_person_extension, "jumping")
+			csm:change_state("jumping", self.temp_params)
+			first_person_extension:change_state("jumping")
 
-			return 
+			return
 		end
 	end
 
@@ -226,25 +231,25 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	if not csm.state_next and not is_moving and current_movement_speed_scale == 0 then
 		local params = self.temp_params
 
-		csm.change_state(csm, "standing", params)
-		first_person_extension.change_state(first_person_extension, "standing")
+		csm:change_state("standing", params)
+		first_person_extension:change_state("standing")
 
-		return 
+		return
 	end
 
-	if not csm.state_next and not locomotion_extension.is_on_ground(locomotion_extension) then
-		csm.change_state(csm, "falling", self.temp_params)
-		first_person_extension.change_state(first_person_extension, "falling")
+	if not csm.state_next and not locomotion_extension:is_on_ground() then
+		csm:change_state("falling", self.temp_params)
+		first_person_extension:change_state("falling")
 
-		return 
+		return
 	end
 
-	local new_state = self._handle_ladder_collision(self, t, movement_settings_table)
+	local new_state = self:_handle_ladder_collision(t, movement_settings_table)
 
 	if not csm.state_next and new_state then
-		csm.change_state(csm, new_state, self.temp_params)
+		csm:change_state(new_state, self.temp_params)
 
-		return 
+		return
 	end
 
 	local toggle_crouch = input_extension.toggle_crouch
@@ -269,15 +274,15 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 		current_movement_speed_scale = 0
 	end
 
-	local is_walking = input_extension.get(input_extension, "walk")
-	local is_crouching = status_extension.is_crouching(status_extension)
+	local is_walking = input_extension:get("walk")
+	local is_crouching = status_extension:is_crouching()
 
 	if is_walking ~= self.walking then
-		status_extension.set_slowed(status_extension, is_walking)
+		status_extension:set_slowed(is_walking)
 	end
 
 	local current_max_move_speed = (is_crouching and movement_settings_table.crouch_move_speed) or (is_walking and movement_settings_table.walk_move_speed) or movement_settings_table.move_speed
-	local move_speed_multiplier = status_extension.current_move_speed_multiplier(status_extension)
+	local move_speed_multiplier = status_extension:current_move_speed_multiplier()
 	local final_move_speed = current_max_move_speed * move_speed_multiplier * current_movement_speed_scale * movement_settings_table.player_speed_scale
 	local move_input_direction = Vector3.normalize(move_input)
 
@@ -288,19 +293,20 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	end
 
 	if CharacterStateHelper.is_starting_interaction(input_extension, interactor_extension) then
-		local config = interactor_extension.interaction_config(interactor_extension)
+		local config = interactor_extension:interaction_config()
 
-		interactor_extension.start_interaction(interactor_extension, "interacting")
+		interactor_extension:start_interaction("interacting")
 
 		if not config.allow_movement then
 			local params = self.temp_params
 			params.swap_to_3p = config.swap_to_3p
 			params.show_weapons = config.show_weapons
+			params.activate_block = config.activate_block
 
-			csm.change_state(csm, "interacting", params)
+			csm:change_state("interacting", params)
 		end
 
-		return 
+		return
 	end
 
 	CharacterStateHelper.move_on_ground(first_person_extension, input_extension, locomotion_extension, move_input_direction, final_move_speed, unit)
@@ -309,17 +315,18 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	CharacterStateHelper.reload(input_extension, inventory_extension, status_extension)
 
 	if CharacterStateHelper.is_interacting(interactor_extension) then
-		local config = interactor_extension.interaction_config(interactor_extension)
+		local config = interactor_extension:interaction_config()
 
 		if not config.allow_movement then
 			local params = self.temp_params
 			params.swap_to_3p = config.swap_to_3p
 			params.show_weapons = config.show_weapons
+			params.activate_block = config.activate_block
 
-			csm.change_state(csm, "interacting", params)
+			csm:change_state("interacting", params)
 		end
 
-		return 
+		return
 	end
 
 	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension)
@@ -334,8 +341,6 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 
 	self.current_movement_speed_scale = current_movement_speed_scale
 	self.walking = is_walking
-
-	return 
 end
 
-return 
+return

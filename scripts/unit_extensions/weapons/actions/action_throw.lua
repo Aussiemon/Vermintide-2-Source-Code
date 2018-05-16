@@ -1,4 +1,5 @@
 ActionThrow = class(ActionThrow)
+
 ActionThrow.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.world = world
 	self.owner_unit = owner_unit
@@ -11,38 +12,35 @@ ActionThrow.init = function (self, world, item_name, is_server, owner_unit, dama
 	end
 
 	self.owner_inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
-
-	return 
 end
+
 ActionThrow.client_owner_start_action = function (self, new_action, t)
 	self.current_action = new_action
 	self.action_time_started = t
 	self.thrown = nil
-
-	return 
 end
+
 ActionThrow.client_owner_post_update = function (self, dt, t, world, can_damage)
 	if self.thrown then
-		return 
+		return
 	end
 
 	local current_action = self.current_action
 	local throw_time = self.action_time_started + current_action.throw_time
 
-	if throw_time <= t then
-		self._throw(self)
+	if t >= throw_time then
+		self:_throw()
 
 		self.thrown = true
 	end
-
-	return 
 end
+
 ActionThrow._throw = function (self)
 	local owner_unit = self.owner_unit
 	local current_action = self.current_action
 	local projectile_info = current_action.projectile_info
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-	local first_person_unit = first_person_extension.get_first_person_unit(first_person_extension)
+	local first_person_unit = first_person_extension:get_first_person_unit()
 	local first_person_unit_pos = POSITION_LOOKUP[first_person_unit]
 	local speed = current_action.speed
 	local velocity_multiplier = current_action.velocity_multiplier or 0.25
@@ -100,7 +98,7 @@ ActionThrow._throw = function (self)
 		local event_data = FrameTable.alloc_table()
 		event_data.item_type = projectile_info.pickup_name
 
-		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "throwing_item", event_data)
+		dialogue_input:trigger_networked_dialogue_event("throwing_item", event_data)
 	end
 
 	if self.ammo_extension then
@@ -108,11 +106,10 @@ ActionThrow._throw = function (self)
 
 		self.ammo_extension:use_ammo(ammo_usage)
 	end
-
-	return 
 end
+
 ActionThrow.finish = function (self, reason)
-	return 
+	return
 end
 
-return 
+return

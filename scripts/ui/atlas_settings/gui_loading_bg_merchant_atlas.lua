@@ -29,4 +29,4 @@ loading_bg_merchant_atlas = {
 	}
 }
 
-return 
+return

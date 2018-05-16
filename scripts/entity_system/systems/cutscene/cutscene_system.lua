@@ -2,6 +2,7 @@ CutsceneSystem = class(CutsceneSystem, ExtensionSystemBase)
 local extensions = {
 	"CutsceneCamera"
 }
+
 CutsceneSystem.init = function (self, context, name)
 	CutsceneSystem.super.init(self, context, name, extensions)
 
@@ -15,9 +16,8 @@ CutsceneSystem.init = function (self, context, name)
 	self.cutscene_started = false
 	self._should_hide_loading_icon = false
 	self.ui_event_queue = pdArray.new()
-
-	return 
 end
+
 CutsceneSystem.destroy = function (self)
 	self.world = nil
 	self.cameras = nil
@@ -29,15 +29,15 @@ CutsceneSystem.destroy = function (self)
 
 		self._should_hide_loading_icon = nil
 	end
-
-	return 
 end
+
 CutsceneSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = CutsceneSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
 	self.cameras[unit] = extension
 
 	return extension
 end
+
 CutsceneSystem.on_remove_extension = function (self, unit, extension_name)
 	local camera_to_remove = self.cameras[unit]
 	local active_camera = self.active_camera
@@ -49,21 +49,19 @@ CutsceneSystem.on_remove_extension = function (self, unit, extension_name)
 	camera_to_remove = nil
 
 	CutsceneSystem.super.on_remove_extension(self, unit, extension_name)
-
-	return 
 end
+
 CutsceneSystem.update = function (self)
 	local active_camera = self.active_camera
 
 	if active_camera then
-		self.set_first_person_mode(self, false)
-		active_camera.update(active_camera)
+		self:set_first_person_mode(false)
+		active_camera:update()
 	end
 
-	self.handle_loading_icon(self)
-
-	return 
+	self:handle_loading_icon()
 end
+
 CutsceneSystem.handle_loading_icon = function (self)
 	if self.active_camera then
 		Managers.transition:show_loading_icon()
@@ -72,9 +70,8 @@ CutsceneSystem.handle_loading_icon = function (self)
 
 		self._should_hide_loading_icon = nil
 	end
-
-	return 
 end
+
 CutsceneSystem.skip_pressed = function (self)
 	if self.active_camera and script_data.skippable_cutscenes then
 		if self.event_on_skip then
@@ -85,12 +82,11 @@ CutsceneSystem.skip_pressed = function (self)
 
 		self.event_on_skip = nil
 
-		self.flow_cb_deactivate_cutscene_cameras(self)
-		self.flow_cb_deactivate_cutscene_logic(self)
+		self:flow_cb_deactivate_cutscene_cameras()
+		self:flow_cb_deactivate_cutscene_logic()
 	end
-
-	return 
 end
+
 CutsceneSystem.set_first_person_mode = function (self, enabled)
 	local local_player = Managers.player:local_player()
 	local player_unit = local_player.player_unit
@@ -99,20 +95,19 @@ CutsceneSystem.set_first_person_mode = function (self, enabled)
 		local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
 
 		if enabled ~= first_person_extension.first_person_mode then
-			first_person_extension.set_first_person_mode(first_person_extension, enabled)
+			first_person_extension:set_first_person_mode(enabled)
 		end
 	end
-
-	return 
 end
+
 CutsceneSystem.flow_cb_activate_cutscene_camera = function (self, camera_unit, transition_data, ingame_hud_enabled, letterbox_enabled)
 	if not self.active_camera then
-		self.set_first_person_mode(self, false)
+		self:set_first_person_mode(false)
 	end
 
 	local camera = self.cameras[camera_unit]
 
-	camera.activate(camera, transition_data)
+	camera:activate(transition_data)
 
 	self.active_camera = camera
 	self.ingame_hud_enabled = ingame_hud_enabled
@@ -123,11 +118,10 @@ CutsceneSystem.flow_cb_activate_cutscene_camera = function (self, camera_unit, t
 	end
 
 	pdArray.push_back2(self.ui_event_queue, "set_letterbox_enabled", letterbox_enabled)
-
-	return 
 end
+
 CutsceneSystem.flow_cb_deactivate_cutscene_cameras = function (self)
-	self.set_first_person_mode(self, true)
+	self:set_first_person_mode(true)
 
 	self.active_camera = nil
 	self.ingame_hud_enabled = true
@@ -143,9 +137,8 @@ CutsceneSystem.flow_cb_deactivate_cutscene_cameras = function (self)
 	end
 
 	pdArray.push_back2(self.ui_event_queue, "set_letterbox_enabled", false)
-
-	return 
 end
+
 CutsceneSystem.flow_cb_activate_cutscene_logic = function (self, player_input_enabled, event_on_activate, event_on_skip)
 	if event_on_activate then
 		local level = LevelHelper:current_level(self.world)
@@ -157,9 +150,8 @@ CutsceneSystem.flow_cb_activate_cutscene_logic = function (self, player_input_en
 	self.cutscene_started = true
 
 	pdArray.push_back2(self.ui_event_queue, "set_player_input_enabled", player_input_enabled)
-
-	return 
 end
+
 CutsceneSystem.flow_cb_deactivate_cutscene_logic = function (self, event_on_deactivate)
 	if event_on_deactivate then
 		local level = LevelHelper:current_level(self.world)
@@ -170,9 +162,8 @@ CutsceneSystem.flow_cb_deactivate_cutscene_logic = function (self, event_on_deac
 	self.event_on_skip = nil
 
 	pdArray.push_back2(self.ui_event_queue, "set_player_input_enabled", true)
-
-	return 
 end
+
 CutsceneSystem.flow_cb_cutscene_effect = function (self, name, flow_params)
 	if name == "fx_fade" then
 		local args = {
@@ -184,7 +175,7 @@ CutsceneSystem.flow_cb_cutscene_effect = function (self, name, flow_params)
 
 		pdArray.push_back2(self.ui_event_queue, name, args)
 
-		return 
+		return
 	elseif name == "fx_text_popup" then
 		local args = {
 			flow_params.fade_in_time,
@@ -195,16 +186,16 @@ CutsceneSystem.flow_cb_cutscene_effect = function (self, name, flow_params)
 
 		pdArray.push_back2(self.ui_event_queue, name, args)
 
-		return 
+		return
 	end
 
 	fassert(false, "[CutsceneSystem] Tried to register unknown cutsene effect named %q from flow", name)
-
-	return 
 end
+
 CutsceneSystem.has_intro_cutscene_finished_playing = function (self)
 	return self.cutscene_started and self.ingame_hud_enabled
 end
+
 CutsceneSystem.fade_game_logo = function (self, is_fade_in, time)
 	if is_fade_in then
 		self.fade_in_game_logo = true
@@ -217,8 +208,6 @@ CutsceneSystem.fade_game_logo = function (self, is_fade_in, time)
 		self.fade_in_game_logo = nil
 		self.fade_in_game_logo_time = nil
 	end
-
-	return 
 end
 
-return 
+return

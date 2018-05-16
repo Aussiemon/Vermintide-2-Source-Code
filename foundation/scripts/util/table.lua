@@ -1,6 +1,7 @@
 table.is_empty = function (t)
 	return next(t) == nil
 end
+
 table.size = function (t)
 	local elements = 0
 
@@ -10,6 +11,7 @@ table.size = function (t)
 
 	return elements
 end
+
 table.clone = function (t)
 	local clone = {}
 
@@ -23,6 +25,7 @@ table.clone = function (t)
 
 	return clone
 end
+
 table.shallow_copy = function (t)
 	local copy = {}
 
@@ -32,6 +35,7 @@ table.shallow_copy = function (t)
 
 	return copy
 end
+
 table.crop = function (t, index)
 	local new_table = {}
 	local new_table_size = 0
@@ -43,6 +47,7 @@ table.crop = function (t, index)
 
 	return new_table, new_table_size
 end
+
 table.create_copy = function (copy, original)
 	if not copy then
 		return table.clone(original)
@@ -63,9 +68,8 @@ table.create_copy = function (copy, original)
 
 		return copy
 	end
-
-	return 
 end
+
 table.clone_instance = function (t)
 	local clone = table.clone(t)
 
@@ -73,6 +77,7 @@ table.clone_instance = function (t)
 
 	return clone
 end
+
 table.merge = function (dest, source)
 	for key, value in pairs(source) do
 		dest[key] = value
@@ -80,6 +85,7 @@ table.merge = function (dest, source)
 
 	return dest
 end
+
 table.merge_recursive = function (dest, source)
 	for key, value in pairs(source) do
 		local is_table = type(value) == "table"
@@ -92,9 +98,8 @@ table.merge_recursive = function (dest, source)
 			dest[key] = value
 		end
 	end
-
-	return 
 end
+
 table.append = function (dest, source)
 	local dest_size = #dest
 
@@ -102,9 +107,8 @@ table.append = function (dest, source)
 		dest_size = dest_size + 1
 		dest[dest_size] = source[i]
 	end
-
-	return 
 end
+
 table.append_non_indexed = function (dest, source)
 	local dest_size = #dest
 
@@ -112,9 +116,8 @@ table.append_non_indexed = function (dest, source)
 		dest_size = dest_size + 1
 		dest[dest_size] = value
 	end
-
-	return 
 end
+
 table.contains = function (t, element)
 	for _, value in pairs(t) do
 		if value == element then
@@ -124,6 +127,7 @@ table.contains = function (t, element)
 
 	return false
 end
+
 table.find = function (t, element)
 	for key, value in pairs(t) do
 		if value == element then
@@ -133,6 +137,7 @@ table.find = function (t, element)
 
 	return false
 end
+
 table.sorted = function (t, order_func)
 	local keys = {}
 
@@ -156,10 +161,9 @@ table.sorted = function (t, order_func)
 		if keys[i] then
 			return keys[i], t[keys[i]]
 		end
-
-		return 
 	end
 end
+
 table.reverse = function (t)
 	local size = #t
 
@@ -167,27 +171,23 @@ table.reverse = function (t)
 		t[size - i + 1] = t[i]
 		t[i] = t[size - i + 1]
 	end
-
-	return 
 end
+
 table.clear = function (t)
 	for key, _ in pairs(t) do
 		t[key] = nil
 	end
-
-	return 
 end
+
 table.clear_array = function (t, n)
 	for i = 1, n, 1 do
 		t[i] = nil
 	end
-
-	return 
 end
 
 local function table_dump(key, value, depth, max_depth, print_func)
 	if max_depth < depth then
-		return 
+		return
 	end
 
 	local prefix = string.rep("  ", depth) .. ((key == nil and "") or "[" .. tostring(key) .. "]")
@@ -221,8 +221,6 @@ local function table_dump(key, value, depth, max_depth, print_func)
 	else
 		print_func(prefix .. " = " .. tostring(value) .. " (" .. type(value) .. ")")
 	end
-
-	return 
 end
 
 table.dump = function (t, tag, max_depth, print_func)
@@ -239,8 +237,6 @@ table.dump = function (t, tag, max_depth, print_func)
 	if tag then
 		print_func(string.format("</%s>", tag))
 	end
-
-	return 
 end
 
 function is_array(t)
@@ -279,8 +275,6 @@ function value_to_string(v, depth)
 	else
 		return v
 	end
-
-	return 
 end
 
 function table_dump_string(t, depth)
@@ -303,9 +297,8 @@ table.dump_string = function (t, depth)
 	else
 		return table_dump_string(t, depth or 1)
 	end
-
-	return 
 end
+
 table.shuffle = function (source, seed)
 	if seed then
 		for ii = #source, 2, -1 do
@@ -324,6 +317,7 @@ table.shuffle = function (source, seed)
 
 	return seed
 end
+
 table.max = function (t)
 	local max_key, max_value = next(t)
 
@@ -336,12 +330,11 @@ table.max = function (t)
 
 	return max_key, max_value
 end
+
 table.for_each = function (t, f)
 	for key, value in pairs(t) do
 		t[key] = f(value)
 	end
-
-	return 
 end
 
 function _add_tabs(str, tabs)
@@ -354,6 +347,7 @@ end
 
 local random_indices = {}
 local all = {}
+
 table.get_random_array_indices = function (size, num_picks)
 	assert(num_picks <= size, "Can't pick more elements than the size of the")
 	assert(size < 128, "Don't use this for large arrays, since it will be inefficient. It creates large tables then.")
@@ -371,6 +365,7 @@ table.get_random_array_indices = function (size, num_picks)
 
 	return random_indices
 end
+
 table.tostring = function (t, tabs)
 	tabs = tabs or 0
 	local str = "{\n"
@@ -405,6 +400,7 @@ table.tostring = function (t, tabs)
 
 	return _add_tabs(str, tabs) .. "}"
 end
+
 table.set = function (list)
 	local set = {}
 
@@ -414,6 +410,7 @@ table.set = function (list)
 
 	return set
 end
+
 table.mirror_table = function (source, dest)
 	assert(source ~= dest)
 
@@ -426,6 +423,7 @@ table.mirror_table = function (source, dest)
 
 	return result
 end
+
 table.mirror_array = function (source, dest)
 	assert(source ~= dest)
 
@@ -438,6 +436,7 @@ table.mirror_array = function (source, dest)
 
 	return result
 end
+
 table.mirror_array_inplace = function (t)
 	for index, value in ipairs(t) do
 		t[value] = index
@@ -445,10 +444,12 @@ table.mirror_array_inplace = function (t)
 
 	return t
 end
+
 local temp_weak_table = setmetatable({}, {
 	__mode = "v"
 })
 local temp_weak_table_size = 0
+
 table.unpack_map = function (t)
 	local n = 0
 
@@ -465,6 +466,7 @@ table.unpack_map = function (t)
 
 	return unpack(temp_weak_table)
 end
+
 table.keys = function (t, output)
 	local n = 0
 	local result = output or {}
@@ -476,6 +478,7 @@ table.keys = function (t, output)
 
 	return result
 end
+
 table.append_varargs = function (t, ...)
 	local num_varargs = select("#", ...)
 	local t_size = #t
@@ -486,15 +489,15 @@ table.append_varargs = function (t, ...)
 
 	return t
 end
+
 table.array_to_table = function (array, array_n, out_table)
 	for i = 1, array_n, 2 do
 		local key = array[i]
 		local value = array[i + 1]
 		out_table[key] = value
 	end
-
-	return 
 end
+
 table.table_to_array = function (t, array_out)
 	assert(#array_out == 0)
 
@@ -508,6 +511,7 @@ table.table_to_array = function (t, array_out)
 
 	return array_out_n
 end
+
 table.add_meta_logging = function (real_table, debug_enabled, debug_name)
 	local real_table = real_table or {}
 
@@ -527,16 +531,12 @@ table.add_meta_logging = function (real_table, debug_enabled, debug_name)
 		front_table.__newindex = function (table, key, value)
 			print("meta setting", debug_name, key, value)
 			rawset(real_table, key, value)
-
-			return 
 		end
 
 		return front_table
 	else
 		return real_table
 	end
-
-	return 
 end
 
 function ripairs(t)
@@ -554,4 +554,4 @@ function ripairs(t)
 	return ripairs_it, t, #t + 1
 end
 
-return 
+return

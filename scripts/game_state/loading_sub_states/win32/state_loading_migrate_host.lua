@@ -2,28 +2,25 @@ local function network_printf(format, ...)
 	if script_data.network_debug_connections then
 		printf("[StateLoadingMigrateHost] " .. format, ...)
 	end
-
-	return 
 end
 
 StateLoadingMigrateHost = class(StateLoadingMigrateHost)
 StateLoadingMigrateHost.NAME = "StateLoadingMigrateHost"
+
 StateLoadingMigrateHost.on_enter = function (self, params)
 	print("[Gamestate] Enter Substate StateLoadingMigrateHost")
-	self._init_params(self, params)
-	self._init_network(self)
-
-	return 
+	self:_init_params(params)
+	self:_init_network()
 end
+
 StateLoadingMigrateHost._init_params = function (self, params)
 	self._loading_view = params.loading_view
 	self._lobby_client = params.lobby_client
 	self._level_transition_handler = params.level_transition_handler
 	self._lobby_joined = false
 	self._server_created = false
-
-	return 
 end
+
 StateLoadingMigrateHost._init_network = function (self)
 	self.parent:setup_network_options()
 
@@ -68,44 +65,38 @@ StateLoadingMigrateHost._init_network = function (self)
 		LobbyInternal.clear_filter_requirements()
 		LobbyInternal.add_filter_requirements(requirements)
 	end
-
-	return 
 end
+
 StateLoadingMigrateHost.update = function (self, dt, t)
 	if self._server_created or self._lobby_joined then
 		return StateLoadingRunning
 	end
-
-	return 
 end
+
 StateLoadingMigrateHost.on_exit = function (self, application_shutdown)
 	self.parent.parent.loading_context.host_migration_info = nil
-
-	return 
 end
+
 StateLoadingMigrateHost.cb_server_created = function (self)
 	network_printf("cb_server_created")
 
 	local lobby_host = self.parent:get_lobby()
-	local stored_lobby_data = lobby_host.get_stored_lobby_data(lobby_host) or {}
+	local stored_lobby_data = lobby_host:get_stored_lobby_data() or {}
 	local lobby_data = self.parent.parent.loading_context.host_migration_info.lobby_data
 
 	for key, value in pairs(lobby_data) do
 		stored_lobby_data[key] = value
 	end
 
-	lobby_host.set_lobby_data(lobby_host, stored_lobby_data)
+	lobby_host:set_lobby_data(stored_lobby_data)
 
 	self._server_created = true
-
-	return 
 end
+
 StateLoadingMigrateHost.cb_lobby_joined = function (self)
 	network_printf("cb_lobby_joined")
 
 	self._lobby_joined = true
-
-	return 
 end
 
-return 
+return

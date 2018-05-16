@@ -1424,7 +1424,7 @@ local unit_templates = {
 	pickup_training_dummy_unit = {
 		go_type = "pickup_training_dummy_unit",
 		self_owned_extensions = {
-			"GenericHealthExtension",
+			"TrainingDummyHealthExtension",
 			"GenericDeathExtension",
 			"GenericHitReactionExtension",
 			"ProjectileLinkerExtension",
@@ -1433,10 +1433,11 @@ local unit_templates = {
 			"GenericUnitInteractableExtension",
 			"LookatTargetExtension",
 			"PickupProjectileVolumeExtension",
-			"PingTargetExtension"
+			"PingTargetExtension",
+			"BuffExtension"
 		},
 		husk_extensions = {
-			"GenericHealthExtension",
+			"TrainingDummyHealthExtension",
 			"GenericDeathExtension",
 			"GenericHitReactionExtension",
 			"ProjectileLinkerExtension",
@@ -1444,7 +1445,8 @@ local unit_templates = {
 			"PickupUnitExtension",
 			"GenericUnitInteractableExtension",
 			"LookatTargetExtension",
-			"PingTargetExtension"
+			"PingTargetExtension",
+			"BuffExtension"
 		}
 	},
 	pickup_torch_unit_init = {
@@ -1472,7 +1474,6 @@ local unit_templates = {
 	pickup_torch_unit = {
 		go_type = "pickup_torch_unit",
 		self_owned_extensions = {
-			"ObjectivePickupTutorialExtension",
 			"ProjectilePhysicsUnitLocomotionExtension",
 			"PlayerTeleportingPickupExtension",
 			"GenericUnitInteractableExtension",
@@ -1483,7 +1484,6 @@ local unit_templates = {
 			"LightSourceExtension"
 		},
 		husk_extensions = {
-			"ObjectivePickupTutorialExtension",
 			"ProjectilePhysicsHuskLocomotionExtension",
 			"PickupUnitExtension",
 			"GenericUnitInteractableExtension",
@@ -1960,6 +1960,7 @@ unit_templates.get_extensions = function (unit, unit_template_name, is_husk, is_
 
 	return extensions, num_extensions
 end
+
 unit_templates.extensions_to_remove_on_death = function (unit_template_name, is_husk, is_server)
 	local extensions, num_extensions = nil
 	local remove_when_killed = unit_templates[unit_template_name].remove_when_killed

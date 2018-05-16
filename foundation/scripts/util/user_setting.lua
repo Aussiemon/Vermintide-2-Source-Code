@@ -3,6 +3,7 @@ PATCHED_USER_SETTINGS = PATCHED_USER_SETTINGS or false
 
 if PLATFORM == "ps4" or (PLATFORM == "xb1" and not PATCHED_USER_SETTINGS) then
 	UserSettings = UserSettings or {}
+
 	Application.set_user_setting = function (...)
 		local t = UserSettings
 		local num_args = select("#", ...)
@@ -16,9 +17,8 @@ if PLATFORM == "ps4" or (PLATFORM == "xb1" and not PATCHED_USER_SETTINGS) then
 		local set_key = select(num_args - 1, ...)
 		local set_value = select(num_args, ...)
 		t[set_key] = set_value
-
-		return 
 	end
+
 	Application.user_setting = function (...)
 		local t = UserSettings
 		local num_args = select("#", ...)
@@ -28,28 +28,29 @@ if PLATFORM == "ps4" or (PLATFORM == "xb1" and not PATCHED_USER_SETTINGS) then
 			t = t[key]
 
 			if type(t) ~= "table" then
-				return 
+				return
 			end
 		end
 
 		return t[select(num_args, ...)]
 	end
+
 	Application.save_user_settings = function ()
-		return 
+		return
 	end
+
 	PATCHED_USER_SETTINGS = true
 end
 
 Development.user_setting_disable = function ()
 	local function nop()
-		return 
+		return
 	end
 
 	Development.setting = nop
 	Development.set_setting = nop
-
-	return 
 end
+
 Development.init_user_settings = function ()
 	local enabled_platforms = {
 		ps4 = true,
@@ -62,23 +63,23 @@ Development.init_user_settings = function ()
 	if not enabled_platforms[current_platform] then
 		Development.user_setting_disable()
 
-		return 
+		return
 	end
 
 	if BUILD == "release" then
 		Development.user_setting_disable()
 
-		return 
+		return
 	end
 
 	Development.set_setting = function (...)
 		Application.set_user_setting("development_settings", ...)
-
-		return 
 	end
+
 	Development.setting = function (...)
 		return Application.user_setting("development_settings", ...)
 	end
+
 	local development_settings = Application.user_setting("development_settings")
 
 	if not development_settings then
@@ -92,9 +93,8 @@ Development.init_user_settings = function ()
 			script_data[param] = value
 		end
 	end
-
-	return 
 end
+
 Application.test_user_setting = function (...)
 	local t = UserSettings
 	local num_args = select("#", ...)
@@ -104,11 +104,11 @@ Application.test_user_setting = function (...)
 		t = t[key]
 
 		if type(t) ~= "table" then
-			return 
+			return
 		end
 	end
 
 	return t[select(num_args, ...)]
 end
 
-return 
+return

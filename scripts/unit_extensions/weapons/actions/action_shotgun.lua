@@ -1,4 +1,5 @@
 ActionShotgun = class(ActionShotgun)
+
 ActionShotgun.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.weapon_system = weapon_system
 	self.owner_unit = owner_unit
@@ -17,9 +18,8 @@ ActionShotgun.init = function (self, world, item_name, is_server, owner_unit, da
 	self.is_server = is_server
 	self._is_critical_strike = false
 	self.start_gaze_rotation = QuaternionBox()
-
-	return 
 end
+
 ActionShotgun.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
 	self.current_action = new_action
 	self.state = "waiting_to_shoot"
@@ -31,7 +31,7 @@ ActionShotgun.client_owner_start_action = function (self, new_action, t, chain_a
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local infinite_ammo = false
-	infinite_ammo = buff_extension.get_non_stacking_buff(buff_extension, "victor_bountyhunter_passive_infinite_ammo_buff")
+	infinite_ammo = buff_extension:get_non_stacking_buff("victor_bountyhunter_passive_infinite_ammo_buff")
 	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
 
@@ -64,12 +64,11 @@ ActionShotgun.client_owner_start_action = function (self, new_action, t, chain_a
 		if ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
 			local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
 
-			self.start_gaze_rotation:store(eyetracking_extension.gaze_rotation(eyetracking_extension))
+			self.start_gaze_rotation:store(eyetracking_extension:gaze_rotation())
 		end
 	end
-
-	return 
 end
+
 ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local owner_unit = self.owner_unit
 	local current_action = self.current_action
@@ -83,13 +82,13 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 		local world = self.world
 		local spread_extension = self.spread_extension
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-		local current_position = first_person_extension.current_position(first_person_extension)
-		local current_rotation = first_person_extension.current_rotation(first_person_extension)
+		local current_position = first_person_extension:current_position()
+		local current_rotation = first_person_extension:current_rotation()
 
 		if current_action.fire_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
 			local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
 
-			if eyetracking_extension.get_is_feature_enabled(eyetracking_extension, "tobii_fire_at_gaze") then
+			if eyetracking_extension:get_is_feature_enabled("tobii_fire_at_gaze") then
 				current_rotation = self.start_gaze_rotation:unbox()
 			end
 		end
@@ -119,7 +118,7 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 			local rotation = current_rotation
 
 			if spread_extension then
-				rotation = spread_extension.get_target_style_spread(spread_extension, i, num_shots, current_rotation, num_layers_spread, bullseye, spread_pitch)
+				rotation = spread_extension:get_target_style_spread(i, num_shots, current_rotation, num_layers_spread, bullseye, spread_pitch)
 			end
 
 			local direction = Quaternion.forward(rotation)
@@ -149,7 +148,7 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 		local add_spread = not self.extra_buff_shot
 
 		if spread_extension and add_spread then
-			spread_extension.set_shooting(spread_extension)
+			spread_extension:set_shooting()
 		end
 
 		if current_action.alert_sound_range_fire then
@@ -169,7 +168,7 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 		end
 
 		local buff_extension = self.owner_buff_extension
-		local _, procced = buff_extension.apply_buffs_to_value(buff_extension, 0, StatBuffIndex.EXTRA_SHOT)
+		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
 
 		if procced and not self.extra_buff_shot then
 			self.state = "waiting_to_shoot"
@@ -184,7 +183,7 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 		if fire_sound_event then
 			local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-			first_person_extension.play_hud_sound_event(first_person_extension, fire_sound_event)
+			first_person_extension:play_hud_sound_event(fire_sound_event)
 		end
 	end
 
@@ -194,18 +193,17 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 		if self.active_reload_time < t then
 			local ammo_extension = self.ammo_extension
 
-			if (input_extension.get(input_extension, "weapon_reload") or input_extension.get_buffer(input_extension, "weapon_reload")) and ammo_extension.can_reload(ammo_extension) then
+			if (input_extension:get("weapon_reload") or input_extension:get_buffer("weapon_reload")) and ammo_extension:can_reload() then
 				local weapon_extension = ScriptUnit.extension(self.weapon_unit, "weapon_system")
 
-				weapon_extension.stop_action(weapon_extension, "reload")
+				weapon_extension:stop_action("reload")
 			end
-		elseif input_extension.get(input_extension, "weapon_reload") then
-			input_extension.add_buffer(input_extension, "weapon_reload", 0)
+		elseif input_extension:get("weapon_reload") then
+			input_extension:add_buffer("weapon_reload", 0)
 		end
 	end
-
-	return 
 end
+
 ActionShotgun.finish = function (self, reason)
 	local ammo_extension = self.ammo_extension
 	local current_action = self.current_action
@@ -214,10 +212,10 @@ ActionShotgun.finish = function (self, reason)
 		self.spread_extension:reset_spread_template()
 	end
 
-	if ammo_extension and current_action.reload_when_out_of_ammo and (ammo_extension.ammo_count(ammo_extension) == 0 or reason == "reload") and ammo_extension.can_reload(ammo_extension) then
+	if ammo_extension and current_action.reload_when_out_of_ammo and (ammo_extension:ammo_count() == 0 or reason == "reload") and ammo_extension:can_reload() then
 		local play_reload_animation = true
 
-		ammo_extension.start_reload(ammo_extension, play_reload_animation)
+		ammo_extension:start_reload(play_reload_animation)
 	end
 
 	local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
@@ -225,8 +223,6 @@ ActionShotgun.finish = function (self, reason)
 	if hud_extension then
 		hud_extension.show_critical_indication = false
 	end
-
-	return 
 end
 
-return 
+return

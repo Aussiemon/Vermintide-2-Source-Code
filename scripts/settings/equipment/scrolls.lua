@@ -12,8 +12,10 @@ weapon_template.actions = {
 			hit_effect = "melee_hit_slashing",
 			attack_template = "basic_sweep_push",
 			weapon_action_hand = "left",
+			damage_profile_inner = "medium_push",
 			push_angle = 100,
 			anim_event = "attack_push",
+			damage_profile_outer = "light_push",
 			total_time = 0.8,
 			allowed_chain_actions = {
 				{
@@ -28,7 +30,7 @@ weapon_template.actions = {
 			condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
-				return not status_extension.fatigued(status_extension)
+				return not status_extension:fatigued()
 			end
 		}
 	},
@@ -74,4 +76,4 @@ Weapons.aoe_damage_scroll.left_hand_unit = "units/weapons/player/wpn_scroll/wpn_
 Weapons.aoe_damage_scroll.actions.action_one.default = Weapons.aoe_damage_scroll.actions.action_one.default or table.clone(aoe_damage_scroll_action)
 Weapons.aoe_damage_scroll.gui_texture = "hud_consumable_icon_potion"
 
-return 
+return

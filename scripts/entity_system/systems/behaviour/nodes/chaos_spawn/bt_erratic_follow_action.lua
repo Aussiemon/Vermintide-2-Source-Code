@@ -1,13 +1,14 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTErraticFollowAction = class(BTErraticFollowAction, BTNode)
+
 BTErraticFollowAction.init = function (self, ...)
 	BTErraticFollowAction.super.init(self, ...)
-
-	return 
 end
+
 BTErraticFollowAction.name = "BTErraticFollowAction"
 local debug_movement = false
+
 BTErraticFollowAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -16,14 +17,14 @@ BTErraticFollowAction.enter = function (self, unit, blackboard, t)
 	blackboard.active_node = self
 	local network_manager = Managers.state.network
 
-	network_manager.anim_event(network_manager, unit, "to_combat")
+	network_manager:anim_event(unit, "to_combat")
 
 	local move_state = blackboard.move_state
 	local target_pos = POSITION_LOOKUP[blackboard.target_unit]
 	local animation_name = AiAnimUtils.get_start_move_animation(unit, target_pos, action.start_anims_name)
 
 	if blackboard.move_state ~= "moving" then
-		self._go_moving(self, unit, blackboard, animation_name)
+		self:_go_moving(unit, blackboard, animation_name)
 	end
 
 	local tutorial_message_template = action.tutorial_message_template
@@ -44,14 +45,13 @@ BTErraticFollowAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.next_jump_time = t + 1
-
-	return 
 end
+
 BTErraticFollowAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_max_speed(navigation_extension, default_move_speed)
+	navigation_extension:set_max_speed(default_move_speed)
 
 	blackboard.move_animation_name = nil
 	blackboard.is_turning = nil
@@ -67,29 +67,29 @@ BTErraticFollowAction.leave = function (self, unit, blackboard, t, reason, destr
 	if blackboard.move_state == "jumping" then
 		local locomotion_extension = blackboard.locomotion_extension
 
-		locomotion_extension.set_animation_driven(locomotion_extension, false, true, false)
-		locomotion_extension.use_lerp_rotation(locomotion_extension, true)
-		locomotion_extension.set_movement_type(locomotion_extension, "snap_to_navmesh")
+		locomotion_extension:set_animation_driven(false, true, false)
+		locomotion_extension:use_lerp_rotation(true)
+		locomotion_extension:set_movement_type("snap_to_navmesh")
 		Managers.state.network:anim_event(unit, "move_fwd")
 
 		blackboard.move_state = "moving"
 	end
-
-	return 
 end
+
 BTErraticFollowAction.run = function (self, unit, blackboard, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
 	local move_state = blackboard.move_state
 
 	if move_state == "jumping" then
 	else
-		self.follow(self, unit, t, dt, blackboard, locomotion_extension)
+		self:follow(unit, t, dt, blackboard, locomotion_extension)
 	end
 
 	blackboard.chasing_timer = blackboard.chasing_timer + dt
 
 	return "running", "evaluate"
 end
+
 BTErraticFollowAction._go_idle = function (self, unit, blackboard, locomotion_extension)
 	blackboard.move_state = "idle"
 
@@ -97,45 +97,42 @@ BTErraticFollowAction._go_idle = function (self, unit, blackboard, locomotion_ex
 
 	local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.target_unit)
 
-	locomotion_extension.set_wanted_rotation(locomotion_extension, rot)
-
-	return 
+	locomotion_extension:set_wanted_rotation(rot)
 end
+
 BTErraticFollowAction._go_moving = function (self, unit, blackboard, move_anim)
 	blackboard.move_state = "moving"
 
 	Managers.state.network:anim_event(unit, move_anim)
-
-	return 
 end
+
 BTErraticFollowAction._go_walking = function (self, unit, blackboard, walk_anim)
 	blackboard.move_state = "walking"
 
 	Managers.state.network:anim_event(unit, walk_anim)
-
-	return 
 end
+
 BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomotion_extension)
 	local navigation_extension = blackboard.navigation_extension
 
-	if 1 < navigation_extension.number_failed_move_attempts(navigation_extension) then
+	if navigation_extension:number_failed_move_attempts() > 1 then
 		blackboard.remembered_threat_pos = false
 
 		if blackboard.move_state ~= "idle" then
-			self._go_idle(self, unit, blackboard, locomotion_extension)
+			self:_go_idle(unit, blackboard, locomotion_extension)
 		end
 	end
 
 	local pos = POSITION_LOOKUP[unit]
 
-	if 10 < blackboard.target_dist and (blackboard.consecutive_jump or blackboard.next_jump_time < t) then
+	if blackboard.target_dist > 10 and (blackboard.consecutive_jump or blackboard.next_jump_time < t) then
 		blackboard.consecutive_jump = false
-		local success = self.investigate_jump(self, unit, t, blackboard, pos, locomotion_extension)
+		local success = self:investigate_jump(unit, t, blackboard, pos, locomotion_extension)
 
 		if success then
 			blackboard.next_jump_time = t + math.random() * 4
 
-			return 
+			return
 		else
 			blackboard.next_jump_time = t + 2
 		end
@@ -157,7 +154,7 @@ BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomoti
 	end
 
 	local action = blackboard.action
-	local previous_is_on_path = navigation_extension.is_following_path(navigation_extension)
+	local previous_is_on_path = navigation_extension:is_following_path()
 	local new_destination = LocomotionUtils.follow_target_ogre(unit, blackboard, t, dt)
 
 	if new_destination then
@@ -168,42 +165,42 @@ BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomoti
 	end
 
 	local walking_allowed = blackboard.walking_allowed
-	local to_vec = Vector3.flat(navigation_extension.destination(navigation_extension) - POSITION_LOOKUP[unit])
+	local to_vec = Vector3.flat(navigation_extension:destination() - POSITION_LOOKUP[unit])
 	local distance_sq = Vector3.length_squared(to_vec)
 	local move_anim = nil
 
 	if action.override_move_speed then
-		navigation_extension.set_max_speed(navigation_extension, action.override_move_speed)
+		navigation_extension:set_max_speed(action.override_move_speed)
 	else
 		local breed = blackboard.breed
 
 		if distance_sq <= action.enter_walk_dist_sq and walking_allowed then
-			navigation_extension.set_max_speed(navigation_extension, breed.walk_speed)
+			navigation_extension:set_max_speed(breed.walk_speed)
 
 			move_anim = action.walk_anim
 		elseif action.leave_walk_dist_sq <= distance_sq then
-			navigation_extension.set_max_speed(navigation_extension, breed.run_speed)
+			navigation_extension:set_max_speed(breed.run_speed)
 
 			move_anim = action.move_anim
 		elseif blackboard.move_state == "walking" then
-			navigation_extension.set_max_speed(navigation_extension, breed.walk_speed)
+			navigation_extension:set_max_speed(breed.walk_speed)
 
 			move_anim = action.walk_anim
 		else
-			navigation_extension.set_max_speed(navigation_extension, breed.run_speed)
+			navigation_extension:set_max_speed(breed.run_speed)
 
 			move_anim = action.move_anim
 		end
 	end
 
-	local is_on_path = navigation_extension.is_following_path(navigation_extension)
+	local is_on_path = navigation_extension:is_following_path()
 
 	if is_on_path and blackboard.move_state ~= "walking" and distance_sq <= action.enter_walk_dist_sq and walking_allowed then
-		self._go_walking(self, unit, blackboard, move_anim)
+		self:_go_walking(unit, blackboard, move_anim)
 	elseif is_on_path and blackboard.move_state ~= "moving" and action.leave_walk_dist_sq <= distance_sq then
-		self._go_moving(self, unit, blackboard, move_anim)
-	elseif blackboard.move_state ~= "idle" and navigation_extension.has_reached_destination(navigation_extension, 0.2) then
-		self._go_idle(self, unit, blackboard, locomotion_extension)
+		self:_go_moving(unit, blackboard, move_anim)
+	elseif blackboard.move_state ~= "idle" and navigation_extension:has_reached_destination(0.2) then
+		self:_go_idle(unit, blackboard, locomotion_extension)
 	end
 
 	local can_rotate = not blackboard.animation_rotation_lock
@@ -212,14 +209,13 @@ BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomoti
 		if blackboard.target_outside_navmesh then
 			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.target_unit)
 
-			locomotion_extension.set_wanted_rotation(locomotion_extension, rot)
+			locomotion_extension:set_wanted_rotation(rot)
 		else
-			locomotion_extension.set_wanted_rotation(locomotion_extension, nil)
+			locomotion_extension:set_wanted_rotation(nil)
 		end
 	end
-
-	return 
 end
+
 BTErraticFollowAction.check_for_high_jump = function (self, unit, blackboard)
 	local physics_world = World.get_data(blackboard.world, "physics_world")
 	local ray_length = 1.2
@@ -233,6 +229,7 @@ BTErraticFollowAction.check_for_high_jump = function (self, unit, blackboard)
 
 	return can_jump_high
 end
+
 BTErraticFollowAction.check_dir = function (self, p0, travel_dir, nav_world, traverse_logic, data)
 	local jump_dir = Quaternion.rotate(Quaternion(Vector3.up(), data.ray_angle), travel_dir)
 	local p1 = p0 + jump_dir * data.ray_dist
@@ -267,20 +264,18 @@ BTErraticFollowAction.check_dir = function (self, p0, travel_dir, nav_world, tra
 	elseif hit_pos then
 		return false
 	end
-
-	return 
 end
+
 BTErraticFollowAction.debug_ray_casts = function (self, unit_position, move_dir, nav_world, traverse_logic, action)
-	self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, action.move_jump_left_anims)
-	self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, action.move_jump_right_anims)
-	self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, action.move_jump_fwd_anims)
-	self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_left_anims)
-	self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_fwd_left_anims)
-	self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_right_anims)
-	self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_fwd_right_anims)
-
-	return 
+	self:check_dir(unit_position, move_dir, nav_world, traverse_logic, action.move_jump_left_anims)
+	self:check_dir(unit_position, move_dir, nav_world, traverse_logic, action.move_jump_right_anims)
+	self:check_dir(unit_position, move_dir, nav_world, traverse_logic, action.move_jump_fwd_anims)
+	self:check_dir(unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_left_anims)
+	self:check_dir(unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_fwd_left_anims)
+	self:check_dir(unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_right_anims)
+	self:check_dir(unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_fwd_right_anims)
 end
+
 BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, unit_position, locomotion_extension)
 	local navigation_extension = blackboard.navigation_extension
 	local nav_bot = navigation_extension._nav_bot
@@ -297,9 +292,9 @@ BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, un
 	local move_dir = Quaternion.forward(Unit.local_rotation(unit, 0))
 	local dot = Vector3.dot(move_dir, travel_dir)
 	local nav_world = blackboard.nav_world
-	local traverse_logic = navigation_extension.traverse_logic(navigation_extension)
+	local traverse_logic = navigation_extension:traverse_logic()
 	local jump_anim, jump_data = nil
-	local moving_towards_target = 0.25 < dot
+	local moving_towards_target = dot > 0.25
 
 	if moving_towards_target then
 		local random_dirs = blackboard.random_dirs
@@ -307,28 +302,28 @@ BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, un
 		table.shuffle(random_dirs)
 
 		for i = 1, 3, 1 do
-			jump_data = self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, random_dirs[i])
+			jump_data = self:check_dir(unit_position, move_dir, nav_world, traverse_logic, random_dirs[i])
 
 			if jump_data then
 				break
 			end
 		end
 	else
-		right_of_to_goal = 0 < Vector3.cross(move_dir, travel_dir)[3]
+		right_of_to_goal = Vector3.cross(move_dir, travel_dir)[3] > 0
 
 		if right_of_to_goal then
 			print("moving away from target, need to turn left to get back")
 
-			jump_data = self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_fwd_left_anims)
+			jump_data = self:check_dir(unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_fwd_left_anims)
 
 			if not jump_data then
-				jump_data = self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_left_anims)
+				jump_data = self:check_dir(unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_left_anims)
 			end
 		else
 			print("moving away from target, need to turn right to get back")
 
-			jump_data = self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_right_anims)
-			jump_data = jump_data or self.check_dir(self, unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_fwd_right_anims)
+			jump_data = self:check_dir(unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_right_anims)
+			jump_data = jump_data or self:check_dir(unit_position, move_dir, nav_world, traverse_logic, action.move_jump_only_fwd_right_anims)
 
 			if not jump_data then
 				print("fail! could not turn back with, a jump")
@@ -339,16 +334,16 @@ BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, un
 	if jump_data then
 		local jump_anim = jump_data[1]
 
-		if action.uses_high_jumps and self.check_for_high_jump(self, unit, blackboard) then
+		if action.uses_high_jumps and self:check_for_high_jump(unit, blackboard) then
 			jump_anim = jump_anim .. "_high"
 		end
 
 		blackboard.current_jump_data = jump_data
 
-		locomotion_extension.set_movement_type(locomotion_extension, "snap_to_navmesh")
-		locomotion_extension.set_animation_driven(locomotion_extension, true, false, false)
+		locomotion_extension:set_movement_type("snap_to_navmesh")
+		locomotion_extension:set_animation_driven(true, false, false)
 		LocomotionUtils.set_animation_translation_scale(unit, Vector3(1, 1, 1))
-		locomotion_extension.use_lerp_rotation(locomotion_extension, false)
+		locomotion_extension:use_lerp_rotation(false)
 		Managers.state.network:anim_event(unit, jump_anim)
 
 		blackboard.jump_color = {
@@ -363,6 +358,7 @@ BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, un
 
 	return false
 end
+
 BTErraticFollowAction.get_travel_dir = function (self, unit, blackboard, pos)
 	local navigation_extension = blackboard.navigation_extension
 	local nav_bot = navigation_extension._nav_bot
@@ -370,7 +366,7 @@ BTErraticFollowAction.get_travel_dir = function (self, unit, blackboard, pos)
 	local num_index = GwNavBot.get_path_nodes_count(nav_bot)
 
 	if node_index < 0 or node_index == num_index then
-		return 
+		return
 	end
 
 	local action = blackboard.action
@@ -379,35 +375,34 @@ BTErraticFollowAction.get_travel_dir = function (self, unit, blackboard, pos)
 
 	return travel_dir
 end
+
 BTErraticFollowAction.anim_cb_move_jump_finished = function (self, unit, blackboard)
 	local pos = POSITION_LOOKUP[unit]
 	local locomotion_extension = blackboard.locomotion_extension
 	local move_dir = Quaternion.forward(Unit.local_rotation(unit, 0))
-	local travel_dir = self.get_travel_dir(self, unit, blackboard, pos) or move_dir
+	local travel_dir = self:get_travel_dir(unit, blackboard, pos) or move_dir
 	local dot = Vector3.dot(move_dir, travel_dir)
-	local consecutive_jump = 10 < blackboard.target_dist
+	local consecutive_jump = blackboard.target_dist > 10
 	local target_pos = POSITION_LOOKUP[blackboard.target_unit]
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.reset_destination(navigation_extension, target_pos)
+	navigation_extension:reset_destination(target_pos)
 
 	if consecutive_jump then
 		local t = Managers.time:time("game")
-		local success = self.investigate_jump(self, unit, t, blackboard, pos, locomotion_extension)
+		local success = self:investigate_jump(unit, t, blackboard, pos, locomotion_extension)
 
 		if success then
-			return 
+			return
 		end
 	end
 
-	locomotion_extension.set_animation_driven(locomotion_extension, false, true, false)
-	locomotion_extension.use_lerp_rotation(locomotion_extension, true)
-	locomotion_extension.set_movement_type(locomotion_extension, "snap_to_navmesh")
+	locomotion_extension:set_animation_driven(false, true, false)
+	locomotion_extension:use_lerp_rotation(true)
+	locomotion_extension:set_movement_type("snap_to_navmesh")
 	Managers.state.network:anim_event(unit, "move_fwd")
 
 	blackboard.move_state = "moving"
-
-	return 
 end
 
-return 
+return

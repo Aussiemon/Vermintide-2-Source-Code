@@ -28,8 +28,6 @@ local info_slate_enter = {
 			end
 
 			widget.element.dirty = true
-
-			return 
 		end,
 		update = function (ui_scenegraph, scenegraph_definition, widget, local_progress, params)
 			local catmullrom_value = (local_progress == 1 and 1) or math.catmullrom(local_progress, 2, 0, 1, -1)
@@ -42,11 +40,9 @@ local info_slate_enter = {
 			end
 
 			widget.element.dirty = true
-
-			return 
 		end,
 		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return 
+			return
 		end
 	},
 	{
@@ -58,8 +54,6 @@ local info_slate_enter = {
 			local icon_definition = ui_scenegraph[icon_scenegraph_id]
 			icon_definition.position[3] = icon_definition.position[3] + 10
 			widget.element.dirty = true
-
-			return 
 		end,
 		update = function (ui_scenegraph, scenegraph_definition, widget, local_progress, params)
 			local catmullrom_value = (local_progress == 1 and 1) or math.catmullrom(local_progress, -15, 0, 1, 1)
@@ -73,15 +67,11 @@ local info_slate_enter = {
 			widget.style.frame_glow_top_texture.color[1] = value * 255
 			widget.style.frame_glow_bottom_texture.color[1] = value * 255
 			widget.element.dirty = true
-
-			return 
 		end,
 		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
 			local icon_scenegraph_id = widget.style.icon_texture.scenegraph_id
 			local icon_definition = ui_scenegraph[icon_scenegraph_id]
 			icon_definition.position[3] = icon_definition.position[3] - 10
-
-			return 
 		end
 	}
 }
@@ -91,7 +81,7 @@ local info_slate_exit = {
 		start_progress = 0,
 		end_progress = 1,
 		init = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return 
+			return
 		end,
 		update = function (ui_scenegraph, scenegraph_definition, widget, local_progress, params)
 			local smooth_value = math.smoothstep(local_progress, 1, 0)
@@ -104,13 +94,9 @@ local info_slate_exit = {
 
 			widget.style.description_text.text_color[1] = 255 * smooth_value
 			widget.element.dirty = true
-
-			return 
 		end,
 		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
 			local lol = math.random()
-
-			return 
 		end
 	}
 }
@@ -120,18 +106,16 @@ local info_slate_flash = {
 		start_progress = 0,
 		end_progress = 1,
 		init = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return 
+			return
 		end,
 		update = function (ui_scenegraph, scenegraph_definition, widget, local_progress, params)
 			local value = math.clamp(math.catmullrom(local_progress, -8, 0.4, 0, -1), 0, 1)
 			widget.style.frame_glow_top_texture.color[1] = value * 255
 			widget.style.frame_glow_bottom_texture.color[1] = value * 255
 			widget.element.dirty = true
-
-			return 
 		end,
 		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return 
+			return
 		end
 	}
 }
@@ -141,7 +125,7 @@ local info_slate_move_slot = {
 		start_progress = 0,
 		end_progress = 2,
 		init = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return 
+			return
 		end,
 		update = function (ui_scenegraph, scenegraph_definition, widget, local_progress, params)
 			local smooth_value = math.smoothstep(local_progress, 0, 1)
@@ -150,11 +134,9 @@ local info_slate_move_slot = {
 			local ui_local_position = ui_scenegraph[widget.scenegraph_id].position
 			ui_local_position[2] = math.lerp(start_position[2], end_position[2], smooth_value)
 			widget.element.dirty = true
-
-			return 
 		end,
 		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return 
+			return
 		end
 	}
 }
@@ -164,13 +146,13 @@ local mission_goal_wait = {
 		start_progress = 0,
 		end_progress = 1,
 		init = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return 
+			return
 		end,
 		update = function (ui_scenegraph, scenegraph_definition, widget, local_progress, params)
-			return 
+			return
 		end,
 		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return 
+			return
 		end
 	}
 }
@@ -180,7 +162,7 @@ local mission_goal_move_up = {
 		start_progress = 0,
 		end_progress = 2,
 		init = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return 
+			return
 		end,
 		update = function (ui_scenegraph, scenegraph_definition, widget, local_progress, params)
 			local smooth_value = math.smoothstep(local_progress, 0, 1)
@@ -201,11 +183,9 @@ local mission_goal_move_up = {
 			widget.content.icon_texture.fraction = fraction
 			widget.style.icon_texture.color[1] = math.lerp(255, 150, smooth_value)
 			widget.element.dirty = true
-
-			return 
 		end,
 		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return 
+			return
 		end
 	}
 }

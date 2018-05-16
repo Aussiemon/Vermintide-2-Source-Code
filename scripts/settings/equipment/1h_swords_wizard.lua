@@ -309,7 +309,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		},
 		heavy_attack_right = {
@@ -381,27 +381,28 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		},
 		heavy_attack_spell = {
+			damage_window_start = 0,
 			push_radius = 2.5,
 			forward_offset = 1.5,
 			kind = "shield_slam",
+			anim_end_event = "attack_finished",
 			no_damage_impact_sound_event = "fire_hit_armour",
-			damage_profile = "dagger_burning_slam",
 			armor_impact_sound_event = "fire_hit_armour",
+			damage_profile = "dagger_burning_slam",
 			hit_time = 0.35,
-			aim_assist_ramp_multiplier = 0.2,
 			hit_effect = "fireball_impact",
+			aim_assist_ramp_multiplier = 0.2,
 			aim_assist_max_ramp_multiplier = 0.4,
-			aim_assist_ramp_decay_delay = 0.1,
 			additional_critical_strike_chance = 0,
 			impact_sound_event = "fire_hit",
 			charge_value = "heavy_attack",
-			anim_end_event = "attack_finished",
 			damage_profile_aoe = "dagger_burning_slam_aoe",
-			impact_particle_effect = "fx/wpnfx_staff_spear_impact",
+			aim_assist_ramp_decay_delay = 0.1,
+			impact_particle_effect = "fx/wpnfx_staff_spark_impact",
 			dedicated_target_range = 2,
 			aoe_damage = true,
 			uninterruptible = false,
@@ -456,7 +457,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			critical_strike = {}
 		},
@@ -737,7 +738,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		},
 		push = {
@@ -816,7 +817,7 @@ weapon_template.actions = {
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
-				return not status_extension.fatigued(status_extension)
+				return not status_extension:fatigued()
 			end
 		}
 	},
@@ -833,7 +834,7 @@ weapon_template.actions = {
 			end,
 			total_time = math.huge,
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			buff_data = {
 				{
@@ -927,29 +928,28 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_crowd_control",
 	"weapon_keyword_damage_over_time"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.7,
-			stagger = 0.2,
-			damage = 0.3125,
-			targets = 0.4
-		},
-		heavy_attack = {
-			speed = 0.5,
-			stagger = 0.6,
-			damage = 0.4375,
-			targets = 0.9
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "light_attack_left"
 	},
-	perks = {
-		light_attack = {
-			"head_shot"
-		},
-		heavy_attack = {
-			"armor_penetration",
-			"burn"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "heavy_attack_spell"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	push = {
+		action_name = "action_one",
+		sub_action_name = "push"
 	}
 }
 weapon_template.wwise_dep_right_hand = {
@@ -961,4 +961,4 @@ Weapons.flaming_sword_template_1_t3_un = table.clone(Weapons.flaming_sword_templ
 Weapons.flaming_sword_template_1_t3_un.actions.action_inspect.action_inspect_hold.anim_event = "inspect_start_2"
 Weapons.flaming_sword_template_1_t3_un.actions.action_inspect.action_inspect_hold.anim_end_event = "inspect_end_2"
 
-return 
+return

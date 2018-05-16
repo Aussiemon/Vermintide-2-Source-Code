@@ -11,8 +11,6 @@ local function ipprintf(...)
 	if script_data.ai_interest_point_debug then
 		printf(...)
 	end
-
-	return 
 end
 
 AIInterestPointSystem.init = function (self, context, name)
@@ -41,7 +39,7 @@ AIInterestPointSystem.init = function (self, context, name)
 	self.interest_points_to_spawn = {}
 	self.reachable_interest_points = {}
 	local ai_system = Managers.state.entity:system("ai_system")
-	local nav_world = ai_system.nav_world(ai_system)
+	local nav_world = ai_system:nav_world()
 	self.nav_world = nav_world
 	self.astar = GwNavAStar.create(nav_world)
 	self.processing_astar = false
@@ -71,16 +69,15 @@ AIInterestPointSystem.init = function (self, context, name)
 	local network_event_delegate = context.network_event_delegate
 	self.network_event_delegate = network_event_delegate
 
-	network_event_delegate.register(network_event_delegate, self, "rpc_interest_point_chatter_update")
+	network_event_delegate:register(self, "rpc_interest_point_chatter_update")
 
 	self.level_seed = Managers.state.game_mode.level_transition_handler.level_seed
 
 	print("[AIInterestPointSystem] Level Seed: ", self.level_seed)
 
 	self.current_obsolete_request = nil
-
-	return 
 end
+
 AIInterestPointSystem.destroy = function (self)
 	local clear_table = table.clear
 	self.system_api[self.name] = nil
@@ -110,10 +107,10 @@ AIInterestPointSystem.destroy = function (self)
 	GwNavAStar.destroy(astar)
 	table.for_each(self.reachable_interest_points, clear_table)
 	self.network_event_delegate:unregister(self)
-
-	return 
 end
+
 local dummy_input = {}
+
 AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {}
 	local go_id, is_level_unit = self.network_manager:game_object_or_level_id(unit)
@@ -202,7 +199,7 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 					rotation = QuaternionBox(point_rotation)
 				}
 
-				assert(not is_position_on_navmesh or 0 < point.animations_n, "There is an interest point %q (point index=%d, node name=%s) on the level with no valid animations at position=%s", tostring(unit), point_i + 1, node_name, tostring(point_position))
+				assert(not is_position_on_navmesh or point.animations_n > 0, "There is an interest point %q (point index=%d, node name=%s) on the level with no valid animations at position=%s", tostring(unit), point_i + 1, node_name, tostring(point_position))
 
 				extension.points[point_i + 1] = point
 				point_i = point_i + 1
@@ -241,13 +238,14 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 
 	return extension
 end
+
 AIInterestPointSystem.on_remove_extension = function (self, unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
 
 	local extension = self.interest_points[unit]
 
 	if not extension then
-		return 
+		return
 	end
 
 	if unit == self.processing_best_ip_unit then
@@ -272,15 +270,14 @@ AIInterestPointSystem.on_remove_extension = function (self, unit, extension_name
 		WwiseWorld.stop_event(self.wwise_world, extension.wwise_playing_id)
 		WwiseWorld.destroy_manual_source(self.wwise_world, extension.wwise_source_id)
 	end
-
-	return 
 end
+
 AIInterestPointSystem.update = function (self, context, t)
 	if self.is_server then
-		self.debug_draw(self, t, context.dt)
-		self.spawn_interest_points(self)
-		self.release_obsolete_requests(self, t)
-		self.resolve_requests(self)
+		self:debug_draw(t, context.dt)
+		self:spawn_interest_points()
+		self:release_obsolete_requests(t)
+		self:resolve_requests()
 	end
 
 	local dt = context.dt
@@ -292,9 +289,8 @@ AIInterestPointSystem.update = function (self, context, t)
 	else
 		GwNavWorld.update(self.nav_world, dt)
 	end
-
-	return 
 end
+
 AIInterestPointSystem.debug_draw_baker_data = function (self, hi_data, data, breed_name, point)
 	if data.max_amount < data.count then
 		local c = Colors.distinct_colors_lookup[hi_data.id] or Colors.distinct_colors_lookup[1]
@@ -309,11 +305,11 @@ AIInterestPointSystem.debug_draw_baker_data = function (self, hi_data, data, bre
 		QuickDrawerStay:sphere(Vector3Aux.unbox(point.position), 0.1, color)
 		print(string.format("SPAWN NORMAL breed %s, hidata-id: %s count: %d/%d", breed_name, hi_data.id, data.switch_count, data.max_amount))
 	end
-
-	return 
 end
+
 local spawned_interest_points = {}
 local spawned_interest_points_n = 0
+
 AIInterestPointSystem.spawn_interest_points = function (self)
 	local conflict = Managers.state.conflict
 	local num_to_spawn = 8
@@ -322,7 +318,7 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 	local BreedPacksBySize = BreedPacksBySize
 	local breed_override_lookup = self._breed_override_lookup
 
-	while 0 < num_to_spawn and interest_point_unit ~= nil do
+	while num_to_spawn > 0 and interest_point_unit ~= nil do
 		local point_extension = interest_points_to_spawn[interest_point_unit]
 		local pack_type = point_extension.pack_type
 		local pack_type_by_size = BreedPacksBySize[pack_type]
@@ -368,7 +364,7 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 					breed = Breeds[breed_override_lookup[breed.name]]
 				end
 
-				local id = conflict.spawn_queued_unit(conflict, breed, Vector3Box(Vector3Aux.unbox(point.position)), point.rotation, spawn_category, spawn_animation, spawn_type, optional_data, group_data, point)
+				local id = conflict:spawn_queued_unit(breed, Vector3Box(Vector3Aux.unbox(point.position)), point.rotation, spawn_category, spawn_animation, spawn_type, optional_data, group_data, point)
 				point[1] = id
 			else
 				print("FAIL INTEREST POINT SPAWN UNIT")
@@ -387,9 +383,8 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 	end
 
 	spawned_interest_points_n = 0
-
-	return 
 end
+
 AIInterestPointSystem.release_obsolete_requests = function (self, t)
 	if self.requests[self.current_obsolete_request] == nil then
 		self.current_obsolete_request = nil
@@ -400,7 +395,7 @@ AIInterestPointSystem.release_obsolete_requests = function (self, t)
 	if request_id == nil then
 		self.current_obsolete_request = nil
 
-		return 
+		return
 	end
 
 	local release_claim = false
@@ -417,12 +412,10 @@ AIInterestPointSystem.release_obsolete_requests = function (self, t)
 	if release_claim then
 		self.current_obsolete_request = nil
 
-		self.api_release_claim(self, request_id)
+		self:api_release_claim(request_id)
 	else
 		self.current_obsolete_request = request_id
 	end
-
-	return 
 end
 
 local function _get_next_request(requests, start_i, end_i)
@@ -462,6 +455,7 @@ AIInterestPointSystem._update_astar_result = function (self, current_request_poi
 
 	return path_found
 end
+
 local interest_points_result = {}
 
 local function _get_best_interest_point(broadphase, request, claim_unit_position, current_request_point_unit, reachable_interest_points)
@@ -517,6 +511,7 @@ local function _get_best_interest_point(broadphase, request, claim_unit_position
 end
 
 local INTEREST_POINT_ASTAR_BOX_EXTENTS = 15
+
 AIInterestPointSystem._start_astar_query = function (self, astar, start_position, end_position, nav_world, traverse_logic, best_unit, best_point, best_point_extension)
 	GwNavAStar.start_with_propagation_box(astar, nav_world, start_position, end_position, INTEREST_POINT_ASTAR_BOX_EXTENTS, traverse_logic)
 
@@ -524,8 +519,6 @@ AIInterestPointSystem._start_astar_query = function (self, astar, start_position
 	self.processing_best_ip_unit = best_unit
 	self.processing_best_point = best_point
 	self.processing_best_point_extension = best_point_extension
-
-	return 
 end
 
 local function _check_and_update_request_result(request, best_unit, best_point, best_point_extension, path_found, network_manager, network_transmit)
@@ -549,21 +542,19 @@ local function _check_and_update_request_result(request, best_unit, best_point, 
 			chatter_number = 0
 		end
 
-		local go_id, is_level_unit = network_manager.game_object_or_level_id(network_manager, best_unit)
+		local go_id, is_level_unit = network_manager:game_object_or_level_id(best_unit)
 
-		network_transmit.send_rpc_all(network_transmit, "rpc_interest_point_chatter_update", go_id, is_level_unit, chatter_number)
+		network_transmit:send_rpc_all("rpc_interest_point_chatter_update", go_id, is_level_unit, chatter_number)
 
 		return true
 	else
 		return false
 	end
-
-	return 
 end
 
 AIInterestPointSystem.resolve_requests = function (self)
 	if next(self.interest_points_to_spawn) ~= nil then
-		return 
+		return
 	end
 
 	local request, request_index = _get_next_request(self.requests, self.current_request_index, self.last_request_index)
@@ -589,7 +580,7 @@ AIInterestPointSystem.resolve_requests = function (self)
 					local start_position = claim_unit_position
 					local end_position = Vector3Aux.unbox(best_point.position)
 
-					self._start_astar_query(self, astar, start_position, end_position, self.nav_world, self.traverse_logic, best_unit, best_point, best_point_extension)
+					self:_start_astar_query(astar, start_position, end_position, self.nav_world, self.traverse_logic, best_unit, best_point, best_point_extension)
 
 					path_check_done = false
 				else
@@ -603,7 +594,7 @@ AIInterestPointSystem.resolve_requests = function (self)
 			best_point = self.processing_best_point
 			best_point_extension = self.processing_best_point_extension
 			path_check_done = true
-			path_found = self._update_astar_result(self, current_request_point_unit, request, best_unit, astar)
+			path_found = self:_update_astar_result(current_request_point_unit, request, best_unit, astar)
 		end
 
 		if path_check_done then
@@ -614,18 +605,17 @@ AIInterestPointSystem.resolve_requests = function (self)
 			end
 		end
 	end
-
-	return 
 end
+
 AIInterestPointSystem.debug_draw = function (self, t, dt)
 	if not script_data.ai_interest_point_debug then
-		return 
+		return
 	end
 
 	local QuickDrawer = QuickDrawer
 	self.debug_anim_t = (self.debug_anim_t or 0) + dt
 
-	if 1 < self.debug_anim_t then
+	if self.debug_anim_t > 1 then
 		self.debug_anim_t = 0
 	end
 
@@ -637,17 +627,17 @@ AIInterestPointSystem.debug_draw = function (self, t, dt)
 			local forward = Quaternion.forward(point.rotation:unbox())
 
 			if not point.is_position_on_navmesh then
-				QuickDrawer.cylinder(QuickDrawer, position, position + Vector3.up(), 0.25, Colors.get("dark_red"), 5)
-				QuickDrawer.cone(QuickDrawer, position + Vector3.up() * 1.3 + forward * 0.25, (position + Vector3.up() * 1.3) - forward * 0.25, 0.1, Colors.get("dark_red"), 8, 8)
+				QuickDrawer:cylinder(position, position + Vector3.up(), 0.25, Colors.get("dark_red"), 5)
+				QuickDrawer:cone(position + Vector3.up() * 1.3 + forward * 0.25, (position + Vector3.up() * 1.3) - forward * 0.25, 0.1, Colors.get("dark_red"), 8, 8)
 			elseif point.claimed then
 				local offset = Vector3.up() * self.debug_anim_t * 0.2
 
-				QuickDrawer.circle(QuickDrawer, position + Vector3.up() * 0.8, 0.25, Vector3.up(), Colors.get("lime_green"))
-				QuickDrawer.cylinder(QuickDrawer, position - offset, (position + Vector3.up() * 1) - offset, 0.25, Colors.get("lime_green"), 5)
-				QuickDrawer.cone(QuickDrawer, position + Vector3.up() * 1.3 + forward * 0.25, (position + Vector3.up() * 1.3) - forward * 0.25, 0.1, Colors.get("lime_green"), 8, 8)
+				QuickDrawer:circle(position + Vector3.up() * 0.8, 0.25, Vector3.up(), Colors.get("lime_green"))
+				QuickDrawer:cylinder(position - offset, (position + Vector3.up() * 1) - offset, 0.25, Colors.get("lime_green"), 5)
+				QuickDrawer:cone(position + Vector3.up() * 1.3 + forward * 0.25, (position + Vector3.up() * 1.3) - forward * 0.25, 0.1, Colors.get("lime_green"), 8, 8)
 			else
-				QuickDrawer.cylinder(QuickDrawer, position, position + Vector3.up(), 0.25, Colors.get("dark_green"), 5)
-				QuickDrawer.cone(QuickDrawer, position + Vector3.up() * 1.3 + forward * 0.25, (position + Vector3.up() * 1.3) - forward * 0.25, 0.1, Colors.get("dark_green"), 8, 8)
+				QuickDrawer:cylinder(position, position + Vector3.up(), 0.25, Colors.get("dark_green"), 5)
+				QuickDrawer:cone(position + Vector3.up() * 1.3 + forward * 0.25, (position + Vector3.up() * 1.3) - forward * 0.25, 0.1, Colors.get("dark_green"), 8, 8)
 			end
 
 			Script.set_temp_count(a, b, c)
@@ -663,13 +653,12 @@ AIInterestPointSystem.debug_draw = function (self, t, dt)
 			if ip_end_time then
 				local end_position = POSITION_LOOKUP[claim_unit] + Vector3.up() * (ip_end_time - t) + Vector3.up()
 
-				QuickDrawer.cylinder(QuickDrawer, POSITION_LOOKUP[claim_unit], end_position, 0.25, Colors.get("dark_red"), 5)
+				QuickDrawer:cylinder(POSITION_LOOKUP[claim_unit], end_position, 0.25, Colors.get("dark_red"), 5)
 			end
 		end
 	end
-
-	return 
 end
+
 AIInterestPointSystem.api_start_async_claim_request = function (self, claim_unit, position, min_range, max_range, current_request_id)
 	self.last_request_index = self.last_request_index + 1
 	local request_id = self.last_request_index
@@ -690,11 +679,13 @@ AIInterestPointSystem.api_start_async_claim_request = function (self, claim_unit
 
 	return request_id
 end
+
 AIInterestPointSystem.api_get_claim = function (self, request_id)
 	assert(request_id, "Tried to get claim with no request_id")
 
 	return self.requests[request_id]
 end
+
 AIInterestPointSystem.api_release_claim = function (self, request_id)
 	local request = self.requests[request_id]
 
@@ -738,14 +729,13 @@ AIInterestPointSystem.api_release_claim = function (self, request_id)
 
 	request.current_request = nil
 	self.requests[request_id] = nil
-
-	return 
 end
+
 AIInterestPointSystem.rpc_interest_point_chatter_update = function (self, sender, go_id, is_level_unit, percent_claimed)
 	local unit = self.network_manager:game_object_or_level_unit(go_id, is_level_unit)
 
 	if unit == nil then
-		return 
+		return
 	end
 
 	local extension = self.interest_points[unit]
@@ -753,15 +743,15 @@ AIInterestPointSystem.rpc_interest_point_chatter_update = function (self, sender
 	if not extension then
 		print("Missing interest_point should not happen?")
 
-		return 
+		return
 	end
 
 	local wwise_world = self.wwise_world
 	local percent_claimed_old = extension.percent_claimed or 0
 
 	if percent_claimed == percent_claimed_old then
-		return 
-	elseif 0 < percent_claimed_old and percent_claimed == 0 then
+		return
+	elseif percent_claimed_old > 0 and percent_claimed == 0 then
 		ipprintf("AIInterestPointSystem stopping event")
 
 		if not extension.wwise_source_id or not WwiseWorld.has_source(wwise_world, extension.wwise_source_id) then
@@ -771,7 +761,7 @@ AIInterestPointSystem.rpc_interest_point_chatter_update = function (self, sender
 			extension.wwise_source_id = nil
 			extension.wwise_playing_id = nil
 
-			return 
+			return
 		end
 
 		WwiseWorld.stop_event(wwise_world, extension.wwise_playing_id)
@@ -779,7 +769,7 @@ AIInterestPointSystem.rpc_interest_point_chatter_update = function (self, sender
 
 		extension.wwise_source_id = nil
 		extension.wwise_playing_id = nil
-	elseif percent_claimed_old == 0 and 0 < percent_claimed then
+	elseif percent_claimed_old == 0 and percent_claimed > 0 then
 		ipprintf("AIInterestPointSystem starting event %f", percent_claimed)
 
 		local wwise_event = extension.wwise_event
@@ -800,7 +790,7 @@ AIInterestPointSystem.rpc_interest_point_chatter_update = function (self, sender
 			extension.wwise_source_id = nil
 			extension.wwise_playing_id = nil
 
-			return 
+			return
 		end
 
 		ipprintf("AIInterestPointSystem setting percent_claimed %f", percent_claimed)
@@ -808,13 +798,10 @@ AIInterestPointSystem.rpc_interest_point_chatter_update = function (self, sender
 	end
 
 	extension.percent_claimed = percent_claimed
-
-	return 
 end
+
 AIInterestPointSystem.set_breed_override_lookup = function (self, breed_override_lookup)
 	self._breed_override_lookup = breed_override_lookup
-
-	return 
 end
 
-return 
+return

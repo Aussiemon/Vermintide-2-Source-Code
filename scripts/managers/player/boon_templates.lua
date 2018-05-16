@@ -64,4 +64,4 @@ for _, data in pairs(BoonTemplates) do
 	end
 end
 
-return 
+return

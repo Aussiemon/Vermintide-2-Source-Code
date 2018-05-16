@@ -1,4 +1,5 @@
 ActionCharge = class(ActionCharge)
+
 ActionCharge.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.world = world
 	self.owner_unit = owner_unit
@@ -11,8 +12,8 @@ ActionCharge.init = function (self, world, item_name, is_server, owner_unit, dam
 
 	if ScriptUnit.has_extension(owner_unit, "inventory_system") then
 		local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
-		local slot_name = inventory_extension.get_wielded_slot_name(inventory_extension)
-		local slot_data = inventory_extension.get_slot_data(inventory_extension, slot_name)
+		local slot_name = inventory_extension:get_wielded_slot_name()
+		local slot_data = inventory_extension:get_slot_data(slot_name)
 		self.left_unit = slot_data.left_unit_1p
 	end
 
@@ -27,18 +28,18 @@ ActionCharge.init = function (self, world, item_name, is_server, owner_unit, dam
 	if ScriptUnit.has_extension(weapon_unit, "spread_system") then
 		self.spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
 	end
-
-	return 
 end
+
 ActionCharge.client_owner_start_action = function (self, new_action, t)
 	local owner_unit = self.owner_unit
 	self.current_action = new_action
 	self.charge_ready_sound_event = self.current_action.charge_ready_sound_event
 	self.venting_overcharge = nil
+	self._max_charge = false
 	local overcharge_extension = self.overcharge_extension
 
-	if new_action.vent_overcharge and overcharge_extension and 0 < overcharge_extension.get_overcharge_value(overcharge_extension) then
-		overcharge_extension.vent_overcharge(overcharge_extension)
+	if new_action.vent_overcharge and overcharge_extension and overcharge_extension:get_overcharge_value() > 0 then
+		overcharge_extension:vent_overcharge()
 
 		self.venting_overcharge = true
 	end
@@ -47,9 +48,14 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 	self.remove_overcharge_on_interrupt = new_action.remove_overcharge_on_interrupt
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.charge_level = 0
-	self.charge_time = buff_extension.apply_buffs_to_value(buff_extension, new_action.charge_time, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
+	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
 	self.charge_complete_time = self.charge_time + t
 	self.overcharge_timer = 0
+
+	if not new_action.vent_overcharge then
+		Unit.flow_event(self.first_person_unit, "lua_charge_start")
+	end
+
 	local charge_effect_name = new_action.charge_effect_name
 
 	if charge_effect_name then
@@ -91,8 +97,8 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 	if new_action.zoom then
 		local status_extension = ScriptUnit.extension(self.owner_unit, "status_system")
 
-		if not status_extension.is_zooming(status_extension) then
-			status_extension.set_zooming(status_extension, true)
+		if not status_extension:is_zooming() then
+			status_extension:set_zooming(true)
 		end
 	end
 
@@ -101,11 +107,10 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 	if loaded_projectile_settings then
 		local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
-		inventory_extension.set_loaded_projectile_override(inventory_extension, loaded_projectile_settings)
+		inventory_extension:set_loaded_projectile_override(loaded_projectile_settings)
 	end
-
-	return 
 end
+
 ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 	local charge_time = self.charge_time
@@ -114,17 +119,24 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 	local overcharge_type = current_action.overcharge_type
 	local current_charge_time = nil
 
-	if 0 < full_charge_time and 0 < charge_time then
+	if full_charge_time > 0 and charge_time > 0 then
 		current_charge_time = 1 - full_charge_time / charge_time
-	elseif (0 < full_charge_time and charge_time <= 0) or (full_charge_time <= 0 and 0 < charge_time) or (full_charge_time <= 0 and charge_time <= 0) then
+	elseif (full_charge_time > 0 and charge_time <= 0) or (full_charge_time <= 0 and charge_time > 0) or (full_charge_time <= 0 and charge_time <= 0) then
 		current_charge_time = 1
 	end
 
 	local charge_level = math.max(math.min(current_charge_time, 1), 0)
+
+	if not current_action.vent_overcharge and charge_level >= 1 and not self._max_charge then
+		self._max_charge = true
+
+		Unit.flow_event(self.first_person_unit, "lua_max_charge")
+	end
+
 	local overcharge_extension = self.overcharge_extension
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
-	if overcharge_type and overcharge_extension.get_overcharge_value(overcharge_extension) == 0 and self.venting_overcharge then
+	if overcharge_type and overcharge_extension:get_overcharge_value() == 0 and self.venting_overcharge then
 		CharacterStateHelper.stop_weapon_actions(inventory_extension, "no_more_overcharge")
 	end
 
@@ -192,23 +204,22 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 			WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, charge_sound_parameter_name, charge_level)
 		end
 
-		if self.charge_ready_sound_event and 1 <= charge_level then
+		if self.charge_ready_sound_event and charge_level >= 1 then
 			self.first_person_extension:play_hud_sound_event(self.charge_ready_sound_event)
 
 			self.charge_ready_sound_event = nil
 		end
 	end
 
-	if 1 <= charge_level and not Managers.player:owner(self.owner_unit).bot_player and not self._rumble_effect_id then
+	if charge_level >= 1 and not Managers.player:owner(self.owner_unit).bot_player and not self._rumble_effect_id then
 		self._rumble_effect_id = Managers.state.controller_features:add_effect("persistent_rumble", {
 			rumble_effect = "reload_start"
 		})
 	end
 
 	self.charge_level = charge_level
-
-	return 
 end
+
 ActionCharge.finish = function (self, reason)
 	local owner_unit = self.owner_unit
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
@@ -230,20 +241,22 @@ ActionCharge.finish = function (self, reason)
 	local overcharge_extension = self.overcharge_extension
 
 	if current_action.vent_overcharge and overcharge_extension then
-		overcharge_extension.vent_overcharge_done(overcharge_extension)
+		overcharge_extension:vent_overcharge_done()
 	end
 
 	if self.remove_overcharge_on_interrupt then
 		if reason == "interrupted" then
-			overcharge_extension.remove_charge(overcharge_extension, self.total_overcharge_added * 0.75)
+			overcharge_extension:remove_charge(self.total_overcharge_added * 0.75)
 		elseif reason == "hold_input_released" then
-			overcharge_extension.remove_charge(overcharge_extension, self.total_overcharge_added * 0.5)
+			overcharge_extension:remove_charge(self.total_overcharge_added * 0.5)
 		end
 	end
 
 	if reason == "hold_input_released" or reason == "weapon_wielded" then
 		Unit.flow_event(first_person_unit, "lua_charge_cancel")
 	end
+
+	Unit.flow_event(first_person_unit, "lua_charge_stop")
 
 	if self._rumble_effect_id then
 		Managers.state.controller_features:stop_effect(self._rumble_effect_id)
@@ -267,12 +280,12 @@ ActionCharge.finish = function (self, reason)
 	if current_action.zoom then
 		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 
-		status_extension.set_zooming(status_extension, false)
+		status_extension:set_zooming(false)
 	end
 
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
-	inventory_extension.set_loaded_projectile_override(inventory_extension, nil)
+	inventory_extension:set_loaded_projectile_override(nil)
 
 	local charge_sound_husk_stop_event = current_action.charge_sound_husk_stop_event
 
@@ -284,6 +297,7 @@ ActionCharge.finish = function (self, reason)
 		charge_level = self.charge_level
 	}
 end
+
 ActionCharge.destroy = function (self)
 	if self.particle_id then
 		World.destroy_particles(self.world, self.particle_id)
@@ -311,8 +325,6 @@ ActionCharge.destroy = function (self)
 
 		self._rumble_effect_id = nil
 	end
-
-	return 
 end
 
-return 
+return

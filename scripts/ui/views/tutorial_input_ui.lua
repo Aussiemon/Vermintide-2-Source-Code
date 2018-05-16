@@ -1,6 +1,7 @@
 local definitions = local_require("scripts/ui/views/tutorial_input_ui_definitions")
 local DO_RELOAD = true
 TutorialInputUI = class(TutorialInputUI)
+
 TutorialInputUI.init = function (self, ingame_ui_context)
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._input_manager = ingame_ui_context.input_manager
@@ -13,14 +14,13 @@ TutorialInputUI.init = function (self, ingame_ui_context)
 		mouse = "mouse"
 	}
 
-	self._create_ui_elements(self)
+	self:_create_ui_elements()
 	Managers.state.event:register(self, "event_add_tutorial_input", "event_add_tutorial_input")
 	Managers.state.event:register(self, "event_update_tutorial_input", "event_update_tutorial_input")
 	Managers.state.event:register(self, "event_remove_tutorial_input", "event_remove_tutorial_input")
 	Managers.state.event:register(self, "input_changed", "event_input_changed")
-
-	return 
 end
+
 TutorialInputUI.destroy = function (self)
 	if Managers.state.event then
 		Managers.state.event:unregister("event_add_tutorial_input", self)
@@ -28,9 +28,8 @@ TutorialInputUI.destroy = function (self)
 		Managers.state.event:unregister("event_remove_tutorial_input", self)
 		Managers.state.event:unregister("input_changed", self)
 	end
-
-	return 
 end
+
 TutorialInputUI.event_add_tutorial_input = function (self, mission_name, unit)
 	local mission_data = Missions[mission_name]
 
@@ -41,12 +40,12 @@ TutorialInputUI.event_add_tutorial_input = function (self, mission_name, unit)
 	if unit then
 		Unit.flow_event(unit, "lua_mission_started")
 	end
+end
 
-	return 
-end
 TutorialInputUI.event_update_tutorial_input = function (self, mission_name)
-	return 
+	return
 end
+
 TutorialInputUI.event_remove_tutorial_input = function (self, mission_name)
 	fassert(Missions[mission_name], "[TutorialInputUI:event_remove_tutorial_input] There is no mission called %q", mission_name)
 
@@ -63,14 +62,12 @@ TutorialInputUI.event_remove_tutorial_input = function (self, mission_name)
 	if index then
 		table.remove(self._active_tutorial_tooltips, index)
 	end
-
-	return 
 end
+
 TutorialInputUI.event_input_changed = function (self)
 	self._input_changed = true
-
-	return 
 end
+
 TutorialInputUI._create_ui_elements = function (self)
 	self._tutorial_tooltip_animations = {}
 
@@ -85,12 +82,11 @@ TutorialInputUI._create_ui_elements = function (self)
 
 	DO_RELOAD = false
 	self._active_tooltip_name = nil
-
-	return 
 end
+
 TutorialInputUI._button_texture_data_by_input_action = function (self, input_action, alt_button_name, active_template)
 	local input_manager = self._input_manager
-	local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
+	local gamepad_active = input_manager:is_device_active("gamepad")
 	local platform = PLATFORM
 
 	if platform == "win32" and gamepad_active then
@@ -102,31 +98,29 @@ TutorialInputUI._button_texture_data_by_input_action = function (self, input_act
 
 		return button_texture_data
 	else
-		local input_service = input_manager.get_service(input_manager, "Player")
+		local input_service = input_manager:get_service("Player")
 		local alternate_input_action = nil
 
 		if active_template.input_service_fallback then
-			alternate_input_action = input_manager.get_service(input_manager, active_template.input_service_fallback)
+			alternate_input_action = input_manager:get_service(active_template.input_service_fallback)
 		end
 
 		return UISettings.get_gamepad_input_texture_data(input_service, input_action, gamepad_active, alternate_input_action)
 	end
-
-	return 
 end
+
 TutorialInputUI.update = function (self, dt, t)
 	if DO_RELOAD then
-		self._create_ui_elements(self)
+		self:_create_ui_elements()
 	end
 
 	script_data.tutorial_input = self
 
-	self._update_animations(self, dt, t)
-	self._update_tooltip(self, dt, t)
-	self._draw(self, dt, t)
-
-	return 
+	self:_update_animations(dt, t)
+	self:_update_tooltip(dt, t)
+	self:_draw(dt, t)
 end
+
 TutorialInputUI._update_animations = function (self, dt, t)
 	for name, ui_animation in pairs(self._tutorial_tooltip_animations) do
 		UIAnimation.update(ui_animation, dt)
@@ -135,18 +129,17 @@ TutorialInputUI._update_animations = function (self, dt, t)
 			self._tutorial_tooltip_animations[name] = nil
 		end
 	end
-
-	return 
 end
+
 TutorialInputUI._update_tooltip = function (self, dt, t)
 	local active_template = self._active_tutorial_tooltips[1]
 
 	if not active_template then
 		if self._active_tooltip_name then
-			self.hide(self)
+			self:hide()
 		end
 
-		return 
+		return
 	end
 
 	local ui_renderer = self._ui_renderer
@@ -164,7 +157,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 	local inputs = (gamepad_active and active_template.tooltip_gamepad_inputs) or active_template.tooltip_inputs
 
 	if not active_tooltip_name then
-		self.fade_in(self)
+		self:fade_in()
 	end
 
 	local input_widgets = self._tutorial_tooltip_input_widgets
@@ -185,7 +178,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 		end
 
 		local num_inputs = (inputs and #inputs) or 0
-		widget_content.show_bg = 0 < num_inputs
+		widget_content.show_bg = num_inputs > 0
 		widget_content.description = text
 		widget_content.sub_description = sub_text
 		local parent_widget_content = widget_content
@@ -198,10 +191,10 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 			local widget_style = widget.style
 			local input = inputs[i]
 			local input_action = input.action
-			local button_texture_data, button_text, keymap_binding, unassigned = self._button_texture_data_by_input_action(self, input_action, nil, active_template)
+			local button_texture_data, button_text, keymap_binding, unassigned = self:_button_texture_data_by_input_action(input_action, nil, active_template)
 
 			if not button_texture_data and active_template.alt_action_icons then
-				button_texture_data, button_text = self._button_texture_data_by_input_action(self, input_action, active_template.alt_action_icons[input_action], active_template)
+				button_texture_data, button_text = self:_button_texture_data_by_input_action(input_action, active_template.alt_action_icons[input_action], active_template)
 			end
 
 			parent_widget_content.unassigned = parent_widget_content.unassigned or unassigned
@@ -297,9 +290,8 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 
 		return self._tutorial_tooltip_widget, tooltip_name
 	end
-
-	return 
 end
+
 TutorialInputUI._draw = function (self, dt, t)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
@@ -313,27 +305,24 @@ TutorialInputUI._draw = function (self, dt, t)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 TutorialInputUI.hide = function (self)
 	self._active_tooltip_name = nil
 
-	self.fade_out(self)
-
-	return 
+	self:fade_out()
 end
+
 local FADE_TIME = 0.25
+
 TutorialInputUI.fade_in = function (self)
-	self._fade(self, 0, 255, FADE_TIME, false)
-
-	return 
+	self:_fade(0, 255, FADE_TIME, false)
 end
+
 TutorialInputUI.fade_out = function (self)
-	self._fade(self, 255, 0, FADE_TIME, true)
-
-	return 
+	self:_fade(255, 0, FADE_TIME, true)
 end
+
 TutorialInputUI._fade = function (self, from_alpha, to_alpha, duration, completed)
 	local widget_style = self._tutorial_tooltip_widget.style
 	local bg_style = widget_style.background
@@ -390,9 +379,8 @@ TutorialInputUI._fade = function (self, from_alpha, to_alpha, duration, complete
 		tutorial_tooltip_animations["tooltip_input_button_shadow_" .. i] = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, button_text_shadow_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 		tutorial_tooltip_animations["tooltip_input_icon_" .. i] = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, icon_style.color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 	end
-
-	return 
 end
+
 TutorialInputUI.has_completed_fade = function (self)
 	if next(self._tutorial_tooltip_animations) ~= nil then
 		return false
@@ -400,6 +388,7 @@ TutorialInputUI.has_completed_fade = function (self)
 
 	return true
 end
+
 TutorialInputUI.set_visible = function (self, visible)
 	self._is_visible = visible
 	local ui_renderer = self._ui_renderer
@@ -409,8 +398,6 @@ TutorialInputUI.set_visible = function (self, visible)
 	end
 
 	UIRenderer.set_element_visible(ui_renderer, self._tutorial_tooltip_widget.element, visible)
-
-	return 
 end
 
-return 
+return

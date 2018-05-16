@@ -28,4 +28,4 @@ BreedBehaviors.chaos_plague_wave_spawner = {
 	name = "chaos_plague_wave_spawner"
 }
 
-return 
+return

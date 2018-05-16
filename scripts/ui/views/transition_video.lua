@@ -6,12 +6,13 @@ local demo_video = definitions.demo_video
 TransitionVideo = class(TransitionVideo)
 local fake_input_service = {
 	get = function ()
-		return 
+		return
 	end,
 	has = function ()
-		return 
+		return
 	end
 }
+
 TransitionVideo.init = function (self, world, video_data_table)
 	self._world = world
 	local platform = PLATFORM
@@ -22,10 +23,9 @@ TransitionVideo.init = function (self, world, video_data_table)
 	self._video_data_table = video_data_table or demo_video
 	self._ui_renderer = UIRenderer.create(world, "material", self._video_data_table.video_name)
 
-	self._create_ui_elements(self)
-
-	return 
+	self:_create_ui_elements()
 end
+
 TransitionVideo._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._demo_video = UIWidget.init(UIWidgets.create_splash_video(self._video_data_table))
@@ -40,13 +40,13 @@ TransitionVideo._create_ui_elements = function (self)
 	for widget_name, widget_definition in pairs(background_widget_definitions) do
 		self._background_widgets[widget_name] = UIWidget.init(widget_definition)
 	end
-
-	return 
 end
+
 local DO_RELOAD = true
+
 TransitionVideo.activate = function (self, activate)
 	if DO_RELOAD then
-		self._create_ui_elements(self)
+		self:_create_ui_elements()
 
 		DO_RELOAD = false
 	end
@@ -54,11 +54,10 @@ TransitionVideo.activate = function (self, activate)
 	self._active = activate
 
 	if not activate then
-		self._destroy_video(self)
+		self:_destroy_video()
 	end
-
-	return 
 end
+
 TransitionVideo._destroy_video = function (self)
 	local ui_renderer = self._ui_renderer
 
@@ -71,16 +70,14 @@ TransitionVideo._destroy_video = function (self)
 			Managers.music:trigger_event(self._video_data_table.sound_stop)
 		end
 	end
-
-	return 
 end
+
 TransitionVideo.update = function (self, dt, t)
 	if self._active then
-		self._draw(self, dt, t)
+		self:_draw(dt, t)
 	end
-
-	return 
 end
+
 TransitionVideo._draw = function (self, dt, t)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
@@ -123,19 +120,18 @@ TransitionVideo._draw = function (self, dt, t)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 TransitionVideo.completed = function (self)
 	return self._demo_video.content.video_content.video_completed
 end
+
 TransitionVideo.is_active = function (self)
 	return self._active
 end
+
 TransitionVideo.destroy = function (self)
 	UIRenderer.destroy(self._ui_renderer, self._world)
-
-	return 
 end
 
-return 
+return

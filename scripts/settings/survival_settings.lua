@@ -1217,4 +1217,4 @@ SurvivalSettings = {
 	}
 }
 
-return 
+return

@@ -1,14 +1,15 @@
 ProjectileLinkerExtension = class(ProjectileLinkerExtension)
+
 ProjectileLinkerExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.unit = unit
 	self.linked_projectiles = {}
+end
 
-	return 
-end
 ProjectileLinkerExtension.extensions_ready = function (self)
-	return 
+	return
 end
+
 ProjectileLinkerExtension.link_projectile = function (self, projectile_unit, offset_position, rotation, actor_node)
 	local unit = self.unit
 	local hit_node_rot = Unit.world_rotation(unit, actor_node)
@@ -20,11 +21,10 @@ ProjectileLinkerExtension.link_projectile = function (self, projectile_unit, off
 	World.update_unit(self.world, projectile_unit)
 
 	self.linked_projectiles[#self.linked_projectiles + 1] = projectile_unit
-
-	return 
 end
+
 ProjectileLinkerExtension.destroy = function (self)
-	return 
+	return
 end
 
-return 
+return

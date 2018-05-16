@@ -1,5 +1,6 @@
 PlayerHuskLocomotionExtension = class(PlayerHuskLocomotionExtension)
 local POSITION_LOOKUP = POSITION_LOOKUP
+
 PlayerHuskLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.unit = unit
@@ -37,34 +38,34 @@ PlayerHuskLocomotionExtension.init = function (self, extension_init_context, uni
 		self._nav_traverse_logic = GwNavTraverseLogic.create(self._nav_world, nav_cost_map_cost_table)
 		self._nav_cost_map_cost_table = nav_cost_map_cost_table
 	end
-
-	return 
 end
+
 PlayerHuskLocomotionExtension.destroy = function (self)
 	if self.is_server then
 		GwNavCostMap.destroy_tag_cost_table(self._nav_cost_map_cost_table)
 		GwNavTraverseLogic.destroy(self._nav_traverse_logic)
 	end
-
-	return 
 end
+
 PlayerHuskLocomotionExtension.current_velocity = function (self)
 	return GameSession.game_object_field(self.game, self.id, "velocity")
 end
+
 PlayerHuskLocomotionExtension.average_velocity = function (self)
 	return GameSession.game_object_field(self.game, self.id, "average_velocity")
 end
+
 PlayerHuskLocomotionExtension.small_sample_size_average_velocity = function (self)
 	return GameSession.game_object_field(self.game, self.id, "small_sample_size_average_velocity")
 end
+
 PlayerHuskLocomotionExtension.extensions_ready = function (self, world, unit)
 	self.status_extension = ScriptUnit.extension(self.unit, "status_system")
-
-	return 
 end
+
 PlayerHuskLocomotionExtension.add_external_velocity = function (self, velocity, upper_limit)
 	if not Managers.state.network:game() then
-		return 
+		return
 	end
 
 	local rpc_name = (upper_limit and "rpc_add_external_velocity_with_upper_limit") or "rpc_add_external_velocity"
@@ -74,9 +75,8 @@ PlayerHuskLocomotionExtension.add_external_velocity = function (self, velocity, 
 	else
 		Managers.state.network.network_transmit:send_rpc_server(rpc_name, self.id, velocity, upper_limit)
 	end
-
-	return 
 end
+
 PlayerHuskLocomotionExtension.set_forced_velocity = function (self, velocity_forced)
 	if not self.disabled then
 		if self.is_server then
@@ -85,9 +85,8 @@ PlayerHuskLocomotionExtension.set_forced_velocity = function (self, velocity_for
 			Managers.state.network.network_transmit:send_rpc_server("rpc_set_forced_velocity", self.id, velocity_forced)
 		end
 	end
-
-	return 
 end
+
 PlayerHuskLocomotionExtension.set_disabled = function (self, disabled, run_func, master_unit)
 	self._disabled = disabled
 	self._run_func = run_func
@@ -107,42 +106,41 @@ PlayerHuskLocomotionExtension.set_disabled = function (self, disabled, run_func,
 		Mover.set_position(mover, pos)
 		Unit.set_local_position(unit, 0, pos)
 	end
-
-	return 
 end
+
 PlayerHuskLocomotionExtension.update = function (self, unit, input, dt, context, t)
 	if self._disabled then
 		self._run_func(unit, dt, self)
 
-		return 
+		return
 	end
 
 	if self.game and self.id then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
-		local is_alive = health_extension.is_alive(health_extension)
+		local is_alive = health_extension:is_alive()
 
 		if is_alive then
 			local movement_state = "onground"
 
-			self.update_movement(self, dt, unit, movement_state)
+			self:update_movement(dt, unit, movement_state)
 		end
 	end
 
 	local is_on_ladder, ladder_unit = self.status_extension:get_is_on_ladder()
 
 	if is_on_ladder and ladder_unit then
-		self.update_ladder_animation_position(self, ladder_unit)
+		self:update_ladder_animation_position(ladder_unit)
 	end
 
-	self._update_last_position_on_navmesh(self)
-
-	return 
+	self:_update_last_position_on_navmesh()
 end
+
 PlayerHuskLocomotionExtension.last_position_on_navmesh = function (self)
 	assert(self.is_server, "last position on nav mesh is only saved on server")
 
 	return self._latest_position_on_navmesh:unbox()
 end
+
 PlayerHuskLocomotionExtension._update_last_position_on_navmesh = function (self)
 	if self.is_server then
 		local current_position = GameSession.game_object_field(self.game, self.id, "position")
@@ -152,13 +150,13 @@ PlayerHuskLocomotionExtension._update_last_position_on_navmesh = function (self)
 			self._latest_position_on_navmesh:store(Vector3(current_position.x, current_position.y, current_position.z))
 		end
 	end
-
-	return 
 end
+
 local POS_EPSILON = 0.01
 local POS_LERP_TIME = 0.1
 local POS_LERP_TIME_LINKED = 0.01
 local DISCONNECT_GRACE_TIME = 1
+
 PlayerHuskLocomotionExtension.update_movement = function (self, dt, unit, movement_state)
 	local old_pos = Unit.local_position(unit, 0)
 	local new_pos = nil
@@ -194,13 +192,12 @@ PlayerHuskLocomotionExtension.update_movement = function (self, dt, unit, moveme
 
 	self.has_moved_from_start_position = GameSession.game_object_field(self.game, self.id, "has_moved_from_start_position")
 
-	self._extrapolation_movement(self, unit, dt, old_pos, new_pos, new_rot, movement_state, velocity, linked_movement)
+	self:_extrapolation_movement(unit, dt, old_pos, new_pos, new_rot, movement_state, velocity, linked_movement)
 	self.velocity_current:store(velocity)
 	self._current_rotation:store(new_rot)
-	self._update_speed_variable(self)
-
-	return 
+	self:_update_speed_variable()
 end
+
 PlayerHuskLocomotionExtension.update_ladder_animation_position = function (self, ladder_unit)
 	local unit = self.unit
 	local ladder_pos = Unit.world_position(ladder_unit, 0)
@@ -208,9 +205,8 @@ PlayerHuskLocomotionExtension.update_ladder_animation_position = function (self,
 	local variable_index = Unit.animation_find_variable(unit, "climb_time")
 
 	Unit.animation_set_variable(unit, variable_index, time_in_move_animation)
-
-	return 
 end
+
 PlayerHuskLocomotionExtension._extrapolation_movement = function (self, unit, dt, old_pos, new_pos, new_rot, movement_state, velocity, linked_movement)
 	local last_pos = Unit.get_data(unit, "last_lerp_position") or old_pos
 	local last_pos_offset = Unit.get_data(unit, "last_lerp_position_offset") or Vector3(0, 0, 0)
@@ -257,15 +253,15 @@ PlayerHuskLocomotionExtension._extrapolation_movement = function (self, unit, dt
 	local old_rot = Unit.local_rotation(unit, 0)
 
 	Unit.set_local_rotation(unit, 0, Quaternion.lerp(old_rot, new_rot, math.min(dt * 15, 1)))
-
-	return 
 end
+
 local WALK_THRESHOLD = 0.97
 local JOG_THRESHOLD = 3.23
 local RUN_THRESHOLD = 6.14
 local LOWEST_MOVEMENT_ANIMATION_SCALE = 0.3
 local HIGHEST_MOVEMENT_ANIMATION_SCALE = 1.5
 local MOVE_SPEED_MAX = 99.9999
+
 PlayerHuskLocomotionExtension._update_speed_variable = function (self)
 	local velocity = self.velocity_current:unbox()
 	local flat_velocity = Vector3(velocity.x, velocity.y, 0)
@@ -287,9 +283,8 @@ PlayerHuskLocomotionExtension._update_speed_variable = function (self)
 	movement_anim_scale = math.clamp(movement_anim_scale, LOWEST_MOVEMENT_ANIMATION_SCALE, HIGHEST_MOVEMENT_ANIMATION_SCALE)
 
 	Unit.animation_set_variable(unit, self.movement_scale_animation_id, movement_anim_scale)
-
-	return 
 end
+
 PlayerHuskLocomotionExtension._calculate_move_speed_var_from_mps = function (self, move_speed)
 	local speed_var = nil
 	local speed_multiplier = 1
@@ -308,21 +303,20 @@ PlayerHuskLocomotionExtension._calculate_move_speed_var_from_mps = function (sel
 
 	return speed_var, speed_multiplier
 end
+
 PlayerHuskLocomotionExtension.rpc_animation_set_variable = function (self, index, variable)
 	Unit.animation_set_variable(self.unit, index, variable)
-
-	return 
 end
+
 PlayerHuskLocomotionExtension.hot_join_sync = function (self, sender)
 	local player_object_id = self.id
 	local unit = self.unit
 
 	RPC.rpc_sync_anim_state_3(sender, player_object_id, Unit.animation_get_state(unit))
-
-	return 
 end
+
 PlayerHuskLocomotionExtension.current_rotation = function (self)
 	return self._current_rotation:unbox()
 end
 
-return 
+return

@@ -25,18 +25,6 @@ local lobby_list_size = {
 	inner_window_size[1] - filter_frame_size[1] - info_frame_size[1],
 	inner_window_size[2] - 50
 }
-local password_popup_frame_size = {
-	600,
-	300
-}
-local password_text_input_size = {
-	500,
-	45
-}
-local password_input_button_size = {
-	200,
-	70
-}
 local lobby_info_box_size_lobbies = {
 	300,
 	100
@@ -583,90 +571,6 @@ local scenegraph_definition = {
 			0
 		}
 	},
-	password_popup = {
-		vertical_alignment = "center",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			password_popup_frame_size[1],
-			password_popup_frame_size[2]
-		},
-		position = {
-			0,
-			0,
-			100
-		}
-	},
-	password_popup_content = {
-		vertical_alignment = "center",
-		parent = "password_popup",
-		horizontal_alignment = "center",
-		size = {
-			password_popup_frame_size[1] * 0.85,
-			password_popup_frame_size[2] * 0.85
-		},
-		position = {
-			0,
-			0,
-			0
-		}
-	},
-	password_description_text = {
-		vertical_alignment = "top",
-		parent = "password_popup_content",
-		horizontal_alignment = "center",
-		size = {
-			300,
-			15
-		},
-		position = {
-			0,
-			-10,
-			1
-		}
-	},
-	password_popup_text_input = {
-		vertical_alignment = "top",
-		parent = "password_popup_content",
-		horizontal_alignment = "center",
-		size = {
-			password_text_input_size[1],
-			password_text_input_size[2]
-		},
-		position = {
-			0,
-			-55,
-			1
-		}
-	},
-	password_cancel_button = {
-		vertical_alignment = "bottom",
-		parent = "password_popup_content",
-		horizontal_alignment = "left",
-		size = {
-			password_input_button_size[1],
-			password_input_button_size[2]
-		},
-		position = {
-			15,
-			0,
-			1
-		}
-	},
-	password_ok_button = {
-		vertical_alignment = "bottom",
-		parent = "password_popup_content",
-		horizontal_alignment = "right",
-		size = {
-			password_input_button_size[1],
-			password_input_button_size[2]
-		},
-		position = {
-			-15,
-			0,
-			1
-		}
-	},
 	name_input_box = {
 		vertical_alignment = "top",
 		parent = "filter_frame",
@@ -1014,17 +918,15 @@ LobbyBrowserGamepadWidgets = {
 		input_function = function (widget, input_service)
 			local content = widget.content
 
-			if input_service.get(input_service, "move_left") then
+			if input_service:get("move_left") then
 				content.left_button_hotspot.on_release = true
 
 				return true
-			elseif input_service.get(input_service, "move_right") then
+			elseif input_service:get("move_right") then
 				content.right_button_hotspot.on_release = true
 
 				return true
 			end
-
-			return 
 		end
 	}
 }
@@ -1877,7 +1779,7 @@ local info_frame_text_title_style = {
 	word_wrap = true,
 	horizontal_alignment = "left",
 	vertical_alignment = "center",
-	font_type = "hell_shark_header",
+	font_type = "arial",
 	text_color = Colors.get_color_table_with_alpha("white", 255),
 	offset = {
 		0,
@@ -1893,7 +1795,7 @@ local info_frame_text_style = {
 	word_wrap = true,
 	horizontal_alignment = "right",
 	vertical_alignment = "center",
-	font_type = "hell_shark_header",
+	font_type = "arial",
 	text_color = Colors.get_color_table_with_alpha("white", 255),
 	offset = {
 		0,
@@ -1937,17 +1839,6 @@ local widgets = {
 		name_input_box_banner = UIWidgets.create_title_and_tooltip("name_input_box_banner", scenegraph_definition.name_input_box_banner.size, "lb_server_name", "lb_server_name_tooltip", create_banner_text_config()),
 		search_type_banner_widget = UIWidgets.create_title_and_tooltip("search_type_banner", scenegraph_definition.search_type_banner.size, "lb_search_type_setting", "lb_search_type_setting_tooltip", create_banner_text_config())
 	},
-	password_popup = {
-		background = UIWidgets.create_background_with_frame("password_popup", password_popup_frame_size),
-		text_description = UIWidgets.create_title_text("lb_password", "password_description_text"),
-		input_box = UIWidgets.create_text_input_rect("password_popup_text_input", password_text_input_size, {
-			5,
-			13,
-			0
-		}),
-		cancel_button = UIWidgets.create_default_button("password_cancel_button", scenegraph_definition.password_cancel_button.size, nil, nil, Localize("lb_cancel")),
-		ok_button = UIWidgets.create_default_button("password_ok_button", scenegraph_definition.password_ok_button.size, nil, nil, Localize("lb_ok"))
-	},
 	lobby_info_box_base = {
 		level_image_frame = UIWidgets.create_simple_texture("map_frame_00", "lobby_info_level_image_frame"),
 		level_image = UIWidgets.create_simple_texture("level_icon_01", "lobby_info_level_image"),
@@ -1955,7 +1846,7 @@ local widgets = {
 		hero_tabs = UIWidgets.create_icon_selector("lobby_info_hero_tabs", {
 			hero_entry_width,
 			hero_entry_height
-		}, hero_icons, hero_entry_spacing, true, hero_entry_frame_size)
+		}, hero_icons, hero_entry_spacing, true, hero_entry_frame_size, true)
 	},
 	lobby_info_box_lobbies = {
 		info_frame = UIWidgets.create_frame("lobby_info_box_info_frame_lobbies", scenegraph_definition.lobby_info_box_info_frame_lobbies.size, window_frame, 5),
@@ -2002,17 +1893,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -2023,17 +1910,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

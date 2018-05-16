@@ -1,39 +1,41 @@
 local breed_data = {
 	detection_radius = 12,
-	has_inventory = true,
+	poison_resistance = 100,
 	walk_speed = 2.2,
 	disable_crowd_dispersion = true,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
-	run_speed = 4.8,
+	dont_wield_weapon_on_patrol = true,
 	aim_template = "chaos_marauder",
 	animation_sync_rpc = "rpc_sync_anim_state_7",
 	aoe_radius = 0.4,
 	scale_death_push = 0.75,
-	dont_wield_weapon_on_patrol = true,
-	poison_resistance = 100,
+	opt_base_unit = "units/beings/enemies/chaos_raider/chr_chaos_raider_baked",
+	target_selection = "pick_closest_target_with_spillover",
+	look_at_range = 30,
+	no_stagger_duration = true,
 	is_bot_threat = true,
 	dialogue_source_name = "chaos_marauder",
 	attack_player_sound_event = "Play_enemy_marauder_attack_player_vce",
 	headshot_coop_stamina_fatigue_type = "headshot_special",
-	threat_value = 5,
-	awards_positive_reinforcement_message = true,
 	attack_general_sound_event = "Play_enemy_marauder_attack_husk_vce",
 	default_inventory_template = "raider_axe_2h",
 	stagger_resistance = 3,
 	patrol_detection_radius = 10,
+	threat_value = 5,
 	flingable = true,
 	wwise_voice_switch_group = "marauder_vce_variations",
 	panic_close_detection_radius_sq = 9,
 	radius = 2,
 	use_slot_type = "medium",
-	bone_lod_level = 1,
+	awards_positive_reinforcement_message = true,
 	hit_mass_count = 8,
 	patrol_active_perception = "perception_regular",
 	perception_previous_attacker_stickyness_value = -4.5,
 	race = "chaos",
-	smart_object_template = "special",
+	bone_lod_level = 1,
 	death_reaction = "ai_default",
 	armor_category = 1,
+	smart_object_template = "special",
 	backstab_player_sound_event = "Play_enemy_marauder_attack_player_back_vce",
 	death_sound_event = "Play_enemy_marauder_death_vce",
 	smart_targeting_width = 0.2,
@@ -41,8 +43,8 @@ local breed_data = {
 	behavior = "raider",
 	stagger_armor_category = 2,
 	bots_should_flank = true,
-	target_selection = "pick_closest_target_with_spillover",
-	no_stagger_duration = true,
+	has_inventory = true,
+	run_speed = 4.8,
 	exchange_order = 3,
 	stagger_threshold_heavy = 3,
 	stagger_multiplier = 0.4,
@@ -162,7 +164,7 @@ local breed_data = {
 			if direction then
 				local unit_dir = Quaternion.forward(Unit.local_rotation(blackboard.unit, 0))
 				local angle = Vector3.dot(Vector3.normalize(direction), Vector3.normalize(unit_dir))
-				local direction_allowed = -0.35 <= angle and angle <= 1
+				local direction_allowed = angle >= -0.35 and angle <= 1
 
 				if direction_allowed then
 					blackboard.fallen_stagger = true
@@ -984,4 +986,4 @@ local action_data = {
 }
 BreedActions.chaos_raider = table.create_copy(BreedActions.chaos_raider, action_data)
 
-return 
+return

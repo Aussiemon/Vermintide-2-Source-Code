@@ -1,4 +1,5 @@
 DebugTextManager = class(DebugTextManager)
+
 DebugTextManager.init = function (self, world, gui, is_server, network_event_delegate)
 	self._world = world
 	self._gui = gui
@@ -14,22 +15,20 @@ DebugTextManager.init = function (self, world, gui, is_server, network_event_del
 	self._world_text_size = 0.6
 	self._world_text_time = math.huge
 	self._world_texts = {}
-
-	return 
 end
+
 DebugTextManager.update = function (self, dt, viewport_name)
 	self._time = self._time + dt
 
 	if script_data and script_data.disable_debug_draw then
-		return 
+		return
 	end
 
-	self._update_unit_texts(self, viewport_name, dt)
-	self._update_world_texts(self, viewport_name)
-	self._update_screen_text(self)
-
-	return 
+	self:_update_unit_texts(viewport_name, dt)
+	self:_update_world_texts(viewport_name)
+	self:_update_screen_text()
 end
+
 DebugTextManager._update_unit_texts = function (self, viewport_name, dt)
 	local camera_rotation = Managers.state.camera:camera_rotation(viewport_name)
 	local world_gui = self._world_gui
@@ -63,7 +62,7 @@ DebugTextManager._update_unit_texts = function (self, viewport_name, dt)
 						local floating_position_box = gui_text.floating_position_box
 
 						if floating_position_box then
-							local floating_position = floating_position_box.unbox(floating_position_box)
+							local floating_position = floating_position_box:unbox()
 							floating_position = floating_position + Vector3.forward() * dt * 0.5
 							text_offset = text_offset + floating_position
 
@@ -75,12 +74,11 @@ DebugTextManager._update_unit_texts = function (self, viewport_name, dt)
 				end
 			end
 		else
-			self._destroy_unit_texts(self, unit)
+			self:_destroy_unit_texts(unit)
 		end
 	end
-
-	return 
 end
+
 DebugTextManager._update_world_texts = function (self, viewport_name)
 	local camera_rotation = Managers.state.camera:camera_rotation(viewport_name)
 	local world_gui = self._world_gui
@@ -103,9 +101,8 @@ DebugTextManager._update_world_texts = function (self, viewport_name)
 			end
 		end
 	end
-
-	return 
 end
+
 DebugTextManager._update_screen_text = function (self)
 	if self._screen_text and self._screen_text.time < self._time then
 		Gui.destroy_text(self._gui, self._screen_text.text_id)
@@ -113,12 +110,11 @@ DebugTextManager._update_screen_text = function (self)
 
 		self._screen_text = nil
 	end
-
-	return 
 end
+
 DebugTextManager.output_unit_text = function (self, text, text_size, unit, node_index, offset, time, category, color, viewport_name, floating, fade)
 	if script_data and script_data.disable_debug_draw then
-		return 
+		return
 	end
 
 	node_index = node_index or 0
@@ -177,9 +173,8 @@ DebugTextManager.output_unit_text = function (self, text, text_size, unit, node_
 	self._unit_texts[unit] = self._unit_texts[unit] or {}
 	self._unit_texts[unit][category] = self._unit_texts[unit][category] or {}
 	self._unit_texts[unit][category][#self._unit_texts[unit][category] + 1] = new_text
-
-	return 
 end
+
 DebugTextManager.clear_unit_text = function (self, clear_unit, clear_category)
 	for unit, categories in pairs(self._unit_texts) do
 		if not clear_unit or clear_unit == unit then
@@ -193,12 +188,11 @@ DebugTextManager.clear_unit_text = function (self, clear_unit, clear_category)
 			end
 		end
 	end
-
-	return 
 end
+
 DebugTextManager.output_world_text = function (self, text, text_size, position, time, category, color, viewport_name)
 	if script_data and script_data.disable_debug_draw then
-		return 
+		return
 	end
 
 	text_size = text_size or self._world_text_size
@@ -243,9 +237,8 @@ DebugTextManager.output_world_text = function (self, text, text_size, position, 
 	}
 	self._world_texts[category] = self._world_texts[category] or {}
 	self._world_texts[category][#self._world_texts[category] + 1] = new_text
-
-	return 
 end
+
 DebugTextManager.clear_world_text = function (self, clear_category)
 	for category, gui_texts in pairs(self._world_texts) do
 		if not clear_category or category == "none" or clear_category == category then
@@ -257,12 +250,11 @@ DebugTextManager.clear_world_text = function (self, clear_category)
 			end
 		end
 	end
-
-	return 
 end
+
 DebugTextManager.output_screen_text = function (self, text, text_size, time, color)
 	if script_data and script_data.disable_debug_draw then
-		return 
+		return
 	end
 
 	text_size = text_size or self._screen_text_size
@@ -296,9 +288,8 @@ DebugTextManager.output_screen_text = function (self, text, text_size, time, col
 		}
 		self._screen_text = screen_text
 	end
-
-	return 
 end
+
 DebugTextManager.destroy = function (self)
 	if self._screen_text then
 		Gui.destroy_text(self._gui, self._screen_text.text_id)
@@ -308,7 +299,7 @@ DebugTextManager.destroy = function (self)
 	end
 
 	for unit, categories in pairs(self._unit_texts) do
-		self._destroy_unit_texts(self, unit)
+		self:_destroy_unit_texts(unit)
 	end
 
 	for category, gui_texts in pairs(self._world_texts) do
@@ -316,9 +307,8 @@ DebugTextManager.destroy = function (self)
 			Gui.destroy_text_3d(self._world_gui, gui_text.id)
 		end
 	end
-
-	return 
 end
+
 DebugTextManager._destroy_unit_texts = function (self, unit)
 	local categories = self._unit_texts[unit]
 
@@ -329,8 +319,6 @@ DebugTextManager._destroy_unit_texts = function (self, unit)
 	end
 
 	self._unit_texts[unit] = nil
-
-	return 
 end
 
-return 
+return

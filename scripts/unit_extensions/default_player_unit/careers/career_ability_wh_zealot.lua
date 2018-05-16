@@ -1,4 +1,5 @@
 CareerAbilityWHZealot = class(CareerAbilityWHZealot)
+
 CareerAbilityWHZealot.init = function (self, extension_init_context, unit, extension_init_data)
 	self._owner_unit = unit
 	self._world = extension_init_context.world
@@ -13,9 +14,8 @@ CareerAbilityWHZealot.init = function (self, extension_init_context, unit, exten
 	self._decal_unit = nil
 	self._decal_unit_name = "units/decals/decal_arrow_saltzpyre"
 	self._fov_lerp_time = 0
-
-	return 
 end
+
 CareerAbilityWHZealot.extensions_ready = function (self, world, unit)
 	self._first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 	self._status_extension = ScriptUnit.extension(unit, "status_system")
@@ -26,54 +26,54 @@ CareerAbilityWHZealot.extensions_ready = function (self, world, unit)
 	if self._first_person_extension then
 		self._first_person_unit = self._first_person_extension:get_first_person_unit()
 	end
+end
 
-	return 
-end
 CareerAbilityWHZealot.destroy = function (self)
-	return 
+	return
 end
+
 CareerAbilityWHZealot.update = function (self, unit, input, dt, context, t)
-	if not self._ability_available(self) then
-		return 
+	if not self:_ability_available() then
+		return
 	end
 
 	local input_extension = self._input_extension
 
 	if not input_extension then
-		return 
+		return
 	end
 
 	if not self._is_priming then
-		if input_extension.get(input_extension, "action_career") then
-			self._start_priming(self)
+		if input_extension:get("action_career") then
+			self:_start_priming()
 		end
 	elseif self._is_priming then
-		self._update_priming(self, dt)
+		self:_update_priming(dt)
 
-		if input_extension.get(input_extension, "action_two") then
-			self._stop_priming(self)
+		if input_extension:get("action_two") then
+			self:_stop_priming()
 
-			return 
+			return
 		end
 
-		if input_extension.get(input_extension, "action_career_release") then
-			self._run_ability(self)
+		if input_extension:get("action_career_release") then
+			self:_run_ability()
 		end
 	end
-
-	return 
 end
+
 CareerAbilityWHZealot._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
 
-	return career_extension.can_use_activated_ability(career_extension) and not status_extension.is_disabled(status_extension)
+	return career_extension:can_use_activated_ability() and not status_extension:is_disabled()
 end
+
 CareerAbilityWHZealot._start_priming = function (self)
 	if self._local_player then
 		local decal_unit_name = self._decal_unit_name
 		local unit_spawner = Managers.state.unit_spawner
-		self._decal_unit = unit_spawner.spawn_local_unit(unit_spawner, decal_unit_name)
+		self._decal_unit = unit_spawner:spawn_local_unit(decal_unit_name)
 	end
 
 	local buff_extension = self._buff_extension
@@ -81,16 +81,15 @@ CareerAbilityWHZealot._start_priming = function (self)
 	local buff_params = {
 		external_optional_multiplier = 0.3
 	}
-	self._buff_id = buff_extension.add_buff(buff_extension, buff_template_name, buff_params)
+	self._buff_id = buff_extension:add_buff(buff_template_name, buff_params)
 	self._is_priming = true
-
-	return 
 end
+
 CareerAbilityWHZealot._update_priming = function (self, dt)
 	if self._local_player then
 		local first_person_extension = self._first_person_extension
 		local player_position = Unit.local_position(self._owner_unit, 0)
-		local player_rotation = first_person_extension.current_rotation(first_person_extension)
+		local player_rotation = first_person_extension:current_rotation()
 		local player_direction_flat = Vector3.flat(Vector3.normalize(Quaternion.forward(player_rotation)))
 		local player_rotation_flat = Quaternion.look(player_direction_flat, Vector3.up())
 
@@ -104,20 +103,19 @@ CareerAbilityWHZealot._update_priming = function (self, dt)
 
 		Managers.state.camera:set_additional_fov_multiplier(fov_multiplier)
 	end
-
-	return 
 end
+
 CareerAbilityWHZealot._stop_priming = function (self)
 	if self._decal_unit then
 		local unit_spawner = Managers.state.unit_spawner
 
-		unit_spawner.mark_for_deletion(unit_spawner, self._decal_unit)
+		unit_spawner:mark_for_deletion(self._decal_unit)
 	end
 
 	if self._buff_id then
 		local buff_extension = self._buff_extension
 
-		buff_extension.remove_buff(buff_extension, self._buff_id)
+		buff_extension:remove_buff(self._buff_id)
 
 		self._buff_id = nil
 	end
@@ -129,11 +127,10 @@ CareerAbilityWHZealot._stop_priming = function (self)
 	end
 
 	self._is_priming = false
-
-	return 
 end
+
 CareerAbilityWHZealot._run_ability = function (self)
-	self._stop_priming(self)
+	self:_stop_priming()
 
 	local owner_unit = self._owner_unit
 	local is_server = self._is_server
@@ -145,41 +142,41 @@ CareerAbilityWHZealot._run_ability = function (self)
 	local buff_name = "victor_zealot_activated_ability"
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 
-	if talent_extension.has_talent(talent_extension, "victor_zealot_activated_ability_duration", "witch_hunter", true) then
+	if talent_extension:has_talent("victor_zealot_activated_ability_duration", "witch_hunter", true) then
 		buff_name = "victor_zealot_activated_ability_duration"
 	end
 
-	local unit_object_id = network_manager.unit_game_object_id(network_manager, owner_unit)
+	local unit_object_id = network_manager:unit_game_object_id(owner_unit)
 	local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
 	if is_server then
 		local buff_extension = self._buff_extension
 
-		buff_extension.add_buff(buff_extension, buff_name, {
+		buff_extension:add_buff(buff_name, {
 			attacker_unit = owner_unit
 		})
-		network_transmit.send_rpc_clients(network_transmit, "rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
+		network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 	else
-		network_transmit.send_rpc_server(network_transmit, "rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
+		network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
 	end
 
 	if local_player or (is_server and self._bot_player) then
 		local first_person_extension = self._first_person_extension
 
-		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_victor_zealot_enter", nil, true)
-		first_person_extension.play_hud_sound_event(first_person_extension, "Play_career_ability_victor_zealot_loop")
+		first_person_extension:play_hud_sound_event("Play_career_ability_victor_zealot_enter", nil, true)
+		first_person_extension:play_hud_sound_event("Play_career_ability_victor_zealot_loop")
 
 		if local_player then
-			first_person_extension.animation_event(first_person_extension, "shade_stealth_ability")
+			first_person_extension:animation_event("shade_stealth_ability")
 
 			MOOD_BLACKBOARD.skill_zealot = true
 
-			career_extension.set_state(career_extension, "victor_activate_zealot")
+			career_extension:set_state("victor_activate_zealot")
 			WwiseUtils.trigger_unit_event(self._world, "Play_career_ability_zealot_charge", owner_unit, 0)
 		end
 	end
 
-	status_extension.set_noclip(status_extension, true)
+	status_extension:set_noclip(true)
 
 	status_extension.do_lunge = {
 		animation_end_event = "zealot_active_ability_charge_hit",
@@ -220,19 +217,16 @@ CareerAbilityWHZealot._run_ability = function (self)
 		}
 	}
 
-	career_extension.start_activated_ability_cooldown(career_extension)
-	self._play_vo(self)
-
-	return 
+	career_extension:start_activated_ability_cooldown()
+	self:_play_vo()
 end
+
 CareerAbilityWHZealot._play_vo = function (self)
 	local owner_unit = self._owner_unit
 	local dialogue_input = ScriptUnit.extension_input(owner_unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
 
-	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "activate_ability", event_data)
-
-	return 
+	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
 
-return 
+return

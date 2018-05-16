@@ -1,4 +1,5 @@
 ActionGeiserTargeting = class(ActionGeiserTargeting)
+
 ActionGeiserTargeting.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.world = world
 	self.owner_unit = owner_unit
@@ -12,9 +13,8 @@ ActionGeiserTargeting.init = function (self, world, item_name, is_server, owner_
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self.network_transmit = Managers.state.network.network_transmit
 	self.unit_id = Managers.state.network.unit_storage:go_id(owner_unit)
-
-	return 
 end
+
 ActionGeiserTargeting.client_owner_start_action = function (self, new_action, t)
 	local world = self.world
 	local network_transmit = self.network_transmit
@@ -26,15 +26,15 @@ ActionGeiserTargeting.client_owner_start_action = function (self, new_action, t)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.targeting_effect_id = World.create_particles(world, effect_name, Vector3.zero())
 	self.targeting_variable_id = World.find_particles_variable(world, effect_name, "charge_radius")
-	self.charge_time = buff_extension.apply_buffs_to_value(buff_extension, new_action.charge_time, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
+	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time, StatBuffIndex.REDUCED_RANGED_CHARGE_TIME)
 	self.angle = math.degrees_to_radians(new_action.angle)
 	self.time_to_shoot = t
 	local go_id = self.unit_id
 
 	if self.is_server or LEVEL_EDITOR_TEST then
-		network_transmit.send_rpc_clients(network_transmit, "rpc_start_geiser", go_id, effect_id, new_action.min_radius, new_action.max_radius, self.charge_time, self.angle)
+		network_transmit:send_rpc_clients("rpc_start_geiser", go_id, effect_id, new_action.min_radius, new_action.max_radius, self.charge_time, self.angle)
 	else
-		network_transmit.send_rpc_server(network_transmit, "rpc_start_geiser", go_id, effect_id, new_action.min_radius, new_action.max_radius, self.charge_time, self.angle)
+		network_transmit:send_rpc_server("rpc_start_geiser", go_id, effect_id, new_action.min_radius, new_action.max_radius, self.charge_time, self.angle)
 	end
 
 	self.min_radius = new_action.min_radius
@@ -62,9 +62,9 @@ ActionGeiserTargeting.client_owner_start_action = function (self, new_action, t)
 		if current_action.fire_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
 			local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
 
-			if eyetracking_extension.get_is_feature_enabled(eyetracking_extension, "tobii_fire_at_gaze") then
+			if eyetracking_extension:get_is_feature_enabled("tobii_fire_at_gaze") then
 				local first_person_rotation = Unit.world_rotation(self.first_person_unit, 0)
-				local new_direction = eyetracking_extension.gaze_rotation(eyetracking_extension)
+				local new_direction = eyetracking_extension:gaze_rotation()
 				local player_rotation_inverse = Quaternion.inverse(first_person_rotation)
 				local new_offset = Quaternion.multiply(player_rotation_inverse, new_direction)
 				self.fire_at_gaze_offset = QuaternionBox()
@@ -81,9 +81,8 @@ ActionGeiserTargeting.client_owner_start_action = function (self, new_action, t)
 	end
 
 	self.charge_value = 0
-
-	return 
 end
+
 ActionGeiserTargeting.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local time_to_shoot = self.time_to_shoot
 	local current_action = self.current_action
@@ -191,15 +190,14 @@ ActionGeiserTargeting.client_owner_post_update = function (self, dt, t, world, c
 			WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, charge_sound_parameter_name, self.charge_value)
 		end
 
-		if self.charge_ready_sound_event and 1 <= self.charge_value then
+		if self.charge_ready_sound_event and self.charge_value >= 1 then
 			self.first_person_extension:play_hud_sound_event(self.charge_ready_sound_event)
 
 			self.charge_ready_sound_event = nil
 		end
 	end
-
-	return 
 end
+
 ActionGeiserTargeting.finish = function (self, reason, data)
 	local world = self.world
 	local network_transmit = self.network_transmit
@@ -208,9 +206,9 @@ ActionGeiserTargeting.finish = function (self, reason, data)
 	local go_id = self.unit_id
 
 	if self.is_server or LEVEL_EDITOR_TEST then
-		network_transmit.send_rpc_clients(network_transmit, "rpc_end_geiser", go_id)
+		network_transmit:send_rpc_clients("rpc_end_geiser", go_id)
 	else
-		network_transmit.send_rpc_server(network_transmit, "rpc_end_geiser", go_id)
+		network_transmit:send_rpc_server("rpc_end_geiser", go_id)
 	end
 
 	local charging_sound_id = self.charging_sound_id
@@ -248,6 +246,7 @@ ActionGeiserTargeting.finish = function (self, reason, data)
 
 	return chain_action_data
 end
+
 ActionGeiserTargeting.destroy = function (self)
 	if self.targeting_effect_id then
 		World.destroy_particles(self.world, self.targeting_effect_id)
@@ -263,8 +262,6 @@ ActionGeiserTargeting.destroy = function (self)
 		self.wwise_source_id = nil
 		self.charging_sound_id = nil
 	end
-
-	return 
 end
 
-return 
+return

@@ -867,14 +867,91 @@ local action_data = {
 			}
 		}
 	},
+	special_attack_aoe = {
+		offset_forward = -4,
+		height = 4,
+		radius = 4.5,
+		collision_type = "cylinder",
+		rotation_time = 0,
+		fatigue_type = "blocked_slam",
+		shove_z_speed = 4,
+		bot_threat_duration = 0.75,
+		damage_type = "cutting",
+		offset_up = -0.6,
+		attack_anim = "attack_push_back",
+		offset_right = 0,
+		player_push_speed = 20,
+		action_weight = 4,
+		shove_speed = 10,
+		player_push_speed_blocked = 15,
+		ignore_abort_on_blocked_attack = true,
+		considerations = UtilityConsiderations.stormfiend_boss_aoe,
+		damage = {
+			20,
+			10,
+			5
+		},
+		difficulty_damage = {
+			easy = {
+				15,
+				10,
+				5
+			},
+			normal = {
+				10,
+				5,
+				2
+			},
+			hard = {
+				15,
+				10,
+				5
+			},
+			survival_hard = {
+				25,
+				15,
+				10
+			},
+			harder = {
+				25,
+				20,
+				10
+			},
+			survival_harder = {
+				30,
+				20,
+				10
+			},
+			hardest = {
+				30,
+				25,
+				20
+			},
+			survival_hardest = {
+				75,
+				45,
+				30
+			}
+		},
+		ignore_staggers = {
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true
+		}
+	},
 	shoot = {
 		weapon_setup = "ratling_gun",
 		minimum_length = 2,
 		sync_with_linked_unit = false,
 		aim_start_offset = -1,
 		firing_time = 3.5,
-		fire_rate_at_end = 50,
-		max_fire_rate_at_percentage = 0.5,
+		fire_rate_at_end = 40,
+		max_fire_rate_at_percentage = 0.75,
 		start_distance = 4,
 		afro_hit_sound = "bullet_pass_by",
 		beam_sfx_stop_event = "Stop_stormfiend_torch_loop",
@@ -882,7 +959,7 @@ local action_data = {
 		action_weight = 1,
 		global_sound_parameter = "stormfiend_mood",
 		environment_max_intensity = 100,
-		fire_rate_at_start = 75,
+		fire_rate_at_start = 20,
 		attack_template = "shot_machinegun",
 		projectile_speed = 80,
 		beam_sfx_start_event = "Play_stormfiend_torch_loop",
@@ -891,8 +968,7 @@ local action_data = {
 		maximum_length = 15,
 		warpfire_switch_range = 8,
 		environment_intensity_increase_per_firewall = 10,
-		impact_push_speed = 6,
-		beam_vfx_unit_name = "units/weapons/enemy/wpn_warpfire/wpn_stormfiend_warpfire",
+		impact_push_speed = 3,
 		light_weight_projectile_particle_effect = "stormfiend_gun_bullet",
 		considerations = UtilityConsiderations.stormfiend_boss_shoot,
 		ratling_gun_switch_range = math.huge,
@@ -1037,11 +1113,11 @@ local action_data = {
 			skaven_stormfiend = true
 		},
 		attack_power_level = {
+			20,
 			40,
 			60,
-			90,
-			120,
-			180
+			80,
+			120
 		},
 		power_distribution = {
 			attack = 0.3,
@@ -1507,4 +1583,4 @@ local action_data = {
 }
 BreedActions.skaven_stormfiend_boss = table.create_copy(BreedActions.skaven_stormfiend_boss, action_data)
 
-return 
+return

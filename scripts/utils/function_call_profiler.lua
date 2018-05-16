@@ -15,22 +15,21 @@ end
 FunctionCallProfiler.setup = function (world)
 	FunctionCallProfiler.world = world
 	FunctionCallProfiler.gui = World.create_screen_gui(world, "material", "materials/fonts/gw_fonts", "immediate")
-
-	return 
 end
+
 FunctionCallProfiler.destroy = function ()
 	World.destroy_gui(FunctionCallProfiler.gui)
 
 	FunctionCallProfiler.world = nil
-
-	return 
 end
+
 local font_size = 16
 local font = "gw_arial_16"
 local font_mtrl = "materials/fonts/" .. font
+
 FunctionCallProfiler.render = function ()
 	if not script_data.profile_function_calls then
-		return 
+		return
 	end
 
 	local num_frames = FunctionCallProfiler.num_frames
@@ -57,12 +56,11 @@ FunctionCallProfiler.render = function ()
 	end
 
 	Gui.rect(gui, Vector3(start_x, pos.y + font_size, 100), Vector2(250, start_y - pos.y), Color(240, 25, 50, 25))
-
-	return 
 end
+
 FunctionCallProfiler.log_function_call = function (name)
 	if not script_data.profile_function_calls then
-		return 
+		return
 	end
 
 	local current_frame = FunctionCallProfiler.current_frame
@@ -73,14 +71,10 @@ FunctionCallProfiler.log_function_call = function (name)
 	end
 
 	frame[name] = frame[name] + 1
-
-	return 
 end
 
 function LogFunctionCall(name)
 	FunctionCallProfiler.log_function_call(name)
-
-	return 
 end
 
-return 
+return

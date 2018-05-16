@@ -45,12 +45,12 @@ if platform == "win32" then
 		"right_shoulder",
 		"soft_button"
 	}
-	keymap_override_1.weapon_reload = {
+	keymap_override_1.weapon_reload_input = {
 		"gamepad",
 		"left_trigger",
 		"pressed"
 	}
-	keymap_override_1.weapon_reload_hold = {
+	keymap_override_1.weapon_reload_hold_input = {
 		"gamepad",
 		"left_trigger",
 		"held"
@@ -61,12 +61,12 @@ if platform == "win32" then
 		"pressed"
 	}
 	keymap_override_1.jump_2 = {}
-	keymap_override_1.dodge_hold_1 = {
+	keymap_override_1.dodge_1 = {
 		"gamepad",
 		"a",
 		"held"
 	}
-	keymap_override_1.dodge_hold_2 = {}
+	keymap_override_1.dodge_2 = {}
 	keymap_override_1.ping = {
 		"gamepad",
 		"right_trigger",
@@ -128,12 +128,12 @@ if platform == "win32" then
 		"right_trigger",
 		"soft_button"
 	}
-	keymap_override_2.weapon_reload = {
+	keymap_override_2.weapon_reload_input = {
 		"gamepad",
 		"a",
 		"pressed"
 	}
-	keymap_override_2.weapon_reload_hold = {
+	keymap_override_2.weapon_reload_hold_input = {
 		"gamepad",
 		"a",
 		"held"
@@ -148,12 +148,12 @@ if platform == "win32" then
 		"right_shoulder",
 		"pressed"
 	}
-	keymap_override_2.dodge_hold_1 = {
+	keymap_override_2.dodge_1 = {
 		"gamepad",
 		"left_shoulder",
 		"held"
 	}
-	keymap_override_2.dodge_hold_2 = {
+	keymap_override_2.dodge_2 = {
 		"gamepad",
 		"right_shoulder",
 		"held"
@@ -219,12 +219,12 @@ if platform == "win32" then
 		"right_shoulder",
 		"soft_button"
 	}
-	keymap_override_3.weapon_reload = {
+	keymap_override_3.weapon_reload_input = {
 		"gamepad",
 		"a",
 		"pressed"
 	}
-	keymap_override_3.weapon_reload_hold = {
+	keymap_override_3.weapon_reload_hold_input = {
 		"gamepad",
 		"a",
 		"held"
@@ -239,12 +239,12 @@ if platform == "win32" then
 		"right_trigger",
 		"pressed"
 	}
-	keymap_override_3.dodge_hold_1 = {
+	keymap_override_3.dodge_1 = {
 		"gamepad",
 		"left_trigger",
 		"held"
 	}
-	keymap_override_3.dodge_hold_2 = {
+	keymap_override_3.dodge_2 = {
 		"gamepad",
 		"right_trigger",
 		"held"
@@ -340,12 +340,12 @@ if platform == "win32" then
 		"left_trigger",
 		"soft_button"
 	}
-	keymap_override_left.weapon_reload = {
+	keymap_override_left.weapon_reload_input = {
 		"gamepad",
 		"right_shoulder",
 		"pressed"
 	}
-	keymap_override_left.weapon_reload_hold = {
+	keymap_override_left.weapon_reload_hold_input = {
 		"gamepad",
 		"right_shoulder",
 		"held"
@@ -355,12 +355,12 @@ if platform == "win32" then
 		"a",
 		"pressed"
 	}
-	keymap_override_left.dodge_hold_1 = {
+	keymap_override_left.dodge_1 = {
 		"gamepad",
 		"left_trigger",
 		"held"
 	}
-	keymap_override_left.dodge_hold_2 = {
+	keymap_override_left.dodge_2 = {
 		"gamepad",
 		"right_trigger",
 		"held"
@@ -427,12 +427,12 @@ if platform == "win32" then
 		"left_shoulder",
 		"soft_button"
 	}
-	keymap_override_4.weapon_reload = {
+	keymap_override_4.weapon_reload_input = {
 		"gamepad",
 		"right_trigger",
 		"pressed"
 	}
-	keymap_override_4.weapon_reload_hold = {
+	keymap_override_4.weapon_reload_hold_input = {
 		"gamepad",
 		"right_trigger",
 		"held"
@@ -442,7 +442,7 @@ if platform == "win32" then
 		"a",
 		"pressed"
 	}
-	keymap_override_4.dodge_hold_1 = {
+	keymap_override_4.dodge_1 = {
 		"gamepad",
 		"a",
 		"held"
@@ -508,12 +508,12 @@ if platform == "win32" then
 		"left_trigger",
 		"soft_button"
 	}
-	keymap_override_5.weapon_reload = {
+	keymap_override_5.weapon_reload_input = {
 		"gamepad",
 		"a",
 		"pressed"
 	}
-	keymap_override_5.weapon_reload_hold = {
+	keymap_override_5.weapon_reload_hold_input = {
 		"gamepad",
 		"a",
 		"held"
@@ -528,12 +528,12 @@ if platform == "win32" then
 		"right_shoulder",
 		"pressed"
 	}
-	keymap_override_5.dodge_hold_1 = {
+	keymap_override_5.dodge_1 = {
 		"gamepad",
 		"left_shoulder",
 		"held"
 	}
-	keymap_override_5.dodge_hold_2 = {
+	keymap_override_5.dodge_2 = {
 		"gamepad",
 		"right_shoulder",
 		"held"
@@ -599,12 +599,12 @@ if platform == "win32" then
 		"left_shoulder",
 		"soft_button"
 	}
-	keymap_override_6.weapon_reload = {
+	keymap_override_6.weapon_reload_input = {
 		"gamepad",
 		"a",
 		"pressed"
 	}
-	keymap_override_6.weapon_reload_hold = {
+	keymap_override_6.weapon_reload_hold_input = {
 		"gamepad",
 		"a",
 		"held"
@@ -619,12 +619,12 @@ if platform == "win32" then
 		"right_trigger",
 		"pressed"
 	}
-	keymap_override_6.dodge_hold_1 = {
+	keymap_override_6.dodge_1 = {
 		"gamepad",
 		"left_trigger",
 		"held"
 	}
-	keymap_override_6.dodge_hold_2 = {
+	keymap_override_6.dodge_2 = {
 		"gamepad",
 		"right_trigger",
 		"held"
@@ -691,12 +691,12 @@ elseif platform == "xb1" then
 		"right_shoulder",
 		"soft_button"
 	}
-	keymap_override_1.weapon_reload = {
+	keymap_override_1.weapon_reload_input = {
 		"gamepad",
 		"left_trigger",
 		"pressed"
 	}
-	keymap_override_1.weapon_reload_hold = {
+	keymap_override_1.weapon_reload_hold_input = {
 		"gamepad",
 		"left_trigger",
 		"held"
@@ -706,7 +706,7 @@ elseif platform == "xb1" then
 		"a",
 		"pressed"
 	}
-	keymap_override_1.dodge_hold_1 = {
+	keymap_override_1.dodge_1 = {
 		"gamepad",
 		"a",
 		"held"
@@ -772,12 +772,12 @@ elseif platform == "xb1" then
 		"right_trigger",
 		"soft_button"
 	}
-	keymap_override_2.weapon_reload = {
+	keymap_override_2.weapon_reload_input = {
 		"gamepad",
 		"a",
 		"pressed"
 	}
-	keymap_override_2.weapon_reload_hold = {
+	keymap_override_2.weapon_reload_hold_input = {
 		"gamepad",
 		"a",
 		"held"
@@ -792,12 +792,12 @@ elseif platform == "xb1" then
 		"right_shoulder",
 		"pressed"
 	}
-	keymap_override_2.dodge_hold_1 = {
+	keymap_override_2.dodge_1 = {
 		"gamepad",
 		"left_shoulder",
 		"held"
 	}
-	keymap_override_2.dodge_hold_2 = {
+	keymap_override_2.dodge_2 = {
 		"gamepad",
 		"right_shoulder",
 		"held"
@@ -863,12 +863,12 @@ elseif platform == "xb1" then
 		"right_shoulder",
 		"soft_button"
 	}
-	keymap_override_3.weapon_reload = {
+	keymap_override_3.weapon_reload_input = {
 		"gamepad",
 		"a",
 		"pressed"
 	}
-	keymap_override_3.weapon_reload_hold = {
+	keymap_override_3.weapon_reload_hold_input = {
 		"gamepad",
 		"a",
 		"held"
@@ -883,12 +883,12 @@ elseif platform == "xb1" then
 		"right_trigger",
 		"pressed"
 	}
-	keymap_override_3.dodge_hold_1 = {
+	keymap_override_3.dodge_1 = {
 		"gamepad",
 		"left_trigger",
 		"held"
 	}
-	keymap_override_3.dodge_hold_2 = {
+	keymap_override_3.dodge_2 = {
 		"gamepad",
 		"right_trigger",
 		"held"
@@ -984,12 +984,12 @@ elseif platform == "xb1" then
 		"left_trigger",
 		"soft_button"
 	}
-	keymap_override_left.weapon_reload = {
+	keymap_override_left.weapon_reload_input = {
 		"gamepad",
 		"right_shoulder",
 		"pressed"
 	}
-	keymap_override_left.weapon_reload_hold = {
+	keymap_override_left.weapon_reload_hold_input = {
 		"gamepad",
 		"right_shoulder",
 		"held"
@@ -999,7 +999,7 @@ elseif platform == "xb1" then
 		"a",
 		"pressed"
 	}
-	keymap_override_left.dodge_hold_1 = {
+	keymap_override_left.dodge_1 = {
 		"gamepad",
 		"a",
 		"held"
@@ -1065,12 +1065,12 @@ elseif platform == "xb1" then
 		"left_shoulder",
 		"soft_button"
 	}
-	keymap_override_4.weapon_reload = {
+	keymap_override_4.weapon_reload_input = {
 		"gamepad",
 		"right_trigger",
 		"pressed"
 	}
-	keymap_override_4.weapon_reload_hold = {
+	keymap_override_4.weapon_reload_hold_input = {
 		"gamepad",
 		"right_trigger",
 		"held"
@@ -1080,7 +1080,7 @@ elseif platform == "xb1" then
 		"a",
 		"pressed"
 	}
-	keymap_override_4.dodge_hold_1 = {
+	keymap_override_4.dodge_1 = {
 		"gamepad",
 		"a",
 		"held"
@@ -1146,12 +1146,12 @@ elseif platform == "xb1" then
 		"left_trigger",
 		"soft_button"
 	}
-	keymap_override_5.weapon_reload = {
+	keymap_override_5.weapon_reload_input = {
 		"gamepad",
 		"a",
 		"pressed"
 	}
-	keymap_override_5.weapon_reload_hold = {
+	keymap_override_5.weapon_reload_hold_input = {
 		"gamepad",
 		"a",
 		"held"
@@ -1166,12 +1166,12 @@ elseif platform == "xb1" then
 		"right_shoulder",
 		"pressed"
 	}
-	keymap_override_5.dodge_hold_1 = {
+	keymap_override_5.dodge_1 = {
 		"gamepad",
 		"left_shoulder",
 		"held"
 	}
-	keymap_override_5.dodge_hold_2 = {
+	keymap_override_5.dodge_2 = {
 		"gamepad",
 		"right_shoulder",
 		"held"
@@ -1237,12 +1237,12 @@ elseif platform == "xb1" then
 		"left_shoulder",
 		"soft_button"
 	}
-	keymap_override_6.weapon_reload = {
+	keymap_override_6.weapon_reload_input = {
 		"gamepad",
 		"a",
 		"pressed"
 	}
-	keymap_override_6.weapon_reload_hold = {
+	keymap_override_6.weapon_reload_hold_input = {
 		"gamepad",
 		"a",
 		"held"
@@ -1257,12 +1257,12 @@ elseif platform == "xb1" then
 		"right_trigger",
 		"pressed"
 	}
-	keymap_override_6.dodge_hold_1 = {
+	keymap_override_6.dodge_1 = {
 		"gamepad",
 		"left_trigger",
 		"held"
 	}
-	keymap_override_6.dodge_hold_2 = {
+	keymap_override_6.dodge_2 = {
 		"gamepad",
 		"right_trigger",
 		"held"
@@ -1329,12 +1329,12 @@ elseif platform == "ps4" then
 		"r1",
 		"soft_button"
 	}
-	keymap_override_1.weapon_reload = {
+	keymap_override_1.weapon_reload_input = {
 		"gamepad",
 		"l2",
 		"pressed"
 	}
-	keymap_override_1.weapon_reload_hold = {
+	keymap_override_1.weapon_reload_hold_input = {
 		"gamepad",
 		"l2",
 		"held"
@@ -1354,7 +1354,7 @@ elseif platform == "ps4" then
 		"cross",
 		"pressed"
 	}
-	keymap_override_1.dodge_hold_1 = {
+	keymap_override_1.dodge_1 = {
 		"gamepad",
 		"cross",
 		"held"
@@ -1420,12 +1420,12 @@ elseif platform == "ps4" then
 		"r2",
 		"soft_button"
 	}
-	keymap_override_2.weapon_reload = {
+	keymap_override_2.weapon_reload_input = {
 		"gamepad",
 		"cross",
 		"pressed"
 	}
-	keymap_override_2.weapon_reload_hold = {
+	keymap_override_2.weapon_reload_hold_input = {
 		"gamepad",
 		"cross",
 		"held"
@@ -1450,12 +1450,12 @@ elseif platform == "ps4" then
 		"l1",
 		"pressed"
 	}
-	keymap_override_2.dodge_hold_1 = {
+	keymap_override_2.dodge_1 = {
 		"gamepad",
 		"r1",
 		"held"
 	}
-	keymap_override_2.dodge_hold_2 = {
+	keymap_override_2.dodge_2 = {
 		"gamepad",
 		"l1",
 		"held"
@@ -1521,12 +1521,12 @@ elseif platform == "ps4" then
 		"r1",
 		"soft_button"
 	}
-	keymap_override_3.weapon_reload = {
+	keymap_override_3.weapon_reload_input = {
 		"gamepad",
 		"cross",
 		"pressed"
 	}
-	keymap_override_3.weapon_reload_hold = {
+	keymap_override_3.weapon_reload_hold_input = {
 		"gamepad",
 		"cross",
 		"held"
@@ -1551,12 +1551,12 @@ elseif platform == "ps4" then
 		"l2",
 		"pressed"
 	}
-	keymap_override_3.dodge_hold_1 = {
+	keymap_override_3.dodge_1 = {
 		"gamepad",
 		"r2",
 		"held"
 	}
-	keymap_override_3.dodge_hold_2 = {
+	keymap_override_3.dodge_2 = {
 		"gamepad",
 		"l2",
 		"held"
@@ -1652,12 +1652,12 @@ elseif platform == "ps4" then
 		"l2",
 		"soft_button"
 	}
-	keymap_override_left.weapon_reload = {
+	keymap_override_left.weapon_reload_input = {
 		"gamepad",
 		"r1",
 		"pressed"
 	}
-	keymap_override_left.weapon_reload_hold = {
+	keymap_override_left.weapon_reload_hold_input = {
 		"gamepad",
 		"r1",
 		"held"
@@ -1677,7 +1677,7 @@ elseif platform == "ps4" then
 		"cross",
 		"pressed"
 	}
-	keymap_override_left.dodge_hold_1 = {
+	keymap_override_left.dodge_1 = {
 		"gamepad",
 		"cross",
 		"held"
@@ -1743,12 +1743,12 @@ elseif platform == "ps4" then
 		"l1",
 		"soft_button"
 	}
-	keymap_override_4.weapon_reload = {
+	keymap_override_4.weapon_reload_input = {
 		"gamepad",
 		"r2",
 		"pressed"
 	}
-	keymap_override_4.weapon_reload_hold = {
+	keymap_override_4.weapon_reload_hold_input = {
 		"gamepad",
 		"r2",
 		"held"
@@ -1768,7 +1768,7 @@ elseif platform == "ps4" then
 		"cross",
 		"pressed"
 	}
-	keymap_override_4.dodge_hold_1 = {
+	keymap_override_4.dodge_1 = {
 		"gamepad",
 		"cross",
 		"held"
@@ -1844,12 +1844,12 @@ elseif platform == "ps4" then
 		"l2",
 		"soft_button"
 	}
-	keymap_override_5.weapon_reload = {
+	keymap_override_5.weapon_reload_input = {
 		"gamepad",
 		"cross",
 		"pressed"
 	}
-	keymap_override_5.weapon_reload_hold = {
+	keymap_override_5.weapon_reload_hold_input = {
 		"gamepad",
 		"cross",
 		"held"
@@ -1874,12 +1874,12 @@ elseif platform == "ps4" then
 		"r1",
 		"pressed"
 	}
-	keymap_override_5.dodge_hold_1 = {
+	keymap_override_5.dodge_1 = {
 		"gamepad",
 		"l1",
 		"held"
 	}
-	keymap_override_5.dodge_hold_1 = {
+	keymap_override_5.dodge_1 = {
 		"gamepad",
 		"r1",
 		"held"
@@ -1955,12 +1955,12 @@ elseif platform == "ps4" then
 		"l1",
 		"soft_button"
 	}
-	keymap_override_6.weapon_reload = {
+	keymap_override_6.weapon_reload_input = {
 		"gamepad",
 		"cross",
 		"pressed"
 	}
-	keymap_override_6.weapon_reload_hold = {
+	keymap_override_6.weapon_reload_hold_input = {
 		"gamepad",
 		"cross",
 		"held"
@@ -1985,12 +1985,12 @@ elseif platform == "ps4" then
 		"r2",
 		"pressed"
 	}
-	keymap_override_6.dodge_hold_1 = {
+	keymap_override_6.dodge_1 = {
 		"gamepad",
 		"l2",
 		"held"
 	}
-	keymap_override_6.dodge_hold_1 = {
+	keymap_override_6.dodge_1 = {
 		"gamepad",
 		"r2",
 		"held"
@@ -2059,16 +2059,16 @@ if platform == "win32" then
 			ignore_gamepad_action_names = {
 				action_two_release = true,
 				weapon_reload_hold_input = true,
+				interacting = true,
+				dodge_1 = true,
 				action_three_hold = true,
-				dodge_hold_1 = true,
-				active_ability_right_pressed = true,
 				action_one_release = true,
 				wield_switch_1 = true,
-				weapon_reload_hold = true,
+				dodge_2 = true,
 				wield_switch_2 = true,
 				action_three_release = true,
 				next_observer_target = true,
-				active_ability_right_held = true,
+				active_ability_right_pressed = true,
 				crouching = true,
 				move_left_pressed = true,
 				action_inspect_hold = true,
@@ -2077,11 +2077,11 @@ if platform == "win32" then
 				active_ability_left_held = true,
 				action_one_mouse = true,
 				action_one_hold = true,
+				active_ability_right_held = true,
 				active_ability_left_release = true,
 				active_ability_right_release = true,
-				interacting = true,
+				weapon_reload_hold_input_input = true,
 				action_one_softbutton_gamepad = true,
-				dodge_hold_2 = true,
 				action_inspect_release = true,
 				wield_switch = true
 			},
@@ -2097,12 +2097,13 @@ if platform == "win32" then
 		left_handed = {
 			ignore_gamepad_action_names = {
 				action_two_release = true,
+				weapon_reload_hold_input = true,
 				interacting = true,
+				dodge_1 = true,
 				action_three_hold = true,
-				dodge_hold_1 = true,
 				action_one_release = true,
 				wield_switch_1 = true,
-				weapon_reload_hold = true,
+				dodge_2 = true,
 				wield_switch_2 = true,
 				action_three_release = true,
 				next_observer_target = true,
@@ -2112,7 +2113,6 @@ if platform == "win32" then
 				action_one_mouse = true,
 				action_one_hold = true,
 				action_one_softbutton_gamepad = true,
-				dodge_hold_2 = true,
 				action_inspect_release = true,
 				wield_switch = true
 			},
@@ -2131,12 +2131,13 @@ elseif platform == "xb1" then
 		default = {
 			ignore_gamepad_action_names = {
 				action_two_release = true,
-				wield_switch_1 = true,
+				weapon_reload_hold_input = true,
 				interacting = true,
-				action_one_release = true,
-				dodge_hold_1 = true,
+				dodge_1 = true,
 				action_three_hold = true,
-				weapon_reload_hold = true,
+				action_one_release = true,
+				wield_switch_1 = true,
+				dodge_2 = true,
 				wield_switch_2 = true,
 				action_three_release = true,
 				next_observer_target = true,
@@ -2147,27 +2148,28 @@ elseif platform == "xb1" then
 				action_one_mouse = true,
 				action_one_hold = true,
 				action_one_softbutton_gamepad = true,
-				dodge_hold_2 = true,
 				action_inspect_release = true
 			},
 			default_gamepad_actions_by_key = {
 				ls = "move_controller",
 				start = "toggle_menu",
-				rs = "look_raw_controller",
 				y = "wield_switch",
+				right_shoulder = "input_active_ability",
 				back = "ingame_player_list_toggle",
-				d_down = "wield_switch"
+				rs = "look_raw_controller",
+				left_shoulder = "input_active_ability"
 			}
 		},
 		left_handed = {
 			ignore_gamepad_action_names = {
 				action_two_release = true,
+				weapon_reload_hold_input = true,
 				interacting = true,
+				dodge_1 = true,
 				action_three_hold = true,
-				dodge_hold_1 = true,
 				action_one_release = true,
 				wield_switch_1 = true,
-				weapon_reload_hold = true,
+				dodge_2 = true,
 				wield_switch_2 = true,
 				action_three_release = true,
 				next_observer_target = true,
@@ -2178,17 +2180,17 @@ elseif platform == "xb1" then
 				action_one_mouse = true,
 				action_one_hold = true,
 				action_one_softbutton_gamepad = true,
-				dodge_hold_2 = true,
 				action_inspect_release = true,
 				wield_switch = true
 			},
 			default_gamepad_actions_by_key = {
 				ls = "look_raw_controller",
 				start = "toggle_menu",
-				rs = "move_controller",
 				y = "wield_switch",
+				right_shoulder = "input_active_ability",
 				back = "ingame_player_list_toggle",
-				d_down = "wield_switch"
+				rs = "move_controller",
+				left_shoulder = "input_active_ability"
 			}
 		}
 	}
@@ -2197,12 +2199,11 @@ elseif platform == "ps4" then
 		default = {
 			ignore_gamepad_action_names = {
 				action_two_release = true,
+				weapon_reload_hold_input = true,
 				interacting = true,
 				action_three_hold = true,
-				dodge_hold_1 = true,
 				action_one_release = true,
 				wield_switch_1 = true,
-				weapon_reload_hold = true,
 				wield_switch_2 = true,
 				action_three_release = true,
 				next_observer_target = true,
@@ -2212,14 +2213,13 @@ elseif platform == "ps4" then
 				action_two_hold = true,
 				action_one_mouse = true,
 				action_one_hold = true,
+				dodge_hold = true,
 				action_one_softbutton_gamepad = true,
-				dodge_hold_2 = true,
 				action_inspect_release = true,
 				wield_switch = true
 			},
 			default_gamepad_actions_by_key = {
 				ls = "move_controller",
-				down = "wield_switch",
 				triangle = "wield_switch",
 				options = "toggle_menu",
 				touch = "ingame_player_list_toggle",
@@ -2229,12 +2229,11 @@ elseif platform == "ps4" then
 		left_handed = {
 			ignore_gamepad_action_names = {
 				action_two_release = true,
+				weapon_reload_hold_input = true,
 				interacting = true,
 				action_three_hold = true,
-				dodge_hold_1 = true,
 				action_one_release = true,
 				wield_switch_1 = true,
-				weapon_reload_hold = true,
 				wield_switch_2 = true,
 				action_three_release = true,
 				next_observer_target = true,
@@ -2244,14 +2243,13 @@ elseif platform == "ps4" then
 				action_two_hold = true,
 				action_one_mouse = true,
 				action_one_hold = true,
+				dodge_hold = true,
 				action_one_softbutton_gamepad = true,
-				dodge_hold_2 = true,
 				action_inspect_release = true,
 				wield_switch = true
 			},
 			default_gamepad_actions_by_key = {
 				ls = "look_raw_controller",
-				down = "wield_switch",
 				triangle = "wield_switch",
 				options = "toggle_menu",
 				touch = "ingame_player_list_toggle",
@@ -2261,4 +2259,4 @@ elseif platform == "ps4" then
 	}
 end
 
-return 
+return

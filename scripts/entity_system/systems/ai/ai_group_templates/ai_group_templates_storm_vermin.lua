@@ -5,8 +5,6 @@ local function debug_print(...)
 	if script_data.debug_storm_vermin_patrol then
 		print(...)
 	end
-
-	return 
 end
 
 local TURN_SPEED = math.pi * 0.7
@@ -55,8 +53,6 @@ AIGroupTemplates.storm_vermin_formation_patrol = {
 		enter_state_find_path_entry(nav_world, group)
 
 		group.resycnc_anchor_indexes_at = t + 5
-
-		return 
 	end,
 	destroy = function (world, nav_world, group, unit)
 		local nav_data = group.nav_data
@@ -80,23 +76,21 @@ AIGroupTemplates.storm_vermin_formation_patrol = {
 		if script_data.debug_storm_vermin_patrol then
 			local debug_manager = Managers.state.debug
 
-			debug_manager.drawer(debug_manager, {
+			debug_manager:drawer({
 				mode = "retained",
 				name = "storm_vermin_patrol_retained_until_destroy"
 			}):reset()
-			debug_manager.drawer(debug_manager, {
+			debug_manager:drawer({
 				mode = "retained",
 				name = "storm_vermin_patrol_targeting_retained"
 			}):reset()
 		end
-
-		return 
 	end,
 	update = function (world, nav_world, group, t, dt)
 		remove_dead_units(group)
 
 		if group.num_indexed_members == 0 then
-			return 
+			return
 		end
 
 		if group.resycnc_anchor_indexes_at < t then
@@ -121,7 +115,7 @@ AIGroupTemplates.storm_vermin_formation_patrol = {
 			local door_found = check_for_doors(group)
 
 			if door_found then
-				return 
+				return
 			end
 
 			update_anchor_position(nav_world, group, dt)
@@ -140,8 +134,6 @@ AIGroupTemplates.storm_vermin_formation_patrol = {
 		elseif state == "in_combat" then
 			check_if_players_dead(nav_world, group, t, dt)
 		end
-
-		return 
 	end,
 	BT_debug = function (group)
 		return {
@@ -159,17 +151,13 @@ function play_sound(group, event)
 
 	local audio_system = Managers.state.entity:system("audio_system")
 
-	audio_system.play_audio_unit_event(audio_system, event, group.wwise_source_unit)
-
-	return 
+	audio_system:play_audio_unit_event(event, group.wwise_source_unit)
 end
 
 function pick_sound_source_unit(group)
 	local wanted_unit_i = math.ceil(group.num_indexed_members * 0.5)
 	local wanted_unit = group.indexed_members[wanted_unit_i]
 	group.wwise_source_unit = wanted_unit
-
-	return 
 end
 
 function update_animation_triggered_sounds(group)
@@ -187,10 +175,8 @@ function update_animation_triggered_sounds(group)
 		blackboard.anim_cb_patrol_sound = nil
 		local audio_system = Managers.state.entity:system("audio_system")
 
-		audio_system.play_audio_unit_event(audio_system, "Play_stormvermin_patrol_foley", source_unit)
+		audio_system:play_audio_unit_event("Play_stormvermin_patrol_foley", source_unit)
 	end
-
-	return 
 end
 
 function set_state(group, state_name)
@@ -198,8 +184,6 @@ function set_state(group, state_name)
 
 	group.previous_state = group.state
 	group.state = state_name
-
-	return 
 end
 
 local dead_units = {}
@@ -272,8 +256,6 @@ function remove_dead_units(group)
 			group_targets[target_unit] = nil
 		end
 	end
-
-	return 
 end
 
 function calculate_group_middle_position(group)
@@ -320,11 +302,11 @@ function find_position_on_navmesh(nav_world, position, fallback_position, check1
 		})
 
 		if success then
-			drawer.sphere(drawer, found_position, 0.1, Colors.get("green"))
+			drawer:sphere(found_position, 0.1, Colors.get("green"))
 		elseif found_position == fallback_position then
-			drawer.sphere(drawer, found_position, 0.1, Colors.get("red"))
+			drawer:sphere(found_position, 0.1, Colors.get("red"))
 		else
-			drawer.sphere(drawer, found_position, 0.1, Colors.get("yellow"))
+			drawer:sphere(found_position, 0.1, Colors.get("yellow"))
 		end
 	end
 
@@ -351,8 +333,6 @@ function antenna_collision(nav_world, position, mid_pos, side_direction)
 
 		return distance
 	end
-
-	return 
 end
 
 function change_path_direction(group, current_node_index)
@@ -371,20 +351,16 @@ function change_path_direction(group, current_node_index)
 	end
 
 	debug_print("[StormVerminPatrol] Changed path direction:", current_node_index, "New node:", new_node_index, "New direction:", new_direction)
-
-	return 
 end
 
 function unit_animation_event(group, unit, event_name)
 	Unit.animation_event(unit, event_name)
 
 	group.animation_events[unit] = event_name
-
-	return 
 end
 
 function init_group(nav_world, group)
-	fassert(0 < group.members_n, "Group was initialized with zero members!")
+	fassert(group.members_n > 0, "Group was initialized with zero members!")
 
 	group.nav_data = {}
 	local navtag_layer_cost_table = GwNavTagLayerCostTable.create()
@@ -456,8 +432,6 @@ function init_group(nav_world, group)
 		group.anchors[i].antenna_target_pos = group.anchors[i].point
 		group.anchors[i].antenna_x_displacement = 0
 	end
-
-	return 
 end
 
 function enter_state_find_path_entry(nav_world, group)
@@ -474,8 +448,6 @@ function enter_state_find_path_entry(nav_world, group)
 	else
 		enter_state_forming(nav_world, group)
 	end
-
-	return 
 end
 
 function pick_entry_node(nav_world, group)
@@ -525,8 +497,6 @@ function pick_entry_node(nav_world, group)
 	for i = 1, #anchors, 1 do
 		anchors[i].node_index = node_index
 	end
-
-	return 
 end
 
 function set_path_direction(group, direction)
@@ -541,8 +511,6 @@ function set_path_direction(group, direction)
 		nav_data.node_list = nav_data.node_data.reversed_list
 		nav_data.node_break_list = nav_data.node_data.reversed_break_list
 	end
-
-	return 
 end
 
 function enter_state_forming(nav_world, group)
@@ -552,7 +520,7 @@ function enter_state_forming(nav_world, group)
 			name = "storm_vermin_patrol_retained"
 		})
 
-		drawer.reset(drawer)
+		drawer:reset()
 		Managers.state.debug_text:clear_world_text("storm_vermin_patrol_world_text")
 	end
 
@@ -573,11 +541,11 @@ function enter_state_forming(nav_world, group)
 				name = "storm_vermin_patrol_retained"
 			})
 
-			drawer.sphere(drawer, goal_destination, 0.5, Colors.get("yellow"))
-			drawer.sphere(drawer, goal_destination, 0.4, Colors.get("red"))
+			drawer:sphere(goal_destination, 0.5, Colors.get("yellow"))
+			drawer:sphere(goal_destination, 0.4, Colors.get("red"))
 		end
 
-		return 
+		return
 	end
 
 	goal_destination.z = altitude
@@ -591,23 +559,23 @@ function enter_state_forming(nav_world, group)
 		local blackboard = BLACKBOARDS[unit]
 
 		if not blackboard.climb_state then
-			network_manager.anim_event(network_manager, unit, "to_passive")
+			network_manager:anim_event(unit, "to_passive")
 			unit_animation_event(group, unit, "move_fwd")
 		end
 
 		local navigation_extension = blackboard.navigation_extension
 
-		navigation_extension.set_max_speed(navigation_extension, WALK_SPEED)
+		navigation_extension:set_max_speed(WALK_SPEED)
 
 		local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
-		ai_slot_system.do_slot_search(ai_slot_system, unit, false)
+		ai_slot_system:do_slot_search(unit, false)
 
 		local ai_extension = ScriptUnit.extension(unit, "ai_system")
 		local perception_func_name = nil
 		local target_selection_func_name = "patrol_passive_target_selection"
 
-		ai_extension.set_perception(ai_extension, perception_func_name, target_selection_func_name)
+		ai_extension:set_perception(perception_func_name, target_selection_func_name)
 
 		blackboard.SVP_target_unit = nil
 		local member_goal_destination = goal_destination
@@ -626,7 +594,7 @@ function enter_state_forming(nav_world, group)
 		blackboard.goal_destination = Vector3Box(member_goal_destination)
 		blackboard.preferred_door_action = "open"
 
-		navigation_extension.allow_layer(navigation_extension, "planks", false)
+		navigation_extension:allow_layer("planks", false)
 		GwNavTagLayerCostTable.forbid_layer(group.nav_data.navtag_layer_cost_table, LAYER_ID_MAPPING.planks)
 
 		if script_data.debug_storm_vermin_patrol then
@@ -635,8 +603,8 @@ function enter_state_forming(nav_world, group)
 				name = "storm_vermin_patrol_retained"
 			})
 
-			drawer.sphere(drawer, member_goal_destination, 0.5, Colors.get("yellow"))
-			drawer.sphere(drawer, member_goal_destination, 0.4, Colors.get("green"))
+			drawer:sphere(member_goal_destination, 0.5, Colors.get("yellow"))
+			drawer:sphere(member_goal_destination, 0.4, Colors.get("green"))
 		end
 	end
 
@@ -647,8 +615,6 @@ function enter_state_forming(nav_world, group)
 	if script_data.debug_storm_vermin_patrol then
 		debug_draw_formation(group)
 	end
-
-	return 
 end
 
 function debug_draw_formation(group)
@@ -663,22 +629,22 @@ function debug_draw_formation(group)
 
 	for i = 1, #node_list, 1 do
 		local node = node_list[i]
-		local node_position = node.unbox(node)
+		local node_position = node:unbox()
 
 		if node_break_list[node] then
-			drawer.sphere(drawer, node_position, 0.1, Colors.get("red"))
-			debug_text_manager.output_world_text(debug_text_manager, i, 0.3, node_position + Vector3(0, 0, 0.3), nil, "storm_vermin_patrol_world_text", Vector3(255, 0, 0))
+			drawer:sphere(node_position, 0.1, Colors.get("red"))
+			debug_text_manager:output_world_text(i, 0.3, node_position + Vector3(0, 0, 0.3), nil, "storm_vermin_patrol_world_text", Vector3(255, 0, 0))
 		else
-			drawer.sphere(drawer, node_position, 0.1, Colors.get("yellow"))
-			debug_text_manager.output_world_text(debug_text_manager, i, 0.3, node_position + Vector3(0, 0, 0.3), nil, "storm_vermin_patrol_world_text", Vector3(255, 255, 0))
+			drawer:sphere(node_position, 0.1, Colors.get("yellow"))
+			debug_text_manager:output_world_text(i, 0.3, node_position + Vector3(0, 0, 0.3), nil, "storm_vermin_patrol_world_text", Vector3(255, 255, 0))
 		end
 
 		local next_node = nav_data.node_list[i + 1]
 
 		if next_node then
-			next_node = next_node.unbox(next_node)
+			next_node = next_node:unbox()
 
-			drawer.line(drawer, node_position, next_node, Colors.get("yellow"))
+			drawer:line(node_position, next_node, Colors.get("yellow"))
 		end
 	end
 
@@ -690,18 +656,16 @@ function debug_draw_formation(group)
 		local entry_node_position = nav_data.node_list[anchor.node_index - 1]:unbox()
 		local anchor_position = anchor.point:unbox()
 
-		drawer.sphere(drawer, entry_node_position, 0.05, Colors.get("blue"))
+		drawer:sphere(entry_node_position, 0.05, Colors.get("blue"))
 
 		local offset_y = Vector3(0, 0, 0.2 + i * 0.04)
 
-		drawer.sphere(drawer, anchor_position, 0.08, Colors.get("pink"))
-		drawer.line(drawer, anchor_position, anchor_position + offset_y, Colors.get("pink"))
-		drawer.line(drawer, anchor_position + offset_y, target_node_position + offset_y, Colors.get("pink"))
-		drawer.vector(drawer, anchor_position + offset_y, anchor.wanted_direction:unbox() * 0.2, Colors.get("pink"))
-		drawer.line(drawer, target_node_position + offset_y, target_node_position, Colors.get("pink"))
+		drawer:sphere(anchor_position, 0.08, Colors.get("pink"))
+		drawer:line(anchor_position, anchor_position + offset_y, Colors.get("pink"))
+		drawer:line(anchor_position + offset_y, target_node_position + offset_y, Colors.get("pink"))
+		drawer:vector(anchor_position + offset_y, anchor.wanted_direction:unbox() * 0.2, Colors.get("pink"))
+		drawer:line(target_node_position + offset_y, target_node_position, Colors.get("pink"))
 	end
-
-	return 
 end
 
 function set_forming_positions(nav_world, group)
@@ -754,8 +718,6 @@ function set_forming_positions(nav_world, group)
 		Debug.storm_vermin_patrols_done = Debug.storm_vermin_patrols_done or -1
 		Debug.storm_vermin_patrols_done = Debug.storm_vermin_patrols_done + 1
 	end
-
-	return 
 end
 
 function update_units(nav_world, group, t, dt)
@@ -794,10 +756,8 @@ function update_units(nav_world, group, t, dt)
 			anchor.unit_distance = math.max(unit_to_formation_pos_distance, previous_distance)
 		end
 
-		navigation_extension.move_to(navigation_extension, destination)
+		navigation_extension:move_to(destination)
 	end
-
-	return 
 end
 
 local in_formation_check_timer = 0
@@ -818,7 +778,7 @@ function check_is_in_formation(group, dt)
 				local unit = anchor_units[j]
 				local blackboard = BLACKBOARDS[unit]
 				local navigation_extension = blackboard.navigation_extension
-				local reached_start_position = navigation_extension.has_reached_destination(navigation_extension, 0.3)
+				local reached_start_position = navigation_extension:has_reached_destination(0.3)
 
 				if reached_start_position and not blackboard.climb_state then
 					if group.animation_events[unit] ~= "idle" then
@@ -827,7 +787,7 @@ function check_is_in_formation(group, dt)
 
 					local wanted_direction = anchor.wanted_direction:unbox()
 					local current_direction = Quaternion.forward(Unit.world_rotation(unit, 0))
-					local has_wanted_rotation = 0.8 < Vector3.dot(wanted_direction, current_direction)
+					local has_wanted_rotation = Vector3.dot(wanted_direction, current_direction) > 0.8
 
 					if not has_wanted_rotation then
 						local wanted_rotation = Quaternion.look(wanted_direction)
@@ -846,8 +806,6 @@ function check_is_in_formation(group, dt)
 	if in_formation then
 		enter_state_patrolling(group)
 	end
-
-	return 
 end
 
 function enter_state_patrolling(group)
@@ -862,7 +820,7 @@ function enter_state_patrolling(group)
 		local blackboard = BLACKBOARDS[unit]
 		local navigation_extension = blackboard.navigation_extension
 
-		navigation_extension.set_max_speed(navigation_extension, WALK_SPEED)
+		navigation_extension:set_max_speed(WALK_SPEED)
 
 		if not blackboard.climb_state then
 			unit_animation_event(group, unit, "move_fwd")
@@ -870,8 +828,6 @@ function enter_state_patrolling(group)
 	end
 
 	play_sound(group, "Play_stormvemin_patrol_formated")
-
-	return 
 end
 
 function update_anchor_position(nav_world, group, dt)
@@ -892,10 +848,10 @@ function update_anchor_position(nav_world, group, dt)
 			change_path_direction(group, previous_node_index)
 			enter_state_forming(nav_world, group)
 
-			return 
+			return
 		end
 
-		local target_node_position = target_node.unbox(target_node)
+		local target_node_position = target_node:unbox()
 		local previous_node_position = node_list[previous_node_index]:unbox()
 		local node_diff = target_node_position - previous_node_position
 		local dir = Vector3.normalize(node_diff)
@@ -911,7 +867,7 @@ function update_anchor_position(nav_world, group, dt)
 			local previous_anchor_on_path = Vector3Box.unbox(previous_anchor.point_on_path)
 			local dot_to_previous_anchor = Vector3.dot(dir, previous_anchor_position - anchor_position)
 
-			if 0 < dot_to_previous_anchor or anchor.node_index < previous_anchor.node_index then
+			if dot_to_previous_anchor > 0 or anchor.node_index < previous_anchor.node_index then
 				distance_to_previous_anchor = Vector3.distance(anchor_position, previous_anchor_position)
 			end
 		end
@@ -961,7 +917,7 @@ function update_anchor_position(nav_world, group, dt)
 			if node_break_list[target_node] and (astar_data.node_index ~= target_node_index or not astar_data.path_found) then
 				enter_state_break_node(nav_world, group, target_node_index)
 
-				return 
+				return
 			end
 
 			anchor_on_path = target_node_position
@@ -973,7 +929,7 @@ function update_anchor_position(nav_world, group, dt)
 					name = "storm_vermin_patrol_retained"
 				})
 
-				drawer.sphere(drawer, target_node_position, 0.1, Colors.get("green"))
+				drawer:sphere(target_node_position, 0.1, Colors.get("green"))
 			end
 		end
 
@@ -993,8 +949,8 @@ function update_anchor_position(nav_world, group, dt)
 					name = "storm_vermin_patrol_retained"
 				})
 
-				drawer.sphere(drawer, anchor_on_path, 0.25, Colors.get("red"))
-				drawer.sphere(drawer, anchor_on_path, 0.2, Colors.get("blue"))
+				drawer:sphere(anchor_on_path, 0.25, Colors.get("red"))
+				drawer:sphere(anchor_on_path, 0.2, Colors.get("blue"))
 			end
 
 			new_anchor_position = target_node_position
@@ -1004,7 +960,7 @@ function update_anchor_position(nav_world, group, dt)
 		target_node = node_list[target_node_index]
 
 		if target_node then
-			target_node_position = target_node.unbox(target_node)
+			target_node_position = target_node:unbox()
 			previous_node_position = node_list[target_node_index - 1]:unbox()
 			node_diff = target_node_position - previous_node_position
 			dir = Vector3.normalize(node_diff)
@@ -1024,7 +980,7 @@ function update_anchor_position(nav_world, group, dt)
 				name = "storm_vermin_patrol_immidiate"
 			})
 
-			drawer.sphere(drawer, new_anchor_position, 0.3, Colors.get("white"))
+			drawer:sphere(new_anchor_position, 0.3, Colors.get("white"))
 		end
 	end
 
@@ -1033,11 +989,9 @@ function update_anchor_position(nav_world, group, dt)
 
 	if point then
 		local main_paths = Managers.state.conflict.level_analysis:get_main_paths()
-		local path_pos, travel_dist, move_percent = MainPathUtils.closest_pos_at_main_path(main_paths, point.unbox(point))
+		local path_pos, travel_dist, move_percent = MainPathUtils.closest_pos_at_main_path(main_paths, point:unbox())
 		group.main_path_travel_dist = travel_dist
 	end
-
-	return 
 end
 
 function update_anchor_direction(nav_world, group, dt)
@@ -1061,11 +1015,11 @@ function update_anchor_direction(nav_world, group, dt)
 				break
 			end
 
-			target_node = target_node.unbox(target_node)
+			target_node = target_node:unbox()
 			local search_node_dir = wanted_face_dir
 			local search_node_index = target_node_index
 
-			while 0 < length_along_path do
+			while length_along_path > 0 do
 				distance_to_next_node = Vector3.distance(face_position, target_node)
 
 				if length_along_path < distance_to_next_node then
@@ -1081,7 +1035,7 @@ function update_anchor_direction(nav_world, group, dt)
 						break
 					end
 
-					target_node = target_node.unbox(target_node)
+					target_node = target_node:unbox()
 					search_node_dir = Vector3.normalize(target_node - face_position)
 				end
 
@@ -1091,8 +1045,8 @@ function update_anchor_direction(nav_world, group, dt)
 						name = "storm_vermin_patrol_immidiate"
 					})
 
-					drawer.sphere(drawer, face_position, 0.15, Colors.get("cyan"))
-					drawer.line(drawer, anchor_position_on_path, face_position, Colors.get("cyan"))
+					drawer:sphere(face_position, 0.15, Colors.get("cyan"))
+					drawer:line(anchor_position_on_path, face_position, Colors.get("cyan"))
 				end
 
 				length_along_path = length_along_path - distance_to_next_node
@@ -1126,7 +1080,7 @@ function update_anchor_direction(nav_world, group, dt)
 
 		local difference = wanted_rad - face_rad
 
-		if 0.0001 < math.abs(difference) then
+		if math.abs(difference) > 0.0001 then
 			local movement = TURN_SPEED * dt
 
 			if math.pi < difference then
@@ -1159,8 +1113,6 @@ function update_anchor_direction(nav_world, group, dt)
 			blackboard.anchor_direction = anchor.current_direction
 		end
 	end
-
-	return 
 end
 
 function antennae_check(nav_world, group, dt)
@@ -1176,7 +1128,7 @@ function antennae_check(nav_world, group, dt)
 			break
 		end
 
-		target_node = target_node.unbox(target_node)
+		target_node = target_node:unbox()
 		local anchor_position = Vector3Box.unbox(anchor.point)
 		local anchor_on_path = Vector3Box.unbox(anchor.point_on_path)
 		local wanted_face_dir = Vector3Box.unbox(anchor.wanted_direction)
@@ -1190,7 +1142,7 @@ function antennae_check(nav_world, group, dt)
 				name = "storm_vermin_patrol_immidiate"
 			})
 
-			drawer.sphere(drawer, antenna_on_path, 0.2, Colors.get("orange"))
+			drawer:sphere(antenna_on_path, 0.2, Colors.get("orange"))
 		end
 
 		local antenna_x_offset = anchor.antenna_x_displacement
@@ -1212,7 +1164,7 @@ function antennae_check(nav_world, group, dt)
 			local distance_to_next_node = Vector3.dot(target_node - antenna_on_path, wanted_face_dir)
 			local antenna_change = ANTENNA_SPEED * dt
 
-			if antenna_change < distance_to_next_node then
+			if distance_to_next_node > antenna_change then
 				antenna_on_path = antenna_on_path + antenna_change * movement_dir
 			else
 				antenna_on_path = target_node
@@ -1253,8 +1205,8 @@ function antennae_check(nav_world, group, dt)
 					name = "storm_vermin_patrol_immidiate"
 				})
 
-				drawer.sphere(drawer, antenna_position, 0.25, Colors.get("orange"))
-				drawer.line(drawer, antenna_position, antenna_mid_position, Colors.get("orange"))
+				drawer:sphere(antenna_position, 0.25, Colors.get("orange"))
+				drawer:line(antenna_position, antenna_mid_position, Colors.get("orange"))
 
 				if antenna_lock then
 					slot38 = Managers.state.debug:drawer({
@@ -1300,8 +1252,6 @@ function antennae_check(nav_world, group, dt)
 
 		anchor.antenna_target_pos = Vector3Box(antenna_target)
 	end
-
-	return 
 end
 
 function is_valid_target_unit(target_unit)
@@ -1319,7 +1269,7 @@ function check_for_players(nav_world, group, t, dt)
 		local target_unit = blackboard.target_unit
 
 		if blackboard.climb_state then
-			return 
+			return
 		end
 
 		if is_valid_target_unit(target_unit) then
@@ -1336,8 +1286,6 @@ function check_for_players(nav_world, group, t, dt)
 	if has_targets then
 		enter_state_controlled_advance(nav_world, group, t)
 	end
-
-	return 
 end
 
 function check_for_doors(group)
@@ -1356,8 +1304,6 @@ function check_for_doors(group)
 			return true
 		end
 	end
-
-	return 
 end
 
 local function sort_anchors_asc(anchor_a, anchor_b)
@@ -1371,8 +1317,6 @@ local function sort_anchors_asc(anchor_a, anchor_b)
 	else
 		return path_percentage_b < path_percentage_a
 	end
-
-	return 
 end
 
 function resycnc_anchor_indexes(group)
@@ -1381,8 +1325,6 @@ function resycnc_anchor_indexes(group)
 	table.sort(anchors, sort_anchors_asc)
 
 	local temp_debug_stopper = math.random()
-
-	return 
 end
 
 function enter_state_opening_door(group, door_unit)
@@ -1398,14 +1340,12 @@ function enter_state_opening_door(group, door_unit)
 		blackboard.stored_goal_destination = blackboard.goal_destination
 		blackboard.goal_destination = nil
 	end
-
-	return 
 end
 
 function update_state_opening_door(group)
 	local door_extension = ScriptUnit.extension(group.door_unit, "door_system")
 
-	if not door_extension.is_opening(door_extension) then
+	if not door_extension:is_opening() then
 		group.door_unit = nil
 		local indexed_members = group.indexed_members
 		local num_indexed_members = group.num_indexed_members
@@ -1419,8 +1359,6 @@ function update_state_opening_door(group)
 
 		enter_state_patrolling(group)
 	end
-
-	return 
 end
 
 function enter_state_break_node(nav_world, group, break_node_index)
@@ -1446,8 +1384,6 @@ function enter_state_break_node(nav_world, group, break_node_index)
 		change_path_direction(group, astar_data.node_index)
 		enter_state_forming(nav_world, group)
 	end
-
-	return 
 end
 
 function update_break_node_astar(nav_world, group)
@@ -1455,7 +1391,7 @@ function update_break_node_astar(nav_world, group)
 	local astar = astar_data.astar
 
 	if GwNavAStar.processing_finished(astar) then
-		if GwNavAStar.path_found(astar) and 0 < GwNavAStar.node_count(astar) then
+		if GwNavAStar.path_found(astar) and GwNavAStar.node_count(astar) > 0 then
 			if script_data.debug_storm_vermin_patrol then
 				debug_break_node_astar(group, astar_data, Colors.get("green"))
 				debug_print("[StormVerminPatrol] Found path from break node to next node. Path distance:", GwNavAStar.path_distance(astar))
@@ -1481,8 +1417,6 @@ function update_break_node_astar(nav_world, group)
 			enter_state_forming(nav_world, group)
 		end
 	end
-
-	return 
 end
 
 function debug_break_node_astar(group, astar_data, color)
@@ -1507,9 +1441,7 @@ function debug_break_node_astar(group, astar_data, color)
 		name = "storm_vermin_patrol_retained_until_destroy"
 	})
 
-	drawer.box(drawer, box_pose, box_extents, color)
-
-	return 
+	drawer:box(box_pose, box_extents, color)
 end
 
 function enter_state_controlled_advance(nav_world, group, t)
@@ -1525,7 +1457,7 @@ function enter_state_controlled_advance(nav_world, group, t)
 		local blackboard = BLACKBOARDS[unit]
 		local navigation_extension = blackboard.navigation_extension
 
-		navigation_extension.set_max_speed(navigation_extension, CONTROLLED_ADVANCE_SPEED)
+		navigation_extension:set_max_speed(CONTROLLED_ADVANCE_SPEED)
 
 		local SVP_target_unit = blackboard.SVP_target_unit
 		local target_position = POSITION_LOOKUP[SVP_target_unit]
@@ -1543,13 +1475,13 @@ function enter_state_controlled_advance(nav_world, group, t)
 			local network_manager = Managers.state.network
 
 			if not blackboard.climb_state then
-				network_manager.anim_event(network_manager, unit, "to_combat")
+				network_manager:anim_event(unit, "to_combat")
 				unit_animation_event(group, unit, "move_fwd_walk")
 			end
 		else
 			blackboard.goal_destination = nil
 
-			navigation_extension.stop(navigation_extension)
+			navigation_extension:stop()
 
 			if not blackboard.climb_state then
 				unit_animation_event(group, unit, "idle")
@@ -1558,24 +1490,22 @@ function enter_state_controlled_advance(nav_world, group, t)
 
 		local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
-		ai_slot_system.do_slot_search(ai_slot_system, unit, true)
+		ai_slot_system:do_slot_search(unit, true)
 
 		local ai_extension = ScriptUnit.extension(unit, "ai_system")
 		local perception_func_name = nil
 		local target_selection_func_name = "storm_patrol_death_squad_target_selection"
 
-		ai_extension.set_perception(ai_extension, perception_func_name, target_selection_func_name)
+		ai_extension:set_perception(perception_func_name, target_selection_func_name)
 
 		blackboard.preferred_door_action = "smash"
 
-		navigation_extension.allow_layer(navigation_extension, "planks", true)
+		navigation_extension:allow_layer("planks", true)
 		GwNavTagLayerCostTable.allow_layer(group.nav_data.navtag_layer_cost_table, LAYER_ID_MAPPING.planks)
 	end
 
 	set_state(group, "controlled_advance")
 	play_sound(group, "storm_vermin_patrol_player_spotted")
-
-	return 
 end
 
 function acquire_targets(group)
@@ -1615,8 +1545,6 @@ function acquire_targets(group)
 			blackboard.SVP_target_unit = selected_target_unit
 		end
 	end
-
-	return 
 end
 
 function controlled_advance(nav_world, group, t, dt)
@@ -1656,8 +1584,6 @@ function controlled_advance(nav_world, group, t, dt)
 	if should_attack or group.attack_latest_t < t then
 		enter_state_combat(group)
 	end
-
-	return 
 end
 
 function enter_state_combat(group)
@@ -1687,8 +1613,6 @@ function enter_state_combat(group)
 	end
 
 	play_sound(group, "storm_vermin_patrol_charge")
-
-	return 
 end
 
 function check_if_players_dead(nav_world, group, t, dt)
@@ -1728,8 +1652,6 @@ function check_if_players_dead(nav_world, group, t, dt)
 			enter_state_find_path_entry(nav_world, group)
 		end
 	end
-
-	return 
 end
 
-return 
+return

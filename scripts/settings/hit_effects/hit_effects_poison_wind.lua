@@ -1081,4 +1081,4 @@ HitEffectsPoisonWind = {
 	}
 }
 
-return 
+return

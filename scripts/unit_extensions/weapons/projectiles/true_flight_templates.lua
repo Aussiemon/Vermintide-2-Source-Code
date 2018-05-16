@@ -95,8 +95,6 @@ TrueFlightTemplates.sorcerer_strike_missile = {
 		elseif state_id == 2 then
 			Unit.flow_event(projectile_unit, "lua_projectile_striking")
 		end
-
-		return 
 	end
 }
 TrueFlightTemplates.sorcerer_magic_missile_ground = {
@@ -147,21 +145,17 @@ TrueFlightTemplates.sorcerer_slow_bomb_missile = {
 			local parent_unit = hit_unit
 
 			if not parent_unit then
-				return 
+				return
 			end
 
 			if is_server then
 			end
 		end
-
-		return 
 	end,
 	init_func = function (unit, world)
 		local large_actor = Unit.actor(unit, "c_large")
 
 		Actor.set_collision_enabled(large_actor, false)
-
-		return 
 	end
 }
 TrueFlightTemplates.sorcerer_vortex_dummy_missile = {
@@ -185,4 +179,4 @@ for name, template in pairs(TrueFlightTemplates) do
 	TrueFlightTemplatesLookup[template_index] = name
 end
 
-return 
+return

@@ -13,8 +13,6 @@ local console_cursor_definition = definitions.console_cursor_definition
 
 local function dprint(...)
 	print("[LevelEndView]", ...)
-
-	return 
 end
 
 local DO_RELOAD = false
@@ -22,16 +20,17 @@ local debug_draw_scenegraph = false
 local debug_menu = false
 local fake_input_service = {
 	get = function ()
-		return 
+		return
 	end,
 	has = function ()
-		return 
+		return
 	end
 }
 local RPCS = {
 	"rpc_signal_end_of_level_done"
 }
 LevelEndView = class(LevelEndView)
+
 LevelEndView.init = function (self, context)
 	local game_won = context.game_won
 	self.game_won = game_won
@@ -53,9 +52,15 @@ LevelEndView.init = function (self, context)
 	}
 	self._lobby = context.lobby
 	self.is_server = context.is_server
-	self.level_up_rewards = self._get_level_up_rewards(self)
-	self.deed_rewards = self._get_deed_rewards(self)
-	self.keep_decoration_rewards = self._get_keep_decoration_rewards(self)
+	local is_untrusted = script_data["eac-untrusted"]
+	self._is_untrusted = is_untrusted
+
+	if not is_untrusted then
+		self.level_up_rewards = self:_get_level_up_rewards()
+		self.deed_rewards = self:_get_deed_rewards()
+		self.keep_decoration_rewards = self:_get_keep_decoration_rewards()
+	end
+
 	local world = context.world
 	self.wwise_world = Managers.world:wwise_world(world)
 	context.wwise_world = self.wwise_world
@@ -63,11 +68,11 @@ LevelEndView.init = function (self, context)
 	self.input_manager = input_manager
 	self._reward_presentation_queue = {}
 	self.reward_popup = RewardPopupUI:new(context)
-	local index_by_state_name, state_name_by_index = self._setup_pages(self, game_won)
+	local index_by_state_name, state_name_by_index = self:_setup_pages(game_won)
 	self._index_by_state_name = index_by_state_name
 	self._state_name_by_index = state_name_by_index
 
-	self.create_ui_elements(self)
+	self:create_ui_elements()
 
 	self._state_machine_params = {
 		parent = self,
@@ -76,42 +81,41 @@ LevelEndView.init = function (self, context)
 		game_mode_key = self.game_mode_key
 	}
 
-	self._setup_camera(self)
+	self:_setup_camera()
 
 	self._done_peers = {}
 	self.waiting_to_start = true
+	self._wants_to_exit_to_game = nil
+	self._started_exit = nil
 
 	if self._lobby == nil then
-		self.left_lobby(self)
+		self:left_lobby()
 	end
-
-	return 
 end
+
 LevelEndView.register_rpcs = function (self, network_event_delegate)
 	self._registered_rpcs = true
 
-	network_event_delegate.register(network_event_delegate, self, unpack(RPCS))
+	network_event_delegate:register(self, unpack(RPCS))
 
 	self._network_event_delegate = network_event_delegate
-
-	return 
 end
+
 LevelEndView.unregister_rpcs = function (self)
 	self._network_event_delegate:unregister(self)
 
 	self._network_event_delegate = nil
 	self._registered_rpcs = false
-
-	return 
 end
+
 LevelEndView._request_state_change = function (self, state_name)
 	local state_machine = self._machine
 
 	if not state_machine then
-		return 
+		return
 	end
 
-	local current_state = state_machine.state(state_machine)
+	local current_state = state_machine:state()
 	local current_state_name = current_state.NAME
 	local direction = nil
 	local new_state_index = self._index_by_state_name[state_name]
@@ -123,29 +127,27 @@ LevelEndView._request_state_change = function (self, state_name)
 		direction = "right"
 	end
 
-	current_state.exit(current_state, direction)
+	current_state:exit(direction)
 
 	self._new_state_name = state_name
-
-	return 
 end
+
 LevelEndView._handle_state_exit = function (self)
 	local state_machine = self._machine
 
 	if not state_machine then
-		return 
+		return
 	end
 
-	local current_state = state_machine.state(state_machine)
+	local current_state = state_machine:state()
 
-	if current_state.exit_done(current_state) then
-		self._setup_state_machine(self, self._new_state_name)
+	if current_state:exit_done() then
+		self:_setup_state_machine(self._new_state_name)
 
 		self._new_state_name = nil
 	end
-
-	return 
 end
+
 LevelEndView._setup_state_machine = function (self, optional_start_state_name, initial)
 	if self._machine then
 		self._machine:destroy()
@@ -175,9 +177,8 @@ LevelEndView._setup_state_machine = function (self, optional_start_state_name, i
 	state_machine_params.direction = direction
 	self._current_state_name = state_name
 	self._machine = StateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
-
-	return 
 end
+
 LevelEndView.set_input_manager = function (self, input_manager)
 	self.input_manager = input_manager
 
@@ -187,45 +188,45 @@ LevelEndView.set_input_manager = function (self, input_manager)
 
 	local state = self._machine:state()
 
-	state.set_input_manager(state, input_manager)
-
-	return 
+	state:set_input_manager(input_manager)
 end
+
 LevelEndView.wanted_menu_state = function (self)
 	return self._wanted_menu_state
 end
+
 LevelEndView.clear_wanted_menu_state = function (self)
 	self._wanted_menu_state = nil
-
-	return 
 end
+
 LevelEndView.start = function (self)
-	self._activate_viewport(self)
+	self:_activate_viewport()
 
 	self.waiting_to_start = nil
 	self.state_auto_change = true
 
-	self._setup_state_machine(self, nil, true)
-	self.play_sound(self, "play_gui_chestroom_start")
+	self:_proceed_to_next_auto_state(1, #self._state_name_by_index)
+	self:play_sound("play_gui_chestroom_start")
 
 	self._playing_music = nil
 	self._start_music_event = (self.game_won and "Play_won_music") or "Play_lost_music"
 	self._stop_music_event = (self.game_won and "Stop_won_music") or "Stop_lost_music"
-
-	return 
 end
+
 LevelEndView.on_enter = function (self)
-	return 
+	return
 end
+
 LevelEndView.on_exit = function (self)
-	local difficulty_key = Managers.state.difficulty:get_difficulty()
-	local chest_settings = LootChestData.chests_by_category[difficulty_key]
-	local chests_package_name = chest_settings.package_name
+	if not self._is_untrusted then
+		local difficulty_key = Managers.state.difficulty:get_difficulty()
+		local chest_settings = LootChestData.chests_by_category[difficulty_key]
+		local chests_package_name = chest_settings.package_name
 
-	Managers.package:unload(chests_package_name, "global")
-
-	return 
+		Managers.package:unload(chests_package_name, "global")
+	end
 end
+
 LevelEndView._get_level_up_rewards = function (self)
 	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
 	local items_by_level = {}
@@ -246,6 +247,7 @@ LevelEndView._get_level_up_rewards = function (self)
 
 	return items_by_level
 end
+
 LevelEndView._get_deed_rewards = function (self)
 	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
 	local deed_rewards = {}
@@ -258,6 +260,7 @@ LevelEndView._get_deed_rewards = function (self)
 
 	return deed_rewards
 end
+
 LevelEndView._get_keep_decoration_rewards = function (self)
 	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
 	local keep_decoration_rewards = {}
@@ -270,72 +273,75 @@ LevelEndView._get_keep_decoration_rewards = function (self)
 
 	return keep_decoration_rewards
 end
+
 LevelEndView._set_end_timer = function (self, time)
 	local widget = self._dynamic_widgets.timer_text
 	time = math.ceil(time)
 	local time_text = string.format("%02d:%02d", math.floor(time / 60), time % 60)
 	widget.content.text = string.format(Localize("timer_prefix_time_left") .. ": %s", time_text)
-
-	return 
 end
+
 LevelEndView._update_end_level_vote = function (self, dt)
 	local voting_manager = Managers.state.voting
-	local can_vote = not self._voted and voting_manager.vote_in_progress(voting_manager)
+	local can_vote = not self._voted and voting_manager:vote_in_progress()
 	self._ready_button_widget.content.button_hotspot.disable_button = not can_vote
 
 	if not can_vote then
 		self._retry_button_widget.content.button_hotspot.disable_button = true
 	end
 
-	local vote_time_left = voting_manager.vote_time_left(voting_manager)
+	local vote_time_left = voting_manager:vote_time_left()
 
 	if vote_time_left then
-		self._set_end_timer(self, vote_time_left)
+		self:_set_end_timer(vote_time_left)
 	end
-
-	return 
 end
+
 LevelEndView._vote_to_leave_game = function (self)
 	local voting_manager = Managers.state.voting
 
-	voting_manager.vote(voting_manager, 1)
+	voting_manager:vote(1)
 
 	self._voted = true
-
-	return 
 end
+
 LevelEndView._exit_to_game = function (self)
-	self._wants_to_exit_to_game = true
+	self:play_sound(self._stop_music_event)
 
-	return 
+	self._exit_timer = 2
+	self._started_exit = true
 end
+
 LevelEndView.done = function (self)
 	return self._wants_to_exit_to_game
 end
+
 LevelEndView._push_mouse_cursor = function (self)
 	if not self._cursor_visible then
 		ShowCursorStack.push()
 
 		self._cursor_visible = true
 
-		self._start_animation(self, "ready_button_entry")
+		self:_start_animation("ready_button_entry")
 	end
-
-	return 
 end
+
 LevelEndView._pop_mouse_cursor = function (self)
 	if self._cursor_visible then
 		ShowCursorStack.pop()
 
 		self._cursor_visible = nil
 	end
-
-	return 
 end
+
 LevelEndView._setup_pages = function (self, game_won)
 	local index_by_state_name = nil
 
-	if game_won then
+	if self._is_untrusted then
+		index_by_state_name = {
+			EndViewStateScore = 1
+		}
+	elseif game_won then
 		index_by_state_name = {
 			EndViewStateChest = 2,
 			EndViewStateScore = 3,
@@ -356,6 +362,7 @@ LevelEndView._setup_pages = function (self, game_won)
 
 	return index_by_state_name, state_name_by_index
 end
+
 LevelEndView.create_ui_elements = function (self)
 	DO_RELOAD = false
 	self.ui_animations = {}
@@ -382,16 +389,14 @@ LevelEndView.create_ui_elements = function (self)
 	if self.game_won then
 		self._ready_button_widget.scenegraph_id = "ready_button_alone"
 	end
-
-	return 
 end
+
 LevelEndView._activate_viewport = function (self)
-	local world, viewport = self.get_viewport_world(self)
+	local world, viewport = self:get_viewport_world()
 
 	ScriptWorld.activate_viewport(world, viewport)
-
-	return 
 end
+
 LevelEndView._setup_camera = function (self)
 	local camera_pose = nil
 	local level_name = "levels/end_screen/world"
@@ -413,13 +418,12 @@ LevelEndView._setup_camera = function (self)
 
 	self._camera_pose = camera_pose
 
-	self._position_camera(self)
-
-	return 
+	self:_position_camera()
 end
+
 LevelEndView.get_world_link_unit = function (self)
 	local level_name = "levels/end_screen/world"
-	local world = self.get_viewport_world(self)
+	local world = self:get_viewport_world()
 	local level = ScriptWorld.level(world, level_name)
 
 	if level then
@@ -433,12 +437,12 @@ LevelEndView.get_world_link_unit = function (self)
 			end
 		end
 	end
-
-	return 
 end
+
 LevelEndView.get_viewport_world = function (self)
 	return self._world, self._world_viewport
 end
+
 local cam_shake_settings = {
 	persistance = 1,
 	fade_out = 0.5,
@@ -448,6 +452,7 @@ local cam_shake_settings = {
 	fade_in = 0.1,
 	octaves = 7
 }
+
 LevelEndView.add_camera_shake = function (self, settings, start_time, scale)
 	local data = {}
 	local settings = settings or cam_shake_settings
@@ -465,9 +470,8 @@ LevelEndView.add_camera_shake = function (self, settings, start_time, scale)
 	self._active_camera_shakes = {
 		[data] = true
 	}
-
-	return 
 end
+
 LevelEndView._apply_shake_event = function (self, settings, t)
 	local active_camera_shakes = self._active_camera_shakes
 	local start_time = settings.start_time
@@ -481,23 +485,22 @@ LevelEndView._apply_shake_event = function (self, settings, t)
 		settings.fade_progress = math.clamp((end_time - t) / (end_time - fade_out_time), 0, 1)
 	end
 
-	local pitch_noise_value = self._calculate_perlin_value(self, t - settings.start_time, settings) * settings.scale
-	local yaw_noise_value = self._calculate_perlin_value(self, t - settings.start_time + 10, settings) * settings.scale
-	local current_rot = self.get_camera_rotation(self)
+	local pitch_noise_value = self:_calculate_perlin_value(t - settings.start_time, settings) * settings.scale
+	local yaw_noise_value = self:_calculate_perlin_value(t - settings.start_time + 10, settings) * settings.scale
+	local current_rot = self:get_camera_rotation()
 	local deg_to_rad = math.pi / 180
 	local yaw_offset = Quaternion(Vector3.up(), yaw_noise_value * deg_to_rad)
 	local pitch_offset = Quaternion(Vector3.right(), pitch_noise_value * deg_to_rad)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
 	local rotation = Quaternion.multiply(Quaternion.identity(), total_offset)
 
-	self.set_camera_rotation(self, rotation)
+	self:set_camera_rotation(rotation)
 
 	if settings.end_time and settings.end_time <= t then
 		active_camera_shakes[settings] = nil
 	end
-
-	return 
 end
+
 LevelEndView._calculate_perlin_value = function (self, x, settings)
 	local total = 0
 	local shake_settings = settings.shake_settings
@@ -507,7 +510,7 @@ LevelEndView._calculate_perlin_value = function (self, x, settings)
 	for i = 0, number_of_octaves, 1 do
 		local frequency = 2^i
 		local amplitude = persistance^i
-		total = total + self._interpolated_noise(self, x * frequency, settings) * amplitude
+		total = total + self:_interpolated_noise(x * frequency, settings) * amplitude
 	end
 
 	local amplitude_multiplier = shake_settings.amplitude or 1
@@ -516,49 +519,57 @@ LevelEndView._calculate_perlin_value = function (self, x, settings)
 
 	return total
 end
+
 LevelEndView._interpolated_noise = function (self, x, settings)
 	local x_floored = math.floor(x)
 	local remainder = x - x_floored
-	local v1 = self._smoothed_noise(self, x_floored, settings)
-	local v2 = self._smoothed_noise(self, x_floored + 1, settings)
+	local v1 = self:_smoothed_noise(x_floored, settings)
+	local v2 = self:_smoothed_noise(x_floored + 1, settings)
 
 	return math.lerp(v1, v2, remainder)
 end
+
 LevelEndView._smoothed_noise = function (self, x, settings)
-	return self._noise(self, x, settings) / 2 + self._noise(self, x - 1, settings) / 4 + self._noise(self, x + 1, settings) / 4
+	return self:_noise(x, settings) / 2 + self:_noise(x - 1, settings) / 4 + self:_noise(x + 1, settings) / 4
 end
+
 LevelEndView._noise = function (self, x, settings)
 	local next_seed, _ = Math.next_random(x + settings.seed)
 	local _, value = Math.next_random(next_seed)
 
 	return value * 2 - 1
 end
+
 LevelEndView.set_camera_position = function (self, position)
-	local _, viewport = self.get_viewport_world(self)
+	local _, viewport = self:get_viewport_world()
 	local camera = ScriptViewport.camera(viewport)
 
 	return ScriptCamera.set_local_position(camera, position)
 end
+
 LevelEndView.set_camera_rotation = function (self, rotation)
-	local _, viewport = self.get_viewport_world(self)
+	local _, viewport = self:get_viewport_world()
 	local camera = ScriptViewport.camera(viewport)
 
 	return ScriptCamera.set_local_rotation(camera, rotation)
 end
+
 LevelEndView.get_camera_position = function (self)
-	local _, viewport = self.get_viewport_world(self)
+	local _, viewport = self:get_viewport_world()
 	local camera = ScriptViewport.camera(viewport)
 
 	return ScriptCamera.position(camera)
 end
+
 LevelEndView.get_camera_rotation = function (self)
-	local _, viewport = self.get_viewport_world(self)
+	local _, viewport = self:get_viewport_world()
 	local camera = ScriptViewport.camera(viewport)
 
 	return ScriptCamera.rotation(camera)
 end
+
 LevelEndView._position_camera = function (self, optional_pose)
-	local world, viewport = self.get_viewport_world(self)
+	local world, viewport = self:get_viewport_world()
 	local camera = ScriptViewport.camera(viewport)
 	local camera_pose = optional_pose or self._camera_pose:unbox()
 
@@ -569,9 +580,8 @@ LevelEndView._position_camera = function (self, optional_pose)
 		ScriptCamera.set_local_pose(camera, camera_pose)
 		ScriptCamera.force_update(world, camera)
 	end
-
-	return 
 end
+
 LevelEndView.set_camera_zoom = function (self, progress)
 	local camera_pose = self._camera_pose:unbox()
 	local translation = Matrix4x4.translation(camera_pose)
@@ -581,12 +591,11 @@ LevelEndView.set_camera_zoom = function (self, progress)
 	local dir = Quaternion.forward(rotation)
 	local position = translation + dir * distance
 
-	self.set_camera_position(self, position)
-
-	return 
+	self:set_camera_position(position)
 end
+
 LevelEndView._setup_viewport_camera = function (self)
-	local world, viewport = self.get_viewport_world(self)
+	local world, viewport = self:get_viewport_world()
 	local level_camera_unit = World.unit_by_name(world, "camera")
 	local level_camera_rot = Unit.world_rotation(level_camera_unit, 0)
 	local level_camera_pos = Unit.world_position(level_camera_unit, 0)
@@ -596,15 +605,14 @@ LevelEndView._setup_viewport_camera = function (self)
 
 	ScriptCamera.set_local_rotation(viewport_camera, level_camera_rot)
 	ScriptCamera.set_local_position(viewport_camera, level_camera_pos)
-
-	return 
 end
+
 LevelEndView.draw = function (self, dt, input_service)
 	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_manager = self.input_manager
-	local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
+	local gamepad_active = input_manager:is_device_active("gamepad")
 	local waiting_to_start = self.waiting_to_start
 	local render_settings = self.render_settings
 
@@ -639,18 +647,17 @@ LevelEndView.draw = function (self, dt, input_service)
 		UIRenderer.draw_widget(ui_top_renderer, self._console_cursor)
 		UIRenderer.end_pass(ui_top_renderer)
 	end
-
-	return 
 end
+
 LevelEndView.update = function (self, dt, t)
 	if DO_RELOAD then
 		DO_RELOAD = false
 		self.waiting_to_start = true
-		local index_by_state_name, state_name_by_index = self._setup_pages(self, self.game_won)
+		local index_by_state_name, state_name_by_index = self:_setup_pages(self.game_won)
 		self._index_by_state_name = index_by_state_name
 		self._state_name_by_index = state_name_by_index
 
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 
 		self._state_machine_params = {
 			parent = self,
@@ -661,49 +668,53 @@ LevelEndView.update = function (self, dt, t)
 	end
 
 	if self.suspended or self.waiting_for_post_update_enter then
-		return 
+		return
 	end
 
 	local active_camera_shakes = self._active_camera_shakes
 
 	if active_camera_shakes then
 		for settings, _ in pairs(active_camera_shakes) do
-			self._apply_shake_event(self, settings, t)
+			self:_apply_shake_event(settings, t)
 		end
 	end
 
 	local input_manager = self.input_manager
-	local input_service = self.input_service(self)
-	local transitioning = self.transitioning(self)
+	local input_service = self:input_service()
+	local transitioning = self:transitioning()
 
 	if self.active then
 		if self._started_force_shutdown then
-			self._update_force_shutdown(self, dt)
+			self:_update_force_shutdown(dt)
 		end
 
-		self._update_animations(self, dt, t)
-		self.draw(self, dt, input_service)
+		if self._started_exit then
+			self:_update_exit(dt)
+		end
+
+		self:_update_animations(dt, t)
+		self:draw(dt, input_service)
 
 		if self.reward_popup then
 			self.reward_popup:update(dt)
 		end
 
-		self._handle_queued_presentations(self)
+		self:_handle_queued_presentations()
 
 		if self._machine then
 			self._machine:update(dt, t)
 
 			if self._new_state_name then
-				self._handle_state_exit(self)
+				self:_handle_state_exit()
 			elseif self.state_auto_change then
-				self._handle_state_auto_change(self)
+				self:_handle_state_auto_change()
 			elseif self._page_selector_widget then
-				local index = self._is_page_selector_pressed(self)
+				local index = self:_is_page_selector_pressed()
 
 				if index then
 					local state_name = self._state_name_by_index[index]
 
-					self._request_state_change(self, state_name)
+					self:_request_state_change(state_name)
 				end
 			end
 		end
@@ -715,44 +726,42 @@ LevelEndView.update = function (self, dt, t)
 	if not self._playing_music then
 		self._playing_music = true
 
-		self.play_sound(self, self._start_music_event)
+		self:play_sound(self._start_music_event)
 	end
 
 	local button_pressed = false
 
-	if self._is_button_hover_enter(self, self._retry_button_widget) or self._is_button_hover_enter(self, self._ready_button_widget) then
-		self.play_sound(self, "play_gui_start_menu_button_hover")
+	if self:_is_button_hover_enter(self._retry_button_widget) or self:_is_button_hover_enter(self._ready_button_widget) then
+		self:play_sound("play_gui_start_menu_button_hover")
 	end
 
-	if self._is_button_pressed(self, self._retry_button_widget) and not button_pressed then
-		self._retry_level(self)
+	if self:_is_button_pressed(self._retry_button_widget) and not button_pressed then
+		self:_retry_level()
 
 		button_pressed = true
 	end
 
-	if self._is_button_pressed(self, self._ready_button_widget) and not button_pressed then
-		self.play_sound(self, "play_gui_mission_summary_button_return_to_keep_click")
-		self.play_sound(self, self._stop_music_event)
+	if self:_is_button_pressed(self._ready_button_widget) and not button_pressed then
+		self:play_sound("play_gui_mission_summary_button_return_to_keep_click")
 
 		if self._left_lobby then
-			self._exit_to_game(self)
+			self:_exit_to_game()
 		else
-			self._signal_done(self)
+			self:_signal_done()
 		end
 
 		button_pressed = true
 	end
-
-	return 
 end
+
 LevelEndView._handle_state_auto_change = function (self)
 	local state_machine = self._machine
 
 	if not state_machine then
-		return 
+		return
 	end
 
-	local current_state = state_machine.state(state_machine)
+	local current_state = state_machine:state()
 	local state_name = current_state.NAME
 	local state_name_by_index = self._state_name_by_index
 	local index_by_state_name = self._index_by_state_name
@@ -760,46 +769,45 @@ LevelEndView._handle_state_auto_change = function (self)
 	local num_states = #state_name_by_index
 
 	if self._next_auto_state_index then
-		if current_state.exit_done(current_state) then
-			local new_state = self._state_name_by_index[self._next_auto_state_index]
-
-			self._setup_state_machine(self, new_state, true)
-
-			if self._next_auto_state_index == num_states then
-				self.state_auto_change = false
-
-				self._push_mouse_cursor(self)
-			end
-
-			self._next_auto_state_index = nil
+		if current_state:exit_done() then
+			self:_proceed_to_next_auto_state(self._next_auto_state_index, num_states)
 		end
 	else
 		local new_state_index = nil
-		local displaying_reward_presentation = self.displaying_reward_presentation(self)
+		local displaying_reward_presentation = self:displaying_reward_presentation()
 
 		if not displaying_reward_presentation then
-			if state_name == "EndViewStateSummary" and current_state.done(current_state) then
-				if current_state_index < num_states then
-					new_state_index = current_state_index + 1
-				end
-			elseif state_name == "EndViewStateChest" and current_state.done(current_state) and current_state_index < num_states then
+			if current_state_index < num_states and current_state:done() then
 				new_state_index = current_state_index + 1
 			end
 
 			if new_state_index then
-				current_state.exit(current_state)
+				current_state:exit()
 
 				self._next_auto_state_index = new_state_index
 			end
 		end
 	end
-
-	return 
 end
+
+LevelEndView._proceed_to_next_auto_state = function (self, index, num_states)
+	local new_state = self._state_name_by_index[index]
+
+	self:_setup_state_machine(new_state, true)
+
+	if index == num_states then
+		self.state_auto_change = false
+
+		self:_push_mouse_cursor()
+	end
+
+	self._next_auto_state_index = nil
+end
+
 LevelEndView._update_animations = function (self, dt, t)
 	local ui_animator = self.ui_animator
 
-	ui_animator.update(ui_animator, dt)
+	ui_animator:update(dt)
 
 	for name, ui_animation in pairs(self.ui_animations) do
 		UIAnimation.update(ui_animation, dt)
@@ -808,28 +816,25 @@ LevelEndView._update_animations = function (self, dt, t)
 			self.ui_animations[name] = nil
 		end
 	end
-
-	return 
 end
+
 LevelEndView.transitioning = function (self)
 	if self.exiting then
 		return true
 	else
 		return not self.active
 	end
-
-	return 
 end
+
 LevelEndView.left_lobby = function (self)
 	self._left_lobby = true
 	self._lobby = nil
 
 	if self._done_peers[Network.peer_id()] then
-		self._exit_to_game(self)
+		self:_exit_to_game()
 	end
-
-	return 
 end
+
 LevelEndView.destroy = function (self)
 	if self._registered_rpcs then
 		self._network_event_delegate:unregister(self)
@@ -851,28 +856,27 @@ LevelEndView.destroy = function (self)
 		self.reward_popup = nil
 	end
 
-	self._pop_mouse_cursor(self)
-	self.play_sound(self, "play_gui_chestroom_stop")
-	self.play_sound(self, "unmute_all_world_sounds")
+	self:_pop_mouse_cursor()
+	self:play_sound("play_gui_chestroom_stop")
+	self:play_sound("unmute_all_world_sounds")
+end
 
-	return 
-end
 LevelEndView.input_service = function (self)
-	return (self.displaying_reward_presentation(self) and fake_input_service) or self.input_manager:get_service("end_of_level")
+	return (self:displaying_reward_presentation() and fake_input_service) or self.input_manager:get_service("end_of_level")
 end
+
 LevelEndView.menu_input_service = function (self)
-	return (self.input_blocked and fake_input_service) or self.input_service(self)
+	return (self.input_blocked and fake_input_service) or self:input_service()
 end
+
 LevelEndView.set_input_blocked = function (self, blocked)
 	self.input_blocked = blocked
-
-	return 
 end
+
 LevelEndView.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
-
-	return 
 end
+
 LevelEndView._is_button_pressed = function (self, widget)
 	local button_hotspot = widget.content.button_hotspot
 
@@ -881,15 +885,15 @@ LevelEndView._is_button_pressed = function (self, widget)
 
 		return true
 	end
-
-	return 
 end
+
 LevelEndView._is_button_hover_enter = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
 
 	return hotspot.on_hover_enter
 end
+
 LevelEndView._is_page_selector_pressed = function (self)
 	local widget = self._page_selector_widget
 	local content = widget.content
@@ -904,9 +908,8 @@ LevelEndView._is_page_selector_pressed = function (self)
 			return i
 		end
 	end
-
-	return 
 end
+
 LevelEndView._set_page_selector_selection = function (self, index)
 	local widget = self._page_selector_widget
 	local content = widget.content
@@ -918,9 +921,8 @@ LevelEndView._set_page_selector_selection = function (self, index)
 		local hotspot = content[hotspot_name]
 		hotspot.is_selected = index == i
 	end
-
-	return 
 end
+
 LevelEndView._start_animation = function (self, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
@@ -930,26 +932,28 @@ LevelEndView._start_animation = function (self, animation_name)
 
 	return self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
 end
+
 LevelEndView.enable_chat = function (self)
 	return true
 end
+
 LevelEndView.active_input_service = function (self)
-	return (self.input_blocked and fake_input_service) or self.input_service(self)
+	return (self.input_blocked and fake_input_service) or self:input_service()
 end
+
 LevelEndView._retry_level = function (self)
 	if self.is_server then
 		Managers.state.game_mode:retry_level()
 	else
 		self._retry_button_widget.content.button_hotspot.disabled = true
 	end
-
-	return 
 end
+
 LevelEndView._signal_done = function (self)
 	if not self._left_lobby then
 		if self.is_server then
 			local lobby = self._lobby
-			local members = lobby.members(lobby):get_members()
+			local members = lobby:members():get_members()
 			local own_peer_id = Network.peer_id()
 
 			for i, peer_id in ipairs(members) do
@@ -959,7 +963,7 @@ LevelEndView._signal_done = function (self)
 			end
 		else
 			local lobby = self._lobby
-			local host = lobby.lobby_host(lobby)
+			local host = lobby:lobby_host()
 
 			RPC.rpc_signal_end_of_level_done(host)
 		end
@@ -967,32 +971,29 @@ LevelEndView._signal_done = function (self)
 
 	self._ready_button_widget.content.button_hotspot.disable_button = true
 
-	self._peer_signaled_done(self, Network.peer_id())
-
-	return 
+	self:_peer_signaled_done(Network.peer_id())
 end
+
 LevelEndView._peer_signaled_done = function (self, peer_id)
 	if not self._started_force_shutdown then
-		self._start_force_shutdown(self)
+		self:_start_force_shutdown()
 	end
 
 	self._done_peers[peer_id] = true
-
-	return 
 end
+
 LevelEndView._start_force_shutdown = function (self)
 	self._started_force_shutdown = true
 	self._force_shutdown_timer = 10
-
-	return 
 end
+
 LevelEndView._update_force_shutdown = function (self, dt)
 	self._force_shutdown_timer = math.max(0, self._force_shutdown_timer - dt)
 
-	self._set_end_timer(self, self._force_shutdown_timer)
+	self:_set_end_timer(self._force_shutdown_timer)
 
 	if self._force_shutdown_timer == 0 then
-		self._exit_to_game(self)
+		self:_exit_to_game()
 	elseif not self._left_lobby then
 		local all_done = true
 		local members = self._lobby:members():get_members()
@@ -1006,58 +1007,67 @@ LevelEndView._update_force_shutdown = function (self, dt)
 		end
 
 		if all_done then
-			self._exit_to_game(self)
+			self:_exit_to_game()
 		end
 	end
 
-	if self._wants_to_exit_to_game then
+	if self._started_exit then
 		self._started_force_shutdown = false
 	end
-
-	return 
 end
+
+LevelEndView._update_exit = function (self, dt)
+	self._exit_timer = math.max(0, self._exit_timer - dt)
+
+	if self._exit_timer == 0 then
+		self._started_exit = false
+		self._wants_to_exit_to_game = true
+	end
+end
+
 LevelEndView._present_reward = function (self, data)
 	local reward_popup = self.reward_popup
 
-	if self.displaying_reward_presentation(self) then
+	if self:displaying_reward_presentation() then
 		local reward_presentation_queue = self._reward_presentation_queue
 		reward_presentation_queue[#reward_presentation_queue + 1] = data
 	else
-		reward_popup.display_presentation(reward_popup, data)
+		reward_popup:display_presentation(data)
 	end
-
-	return 
 end
+
 LevelEndView._handle_queued_presentations = function (self)
-	if self._is_reward_presentation_complete(self) or (#self._reward_presentation_queue == 0 and not self.displaying_reward_presentation(self)) then
+	if self:_is_reward_presentation_complete() or (#self._reward_presentation_queue == 0 and not self:displaying_reward_presentation()) then
 		local reward_presentation_queue = self._reward_presentation_queue
 		local num_queued_rewards = #reward_presentation_queue
 
-		if 0 < num_queued_rewards then
+		if num_queued_rewards > 0 then
 			local next_reward = table.remove(reward_presentation_queue, 1)
 
-			self._present_reward(self, next_reward)
+			self:_present_reward(next_reward)
 		else
 			self._reward_presentation_done = true
 		end
 	end
-
-	return 
 end
+
 LevelEndView.displaying_reward_presentation = function (self)
 	return self.reward_popup:is_presentation_active()
 end
+
 LevelEndView._is_reward_presentation_complete = function (self)
 	return self.reward_popup:is_presentation_complete()
 end
+
 LevelEndView.reward_presentation_done = function (self)
 	return self._reward_presentation_done
 end
+
 LevelEndView.present_level_up = function (self, hero_name, hero_level)
 	local level_unlocks = ProgressionUnlocks.get_level_unlocks(hero_level, hero_name)
 	local level_up_rewards = self.level_up_rewards[hero_level]
-	local has_level_up_unlocks = level_unlocks and 0 < #level_unlocks
-	local has_level_up_rewards = level_up_rewards and 0 < #level_up_rewards
+	local has_level_up_unlocks = level_unlocks and #level_unlocks > 0
+	local has_level_up_rewards = level_up_rewards and #level_up_rewards > 0
 	local presentation_data = nil
 
 	if has_level_up_rewards or has_level_up_unlocks then
@@ -1104,8 +1114,8 @@ LevelEndView.present_level_up = function (self, hero_name, hero_level)
 		for index, item in ipairs(level_up_rewards) do
 			local entry = {}
 			local backend_id = item.backend_id
-			local reward_item = item_interface.get_item_from_id(item_interface, backend_id)
-			local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
+			local reward_item = item_interface:get_item_from_id(backend_id)
+			local item_data = item_interface:get_item_masterlist_data(backend_id)
 			local item_type = item_data.item_type
 			local description = {}
 			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
@@ -1134,17 +1144,16 @@ LevelEndView.present_level_up = function (self, hero_name, hero_level)
 	end
 
 	if presentation_data then
-		self._present_reward(self, presentation_data)
+		self:_present_reward(presentation_data)
 	end
-
-	return 
 end
+
 LevelEndView.present_additional_rewards = function (self)
 	local deed_rewards = self.deed_rewards
 	local num_deed_rewards = #deed_rewards
 	local item_interface = Managers.backend:get_interface("items")
 
-	if 0 < num_deed_rewards then
+	if num_deed_rewards > 0 then
 		local presentation_data = {
 			{
 				{
@@ -1157,8 +1166,8 @@ LevelEndView.present_additional_rewards = function (self)
 		for _, item in ipairs(deed_rewards) do
 			local entry = {}
 			local backend_id = item.backend_id
-			local reward_item = item_interface.get_item_from_id(item_interface, backend_id)
-			local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
+			local reward_item = item_interface:get_item_from_id(backend_id)
+			local item_data = item_interface:get_item_masterlist_data(backend_id)
 			local item_type = item_data.item_type
 			local description = {}
 			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
@@ -1185,21 +1194,21 @@ LevelEndView.present_additional_rewards = function (self)
 			presentation_data[#presentation_data + 1] = entry
 		end
 
-		self._present_reward(self, presentation_data)
+		self:_present_reward(presentation_data)
 	end
 
 	local keep_decoration_rewards = self.keep_decoration_rewards
 	local num_keep_decoration_rewards = #keep_decoration_rewards
 	local item_interface = Managers.backend:get_interface("items")
 
-	if 0 < num_keep_decoration_rewards then
+	if num_keep_decoration_rewards > 0 then
 		local presentation_data = {}
 
 		for _, item in ipairs(keep_decoration_rewards) do
 			local entry = {}
 			local backend_id = item.backend_id
-			local reward_item = item_interface.get_item_from_id(item_interface, backend_id)
-			local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
+			local reward_item = item_interface:get_item_from_id(backend_id)
+			local item_data = item_interface:get_item_masterlist_data(backend_id)
 			local item_type = item_data.item_type
 			local description = {}
 			local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
@@ -1223,11 +1232,10 @@ LevelEndView.present_additional_rewards = function (self)
 			presentation_data[#presentation_data + 1] = entry
 		end
 
-		self._present_reward(self, presentation_data)
+		self:_present_reward(presentation_data)
 	end
-
-	return 
 end
+
 LevelEndView.present_chest_rewards = function (self)
 	local end_of_level_rewards = self.context.rewards.end_of_level_rewards
 	local item_interface = Managers.backend:get_interface("items")
@@ -1235,8 +1243,8 @@ LevelEndView.present_chest_rewards = function (self)
 
 	if chest then
 		local backend_id = chest.backend_id
-		local reward_item = item_interface.get_item_from_id(item_interface, backend_id)
-		local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
+		local reward_item = item_interface:get_item_from_id(backend_id)
+		local item_data = item_interface:get_item_masterlist_data(backend_id)
 		local _, display_name, _ = UIUtils.get_ui_information_from_item(reward_item)
 		local item_name = item_data.name
 		local presentation_data = {
@@ -1255,14 +1263,14 @@ LevelEndView.present_chest_rewards = function (self)
 			}
 		}
 
-		self._present_reward(self, presentation_data)
+		self:_present_reward(presentation_data)
 	end
 
 	local bonus_chest = end_of_level_rewards.bonus_chest
 
 	if bonus_chest then
 		local backend_id = bonus_chest.backend_id
-		local item_data = item_interface.get_item_masterlist_data(item_interface, backend_id)
+		local item_data = item_interface:get_item_masterlist_data(backend_id)
 		local item_name = item_data.name
 		local presentation_data = {
 			{
@@ -1283,15 +1291,14 @@ LevelEndView.present_chest_rewards = function (self)
 			}
 		}
 
-		self._present_reward(self, presentation_data)
+		self:_present_reward(presentation_data)
 	end
-
-	return 
 end
+
 LevelEndView.rpc_signal_end_of_level_done = function (self, sender)
 	if self.is_server then
 		local lobby = self._lobby
-		local members = lobby.members(lobby):get_members()
+		local members = lobby:members():get_members()
 		local my_peer_id = Network.peer_id()
 
 		for i, peer_id in ipairs(members) do
@@ -1301,9 +1308,7 @@ LevelEndView.rpc_signal_end_of_level_done = function (self, sender)
 		end
 	end
 
-	self._peer_signaled_done(self, sender)
-
-	return 
+	self:_peer_signaled_done(sender)
 end
 
-return 
+return

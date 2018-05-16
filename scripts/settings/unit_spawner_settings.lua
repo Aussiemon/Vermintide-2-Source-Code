@@ -13,4 +13,4 @@ if PLATFORM == "ps4" then
 	RagdollSettings.max_num_ragdolls = 5
 end
 
-return 
+return

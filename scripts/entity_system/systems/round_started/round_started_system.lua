@@ -3,16 +3,19 @@ local extensions = {
 	"RoundStartedExtension"
 }
 RoundStartedExtension = class(RoundStartedExtension)
+
 RoundStartedExtension.init = function (self)
-	return 
+	return
 end
+
 RoundStartedExtension.destroy = function (self)
-	return 
+	return
 end
+
 RoundStartedSystem.init = function (self, context, system_name)
 	local entity_manager = context.entity_manager
 
-	entity_manager.register_system(entity_manager, self, system_name, extensions)
+	entity_manager:register_system(self, system_name, extensions)
 
 	self._is_server = context.is_server
 	self._world = context.world
@@ -20,12 +23,12 @@ RoundStartedSystem.init = function (self, context, system_name)
 	self._round_started = false
 	self._player_spawned = false
 	self._units = {}
+end
 
-	return 
-end
 RoundStartedSystem.destroy = function (self)
-	return 
+	return
 end
+
 RoundStartedSystem.set_start_area = function (self, volume_name)
 	local level = LevelHelper:current_level(self._world)
 	local level_name = LevelHelper:current_level_settings(self._world).level_name
@@ -33,9 +36,8 @@ RoundStartedSystem.set_start_area = function (self, volume_name)
 	fassert(Level.has_volume(level, volume_name), "Volume name %s does not exist in level %s", volume_name, level_name)
 
 	self._start_area = volume_name
-
-	return 
 end
+
 RoundStartedSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	ScriptUnit.add_extension(nil, unit, "RoundStartedExtension", self.NAME, extension_init_data)
 
@@ -44,22 +46,23 @@ RoundStartedSystem.on_add_extension = function (self, world, unit, extension_nam
 
 	return ext
 end
+
 RoundStartedSystem.on_remove_extension = function (self, unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
 
 	self._units[unit] = nil
+end
 
-	return 
-end
 RoundStartedSystem.hot_join_sync = function (self, sender, player)
-	return 
+	return
 end
+
 RoundStartedSystem.update = function (self, context, t)
 	if not self._is_server or self._round_started then
-		return 
+		return
 	end
 
-	local started = self._players_left_start_area(self)
+	local started = self:_players_left_start_area()
 
 	if started then
 		Managers.state.game_mode:round_started()
@@ -73,14 +76,13 @@ RoundStartedSystem.update = function (self, context, t)
 			}
 			local leaderboard_system = Managers.state.entity:system("leaderboard_system")
 
-			leaderboard_system.round_started(leaderboard_system, score_type, start_data)
+			leaderboard_system:round_started(score_type, start_data)
 		end
 
 		self._round_started = true
 	end
-
-	return 
 end
+
 RoundStartedSystem._players_left_start_area = function (self)
 	local checkpoint_data = Managers.state.spawn:checkpoint_data()
 	local volume_name = (checkpoint_data and checkpoint_data.safe_zone_volume_name) or self._start_area
@@ -104,10 +106,9 @@ RoundStartedSystem._players_left_start_area = function (self)
 
 	return false
 end
+
 RoundStartedSystem.player_spawned = function (self)
 	self._player_spawned = true
-
-	return 
 end
 
-return 
+return

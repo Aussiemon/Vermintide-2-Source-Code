@@ -159,34 +159,30 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_crowd_control",
 	"weapon_keyword_close_range"
 }
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_two",
+		sub_action_name = "default"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_two",
+		sub_action_name = "default"
+	}
+}
 weapon_template.wwise_dep_right_hand = {
 	"wwise/blunderbuss"
-}
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.2,
-			range = 0.3,
-			damage = 0.75,
-			targets = 1,
-			stagger = 0.6
-		},
-		heavy_attack = {
-			speed = 0.5,
-			range = 0.05,
-			damage = 0.25,
-			targets = 1,
-			stagger = 0.8
-		}
-	},
-	perks = {
-		light_attack = {
-			"armor_penetration"
-		},
-		heavy_attack = {}
-	}
 }
 Weapons = Weapons or {}
 Weapons.blunderbuss_template_1 = table.create_copy(Weapons.blunderbuss_template_1, weapon_template)
 
-return 
+return

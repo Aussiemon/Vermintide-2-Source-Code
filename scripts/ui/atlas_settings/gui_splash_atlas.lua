@@ -169,4 +169,4 @@ splash_atlas = {
 	}
 }
 
-return 
+return

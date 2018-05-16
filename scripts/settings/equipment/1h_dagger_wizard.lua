@@ -299,12 +299,13 @@ weapon_template.actions = {
 			armor_impact_sound_event = "fire_hit",
 			aim_assist_ramp_multiplier = 0.2,
 			aim_assist_max_ramp_multiplier = 0.4,
-			hit_effect = "staff_spear",
+			hit_effect = "staff_spark",
 			aim_assist_ramp_decay_delay = 0.1,
 			damage_window_end = 0.25,
 			impact_sound_event = "fire_hit",
 			anim_end_event = "attack_finished",
-			impact_particle_effect = "fx/wpnfx_staff_spear_impact",
+			damage_profile_aoe = "dagger_burning_slam_aoe",
+			impact_particle_effect = "fx/wpnfx_staff_spark_impact",
 			dedicated_target_range = 2,
 			uninterruptible = true,
 			anim_event = "attack_swing_heavy",
@@ -349,7 +350,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		},
 		heavy_attack_right = {
@@ -365,7 +366,7 @@ weapon_template.actions = {
 			armor_impact_sound_event = "fire_hit",
 			damage_profile = "medium_burning_smiter_stab_H",
 			use_target = true,
-			hit_effect = "staff_spear",
+			hit_effect = "staff_spark",
 			max_targets = 1,
 			damage_window_end = 0.15,
 			impact_sound_event = "fire_hit",
@@ -428,7 +429,7 @@ weapon_template.actions = {
 				}
 			},
 			chain_condition_func = function (attacker_unit, input_extension)
-				input_extension.reset_release_input(input_extension)
+				input_extension:reset_release_input()
 
 				return true
 			end
@@ -701,7 +702,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			buff_data = {
 				{
@@ -749,16 +750,18 @@ weapon_template.actions = {
 		push = {
 			damage_window_start = 0.05,
 			anim_end_event = "attack_finished",
-			fatigue_cost = "action_stun_push",
+			outer_push_angle = 180,
 			kind = "push_stagger",
-			damage_window_end = 0.2,
-			no_damage_impact_sound_event = "slashing_hit_armour",
-			damage_profile_outer = "light_push",
-			weapon_action_hand = "right",
-			hit_effect = "melee_hit_sword_1h",
 			hit_time = 0.1,
+			damage_profile_outer = "light_push",
+			fatigue_cost = "action_stun_push",
+			weapon_action_hand = "right",
+			push_angle = 100,
+			hit_effect = "melee_hit_sword_1h",
+			damage_window_end = 0.2,
 			impact_sound_event = "slashing_hit",
 			charge_value = "action_push",
+			no_damage_impact_sound_event = "slashing_hit_armour",
 			dedicated_target_range = 2,
 			anim_event = "attack_push",
 			damage_profile_inner = "light_push",
@@ -821,7 +824,7 @@ weapon_template.actions = {
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
-				return not status_extension.fatigued(status_extension)
+				return not status_extension:fatigued()
 			end
 		}
 	},
@@ -838,7 +841,7 @@ weapon_template.actions = {
 			end,
 			total_time = math.huge,
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			buff_data = {
 				{
@@ -931,29 +934,28 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_crowd_control",
 	"weapon_keyword_fast_attacks"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.7,
-			stagger = 0.2,
-			damage = 0.2916666666666667,
-			targets = 0.6
-		},
-		heavy_attack = {
-			speed = 0.5,
-			stagger = 0.6,
-			damage = 0.325,
-			targets = 0.9
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "light_attack_left"
 	},
-	perks = {
-		light_attack = {
-			"head_shot"
-		},
-		heavy_attack = {
-			"head_shot",
-			"armor_penetration"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "heavy_attack_left"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	push = {
+		action_name = "action_one",
+		sub_action_name = "push"
 	}
 }
 weapon_template.wwise_dep_right_hand = {
@@ -963,4 +965,4 @@ weapon_template.wwise_dep_right_hand = {
 Weapons = Weapons or {}
 Weapons.one_handed_daggers_template_1 = table.clone(weapon_template)
 
-return 
+return

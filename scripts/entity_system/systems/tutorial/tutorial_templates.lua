@@ -1,11 +1,11 @@
 local function apply_outline(unit)
-	return 
+	return
 end
 
 local function has_melee_weapon_equipped(unit)
 	local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
-	local slot_name = inventory_extension.get_wielded_slot_name(inventory_extension)
-	local slot_data = inventory_extension.get_slot_data(inventory_extension, slot_name)
+	local slot_name = inventory_extension:get_wielded_slot_name()
+	local slot_data = inventory_extension:get_slot_data(slot_name)
 
 	if slot_data == nil then
 		return false
@@ -31,13 +31,13 @@ TutorialTemplates = {
 		icon = "hud_tutorial_icon_attention",
 		is_mission_tutorial = true,
 		init_data = function (data)
-			return 
+			return
 		end,
 		clear_data = function (data)
-			return 
+			return
 		end,
 		update_data = function (t, unit, data)
-			return 
+			return
 		end,
 		can_show = function (t, unit, data, raycast_unit)
 			local players = Managers.player:human_and_bot_players()
@@ -51,7 +51,7 @@ TutorialTemplates = {
 				if Unit.alive(player_unit) and unit ~= player_unit then
 					local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
-					if status_extension.is_pounced_down(status_extension) or status_extension.get_is_ledge_hanging(status_extension) or status_extension.is_grabbed_by_pack_master(status_extension) then
+					if status_extension:is_pounced_down() or status_extension:get_is_ledge_hanging() or status_extension:is_grabbed_by_pack_master() then
 						local player_position = POSITION_LOOKUP[player_unit]
 						local distance_sq = Vector3.distance_squared(unit_position, player_position)
 
@@ -91,13 +91,13 @@ TutorialTemplates = {
 		icon = "hud_tutorial_icon_attention",
 		is_mission_tutorial = true,
 		init_data = function (data)
-			return 
+			return
 		end,
 		clear_data = function (data)
-			return 
+			return
 		end,
 		update_data = function (t, unit, data)
-			return 
+			return
 		end,
 		can_show = function (t, unit, data, raycast_unit, world)
 			local players = Managers.player:human_and_bot_players()
@@ -111,7 +111,7 @@ TutorialTemplates = {
 				if Unit.alive(player_unit) and unit ~= player_unit then
 					local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
-					if status_extension.is_knocked_down(status_extension) then
+					if status_extension:is_knocked_down() then
 						local player_position = POSITION_LOOKUP[player_unit]
 						local distance_sq = Vector3.distance_squared(unit_position, player_position)
 
@@ -148,13 +148,13 @@ TutorialTemplates = {
 		icon = "grenade_icon",
 		is_mission_tutorial = true,
 		init_data = function (data)
-			return 
+			return
 		end,
 		clear_data = function (data)
-			return 
+			return
 		end,
 		update_data = function (t, unit, data)
-			return 
+			return
 		end,
 		can_show = function (t, unit, data, raycast_unit, world)
 			local unit_position = POSITION_LOOKUP[unit]
@@ -225,21 +225,19 @@ TutorialTemplates = {
 			return data.force_update
 		end,
 		init_data = function (data)
-			return 
+			return
 		end,
 		clear_data = function (data)
-			return 
+			return
 		end,
 		update_data = function (t, unit, data)
 			if data.force_update then
 				data.force_update = false
 			end
-
-			return 
 		end,
 		can_show = function (t, unit, data, raycast_unit, world)
 			local mission_system = Managers.state.entity:system("mission_system")
-			local active_missions, completed_missions = mission_system.get_missions(mission_system)
+			local active_missions, completed_missions = mission_system:get_missions()
 
 			for mission_name, mission_data in pairs(active_missions) do
 				if active_missions[mission_name].mission_data.tooltip_text ~= nil then
@@ -274,13 +272,13 @@ TutorialTemplates = {
 		icon = "hud_tutorial_icon_rescue",
 		is_mission_tutorial = true,
 		init_data = function (data)
-			return 
+			return
 		end,
 		clear_data = function (data)
-			return 
+			return
 		end,
 		update_data = function (t, unit, data)
-			return 
+			return
 		end,
 		can_show = function (t, unit, data, raycast_unit, world)
 			local players = Managers.player:human_and_bot_players()
@@ -294,7 +292,7 @@ TutorialTemplates = {
 				if Unit.alive(player_unit) and unit ~= player_unit then
 					local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
-					if status_extension.is_ready_for_assisted_respawn(status_extension) then
+					if status_extension:is_ready_for_assisted_respawn() then
 						local player_position = POSITION_LOOKUP[player_unit]
 						local distance_sq = Vector3.distance_squared(unit_position, player_position)
 
@@ -357,18 +355,18 @@ TutorialTemplates.objective_pickup = {
 		return data.objective_text
 	end,
 	init_data = function (data)
-		return 
+		return
 	end,
 	clear_data = function (data)
-		return 
+		return
 	end,
 	update_data = function (t, unit, data)
-		return 
+		return
 	end,
 	can_show = function (t, unit, data, raycast_unit, world)
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
-		local slot_name = inventory_extension.get_wielded_slot_name(inventory_extension)
-		local slot_data = inventory_extension.get_slot_data(inventory_extension, slot_name)
+		local slot_name = inventory_extension:get_wielded_slot_name()
+		local slot_data = inventory_extension:get_slot_data(slot_name)
 
 		if slot_name == "slot_level_event" and slot_data ~= nil then
 			return false
@@ -386,7 +384,7 @@ TutorialTemplates.objective_pickup = {
 				if ScriptUnit.has_extension(pickup_unit, "death_system") then
 					local death_extension = ScriptUnit.extension(pickup_unit, "death_system")
 
-					if death_extension.has_death_started(death_extension) then
+					if death_extension:has_death_started() then
 						disregard = true
 					end
 				end
@@ -421,7 +419,7 @@ TutorialTemplates.objective_pickup = {
 			end
 		end
 
-		if 0 < objective_units_n then
+		if objective_units_n > 0 then
 			local unit = objective_units[1]
 			data.objective_text = Unit.get_data(unit, "tutorial_text_id") or "tutorial_no_text"
 
@@ -445,19 +443,19 @@ TutorialTemplates.objective_socket = {
 		return data.objective_text
 	end,
 	init_data = function (data)
-		return 
+		return
 	end,
 	clear_data = function (data)
-		return 
+		return
 	end,
 	update_data = function (t, unit, data)
-		return 
+		return
 	end,
 	can_show = function (t, unit, data, raycast_unit, world)
 		local unit_position = POSITION_LOOKUP[unit]
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
-		local slot_name = inventory_extension.get_wielded_slot_name(inventory_extension)
-		local slot_data = inventory_extension.get_slot_data(inventory_extension, slot_name)
+		local slot_name = inventory_extension:get_wielded_slot_name()
+		local slot_data = inventory_extension:get_slot_data(slot_name)
 
 		if slot_name == "slot_level_event" and slot_data ~= nil then
 			local best_distance_sq = 10000
@@ -519,13 +517,13 @@ TutorialTemplates.objective_unit = {
 		return data.objective_wave
 	end,
 	init_data = function (data)
-		return 
+		return
 	end,
 	clear_data = function (data)
-		return 
+		return
 	end,
 	update_data = function (t, unit, data)
-		return 
+		return
 	end,
 	can_show = function (t, unit, data, raycast_unit, world)
 		local unit_position = POSITION_LOOKUP[unit]
@@ -593,4 +591,4 @@ end
 table.sort(TutorialTooltipTemplates, tooltip_sort_function)
 table.sort(TutorialObjectiveTooltipTemplates, tooltip_sort_function)
 
-return 
+return

@@ -84,4 +84,4 @@ BreedBehaviors.chaos_tentacle_sorcerer = {
 	name = "chaos_tentacle_sorcerer"
 }
 
-return 
+return

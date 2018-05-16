@@ -1,21 +1,22 @@
 require("scripts/managers/backend_playfab/playfab_mirror")
 
 local IPlayFabHttps = require("PlayFab.IPlayFabHttps")
-local playfab_https_curl = require("scripts/managers/backend/playfab_https_curl")
+local playfab_https = require("scripts/managers/backend/playfab_https_curl")
 
-IPlayFabHttps.SetHttp(playfab_https_curl)
+IPlayFabHttps.SetHttp(playfab_https)
 
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
 PlayFabClientApi.settings.titleId = GameSettingsDevelopment.backend_settings.title_id
 ScriptBackendPlayFab = class(ScriptBackendPlayFab)
+
 ScriptBackendPlayFab.init = function (self)
 	self._steam_ticket_id = Steam.retrieve_auth_session_ticket()
+end
 
-	return 
-end
 ScriptBackendPlayFab.update_state = function (self)
-	return 
+	return
 end
+
 ScriptBackendPlayFab.update_signin = function (self)
 	if self._steam_ticket_id then
 		local ticket = Steam.poll_auth_session_ticket(self._steam_ticket_id)
@@ -75,6 +76,7 @@ ScriptBackendPlayFab.update_signin = function (self)
 
 	return nil
 end
+
 ScriptBackendPlayFab.login_request_cb = function (self, result)
 	self._signin_result = result
 
@@ -85,16 +87,15 @@ ScriptBackendPlayFab.login_request_cb = function (self, result)
 		local read_only_data = info_result_payload.UserReadOnlyData
 
 		if result.NewlyCreated or not read_only_data.account_set_up then
-			self._set_up_initial_account(self)
+			self:_set_up_initial_account()
 		elseif not read_only_data.account_data_set_up then
-			self._set_up_initial_account_data(self)
+			self:_set_up_initial_account_data()
 		end
 
 		self._signed_in = true
 	end
-
-	return 
 end
+
 ScriptBackendPlayFab._set_up_initial_account = function (self)
 	local initial_account_set_up = {
 		FunctionName = "initialAccountSetUp"
@@ -104,20 +105,18 @@ ScriptBackendPlayFab._set_up_initial_account = function (self)
 	PlayFabClientApi.ExecuteCloudScript(initial_account_set_up, initial_setup_request_cb, initial_setup_request_cb)
 
 	self._setting_up_initial_account = true
-
-	return 
 end
+
 ScriptBackendPlayFab.initial_setup_request_cb = function (self, result)
 	if result.Error then
 		self._initial_set_up_result_error = result
 	else
-		self._set_up_initial_account_data(self)
+		self:_set_up_initial_account_data()
 
 		self._setting_up_initial_account = false
 	end
-
-	return 
 end
+
 ScriptBackendPlayFab._set_up_initial_account_data = function (self)
 	local initial_account_data_set_up = {
 		FunctionName = "initialAccountDataSetUp"
@@ -127,18 +126,16 @@ ScriptBackendPlayFab._set_up_initial_account_data = function (self)
 	PlayFabClientApi.ExecuteCloudScript(initial_account_data_set_up, initial_data_setup_request_cb, initial_data_setup_request_cb)
 
 	self._setting_up_initial_account_data = true
-
-	return 
 end
+
 ScriptBackendPlayFab.initial_data_setup_request_cb = function (self, result)
 	if result.Error then
 		self._initial_data_set_up_result_error = result
 	else
 		self._setting_up_initial_account_data = false
 	end
-
-	return 
 end
+
 ScriptBackendPlayFab.authenticated = function (self)
 	if self._setting_up_initial_account or self._setting_up_initial_account_data then
 		return false
@@ -150,11 +147,13 @@ ScriptBackendPlayFab.authenticated = function (self)
 
 	return false
 end
+
 ScriptBackendPlayFab.get_signin_result = function (self)
 	return self._signin_result
 end
+
 ScriptBackendPlayFab.destroy = function (self)
-	return 
+	return
 end
 
-return 
+return

@@ -294,4 +294,4 @@ BreedActions.critter_rat = {
 	idle = {}
 }
 
-return 
+return

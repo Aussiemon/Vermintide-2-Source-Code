@@ -3,20 +3,21 @@ local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
 		default = {
-			damage_window_end = 0,
-			damage_window_start = 0.1,
+			total_time_secondary = 2,
+			charge_value = "bullet_hit",
+			anim_event = "attack_shoot",
 			ammo_usage = 1,
 			kind = "handgun",
-			total_time_secondary = 2,
-			fire_time = 0,
+			damage_window_start = 0.1,
+			damage_profile = "shot_machinegun",
 			attack_template = "shot_machinegun",
-			anim_event_secondary = "reload",
 			hit_effect = "bullet_impact",
-			charge_value = "bullet_hit",
+			damage_window_end = 0,
 			alert_sound_range_fire = 12,
-			anim_event = "attack_shoot",
-			reload_time = 1.25,
+			fire_time = 0,
+			anim_event_secondary = "reload",
 			alert_sound_range_hit = 2,
+			reload_time = 1.25,
 			total_time = 1,
 			allowed_chain_actions = {
 				{
@@ -33,6 +34,7 @@ weapon_template.actions = {
 			charge_value = "bullet_hit",
 			kind = "handgun_lock",
 			hit_effect = "bullet_impact",
+			damage_profile = "shot_machinegun",
 			total_time = math.huge,
 			allowed_chain_actions = {}
 		}
@@ -66,7 +68,7 @@ weapon_template.actions = {
 				}
 			},
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension.total_remaining_ammo(ammo_extension) <= 0 then
+				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
 					return false
 				end
 
@@ -175,33 +177,27 @@ weapon_template.tooltip_keywords = {
 	"keyword_2",
 	"keyword_3"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.4,
-			range = 0.4,
-			damage = 0.6,
-			targets = 0.2,
-			stagger = 0.4
-		},
-		heavy_attack = {
-			speed = 0.8,
-			range = 0.4,
-			damage = 0.6,
-			targets = 0.2,
-			stagger = 0.4
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	},
-	perks = {
-		light_attack = {
-			"armor_penetration"
-		},
-		heavy_attack = {
-			"armor_penetration"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	}
 }
 Weapons = Weapons or {}
 Weapons.brace_of_repeating_pistols_template_1 = table.clone(weapon_template)
 
-return 
+return

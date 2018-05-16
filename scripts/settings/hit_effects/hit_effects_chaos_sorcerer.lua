@@ -148,4 +148,4 @@ HitEffectsChaosSorcerer = {
 	}
 }
 
-return 
+return

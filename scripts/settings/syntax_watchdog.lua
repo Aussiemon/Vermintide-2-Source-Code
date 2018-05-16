@@ -33,4 +33,4 @@ for i = 1, #BreedPacks, 1 do
 	fassert(okay, "BreedPack %d is missing table filed 'member'.", i)
 end
 
-return 
+return

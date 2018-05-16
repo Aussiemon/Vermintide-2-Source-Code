@@ -112,4 +112,4 @@ BreedBehaviors.pack_master = {
 	name = "pack_master"
 }
 
-return 
+return

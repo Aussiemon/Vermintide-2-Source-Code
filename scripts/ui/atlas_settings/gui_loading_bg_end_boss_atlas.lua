@@ -29,4 +29,4 @@ loading_bg_end_boss_atlas = {
 	}
 }
 
-return 
+return

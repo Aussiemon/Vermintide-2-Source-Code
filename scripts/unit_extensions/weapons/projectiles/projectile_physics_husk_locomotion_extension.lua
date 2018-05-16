@@ -1,5 +1,6 @@
 ProjectilePhysicsHuskLocomotionExtension = class(ProjectilePhysicsHuskLocomotionExtension)
 script_data.debug_projectiles = script_data.debug_projectiles or Development.parameter("debug_projectiles")
+
 ProjectilePhysicsHuskLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
 	self.owner_unit = extension_init_data.owner_unit
@@ -27,17 +28,17 @@ ProjectilePhysicsHuskLocomotionExtension.init = function (self, extension_init_c
 			Actor.set_angular_velocity(actor, angular_velocity)
 		end
 	end
+end
 
-	return 
-end
 ProjectilePhysicsHuskLocomotionExtension.destroy = function (self)
-	return 
+	return
 end
+
 ProjectilePhysicsHuskLocomotionExtension.update = function (self, unit, input, dt, context, t)
 	if script_data.debug_projectiles then
 		local network_manager = Managers.state.network
-		local go_id = network_manager.unit_game_object_id(network_manager, unit)
-		local game = network_manager.game(network_manager)
+		local go_id = network_manager:unit_game_object_id(unit)
+		local game = network_manager:game()
 		local debug_pos = GameSession.game_object_field(game, go_id, "debug_pos")
 		local pos = Unit.local_position(unit, 0)
 
@@ -45,14 +46,14 @@ ProjectilePhysicsHuskLocomotionExtension.update = function (self, unit, input, d
 	end
 
 	if self.stopped then
-		return 
+		return
 	end
-
-	return 
 end
+
 ProjectilePhysicsHuskLocomotionExtension.is_at_rest = function (self)
 	return Actor.is_sleeping(self.physics_actor)
 end
+
 ProjectilePhysicsHuskLocomotionExtension.teleport = function (self, position, rotation)
 	local pose = Matrix4x4.from_quaternion_position(rotation, position)
 	local unit = self.unit
@@ -65,28 +66,26 @@ ProjectilePhysicsHuskLocomotionExtension.teleport = function (self, position, ro
 
 	Actor.set_angular_velocity(actor, null_vector)
 	Actor.set_velocity(actor, null_vector)
+end
 
-	return 
-end
 ProjectilePhysicsHuskLocomotionExtension.bounce = function (self)
-	return 
+	return
 end
+
 ProjectilePhysicsHuskLocomotionExtension.stop = function (self)
 	self.stopped = true
 
 	Actor.put_to_sleep(self.physics_actor)
-
-	return 
 end
+
 ProjectilePhysicsHuskLocomotionExtension.drop = function (self)
 	self.dropped = true
 
 	Actor.set_velocity(self.physics_actor, Vector3(0, 0, 0))
-
-	return 
 end
+
 ProjectilePhysicsHuskLocomotionExtension.has_stopped = function (self)
 	return self.stopped
 end
 
-return 
+return

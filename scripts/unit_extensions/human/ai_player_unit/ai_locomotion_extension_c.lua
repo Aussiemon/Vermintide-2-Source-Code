@@ -5,6 +5,7 @@ local DEFAULT_ROTATION_SPEED = 10
 local LOCOMOTION_GRAVITY = 20
 local ALLOWED_MOVER_MOVE_DISTANCE = 0.5
 AILocomotionExtensionC = class(AILocomotionExtensionC)
+
 AILocomotionExtensionC.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
 	local blackboard = BLACKBOARDS[unit]
@@ -31,19 +32,16 @@ AILocomotionExtensionC.init = function (self, extension_init_context, unit, exte
 	MoverHelper.set_active_mover(unit, self._mover_state, "mover")
 
 	self.bone_lod = true
-
-	return 
 end
+
 AILocomotionExtensionC.ready = function (self, go_id, blackboard)
 	EngineOptimizedExtensions.ai_locomotion_ai_ready(self._engine_extension_id, go_id)
-
-	return 
 end
+
 AILocomotionExtensionC.destroy = function (self)
 	EngineOptimizedExtensions.ai_locomotion_destroy_extension(self._engine_extension_id)
-
-	return 
 end
+
 AILocomotionExtensionC.hot_join_sync = function (self, sender)
 	local unit = self._unit
 
@@ -57,22 +55,20 @@ AILocomotionExtensionC.hot_join_sync = function (self, sender)
 
 		RPC.rpc_hot_join_nail_to_wall_fix(sender, game_object_id)
 	end
-
-	return 
 end
+
 AILocomotionExtensionC.set_mover_displacement = function (self, displacement, duration)
 	EngineOptimizedExtensions.ai_locomotion_set_mover_displacement(self._engine_extension_id, displacement, duration)
-
-	return 
 end
+
 AILocomotionExtensionC.teleport_to = function (self, position, rotation)
 	EngineOptimizedExtensions.ai_locomotion_teleport_to(self._engine_extension_id, position, rotation)
-
-	return 
 end
+
 local ANIMATION_DRIVEN_SCRIPT_DRIVEN_ROTATION_FUNCTION_NAME = "update_animation_driven_movement_script_driven_rotation"
 local ANIMATION_DRIVEN_FUNCTION_NAME = "update_animation_driven"
 local SCRIPT_DRIVEN_FUNCTION_NAME = "update_script_driven"
+
 AILocomotionExtensionC.set_animation_driven = function (self, is_animation_driven, is_affected_by_gravity, script_driven_rotation)
 	is_affected_by_gravity = is_affected_by_gravity or false
 	local r, param1, param2, param3 = EngineOptimizedExtensions.ai_locomotion_set_animation_driven(self._engine_extension_id, is_animation_driven, is_affected_by_gravity, script_driven_rotation)
@@ -83,94 +79,82 @@ AILocomotionExtensionC.set_animation_driven = function (self, is_animation_drive
 		local position = param2
 		local rotation = param3
 
-		network_transmit.send_rpc_clients(network_transmit, "rpc_set_animation_driven_script_movement", game_object_id, position, rotation, is_affected_by_gravity)
+		network_transmit:send_rpc_clients("rpc_set_animation_driven_script_movement", game_object_id, position, rotation, is_affected_by_gravity)
 	elseif r == 2 then
 		local network_transmit = Managers.state.network.network_transmit
 		local game_object_id = param1
 		local position = param2
 		local rotation = param3
 
-		network_transmit.send_rpc_clients(network_transmit, "rpc_set_animation_driven", game_object_id, position, rotation, is_affected_by_gravity)
+		network_transmit:send_rpc_clients("rpc_set_animation_driven", game_object_id, position, rotation, is_affected_by_gravity)
 	elseif r == 3 then
 		local network_transmit = Managers.state.network.network_transmit
 		local game_object_id = param1
 
-		network_transmit.send_rpc_clients(network_transmit, "rpc_set_script_driven", game_object_id, is_affected_by_gravity)
+		network_transmit:send_rpc_clients("rpc_set_script_driven", game_object_id, is_affected_by_gravity)
 	elseif r == 4 then
 		local network_transmit = Managers.state.network.network_transmit
 		local game_object_id = param1
 
-		network_transmit.send_rpc_clients(network_transmit, "rpc_set_affected_by_gravity", game_object_id, is_affected_by_gravity)
+		network_transmit:send_rpc_clients("rpc_set_affected_by_gravity", game_object_id, is_affected_by_gravity)
 	end
-
-	return 
 end
+
 AILocomotionExtensionC.set_animation_translation_scale = function (self, animation_translation_scale)
 	EngineOptimizedExtensions.ai_locomotion_set_animation_translation_scale(self._engine_extension_id, animation_translation_scale)
-
-	return 
 end
+
 AILocomotionExtensionC.set_animation_rotation_scale = function (self, animation_rotation_scale)
 	EngineOptimizedExtensions.ai_locomotion_set_animation_rotation_scale(self._engine_extension_id, animation_rotation_scale)
-
-	return 
 end
+
 AILocomotionExtensionC.set_wanted_velocity_flat = function (self, wanted_velocity)
 	EngineOptimizedExtensions.ai_locomotion_set_wanted_velocity_flat(self._engine_extension_id, wanted_velocity)
-
-	return 
 end
+
 AILocomotionExtensionC.set_wanted_velocity = function (self, wanted_velocity)
 	EngineOptimizedExtensions.ai_locomotion_set_wanted_velocity(self._engine_extension_id, wanted_velocity)
-
-	return 
 end
+
 AILocomotionExtensionC.set_external_velocity = function (self, external_velocity)
 	EngineOptimizedExtensions.ai_locomotion_set_external_velocity(self._engine_extension_id, external_velocity)
-
-	return 
 end
+
 AILocomotionExtensionC.set_wanted_rotation = function (self, rotation)
 	EngineOptimizedExtensions.ai_locomotion_set_wanted_rotation(self._engine_extension_id, rotation)
-
-	return 
 end
+
 AILocomotionExtensionC.use_lerp_rotation = function (self, active)
 	EngineOptimizedExtensions.ai_locomotion_use_lerp_rotation(self._engine_extension_id, active)
-
-	return 
 end
+
 AILocomotionExtensionC.set_rotation_speed = function (self, rotation_speed)
 	EngineOptimizedExtensions.ai_locomotion_set_rotation_speed(self._engine_extension_id, rotation_speed)
-
-	return 
 end
+
 AILocomotionExtensionC.set_rotation_speed_modifier = function (self, rotation_speed_modifier, rotation_speed_modifier_lerp_time, start_time)
 	EngineOptimizedExtensions.ai_locomotion_set_rotation_speed_modifier(self._engine_extension_id, rotation_speed_modifier, rotation_speed_modifier_lerp_time, start_time)
-
-	return 
 end
+
 AILocomotionExtensionC.set_affected_by_gravity = function (self, affected_by_gravity)
 	EngineOptimizedExtensions.ai_locomotion_set_affected_by_gravity(self._engine_extension_id, affected_by_gravity)
-
-	return 
 end
+
 AILocomotionExtensionC.set_gravity = function (self, gravity)
 	EngineOptimizedExtensions.ai_locomotion_set_gravity(self._engine_extension_id, gravity)
-
-	return 
 end
+
 AILocomotionExtensionC.set_check_falling = function (self, state)
 	EngineOptimizedExtensions.ai_locomotion_set_check_falling(self._engine_extension_id, state)
-
-	return 
 end
+
 local movement_types = {
 	script_driven = 0,
 	snap_to_navmesh = 1,
 	constrained_by_mover = 2,
 	disabled = 3
 }
+
 AILocomotionExtensionC.set_movement_type = function (self, movement_type, override_mover_move_distance, ignore_forced_mover_kill)
 	if movement_type == self.movement_type then
 		return true
@@ -198,35 +182,36 @@ AILocomotionExtensionC.set_movement_type = function (self, movement_type, overri
 
 	return not kill
 end
+
 AILocomotionExtensionC.current_velocity = function (self)
 	return EngineOptimizedExtensions.ai_locomotion_get_velocity(self._engine_extension_id)
 end
+
 AILocomotionExtensionC.is_falling = function (self)
 	return EngineOptimizedExtensions.ai_locomotion_is_falling(self._engine_extension_id)
 end
+
 AILocomotionExtensionC.get_rotation_speed = function (self)
 	return EngineOptimizedExtensions.ai_locomotion_get_rotation_speed(self._engine_extension_id)
 end
+
 AILocomotionExtensionC.get_rotation_speed_modifier = function (self)
 	return EngineOptimizedExtensions.ai_locomotion_get_rotation_speed_modifier(self._engine_extension_id)
 end
+
 AILocomotionExtensionC.set_disabled = function (self)
 	EngineOptimizedExtensions.ai_locomotion_set_disabled(self._engine_extension_id)
 	MoverHelper.set_disable_reason(unit, self._mover_state, "constrained_by_mover", true)
-
-	return 
 end
+
 AILocomotionExtensionC.set_mover_disable_reason = function (self, reason, state)
 	MoverHelper.set_disable_reason(self._unit, self._mover_state, reason, state)
-
-	return 
 end
+
 AILocomotionExtensionC.set_collision_disabled = function (self, reason, state)
 	if self._collision_state then
 		MoverHelper.set_collision_disable_reason(self._unit, self._collision_state, reason, state)
 	end
-
-	return 
 end
 
-return 
+return

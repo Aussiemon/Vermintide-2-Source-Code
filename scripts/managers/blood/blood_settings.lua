@@ -50,4 +50,4 @@ if PLATFORM == "win32" then
 	BloodSettings.blood_decals.num_decals = num_decals
 end
 
-return 
+return

@@ -16,7 +16,7 @@ function RandomTable_get_0_to_1(seed)
 
 	local index = 1 + math.floor(seed % RandomTable_n)
 
-	assert(1 <= index and index <= RandomTable_n)
+	assert(index >= 1 and index <= RandomTable_n)
 
 	return RandomTable_0_1[index]
 end
@@ -26,9 +26,9 @@ function RandomTable_get_05_to_05(seed)
 
 	local index = 1 + math.floor(seed % RandomTable_n)
 
-	assert(1 <= index and index <= RandomTable_n)
+	assert(index >= 1 and index <= RandomTable_n)
 
 	return RandomTable_05_05[index]
 end
 
-return 
+return

@@ -11,6 +11,7 @@ require("scripts/utils/pool_tables/pool_generic_extension")
 local alive = Unit.alive
 local PLAYER_AND_BOT_UNITS = PLAYER_AND_BOT_UNITS
 AISimpleExtension = class(AISimpleExtension)
+
 AISimpleExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._world = extension_init_context.world
 	self._unit = unit
@@ -71,13 +72,16 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 		Managers.music:music_trigger("combat_music", breed.combat_spawn_stinger)
 	end
 
-	self._init_event_handler(self)
-	self._init_brain(self, breed, is_horde)
-	self._set_size_variation(self, extension_init_data.size_variation, extension_init_data.size_variation_normalized)
-	GarbageLeakDetector.register_object(blackboard, "ai_blackboard")
+	if breed.special_spawn_stinger then
+		WwiseUtils.trigger_unit_event(self._world, breed.special_spawn_stinger, unit, 0)
+	end
 
-	return 
+	self:_init_event_handler()
+	self:_init_brain(breed, is_horde)
+	self:_set_size_variation(extension_init_data.size_variation, extension_init_data.size_variation_normalized)
+	GarbageLeakDetector.register_object(blackboard, "ai_blackboard")
 end
+
 AISimpleExtension.destroy = function (self)
 	local blackboard = self._blackboard
 
@@ -90,9 +94,8 @@ AISimpleExtension.destroy = function (self)
 	end
 
 	self._brain:destroy()
-
-	return 
 end
+
 AISimpleExtension.extensions_ready = function (self, world, unit)
 	local blackboard = self._blackboard
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
@@ -107,9 +110,9 @@ AISimpleExtension.extensions_ready = function (self, world, unit)
 	local spawn_type = blackboard.spawn_type
 	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
 
-	self.init_perception(self, breed, is_horde)
+	self:init_perception(breed, is_horde)
 
-	if health_extension and not breed.allied then
+	if health_extension then
 		self.broadphase_id = Broadphase.add(blackboard.group_blackboard.broadphase, unit, Unit.local_position(unit, 0), 1)
 	end
 
@@ -120,9 +123,8 @@ AISimpleExtension.extensions_ready = function (self, world, unit)
 	if breed.run_on_spawn then
 		breed.run_on_spawn(unit, blackboard)
 	end
-
-	return 
 end
+
 AISimpleExtension.get_overlap_context = function (self)
 	if self._overlap_context then
 		self._overlap_context.num_hits = 0
@@ -139,14 +141,15 @@ AISimpleExtension.get_overlap_context = function (self)
 
 	return self._overlap_context
 end
+
 AISimpleExtension.set_properties = function (self, params)
 	for _, property in pairs(params) do
-		local prop_name, prop_value = property.match(property, "(%S+) (%S+)")
+		local prop_name, prop_value = property:match("(%S+) (%S+)")
 		local prop_type = type(self._breed.properties[prop_name])
 
 		if prop_type == "table" then
 			prop_value = AIProperties
-			local prop_iterator = property.gmatch(property, "(%S+)")
+			local prop_iterator = property:gmatch("(%S+)")
 
 			prop_iterator()
 
@@ -169,9 +172,8 @@ AISimpleExtension.set_properties = function (self, params)
 
 		self._breed.properties[prop_name] = prop_value
 	end
-
-	return 
 end
+
 AISimpleExtension._parse_properties = function (self)
 	for prop_name, prop_value in pairs(self._breed.properties) do
 		if type(prop_value) == "table" then
@@ -180,9 +182,8 @@ AISimpleExtension._parse_properties = function (self)
 			end
 		end
 	end
-
-	return 
 end
+
 AISimpleExtension.init_perception = function (self, breed, is_horde)
 	local unit = self._unit
 
@@ -197,7 +198,7 @@ AISimpleExtension.init_perception = function (self, breed, is_horde)
 			self._perception_func_name = breed.patrol_passive_perception
 			self._target_selection_func_name = breed.patrol_passive_target_selection
 
-			return 
+			return
 		end
 	end
 
@@ -212,9 +213,8 @@ AISimpleExtension.init_perception = function (self, breed, is_horde)
 	else
 		self._target_selection_func_name = "pick_closest_target_with_spillover"
 	end
-
-	return 
 end
+
 AISimpleExtension.set_perception = function (self, perception_func_name, target_selection_func_name)
 	if perception_func_name then
 		self._perception_func_name = perception_func_name
@@ -227,9 +227,8 @@ AISimpleExtension.set_perception = function (self, perception_func_name, target_
 	else
 		self._target_selection_func_name = "pick_closest_target_with_spillover"
 	end
-
-	return 
 end
+
 AISimpleExtension._init_event_handler = function (self)
 	if self._breed.event then
 		local class_name = self._breed.event.class_name
@@ -237,60 +236,63 @@ AISimpleExtension._init_event_handler = function (self)
 	else
 		self._event_handler = AIEventHandler:new(self._unit)
 	end
-
-	return 
 end
+
 AISimpleExtension._init_brain = function (self, breed, is_horde)
 	local behavior = (is_horde and breed.horde_behavior) or breed.behavior
 	self._brain = AIBrain:new(self._world, self._unit, self._blackboard, self._breed, behavior)
-
-	return 
 end
+
 AISimpleExtension._set_size_variation = function (self, size_variation, size_variation_normalized)
 	self._size_variation = size_variation or 1
 	self._size_variation_normalized = size_variation_normalized or 1
-
-	return 
 end
+
 AISimpleExtension.locomotion = function (self)
 	return self._locomotion
 end
+
 AISimpleExtension.navigation = function (self)
 	return self._navigation
 end
+
 AISimpleExtension.brain = function (self)
 	return self._brain
 end
+
 AISimpleExtension.breed = function (self)
 	return self._breed
 end
+
 AISimpleExtension.blackboard = function (self)
 	return self._blackboard
 end
+
 AISimpleExtension.size_variation = function (self)
 	return self._size_variation, self._size_variation_normalized
 end
+
 AISimpleExtension.force_enemy_detection = function (self, t)
 	local num_targets = #PLAYER_AND_BOT_UNITS
 
 	if num_targets == 0 then
-		return 
+		return
 	end
 
 	local target = Math.random(1, num_targets)
 	local random_enemy = PLAYER_AND_BOT_UNITS[target]
 
 	if random_enemy then
-		self.enemy_aggro(self, self._unit, random_enemy)
+		self:enemy_aggro(self._unit, random_enemy)
 	end
-
-	return 
 end
+
 AISimpleExtension.current_action_name = function (self)
 	local blackboard = self._blackboard
 
 	return (blackboard.action and blackboard.action.name) or "n/a"
 end
+
 AISimpleExtension.die = function (self, killer_unit, killing_blow)
 	local blackboard = self._blackboard
 	local unit = self._unit
@@ -303,10 +305,9 @@ AISimpleExtension.die = function (self, killer_unit, killing_blow)
 
 	local conflict_director = Managers.state.conflict
 
-	conflict_director.register_unit_killed(conflict_director, unit, blackboard, killer_unit, killing_blow)
-
-	return 
+	conflict_director:register_unit_killed(unit, blackboard, killer_unit, killing_blow)
 end
+
 AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
 	local unit = self._unit
 	local blackboard = self._blackboard
@@ -328,20 +329,19 @@ AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
 	if not damage_hit and blackboard.stagger == 1 and AiUtils.unit_alive(unit) then
 		StatisticsUtil.check_save(attacker_unit, unit)
 	end
-
-	return 
 end
+
 AISimpleExtension.enemy_aggro = function (self, alerting_unit, enemy_unit)
 	local blackboard = self._blackboard
 
 	if blackboard.confirmed_player_sighting or blackboard.only_trust_your_own_eyes then
-		return 
+		return
 	end
 
 	local attacker_is_player = Managers.player:owner(enemy_unit)
 
 	if not attacker_is_player then
-		return 
+		return
 	end
 
 	blackboard.delayed_target_unit = enemy_unit
@@ -357,13 +357,12 @@ AISimpleExtension.enemy_aggro = function (self, alerting_unit, enemy_unit)
 
 	if ScriptUnit.has_extension(self_unit, "ai_inventory_system") then
 		local network_manager = Managers.state.network
-		local self_unit_id = network_manager.unit_game_object_id(network_manager, self_unit)
+		local self_unit_id = network_manager:unit_game_object_id(self_unit)
 
 		network_manager.network_transmit:send_rpc_all("rpc_ai_inventory_wield", self_unit_id, 1)
 	end
-
-	return 
 end
+
 AISimpleExtension.enemy_alert = function (self, alerting_unit, enemy_unit)
 	local blackboard = self._blackboard
 	local run_on_alerted = self._breed.run_on_alerted
@@ -373,24 +372,24 @@ AISimpleExtension.enemy_alert = function (self, alerting_unit, enemy_unit)
 	end
 
 	if blackboard.confirmed_player_sighting or blackboard.only_trust_your_own_eyes then
-		return 
+		return
 	end
 
 	if blackboard.hesitating or (blackboard.in_alerted_state and blackboard.alerted_deadline_reached) then
-		self.enemy_aggro(self, alerting_unit, enemy_unit)
+		self:enemy_aggro(alerting_unit, enemy_unit)
 	end
 
 	local attacker_is_player = Managers.player:owner(enemy_unit)
 
 	if not attacker_is_player then
-		return 
+		return
 	end
 
 	self._blackboard.delayed_target_unit = enemy_unit
-
-	return 
 end
+
 local DEFAULT_STAGGER_RESET_TIME = 10
+
 AISimpleExtension.increase_stagger_count = function (self)
 	local blackboard = self._blackboard
 	local breed = self._breed
@@ -399,26 +398,22 @@ AISimpleExtension.increase_stagger_count = function (self)
 	local t = Managers.time:time("main")
 	blackboard.stagger_count = stagger_count + 1
 	blackboard.stagger_count_reset_at = t + reset_time
-
-	return 
 end
+
 AISimpleExtension.reset_stagger_count = function (self)
 	local blackboard = self._blackboard
 	blackboard.stagger_count_reset_at = 0
 	blackboard.stagger_count = 0
-
-	return 
 end
+
 AISimpleExtension.update_stagger_count = function (self)
 	local blackboard = self._blackboard
 	local reset_at = blackboard.stagger_count_reset_at
 	local t = Managers.time:time("main")
 
-	if reset_at < t and 0 < blackboard.stagger_count then
+	if reset_at < t and blackboard.stagger_count > 0 then
 		blackboard.stagger_count = 0
 	end
-
-	return 
 end
 
-return 
+return

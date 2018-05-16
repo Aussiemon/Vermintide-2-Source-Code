@@ -1,14 +1,15 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterFollowAction = class(BTPackMasterFollowAction, BTNode)
+
 BTPackMasterFollowAction.init = function (self, ...)
 	BTPackMasterFollowAction.super.init(self, ...)
 
 	self.navigation_group_manager = Managers.state.conflict.navigation_group_manager
-
-	return 
 end
+
 BTPackMasterFollowAction.name = "BTPackMasterFollowAction"
+
 BTPackMasterFollowAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -24,9 +25,8 @@ BTPackMasterFollowAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.start_anim_done = true
 	blackboard.physics_world = blackboard.physics_world or World.get_data(blackboard.world, "physics_world")
-
-	return 
 end
+
 BTPackMasterFollowAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.action = nil
 	blackboard.start_anim_locked = nil
@@ -39,9 +39,8 @@ BTPackMasterFollowAction.leave = function (self, unit, blackboard, t, reason, de
 	elseif reason == "failed" then
 		blackboard.target_unit = nil
 	end
-
-	return 
 end
+
 BTPackMasterFollowAction.run = function (self, unit, blackboard, t, dt)
 	local target_unit = blackboard.target_unit
 
@@ -53,7 +52,7 @@ BTPackMasterFollowAction.run = function (self, unit, blackboard, t, dt)
 	local target_position = POSITION_LOOKUP[target_unit]
 	local hook_time = 0.4
 	local target_locomotion_extension = ScriptUnit.extension(target_unit, "locomotion_system")
-	local extrapolated_target_position = target_position + target_locomotion_extension.average_velocity(target_locomotion_extension) * hook_time
+	local extrapolated_target_position = target_position + target_locomotion_extension:average_velocity() * hook_time
 	local distance_sq = Vector3.distance_squared(current_position, extrapolated_target_position)
 	local attack_distance = blackboard.action.distance_to_attack
 
@@ -69,22 +68,22 @@ BTPackMasterFollowAction.run = function (self, unit, blackboard, t, dt)
 
 	if blackboard.start_anim_done then
 		local whereabouts_extension = ScriptUnit.extension(target_unit, "whereabouts_system")
-		local pos_list, player_position_on_mesh = whereabouts_extension.closest_positions_when_outside_navmesh(whereabouts_extension)
+		local pos_list, player_position_on_mesh = whereabouts_extension:closest_positions_when_outside_navmesh()
 
 		if player_position_on_mesh then
 			local position = POSITION_LOOKUP[target_unit]
 
-			navigation_extension.move_to(navigation_extension, position)
-		elseif 0 < #pos_list then
+			navigation_extension:move_to(position)
+		elseif #pos_list > 0 then
 			local position = pos_list[1]
 
-			navigation_extension.move_to(navigation_extension, position.unbox(position))
+			navigation_extension:move_to(position:unbox())
 		else
 			return "failed"
 		end
 	end
 
-	if navigation_extension.has_reached_destination(navigation_extension) then
+	if navigation_extension:has_reached_destination() then
 		return "failed"
 	end
 
@@ -95,17 +94,17 @@ BTPackMasterFollowAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.time_to_next_evaluate = t + 0.1
 	end
 
-	local is_computing_path = navigation_extension.is_computing_path(navigation_extension)
+	local is_computing_path = navigation_extension:is_computing_path()
 
 	if blackboard.move_state ~= "moving" and not is_computing_path then
 		local network_manager = Managers.state.network
 		blackboard.move_state = "moving"
 
-		network_manager.anim_event(network_manager, unit, blackboard.action.move_animation or "move_fwd")
-		navigation_extension.set_enabled(navigation_extension, true)
+		network_manager:anim_event(unit, blackboard.action.move_animation or "move_fwd")
+		navigation_extension:set_enabled(true)
 	end
 
 	return "running", should_evaluate
 end
 
-return 
+return

@@ -1,6 +1,7 @@
 ProjectileTest = ProjectileTest or {}
 local POSITION_LOOKUP = POSITION_LOOKUP
 local projectiles = {}
+
 ProjectileTest.add_simulated_projectile = function (p1, p2, projectile_speed, projectile_angle, target_velocity, gravity)
 	local angle, speed, new_p2 = nil
 
@@ -47,9 +48,8 @@ ProjectileTest.add_simulated_projectile = function (p1, p2, projectile_speed, pr
 			}
 		end
 	end
-
-	return 
 end
+
 ProjectileTest.simulate_projectiles = function (physics_world, dt)
 	Debug.text("PROJECTILES:%d", #projectiles)
 
@@ -69,8 +69,8 @@ ProjectileTest.simulate_projectiles = function (physics_world, dt)
 
 		local hit = dot * p.last_dot < 0
 
-		if hit or 10 < p.t then
-			if 1 < Vector3.distance(pos, target_pos) then
+		if hit or p.t > 10 then
+			if Vector3.distance(pos, target_pos) > 1 then
 				QuickDrawer:sphere(p.p2:unbox(), 0.24, color)
 			else
 				QuickDrawer:sphere(p.p2:unbox(), 0.2, Color(240, 40, 40))
@@ -98,10 +98,10 @@ ProjectileTest.simulate_projectiles = function (physics_world, dt)
 			end
 		end
 	end
-
-	return 
 end
+
 local next_proj_test = 0
+
 ProjectileTest.run_projectile_test = function (world, t, dt)
 	local gravity = 9.82
 	local physics_world = World.get_data(world, "physics_world")
@@ -139,9 +139,8 @@ ProjectileTest.run_projectile_test = function (world, t, dt)
 	if speed then
 		QuickDrawer:sphere(new_pos, 0.5, Color(180, 180, 0))
 	end
-
-	return 
 end
+
 ProjectileTest.trajectory_test = function (set_speed, set_angle)
 	for i = 20, 35, 1 do
 		local p1 = Vector3(0, 0, 0)
@@ -154,9 +153,8 @@ ProjectileTest.trajectory_test = function (set_speed, set_angle)
 
 		print(sprintf("Distance: %.1f  1) speed: %.1f and angle: %.1f OR speed: %.1f and angle: %.1f", i, set_speed, angle, speed, set_angle))
 	end
-
-	return 
 end
+
 ProjectileTest.draw_projectile_trajectory = function (p1, p2, gravity, projectile_speed)
 	local time_step = 0.016666666666666666
 	local distance_vector = p2 - p1
@@ -195,8 +193,6 @@ ProjectileTest.draw_projectile_trajectory = function (p1, p2, gravity, projectil
 			i = i + 1
 		end
 	end
-
-	return 
 end
 
-return 
+return

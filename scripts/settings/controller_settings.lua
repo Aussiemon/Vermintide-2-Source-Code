@@ -351,17 +351,17 @@ PlayerControllerKeymaps = {
 		},
 		action_inspect = {
 			"gamepad",
-			"right_thumb",
+			"left_thumb",
 			"pressed"
 		},
 		action_inspect_hold = {
 			"gamepad",
-			"right_thumb",
+			"left_thumb",
 			"held"
 		},
 		action_inspect_release = {
 			"gamepad",
-			"right_thumb",
+			"left_thumb",
 			"released"
 		},
 		active_ability_left_pressed = {
@@ -399,11 +399,7 @@ PlayerControllerKeymaps = {
 			"right_trigger",
 			"soft_button"
 		},
-		action_one_mouse = {
-			"mouse",
-			"left",
-			"pressed"
-		},
+		action_one_mouse = {},
 		weapon_reload_input = {
 			"gamepad",
 			"left_shoulder",
@@ -416,7 +412,7 @@ PlayerControllerKeymaps = {
 		},
 		character_inspecting = {
 			"gamepad",
-			"left_thumb",
+			"d_down",
 			"held"
 		},
 		wield_1 = {},
@@ -446,11 +442,7 @@ PlayerControllerKeymaps = {
 			"y",
 			"pressed"
 		},
-		wield_switch_2 = {
-			"gamepad",
-			"d_down",
-			"pressed"
-		},
+		wield_switch_2 = {},
 		wield_scroll = {
 			"mouse",
 			"wheel",
@@ -476,11 +468,12 @@ PlayerControllerKeymaps = {
 		},
 		jump_2 = {},
 		jump_only = {},
-		dodge_hold = {
+		dodge_1 = {
 			"gamepad",
 			"a",
 			"held"
 		},
+		dodge_2 = {},
 		dodge = {},
 		crouch = {
 			"gamepad",
@@ -492,11 +485,7 @@ PlayerControllerKeymaps = {
 			"b",
 			"held"
 		},
-		look_raw = {
-			"mouse",
-			"mouse",
-			"axis"
-		},
+		look_raw = {},
 		look_raw_controller = {
 			"gamepad",
 			"right",
@@ -526,11 +515,6 @@ PlayerControllerKeymaps = {
 		move_right_pressed = {},
 		move_forward_pressed = {},
 		move_back_pressed = {},
-		cursor = {
-			"gamepad",
-			"left",
-			"axis"
-		},
 		next_observer_target = {
 			"gamepad",
 			"a",
@@ -590,17 +574,17 @@ PlayerControllerKeymaps = {
 		},
 		action_inspect = {
 			"gamepad",
-			"r3",
+			"l3",
 			"pressed"
 		},
 		action_inspect_hold = {
 			"gamepad",
-			"r3",
+			"l3",
 			"held"
 		},
 		action_inspect_release = {
 			"gamepad",
-			"r3",
+			"l3",
 			"released"
 		},
 		active_ability_left_pressed = {
@@ -638,11 +622,7 @@ PlayerControllerKeymaps = {
 			"r2",
 			"soft_button"
 		},
-		action_one_mouse = {
-			"mouse",
-			"left",
-			"pressed"
-		},
+		action_one_mouse = {},
 		weapon_reload_input = {
 			"gamepad",
 			"l1",
@@ -655,7 +635,7 @@ PlayerControllerKeymaps = {
 		},
 		character_inspecting = {
 			"gamepad",
-			"l3",
+			"down",
 			"held"
 		},
 		wield_1 = {},
@@ -685,11 +665,7 @@ PlayerControllerKeymaps = {
 			"triangle",
 			"pressed"
 		},
-		wield_switch_2 = {
-			"gamepad",
-			"down",
-			"pressed"
-		},
+		wield_switch_2 = {},
 		wield_scroll = {
 			"mouse",
 			"wheel",
@@ -715,12 +691,11 @@ PlayerControllerKeymaps = {
 		},
 		jump_2 = {},
 		jump_only = {},
-		dodge_hold = {
+		dodge_1 = {
 			"gamepad",
 			"cross",
 			"held"
 		},
-		dodge_1 = {},
 		dodge_2 = {},
 		crouch = {
 			"gamepad",
@@ -732,11 +707,7 @@ PlayerControllerKeymaps = {
 			"circle",
 			"held"
 		},
-		look_raw = {
-			"mouse",
-			"mouse",
-			"axis"
-		},
+		look_raw = {},
 		look_raw_controller = {
 			"gamepad",
 			"right",
@@ -766,11 +737,6 @@ PlayerControllerKeymaps = {
 		move_right_pressed = {},
 		move_forward_pressed = {},
 		move_back_pressed = {},
-		cursor = {
-			"gamepad",
-			"left",
-			"axis"
-		},
 		next_observer_target = {
 			"gamepad",
 			"cross",
@@ -805,8 +771,7 @@ PlayerControllerFilters = {
 		wield_switch = {
 			filter_type = "or",
 			input_mappings = {
-				button_1 = "wield_switch_1",
-				button_2 = "wield_switch_2"
+				button_1 = "wield_switch_1"
 			}
 		},
 		look_controller = {
@@ -974,8 +939,7 @@ PlayerControllerFilters = {
 		wield_switch = {
 			filter_type = "or",
 			input_mappings = {
-				button_1 = "wield_switch_1",
-				button_2 = "wield_switch_2"
+				button_1 = "wield_switch_1"
 			}
 		},
 		jump = {
@@ -985,7 +949,7 @@ PlayerControllerFilters = {
 				button_2 = "jump_2"
 			}
 		},
-		dodge = {
+		dodge_hold = {
 			filter_type = "or",
 			input_mappings = {
 				button_1 = "dodge_1",
@@ -1145,8 +1109,7 @@ PlayerControllerFilters = {
 		wield_switch = {
 			filter_type = "or",
 			input_mappings = {
-				button_1 = "wield_switch_1",
-				button_2 = "wield_switch_2"
+				button_1 = "wield_switch_1"
 			}
 		},
 		jump = {
@@ -1156,7 +1119,7 @@ PlayerControllerFilters = {
 				button_2 = "jump_2"
 			}
 		},
-		dodge = {
+		dodge_hold = {
 			filter_type = "or",
 			input_mappings = {
 				button_1 = "dodge_1",
@@ -1854,6 +1817,11 @@ FreeFlightKeymaps = {
 		projection_mode = {
 			"keyboard",
 			"f7",
+			"pressed"
+		},
+		frustum_freeze_toggle = {
+			"gamepad",
+			"x",
 			"pressed"
 		},
 		set_drop_position = {
@@ -3599,6 +3567,26 @@ IngameMenuKeymaps = {
 			"u",
 			"pressed"
 		},
+		item_compare_1 = {
+			"keyboard",
+			"left shift",
+			"held"
+		},
+		item_compare_2 = {
+			"keyboard",
+			"right shift",
+			"held"
+		},
+		item_detail_1 = {
+			"keyboard",
+			"left ctrl",
+			"held"
+		},
+		item_detail_2 = {
+			"keyboard",
+			"right ctrl",
+			"held"
+		},
 		scroll_axis = {
 			"mouse",
 			"wheel",
@@ -3851,27 +3839,24 @@ IngameMenuKeymaps = {
 			"a",
 			"released"
 		},
-		right_press = {
-			"gamepad",
-			"right_shoulder",
-			"pressed"
-		},
-		right_hold = {
-			"gamepad",
-			"right_shoulder",
-			"held"
-		},
-		right_release = {
-			"gamepad",
-			"right_shoulder",
-			"released"
-		},
+		right_press = {},
+		right_hold = {},
+		right_release = {},
 		scroll_axis = {
 			"gamepad",
 			"right",
 			"axis"
 		},
-		debug_pixeldistance = {}
+		debug_pixeldistance_1 = {
+			"gamepad",
+			"left_trigger",
+			"held"
+		},
+		debug_pixeldistance_2 = {
+			"gamepad",
+			"right_trigger",
+			"held"
+		}
 	},
 	ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		ingame_vote_yes = {
@@ -4069,6 +4054,11 @@ IngameMenuKeymaps = {
 			"l2",
 			"held"
 		},
+		axis_cursor = {
+			"gamepad",
+			"left",
+			"axis"
+		},
 		gamepad_left_axis = {
 			"gamepad",
 			"left",
@@ -4084,7 +4074,16 @@ IngameMenuKeymaps = {
 			"left",
 			"axis"
 		},
-		debug_pixeldistance = {}
+		debug_pixeldistance_1 = {
+			"gamepad",
+			"l2",
+			"held"
+		},
+		debug_pixeldistance_2 = {
+			"gamepad",
+			"r2",
+			"held"
+		}
 	}
 }
 IngameMenuFilters = {
@@ -4233,9 +4232,30 @@ IngameMenuFilters = {
 				0,
 				0
 			}
+		},
+		item_compare = {
+			filter_type = "or",
+			input_mappings = {
+				button_1 = "item_compare_1",
+				button_2 = "item_compare_2"
+			}
+		},
+		item_detail = {
+			filter_type = "or",
+			input_mappings = {
+				button_1 = "item_detail_1",
+				button_2 = "item_detail_2"
+			}
 		}
 	},
 	xb1 = InputUtils.keymaps_key_approved("xb1") and {
+		debug_pixeldistance = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "debug_pixeldistance_1",
+				button_2 = "debug_pixeldistance_2"
+			}
+		},
 		show_support_info = {
 			filter_type = "and",
 			input_mappings = {
@@ -4383,6 +4403,13 @@ IngameMenuFilters = {
 		}
 	},
 	ps4 = InputUtils.keymaps_key_approved("ps4") and {
+		debug_pixeldistance = {
+			filter_type = "and",
+			input_mappings = {
+				button_1 = "debug_pixeldistance_1",
+				button_2 = "debug_pixeldistance_2"
+			}
+		},
 		show_support_info = {
 			filter_type = "and",
 			input_mappings = {
@@ -4513,6 +4540,20 @@ IngameMenuFilters = {
 				0,
 				0
 			}
+		},
+		cursor = {
+			filter_type = "gamepad_cursor",
+			multiplier = 1000,
+			acceleration_delay = 0.2,
+			acceleration_threshold = 0.5,
+			threshold = 0.1,
+			min_multiplier_y = 25,
+			accelerate_time_ref = 1.2,
+			input_mapping = "axis_cursor",
+			multiplier_y = 40,
+			multiplier_x = 40,
+			min_multiplier_x = 25,
+			hover_multiplier = 0.3
 		}
 	}
 }
@@ -4692,4 +4733,4 @@ GamepadSettings = {
 
 require("scripts/helpers/gamepad_alternate_layout_helper")
 
-return 
+return

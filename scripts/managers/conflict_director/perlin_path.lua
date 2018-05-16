@@ -48,6 +48,7 @@ PerlinPath = {
 }
 local near_path = 1345600
 local zone_length = 25
+
 PerlinPath.make_easy_path = function (nav_world, main_path, path_length)
 	local new_path = {}
 	local cycle_length = zone_length
@@ -62,7 +63,9 @@ PerlinPath.make_easy_path = function (nav_world, main_path, path_length)
 
 	return PerlinPath.fill_spawns(nav_world, new_path, path_length)
 end
+
 local vector3_distance_squared = Vector3.distance_squared
+
 PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_path, p1, p2)
 	local lookup = {}
 	local triangle = nil
@@ -93,7 +96,7 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 
 	local i = 0
 
-	while i < num_triangles do
+	while num_triangles > i do
 		i = i + 1
 		triangle = triangles[i]
 		local a, b, c = Script.temp_count()
@@ -167,9 +170,11 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 
 	return triangles, lookup, area_list
 end
+
 PerlinPath.populate_spawns = function (nav_world, main_path, path_length, density_path, p1, p2)
-	return 
+	return
 end
+
 PerlinPath.draw_debug_spawns = function (nav_world, gui, triangles, lookup, area_list)
 	local size = #triangles
 
@@ -184,9 +189,8 @@ PerlinPath.draw_debug_spawns = function (nav_world, gui, triangles, lookup, area
 		Gui.triangle(gui, p1 + h, p2 + h, p3 + h, 2, Colors.get_indexed((12 + lookup[key]) % 32 + 1))
 		Script.set_temp_count(a, b, c)
 	end
-
-	return 
 end
+
 PerlinPath.make_path = function (oktave_table, points)
 	local step_dist = 1 / points
 	local x = 0
@@ -194,9 +198,8 @@ PerlinPath.make_path = function (oktave_table, points)
 	for i = start_oktave, end_oktave, 1 do
 		x = x + step_dist
 	end
-
-	return 
 end
+
 PerlinPath.normalize_path = function (points, wanted_area_fill_rate)
 	local area = 0
 	local segments = #points - 1
@@ -212,4 +215,4 @@ PerlinPath.normalize_path = function (points, wanted_area_fill_rate)
 	return multiply_with
 end
 
-return 
+return

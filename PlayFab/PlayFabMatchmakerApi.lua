@@ -8,8 +8,6 @@ local PlayFabMatchmakerApi = {
 		end
 
 		IPlayFabHttps.MakePlayFabApiCall("/Matchmaker/AuthUser", request, "X-SecretKey", PlayFabSettings.settings.devSecretKey, onSuccess, onError)
-
-		return 
 	end,
 	PlayerJoined = function (request, onSuccess, onError)
 		if not PlayFabSettings.settings.titleId or not PlayFabSettings.settings.devSecretKey then
@@ -17,8 +15,6 @@ local PlayFabMatchmakerApi = {
 		end
 
 		IPlayFabHttps.MakePlayFabApiCall("/Matchmaker/PlayerJoined", request, "X-SecretKey", PlayFabSettings.settings.devSecretKey, onSuccess, onError)
-
-		return 
 	end,
 	PlayerLeft = function (request, onSuccess, onError)
 		if not PlayFabSettings.settings.titleId or not PlayFabSettings.settings.devSecretKey then
@@ -26,8 +22,6 @@ local PlayFabMatchmakerApi = {
 		end
 
 		IPlayFabHttps.MakePlayFabApiCall("/Matchmaker/PlayerLeft", request, "X-SecretKey", PlayFabSettings.settings.devSecretKey, onSuccess, onError)
-
-		return 
 	end,
 	StartGame = function (request, onSuccess, onError)
 		if not PlayFabSettings.settings.titleId or not PlayFabSettings.settings.devSecretKey then
@@ -35,8 +29,6 @@ local PlayFabMatchmakerApi = {
 		end
 
 		IPlayFabHttps.MakePlayFabApiCall("/Matchmaker/StartGame", request, "X-SecretKey", PlayFabSettings.settings.devSecretKey, onSuccess, onError)
-
-		return 
 	end,
 	UserInfo = function (request, onSuccess, onError)
 		if not PlayFabSettings.settings.titleId or not PlayFabSettings.settings.devSecretKey then
@@ -44,8 +36,6 @@ local PlayFabMatchmakerApi = {
 		end
 
 		IPlayFabHttps.MakePlayFabApiCall("/Matchmaker/UserInfo", request, "X-SecretKey", PlayFabSettings.settings.devSecretKey, onSuccess, onError)
-
-		return 
 	end
 }
 

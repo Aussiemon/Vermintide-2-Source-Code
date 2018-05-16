@@ -1,5 +1,6 @@
 MIN_POWER_LEVEL = 0
 MAX_POWER_LEVEL = 1000
+MIN_POWER_LEVEL_CAP = 200
 BoostCurves = {
 	default = {
 		0,
@@ -258,4 +259,4 @@ PowerLevelFromLevelSettings = {
 	power_level_per_level = 10
 }
 
-return 
+return

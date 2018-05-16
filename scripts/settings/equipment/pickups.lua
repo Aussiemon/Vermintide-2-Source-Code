@@ -279,14 +279,14 @@ Pickups.ammo.all_ammo = {
 	hud_description = "interaction_ammunition_crate",
 	pickup_sound_event_func = function (interactor_unit, interactable_unit, data)
 		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
-		local full_ammo = inventory_extension.has_full_ammo(inventory_extension)
+		local full_ammo = inventory_extension:has_full_ammo()
 
 		return (full_ammo and "pickup_ammo_full") or "pickup_ammo"
 	end,
 	can_interact_func = function (interactor_unit, interactable_unit, data)
 		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
 
-		return inventory_extension.has_ammo_consuming_weapon_equipped(inventory_extension)
+		return inventory_extension:has_ammo_consuming_weapon_equipped()
 	end
 }
 Pickups.ammo.all_ammo_small = {
@@ -303,7 +303,7 @@ Pickups.ammo.all_ammo_small = {
 	can_interact_func = function (interactor_unit, interactable_unit, data)
 		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
 
-		return inventory_extension.has_ammo_consuming_weapon_equipped(inventory_extension)
+		return inventory_extension:has_ammo_consuming_weapon_equipped()
 	end
 }
 Pickups.ammo.ammo_ranger = {
@@ -321,7 +321,7 @@ Pickups.ammo.ammo_ranger = {
 	can_interact_func = function (interactor_unit, interactable_unit, data)
 		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
 
-		return inventory_extension.has_ammo_consuming_weapon_equipped(inventory_extension)
+		return inventory_extension:has_ammo_consuming_weapon_equipped()
 	end
 }
 Pickups.ammo.ammo_ranger_improved = {
@@ -339,7 +339,7 @@ Pickups.ammo.ammo_ranger_improved = {
 	can_interact_func = function (interactor_unit, interactable_unit, data)
 		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
 
-		return inventory_extension.has_ammo_consuming_weapon_equipped(inventory_extension)
+		return inventory_extension:has_ammo_consuming_weapon_equipped()
 	end
 }
 Pickups.grenades = Pickups.grenades or {}
@@ -456,7 +456,7 @@ Pickups.special = {
 
 			local dice_keeper = params.dice_keeper
 
-			return dice_keeper.num_bonus_dice_spawned(dice_keeper) < 2
+			return dice_keeper:num_bonus_dice_spawned() < 2
 		end
 	},
 	endurance_badge_01 = {
@@ -502,13 +502,13 @@ Pickups.lorebook_pages = {
 
 			local num_pages = #pages
 			local local_player = Managers.player:local_player()
-			local stats_id = local_player.stats_id(local_player)
+			local stats_id = local_player:stats_id()
 			local unlocked_all = true
 
 			for i = 1, num_pages, 1 do
 				local category_name = pages[i]
 				local id = LorebookCategoryLookup[category_name]
-				local unlocked = statistics_db.get_persistent_array_stat(statistics_db, stats_id, "lorebook_unlocks", id)
+				local unlocked = statistics_db:get_persistent_array_stat(stats_id, "lorebook_unlocks", id)
 
 				if not unlocked then
 					unlocked_all = false
@@ -581,4 +581,4 @@ for group, pickups in pairs(Pickups) do
 	NearPickupSpawnChance[group] = NearPickupSpawnChance[group] or 0
 end
 
-return 
+return

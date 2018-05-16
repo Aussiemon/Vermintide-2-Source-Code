@@ -1,7 +1,7 @@
 LiquidAreaDamageTemplates = {
 	templates = {
 		bile_troll_vomit_near = {
-			sfx_name_start = "Play_enemy_troll_puke_loop",
+			do_direct_damage_ai = true,
 			sfx_name_stop = "Stop_enemy_troll_puke_loop",
 			cell_size = 1,
 			liquid_spread_function = "pour_spread",
@@ -11,7 +11,7 @@ LiquidAreaDamageTemplates = {
 			buff_template_name = "bile_troll_vomit_ground_base",
 			linearized_flow = false,
 			damage_type = "vomit_ground",
-			do_direct_damage_ai = true,
+			sfx_name_start = "Play_enemy_troll_puke_loop",
 			init_function = "bile_troll_vomit_init",
 			end_pressure = 3,
 			fx_name_filled = "fx/wpnfx_troll_vomit_impact_01",
@@ -20,6 +20,7 @@ LiquidAreaDamageTemplates = {
 			max_liquid = 30,
 			update_function = "bile_troll_vomit_update",
 			use_nav_cost_map_volumes = true,
+			buff_template_type = "troll_bile_ground",
 			nav_cost_map_cost_type = "troll_bile",
 			buff_condition_function = "bile_troll_vomit_ground_base_condition",
 			immune_breeds = {
@@ -89,7 +90,7 @@ LiquidAreaDamageTemplates = {
 			}
 		},
 		bile_troll_vomit = {
-			sfx_name_start = "Play_enemy_troll_puke_loop",
+			do_direct_damage_ai = true,
 			sfx_name_stop = "Stop_enemy_troll_puke_loop",
 			cell_size = 1,
 			liquid_spread_function = "default_spread",
@@ -99,7 +100,7 @@ LiquidAreaDamageTemplates = {
 			buff_template_name = "bile_troll_vomit_ground_base",
 			linearized_flow = false,
 			damage_type = "vomit_ground",
-			do_direct_damage_ai = true,
+			sfx_name_start = "Play_enemy_troll_puke_loop",
 			init_function = "bile_troll_vomit_init",
 			end_pressure = 3,
 			fx_name_filled = "fx/wpnfx_troll_vomit_impact_01",
@@ -108,6 +109,7 @@ LiquidAreaDamageTemplates = {
 			max_liquid = 20,
 			update_function = "bile_troll_vomit_update",
 			use_nav_cost_map_volumes = true,
+			buff_template_type = "troll_bile_ground",
 			nav_cost_map_cost_type = "troll_bile",
 			buff_condition_function = "bile_troll_vomit_ground_base_condition",
 			immune_breeds = {
@@ -177,7 +179,7 @@ LiquidAreaDamageTemplates = {
 			}
 		},
 		nurgle_liquid = {
-			sfx_name_start = "Play_enemy_troll_puke_loop",
+			do_direct_damage_ai = true,
 			sfx_name_stop = "Stop_enemy_troll_puke_loop",
 			cell_size = 0.6,
 			liquid_spread_function = "pour_spread",
@@ -187,7 +189,7 @@ LiquidAreaDamageTemplates = {
 			buff_template_name = "bile_troll_vomit_ground_base",
 			linearized_flow = false,
 			damage_type = "vomit_ground",
-			do_direct_damage_ai = true,
+			sfx_name_start = "Play_enemy_troll_puke_loop",
 			init_function = "bile_troll_vomit_init",
 			end_pressure = 3,
 			fx_name_filled = "fx/nurgle_liquid_blob_ground_01",
@@ -196,6 +198,7 @@ LiquidAreaDamageTemplates = {
 			max_liquid = 12,
 			update_function = "bile_troll_vomit_update",
 			use_nav_cost_map_volumes = true,
+			buff_template_type = "troll_bile_ground",
 			nav_cost_map_cost_type = "troll_bile",
 			buff_condition_function = "bile_troll_vomit_ground_base_condition",
 			immune_breeds = {
@@ -262,7 +265,51 @@ LiquidAreaDamageTemplates = {
 					0,
 					1
 				}
-			}
+			},
+			hit_player_function = function (hit_player_unit, player_and_bot_units)
+				local stat_name = "nurgle_bathed_all"
+				local current_difficulty = Managers.state.difficulty:get_difficulty()
+				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
+				local allowed_difficulty = allowed_difficulties[current_difficulty]
+				local achievements_enabled = Development.parameter("v2_achievements")
+
+				if allowed_difficulty and achievements_enabled then
+					local status_extension = ScriptUnit.extension(hit_player_unit, "status_system")
+					local num_times_bathed_in_nurgle_liquid = status_extension.num_times_bathed_in_nurgle_liquid or 0
+					status_extension.num_times_bathed_in_nurgle_liquid = num_times_bathed_in_nurgle_liquid + 1
+					local completed_challenge = false
+
+					for i = 0, #player_and_bot_units, 1 do
+						local player_unit = player_and_bot_units[i]
+
+						if Unit.alive(player_unit) then
+							local player_unit_status_extension = ScriptUnit.extension(player_unit, "status_system")
+							local num_times_bathed = player_unit_status_extension.num_times_bathed_in_nurgle_liquid
+
+							if num_times_bathed and QuestSettings.nurgle_bathed_all <= num_times_bathed then
+								local statistics_db = Managers.player:statistics_db()
+
+								statistics_db:increment_stat_and_sync_to_clients(stat_name)
+
+								completed_challenge = true
+
+								break
+							end
+						end
+					end
+
+					if completed_challenge then
+						for i = 0, #player_and_bot_units, 1 do
+							local player_unit = player_and_bot_units[i]
+
+							if Unit.alive(player_unit) then
+								local player_unit_status_extension = ScriptUnit.extension(player_unit, "status_system")
+								player_unit_status_extension.num_times_bathed_in_nurgle_liquid = nil
+							end
+						end
+					end
+				end
+			end
 		},
 		stormfiend_firewall = {
 			do_direct_damage_ai = true,
@@ -283,6 +330,7 @@ LiquidAreaDamageTemplates = {
 			time_of_life = 6,
 			max_liquid = 20,
 			use_nav_cost_map_volumes = true,
+			buff_template_type = "stormfiend_warpfire_ground",
 			nav_cost_map_cost_type = "stormfiend_warpfire",
 			buff_condition_function = "stormfiend_warpfire_ground_base_condition",
 			immune_breeds = {
@@ -681,7 +729,7 @@ LiquidAreaDamageTemplates = {
 			local tongue_pos = Unit.world_position(troll_unit, tongue_node)
 			local vomit_unit_name = "units/weapons/enemy/wpn_troll_vomit/wpn_troll_vomit"
 			local unit_spawner = Managers.state.unit_spawner
-			local vomit_unit = unit_spawner.spawn_local_unit(unit_spawner, vomit_unit_name, tongue_pos, nil, nil)
+			local vomit_unit = unit_spawner:spawn_local_unit(vomit_unit_name, tongue_pos, nil, nil)
 
 			World.link_unit(world, vomit_unit, troll_unit, tongue_node)
 			Unit.flow_event(vomit_unit, "fade_in")
@@ -691,8 +739,6 @@ LiquidAreaDamageTemplates = {
 			local firing_time = action.firing_time
 			self._firing_time_deadline = t + firing_time
 		end
-
-		return 
 	end,
 	bile_troll_vomit_update = function (self, t, dt)
 		local vomit_unit = self._vomit_unit
@@ -711,19 +757,17 @@ LiquidAreaDamageTemplates = {
 
 			return false
 		end
-
-		return 
 	end,
 	bile_troll_vomit_ground_base_condition = function (unit)
 		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
-		return not buff_extension.has_buff_type(buff_extension, "troll_bile_face")
+		return not buff_extension:has_buff_type("troll_bile_face")
 	end,
 	stormfiend_warpfire_ground_base_condition = function (unit)
 		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
-		return not buff_extension.has_buff_type(buff_extension, "stormfiend_warpfire_face")
+		return not buff_extension:has_buff_type("stormfiend_warpfire_face")
 	end
 }
 
-return 
+return

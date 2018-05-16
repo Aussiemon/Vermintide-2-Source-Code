@@ -39,7 +39,7 @@ DamageBlobTemplates = {
 		if Unit.alive(warpfire_thrower_unit) then
 			local inventory_extension = ScriptUnit.extension(warpfire_thrower_unit, "ai_inventory_system")
 			local inventory_template = Breeds.skaven_warpfire_thrower.default_inventory_template
-			local warpfire_gun_unit = inventory_extension.get_unit(inventory_extension, inventory_template)
+			local warpfire_gun_unit = inventory_extension:get_unit(inventory_template)
 			self._warpfire_gun_unit = warpfire_gun_unit
 			local action = BreedActions.skaven_warpfire_thrower.shoot_warpfire_thrower
 			local node_name = action.muzzle_node
@@ -56,8 +56,6 @@ DamageBlobTemplates = {
 			self._firing_time_deadline = t + firing_time
 			self._particle_life_time = Vector3Box(1, 0, 0)
 		end
-
-		return 
 	end,
 	warpfire_thrower_fire_update = function (self, t, dt, target_unit)
 		local warpfire_gun_unit = self._warpfire_gun_unit
@@ -101,9 +99,7 @@ DamageBlobTemplates = {
 
 			return false
 		end
-
-		return 
 	end
 }
 
-return 
+return

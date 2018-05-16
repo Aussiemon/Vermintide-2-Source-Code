@@ -122,11 +122,13 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_empire_soldier_elven_ruins",
 	"dialogues/generated/lookup_dwarf_ranger_elven_ruins",
 	"dialogues/generated/lookup_wood_elf_elven_ruins",
+	"dialogues/generated/lookup_hero_conversations_elven_ruins",
 	"dialogues/generated/lookup_bright_wizard_catacombs",
 	"dialogues/generated/lookup_witch_hunter_catacombs",
 	"dialogues/generated/lookup_empire_soldier_catacombs",
 	"dialogues/generated/lookup_dwarf_ranger_catacombs",
 	"dialogues/generated/lookup_wood_elf_catacombs",
+	"dialogues/generated/lookup_hero_conversations_catacombs",
 	"dialogues/generated/lookup_bright_wizard_military",
 	"dialogues/generated/lookup_witch_hunter_military",
 	"dialogues/generated/lookup_dwarf_ranger_military",
@@ -143,12 +145,14 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_bright_wizard_ussingen",
 	"dialogues/generated/lookup_dwarf_ranger_ussingen",
 	"dialogues/generated/lookup_witch_hunter_ussingen",
+	"dialogues/generated/lookup_hero_conversations_ussingen",
 	"dialogues/generated/lookup_marker_events",
 	"dialogues/generated/lookup_bright_wizard_fort",
 	"dialogues/generated/lookup_dwarf_ranger_fort",
 	"dialogues/generated/lookup_witch_hunter_fort",
 	"dialogues/generated/lookup_wood_elf_fort",
 	"dialogues/generated/lookup_empire_soldier_fort",
+	"dialogues/generated/lookup_hero_conversations_fort",
 	"dialogues/generated/lookup_bright_wizard_skaven_stronghold",
 	"dialogues/generated/lookup_dwarf_ranger_skaven_stronghold",
 	"dialogues/generated/lookup_witch_hunter_skaven_stronghold",
@@ -165,16 +169,19 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_witch_hunter_warcamp",
 	"dialogues/generated/lookup_wood_elf_warcamp",
 	"dialogues/generated/lookup_empire_soldier_warcamp",
+	"dialogues/generated/lookup_hero_conversations_war_camp",
 	"dialogues/generated/lookup_bright_wizard_farmland",
 	"dialogues/generated/lookup_dwarf_ranger_farmland",
 	"dialogues/generated/lookup_witch_hunter_farmland",
 	"dialogues/generated/lookup_wood_elf_farmland",
 	"dialogues/generated/lookup_empire_soldier_farmland",
+	"dialogues/generated/lookup_hero_conversations_farmlands",
 	"dialogues/generated/lookup_bright_wizard_skittergate",
 	"dialogues/generated/lookup_dwarf_ranger_skittergate",
 	"dialogues/generated/lookup_witch_hunter_skittergate",
 	"dialogues/generated/lookup_wood_elf_skittergate",
 	"dialogues/generated/lookup_empire_soldier_skittergate",
+	"dialogues/generated/lookup_grey_seer_skittergate",
 	"dialogues/generated/lookup_bright_wizard_bell",
 	"dialogues/generated/lookup_dwarf_ranger_bell",
 	"dialogues/generated/lookup_witch_hunter_bell",
@@ -185,7 +192,20 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_witch_hunter_ground_zero",
 	"dialogues/generated/lookup_wood_elf_ground_zero",
 	"dialogues/generated/lookup_empire_soldier_ground_zero",
-	"dialogues/generated/lookup_hub_conversations"
+	"dialogues/generated/lookup_hero_conversations_ground_zero",
+	"dialogues/generated/lookup_witch_hunter_bogenhafen_city",
+	"dialogues/generated/lookup_bright_wizard_bogenhafen_city",
+	"dialogues/generated/lookup_dwarf_ranger_bogenhafen_city",
+	"dialogues/generated/lookup_empire_soldier_bogenhafen_city",
+	"dialogues/generated/lookup_wood_elf_bogenhafen_city",
+	"dialogues/generated/lookup_witch_hunter_bogenhafen_slum",
+	"dialogues/generated/lookup_bright_wizard_bogenhafen_slum",
+	"dialogues/generated/lookup_dwarf_ranger_bogenhafen_slum",
+	"dialogues/generated/lookup_empire_soldier_bogenhafen_slum",
+	"dialogues/generated/lookup_wood_elf_bogenhafen_slum",
+	"dialogues/generated/lookup_hub_conversations",
+	"dialogues/generated/lookup_hero_conversations_dlc_bogenhafen_city",
+	"dialogues/generated/lookup_hero_conversations_dlc_bogenhafen_slum"
 }
 
 for _, dialogue_lookup_table in ipairs(dialogue_lookup_tables) do
@@ -300,8 +320,6 @@ NetworkLookup.breeds = {
 	"critter_rat",
 	"pet_pig",
 	"pet_rat",
-	"debug_ai_profile",
-	"skaven_ai_profile",
 	"chaos_marauder",
 	"chaos_marauder_tutorial",
 	"chaos_raider_tutorial",
@@ -368,7 +386,7 @@ NetworkLookup.damage_sources = damage_sources
 NetworkLookup.breeds[#NetworkLookup.breeds + 1] = "n/a"
 NetworkLookup.husks = {
 	"units/decals/decal_vortex_circle_inner",
-	"units/decals/decal_nurgle_pentagram_base_unit",
+	"units/decals/decal_vortex_circle_outer",
 	"units/beings/player/witch_hunter/third_person_base/chr_third_person_husk_base",
 	"units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_husk_base",
 	"units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_husk_base",
@@ -412,10 +430,19 @@ NetworkLookup.husks = {
 	"units/beings/enemies/skaven_grey_seer/chr_skaven_grey_seer",
 	"units/beings/enemies/skaven_warpfire_thrower/chr_skaven_warpfire_thrower",
 	"units/beings/enemies/chaos_marauder/chr_chaos_marauder",
+	"units/beings/enemies/chaos_marauder/chr_chaos_marauder_baked_var1",
+	"units/beings/enemies/chaos_marauder/chr_chaos_marauder_baked_var2",
+	"units/beings/enemies/chaos_marauder/chr_chaos_marauder_baked_var3",
+	"units/beings/enemies/chaos_marauder/chr_chaos_marauder_baked_var4",
 	"units/beings/enemies/chaos_fanatic/chr_chaos_fanatic",
+	"units/beings/enemies/chaos_fanatic/chr_chaos_fanatic_baked_var1",
+	"units/beings/enemies/chaos_fanatic/chr_chaos_fanatic_baked_var2",
+	"units/beings/enemies/chaos_fanatic/chr_chaos_fanatic_baked_var3",
 	"units/beings/enemies/chaos_nurgle_corpses/chr_npc_chaos_nurgle_corpse",
 	"units/beings/enemies/chaos_raider/chr_chaos_raider",
+	"units/beings/enemies/chaos_raider/chr_chaos_raider_baked",
 	"units/beings/enemies/chaos_berzerker/chr_chaos_berzerker",
+	"units/beings/enemies/chaos_berzerker/chr_chaos_berzerker_baked",
 	"units/beings/enemies/chaos_warrior/chr_chaos_warrior",
 	"units/beings/enemies/chaos_warrior/chr_chaos_warrior_exalted",
 	"units/beings/enemies/chaos_warrior_boss/chr_chaos_warrior_boss",
@@ -491,8 +518,6 @@ NetworkLookup.husks = {
 	"units/gameplay/training_dummy/training_dummy_armored",
 	"units/gameplay/training_dummy/wpn_training_dummy_armored",
 	"units/gameplay/training_dummy/wpn_training_dummy_armored_3p",
-	"units/decals/decal_nurgle_pentagram_1",
-	"units/weapons/enemy/wpn_warpfire/wpn_stormfiend_warpfire",
 	"units/weapons/projectile/poison_wind_globe/poison_wind_globe",
 	"units/weapons/projectile/vortex_rune/vortex_rune",
 	"units/weapons/projectile/magic_missile/magic_missile",
@@ -502,7 +527,6 @@ NetworkLookup.husks = {
 	"units/weapons/player/drake_pistol_projectile/drake_pistol_projectile_3ps",
 	"units/weapons/player/spear_projectile/spear_3ps",
 	"units/weapons/player/spear_projectile/spark_3ps",
-	"units/gameplay/gameplay_respawn_cage_01",
 	"units/hub_elements/empty",
 	"units/hub_elements/interest_points/pack_spawning/ai_interest_point_1pack",
 	"units/hub_elements/interest_points/pack_spawning/ai_interest_point_2pack",
@@ -959,6 +983,7 @@ NetworkLookup.damage_types = {
 	"weapon_bleed_dot_test",
 	"sync_health",
 	"killing_blow",
+	"military_finish",
 	"volume_generic_dot",
 	"volume_insta_kill",
 	"globadier_gas_dot",
@@ -1080,6 +1105,7 @@ NetworkLookup.buff_templates = {
 	"sienna_adept_defence_on_last_standing",
 	"sienna_unchained_activated_ability",
 	"kerillian_shade_activated_ability",
+	"kerillian_shade_activated_ability_duration",
 	"kerillian_shade_crit_hit_damage_on_low_health",
 	"kerillian_shade_revive_speed_on_last_standing",
 	"kerillian_shade_damage_on_grimoire_picked_up",
@@ -1140,7 +1166,8 @@ NetworkLookup.buff_templates = {
 	"twitch_health_regen",
 	"twitch_health_degen",
 	"twitch_grimoire_health_debuff",
-	"twitch_power_boost_dismember"
+	"twitch_power_boost_dismember",
+	"trait_ring_potion_spread"
 }
 NetworkLookup.buff_data_types = {
 	"n/a",
@@ -1216,7 +1243,8 @@ NetworkLookup.pickup_spawn_types = {
 	"limited",
 	"loot",
 	"rare",
-	"debug"
+	"debug",
+	"buff"
 }
 NetworkLookup.effects = {
 	"n/a",
@@ -1263,14 +1291,13 @@ NetworkLookup.effects = {
 	"fx/wpnfx_flamethrower_01",
 	"fx/wpnfx_flamethrower_hit_01",
 	"fx/wpnfx_range_crit_01",
-	"fx/chr_warp_fire_flamethrower_03",
 	"fx/chaos_sorcerer_plague_wave_hit_01",
-	"fx/wpn_chaos_sorcerer_boss_bomb_03",
 	"fx/chr_nurgle_explosion_01",
 	"fx/doomwheel_explosion",
 	"fx/warp_lightning_bolt_impact",
 	"fx/chr_iron_breaker_ability_taunt",
-	"fx/chr_grey_seer_lightning_hit_02"
+	"fx/chr_grey_seer_lightning_hit_02",
+	"fx/chr_chaos_sorcerer_boss_projectile_flies_impact"
 }
 NetworkLookup.light_weight_projectile_particle_effects = create_lookup({}, LightWeightProjectileParticleEffects)
 NetworkLookup.localized_strings = {
@@ -1372,9 +1399,13 @@ NetworkLookup.sound_events = {
 	"Play_career_ability_kerillian_shade_enter",
 	"Play_career_ability_kerillian_shade_loop",
 	"Play_career_ability_kerillian_shade_exit",
+	"Play_career_ability_kerillian_shade_loop_husk",
+	"Stop_career_ability_kerillian_shade_loop_husk",
 	"Play_career_ability_markus_huntsman_enter",
 	"Play_career_ability_markus_huntsman_loop",
 	"Play_career_ability_markus_huntsman_exit",
+	"Play_career_ability_markus_huntsman_loop_husk",
+	"Stop_career_ability_markus_huntsman_loop_husk",
 	"Play_career_ability_bardin_ranger_enter",
 	"Play_career_ability_bardin_ranger_exit",
 	"Play_career_ability_bardin_slayer_enter",
@@ -1553,7 +1584,7 @@ NetworkLookup.ai_inventory = {
 	"axe",
 	"warrior_axe",
 	"exalted_axe",
-	"exalted_boss_axe",
+	"exalted_spawn_axe",
 	"axe_2h",
 	"warpfiregun",
 	"marauder_mace",
@@ -1697,6 +1728,7 @@ NetworkLookup.music_group_states = {
 	"pre_ambush_chaos",
 	"no_boss",
 	"rat_ogre",
+	"stormfiend",
 	"chaos_spawn",
 	"troll",
 	"champion_skaven_stormvermin",
@@ -1711,7 +1743,21 @@ NetworkLookup.locations = {
 	"test",
 	"test2"
 }
-NetworkLookup.statistics = {}
+NetworkLookup.statistics = {
+	"elven_ruins_speed_event",
+	"farmlands_speed_event",
+	"bell_speed_event",
+	"mines_speed_event",
+	"skittergate_speed_event",
+	"exalted_champion_charge_chaos_warrior",
+	"military_statue_kill_chaos_warriors",
+	"halescourge_tornado_enemies",
+	"storm_vermin_warlord_kills_enemies",
+	"nurgle_bathed_all",
+	"ussingen_used_no_barrels",
+	"forest_fort_kill_cannonball",
+	"catacombs_added_souls"
+}
 local music_group_states = {}
 local music_lookups = NetworkLookup.music_group_states
 
@@ -1846,8 +1892,6 @@ local function statistics_path_names(path_names, stat)
 			statistics_path_names(path_names, stat_definition)
 		end
 	end
-
-	return 
 end
 
 local path_names = {}
@@ -1876,6 +1920,10 @@ end
 
 NetworkLookup.terror_flow_events = create_lookup({}, flow_events)
 NetworkLookup.inventory_packages = dofile("scripts/network_lookup/inventory_package_list")
+local career_packages = dofile("scripts/network_lookup/career_package_list")
+
+table.append(NetworkLookup.inventory_packages, career_packages)
+
 local paintings = {}
 
 for _, orientations in pairs(Paintings) do
@@ -1899,14 +1947,10 @@ local function init(self, name)
 	local meta = {
 		__index = function (_, key)
 			error(index_error_print .. tostring(key))
-
-			return 
 		end
 	}
 
 	setmetatable(self, meta)
-
-	return 
 end
 
 local DialogueLookup = DialogueLookup
@@ -1918,4 +1962,4 @@ for key, lookup_table in pairs(NetworkLookup) do
 	init(lookup_table, key)
 end
 
-return 
+return

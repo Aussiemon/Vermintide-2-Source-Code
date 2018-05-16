@@ -26,32 +26,25 @@ local function tprint(format, ...)
 	if script_data.dialogue_debug_queries then
 		print(string.format("[TagQueryLoader] " .. format, ...))
 	end
-
-	return 
 end
 
 TagQueryLoader = class(TagQueryLoader)
+
 TagQueryLoader.init = function (self, tagquery_database, dialogues_destination_table)
 	self.loaded_files = {}
 	self.file_environment = {
 		OP = OP,
 		define_rule = function (rule_definition)
 			tagquery_database:define_rule(rule_definition)
-
-			return 
 		end,
 		add_dialogues = function (dialogues)
 			for name, dialogue in pairs(dialogues) do
 				dialogue.category = dialogue.category or "default"
 				dialogues_destination_table[name] = dialogue
 			end
-
-			return 
 		end
 	}
 	self.tagquery_database = tagquery_database
-
-	return 
 end
 
 function tag_query_errorfunc(arg)
@@ -70,9 +63,8 @@ TagQueryLoader.load_file = function (self, filename)
 	local rules_read = self.tagquery_database.rules_n - num_rules_before
 
 	tprint("Loaded file %s. Read %d rules.", filename, rules_read)
-
-	return 
 end
+
 TagQueryLoader.unload_files = function (self)
 	for _, filename in ipairs(self.loaded_files) do
 		if package.loaded[filename] then
@@ -101,8 +93,6 @@ TagQueryLoader.unload_files = function (self)
 	self.file_environment = nil
 	self.loaded_files = nil
 	self.tagquery_database = nil
-
-	return 
 end
 
-return 
+return

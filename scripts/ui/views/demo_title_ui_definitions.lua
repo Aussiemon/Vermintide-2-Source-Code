@@ -560,11 +560,11 @@ local scenegraph_definition = {
 }
 local attract_mode_video = {
 	video_name = "video/vermintide_2_reveal",
-	sound_start = "Play_vermintide_2_reveal",
 	scenegraph_id = "splash_video",
 	loop = false,
 	material_name = "vermintide_2_reveal",
-	sound_stop = "Stop_vermintide_2_reveal"
+	sound_start = (PLATFORM == "xb1" and "Play_reveal_trailer") or "Play_vermintide_2_reveal",
+	sound_stop = (PLATFORM == "xb1" and "Stop_reveal_trailer") or "Stop_vermintide_2_reveal"
 }
 local skill_title_style = {
 	vertical_alignment = "bottom",
@@ -677,7 +677,7 @@ local function create_video(scenegraph_id, material_name)
 
 						if current_frame <= fade_range_in then
 							style.color[1] = current_frame / fade_range_in * 255
-						elseif num_frames - fade_range_out - black_frames <= current_frame then
+						elseif current_frame >= num_frames - fade_range_out - black_frames then
 							style.color[1] = math.clamp((num_frames - current_frame - black_frames) / fade_range_out, 0, 1) * 255
 						else
 							style.color[1] = 255

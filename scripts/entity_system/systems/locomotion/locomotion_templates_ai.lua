@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 LocomotionTemplates = LocomotionTemplates or {}
 local LocomotionTemplates = LocomotionTemplates
 local detailed_profiler_start, detailed_profiler_stop = nil
@@ -8,11 +6,11 @@ local DETAILED_PROFILING = true
 if DETAILED_PROFILING then
 else
 	function detailed_profiler_start()
-		return 
+		return
 	end
 
 	function detailed_profiler_stop()
-		return 
+		return
 	end
 end
 
@@ -29,8 +27,6 @@ LocomotionTemplates.AILocomotionExtension = {
 		data.snap_to_navmesh_update_units = {}
 		data.get_to_navmesh_update_units = {}
 		data.mover_constrained_update_units = {}
-
-		return 
 	end,
 	update = function (data, t, dt)
 		LocomotionTemplates.AILocomotionExtension.validate2(data, t, dt)
@@ -42,8 +38,6 @@ LocomotionTemplates.AILocomotionExtension = {
 		LocomotionTemplates.AILocomotionExtension.update_position(data, t, dt)
 		LocomotionTemplates.AILocomotionExtension.update_out_of_range(data, t, dt)
 		LocomotionTemplates.AILocomotionExtension.update_network(data, t, dt)
-
-		return 
 	end,
 	validate2 = function (data, t, dt)
 		local all_update_units = data.all_update_units
@@ -61,8 +55,6 @@ LocomotionTemplates.AILocomotionExtension = {
 				fassert(Vector3.is_valid(wanted_velocity), "Invalid velocity %s", wanted_velocity)
 			end
 		end
-
-		return 
 	end,
 	update_alive = function (data, t, dt)
 		for unit, extension in pairs(data.destroy_units) do
@@ -77,22 +69,16 @@ LocomotionTemplates.AILocomotionExtension = {
 			data.get_to_navmesh_update_units[unit] = nil
 			data.mover_constrained_update_units[unit] = nil
 		end
-
-		return 
 	end,
 	update_velocity = function (data, t, dt)
 		for unit, extension in pairs(data.all_update_units) do
 			extension._wanted_velocity = extension._wanted_velocity or extension._velocity:unbox()
 		end
-
-		return 
 	end,
 	update_gravity = function (data, t, dt)
 		for unit, extension in pairs(data.affected_by_gravity_update_units) do
 			extension._wanted_velocity.z = extension._velocity.z - extension._gravity * dt
 		end
-
-		return 
 	end,
 	update_animation_driven_units = function (data, t, dt)
 		for unit, extension in pairs(data.animation_update_units) do
@@ -121,8 +107,6 @@ LocomotionTemplates.AILocomotionExtension = {
 			wanted_velocity = Vector3.multiply_elements(wanted_velocity, extension._animation_translation_scale:unbox())
 			extension._wanted_velocity = wanted_velocity
 		end
-
-		return 
 	end,
 	update_rotation = function (data, t, dt)
 		local Vector3_length_squared = Vector3.length_squared
@@ -134,10 +118,37 @@ LocomotionTemplates.AILocomotionExtension = {
 		local Quaternion_lerp = Quaternion.lerp
 
 		for unit, extension in pairs(data.all_update_units) do
+			repeat
+				local wanted_velocity = extension._wanted_velocity
+				local wanted_rotation = extension._wanted_rotation
 
-			-- Decompilation error in this vicinity:
-			local wanted_velocity = extension._wanted_velocity
-			local wanted_rotation = extension._wanted_rotation
+				if not wanted_rotation then
+					local flat_velocity = Vector3_flat(wanted_velocity)
+
+					if Vector3_length_squared(flat_velocity) < 0.010000000000000002 then
+						break
+					end
+
+					wanted_rotation = Quaternion_look(flat_velocity, up_vector)
+				end
+
+				extension._wanted_rotation = nil
+
+				if extension._lerp_rotation then
+					if extension._rotation_speed * extension._rotation_speed_modifier * dt > 1 then
+						local new_rotation = wanted_rotation
+
+						Unit_set_local_rotation(unit, 0, new_rotation)
+					else
+						local current_rotation = Unit_local_rotation(unit, 0)
+						local new_rotation = Quaternion_lerp(current_rotation, wanted_rotation, extension._rotation_speed * extension._rotation_speed_modifier * dt)
+
+						Unit_set_local_rotation(unit, 0, new_rotation)
+					end
+				else
+					Unit_set_local_rotation(unit, 0, wanted_rotation)
+				end
+			until true
 		end
 
 		for unit, extension in pairs(data.rotation_speed_modifier_update_units) do
@@ -145,7 +156,7 @@ LocomotionTemplates.AILocomotionExtension = {
 			local time_in_lerp = math.max(0, t - extension._rotation_speed_modifier_lerp_start_time)
 			local lerp_percentage = time_in_lerp / lerp_total_time
 
-			if 1 <= lerp_percentage then
+			if lerp_percentage >= 1 then
 				extension._rotation_speed_modifier = 1
 				extension._rotation_speed_modifier_lerp_end_time = nil
 				extension._rotation_speed_modifier_lerp_start_time = nil
@@ -155,8 +166,6 @@ LocomotionTemplates.AILocomotionExtension = {
 				extension._rotation_speed_modifier = math.lerp(extension._rotation_speed_modifier_lerp_start_value, 1, lerp_percentage)
 			end
 		end
-
-		return 
 	end,
 	update_position = function (data, t, dt)
 		local Unit_local_position = Unit.local_position
@@ -259,7 +268,7 @@ LocomotionTemplates.AILocomotionExtension = {
 			local final_velocity = (final_position - current_position) / dt
 			local mover_collides_down = Mover.collides_down(mover)
 
-			if mover_collides_down and 0 < Mover.standing_frames(mover) then
+			if mover_collides_down and Mover.standing_frames(mover) > 0 then
 				final_velocity.z = 0
 				extension._is_falling = false
 			else
@@ -268,7 +277,7 @@ LocomotionTemplates.AILocomotionExtension = {
 				if extension._check_falling then
 					local dist_sq = Vector3.distance_squared(extension._last_fall_position:unbox(), final_position)
 
-					if not extension._is_falling or 0.0625 < dist_sq then
+					if not extension._is_falling or dist_sq > 0.0625 then
 						local physics_world = World.get_data(extension._world, "physics_world")
 						local size = Vector3(0.5, 1.5, 0.5)
 						local rotation = Quaternion.look(Vector3(0, 0, 1))
@@ -295,8 +304,6 @@ LocomotionTemplates.AILocomotionExtension = {
 				Mover_set_position(mover, Unit_local_position(unit, 0))
 			end
 		end
-
-		return 
 	end,
 	update_out_of_range = function (data, t, dt)
 		local conflict_director = Managers.state.conflict
@@ -319,17 +326,15 @@ LocomotionTemplates.AILocomotionExtension = {
 				local blackboard = ai_extension._blackboard
 				data.all_update_units[unit] = nil
 
-				conflict_director.destroy_unit(conflict_director, unit, blackboard, "out_of_range")
+				conflict_director:destroy_unit(unit, blackboard, "out_of_range")
 			end
 		end
-
-		return 
 	end,
 	update_network = function (data, t, dt)
 		local game = Managers.state.network:game()
 
 		if game == nil then
-			return 
+			return
 		end
 
 		local unit_storage = Managers.state.unit_storage
@@ -345,7 +350,7 @@ LocomotionTemplates.AILocomotionExtension = {
 		local vel_max_v3 = Vector3(vel_max, vel_max, vel_max)
 
 		for unit, extension in pairs(data.all_update_units) do
-			local go_id = unit_storage.go_id(unit_storage, unit)
+			local go_id = unit_storage:go_id(unit)
 			local pos = Unit_local_position(unit, 0)
 			local rot = Unit_local_rotation(unit, 0)
 			local yaw = Quaternion.yaw(rot)
@@ -358,9 +363,7 @@ LocomotionTemplates.AILocomotionExtension = {
 
 			GameSession_set_game_object_field(game, go_id, "velocity", velocity)
 		end
-
-		return 
 	end
 }
 
-return 
+return

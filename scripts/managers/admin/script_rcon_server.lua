@@ -93,32 +93,29 @@ ScriptRconServer.init = function (self, settings)
 
 		self._enabled = false
 	end
-
-	return 
 end
+
 ScriptRconServer.destroy = function (self)
 	if self._enabled then
 		RConServer.stop()
 	end
-
-	return 
 end
+
 ScriptRconServer.update = function (self, dt, t)
 	if self._enabled then
 		RConServer.update(dt, self)
 	end
-
-	return 
 end
+
 ScriptRconServer._find_player = function (self, find_str)
 	local disable_pattern_matching = true
 	local start_index = 1
 	local found_id = nil
 
 	for _, player in pairs(Managers.player:players()) do
-		local peer_id = player.network_id(player)
+		local peer_id = player:network_id()
 
-		if string.find(peer_id, find_str, start_index, disable_pattern_matching) ~= nil or string.find(player.name(player), find_str, start_index, disable_pattern_matching) ~= nil then
+		if string.find(peer_id, find_str, start_index, disable_pattern_matching) ~= nil or string.find(player:name(), find_str, start_index, disable_pattern_matching) ~= nil then
 			if found_id ~= nil then
 				return nil
 			end
@@ -129,6 +126,7 @@ ScriptRconServer._find_player = function (self, find_str)
 
 	return found_id
 end
+
 ScriptRconServer._find_banned = function (self, find_str)
 	local list = Managers.ban_list:ban_list()
 	local disable_pattern_matching = true
@@ -149,6 +147,7 @@ ScriptRconServer._find_banned = function (self, find_str)
 
 	return found_id
 end
+
 ScriptRconServer.rcon_connect = function (self, id, ip_port)
 	cprintf("RCon client with ID %s successfully connected", id)
 
@@ -156,6 +155,7 @@ ScriptRconServer.rcon_connect = function (self, id, ip_port)
 
 	return true
 end
+
 ScriptRconServer.rcon_command = function (self, id, command_string)
 	if not self._clients[id] then
 		return string.format("%s\n", tr("rcon_server_command_error_unauthorized"))
@@ -164,7 +164,7 @@ ScriptRconServer.rcon_command = function (self, id, command_string)
 	local args = split_string(command_string)
 
 	if #args == 0 then
-		return 
+		return
 	end
 
 	local command = table.remove(args, 1)
@@ -188,13 +188,13 @@ ScriptRconServer.rcon_command = function (self, id, command_string)
 
 	return response
 end
+
 ScriptRconServer.rcon_disconnect = function (self, id)
 	cprintf("RCon client with ID %s disconnected", id)
 
 	self._clients[id] = nil
-
-	return 
 end
+
 ScriptRconServer._command_ban = function (self, peer_id, name, days_str)
 	local dec = Application.hex64_to_dec(peer_id)
 
@@ -202,7 +202,7 @@ ScriptRconServer._command_ban = function (self, peer_id, name, days_str)
 		return string.format("%s\n", tr("rcon_server_command_response_invalid_peerid"))
 	end
 
-	if days_str ~= nil and days_str.match(days_str, "^%d+$") == nil then
+	if days_str ~= nil and days_str:match("^%d+$") == nil then
 		return string.format("%s\n", tr("rcon_server_command_response_invalid_days"))
 	end
 
@@ -220,21 +220,20 @@ ScriptRconServer._command_ban = function (self, peer_id, name, days_str)
 
 	local manager = Managers.ban_list
 
-	manager.ban(manager, peer_id, name, unban_at)
-	manager.save(manager, function (error)
+	manager:ban(peer_id, name, unban_at)
+	manager:save(function (error)
 		if error ~= nil then
 			cprintf("Ban list save failed (%s)", error)
 		end
-
-		return 
 	end)
 
 	return string.format("%s\n", tr("rcon_server_command_response_ok"))
 end
+
 ScriptRconServer._command_banlist = function (self)
 	local result = ""
 	local manager = Managers.ban_list
-	local list = manager.ban_list(manager)
+	local list = manager:ban_list()
 
 	for _, info in ipairs(list) do
 		if info.ban_end ~= nil then
@@ -247,6 +246,7 @@ ScriptRconServer._command_banlist = function (self)
 
 	return result
 end
+
 ScriptRconServer._command_help = function (self)
 	local help_text = tr("rcon_server_command_response_help") .. "\n---\n"
 	local sorted_names = {}
@@ -264,11 +264,13 @@ ScriptRconServer._command_help = function (self)
 
 	return help_text
 end
+
 ScriptRconServer._command_id = function (self)
 	return string.format("%s\n", Network.peer_id())
 end
+
 ScriptRconServer._command_kick = function (self, id_or_name)
-	local peer_id = self._find_player(self, id_or_name)
+	local peer_id = self:_find_player(id_or_name)
 
 	if peer_id == nil then
 		return string.format("%s\n", tr("rcon_server_command_response_unmatched_player"))
@@ -276,15 +278,16 @@ ScriptRconServer._command_kick = function (self, id_or_name)
 
 	local server = Managers.matchmaking.network_server
 
-	server.kick_peer(server, peer_id)
+	server:kick_peer(peer_id)
 
 	return string.format("%s\n", tr("rcon_server_command_response_ok"))
 end
+
 ScriptRconServer._command_players = function (self)
 	local player_list = ""
 
 	for _, player in pairs(Managers.player:players()) do
-		player_list = string.format("%s%s - %s\n", player_list, player.network_id(player), player.name(player))
+		player_list = string.format("%s%s - %s\n", player_list, player:network_id(), player:name())
 	end
 
 	if player_list == "" then
@@ -293,23 +296,26 @@ ScriptRconServer._command_players = function (self)
 
 	return player_list
 end
+
 ScriptRconServer._command_shutdown = function (self)
 	Application.quit()
 
 	return string.format("%s\n", tr("rcon_server_command_response_shutting_down"))
 end
+
 ScriptRconServer._command_say = function (self, ...)
 	local say_text = varargs.join(" ", ...)
 	local chat = Managers.chat
 
-	if chat.has_channel(chat, 1) then
-		chat.send_chat_message(chat, 1, say_text)
+	if chat:has_channel(1) then
+		chat:send_chat_message(1, say_text)
 	end
 
 	return string.format("%s\n", tr("rcon_server_command_response_ok"))
 end
+
 ScriptRconServer._command_unban = function (self, id_or_name)
-	local peer_id = self._find_banned(self, id_or_name)
+	local peer_id = self:_find_banned(id_or_name)
 
 	if peer_id == nil then
 		return string.format("%s\n", tr("rcon_server_command_response_unmatched_player"))
@@ -317,16 +323,14 @@ ScriptRconServer._command_unban = function (self, id_or_name)
 
 	local manager = Managers.ban_list
 
-	manager.unban(manager, peer_id)
-	manager.save(manager, function (error)
+	manager:unban(peer_id)
+	manager:save(function (error)
 		if error ~= nil then
 			cprintf("Ban list save failed (%s)", error)
 		end
-
-		return 
 	end)
 
 	return string.format("%s\n", tr("rcon_server_command_response_ok"))
 end
 
-return 
+return

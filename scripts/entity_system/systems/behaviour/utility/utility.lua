@@ -2,6 +2,7 @@ require("scripts/entity_system/systems/behaviour/utility/utility_considerations"
 
 Utility = Utility or {}
 local Utility = Utility
+
 Utility.GetUtilityValueFromSpline = function (spline, norm_value)
 	for i = 3, #spline, 2 do
 		if norm_value <= spline[i] then
@@ -18,6 +19,7 @@ Utility.GetUtilityValueFromSpline = function (spline, norm_value)
 
 	return spline[#spline]
 end
+
 Utility.get_action_utility = function (breed_action, action_name, blackboard, from_draw_ai_behavior)
 	if not from_draw_ai_behavior then
 		slot4 = true
@@ -29,10 +31,13 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 	local considerations = breed_action.considerations
 
 	for name, consideration in pairs(considerations) do
-		local is_table = type(consideration) == "table"
+		repeat
+			local is_table = type(consideration) == "table"
 
-		if not is_table then
-		else
+			if not is_table then
+				break
+			end
+
 			local input = consideration.blackboard_input
 			local blackboard_value = blackboard_action_data[input] or blackboard[input]
 			local utility = 0
@@ -62,7 +67,7 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 			if not from_draw_ai_behavior then
 				AiUtils.print("ai_debug_utility_considerations", "------------> action:", action_name, " consideration:", name, " utility:", utilily)
 			end
-		end
+		until true
 	end
 
 	total_utility = total_utility * breed_action.action_weight
@@ -70,4 +75,4 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 	return total_utility
 end
 
-return 
+return

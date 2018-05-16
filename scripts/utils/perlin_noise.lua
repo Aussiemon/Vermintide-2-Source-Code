@@ -1,4 +1,5 @@
 PerlinNoise = class(PerlinNoise)
+
 PerlinNoise.init = function (self, world)
 	self._n = 256
 	self._permutations = {}
@@ -7,10 +8,9 @@ PerlinNoise.init = function (self, world)
 	self.world_gui = World.create_world_gui(world, Matrix4x4.identity(), 1, 1, "material", "materials/fonts/gw_fonts")
 	self._line_object = World.create_line_object(world, false)
 
-	self.setup(self)
-
-	return 
+	self:setup()
 end
+
 local colors = {
 	{
 		30,
@@ -88,6 +88,7 @@ local colors = {
 		255
 	}
 }
+
 PerlinNoise.draw_height = function (self, height, x, y, z, rad)
 	local drawer = Managers.state.debug:drawer({
 		mode = "lel",
@@ -103,10 +104,9 @@ PerlinNoise.draw_height = function (self, height, x, y, z, rad)
 
 	local color = colors[index]
 
-	drawer.sphere(drawer, Vector3(x, y, z + 0.5), rad or 0.35, Color(color[1], color[2], color[3]))
-
-	return 
+	drawer:sphere(Vector3(x, y, z + 0.5), rad or 0.35, Color(color[1], color[2], color[3]))
 end
+
 PerlinNoise.filter_list_using_noise = function (self, list, height_threshold)
 	local a, b, c = Script.temp_count()
 	local lowest = 0
@@ -116,7 +116,7 @@ PerlinNoise.filter_list_using_noise = function (self, list, height_threshold)
 		local pos = list[i]:unbox()
 		local x = pos.x
 		local y = pos.y
-		local height = self.get_height(self, x, y)
+		local height = self:get_height(x, y)
 		local radius = nil
 
 		if height < height_threshold then
@@ -127,7 +127,7 @@ PerlinNoise.filter_list_using_noise = function (self, list, height_threshold)
 		end
 
 		if script_data.debug_perlin_noise_spawning then
-			self.draw_height(self, height, x, y, pos.z, radius)
+			self:draw_height(height, x, y, pos.z, radius)
 		end
 
 		if height < lowest then
@@ -143,6 +143,7 @@ PerlinNoise.filter_list_using_noise = function (self, list, height_threshold)
 
 	return list
 end
+
 PerlinNoise.normalize = function (self, gradient_x, gradient_y)
 	local s = nil
 	s = math.sqrt(gradient_x * gradient_x + gradient_y * gradient_y)
@@ -154,6 +155,7 @@ PerlinNoise.normalize = function (self, gradient_x, gradient_y)
 
 	return gradient_x, gradient_y
 end
+
 PerlinNoise.setup = function (self)
 	for i = 1, self._n, 1 do
 		self._permutations[i] = i
@@ -170,7 +172,7 @@ PerlinNoise.setup = function (self)
 			end
 		until not check
 
-		self._gradients[i][1], self._gradients[i][2] = self.normalize(self, self._gradients[i][1], self._gradients[i][2])
+		self._gradients[i][1], self._gradients[i][2] = self:normalize(self._gradients[i][1], self._gradients[i][2])
 	end
 
 	local k, j = nil
@@ -193,9 +195,8 @@ PerlinNoise.setup = function (self)
 			self._gradients[self._n + i][j] = self._gradients[i][j]
 		end
 	end
-
-	return 
 end
+
 PerlinNoise.get_height = function (self, x, y)
 	local point_x = x
 	local point_y = y
@@ -232,33 +233,36 @@ PerlinNoise.get_height = function (self, x, y)
 	local p10 = self._permutations[j + p0_y]
 	local p01 = self._permutations[i + p1_y]
 	local p11 = self._permutations[j + p1_y]
-	local s_curve_x = self.getSCurve(self, rx0)
-	local s_curve_y = self.getSCurve(self, ry0)
+	local s_curve_x = self:getSCurve(rx0)
+	local s_curve_y = self:getSCurve(ry0)
 	local gradient, s, t, u, v = nil
 	gradient = self._gradients[p00]
-	s = self.at2(self, gradient, rx0, ry0)
+	s = self:at2(gradient, rx0, ry0)
 	gradient = self._gradients[p10]
-	t = self.at2(self, gradient, rx1, ry0)
+	t = self:at2(gradient, rx1, ry0)
 	gradient = self._gradients[p01]
-	u = self.at2(self, gradient, rx0, ry1)
+	u = self:at2(gradient, rx0, ry1)
 	gradient = self._gradients[p11]
-	v = self.at2(self, gradient, rx1, ry1)
+	v = self:at2(gradient, rx1, ry1)
 	local a = math.lerp(s, t, s_curve_x)
 	local b = math.lerp(u, v, s_curve_x)
 	local z = math.lerp(a, b, s_curve_y)
 
 	return z
 end
+
 PerlinNoise.at2 = function (self, gradient, vec_x, vec_y)
 	local arctang = gradient[1] * vec_x + gradient[2] * vec_y
 
 	return arctang
 end
+
 PerlinNoise.getSCurve = function (self, p)
 	local s_curve = 6 * p^5 - 15 * p^4 + 10 * p^3
 
 	return s_curve
 end
+
 PerlinNoise.simulate_points = function (self)
 	local drawer = Managers.state.debug:drawer({
 		mode = "lel",
@@ -279,7 +283,7 @@ PerlinNoise.simulate_points = function (self)
 		for j = self._lowest_point.y, self._highest_point.y, 1 do
 			local lalal = j
 			j = j + Math.random(-1, 1) / 10
-			local height = self.get_height(self, i, j)
+			local height = self:get_height(i, j)
 
 			if height < lowest then
 				lowest = height
@@ -301,15 +305,13 @@ PerlinNoise.simulate_points = function (self)
 			local color = colors[index]
 			j = lalal
 
-			drawer.sphere(drawer, Vector3(lal, lalal, 100), 0.5, Color(color[1], color[2], color[3]))
+			drawer:sphere(Vector3(lal, lalal, 100), 0.5, Color(color[1], color[2], color[3]))
 		end
 
 		i = lal
 	end
 
 	print("lowest and highest", lowest, highest)
-
-	return 
 end
 
-return 
+return

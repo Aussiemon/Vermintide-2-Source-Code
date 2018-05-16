@@ -1614,4 +1614,4 @@ action_data.frenzy_attack_ranged.combo_attacks.attack_1 = {
 }
 BreedActions.skaven_plague_monk = table.create_copy(BreedActions.skaven_plague_monk, action_data)
 
-return 
+return

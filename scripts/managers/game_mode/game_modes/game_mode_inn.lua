@@ -3,11 +3,11 @@ require("scripts/managers/game_mode/game_modes/game_mode_base")
 local COMPLETE_LEVEL_VAR = false
 local FAIL_LEVEL_VAR = false
 GameModeInn = class(GameModeInn, GameModeBase)
+
 GameModeInn.init = function (self, settings, world, ...)
 	GameModeInn.super.init(self, settings, world, ...)
-
-	return 
 end
+
 GameModeInn.evaluate_end_conditions = function (self, round_started)
 	if COMPLETE_LEVEL_VAR then
 		COMPLETE_LEVEL_VAR = false
@@ -15,7 +15,7 @@ GameModeInn.evaluate_end_conditions = function (self, round_started)
 		return true, "won"
 	end
 
-	if self._is_time_up(self) then
+	if self:_is_time_up() then
 		return true, "reload"
 	end
 
@@ -30,18 +30,14 @@ GameModeInn.evaluate_end_conditions = function (self, round_started)
 	else
 		return false
 	end
-
-	return 
 end
+
 GameModeInn.COMPLETE_LEVEL = function (self)
 	COMPLETE_LEVEL_VAR = true
-
-	return 
 end
+
 GameModeInn.FAIL_LEVEL = function (self)
 	FAIL_LEVEL_VAR = true
-
-	return 
 end
 
-return 
+return

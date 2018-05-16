@@ -1,4 +1,5 @@
 DebugGutterRunner = DebugGutterRunner or {}
+
 DebugGutterRunner.update = function (unit, blackboard, t)
 	local breed = blackboard.breed
 	local target_unit = (blackboard.target_unit and Unit.get_data(blackboard.target_unit, "unit_name")) or "nil"
@@ -10,7 +11,7 @@ DebugGutterRunner.update = function (unit, blackboard, t)
 
 	if not skulk_time then
 		skulk = "not skulking"
-	elseif 0 < skulk_time then
+	elseif skulk_time > 0 then
 		skulk = "engage"
 	else
 		skulk = string.format("%.1f", skulk_time)
@@ -40,13 +41,13 @@ DebugGutterRunner.update = function (unit, blackboard, t)
 	DebugGlobadier.debug_hud_print("nxt smartobj:", next_smart_object_data, 12)
 	DebugGlobadier.debug_hud_print("in smartobj range:", in_smartobj_range, 13)
 	DebugGlobadier.debug_hud_background(11)
-
-	return 
 end
+
 local font_size = 16
 local font = "gw_arial_16"
 local font_mtrl = "materials/fonts/" .. font
 local row_height = 17
+
 DebugGutterRunner.debug_hud_print = function (caption, value, index, valid)
 	local gui = Debug.gui
 	local y = 220 - index * row_height
@@ -56,7 +57,7 @@ DebugGutterRunner.debug_hud_print = function (caption, value, index, valid)
 	Gui.text(gui, caption, font_mtrl, font_size, font, caption_pos, caption_color)
 
 	if not value then
-		return 
+		return
 	end
 
 	local text_color = Colors.get("light_green")
@@ -71,9 +72,8 @@ DebugGutterRunner.debug_hud_print = function (caption, value, index, valid)
 	local pos = Vector3(160, y, 100)
 
 	Gui.text(gui, value, font_mtrl, font_size, font, pos, text_color)
-
-	return 
 end
+
 DebugGutterRunner.debug_hud_background = function (max_index)
 	local gui = Debug.gui
 	local width = 300
@@ -84,8 +84,6 @@ DebugGutterRunner.debug_hud_background = function (max_index)
 	local color = Colors.get_color_with_alpha("black", 150)
 
 	Gui.rect(gui, pos, size, color)
-
-	return 
 end
 
-return 
+return

@@ -1,37 +1,37 @@
 local breed_data = {
 	detection_radius = 12,
-	no_stagger_duration = false,
+	radius = 1.5,
 	walk_speed = 2.3,
 	look_at_range = 30,
 	patrol_active_target_selection = "pick_closest_target_with_spillover",
-	radius = 1.5,
-	leave_walk_distance = 5,
-	aim_template = "chaos_marauder",
-	animation_sync_rpc = "rpc_sync_anim_state_7",
+	exchange_order = 4,
+	has_running_attack = true,
 	death_reaction = "ai_default",
+	animation_sync_rpc = "rpc_sync_anim_state_7",
 	aoe_height = 1.4,
 	run_speed = 4.8,
 	target_selection = "pick_closest_target_with_spillover",
-	wwise_voice_switch_group = "marauder_vce_variations",
+	no_stagger_duration = false,
 	attack_player_sound_event = "Play_enemy_marauder_attack_player_vce",
-	shield_slashing_block_sound = "slashing_hit_shield_metal",
 	shield_blunt_block_sound = "blunt_hit_shield_metal",
+	shield_slashing_block_sound = "slashing_hit_shield_metal",
 	shield_stab_block_sound = "stab_hit_shield_metal",
-	uses_attack_sfx_callback = true,
 	hit_mass_count_block = 6,
-	threat_value = 4,
+	uses_attack_sfx_callback = true,
 	attack_general_sound_event = "Play_enemy_marauder_attack_husk_vce",
 	default_inventory_template = "marauder_sword_and_shield",
+	threat_value = 4,
 	patrol_detection_radius = 10,
 	flingable = true,
+	wwise_voice_switch_group = "marauder_vce_variations",
 	panic_close_detection_radius_sq = 9,
 	use_slot_type = "medium",
-	bone_lod_level = 1,
 	hit_mass_count = 3,
 	patrol_active_perception = "perception_regular",
-	smart_object_template = "chaos_marauder",
+	bone_lod_level = 1,
 	perception_previous_attacker_stickyness_value = -7.75,
 	race = "chaos",
+	smart_object_template = "chaos_marauder",
 	poison_resistance = 70,
 	armor_category = 1,
 	backstab_player_sound_event = "Play_enemy_marauder_attack_player_back_vce",
@@ -42,7 +42,7 @@ local breed_data = {
 	shield_user = true,
 	has_inventory = true,
 	scale_death_push = 0.65,
-	exchange_order = 4,
+	aim_template = "chaos_marauder",
 	stagger_multiplier = 0.45,
 	dont_wield_weapon_on_patrol = true,
 	shield_opening_event = "idle",
@@ -55,7 +55,7 @@ local breed_data = {
 	horde_behavior = "shield_marauder",
 	unit_template = "ai_unit_shield_marauder",
 	stagger_reduction = 0.5,
-	has_running_attack = true,
+	leave_walk_distance = 5,
 	perception = "perception_regular",
 	player_locomotion_constrain_radius = 0.7,
 	weapon_reach = 2.25,
@@ -65,6 +65,10 @@ local breed_data = {
 	vortexable = true,
 	base_unit = "units/beings/enemies/chaos_marauder/chr_chaos_marauder",
 	enter_walk_distance = 2.5,
+	opt_base_unit = {
+		"units/beings/enemies/chaos_marauder/chr_chaos_marauder_baked_var3",
+		"units/beings/enemies/chaos_marauder/chr_chaos_marauder_baked_var4"
+	},
 	passive_in_patrol_start_anim = {
 		"move_fwd_4",
 		"move_fwd_5",
@@ -150,7 +154,7 @@ local breed_data = {
 			if direction then
 				local unit_dir = Quaternion.forward(Unit.local_rotation(blackboard.unit, 0))
 				local angle = Vector3.dot(Vector3.normalize(direction), Vector3.normalize(unit_dir))
-				local direction_allowed = -0.35 <= angle and angle <= 1
+				local direction_allowed = angle >= -0.35 and angle <= 1
 
 				if direction_allowed then
 					blackboard.fallen_stagger = true
@@ -1155,7 +1159,7 @@ local action_data = {
 			if using_shield and not blackboard.stagger_immune_time and blocked_previous_attack then
 				local is_blocking = blackboard.stagger <= 2
 
-				ai_shield_extension.set_is_blocking(ai_shield_extension, is_blocking)
+				ai_shield_extension:set_is_blocking(is_blocking)
 
 				if not is_blocking then
 					blackboard.stagger_time = blackboard.stagger_time + math.clamp(0.2 * blackboard.stagger, 0, 0.6)
@@ -1174,7 +1178,7 @@ local action_data = {
 					idle_event = blackboard.breed.shield_opening_event or "idle"
 				end
 			else
-				ai_shield_extension.set_is_blocking(ai_shield_extension, false)
+				ai_shield_extension:set_is_blocking(false)
 
 				stagger_anims = action.stagger_anims[blackboard.stagger_type]
 				idle_event = "idle"
@@ -1199,9 +1203,7 @@ local action_data = {
 		custom_exit_function = function (unit, blackboard, t)
 			local ai_shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system") and ScriptUnit.extension(unit, "ai_shield_system")
 
-			ai_shield_extension.set_is_blocking(ai_shield_extension, true)
-
-			return 
+			ai_shield_extension:set_is_blocking(true)
 		end,
 		stagger_anims = {
 			{
@@ -1769,4 +1771,4 @@ local action_data = {
 }
 BreedActions.chaos_marauder_with_shield = table.create_copy(BreedActions.chaos_marauder_with_shield, action_data)
 
-return 
+return

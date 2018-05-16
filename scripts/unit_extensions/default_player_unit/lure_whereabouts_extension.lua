@@ -1,6 +1,7 @@
 require("scripts/unit_extensions/generic/generic_state_machine")
 
 LureWhereaboutsExtension = class(LureWhereaboutsExtension)
+
 LureWhereaboutsExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
@@ -23,14 +24,14 @@ LureWhereaboutsExtension.init = function (self, extension_init_context, unit, ex
 			self._closest_positions[1] = Vector3Box(nav_mesh_pos)
 		end
 	end
+end
 
-	return 
-end
 LureWhereaboutsExtension.destroy = function (self)
-	return 
+	return
 end
+
 LureWhereaboutsExtension.closest_positions_when_outside_navmesh = function (self)
 	return self._closest_positions, self._on_navmesh
 end
 
-return 
+return

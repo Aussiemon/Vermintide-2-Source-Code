@@ -46,32 +46,32 @@ local breed_data = {
 	bots_should_flank = true,
 	target_selection_angry = "pick_rat_ogre_target_with_weights",
 	bot_opportunity_target_melee_range_while_ranged = 5,
-	race = "skaven",
-	poison_resistance = 100,
+	is_bot_aid_threat = true,
 	stagger_threshold_explosion = 1,
+	use_avoidance = false,
 	always_look_at_target = true,
-	target_selection = "pick_rat_ogre_target_idle",
+	aoe_radius = 1,
 	animation_sync_rpc = "rpc_sync_anim_state_10",
 	bot_hitbox_radius_approximation = 1,
-	use_avoidance = false,
 	perception = "perception_rat_ogre",
 	behavior = "stormfiend",
-	is_bot_aid_threat = true,
+	stagger_count_reset_time = 5,
 	walk_speed = 5,
 	aim_template = "stormfiend",
-	ignore_nav_propagation_box = true,
 	threat_value = 32,
+	ignore_nav_propagation_box = true,
 	bot_opportunity_target_melee_range = 7,
 	bone_lod_level = 0,
 	default_inventory_template = "rat_ogre",
 	stagger_resistance = 100,
-	aoe_radius = 1,
-	stagger_count_reset_time = 5,
+	target_selection = "pick_rat_ogre_target_idle",
+	poison_resistance = 100,
 	boss_staggers = true,
 	radius = 2,
 	boss = true,
 	hit_mass_count = 50,
 	chance_of_starting_sleepy = 0,
+	race = "skaven",
 	proximity_system_check = true,
 	death_reaction = "ai_default",
 	armor_category = 3,
@@ -86,6 +86,7 @@ local breed_data = {
 	exchange_order = 1,
 	stagger_threshold_heavy = 1,
 	reach_distance = 3,
+	combat_music_state = "stormfiend",
 	stagger_threshold_light = 1,
 	hit_reaction = "ai_default",
 	smart_targeting_outer_width = 1.4,
@@ -927,11 +928,9 @@ local action_data = {
 				blackboard.weakspot_hits = 1
 			end
 
-			if 4 <= blackboard.weakspot_hits then
+			if blackboard.weakspot_hits >= 4 then
 				blackboard.weakspot_rage = true
 			end
-
-			return 
 		end
 	},
 	target_rage = {
@@ -967,4 +966,4 @@ local action_data = {
 }
 BreedActions.skaven_stormfiend = table.create_copy(BreedActions.skaven_stormfiend, action_data)
 
-return 
+return

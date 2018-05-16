@@ -2,6 +2,7 @@ require("scripts/settings/end_zone_settings")
 
 local DEBUG = false
 EndZoneExtension = class(EndZoneExtension)
+
 EndZoneExtension.init = function (self, extension_init_context, unit)
 	self._unit = unit
 	self._world = extension_init_context.world
@@ -29,28 +30,26 @@ EndZoneExtension.init = function (self, extension_init_context, unit)
 		Unit.set_visibility(self._unit, "dome", false)
 	end
 
-	self._set_light_intensity(self, 0)
+	self:_set_light_intensity(0)
 
 	local network_event_delegate = Managers.state.network.network_transmit.network_event_delegate
 
-	network_event_delegate.register(network_event_delegate, self, "rpc_activate_end_zone")
+	network_event_delegate:register(self, "rpc_activate_end_zone")
 
 	local level_settings = LevelHelper:current_level_settings(self._world)
 	self._nav_world_available = not level_settings.no_bots_allowed
-
-	return 
 end
+
 EndZoneExtension.rpc_activate_end_zone = function (self, sender, activate)
 	self._activated = activate
 
 	if self._activated and not activate then
-		self._deactivate_volume(self)
+		self:_deactivate_volume()
 	elseif not self._activated and activate then
-		self._activate_volume(self)
+		self:_activate_volume()
 	end
-
-	return 
 end
+
 EndZoneExtension._set_light_intensity = function (self, intensity)
 	local num_lights = Unit.num_lights(self._unit)
 
@@ -59,32 +58,32 @@ EndZoneExtension._set_light_intensity = function (self, intensity)
 
 		Light.set_intensity(light, intensity)
 	end
-
-	return 
 end
+
 EndZoneExtension.end_time = function (self)
 	return self._game_start_time or EndZoneSettings.end_zone_timer
 end
-EndZoneExtension.end_time_left = function (self)
-	return self._state_data.end_zone_timer or self.end_time(self)
-end
-EndZoneExtension.update = function (self, unit, input, dt, context, t)
-	self._reset_distances(self)
-	self._check_proximity(self)
-	self._update_state(self, dt, t)
 
-	return 
+EndZoneExtension.end_time_left = function (self)
+	return self._state_data.end_zone_timer or self:end_time()
 end
+
+EndZoneExtension.update = function (self, unit, input, dt, context, t)
+	self:_reset_distances()
+	self:_check_proximity()
+	self:_update_state(dt, t)
+end
+
 EndZoneExtension.activate = function (self, activate, always_activated)
 	if not self._is_server then
-		return 
+		return
 	end
 
 	if not self._activated and activate then
-		self._activate_volume(self)
+		self:_activate_volume()
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_activate_end_zone", true)
 	elseif self._activated and not activate then
-		self._deactivate_volume(self)
+		self:_deactivate_volume()
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_activate_end_zone", false)
 
 		local player_distances = self._player_distances
@@ -92,17 +91,16 @@ EndZoneExtension.activate = function (self, activate, always_activated)
 		for unit, _ in pairs(player_distances) do
 			local status_ext = ScriptUnit.extension(unit, "status_system")
 
-			status_ext.set_in_end_zone(status_ext, false)
+			status_ext:set_in_end_zone(false)
 		end
 	end
 
 	self._activated = activate
 	self._always_activated = always_activated
-
-	return 
 end
+
 EndZoneExtension._activate_volume = function (self)
-	self._deactivate_volume(self, self._current_volume_id)
+	self:_deactivate_volume(self._current_volume_id)
 
 	local shading_environment = Unit.get_data(self._unit, "shading_environment")
 	local volume_name = Unit.get_data(self._unit, "volume_name")
@@ -118,11 +116,10 @@ EndZoneExtension._activate_volume = function (self)
 
 		local nav_tag_volume_layer = "end_zone"
 		local position = Unit.local_position(self._unit, 0)
-		self._nav_tag_volume_id = volume_system.create_nav_tag_volume_from_data(volume_system, position, EndZoneSettings.size, nav_tag_volume_layer)
+		self._nav_tag_volume_id = volume_system:create_nav_tag_volume_from_data(position, EndZoneSettings.size, nav_tag_volume_layer)
 	end
-
-	return 
 end
+
 EndZoneExtension._deactivate_volume = function (self)
 	if self._current_volume_id then
 		Managers.state.event:trigger("unregister_environment_volume", self._current_volume_id)
@@ -133,20 +130,18 @@ EndZoneExtension._deactivate_volume = function (self)
 	if self._nav_tag_volume_id then
 		local volume_system = Managers.state.entity:system("volume_system")
 
-		volume_system.destroy_nav_tag_volume(volume_system, self._nav_tag_volume_id)
+		volume_system:destroy_nav_tag_volume(self._nav_tag_volume_id)
 
 		self._nav_tag_volume_id = nil
 	end
-
-	return 
 end
+
 EndZoneExtension._reset_distances = function (self)
 	self._closest_player = math.huge
 
 	table.clear(self._player_distances)
-
-	return 
 end
+
 EndZoneExtension._check_proximity = function (self)
 	local end_zone_pos = Unit.local_position(self._unit, 0)
 	local human_players = Managers.player:human_and_bot_players()
@@ -164,9 +159,8 @@ EndZoneExtension._check_proximity = function (self)
 			end
 		end
 	end
-
-	return 
 end
+
 EndZoneExtension._update_state = function (self, dt, t)
 	if DEBUG then
 		Debug.text(self._state)
@@ -174,32 +168,29 @@ EndZoneExtension._update_state = function (self, dt, t)
 	end
 
 	self[self._state](self, dt, t, self._state_data)
-
-	return 
 end
+
 EndZoneExtension.hot_join_sync = function (self, sender)
 	if self._activated then
 		RPC.rpc_activate_end_zone(sender, true)
 	end
-
-	return 
 end
+
 EndZoneExtension.destroy = function (self)
 	local network_event_delegate = Managers.state.network.network_transmit.network_event_delegate
 
-	network_event_delegate.unregister(network_event_delegate, self)
+	network_event_delegate:unregister(self)
 
 	if self._nav_tag_volume_id then
 		local volume_system = Managers.state.entity:system("volume_system")
 
-		volume_system.destroy_nav_tag_volume(volume_system, self._nav_tag_volume_id)
+		volume_system:destroy_nav_tag_volume(self._nav_tag_volume_id)
 	end
-
-	return 
 end
+
 EndZoneExtension._idle = function (self, dt, t)
 	if not self._activated then
-		return 
+		return
 	end
 
 	if self._always_activated or self._closest_player <= EndZoneSettings.activate_size * EndZoneSettings.activate_size then
@@ -224,9 +215,8 @@ EndZoneExtension._idle = function (self, dt, t)
 		self._drawer:reset()
 		self._drawer:sphere(Unit.local_position(self._unit, 0), 10, Color(255, 255, 0), 30, 30)
 	end
-
-	return 
 end
+
 EndZoneExtension._open = function (self, dt, t)
 	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size * EndZoneSettings.activate_size) then
 		local animation_time = EndZoneSettings.animation_time or 0.5
@@ -235,10 +225,10 @@ EndZoneExtension._open = function (self, dt, t)
 		local node = Unit.node(self._unit, "ap_dome_scaler")
 
 		Unit.set_local_scale(self._unit, node, Vector3(scale, scale, scale))
-		self._set_light_intensity(self, scale * scale * scale)
+		self:_set_light_intensity(scale * scale * scale)
 
 		if scale == 1 then
-			self._state_data.end_zone_timer = self.end_time(self)
+			self._state_data.end_zone_timer = self:end_time()
 			self._state = "_end_mission_check"
 		end
 	else
@@ -246,9 +236,8 @@ EndZoneExtension._open = function (self, dt, t)
 
 		Unit.flow_event(self._unit, "closing_end_zone")
 	end
-
-	return 
 end
+
 EndZoneExtension._close = function (self, dt, t)
 	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size * EndZoneSettings.activate_size) then
 		self._state = "_open"
@@ -261,7 +250,7 @@ EndZoneExtension._close = function (self, dt, t)
 		local node = Unit.node(self._unit, "ap_dome_scaler")
 
 		Unit.set_local_scale(self._unit, node, Vector3(scale, scale, scale))
-		self._set_light_intensity(self, scale * scale * scale)
+		self:_set_light_intensity(scale * scale * scale)
 
 		if scale == 0 then
 			self._state = "_idle"
@@ -281,9 +270,8 @@ EndZoneExtension._close = function (self, dt, t)
 		self._drawer:reset()
 		self._drawer:sphere(Unit.local_position(self._unit, 0), 10, Color(255, 255, 0), 30, 30)
 	end
-
-	return 
 end
+
 EndZoneExtension._end_mission_check = function (self, dt, t)
 	if self._activated and (self._always_activated or self._closest_player <= EndZoneSettings.activate_size * EndZoneSettings.activate_size) then
 		local inside = nil
@@ -292,34 +280,34 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 			for player_unit, distance_squared in pairs(self._player_distances) do
 				local status_ext = ScriptUnit.extension(player_unit, "status_system")
 
-				if EndZoneSettings.size * EndZoneSettings.size < distance_squared then
-					if not status_ext.is_disabled(status_ext) then
+				if distance_squared > EndZoneSettings.size * EndZoneSettings.size then
+					if not status_ext:is_disabled() then
 						inside = false
 					end
 
-					status_ext.set_in_end_zone(status_ext, false)
+					status_ext:set_in_end_zone(false)
 				else
 					if inside == nil then
 						inside = true
 					end
 
-					status_ext.set_in_end_zone(status_ext, true)
+					status_ext:set_in_end_zone(true)
 				end
 			end
 
-			if inside and self._check_joining_players(self) then
-				self._state_data.end_zone_timer = math.clamp(self.end_time_left(self) - dt, 0, self.end_time(self))
+			if inside and self:_check_joining_players() then
+				self._state_data.end_zone_timer = math.clamp(self:end_time_left() - dt, 0, self:end_time())
 
-				if self.end_time_left(self) <= 0 and not self._disable_complete_level then
+				if self:end_time_left() <= 0 and not self._disable_complete_level then
 					Managers.state.game_mode:complete_level()
 				end
 			else
-				self._state_data.end_zone_timer = self.end_time(self)
+				self._state_data.end_zone_timer = self:end_time()
 			end
 
 			if DEBUG then
-				if 0 < self.end_time_left(self) then
-					Debug.text("Ending in: " .. string.format("%.2f", self.end_time_left(self)))
+				if self:end_time_left() > 0 then
+					Debug.text("Ending in: " .. string.format("%.2f", self:end_time_left()))
 				else
 					Debug.text("LEVEL ENDED")
 				end
@@ -330,15 +318,15 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 			for player_unit, distance_squared in pairs(self._player_distances) do
 				local status_ext = ScriptUnit.extension(player_unit, "status_system")
 
-				if not status_ext.is_in_end_zone(status_ext) then
+				if not status_ext:is_in_end_zone() then
 					inside = false
 				end
 			end
 
-			if inside and self._check_joining_players(self) then
-				self._state_data.end_zone_timer = math.clamp(self.end_time_left(self) - dt, 0, self.end_time(self))
+			if inside and self:_check_joining_players() then
+				self._state_data.end_zone_timer = math.clamp(self:end_time_left() - dt, 0, self:end_time())
 			else
-				self._state_data.end_zone_timer = self.end_time(self)
+				self._state_data.end_zone_timer = self:end_time()
 			end
 		end
 	else
@@ -356,16 +344,15 @@ EndZoneExtension._end_mission_check = function (self, dt, t)
 		self._drawer:reset()
 
 		if self._is_server then
-			local timer_progress = self.end_time_left(self) / self.end_time(self)
+			local timer_progress = self:end_time_left() / self:end_time()
 			local red = math.lerp(0, 1, timer_progress) * 255
 			local green = math.lerp(1, 0, timer_progress) * 255
 
 			self._drawer:sphere(Unit.local_position(self._unit, 0), 5, Color(red, green, 0), 30, 30)
 		end
 	end
-
-	return 
 end
+
 EndZoneExtension._check_joining_players = function (self)
 	if self._disable_check_joining_players then
 		return true
@@ -380,4 +367,4 @@ EndZoneExtension._check_joining_players = function (self)
 	return true
 end
 
-return 
+return

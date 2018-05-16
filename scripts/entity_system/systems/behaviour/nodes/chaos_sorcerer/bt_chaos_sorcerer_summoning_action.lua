@@ -1,12 +1,13 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTChaosSorcererSummoningAction = class(BTChaosSorcererSummoningAction, BTNode)
+
 BTChaosSorcererSummoningAction.init = function (self, ...)
 	BTChaosSorcererSummoningAction.super.init(self, ...)
-
-	return 
 end
+
 BTChaosSorcererSummoningAction.name = "BTChaosSorcererSummoningAction"
+
 BTChaosSorcererSummoningAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -24,11 +25,11 @@ BTChaosSorcererSummoningAction.enter = function (self, unit, blackboard, t)
 	if not action.is_spawner then
 		local locomotion_extension = blackboard.locomotion_extension
 
-		locomotion_extension.set_wanted_velocity(locomotion_extension, Vector3.zero())
+		locomotion_extension:set_wanted_velocity(Vector3.zero())
 
 		local navigation_extension = blackboard.navigation_extension
 
-		navigation_extension.set_enabled(navigation_extension, false)
+		navigation_extension:set_enabled(false)
 
 		local attack_animation = action.attack_anim
 
@@ -45,11 +46,10 @@ BTChaosSorcererSummoningAction.enter = function (self, unit, blackboard, t)
 	end
 
 	if blackboard.breed.summon_sound_event then
-		self.trigger_summon_sound(self, unit, blackboard, t)
+		self:trigger_summon_sound(unit, blackboard, t)
 	end
-
-	return 
 end
+
 BTChaosSorcererSummoningAction.trigger_summon_sound = function (self, unit, blackboard, t)
 	local breed = blackboard.breed
 	local network_manager = Managers.state.network
@@ -57,7 +57,7 @@ BTChaosSorcererSummoningAction.trigger_summon_sound = function (self, unit, blac
 	local no_summon_sound_for_target = breed.no_summon_sound_for_target
 	local player_manager = Managers.player
 	local player_unit = blackboard.target_unit
-	local player = player_manager.unit_owner(player_manager, player_unit)
+	local player = player_manager:unit_owner(player_unit)
 	local dialogue_input = ScriptUnit.has_extension_input(unit, "dialogue_system")
 	local audio_system_extension = Managers.state.entity:system("audio_system")
 	local unit_id = NetworkUnit.game_object_id(unit)
@@ -65,24 +65,23 @@ BTChaosSorcererSummoningAction.trigger_summon_sound = function (self, unit, blac
 
 	if no_summon_sound_for_target then
 		if not player.local_player then
-			dialogue_input.play_voice(dialogue_input, summon_sound_event, true)
+			dialogue_input:play_voice(summon_sound_event, true)
 		end
 
 		network_manager.network_transmit:send_rpc_clients_except("rpc_server_audio_unit_dialogue_event", player.peer_id, sound_event_id, unit_id, 0)
 	else
-		dialogue_input.play_voice(dialogue_input, summon_sound_event, true)
+		dialogue_input:play_voice(summon_sound_event, true)
 		network_manager.network_transmit:send_rpc_clients("rpc_server_audio_unit_dialogue_event", sound_event_id, unit_id, 0)
 	end
-
-	return 
 end
+
 BTChaosSorcererSummoningAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local action = blackboard.action
 
 	if not action.is_spawner then
 		local navigation_extension = blackboard.navigation_extension
 
-		navigation_extension.set_enabled(navigation_extension, true)
+		navigation_extension:set_enabled(true)
 
 		local cleanup_func_name = action.cleanup_func_name
 
@@ -98,9 +97,8 @@ BTChaosSorcererSummoningAction.leave = function (self, unit, blackboard, t, reas
 	blackboard.summon_target_unit = nil
 	blackboard.ready_to_summon = false
 	blackboard.summoning_finished = nil
-
-	return 
 end
+
 BTChaosSorcererSummoningAction.run = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
 	local target_unit = blackboard.summon_target_unit
@@ -108,7 +106,7 @@ BTChaosSorcererSummoningAction.run = function (self, unit, blackboard, t, dt)
 	if Unit.alive(target_unit) then
 		local status_ext = ScriptUnit.has_extension(target_unit, "status_system")
 
-		if status_ext and not status_ext.is_invisible(status_ext) and not status_ext.get_is_dodging(status_ext) then
+		if status_ext and not status_ext:is_invisible() and not status_ext:get_is_dodging() then
 			blackboard.target_position:store(POSITION_LOOKUP[target_unit])
 		end
 
@@ -116,7 +114,7 @@ BTChaosSorcererSummoningAction.run = function (self, unit, blackboard, t, dt)
 			local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 			local locomotion_extension = blackboard.locomotion_extension
 
-			locomotion_extension.set_wanted_rotation(locomotion_extension, rotation)
+			locomotion_extension:set_wanted_rotation(rotation)
 		end
 	end
 
@@ -152,14 +150,15 @@ BTChaosSorcererSummoningAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
+
 BTChaosSorcererSummoningAction.spawn_exalted_spell = function (self, unit, blackboard, t, dt, target_position)
 	local spell = blackboard.current_spell
 
 	spell.spawn_function(self, blackboard, t, dt, target_position, spell)
-
-	return 
 end
+
 local VORTEX_MIN_DUMMY_MISSILE_HEIGHT = 0.25
+
 BTChaosSorcererSummoningAction._start_vortex_summoning = function (self, unit, blackboard, t)
 	local world = blackboard.world
 	local action = blackboard.action
@@ -210,22 +209,21 @@ BTChaosSorcererSummoningAction._start_vortex_summoning = function (self, unit, b
 
 		Managers.state.entity:system("ai_bot_group_system"):ranged_attack_started(unit, target_unit, "chaos_vortex")
 	end
-
-	return 
 end
+
 BTChaosSorcererSummoningAction._clean_up_vortex_summoning = function (self, unit, blackboard, t)
 	local vortex_data = blackboard.vortex_data
 	local unit_spawner = Managers.state.unit_spawner
 	local inner_decal_unit = vortex_data.inner_decal_unit
 
 	if Unit.alive(inner_decal_unit) then
-		unit_spawner.mark_for_deletion(unit_spawner, inner_decal_unit)
+		unit_spawner:mark_for_deletion(inner_decal_unit)
 	end
 
 	local outer_decal_unit = vortex_data.outer_decal_unit
 
 	if Unit.alive(outer_decal_unit) then
-		unit_spawner.mark_for_deletion(unit_spawner, outer_decal_unit)
+		unit_spawner:mark_for_deletion(outer_decal_unit)
 	end
 
 	vortex_data.inner_decal_unit = nil
@@ -238,19 +236,18 @@ BTChaosSorcererSummoningAction._clean_up_vortex_summoning = function (self, unit
 
 		Managers.state.entity:system("ai_bot_group_system"):ranged_attack_ended(unit, target_unit, "chaos_vortex")
 	end
-
-	return 
 end
+
 BTChaosSorcererSummoningAction._update_vortex_summoning = function (self, unit, blackboard, t, dt)
 	local vortex_data = blackboard.vortex_data
 	local summon_position = vortex_data.vortex_spawn_pos:unbox()
 	local rotation = LocomotionUtils.look_at_position_flat(unit, summon_position)
 	local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension.set_wanted_rotation(locomotion_extension, rotation)
+	locomotion_extension:set_wanted_rotation(rotation)
 
 	if blackboard.attack_finished then
-		return 
+		return
 	end
 
 	local action = blackboard.action
@@ -262,7 +259,7 @@ BTChaosSorcererSummoningAction._update_vortex_summoning = function (self, unit, 
 		local hand_node = Unit.node(unit, "j_lefthand")
 		local hand_position = Unit.world_position(unit, hand_node)
 
-		self._launch_vortex_dummy_missile(self, unit, action, vortex_data, hand_position, summon_position, summon_direction)
+		self:_launch_vortex_dummy_missile(unit, action, vortex_data, hand_position, summon_position, summon_direction)
 
 		vortex_data.next_missile_cast_t = vortex_data.next_missile_cast_t + action.missile_cast_interval
 	end
@@ -270,9 +267,8 @@ BTChaosSorcererSummoningAction._update_vortex_summoning = function (self, unit, 
 	if vortex_data.summoning_done_t < t then
 		blackboard.summoning_finished = true
 	end
-
-	return 
 end
+
 BTChaosSorcererSummoningAction._launch_vortex_dummy_missile = function (self, owner_unit, action, vortex_data, spawn_position, target_position, target_dir)
 	local angle = action.missile_launch_angle
 	local speed = action.missile_speed
@@ -305,21 +301,45 @@ BTChaosSorcererSummoningAction._launch_vortex_dummy_missile = function (self, ow
 	local projectile_unit_name = action.missile_effect_unit_name
 	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, "ai_true_flight_projectile_unit_without_raycast", extension_init_data, spawn_position, rotation)
 	vortex_data.num_dummy_missiles = vortex_data.num_dummy_missiles + 1
-
-	return 
 end
+
 BTChaosSorcererSummoningAction._spawn_boss_vortex = function (self, unit, blackboard, t, dt, target_position)
+	local action = blackboard.action
+	local vortex_template_name = action.vortex_template_name
+	local vortex_template = VortexTemplates[vortex_template_name]
 	local boss_vortex_data = blackboard.boss_vortex_data
+	local spawn_radius = 6
 	local spawn_pos = POSITION_LOOKUP[unit]
 
 	boss_vortex_data.vortex_spawn_pos:store(spawn_pos)
 
-	boss_vortex_data.vortex_spawn_radius = 6
+	boss_vortex_data.vortex_spawn_radius = spawn_radius
+	local inner_radius_p = math.min(spawn_radius / vortex_template.full_inner_radius, 1)
+	local inner_decal_unit_name = action.inner_decal_unit_name
 
-	self._spawn_vortex(self, unit, blackboard, t, dt, target_position, boss_vortex_data)
+	if inner_decal_unit_name then
+		local inner_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), spawn_pos)
+		local inner_radius = math.max(vortex_template.min_inner_radius, inner_radius_p * vortex_template.full_inner_radius)
 
-	return 
+		Matrix4x4.set_scale(inner_spawn_pose, Vector3(inner_radius, inner_radius, inner_radius))
+
+		boss_vortex_data.inner_decal_unit = Managers.state.unit_spawner:spawn_network_unit(inner_decal_unit_name, "network_synched_dummy_unit", nil, inner_spawn_pose)
+	end
+
+	local outer_decal_unit_name = action.outer_decal_unit_name
+
+	if outer_decal_unit_name then
+		local outer_spawn_pose = Matrix4x4.from_quaternion_position(Quaternion.identity(), spawn_pos)
+		local outer_radius = math.max(vortex_template.min_outer_radius, inner_radius_p * vortex_template.full_outer_radius)
+
+		Matrix4x4.set_scale(outer_spawn_pose, Vector3(outer_radius, outer_radius, outer_radius))
+
+		boss_vortex_data.outer_decal_unit = Managers.state.unit_spawner:spawn_network_unit(outer_decal_unit_name, "network_synched_dummy_unit", nil, outer_spawn_pose)
+	end
+
+	self:_spawn_vortex(unit, blackboard, t, dt, target_position, boss_vortex_data)
 end
+
 BTChaosSorcererSummoningAction._spawn_vortex = function (self, unit, blackboard, t, dt, target_position, vortex_data)
 	vortex_data = vortex_data or blackboard.vortex_data
 	local action = blackboard.action
@@ -330,21 +350,26 @@ BTChaosSorcererSummoningAction._spawn_vortex = function (self, unit, blackboard,
 	local vortex_units = vortex_data.vortex_units
 	local spawn_category = "vortex"
 	local link_decal_units = action.link_decal_units_to_vortex
+	local inner_decal_unit = vortex_data.inner_decal_unit
+	local outer_decal_unit = vortex_data.outer_decal_unit
 	local optional_data = {
 		prepare_func = function (breed, extension_init_data)
 			extension_init_data.ai_supplementary_system = {
 				vortex_template_name = vortex_template_name or "standard",
-				inner_decal_unit = link_decal_units and vortex_data.inner_decal_unit,
-				outer_decal_unit = link_decal_units and vortex_data.outer_decal_unit
+				inner_decal_unit = link_decal_units and inner_decal_unit,
+				outer_decal_unit = link_decal_units and outer_decal_unit
 			}
+		end,
+		spawned_func = function (vortex_unit, breed, optional_data)
+			vortex_units[#vortex_units + 1] = vortex_unit
+			local vortex_blackboard = BLACKBOARDS[vortex_unit]
+			vortex_blackboard.master_unit = unit
 
-			return 
+			Managers.state.entity:system("surrounding_aware_system"):add_system_event(vortex_unit, "enemy_attack", DialogueSettings.see_vortex_distance, "attack_tag", "chaos_vortex_spawned")
 		end
 	}
-	local vortex_unit = Managers.state.conflict:spawn_unit(breed, vortex_pos, Quaternion.identity(), spawn_category, nil, nil, optional_data)
-	vortex_units[#vortex_units + 1] = vortex_unit
-	local vortex_blackboard = BLACKBOARDS[vortex_unit]
-	vortex_blackboard.master_unit = unit
+
+	Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(vortex_pos), QuaternionBox(Quaternion.identity()), spawn_category, nil, nil, optional_data)
 
 	if link_decal_units then
 		vortex_data.inner_decal_unit = nil
@@ -353,10 +378,9 @@ BTChaosSorcererSummoningAction._spawn_vortex = function (self, unit, blackboard,
 
 	blackboard.attack_finished = true
 
-	Managers.state.entity:system("surrounding_aware_system"):add_system_event(vortex_unit, "enemy_attack", DialogueSettings.see_vortex_distance, "attack_tag", "chaos_vortex_spawned")
-
 	return true
 end
+
 BTChaosSorcererSummoningAction.spawn_portal = function (self, unit, blackboard, t, dt, target_position, portal_data)
 	portal_data = portal_data or blackboard.portal_data
 	local portal_pos = portal_data.portal_spawn_pos:unbox()
@@ -380,16 +404,18 @@ BTChaosSorcererSummoningAction.spawn_portal = function (self, unit, blackboard, 
 			extension_init_data.ai_supplementary_system = {
 				tentacle_template_name = tentacle_template_name
 			}
-
-			return 
-		end
+		end,
+		spawned_func = function (portal_unit, breed, optional_data)
+			optional_data.sorcerer_blackboard.portal_unit = portal_unit
+		end,
+		sorcerer_blackboard = blackboard
 	}
 	local spawn_category = "portal"
 
 	if portal_type == "wall" then
-		blackboard.portal_unit = Managers.state.conflict:spawn_unit(breed, tentacle_pos, portal_rot, spawn_category, nil, nil, optional_data)
+		Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(tentacle_pos), QuaternionBox(portal_rot), spawn_category, nil, nil, optional_data)
 	elseif portal_type == "floor" then
-		blackboard.portal_unit = Managers.state.conflict:spawn_unit(breed, tentacle_pos, portal_rot, spawn_category, nil, nil, optional_data)
+		Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(tentacle_pos), QuaternionBox(portal_rot), spawn_category, nil, nil, optional_data)
 	end
 
 	blackboard.portal_search_active = false
@@ -397,6 +423,7 @@ BTChaosSorcererSummoningAction.spawn_portal = function (self, unit, blackboard, 
 
 	return true
 end
+
 BTChaosSorcererSummoningAction.boss_sorcerer_spawn_tentacle_in_arena = function (self, unit, blackboard, t)
 	local breed = Breeds.chaos_tentacle
 	local level_analysis = Managers.state.conflict.level_analysis
@@ -408,20 +435,23 @@ BTChaosSorcererSummoningAction.boss_sorcerer_spawn_tentacle_in_arena = function 
 	local inside_wall_spawn_distance = breed.inside_wall_spawn_distance
 	local spawn_category = "portal"
 	local tentacle_pos = portal_pos - normal * inside_wall_spawn_distance
-	local portal_unit = Managers.state.conflict:spawn_unit(breed, tentacle_pos, portal_rot, spawn_category, nil)
-	blackboard.tentacle_portal_units[portal_unit] = true
-	local tentacle_blackboard = BLACKBOARDS[portal_unit]
-	tentacle_blackboard.boss_master_unit = unit
-	blackboard.num_portals_alive = blackboard.num_portals_alive + 1
-	blackboard.portal_unit = portal_unit
+	local optional_data = {
+		spawned_func = function (portal_unit, breed, optional_data)
+			blackboard.tentacle_portal_units[portal_unit] = true
+			local tentacle_blackboard = BLACKBOARDS[portal_unit]
+			tentacle_blackboard.boss_master_unit = unit
+			blackboard.num_portals_alive = blackboard.num_portals_alive + 1
+			blackboard.portal_unit = portal_unit
+		end
+	}
 
-	return 
+	Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(tentacle_pos), QuaternionBox(portal_rot), spawn_category, nil, nil, optional_data)
 end
+
 BTChaosSorcererSummoningAction.init_boss_sorcerer_tentacle = function (self, unit, blackboard, t)
 	blackboard.summon_plague_wave_timer = t + 0.5
-
-	return 
 end
+
 BTChaosSorcererSummoningAction.init_summon_plague_wave = function (self, unit, blackboard, t)
 	blackboard.summon_plague_wave_timer = t + 0.1
 	local breed = blackboard.breed
@@ -431,15 +461,13 @@ BTChaosSorcererSummoningAction.init_summon_plague_wave = function (self, unit, b
 
 		Managers.state.entity:system("ai_bot_group_system"):ranged_attack_started(unit, target_unit, "plague_wave")
 	end
-
-	return 
 end
+
 BTChaosSorcererSummoningAction.init_summon_vermintide = function (self, unit, blackboard, t)
 	blackboard.summon_plague_wave_timer = t + 0.1
 	blackboard.damage_wave_template_name = "vermintide"
-
-	return 
 end
+
 BTChaosSorcererSummoningAction.update_summon_plague_wave = function (self, unit, blackboard, t, dt)
 	if blackboard.summon_plague_wave_timer < t then
 		if not blackboard.summoning_unit then
@@ -481,9 +509,8 @@ BTChaosSorcererSummoningAction.update_summon_plague_wave = function (self, unit,
 			GameSession.set_game_object_field(damage_wave_extension.game, go_id, "position", pos)
 		end
 	end
-
-	return 
 end
+
 BTChaosSorcererSummoningAction.spawn_plague_wave = function (self, unit, blackboard, t, dt, target_position)
 	local plague_wave_data = blackboard.plague_wave_data
 	local target_starting_pos = plague_wave_data.target_starting_pos:unbox()
@@ -503,7 +530,7 @@ BTChaosSorcererSummoningAction.spawn_plague_wave = function (self, unit, blackbo
 		else
 			blackboard.ready_to_summon = false
 
-			damage_wave_extension.abort(damage_wave_extension)
+			damage_wave_extension:abort()
 
 			return false
 		end
@@ -517,7 +544,7 @@ BTChaosSorcererSummoningAction.spawn_plague_wave = function (self, unit, blackbo
 		else
 			blackboard.ready_to_summon = false
 
-			damage_wave_extension.abort(damage_wave_extension)
+			damage_wave_extension:abort()
 
 			return false
 		end
@@ -552,7 +579,7 @@ BTChaosSorcererSummoningAction.spawn_plague_wave = function (self, unit, blackbo
 		if not found_new_target_pos then
 			blackboard.ready_to_summon = false
 
-			damage_wave_extension.abort(damage_wave_extension)
+			damage_wave_extension:abort()
 
 			return false
 		end
@@ -562,18 +589,19 @@ BTChaosSorcererSummoningAction.spawn_plague_wave = function (self, unit, blackbo
 	local dist_sq = Vector3.distance_squared(optional_target_pos, target_position)
 	local max_dist_sq = action.max_wave_to_target_dist^2
 
-	if max_dist_sq < dist_sq then
+	if dist_sq > max_dist_sq then
 		blackboard.ready_to_summon = false
 
-		damage_wave_extension.abort(damage_wave_extension)
+		damage_wave_extension:abort()
 
 		return false
 	end
 
-	damage_wave_extension.launch_wave(damage_wave_extension, blackboard.summon_target_unit, optional_target_pos)
+	damage_wave_extension:launch_wave(blackboard.summon_target_unit, optional_target_pos)
 
 	return true
 end
+
 BTChaosSorcererSummoningAction.spawn_plague_wave_from_spawner = function (self, unit, blackboard, t, dt, target_position)
 	local plague_wave_pos = POSITION_LOOKUP[unit]
 	local nav_world = blackboard.nav_world
@@ -596,12 +624,13 @@ BTChaosSorcererSummoningAction.spawn_plague_wave_from_spawner = function (self, 
 	local damage_wave_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "damage_wave_unit", extension_init_data, spawn_pos, spawn_rot)
 	local wave_extension = ScriptUnit.extension(damage_wave_unit, "area_damage_system")
 
-	wave_extension.launch_wave(wave_extension, target_unit)
+	wave_extension:launch_wave(target_unit)
 
 	blackboard.attack_finished = true
 
 	return true
 end
+
 BTChaosSorcererSummoningAction.spawn_plague_waves_in_patterns = function (self, unit, blackboard, t, dt, target_position)
 	local nav_world = blackboard.nav_world
 	local action = blackboard.action
@@ -655,12 +684,12 @@ BTChaosSorcererSummoningAction.spawn_plague_waves_in_patterns = function (self, 
 				local wave_extension = ScriptUnit.extension(damage_wave_unit, "area_damage_system")
 
 				if action.damage_wave_update_func then
-					wave_extension.set_update_func(wave_extension, action.damage_wave_update_func, action.damage_wave_init_func, t)
+					wave_extension:set_update_func(action.damage_wave_update_func, action.damage_wave_init_func, t)
 				end
 
 				local target_unit = nil
 
-				wave_extension.launch_wave(wave_extension, target_unit, target_pos)
+				wave_extension:launch_wave(target_unit, target_pos)
 
 				blackboard.attack_finished = true
 			end
@@ -669,6 +698,7 @@ BTChaosSorcererSummoningAction.spawn_plague_waves_in_patterns = function (self, 
 
 	return true
 end
+
 BTChaosSorcererSummoningAction.init_summon_plague_wave_sequence = function (self, unit, blackboard, t)
 	blackboard.summon_plague_wave_timer = t + 0.5
 	blackboard.next_wave_time = 0
@@ -678,9 +708,8 @@ BTChaosSorcererSummoningAction.init_summon_plague_wave_sequence = function (self
 	if sequence_init_func then
 		sequence_init_func(unit, blackboard)
 	end
-
-	return 
 end
+
 BTChaosSorcererSummoningAction.update_sequenced_plague_wave_spawning = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
 	local target_position = nil
@@ -695,15 +724,12 @@ BTChaosSorcererSummoningAction.update_sequenced_plague_wave_spawning = function 
 			return true
 		end
 	end
-
-	return 
 end
+
 BTChaosSorcererSummoningAction.clean_up_plague_wave = function (self, unit, blackboard, t)
 	local target_unit = blackboard.target_unit
 
 	Managers.state.entity:system("ai_bot_group_system"):ranged_attack_ended(unit, target_unit, "plague_wave")
-
-	return 
 end
 
-return 
+return

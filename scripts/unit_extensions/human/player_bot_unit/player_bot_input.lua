@@ -2,6 +2,7 @@ require("scripts/unit_extensions/generic/generic_state_machine")
 
 PlayerBotInput = class(PlayerBotInput)
 local POSITION_LOOKUP = POSITION_LOOKUP
+
 PlayerBotInput.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
 	self.move = {
@@ -18,7 +19,9 @@ PlayerBotInput.init = function (self, extension_init_context, unit, extension_in
 	self._soft_aiming = false
 	self._charge_shot = false
 	self._charge_shot_held = false
+	self._fire_hold = false
 	self._fire = false
+	self._fire_held = false
 	self._defend = false
 	self._defend_held = false
 	self._melee_push = false
@@ -29,6 +32,7 @@ PlayerBotInput.init = function (self, extension_init_context, unit, extension_in
 	self._interact_held = false
 	self._activate_ability = false
 	self._activate_ability_held = false
+	self._weapon_reload = false
 	self._dodge = false
 	self._bot_in_attract_mode_focus = false
 	self._avoiding_aoe_threat = false
@@ -40,9 +44,8 @@ PlayerBotInput.init = function (self, extension_init_context, unit, extension_in
 	self._world = extension_init_context.world
 	self._nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	self._game = Managers.state.network:game()
-
-	return 
 end
+
 PlayerBotInput.extensions_ready = function (self, world, unit)
 	local ext = ScriptUnit.extension
 	self._navigation_extension = ext(unit, "ai_navigation_system")
@@ -50,33 +53,43 @@ PlayerBotInput.extensions_ready = function (self, world, unit)
 	self._first_person_extension = ext(unit, "first_person_system")
 	self._ai_bot_group_extension = ext(unit, "ai_bot_group_system")
 	self._locomotion_extension = ext(unit, "locomotion_system")
+end
 
-	return 
-end
 PlayerBotInput.destroy = function (self)
-	return 
+	return
 end
+
 PlayerBotInput.reset = function (self)
-	return 
+	return
 end
+
 PlayerBotInput.pre_update = function (self, unit, input, dt, context, t)
 	local position = POSITION_LOOKUP[unit]
 	local success, altitude = GwNavQueries.triangle_from_position(self._nav_world, position, 1.1, 0.5)
 	self._position_on_navmesh = (success and Vector3(position.x, position.y, altitude)) or position
-
-	return 
 end
+
 PlayerBotInput.update = function (self, unit, input, dt, context, t)
 	table.clear(self._input)
-	self._update_movement(self, dt, t)
-	self._update_actions(self)
-
-	return 
+	self:_update_movement(dt, t)
+	self:_update_actions()
 end
+
 PlayerBotInput._update_actions = function (self)
 	local input = self._input
 
-	if self._fire then
+	if self._fire_hold then
+		self._fire_hold = false
+		input.action_one_hold = true
+
+		if not self._fire_held then
+			input.action_one = true
+			self._fire_held = true
+		end
+	elseif self._fire_held then
+		self._fire_held = false
+		input.action_one_release = true
+	elseif self._fire then
 		self._fire = false
 		input.action_one = true
 	end
@@ -119,6 +132,12 @@ PlayerBotInput._update_actions = function (self)
 	elseif self._activate_ability_held then
 		self._activate_ability_held = false
 		input.action_career_release = true
+	end
+
+	if self._weapon_reload then
+		self._weapon_reload = false
+		input.weapon_reload = true
+		input.weapon_reload_hold = true
 	end
 
 	if self._hold_attack then
@@ -188,18 +207,16 @@ PlayerBotInput._update_actions = function (self)
 		input.dodge_hold = true
 		self._dodge = false
 	end
-
-	return 
 end
+
 PlayerBotInput._update_debug_text = function (self, unit, input)
 	if script_data.debug_unit ~= unit or not script_data.ai_bots_input_debug then
-		return 
+		return
 	end
 
 	table.dump(input, nil, nil, Debug.text)
-
-	return 
 end
+
 PlayerBotInput._debug_aim_target_sine_curve = function (self, dt, t)
 	local pos = Vector3(-70.1625, -90.9497, -7.42347)
 	local z = 6 - 3 * math.sin(t)
@@ -214,20 +231,17 @@ PlayerBotInput._debug_aim_target_sine_curve = function (self, dt, t)
 		name = "playerbotinput"
 	})
 
-	drawer.sphere(drawer, pos, 0.5, Color(255, 0, 0))
-
-	return 
+	drawer:sphere(pos, 0.5, Color(255, 0, 0))
 end
+
 PlayerBotInput.set_aim_position = function (self, position)
 	self._aim_target:store(position)
-
-	return 
 end
+
 PlayerBotInput.set_aim_rotation = function (self, rotation)
 	self._aim_rotation:store(rotation)
-
-	return 
 end
+
 PlayerBotInput.set_aiming = function (self, aiming, soft, use_rotation)
 	self._aiming = aiming
 	self._aim_with_rotation = (use_rotation and aiming) or false
@@ -237,70 +251,67 @@ PlayerBotInput.set_aiming = function (self, aiming, soft, use_rotation)
 	else
 		self._soft_aiming = false
 	end
-
-	return 
 end
+
 PlayerBotInput.set_look_at_player = function (self, player_unit, rotation_allowed)
 	self._look_at_player = player_unit
 	self._look_at_player_rotation_allowed = not not rotation_allowed
-
-	return 
 end
+
 PlayerBotInput.defend = function (self)
 	self._defend = true
-
-	return 
 end
+
 PlayerBotInput.activate_ability = function (self)
 	self._activate_ability = true
-
-	return 
 end
+
 PlayerBotInput.melee_push = function (self)
 	self._melee_push = true
-
-	return 
 end
+
 PlayerBotInput.hold_attack = function (self)
 	self._hold_attack = true
-
-	return 
 end
+
 PlayerBotInput.tap_attack = function (self)
 	self._tap_attack = true
-
-	return 
 end
+
 PlayerBotInput.charge_shot = function (self)
 	self._charge_shot = true
-
-	return 
 end
+
 PlayerBotInput.fire = function (self)
 	self._fire = true
-
-	return 
 end
+
+PlayerBotInput.fire_hold = function (self)
+	self._fire_hold = true
+end
+
 PlayerBotInput.interact = function (self)
 	self._interact = true
-
-	return 
 end
+
+PlayerBotInput.weapon_reload = function (self)
+	self._weapon_reload = true
+end
+
 PlayerBotInput.dodge = function (self)
 	self._dodge = true
-
-	return 
 end
+
 PlayerBotInput.wield = function (self, slot)
 	self._slot_to_wield = slot
-
-	return 
 end
+
 local Quaternion_look = Quaternion.look
 local Quaternion_multiply = Quaternion.multiply
 local MOVE_SCALE_START_DIST_SQ = 0.010000000000000002
 local MOVE_SCALE_FACTOR = 99.995
 local MOVE_SCALE_MIN = 5e-05
+
 PlayerBotInput._update_wanted_rotation_for_attract_mode = function (self, dt, rotation, current_goal, on_ladder, ladder_unit, camera_position)
 	local transition_jump = nil
 	local player_bot_navigation = self._navigation_extension
@@ -339,8 +350,8 @@ PlayerBotInput._update_wanted_rotation_for_attract_mode = function (self, dt, ro
 
 		local dir = current_goal - position
 
-		if player_bot_navigation.is_in_transition(player_bot_navigation) then
-			transition_jump = player_bot_navigation.transition_requires_jump(player_bot_navigation, position, Vector3.normalize(dir))
+		if player_bot_navigation:is_in_transition() then
+			transition_jump = player_bot_navigation:transition_requires_jump(position, Vector3.normalize(dir))
 			wanted_rotation = Quaternion_look(dir, up)
 		else
 			wanted_rotation = Quaternion.lerp(rotation, Quaternion_look(dir, up), math.min(dt * 2, 1))
@@ -353,30 +364,32 @@ PlayerBotInput._update_wanted_rotation_for_attract_mode = function (self, dt, ro
 
 	return wanted_rotation, transition_jump
 end
+
 PlayerBotInput.set_bot_in_attract_mode_focus = function (self, is_in_focus)
 	self._bot_in_attract_mode_focus = is_in_focus
-
-	return 
 end
+
 PlayerBotInput._update_movement = function (self, dt, t)
 	local unit = self.unit
 	local player_bot_navigation = self._navigation_extension
-	local current_goal = player_bot_navigation.current_goal(player_bot_navigation)
+	local current_goal = player_bot_navigation:current_goal()
 	local position = POSITION_LOOKUP[unit]
 	local position_on_navmesh = self._position_on_navmesh
 	local first_person_extension = self._first_person_extension
-	local rotation = first_person_extension.current_rotation(first_person_extension)
-	local camera_position = first_person_extension.current_camera_position(first_person_extension)
+	local rotation = first_person_extension:current_rotation()
+	local camera_position = first_person_extension:current_camera_position()
 	local wanted_rotation = nil
 	local status_extension = self._status_extension
-	local on_ladder, ladder_unit = status_extension.get_is_on_ladder(status_extension)
+	local on_ladder, ladder_unit = status_extension:get_is_on_ladder()
 	local transition_jump = nil
+	local look_at_player_unit = self._look_at_player
+	local look_at_player_has_moved = look_at_player_unit and ScriptUnit.extension(look_at_player_unit, "locomotion_system").has_moved_from_start_position
 	local cutscene_system = Managers.state.entity:system("cutscene_system")
-	local has_intro_cutscene_finished = cutscene_system.has_intro_cutscene_finished_playing(cutscene_system)
+	local has_intro_cutscene_finished = cutscene_system:has_intro_cutscene_finished_playing()
 	local up = Vector3.up()
 
 	if self._bot_in_attract_mode_focus then
-		wanted_rotation, transition_jump = self._update_wanted_rotation_for_attract_mode(self, dt, rotation, current_goal, on_ladder, ladder_unit, camera_position)
+		wanted_rotation, transition_jump = self:_update_wanted_rotation_for_attract_mode(dt, rotation, current_goal, on_ladder, ladder_unit, camera_position)
 	elseif current_goal and on_ladder then
 		local dir = current_goal - position
 		local ladder_up = Quaternion.up(Unit.local_rotation(ladder_unit, 0))
@@ -396,9 +409,8 @@ PlayerBotInput._update_movement = function (self, dt, t)
 		wanted_rotation = Quaternion.lerp(rotation, Quaternion_look(direction, up), math.min(dt * 5, 1))
 	elseif self._aiming then
 		wanted_rotation = Quaternion_look(self._aim_target:unbox() - camera_position, up)
-	elseif self._look_at_player and self._game and has_intro_cutscene_finished and (not current_goal or not player_bot_navigation.is_in_transition(player_bot_navigation)) then
-		local player_unit = self._look_at_player
-		local unit_id = Managers.state.network:unit_game_object_id(player_unit)
+	elseif look_at_player_unit and self._game and (has_intro_cutscene_finished or look_at_player_has_moved) and (not current_goal or not player_bot_navigation:is_in_transition()) then
+		local unit_id = Managers.state.network:unit_game_object_id(look_at_player_unit)
 		local player_camera_position = GameSession.game_object_field(self._game, unit_id, "aim_position")
 		local direction = player_camera_position - camera_position
 		local look_rotation = Quaternion_look(direction, up)
@@ -418,8 +430,8 @@ PlayerBotInput._update_movement = function (self, dt, t)
 	elseif current_goal then
 		local dir = current_goal - position_on_navmesh
 
-		if player_bot_navigation.is_in_transition(player_bot_navigation) then
-			transition_jump = player_bot_navigation.transition_requires_jump(player_bot_navigation, position_on_navmesh, Vector3.normalize(dir))
+		if player_bot_navigation:is_in_transition() then
+			transition_jump = player_bot_navigation:transition_requires_jump(position_on_navmesh, Vector3.normalize(dir))
 			wanted_rotation = Quaternion_look(dir, up)
 		else
 			wanted_rotation = Quaternion.lerp(rotation, Quaternion_look(dir, up), math.min(dt * 2, 1))
@@ -440,11 +452,11 @@ PlayerBotInput._update_movement = function (self, dt, t)
 		flat_goal_vector = Vector3.flat(goal_vector)
 		goal_direction = Vector3.normalize(flat_goal_vector)
 
-		if 0 < Vector3.length_squared(goal_direction) and not on_ladder then
+		if Vector3.length_squared(goal_direction) > 0 and not on_ladder then
 			local physics_world = World.get_data(self._world, "physics_world")
 			local collision_filter = "filter_ai_line_of_sight_check"
 			local locomotion_extension = self._locomotion_extension
-			local current_velocity = locomotion_extension.current_velocity(locomotion_extension)
+			local current_velocity = locomotion_extension:current_velocity()
 			local current_speed_sq = Vector3.length_squared(current_velocity)
 			local forward_offset = 0.25
 			local jump_range_check_epsilon = 0.05
@@ -452,7 +464,7 @@ PlayerBotInput._update_movement = function (self, dt, t)
 			local depth = math.min(0.5, Vector3.length(goal_vector) - jump_range_check_epsilon)
 			local height, half_extra_upper_depth, half_extra_upper_height = nil
 
-			if 0.04000000000000001 < current_speed_sq then
+			if current_speed_sq > 0.04000000000000001 then
 				height = 0.4
 				half_extra_upper_depth = 0.55
 				half_extra_upper_height = (0.8 - height) * 0.5
@@ -476,7 +488,7 @@ PlayerBotInput._update_movement = function (self, dt, t)
 			local rotation = Quaternion_look(goal_direction, up)
 			local _, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "oobb", "position", lower_check_pos, "rotation", rotation, "size", lower_extents, "types", "statics", "collision_filter", collision_filter, "use_global_table")
 
-			if 0 < num_actors then
+			if num_actors > 0 then
 				lower_hit = true
 				local _, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "oobb", "position", upper_check_pos, "rotation", rotation, "size", upper_extents, "types", "statics", "collision_filter", collision_filter, "use_global_table")
 
@@ -510,7 +522,7 @@ PlayerBotInput._update_movement = function (self, dt, t)
 	elseif t < threat_data.expires then
 		local dir = threat_data.escape_direction:unbox()
 
-		self.dodge(self)
+		self:dodge()
 
 		self._avoiding_aoe_threat = true
 		move.x = Vector3.dot(Quaternion.right(wanted_rotation), dir)
@@ -519,7 +531,7 @@ PlayerBotInput._update_movement = function (self, dt, t)
 		move.x = 0
 		move.y = 0
 	else
-		local is_last_goal = player_bot_navigation.is_following_last_goal(player_bot_navigation)
+		local is_last_goal = player_bot_navigation:is_following_last_goal()
 		local move_scale = 1
 
 		if is_last_goal then
@@ -537,15 +549,14 @@ PlayerBotInput._update_movement = function (self, dt, t)
 	end
 
 	if self._avoiding_aoe_threat and threat_data.expires <= t then
-		if player_bot_navigation.destination_reached(player_bot_navigation) then
-			player_bot_navigation.stop(player_bot_navigation)
+		if player_bot_navigation:destination_reached() then
+			player_bot_navigation:stop()
 		end
 
 		self._avoiding_aoe_threat = false
 	end
-
-	return 
 end
+
 PlayerBotInput.get = function (self, input_key)
 	if input_key == "look" then
 		return Vector3(self.look.x, self.look.y, 0)
@@ -554,79 +565,86 @@ PlayerBotInput.get = function (self, input_key)
 	elseif self._input[input_key] ~= nil then
 		return self._input[input_key]
 	end
+end
 
-	return 
-end
 PlayerBotInput.set_enabled = function (self, enabled)
-	return 
+	return
 end
+
 PlayerBotInput.get_buffer = function (self, input_key)
-	return 
+	return
 end
+
 PlayerBotInput.add_buffer = function (self, input_key)
-	return 
+	return
 end
+
 PlayerBotInput.reset_input_buffer = function (self, input_key)
-	return 
+	return
 end
+
 PlayerBotInput.clear_input_buffer = function (self, input_key)
-	return 
+	return
 end
+
 PlayerBotInput.reset_wield_switch_buffer = function (self)
-	return 
+	return
 end
+
 PlayerBotInput.set_last_scroll_value = function (self)
-	return 
+	return
 end
+
 PlayerBotInput.get_last_scroll_value = function (self)
-	return 
+	return
 end
+
 PlayerBotInput.move = function (self, vector)
 	self.move.x = vector.x
 	self.move.y = vector.y
-
-	return 
 end
+
 PlayerBotInput.look = function (self, vector)
 	self.look.x = vector.x
 	self.look.y = vector.y
-
-	return 
 end
+
 PlayerBotInput.move_forward = function (self)
 	self.move.x = 0
 	self.move.y = 1
-
-	return 
 end
+
 PlayerBotInput.rotate_right = function (self)
 	self.look.x = 0.1
 	self.look.y = 0
-
-	return 
 end
+
 PlayerBotInput.not_moving = function (self)
 	return self.move.x == 0 and self.move.y == 0
 end
+
 PlayerBotInput.move_towards = function (self, target_position)
 	self.target_position = (target_position and Vector3Box(target_position)) or nil
-
-	return 
 end
+
 PlayerBotInput.get_wield_cooldown = function (self)
 	return false
 end
+
 PlayerBotInput.add_wield_cooldown = function (self, cooldown_time)
-	return 
+	return
 end
+
 PlayerBotInput.released_input = function (self, input)
 	return not self._input[input]
 end
+
 PlayerBotInput.add_stun_buffer = function (self, input_key)
-	return 
+	return
 end
+
 PlayerBotInput.reset_release_input = function (self)
 	return true
 end
 
-return 
+return

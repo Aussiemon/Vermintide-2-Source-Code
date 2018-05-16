@@ -2177,4 +2177,4 @@ end
 
 BuffUtils.apply_buff_tweak_data(WeaponProperties.buff_templates, buff_tweak_data)
 
-return 
+return

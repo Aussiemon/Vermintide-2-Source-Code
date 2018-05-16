@@ -1,26 +1,28 @@
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
 BackendInterfaceLootPlayfab = class(BackendInterfaceLootPlayfab)
+
 BackendInterfaceLootPlayfab.init = function (self, backend_mirror)
 	self._backend_mirror = backend_mirror
 	self._last_id = 0
 	self._loot_requests = {}
-	self._loot_chest_requests = {}
-
-	return 
 end
+
 BackendInterfaceLootPlayfab.ready = function (self)
 	return true
 end
+
 BackendInterfaceLootPlayfab.update = function (self, dt)
-	return 
+	return
 end
+
 BackendInterfaceLootPlayfab._new_id = function (self)
 	self._last_id = self._last_id + 1
 
 	return self._last_id
 end
+
 BackendInterfaceLootPlayfab.open_loot_chest = function (self, hero_name, backend_id)
-	local id = self._new_id(self)
+	local id = self:_new_id()
 	local data = {
 		hero_name = hero_name,
 		playfab_id = backend_id,
@@ -35,6 +37,7 @@ BackendInterfaceLootPlayfab.open_loot_chest = function (self, hero_name, backend
 
 	return id
 end
+
 BackendInterfaceLootPlayfab.open_loot_chest_challenge_request_cb = function (self, data, result)
 	if result.Error then
 		table.dump(result, nil, 5)
@@ -45,23 +48,22 @@ BackendInterfaceLootPlayfab.open_loot_chest_challenge_request_cb = function (sel
 		local eac_response, response = nil
 
 		if challenge then
-			eac_response, response = self._get_eac_response(self, challenge)
+			eac_response, response = self:_get_eac_response(challenge)
 		end
 
 		if not challenge then
 			print("EAC disabled on backend")
-			self._open_loot_chest(self, data)
+			self:_open_loot_chest(data)
 		elseif not eac_response then
 			print("EAC disabled on client")
 			Managers.backend:playfab_eac_error()
 		else
 			print("EAC Enabled!")
-			self._open_loot_chest(self, data, response)
+			self:_open_loot_chest(data, response)
 		end
 	end
-
-	return 
 end
+
 BackendInterfaceLootPlayfab._open_loot_chest = function (self, data, response)
 	local function_params = table.clone(data)
 	function_params.response = response
@@ -73,9 +75,8 @@ BackendInterfaceLootPlayfab._open_loot_chest = function (self, data, response)
 	local loot_chest_rewards_request_cb = callback(self, "loot_chest_rewards_request_cb", id)
 
 	PlayFabClientApi.ExecuteCloudScript(generate_loot_chest_rewards_request, loot_chest_rewards_request_cb, loot_chest_rewards_request_cb)
-
-	return 
 end
+
 BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, id, result)
 	if result.Error then
 		table.dump(result, nil, 5)
@@ -87,7 +88,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, id, 
 		if eac_failed then
 			Managers.backend:playfab_eac_error()
 
-			return 
+			return
 		end
 
 		local items = function_result.items
@@ -102,36 +103,23 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, id, 
 			local item = items[i]
 			local backend_id = item.ItemInstanceId
 
-			backend_mirror.add_item(backend_mirror, backend_id, item)
+			backend_mirror:add_item(backend_id, item)
 
 			loot[#loot + 1] = backend_id
 		end
 
-		if 0 < remaining_uses then
-			backend_mirror.update_item_field(backend_mirror, chest_backend_id, "RemainingUses", remaining_uses)
+		if remaining_uses > 0 then
+			backend_mirror:update_item_field(chest_backend_id, "RemainingUses", remaining_uses)
 		else
-			backend_mirror.remove_item(backend_mirror, chest_backend_id)
+			backend_mirror:remove_item(chest_backend_id)
 		end
 
-		self._loot_chest_requests[id] = loot
+		self._loot_requests[id] = loot
 	end
-
-	return 
 end
-BackendInterfaceLootPlayfab.is_loot_chest_opened = function (self, id)
-	local loot_chest_request = self._loot_chest_requests[id]
 
-	if loot_chest_request then
-		return true
-	end
-
-	return false
-end
-BackendInterfaceLootPlayfab.get_loot_chest_rewards = function (self, id)
-	return self._loot_chest_requests[id]
-end
 BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_won, quick_play_bonus, difficulty, level_key, num_tomes, num_grims, num_loot_dice, hero_name, start_experience, end_experience, deed_item_name, deed_backend_id)
-	local id = self._new_id(self)
+	local id = self:_new_id()
 	local data = {
 		won = game_won,
 		quick_play_bonus = quick_play_bonus,
@@ -156,6 +144,7 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 
 	return id
 end
+
 BackendInterfaceLootPlayfab.end_of_level_loot_challenge_request_cb = function (self, data, result)
 	if result.Error then
 		table.dump(result, nil, 5)
@@ -166,23 +155,22 @@ BackendInterfaceLootPlayfab.end_of_level_loot_challenge_request_cb = function (s
 		local eac_response, response = nil
 
 		if challenge then
-			eac_response, response = self._get_eac_response(self, challenge)
+			eac_response, response = self:_get_eac_response(challenge)
 		end
 
 		if not challenge then
 			print("EAC disabled on backend")
-			self._generate_end_of_level_loot(self, data)
+			self:_generate_end_of_level_loot(data)
 		elseif not eac_response then
 			print("EAC disabled on client")
 			Managers.backend:playfab_eac_error()
 		else
 			print("EAC Enabled!")
-			self._generate_end_of_level_loot(self, data, response)
+			self:_generate_end_of_level_loot(data, response)
 		end
 	end
-
-	return 
 end
+
 BackendInterfaceLootPlayfab._generate_end_of_level_loot = function (self, data, response)
 	local function_params = table.clone(data)
 	function_params.response = response
@@ -190,14 +178,12 @@ BackendInterfaceLootPlayfab._generate_end_of_level_loot = function (self, data, 
 		FunctionName = "generateEndOfLevelLoot",
 		FunctionParameter = function_params
 	}
-	local id = data.id
-	local end_of_level_loot_request_cb = callback(self, "end_of_level_loot_request_cb", id)
+	local end_of_level_loot_request_cb = callback(self, "end_of_level_loot_request_cb", data)
 
 	PlayFabClientApi.ExecuteCloudScript(generate_end_of_level_loot_request, end_of_level_loot_request_cb, end_of_level_loot_request_cb)
-
-	return id
 end
-BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, id, result)
+
+BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data, result)
 	if result.Error then
 		table.dump(result, nil, 5)
 		fassert(false, "end_of_level_loot_request_cb: it failed!")
@@ -208,13 +194,15 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, id, r
 		if eac_failed then
 			Managers.backend:playfab_eac_error()
 
-			return 
+			return
 		end
 
+		local id = data.id
 		local rewards = function_result.Rewards
 		local items = function_result.Result
 		local random_value = function_result.RandomValue
 		local consumed_deed_result = function_result.ConsumedDeedResult
+		local experience = function_result.Experience
 		local num_items = #items
 		local loot_request = {}
 
@@ -248,11 +236,141 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, id, r
 			self._backend_mirror:remove_item(deed_backend_id)
 		end
 
+		local hero_name = data.hero_name
+		local key = hero_name .. "_experience"
+
+		self._backend_mirror:set_read_only_data(key, experience, true)
+		Managers.backend:dirtify_interfaces()
+
 		self._loot_requests[id] = loot_request
 	end
-
-	return 
 end
+
+BackendInterfaceLootPlayfab.achievement_rewards_claimed = function (self, achievement_id)
+	local mirror = self._backend_mirror
+	local claimed_achievements = mirror:get_claimed_achievements()
+
+	return claimed_achievements[achievement_id]
+end
+
+BackendInterfaceLootPlayfab.can_claim_achievement_rewards = function (self, achievement_id)
+	local mirror = self._backend_mirror
+	local claimed_achievements = mirror:get_claimed_achievements()
+
+	if not claimed_achievements[achievement_id] then
+		return true
+	end
+
+	return false
+end
+
+BackendInterfaceLootPlayfab.claim_achievement_rewards = function (self, achievement_id)
+	local id = self:_new_id()
+	local data = {
+		achievement_id = achievement_id,
+		id = id
+	}
+	local generate_challenge_request = {
+		FunctionName = "generateChallenge"
+	}
+	local claim_achievement_rewards_challenge_request_cb = callback(self, "claim_achievement_rewards_challenge_request_cb", data)
+
+	PlayFabClientApi.ExecuteCloudScript(generate_challenge_request, claim_achievement_rewards_challenge_request_cb, claim_achievement_rewards_challenge_request_cb)
+
+	return id
+end
+
+BackendInterfaceLootPlayfab.claim_achievement_rewards_challenge_request_cb = function (self, data, result)
+	if result.Error then
+		table.dump(result, nil, 5)
+		fassert(false, "claim_achievement_rewards_challenge_request_cb: it failed!")
+	else
+		local function_result = result.FunctionResult
+		local challenge = function_result.challenge
+		local eac_response, response = nil
+
+		if challenge then
+			eac_response, response = self:_get_eac_response(challenge)
+		end
+
+		if not challenge then
+			print("EAC disabled on backend")
+			self:_claim_achievement_rewards(data)
+		elseif not eac_response then
+			print("EAC disabled on client")
+			Managers.backend:playfab_eac_error()
+		else
+			print("EAC Enabled!")
+			self:_claim_achievement_rewards(data, response)
+		end
+	end
+end
+
+BackendInterfaceLootPlayfab._claim_achievement_rewards = function (self, data, response)
+	local function_params = table.clone(data)
+	function_params.response = response
+	local generate_achievement_rewards_request = {
+		FunctionName = "generateAchievementRewards",
+		FunctionParameter = function_params
+	}
+	local achievement_rewards_request_cb = callback(self, "achievement_rewards_request_cb", data)
+
+	PlayFabClientApi.ExecuteCloudScript(generate_achievement_rewards_request, achievement_rewards_request_cb, achievement_rewards_request_cb)
+end
+
+BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, data, result)
+	if result.Error then
+		table.dump(result, nil, 5)
+		fassert(false, "achievement_rewards_request_cb: it failed!")
+	else
+		local function_result = result.FunctionResult
+
+		if not function_result then
+			Managers.backend:playfab_api_error(result)
+
+			return
+		elseif function_result.eac_failed_verification then
+			Managers.backend:playfab_eac_error()
+
+			return
+		end
+
+		local id = data.id
+
+		if function_result == "reward_claimed" then
+			Managers.backend:playfab_error(BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED)
+
+			self._loot_requests[id] = {}
+
+			return
+		end
+
+		local items = function_result.items
+		local achievement_id = function_result.achievement_id
+		local backend_mirror = self._backend_mirror
+		local loot = {}
+
+		if items then
+			for i = 1, #items, 1 do
+				local item = items[i]
+				local backend_id = item.ItemInstanceId
+				local amount = item.UsesIncrementedBy or 1
+
+				backend_mirror:add_item(backend_id, item)
+
+				loot[i] = {
+					backend_id,
+					amount
+				}
+			end
+		end
+
+		backend_mirror:set_achievement_claimed(achievement_id)
+
+		self._loot_requests[id] = loot
+	end
+end
+
 BackendInterfaceLootPlayfab.is_loot_generated = function (self, id)
 	local loot_request = self._loot_requests[id]
 
@@ -262,9 +380,11 @@ BackendInterfaceLootPlayfab.is_loot_generated = function (self, id)
 
 	return false
 end
+
 BackendInterfaceLootPlayfab.get_loot = function (self, id)
 	return self._loot_requests[id]
 end
+
 BackendInterfaceLootPlayfab._get_eac_response = function (self, challenge)
 	local i = 0
 	local str = ""
@@ -291,4 +411,4 @@ BackendInterfaceLootPlayfab._get_eac_response = function (self, challenge)
 	return eac_response, response
 end
 
-return 
+return

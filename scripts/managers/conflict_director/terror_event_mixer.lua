@@ -8,19 +8,16 @@ local amount = {
 }
 TerrorEventMixer.active_events = TerrorEventMixer.active_events or {}
 TerrorEventMixer.start_event_list = TerrorEventMixer.start_event_list or {}
+TerrorEventMixer.optional_data = TerrorEventMixer.optional_data or {}
 TerrorEventMixer.init_functions = {
 	text = function (event, element, t)
 		event.ends_at = t + ConflictUtils.random_interval(element.duration)
-
-		return 
 	end,
 	delay = function (event, element, t)
 		event.ends_at = t + ConflictUtils.random_interval(element.duration)
-
-		return 
 	end,
 	spawn = function (event, element, t)
-		return 
+		return
 	end,
 	spawn_at_raw = function (event, element, t)
 		if Managers.player.is_server then
@@ -34,23 +31,19 @@ TerrorEventMixer.init_functions = {
 				breed_name = check_name
 			end
 
-			conflict_director.spawn_at_raw_spawner(conflict_director, Breeds[breed_name], element.spawner_id, element.optional_data)
+			conflict_director:spawn_at_raw_spawner(Breeds[breed_name], element.spawner_id, element.optional_data)
 		end
-
-		return 
 	end,
 	spawn_patrol = function (event, element, t)
-		return 
+		return
 	end,
 	roaming_patrol = function (event, element, t)
-		return 
+		return
 	end,
 	continue_when = function (event, element, t)
 		if element.duration then
 			event.ends_at = t + ConflictUtils.random_interval(element.duration)
 		end
-
-		return 
 	end,
 	control_pacing = function (event, element, t)
 		local conflict_director = Managers.state.conflict
@@ -60,44 +53,32 @@ TerrorEventMixer.init_functions = {
 		else
 			conflict_director.pacing:disable()
 		end
-
-		return 
 	end,
 	control_specials = function (event, element, t)
 		local conflict_director = Managers.state.conflict
 		local specials_pacing = conflict_director.specials_pacing
 
 		if specials_pacing then
-			specials_pacing.enable(specials_pacing, element.enable)
+			specials_pacing:enable(element.enable)
 		end
-
-		return 
 	end,
 	horde = function (event, element, t)
 		event.ends_at = t + ((element.duration and ConflictUtils.random_interval(element.duration)) or 0)
 		event.num_hordes = 0
 		event.spawn_check = 0
 		event.spawned = 0
-
-		return 
 	end,
 	debug_horde = function (event, element, t)
 		event.ends_at = t + ((element.duration and ConflictUtils.random_interval(element.duration)) or 0)
-
-		return 
 	end,
 	event_horde = function (event, element, t)
 		event.ends_at = t + ((element.duration and ConflictUtils.random_interval(element.duration)) or 0)
 		local conflict_director = Managers.state.conflict
-		local horde_data = conflict_director.event_horde(conflict_director, t, element.spawner_id, element.composition_type, element.limit_spawners, element.horde_silent)
+		local horde_data = conflict_director:event_horde(t, element.spawner_id, element.composition_type, element.limit_spawners, element.horde_silent)
 		element.horde_data = horde_data
-
-		return 
 	end,
 	reset_event_horde = function (event, element, t)
 		Managers.state.entity:system("spawner_system"):reset_spawners_with_event_id(element.event_id)
-
-		return 
 	end,
 	force_horde = function (event, element, t)
 		event.ends_at = t + ((element.duration and ConflictUtils.random_interval(element.duration)) or 0)
@@ -111,16 +92,12 @@ TerrorEventMixer.init_functions = {
 		end
 
 		Managers.state.conflict.horde_spawner:horde(horde_type)
-
-		return 
 	end,
 	start_event = function (event, element, t)
 		print("starting terror event: ", element.start_event_name)
 
 		local start_events = TerrorEventMixer.start_event_list
 		start_events[#start_events + 1] = element.start_event_name
-
-		return 
 	end,
 	stop_event = function (event, element, t)
 		print("stopping terror event: ", element.stop_event_name)
@@ -130,34 +107,26 @@ TerrorEventMixer.init_functions = {
 		if event then
 			event.destroy = true
 		end
-
-		return 
 	end,
 	set_master_event_running = function (event, element, t)
 		Managers.state.conflict:set_master_event_running(element.name)
-
-		return 
 	end,
 	stop_master_event = function (event, element, t)
 		Managers.state.conflict:set_master_event_running()
-
-		return 
 	end,
 	flow_event = function (event, element, t)
 		local conflict_director = Managers.state.conflict
 		local flow_event = element.flow_event_name
 
-		conflict_director.level_flow_event(conflict_director, flow_event)
+		conflict_director:level_flow_event(flow_event)
 
 		local network_manager = Managers.state.network
 
-		if not element.disable_network_send and network_manager.game(network_manager) then
+		if not element.disable_network_send and network_manager:game() then
 			local event_id = NetworkLookup.terror_flow_events[flow_event]
 
 			network_manager.network_transmit:send_rpc_clients("rpc_terror_event_trigger_flow", event_id)
 		end
-
-		return 
 	end,
 	play_stinger = function (event, element, t)
 		local stinger_name = element.stinger_name or "enemy_terror_event_stinger"
@@ -174,50 +143,43 @@ TerrorEventMixer.init_functions = {
 
 			Managers.state.network.network_transmit:send_rpc_clients("rpc_server_audio_event", NetworkLookup.sound_events[stinger_name])
 		end
+	end,
+	force_load_breed_package = function (event, element, t)
+		local enemy_package_loader = Managers.state.game_mode.level_transition_handler.enemy_package_loader
 
-		return 
+		if not enemy_package_loader.breed_processed[breed_name] then
+			local ignore_breed_limits = true
+
+			enemy_package_loader:request_breed(element.breed_name, ignore_breed_limits)
+		end
 	end,
 	enable_bots_in_carry_event = function (event, element, t)
 		Managers.state.entity:system("ai_bot_group_system"):set_in_carry_event(true)
-
-		return 
 	end,
 	disable_bots_in_carry_event = function (event, element, t)
 		Managers.state.entity:system("ai_bot_group_system"):set_in_carry_event(false)
-
-		return 
 	end,
 	enable_kick = function (event, element, t)
 		Managers.state.voting:set_vote_kick_enabled(true)
-
-		return 
 	end,
 	disable_kick = function (event, element, t)
 		Managers.state.voting:set_vote_kick_enabled(false)
-
-		return 
 	end,
 	set_freeze_condition = function (event, element, t)
 		event.max_active_enemies = element.max_active_enemies or math.huge
-
-		return 
 	end,
 	set_breed_event_horde_spawn_limit = function (event, element, t)
 		Managers.state.entity:system("spawner_system"):set_breed_event_horde_spawn_limit(element.breed_name, element.limit)
-
-		return 
 	end,
 	create_boss_door_group = function (event, element, t)
 		local data = event.data
 		local ai_group_system = Managers.state.entity:system("ai_group_system")
 		local group_data = {
 			template = "boss_door_closers",
-			id = ai_group_system.generate_group_id(ai_group_system),
+			id = ai_group_system:generate_group_id(),
 			size = element.group_size
 		}
 		data.group_data = group_data
-
-		return 
 	end,
 	close_boss_doors = function (event, element, t)
 		local data = event.data
@@ -229,10 +191,8 @@ TerrorEventMixer.init_functions = {
 			local breed_name = element.breed_name
 			local door_system = Managers.state.entity:system("door_system")
 
-			door_system.close_boss_doors(door_system, map_section, group_id, breed_name)
+			door_system:close_boss_doors(map_section, group_id, breed_name)
 		end
-
-		return 
 	end,
 	spawn_encampment = function (event, element, t)
 		local encampment_id, unit_compositions_id, rotation = nil
@@ -253,7 +213,7 @@ TerrorEventMixer.init_functions = {
 		local pos_from_recycler = event_data and event_data.optional_pos
 
 		if pos_from_recycler then
-			position = pos_from_recycler.unbox(pos_from_recycler)
+			position = pos_from_recycler:unbox()
 		else
 			local optional_pos = element.optional_pos
 			position = Vector3(optional_pos[1], optional_pos[2], optional_pos[3])
@@ -266,8 +226,6 @@ TerrorEventMixer.init_functions = {
 		local unit_composition = encampment_template.unit_compositions[unit_compositions_id]
 
 		FormationUtils.spawn_encampment(encampment, position, rotation, unit_composition)
-
-		return 
 	end,
 	teleport_player = function (event, element, t)
 		local portal_unit = element.portal_id
@@ -285,18 +243,66 @@ TerrorEventMixer.init_functions = {
 				local world = Managers.world:world("level_world")
 
 				LevelHelper:flow_event(world, "teleport_" .. portal_id)
-				locomotion.teleport_to(locomotion, pos, rot)
+				locomotion:teleport_to(pos, rot)
 			end
 		end
-
-		return 
 	end,
 	run_benchmark_func = function (event, element, t)
 		local func_name = element.func_name
 
 		script_data.benchmark[func_name](script_data.benchmark, element, t)
+	end,
+	set_time_challenge = function (event, element, t, dt)
+		local optional_data = TerrorEventMixer.optional_data
+		local time_challenge_name = element.time_challenge_name
+		local challenge_threshold = QuestSettings[time_challenge_name]
+		local duration = t + challenge_threshold
+		local current_difficulty = Managers.state.difficulty:get_difficulty()
+		local allowed_difficulties = QuestSettings.allowed_difficulties[time_challenge_name]
+		local allowed_difficulty = allowed_difficulties[current_difficulty]
+		local achievements_enabled = Development.parameter("v2_achievements")
 
-		return 
+		if achievements_enabled and allowed_difficulty and not optional_data[time_challenge_name] then
+			optional_data[time_challenge_name] = duration
+		end
+	end,
+	has_completed_time_challenge = function (event, element, t, dt)
+		local optional_data = TerrorEventMixer.optional_data
+		local time_challenge_name = element.time_challenge_name
+		local duration = optional_data[time_challenge_name]
+
+		if duration then
+			local completed = t < duration
+			local time_left = math.abs(t - duration)
+
+			if completed then
+				optional_data[time_challenge_name] = nil
+				local stat_name = time_challenge_name
+				local statistics_db = Managers.player:statistics_db()
+
+				statistics_db:increment_stat_and_sync_to_clients(stat_name)
+			else
+				optional_data[time_challenge_name] = nil
+			end
+		end
+	end,
+	do_volume_challenge = function (event, element, t, dt)
+		local optional_data = TerrorEventMixer.optional_data
+		local volume_name = element.volume_name
+
+		fassert(optional_data[volume_name] == nil, "Already started a volume challenge for volume_name=(%s)", volume_name)
+
+		local challenge_duration = QuestSettings[volume_name]
+		local allowed_difficulties = QuestSettings.allowed_difficulties[volume_name]
+		local difficulty = Managers.state.difficulty:get_difficulty()
+		local on_allowed_difficulty = allowed_difficulties[difficulty]
+		local achievements_enabled = Development.parameter("v2_achievements")
+		local terminate = not on_allowed_difficulty or not achievements_enabled
+		optional_data[volume_name] = {
+			time_inside = 0,
+			duration = challenge_duration,
+			terminate = terminate
+		}
 	end
 }
 TerrorEventMixer.run_functions = {
@@ -319,13 +325,10 @@ TerrorEventMixer.run_functions = {
 		local conflict_director = Managers.state.conflict
 		local group_data = data.group_data
 		local breed_name = element.breed_name
-		local unit_queue_id = conflict_director.spawn_one(conflict_director, Breeds[breed_name], position, group_data, optional_data)
 
-		if unit_queue_id then
-			return true
-		end
+		conflict_director:spawn_one(Breeds[breed_name], position, group_data, optional_data)
 
-		return 
+		return true
 	end,
 	spawn_at_raw = function (event, element, t, dt)
 		return true
@@ -344,11 +347,11 @@ TerrorEventMixer.run_functions = {
 			patrol_data.breed = breed
 			patrol_data.group_type = "main_path_patrol"
 
-			conflict_director.spawn_group(conflict_director, patrol_template, position, patrol_data)
+			conflict_director:spawn_group(patrol_template, position, patrol_data)
 		else
 			formations = (data and data.formations) or element.formations
 			local num_formations = #formations
-			local random_index = (1 < num_formations and math.random(num_formations)) or 1
+			local random_index = (num_formations > 1 and math.random(num_formations)) or 1
 			local formation_name = formations[random_index]
 
 			assert(PatrolFormationSettings[formation_name], "No such formation exists in PatrolFormationSettings")
@@ -358,7 +361,7 @@ TerrorEventMixer.run_functions = {
 
 			if splines then
 				local num_splines = #splines
-				local random_index = (1 < num_splines and math.random(num_splines)) or 1
+				local random_index = (num_splines > 1 and math.random(num_splines)) or 1
 				spline_name = splines[random_index]
 			else
 				spline_name = data and data.spline_id
@@ -388,7 +391,7 @@ TerrorEventMixer.run_functions = {
 			patrol_data.spline_type = spline_type
 			patrol_data.despawn_at_end = true
 
-			conflict_director.spawn_spline_group(conflict_director, patrol_template, spline_start_position, patrol_data)
+			conflict_director:spawn_spline_group(patrol_template, spline_start_position, patrol_data)
 		end
 
 		return true
@@ -411,7 +414,7 @@ TerrorEventMixer.run_functions = {
 		patrol_data.despawn_at_end = false
 		patrol_data.zone_data = data.zone_data
 
-		conflict_director.spawn_spline_group(conflict_director, patrol_template, position, patrol_data)
+		conflict_director:spawn_spline_group(patrol_template, position, patrol_data)
 
 		return true
 	end,
@@ -432,8 +435,6 @@ TerrorEventMixer.run_functions = {
 		if event.ends_at < t then
 			return true
 		end
-
-		return 
 	end,
 	reset_event_horde = function (event, element, t, dt)
 		return true
@@ -442,8 +443,6 @@ TerrorEventMixer.run_functions = {
 		if event.ends_at < t then
 			return true
 		end
-
-		return 
 	end,
 	horde = function (event, element, t, dt)
 		local conflict_director = Managers.state.conflict
@@ -453,10 +452,10 @@ TerrorEventMixer.run_functions = {
 		end
 
 		if t < event.spawn_check then
-			return 
+			return
 		end
 
-		local living_horde = conflict_director.horde_size_total(conflict_director)
+		local living_horde = conflict_director:horde_size_total()
 
 		if element.peak_amount < living_horde then
 			event.spawn_check = t + 1
@@ -466,7 +465,7 @@ TerrorEventMixer.run_functions = {
 			amount[1] = minimum
 			amount[2] = missing
 
-			conflict_director.insert_horde(conflict_director, t, amount, 0)
+			conflict_director:insert_horde(t, amount, 0)
 			print("horde spawning:", minimum, missing)
 
 			event.num_hordes = event.num_hordes + 1
@@ -474,8 +473,6 @@ TerrorEventMixer.run_functions = {
 		else
 			event.spawn_check = t + 1
 		end
-
-		return 
 	end,
 	debug_horde = function (event, element, t, dt)
 		if event.ends_at < t then
@@ -483,7 +480,7 @@ TerrorEventMixer.run_functions = {
 		end
 
 		local conflict_director = Managers.state.conflict
-		local spawned_units = conflict_director.spawned_units(conflict_director)
+		local spawned_units = conflict_director:spawned_units()
 		local amount = #spawned_units
 
 		if amount < element.amount then
@@ -495,29 +492,23 @@ TerrorEventMixer.run_functions = {
 				local spawn_rot = Quaternion.look(Vector3(dir.x, dir.y, 1))
 				local breed = Breeds[conflict_director._debug_breed]
 
-				conflict_director.spawn_queued_unit(conflict_director, breed, Vector3Box(pos), QuaternionBox(spawn_rot), "constant_70", nil, "horde_hidden")
+				conflict_director:spawn_queued_unit(breed, Vector3Box(pos), QuaternionBox(spawn_rot), "constant_70", nil, "horde_hidden")
 			end
 		end
-
-		return 
 	end,
 	delay = function (event, element, t, dt)
 		if event.ends_at < t then
 			return true
 		end
-
-		return 
 	end,
 	text = function (event, element, t, dt)
 		local time_left = event.ends_at - t
 
-		if 0 <= time_left then
+		if time_left >= 0 then
 			Debug.text(tostring(element.text))
 		else
 			return true
 		end
-
-		return 
 	end,
 	start_event = function (event, element, t, dt)
 		return true
@@ -529,6 +520,9 @@ TerrorEventMixer.run_functions = {
 		return true
 	end,
 	play_stinger = function (event, element, t)
+		return true
+	end,
+	force_load_breed_package = function (event, element, t)
 		return true
 	end,
 	set_master_event_running = function (event, element, t, dt)
@@ -569,6 +563,58 @@ TerrorEventMixer.run_functions = {
 	end,
 	run_benchmark_func = function (event, element, t, dt)
 		return true
+	end,
+	set_time_challenge = function (event, element, t, dt)
+		return true
+	end,
+	has_completed_time_challenge = function (event, element, t, dt)
+		return true
+	end,
+	do_volume_challenge = function (event, element, t, dt)
+		local volume_name = element.volume_name
+		local optional_data = TerrorEventMixer.optional_data[volume_name]
+
+		if optional_data.terminate then
+			return true
+		end
+
+		local all_inside = true
+		local human_players = Managers.player:human_players()
+
+		for _, player in pairs(human_players) do
+			local player_unit = player.player_unit
+
+			if not AiUtils.unit_alive(player_unit) then
+				all_inside = false
+
+				break
+			end
+
+			local volume_extension = ScriptUnit.extension(player_unit, "volume_system")
+
+			if not volume_extension:is_inside_volume(volume_name) then
+				all_inside = false
+
+				break
+			end
+		end
+
+		if all_inside then
+			optional_data.time_inside = optional_data.time_inside + dt
+		else
+			optional_data.time_inside = 0
+		end
+
+		if optional_data.duration <= optional_data.time_inside then
+			local increment_stat_name = element.increment_stat_name
+			local statistics_db = Managers.player:statistics_db()
+
+			statistics_db:increment_stat_and_sync_to_clients(increment_stat_name)
+
+			return true
+		else
+			return false
+		end
 	end
 }
 TerrorEventMixer.debug_functions = {
@@ -579,7 +625,7 @@ TerrorEventMixer.debug_functions = {
 		return (element.enable and "enable") or "disable"
 	end,
 	delay = function (event, element, t, dt)
-		return 
+		return
 	end,
 	horde = function (event, element, t, dt)
 		local size = Managers.state.conflict:horde_size()
@@ -608,8 +654,6 @@ TerrorEventMixer.debug_functions = {
 		else
 			return string.format("waiting to start...")
 		end
-
-		return 
 	end,
 	reset_event_horde = function (event, element, t, dt)
 		return string.format(element.event_id)
@@ -621,7 +665,15 @@ TerrorEventMixer.debug_functions = {
 		return element.breed_name
 	end,
 	spawn_at_raw = function (event, element, t, dt)
-		return element.spawner_id .. " -> " .. element.breed_name
+		local debug_text = nil
+
+		if type(element.breed_name) == "table" then
+			debug_text = table.dump_string(element.breed_name)
+		else
+			debug_text = element.breed_name
+		end
+
+		return element.spawner_id .. " -> " .. debug_text
 	end,
 	spawn_patrol = function (event, element, t, dt)
 		return element.breed_name
@@ -649,8 +701,9 @@ TerrorEventMixer.debug_functions = {
 		else
 			return " stinger-name:" .. element.stinger_name
 		end
-
-		return 
+	end,
+	force_load_breed_package = function (event, element, t, dt)
+		return "breed_name: " .. element.breed_name
 	end,
 	stop_master_event = function (event, element, t, dt)
 		return ""
@@ -663,20 +716,32 @@ TerrorEventMixer.debug_functions = {
 	end,
 	run_benchmark_func = function (event, element, t, dt)
 		return "func_name:" .. element.func_name
+	end,
+	set_time_challenge = function (event, element, t, dt)
+		return "Time challenge started "
+	end,
+	do_volume_challenge = function (event, element, t, dt)
+		local volume_name = element.volume_name
+		local optional_data = TerrorEventMixer.optional_data[volume_name]
+		local time_inside = optional_data.time_inside
+		local duration = optional_data.duration
+		local complete_status = time_inside / duration
+
+		return string.format("%.2f/%.2f - %.2f", time_inside, duration, complete_status)
 	end
 }
+
 TerrorEventMixer.reset = function ()
 	table.clear(TerrorEventMixer.active_events)
 	table.clear(TerrorEventMixer.start_event_list)
-
-	return 
+	table.clear(TerrorEventMixer.optional_data)
 end
+
 TerrorEventMixer.add_to_start_event_list = function (event_name)
 	local start_events = TerrorEventMixer.start_event_list
 	start_events[#start_events + 1] = event_name
-
-	return 
 end
+
 TerrorEventMixer.start_random_event = function (event_chunk_name)
 	local event_chunk = WeightedRandomTerrorEvents[event_chunk_name]
 
@@ -688,9 +753,8 @@ TerrorEventMixer.start_random_event = function (event_chunk_name)
 
 	TerrorEventMixer.add_to_start_event_list(event_name)
 	print("TerrorEventMixer.start_random_event:", event_chunk_name, "->", event_name)
-
-	return 
 end
+
 TerrorEventMixer.start_event = function (event_name, data)
 	local active_events = TerrorEventMixer.active_events
 	local elements = TerrorEventBlueprints[event_name]
@@ -717,9 +781,8 @@ TerrorEventMixer.start_event = function (event_name, data)
 
 	TerrorEventMixer.init_functions[func_name](new_event, element, t)
 	Managers.telemetry.events:terror_event_started(event_name)
-
-	return 
 end
+
 TerrorEventMixer.stop_event = function (event_name)
 	print("TerrorEventMixer.stop_event:", event_name)
 
@@ -736,9 +799,8 @@ TerrorEventMixer.stop_event = function (event_name)
 			break
 		end
 	end
-
-	return 
 end
+
 TerrorEventMixer.find_event = function (event_name)
 	local active_events = TerrorEventMixer.active_events
 	local num_events = #active_events
@@ -750,16 +812,15 @@ TerrorEventMixer.find_event = function (event_name)
 			return event
 		end
 	end
-
-	return 
 end
+
 TerrorEventMixer.update = function (t, dt, gui)
 	local active_events = TerrorEventMixer.active_events
 	local num_events = #active_events
 	local num_events_at_start_of_update = num_events
 	local i = 1
 
-	while i <= num_events do
+	while num_events >= i do
 		local event = active_events[i]
 
 		if not event then
@@ -791,9 +852,8 @@ TerrorEventMixer.update = function (t, dt, gui)
 	if script_data.debug_terror and gui then
 		TerrorEventMixer.debug(gui, active_events, t, dt)
 	end
-
-	return 
 end
+
 TerrorEventMixer.run_event = function (event, t, dt)
 	local elements = event.elements
 	local index = event.index
@@ -813,7 +873,7 @@ TerrorEventMixer.run_event = function (event, t, dt)
 
 			index = index + 1
 
-			if #elements < index then
+			if index > #elements then
 				return true
 			end
 
@@ -824,19 +884,19 @@ TerrorEventMixer.run_event = function (event, t, dt)
 			TerrorEventMixer.init_functions[func_name](event, element, t)
 		end
 	end
-
-	return 
 end
+
 local tiny_font_size = 16
 local tiny_font = "gw_arial_16"
 local tiny_font_mtrl = "materials/fonts/" .. tiny_font
 local resx, resy = Application.resolution()
 local debug_win_width = 330
 local debug_x = 0
+
 TerrorEventMixer.debug = function (gui, active_events, t, dt)
 	if DebugKeyHandler.key_pressed("mouse_middle_held", "pan terror event mixer", "ai debugger") then
 		local input_service = Managers.free_flight.input_manager:get_service("Debug")
-		local look = input_service.get(input_service, "look")
+		local look = input_service:get("look")
 		debug_x = debug_x - look.x * 0.001
 	end
 
@@ -853,8 +913,15 @@ TerrorEventMixer.debug = function (gui, active_events, t, dt)
 		end
 	end
 
-	return 
+	for name, value in pairs(TerrorEventMixer.optional_data) do
+		if type(value) == "number" then
+			local duration = math.abs(t - value)
+
+			Debug.text("Time challenge running: %s Time left: %0.1f ", name, duration)
+		end
+	end
 end
+
 TerrorEventMixer.debug_event = function (gui, event, t, dt, x1, y1, panning_x, render_master)
 	local elements = event.elements
 	local index = event.index
@@ -876,13 +943,13 @@ TerrorEventMixer.debug_event = function (gui, event, t, dt, x1, y1, panning_x, r
 	y2 = y2 + 20
 	local start_index = 1
 
-	if 9 < index then
+	if index > 9 then
 		start_index = index - 9
 	end
 
 	local end_index = #elements
 
-	if 18 < end_index - start_index then
+	if end_index - start_index > 18 then
 		end_index = start_index + 18
 	end
 
@@ -936,9 +1003,8 @@ TerrorEventMixer.debug_event = function (gui, event, t, dt, x1, y1, panning_x, r
 
 		ScriptGUI.icrect(gui, resx, resy, borderx, bordery - 22, x1 + debug_win_width * 0.66, bordery - 2, layer - 1, Color(200, 20, 20, 20))
 	end
-
-	return 
 end
+
 local fail = nil
 local s = "\n"
 
@@ -957,4 +1023,4 @@ if fail then
 	assert(false, s)
 end
 
-return 
+return

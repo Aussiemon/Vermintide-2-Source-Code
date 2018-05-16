@@ -44,4 +44,4 @@ end
 
 BreedActions.chaos_dummy_troll = table.create_copy(BreedActions.chaos_dummy_troll, action_data)
 
-return 
+return

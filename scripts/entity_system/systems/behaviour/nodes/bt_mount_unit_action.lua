@@ -3,12 +3,13 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 BTMountUnitAction = class(BTMountUnitAction, BTNode)
 local PLAYER_POSITIONS = PLAYER_POSITIONS
 local PLAYER_UNITS = PLAYER_UNITS
+
 BTMountUnitAction.init = function (self, ...)
 	BTMountUnitAction.super.init(self, ...)
-
-	return 
 end
+
 BTMountUnitAction.name = "BTMountUnitAction"
+
 BTMountUnitAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local action = self._tree_node.action_data
@@ -18,7 +19,7 @@ BTMountUnitAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.navigation_extension:set_enabled(false)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
-	network_manager.anim_event(network_manager, unit, animation)
+	network_manager:anim_event(unit, animation)
 
 	local mounted_data = blackboard.mounted_data
 
@@ -33,9 +34,8 @@ BTMountUnitAction.enter = function (self, unit, blackboard, t)
 			Unit.set_local_rotation(unit, 0, mount_rotation)
 		end
 	end
-
-	return 
 end
+
 BTMountUnitAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.navigation_extension:set_enabled(true)
 
@@ -47,10 +47,10 @@ BTMountUnitAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	if mounted_data then
 		mounted_data.knocked_off_mounted_timer = nil
 	end
-
-	return 
 end
+
 local Unit_alive = Unit.alive
+
 BTMountUnitAction.run = function (self, unit, blackboard, t, dt)
 	local mounting_finished = blackboard.mounting_finished
 	local action = blackboard.action
@@ -80,8 +80,6 @@ BTMountUnitAction.run = function (self, unit, blackboard, t, dt)
 	else
 		return "running"
 	end
-
-	return 
 end
 
-return 
+return

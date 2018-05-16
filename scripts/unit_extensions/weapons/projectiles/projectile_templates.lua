@@ -8,7 +8,7 @@ ProjectileTemplates.trajectory_templates = {
 			local EPSILON = 0.01
 			local ITERATIONS = 10
 
-			assert(0 < gravity, "Can't solve for <=0 gravity, use different projectile template")
+			assert(gravity > 0, "Can't solve for <=0 gravity, use different projectile template")
 
 			local estimated_target_position = target_position
 
@@ -70,7 +70,7 @@ ProjectileTemplates.impact_templates = {
 				local ai_base_extension = ScriptUnit.has_extension(owner_unit, "ai_system")
 
 				if ai_base_extension then
-					local blackboard = ai_base_extension.blackboard(ai_base_extension)
+					local blackboard = ai_base_extension:blackboard()
 					blackboard.explosion_impact = true
 				end
 
@@ -96,7 +96,7 @@ ProjectileTemplates.impact_templates = {
 					local event_data = FrameTable.alloc_table()
 					event_data.num_units = players_inside
 
-					dialogue_input.trigger_dialogue_event(dialogue_input, "pwg_projectile_hit", event_data)
+					dialogue_input:trigger_dialogue_event("pwg_projectile_hit", event_data)
 				end
 
 				return true
@@ -155,6 +155,7 @@ ProjectileTemplates.impact_templates = {
 		}
 	}
 }
+
 ProjectileTemplates.get_trajectory_template = function (trajectory_template_name, is_husk)
 	local templates = ProjectileTemplates.trajectory_templates
 	local husk_key = (is_husk == true and "husk") or (is_husk == false and "unit")
@@ -162,6 +163,7 @@ ProjectileTemplates.get_trajectory_template = function (trajectory_template_name
 
 	return template
 end
+
 ProjectileTemplates.get_impact_template = function (impact_template_name)
 	local templates = ProjectileTemplates.impact_templates
 	local template = templates[impact_template_name]
@@ -203,4 +205,4 @@ function check_for_afro_hit(recent_impacts, num_impacts)
 	return hit_unit, actor_index, hit_actor, node_index, only_hit_afro, non_afro_hit_index
 end
 
-return 
+return

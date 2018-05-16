@@ -1992,4 +1992,4 @@ PowerLevelTemplates = {
 	}
 }
 
-return 
+return

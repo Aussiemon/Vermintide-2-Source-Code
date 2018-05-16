@@ -12,8 +12,6 @@ local function save_joints_in_boxed_array(source_array, target_array, num)
 	for i = 1, num, 1 do
 		target_array[i]:store(source_array[i])
 	end
-
-	return 
 end
 
 IkChain.init = function (self, joints, start_pos, target_pos, tolerance, use_max_joint_angle)
@@ -45,16 +43,14 @@ IkChain.init = function (self, joints, start_pos, target_pos, tolerance, use_max
 		self.constrain_angle = use_max_joint_angle
 		self.dot_constrain = math.cos(use_max_joint_angle)
 	end
-
-	return 
 end
+
 IkChain.set_target_pos = function (self, target_pos, acceleration)
 	self.target_pos:store(target_pos)
 
 	self.acc = acceleration or 1
-
-	return 
 end
+
 IkChain.debug_draw = function (self, joints, num_joints)
 	local line_color = (self.constrain_angle and Color(120, 0, 120)) or Color(120, 255, 0)
 	local ball_color = Color(0, 155, 255)
@@ -67,9 +63,8 @@ IkChain.debug_draw = function (self, joints, num_joints)
 	QuickDrawer:sphere(joints[num_joints], 0.05, ball_color)
 	QuickDrawer:sphere(self.target_pos:unbox(), 0.1, Color(255, 45, 0))
 	QuickDrawer:sphere(self.aim_pos:unbox(), 0.095, Color(255, 0, 200))
-
-	return 
 end
+
 IkChain.backward = function (self, joints, lengths, num_joints, target_pos)
 	joints[num_joints] = target_pos
 
@@ -79,9 +74,8 @@ IkChain.backward = function (self, joints, lengths, num_joints, target_pos)
 		local pos = (1 - l) * joints[i + 1] + l * joints[i]
 		joints[i] = pos
 	end
-
-	return 
 end
+
 IkChain.forward = function (self, joints, lengths, num_joints, start_pos)
 	joints[1] = start_pos
 
@@ -91,11 +85,11 @@ IkChain.forward = function (self, joints, lengths, num_joints, start_pos)
 		local pos = (1 - l) * joints[i] + l * joints[i + 1]
 		joints[i + 1] = pos
 	end
-
-	return 
 end
+
 local dot_constrain = 0.7
 local constrain_angle = math.acos(dot_constrain)
+
 IkChain.forward_constrained = function (self, joints, lengths, num_joints, start_pos)
 	local dot_constrain = self.dot_constrain
 	local constrain_angle = self.constrain_angle
@@ -121,10 +115,10 @@ IkChain.forward_constrained = function (self, joints, lengths, num_joints, start
 
 		cone_dir = Vector3.normalize(joints[i + 1] - joints[i])
 	end
-
-	return 
 end
+
 local temp_joints = {}
+
 IkChain.solve = function (self, t, dt)
 	local target_pos = self.target_pos:unbox()
 	local aim_pos = self.aim_pos:unbox()
@@ -150,28 +144,26 @@ IkChain.solve = function (self, t, dt)
 		local dif = Vector3.length(joints[num_joints] - target_pos)
 
 		while self.tolerance < dif do
-			self.backward(self, joints, lengths, num_joints, target_pos)
+			self:backward(joints, lengths, num_joints, target_pos)
 
 			if self.constrain_angle then
-				self.forward_constrained(self, joints, lengths, num_joints, start_pos)
+				self:forward_constrained(joints, lengths, num_joints, start_pos)
 			else
-				self.forward(self, joints, lengths, num_joints, start_pos)
+				self:forward(joints, lengths, num_joints, start_pos)
 			end
 
 			dif = Vector3.length(joints[num_joints] - target_pos)
 			count = count + 1
 
-			if 10 < count then
+			if count > 10 then
 				break
 			end
 		end
 	end
 
 	save_joints_in_boxed_array(joints, self.joints, num_joints)
-	self.debug_draw(self, joints, num_joints)
+	self:debug_draw(joints, num_joints)
 	Debug.text("Solving tentacle: %d iterations", count)
-
-	return 
 end
 
-return 
+return

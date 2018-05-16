@@ -168,4 +168,4 @@ HitEffectsChaosTroll = {
 }
 HitEffectsRatOgre = table.create_copy(HitEffectsRatOgre, HitEffectsRatOgre)
 
-return 
+return

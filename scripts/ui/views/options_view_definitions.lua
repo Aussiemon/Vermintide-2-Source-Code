@@ -718,8 +718,6 @@ local background_widget_definitions = {
 						local current_scroll_value = ui_content.internal_scroll_value
 						current_scroll_value = current_scroll_value + scroll_step * -scroll_axis.y
 						ui_content.internal_scroll_value = math.clamp(current_scroll_value, 0, 1)
-
-						return 
 					end
 				}
 			}
@@ -817,14 +815,14 @@ local button_element_template = {
 			pass_type = "texture",
 			texture_id = "texture_id",
 			content_check_function = function (content)
-				return not content.hotspot.is_hover and 0 < content.hotspot.is_clicked
+				return not content.hotspot.is_hover and content.hotspot.is_clicked > 0
 			end
 		},
 		{
 			pass_type = "texture",
 			texture_id = "texture_hover_id",
 			content_check_function = function (content)
-				return content.hotspot.is_hover and 0 < content.hotspot.is_clicked
+				return content.hotspot.is_hover and content.hotspot.is_clicked > 0
 			end
 		},
 		{
@@ -982,8 +980,6 @@ local function create_checkbox_widget(text, scenegraph_id, base_offset)
 						else
 							ui_content.checkbox = "checkbox_unchecked"
 						end
-
-						return 
 					end
 				},
 				{
@@ -1273,9 +1269,9 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 						local gamepad_active = Managers.input:is_device_active("gamepad")
 
 						if gamepad_active then
-							cursor = input_service.get(input_service, "cursor")
+							cursor = input_service:get("cursor")
 						else
-							cursor = UIInverseScaleVectorToResolution(input_service.get(input_service, "cursor"))
+							cursor = UIInverseScaleVectorToResolution(input_service:get("cursor"))
 						end
 
 						local scenegraph_id = ui_content.scenegraph_id
@@ -1289,15 +1285,11 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 						ui_content.internal_value = value
 
 						if old_value ~= value and not ui_content.callback_on_release then
-							ui_content.callback(ui_content)
+							ui_content:callback()
 						end
-
-						return 
 					end,
 					release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-						ui_content.callback(ui_content)
-
-						return 
+						ui_content:callback()
 					end
 				},
 				{
@@ -1326,8 +1318,6 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 						else
 							ui_style.value_text.text_color = ui_style.value_text.default_color
 						end
-
-						return 
 					end
 				},
 				{
@@ -1475,8 +1465,6 @@ local function create_slider_widget(text, tooltip_text, scenegraph_id, base_offs
 								on_pressed_callback("right_arrow_hover")
 							end
 						end
-
-						return 
 					end
 				}
 			}
@@ -1981,8 +1969,6 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 
 							return parent_content.active
 						end
-
-						return 
 					end
 				},
 				{
@@ -2001,8 +1987,6 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 
 							return not parent_content.active
 						end
-
-						return 
 					end
 				},
 				{
@@ -2060,8 +2044,6 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 								else
 									text_style.text_color = text_style.default_color
 								end
-
-								return 
 							end
 						},
 						{
@@ -2383,8 +2365,6 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 						if selection_text ~= ui_content.selection_text then
 							ui_content.selection_text = selection_text
 						end
-
-						return 
 					end
 				},
 				{
@@ -2472,8 +2452,6 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 						else
 							ui_style.selection_text.text_color = ui_style.selection_text.default_color
 						end
-
-						return 
 					end
 				},
 				{
@@ -2867,7 +2845,7 @@ local function create_title_widget(text, optional_font_size, optional_text_color
 			text = {
 				upper_case = true,
 				localize = true,
-				dynamic_font = true,
+				dynamic_font_size = true,
 				font_type = "hell_shark_header_masked",
 				offset = {
 					base_offset[1] + 2,
@@ -3136,8 +3114,6 @@ local function create_option_widget(ui_renderer, text, options, selected_option,
 					ui_style[option_text_id].text_color = (is_selected and ui_style[option_text_id].highlight_color) or ui_style[option_text_id].default_color
 				end
 			end
-
-			return 
 		end
 	}
 	passes[#passes + 1] = {
@@ -3314,8 +3290,6 @@ local function create_option_widget(ui_renderer, text, options, selected_option,
 						style.text_color = Colors.get_color_table_with_alpha("font_title", 255)
 					end
 				end
-
-				return 
 			end
 		}
 		style[option_text_id] = {
@@ -3374,8 +3348,6 @@ local function create_option_widget(ui_renderer, text, options, selected_option,
 						style.color = Colors.get_color_table_with_alpha("font_title", 255)
 					end
 				end
-
-				return 
 			end
 		}
 		content.rect_texture = "rect_masked"
@@ -3457,8 +3429,6 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 						else
 							ui_style.selected_rect.color[1] = 255
 						end
-
-						return 
 					end
 				},
 				{
@@ -3667,7 +3637,7 @@ SettingsWidgetTypeTemplate = {
 			local list_style = style.list_style
 
 			if content.active then
-				if input_service.get(input_service, "move_up") then
+				if input_service:get("move_up") then
 					local num_draws = list_style.num_draws
 					local selected_index = nil
 
@@ -3682,7 +3652,7 @@ SettingsWidgetTypeTemplate = {
 					end
 
 					if selected_index then
-						if 1 < selected_index then
+						if selected_index > 1 then
 							list_content[selected_index].hotspot.is_selected = false
 							list_content[selected_index - 1].hotspot.is_selected = true
 						end
@@ -3691,7 +3661,7 @@ SettingsWidgetTypeTemplate = {
 					end
 
 					return true
-				elseif input_service.get(input_service, "move_down") then
+				elseif input_service:get("move_down") then
 					local num_draws = list_style.num_draws
 					local selected_index = nil
 
@@ -3718,7 +3688,7 @@ SettingsWidgetTypeTemplate = {
 				end
 			end
 
-			if input_service.get(input_service, "confirm") then
+			if input_service:get("confirm") then
 				if not content.active then
 					content.active = true
 					list_style.active = true
@@ -3742,14 +3712,14 @@ SettingsWidgetTypeTemplate = {
 					if selected_index then
 						content.current_selection = selected_index
 
-						content.callback(content)
+						content:callback()
 					end
 				end
 
 				return true, content.active
 			end
 
-			if content.active and input_service.get(input_service, "back") then
+			if content.active and input_service:get("back") then
 				content.active = false
 				list_style.active = false
 				local num_draws = list_style.num_draws
@@ -3791,13 +3761,11 @@ SettingsWidgetTypeTemplate = {
 		input_function = function (widget, input_service)
 			local content = widget.content
 
-			if input_service.get(input_service, "confirm") then
+			if input_service:get("confirm") then
 				content.hotspot.on_release = true
 
 				return true
 			end
-
-			return 
 		end,
 		input_description = {
 			name = "checkbox",
@@ -3817,14 +3785,14 @@ SettingsWidgetTypeTemplate = {
 			local num_options = content.num_options
 			local current_selection = content.current_selection
 
-			if input_service.get(input_service, "move_left") then
-				if 1 < current_selection then
+			if input_service:get("move_left") then
+				if current_selection > 1 then
 					local new_selection_index = current_selection - 1
 					content["option_" .. new_selection_index].on_release = true
 				end
 
 				return true
-			elseif input_service.get(input_service, "move_right") then
+			elseif input_service:get("move_right") then
 				if current_selection < num_options then
 					local new_selection_index = current_selection + 1
 					content["option_" .. new_selection_index].on_release = true
@@ -3832,8 +3800,6 @@ SettingsWidgetTypeTemplate = {
 
 				return true
 			end
-
-			return 
 		end
 	},
 	keybind = {
@@ -3841,17 +3807,15 @@ SettingsWidgetTypeTemplate = {
 			local content = widget.content
 			local style = widget.style
 
-			if content.active and input_service.get(input_service, "back", true) then
+			if content.active and input_service:get("back", true) then
 				content.controller_input_pressed = true
 
 				return true
 			end
 
-			if content.active and (input_service.get(input_service, "move_up") or input_service.get(input_service, "move_down") or input_service.get(input_service, "move_up_hold") or input_service.get(input_service, "move_down_hold")) then
+			if content.active and (input_service:get("move_up") or input_service:get("move_down") or input_service:get("move_up_hold") or input_service:get("move_down_hold")) then
 				return true
 			end
-
-			return 
 		end,
 		input_description = {
 			name = "keybind",
@@ -3863,17 +3827,15 @@ SettingsWidgetTypeTemplate = {
 		input_function = function (widget, input_service)
 			local content = widget.content
 
-			if input_service.get(input_service, "move_left") then
+			if input_service:get("move_left") then
 				content.controller_on_release_left = true
 
 				return true
-			elseif input_service.get(input_service, "move_right") then
+			elseif input_service:get("move_right") then
 				content.controller_on_release_right = true
 
 				return true
 			end
-
-			return 
 		end
 	},
 	slider = {
@@ -3886,7 +3848,7 @@ SettingsWidgetTypeTemplate = {
 			if input_cooldown then
 				on_cooldown_last_frame = true
 				local new_cooldown = math.max(input_cooldown - dt, 0)
-				input_cooldown = (0 < new_cooldown and new_cooldown) or nil
+				input_cooldown = (new_cooldown > 0 and new_cooldown) or nil
 				content.input_cooldown = input_cooldown
 			end
 
@@ -3899,12 +3861,12 @@ SettingsWidgetTypeTemplate = {
 			local step = 1 / total_step
 			local input_been_made = false
 
-			if input_service.get(input_service, "move_left_hold") then
+			if input_service:get("move_left_hold") then
 				if not input_cooldown then
 					content.internal_value = math.clamp(internal_value - step, 0, 1)
 					input_been_made = true
 				end
-			elseif input_service.get(input_service, "move_right_hold") and not input_cooldown then
+			elseif input_service:get("move_right_hold") and not input_cooldown then
 				content.internal_value = math.clamp(internal_value + step, 0, 1)
 				input_been_made = true
 			end
@@ -3924,13 +3886,11 @@ SettingsWidgetTypeTemplate = {
 
 				return true
 			end
-
-			return 
 		end
 	},
 	image = {
 		input_function = function ()
-			return 
+			return
 		end,
 		input_description = {
 			name = "image",
@@ -3940,7 +3900,7 @@ SettingsWidgetTypeTemplate = {
 	},
 	title = {
 		input_function = function ()
-			return 
+			return
 		end,
 		input_description = {
 			name = "title",
@@ -3950,7 +3910,7 @@ SettingsWidgetTypeTemplate = {
 	},
 	text_link = {
 		input_function = function ()
-			return 
+			return
 		end,
 		input_description = {
 			name = "title",
@@ -3960,7 +3920,7 @@ SettingsWidgetTypeTemplate = {
 	},
 	gamepad_layout = {
 		input_function = function ()
-			return 
+			return
 		end,
 		input_description = {
 			name = "gamepad_layout",

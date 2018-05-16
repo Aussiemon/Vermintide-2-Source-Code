@@ -142,6 +142,7 @@ NetworkLookup.anims = {
 	"scholar_burning_head_ability_shoot_fast",
 	"scholar_burning_head_ability_cancel",
 	"unchained_ability_explosion",
+	"veteran_ranger_ability_grenade",
 	"iron_breaker_active_ability",
 	"knight_active_ability",
 	"foot_knight_ability_charge_start",
@@ -740,6 +741,7 @@ NetworkLookup.anims = {
 	"teleport_pose_pain_3",
 	"idle_wounded",
 	"attack_fire_dual_narrow",
+	"attack_push_back",
 	"stagger_heavy_fwd",
 	"stagger_heavy_bwd",
 	"stagger_heavy_right",
@@ -774,4 +776,4 @@ NetworkLookup.interest_point_anims = {
 	"idle_passive_guard"
 }
 
-return 
+return

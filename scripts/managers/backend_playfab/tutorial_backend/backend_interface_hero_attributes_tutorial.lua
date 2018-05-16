@@ -19,34 +19,40 @@ local DEFAULT_ATTRIBUTES = {
 	empire_soldier_experience = 0,
 	empire_soldier_tutorial_experience = 0
 }
+
 BackendInterfaceHeroAttributesTutorial.init = function (self, backend_mirror)
 	self._attributes = table.clone(DEFAULT_ATTRIBUTES)
 	self._initialized = true
-
-	return 
 end
+
 BackendInterfaceHeroAttributesTutorial.ready = function (self)
 	return self._initialized
 end
+
 BackendInterfaceHeroAttributesTutorial.update = function (self, dt)
-	return 
+	return
 end
+
 BackendInterfaceHeroAttributesTutorial.get = function (self, hero, attribute)
 	local key = hero .. "_" .. attribute
 
 	return self._attributes[key] or DEFAULT_ATTRIBUTES[key]
 end
+
 BackendInterfaceHeroAttributesTutorial.set = function (self, hero, attribute, value)
-	return 
+	return
 end
+
 BackendInterfaceHeroAttributesTutorial.prestige = function (self, hero_name, callback_function)
-	return 
+	return
 end
+
 BackendInterfaceHeroAttributesTutorial.prestige_request_cb = function (self, hero_name, callback_function, result)
-	return 
+	return
 end
+
 BackendInterfaceHeroAttributesTutorial.save = function (self, save_hero_attributes_cb)
 	return false
 end
 
-return 
+return

@@ -19,11 +19,21 @@ BenchmarkSettings = {
 	destroy_close_enemies_timer = 90,
 	initial_overview_time = math.huge,
 	parameters = {
-		disable_gutter_runner = true,
+		disable_debug_draw = true,
 		use_local_backend = true,
-		disable_pack_master = true,
 		use_lan_backend = true,
+		disable_gutter_runner = true,
+		hide_version_info = true,
+		network_debug_connections = false,
 		hide_fps = true,
+		spawn_empty_chest = true,
+		honduras_demo = true,
+		network_debug = false,
+		disable_pack_master = true,
+		network_log_messages = false,
+		disable_intro_trailer = true,
+		force_steam = false,
+		debug_interactions = false,
 		screen_space_player_camera_reactions = false,
 		infinite_ammo = true,
 		player_invincible = true,
@@ -43,8 +53,6 @@ local function setup_parameters(parameters)
 	for parameter, value in pairs(parameters) do
 		Development.set_parameter(parameter, value)
 	end
-
-	return 
 end
 
 local function override_display_name(mode_settings)
@@ -53,8 +61,6 @@ local function override_display_name(mode_settings)
 	level_settings.display_name = mode_settings.display_name
 	level_settings.loading_screen_wwise_events = mode_settings.loading_screen_wwise_events
 	script_data.no_loading_screen_tip_texts = true
-
-	return 
 end
 
 local DEMO_MODE = false
@@ -102,7 +108,9 @@ BenchmarkSettings.demo_mode_overrides = function ()
 		end
 
 		for setting_name, setting in pairs(BreedPacks) do
-			setting.patrol_overrides.patrol_chance = 0
+			if setting.patrol_overrides then
+				setting.patrol_overrides.patrol_chance = 0
+			end
 		end
 
 		SpecialsSettings.chaos.breeds = {
@@ -111,8 +119,6 @@ BenchmarkSettings.demo_mode_overrides = function ()
 			"skaven_warpfire_thrower"
 		}
 	end
-
-	return 
 end
 
-return 
+return

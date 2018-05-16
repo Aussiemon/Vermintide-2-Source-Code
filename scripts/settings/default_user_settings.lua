@@ -53,6 +53,7 @@ local default_user_settings = {
 	tobii_clean_ui = true,
 	tobii_fire_at_gaze = true,
 	use_alien_fx = false,
+	process_priority = "unchanged",
 	weapon_scroll_type = "scroll_wrap",
 	voip_is_enabled = true,
 	toggle_crouch = false,
@@ -62,8 +63,10 @@ local default_user_settings = {
 	max_stacking_frames = -1,
 	gamepad_layout = "default",
 	chat_enabled = true,
+	small_network_packets = false,
 	twitch_time_between_votes = 30,
 	use_subtitles = true,
+	deadlock_timeout = 15,
 	voip_bus_volume = 100,
 	blood_enabled = true,
 	gamepad_look_sensitivity = 0,
@@ -78,29 +81,31 @@ local default_user_settings = {
 	sun_shadow_quality = script_data.settings.default_sun_shadow_quality or "high",
 	use_physic_debris = script_data.settings.default_use_physic_debris or true,
 	num_blood_decals = BloodSettings.blood_decals.num_decals or 100,
-	volumetric_fog_quality = script_data.settings.default_volumetric_fog_quality or "medium",
-	ambient_light_quality = script_data.settings.default_ambient_light_quality or "medium",
+	volumetric_fog_quality = script_data.settings.default_volumetric_fog_quality or "lowest",
+	ambient_light_quality = script_data.settings.default_ambient_light_quality or "high",
 	ao_quality = script_data.settings.default_ao_quality or "medium"
 }
 local default_render_settings = {
 	lod_decoration_density = 1,
-	gamma = 2.2,
-	lens_flares_enabled = false,
+	eye_adaptation_speed = 1,
+	light_shafts_enabled = false,
 	fxaa_enabled = false,
-	sun_flare_enabled = false,
+	lens_flares_enabled = false,
 	skin_material_enabled = false,
-	lens_quality_enabled = false,
+	sun_flare_enabled = false,
 	ao_enabled = true,
 	sun_shadows = true,
 	ao_high_quality = false,
+	lens_quality_enabled = false,
 	sharpen_enabled = false,
 	dof_enabled = false,
 	ssr_enabled = false,
 	bloom_enabled = true,
 	taa_enabled = false,
 	ssr_high_quality = false,
-	light_shafts_enabled = false,
+	gamma = 2.2,
 	lod_object_multiplier = 1,
+	local_probes_enabled = true,
 	lod_scatter_density = 1,
 	max_shadow_casting_lights = (PLATFORM == "win32" and 1) or 2,
 	fov = script_data.settings.default_fov or CameraSettings.first_person._node.vertical_fov
@@ -149,7 +154,7 @@ for setting, value in pairs(local_light_shadow_quality_settings) do
 	default_render_settings[setting] = value
 end
 
-local volumetric_fog_quality_settings = LocalLightShadowQuality[default_user_settings.volumetric_fog_quality]
+local volumetric_fog_quality_settings = VolumetricFogQuality[default_user_settings.volumetric_fog_quality]
 
 for setting, value in pairs(volumetric_fog_quality_settings) do
 	default_render_settings[setting] = value
@@ -158,7 +163,7 @@ end
 DefaultUserSettings = {
 	set_default_user_settings = function ()
 		if LEVEL_EDITOR_TEST then
-			return 
+			return
 		end
 
 		local set_default = false
@@ -198,8 +203,6 @@ DefaultUserSettings = {
 		if set_default then
 			Application.save_user_settings()
 		end
-
-		return 
 	end,
 	get = function (setting_type, setting_name)
 		local setting = nil
@@ -312,9 +315,7 @@ DefaultUserSettings = {
 
 			return true
 		end
-
-		return 
 	end
 }
 
-return 
+return

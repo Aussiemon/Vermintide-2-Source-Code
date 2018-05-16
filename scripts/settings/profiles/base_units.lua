@@ -45,4 +45,4 @@ for profile_name, third_person_units in pairs(third_person_base_units) do
 	end
 end
 
-return 
+return

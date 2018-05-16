@@ -1,14 +1,14 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
 if rawget(_G, "G_RESOLUTION_SETUP") then
-	return 
+	return
 end
 
 rawset(_G, "G_RESOLUTION_SETUP", true)
 require("scripts/ui/aspect_ratio")
 
 local function printf()
-	return 
+	return
 end
 
 local current_viewport = {
@@ -58,7 +58,7 @@ local function determine_native_aspect_ratio_and_resolution()
 			local num_adapters = DisplayAdapter.num_adapters()
 
 			for i = 0, num_adapters - 1, 1 do
-				if 0 < DisplayAdapter.num_outputs(i) then
+				if DisplayAdapter.num_outputs(i) > 0 then
 					adapter_index = i
 				end
 			end
@@ -67,7 +67,7 @@ local function determine_native_aspect_ratio_and_resolution()
 		local num_modes = DisplayAdapter.num_modes(adapter_index, fullscreen_output)
 		local tmp = FrameTable.alloc_table()
 
-		if 0 < num_modes then
+		if num_modes > 0 then
 			for i = 0, num_modes - 1, 1 do
 				local temp = FrameTable.alloc_table()
 				temp.w, temp.h = DisplayAdapter.mode(adapter_index, fullscreen_output, i)
@@ -83,7 +83,7 @@ local function determine_native_aspect_ratio_and_resolution()
 		end
 
 		table.sort(tmp, function (x, y)
-			return y.w * y.h < x.w * x.h
+			return x.w * x.h > y.w * y.h
 		end)
 
 		native_screen_height = tmp[1].h
@@ -94,8 +94,6 @@ local function determine_native_aspect_ratio_and_resolution()
 
 	printf("ui: Native aspect ratio %s", AspectRatio.Mapping[AspectRatio.Native])
 	printf("ui: Native resolution %d x %d", native_screen_width, native_screen_height)
-
-	return 
 end
 
 local current_aspect_ratio = AspectRatio.calculate(Application.resolution())
@@ -106,8 +104,6 @@ function UIResolutionWidthFragments()
 	else
 		return NUM_SCREEN_FRAGMENTS_W_16_9
 	end
-
-	return 
 end
 
 function UIResolutionHeightFragments()
@@ -116,8 +112,6 @@ function UIResolutionHeightFragments()
 	else
 		return NUM_SCREEN_FRAGMENTS_H_16_9
 	end
-
-	return 
 end
 
 function DebugUIResolution()
@@ -136,8 +130,6 @@ function DebugUIResolution()
 	end
 
 	Debug.text("Ratio: %s (AR Index is %d)", aspect_ratio_string, current_aspect_ratio)
-
-	return 
 end
 
 function UIResolution()
@@ -151,8 +143,6 @@ function SetResolution(width, height)
 	Application.set_user_setting("screen_resolution", 1, width)
 	Application.set_user_setting("screen_resolution", 2, height)
 	Application.save_user_settings()
-
-	return 
 end
 
 function UIResolutionScale()
@@ -213,8 +203,6 @@ function UIScalePositionTableToResolution(position, pixel_snap)
 			position[3] or 0
 		}
 	end
-
-	return 
 end
 
 function UIScaleVectorToResolution(position, pixel_snap)
@@ -225,8 +213,6 @@ function UIScaleVectorToResolution(position, pixel_snap)
 	else
 		return Vector3(position[1] * scale, position[2] * scale, position[3] or 0)
 	end
-
-	return 
 end
 
 function UIScaleScalarToResolution(scalar, pixel_snap)
@@ -237,8 +223,6 @@ function UIScaleScalarToResolution(scalar, pixel_snap)
 	else
 		return scalar * scale
 	end
-
-	return 
 end
 
 function UIInverseScaleVectorToResolution(position, pixel_snap)
@@ -249,8 +233,6 @@ function UIInverseScaleVectorToResolution(position, pixel_snap)
 	else
 		return Vector3(position[1] * scale, position[2] * scale, position[3] or 0)
 	end
-
-	return 
 end
 
 function UIScaleVectorToResolution_pow2(position, pixel_snap)
@@ -261,8 +243,6 @@ function UIScaleVectorToResolution_pow2(position, pixel_snap)
 	else
 		return Vector3(position[1] * scale, position[2] * scale, position[3] or 0)
 	end
-
-	return 
 end
 
 function EnumDisplayModes()
@@ -284,17 +264,21 @@ function EnumDisplayModes()
 			local num_modes = DisplayAdapter.num_modes(adapter, output)
 
 			for mode = 0, num_modes - 1, 1 do
+				repeat
 
-				-- Decompilation error in this vicinity:
-				local width, height = DisplayAdapter.mode(adapter, output, mode)
-				local aspect_ratio = AspectRatio.calculate(width, height)
+					-- Decompilation error in this vicinity:
+					local width, height = DisplayAdapter.mode(adapter, output, mode)
+					local aspect_ratio = AspectRatio.calculate(width, height)
 
-				printf("ui: SKIPPED %d/%d adapter %d, output %d. Reason: WRONG ADAPTER", width, height, adapter, output)
+					printf("ui: SKIPPED %d/%d adapter %d, output %d. Reason: WRONG ADAPTER", width, height, adapter, output)
+					table.insert(resolutions_by_aspect_ratio[aspect_ratio], {
+						width,
+						height
+					})
+				until true
 			end
 		end
 	end
-
-	return 
 end
 
 local base_window_resolutions = {
@@ -449,8 +433,6 @@ function InitVideo()
 	else
 		AccomodateViewport()
 	end
-
-	return 
 end
 
 function AccomodateViewport()
@@ -461,8 +443,6 @@ function AccomodateViewport()
 	current_viewport.y = max.y / native_screen_height
 	current_viewport.width = max.width / native_screen_width
 	current_viewport.height = max.height / native_screen_height
-
-	return 
 end
 
 function DebugUpdateResolution()
@@ -474,8 +454,6 @@ function DebugUpdateResolution()
 		screen_width = current_width
 		screen_height = current_height
 	end
-
-	return 
 end
 
-return 
+return

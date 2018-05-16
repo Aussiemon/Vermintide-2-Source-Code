@@ -1,4 +1,5 @@
 KeystrokeHelper = KeystrokeHelper or {}
+
 KeystrokeHelper.num_utf8chars = function (text)
 	local length = string.len(text)
 	local index = 1
@@ -12,6 +13,7 @@ KeystrokeHelper.num_utf8chars = function (text)
 
 	return num_chars
 end
+
 KeystrokeHelper.parse_strokes = function (text, index, mode, keystrokes)
 	local text_table = KeystrokeHelper._build_utf8_table(text)
 
@@ -33,6 +35,7 @@ KeystrokeHelper.parse_strokes = function (text, index, mode, keystrokes)
 
 	return new_text, index, mode
 end
+
 KeystrokeHelper._build_utf8_table = function (text, external_table)
 	local text_table = external_table or {}
 	local character_index = 1
@@ -48,6 +51,7 @@ KeystrokeHelper._build_utf8_table = function (text, external_table)
 
 	return text_table
 end
+
 KeystrokeHelper._add_character = function (text_table, text, index, mode)
 	if mode == "insert" then
 		table.insert(text_table, index, text)
@@ -57,23 +61,30 @@ KeystrokeHelper._add_character = function (text_table, text, index, mode)
 
 	return index + 1, mode
 end
+
 KeystrokeHelper[Keyboard.LEFT] = function (text_table, index, mode)
 	return math.max(index - 1, 1), mode
 end
+
 KeystrokeHelper[Keyboard.RIGHT] = function (text_table, index, mode)
 	return math.min(index + 1, #text_table + 1), mode
 end
+
 KeystrokeHelper[Keyboard.UP] = nil
 KeystrokeHelper[Keyboard.DOWN] = nil
+
 KeystrokeHelper[Keyboard.INSERT] = function (text_table, index, mode)
 	return index, (mode == "insert" and "overwrite") or "insert"
 end
+
 KeystrokeHelper[Keyboard.HOME] = function (text_table, index, mode)
 	return 1, mode
 end
+
 KeystrokeHelper[Keyboard.END] = function (text_table, index, mode)
 	return #text_table + 1, mode
 end
+
 KeystrokeHelper[Keyboard.BACKSPACE] = function (text_table, index, mode)
 	local backspace_index = index - 1
 
@@ -85,12 +96,15 @@ KeystrokeHelper[Keyboard.BACKSPACE] = function (text_table, index, mode)
 
 	return backspace_index, mode
 end
+
 KeystrokeHelper[Keyboard.TAB] = function (text_table, index, mode)
 	return KeystrokeHelper._add_character(text_table, "\t", index, mode)
 end
+
 KeystrokeHelper[Keyboard.PAGE_UP] = nil
 KeystrokeHelper[Keyboard.PAGE_DOWN] = nil
 KeystrokeHelper[Keyboard.ESCAPE] = nil
+
 KeystrokeHelper[Keyboard.DELETE] = function (text_table, index, mode)
 	if text_table[index] then
 		table.remove(text_table, index)
@@ -99,4 +113,4 @@ KeystrokeHelper[Keyboard.DELETE] = function (text_table, index, mode)
 	return index, mode
 end
 
-return 
+return

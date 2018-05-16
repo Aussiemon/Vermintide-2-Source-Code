@@ -1,26 +1,27 @@
 MatchmakingStateWaitForCountdown = class(MatchmakingStateWaitForCountdown)
 MatchmakingStateWaitForCountdown.NAME = "MatchmakingStateWaitForCountdown"
+
 MatchmakingStateWaitForCountdown.init = function (self, params)
 	self._lobby = params.lobby
+end
 
-	return 
-end
 MatchmakingStateWaitForCountdown.destroy = function (self)
-	return 
+	return
 end
+
 MatchmakingStateWaitForCountdown.on_enter = function (self, state_context)
 	self._state_context = state_context
 	self._search_config = state_context.search_config
-
-	return 
 end
+
 MatchmakingStateWaitForCountdown.on_exit = function (self)
 	Managers.matchmaking:activate_waystone_portal(false)
-
-	return 
 end
+
 MatchmakingStateWaitForCountdown.update = function (self, dt, t)
-	self._capture_telemetry(self)
+	if not DEDICATED_SERVER then
+		self:_capture_telemetry()
+	end
 
 	local manager = Managers.matchmaking
 
@@ -32,11 +33,12 @@ MatchmakingStateWaitForCountdown.update = function (self, dt, t)
 
 	return nil
 end
+
 MatchmakingStateWaitForCountdown._capture_telemetry = function (self)
 	local members_joined = self._lobby:members():get_members_joined()
 	local num_members_joined = #members_joined
 
-	if 0 < num_members_joined then
+	if num_members_joined > 0 then
 		local player = Managers.player:local_player()
 		local time_taken = Managers.time:time("main") - self._state_context.started_hosting_t
 
@@ -50,8 +52,6 @@ MatchmakingStateWaitForCountdown._capture_telemetry = function (self)
 			Managers.telemetry.events:matchmaking_player_joined(player, time_taken, is_friend)
 		end
 	end
-
-	return 
 end
 
-return 
+return

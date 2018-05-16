@@ -2402,4 +2402,4 @@ HitEffectsChaosMarauderShield = {
 }
 HitEffectsChaosMarauder = table.create_copy(HitEffectsChaosMarauder, HitEffectsChaosMarauder)
 
-return 
+return

@@ -4,14 +4,15 @@ BTChaosSorcererSkulkApproachAction = class(BTChaosSorcererSkulkApproachAction, B
 local BTChaosSorcererSkulkApproachAction = BTChaosSorcererSkulkApproachAction
 local Unit_alive = Unit.alive
 local POSITION_LOOKUP = POSITION_LOOKUP
+
 BTChaosSorcererSkulkApproachAction.init = function (self, ...)
 	BTChaosSorcererSkulkApproachAction.super.init(self, ...)
 
 	self.cover_points_broadphase = Managers.state.conflict.level_analysis.cover_points_broadphase
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction.name = "BTChaosSorcererSkulkApproachAction"
+
 BTChaosSorcererSkulkApproachAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local breed = blackboard.breed
@@ -23,18 +24,18 @@ BTChaosSorcererSkulkApproachAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = action
 
 	if blackboard.move_state ~= "idle" then
-		self.idle(self, unit, blackboard)
+		self:idle(unit, blackboard)
 	end
 
 	local ai_navigation = blackboard.navigation_extension
 
-	ai_navigation.set_max_speed(ai_navigation, breed.run_speed)
+	ai_navigation:set_max_speed(breed.run_speed)
 	LocomotionUtils.set_animation_driven_movement(unit, false)
 
 	if blackboard.move_pos then
 		local move_pos = blackboard.move_pos:unbox()
 
-		self.move_to(self, move_pos, unit, blackboard)
+		self:move_to(move_pos, unit, blackboard)
 	end
 
 	blackboard.ready_to_summon = false
@@ -55,7 +56,7 @@ BTChaosSorcererSkulkApproachAction.enter = function (self, unit, blackboard, t)
 			blackboard.spell = blackboard.portal_data
 		end
 	elseif action.sorcerer_type == "vortex" and not blackboard.vortex_data then
-		self._initialize_vortex_data(self, blackboard, action)
+		self:_initialize_vortex_data(blackboard, action)
 
 		blackboard.spell = blackboard.vortex_data
 	end
@@ -63,15 +64,15 @@ BTChaosSorcererSkulkApproachAction.enter = function (self, unit, blackboard, t)
 	if blackboard.teleport_health_percent == nil or blackboard.set_teleport_hp then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		blackboard.health_extension = health_extension
-		blackboard.teleport_health_percent = health_extension.current_health_percent(health_extension) - action.part_hp_lost_to_teleport
+		blackboard.teleport_health_percent = health_extension:current_health_percent() - action.part_hp_lost_to_teleport
 		blackboard.set_teleport_hp = nil
 	end
 
 	blackboard.travel_teleport_timer = t + ConflictUtils.random_interval(action.teleport_cooldown)
-
-	return 
 end
+
 local VORTEX_CHECK_ANGLE_INCREMENT = math.pi / 4
+
 BTChaosSorcererSkulkApproachAction._initialize_vortex_data = function (self, blackboard, action)
 	local vortex_template = VortexTemplates[action.vortex_template_name]
 	local max_radius = vortex_template.full_inner_radius
@@ -92,33 +93,31 @@ BTChaosSorcererSkulkApproachAction._initialize_vortex_data = function (self, bla
 		radius_check_directions = check_directions,
 		vortex_template = vortex_template
 	}
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local skulk_data = blackboard.skulk_data
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_max_speed(navigation_extension, default_move_speed)
+	navigation_extension:set_max_speed(default_move_speed)
 
 	if reason == "aborted" then
-		local path_found = navigation_extension.is_following_path(navigation_extension)
+		local path_found = navigation_extension:is_following_path()
 
 		if blackboard.move_pos and path_found and blackboard.move_state == "idle" then
-			self.start_move_animation(self, unit, blackboard)
+			self:start_move_animation(unit, blackboard)
 		end
 	end
 
 	skulk_data.animation_state = nil
 	blackboard.action = nil
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction.run = function (self, unit, blackboard, t, dt)
 	local ai_navigation = blackboard.navigation_extension
-	local path_found = ai_navigation.is_following_path(ai_navigation)
-	local failed_attempts = ai_navigation.number_failed_move_attempts(ai_navigation)
+	local path_found = ai_navigation:is_following_path()
+	local failed_attempts = ai_navigation:number_failed_move_attempts()
 	local action = blackboard.action
 
 	if self[action.search_func_name](self, unit, blackboard, t, blackboard.spell) then
@@ -128,7 +127,7 @@ BTChaosSorcererSkulkApproachAction.run = function (self, unit, blackboard, t, dt
 	local skulk_data = blackboard.skulk_data
 
 	if blackboard.move_pos and path_found and blackboard.move_state == "idle" then
-		self.start_move_animation(self, unit, blackboard)
+		self:start_move_animation(unit, blackboard)
 	end
 
 	local current_health_percent = blackboard.health_extension:current_health_percent()
@@ -158,7 +157,7 @@ BTChaosSorcererSkulkApproachAction.run = function (self, unit, blackboard, t, dt
 			return "done"
 		end
 	elseif blackboard.travel_teleport_timer < t then
-		local teleport_pos = self.get_skulk_target(self, unit, blackboard, true)
+		local teleport_pos = self:get_skulk_target(unit, blackboard, true)
 
 		if teleport_pos then
 			blackboard.quick_teleport_exit_pos = Vector3Box(teleport_pos)
@@ -172,29 +171,30 @@ BTChaosSorcererSkulkApproachAction.run = function (self, unit, blackboard, t, dt
 	local position = blackboard.move_pos
 
 	if position then
-		local at_goal = self.at_goal(self, unit, blackboard)
+		local at_goal = self:at_goal(unit, blackboard)
 
-		if at_goal or 0 < failed_attempts then
+		if at_goal or failed_attempts > 0 then
 			blackboard.move_pos = nil
 		end
 
 		return "running"
 	end
 
-	local position = self.get_skulk_target(self, unit, blackboard)
+	local position = self:get_skulk_target(unit, blackboard)
 
 	if position then
-		self.move_to(self, position, unit, blackboard)
+		self:move_to(position, unit, blackboard)
 
 		return "running"
 	end
 
 	if blackboard.move_state ~= "idle" then
-		self.idle(self, unit, blackboard)
+		self:idle(unit, blackboard)
 	end
 
 	return "running"
 end
+
 BTChaosSorcererSkulkApproachAction.at_goal = function (self, unit, blackboard)
 	local skulk_data = blackboard.skulk_data
 	local position_boxed = blackboard.move_pos
@@ -203,40 +203,36 @@ BTChaosSorcererSkulkApproachAction.at_goal = function (self, unit, blackboard)
 		return false
 	end
 
-	local position = position_boxed.unbox(position_boxed)
+	local position = position_boxed:unbox()
 	local distance = Vector3.distance_squared(position, POSITION_LOOKUP[unit])
 
 	if distance < 0.25 then
 		return true
 	end
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction.move_to = function (self, position, unit, blackboard)
 	local ai_navigation = blackboard.navigation_extension
 
-	ai_navigation.move_to(ai_navigation, position)
+	ai_navigation:move_to(position)
 
 	blackboard.move_pos = Vector3Box(position)
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction.idle = function (self, unit, blackboard)
-	self.anim_event(self, unit, blackboard, "idle")
+	self:anim_event(unit, blackboard, "idle")
 
 	blackboard.move_state = "idle"
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction.start_move_animation = function (self, unit, blackboard)
 	local move_animation = blackboard.action.move_animation
 
-	self.anim_event(self, unit, blackboard, move_animation)
+	self:anim_event(unit, blackboard, move_animation)
 
 	blackboard.move_state = "moving"
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction.anim_event = function (self, unit, blackboard, anim)
 	local skulk_data = blackboard.skulk_data
 
@@ -245,10 +241,10 @@ BTChaosSorcererSkulkApproachAction.anim_event = function (self, unit, blackboard
 
 		skulk_data.animation_state = anim
 	end
-
-	return 
 end
+
 local TRIES = 15
+
 BTChaosSorcererSkulkApproachAction.get_skulk_target = function (self, unit, blackboard, teleporting)
 	local action = blackboard.action
 	local nav_world = blackboard.nav_world
@@ -285,7 +281,7 @@ BTChaosSorcererSkulkApproachAction.get_skulk_target = function (self, unit, blac
 	for i = 1, TRIES, 1 do
 		local rot_vec = to_target - to_target_dir * 0.5
 
-		if blackboard.num_summons and (action.teleport_closer_summon_limit or 3) <= blackboard.num_summons then
+		if blackboard.num_summons and blackboard.num_summons >= (action.teleport_closer_summon_limit or 3) then
 			rot_vec = Vector3.normalize(target_position - unit_position) * action.teleport_closer_range
 		end
 
@@ -298,9 +294,8 @@ BTChaosSorcererSkulkApproachAction.get_skulk_target = function (self, unit, blac
 	end
 
 	skulk_data.direction = skulk_data.direction * -1
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction.debug_show_skulk_circle = function (self, unit, blackboard)
 	local action = blackboard.action
 	local skulk_data = blackboard.skulk_data
@@ -313,19 +308,19 @@ BTChaosSorcererSkulkApproachAction.debug_show_skulk_circle = function (self, uni
 	QuickDrawer:circle(target_position + offset, skulk_data.radius, Vector3.up(), Colors.get("light_green"))
 
 	skulk_data.radius = blackboard.target_dist
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction.update_dummie = function (self, unit, blackboard, t)
 	return false
 end
+
 BTChaosSorcererSkulkApproachAction._update_vortex_search = function (self, unit, blackboard, t, vortex_data)
 	if vortex_data.spawn_timer < t then
 		local vortex_units = vortex_data.vortex_units
 		local num_vortex_units = #vortex_units
 		local i = 1
 
-		while i <= num_vortex_units do
+		while num_vortex_units >= i do
 			local vortex_unit = vortex_units[i]
 
 			if not Unit_alive(vortex_unit) then
@@ -377,15 +372,14 @@ BTChaosSorcererSkulkApproachAction._update_vortex_search = function (self, unit,
 			vortex_data.spawn_timer = t + action.vortex_check_timer
 		end
 	end
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction._get_vortex_cast_position = function (unit, blackboard, vortex_data, physics_world)
 	local action = blackboard.action
 	local params = FrameTable.alloc_table()
 	local target_distance = blackboard.target_dist
 	local navigation_extension = blackboard.navigation_extension
-	local traverse_logic = navigation_extension.traverse_logic(navigation_extension)
+	local traverse_logic = navigation_extension:traverse_logic()
 	params.nav_world = blackboard.nav_world
 	params.physics_world = physics_world
 	params.from_unit = unit
@@ -409,11 +403,13 @@ BTChaosSorcererSkulkApproachAction._get_vortex_cast_position = function (unit, b
 
 	return cast_position, min_radius
 end
+
 local min_dist_to_target = 7
 local mean_spawn_distance = 20
 local portal_radius = 1.5
 local debug_floor = false
 local debug_wall = false
+
 BTChaosSorcererSkulkApproachAction.update_portal_search = function (self, unit, blackboard, t, portal_data)
 	if blackboard.target_unit and not Unit_alive(blackboard.portal_unit) then
 		if portal_data.portal_search_active then
@@ -438,9 +434,8 @@ BTChaosSorcererSkulkApproachAction.update_portal_search = function (self, unit, 
 			portal_data.portal_search_timer = t + 1
 		end
 	end
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction.get_portal_location_list = function (portal_data, center_position)
 	if math.random() <= portal_data.chance_to_look_for_wall_spawn then
 		local success = BTChaosSorcererSkulkApproachAction.prepare_wall_search(portal_data, center_position)
@@ -464,6 +459,7 @@ BTChaosSorcererSkulkApproachAction.get_portal_location_list = function (portal_d
 
 	return false
 end
+
 BTChaosSorcererSkulkApproachAction.prepare_wall_search = function (portal_data, center_position)
 	local bp = Managers.state.conflict.level_analysis.cover_points_broadphase
 	local radius = 30
@@ -565,7 +561,9 @@ BTChaosSorcererSkulkApproachAction.evaluate_floor = function (portal_data, nav_w
 
 	return spawn_pos_found
 end
+
 local min_spawn_dist_sqr = 25
+
 BTChaosSorcererSkulkApproachAction.evaluate_wall = function (portal_data, nav_world, center_pos, num_tries)
 	local index = portal_data.cover_point_index
 	local num_cover_points = portal_data.num_cover_points
@@ -618,9 +616,8 @@ BTChaosSorcererSkulkApproachAction.evaluate_wall = function (portal_data, nav_wo
 	end
 
 	portal_data.cover_point_index = index
-
-	return 
 end
+
 BTChaosSorcererSkulkApproachAction.try_next_portal_location = function (portal_data, nav_world, center_pos)
 	local placement = portal_data.placement
 	local target_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, center_pos, 3, 3)
@@ -646,7 +643,7 @@ BTChaosSorcererSkulkApproachAction.try_next_portal_location = function (portal_d
 
 		portal_data.floor_search_count = portal_data.floor_search_count + num_tries
 
-		if 30 < portal_data.floor_search_count then
+		if portal_data.floor_search_count > 30 then
 			return "failed"
 		end
 	elseif placement == "wall" then
@@ -654,8 +651,6 @@ BTChaosSorcererSkulkApproachAction.try_next_portal_location = function (portal_d
 
 		return BTChaosSorcererSkulkApproachAction.evaluate_wall(portal_data, nav_world, center_pos, num_tries)
 	end
-
-	return 
 end
 
-return 
+return

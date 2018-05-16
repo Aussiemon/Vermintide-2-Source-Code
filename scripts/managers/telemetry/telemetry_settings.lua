@@ -1,7 +1,7 @@
 TelemetrySettings = {
 	ftp_address = "ftp.fatshark.se/pub/bulldozer/telemetry/",
-	enabled = false,
 	version = 2,
+	enabled = not Development.parameter("telemetry-disable"),
 	title_id = ((BUILD == "debug" or BUILD == "dev") and Development.parameter("telemetry-title-id")) or GameSettingsDevelopment.backend_settings.title_id,
 	blacklist = {
 		"ai_death"
@@ -11,4 +11,4 @@ TelemetrySettings = {
 	use_session_survey = Development.parameter("use-session-survey")
 }
 
-return 
+return

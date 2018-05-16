@@ -10,4 +10,4 @@ SynergySettings.user_settings.lopus = {
 	ip = "172.16.1.158"
 }
 
-return 
+return

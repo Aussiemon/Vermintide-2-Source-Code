@@ -10,4 +10,4 @@ NetworkInputDevice = {
 	end
 }
 
-return 
+return

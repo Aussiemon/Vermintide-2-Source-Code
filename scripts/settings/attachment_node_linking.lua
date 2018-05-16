@@ -603,6 +603,78 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	brw_hammer = {
+		first_person = {
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "j_hips"
+				}
+			}
+		},
+		third_person = {
+			display = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "a_unwielded_brw_mace"
+				}
+			}
+		}
+	},
+	two_handed_melee_weapon = {
+		first_person = {
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "j_hips"
+				}
+			}
+		},
+		third_person = {
+			display = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "a_unwielded_2h"
+				}
+			}
+		}
+	},
 	shield = {
 		first_person = {
 			wielded = {
@@ -722,7 +794,43 @@ AttachmentNodeLinking = {
 			unwielded = {
 				{
 					target = 0,
-					source = "j_leftweaponattach"
+					source = "a_unwielded_staff"
+				}
+			}
+		}
+	},
+	polearm = {
+		first_person = {
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "j_hips"
+				}
+			}
+		},
+		third_person = {
+			display = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "a_unwielded_polearm"
 				}
 			}
 		}
@@ -1272,6 +1380,10 @@ AttachmentNodeLinking = {
 				}
 			},
 			wielded = {
+				{
+					target = 0,
+					source = "j_leftweaponattach"
+				},
 				{
 					target = "j_bow_root",
 					source = "j_leftweaponcomponent13"
@@ -2850,20 +2962,6 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
-	ai_axe = {
-		wielded = {
-			{
-				target = 0,
-				source = "j_rightweaponattach"
-			}
-		},
-		unwielded = {
-			{
-				target = 0,
-				source = "j_rightweaponattach"
-			}
-		}
-	},
 	ai_shield = {
 		wielded = {
 			{
@@ -3002,7 +3100,7 @@ AttachmentNodeLinking = {
 		unwielded = {
 			{
 				target = 0,
-				source = "a_sword"
+				source = "a_sword_left"
 			}
 		}
 	},
@@ -3164,12 +3262,6 @@ AttachmentNodeLinking = {
 			source = "a_helmet"
 		}
 	},
-	ai_helmet_cw = {
-		{
-			target = 0,
-			source = "a_helmet_cw"
-		}
-	},
 	ai_marauder_shield = {
 		wielded = {
 			{
@@ -3204,4 +3296,4 @@ AttachmentNodeLinking = {
 	}
 }
 
-return 
+return

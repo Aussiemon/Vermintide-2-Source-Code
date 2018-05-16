@@ -26,6 +26,7 @@ local chest_idle_animations = {
 	"loot_chest_jump_02"
 }
 GiftPopupUI = class(GiftPopupUI)
+
 GiftPopupUI.init = function (self, ingame_ui_context)
 	self.is_in_inn = ingame_ui_context.is_in_inn
 	self.world_manager = ingame_ui_context.world_manager
@@ -37,10 +38,10 @@ GiftPopupUI.init = function (self, ingame_ui_context)
 	local input_manager = Managers.input
 	local input_service_name = "gift_popup"
 
-	input_manager.create_input_service(input_manager, input_service_name, "IngameMenuKeymaps", "IngameMenuFilters")
-	input_manager.map_device_to_service(input_manager, input_service_name, "keyboard")
-	input_manager.map_device_to_service(input_manager, input_service_name, "mouse")
-	input_manager.map_device_to_service(input_manager, input_service_name, "gamepad")
+	input_manager:create_input_service(input_service_name, "IngameMenuKeymaps", "IngameMenuFilters")
+	input_manager:map_device_to_service(input_service_name, "keyboard")
+	input_manager:map_device_to_service(input_service_name, "mouse")
+	input_manager:map_device_to_service(input_service_name, "gamepad")
 
 	self.input_service_name = input_service_name
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -53,11 +54,10 @@ GiftPopupUI.init = function (self, ingame_ui_context)
 	self.poll_cooldown = GIFT_POLL_COOLDOWN
 	local event_manager = Managers.state.event
 
-	event_manager.register(event_manager, self, "level_start_local_player_spawned", "event_initialize_poll")
+	event_manager:register(self, "level_start_local_player_spawned", "event_initialize_poll")
 	rawset(_G, "gift_popup_ui", self)
-
-	return 
 end
+
 GiftPopupUI._create_world = function (self)
 	local reward_world = self.world_manager:create_world("gift_world", "environment/blank_offscreen_chest", nil, 990)
 	local reward_viewport = ScriptWorld.create_viewport(reward_world, "gift_world_viewport_default", "default", 0)
@@ -66,9 +66,8 @@ GiftPopupUI._create_world = function (self)
 
 	self.reward_world = reward_world
 	self.reward_viewport = reward_viewport
-
-	return 
 end
+
 GiftPopupUI._destroy_world = function (self)
 	if self.reward_world then
 		ScriptWorld.deactivate_viewport(self.reward_world, self.reward_viewport)
@@ -78,11 +77,10 @@ GiftPopupUI._destroy_world = function (self)
 		self.reward_world = nil
 		self.reward_viewport = nil
 	end
-
-	return 
 end
+
 GiftPopupUI._create_ui_elements = function (self, rewards, title_text, description_text, button_text)
-	self._create_world(self)
+	self:_create_world()
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widget_definitions = definitions.widget_definitions
@@ -138,18 +136,17 @@ GiftPopupUI._create_ui_elements = function (self, rewards, title_text, descripti
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 
-	self.start(self, rewards)
-	self._align_thumb_widgets(self)
-	self._populate_thumb_widgets(self)
+	self:start(rewards)
+	self:_align_thumb_widgets()
+	self:_populate_thumb_widgets()
 
 	local input_service = self.input_manager:get_service(self.input_service_name)
 	local gui_layer = UILayer.item_display_popup + 30
 	self.menu_input_description = MenuInputDescriptionUI:new(self.ingame_ui_context, self.ui_renderer, input_service, 5, gui_layer, generic_input_actions.default)
 
 	self.menu_input_description:set_input_description(nil)
-
-	return 
 end
+
 GiftPopupUI._align_thumb_widgets = function (self)
 	local thumb_widgets = self.thumb_widgets
 	local num_thumb_widgets = #thumb_widgets
@@ -157,16 +154,15 @@ GiftPopupUI._align_thumb_widgets = function (self)
 	local thumb_width = 64
 	local total_thumb_width = num_thumb_widgets * thumb_width
 	local free_spacing_width = (max_display_width - total_thumb_width) / math.max(num_thumb_widgets - 1, 1)
-	local distance_between = (0 < free_spacing_width and math.min(free_spacing_width, 36)) or free_spacing_width
+	local distance_between = (free_spacing_width > 0 and math.min(free_spacing_width, 36)) or free_spacing_width
 	local start_offset = -((distance_between + thumb_width) * (num_thumb_widgets - 1)) / 2
 
 	for index, widget in ipairs(thumb_widgets) do
 		widget.offset[1] = start_offset
 		start_offset = start_offset + distance_between + thumb_width
 	end
-
-	return 
 end
+
 GiftPopupUI._populate_thumb_widgets = function (self)
 	local thumb_widgets = self.thumb_widgets
 	local rewards = self.rewards
@@ -195,14 +191,12 @@ GiftPopupUI._populate_thumb_widgets = function (self)
 			end
 		end
 	end
-
-	return 
 end
+
 GiftPopupUI.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
-
-	return 
 end
+
 GiftPopupUI._destroy_units = function (self)
 	local reward_world = self.reward_world
 
@@ -231,19 +225,20 @@ GiftPopupUI._destroy_units = function (self)
 	end
 
 	self.units_spawned = nil
-
-	return 
 end
+
 GiftPopupUI.active_input_service = function (self)
 	local input_manager = self.input_manager
 	local service_name = (self.presentation_started and self.input_service_name) or "ingame_menu"
-	local input_service = input_manager.get_service(input_manager, service_name)
+	local input_service = input_manager:get_service(service_name)
 
 	return input_service
 end
+
 GiftPopupUI.active = function (self)
 	return self.presentation_started
 end
+
 GiftPopupUI.start = function (self, rewards)
 	self.presentation_started = true
 
@@ -262,13 +257,12 @@ GiftPopupUI.start = function (self, rewards)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 
-	self.spawn_chest_unit(self)
-	self.load_reward_units(self)
+	self:spawn_chest_unit()
+	self:load_reward_units()
 	ScriptWorld.activate_viewport(self.reward_world, self.reward_viewport)
-	self.play_sound(self, "hud_reward_chest_spin")
-
-	return 
+	self:play_sound("hud_reward_chest_spin")
 end
+
 GiftPopupUI.stop = function (self)
 	if self.cursor_pushed then
 		ShowCursorStack.pop()
@@ -279,8 +273,8 @@ GiftPopupUI.stop = function (self)
 	self._selection_index = nil
 	self.rewards = nil
 
-	self._destroy_units(self)
-	self.unload_packages(self)
+	self:_destroy_units()
+	self:unload_packages()
 	table.clear(self.loaded_packages)
 	table.clear(self.packages_to_load)
 	self.input_manager:device_unblock_all_services("keyboard", 1)
@@ -289,19 +283,18 @@ GiftPopupUI.stop = function (self)
 
 	self.presentation_started = nil
 
-	self._destroy_world(self)
+	self:_destroy_world()
 
 	self.poll_cooldown = GIFT_POLL_COOLDOWN
-
-	return 
 end
+
 GiftPopupUI.destroy = function (self)
 	if self.presentation_started then
-		self.stop(self)
+		self:stop()
 	end
 
-	self._destroy_units(self)
-	self._destroy_world(self)
+	self:_destroy_units()
+	self:_destroy_world()
 
 	self.ui_animator = nil
 
@@ -313,19 +306,17 @@ GiftPopupUI.destroy = function (self)
 
 	local event_manager = Managers.state.event
 
-	event_manager.unregister(event_manager, "level_start_local_player_spawned", self)
+	event_manager:unregister("level_start_local_player_spawned", self)
 	rawset(_G, "gift_popup_ui", nil)
-
-	return 
 end
+
 GiftPopupUI.event_initialize_poll = function (self)
 	self._poll_initialized = true
-
-	return 
 end
+
 GiftPopupUI.update = function (self, dt, t)
 	if not self.presentation_started then
-		return 
+		return
 	end
 
 	self.ui_animator:update(dt)
@@ -352,42 +343,41 @@ GiftPopupUI.update = function (self, dt, t)
 		end
 	end
 
-	self._draw(self, dt)
-
-	return 
+	self:_draw(dt)
 end
+
 GiftPopupUI.post_update = function (self, dt)
 	if Development.parameter("debug_gift_popup") then
 		local input_manager = self.input_manager
 		local service_name = (self.presentation_started and self.input_service_name) or "ingame_menu"
-		local input_service = input_manager.get_service(input_manager, service_name)
+		local input_service = input_manager:get_service(service_name)
 
-		if input_service.get(input_service, "matchmaking_start") then
-			self.stop(self)
-			self._create_ui_elements(self, temp_rewards, "gift_popup_main_title_sonnstill", "gift_popup_sub_title_sonnstill", "gift_popup_button_text")
+		if input_service:get("matchmaking_start") then
+			self:stop()
+			self:_create_ui_elements(temp_rewards, "gift_popup_main_title_sonnstill", "gift_popup_sub_title_sonnstill", "gift_popup_button_text")
 		end
 	end
 
 	if self._poll_initialized and self.is_in_inn then
 		if not self.presentation_started then
-			if self._verify_poll(self) then
-				local handled = self._poll_new_rewards(self, dt)
+			if self:_verify_poll() then
+				local handled = self:_poll_new_rewards(dt)
 
 				if not handled then
-					return 
+					return
 				end
 			else
-				return 
+				return
 			end
 		end
 	else
-		return 
+		return
 	end
 
 	local gamepad_active = self.input_manager:is_device_active("gamepad")
 
 	if self.update_reward_units_visibility then
-		self._enable_reward_units_visibility(self)
+		self:_enable_reward_units_visibility()
 
 		self.update_reward_units_visibility = nil
 	end
@@ -403,7 +393,7 @@ GiftPopupUI.post_update = function (self, dt)
 	if claim_button_hotspot.on_release and self.chest_spawn_animation_completed then
 		claim_button_hotspot.on_release = nil
 
-		self._open_chest(self)
+		self:_open_chest()
 	end
 
 	local close_button_hotspot = self.close_button_widget.content.button_hotspot
@@ -411,12 +401,12 @@ GiftPopupUI.post_update = function (self, dt)
 	if close_button_hotspot.on_release and self.chest_spawn_animation_completed then
 		close_button_hotspot.on_release = nil
 
-		self.play_sound(self, "Play_hud_select")
-		self.stop(self)
+		self:play_sound("Play_hud_select")
+		self:stop()
 	end
 
 	if self.chest_spawn_animation_completed and not self.chest_open_animation_completed and not self.chest_spawn_anim_id and not self.chest_open_anim_id then
-		self._update_chest_idle_timer(self, dt)
+		self:_update_chest_idle_timer(dt)
 	end
 
 	if self.chest_open_animation_completed then
@@ -427,46 +417,44 @@ GiftPopupUI.post_update = function (self, dt)
 		end
 
 		if not self._selection_index then
-			self._set_selection(self, 1)
+			self:_set_selection(1)
 		end
 
 		if not gamepad_active then
-			self._handle_mouse_input(self, dt)
+			self:_handle_mouse_input(dt)
 		end
 	end
 
 	if gamepad_active then
-		self._handle_gamepad_input(self, dt)
+		self:_handle_gamepad_input(dt)
 	end
-
-	return 
 end
+
 GiftPopupUI._verify_poll = function (self)
 	local popup_manager = Managers.popup
 
-	if popup_manager and popup_manager.has_popup(popup_manager) then
-		return 
+	if popup_manager and popup_manager:has_popup() then
+		return
 	end
 
 	local translation_manager = Managers.transition
-	local fade_out_completed = translation_manager.fade_out_completed(translation_manager)
+	local fade_out_completed = translation_manager:fade_out_completed()
 
 	if fade_out_completed then
 		return true
 	end
-
-	return 
 end
+
 GiftPopupUI._poll_new_rewards = function (self, dt)
 	local poll_cooldown = self.poll_cooldown
 
-	if poll_cooldown and 0 < poll_cooldown then
+	if poll_cooldown and poll_cooldown > 0 then
 		self.poll_cooldown = poll_cooldown - dt
 	else
 		local unlock_manager = Managers.unlock
 
 		if unlock_manager then
-			local gift_info = unlock_manager.poll_script_startup_data(unlock_manager)
+			local gift_info = unlock_manager:poll_script_startup_data()
 
 			if gift_info and gift_info ~= "none" then
 				local rewards = gift_info.rewards
@@ -475,54 +463,51 @@ GiftPopupUI._poll_new_rewards = function (self, dt)
 				local description_key = gift_info.description_key
 
 				print("gift_info", title_key, description_key, button_key)
-				self.stop(self)
-				self._create_ui_elements(self, rewards, title_key, description_key, button_key)
+				self:stop()
+				self:_create_ui_elements(rewards, title_key, description_key, button_key)
 
 				return true
 			end
 		end
 	end
-
-	return 
 end
+
 GiftPopupUI._open_chest = function (self)
-	self.chest_open_anim_id = self._start_chest_animation(self, "chest_unit_open")
+	self.chest_open_anim_id = self:_start_chest_animation("chest_unit_open")
 
-	self.play_sound(self, "Play_hud_select")
-	self.play_sound(self, "hud_reward_open_chest")
-
-	return 
+	self:play_sound("Play_hud_select")
+	self:play_sound("hud_reward_open_chest")
 end
+
 GiftPopupUI._handle_mouse_input = function (self, dt)
 	for index, widget in ipairs(self.thumb_widgets) do
 		local content = widget.content
 		local button_hotspot = content.button_hotspot
 
 		if button_hotspot.on_release then
-			self._set_selection(self, index)
+			self:_set_selection(index)
 		end
 	end
-
-	return 
 end
+
 GiftPopupUI._handle_gamepad_input = function (self, dt)
 	local input_manager = self.input_manager
 	local service_name = self.input_service_name
-	local input_service = input_manager.get_service(input_manager, service_name)
+	local input_service = input_manager:get_service(service_name)
 	local controller_cooldown = self.controller_cooldown
 
-	if controller_cooldown and 0 < controller_cooldown then
+	if controller_cooldown and controller_cooldown > 0 then
 		self.controller_cooldown = controller_cooldown - dt
 	elseif self.chest_open_animation_completed then
-		if input_service.get(input_service, "toggle_menu") or input_service.get(input_service, "back", true) then
-			self.play_sound(self, "Play_hud_select")
-			self.stop(self)
+		if input_service:get("toggle_menu") or input_service:get("back", true) then
+			self:play_sound("Play_hud_select")
+			self:stop()
 		elseif self._selection_index then
 			local new_selection_index = nil
 
-			if input_service.get(input_service, "move_left") then
+			if input_service:get("move_left") then
 				new_selection_index = math.max(self._selection_index - 1, 1)
-			elseif input_service.get(input_service, "move_right") then
+			elseif input_service:get("move_right") then
 				local num_thumb_widgets = #self.thumb_widgets
 				new_selection_index = math.min(self._selection_index + 1, num_thumb_widgets)
 			end
@@ -530,23 +515,22 @@ GiftPopupUI._handle_gamepad_input = function (self, dt)
 			if new_selection_index and new_selection_index ~= self._selection_index then
 				self.controller_cooldown = GamepadSettings.menu_cooldown
 
-				self._set_selection(self, new_selection_index)
+				self:_set_selection(new_selection_index)
 			end
 		end
-	elseif self.chest_spawn_animation_completed and input_service.get(input_service, "confirm", true) then
+	elseif self.chest_spawn_animation_completed and input_service:get("confirm", true) then
 		self.controller_cooldown = GamepadSettings.menu_cooldown
 
-		self._open_chest(self)
+		self:_open_chest()
 	end
-
-	return 
 end
+
 GiftPopupUI._draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_manager = self.input_manager
-	local input_service = input_manager.get_service(input_manager, self.input_service_name)
+	local input_service = input_manager:get_service(self.input_service_name)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 	UIRenderer.draw_widget(ui_renderer, self.popup_bg_widget)
@@ -554,7 +538,7 @@ GiftPopupUI._draw = function (self, dt)
 	if not self.chest_open_animation_completed and not self.chest_open_anim_id then
 		UIRenderer.draw_widget(ui_renderer, self.claim_button_widget)
 
-		if self.chest_spawn_animation_completed and (not self.claim_button_widget.content.button_hotspot.is_hover or not input_service.get(input_service, "left_hold")) then
+		if self.chest_spawn_animation_completed and (not self.claim_button_widget.content.button_hotspot.is_hover or not input_service:get("left_hold")) then
 			UIRenderer.draw_widget(ui_renderer, self.button_glow_widget)
 		end
 	end
@@ -592,34 +576,31 @@ GiftPopupUI._draw = function (self, dt)
 	UIRenderer.end_pass(ui_top_renderer)
 
 	if not self.chest_spawn_anim_id and not self.chest_open_anim_id then
-		local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
+		local gamepad_active = input_manager:is_device_active("gamepad")
 
 		if gamepad_active then
 			self.menu_input_description:draw(ui_renderer, dt)
 		end
 	end
-
-	return 
 end
+
 GiftPopupUI.load_package = function (self, package_name)
 	if self.packages_to_load[package_name] ~= nil then
-		return 
+		return
 	end
 
 	self.packages_to_load[package_name] = true
 	local package_manager = Managers.package
 	local cb = callback(self, "on_load_complete", package_name)
 
-	package_manager.load(package_manager, package_name, "GiftPopupUI", cb, true)
-
-	return 
+	package_manager:load(package_name, "GiftPopupUI", cb, true)
 end
+
 GiftPopupUI.on_load_complete = function (self, package_name)
 	self.loaded_packages[package_name] = true
 	self.packages_to_load[package_name] = false
-
-	return 
 end
+
 GiftPopupUI.unload_packages = function (self)
 	local loaded_packages = self.loaded_packages
 
@@ -627,12 +608,11 @@ GiftPopupUI.unload_packages = function (self)
 		local package_manager = Managers.package
 
 		for package_name, _ in pairs(loaded_packages) do
-			package_manager.unload(package_manager, package_name, "GiftPopupUI")
+			package_manager:unload(package_name, "GiftPopupUI")
 		end
 	end
-
-	return 
 end
+
 GiftPopupUI.reward_packages_loaded = function (self)
 	local reward_units_to_spawn = self.reward_units_to_spawn
 	local loaded_packages = self.loaded_packages
@@ -647,18 +627,21 @@ GiftPopupUI.reward_packages_loaded = function (self)
 
 	return true
 end
+
 GiftPopupUI.get_camera_position = function (self)
 	local reward_viewport = self.reward_viewport
 	local camera = ScriptViewport.camera(reward_viewport)
 
 	return ScriptCamera.position(camera)
 end
+
 GiftPopupUI.get_camera_rotation = function (self)
 	local reward_viewport = self.reward_viewport
 	local camera = ScriptViewport.camera(reward_viewport)
 
 	return ScriptCamera.rotation(camera)
 end
+
 GiftPopupUI.load_reward_units = function (self)
 	local rewards = self.rewards
 	local reward_units_to_spawn = {}
@@ -677,7 +660,7 @@ GiftPopupUI.load_reward_units = function (self)
 			if left_hand_unit then
 				local left_unit = left_hand_unit .. "_3p"
 
-				self.load_package(self, left_unit)
+				self:load_package(left_unit)
 
 				units_to_spawn_data[#units_to_spawn_data + 1] = {
 					unit_name = left_unit,
@@ -689,7 +672,7 @@ GiftPopupUI.load_reward_units = function (self)
 				local right_unit = right_hand_unit .. "_3p"
 
 				if right_hand_unit ~= left_hand_unit then
-					self.load_package(self, right_unit)
+					self:load_package(right_unit)
 				end
 
 				units_to_spawn_data[#units_to_spawn_data + 1] = {
@@ -701,7 +684,7 @@ GiftPopupUI.load_reward_units = function (self)
 			local unit = item_data.unit
 
 			if unit then
-				self.load_package(self, unit)
+				self:load_package(unit)
 
 				units_to_spawn_data[#units_to_spawn_data + 1] = {
 					unit_name = unit,
@@ -714,21 +697,20 @@ GiftPopupUI.load_reward_units = function (self)
 	end
 
 	self.reward_units_to_spawn = reward_units_to_spawn
-
-	return 
 end
+
 GiftPopupUI.spawn_chest_unit = function (self)
 	if self.chest_unit then
-		return 
+		return
 	end
 
 	local unit_name = "units/props/loot_chest/prop_loot_chest_01"
-	local camera_rotation = self.get_camera_rotation(self)
+	local camera_rotation = self:get_camera_rotation()
 	local camera_forward_vector = Quaternion.forward(camera_rotation)
 	local camera_look_rotation = Quaternion.look(camera_forward_vector, Vector3.up())
 	local horizontal_rotation = Quaternion.axis_angle(Vector3.up(), 0)
 	local unit_spawn_rotation = Quaternion.multiply(camera_look_rotation, horizontal_rotation)
-	local camera_position = self.get_camera_position(self)
+	local camera_position = self:get_camera_position()
 	local unit_spawn_position = camera_position + camera_forward_vector
 	unit_spawn_position.z = unit_spawn_position.z - 5
 	local reward_world = self.reward_world
@@ -771,13 +753,12 @@ GiftPopupUI.spawn_chest_unit = function (self)
 		self.chest_unit = chest_unit
 	end
 
-	self.chest_spawn_anim_id = self._start_chest_animation(self, "chest_unit_spawn")
+	self.chest_spawn_anim_id = self:_start_chest_animation("chest_unit_spawn")
 	self.chest_spawn_animation_completed = nil
 	self.chest_open_animation_completed = nil
 	self._chest_idle_timer = nil
-
-	return 
 end
+
 GiftPopupUI.auto_rotate = function (self, dt)
 	local chest_unit = self.chest_unit
 
@@ -791,16 +772,14 @@ GiftPopupUI.auto_rotate = function (self, dt)
 
 		self.unit_auto_rotate_value = value
 	end
-
-	return 
 end
+
 GiftPopupUI.trigger_unit_flow_event = function (self, unit, event_name)
 	if unit and Unit.alive(unit) then
 		Unit.flow_event(unit, event_name)
 	end
-
-	return 
 end
+
 GiftPopupUI._start_chest_animation = function (self, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
@@ -821,38 +800,37 @@ GiftPopupUI._start_chest_animation = function (self, animation_name)
 
 	return self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
 end
+
 GiftPopupUI._update_chest_idle_timer = function (self, dt)
 	local current_time = self._chest_idle_timer or 0
 	current_time = current_time + dt
 
-	if 1.3 <= current_time then
+	if current_time >= 1.3 then
 		self._chest_idle_timer = nil
 
-		self._trigger_chest_idle_animation(self)
+		self:_trigger_chest_idle_animation()
 	else
 		self._chest_idle_timer = current_time
 	end
-
-	return 
 end
+
 GiftPopupUI._trigger_chest_idle_animation = function (self)
 	local num_anims = #chest_idle_animations
 	local random_anim_index = math.round(Math.random_range(1, num_anims))
 	local event_name = chest_idle_animations[random_anim_index]
 
-	self.trigger_unit_flow_event(self, self.chest_unit, event_name)
-	self.play_sound(self, "hud_reward_chest_move")
-
-	return 
+	self:trigger_unit_flow_event(self.chest_unit, event_name)
+	self:play_sound("hud_reward_chest_move")
 end
+
 GiftPopupUI._set_selection = function (self, index)
 	if self._selection_index == index then
 		if self.link_unit then
 			Unit.flow_event(self.link_unit, "lua_spin_no_fx")
-			self.play_sound(self, "Play_hud_select")
+			self:play_sound("Play_hud_select")
 		end
 
-		return 
+		return
 	end
 
 	self.menu_input_description:change_generic_actions(generic_input_actions.selection)
@@ -887,7 +865,7 @@ GiftPopupUI._set_selection = function (self, index)
 
 	local icon_glow_color = widget.style.icon_glow.color
 
-	if 0 < icon_glow_color[1] then
+	if icon_glow_color[1] > 0 then
 		local animation = UIAnimation.init(UIAnimation.function_by_time, icon_glow_color, 1, icon_glow_color[1], 0, 0.2, math.easeOutCubic)
 		widget_animations[animation] = true
 	end
@@ -917,13 +895,12 @@ GiftPopupUI._set_selection = function (self, index)
 			local item_data = self.rewards[index]
 			local item_key = item_data.item_key
 
-			self.spawn_link_unit(self, item_key)
-			self.spawn_reward_units(self, units_data, first_time)
+			self:spawn_link_unit(item_key)
+			self:spawn_reward_units(units_data, first_time)
 		end
 	end
-
-	return 
 end
+
 GiftPopupUI.spawn_link_unit = function (self, item_key)
 	if self.link_unit then
 		World.destroy_unit(self.reward_world, self.link_unit)
@@ -934,12 +911,12 @@ GiftPopupUI.spawn_link_unit = function (self, item_key)
 	local item_template = ItemHelper.get_template_by_item_name(item_key)
 	local item_data = ItemMasterList[item_key]
 	local unit_name = item_template.display_unit
-	local camera_rotation = self.get_camera_rotation(self)
+	local camera_rotation = self:get_camera_rotation()
 	local camera_forward_vector = Quaternion.forward(camera_rotation)
 	local camera_look_rotation = Quaternion.look(camera_forward_vector, Vector3.up())
 	local horizontal_rotation = Quaternion.axis_angle(Vector3.up(), math.pi * 1)
 	local unit_spawn_rotation = Quaternion.multiply(camera_look_rotation, horizontal_rotation)
-	local camera_position = self.get_camera_position(self)
+	local camera_position = self:get_camera_position()
 	local unit_spawn_position = camera_position + camera_forward_vector
 	unit_spawn_position.z = unit_spawn_position.z + 0.05
 	local reward_world = self.reward_world
@@ -981,9 +958,8 @@ GiftPopupUI.spawn_link_unit = function (self, item_key)
 
 		self.link_unit = link_unit
 	end
-
-	return 
 end
+
 GiftPopupUI.spawn_reward_units = function (self, data, first_time)
 	if self.reward_units then
 		local reward_world = self.reward_world
@@ -1033,14 +1009,13 @@ GiftPopupUI.spawn_reward_units = function (self, data, first_time)
 		self.units_spawned = true
 
 		if first_time then
-			self.play_sound(self, "hud_dice_game_reward_sound")
+			self:play_sound("hud_dice_game_reward_sound")
 		else
-			self.play_sound(self, "Play_hud_select")
+			self:play_sound("Play_hud_select")
 		end
 	end
-
-	return 
 end
+
 GiftPopupUI._enable_reward_units_visibility = function (self)
 	local reward_units = self.reward_units
 
@@ -1050,12 +1025,11 @@ GiftPopupUI._enable_reward_units_visibility = function (self)
 
 			local reward_unit_event = "lua_presentation"
 
-			self.trigger_unit_flow_event(self, unit, reward_unit_event)
+			self:trigger_unit_flow_event(unit, reward_unit_event)
 		end
 	end
-
-	return 
 end
+
 GiftPopupUI._update_thumb_selection_timer = function (self, dt)
 	local timer = self._selection_timer
 
@@ -1065,7 +1039,7 @@ GiftPopupUI._update_thumb_selection_timer = function (self, dt)
 		if timer == total_time then
 			self._selection_timer = nil
 
-			return 
+			return
 		else
 			timer = math.min(timer + dt, total_time)
 			self._selection_timer = timer
@@ -1073,14 +1047,13 @@ GiftPopupUI._update_thumb_selection_timer = function (self, dt)
 			return timer / total_time
 		end
 	end
-
-	return 
 end
+
 GiftPopupUI._update_thumb_widgets = function (self, dt, instant)
-	local selection_progress = (instant and 1) or self._update_thumb_selection_timer(self, dt)
+	local selection_progress = (instant and 1) or self:_update_thumb_selection_timer(dt)
 
 	if not selection_progress then
-		return 
+		return
 	end
 
 	local selected_index = self._selection_index or 1
@@ -1088,16 +1061,13 @@ GiftPopupUI._update_thumb_widgets = function (self, dt, instant)
 	local anim_progress = math.easeCubic(selection_progress)
 
 	for index, widget in ipairs(self.thumb_widgets) do
-		self._animate_thumb_element(self, widget, index, selection_progress)
+		self:_animate_thumb_element(widget, index, selection_progress)
 	end
-
-	return 
 end
+
 GiftPopupUI._animate_thumb_element = function (self, widget, index, progress)
 	local is_selection_widget = self._selection_index == index
 	local anim_progress = (is_selection_widget and math.easeCubic(progress)) or math.easeCubic(1 - progress)
-
-	return 
 end
 
-return 
+return

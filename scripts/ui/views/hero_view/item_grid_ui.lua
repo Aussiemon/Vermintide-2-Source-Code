@@ -8,8 +8,6 @@ local function tablefind_item_key(tab, item_key)
 			return index
 		end
 	end
-
-	return 
 end
 
 ItemGridUI.init = function (self, category_settings, widget, hero_name, career_index)
@@ -19,11 +17,10 @@ ItemGridUI.init = function (self, category_settings, widget, hero_name, career_i
 	self._hero_name = hero_name
 	self._career_index = career_index
 	self._locked_items = {}
-
-	return 
 end
+
 ItemGridUI.change_category = function (self, category_name, keep_page_index)
-	self.clear_item_grid(self)
+	self:clear_item_grid()
 
 	local hero_name = self._hero_name
 	local career_index = self._career_index
@@ -38,19 +35,18 @@ ItemGridUI.change_category = function (self, category_name, keep_page_index)
 
 	for index, category in ipairs(self._category_settings) do
 		if category.name == category_name then
-			self._on_category_index_change(self, index, keep_page_index)
+			self:_on_category_index_change(index, keep_page_index)
 
-			return 
+			return
 		end
 	end
-
-	return 
 end
+
 ItemGridUI.set_item_page = function (self, page_index)
 	local total_item_pages = self._total_item_pages
 
 	if total_item_pages < page_index then
-		return 
+		return
 	end
 
 	local widget = self._widget
@@ -59,16 +55,16 @@ ItemGridUI.set_item_page = function (self, page_index)
 	local start_read_index = (page_index - 1) * item_slots + 1
 	local items = self._items
 
-	self._populate_inventory_page(self, items, start_read_index)
+	self:_populate_inventory_page(items, start_read_index)
 
 	widget.content.page_text = page_index .. "/" .. total_item_pages
 	self._selected_page_index = page_index
-
-	return 
 end
+
 ItemGridUI.get_page_info = function (self)
 	return self._selected_page_index, self._total_item_pages
 end
+
 ItemGridUI.get_equipped_items = function (self, hero_name, career_index)
 	local slots = InventorySettings.slots
 	local equipped_items = {}
@@ -87,68 +83,59 @@ ItemGridUI.get_equipped_items = function (self, hero_name, career_index)
 
 	return equipped_items
 end
+
 ItemGridUI.apply_item_sorting_function = function (self, item_sort_func)
 	self._item_sort_func = item_sort_func
-
-	return 
 end
+
 ItemGridUI.disable_locked_items = function (self, disable)
 	self._disable_locked_items = disable
 
-	self.mark_locked_items(self, self._mark_locked_items)
-
-	return 
+	self:mark_locked_items(self._mark_locked_items)
 end
+
 ItemGridUI.lock_item_by_id = function (self, backend_id, reserve)
 	self._locked_items[backend_id] = reserve
-
-	return 
 end
+
 ItemGridUI.clear_locked_items = function (self)
 	self._locked_items = {}
-
-	return 
 end
+
 ItemGridUI.hide_slots = function (self, hide)
 	self._hide_slots = hide
 
-	self.update_items_status(self)
-
-	return 
+	self:update_items_status()
 end
+
 ItemGridUI.mark_locked_items = function (self, mark)
 	self._mark_locked_items = mark
 
-	self.update_items_status(self)
-
-	return 
+	self:update_items_status()
 end
+
 ItemGridUI.disable_unwieldable_items = function (self, disable)
 	self._disable_unwieldable_items = disable
-
-	return 
 end
+
 ItemGridUI.disable_equipped_items = function (self, disable)
 	self._disable_equipped_items = disable
 
-	self.mark_equipped_items(self, self._mark_equipped_items)
-
-	return 
+	self:mark_equipped_items(self._mark_equipped_items)
 end
+
 ItemGridUI.mark_equipped_items = function (self, mark)
 	self._mark_equipped_items = mark
 
-	self.update_items_status(self)
-
-	return 
+	self:update_items_status()
 end
+
 ItemGridUI.disable_item_drag = function (self)
 	self._item_drag_disabled = true
 
-	self.update_items_status(self)
-
-	return 
+	self:update_items_status()
 end
+
 ItemGridUI.update_items_status = function (self)
 	local hero_name = self._hero_name
 	local profile_index = FindProfileIndex(hero_name)
@@ -158,7 +145,7 @@ ItemGridUI.update_items_status = function (self)
 	local career = careers[career_index]
 	local career_name = career.name
 	local locked_items = self._mark_locked_items and self._locked_items
-	local equipped_items = self._mark_equipped_items and self.get_equipped_items(self, hero_name, career_index)
+	local equipped_items = self._mark_equipped_items and self:get_equipped_items(hero_name, career_index)
 	local item_drag_disabled = self._item_drag_disabled
 	local hide_slots = self._hide_slots
 	local disable_locked_items = self._disable_locked_items
@@ -232,9 +219,8 @@ ItemGridUI.update_items_status = function (self)
 			item_style.saturated = saturated
 		end
 	end
-
-	return 
 end
+
 ItemGridUI.set_item_selected = function (self, item)
 	self._selected_item = item
 	local widget = self._widget
@@ -251,9 +237,8 @@ ItemGridUI.set_item_selected = function (self, item)
 			hotspot.is_selected = item and grid_item and item.backend_id == grid_item.backend_id
 		end
 	end
-
-	return 
 end
+
 ItemGridUI.get_item_in_slot = function (self, row_number, column_number)
 	local widget = self._widget
 	local content = widget.content
@@ -271,20 +256,19 @@ ItemGridUI.get_item_in_slot = function (self, row_number, column_number)
 			end
 		end
 	end
-
-	return 
 end
+
 ItemGridUI.set_backend_id_selected = function (self, backend_id)
 	local item_interface = Managers.backend:get_interface("items")
-	local item = backend_id and item_interface.get_item_from_id(item_interface, backend_id)
+	local item = backend_id and item_interface:get_item_from_id(backend_id)
 
-	self.set_item_selected(self, item)
-
-	return 
+	self:set_item_selected(item)
 end
+
 ItemGridUI.selected_item = function (self)
 	return self._selected_item
 end
+
 ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_amount)
 	local widget = self._widget
 	local content = widget.content
@@ -308,7 +292,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 		local rarity = item_data.rarity
 
 		if backend_id then
-			rarity = backend_items.get_item_rarity(backend_items, backend_id)
+			rarity = backend_items:get_item_rarity(backend_id)
 		end
 
 		local inventory_icon, display_name, _ = UIUtils.get_ui_information_from_item(item)
@@ -322,7 +306,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 
 		if backend_id then
 			local item_tooltip_name = "item_tooltip" .. name_sufix
-			amount = optional_amount or backend_items.get_item_amount(backend_items, backend_id)
+			amount = optional_amount or backend_items:get_item_amount(backend_id)
 			local amount_color = style[item_amount_name].text_color
 			local amount_default_color = style[item_amount_name].default_color
 			amount_color[2] = amount_default_color[2]
@@ -369,11 +353,10 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 	end
 
 	if self._mark_locked_items then
-		self.mark_locked_items(self, true)
+		self:mark_locked_items(true)
 	end
-
-	return 
 end
+
 ItemGridUI.repopulate_current_inventory_page = function (self)
 	local widget = self._widget
 	local content = widget.content
@@ -383,13 +366,12 @@ ItemGridUI.repopulate_current_inventory_page = function (self)
 	local item_slots = content.slots
 	local start_read_index = (page_index - 1) * item_slots + 1
 
-	self._populate_inventory_page(self, items, start_read_index)
+	self:_populate_inventory_page(items, start_read_index)
 
 	widget.content.page_text = page_index .. "/" .. total_item_pages
 	self._selected_page_index = page_index
-
-	return 
 end
+
 ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 	local widget = self._widget
 	local content = widget.content
@@ -416,7 +398,7 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 				local backend_items = Managers.backend:get_interface("items")
 
 				if backend_id then
-					rarity = backend_items.get_item_rarity(backend_items, backend_id)
+					rarity = backend_items:get_item_rarity(backend_id)
 				end
 
 				local inventory_icon, display_name, _ = UIUtils.get_ui_information_from_item(item)
@@ -430,7 +412,7 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 
 				if backend_id then
 					local item_tooltip_name = "item_tooltip" .. name_sufix
-					amount = backend_items.get_item_amount(backend_items, backend_id)
+					amount = backend_items:get_item_amount(backend_id)
 					local amount_color = style[item_amount_name].text_color
 					local amount_default_color = style[item_amount_name].default_color
 					amount_color[2] = amount_default_color[2]
@@ -478,17 +460,16 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 	end
 
 	if self._mark_equipped_items then
-		self.mark_equipped_items(self, true)
+		self:mark_equipped_items(true)
 	end
 
 	if self._mark_locked_items then
-		self.mark_locked_items(self, true)
+		self:mark_locked_items(true)
 	end
 
-	self.set_item_selected(self, self._selected_item)
-
-	return 
+	self:set_item_selected(self._selected_item)
 end
+
 ItemGridUI.clear_item_grid = function (self)
 	local widget = self._widget
 	local content = widget.content
@@ -512,9 +493,8 @@ ItemGridUI.clear_item_grid = function (self)
 			item_style.saturated = false
 		end
 	end
-
-	return 
 end
+
 ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 	local settings = self._category_settings[index]
 	local display_name = settings.display_name
@@ -528,12 +508,12 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 	end
 
 	if settings.wield then
-		self.disable_unwieldable_items(self, true)
+		self:disable_unwieldable_items(true)
 	end
 
 	local current_page_index = self._selected_page_index or 1
 
-	self.change_item_filter(self, item_filter, not keep_page_index)
+	self:change_item_filter(item_filter, not keep_page_index)
 
 	local widget = self._widget
 	local content = widget.content
@@ -543,20 +523,19 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 	if keep_page_index then
 		local page_index = math.min(current_page_index, self._total_item_pages)
 
-		self.set_item_page(self, page_index)
+		self:set_item_page(page_index)
 	end
-
-	return 
 end
+
 ItemGridUI.change_item_filter = function (self, item_filter, change_page)
 	self._item_filter = item_filter
-	local items_1 = self._get_items_by_filter(self, "can_wield_by_current_career and " .. item_filter)
-	local items_2 = self._get_items_by_filter(self, "not can_wield_by_current_career and " .. item_filter)
+	local items_1 = self:_get_items_by_filter("can_wield_by_current_career and " .. item_filter)
+	local items_2 = self:_get_items_by_filter("not can_wield_by_current_career and " .. item_filter)
 	local item_sort_func = self._item_sort_func
 
 	if item_sort_func then
-		self._sort_items(self, items_1, item_sort_func)
-		self._sort_items(self, items_2, item_sort_func)
+		self:_sort_items(items_1, item_sort_func)
+		self:_sort_items(items_2, item_sort_func)
 	end
 
 	local items = items_1
@@ -576,30 +555,29 @@ ItemGridUI.change_item_filter = function (self, item_filter, change_page)
 	if change_page then
 		local page_index = 1
 
-		self.set_item_page(self, page_index)
+		self:set_item_page(page_index)
 	end
-
-	return 
 end
+
 ItemGridUI._sort_items = function (self, items, item_sort_func)
-	if item_sort_func and 1 < #items then
+	if item_sort_func and #items > 1 then
 		table.sort(items, item_sort_func)
 	end
-
-	return 
 end
+
 ItemGridUI._get_items_by_filter = function (self, item_filter)
 	local backend_items = Managers.backend:get_interface("items")
-	local items = backend_items.get_filtered_items(backend_items, item_filter)
+	local items = backend_items:get_filtered_items(item_filter)
 
 	return items
 end
+
 ItemGridUI._filter_career_specific_items = function (self, items, career_index, slot_type)
 	local item_interface = Managers.backend:get_interface("items")
 
 	if slot_type == "skin" then
 		for _, item in pairs(items) do
-			local item_key = item_interface.get_key(item_interface, item.backend_id)
+			local item_key = item_interface:get_key(item.backend_id)
 			local item_data = item.data
 
 			if item_data.slot_type == "skin" and item_key then
@@ -612,9 +590,8 @@ ItemGridUI._filter_career_specific_items = function (self, items, career_index, 
 			end
 		end
 	end
-
-	return 
 end
+
 ItemGridUI._get_slot_by_ui_index = function (self, index)
 	local slots = InventorySettings.slots
 
@@ -623,9 +600,8 @@ ItemGridUI._get_slot_by_ui_index = function (self, index)
 			return slot
 		end
 	end
-
-	return 
 end
+
 ItemGridUI._handle_page_arrow_pressed = function (self)
 	local selected_page_index = self._selected_page_index or 0
 	local total_item_pages = self._total_item_pages
@@ -636,14 +612,14 @@ ItemGridUI._handle_page_arrow_pressed = function (self)
 	local page_hotspot_right = content.page_hotspot_right
 
 	if not page_hotspot_left and not page_hotspot_right then
-		return 
+		return
 	end
 
 	page_hotspot_left.disable_button = disable_page_selection or selected_page_index <= 1
 	page_hotspot_right.disable_button = disable_page_selection or selected_page_index == total_item_pages
 
 	if not self._selected_page_index or not self._total_item_pages then
-		return 
+		return
 	end
 
 	local new_page_index = nil
@@ -655,13 +631,12 @@ ItemGridUI._handle_page_arrow_pressed = function (self)
 	end
 
 	if new_page_index and new_page_index ~= selected_page_index then
-		self.set_item_page(self, new_page_index)
+		self:set_item_page(new_page_index)
 
 		return true
 	end
-
-	return 
 end
+
 ItemGridUI.is_item_pressed = function (self, allow_single_press)
 	local widget = self._widget
 	local content = widget.content
@@ -682,9 +657,8 @@ ItemGridUI.is_item_pressed = function (self, allow_single_press)
 			end
 		end
 	end
-
-	return 
 end
+
 ItemGridUI.is_item_hovered = function (self)
 	local widget = self._widget
 	local content = widget.content
@@ -704,9 +678,8 @@ ItemGridUI.is_item_hovered = function (self)
 			end
 		end
 	end
-
-	return 
 end
+
 ItemGridUI.is_slot_hovered = function (self)
 	local widget = self._widget
 	local content = widget.content
@@ -724,9 +697,8 @@ ItemGridUI.is_slot_hovered = function (self)
 			end
 		end
 	end
-
-	return 
 end
+
 ItemGridUI.highlight_slots = function (self, enabled, optional_alpha)
 	local widget = self._widget
 	local content = widget.content
@@ -744,9 +716,8 @@ ItemGridUI.highlight_slots = function (self, enabled, optional_alpha)
 			style[slot_hover_name].color[1] = (enabled and (optional_alpha or 255)) or 255
 		end
 	end
-
-	return 
 end
+
 ItemGridUI.highlight_drop_slots = function (self, enabled)
 	local widget = self._widget
 	local content = widget.content
@@ -766,9 +737,8 @@ ItemGridUI.highlight_drop_slots = function (self, enabled)
 			style[slot_hover_name].color[1] = (enabled and alpha) or 255
 		end
 	end
-
-	return 
 end
+
 ItemGridUI.is_item_dragged = function (self)
 	local widget = self._widget
 	local content = widget.content
@@ -794,6 +764,7 @@ ItemGridUI.is_item_dragged = function (self)
 
 	return dragged_item
 end
+
 ItemGridUI.is_dragging_item = function (self)
 	local widget = self._widget
 	local content = widget.content
@@ -819,13 +790,13 @@ ItemGridUI.is_dragging_item = function (self)
 
 	return dragged_item
 end
+
 ItemGridUI.update = function (self, dt, t)
-	local input_pressed = self._handle_page_arrow_pressed(self)
-
-	return 
+	local input_pressed = self:_handle_page_arrow_pressed()
 end
+
 ItemGridUI.destroy = function (self)
-	return 
+	return
 end
 
-return 
+return

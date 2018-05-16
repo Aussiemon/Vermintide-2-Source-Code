@@ -156,4 +156,4 @@ HitEffectsChaosSpawn = {
 	}
 }
 
-return 
+return

@@ -16,8 +16,10 @@ function DebugPrintQuery(query, user_context_list, global_context)
 	for name, context in pairs(user_context_list) do
 		print("\t" .. name)
 
-		for key, value in pairs(context) do
-			print(string.format("\t\t%-15s : %-15s", key, tostring(value)))
+		if type(context) == "table" then
+			for key, value in pairs(context) do
+				print(string.format("\t\t%-15s : %-15s", key, tostring(value)))
+			end
 		end
 	end
 
@@ -30,8 +32,6 @@ function DebugPrintQuery(query, user_context_list, global_context)
 	end
 
 	print("--------------- END OF QUERY CONTEXTS ---------------")
-
-	return 
 end
 
 if not rawget(_G, "RuleDatabase") then
@@ -43,12 +43,12 @@ if not rawget(_G, "RuleDatabase") then
 		self.contexts_by_object = {}
 		self.global_context = nil
 		self.queries = {}
+	end
 
-		return 
-	end
 	TagQueryDatabase.destroy = function (self)
-		return 
+		return
 	end
+
 	TagQueryDatabase.create_query = function (self)
 		return setmetatable({
 			query_context = {},
@@ -62,40 +62,34 @@ if not rawget(_G, "RuleDatabase") then
 
 	TagQueryDatabase.finalize_rules = function (self)
 		table.sort(self.rules, sort_function)
-
-		return 
 	end
+
 	TagQueryDatabase.add_object_context = function (self, object, context_name, context)
 		local object_context_list = self.contexts_by_object[object] or {}
 		self.contexts_by_object[object] = object_context_list
 		object_context_list[context_name] = context
-
-		return 
 	end
+
 	TagQueryDatabase.remove_object = function (self, object)
 		self.contexts_by_object[object] = nil
-
-		return 
 	end
+
 	TagQueryDatabase.set_global_context = function (self, context)
 		self.global_context = context
-
-		return 
 	end
+
 	TagQueryDatabase.add_query = function (self, query)
 		self.queries[#self.queries + 1] = query
-
-		return 
 	end
+
 	TagQueryDatabase.define_rule = function (self, rule)
 		local rules_n = self.rules_n
 		rules_n = rules_n + 1
 		self.rules[rules_n] = rule
 		self.rules_n = rules_n
 		rule.n_criterias = #rule.criterias
-
-		return 
 	end
+
 	local LOCAL_GAMETIME = 0
 	local function_by_op = {
 		[TagQuery.OP.EQ] = function (lhs, rhs)
@@ -105,7 +99,7 @@ if not rawget(_G, "RuleDatabase") then
 			return (lhs ~= rhs and true) or false
 		end,
 		[TagQuery.OP.LT] = function (lhs, rhs)
-			return (lhs or 0) < rhs and rhs
+			return rhs > (lhs or 0) and rhs
 		end,
 		[TagQuery.OP.GT] = function (lhs, rhs)
 			return rhs < (lhs or 0) and rhs
@@ -144,8 +138,6 @@ if not rawget(_G, "RuleDatabase") then
 		end
 
 		print(text)
-
-		return 
 	end
 
 	TagQueryDatabase.iterate_queries = function (self, t)
@@ -154,7 +146,7 @@ if not rawget(_G, "RuleDatabase") then
 		local best_query_value = 0
 
 		for i = 1, num_iterations, 1 do
-			local query = self.iterate_query(self, t)
+			local query = self:iterate_query(t)
 			local result = query.result
 
 			if result then
@@ -170,7 +162,9 @@ if not rawget(_G, "RuleDatabase") then
 
 		return best_query
 	end
+
 	local iterate_context = {}
+
 	TagQueryDatabase.iterate_query = function (self, t)
 		LOCAL_GAMETIME = t
 		local DEBUG_QUERY = script_data.dialogue_debug_queries
@@ -181,7 +175,7 @@ if not rawget(_G, "RuleDatabase") then
 		local query = table.remove(self.queries, 1)
 
 		if not query then
-			return 
+			return
 		end
 
 		local query_context = query.query_context
@@ -274,7 +268,7 @@ if not rawget(_G, "RuleDatabase") then
 				elseif current_op then
 					local op_result = nil
 
-					if 4 < crit_index then
+					if crit_index > 4 then
 						op_result = function_by_op[current_op](lhs_value, current_value)
 					else
 						op_result = function_by_op[current_op](current_value)
@@ -327,7 +321,7 @@ if not rawget(_G, "RuleDatabase") then
 		return query
 	end
 
-	return 
+	return
 end
 
 TagQueryDatabase.init = function (self)
@@ -336,9 +330,8 @@ TagQueryDatabase.init = function (self)
 	self.rules_n = 0
 	self.contexts_by_object = {}
 	self.queries = {}
-
-	return 
 end
+
 TagQueryDatabase.destroy = function (self)
 	RuleDatabase.destroy(self.database)
 
@@ -346,41 +339,35 @@ TagQueryDatabase.destroy = function (self)
 	self.rule_id_mapping = nil
 	self.contexts_by_object = nil
 	self.queries = nil
-
-	return 
 end
+
 TagQueryDatabase.add_object_context = function (self, object, context_name, context)
 	local object_context_list = self.contexts_by_object[object] or {}
 	self.contexts_by_object[object] = object_context_list
 	object_context_list[context_name] = context
-
-	return 
 end
+
 TagQueryDatabase.remove_object = function (self, object)
 	self.contexts_by_object[object] = nil
-
-	return 
 end
+
 TagQueryDatabase.set_global_context = function (self, context)
 	self.global_context = context
-
-	return 
 end
+
 TagQueryDatabase.create_query = function (self)
 	return setmetatable({
 		query_context = {},
 		tagquery_database = self
 	}, TagQuery)
 end
+
 TagQueryDatabase.add_query = function (self, query)
 	self.queries[#self.queries + 1] = query
-
-	return 
 end
+
 TagQueryDatabase.finalize_rules = function (self)
 	RuleDatabase.sort_rules(self.database)
-
-	return 
 end
 
 RuleDatabase.initialize_static_values()
@@ -402,6 +389,7 @@ local context_indexes = table.mirror_array_inplace({
 	"user_memory",
 	"faction_memory"
 })
+
 TagQueryDatabase.define_rule = function (self, rule_definition)
 	local dialogue_name = rule_definition.name
 
@@ -467,16 +455,15 @@ TagQueryDatabase.define_rule = function (self, rule_definition)
 	self.rule_id_mapping[rule_id] = rule_definition
 	self.rule_id_mapping[rule_definition.name] = rule_id
 	self.rules_n = self.rules_n + 1
-
-	return 
 end
+
 TagQueryDatabase.iterate_queries = function (self, t)
 	local num_iterations = #self.queries
 	local best_query = nil
 	local best_query_value = 0
 
 	for i = 1, num_iterations, 1 do
-		local query = self.iterate_query(self, t)
+		local query = self:iterate_query(t)
 		local result = query.result
 
 		if result then
@@ -492,12 +479,14 @@ TagQueryDatabase.iterate_queries = function (self, t)
 
 	return best_query
 end
+
 local dummy_table = {}
+
 TagQueryDatabase.iterate_query = function (self, t)
 	local query = table.remove(self.queries, 1)
 
 	if not query then
-		return 
+		return
 	end
 
 	local query_context = query.query_context
@@ -531,24 +520,26 @@ TagQueryDatabase.iterate_query = function (self, t)
 
 	return query
 end
+
 local dummy_table_2 = {}
+
 TagQueryDatabase.debug_test_query = function (self, concept, source, test_query, test_user_context_list, test_global_context)
 	print("--------------- TESTING FOLLOWING QUERY ---------------")
 	print(concept, source, test_query, test_user_context_list, test_global_context)
 	table.dump(test_query.query_context)
 
-	local Q = self.create_query(self)
+	local Q = self:create_query()
 	local unit = Managers.player:local_player().player_unit
 
-	Q.add(Q, "concept", concept, "source", unit, "source_name", source)
-	Q.finalize(Q)
+	Q:add("concept", concept, "source", unit, "source_name", source)
+	Q:finalize()
 
 	local query = self.queries[1]
 
 	if not query then
 		print("FAILED TO CREATE NEW QUERY ", query)
 
-		return 
+		return
 	end
 
 	local query_context = query.query_context
@@ -600,6 +591,4 @@ TagQueryDatabase.debug_test_query = function (self, concept, source, test_query,
 	self.queries[1] = query
 
 	print("--------------- END OF TEST QUERY---------------")
-
-	return 
 end

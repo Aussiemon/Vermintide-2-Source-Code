@@ -1,9 +1,9 @@
 EventManager = class(EventManager)
+
 EventManager.init = function (self)
 	self._events = {}
-
-	return 
 end
+
 EventManager.register = function (self, object, ...)
 	for i = 1, select("#", ...), 2 do
 		local event_name = select(i, ...)
@@ -16,9 +16,8 @@ EventManager.register = function (self, object, ...)
 		})
 		self._events[event_name][object] = callback_name
 	end
-
-	return 
 end
+
 EventManager.unregister = function (self, event_name, object)
 	local events = self._events[event_name]
 	events[object] = nil
@@ -26,9 +25,8 @@ EventManager.unregister = function (self, event_name, object)
 	if table.is_empty(events) then
 		self._events[event_name] = nil
 	end
-
-	return 
 end
+
 EventManager.trigger = function (self, event_name, ...)
 	local events = self._events[event_name]
 
@@ -37,8 +35,6 @@ EventManager.trigger = function (self, event_name, ...)
 			object[callback_name](object, ...)
 		end
 	end
-
-	return 
 end
 
-return 
+return

@@ -2,24 +2,23 @@ BTEnterHooks = BTEnterHooks or {}
 local BTEnterHooks = BTEnterHooks
 local unit_alive = Unit.alive
 local ScriptUnit = ScriptUnit
+
 BTEnterHooks.crouch_on_enter = function (unit, blackboard, t)
 	if blackboard.is_upright then
 		Managers.state.network:anim_event(unit, "to_crouch")
 
 		blackboard.is_upright = false
 	end
-
-	return 
 end
+
 BTEnterHooks.upright_on_enter = function (unit, blackboard, t)
 	if not blackboard.is_upright then
 		Managers.state.network:anim_event(unit, "to_upright")
 
 		blackboard.is_upright = true
 	end
-
-	return 
 end
+
 BTEnterHooks.crouch_or_upright_on_enter = function (unit, blackboard, t)
 	if blackboard.needs_to_crouch == nil then
 		PerceptionUtils.troll_crouch_check(unit, blackboard, t)
@@ -30,14 +29,12 @@ BTEnterHooks.crouch_or_upright_on_enter = function (unit, blackboard, t)
 	else
 		Managers.state.network:anim_event(unit, "to_upright")
 	end
-
-	return 
 end
+
 BTEnterHooks.rage_on_enter = function (unit, blackboard, t)
 	blackboard.next_rage_time = t + 7
-
-	return 
 end
+
 BTEnterHooks.attack_grabbed_smash = function (unit, blackboard, t)
 	if Unit.alive(blackboard.victim_grabbed) then
 		StatusUtils.set_grabbed_by_chaos_spawn_status_network(blackboard.victim_grabbed, "beating_with")
@@ -50,33 +47,29 @@ BTEnterHooks.attack_grabbed_smash = function (unit, blackboard, t)
 		blackboard.wants_to_throw = true
 		blackboard.attack_grabbed_attacks = 0
 	end
-
-	return 
 end
+
 BTEnterHooks.on_warlord_dual_wield = function (unit, blackboard, t)
 	if blackboard.inventory_item_set ~= 2 then
 		blackboard.switching_weapons = 2
 	end
-
-	return 
 end
+
 BTEnterHooks.on_warlord_halberd = function (unit, blackboard, t)
 	if blackboard.inventory_item_set ~= 1 then
 		blackboard.switching_weapons = 1
 	end
-
-	return 
 end
+
 BTEnterHooks.on_warlord_disable_blocking = function (unit, blackboard, t)
 	local ai_shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system")
 
 	if ai_shield_extension then
-		ai_shield_extension.set_is_blocking(ai_shield_extension, false)
-		ai_shield_extension.set_is_dodging(ai_shield_extension, false)
+		ai_shield_extension:set_is_blocking(false)
+		ai_shield_extension:set_is_dodging(false)
 	end
-
-	return 
 end
+
 BTEnterHooks.on_grey_seer_intro_enter = function (unit, blackboard, t)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 	health_extension.is_invincible = true
@@ -84,22 +77,25 @@ BTEnterHooks.on_grey_seer_intro_enter = function (unit, blackboard, t)
 	local network_transmit = network_manager.network_transmit
 	local go_id = Managers.state.unit_storage:go_id(unit)
 
-	network_transmit.send_rpc_clients(network_transmit, "rpc_set_hit_reaction_template", go_id, "HitEffectsSkavenGreySeerMounted")
+	network_transmit:send_rpc_clients("rpc_set_hit_reaction_template", go_id, "HitEffectsSkavenGreySeerMounted")
 
-	return 
+	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+	local event_data = FrameTable.alloc_table()
+
+	dialogue_input:trigger_networked_dialogue_event("egs_intro", event_data)
 end
+
 BTEnterHooks.grey_seer_death_sequence_teleport = function (unit, blackboard, t)
 	local index = blackboard.current_death_sequence_index or 1
 	local teleport_position = blackboard.death_sequence_positions[index]
 
 	if teleport_position then
-		blackboard.quick_teleport_exit_pos = Vector3Box(teleport_position.unbox(teleport_position))
+		blackboard.quick_teleport_exit_pos = Vector3Box(teleport_position:unbox())
 		blackboard.quick_teleport = true
 		blackboard.current_death_sequence_index = index + 1
 	end
-
-	return 
 end
+
 BTEnterHooks.grey_seer_call_stormfiend_enter = function (unit, blackboard, t)
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local mounted_data = blackboard.mounted_data
@@ -124,13 +120,12 @@ BTEnterHooks.grey_seer_call_stormfiend_enter = function (unit, blackboard, t)
 	mount_blackboard.start_anim_done = true
 	local event_data = FrameTable.alloc_table()
 
-	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "egs_calls_mount_battle", event_data)
+	dialogue_input:trigger_networked_dialogue_event("egs_calls_mount_battle", event_data)
 
 	blackboard.quick_teleport = true
 	blackboard.quick_teleport_exit_pos = Vector3Box(projected_wanted_pos)
-
-	return 
 end
+
 BTEnterHooks.stormfiend_boss_charge_enter = function (unit, blackboard, t)
 	local wanted_unit = nil
 	local furthest_distance = 0
@@ -156,14 +151,12 @@ BTEnterHooks.stormfiend_boss_charge_enter = function (unit, blackboard, t)
 		blackboard.target_unit = wanted_unit
 		blackboard.keep_target = true
 	end
-
-	return 
 end
+
 BTEnterHooks.to_combat = function (unit, blackboard, t)
 	Managers.state.network:anim_event(unit, "to_combat")
-
-	return 
 end
+
 BTEnterHooks.on_chaos_exalted_champion_intro_enter = function (unit, blackboard, t)
 	local level_analysis = Managers.state.conflict.level_analysis
 	local node_units = level_analysis.generic_ai_node_units.chaos_exalted_intro_move_to
@@ -179,9 +172,8 @@ BTEnterHooks.on_chaos_exalted_champion_intro_enter = function (unit, blackboard,
 
 		blackboard.intro_timer = nil
 	end
-
-	return 
 end
+
 BTEnterHooks.on_chaos_exalted_sorcerer_intro_enter = function (unit, blackboard, t)
 	local level_analysis = Managers.state.conflict.level_analysis
 	local node_units = level_analysis.generic_ai_node_units.sorcerer_boss_intro
@@ -206,10 +198,9 @@ BTEnterHooks.on_chaos_exalted_sorcerer_intro_enter = function (unit, blackboard,
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
 
-	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "ebh_intro", event_data)
-
-	return 
+	dialogue_input:trigger_networked_dialogue_event("ebh_intro", event_data)
 end
+
 BTEnterHooks.on_skaven_warlord_intro_enter = function (unit, blackboard, t)
 	local level_analysis = Managers.state.conflict.level_analysis
 	local node_units = level_analysis.generic_ai_node_units.skaven_warlord_intro_move_to
@@ -225,30 +216,25 @@ BTEnterHooks.on_skaven_warlord_intro_enter = function (unit, blackboard, t)
 
 		blackboard.intro_timer = nil
 	end
-
-	return 
 end
+
 BTEnterHooks.sorcerer_dummy_idle = function (unit, blackboard, t)
 	Managers.state.network:anim_event(unit, "to_plague_wave")
 
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 	health_extension.is_invincible = true
-
-	return 
 end
+
 BTEnterHooks.corruptor_enter = function (unit, blackboard, t)
 	Managers.state.network:anim_event(unit, "to_corruptor")
-
-	return 
 end
+
 BTEnterHooks.grey_seer_stagger_enter = function (unit, blackboard, t)
 	local damage_wave_extension = blackboard.damage_wave_extension
 
 	if damage_wave_extension then
-		damage_wave_extension.abort(damage_wave_extension)
+		damage_wave_extension:abort()
 	end
-
-	return 
 end
 
 local function setup_sorcerer_boss_spawning(unit, blackboard, data)
@@ -299,10 +285,9 @@ BTEnterHooks.sorcerer_begin_defensive_mode = function (unit, blackboard, t)
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
 
-	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "ebh_summon", event_data)
-
-	return 
+	dialogue_input:trigger_networked_dialogue_event("ebh_summon", event_data)
 end
+
 BTEnterHooks.sorcerer_spawn_horde = function (unit, blackboard, t)
 	local data = {
 		stay_still = true,
@@ -312,17 +297,15 @@ BTEnterHooks.sorcerer_spawn_horde = function (unit, blackboard, t)
 	setup_sorcerer_boss_spawning(unit, blackboard, data)
 
 	blackboard.spawning_allies = data
-
-	return 
 end
+
 BTEnterHooks.sorcerer_defensive_seeking_bomb = function (unit, blackboard, t)
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
 
-	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "ebh_insect_spell", event_data)
-
-	return 
+	dialogue_input:trigger_networked_dialogue_event("ebh_insect_spell", event_data)
 end
+
 BTEnterHooks.teleport_to_center = function (unit, blackboard, t)
 	local level_analysis = Managers.state.conflict.level_analysis
 	local node_units = level_analysis.generic_ai_node_units.sorcerer_boss_center
@@ -334,16 +317,14 @@ BTEnterHooks.teleport_to_center = function (unit, blackboard, t)
 		blackboard.quick_teleport = true
 		blackboard.move_pos = nil
 
-		return 
+		return
 	end
-
-	return 
 end
+
 BTEnterHooks.summoning_starts = function (unit, blackboard, t)
 	blackboard.is_summoning = true
-
-	return 
 end
+
 BTEnterHooks.block_stagger_start = function (unit, blackboard, t)
 	if blackboard.mode == "defensive" then
 		local current_health_percent = blackboard.health_extension:current_health_percent()
@@ -353,7 +334,7 @@ BTEnterHooks.block_stagger_start = function (unit, blackboard, t)
 			blackboard.escape_teleport = true
 		end
 
-		return 
+		return
 	end
 
 	if not blackboard.stagger_time_end then
@@ -368,12 +349,11 @@ BTEnterHooks.block_stagger_start = function (unit, blackboard, t)
 			blackboard.quick_teleport = true
 			blackboard.move_pos = nil
 
-			return 
+			return
 		end
 	end
-
-	return 
 end
+
 BTEnterHooks.sorcerer_evade = function (unit, blackboard, t)
 	blackboard.quick_teleport = true
 	local difficulty = Managers.state.difficulty:get_difficulty()
@@ -389,10 +369,9 @@ BTEnterHooks.sorcerer_evade = function (unit, blackboard, t)
 	local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 	local event_data = FrameTable.alloc_table()
 
-	dialogue_input.trigger_networked_dialogue_event(dialogue_input, "ebh_taunt", event_data)
-
-	return 
+	dialogue_input:trigger_networked_dialogue_event("ebh_taunt", event_data)
 end
+
 BTEnterHooks.warlord_defensive_on_enter = function (unit, blackboard, t)
 	local spawn_allies_positions = blackboard.spawn_allies_positions
 	local self_position = POSITION_LOOKUP[unit]
@@ -410,13 +389,10 @@ BTEnterHooks.warlord_defensive_on_enter = function (unit, blackboard, t)
 	end
 
 	blackboard.override_spawn_allies_call_position = Vector3Box(wanted_pos)
-
-	return 
 end
+
 BTEnterHooks.keep_target = function (unit, blackboard, t)
 	blackboard.keep_target = true
-
-	return 
 end
 
-return 
+return

@@ -2867,4 +2867,4 @@ HordeCompositions = {
 	}
 }
 
-return 
+return

@@ -17,6 +17,7 @@ GameServerInternal.search_types_map = {
 	favorites = SteamServerBrowser.FAVORITES,
 	history = SteamServerBrowser.HISTORY
 }
+
 GameServerInternal.join_server = function (game_server_info, password)
 	local ip_address = game_server_info.ip_port
 	local use_eac = true
@@ -26,22 +27,23 @@ GameServerInternal.join_server = function (game_server_info, password)
 
 	return game_server_lobby
 end
+
 GameServerInternal.leave_server = function (game_server_lobby)
 	Network.leave_steam_server(game_server_lobby)
-
-	return 
 end
+
 GameServerInternal.lobby_host = function (game_server_lobby)
 	return SteamGameServerLobby.game_session_host(game_server_lobby)
 end
+
 GameServerInternal.lobby_id = function (game_server_lobby)
 	return SteamGameServerLobby.game_session_host(game_server_lobby)
 end
+
 GameServerInternal.user_name = function (user)
 	error("The dedicated server can't lookup names")
-
-	return 
 end
+
 GameServerInternal.server_browser = function ()
 	if not GameServerInternal._internal_server_browser then
 		GameServerInternal._create_server_browser_wrapper()
@@ -49,6 +51,7 @@ GameServerInternal.server_browser = function ()
 
 	return GameServerInternal._internal_server_browser
 end
+
 GameServerInternal.clear_filter_requirements = function ()
 	if not GameServerInternal._internal_server_browser then
 		GameServerInternal._create_server_browser_wrapper()
@@ -56,10 +59,9 @@ GameServerInternal.clear_filter_requirements = function ()
 
 	local server_browser = GameServerInternal._internal_server_browser
 
-	server_browser.clear_filters(server_browser)
-
-	return 
+	server_browser:clear_filters()
 end
+
 GameServerInternal.add_filter_requirements = function (requirements)
 	if not GameServerInternal._internal_server_browser then
 		GameServerInternal._create_server_browser_wrapper()
@@ -67,24 +69,21 @@ GameServerInternal.add_filter_requirements = function (requirements)
 
 	local server_browser = GameServerInternal._internal_server_browser
 
-	server_browser.clear_filters(server_browser)
-	server_browser.add_filters(server_browser, requirements)
-
-	return 
+	server_browser:clear_filters()
+	server_browser:add_filters(requirements)
 end
+
 GameServerInternal.forget_server_browser = function ()
 	GameServerInternal._internal_server_browser = nil
-
-	return 
 end
+
 GameServerInternal._create_server_browser_wrapper = function ()
 	fassert(GameServerInternal._internal_server_browser == nil, "Already has server browser wrapper")
 
 	local server_browser = LobbyInternal.client:server_browser()
 	GameServerInternal._internal_server_browser = SteamServerBrowserWrapper:new(server_browser)
-
-	return 
 end
+
 SteamServerBrowserWrapper = class(SteamServerBrowserWrapper)
 SteamServerBrowserWrapper.compare_funcs = {
 	[LobbyComparison.EQUAL] = function (lhv, rhv)
@@ -114,23 +113,25 @@ SteamServerBrowserWrapper.compare_func_names = {
 	[LobbyComparison.GREATER] = ">",
 	[LobbyComparison.GREATER_OR_EQUAL] = ">="
 }
+
 SteamServerBrowserWrapper.init = function (self, server_browser)
 	self._browser = server_browser
 	self._cached_servers = {}
 	self._filters = {}
 	self._search_type = "internet"
 	self._state = "waiting"
-
-	return 
 end
+
 SteamServerBrowserWrapper.servers = function (self)
 	return self._cached_servers
 end
+
 SteamServerBrowserWrapper.is_refreshing = function (self)
 	local state = self._state
 
 	return state == "refreshing" or state == "fetching_data"
 end
+
 SteamServerBrowserWrapper.refresh = function (self)
 	if SteamServerBrowser.is_refreshing(self._browser) then
 		SteamServerBrowser.abort_refresh(self._browser)
@@ -141,32 +142,27 @@ SteamServerBrowserWrapper.refresh = function (self)
 	SteamServerBrowser.refresh(self._browser, search_type)
 
 	self._state = "refreshing"
-
-	return 
 end
+
 SteamServerBrowserWrapper.set_search_type = function (self, search_type)
 	fassert(GameServerInternal.search_types_map[search_type] ~= nil, "Unknown search type (%s)", search_type)
 
 	self._search_type = search_type
-
-	return 
 end
+
 SteamServerBrowserWrapper.add_to_favorites = function (self, ip, connection_port, query_port)
 	SteamServerBrowser.add_favorite(self._browser, ip, connection_port, query_port)
-
-	return 
 end
+
 SteamServerBrowserWrapper.remove_from_favorites = function (self, ip, connection_port, query_port)
 	SteamServerBrowser.remove_favorite(self._browser, ip, connection_port, query_port)
-
-	return 
 end
+
 SteamServerBrowserWrapper.clear_filters = function (self)
 	SteamServerBrowser.clear_filters(self._browser)
 	table.clear(self._filters)
-
-	return 
 end
+
 SteamServerBrowserWrapper.add_filters = function (self, filters)
 	local server_browser_filters = filters.server_browser_filters
 
@@ -193,9 +189,8 @@ SteamServerBrowserWrapper.add_filters = function (self, filters)
 
 		mm_printf("Server Filter: %s, comparison(%s), value=%s", tostring(data_name), tostring(comparison), tostring(value))
 	end
-
-	return 
 end
+
 SteamServerBrowserWrapper.update = function (self, dt, t)
 	local state = self._state
 
@@ -236,7 +231,7 @@ SteamServerBrowserWrapper.update = function (self, dt, t)
 				local lobby_data = SteamServerBrowser.data_all(self._browser, i)
 				lobby_data.server_info = server
 
-				if self._filter_server(self, lobby_data) then
+				if self:_filter_server(lobby_data) then
 					cached_servers[#cached_servers + 1] = lobby_data
 				end
 			end
@@ -248,9 +243,8 @@ SteamServerBrowserWrapper.update = function (self, dt, t)
 	if self._state ~= state then
 		printf("[SteamServerBrowserWrapper] Switched state from (%s) to (%s)", state, self._state)
 	end
-
-	return 
 end
+
 SteamServerBrowserWrapper._filter_server = function (self, server_data)
 	local filters = self._filters
 
@@ -277,4 +271,4 @@ SteamServerBrowserWrapper._filter_server = function (self, server_data)
 	return true
 end
 
-return 
+return

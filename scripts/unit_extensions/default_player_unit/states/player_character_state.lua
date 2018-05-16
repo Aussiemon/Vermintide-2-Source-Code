@@ -1,4 +1,5 @@
 PlayerCharacterState = class(PlayerCharacterState)
+
 PlayerCharacterState.init = function (self, character_state_init_context, name)
 	local unit = character_state_init_context.unit
 	self.name = name
@@ -21,8 +22,6 @@ PlayerCharacterState.init = function (self, character_state_init_context, name)
 	self.first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 	self.status_extension = ScriptUnit.extension(unit, "status_system")
 	self.ai_extension = ScriptUnit.has_extension(unit, "ai_system") and ScriptUnit.extension(unit, "ai_system")
-
-	return 
 end
 
-return 
+return

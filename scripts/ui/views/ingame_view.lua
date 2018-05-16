@@ -25,8 +25,6 @@ local function player_stuck_cb()
 	if player and Unit.alive(player.player_unit) then
 		Managers.telemetry.events:player_stuck(player, level_key)
 	end
-
-	return 
 end
 
 if PLATFORM == "ps4" then
@@ -45,6 +43,13 @@ if PLATFORM == "ps4" then
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
+				},
+				{
+					display_name = "interact_open_inventory_chest",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "overview",
+					transition = "hero_view_force"
 				},
 				{
 					fade = true,
@@ -71,6 +76,13 @@ if PLATFORM == "ps4" then
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
+				},
+				{
+					display_name = "interact_open_inventory_chest",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "overview",
+					transition = "hero_view_force"
 				},
 				{
 					fade = true,
@@ -102,6 +114,13 @@ if PLATFORM == "ps4" then
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
+				},
+				{
+					display_name = "interact_open_inventory_chest",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "overview",
+					transition = "hero_view_force"
 				},
 				{
 					fade = true,
@@ -261,6 +280,13 @@ elseif PLATFORM == "xb1" then
 					disable_when_matchmaking = true
 				},
 				{
+					display_name = "interact_open_inventory_chest",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "overview",
+					transition = "hero_view_force"
+				},
+				{
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
@@ -292,6 +318,13 @@ elseif PLATFORM == "xb1" then
 					disable_when_matchmaking = true
 				},
 				{
+					display_name = "interact_open_inventory_chest",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "overview",
+					transition = "hero_view_force"
+				},
+				{
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
@@ -321,6 +354,13 @@ elseif PLATFORM == "xb1" then
 					transition_state = "character",
 					transition = "character_selection",
 					disable_when_matchmaking = true
+				},
+				{
+					display_name = "interact_open_inventory_chest",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "overview",
+					transition = "hero_view_force"
 				},
 				{
 					fade = true,
@@ -727,6 +767,7 @@ if GameSettingsDevelopment.use_global_chat and PLATFORM == "win32" then
 end
 
 IngameView = class(IngameView)
+
 IngameView.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
@@ -742,7 +783,7 @@ IngameView.init = function (self, ingame_ui_context)
 	self.layout_list = (is_in_inn and menu_layouts.in_menu) or menu_layouts.in_game
 	self.menu_definition = IngameViewDefinitions
 
-	self.create_ui_elements(self)
+	self:create_ui_elements()
 
 	self.ui_animations = {}
 	self.controller_grid_index = {
@@ -759,10 +800,10 @@ IngameView.init = function (self, ingame_ui_context)
 	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, number_of_actvie_descriptions, gui_layer, generic_input_actions)
 
 	self.menu_input_description:set_input_description(nil)
-
-	return 
 end
+
 local MENU_ANIMATION_TIME = 0.3
+
 IngameView.on_enter = function (self, menu_to_enter)
 	assert(menu_to_enter ~= "MainMenu")
 
@@ -770,13 +811,13 @@ IngameView.on_enter = function (self, menu_to_enter)
 	self.active_menu = menu_to_enter
 	self.controller_cooldown = 0.2
 
-	self.update_menu_options(self)
-	self.update_menu_options_enabled_states(self)
+	self:update_menu_options()
+	self:update_menu_options_enabled_states()
 	self.input_manager:block_device_except_service("ingame_menu", "keyboard", 1)
 	self.input_manager:block_device_except_service("ingame_menu", "mouse", 1)
 	self.input_manager:block_device_except_service("ingame_menu", "gamepad", 1)
 	ShowCursorStack.push()
-	self.play_sound(self, "Play_hud_button_open")
+	self:play_sound("Play_hud_button_open")
 
 	local world = self.ui_renderer.world
 	local shading_env = World.get_data(world, "shading_environment")
@@ -786,9 +827,8 @@ IngameView.on_enter = function (self, menu_to_enter)
 		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", 0.75)
 		ShadingEnvironment.apply(shading_env)
 	end
-
-	return 
 end
+
 IngameView.on_exit = function (self)
 	if self._friends_component_ui:is_active() then
 		self._friends_component_ui:deactivate_friends_ui()
@@ -801,7 +841,7 @@ IngameView.on_exit = function (self)
 
 	MOOD_BLACKBOARD.menu = false
 
-	self.play_sound(self, "Play_hud_button_close")
+	self:play_sound("Play_hud_button_close")
 
 	local world = self.ui_renderer.world
 	local shading_env = World.get_data(world, "shading_environment")
@@ -811,12 +851,12 @@ IngameView.on_exit = function (self)
 		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", 0)
 		ShadingEnvironment.apply(shading_env)
 	end
-
-	return 
 end
+
 IngameView.input_service = function (self)
 	return self.input_manager:get_service("ingame_menu")
 end
+
 IngameView.create_ui_elements = function (self)
 	local widgets = self.menu_definition.widgets
 	self.stored_buttons = {
@@ -846,9 +886,8 @@ IngameView.create_ui_elements = function (self)
 	self.right_chain_widget = UIWidget.init(widgets.right_chain)
 	self.console_cursor_widget = UIWidget.init(widgets.console_cursor)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(self.menu_definition.scenegraph_definition)
-
-	return 
 end
+
 IngameView.update_menu_options = function (self)
 	if script_data.pause_menu_full_access then
 		if not self.pause_menu_full_access then
@@ -904,7 +943,17 @@ IngameView.update_menu_options = function (self)
 				}
 			}
 
-			self.setup_button_layout(self, full_access_layout)
+			if Development.parameter("v2_achievements") then
+				full_access_layout[#full_access_layout + 1] = {
+					display_name = "achievements",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "achievements",
+					transition = "hero_view"
+				}
+			end
+
+			self:setup_button_layout(full_access_layout)
 		end
 	else
 		self.pause_menu_full_access = nil
@@ -928,12 +977,11 @@ IngameView.update_menu_options = function (self)
 				new_menu_layout = layout_list.client
 			end
 
-			self.setup_button_layout(self, new_menu_layout)
+			self:setup_button_layout(new_menu_layout)
 		end
 	end
-
-	return 
 end
+
 IngameView.update_menu_options_enabled_states = function (self)
 	local active_button_data = self.active_button_data
 
@@ -942,7 +990,7 @@ IngameView.update_menu_options_enabled_states = function (self)
 		local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
 		local is_server = self.is_server
 		local player_manager = Managers.player
-		local local_player = player_manager.local_player(player_manager)
+		local local_player = player_manager:local_player()
 		local has_player = local_player and local_player.player_unit ~= nil
 
 		for index, menu_option in ipairs(active_button_data) do
@@ -962,9 +1010,8 @@ IngameView.update_menu_options_enabled_states = function (self)
 			end
 		end
 	end
-
-	return 
 end
+
 IngameView.setup_button_layout = function (self, layout_data)
 	local active_button_data = self.active_button_data
 
@@ -1006,21 +1053,19 @@ IngameView.setup_button_layout = function (self, layout_data)
 
 	local controller_selection_index = self.controller_selection_index
 
-	if controller_selection_index and #active_button_data < controller_selection_index then
-		self.controller_select_button_index(self, #active_button_data, true)
+	if controller_selection_index and controller_selection_index > #active_button_data then
+		self:controller_select_button_index(#active_button_data, true)
 	end
 
-	self.set_background_height(self, #active_button_data)
-
-	return 
+	self:set_background_height(#active_button_data)
 end
+
 IngameView.destroy = function (self)
 	self.menu_input_description:destroy()
 
 	self.menu_input_description = nil
-
-	return 
 end
+
 IngameView.set_background_height = function (self, num_buttons)
 	local button_spacing = self.menu_definition.MENU_BUTTON_SPACING
 	local button_size = self.menu_definition.MENU_BUTTON_SIZE
@@ -1035,12 +1080,11 @@ IngameView.set_background_height = function (self, num_buttons)
 	local right_chain_widget = self.right_chain_widget
 	local right_chain_scenegraph_id = right_chain_widget.scenegraph_id
 	ui_scenegraph[right_chain_scenegraph_id].size[2] = total_button_height + 100
-
-	return 
 end
+
 IngameView.update = function (self, dt)
-	self.update_menu_options(self)
-	self.update_menu_options_enabled_states(self)
+	self:update_menu_options()
+	self:update_menu_options_enabled_states()
 
 	if self._reinit_menu_input_description_next_update then
 		self._reinit_menu_input_description_next_update = nil
@@ -1050,8 +1094,8 @@ IngameView.update = function (self, dt)
 
 	local ui_top_renderer = self.ui_top_renderer
 	local input_manager = self.input_manager
-	local input_service = input_manager.get_service(input_manager, "ingame_menu")
-	local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
+	local input_service = input_manager:get_service("ingame_menu")
+	local gamepad_active = input_manager:is_device_active("gamepad")
 
 	self._friends_component_ui:update(dt, input_service)
 
@@ -1086,17 +1130,17 @@ IngameView.update = function (self, dt)
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 
 			if widget.content.button_hotspot.on_hover_enter then
-				self.play_sound(self, "Play_hud_hover")
+				self:play_sound("Play_hud_hover")
 			end
 
-			if not ingame_ui.pending_transition(ingame_ui) then
+			if not ingame_ui:pending_transition() then
 				local mouse_input_approved = widget.content.button_hotspot.on_release
-				local gamepad_input_approved = self.controller_cooldown < 0 and self.controller_selection_index == index and input_service.get(input_service, "confirm", true)
+				local gamepad_input_approved = self.controller_cooldown < 0 and self.controller_selection_index == index and input_service:get("confirm", true)
 
 				if mouse_input_approved or gamepad_input_approved then
 					widget.content.button_hotspot.on_release = nil
 
-					self.play_sound(self, "Play_hud_select")
+					self:play_sound("Play_hud_select")
 
 					local url = data.url
 
@@ -1115,9 +1159,9 @@ IngameView.update = function (self, dt)
 						local fade = data.fade
 
 						if fade then
-							ingame_ui.transition_with_fade(ingame_ui, transition, transition_state, transition_sub_state)
+							ingame_ui:transition_with_fade(transition, transition_state, transition_sub_state)
 						else
-							ingame_ui.handle_transition(ingame_ui, transition, transition_state, transition_sub_state)
+							ingame_ui:handle_transition(transition, transition_state, transition_sub_state)
 						end
 					end
 
@@ -1135,22 +1179,20 @@ IngameView.update = function (self, dt)
 
 	if join_lobby_data and Managers.matchmaking:allowed_to_initiate_join_lobby() then
 		Managers.matchmaking:request_join_lobby(join_lobby_data)
-		ingame_ui.handle_transition(ingame_ui, "exit_menu")
+		ingame_ui:handle_transition("exit_menu")
 	end
 
-	if (input_service.get(input_service, "toggle_menu", true) or input_service.get(input_service, "back", true)) and not ingame_ui.pending_transition(ingame_ui) then
-		ingame_ui.handle_transition(ingame_ui, "exit_menu")
+	if (input_service:get("toggle_menu", true) or input_service:get("back", true)) and not ingame_ui:pending_transition() then
+		ingame_ui:handle_transition("exit_menu")
 	end
-
-	return 
 end
+
 IngameView.setup_controller_selection = function (self)
 	local selection_index = 1
 
-	self.controller_select_button_index(self, selection_index, true)
-
-	return 
+	self:controller_select_button_index(selection_index, true)
 end
+
 IngameView.controller_select_button_index = function (self, index, ignore_sound)
 	local selection_accepted = false
 	local active_button_data = self.active_button_data
@@ -1177,7 +1219,7 @@ IngameView.controller_select_button_index = function (self, index, ignore_sound)
 	end
 
 	if not ignore_sound and index ~= self.controller_selection_index then
-		self.play_sound(self, "Play_hud_hover")
+		self:play_sound("Play_hud_hover")
 	end
 
 	self.controller_selection_index = index
@@ -1185,6 +1227,7 @@ IngameView.controller_select_button_index = function (self, index, ignore_sound)
 
 	return selection_accepted
 end
+
 IngameView.clear_controller_selection = function (self)
 	local active_button_data = self.active_button_data
 
@@ -1192,73 +1235,71 @@ IngameView.clear_controller_selection = function (self)
 		local widget = data.widget
 		widget.content.button_hotspot.is_selected = false
 	end
-
-	return 
 end
+
 IngameView.update_controller_input = function (self, input_service, dt)
 	local num_buttons = #self.active_button_data
 
-	if 0 < self.controller_cooldown then
+	if self.controller_cooldown > 0 then
 		self.controller_cooldown = self.controller_cooldown - dt
 		local speed_multiplier = self.speed_multiplier or 1
 		local decrease = GamepadSettings.menu_speed_multiplier_frame_decrease
 		local min_multiplier = GamepadSettings.menu_min_speed_multiplier
 		self.speed_multiplier = math.max(speed_multiplier - decrease, min_multiplier)
 
-		return 
+		return
 	else
 		speed_multiplier = self.speed_multiplier or 1
-		local move_up = input_service.get(input_service, "move_up")
-		local move_up_hold = input_service.get(input_service, "move_up_hold")
-		local controller_selection_index = self.controller_selection_index or 0
 
-		if move_up or move_up_hold then
-			local new_index = math.max(controller_selection_index - 1, 1)
-			local selection_accepted = self.controller_select_button_index(self, new_index)
+		repeat
+			local move_up = input_service:get("move_up")
+			local move_up_hold = input_service:get("move_up_hold")
+			local controller_selection_index = self.controller_selection_index or 0
 
-			while not selection_accepted do
-				new_index = math.max(new_index - 1, 1)
-				selection_accepted = self.controller_select_button_index(self, new_index)
+			if move_up or move_up_hold then
+				local new_index = math.max(controller_selection_index - 1, 1)
+				local selection_accepted = self:controller_select_button_index(new_index)
+
+				while not selection_accepted do
+					new_index = math.max(new_index - 1, 1)
+					selection_accepted = self:controller_select_button_index(new_index)
+				end
+
+				self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
+
+				return
 			end
 
-			self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
+			local move_down = input_service:get("move_down")
+			local move_down_hold = input_service:get("move_down_hold")
 
-			return 
-		end
+			if move_down or move_down_hold then
+				local new_index = math.min(controller_selection_index + 1, num_buttons)
+				local selection_accepted = self:controller_select_button_index(new_index)
 
-		local move_down = input_service.get(input_service, "move_down")
-		local move_down_hold = input_service.get(input_service, "move_down_hold")
+				while not selection_accepted do
+					new_index = math.min(new_index + 1, num_buttons)
+					selection_accepted = self:controller_select_button_index(new_index)
+				end
 
-		if move_down or move_down_hold then
-			local new_index = math.min(controller_selection_index + 1, num_buttons)
-			local selection_accepted = self.controller_select_button_index(self, new_index)
+				self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
 
-			while not selection_accepted do
-				new_index = math.min(new_index + 1, num_buttons)
-				selection_accepted = self.controller_select_button_index(self, new_index)
+				return
 			end
-
-			self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
-
-			return 
-		end
+		until true
 	end
 
 	self.speed_multiplier = 1
-
-	return 
 end
+
 IngameView.get_transition = function (self)
 	if self.leave_game then
 		return "leave_game"
 	end
-
-	return 
 end
+
 IngameView.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
-
-	return 
 end
 
-return 
+return

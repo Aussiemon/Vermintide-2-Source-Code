@@ -19,4 +19,4 @@ BreedBehaviors.chaos_tentacle = {
 	name = "chaos_tentacle"
 }
 
-return 
+return

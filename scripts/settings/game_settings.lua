@@ -74,4 +74,4 @@ GameSettings.crosshairs = {
 	}
 }
 
-return 
+return

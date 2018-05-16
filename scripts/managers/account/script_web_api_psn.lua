@@ -6,11 +6,11 @@ local method_to_string = {
 	[web_api.POST] = "POST",
 	[web_api.DELETE] = "DELETE"
 }
+
 ScriptWebApiPsn.init = function (self)
 	self._requests = {}
-
-	return 
 end
+
 ScriptWebApiPsn.destroy = function (self)
 	local requests = self._requests
 
@@ -21,9 +21,8 @@ ScriptWebApiPsn.destroy = function (self)
 	end
 
 	self._requests = nil
-
-	return 
 end
+
 ScriptWebApiPsn.update = function (self, dt)
 	local requests = self._requests
 
@@ -33,14 +32,13 @@ ScriptWebApiPsn.update = function (self, dt)
 		local status = web_api.status(id)
 
 		if status == web_api.COMPLETED then
-			self._handle_request_response(self, i, true)
+			self:_handle_request_response(i, true)
 		elseif status == web_api.ERROR then
-			self._handle_request_response(self, i, false)
+			self:_handle_request_response(i, false)
 		end
 	end
-
-	return 
 end
+
 ScriptWebApiPsn._handle_request_response = function (self, request_index, success)
 	local request = self._requests[request_index]
 	local id = request.id
@@ -69,12 +67,11 @@ ScriptWebApiPsn._handle_request_response = function (self, request_index, succes
 
 	web_api.free(id)
 	table.remove(self._requests, request_index)
-
-	return 
 end
+
 ScriptWebApiPsn.send_request = function (self, np_id, api_group, path, method, content, response_callback, response_format)
 	if np_id == nil then
-		return 
+		return
 	end
 
 	local id = web_api.send_request(np_id, api_group, path, method, content)
@@ -84,9 +81,8 @@ ScriptWebApiPsn.send_request = function (self, np_id, api_group, path, method, c
 		response_format = response_format,
 		debug_text = string.format("%s %s", method_to_string[method], path)
 	}
-
-	return 
 end
+
 ScriptWebApiPsn.send_request_create_session = function (self, np_id, session_parameters, session_image, session_data, changable_session_data, response_callback)
 	local id = web_api.send_request_create_session(np_id, session_parameters, session_image, session_data, changable_session_data)
 	self._requests[#self._requests + 1] = {
@@ -94,17 +90,14 @@ ScriptWebApiPsn.send_request_create_session = function (self, np_id, session_par
 		id = id,
 		response_callback = response_callback
 	}
-
-	return 
 end
+
 ScriptWebApiPsn.send_request_session_invitation = function (self, np_id, params, session_id)
 	local id = web_api.send_request_session_invitation(np_id, params, session_id)
 	self._requests[#self._requests + 1] = {
 		id = id,
 		debug_text = string.format("POST /v1/sessions/%s/invitations", session_id)
 	}
-
-	return 
 end
 
-return 
+return

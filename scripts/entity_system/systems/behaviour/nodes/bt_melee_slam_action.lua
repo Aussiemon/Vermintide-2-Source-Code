@@ -1,11 +1,11 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTMeleeSlamAction = class(BTMeleeSlamAction, BTNode)
+
 BTMeleeSlamAction.init = function (self, ...)
 	BTMeleeSlamAction.super.init(self, ...)
-
-	return 
 end
+
 BTMeleeSlamAction.name = "BTMeleeSlamAction"
 
 local function randomize(event)
@@ -14,8 +14,6 @@ local function randomize(event)
 	else
 		return event
 	end
-
-	return 
 end
 
 BTMeleeSlamAction.enter = function (self, unit, blackboard, t)
@@ -23,7 +21,7 @@ BTMeleeSlamAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = action
 	blackboard.active_node = BTMeleeSlamAction
 
-	self.init_attack(self, unit, blackboard, action, t)
+	self:init_attack(unit, blackboard, action, t)
 
 	blackboard.attack_cooldown = t + action.cooldown
 	blackboard.anim_locked = t + action.attack_time
@@ -33,9 +31,8 @@ BTMeleeSlamAction.enter = function (self, unit, blackboard, t)
 	blackboard.keep_target = true
 
 	Managers.state.conflict:freeze_intensity_decay(15)
-
-	return 
 end
+
 BTMeleeSlamAction.init_attack = function (self, unit, blackboard, action, t)
 	local attack_anim, anim_driven = LocomotionUtils.get_attack_anim(unit, blackboard, action.attack_anims)
 	anim_driven = anim_driven or action.anim_driven or false
@@ -46,7 +43,7 @@ BTMeleeSlamAction.init_attack = function (self, unit, blackboard, action, t)
 	if anim_driven then
 		local locomotion_extension = blackboard.locomotion_extension
 
-		locomotion_extension.use_lerp_rotation(locomotion_extension, false)
+		locomotion_extension:use_lerp_rotation(false)
 	else
 		blackboard.navigation_extension:stop()
 	end
@@ -70,15 +67,14 @@ BTMeleeSlamAction.init_attack = function (self, unit, blackboard, action, t)
 		blackboard.current_bot_threat_index = current_threat_index
 		blackboard.bot_threats_data = bot_threats
 	end
-
-	return 
 end
+
 BTMeleeSlamAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	if blackboard.attack_anim_driven then
 		local locomotion_extension = blackboard.locomotion_extension
 
 		LocomotionUtils.set_animation_driven_movement(unit, false)
-		locomotion_extension.use_lerp_rotation(locomotion_extension, true)
+		locomotion_extension:use_lerp_rotation(true)
 	end
 
 	blackboard.attack_anim_driven = nil
@@ -91,9 +87,8 @@ BTMeleeSlamAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.create_bot_threat_at_t = nil
 	blackboard.current_bot_threat_index = nil
 	blackboard.bot_threats_data = nil
-
-	return 
 end
+
 BTMeleeSlamAction._calculate_collision = function (self, action, self_pos, forward_direction)
 	local height = action.height
 	local pos = self_pos + forward_direction * action.forward_offset + Vector3(0, 0, height * 0.5)
@@ -103,6 +98,7 @@ BTMeleeSlamAction._calculate_collision = function (self, action, self_pos, forwa
 
 	return pos, rotation, size
 end
+
 BTMeleeSlamAction._calculate_cylinder_collision = function (self, action, bot_threat, self_pos, self_rot)
 	local radius = bot_threat.radius or action.radius
 	local height = bot_threat.height or action.height
@@ -116,23 +112,23 @@ BTMeleeSlamAction._calculate_cylinder_collision = function (self, action, bot_th
 
 	return cylinder_center, rotation, size
 end
+
 BTMeleeSlamAction._create_bot_aoe_threat = function (self, unit, attack_rotation, action, bot_threat)
 	local bot_threat_duration = bot_threat.duration
 	local unit_position = POSITION_LOOKUP[unit]
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
-	local obstacle_position, _, obstacle_size = self._calculate_cylinder_collision(self, action, bot_threat, unit_position, attack_rotation)
+	local obstacle_position, _, obstacle_size = self:_calculate_cylinder_collision(action, bot_threat, unit_position, attack_rotation)
 
-	ai_bot_group_system.aoe_threat_created(ai_bot_group_system, obstacle_position, "cylinder", obstacle_size, nil, bot_threat_duration)
-
-	return 
+	ai_bot_group_system:aoe_threat_created(obstacle_position, "cylinder", obstacle_size, nil, bot_threat_duration)
 end
+
 BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 	local world = blackboard.world
 	local physics_world = World.get_data(world, "physics_world")
 	local action = blackboard.action
 	local unit_forward = Quaternion.forward(Unit.local_rotation(unit, 0))
 	local self_pos = POSITION_LOOKUP[unit]
-	local pos, rotation, size = self._calculate_collision(self, action, self_pos, unit_forward)
+	local pos, rotation, size = self:_calculate_collision(action, self_pos, unit_forward)
 
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, pos, math.max(action.radius, action.height))
 
@@ -162,13 +158,13 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 				if not dodge then
 					local attack_direction = action.attack_directions and action.attack_directions[blackboard.attack_anim]
 
-					if target_status_extension.is_disabled(target_status_extension) then
+					if target_status_extension:is_disabled() then
 						damage = action.damage
 					elseif DamageUtils.check_block(unit, hit_unit, action.fatigue_type, attack_direction) then
 						local blocked_velocity = action.player_push_speed_blocked * Vector3.normalize(POSITION_LOOKUP[hit_unit] - self_pos)
 						local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
 
-						locomotion_extension.add_external_velocity(locomotion_extension, blocked_velocity)
+						locomotion_extension:add_external_velocity(blocked_velocity)
 
 						damage = action.blocked_damage
 					else
@@ -191,7 +187,7 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 			elseif ScriptUnit.has_extension(hit_unit, "ladder_system") then
 				local ladder_ext = ScriptUnit.extension(hit_unit, "ladder_system")
 
-				ladder_ext.shake(ladder_ext)
+				ladder_ext:shake()
 			end
 
 			if damage then
@@ -203,9 +199,8 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 	end
 
 	blackboard.attacking_target = nil
-
-	return 
 end
+
 BTMeleeSlamAction.run = function (self, unit, blackboard, t, dt)
 	if blackboard.attack_finished then
 		return "done"
@@ -216,7 +211,7 @@ BTMeleeSlamAction.run = function (self, unit, blackboard, t, dt)
 			local locomotion_extension = blackboard.locomotion_extension
 			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.target_unit)
 
-			locomotion_extension.set_wanted_rotation(locomotion_extension, rot)
+			locomotion_extension:set_wanted_rotation(rot)
 			blackboard.attack_rotation:store(rot)
 		end
 
@@ -229,7 +224,7 @@ BTMeleeSlamAction.run = function (self, unit, blackboard, t, dt)
 			local current_bot_threat_index = blackboard.current_bot_threat_index
 			local current_bot_threat = bot_threats[current_bot_threat_index]
 
-			self._create_bot_aoe_threat(self, unit, attack_rotation, action, current_bot_threat)
+			self:_create_bot_aoe_threat(unit, attack_rotation, action, current_bot_threat)
 
 			local next_bot_threat_index = current_bot_threat_index + 1
 			local next_bot_threat = bot_threats[next_bot_threat_index]
@@ -250,4 +245,4 @@ BTMeleeSlamAction.run = function (self, unit, blackboard, t, dt)
 	return "done"
 end
 
-return 
+return

@@ -12,7 +12,7 @@ AreaDamageTemplates.templates = {
 
 				local area_damage_position = Unit.local_position(unit, 0)
 
-				if 0 <= damage_timer and damage_timer < damage_interval then
+				if damage_timer >= 0 and damage_timer < damage_interval then
 					return false
 				end
 
@@ -48,14 +48,12 @@ AreaDamageTemplates.templates = {
 				local damage_source = data.damage_source
 
 				DamageUtils.add_damage_network(unit, extension_unit, damage, "torso", "damage_over_time", Vector3(1, 0, 0), damage_source)
-
-				return 
 			end
 		},
 		client = {
 			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, aoe_dot_player_take_damage)
 				if Development.parameter("screen_space_player_camera_reactions") == false then
-					return 
+					return
 				end
 
 				for _, player in pairs(Managers.player:players()) do
@@ -74,7 +72,7 @@ AreaDamageTemplates.templates = {
 								particle_id = particle_id,
 								start_time = t
 							}
-						elseif is_inside_radius and player_unit_particles[player_unit].start_time + 5 <= t then
+						elseif is_inside_radius and t >= player_unit_particles[player_unit].start_time + 5 then
 							local particle_id = player_unit_particles[player_unit].particle_id
 
 							World.stop_spawning_particles(world, particle_id)
@@ -97,8 +95,6 @@ AreaDamageTemplates.templates = {
 						end
 					end
 				end
-
-				return 
 			end,
 			spawn_effect = function (world, unit, effect_name, particle_var_table)
 				local position = Unit.local_position(unit, 0)
@@ -116,7 +112,7 @@ AreaDamageTemplates.templates = {
 				return effect_id
 			end,
 			destroy = function ()
-				return 
+				return
 			end
 		}
 	},
@@ -129,7 +125,7 @@ AreaDamageTemplates.templates = {
 					return false
 				end
 
-				if 0 < damage_timer and damage_timer < damage_interval then
+				if damage_timer > 0 and damage_timer < damage_interval then
 					return false
 				end
 
@@ -165,8 +161,6 @@ AreaDamageTemplates.templates = {
 				local damage_source = data.damage_source
 
 				DamageUtils.add_damage_network(unit, unit, damage, "torso", "damage_over_time", Vector3(1, 0, 0), damage_source)
-
-				return 
 			end
 		},
 		client = {
@@ -187,7 +181,7 @@ AreaDamageTemplates.templates = {
 								particle_id = particle_id,
 								start_time = t
 							}
-						elseif is_inside_radius and player_unit_particles[player_unit].start_time + 5 <= t then
+						elseif is_inside_radius and t >= player_unit_particles[player_unit].start_time + 5 then
 							local particle_id = player_unit_particles[player_unit].particle_id
 
 							World.stop_spawning_particles(world, particle_id)
@@ -210,8 +204,6 @@ AreaDamageTemplates.templates = {
 						end
 					end
 				end
-
-				return 
 			end,
 			spawn_effect = function (world, unit, effect_name, particle_var_table)
 				local position = Unit.local_position(unit, 0)
@@ -229,7 +221,7 @@ AreaDamageTemplates.templates = {
 				return effect_id
 			end,
 			destroy = function ()
-				return 
+				return
 			end
 		}
 	},
@@ -326,8 +318,6 @@ AreaDamageTemplates.templates = {
 
 					return true, damage_buffer
 				end
-
-				return 
 			end,
 			do_damage = function (data, extension_unit)
 				local dot_template_name = data.dot_template_name
@@ -345,13 +335,11 @@ AreaDamageTemplates.templates = {
 						dot_func(dot_template_name, nil, nil, nil, target_unit, attacker_unit, hit_zone_name, damage_source, nil, nil)
 					end
 				end
-
-				return 
 			end
 		},
 		client = {
 			update = function (world, radius, aoe_unit, player_screen_effect_name, player_unit_particles, damage_players, explosion_template_name)
-				return 
+				return
 			end,
 			spawn_effect = function (world, unit, effect_name, particle_var_table, override_position)
 				local position = override_position or Unit.world_position(unit, 0)
@@ -373,7 +361,7 @@ AreaDamageTemplates.templates = {
 	area_poison_ai_random_death = {
 		server = {
 			update = function (damage_source, unit, radius, death_interval, damage_timer)
-				if 0 < damage_timer and damage_timer < death_interval then
+				if damage_timer > 0 and damage_timer < death_interval then
 					return false
 				end
 
@@ -389,7 +377,7 @@ AreaDamageTemplates.templates = {
 
 					assert(health_extension)
 
-					local is_alive = health_extension.is_alive(health_extension)
+					local is_alive = health_extension:is_alive()
 
 					if is_alive then
 						local die_roll = math.random(1, 100)
@@ -417,18 +405,17 @@ AreaDamageTemplates.templates = {
 				local damage_source_id = NetworkLookup.damage_sources[damage_source]
 				local damage_profile_name = "globadier_gas_cloud"
 				local damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
-				local unit_id = network_manager.unit_game_object_id(network_manager, unit)
+				local unit_id = network_manager:unit_game_object_id(unit)
 				local hit_zone_name = "full"
 				local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 				local weapon_system = Managers.state.entity:system("weapon_system")
 
-				weapon_system.send_rpc_attack_hit(weapon_system, damage_source_id, unit_id, unit_id, hit_zone_id, damage_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 0, "is_critical_strike", false)
-
-				return 
+				weapon_system:send_rpc_attack_hit(damage_source_id, unit_id, unit_id, hit_zone_id, damage_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 0, "is_critical_strike", false)
 			end
 		}
 	}
 }
+
 AreaDamageTemplates.get_template = function (area_damage_template, is_husk)
 	local templates = AreaDamageTemplates.templates
 	local husk_key = (is_husk == true and "husk") or (is_husk == false and "unit") or nil
@@ -439,4 +426,4 @@ AreaDamageTemplates.get_template = function (area_damage_template, is_husk)
 	return template
 end
 
-return 
+return

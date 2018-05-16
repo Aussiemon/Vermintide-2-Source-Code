@@ -1,12 +1,12 @@
 CameraStateFollow = class(CameraStateFollow, CameraState)
+
 CameraStateFollow.init = function (self, camera_state_init_context)
 	CameraState.init(self, camera_state_init_context, "follow")
 
 	self._follow_unit = nil
 	self._follow_node = 0
-
-	return 
 end
+
 CameraStateFollow.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	local follow_unit, follow_node = self.camera_extension:get_follow_data()
 	self._follow_unit = follow_unit
@@ -21,14 +21,12 @@ CameraStateFollow.on_enter = function (self, unit, input, dt, context, t, previo
 		self.calculate_lerp = true
 		self.camera_start_pose = Matrix4x4Box(Unit.world_pose(unit, 0))
 	end
-
-	return 
 end
+
 CameraStateFollow.on_exit = function (self, unit, input, dt, context, t, next_state)
 	self._follow_unit = nil
-
-	return 
 end
+
 CameraStateFollow.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local unit = self.unit
@@ -37,18 +35,18 @@ CameraStateFollow.update = function (self, unit, input, dt, context, t)
 	local follow_node = self._follow_node
 
 	if not Unit.alive(follow_unit) then
-		csm.change_state(csm, "idle")
+		csm:change_state("idle")
 
-		return 
+		return
 	end
 
 	local external_state_change = camera_extension.external_state_change
 
 	if external_state_change and external_state_change ~= self.name then
-		csm.change_state(csm, external_state_change)
-		camera_extension.set_external_state_change(camera_extension, nil)
+		csm:change_state(external_state_change)
+		camera_extension:set_external_state_change(nil)
 
-		return 
+		return
 	end
 
 	CameraStateHelper.set_local_pose(unit, follow_unit, follow_node)
@@ -78,8 +76,6 @@ CameraStateFollow.update = function (self, unit, input, dt, context, t)
 			self.lerp_time = current_lerp_time
 		end
 	end
-
-	return 
 end
 
-return 
+return

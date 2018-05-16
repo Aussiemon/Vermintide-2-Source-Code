@@ -169,4 +169,4 @@ HordeCompositions.chaos_mini_patrol = {
 	}
 }
 
-return 
+return

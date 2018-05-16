@@ -10,4 +10,4 @@ PlayRecordingInputDevice = {
 	end
 }
 
-return 
+return

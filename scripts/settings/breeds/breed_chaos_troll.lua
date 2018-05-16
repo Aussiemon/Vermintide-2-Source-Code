@@ -1149,4 +1149,4 @@ local action_data = {
 }
 BreedActions.chaos_troll = table.create_copy(BreedActions.chaos_troll, action_data)
 
-return 
+return

@@ -1,12 +1,13 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTFallbackIdleAction = class(BTFallbackIdleAction, BTNode)
+
 BTFallbackIdleAction.init = function (self, ...)
 	BTFallbackIdleAction.super.init(self, ...)
-
-	return 
 end
+
 BTFallbackIdleAction.name = "BTFallbackIdleAction"
+
 BTFallbackIdleAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -25,17 +26,18 @@ BTFallbackIdleAction.enter = function (self, unit, blackboard, t)
 	if blackboard.move_state ~= "idle" or (action and action.force_idle_animation) then
 		local network_manager = Managers.state.network
 
-		network_manager.anim_event(network_manager, unit, animation)
+		network_manager:anim_event(unit, animation)
 
 		blackboard.move_state = "idle"
 	end
+end
 
-	return 
-end
 BTFallbackIdleAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	return 
+	return
 end
+
 local Unit_alive = Unit.alive
+
 BTFallbackIdleAction.run = function (self, unit, blackboard, t, dt)
 	local target_unit = blackboard.target_unit
 
@@ -48,4 +50,4 @@ BTFallbackIdleAction.run = function (self, unit, blackboard, t, dt)
 	return "running"
 end
 
-return 
+return

@@ -3,8 +3,7 @@ require("scripts/utils/input_helper")
 DebugKeymap = {}
 DebugInputFilters = {}
 local valid_debug_build = BUILD == "dev" or BUILD == "debug"
-local use_synergy = script_data.synergy ~= nil and valid_debug_build
-local keyboard_device = (use_synergy and "synergy_keyboard") or "keyboard"
+local keyboard_device = "keyboard"
 local keyboard_keymaps = {
 	f1 = {
 		keyboard_device,
@@ -373,6 +372,11 @@ DebugKeymap.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"left_trigger",
 		"soft_button"
 	},
+	d_down = {
+		"gamepad",
+		"d_down",
+		"pressed"
+	},
 	d_left = {
 		"gamepad",
 		"d_left",
@@ -433,22 +437,9 @@ DebugKeymap.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 		"right",
 		"axis"
 	},
-	["left ctrl"] = {
-		"gamepad",
-		"left_trigger",
-		"held"
-	},
-	["left shift"] = {
-		"gamepad",
-		"right_trigger",
-		"held"
-	}
+	["left ctrl"] = {},
+	["left shift"] = {}
 }
-
-if use_synergy then
-	table.merge(DebugKeymap.xb1, keyboard_keymaps)
-end
-
 DebugInputFilters.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 	n_switch = {
 		filter_type = "and",
@@ -636,11 +627,6 @@ DebugKeymap.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"axis"
 	}
 }
-
-if use_synergy then
-	table.merge(DebugKeymap.ps4, keyboard_keymaps)
-end
-
 DebugInputFilters.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 	n_switch = {
 		filter_type = "and",
@@ -737,4 +723,4 @@ DebugInputFilters.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 	}
 }
 
-return 
+return

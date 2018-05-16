@@ -1,59 +1,58 @@
+require("scripts/game_state/components/enemy_package_loader")
+
 local function check_bool_string(text)
 	if text == "false" then
 		return false
 	else
 		return text
 	end
-
-	return 
 end
 
 local function Print(format, ...)
 	print(string.format(string.format("[LevelTransitionHandler] %s", format), ...))
-
-	return 
 end
 
 LevelTransitionHandler = class(LevelTransitionHandler)
+
 LevelTransitionHandler.init = function (self)
 	self.loading_packages = {}
 	self.has_loaded_all_packages = false
 	self.loaded_levels = {}
-
-	return 
+	self.enemy_package_loader = EnemyPackageLoader:new()
 end
+
 local rpcs = {
 	"rpc_reload_level"
 }
 local events = {}
+
 LevelTransitionHandler.register_rpcs = function (self, network_event_delegate)
 	self.network_event_delegate = network_event_delegate
 
-	network_event_delegate.register(network_event_delegate, self, unpack(rpcs))
-
-	return 
+	network_event_delegate:register(self, unpack(rpcs))
+	self.enemy_package_loader:register_rpcs(network_event_delegate)
 end
+
 LevelTransitionHandler.register_events = function (self, event_manager)
 	for i = 1, #events, 1 do
-		event_manager.register(event_manager, self, events[i], events[i])
+		event_manager:register(self, events[i], events[i])
 	end
-
-	return 
 end
+
 LevelTransitionHandler.unregister_events = function (self, event_manager)
 	for i = 1, #events, 1 do
-		event_manager.unregister(event_manager, events[i], self)
+		event_manager:unregister(events[i], self)
 	end
-
-	return 
 end
+
 LevelTransitionHandler.unregister_rpcs = function (self)
 	self.network_event_delegate:unregister(self)
 
 	self.network_event_delegate = nil
 
-	return 
+	self.enemy_package_loader:unregister_rpcs()
 end
+
 LevelTransitionHandler.default_level_key = function (self)
 	local boot_level_name = Boot.loading_context and Boot.loading_context.level_key
 	local attract_mode_level = check_bool_string(Development.parameter("attract_mode")) and BenchmarkSettings.auto_host_level
@@ -61,26 +60,26 @@ LevelTransitionHandler.default_level_key = function (self)
 
 	return boot_level_name or level_name
 end
+
 LevelTransitionHandler.load_default_level = function (self)
-	local level_key = self.default_level_key(self)
+	local level_key = self:default_level_key()
 
-	self.load_level(self, level_key)
-
-	return 
+	self:load_level(level_key)
 end
+
 LevelTransitionHandler.load_level = function (self, level_key)
 	printf("[LevelTransitionHandler] load_level %s", level_key)
-	assert(LevelSettings[level_key], "The level named %q does not exist in LevelSettings.", tostring(level_key))
+	fassert(LevelSettings[level_key], "The level named %q does not exist in LevelSettings.", tostring(level_key))
 
 	local current_level = self.level_key
 
 	if current_level and level_key ~= current_level then
-		self.release_level_resources(self, current_level)
+		self:release_level_resources(current_level)
 	end
 
 	local level_package_name = LevelSettings[level_key].package_name
 
-	if self.level_key ~= level_key or not Managers.package:has_loaded(level_package_name) then
+	if self.level_key ~= level_key or (not Managers.package:has_loaded(level_package_name, "LevelTransitionHandler") and not Managers.package:is_loading(level_package_name)) then
 		self.last_level_key = self.level_key
 		self.level_key = level_key
 		self.level_name = LevelSettings[level_key].level_name
@@ -98,11 +97,12 @@ LevelTransitionHandler.load_level = function (self, level_key)
 		self.last_level_key = self.level_key
 	end
 
-	return 
+	self.enemy_package_loader:setup_startup_enemies(level_key)
 end
+
 LevelTransitionHandler.release_level_resources = function (self, level_key)
 	if level_key == nil then
-		return 
+		return
 	end
 
 	local package_name = LevelSettings[level_key].package_name
@@ -116,9 +116,8 @@ LevelTransitionHandler.release_level_resources = function (self, level_key)
 			self.level_key = nil
 		end
 	end
-
-	return 
 end
+
 LevelTransitionHandler.get_current_transition_level = function (self)
 	assert(self.transition_type, "Missing transition type.")
 
@@ -129,9 +128,8 @@ LevelTransitionHandler.get_current_transition_level = function (self)
 	else
 		return self.level_key
 	end
-
-	return 
 end
+
 LevelTransitionHandler.get_next_level_key = function (self)
 	if self.picked_level_key then
 		return self.picked_level_key
@@ -140,51 +138,48 @@ LevelTransitionHandler.get_next_level_key = function (self)
 	else
 		return self.level_key
 	end
-
-	return 
 end
+
 LevelTransitionHandler.load_next_level = function (self)
 	printf("[LevelTransitionHandler] load_next_level - self.transition_type=[%s] self.picked_level_key=[%s]", tostring(self.transition_type), tostring(self.picked_level_key))
 
 	if self.picked_level_key then
-		self.load_level(self, self.picked_level_key)
+		self:load_level(self.picked_level_key)
 
 		self.picked_level_key = nil
 	elseif self.transition_type ~= "reload_level" then
-		self.load_level(self, self.transition_type)
+		self:load_level(self.transition_type)
 	end
 
 	self.transition_type = nil
-
-	return 
 end
+
 LevelTransitionHandler.reload_level = function (self, checkpoint_data)
 	self.checkpoint_data = checkpoint_data
 	self.transition_type = "reload_level"
-
-	return 
 end
+
 LevelTransitionHandler.level_completed = function (self)
 	if self.picked_level_key then
 		self.transition_type = self.picked_level_key
 		self.picked_level_key = nil
 	end
-
-	return 
 end
+
 LevelTransitionHandler.set_next_level = function (self, level_key)
 	printf("[LevelTransitionHandler] set_next_level( %s )", tostring(level_key))
 
 	self.picked_level_key = level_key
-
-	return 
 end
+
 LevelTransitionHandler.get_current_level_keys = function (self)
 	return self.level_key
 end
+
 LevelTransitionHandler.all_packages_loaded = function (self)
 	return self.has_loaded_all_packages
 end
+
 LevelTransitionHandler.update = function (self)
 	local package_manager = Managers.package
 	local has_loading_packages = false
@@ -192,7 +187,7 @@ LevelTransitionHandler.update = function (self)
 	for level_name, level_package_name in pairs(self.loading_packages) do
 		has_loading_packages = true
 
-		if package_manager.has_loaded(package_manager, level_package_name) then
+		if package_manager:has_loaded(level_package_name) then
 			self.loading_packages[level_name] = nil
 			self.loaded_levels[level_name] = true
 		end
@@ -203,15 +198,8 @@ LevelTransitionHandler.update = function (self)
 
 		self.has_loaded_all_packages = not has_loading_packages
 	end
-
-	if script_data.debug_level_packages then
-		for level_name, is_loaded in pairs(self.loaded_levels) do
-			Debug.text("Level %q is_loaded: %s", level_name, tostring(is_loaded))
-		end
-	end
-
-	return 
 end
+
 LevelTransitionHandler.generate_level_seed = function (self)
 	local t = Managers.time:time("main")
 	local time_since_start = (os.clock() * 10000) % 961748927
@@ -222,14 +210,13 @@ LevelTransitionHandler.generate_level_seed = function (self)
 	self.level_seed = seed
 
 	print("[LevelTransitionHandler] Generated new level_seed:", seed)
-
-	return 
 end
+
 LevelTransitionHandler.prepare_load_level = function (self, level_index, level_seed)
 	local level_name = NetworkLookup.level_keys[level_index]
 	self.transition_type = level_name
 
-	self.set_next_level(self, level_name)
+	self:set_next_level(level_name)
 
 	if self.level_key ~= level_name then
 		printf("[LevelTransitionHandler] prepare_load_level : %s seed: %i. New level, resetting package load status.", level_name, level_seed or -1)
@@ -242,26 +229,22 @@ LevelTransitionHandler.prepare_load_level = function (self, level_index, level_s
 	print("[LevelTransitionHandler] Setting level_seed: ", level_seed)
 
 	self.level_seed = level_seed
-
-	return 
 end
+
 LevelTransitionHandler.rpc_reload_level = function (self, sender)
-	self.reload_level(self)
-
-	return 
+	self:reload_level()
 end
+
 LevelTransitionHandler.set_transition_exit_type = function (self, transition_exit_type)
 	self.transition_exit_type = transition_exit_type
-
-	return 
 end
+
 LevelTransitionHandler.clear_transition_exit_type = function (self)
 	self.transition_exit_type = nil
-
-	return 
 end
+
 LevelTransitionHandler.transition_in_progress = function (self)
 	return self.transition_exit_type ~= nil
 end
 
-return 
+return

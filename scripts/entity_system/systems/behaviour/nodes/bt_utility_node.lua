@@ -1,40 +1,37 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTUtilityNode = class(BTUtilityNode, BTNode)
+
 BTUtilityNode.init = function (self, ...)
 	BTUtilityNode.super.init(self, ...)
 
 	self._children = {}
 	self.fail_cooldown_name = self._identifier .. "_fail_cooldown"
-
-	return 
 end
+
 BTUtilityNode.name = "BTUtilityNode"
+
 BTUtilityNode.ready = function (self, lua_node)
 	for name, child in pairs(self._children) do
 		self._action_list = self._action_list or {}
 		self._action_list[#self._action_list + 1] = child._tree_node.action_data
 	end
+end
 
-	return 
-end
 BTUtilityNode.enter = function (self, unit, blackboard, t)
-	return 
+	return
 end
+
 BTUtilityNode.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.running_attack_action = nil
 
-	self.set_running_child(self, unit, blackboard, t, nil, reason)
-
-	return 
+	self:set_running_child(unit, blackboard, t, nil, reason)
 end
 
 local function swap(t, i, j)
 	local temp = t[i]
 	t[i] = t[j]
 	t[j] = temp
-
-	return 
 end
 
 local function randomize_actions(unit, actions, blackboard, t)
@@ -93,13 +90,13 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 		blackboard[self.fail_cooldown_name] = nil
 	end
 
-	local running_node = self.current_running_child(self, blackboard)
+	local running_node = self:current_running_child(blackboard)
 	local result = "failed"
 	local evaluate_next_frame = nil
 
 	if running_node and not blackboard.evaluate then
 		local running_node_id = running_node._identifier
-		result, evaluate_next_frame = running_node.evaluate(running_node, unit, blackboard, t, dt)
+		result, evaluate_next_frame = running_node:evaluate(unit, blackboard, t, dt)
 
 		if result == "done" then
 			local utility_data = blackboard.utility_actions[running_node_id]
@@ -122,7 +119,7 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 		local node = self._children[action_name]
 
 		if node ~= running_node then
-			self.set_running_child(self, unit, blackboard, t, node, "aborted")
+			self:set_running_child(unit, blackboard, t, node, "aborted")
 
 			running_node = node
 		end
@@ -130,14 +127,14 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 		local utility_data = blackboard.utility_actions[action_name]
 		utility_data.last_time = t
 		local node_id = node._identifier
-		result, evaluate_next_frame = node.evaluate(node, unit, blackboard, t, dt)
+		result, evaluate_next_frame = node:evaluate(unit, blackboard, t, dt)
 
 		if result ~= "running" then
 			if result == "done" then
 				utility_data.last_done_time = t
 			end
 
-			self.set_running_child(self, unit, blackboard, t, nil, result)
+			self:set_running_child(unit, blackboard, t, nil, result)
 
 			running_node = nil
 		end
@@ -164,10 +161,9 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 
 	return result
 end
+
 BTUtilityNode.add_child = function (self, node)
 	self._children[node._identifier] = node
-
-	return 
 end
 
-return 
+return

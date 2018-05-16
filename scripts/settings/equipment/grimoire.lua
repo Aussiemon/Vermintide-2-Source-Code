@@ -117,9 +117,11 @@ Weapons.wpn_side_objective_tome_01.actions = {
 			kind = "push_stagger",
 			damage_window_start = 0.05,
 			attack_template = "basic_sweep_push",
+			damage_profile_outer = "light_push",
 			anim_event = "attack_push",
 			weapon_action_hand = "left",
 			hit_effect = "melee_hit_slashing",
+			damage_profile_inner = "medium_push",
 			total_time = 0.8,
 			allowed_chain_actions = {
 				{
@@ -133,7 +135,7 @@ Weapons.wpn_side_objective_tome_01.actions = {
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
-				return not status_extension.fatigued(status_extension)
+				return not status_extension:fatigued()
 			end
 		}
 	},
@@ -155,4 +157,4 @@ Weapons.wpn_side_objective_tome_01.pickup_data = {
 	pickup_name = "tome"
 }
 
-return 
+return

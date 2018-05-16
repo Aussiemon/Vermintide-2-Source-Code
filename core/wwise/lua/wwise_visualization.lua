@@ -24,16 +24,14 @@ end
 
 WwiseVisualization.add_soundscape_unit = function (unit)
 	if not stingray.Wwise then
-		return 
+		return
 	end
 
 	if not verify_unit_script_data(unit) then
-		return 
+		return
 	end
 
 	soundscape_units[#soundscape_units + 1] = unit
-
-	return 
 end
 
 local function render_soundscape_unit(lines, lines_noz, unit)
@@ -85,13 +83,11 @@ local function render_soundscape_unit(lines, lines_noz, unit)
 			LineObject.add_box(lines_noz, trigger_range_color, pose, scale + Vector3(1, 1, 1) * range)
 		end
 	end
-
-	return 
 end
 
 WwiseVisualization.render = function (lines, lines_noz)
 	if not stingray.Wwise then
-		return 
+		return
 	end
 
 	local current_selection, last_selected_level_object, last_selected_component_id = nil
@@ -118,8 +114,6 @@ WwiseVisualization.render = function (lines, lines_noz)
 			end
 		end
 	end
-
-	return 
 end
 
 return WwiseVisualization

@@ -105,4 +105,4 @@ BreedBehaviors.horde_shield_rat = {
 	name = "horde_shield_rat"
 }
 
-return 
+return

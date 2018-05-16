@@ -2,10 +2,11 @@ local extensions = {
 	"GameObjectExtension"
 }
 GameObjectSystem = class(GameObjectSystem, ExtensionSystemBase)
+
 GameObjectSystem.init = function (self, entity_system_creation_context, system_name)
 	local entity_manager = entity_system_creation_context.entity_manager
 
-	entity_manager.register_system(entity_manager, self, system_name, extensions)
+	entity_manager:register_system(self, system_name, extensions)
 
 	self.is_server = entity_system_creation_context.is_server
 	self.unit_storage = entity_system_creation_context.unit_storage
@@ -14,13 +15,14 @@ GameObjectSystem.init = function (self, entity_system_creation_context, system_n
 	self.own_peer_id = Network.peer_id()
 	self.unit_extension_data = {}
 	self.units_to_sync = {}
+end
 
-	return 
-end
 GameObjectSystem.destroy = function (self)
-	return 
+	return
 end
+
 local dummy_input = {}
+
 GameObjectSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {}
 
@@ -55,6 +57,7 @@ GameObjectSystem.on_add_extension = function (self, world, unit, extension_name,
 
 	return extension
 end
+
 GameObjectSystem.extensions_ready = function (self, world, unit, extension_name)
 	if extension_name == "GameObjectExtension" then
 		local extension = self.unit_extension_data[unit]
@@ -78,9 +81,8 @@ GameObjectSystem.extensions_ready = function (self, world, unit, extension_name)
 			self.unit_storage:add_unit_info(unit, game_object_id, go_type, self.own_peer_id)
 		end
 	end
-
-	return 
 end
+
 GameObjectSystem.on_remove_extension = function (self, unit, extension_name)
 	local extension = self.unit_extension_data[unit]
 
@@ -104,9 +106,8 @@ GameObjectSystem.on_remove_extension = function (self, unit, extension_name)
 	self.unit_extension_data[unit] = nil
 
 	ScriptUnit.remove_extension(unit, self.NAME)
-
-	return 
 end
+
 GameObjectSystem.game_object_created = function (self, game_object_id, owner_id, go_template)
 	local game_session = Managers.state.network:game()
 	local sync_name_id = GameSession.game_object_field(game_session, game_object_id, "sync_name")
@@ -125,14 +126,14 @@ GameObjectSystem.game_object_created = function (self, game_object_id, owner_id,
 	extension.game_object_id = game_object_id
 
 	fassert(not extension.ignored, "Client got game_object_created for unit %s with sync_name %s that should be ignored...", unit, sync_name)
-
-	return 
 end
+
 GameObjectSystem.update = function (self, context, t)
-	return 
-end
-GameObjectSystem.hot_join_sync = function (self, peer_id)
-	return 
+	return
 end
 
-return 
+GameObjectSystem.hot_join_sync = function (self, peer_id)
+	return
+end
+
+return

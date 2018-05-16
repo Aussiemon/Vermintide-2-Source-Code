@@ -1,6 +1,7 @@
 require("scripts/settings/mood_settings")
 
 MoodHandler = class(MoodHandler)
+
 MoodHandler.init = function (self, world)
 	self.world = world
 	self.playing_particles = {}
@@ -8,14 +9,13 @@ MoodHandler.init = function (self, world)
 	self.mood_blends = nil
 	self.mood_weights = {}
 	local environment = require("scripts/settings/lua_environments/moods")
-	local env_vars, type_map = self.parse_environment_settings(self, environment)
+	local env_vars, type_map = self:parse_environment_settings(environment)
 	self.environment_variables = env_vars
 	self.environment_variables_type_map = type_map
 	self.environment_variables_to_set = {}
 	self.environment_weight_remainder = 1
-
-	return 
 end
+
 MoodHandler.destroy = function (self)
 	local world = self.world
 	local playing_particles = self.playing_particles
@@ -32,9 +32,8 @@ MoodHandler.destroy = function (self)
 	self.mood_blends = nil
 	self.environment_variables_to_set = nil
 	self.mood_weights = nil
-
-	return 
 end
+
 MoodHandler.parse_environment_settings = function (self, environment)
 	local environment_settings = environment.settings
 	local variables = {}
@@ -80,9 +79,10 @@ MoodHandler.parse_environment_settings = function (self, environment)
 
 	return variables, type_map
 end
+
 MoodHandler.set_mood = function (self, next_mood)
 	if Development.parameter("screen_space_player_camera_reactions") == false then
-		return 
+		return
 	end
 
 	fassert(next_mood and (next_mood == "default" or MoodSettings[next_mood]), "Mood %q not defined in MoodSettings.lua", next_mood)
@@ -90,19 +90,18 @@ MoodHandler.set_mood = function (self, next_mood)
 	local current_mood = self.current_mood
 
 	if next_mood == current_mood then
-		return 
+		return
 	end
 
-	self.add_mood_blend(self, current_mood, next_mood)
-	self.handle_particles(self, current_mood, next_mood)
+	self:add_mood_blend(current_mood, next_mood)
+	self:handle_particles(current_mood, next_mood)
 
 	self.current_mood = next_mood
-
-	return 
 end
+
 MoodHandler.add_mood_blend = function (self, current_mood, next_mood)
 	if Development.parameter("screen_space_player_camera_reactions") == false then
-		return 
+		return
 	end
 
 	local blend_time = nil
@@ -123,9 +122,8 @@ MoodHandler.add_mood_blend = function (self, current_mood, next_mood)
 			blends = self.mood_blends
 		}
 	end
-
-	return 
 end
+
 MoodHandler.handle_particles = function (self, current_mood, next_mood)
 	local playing_particles = self.playing_particles
 	local world = self.world
@@ -166,15 +164,13 @@ MoodHandler.handle_particles = function (self, current_mood, next_mood)
 			end
 		end
 	end
-
-	return 
 end
+
 MoodHandler.update = function (self, dt)
-	self.update_mood_blends(self, dt)
-	self.update_environment_variables(self)
-
-	return 
+	self:update_mood_blends(dt)
+	self:update_environment_variables()
 end
+
 MoodHandler.update_mood_blends = function (self, dt)
 	local mood_weights = self.mood_weights
 
@@ -182,29 +178,27 @@ MoodHandler.update_mood_blends = function (self, dt)
 
 	mood_weights[1] = self.current_mood
 
-	self.set_mood_weights(self, dt, self.mood_blends, mood_weights, 1)
-
-	return 
+	self:set_mood_weights(dt, self.mood_blends, mood_weights, 1)
 end
+
 MoodHandler.set_mood_weights = function (self, dt, blend, mood_weights, weight)
 	if blend then
 		blend.value = blend.value + blend.speed * dt
 
-		if 1 <= blend.value then
+		if blend.value >= 1 then
 			blend.blends = nil
 			mood_weights[#mood_weights + 1] = weight
 		else
 			mood_weights[#mood_weights + 1] = blend.value * weight
 			mood_weights[#mood_weights + 1] = blend.mood
 
-			return self.set_mood_weights(self, dt, blend.blends, mood_weights, weight * (1 - blend.value))
+			return self:set_mood_weights(dt, blend.blends, mood_weights, weight * (1 - blend.value))
 		end
 	else
 		mood_weights[#mood_weights + 1] = weight
 	end
-
-	return 
 end
+
 MoodHandler.update_environment_variables = function (self)
 	local variables_to_set = self.environment_variables_to_set
 
@@ -237,7 +231,7 @@ MoodHandler.update_environment_variables = function (self)
 					value_to_set = value_to_set + var_value * mood_weight
 				elseif var_type == "vector2" or var_type == "vector3" then
 					value_to_set = value_to_set or Vector3(0, 0, 0)
-					value_to_set = value_to_set + var_value.unbox(var_value) * mood_weight
+					value_to_set = value_to_set + var_value:unbox() * mood_weight
 				end
 
 				variables_to_set[var_name] = value_to_set
@@ -256,9 +250,8 @@ MoodHandler.update_environment_variables = function (self)
 	end
 
 	self.environment_weight_remainder = math.max(weight_remainder, 0)
-
-	return 
 end
+
 MoodHandler.apply_environment_variables = function (self, shading_environment)
 	local type_map = self.environment_variables_type_map
 	local weight_remainder = self.environment_weight_remainder
@@ -272,9 +265,9 @@ MoodHandler.apply_environment_variables = function (self, shading_environment)
 			elseif var_type == "scalar" then
 				ShadingEnvironment.set_scalar(shading_environment, var_name, var_value)
 			elseif var_type == "vector2" then
-				ShadingEnvironment.set_vector2(shading_environment, var_name, var_value.unbox(var_value))
+				ShadingEnvironment.set_vector2(shading_environment, var_name, var_value:unbox())
 			elseif var_type == "vector3" then
-				ShadingEnvironment.set_vector3(shading_environment, var_name, var_value.unbox(var_value))
+				ShadingEnvironment.set_vector3(shading_environment, var_name, var_value:unbox())
 			end
 		elseif var_type == "texture" then
 			ShadingEnvironment.set_texture(shading_environment, var_name, var_value)
@@ -285,18 +278,16 @@ MoodHandler.apply_environment_variables = function (self, shading_environment)
 			ShadingEnvironment.set_scalar(shading_environment, var_name, set_value)
 		elseif var_type == "vector2" then
 			local default_value = ShadingEnvironment.vector2(shading_environment, var_name) * weight_remainder
-			local set_value = var_value.unbox(var_value) + default_value
+			local set_value = var_value:unbox() + default_value
 
 			ShadingEnvironment.set_vector2(shading_environment, var_name, set_value)
 		elseif var_type == "vector3" then
 			local default_value = ShadingEnvironment.vector3(shading_environment, var_name) * weight_remainder
-			local set_value = var_value.unbox(var_value) + default_value
+			local set_value = var_value:unbox() + default_value
 
 			ShadingEnvironment.set_vector3(shading_environment, var_name, set_value)
 		end
 	end
-
-	return 
 end
 
-return 
+return

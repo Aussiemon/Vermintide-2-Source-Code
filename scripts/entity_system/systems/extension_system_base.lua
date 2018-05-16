@@ -1,11 +1,12 @@
 ExtensionSystemBase = class(ExtensionSystemBase)
+
 ExtensionSystemBase.init = function (self, entity_system_creation_context, system_name, extension_list)
 	self.is_server = entity_system_creation_context.is_server
 	self.world = entity_system_creation_context.world
 	self.name = system_name
 	local entity_manager = entity_system_creation_context.entity_manager
 
-	entity_manager.register_system(entity_manager, self, system_name, extension_list)
+	entity_manager:register_system(self, system_name, extension_list)
 
 	self.entity_manager = entity_manager
 	self.unit_storage = entity_system_creation_context.unit_storage
@@ -35,9 +36,8 @@ ExtensionSystemBase.init = function (self, entity_system_creation_context, syste
 		self.extensions[extension_name] = 0
 		self.profiler_names[extension_name] = extension_name .. " [ALL]"
 	end
-
-	return 
 end
+
 ExtensionSystemBase.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension_alias = self.NAME
 	local extension_pool_table = nil
@@ -58,6 +58,7 @@ ExtensionSystemBase.on_add_extension = function (self, world, unit, extension_na
 
 	return extension
 end
+
 ExtensionSystemBase.on_remove_extension = function (self, unit, extension_name)
 	local extension = ScriptUnit.has_extension(unit, self.NAME)
 
@@ -68,13 +69,14 @@ ExtensionSystemBase.on_remove_extension = function (self, unit, extension_name)
 	self.update_list[extension_name].pre_update[unit] = nil
 	self.update_list[extension_name].update[unit] = nil
 	self.update_list[extension_name].post_update[unit] = nil
+end
 
-	return 
-end
 ExtensionSystemBase.on_freeze_extension = function (self, unit, extension_name)
-	return 
+	return
 end
+
 local dummy_input = {}
+
 ExtensionSystemBase.pre_update = function (self, context, t)
 	local dt = context.dt
 	local update_list = self.update_list
@@ -84,22 +86,19 @@ ExtensionSystemBase.pre_update = function (self, context, t)
 		local profiler_name = self.profiler_names[extension_name]
 
 		for unit, extension in pairs(update_list[extension_name].pre_update) do
-			extension.pre_update(extension, unit, dummy_input, dt, context, t)
+			extension:pre_update(unit, dummy_input, dt, context, t)
 		end
 	end
-
-	return 
 end
+
 ExtensionSystemBase.enable_update_function = function (self, extension_name, update_function_name, unit, extension)
 	self.update_list[extension_name][update_function_name][unit] = extension
-
-	return 
 end
+
 ExtensionSystemBase.disable_update_function = function (self, extension_name, update_function_name, unit)
 	self.update_list[extension_name][update_function_name][unit] = nil
-
-	return 
 end
+
 ExtensionSystemBase.update = function (self, context, t)
 	local dt = context.dt
 	local update_list = self.update_list
@@ -109,12 +108,11 @@ ExtensionSystemBase.update = function (self, context, t)
 		local profiler_name = self.profiler_names[extension_name]
 
 		for unit, extension in pairs(update_list[extension_name].update) do
-			extension.update(extension, unit, dummy_input, dt, context, t)
+			extension:update(unit, dummy_input, dt, context, t)
 		end
 	end
-
-	return 
 end
+
 ExtensionSystemBase.post_update = function (self, context, t)
 	local dt = context.dt
 	local update_list = self.update_list
@@ -124,59 +122,53 @@ ExtensionSystemBase.post_update = function (self, context, t)
 		local profiler_name = self.profiler_names[extension_name]
 
 		for unit, extension in pairs(update_list[extension_name].post_update) do
-			extension.post_update(extension, unit, dummy_input, dt, context, t)
+			extension:post_update(unit, dummy_input, dt, context, t)
 		end
 	end
-
-	return 
 end
+
 ExtensionSystemBase.pre_update_extension = function (self, extension_name, dt, context, t)
 	local dummy_input = dummy_input
 
 	for unit, extension in pairs(self.update_list[extension_name].pre_update) do
-		extension.pre_update(extension, unit, dummy_input, dt, context, t)
+		extension:pre_update(unit, dummy_input, dt, context, t)
 	end
-
-	return 
 end
+
 ExtensionSystemBase.update_extension = function (self, extension_name, dt, context, t)
 	local dummy_input = dummy_input
 
 	for unit, extension in pairs(self.update_list[extension_name].update) do
-		extension.update(extension, unit, dummy_input, dt, context, t)
+		extension:update(unit, dummy_input, dt, context, t)
 	end
-
-	return 
 end
+
 ExtensionSystemBase.post_update_extension = function (self, extension_name, dt, context, t)
 	local dummy_input = dummy_input
 
 	for unit, extension in pairs(self.update_list[extension_name].post_update) do
-		extension.post_update(extension, unit, dummy_input, dt, context, t)
+		extension:post_update(unit, dummy_input, dt, context, t)
 	end
-
-	return 
 end
+
 ExtensionSystemBase.hot_join_sync = function (self, sender)
 	for extension_name, _ in pairs(self.extensions) do
-		self._hot_join_sync_extension(self, extension_name, sender)
+		self:_hot_join_sync_extension(extension_name, sender)
 	end
-
-	return 
 end
+
 ExtensionSystemBase._hot_join_sync_extension = function (self, extension_name, sender)
 	local entities = self.entity_manager:get_entities(extension_name)
 
 	for unit, internal in pairs(entities) do
 		if internal.hot_join_sync then
-			internal.hot_join_sync(internal, sender)
+			internal:hot_join_sync(sender)
 		end
 	end
-
-	return 
 end
+
 ExtensionSystemBase.destroy = function (self)
-	return 
+	return
 end
 
-return 
+return

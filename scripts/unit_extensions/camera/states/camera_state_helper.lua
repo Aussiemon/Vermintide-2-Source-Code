@@ -1,4 +1,5 @@
 CameraStateHelper = CameraStateHelper or {}
+
 CameraStateHelper.set_local_pose = function (camera_unit, unit, node)
 	local pose = Unit.local_pose(unit, node)
 	local current_node = node
@@ -16,8 +17,6 @@ CameraStateHelper.set_local_pose = function (camera_unit, unit, node)
 	end
 
 	Unit.set_local_pose(camera_unit, 0, pose)
-
-	return 
 end
 
-return 
+return

@@ -95,4 +95,4 @@ OldTalentBuffTemplates = {
 	}
 }
 
-return 
+return

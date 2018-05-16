@@ -69,6 +69,7 @@ LoadedDice = {
 	end
 }
 local only_prob_table = {}
+
 LoadedDice.create_from_mixed = function (mixed_table, normalized)
 	local only_prob_table = only_prob_table
 	local num_probabilities = #mixed_table / 2
@@ -88,9 +89,11 @@ LoadedDice.create_from_mixed = function (mixed_table, normalized)
 		a
 	}
 end
+
 LoadedDice.roll_easy = function (loaded_table)
 	return LoadedDice.roll(loaded_table[1], loaded_table[2])
 end
+
 LoadedDice.test = function ()
 	local test = {
 		10,
@@ -119,8 +122,6 @@ LoadedDice.test = function ()
 	end
 
 	print(s)
-
-	return 
 end
 
-return 
+return

@@ -219,7 +219,7 @@ local function survey_rating_definitions(index)
 					style_id = "style_normal",
 					texture_id = "texture_id",
 					content_check_function = function (content)
-						return not content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+						return not content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 					end
 				},
 				{
@@ -227,7 +227,7 @@ local function survey_rating_definitions(index)
 					style_id = "style_hover",
 					texture_id = "texture_hover_id",
 					content_check_function = function (content)
-						return content.button_hotspot.is_hover and 0 < content.button_hotspot.is_clicked
+						return content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 					end
 				},
 				{
@@ -243,8 +243,6 @@ local function survey_rating_definitions(index)
 					click_check_content_id = "button_hotspot",
 					click_function = function (ui_scenegraph, ui_style, ui_content, input_service)
 						ui_content.button_hotspot.is_selected = true
-
-						return 
 					end
 				}
 			}

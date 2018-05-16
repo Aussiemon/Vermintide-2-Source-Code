@@ -1,4 +1,5 @@
 ScriptConnectedStorageToken = class(ScriptConnectedStorageToken, ScriptSaveToken)
+
 ScriptConnectedStorageToken.info = function (self)
 	local info = {}
 
@@ -12,13 +13,15 @@ ScriptConnectedStorageToken.info = function (self)
 		print("GET STORAGE ID ERROR", self._status)
 
 		info = {
-			error = self._parse_error(self, self._status)
+			error = self:_parse_error(self._status)
 		}
 	end
 
 	return info
 end
+
 ScriptConnectedStorageQueryToken = class(ScriptConnectedStorageQueryToken, ScriptSaveToken)
+
 ScriptConnectedStorageQueryToken.info = function (self)
 	local info = {}
 
@@ -28,13 +31,15 @@ ScriptConnectedStorageQueryToken.info = function (self)
 		print("QUERY ERROR")
 
 		info = {
-			error = self._parse_error(self, self._status)
+			error = self:_parse_error(self._status)
 		}
 	end
 
 	return info
 end
+
 ScriptConnectedStorageDeleteToken = class(ScriptConnectedStorageDeleteToken, ScriptSaveToken)
+
 ScriptConnectedStorageDeleteToken.info = function (self)
 	local info = {}
 
@@ -42,11 +47,11 @@ ScriptConnectedStorageDeleteToken.info = function (self)
 		print("DELETE ERROR")
 
 		info = {
-			error = self._parse_error(self, self._status)
+			error = self:_parse_error(self._status)
 		}
 	end
 
 	return info
 end
 
-return 
+return

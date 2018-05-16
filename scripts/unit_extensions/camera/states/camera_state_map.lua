@@ -1,15 +1,15 @@
 CameraStateMap = class(CameraStateMap, CameraState)
+
 CameraStateMap.init = function (self, camera_state_init_context)
 	CameraState.init(self, camera_state_init_context, "camera_state_map")
-
-	return 
 end
+
 CameraStateMap.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	local world_manager = Managers.world
 
-	if world_manager.has_world(world_manager, "level_world") then
+	if world_manager:has_world("level_world") then
 		local camera_target_unit = nil
-		local world = world_manager.world(world_manager, "level_world")
+		local world = world_manager:world("level_world")
 		local level_name = "levels/inn/world"
 		local level = ScriptWorld.level(world, level_name)
 
@@ -32,14 +32,12 @@ CameraStateMap.on_enter = function (self, unit, input, dt, context, t, previous_
 		self.calculate_lerp = true
 		self.camera_start_pose = Matrix4x4Box(Unit.world_pose(unit, 0))
 	end
-
-	return 
 end
+
 CameraStateMap.on_exit = function (self, unit, input, dt, context, t, next_state)
 	self.camera_target_unit = nil
-
-	return 
 end
+
 CameraStateMap.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local unit = self.unit
@@ -47,18 +45,18 @@ CameraStateMap.update = function (self, unit, input, dt, context, t)
 	local camera_target_unit = self.camera_target_unit
 
 	if not Unit.alive(camera_target_unit) then
-		csm.change_state(csm, "idle")
+		csm:change_state("idle")
 
-		return 
+		return
 	end
 
 	local external_state_change = camera_extension.external_state_change
 
 	if external_state_change and external_state_change ~= self.name then
-		csm.change_state(csm, external_state_change)
-		camera_extension.set_external_state_change(camera_extension, nil)
+		csm:change_state(external_state_change)
+		camera_extension:set_external_state_change(nil)
 
-		return 
+		return
 	end
 
 	if self.calculate_lerp and camera_target_unit then
@@ -86,8 +84,6 @@ CameraStateMap.update = function (self, unit, input, dt, context, t)
 			self.lerp_time = current_lerp_time
 		end
 	end
-
-	return 
 end
 
-return 
+return

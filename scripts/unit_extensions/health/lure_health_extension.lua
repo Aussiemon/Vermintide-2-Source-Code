@@ -20,6 +20,7 @@ end
 DamageDataIndex.STRIDE = #data_fields
 data_fields = nil
 LureHealthExtension = class(LureHealthExtension)
+
 LureHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
 	self._is_server = Managers.player.is_server
@@ -31,54 +32,58 @@ LureHealthExtension.init = function (self, extension_init_context, unit, extensi
 	}
 	self._network_transmit = extension_init_context.network_transmit
 	self._is_dead = false
+end
 
-	return 
-end
 LureHealthExtension.destroy = function (self)
-	return 
+	return
 end
+
 LureHealthExtension.hot_join_sync = function (self, sender)
-	return 
+	return
 end
+
 LureHealthExtension.is_alive = function (self)
 	return not self._is_dead
 end
+
 LureHealthExtension.current_health_percent = function (self)
 	return (self._is_dead and 0) or 1
 end
+
 LureHealthExtension.current_health = function (self)
 	return 1
 end
+
 LureHealthExtension.get_damage_taken = function (self)
 	return 0
 end
+
 LureHealthExtension.get_max_health = function (self)
 	return 1
 end
+
 LureHealthExtension.add_damage = function (self, ...)
 	slot1 = self._is_server and (self._is_dead or (Unit.alive(self._attached_unit) and ScriptUnit.extension(self._attached_unit, "health_system"):add_damage(...)))
-
-	return 
 end
+
 LureHealthExtension.update = function (self, dt, context, t)
 	if self._is_server and not self._is_dead and self._lifetime < t then
 		local death_system = Managers.state.entity:system("death_system")
 
-		death_system.kill_unit(death_system, self._unit, {})
+		death_system:kill_unit(self._unit, {})
 	end
+end
 
-	return 
-end
 LureHealthExtension.add_heal = function (self, ...)
-	return 
+	return
 end
+
 LureHealthExtension.set_dead = function (self)
 	self._is_dead = true
-
-	return 
 end
+
 LureHealthExtension.has_assist_shield = function (self)
 	return false
 end
 
-return 
+return

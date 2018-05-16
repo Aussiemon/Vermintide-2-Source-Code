@@ -1,12 +1,13 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTInterestPointUseAction = class(BTInterestPointUseAction, BTNode)
+
 BTInterestPointUseAction.init = function (self, ...)
 	BTInterestPointUseAction.super.init(self, ...)
-
-	return 
 end
+
 BTInterestPointUseAction.name = "BTInterestPointUseAction"
+
 BTInterestPointUseAction.enter = function (self, unit, blackboard, t)
 	local interest_point_system_api = blackboard.system_api.ai_interest_point_system
 	local request = interest_point_system_api.get_claim(blackboard.ip_request_id)
@@ -21,7 +22,7 @@ BTInterestPointUseAction.enter = function (self, unit, blackboard, t)
 	blackboard.move_state = "idle"
 	local duration = request.point_extension.duration
 
-	if duration and 0 < duration then
+	if duration and duration > 0 then
 		local duration_multiplier = 0.8 + math.random() * 0.4
 		blackboard.ip_end_time = t + duration * duration_multiplier
 	end
@@ -30,10 +31,9 @@ BTInterestPointUseAction.enter = function (self, unit, blackboard, t)
 
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_enabled(navigation_extension, false)
-
-	return 
+	navigation_extension:set_enabled(false)
 end
+
 BTInterestPointUseAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local interest_point_system_api = blackboard.system_api.ai_interest_point_system
 
@@ -45,7 +45,7 @@ BTInterestPointUseAction.leave = function (self, unit, blackboard, t, reason, de
 
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_enabled(navigation_extension, true)
+	navigation_extension:set_enabled(true)
 
 	blackboard.ip_end_time = nil
 
@@ -60,9 +60,8 @@ BTInterestPointUseAction.leave = function (self, unit, blackboard, t, reason, de
 
 		blackboard.ip_next_request_id = nil
 	end
-
-	return 
 end
+
 BTInterestPointUseAction.run = function (self, unit, blackboard, t, dt)
 	if script_data.ai_interest_point_debug then
 		Debug.text("BTInterestPointApproachAction state = %s", blackboard.ip_state)
@@ -105,4 +104,4 @@ BTInterestPointUseAction.run = function (self, unit, blackboard, t, dt)
 	return "running"
 end
 
-return 
+return

@@ -1832,7 +1832,7 @@ UtilityConsiderations = {
 	},
 	player_bot_default_combat = {
 		distance_to_target = {
-			max_value = 20,
+			max_value = 30,
 			blackboard_input = "target_dist",
 			spline = {
 				0,
@@ -3231,6 +3231,30 @@ UtilityConsiderations = {
 			blackboard_input = "defensive_mode_duration"
 		}
 	},
+	stormfiend_boss_aoe = {
+		time_since_last = {
+			max_value = 10,
+			blackboard_input = "time_since_last",
+			spline = {
+				0,
+				0,
+				0.5,
+				0,
+				1,
+				1
+			}
+		},
+		surrounding_players = {
+			max_value = 2,
+			blackboard_input = "surrounding_players",
+			spline = {
+				0,
+				0,
+				1,
+				1
+			}
+		}
+	},
 	chaos_exalted_defensive_idle = {
 		in_defensive_phase = {
 			is_condition = true,
@@ -3883,4 +3907,4 @@ UtilityConsiderations = {
 	}
 }
 
-return 
+return

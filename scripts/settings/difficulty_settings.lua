@@ -24,8 +24,9 @@ DifficultySettings.easy = {
 	amount_shield_vermin_patrol = 2,
 	attack_intensity_threshold = 2.5,
 	respawn = {
-		ammo_melee = 0.5,
+		temporary_health_percentage = 0,
 		health_percentage = 0.5,
+		ammo_melee = 0.5,
 		ammo_ranged = 0.5
 	},
 	level_failed_reward = {
@@ -63,8 +64,9 @@ DifficultySettings.normal = {
 	amount_shield_vermin_patrol = 2,
 	attack_intensity_threshold = 2.5,
 	respawn = {
-		ammo_melee = 0.5,
+		temporary_health_percentage = 0,
 		health_percentage = 0.5,
+		ammo_melee = 0.5,
 		ammo_ranged = 0.5
 	},
 	level_failed_reward = {
@@ -94,8 +96,9 @@ DifficultySettings.hard = {
 	amount_shield_vermin_patrol = 2,
 	attack_intensity_threshold = 3.5,
 	respawn = {
-		ammo_melee = 0.5,
+		temporary_health_percentage = 0,
 		health_percentage = 0.5,
+		ammo_melee = 0.5,
 		ammo_ranged = 0.5
 	},
 	level_failed_reward = {
@@ -133,8 +136,9 @@ DifficultySettings.harder = {
 	amount_shield_vermin_patrol = 2,
 	attack_intensity_threshold = 6,
 	respawn = {
-		ammo_melee = 0.5,
+		temporary_health_percentage = 0,
 		health_percentage = 0.5,
+		ammo_melee = 0.5,
 		ammo_ranged = 0.5
 	},
 	level_failed_reward = {
@@ -173,8 +177,9 @@ DifficultySettings.hardest = {
 	amount_shield_vermin_patrol = 2,
 	attack_intensity_threshold = 10,
 	respawn = {
-		ammo_melee = 0.5,
+		temporary_health_percentage = 0,
 		health_percentage = 0.75,
+		ammo_melee = 0.5,
 		ammo_ranged = 0.5
 	},
 	level_failed_reward = {
@@ -238,4 +243,4 @@ SurvivalEndWaveByDifficulty = {
 	survival_hard = 13
 }
 
-return 
+return

@@ -9,7 +9,7 @@ local function check_level_list(statistics_db, stats_id, levels_to_complete)
 
 	for i = 1, #levels_to_complete, 1 do
 		local level_id = levels_to_complete[i]
-		local level_stat = statistics_db.get_persistent_stat(statistics_db, stats_id, "completed_levels", level_id)
+		local level_stat = statistics_db:get_persistent_stat(stats_id, "completed_levels", level_id)
 
 		if not level_stat or level_stat == 0 then
 			return false
@@ -34,7 +34,7 @@ local function check_level_list_difficulty(statistics_db, stats_id, levels_to_co
 
 	for i = 1, #levels_to_complete, 1 do
 		local level_id = levels_to_complete[i]
-		local difficulties = difficulty_manager.get_level_difficulties(difficulty_manager, level_id)
+		local difficulties = difficulty_manager:get_level_difficulties(level_id)
 		local difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
 		local difficulty_key = difficulties[difficulty_index]
 
@@ -83,14 +83,14 @@ local function equipped_items_of_rarity(required_rarity)
 		return false
 	end
 
-	local backend_items = backend.get_interface(backend, "items")
+	local backend_items = backend:get_interface("items")
 
 	if not backend_items then
 		return false
 	end
 
 	local filter = "equipped_by_current_career and is_equipment_slot"
-	local items = backend_items.get_filtered_items(backend_items, filter)
+	local items = backend_items:get_filtered_items(filter)
 	local ret = {}
 
 	for _, item in ipairs(items) do
@@ -106,7 +106,7 @@ end
 
 AchievementTemplates = {
 	complete_tutorial = {
-		ID_XB1 = "TROP001",
+		ID_XB1 = 2,
 		ID_PS4 = "TROP001",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -116,7 +116,7 @@ AchievementTemplates = {
 		end
 	},
 	complete_act_one = {
-		ID_XB1 = "TROP002",
+		ID_XB1 = 3,
 		ID_PS4 = "TROP002",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -124,7 +124,7 @@ AchievementTemplates = {
 		end
 	},
 	complete_act_two = {
-		ID_XB1 = "TROP003",
+		ID_XB1 = 4,
 		ID_PS4 = "TROP003",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -132,7 +132,7 @@ AchievementTemplates = {
 		end
 	},
 	complete_act_three = {
-		ID_XB1 = "TROP004",
+		ID_XB1 = 5,
 		ID_PS4 = "TROP004",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -140,7 +140,7 @@ AchievementTemplates = {
 		end
 	},
 	complete_skittergate_recruit = {
-		ID_XB1 = "TROP005",
+		ID_XB1 = 6,
 		ID_PS4 = "TROP005",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -152,7 +152,7 @@ AchievementTemplates = {
 		end
 	},
 	complete_skittergate_veteran = {
-		ID_XB1 = "TROP006",
+		ID_XB1 = 7,
 		ID_PS4 = "TROP006",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -164,7 +164,7 @@ AchievementTemplates = {
 		end
 	},
 	complete_skittergate_champion = {
-		ID_XB1 = "TROP007",
+		ID_XB1 = 8,
 		ID_PS4 = "TROP007",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -176,7 +176,7 @@ AchievementTemplates = {
 		end
 	},
 	complete_skittergate_legend = {
-		ID_XB1 = "TROP008",
+		ID_XB1 = 9,
 		ID_PS4 = "TROP008",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -188,7 +188,7 @@ AchievementTemplates = {
 		end
 	},
 	level_thirty_wood_elf = {
-		ID_XB1 = "TROP009",
+		ID_XB1 = 10,
 		ID_PS4 = "TROP009",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -196,7 +196,7 @@ AchievementTemplates = {
 		end
 	},
 	level_thirty_witch_hunter = {
-		ID_XB1 = "TROP010",
+		ID_XB1 = 11,
 		ID_PS4 = "TROP010",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -204,7 +204,7 @@ AchievementTemplates = {
 		end
 	},
 	level_thirty_empire_soldier = {
-		ID_XB1 = "TROP011",
+		ID_XB1 = 12,
 		ID_PS4 = "TROP011",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -212,7 +212,7 @@ AchievementTemplates = {
 		end
 	},
 	level_thirty_bright_wizard = {
-		ID_XB1 = "TROP012",
+		ID_XB1 = 13,
 		ID_PS4 = "TROP012",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -220,7 +220,7 @@ AchievementTemplates = {
 		end
 	},
 	level_thirty_dwarf_ranger = {
-		ID_XB1 = "TROP013",
+		ID_XB1 = 14,
 		ID_PS4 = "TROP013",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -228,7 +228,7 @@ AchievementTemplates = {
 		end
 	},
 	level_thirty_all = {
-		ID_XB1 = "TROP014",
+		ID_XB1 = 15,
 		ID_PS4 = "TROP014",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -236,7 +236,7 @@ AchievementTemplates = {
 		end
 	},
 	unlock_first_talent_point = {
-		ID_XB1 = "TROP015",
+		ID_XB1 = 16,
 		ID_PS4 = "TROP015",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -249,7 +249,7 @@ AchievementTemplates = {
 			}
 
 			for _, hero in ipairs(heroes) do
-				if 1 <= ProgressionUnlocks.get_num_talent_points(hero) then
+				if ProgressionUnlocks.get_num_talent_points(hero) >= 1 then
 					return true
 				end
 			end
@@ -258,7 +258,7 @@ AchievementTemplates = {
 		end
 	},
 	unlock_all_talent_points = {
-		ID_XB1 = "TROP016",
+		ID_XB1 = 17,
 		ID_PS4 = "TROP016",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -280,77 +280,77 @@ AchievementTemplates = {
 		end
 	},
 	craft_item = {
-		ID_XB1 = "TROP017",
+		ID_XB1 = 18,
 		ID_PS4 = "TROP017",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
-			local crafted_items = statistics_db.get_persistent_stat(statistics_db, stats_id, "crafted_items")
+			local crafted_items = statistics_db:get_persistent_stat(stats_id, "crafted_items")
 
-			return 1 <= crafted_items
+			return crafted_items >= 1
 		end
 	},
 	craft_fifty_items = {
-		ID_XB1 = "TROP018",
+		ID_XB1 = 19,
 		ID_PS4 = "TROP018",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
-			local crafted_items = statistics_db.get_persistent_stat(statistics_db, stats_id, "crafted_items")
+			local crafted_items = statistics_db:get_persistent_stat(stats_id, "crafted_items")
 
-			return 50 <= crafted_items
+			return crafted_items >= 50
 		end
 	},
 	salvage_item = {
-		ID_XB1 = "TROP019",
+		ID_XB1 = 20,
 		ID_PS4 = "TROP019",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
-			local crafted_items = statistics_db.get_persistent_stat(statistics_db, stats_id, "salvaged_items")
+			local crafted_items = statistics_db:get_persistent_stat(stats_id, "salvaged_items")
 
-			return 1 <= crafted_items
+			return crafted_items >= 1
 		end
 	},
 	salvage_hundred_items = {
-		ID_XB1 = "TROP020",
+		ID_XB1 = 21,
 		ID_PS4 = "TROP020",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
-			local crafted_items = statistics_db.get_persistent_stat(statistics_db, stats_id, "salvaged_items")
+			local crafted_items = statistics_db:get_persistent_stat(stats_id, "salvaged_items")
 
-			return 100 <= crafted_items
+			return crafted_items >= 100
 		end
 	},
 	equip_common_quality = {
-		ID_XB1 = "TROP021",
+		ID_XB1 = 22,
 		ID_PS4 = "TROP021",
 		context = "set_loadout",
 		evaluate = function (statistics_db, stats_id)
 			local items = equipped_items_of_rarity("common")
 
-			return 1 <= #items
+			return #items >= 1
 		end
 	},
 	equip_rare_quality = {
-		ID_XB1 = "TROP022",
+		ID_XB1 = 23,
 		ID_PS4 = "TROP022",
 		context = "set_loadout",
 		evaluate = function (statistics_db, stats_id)
 			local items = equipped_items_of_rarity("rare")
 
-			return 1 <= #items
+			return #items >= 1
 		end
 	},
 	equip_exotic_quality = {
-		ID_XB1 = "TROP023",
+		ID_XB1 = 24,
 		ID_PS4 = "TROP023",
 		context = "set_loadout",
 		evaluate = function (statistics_db, stats_id)
 			local items = equipped_items_of_rarity("exotic")
 
-			return 1 <= #items
+			return #items >= 1
 		end
 	},
 	equip_all_exotic_quality = {
-		ID_XB1 = "TROP024",
+		ID_XB1 = 25,
 		ID_PS4 = "TROP024",
 		context = "set_loadout",
 		evaluate = function (statistics_db, stats_id)
@@ -360,17 +360,17 @@ AchievementTemplates = {
 		end
 	},
 	equip_veteran_quality = {
-		ID_XB1 = "TROP025",
+		ID_XB1 = 26,
 		ID_PS4 = "TROP025",
 		context = "set_loadout",
 		evaluate = function (statistics_db, stats_id)
 			local items = equipped_items_of_rarity("unique")
 
-			return 1 <= #items
+			return #items >= 1
 		end
 	},
 	complete_level_all = {
-		ID_XB1 = "TROP026",
+		ID_XB1 = 27,
 		ID_PS4 = "TROP026",
 		context = "in_inn",
 		evaluate = function (statistics_db, stats_id)
@@ -387,7 +387,7 @@ AchievementTemplates = {
 					local all_completed = true
 
 					for _, hero in ipairs(heroes) do
-						local completed = statistics_db.get_persistent_stat(statistics_db, stats_id, "completed_levels_" .. hero, level_key)
+						local completed = statistics_db:get_persistent_stat(stats_id, "completed_levels_" .. hero, level_key)
 
 						if completed == 0 then
 							all_completed = false
@@ -421,7 +421,7 @@ end
 
 local function collected_tomes(statistics_db, stats_id)
 	local mission_system = Managers.state.entity:system("mission_system")
-	local tome_mission_data = mission_system.get_level_end_mission_data(mission_system, "tome_bonus_mission")
+	local tome_mission_data = mission_system:get_level_end_mission_data("tome_bonus_mission")
 
 	if not tome_mission_data then
 		return 0
@@ -432,7 +432,7 @@ end
 
 local function collected_grimoires(statistics_db, stats_id)
 	local mission_system = Managers.state.entity:system("mission_system")
-	local grimoire_mission_data = mission_system.get_level_end_mission_data(mission_system, "grimoire_hidden_mission")
+	local grimoire_mission_data = mission_system:get_level_end_mission_data("grimoire_hidden_mission")
 
 	if not grimoire_mission_data then
 		return 0
@@ -453,14 +453,14 @@ HeroStats = {
 		persistent = false,
 		stat_name = "HeroSkavenKilled",
 		evaluate = function (statistics_db, stats_id)
-			return statistics_db.get_stat(statistics_db, stats_id, "kills_total")
+			return statistics_db:get_stat(stats_id, "kills_total")
 		end
 	},
 	rat_ogres_killed = {
 		persistent = false,
 		stat_name = "HeroOgresKilled",
 		evaluate = function (statistics_db, stats_id)
-			return statistics_db.get_stat(statistics_db, stats_id, "kills_per_breed", "skaven_rat_ogre")
+			return statistics_db:get_stat(stats_id, "kills_per_breed", "skaven_rat_ogre")
 		end
 	},
 	tomes_collected = {
@@ -490,4 +490,4 @@ end
 
 AchievementTemplates = templates
 
-return 
+return

@@ -241,6 +241,7 @@ table.sort(EMOJI_REPLACEMENTS, sort_func)
 
 EmojiHelper = {}
 local EMOJIS = {}
+
 EmojiHelper.parse_emojis = function (message)
 	local match_str = message
 
@@ -268,6 +269,7 @@ EmojiHelper.parse_emojis = function (message)
 
 	return EMOJIS
 end
+
 EmojiHelper.replace_emojis = function (text)
 	for _, emoji_table in ipairs(EMOJI_REPLACEMENTS) do
 		local emoji_data = emoji_table.data
@@ -280,4 +282,4 @@ EmojiHelper.replace_emojis = function (text)
 	return text
 end
 
-return 
+return

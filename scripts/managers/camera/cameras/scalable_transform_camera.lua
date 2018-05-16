@@ -1,15 +1,15 @@
 require("scripts/managers/camera/cameras/transform_camera")
 
 ScalableTransformCamera = class(ScalableTransformCamera, TransformCamera)
+
 ScalableTransformCamera.parse_parameters = function (self, camera_settings, parent_node)
 	ScalableTransformCamera.super.parse_parameters(self, camera_settings, parent_node)
 
 	self._scale_function = camera_settings.scale_function
 	self._scale_variable = camera_settings.scale_variable
 	self._max_fov = camera_settings.vertical_fov and (camera_settings.vertical_fov * math.pi) / 180
-
-	return 
 end
+
 ScalableTransformCamera.update = function (self, dt, position, rotation, data)
 	local scale = data[self._scale_variable] or 1
 	local scale_value = self._scale_function(scale)
@@ -27,8 +27,6 @@ ScalableTransformCamera.update = function (self, dt, position, rotation, data)
 	end
 
 	ScalableTransformCamera.super.super.update(self, dt, position, rotation, data)
-
-	return 
 end
 
-return 
+return

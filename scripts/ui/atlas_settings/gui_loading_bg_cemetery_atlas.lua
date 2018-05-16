@@ -29,4 +29,4 @@ loading_bg_cemetery_atlas = {
 	}
 }
 
-return 
+return

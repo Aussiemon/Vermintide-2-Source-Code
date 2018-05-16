@@ -2374,4 +2374,4 @@ HitEffectsRatlingGunner.arrow_default_shooting_back_no_damage = {
 	animations = SHOOTING_HIT_EFFECT_ANIMS
 }
 
-return 
+return

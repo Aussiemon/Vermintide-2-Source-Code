@@ -23,4 +23,4 @@ BreedBehaviors.critter_pig = {
 	name = "critter_pig"
 }
 
-return 
+return

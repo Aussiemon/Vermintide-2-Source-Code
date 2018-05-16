@@ -67,7 +67,7 @@ local buff_tweak_data = {
 		bonus = 0.3
 	},
 	kerillian_maidenguard_passive_damage_reduction = {
-		multiplier = 0.2
+		multiplier = -0.2
 	},
 	kerillian_maidenguard_passive_stamina_regen_aura = {
 		range = 5
@@ -228,12 +228,13 @@ TalentBuffTemplates.wood_elf = {
 		continuous_effect = "fx/screenspace_shade_skill_01",
 		buffs = {
 			{
-				icon = "passive_bonus_kerillian_shade",
+				dormant = true,
 				name = "kerillian_shade_activated_ability",
+				remove_buff_func = "end_shade_activated_ability",
 				refresh_durations = true,
 				max_stacks = 1,
-				remove_buff_func = "end_shade_activated_ability",
-				dormant = true
+				icon = "passive_bonus_kerillian_shade",
+				apply_buff_func = "apply_shade_activated_ability"
 			}
 		}
 	},
@@ -362,9 +363,13 @@ TalentBuffTemplates.wood_elf = {
 		continuous_effect = "fx/screenspace_shade_skill_01",
 		buffs = {
 			{
-				max_stacks = 1,
+				dormant = true,
+				name = "kerillian_shade_activated_ability",
 				remove_buff_func = "end_shade_activated_ability",
-				refresh_durations = true
+				refresh_durations = true,
+				max_stacks = 1,
+				icon = "passive_bonus_kerillian_shade",
+				apply_buff_func = "apply_shade_activated_ability"
 			}
 		}
 	},
@@ -1510,4 +1515,4 @@ end
 
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.wood_elf, buff_tweak_data)
 
-return 
+return

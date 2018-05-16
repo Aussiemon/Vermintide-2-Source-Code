@@ -22,7 +22,7 @@ local function apply_buff_to_alive_player_units(context, data, buff_name)
 			}
 			local buff_ext = get_extension(unit, "buff_system")
 
-			buff_ext.add_buff(buff_ext, buff_name, params)
+			buff_ext:add_buff(buff_name, params)
 		end
 
 		player_units[unit] = true
@@ -33,8 +33,6 @@ local function apply_buff_to_alive_player_units(context, data, buff_name)
 			player_units[unit] = nil
 		end
 	end
-
-	return 
 end
 
 local mutator_settings = {
@@ -60,13 +58,9 @@ local mutator_settings = {
 		icon = "mutator_icon_player_dot",
 		server_start_function = function (context, data)
 			data.player_units = {}
-
-			return 
 		end,
 		server_update_function = function (context, data, dt, t)
 			apply_buff_to_alive_player_units(context, data, "mutator_player_dot")
-
-			return 
 		end
 	},
 	instant_death = {
@@ -106,16 +100,12 @@ local mutator_settings = {
 
 			GearUtils.get_property_and_trait_buffs = get_property_and_trait_buffs_whiterun
 			data.vanilla_get_property_and_trait_buffs = vanilla_get_property_and_trait_buffs
-
-			return 
 		end,
 		client_stop_function = function (context, data)
 			BackendUtils.get_total_power_level = data.vanilla_get_total_power_level
 			data.vanilla_get_total_power_level = nil
 			GearUtils.get_property_and_trait_buffs = data.vanilla_get_property_and_trait_buffs
 			data.vanilla_get_property_and_trait_buffs = nil
-
-			return 
 		end
 	},
 	no_respawn = {
@@ -124,11 +114,9 @@ local mutator_settings = {
 		icon = "mutator_icon_no_respawn",
 		server_start_game_mode_function = function (context, data)
 			Managers.state.spawn:set_respawning_enabled(false)
-
-			return 
 		end,
 		server_stop_function = function (context, data)
-			return 
+			return
 		end
 	},
 	elite_run = {
@@ -142,69 +130,14 @@ local mutator_settings = {
 			skaven_clan_rat = "skaven_storm_vermin",
 			chaos_marauder = "chaos_raider"
 		},
-		horde_override_lookup = {
-			chaos_fanatic = "chaos_marauder",
-			skaven_slave = "skaven_clan_rat"
-		},
-		server_start_function = function (context, data)
-			local horde_override_lookup = data.template.horde_override_lookup
-			local vanilla_horde_compositions = {}
-
-			for name, composition in pairs(HordeCompositions) do
-				vanilla_horde_compositions[name] = table.clone(composition)
-				local i = 1
-
-				while composition[i] ~= nil do
-					local variant = composition[i]
-					local breeds = variant.breeds
-					local num_breeds = #breeds
-
-					for j = 1, num_breeds, 2 do
-						local breed_name = breeds[j]
-						local new_breed_name = horde_override_lookup[breed_name]
-
-						if new_breed_name then
-							mutator_dprint("Switching horde composition(%s) variant(%i), breed_name(%s) to (%s)", name, i, breed_name, new_breed_name)
-
-							breeds[j] = new_breed_name
-						end
-					end
-
-					i = i + 1
-				end
-			end
-
-			data.vanilla_horde_compositions = vanilla_horde_compositions
-
-			return 
-		end,
 		server_start_game_mode_function = function (context, data)
 			local roamer_override_lookup = data.template.roamer_override_lookup
 
 			Managers.state.entity:system("ai_interest_point_system"):set_breed_override_lookup(roamer_override_lookup)
 			Managers.state.conflict:set_breed_override_lookup(roamer_override_lookup)
-
-			return 
 		end,
 		server_stop_function = function (context, data)
-			local vanilla_horde_compositions = data.vanilla_horde_compositions
-
-			for name, composition in pairs(HordeCompositions) do
-				local vanilla_composition = vanilla_horde_compositions[name]
-				local i = 1
-
-				while composition[i] ~= nil do
-					local variant = composition[i]
-					local breeds = variant.breeds
-					local num_breeds = #breeds
-					variant.breeds = vanilla_composition[i].breeds
-					i = i + 1
-				end
-
-				mutator_dprint("Switching back horde composition for %s", name)
-			end
-
-			return 
+			return
 		end
 	},
 	specials_frequency = {
@@ -264,8 +197,6 @@ local mutator_settings = {
 			end
 
 			data.vanilla_specials_settings = vanilla_specials_settings
-
-			return 
 		end,
 		server_stop_function = function (context, data)
 			local vanilla_specials_settings = data.vanilla_specials_settings
@@ -303,8 +234,6 @@ local mutator_settings = {
 					end
 				end
 			end
-
-			return 
 		end
 	},
 	hordes_galore = {
@@ -323,8 +252,6 @@ local mutator_settings = {
 				time_table[2] = tt_2 - tt_2 * modifier
 
 				mutator_dprint(dprint_string, tt_1, tt_2, time_table[1], time_table[2], modifier)
-
-				return 
 			end
 
 			local template = data.template
@@ -374,8 +301,6 @@ local mutator_settings = {
 			end
 
 			data.vanilla_pacing_settings = vanilla_pacing_settings
-
-			return 
 		end,
 		server_stop_function = function (context, data)
 			local function reset_time_table(time_table, vanilla_time_table, dprint_string)
@@ -388,8 +313,6 @@ local mutator_settings = {
 				local s = sprintf("Resetting time table from ({%s, %s}) to ({%s, %s}) - %s", tt_1, tt_2, vanilla_tt_1, vanilla_tt_2, dprint_string)
 
 				mutator_dprint(s)
-
-				return 
 			end
 
 			for name, pacing_settings in pairs(PacingSettings) do
@@ -439,8 +362,6 @@ local mutator_settings = {
 					end
 				end
 			end
-
-			return 
 		end
 	},
 	powerful_elites = {
@@ -459,13 +380,9 @@ local mutator_settings = {
 		},
 		server_start_function = function (context, data)
 			data.player_units = {}
-
-			return 
 		end,
 		server_update_function = function (context, data)
 			apply_buff_to_alive_player_units(context, data, "damage_taken_powerful_elites")
-
-			return 
 		end
 	}
 }

@@ -4,60 +4,72 @@ local debug_friends_list = Development.parameter("debug_friends_list")
 
 local function dprint(...)
 	print("[AccountManager] ", ...)
-
-	return 
 end
 
 AccountManager.init = function (self)
-	return 
+	return
 end
+
 AccountManager.set_level_transition_handler = function (self, level_transition_handler)
-	return 
+	return
 end
+
 AccountManager.user_id = function (self)
-	return 
+	return
 end
+
 AccountManager.update = function (self, dt)
-	return 
+	return
 end
+
 AccountManager.sign_in = function (self, user_id)
 	Managers.state.event:trigger("account_user_signed_in")
-
-	return 
 end
+
 AccountManager.num_signed_in_users = function (self)
 	return 1
 end
+
 AccountManager.user_detached = function (self)
 	return false
 end
+
 AccountManager.acitve_controller = function (self)
-	return 
+	return
 end
+
 AccountManager.leaving_game = function (self)
-	return 
+	return
 end
+
 AccountManager.reset = function (self)
-	return 
+	return
 end
+
 AccountManager.set_presence_menu = function (self)
-	return 
+	return
 end
+
 AccountManager.set_presence_idle = function (self)
-	return 
+	return
 end
+
 AccountManager.set_presence_credits = function (self)
-	return 
+	return
 end
+
 AccountManager.set_presence_ingame = function (self, level_key)
-	return 
+	return
 end
+
 AccountManager.set_controller_disconnected = function (self, disconnected)
-	return 
+	return
 end
+
 AccountManager.controller_disconnected = function (self)
-	return 
+	return
 end
+
 AccountManager.get_friends = function (self, friends_list_limit, callback)
 	if debug_friends_list then
 		callback(SteamHelper.debug_friends())
@@ -66,22 +78,22 @@ AccountManager.get_friends = function (self, friends_list_limit, callback)
 	else
 		callback(nil)
 	end
+end
 
-	return 
-end
 AccountManager.set_current_lobby = function (self, lobby)
-	return 
+	return
 end
+
 AccountManager.all_lobbies_freed = function (self)
-	return 
+	return
 end
+
 AccountManager.send_session_invitation = function (self, id, invite_target)
 	if rawget(_G, "Steam") and rawget(_G, "Friends") then
 		Friends.invite(id, invite_target)
 	end
-
-	return 
 end
+
 AccountManager.show_player_profile = function (self, id)
 	if rawget(_G, "Steam") then
 		local dec_id = Steam.id_hex_to_dec(id)
@@ -89,8 +101,10 @@ AccountManager.show_player_profile = function (self, id)
 
 		Steam.open_url(url)
 	end
-
-	return 
 end
 
-return 
+AccountManager.friends_list_initiated = function (self)
+	return
+end
+
+return

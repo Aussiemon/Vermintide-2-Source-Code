@@ -5,17 +5,14 @@ local function lazy_init(self)
 	if not self.references then
 		self.references = {}
 	end
-
-	return 
 end
 
 WwiseBankReference.add = function (self, bank_resource_name)
 	lazy_init(self)
 
 	self.references[bank_resource_name] = (self.references[bank_resource_name] or 0) + 1
-
-	return 
 end
+
 WwiseBankReference.remove = function (self, bank_resource_name)
 	lazy_init(self)
 
@@ -24,9 +21,8 @@ WwiseBankReference.remove = function (self, bank_resource_name)
 	if new_count <= 0 then
 		self.references[bank_resource_name] = nil
 	end
-
-	return 
 end
+
 WwiseBankReference.count = function (self, bank_resource_name)
 	lazy_init(self)
 

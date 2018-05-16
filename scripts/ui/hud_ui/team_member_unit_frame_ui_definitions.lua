@@ -224,8 +224,8 @@ local function create_static_widget()
 			},
 			player_name = {
 				vertical_alignment = "bottom",
-				font_type = "hell_shark",
-				font_size = 20,
+				font_type = "arial",
+				font_size = 18,
 				horizontal_alignment = "center",
 				text_color = Colors.get_table("white"),
 				offset = {
@@ -236,8 +236,8 @@ local function create_static_widget()
 			},
 			player_name_shadow = {
 				vertical_alignment = "bottom",
-				font_type = "hell_shark",
-				font_size = 20,
+				font_type = "arial",
+				font_size = 18,
 				horizontal_alignment = "center",
 				text_color = Colors.get_table("black"),
 				offset = {
@@ -343,7 +343,7 @@ local function create_dynamic_portait_widget()
 					content_check_function = function (content)
 						local ammo_progress = content.ammo_percent
 
-						return ammo_progress and 0 < ammo_progress and ammo_progress <= 0.33
+						return ammo_progress and ammo_progress > 0 and ammo_progress <= 0.33
 					end
 				},
 				{
@@ -852,8 +852,6 @@ local function create_dynamic_health_widget()
 						local grim_progress = math.max(internal_bar_value, actual_active_percentage)
 						local offset = style.offset
 						offset[1] = health_bar_offset[1] + health_bar_size[1] * grim_progress
-
-						return 
 					end
 				},
 				{
@@ -894,8 +892,6 @@ local function create_dynamic_health_widget()
 						uvs[1][1] = grim_progress
 						size[1] = bar_length * (1 - grim_progress)
 						offset[1] = 2 + health_bar_offset[1] + bar_length * grim_progress
-
-						return 
 					end
 				},
 				{
@@ -1065,8 +1061,6 @@ local function create_dynamic_ability_widget()
 						local bar_length = 92
 						uvs[2][2] = ability_progress
 						size[1] = bar_length * ability_progress
-
-						return 
 					end
 				}
 			}

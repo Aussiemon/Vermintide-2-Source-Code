@@ -15,4 +15,4 @@ map_locations_atlas = {
 	}
 }
 
-return 
+return

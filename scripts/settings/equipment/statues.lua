@@ -47,15 +47,17 @@ weapon_template.actions = {
 	action_two = {
 		default = {
 			damage_window_start = 0.05,
-			charge_value = "action_push",
 			outer_push_angle = 180,
 			kind = "push_stagger",
-			damage_window_end = 0.2,
-			hit_effect = "melee_hit_slashing",
+			damage_profile_outer = "light_push",
 			attack_template = "basic_sweep_push",
-			weapon_action_hand = "left",
 			push_angle = 100,
+			hit_effect = "melee_hit_slashing",
+			damage_window_end = 0.2,
+			charge_value = "action_push",
+			weapon_action_hand = "left",
 			anim_event = "attack_push",
+			damage_profile_inner = "medium_push",
 			total_time = 0.8,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
@@ -73,7 +75,7 @@ weapon_template.actions = {
 			condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
-				return not status_extension.fatigued(status_extension)
+				return not status_extension:fatigued()
 			end
 		}
 	},
@@ -115,6 +117,20 @@ Weapons.drachenfels_statue.wield_anim = "to_statue"
 Weapons.cannon_ball = Weapons.cannon_ball or table.clone(weapon_template)
 Weapons.cannon_ball.left_hand_unit = "units/weapons/player/wpn_cannon_ball_01/wpn_cannon_ball_01"
 Weapons.cannon_ball.actions.action_one.default.speed = 8
+Weapons.cannon_ball.actions.action_one.default.throw_time = 0.35000000000000003
+Weapons.cannon_ball.actions.action_one.default.throw_offset = {
+	0.3,
+	0.5,
+	0
+}
+Weapons.cannon_ball.actions.action_one.default.buff_data = {
+	{
+		start_time = 0,
+		external_multiplier = 0.5,
+		end_time = 0.28,
+		buff_name = "planted_fast_decrease_movement"
+	}
+}
 Weapons.cannon_ball.actions.action_one.default.projectile_info = {
 	projectile_unit_template_name = "pickup_projectile_unit",
 	pickup_name = "cannon_ball",
@@ -147,4 +163,4 @@ Weapons.training_dummy_armored.left_hand_unit = "units/gameplay/training_dummy/w
 Weapons.training_dummy_armored.actions.action_one.default.projectile_info.projectile_unit_name = "units/gameplay/training_dummy/training_dummy_armored"
 Weapons.training_dummy_armored.actions.action_one.default.projectile_info.pickup_name = "training_dummy_armored"
 
-return 
+return

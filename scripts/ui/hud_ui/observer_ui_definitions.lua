@@ -317,7 +317,7 @@ local widget_definitions = {
 					style_id = "hp_bar_divider",
 					texture_id = "hp_bar_divider",
 					content_check_function = function (content, style)
-						return 0 < style.texture_amount
+						return style.texture_amount > 0
 					end
 				},
 				{

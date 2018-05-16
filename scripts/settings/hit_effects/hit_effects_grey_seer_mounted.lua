@@ -69,4 +69,4 @@ HitEffectsSkavenGreySeerMounted = {
 }
 HitEffectsSkavenGreySeerMounted = table.create_copy(HitEffectsSkavenGreySeerMounted, HitEffectsSkavenGreySeerMounted)
 
-return 
+return

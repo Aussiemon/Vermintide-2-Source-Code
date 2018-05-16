@@ -1,24 +1,25 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTPackMasterSkulkAroundAction = class(BTPackMasterSkulkAroundAction, BTNode)
+
 BTPackMasterSkulkAroundAction.init = function (self, ...)
 	BTPackMasterSkulkAroundAction.super.init(self, ...)
 
 	self.navigation_group_manager = Managers.state.conflict.navigation_group_manager
-
-	return 
 end
+
 BTPackMasterSkulkAroundAction.name = "BTPackMasterSkulkAroundAction"
+
 BTPackMasterSkulkAroundAction.enter = function (self, unit, blackboard, t)
 	LocomotionUtils.set_animation_driven_movement(unit, false)
 
 	local network_manager = Managers.state.network
 
-	network_manager.anim_event(network_manager, unit, "to_combat")
+	network_manager:anim_event(unit, "to_combat")
 
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_max_speed(navigation_extension, blackboard.breed.run_speed)
+	navigation_extension:set_max_speed(blackboard.breed.run_speed)
 
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -28,12 +29,11 @@ BTPackMasterSkulkAroundAction.enter = function (self, unit, blackboard, t)
 	blackboard.skulk_debug_state = "enter"
 	local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension.set_rotation_speed(locomotion_extension, 5)
+	locomotion_extension:set_rotation_speed(5)
 
 	blackboard.attack_cooldown = blackboard.attack_cooldown or 0
-
-	return 
 end
+
 BTPackMasterSkulkAroundAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.action = nil
 	blackboard.skulk_in_los = nil
@@ -52,11 +52,11 @@ BTPackMasterSkulkAroundAction.leave = function (self, unit, blackboard, t, reaso
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_max_speed(navigation_extension, default_move_speed)
-
-	return 
+	navigation_extension:set_max_speed(default_move_speed)
 end
+
 local test_points = {}
+
 BTPackMasterSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 	if not AiUtils.is_of_interest_to_packmaster(unit, blackboard.target_unit) then
 		return "failed"
@@ -69,14 +69,14 @@ BTPackMasterSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 	if script_data.debug_ai_movement then
 		blackboard.skulk_time_left = string.format("%.2f", blackboard.skulk_time - t)
 
-		self.debug(self, unit, blackboard)
+		self:debug(unit, blackboard)
 	end
 
 	if blackboard.skulk_time < t and blackboard.attack_cooldown < t then
 		local action = blackboard.action
 		local waited_too_long = blackboard.skulk_time_force_attack < t
 		local ai_slot_system = Managers.state.entity:system("ai_slot_system")
-		local dogpile = ai_slot_system.slots_count(ai_slot_system, blackboard.target_unit)
+		local dogpile = ai_slot_system:slots_count(blackboard.target_unit)
 		local enough_aggro_on_player = action.dogpile_aggro_needed <= dogpile or script_data.ai_packmaster_ignore_dogpile
 
 		if enough_aggro_on_player or waited_too_long then
@@ -91,7 +91,7 @@ BTPackMasterSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if not blackboard.skulk_pos then
-		self.get_new_goal(self, unit, blackboard)
+		self:get_new_goal(unit, blackboard)
 
 		blackboard.skulk_debug_state = "get_new_goal"
 
@@ -99,24 +99,24 @@ BTPackMasterSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	local navigation_extension = blackboard.navigation_extension
-	local is_computing_path = navigation_extension.is_computing_path(navigation_extension)
+	local is_computing_path = navigation_extension:is_computing_path()
 
 	if blackboard.move_state ~= "moving" and not is_computing_path then
 		local network_manager = Managers.state.network
 		blackboard.move_state = "moving"
 
-		network_manager.anim_event(network_manager, unit, blackboard.action.skulk_animation or "move_fwd")
-		navigation_extension.set_enabled(navigation_extension, true)
+		network_manager:anim_event(unit, blackboard.action.skulk_animation or "move_fwd")
+		navigation_extension:set_enabled(true)
 	end
 
 	local goal_pos = blackboard.skulk_pos:unbox()
 	local position = POSITION_LOOKUP[unit]
 	local goal_distance_sq = Vector3.distance_squared(goal_pos, position)
 
-	locomotion_extension.set_wanted_rotation(locomotion_extension, nil)
+	locomotion_extension:set_wanted_rotation(nil)
 
 	if goal_distance_sq < 9 then
-		local goal_found = self.get_new_goal(self, unit, blackboard)
+		local goal_found = self:get_new_goal(unit, blackboard)
 
 		if goal_found then
 			blackboard.skulk_debug_state = "new goal found"
@@ -129,7 +129,7 @@ BTPackMasterSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 				blackboard.skulk_debug_state = "fallback"
 				blackboard.skulk_pos = Vector3Box(pos)
 
-				navigation_extension.move_to(navigation_extension, pos)
+				navigation_extension:move_to(pos)
 			else
 				blackboard.skulk_debug_state = "fallback fail"
 			end
@@ -148,6 +148,7 @@ BTPackMasterSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
+
 BTPackMasterSkulkAroundAction.get_new_goal = function (self, unit, blackboard)
 	local target_unit = blackboard.target_unit
 
@@ -168,16 +169,15 @@ BTPackMasterSkulkAroundAction.get_new_goal = function (self, unit, blackboard)
 			blackboard.skulk_pos = Vector3Box(pos)
 			local navigation_extension = blackboard.navigation_extension
 
-			navigation_extension.move_to(navigation_extension, pos)
+			navigation_extension:move_to(pos)
 
 			return true
 		else
 			blackboard.skulk_goal_get_fails = fails + 1
 		end
 	end
-
-	return 
 end
+
 BTPackMasterSkulkAroundAction.debug = function (self, unit, blackboard)
 	local pos = POSITION_LOOKUP[unit]
 
@@ -206,8 +206,6 @@ BTPackMasterSkulkAroundAction.debug = function (self, unit, blackboard)
 
 		QuickDrawer:sphere(pos + Vector3(0, 0, 2), 0.5, Color(255, 43, 43, 207))
 	end
-
-	return 
 end
 
-return 
+return

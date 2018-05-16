@@ -2,34 +2,35 @@ MatchmakingStateFriendClient = class(MatchmakingStateFriendClient)
 MatchmakingStateFriendClient.NAME = "MatchmakingStateFriendClient"
 local fake_input_service = {
 	get = function ()
-		return 
+		return
 	end,
 	has = function ()
-		return 
+		return
 	end
 }
+
 MatchmakingStateFriendClient.init = function (self, params)
 	self.matchmaking_manager = params.matchmaking_manager
 	self.handshaker_client = params.handshaker_client
 	self.wwise_world = params.wwise_world
+end
 
-	return 
-end
 MatchmakingStateFriendClient.destroy = function (self)
-	return 
+	return
 end
+
 MatchmakingStateFriendClient.on_enter = function (self, state_context)
 	self.request_data_done = false
 	self._game_server_data = nil
+end
 
-	return 
-end
 MatchmakingStateFriendClient.on_exit = function (self)
-	return 
+	return
 end
+
 MatchmakingStateFriendClient.update = function (self, dt, t)
 	if not Managers.state.game_mode or Managers.state.game_mode:level_key() ~= "inn_level" then
-		return 
+		return
 	end
 
 	local gamepad_active_last_frame = self._gamepad_active_last_frame
@@ -40,19 +41,17 @@ MatchmakingStateFriendClient.update = function (self, dt, t)
 	end
 
 	self._gamepad_active_last_frame = gamepad_active
-
-	return 
 end
+
 MatchmakingStateFriendClient.get_transition = function (self)
 	if self._game_server_data then
 		return "join_server", self._game_server_data
 	end
-
-	return 
 end
+
 MatchmakingStateFriendClient.rpc_matchmaking_broadcast_game_server_ip_address = function (self, sender, client_cookie, host_cookie, ip_address)
 	if not self.handshaker_client:validate_cookies(client_cookie, host_cookie) then
-		return 
+		return
 	end
 
 	self._game_server_data = {
@@ -60,8 +59,6 @@ MatchmakingStateFriendClient.rpc_matchmaking_broadcast_game_server_ip_address = 
 			ip_port = ip_address
 		}
 	}
-
-	return 
 end
 
-return 
+return

@@ -281,4 +281,4 @@ breed_data = {
 }
 Breeds.skaven_slave = table.create_copy(Breeds.skaven_slave, breed_data)
 
-return 
+return

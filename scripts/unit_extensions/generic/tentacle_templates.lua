@@ -14,4 +14,4 @@ TentacleTemplates = {
 	}
 }
 
-return 
+return

@@ -1,32 +1,29 @@
 ControllerFeaturesImplementation = class(ControllerFeaturesImplementation)
+
 ControllerFeaturesImplementation.init = function (self, is_in_inn)
-	self._reset(self)
+	self:_reset()
 
 	self._is_in_inn = is_in_inn
 
 	if Managers.state.event then
 		Managers.state.event:register(self, "gm_event_end_conditions_met", "event_end_conditions_met")
 	end
-
-	return 
 end
+
 ControllerFeaturesImplementation._reset = function (self)
 	self._effects = {}
 	self._current_effect_id = 1
 	self._game_mode_ended = false
 	self._state_data = {}
-
-	return 
 end
+
 ControllerFeaturesImplementation.event_end_conditions_met = function (self)
 	self._game_mode_ended = true
-
-	return 
 end
-local EFFECTS_TO_REMOVE = {}
-ControllerFeaturesImplementation.update = function (self, dt, t)
-	return 
 
+local EFFECTS_TO_REMOVE = {}
+
+ControllerFeaturesImplementation.update = function (self, dt, t)
 	for user, effects in pairs(self._effects) do
 		table.clear(EFFECTS_TO_REMOVE)
 
@@ -42,24 +39,23 @@ ControllerFeaturesImplementation.update = function (self, dt, t)
 			effects[id] = nil
 		end
 	end
-
-	return 
 end
+
 ControllerFeaturesImplementation.add_effect = function (self, effect_name, params, user_id)
-	if self._game_mode_ended or not Application.user_setting("gamepad_rumble_enabled") or (effect_name == "camera_shake" and self._is_in_inn) then
-		return 
+	if self._game_mode_ended or not Application.user_setting("gamepad_rumble_enabled") or (effect_name == "camera_shake" and self._is_in_inn) or script_data.honduras_demo then
+		return
 	end
 
 	local user_id = user_id or Managers.account:user_id()
 
 	if not user_id then
-		return 
+		return
 	end
 
 	local controller = Managers.account:active_controller(user_id)
 
 	if not controller then
-		return 
+		return
 	end
 
 	local state_data = {}
@@ -80,14 +76,13 @@ ControllerFeaturesImplementation.add_effect = function (self, effect_name, param
 
 		return self._current_effect_id - 1
 	end
-
-	return 
 end
+
 ControllerFeaturesImplementation.stop_effect = function (self, effect_id)
 	local user_id = Managers.account:user_id()
 
 	if not user_id then
-		return 
+		return
 	end
 
 	local effect_data = self._effects[user_id][effect_id]
@@ -97,9 +92,8 @@ ControllerFeaturesImplementation.stop_effect = function (self, effect_id)
 
 		self._effects[user_id][effect_id] = nil
 	end
-
-	return 
 end
+
 ControllerFeaturesImplementation.destroy = function (self)
 	for user, effects in pairs(self._effects) do
 		for id, effect_data in pairs(effects) do
@@ -107,9 +101,7 @@ ControllerFeaturesImplementation.destroy = function (self)
 		end
 	end
 
-	self._reset(self)
-
-	return 
+	self:_reset()
 end
 
-return 
+return

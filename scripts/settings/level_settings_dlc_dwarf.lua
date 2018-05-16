@@ -285,4 +285,4 @@ LevelSettings.dlc_dwarf_beacons = {
 	}
 }
 
-return 
+return

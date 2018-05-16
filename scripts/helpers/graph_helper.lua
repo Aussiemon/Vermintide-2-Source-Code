@@ -7,19 +7,19 @@ local record_statistics = Profiler.record_statistics
 
 if console_command == nil or build == "release" then
 	function console_command()
-		return 
+		return
 	end
 end
 
 if record_statistics == nil or build == "release" then
 	function record_statistics()
-		return 
+		return
 	end
 end
 
 GraphHelper.create = function (graph_name, stat_names, stat_names_vector3)
 	if GraphHelper._known_graphs[graph_name] ~= nil then
-		return 
+		return
 	end
 
 	console_command("graph", "make", graph_name)
@@ -55,39 +55,31 @@ GraphHelper.create = function (graph_name, stat_names, stat_names_vector3)
 	end
 
 	console_command("graph", "show", graph_name)
-
-	return 
 end
+
 GraphHelper.show = function (graph_name)
 	console_command("graph", "show", graph_name)
-
-	return 
 end
+
 GraphHelper.hide = function (graph_name)
 	console_command("graph", "hide", graph_name)
-
-	return 
 end
+
 GraphHelper.set_range = function (graph_name, min, max)
 	console_command("graph", "range", graph_name, tostring(min), tostring(max))
-
-	return 
 end
+
 GraphHelper.update_range = function (graph_name)
 	console_command("graph", "range", graph_name)
-
-	return 
 end
+
 GraphHelper.set_color = function (stat, color)
 	console_command("graph", "color", color)
-
-	return 
 end
+
 GraphHelper.record_statistics = function (stat, value)
 	assert(GraphHelper._known_stats[stat] == type(value))
 	record_statistics(stat, value)
-
-	return 
 end
 
-return 
+return

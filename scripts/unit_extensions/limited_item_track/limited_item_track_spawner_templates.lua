@@ -137,4 +137,4 @@ LimitedItemTrackSpawnerTemplates = {
 	}
 }
 
-return 
+return

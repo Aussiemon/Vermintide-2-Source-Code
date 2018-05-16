@@ -4,11 +4,11 @@ BTVictimGrabbedIdleAction = class(BTVictimGrabbedIdleAction, BTNode)
 BTVictimGrabbedIdleAction.name = "BTVictimGrabbedIdleAction"
 local PLAYER_POSITIONS = PLAYER_POSITIONS
 local PLAYER_UNITS = PLAYER_UNITS
+
 BTVictimGrabbedIdleAction.init = function (self, ...)
 	BTVictimGrabbedIdleAction.super.init(self, ...)
-
-	return 
 end
+
 BTVictimGrabbedIdleAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local animation = "idle_grabbed"
@@ -16,7 +16,7 @@ BTVictimGrabbedIdleAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = action
 
 	if blackboard.move_state ~= "idle" then
-		network_manager.anim_event(network_manager, unit, animation)
+		network_manager:anim_event(unit, animation)
 
 		blackboard.move_state = "idle"
 	end
@@ -26,15 +26,14 @@ BTVictimGrabbedIdleAction.enter = function (self, unit, blackboard, t)
 	StatusUtils.set_grabbed_by_chaos_spawn_status_network(blackboard.victim_grabbed, "idle")
 
 	blackboard.grabbed_state = "idle"
-
-	return 
 end
+
 BTVictimGrabbedIdleAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.navigation_extension:set_enabled(true)
-
-	return 
 end
+
 local Unit_alive = Unit.alive
+
 BTVictimGrabbedIdleAction.run = function (self, unit, blackboard, t, dt)
 	local target_unit = blackboard.target_unit
 
@@ -47,4 +46,4 @@ BTVictimGrabbedIdleAction.run = function (self, unit, blackboard, t, dt)
 	return "running"
 end
 
-return 
+return

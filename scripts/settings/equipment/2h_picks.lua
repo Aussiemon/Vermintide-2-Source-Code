@@ -362,7 +362,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			critical_strike = {}
 		},
@@ -719,7 +719,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		},
 		push = {
@@ -797,7 +797,7 @@ weapon_template.actions = {
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
-				return not status_extension.fatigued(status_extension)
+				return not status_extension:fatigued()
 			end
 		}
 	},
@@ -814,7 +814,7 @@ weapon_template.actions = {
 			end,
 			total_time = math.huge,
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			buff_data = {
 				{
@@ -863,7 +863,7 @@ weapon_template.actions = {
 	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/wpn_empire_short_sword"
-weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
+weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.two_handed_melee_weapon
 weapon_template.display_unit = "units/weapons/weapon_display/display_2h_weapon"
 weapon_template.wield_anim = "to_2h_hammer"
 weapon_template.buff_type = "MELEE_2H"
@@ -897,32 +897,32 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_crowd_control",
 	"weapon_keyword_heavy_charge"
 }
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "light_attack_left"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "heavy_attack_left"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	push = {
+		action_name = "action_one",
+		sub_action_name = "push"
+	}
+}
 weapon_template.wwise_dep_right_hand = {
 	"wwise/two_handed_axes"
-}
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.4,
-			stagger = 0.5,
-			damage = 0.546875,
-			targets = 0.7
-		},
-		heavy_attack = {
-			speed = 0.2,
-			stagger = 0.6,
-			damage = 0.625,
-			targets = 0.2
-		}
-	},
-	perks = {
-		light_attack = {
-			"armor_penetration"
-		},
-		heavy_attack = {
-			"armor_penetration"
-		}
-	}
 }
 Weapons = Weapons or {}
 Weapons.two_handed_picks_template_1 = table.clone(weapon_template)
@@ -930,4 +930,4 @@ Weapons.two_handed_picks_template_1_t3_un = table.clone(Weapons.two_handed_picks
 Weapons.two_handed_picks_template_1_t3_un.actions.action_inspect.action_inspect_hold.anim_event = "inspect_start_2"
 Weapons.two_handed_picks_template_1_t3_un.actions.action_inspect.action_inspect_hold.anim_end_event = "inspect_end_2"
 
-return 
+return

@@ -32,7 +32,7 @@ local breed_data = {
 	max_chain_stagger_time = 2,
 	bone_lod_level = 1,
 	dialogue_source_name = "chaos_exalted_sorcerer",
-	poison_resistance = 100,
+	difficulty_kill_achievement = "kill_chaos_exalted_sorcerer_difficulty_rank",
 	race = "chaos",
 	disable_second_hit_ragdoll = true,
 	proximity_system_check = true,
@@ -40,6 +40,7 @@ local breed_data = {
 	perception = "perception_all_seeing",
 	player_locomotion_constrain_radius = 0.7,
 	smart_object_template = "special",
+	poison_resistance = 100,
 	far_off_despawn_immunity = true,
 	is_of_interest_func = "is_of_interest_boss_sorcerer",
 	vortexable = false,
@@ -60,7 +61,7 @@ local breed_data = {
 		2160
 	},
 	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
-		if 3 <= blackboard.stagger_count then
+		if blackboard.stagger_count >= 3 then
 			stagger = 0
 			blackboard.stagger_ignore_anim_cb = true
 		else
@@ -244,8 +245,11 @@ local action_data = {
 	spawn_boss_vortex = {
 		cleanup_func_name = "_clean_up_vortex_summoning",
 		vortex_template_name = "boss_sorcerer",
+		link_decal_units_to_vortex = true,
 		spawn_func_name = "_spawn_boss_vortex",
+		outer_decal_unit_name = "units/decals/decal_vortex_circle_outer",
 		attack_anim = "attack_staff",
+		inner_decal_unit_name = "units/decals/decal_vortex_circle_inner",
 		ignore_staggers = {
 			true,
 			true,
@@ -296,8 +300,6 @@ local action_data = {
 			table.shuffle(angles)
 
 			blackboard.random_flower_angles = angles
-
-			return 
 		end
 	},
 	spawn_multiple_wave = {
@@ -329,8 +331,6 @@ local action_data = {
 			if hit_pos then
 				return hit_pos
 			end
-
-			return 
 		end
 	},
 	cast_missile = {
@@ -415,8 +415,6 @@ local action_data = {
 		},
 		init_spell_func = function (blackboard)
 			blackboard.current_spell = blackboard.sorcerer_strike_missile_data
-
-			return 
 		end,
 		get_throw_position_func = function (unit, blackboard, target_position)
 			local ai_inventory_ext = ScriptUnit.has_extension(unit, "ai_inventory_system")
@@ -602,8 +600,6 @@ local action_data = {
 		},
 		init_spell_func = function (blackboard)
 			blackboard.current_spell = blackboard.sorcerer_strike_missile_data
-
-			return 
 		end,
 		get_throw_position_func = function (unit, blackboard, target_position)
 			local ai_inventory_ext = ScriptUnit.has_extension(unit, "ai_inventory_system")
@@ -689,8 +685,6 @@ local action_data = {
 		},
 		init_spell_func = function (blackboard)
 			blackboard.current_spell = blackboard.seeking_bomb_missile_data
-
-			return 
 		end
 	},
 	intro_idle = {
@@ -901,4 +895,4 @@ action_data.magic_missile_skulking = copy_action_data("magic_missile_skulking", 
 action_data.seeking_bomb_missile_skulking = copy_action_data("seeking_bomb_missile_skulking", action_data.skulking, "seeking_bomb_missile")
 BreedActions.chaos_exalted_sorcerer = table.create_copy(BreedActions.chaos_exalted_sorcerer, action_data)
 
-return 
+return

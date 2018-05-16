@@ -2,12 +2,13 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTAdvanceTowardsPlayersAction = class(BTAdvanceTowardsPlayersAction, BTNode)
 BTAdvanceTowardsPlayersAction.name = "BTAdvanceTowardsPlayersAction"
+
 BTAdvanceTowardsPlayersAction.init = function (self, ...)
 	BTAdvanceTowardsPlayersAction.super.init(self, ...)
-
-	return 
 end
+
 local EVALUATE_TIME = 1
+
 BTAdvanceTowardsPlayersAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -26,17 +27,17 @@ BTAdvanceTowardsPlayersAction.enter = function (self, unit, blackboard, t)
 	blackboard.advance_towards_players = advance_towards_players
 
 	if blackboard.move_state ~= "idle" then
-		self.start_idle_animation(self, unit, blackboard)
+		self:start_idle_animation(unit, blackboard)
 	end
 
 	local ai_navigation_extension = blackboard.navigation_extension
 
-	ai_navigation_extension.set_max_speed(ai_navigation_extension, blackboard.breed.walk_speed)
+	ai_navigation_extension:set_max_speed(blackboard.breed.walk_speed)
 
 	if blackboard.move_pos then
 		local move_pos = blackboard.move_pos:unbox()
 
-		ai_navigation_extension.move_to(ai_navigation_extension, move_pos)
+		ai_navigation_extension:move_to(move_pos)
 	end
 
 	local tutorial_message_template = action.tutorial_message_template
@@ -47,18 +48,17 @@ BTAdvanceTowardsPlayersAction.enter = function (self, unit, blackboard, t)
 
 		Managers.state.network.network_transmit:send_rpc_all("rpc_tutorial_message", template_id, message_id)
 	end
-
-	return 
 end
+
 BTAdvanceTowardsPlayersAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.action = nil
 	local navigation_extension = blackboard.navigation_extension
 
 	if reason == "aborted" then
-		local path_found = navigation_extension.is_following_path(navigation_extension)
+		local path_found = navigation_extension:is_following_path()
 
 		if blackboard.move_pos and path_found and blackboard.move_state == "idle" then
-			self.start_move_animation(self, unit, blackboard)
+			self:start_move_animation(unit, blackboard)
 		end
 
 		blackboard.move_pos = nil
@@ -66,10 +66,9 @@ BTAdvanceTowardsPlayersAction.leave = function (self, unit, blackboard, t, reaso
 
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 
-	navigation_extension.set_max_speed(navigation_extension, default_move_speed)
-
-	return 
+	navigation_extension:set_max_speed(default_move_speed)
 end
+
 BTAdvanceTowardsPlayersAction.run = function (self, unit, blackboard, t, dt)
 	local ai_navigation = blackboard.navigation_extension
 	local breed = blackboard.breed
@@ -78,11 +77,11 @@ BTAdvanceTowardsPlayersAction.run = function (self, unit, blackboard, t, dt)
 	advance_towards_players.evaluate_timer = (blackboard.times_thrown ~= 0 and 0) or advance_towards_players.evaluate_timer - dt
 	advance_towards_players.timer = advance_towards_players.timer + dt
 	advance_towards_players.time_before_throw_timer = advance_towards_players.time_before_throw_timer + dt
-	local failed_attempts = ai_navigation.number_failed_move_attempts(ai_navigation)
-	local path_found = ai_navigation.is_following_path(ai_navigation)
+	local failed_attempts = ai_navigation:number_failed_move_attempts()
+	local path_found = ai_navigation:is_following_path()
 
-	if not blackboard.move_pos or 0 < failed_attempts then
-		local success = self.get_new_goal(self, unit, blackboard)
+	if not blackboard.move_pos or failed_attempts > 0 then
+		local success = self:get_new_goal(unit, blackboard)
 
 		if not success then
 			return "failed"
@@ -90,18 +89,18 @@ BTAdvanceTowardsPlayersAction.run = function (self, unit, blackboard, t, dt)
 
 		local goal_pos = blackboard.move_pos:unbox()
 
-		ai_navigation.move_to(ai_navigation, goal_pos)
+		ai_navigation:move_to(goal_pos)
 
 		return "running"
 	end
 
 	if blackboard.move_pos and path_found and blackboard.move_state == "idle" then
-		self.start_move_animation(self, unit, blackboard)
+		self:start_move_animation(unit, blackboard)
 	end
 
 	local locomotion_extension = blackboard.locomotion_extension
 
-	locomotion_extension.set_wanted_rotation(locomotion_extension, nil)
+	locomotion_extension:set_wanted_rotation(nil)
 
 	local goal_pos = blackboard.move_pos:unbox()
 	local target_unit = blackboard.target_unit
@@ -111,7 +110,7 @@ BTAdvanceTowardsPlayersAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.move_pos = nil
 	end
 
-	if 0 < advance_towards_players.evaluate_timer then
+	if advance_towards_players.evaluate_timer > 0 then
 		return "running"
 	end
 
@@ -121,7 +120,7 @@ BTAdvanceTowardsPlayersAction.run = function (self, unit, blackboard, t, dt)
 		return "failed"
 	end
 
-	local want_to_throw = self.want_to_throw(self, unit, blackboard, t)
+	local want_to_throw = self:want_to_throw(unit, blackboard, t)
 
 	if not want_to_throw then
 		advance_towards_players.evaluate_timer = EVALUATE_TIME
@@ -129,9 +128,9 @@ BTAdvanceTowardsPlayersAction.run = function (self, unit, blackboard, t, dt)
 		return "running"
 	end
 
-	local can_throw = self.can_throw(self, unit, blackboard, t)
+	local can_throw = self:can_throw(unit, blackboard, t)
 
-	if can_throw and self._calculate_trajectory_to_target(self, unit, blackboard.world, blackboard, action) then
+	if self:has_valid_target(target_unit) and can_throw and self:_calculate_trajectory_to_target(unit, blackboard.world, blackboard, action) then
 		blackboard.has_thrown = true
 		blackboard.move_pos = nil
 
@@ -142,6 +141,7 @@ BTAdvanceTowardsPlayersAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
+
 BTAdvanceTowardsPlayersAction._calculate_trajectory_to_target = function (self, unit, world, blackboard, action)
 	local curr_pos = Vector3.copy(POSITION_LOOKUP[unit])
 	local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.target_unit)
@@ -180,6 +180,11 @@ BTAdvanceTowardsPlayersAction._calculate_trajectory_to_target = function (self, 
 
 	return hit
 end
+
+BTAdvanceTowardsPlayersAction.has_valid_target = function (self, target_unit)
+	return VALID_TARGETS_PLAYERS_AND_BOTS[target_unit]
+end
+
 BTAdvanceTowardsPlayersAction.want_to_throw = function (self, unit, blackboard, t)
 	local action = blackboard.action
 	local slot_count = blackboard.total_slots_count
@@ -224,6 +229,7 @@ BTAdvanceTowardsPlayersAction.want_to_throw = function (self, unit, blackboard, 
 
 	return true
 end
+
 BTAdvanceTowardsPlayersAction.can_throw = function (self, unit, blackboard, t)
 	local action_data = blackboard.action
 
@@ -240,6 +246,7 @@ BTAdvanceTowardsPlayersAction.can_throw = function (self, unit, blackboard, t)
 
 	return not hit
 end
+
 BTAdvanceTowardsPlayersAction.get_new_goal = function (self, unit, blackboard)
 	local action = blackboard.action
 	local min_distance = action.keep_target_distance[1]
@@ -263,21 +270,19 @@ BTAdvanceTowardsPlayersAction.get_new_goal = function (self, unit, blackboard)
 
 	return false
 end
+
 BTAdvanceTowardsPlayersAction.start_idle_animation = function (self, unit, blackboard)
 	Managers.state.network:anim_event(unit, "to_passive")
 	Managers.state.network:anim_event(unit, "idle")
 
 	blackboard.move_state = "idle"
-
-	return 
 end
+
 BTAdvanceTowardsPlayersAction.start_move_animation = function (self, unit, blackboard)
 	Managers.state.network:anim_event(unit, "to_combat")
 	Managers.state.network:anim_event(unit, "move_fwd")
 
 	blackboard.move_state = "moving"
-
-	return 
 end
 
-return 
+return

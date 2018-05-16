@@ -1,19 +1,18 @@
 ScriptPSRestrictionToken = class(ScriptPSRestrictionToken)
+
 ScriptPSRestrictionToken.init = function (self, token)
 	self._token = token
 	self._done = false
-
-	return 
 end
+
 ScriptPSRestrictionToken.update = function (self)
 	local status = NpCheck.status(self._token)
 
 	if status == NpCheck.COMPLETED or status == NpCheck.ERROR then
 		self._done = true
 	end
-
-	return 
 end
+
 ScriptPSRestrictionToken.info = function (self)
 	local info = {}
 	local status = NpCheck.status(self._token)
@@ -28,13 +27,13 @@ ScriptPSRestrictionToken.info = function (self)
 
 	return info
 end
+
 ScriptPSRestrictionToken.done = function (self)
 	return self._done
 end
+
 ScriptPSRestrictionToken.close = function (self)
 	NpCheck.free(self._token)
-
-	return 
 end
 
-return 
+return

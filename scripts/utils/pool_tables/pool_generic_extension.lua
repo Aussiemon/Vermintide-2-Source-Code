@@ -1324,8 +1324,6 @@ function POOL_generic_extension_release(pool_table)
 	POOL_generic_extension_next_free = pool_table
 	POOL_generic_extension_availability[pool_table._INDEX] = true
 	POOL_generic_extension_free_count = POOL_generic_extension_free_count + 1
-
-	return 
 end
 
 POOL_tables = POOL_tables or {}
@@ -1341,4 +1339,4 @@ POOL_tables.generic_extension = {
 	hash_count = hash_count
 }
 
-return 
+return

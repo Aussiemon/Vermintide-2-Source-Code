@@ -604,8 +604,6 @@ function POOL_blackboard_release(pool_table)
 	POOL_blackboard_next_free = pool_table
 	POOL_blackboard_availability[pool_table._INDEX] = true
 	POOL_blackboard_free_count = POOL_blackboard_free_count + 1
-
-	return 
 end
 
 POOL_tables = POOL_tables or {}
@@ -621,4 +619,4 @@ POOL_tables.blackboard = {
 	hash_count = hash_count
 }
 
-return 
+return

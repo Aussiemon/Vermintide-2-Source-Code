@@ -2,7 +2,7 @@ local function INVENTORY_UNIT(owner_unit)
 	local breed = Unit.get_data(owner_unit, "breed")
 	local inventory_template = breed.default_inventory_template
 	local inventory_extension = ScriptUnit.extension(owner_unit, "ai_inventory_system")
-	local inventory_unit = inventory_extension.get_unit(inventory_extension, inventory_template)
+	local inventory_unit = inventory_extension:get_unit(inventory_template)
 
 	return inventory_unit
 end
@@ -38,4 +38,4 @@ LightWeightProjectileParticleEffects = {
 	}
 }
 
-return 
+return

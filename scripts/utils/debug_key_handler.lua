@@ -35,34 +35,34 @@ DebugKeyHandler = DebugKeyHandler or {
 	keys = {}
 }
 local DebugKeyHandler = DebugKeyHandler
+
 DebugKeyHandler.setup = function (world, input_manager)
 	DebugKeyHandler.gui = World.create_screen_gui(world, "material", "materials/fonts/gw_fonts", "immediate")
 	DebugKeyHandler.enabled = true
 	DebugKeyHandler.input_manager = input_manager
 	DebugKeyHandler.current_y = 0
-
-	return 
 end
+
 DebugKeyHandler.set_enabled = function (enabled)
 	DebugKeyHandler.enabled = enabled
-
-	return 
 end
+
 local blocking_modifiers = {
 	"left ctrl",
 	"left shift",
 	"right ctrl",
 	"left alt"
 }
+
 DebugKeyHandler.key_pressed = function (key, description, category, key_modifier, input_service_name)
 	if not DebugKeyHandler.enabled then
-		return 
+		return
 	end
 
 	local input_service = DebugKeyHandler.input_manager:get_service(input_service_name or "Debug")
 
 	if not input_service then
-		return 
+		return
 	end
 
 	if script_data.debug_key_handler_visible then
@@ -75,10 +75,10 @@ DebugKeyHandler.key_pressed = function (key, description, category, key_modifier
 			DebugKeyHandler.keys[category] = category_keys
 		end
 
-		local key_string = (input_service.has(input_service, key) and key) or cached_fail(key)
+		local key_string = (input_service:has(key) and key) or cached_fail(key)
 
 		if key_modifier then
-			key_string = (input_service.has(input_service, key) and cached_key_mod(key, key_modifier)) or cached_key_mod(key, key_modifier, true)
+			key_string = (input_service:has(key) and cached_key_mod(key, key_modifier)) or cached_key_mod(key, key_modifier, true)
 		end
 
 		category_keys[key_string] = description
@@ -87,10 +87,10 @@ DebugKeyHandler.key_pressed = function (key, description, category, key_modifier
 	local modifier_pressed = true
 
 	if key_modifier then
-		modifier_pressed = input_service.get(input_service, key_modifier)
+		modifier_pressed = input_service:get(key_modifier)
 	else
 		for i, blocking_key in ipairs(blocking_modifiers) do
-			if blocking_key ~= key and input_service.get(input_service, blocking_key) then
+			if blocking_key ~= key and input_service:get(blocking_key) then
 				modifier_pressed = false
 
 				break
@@ -98,10 +98,11 @@ DebugKeyHandler.key_pressed = function (key, description, category, key_modifier
 		end
 	end
 
-	local key_pressed = input_service.get(input_service, key)
+	local key_pressed = input_service:get(key)
 
 	return modifier_pressed and key_pressed
 end
+
 DebugKeyHandler.frame_clear = function ()
 	DebugKeyHandler.num_keys = 0
 
@@ -112,15 +113,15 @@ DebugKeyHandler.frame_clear = function ()
 
 		table.clear(category_keys)
 	end
-
-	return 
 end
+
 local font_size = 16
 local font = "gw_arial_16"
 local font_mtrl = "materials/fonts/" .. font
+
 DebugKeyHandler.render = function ()
 	if not script_data.debug_key_handler_visible then
-		return 
+		return
 	end
 
 	local offset_lerp = 1
@@ -166,8 +167,6 @@ DebugKeyHandler.render = function ()
 	if not DebugKeyHandler.enabled then
 		Gui.rect(gui, Vector3(res_x - 250, pos.y + font_size, 300), Vector2(250, start_y - pos.y), Color(offset_lerp * 200, 20, 20, 20))
 	end
-
-	return 
 end
 
-return 
+return

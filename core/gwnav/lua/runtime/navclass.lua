@@ -1,6 +1,7 @@
 require("core/gwnav/lua/safe_require")
 
 local NavClass = safe_require_guard()
+
 NavClass.NavClass = function (class, super)
 	class = class or {}
 
@@ -12,7 +13,7 @@ NavClass.NavClass = function (class, super)
 				setmetatable(object, class)
 
 				if object.init then
-					object.init(object, ...)
+					object:init(...)
 				end
 
 				return object

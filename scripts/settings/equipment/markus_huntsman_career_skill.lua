@@ -39,4 +39,4 @@ weapon_template.buffs = {
 Weapons = Weapons or {}
 Weapons.markus_huntsman_career_skill_weapon = table.create_copy(Weapons.markus_huntsman_career_skill_weapon, weapon_template)
 
-return 
+return

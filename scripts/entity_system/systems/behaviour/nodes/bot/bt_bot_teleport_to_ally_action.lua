@@ -3,11 +3,11 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 BTBotTeleportToAllyAction = class(BTBotTeleportToAllyAction, BTNode)
 BTBotTeleportToAllyAction.name = "BTBotTeleportToAllyAction"
 local MAX_ALLOWED_TELEPORT_DISTANCE = 10
+
 BTBotTeleportToAllyAction.init = function (self, ...)
 	BTBotTeleportToAllyAction.super.init(self, ...)
-
-	return 
 end
+
 BTBotTeleportToAllyAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local a_star = blackboard.teleport.a_star
 	blackboard.teleport = nil
@@ -17,18 +17,16 @@ BTBotTeleportToAllyAction.leave = function (self, unit, blackboard, t, reason, d
 	end
 
 	GwNavAStar.destroy(a_star)
-
-	return 
 end
+
 BTBotTeleportToAllyAction.enter = function (self, unit, blackboard, t)
 	blackboard.teleport = {
 		state = "init",
 		position = Vector3Box(Vector3.invalid_vector()),
 		a_star = GwNavAStar.create()
 	}
-
-	return 
 end
+
 BTBotTeleportToAllyAction.run = function (self, unit, blackboard, t, dt)
 	local target_ally_unit = blackboard.target_ally_unit
 	local tp_bb = blackboard.teleport
@@ -47,12 +45,12 @@ BTBotTeleportToAllyAction.run = function (self, unit, blackboard, t, dt)
 			GwNavAStar.start(a_star, blackboard.nav_world, target_pos, pos, Managers.state.bot_nav_transition:traverse_logic())
 		end
 	elseif state == "a_star_search" and GwNavAStar.processing_finished(a_star) then
-		if GwNavAStar.path_found(a_star) and GwNavAStar.path_distance(a_star) < MAX_ALLOWED_TELEPORT_DISTANCE and 0 < GwNavAStar.node_count(a_star) then
+		if GwNavAStar.path_found(a_star) and GwNavAStar.path_distance(a_star) < MAX_ALLOWED_TELEPORT_DISTANCE and GwNavAStar.node_count(a_star) > 0 then
 			local node_count = GwNavAStar.node_count(a_star)
 			local destination = GwNavAStar.node_at_index(a_star, node_count)
 			local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
-			locomotion_extension.teleport_to(locomotion_extension, destination)
+			locomotion_extension:teleport_to(destination)
 
 			tp_bb.state = "done"
 			blackboard.has_teleported = true
@@ -71,4 +69,4 @@ BTBotTeleportToAllyAction.run = function (self, unit, blackboard, t, dt)
 	return "running"
 end
 
-return 
+return

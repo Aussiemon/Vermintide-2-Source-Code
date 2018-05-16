@@ -1,6 +1,7 @@
 require("scripts/utils/debug_screen")
 
 InventoryPackageSynchronizer = class(InventoryPackageSynchronizer)
+
 InventoryPackageSynchronizer.init = function (self)
 	self.packages_by_profile = {}
 
@@ -20,9 +21,8 @@ InventoryPackageSynchronizer.init = function (self)
 		package_map_first_person = MakeTableFrozen({})
 	}
 	self.packages_to_unload = {}
-
-	return 
 end
+
 InventoryPackageSynchronizer.set_inventory_list = function (self, profile_index, inventory_list, inventory_list_first_person)
 	local profile_data = self.packages_by_profile[profile_index]
 	local package_map = profile_data.package_map
@@ -40,9 +40,8 @@ InventoryPackageSynchronizer.set_inventory_list = function (self, profile_index,
 	for _, package_name in ipairs(inventory_list_first_person) do
 		package_map_first_person[package_name] = true
 	end
-
-	return 
 end
+
 InventoryPackageSynchronizer.get_complete_package_map_for_profile = function (self, profile_indexes)
 	local package_map = FrameTable.alloc_table()
 
@@ -61,4 +60,4 @@ InventoryPackageSynchronizer.get_complete_package_map_for_profile = function (se
 	return package_map
 end
 
-return 
+return

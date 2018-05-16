@@ -1,15 +1,15 @@
 require("scripts/unit_extensions/generic/generic_state_machine")
 
 GenericCameraStateMachineExtension = class(GenericCameraStateMachineExtension)
+
 GenericCameraStateMachineExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.unit = unit
 	self.start_state = extension_init_data.start_state
 	self.camera_state_class_list = extension_init_data.camera_state_class_list
 	self.state_machine = GenericStateMachine:new(self.world, self.unit)
-
-	return 
 end
+
 GenericCameraStateMachineExtension.extensions_ready = function (self)
 	local character_state_init_context = {
 		world = self.world,
@@ -31,21 +31,18 @@ GenericCameraStateMachineExtension.extensions_ready = function (self)
 	local start_state = self.start_state
 
 	self.state_machine:post_init(states, start_state)
+end
 
-	return 
-end
 GenericCameraStateMachineExtension.destroy = function (self)
-	return 
+	return
 end
+
 GenericCameraStateMachineExtension.reset = function (self)
 	self.state_machine:reset()
-
-	return 
 end
+
 GenericCameraStateMachineExtension.update = function (self, unit, input, dt, context, t)
 	self.state_machine:update(unit, input, dt, context, t)
-
-	return 
 end
 
-return 
+return

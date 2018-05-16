@@ -1,8 +1,6 @@
 local destroyed_mt = {
 	__index = function ()
 		error("This object has been destroyed")
-
-		return 
 	end
 }
 local special_functions = {
@@ -15,7 +13,7 @@ local special_functions = {
 function class(class_table, ...)
 	local super = ...
 
-	if 1 <= select("#", ...) and super == nil then
+	if select("#", ...) >= 1 and super == nil then
 		ferror("Trying to inherit from nil")
 	end
 
@@ -29,19 +27,17 @@ function class(class_table, ...)
 				setmetatable(object, class_table)
 
 				if object.init then
-					object.init(object, ...)
+					object:init(...)
 				end
 
 				return object
 			end,
 			delete = function (self, ...)
 				if self.destroy then
-					self.destroy(self, ...)
+					self:destroy(...)
 				end
 
 				setmetatable(self, destroyed_mt)
-
-				return 
 			end
 		}
 	end
@@ -57,4 +53,4 @@ function class(class_table, ...)
 	return class_table
 end
 
-return 
+return

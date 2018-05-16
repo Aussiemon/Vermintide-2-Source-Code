@@ -383,7 +383,7 @@ local scenegraph_definition = {
 		parent = "info_passive_icon",
 		horizontal_alignment = "left",
 		size = {
-			video_window_width - 70,
+			video_window_width - 90,
 			80
 		},
 		position = {
@@ -453,7 +453,7 @@ local scenegraph_definition = {
 		parent = "info_ability_icon",
 		horizontal_alignment = "left",
 		size = {
-			video_window_width - 70,
+			video_window_width - 90,
 			80
 		},
 		position = {
@@ -548,13 +548,14 @@ local scenegraph_definition = {
 	}
 }
 local hero_career_style = {
-	word_wrap = true,
+	font_size = 36,
 	upper_case = true,
 	localize = true,
 	use_shadow = true,
-	font_size = 36,
+	word_wrap = true,
 	horizontal_alignment = "center",
 	vertical_alignment = "top",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
@@ -610,12 +611,12 @@ local locked_info_text_style = {
 }
 local skill_title_style = {
 	word_wrap = true,
-	font_size = 18,
+	font_size = 28,
 	localize = false,
 	use_shadow = true,
 	horizontal_alignment = "left",
-	vertical_alignment = "bottom",
-	font_type = "hell_shark",
+	vertical_alignment = "top",
+	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
@@ -623,13 +624,14 @@ local skill_title_style = {
 		2
 	}
 }
-local skill_title_style = {
+local skill_info_title_style = {
 	word_wrap = true,
-	font_size = 32,
-	localize = false,
 	use_shadow = true,
+	localize = false,
+	font_size = 32,
 	horizontal_alignment = "left",
 	vertical_alignment = "top",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
@@ -680,8 +682,9 @@ local career_images = {
 	"icons_placeholder",
 	"icons_placeholder"
 }
+local disable_with_gamepad = true
 local widgets = {
-	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("input_description_confirm")),
+	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("input_description_confirm"), nil, nil, nil, nil, disable_with_gamepad),
 	hero_tabs = UIWidgets.create_icon_selector("hero_tabs", {
 		hero_entry_width,
 		hero_entry_height
@@ -700,8 +703,8 @@ local widgets = {
 	info_ability_title = UIWidgets.create_simple_text("n/a", "info_ability_title", nil, nil, skill_title_style),
 	info_passive_description = UIWidgets.create_simple_text("n/a", "info_passive_description", nil, nil, skill_description_style),
 	info_ability_description = UIWidgets.create_simple_text("n/a", "info_ability_description", nil, nil, skill_description_style),
-	info_window_passive_title = UIWidgets.create_simple_text(Localize("hero_view_passive_ability"), "info_window_passive_title", nil, nil, skill_title_style),
-	info_window_ability_title = UIWidgets.create_simple_text(Localize("hero_view_activated_ability"), "info_window_ability_title", nil, nil, skill_title_style),
+	info_window_passive_title = UIWidgets.create_simple_text(Localize("hero_view_passive_ability"), "info_window_passive_title", nil, nil, skill_info_title_style),
+	info_window_ability_title = UIWidgets.create_simple_text(Localize("hero_view_activated_ability"), "info_window_ability_title", nil, nil, skill_info_title_style),
 	selection_divider = UIWidgets.create_simple_texture("divider_01_top", "selection_divider"),
 	selection_description = UIWidgets.create_simple_text("profile_choose", "selection_description", nil, nil, selection_description_style),
 	info_window = UIWidgets.create_simple_texture("info_window_background", "info_window"),
@@ -716,11 +719,27 @@ local generic_input_actions = {
 			input_action = "confirm",
 			priority = 2,
 			description_text = "input_description_select"
+		}
+	},
+	default_back = {
+		{
+			input_action = "confirm",
+			priority = 2,
+			description_text = "input_description_select"
 		},
 		{
 			input_action = "back",
 			priority = 3,
-			description_text = "input_description_close"
+			description_text = "input_description_back"
+		}
+	},
+	available = {
+		actions = {
+			{
+				input_action = "refresh",
+				priority = 1,
+				description_text = "input_description_confirm"
+			}
 		}
 	}
 }
@@ -732,19 +751,15 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
 				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + -100 * (1 - anim_progress)
 				ui_scenegraph.right_side_root.local_position[1] = scenegraph_definition.right_side_root.position[1] + 100 * (1 - anim_progress)
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -755,19 +770,15 @@ local animation_definitions = {
 			end_progress = 1,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
 				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + -100 * anim_progress
 				ui_scenegraph.right_side_root.local_position[1] = scenegraph_definition.right_side_root.position[1] + 100 * anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

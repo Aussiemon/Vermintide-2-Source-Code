@@ -1,7 +1,7 @@
 TelemetryEventsDummy = class(TelemetryEventsDummy)
 
 local function nop()
-	return 
+	return
 end
 
 setmetatable(TelemetryEventsDummy, {
@@ -10,4 +10,4 @@ setmetatable(TelemetryEventsDummy, {
 	end
 })
 
-return 
+return

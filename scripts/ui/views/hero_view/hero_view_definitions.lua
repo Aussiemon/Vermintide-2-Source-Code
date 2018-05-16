@@ -100,6 +100,25 @@ local settings_by_screen = {
 		end
 	},
 	{
+		name = "achievements",
+		hotkey_disabled = true,
+		state_name = "HeroViewStateAchievements",
+		draw_background_world = false,
+		camera_position = {
+			0,
+			0,
+			0
+		},
+		camera_rotation = {
+			0,
+			0,
+			0
+		},
+		contains_new_content = function ()
+			return false
+		end
+	},
+	{
 		camera_target = "consumable_table",
 		name = "loot",
 		state_name = "HeroViewStateLoot",

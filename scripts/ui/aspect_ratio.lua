@@ -44,7 +44,7 @@ local function box_max(box1, box2)
 	local b1 = box1.width * box1.height
 	local b2 = box2.width * box2.height
 
-	return (b2 < b1 and box1) or box2
+	return (b1 > b2 and box1) or box2
 end
 
 AspectRatio.calculate = function (width, height)
@@ -63,8 +63,6 @@ AspectRatio.calculate = function (width, height)
 	else
 		return AspectRatio.AR16_9, max
 	end
-
-	return 
 end
 
-return 
+return

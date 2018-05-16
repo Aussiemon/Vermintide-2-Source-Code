@@ -33,4 +33,4 @@ RuneBuffTemplates.rune_triangle_attackspeed = {
 	}
 }
 
-return 
+return

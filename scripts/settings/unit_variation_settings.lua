@@ -564,8 +564,8 @@ UnitVariationSettings.skaven_clan_rat_baked = {
 }
 UnitVariationSettings.skaven_clan_rat_with_shield_baked = table.create_copy(UnitVariationSettings.skaven_clan_rat_with_shield_baked, UnitVariationSettings.skaven_clan_rat_baked)
 UnitVariationSettings.skaven_clan_rat_with_shield_baked.material_variations.tint_set_1 = {
-	min = 0,
-	max = 0,
+	min = 2,
+	max = 2,
 	materials = {
 		"mtr_outfit"
 	},
@@ -574,8 +574,8 @@ UnitVariationSettings.skaven_clan_rat_with_shield_baked.material_variations.tint
 	}
 }
 UnitVariationSettings.skaven_clan_rat_with_shield_baked.material_variations.tint_set_2 = {
-	min = 2,
-	max = 2,
+	min = 3,
+	max = 3,
 	materials = {
 		"mtr_outfit"
 	},
@@ -872,8 +872,8 @@ UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.cloth_tint
 	}
 }
 UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.tint_set_1 = {
-	min = 6,
-	max = 6,
+	min = 7,
+	max = 7,
 	materials = {
 		"mtr_outfit"
 	},
@@ -882,8 +882,8 @@ UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.tint_set_1
 	}
 }
 UnitVariationSettings.skaven_storm_vermin_warlord.material_variations.tint_set_2 = {
-	min = 7,
-	max = 7,
+	min = 6,
+	max = 6,
 	materials = {
 		"mtr_outfit"
 	},
@@ -1265,19 +1265,7 @@ UnitVariationSettings.chaos_marauder = {
 			},
 			{
 				weight = 1,
-				group = "vg_shoulder_left_1"
-			},
-			{
-				weight = 1,
 				group = "vg_shoulder_left_2"
-			},
-			{
-				weight = 1,
-				group = "vg_shoulder_left_2"
-			},
-			{
-				weight = 1,
-				group = "vg_shoulder_left_3"
 			},
 			{
 				weight = 1,
@@ -1398,7 +1386,102 @@ UnitVariationSettings.chaos_marauder = {
 		}
 	}
 }
+UnitVariationSettings.chaos_marauder_baked = table.create_copy(UnitVariationSettings.chaos_marauder_baked, UnitVariationSettings.chaos_marauder)
+UnitVariationSettings.chaos_marauder_baked.enabled_from_start = {}
+UnitVariationSettings.chaos_marauder_baked.body_parts = {}
 UnitVariationSettings.chaos_marauder_with_shield = table.create_copy(UnitVariationSettings.chaos_marauder_with_shield, UnitVariationSettings.chaos_marauder)
+UnitVariationSettings.chaos_marauder_with_shield.body_parts.upper_body_straps = {
+	{
+		group = "vg_body_straps_c_1",
+		weight = 1,
+		enables = {
+			"left_shoulder",
+			"upper_body_straps_detail"
+		}
+	},
+	{
+		group = "vg_body_straps_c_1",
+		weight = 1,
+		enables = {
+			"right_shoulder",
+			"upper_body_straps_detail"
+		}
+	},
+	{
+		group = "vg_body_straps_l_1",
+		weight = 1,
+		enables = {
+			"left_shoulder"
+		}
+	},
+	{
+		group = "vg_body_straps_l_1",
+		weight = 1,
+		enables = {
+			"left_shoulder"
+		}
+	},
+	{
+		group = "vg_body_straps_r_1",
+		weight = 1,
+		enables = {
+			"right_shoulder"
+		}
+	}
+}
+UnitVariationSettings.chaos_marauder_with_shield.body_parts.upper_body_girdle_straps = {
+	{
+		group = "vg_body_straps_c_girdle_1",
+		weight = 1,
+		enables = {
+			"left_shoulder",
+			"upper_body_straps_detail"
+		}
+	},
+	{
+		group = "vg_body_straps_c_girdle_1",
+		weight = 1,
+		enables = {
+			"right_shoulder",
+			"upper_body_straps_detail"
+		}
+	},
+	{
+		group = "vg_body_straps_l_girdle_1",
+		weight = 1,
+		enables = {
+			"left_shoulder"
+		}
+	},
+	{
+		group = "vg_body_straps_l_girdle_1",
+		weight = 1,
+		enables = {
+			"left_shoulder"
+		}
+	},
+	{
+		group = "vg_body_straps_r_girdle_1",
+		weight = 1,
+		enables = {
+			"right_shoulder"
+		}
+	}
+}
+UnitVariationSettings.chaos_marauder_with_shield.body_parts.right_shoulder = {
+	{
+		weight = 1,
+		group = "vg_shoulder_right_1"
+	},
+	{
+		weight = 1,
+		group = "vg_shoulder_right_2"
+	},
+	{
+		weight = 1,
+		group = "vg_shoulder_right_3"
+	}
+}
 UnitVariationSettings.chaos_marauder_with_shield.material_variations.tint_column = {
 	min = 5,
 	max = 5,
@@ -1434,6 +1517,9 @@ UnitVariationSettings.chaos_marauder_with_shield.materials_enabled_from_start = 
 	"tattoo_color",
 	"moc_attachments_tints"
 }
+UnitVariationSettings.chaos_marauder_with_shield_baked = table.create_copy(UnitVariationSettings.chaos_marauder_with_shield_baked, UnitVariationSettings.chaos_marauder_with_shield)
+UnitVariationSettings.chaos_marauder_with_shield_baked.enabled_from_start = {}
+UnitVariationSettings.chaos_marauder_with_shield_baked.body_parts = {}
 UnitVariationSettings.chaos_berzerker = {
 	enabled_from_start = {
 		"lower_body",
@@ -1498,9 +1584,7 @@ UnitVariationSettings.chaos_berzerker = {
 			min = 7,
 			max = 7,
 			materials = {
-				"mtr_outfit",
-				"m_moc_attachements",
-				"m_moc_hood"
+				"mtr_outfit"
 			},
 			variables = {
 				"tint_color_set_1"
@@ -1511,8 +1595,6 @@ UnitVariationSettings.chaos_berzerker = {
 			max = 8,
 			materials = {
 				"mtr_outfit",
-				"m_moc_attachements",
-				"m_moc_hood",
 				"mtr_body"
 			},
 			variables = {
@@ -1561,6 +1643,9 @@ UnitVariationSettings.chaos_berzerker = {
 		}
 	}
 }
+UnitVariationSettings.chaos_berzerker_baked = table.create_copy(UnitVariationSettings.chaos_berzerker_baked, UnitVariationSettings.chaos_berzerker)
+UnitVariationSettings.chaos_berzerker_baked.enabled_from_start = {}
+UnitVariationSettings.chaos_berzerker_baked.body_parts = {}
 UnitVariationSettings.chaos_raider = {
 	enabled_from_start = {
 		"lower_body",
@@ -1687,6 +1772,9 @@ UnitVariationSettings.chaos_raider = {
 		}
 	}
 }
+UnitVariationSettings.chaos_raider_baked = table.create_copy(UnitVariationSettings.chaos_raider_baked, UnitVariationSettings.chaos_raider)
+UnitVariationSettings.chaos_raider_baked.enabled_from_start = {}
+UnitVariationSettings.chaos_raider_baked.body_parts = {}
 UnitVariationSettings.chaos_raider_tutorial = table.create_copy(UnitVariationSettings.chaos_raider_tutorial, UnitVariationSettings.chaos_raider)
 UnitVariationSettings.chaos_zombie = {
 	enabled_from_start = {
@@ -2074,5 +2162,8 @@ UnitVariationSettings.chaos_fanatic = {
 		}
 	}
 }
+UnitVariationSettings.chaos_fanatic_baked = table.create_copy(UnitVariationSettings.chaos_fanatic_baked, UnitVariationSettings.chaos_fanatic)
+UnitVariationSettings.chaos_fanatic_baked.enabled_from_start = {}
+UnitVariationSettings.chaos_fanatic_baked.body_parts = {}
 
-return 
+return

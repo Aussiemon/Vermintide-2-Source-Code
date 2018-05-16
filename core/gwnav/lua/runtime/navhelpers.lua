@@ -3,15 +3,15 @@ require("core/gwnav/lua/safe_require")
 local NavHelpers = safe_require_guard()
 local Color = stingray.Color
 local Unit = stingray.Unit
+
 NavHelpers.unit_script_data = function (unit, default, ...)
 	if unit and Unit.alive(unit) and Unit.has_data(unit, ...) then
 		return Unit.get_data(unit, ...)
 	else
 		return default
 	end
-
-	return 
 end
+
 NavHelpers.get_layer_and_smartobject = function (unit, script_object_name)
 	local is_exclusive = NavHelpers.unit_script_data(unit, false, script_object_name, "is_exclusive")
 

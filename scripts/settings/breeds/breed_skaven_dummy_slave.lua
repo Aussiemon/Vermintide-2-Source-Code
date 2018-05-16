@@ -40,4 +40,4 @@ end
 
 BreedActions.skaven_dummy_slave = table.create_copy(BreedActions.skaven_dummy_slave, action_data)
 
-return 
+return

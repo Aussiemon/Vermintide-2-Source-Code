@@ -1,6 +1,7 @@
 require("scripts/unit_extensions/weapons/projectiles/true_flight_templates")
 
 ActionTrueFlightBow = class(ActionTrueFlightBow)
+
 ActionTrueFlightBow.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.owner_unit = owner_unit
 	self.first_person_unit = first_person_unit
@@ -17,9 +18,8 @@ ActionTrueFlightBow.init = function (self, world, item_name, is_server, owner_un
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	self._is_critical_strike = false
-
-	return 
 end
+
 ActionTrueFlightBow.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
 	self.current_action = new_action
 	self.true_flight_template_id = TrueFlightTemplates[new_action.true_flight_template].lookup_id
@@ -31,7 +31,7 @@ ActionTrueFlightBow.client_owner_start_action = function (self, new_action, t, c
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
 	self.num_projectiles = new_action.num_projectiles or 1
-	self.multi_projectile_spread = (1 < self.num_projectiles and (new_action.multi_projectile_spread or 0.075)) or nil
+	self.multi_projectile_spread = (self.num_projectiles > 1 and (new_action.multi_projectile_spread or 0.075)) or nil
 	self.num_projectiles_shot = 1
 
 	if chain_action_data then
@@ -72,9 +72,8 @@ ActionTrueFlightBow.client_owner_start_action = function (self, new_action, t, c
 	end
 
 	self._is_critical_strike = is_critical_strike
-
-	return 
 end
+
 ActionTrueFlightBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
@@ -85,10 +84,10 @@ ActionTrueFlightBow.client_owner_post_update = function (self, dt, t, world, can
 
 	if self.state == "shooting" then
 		local buff_extension = self.owner_buff_extension
-		local _, procced = buff_extension.apply_buffs_to_value(buff_extension, 0, StatBuffIndex.EXTRA_SHOT)
+		local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.EXTRA_SHOT)
 		local add_spread = not self.extra_buff_shot
 
-		self.fire(self, current_action, add_spread)
+		self:fire(current_action, add_spread)
 
 		if procced and not self.extra_buff_shot then
 			self.state = "waiting_to_shoot"
@@ -101,7 +100,7 @@ ActionTrueFlightBow.client_owner_post_update = function (self, dt, t, world, can
 		local first_person_extension = self.first_person_extension
 
 		if self.current_action.reset_aim_on_attack then
-			first_person_extension.reset_aim_assist_multiplier(first_person_extension)
+			first_person_extension:reset_aim_assist_multiplier()
 		end
 
 		local fire_sound_event = self.current_action.fire_sound_event
@@ -109,7 +108,7 @@ ActionTrueFlightBow.client_owner_post_update = function (self, dt, t, world, can
 		if fire_sound_event then
 			local play_on_husk = self.current_action.fire_sound_on_husk
 
-			first_person_extension.play_hud_sound_event(first_person_extension, fire_sound_event, nil, play_on_husk)
+			first_person_extension:play_hud_sound_event(fire_sound_event, nil, play_on_husk)
 		end
 
 		if self.current_action.extra_fire_sound_event then
@@ -118,25 +117,23 @@ ActionTrueFlightBow.client_owner_post_update = function (self, dt, t, world, can
 			WwiseUtils.trigger_position_event(self.world, self.current_action.extra_fire_sound_event, position)
 		end
 	end
-
-	return 
 end
+
 ActionTrueFlightBow.finish = function (self, reason, data)
 	local owner_unit_status = ScriptUnit.extension(self.owner_unit, "status_system")
 	local current_action = self.current_action
 
 	if not data or data.new_action ~= "action_two" or data.new_sub_action ~= "default" then
-		owner_unit_status.set_zooming(owner_unit_status, false)
+		owner_unit_status:set_zooming(false)
 	end
-
-	return 
 end
+
 ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 	local owner_unit = self.owner_unit
 	local speed = current_action.speed
 	local first_person_extension = self.first_person_extension
-	local position = first_person_extension.current_position(first_person_extension)
-	local rotation = first_person_extension.current_rotation(first_person_extension)
+	local position = first_person_extension:current_position()
+	local rotation = first_person_extension:current_rotation()
 	local spread_extension = self.spread_extension
 	local num_projectiles = self.num_projectiles
 
@@ -144,22 +141,22 @@ ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 		local fire_rotation = rotation
 
 		if spread_extension then
-			if 1 < self.num_projectiles_shot then
+			if self.num_projectiles_shot > 1 then
 				local spread_horizontal_angle = math.pi * (self.num_projectiles_shot % 2 + 0.5)
 				local shot_count_offset = (self.num_projectiles_shot == 1 and 0) or math.round((self.num_projectiles_shot - 1) * 0.5, 0)
 				local angle_offset = self.multi_projectile_spread * shot_count_offset
-				fire_rotation = spread_extension.combine_spread_rotations(spread_extension, spread_horizontal_angle, angle_offset, fire_rotation)
+				fire_rotation = spread_extension:combine_spread_rotations(spread_horizontal_angle, angle_offset, fire_rotation)
 			end
 
 			if add_spread then
-				spread_extension.set_shooting(spread_extension)
+				spread_extension:set_shooting()
 			end
 		end
 
-		local angle = DamageUtils.pitch_from_rotation(fire_rotation)
+		local angle = ActionUtils.pitch_from_rotation(fire_rotation)
 		local target_vector = Vector3.normalize(Quaternion.forward(fire_rotation))
 
-		if 1 < i then
+		if i > 1 then
 			speed = speed * (1 - i * 0.05)
 		end
 
@@ -197,8 +194,6 @@ ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 			Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
 		end
 	end
-
-	return 
 end
 
-return 
+return

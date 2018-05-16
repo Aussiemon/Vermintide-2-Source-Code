@@ -1,648 +1,335 @@
-require("scripts/managers/quest/contract_templates")
-require("scripts/managers/quest/quest_templates")
-require("scripts/managers/quest/quest_contract_texts")
-require("scripts/settings/quest_settings")
-
-local QuestTextSettings = QuestTextSettings
-local NUM_QUEST_GIVERS = table.size(QuestTextSettings.quest_givers)
+local quest_templates = require("scripts/managers/quest/quest_templates")
+local outline = require("scripts/managers/quest/quest_outline")
+local quest_keys = {
+	daily = {
+		"daily_quest_1",
+		"daily_quest_2",
+		"daily_quest_3"
+	}
+}
+local stat_names_by_quest_key = {
+	daily_quest_1 = {
+		"daily_quest_1_stat_1",
+		"daily_quest_1_stat_2",
+		"daily_quest_1_stat_3"
+	},
+	daily_quest_2 = {
+		"daily_quest_2_stat_1",
+		"daily_quest_2_stat_2",
+		"daily_quest_2_stat_3"
+	},
+	daily_quest_3 = {
+		"daily_quest_3_stat_1",
+		"daily_quest_3_stat_2",
+		"daily_quest_3_stat_3"
+	}
+}
 QuestManager = class(QuestManager)
-QuestManager.init = function (self, statistics_db, level_key)
-	local backend_settings = GameSettingsDevelopment.backend_settings
 
-	if backend_settings.quests_enabled then
-		local statistics_db = statistics_db
-		local difficulty_manager = Managers.state.difficulty
-		local difficulty_rank = difficulty_manager.get_difficulty_rank(difficulty_manager)
+QuestManager.init = function (self, statistics_db)
+	self._statistics_db = statistics_db
+	local backend_interface_quests = Managers.backend:get_interface("quests")
+	local quests = backend_interface_quests:get_quests()
+	self._backend_interface_quests = backend_interface_quests
 
-		Managers.state.event:register(self, "difficulty_synced", "difficulty_set")
+	Managers.state.event:register(self, "event_stat_incremented", "event_stat_incremented")
+end
 
-		self.evaluation_params = {
-			statistics_db = statistics_db,
-			level_key = level_key,
-			difficulty_rank = difficulty_rank
-		}
-		local quest_interface = Managers.backend:get_interface("quests")
+QuestManager.event_stat_incremented = function (self, stats_id, ...)
+	local templates = quest_templates.quests
+	local statistics_db = self._statistics_db
+	local stats = statistics_db:get_all_stats(stats_id)
+	local quests = self._backend_interface_quests:get_quests()
+	local arg_n = select("#", ...)
 
-		quest_interface.are_contracts_dirty(quest_interface)
-		quest_interface.are_quests_dirty(quest_interface)
-		quest_interface.are_expire_times_dirty(quest_interface)
+	for quest_key, quest_id in pairs(quests) do
+		local template = templates[quest_id]
+		local stat_mappings = template.stat_mappings
 
-		self.quest_interface = quest_interface
-		self.session_progress = {}
-		self.all_quests = quest_interface.get_quests(quest_interface)
-		self.active_quest = quest_interface.get_active_quest(quest_interface)
-		self.available_quests = quest_interface.get_available_quests(quest_interface)
-		self.all_contracts = quest_interface.get_contracts(quest_interface)
-		self.active_contracts = quest_interface.get_active_contracts(quest_interface)
-		self.available_contracts = quest_interface.get_available_contracts(quest_interface)
-		self.status = quest_interface.get_status(quest_interface)
+		for i = 1, #stat_mappings, 1 do
+			local map = stat_mappings[i]
+			local success = true
+
+			for j = 1, arg_n, 1 do
+				local arg_value = select(j, ...)
+				map = map[arg_value]
+
+				if not map then
+					success = false
+
+					break
+				end
+			end
+
+			if success then
+				local stat_name = stat_names_by_quest_key[quest_key][i]
+
+				statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
+
+				break
+			end
+		end
+	end
+end
+
+QuestManager.update = function (self, dt, t)
+	local reward_poll_id = self._reward_poll_id
+	local player_manager = Managers.player
+	local player = player_manager:local_player()
+
+	if not player then
+		return
 	end
 
-	return 
+	local stats_id = player:stats_id()
+
+	if reward_poll_id then
+		local statistics_db = self._statistics_db
+		local backend_interface_quests = self._backend_interface_quests
+		local poll_completed = backend_interface_quests:quest_rewards_generated(reward_poll_id)
+
+		if poll_completed then
+			local rewards = backend_interface_quests:get_quest_rewards(reward_poll_id)
+			local quest_key = rewards.quest_key
+			local stat_names = stat_names_by_quest_key[quest_key]
+
+			for i = 1, #stat_names, 1 do
+				local stat_name = stat_names[i]
+
+				statistics_db:set_stat(stats_id, "quest_statistics", stat_name, 0)
+			end
+
+			Managers.backend:commit()
+
+			self._reward_poll_id = nil
+		end
+	end
+
+	local refresh_poll_id = self._refresh_poll_id
+
+	if refresh_poll_id then
+		local statistics_db = self._statistics_db
+		local backend_interface_quests = self._backend_interface_quests
+		local poll_completed, quest_key = backend_interface_quests:is_quest_refreshed(refresh_poll_id)
+
+		if poll_completed then
+			if quest_key then
+				local stat_names = stat_names_by_quest_key[quest_key]
+
+				for i = 1, #stat_names, 1 do
+					local stat_name = stat_names[i]
+
+					statistics_db:set_stat(stats_id, "quest_statistics", stat_name, 0)
+				end
+
+				Managers.backend:commit()
+			end
+
+			self._refresh_poll_id = nil
+		end
+	end
 end
-QuestManager.evaluate_level_end = function (self, statistics_db, level_key)
-	local backend_settings = GameSettingsDevelopment.backend_settings
 
-	if backend_settings.quests_enabled then
-		local params = self.evaluation_params
-		local active_contracts = self.active_contracts
-		local session_progress = self.session_progress
+QuestManager.get_quest_outline = function (self)
+	local quests = self._backend_interface_quests:get_quests()
+	local outline = table.clone(outline)
+	local quest_categories = outline.categories
 
-		for contract_id, contract in pairs(active_contracts) do
-			self._commit_contract_progress(self, contract_id, contract, params)
+	for i = 1, #quest_categories, 1 do
+		local catergory = quest_categories[i]
+		local quest_type = catergory.quest_type
 
-			local contract_session_progress = session_progress[contract_id]
+		if quest_type == "daily" then
+			local entries = catergory.entries
+			local keys = quest_keys.daily
 
-			if contract_session_progress then
-				contract_session_progress.commited = true
+			for j = 1, #keys, 1 do
+				local key = keys[j]
+				local quest_name = quests[key]
+
+				if quest_name then
+					entries[#entries + 1] = quest_name
+				end
 			end
 		end
 	end
 
-	return 
+	return outline
 end
-QuestManager.difficulty_set = function (self)
-	local params = self.evaluation_params
 
-	if params then
-		local difficulty_manager = Managers.state.difficulty
-		local difficulty_rank = difficulty_manager.get_difficulty_rank(difficulty_manager)
-		params.difficulty_rank = difficulty_rank
+QuestManager.get_data_by_id = function (self, quest_id)
+	local quests = self._backend_interface_quests:get_quests()
+	local quest_key = table.find(quests, quest_id)
+	local quest_data = quest_templates.quests[quest_id]
+
+	assert(quest_key)
+	assert(quest_data)
+
+	local name, desc, completed, progress, requirements, claimed = nil
+	local player_manager = Managers.player
+	local player = player_manager:local_player()
+
+	if not player then
+		return nil, "Missing player"
 	end
 
-	return 
-end
-QuestManager.update = function (self, statistics_db, dt, t)
-	local quest_interface = self.quest_interface
-	self.all_quests = quest_interface.get_quests(quest_interface)
-	self.active_quest = quest_interface.get_active_quest(quest_interface)
-	self.available_quests = quest_interface.get_available_quests(quest_interface)
-	self.all_contracts = quest_interface.get_contracts(quest_interface)
-	self.active_contracts = quest_interface.get_active_contracts(quest_interface)
-	self.available_contracts = quest_interface.get_available_contracts(quest_interface)
-	local session_progress = self.session_progress
-	local active_contracts = self.active_contracts
-	local params = self.evaluation_params
+	local stats_id = player:stats_id()
 
-	for contract_id, contract in pairs(active_contracts) do
-		if not self._progress_valid(self, contract, params) then
-			local contract_session_progress = session_progress[contract_id]
+	if type(quest_data.name) == "function" then
+		local status, result = pcall(quest_data.name)
 
-			if contract_session_progress and not contract_session_progress.commited then
-				session_progress[contract_id] = nil
-			end
+		if status then
+			name = result
 		else
-			if not session_progress[contract_id] then
-				session_progress[contract_id] = {
-					changed = false,
-					commited = false,
-					amount = 0
-				}
+			Application.warning("Failed to evaluate quest name for %s: %s", quest_id, result)
+
+			name = "<Error>"
+		end
+	elseif type(quest_data.name) == "string" then
+		name = Localize(quest_data.name)
+	end
+
+	if type(quest_data.desc) == "function" then
+		local status, result = pcall(quest_data.desc)
+
+		if status then
+			desc = result
+		else
+			Application.warning("Failed to evaluate quest desc for %s: %s", quest_id, result)
+
+			desc = "<Error>"
+		end
+	elseif type(quest_data.desc) == "string" then
+		desc = Localize(quest_data.desc)
+	end
+
+	if type(quest_data.completed) == "boolean" then
+		completed = quest_data.completed
+	elseif type(quest_data.completed) == "function" then
+		completed = quest_data.completed(self._statistics_db, stats_id, quest_key)
+	end
+
+	if type(quest_data.progress) == "table" then
+		progress = quest_data.progress
+	elseif type(quest_data.progress) == "function" then
+		progress = quest_data.progress(self._statistics_db, stats_id, quest_key)
+	end
+
+	if type(quest_data.requirements) == "table" then
+		requirements = quest_data.requirements
+	elseif type(quest_data.requirements) == "function" then
+		requirements = quest_data.requirements(self._statistics_db, stats_id, quest_key)
+	end
+
+	if requirements then
+		for i, requirement in ipairs(requirements) do
+			if type(requirement.name) == "string" then
+				requirement.name = Localize(requirement.name)
+			elseif type(requirement.name) == "function" then
+				local status, result = pcall(requirement.name)
+
+				if status then
+					requirement.name = result
+				else
+					Application.warning("Failed to evaluate requirement name for %s: %s", quest_id, result)
+
+					requirement.name = "<Error>"
+				end
 			end
-
-			local progress = session_progress[contract_id]
-			local amount = progress.amount
-			local session_amount = self._calculate_contract_session_progress(self, contract, params, false)
-
-			if amount ~= session_amount then
-				local task = contract.requirements.task
-				local amount = task.amount
-				local acquired = amount.acquired
-				local required = amount.required
-				local missing_progress = required - acquired
-				progress.amount = math.min(session_amount, missing_progress)
-				progress.changed = true
-			end
 		end
 	end
 
-	if self._poll then
-		self._poll_backend(self, dt, t)
-	end
+	local evaluated_quest = {
+		claimed = false,
+		id = quest_id,
+		name = name,
+		desc = desc,
+		icon = quest_data.icon,
+		completed = completed,
+		progress = progress,
+		requirements = requirements,
+		reward = quest_data.reward
+	}
 
-	return 
+	return evaluated_quest
 end
-QuestManager.has_contract_session_changes = function (self, contract_id)
-	local session_progress = self.session_progress
-	local progress = session_progress[contract_id]
 
-	if progress then
-		local changed = progress.changed
-		progress.changed = false
-
-		return changed
+QuestManager.refresh_quest = function (self, quest_id)
+	if self._reward_poll_id or self._refresh_poll_id then
+		return "Polling in progress."
 	end
 
-	return 
+	local quests = self._backend_interface_quests:get_quests()
+	local quest_key = table.find(quests, quest_id)
+	local backend_interface_quests = self._backend_interface_quests
+	local refresh_poll_id = backend_interface_quests:refresh_quest(quest_key)
+	self._refresh_poll_id = refresh_poll_id
+
+	return refresh_poll_id
 end
-QuestManager.get_session_progress_by_contract_id = function (self, contract_id)
-	local session_progress = self.session_progress
-	local progress = session_progress[contract_id]
 
-	if progress then
-		return progress.amount
-	end
-
-	return 
+QuestManager.polling_quest_refresh = function (self)
+	return (self._refresh_poll_id and true) or false
 end
-QuestManager._progress_valid = function (self, contract, params)
-	local requirements = contract.requirements
-	local level_key = params.level_key
-	local required_level = requirements.level
 
-	if required_level and required_level ~= level_key then
-		return false
+QuestManager.can_refresh_quest = function (self)
+	local backend_interface_quests = self._backend_interface_quests
+	local can_refresh = backend_interface_quests:can_refresh_quest()
+
+	if not can_refresh then
+		return nil, "Refresh Unavailable"
 	end
 
-	local difficulty_rank = params.difficulty_rank
-	local required_difficulty = requirements.difficulty
-
-	if required_difficulty then
-		local required_rank = DifficultySettings[required_difficulty].rank
-		local correct_difficulty = required_rank <= difficulty_rank
-
-		if not correct_difficulty then
-			return false
-		end
-	end
-
-	local task = requirements.task
-
-	if task then
-		local amount = task.amount
-		local acquired = amount.acquired
-		local required = amount.required
-
-		if required <= acquired then
-			return false
-		end
+	if self._reward_poll_id or self._refresh_poll_id then
+		return "Polling in progress."
 	end
 
 	return true
 end
-local SPECIALS = {}
 
-for breed_name, breed in pairs(Breeds) do
-	if breed.special then
-		SPECIALS[#SPECIALS + 1] = breed_name
-	end
-end
-
-QuestManager._calculate_contract_session_progress = function (self, contract, params, finished_level)
-	local requirements = contract.requirements
-	local task = requirements.task
-
-	if task then
-		local task_type = task.type
-		local statistics_db = params.statistics_db
-		local stats_id = Managers.player:local_player(1):stats_id()
-		local mission_system = Managers.state.entity:system("mission_system")
-
-		if task_type == "level" then
-			return (finished_level and 1) or 0
-		elseif task_type == "ogre" then
-			local local_player = Managers.player:local_player()
-			local stats_id = local_player.stats_id(local_player)
-			local player_killed = statistics_db.get_stat(statistics_db, stats_id, "kills_per_breed", "skaven_rat_ogre")
-			local player_assists = statistics_db.get_stat(statistics_db, stats_id, "kill_assists_per_breed", "skaven_rat_ogre")
-
-			return player_killed + player_assists
-		elseif task_type == "tome" then
-			local mission_data = mission_system.get_level_end_mission_data(mission_system, "tome_bonus_mission")
-			local num_collected = (mission_data and mission_data.get_current_amount(mission_data)) or 0
-
-			return num_collected
-		elseif task_type == "grimoire" then
-			local mission_data = mission_system.get_level_end_mission_data(mission_system, "grimoire_hidden_mission")
-			local num_collected = (mission_data and mission_data.get_current_amount(mission_data)) or 0
-
-			return num_collected
-		elseif task_type == "grenade_kills" then
-			local local_player = Managers.player:local_player()
-			local stats_id = local_player.stats_id(local_player)
-			local player_killed = statistics_db.get_stat(statistics_db, stats_id, "kills_grenade")
-			local player_assists = statistics_db.get_stat(statistics_db, stats_id, "kill_assists_grenade")
-			local grenade_kills = player_killed + player_assists
-
-			return grenade_kills
-		elseif task_type == "open_chests" then
-			return statistics_db.get_stat(statistics_db, "session", "chests_opened")
-		elseif task_type == "damage_taken_individual" then
-			local local_player = Managers.player:local_player()
-			local stats_id = local_player.stats_id(local_player)
-			local dmg_taken = statistics_db.get_stat(statistics_db, stats_id, "damage_taken")
-			local join_percent = statistics_db.get_stat(statistics_db, stats_id, "level_progress_on_join")
-			local progress_percent = statistics_db.get_stat(statistics_db, "session", "level_progress") - join_percent
-			local allowed_damage = 300
-			local penalty = math.max(dmg_taken / allowed_damage, 1)
-
-			return math.floor(progress_percent / penalty)
-		elseif task_type == "avoid_deaths_team" then
-			local allowed_deaths = 0
-			local starting_points = 4
-			local deaths = statistics_db.get_stat(statistics_db, "session", "deaths")
-
-			return starting_points - math.max(0, deaths - allowed_deaths)
-		elseif task_type == "avoid_specials_damage_team" then
-			local allowed_damage = 150
-			local damage = 0
-
-			for _, breed_name in ipairs(SPECIALS) do
-				damage = damage + statistics_db.get_stat(statistics_db, "session", "damage_taken_per_breed", breed_name)
-			end
-
-			local penalty = math.max(damage / allowed_damage, 1)
-
-			return math.floor(100 / penalty)
-		elseif task_type == "avoid_globadier_damage_individual" then
-			local local_player = Managers.player:local_player()
-			local stats_id = local_player.stats_id(local_player)
-			local dmg_taken = statistics_db.get_stat(statistics_db, stats_id, "damage_taken_per_breed", "skaven_poison_wind_globadier")
-			local join_percent = statistics_db.get_stat(statistics_db, stats_id, "level_progress_on_join")
-			local progress_percent = statistics_db.get_stat(statistics_db, "session", "level_progress") - join_percent
-			local allowed_damage = 75
-			local penalty = math.max(dmg_taken / allowed_damage, 1)
-
-			return math.floor(progress_percent / penalty)
-		end
-
-		fassert(false, "trying to calculate session progress on a contract with an unsuported task: %s", task_type)
+QuestManager.claim_reward = function (self, quest_id)
+	if self._reward_poll_id or self._refresh_poll_id then
+		return "Polling in progress."
 	end
 
-	return 0
+	local quests = self._backend_interface_quests:get_quests()
+	local quest_key = table.find(quests, quest_id)
+	local backend_interface_quests = self._backend_interface_quests
+	local reward_poll_id = backend_interface_quests:claim_quest_rewards(quest_key)
+	self._reward_poll_id = reward_poll_id
+
+	return reward_poll_id
 end
-QuestManager._commit_contract_progress = function (self, contract_id, contract, params)
-	if not self._progress_valid(self, contract, params) then
-		return 
+
+QuestManager.polling_quest_reward = function (self)
+	return (self._reward_poll_id and true) or false
+end
+
+QuestManager.can_claim_quest_rewards = function (self, quest_id)
+	local quests = self._backend_interface_quests:get_quests()
+	local quest_key = table.find(quests, quest_id)
+	local backend_interface_quests = self._backend_interface_quests
+	local can_claim = backend_interface_quests:can_claim_quest_rewards(quest_key)
+
+	if not can_claim then
+		return nil, "Quest already claimed."
 	end
 
-	local task_amount = self._calculate_contract_session_progress(self, contract, params, true)
-	local local_player = Managers.player:local_player(1)
-	local requirements = contract.requirements
-	local task = requirements.task
-
-	if task and local_player then
-		local acquired = task.amount.acquired
-		local required = task.amount.required
-		local progress = acquired + task_amount
-		local difficulty = Managers.state.difficulty:get_difficulty()
-
-		Managers.telemetry.events:contract_progress(local_player, task.type, acquired, task_amount, required, required <= progress, params.level_key, contract.requirements, difficulty)
+	if self._reward_poll_id or self._refresh_poll_id then
+		return "Polling in progress."
 	end
 
-	if 0 < task_amount then
-		local level_key = params.level_key
-
-		self.quest_interface:add_contract_progress(contract_id, level_key, task_amount)
-	end
-
-	return 
-end
-QuestManager.get_contract_progress = function (self, contract_id)
-	local contract = self.get_contract_by_id(self, contract_id)
-	local task = contract.requirements.task
-
-	if not task then
-		return 0
-	end
-
-	local progress = task.amount.acquired
-
-	return progress
-end
-QuestManager.has_contract_progressed = function (self, contract_id)
-	local progress = self.get_contract_progress(self, contract_id)
-
-	if progress and 0 < progress then
-		return true
-	end
-
-	return false
-end
-QuestManager.get_contracts = function (self)
-	return self.all_contracts
-end
-QuestManager.get_available_contracts = function (self)
-	return self.available_contracts
-end
-QuestManager.get_contract_by_id = function (self, contract_id)
-	local quest_interface = self.quest_interface
-	local contracts = quest_interface.get_contracts(quest_interface)
-	local contract = contracts[contract_id]
-
-	return contract
-end
-QuestManager.accept_contract_by_id = function (self, contract_id)
-	local quest_interface = self.quest_interface
-
-	quest_interface.set_contract_active(quest_interface, contract_id, true)
-
-	return 
-end
-QuestManager.decline_contract_by_id = function (self, contract_id)
-	local quest_interface = self.quest_interface
-
-	quest_interface.set_contract_active(quest_interface, contract_id, false)
-
-	return 
-end
-QuestManager.complete_contract_by_id = function (self, contract_id)
-	local quest_interface = self.quest_interface
-
-	quest_interface.complete_contract(quest_interface, contract_id)
-
-	return 
-end
-QuestManager.is_contract_requirements_met_by_id = function (self, contract_id)
-	local contract = self.get_contract_by_id(self, contract_id)
-	local requirements_met = contract.requirements_met
-
-	return requirements_met
-end
-local active_contract_ids = {}
-QuestManager.get_active_contract_ids = function (self)
-	table.clear(active_contract_ids)
-
-	local quest_interface = self.quest_interface
-	local active_contracts = self.active_contracts
-
-	for contract_id, data in pairs(active_contracts) do
-		active_contract_ids[#active_contract_ids + 1] = contract_id
-	end
-
-	return active_contract_ids
-end
-QuestManager.get_active_contracts = function (self)
-	local active_contracts = self.active_contracts
-
-	return active_contracts
-end
-QuestManager.is_contract_able_to_progress = function (self, contract_id)
-	local params = self.evaluation_params
-	local contract = self.get_contract_by_id(self, contract_id)
-	local progress_valid = self._progress_valid(self, contract, params)
-
-	return progress_valid
-end
-QuestManager.are_contracts_dirty = function (self)
-	local quest_interface = self.quest_interface
-	local dirty = quest_interface.are_contracts_dirty(quest_interface)
-
-	return dirty
-end
-QuestManager.get_title_for_contract_id = function (self, contract_id)
-	local contract = self.get_contract_by_id(self, contract_id)
-	local task = contract.requirements.task
-	local task_type = task and task.type
-	local dlc_type = contract.type
-	local titles = QuestSettings.task_type_titles[task_type]
-	local title = Localize(titles[1])
-
-	return title
-end
-QuestManager.get_description_for_contract_id = function (self, contract_id)
-	local contract = self.get_contract_by_id(self, contract_id)
-	local task = contract.requirements.task
-	local task_type = task and task.type
-
-	if task_type == "grimoire" then
-		task_type = "grim"
-	end
-
-	local start_seed = self.get_random_seed_from_id(self, contract_id)
-	local max_range = QuestTextSettings.task_type_max_range[task_type]
-
-	if not max_range then
-		printf("QuestManager:get_description_for_contract_id() ERROR! Missing max_range for task type %q in QuestSettings, defaulting to 1", task_type)
-
-		max_range = 1
-	end
-
-	local seed, value = Math.next_random(start_seed, max_range)
-	local index = (value < 10 and "0" .. tostring(value)) or tostring(value)
-	local localization_key = "dlc1_3_1_task_description_" .. task_type .. "_" .. index
-
-	return localization_key
-end
-QuestManager.get_quest_progress = function (self, quest_id)
-	local quest = self.get_quest_by_id(self, quest_id)
-	local progress = quest.requirements.task.amount.acquired
-
-	return progress
-end
-QuestManager.has_quest_progressed = function (self, contract_id)
-	local progress = self.get_quest_progress(self, contract_id)
-
-	if progress and 0 < progress then
-		return true
-	end
-
-	return false
-end
-QuestManager.get_quests = function (self)
-	return self.all_quests
-end
-QuestManager.get_available_quests = function (self)
-	return self.available_quests
-end
-QuestManager.get_quest_by_id = function (self, quest_id)
-	local quest_interface = self.quest_interface
-	local quests = quest_interface.get_quests(quest_interface)
-	local quest = quests[quest_id]
-
-	return quest
-end
-QuestManager.accept_quest_by_id = function (self, quest_id)
-	local quest_interface = self.quest_interface
-
-	self.quest_interface:set_active_quest(quest_id, true)
-
-	return 
-end
-QuestManager.decline_quest_by_id = function (self, quest_id)
-	local quest_interface = self.quest_interface
-
-	quest_interface.set_active_quest(quest_interface, quest_id, false)
-
-	return 
-end
-QuestManager.complete_quest_by_id = function (self, quest_id)
-	local quest_interface = self.quest_interface
-
-	quest_interface.complete_quest(quest_interface, quest_id)
-
-	return 
-end
-QuestManager.is_quest_requirements_met_by_id = function (self, quest_id)
-	local quest = self.get_quest_by_id(self, quest_id)
-	local requirements_met = quest.requirements_met
-
-	return requirements_met
-end
-QuestManager.get_active_quest = function (self)
-	local active_quest = self.active_quest
-
-	return active_quest
-end
-QuestManager.are_quests_dirty = function (self)
-	local quest_interface = self.quest_interface
-	local dirty = quest_interface.are_quests_dirty(quest_interface)
-
-	return dirty
-end
-QuestManager.get_title_for_quest_id = function (self, quest_id)
-	local quest = self.get_quest_by_id(self, quest_id)
-	local start_seed = self.get_random_seed_from_id(self, quest_id)
-	local seed, value = Math.next_random(start_seed, NUM_QUEST_GIVERS)
-	local giver = QuestTextSettings.quest_givers[value]
-	local max_range = QuestTextSettings.quest_giver_max_range[giver]
-	seed, value = Math.next_random(seed, max_range)
-	local index = (value < 10 and "0" .. tostring(value)) or tostring(value)
-	local localization_key = "dlc1_3_1_quest_title_" .. giver .. "_" .. index
-
-	return localization_key
-end
-QuestManager.get_description_for_quest_id = function (self, quest_id)
-	local quest = self.get_quest_by_id(self, quest_id)
-	local start_seed = self.get_random_seed_from_id(self, quest_id)
-	local seed, value = Math.next_random(start_seed, NUM_QUEST_GIVERS)
-	local giver = QuestTextSettings.quest_givers[value]
-	local max_range = QuestTextSettings.quest_giver_max_range[giver]
-	seed, value = Math.next_random(seed, max_range)
-	local index = (value < 10 and "0" .. tostring(value)) or tostring(value)
-	local localization_key = "dlc1_3_1_quest_description_" .. giver .. "_" .. index
-
-	return localization_key
-end
-QuestManager._refresh_expire_times = function (self)
-	self.quest_interface:query_expire_times()
-
-	self._query_expire_times = true
-
-	return 
-end
-QuestManager._update_expire_times = function (self, dt, t)
-	local quest_interface = self.quest_interface
-
-	if quest_interface.are_expire_times_dirty(quest_interface) then
-		self.expire_times = quest_interface.get_expire_times(quest_interface)
-		local lowest_time_left = math.min(self.expire_times.quests_ttl, self.expire_times.contracts_ttl)
-		self._expire_check_cooldown = math.min(lowest_time_left + QuestSettings.EXPIRE_CHECK_MARGIN, QuestSettings.EXPIRE_CHECK_COOLDOWN)
-		self._query_expire_times = nil
-	end
-
-	if self.expire_times then
-		local quests_expired = self.has_time_expired(self, self.expire_times.quests_ttl)
-		local contracts_expired = self.has_time_expired(self, self.expire_times.contracts_ttl)
-		self.quests_expired = quests_expired
-		self.contracts_expired = contracts_expired
-
-		if quests_expired or contracts_expired then
-			self.query_quests_and_contracts(self)
-		elseif not self._query_expire_times then
-			self._expire_check_cooldown = self._expire_check_cooldown - dt
-
-			if self._expire_check_cooldown <= 0 then
-				self._refresh_expire_times(self)
-			end
-		end
-	end
-
-	return 
-end
-QuestManager.has_quests_expired = function (self)
-	return self.quests_expired
-end
-QuestManager.has_contracts_expired = function (self)
-	return self.contracts_expired
-end
-QuestManager.are_status_dirty = function (self)
-	local quest_interface = self.quest_interface
-	local dirty = quest_interface.are_status_dirty(quest_interface)
-
-	return dirty
-end
-QuestManager.get_status = function (self)
-	return self.status
-end
-QuestManager.set_poll_active = function (self, poll)
-	self._poll = poll
-
-	if poll and not self.expire_times then
-		self.query_quests_and_contracts(self)
-	end
-
-	return 
-end
-QuestManager.query_quests_and_contracts = function (self)
-	local quest_interface = self.quest_interface
-
-	quest_interface.query_quests_and_contracts(quest_interface)
-
-	self._query_quests_and_contracts = true
-
-	return 
-end
-QuestManager.is_querying_quests_and_contracts = function (self)
-	return self._query_quests_and_contracts
-end
-QuestManager.prepare_for_new_quests_and_contracts = function (self)
-	local expire_times = self.expire_times
-
-	if expire_times then
-		local duration = QuestSettings.PREPARE_MENU_FOR_SYNC_DURATION
-		local lowest_time_left = math.min(self.expire_times.quests_ttl, self.expire_times.contracts_ttl)
-
-		if lowest_time_left < QuestSettings.EXPIRE_CHECK_COOLDOWN and self._expire_check_cooldown < duration then
-			return true
-		end
-	end
-
-	return false
-end
-QuestManager.is_quests_and_contracts_dirty = function (self)
-	return self._quests_and_contracts_dirty
-end
-QuestManager._poll_backend = function (self, dt, t)
-	local dirty_quests = self.are_quests_dirty(self)
-	local dirty_contracts = self.are_contracts_dirty(self)
-	local dirty = dirty_quests or dirty_contracts
-
-	if self._query_quests_and_contracts then
-		if dirty then
-			self._query_quests_and_contracts = nil
-
-			self._refresh_expire_times(self)
-		end
-	else
-		self._update_expire_times(self, dt, t)
-	end
-
-	self._quests_and_contracts_dirty = dirty
-
-	return 
-end
-QuestManager.poll_reward = function (self)
-	local quest_interface = self.quest_interface
-	local reward = quest_interface.poll_reward(quest_interface)
-
-	return reward
-end
-QuestManager.get_random_seed_from_id = function (self, id)
-	local id_seed = nil
-
-	if type(id) == "number" then
-		id_seed = id
-	else
-		id_seed = id.sub(id, -12, -6) + id.sub(id, -6)
-	end
-
-	local seed = Math.next_random(id_seed)
-
-	return seed
-end
-QuestManager.has_time_expired = function (self, ttl)
-	return ttl < 0
+	return true
 end
 
-return 
+QuestManager.time_until_new_daily_quest = function (self)
+	local current_utc = os.time(os.date("!*t"))
+	local backend_interface_quests = self._backend_interface_quests
+	local next_quest_time = backend_interface_quests:get_daily_quest_update_time()
+	local difference = next_quest_time - current_utc * 1000
+	local difference_in_seconds = difference / 1000
+
+	return difference_in_seconds
+end
+
+return

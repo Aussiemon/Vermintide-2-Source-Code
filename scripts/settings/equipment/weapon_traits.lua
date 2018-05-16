@@ -397,9 +397,10 @@ WeaponTraits.buff_templates = {
 	trait_necklace_no_healing_health_regen = {
 		buffs = {
 			{
-				time_between_heals = 10,
-				max_stacks = 1,
+				icon = "necklace_no_healing_health_regen",
 				heal_amount = 2,
+				max_stacks = 1,
+				time_between_heals = 10,
 				update_func = "update_heal_ticks",
 				dormant = true
 			}
@@ -681,9 +682,10 @@ WeaponTraits.traits = {
 		}
 	},
 	ring_potion_spread = {
+		display_name = "trait_ring_potion_spread",
+		buffer = "both",
 		advanced_description = "description_trait_ring_potion_spread",
 		icon = "charm_potion_spread",
-		display_name = "trait_ring_potion_spread",
 		buff_name = "trait_ring_potion_spread"
 	},
 	ring_not_consume_potion_damage = {
@@ -953,4 +955,4 @@ end
 
 BuffUtils.apply_buff_tweak_data(WeaponTraits.buff_templates, buff_tweak_data)
 
-return 
+return

@@ -5,11 +5,13 @@ PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF = -0.3
 PlayerUnitDamageSettings.REGEN_DELAY = 6
 PlayerUnitDamageSettings.REGEN_AMOUNT = 20
 PlayerUnitDamageSettings.REGEN_RAMP_SPEED = 1
+
 PlayerUnitDamageSettings.REGEN_FUNCTION = function (real_t)
 	local t = real_t * PlayerUnitDamageSettings.REGEN_RAMP_SPEED
 
 	return PlayerUnitDamageSettings.REGEN_AMOUNT * t * t
 end
+
 PlayerUnitDamageSettings.INSTAKILL_THRESHOLD = 100
 PlayerUnitDamageSettings.INSTAKILL_HEALTH_FACTOR = 0
 PlayerUnitDamageSettings.BANDAGED_HP = 120
@@ -53,4 +55,4 @@ PlayerUnitDamageSettings.dot_types = {
 	burning = {}
 }
 
-return 
+return

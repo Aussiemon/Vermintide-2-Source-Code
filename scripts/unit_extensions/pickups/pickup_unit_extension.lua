@@ -1,4 +1,5 @@
 PickupUnitExtension = class(PickupUnitExtension)
+
 PickupUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.unit = unit
@@ -35,15 +36,16 @@ PickupUnitExtension.init = function (self, extension_init_context, unit, extensi
 
 		Managers.telemetry.events:pickup_spawned(pickup_name, spawn_type, position)
 	end
+end
 
-	return 
-end
 PickupUnitExtension.extensions_ready = function (self)
-	return 
+	return
 end
+
 PickupUnitExtension.update = function (self, unit, input, dt, context, t)
-	return 
+	return
 end
+
 PickupUnitExtension.hide = function (self)
 	local unit = self.unit
 	self.hidden = true
@@ -51,17 +53,17 @@ PickupUnitExtension.hide = function (self)
 	Unit.set_unit_visibility(unit, false)
 	Unit.disable_physics(unit)
 	Unit.flow_event(unit, "lua_hidden")
-
-	return 
 end
+
 PickupUnitExtension.get_pickup_settings = function (self)
 	return AllPickups[self.pickup_name]
 end
+
 PickupUnitExtension.destroy = function (self)
 	local pickup_system = Managers.state.entity:system("pickup_system")
 
 	if pickup_system and self.spawn_index then
-		pickup_system.set_taken(pickup_system, self.spawn_index)
+		pickup_system:set_taken(self.spawn_index)
 	end
 
 	if self.is_server then
@@ -69,9 +71,8 @@ PickupUnitExtension.destroy = function (self)
 
 		Managers.telemetry.events:pickup_destroyed(self.pickup_name, self.spawn_type, position)
 	end
-
-	return 
 end
+
 PickupUnitExtension.can_interact = function (self)
 	local t = Managers.time:time("game")
 	local return_value = t <= self.can_interact_time
@@ -79,4 +80,4 @@ PickupUnitExtension.can_interact = function (self)
 	return not return_value
 end
 
-return 
+return

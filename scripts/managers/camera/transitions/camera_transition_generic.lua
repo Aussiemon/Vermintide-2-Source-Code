@@ -1,14 +1,14 @@
 require("scripts/managers/camera/transitions/camera_transition_base")
 
 CameraTransitionGeneric = class(CameraTransitionGeneric, CameraTransitionBase)
+
 CameraTransitionGeneric.init = function (self, node_1, node_2, duration, speed, settings)
 	CameraTransitionBase.init(self, node_1, node_2, duration, speed, settings)
 
 	self._transition_func = settings.transition_func
 	self._parameter = settings.parameter
-
-	return 
 end
+
 CameraTransitionGeneric.update = function (self, dt, parameter_value, update_time)
 	CameraTransitionBase.update(self, dt, update_time)
 
@@ -44,4 +44,4 @@ CameraTransitionGeneric.update = function (self, dt, parameter_value, update_tim
 	return value, done
 end
 
-return 
+return

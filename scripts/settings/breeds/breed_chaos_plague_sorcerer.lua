@@ -225,4 +225,4 @@ local action_data = {
 }
 BreedActions.chaos_plague_sorcerer = table.create_copy(BreedActions.chaos_plague_sorcerer, action_data)
 
-return 
+return

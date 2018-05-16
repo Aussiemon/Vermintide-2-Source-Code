@@ -2655,17 +2655,19 @@ DebugBreedSpawns[#DebugBreedSpawns + 1] = {
 		"Everything",
 		"debug_spawn_all_breeds",
 		{
-			skaven_storm_vermin_champion = true,
+			skaven_dummy_clan_rat = true,
 			chaos_dummy_sorcerer = true,
 			chaos_exalted_champion_warcamp = true,
 			chaos_exalted_sorcerer = true,
 			skaven_storm_vermin_warlord = true,
-			skaven_dummy_clan_rat = true,
-			chaos_plague_wave_spawner = true,
+			chaos_plague_sorcerer = true,
+			pet_rat = true,
 			skaven_dummy_slave = true,
 			chaos_exalted_champion_norsca = true,
-			chaos_plague_sorcerer = true,
+			skaven_storm_vermin_champion = true,
 			chaos_tentacle = true,
+			pet_pig = true,
+			chaos_plague_wave_spawner = true,
 			chaos_spawn_exalted_champion_norsca = true,
 			skaven_stormfiend_demo = true,
 			chaos_dummy_troll = true,
@@ -2706,4 +2708,4 @@ end
 
 DebugBreedSpawns[#DebugBreedSpawns + 1] = list
 
-return 
+return

@@ -1,4 +1,5 @@
 ActionBeam = class(ActionBeam)
+
 ActionBeam.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.weapon_system = weapon_system
 	self.owner_unit = owner_unit
@@ -20,9 +21,8 @@ ActionBeam.init = function (self, world, item_name, is_server, owner_unit, damag
 	self.network_transmit = Managers.state.network.network_transmit
 	self.unit_id = Managers.state.network.unit_storage:go_id(owner_unit)
 	self._is_critical_strike = false
-
-	return 
 end
+
 ActionBeam.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level)
 	self.current_action = new_action
 	local owner_unit = self.owner_unit
@@ -57,8 +57,8 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 
 	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 
-	if not status_extension.is_zooming(status_extension) then
-		status_extension.set_zooming(status_extension, true)
+	if not status_extension:is_zooming() then
+		status_extension:set_zooming(true)
 	end
 
 	local overcharge_type = current_action.overcharge_type
@@ -83,13 +83,13 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 	if charge_sound_husk_name then
 		ActionUtils.play_husk_sound_event(charge_sound_husk_name, self.owner_unit)
 	end
-
-	return 
 end
+
 local INDEX_POSITION = 1
 local INDEX_DISTANCE = 2
 local INDEX_NORMAL = 3
 local INDEX_ACTOR = 4
+
 ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.first_person_unit
@@ -99,10 +99,10 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local buff_extension = self.owner_buff_extension
 	local status_extension = ScriptUnit.extension(self.owner_unit, "status_system")
 
-	if buff_extension.has_buff_type(buff_extension, "increased_zoom") and status_extension.is_zooming(status_extension) and input_extension.get(input_extension, "action_three") then
-		status_extension.switch_variable_zoom(status_extension, current_action.buffed_zoom_thresholds)
-	elseif current_action.zoom_thresholds and status_extension.is_zooming(status_extension) and input_extension.get(input_extension, "action_three") then
-		status_extension.switch_variable_zoom(status_extension, current_action.zoom_thresholds)
+	if buff_extension:has_buff_type("increased_zoom") and status_extension:is_zooming() and input_extension:get("action_three") then
+		status_extension:switch_variable_zoom(current_action.buffed_zoom_thresholds)
+	elseif current_action.zoom_thresholds and status_extension:is_zooming() and input_extension:get("action_three") then
+		status_extension:switch_variable_zoom(current_action.zoom_thresholds)
 	end
 
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
@@ -130,8 +130,8 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 		local world = self.world
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-		local current_position = first_person_extension.current_position(first_person_extension)
-		local current_rotation = first_person_extension.current_rotation(first_person_extension)
+		local current_position = first_person_extension:current_position()
+		local current_rotation = first_person_extension:current_rotation()
 		local direction = Quaternion.forward(current_rotation)
 		local physics_world = World.get_data(world, "physics_world")
 		local range = current_action.range or 30
@@ -149,7 +149,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 				local potential_hit_position = hit[INDEX_POSITION]
 				local hit_actor = hit[INDEX_ACTOR]
 				local potential_hit_unit = Actor.unit(hit_actor)
-				potential_hit_unit, hit_actor = DamageUtils.redirect_shield_hit(potential_hit_unit, hit_actor)
+				potential_hit_unit, hit_actor = ActionUtils.redirect_shield_hit(potential_hit_unit, hit_actor)
 
 				if potential_hit_unit ~= owner_unit then
 					local breed = Unit.get_data(potential_hit_unit, "breed")
@@ -188,7 +188,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 				local health_extension = ScriptUnit.has_extension(hit_unit, "health_system")
 
-				if current_action.damage_interval * self.ramping_interval <= self.damage_timer then
+				if self.damage_timer >= current_action.damage_interval * self.ramping_interval then
 					Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], 5)
 
 					self.damage_timer = 0
@@ -229,7 +229,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 							end
 						end
 
-						first_person_extension.play_hud_sound_event(first_person_extension, "staff_beam_hit_enemy", nil, false)
+						first_person_extension:play_hud_sound_event("staff_beam_hit_enemy", nil, false)
 						DamageUtils.process_projectile_hit(world, self.item_name, owner_unit, is_server, result, current_action, direction, true, nil, nil, self._is_critical_strike, power_level, override_damage_profile)
 
 						if not Managers.player:owner(self.owner_unit).bot_player then
@@ -238,7 +238,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 							})
 						end
 
-						if health_extension.is_alive(health_extension) then
+						if health_extension:is_alive() then
 							local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[current_action.overcharge_type]
 
 							self.overcharge_extension:add_charge(overcharge_amount * self.ramping_interval)
@@ -262,9 +262,8 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 		self.current_target = hit_unit
 	end
-
-	return 
 end
+
 ActionBeam.finish = function (self, reason)
 	local owner_unit = self.owner_unit
 	local go_id = self.unit_id
@@ -272,7 +271,7 @@ ActionBeam.finish = function (self, reason)
 	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-	status_extension.set_zooming(status_extension, false)
+	status_extension:set_zooming(false)
 	World.destroy_particles(self.world, self.beam_end_effect)
 
 	self.beam_end_effect = nil
@@ -311,6 +310,7 @@ ActionBeam.finish = function (self, reason)
 		beam_consecutive_hits = math.max(self.consecutive_hits - 1, 0)
 	}
 end
+
 ActionBeam.destroy = function (self)
 	if self.beam_end_effect then
 		World.destroy_particles(self.world, self.beam_end_effect)
@@ -338,8 +338,6 @@ ActionBeam.destroy = function (self)
 		self.wwise_source_id = nil
 		self.charging_sound_id = nil
 	end
-
-	return 
 end
 
-return 
+return

@@ -101,9 +101,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			cleave_distribution = {
 				attack = 0.5,
@@ -184,7 +184,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension.total_remaining_ammo(ammo_extension) <= 0 then
+				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
 					return false
 				end
 
@@ -277,82 +277,30 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_sniper",
 	"weapon_keyword_piercing_bolts"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.2,
-			range = 0.8,
-			damage = 0.75,
-			targets = 0.4,
-			stagger = 0.6
-		},
-		heavy_attack = {
-			speed = 0.2,
-			range = 0.9,
-			damage = 0.75,
-			targets = 0.4,
-			stagger = 0.6
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	},
-	perks = {
-		light_attack = {
-			"head_shot",
-			"armor_penetration"
-		},
-		heavy_attack = {
-			"head_shot",
-			"armor_penetration"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "zoomed_shot"
 	}
 }
-local quality_settings = {
-	damage = {
-		1,
-		2,
-		3,
-		4
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	},
-	targets = {
-		1,
-		2,
-		3,
-		4
+	heavy = {
+		action_name = "action_two",
+		sub_action_name = "default"
 	}
 }
-weapon_template.damage_property = function (template, quality)
-	if quality then
-		slot2 = quality_settings.damage[quality]
-	end
-
-	return 
-end
-weapon_template.targets_property = function (template, quality)
-	if quality then
-		local targets = quality_settings.targets[quality]
-		template.actions.action_one.default.impact_data.targets = template.actions.action_one.default.impact_data.targets + targets
-		template.actions.action_one.zoomed_shot.impact_data.targets = template.actions.action_one.zoomed_shot.impact_data.targets + targets
-	end
-
-	return 
-end
-weapon_template.ammo_property = function (template, quality)
-	if quality then
-		template.ammo_data.max_ammo = template.ammo_data.max_ammo + math.floor(template.ammo_data.max_ammo * quality * 0.1)
-	end
-
-	return 
-end
-weapon_template.reload_property = function (template, quality)
-	if quality then
-		template.ammo_data.reload_time = template.ammo_data.reload_time - quality * 0.1
-	end
-
-	return 
-end
 Weapons = Weapons or {}
 Weapons.crossbow_template_1 = table.create_copy(Weapons.crossbow_template_1, weapon_template)
 Weapons.dwarf_ranger_career_skill_weapon = table.create_copy(Weapons.dwarf_ranger_career_skill_weapon, weapon_template)
 Weapons.dwarf_ranger_career_skill_weapon.ammo_data.max_ammo = 3
 Weapons.dwarf_ranger_career_skill_weapon.ammo_data.unwield_when_out_of_ammo = true
 
-return 
+return

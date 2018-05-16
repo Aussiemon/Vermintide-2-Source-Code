@@ -61,6 +61,7 @@ local widget_definitions = {
 	damage_text = UIWidgets.create_simple_text("0", "damage_text", nil, nil, default_text_style)
 }
 DamageNumbersUI = class(DamageNumbersUI)
+
 DamageNumbersUI.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.camera = Managers.camera
@@ -72,71 +73,74 @@ DamageNumbersUI.init = function (self, ingame_ui_context)
 	local world_manager = Managers.world
 	local viewport_name = "player_1"
 	local world_name = "level_world"
-	local world = world_manager.world(world_manager, world_name)
+	local world = world_manager:world(world_name)
 	local viewport = ScriptWorld.viewport(world, viewport_name)
 	self.camera = ScriptViewport.camera(viewport)
 
-	self.create_ui_elements(self)
+	self:create_ui_elements()
 	Managers.state.event:register(self, "add_damage_number", "event_add_damage_number")
-
-	return 
 end
+
 DamageNumbersUI.update = function (self, dt, viewport_name)
 	self._time = self._time + dt
 
-	self.draw(self, dt)
-
-	return 
+	self:draw(dt)
 end
+
 DamageNumbersUI.event_add_damage_number = function (self, damage, size, unit, time, color, is_critical_strike)
-	local size = size or 1
-	local color = color or Vector3(255, 255, 255)
-	local new_text = {
-		floating_speed = 150,
-		alpha = 255,
-		size = size,
-		text = damage * 100,
-		color = {
-			255,
-			color.x,
-			color.y,
-			color.z
-		},
-		time = self._time + (time or self._unit_text_time),
-		starting_time = self._time,
-		random_x_offset = math.random(-40, 40),
-		random_y_offset = math.random(-40, 40),
-		is_critical_strike = is_critical_strike
-	}
-	self._unit_texts[unit] = self._unit_texts[unit] or {}
-	self._unit_texts[unit][#self._unit_texts[unit] + 1] = new_text
+	local camera_position = Camera.world_position(self.camera)
+	local unit_position = Unit.world_position(unit, 0)
+	local cam_to_unit_dir = Vector3.normalize(unit_position - camera_position)
+	local cam_direction = Quaternion.forward(Camera.world_rotation(self.camera))
+	local forward_dot = Vector3.dot(cam_direction, cam_to_unit_dir)
+	local is_infront = forward_dot >= 0.55 and forward_dot <= 1
 
-	return 
+	if is_infront then
+		local size = size or 1
+		local color = color or Vector3(255, 255, 255)
+		local new_text = {
+			floating_speed = 150,
+			alpha = 255,
+			size = size,
+			text = damage * 100,
+			color = {
+				255,
+				color.x,
+				color.y,
+				color.z
+			},
+			time = self._time + (time or self._unit_text_time),
+			starting_time = self._time,
+			random_x_offset = math.random(-60, 60),
+			random_y_offset = math.random(-40, 40),
+			is_critical_strike = is_critical_strike
+		}
+		self._unit_texts[unit] = self._unit_texts[unit] or {}
+		self._unit_texts[unit][#self._unit_texts[unit] + 1] = new_text
+	end
 end
+
 DamageNumbersUI.destroy = function (self)
 	for unit, categories in pairs(self._unit_texts) do
-		self._destroy_unit_texts(self, unit)
+		self:_destroy_unit_texts(unit)
 	end
 
 	if Managers.state.event then
 		Managers.state.event:unregister("add_damage_number", self)
 	end
-
-	return 
 end
+
 DamageNumbersUI._destroy_unit_texts = function (self, unit)
 	self._unit_texts[unit] = nil
-
-	return 
 end
+
 DamageNumbersUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.damage_text = UIWidget.init(widget_definitions.damage_text)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
-
-	return 
 end
+
 DamageNumbersUI.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -185,8 +189,8 @@ DamageNumbersUI.draw = function (self, dt)
 					local font_size = unit_text.size
 
 					if is_critical_strike then
-						local size_progress = easeOutCubic(math.min(progress * 10, 1))
-						font_size = font_size + math.ease_pulse(size_progress) * 30
+						local size_progress = easeOutCubic(math.min(progress * 7, 1))
+						font_size = font_size + math.ease_pulse(size_progress) * 60
 					end
 
 					damage_text_widget.style.text.font_size = font_size
@@ -196,13 +200,11 @@ DamageNumbersUI.draw = function (self, dt)
 				end
 			end
 		else
-			self._destroy_unit_texts(self, unit)
+			self:_destroy_unit_texts(unit)
 		end
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
 
-return 
+return

@@ -89,4 +89,4 @@ BreedBehaviors.stormfiend_demo = {
 	name = "stormfiend_demo"
 }
 
-return 
+return

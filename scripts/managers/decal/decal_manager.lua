@@ -1,13 +1,13 @@
 require("scripts/settings/decal_settings")
 
 DecalManager = class(DecalManager)
+
 DecalManager.init = function (self, world)
 	self._world = world
 
-	self._setup_decal_data(self)
-
-	return 
+	self:_setup_decal_data()
 end
+
 DecalManager._setup_decal_data = function (self)
 	self._decal_pools = {}
 	local decal_pools = self._decal_pools
@@ -17,9 +17,8 @@ DecalManager._setup_decal_data = function (self)
 	end
 
 	decal_pools.default = GrowQueue:new()
-
-	return 
 end
+
 DecalManager.add_projection_decal = function (self, effect_name, material, hit_unit, hit_actor, position, rotation, extents, normal, unit_rotation)
 	local world = self._world
 	local material_surface_decals = EffectHelper.create_surface_material_drawer_mapping(effect_name)
@@ -98,16 +97,15 @@ DecalManager.add_projection_decal = function (self, effect_name, material, hit_u
 		decal_pool = self._decal_pools.default
 	end
 
-	while decal_settings.pool_size <= decal_pool.size(decal_pool) do
-		local unit = decal_pool.pop_first(decal_pool)
+	while decal_settings.pool_size <= decal_pool:size() do
+		local unit = decal_pool:pop_first()
 
 		World.destroy_unit(world, unit)
 	end
 
-	decal_pool.push_back(decal_pool, unit)
-
-	return 
+	decal_pool:push_back(unit)
 end
+
 DecalManager.update = function (self, dt, t)
 	local world = self._world
 	local unit_alive = Unit.alive
@@ -115,11 +113,11 @@ DecalManager.update = function (self, dt, t)
 	local decal_pools = self._decal_pools
 
 	for material, unit_queue in pairs(decal_pools) do
-		local first_unit = unit_queue.get_first(unit_queue)
+		local first_unit = unit_queue:get_first()
 		local life_time = (unit_alive(first_unit) and unit_get_data(first_unit, "life_time")) or math.huge
 
 		if life_time < t then
-			local unit = unit_queue.pop_first(unit_queue)
+			local unit = unit_queue:pop_first()
 
 			if script_data.debug_material_effects then
 				print(string.format("[DecalManager] Removing decal -> Effect Name: %q Unit: %q, Life Time: %q Current Time: %q", material, unit, unit_get_data(unit, "life_time"), t))
@@ -128,11 +126,10 @@ DecalManager.update = function (self, dt, t)
 			World.destroy_unit(world, unit)
 		end
 	end
-
-	return 
 end
+
 DecalManager.destroy = function (self)
-	return 
+	return
 end
 
-return 
+return

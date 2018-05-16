@@ -1,14 +1,14 @@
 require("scripts/settings/profiles/room_profiles")
 
 RoomHandler = class(RoomHandler)
+
 RoomHandler.init = function (self, world)
 	self._world = world
 	self._rooms = {}
 	self._level_anchor_points = {}
 	self._num_active_rooms = 0
-
-	return 
 end
+
 RoomHandler.setup_level_anchor_points = function (self, level)
 	local units = Level.units(level)
 
@@ -31,11 +31,10 @@ RoomHandler.setup_level_anchor_points = function (self, level)
 			}
 		end
 	end
-
-	return 
 end
+
 RoomHandler.create_room = function (self, room_info, room_id)
-	room_id = room_id or self._available_room_id(self)
+	room_id = room_id or self:_available_room_id()
 
 	fassert(self._rooms[room_id].available, "[RoomHandler]: room_id %q is not available", room_id)
 
@@ -60,6 +59,7 @@ RoomHandler.create_room = function (self, room_info, room_id)
 
 	return room_id
 end
+
 RoomHandler.destroy_room = function (self, room_id)
 	printf("[RoomHandler]: Destroying room with room_id: %s", tostring(room_id))
 
@@ -75,9 +75,8 @@ RoomHandler.destroy_room = function (self, room_id)
 	self._rooms[room_id] = {
 		available = true
 	}
-
-	return 
 end
+
 RoomHandler._available_room_id = function (self)
 	local num_rooms = #self._rooms
 
@@ -90,9 +89,8 @@ RoomHandler._available_room_id = function (self)
 	end
 
 	error("[RoomHandler]: There's no rooms available. Lobby size to big? Not enough anchor points?")
-
-	return 
 end
+
 RoomHandler._debug_print = function (self)
 	local occupied = ""
 	local available = ""
@@ -109,12 +107,12 @@ RoomHandler._debug_print = function (self)
 	end
 
 	Managers.state.debug_text:output_screen_text("Occupied: " .. occupied .. "\n" .. "Available: " .. available, 22, 5)
-
-	return 
 end
+
 RoomHandler.room_from_id = function (self, room_id)
 	return self._rooms[room_id]
 end
+
 RoomHandler.destroy = function (self)
 	local num_rooms = self._num_active_rooms
 
@@ -123,8 +121,6 @@ RoomHandler.destroy = function (self)
 
 		World.destroy_level(self._world, room.level)
 	end
-
-	return 
 end
 
-return 
+return

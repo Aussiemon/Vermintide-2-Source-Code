@@ -687,4 +687,4 @@ BreedActions.skaven_storm_vermin = table.create_copy(BreedActions.skaven_storm_v
 BreedActions.skaven_storm_vermin_commander = table.create_copy(BreedActions.skaven_storm_vermin_commander, action_data)
 BreedActions.skaven_storm_vermin_commander.give_command = {}
 
-return 
+return

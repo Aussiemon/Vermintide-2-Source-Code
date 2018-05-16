@@ -4,22 +4,23 @@ weapon_template.actions = {
 	action_one = {
 		geiser_launch = {
 			damage_window_start = 0.1,
-			boost_curve_type = "ninja_curve",
-			is_spell = true,
 			boost_curve_coefficient = 1,
+			is_spell = true,
 			kind = "geiser",
 			particle_radius_variable = "spawn_cylinder",
 			attack_template = "wizard_staff_geiser",
 			particle_effect = "fx/wpnfx_staff_geiser_fire",
+			anim_event = "attack_geiser_placed",
 			fire_sound_event = "player_combat_weapon_staff_geiser_fire",
-			fire_sound_event_parameter = "drakegun_charge_fire",
 			critical_attack_template = "wizard_staff_geiser_crit",
+			fire_sound_event_parameter = "drakegun_charge_fire",
+			boost_curve_type = "ninja_curve",
 			damage_window_end = 0,
 			overcharge_type = "geiser_charged",
 			anim_end_event = "attack_finished",
 			fire_time = 0.1,
 			dot_template_name = "burning_1W_dot",
-			anim_event = "attack_geiser_placed",
+			damage_profile = "geiser",
 			total_time = 1,
 			buff_data = {
 				{
@@ -252,35 +253,28 @@ weapon_template.tooltip_keywords = {
 	"keyword_2",
 	"keyword_3"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.5,
-			range = 0.25,
-			damage = 0.4,
-			targets = 0.8,
-			stagger = 0.6
-		},
-		heavy_attack = {
-			speed = 0.4,
-			range = 0.4,
-			damage = 0.4,
-			targets = 1,
-			stagger = 0.9
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "geiser_launch"
 	},
-	perks = {
-		light_attack = {
-			"burn"
-		},
-		heavy_attack = {
-			"armor_penetration",
-			"burn"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "geiser_launch"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	}
 }
 Weapons = Weapons or {}
 Weapons.staff_slam_geiser_template_1 = table.clone(weapon_template)
 Weapons.staff_slam_geiser_template_1_t2 = table.clone(weapon_template)
 
-return 
+return

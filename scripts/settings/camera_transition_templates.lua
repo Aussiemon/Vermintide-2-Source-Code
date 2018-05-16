@@ -108,4 +108,4 @@ CameraTransitionTemplates.zoom = {
 	}
 }
 
-return 
+return

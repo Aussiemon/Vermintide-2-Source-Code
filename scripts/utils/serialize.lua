@@ -34,8 +34,6 @@ local function basicSerialize(o)
 	else
 		return string.format("%q", o)
 	end
-
-	return 
 end
 
 local lua_reserved_words = {}
@@ -101,8 +99,6 @@ function save_item(name, value, out, indent, saved)
 	else
 		error("Cannot serialize '" .. name .. "' (" .. vtype .. ")")
 	end
-
-	return 
 end
 
 function save_item_simple(value, out, indent)
@@ -130,8 +126,6 @@ function save_item_simple(value, out, indent)
 	else
 		error("Cannot serialize " .. type(value))
 	end
-
-	return 
 end
 
 return serialize

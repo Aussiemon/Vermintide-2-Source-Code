@@ -5,13 +5,13 @@ BTChaosExaltedSorcererSkulkAction.name = "BTChaosExaltedSorcererSkulkAction"
 local BTChaosExaltedSorcererSkulkAction = BTChaosExaltedSorcererSkulkAction
 local Unit_alive = Unit.alive
 local POSITION_LOOKUP = POSITION_LOOKUP
+
 BTChaosExaltedSorcererSkulkAction.init = function (self, ...)
 	BTChaosExaltedSorcererSkulkAction.super.init(self, ...)
 
 	self.cover_points_broadphase = Managers.state.conflict.level_analysis.cover_points_broadphase
-
-	return 
 end
+
 BTChaosExaltedSorcererSkulkAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local breed = blackboard.breed
@@ -23,18 +23,18 @@ BTChaosExaltedSorcererSkulkAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = action
 
 	if blackboard.move_state ~= "idle" then
-		self.idle(self, unit, blackboard)
+		self:idle(unit, blackboard)
 	end
 
 	local ai_navigation = blackboard.navigation_extension
 
-	ai_navigation.set_max_speed(ai_navigation, breed.run_speed)
+	ai_navigation:set_max_speed(breed.run_speed)
 	LocomotionUtils.set_animation_driven_movement(unit, false)
 
 	if blackboard.move_pos then
 		local move_pos = blackboard.move_pos:unbox()
 
-		self.move_to(self, move_pos, unit, blackboard)
+		self:move_to(move_pos, unit, blackboard)
 	end
 
 	blackboard.ready_to_summon = false
@@ -48,21 +48,20 @@ BTChaosExaltedSorcererSkulkAction.enter = function (self, unit, blackboard, t)
 	blackboard.current_spell = spell
 	blackboard.current_spell_name = spell.name
 	blackboard.face_target_while_summoning = true
-
-	return 
 end
+
 BTChaosExaltedSorcererSkulkAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local skulk_data = blackboard.skulk_data
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_max_speed(navigation_extension, default_move_speed)
+	navigation_extension:set_max_speed(default_move_speed)
 
 	if reason == "aborted" then
-		local path_found = navigation_extension.is_following_path(navigation_extension)
+		local path_found = navigation_extension:is_following_path()
 
 		if blackboard.move_pos and path_found and blackboard.move_state == "idle" then
-			self.start_move_animation(self, unit, blackboard)
+			self:start_move_animation(unit, blackboard)
 		end
 
 		local difficulty = Managers.state.difficulty:get_difficulty()
@@ -71,13 +70,12 @@ BTChaosExaltedSorcererSkulkAction.leave = function (self, unit, blackboard, t, r
 
 	skulk_data.animation_state = nil
 	blackboard.action = nil
-
-	return 
 end
+
 BTChaosExaltedSorcererSkulkAction.run = function (self, unit, blackboard, t, dt)
 	local ai_navigation = blackboard.navigation_extension
-	local path_found = ai_navigation.is_following_path(ai_navigation)
-	local failed_attempts = ai_navigation.number_failed_move_attempts(ai_navigation)
+	local path_found = ai_navigation:is_following_path()
+	local failed_attempts = ai_navigation:number_failed_move_attempts()
 	local action = blackboard.action
 	local spell = blackboard.current_spell
 
@@ -88,7 +86,7 @@ BTChaosExaltedSorcererSkulkAction.run = function (self, unit, blackboard, t, dt)
 	local skulk_data = blackboard.skulk_data
 
 	if blackboard.move_pos and path_found and blackboard.move_state == "idle" then
-		self.start_move_animation(self, unit, blackboard)
+		self:start_move_animation(unit, blackboard)
 	end
 
 	local current_health_percent = blackboard.health_extension:current_health_percent()
@@ -131,9 +129,9 @@ BTChaosExaltedSorcererSkulkAction.run = function (self, unit, blackboard, t, dt)
 	local position = blackboard.move_pos
 
 	if position then
-		local at_goal = self.at_goal(self, unit, blackboard)
+		local at_goal = self:at_goal(unit, blackboard)
 
-		if at_goal or 0 < failed_attempts then
+		if at_goal or failed_attempts > 0 then
 			blackboard.move_pos = nil
 		end
 
@@ -143,17 +141,18 @@ BTChaosExaltedSorcererSkulkAction.run = function (self, unit, blackboard, t, dt)
 	local position = BTChaosExaltedSorcererSkulkAction.get_skulk_target(unit, blackboard)
 
 	if position then
-		self.move_to(self, position, unit, blackboard)
+		self:move_to(position, unit, blackboard)
 
 		return "running"
 	end
 
 	if blackboard.move_state ~= "idle" then
-		self.idle(self, unit, blackboard)
+		self:idle(unit, blackboard)
 	end
 
 	return "running"
 end
+
 BTChaosExaltedSorcererSkulkAction.at_goal = function (self, unit, blackboard)
 	local skulk_data = blackboard.skulk_data
 	local position_boxed = blackboard.move_pos
@@ -162,40 +161,36 @@ BTChaosExaltedSorcererSkulkAction.at_goal = function (self, unit, blackboard)
 		return false
 	end
 
-	local position = position_boxed.unbox(position_boxed)
+	local position = position_boxed:unbox()
 	local distance = Vector3.distance_squared(position, POSITION_LOOKUP[unit])
 
 	if distance < 0.25 then
 		return true
 	end
-
-	return 
 end
+
 BTChaosExaltedSorcererSkulkAction.move_to = function (self, position, unit, blackboard)
 	local ai_navigation = blackboard.navigation_extension
 
-	ai_navigation.move_to(ai_navigation, position)
+	ai_navigation:move_to(position)
 
 	blackboard.move_pos = Vector3Box(position)
-
-	return 
 end
+
 BTChaosExaltedSorcererSkulkAction.idle = function (self, unit, blackboard)
-	self.anim_event(self, unit, blackboard, "idle")
+	self:anim_event(unit, blackboard, "idle")
 
 	blackboard.move_state = "idle"
-
-	return 
 end
+
 BTChaosExaltedSorcererSkulkAction.start_move_animation = function (self, unit, blackboard)
 	local move_animation = blackboard.action.move_animation
 
-	self.anim_event(self, unit, blackboard, move_animation)
+	self:anim_event(unit, blackboard, move_animation)
 
 	blackboard.move_state = "moving"
-
-	return 
 end
+
 BTChaosExaltedSorcererSkulkAction.anim_event = function (self, unit, blackboard, anim)
 	local skulk_data = blackboard.skulk_data
 
@@ -204,10 +199,10 @@ BTChaosExaltedSorcererSkulkAction.anim_event = function (self, unit, blackboard,
 
 		skulk_data.animation_state = anim
 	end
-
-	return 
 end
+
 local TRIES = 15
+
 BTChaosExaltedSorcererSkulkAction.get_skulk_target = function (unit, blackboard, teleporting)
 	local action = blackboard.action
 	local nav_world = blackboard.nav_world
@@ -244,7 +239,7 @@ BTChaosExaltedSorcererSkulkAction.get_skulk_target = function (unit, blackboard,
 	for i = 1, TRIES, 1 do
 		local rot_vec = to_target - to_target_dir * 0.5
 
-		if blackboard.num_summons and (action.teleport_closer_summon_limit or 3) <= blackboard.num_summons then
+		if blackboard.num_summons and blackboard.num_summons >= (action.teleport_closer_summon_limit or 3) then
 			rot_vec = Vector3.normalize(target_position - unit_position) * action.teleport_closer_range
 		end
 
@@ -257,9 +252,8 @@ BTChaosExaltedSorcererSkulkAction.get_skulk_target = function (unit, blackboard,
 	end
 
 	skulk_data.direction = skulk_data.direction * -1
-
-	return 
 end
+
 BTChaosExaltedSorcererSkulkAction.debug_show_skulk_circle = function (self, unit, blackboard)
 	local action = blackboard.action
 	local skulk_data = blackboard.skulk_data
@@ -272,12 +266,12 @@ BTChaosExaltedSorcererSkulkAction.debug_show_skulk_circle = function (self, unit
 	QuickDrawer:circle(target_position + offset, skulk_data.radius, Vector3.up(), Colors.get("light_green"))
 
 	skulk_data.radius = blackboard.target_dist
-
-	return 
 end
+
 BTChaosExaltedSorcererSkulkAction.update_dummy = function (self, unit, blackboard, t)
 	return false
 end
+
 BTChaosExaltedSorcererSkulkAction.update_plague_wave = function (self, unit, blackboard, t, plague_wave_data)
 	local target_unit = blackboard.target_unit
 	local teleport_position = BTChaosSorcererPlagueSkulkAction.get_plague_wave_cast_position(self, unit, blackboard, plague_wave_data)
@@ -290,15 +284,14 @@ BTChaosExaltedSorcererSkulkAction.update_plague_wave = function (self, unit, bla
 		blackboard.ready_to_summon = true
 		blackboard.num_plague_waves = (blackboard.num_plague_waves and blackboard.num_plague_waves + 1) or 1
 
-		if 4 <= blackboard.num_plague_waves then
+		if blackboard.num_plague_waves >= 4 then
 			blackboard.num_plague_waves = 0
 		end
 
 		return true
 	end
-
-	return 
 end
+
 BTChaosExaltedSorcererSkulkAction.update_cast_missile = function (self, unit, blackboard, t, missile_data)
 	local curr_pos = Vector3.copy(POSITION_LOOKUP[unit])
 	local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.target_unit)
@@ -323,4 +316,4 @@ BTChaosExaltedSorcererSkulkAction.update_cast_missile = function (self, unit, bl
 	return true
 end
 
-return 
+return

@@ -226,6 +226,7 @@ local button_definitions = {
 	}
 }
 UICalibrationView = class(UICalibrationView)
+
 UICalibrationView.init = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.background = UIWidget.init(widget_definitions.background)
@@ -238,12 +239,12 @@ UICalibrationView.init = function (self)
 	end
 
 	self.buttons = buttons
+end
 
-	return 
-end
 UICalibrationView.destroy = function (self)
-	return 
+	return
 end
+
 UICalibrationView.update = function (self, ui_renderer, input_service, dt)
 	local ui_scenegraph = self.ui_scenegraph
 	local top_left_reticule = self.top_left_reticule
@@ -265,7 +266,7 @@ UICalibrationView.update = function (self, ui_renderer, input_service, dt)
 	local top_left_reticule_content = top_left_reticule.content
 
 	if top_left_reticule_content.on_pressed then
-		local cursor = input_service.get(input_service, "cursor")
+		local cursor = input_service:get("cursor")
 		self.cursor_start_pos = {
 			cursor.x,
 			cursor.y
@@ -277,7 +278,7 @@ UICalibrationView.update = function (self, ui_renderer, input_service, dt)
 	local bottom_right_reticule_content = bottom_right_reticule.content
 
 	if bottom_right_reticule_content.on_pressed then
-		local cursor = input_service.get(input_service, "cursor")
+		local cursor = input_service:get("cursor")
 		self.cursor_start_pos = {
 			cursor.x,
 			cursor.y
@@ -286,9 +287,9 @@ UICalibrationView.update = function (self, ui_renderer, input_service, dt)
 		self.modifying_retucile = "bottom_right"
 	end
 
-	if self.cursor_start_pos and not input_service.get(input_service, "left_hold") then
-		self.evaluate_new_root_scale(self, UISettings.root_scale)
-		self.save_new_root_scale(self, UISettings.root_scale)
+	if self.cursor_start_pos and not input_service:get("left_hold") then
+		self:evaluate_new_root_scale(UISettings.root_scale)
+		self:save_new_root_scale(UISettings.root_scale)
 
 		self.cursor_start_pos = nil
 		self.start_root = nil
@@ -297,7 +298,7 @@ UICalibrationView.update = function (self, ui_renderer, input_service, dt)
 
 	if self.cursor_start_pos then
 		local cursor_start = self.cursor_start_pos
-		local cursor = input_service.get(input_service, "cursor")
+		local cursor = input_service:get("cursor")
 		local start_x = cursor_start[1]
 		local cursor_x = cursor[1]
 		local w = RESOLUTION_LOOKUP.res_w
@@ -322,25 +323,23 @@ UICalibrationView.update = function (self, ui_renderer, input_service, dt)
 
 	for i, button in ipairs(self.buttons) do
 		if button.content.button_hotspot.on_release and button_navigation[i] == "reset" then
-			self.reset_root_scale(self)
+			self:reset_root_scale()
 		end
 	end
-
-	return 
 end
+
 UICalibrationView.reset_root_scale = function (self)
 	UISettings.root_scale[1] = 1
 	UISettings.root_scale[2] = 1
 
-	self.save_new_root_scale(self, UISettings.root_scale)
-
-	return 
+	self:save_new_root_scale(UISettings.root_scale)
 end
+
 UICalibrationView.evaluate_new_root_scale = function (self, root_scale)
 	local w, h = Application.resolution()
 	local scale_x = root_scale[1]
 
-	if 1 < scale_x then
+	if scale_x > 1 then
 		local new_root_screen_x = 1920 * scale_x
 
 		if w < new_root_screen_x then
@@ -353,7 +352,7 @@ UICalibrationView.evaluate_new_root_scale = function (self, root_scale)
 
 	local scale_y = root_scale[2]
 
-	if 1 < scale_y then
+	if scale_y > 1 then
 		scale_y = 1
 	elseif scale_y < 0.2 then
 		scale_y = 0.2
@@ -361,15 +360,12 @@ UICalibrationView.evaluate_new_root_scale = function (self, root_scale)
 
 	root_scale[1] = scale_x
 	root_scale[2] = scale_y
-
-	return 
 end
+
 UICalibrationView.save_new_root_scale = function (self, root_scale)
 	Application.set_user_setting("root_scale_x", root_scale[1])
 	Application.set_user_setting("root_scale_y", root_scale[2])
 	Application.save_user_settings()
-
-	return 
 end
 
-return 
+return

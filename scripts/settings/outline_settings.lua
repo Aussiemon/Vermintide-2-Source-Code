@@ -88,4 +88,4 @@ OutlineSettings.ranges = {
 	interactable = 15
 }
 
-return 
+return

@@ -1,16 +1,19 @@
 WwiseUtils = WwiseUtils or {}
+
 WwiseUtils.trigger_position_event = function (world, event, position)
 	local source, wwise_world = WwiseUtils.make_position_auto_source(world, position)
 	local id = WwiseWorld.trigger_event(wwise_world, event, source)
 
 	return id, source, wwise_world
 end
+
 WwiseUtils.trigger_unit_event = function (world, event, unit, node_id)
 	local source, wwise_world = WwiseUtils.make_unit_auto_source(world, unit, node_id)
 	local id = WwiseWorld.trigger_event(wwise_world, event, source)
 
 	return id, source, wwise_world
 end
+
 WwiseUtils.make_position_auto_source = function (world, position)
 	local wwise_world = Managers.world:wwise_world(world)
 	local source = WwiseWorld.make_auto_source(wwise_world, position)
@@ -19,6 +22,7 @@ WwiseUtils.make_position_auto_source = function (world, position)
 
 	return source, wwise_world
 end
+
 WwiseUtils.make_unit_auto_source = function (world, unit, node_id)
 	local wwise_world = Managers.world:wwise_world(world)
 	local source, position = nil
@@ -36,4 +40,4 @@ WwiseUtils.make_unit_auto_source = function (world, unit, node_id)
 	return source, wwise_world
 end
 
-return 
+return

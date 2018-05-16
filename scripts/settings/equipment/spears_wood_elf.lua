@@ -393,7 +393,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			critical_strike = {
 				critical_damage_attack_template = "heavy_stab_fencer"
@@ -482,7 +482,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		},
 		light_attack_left = {
@@ -640,7 +640,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		},
 		light_attack_stab = {
@@ -959,7 +959,7 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		},
 		push = {
@@ -1028,7 +1028,7 @@ weapon_template.actions = {
 			chain_condition_func = function (attacker_unit, input_extension)
 				local status_extension = ScriptUnit.extension(attacker_unit, "status_system")
 
-				return not status_extension.fatigued(status_extension)
+				return not status_extension:fatigued()
 			end
 		}
 	},
@@ -1045,7 +1045,7 @@ weapon_template.actions = {
 			end,
 			total_time = math.huge,
 			enter_function = function (attacker_unit, input_extension)
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			buff_data = {
 				{
@@ -1094,7 +1094,7 @@ weapon_template.actions = {
 	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/wpn_empire_short_sword"
-weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
+weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.polearm
 weapon_template.display_unit = "units/weapons/weapon_display/display_2h_weapon"
 weapon_template.wield_anim = "to_spear"
 weapon_template.buff_type = "MELEE_2H"
@@ -1139,28 +1139,28 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_versatile",
 	"weapon_keyword_high_agility"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.5,
-			stagger = 0.3,
-			damage = 0.625,
-			targets = 0.2
-		},
-		heavy_attack = {
-			speed = 0.3,
-			stagger = 0.8,
-			damage = 0.4,
-			targets = 0.9
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "light_attack_left"
 	},
-	perks = {
-		light_attack = {
-			"armor_penetration"
-		},
-		heavy_attack = {
-			"armor_penetration"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "heavy_attack_left"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	push = {
+		action_name = "action_one",
+		sub_action_name = "push"
 	}
 }
 weapon_template.wwise_dep_right_hand = {
@@ -1172,4 +1172,4 @@ Weapons.two_handed_spears_elf_template_1_t3_un = table.clone(Weapons.two_handed_
 Weapons.two_handed_spears_elf_template_1_t3_un.actions.action_inspect.default.anim_event = "inspect_start_2"
 Weapons.two_handed_spears_elf_template_1_t3_un.actions.action_inspect.default.anim_end_event = "inspect_end_2"
 
-return 
+return

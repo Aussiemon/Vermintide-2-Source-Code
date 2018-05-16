@@ -1,4 +1,5 @@
 PlayerCharacterStateDodging = class(PlayerCharacterStateDodging, PlayerCharacterState)
+
 PlayerCharacterStateDodging.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "dodging")
 
@@ -6,9 +7,8 @@ PlayerCharacterStateDodging.init = function (self, character_state_init_context)
 	self.movement_speed = 0
 	self.dodge_direction = Vector3Box(0, 0, 0)
 	self.last_position = Vector3Box(0, 0, 0)
-
-	return 
 end
+
 PlayerCharacterStateDodging.on_enter_animation = function (self, unit)
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local dodge_direction = self.dodge_direction:unbox()
@@ -21,16 +21,15 @@ PlayerCharacterStateDodging.on_enter_animation = function (self, unit)
 	if math.abs(x_value) < math.abs(y_value) then
 		CharacterStateHelper.play_animation_event_with_variable_float(unit, "dodge_bwd", variable_name, variable_value)
 		CharacterStateHelper.play_animation_event_first_person(first_person_extension, "dodge_bwd")
-	elseif 0 < x_value then
+	elseif x_value > 0 then
 		CharacterStateHelper.play_animation_event_with_variable_float(unit, "dodge_left", variable_name, variable_value)
 		CharacterStateHelper.play_animation_event_first_person(first_person_extension, "dodge_left")
 	else
 		CharacterStateHelper.play_animation_event_with_variable_float(unit, "dodge_right", variable_name, variable_value)
 		CharacterStateHelper.play_animation_event_first_person(first_person_extension, "dodge_right")
 	end
-
-	return 
 end
+
 PlayerCharacterStateDodging.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	local unit = self.unit
 	local input_extension = self.input_extension
@@ -44,14 +43,14 @@ PlayerCharacterStateDodging.on_enter = function (self, unit, input, dt, context,
 	params.dodge_direction = nil
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 
-	status_extension.set_dodge_jump_override_t(status_extension, t, movement_settings_table.dodging.dodge_jump_override_timer)
-	self.start_dodge(self, unit, t)
+	status_extension:set_dodge_jump_override_t(t, movement_settings_table.dodging.dodge_jump_override_timer)
+	self:start_dodge(unit, t)
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, inventory_extension)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, health_extension)
-	self.on_enter_animation(self, unit)
+	self:on_enter_animation(unit)
 	self.locomotion_extension:enable_rotation_towards_velocity(false)
 
-	local forward_direction = Quaternion.forward(first_person_extension.current_rotation(first_person_extension))
+	local forward_direction = Quaternion.forward(first_person_extension:current_rotation())
 
 	Vector3.set_z(forward_direction, 0)
 
@@ -59,9 +58,8 @@ PlayerCharacterStateDodging.on_enter = function (self, unit, input, dt, context,
 	local flat_rotation = Quaternion.look(forward_direction, Vector3(0, 0, 1))
 
 	Unit.set_local_rotation(unit, 0, flat_rotation)
-
-	return 
 end
+
 PlayerCharacterStateDodging.on_exit = function (self, unit, input, dt, context, t, next_state)
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local cd = math.max(movement_settings_table.dodging.dodge_cd, movement_settings_table.dodging.dodge_jump_override_timer - self.time_in_dodge)
@@ -77,19 +75,18 @@ PlayerCharacterStateDodging.on_exit = function (self, unit, input, dt, context, 
 
 	local network_manager = Managers.state.network
 
-	if network_manager.game(network_manager) then
+	if network_manager:game() then
 		CharacterStateHelper.play_animation_event(unit, "dodge_end")
 
 		if not LEVEL_EDITOR_TEST then
-			local unit_id = network_manager.unit_game_object_id(network_manager, unit)
+			local unit_id = network_manager:unit_game_object_id(unit)
 
 			self.status_extension:set_is_dodging(false)
 			network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, false, unit_id, 0)
 		end
 	end
-
-	return 
 end
+
 PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local unit = self.unit
@@ -102,63 +99,63 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 	ScriptUnit.extension(unit, "whereabouts_system"):set_is_onground()
 
 	if CharacterStateHelper.do_common_state_transitions(status_extension, csm) then
-		return 
+		return
 	end
 
 	if CharacterStateHelper.is_using_transport(status_extension) then
-		csm.change_state(csm, "using_transport")
+		csm:change_state("using_transport")
 
-		return 
+		return
 	end
 
 	if CharacterStateHelper.is_pushed(status_extension) then
-		status_extension.set_pushed(status_extension, false)
+		status_extension:set_pushed(false)
 
 		local params = movement_settings_table.stun_settings.pushed
-		local hit_react_type = status_extension.hit_react_type(status_extension)
+		local hit_react_type = status_extension:hit_react_type()
 		params.hit_react_type = hit_react_type .. "_push"
 
-		csm.change_state(csm, "stunned", params)
+		csm:change_state("stunned", params)
 
-		return 
+		return
 	end
 
 	if CharacterStateHelper.is_block_broken(status_extension) then
-		status_extension.set_block_broken(status_extension, false)
+		status_extension:set_block_broken(false)
 
 		local params = movement_settings_table.stun_settings.parry_broken
 		params.hit_react_type = "medium_push"
 
-		csm.change_state(csm, "stunned", params)
+		csm:change_state("stunned", params)
 
-		return 
+		return
 	end
 
 	if self.locomotion_extension:is_animation_driven() then
-		return 
+		return
 	end
 
-	if (input_extension.get(input_extension, "jump") or input_extension.get(input_extension, "jump_only")) and status_extension.can_override_dodge_with_jump(status_extension, t) and self.locomotion_extension:jump_allowed() then
+	if (input_extension:get("jump") or input_extension:get("jump_only")) and status_extension:can_override_dodge_with_jump(t) and self.locomotion_extension:jump_allowed() then
 		local params = self.temp_params
 		params.post_dodge_jump = true
 
-		csm.change_state(csm, "jumping", params)
+		csm:change_state("jumping", params)
 
-		return 
+		return
 	end
 
 	CharacterStateHelper.update_dodge_lock(unit, self.input_extension, status_extension)
 
 	if not self.csm.state_next and not self.locomotion_extension:is_on_ground() then
-		csm.change_state(csm, "falling", self.temp_params)
+		csm:change_state("falling", self.temp_params)
 
-		return 
+		return
 	end
 
-	if not self.update_dodge(self, unit, dt, t) then
+	if not self:update_dodge(unit, dt, t) then
 		local params = self.temp_params
 
-		csm.change_state(csm, "walking", params)
+		csm:change_state("walking", params)
 	end
 
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, self.inventory_extension)
@@ -172,10 +169,10 @@ PlayerCharacterStateDodging.update = function (self, unit, input, dt, context, t
 
 		self.move_anim = move_anim
 	end
-
-	return 
 end
+
 local params = {}
+
 PlayerCharacterStateDodging.update_dodge = function (self, unit, dt, t)
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local last_distance_left = self.distance_left
@@ -232,21 +229,23 @@ PlayerCharacterStateDodging.update_dodge = function (self, unit, dt, t)
 
 	return true
 end
+
 PlayerCharacterStateDodging.get_is_dodging = function (self)
 	return self.dodge_timer or self.dodge_stand_still_timer or self.dodge_return_timer
 end
+
 PlayerCharacterStateDodging.start_dodge = function (self, unit, t)
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 	local network_manager = Managers.state.network
 
-	if network_manager.game(network_manager) and not LEVEL_EDITOR_TEST then
-		local unit_id = network_manager.unit_game_object_id(network_manager, unit)
+	if network_manager:game() and not LEVEL_EDITOR_TEST then
+		local unit_id = network_manager:unit_game_object_id(unit)
 
 		self.status_extension:set_is_dodging(true)
 		network_manager.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, true, unit_id, 0)
 	end
 
-	assert(1 < #movement_settings_table.dodging.speed_at_times, "not enough speed at times in movementsettings")
+	assert(#movement_settings_table.dodging.speed_at_times > 1, "not enough speed at times in movementsettings")
 
 	self.current_speed_setting_index = 1
 	self.speed = movement_settings_table.dodging.speed_at_times[self.current_speed_setting_index].speed
@@ -255,10 +254,9 @@ PlayerCharacterStateDodging.start_dodge = function (self, unit, t)
 	self.distance_left = movement_settings_table.dodging.distance * movement_settings_table.dodging.distance_modifier * self.status_extension:get_dodge_cooldown()
 
 	self.last_position:store(Unit.world_position(unit, 0))
-	self.calculate_dodge_total_time(self, unit)
-
-	return 
+	self:calculate_dodge_total_time(unit)
 end
+
 PlayerCharacterStateDodging.calculate_dodge_total_time = function (self, unit)
 	local time_step = 0.016666666666666666
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
@@ -300,14 +298,12 @@ PlayerCharacterStateDodging.calculate_dodge_total_time = function (self, unit)
 
 		distance_travelled = distance_travelled + speed * time_step
 
-		if movement_settings_table.dodging.distance * distance_modifier * diminishing_return_factor < distance_travelled then
+		if distance_travelled > movement_settings_table.dodging.distance * distance_modifier * diminishing_return_factor then
 			not_hit_end = false
 		end
 	end
 
 	self.estimated_dodge_time = time_in_dodge
-
-	return 
 end
 
-return 
+return

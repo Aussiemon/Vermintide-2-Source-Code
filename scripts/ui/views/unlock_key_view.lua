@@ -1,5 +1,6 @@
 local definitions = local_require("scripts/ui/views/unlock_key_view_definitions")
 UnlockKeyView = class(UnlockKeyView)
+
 UnlockKeyView.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
@@ -9,32 +10,32 @@ UnlockKeyView.init = function (self, ingame_ui_context)
 	self.wwise_world = ingame_ui_context.dialogue_system.wwise_world
 	local input_manager = self.input_manager
 
-	input_manager.create_input_service(input_manager, "unlock_key_menu", "IngameMenuKeymaps", "IngameMenuFilters")
-	input_manager.map_device_to_service(input_manager, "unlock_key_menu", "keyboard")
-	input_manager.map_device_to_service(input_manager, "unlock_key_menu", "mouse")
-	input_manager.map_device_to_service(input_manager, "unlock_key_menu", "gamepad")
+	input_manager:create_input_service("unlock_key_menu", "IngameMenuKeymaps", "IngameMenuFilters")
+	input_manager:map_device_to_service("unlock_key_menu", "keyboard")
+	input_manager:map_device_to_service("unlock_key_menu", "mouse")
+	input_manager:map_device_to_service("unlock_key_menu", "gamepad")
 	rawset(_G, "global_unlock_key_view", self)
 
 	self.ui_animations = {}
 
-	self.create_ui_elements(self)
+	self:create_ui_elements()
 
 	self.controller_cooldown = 0
-
-	return 
 end
+
 UnlockKeyView.input_service = function (self)
 	return self.input_manager:get_service("unlock_key_menu")
 end
+
 UnlockKeyView.destroy = function (self)
 	rawset(_G, "global_unlock_key_view", nil)
 	GarbageLeakDetector.register_object(self, "UnlockKeyView")
-
-	return 
 end
+
 local widget_definitions = definitions.widget_definitions
 local create_simple_texture_widget = definitions.create_simple_texture_widget
 local index = 0
+
 UnlockKeyView.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self.background_widgets = {
@@ -50,9 +51,8 @@ UnlockKeyView.create_ui_elements = function (self)
 	self.title_widget = UIWidget.init(widget_definitions.title)
 	self.confirm_gamepad_button_widget.content.text_field = "Select"
 	self.back_gamepad_button_widget.content.text_field = "Exit"
-
-	return 
 end
+
 UnlockKeyView.on_enter = function (self)
 	self.input_manager:block_device_except_service("unlock_key_menu", "keyboard", 1)
 	self.input_manager:block_device_except_service("unlock_key_menu", "mouse", 1)
@@ -62,8 +62,6 @@ UnlockKeyView.on_enter = function (self)
 
 	Managers.transition:fade_in(10, function ()
 		self.fade_in_done = true
-
-		return 
 	end)
 
 	self.ui_animations.entry_animation = UIAnimation.init(UIAnimation.function_by_time, self.ui_scenegraph.root.local_position, 2, 1080, 1080, 0.01, math.easeInCubic, UIAnimation.wait, 0.1, UIAnimation.function_by_time, self.ui_scenegraph.root.local_position, 2, 1080, 0, 0.01, math.easeInCubic)
@@ -73,33 +71,31 @@ UnlockKeyView.on_enter = function (self)
 	self.text_input_widget.content.caret_index = 1
 	self.text_input_widget.content.text_index = 1
 	self.transition_on_completed_animation = nil
+end
 
-	return 
-end
 UnlockKeyView.on_exit = function (self)
-	return 
+	return
 end
+
 UnlockKeyView.suspend = function (self)
 	self.suspended = true
 
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
-
-	return 
 end
+
 UnlockKeyView.unsuspend = function (self)
 	self.input_manager:block_device_except_service("unlock_key_menu", "keyboard", 1)
 	self.input_manager:block_device_except_service("unlock_key_menu", "mouse", 1)
 	self.input_manager:block_device_except_service("unlock_key_menu", "gamepad", 1)
 
 	self.suspended = nil
-
-	return 
 end
+
 UnlockKeyView.update = function (self, dt, t)
 	if self.suspended then
-		return 
+		return
 	end
 
 	local ui_renderer = self.ui_renderer
@@ -133,29 +129,27 @@ UnlockKeyView.update = function (self, dt, t)
 	end
 
 	if self.fade_in_done then
-		self.draw_widgets(self, dt, t)
+		self:draw_widgets(dt, t)
 	end
 
 	if not menu_animation_active then
-		self.handle_input(self, input_service)
-		self.handle_controller_input(self, input_service, dt)
+		self:handle_input(input_service)
+		self:handle_controller_input(input_service, dt)
 	end
 
-	if not menu_animation_active and (input_service.get(input_service, "toggle_menu") or self.cancel_button_widget.content.button_hotspot.on_release) then
-		self.exit(self)
+	if not menu_animation_active and (input_service:get("toggle_menu") or self.cancel_button_widget.content.button_hotspot.on_release) then
+		self:exit()
 	end
-
-	return 
 end
+
 UnlockKeyView.exit = function (self)
-	self.on_menu_close(self)
+	self:on_menu_close()
 	Managers.transition:fade_in(10)
 
 	self.ui_animations.exit_animation = UIAnimation.init(UIAnimation.wait, 0.2)
 	self.transition_on_completed_animation = "exit_menu"
-
-	return 
 end
+
 UnlockKeyView.draw_widgets = function (self, dt, t)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -185,9 +179,8 @@ UnlockKeyView.draw_widgets = function (self, dt, t)
 	UIRenderer.draw_widget(ui_renderer, self.cancel_button_widget)
 	UIRenderer.draw_widget(ui_renderer, self.title_widget)
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 UnlockKeyView.handle_input = function (self, input_service)
 	local keystrokes = Keyboard.keystrokes()
 	self.key_text, self.key_text_index, self.text_mode = KeystrokeHelper.parse_strokes(self.key_text, self.key_text_index, self.text_mode, keystrokes)
@@ -208,11 +201,10 @@ UnlockKeyView.handle_input = function (self, input_service)
 			end
 		end
 	end
-
-	return 
 end
+
 UnlockKeyView.handle_controller_input = function (self, input_service, dt)
-	if 0 < self.controller_cooldown then
+	if self.controller_cooldown > 0 then
 		self.controller_cooldown = self.controller_cooldown - dt
 	elseif self.confirm_gamepad_button_widget.content.gamepad_button.is_clicked ~= 0 then
 		if self.confirm_gamepad_button_widget.content.button_hotspot.is_clicked == 0 then
@@ -220,21 +212,22 @@ UnlockKeyView.handle_controller_input = function (self, input_service, dt)
 			self.controller_cooldown = GamepadSettings.menu_cooldown
 		end
 	end
+end
 
-	return 
-end
 UnlockKeyView.on_reset = function (self)
-	return 
+	return
 end
+
 UnlockKeyView.on_apply = function (self)
-	return 
+	return
 end
+
 UnlockKeyView.on_menu_close = function (self)
-	return 
+	return
 end
 
 if rawget(_G, "my_global_ass_pointer") then
 	my_global_ass_pointer:create_ui_elements()
 end
 
-return 
+return

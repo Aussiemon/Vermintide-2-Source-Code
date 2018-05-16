@@ -13,8 +13,6 @@ local function debug_printf(pattern, ...)
 	if script_data.debug_hit_effects_templates then
 		printf("[hit-effects] " .. pattern, ...)
 	end
-
-	return 
 end
 
 GenericHitReactionExtension = class(GenericHitReactionExtension)
@@ -53,7 +51,7 @@ local function get_attacker_direction(attacker_unit, hit_direction, explosion_pu
 	if Unit.alive(attacker_unit) and not explosion_push then
 		if ScriptUnit.has_extension(attacker_unit, "first_person_system") then
 			local first_person_extension = ScriptUnit.extension(attacker_unit, "first_person_system")
-			attacker_unit = first_person_extension.get_first_person_unit(first_person_extension)
+			attacker_unit = first_person_extension:get_first_person_unit()
 		end
 
 		local attacker_rotation = Unit.world_rotation(attacker_unit, 0)
@@ -83,8 +81,6 @@ local function check_single_condition(control, test)
 	else
 		return test == control
 	end
-
-	return 
 end
 
 local function check_conditions(control, test)
@@ -111,8 +107,6 @@ local function map_function(event, func, ...)
 	else
 		func(event, ...)
 	end
-
-	return 
 end
 
 local function play_effect(hit_effect_name, world, hit_direction, position)
@@ -120,8 +114,6 @@ local function play_effect(hit_effect_name, world, hit_direction, position)
 
 	World.create_particles(world, hit_effect_name, position, hit_rotation)
 	debug_printf("Playing effect %q", tostring(hit_effect_name))
-
-	return 
 end
 
 local function play_sound(event_id, wwise_world, wwise_source_id, damage_type, enemy_type, weapon_type, hit_zone, is_husk)
@@ -131,21 +123,18 @@ local function play_sound(event_id, wwise_world, wwise_source_id, damage_type, e
 
 	WwiseWorld.trigger_event(wwise_world, event_name, wwise_source_id)
 	debug_printf("Playing sound %q. damage_type = %q, enemy_type = %q, weapon_type = %q, hit_zone = %q, husk = %q", event_name, damage_type, enemy_type, weapon_type, hit_zone, tostring(is_husk))
-
-	return 
 end
 
 local function send_flow_event(event, unit)
 	if event == "dismember_torso" and not Unit.has_animation_state_machine(unit) then
-		return 
+		return
 	end
 
 	Unit.flow_event(unit, event)
-
-	return 
 end
 
 local is_player = DamageUtils.is_player_unit
+
 GenericHitReactionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.is_husk = extension_init_data.is_husk
@@ -162,14 +151,12 @@ GenericHitReactionExtension.init = function (self, extension_init_context, unit,
 	fassert(self.hit_reaction_template)
 
 	self.hit_effect_template = extension_init_data.hit_effect_template
-
-	return 
 end
+
 GenericHitReactionExtension.set_hit_effect_template_id = function (self, template_id)
 	self.hit_effect_template = template_id
-
-	return 
 end
+
 GenericHitReactionExtension.extensions_ready = function (self, world, unit)
 	self.health_extension = ScriptUnit.extension(unit, "health_system")
 
@@ -179,27 +166,29 @@ GenericHitReactionExtension.extensions_ready = function (self, world, unit)
 	self.dialogue_extension = ScriptUnit.has_extension(unit, "dialogue_system") and ScriptUnit.extension(unit, "dialogue_system")
 	self.locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system") and ScriptUnit.extension(unit, "locomotion_system")
 	self.ai_extension = ScriptUnit.has_extension(unit, "ai_system") and ScriptUnit.extension(unit, "ai_system")
+end
 
-	return 
-end
 GenericHitReactionExtension.destroy = function (self)
-	return 
+	return
 end
+
 GenericHitReactionExtension.reset = function (self)
-	return 
+	return
 end
+
 local DD_STRIDE = DamageDataIndex.STRIDE
 local DD_DAMAGE_AMOUNT = DamageDataIndex.DAMAGE_AMOUNT
 local biggest_hit = {}
 local conditions = {}
 local temp_effect_results = {}
+
 GenericHitReactionExtension.update = function (self, unit, input, dt, context, t)
 	if self._delayed_flow then
 		map_function(self._delayed_flow, send_flow_event, unit)
 
 		self._delayed_flow = nil
 
-		return 
+		return
 	end
 
 	if self._delayed_animation then
@@ -209,24 +198,24 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 
 		self._delayed_animation = nil
 
-		return 
+		return
 	end
 
 	if self._delayed_push then
-		local has_pushed = self._do_push(self, unit, dt)
+		local has_pushed = self:_do_push(unit, dt)
 
 		if has_pushed then
 			self._delayed_push = nil
 		end
 
-		return 
+		return
 	end
 
 	local health_extension = self.health_extension
-	local damages, num_damages = health_extension.recent_damages(health_extension)
+	local damages, num_damages = health_extension:recent_damages()
 
 	if num_damages == 0 then
-		return 
+		return
 	end
 
 	local best_damage_amount = -1000
@@ -236,19 +225,19 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	for i = 1, num_damages, stride do
 		local damage_amount = damages[(i + DD_DAMAGE_AMOUNT) - 1]
 
-		if best_damage_amount < damage_amount and 0 <= damage_amount then
+		if best_damage_amount < damage_amount and damage_amount >= 0 then
 			best_damage_amount = damage_amount
 			best_damage_index = i
 		end
 	end
 
 	if best_damage_amount < 0 then
-		return 
+		return
 	end
 
 	pack_index[stride](biggest_hit, 1, unpack_index[stride](damages, best_damage_index))
 
-	local is_dead = not health_extension.is_alive(health_extension)
+	local is_dead = not health_extension:is_alive()
 
 	if not is_dead then
 		local hit_reaction = HitReactions.get_reaction(self.hit_reaction_template, self.is_husk)
@@ -257,7 +246,7 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	end
 
 	if not self.hit_effect_template then
-		return 
+		return
 	end
 
 	local damage_type = biggest_hit[DamageDataIndex.DAMAGE_TYPE]
@@ -281,7 +270,7 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	conditions.death = is_dead
 	conditions.weapon_type = offending_weapon
 	conditions.is_husk = is_husk
-	conditions.damage = 0 < damage_amount
+	conditions.damage = damage_amount > 0
 	conditions.is_critical_strike = is_critical_strike
 
 	if self.ai_extension then
@@ -298,17 +287,16 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 		debug_printf("    Hit direction: %q", tostring(damage_direction))
 	end
 
-	local hit_effects, num_effects = self._resolve_effects(self, conditions, temp_effect_results)
+	local hit_effects, num_effects = self:_resolve_effects(conditions, temp_effect_results)
 	local parameters = conditions
 	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
-	parameters.force_dismember = buff_extension and buff_extension.has_buff_perk(buff_extension, "bloody_mess")
+	parameters.force_dismember = buff_extension and buff_extension:has_buff_perk("bloody_mess")
 
 	for i = 1, num_effects, 1 do
-		self._execute_effect(self, unit, hit_effects[i], biggest_hit, parameters, t, dt)
+		self:_execute_effect(unit, hit_effects[i], biggest_hit, parameters, t, dt)
 	end
-
-	return 
 end
+
 GenericHitReactionExtension._resolve_effects = function (self, conditions, results)
 	local template_name = self.hit_effect_template
 	local templates = HitTemplates[template_name]
@@ -331,6 +319,7 @@ GenericHitReactionExtension._resolve_effects = function (self, conditions, resul
 
 	return results, num_results
 end
+
 GenericHitReactionExtension._can_wall_nail = function (self, effect_template)
 	if effect_template.disable_wall_nail then
 		return false
@@ -364,19 +353,21 @@ GenericHitReactionExtension._can_wall_nail = function (self, effect_template)
 
 	return true
 end
+
 GenericHitReactionExtension.set_death_sound_event_id = function (self, playing_id)
 	self._death_sound_event_id = playing_id
-
-	return 
 end
+
 GenericHitReactionExtension.death_sound_event_id = function (self)
 	return self._death_sound_event_id
 end
+
 local allowed_diagonal_hit_zones = {
 	left_arm = true,
 	right_arm = true,
 	torso = true
 }
+
 GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, unit, actor_name, hit_direction, flow_event, hit_zone)
 	local dismember_event = flow_event
 
@@ -388,12 +379,12 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 	local line_pos = impact_position + hit_direction * 2
 	local dot_pos = impact_position + Vector3(0, 0, -2)
 	local dot = Vector3.dot(Vector3.normalize(impact_position - line_pos), Vector3.normalize(impact_position - dot_pos))
-	local is_diagonal = 0.51 < dot and dot < 0.7
+	local is_diagonal = dot > 0.51 and dot < 0.7
 	local hit_unit_dir = Quaternion.forward(Unit.local_rotation(unit, 0))
 	local angle = Vector3.flat_angle(hit_unit_dir, hit_direction)
 	local direction = nil
 
-	if angle < -math.pi * 0.75 or math.pi * 0.75 < angle then
+	if angle < -math.pi * 0.75 or angle > math.pi * 0.75 then
 		direction = nil
 	elseif angle < -math.pi * 0.25 then
 		direction = "right"
@@ -404,7 +395,7 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 	end
 
 	if is_diagonal and direction then
-		if hit_zone ~= "torso" and 0.5 < math.random() then
+		if hit_zone ~= "torso" and math.random() > 0.5 then
 			dismember_event = "dismember_torso_" .. direction
 			dismember_event = {
 				dismember_event,
@@ -417,7 +408,9 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 
 	return dismember_event
 end
+
 local WWISE_PARAMETERS = {}
+
 GenericHitReactionExtension._execute_effect = function (self, unit, effect_template, biggest_hit, parameters, t, dt)
 	debug_printf("executing effect %s", effect_template.template_name)
 
@@ -434,18 +427,18 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	local flow_event = (type(effect_template.flow_event) == "table" and table.clone(effect_template.flow_event)) or effect_template.flow_event
 	local death_ext = self.death_extension
 	local hit_ragdoll_actor_name = biggest_hit[DamageDataIndex.HIT_RAGDOLL_ACTOR_NAME]
-	local can_wall_nail = self._can_wall_nail(self, effect_template)
+	local can_wall_nail = self:_can_wall_nail(effect_template)
 	local death_has_started = death_ext and death_ext.death_has_started
 
 	if effect_template.buff then
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		buff_system.add_buff(buff_system, self.unit, effect_template.buff, attacker_unit)
+		buff_system:add_buff(self.unit, effect_template.buff, attacker_unit)
 	end
 
 	dismember = effect_template.do_dismember or (parameters.force_dismember and parameters.death)
 
-	if dismember and (not death_ext or not death_ext.is_wall_nailed(death_ext)) then
+	if dismember and (not death_ext or not death_ext:is_wall_nailed()) then
 		local event_table = Dismemberments[breed_data.name]
 		local dismember_event = event_table[hit_zone]
 
@@ -461,13 +454,13 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		end
 
 		if effect_template.do_diagonal_dismemberments and allowed_diagonal_hit_zones[hit_zone] then
-			flow_event = self._check_for_diagonal_dismemberment(self, unit, actors[1], hit_direction, flow_event, hit_zone)
+			flow_event = self:_check_for_diagonal_dismemberment(unit, actors[1], hit_direction, flow_event, hit_zone)
 		end
 
 		if ScriptUnit.has_extension(unit, "projectile_linker_system") then
 			local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
 
-			projectile_linker_system.clear_linked_projectiles(projectile_linker_system, unit)
+			projectile_linker_system:clear_linked_projectiles(unit)
 		end
 	end
 
@@ -483,8 +476,6 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		else
 			map_function(flow_event, function (event, unit)
 				Unit.flow_event(unit, event)
-
-				return 
 			end, unit)
 			debug_printf("Started flow event %q", tostring(flow_event))
 		end
@@ -531,7 +522,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		local random_animation = math.random(#animations)
 		local animation_event = animations[random_animation]
 
-		if death_has_started and death_ext.second_hit_ragdoll_allowed(death_ext) then
+		if death_has_started and death_ext:second_hit_ragdoll_allowed() then
 			animation_event = "ragdoll"
 		elseif death_has_started then
 			animation_event = nil
@@ -555,7 +546,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	end
 
 	local damage_amount = biggest_hit[DamageDataIndex.DAMAGE_AMOUNT]
-	local should_spawn_blood = 0 < damage_amount and not breed_data.no_blood_splatter_on_damage and not effect_template.disable_blood
+	local should_spawn_blood = damage_amount > 0 and not breed_data.no_blood_splatter_on_damage and not effect_template.disable_blood
 	local sound_event = effect_template.sound_event
 	local impact_position = nil
 
@@ -645,9 +636,8 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 
 		death_ext.death_has_started = true
 	end
-
-	return 
 end
+
 GenericHitReactionExtension._do_push = function (self, unit, dt)
 	local delayed_push = self._delayed_push
 	local push_parameters = delayed_push.push_parameters
@@ -693,7 +683,7 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	local push_force = nil
 
 	if death_velocity then
-		push_force = distal_vector + lateral_vector + vertical_vector + death_velocity.unbox(death_velocity) * 20
+		push_force = distal_vector + lateral_vector + vertical_vector + death_velocity:unbox() * 20
 	else
 		push_force = distal_vector + lateral_vector + vertical_vector
 	end
@@ -723,4 +713,4 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	return true
 end
 
-return 
+return

@@ -6,8 +6,6 @@ local function debug_printf(...)
 	if DialogueStateHandler.debug then
 		print("[DialogueStateHandler] " .. string.format(...))
 	end
-
-	return 
 end
 
 DialogueStateHandler.init = function (self, world, wwise_world)
@@ -15,22 +13,21 @@ DialogueStateHandler.init = function (self, world, wwise_world)
 	self._wwise_world = wwise_world
 	self._playing_dialogues = {}
 	self._current_index = 1
-
-	return 
 end
+
 DialogueStateHandler.add_playing_dialogue = function (self, identifier, event_id, t)
 	self._playing_dialogues[#self._playing_dialogues + 1] = {
 		identifier = identifier,
 		event_id = event_id,
 		start_time = t
 	}
-
-	return 
 end
+
 local DIALOGUES_TO_REMOVE = {}
+
 DialogueStateHandler.update = function (self, t)
 	if #self._playing_dialogues == 0 then
-		return 
+		return
 	end
 
 	table.clear(DIALOGUES_TO_REMOVE)
@@ -60,7 +57,7 @@ DialogueStateHandler.update = function (self, t)
 		end
 	end
 
-	if 0 < #DIALOGUES_TO_REMOVE then
+	if #DIALOGUES_TO_REMOVE > 0 then
 		table.sort(DIALOGUES_TO_REMOVE)
 
 		for i = #DIALOGUES_TO_REMOVE, 1, -1 do
@@ -69,8 +66,6 @@ DialogueStateHandler.update = function (self, t)
 			table.remove(self._playing_dialogues, index)
 		end
 	end
-
-	return 
 end
 
-return 
+return

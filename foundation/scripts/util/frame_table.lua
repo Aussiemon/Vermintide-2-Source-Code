@@ -1,5 +1,5 @@
 if rawget(_G, "FrameTable") then
-	return 
+	return
 end
 
 local DEBUG_FRAME_TABLES = false
@@ -63,18 +63,14 @@ local function clear_tables()
 	end
 
 	frame_table_counters[frame_table_current_buffer] = 0
-
-	return 
 end
 
 local function swap_tables()
 	frame_table_current_buffer = 3 - frame_table_current_buffer
-
-	return 
 end
 
 local function frame_table_noop()
-	return 
+	return
 end
 
 local function frame_table_ordinary_alloc()
@@ -83,14 +79,12 @@ end
 
 local function frame_table_init(use_ordinary_tables)
 	if not use_ordinary_tables then
-		return 
+		return
 	end
 
 	FrameTable.alloc_table = frame_table_ordinary_alloc
 	FrameTable.clear_tables = frame_table_noop
 	FrameTable.swap_tables = frame_table_noop
-
-	return 
 end
 
 FrameTable = {
@@ -100,4 +94,4 @@ FrameTable = {
 	swap_tables = swap_tables
 }
 
-return 
+return

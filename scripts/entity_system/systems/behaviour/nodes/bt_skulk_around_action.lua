@@ -4,18 +4,15 @@ BTSkulkAroundAction = class(BTSkulkAroundAction, BTNode)
 BTSkulkAroundAction.name = "BTSkulkAroundAction"
 local position_lookup = POSITION_LOOKUP
 local script_data = script_data
+
 BTSkulkAroundAction.init = function (self, ...)
 	BTSkulkAroundAction.super.init(self, ...)
-
-	return 
 end
 
 local function debug3d(unit, text, color_name)
 	if script_data.debug_ai_movement then
 		Debug.world_sticky_text(position_lookup[unit], text, color_name)
 	end
-
-	return 
 end
 
 BTSkulkAroundAction.enter = function (self, unit, blackboard, t)
@@ -29,20 +26,20 @@ BTSkulkAroundAction.enter = function (self, unit, blackboard, t)
 
 	local network_manager = Managers.state.network
 
-	network_manager.anim_event(network_manager, unit, "to_combat")
-	network_manager.anim_event(network_manager, unit, "move_fwd")
+	network_manager:anim_event(unit, "to_combat")
+	network_manager:anim_event(unit, "move_fwd")
 	blackboard.navigation_extension:set_max_speed(blackboard.breed.run_speed)
 
 	local locomotion = blackboard.locomotion_extension
 
-	locomotion.set_rotation_speed(locomotion, 5)
+	locomotion:set_rotation_speed(5)
 
 	if skulk_data.skulk_pos then
 		local pos = skulk_data.skulk_pos:unbox()
 
 		blackboard.navigation_extension:move_to(pos)
 	else
-		local pos = self.get_new_skulk_goal(self, unit, blackboard)
+		local pos = self:get_new_skulk_goal(unit, blackboard)
 		skulk_data.skulk_pos = Vector3Box(pos)
 
 		blackboard.navigation_extension:move_to(pos)
@@ -51,14 +48,13 @@ BTSkulkAroundAction.enter = function (self, unit, blackboard, t)
 	if not skulk_data.attack_timer or skulk_data.attack_timer < t then
 		skulk_data.attack_timer = t + math.random(25, 30)
 	end
-
-	return 
 end
+
 BTSkulkAroundAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
-	navigation_extension.set_max_speed(navigation_extension, default_move_speed)
+	navigation_extension:set_max_speed(default_move_speed)
 
 	if reason == "aborted" then
 	end
@@ -67,9 +63,8 @@ BTSkulkAroundAction.leave = function (self, unit, blackboard, t, reason, destroy
 		local skulk_data = blackboard.skulk_data
 		skulk_data.attack_timer = nil
 	end
-
-	return 
 end
+
 BTSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 	local skulk_data = blackboard.skulk_data
 
@@ -85,7 +80,7 @@ BTSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 
 	local urgency_to_engage = PerceptionUtils.special_opportunity(unit, blackboard)
 
-	if 0 < urgency_to_engage then
+	if urgency_to_engage > 0 then
 		blackboard.approach_target = true
 
 		return "failed"
@@ -103,6 +98,7 @@ BTSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
+
 BTSkulkAroundAction.get_new_skulk_goal = function (self, unit, blackboard)
 	local conflict_director = Managers.state.conflict
 	local main_paths = conflict_director.level_analysis:get_main_paths()
@@ -162,4 +158,4 @@ BTSkulkAroundAction.get_new_skulk_goal = function (self, unit, blackboard)
 	return pos
 end
 
-return 
+return

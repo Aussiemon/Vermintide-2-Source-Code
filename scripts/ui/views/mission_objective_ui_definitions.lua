@@ -987,17 +987,13 @@ local animation_definitions = {
 				area_text_shadow_style.font_size = area_text_style.default_font_size
 				area_text_style.text_color[1] = 0
 				area_text_shadow_style.text_color[1] = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return 
+				return
 			end
 		},
 		{
@@ -1044,8 +1040,6 @@ local animation_definitions = {
 				local bottom_right_default_size = bottom_right_definition.size
 				bottom_right_current_size[1] = bottom_right_default_size[1] * start_progress
 				bottom_right_uvs[1][1] = 1 - start_progress
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.min(0.1 + math.easeInCubic(progress), 1)
@@ -1087,11 +1081,9 @@ local animation_definitions = {
 				local bottom_right_default_size = bottom_right_definition.size
 				bottom_right_current_size[1] = bottom_right_default_size[1] * anim_progress
 				bottom_right_uvs[1][1] = 1 - anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return 
+				return
 			end
 		},
 		{
@@ -1111,8 +1103,6 @@ local animation_definitions = {
 				background_style.color[1] = 0
 				ui_scenegraph.top_center.local_position[2] = scenegraph_definition.top_center.position[2]
 				ui_scenegraph.bottom_center.local_position[2] = scenegraph_definition.bottom_center.position[2]
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
@@ -1152,11 +1142,9 @@ local animation_definitions = {
 				background_style.color[1] = 255
 				widget.style.top_edge_glow.color[1] = 255 * anim_progress
 				widget.style.bottom_edge_glow.color[1] = 255 * anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return 
+				return
 			end
 		},
 		{
@@ -1166,8 +1154,6 @@ local animation_definitions = {
 			init = function (ui_scenegraph, scenegraph_definition, widget, params)
 				local style = widget.style
 				local content = widget.content
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeCubic(progress)
@@ -1179,13 +1165,9 @@ local animation_definitions = {
 				area_text_style.text_color[1] = alpha
 				area_text_shadow_style.text_color[1] = alpha
 				local size_progress = math.ease_pulse(math.easeInCubic(progress))
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
 				params.render_settings.snap_pixel_positions = false
-
-				return 
 			end
 		},
 		{
@@ -1195,8 +1177,6 @@ local animation_definitions = {
 			init = function (ui_scenegraph, scenegraph_definition, widget, params)
 				local style = widget.style
 				local content = widget.content
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
@@ -1210,11 +1190,9 @@ local animation_definitions = {
 				local new_font_size = default_font_size - font_size_diff * anim_progress
 				area_text_style.font_size = new_font_size
 				area_text_shadow_style.font_size = new_font_size
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return 
+				return
 			end
 		},
 		{
@@ -1230,8 +1208,6 @@ local animation_definitions = {
 				top_glow_style.size[2] = 0
 				bottom_glow_style.size[2] = 0
 				background_style.color[1] = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
@@ -1272,11 +1248,9 @@ local animation_definitions = {
 				local background_size_fraction = text_height / background_default_size[2] * anim_progress
 				background_uvs[1][2] = 0.5 * background_size_fraction
 				background_uvs[2][2] = 1 - background_size_fraction / 2
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return 
+				return
 			end
 		},
 		{
@@ -1284,18 +1258,14 @@ local animation_definitions = {
 			start_progress = 5,
 			end_progress = 5.3,
 			init = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
 				ui_scenegraph.mission_pivot.local_position[2] = 0
-
-				return 
 			end
 		},
 		{
@@ -1303,18 +1273,14 @@ local animation_definitions = {
 			start_progress = 5.3,
 			end_progress = 5.6,
 			init = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
 				params.render_settings.snap_pixel_positions = true
-
-				return 
 			end
 		}
 	},
@@ -1326,17 +1292,13 @@ local animation_definitions = {
 			init = function (ui_scenegraph, scenegraph_definition, widget, params)
 				params.render_settings.alpha_multiplier = 0
 				params.render_settings.snap_pixel_positions = false
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return 
+				return
 			end
 		}
 	}

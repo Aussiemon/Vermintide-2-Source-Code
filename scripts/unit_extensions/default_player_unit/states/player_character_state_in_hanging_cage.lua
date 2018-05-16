@@ -1,9 +1,9 @@
 PlayerCharacterStateInHangingCage = class(PlayerCharacterStateInHangingCage, PlayerCharacterState)
+
 PlayerCharacterStateInHangingCage.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "in_hanging_cage")
-
-	return 
 end
+
 PlayerCharacterStateInHangingCage.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	CharacterStateHelper.stop_weapon_actions(self.inventory_extension, "in_hanging_cage")
 
@@ -24,16 +24,14 @@ PlayerCharacterStateInHangingCage.on_enter = function (self, unit, input, dt, co
 	self.falling_animation = animations.falling
 	self.landing_animation = animations.landing
 	self.state = "hanging"
-
-	return 
 end
+
 PlayerCharacterStateInHangingCage.on_exit = function (self, unit, input, dt, context, t, next_state)
 	local status_extension = self.status_extension
 
-	status_extension.set_in_hanging_cage(status_extension, false)
-
-	return 
+	status_extension:set_in_hanging_cage(false)
 end
+
 PlayerCharacterStateInHangingCage.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local status_extension = self.status_extension
@@ -60,18 +58,16 @@ PlayerCharacterStateInHangingCage.update = function (self, unit, input, dt, cont
 			local current_position = POSITION_LOOKUP[unit]
 			local locomotion_extension = self.locomotion_extension
 
-			locomotion_extension.teleport_to(locomotion_extension, current_position)
-			locomotion_extension.enable_script_driven_movement(locomotion_extension)
+			locomotion_extension:teleport_to(current_position)
+			locomotion_extension:enable_script_driven_movement()
 			self.health_extension:die()
-			csm.change_state(csm, "knocked_down", {
+			csm:change_state("knocked_down", {
 				already_in_ko_anim = true
 			})
 		end
 
 		self.state = new_state
 	end
-
-	return 
 end
 
-return 
+return

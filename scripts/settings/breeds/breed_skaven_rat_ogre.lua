@@ -931,4 +931,4 @@ action_data.fling_skaven = table.clone(action_data.melee_shove)
 action_data.fling_skaven.self_running_speed_threshold = 2
 BreedActions.skaven_rat_ogre = table.create_copy(BreedActions.skaven_rat_ogre, action_data)
 
-return 
+return

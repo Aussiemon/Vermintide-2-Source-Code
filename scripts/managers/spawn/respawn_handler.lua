@@ -2,14 +2,14 @@ RespawnHandler = class(RespawnHandler, ExtensionSystemBase)
 local RESPAWN_DISTANCE = 70
 local END_OF_LEVEL_BUFFER = 35
 local RESPAWN_TIME = 30
+
 RespawnHandler.init = function (self)
 	self._respawnable_players = {}
 	self._respawn_units = {}
 	self._respawner_groups = {}
 	self._active_overridden_units = {}
-
-	return 
 end
+
 RespawnHandler.set_respawn_unit_available = function (self, unit)
 	local respawn_units = self._respawn_units
 	local num_respawn_units = #respawn_units
@@ -23,8 +23,6 @@ RespawnHandler.set_respawn_unit_available = function (self, unit)
 			break
 		end
 	end
-
-	return 
 end
 
 local function comparator(a, b)
@@ -43,7 +41,7 @@ RespawnHandler.set_override_respawn_group = function (self, group_id, enable)
 	if not group_data then
 		print("WARNING: Override Player Respawning, bad group-id: '" .. tostring(group_id) .. "'' (not registered).")
 
-		return 
+		return
 	end
 
 	print("Override Player Respawning", group_id, enable)
@@ -59,9 +57,8 @@ RespawnHandler.set_override_respawn_group = function (self, group_id, enable)
 			active_overridden[unit] = nil
 		end
 	end
-
-	return 
 end
+
 RespawnHandler.respawn_unit_spawned = function (self, unit)
 	local distance_through_level = Unit.get_data(unit, "distance_through_level")
 	local group_id = Unit.get_data(unit, "respawn_group_id")
@@ -87,9 +84,8 @@ RespawnHandler.respawn_unit_spawned = function (self, unit)
 
 		print("respawn_unit_spawned with group id:", group_id)
 	end
-
-	return 
 end
+
 RespawnHandler.debug_draw_respaners = function (self)
 	local up = Vector3(0, 0, 1)
 	local respawners = self._respawn_units
@@ -106,9 +102,8 @@ RespawnHandler.debug_draw_respaners = function (self)
 
 		Debug.world_sticky_text(pos, s, "yellow")
 	end
-
-	return 
 end
+
 RespawnHandler.remove_respawn_units_due_to_crossroads = function (self, removed_path_distances, total_main_path_length)
 	local debug_respawners = script_data.debug_player_respawns
 	local up = Vector3(0, 0, 1.5)
@@ -123,7 +118,7 @@ RespawnHandler.remove_respawn_units_due_to_crossroads = function (self, removed_
 		for j = 1, num_removed_dist_pairs, 1 do
 			local dist_pair = removed_path_distances[j]
 
-			if dist_pair[1] - 1 <= travel_dist and travel_dist <= dist_pair[2] + 1 then
+			if travel_dist >= dist_pair[1] - 1 and travel_dist <= dist_pair[2] + 1 then
 				to_remove[#to_remove + 1] = i
 
 				if respawner.group_data then
@@ -154,9 +149,8 @@ RespawnHandler.remove_respawn_units_due_to_crossroads = function (self, removed_
 
 		to_remove[i] = nil
 	end
-
-	return 
 end
+
 RespawnHandler.recalc_respawner_dist_due_to_crossroads = function (self)
 	local respawners = self._respawn_units
 	local unit_local_position = Unit.local_position
@@ -166,10 +160,10 @@ RespawnHandler.recalc_respawner_dist_due_to_crossroads = function (self)
 		local best_point, best_travel_dist, move_percent, best_sub_index, best_main_path = MainPathUtils.closest_pos_at_main_path(nil, unit_local_position(respawner.unit, 0))
 		respawner.distance_through_level = best_travel_dist
 	end
-
-	return 
 end
+
 local ready_players = {}
+
 RespawnHandler.update = function (self, dt, t, player_statuses)
 	for _, status in ipairs(player_statuses) do
 		if status.health_state == "dead" and not status.ready_for_respawn and not status.respawn_timer then
@@ -183,7 +177,7 @@ RespawnHandler.update = function (self, dt, t, player_statuses)
 
 				if Unit.alive(player_unit) then
 					local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-					respawn_time = buff_extension.apply_buffs_to_value(buff_extension, respawn_time, StatBuffIndex.FASTER_RESPAWN)
+					respawn_time = buff_extension:apply_buffs_to_value(respawn_time, StatBuffIndex.FASTER_RESPAWN)
 				end
 			end
 
@@ -193,9 +187,8 @@ RespawnHandler.update = function (self, dt, t, player_statuses)
 			status.ready_for_respawn = true
 		end
 	end
-
-	return 
 end
+
 RespawnHandler.get_respawn_unit = function (self)
 	local respawn_units = self._respawn_units
 	local active_overridden = self._active_overridden_units
@@ -216,11 +209,11 @@ RespawnHandler.get_respawn_unit = function (self)
 
 	local conflict = Managers.state.conflict
 	local level_analysis = conflict.level_analysis
-	local main_paths = level_analysis.get_main_paths(level_analysis)
+	local main_paths = level_analysis:get_main_paths()
 	local ahead_position = POSITION_LOOKUP[conflict.main_path_info.ahead_unit]
 
 	if not ahead_position then
-		return 
+		return
 	end
 
 	local path_pos, travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, ahead_position)
@@ -267,8 +260,9 @@ RespawnHandler.get_respawn_unit = function (self)
 
 	return selected_unit
 end
+
 RespawnHandler.destroy = function (self)
-	return 
+	return
 end
 
-return 
+return

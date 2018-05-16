@@ -4,6 +4,7 @@ local accepted_slots = {
 	slot_ranged = true,
 	slot_melee = true
 }
+
 OverchargeBarUI.init = function (self, ingame_ui_context)
 	self.platform = PLATFORM
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -12,7 +13,7 @@ OverchargeBarUI.init = function (self, ingame_ui_context)
 	self.slot_animations = {}
 	self.ui_animations = {}
 
-	self.create_ui_elements(self)
+	self:create_ui_elements()
 
 	self.peer_id = ingame_ui_context.peer_id
 	self.player_manager = ingame_ui_context.player_manager
@@ -21,15 +22,13 @@ OverchargeBarUI.init = function (self, ingame_ui_context)
 		snap_pixel_positions = true
 	}
 	self._previous_overcharge_fraction = 0
-
-	return 
 end
 
 local function get_overcharge_amount(player_unit)
 	local overcharge_extension = ScriptUnit.extension(player_unit, "overcharge_system")
-	local overcharge_fraction = overcharge_extension.overcharge_fraction(overcharge_extension)
-	local threshold_fraction = overcharge_extension.threshold_fraction(overcharge_extension)
-	local anim_blend_overcharge = overcharge_extension.get_anim_blend_overcharge(overcharge_extension)
+	local overcharge_fraction = overcharge_extension:overcharge_fraction()
+	local threshold_fraction = overcharge_extension:threshold_fraction()
+	local anim_blend_overcharge = overcharge_extension:get_anim_blend_overcharge()
 
 	return overcharge_fraction, threshold_fraction, 0.8, anim_blend_overcharge
 end
@@ -37,25 +36,24 @@ end
 OverchargeBarUI._set_player_extensions = function (self, player_unit)
 	self.inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 	self.initialize_charge_bar = true
-
-	return 
 end
+
 OverchargeBarUI._update_overcharge = function (self, player, dt)
 	if not player then
-		return 
+		return
 	end
 
 	local player_unit = player.player_unit
 
 	if not Unit.alive(player_unit) then
-		return 
+		return
 	end
 
 	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
-	local equipment = inventory_extension.equipment(inventory_extension)
+	local equipment = inventory_extension:equipment()
 
 	if not equipment then
-		return 
+		return
 	end
 
 	local wielded = equipment.wielded
@@ -72,48 +70,45 @@ OverchargeBarUI._update_overcharge = function (self, player, dt)
 				local item_name = item_data.name
 				local is_wielded = wielded == item_data
 				local overcharge_fraction, min_threshold_fraction, max_threshold_fraction, anim_blend_overcharge = get_overcharge_amount(player_unit)
-				local has_overcharge = overcharge_fraction and 0 < overcharge_fraction
+				local has_overcharge = overcharge_fraction and overcharge_fraction > 0
 
 				if has_overcharge then
 					if not self.wielded_item_name or self.wielded_item_name ~= item_name then
 						self.wielded_item_name = item_name
 					end
 
-					self.set_charge_bar_fraction(self, overcharge_fraction, min_threshold_fraction, max_threshold_fraction, anim_blend_overcharge)
+					self:set_charge_bar_fraction(overcharge_fraction, min_threshold_fraction, max_threshold_fraction, anim_blend_overcharge)
 
 					return true
 				end
 			end
 		end
 	end
-
-	return 
 end
+
 OverchargeBarUI.create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	local widget_definitions = definitions.inventory_entry_definitions
 	self.charge_bar = UIWidget.init(definitions.widget_definitions.charge_bar)
-
-	return 
 end
+
 OverchargeBarUI.update = function (self, dt, t, player)
 	local ui_scenegraph = self.ui_scenegraph
 	local input_manager = self.input_manager
-	local input_service = input_manager.get_service(input_manager, "ingame_menu")
-	local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
+	local input_service = input_manager:get_service("ingame_menu")
+	local gamepad_active = input_manager:is_device_active("gamepad")
 
-	if self._update_overcharge(self, player, dt) then
+	if self:_update_overcharge(player, dt) then
 		local ui_renderer = self.ui_renderer
 
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
 		UIRenderer.draw_widget(ui_renderer, self.charge_bar)
 		UIRenderer.end_pass(ui_renderer)
 	end
-
-	return 
 end
+
 local colors = {
 	normal = {
 		255,
@@ -134,6 +129,7 @@ local colors = {
 		0
 	}
 }
+
 OverchargeBarUI.set_charge_bar_fraction = function (self, overcharge_fraction, min_threshold_fraction, max_threshold_fraction, anim_blend_overcharge)
 	local widget = self.charge_bar
 	local style = widget.style
@@ -177,24 +173,21 @@ OverchargeBarUI.set_charge_bar_fraction = function (self, overcharge_fraction, m
 	icon_color[2] = color[2]
 	icon_color[3] = color[3]
 	icon_color[4] = color[4]
+end
 
-	return 
-end
 OverchargeBarUI.destroy = function (self)
-	return 
+	return
 end
+
 OverchargeBarUI.set_alpha = function (self, alpha)
 	self.render_settings.alpha_multiplier = alpha
-
-	return 
 end
+
 OverchargeBarUI.apply_crosshair_position = function (self, x, y)
 	local scenegraph_id = "screen_bottom_pivot"
 	local position = self.ui_scenegraph[scenegraph_id].local_position
 	position[1] = x
 	position[2] = y
-
-	return 
 end
 
-return 
+return

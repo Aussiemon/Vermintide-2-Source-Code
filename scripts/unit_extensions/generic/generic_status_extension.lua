@@ -7,6 +7,7 @@ local DamageDataIndex = DamageDataIndex
 local ATTACK_INTENSITY_RESET = 0.25
 local ATTACK_INTENSITY_DECAY = 1
 local ATTACK_INTENSITY_DECAY_FAST = 2
+
 GenericStatusExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.profile_id = extension_init_data.profile_id
@@ -58,7 +59,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	self.attack_intensity = 0
 	self.attack_allowed = true
 	local difficulty_manager = Managers.state.difficulty
-	local difficulty_settings = difficulty_manager.get_difficulty_settings(difficulty_manager)
+	local difficulty_settings = difficulty_manager:get_difficulty_settings()
 	self.attack_intensity_threshold = difficulty_settings.attack_intensity_threshold or 3
 	self.inside_transport_unit = nil
 	self.using_transport = false
@@ -92,7 +93,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	self.is_server = Managers.player.is_server
 	self.update_funcs = {}
 
-	self.set_spawn_grace_time(self, 5)
+	self:set_spawn_grace_time(5)
 
 	self.ready_for_assisted_respawn = false
 	self.assisted_respawning = false
@@ -103,9 +104,8 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	if self.is_server then
 		self.conflict_director = Managers.state.conflict
 	end
-
-	return 
 end
+
 GenericStatusExtension.extensions_ready = function (self)
 	local unit = self.unit
 	self.health_extension = ScriptUnit.extension(unit, "health_system")
@@ -117,48 +117,42 @@ GenericStatusExtension.extensions_ready = function (self)
 		self.first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 		self.low_health_playing_id, self.low_health_source_id = self.first_person_extension:play_hud_sound_event("hud_low_health")
 	end
-
-	return 
 end
+
 GenericStatusExtension.destroy = function (self)
 	local first_person_extension = self.first_person_extension
 
 	if first_person_extension then
-		first_person_extension.play_hud_sound_event(first_person_extension, "stop_hud_low_health")
+		first_person_extension:play_hud_sound_event("stop_hud_low_health")
 	end
-
-	return 
 end
+
 GenericStatusExtension.add_damage_intensity = function (self, percent_health_lost, damage_type)
 	self.intensity = math.clamp(self.intensity + percent_health_lost * CurrentIntensitySettings.intensity_add_per_percent_dmg_taken * 100, 0, 100)
 	self.intensity_decay_delay = CurrentIntensitySettings.decay_delay
-
-	return 
 end
+
 GenericStatusExtension.add_intensity = function (self, value)
 	self.intensity = math.clamp(self.intensity + value, 0, 100)
 	self.intensity_decay_delay = CurrentIntensitySettings.decay_delay
-
-	return 
 end
+
 GenericStatusExtension.add_combo_target_count = function (self, value)
 	self.combo_target_count = math.clamp(self.combo_target_count + value, 0, 5)
-
-	return 
 end
+
 GenericStatusExtension.add_intensity_by_difficulty = function (self, intensity_table)
 	local difficulty = Managers.state.difficulty:get_difficulty()
 	local value = intensity_table[difficulty]
 
 	if not value then
-		return 
+		return
 	end
 
 	self.intensity = math.clamp(self.intensity + value, 0, 100)
 	self.intensity_decay_delay = CurrentIntensitySettings.decay_delay
-
-	return 
 end
+
 local intensity_ignored_damage_types = {
 	temporary_health_degen = true,
 	overcharge = true,
@@ -167,9 +161,10 @@ local intensity_ignored_damage_types = {
 	heal = true,
 	health_degen = true
 }
+
 GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 	local health_extension = self.health_extension
-	local damages, num_damages = health_extension.recent_damages(health_extension)
+	local damages, num_damages = health_extension:recent_damages()
 
 	if self.is_server then
 		local stride = DamageDataIndex.STRIDE
@@ -180,9 +175,9 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 
 			if not intensity_ignored_damage_types[damage_type] then
 				local amount = damages[index + DamageDataIndex.DAMAGE_AMOUNT]
-				local max_health = health_extension.get_max_health(health_extension)
+				local max_health = health_extension:get_max_health()
 
-				self.add_damage_intensity(self, amount / max_health, damage_type)
+				self:add_damage_intensity(amount / max_health, damage_type)
 			end
 		end
 
@@ -197,7 +192,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 
 	local current_player_health = self.health_extension:current_health_percent()
 
-	if 0 < self.attack_intensity then
+	if self.attack_intensity > 0 then
 		if self.attack_intensity_threshold < self.attack_intensity then
 			self.attack_allowed = false
 		elseif self.attack_intensity < ATTACK_INTENSITY_RESET then
@@ -207,7 +202,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		local attack_intensity_decay = ATTACK_INTENSITY_DECAY
 		local buff_extension = self.buff_extension
 
-		if buff_extension.has_buff_type(buff_extension, "bardin_ironbreaker_activated_ability") or buff_extension.has_buff_type(buff_extension, "bardin_ironbreaker_activated_ability_duration") then
+		if buff_extension:has_buff_type("bardin_ironbreaker_activated_ability") or buff_extension:has_buff_type("bardin_ironbreaker_activated_ability_duration") then
 			attack_intensity_decay = ATTACK_INTENSITY_DECAY_FAST
 		end
 
@@ -220,7 +215,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		self.move_speed_multiplier_timer = self.move_speed_multiplier_timer + move_speed_timer_added_bonus
 	end
 
-	if 0 < num_damages then
+	if num_damages > 0 then
 		local slow_movement = false
 
 		for i = 1, num_damages / DamageDataIndex.STRIDE, 1 do
@@ -234,7 +229,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		end
 
 		if slow_movement then
-			self.move_speed_multiplier = self.current_move_speed_multiplier(self) * 0.5
+			self.move_speed_multiplier = self:current_move_speed_multiplier() * 0.5
 			self.move_speed_multiplier = math.max(0.2, self.move_speed_multiplier)
 			self.move_speed_multiplier_timer = 0
 		end
@@ -244,7 +239,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 
 	if not player.remote then
 		local previous_max_fatigue_points = self.max_fatigue_points
-		local max_fatigue_points = self._get_current_max_fatigue_points(self) or previous_max_fatigue_points
+		local max_fatigue_points = self:_get_current_max_fatigue_points() or previous_max_fatigue_points
 		local degen_delay = self.block_broken_degen_delay or self.push_degen_delay or PlayerUnitStatusSettings.FATIGUE_DEGEN_DELAY
 		degen_delay = degen_delay / self.buff_extension:apply_buffs_to_value(1, StatBuffIndex.FATIGUE_REGEN)
 
@@ -252,15 +247,15 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			self.fatigue = (max_fatigue_points == 0 and 0) or previous_max_fatigue_points / max_fatigue_points * self.fatigue
 		end
 
-		if 0 < num_damages and 50 <= self.fatigue then
+		if num_damages > 0 and self.fatigue >= 50 then
 			if self.action_stun_push then
 				self.action_stun_push = false
 			else
-				self.remove_fatigue_points(self, 100 / max_fatigue_points)
+				self:remove_fatigue_points(100 / max_fatigue_points)
 			end
 		end
 
-		if self.last_fatigue_gain_time + degen_delay <= t then
+		if t >= self.last_fatigue_gain_time + degen_delay then
 			self.action_stun_push = false
 			self.show_fatigue_gui = false
 			local degen_amount = (max_fatigue_points == 0 and 0) or PlayerUnitStatusSettings.FATIGUE_POINTS_DEGEN_AMOUNT / max_fatigue_points * PlayerUnitStatusSettings.MAX_FATIGUE
@@ -272,13 +267,13 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 				self.has_bonus_fatigue_active = false
 			end
 
-			self.remove_fatigue_points(self, new_degen_amount * dt)
+			self:remove_fatigue_points(new_degen_amount * dt)
 
 			self.block_broken_degen_delay = nil
 			self.push_degen_delay = nil
 		end
 
-		if 0 < self.dodge_cooldown and self.dodge_cooldown_delay and self.dodge_cooldown_delay < t then
+		if self.dodge_cooldown > 0 and self.dodge_cooldown_delay and self.dodge_cooldown_delay < t then
 			self.dodge_cooldown = 0
 		end
 
@@ -318,8 +313,8 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			WwiseWorld.set_source_parameter(wwise_world, self.low_health_source_id, "health_status", health)
 		end
 
-		if self.shielded and not health_extension.has_assist_shield(health_extension) and health_extension.previous_shield_end_reason(health_extension) then
-			self.set_shielded(self, false)
+		if self.shielded and not health_extension:has_assist_shield() and health_extension:previous_shield_end_reason() then
+			self:set_shielded(false)
 		end
 	end
 
@@ -342,7 +337,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			if self.release_falling_time and self.release_falling_time < t then
 				local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 
-				locomotion.set_disabled(locomotion, false, nil, nil, true)
+				locomotion:set_disabled(false, nil, nil, true)
 
 				if self.is_server then
 					StatusUtils.set_grabbed_by_pack_master_network("pack_master_released", unit, false, nil)
@@ -354,7 +349,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			if self.release_unhook_time and self.release_unhook_time < t then
 				local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 
-				locomotion.set_disabled(locomotion, false, nil, nil, true)
+				locomotion:set_disabled(false, nil, nil, true)
 
 				if self.is_server then
 					StatusUtils.set_grabbed_by_pack_master_network("pack_master_released", unit, false, nil)
@@ -369,7 +364,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 
 	local poison_level = math.min(PlayerUnitStatusSettings.poison_level_max, self.poison_level)
 
-	if self.is_server and 0 < poison_level and self.poison_next_t < t then
+	if self.is_server and poison_level > 0 and self.poison_next_t < t then
 		self.poison_next_t = t + PlayerUnitStatusSettings.poison_dot_time
 
 		if Unit.alive(self.poison_attacker) then
@@ -379,14 +374,14 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
-	if 0 < poison_level then
+	if poison_level > 0 then
 		local wwise_world = Managers.world:wwise_world(self.world)
 
 		if self.poison_time_to_cough < t then
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 
-			dialogue_input.trigger_dialogue_event(dialogue_input, "hit_by_goo", event_data)
+			dialogue_input:trigger_dialogue_event("hit_by_goo", event_data)
 
 			self.poison_time_to_cough = t + 2
 		end
@@ -400,15 +395,15 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	if script_data.debug_draw_block_arcs then
-		self._debug_draw_block_arcs(self, unit)
+		self:_debug_draw_block_arcs(unit)
 	end
 
 	if script_data.debug_draw_push_arcs then
-		self._debug_draw_push_arcs(self, unit)
+		self:_debug_draw_push_arcs(unit)
 	end
 
 	if self.player.local_player then
-		local in_end_zone = self.is_in_end_zone(self)
+		local in_end_zone = self:is_in_end_zone()
 
 		if self._current_end_zone_state ~= in_end_zone then
 			Wwise.set_state("inside_waystone", (in_end_zone and "true") or "false")
@@ -416,12 +411,11 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 			self._current_end_zone_state = in_end_zone
 		end
 	end
-
-	return 
 end
+
 GenericStatusExtension._debug_draw_block_arcs = function (self, unit)
 	local inventory_extension = self.inventory_extension
-	local equipment = inventory_extension.equipment(inventory_extension)
+	local equipment = inventory_extension:equipment()
 	local weapon_template_name = equipment.wielded.template or equipment.wielded.temporary_template
 
 	if weapon_template_name then
@@ -431,19 +425,19 @@ GenericStatusExtension._debug_draw_block_arcs = function (self, unit)
 		if player then
 			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 			local player_position = POSITION_LOOKUP[unit]
-			local player_rotation = (first_person_extension and first_person_extension.current_rotation(first_person_extension)) or Unit.world_rotation(unit, 0)
+			local player_rotation = (first_person_extension and first_person_extension:current_rotation()) or Unit.world_rotation(unit, 0)
 			local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 			local player_direction_flat = Vector3.flat(player_direction)
 			local buff_extension = self.buff_extension
-			local block_angle = buff_extension.apply_buffs_to_value(buff_extension, weapon_template.block_angle or 90, StatBuffIndex.BLOCK_ANGLE)
-			local outer_block_angle = buff_extension.apply_buffs_to_value(buff_extension, weapon_template.outer_block_angle or 360, StatBuffIndex.BLOCK_ANGLE)
+			local block_angle = buff_extension:apply_buffs_to_value(weapon_template.block_angle or 90, StatBuffIndex.BLOCK_ANGLE)
+			local outer_block_angle = buff_extension:apply_buffs_to_value(weapon_template.outer_block_angle or 360, StatBuffIndex.BLOCK_ANGLE)
 			block_angle = math.clamp(block_angle, 0, 360)
 			outer_block_angle = math.clamp(outer_block_angle, 0, 360)
 			local block_half_angle = math.rad(block_angle * 0.5)
 			local outer_block_half_angle = math.rad(outer_block_angle * 0.5)
 			local color = Color(255, 255, 255)
 
-			if self.is_blocking(self) then
+			if self:is_blocking() then
 				local block_color = self._debug_draw_color
 
 				if block_color and not Color(unpack(block_color)) then
@@ -463,9 +457,8 @@ GenericStatusExtension._debug_draw_block_arcs = function (self, unit)
 			QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_right_direction) * 2 + Vector3.up(), color)
 		end
 	end
-
-	return 
 end
+
 GenericStatusExtension._debug_draw_push_arcs = function (self, unit)
 	local player = self.player
 	local current_action = self._current_action
@@ -473,12 +466,12 @@ GenericStatusExtension._debug_draw_push_arcs = function (self, unit)
 	if player and current_action then
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 		local player_position = POSITION_LOOKUP[unit]
-		local player_rotation = (first_person_extension and first_person_extension.current_rotation(first_person_extension)) or Unit.world_rotation(unit, 0)
+		local player_rotation = (first_person_extension and first_person_extension:current_rotation()) or Unit.world_rotation(unit, 0)
 		local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 		local player_direction_flat = Vector3.flat(player_direction)
 		local buff_extension = self.buff_extension
-		local push_half_angle = math.rad(buff_extension.apply_buffs_to_value(buff_extension, current_action.push_angle or 90, StatBuffIndex.BLOCK_ANGLE) * 0.5)
-		local outer_push_half_angle = math.rad(buff_extension.apply_buffs_to_value(buff_extension, current_action.outer_push_angle or 360, StatBuffIndex.BLOCK_ANGLE) * 0.5)
+		local push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.push_angle or 90, StatBuffIndex.BLOCK_ANGLE) * 0.5)
+		local outer_push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.outer_push_angle or 360, StatBuffIndex.BLOCK_ANGLE) * 0.5)
 		local color = Color(255, 255, 255)
 		local inner_left_direction = Quaternion.rotate(Quaternion(Vector3.up(), push_half_angle), player_direction_flat)
 		local inner_right_direction = Quaternion.rotate(Quaternion(Vector3.up(), -push_half_angle), player_direction_flat)
@@ -492,25 +485,22 @@ GenericStatusExtension._debug_draw_push_arcs = function (self, unit)
 		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_left_direction) * 2 + Vector3.up(), color)
 		QuickDrawer:line(player_position + Vector3.up(), player_position + Vector3.normalize(outer_right_direction) * 2 + Vector3.up(), color)
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_spawn_grace_time = function (self, duration)
 	local t = Managers.time:time("game")
 	self.spawn_grace_time = t + duration
 	self.spawn_grace = true
 	self.update_funcs.spawn_grace_time = GenericStatusExtension.update_spawn_grace_time
-
-	return 
 end
+
 GenericStatusExtension.update_spawn_grace_time = function (self, t)
 	if self.spawn_grace_time < t then
 		self.spawn_grace = false
 		self.update_funcs.spawn_grace_time = nil
 	end
-
-	return 
 end
+
 GenericStatusExtension.fall_distance = function (self)
 	if self.fall_height then
 		local current_fall_height = POSITION_LOOKUP[self.unit].z
@@ -521,6 +511,7 @@ GenericStatusExtension.fall_distance = function (self)
 
 	return 0
 end
+
 GenericStatusExtension.update_falling = function (self, t)
 	if self.locomotion_extension:is_on_ground() and not self.on_ladder then
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(self.unit)
@@ -537,7 +528,7 @@ GenericStatusExtension.update_falling = function (self, t)
 				local network_height = math.clamp(fall_distance * 4, 0, 255)
 				local network_manager = Managers.state.network
 				local unit_storage = Managers.state.unit_storage
-				local go_id = unit_storage.go_id(unit_storage, self.unit)
+				local go_id = unit_storage:go_id(self.unit)
 
 				network_manager.network_transmit:send_rpc_server("rpc_take_falling_damage", go_id, network_height)
 			end
@@ -556,13 +547,12 @@ GenericStatusExtension.update_falling = function (self, t)
 		self.update_funcs.falling = nil
 		self.fall_height = nil
 	end
-
-	return 
 end
+
 GenericStatusExtension._get_current_max_fatigue_points = function (self)
 	local inventory_extension = self.inventory_extension
-	local slot_name = inventory_extension.get_wielded_slot_name(inventory_extension)
-	local slot_data = inventory_extension.get_slot_data(inventory_extension, slot_name)
+	local slot_name = inventory_extension:get_wielded_slot_name()
+	local slot_data = inventory_extension:get_slot_data(slot_name)
 
 	if slot_data then
 		local item_data = slot_data.item_data
@@ -575,7 +565,7 @@ GenericStatusExtension._get_current_max_fatigue_points = function (self)
 			local boon_handler = player.boon_handler
 
 			if boon_handler then
-				local num_bonus_fatigue_boons = boon_handler.get_num_boons(boon_handler, "bonus_fatigue")
+				local num_bonus_fatigue_boons = boon_handler:get_num_boons("bonus_fatigue")
 				local boon_template = BoonTemplates.bonus_fatigue
 				max_fatigue_points = max_fatigue_points + num_bonus_fatigue_boons * boon_template.fatigue_increase
 			end
@@ -583,13 +573,16 @@ GenericStatusExtension._get_current_max_fatigue_points = function (self)
 
 		return max_fatigue_points
 	end
-
-	return 
 end
+
+GenericStatusExtension.get_max_fatigue_points = function (self)
+	return self:_get_current_max_fatigue_points()
+end
+
 GenericStatusExtension.can_block = function (self, attacking_unit, attack_direction)
 	local unit = self.unit
 	local inventory_extension = self.inventory_extension
-	local equipment = inventory_extension.equipment(inventory_extension)
+	local equipment = inventory_extension:equipment()
 	local network_manager = Managers.state.network
 	local weapon_template_name = equipment.wielded.template or equipment.wielded.temporary_template
 	local weapon_template = Weapons[weapon_template_name]
@@ -603,15 +596,15 @@ GenericStatusExtension.can_block = function (self, attacking_unit, attack_direct
 	if player then
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 		local player_position = POSITION_LOOKUP[unit]
-		local player_rotation = (first_person_extension and first_person_extension.current_rotation(first_person_extension)) or Unit.world_rotation(unit, 0)
+		local player_rotation = (first_person_extension and first_person_extension:current_rotation()) or Unit.world_rotation(unit, 0)
 		local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 		local player_direction_flat = Vector3.flat(player_direction)
 		local attacker_position = POSITION_LOOKUP[attacking_unit]
 		local block_direction = Vector3.normalize(attacker_position - player_position)
 		local block_direction_flat = Vector3.flat(block_direction)
 		local buff_extension = self.buff_extension
-		local block_angle = buff_extension.apply_buffs_to_value(buff_extension, weapon_template.block_angle or 90, StatBuffIndex.BLOCK_ANGLE)
-		local outer_block_angle = buff_extension.apply_buffs_to_value(buff_extension, weapon_template.outer_block_angle or 360, StatBuffIndex.BLOCK_ANGLE)
+		local block_angle = buff_extension:apply_buffs_to_value(weapon_template.block_angle or 90, StatBuffIndex.BLOCK_ANGLE)
+		local outer_block_angle = buff_extension:apply_buffs_to_value(weapon_template.outer_block_angle or 360, StatBuffIndex.BLOCK_ANGLE)
 		block_angle = math.clamp(block_angle, 0, 360)
 		outer_block_angle = math.clamp(outer_block_angle, 0, 360)
 		local block_half_angle = math.rad(block_angle * 0.5)
@@ -650,35 +643,68 @@ GenericStatusExtension.can_block = function (self, attacking_unit, attack_direct
 
 		return true, fatigue_point_costs_multiplier, improved_block, attack_direction
 	end
-
-	return 
 end
+
 GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_unit, fatigue_point_costs_multiplier, improved_block, attack_direction)
 	local unit = self.unit
 	local inventory_extension = self.inventory_extension
-	local equipment = inventory_extension.equipment(inventory_extension)
+	local equipment = inventory_extension:equipment()
 	local network_manager = Managers.state.network
 	local blocking_unit = nil
 
-	self.set_has_blocked(self, true)
+	self:set_has_blocked(true)
 
 	local player = self.player
 
 	if player then
 		if not player.remote then
-
-			-- Decompilation error in this vicinity:
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-			local first_person_unit = first_person_extension.get_first_person_unit(first_person_extension)
+			local first_person_unit = first_person_extension:get_first_person_unit()
 			local t = Managers.time:time("game")
 			local time_blocking = t - self.raise_block_time
 			local timed_block = time_blocking <= 0.3
+
+			if Managers.state.controller_features and player.local_player then
+				Managers.state.controller_features:add_effect("rumble", {
+					rumble_effect = "block"
+				})
+
+				blocking_unit = equipment.right_hand_wielded_unit or equipment.left_hand_wielded_unit
+				local weapon_template_name = equipment.wielded.template or equipment.wielded.temporary_template
+				local weapon_template = Weapons[weapon_template_name]
+
+				self:add_fatigue_points(fatigue_type, attacking_unit, blocking_unit, fatigue_point_costs_multiplier)
+
+				local parry_reaction = "parry_hit_reaction"
+
+				if improved_block then
+					local amount = PlayerUnitStatusSettings.fatigue_point_costs[fatigue_type]
+
+					if amount <= 2 and (attack_direction == "left" or attack_direction == "right") then
+						parry_reaction = "parry_deflect_" .. attack_direction
+					end
+
+					local block_arc_event = (weapon_template and weapon_template.sound_event_block_within_arc) or "Play_player_block_ark_success"
+
+					first_person_extension:play_hud_sound_event(block_arc_event, nil, false)
+				else
+					local wwise_world = Managers.world:wwise_world(self.world)
+					local enemy_pos = POSITION_LOOKUP[attacking_unit]
+
+					if enemy_pos then
+						local player_pos = first_person_extension:current_position()
+						local dir_to_enemy = Vector3.normalize(enemy_pos - player_pos)
+
+						WwiseWorld.trigger_event(wwise_world, "Play_player_combat_out_of_arc_block", player_pos + dir_to_enemy)
+					end
+				end
+			end
 
 			Unit.animation_event(first_person_unit, parry_reaction)
 		else
 			blocking_unit = equipment.right_hand_wielded_unit_3p or equipment.left_hand_wielded_unit_3p
 
-			self.add_fatigue_points(self, fatigue_type, attacking_unit, blocking_unit, fatigue_point_costs_multiplier)
+			self:add_fatigue_points(fatigue_type, attacking_unit, blocking_unit, fatigue_point_costs_multiplier)
 			Unit.animation_event(unit, "parry_hit_reaction")
 		end
 
@@ -692,9 +718,8 @@ GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_
 
 		World.create_particles(self.world, "fx/wpnfx_sword_spark_parry", particle_position)
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_shielded = function (self, shielded)
 	local unit = self.unit
 	local player = self.player
@@ -704,24 +729,23 @@ GenericStatusExtension.set_shielded = function (self, shielded)
 		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 		if shielded then
-			first_person_extension.play_hud_sound_event(first_person_extension, "hud_player_buff_shield_activate")
-			first_person_extension.create_screen_particles(first_person_extension, "fx/screenspace_shield_healed")
+			first_person_extension:play_hud_sound_event("hud_player_buff_shield_activate")
+			first_person_extension:create_screen_particles("fx/screenspace_shield_healed")
 		else
 			local health_extension = self.health_extension
-			local shield_end_reason = health_extension.previous_shield_end_reason(health_extension)
+			local shield_end_reason = health_extension:previous_shield_end_reason()
 
 			if shield_end_reason == "blocked_damage" then
-				first_person_extension.play_hud_sound_event(first_person_extension, "hud_player_buff_shield_down")
+				first_person_extension:play_hud_sound_event("hud_player_buff_shield_down")
 			elseif shield_end_reason == "timed_out" then
-				first_person_extension.play_hud_sound_event(first_person_extension, "hud_player_buff_shield_deactivate")
+				first_person_extension:play_hud_sound_event("hud_player_buff_shield_deactivate")
 			end
 		end
 	end
 
 	self.shielded = shielded
-
-	return 
 end
+
 local no_sfx_heal_reasons = {
 	career_passive = true,
 	health_regen = true,
@@ -734,6 +758,7 @@ local vfx_heal_reasons = {
 	buff_shared_medpack = true,
 	healing_draught = true
 }
+
 GenericStatusExtension.healed = function (self, reason)
 	local unit = self.unit
 	local player = self.player
@@ -742,7 +767,7 @@ GenericStatusExtension.healed = function (self, reason)
 	if player.local_player then
 		if not no_sfx_heal_reasons[reason] then
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-			local first_person_unit = first_person_extension.get_first_person_unit(first_person_extension)
+			local first_person_unit = first_person_extension:get_first_person_unit()
 
 			Unit.flow_event(first_person_unit, "sfx_heal")
 		end
@@ -755,20 +780,20 @@ GenericStatusExtension.healed = function (self, reason)
 	elseif vfx_heal_reasons[reason] then
 		ScriptWorld.create_particles_linked(self.world, "fx/chr_player_fak_healed", unit, 0, "destroy")
 	end
-
-	return 
 end
+
 GenericStatusExtension.fatigued = function (self)
 	local max_fatigue = PlayerUnitStatusSettings.MAX_FATIGUE
 	local max_fatigue_points = self.max_fatigue_points
 
-	return (max_fatigue_points == 0 and true) or max_fatigue - max_fatigue / max_fatigue_points < self.fatigue
+	return (max_fatigue_points == 0 and true) or self.fatigue > max_fatigue - max_fatigue / max_fatigue_points
 end
+
 GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attacking_unit, blocking_weapon_unit, fatigue_point_costs_multiplier)
 	local buff_extension = self.buff_extension
 
 	if Development.parameter("disable_fatigue_system") then
-		return 
+		return
 	end
 
 	local amount = PlayerUnitStatusSettings.fatigue_point_costs[fatigue_type]
@@ -778,23 +803,23 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	local fatigue_cost = amount * max_fatigue / max_fatigue_points * (fatigue_point_costs_multiplier or 1)
 
 	if blocking_weapon_unit and self.timed_block and t < self.timed_block then
-		fatigue_cost = buff_extension.apply_buffs_to_value(buff_extension, fatigue_cost, StatBuffIndex.TIMED_BLOCK_COST)
+		fatigue_cost = buff_extension:apply_buffs_to_value(fatigue_cost, StatBuffIndex.TIMED_BLOCK_COST)
 	end
 
-	if amount and fatigue_point_costs_multiplier and amount < 2 and fatigue_point_costs_multiplier < 1 and buff_extension.has_buff_perk(buff_extension, "in_arc_block_cost_reduction") then
+	if amount and fatigue_point_costs_multiplier and amount < 2 and fatigue_point_costs_multiplier < 1 and buff_extension:has_buff_perk("in_arc_block_cost_reduction") then
 		fatigue_cost = 0
 	end
 
 	if blocking_weapon_unit then
-		fatigue_cost = buff_extension.apply_buffs_to_value(buff_extension, fatigue_cost, StatBuffIndex.BLOCK_COST)
+		fatigue_cost = buff_extension:apply_buffs_to_value(fatigue_cost, StatBuffIndex.BLOCK_COST)
 
-		if buff_extension.has_buff_perk(buff_extension, "overcharged_block") then
+		if buff_extension:has_buff_perk("overcharged_block") then
 			local overcharge_extension = ScriptUnit.has_extension(self.unit, "overcharge_system")
 
-			if overcharge_extension and overcharge_extension.above_overcharge_threshold(overcharge_extension) then
+			if overcharge_extension and overcharge_extension:above_overcharge_threshold() then
 				fatigue_cost = fatigue_cost * 0.5
 
-				overcharge_extension.remove_charge(overcharge_extension, amount)
+				overcharge_extension:remove_charge(amount)
 			end
 		end
 	end
@@ -803,22 +828,22 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	local current_fatigue = self.fatigue
 
 	if blocking_weapon_unit then
-		buff_extension.trigger_procs(buff_extension, "on_block", attacking_unit, fatigue_type, blocking_weapon_unit)
+		buff_extension:trigger_procs("on_block", attacking_unit, fatigue_type, blocking_weapon_unit)
 	end
 
-	if self._block_breaking_fatigue_gain(self, fatigue_type, max_fatigue) then
-		buff_extension.trigger_procs(buff_extension, "on_block_broken", attacking_unit, fatigue_type, blocking_weapon_unit)
+	if self:_block_breaking_fatigue_gain(fatigue_type, max_fatigue) then
+		buff_extension:trigger_procs("on_block_broken", attacking_unit, fatigue_type, blocking_weapon_unit)
 	end
 
 	local block_breaking = false
 
-	if self._block_breaking_fatigue_gain(self, fatigue_type, max_fatigue) then
-		self.set_block_broken(self, true, t)
+	if self:_block_breaking_fatigue_gain(fatigue_type, max_fatigue) then
+		self:set_block_broken(true, t)
 
 		block_breaking = true
 	end
 
-	if 0 < fatigue_cost then
+	if fatigue_cost > 0 then
 		self.last_fatigue_gain_time = t
 		self.show_fatigue_gui = true
 	end
@@ -830,7 +855,7 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	local first_person_extension = self.first_person_extension
 
 	if PlayerUnitStatusSettings.fatigue_points_to_play_heavy_block_sfx < amount and first_person_extension then
-		first_person_extension.play_hud_sound_event(first_person_extension, "Play_player_combat_heavy_block_sweetner", nil, false)
+		first_person_extension:play_hud_sound_event("Play_player_combat_heavy_block_sweetner", nil, false)
 	end
 
 	local fatigue_points_to_trigger_vo = PlayerUnitStatusSettings.fatigue_points_to_trigger_vo
@@ -845,18 +870,16 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	local position = POSITION_LOOKUP[self.unit]
 
 	Managers.telemetry.events:fatigue_gained(self.player, position, fatigue_type, block_breaking)
-
-	return 
 end
+
 GenericStatusExtension.remove_fatigue_points = function (self, amount)
 	self.fatigue = math.max(self.fatigue - amount, 0)
-
-	return 
 end
+
 GenericStatusExtension.get_dodge_item_data = function (self)
 	local inventory_extension = self.inventory_extension
-	local slot_name = inventory_extension.get_wielded_slot_name(inventory_extension)
-	local slot_data = inventory_extension.get_slot_data(inventory_extension, slot_name)
+	local slot_name = inventory_extension:get_wielded_slot_name()
+	local slot_data = inventory_extension:get_slot_data(slot_name)
 	local dodge_count = nil
 
 	if slot_data then
@@ -866,46 +889,48 @@ GenericStatusExtension.get_dodge_item_data = function (self)
 	end
 
 	self.dodge_count = dodge_count or 2
-
-	return 
 end
+
 GenericStatusExtension.add_dodge_cooldown = function (self)
-	self.get_dodge_item_data(self)
+	self:get_dodge_item_data()
 
 	self.dodge_cooldown = math.min(self.dodge_cooldown + 1, 3 + self.dodge_count)
 	self.dodge_cooldown_delay = nil
-
-	return 
 end
+
 GenericStatusExtension.start_dodge_cooldown = function (self, t)
 	self.dodge_cooldown_delay = t + 0.5
-
-	return 
 end
+
 GenericStatusExtension.get_dodge_cooldown = function (self)
 	local buff_extension = ScriptUnit.extension(self.unit, "buff_system")
 	local cooldown = 0.4 + 0.6 * (1 - math.max(self.dodge_cooldown - self.dodge_count, 0) / 3)
 
-	return (buff_extension.has_buff_type(buff_extension, "passive_career_we_2") and 1) or cooldown
+	return (buff_extension:has_buff_type("passive_career_we_2") and 1) or cooldown
 end
+
 GenericStatusExtension._block_breaking_fatigue_gain = function (self, fatigue_type, max_fatigue)
-	return max_fatigue <= self.fatigue and self._block_breaking_fatigue_type(self, fatigue_type)
+	return max_fatigue <= self.fatigue and self:_block_breaking_fatigue_type(fatigue_type)
 end
+
 GenericStatusExtension._block_breaking_fatigue_type = function (self, fatigue_type)
 	return fatigue_type == "blocked_attack" or fatigue_type == "sv_shove" or fatigue_type == "complete" or fatigue_type == "blocked_ranged" or fatigue_type == "blocked_running" or fatigue_type == "blocked_sv_cleave" or fatigue_type == "blocked_sv_sweep" or fatigue_type == "sv_push" or fatigue_type == "chaos_cleave" or fatigue_type == "blocked_berzerker" or fatigue_type == "chaos_spawn_combo"
 end
+
 GenericStatusExtension.current_fatigue = function (self)
 	return self.fatigue
 end
+
 GenericStatusExtension.current_fatigue_points = function (self)
 	local max_fatigue = PlayerUnitStatusSettings.MAX_FATIGUE
 	local max_fatigue_points = self.max_fatigue_points
 
 	return (max_fatigue_points == 0 and 0) or math.ceil(self.fatigue / max_fatigue / max_fatigue_points), max_fatigue_points
 end
+
 GenericStatusExtension.set_pushed = function (self, pushed, t)
 	if pushed and self.push_cooldown then
-		return 
+		return
 	elseif pushed then
 		self.pushed = pushed
 		self.push_cooldown = true
@@ -913,23 +938,20 @@ GenericStatusExtension.set_pushed = function (self, pushed, t)
 	else
 		self.pushed = pushed
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_pushed_no_cooldown = function (self, pushed, t)
 	self.pushed = pushed
 
 	if pushed then
 		self.pushed_at_t = t
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_hit_react_type = function (self, hit_react_type)
 	self._hit_react_type = hit_react_type
-
-	return 
 end
+
 GenericStatusExtension.hitreact_interrupt = function (self)
 	if self.interrupt_cooldown then
 		return false
@@ -938,27 +960,28 @@ GenericStatusExtension.hitreact_interrupt = function (self)
 
 		return true
 	end
-
-	return 
 end
+
 GenericStatusExtension.want_an_attack = function (self)
 	return self.attack_allowed
 end
+
 GenericStatusExtension.add_attack_intensity = function (self, attack_intensity, clamp_override)
 	self.attack_intensity = math.clamp(self.attack_intensity + attack_intensity, 0, clamp_override or 10)
 
 	if self.attack_intensity_threshold < self.attack_intensity then
 		self.attack_allowed = false
 	end
-
-	return 
 end
+
 GenericStatusExtension.is_pushed = function (self)
 	return self.pushed and not self.overcharge_exploding
 end
+
 GenericStatusExtension.hit_react_type = function (self)
 	return self._hit_react_type or "light"
 end
+
 GenericStatusExtension.set_block_broken = function (self, block_broken, t)
 	self.block_broken = block_broken
 
@@ -966,23 +989,20 @@ GenericStatusExtension.set_block_broken = function (self, block_broken, t)
 		self.block_broken_degen_delay = 0
 		self.block_broken_at_t = t
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_has_pushed = function (self, degen_delay)
 	local buff_extension = self.buff_extension
 
-	if not buff_extension.has_buff_perk(buff_extension, "slayer_stamina") then
+	if not buff_extension:has_buff_perk("slayer_stamina") then
 		self.push_degen_delay = degen_delay or 3
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_has_blocked = function (self, has_blocked)
 	self._has_blocked = has_blocked
-
-	return 
 end
+
 GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_unit)
 	local unit = self.unit
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
@@ -998,17 +1018,17 @@ GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_
 		Unit.set_local_rotation(pouncer_unit, 0, towards_foe_rotation)
 
 		if not self.is_husk then
-			locomotion.set_wanted_velocity(locomotion, Vector3.zero())
+			locomotion:set_wanted_velocity(Vector3.zero())
 		end
 
-		locomotion.set_disabled(locomotion, true, LocomotionUtils.update_local_animation_driven_movement_with_parent, pouncer_unit)
+		locomotion:set_disabled(true, LocomotionUtils.update_local_animation_driven_movement_with_parent, pouncer_unit)
 	else
-		locomotion.set_disabled(locomotion, false, LocomotionUtils.update_local_animation_driven_movement_with_parent)
+		locomotion:set_disabled(false, LocomotionUtils.update_local_animation_driven_movement_with_parent)
 
 		self.pouncer_unit = nil
 	end
 
-	self.set_outline_incapacitated(self, pounced_down or self.is_disabled(self), pouncer_unit, true)
+	self:set_outline_incapacitated(pounced_down or self:is_disabled(), pouncer_unit, true)
 
 	if pounced_down then
 		SurroundingAwareSystem.add_event(unit, "pounced_down", DialogueSettings.pounced_down_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
@@ -1019,7 +1039,7 @@ GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_
 		event_data.target = unit
 		event_data.target_name = ScriptUnit.extension(unit, "dialogue_system").context.player_profile
 
-		dialogue_input.trigger_dialogue_event(dialogue_input, "pounced_down", event_data)
+		dialogue_input:trigger_dialogue_event("pounced_down", event_data)
 		Managers.music:trigger_event("enemy_gutter_runner_pounced_stinger")
 	end
 
@@ -1029,13 +1049,12 @@ GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_
 
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.pounced_down, pounced_down, go_id, enemy_go_id)
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_crouching = function (self, crouching)
 	self.crouching = crouching
 
-	self.set_slowed(self, crouching)
+	self:set_slowed(crouching)
 
 	local player = self.player
 
@@ -1048,15 +1067,16 @@ GenericStatusExtension.set_crouching = function (self, crouching)
 			Managers.state.network.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.crouching, crouching, go_id, 0)
 		end
 	end
-
-	return 
 end
+
 GenericStatusExtension.crouch_toggle = function (self)
 	local crouching = not self.crouching
 
 	return crouching
 end
+
 local biggest_hit = {}
+
 GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 	self.knocked_down = knocked_down
 	local unit = self.unit
@@ -1065,7 +1085,7 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 	local player = self.player
 	local is_server = self.is_server
 
-	self.set_outline_incapacitated(self, knocked_down)
+	self:set_outline_incapacitated(knocked_down)
 
 	if knocked_down then
 		SurroundingAwareSystem.add_event(unit, "knocked_down", DialogueSettings.knocked_down_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
@@ -1076,7 +1096,7 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 		event_data.height_distance = 0
 		event_data.target_name = ScriptUnit.extension(unit, "dialogue_system").context.player_profile
 
-		dialogue_input.trigger_dialogue_event(dialogue_input, "knocked_down", event_data)
+		dialogue_input:trigger_dialogue_event("knocked_down", event_data)
 
 		local position = POSITION_LOOKUP[unit]
 		local nearby_units = {}
@@ -1089,24 +1109,24 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 			if nearby_unit_dialogue_extension then
 				local nearby_unit_dialogue_input = nearby_unit_dialogue_extension.input
 
-				nearby_unit_dialogue_input.trigger_dialogue_event(nearby_unit_dialogue_input, "knocked_down", event_data)
+				nearby_unit_dialogue_input:trigger_dialogue_event("knocked_down", event_data)
 			end
 		end
 
 		if is_server and not self.knocked_down_bleed_id then
-			self.knocked_down_bleed_id = buff_extension.add_buff(buff_extension, "knockdown_bleed")
+			self.knocked_down_bleed_id = buff_extension:add_buff("knockdown_bleed")
 		end
 
 		if player.local_player then
 			MOOD_BLACKBOARD.knocked_down = true
 		end
 
-		buff_extension.trigger_procs(buff_extension, "on_knocked_down")
+		buff_extension:trigger_procs("on_knocked_down")
 	else
-		health_extension.reset(health_extension)
+		health_extension:reset()
 
 		if is_server and self.knocked_down_bleed_id then
-			buff_extension.remove_buff(buff_extension, self.knocked_down_bleed_id)
+			buff_extension:remove_buff(self.knocked_down_bleed_id)
 
 			self.knocked_down_bleed_id = nil
 		end
@@ -1118,10 +1138,10 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 
 	if knocked_down then
 		if is_server then
-			self.add_intensity(self, CurrentIntensitySettings.intensity_add_knockdown)
+			self:add_intensity(CurrentIntensitySettings.intensity_add_knockdown)
 		end
 
-		local kill_damages, num_kill_damages = health_extension.recent_damages(health_extension)
+		local kill_damages, num_kill_damages = health_extension:recent_damages()
 
 		pack_index[DamageDataIndex.STRIDE](biggest_hit, 1, unpack_index[DamageDataIndex.STRIDE](kill_damages, 1))
 
@@ -1139,9 +1159,8 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 	end
 
 	Managers.music:check_last_man_standing_music_state()
-
-	return 
 end
+
 GenericStatusExtension.set_ready_for_assisted_respawn = function (self, ready, flavour_unit)
 	local previously_ready = self.ready_for_assisted_respawn
 	self.ready_for_assisted_respawn = ready
@@ -1158,31 +1177,30 @@ GenericStatusExtension.set_ready_for_assisted_respawn = function (self, ready, f
 		outline_extension.set_distance("revive")
 		outline_extension.set_outline_color("ally")
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_assisted_respawning = function (self, respawning, helper_unit)
 	self.assisted_respawning = respawning
 	self.assisted_respawn_helper_unit = helper_unit
-
-	return 
 end
+
 GenericStatusExtension.is_assisted_respawning = function (self)
 	return self.assisted_respawning
 end
+
 GenericStatusExtension.get_assisted_respawn_helper_unit = function (self)
 	return self.assisted_respawn_helper_unit
 end
+
 GenericStatusExtension.set_respawned = function (self, respawned)
 	local unit = self.unit
 
 	if respawned then
-		self.set_ready_for_assisted_respawn(self, false)
+		self:set_ready_for_assisted_respawn(false)
 		Managers.music:check_last_man_standing_music_state()
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_dead = function (self, dead)
 	local player = self.player
 
@@ -1203,9 +1221,8 @@ GenericStatusExtension.set_dead = function (self, dead)
 	end
 
 	self.dead = dead
-
-	return 
 end
+
 GenericStatusExtension.set_blocking = function (self, blocking)
 	self.blocking = blocking
 
@@ -1213,14 +1230,12 @@ GenericStatusExtension.set_blocking = function (self, blocking)
 		local t = Managers.time:time("game")
 		self.raise_block_time = t
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_slowed = function (self, slowed)
 	self.is_slowed = slowed
-
-	return 
 end
+
 GenericStatusExtension.set_wounded = function (self, wounded, reason, t)
 	if wounded then
 		self.wounds = self.wounds - 1
@@ -1239,9 +1254,8 @@ GenericStatusExtension.set_wounded = function (self, wounded, reason, t)
 			MOOD_BLACKBOARD.bleeding_out = false
 		end
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_pulled_up = function (self, pulled_up, helper)
 	if self.is_ledge_hanging then
 		self.pulled_up = pulled_up
@@ -1252,14 +1266,13 @@ GenericStatusExtension.set_pulled_up = function (self, pulled_up, helper)
 			event_data.reviver = helper
 			event_data.reviver_name = ScriptUnit.extension(helper, "dialogue_system").context.player_profile
 
-			dialogue_input.trigger_dialogue_event(dialogue_input, "revive_completed", event_data)
+			dialogue_input:trigger_dialogue_event("revive_completed", event_data)
 		end
 	elseif not pulled_up then
 		self.pulled_up = pulled_up
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_revived = function (self, revived, reviver)
 	self.revived = revived
 	local unit = self.unit
@@ -1270,23 +1283,22 @@ GenericStatusExtension.set_revived = function (self, revived, reviver)
 		event_data.reviver = reviver
 		event_data.reviver_name = ScriptUnit.extension(reviver, "dialogue_system").context.player_profile
 
-		dialogue_input.trigger_dialogue_event(dialogue_input, "revive_completed", event_data)
+		dialogue_input:trigger_dialogue_event("revive_completed", event_data)
 
 		local revived_buff_extension = ScriptUnit.extension(unit, "buff_system")
 
-		revived_buff_extension.trigger_procs(revived_buff_extension, "on_revived", reviver)
+		revived_buff_extension:trigger_procs("on_revived", reviver)
 
 		local reviver_buff_extension = ScriptUnit.extension(reviver, "buff_system")
 
-		reviver_buff_extension.trigger_procs(reviver_buff_extension, "on_revived_ally", unit)
+		reviver_buff_extension:trigger_procs("on_revived_ally", unit)
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_zooming = function (self, zooming, camera_name)
 	self.zooming = zooming
 
-	self.set_slowed(self, zooming)
+	self:set_slowed(zooming)
 
 	local unit = self.unit
 	local player = self.player
@@ -1316,13 +1328,13 @@ GenericStatusExtension.set_zooming = function (self, zooming, camera_name)
 
 		self.zoom_mode = nil
 	end
-
-	return 
 end
+
 local DEFAULT_ZOOM_TABLE = {
 	"zoom_in",
 	"increased_zoom_in"
 }
+
 GenericStatusExtension.switch_variable_zoom = function (self, zoom_table)
 	local player = self.player
 	local camera_follow_unit = player.camera_follow_unit
@@ -1345,21 +1357,18 @@ GenericStatusExtension.switch_variable_zoom = function (self, zoom_table)
 
 		self.zoom_mode = new_camera_name
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_grabbed_by_tentacle = function (self, grabbed, tentacle_unit)
 	self.grabbed_by_tentacle = grabbed
 	self.grabbed_by_tentacle_unit = tentacle_unit
 	self.grabbed_by_tentacle_status = (grabbed and "grabbed") or nil
-
-	return 
 end
+
 GenericStatusExtension.set_grabbed_by_tentacle_status = function (self, status)
 	self.grabbed_by_tentacle_status = status
-
-	return 
 end
+
 GenericStatusExtension.set_grabbed_by_chaos_spawn = function (self, grabbed, chaos_spawn_unit)
 	self.grabbed_by_chaos_spawn = grabbed
 
@@ -1371,52 +1380,47 @@ GenericStatusExtension.set_grabbed_by_chaos_spawn = function (self, grabbed, cha
 		self.grabbed_by_chaos_spawn_status = nil
 		self.grabbed_by_chaos_spawn_status_count = nil
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_grabbed_by_chaos_spawn_status = function (self, status)
 	if self.grabbed_by_chaos_spawn_status_count then
 		self.grabbed_by_chaos_spawn_status = status
 		self.grabbed_by_chaos_spawn_status_count = self.grabbed_by_chaos_spawn_status_count + 1
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_in_vortex = function (self, in_vortex, vortex_unit)
 	self.in_vortex = in_vortex
 	self.in_vortex_unit = (in_vortex and vortex_unit) or nil
 
-	self.set_outline_incapacitated(self, in_vortex or self.is_disabled(self))
-
-	return 
+	self:set_outline_incapacitated(in_vortex or self:is_disabled())
 end
+
 GenericStatusExtension.set_near_vortex = function (self, near_vortex, vortex_unit)
 	self.near_vortex = near_vortex
 	self.near_vortex_unit = (near_vortex and vortex_unit) or nil
-
-	return 
 end
+
 GenericStatusExtension.set_in_liquid = function (self, in_liquid, liquid_unit)
 	self.in_liquid = in_liquid
 	self.in_liquid_unit = (in_liquid and liquid_unit) or nil
-
-	return 
 end
+
 GenericStatusExtension.set_catapulted = function (self, catapulted, velocity)
 	local unit = self.unit
 
 	if catapulted then
-		if not self.is_disabled(self) then
+		if not self:is_disabled() then
 			self.catapulted = true
 			self.last_catapulted_time = Managers.time:time("game")
 
 			if not self.is_husk then
 				self.catapulted_velocity = Vector3Box(velocity)
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-				local dir = Vector3.dot(Quaternion.forward(first_person_extension.current_rotation(first_person_extension)), velocity)
+				local dir = Vector3.dot(Quaternion.forward(first_person_extension:current_rotation()), velocity)
 				local look_dir, catapulted_direction = nil
 
-				if 0 < dir then
+				if dir > 0 then
 					look_dir = Vector3.normalize(velocity)
 					catapulted_direction = "forward"
 				else
@@ -1427,7 +1431,7 @@ GenericStatusExtension.set_catapulted = function (self, catapulted, velocity)
 				self.catapulted_direction = catapulted_direction
 				local rot = Quaternion.look(look_dir, Vector3.up())
 
-				first_person_extension.force_look_rotation(first_person_extension, rot)
+				first_person_extension:force_look_rotation(rot)
 			end
 		end
 	else
@@ -1447,36 +1451,30 @@ GenericStatusExtension.set_catapulted = function (self, catapulted, velocity)
 			Managers.state.network.network_transmit:send_rpc_server("rpc_set_catapulted", go_id, catapulted, velocity or Vector3.zero())
 		end
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_inside_transport_unit = function (self, unit)
 	self.inside_transport_unit = unit
-
-	return 
 end
+
 GenericStatusExtension.set_using_transport = function (self, using_transport)
 	self.using_transport = using_transport
-
-	return 
 end
+
 GenericStatusExtension.set_overcharge_exploding = function (self, overcharge_exploding)
 	self.overcharge_exploding = overcharge_exploding
-
-	return 
 end
+
 GenericStatusExtension.set_left_ladder = function (self, t)
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(self.unit)
 	self.left_ladder_timer = t + movement_settings_table.ladder.leave_ladder_reattach_time
-
-	return 
 end
+
 GenericStatusExtension.set_is_on_ladder = function (self, is_on_ladder, ladder_unit)
 	self.on_ladder = is_on_ladder
 	self.current_ladder_unit = ladder_unit
-
-	return 
 end
+
 GenericStatusExtension.set_is_ledge_hanging = function (self, is_ledge_hanging, ledge_unit)
 	self.is_ledge_hanging = is_ledge_hanging
 	self.current_ledge_hanging_unit = ledge_unit
@@ -1486,7 +1484,7 @@ GenericStatusExtension.set_is_ledge_hanging = function (self, is_ledge_hanging, 
 		self.pulled_up = false
 	end
 
-	self.set_outline_incapacitated(self, is_ledge_hanging)
+	self:set_outline_incapacitated(is_ledge_hanging)
 
 	if is_ledge_hanging then
 		SurroundingAwareSystem.add_event(unit, "ledge_hanging", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
@@ -1495,11 +1493,10 @@ GenericStatusExtension.set_is_ledge_hanging = function (self, is_ledge_hanging, 
 		local event_data = FrameTable.alloc_table()
 		event_data.target_name = ScriptUnit.extension(unit, "dialogue_system").context.player_profile
 
-		dialogue_input.trigger_dialogue_event(dialogue_input, "ledge_hanging", event_data)
+		dialogue_input:trigger_dialogue_event("ledge_hanging", event_data)
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_in_hanging_cage = function (self, in_hanging_cage, cage_unit, state, animations)
 	if in_hanging_cage then
 		self.in_hanging_cage_unit = cage_unit or self.in_hanging_cage_unit
@@ -1512,15 +1509,14 @@ GenericStatusExtension.set_in_hanging_cage = function (self, in_hanging_cage, ca
 	end
 
 	self.in_hanging_cage = in_hanging_cage
-
-	return 
 end
+
 GenericStatusExtension.set_outline_incapacitated = function (self, incapacitated, disabler_unit, outline_disabler_unit)
 	local unit = self.unit
 	local player = self.player
 
 	if not player then
-		return 
+		return
 	end
 
 	if not player.local_player then
@@ -1540,9 +1536,8 @@ GenericStatusExtension.set_outline_incapacitated = function (self, incapacitated
 			outline_extension.set_method((incapacitated and outline_disabler_unit and "always") or "never")
 		end
 	end
-
-	return 
 end
+
 GenericStatusExtension._set_packmaster_unhooked = function (self, locomotion, grabbed_status)
 	local unit = self.unit
 	local t = Managers.time:time("game")
@@ -1561,14 +1556,13 @@ GenericStatusExtension._set_packmaster_unhooked = function (self, locomotion, gr
 	end
 
 	if not self.is_husk then
-		locomotion.set_wanted_velocity(locomotion, Vector3.zero())
-		locomotion.move_to_non_intersecting_position(locomotion)
+		locomotion:set_wanted_velocity(Vector3.zero())
+		locomotion:move_to_non_intersecting_position()
 	end
 
 	self.pack_master_status = "pack_master_unhooked"
-
-	return 
 end
+
 GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grabbed, grabber_unit)
 	local unit = self.unit
 	self.pack_master_grabber = (is_grabbed and grabber_unit) or nil
@@ -1577,13 +1571,13 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 	local outline_grabbed_unit = grabbed_status ~= "pack_master_hanging"
 
-	self.set_outline_incapacitated(self, is_grabbed or self.is_disabled(self), grabber_unit, outline_grabbed_unit)
+	self:set_outline_incapacitated(is_grabbed or self:is_disabled(), grabber_unit, outline_grabbed_unit)
 
 	if grabbed_status == "pack_master_pulling" then
 		if not is_grabbed then
-			self._set_packmaster_unhooked(self, locomotion, grabbed_status)
+			self:_set_packmaster_unhooked(locomotion, grabbed_status)
 
-			return 
+			return
 		end
 
 		self.release_unhook_time = nil
@@ -1594,7 +1588,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		Unit.set_local_rotation(unit, 0, back_to_grabber_rotation)
 
 		if not self.is_husk then
-			locomotion.set_wanted_velocity(locomotion, Vector3.zero())
+			locomotion:set_wanted_velocity(Vector3.zero())
 		end
 
 		local target_player = self.player
@@ -1608,48 +1602,48 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		self.pack_master_hoisted = false
 	elseif grabbed_status == "pack_master_dragging" then
 		if not is_grabbed then
-			self._set_packmaster_unhooked(self, locomotion, grabbed_status)
+			self:_set_packmaster_unhooked(locomotion, grabbed_status)
 
-			return 
+			return
 		end
 
 		if previous_status == "pack_master_pulling" then
-			locomotion.set_disabled(locomotion, false, nil, nil, true)
+			locomotion:set_disabled(false, nil, nil, true)
 		else
 			Unit.animation_event(grabber_unit, "drag_walk")
 			Unit.animation_event(unit, "move_bwd")
 		end
 	elseif grabbed_status == "pack_master_unhooked" then
 		if previous_status ~= "pack_master_unhooked" then
-			self._set_packmaster_unhooked(self, locomotion, grabbed_status)
+			self:_set_packmaster_unhooked(locomotion, grabbed_status)
 		end
 
-		locomotion.set_disabled(locomotion, false, nil, nil, true)
+		locomotion:set_disabled(false, nil, nil, true)
 	elseif grabbed_status == "pack_master_hoisting" then
 		if not is_grabbed then
-			self._set_packmaster_unhooked(self, locomotion, grabbed_status)
+			self:_set_packmaster_unhooked(locomotion, grabbed_status)
 
-			return 
+			return
 		end
 
 		if not self.is_husk then
-			locomotion.set_wanted_velocity(locomotion, Vector3.zero())
+			locomotion:set_wanted_velocity(Vector3.zero())
 		end
 
 		local dir = Vector3.normalize(POSITION_LOOKUP[unit] - POSITION_LOOKUP[grabber_unit])
 
 		Unit.set_local_rotation(unit, 0, Quaternion.look(dir, Vector3.up()))
 		Unit.animation_event(unit, "packmaster_hang_start")
-		locomotion.set_disabled(locomotion, true, LocomotionUtils.update_local_animation_driven_movement_plus_mover)
+		locomotion:set_disabled(true, LocomotionUtils.update_local_animation_driven_movement_plus_mover)
 		Unit.animation_event(grabber_unit, "attack_grab_hang")
 
 		self.pack_master_hoisted = true
 	elseif grabbed_status == "pack_master_hanging" then
-		locomotion.set_disabled(locomotion, true, LocomotionUtils.update_local_animation_driven_movement_plus_mover)
+		locomotion:set_disabled(true, LocomotionUtils.update_local_animation_driven_movement_plus_mover)
 	elseif grabbed_status == "pack_master_dropping" then
 		local t = Managers.time:time("game")
 
-		locomotion.set_disabled(locomotion, false, nil, nil, true)
+		locomotion:set_disabled(false, nil, nil, true)
 
 		if self.release_falling_time then
 		elseif self.dead then
@@ -1657,7 +1651,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		elseif self.knocked_down then
 			self.release_falling_time = t + PlayerUnitStatusSettings.hanging_by_pack_master.release_falling_time_ko
 		else
-			locomotion.set_disabled(locomotion, false, nil, nil, true)
+			locomotion:set_disabled(false, nil, nil, true)
 
 			self.release_falling_time = t + PlayerUnitStatusSettings.hanging_by_pack_master.release_falling_time
 		end
@@ -1665,12 +1659,11 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		SurroundingAwareSystem.add_event(unit, "un_grabbed", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
 
 		if not Managers.state.network.is_server then
-			locomotion.set_disabled(locomotion, false, nil, nil, true)
+			locomotion:set_disabled(false, nil, nil, true)
 		end
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status, is_grabbed, grabber_unit)
 	local unit = self.unit
 	self.corruptor_grabbed = (is_grabbed and grabber_unit) or nil
@@ -1680,77 +1673,84 @@ GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status
 	self.corruptor_status = grabbed_status
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
 
-	self.set_outline_incapacitated(self, is_grabbed or self.is_disabled(self), grabber_unit, is_grabbed)
+	self:set_outline_incapacitated(is_grabbed or self:is_disabled(), grabber_unit, is_grabbed)
 
 	if grabbed_status == "chaos_corruptor_grabbed" then
 		Unit.animation_event(unit, "to_corruptor")
 
 		if not self.is_husk then
-			locomotion.set_wanted_velocity(locomotion, Vector3.zero())
+			locomotion:set_wanted_velocity(Vector3.zero())
 		end
 
 		SurroundingAwareSystem.add_event(unit, "grabbed", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
 		Managers.music:trigger_event("enemy_pack_master_grabbed_stinger")
 	elseif grabbed_status == "chaos_corruptor_released" then
 		if not self.is_husk then
-			locomotion.set_wanted_velocity(locomotion, Vector3.zero())
-			locomotion.move_to_non_intersecting_position(locomotion)
+			locomotion:set_wanted_velocity(Vector3.zero())
+			locomotion:move_to_non_intersecting_position()
 		end
 
 		SurroundingAwareSystem.add_event(unit, "un_grabbed", DialogueSettings.grabbed_broadcast_range, "target", unit, "target_name", ScriptUnit.extension(unit, "dialogue_system").context.player_profile)
 	end
-
-	return 
 end
+
 GenericStatusExtension.get_intensity = function (self)
 	return self.intensity
 end
+
 GenericStatusExtension.get_combo_target_count = function (self)
 	return self.combo_target_count
 end
+
 GenericStatusExtension.is_pounced_down = function (self)
 	return self.pounced_down, self.pouncer_unit
 end
+
 GenericStatusExtension.get_pouncer_unit = function (self)
 	return self.pouncer_unit
 end
+
 GenericStatusExtension.is_knocked_down = function (self)
 	return self.knocked_down
 end
+
 GenericStatusExtension.set_knocked_down_bleed_buff_paused = function (self, pause_bleed)
 	local unit = self.unit
 	local buff_extension = self.buff_extension or ScriptUnit.extension(unit, "buff_system")
 
 	if self.knocked_down_bleed_id and pause_bleed then
-		buff_extension.remove_buff(buff_extension, self.knocked_down_bleed_id)
+		buff_extension:remove_buff(self.knocked_down_bleed_id)
 
 		self.knocked_down_bleed_id = nil
 	elseif self.knocked_down and not pause_bleed and not self.knocked_down_bleed_id then
-		self.knocked_down_bleed_id = buff_extension.add_buff(buff_extension, "knockdown_bleed")
+		self.knocked_down_bleed_id = buff_extension:add_buff("knockdown_bleed")
 	end
 
 	return self.knocked_down_bleed_id
 end
+
 GenericStatusExtension.is_ready_for_assisted_respawn = function (self)
 	return self.ready_for_assisted_respawn
 end
+
 GenericStatusExtension.disabled_vo_reason = function (self)
 	local vo_reason = nil
 
-	if self.is_dead(self) then
+	if self:is_dead() then
 		vo_reason = "dead"
-	elseif self.is_pounced_down(self) then
+	elseif self:is_pounced_down() then
 		vo_reason = "pounced_down"
-	elseif self.is_grabbed_by_pack_master(self) or self.is_hanging_from_hook(self) then
+	elseif self:is_grabbed_by_pack_master() or self:is_hanging_from_hook() then
 		vo_reason = "grabbed"
-	elseif self.get_is_ledge_hanging(self) then
+	elseif self:get_is_ledge_hanging() then
 		vo_reason = "ledge_hanging"
-	elseif self.is_knocked_down(self) or self.is_ready_for_assisted_respawn(self) then
+	elseif self:is_knocked_down() or self:is_ready_for_assisted_respawn() then
 		vo_reason = "knocked_down"
 	end
 
 	return vo_reason
 end
+
 GenericStatusExtension.set_has_bonus_fatigue_active = function (self)
 	self.has_bonus_fatigue_active = true
 	local t = Managers.time:time("game")
@@ -1758,160 +1758,193 @@ GenericStatusExtension.set_has_bonus_fatigue_active = function (self)
 	local first_person_extension = self.first_person_extension
 
 	if first_person_extension then
-		first_person_extension.play_hud_sound_event(first_person_extension, "hud_player_buff_regen_stamina")
+		first_person_extension:play_hud_sound_event("hud_player_buff_regen_stamina")
 	end
-
-	return 
 end
+
 GenericStatusExtension.get_disabler_unit = function (self)
 	local disabler_unit = self.grabbed_by_tentacle_unit or self.pouncer_unit or self.grabbed_by_chaos_spawn_unit or self.pack_master_grabber or self.corruptor_unit
 
 	if Unit.alive(disabler_unit) then
 		return disabler_unit
 	end
+end
 
-	return 
-end
 GenericStatusExtension.is_disabled = function (self)
-	return self.is_dead(self) or self.is_pounced_down(self) or self.is_knocked_down(self) or self.is_grabbed_by_pack_master(self) or self.get_is_ledge_hanging(self) or self.is_hanging_from_hook(self) or self.is_ready_for_assisted_respawn(self) or self.is_grabbed_by_tentacle(self) or self.is_grabbed_by_chaos_spawn(self) or self.is_in_vortex(self) or self.is_grabbed_by_corruptor(self) or self.is_overpowered(self)
+	return self:is_dead() or self:is_pounced_down() or self:is_knocked_down() or self:is_grabbed_by_pack_master() or self:get_is_ledge_hanging() or self:is_hanging_from_hook() or self:is_ready_for_assisted_respawn() or self:is_grabbed_by_tentacle() or self:is_grabbed_by_chaos_spawn() or self:is_in_vortex() or self:is_grabbed_by_corruptor() or self:is_overpowered()
 end
+
 GenericStatusExtension.is_valid_vortex_target = function (self)
-	return not self.is_dead(self) and not self.is_pounced_down(self) and not self.is_knocked_down(self) and not self.is_grabbed_by_pack_master(self) and not self.get_is_ledge_hanging(self) and not self.is_hanging_from_hook(self) and not self.is_ready_for_assisted_respawn(self) and not self.is_grabbed_by_tentacle(self) and not self.is_grabbed_by_chaos_spawn(self) and not self.is_in_end_zone(self)
+	return not self:is_dead() and not self:is_pounced_down() and not self:is_knocked_down() and not self:is_grabbed_by_pack_master() and not self:get_is_ledge_hanging() and not self:is_hanging_from_hook() and not self:is_ready_for_assisted_respawn() and not self:is_grabbed_by_tentacle() and not self:is_grabbed_by_chaos_spawn() and not self:is_in_end_zone()
 end
+
 GenericStatusExtension.is_ogre_target = function (self)
-	return not self.is_dead(self) and not self.is_pounced_down(self) and not self.is_grabbed_by_pack_master(self) and not self.is_hanging_from_hook(self) and not self.is_using_transport(self) and not self.is_grabbed_by_tentacle(self) and not self.is_grabbed_by_chaos_spawn(self)
+	return not self:is_dead() and not self:is_pounced_down() and not self:is_grabbed_by_pack_master() and not self:is_hanging_from_hook() and not self:is_using_transport() and not self:is_grabbed_by_tentacle() and not self:is_grabbed_by_chaos_spawn()
 end
+
 GenericStatusExtension.is_chaos_spawn_target = function (self)
-	return not self.is_dead(self) and not self.is_knocked_down(self) and not self.is_pounced_down(self) and not self.is_grabbed_by_pack_master(self) and not self.is_hanging_from_hook(self) and not self.is_using_transport(self) and not self.is_grabbed_by_tentacle(self) and not self.is_grabbed_by_chaos_spawn(self)
+	return not self:is_dead() and not self:is_knocked_down() and not self:is_pounced_down() and not self:is_grabbed_by_pack_master() and not self:is_hanging_from_hook() and not self:is_using_transport() and not self:is_grabbed_by_tentacle() and not self:is_grabbed_by_chaos_spawn()
 end
+
 GenericStatusExtension.is_lord_target = function (self)
-	return not self.is_dead(self) and not self.is_knocked_down(self) and not self.is_pounced_down(self) and not self.is_grabbed_by_pack_master(self) and not self.is_hanging_from_hook(self) and not self.is_using_transport(self) and not self.is_grabbed_by_tentacle(self) and not self.is_grabbed_by_chaos_spawn(self)
+	return not self:is_dead() and not self:is_knocked_down() and not self:is_pounced_down() and not self:is_grabbed_by_pack_master() and not self:is_hanging_from_hook() and not self:is_using_transport() and not self:is_grabbed_by_tentacle() and not self:is_grabbed_by_chaos_spawn()
 end
+
 GenericStatusExtension.is_available_for_career_revive = function (self)
-	return self.is_knocked_down(self) and not self.is_pounced_down(self) and not self.is_grabbed_by_pack_master(self) and not self.is_hanging_from_hook(self) and not self.is_grabbed_by_tentacle(self) and not self.is_grabbed_by_chaos_spawn(self)
+	return self:is_knocked_down() and not self:is_pounced_down() and not self:is_grabbed_by_pack_master() and not self:is_hanging_from_hook() and not self:is_grabbed_by_tentacle() and not self:is_grabbed_by_chaos_spawn()
 end
+
 GenericStatusExtension.is_grabbed_by_tentacle = function (self)
 	return self.grabbed_by_tentacle
 end
+
 GenericStatusExtension.is_grabbed_by_corruptor = function (self)
 	return self.grabbed_by_corruptor
 end
+
 GenericStatusExtension.is_grabbed_by_chaos_spawn = function (self)
 	return self.grabbed_by_chaos_spawn
 end
+
 GenericStatusExtension.is_in_liquid = function (self)
 	return self.in_liquid
 end
+
 GenericStatusExtension.is_dead = function (self)
 	return self.dead
 end
+
 GenericStatusExtension.is_crouching = function (self)
 	return self.crouching
 end
+
 GenericStatusExtension.is_blocking = function (self)
 	return self.blocking
 end
+
 GenericStatusExtension.is_wounded = function (self)
 	return self.wounds < self.max_wounds
 end
+
 GenericStatusExtension.is_permanent_heal = function (self, heal_type)
 	return heal_type == "healing_draught" or heal_type == "bandage" or heal_type == "bandage_trinket" or heal_type == "buff_shared_medpack" or heal_type == "career_passive" or heal_type == "health_regen" or heal_type == "debug"
 end
+
 GenericStatusExtension.heal_can_remove_wounded = function (self, heal_type)
 	return heal_type == "healing_draught" or heal_type == "bandage" or heal_type == "bandage_trinket" or heal_type == "buff_shared_medpack" or heal_type == "debug"
 end
+
 GenericStatusExtension.is_revived = function (self)
 	return self.revived
 end
+
 GenericStatusExtension.is_pulled_up = function (self)
 	return self.pulled_up
 end
+
 GenericStatusExtension.is_zooming = function (self)
 	return self.zooming
 end
+
 GenericStatusExtension.num_wounds_remaining = function (self)
 	return self.wounds
 end
+
 GenericStatusExtension.has_wounds_remaining = function (self)
-	return 1 < self.wounds
+	return self.wounds > 1
 end
+
 GenericStatusExtension.has_recently_left_ladder = function (self, t)
 	return t < self.left_ladder_timer
 end
+
 GenericStatusExtension.get_is_on_ladder = function (self)
 	return self.on_ladder, self.current_ladder_unit
 end
+
 GenericStatusExtension.get_is_ledge_hanging = function (self)
 	return self.is_ledge_hanging, self.current_ledge_hanging_unit
 end
+
 GenericStatusExtension.is_catapulted = function (self)
 	return self.catapulted, self.catapulted_direction
 end
+
 GenericStatusExtension.is_in_vortex = function (self)
 	return self.in_vortex
 end
+
 GenericStatusExtension.is_block_broken = function (self)
 	return self.block_broken
 end
+
 GenericStatusExtension.get_inside_transport_unit = function (self)
 	return self.inside_transport_unit
 end
+
 GenericStatusExtension.is_using_transport = function (self)
 	return self.using_transport
 end
+
 GenericStatusExtension.is_overcharge_exploding = function (self)
 	return self.overcharge_exploding
 end
+
 GenericStatusExtension.is_grabbed_by_pack_master = function (self)
 	return self.pack_master_grabber ~= nil and Unit.alive(self.pack_master_grabber)
 end
+
 GenericStatusExtension.is_hanging_from_hook = function (self)
 	return self.pack_master_status == "pack_master_hanging"
 end
+
 GenericStatusExtension.get_pack_master_grabber = function (self)
 	return self.pack_master_grabber
 end
+
 GenericStatusExtension.has_blocked = function (self)
 	return self._has_blocked
 end
+
 GenericStatusExtension.current_move_speed_multiplier = function (self)
 	local lerp_t = math.smoothstep(self.move_speed_multiplier_timer, 0, 1)
 
 	return math.lerp(self.move_speed_multiplier, 1, lerp_t)
 end
+
 GenericStatusExtension.set_invisible = function (self, invisible)
 	self.invisible = invisible
 	local unit = self.unit
 	local flow_event_name = nil
 	local player = self.player
-	local owner_player = Managers.player:owner(unit)
+	local is_third_person = self.is_husk or player.bot_player
 
 	if invisible then
 		flow_event_name = "lua_enabled_invisibility"
 
-		if self.is_husk and not player == owner_player then
+		if is_third_person then
 			Managers.state.entity:system("fade_system"):set_min_fade(unit, 0.8)
 		end
 	else
 		flow_event_name = "lua_disabled_invisibility"
 
-		if self.is_husk and not player == owner_player then
+		if is_third_person then
 			Managers.state.entity:system("fade_system"):set_min_fade(unit, 0)
 		end
 	end
 
-	local first_person_extension = self.first_person_extension
-
-	if first_person_extension then
-		local fp_unit = first_person_extension.get_first_person_unit(first_person_extension)
-		local fp_mesh_unit = first_person_extension.get_first_person_mesh_unit(first_person_extension)
-
-		Unit.flow_event(fp_unit, flow_event_name)
-		Unit.flow_event(fp_mesh_unit, flow_event_name)
-	end
-
-	if self.is_husk and not player == owner_player then
+	if is_third_person then
 		Unit.flow_event(unit, flow_event_name)
+	else
+		local first_person_extension = self.first_person_extension
+
+		if first_person_extension then
+			local fp_unit = first_person_extension:get_first_person_unit()
+			local fp_mesh_unit = first_person_extension:get_first_person_mesh_unit()
+
+			Unit.flow_event(fp_unit, flow_event_name)
+			Unit.flow_event(fp_mesh_unit, flow_event_name)
+		end
 	end
 
 	if not self.is_husk then
@@ -1923,63 +1956,62 @@ GenericStatusExtension.set_invisible = function (self, invisible)
 			Managers.state.network.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.invisible, invisible, go_id, 0)
 		end
 	end
-
-	return 
 end
+
 GenericStatusExtension.set_noclip = function (self, no_clip)
 	if not self.is_husk then
 		self.locomotion_extension:set_mover_filter_property("enemy_noclip", no_clip)
 	end
-
-	return 
 end
+
 GenericStatusExtension.is_invisible = function (self)
 	return self.invisible
 end
+
 GenericStatusExtension.set_inspecting = function (self, inspecting)
 	self.inspecting = inspecting
-
-	return 
 end
+
 GenericStatusExtension.is_inspecting = function (self)
 	return self.inspecting
 end
+
 GenericStatusExtension.set_overpowered = function (self, overpowered, overpowered_template, overpowered_attacking_unit)
-	self.set_outline_incapacitated(self, overpowered)
+	self:set_outline_incapacitated(overpowered)
 
 	self.overpowered = overpowered
 	self.overpowered_template = overpowered_template
 	self.overpowered_attacking_unit = overpowered_attacking_unit
-
-	return 
 end
+
 GenericStatusExtension.is_overpowered = function (self)
 	return self.overpowered
 end
+
 GenericStatusExtension.can_dodge = function (self, t)
 	return self.my_dodge_cd < t
 end
+
 GenericStatusExtension.set_dodge_cd = function (self, t, dodge_cd)
 	self.my_dodge_cd = t + dodge_cd
-
-	return 
 end
+
 GenericStatusExtension.can_override_dodge_with_jump = function (self, t)
 	return t < self.my_dodge_jump_override_t
 end
+
 GenericStatusExtension.set_dodge_jump_override_t = function (self, t, dodge_jump_override_t)
 	self.my_dodge_jump_override_t = t + dodge_jump_override_t
-
-	return 
 end
+
 GenericStatusExtension.dodge_locked = function (self)
 	return self.dodge_is_locked
 end
+
 GenericStatusExtension.set_dodge_locked = function (self, dodge_locked)
 	self.dodge_is_locked = dodge_locked
-
-	return 
 end
+
 GenericStatusExtension.set_is_dodging = function (self, is_dodging)
 	self.is_dodging = is_dodging
 
@@ -1996,26 +2028,27 @@ GenericStatusExtension.set_is_dodging = function (self, is_dodging)
 			Managers.state.network.network_transmit:send_rpc_server("rpc_status_change_bool", NetworkLookup.statuses.dodging, is_dodging, go_id, 0)
 		end
 	end
-
-	return 
 end
+
 GenericStatusExtension.get_is_dodging = function (self)
 	return self.is_dodging
 end
+
 GenericStatusExtension.get_dodge_position = function (self)
 	return self.dodge_position:unbox()
 end
+
 GenericStatusExtension.get_is_slowed = function (self)
 	return self.is_slowed
 end
+
 GenericStatusExtension.set_falling_height = function (self, override, override_height)
 	fassert(not self.is_husk, "Trying to set falling height on non-owned unit")
 
 	self.fall_height = override_height or (self.fall_height and not override and POSITION_LOOKUP[self.unit].z < self.fall_height and self.fall_height) or POSITION_LOOKUP[self.unit].z
 	self.update_funcs.falling = GenericStatusExtension.update_falling
-
-	return 
 end
+
 GenericStatusExtension.modify_poison = function (self, increase, attacker_unit)
 	local poison_level_old = self.poison_level
 
@@ -2030,8 +2063,8 @@ GenericStatusExtension.modify_poison = function (self, increase, attacker_unit)
 			if self.first_person_extension then
 				local buff_extension = ScriptUnit.extension(self.unit, "buff_system")
 
-				if buff_extension.has_buff_type(buff_extension, "poison_screen_effect_immune") then
-					return 
+				if buff_extension:has_buff_type("poison_screen_effect_immune") then
+					return
 				end
 
 				local particle_id = World.create_particles(self.world, "fx/screenspace_poison_globe_impact", Vector3(0, 0, 0))
@@ -2041,7 +2074,7 @@ GenericStatusExtension.modify_poison = function (self, increase, attacker_unit)
 	else
 		self.poison_level = poison_level_old - 1
 
-		assert(0 <= self.poison_level, "Poison level became negative")
+		assert(self.poison_level >= 0, "Poison level became negative")
 
 		if poison_level_old == 1 and self.poison_particle_id then
 			World.stop_spawning_particles(self.world, self.poison_particle_id)
@@ -2052,9 +2085,8 @@ GenericStatusExtension.modify_poison = function (self, increase, attacker_unit)
 			SurroundingAwareSystem.add_event(self.unit, "was_hit_by_goo", DialogueSettings.grabbed_broadcast_range, "target_name", ScriptUnit.extension(self.unit, "dialogue_system").context.player_profile, "times_poisoned", self.times_poisoned)
 		end
 	end
-
-	return 
 end
+
 GenericStatusExtension.max_wounds_network_safe = function (self)
 	local max_wounds = self.max_wounds
 
@@ -2064,18 +2096,19 @@ GenericStatusExtension.max_wounds_network_safe = function (self)
 
 	return max_wounds
 end
+
 GenericStatusExtension.hot_join_sync = function (self, sender)
 	local lookup = NetworkLookup.statuses
 	local network_manager = Managers.state.network
-	local self_game_object_id = network_manager.unit_game_object_id(network_manager, self.unit)
-	local flavour_unit_game_object_id = (self.ready_for_assisted_respawn and network_manager.unit_game_object_id(network_manager, self.assisted_respawn_flavour_unit)) or 0
+	local self_game_object_id = network_manager:unit_game_object_id(self.unit)
+	local flavour_unit_game_object_id = (self.ready_for_assisted_respawn and network_manager:unit_game_object_id(self.assisted_respawn_flavour_unit)) or 0
 
-	RPC.rpc_hot_join_sync_health_status(sender, self_game_object_id, self.max_wounds_network_safe(self), self.ready_for_assisted_respawn, flavour_unit_game_object_id)
+	RPC.rpc_hot_join_sync_health_status(sender, self_game_object_id, self:max_wounds_network_safe(), self.ready_for_assisted_respawn, flavour_unit_game_object_id)
 
 	if self.pack_master_status then
 		local t = Managers.time:time("game")
 		local is_grabbed = Unit.alive(self.pack_master_grabber)
-		local grabber_go_id = network_manager.unit_game_object_id(network_manager, self.pack_master_grabber) or NetworkConstants.invalid_game_object_id
+		local grabber_go_id = network_manager:unit_game_object_id(self.pack_master_grabber) or NetworkConstants.invalid_game_object_id
 		local pack_master_status_id = lookup[self.pack_master_status]
 
 		if self.pack_master_status == "pack_master_dropping" then
@@ -2091,15 +2124,15 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_status_change_bool(sender, pack_master_status_id, is_grabbed, self_game_object_id, grabber_go_id)
 	end
 
-	ledge_hanging_unit_game_object_id = (self.is_ledge_hanging and network_manager.unit_game_object_id(network_manager, self.current_ledge_hanging_unit)) or 0
-	local pouncer_unit_game_object_id = (self.pounced_down and network_manager.unit_game_object_id(network_manager, self.pouncer_unit)) or 0
-	local current_ladder_unit_game_object_id = (self.on_ladder and network_manager.unit_game_object_id(network_manager, self.current_ladder_unit)) or 0
+	ledge_hanging_unit_game_object_id = (self.is_ledge_hanging and network_manager:unit_game_object_id(self.current_ledge_hanging_unit)) or 0
+	local pouncer_unit_game_object_id = (self.pounced_down and network_manager:unit_game_object_id(self.pouncer_unit)) or 0
+	local current_ladder_unit_game_object_id = (self.on_ladder and network_manager:unit_game_object_id(self.current_ladder_unit)) or 0
 
 	RPC.rpc_status_change_bool(sender, lookup.pounced_down, self.pounced_down, self_game_object_id, pouncer_unit_game_object_id)
 	RPC.rpc_status_change_bool(sender, lookup.pushed, self.pushed, self_game_object_id, 0)
 	RPC.rpc_status_change_bool(sender, lookup.dead, self.dead, self_game_object_id, 0)
 
-	local tentacle_grabber_go_id = network_manager.unit_game_object_id(network_manager, self.grabbed_by_tentacle_unit) or NetworkConstants.invalid_game_object_id
+	local tentacle_grabber_go_id = network_manager:unit_game_object_id(self.grabbed_by_tentacle_unit) or NetworkConstants.invalid_game_object_id
 
 	RPC.rpc_status_change_bool(sender, lookup.grabbed_by_tentacle, self.grabbed_by_tentacle, self_game_object_id, tentacle_grabber_go_id)
 
@@ -2109,7 +2142,7 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_status_change_int(sender, lookup.grabbed_by_tentacle, grabbed_substatus_id, self_game_object_id)
 	end
 
-	chaos_spawn_grabber_go_id = network_manager.unit_game_object_id(network_manager, self.grabbed_by_chaos_spawn_unit) or NetworkConstants.invalid_game_object_id
+	chaos_spawn_grabber_go_id = network_manager:unit_game_object_id(self.grabbed_by_chaos_spawn_unit) or NetworkConstants.invalid_game_object_id
 
 	RPC.rpc_status_change_bool(sender, lookup.grabbed_by_chaos_spawn, self.grabbed_by_chaos_spawn, self_game_object_id, chaos_spawn_grabber_go_id)
 
@@ -2119,7 +2152,7 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_status_change_int(sender, lookup.grabbed_by_chaos_spawn, grabbed_substatus_id, self_game_object_id)
 	end
 
-	attacking_unit_id = (self.overpowered and network_manager.unit_game_object_id(network_manager, self.overpowered_attacking_unit)) or NetworkConstants.invalid_game_object_id
+	attacking_unit_id = (self.overpowered and network_manager:unit_game_object_id(self.overpowered_attacking_unit)) or NetworkConstants.invalid_game_object_id
 	local status_int = (self.overpowered and NetworkLookup.overpowered_templates[self.overpowered_template]) or 0
 
 	RPC.rpc_status_change_int_and_unit(sender, lookup.overpowered, status_int, self_game_object_id, attacking_unit_id)
@@ -2130,16 +2163,15 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_status_change_bool(sender, knocked_down_status_id, true, self_game_object_id, 0)
 	end
 
-	vortex_unit_id = (self.in_vortex and network_manager.unit_game_object_id(network_manager, self.in_vortex_unit)) or NetworkConstants.invalid_game_object_id
+	vortex_unit_id = (self.in_vortex and network_manager:unit_game_object_id(self.in_vortex_unit)) or NetworkConstants.invalid_game_object_id
 
 	RPC.rpc_status_change_bool(sender, lookup.in_vortex, self.in_vortex, self_game_object_id, vortex_unit_id)
 	RPC.rpc_status_change_bool(sender, lookup.crouching, self.crouching, self_game_object_id, 0)
 	RPC.rpc_status_change_bool(sender, lookup.pulled_up, self.pulled_up, self_game_object_id, 0)
 	RPC.rpc_status_change_bool(sender, lookup.ladder_climbing, self.on_ladder, self_game_object_id, current_ladder_unit_game_object_id)
 	RPC.rpc_status_change_bool(sender, lookup.ledge_hanging, self.is_ledge_hanging, self_game_object_id, ledge_hanging_unit_game_object_id)
-
-	return 
 end
+
 GenericStatusExtension.set_in_end_zone = function (self, in_end_zone)
 	if self.is_server then
 		local go_id = Managers.state.unit_storage:go_id(self.unit)
@@ -2148,11 +2180,10 @@ GenericStatusExtension.set_in_end_zone = function (self, in_end_zone)
 	end
 
 	self.in_end_zone = in_end_zone
-
-	return 
 end
+
 GenericStatusExtension.is_in_end_zone = function (self)
 	return self.in_end_zone
 end
 
-return 
+return

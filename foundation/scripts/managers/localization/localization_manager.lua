@@ -1,4 +1,5 @@
 LocalizationManager = class(LocalizationManager)
+
 LocalizationManager.init = function (self, path)
 	self.path = path
 
@@ -10,20 +11,20 @@ LocalizationManager.init = function (self, path)
 	local has_steam = rawget(_G, "Steam")
 	local language_id = Application.user_setting("language_id") or (has_steam and Steam:language()) or "en"
 	self._language_id = language_id
-
-	return 
 end
+
 LocalizationManager.add_macro = function (self, macro, callback_function)
 	self._macros[macro] = callback_function
-
-	return 
 end
+
 LocalizationManager.language_id = function (self)
 	return self._language_id
 end
+
 LocalizationManager.text_to_upper = function (self, text)
 	return Utf8.upper(text)
 end
+
 LocalizationManager.lookup = function (self, text_id)
 	if script_data.show_longest_localizations then
 		return localize_longest(text_id)
@@ -34,13 +35,15 @@ LocalizationManager.lookup = function (self, text_id)
 
 	local str = Localizer.lookup(self._localizer, text_id) or "<" .. tostring(text_id) .. ">"
 
-	return self.apply_macro(self, str)
+	return self:apply_macro(str)
 end
+
 LocalizationManager.apply_macro = function (self, str)
 	local result, _ = string.gsub(str, "%b$;[%a%d_]*:", self._find_macro_callback_to_self)
 
 	return result
 end
+
 LocalizationManager.simple_lookup = function (self, text_id)
 	assert(self._localizer, "LocalizationManager not initialized")
 
@@ -48,11 +51,13 @@ LocalizationManager.simple_lookup = function (self, text_id)
 
 	return str
 end
+
 LocalizationManager._find_macro = function (self, macro_string)
 	local arg_start = string.find(macro_string, ";")
 
 	return self._macros[string.sub(macro_string, 2, arg_start - 1)](string.sub(macro_string, arg_start + 1, -2))
 end
+
 LocalizationManager.exists = function (self, text_id)
 	assert(self._localizer, "LocalizationManager not initialized")
 
@@ -83,8 +88,6 @@ local function change_locale(locale)
 	Managers.package:unload("resource_packages/strings", "boot")
 	Application.set_resource_property_preference_order(locale)
 	Managers.package:load("resource_packages/strings", "boot")
-
-	return 
 end
 
 local function update_locale_cycling(dt)
@@ -94,7 +97,7 @@ local function update_locale_cycling(dt)
 	if not cycle_last_frame and pressed then
 		current_locale = current_locale + 1
 
-		if #locales < current_locale then
+		if current_locale > #locales then
 			current_locale = 1
 		end
 
@@ -105,8 +108,6 @@ local function update_locale_cycling(dt)
 	end
 
 	cycle_last_frame = pressed
-
-	return 
 end
 
 function enable_locale_cycling(enable)
@@ -117,8 +118,6 @@ function enable_locale_cycling(enable)
 
 		updator_id = nil
 	end
-
-	return 
 end
 
 local function localize_one(text_id, locale)
@@ -179,6 +178,7 @@ function localize_longest(text_id)
 end
 
 local INPUT_ACTIONS = {}
+
 LocalizationManager.get_input_action = function (self, text_id)
 	local str = Localizer.lookup(self._localizer, text_id) or "<" .. tostring(text_id) .. ">"
 	local macro = string.match(str, "%b$;[%a%d_]*:")
@@ -197,6 +197,7 @@ LocalizationManager.get_input_action = function (self, text_id)
 
 	return INPUT_ACTIONS[1], INPUT_ACTIONS
 end
+
 LocalizationManager.replace_macro_in_string = function (self, text_id, replacement_str)
 	local str = Localizer.lookup(self._localizer, text_id) or "<" .. tostring(text_id) .. ">"
 	local result, num_replacements = string.gsub(str, "%b$;[%a%d_]*:", replacement_str)
@@ -204,4 +205,4 @@ LocalizationManager.replace_macro_in_string = function (self, text_id, replaceme
 	return result, str, Localize(text_id), num_replacements
 end
 
-return 
+return

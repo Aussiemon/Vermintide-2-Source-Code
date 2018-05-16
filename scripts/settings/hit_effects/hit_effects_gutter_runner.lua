@@ -2170,4 +2170,4 @@ HitEffectsGutterRunner = {
 }
 HitEffectsSkavenClanRat = table.create_copy(HitEffectsSkavenClanRat, HitEffectsSkavenClanRat)
 
-return 
+return

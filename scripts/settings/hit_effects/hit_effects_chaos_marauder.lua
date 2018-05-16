@@ -2712,4 +2712,4 @@ end
 
 HitEffectsChaosMarauder = HitEffectsChaosMarauder or {}
 
-return 
+return

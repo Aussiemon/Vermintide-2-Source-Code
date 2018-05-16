@@ -132,4 +132,4 @@ BreedBehaviors.shield_rat = {
 	name = "shield_rat"
 }
 
-return 
+return

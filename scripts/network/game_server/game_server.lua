@@ -4,11 +4,9 @@ require("scripts/network/lobby_members")
 GameServer = class(GameServer)
 
 local function dprintf(string, ...)
-	local s = string.format(string, ...)
+	local s = string:format(...)
 
 	printf("[GameServer]: %s", s)
-
-	return 
 end
 
 GameServer.init = function (self, network_options, server_name)
@@ -24,9 +22,8 @@ GameServer.init = function (self, network_options, server_name)
 	self._game_server = GameServerInternal.init_server(network_options, server_name)
 	self._data_table = {}
 	self._server_name = server_name
-
-	return 
 end
+
 GameServer.destroy = function (self)
 	dprintf("Shutting down game server")
 
@@ -38,12 +35,11 @@ GameServer.destroy = function (self)
 	self._game_server = nil
 
 	GarbageLeakDetector.register_object(self, "Game Server")
-
-	return 
 end
+
 GameServer.update = function (self, dt, t)
 	local game_server = self._game_server
-	local game_server_state = game_server.state(game_server)
+	local game_server_state = game_server:state()
 	local new_state = GameServerInternal.state_map[game_server_state]
 	local old_state = self._state
 
@@ -57,7 +53,7 @@ GameServer.update = function (self, dt, t)
 			data_table.network_hash = self._network_hash
 
 			for key, value in pairs(data_table) do
-				game_server.set_data(game_server, key, value)
+				game_server:set_data(key, value)
 			end
 
 			self._members = self._members or LobbyMembers:new(game_server)
@@ -71,16 +67,20 @@ GameServer.update = function (self, dt, t)
 	local members = self._members
 
 	if members then
-		members.update(members)
+		members:update()
 	end
 
 	return self._state
 end
+
 GameServer.remove_peer = function (self, peer_id)
 	self._game_server:remove_member(peer_id)
-
-	return 
 end
+
+GameServer.set_level_name = function (self, name)
+	GameServerInternal.set_level_name(self._game_server, name)
+end
+
 GameServer.set_lobby_data = function (self, data)
 	print("Set lobby begin:")
 
@@ -92,45 +92,50 @@ GameServer.set_lobby_data = function (self, data)
 
 		internal_data_table[key] = value
 
-		game_server.set_data(game_server, key, value)
+		game_server:set_data(key, value)
 	end
 
 	print("Set lobby end.")
-
-	return 
 end
+
 GameServer.get_stored_lobby_data = function (self)
 	return self._data_table
 end
+
 GameServer.is_dedicated_server = function (self)
 	return true
 end
+
 GameServer.lobby_data = function (self, key)
 	return self._game_server:data(key)
 end
+
 GameServer.lobby_host = function (self)
 	return Network.peer_id()
 end
+
 GameServer.state = function (self)
 	return self._state
 end
+
 GameServer.members = function (self)
 	return self._members
 end
+
 GameServer.get_max_members = function (self)
 	return self._max_members
 end
+
 GameServer.is_joined = function (self)
 	return self._state == GameServerState.CONNECTED
 end
+
 GameServer.id = function (self)
 	return (GameServerInternal.server_id and GameServerInternal.server_id(self._game_server)) or "no_id"
 end
+
 GameServer.server_name = function (self)
 	return self._server_name
 end
-GameServer.eac_state = function (self, peer)
-	return self._game_server:eac_state(peer)
-end
 
-return 
+return

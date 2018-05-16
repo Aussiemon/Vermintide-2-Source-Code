@@ -5,6 +5,7 @@ local DEFAULT_ROTATION_SPEED = 10
 local LOCOMOTION_GRAVITY = 20
 local ALLOWED_MOVER_MOVE_DISTANCE = 0.5
 AILocomotionExtension = class(AILocomotionExtension)
+
 AILocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._system_data = extension_init_data.system_data
 	self._unit = unit
@@ -48,20 +49,19 @@ AILocomotionExtension.init = function (self, extension_init_context, unit, exten
 	end
 
 	MoverHelper.set_active_mover(unit, self._mover_state, "mover")
-	self.set_movement_type(self, "snap_to_navmesh")
-
-	return 
+	self:set_movement_type("snap_to_navmesh")
 end
+
 AILocomotionExtension.destroy = function (self)
 	local system_data = self._system_data
 	local unit = self._unit
 	system_data.destroy_units[unit] = self
+end
 
-	return 
-end
 AILocomotionExtension.ready = function (self, go_id, blackboard)
-	return 
+	return
 end
+
 AILocomotionExtension.hot_join_sync = function (self, sender)
 	local unit = self._unit
 
@@ -75,9 +75,8 @@ AILocomotionExtension.hot_join_sync = function (self, sender)
 
 		RPC.rpc_hot_join_nail_to_wall_fix(sender, game_object_id)
 	end
-
-	return 
 end
+
 AILocomotionExtension.set_mover_displacement = function (self, displacement, duration)
 	if displacement then
 		local mover = Unit.mover(self._unit)
@@ -92,9 +91,8 @@ AILocomotionExtension.set_mover_displacement = function (self, displacement, dur
 		self._mover_displacement_duration = nil
 		self._mover_displacement_t = nil
 	end
-
-	return 
 end
+
 AILocomotionExtension.teleport_to = function (self, position, rotation)
 	local unit = self._unit
 
@@ -105,21 +103,21 @@ AILocomotionExtension.teleport_to = function (self, position, rotation)
 	end
 
 	local network_manager = Managers.state.network
-	local game = network_manager.game(network_manager)
+	local game = network_manager:game()
 
 	if game then
-		local game_object_id = network_manager.unit_game_object_id(network_manager, unit)
+		local game_object_id = network_manager:unit_game_object_id(unit)
 		local has_teleported_value = GameSession.game_object_field(game, game_object_id, "has_teleported")
 		has_teleported_value = has_teleported_value % NetworkConstants.teleports.max + 1
 
 		GameSession.set_game_object_field(game, game_object_id, "has_teleported", has_teleported_value)
 	end
-
-	return 
 end
+
 local ANIMATION_DRIVEN_SCRIPT_DRIVEN_ROTATION_FUNCTION_NAME = "update_animation_driven_movement_script_driven_rotation"
 local ANIMATION_DRIVEN_FUNCTION_NAME = "update_animation_driven"
 local SCRIPT_DRIVEN_FUNCTION_NAME = "update_script_driven"
+
 AILocomotionExtension.set_animation_driven = function (self, is_animation_driven, is_affected_by_gravity, script_driven_rotation)
 	is_affected_by_gravity = is_affected_by_gravity or false
 	local unit = self._unit
@@ -129,11 +127,11 @@ AILocomotionExtension.set_animation_driven = function (self, is_animation_driven
 	local was_animation_driven_script_rot = old_func_name == ANIMATION_DRIVEN_SCRIPT_DRIVEN_ROTATION_FUNCTION_NAME
 	local was_script_driven = old_func_name == SCRIPT_DRIVEN_FUNCTION_NAME
 
-	self.set_affected_by_gravity(self, is_affected_by_gravity)
+	self:set_affected_by_gravity(is_affected_by_gravity)
 
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
-	local game_object_id = network_manager.game(network_manager) and network_manager.unit_game_object_id(network_manager, unit)
+	local game_object_id = network_manager:game() and network_manager:unit_game_object_id(unit)
 	local changed = false
 	local system_data = self._system_data
 
@@ -146,7 +144,7 @@ AILocomotionExtension.set_animation_driven = function (self, is_animation_driven
 			local position = Unit.local_position(unit, 0)
 			local rotation = Unit.local_rotation(unit, 0)
 
-			network_transmit.send_rpc_clients(network_transmit, "rpc_set_animation_driven_script_movement", game_object_id, position, rotation, is_affected_by_gravity)
+			network_transmit:send_rpc_clients("rpc_set_animation_driven_script_movement", game_object_id, position, rotation, is_affected_by_gravity)
 		end
 
 		changed = true
@@ -159,7 +157,7 @@ AILocomotionExtension.set_animation_driven = function (self, is_animation_driven
 			local position = Unit.local_position(unit, 0)
 			local rotation = Unit.local_rotation(unit, 0)
 
-			network_transmit.send_rpc_clients(network_transmit, "rpc_set_animation_driven", game_object_id, position, rotation, is_affected_by_gravity)
+			network_transmit:send_rpc_clients("rpc_set_animation_driven", game_object_id, position, rotation, is_affected_by_gravity)
 		end
 
 		changed = true
@@ -169,69 +167,60 @@ AILocomotionExtension.set_animation_driven = function (self, is_animation_driven
 		system_data.animation_and_script_update_units[unit] = nil
 
 		if game_object_id then
-			network_transmit.send_rpc_clients(network_transmit, "rpc_set_script_driven", game_object_id, is_affected_by_gravity)
+			network_transmit:send_rpc_clients("rpc_set_script_driven", game_object_id, is_affected_by_gravity)
 		end
 
 		changed = true
 	end
 
 	if game_object_id and not changed and was_affected_by_gravity ~= is_affected_by_gravity then
-		network_transmit.send_rpc_clients(network_transmit, "rpc_set_affected_by_gravity", game_object_id, is_affected_by_gravity)
+		network_transmit:send_rpc_clients("rpc_set_affected_by_gravity", game_object_id, is_affected_by_gravity)
 	end
-
-	return 
 end
+
 AILocomotionExtension.set_animation_translation_scale = function (self, animation_translation_scale)
 	self._animation_translation_scale:store(animation_translation_scale)
-
-	return 
 end
+
 AILocomotionExtension.set_animation_rotation_scale = function (self, animation_rotation_scale)
 	self._animation_rotation_scale = animation_rotation_scale
-
-	return 
 end
+
 AILocomotionExtension.set_wanted_velocity_flat = function (self, wanted_velocity)
 	wanted_velocity.z = self._velocity.z
 	self._wanted_velocity = wanted_velocity
-
-	return 
 end
+
 AILocomotionExtension.set_wanted_velocity = function (self, wanted_velocity)
 	self._wanted_velocity = wanted_velocity
 
 	self._velocity:store(wanted_velocity)
-
-	return 
 end
+
 AILocomotionExtension.set_wanted_rotation = function (self, rotation)
 	self._wanted_rotation = rotation
-
-	return 
 end
+
 AILocomotionExtension.use_lerp_rotation = function (self, active)
 	self._lerp_rotation = active
-
-	return 
 end
+
 AILocomotionExtension.set_rotation_speed = function (self, rotation_speed)
 	if rotation_speed == nil then
 		self._rotation_speed = DEFAULT_ROTATION_SPEED
 	else
 		self._rotation_speed = rotation_speed
 	end
-
-	return 
 end
+
 AILocomotionExtension.set_rotation_speed_modifier = function (self, rotation_speed_modifier, rotation_speed_modifier_lerp_time, start_time)
 	self._system_data.rotation_speed_modifier_update_units[self._unit] = self
 	self._rotation_speed_modifier = rotation_speed_modifier
 	self._rotation_speed_modifier_lerp_start_value = rotation_speed_modifier
 	self._rotation_speed_modifier_lerp_start_time = start_time
 	self._rotation_speed_modifier_lerp_end_time = start_time + rotation_speed_modifier_lerp_time
-
-	return 
 end
+
 AILocomotionExtension.set_affected_by_gravity = function (self, affected_by_gravity)
 	self._affected_by_gravity = affected_by_gravity
 
@@ -240,34 +229,29 @@ AILocomotionExtension.set_affected_by_gravity = function (self, affected_by_grav
 	elseif not affected_by_gravity then
 		self._system_data.affected_by_gravity_update_units[self._unit] = nil
 	end
-
-	return 
 end
+
 AILocomotionExtension.set_gravity = function (self, gravity)
 	self._gravity = gravity or LOCOMOTION_GRAVITY
-
-	return 
 end
+
 AILocomotionExtension.set_mover_disable_reason = function (self, reason, state)
 	MoverHelper.set_disable_reason(self._unit, self._mover_state, reason, state)
-
-	return 
 end
+
 AILocomotionExtension.set_check_falling = function (self, state)
 	self._check_falling = state
-
-	return 
 end
+
 AILocomotionExtension.set_collision_disabled = function (self, reason, state)
 	if self._collision_state then
 		MoverHelper.set_collision_disable_reason(self._unit, self._collision_state, reason, state)
 	end
-
-	return 
 end
+
 AILocomotionExtension.set_movement_type = function (self, movement_type, override_mover_move_distance)
 	if movement_type == self.movement_type then
-		return 
+		return
 	end
 
 	self.movement_type = movement_type
@@ -326,7 +310,7 @@ AILocomotionExtension.set_movement_type = function (self, movement_type, overrid
 
 				AiUtils.kill_unit(unit, nil, nil, damage_type, damage_direction)
 
-				return 
+				return
 			end
 		end
 
@@ -340,9 +324,8 @@ AILocomotionExtension.set_movement_type = function (self, movement_type, overrid
 		local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "capsule", "position", mover_position, "rotation", rotation, "size", size, "collision_filter", "filter_environment_overlap", "use_global_table")
 		self._is_falling = num_hit_actors == 0
 	end
-
-	return 
 end
+
 AILocomotionExtension.set_disabled = function (self)
 	assert(not self._disabled, "ai_locomotion_extension disabled extension several times.")
 
@@ -351,20 +334,22 @@ AILocomotionExtension.set_disabled = function (self)
 	MoverHelper.set_disable_reason(unit, self._mover_state, "constrained_by_mover", true)
 
 	self._disabled = true
-
-	return 
 end
+
 AILocomotionExtension.current_velocity = function (self)
 	return self._velocity:unbox()
 end
+
 AILocomotionExtension.is_falling = function (self)
 	return self._is_falling
 end
+
 AILocomotionExtension.get_rotation_speed = function (self)
 	return self._rotation_speed
 end
+
 AILocomotionExtension.get_rotation_speed_modifier = function (self)
 	return self._rotation_speed_modifier
 end
 
-return 
+return

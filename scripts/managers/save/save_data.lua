@@ -66,8 +66,6 @@ function populate_save_data(save_data)
 	populate_player_data_from_save(SaveData, id, version_match)
 
 	SaveData.save_loaded = true
-
-	return 
 end
 
-return 
+return

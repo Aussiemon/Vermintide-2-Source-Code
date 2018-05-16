@@ -47,7 +47,7 @@ function callback(...)
 			end
 		end
 
-		return 
+		return
 	end
 
 	if type(arg1) == "function" then
@@ -96,4 +96,4 @@ function callback(...)
 	end
 end
 
-return 
+return

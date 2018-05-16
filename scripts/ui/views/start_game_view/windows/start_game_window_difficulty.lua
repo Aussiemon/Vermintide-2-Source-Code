@@ -7,6 +7,7 @@ local STARTING_DIFFICULTY_INDEX = 1
 local DEBUG_NUM_VISIBLE_DIFFICULTIES = nil
 StartGameWindowDifficulty = class(StartGameWindowDifficulty)
 StartGameWindowDifficulty.NAME = "StartGameWindowDifficulty"
+
 StartGameWindowDifficulty.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowDifficulty")
 
@@ -18,22 +19,23 @@ StartGameWindowDifficulty.on_enter = function (self, params, offset)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
+	self._has_exited = false
 	local player_manager = Managers.player
-	local local_player = player_manager.local_player(player_manager)
-	self._stats_id = local_player.stats_id(local_player)
+	local local_player = player_manager:local_player()
+	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self._animations = {}
 
-	self.create_ui_elements(self, params, offset)
-	self._setup_difficulties(self)
+	self:create_ui_elements(params, offset)
+	self:_setup_difficulties()
 
 	local difficulty_key = self.parent:get_difficulty_option() or Managers.state.difficulty:get_difficulty()
 
-	self._update_selected_difficulty_option(self, difficulty_key)
-
-	return 
+	self:_update_selected_difficulty_option(difficulty_key)
+	self.parent.parent:set_input_description("select_difficulty")
 end
+
 StartGameWindowDifficulty.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
@@ -58,11 +60,10 @@ StartGameWindowDifficulty.create_ui_elements = function (self, params, offset)
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
-
-	return 
 end
+
 StartGameWindowDifficulty._setup_difficulties = function (self)
-	local difficulties = self._get_difficulty_options(self)
+	local difficulties = self:_get_difficulty_options()
 	local widgets_by_name = self._widgets_by_name
 	local widget_index_counter = 1
 	local widget_prefix = "difficulty_option_"
@@ -85,36 +86,39 @@ StartGameWindowDifficulty._setup_difficulties = function (self)
 
 		widget_index_counter = widget_index_counter + 1
 	end
-
-	return 
 end
+
 StartGameWindowDifficulty._get_difficulty_options = function (self)
 	return Managers.state.difficulty:get_level_difficulties()
 end
+
 StartGameWindowDifficulty.on_exit = function (self, params)
 	print("[StartGameWindow] Exit Substate StartGameWindowDifficulty")
 
 	self.ui_animator = nil
 
-	return 
+	self.parent.parent:set_input_description(nil)
+
+	self._has_exited = true
 end
+
 StartGameWindowDifficulty.update = function (self, dt, t)
 	if DO_RELOAD then
 		DO_RELOAD = false
 
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 	end
 
-	self._update_animations(self, dt)
-	self._handle_input(self, dt, t)
-	self._update_difficulty_lock(self)
-	self.draw(self, dt)
+	self:_update_animations(dt)
+	self:_handle_input(dt, t)
+	self:_update_difficulty_lock()
+	self:draw(dt)
+end
 
-	return 
-end
 StartGameWindowDifficulty.post_update = function (self, dt, t)
-	return 
+	return
 end
+
 StartGameWindowDifficulty._update_animations = function (self, dt)
 	self.ui_animator:update(dt)
 
@@ -122,8 +126,8 @@ StartGameWindowDifficulty._update_animations = function (self, dt)
 	local ui_animator = self.ui_animator
 
 	for animation_name, animation_id in pairs(animations) do
-		if ui_animator.is_animation_completed(ui_animator, animation_id) then
-			ui_animator.stop_animation(ui_animator, animation_id)
+		if ui_animator:is_animation_completed(animation_id) then
+			ui_animator:stop_animation(animation_id)
 
 			animations[animation_name] = nil
 		end
@@ -131,13 +135,12 @@ StartGameWindowDifficulty._update_animations = function (self, dt)
 
 	local widgets_by_name = self._widgets_by_name
 
-	self._animate_difficulty_option_button(self, widgets_by_name.difficulty_option_1, dt)
-	self._animate_difficulty_option_button(self, widgets_by_name.difficulty_option_2, dt)
-	self._animate_difficulty_option_button(self, widgets_by_name.difficulty_option_3, dt)
-	self._animate_difficulty_option_button(self, widgets_by_name.difficulty_option_4, dt)
-
-	return 
+	self:_animate_difficulty_option_button(widgets_by_name.difficulty_option_1, dt)
+	self:_animate_difficulty_option_button(widgets_by_name.difficulty_option_2, dt)
+	self:_animate_difficulty_option_button(widgets_by_name.difficulty_option_3, dt)
+	self:_animate_difficulty_option_button(widgets_by_name.difficulty_option_4, dt)
 end
+
 StartGameWindowDifficulty._is_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -147,9 +150,8 @@ StartGameWindowDifficulty._is_button_pressed = function (self, widget)
 
 		return true
 	end
-
-	return 
 end
+
 StartGameWindowDifficulty._is_button_released = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -159,15 +161,15 @@ StartGameWindowDifficulty._is_button_released = function (self, widget)
 
 		return true
 	end
-
-	return 
 end
+
 StartGameWindowDifficulty._is_button_hover_enter = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
 
 	return hotspot.on_hover_enter and not hotspot.is_selected
 end
+
 StartGameWindowDifficulty._is_stepper_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot_left = content.button_hotspot_left
@@ -182,15 +184,15 @@ StartGameWindowDifficulty._is_stepper_button_pressed = function (self, widget)
 
 		return true, 1
 	end
-
-	return 
 end
+
 local difficulties_select_sounds = {
 	"play_gui_lobby_button_01_difficulty_select_normal",
 	"play_gui_lobby_button_01_difficulty_select_hard",
 	"play_gui_lobby_button_01_difficulty_select_nightmare",
 	"play_gui_lobby_button_01_difficulty_select_cataclysm"
 }
+
 StartGameWindowDifficulty._handle_input = function (self, dt, t)
 	local widgets_by_name = self._widgets_by_name
 	local widget_prefix = "difficulty_option_"
@@ -199,19 +201,19 @@ StartGameWindowDifficulty._handle_input = function (self, dt, t)
 		local widget_name = widget_prefix .. i
 		local widget = widgets_by_name[widget_name]
 
-		if self._is_button_hover_enter(self, widget) then
-			self._play_sound(self, "play_gui_lobby_button_01_difficulty_select_hover")
+		if self:_is_button_hover_enter(widget) then
+			self:_play_sound("play_gui_lobby_button_01_difficulty_select_hover")
 		end
 
-		if self._is_button_pressed(self, widget) then
+		if self:_is_button_pressed(widget) then
 			local content = widget.content
 			local difficulty_key = content.difficulty_key
 
-			self._update_selected_difficulty_option(self, difficulty_key)
+			self:_update_selected_difficulty_option(difficulty_key)
 
 			local sound_event = difficulties_select_sounds[i]
 
-			self._play_sound(self, sound_event)
+			self:_play_sound(sound_event)
 		end
 	end
 
@@ -219,27 +221,29 @@ StartGameWindowDifficulty._handle_input = function (self, dt, t)
 
 	UIWidgetUtils.animate_default_button(select_button, dt)
 
+	local input_service = self.parent:window_input_service()
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local gamepad_confirm_pressed = gamepad_active and not select_button.content.button_hotspot.disable_button and input_service:get("refresh_press", true)
 	local parent = self.parent
 
-	if self._is_button_hover_enter(self, select_button) then
-		self._play_sound(self, "play_gui_lobby_button_01_difficulty_confirm_hover")
+	if self:_is_button_hover_enter(select_button) then
+		self:_play_sound("play_gui_lobby_button_01_difficulty_confirm_hover")
 	end
 
-	if self._is_button_released(self, select_button) then
+	if self:_is_button_released(select_button) or gamepad_confirm_pressed then
 		if self._selected_difficulty_key then
-			parent.set_difficulty_option(parent, self._selected_difficulty_key)
-			self._play_sound(self, "play_gui_lobby_button_01_difficulty_confirm_click")
+			parent:set_difficulty_option(self._selected_difficulty_key)
+			self:_play_sound("play_gui_lobby_button_01_difficulty_confirm_click")
 		end
 
-		local previous_game_mode_index = parent.get_previous_selected_game_mode_index(parent)
+		local previous_game_mode_index = parent:get_previous_selected_game_mode_index()
 
-		parent.set_layout(parent, previous_game_mode_index)
+		parent:set_layout(previous_game_mode_index)
 	end
-
-	return 
 end
+
 StartGameWindowDifficulty._set_selected_difficulty_option = function (self, new_difficulty_key)
-	local difficulties = self._get_difficulty_options(self)
+	local difficulties = self:_get_difficulty_options()
 	local widgets_by_name = self._widgets_by_name
 	local widget_index_counter = 1
 	local widget_prefix = "difficulty_option_"
@@ -252,9 +256,8 @@ StartGameWindowDifficulty._set_selected_difficulty_option = function (self, new_
 		content.button_hotspot.is_selected = difficulty_key == new_difficulty_key
 		widget_index_counter = widget_index_counter + 1
 	end
-
-	return 
 end
+
 StartGameWindowDifficulty._set_info_window = function (self, difficulty_key)
 	local widgets_by_name = self._widgets_by_name
 	local difficulty_settings = DifficultySettings[difficulty_key]
@@ -268,11 +271,10 @@ StartGameWindowDifficulty._set_info_window = function (self, difficulty_key)
 	widgets_by_name.description_text.content.text = Localize(description)
 	widgets_by_name.difficulty_chest_info.content.text = Localize("difficulty_chest_max_powerlevel") .. ": " .. tostring(chest_max_powerlevel)
 	widgets_by_name.xp_multiplier.content.text = Localize("difficulty_xp_multiplier") .. ": " .. tostring(xp_multiplier_number * 100) .. "%"
-
-	return 
 end
+
 StartGameWindowDifficulty._update_difficulty_lock = function (self)
-	local difficulties = self._get_difficulty_options(self)
+	local difficulties = self:_get_difficulty_options()
 	local widgets_by_name = self._widgets_by_name
 	local select_button = widgets_by_name.select_button
 	local selected_difficulty_key = self._selected_difficulty_key
@@ -287,17 +289,28 @@ StartGameWindowDifficulty._update_difficulty_lock = function (self)
 			local difficulty_lock_text = Localize("required_power_level")
 			widgets_by_name.difficulty_lock_text.content.text = string.format("%s: %s", difficulty_lock_text, tostring(UIUtils.presentable_hero_power_level(required_power_level)))
 			widgets_by_name.difficulty_is_locked_text.content.text = Localize("required_power_level_not_met_in_party")
+
+			if not self._has_exited then
+				self.parent.parent:set_input_description(nil)
+			end
 		else
 			select_button.content.button_hotspot.disable_button = false
 			widgets_by_name.difficulty_lock_text.content.text = ""
 			widgets_by_name.difficulty_is_locked_text.content.text = ""
+
+			if not self._has_exited then
+				self.parent.parent:set_input_description("select_difficulty")
+			end
 		end
 	else
 		select_button.content.button_hotspot.disable_button = true
-	end
 
-	return 
+		if not self._has_exited then
+			self.parent.parent:set_input_description(nil)
+		end
+	end
 end
+
 StartGameWindowDifficulty._set_blocking_peers = function (self, players_below_power_level)
 	local ui_renderer = self.ui_renderer
 	local blocking_peers = self._widgets_by_name.blocking_peers
@@ -309,7 +322,7 @@ StartGameWindowDifficulty._set_blocking_peers = function (self, players_below_po
 
 	for i = 1, num_players_below_power_level, 1 do
 		local player = players_below_power_level[i]
-		local player_name = UIRenderer.crop_text_width(ui_renderer, player.name(player), text_width, blocking_peers_style.text)
+		local player_name = UIRenderer.crop_text_width(ui_renderer, player:name(), text_width, blocking_peers_style.text)
 		text = string.format(text, player_name)
 
 		if players_below_power_level[i + 1] == nil then
@@ -322,23 +335,21 @@ StartGameWindowDifficulty._set_blocking_peers = function (self, players_below_po
 	if num_players_below_power_level == 0 then
 		text = ""
 	end
-
-	return 
 end
+
 StartGameWindowDifficulty._update_selected_difficulty_option = function (self, difficulty_key)
 	local parent = self.parent
 	local difficulty_key = difficulty_key or Managers.state.difficulty:get_difficulty()
 
 	if difficulty_key ~= self._selected_difficulty_key then
-		self._set_selected_difficulty_option(self, difficulty_key)
+		self:_set_selected_difficulty_option(difficulty_key)
 
 		self._selected_difficulty_key = difficulty_key
 
-		self._set_info_window(self, difficulty_key)
+		self:_set_info_window(difficulty_key)
 	end
-
-	return 
 end
+
 StartGameWindowDifficulty.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -359,14 +370,12 @@ StartGameWindowDifficulty.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 StartGameWindowDifficulty._play_sound = function (self, event)
 	self.parent:play_sound(event)
-
-	return 
 end
+
 StartGameWindowDifficulty._animate_difficulty_option_button = function (self, widget, dt)
 	local ui_renderer = self.ui_renderer
 	local scenegraph_id = widget.scenegraph_id
@@ -451,9 +460,8 @@ StartGameWindowDifficulty._animate_difficulty_option_button = function (self, wi
 	icon_glow_color[2] = combined_progress * 255
 	icon_glow_color[3] = combined_progress * 255
 	icon_glow_color[4] = combined_progress * 255
-
-	return 
 end
+
 StartGameWindowDifficulty._get_text_height = function (self, ui_renderer, size, ui_style, text, ui_style_global)
 	local widget_scale = nil
 
@@ -494,4 +502,4 @@ StartGameWindowDifficulty._get_text_height = function (self, ui_renderer, size, 
 	return full_font_height
 end
 
-return 
+return

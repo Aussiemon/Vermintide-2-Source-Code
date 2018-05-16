@@ -339,6 +339,7 @@ local hero_icons = {
 	"unit_frame_portrait_dead",
 	"unit_frame_portrait_dead"
 }
+local disable_with_gamepad = true
 local widgets_definitions = {
 	viewport = {
 		scenegraph_id = "dead_space_filler",
@@ -384,7 +385,7 @@ local widgets_definitions = {
 	hero_level_text = UIWidgets.create_simple_text("n/a", "hero_level_text", nil, nil, hero_level_text_style),
 	hero_prestige_level_text = UIWidgets.create_simple_text("n/a", "hero_prestige_level_text", nil, nil, hero_level_text_style),
 	background = UIWidgets.create_simple_texture("large_frame_01", "dead_space_filler"),
-	exit_button = UIWidgets.create_default_button("exit_button", scenegraph_definition.exit_button.size, nil, nil, Localize("interaction_action_close")),
+	exit_button = UIWidgets.create_default_button("exit_button", scenegraph_definition.exit_button.size, nil, nil, Localize("interaction_action_close"), nil, nil, nil, nil, disable_with_gamepad),
 	console_cursor = UIWidgets.create_console_cursor("console_cursor")
 }
 local animations = {}

@@ -168,15 +168,7 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 			}
 		},
 		catacombs_corpse_pit = {
-			[PLAYER] = {
-				time_between_damage = 1,
-				damage = {
-					2,
-					2,
-					2,
-					2
-				}
-			}
+			[PLAYER] = {}
 		},
 		skaven_molten_steel = {
 			[PLAYER] = {
@@ -306,4 +298,4 @@ end
 
 VolumeSystemSettings.nav_tag_layer_costs = nav_tag_layer_costs
 
-return 
+return

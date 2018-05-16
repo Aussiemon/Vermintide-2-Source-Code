@@ -1,6 +1,7 @@
 BTConditions.can_activate = BTConditions.can_activate or {}
 local unit_alive = Unit.alive
 local ScriptUnit = ScriptUnit
+
 BTConditions.can_activate.dr_ironbreaker = function (blackboard)
 	local self_unit = blackboard.unit
 	local self_position = POSITION_LOOKUP[self_unit]
@@ -29,9 +30,10 @@ BTConditions.can_activate.dr_ironbreaker = function (blackboard)
 
 	return false
 end
+
 BTConditions.can_activate.dr_slayer = function (blackboard)
 	local locomotion_extension = blackboard.locomotion_extension
-	local is_on_ground = locomotion_extension.is_on_ground(locomotion_extension)
+	local is_on_ground = locomotion_extension:is_on_ground()
 
 	if not is_on_ground then
 		return false
@@ -46,13 +48,13 @@ BTConditions.can_activate.dr_slayer = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 	local target_ally_need_type = blackboard.target_ally_need_type
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
-	local is_prioritized = ai_bot_group_system.is_prioritized_ally(ai_bot_group_system, self_unit, target_ally_unit)
+	local is_prioritized = ai_bot_group_system:is_prioritized_ally(self_unit, target_ally_unit)
 	local leap_target, leap_target_distance_sq = nil
 
 	if is_prioritized and (target_ally_need_type == "knocked_down" or target_ally_need_type == "hook") then
 		leap_target = target_ally_unit
 		leap_target_distance_sq = blackboard.ally_distance^2
-	elseif target_unit and 8 <= target_threat_value then
+	elseif target_unit and target_threat_value >= 8 then
 		local target_position = POSITION_LOOKUP[target_unit]
 		leap_target = target_unit
 		leap_target_distance_sq = Vector3.distance_squared(self_position, target_position)
@@ -77,11 +79,12 @@ BTConditions.can_activate.dr_slayer = function (blackboard)
 
 	return false
 end
+
 BTConditions.can_activate.dr_ranger = function (blackboard)
 	local self_unit = blackboard.unit
 	local target_ally_unit = blackboard.target_ally_unit
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
-	local is_prioritized = ai_bot_group_system.is_prioritized_ally(ai_bot_group_system, self_unit, target_ally_unit)
+	local is_prioritized = ai_bot_group_system:is_prioritized_ally(self_unit, target_ally_unit)
 	local ally_distance = blackboard.ally_distance
 	local self_position = POSITION_LOOKUP[self_unit]
 	local proximite_enemies = blackboard.proximite_enemies
@@ -112,6 +115,7 @@ BTConditions.can_activate.dr_ranger = function (blackboard)
 
 	return false
 end
+
 BTConditions.can_activate.es_mercenary = function (blackboard)
 	local self_unit = blackboard.unit
 	local self_position = POSITION_LOOKUP[self_unit]
@@ -167,6 +171,7 @@ BTConditions.can_activate.es_mercenary = function (blackboard)
 
 	return false
 end
+
 BTConditions.can_activate.es_huntsman = function (blackboard)
 	local proximite_enemies = blackboard.proximite_enemies
 	local num_proximite_enemies = #proximite_enemies
@@ -184,21 +189,22 @@ BTConditions.can_activate.es_huntsman = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 	local target_ally_need_type = blackboard.target_ally_need_type
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
-	local is_prioritized = ai_bot_group_system.is_prioritized_ally(ai_bot_group_system, self_unit, target_ally_unit)
+	local is_prioritized = ai_bot_group_system:is_prioritized_ally(self_unit, target_ally_unit)
 	local health_extension = blackboard.health_extension
-	local current_health_percent = health_extension.current_health_percent(health_extension)
+	local current_health_percent = health_extension:current_health_percent()
 	local is_wounded = blackboard.status_extension:is_wounded()
 
 	if is_prioritized and (target_ally_need_type == "knocked_down" or target_ally_need_type == "hook" or target_ally_need_type == "ledge") then
 		return true
 	elseif current_health_percent < 0.4 or is_wounded then
 		return true
-	elseif target_unit and 8 <= target_threat_value then
+	elseif target_unit and target_threat_value >= 8 then
 		return true
 	end
 
 	return false
 end
+
 BTConditions.can_activate.es_knight = function (blackboard)
 	local self_unit = blackboard.unit
 	local self_position = POSITION_LOOKUP[self_unit]
@@ -209,13 +215,13 @@ BTConditions.can_activate.es_knight = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 	local target_ally_need_type = blackboard.target_ally_need_type
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
-	local is_prioritized = ai_bot_group_system.is_prioritized_ally(ai_bot_group_system, self_unit, target_ally_unit)
+	local is_prioritized = ai_bot_group_system:is_prioritized_ally(self_unit, target_ally_unit)
 	local charge_target, charge_target_distance_sq = nil
 
 	if is_prioritized and (target_ally_need_type == "knocked_down" or target_ally_need_type == "hook") then
 		charge_target = target_ally_unit
 		charge_target_distance_sq = blackboard.ally_distance^2
-	elseif target_unit and 5 <= target_threat_value then
+	elseif target_unit and target_threat_value >= 5 then
 		local target_position = POSITION_LOOKUP[target_unit]
 		charge_target = target_unit
 		charge_target_distance_sq = Vector3.distance_squared(self_position, target_position)
@@ -241,6 +247,7 @@ BTConditions.can_activate.es_knight = function (blackboard)
 
 	return false
 end
+
 BTConditions.can_activate.we_waywatcher = function (blackboard, can_use_ranged_shot_ability)
 	if not can_use_ranged_shot_ability then
 		return false
@@ -258,15 +265,14 @@ BTConditions.can_activate.we_waywatcher = function (blackboard, can_use_ranged_s
 	if is_range_ok then
 		local obstruction = blackboard.ranged_obstruction_by_static
 		local t = Managers.time:time("game")
-		local obstructed = obstruction and obstruction.unit == target and obstruction.timer + 3 < t
+		local obstructed = obstruction and obstruction.unit == target and t > obstruction.timer + 3
 
 		return not obstructed
 	else
 		return false
 	end
-
-	return 
 end
+
 BTConditions.can_activate.we_maidenguard = function (blackboard)
 	local self_unit = blackboard.unit
 	local self_position = POSITION_LOOKUP[self_unit]
@@ -277,13 +283,13 @@ BTConditions.can_activate.we_maidenguard = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 	local target_ally_need_type = blackboard.target_ally_need_type
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
-	local is_prioritized = ai_bot_group_system.is_prioritized_ally(ai_bot_group_system, self_unit, target_ally_unit)
+	local is_prioritized = ai_bot_group_system:is_prioritized_ally(self_unit, target_ally_unit)
 	local dash_target, dash_target_distance_sq = nil
 
 	if is_prioritized and (target_ally_need_type == "knocked_down" or target_ally_need_type == "hook") then
 		dash_target = target_ally_unit
 		dash_target_distance_sq = blackboard.ally_distance^2
-	elseif target_unit and 5 <= target_threat_value then
+	elseif target_unit and target_threat_value >= 5 then
 		local target_position = POSITION_LOOKUP[target_unit]
 		dash_target = target_unit
 		dash_target_distance_sq = Vector3.distance_squared(self_position, target_position)
@@ -309,6 +315,7 @@ BTConditions.can_activate.we_maidenguard = function (blackboard)
 
 	return false
 end
+
 BTConditions.can_activate.we_shade = function (blackboard)
 	local proximite_enemies = blackboard.proximite_enemies
 	local num_proximite_enemies = #proximite_enemies
@@ -326,21 +333,22 @@ BTConditions.can_activate.we_shade = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 	local target_ally_need_type = blackboard.target_ally_need_type
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
-	local is_prioritized = ai_bot_group_system.is_prioritized_ally(ai_bot_group_system, self_unit, target_ally_unit)
+	local is_prioritized = ai_bot_group_system:is_prioritized_ally(self_unit, target_ally_unit)
 	local health_extension = blackboard.health_extension
-	local current_health_percent = health_extension.current_health_percent(health_extension)
+	local current_health_percent = health_extension:current_health_percent()
 	local is_wounded = blackboard.status_extension:is_wounded()
 
 	if is_prioritized and (target_ally_need_type == "knocked_down" or target_ally_need_type == "hook" or target_ally_need_type == "ledge") then
 		return true
 	elseif current_health_percent < 0.4 or is_wounded then
 		return true
-	elseif target_unit and 8 <= target_threat_value then
+	elseif target_unit and target_threat_value >= 8 then
 		return true
 	end
 
 	return false
 end
+
 BTConditions.can_activate.wh_captain = function (blackboard)
 	local self_unit = blackboard.unit
 	local self_position = POSITION_LOOKUP[self_unit]
@@ -355,7 +363,7 @@ BTConditions.can_activate.wh_captain = function (blackboard)
 		local player_position = POSITION_LOOKUP[player_unit]
 		local distance_squared = Vector3.distance_squared(self_position, player_position)
 
-		if player_unit ~= self_unit and not player_status_extension.is_disabled(player_status_extension) and distance_squared < max_ally_distance_sq then
+		if player_unit ~= self_unit and not player_status_extension:is_disabled() and distance_squared < max_ally_distance_sq then
 			num_players_within_range = num_players_within_range + 1
 		end
 	end
@@ -397,6 +405,7 @@ BTConditions.can_activate.wh_captain = function (blackboard)
 
 	return false
 end
+
 BTConditions.can_activate.wh_bountyhunter = function (blackboard, can_use_ranged_shot_ability)
 	if not can_use_ranged_shot_ability then
 		return false
@@ -414,15 +423,14 @@ BTConditions.can_activate.wh_bountyhunter = function (blackboard, can_use_ranged
 	if is_range_ok then
 		local obstruction = blackboard.ranged_obstruction_by_static
 		local t = Managers.time:time("game")
-		local obstructed = obstruction and obstruction.unit == target and obstruction.timer + 3 < t
+		local obstructed = obstruction and obstruction.unit == target and t > obstruction.timer + 3
 
 		return not obstructed
 	else
 		return false
 	end
-
-	return 
 end
+
 BTConditions.can_activate.wh_zealot = function (blackboard)
 	local self_unit = blackboard.unit
 	local self_position = POSITION_LOOKUP[self_unit]
@@ -433,13 +441,13 @@ BTConditions.can_activate.wh_zealot = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 	local target_ally_need_type = blackboard.target_ally_need_type
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
-	local is_prioritized = ai_bot_group_system.is_prioritized_ally(ai_bot_group_system, self_unit, target_ally_unit)
+	local is_prioritized = ai_bot_group_system:is_prioritized_ally(self_unit, target_ally_unit)
 	local run_target, run_target_distance_sq = nil
 
 	if is_prioritized and (target_ally_need_type == "knocked_down" or target_ally_need_type == "hook") then
 		run_target = target_ally_unit
 		run_target_distance_sq = blackboard.ally_distance^2
-	elseif target_unit and 8 <= target_threat_value then
+	elseif target_unit and target_threat_value >= 8 then
 		local target_position = POSITION_LOOKUP[target_unit]
 		run_target = target_unit
 		run_target_distance_sq = Vector3.distance_squared(self_position, target_position)
@@ -464,6 +472,7 @@ BTConditions.can_activate.wh_zealot = function (blackboard)
 
 	return false
 end
+
 BTConditions.can_activate.bw_adept = function (blackboard)
 	local self_unit = blackboard.unit
 	local self_position = POSITION_LOOKUP[self_unit]
@@ -474,13 +483,13 @@ BTConditions.can_activate.bw_adept = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 	local target_ally_need_type = blackboard.target_ally_need_type
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
-	local is_prioritized = ai_bot_group_system.is_prioritized_ally(ai_bot_group_system, self_unit, target_ally_unit)
+	local is_prioritized = ai_bot_group_system:is_prioritized_ally(self_unit, target_ally_unit)
 	local fire_walk_target, fire_walk_target_distance_sq = nil
 
 	if is_prioritized and (target_ally_need_type == "knocked_down" or target_ally_need_type == "hook") then
 		fire_walk_target = target_ally_unit
 		fire_walk_target_distance_sq = blackboard.ally_distance^2
-	elseif target_unit and 8 <= target_threat_value then
+	elseif target_unit and target_threat_value >= 8 then
 		local target_position = POSITION_LOOKUP[target_unit]
 		fire_walk_target = target_unit
 		fire_walk_target_distance_sq = Vector3.distance_squared(self_position, target_position)
@@ -505,6 +514,7 @@ BTConditions.can_activate.bw_adept = function (blackboard)
 
 	return false
 end
+
 BTConditions.can_activate.bw_scholar = function (blackboard, can_use_ranged_shot_ability)
 	if not can_use_ranged_shot_ability then
 		return false
@@ -522,18 +532,17 @@ BTConditions.can_activate.bw_scholar = function (blackboard, can_use_ranged_shot
 	if is_range_ok then
 		local obstruction = blackboard.ranged_obstruction_by_static
 		local t = Managers.time:time("game")
-		local obstructed = obstruction and obstruction.unit == target and obstruction.timer + 3 < t
+		local obstructed = obstruction and obstruction.unit == target and t > obstruction.timer + 3
 
 		return not obstructed
 	else
 		return false
 	end
-
-	return 
 end
+
 BTConditions.can_activate.bw_unchained = function (blackboard)
 	local overcharge_extension = blackboard.overcharge_extension
-	local is_above_critical_limit = overcharge_extension.is_above_critical_limit(overcharge_extension)
+	local is_above_critical_limit = overcharge_extension:is_above_critical_limit()
 
 	if is_above_critical_limit then
 		return true
@@ -566,10 +575,11 @@ BTConditions.can_activate.bw_unchained = function (blackboard)
 
 	return false
 end
+
 BTConditions.can_activate_ability = function (blackboard, args)
 	local career_extension = blackboard.career_extension
 	local is_using_ability = blackboard.activate_ability_data.is_using_ability
-	local career_name = career_extension.career_name(career_extension)
+	local career_name = career_extension:career_name()
 	local can_use_ranged_shot_ability = args[1]
 
 	if can_use_ranged_shot_ability and (not unit_alive(blackboard.target_unit) or not Unit.has_data(blackboard.target_unit, "breed")) then
@@ -578,14 +588,17 @@ BTConditions.can_activate_ability = function (blackboard, args)
 
 	local condition_function = BTConditions.can_activate[career_name]
 
-	return is_using_ability or (career_extension.can_use_activated_ability(career_extension) and condition_function and condition_function(blackboard, can_use_ranged_shot_ability))
+	return is_using_ability or (career_extension:can_use_activated_ability() and condition_function and condition_function(blackboard, can_use_ranged_shot_ability))
 end
+
 BTConditions.is_disabled = function (blackboard)
 	return blackboard.is_knocked_down or blackboard.is_grabbed_by_pack_master or blackboard.is_pounced_down or blackboard.is_hanging_from_hook or blackboard.is_ledge_hanging or blackboard.is_grabbed_by_chaos_spawn
 end
+
 BTConditions.is_transported = function (blackboard)
 	return blackboard.is_transported
 end
+
 local PUSHED_COOLDOWN = 2
 local BLOCK_BROKEN_COOLDOWN = 4
 
@@ -594,22 +607,20 @@ local function is_safe_to_block_interact(status_extension, interaction_extension
 	local pushed_t = status_extension.pushed_at_t
 	local block_broken_t = status_extension.block_broken_at_t
 	local enough_fatigue = true
-	local is_interacting, interaction_type = interaction_extension.is_interacting(interaction_extension)
+	local is_interacting, interaction_type = interaction_extension:is_interacting()
 
 	if not is_interacting or interaction_type ~= wanted_interaction_type then
-		local current_fatigue, max_fatigue = status_extension.current_fatigue_points(status_extension)
+		local current_fatigue, max_fatigue = status_extension:current_fatigue_points()
 		local stamina_left = max_fatigue - current_fatigue
 		local blocked_attack_cost = PlayerUnitStatusSettings.fatigue_point_costs.blocked_attack
 		enough_fatigue = current_fatigue == 0 or blocked_attack_cost < stamina_left
 	end
 
-	if enough_fatigue and pushed_t + PUSHED_COOLDOWN < t and block_broken_t + BLOCK_BROKEN_COOLDOWN < t then
+	if enough_fatigue and t > pushed_t + PUSHED_COOLDOWN and t > block_broken_t + BLOCK_BROKEN_COOLDOWN then
 		return true
 	else
 		return false
 	end
-
-	return 
 end
 
 local function is_there_threat_to_aid(self_unit, proximite_enemies, force_aid)
@@ -633,7 +644,7 @@ end
 
 local function can_interact_with_ally(self_unit, target_ally_unit)
 	local interactable_extension = ScriptUnit.extension(target_ally_unit, "interactable_system")
-	local interactor_unit = interactable_extension.is_being_interacted_with(interactable_extension)
+	local interactor_unit = interactable_extension:is_being_interacted_with()
 	local can_interact_with_ally = interactor_unit == nil or interactor_unit == self_unit
 
 	return can_interact_with_ally
@@ -644,19 +655,22 @@ local Z_MOVE_TO_EPSILON = BotConstants.default.Z_MOVE_TO_EPSILON
 
 local function has_reached_ally_aid_destination(self_position, blackboard)
 	local navigation_extension = blackboard.navigation_extension
-	local destination = navigation_extension.destination(navigation_extension)
+	local destination = navigation_extension:destination()
 	local target_ally_aid_destination = blackboard.target_ally_aid_destination:unbox()
 	local has_target_ally_aid_destination = Vector3.equal(destination, target_ally_aid_destination)
 
 	if has_target_ally_aid_destination then
-		return navigation_extension.destination_reached(navigation_extension)
+		return navigation_extension:destination_reached()
+	elseif navigation_extension:destination_reached() then
+		local bot_ai_extension = blackboard.ai_extension
+		local is_near = not bot_ai_extension:new_destination_distance_check(self_position, destination, target_ally_aid_destination, navigation_extension)
+
+		return is_near
 	else
 		local offset = target_ally_aid_destination - self_position
 
 		return math.abs(offset.z) <= Z_MOVE_TO_EPSILON and Vector3.length_squared(Vector3.flat(offset)) <= FLAT_MOVE_TO_EPSILON_SQ
 	end
-
-	return 
 end
 
 BTConditions.can_revive = function (blackboard)
@@ -672,12 +686,12 @@ BTConditions.can_revive = function (blackboard)
 		local self_unit = blackboard.unit
 		local health = ScriptUnit.extension(target_ally_unit, "health_system"):current_health_percent()
 
-		if 0.3 < health and is_there_threat_to_aid(self_unit, blackboard.proximite_enemies, blackboard.force_aid) then
+		if health > 0.3 and is_there_threat_to_aid(self_unit, blackboard.proximite_enemies, blackboard.force_aid) then
 			return false
 		end
 
 		local ally_distance = blackboard.ally_distance
-		local is_interacting, interaction_type = interaction_extension.is_interacting(interaction_extension)
+		local is_interacting, interaction_type = interaction_extension:is_interacting()
 
 		if is_interacting and interaction_type == "revive" and ally_distance < 1 then
 			return true
@@ -691,21 +705,20 @@ BTConditions.can_revive = function (blackboard)
 			return true
 		end
 	end
-
-	return 
 end
+
 BTConditions.can_heal_player = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 
 	if blackboard.interaction_unit == target_ally_unit and blackboard.target_ally_need_type == "in_need_of_heal" then
 		local interaction_extension = blackboard.interaction_extension
-		local is_interacting, interaction_type = interaction_extension.is_interacting(interaction_extension)
+		local is_interacting, interaction_type = interaction_extension:is_interacting()
 
 		if is_interacting and interaction_type == "heal" then
 			return true
 		end
 
-		if 0 < #blackboard.proximite_enemies then
+		if #blackboard.proximite_enemies > 0 then
 			return false
 		end
 
@@ -714,17 +727,16 @@ BTConditions.can_heal_player = function (blackboard)
 		local ally_destination_reached = has_reached_ally_aid_destination(self_position, blackboard)
 		local can_interact_with_ally = can_interact_with_ally(self_unit, target_ally_unit)
 		local ally_locomotion_extension = ScriptUnit.extension(target_ally_unit, "locomotion_system")
-		local ally_velocity = ally_locomotion_extension.current_velocity(ally_locomotion_extension)
+		local ally_velocity = ally_locomotion_extension:current_velocity()
 		local ally_speed_sq = Vector3.length_squared(ally_velocity)
 		local ally_distance = blackboard.ally_distance
 
-		if can_interact_with_ally and (ally_destination_reached or (0.04000000000000001 < ally_speed_sq and ally_distance < 2)) then
+		if can_interact_with_ally and (ally_destination_reached or (ally_speed_sq > 0.04000000000000001 and ally_distance < 2)) then
 			return true
 		end
 	end
-
-	return 
 end
+
 BTConditions.can_help_in_need_player = function (blackboard, args)
 	local need_type = args[1]
 	local target_ally_unit = blackboard.target_ally_unit
@@ -735,17 +747,16 @@ BTConditions.can_help_in_need_player = function (blackboard, args)
 		local ally_destination_reached = has_reached_ally_aid_destination(self_position, blackboard)
 		local can_interact_with_ally = can_interact_with_ally(self_unit, target_ally_unit)
 		local ally_locomotion_extension = ScriptUnit.extension(target_ally_unit, "locomotion_system")
-		local ally_velocity = ally_locomotion_extension.current_velocity(ally_locomotion_extension)
+		local ally_velocity = ally_locomotion_extension:current_velocity()
 		local ally_speed_sq = Vector3.length_squared(ally_velocity)
 		local ally_distance = blackboard.ally_distance
 
-		if can_interact_with_ally and (ally_destination_reached or (0.04000000000000001 < ally_speed_sq and ally_distance < 2)) then
+		if can_interact_with_ally and (ally_destination_reached or (ally_speed_sq > 0.04000000000000001 and ally_distance < 2)) then
 			return true
 		end
 	end
-
-	return 
 end
+
 BTConditions.can_rescue_hanging_from_hook = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 
@@ -768,9 +779,8 @@ BTConditions.can_rescue_hanging_from_hook = function (blackboard)
 			return true
 		end
 	end
-
-	return 
 end
+
 BTConditions.can_rescue_ledge_hanging = function (blackboard)
 	local target_ally_unit = blackboard.target_ally_unit
 
@@ -793,13 +803,12 @@ BTConditions.can_rescue_ledge_hanging = function (blackboard)
 			return true
 		end
 	end
-
-	return 
 end
+
 BTConditions.can_loot = function (blackboard)
 	local play_go_system = Managers.state.entity:system("play_go_tutorial_system")
 
-	if play_go_system and not play_go_system.bot_loot_enabled(play_go_system) then
+	if play_go_system and not play_go_system:bot_loot_enabled() then
 		return false
 	end
 
@@ -807,12 +816,15 @@ BTConditions.can_loot = function (blackboard)
 
 	return (blackboard.health_pickup and blackboard.allowed_to_take_health_pickup and blackboard.health_dist < max_dist and blackboard.health_pickup == blackboard.interaction_unit) or (blackboard.ammo_pickup and blackboard.needs_ammo and blackboard.ammo_dist < max_dist and blackboard.ammo_pickup == blackboard.interaction_unit) or (blackboard.mule_pickup and blackboard.mule_pickup == blackboard.interaction_unit and blackboard.mule_pickup_dist_squared < max_dist * max_dist)
 end
+
 BTConditions.bot_should_heal = function (blackboard)
 	local self_unit = blackboard.unit
 	local inventory_ext = blackboard.inventory_extension
-	local health_slot_data = inventory_ext.get_slot_data(inventory_ext, "slot_healthkit")
-	local template = health_slot_data and inventory_ext.get_item_template(inventory_ext, health_slot_data)
-	local can_heal_self = template and template.can_heal_self
+	local buff_extension = ScriptUnit.extension(self_unit, "buff_system")
+	local health_slot_data = inventory_ext:get_slot_data("slot_healthkit")
+	local template = health_slot_data and inventory_ext:get_item_template(health_slot_data)
+	local has_heal_disable_buff = buff_extension:has_buff_type("trait_necklace_no_healing_health_regen")
+	local can_heal_self = template and template.can_heal_self and not has_heal_disable_buff
 
 	if not can_heal_self then
 		return false
@@ -826,6 +838,7 @@ BTConditions.bot_should_heal = function (blackboard)
 
 	return is_safe and (hurt or blackboard.force_use_health_pickup or wounded)
 end
+
 BTConditions.is_slot_not_wielded = function (blackboard, args)
 	local wielded_slot = blackboard.inventory_extension:equipment().wielded_slot
 	local wanted_slot = args[1]
@@ -836,9 +849,8 @@ BTConditions.is_slot_not_wielded = function (blackboard, args)
 	else
 		return wielded_slot ~= wanted_slot
 	end
-
-	return 
 end
+
 BTConditions.has_priority_or_opportunity_target = function (blackboard)
 	local target = blackboard.target_unit
 
@@ -851,9 +863,11 @@ BTConditions.has_priority_or_opportunity_target = function (blackboard)
 
 	return result
 end
+
 BTConditions.ally_within_range_or_solo = function (blackboard)
 	return not unit_alive(blackboard.target_ally_unit) or blackboard.ally_distance < 40
 end
+
 BTConditions.bot_in_melee_range = function (blackboard)
 	local target_unit = blackboard.target_unit
 
@@ -891,12 +905,13 @@ BTConditions.bot_in_melee_range = function (blackboard)
 	end
 
 	local offset = target_aim_position - POSITION_LOOKUP[self_unit]
-	local dist = Vector3.length(offset)
-	local in_range = dist < melee_range
+	local distance_squared = Vector3.length_squared(offset)
+	local in_range = distance_squared < melee_range^2
 	local z_offset = offset.z
 
-	return in_range and -1.5 < z_offset and z_offset < 2
+	return in_range and z_offset > -1.5 and z_offset < 2
 end
+
 BTConditions.has_target_and_ammo_greater_than = function (blackboard, args)
 	local target_unit = blackboard.target_unit
 
@@ -905,8 +920,8 @@ BTConditions.has_target_and_ammo_greater_than = function (blackboard, args)
 	end
 
 	local inventory_extension = blackboard.inventory_extension
-	local ranged_slot_data = inventory_extension.get_slot_data(inventory_extension, "slot_ranged")
-	local ranged_slot_template = inventory_extension.get_item_template(inventory_extension, ranged_slot_data)
+	local ranged_slot_data = inventory_extension:get_slot_data("slot_ranged")
+	local ranged_slot_template = inventory_extension:get_item_template(ranged_slot_data)
 	local ranged_slot_buff_type = ranged_slot_template and ranged_slot_template.buff_type
 	local is_ranged = RangedBuffTypes[ranged_slot_buff_type]
 
@@ -914,18 +929,41 @@ BTConditions.has_target_and_ammo_greater_than = function (blackboard, args)
 		return false
 	end
 
-	local current, max = inventory_extension.current_ammo_status(inventory_extension, "slot_ranged")
+	local current, max = inventory_extension:current_ammo_status("slot_ranged")
 	local ammo_ok = not current or args.ammo_percentage < current / max
 	local overcharge_extension = blackboard.overcharge_extension
 	local overcharge_limit_type = args.overcharge_limit_type
-	local current_oc, threshold_oc, max_oc = overcharge_extension.current_overcharge_status(overcharge_extension)
+	local current_oc, threshold_oc, max_oc = overcharge_extension:current_overcharge_status()
 	local overcharge_ok = current_oc == 0 or (overcharge_limit_type == "threshold" and current_oc / threshold_oc < args.overcharge_limit) or (overcharge_limit_type == "maximum" and current_oc / max_oc < args.overcharge_limit)
 	local obstruction = blackboard.ranged_obstruction_by_static
 	local t = Managers.time:time("game")
-	local obstructed = obstruction and obstruction.unit == blackboard.target_unit and obstruction.timer + 3 < t
+	local obstructed = obstruction and obstruction.unit == blackboard.target_unit and t > obstruction.timer + 3
 
 	return ammo_ok and overcharge_ok and not obstructed
 end
+
+BTConditions.should_vent_overcharge = function (blackboard, args)
+	local overcharge_extension = blackboard.overcharge_extension
+	local overcharge_limit_type = args.overcharge_limit_type
+	local current_oc, threshold_oc, max_oc = overcharge_extension:current_overcharge_status()
+	local should_vent = false
+	local overcharge_percentage = 0
+
+	if overcharge_limit_type == "threshold" then
+		overcharge_percentage = current_oc / threshold_oc
+	elseif overcharge_limit_type == "maximum" then
+		overcharge_percentage = current_oc / max_oc
+	end
+
+	if blackboard.venting then
+		should_vent = args.stop_percentage <= overcharge_percentage
+	else
+		should_vent = args.start_min_percentage <= overcharge_percentage and overcharge_percentage <= args.start_max_percentage
+	end
+
+	return should_vent
+end
+
 BTConditions.can_open_door = function (blackboard)
 	local can_interact = false
 
@@ -934,17 +972,19 @@ BTConditions.can_open_door = function (blackboard)
 		local door_extension = unit_alive(interaction_unit) and ScriptUnit.has_extension(interaction_unit, "door_system")
 
 		if door_extension then
-			can_interact = door_extension.get_current_state(door_extension) == "closed"
+			can_interact = door_extension:get_current_state() == "closed"
 		end
 	end
 
 	return can_interact
 end
+
 BTConditions.bot_at_breakable = function (blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
-	return navigation_extension.is_in_transition(navigation_extension) and navigation_extension.transition_type(navigation_extension) == "planks"
+	return navigation_extension:is_in_transition() and navigation_extension:transition_type() == "planks"
 end
+
 BTConditions.cant_reach_ally = function (blackboard)
 	local follow_unit = blackboard.ai_bot_group_extension.data.follow_unit
 
@@ -959,8 +999,8 @@ BTConditions.cant_reach_ally = function (blackboard)
 	if not disable_bot_main_path_teleport_check then
 		local self_unit = blackboard.unit
 		local conflict_director = Managers.state.conflict
-		local self_segment = conflict_director.get_player_unit_segment(conflict_director, self_unit)
-		local target_segment = conflict_director.get_player_unit_segment(conflict_director, follow_unit)
+		local self_segment = conflict_director:get_player_unit_segment(self_unit)
+		local target_segment = conflict_director:get_player_unit_segment(follow_unit)
 
 		if not self_segment or not target_segment then
 			return false
@@ -977,10 +1017,11 @@ BTConditions.cant_reach_ally = function (blackboard)
 
 	local t = Managers.time:time("game")
 	local navigation_extension = blackboard.navigation_extension
-	local fails, last_success = navigation_extension.successive_failed_paths(navigation_extension)
+	local fails, last_success = navigation_extension:successive_failed_paths()
 
-	return blackboard.moving_toward_follow_position and (((disable_bot_main_path_teleport_check or is_forwards) and 1) or 5) < fails and 5 < t - last_success and not blackboard.has_teleported
+	return blackboard.moving_toward_follow_position and fails > (((disable_bot_main_path_teleport_check or is_forwards) and 1) or 5) and t - last_success > 5 and not blackboard.has_teleported
 end
+
 BTConditions.can_teleport = function (blackboard)
 	local follow_unit = blackboard.ai_bot_group_extension.data.follow_unit
 
@@ -994,8 +1035,8 @@ BTConditions.can_teleport = function (blackboard)
 	if not disable_bot_main_path_teleport_check then
 		local self_unit = blackboard.unit
 		local conflict_director = Managers.state.conflict
-		local self_segment = conflict_director.get_player_unit_segment(conflict_director, self_unit) or 1
-		local target_segment = conflict_director.get_player_unit_segment(conflict_director, follow_unit)
+		local self_segment = conflict_director:get_player_unit_segment(self_unit) or 1
+		local target_segment = conflict_director:get_player_unit_segment(follow_unit)
 
 		if not target_segment or target_segment < self_segment then
 			return false
@@ -1005,4 +1046,4 @@ BTConditions.can_teleport = function (blackboard)
 	return true
 end
 
-return 
+return

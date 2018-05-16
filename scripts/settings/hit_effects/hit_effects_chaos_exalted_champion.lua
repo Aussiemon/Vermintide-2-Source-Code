@@ -284,4 +284,4 @@ HitEffectsChaosExaltedChampion = {
 	}
 }
 
-return 
+return

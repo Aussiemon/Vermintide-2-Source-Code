@@ -57,21 +57,21 @@ BotActions.default = {
 		engage_range = math.huge,
 		engage_range_near_follow_pos = math.huge,
 		override_engage_range_to_follow_pos = math.huge,
-		override_engage_range_to_follow_pos_horde = math.huge
+		override_engage_range_to_follow_pos_threat = math.huge
 	},
 	fight_melee = {
-		override_engage_range_to_follow_pos_horde = 6,
+		engage_range = 6,
 		override_engage_range_to_follow_pos = 12,
 		engage_range_near_follow_pos = 10,
-		engage_range = 6
+		override_engage_range_to_follow_pos_threat = 6
 	},
 	destroy_object_melee = {
-		destroy_object = true,
 		do_not_update_engage_position = true,
+		destroy_object = true,
 		engage_range = math.huge,
 		engage_range_near_follow_pos = math.huge,
 		override_engage_range_to_follow_pos = math.huge,
-		override_engage_range_to_follow_pos_horde = math.huge
+		override_engage_range_to_follow_pos_threat = math.huge
 	},
 	combat = {
 		action_weight = 1
@@ -187,12 +187,7 @@ for category_name, category_table in pairs(BotActions) do
 end
 
 PlayerBots.default = {
-	walk_speed = 1.9,
-	radius = 1,
-	behavior = "default",
-	run_speed = 4,
-	perception = "regular",
-	blackboard_allocation_size = 128
+	behavior = "default"
 }
 BotConstants.default = {
 	Z_MOVE_TO_EPSILON = 0.3,
@@ -223,28 +218,41 @@ BotConstants.default = {
 		survival_hardest = {
 			max_start_delay = 0
 		}
+	},
+	OPPORTUNITY_TARGET_REACTION_TIMES = {
+		easy = {
+			max = 0.75,
+			min = 0.5
+		},
+		normal = {
+			max = 0.75,
+			min = 0.5
+		},
+		hard = {
+			max = 0.65,
+			min = 0.2
+		},
+		survival_hard = {
+			max = 0.65,
+			min = 0.2
+		},
+		harder = {
+			max = 0.65,
+			min = 0.2
+		},
+		survival_harder = {
+			max = 0.65,
+			min = 0.2
+		},
+		hardest = {
+			max = 0.65,
+			min = 0.2
+		},
+		survival_hardest = {
+			max = 0.65,
+			min = 0.2
+		}
 	}
 }
-local PerceptionTypes = {
-	regular = true,
-	no_seeing = true,
-	all_seeing = true
-}
-local TargetSelectionTypes = {
-	pick_pounce_down_target = true,
-	pick_closest_target = true
-}
 
-for name, bot in pairs(PlayerBots) do
-	bot.name = name
-
-	if bot.perception and not PerceptionTypes[bot.perception] then
-		error("Bad perception type '" .. bot.perception .. "' specified in bot .. '" .. bot.name .. "'.")
-	end
-
-	if bot.target_selection and not TargetSelectionTypes[bot.target_selection] then
-		error("Bad 'target_selection' type '" .. bot.target_selection .. "' specified in bot .. '" .. bot.name .. "'.")
-	end
-end
-
-return 
+return

@@ -5,10 +5,11 @@ local extensions = {
 	"SurroundingObserverHuskExtension"
 }
 SurroundingAwareSystem = class(SurroundingAwareSystem, ExtensionSystemBase)
+
 SurroundingAwareSystem.init = function (self, entity_system_creation_context, system_name)
 	local entity_manager = entity_system_creation_context.entity_manager
 
-	entity_manager.register_system(entity_manager, self, system_name, extensions)
+	entity_manager:register_system(self, system_name, extensions)
 
 	self.entity_manager = entity_manager
 	self.world = entity_system_creation_context.world
@@ -27,11 +28,10 @@ SurroundingAwareSystem.init = function (self, entity_system_creation_context, sy
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
 	self.network_event_delegate = network_event_delegate
 
-	network_event_delegate.register(network_event_delegate, self, unpack(RPCS))
+	network_event_delegate:register(self, unpack(RPCS))
 	GarbageLeakDetector.register_object(self, "surrounding_aware_system")
-
-	return 
 end
+
 SurroundingAwareSystem.destroy = function (self)
 	for unit, ext in pairs(self.unit_extension_data) do
 		Broadphase.remove(self.broadphase, ext.broadphase_id)
@@ -39,9 +39,8 @@ SurroundingAwareSystem.destroy = function (self)
 
 	self.network_event_delegate:unregister(self)
 	table.clear(self)
-
-	return 
 end
+
 SurroundingAwareSystem.add_event = function (unit, event_name, distance, ...)
 	distance = distance or DialogueSettings.default_hear_distance
 	local input = ScriptUnit.extension_input(unit, "surrounding_aware_system")
@@ -57,9 +56,8 @@ SurroundingAwareSystem.add_event = function (unit, event_name, distance, ...)
 	local new_size = event_array_size + num_args + 4
 
 	pdArray.set_size(event_array, new_size)
-
-	return 
 end
+
 SurroundingAwareSystem.add_system_event = function (self, unit, event_name, distance, ...)
 	distance = distance or DialogueSettings.default_hear_distance
 	local event_array = self.event_array
@@ -74,10 +72,10 @@ SurroundingAwareSystem.add_system_event = function (self, unit, event_name, dist
 	local new_size = event_array_size + num_args + 4
 
 	pdArray.set_size(event_array, new_size)
-
-	return 
 end
+
 local dummy_input = {}
+
 SurroundingAwareSystem.on_add_extension = function (self, world, unit, extension_name)
 	local extension = {
 		input = MakeTableStrict({
@@ -107,6 +105,7 @@ SurroundingAwareSystem.on_add_extension = function (self, world, unit, extension
 
 	return extension
 end
+
 SurroundingAwareSystem.extensions_ready = function (self, world, unit, extension_name)
 	if extension_name ~= "SurroundingObserverExtension" then
 		if extension_name == "SurroundingObserverHuskExtension" then
@@ -115,9 +114,8 @@ SurroundingAwareSystem.extensions_ready = function (self, world, unit, extension
 			extension.collision_filter = "filter_lookat_pickup_object_ray"
 		end
 	end
-
-	return 
 end
+
 SurroundingAwareSystem.on_remove_extension = function (self, unit, extension_name)
 	Broadphase.remove(self.broadphase, self.unit_extension_data[unit].broadphase_id)
 
@@ -131,7 +129,7 @@ SurroundingAwareSystem.on_remove_extension = function (self, unit, extension_nam
 		local previous_bot_extension = previous_seen_observer and ScriptUnit.has_extension(previous_seen_observer, "ai_system")
 
 		if previous_bot_extension then
-			previous_bot_extension.set_seen_by_player(previous_bot_extension, false, unit)
+			previous_bot_extension:set_seen_by_player(false, unit)
 		end
 
 		seen_observers[unit] = nil
@@ -144,15 +142,12 @@ SurroundingAwareSystem.on_remove_extension = function (self, unit, extension_nam
 	end
 
 	ScriptUnit.remove_extension(unit, "surrounding_aware_system")
-
-	return 
 end
-SurroundingAwareSystem.update = function (self, context, t)
-	self.update_seen_recently(self, context, t)
-	self.update_lookat(self, context, t)
-	self.update_events(self, context, t)
 
-	return 
+SurroundingAwareSystem.update = function (self, context, t)
+	self:update_seen_recently(context, t)
+	self:update_lookat(context, t)
+	self:update_events(context, t)
 end
 
 local function check_raycast_center(physics_world, unit, target, ray_position, ray_direction, ray_length, collision_filter)
@@ -188,7 +183,7 @@ local function is_in_range(observer_position, target_position, observer_forward,
 	local angle = math.acos(forward_dot)
 	local max_angle = view_angle_rad * distance_det
 
-	if max_angle <= angle then
+	if angle >= max_angle then
 		return false, observer_to_target_vector, observer_target_direction, angle, max_angle
 	end
 
@@ -199,6 +194,7 @@ local BASE_ANGLE_MULTIPLIER = 10
 local STICKINESS_MODIFIER = -1
 local VIEW_ANGLE_STICKINESS = 1.5
 local found_units = {}
+
 SurroundingAwareSystem.update_lookat = function (self, context, t)
 	local observers = self.observers
 
@@ -211,21 +207,25 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 	local unit = self.current_observer_unit
 
 	if game == nil or unit == nil then
-		return 
+		return
 	end
 
 	local POSITION_LOOKUP = POSITION_LOOKUP
 	local Broadphase = Broadphase
 	local broadphase = self.broadphase
 	local extension = observers[unit]
-	local observer_wp = POSITION_LOOKUP[unit]
+	local observer_world_pos = POSITION_LOOKUP[unit]
 
-	Broadphase.move(broadphase, extension.broadphase_id, observer_wp)
+	if not observer_world_pos then
+		return
+	end
+
+	Broadphase.move(broadphase, extension.broadphase_id, observer_world_pos)
 
 	local time_since_last = t - extension.last_lookat_trigger
 
 	if time_since_last <= DialogueSettings.view_event_trigger_interval then
-		return 
+		return
 	end
 
 	local Unit = Unit
@@ -238,7 +238,7 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 	local is_server = self.is_server
 	local seen_observers = self.seen_observers
 	local unit_storage = self.unit_storage
-	local unit_id = unit_storage.go_id(unit_storage, unit)
+	local unit_id = unit_storage:go_id(unit)
 	local observer_fpp = GameSession.game_object_field(game, unit_id, "aim_position")
 	local observer_forward = GameSession.game_object_field(game, unit_id, "aim_direction")
 	local dialogue_extension = ScriptUnit.extension_input(unit, "dialogue_system")
@@ -273,7 +273,7 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 				local view_angle_rad = extension.view_angle_rad * ((target == previous_seen_observer and VIEW_ANGLE_STICKINESS) or 1)
 				local in_range, observer_to_target_vector, observer_target_direction, angle, max_angle = is_in_range(observer_fpp, target_center, observer_forward, view_distance_sq, view_angle_rad)
 
-				if in_range and not darkness_system.is_in_darkness(darkness_system, target_center) then
+				if in_range and not darkness_system:is_in_darkness(target_center) then
 					local observer_to_target_length = Vector3.length(observer_to_target_vector)
 					local collision_filter = lookat_target_ext.collision_filter
 					local is_in_view = check_raycast_center(physics_world, unit, target, observer_fpp, observer_target_direction, observer_to_target_length, collision_filter)
@@ -285,14 +285,14 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 						event_data.item_tag = Unit.get_data(target, "lookat_tag") or Unit.debug_name(target)
 						event_data.distance = observer_to_target_length
 
-						dialogue_extension.trigger_dialogue_event(dialogue_extension, "seen_item", event_data)
+						dialogue_extension:trigger_dialogue_event("seen_item", event_data)
 
 						seen_recently[target] = t
 					elseif is_in_view then
 						local angle_multiplier = BASE_ANGLE_MULTIPLIER + ((target == previous_seen_observer and STICKINESS_MODIFIER) or 0)
 						local utility = angle * angle_multiplier + observer_to_target_length
 
-						if utility < closest_observer_utility then
+						if closest_observer_utility > utility then
 							closest_observer_unit = target
 							closest_observer_utility = utility
 						end
@@ -304,14 +304,14 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 
 	if is_server and closest_observer_unit ~= previous_seen_observer then
 		local player_manager = Managers.player
-		local player = player_manager.unit_owner(player_manager, unit)
+		local player = player_manager:unit_owner(unit)
 		local is_human = not player.bot_player
 
 		if previous_seen_observer then
 			local previous_bot_extension = ScriptUnit.has_extension(previous_seen_observer, "ai_system")
 
 			if is_human and previous_bot_extension then
-				previous_bot_extension.set_seen_by_player(previous_bot_extension, false, unit)
+				previous_bot_extension:set_seen_by_player(false, unit)
 			end
 		end
 
@@ -319,25 +319,24 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 			local current_bot_extension = ScriptUnit.has_extension(closest_observer_unit, "ai_system")
 
 			if is_human and current_bot_extension then
-				current_bot_extension.set_seen_by_player(current_bot_extension, true, unit, t)
+				current_bot_extension:set_seen_by_player(true, unit, t)
 			end
 		end
 
 		seen_observers[unit] = closest_observer_unit
 	end
-
-	return 
 end
+
 SurroundingAwareSystem.update_debug = function (self, context, t)
 	if not script_data.dialogue_debug_lookat then
-		return 
+		return
 	end
 
 	local game = self.game
 	local player = Managers.player:local_player()
 
 	if not player or not player.player_unit or not game then
-		return 
+		return
 	end
 
 	local outside_color = Color(255, 255, 0, 0)
@@ -355,15 +354,15 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 	local seen_observers = self.seen_observers
 	local previous_seen_observer = seen_observers[player_unit]
 	local unit_storage = self.unit_storage
-	local unit_id = unit_storage.go_id(unit_storage, player_unit)
+	local unit_id = unit_storage:go_id(player_unit)
 	local observer_fpp = GameSession.game_object_field(game, unit_id, "aim_position")
 	local observer_forward = GameSession.game_object_field(game, unit_id, "aim_direction")
 	local broadphase_size = DialogueSettings.max_view_distance * 0.5
 	local observe_position = observer_fpp + observer_forward * broadphase_size
 	local num_nearby = Broadphase.query(broadphase, observe_position, broadphase_size, found_units)
 
-	drawer.sphere(drawer, observe_position, broadphase_size, Colors.get("light_blue"))
-	drawer.vector(drawer, observer_fpp, observer_forward)
+	drawer:sphere(observe_position, broadphase_size, Colors.get("light_blue"))
+	drawer:vector(observer_fpp, observer_forward)
 
 	for i = 1, num_nearby, 1 do
 		local target = found_units[i]
@@ -396,7 +395,7 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 					debug_text = string.format(debug_text .. "| ANGLE: %.2f/%.2f", math.radians_to_degrees(angle), math.radians_to_degrees(max_angle))
 				end
 
-				if in_range and not darkness_system.is_in_darkness(darkness_system, target_center) then
+				if in_range and not darkness_system:is_in_darkness(target_center) then
 					local observer_to_target_length = Vector3.length(observer_to_target_vector)
 					local collision_filter = lookat_target_ext.collision_filter
 					local is_in_view = check_raycast_center(physics_world, player_unit, target, observer_fpp, observer_target_direction, observer_to_target_length, collision_filter)
@@ -412,7 +411,7 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 
 				debug_draw_units[target] = color
 
-				drawer.vector(drawer, observer_fpp, observer_target_direction, color)
+				drawer:vector(observer_fpp, observer_target_direction, color)
 			end
 
 			Debug.text(debug_text)
@@ -424,7 +423,7 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 			local color = debug_draw_units[unit]
 			color = color or outside_color
 
-			drawer.unit(drawer, unit, color)
+			drawer:unit(unit, color)
 		end
 	end
 
@@ -436,12 +435,11 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 			local target_center = Unit.world_position(observer_unit, spine_node)
 			local observer_is_bot = ScriptUnit.has_extension(observer_unit, "ai_system")
 
-			drawer.sphere(drawer, target_center, 0.25, (observer_is_bot and Colors.get("blue")) or Colors.get("light_blue"))
+			drawer:sphere(target_center, 0.25, (observer_is_bot and Colors.get("blue")) or Colors.get("light_blue"))
 		end
 	end
-
-	return 
 end
+
 SurroundingAwareSystem.update_events = function (self, context, t)
 	local unit_input_data = self.unit_input_data
 	local broadphase = self.broadphase
@@ -449,7 +447,7 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 	local array_data, num_event_data = pdArray.data(event_array)
 	local i = 1
 
-	while i <= num_event_data do
+	while num_event_data >= i do
 		local num_args = array_data[i]
 		local unit = array_data[i + 1]
 		local event_name = array_data[i + 2]
@@ -495,7 +493,7 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 						event_data[array_data[array_data_index]] = array_data[array_data_index + 1]
 					end
 
-					dialogue_input.trigger_dialogue_event(dialogue_input, event_name, event_data)
+					dialogue_input:trigger_dialogue_event(event_name, event_data)
 				end
 			end
 		end
@@ -504,9 +502,8 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 	end
 
 	pdArray.set_empty(event_array)
-
-	return 
 end
+
 SurroundingAwareSystem.update_seen_recently = function (self, context, t)
 	local seen_recently = self.seen_recently
 	local threshold = DialogueSettings.seen_recently_threshold
@@ -517,11 +514,10 @@ SurroundingAwareSystem.update_seen_recently = function (self, context, t)
 			seen_recently[unit] = nil
 		end
 	end
-
-	return 
 end
+
 SurroundingAwareSystem.hot_join_sync = function (self, sender)
-	return 
+	return
 end
 
-return 
+return

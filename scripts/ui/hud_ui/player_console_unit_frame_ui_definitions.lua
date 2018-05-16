@@ -697,7 +697,7 @@ local function create_dynamic_loadout_widget()
 					texture_id = "hp_bar_divider",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content, style)
-						return 0 < style.texture_amount
+						return style.texture_amount > 0
 					end
 				},
 				{

@@ -2,6 +2,7 @@ require("scripts/game_state/state_loading")
 
 StateTitleScreenLoadSave = class(StateTitleScreenLoadSave)
 StateTitleScreenLoadSave.NAME = "StateTitleScreenLoadSave"
+
 StateTitleScreenLoadSave.on_enter = function (self, params)
 	print("[Gamestate] Enter Substate StateTitleScreenLoadSave")
 
@@ -10,28 +11,27 @@ StateTitleScreenLoadSave.on_enter = function (self, params)
 	self._viewport = self._params.viewport
 	self._title_start_ui = params.ui
 
-	self._handle_tutorial_auto_start(self)
-	self._setup_init_network_view(self)
+	self:_handle_tutorial_auto_start()
+	self:_setup_init_network_view()
 
 	local loading_context = self.parent.parent.loading_context
 	local loading_view = loading_context.loading_view
 
 	if loading_view then
-		loading_view.destroy(loading_view)
+		loading_view:destroy()
 
 		loading_context.loading_view = nil
 	end
-
-	return 
 end
+
 StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 	if SaveData.has_completed_tutorial or script_data.disable_tutorial_at_start then
-		return 
+		return
 	end
 
 	local level_transition_handler = LevelTransitionHandler:new()
 
-	level_transition_handler.set_next_level(level_transition_handler, "prologue")
+	level_transition_handler:set_next_level("prologue")
 
 	self.parent.parent.loading_context.level_transition_handler = level_transition_handler
 	self.parent.parent.loading_context.switch_to_tutorial_backend = true
@@ -39,9 +39,8 @@ StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 	SaveData.has_completed_tutorial = true
 
 	Managers.save:auto_save(SaveFileName, SaveData)
-
-	return 
 end
+
 StateTitleScreenLoadSave._setup_init_network_view = function (self)
 	if Development.parameter("goto_endoflevel") then
 		if false then
@@ -54,32 +53,30 @@ StateTitleScreenLoadSave._setup_init_network_view = function (self)
 	end
 
 	self.wanted_state = StateLoading
-
-	return 
 end
+
 StateTitleScreenLoadSave.update = function (self, dt, t)
 	if self._title_start_ui then
 		self._title_start_ui:update(dt, t)
 	end
 
-	return self._next_state(self)
+	return self:_next_state()
 end
+
 StateTitleScreenLoadSave._next_state = function (self)
 	if Managers.backend:profiles_loaded() and not Managers.backend:is_waiting_for_user_input() and self.wanted_state then
 		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(self, "cb_fade_in_done", self.wanted_state))
 
 		self.wanted_state = nil
 	end
-
-	return 
 end
+
 StateTitleScreenLoadSave.cb_fade_in_done = function (self, wanted_state)
 	self.parent.state = wanted_state
-
-	return 
 end
+
 StateTitleScreenLoadSave.on_exit = function (self, application_shutdown)
-	return 
+	return
 end
 
-return 
+return

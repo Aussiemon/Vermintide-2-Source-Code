@@ -21,6 +21,7 @@ local legal_texts = {
 	"gw_legal_4"
 }
 TitleMainUI = class(TitleMainUI)
+
 TitleMainUI.init = function (self, world)
 	self._world = world
 	local platform = PLATFORM
@@ -28,7 +29,7 @@ TitleMainUI.init = function (self, world)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
-	self._ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_start_screen", "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", attract_mode_video.video_name)
+	self._ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_start_screen", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", "materials/ui/ui_1080p_menu_single_textures", "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", attract_mode_video.video_name)
 
 	UISetupFontHeights(self._ui_renderer.gui)
 
@@ -41,27 +42,27 @@ TitleMainUI.init = function (self, world)
 
 	self._attract_mode_active = false
 
-	self._create_ui_elements(self)
-	self._init_animations(self)
-
-	return 
+	self:_create_ui_elements()
+	self:_init_animations()
 end
+
 TitleMainUI._play_sound = function (self, event)
 	return Managers.music:trigger_event(event)
 end
+
 TitleMainUI.get_ui_renderer = function (self)
 	return self._ui_renderer
 end
+
 TitleMainUI._init_animations = function (self)
 	self._menu_item_animations = {}
 	self._ui_animations = {}
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animations)
 	self._circle_pulse_out_anim_id = self._ui_animator:start_animation("circle_glow_pulse_out", self._widgets, scenegraph_definition)
 
-	self._start_fog_animations(self)
-
-	return 
+	self:_start_fog_animations()
 end
+
 TitleMainUI._create_ui_elements = function (self)
 	self._current_menu_index = nil
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
@@ -126,15 +127,14 @@ TitleMainUI._create_ui_elements = function (self)
 	end
 
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
-
-	return 
 end
+
 TitleMainUI.update = function (self, dt, t, render_background_only)
 	if DO_RELOAD then
 		self._attract_mode_active = false
 
-		self._create_ui_elements(self)
-		self._init_animations(self)
+		self:_create_ui_elements()
+		self:_init_animations()
 
 		DO_RELOAD = false
 	end
@@ -149,23 +149,23 @@ TitleMainUI.update = function (self, dt, t, render_background_only)
 
 	local ui_animator = self._ui_animator
 
-	ui_animator.update(ui_animator, dt)
+	ui_animator:update(dt)
 
-	if self._circle_pulse_out_anim_id and ui_animator.is_animation_completed(ui_animator, self._circle_pulse_out_anim_id) then
-		ui_animator.stop_animation(ui_animator, self._circle_pulse_out_anim_id)
+	if self._circle_pulse_out_anim_id and ui_animator:is_animation_completed(self._circle_pulse_out_anim_id) then
+		ui_animator:stop_animation(self._circle_pulse_out_anim_id)
 
 		self._circle_pulse_out_anim_id = nil
-		self._circle_pulse_in_anim_id = ui_animator.start_animation(ui_animator, "circle_glow_pulse_in", self._widgets, scenegraph_definition)
+		self._circle_pulse_in_anim_id = ui_animator:start_animation("circle_glow_pulse_in", self._widgets, scenegraph_definition)
 	end
 
-	if self._circle_pulse_in_anim_id and ui_animator.is_animation_completed(ui_animator, self._circle_pulse_in_anim_id) then
-		ui_animator.stop_animation(ui_animator, self._circle_pulse_in_anim_id)
+	if self._circle_pulse_in_anim_id and ui_animator:is_animation_completed(self._circle_pulse_in_anim_id) then
+		ui_animator:stop_animation(self._circle_pulse_in_anim_id)
 
 		self._circle_pulse_in_anim_id = nil
 		self._circle_pulse_out_anim_id = self._ui_animator:start_animation("circle_glow_pulse_out", self._widgets, scenegraph_definition)
 	end
 
-	if self._frame_anim_id and ui_animator.is_animation_completed(ui_animator, self._frame_anim_id) then
+	if self._frame_anim_id and ui_animator:is_animation_completed(self._frame_anim_id) then
 		self._ui_animator:stop_animation(self._frame_anim_id)
 
 		self._frame_anim_id = nil
@@ -175,59 +175,57 @@ TitleMainUI.update = function (self, dt, t, render_background_only)
 		end
 	end
 
-	if self._input_fade_out_anim_id and ui_animator.is_animation_completed(ui_animator, self._input_fade_out_anim_id) then
+	if self._input_fade_out_anim_id and ui_animator:is_animation_completed(self._input_fade_out_anim_id) then
 		self._ui_animator:stop_animation(self._input_fade_out_anim_id)
 
 		self._input_fade_out_anim_id = nil
 	end
 
-	self._update_fog_loop_animations(self)
+	self:_update_fog_loop_animations()
 
 	if not self._frame_anim_id and not self._show_menu and self._start_pressed then
-		self._animate_lock(self, dt)
+		self:_animate_lock(dt)
 	end
 
 	if not render_background_only and not self._frame_anim_id and self._show_menu then
-		self._handle_menu_input(self, dt, t)
+		self:_handle_menu_input(dt, t)
 	end
 
 	for index, animation in pairs(self._menu_item_animations) do
 		self[animation.func](self, animation, index, dt)
 	end
 
-	self._draw(self, dt, render_background_only)
-
-	return 
+	self:_draw(dt, render_background_only)
 end
+
 TitleMainUI._handle_menu_input = function (self, dt, t)
 	local current_index = self._current_menu_index or 1
 	local input_service = self.input_manager:get_service("main_menu")
 	local navigation_allowed = self._frame_anim_id == nil
 
 	if navigation_allowed then
-		if input_service.get(input_service, "down") then
+		if input_service:get("down") then
 			current_index = 1 + current_index % #self._menu_widgets
 
-			self._play_sound(self, "hud_menu_select")
-		elseif input_service.get(input_service, "up") then
+			self:_play_sound("hud_menu_select")
+		elseif input_service:get("up") then
 			current_index = (current_index - 1 < 1 and #self._menu_widgets) or current_index - 1
 
-			self._play_sound(self, "hud_menu_select")
+			self:_play_sound("hud_menu_select")
 		end
 	end
 
 	if current_index ~= self._current_menu_index then
 		if self._current_menu_index then
-			self._add_menu_item_animation(self, self._current_menu_index, "anim_deselect_button")
+			self:_add_menu_item_animation(self._current_menu_index, "anim_deselect_button")
 		end
 
-		self._add_menu_item_animation(self, current_index, "anim_select_button")
+		self:_add_menu_item_animation(current_index, "anim_select_button")
 	end
 
 	self._current_menu_index = current_index
-
-	return 
 end
+
 TitleMainUI.current_menu_index = function (self)
 	if self._show_menu then
 		local index = self._current_menu_index
@@ -239,16 +237,14 @@ TitleMainUI.current_menu_index = function (self)
 			return not disabled and index
 		end
 	end
-
-	return 
 end
+
 TitleMainUI.active_menu_selection = function (self)
 	if self._show_menu then
 		return self._current_menu_index ~= nil
 	end
-
-	return 
 end
+
 TitleMainUI._draw = function (self, dt, render_background_only)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
@@ -341,51 +337,49 @@ TitleMainUI._draw = function (self, dt, render_background_only)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 TitleMainUI.destroy = function (self)
 	GarbageLeakDetector.register_object(self, "TitleMainUI")
 	UIRenderer.destroy(self._ui_renderer, self._world)
-
-	return 
 end
+
 TitleMainUI.should_start = function (self)
 	return self._start_pressed
 end
+
 TitleMainUI.enter_attract_mode = function (self)
 	self._attract_mode_enabled = true
 	self.attract_video.content.video_content.video_completed = false
-
-	return 
 end
+
 TitleMainUI.exit_attract_mode = function (self)
 	self._attract_mode_enabled = false
 	self._destroy_video_player = true
-
-	return 
 end
+
 TitleMainUI.video_completed = function (self)
 	return self.attract_video.content.video_content.video_completed
 end
+
 TitleMainUI.attract_mode = function (self)
 	return self._attract_mode_enabled
 end
+
 TitleMainUI._start_fog_animations = function (self)
 	local fog_animations = {}
 	local ui_animator = self._ui_animator
 	fog_animations[#fog_animations + 1] = {
 		name = "fog_move_back",
-		id = ui_animator.start_animation(ui_animator, "fog_move_back", self._background_widgets, scenegraph_definition)
+		id = ui_animator:start_animation("fog_move_back", self._background_widgets, scenegraph_definition)
 	}
 	fog_animations[#fog_animations + 1] = {
 		name = "fog_move_front",
-		id = ui_animator.start_animation(ui_animator, "fog_move_front", self._background_widgets, scenegraph_definition)
+		id = ui_animator:start_animation("fog_move_front", self._background_widgets, scenegraph_definition)
 	}
 	self._fog_animations = fog_animations
-
-	return 
 end
+
 TitleMainUI._update_fog_loop_animations = function (self)
 	local fog_animations = self._fog_animations
 
@@ -397,19 +391,18 @@ TitleMainUI._update_fog_loop_animations = function (self)
 			local anim_id = anim_data.id
 			local anim_name = anim_data.name
 
-			if ui_animator.is_animation_completed(ui_animator, anim_id) then
+			if ui_animator:is_animation_completed(anim_id) then
 				anim_data.id = self._ui_animator:start_animation(anim_name, widgets, scenegraph_definition)
 			end
 		end
 	end
-
-	return 
 end
+
 TitleMainUI.show_menu = function (self, show)
 	if show and self._lock_angle then
 		self._show_menu_when_ready = true
 
-		return 
+		return
 	end
 
 	self._show_menu = show
@@ -429,7 +422,7 @@ TitleMainUI.show_menu = function (self, show)
 		local current_menu_index = self._current_menu_index
 
 		if current_menu_index then
-			self.anim_deselect_button(self, nil, current_menu_index, nil, 0)
+			self:anim_deselect_button(nil, current_menu_index, nil, 0)
 
 			self._current_menu_index = nil
 			self._menu_item_animations[current_menu_index] = nil
@@ -437,19 +430,18 @@ TitleMainUI.show_menu = function (self, show)
 
 		self._frame_anim_id = self._ui_animator:start_animation("frame_close", self._widgets, scenegraph_definition)
 
-		self._play_sound(self, "Play_hud_main_menu_close")
+		self:_play_sound("Play_hud_main_menu_close")
 	else
 		self._frame_anim_id = self._ui_animator:start_animation("frame_open", self._widgets, scenegraph_definition)
 
-		self._play_sound(self, "Play_hud_main_menu_open")
+		self:_play_sound("Play_hud_main_menu_open")
 
 		self._draw_information_text = nil
 	end
 
 	self._lock_angle = nil
-
-	return 
 end
+
 TitleMainUI.set_start_pressed = function (self, pressed)
 	if self._start_pressed ~= pressed then
 		if pressed then
@@ -488,14 +480,14 @@ TitleMainUI.set_start_pressed = function (self, pressed)
 	end
 
 	self._start_pressed = pressed
-
-	return 
 end
+
 local MENU_ITEM_FADE_IN = 0.2
 local MENU_ITEM_FADE_OUT = 0.2
+
 TitleMainUI.anim_select_button = function (self, animation_data, index, dt)
 	if animation_data.progress == 1 then
-		return 
+		return
 	end
 
 	animation_data.timer = animation_data.timer or animation_data.progress * MENU_ITEM_FADE_IN
@@ -514,16 +506,15 @@ TitleMainUI.anim_select_button = function (self, animation_data, index, dt)
 	ui_scenegraph.selection_anchor.local_position[2] = ui_scenegraph[menu_item_scenegraph_id].local_position[2]
 	local widget_style = menu_item.style
 	local text = menu_item.content.text_field
-	local text_width, text_height = self._get_word_wrap_size(self, Localize(text), widget_style.text, 1000)
+	local text_width, text_height = self:_get_word_wrap_size(Localize(text), widget_style.text, 1000)
 	ui_scenegraph.selection_anchor.size[1] = text_width or 0
 	self._menu_selection_left.offset[1] = math.lerp(-50, 0, math.smoothstep(animation_data.progress, 0, 1))
 	self._menu_selection_right.offset[1] = math.lerp(50, 0, math.smoothstep(animation_data.progress, 0, 1))
-
-	return 
 end
+
 TitleMainUI.anim_deselect_button = function (self, animation_data, index, dt, optional_progress)
 	if animation_data and animation_data.progress == 0 then
-		return 
+		return
 	end
 
 	local progress = 0
@@ -550,30 +541,30 @@ TitleMainUI.anim_deselect_button = function (self, animation_data, index, dt, op
 	else
 		menu_item.style.text.font_size = math.lerp(menu_item.style.text.font_size, menu_button_font_size, math.easeInCubic(progress))
 	end
-
-	return 
 end
+
 TitleMainUI._get_text_size = function (self, localized_text, text_style)
 	local font, scaled_font_size = UIFontByResolution(text_style)
 	local text_width, text_height, min = UIRenderer.text_size(self._ui_renderer, localized_text, font[1], scaled_font_size)
 
 	return text_width, text_height
 end
+
 TitleMainUI._get_word_wrap_size = function (self, localized_text, text_style, text_area_width)
 	local font, scaled_font_size = UIFontByResolution(text_style)
 	local lines = UIRenderer.word_wrap(self._ui_renderer, localized_text, font[1], scaled_font_size, text_area_width)
-	local text_width, text_height = self._get_text_size(self, localized_text, text_style)
+	local text_width, text_height = self:_get_text_size(localized_text, text_style)
 
 	return text_width, text_height * #lines
 end
+
 TitleMainUI._add_menu_item_animation = function (self, index, func)
 	self._menu_item_animations[index] = {
 		progress = (self._menu_item_animations[index] and self._menu_item_animations[index].progress) or 0,
 		func = func
 	}
-
-	return 
 end
+
 TitleMainUI.set_information_text = function (self, optinal_text)
 	self._draw_information_text = true
 	local widget = self._information_text
@@ -585,9 +576,8 @@ TitleMainUI.set_information_text = function (self, optinal_text)
 	else
 		widget_content.text = optinal_text
 	end
-
-	return 
 end
+
 TitleMainUI.set_user_name = function (self, username)
 	self._draw_gamertag = true
 	self._user_gamertag_widget.content.text = username
@@ -595,26 +585,22 @@ TitleMainUI.set_user_name = function (self, username)
 	if PLATFORM == "ps4" then
 		self._switch_profile_blocked = true
 	end
-
-	return 
 end
+
 TitleMainUI.clear_user_name = function (self)
 	self._draw_gamertag = nil
 	self._switch_profile_blocked = nil
-
-	return 
 end
+
 TitleMainUI.set_playgo_status = function (self, status_text)
 	self._draw_playgo = true
 	self._playgo_status_widget.content.text = status_text
-
-	return 
 end
+
 TitleMainUI.clear_playgo_status = function (self)
 	self._draw_playgo = nil
-
-	return 
 end
+
 TitleMainUI.set_menu_item_enable_state_by_index = function (self, item_lookup_name, enabled, reason)
 	local index = menu_item_index_lookup[item_lookup_name]
 	local menu_item = self._menu_widgets[index]
@@ -624,9 +610,8 @@ TitleMainUI.set_menu_item_enable_state_by_index = function (self, item_lookup_na
 	text_color[2] = color[2]
 	text_color[3] = color[3]
 	text_color[4] = color[4]
-
-	return 
 end
+
 TitleMainUI._animate_lock = function (self, dt)
 	local widget = self._lock_widgets
 	local moduluse_value = 6.2831852999999995
@@ -641,6 +626,9 @@ TitleMainUI._animate_lock = function (self, dt)
 	if self._show_menu_when_ready then
 		if moduluse_value < angle then
 			angle = 0
+
+			if 0 then
+			end
 		end
 	else
 		angle = angle % moduluse_value
@@ -655,10 +643,8 @@ TitleMainUI._animate_lock = function (self, dt)
 	if self._show_menu_when_ready and angle == 0 then
 		self._lock_angle = nil
 
-		self.show_menu(self, true)
+		self:show_menu(true)
 	end
-
-	return 
 end
 
-return 
+return

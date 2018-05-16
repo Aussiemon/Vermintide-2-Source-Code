@@ -19,6 +19,7 @@ end
 local DO_RELOAD = false
 StartGameWindowMissionSelection = class(StartGameWindowMissionSelection)
 StartGameWindowMissionSelection.NAME = "StartGameWindowMissionSelection"
+
 StartGameWindowMissionSelection.on_enter = function (self, params, offset)
 	print("[StartGameWindow] Enter Substate StartGameWindowMissionSelection")
 
@@ -30,24 +31,25 @@ StartGameWindowMissionSelection.on_enter = function (self, params, offset)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
+	self._has_exited = false
 	local player_manager = Managers.player
-	local local_player = player_manager.local_player(player_manager)
-	self._stats_id = local_player.stats_id(local_player)
+	local local_player = player_manager:local_player()
+	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self._animations = {}
 
-	self.create_ui_elements(self, params, offset)
+	self:create_ui_elements(params, offset)
 
 	self._widgets_by_name.select_button.content.button_hotspot.disable_button = true
 
-	self._set_presentation_info(self)
-	self._setup_level_acts(self)
-	self._present_act_levels(self)
-	self._update_level_option(self)
-
-	return 
+	self:_set_presentation_info()
+	self:_setup_level_acts()
+	self:_present_act_levels()
+	self:_update_level_option()
+	self.parent.parent:set_input_description("select_mission")
 end
+
 StartGameWindowMissionSelection.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
@@ -95,9 +97,8 @@ StartGameWindowMissionSelection.create_ui_elements = function (self, params, off
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
-
-	return 
 end
+
 StartGameWindowMissionSelection._setup_level_acts = function (self)
 	local statistics_db = self.statistics_db
 	local stats_id = self._stats_id
@@ -125,9 +126,8 @@ StartGameWindowMissionSelection._setup_level_acts = function (self)
 	end
 
 	self._levels_by_act = levels_by_act
-
-	return 
 end
+
 StartGameWindowMissionSelection._verify_act = function (self, act)
 	if not act then
 		return false
@@ -141,6 +141,7 @@ StartGameWindowMissionSelection._verify_act = function (self, act)
 
 	return false
 end
+
 StartGameWindowMissionSelection._present_act_levels = function (self, act)
 	local ui_scenegraph = self.ui_scenegraph
 	local map_width = map_size[1]
@@ -158,7 +159,7 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 	local max_act_number = 3
 
 	for act_key, levels in pairs(levels_by_act) do
-		local act_verified = self._verify_act(self, act_key)
+		local act_verified = self:_verify_act(act_key)
 
 		if act_verified and (not act or act == act_key) then
 			local act_settings = ActSettings[act_key]
@@ -190,10 +191,10 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 					level_position_x = level_width_spacing * 4
 				elseif act_index == 1 and not is_end_act then
 					if level_index == 1 then
-						if not (level_position_x + level_width_spacing / 2) then
-						end
+						level_position_x = level_position_x + level_width_spacing / 2
 					end
-				elseif act_index ~= 2 and level_index == 1 and not (level_position_x + level_width_spacing / 2) then
+				elseif act_index ~= 2 and level_index == 1 then
+					level_position_x = level_position_x + level_width_spacing / 2
 				end
 
 				local index = #assigned_widgets + 1
@@ -206,7 +207,7 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 				content.text = Localize(level_display_name)
 				local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key)
 				local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_key)
-				local selection_frame_texture = self._get_selection_frame_by_difficulty_index(self, completed_difficulty_index)
+				local selection_frame_texture = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
 				content.frame = selection_frame_texture
 				content.locked = not level_unlocked
 				content.act_key = act_key
@@ -244,10 +245,9 @@ StartGameWindowMissionSelection._present_act_levels = function (self, act)
 	self._active_node_widgets = assigned_widgets
 	self._active_act_widgets = act_widgets
 
-	self._setup_required_act_connections(self)
-
-	return 
+	self:_setup_required_act_connections()
 end
+
 StartGameWindowMissionSelection._setup_required_act_connections = function (self)
 	local statistics_db = self.statistics_db
 	local stats_id = self._stats_id
@@ -265,12 +265,12 @@ StartGameWindowMissionSelection._setup_required_act_connections = function (self
 
 		if required_acts then
 			for _, required_act in ipairs(required_acts) do
-				local required_level_key = self._get_last_level_in_act(self, required_act)
+				local required_level_key = self:_get_last_level_in_act(required_act)
 
 				for i, level_widget in ipairs(assigned_widgets) do
 					if level_widget.content.level_key == required_level_key then
 						local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, required_level_key)
-						local level_completed = completed_difficulty_index and 0 < completed_difficulty_index
+						local level_completed = completed_difficulty_index and completed_difficulty_index > 0
 						local level_scenegraph_id = level_widget.scenegraph_id
 						local level_position = ui_scenegraph[level_scenegraph_id].world_position
 						local path_style = level_widget.style.path
@@ -291,12 +291,11 @@ StartGameWindowMissionSelection._setup_required_act_connections = function (self
 				end
 			end
 
-			return 
+			return
 		end
 	end
-
-	return 
 end
+
 StartGameWindowMissionSelection._get_last_level_in_act = function (self, act_key)
 	local act_levels = GameActs[act_key]
 	local best_level_id = nil
@@ -314,10 +313,11 @@ StartGameWindowMissionSelection._get_last_level_in_act = function (self, act_key
 
 	return best_level_id, best_sort_order
 end
+
 StartGameWindowMissionSelection._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
 	local completed_frame_texture = "map_frame_00"
 
-	if 0 < difficulty_index then
+	if difficulty_index > 0 then
 		local difficulty_key = DefaultDifficulties[difficulty_index]
 		local difficulty_manager = Managers.state.difficulty
 		local settings = DifficultySettings[difficulty_key]
@@ -326,6 +326,7 @@ StartGameWindowMissionSelection._get_selection_frame_by_difficulty_index = funct
 
 	return completed_frame_texture
 end
+
 StartGameWindowMissionSelection._select_level = function (self, level_id)
 	local active_node_widgets = self._active_node_widgets
 
@@ -341,12 +342,11 @@ StartGameWindowMissionSelection._select_level = function (self, level_id)
 
 	self._selected_level_id = level_id
 
-	self._set_presentation_info(self, level_id)
+	self:_set_presentation_info(level_id)
 
 	self._widgets_by_name.select_button.content.button_hotspot.disable_button = level_id == nil
-
-	return 
 end
+
 StartGameWindowMissionSelection._set_presentation_info = function (self, level_id)
 	local widgets_by_name = self._widgets_by_name
 	local level_text = ""
@@ -365,7 +365,7 @@ StartGameWindowMissionSelection._set_presentation_info = function (self, level_i
 		local display_name = level_settings.display_name
 		level_description_text = level_settings.description_text
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
-		frame_texture = self._get_selection_frame_by_difficulty_index(self, completed_difficulty_index)
+		frame_texture = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
 		content.icon = level_image
 		content.boss_level = boss_level
 		level_text = Localize(display_name)
@@ -381,32 +381,34 @@ StartGameWindowMissionSelection._set_presentation_info = function (self, level_i
 	widgets_by_name.level_title_divider.content.visible = draw_info
 	widgets_by_name.level_title.content.text = level_text
 	widgets_by_name.description_text.content.text = level_description_text
-
-	return 
 end
+
 StartGameWindowMissionSelection.on_exit = function (self, params)
 	print("[StartGameWindow] Exit Substate StartGameWindowMissionSelection")
 
 	self.ui_animator = nil
 
-	return 
+	self.parent.parent:set_input_description(nil)
+
+	self._has_exited = true
 end
+
 StartGameWindowMissionSelection.update = function (self, dt, t)
 	if DO_RELOAD then
 		DO_RELOAD = false
 
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 	end
 
-	self._update_animations(self, dt)
-	self._handle_input(self, dt, t)
-	self.draw(self, dt)
+	self:_update_animations(dt)
+	self:_handle_input(dt, t)
+	self:draw(dt)
+end
 
-	return 
-end
 StartGameWindowMissionSelection.post_update = function (self, dt, t)
-	return 
+	return
 end
+
 StartGameWindowMissionSelection._update_animations = function (self, dt)
 	self.ui_animator:update(dt)
 
@@ -414,17 +416,16 @@ StartGameWindowMissionSelection._update_animations = function (self, dt)
 	local ui_animator = self.ui_animator
 
 	for animation_name, animation_id in pairs(animations) do
-		if ui_animator.is_animation_completed(ui_animator, animation_id) then
-			ui_animator.stop_animation(ui_animator, animation_id)
+		if ui_animator:is_animation_completed(animation_id) then
+			ui_animator:stop_animation(animation_id)
 
 			animations[animation_name] = nil
 		end
 	end
 
 	local widgets_by_name = self._widgets_by_name
-
-	return 
 end
+
 StartGameWindowMissionSelection._is_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -434,9 +435,8 @@ StartGameWindowMissionSelection._is_button_pressed = function (self, widget)
 
 		return true
 	end
-
-	return 
 end
+
 StartGameWindowMissionSelection._is_button_hovered = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -444,9 +444,8 @@ StartGameWindowMissionSelection._is_button_hovered = function (self, widget)
 	if hotspot.on_hover_enter then
 		return true
 	end
-
-	return 
 end
+
 StartGameWindowMissionSelection._is_stepper_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot_left = content.button_hotspot_left
@@ -461,18 +460,16 @@ StartGameWindowMissionSelection._is_stepper_button_pressed = function (self, wid
 
 		return true, 1
 	end
-
-	return 
 end
+
 StartGameWindowMissionSelection._update_level_option = function (self)
 	local level_id = self.parent:get_selected_level_id()
 
 	if level_id ~= self._selected_level_id then
-		self._select_level(self, level_id)
+		self:_select_level(level_id)
 	end
-
-	return 
 end
+
 StartGameWindowMissionSelection._handle_input = function (self, dt, t)
 	local parent = self.parent
 	local widgets_by_name = self._widgets_by_name
@@ -480,21 +477,21 @@ StartGameWindowMissionSelection._handle_input = function (self, dt, t)
 
 	if active_node_widgets then
 		for index, widget in ipairs(active_node_widgets) do
-			if self._is_button_hovered(self, widget) then
-				self._play_sound(self, "play_gui_lobby_button_02_mission_act_hover")
+			if self:_is_button_hovered(widget) then
+				self:_play_sound("play_gui_lobby_button_02_mission_act_hover")
 			end
 
-			if self._is_button_pressed(self, widget) then
+			if self:_is_button_pressed(widget) then
 				local content = widget.content
 				local level_settings = content.level_data
 				local level_id = level_settings.level_id
 
 				if self._selected_level_id ~= level_id then
-					self._play_sound(self, "play_gui_lobby_button_02_mission_act_click")
-					self._select_level(self, level_id)
+					self:_play_sound("play_gui_lobby_button_02_mission_act_click")
+					self:_select_level(level_id)
 				end
 
-				return 
+				return
 			end
 		end
 	end
@@ -503,27 +500,29 @@ StartGameWindowMissionSelection._handle_input = function (self, dt, t)
 
 	UIWidgetUtils.animate_default_button(select_button, dt)
 
-	if self._is_button_hovered(self, select_button) then
-		self._play_sound(self, "play_gui_lobby_button_01_difficulty_confirm_hover")
+	local input_service = self.parent:window_input_service()
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local gamepad_confirm_pressed = gamepad_active and not select_button.content.button_hotspot.disable_button and input_service:get("refresh_press", true)
+
+	if self:_is_button_hovered(select_button) then
+		self:_play_sound("play_gui_lobby_button_01_difficulty_confirm_hover")
 	end
 
-	if self._is_button_pressed(self, select_button) then
-		self._play_sound(self, "play_gui_lobby_button_02_mission_select")
+	if self:_is_button_pressed(select_button) or gamepad_confirm_pressed then
+		self:_play_sound("play_gui_lobby_button_02_mission_select")
 
-		local previous_game_mode_index = parent.get_previous_selected_game_mode_index(parent)
+		local previous_game_mode_index = parent:get_previous_selected_game_mode_index()
 
-		parent.set_selected_level_id(parent, self._selected_level_id)
-		parent.set_layout(parent, previous_game_mode_index)
+		parent:set_selected_level_id(self._selected_level_id)
+		parent:set_layout(previous_game_mode_index)
 	end
-
-	return 
 end
+
 StartGameWindowMissionSelection._exit = function (self, selected_level)
 	self.exit = true
 	self.exit_level_id = selected_level
-
-	return 
 end
+
 StartGameWindowMissionSelection.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -552,13 +551,10 @@ StartGameWindowMissionSelection.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 StartGameWindowMissionSelection._play_sound = function (self, event)
 	self.parent:play_sound(event)
-
-	return 
 end
 
-return 
+return

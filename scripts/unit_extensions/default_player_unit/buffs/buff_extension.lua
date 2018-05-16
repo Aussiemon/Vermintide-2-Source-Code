@@ -1,10 +1,9 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 local bpc = dofile("scripts/settings/bpc")
 script_data.buff_debug = script_data.buff_debug or Development.parameter("buff_debug")
 BuffExtension = class(BuffExtension)
 buff_extension_function_params = buff_extension_function_params or {}
 local E = 0.001
+
 BuffExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
 	self.world = extension_init_context.world
@@ -30,41 +29,39 @@ BuffExtension.init = function (self, extension_init_context, unit, extension_ini
 	self.is_husk = extension_init_data.is_husk
 	self.id = 1
 	self.individual_stat_buff_index = 1
-
-	return 
 end
+
 BuffExtension.extensions_ready = function (self, world, unit)
 	local breed = Unit.get_data(unit, "breed")
 
 	if breed then
-		return 
+		return
 	end
 
 	local buff_system = Managers.state.entity:system("buff_system")
-	local group_buffs = buff_system.get_player_group_buffs(buff_system)
+	local group_buffs = buff_system:get_player_group_buffs()
 	local num_group_buffs = #group_buffs
 
-	if 0 < num_group_buffs then
+	if num_group_buffs > 0 then
 		for i = 1, num_group_buffs, 1 do
 			local group_buff_data = group_buffs[i]
 			local group_buff_template_name = group_buff_data.group_buff_template_name
 			local group_buff = GroupBuffTemplates[group_buff_template_name]
 			local buff_per_instance = group_buff.buff_per_instance
 			local recipients = group_buff_data.recipients
-			local id = self.add_buff(self, buff_per_instance)
+			local id = self:add_buff(buff_per_instance)
 			recipients[unit] = id
 		end
 	end
-
-	return 
 end
+
 BuffExtension.destroy = function (self)
 	local buffs = self._buffs
 	local num_buffs = #buffs
 	local end_time = Managers.time:time("game")
 	local i = 1
 
-	while i <= num_buffs do
+	while num_buffs >= i do
 		local buff = buffs[i]
 		buff_extension_function_params.bonus = buff.bonus
 		buff_extension_function_params.multiplier = buff.multiplier
@@ -72,15 +69,14 @@ BuffExtension.destroy = function (self)
 		buff_extension_function_params.end_time = end_time
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
 
-		self._remove_sub_buff(self, buff, i, buff_extension_function_params)
+		self:_remove_sub_buff(buff, i, buff_extension_function_params)
 
 		num_buffs = num_buffs - 1
 	end
 
 	self._buffs = nil
-
-	return 
 end
+
 BuffExtension.add_buff = function (self, template_name, params)
 	local buff_template = BuffTemplates[template_name]
 	local buffs = buff_template.buffs
@@ -89,46 +85,87 @@ BuffExtension.add_buff = function (self, template_name, params)
 	local world = self.world
 
 	for i, sub_buff_template in ipairs(buffs) do
-		local duration = sub_buff_template.duration
-		local max_stacks = sub_buff_template.max_stacks
-		local end_time = duration and start_time + duration
+		repeat
+			local duration = sub_buff_template.duration
+			local max_stacks = sub_buff_template.max_stacks
+			local end_time = duration and start_time + duration
 
-		if max_stacks then
-			local has_max_stacks = false
-			local stacks = 0
+			if max_stacks then
+				local has_max_stacks = false
+				local stacks = 0
 
-			for j = 1, #self._buffs, 1 do
-				local existing_buff = self._buffs[j]
+				for j = 1, #self._buffs, 1 do
+					local existing_buff = self._buffs[j]
 
-				if existing_buff.buff_type == sub_buff_template.name then
-					if duration and sub_buff_template.refresh_durations then
-						existing_buff.start_time = start_time
-						existing_buff.duration = duration
-						existing_buff.end_time = end_time
-						existing_buff.attacker_unit = (params and params.attacker_unit) or nil
-						local reapply_buff_func = sub_buff_template.reapply_buff_func
+					if existing_buff.buff_type == sub_buff_template.name then
+						if duration and sub_buff_template.refresh_durations then
+							existing_buff.start_time = start_time
+							existing_buff.duration = duration
+							existing_buff.end_time = end_time
+							existing_buff.attacker_unit = (params and params.attacker_unit) or nil
+							local reapply_buff_func = sub_buff_template.reapply_buff_func
 
-						if reapply_buff_func then
-							buff_extension_function_params.bonus = existing_buff.bonus
-							buff_extension_function_params.multiplier = existing_buff.multiplier
-							buff_extension_function_params.t = start_time
-							buff_extension_function_params.end_time = end_time
-							buff_extension_function_params.attacker_unit = existing_buff.attacker_unit
+							if reapply_buff_func then
+								buff_extension_function_params.bonus = existing_buff.bonus
+								buff_extension_function_params.multiplier = existing_buff.multiplier
+								buff_extension_function_params.t = start_time
+								buff_extension_function_params.end_time = end_time
+								buff_extension_function_params.attacker_unit = existing_buff.attacker_unit
 
-							BuffFunctionTemplates.functions[reapply_buff_func](self._unit, existing_buff, buff_extension_function_params, world)
+								BuffFunctionTemplates.functions[reapply_buff_func](self._unit, existing_buff, buff_extension_function_params, world)
+							end
+						end
+
+						stacks = stacks + 1
+
+						if stacks == max_stacks then
+							has_max_stacks = true
+
+							break
+						end
+					end
+				end
+
+				if has_max_stacks then
+					break
+				elseif stacks == max_stacks - 1 then
+					local on_max_stacks_func = sub_buff_template.on_max_stacks_func
+
+					if on_max_stacks_func then
+						local player = Managers.player:owner(self._unit)
+
+						if player then
+							on_max_stacks_func(player, sub_buff_template)
 						end
 					end
 
-					stacks = stacks + 1
+					if sub_buff_template.reset_on_max_stacks then
+						local num_buffs = #self._buffs
+						local j = 1
 
-					if stacks == max_stacks then
-						has_max_stacks = true
+						while num_buffs >= j do
+							local buff = self._buffs[j]
+
+							if buff.buff_type == sub_buff_template.name then
+								buff_extension_function_params.bonus = buff.bonus
+								buff_extension_function_params.multiplier = buff.multiplier
+								buff_extension_function_params.t = start_time
+								buff_extension_function_params.end_time = buff.duration and buff.start_time + buff.duration
+								buff_extension_function_params.attacker_unit = buff.attacker_unit
+
+								self:_remove_sub_buff(buff, j, buff_extension_function_params)
+
+								num_buffs = num_buffs - 1
+							else
+								j = j + 1
+							end
+						end
 
 						break
 					end
 				end
 			end
-		else
+
 			local buff = {
 				id = id,
 				parent_id = params and params.parent_id,
@@ -203,7 +240,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 			end
 
 			if sub_buff_template.stat_buff then
-				local index = self._add_stat_buff(self, sub_buff_template, buff)
+				local index = self:_add_stat_buff(sub_buff_template, buff)
 				buff.stat_buff_index = index
 			end
 
@@ -223,25 +260,25 @@ BuffExtension.add_buff = function (self, template_name, params)
 			end
 
 			self._buffs[#self._buffs + 1] = buff
-		end
+		until true
 	end
 
 	local activation_sound = buff_template.activation_sound
 
 	if activation_sound then
-		self._play_buff_sound(self, activation_sound)
+		self:_play_buff_sound(activation_sound)
 	end
 
 	local activation_effect = buff_template.activation_effect
 
 	if activation_effect then
-		self._play_screen_effect(self, activation_effect)
+		self:_play_screen_effect(activation_effect)
 	end
 
 	local continuous_effect = buff_template.continuous_effect
 
 	if continuous_effect then
-		self._continuous_screen_effects[id] = self._play_screen_effect(self, continuous_effect)
+		self._continuous_screen_effects[id] = self:_play_screen_effect(continuous_effect)
 	end
 
 	local deactivation_effect = buff_template.deactivation_effect
@@ -260,6 +297,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 
 	return id
 end
+
 BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 	local bonus = buff.bonus or 0
 	local multiplier = buff.multiplier or 0
@@ -304,11 +342,11 @@ BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
 
 	return index
 end
-BuffExtension.update = function (self, unit, input, dt, context, t)
-	self._update_buffs(self, dt, t)
 
-	return 
+BuffExtension.update = function (self, unit, input, dt, context, t)
+	self:_update_buffs(dt, t)
 end
+
 BuffExtension._update_buffs = function (self, dt, t)
 	local world = self.world
 	local buffs = self._buffs
@@ -316,7 +354,7 @@ BuffExtension._update_buffs = function (self, dt, t)
 	local num_buffs = #buffs
 	local i = 1
 
-	while i <= num_buffs do
+	while num_buffs >= i do
 		local buff = buffs[i]
 		local template = buff.template
 		local end_time = buff.duration and buff.start_time + buff.duration
@@ -327,12 +365,12 @@ BuffExtension._update_buffs = function (self, dt, t)
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
 
 		if end_time and end_time <= t then
-			self._remove_sub_buff(self, buff, i, buff_extension_function_params)
+			self:_remove_sub_buff(buff, i, buff_extension_function_params)
 
 			if template.buff_after_delay then
 				local delayed_buff_name = buff.delayed_buff_name
 
-				self.add_buff(self, delayed_buff_name)
+				self:add_buff(delayed_buff_name)
 			end
 		else
 			local update_func = template.update_func
@@ -351,9 +389,8 @@ BuffExtension._update_buffs = function (self, dt, t)
 
 		num_buffs = #buffs
 	end
-
-	return 
 end
+
 BuffExtension.update_stat_buff = function (self, stat_buff_index, difference)
 	local stat_buffs = self._stat_buffs
 	local stat_buff = stat_buffs[stat_buff_index]
@@ -369,9 +406,8 @@ BuffExtension.update_stat_buff = function (self, stat_buff_index, difference)
 	else
 		fassert(false, "trying to update a stat with an incompatible application method")
 	end
-
-	return 
 end
+
 BuffExtension.remove_buff = function (self, id, handled_in_buff_update_function)
 	local buffs = self._buffs
 	local num_buffs = #buffs
@@ -379,7 +415,7 @@ BuffExtension.remove_buff = function (self, id, handled_in_buff_update_function)
 	local num_buffs_removed = 0
 	local i = 1
 
-	while i <= num_buffs do
+	while num_buffs >= i do
 		local buff = buffs[i]
 		local template = buff.template
 		buff_extension_function_params.bonus = buff.bonus
@@ -389,7 +425,7 @@ BuffExtension.remove_buff = function (self, id, handled_in_buff_update_function)
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
 
 		if buff.id == id or (buff.parent_id and buff.parent_id == id) then
-			self._remove_sub_buff(self, buff, i, buff_extension_function_params)
+			self:_remove_sub_buff(buff, i, buff_extension_function_params)
 
 			num_buffs = num_buffs - 1
 			num_buffs_removed = num_buffs_removed + 1
@@ -400,6 +436,7 @@ BuffExtension.remove_buff = function (self, id, handled_in_buff_update_function)
 
 	return num_buffs_removed
 end
+
 BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_function_params)
 	local world = self.world
 	local template = buff.template
@@ -410,7 +447,7 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 	end
 
 	if template.stat_buff then
-		self._remove_stat_buff(self, buff)
+		self:_remove_stat_buff(buff)
 	end
 
 	local buff_to_remove = template.buff_to_add
@@ -438,23 +475,22 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 	local deactivation_sound = self._deactivation_sounds[id]
 
 	if deactivation_sound then
-		self._play_buff_sound(self, deactivation_sound)
+		self:_play_buff_sound(deactivation_sound)
 	end
 
 	local continuous_screen_effect_id = self._continuous_screen_effects[id]
 
 	if continuous_screen_effect_id then
-		self._stop_screen_effect(self, continuous_screen_effect_id)
+		self:_stop_screen_effect(continuous_screen_effect_id)
 	end
 
 	local deactivation_screen_effect = self._deactivation_screen_effects[id]
 
 	if deactivation_screen_effect then
-		self._play_screen_effect(self, deactivation_screen_effect)
+		self:_play_screen_effect(deactivation_screen_effect)
 	end
-
-	return 
 end
+
 BuffExtension._remove_stat_buff = function (self, buff)
 	local sub_buff_template = buff.template
 	local bonus = buff.bonus or 0
@@ -479,9 +515,8 @@ BuffExtension._remove_stat_buff = function (self, buff)
 		stat_buffs[index].bonus = current_bonus - bonus
 		stat_buffs[index].multiplier = current_multiplier - multiplier
 	end
-
-	return 
 end
+
 BuffExtension.has_buff_type = function (self, buff_type)
 	local buffs = self._buffs
 	local num_buffs = #buffs
@@ -496,6 +531,7 @@ BuffExtension.has_buff_type = function (self, buff_type)
 
 	return false
 end
+
 BuffExtension.has_buff_perk = function (self, perk_name)
 	local buffs = self._buffs
 	local num_buffs = #buffs
@@ -511,6 +547,7 @@ BuffExtension.has_buff_perk = function (self, perk_name)
 
 	return false
 end
+
 BuffExtension.num_buff_perk = function (self, perk_name)
 	local buffs = self._buffs
 	local num_buffs = #buffs
@@ -527,6 +564,7 @@ BuffExtension.num_buff_perk = function (self, perk_name)
 
 	return num_buff_perk
 end
+
 BuffExtension.get_non_stacking_buff = function (self, buff_type)
 	local buffs = self._buffs
 	local num_buffs = #buffs
@@ -543,6 +581,7 @@ BuffExtension.get_non_stacking_buff = function (self, buff_type)
 
 	return nil
 end
+
 BuffExtension.num_buff_type = function (self, buff_type)
 	local buffs = self._buffs
 	local num_buffs = #buffs
@@ -558,12 +597,13 @@ BuffExtension.num_buff_type = function (self, buff_type)
 
 	return num_buff_type
 end
+
 BuffExtension.trigger_procs = function (self, event, ...)
 	local event_buffs = self._event_buffs[event]
 	local num_event_buffs = #event_buffs
 
 	if num_event_buffs == 0 then
-		return 
+		return
 	end
 
 	local player = Managers.player:owner(self._unit)
@@ -594,11 +634,10 @@ BuffExtension.trigger_procs = function (self, event, ...)
 		local buff = event_buffs_to_remove[i]
 		local id = buff.id
 
-		self.remove_buff(self, id)
+		self:remove_buff(id)
 	end
-
-	return 
 end
+
 BuffExtension.apply_buffs_to_value = function (self, value, stat_buff)
 	local unit = self._unit
 	local stat_buffs = self._stat_buffs[stat_buff]
@@ -626,42 +665,42 @@ BuffExtension.apply_buffs_to_value = function (self, value, stat_buff)
 
 	return final_value, procced, id
 end
+
 BuffExtension._play_buff_sound = function (self, sound_event)
 	local unit = self._unit
 
 	if ScriptUnit.has_extension(unit, "first_person_system") then
 		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-		first_person_extension.play_hud_sound_event(first_person_extension, sound_event)
+		first_person_extension:play_hud_sound_event(sound_event)
 	end
-
-	return 
 end
+
 BuffExtension._play_screen_effect = function (self, effect)
 	local unit = self._unit
 
 	if ScriptUnit.has_extension(unit, "first_person_system") then
 		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-		local effect_id = first_person_extension.create_screen_particles(first_person_extension, effect)
+		local effect_id = first_person_extension:create_screen_particles(effect)
 
 		return effect_id
 	end
 
 	return nil
 end
+
 BuffExtension._stop_screen_effect = function (self, effect_id)
 	local unit = self._unit
 
 	if effect_id and ScriptUnit.has_extension(unit, "first_person_system") then
 		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-		first_person_extension.stop_spawning_screen_particles(first_person_extension, effect_id)
+		first_person_extension:stop_spawning_screen_particles(effect_id)
 	end
-
-	return 
 end
+
 BuffExtension.active_buffs = function (self)
 	return self._buffs
 end
 
-return 
+return

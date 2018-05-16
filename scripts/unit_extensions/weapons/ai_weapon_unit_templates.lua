@@ -13,8 +13,6 @@ AiWeaponUnitTemplates.templates = {
 			WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "ratling_gun_shooting_loop_parameter", 0)
 
 			data.shoot_sound_source_id = wwise_source_id
-
-			return 
 		end,
 		destroy = function (world, unit, data)
 			if data.shoot_sound_source_id then
@@ -26,11 +24,9 @@ AiWeaponUnitTemplates.templates = {
 				data.shoot_timer = nil
 				data.shoot_time = nil
 			end
-
-			return 
 		end,
 		shoot = function (world, unit, data)
-			return 
+			return
 		end,
 		shoot_end = function (world, unit, data)
 			local wwise_world = Managers.world:wwise_world(world)
@@ -40,20 +36,14 @@ AiWeaponUnitTemplates.templates = {
 			data.shoot_sound_source_id = nil
 			data.shoot_timer = nil
 			data.shoot_time = nil
-
-			return 
 		end,
 		windup_start = function (world, unit, data, windup_time)
 			data.windup_time = windup_time
 			data.windup_timer = windup_time
-
-			return 
 		end,
 		windup_end = function (world, unit, data)
 			data.windup_timer = nil
 			data.windup_time = nil
-
-			return 
 		end,
 		update = function (world, unit, data, t, dt)
 			if data.shoot_timer then
@@ -61,8 +51,6 @@ AiWeaponUnitTemplates.templates = {
 
 				update_shoot(world, unit, data)
 			end
-
-			return 
 		end
 	},
 	warpfire_gun = {
@@ -77,8 +65,6 @@ AiWeaponUnitTemplates.templates = {
 			WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "ratling_gun_shooting_loop_parameter", 0)
 
 			data.shoot_sound_source_id = wwise_source_id
-
-			return 
 		end,
 		destroy = function (world, unit, data)
 			if data.shoot_sound_source_id then
@@ -90,11 +76,9 @@ AiWeaponUnitTemplates.templates = {
 				data.shoot_timer = nil
 				data.shoot_time = nil
 			end
-
-			return 
 		end,
 		shoot = function (world, unit, data)
-			return 
+			return
 		end,
 		shoot_end = function (world, unit, data)
 			local wwise_world = Managers.world:wwise_world(world)
@@ -104,20 +88,14 @@ AiWeaponUnitTemplates.templates = {
 			data.shoot_sound_source_id = nil
 			data.shoot_timer = nil
 			data.shoot_time = nil
-
-			return 
 		end,
 		windup_start = function (world, unit, data, windup_time)
 			data.windup_time = windup_time
 			data.windup_timer = windup_time
-
-			return 
 		end,
 		windup_end = function (world, unit, data)
 			data.windup_timer = nil
 			data.windup_time = nil
-
-			return 
 		end,
 		update = function (world, unit, data, t, dt)
 			if data.shoot_timer then
@@ -125,8 +103,6 @@ AiWeaponUnitTemplates.templates = {
 
 				update_shoot(world, unit, data)
 			end
-
-			return 
 		end
 	}
 }
@@ -141,8 +117,6 @@ function update_shoot(world, unit, data)
 
 		WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "ratling_gun_shooting_loop_parameter", time_shooting_percent)
 	end
-
-	return 
 end
 
 AiWeaponUnitTemplates.get_template = function (projectile_template, is_husk)
@@ -153,4 +127,4 @@ AiWeaponUnitTemplates.get_template = function (projectile_template, is_husk)
 	return template
 end
 
-return 
+return

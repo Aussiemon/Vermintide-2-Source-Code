@@ -48,8 +48,6 @@ local crafting_recipes = {
 			else
 				return item_1_power_level < item_2_power_level
 			end
-
-			return 
 		end
 	},
 	{
@@ -82,8 +80,6 @@ local crafting_recipes = {
 			else
 				return item_type_1 < item_type_2
 			end
-
-			return 
 		end
 	},
 	{
@@ -126,8 +122,6 @@ local crafting_recipes = {
 			else
 				return item_type_1 < item_type_2
 			end
-
-			return 
 		end
 	},
 	{
@@ -164,8 +158,6 @@ local crafting_recipes = {
 			else
 				return item_type_1 < item_type_2
 			end
-
-			return 
 		end
 	},
 	{
@@ -208,8 +200,6 @@ local crafting_recipes = {
 			else
 				return item_type_1 < item_type_2
 			end
-
-			return 
 		end
 	},
 	{
@@ -246,8 +236,6 @@ local crafting_recipes = {
 			else
 				return item_type_1 < item_type_2
 			end
-
-			return 
 		end
 	},
 	{
@@ -307,8 +295,6 @@ local crafting_recipes = {
 			else
 				return item_2_power_level < item_1_power_level
 			end
-
-			return 
 		end
 	},
 	{
@@ -368,8 +354,6 @@ local crafting_recipes = {
 			else
 				return item_2_power_level < item_1_power_level
 			end
-
-			return 
 		end
 	},
 	{
@@ -425,8 +409,6 @@ local crafting_recipes = {
 			else
 				return item_2_power_level < item_1_power_level
 			end
-
-			return 
 		end
 	},
 	{
@@ -506,8 +488,6 @@ local crafting_recipes = {
 			else
 				return item_2_power_level < item_1_power_level
 			end
-
-			return 
 		end
 	},
 	{
@@ -565,8 +545,6 @@ local crafting_recipes = {
 			else
 				return item_2_power_level < item_1_power_level
 			end
-
-			return 
 		end
 	},
 	{
@@ -622,8 +600,6 @@ local crafting_recipes = {
 			else
 				return item_2_power_level < item_1_power_level
 			end
-
-			return 
 		end
 	},
 	{
@@ -679,8 +655,6 @@ local crafting_recipes = {
 			else
 				return item_2_power_level < item_1_power_level
 			end
-
-			return 
 		end
 	},
 	{
@@ -736,8 +710,6 @@ local crafting_recipes = {
 			else
 				return item_2_power_level < item_1_power_level
 			end
-
-			return 
 		end
 	}
 }

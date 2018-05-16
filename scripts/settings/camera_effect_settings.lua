@@ -1297,8 +1297,6 @@ function hit_impact_multiplied_by_x(new_sequence_name, sequence_name, x, time_sc
 
 		new_table.values[axis] = axis_table
 	end
-
-	return 
 end
 
 CameraEffectSettings.shake.swing_impact_up_no_damage = swing_impact_no_damage_shake
@@ -1318,12 +1316,14 @@ CameraEffectSettings.shake.swing_impact_down_heavy = swing_impact_shake
 CameraEffectSettings.shake.swing_impact_left_heavy = swing_impact_shake
 CameraEffectSettings.shake.swing_impact_right_heavy = swing_impact_shake
 CameraEffectSettings.transition_functions = CameraEffectSettings.transition_functions or {}
+
 CameraEffectSettings.transition_functions.lerp = function (current_value, next_value, progress)
 	return math.lerp(current_value, next_value, progress)
 end
+
 CameraEffectSettings.empty_modifier_settings = {
 	value = 0,
 	time_stamp = 0
 }
 
-return 
+return

@@ -1205,4 +1205,4 @@ loading_atlas = {
 	}
 }
 
-return 
+return

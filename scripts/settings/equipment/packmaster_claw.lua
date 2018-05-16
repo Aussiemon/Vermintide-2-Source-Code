@@ -7,4 +7,4 @@ weapon_template.wield_anim = "to_packmaster_claw"
 Weapons = Weapons or {}
 Weapons.packmaster_claw = Weapons.packmaster_claw or table.clone(weapon_template)
 
-return 
+return

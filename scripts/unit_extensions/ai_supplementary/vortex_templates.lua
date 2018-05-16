@@ -1,3 +1,5 @@
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
 VortexTemplates = {
 	standard = {
 		full_inner_radius = 3.5,
@@ -102,7 +104,6 @@ VortexTemplates = {
 		player_actions_allowed = false,
 		full_outer_radius = 9,
 		player_ejected_bliss_time = 5,
-		min_outer_radius = 7,
 		high_cost_nav_cost_map_cost_type = "vortex_danger_zone",
 		ai_rotation_speed = 15,
 		random_wander = false,
@@ -111,6 +112,7 @@ VortexTemplates = {
 		player_eject_speed = 12,
 		max_height = 20,
 		medium_cost_nav_cost_map_cost_type = "vortex_near",
+		min_outer_radius = 7,
 		player_in_vortex_max_duration = 5,
 		player_attract_speed = 15,
 		start_radius = 0.1,
@@ -183,8 +185,31 @@ VortexTemplates = {
 				15,
 				22.5
 			}
-		}
+		},
+		suck_in_ai_func = function (blackboard)
+			local stat_name = "halescourge_tornado_enemies"
+			local current_difficulty = Managers.state.difficulty:get_difficulty()
+			local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
+			local allowed_difficulty = allowed_difficulties[current_difficulty]
+			local achievements_enabled = Development.parameter("v2_achievements")
+
+			if achievements_enabled and allowed_difficulty and not blackboard.completed_vortex_suck_in_challenge then
+				if not blackboard.num_ai_units_sucked_in then
+					blackboard.num_ai_units_sucked_in = 0
+					local num_ai_units_sucked_in = blackboard.num_ai_units_sucked_in or 0
+					blackboard.num_ai_units_sucked_in = num_ai_units_sucked_in + 1
+
+					if QuestSettings.halescourge_tornado_enemies <= blackboard.num_ai_units_sucked_in then
+						local statistics_db = Managers.player:statistics_db()
+
+						statistics_db:increment_stat_and_sync_to_clients(stat_name)
+
+						blackboard.completed_vortex_suck_in_challenge = true
+					end
+				end
+			end
+		end
 	}
 }
 
-return 
+return

@@ -1,11 +1,11 @@
 ControllerSettingsView = class(ControllerSettingsView)
+
 ControllerSettingsView.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.input_manager = ingame_ui_context.input_manager
 	self.ingame_ui = ingame_ui_context.ingame_ui
-
-	return 
 end
+
 local controller_settings_to_add = {
 	{
 		"Player",
@@ -133,11 +133,11 @@ ControllerSettingsView.create_ui_elements = function (self)
 			}
 		}
 		ui_widgets[n_widgets] = UIWidget.init(widget_definition)
-		local input_service = input_manager.get_service(input_manager, service_name)
+		local input_service = input_manager:get_service(service_name)
 
 		for map_name, _ in pairs(settings_data[2]) do
 			n_widgets = n_widgets + 1
-			local keymapping = input_service.get_keymapping(input_service, map_name)
+			local keymapping = input_service:get_keymapping(map_name)
 			local keymap_1 = keymapping.input_mappings[1]
 			local keymap_2 = keymapping.input_mappings[2]
 			local keymap_1_text = "-"
@@ -175,17 +175,16 @@ ControllerSettingsView.create_ui_elements = function (self)
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.ui_widgets = ui_widgets
-
-	return 
 end
+
 ControllerSettingsView.on_enter = function (self)
-	self.create_ui_elements(self)
+	self:create_ui_elements()
+end
 
-	return 
-end
 ControllerSettingsView.destroy = function (self)
-	return 
+	return
 end
+
 ControllerSettingsView.update = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local input_service = self.input_manager:get_service("ingame_menu")
@@ -198,11 +197,9 @@ ControllerSettingsView.update = function (self, dt)
 
 	UIRenderer.end_pass(ui_renderer)
 
-	if input_service.get(input_service, "toggle_menu") or input_service.get(input_service, "back") then
+	if input_service:get("toggle_menu") or input_service:get("back") then
 		self.ingame_ui:handle_transition("ingame_menu", "OptionsMenu")
 	end
-
-	return 
 end
 
-return 
+return

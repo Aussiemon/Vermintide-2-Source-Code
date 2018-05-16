@@ -1,4 +1,3 @@
-local push_radius = 2
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
 	action_one = {
@@ -33,10 +32,8 @@ weapon_template.actions = {
 			end,
 			total_time = math.huge,
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.reset_release_input(input_extension)
-				input_extension.clear_input_buffer(input_extension)
-
-				return 
+				input_extension:reset_release_input()
+				input_extension:clear_input_buffer()
 			end,
 			buff_data = {
 				{
@@ -140,9 +137,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			recoil_settings = {
 				horizontal_climb = -1,
@@ -264,9 +261,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end
 		}
 	},
@@ -300,10 +297,8 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.reset_release_input(input_extension)
-				input_extension.clear_input_buffer(input_extension)
-
-				return 
+				input_extension:reset_release_input()
+				input_extension:clear_input_buffer()
 			end,
 			allowed_chain_actions = {
 				{
@@ -316,12 +311,12 @@ weapon_template.actions = {
 			condition_func = function (action_user, input_extension)
 				local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
 
-				return overcharge_extension.get_overcharge_value(overcharge_extension) ~= 0
+				return overcharge_extension:get_overcharge_value() ~= 0
 			end,
 			chain_condition_func = function (action_user, input_extension)
 				local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
 
-				return overcharge_extension.get_overcharge_value(overcharge_extension) ~= 0
+				return overcharge_extension:get_overcharge_value() ~= 0
 			end
 		}
 	},
@@ -343,6 +338,34 @@ weapon_template.overcharge_data = {
 	hit_overcharge_threshold_sound = "ui_special_attack_ready",
 	time_until_overcharge_decreases = 0.5,
 	overcharge_value_decrease_rate = 1
+}
+weapon_template.attack_meta_data = {
+	aim_at_node = "j_head",
+	obstruction_fuzzyness_range_charged = 6,
+	charged_attack_action_name = "shoot_charged",
+	charge_when_outside_max_range_charged = false,
+	ignore_enemies_for_obstruction_charged = false,
+	max_range = 50,
+	aim_at_node_charged = "j_spine1",
+	minimum_charge_time = 0.21,
+	max_range_charged = 6,
+	can_charge_shot = true,
+	fire_input = "fire_hold",
+	charge_when_obstructed = true,
+	ignore_enemies_for_obstruction = false,
+	obstruction_fuzzyness_range = 1,
+	aim_data = {
+		min_radius_pseudo_random_c = 0.94737,
+		max_radius_pseudo_random_c = 0.0557,
+		min_radius = math.pi / 72,
+		max_radius = math.pi / 16
+	},
+	aim_data_charged = {
+		min_radius_pseudo_random_c = 0.0557,
+		max_radius_pseudo_random_c = 0.01475,
+		min_radius = math.pi / 72,
+		max_radius = math.pi / 16
+	}
 }
 weapon_template.aim_assist_settings = {
 	max_range = 50,
@@ -374,44 +397,35 @@ weapon_template.buffs = {
 		external_optional_multiplier = 1
 	}
 }
-weapon_template.wwise_dep_right_hand = {
-	"wwise/staff"
-}
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_sniper",
 	"weapon_keyword_crowd_control",
 	"weapon_keyword_damage_over_time"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.5,
-			range = 0.25,
-			damage = 0.25,
-			targets = 0.8,
-			stagger = 0.6
-		},
-		heavy_attack = {
-			speed = 0.9,
-			range = 0.8,
-			damage = 0.125,
-			targets = 0.1,
-			stagger = 0.2
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	},
-	perks = {
-		light_attack = {
-			"armor_penetration",
-			"burn"
-		},
-		heavy_attack = {
-			"head_shot",
-			"armor_penetration",
-			"burn"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "shoot_charged"
 	}
 }
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "shoot_charged"
+	}
+}
+weapon_template.wwise_dep_right_hand = {
+	"wwise/staff"
+}
 Weapons = Weapons or {}
-Weapons.staff_blast_beam_template_1 = table.clone(weapon_template)
+Weapons.staff_blast_beam_template_1 = table.create_copy(Weapons.staff_blast_beam_template_1, weapon_template)
 
-return 
+return

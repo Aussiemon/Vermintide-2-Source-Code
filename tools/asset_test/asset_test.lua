@@ -970,20 +970,18 @@ LEVELS = {
 
 function boot()
 	Application.set_autoload_enabled(true)
-
-	return 
 end
 
 Test = Test or {}
+
 Test.init = function (self)
 	self.units = UNITS
 	self.levels = LEVELS
 	self.stage = self.test_units
 
-	self.init_world(self)
-
-	return 
+	self:init_world()
 end
+
 Test.init_world = function (self)
 	self.world = Application.new_world()
 	self.viewport = Application.create_viewport(self.world, "default")
@@ -998,22 +996,19 @@ Test.init_world = function (self)
 	Camera.set_local_rotation(self.camera, camera_unit, Quaternion.look(camera_dir, Vector3(0, 0, 1)))
 	World.spawn_unit(self.world, "core/editor_slave/units/skydome/skydome")
 	World.spawn_unit(self.world, "core/editor_slave/units/skydome/skydome", Vector3(0, 0, 0), Quaternion(Vector3(1, 0, 0), 3.14159265))
-
-	return 
 end
+
 Test.shutdown = function (self)
 	Application.destroy_viewport(self.world, self.viewport)
 	World.destroy_shading_environment(self.world, self.shading_environment)
 	Application.release_world(self.world)
-
-	return 
 end
+
 Test.render = function (self)
 	ShadingEnvironment.update(self.shading_environment)
 	Application.render_world(self.world, self.camera, self.viewport, self.shading_environment)
-
-	return 
 end
+
 Test.test_units = function (self)
 	if not self.timer then
 		self.timer = 0
@@ -1041,6 +1036,7 @@ Test.test_units = function (self)
 
 	return false
 end
+
 Test.test_levels = function (self)
 	if not self.timer then
 		self.timer = 0
@@ -1053,8 +1049,8 @@ Test.test_levels = function (self)
 			return true
 		end
 
-		self.shutdown(self)
-		self.init_world(self)
+		self:shutdown()
+		self:init_world()
 		print("Testing level " .. self.levels[#self.levels])
 		World.load_level(self.world, self.levels[#self.levels])
 
@@ -1064,54 +1060,45 @@ Test.test_levels = function (self)
 
 	return false
 end
+
 Test.done = function (self)
 	print("Test completed successfully... shutting down")
 	Application.quit()
 
 	return false
 end
+
 Test.next_stage = function (self)
 	if self.stage == self.test_units then
 		self.stage = self.test_levels
 	elseif self.stage == self.test_levels then
 		self.stage = self.done
 	end
-
-	return 
 end
+
 Test.update = function (self, dt)
-	if self.stage(self) then
-		self.next_stage(self)
+	if self:stage() then
+		self:next_stage()
 	end
 
 	World.update(self.world, dt)
-
-	return 
 end
 
 function init()
 	boot()
 	Test:init()
-
-	return 
 end
 
 function shutdown()
 	Test:shutdown()
-
-	return 
 end
 
 function update(dt)
 	Test:update(dt)
-
-	return 
 end
 
 function render()
 	Test:render()
-
-	return 
 end
 
-return 
+return

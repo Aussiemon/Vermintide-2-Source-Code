@@ -43,4 +43,4 @@ BreedBehaviors.critter_rat = {
 	name = "critter_rat"
 }
 
-return 
+return

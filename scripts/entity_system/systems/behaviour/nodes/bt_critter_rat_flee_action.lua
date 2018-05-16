@@ -1,13 +1,14 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCritterRatFleeAction = class(BTCritterRatFleeAction, BTNode)
+
 BTCritterRatFleeAction.init = function (self, ...)
 	BTCritterRatFleeAction.super.init(self, ...)
-
-	return 
 end
+
 BTCritterRatFleeAction.name = "BTCritterRatFleeAction"
 local player_and_bot_positions = PLAYER_AND_BOT_POSITIONS
+
 BTCritterRatFleeAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = self._tree_node.action_data
 	blackboard.move_pos = nil
@@ -17,19 +18,17 @@ BTCritterRatFleeAction.enter = function (self, unit, blackboard, t)
 	blackboard.using_random_point = false
 
 	if blackboard.move_state ~= "idle" then
-		self.start_idle_animation(self, unit, blackboard)
+		self:start_idle_animation(unit, blackboard)
 	end
-
-	return 
 end
+
 BTCritterRatFleeAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.move_pos = nil
 	blackboard.move_check_index = nil
 	blackboard.dig_timer = nil
 	blackboard.current_check_list = nil
-
-	return 
 end
+
 BTCritterRatFleeAction.run = function (self, unit, blackboard, t)
 	local ai_navigation = blackboard.navigation_extension
 
@@ -38,9 +37,9 @@ BTCritterRatFleeAction.run = function (self, unit, blackboard, t)
 	end
 
 	if not blackboard.move_pos then
-		local move_pos = self.select_move_pos(self, unit, blackboard)
+		local move_pos = self:select_move_pos(unit, blackboard)
 
-		ai_navigation.move_to(ai_navigation, move_pos)
+		ai_navigation:move_to(move_pos)
 
 		blackboard.move_pos = Vector3Box(move_pos)
 		blackboard.is_fleeing = true
@@ -48,56 +47,58 @@ BTCritterRatFleeAction.run = function (self, unit, blackboard, t)
 		return "running"
 	end
 
-	failed_to_move = 0 < ai_navigation.number_failed_move_attempts(ai_navigation)
+	failed_to_move = ai_navigation:number_failed_move_attempts() > 0
 
 	if failed_to_move then
 		blackboard.move_pos = nil
 
 		if blackboard.move_state ~= "idle" then
-			self.start_idle_animation(self, unit, blackboard)
+			self:start_idle_animation(unit, blackboard)
 		end
 
 		return "running"
 	end
 
-	local path_found = ai_navigation.is_following_path(ai_navigation)
-	local has_reached_destination = ai_navigation.has_reached_destination(ai_navigation)
+	local path_found = ai_navigation:is_following_path()
+	local has_reached_destination = ai_navigation:has_reached_destination()
 
 	if path_found and not has_reached_destination and blackboard.move_state ~= "moving" then
-		self.start_move_animation(self, unit, blackboard)
+		self:start_move_animation(unit, blackboard)
 
 		return "running"
 	end
 
 	if has_reached_destination then
-		self.at_destination(self, unit, blackboard, t)
+		self:at_destination(unit, blackboard, t)
 
 		return "running"
 	end
 
 	return "running"
 end
+
 BTCritterRatFleeAction.select_move_pos = function (self, unit, blackboard)
 	local move_pos = nil
 
 	if blackboard.using_cover_points then
-		move_pos = self._get_cover_point_flee_pos(self, unit, blackboard)
+		move_pos = self:_get_cover_point_flee_pos(unit, blackboard)
 	end
 
 	if blackboard.using_far_along_path_point then
-		move_pos = self._get_far_along_path_pos(self, unit, blackboard)
+		move_pos = self:_get_far_along_path_pos(unit, blackboard)
 	end
 
 	if not move_pos and blackboard.using_random_point_in_front_of_target then
-		move_pos = self._get_random_flee_pos_in_front_of_target(self, unit, blackboard)
+		move_pos = self:_get_random_flee_pos_in_front_of_target(unit, blackboard)
 	end
 
 	if not move_pos and blackboard.using_random_point then
-		move_pos = self._get_random_flee_pos(self, unit, blackboard)
+		move_pos = self:_get_random_flee_pos(unit, blackboard)
 	end
 
 	return move_pos
 end
+
 BTCritterRatFleeAction._get_cover_point_flee_pos = function (self, unit, blackboard)
 	local target_unit = blackboard.target_unit
 	local move_pos = nil
@@ -151,6 +152,7 @@ BTCritterRatFleeAction._get_cover_point_flee_pos = function (self, unit, blackbo
 
 	return move_pos
 end
+
 BTCritterRatFleeAction._get_far_along_path_pos = function (self, unit, blackboard)
 	local move_pos = nil
 	local target_unit = blackboard.target_unit
@@ -175,6 +177,7 @@ BTCritterRatFleeAction._get_far_along_path_pos = function (self, unit, blackboar
 
 	return move_pos
 end
+
 BTCritterRatFleeAction._get_random_flee_pos_in_front_of_target = function (self, unit, blackboard)
 	local move_pos = nil
 	local nav_world = blackboard.nav_world
@@ -202,6 +205,7 @@ BTCritterRatFleeAction._get_random_flee_pos_in_front_of_target = function (self,
 
 	return move_pos
 end
+
 BTCritterRatFleeAction._get_random_flee_pos = function (self, unit, blackboard)
 	local action = blackboard.action
 	local nav_world = blackboard.nav_world
@@ -217,23 +221,22 @@ BTCritterRatFleeAction._get_random_flee_pos = function (self, unit, blackboard)
 
 	return move_pos
 end
+
 BTCritterRatFleeAction.start_idle_animation = function (self, unit, blackboard)
 	Managers.state.network:anim_event(unit, "idle")
 
 	blackboard.move_state = "idle"
-
-	return 
 end
+
 BTCritterRatFleeAction.start_move_animation = function (self, unit, blackboard)
 	Managers.state.network:anim_event(unit, "move_fwd")
 
 	blackboard.move_state = "moving"
-
-	return 
 end
+
 BTCritterRatFleeAction.at_destination = function (self, unit, blackboard, t)
 	if blackboard.move_state ~= "idle" then
-		self.start_idle_animation(self, unit, blackboard)
+		self:start_idle_animation(unit, blackboard)
 	end
 
 	if not blackboard.dig_timer then
@@ -250,8 +253,6 @@ BTCritterRatFleeAction.at_destination = function (self, unit, blackboard, t)
 		blackboard.using_random_point = false
 		blackboard.using_cover_points = true
 	end
-
-	return 
 end
 
-return 
+return

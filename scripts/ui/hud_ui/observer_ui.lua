@@ -3,6 +3,7 @@ local RELOAD_UI = true
 local MIN_HEALTH_DIVIDERS = 0
 local MAX_HEALTH_DIVIDERS = 10
 ObserverUI = class(ObserverUI)
+
 ObserverUI.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
@@ -14,10 +15,9 @@ ObserverUI.init = function (self, ingame_ui_context)
 	self.player_shielded = false
 	self._is_visible = false
 
-	self.create_ui_elements(self)
-
-	return 
+	self:create_ui_elements()
 end
+
 ObserverUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self.divider_widget = UIWidget.init(definitions.widget_definitions.divider)
@@ -27,11 +27,10 @@ ObserverUI.create_ui_elements = function (self)
 	self.player_name_widget.style.text.localize = false
 	RELOAD_UI = false
 
-	self.set_visible(self, false)
-	self.draw(self)
-
-	return 
+	self:set_visible(false)
+	self:draw()
 end
+
 ObserverUI.get_player_camera_extension = function (self)
 	local peer_id = self.peer_id
 	local my_player = self.player_manager:player_from_peer_id(peer_id)
@@ -40,41 +39,39 @@ ObserverUI.get_player_camera_extension = function (self)
 	if camera_unit and ScriptUnit.has_extension(camera_unit, "camera_system") then
 		return ScriptUnit.extension(camera_unit, "camera_system")
 	end
-
-	return 
 end
+
 ObserverUI.handle_observer_player_changed = function (self)
-	local camera_extension = self.get_player_camera_extension(self)
+	local camera_extension = self:get_player_camera_extension()
 
 	if not camera_extension then
-		return 
+		return
 	end
 
-	local observed_player_id = camera_extension.get_observed_player_id(camera_extension)
+	local observed_player_id = camera_extension:get_observed_player_id()
 
 	if observed_player_id then
 		local current_observing_player_id = self.observing_player_id
 
 		if not current_observing_player_id or current_observing_player_id ~= observed_player_id then
-			self.set_observer_player(self, observed_player_id)
+			self:set_observer_player(observed_player_id)
 		end
 	else
-		self.stop_draw_observer_ui(self)
+		self:stop_draw_observer_ui()
 	end
-
-	return 
 end
+
 ObserverUI.set_observer_player = function (self, player_id)
 	local profiles = SPProfiles
 	local profile_synchronizer = self.profile_synchronizer
 	local player_manager = Managers.player
-	local players = player_manager.players(player_manager)
+	local players = player_manager:players()
 	local follow_player = players[player_id]
-	local is_player_controlled = follow_player.is_player_controlled(follow_player)
-	local local_player_id = follow_player.local_player_id(follow_player)
-	local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, follow_player.peer_id, local_player_id)
+	local is_player_controlled = follow_player:is_player_controlled()
+	local local_player_id = follow_player:local_player_id()
+	local profile_index = profile_synchronizer:profile_by_peer(follow_player.peer_id, local_player_id)
 	local hero_display_name = profiles[profile_index] and profiles[profile_index].display_name
-	local player_name = follow_player.name(follow_player)
+	local player_name = follow_player:name()
 	self.player_name_widget.content.text = (is_player_controlled and player_name) or player_name .. " (BOT)"
 	self.hero_name_widget.content.text = hero_display_name
 	self.observing_player_id = player_id
@@ -82,9 +79,8 @@ ObserverUI.set_observer_player = function (self, player_id)
 	self.player_name_widget.element.dirty = true
 	self.hero_name_widget.element.dirty = true
 	self._dirty = true
-
-	return 
 end
+
 ObserverUI.stop_draw_observer_ui = function (self)
 	self.observing_player_id = nil
 	self.divider_widget.element.dirty = true
@@ -92,31 +88,29 @@ ObserverUI.stop_draw_observer_ui = function (self)
 	self.hero_name_widget.element.dirty = true
 	self.hp_bar_widget.element.dirty = true
 	self._dirty = true
-
-	return 
 end
+
 ObserverUI.update = function (self, dt, t)
 	if RELOAD_UI then
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 	end
 
 	if not self._is_visible then
-		return 
+		return
 	end
 
-	self.handle_observer_player_changed(self)
+	self:handle_observer_player_changed()
 
 	if self.observing_player_id then
-		self.update_follow_player_health_bar(self, self.observing_player_id)
-		self.update_health_animations(self, dt)
+		self:update_follow_player_health_bar(self.observing_player_id)
+		self:update_health_animations(dt)
 
 		self._skip_bar_animation = nil
 	end
 
-	self.draw(self, dt)
-
-	return 
+	self:draw(dt)
 end
+
 ObserverUI.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
@@ -134,12 +128,12 @@ ObserverUI.draw = function (self, dt)
 
 	UIRenderer.draw_widget(ui_renderer, self.hp_bar_widget)
 	UIRenderer.end_pass(ui_renderer)
+end
 
-	return 
-end
 ObserverUI.destroy = function (self)
-	return 
+	return
 end
+
 ObserverUI.set_visible = function (self, visible)
 	if self._is_visible ~= visible then
 		local divider_widget = self.divider_widget
@@ -169,23 +163,23 @@ ObserverUI.set_visible = function (self, visible)
 		self._dirty = true
 		self._is_visible = visible
 	end
-
-	return 
 end
+
 ObserverUI.is_visible = function (self)
 	return self._is_visible
 end
+
 ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 	local profile_synchronizer = self.profile_synchronizer
 	local player_manager = Managers.player
-	local players = player_manager.players(player_manager)
+	local players = player_manager:players()
 	local player = players[peer_id]
 
 	if not player then
-		return 
+		return
 	end
 
-	local local_player_id = player.local_player_id(player)
+	local local_player_id = player:local_player_id()
 	local player_unit = player.player_unit
 	local health_percent, is_knocked_down, is_dead, is_wounded, is_ready_for_assisted_respawn = nil
 	local shield_percent = 0
@@ -198,9 +192,9 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 	if player_unit then
 		local health_extension = ScriptUnit.extension(player_unit, "health_system")
 		local status_extension = ScriptUnit.extension(player_unit, "status_system")
-		health_percent = health_extension.current_health_percent(health_extension)
-		local max_health = health_extension.get_max_health(health_extension)
-		local has_shield, shield_amount = health_extension.has_assist_shield(health_extension)
+		health_percent = health_extension:current_health_percent()
+		local max_health = health_extension:get_max_health()
+		local has_shield, shield_amount = health_extension:has_assist_shield()
 
 		if has_shield then
 			shield_percent = shield_amount / max_health
@@ -226,13 +220,13 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 			self.player_shielded = false
 		end
 
-		is_wounded = status_extension.is_wounded(status_extension)
-		is_knocked_down = status_extension.is_knocked_down(status_extension) and 0 < health_percent
-		is_ready_for_assisted_respawn = status_extension.is_ready_for_assisted_respawn(status_extension)
+		is_wounded = status_extension:is_wounded()
+		is_knocked_down = status_extension:is_knocked_down() and health_percent > 0
+		is_ready_for_assisted_respawn = status_extension:is_ready_for_assisted_respawn()
 		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-		local num_grimoires = buff_extension.num_buff_perk(buff_extension, "skaven_grimoire")
-		local multiplier = buff_extension.apply_buffs_to_value(buff_extension, PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
-		local num_twitch_grimoires = buff_extension.num_buff_perk(buff_extension, "twitch_grimoire")
+		local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
+		local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, StatBuffIndex.CURSE_PROTECTION)
+		local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
 		local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
 		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier
 	else
@@ -244,8 +238,8 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 	is_dead = health_percent <= 0
 	local num_of_health_dividers = MIN_HEALTH_DIVIDERS
 	local low_health = (not is_dead and not is_knocked_down and health_percent < UISettings.unit_frames.low_health_threshold) or nil
-	local health_changed = self.on_player_health_changed(self, "my_player", hp_bar_widget, health_percent * active_percentage)
-	local grims_changed = self.on_num_grimoires_changed(self, "my_player_grimoires", hp_bar_widget, 1 - active_percentage)
+	local health_changed = self:on_player_health_changed("my_player", hp_bar_widget, health_percent * active_percentage)
+	local grims_changed = self:on_num_grimoires_changed("my_player_grimoires", hp_bar_widget, 1 - active_percentage)
 	modified_bar = modified_bar or health_changed or grims_changed
 	local hp_bar_value = hp_bar_widget.content.hp_bar.bar_value
 	local grimoire_value = hp_bar_widget.content.hp_bar_grimoire_debuff.bar_value
@@ -275,7 +269,7 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 		end
 	end
 
-	local profile_index = profile_synchronizer.profile_by_peer(profile_synchronizer, player.peer_id, local_player_id)
+	local profile_index = profile_synchronizer:profile_by_peer(player.peer_id, local_player_id)
 
 	if profile_index then
 		if is_knocked_down or is_dead then
@@ -296,9 +290,8 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 		hp_bar_widget.element.dirty = true
 		self._dirty = true
 	end
-
-	return 
 end
+
 ObserverUI.on_player_health_changed = function (self, name, widget, health_percent)
 	if not self.bar_animations_data then
 		self.bar_animations_data = {}
@@ -340,9 +333,8 @@ ObserverUI.on_player_health_changed = function (self, name, widget, health_perce
 
 		return true
 	end
-
-	return 
 end
+
 ObserverUI.on_num_grimoires_changed = function (self, name, widget, health_debuff_percent)
 	if not self.bar_animations_data then
 		self.bar_animations_data = {}
@@ -373,9 +365,8 @@ ObserverUI.on_num_grimoires_changed = function (self, name, widget, health_debuf
 
 	widget_animation_data.current_health_debuff = health_debuff_percent
 	self.bar_animations_data[name] = widget_animation_data
-
-	return 
 end
+
 ObserverUI.update_health_animations = function (self, dt)
 	local bar_animations = self.bar_animations_data
 
@@ -389,7 +380,7 @@ ObserverUI.update_health_animations = function (self, dt)
 			end
 
 			if animation_data.animate_highlight and not self.player_shielded then
-				animation_data.animate_highlight = self.update_damage_highlight(self, widget, animation_data.animate_highlight, dt)
+				animation_data.animate_highlight = self:update_damage_highlight(widget, animation_data.animate_highlight, dt)
 			end
 
 			if animation_data.animate then
@@ -397,7 +388,7 @@ ObserverUI.update_health_animations = function (self, dt)
 				local total_time = animation_data.total_time
 				local new_health = animation_data.new_health
 				local previous_health = animation_data.previous_health
-				local time_left = self.update_player_bar_animation(self, widget, bar, time, total_time, previous_health, new_health, dt)
+				local time_left = self:update_player_bar_animation(widget, bar, time, total_time, previous_health, new_health, dt)
 
 				if time_left then
 					animation_data.time = time_left
@@ -407,13 +398,12 @@ ObserverUI.update_health_animations = function (self, dt)
 			end
 		end
 	end
-
-	return 
 end
+
 ObserverUI.update_player_bar_animation = function (self, widget, bar, time, total_time, anim_start_health, anim_end_health, dt)
 	time = time + dt
 
-	if 0 < total_time then
+	if total_time > 0 then
 		local style = widget.style
 		local progress = math.min(time / total_time, 1)
 		local catmullrom_value = math.catmullrom(progress, -14, 0, 0, 0)
@@ -438,11 +428,12 @@ ObserverUI.update_player_bar_animation = function (self, widget, bar, time, tota
 
 	return nil
 end
+
 ObserverUI.update_damage_highlight = function (self, widget, time, dt)
 	local total_time = (self._skip_bar_animation and 0) or 0.2
 	time = time + dt
 
-	if 0 < total_time then
+	if total_time > 0 then
 		local style = widget.style
 		local progress = math.min(time / total_time, 1)
 		local catmullrom_value = math.catmullrom(progress, -8, 0, 0, -8)
@@ -457,4 +448,4 @@ ObserverUI.update_damage_highlight = function (self, widget, time, dt)
 	return nil
 end
 
-return 
+return

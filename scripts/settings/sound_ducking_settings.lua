@@ -269,4 +269,4 @@ DuckingConfigs = {
 	}
 }
 
-return 
+return

@@ -7,11 +7,10 @@ local scenegraph_definition = definitions.scenegraph_definition
 local settings_by_screen = definitions.settings_by_screen
 local attachments = definitions.attachments
 local flow_events = definitions.flow_events
+local generic_input_actions = definitions.generic_input_actions
 
 local function dprint(...)
 	print("[StartGameView]", ...)
-
-	return 
 end
 
 local platform = PLATFORM
@@ -35,12 +34,13 @@ local debug_menu = true
 StartGameView = class(StartGameView)
 local fake_input_service = {
 	get = function ()
-		return 
+		return
 	end,
 	has = function ()
-		return 
+		return
 	end
 }
+
 StartGameView.init = function (self, ingame_ui_context)
 	self.world = ingame_ui_context.world
 	self.player_manager = ingame_ui_context.player_manager
@@ -59,10 +59,10 @@ StartGameView.init = function (self, ingame_ui_context)
 	local input_manager = ingame_ui_context.input_manager
 	self.input_manager = input_manager
 
-	input_manager.create_input_service(input_manager, "start_game_view", "IngameMenuKeymaps", "IngameMenuFilters")
-	input_manager.map_device_to_service(input_manager, "start_game_view", "keyboard")
-	input_manager.map_device_to_service(input_manager, "start_game_view", "mouse")
-	input_manager.map_device_to_service(input_manager, "start_game_view", "gamepad")
+	input_manager:create_input_service("start_game_view", "IngameMenuKeymaps", "IngameMenuFilters")
+	input_manager:map_device_to_service("start_game_view", "keyboard")
+	input_manager:map_device_to_service("start_game_view", "mouse")
+	input_manager:map_device_to_service("start_game_view", "gamepad")
 
 	local state_machine_params = {
 		wwise_world = self.wwise_world,
@@ -78,12 +78,12 @@ StartGameView.init = function (self, ingame_ui_context)
 	self.ui_animations = {}
 	self.ingame_ui_context = ingame_ui_context
 	DO_RELOAD = false
-
-	return 
 end
+
 StartGameView.initial_profile_view = function (self)
 	return self.ingame_ui.initial_profile_view
 end
+
 StartGameView._setup_state_machine = function (self, state_machine_params, optional_start_state, optional_start_sub_state)
 	if self._machine then
 		self._machine:destroy()
@@ -94,35 +94,34 @@ StartGameView._setup_state_machine = function (self, state_machine_params, optio
 	local start_state = optional_start_state or StartGameStateSettingsOverview
 	local profiling_debugging_enabled = false
 	state_machine_params.start_state = optional_start_sub_state
-	self._machine = StateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
+	self._machine = GameStateMachine:new(self, start_state, state_machine_params, profiling_debugging_enabled)
 	self._state_machine_params = state_machine_params
-
-	return 
 end
+
 StartGameView.wanted_state = function (self)
 	return self._wanted_state
 end
+
 StartGameView.clear_wanted_state = function (self)
 	self._wanted_state = nil
-
-	return 
 end
+
 StartGameView.input_service = function (self)
 	return (self._draw_loading and fake_input_service) or self.input_manager:get_service("start_game_view")
 end
+
 StartGameView.set_input_blocked = function (self, blocked)
 	self._input_blocked = blocked
-
-	return 
 end
+
 StartGameView.input_blocked = function (self)
 	return self._input_blocked
 end
+
 StartGameView.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
-
-	return 
 end
+
 StartGameView.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self._static_widgets = {}
@@ -131,19 +130,29 @@ StartGameView.create_ui_elements = function (self)
 		text = UIWidget.init(widget_definitions.loading_text)
 	}
 	self._console_cursor_widget = UIWidget.init(widget_definitions.console_cursor)
+	local input_service = Managers.input:get_service("start_game_view")
+	local gui_layer = UILayer.default + 30
+	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 4, gui_layer, generic_input_actions.default)
 
+	self._menu_input_description:set_input_description(nil)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, definitions.animations)
-
-	return 
 end
+
+StartGameView.set_input_description = function (self, input_description)
+	local test = generic_input_actions
+
+	fassert(not input_description or generic_input_actions[input_description], "[StartGameView:set_input_description] There is no such input_description (%s)", input_description)
+	self._menu_input_description:set_input_description(generic_input_actions[input_description])
+end
+
 StartGameView.draw = function (self, dt, input_service)
 	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_manager = self.input_manager
-	local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
+	local gamepad_active = input_manager:is_device_active("gamepad")
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 
@@ -169,20 +178,22 @@ StartGameView.draw = function (self, dt, input_service)
 
 	UIRenderer.end_pass(ui_renderer)
 
-	return 
+	if gamepad_active then
+		self._menu_input_description:draw(ui_top_renderer, dt)
+	end
 end
+
 StartGameView.post_update = function (self, dt, t)
 	self._machine:post_update(dt, t)
-
-	return 
 end
+
 StartGameView.update = function (self, dt, t)
 	if self.suspended or self.waiting_for_post_update_enter then
-		return 
+		return
 	end
 
-	if self._has_active_level_vote(self) then
-		self.close_menu(self, nil, true)
+	if self:_has_active_level_vote() then
+		self:close_menu(nil, true)
 	end
 
 	local requested_screen_change_data = self._requested_screen_change_data
@@ -191,18 +202,18 @@ StartGameView.update = function (self, dt, t)
 		local screen_name = requested_screen_change_data.screen_name
 		local sub_screen_name = requested_screen_change_data.sub_screen_name
 
-		self._change_screen_by_name(self, screen_name, sub_screen_name)
+		self:_change_screen_by_name(screen_name, sub_screen_name)
 
 		self._requested_screen_change_data = nil
 	end
 
 	local is_sub_menu = true
 	local input_manager = self.input_manager
-	local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
-	local input_blocked = self.input_blocked(self)
-	local input_service = (input_blocked and fake_input_service) or self.input_service(self)
+	local gamepad_active = input_manager:is_device_active("gamepad")
+	local input_blocked = self:input_blocked()
+	local input_service = (input_blocked and fake_input_service) or self:input_service()
 	self._state_machine_params.input_service = input_service
-	local transitioning = self.transitioning(self)
+	local transitioning = self:transitioning()
 
 	self.ui_animator:update(dt)
 
@@ -215,31 +226,30 @@ StartGameView.update = function (self, dt, t)
 	end
 
 	if not transitioning then
-		self._handle_mouse_input(self, dt, t, input_service)
+		self:_handle_mouse_input(dt, t, input_service)
 	end
 
 	self._machine:update(dt, t)
-	self.draw(self, dt, input_service)
-
-	return 
+	self:draw(dt, input_service)
 end
+
 StartGameView.on_enter = function (self, menu_state_name, menu_sub_state_name)
 	ShowCursorStack.push()
 
 	local input_manager = self.input_manager
 
-	input_manager.block_device_except_service(input_manager, "start_game_view", "keyboard", 1)
-	input_manager.block_device_except_service(input_manager, "start_game_view", "mouse", 1)
-	input_manager.block_device_except_service(input_manager, "start_game_view", "gamepad", 1)
+	input_manager:block_device_except_service("start_game_view", "keyboard", 1)
+	input_manager:block_device_except_service("start_game_view", "mouse", 1)
+	input_manager:block_device_except_service("start_game_view", "gamepad", 1)
 
 	local params = self._state_machine_params
 	params.initial_state = true
 
-	self.create_ui_elements(self)
+	self:create_ui_elements()
 
 	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
 
-	self.set_current_hero(self, profile_index)
+	self:set_current_hero(profile_index)
 
 	self.waiting_for_post_update_enter = true
 	self._on_enter_transition = {
@@ -247,12 +257,11 @@ StartGameView.on_enter = function (self, menu_state_name, menu_sub_state_name)
 		menu_sub_state_name = menu_sub_state_name
 	}
 
-	self.play_sound(self, "hud_in_inventory_state_on")
+	self:play_sound("hud_in_inventory_state_on")
 
 	self._draw_loading = false
-
-	return 
 end
+
 StartGameView.set_current_hero = function (self, profile_index)
 	local profile_settings = SPProfiles[profile_index]
 	local display_name = profile_settings.display_name
@@ -260,9 +269,8 @@ StartGameView.set_current_hero = function (self, profile_index)
 	self._hero_name = display_name
 	local params = self._state_machine_params
 	params.hero_name = display_name
-
-	return 
 end
+
 StartGameView._get_sorted_players = function (self)
 	local human_players = self.player_manager:human_players()
 	local player_order = {}
@@ -277,9 +285,11 @@ StartGameView._get_sorted_players = function (self)
 
 	return player_order
 end
+
 StartGameView._handle_mouse_input = function (self, dt, t, input_service)
-	return 
+	return
 end
+
 StartGameView._is_selection_widget_pressed = function (self, widget)
 	local content = widget.content
 	local steps = content.steps
@@ -292,11 +302,10 @@ StartGameView._is_selection_widget_pressed = function (self, widget)
 			return true, i
 		end
 	end
-
-	return 
 end
+
 StartGameView.hotkey_allowed = function (self, input, mapping_data)
-	if self.input_blocked(self) then
+	if self:input_blocked() then
 		return false
 	end
 
@@ -305,21 +314,21 @@ StartGameView.hotkey_allowed = function (self, input, mapping_data)
 	local state_machine = self._machine
 
 	if state_machine then
-		local current_state = state_machine.state(state_machine)
+		local current_state = state_machine:state()
 		local current_state_name = current_state.NAME
-		local current_screen_settings = self._get_screen_settings_by_state_name(self, current_state_name)
+		local current_screen_settings = self:_get_screen_settings_by_state_name(current_state_name)
 		local name = current_screen_settings.name
 
 		if name == transition_state then
-			local active_sub_settings_name = current_state.active_settings_name and current_state.active_settings_name(current_state)
+			local active_sub_settings_name = current_state.active_settings_name and current_state:active_settings_name()
 
 			if not transition_sub_state or transition_sub_state == active_sub_settings_name then
 				return true
 			elseif transition_sub_state then
-				current_state.requested_screen_change_by_name(current_state, transition_sub_state)
+				current_state:requested_screen_change_by_name(transition_sub_state)
 			end
 		elseif transition_state then
-			self.requested_screen_change_by_name(self, transition_state, transition_sub_state)
+			self:requested_screen_change_by_name(transition_state, transition_sub_state)
 		else
 			return true
 		end
@@ -327,23 +336,22 @@ StartGameView.hotkey_allowed = function (self, input, mapping_data)
 
 	return false
 end
+
 StartGameView._get_screen_settings_by_state_name = function (self, state_name)
 	for index, screen_settings in ipairs(settings_by_screen) do
 		if screen_settings.state_name == state_name then
 			return screen_settings
 		end
 	end
-
-	return 
 end
+
 StartGameView.requested_screen_change_by_name = function (self, screen_name, sub_screen_name)
 	self._requested_screen_change_data = {
 		screen_name = screen_name,
 		sub_screen_name = sub_screen_name
 	}
-
-	return 
 end
+
 StartGameView._change_screen_by_name = function (self, screen_name, sub_screen_name)
 	local settings, settings_index = nil
 
@@ -364,36 +372,34 @@ StartGameView._change_screen_by_name = function (self, screen_name, sub_screen_n
 	if self._machine and not sub_screen_name then
 		self._wanted_state = state
 	else
-		self._setup_state_machine(self, self._state_machine_params, state, sub_screen_name)
+		self:_setup_state_machine(self._state_machine_params, state, sub_screen_name)
 	end
-
-	return 
 end
+
 StartGameView._change_screen_by_index = function (self, index)
 	local screen_settings = settings_by_screen[index]
 	local settings_name = screen_settings.name
 
-	self._change_screen_by_name(self, settings_name)
-
-	return 
+	self:_change_screen_by_name(settings_name)
 end
+
 StartGameView.post_update_on_enter = function (self)
 	self.waiting_for_post_update_enter = nil
 	local on_enter_transition = self._on_enter_transition
 
 	if on_enter_transition and on_enter_transition.menu_state_name then
-		self._change_screen_by_name(self, on_enter_transition.menu_state_name, on_enter_transition.menu_sub_state_name)
+		self:_change_screen_by_name(on_enter_transition.menu_state_name, on_enter_transition.menu_sub_state_name)
 
 		self._on_enter_transition = nil
 	else
-		self._change_screen_by_index(self, 1)
+		self:_change_screen_by_index(1)
 	end
+end
 
-	return 
-end
 StartGameView.post_update_on_exit = function (self)
-	return 
+	return
 end
+
 StartGameView.on_exit = function (self)
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
@@ -408,59 +414,53 @@ StartGameView.on_exit = function (self)
 		self._machine = nil
 	end
 
-	self.play_sound(self, "hud_in_inventory_state_off")
+	self:play_sound("hud_in_inventory_state_off")
 
 	self._draw_loading = false
-
-	return 
 end
+
 StartGameView.exit = function (self, return_to_game, ignore_sound)
 	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition)
 
 	if not ignore_sound then
-		self.play_sound(self, "Play_hud_button_close")
+		self:play_sound("Play_hud_button_close")
 	end
 
 	self.exiting = true
-
-	return 
 end
+
 StartGameView.transitioning = function (self)
 	if self.exiting then
 		return true
 	else
 		return false
 	end
-
-	return 
 end
+
 StartGameView.suspend = function (self)
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
 
 	self.suspended = true
-
-	return 
 end
+
 StartGameView.unsuspend = function (self)
 	self.input_manager:block_device_except_service("start_game_view", "keyboard", 1)
 	self.input_manager:block_device_except_service("start_game_view", "mouse", 1)
 	self.input_manager:block_device_except_service("start_game_view", "gamepad", 1)
 
 	self.suspended = nil
-
-	return 
 end
+
 StartGameView.close_menu = function (self, return_to_main_screen, ignore_sound)
 	local return_to_game = not return_to_main_screen
 
-	self.exit(self, return_to_game, ignore_sound)
-
-	return 
+	self:exit(return_to_game, ignore_sound)
 end
+
 StartGameView.destroy = function (self)
 	self.ingame_ui_context = nil
 	self.ui_animator = nil
@@ -470,9 +470,8 @@ StartGameView.destroy = function (self)
 
 		self._machine = nil
 	end
-
-	return 
 end
+
 StartGameView._is_button_pressed = function (self, widget)
 	local button_hotspot = widget.content.button_hotspot
 
@@ -481,16 +480,16 @@ StartGameView._is_button_pressed = function (self, widget)
 
 		return true
 	end
-
-	return 
 end
+
 StartGameView._has_active_level_vote = function (self)
 	local voting_manager = self.voting_manager
-	local active_vote_name = voting_manager.vote_in_progress(voting_manager)
+	local active_vote_name = voting_manager:vote_in_progress()
 	local is_mission_vote = active_vote_name == "game_settings_vote" or active_vote_name == "game_settings_deed_vote"
 
-	return is_mission_vote and not voting_manager.has_voted(voting_manager, Network.peer_id())
+	return is_mission_vote and not voting_manager:has_voted(Network.peer_id())
 end
+
 StartGameView._set_loading_overlay_enabled = function (self, enabled, message)
 	local loading_widgets = self._loading_widgets
 	local loading_text_widget = loading_widgets.text
@@ -500,14 +499,14 @@ StartGameView._set_loading_overlay_enabled = function (self, enabled, message)
 	loading_text_widget.style.text.text_color[1] = alpha
 	loading_text_widget.content.text = message or ""
 	self._draw_loading = enabled
-
-	return 
 end
+
 StartGameView.number_of_players = function (self)
 	local player_manager = Managers.player
 
-	return player_manager.num_human_players(player_manager)
+	return player_manager:num_human_players()
 end
+
 StartGameView.start_game = function (self, level_key, difficulty_key, private_game, quick_game, always_host, strict_matchmaking, t, deed_backend_id)
 	print("............................................................................................................")
 	print("............................................................................................................")
@@ -524,7 +523,7 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 
 	if deed_backend_id then
 		local item_interface = Managers.backend:get_interface("items")
-		local item = item_interface.get_item_from_id(item_interface, deed_backend_id)
+		local item = item_interface:get_item_from_id(deed_backend_id)
 		local item_data = item.data
 		local level_key = item.level_key
 		local difficulty = item.difficulty
@@ -548,10 +547,8 @@ StartGameView.start_game = function (self, level_key, difficulty_key, private_ga
 		Managers.state.voting:request_vote("game_settings_vote", vote_data, Network.peer_id())
 	end
 
-	self.play_sound(self, "play_gui_lobby_button_play")
-	self.close_menu(self)
-
-	return 
+	self:play_sound("play_gui_lobby_button_play")
+	self:close_menu()
 end
 
-return 
+return

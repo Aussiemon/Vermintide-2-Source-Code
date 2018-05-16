@@ -5,22 +5,21 @@ DEFAULT_PRIVILEGES = DEFAULT_PRIVILEGES or {}
 ATTEMPT_RESOLUTION_PRIVILEGES = ATTEMPT_RESOLUTION_PRIVILEGES or {}
 XBOX_PRIVILEGE_LUT = XBOX_PRIVILEGE_LUT or {}
 PRIVILEGES_ERROR_CODES = PRIVILEGES_ERROR_CODES or {}
-XboxUserPrivileges.init = function (self)
-	self.reset(self)
-	self._setup_lookup_tables(self)
 
-	return 
+XboxUserPrivileges.init = function (self)
+	self:reset()
+	self:_setup_lookup_tables()
 end
+
 XboxUserPrivileges.reset = function (self)
 	self._current_users = {}
 	self._initialized = false
 	self._has_error = nil
 	self._check_privilege_cb = {}
-
-	return 
 end
+
 XboxUserPrivileges.add_user = function (self, user_id)
-	self.reset(self)
+	self:reset()
 
 	self._current_users[user_id] = {}
 
@@ -43,9 +42,8 @@ XboxUserPrivileges.add_user = function (self, user_id)
 			self._has_error = true
 		end
 	end
-
-	return 
 end
+
 XboxUserPrivileges.update_privilege = function (self, privilege, cb)
 	local privilege_id = nil
 
@@ -77,9 +75,8 @@ XboxUserPrivileges.update_privilege = function (self, privilege, cb)
 			self._has_error = true
 		end
 	end
-
-	return 
 end
+
 XboxUserPrivileges.cb_user_privilege_done = function (self, user_id, privilege, info)
 	if info.error then
 		Application.error(string.format("[XboxUserPrivileges] Something went wrong when trying to fetch privilege [%s] for User [%s]. Error: %s", XBOX_PRIVILEGE_LUT[privilege] or "unknown", tostring(user_id), PRIVILEGES_ERROR_CODES[info.error] or "UNKNOWN"))
@@ -105,18 +102,16 @@ XboxUserPrivileges.cb_user_privilege_done = function (self, user_id, privilege, 
 
 		self._check_privilege_cb[privilege] = nil
 	end
-
-	return 
 end
+
 XboxUserPrivileges.has_privilege = function (self, user_id, privilege)
 	if user_id and self._current_users[user_id] then
 		return self._current_users[user_id][privilege]
 	else
 		return false
 	end
-
-	return 
 end
+
 XboxUserPrivileges.is_initialized = function (self)
 	if self._initialized then
 		return true
@@ -138,12 +133,12 @@ XboxUserPrivileges.is_initialized = function (self)
 
 		return true
 	end
-
-	return 
 end
+
 XboxUserPrivileges.has_error = function (self)
 	return self._has_error
 end
+
 XboxUserPrivileges._setup_lookup_tables = function (self)
 	XBOX_PRIVILEGE_LUT[UserPrivilege.ADD_FRIEND] = "ADD_FRIEND"
 	XBOX_PRIVILEGE_LUT[UserPrivilege.BROADCAST] = "BROADCAST"
@@ -195,8 +190,6 @@ XboxUserPrivileges._setup_lookup_tables = function (self)
 	PRIVILEGES_ERROR_CODES[UserPrivilege.PurchaseRequired] = "PURCHASE_REQUIRED"
 	PRIVILEGES_ERROR_CODES[UserPrivilege.Restricted] = "RESTRICTED"
 	ATTEMPT_RESOLUTION_PRIVILEGES[UserPrivilege.MULTIPLAYER_SESSIONS] = true
-
-	return 
 end
 
-return 
+return

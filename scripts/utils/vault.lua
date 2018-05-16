@@ -12,10 +12,8 @@ local function init_economy_vault()
 
 		Vault.deposit_single(t.amount, level_failed_reward.token_amount)
 	end
-
-	return 
 end
 
 init_economy_vault()
 
-return 
+return

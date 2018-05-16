@@ -1,9 +1,10 @@
 require("scripts/unit_extensions/limited_item_track/limited_item_track_spawner_templates")
 
 LimitedItemTrackSpawner = class(LimitedItemTrackSpawner)
+
 LimitedItemTrackSpawner.init = function (self, world, unit, extension_init_data)
 	assert(Managers.player.is_server, "Spawner should only exist on server")
-	assert(0 < extension_init_data.pool, "Can't have pool less than 1")
+	assert(extension_init_data.pool > 0, "Can't have pool less than 1")
 
 	self.world = world
 	self.unit = unit
@@ -18,23 +19,23 @@ LimitedItemTrackSpawner.init = function (self, world, unit, extension_init_data)
 	local template_name = self.template_name
 	local init_func = LimitedItemTrackSpawnerTemplates[template_name].init_func
 	self.spawn_data = init_func(world, unit, extension_init_data)
-
-	return 
 end
+
 LimitedItemTrackSpawner.extensions_ready = function (self)
 	Unit.flow_event(self.unit, "lua_spawner_initialized")
+end
 
-	return 
-end
 LimitedItemTrackSpawner.destroy = function (self)
-	return 
+	return
 end
+
 LimitedItemTrackSpawner.update = function (self, unit, input, dt, context, t)
-	return 
+	return
 end
+
 LimitedItemTrackSpawner.spawn_item = function (self)
 	local self_unit = self.unit
-	local id = self.find_empty_id(self)
+	local id = self:find_empty_id()
 
 	fassert(id, "Found no empty id")
 
@@ -47,9 +48,8 @@ LimitedItemTrackSpawner.spawn_item = function (self)
 	self.num_items = self.num_items + 1
 
 	Unit.flow_event(self_unit, "lua_spawner_spawn_item")
-
-	return 
 end
+
 LimitedItemTrackSpawner.find_empty_id = function (self)
 	local pool = self.pool
 	local items = self.items
@@ -61,9 +61,8 @@ LimitedItemTrackSpawner.find_empty_id = function (self)
 			return i
 		end
 	end
-
-	return 
 end
+
 LimitedItemTrackSpawner.remove = function (self, id)
 	local items = self.items
 
@@ -72,18 +71,16 @@ LimitedItemTrackSpawner.remove = function (self, id)
 		self.num_items = self.num_items - 1
 		self.pool_exhausted = false
 	end
-
-	return 
 end
+
 LimitedItemTrackSpawner.transform = function (self, id)
 	local items = self.items
 
 	if items[id] then
 		items[id] = true
 	end
-
-	return 
 end
+
 LimitedItemTrackSpawner.is_transformed = function (self, id)
 	local item = self.items[id]
 
@@ -92,8 +89,6 @@ LimitedItemTrackSpawner.is_transformed = function (self, id)
 	else
 		return false
 	end
-
-	return 
 end
 
-return 
+return

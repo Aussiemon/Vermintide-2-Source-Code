@@ -1,6 +1,7 @@
 require("foundation/scripts/managers/time/timer")
 
 TimeManager = class(TimeManager)
+
 TimeManager.init = function (self)
 	self._timers = {
 		main = Timer:new("main", nil)
@@ -11,9 +12,8 @@ TimeManager.init = function (self)
 	self._mean_dt = 0
 	self._global_time_scale = 1
 	self._lerp_global_time_scale = false
-
-	return 
 end
+
 TimeManager.register_timer = function (self, name, parent_name, start_time)
 	local timers = self._timers
 
@@ -23,58 +23,56 @@ TimeManager.register_timer = function (self, name, parent_name, start_time)
 	local parent_timer = timers[parent_name]
 	local new_timer = Timer:new(name, parent_timer, start_time)
 
-	parent_timer.add_child(parent_timer, new_timer)
+	parent_timer:add_child(new_timer)
 
 	timers[name] = new_timer
-
-	return 
 end
+
 TimeManager.unregister_timer = function (self, name)
 	local timer = self._timers[name]
 
 	fassert(timer, "[TimeManager] Tried to remove unregistered timer %q", name)
-	fassert(table.size(timer.children(timer)) == 0, "[TimeManager] Not allowed to remove timer %q with children", name)
+	fassert(table.size(timer:children()) == 0, "[TimeManager] Not allowed to remove timer %q with children", name)
 
-	local parent = timer.parent(timer)
+	local parent = timer:parent()
 
 	if parent then
-		parent.remove_child(parent, timer)
+		parent:remove_child(timer)
 	end
 
-	timer.destroy(timer)
+	timer:destroy()
 
 	self._timers[name] = nil
-
-	return 
 end
+
 TimeManager.has_timer = function (self, name)
 	return (self._timers[name] and true) or false
 end
+
 TimeManager.update = function (self, dt)
 	local main_timer = self._timers.main
 
-	if main_timer.active(main_timer) then
-		main_timer.update(main_timer, dt, 1)
+	if main_timer:active() then
+		main_timer:update(dt, 1)
 	end
 
 	if self._lerp_global_time_scale then
-		self._update_global_time_scale_lerp(self, dt)
+		self:_update_global_time_scale_lerp(dt)
 	end
 
 	if script_data.honduras_demo then
-		self._update_demo_timer(self, dt)
+		self:_update_demo_timer(dt)
 	end
 
-	self._update_mean_dt(self, dt)
-
-	return 
+	self:_update_mean_dt(dt)
 end
+
 TimeManager._update_demo_timer = function (self, dt)
 	self._demo_timer = (self._demo_timer or DemoSettings.demo_idle_timer) - dt
 	local device = Managers.input and Managers.input:get_most_recent_device()
 
 	if not device then
-		return 
+		return
 	end
 
 	local gamepad_active = Managers.input:is_device_active("gamepad")
@@ -100,12 +98,12 @@ TimeManager._update_demo_timer = function (self, dt)
 	elseif self._demo_timer <= 0 then
 		self._demo_idle_timer_failed = true
 	end
-
-	return 
 end
+
 TimeManager.get_demo_transition = function (self)
 	return self._demo_idle_timer_failed and "return_to_demo_title_screen"
 end
+
 TimeManager._update_mean_dt = function (self, dt)
 	local dt_stack = self._dt_stack
 	self._dt_stack_index = self._dt_stack_index % self._dt_stack_max_size + 1
@@ -117,59 +115,56 @@ TimeManager._update_mean_dt = function (self, dt)
 	end
 
 	self._mean_dt = dt_sum / #dt_stack
-
-	return 
 end
+
 TimeManager.mean_dt = function (self)
 	return self._mean_dt
 end
+
 TimeManager.set_time = function (self, name, time)
 	self._timers[name]:set_time(time)
-
-	return 
 end
+
 TimeManager.time = function (self, name)
 	if self._timers[name] then
 		return self._timers[name]:time()
 	end
-
-	return 
 end
+
 TimeManager.active = function (self, name)
 	return self._timers[name]:active()
 end
+
 TimeManager.set_active = function (self, name, active)
 	self._timers[name]:set_active(active)
-
-	return 
 end
+
 TimeManager.set_local_scale = function (self, name, scale)
 	fassert(name ~= "main", "[TimeManager] Not allowed to set scale in main timer")
 	self._timers[name]:set_local_scale(scale)
-
-	return 
 end
+
 TimeManager.local_scale = function (self, name)
 	return self._timers[name]:local_scale()
 end
+
 TimeManager.global_scale = function (self, name)
 	return self._timers[name]:global_scale()
 end
+
 TimeManager.set_global_time_scale = function (self, scale)
 	self._global_time_scale = scale
 	self._lerp_global_time_scale = false
-
-	return 
 end
+
 TimeManager.set_global_time_scale_lerp = function (self, wanted_scale, duration)
 	self._global_time_scale_lerp_start = self._global_time_scale
 	self._global_time_scale_lerp_end = wanted_scale
 	self._global_time_scale_lerp_progress = 0
 	self._global_time_scale_lerp_increment = 1 / duration
 	self._lerp_global_time_scale = true
-
-	return 
 end
+
 TimeManager._update_global_time_scale_lerp = function (self, dt)
 	local start_value = self._global_time_scale_lerp_start
 	local end_value = self._global_time_scale_lerp_end
@@ -180,23 +175,21 @@ TimeManager._update_global_time_scale_lerp = function (self, dt)
 	self._global_time_scale = current_value
 	self._global_time_scale_lerp_progress = progress
 
-	if 1 <= progress then
+	if progress >= 1 then
 		self._lerp_global_time_scale = false
 	end
-
-	return 
 end
+
 TimeManager.scaled_delta_time = function (self, dt)
 	return math.max(dt * self._global_time_scale, 1e-06)
 end
+
 TimeManager.destroy = function (self)
 	for name, timer in pairs(self._timers) do
-		timer.destroy(timer)
+		timer:destroy()
 	end
 
 	self._timers = nil
-
-	return 
 end
 
-return 
+return

@@ -64,7 +64,7 @@ local function pick_action(action_name)
 	if not UtilityConsiderations[action_name] then
 		print("No utility action named:", action_name)
 
-		return 
+		return
 	end
 
 	cons_lookup = {}
@@ -80,8 +80,6 @@ local function pick_action(action_name)
 	fassert(num_condiditons <= 6, "only support for 6 edit windows, %s have %d conditions -> poke jocke w and tell him to fix this", action_name, num_condiditons)
 
 	considerations = UtilityConsiderations[action_name]
-
-	return 
 end
 
 if not considerations then
@@ -93,38 +91,37 @@ if not considerations then
 end
 
 EditAiUtility = class(EditAiUtility)
+
 EditAiUtility.init = function (self, world)
 	self.world = world
 	self.world_gui = World.create_world_gui(world, Matrix4x4.identity(), 1, 1, "immediate", "material", "materials/fonts/gw_fonts")
 	self.screen_gui = World.create_screen_gui(self.world, "material", "materials/fonts/gw_fonts", "immediate")
-
-	return 
 end
+
 EditAiUtility.activate = function (self)
 	ShowCursorStack.push()
-
-	return 
 end
+
 EditAiUtility.deactivate = function (self)
 	ShowCursorStack.pop()
+end
 
-	return 
-end
 EditAiUtility.use_breed = function (self, breed)
-	return 
+	return
 end
+
 EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
-	local mouse_pos = input_service.get(input_service, "cursor")
-	status.left_pressed = input_service.get(input_service, "mouse_left_held")
+	local mouse_pos = input_service:get("cursor")
+	status.left_pressed = input_service:get("mouse_left_held")
 
 	if not status.selected_drag_point then
-		status.hover_win_name, status.win_pos = self.hover_win(self, t, mouse_pos, window_list, spline_window_size)
+		status.hover_win_name, status.win_pos = self:hover_win(t, mouse_pos, window_list, spline_window_size)
 		local spline = status.hover_win_name and considerations[status.hover_win_name].spline
 		local spline_id = nil
 
 		if spline and spline == status.last_hover_spline then
 			local spline_window_pos = status.win_pos
-			status.hover_point = self.hover_spline_point(self, t, spline, spline_window_pos, spline_window_size, mouse_pos)
+			status.hover_point = self:hover_spline_point(t, spline, spline_window_pos, spline_window_size, mouse_pos)
 
 			if status.hover_point and status.left_pressed and not status.selected_point then
 				status.selected_point = status.hover_point
@@ -134,19 +131,19 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 			end
 
 			if status.selected_point then
-				self.move_spline_point(self, t, spline, spline_window_pos, spline_window_size, status.selected_point, mouse_pos)
-				self.draw_mouse_selection(self, t, spline, spline_window_pos, spline_window_size, status.selected_point, "selected", considerations[status.hover_win_name].max_value)
+				self:move_spline_point(t, spline, spline_window_pos, spline_window_size, status.selected_point, mouse_pos)
+				self:draw_mouse_selection(t, spline, spline_window_pos, spline_window_size, status.selected_point, "selected", considerations[status.hover_win_name].max_value)
 			elseif status.hover_point then
-				self.draw_mouse_selection(self, t, spline, spline_window_pos, spline_window_size, status.hover_point, "hover", considerations[status.hover_win_name].max_value)
+				self:draw_mouse_selection(t, spline, spline_window_pos, spline_window_size, status.hover_point, "hover", considerations[status.hover_win_name].max_value)
 			end
 
 			if status.hover_point and DebugKeyHandler.key_pressed("d", "remove selected point", "ai editor", "left ctrl") then
-				self.remove_spline_point(self, spline, status.hover_point)
+				self:remove_spline_point(spline, status.hover_point)
 
 				status.last_selected_point = nil
 				status.hover_point = nil
 
-				return 
+				return
 			end
 		else
 			status.selected_point = nil
@@ -156,11 +153,11 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 		status.last_hover_spline = spline
 
 		if not status.hover_point and status.hover_win_name and DebugKeyHandler.key_pressed("a", "insert spline point", "ai editor", "left ctrl") then
-			self.insert_spline_point(self, spline, status.win_pos, spline_window_size, mouse_pos)
+			self:insert_spline_point(spline, status.win_pos, spline_window_size, mouse_pos)
 		end
 	end
 
-	status.hover_drag_point = self.hover_drag_points(self, t, drag_point_list, mouse_pos)
+	status.hover_drag_point = self:hover_drag_points(t, drag_point_list, mouse_pos)
 
 	if status.hover_drag_point and status.left_pressed and not status.selected_drag_point then
 		status.selected_drag_point = status.hover_drag_point
@@ -168,7 +165,7 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 		local point = status.selected_drag_point
 		local safe_drag_lane = 16
 
-		self.draw_safe_drag_lane(self, point, safe_drag_lane)
+		self:draw_safe_drag_lane(point, safe_drag_lane)
 
 		local con = considerations[cons_lookup[point.index]]
 
@@ -176,17 +173,17 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 			local original_max_value = con.max_value
 			local xd, yd = EditAiUtility:drag_point_distance(t, point, mouse_pos)
 
-			if math.abs(yd) < safe_drag_lane and 0 < math.abs(xd) then
+			if math.abs(yd) < safe_drag_lane and math.abs(xd) > 0 then
 				local value = nil
 
-				if 0 < xd then
+				if xd > 0 then
 					value = 0.01 * math.pow(xd, 1.2) + original_max_value
 				else
 					value = -0.01 * math.pow(-xd, 1.2) + original_max_value
 				end
 
 				value = math.floor(value * 10) / 10
-				status.selected_drag_point.max_value = (0 <= value and value) or 0
+				status.selected_drag_point.max_value = (value >= 0 and value) or 0
 			else
 				status.selected_drag_point.max_value = nil
 			end
@@ -228,7 +225,7 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 				EditAiUtility.draw_utility_info(gui, data, nil, name, pos, win_size, fade_factor)
 			end
 
-			self.draw_utility_ruler(self, gui, data, pos, win_size, 1)
+			self:draw_utility_ruler(gui, data, pos, win_size, 1)
 
 			if blackboard then
 				local action = status.selected_action and action_list[status.selected_action]
@@ -238,24 +235,28 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 				local breed_actions = BreedActions[breed_name]
 
 				for i, breed_action in pairs(breed_actions) do
-					local unit_considerations = breed_action.considerations
+					repeat
+						local unit_considerations = breed_action.considerations
 
-					if not unit_considerations then
-					else
+						if not unit_considerations then
+							break
+						end
+
 						local consideration_name = unit_considerations.name
 
 						if consideration_name ~= action then
-						else
-							for unit_data_name, unit_data in pairs(unit_considerations) do
-								local data_name = data.name
+							break
+						end
 
-								if unit_data_name == data_name then
-									unit_data.spline = table.clone(data.spline)
-									unit_data.max_value = data.max_value
-								end
+						for unit_data_name, unit_data in pairs(unit_considerations) do
+							local data_name = data.name
+
+							if unit_data_name == data_name then
+								unit_data.spline = table.clone(data.spline)
+								unit_data.max_value = data.max_value
 							end
 						end
-					end
+					until true
 				end
 			end
 		end
@@ -268,10 +269,10 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 	end
 
 	if DebugKeyHandler.key_pressed("s", "save to disk", "ai editor", "left ctrl") then
-		self.save_considerations(self)
+		self:save_considerations()
 	end
 
-	status.hover_action_window, status.hover_action = self.hover_action(self, t, action_list_layout, action_list, mouse_pos)
+	status.hover_action_window, status.hover_action = self:hover_action(t, action_list_layout, action_list, mouse_pos)
 
 	if status.hover_action_window and status.left_pressed and status.hover_action then
 		status.selected_action = status.hover_action
@@ -281,10 +282,9 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 
 	local bk_color = (status.hover_action_window and Color(164, 28, 44, 100)) or Color(92, 28, 44, 100)
 
-	self.draw_action_list(self, unit, t, "Actions", action_list_layout, action_list, bk_color, status.selected_action, blackboard)
-
-	return 
+	self:draw_action_list(unit, t, "Actions", action_list_layout, action_list, bk_color, status.selected_action, blackboard)
 end
+
 EditAiUtility.insert_spline_point = function (self, spline, win_pos, win_size, mouse_pos)
 	local x = (mouse_pos.x - win_pos.x) / win_size.x
 	local y = (mouse_pos.y - win_pos.y) / win_size.y
@@ -306,15 +306,14 @@ EditAiUtility.insert_spline_point = function (self, spline, win_pos, win_size, m
 		spline[insert_index] = x
 		spline[insert_index + 1] = y
 	end
-
-	return 
 end
+
 EditAiUtility.remove_spline_point = function (self, spline, point_index)
 	local first_point_index = 1
 	local last_point_index = #spline - 1
 
 	if point_index == first_point_index or point_index == last_point_index then
-		return 
+		return
 	end
 
 	for i = point_index, #spline - 2, 1 do
@@ -323,9 +322,8 @@ EditAiUtility.remove_spline_point = function (self, spline, point_index)
 
 	spline[#spline] = nil
 	spline[#spline] = nil
-
-	return 
 end
+
 EditAiUtility.hover_win = function (self, t, mouse_pos, window_list, win_size)
 	local x = mouse_pos.x
 	local y = mouse_pos.y
@@ -333,15 +331,14 @@ EditAiUtility.hover_win = function (self, t, mouse_pos, window_list, win_size)
 	local border = 10
 
 	for k = 1, #cons_lookup, 1 do
-		if window_list[k].x - border <= x and x <= window_list[k].x + win_size.x + border and window_list[k].y - border <= y and y <= window_list[k].y + win_size.y + border then
+		if x >= window_list[k].x - border and x <= window_list[k].x + win_size.x + border and y >= window_list[k].y - border and y <= window_list[k].y + win_size.y + border then
 			return cons_lookup[k], window_list[k]
 		end
 
 		k = k + 1
 	end
-
-	return 
 end
+
 EditAiUtility.move_spline_point = function (self, t, spline, win_pos, win_size, point_index, new_pos)
 	local first_point_index = 1
 	local last_point_index = #spline - 1
@@ -352,13 +349,13 @@ EditAiUtility.move_spline_point = function (self, t, spline, win_pos, win_size, 
 		spline[point_index] = x
 	end
 
-	if 0 <= y and y <= 1 then
+	if y >= 0 and y <= 1 then
 		spline[point_index + 1] = y
 	end
-
-	return 
 end
+
 local hover_dist = 20
+
 EditAiUtility.hover_spline_point = function (self, t, spline, win_pos, win_size, mouse_pos)
 	local gui = self.screen_gui
 	local resx, resy = Application.resolution()
@@ -373,9 +370,8 @@ EditAiUtility.hover_spline_point = function (self, t, spline, win_pos, win_size,
 			return i, x1, y1
 		end
 	end
-
-	return 
 end
+
 EditAiUtility.drag_point_distance = function (self, t, point, mouse_pos)
 	local x = mouse_pos.x
 	local y = mouse_pos.y
@@ -385,7 +381,7 @@ EditAiUtility.drag_point_distance = function (self, t, point, mouse_pos)
 	if math.abs(x_dist) < safe_zone then
 		x_dist = 0
 	else
-		x_dist = x_dist - ((0 < x_dist and safe_zone) or -safe_zone)
+		x_dist = x_dist - ((x_dist > 0 and safe_zone) or -safe_zone)
 	end
 
 	local y_dist = y - point.y
@@ -393,11 +389,12 @@ EditAiUtility.drag_point_distance = function (self, t, point, mouse_pos)
 	if math.abs(y_dist) < safe_zone then
 		y_dist = 0
 	else
-		y_dist = y_dist - ((0 < y_dist and safe_zone) or -safe_zone)
+		y_dist = y_dist - ((y_dist > 0 and safe_zone) or -safe_zone)
 	end
 
 	return x_dist, y_dist
 end
+
 EditAiUtility.hover_drag_points = function (self, t, point_list, mouse_pos)
 	local gui = self.screen_gui
 	local x = mouse_pos.x
@@ -407,15 +404,14 @@ EditAiUtility.hover_drag_points = function (self, t, point_list, mouse_pos)
 	for i = 1, #point_list, 1 do
 		local point = point_list[i]
 
-		if point.x - size < x and x < point.x + size and point.y - size < y and y < point.y + size then
+		if x > point.x - size and x < point.x + size and y > point.y - size and y < point.y + size then
 			EditAiUtility.draw_square(gui, t, Vector2(point.x, point.y), half_row_height, Color(255, 255, 255, 255), 3)
 
 			return point
 		end
 	end
-
-	return 
 end
+
 EditAiUtility.draw_mouse_selection = function (self, t, spline, win_pos, win_size, point_index, selected, max_value)
 	local gui = self.screen_gui
 	local resx, resy = Application.resolution()
@@ -436,9 +432,8 @@ EditAiUtility.draw_mouse_selection = function (self, t, spline, win_pos, win_siz
 	local pos = Vector3(x1 + 20, y1, 30)
 
 	ScriptGUI.text(gui, pos_text, font_mtrl, 32, font, pos, Color(255, 0, 0, 0))
-
-	return 
 end
+
 EditAiUtility.draw_square = function (gui, t, pos, width, color, thickness)
 	thickness = thickness or 5
 	width = width * 0.5
@@ -451,9 +446,8 @@ EditAiUtility.draw_square = function (gui, t, pos, width, color, thickness)
 	ScriptGUI.hud_line(gui, Vector2(x2, y1), Vector2(x2, y2), nil, thickness, color)
 	ScriptGUI.hud_line(gui, Vector2(x2, y2), Vector2(x1, y2), nil, thickness, color)
 	ScriptGUI.hud_line(gui, Vector2(x1, y2), Vector2(x1, y1), nil, thickness, color)
-
-	return 
 end
+
 EditAiUtility.hover_action = function (self, t, layout, action_list, mouse_pos)
 	local height = #action_list * row_height
 	local x = mouse_pos.x
@@ -470,6 +464,7 @@ EditAiUtility.hover_action = function (self, t, layout, action_list, mouse_pos)
 
 	return inside_window
 end
+
 EditAiUtility.draw_action_list = function (self, unit, t, name, layout, action_list, bk_color, selected_action, blackboard)
 	local gui = self.screen_gui
 	local resx, resy = Application.resolution()
@@ -493,7 +488,7 @@ EditAiUtility.draw_action_list = function (self, unit, t, name, layout, action_l
 
 		if active_ai then
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local action_data = ai_extension.brain(ai_extension):bt():action_data()
+			local action_data = ai_extension:brain():bt():action_data()
 			local breed_action = action_data[text]
 			utility = math.floor(Utility.get_action_utility(breed_action, text, blackboard, t) * 10) / 10
 
@@ -504,9 +499,8 @@ EditAiUtility.draw_action_list = function (self, unit, t, name, layout, action_l
 	local height = #action_list * row_height
 
 	Gui.rect(gui, Vector2(layout.x, layout.y), Vector2(layout.size_x, height), bk_color)
-
-	return 
 end
+
 EditAiUtility.draw_safe_drag_lane = function (self, point, safe_distance)
 	local x1 = point.x - 400
 	local x2 = point.x + 400
@@ -515,9 +509,8 @@ EditAiUtility.draw_safe_drag_lane = function (self, point, safe_distance)
 
 	ScriptGUI.hud_line(self.screen_gui, Vector2(x1, y1), Vector2(x2, y1), 40, 3, Color(255, 240, 200, 10))
 	ScriptGUI.hud_line(self.screen_gui, Vector2(x1, y2), Vector2(x2, y2), 40, 3, Color(255, 240, 200, 10))
-
-	return 
 end
+
 EditAiUtility.draw_realtime_utility = function (gui, action_name, consideration, pos, win_size, blackboard)
 	local blackboard_action_data = blackboard.utility_actions[action_name]
 
@@ -544,9 +537,11 @@ EditAiUtility.draw_realtime_utility = function (gui, action_name, consideration,
 
 	return 0
 end
+
 EditAiUtility.draw_utility_sum = function (gui, name, pos, size)
-	return 
+	return
 end
+
 EditAiUtility.draw_utility_ruler = function (self, gui, consideration_data, pos, size)
 	local font_size = 12
 	local num_divides = 10
@@ -570,9 +565,8 @@ EditAiUtility.draw_utility_ruler = function (self, gui, consideration_data, pos,
 
 		x = x + pixel_stride
 	end
-
-	return 
 end
+
 EditAiUtility.draw_utility_info = function (gui, consideration_data, temp_max_value, name, pos, size, fade_factor, tiny)
 	local font_size = font_size
 	local font = font
@@ -600,9 +594,8 @@ EditAiUtility.draw_utility_info = function (gui, consideration_data, temp_max_va
 
 	ScriptGUI.text(gui, scale_text, font_mtrl, font_size, font, scale_text_pos, (temp_max_value and Color(255 * fade_factor, 240, 200, 10)) or Color(255 * fade_factor, 255, 255, 255))
 	ScriptGUI.text(gui, name, font_mtrl, font_size, font, pos + Vector3(offset_x, axis_y, 10), Color(255 * fade_factor, 255, 255, 255))
-
-	return 
 end
+
 EditAiUtility.draw_utility_spline = function (gui, t, consideration_data, temp_max_value, name, pos, size, bk_color, fade_factor, thickness)
 	local spline = consideration_data.spline
 	local resx, resy = Application.resolution()
@@ -621,9 +614,8 @@ EditAiUtility.draw_utility_spline = function (gui, t, consideration_data, temp_m
 	end
 
 	Gui.rect(gui, pos, size, bk_color)
-
-	return 
 end
+
 EditAiUtility.draw_utility_condition = function (gui, action_name, consideration, pos, win_size, blackboard, bk_color)
 	local blackboard_action_data = blackboard.utility_actions[action_name]
 
@@ -645,14 +637,13 @@ EditAiUtility.draw_utility_condition = function (gui, action_name, consideration
 	end
 
 	Gui.rect(gui, pos, win_size, bk_color)
-
-	return 
 end
+
 EditAiUtility.save_considerations = function (self)
 	if not GameSettingsDevelopment.trunk_path then
 		print("Cannot save! No run parameter \"-trunk-path <path to my bulldozer trunk>\" has been added")
 
-		return 
+		return
 	end
 
 	print("SAVING CONSIDERATIONS!")
@@ -677,10 +668,8 @@ EditAiUtility.save_considerations = function (self)
 	local filehandle = io.open(file_path, "w+")
 
 	assert(filehandle)
-	filehandle.write(filehandle, write_string)
+	filehandle:write(write_string)
 	io.close(filehandle)
-
-	return 
 end
 
-return 
+return

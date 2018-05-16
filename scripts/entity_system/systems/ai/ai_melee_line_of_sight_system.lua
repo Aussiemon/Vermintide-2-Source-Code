@@ -3,18 +3,19 @@ local extensions = {
 	"AIMeleeLineOfSightExtension"
 }
 AIMeleeLineOfSightExtension = class(AIMeleeLineOfSightExtension)
+
 AIMeleeLineOfSightExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
+end
 
-	return 
-end
 AIMeleeLineOfSightExtension.destroy = function (self)
-	return 
+	return
 end
+
 AIMeleeLineOfSightSystem.init = function (self, context, system_name)
 	local entity_manager = context.entity_manager
 
-	entity_manager.register_system(entity_manager, self, system_name, extensions)
+	entity_manager:register_system(self, system_name, extensions)
 
 	self._is_server = context.is_server
 	self._world = context.world
@@ -23,12 +24,12 @@ AIMeleeLineOfSightSystem.init = function (self, context, system_name)
 	self._update_queue = {}
 	self._update_queue_index = 0
 	self._update_queue_length = 0
+end
 
-	return 
-end
 AIMeleeLineOfSightSystem.destroy = function (self)
-	return 
+	return
 end
+
 AIMeleeLineOfSightSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local index = self._update_queue_length + 1
 
@@ -42,11 +43,11 @@ AIMeleeLineOfSightSystem.on_add_extension = function (self, world, unit, extensi
 
 	return ext
 end
-AIMeleeLineOfSightSystem.on_freeze_extension = function (self, unit, extension_name)
-	self.on_remove_extension(self, unit, extension_name)
 
-	return 
+AIMeleeLineOfSightSystem.on_freeze_extension = function (self, unit, extension_name)
+	self:on_remove_extension(unit, extension_name)
 end
+
 AIMeleeLineOfSightSystem.on_remove_extension = function (self, unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
 
@@ -60,30 +61,29 @@ AIMeleeLineOfSightSystem.on_remove_extension = function (self, unit, extension_n
 	last_item.index = remove_index
 	extensions[unit] = nil
 	self._update_queue_length = self._update_queue_length - 1
+end
 
-	return 
-end
 AIMeleeLineOfSightSystem.hot_join_sync = function (self, sender, player)
-	return 
+	return
 end
+
 AIMeleeLineOfSightSystem.extensions_ready = function (self, world, unit, extension_name)
 	local bb = BLACKBOARDS[unit]
 	self._extensions[unit].blackboard = bb
 	bb.has_line_of_sight = true
-
-	return 
 end
+
 AIMeleeLineOfSightSystem.target_changed = function (self, unit)
 	self._extensions[unit].blackboard.has_line_of_sight = true
-
-	return 
 end
+
 local OFFSETS = {}
+
 AIMeleeLineOfSightSystem.update = function (self, context, t)
 	local max_index = self._update_queue_length
 
 	if not self._is_server or max_index == 0 then
-		return 
+		return
 	end
 
 	local is_win32 = PLATFORM == Application.WIN32
@@ -196,8 +196,6 @@ AIMeleeLineOfSightSystem.update = function (self, context, t)
 	end
 
 	self._update_queue_index = index
-
-	return 
 end
 
-return 
+return

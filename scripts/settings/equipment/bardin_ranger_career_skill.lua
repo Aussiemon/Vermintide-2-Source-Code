@@ -1,10 +1,18 @@
 local push_radius = 2
 local weapon_template = weapon_template or {}
 weapon_template.actions = {
-	action_active_ability_ranger = {
+	action_career = {
 		default = {
-			kind = "dummy",
-			total_time = 0,
+			block_pickup = true,
+			throw_time = 0.65,
+			anim_end_event = "ability_finished",
+			kind = "career_dr_three",
+			uninterruptible = true,
+			anim_event = "veteran_ranger_ability_grenade",
+			total_time = 0.75,
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action"
+			end,
 			allowed_chain_actions = {}
 		}
 	},
@@ -22,7 +30,7 @@ weapon_template.actions = {
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_emp_grenade_02_t2/wpn_emp_grenade_02_t2"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
-weapon_template.wield_anim = "veteran_ranger_ability_grenade"
+weapon_template.wield_anim = "to_grenade"
 weapon_template.gui_texture = "hud_consumable_icon_grenade"
 weapon_template.crosshair_style = "default"
 weapon_template.max_fatigue_points = 4
@@ -39,4 +47,4 @@ weapon_template.buffs = {
 Weapons = Weapons or {}
 Weapons.bardin_ranger_career_skill_weapon = table.create_copy(Weapons.bardin_ranger_career_skill_weapon, weapon_template)
 
-return 
+return

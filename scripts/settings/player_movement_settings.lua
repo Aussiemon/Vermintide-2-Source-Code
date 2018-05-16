@@ -1,5 +1,6 @@
 PlayerUnitMovementSettings = PlayerUnitMovementSettings or {}
 local units_player_movement_setting = {}
+
 PlayerUnitMovementSettings.get_movement_settings_table = function (unit)
 	if not units_player_movement_setting[unit] then
 		PlayerUnitMovementSettings.register_unit(unit)
@@ -7,16 +8,15 @@ PlayerUnitMovementSettings.get_movement_settings_table = function (unit)
 
 	return units_player_movement_setting[unit]
 end
+
 PlayerUnitMovementSettings.register_unit = function (unit)
 	units_player_movement_setting[unit] = table.clone(PlayerUnitMovementSettings)
-
-	return 
 end
+
 PlayerUnitMovementSettings.unregister_unit = function (unit)
 	units_player_movement_setting[unit] = nil
-
-	return 
 end
+
 PlayerUnitMovementSettings.get_active_units_in_movement_settings = function ()
 	local units = {}
 	local index = 1
@@ -28,6 +28,7 @@ PlayerUnitMovementSettings.get_active_units_in_movement_settings = function ()
 
 	return units
 end
+
 PlayerUnitMovementSettings.FWD_MOVE_SPEED_SCALE = 1
 PlayerUnitMovementSettings.BWD_MOVE_SPEED_SCALE = 0.65
 PlayerUnitMovementSettings.STRAFE_MOVE_SPEED_SCALE = 1
@@ -239,7 +240,7 @@ PlayerUnitMovementSettings.hit_react_settings = {
 		end,
 		onscreen_particle_function = function (duration)
 			if duration < 0.35 then
-				return 
+				return
 			end
 
 			return "fx/screenspace_head_blow_light"
@@ -390,9 +391,11 @@ PlayerUnitMovementSettings.block.stamina_per_damage = 0.001375
 PlayerUnitMovementSettings.block.consecutive_block_impact_time = 3
 PlayerUnitMovementSettings.block.consecutive_block_impact_multiplier = 1
 PlayerUnitMovementSettings.block.override_recharge_rate = 0.025
+
 PlayerUnitMovementSettings.block.aim_direction_pitch_function = function (z)
 	return 1.25 * (z - 0.2)
 end
+
 PlayerUnitMovementSettings.parry = PlayerUnitMovementSettings.parry or {}
 PlayerUnitMovementSettings.parry.REQUIRED_MOVEMENT_TO_POSE = 0.003
 PlayerUnitMovementSettings.parry.invert_parry_control_x = false
@@ -402,4 +405,4 @@ PlayerUnitMovementSettings.parry.raise_delay = 0.18
 PlayerUnitMovementSettings.block = PlayerUnitMovementSettings.block or {}
 PlayerUnitMovementSettings.block.raise_delay = 0.18
 
-return 
+return

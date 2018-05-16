@@ -87,30 +87,29 @@ HoverUI = class(HoverUI)
 local TEXT_SIZE_MULTIPLIER = 1.1
 local fake_input_service = {
 	get = function ()
-		return 
+		return
 	end,
 	has = function ()
-		return 
+		return
 	end
 }
+
 HoverUI.init = function (self, ingame_ui_context, input_service)
 	self.ui_renderer = ingame_ui_context.ui_top_renderer
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_service = input_service
 	self.ui_animations = {}
 
-	self.create_ui_elements(self)
-
-	return 
+	self:create_ui_elements()
 end
+
 HoverUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.default_widget = UIWidget.init(widget_definitions.default_hover_widget)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
-
-	return 
 end
+
 HoverUI.update_animations = function (self, dt)
 	local ui_scenegraph = self.ui_scenegraph
 
@@ -121,22 +120,20 @@ HoverUI.update_animations = function (self, dt)
 			self.ui_animations[name] = nil
 		end
 	end
-
-	return 
 end
+
 HoverUI.update = function (self, dt)
 	if not self.show_ui then
-		return 
+		return
 	end
 
 	local input_service = self.input_service or fake_input_service
 	local ui_scenegraph = self.ui_scenegraph
 
-	self.update_widget_pivot_position(self, ui_scenegraph, input_service)
-	self.draw(self, dt, ui_scenegraph, input_service)
-
-	return 
+	self:update_widget_pivot_position(ui_scenegraph, input_service)
+	self:draw(dt, ui_scenegraph, input_service)
 end
+
 HoverUI.draw = function (self, dt, ui_scenegraph, input_service)
 	local ui_renderer = self.ui_renderer
 
@@ -149,16 +146,15 @@ HoverUI.draw = function (self, dt, ui_scenegraph, input_service)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 HoverUI.update_objects = function (self)
 	for index, data in ipairs(self._registered_hover_object) do
 		local hover_content = data.hover_content
 
 		if hover_content then
 			if hover_content.disabled then
-				return 
+				return
 			end
 
 			if hover_content.is_hover then
@@ -167,29 +163,29 @@ HoverUI.update_objects = function (self)
 				local content = data.content
 				local style = data.style
 
-				self.display_object(self, tooltip_name, tooltip_type, content, style)
+				self:display_object(tooltip_name, tooltip_type, content, style)
 			end
 		end
 	end
-
-	return 
 end
+
 HoverUI.display_object = function (self, name, type, content, style)
 	if self.display_object_name == name then
-		return 
+		return
 	end
 
 	self.display_object_name = name
 	self.active_tooltip_widget = self.default_widget
+end
 
-	return 
-end
 HoverUI.stop_display_object = function (self)
-	return 
+	return
 end
+
 HoverUI.destroy = function (self, dt)
-	return 
+	return
 end
+
 HoverUI.register_widget = function (self, name, tooltip_type, hover_content, content, style)
 	local hover_object_data = {
 		name = name,
@@ -201,9 +197,8 @@ HoverUI.register_widget = function (self, name, tooltip_type, hover_content, con
 	local index = #self._registered_hover_object + 1
 	self._registered_hover_index_by_name[name] = index
 	self._registered_hover_object[index] = hover_object_data
-
-	return 
 end
+
 HoverUI.unregister_widget = function (self, name)
 	local index = self._registered_hover_index_by_name[name]
 
@@ -211,9 +206,8 @@ HoverUI.unregister_widget = function (self, name)
 		self._registered_hover_object[index] = nil
 		self._registered_hover_index_by_name[name] = nil
 	end
-
-	return 
 end
+
 HoverUI.get_text_size = function (self, localized_text, text_style)
 	local font_size = text_style.font_size
 	local font, scaled_font_size = UIFontByResolution(text_style)
@@ -221,18 +215,19 @@ HoverUI.get_text_size = function (self, localized_text, text_style)
 
 	return text_width, text_height
 end
+
 HoverUI.animate_default_widget = function (self)
-	return 
+	return
 end
+
 HoverUI.set_default_widget_text = function (self, text)
 	local ui_scenegraph = self.ui_scenegraph
 	local default_widget = self.default_widget
 	local text_style = default_widget.style.text
 	text = Localize(text)
 	self.default_widget.content.text = text
-
-	return 
 end
+
 HoverUI.update_widget_pivot_position = function (self, ui_scenegraph, input_service)
 	local active_widget = self.active_tooltip_widget
 
@@ -243,13 +238,11 @@ HoverUI.update_widget_pivot_position = function (self, ui_scenegraph, input_serv
 		hover_position[2] = cursor_position.y
 		local text_style = active_widget.style.text
 		local text = active_widget.content.text
-		local text_width, text_height = self.get_text_size(self, text, text_style)
+		local text_width, text_height = self:get_text_size(text, text_style)
 		local widget_scenegraph_definition = ui_scenegraph.default_hover_widget
 		widget_scenegraph_definition.size[1] = text_width * TEXT_SIZE_MULTIPLIER
 		widget_scenegraph_definition.size[2] = text_height * TEXT_SIZE_MULTIPLIER
 	end
-
-	return 
 end
 
-return 
+return

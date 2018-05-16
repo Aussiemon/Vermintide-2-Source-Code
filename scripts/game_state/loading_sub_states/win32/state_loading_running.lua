@@ -3,9 +3,10 @@ require("scripts/ui/views/loading_view")
 DO_RELOAD = false
 StateLoadingRunning = class(StateLoadingRunning)
 StateLoadingRunning.NAME = "StateLoadingRunning"
+
 StateLoadingRunning.on_enter = function (self, params)
 	print("[Gamestate] Enter Substate StateLoadingRunning")
-	self._init_network(self)
+	self:_init_network()
 
 	self._loading_view = params.loading_view
 	self._level_transition_handler = params.level_transition_handler
@@ -28,9 +29,8 @@ StateLoadingRunning.on_enter = function (self, params)
 	end
 
 	DO_RELOAD = false
-
-	return 
 end
+
 StateLoadingRunning._init_network = function (self)
 	local loading_context = self.parent.parent.loading_context
 	Managers.state.event = EventManager:new()
@@ -54,16 +54,9 @@ StateLoadingRunning._init_network = function (self)
 		local network_client_setup_successful = self.parent:setup_network_client(true, lobby_client)
 
 		if network_client_setup_successful then
-			self.parent:setup_chat_manager(lobby_client, lobby_client.lobby_host(lobby_client), Network.peer_id(), false)
-			self.parent:setup_deed_manager(lobby_client, lobby_client.lobby_host(lobby_client), Network.peer_id())
-		end
-
-		if loading_context.start_lobby_data.initialize_voip and PLATFORM == "xb1" and Managers.account:has_privilege(UserPrivilege.COMMUNICATION_VOICE_INGAME) then
-			if not Managers.voice_chat then
-				Managers.voice_chat = VoiceChatXboxOneManager:new()
-			elseif Managers.voice_chat then
-				Managers.voice_chat:initate_voice_chat()
-			end
+			self.parent:setup_chat_manager(lobby_client, lobby_client:lobby_host(), Network.peer_id(), false)
+			self.parent:setup_deed_manager(lobby_client, lobby_client:lobby_host(), Network.peer_id())
+			self.parent:setup_enemy_package_loader(lobby_client, lobby_client:lobby_host(), Network.peer_id())
 		end
 
 		loading_context.start_lobby_data = nil
@@ -80,12 +73,11 @@ StateLoadingRunning._init_network = function (self)
 			self.parent:setup_network_transmit(self._network_client)
 		end
 	end
-
-	return 
 end
+
 StateLoadingRunning.update = function (self, dt)
 	if PLATFORM == "xb1" and self.parent:waiting_for_cleanup() then
-		return 
+		return
 	end
 
 	if not LEVEL_EDITOR_TEST and self._level_transition_handler.transition_type ~= nil then
@@ -107,11 +99,10 @@ StateLoadingRunning.update = function (self, dt)
 
 		self.parent:setup_loading_view(level_key)
 	end
-
-	return 
 end
+
 StateLoadingRunning.on_exit = function (self, application_shutdown)
-	return 
+	return
 end
 
-return 
+return

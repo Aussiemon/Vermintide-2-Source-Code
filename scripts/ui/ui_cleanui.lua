@@ -5,6 +5,7 @@ local fade_min = 0.1
 local margin = 50
 local lost_gaze_threshhold = 1
 local DEBUG_BOUNDING_BOXES = false
+
 UICleanUI.create = function ()
 	return {
 		dirty = true,
@@ -58,7 +59,7 @@ UICleanUI.update = function (self, dt, context)
 
 	if ScriptUnit.has_extension(context.player.player_unit, "eyetracking_system") then
 		local eyetracking_extension = ScriptUnit.extension(context.player.player_unit, "eyetracking_system")
-		tobii_active = eyetracking_extension.get_is_feature_enabled(eyetracking_extension, "tobii_clean_ui")
+		tobii_active = eyetracking_extension:get_is_feature_enabled("tobii_clean_ui")
 	end
 
 	local gaze_x, gaze_y = Tobii.get_gaze_point()
@@ -74,7 +75,7 @@ UICleanUI.update = function (self, dt, context)
 		86,
 		108
 	}
-	local on_window = 0 <= gaze_x and gaze_x <= 1 and 0 <= gaze_y and gaze_y <= 1
+	local on_window = gaze_x >= 0 and gaze_x <= 1 and gaze_y >= 0 and gaze_y <= 1
 	local off_window_override = false
 
 	if on_window then
@@ -291,8 +292,6 @@ UICleanUI.update = function (self, dt, context)
 			ScriptGUI.icrect(gui, res_x, res_y, cluster.bounding_box[1], res_y - cluster.bounding_box[2], cluster.bounding_box[3], res_y - cluster.bounding_box[4], 1, color)
 		end
 	end
-
-	return 
 end
 
-return 
+return

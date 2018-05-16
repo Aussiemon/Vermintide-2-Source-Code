@@ -770,8 +770,6 @@ local function create_status_widget(texture, scenegraph_id)
 						elseif content.is_connected then
 							color[1] = 255
 						end
-
-						return 
 					end
 				}
 			}

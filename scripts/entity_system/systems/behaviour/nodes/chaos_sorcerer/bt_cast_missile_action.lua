@@ -2,11 +2,11 @@ require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
 BTCastMissileAction = class(BTCastMissileAction, BTNode)
 BTCastMissileAction.name = "BTCastMissileAction"
+
 BTCastMissileAction.init = function (self, ...)
 	BTCastMissileAction.super.init(self, ...)
-
-	return 
 end
+
 BTCastMissileAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
@@ -29,17 +29,15 @@ BTCastMissileAction.enter = function (self, unit, blackboard, t)
 	if action.init_spell_func then
 		action.init_spell_func(blackboard)
 	end
-
-	return 
 end
+
 BTCastMissileAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.active_node = nil
 	blackboard.cast_time_done = nil
 	blackboard.summoning = nil
 	blackboard.ready_to_summon = false
-
-	return 
 end
+
 BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
 	local cast_target_unit = blackboard.cast_target_unit
@@ -47,7 +45,7 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 	if Unit.alive(cast_target_unit) then
 		local status_ext = ScriptUnit.extension(cast_target_unit, "status_system")
 
-		if not status_ext.is_invisible(status_ext) and not status_ext.get_is_dodging(status_ext) then
+		if not status_ext:is_invisible() and not status_ext:get_is_dodging() then
 			blackboard.target_position:store(POSITION_LOOKUP[cast_target_unit])
 		end
 	else
@@ -90,25 +88,15 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 			local right = Vector3.cross(target_dir, Vector3.right()) * (1 - 2 * math.random()) * 0.25
 			local target_dir = Vector3.normalize(target_dir + up + right)
 
-			self.launch_magic_missile(self, blackboard, action, throw_pos, target_dir, angle, speed, unit, blackboard.target_unit, nil, missile_data)
+			self:launch_magic_missile(blackboard, action, throw_pos, target_dir, angle, speed, unit, blackboard.target_unit, nil, missile_data)
 		else
 			local angle = missile_data.angle
 			local speed = missile_data.speed
 
-			self.launch_projectile(self, blackboard, action, throw_pos, target_dir, angle, speed, unit, blackboard.target_unit, missile_data)
+			self:launch_projectile(blackboard, action, throw_pos, target_dir, angle, speed, unit, blackboard.target_unit, missile_data)
 		end
 
 		blackboard.spell_count = blackboard.spell_count + 1
-
-		Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "enemy_attack", DialogueSettings.pounced_down_broadcast_range, "attack_tag", "pwg_projectile")
-
-		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-		local event_data = FrameTable.alloc_table()
-		event_data.attack_tag = "pwg_projectile"
-		event_data.distance = math.floor(Vector3.distance(throw_pos, POSITION_LOOKUP[unit]))
-
-		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "enemy_attack", event_data)
-
 		blackboard.volleys = blackboard.volleys + 1
 
 		if action.volleys <= blackboard.volleys then
@@ -126,6 +114,7 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
+
 BTCastMissileAction.launch_projectile = function (self, blackboard, action, initial_position, target_dir, angle, speed, owner_unit, target_unit)
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 	local aoe_dot_damage_table = action.aoe_dot_damage[difficulty_rank]
@@ -157,10 +146,8 @@ BTCastMissileAction.launch_projectile = function (self, blackboard, action, init
 			owner_unit = owner_unit
 		},
 		area_damage_system = {
-			dot_effect_name = "fx/wpnfx_poison_wind_globe_impact",
 			area_damage_template = "area_dot_damage",
 			invisible_unit = false,
-			player_screen_effect_name = "fx/screenspace_poison_globe_impact",
 			area_ai_random_death_template = "area_poison_ai_random_death",
 			damage_players = true,
 			aoe_dot_damage = aoe_dot_damage,
@@ -168,16 +155,17 @@ BTCastMissileAction.launch_projectile = function (self, blackboard, action, init
 			aoe_dot_damage_interval = aoe_dot_damage_interval,
 			radius = radius,
 			life_time = duration,
+			player_screen_effect_name = action.player_screen_effect_name,
+			dot_effect_name = action.dot_effect_name,
 			damage_source = damage_source,
 			create_nav_tag_volume = create_nav_tag_volume,
 			nav_tag_volume_layer = nav_tag_volume_layer
 		}
 	}
-	local projectile_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
+	local projectile_unit_name = "units/hub_elements/empty"
 	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, "aoe_projectile_unit", extension_init_data, initial_position)
-
-	return 
 end
+
 BTCastMissileAction.launch_magic_missile = function (self, blackboard, action, position, target_dir, angle, speed, owner_unit, target_unit, position_target, missile_data)
 	local scale = 1
 	local radius_min = 0.2
@@ -251,8 +239,6 @@ BTCastMissileAction.launch_magic_missile = function (self, blackboard, action, p
 	end
 
 	Unit.set_unit_visibility(projectile_unit, true)
-
-	return 
 end
 
-return 
+return

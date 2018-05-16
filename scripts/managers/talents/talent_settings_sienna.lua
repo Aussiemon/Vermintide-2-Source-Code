@@ -76,9 +76,10 @@ local buff_tweak_data = {
 		multiplier = 0.1
 	},
 	sienna_adept_passive_overcharge_charge_speed_increased = {
-		max_multiplier = -0.15,
-		chunk_size = 4,
-		min_multiplier = -0.02
+		chunk_size = 8
+	},
+	sienna_adept_passive_overcharge_charge_speed_increased_buff = {
+		multiplier = -0.1
 	},
 	tranquility = {
 		multiplier = 2
@@ -396,8 +397,16 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_passive_overcharge_charge_speed_increased = {
 		buffs = {
 			{
-				dormant = true,
-				update_func = "update_multiplier_based_on_overcharge_chunks",
+				buff_to_add = "sienna_adept_passive_overcharge_charge_speed_increased_buff",
+				update_func = "activate_buff_stacks_based_on_overcharge_chunks"
+			}
+		}
+	},
+	sienna_adept_passive_overcharge_charge_speed_increased_buff = {
+		buffs = {
+			{
+				max_stacks = 3,
+				icon = "sienna_scholar_activated_ability_dump_overcharge",
 				stat_buff = StatBuffIndex.REDUCED_RANGED_CHARGE_TIME
 			}
 		}
@@ -1564,4 +1573,4 @@ end
 
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.bright_wizard, buff_tweak_data)
 
-return 
+return

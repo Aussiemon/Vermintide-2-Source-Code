@@ -257,14 +257,14 @@ UIAnimation = UIAnimation or {
 		update = function (dt, time, progressed_time)
 			progressed_time = progressed_time + dt
 
-			return progressed_time <= time, progressed_time
+			return time >= progressed_time, progressed_time
 		end
 	},
 	set_visible = {
 		num_args = 1,
 		num_data = 0,
 		init = function ()
-			return 
+			return
 		end,
 		update = function (dt, target)
 			target.visible = true
@@ -276,7 +276,7 @@ UIAnimation = UIAnimation or {
 		num_args = 1,
 		num_data = 0,
 		init = function ()
-			return 
+			return
 		end,
 		update = function (dt, target)
 			target.visible = false
@@ -327,6 +327,7 @@ UIAnimation = UIAnimation or {
 		end
 	}
 }
+
 UIAnimation.init = function (...)
 	local data_array = {}
 	local ui_animation = {
@@ -374,8 +375,6 @@ local function debug_print_ui_animation(...)
 
 	Application.error("########### ANIMATION ERROR END ###########")
 	print(debug.traceback())
-
-	return 
 end
 
 UIAnimation.init_debug = function (...)
@@ -448,11 +447,10 @@ UIAnimation.update = function (ui_animation, dt)
 			end
 		end
 	end
-
-	return 
 end
+
 UIAnimation.completed = function (ui_animation)
-	return #ui_animation.data_array <= ui_animation.current_index
+	return ui_animation.current_index >= #ui_animation.data_array
 end
 
-return 
+return

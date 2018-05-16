@@ -5,6 +5,7 @@ FadeSystem.system_extensions = {
 }
 local unit_alive = Unit.alive
 local script_unit_extension = ScriptUnit.extension
+
 FadeSystem.init = function (self, entity_system_creation_context, system_name)
 	local extensions = FadeSystem.system_extensions
 
@@ -15,9 +16,8 @@ FadeSystem.init = function (self, entity_system_creation_context, system_name)
 	self.num_fade_units = 0
 	self.faded_ai_units = {}
 	self.unit_extension_data = {}
-
-	return 
 end
+
 FadeSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {}
 
@@ -40,11 +40,11 @@ FadeSystem.on_add_extension = function (self, world, unit, extension_name, exten
 
 	return extension
 end
+
 FadeSystem.set_min_fade = function (self, unit, min_fade)
 	self.unit_extension_data[unit].min_value = min_fade
-
-	return 
 end
+
 FadeSystem.on_remove_extension = function (self, unit, extension_name)
 	if extension_name == "PlayerUnitFadeExtension" then
 		local fade_unit_list = self.fade_unit_list
@@ -70,31 +70,29 @@ FadeSystem.on_remove_extension = function (self, unit, extension_name)
 	self.unit_extension_data[unit] = nil
 
 	ScriptUnit.remove_extension(unit, self.name)
-
-	return 
 end
+
 FadeSystem.local_player_created = function (self, player)
 	self.player = player
-
-	return 
 end
+
 FadeSystem.update = function (self, context, t)
 	if Development.parameter("fade_on_camera_ai_collision") == false then
-		return 
+		return
 	end
 
 	if not self.player then
-		return 
+		return
 	end
 
 	local local_player = self.player
-	local local_player_id = local_player.local_player_id(local_player)
+	local local_player_id = local_player:local_player_id()
 	local viewport_name = local_player.viewport_name
 	local camera_position = nil
 	local freeflight_manager = Managers.free_flight
 
-	if freeflight_manager.active(freeflight_manager, local_player_id) then
-		camera_position = freeflight_manager.camera_position_rotation(freeflight_manager, local_player_id)
+	if freeflight_manager:active(local_player_id) then
+		camera_position = freeflight_manager:camera_position_rotation(local_player_id)
 	else
 		camera_position = Managers.state.camera:camera_position(viewport_name)
 	end
@@ -109,15 +107,15 @@ FadeSystem.update = function (self, context, t)
 		local fade_unit = fade_unit_list[i]
 		local extension = unit_extension_data[fade_unit]
 		local cached_value = extension.cached_value
-		local value = self.calculate_and_set_jitter_alpha(self, camera_position_flat, camera_position_height, fade_unit, nil, extension.min_value)
+		local value = self:calculate_and_set_jitter_alpha(camera_position_flat, camera_position_height, fade_unit, nil, extension.min_value)
 		extension.cached_value = value
 	end
 
-	self.update_ai_units(self, camera_position, camera_position_flat, camera_position_height)
-
-	return 
+	self:update_ai_units(camera_position, camera_position_flat, camera_position_height)
 end
+
 local ai_units = {}
+
 FadeSystem.update_ai_units = function (self, camera_position, camera_position_flat, camera_position_height)
 	local unit_extension_data = self.unit_extension_data
 	local faded_ai_units = self.faded_ai_units
@@ -128,7 +126,7 @@ FadeSystem.update_ai_units = function (self, camera_position, camera_position_fl
 		else
 			local health_extension = script_unit_extension(unit, "health_system")
 
-			if not health_extension.is_alive(health_extension) then
+			if not health_extension:is_alive() then
 				Unit.set_scalar_for_materials_in_unit_and_childs(unit, "inv_jitter_alpha", 0)
 
 				unit_extension_data[unit].cached_value = 0
@@ -145,19 +143,18 @@ FadeSystem.update_ai_units = function (self, camera_position, camera_position_fl
 
 		if extension then
 			local cached_value = extension.cached_value
-			local value = self.calculate_and_set_jitter_alpha(self, camera_position_flat, camera_position_height, unit, cached_value, 0)
+			local value = self:calculate_and_set_jitter_alpha(camera_position_flat, camera_position_height, unit, cached_value, 0)
 			extension.cached_value = value
 
-			if 0 < value then
+			if value > 0 then
 				faded_ai_units[unit] = true
 			else
 				faded_ai_units[unit] = nil
 			end
 		end
 	end
-
-	return 
 end
+
 local unit_world_position = Unit.world_position
 local unit_node = Unit.node
 local vector3_flat = Vector3.flat
@@ -167,6 +164,7 @@ local MAX_FADE_DISTANCE = 0.7
 local MIN_FADE_DISTANCE = 0.5
 local CHANGE_DISTANCE = MAX_FADE_DISTANCE - MIN_FADE_DISTANCE
 local MAX_HEIGHT_DIFFERENCE = 1
+
 FadeSystem.calculate_and_set_jitter_alpha = function (self, camera_position_flat, camera_height, unit, cached_value, min_value)
 	local fade_unit_position = unit_world_position(unit, unit_node(unit, "j_spine"))
 
@@ -179,7 +177,7 @@ FadeSystem.calculate_and_set_jitter_alpha = function (self, camera_position_flat
 	local to_vec = fade_unit_position_flat - camera_position_flat
 	local value = 0
 
-	if self._verify_length(self, to_vec, unit) then
+	if self:_verify_length(to_vec, unit) then
 		local to_vec_length = vector3_length(to_vec)
 		local height_difference = math.abs(camera_height - fade_unit_position_height)
 
@@ -198,15 +196,15 @@ FadeSystem.calculate_and_set_jitter_alpha = function (self, camera_position_flat
 
 	return value
 end
+
 SAFE_DISTANCE = SAFE_DISTANCE or MIN_FADE_DISTANCE * 2
+
 FadeSystem._verify_length = function (self, vec, unit)
 	if SAFE_DISTANCE < math.abs(vec[1]) or SAFE_DISTANCE < math.abs(vec[2]) then
 		return false
 	else
 		return true
 	end
-
-	return 
 end
 
-return 
+return

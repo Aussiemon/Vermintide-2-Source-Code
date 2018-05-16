@@ -147,11 +147,12 @@ local scenegraph_definition = {
 		}
 	}
 }
+local disable_with_gamepad = true
 local widgets = {
 	item_grid_bg = UIWidgets.create_simple_texture("crafting_bg_02", "item_grid", nil, nil, nil, -1),
 	item_grid = UIWidgets.create_grid("item_grid", scenegraph_definition.item_grid.size, NUM_CRAFT_SLOTS_Y, NUM_CRAFT_SLOTS_X, 20, 20),
 	recipe_grid = UIWidgets.create_recipe_grid("recipe_grid", scenegraph_definition.recipe_grid.size, NUM_RECIPE_SLOTS_Y, NUM_RECIPE_SLOTS_X, 30, 30),
-	craft_button = UIWidgets.create_default_button("craft_button", scenegraph_definition.craft_button.size, nil, nil, Localize("hero_view_crafting_properties"), 24, nil, "button_detail_02"),
+	craft_button = UIWidgets.create_default_button("craft_button", scenegraph_definition.craft_button.size, nil, nil, Localize("hero_view_crafting_properties"), 24, nil, "button_detail_02", nil, disable_with_gamepad),
 	craft_bar_fg = UIWidgets.create_simple_texture("crafting_bar_fg", "craft_bar_fg"),
 	craft_bar_bg = UIWidgets.create_simple_rect("craft_bar_bg", {
 		255,
@@ -169,17 +170,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -190,17 +187,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

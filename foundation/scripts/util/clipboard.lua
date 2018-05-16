@@ -4,11 +4,11 @@ if PLATFORM ~= "win32" or not rawget(_G, "jit") then
 			return ""
 		end,
 		put = function ()
-			return 
+			return
 		end
 	}
 
-	return 
+	return
 end
 
 local ffi = lua_require("ffi")
@@ -53,9 +53,7 @@ Clipboard = {
 		user32.EmptyClipboard()
 		user32.SetClipboardData(user32.CF_TEXT, hMem)
 		user32.CloseClipboard()
-
-		return 
 	end
 }
 
-return 
+return

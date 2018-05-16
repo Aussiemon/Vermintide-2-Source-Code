@@ -1,5 +1,6 @@
 TagQuery = TagQuery or {}
 TagQuery.__index = TagQuery
+
 TagQuery.add = function (self, ...)
 	local n_args = select("#", ...)
 
@@ -14,19 +15,18 @@ TagQuery.add = function (self, ...)
 	end
 
 	assert(not self.finalized)
-
-	return 
 end
+
 TagQuery.get_result = function (self)
 	return self.completed, self.result
 end
+
 TagQuery.finalize = function (self)
 	self.tagquery_database:add_query(self)
 
 	self.finalized = true
-
-	return 
 end
+
 TagQuery.OP = TagQuery.OP or {
 	EQ = setmetatable({}, {
 		__tostring = function ()
@@ -95,4 +95,4 @@ TagQuery.OP = TagQuery.OP or {
 	})
 }
 
-return 
+return

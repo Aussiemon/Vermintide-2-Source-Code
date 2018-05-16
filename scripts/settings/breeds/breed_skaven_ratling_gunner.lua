@@ -423,4 +423,4 @@ local action_data = {
 }
 BreedActions.skaven_ratling_gunner = table.create_copy(BreedActions.skaven_ratling_gunner, action_data)
 
-return 
+return

@@ -2699,4 +2699,4 @@ end
 
 HitEffectsSkavenClanRatShield = table.create_copy(HitEffectsSkavenClanRatShield, HitEffectsSkavenClanRatShield)
 
-return 
+return

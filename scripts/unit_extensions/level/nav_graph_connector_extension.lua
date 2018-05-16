@@ -1,5 +1,6 @@
 local ledges = require("scripts/settings/ledges")
 NavGraphConnectorExtension = class(NavGraphConnectorExtension)
+
 NavGraphConnectorExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
 	self.unit = unit
@@ -9,7 +10,7 @@ NavGraphConnectorExtension.init = function (self, extension_init_context, unit, 
 	local ledge_id = Unit.get_data(unit, "ledge_id")
 
 	if ledge_id and ledges[ledge_id] then
-		self.init_nav_graphs(self, ledge_id)
+		self:init_nav_graphs(ledge_id)
 	else
 		local drawer = Managers.state.debug:drawer({
 			mode = "retained",
@@ -17,13 +18,13 @@ NavGraphConnectorExtension.init = function (self, extension_init_context, unit, 
 		})
 		local pose, half_extents = Unit.box(unit)
 
-		drawer.box(drawer, pose, half_extents * 1.1, Colors.get("purple"))
+		drawer:box(pose, half_extents * 1.1, Colors.get("purple"))
 	end
-
-	return 
 end
+
 local control_points = {}
 local idx = 0
+
 NavGraphConnectorExtension.init_nav_graphs = function (self, ledge_id)
 	local unit = self.unit
 	local world = self.world
@@ -53,31 +54,31 @@ NavGraphConnectorExtension.init_nav_graphs = function (self, ledge_id)
 			local debug_color = Colors.get("dark_orange")
 			local debug_color_fail = Colors.get("red")
 
-			drawer.line(drawer, control_points[1], control_points[2], debug_color)
+			drawer:line(control_points[1], control_points[2], debug_color)
 
 			local is_position_on_navmesh = GwNavQueries.triangle_from_position(nav_world, control_points[1])
 
 			if is_position_on_navmesh then
-				drawer.sphere(drawer, control_points[1], 0.05, debug_color)
+				drawer:sphere(control_points[1], 0.05, debug_color)
 			else
-				drawer.sphere(drawer, control_points[1], 0.05, debug_color_fail)
+				drawer:sphere(control_points[1], 0.05, debug_color_fail)
 			end
 
 			is_position_on_navmesh = GwNavQueries.triangle_from_position(nav_world, control_points[2])
 
 			if is_position_on_navmesh then
-				drawer.sphere(drawer, control_points[2], 0.05, debug_color)
+				drawer:sphere(control_points[2], 0.05, debug_color)
 			else
-				drawer.sphere(drawer, control_points[2], 0.05, debug_color_fail)
+				drawer:sphere(control_points[2], 0.05, debug_color_fail)
 			end
 		end
 	end
+end
 
-	return 
-end
 NavGraphConnectorExtension.extensions_ready = function (self)
-	return 
+	return
 end
+
 NavGraphConnectorExtension.destroy = function (self)
 	for i = 1, #self.navgraphs, 1 do
 		local navgraph = self.navgraphs[i]
@@ -85,11 +86,10 @@ NavGraphConnectorExtension.destroy = function (self)
 		GwNavGraph.remove_from_database(navgraph)
 		GwNavGraph.destroy(navgraph)
 	end
-
-	return 
 end
+
 NavGraphConnectorExtension.update = function (self, unit, input, dt, context, t)
-	return 
+	return
 end
 
-return 
+return

@@ -55,6 +55,7 @@ local font_sizes = {
 	normal = 30
 }
 CreditsView = class(CreditsView)
+
 CreditsView.init = function (self, ingame_ui_context)
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
@@ -62,21 +63,21 @@ CreditsView.init = function (self, ingame_ui_context)
 	local input_manager = ingame_ui_context.input_manager
 	self.input_manager = input_manager
 
-	input_manager.create_input_service(input_manager, "credits_view", "IngameMenuKeymaps", "IngameMenuFilters")
-	input_manager.map_device_to_service(input_manager, "credits_view", "keyboard")
-	input_manager.map_device_to_service(input_manager, "credits_view", "mouse")
-	input_manager.map_device_to_service(input_manager, "credits_view", "gamepad")
+	input_manager:create_input_service("credits_view", "IngameMenuKeymaps", "IngameMenuFilters")
+	input_manager:map_device_to_service("credits_view", "keyboard")
+	input_manager:map_device_to_service("credits_view", "mouse")
+	input_manager:map_device_to_service("credits_view", "gamepad")
 
 	self.num_credits = #credits.entries
 	self.current_offset = 0
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.ui_element = UIElement.init(credits_ui_element)
-
-	return 
 end
+
 CreditsView.input_service = function (self)
 	return self.input_manager:get_service("credits_view")
 end
+
 CreditsView.on_enter = function (self)
 	self.input_manager:block_device_except_service("credits_view", "keyboard", 1)
 	self.input_manager:block_device_except_service("credits_view", "mouse", 1)
@@ -84,9 +85,8 @@ CreditsView.on_enter = function (self)
 
 	self.current_offset = 0
 	self.active = true
-
-	return 
 end
+
 CreditsView.on_exit = function (self)
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
@@ -94,52 +94,48 @@ CreditsView.on_exit = function (self)
 
 	self.active = nil
 	self.exiting = nil
-
-	return 
 end
+
 CreditsView.exit = function (self, return_to_game)
 	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
 
 	self.ingame_ui:handle_transition(exit_transition)
 
 	self.exiting = nil
-
-	return 
 end
+
 CreditsView.suspend = function (self)
 	self.suspended = true
 
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
-
-	return 
 end
+
 CreditsView.unsuspend = function (self)
 	self.input_manager:block_device_except_service("credits_view", "keyboard", 1)
 	self.input_manager:block_device_except_service("credits_view", "mouse", 1)
 	self.input_manager:block_device_except_service("credits_view", "gamepad", 1)
 
 	self.suspended = nil
-
-	return 
 end
+
 CreditsView.update = function (self, dt)
 	if self.suspended then
-		return 
+		return
 	end
 
 	local input_manager = self.input_manager
 	local input_service = self.input_manager:get_service("credits_view")
-	local gamepad_active = input_manager.is_device_active(input_manager, "gamepad")
+	local gamepad_active = input_manager:is_device_active("gamepad")
 
-	if input_service.get(input_service, "toggle_menu", true) or (gamepad_active and input_service.get(input_service, "back", true)) then
-		self.exit(self)
+	if input_service:get("toggle_menu", true) or (gamepad_active and input_service:get("back", true)) then
+		self:exit()
 
-		return 
+		return
 	end
 
-	local input_axis = (gamepad_active and input_service.get(input_service, "gamepad_left_axis")) or input_service.get(input_service, "scroll_axis")
+	local input_axis = (gamepad_active and input_service:get("gamepad_left_axis")) or input_service:get("scroll_axis")
 	local current_offset = math.max(0, (self.current_offset + dt * 50) - input_axis.y * 30)
 	self.current_offset = current_offset
 	local ui_top_renderer = self.ui_top_renderer
@@ -187,20 +183,18 @@ CreditsView.update = function (self, dt)
 
 		if current_offset < -84 then
 			break
-		elseif current_offset < 1080 then
+		elseif current_offset < h then
 			offset[2] = current_offset
 
 			UIRenderer.draw_element(ui_top_renderer, self.ui_element, ui_style, nil, scenegraph_id, ui_content, nil, offset)
 		end
 	end
 
-	if 1200 < current_offset then
+	if current_offset > 1200 then
 		self.current_offset = 0
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
-
-	return 
 end
 
-return 
+return

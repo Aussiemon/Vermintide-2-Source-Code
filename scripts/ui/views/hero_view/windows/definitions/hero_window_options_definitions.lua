@@ -259,7 +259,7 @@ local scenegraph_definition = {
 		parent = "hero_info_bg",
 		horizontal_alignment = "left",
 		size = {
-			window_size[1],
+			window_size[1] - 190,
 			0
 		},
 		position = {
@@ -287,7 +287,7 @@ local scenegraph_definition = {
 		parent = "name_divider",
 		horizontal_alignment = "left",
 		size = {
-			window_size[1],
+			window_size[1] - 190,
 			0
 		},
 		position = {
@@ -480,12 +480,13 @@ local scenegraph_definition = {
 	}
 }
 local career_name_style = {
-	font_size = 28,
+	use_shadow = true,
 	upper_case = true,
 	localize = true,
-	use_shadow = true,
+	font_size = 28,
 	horizontal_alignment = "left",
 	vertical_alignment = "center",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
@@ -495,11 +496,12 @@ local career_name_style = {
 	}
 }
 local hero_name_style = {
+	font_size = 20,
 	use_shadow = true,
-	vertical_alignment = "center",
 	localize = true,
 	horizontal_alignment = "left",
-	font_size = 20,
+	vertical_alignment = "center",
+	dynamic_font_size = true,
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
@@ -1252,17 +1254,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -1273,17 +1271,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

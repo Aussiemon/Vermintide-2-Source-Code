@@ -1,6 +1,7 @@
 require("scripts/managers/news_ticker/news_ticker_token")
 
 NewsTickerManager = class(NewsTickerManager)
+
 NewsTickerManager.init = function (self)
 	self._platform = PLATFORM
 
@@ -15,8 +16,6 @@ NewsTickerManager.init = function (self)
 
 	self._loading_screen_text = nil
 	self._ingame_text = nil
-
-	return 
 end
 
 local function lines(str)
@@ -28,17 +27,19 @@ local function lines(str)
 		return ""
 	end
 
-	helper(str.gsub(str, "(.-)\r?\n", helper))
+	helper(str:gsub("(.-)\r?\n", helper))
 
 	return t
 end
 
 NewsTickerManager.update = function (self, dt)
-	return 
+	return
 end
+
 NewsTickerManager.destroy = function (self)
-	return 
+	return
 end
+
 NewsTickerManager._load = function (self, url, callback)
 	if self._platform == "win32" then
 		local token = Curl.add_request(url)
@@ -61,7 +62,7 @@ NewsTickerManager._load = function (self, url, callback)
 
 				callback(info)
 
-				return 
+				return
 			end
 		end
 
@@ -72,26 +73,24 @@ NewsTickerManager._load = function (self, url, callback)
 
 		callback(info)
 	end
-
-	return 
 end
+
 NewsTickerManager.refresh_loading_screen_message = function (self)
 	self._loading_screen_text = nil
 	self._refreshing_loading_screen_message = true
 
 	if self._platform == "win32" and not rawget(_G, "Curl") then
-		self.cb_loading_screen_loaded(self, {
+		self:cb_loading_screen_loaded({
 			done = true,
 			data = "This executable is built without Curl. News ticker will be unavailable."
 		})
 
-		return 
+		return
 	end
 
-	self._load(self, self._loading_screen_url, callback(self, "cb_loading_screen_loaded"))
-
-	return 
+	self:_load(self._loading_screen_url, callback(self, "cb_loading_screen_loaded"))
 end
+
 NewsTickerManager.cb_loading_screen_loaded = function (self, info)
 	if self._refreshing_loading_screen_message and info.done then
 		local str = info.data
@@ -104,32 +103,32 @@ NewsTickerManager.cb_loading_screen_loaded = function (self, info)
 
 		self._refreshing_loading_screen_message = nil
 	end
-
-	return 
 end
+
 NewsTickerManager.loading_screen_text = function (self)
 	return self._loading_screen_text
 end
+
 NewsTickerManager.refresh_ingame_message = function (self)
 	self._ingame_text = nil
 	self._refreshing_ingame_message = true
 
 	if self._platform == "win32" and not rawget(_G, "Curl") then
-		self.cb_ingame_loaded(self, {
+		self:cb_ingame_loaded({
 			done = true,
 			data = "This executable is built without Curl. News ticker will be unavailable."
 		})
 
-		return 
+		return
 	end
 
-	self._load(self, self._ingame_url, callback(self, "cb_ingame_loaded"))
-
-	return 
+	self:_load(self._ingame_url, callback(self, "cb_ingame_loaded"))
 end
+
 NewsTickerManager.refreshing_ingame_message = function (self)
 	return self._refreshing_ingame_message
 end
+
 NewsTickerManager.cb_ingame_loaded = function (self, info)
 	if self._refreshing_ingame_message and info.done then
 		local str = info.data
@@ -142,11 +141,10 @@ NewsTickerManager.cb_ingame_loaded = function (self, info)
 
 		self._refreshing_ingame_message = nil
 	end
-
-	return 
 end
+
 NewsTickerManager.ingame_text = function (self)
 	return self._ingame_text
 end
 
-return 
+return

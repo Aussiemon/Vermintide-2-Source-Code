@@ -14,17 +14,16 @@ local function readonlytable(table)
 		__index = table,
 		__newindex = function (table, key, value)
 			error("Coder trying to modify a AI group system read-only empty table. Don't do it!")
-
-			return 
 		end
 	})
 end
 
 local EMPTY_TABLE = readonlytable({})
+
 AIGroupSystem.init = function (self, context, system_name)
 	local entity_manager = context.entity_manager
 
-	entity_manager.register_system(entity_manager, self, system_name, extensions)
+	entity_manager:register_system(self, system_name, extensions)
 
 	self.entity_manager = entity_manager
 	self.is_server = context.is_server
@@ -40,8 +39,6 @@ AIGroupSystem.init = function (self, context, system_name)
 	self._spline_properties = {}
 	self._spline_lookup = {}
 	self._last_recycler_group_id = nil
-
-	return 
 end
 
 function boxify_table_pos_array(array)
@@ -49,8 +46,6 @@ function boxify_table_pos_array(array)
 		local p = array[i]
 		array[i] = Vector3Box(p[1], p[2], p[3])
 	end
-
-	return 
 end
 
 function remove_duplicates(spline_points)
@@ -65,13 +60,11 @@ function remove_duplicates(spline_points)
 			table.remove(spline_points, i)
 		end
 	end
-
-	return 
 end
 
 AIGroupSystem.add_ready_splines = function (self, waypoint_list, spline_type)
 	if not waypoint_list then
-		return 
+		return
 	end
 
 	for i = 1, #waypoint_list, 1 do
@@ -83,7 +76,7 @@ AIGroupSystem.add_ready_splines = function (self, waypoint_list, spline_type)
 			remove_duplicates(spline_points)
 
 			local start_position_boxed = spline_points[1]
-			local start_position = start_position_boxed.unbox(start_position_boxed)
+			local start_position = start_position_boxed:unbox()
 
 			if #spline_points == 2 then
 				table.insert(spline_points, 2, Vector3Box((start_position + spline_points[2]:unbox()) / 2))
@@ -96,21 +89,21 @@ AIGroupSystem.add_ready_splines = function (self, waypoint_list, spline_type)
 				spline_points = spline_points
 			}
 
-			self._add_spline(self, data.id, spline_data, spline_type)
+			self:_add_spline(data.id, spline_data, spline_type)
 		end
 	end
+end
 
-	return 
-end
 AIGroupSystem.destroy = function (self)
-	return 
+	return
 end
+
 AIGroupSystem.ai_ready = function (self, patrol_analysis)
 	self.patrol_analysis = patrol_analysis
-
-	return 
 end
+
 local dummy_input = readonlytable({})
+
 AIGroupSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local id = extension_init_data.id
 
@@ -215,6 +208,7 @@ AIGroupSystem.on_add_extension = function (self, world, unit, extension_name, ex
 
 	return extension
 end
+
 AIGroupSystem.on_remove_extension = function (self, unit, extension_name)
 	local extension = self.unit_extension_data[unit]
 
@@ -222,19 +216,18 @@ AIGroupSystem.on_remove_extension = function (self, unit, extension_name)
 		fassert(next(extension) == nil, "No extension data for unit %s", unit)
 		ScriptUnit.remove_extension(unit, self.NAME)
 
-		return 
+		return
 	end
 
-	self.on_freeze_extension(self, unit, extension_name)
+	self:on_freeze_extension(unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
-
-	return 
 end
+
 AIGroupSystem.on_freeze_extension = function (self, unit, extension_name)
 	local extension = self.unit_extension_data[unit]
 
 	if extension == self.dummy_extension or extension == nil or extension.frozen then
-		return 
+		return
 	end
 
 	local id = extension.id
@@ -266,15 +259,15 @@ AIGroupSystem.on_freeze_extension = function (self, unit, extension_name)
 	end
 
 	extension.frozen = true
-
-	return 
 end
+
 local MAX_PATROL_SPLINES = 100
 local MAX_ROAMING_SPLINES = 100
 local MAX_EVENT_SPLINES = 100
 local PATROL_SPLINE_PREFIX = "patrol_"
 local ROAMING_SPLINE_PREFIX = "roaming_"
 local EVENT_SPLINE_PREFIX = "event_"
+
 AIGroupSystem.set_level = function (self, level)
 	self._level = level
 	self._patrol_splines = {}
@@ -283,11 +276,14 @@ AIGroupSystem.set_level = function (self, level)
 	local world = self._world
 
 	for i = 1, MAX_PATROL_SPLINES, 1 do
-		local spline_name = PATROL_SPLINE_PREFIX .. i
-		local spline_points = Level.spline(level, spline_name)
+		repeat
+			local spline_name = PATROL_SPLINE_PREFIX .. i
+			local spline_points = Level.spline(level, spline_name)
 
-		if #spline_points == 0 then
-		else
+			if #spline_points == 0 then
+				break
+			end
+
 			local start_position = spline_points[1]
 			local start_direction = Vector3.normalize(spline_points[3] - spline_points[1])
 			local data = {
@@ -296,15 +292,18 @@ AIGroupSystem.set_level = function (self, level)
 			}
 			self._patrol_splines[spline_name] = data
 			self._spline_lookup[spline_name] = data
-		end
+		until true
 	end
 
 	for i = 1, MAX_ROAMING_SPLINES, 1 do
-		local spline_name = ROAMING_SPLINE_PREFIX .. i
-		local spline_points = Level.spline(level, spline_name)
+		repeat
+			local spline_name = ROAMING_SPLINE_PREFIX .. i
+			local spline_points = Level.spline(level, spline_name)
 
-		if #spline_points == 0 then
-		else
+			if #spline_points == 0 then
+				break
+			end
+
 			local start_position = spline_points[1]
 			local start_direction = Vector3.normalize(spline_points[3] - spline_points[1])
 			local data = {
@@ -313,15 +312,18 @@ AIGroupSystem.set_level = function (self, level)
 			}
 			self._roaming_splines[spline_name] = data
 			self._spline_lookup[spline_name] = data
-		end
+		until true
 	end
 
 	for i = 1, MAX_EVENT_SPLINES, 1 do
-		local spline_name = EVENT_SPLINE_PREFIX .. i
-		local spline_points = Level.spline(level, spline_name)
+		repeat
+			local spline_name = EVENT_SPLINE_PREFIX .. i
+			local spline_points = Level.spline(level, spline_name)
 
-		if #spline_points == 0 then
-		else
+			if #spline_points == 0 then
+				break
+			end
+
 			local start_position = spline_points[1]
 			local start_direction = Vector3.normalize(spline_points[3] - spline_points[1])
 			local data = {
@@ -330,13 +332,13 @@ AIGroupSystem.set_level = function (self, level)
 			}
 			self._event_splines[spline_name] = data
 			self._spline_lookup[spline_name] = data
-		end
+		until true
 	end
-
-	return 
 end
+
 local MAX_RANDOM_DISTANCE_MODIFIER = 25
 local MAX_DISTANCE_ROAMING_SPLINE = 25
+
 AIGroupSystem.get_best_spline = function (self, position, spline_type)
 	local best_spline, best_spline_data = nil
 	local best_distance = math.huge
@@ -354,40 +356,48 @@ AIGroupSystem.get_best_spline = function (self, position, spline_type)
 	end
 
 	for spline_name, spline_data in pairs(splines) do
-		local random_distance_modifier = math.random(1, MAX_RANDOM_DISTANCE_MODIFIER)
-		local start_position = spline_data.start_position:unbox()
-		local distance = Vector3.distance(position, start_position)
+		repeat
+			local random_distance_modifier = math.random(1, MAX_RANDOM_DISTANCE_MODIFIER)
+			local start_position = spline_data.start_position:unbox()
+			local distance = Vector3.distance(position, start_position)
 
-		if max_distance < distance then
-		else
+			if max_distance < distance then
+				break
+			end
+
 			distance = distance - random_distance_modifier
 
 			if best_distance < distance then
-			else
-				best_distance = distance
-				best_spline = spline_name
-				best_spline_data = spline_data
+				break
 			end
-		end
+
+			best_distance = distance
+			best_spline = spline_name
+			best_spline_data = spline_data
+		until true
 	end
 
 	return best_spline, best_spline_data
 end
+
 AIGroupSystem.spline_start_position = function (self, spline_name)
 	local spline = self._spline_lookup[spline_name]
 	local start_position = spline.start_position:unbox()
 
 	return start_position
 end
+
 AIGroupSystem.spline_start_direction = function (self, spline_name)
 	local spline = self._spline_lookup[spline_name]
 	local start_direction = spline.start_direction:unbox()
 
 	return start_direction
 end
+
 AIGroupSystem.spline = function (self, spline_name)
 	return self._spline_lookup[spline_name]
 end
+
 AIGroupSystem.level_has_splines = function (self, spline_type)
 	local splines = nil
 
@@ -402,10 +412,11 @@ AIGroupSystem.level_has_splines = function (self, spline_type)
 	end
 
 	local size = table.size(splines)
-	local has_splines = 0 < size
+	local has_splines = size > 0
 
 	return has_splines
 end
+
 AIGroupSystem.get_available_spline_type = function (self)
 	local splines = nil
 
@@ -421,17 +432,20 @@ AIGroupSystem.get_available_spline_type = function (self)
 
 	return spline_type
 end
+
 AIGroupSystem.hot_join_sync = function (self, sender, player)
-	return 
+	return
 end
+
 local position_lookup = POSITION_LOOKUP
+
 AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_zones, use_player_zones)
 	local groups = self.groups_to_update
 	local group_id, group = next(groups, self._last_recycler_group_id)
 	self._last_recycler_group_id = group_id
 
 	if not group_id or group.group_type ~= "roaming_patrol" or group.patrol_in_combat then
-		return 
+		return
 	end
 
 	local indexed_members = group.indexed_members
@@ -439,15 +453,15 @@ AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_
 	local pos = position_lookup[unit]
 
 	if not pos then
-		return 
+		return
 	end
 
 	local conflict_director = Managers.state.conflict
 	local navigation_group_manager = conflict_director.navigation_group_manager
-	local patrol_zone = navigation_group_manager.get_group_from_position(navigation_group_manager, pos)
+	local patrol_zone = navigation_group_manager:get_group_from_position(pos)
 
 	if not patrol_zone then
-		return 
+		return
 	end
 
 	local roaming_settings = CurrentRoamingSettings
@@ -458,7 +472,7 @@ AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_
 	local num_players = #player_positions
 	local math_abs = math.abs
 
-	if 0 <= num_players then
+	if num_players >= 0 then
 		for j = 1, num_players, 1 do
 			local to_dir = pos - player_positions[j]
 			local h = to_dir.z
@@ -471,7 +485,7 @@ AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_
 				local zone = player_zones[j]
 
 				if use_player_zones and zone then
-					local _, path_dist, cached = navigation_group_manager.a_star_cached(navigation_group_manager, zone, patrol_zone)
+					local _, path_dist, cached = navigation_group_manager:a_star_cached(zone, patrol_zone)
 
 					if not path_dist or path_dist < path_distance_threshold then
 						seen_by_player = true
@@ -501,20 +515,20 @@ AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_
 			local boxed_pos = Vector3Box(POSITION_LOOKUP[member_unit])
 			local boxed_rot = QuaternionBox(Unit.local_rotation(member_unit, 0))
 
-			enemy_recycler.add_breed(enemy_recycler, blackboard.breed.name, boxed_pos, boxed_rot)
+			enemy_recycler:add_breed(blackboard.breed.name, boxed_pos, boxed_rot)
 			Managers.state.conflict:destroy_unit(member_unit, blackboard, "patrol_finished")
 		end
 	end
-
-	return 
 end
+
 local debug_drawer_info = {
 	mode = "retained",
 	name = "AIGroupTemplates_retained"
 }
+
 AIGroupSystem.update = function (self, context, t)
 	if not self.is_server then
-		return 
+		return
 	end
 
 	local world = self._world
@@ -523,7 +537,7 @@ AIGroupSystem.update = function (self, context, t)
 
 	for id, group in pairs(self.groups_to_initialize) do
 		if group.num_spawned_members == group.size then
-			if 0 < group.members_n then
+			if group.members_n > 0 then
 				local template = group.template
 				local template_init = AIGroupTemplates[template].init
 
@@ -547,28 +561,31 @@ AIGroupSystem.update = function (self, context, t)
 	if not script_data.ai_group_debug then
 		local drawer = Managers.state.debug:drawer(debug_drawer_info)
 
-		drawer.reset(drawer)
+		drawer:reset()
 	end
 
 	if self.patrol_analysis and self._computing_splines then
 		self.patrol_analysis:run()
 
 		for spline_name, spline_type in pairs(self._computing_splines) do
-			local spline_ready = self._spline_ready(self, spline_name)
+			repeat
+				local spline_ready = self:_spline_ready(spline_name)
 
-			if not spline_ready then
-			else
+				if not spline_ready then
+					break
+				end
+
 				local spline = self.patrol_analysis:spline(spline_name)
 				local spline_points = spline.spline_points
 				local start_position_boxed = spline_points[1]
 
 				if not start_position_boxed then
 					ScriptApplication.send_to_crashify("AiGroupSystem", "Tried to spawn a patrol but could not generate a path. (Most likely nav-mesh is missing) Patrol-id: %s", spline_name)
-					self._add_spline(self, spline_name, "failed", spline_type)
+					self:_add_spline(spline_name, "failed", spline_type)
 
 					self._computing_splines[spline_name] = nil
 				else
-					local start_position = start_position_boxed.unbox(start_position_boxed)
+					local start_position = start_position_boxed:unbox()
 
 					if #spline_points == 2 then
 						table.insert(spline_points, 2, Vector3Box((start_position + spline_points[2]:unbox()) / 2))
@@ -592,51 +609,50 @@ AIGroupSystem.update = function (self, context, t)
 						spline_points = spline_points
 					}
 
-					self._add_spline(self, spline_name, spline_data, spline_type)
+					self:_add_spline(spline_name, spline_data, spline_type)
 
 					self._computing_splines[spline_name] = nil
 				end
-			end
+			until true
 		end
 	end
 
 	local conflict_director = Managers.state.conflict
 
 	if self._update_recycler then
-		self.check_recycler_despawn(self, self._player_positions, self._player_areas, self._use_player_areas)
+		self:check_recycler_despawn(self._player_positions, self._player_areas, self._use_player_areas)
 	end
 
 	self._update_recycler = false
-
-	return 
 end
+
 AIGroupSystem.prepare_update_recycler = function (self, player_positions, player_areas, use_player_areas)
 	self._update_recycler = true
 	self._player_positions = player_positions
 	self._player_areas = player_areas
 	self._use_player_areas = use_player_areas
-
-	return 
 end
+
 AIGroupSystem.get_ai_group = function (self, id)
 	local groups = self.groups
 
 	return groups[id]
 end
+
 AIGroupSystem.run_func_on_all_members = function (self, group, func, ...)
 	local members = group.members
 
 	for unit, extension in pairs(members) do
 		func(unit, extension, ...)
 	end
-
-	return 
 end
+
 AIGroupSystem.generate_group_id = function (self)
 	self.group_uid = self.group_uid + 1
 
 	return self.group_uid
 end
+
 AIGroupSystem.set_allowed_layer = function (self, layer_name, allowed)
 	local layer_id = LAYER_ID_MAPPING[layer_name]
 
@@ -649,9 +665,8 @@ AIGroupSystem.set_allowed_layer = function (self, layer_name, allowed)
 			end
 		end
 	end
-
-	return 
 end
+
 AIGroupSystem.create_spline_from_way_points = function (self, spline_name, spline_way_points, spline_type)
 	local USING_EDITOR = false
 	local navbot_kind = (spline_type == "roaming" and "roaming") or "standard"
@@ -660,12 +675,12 @@ AIGroupSystem.create_spline_from_way_points = function (self, spline_name, splin
 
 	self._computing_splines = self._computing_splines or {}
 	self._computing_splines[spline_name] = spline_type
-
-	return 
 end
+
 AIGroupSystem.spline_ready = function (self, spline_name)
 	return self._spline_lookup[spline_name]
 end
+
 AIGroupSystem._spline_ready = function (self, spline_name)
 	local patrol_analysis = self.patrol_analysis
 
@@ -673,10 +688,11 @@ AIGroupSystem._spline_ready = function (self, spline_name)
 		return false
 	end
 
-	local spline = patrol_analysis.spline(patrol_analysis, spline_name)
+	local spline = patrol_analysis:spline(spline_name)
 
 	return spline
 end
+
 AIGroupSystem._add_spline = function (self, spline_name, spline_data, spline_type)
 	self._spline_lookup[spline_name] = spline_data
 	local is_patrol_spline = spline_type == "patrol" or string.find(spline_name, PATROL_SPLINE_PREFIX)
@@ -684,7 +700,7 @@ AIGroupSystem._add_spline = function (self, spline_name, spline_data, spline_typ
 	if is_patrol_spline then
 		self._patrol_splines[spline_name] = spline_data
 
-		return 
+		return
 	end
 
 	local is_roaming_spline = spline_type == "roaming" or string.find(spline_name, ROAMING_SPLINE_PREFIX)
@@ -692,7 +708,7 @@ AIGroupSystem._add_spline = function (self, spline_name, spline_data, spline_typ
 	if is_roaming_spline then
 		self._roaming_splines[spline_name] = spline_data
 
-		return 
+		return
 	end
 
 	local is_event_spline = spline_type == "event" or string.find(spline_name, EVENT_SPLINE_PREFIX)
@@ -700,38 +716,36 @@ AIGroupSystem._add_spline = function (self, spline_name, spline_data, spline_typ
 	if is_event_spline then
 		self._event_splines[spline_name] = spline_data
 
-		return 
+		return
 	end
 
 	error("unsupported spline type for spline: " .. spline_name .. ". Spline name should start with 'patrol_', 'roaming_' or 'event_' which defines the spline type")
-
-	return 
 end
+
 AIGroupSystem.draw_active_spline_paths = function (self)
 	local drawer = QuickDrawerStay
 	local splines1 = self._patrol_splines
 	local color1 = Color(255, 255, 0)
 
 	for spline_name, spline_data in pairs(splines1) do
-		self.draw_spline(self, spline_data.spline_points, drawer, color1)
+		self:draw_spline(spline_data.spline_points, drawer, color1)
 	end
 
 	local splines2 = self._roaming_splines
 	local color2 = Color(255, 255, 0)
 
 	for spline_name, spline_data in pairs(splines2) do
-		self.draw_spline(self, spline_data.spline_points, drawer, color2)
+		self:draw_spline(spline_data.spline_points, drawer, color2)
 	end
 
 	local splines3 = self._event_splines
 	local color3 = Color(255, 255, 0)
 
 	for spline_name, spline_data in pairs(splines3) do
-		self.draw_spline(self, spline_data.spline_points, drawer, color3)
+		self:draw_spline(spline_data.spline_points, drawer, color3)
 	end
-
-	return 
 end
+
 AIGroupSystem.draw_spline = function (self, spline, drawer, color)
 	local p1 = spline[1]:unbox()
 	local h = Vector3(0, 0, 1)
@@ -740,17 +754,16 @@ AIGroupSystem.draw_spline = function (self, spline, drawer, color)
 		local waypoint = spline[i]
 		local p2 = spline[i]:unbox()
 
-		drawer.line(drawer, p1 + h, p2 + h, color)
+		drawer:line(p1 + h, p2 + h, color)
 
 		p1 = p2
 	end
-
-	return 
 end
+
 AIGroupSystem.create_formation_data = function (self, position, formation, spline_name)
 	local anchor_offset_y = PatrolFormationSettings.default_settings.offsets.ANCHOR_OFFSET.y
 	local anchor_offset_x = PatrolFormationSettings.default_settings.speeds.SPLINE_SPEED
-	local start_direction = self.spline_start_direction(self, spline_name)
+	local start_direction = self:spline_start_direction(spline_name)
 	local formation_data = table.clone(formation)
 	local num_rows = #formation
 	local formation_length = (num_rows - 1) * anchor_offset_x
@@ -775,7 +788,7 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 		for column, breed_name in ipairs(columns) do
 			local num_columns_in_row = #columns
 			local distance = formation_length - (row - 1) * anchor_offset_x
-			local position_on_spline, direction_on_spline = self._get_position_on_spline_by_distance(self, distance, spline_curve, start_spline_index)
+			local position_on_spline, direction_on_spline = self:_get_position_on_spline_by_distance(distance, spline_curve, start_spline_index)
 
 			if position_on_spline == nil then
 				position_on_spline = position
@@ -823,26 +836,27 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 
 	return formation_data
 end
+
 AIGroupSystem._get_position_on_spline_by_distance = function (self, distance, spline_curve, start_spline_index)
 	local total_distance = 0
-	local movement = spline_curve.movement(spline_curve)
+	local movement = spline_curve:movement()
 
-	movement.reset_to_start(movement)
-	movement.set_speed(movement, 2)
+	movement:reset_to_start()
+	movement:set_speed(2)
 
 	if start_spline_index then
-		movement.set_current_spline_index(movement, start_spline_index)
+		movement:set_current_spline_index(start_spline_index)
 	end
 
 	fassert(movement._t == movement._t, "Nan in spline: %s", spline_curve._name)
 
-	local start_position = movement.current_position(movement)
+	local start_position = movement:current_position()
 	local previous_position = start_position
 	local dt = 0.1
 
 	while true do
 		local a, b, c = Script.temp_count()
-		local status = movement.update(movement, dt)
+		local status = movement:update(dt)
 
 		if status == "end" then
 			return nil
@@ -850,7 +864,7 @@ AIGroupSystem._get_position_on_spline_by_distance = function (self, distance, sp
 
 		fassert(movement._t == movement._t, "Nan in spline: %s", spline_curve._name)
 
-		local current_position = movement.current_position(movement)
+		local current_position = movement:current_position()
 		local current_distance = Vector3.distance(current_position, previous_position)
 		total_distance = current_distance + total_distance
 
@@ -863,13 +877,10 @@ AIGroupSystem._get_position_on_spline_by_distance = function (self, distance, sp
 		Vector3.set_xyz(previous_position, current_position.x, current_position.y, current_position.z)
 		Script.set_temp_count(a, b, c)
 	end
-
-	return 
 end
+
 AIGroupSystem.register_spline_properties = function (self, spline_name, properties)
 	self._spline_properties[spline_name] = properties
-
-	return 
 end
 
-return 
+return

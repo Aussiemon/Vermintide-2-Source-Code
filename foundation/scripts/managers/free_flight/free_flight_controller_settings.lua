@@ -266,4 +266,4 @@ FreeFlightControllerSettings.padps3 = {
 	}
 }
 
-return 
+return

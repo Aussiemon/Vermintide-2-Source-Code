@@ -9,29 +9,28 @@ function aiprint(...)
 	if script_data.debug_ai_movement then
 		print(...)
 	end
-
-	return 
 end
 
 AiUtils = AiUtils or {}
+
 AiUtils.special_dead_cleanup = function (unit, blackboard)
 	if not blackboard.target_unit then
-		return 
+		return
 	end
 
 	local special_targets = blackboard.group_blackboard.special_targets
 	special_targets[blackboard.target_unit] = nil
 	local disabled_by_special = blackboard.group_blackboard.disabled_by_special
 	disabled_by_special[blackboard.target_unit] = nil
-
-	return 
 end
+
 local broadphase_query_result = {}
+
 AiUtils.aggro_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit)
 	enemy_unit = AiUtils.get_actual_attacker_unit(enemy_unit)
 
 	if not unit_alive(enemy_unit) then
-		return 
+		return
 	end
 
 	local num_broadphase_query_result = Broadphase.query(broadphase, Unit.local_position(unit, 0), 5, broadphase_query_result)
@@ -43,30 +42,28 @@ AiUtils.aggro_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit)
 			local ai_simple_extension = ScriptUnit.has_extension(unit, "ai_system")
 
 			if ai_simple_extension then
-				ai_simple_extension.enemy_aggro(ai_simple_extension, unit, enemy_unit)
+				ai_simple_extension:enemy_aggro(unit, enemy_unit)
 			end
 		end
 
 		broadphase_query_result[i] = nil
 	end
-
-	return 
 end
+
 AiUtils.aggro_unit_of_enemy = function (unit, enemy_unit)
 	enemy_unit = AiUtils.get_actual_attacker_unit(enemy_unit)
 
 	if not unit_alive(enemy_unit) then
-		return 
+		return
 	end
 
 	local ai_simple_extension = ScriptUnit.has_extension(unit, "ai_system")
 
 	if ai_simple_extension then
-		ai_simple_extension.enemy_aggro(ai_simple_extension, unit, enemy_unit)
+		ai_simple_extension:enemy_aggro(unit, enemy_unit)
 	end
-
-	return 
 end
+
 AiUtils.activate_unit = function (blackboard)
 	if not blackboard.confirmed_player_sighting then
 		local breed = blackboard.breed
@@ -75,18 +72,16 @@ AiUtils.activate_unit = function (blackboard)
 
 		blackboard.confirmed_player_sighting = true
 	end
-
-	return 
 end
+
 AiUtils.stormvermin_champion_hack_check_ward = function (unit, blackboard)
 	if blackboard.ward_active and not blackboard.defensive_mode_duration then
 		blackboard.ward_active = false
 
 		AiUtils.stormvermin_champion_set_ward_state(unit, false, true)
 	end
-
-	return 
 end
+
 AiUtils.stormvermin_champion_set_ward_state = function (unit, state, is_server)
 	local actor = Unit.actor(unit, "c_trophy_rack_ward")
 
@@ -102,13 +97,12 @@ AiUtils.stormvermin_champion_set_ward_state = function (unit, state, is_server)
 
 	if is_server then
 		local network_manager = Managers.state.network
-		local unit_id = network_manager.unit_game_object_id(network_manager, unit)
+		local unit_id = network_manager:unit_game_object_id(unit)
 
 		network_manager.network_transmit:send_rpc_clients("rpc_set_ward_state", unit_id, state)
 	end
-
-	return 
 end
+
 AiUtils.chaos_exalted_champion_set_shield_state = function (unit, state, is_server)
 	if state then
 		Unit.flow_event(unit, "chaos_shields_on")
@@ -118,32 +112,30 @@ AiUtils.chaos_exalted_champion_set_shield_state = function (unit, state, is_serv
 
 	if is_server then
 		local network_manager = Managers.state.network
-		slot4 = network_manager.unit_game_object_id(network_manager, unit)
+		slot4 = network_manager:unit_game_object_id(unit)
 	end
-
-	return 
 end
+
 AiUtils.alert_unit_of_enemy = function (unit, enemy_unit)
 	enemy_unit = AiUtils.get_actual_attacker_unit(enemy_unit)
 
 	if not unit_alive(enemy_unit) then
-		return 
+		return
 	end
 
 	local ai_simple_extension = ScriptUnit.has_extension(unit, "ai_system")
 
 	if ai_simple_extension then
-		ai_simple_extension.enemy_alert(ai_simple_extension, unit, enemy_unit)
+		ai_simple_extension:enemy_alert(unit, enemy_unit)
 	end
-
-	return 
 end
+
 AiUtils.alert_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit, range)
 	range = range or 5
 	enemy_unit = AiUtils.get_actual_attacker_unit(enemy_unit)
 
 	if not unit_alive(enemy_unit) then
-		return 
+		return
 	end
 
 	local num_results = Broadphase.query(broadphase, Unit.local_position(unit, 0), range, broadphase_query_result)
@@ -155,43 +147,40 @@ AiUtils.alert_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit, 
 			local ai_simple_extension = ScriptUnit.has_extension(other_unit, "ai_system")
 
 			if ai_simple_extension then
-				ai_simple_extension.enemy_alert(ai_simple_extension, unit, enemy_unit)
+				ai_simple_extension:enemy_alert(unit, enemy_unit)
 			end
 		end
 
 		broadphase_query_result[i] = nil
 	end
-
-	return 
 end
+
 AiUtils.print = function (debug_parameter, ...)
 	if Development.parameter(debug_parameter) then
 		print(...)
 	end
-
-	return 
 end
+
 AiUtils.printf = function (debug_parameter, ...)
 	if Development.parameter(debug_parameter) then
 		printf(...)
 	end
-
-	return 
 end
+
 AiUtils.breed_name = function (unit)
 	return Unit.get_data(unit, "breed").name
 end
+
 AiUtils.stagger_target = function (unit, hit_unit, distance, impact, direction, t)
 	local stagger_type, stagger_duration = DamageUtils.calculate_stagger(impact, nil, hit_unit, unit)
 
-	if 0 < stagger_type then
+	if stagger_type > 0 then
 		local hit_unit_blackboard = BLACKBOARDS[hit_unit]
 
 		AiUtils.stagger(hit_unit, hit_unit_blackboard, unit, direction, distance, stagger_type, stagger_duration, nil, t)
 	end
-
-	return 
 end
+
 AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_triplett, damage_source)
 	local damage = DamageUtils.calculate_damage(damage_triplett, target_unit, attacker_unit)
 	local attacker_pos = POSITION_LOOKUP[attacker_unit] or Unit.world_position(attacker_unit, 0)
@@ -208,9 +197,9 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 
 		if dimishing_damage_data and has_ai_slot_extension then
 			local ai_slot_system = Managers.state.entity:system("ai_slot_system")
-			local slots_n = ai_slot_system.slots_count(ai_slot_system, target_unit)
+			local slots_n = ai_slot_system:slots_count(target_unit)
 
-			if 0 < slots_n then
+			if slots_n > 0 then
 				local dimishing_damage = dimishing_damage_data[math.min(slots_n, 9)]
 				local damage_modifier = dimishing_damage.damage
 				damage = damage * damage_modifier
@@ -225,16 +214,15 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 		if is_player_unit and push_speed then
 			local target_status_extension = ScriptUnit.extension(target_unit, "status_system")
 
-			if not target_status_extension.is_disabled(target_status_extension) then
+			if not target_status_extension:is_disabled() then
 				local player_locomotion = ScriptUnit.extension(target_unit, "locomotion_system")
 
-				player_locomotion.add_external_velocity(player_locomotion, push_speed * damage_direction, action.max_player_push_speed)
+				player_locomotion:add_external_velocity(push_speed * damage_direction, action.max_player_push_speed)
 			end
 		end
 	end
-
-	return 
 end
+
 AiUtils.poison_explode_unit = function (unit, action, blackboard)
 	local position = Unit.local_position(unit, 0)
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
@@ -279,9 +267,8 @@ AiUtils.poison_explode_unit = function (unit, action, blackboard)
 	assert(world)
 	Managers.state.network.network_transmit:send_rpc_all("rpc_area_damage", unit_id, position)
 	Managers.state.unit_spawner:mark_for_deletion(unit)
-
-	return 
 end
+
 AiUtils.warpfire_explode_unit = function (unit, blackboard)
 	local world = blackboard.world
 	local explosion_template = ExplosionTemplates.warpfire_explosion
@@ -293,12 +280,7 @@ AiUtils.warpfire_explode_unit = function (unit, blackboard)
 	local damage_source = blackboard.breed.name
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 
-	Unit.set_mesh_visibility(unit, "g_warpfire_backpack_lod0", false)
-	Unit.set_mesh_visibility(unit, "g_warpfire_backpack_lod1", false)
-	Unit.set_mesh_visibility(unit, "g_warpfire_backpack_lod2", false)
-	Unit.set_mesh_visibility(unit, "g_warpfire_tube_lod0", false)
-	Unit.set_mesh_visibility(unit, "g_warpfire_tube_lod1", false)
-	Unit.set_mesh_visibility(unit, "g_warpfire_tube_lod2", false)
+	Unit.flow_event(unit, "lua_hide_backpack")
 
 	local actor = Unit.actor(unit, "c_backpack")
 
@@ -322,15 +304,14 @@ AiUtils.warpfire_explode_unit = function (unit, blackboard)
 				source_unit = unit
 			}
 		}
-		local aoe_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
+		local aoe_unit_name = "units/hub_elements/empty"
 		local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, position_on_navmesh)
 		local liquid_area_damage_extension = ScriptUnit.extension(liquid_aoe_unit, "area_damage_system")
 
-		liquid_area_damage_extension.ready(liquid_area_damage_extension)
+		liquid_area_damage_extension:ready()
 	end
-
-	return 
 end
+
 AiUtils.chaos_zombie_explosion = function (unit, action, blackboard, delete_unit)
 	local position = Unit.local_position(unit, 0)
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
@@ -354,9 +335,8 @@ AiUtils.chaos_zombie_explosion = function (unit, action, blackboard, delete_unit
 	local blood_dir = Quaternion.up(Unit.local_rotation(unit, 0))
 
 	Managers.state.blood:spawn_blood_ball(position, blood_dir, "default", unit)
-
-	return 
 end
+
 AiUtils.ai_explosion = function (exploding_unit, owner_unit, blackboard, damage_source, explosion_template)
 	local explosion_position = Unit.local_position(exploding_unit, 0)
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
@@ -371,9 +351,8 @@ AiUtils.ai_explosion = function (exploding_unit, owner_unit, blackboard, damage_
 
 	Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0)
 	Managers.state.unit_spawner:mark_for_deletion(exploding_unit)
-
-	return 
 end
+
 AiUtils.spawn_overpowering_blob = function (network_manager, target_unit, blob_health, life_time)
 	local position = POSITION_LOOKUP[target_unit]
 	local blob_unit_name = "units/weapons/enemy/wpn_overpowering_blob/wpn_overpowering_blob"
@@ -400,13 +379,14 @@ AiUtils.spawn_overpowering_blob = function (network_manager, target_unit, blob_h
 
 	World.link_unit(world, child_unit, target_unit, parent_node)
 
-	local child_unit_id = network_manager.unit_game_object_id(network_manager, child_unit)
-	local parent_unit_id = network_manager.unit_game_object_id(network_manager, target_unit)
+	local child_unit_id = network_manager:unit_game_object_id(child_unit)
+	local parent_unit_id = network_manager:unit_game_object_id(target_unit)
 
 	network_manager.network_transmit:send_rpc_clients("rpc_link_unit", child_unit_id, child_node, parent_unit_id, parent_node)
 
 	return overpowering_blob_unit
 end
+
 AiUtils.broadphase_query = function (position, radius, result_table)
 	fassert(result_table, "No result_table given to AiUtils,broadphase_query")
 
@@ -416,6 +396,7 @@ AiUtils.broadphase_query = function (position, radius, result_table)
 
 	return num_hits
 end
+
 AiUtils.get_angle_between_vectors = function (vector_1, vector_2)
 	vector_1 = Vector3.normalize(Vector3.flat(vector_1))
 	vector_2 = Vector3.normalize(Vector3.flat(vector_2))
@@ -425,6 +406,7 @@ AiUtils.get_angle_between_vectors = function (vector_1, vector_2)
 
 	return angle, degrees, radians
 end
+
 AiUtils.rotate_vector = function (vector, radians)
 	local length = Vector3.length(vector)
 	local l_radians = math.atan2(vector.y, vector.x)
@@ -436,6 +418,7 @@ AiUtils.rotate_vector = function (vector, radians)
 
 	return return_vector
 end
+
 AiUtils.constrain_radians = function (radians)
 	if math.pi < radians then
 		radians = -math.pi + radians - math.pi
@@ -445,6 +428,7 @@ AiUtils.constrain_radians = function (radians)
 
 	return radians
 end
+
 AiUtils.calculate_oobb = function (range, self_pos, self_rot, height, width)
 	local height = height or 2
 	local width = width or 2
@@ -458,14 +442,16 @@ AiUtils.calculate_oobb = function (range, self_pos, self_rot, height, width)
 
 	return oobb_pos, self_rot, size
 end
+
 local previous_random_value = 0
+
 AiUtils.calculate_bot_threat_time = function (bot_threat)
 	local duration = bot_threat.duration
 	local max_start_delay = bot_threat.max_start_delay or 0
 	local current_random_value = math.random()
 	local sum_random = previous_random_value + current_random_value
 
-	if 1 < sum_random then
+	if sum_random > 1 then
 		sum_random = current_random_value
 	end
 
@@ -475,6 +461,7 @@ AiUtils.calculate_bot_threat_time = function (bot_threat)
 
 	return start_time, duration - start_delay
 end
+
 AiUtils.get_actual_attacker_unit = function (attacker_unit)
 	if ScriptUnit.has_extension(attacker_unit, "projectile_system") and not ScriptUnit.has_extension(attacker_unit, "limited_item_track_system") then
 		local projectile_extension = ScriptUnit.extension(attacker_unit, "projectile_system")
@@ -483,16 +470,26 @@ AiUtils.get_actual_attacker_unit = function (attacker_unit)
 
 	return attacker_unit
 end
+
+AiUtils.unit_breed = function (unit)
+	if not unit_alive(unit) then
+		return
+	end
+
+	return unit_get_data(unit, "breed")
+end
+
 AiUtils.unit_alive = function (unit)
 	if not unit_alive(unit) then
 		return false
 	end
 
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
-	local is_alive = health_extension and health_extension.is_alive(health_extension)
+	local is_alive = health_extension and health_extension:is_alive()
 
 	return is_alive
 end
+
 AiUtils.unit_invincible = function (unit)
 	if not unit_alive(unit) then
 		return false
@@ -503,6 +500,7 @@ AiUtils.unit_invincible = function (unit)
 
 	return is_invincible
 end
+
 AiUtils.unit_knocked_down = function (unit)
 	if not unit_alive(unit) then
 		return false
@@ -514,10 +512,11 @@ AiUtils.unit_knocked_down = function (unit)
 		return false
 	end
 
-	local is_knocked_down = status_extension.is_knocked_down(status_extension)
+	local is_knocked_down = status_extension:is_knocked_down()
 
 	return is_knocked_down
 end
+
 AiUtils.unit_disabled = function (unit)
 	if not unit_alive(unit) then
 		return false
@@ -529,22 +528,22 @@ AiUtils.unit_disabled = function (unit)
 		return false
 	end
 
-	local is_disabled = status_extension.is_disabled(status_extension)
+	local is_disabled = status_extension:is_disabled()
 
 	return is_disabled
 end
+
 AiUtils.position_is_on_large_navmesh = function (position, min_group_size, min_group_neighbour_count)
 	local group = self.navigation_group_manager:get_group_from_position(target_pos)
-	local group_area = (group and group.get_group_area(group)) or 0
-	local group_neighbours_count = (group and #group.get_group_neighbours(group)) or 0
-	local navmesh_is_large_enough = 30 < group_area and 0 < group_neighbours_count
-
-	return 
+	local group_area = (group and group:get_group_area()) or 0
+	local group_neighbours_count = (group and #group:get_group_neighbours()) or 0
+	local navmesh_is_large_enough = group_area > 30 and group_neighbours_count > 0
 end
+
 AiUtils.is_unwanted_target = function (enemy_unit)
 	if VALID_TARGETS_PLAYERS_AND_BOTS[enemy_unit] then
 		local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
-		local is_grabbed_by_chaos_spawn = status_extension.is_grabbed_by_chaos_spawn(status_extension)
+		local is_grabbed_by_chaos_spawn = status_extension:is_grabbed_by_chaos_spawn()
 
 		if is_grabbed_by_chaos_spawn then
 			return true
@@ -553,61 +552,63 @@ AiUtils.is_unwanted_target = function (enemy_unit)
 
 	return false
 end
+
 AiUtils.is_of_interest_to_gutter_runner = function (gutter_runner_unit, enemy_unit, blackboard, ignore_knocked_down)
 	if not VALID_TARGETS_PLAYERS_AND_BOTS[enemy_unit] then
-		return 
+		return
 	end
 
 	local disabled_by_unit = blackboard.group_blackboard.disabled_by_special[enemy_unit]
 
 	if disabled_by_unit and disabled_by_unit ~= gutter_runner_unit then
-		return 
+		return
 	end
 
 	local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
 
-	if status_extension.is_knocked_down(status_extension) and not ignore_knocked_down then
-		return 
+	if status_extension:is_knocked_down() and not ignore_knocked_down then
+		return
 	end
 
-	if status_extension.is_grabbed_by_pack_master(status_extension) then
-		return 
+	if status_extension:is_grabbed_by_pack_master() then
+		return
 	end
 
-	if status_extension.is_grabbed_by_corruptor(status_extension) then
-		return 
+	if status_extension:is_grabbed_by_corruptor() then
+		return
 	end
 
-	if status_extension.is_grabbed_by_chaos_spawn(status_extension) then
-		return 
+	if status_extension:is_grabbed_by_chaos_spawn() then
+		return
 	end
 
-	if status_extension.get_is_ledge_hanging(status_extension) then
-		return 
+	if status_extension:get_is_ledge_hanging() then
+		return
 	end
 
-	if status_extension.is_pounced_down(status_extension) and status_extension.get_pouncer_unit(status_extension) ~= gutter_runner_unit then
-		return 
+	if status_extension:is_pounced_down() and status_extension:get_pouncer_unit() ~= gutter_runner_unit then
+		return
 	end
 
 	if status_extension.using_transport then
-		return 
+		return
 	end
 
 	return true
 end
+
 AiUtils.is_of_interest_to_packmaster = function (packmaster_unit, enemy_unit)
 	if VALID_TARGETS_PLAYERS_AND_BOTS[enemy_unit] then
 		local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
-		local is_knocked_down = status_extension.is_knocked_down(status_extension)
-		local is_pounced_down = status_extension.is_pounced_down(status_extension)
-		local is_grabbed_by_chaos_spawn = status_extension.is_grabbed_by_chaos_spawn(status_extension)
-		local grabbed = status_extension.is_grabbed_by_pack_master(status_extension)
-		local is_grabbed_by_other_pack_master = grabbed and status_extension.get_pack_master_grabber(status_extension) ~= packmaster_unit
+		local is_knocked_down = status_extension:is_knocked_down()
+		local is_pounced_down = status_extension:is_pounced_down()
+		local is_grabbed_by_chaos_spawn = status_extension:is_grabbed_by_chaos_spawn()
+		local grabbed = status_extension:is_grabbed_by_pack_master()
+		local is_grabbed_by_other_pack_master = grabbed and status_extension:get_pack_master_grabber() ~= packmaster_unit
 		local is_hanging = status_extension.pack_master_status == "pack_master_hanging"
 		local is_using_transport = status_extension.using_transport
 		local ledge_hanging = status_extension.is_ledge_hanging
-		local is_grabbed_by_corruptor = status_extension.is_grabbed_by_corruptor(status_extension)
+		local is_grabbed_by_corruptor = status_extension:is_grabbed_by_corruptor()
 
 		if not is_knocked_down and not is_pounced_down and not is_grabbed_by_other_pack_master and not is_hanging and not is_using_transport and not ledge_hanging and not is_grabbed_by_chaos_spawn and not is_grabbed_by_corruptor then
 			return true
@@ -616,18 +617,19 @@ AiUtils.is_of_interest_to_packmaster = function (packmaster_unit, enemy_unit)
 
 	return false
 end
+
 AiUtils.is_of_interest_to_corruptor = function (corruptor_unit, enemy_unit)
 	if VALID_TARGETS_PLAYERS_AND_BOTS[enemy_unit] then
 		local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
-		local is_knocked_down = status_extension.is_knocked_down(status_extension)
-		local is_pounced_down = status_extension.is_pounced_down(status_extension)
-		local is_grabbed_by_chaos_spawn = status_extension.is_grabbed_by_chaos_spawn(status_extension)
-		local grabbed = status_extension.is_grabbed_by_corruptor(status_extension)
+		local is_knocked_down = status_extension:is_knocked_down()
+		local is_pounced_down = status_extension:is_pounced_down()
+		local is_grabbed_by_chaos_spawn = status_extension:is_grabbed_by_chaos_spawn()
+		local grabbed = status_extension:is_grabbed_by_corruptor()
 		local is_grabbed_by_other_corruptor = grabbed and status_extension.corruptor_unit ~= corruptor_unit
 		local is_hanging = status_extension.pack_master_status == "pack_master_hanging"
 		local is_using_transport = status_extension.using_transport
 		local ledge_hanging = status_extension.is_ledge_hanging
-		local is_grabbed_by_pack_master = status_extension.is_grabbed_by_pack_master(status_extension)
+		local is_grabbed_by_pack_master = status_extension:is_grabbed_by_pack_master()
 
 		if not is_knocked_down and not is_pounced_down and not is_grabbed_by_other_corruptor and not is_hanging and not is_using_transport and not ledge_hanging and not is_grabbed_by_chaos_spawn and not is_grabbed_by_pack_master then
 			return true
@@ -636,16 +638,17 @@ AiUtils.is_of_interest_to_corruptor = function (corruptor_unit, enemy_unit)
 
 	return false
 end
+
 AiUtils.is_of_interest_to_tentacle = function (enemy_unit, tentacle_unit)
 	local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
-	local is_knocked_down = status_extension.is_knocked_down(status_extension)
-	local is_pounced_down = status_extension.is_pounced_down(status_extension)
-	local is_grabbed_by_chaos_spawn = status_extension.is_grabbed_by_chaos_spawn(status_extension)
+	local is_knocked_down = status_extension:is_knocked_down()
+	local is_pounced_down = status_extension:is_pounced_down()
+	local is_grabbed_by_chaos_spawn = status_extension:is_grabbed_by_chaos_spawn()
 	local is_hanging = status_extension.pack_master_status == "pack_master_hanging"
 	local is_using_transport = status_extension.using_transport
 	local ledge_hanging = status_extension.is_ledge_hanging
 	local in_end_zone = status_extension.in_end_zone
-	local is_grabbed_by_corruptor = status_extension.is_grabbed_by_corruptor(status_extension)
+	local is_grabbed_by_corruptor = status_extension:is_grabbed_by_corruptor()
 	local tentacle_pos = POSITION_LOOKUP[tentacle_unit]
 	local player_pos = POSITION_LOOKUP[enemy_unit]
 
@@ -655,18 +658,19 @@ AiUtils.is_of_interest_to_tentacle = function (enemy_unit, tentacle_unit)
 
 	return false
 end
+
 AiUtils.is_of_interest_to_vortex = function (enemy_unit)
 	local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
-	local is_knocked_down = status_extension.is_knocked_down(status_extension)
-	local is_pounced_down = status_extension.is_pounced_down(status_extension)
-	local grabbed = status_extension.is_grabbed_by_pack_master(status_extension)
+	local is_knocked_down = status_extension:is_knocked_down()
+	local is_pounced_down = status_extension:is_pounced_down()
+	local grabbed = status_extension:is_grabbed_by_pack_master()
 	local is_hanging = status_extension.pack_master_status == "pack_master_hanging"
 	local is_using_transport = status_extension.using_transport
 	local ledge_hanging = status_extension.is_ledge_hanging
-	local is_grabbed_by_chaos_spawn = status_extension.is_grabbed_by_chaos_spawn(status_extension)
-	local is_in_vortex = status_extension.is_in_vortex(status_extension)
+	local is_grabbed_by_chaos_spawn = status_extension:is_grabbed_by_chaos_spawn()
+	local is_in_vortex = status_extension:is_in_vortex()
 	local in_end_zone = status_extension.in_end_zone
-	local is_grabbed_by_corruptor = status_extension.is_grabbed_by_corruptor(status_extension)
+	local is_grabbed_by_corruptor = status_extension:is_grabbed_by_corruptor()
 
 	if not is_knocked_down and not is_pounced_down and not grabbed and not is_hanging and not is_using_transport and not ledge_hanging and not is_grabbed_by_chaos_spawn and not is_in_vortex and not in_end_zone and not is_grabbed_by_corruptor then
 		return true
@@ -674,15 +678,16 @@ AiUtils.is_of_interest_to_vortex = function (enemy_unit)
 
 	return false
 end
+
 AiUtils.is_of_interest_plague_wave_sorcerer = function (enemy_unit)
 	local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
-	local is_knocked_down = status_extension.is_knocked_down(status_extension)
-	local is_pounced_down = status_extension.is_pounced_down(status_extension)
-	local grabbed = status_extension.is_grabbed_by_pack_master(status_extension)
+	local is_knocked_down = status_extension:is_knocked_down()
+	local is_pounced_down = status_extension:is_pounced_down()
+	local grabbed = status_extension:is_grabbed_by_pack_master()
 	local is_hanging = status_extension.pack_master_status == "pack_master_hanging"
 	local is_using_transport = status_extension.using_transport
 	local ledge_hanging = status_extension.is_ledge_hanging
-	local is_grabbed_by_chaos_spawn = status_extension.is_grabbed_by_chaos_spawn(status_extension)
+	local is_grabbed_by_chaos_spawn = status_extension:is_grabbed_by_chaos_spawn()
 	local overpowered = status_extension.overpowered
 	local in_end_zone = status_extension.in_end_zone
 
@@ -692,16 +697,17 @@ AiUtils.is_of_interest_plague_wave_sorcerer = function (enemy_unit)
 
 	return false
 end
+
 AiUtils.is_of_interest_boss_sorcerer = function (enemy_unit)
 	local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
-	local is_knocked_down = status_extension.is_knocked_down(status_extension)
-	local is_pounced_down = status_extension.is_pounced_down(status_extension)
-	local grabbed = status_extension.is_grabbed_by_pack_master(status_extension)
+	local is_knocked_down = status_extension:is_knocked_down()
+	local is_pounced_down = status_extension:is_pounced_down()
+	local grabbed = status_extension:is_grabbed_by_pack_master()
 	local is_hanging = status_extension.pack_master_status == "pack_master_hanging"
 	local is_using_transport = status_extension.using_transport
 	local ledge_hanging = status_extension.is_ledge_hanging
-	local is_grabbed_by_chaos_spawn = status_extension.is_grabbed_by_chaos_spawn(status_extension)
-	local is_in_vortex = status_extension.is_in_vortex(status_extension)
+	local is_grabbed_by_chaos_spawn = status_extension:is_grabbed_by_chaos_spawn()
+	local is_in_vortex = status_extension:is_in_vortex()
 	local overpowered = status_extension.overpowered
 
 	if not is_knocked_down and not is_pounced_down and not grabbed and not is_hanging and not is_using_transport and not ledge_hanging and not is_grabbed_by_chaos_spawn and not is_in_vortex and not overpowered then
@@ -710,25 +716,26 @@ AiUtils.is_of_interest_boss_sorcerer = function (enemy_unit)
 
 	return false
 end
+
 AiUtils.is_of_interest_stormfiend_demo = function (enemy_unit)
 	local player_manager = Managers.player
-	local player = player_manager.unit_owner(player_manager, enemy_unit)
+	local player = player_manager:unit_owner(enemy_unit)
 
 	return not player.bot_player
 end
+
 AiUtils.show_polearm = function (packmaster_unit, show)
 	local item_inventory_index = 1
 	local go_id = Managers.state.unit_storage:go_id(packmaster_unit)
 	local network_manager = Managers.state.network
 
-	if network_manager.game(network_manager) then
+	if network_manager:game() then
 		network_manager.network_transmit:send_rpc_all("rpc_ai_show_single_item", go_id, item_inventory_index, show)
 	end
-
-	return 
 end
+
 AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, stagger_value, always_stagger)
-	fassert(0 < stagger_type, "Tried to use invalid stagger type %q", stagger_type)
+	fassert(stagger_type > 0, "Tried to use invalid stagger type %q", stagger_type)
 
 	local difficulty_modifier = Managers.state.difficulty:get_difficulty_settings().stagger_modifier
 	blackboard.pushing_unit = attacker_unit
@@ -755,12 +762,11 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 		end
 
 		if ai_extension.attacked then
-			ai_extension.attacked(ai_extension, attacker_unit, t)
+			ai_extension:attacked(attacker_unit, t)
 		end
 	end
-
-	return 
 end
+
 AiUtils.override_stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, is_push)
 	local active_node = blackboard.active_node
 
@@ -768,14 +774,14 @@ AiUtils.override_stagger = function (unit, blackboard, attacker_unit, stagger_di
 		return false
 	end
 
-	if active_node.stagger_override(active_node, unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, is_push) then
-		assert(0 < stagger_type, "Tried to use invalid stagger type %q", stagger_type)
+	if active_node:stagger_override(unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, is_push) then
+		assert(stagger_type > 0, "Tried to use invalid stagger type %q", stagger_type)
 
 		if unit ~= attacker_unit and ScriptUnit.has_extension(unit, "ai_system") then
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
 
 			if ai_extension.attacked then
-				ai_extension.attacked(ai_extension, attacker_unit, t)
+				ai_extension:attacked(attacker_unit, t)
 			end
 		end
 
@@ -784,18 +790,21 @@ AiUtils.override_stagger = function (unit, blackboard, attacker_unit, stagger_di
 
 	return false
 end
+
 AiUtils.random = function (value1, value2)
 	return value1 + Math.random() * (value2 - value1)
 end
+
 local MAX_TRIES = 10
 local MIN_ANGLE_STEP = 4
 local MAX_ANGLE_STEP = 8
 local MIN_ANGLE = 0
+
 AiUtils.advance_towards_target = function (unit, blackboard, min_distance, max_distance, min_angle_step, max_angle_step, min_angle, max_tries, direction, above, below)
 	local target_unit = blackboard.target_unit
 
 	if not AiUtils.unit_alive(target_unit) then
-		return 
+		return
 	end
 
 	local max_tries = MAX_TRIES
@@ -821,6 +830,7 @@ AiUtils.advance_towards_target = function (unit, blackboard, min_distance, max_d
 
 	return false
 end
+
 AiUtils.temp_anim_event = function (unit, anim, time)
 	local category_name = "temp_anim_event"
 	local head_node = Unit.node(unit, "c_head")
@@ -836,27 +846,24 @@ AiUtils.temp_anim_event = function (unit, anim, time)
 
 	Managers.state.debug_text:clear_unit_text(unit, category_name)
 	Managers.state.debug_text:output_unit_text(text, text_size, unit, head_node, offset_vector, nil, category_name, color_vector, viewport_name)
-
-	return 
 end
+
 AiUtils.clear_temp_anim_event = function (unit)
 	local category_name = "temp_anim_event"
 
 	Managers.state.debug_text:clear_unit_text(unit, category_name)
-
-	return 
 end
+
 AiUtils.anim_event = function (unit, data, anim_event)
 	if data.anim_event and data.anim_event == anim_event then
-		return 
+		return
 	end
 
 	Managers.state.network:anim_event(unit, anim_event)
 
 	data.anim_event = anim_event
-
-	return 
 end
+
 AiUtils.get_default_breed_move_speed = function (unit, blackboard)
 	local move_speed = nil
 	local breed = blackboard.breed
@@ -869,11 +876,11 @@ AiUtils.get_default_breed_move_speed = function (unit, blackboard)
 
 	return move_speed
 end
+
 AiUtils.clear_anim_event = function (data)
 	data.anim_event = nil
-
-	return 
 end
+
 AiUtils.set_default_anim_constraint = function (unit, constraint_target)
 	local position = POSITION_LOOKUP[unit]
 	local rotation = Unit.world_rotation(unit, 0)
@@ -881,19 +888,17 @@ AiUtils.set_default_anim_constraint = function (unit, constraint_target)
 	local aim_target = position + rotation_forward * 5 + Vector3.up() * 1.25
 
 	Unit.animation_set_constraint_target(unit, constraint_target, aim_target)
-
-	return 
 end
+
 AiUtils.ninja_vanish_when_taking_damage = function (unit, blackboard)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
-	local recent_damages, nr_damages = health_extension.recent_damages(health_extension)
+	local recent_damages, nr_damages = health_extension:recent_damages()
 
-	if 0 < nr_damages then
+	if nr_damages > 0 then
 		blackboard.ninja_vanish = true
 	end
-
-	return 
 end
+
 AiUtils.initialize_cost_table = function (navtag_layer_cost_table, allowed_layers)
 	for layer_id, layer_name in ipairs(LAYER_ID_MAPPING) do
 		local layer_cost = allowed_layers[layer_name]
@@ -905,18 +910,16 @@ AiUtils.initialize_cost_table = function (navtag_layer_cost_table, allowed_layer
 			GwNavTagLayerCostTable.set_layer_cost_multiplier(navtag_layer_cost_table, layer_id, layer_cost)
 		end
 	end
-
-	return 
 end
+
 AiUtils.initialize_nav_cost_map_cost_table = function (cost_table, allowed_layers, default_cost)
 	for layer_id, layer_name in ipairs(NAV_COST_MAP_LAYER_ID_MAPPING) do
 		local layer_cost = (allowed_layers and allowed_layers[layer_name]) or default_cost or 0
 
 		GwNavCostMap.cost_table_set_cost(cost_table, layer_id, layer_cost)
 	end
-
-	return 
 end
+
 AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_type, damage_direction)
 	local damage_amount = NetworkConstants.damage.max
 	local attacker_unit = attacker_unit or victim_unit
@@ -928,18 +931,18 @@ AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_
 	for i = 1, math.ceil(health / damage_amount), 1 do
 		DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, damage_direction, "suicide")
 	end
-
-	return 
 end
+
 local DEFAULT_AGGRO_MULTIPLIERS = {
 	ranged = 1,
 	melee = 1,
 	grenade = 1
 }
+
 AiUtils.update_aggro = function (unit, blackboard, breed, t, dt)
 	local aggro_list = blackboard.aggro_list
 	local health_extension = ScriptUnit.extension(unit, "health_system")
-	local strided_array, array_length = health_extension.recent_damages(health_extension)
+	local strided_array, array_length = health_extension:recent_damages()
 	local aggro_decay = dt * breed.perception_weights.aggro_decay_per_sec
 
 	for enemy_unit, aggro in pairs(aggro_list) do
@@ -948,7 +951,7 @@ AiUtils.update_aggro = function (unit, blackboard, breed, t, dt)
 
 	local aggro_multipliers = breed.perception_weights.aggro_multipliers or DEFAULT_AGGRO_MULTIPLIERS
 
-	if 0 < array_length then
+	if array_length > 0 then
 		local stride = DamageDataIndex.STRIDE
 		local index = 0
 
@@ -976,9 +979,8 @@ AiUtils.update_aggro = function (unit, blackboard, breed, t, dt)
 			index = index + stride
 		end
 	end
-
-	return 
 end
+
 AiUtils.debug_bot_transitions = function (gui, t, x1, y1)
 	local tiny_font_size = 16
 	local tiny_font = "gw_arial_16"
@@ -1007,7 +1009,7 @@ AiUtils.debug_bot_transitions = function (gui, t, x1, y1)
 			local unit = player.player_unit
 
 			if unit_alive(unit) then
-				local profile_index = player.profile_index(player)
+				local profile_index = player:profile_index()
 				local profile = SPProfiles[profile_index]
 				local unit_name = profile and profile.unit_name
 				local text = nil
@@ -1035,9 +1037,8 @@ AiUtils.debug_bot_transitions = function (gui, t, x1, y1)
 	y2 = y2 + 20
 
 	ScriptGUI.icrect(gui, resx, resy, borderx, bordery, x1 + debug_win_width, y2, layer - 1, Color(200, 20, 20, 20))
-
-	return 
 end
+
 AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt, hit_func, ...)
 	local self_forward = Quaternion.forward(Unit.local_rotation(unit, 0))
 	local self_pos = POSITION_LOOKUP[unit]
@@ -1062,7 +1063,7 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 			if dodge_radius then
 				local status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
 
-				if status_extension and status_extension.get_is_dodging(status_extension) then
+				if status_extension and status_extension:get_is_dodging() then
 					push_radius = dodge_radius
 				end
 			end
@@ -1085,7 +1086,7 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 								local push_scaler = 1 - ahead_dist / data.ahead_dist
 								push_scaler = push_scaler * push_scaler
 
-								locomotion_extension.add_external_velocity(locomotion_extension, pushed_velocity * push_scaler)
+								locomotion_extension:add_external_velocity(pushed_velocity * push_scaler)
 
 								if hit_func then
 									hit_func(hit_unit, unit, ...)
@@ -1099,9 +1100,8 @@ AiUtils.push_intersecting_players = function (unit, displaced_units, data, t, dt
 			end
 		end
 	end
-
-	return 
 end
+
 AiUtils.set_material_property = function (unit, variable_name, material_name, value, all_meshes)
 	local mesh = nil
 
@@ -1121,19 +1121,17 @@ AiUtils.set_material_property = function (unit, variable_name, material_name, va
 
 		Material.set_scalar(material, variable, value)
 	end
-
-	return 
 end
+
 AiUtils.allow_smart_object_layers = function (navigation_extension, status)
-	navigation_extension.allow_layer(navigation_extension, "ledges", status)
-	navigation_extension.allow_layer(navigation_extension, "ledges_with_fence", status)
-	navigation_extension.allow_layer(navigation_extension, "doors", status)
-	navigation_extension.allow_layer(navigation_extension, "planks", status)
-	navigation_extension.allow_layer(navigation_extension, "jumps", status)
-	navigation_extension.allow_layer(navigation_extension, "teleporters", status)
-
-	return 
+	navigation_extension:allow_layer("ledges", status)
+	navigation_extension:allow_layer("ledges_with_fence", status)
+	navigation_extension:allow_layer("doors", status)
+	navigation_extension:allow_layer("planks", status)
+	navigation_extension:allow_layer("jumps", status)
+	navigation_extension:allow_layer("teleporters", status)
 end
+
 AiUtils.shield_user = function (unit)
 	if not ScriptUnit.has_extension(unit, "ai_shield_system") then
 		return false
@@ -1145,6 +1143,7 @@ AiUtils.shield_user = function (unit)
 
 	return using_shield
 end
+
 AiUtils.attack_is_shield_blocked = function (hit_unit, attacker_unit, trueflight_blocking, hit_direction)
 	assert(attacker_unit)
 
@@ -1153,10 +1152,11 @@ AiUtils.attack_is_shield_blocked = function (hit_unit, attacker_unit, trueflight
 	end
 
 	local ai_shield_extension = ScriptUnit.extension(hit_unit, "ai_shield_system")
-	local shield_blocked = ai_shield_extension.can_block_attack(ai_shield_extension, attacker_unit, trueflight_blocking, hit_direction)
+	local shield_blocked = ai_shield_extension:can_block_attack(attacker_unit, trueflight_blocking, hit_direction)
 
 	return shield_blocked
 end
+
 AiUtils.attack_is_dodged = function (hit_unit)
 	local dodged = false
 	local game_object_id = Managers.state.unit_storage:go_id(hit_unit)
@@ -1165,10 +1165,11 @@ AiUtils.attack_is_dodged = function (hit_unit)
 
 	return dodged
 end
+
 AiUtils.unit_is_behind_player = function (enemy_unit, player_unit)
 	local network_manager = Managers.state.network
-	local player_unit_id = network_manager.unit_game_object_id(network_manager, player_unit)
-	local game = network_manager.game(network_manager)
+	local player_unit_id = network_manager:unit_game_object_id(player_unit)
+	local game = network_manager:game()
 
 	if game and player_unit_id then
 		local to_target_vec = Vector3.normalize(POSITION_LOOKUP[enemy_unit] - POSITION_LOOKUP[player_unit])
@@ -1181,7 +1182,9 @@ AiUtils.unit_is_behind_player = function (enemy_unit, player_unit)
 
 	return false
 end
+
 local MIN_DIST_SQR = 0.0001
+
 AiUtils.remove_bad_boxed_spline_points = function (source_points, spline_name)
 	local points = {}
 	local pA, pB = source_points[1]:unbox()
@@ -1201,6 +1204,7 @@ AiUtils.remove_bad_boxed_spline_points = function (source_points, spline_name)
 
 	return points
 end
+
 AiUtils.remove_bad_spline_points = function (source_points, spline_name)
 	local points = {}
 	local pA = source_points[1]
@@ -1222,4 +1226,4 @@ AiUtils.remove_bad_spline_points = function (source_points, spline_name)
 	return points
 end
 
-return 
+return

@@ -1,4 +1,5 @@
 EntitySystemBag = class()
+
 EntitySystemBag.init = function (self)
 	self.systems = {}
 	self.num_systems = 0
@@ -6,16 +7,15 @@ EntitySystemBag.init = function (self)
 	self.systems_pre_update = {}
 	self.systems_post_update = {}
 	self.systems_physics_async_update = {}
-
-	return 
 end
+
 EntitySystemBag.destroy = function (self)
 	local systems = self.systems
 
 	for i = 1, #systems, 1 do
 		local system = systems[i]
 
-		system.destroy(system)
+		system:destroy()
 		table.clear(system)
 	end
 
@@ -24,9 +24,8 @@ EntitySystemBag.destroy = function (self)
 	self.systems_pre_update = nil
 	self.systems_post_update = nil
 	self.systems_physics_async_update = nil
-
-	return 
 end
+
 EntitySystemBag.add_system = function (self, system, block_pre_update, block_post_update)
 	self.systems[#self.systems + 1] = system
 
@@ -45,15 +44,15 @@ EntitySystemBag.add_system = function (self, system, block_pre_update, block_pos
 	if system.physics_async_update then
 		self.systems_physics_async_update[#self.systems_physics_async_update + 1] = system
 	end
-
-	return 
 end
+
 local list_name_by_function = {
 	pre_update = "systems_pre_update",
 	update = "systems_update",
 	physics_async_update = "systems_physics_async_update",
 	post_update = "systems_post_update"
 }
+
 EntitySystemBag.update = function (self, entity_system_update_context, update_function)
 	local update_function_list_name = list_name_by_function[update_function]
 	local update_list = self[update_function_list_name]
@@ -64,17 +63,14 @@ EntitySystemBag.update = function (self, entity_system_update_context, update_fu
 
 		system[update_function](system, entity_system_update_context, t)
 	end
-
-	return 
 end
+
 EntitySystemBag.hot_join_sync = function (self, sender)
 	for i, system in ipairs(self.systems) do
 		if system.hot_join_sync then
-			system.hot_join_sync(system, sender)
+			system:hot_join_sync(sender)
 		end
 	end
-
-	return 
 end
 
-return 
+return

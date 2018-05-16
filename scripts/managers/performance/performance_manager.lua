@@ -1,4 +1,5 @@
 PerformanceManager = class(PerformanceManager)
+
 PerformanceManager.init = function (self, gui, is_server, level_key)
 	self._gui = gui
 	self._is_server = is_server
@@ -52,7 +53,7 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 	local event_manager = Managers.state.event
 
 	for event_name, cb_name in pairs(self._events) do
-		event_manager.register(event_manager, self, event_name, cb_name)
+		event_manager:register(self, event_name, cb_name)
 	end
 
 	local level_settings = LevelSettings[level_key]
@@ -64,15 +65,15 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 	for breed_name, breed in pairs(Breeds) do
 		self._activated_per_breed[breed_name] = 0
 	end
+end
 
-	return 
-end
 PerformanceManager.update = function (self, dt, t)
-	return 
+	return
 end
+
 PerformanceManager.event_ai_unit_spawned = function (self, breed_name, active, event_spawned)
 	if not self._tracked_ai_breeds[breed_name] then
-		return 
+		return
 	end
 
 	self._num_ai_spawned = self._num_ai_spawned + 1
@@ -89,9 +90,8 @@ PerformanceManager.event_ai_unit_spawned = function (self, breed_name, active, e
 			self._num_event_ai_active = self._num_event_ai_active + 1
 		end
 	end
-
-	return 
 end
+
 PerformanceManager.event_ai_units_all_destroyed = function (self)
 	self._num_ai_spawned = 0
 	self._num_event_ai_spawned = 0
@@ -102,14 +102,13 @@ PerformanceManager.event_ai_units_all_destroyed = function (self)
 	for breed_name, amount in pairs(activated_per_breed) do
 		activated_per_breed[breed_name] = 0
 	end
-
-	return 
 end
+
 PerformanceManager.event_ai_unit_activated = function (self, breed_name, event_spawned)
 	self._activated_per_breed[breed_name] = self._activated_per_breed[breed_name] + 1
 
 	if not self._tracked_ai_breeds[breed_name] then
-		return 
+		return
 	end
 
 	self._num_ai_active = self._num_ai_active + 1
@@ -117,16 +116,15 @@ PerformanceManager.event_ai_unit_activated = function (self, breed_name, event_s
 	if event_spawned then
 		self._num_event_ai_active = self._num_event_ai_active + 1
 	end
-
-	return 
 end
+
 PerformanceManager.event_ai_unit_despawned = function (self, breed_name, active, event_spawned)
 	if active then
 		self._activated_per_breed[breed_name] = self._activated_per_breed[breed_name] - 1
 	end
 
 	if not self._tracked_ai_breeds[breed_name] then
-		return 
+		return
 	end
 
 	self._num_ai_spawned = self._num_ai_spawned - 1
@@ -142,26 +140,26 @@ PerformanceManager.event_ai_unit_despawned = function (self, breed_name, active,
 			self._num_event_ai_active = self._num_event_ai_active - 1
 		end
 	end
-
-	return 
 end
+
 PerformanceManager.num_active_enemies = function (self)
 	return self._num_ai_active
 end
+
 PerformanceManager.num_active_enemies_of_breed = function (self, breed_name)
 	return self._activated_per_breed[breed_name]
 end
+
 PerformanceManager.activated_per_breed = function (self)
 	return self._activated_per_breed
 end
+
 PerformanceManager.destroy = function (self)
 	local event_manager = Managers.state.event
 
 	for event_name, cb_name in pairs(self._events) do
-		event_manager.unregister(event_manager, event_name, self)
+		event_manager:unregister(event_name, self)
 	end
-
-	return 
 end
 
-return 
+return

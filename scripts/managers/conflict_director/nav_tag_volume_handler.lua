@@ -1,4 +1,5 @@
 NavTagVolumeHandler = class(NavTagVolumeHandler)
+
 NavTagVolumeHandler.init = function (self, world, nav_world)
 	self.world = world
 	self.nav_world = nav_world
@@ -23,16 +24,15 @@ NavTagVolumeHandler.init = function (self, world, nav_world)
 			self._volume_lookup_id = self._volume_lookup_id + 1
 
 			if tag_volume_data.layer_name ~= "undefined" then
-				self.create_tag_volume_from_mappings(self, level_volume_name)
+				self:create_tag_volume_from_mappings(level_volume_name)
 			end
 		end
 	end
-
-	return 
 end
+
 NavTagVolumeHandler.create_tag_volume_from_mappings = function (self, level_volume_name)
 	if self.created_tag_volumes[level_volume_name] then
-		return 
+		return
 	end
 
 	local a, b, c = Script.temp_count()
@@ -63,9 +63,8 @@ NavTagVolumeHandler.create_tag_volume_from_mappings = function (self, level_volu
 	self.level_volumes_by_layer[mapping.layer_name] = volumes
 
 	Script.set_temp_count(a, b, c)
-
-	return 
 end
+
 NavTagVolumeHandler.create_mapping = function (self, pos, size, layer_name)
 	local volume_name = "runtime_volume_" .. self._runtime_volume_index
 
@@ -158,11 +157,13 @@ NavTagVolumeHandler.create_mapping = function (self, pos, size, layer_name)
 
 	return volume_name
 end
+
 NavTagVolumeHandler.get_mapping_from_lookup_id = function (self, lookup_id)
 	local volume_name = self.mapping_lookup_table[lookup_id]
 
 	return volume_name and self.mappings[volume_name]
 end
+
 NavTagVolumeHandler.destroy_nav_tag_volume = function (self, volume_name)
 	assert(self.mappings[volume_name], string.format("[NavTagVolumeHandler] There is not nav tag volume MAPPING with that name (%s)", volume_name))
 	assert(self.created_tag_volumes[volume_name], string.format("[NavTagVolumeHandler] There is not NAV TAG VOLUME with that name (%s)", volume_name))
@@ -176,9 +177,8 @@ NavTagVolumeHandler.destroy_nav_tag_volume = function (self, volume_name)
 	self.created_tag_volumes[volume_name] = nil
 	self.mapping_lookup_table[volume_name] = nil
 	self.mapping_lookup_table[lookup_id] = nil
-
-	return 
 end
+
 NavTagVolumeHandler.set_mapping_layer_name = function (self, level_volume_name, layer_name)
 	assert(self.mappings_available, "[NavTagVolumeHandler] Current level requires world_nav_tag_volumes.lua to be located in the level directory. Run SpawnGenerator in the level editor to export it!")
 
@@ -187,9 +187,8 @@ NavTagVolumeHandler.set_mapping_layer_name = function (self, level_volume_name, 
 	fassert(mapping, "[NavTagVolumeHandler] Level volume %q could not be found in world_nav_tag_volumes.lua. Run SpawnGenerator in the level editor to export it!", level_volume_name)
 
 	mapping.layer_name = layer_name
-
-	return 
 end
+
 NavTagVolumeHandler.destroy = function (self)
 	for _, tag_volume in pairs(self.created_tag_volumes) do
 		GwNavTagVolume.destroy(tag_volume)
@@ -197,8 +196,6 @@ NavTagVolumeHandler.destroy = function (self)
 
 	self.created_tag_volumes = nil
 	self.level_volumes_by_layer = nil
-
-	return 
 end
 
-return 
+return

@@ -1,4 +1,5 @@
 EnvironmentBlendTime = class(EnvironmentBlendTime)
+
 EnvironmentBlendTime.init = function (self, data)
 	self._environment = data.environment
 	self._blend_function = data.blend_function
@@ -12,20 +13,20 @@ EnvironmentBlendTime.init = function (self, data)
 	self._target_value = 0
 
 	Managers.state.event:register(self, "force_blend_environment_volume", "event_force_blend_environment_volume")
-
-	return 
 end
+
 EnvironmentBlendTime.event_force_blend_environment_volume = function (self)
 	self._force_blend = true
-
-	return 
 end
+
 EnvironmentBlendTime.environment = function (self)
 	return self._environment
 end
+
 EnvironmentBlendTime.value = function (self)
 	return self._value
 end
+
 EnvironmentBlendTime.update = function (self, dt)
 	if self._blend_function(self._environment) then
 		self._target_value = 1
@@ -41,17 +42,14 @@ EnvironmentBlendTime.update = function (self, dt)
 	else
 		self._value = math.lerp(self._value, self._target_value, self._lerp_speed * dt)
 	end
-
-	return 
 end
+
 EnvironmentBlendTime.destroy = function (self)
 	local event_manager = Managers.state.event
 
 	if event_manager then
-		event_manager.unregister(event_manager, "force_blend_environment_volume", self)
+		event_manager:unregister("force_blend_environment_volume", self)
 	end
-
-	return 
 end
 
-return 
+return

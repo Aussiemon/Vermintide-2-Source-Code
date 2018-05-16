@@ -10,6 +10,7 @@ require("scripts/network/network_transmit")
 StateTitleScreenInitNetwork = class(StateTitleScreenInitNetwork)
 StateTitleScreenInitNetwork.NAME = "StateTitleScreenInitNetwork"
 StateTitleScreenInitNetwork.lobby_port_increment = 0
+
 StateTitleScreenInitNetwork.on_enter = function (self, params)
 	print("[Gamestate] Enter Substate StateTitleScreenInitNetwork")
 
@@ -17,10 +18,9 @@ StateTitleScreenInitNetwork.on_enter = function (self, params)
 	self._world = self._params.world
 	self._viewport = self._params.viewport
 
-	self._init_network(self)
-
-	return 
+	self:_init_network()
 end
+
 StateTitleScreenInitNetwork._init_network = function (self)
 	local auto_join_setting = Development.parameter("auto_join")
 
@@ -43,9 +43,8 @@ StateTitleScreenInitNetwork._init_network = function (self)
 	end
 
 	self._network_state = "_create_session"
-
-	return 
 end
+
 StateTitleScreenInitNetwork.update = function (self, dt, t)
 	if self[self._network_state] then
 		self[self._network_state](self, dt, t)
@@ -54,8 +53,9 @@ StateTitleScreenInitNetwork.update = function (self, dt, t)
 	Network.update(dt, self._network_event_delegate.event_table)
 	Managers.backend:update(dt)
 
-	return self._next_state(self)
+	return self:_next_state()
 end
+
 StateTitleScreenInitNetwork._create_session = function (self)
 	local auto_join_setting = Development.parameter("auto_join")
 	local unique_server_name = Development.parameter("unique_server_name")
@@ -80,6 +80,10 @@ StateTitleScreenInitNetwork._create_session = function (self)
 			Managers.package:load("resource_packages/inventory", "global")
 		end
 
+		if Managers.package:is_loading("resource_packages/careers", "global") then
+			Managers.package:load("resource_packages/careers", "global")
+		end
+
 		assert(unique_server_name, "No unique_server_name in %%appdata%%\\Roaming\\Fatshark\\Bulldozer\\user_settings.config")
 
 		self._lobby_finder = LobbyFinder:new(self._network_options, nil, true)
@@ -91,9 +95,8 @@ StateTitleScreenInitNetwork._create_session = function (self)
 		self._lobby_host = LobbyHost:new(self._network_options)
 		self._network_state = "_creating_session_host"
 	end
-
-	return 
 end
+
 StateTitleScreenInitNetwork._creating_session_host = function (self, dt, t)
 	self._lobby_host:update(dt)
 
@@ -104,9 +107,8 @@ StateTitleScreenInitNetwork._creating_session_host = function (self, dt, t)
 	elseif state == LobbyState.FAILED then
 		self._network_state = "_error"
 	end
-
-	return 
 end
+
 StateTitleScreenInitNetwork._join_session = function (self, dt, t)
 	self._lobby_host:update(dt)
 	self._level_transition_handler:load_default_level()
@@ -127,9 +129,8 @@ StateTitleScreenInitNetwork._join_session = function (self, dt, t)
 
 	self._wanted_game_state = StateIngame
 	self._network_state = "_update_host_lobby"
-
-	return 
 end
+
 StateTitleScreenInitNetwork._update_host_lobby = function (self, dt, t)
 	self._level_transition_handler:update()
 	self._network_transmit:transmit_local_rpcs()
@@ -146,9 +147,8 @@ StateTitleScreenInitNetwork._update_host_lobby = function (self, dt, t)
 	end
 
 	self._network_server:update(dt)
-
-	return 
 end
+
 StateTitleScreenInitNetwork._update_lobby_client = function (self, dt, t)
 	self._level_transition_handler:update()
 
@@ -193,15 +193,14 @@ StateTitleScreenInitNetwork._update_lobby_client = function (self, dt, t)
 			self._popup_id = Managers.popup:queue_popup(Localize(error_message), Localize("popup_error_topic"), "restart_as_server", Localize("menu_accept"))
 		end
 	end
-
-	return 
 end
+
 StateTitleScreenInitNetwork._update_lobby_join = function (self, dt, t)
 	local lobby_finder = self._lobby_finder
 
-	lobby_finder.update(lobby_finder, dt)
+	lobby_finder:update(dt)
 
-	local lobbies = lobby_finder.lobbies(lobby_finder)
+	local lobbies = lobby_finder:lobbies()
 
 	for i, lobby in ipairs(lobbies) do
 		local auto_join = lobby.unique_server_name == Development.parameter("unique_server_name")
@@ -216,15 +215,15 @@ StateTitleScreenInitNetwork._update_lobby_join = function (self, dt, t)
 			break
 		end
 	end
+end
 
-	return 
-end
 StateTitleScreenInitNetwork._error = function (self, dt, t)
-	return 
+	return
 end
+
 StateTitleScreenInitNetwork._next_state = function (self)
-	if not self._packages_loaded(self) or not self._wanted_game_state then
-		return 
+	if not self:_packages_loaded() or not self._wanted_game_state then
+		return
 	end
 
 	if not self._debug_setup then
@@ -280,36 +279,35 @@ StateTitleScreenInitNetwork._next_state = function (self)
 			self._popup_id = nil
 		end
 
-		return 
+		return
 	end
 
 	if self._lobby_host and self._lobby_host.state ~= LobbyState.JOINED then
-		return 
+		return
 	end
 
 	if self._lobby_finder or (self._lobby_client and self._lobby_client.state ~= LobbyState.JOINED) then
-		return 
+		return
 	end
 
 	if (not self._sent_joined and not self._lobby_host) or (self._lobby_host and self._lobby_host.state == LobbyState.FAILED) then
-		return 
+		return
 	end
 
 	if self._network_client and not self._network_client:can_enter_game() then
-		return 
+		return
 	elseif self._network_server and not self._network_server:can_enter_game() then
-		return 
+		return
 	end
 
 	if not Managers.backend:profiles_loaded() then
-		return 
+		return
 	end
 
 	self.parent.state = self._wanted_game_state
 	self._wanted_game_state = nil
-
-	return 
 end
+
 StateTitleScreenInitNetwork.on_exit = function (self, application_shutdown)
 	if self._level_transition_handler then
 		self._level_transition_handler:unregister_rpcs()
@@ -397,9 +395,8 @@ StateTitleScreenInitNetwork.on_exit = function (self, application_shutdown)
 
 		self._network_event_delegate = nil
 	end
-
-	return 
 end
+
 StateTitleScreenInitNetwork._packages_loaded = function (self)
 	if self._level_transition_handler:all_packages_loaded() then
 		if self._network_server and not self._has_sent_level_loaded then
@@ -413,7 +410,7 @@ StateTitleScreenInitNetwork._packages_loaded = function (self)
 		local package_manager = Managers.package
 
 		for i, name in ipairs(GlobalResources) do
-			if not package_manager.has_loaded(package_manager, name) then
+			if not package_manager:has_loaded(name) then
 				return false
 			end
 		end
@@ -424,4 +421,4 @@ StateTitleScreenInitNetwork._packages_loaded = function (self)
 	return true
 end
 
-return 
+return

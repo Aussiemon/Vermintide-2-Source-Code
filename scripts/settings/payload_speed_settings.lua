@@ -112,4 +112,4 @@ PayloadSpeedSettings.farmlands_heavy_load_01.not_pushed = PayloadSpeedSettings.f
 PayloadSpeedSettings.farmlands_heavy_load_01.not_pushed.speed = 0
 PayloadSpeedSettings.farmlands_heavy_load_01.not_pushed.acceleration = 0.2
 
-return 
+return

@@ -2,6 +2,7 @@ ActionFlamepatch = class(ActionFlamepatch)
 local POSITION_TWEAK = -1
 local SPRAY_RANGE = math.abs(POSITION_TWEAK) + 5
 local SPRAY_RADIUS = 2
+
 ActionFlamepatch.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	self.owner_unit = owner_unit
 	self.first_person_unit = first_person_unit
@@ -24,9 +25,8 @@ ActionFlamepatch.init = function (self, world, item_name, is_server, owner_unit,
 	self.network_transmit = Managers.state.network.network_transmit
 	self.unit_id = Managers.state.network.unit_storage:go_id(owner_unit)
 	self._is_critical_strike = false
-
-	return 
 end
+
 ActionFlamepatch.client_owner_start_action = function (self, new_action, t)
 	self.current_action = new_action
 	self.state = "waiting_to_shoot"
@@ -64,13 +64,13 @@ ActionFlamepatch.client_owner_start_action = function (self, new_action, t)
 	self.source_id = WwiseWorld.make_auto_source(self.wwise_world, self.weapon_unit)
 
 	WwiseWorld.trigger_event(self.wwise_world, new_action.fire_sound_event, self.source_id)
-
-	return 
 end
+
 local INDEX_POSITION = 1
 local INDEX_DISTANCE = 2
 local INDEX_NORMAL = 3
 local INDEX_ACTOR = 4
+
 ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.first_person_unit
@@ -107,12 +107,12 @@ ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_da
 
 			if self.flamepatch_timer == 0 then
 				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-				local current_position = first_person_extension.current_position(first_person_extension)
-				local current_rotation = first_person_extension.current_rotation(first_person_extension)
+				local current_position = first_person_extension:current_position()
+				local current_rotation = first_person_extension:current_rotation()
 				local direction = Quaternion.forward(current_rotation)
 				local end_point = current_position + direction * POSITION_TWEAK + direction * (SPRAY_RANGE - SPRAY_RADIUS)
 
-				self.spawn_liquid_area(self, current_action.liquid_area.liquid_template, current_position, direction)
+				self:spawn_liquid_area(current_action.liquid_area.liquid_template, current_position, direction)
 			end
 
 			self.flamepatch_timer = self.flamepatch_timer + dt
@@ -137,7 +137,7 @@ ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_da
 				local potential_hit_position = hit[INDEX_POSITION]
 				local hit_actor = hit[INDEX_ACTOR]
 				local potential_hit_unit = Actor.unit(hit_actor)
-				potential_hit_unit, hit_actor = DamageUtils.redirect_shield_hit(potential_hit_unit, hit_actor)
+				potential_hit_unit, hit_actor = ActionUtils.redirect_shield_hit(potential_hit_unit, hit_actor)
 
 				if potential_hit_unit ~= self.owner_unit then
 					local breed = Unit.get_data(potential_hit_unit, "breed")
@@ -169,16 +169,15 @@ ActionFlamepatch.client_owner_post_update = function (self, dt, t, world, can_da
 			World.move_particles(world, self.flamethrower_impact_effect, hit_position, muzzle_rotation)
 		end
 	end
-
-	return 
 end
+
 ActionFlamepatch.finish = function (self, reason)
 	local ammo_extension = self.ammo_extension
 
-	if ammo_extension and self.current_action.reload_when_out_of_ammo and ammo_extension.ammo_count(ammo_extension) == 0 and ammo_extension.can_reload(ammo_extension) then
+	if ammo_extension and self.current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 		local play_reload_animation = true
 
-		ammo_extension.start_reload(ammo_extension, play_reload_animation)
+		ammo_extension:start_reload(play_reload_animation)
 	end
 
 	World.stop_spawning_particles(self.world, self.flamethrower_effect)
@@ -201,9 +200,8 @@ ActionFlamepatch.finish = function (self, reason)
 	if hud_extension then
 		hud_extension.show_critical_indication = false
 	end
-
-	return 
 end
+
 ActionFlamepatch.destroy = function (self)
 	if self.flamethrower_effect then
 		World.destroy_particles(self.world, self.flamethrower_effect)
@@ -216,17 +214,14 @@ ActionFlamepatch.destroy = function (self)
 
 		self.flamethrower_impact_effect = nil
 	end
-
-	return 
 end
+
 ActionFlamepatch.spawn_liquid_area = function (self, liquid_template_name, projected_start_position, direction)
 	local liquid_template_id = NetworkLookup.liquid_area_damage_templates[liquid_template_name]
 	local network_manager = Managers.state.network
 	local invalid_game_object_id = NetworkConstants.invalid_game_object_id
 
 	network_manager.network_transmit:send_rpc_server("rpc_create_liquid_damage_area", invalid_game_object_id, projected_start_position, direction, liquid_template_id)
-
-	return 
 end
 
-return 
+return

@@ -2,8 +2,6 @@ local function debug_print(str, ...)
 	if script_data.ai_bots_debug or script_data.ai_bot_transition_debug then
 		printf("[BotNavTransitionManager] " .. str, ...)
 	end
-
-	return 
 end
 
 local IS_BIDIRECTIONAL = false
@@ -31,10 +29,11 @@ BotNavTransitionManager.NAV_COST_MAP_LAYERS = {
 	stormfiend_warpfire = 50,
 	vortex_danger_zone = 75
 }
+
 BotNavTransitionManager.init = function (self, world, is_server, network_event_delegate)
 	self._world = world
 	local ai_system = Managers.state.entity:system("ai_system")
-	local nav_world = ai_system.nav_world(ai_system)
+	local nav_world = ai_system:nav_world()
 	self._nav_world = nav_world
 	self._index_offset = 471100
 	self._current_index = self._index_offset + 1
@@ -61,16 +60,16 @@ BotNavTransitionManager.init = function (self, world, is_server, network_event_d
 	self._is_server = is_server
 	self._network_event_delegate = network_event_delegate
 
-	network_event_delegate.register(network_event_delegate, self, "rpc_create_bot_nav_transition")
-
-	return 
+	network_event_delegate:register(self, "rpc_create_bot_nav_transition")
 end
+
 BotNavTransitionManager.traverse_logic = function (self)
 	return self._traverse_logic
 end
+
 BotNavTransitionManager.update = function (self, dt, t)
 	if not script_data.ai_bots_debug and not script_data.ai_bot_transition_debug then
-		return 
+		return
 	end
 
 	local drawer = Managers.state.debug:drawer({
@@ -85,10 +84,10 @@ BotNavTransitionManager.update = function (self, dt, t)
 		local g = 50 + math.cos(math.pi * 0.5 * (t % 2 - 1)) * 200
 		local color = Color(50, g, 50)
 
-		drawer.line(drawer, from, waypoint, color)
-		drawer.line(drawer, waypoint, to, color)
-		drawer.sphere(drawer, from, 0.3, color)
-		drawer.cone(drawer, to - Vector3.normalize(from - to) * 0.25, to, 0.3, color, 9, 9)
+		drawer:line(from, waypoint, color)
+		drawer:line(waypoint, to, color)
+		drawer:sphere(from, 0.3, color)
+		drawer:cone(to - Vector3.normalize(from - to) * 0.25, to, 0.3, color, 9, 9)
 	end
 
 	for _, transition in pairs(self._ladder_transitions) do
@@ -96,35 +95,32 @@ BotNavTransitionManager.update = function (self, dt, t)
 		local to = transition.to:unbox()
 		local color = (transition.failed and Color(0, 0, 0)) or Color(255, 125, 0)
 
-		drawer.line(drawer, from, to, color)
-		drawer.sphere(drawer, from, 0.3, color)
-		drawer.cone(drawer, to - Vector3.normalize(from - to) * 0.25, to, 0.3, color, 9, 9)
+		drawer:line(from, to, color)
+		drawer:sphere(from, 0.3, color)
+		drawer:cone(to - Vector3.normalize(from - to) * 0.25, to, 0.3, color, 9, 9)
 	end
 
-	if Keyboard.pressed(Keyboard.button_index("l")) and 0 < Keyboard.button(Keyboard.button_index("left ctrl")) then
-		self.debug_refresh_ladders(self)
+	if Keyboard.pressed(Keyboard.button_index("l")) and Keyboard.button(Keyboard.button_index("left ctrl")) > 0 then
+		self:debug_refresh_ladders()
 	end
-
-	return 
 end
+
 BotNavTransitionManager.clear_transitions = function (self)
 	local transitions = self._bot_nav_transitions
 
 	for i, _ in pairs(transitions) do
-		self._destroy_transition(self, transitions, i)
+		self:_destroy_transition(transitions, i)
 	end
-
-	return 
 end
+
 BotNavTransitionManager.destroy = function (self)
 	self._network_event_delegate:unregister(self)
 	GwNavTagLayerCostTable.destroy(self._navtag_layer_cost_table)
 	GwNavCostMap.destroy_tag_cost_table(self._nav_cost_map_cost_table)
 	GwNavTraverseLogic.destroy(self._traverse_logic)
 	GwNavTraverseLogic.destroy(self._layerless_traverse_logic)
-
-	return 
 end
+
 BotNavTransitionManager._find_matching_layer = function (self, from, to, player_jumped)
 	local diff = to - from
 	local flat_length = Vector3.length(Vector3.flat(diff))
@@ -151,12 +147,11 @@ BotNavTransitionManager._find_matching_layer = function (self, from, to, player_
 		return "bot_drops"
 	end
 
-	if 0.3 < height then
+	if height > 0.3 then
 		return "bot_jumps"
 	end
-
-	return 
 end
+
 BotNavTransitionManager._destroy_transition = function (self, transitions, index)
 	debug_print("destroying smart object %i", index)
 
@@ -167,25 +162,23 @@ BotNavTransitionManager._destroy_transition = function (self, transitions, index
 
 	GwNavGraph.destroy(graph)
 	World.destroy_unit(self._world, transition.unit)
-
-	return 
 end
+
 BotNavTransitionManager.rpc_create_bot_nav_transition = function (self, sender, from, via, to, player_jumped)
-	self.create_transition(self, from, via, to, player_jumped)
-
-	return 
+	self:create_transition(from, via, to, player_jumped)
 end
+
 BotNavTransitionManager.create_transition = function (self, from, via, wanted_to, player_jumped, make_permanent)
 	if not self._is_server then
 		Managers.state.network.network_transmit:send_rpc_server("rpc_create_bot_nav_transition", from, via, wanted_to, player_jumped or false)
 
-		return 
+		return
 	end
 
 	local world = self._world
 	local ph_world = World.get_data(world, "physics_world")
 	local hits = PhysicsWorld.immediate_overlap(ph_world, "position", from, "shape", "sphere", "size", 0.1, "collision_filter", "filter_bot_nav_transition_overlap", "use_global_table")
-	local hit_existing_transition = hits and 0 < #hits
+	local hit_existing_transition = hits and #hits > 0
 
 	if hit_existing_transition then
 		debug_print("found_existing_transition")
@@ -224,7 +217,7 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 		return false
 	end
 
-	local layer_name = self._find_matching_layer(self, from, to, player_jumped)
+	local layer_name = self:_find_matching_layer(from, to, player_jumped)
 
 	if not layer_name then
 		debug_print("fail, no layer")
@@ -236,7 +229,7 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 	local transitions = self._bot_nav_transitions
 
 	if transitions[index] then
-		self._destroy_transition(self, transitions, index)
+		self:_destroy_transition(transitions, index)
 	end
 
 	local layer_id = LAYER_ID_MAPPING[layer_name]
@@ -250,7 +243,7 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 	else
 		local from_to_via_flat_direction = Vector3.normalize(Vector3.flat(via - from))
 
-		if 0.001 < Vector3.length_squared(from_to_via_flat_direction) then
+		if Vector3.length_squared(from_to_via_flat_direction) > 0.001 then
 			local test_position = via + from_to_via_flat_direction * EXTRA_FALL_TRANSITION_WAYPOINT_DISTANCE
 			local hit, hit_position = PhysicsWorld.immediate_raycast(ph_world, via, from_to_via_flat_direction, EXTRA_FALL_TRANSITION_WAYPOINT_DISTANCE, "closest", "collision_filter", "filter_player_mover")
 
@@ -299,14 +292,14 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 
 	return true, unit
 end
+
 BotNavTransitionManager.unregister_transition = function (self, unit)
 	local index = self._bot_nav_transition_lookup[unit]
 
 	fassert(index, "No transition index found for unit %s.", unit)
-	self._destroy_transition(self, self._bot_nav_transitions, index)
-
-	return 
+	self:_destroy_transition(self._bot_nav_transitions, index)
 end
+
 BotNavTransitionManager.transition_data = function (self, unit)
 	local ladder_transition = self._ladder_transitions[unit]
 
@@ -318,9 +311,8 @@ BotNavTransitionManager.transition_data = function (self, unit)
 
 		return transition.type, transition.from:unbox(), transition.to:unbox(), transition.waypoint:unbox()
 	end
-
-	return 
 end
+
 BotNavTransitionManager.register_ladder = function (self, unit)
 	local data = {}
 	self._ladder_transitions[unit] = data
@@ -349,8 +341,8 @@ BotNavTransitionManager.register_ladder = function (self, unit)
 		})
 		local color = (hit and Color(0, 255, 0)) or Color(125, 0, 0)
 
-		drawer.line(drawer, ray_from, ray_to, color)
-		drawer.cone(drawer, ray_to - down * 0.25, ray_to, 0.3, color, 9, 9)
+		drawer:line(ray_from, ray_to, color)
+		drawer:cone(ray_to - down * 0.25, ray_to, 0.3, color, 9, 9)
 	end
 
 	if not hit then
@@ -360,7 +352,7 @@ BotNavTransitionManager.register_ladder = function (self, unit)
 		data.to = Vector3Box(ray_from)
 		data.from = Vector3Box(ray_from + down * ray_length)
 
-		return 
+		return
 	end
 
 	local from, to, found_nav_mesh, z = nil
@@ -384,7 +376,7 @@ BotNavTransitionManager.register_ladder = function (self, unit)
 					name = "BotNavTransitionManager_retained"
 				})
 
-				drawer.sphere(drawer, check_pos, 0.2, Color(255, 0, 0))
+				drawer:sphere(check_pos, 0.2, Color(255, 0, 0))
 			end
 
 			found_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, check_pos, 0.3, 0.5, self._layerless_traverse_logic)
@@ -426,7 +418,7 @@ BotNavTransitionManager.register_ladder = function (self, unit)
 					name = "BotNavTransitionManager_retained"
 				})
 
-				drawer.sphere(drawer, check_pos, 0.2, Color(255, 0, 0))
+				drawer:sphere(check_pos, 0.2, Color(255, 0, 0))
 			end
 
 			found_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, check_pos, 0.3, 0.5, self._layerless_traverse_logic)
@@ -452,7 +444,7 @@ BotNavTransitionManager.register_ladder = function (self, unit)
 	if not data.failed then
 		local index = self._ladder_smart_object_index + 1
 		local climbable_height = 1.5
-		local ladder_is_bidirectional = bottom_pos.z - climbable_height < hit_position.z
+		local ladder_is_bidirectional = hit_position.z > bottom_pos.z - climbable_height
 		local layer_name = "bot_ladders"
 		local layer_id = LAYER_ID_MAPPING[layer_name]
 
@@ -475,21 +467,21 @@ BotNavTransitionManager.register_ladder = function (self, unit)
 
 	data.from = Vector3Box(from)
 	data.to = Vector3Box(to)
-
-	return 
 end
+
 BotNavTransitionManager.get_ladder_coordinates = function (self, unit)
 	local data = self._ladder_transitions[unit]
 
 	return data.from:unbox(), data.to:unbox(), data.failed
 end
+
 BotNavTransitionManager.debug_refresh_ladders = function (self)
 	print("[BotNavTransitionManager] Refreshing ladders...")
 
 	local temp_unit_table = {}
 
 	for unit, data in pairs(self._ladder_transitions) do
-		self.unregister_ladder(self, unit)
+		self:unregister_ladder(unit)
 
 		temp_unit_table[#temp_unit_table + 1] = unit
 	end
@@ -499,11 +491,10 @@ BotNavTransitionManager.debug_refresh_ladders = function (self)
 	fassert(self._debug_ladder_smart_objects_created == 0, "Failed to clean up all ladder smart objects during refresh, %i left.", self._debug_ladder_smart_objects_created)
 
 	for _, unit in ipairs(temp_unit_table) do
-		self.register_ladder(self, unit)
+		self:register_ladder(unit)
 	end
-
-	return 
 end
+
 BotNavTransitionManager.unregister_ladder = function (self, unit)
 	local data = self._ladder_transitions[unit]
 	local graph = data.graph
@@ -515,9 +506,8 @@ BotNavTransitionManager.unregister_ladder = function (self, unit)
 	end
 
 	self._ladder_transitions[unit] = nil
-
-	return 
 end
+
 BotNavTransitionManager.allow_layer = function (self, layer_name, layer_allowed)
 	local layer_id = LAYER_ID_MAPPING[layer_name]
 
@@ -526,15 +516,12 @@ BotNavTransitionManager.allow_layer = function (self, layer_name, layer_allowed)
 	else
 		GwNavTagLayerCostTable.forbid_layer(self._navtag_layer_cost_table, layer_id)
 	end
-
-	return 
 end
+
 BotNavTransitionManager.set_layer_cost = function (self, layer_name, layer_cost)
 	local layer_id = LAYER_ID_MAPPING[layer_name]
 
 	GwNavTagLayerCostTable.set_layer_cost_multiplier(self._navtag_layer_cost_table, layer_id, layer_cost)
-
-	return 
 end
 
-return 
+return

@@ -2592,4 +2592,4 @@ HitEffectsChaosRaider = {
 }
 HitEffectsChaosRaider = HitEffectsChaosRaider or {}
 
-return 
+return

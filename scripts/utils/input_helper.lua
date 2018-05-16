@@ -1,4 +1,5 @@
 InputUtils = InputUtils or {}
+
 InputUtils.keymaps_key_approved = function (platform_key)
 	local platform = PLATFORM
 
@@ -7,18 +8,18 @@ InputUtils.keymaps_key_approved = function (platform_key)
 	else
 		return (platform_key == platform and true) or nil
 	end
-
-	return 
 end
+
 InputUtils.get_platform_keymaps = function (keymappings, optional_platform_key)
 	local platform = optional_platform_key or PLATFORM
 
 	return keymappings[platform]
 end
+
 InputUtils.get_platform_filters = function (filters, optional_platform_key)
 	local platform = optional_platform_key or PLATFORM
 
 	return filters[platform]
 end
 
-return 
+return

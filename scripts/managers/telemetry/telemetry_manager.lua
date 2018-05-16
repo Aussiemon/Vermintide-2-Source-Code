@@ -7,40 +7,37 @@ local SAVE_DATA = {
 	upload_attempts = 0
 }
 TelemetryManager = class(TelemetryManager)
+
 TelemetryManager.init = function (self)
-	self.reset(self)
+	self:reset()
 
 	self.events = TelemetryEvents:new(self)
 	self.rpc_listener = TelemetryRPCListener:new(self.events)
 
 	Managers.save:auto_load(SAVE_FILE, function (result)
 		SAVE_DATA = result.data or SAVE_DATA
-
-		return 
 	end)
-
-	return 
 end
+
 TelemetryManager.reset = function (self)
 	self._events_json = {}
 	self._current_tick = 0
-
-	return 
 end
+
 TelemetryManager.update = function (self, dt)
 	self._current_tick = self._current_tick + dt
-
-	return 
 end
+
 local BLACKLIST = table.set(TelemetrySettings.blacklist or {})
 local event_entry = {}
+
 TelemetryManager.register_event = function (self, event_type, event_params)
 	if BLACKLIST[event_type] then
 		if DEBUG then
 			printf("[TelemetryManager] Blacklisted event '%s'", event_type)
 		end
 
-		return 
+		return
 	end
 
 	for k, param in pairs(event_params) do
@@ -59,20 +56,18 @@ TelemetryManager.register_event = function (self, event_type, event_params)
 	if DEBUG then
 		printf("[TelemetryManager] Registering event '%s' %s", event_type, encoded_event)
 	end
-
-	return 
 end
+
 TelemetryManager.send = function (self)
-	self.register_event(self, "upload_attempts", SAVE_DATA)
+	self:register_event("upload_attempts", SAVE_DATA)
 
 	local events_as_string = "[" .. table.concat(self._events_json, ", \n") .. "]"
 	local file_name = sprintf("%s_%s.json", TelemetrySettings.title_id, math.uuid())
 	local url = string.format("%s%s", TelemetrySettings.ftp_address, file_name)
 
 	Managers.curl:upload(url, events_as_string, callback(self, "cb_upload_complete"))
-
-	return 
 end
+
 TelemetryManager.cb_upload_complete = function (self, success, _, _, error)
 	if success then
 		if DEBUG then
@@ -94,8 +89,6 @@ TelemetryManager.cb_upload_complete = function (self, success, _, _, error)
 
 		Managers.save:auto_save(SAVE_FILE, SAVE_DATA)
 	end
-
-	return 
 end
 
-return 
+return

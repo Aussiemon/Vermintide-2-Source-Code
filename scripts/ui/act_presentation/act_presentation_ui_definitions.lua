@@ -267,16 +267,14 @@ local animations = {
 			start_progress = 0,
 			end_progress = 0,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local difficulty_index = params.difficulty_index
 				widgets.level.content.frame = "map_frame_0" .. difficulty_index
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -287,8 +285,6 @@ local animations = {
 				local render_settings = params.render_settings
 				render_settings.alpha_multiplier = 0
 				params.played_entry_sound = false
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				if not params.played_entry_sound then
@@ -314,11 +310,9 @@ local animations = {
 				local glass_size = style.glass.texture_size
 				glass_size[1] = 216 + 216 * size_multiplier * anim_size_fraction
 				glass_size[2] = 216 + 216 * size_multiplier * anim_size_fraction
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -337,8 +331,6 @@ local animations = {
 				act_text_style.text_color[1] = alpha
 				act_text_shadow_style.text_color[1] = alpha
 				title_divider_style.color[1] = alpha
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
@@ -356,11 +348,9 @@ local animations = {
 				act_text_style.text_color[1] = alpha
 				act_text_shadow_style.text_color[1] = alpha
 				title_divider_style.color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -368,17 +358,15 @@ local animations = {
 			start_progress = 5.7,
 			end_progress = 6.2,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
 				local render_settings = params.render_settings
 				render_settings.alpha_multiplier = 1 - anim_fraction
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -391,8 +379,6 @@ local animations = {
 				local render_settings = params.render_settings
 				render_settings.alpha_multiplier = 0
 				params.played_entry_sound = false
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				if not params.played_entry_sound then
@@ -418,11 +404,9 @@ local animations = {
 				local glass_size = style.glass.texture_size
 				glass_size[1] = 216 + 216 * size_multiplier * anim_size_fraction
 				glass_size[2] = 216 + 216 * size_multiplier * anim_size_fraction
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -441,8 +425,6 @@ local animations = {
 				act_text_style.text_color[1] = alpha
 				act_text_shadow_style.text_color[1] = alpha
 				title_divider_style.color[1] = alpha
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeCubic(progress)
@@ -460,11 +442,9 @@ local animations = {
 				act_text_style.text_color[1] = alpha
 				act_text_shadow_style.text_color[1] = alpha
 				title_divider_style.color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -476,8 +456,6 @@ local animations = {
 				local frame_glow = widgets.level.style.frame_glow
 				frame_glow.color[1] = alpha
 				params.played_skull_sound = false
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				if not params.played_skull_sound then
@@ -492,11 +470,9 @@ local animations = {
 				local alpha = 255 * anim_fraction
 				local frame_glow = widgets.level.style.frame_glow
 				frame_glow.color[1] = alpha
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -504,16 +480,14 @@ local animations = {
 			start_progress = 3.2,
 			end_progress = 3.2,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local difficulty_index = params.difficulty_index
 				widgets.level.content.frame = "map_frame_0" .. difficulty_index
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		},
 		{
@@ -521,17 +495,15 @@ local animations = {
 			start_progress = 5.7,
 			end_progress = 6.2,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_fraction = math.easeInCubic(progress)
 				local render_settings = params.render_settings
 				render_settings.alpha_multiplier = 1 - anim_fraction
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

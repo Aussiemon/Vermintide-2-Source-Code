@@ -1,14 +1,15 @@
 AIShieldUserHuskExtension = class(AIShieldUserHuskExtension)
+
 AIShieldUserHuskExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
 	self.is_blocking = extension_init_data.is_blocking
 	self.is_dodging = extension_init_data.is_dodging
+end
 
-	return 
-end
 AIShieldUserHuskExtension.destroy = function (self)
-	return 
+	return
 end
+
 AIShieldUserHuskExtension.can_block_attack = function (self, attacker_unit, trueflight_blocking, hit_direction)
 	assert(attacker_unit)
 
@@ -29,10 +30,10 @@ AIShieldUserHuskExtension.can_block_attack = function (self, attacker_unit, true
 
 	if trueflight_blocking then
 		hit_angle = Vector3.dot(hit_unit_direction, hit_direction)
-		behind_target = -0.75 <= hit_angle and hit_angle <= 1
+		behind_target = hit_angle >= -0.75 and hit_angle <= 1
 	else
 		hit_angle = Vector3.dot(hit_unit_direction, attacker_to_hit_dir)
-		behind_target = 0.55 <= hit_angle and hit_angle <= 1
+		behind_target = hit_angle >= 0.55 and hit_angle <= 1
 	end
 
 	local can_block_attack = not behind_target
@@ -40,4 +41,4 @@ AIShieldUserHuskExtension.can_block_attack = function (self, attacker_unit, true
 	return can_block_attack
 end
 
-return 
+return

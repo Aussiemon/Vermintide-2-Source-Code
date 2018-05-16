@@ -1,4 +1,5 @@
 LadderExtension = class(LadderExtension)
+
 LadderExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._world = extension_init_context.world
 	self._unit = unit
@@ -14,12 +15,12 @@ LadderExtension.init = function (self, extension_init_context, unit, extension_i
 	if self._is_server then
 		Managers.state.bot_nav_transition:register_ladder(unit)
 	end
-
-	return 
 end
+
 LadderExtension.ladder_extents = function (self)
 	return self._bottom_position:unbox(), self._top_position:unbox()
 end
+
 LadderExtension.perlin_shake = {
 	persistance = 1,
 	magnitude = 0.1,
@@ -86,12 +87,12 @@ LadderExtension.update_enabled = function (self, unit, input, dt, context, t)
 			self._shaking = false
 		end
 	end
-
-	return 
 end
+
 LadderExtension.is_shaking = function (self)
 	return (self._shaking and true) or false
 end
+
 LadderExtension.shake = function (self)
 	if not self._shaking then
 		self._shaking = Managers.time:time("game")
@@ -107,15 +108,12 @@ LadderExtension.shake = function (self)
 
 		self.update = self.update_enabled
 	end
-
-	return 
 end
+
 LadderExtension.destroy = function (self)
 	if self._is_server then
 		Managers.state.bot_nav_transition:unregister_ladder(self._unit)
 	end
-
-	return 
 end
 
-return 
+return

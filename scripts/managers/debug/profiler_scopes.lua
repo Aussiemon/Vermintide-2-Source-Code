@@ -30,12 +30,10 @@ end
 
 function profiler_scopes_trace()
 	if overloaded then
-		return 
+		return
 	end
 
 	overloaded = true
-
-	return 
 end
 
 function profiler_scopes_dump()
@@ -43,16 +41,12 @@ function profiler_scopes_dump()
 
 	dump_light = true
 	dump = true
-
-	return 
 end
 
 function profiler_scopes_dump_light()
 	profiler_scopes_trace()
 
 	dump_light = true
-
-	return 
 end
 
 if Development.parameter("validate_profiling_scopes") or Development.parameter("debug_profiling_scopes") then
@@ -60,4 +54,4 @@ if Development.parameter("validate_profiling_scopes") or Development.parameter("
 	profiler_scopes_dump_light()
 end
 
-return 
+return

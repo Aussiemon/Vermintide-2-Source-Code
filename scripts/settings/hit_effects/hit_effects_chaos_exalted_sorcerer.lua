@@ -147,4 +147,4 @@ HitEffectsChaosExaltedSorcerer = {
 	}
 }
 
-return 
+return

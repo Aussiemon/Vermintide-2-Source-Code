@@ -10,13 +10,10 @@ end
 
 Application.warning = function (...)
 	print_warning(format_error_message(...))
-
-	return 
 end
+
 Application.error = function (...)
 	print_error(format_error_message(...))
-
-	return 
 end
 
 function fassert(condition, message, ...)
@@ -25,16 +22,12 @@ function fassert(condition, message, ...)
 
 		assert(false, message)
 	end
-
-	return 
 end
 
 function ferror(message, ...)
 	local message = format_error_message(message, ...)
 
 	error(message)
-
-	return 
 end
 
-return 
+return

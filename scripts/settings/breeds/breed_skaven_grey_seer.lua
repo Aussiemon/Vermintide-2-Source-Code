@@ -29,12 +29,13 @@ local breed_data = {
 	boss = true,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
 	override_mover_move_distance = 0.7,
-	server_controlled_health_bar = true,
+	difficulty_kill_achievement = "kill_skaven_grey_seer_difficulty_rank",
 	race = "skaven",
 	proximity_system_check = true,
 	death_reaction = "ai_default",
 	armor_category = 1,
 	player_locomotion_constrain_radius = 0.7,
+	server_controlled_health_bar = true,
 	teleport_sound_event = "Play_emitter_grey_seer_lightning_bolt_hit",
 	far_off_despawn_immunity = true,
 	smart_targeting_width = 0.6,
@@ -76,18 +77,18 @@ local breed_data = {
 	run_on_despawn = AiBreedSnippets.on_grey_seer_despawn,
 	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
 		local health_extension = ScriptUnit.extension(blackboard.unit, "health_system")
-		local hp = health_extension.current_health_percent(health_extension)
+		local hp = health_extension:current_health_percent()
 
 		if not health_extension.is_invincible and hp < 0.05 and blackboard.current_phase ~= 6 then
-			local max_health = health_extension.get_max_health(health_extension)
+			local max_health = health_extension:get_max_health()
 			health_extension.is_invincible = true
 
-			health_extension.set_current_damage(health_extension, max_health * 0.95)
+			health_extension:set_current_damage(max_health * 0.95)
 
 			blackboard.death_sequence = true
 		end
 
-		if (blackboard.mounted_data and not blackboard.knocked_off_mount) or 5 <= blackboard.stagger_count then
+		if (blackboard.mounted_data and not blackboard.knocked_off_mount) or blackboard.stagger_count >= 5 then
 			stagger = 0
 			blackboard.stagger_ignore_anim_cb = true
 		else
@@ -733,4 +734,4 @@ local action_data = {
 }
 BreedActions.skaven_grey_seer = table.create_copy(BreedActions.skaven_grey_seer, action_data)
 
-return 
+return

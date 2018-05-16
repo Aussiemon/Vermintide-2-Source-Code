@@ -1,5 +1,6 @@
 StormfiendBeamExtension = class(StormfiendBeamExtension)
 local position_lookup = POSITION_LOOKUP
+
 StormfiendBeamExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
 	self.world = world
@@ -11,14 +12,12 @@ StormfiendBeamExtension.init = function (self, extension_init_context, unit, ext
 	self.vfx_list = {}
 	self.beam_forward_offset = 8
 	self.beam_up_offset = 8
-
-	return 
 end
+
 StormfiendBeamExtension.destroy = function (self)
-	self.remove_vfx_and_sfx(self)
-
-	return 
+	self:remove_vfx_and_sfx()
 end
+
 StormfiendBeamExtension.remove_vfx_and_sfx = function (self)
 	local world = self.world
 	local vfx_list = self.vfx_list
@@ -36,23 +35,20 @@ StormfiendBeamExtension.remove_vfx_and_sfx = function (self)
 	end
 
 	self.muzzle_node = nil
-
-	return 
 end
+
 StormfiendBeamExtension.anim_cb_start_stormfiend_beam = function (self, arm)
 	if arm == "right" then
-		self.create_beam(self, "fx_right_muzzle")
+		self:create_beam("fx_right_muzzle")
 	elseif arm == "left" then
-		self.create_beam(self, "fx_left_muzzle")
+		self:create_beam("fx_left_muzzle")
 	end
-
-	return 
 end
+
 StormfiendBeamExtension.anim_cb_stop_stormfiend_beam = function (self)
-	self.remove_vfx_and_sfx(self)
-
-	return 
+	self:remove_vfx_and_sfx()
 end
+
 StormfiendBeamExtension.create_beam = function (self, node_name)
 	local unit = self.unit
 
@@ -78,13 +74,12 @@ StormfiendBeamExtension.create_beam = function (self, node_name)
 		self.particle_life_time = Vector3Box(1, 0, 0)
 		self.vfx_list[#self.vfx_list + 1] = particle_id
 	end
-
-	return 
 end
+
 StormfiendBeamExtension.get_target_position = function (self, unit)
 	local game = Managers.state.network:game()
 	local unit_storage = Managers.state.unit_storage
-	local go_id = unit_storage.go_id(unit_storage, unit)
+	local go_id = unit_storage:go_id(unit)
 	local target_position = GameSession.game_object_field(game, go_id, "aim_target")
 
 	if target_position then
@@ -98,11 +93,12 @@ StormfiendBeamExtension.get_target_position = function (self, unit)
 
 	return false
 end
+
 StormfiendBeamExtension.update = function (self, unit, input, dt, context, t)
 	local world = self.world
 
 	if Unit.alive(unit) and self.muzzle_node then
-		local target_unit_pos = self.get_target_position(self, unit)
+		local target_unit_pos = self:get_target_position(unit)
 
 		if target_unit_pos then
 			local muzzle_node = self.muzzle_node
@@ -127,8 +123,6 @@ StormfiendBeamExtension.update = function (self, unit, input, dt, context, t)
 			World.set_particles_variable(world, self.warpfire_particle_id, effect_variable_id, particle_life_time_vector)
 		end
 	end
-
-	return 
 end
 
-return 
+return

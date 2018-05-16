@@ -16,7 +16,7 @@ local function extract_lines(text)
 		if is_chinese then
 			local is_space_char = char == " " or char == "\u3002" or char == "\uff0c"
 
-			if is_space_char and max_chars_per_line / 2 <= i then
+			if is_space_char and i >= max_chars_per_line / 2 then
 				latest_space_index = i
 			end
 
@@ -59,9 +59,8 @@ SubtitleTimedGui.init = function (self, subtitle_timing_name, target_widgets)
 	self.subtitle_timing_name = subtitle_timing_name
 	self.target_widgets = target_widgets
 	reload = false
-
-	return 
 end
+
 SubtitleTimedGui.update = function (self, dt)
 	local target_widgets = self.target_widgets
 
@@ -82,24 +81,24 @@ SubtitleTimedGui.update = function (self, dt)
 		local offset_y_old = offset_y
 		offset_y = offset_y + dt * self.text_speed
 
-		if 0 < offset_y and offset_y_old <= 0 then
+		if offset_y > 0 and offset_y_old <= 0 then
 			local next_text_index = self.next_text_index + 1
 			self.next_text_index = next_text_index
 			local text = self.texts[next_text_index]
 			widget.content.text = text or ""
-		elseif 200 < offset_y then
+		elseif offset_y > 200 then
 			offset_y = offset_y - #target_widgets * 50
 			widget.style.text.text_color[1] = 0
 		end
 
 		widget.style.text.offset[2] = offset_y
 
-		if 0 <= offset_y and offset_y < 50 then
+		if offset_y >= 0 and offset_y < 50 then
 			local alpha = math.lerp(0, 255, offset_y / 50)
 			widget.style.text.text_color[1] = alpha
-		elseif 50 <= offset_y and offset_y < 150 then
+		elseif offset_y >= 50 and offset_y < 150 then
 			widget.style.text.text_color[1] = 255
-		elseif 150 <= offset_y then
+		elseif offset_y >= 150 then
 			local alpha = math.lerp(255, 0, (offset_y - 150) / 50)
 			widget.style.text.text_color[1] = alpha
 		end
@@ -109,8 +108,6 @@ SubtitleTimedGui.update = function (self, dt)
 
 	if script_data.subtitle_debug then
 	end
-
-	return 
 end
 
-return 
+return

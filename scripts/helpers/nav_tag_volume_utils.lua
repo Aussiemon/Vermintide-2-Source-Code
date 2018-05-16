@@ -1,4 +1,5 @@
 NavTagVolumeUtils = NavTagVolumeUtils or {}
+
 NavTagVolumeUtils.nav_tags_from_position = function (nav_world, position, above, below, layer_name_optional)
 	local layer_id_optional = layer_name_optional and LAYER_ID_MAPPING[layer_name_optional]
 	local query_output = GwNavQueries.tag_volumes_from_position(nav_world, position, above, below)
@@ -26,6 +27,7 @@ NavTagVolumeUtils.nav_tags_from_position = function (nav_world, position, above,
 
 	return nav_tags
 end
+
 NavTagVolumeUtils.inside_nav_tag_layer = function (nav_world, position, above, below, layer_name)
 	local layer = LAYER_ID_MAPPING[layer_name]
 	local query_output = GwNavQueries.tag_volumes_from_position(nav_world, position, above, below)
@@ -42,14 +44,13 @@ NavTagVolumeUtils.inside_nav_tag_layer = function (nav_world, position, above, b
 			end
 		end
 	end
-
-	return 
 end
+
 NavTagVolumeUtils.inside_level_volume_layer = function (level, nav_tag_volume_handler, position, layer_name)
 	local level_volumes = nav_tag_volume_handler.level_volumes_by_layer[layer_name]
 
 	if not level_volumes then
-		return 
+		return
 	end
 
 	for i = 1, #level_volumes, 1 do
@@ -57,8 +58,6 @@ NavTagVolumeUtils.inside_level_volume_layer = function (level, nav_tag_volume_ha
 			return true
 		end
 	end
-
-	return 
 end
 
-return 
+return

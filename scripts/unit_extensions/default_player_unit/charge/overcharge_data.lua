@@ -54,4 +54,4 @@ OverchargeData.bw_unchained = {
 	overcharge_value_decrease_rate = 1
 }
 
-return 
+return

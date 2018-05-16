@@ -24,8 +24,6 @@ function flow_set_script_data(params)
 	else
 		Unit.set_data(params.unit, params.scriptdata, params.value)
 	end
-
-	return 
 end
 
 function flow_script_data_compare_bool(params)
@@ -58,8 +56,6 @@ function flow_script_data_compare_bool(params)
 
 		return returns
 	end
-
-	return 
 end
 
 function flow_script_data_compare_string(params)
@@ -90,8 +86,6 @@ function flow_script_data_compare_string(params)
 
 		return returns
 	end
-
-	return 
 end
 
 function flow_script_data_compare_number(params)
@@ -138,8 +132,6 @@ function flow_script_data_compare_number(params)
 
 		return returns
 	end
-
-	return 
 end
 
 function flow_callback_state_false(params)
@@ -331,14 +323,10 @@ function flow_callback_trigger_event(params)
 	else
 		print("WARNING: flow_callback_trigger_event - unit:", params.unit)
 	end
-
-	return 
 end
 
 function flow_callback_set_unit_visibility(params)
 	Unit.set_visibility(params.unit, params.group, params.visibility)
-
-	return 
 end
 
 function flow_callback_distance_between(params)
@@ -363,15 +351,15 @@ local function split_string(text, sep)
 	local pos = 1
 
 	while true do
-		local b, e = text.find(text, sep, pos)
+		local b, e = text:find(sep, pos)
 
 		if not b then
-			table.insert(lines, text.sub(text, pos))
+			table.insert(lines, text:sub(pos))
 
 			break
 		end
 
-		table.insert(lines, text.sub(text, pos, b - 1))
+		table.insert(lines, text:sub(pos, b - 1))
 
 		pos = e + 1
 	end
@@ -441,7 +429,7 @@ function flow_callback_unlink_objects_in_units_and_remove(params)
 end
 
 function flow_callback_unit_spawner_mark_for_deletion(params)
-	return 
+	return
 end
 
 function flow_callback_set_actor_enabled(params)
@@ -454,8 +442,6 @@ function flow_callback_set_actor_enabled(params)
 	fassert(actor, "Set Actor Enabled flow node referring to unit %s is missing actor %s", tostring(unit), tostring(params.actor or params.actor_name))
 	Actor.set_collision_enabled(actor, params.enabled)
 	Actor.set_scene_query_enabled(actor, params.enabled)
-
-	return 
 end
 
 function flow_callback_set_actor_kinematic(params)
@@ -467,8 +453,6 @@ function flow_callback_set_actor_kinematic(params)
 
 	fassert(actor, "Set Actor Kinematic flow node referring to unit %s is missing actor %s", tostring(unit), tostring(params.actor or params.actor_name))
 	Actor.set_kinematic(actor, params.enabled)
-
-	return 
 end
 
 function flow_callback_spawn_actor(params)
@@ -479,8 +463,6 @@ function flow_callback_spawn_actor(params)
 	local actor = params.actor_name
 
 	Unit.create_actor(unit, actor)
-
-	return 
 end
 
 function flow_callback_destroy_actor(params)
@@ -491,8 +473,6 @@ function flow_callback_destroy_actor(params)
 	local actor = params.actor_name
 
 	Unit.destroy_actor(unit, actor)
-
-	return 
 end
 
 function flow_callback_set_actor_initial_velocity(params)
@@ -500,8 +480,6 @@ function flow_callback_set_actor_initial_velocity(params)
 
 	assert(unit, "Set actor initial velocity has no unit")
 	Unit.apply_initial_actor_velocities(unit, true)
-
-	return 
 end
 
 function flow_callback_set_actor_initial_velocity(params)
@@ -509,8 +487,6 @@ function flow_callback_set_actor_initial_velocity(params)
 
 	assert(unit, "Set actor initial velocity has no unit")
 	Unit.apply_initial_actor_velocities(unit, true)
-
-	return 
 end
 
 function flow_callback_set_unit_material_variation(params)
@@ -518,8 +494,6 @@ function flow_callback_set_unit_material_variation(params)
 	local material_variation = params.material_variation
 
 	Unit.set_material_variation(unit, material_variation)
-
-	return 
 end
 
 function flow_callback_set_material_property_scalar(params)
@@ -546,8 +520,6 @@ function flow_callback_set_material_property_scalar(params)
 
 		Material.set_scalar(material, variable, value)
 	end
-
-	return 
 end
 
 function flow_callback_set_material_property_vector2(params)
@@ -574,8 +546,6 @@ function flow_callback_set_material_property_vector2(params)
 
 		Material.set_vector2(material, variable, value)
 	end
-
-	return 
 end
 
 function flow_callback_set_material_property_vector3(params)
@@ -602,8 +572,6 @@ function flow_callback_set_material_property_vector3(params)
 
 		Material.set_vector3(material, variable, value)
 	end
-
-	return 
 end
 
 function flow_callback_set_material_property_color(params)
@@ -630,8 +598,6 @@ function flow_callback_set_material_property_color(params)
 
 		Material.set_color(material, variable, color)
 	end
-
-	return 
 end
 
 function flow_callback_start_fade(params)
@@ -656,7 +622,7 @@ function flow_callback_start_fade(params)
 	end
 
 	local material = nil
-	local material_name = params.material
+	local material_name = params.material_name
 
 	if mesh and material_name then
 		assert(Mesh.has_material(mesh, material_name), string.format("[flow_callback_start_fade] The material %s doesn't exist for mesh %s", mesh_name, material_name))
@@ -676,7 +642,7 @@ function flow_callback_start_fade(params)
 			Material.set_scalar(material, fade_switch_name, fade_switch)
 			Material.set_vector2(material, start_end_time_name, Vector2(start_time, end_time))
 		end
-	elseif material then
+	elseif material_name then
 		local num_meshes = Unit.num_meshes(unit)
 
 		for i = 0, num_meshes - 1, 1 do
@@ -704,8 +670,6 @@ function flow_callback_start_fade(params)
 			end
 		end
 	end
-
-	return 
 end
 
 function flow_callback_set_unit_light_state(params)
@@ -736,8 +700,6 @@ function flow_callback_set_unit_light_state(params)
 			print("No light named ", light, " in scene")
 		end
 	end
-
-	return 
 end
 
 function flow_callback_set_unit_light_color(params)
@@ -768,8 +730,6 @@ function flow_callback_set_unit_light_color(params)
 			print("No light named ", light, " in scene")
 		end
 	end
-
-	return 
 end
 
 function flow_callback_debug_print(params)
@@ -814,8 +774,6 @@ function flow_callback_debug_print(params)
 	end
 
 	print(print_string)
-
-	return 
 end
 
 function flow_callback_link_objects_in_units(params)
@@ -846,8 +804,6 @@ function flow_callback_link_objects_in_units(params)
 			LODObject.set_orientation_node(child_lod_object, parentunit, LODObject.node(parent_lod_object))
 		end
 	end
-
-	return 
 end
 
 function flow_callback_get_local_transform(params)
@@ -889,8 +845,6 @@ function flow_callback_set_local_scale(params)
 	local node_index = Unit.node(params.unit, params.node)
 
 	Unit.set_local_scale(params.unit, node_index, params.scale)
-
-	return 
 end
 
 function flow_callback_render_cubemap(params)
@@ -900,8 +854,6 @@ function flow_callback_render_cubemap(params)
 
 	LevelEditor.cubemap_generator:create(unitPosition, LevelEditor.shading_environment, path)
 	Application.console_command("reload", "texture")
-
-	return 
 end
 
 function flow_callback_store_parent(params)
@@ -909,8 +861,6 @@ function flow_callback_store_parent(params)
 	local childunit = params.child_unit
 
 	Unit.set_data(childunit, "parent_ref", parentunit)
-
-	return 
 end
 
 function flow_callback_stored_parent(params)
@@ -931,8 +881,6 @@ function flow_callback_set_unit_enabled(params)
 		Unit.set_unit_visibility(params.unit, false)
 		Unit.disable_physics(params.unit)
 	end
-
-	return 
 end
 
 function flow_callback_set_unit_physics(params)
@@ -941,18 +889,14 @@ function flow_callback_set_unit_physics(params)
 	else
 		Unit.disable_physics(params.unit)
 	end
-
-	return 
 end
 
 function flow_callback_disable_animation_state_machine(params)
 	Unit.disable_animation_state_machine(params.unit)
-
-	return 
 end
 
 function flow_callback_play_voice(params)
-	return 
+	return
 end
 
 function flow_callback_relay_trigger(params)
@@ -963,7 +907,7 @@ end
 
 function flow_callback_set_shading_environment_scalar(params)
 	if GameSettingsDevelopment then
-		return 
+		return
 	end
 
 	local variable = params.variable
@@ -973,8 +917,6 @@ function flow_callback_set_shading_environment_scalar(params)
 
 	ShadingEnvironment.set_scalar(shadingenvironment, variable, value)
 	ShadingEnvironment.apply(shadingenvironment)
-
-	return 
 end
 
 function split(text, sep)
@@ -983,15 +925,15 @@ function split(text, sep)
 	local pos = 1
 
 	while true do
-		local b, e = text.find(text, sep, pos)
+		local b, e = text:find(sep, pos)
 
 		if not b then
-			table.insert(lines, text.sub(text, pos))
+			table.insert(lines, text:sub(pos))
 
 			break
 		end
 
-		table.insert(lines, text.sub(text, pos, b - 1))
+		table.insert(lines, text:sub(pos, b - 1))
 
 		pos = e + 1
 	end
@@ -1000,7 +942,7 @@ function split(text, sep)
 end
 
 function flow_callback_wwise_trigger_event_with_environment()
-	return 
+	return
 end
 
-return 
+return

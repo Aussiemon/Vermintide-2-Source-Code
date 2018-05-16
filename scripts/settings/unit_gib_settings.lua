@@ -272,55 +272,6 @@ UnitGibSettings = {
 					"j_neck_1",
 					"j_head"
 				}
-			},
-			upperbody_right = {
-				stump_unit = "units/beings/enemies/skaven_clan_rat/gibs/skaven_clanrat_stump_upperbody_right",
-				parent_scale = 0.01,
-				gib_push_force = 2,
-				stump_parent_align_node = "j_hips",
-				gib_unit = "units/beings/enemies/skaven_clan_rat/gibs/skaven_clanrat_gib_upperbody_right",
-				vfx = "fx/impact_blood_maim",
-				gib_parent_align_node = "j_spine1",
-				gib_push_actor = "j_spine1",
-				parent_hide_group = "dismember_torso_right",
-				stump_link_nodes = {
-					"j_hips",
-					"j_spine",
-					"j_spine1",
-					"j_leftshoulder",
-					"j_leftarm",
-					"j_leftforearm",
-					"j_lefthand"
-				},
-				parent_link_nodes = {
-					"j_hips",
-					"j_spine",
-					"j_spine1",
-					"j_leftshoulder",
-					"j_leftarm",
-					"j_leftforearm",
-					"j_lefthand"
-				},
-				parent_destroy_actors = {
-					"c_rightarm",
-					"c_rightforearm",
-					"c_righthand",
-					"c_neck",
-					"c_head"
-				},
-				parent_scale_nodes = {
-					"j_neck",
-					"j_rightshoulder"
-				},
-				ragdoll_destroy_actors = {
-					"j_rightshoulder",
-					"j_rightarm",
-					"j_rightforearm",
-					"j_righthand",
-					"j_neck",
-					"j_neck_1",
-					"j_head"
-				}
 			}
 		},
 		explode = {
@@ -1458,7 +1409,15 @@ UnitGibSettings.chaos_marauder = {
 		}
 	}
 }
+UnitGibSettings.chaos_marauder_baked = table.create_copy(UnitGibSettings.chaos_marauder_baked, UnitGibSettings.chaos_marauder)
+UnitGibSettings.chaos_marauder_baked.parts.upperbody.gib_unit = "units/beings/enemies/chaos_marauder/gibs/chaos_marauder_gib_upperbody_baked"
+UnitGibSettings.chaos_marauder_with_shield = table.create_copy(UnitGibSettings.chaos_marauder_with_shield, UnitGibSettings.chaos_marauder)
+UnitGibSettings.chaos_marauder_with_shield_baked = table.create_copy(UnitGibSettings.chaos_marauder_with_shield_baked, UnitGibSettings.chaos_marauder_with_shield)
+UnitGibSettings.chaos_marauder_with_shield_baked.parts.upperbody.gib_unit = "units/beings/enemies/chaos_marauder/gibs/chaos_marauder_gib_upperbody_baked"
+UnitGibSettings.chaos_marauder_tutorial = table.create_copy(UnitGibSettings.chaos_marauder_tutorial, UnitGibSettings.chaos_marauder)
 UnitGibSettings.chaos_berzerker = table.create_copy(UnitGibSettings.chaos_berzerker, UnitGibSettings.chaos_marauder)
+UnitGibSettings.chaos_berzerker.parts.upperbody.gib_unit = "units/beings/enemies/chaos_berzerker/gibs/chaos_berzerker_gib_upperbody"
+UnitGibSettings.chaos_berzerker_baked = table.create_copy(UnitGibSettings.chaos_berzerker_baked, UnitGibSettings.chaos_berzerker)
 UnitGibSettings.chaos_raider = {
 	parts = {
 		left_arm = {
@@ -1665,13 +1624,6 @@ UnitGibSettings.chaos_raider = {
 				"left_lowerleg"
 			},
 			{
-				"head",
-				"right_arm",
-				"left_arm",
-				"right_lowerleg",
-				"left_lowerleg"
-			},
-			{
 				"right_lowerleg",
 				"left_lowerleg"
 			},
@@ -1682,9 +1634,8 @@ UnitGibSettings.chaos_raider = {
 		}
 	}
 }
+UnitGibSettings.chaos_raider_baked = table.create_copy(UnitGibSettings.chaos_raider_baked, UnitGibSettings.chaos_raider)
 UnitGibSettings.chaos_raider_tutorial = table.create_copy(UnitGibSettings.chaos_raider_tutorial, UnitGibSettings.chaos_raider)
-UnitGibSettings.chaos_marauder_with_shield = table.create_copy(UnitGibSettings.chaos_marauder_with_shield, UnitGibSettings.chaos_marauder)
-UnitGibSettings.chaos_marauder_tutorial = table.create_copy(UnitGibSettings.chaos_marauder_tutorial, UnitGibSettings.chaos_marauder)
 UnitGibSettings.chaos_fanatic = {
 	parts = {
 		head = {
@@ -1969,6 +1920,7 @@ UnitGibSettings.chaos_fanatic = {
 		}
 	}
 }
+UnitGibSettings.chaos_fanatic_baked = table.create_copy(UnitGibSettings.chaos_fanatic_baked, UnitGibSettings.chaos_fanatic)
 UnitGibSettings.chaos_zombie = {
 	parts = {
 		gib_01 = {
@@ -2078,4 +2030,4 @@ UnitGibSettings.chaos_zombie = {
 	}
 }
 
-return 
+return

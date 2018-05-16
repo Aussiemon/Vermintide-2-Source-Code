@@ -4,141 +4,137 @@ local unit_alive = Unit.alive
 local Profiler = Profiler
 
 local function nop()
-	return 
+	return
 end
 
 BTSelector_critter_rat = class(BTSelector_critter_rat, BTNode)
 BTSelector_critter_rat.name = "BTSelector_critter_rat"
+
 BTSelector_critter_rat.init = function (self, ...)
 	BTSelector_critter_rat.super.init(self, ...)
 
 	self._children = {}
-
-	return 
 end
+
 BTSelector_critter_rat.leave = function (self, unit, blackboard, t, reason)
-	self.set_running_child(self, unit, blackboard, t, nil, reason)
-
-	return 
+	self:set_running_child(unit, blackboard, t, nil, reason)
 end
+
 BTSelector_critter_rat.run = function (self, unit, blackboard, t, dt)
-	local child_running = self.current_running_child(self, blackboard)
+	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_spawn = children[1]
 	local condition_result = blackboard.spawn
 
 	if condition_result then
-		self.set_running_child(self, unit, blackboard, t, node_spawn, "aborted")
+		self:set_running_child(unit, blackboard, t, node_spawn, "aborted")
 
-		local result, evaluate = node_spawn.run(node_spawn, unit, blackboard, t, dt)
+		local result, evaluate = node_spawn:run(unit, blackboard, t, dt)
 
 		if result ~= "running" then
-			self.set_running_child(self, unit, blackboard, t, nil, result)
+			self:set_running_child(unit, blackboard, t, nil, result)
 		end
 
 		if result ~= "failed" then
 			return result, evaluate
 		end
 	elseif node_spawn == child_running then
-		self.set_running_child(self, unit, blackboard, t, nil, "failed")
+		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
 	local node_in_vortex = children[2]
 	local condition_result = blackboard.in_vortex
 
 	if condition_result then
-		self.set_running_child(self, unit, blackboard, t, node_in_vortex, "aborted")
+		self:set_running_child(unit, blackboard, t, node_in_vortex, "aborted")
 
-		local result, evaluate = node_in_vortex.run(node_in_vortex, unit, blackboard, t, dt)
+		local result, evaluate = node_in_vortex:run(unit, blackboard, t, dt)
 
 		if result ~= "running" then
-			self.set_running_child(self, unit, blackboard, t, nil, result)
+			self:set_running_child(unit, blackboard, t, nil, result)
 		end
 
 		if result ~= "failed" then
 			return result, evaluate
 		end
 	elseif node_in_vortex == child_running then
-		self.set_running_child(self, unit, blackboard, t, nil, "failed")
+		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
 	local node_in_gravity_well = children[3]
 	local condition_result = blackboard.gravity_well_position
 
 	if condition_result then
-		self.set_running_child(self, unit, blackboard, t, node_in_gravity_well, "aborted")
+		self:set_running_child(unit, blackboard, t, node_in_gravity_well, "aborted")
 
-		local result, evaluate = node_in_gravity_well.run(node_in_gravity_well, unit, blackboard, t, dt)
+		local result, evaluate = node_in_gravity_well:run(unit, blackboard, t, dt)
 
 		if result ~= "running" then
-			self.set_running_child(self, unit, blackboard, t, nil, result)
+			self:set_running_child(unit, blackboard, t, nil, result)
 		end
 
 		if result ~= "failed" then
 			return result, evaluate
 		end
 	elseif node_in_gravity_well == child_running then
-		self.set_running_child(self, unit, blackboard, t, nil, "failed")
+		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
 	local node_under_door = children[4]
 	local condition_result = BTConditions.at_smartobject(blackboard) and BTConditions.at_door_smartobject(blackboard)
 
 	if condition_result then
-		self.set_running_child(self, unit, blackboard, t, node_under_door, "aborted")
+		self:set_running_child(unit, blackboard, t, node_under_door, "aborted")
 
-		local result, evaluate = node_under_door.run(node_under_door, unit, blackboard, t, dt)
+		local result, evaluate = node_under_door:run(unit, blackboard, t, dt)
 
 		if result ~= "running" then
-			self.set_running_child(self, unit, blackboard, t, nil, result)
+			self:set_running_child(unit, blackboard, t, nil, result)
 		end
 
 		if result ~= "failed" then
 			return result, evaluate
 		end
 	elseif node_under_door == child_running then
-		self.set_running_child(self, unit, blackboard, t, nil, "failed")
+		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
 	local node_flee_sequence = children[5]
 	local condition_result = unit_alive(blackboard.target_unit) or blackboard.is_fleeing
 
 	if condition_result then
-		self.set_running_child(self, unit, blackboard, t, node_flee_sequence, "aborted")
+		self:set_running_child(unit, blackboard, t, node_flee_sequence, "aborted")
 
-		local result, evaluate = node_flee_sequence.run(node_flee_sequence, unit, blackboard, t, dt)
+		local result, evaluate = node_flee_sequence:run(unit, blackboard, t, dt)
 
 		if result ~= "running" then
-			self.set_running_child(self, unit, blackboard, t, nil, result)
+			self:set_running_child(unit, blackboard, t, nil, result)
 		end
 
 		if result ~= "failed" then
 			return result, evaluate
 		end
 	elseif node_flee_sequence == child_running then
-		self.set_running_child(self, unit, blackboard, t, nil, "failed")
+		self:set_running_child(unit, blackboard, t, nil, "failed")
 	end
 
 	local node_idle = children[6]
 
-	self.set_running_child(self, unit, blackboard, t, node_idle, "aborted")
+	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
 
-	local result, evaluate = node_idle.run(node_idle, unit, blackboard, t, dt)
+	local result, evaluate = node_idle:run(unit, blackboard, t, dt)
 
 	if result ~= "running" then
-		self.set_running_child(self, unit, blackboard, t, nil, result)
+		self:set_running_child(unit, blackboard, t, nil, result)
 	end
 
 	if result ~= "failed" then
 		return result, evaluate
 	end
-
-	return 
 end
+
 BTSelector_critter_rat.add_child = function (self, node)
 	self._children[#self._children + 1] = node
-
-	return 
 end
 
-return 
+return

@@ -242,7 +242,7 @@ local function create_tutorial_tooltip_input_description_definitions(amount)
 						content_check_function = function (content)
 							local icon = content.icon
 
-							return icon and 0 < #icon
+							return icon and #icon > 0
 						end
 					}
 				}

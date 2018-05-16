@@ -4,4 +4,4 @@ UIStyles = {
 	end
 }
 
-return 
+return

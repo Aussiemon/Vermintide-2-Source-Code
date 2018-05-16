@@ -81,4 +81,4 @@ BreedBehaviors.chaos_plague_sorcerer = {
 	name = "chaos_plague_sorcerer"
 }
 
-return 
+return

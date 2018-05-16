@@ -6,8 +6,6 @@ local function network_printf(format, ...)
 	if script_data.network_debug_connections then
 		printf("[PeerSM] " .. format, ...)
 	end
-
-	return 
 end
 
 PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
@@ -21,6 +19,7 @@ PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
 		current_state = PeerStates.Connecting,
 		function_memoize = function_memoize
 	}
+
 	state_data.change_state = function (_, new_state)
 		network_printf("%s :: on_exit %s", peer_id, tostring(state_machine.current_state))
 		state_machine.current_state.on_exit(state_data, new_state)
@@ -30,8 +29,6 @@ PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
 
 		network_printf("%s :: on_enter %s", peer_id, tostring(new_state))
 		new_state.on_enter(state_data, old_state)
-
-		return 
 	end
 
 	network_printf("%s :: on_enter %s", peer_id, tostring(state_machine.current_state))
@@ -40,8 +37,6 @@ PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
 	local state_machine_meta_table = {
 		__newindex = function (t, k, v)
 			assert(false)
-
-			return 
 		end,
 		__index = function (self, k)
 			local state_machine_member = PeerStateMachine[k]
@@ -60,8 +55,6 @@ PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
 
 						slot1(slot2, "Could not find function %q in state %q", k, tostring(self.current_state))
 						current_function(state_data, ...)
-
-						return 
 					end
 
 					function_memoize[k] = new_function
@@ -73,8 +66,6 @@ PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
 			else
 				return state_machine_member
 			end
-
-			return 
 		end
 	}
 
@@ -82,9 +73,11 @@ PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
 
 	return state_machine
 end
+
 PeerStateMachine.has_function = function (self, function_name)
 	return not not self.current_state[function_name]
 end
+
 PeerStateMachine.update = function (self, dt)
 	local state_data = self.state_data
 
@@ -95,10 +88,8 @@ PeerStateMachine.update = function (self, dt)
 	local new_state = self.current_state.update(state_data, dt)
 
 	if new_state then
-		state_data.change_state(state_data, new_state)
+		state_data:change_state(new_state)
 	end
-
-	return 
 end
 
-return 
+return

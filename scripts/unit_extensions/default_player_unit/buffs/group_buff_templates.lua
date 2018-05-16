@@ -4,4 +4,4 @@ GroupBuffTemplates = {
 	}
 }
 
-return 
+return

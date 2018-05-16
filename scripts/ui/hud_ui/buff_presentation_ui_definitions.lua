@@ -113,8 +113,6 @@ local animation_definitions = {
 				local default_size = scenegraph_definition.presentation_widget.size
 				current_size[1] = default_size[1]
 				current_size[2] = default_size[2]
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
@@ -125,11 +123,9 @@ local animation_definitions = {
 				local default_size = scenegraph_definition.presentation_widget.size
 				current_size[1] = math.floor(default_size[1] * size_progress)
 				current_size[2] = math.floor(default_size[2] * size_progress)
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return 
+				return
 			end
 		},
 		{
@@ -137,7 +133,7 @@ local animation_definitions = {
 			start_progress = 0.5,
 			end_progress = 0.8,
 			init = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return 
+				return
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
@@ -148,11 +144,9 @@ local animation_definitions = {
 				local default_size = scenegraph_definition.presentation_widget.size
 				current_size[1] = default_size[1] - math.floor(20 * size_progress)
 				current_size[2] = default_size[2] - math.floor(20 * size_progress)
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return 
+				return
 			end
 		}
 	}

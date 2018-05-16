@@ -1,5 +1,6 @@
 AiAnimUtils = AiAnimUtils or {}
 local POSITION_LOOKUP = POSITION_LOOKUP
+
 AiAnimUtils.get_animation_rotation_scale = function (unit, target_pos, animation_name, anims_data)
 	local unit_pos = POSITION_LOOKUP[unit]
 	local unit_rot = Unit.local_rotation(unit, 0)
@@ -27,8 +28,6 @@ local function randomize(event)
 	else
 		return event
 	end
-
-	return 
 end
 
 AiAnimUtils.get_start_move_animation = function (unit, target_pos, anims_table)
@@ -40,10 +39,10 @@ AiAnimUtils.get_start_move_animation = function (unit, target_pos, anims_table)
 	local dot_product = Vector3.dot(forward_vector_flat, target_vector_flat)
 	local inv_sqrt_2 = 0.707
 
-	if inv_sqrt_2 <= dot_product then
+	if dot_product >= inv_sqrt_2 then
 		animation_name = anims_table.fwd
-	elseif -inv_sqrt_2 < dot_product then
-		local is_to_the_left = 0 < Vector3.cross(forward_vector_flat, target_vector_flat).z
+	elseif dot_product > -inv_sqrt_2 then
+		local is_to_the_left = Vector3.cross(forward_vector_flat, target_vector_flat).z > 0
 		animation_name = (is_to_the_left and anims_table.left) or anims_table.right
 	else
 		animation_name = anims_table.bwd
@@ -53,6 +52,7 @@ AiAnimUtils.get_start_move_animation = function (unit, target_pos, anims_table)
 
 	return final_animation_name
 end
+
 AiAnimUtils.set_idle_animation_merge = function (unit, blackboard)
 	local breed = blackboard.breed
 	local animation_merge_options = breed.animation_merge_options
@@ -61,9 +61,8 @@ AiAnimUtils.set_idle_animation_merge = function (unit, blackboard)
 	if idle_animation_merge_options then
 		Unit.set_animation_merge_options(unit, unpack(idle_animation_merge_options))
 	end
-
-	return 
 end
+
 AiAnimUtils.set_move_animation_merge = function (unit, blackboard)
 	local breed = blackboard.breed
 	local animation_merge_options = breed.animation_merge_options
@@ -72,9 +71,8 @@ AiAnimUtils.set_move_animation_merge = function (unit, blackboard)
 	if move_animation_merge_options then
 		Unit.set_animation_merge_options(unit, unpack(move_animation_merge_options))
 	end
-
-	return 
 end
+
 AiAnimUtils.set_walk_animation_merge = function (unit, blackboard)
 	local breed = blackboard.breed
 	local animation_merge_options = breed.animation_merge_options
@@ -83,9 +81,8 @@ AiAnimUtils.set_walk_animation_merge = function (unit, blackboard)
 	if walk_animation_merge_options then
 		Unit.set_animation_merge_options(unit, unpack(walk_animation_merge_options))
 	end
-
-	return 
 end
+
 AiAnimUtils.set_interest_point_animation_merge = function (unit, blackboard)
 	local breed = blackboard.breed
 	local animation_merge_options = breed.animation_merge_options
@@ -94,14 +91,12 @@ AiAnimUtils.set_interest_point_animation_merge = function (unit, blackboard)
 	if interest_point_animation_merge_options then
 		Unit.set_animation_merge_options(unit, unpack(interest_point_animation_merge_options))
 	end
-
-	return 
 end
+
 AiAnimUtils.reset_animation_merge = function (unit)
 	Unit.set_animation_merge_options(unit)
-
-	return 
 end
+
 AiAnimUtils._animation_merge_debug = function (unit, text)
 	local category_name = "animation_merge"
 
@@ -116,11 +111,11 @@ AiAnimUtils._animation_merge_debug = function (unit, text)
 
 		Managers.state.debug_text:output_unit_text(text, text_size, unit, head_node, offset_vector, nil, category_name, color_vector, viewport_name)
 	end
-
-	return 
 end
+
 local VEL_TO_NETWORK_SCALE = 10
 local VEL_FROM_NETWORK_SCALE = 0.1
+
 AiAnimUtils.velocity_network_scale = function (velocity, is_sending)
 	if is_sending then
 		velocity = velocity * VEL_TO_NETWORK_SCALE
@@ -136,11 +131,11 @@ AiAnimUtils.velocity_network_scale = function (velocity, is_sending)
 
 		return result
 	end
-
-	return 
 end
+
 local POS_TO_NETWORK_SCALE = 100
 local POS_FROM_NETWORK_SCALE = 0.01
+
 AiAnimUtils.position_network_scale = function (position, is_sending)
 	if is_sending then
 		position = position * POS_TO_NETWORK_SCALE
@@ -156,11 +151,11 @@ AiAnimUtils.position_network_scale = function (position, is_sending)
 
 		return result
 	end
-
-	return 
 end
+
 local ROT_TO_NETWORK_SCALE = 100
 local ROT_FROM_NETWORK_SCALE = 0.01
+
 AiAnimUtils.rotation_network_scale = function (rotation, is_sending)
 	if is_sending then
 		local x, y, z, w = Quaternion.to_elements(rotation)
@@ -177,9 +172,8 @@ AiAnimUtils.rotation_network_scale = function (rotation, is_sending)
 
 		return result
 	end
-
-	return 
 end
+
 AiAnimUtils.cycle_anims = function (blackboard, anims, blackboard_index_name)
 	local num_anims = #anims
 	local i = blackboard[blackboard_index_name] % num_anims + 1
@@ -189,4 +183,4 @@ AiAnimUtils.cycle_anims = function (blackboard, anims, blackboard_index_name)
 	return anim_name
 end
 
-return 
+return

@@ -212,7 +212,7 @@ local scenegraph_definition = {
 		parent = "selection_info",
 		horizontal_alignment = "center",
 		size = {
-			450,
+			400,
 			25
 		},
 		position = {
@@ -226,7 +226,7 @@ local scenegraph_definition = {
 		parent = "info_career_name",
 		horizontal_alignment = "center",
 		size = {
-			450,
+			400,
 			25
 		},
 		position = {
@@ -493,13 +493,14 @@ if Development.parameter("tobii_button") then
 end
 
 local hero_career_style = {
-	word_wrap = true,
+	font_size = 36,
 	upper_case = true,
 	localize = false,
 	use_shadow = true,
-	font_size = 36,
+	word_wrap = true,
 	horizontal_alignment = "center",
 	vertical_alignment = "top",
+	dynamic_font_size = true,
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
@@ -510,11 +511,12 @@ local hero_career_style = {
 }
 local hero_name_style = {
 	word_wrap = true,
-	font_size = 24,
-	localize = false,
 	use_shadow = true,
+	localize = false,
+	font_size = 24,
 	horizontal_alignment = "center",
 	vertical_alignment = "top",
+	dynamic_font_size = true,
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
@@ -640,19 +642,15 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
 				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + -100 * (1 - anim_progress)
 				ui_scenegraph.right_side_root.local_position[1] = scenegraph_definition.right_side_root.position[1] + 100 * (1 - anim_progress)
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -663,19 +661,15 @@ local animation_definitions = {
 			end_progress = 1,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
 				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + -100 * anim_progress
 				ui_scenegraph.right_side_root.local_position[1] = scenegraph_definition.right_side_root.position[1] + 100 * anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

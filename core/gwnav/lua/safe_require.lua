@@ -40,8 +40,6 @@ end
 
 function set_safe_require_error_level(new_error_level)
 	error_level = new_error_level
-
-	return 
 end
 
-return 
+return

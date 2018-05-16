@@ -3,11 +3,9 @@ require("scripts/network/game_server/game_server_aux")
 GameServerLobbyClient = class(GameServerLobbyClient)
 
 local function dprintf(string, ...)
-	local s = string.format(string, ...)
+	local s = string:format(...)
 
 	printf("[GameServerLobbyClient]: %s", s)
-
-	return 
 end
 
 GameServerLobbyClient.init = function (self, network_options, game_server_data, password)
@@ -24,9 +22,8 @@ GameServerLobbyClient.init = function (self, network_options, game_server_data, 
 	self._network_hash = GameServerAux.create_network_hash(config_file_name, project_hash)
 	self.lobby = self._game_server_lobby
 	self.network_hash = self._network_hash
-
-	return 
 end
+
 GameServerLobbyClient.destroy = function (self)
 	dprintf("Destroying Game Server Client, leaving server...")
 	Presence.stop_advertise_playing()
@@ -37,12 +34,11 @@ GameServerLobbyClient.destroy = function (self)
 	self._game_server_lobby_data = nil
 
 	GarbageLeakDetector.register_object(self, "Game Server Client")
-
-	return 
 end
+
 GameServerLobbyClient.update = function (self, dt)
 	local lobby = self._game_server_lobby
-	local lobby_state = lobby.state(lobby)
+	local lobby_state = lobby:state()
 	local new_state = GameServerInternal.lobby_state_map[lobby_state]
 	local old_state = self._state
 
@@ -63,41 +59,50 @@ GameServerLobbyClient.update = function (self, dt)
 	if self._members then
 		self._members:update()
 	end
-
-	return 
 end
+
 GameServerLobbyClient.state = function (self)
 	return self._state
 end
+
 GameServerLobbyClient.members = function (self)
 	return self._members
 end
+
 GameServerLobbyClient.invite_target = function (self)
 	return self._game_server_info.ip_port
 end
+
 GameServerLobbyClient.is_dedicated_server = function (self)
 	return true
 end
+
 GameServerLobbyClient.lobby_host = function (self)
 	return GameServerInternal.lobby_host(self._game_server_lobby)
 end
+
 GameServerLobbyClient.lobby_data = function (self, key)
 	return self._game_server_lobby:data(key)
 end
+
 GameServerLobbyClient.get_stored_lobby_data = function (self)
 	return self._game_server_lobby_data
 end
+
 GameServerLobbyClient.ip_address = function (self)
 	return self._game_server_info.ip_port
 end
+
 GameServerLobbyClient.is_joined = function (self)
 	return self._state == GameServerLobbyState.JOINED
 end
+
 GameServerLobbyClient.failed = function (self)
 	return self._state == GameServerLobbyState.FAILED
 end
+
 GameServerLobbyClient.id = function (self)
 	return (GameServerInternal.lobby_id and GameServerInternal.lobby_id(self._game_server_lobby)) or "no_id"
 end
 
-return 
+return

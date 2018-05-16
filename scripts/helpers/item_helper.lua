@@ -30,6 +30,7 @@ local stats_localization_keys = {
 	targets = "item_compare_targets",
 	stagger = "item_compare_stagger"
 }
+
 ItemHelper.get_template_by_item_name = function (name)
 	local item_data = ItemMasterList[name]
 
@@ -48,6 +49,7 @@ ItemHelper.get_template_by_item_name = function (name)
 
 	return template
 end
+
 ItemHelper.get_slot_type = function (slot)
 	local slots_n = #InventorySettings.slots
 
@@ -60,9 +62,8 @@ ItemHelper.get_slot_type = function (slot)
 	end
 
 	fassert(false, "no slot in InventorySettings.slots with name: ", slot)
-
-	return 
 end
+
 ItemHelper.mark_sign_in_reward_as_new = function (reward_id, item_backend_id)
 	local new_sign_in_rewards = PlayerData.new_sign_in_rewards or {}
 	local reward_items = new_sign_in_rewards[reward_id]
@@ -76,9 +77,8 @@ ItemHelper.mark_sign_in_reward_as_new = function (reward_id, item_backend_id)
 	PlayerData.new_sign_in_rewards = new_sign_in_rewards
 
 	Managers.save:auto_save(SaveFileName, SaveData, nil)
-
-	return 
 end
+
 ItemHelper.unmark_sign_in_reward_as_new = function (reward_id)
 	local new_sign_in_rewards = PlayerData.new_sign_in_rewards
 
@@ -93,9 +93,8 @@ ItemHelper.unmark_sign_in_reward_as_new = function (reward_id)
 	new_sign_in_rewards[reward_id] = nil
 
 	Managers.save:auto_save(SaveFileName, SaveData, nil)
-
-	return 
 end
+
 ItemHelper.has_new_sign_in_reward = function (reward_id)
 	if Managers.backend:is_local() then
 		return false
@@ -106,9 +105,10 @@ ItemHelper.has_new_sign_in_reward = function (reward_id)
 
 	return (reward_items and true) or false
 end
+
 ItemHelper.mark_backend_id_as_new = function (backend_id)
 	local item_interface = Managers.backend:get_interface("items")
-	local item = item_interface.get_item_from_id(item_interface, backend_id)
+	local item = item_interface:get_item_from_id(backend_id)
 	local item_data = item.data
 	local slot_type = item_data.slot_type
 	local can_wield = item_data.can_wield
@@ -129,9 +129,8 @@ ItemHelper.mark_backend_id_as_new = function (backend_id)
 	PlayerData.new_item_ids_by_career = new_item_ids_by_career
 
 	Managers.save:auto_save(SaveFileName, SaveData, nil)
-
-	return 
 end
+
 ItemHelper.unmark_backend_id_as_new = function (backend_id)
 	local new_item_ids = PlayerData.new_item_ids
 	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
@@ -151,17 +150,18 @@ ItemHelper.unmark_backend_id_as_new = function (backend_id)
 			end
 		end
 	end
-
-	return 
 end
+
 ItemHelper.get_new_backend_ids = function ()
 	return PlayerData.new_item_ids
 end
+
 ItemHelper.is_new_backend_id = function (backend_id)
 	local new_item_ids = PlayerData.new_item_ids
 
 	return new_item_ids and new_item_ids[backend_id]
 end
+
 ItemHelper.has_new_backend_ids_by_career_name_and_slot_type = function (career_name, slot_type_name)
 	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
 
@@ -181,6 +181,7 @@ ItemHelper.has_new_backend_ids_by_career_name_and_slot_type = function (career_n
 
 	return false
 end
+
 ItemHelper.has_new_backend_ids_by_slot_type = function (slot_type_name)
 	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
 
@@ -198,6 +199,7 @@ ItemHelper.has_new_backend_ids_by_slot_type = function (slot_type_name)
 
 	return false
 end
+
 ItemHelper.has_new_backend_ids_by_career_name = function (career_name)
 	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
 
@@ -215,6 +217,7 @@ ItemHelper.has_new_backend_ids_by_career_name = function (career_name)
 
 	return false
 end
+
 ItemHelper.retrieve_weapon_item_statistics = function (item_data, backend_id)
 	local stats_data = {}
 	local stats_data_by_order = {}
@@ -238,6 +241,7 @@ ItemHelper.retrieve_weapon_item_statistics = function (item_data, backend_id)
 
 	return stats_data_by_order
 end
+
 ItemHelper._retrieve_weapon_attack_data = function (stats_data, data_store_table)
 	for key, value in pairs(stats_data) do
 		local localization_key = stats_localization_keys[key]
@@ -249,11 +253,10 @@ ItemHelper._retrieve_weapon_attack_data = function (stats_data, data_store_table
 		}
 		data_store_table[key] = weapon_data
 	end
-
-	return 
 end
+
 ItemHelper.weapon_stat_order_by_type = function (stat_type)
 	return weapon_attack_stats_order[stat_type]
 end
 
-return 
+return

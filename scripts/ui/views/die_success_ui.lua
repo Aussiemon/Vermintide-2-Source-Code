@@ -1,34 +1,31 @@
 DieSuccessUI = class(DieSuccessUI)
 local scenegraph_definition, widget_definition = nil
+
 DieSuccessUI.init = function (self, ui_renderer, input_manager, scenegraph_id)
 	self.ui_renderer = ui_renderer
 	self.input_manager = input_manager
 
-	self.create_ui_elements(self)
+	self:create_ui_elements()
 
 	self.scenegraph_id = scenegraph_id
 	self.num_successes = ""
-
-	return 
 end
+
 DieSuccessUI.set_num_successes = function (self, num_successes)
 	self.num_successes = tostring(num_successes)
-
-	return 
 end
+
 DieSuccessUI.set_done = function (self, is_done)
 	if is_done then
 		UIWidget.animate(self.widget, UIAnimation.init(UIAnimation.function_by_time, self.widget.style.background_glow.color, 1, 0, 255, 0.5, math.easeInCubic, UIAnimation.pulse_animation, self.widget.style.background_glow.color, 1, 255, 128, 2))
 	end
-
-	return 
 end
+
 DieSuccessUI.create_ui_elements = function (self)
 	self.widget = UIWidget.init(widget_definition)
 	self.scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-
-	return 
 end
+
 DieSuccessUI.update = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local input_service = self.input_manager:get_service("ingame_menu")
@@ -38,9 +35,8 @@ DieSuccessUI.update = function (self, dt)
 	UIRenderer.begin_pass(ui_renderer, self.scenegraph, input_service, dt, self.scenegraph_id)
 	UIRenderer.draw_widget(ui_renderer, self.widget)
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 widget_definition = {
 	scenegraph_id = "root",
 	element = {
@@ -135,4 +131,4 @@ scenegraph_definition = {
 	}
 }
 
-return 
+return

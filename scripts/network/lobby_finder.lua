@@ -1,6 +1,7 @@
 require("scripts/network/lobby_aux")
 
 LobbyFinder = class(LobbyFinder)
+
 LobbyFinder.init = function (self, network_options, max_num_lobbies)
 	local config_file_name = network_options.config_file_name
 	local project_hash = network_options.project_hash
@@ -12,59 +13,60 @@ LobbyFinder.init = function (self, network_options, max_num_lobbies)
 	self._cached_lobbies = {}
 	self._max_num_lobbies = max_num_lobbies
 	self._refreshing = false
+end
 
-	return 
-end
 LobbyFinder.destroy = function (self)
-	return 
+	return
 end
+
 LobbyFinder.add_filter_requirements = function (self, requirements, force_refresh)
 	LobbyInternal.add_filter_requirements(requirements)
 
 	if force_refresh then
-		self.refresh(self)
+		self:refresh()
 	end
 
 	table.clear(self._cached_lobbies)
-
-	return 
 end
+
 LobbyFinder.network_hash = function (self)
 	return self._network_hash
 end
+
 LobbyFinder.lobbies = function (self)
 	return self._cached_lobbies
 end
+
 LobbyFinder.latest_filter_lobbies = function (self)
 	print("[LobbyFinder]:latest_filter_lobbies is deprecated")
-
-	return 
 end
+
 LobbyFinder.refresh = function (self)
 	local lobby_browser = LobbyInternal.lobby_browser()
 
-	lobby_browser.refresh(lobby_browser, self._lobby_port)
+	lobby_browser:refresh(self._lobby_port)
 
 	self._refreshing = true
-
-	return 
 end
+
 LobbyFinder.is_lobby_browser_refreshing = function (self)
 	print("[LobbyFinder]:is_lobby_browser_refreshing() is deprecated")
 
 	return false
 end
+
 LobbyFinder.is_refreshing = function (self)
 	return self._refreshing
 end
+
 LobbyFinder.update = function (self, dt)
 	if self._refreshing then
 		local lobby_browser = LobbyInternal.lobby_browser()
-		local is_refreshing = lobby_browser.is_refreshing(lobby_browser)
+		local is_refreshing = lobby_browser:is_refreshing()
 
 		if not is_refreshing then
 			local lobbies = {}
-			local num_lobbies = lobby_browser.num_lobbies(lobby_browser)
+			local num_lobbies = lobby_browser:num_lobbies()
 			local max_num_lobbies = self._max_num_lobbies
 
 			if max_num_lobbies then
@@ -87,8 +89,6 @@ LobbyFinder.update = function (self, dt)
 			self._refreshing = false
 		end
 	end
-
-	return 
 end
 
-return 
+return

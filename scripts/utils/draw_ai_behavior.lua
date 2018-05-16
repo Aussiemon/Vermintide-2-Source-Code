@@ -103,8 +103,6 @@ local function rat_ogre_jump_slam_action_debug(blackboard, fill_lines)
 	else
 		return 0
 	end
-
-	return 
 end
 
 local show_blackboard_data = {
@@ -211,15 +209,11 @@ local function reset_circle_array()
 	table.clear(DrawAiBehaviour.circle_array)
 
 	state_counter = 1
-
-	return 
 end
 
 local function add_item_to_circle_array(item)
 	DrawAiBehaviour.circle_array_index = DrawAiBehaviour.circle_array_index % DrawAiBehaviour.circle_max_size + 1
 	DrawAiBehaviour.circle_array[DrawAiBehaviour.circle_array_index] = item
-
-	return 
 end
 
 local function present_circle_array(gui, x, y)
@@ -239,8 +233,6 @@ local function present_circle_array(gui, x, y)
 
 		index = (index - 2) % max_items + 1
 	end
-
-	return 
 end
 
 local function present_perception(gui, x, y, blackboard)
@@ -309,8 +301,6 @@ local function present_perception(gui, x, y, blackboard)
 
 		ScriptGUI.icrect(gui, RES_X, RES_Y, x1 - 5, y1 - 5, x1 + 380, y2, LAYER, Color(25, 70, 70, 100))
 	end
-
-	return 
 end
 
 local function update_node_history(blackboard, node_children, current_identifier)
@@ -344,8 +334,6 @@ local function update_node_history(blackboard, node_children, current_identifier
 			return current_identifier
 		end
 	end
-
-	return 
 end
 
 local function longest_text_length_check(text, longest_text, longest_text_length)
@@ -356,8 +344,6 @@ local function longest_text_length_check(text, longest_text, longest_text_length
 	else
 		return longest_text, longest_text_length
 	end
-
-	return 
 end
 
 local v3box_meta = getmetatable(Vector3Box(0, 0, 0))
@@ -451,7 +437,7 @@ local function draw_blackboard(gui, node, blackboard, x1, y1, extra_info, node_w
 		end
 	end
 
-	if 0 < longest_text_length then
+	if longest_text_length > 0 then
 		local min_pos, max_pos = Gui.text_extents(gui, longest_text, FONT_MTRL, SMALL_FONT_SIZE)
 		local text_width = (max_pos.x - min_pos.x) / RES_X
 		node_width = math.max(node_width, text_width + TEXT_SPACING)
@@ -722,9 +708,8 @@ DrawAiBehaviour.tree_width = function (gui, node)
 	else
 		return 1, text_width
 	end
-
-	return 
 end
+
 DrawAiBehaviour.draw_tree = function (bt, gui, node, blackboard, row, t, dt, x, y, draw_utility, extra_info)
 	local identifier = node._identifier
 	local node_children = node._children
@@ -772,4 +757,4 @@ DrawAiBehaviour.draw_tree = function (bt, gui, node, blackboard, row, t, dt, x, 
 	return extra_width, max_child_extra_height, extra_height, node_width
 end
 
-return 
+return

@@ -29,4 +29,4 @@ loading_bg_wizard_atlas = {
 	}
 }
 
-return 
+return

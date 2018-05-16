@@ -4,6 +4,7 @@ GameServerInternal.state_map = {
 	[SteamGameServer.CONNECTED] = GameServerState.CONNECTED,
 	[SteamGameServer.DISCONNECTED] = GameServerState.DISCONNECTED
 }
+
 GameServerInternal.init_server = function (network_options, server_name)
 	Network.set_explicit_connections()
 
@@ -27,13 +28,17 @@ GameServerInternal.init_server = function (network_options, server_name)
 
 	return Network.init_steam_server(config_file_name, settings, use_eac)
 end
+
 GameServerInternal.shutdown_server = function (game_server)
 	Network.shutdown_steam_server(game_server)
-
-	return 
 end
+
 GameServerInternal.server_id = function (game_server)
 	return SteamGameServer.id(game_server)
 end
 
-return 
+GameServerInternal.set_level_name = function (game_server, name)
+	SteamGameServer.set_map(game_server, name)
+end
+
+return

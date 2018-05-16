@@ -54,8 +54,8 @@ function to_base64(to_encode)
 end
 
 function from_base64(to_decode)
-	local padded = to_decode.gsub(to_decode, "%s", "")
-	local unpadded = padded.gsub(padded, "=", "")
+	local padded = to_decode:gsub("%s", "")
+	local unpadded = padded:gsub("=", "")
 	local bit_pattern = ""
 	local decoded = ""
 
@@ -75,13 +75,13 @@ function from_base64(to_decode)
 		decoded = decoded .. string.char(from_binary(byte))
 	end
 
-	local padding_length = padded.len(padded) - unpadded.len(unpadded)
+	local padding_length = padded:len() - unpadded:len()
 
 	if padding_length == 1 or padding_length == 2 then
-		decoded = decoded.sub(decoded, 1, -2)
+		decoded = decoded:sub(1, -2)
 	end
 
 	return decoded
 end
 
-return 
+return

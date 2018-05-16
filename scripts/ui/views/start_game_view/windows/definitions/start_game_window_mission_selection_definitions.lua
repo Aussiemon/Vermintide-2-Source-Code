@@ -708,7 +708,7 @@ local function create_act_widget(index, optional_texture_version)
 	local texture_version = optional_texture_version or "09"
 	local scenegraph_id = "act_root_node"
 	local size = scenegraph_definition[scenegraph_id].size
-	local draw_divider = 1 < index
+	local draw_divider = index > 1
 	local widget = {
 		element = {}
 	}
@@ -1219,6 +1219,7 @@ local function create_vertical_window_divider(scenegraph_id, size)
 end
 
 local end_act_widget = create_end_act_widget()
+local disable_with_gamepad = true
 local widgets = {
 	background_fade = UIWidgets.create_simple_texture("options_window_fade_01", "info_window"),
 	background_mask = UIWidgets.create_simple_texture("mask_rect", "info_window"),
@@ -1232,7 +1233,7 @@ local widgets = {
 	helper_text = UIWidgets.create_simple_text(Localize("tutorial_map"), "helper_text", nil, nil, helper_text_style),
 	mission_selection_title = UIWidgets.create_simple_text(Localize("start_game_window_mission_selection_header"), "mission_selection_title", nil, nil, mission_selection_title_text_style),
 	title_divider = create_window_divider("title_divider", scenegraph_definition.title_divider.size),
-	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("menu_select"), 32)
+	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("menu_select"), 32, nil, nil, nil, disable_with_gamepad)
 }
 local node_widgets = {}
 
@@ -1254,17 +1255,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	},
@@ -1275,17 +1272,13 @@ local animation_definitions = {
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 1
-
-				return 
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
 				params.render_settings.alpha_multiplier = 1 - anim_progress
-
-				return 
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return 
+				return
 			end
 		}
 	}

@@ -2,7 +2,7 @@ NetworkEventDelegate = class(NetworkEventDelegate)
 local delegate_metatable = getmetatable(NetworkEventDelegate)
 
 local function empty_function()
-	return 
+	return
 end
 
 NetworkEventDelegate.init = function (self)
@@ -15,9 +15,8 @@ NetworkEventDelegate.init = function (self)
 		end
 	}
 	self.event_table = setmetatable({}, event_meta_table)
-
-	return 
 end
+
 NetworkEventDelegate.register = function (self, object, ...)
 	for i = 1, select("#", ...), 1 do
 		local callback_name = select(i, ...)
@@ -37,16 +36,13 @@ NetworkEventDelegate.register = function (self, object, ...)
 
 					object[callback_name](object, ...)
 				end
-
-				return 
 			end
 
 			self.event_table[callback_name] = rpc_callback
 		end
 	end
-
-	return 
 end
+
 NetworkEventDelegate.unregister = function (self, object)
 	for callback_name, registered_objects in pairs(self._registered_objects) do
 		local num_registered_objects = #registered_objects
@@ -68,14 +64,12 @@ NetworkEventDelegate.unregister = function (self, object)
 			self.event_table[callback_name] = nil
 		end
 	end
-
-	return 
 end
+
 NetworkEventDelegate.unregister_callback = function (self, callback_name)
 	self._registered_objects[callback_name] = nil
-
-	return 
 end
+
 NetworkEventDelegate._cleanup = function (self)
 	for callback_name, registered_objects in pairs(self._registered_objects) do
 		local num_registered_objects = #registered_objects
@@ -86,17 +80,14 @@ NetworkEventDelegate._cleanup = function (self)
 	end
 
 	self._registered_objects = nil
-
-	return 
 end
+
 NetworkEventDelegate.destroy = function (self)
-	self._cleanup(self)
+	self:_cleanup()
 
 	self.event_table = nil
 
 	GarbageLeakDetector.register_object(self, "NetworkEventDelegate")
-
-	return 
 end
 
-return 
+return

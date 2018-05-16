@@ -6,6 +6,7 @@ local PUSH_UPGRADES = {
 	heavy_sweep_push = "super_heavy_sweep_push",
 	weak_sweep_push = "upgraded_sweep_push"
 }
+
 ActionPushStagger.init = function (self, world, item_name, is_server, owner_unit, weapon_unit, first_person_unit, weapon_unit, weapon_system)
 	self.owner_unit = owner_unit
 	self.owner_unit_first_person = first_person_unit
@@ -24,15 +25,14 @@ ActionPushStagger.init = function (self, world, item_name, is_server, owner_unit
 	if ScriptUnit.has_extension(weapon_unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(weapon_unit, "ammo_system")
 	end
-
-	return 
 end
+
 ActionPushStagger.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.owner_unit_first_person
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local career_extension = ScriptUnit.extension(owner_unit, "career_system")
-	local has_melee_boost, boost_amount = career_extension.has_melee_boost(career_extension)
+	local has_melee_boost, boost_amount = career_extension:has_melee_boost()
 	self.melee_boost_curve_multiplier = boost_amount
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t) or has_melee_boost
 	self.power_level = power_level
@@ -61,7 +61,7 @@ ActionPushStagger.client_owner_start_action = function (self, new_action, t, cha
 	self.damage_profile_outer_id = NetworkLookup.damage_profiles[damage_profile_name_outer]
 	self.damage_profile_outer = DamageProfileTemplates[damage_profile_name_outer]
 	local status_extension = self._status_extension
-	local _, procced = buff_extension.apply_buffs_to_value(buff_extension, 0, StatBuffIndex.NO_PUSH_FATIGUE_COST)
+	local _, procced = buff_extension:apply_buffs_to_value(0, StatBuffIndex.NO_PUSH_FATIGUE_COST)
 
 	if not procced then
 		local cost = "action_push"
@@ -70,12 +70,12 @@ ActionPushStagger.client_owner_start_action = function (self, new_action, t, cha
 			cost = new_action.fatigue_cost
 		end
 
-		if buff_extension.has_buff_perk(buff_extension, "slayer_stamina") then
+		if buff_extension:has_buff_perk("slayer_stamina") then
 			cost = "action_stun_push"
 		end
 
-		status_extension.add_fatigue_points(status_extension, cost)
-		status_extension.set_has_pushed(status_extension)
+		status_extension:add_fatigue_points(cost)
+		status_extension:set_has_pushed()
 	end
 
 	self.block_end_time = t + 0.5
@@ -90,12 +90,12 @@ ActionPushStagger.client_owner_start_action = function (self, new_action, t, cha
 			hud_extension.show_critical_indication = true
 		end
 
-		buff_extension.trigger_procs(buff_extension, "on_critical_sweep")
+		buff_extension:trigger_procs("on_critical_sweep")
 
 		local crit_hud_sound_event = "Play_player_combat_crit_swing_2D"
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-		first_person_extension.play_hud_sound_event(first_person_extension, crit_hud_sound_event, nil, false)
+		first_person_extension:play_hud_sound_event(crit_hud_sound_event, nil, false)
 	end
 
 	self._is_critical_strike = is_critical_strike
@@ -110,12 +110,11 @@ ActionPushStagger.client_owner_start_action = function (self, new_action, t, cha
 		end
 	end
 
-	status_extension.set_blocking(status_extension, true)
-	buff_extension.trigger_procs(buff_extension, "on_push_used")
+	status_extension:set_blocking(true)
+	buff_extension:trigger_procs("on_push_used")
 	Unit.animation_event(self.owner_unit_first_person, "hitreaction_defend_reset")
-
-	return 
 end
+
 local callback_context = {
 	has_gotten_callback = false,
 	overlap_units = {}
@@ -134,8 +133,6 @@ local function callback(actors)
 
 		overlap_units[callback_context.num_hits]:store(actor)
 	end
-
-	return 
 end
 
 ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -156,8 +153,8 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 
 		local status_extension = self._status_extension
 
-		status_extension.set_blocking(status_extension, false)
-		status_extension.set_has_blocked(status_extension, false)
+		status_extension:set_blocking(false)
+		status_extension:set_has_blocked(false)
 	end
 
 	if not callback_context.has_gotten_callback and can_damage then
@@ -179,7 +176,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 		self.waiting_for_callback = false
 		callback_context.has_gotten_callback = false
 		local network_manager = Managers.state.network
-		local attacker_unit_id = network_manager.unit_game_object_id(network_manager, owner_unit)
+		local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
 		local overlap_units = callback_context.overlap_units
 		local hit_units = self.hit_units
 		local num_hits = callback_context.num_hits
@@ -187,14 +184,17 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 		local player_direction = self._player_direction:unbox()
 		local player_direction_flat = Vector3.flat(player_direction)
 		local buff_extension = self.owner_buff_extension
-		local push_half_angle = math.rad(buff_extension.apply_buffs_to_value(buff_extension, current_action.push_angle or 90, StatBuffIndex.BLOCK_ANGLE) * 0.5)
-		local outer_push_half_angle = math.rad(buff_extension.apply_buffs_to_value(buff_extension, current_action.outer_push_angle or 0, StatBuffIndex.BLOCK_ANGLE) * 0.5)
+		local push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.push_angle or 90, StatBuffIndex.BLOCK_ANGLE) * 0.5)
+		local outer_push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.outer_push_angle or 0, StatBuffIndex.BLOCK_ANGLE) * 0.5)
 
 		for i = 1, num_hits, 1 do
-			local hit_actor = overlap_units[i]:unbox()
+			repeat
+				local hit_actor = overlap_units[i]:unbox()
 
-			if hit_actor == nil then
-			else
+				if hit_actor == nil then
+					break
+				end
+
 				local hit_unit = Actor.unit(hit_actor)
 				local is_enemy = DamageUtils.is_enemy(hit_unit)
 
@@ -212,74 +212,75 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 					local outer_push = push_half_angle < angle_to_target and angle_to_target <= outer_push_half_angle
 
 					if not inner_push and not outer_push then
-					else
-						if inner_push and not outer_push then
-							local push_arc_event = "Play_player_push_ark_success"
-							local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
-							first_person_extension.play_hud_sound_event(first_person_extension, push_arc_event, nil, false)
-						end
-
-						local hit_unit_id = network_manager.unit_game_object_id(network_manager, hit_unit)
-						local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
-						local power_level = self.power_level
-						local damage_profile_id_to_use = (inner_push and self.damage_profile_inner_id) or self.damage_profile_outer_id
-						local damage_profile_to_use = (inner_push and self.damage_profile_inner) or self.damage_profile_outer
-						local target_settings = damage_profile_to_use.default_target
-						local hit_position = Unit.world_position(hit_unit, node)
-						local hit_effect = current_action.impact_particle_effect or "fx/impact_block_push"
-
-						if hit_effect then
-							EffectHelper.player_melee_hit_particles(world, hit_effect, hit_position, attack_direction, nil, hit_unit)
-						end
-
-						local sound_event = current_action.stagger_impact_sound_event or "blunt_hit"
-
-						if sound_event then
-							local attack_template = AttackTemplates[target_settings.attack_template]
-							local sound_type = (attack_template and attack_template.sound_type) or "stun_heavy"
-							local husk = self.bot_player
-
-							EffectHelper.play_melee_hit_effects(sound_event, world, hit_position, sound_type, husk, hit_unit)
-
-							local sound_event_id = NetworkLookup.sound_events[sound_event]
-							local sound_type_id = NetworkLookup.melee_impact_sound_types[sound_type]
-							hit_position = Vector3(math.clamp(hit_position.x, -600, 600), math.clamp(hit_position.y, -600, 600), math.clamp(hit_position.z, -600, 600))
-
-							if self.is_server then
-								network_manager.network_transmit:send_rpc_clients("rpc_play_melee_hit_effects", sound_event_id, hit_position, sound_type_id, hit_unit_id)
-							else
-								network_manager.network_transmit:send_rpc_server("rpc_play_melee_hit_effects", sound_event_id, hit_position, sound_type_id, hit_unit_id)
-							end
-						else
-							Application.warning("[ActionSweep] Missing sound event for push action in unit %q.", self.weapon_unit)
-						end
-
-						local shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit)
-						local damage_source = self.item_name
-						local damage_source_id = NetworkLookup.damage_sources[damage_source]
-						local is_critical_strike = self._is_critical_strike
-
-						weapon_system.send_rpc_attack_hit(weapon_system, damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id_to_use, "power_level", power_level, "hit_target_index", nil, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", false, "can_stagger", true)
-
-						if Managers.state.controller_features and self.owner.local_player and not self.has_played_rumble_effect then
-							Managers.state.controller_features:add_effect("rumble", {
-								rumble_effect = "push_hit"
-							})
-
-							self.has_played_rumble_effect = true
-						end
-
-						Managers.state.entity:system("play_go_tutorial_system"):register_push(hit_unit)
-
-						local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-
-						buff_extension.trigger_procs(buff_extension, "on_push", hit_unit, damage_source)
-
-						hit_once = true
+						break
 					end
+
+					if inner_push and not outer_push then
+						local push_arc_event = "Play_player_push_ark_success"
+						local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+
+						first_person_extension:play_hud_sound_event(push_arc_event, nil, false)
+					end
+
+					local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
+					local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
+					local power_level = self.power_level
+					local damage_profile_id_to_use = (inner_push and self.damage_profile_inner_id) or self.damage_profile_outer_id
+					local damage_profile_to_use = (inner_push and self.damage_profile_inner) or self.damage_profile_outer
+					local target_settings = damage_profile_to_use.default_target
+					local hit_position = Unit.world_position(hit_unit, node)
+					local hit_effect = current_action.impact_particle_effect or "fx/impact_block_push"
+
+					if hit_effect then
+						EffectHelper.player_melee_hit_particles(world, hit_effect, hit_position, attack_direction, nil, hit_unit)
+					end
+
+					local sound_event = current_action.stagger_impact_sound_event or "blunt_hit"
+
+					if sound_event then
+						local attack_template = AttackTemplates[target_settings.attack_template]
+						local sound_type = (attack_template and attack_template.sound_type) or "stun_heavy"
+						local husk = self.bot_player
+
+						EffectHelper.play_melee_hit_effects(sound_event, world, hit_position, sound_type, husk, hit_unit)
+
+						local sound_event_id = NetworkLookup.sound_events[sound_event]
+						local sound_type_id = NetworkLookup.melee_impact_sound_types[sound_type]
+						hit_position = Vector3(math.clamp(hit_position.x, -600, 600), math.clamp(hit_position.y, -600, 600), math.clamp(hit_position.z, -600, 600))
+
+						if self.is_server then
+							network_manager.network_transmit:send_rpc_clients("rpc_play_melee_hit_effects", sound_event_id, hit_position, sound_type_id, hit_unit_id)
+						else
+							network_manager.network_transmit:send_rpc_server("rpc_play_melee_hit_effects", sound_event_id, hit_position, sound_type_id, hit_unit_id)
+						end
+					else
+						Application.warning("[ActionSweep] Missing sound event for push action in unit %q.", self.weapon_unit)
+					end
+
+					local shield_blocked = AiUtils.attack_is_shield_blocked(hit_unit, owner_unit)
+					local damage_source = self.item_name
+					local damage_source_id = NetworkLookup.damage_sources[damage_source]
+					local is_critical_strike = self._is_critical_strike
+
+					weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, attack_direction, damage_profile_id_to_use, "power_level", power_level, "hit_target_index", nil, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", false, "can_stagger", true)
+
+					if Managers.state.controller_features and self.owner.local_player and not self.has_played_rumble_effect then
+						Managers.state.controller_features:add_effect("rumble", {
+							rumble_effect = "push_hit"
+						})
+
+						self.has_played_rumble_effect = true
+					end
+
+					Managers.state.entity:system("play_go_tutorial_system"):register_push(hit_unit)
+
+					local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+
+					buff_extension:trigger_procs("on_push", hit_unit, damage_source)
+
+					hit_once = true
 				end
-			end
+			until true
 		end
 
 		if hit_once and not self.bot_player then
@@ -288,9 +289,8 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 			})
 		end
 	end
-
-	return 
 end
+
 ActionPushStagger.finish = function (self, reason)
 	local hud_extension = ScriptUnit.has_extension(self.owner_unit, "hud_system")
 
@@ -303,10 +303,10 @@ ActionPushStagger.finish = function (self, reason)
 	local ammo_extension = self.ammo_extension
 	local current_action = self.current_action
 
-	if reason ~= "new_interupting_action" and ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension.ammo_count(ammo_extension) == 0 and ammo_extension.can_reload(ammo_extension) then
+	if reason ~= "new_interupting_action" and ammo_extension and current_action.reload_when_out_of_ammo and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 		local play_reload_animation = true
 
-		ammo_extension.start_reload(ammo_extension, play_reload_animation)
+		ammo_extension:start_reload(play_reload_animation)
 	end
 
 	local owner_unit = self.owner_unit
@@ -323,10 +323,8 @@ ActionPushStagger.finish = function (self, reason)
 
 	local status_extension = self._status_extension
 
-	status_extension.set_blocking(status_extension, false)
-	status_extension.set_has_blocked(status_extension, false)
-
-	return 
+	status_extension:set_blocking(false)
+	status_extension:set_has_blocked(false)
 end
 
-return 
+return

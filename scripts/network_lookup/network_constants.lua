@@ -17,20 +17,20 @@ NetworkConstants.game_object_id_max = Network.type_info("game_object_id").max
 NetworkConstants.invalid_game_object_id = NetworkConstants.game_object_id_max
 NetworkConstants.damage_profile = Network.type_info("damage_profile")
 
-assert(#NetworkLookup.damage_profiles <= NetworkConstants.damage_profile.max, "Too many damage profiles, global config max value needs to be upped")
+fassert(#NetworkLookup.damage_profiles <= NetworkConstants.damage_profile.max, "Too many damage profiles, global config max value needs to be upped")
 
 NetworkConstants.statistics_path_max_size = Network.type_info("statistics_path").max_size
 NetworkConstants.anim_event = Network.type_info("anim_event")
 
-assert(#NetworkLookup.anims <= NetworkConstants.anim_event.max, "Too many anim events in network lookup, time to up the network config max value, max: " .. NetworkConstants.anim_event.max .. "|anims " .. #NetworkLookup.anims)
+fassert(#NetworkLookup.anims <= NetworkConstants.anim_event.max, "Too many anim events in network lookup, time to up the network config max value, max: " .. NetworkConstants.anim_event.max .. "|anims " .. #NetworkLookup.anims)
 
 NetworkConstants.bt_action_name = Network.type_info("bt_action_name")
 
-assert(#NetworkLookup.bt_action_names <= NetworkConstants.bt_action_name.max, "Too many bt_action_name events in network lookup, time to up the network config max value")
+fassert(#NetworkLookup.bt_action_names <= NetworkConstants.bt_action_name.max, "Too many bt_action_name events in network lookup, time to up the network config max value")
 
 NetworkConstants.surface_material_effect = Network.type_info("surface_material_effect")
 
-assert(#NetworkLookup.surface_material_effects <= NetworkConstants.surface_material_effect.max, "Too many surface material effects in network lookup, time to up the network config max value")
+fassert(#NetworkLookup.surface_material_effects <= NetworkConstants.surface_material_effect.max, "Too many surface material effects in network lookup, time to up the network config max value")
 
 NetworkConstants.vfx = Network.type_info("vfx")
 local effetcs_max = NetworkConstants.vfx.max
@@ -49,13 +49,13 @@ NetworkConstants.light_weight_projectile_index = Network.type_info("light_weight
 NetworkConstants.weapon_id = Network.type_info("weapon_id")
 local num_items = #ItemMasterList
 
-assert(num_items <= NetworkConstants.weapon_id.max, "Too many weapons in ItemMasterList, global.network_config value weapon_id needs to be raised.")
+fassert(num_items <= NetworkConstants.weapon_id.max, "Too many weapons in ItemMasterList, global.network_config value weapon_id needs to be raised.")
 
 local num_damage_sources = #NetworkLookup.damage_sources
 NetworkConstants.damage_source_id = Network.type_info("damage_source_id")
 
-assert(num_damage_sources <= NetworkConstants.damage_source_id.max, "Too many damage sources, global.network_config value damage_source_id needs to be raised.")
-assert(num_items <= num_damage_sources, "weapon_id lookup is set higher than damage_source_id lookup despite all weapons being damage sources.")
+fassert(num_damage_sources <= NetworkConstants.damage_source_id.max, "Too many damage sources, global.network_config value damage_source_id needs to be raised.")
+fassert(num_items <= num_damage_sources, "weapon_id lookup is set higher than damage_source_id lookup despite all weapons being damage sources.")
 
 local num_weapon_skins = #NetworkLookup.weapon_skins
 NetworkConstants.lookup = Network.type_info("lookup")
@@ -114,9 +114,30 @@ fassert(num_dialogues <= max_dialogues, "Too many entries in dialogue lookup (%i
 
 NetworkConstants.statuses = Network.type_info("player_status")
 
-assert(#NetworkLookup.statuses <= NetworkConstants.statuses.max, "Too many statuses, raise global.network_config value for player_status by a factor 2")
+fassert(#NetworkLookup.statuses <= NetworkConstants.statuses.max, "Too many statuses, raise global.network_config value for player_status by a factor 2")
 
 NetworkConstants.uint_16 = Network.type_info("uint_16")
 NetworkConstants.server_controlled_buff_id = Network.type_info("server_controlled_buff_id")
+local uint_8 = Network.type_info("uint_8")
 
-return 
+fassert(uint_8.bits == 8, "uint_8 is not 8 bits.")
+
+local uint_16 = Network.type_info("uint_16")
+
+fassert(uint_16.bits == 16, "uint_16 is not 16 bits.")
+
+local uint_19 = Network.type_info("uint_19")
+
+fassert(uint_19.bits == 19, "uint_19 is not 19 bits.")
+
+local uint_32 = Network.type_info("uint_32")
+
+fassert(uint_32.bits == 32, "uint_32 is not 32 bits.")
+
+local enemy_package_loader_bitmask_array = Network.type_info("enemy_package_loader_bitmask_array")
+local num_bitmasks_bits = enemy_package_loader_bitmask_array.max_size * uint_32.bits
+local num_breeds = #NetworkLookup.breeds
+
+fassert(num_breeds <= num_bitmasks_bits, "Need to update enemy_package_loader_bitmask_array so that it enough 32-bit elements to contain number of breeds (%i).", num_breeds)
+
+return

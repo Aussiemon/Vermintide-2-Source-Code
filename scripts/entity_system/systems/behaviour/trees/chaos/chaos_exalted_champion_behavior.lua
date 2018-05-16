@@ -115,8 +115,8 @@ local CHAOS_EXALTED_CHAMPION_NORSCA_COMBAT = {
 	},
 	{
 		"BTMeleeOverlapAttackAction",
-		name = "charge",
-		action_data = ACTIONS.charge
+		name = "norsca_charge",
+		action_data = ACTIONS.norsca_charge
 	},
 	{
 		"BTStormVerminAttackAction",
@@ -231,16 +231,16 @@ BreedBehaviors.chaos_exalted_champion_norsca = {
 		name = "falling"
 	},
 	{
-		"BTStaggerAction",
-		name = "stagger",
-		condition = "stagger",
-		action_data = ACTIONS.stagger
-	},
-	{
 		"BTTransformAction",
 		name = "transform",
 		condition = "boss_phase_two",
 		action_data = ACTIONS.transform
+	},
+	{
+		"BTStaggerAction",
+		name = "stagger",
+		condition = "stagger",
+		action_data = ACTIONS.stagger
 	},
 	CHAOS_EXALTED_CHAMPION_SMART_OBJECT,
 	CHAOS_EXALTED_CHAMPION_NORSCA_COMBAT,
@@ -256,4 +256,4 @@ BreedBehaviors.chaos_exalted_champion_norsca = {
 	name = "horde"
 }
 
-return 
+return

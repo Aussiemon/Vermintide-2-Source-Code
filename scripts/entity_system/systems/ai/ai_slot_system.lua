@@ -9,10 +9,11 @@ local extensions = {
 }
 AISlotSystem = class(AISlotSystem, ExtensionSystemBase)
 local global_ai_target_units = AI_TARGET_UNITS
+
 AISlotSystem.init = function (self, context, system_name)
 	local entity_manager = context.entity_manager
 
-	entity_manager.register_system(entity_manager, self, system_name, extensions)
+	entity_manager:register_system(self, system_name, extensions)
 
 	self.entity_manager = entity_manager
 	self.is_server = context.is_server
@@ -51,19 +52,18 @@ AISlotSystem.init = function (self, context, system_name)
 	self._traverse_logic = GwNavTraverseLogic.create(self.nav_world, nav_cost_map_cost_table)
 
 	GwNavTraverseLogic.set_navtag_layer_cost_table(self._traverse_logic, navtag_layer_cost_table)
-
-	return 
 end
+
 local SLOT_COLORS = nil
+
 AISlotSystem.destroy = function (self)
 	if self._traverse_logic ~= nil then
 		GwNavTagLayerCostTable.destroy(self._navtag_layer_cost_table)
 		GwNavCostMap.destroy_tag_cost_table(self._nav_cost_map_cost_table)
 		GwNavTraverseLogic.destroy(self._traverse_logic)
 	end
-
-	return 
 end
+
 local SLOT_RADIUS = 0.5
 local SLOT_POSITION_CHECK_INDEX = {
 	CHECK_LEFT = 0,
@@ -106,13 +106,11 @@ local function create_target_slots(target_unit, target_unit_extension, color_ind
 			slots[i] = slot
 		end
 	end
-
-	return 
 end
 
 local function delete_slot(slot, unit_extension_data)
 	if not slot then
-		return 
+		return
 	end
 
 	local ai_unit = slot.ai_unit
@@ -162,8 +160,6 @@ local function delete_slot(slot, unit_extension_data)
 	end
 
 	slot = nil
-
-	return 
 end
 
 local function disable_slot(slot, unit_extension_data)
@@ -177,14 +173,10 @@ local function disable_slot(slot, unit_extension_data)
 
 	slot.disabled = true
 	slot.released = false
-
-	return 
 end
 
 local function enable_slot(slot)
 	slot.disabled = false
-
-	return 
 end
 
 local function slots_count(target_unit, unit_extension_data, wanted_slot_type)
@@ -215,7 +207,7 @@ local function detach_ai_unit_from_slot(ai_unit, unit_extension_data)
 	local ai_unit_extension = unit_extension_data[ai_unit]
 
 	if not ai_unit_extension then
-		return 
+		return
 	end
 
 	local slot = ai_unit_extension.slot
@@ -225,7 +217,7 @@ local function detach_ai_unit_from_slot(ai_unit, unit_extension_data)
 		local queue = slot.queue
 		local queue_n = #queue
 
-		if 0 < queue_n then
+		if queue_n > 0 then
 			local ai_unit_waiting = queue[queue_n]
 			local ai_unit_waiting_extension = unit_extension_data[ai_unit_waiting]
 			slot.ai_unit = ai_unit_waiting
@@ -263,13 +255,12 @@ local function detach_ai_unit_from_slot(ai_unit, unit_extension_data)
 
 	ai_unit_extension.waiting_on_slot = nil
 	ai_unit_extension.slot = nil
-
-	return 
 end
 
 AISlotSystem.hot_join_sync = function (self, sender, player)
-	return 
+	return
 end
+
 local AI_UPDATES_PER_FRAME = 1
 local SLOT_QUEUE_RADIUS = 1.75
 local SLOT_QUEUE_RADIUS_SQ = SLOT_QUEUE_RADIUS * SLOT_QUEUE_RADIUS
@@ -285,19 +276,20 @@ local Z_MAX_DIFFERENCE = 1.5
 local NAVMESH_DISTANCE_FROM_WALL = 0.5
 local MOVER_RADIUS = 0.6
 local RAYCANGO_OFFSET = NAVMESH_DISTANCE_FROM_WALL + MOVER_RADIUS
+
 AISlotSystem.do_slot_search = function (self, ai_unit, set)
 	local ai_unit_extension = self.unit_extension_data[ai_unit]
 	ai_unit_extension.do_search = set
-
-	return 
 end
+
 local TARGET_OUTSIDE_NAVMESH_TIMEOUT = 2
+
 AISlotSystem.has_target_been_outside_navmesh_too_long = function (self, target_unit, t)
 	local unit_extension_data = self.unit_extension_data
 	local target_unit_extension = unit_extension_data[target_unit]
 	local outside_navmesh_at_t = target_unit_extension and target_unit_extension.outside_navmesh_at_t
 	local intervention_time = math.max(CurrentSpecialsSettings.outside_navmesh_intervention.intervention_time, TARGET_OUTSIDE_NAVMESH_TIMEOUT)
-	local has_target_been_outside_navmesh_too_long = outside_navmesh_at_t and outside_navmesh_at_t + intervention_time < t
+	local has_target_been_outside_navmesh_too_long = outside_navmesh_at_t and t > outside_navmesh_at_t + intervention_time
 
 	return has_target_been_outside_navmesh_too_long
 end
@@ -351,7 +343,7 @@ local function get_slot_queue_position(unit_extension_data, slot, nav_world, dis
 	local ai_unit = slot.ai_unit
 
 	if not unit_alive(target_unit) or not unit_alive(ai_unit) then
-		return 
+		return
 	end
 
 	local slot_type = slot.type
@@ -386,8 +378,6 @@ local function get_slot_queue_position(unit_extension_data, slot, nav_world, dis
 	else
 		return slot_queue_position_on_navmesh, penalty_term
 	end
-
-	return 
 end
 
 local function offset_slot(target_unit, slot_absolute_position, target_unit_position)
@@ -399,7 +389,7 @@ local function offset_slot(target_unit, slot_absolute_position, target_unit_posi
 		target_velocity = Vector3(0, 0, 0)
 	end
 
-	if 0.1 < Vector3.length(target_velocity) then
+	if Vector3.length(target_velocity) > 0.1 then
 		local speed = Vector3.length(target_velocity)
 		local move_direction = Vector3.normalize(target_velocity)
 		local wanted_slot_offset = move_direction * speed
@@ -413,13 +403,11 @@ local function offset_slot(target_unit, slot_absolute_position, target_unit_posi
 	else
 		return slot_absolute_position
 	end
-
-	return 
 end
 
 AISlotSystem.improve_slot_position = function (self, ai_unit, t)
 	if not unit_alive(ai_unit) then
-		return 
+		return
 	end
 
 	local ai_unit_position = POSITION_LOOKUP[ai_unit]
@@ -460,23 +448,22 @@ AISlotSystem.improve_slot_position = function (self, ai_unit, t)
 		ai_unit_extension.wait_slot_distance = distance
 		ai_unit_extension.improve_wait_slot_position_t = t + Math.random() * 0.4
 	else
-		return 
+		return
 	end
 
 	if not position then
-		return 
+		return
 	end
 
 	local distance_sq = Vector3.distance_squared(ai_unit_position, position)
 	local navigation_extension = ScriptUnit.extension(ai_unit, "ai_navigation_system")
-	local previous_destination = navigation_extension.destination(navigation_extension)
+	local previous_destination = navigation_extension:destination()
 
-	if 1 < distance_sq or Vector3.dot(position - ai_unit_position, previous_destination - ai_unit_position) < 0 then
-		navigation_extension.move_to(navigation_extension, position)
+	if distance_sq > 1 or Vector3.dot(position - ai_unit_position, previous_destination - ai_unit_position) < 0 then
+		navigation_extension:move_to(position)
 	end
-
-	return 
 end
+
 AISlotSystem.ai_unit_have_slot = function (self, ai_unit)
 	local ai_unit_extension = self.unit_extension_data[ai_unit]
 
@@ -492,6 +479,7 @@ AISlotSystem.ai_unit_have_slot = function (self, ai_unit)
 
 	return true
 end
+
 AISlotSystem.ai_unit_wait_slot_distance = function (self, ai_unit)
 	local ai_unit_extension = self.unit_extension_data[ai_unit]
 
@@ -515,6 +503,7 @@ AISlotSystem.ai_unit_wait_slot_distance = function (self, ai_unit)
 
 	return distance
 end
+
 AISlotSystem.ai_unit_slot_position = function (self, ai_unit)
 	local ai_unit_extension = self.unit_extension_data[ai_unit]
 
@@ -530,18 +519,20 @@ AISlotSystem.ai_unit_slot_position = function (self, ai_unit)
 
 	return nil
 end
+
 AISlotSystem.get_target_unit_slot_data = function (self, target_unit, slot_type)
 	local target_unit_extension = self.unit_extension_data[target_unit]
 	local slot_data = target_unit_extension.all_slots[slot_type]
 
 	if not slot_data then
-		return 
+		return
 	end
 
 	local slots = slot_data.slots
 
 	return slots
 end
+
 AISlotSystem.slots_count = function (self, unit, slot_type)
 	local unit_extension = self.unit_extension_data[unit]
 	local slot_type = slot_type or DEFAULT_SLOT_TYPE
@@ -550,6 +541,7 @@ AISlotSystem.slots_count = function (self, unit, slot_type)
 
 	return slots_count
 end
+
 AISlotSystem.total_slots_count = function (self, unit, slot_type)
 	local unit_extension = self.unit_extension_data[unit]
 	local slot_type = slot_type or DEFAULT_SLOT_TYPE
@@ -558,6 +550,7 @@ AISlotSystem.total_slots_count = function (self, unit, slot_type)
 
 	return total_slots_count
 end
+
 AISlotSystem.disabled_slots_count = function (self, unit, slot_type)
 	local unit_extension = self.unit_extension_data[unit]
 	local slot_type = slot_type or DEFAULT_SLOT_TYPE
@@ -579,14 +572,12 @@ local function update_target(target_unit, ai_unit, ai_blackboard, unit_extension
 			detach_ai_unit_from_slot(ai_unit, unit_extension_data)
 		end
 
-		return 
+		return
 	end
 
 	local target_unit_position = POSITION_LOOKUP[target_unit]
 
 	ai_unit_extension.target_position:store(target_unit_position)
-
-	return 
 end
 
 local function rotate_position_from_origin(origin, position, radians, distance)
@@ -610,8 +601,6 @@ local function set_slot_edge_positions(slot, target_unit_extension)
 
 	slot.position_right:store(position_right)
 	slot.position_left:store(position_left)
-
-	return 
 end
 
 local function set_slot_absolute_position(slot, position, target_unit_extension)
@@ -622,8 +611,6 @@ local function set_slot_absolute_position(slot, position, target_unit_extension)
 	slot.absolute_position:store(position)
 	slot.queue_direction:store(direction_vector)
 	set_slot_edge_positions(slot, target_unit_extension)
-
-	return 
 end
 
 function get_slot_position_on_navmesh(target_unit, target_position, wanted_position, radians, distance, should_offset_slot, nav_world, above, below)
@@ -707,10 +694,13 @@ local function overlap_with_other_target_slot(slot, target_units, unit_extension
 	local target_units_n = #target_units
 
 	for i = 1, target_units_n, 1 do
-		local target_unit = target_units[i]
+		repeat
+			local target_unit = target_units[i]
 
-		if target_unit == slot_target_unit then
-		else
+			if target_unit == slot_target_unit then
+				break
+			end
+
 			local target_unit_extension = unit_extension_data[target_unit]
 			local all_slots = target_unit_extension.all_slots
 
@@ -721,20 +711,23 @@ local function overlap_with_other_target_slot(slot, target_units, unit_extension
 				local total_slots_count = slot_data.total_slots_count
 
 				for j = 1, total_slots_count, 1 do
-					local target_slot = target_slots[j]
+					repeat
+						local target_slot = target_slots[j]
 
-					if target_slot.disabled then
-					else
+						if target_slot.disabled then
+							break
+						end
+
 						local target_slot_position = target_slot.absolute_position:unbox()
 						local distance_squared = Vector3.distance_squared(slot_position, target_slot_position)
 
 						if distance_squared < overlap_distance_sq then
 							return target_slot
 						end
-					end
+					until true
 				end
 			end
-		end
+		until true
 	end
 
 	return false
@@ -751,32 +744,39 @@ local function overlap_with_own_slots(slot, unit_extension_data)
 	local all_slots = target_unit_extension.all_slots
 
 	for slot_b_type, slot_data in pairs(all_slots) do
-		if slot_a_type == slot_b_type then
-		else
+		repeat
+			if slot_a_type == slot_b_type then
+				break
+			end
+
 			local slot_b_radius = SlotSettings[slot_b_type].radius
 			local overlap_distance_sq = slot_b_radius * slot_b_radius
 			local slots = slot_data.slots
 			local num_slots = slot_data.total_slots_count
 
 			for j = 1, num_slots, 1 do
-				local slot_b = slots[j]
+				repeat
+					local slot_b = slots[j]
 
-				if slot_b.disabled then
-				else
+					if slot_b.disabled then
+						break
+					end
+
 					local ai_unit_b = slot_b.ai_unit
 
 					if not ai_unit_b then
-					else
-						local slot_b_position = slot_b.absolute_position:unbox()
-						local distance_squared = Vector3.distance_squared(slot_a_position, slot_b_position)
-
-						if distance_squared < overlap_distance_sq then
-							return slot_b
-						end
+						break
 					end
-				end
+
+					local slot_b_position = slot_b.absolute_position:unbox()
+					local distance_squared = Vector3.distance_squared(slot_a_position, slot_b_position)
+
+					if distance_squared < overlap_distance_sq then
+						return slot_b
+					end
+				until true
 			end
-		end
+		until true
 	end
 
 	return false
@@ -791,17 +791,20 @@ local function overlap_with_other_target(slot, target_units, unit_extension_data
 	local target_units_n = #target_units
 
 	for i = 1, target_units_n, 1 do
-		local target_unit = target_units[i]
+		repeat
+			local target_unit = target_units[i]
 
-		if target_unit == slot_target_unit then
-		else
+			if target_unit == slot_target_unit then
+				break
+			end
+
 			local target_unit_position = unit_extension_data[target_unit].position:unbox()
 			local distance_squared = Vector3.distance_squared(slot_position, target_unit_position)
 
 			if distance_squared < OVERLAP_SLOT_TO_TARGET_DISTANCE_SQ then
 				return true
 			end
-		end
+		until true
 	end
 
 	return false
@@ -820,9 +823,9 @@ local function disable_overlaping_slot(slot, overlap_slot, unit_extension_data, 
 	local overlap_slot_index = overlap_slot.index
 
 	if slot_priority < overlap_slot_priority and not slot.ai_unit then
-		return 
+		return
 	elseif overlap_slot_priority < slot_priority and not overlap_slot.ai_unit then
-		return 
+		return
 	end
 
 	if slot_priority < overlap_slot_priority then
@@ -856,8 +859,6 @@ local function disable_overlaping_slot(slot, overlap_slot, unit_extension_data, 
 
 		return false
 	end
-
-	return 
 end
 
 local function slot_is_behind_target(slot, ai_unit, target_unit_extension)
@@ -876,8 +877,6 @@ end
 
 local function clear_ghost_position(slot)
 	slot.ghost_position:store(Vector3(0, 0, 0))
-
-	return 
 end
 
 local GHOST_ANGLE = 90
@@ -914,7 +913,7 @@ local function set_ghost_position(target_unit_extension, slot, nav_world, traver
 			if ray_can_go then
 				slot.ghost_position:store(ghost_position_on_navmesh)
 
-				return 
+				return
 			end
 		end
 
@@ -926,8 +925,6 @@ local function set_ghost_position(target_unit_extension, slot, nav_world, traver
 	end
 
 	clear_ghost_position(slot)
-
-	return 
 end
 
 local function update_slot_anchor_weight(slot, target_unit, unit_extension_data)
@@ -986,8 +983,6 @@ local function update_slot_anchor_weight(slot, target_unit, unit_extension_data)
 			score = score / 2
 		end
 	end
-
-	return 
 end
 
 local function update_anchor_weights(target_unit, unit_extension_data)
@@ -1004,8 +999,6 @@ local function update_anchor_weights(target_unit, unit_extension_data)
 			update_slot_anchor_weight(slot, target_unit, unit_extension_data)
 		end
 	end
-
-	return 
 end
 
 local RELEASE_SLOT_DISTANCE = 3
@@ -1013,7 +1006,7 @@ local RELEASE_SLOT_DISTANCE_SQ = RELEASE_SLOT_DISTANCE * RELEASE_SLOT_DISTANCE
 
 local function check_to_release_slot(slot)
 	if slot.disabled then
-		return 
+		return
 	end
 
 	local ai_unit = slot.ai_unit
@@ -1021,7 +1014,7 @@ local function check_to_release_slot(slot)
 	if not ai_unit then
 		slot.released = false
 
-		return 
+		return
 	end
 
 	local ai_unit_position = POSITION_LOOKUP[ai_unit]
@@ -1029,8 +1022,6 @@ local function check_to_release_slot(slot)
 	local distance_to_slot_position = Vector3.distance_squared(ai_unit_position, slot_position)
 	local slot_released = RELEASE_SLOT_DISTANCE_SQ < distance_to_slot_position
 	slot.released = slot_released
-
-	return 
 end
 
 local function get_anchor_slot(slot_type, target_unit, unit_extension_data)
@@ -1042,18 +1033,21 @@ local function get_anchor_slot(slot_type, target_unit, unit_extension_data)
 	local best_anchor_weight = best_slot.anchor_weight
 
 	for i = 1, total_slots_count, 1 do
-		local slot = target_slots[i]
-		local slot_disabled = slot.disabled
+		repeat
+			local slot = target_slots[i]
+			local slot_disabled = slot.disabled
 
-		if slot_disabled then
-		else
+			if slot_disabled then
+				break
+			end
+
 			local slot_anchor_weight = slot.anchor_weight
 
 			if best_anchor_weight < slot_anchor_weight or (slot_anchor_weight == best_anchor_weight and slot.index < best_slot.index) then
 				best_slot = slot
 				best_anchor_weight = slot_anchor_weight
 			end
-		end
+		until true
 	end
 
 	return best_slot
@@ -1082,7 +1076,7 @@ local function update_anchor_slot_position(slot, unit_extension_data, should_off
 	local i = 0
 
 	while i <= MAX_GET_SLOT_POSITION_TRIES and not position_on_navmesh do
-		local sign = (0 < i % 2 and -1) or 1
+		local sign = (i % 2 > 0 and -1) or 1
 		local radians = math.ceil(i / 2) * sign
 
 		if target_outside_navmesh then
@@ -1105,8 +1099,6 @@ local function update_anchor_slot_position(slot, unit_extension_data, should_off
 
 		return false, wanted_position
 	end
-
-	return 
 end
 
 local function update_slot_position(target_unit, slot, slot_position, unit_extension_data, should_offset_slot, nav_world, traverse_logic, above, below, target_outside_navmesh)
@@ -1133,8 +1125,6 @@ local function update_slot_position(target_unit, slot, slot_position, unit_exten
 
 		return false, slot_position
 	end
-
-	return 
 end
 
 local function disable_all_slots(target_unit, unit_extension_data)
@@ -1151,8 +1141,6 @@ local function disable_all_slots(target_unit, unit_extension_data)
 			disable_slot(slot, unit_extension_data)
 		end
 	end
-
-	return 
 end
 
 local function update_slot_status(slot, is_on_navmesh, target_units, unit_extension_data)
@@ -1222,8 +1210,6 @@ local function update_target_slots_status(target_unit, target_units, unit_extens
 
 		update_anchor_weights(target_unit, unit_extension_data)
 	end
-
-	return 
 end
 
 local function update_target_slots_positions_on_ladder(target_unit, target_units, unit_extension_data, should_offset_slot, nav_world, traverse_logic, ladder_unit, bottom, top)
@@ -1331,15 +1317,13 @@ local function update_target_slots_positions_on_ladder(target_unit, target_units
 
 		update_anchor_weights(target_unit, unit_extension_data)
 	end
-
-	return 
 end
 
 local function update_target_slots_positions(target_unit, target_units, unit_extension_data, should_offset_slot, nav_world, traverse_logic, is_on_ladder, ladder_unit, bottom, top, target_outside_navmesh)
 	if is_on_ladder then
 		update_target_slots_positions_on_ladder(target_unit, target_units, unit_extension_data, should_offset_slot, nav_world, traverse_logic, ladder_unit, bottom, top)
 
-		return 
+		return
 	end
 
 	local above, below = nil
@@ -1386,8 +1370,6 @@ local function update_target_slots_positions(target_unit, target_units, unit_ext
 	end
 
 	update_anchor_weights(target_unit, unit_extension_data)
-
-	return 
 end
 
 local OWNER_STICKY_VALUE = -3
@@ -1406,12 +1388,18 @@ local function get_best_slot(target_unit, target_units, ai_unit, unit_extension_
 	local previous_slot = ai_unit_extension.slot
 
 	for i = 1, total_slots_count, 1 do
-		local slot = target_slots[i]
-		local disabled = slot.disabled
+		repeat
+			local slot = target_slots[i]
+			local disabled = slot.disabled
 
-		if disabled then
-		elseif skip_slots_behind_target and slot_is_behind_target(slot, ai_unit, target_unit_extension) then
-		else
+			if disabled then
+				break
+			end
+
+			if skip_slots_behind_target and slot_is_behind_target(slot, ai_unit, target_unit_extension) then
+				break
+			end
+
 			local slot_owner = slot.ai_unit
 			local slot_released = slot.released
 			local slot_position = slot.original_absolute_position:unbox()
@@ -1437,15 +1425,18 @@ local function get_best_slot(target_unit, target_units, ai_unit, unit_extension_
 				best_slot = slot
 				best_score = slot_score
 			end
-		end
+		until true
 	end
 
 	if best_slot then
-		ai_unit_extension.temporary_wait_position = nil
-		local current_slot = ai_unit_extension.slot
+		repeat
+			ai_unit_extension.temporary_wait_position = nil
+			local current_slot = ai_unit_extension.slot
 
-		if current_slot and current_slot == best_slot then
-		else
+			if current_slot and current_slot == best_slot then
+				break
+			end
+
 			local waiting_on_slot = ai_unit_extension.waiting_on_slot
 
 			if current_slot or waiting_on_slot then
@@ -1465,7 +1456,7 @@ local function get_best_slot(target_unit, target_units, ai_unit, unit_extension_
 			ai_unit_extension.slot = best_slot
 
 			update_anchor_weights(target_unit, unit_extension_data)
-		end
+		until true
 	end
 
 	if previous_slot ~= ai_unit_extension.slot then
@@ -1477,10 +1468,8 @@ local function get_best_slot(target_unit, target_units, ai_unit, unit_extension_
 		local dialogue_input = ScriptUnit.extension_input(ai_unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
 
-		dialogue_input.trigger_networked_dialogue_event(dialogue_input, "flanking", event_data)
+		dialogue_input:trigger_networked_dialogue_event("flanking", event_data)
 	end
-
-	return 
 end
 
 SLOT_QUEUE_PENALTY_MULTIPLIER = 3
@@ -1496,7 +1485,7 @@ local function get_best_slot_to_wait_on(target_unit, ai_unit, unit_extension_dat
 
 			waiting_on_slot = nil
 		else
-			return 
+			return
 		end
 	end
 
@@ -1509,25 +1498,32 @@ local function get_best_slot_to_wait_on(target_unit, ai_unit, unit_extension_dat
 	local best_slot = nil
 
 	for i = 1, target_slots_n, 1 do
-		local slot = target_slots[i]
-		local queue = slot.queue
-		local queue_n = #queue
+		repeat
+			local slot = target_slots[i]
+			local queue = slot.queue
+			local queue_n = #queue
 
-		if slot.disabled then
-		elseif skip_slots_behind_target and slot_is_behind_target(slot, ai_unit, target_unit_extension) then
-		else
+			if slot.disabled then
+				break
+			end
+
+			if skip_slots_behind_target and slot_is_behind_target(slot, ai_unit, target_unit_extension) then
+				break
+			end
+
 			local slot_queue_position, additional_penalty = get_slot_queue_position(unit_extension_data, slot, nav_world)
 
 			if not slot_queue_position then
-			else
-				local slot_queue_distance = Vector3.distance_squared(slot_queue_position, ai_unit_position) + queue_n * queue_n * SLOT_QUEUE_PENALTY_MULTIPLIER + additional_penalty
-
-				if slot_queue_distance < best_distance then
-					best_distance = slot_queue_distance
-					best_slot = slot
-				end
+				break
 			end
-		end
+
+			local slot_queue_distance = Vector3.distance_squared(slot_queue_position, ai_unit_position) + queue_n * queue_n * SLOT_QUEUE_PENALTY_MULTIPLIER + additional_penalty
+
+			if best_distance > slot_queue_distance then
+				best_distance = slot_queue_distance
+				best_slot = slot
+			end
+		until true
 	end
 
 	if best_slot then
@@ -1536,8 +1532,6 @@ local function get_best_slot_to_wait_on(target_unit, ai_unit, unit_extension_dat
 		queue[queue_n + 1] = ai_unit
 		ai_unit_extension.waiting_on_slot = best_slot
 	end
-
-	return 
 end
 
 local function update_disabled_slots_count(target_units, unit_extension_data)
@@ -1565,8 +1559,6 @@ local function update_disabled_slots_count(target_units, unit_extension_data)
 			slot_data.disabled_slots_count = disabled_count
 		end
 	end
-
-	return 
 end
 
 local function update_slot_sound(is_server, network_transmit, target_units, unit_extension_data)
@@ -1581,8 +1573,8 @@ local function update_slot_sound(is_server, network_transmit, target_units, unit
 		local target_unit = target_units[unit_i]
 		local target_unit_extension = target_unit_extensions[target_unit]
 		local all_slots = target_unit_extension.all_slots
-		local player = player_manager.owner(player_manager, target_unit)
-		local is_server_player = is_server and player and player.is_player_controlled(player)
+		local player = player_manager:owner(target_unit)
+		local is_server_player = is_server and player and player:is_player_controlled()
 		local largest_percentage_taken = 0
 
 		for slot_type, slot_data in pairs(all_slots) do
@@ -1594,7 +1586,7 @@ local function update_slot_sound(is_server, network_transmit, target_units, unit
 				local disabled_slots_count = slot_data.disabled_slots_count
 				local total_slots_count = slot_data.total_slots_count
 				local enabled_slots_count = total_slots_count - disabled_slots_count
-				local percentage_taken = (0 < enabled_slots_count and taken_slots / enabled_slots_count) or 0
+				local percentage_taken = (enabled_slots_count > 0 and taken_slots / enabled_slots_count) or 0
 				percentage_taken = math.clamp(percentage_taken, 0, 1)
 
 				if largest_percentage_taken < percentage_taken then
@@ -1608,22 +1600,20 @@ local function update_slot_sound(is_server, network_transmit, target_units, unit
 				event_data.current_amount = taken_slots
 				event_data.has_shield = DialogueSystem:PlayerShieldCheck(target_unit)
 
-				dialogue_input.trigger_networked_dialogue_event(dialogue_input, "surrounded", event_data)
+				dialogue_input:trigger_networked_dialogue_event("surrounded", event_data)
 			end
 		end
 
 		if is_server_player then
 			if player.local_player then
-				audio_system.set_global_parameter_with_lerp(audio_system, "occupied_slots_percentage", largest_percentage_taken * 100)
+				audio_system:set_global_parameter_with_lerp("occupied_slots_percentage", largest_percentage_taken * 100)
 			else
-				local peer_id = player.network_id(player)
+				local peer_id = player:network_id()
 
-				network_transmit.send_rpc(network_transmit, "rpc_client_audio_set_global_parameter_with_lerp", peer_id, parameter_id, largest_percentage_taken)
+				network_transmit:send_rpc("rpc_client_audio_set_global_parameter_with_lerp", peer_id, parameter_id, largest_percentage_taken)
 			end
 		end
 	end
-
-	return 
 end
 
 AISlotSystem.update = function (self, context, t, dt)
@@ -1634,15 +1624,15 @@ AISlotSystem.update = function (self, context, t, dt)
 
 		NAVIGATION_RUNNING_IN_THREAD = false
 	end
-
-	return 
 end
+
 local debug_draw_slots, debug_print_slots_count = nil
 local SLOT_STATUS_UPDATE_INTERVAL = 0.5
 local TOTAL_SLOTS_COUNT_UPDATE_INTERVAL = 1
 local DISABLED_SLOTS_COUNT_UPDATE_INTERVAL = 1
 local SLOT_SOUND_UPDATE_INTERVAL = 1
 local TARGET_STOPPED_MOVING_SPEED_SQ = 0.25
+
 AISlotSystem.physics_async_update = function (self, context, t)
 	local dt = context.dt
 	self.t = t
@@ -1650,7 +1640,7 @@ AISlotSystem.physics_async_update = function (self, context, t)
 	local target_units_n = #target_units
 
 	if target_units_n == 0 then
-		return 
+		return
 	end
 
 	local nav_world = self.nav_world
@@ -1659,7 +1649,7 @@ AISlotSystem.physics_async_update = function (self, context, t)
 	for i_target = 1, target_units_n, 1 do
 		local target_unit = target_units[i_target]
 		local target_unit_extension = unit_extension_data[target_unit]
-		local successful = self.update_target_slots(self, t, target_unit, target_units, unit_extension_data, target_unit_extension, nav_world, self._traverse_logic)
+		local successful = self:update_target_slots(t, target_unit, target_units, unit_extension_data, target_unit_extension, nav_world, self._traverse_logic)
 
 		if successful then
 			break
@@ -1667,7 +1657,7 @@ AISlotSystem.physics_async_update = function (self, context, t)
 	end
 
 	if self.next_total_slot_count_update < t then
-		self.update_total_slots_count(self)
+		self:update_total_slots_count()
 
 		self.next_total_slot_count_update = t + TOTAL_SLOTS_COUNT_UPDATE_INTERVAL
 	end
@@ -1690,7 +1680,7 @@ AISlotSystem.physics_async_update = function (self, context, t)
 	for i = 1, update_slots_ai_units_prioritized_n, 1 do
 		local ai_unit = update_slots_ai_units_prioritized[i]
 
-		self.update_ai_unit_slot(self, ai_unit, target_units, unit_extension_data, nav_world, t)
+		self:update_ai_unit_slot(ai_unit, target_units, unit_extension_data, nav_world, t)
 
 		update_slots_ai_units_prioritized[i] = nil
 	end
@@ -1709,44 +1699,43 @@ AISlotSystem.physics_async_update = function (self, context, t)
 	for i = start_index, end_index, 1 do
 		local ai_unit = update_slots_ai_units[i]
 
-		self.update_ai_unit_slot(self, ai_unit, target_units, unit_extension_data, nav_world, t)
+		self:update_ai_unit_slot(ai_unit, target_units, unit_extension_data, nav_world, t)
 	end
 
 	if script_data.ai_debug_slots and self.is_server then
 		debug_draw_slots(unit_extension_data, nav_world, t)
 		debug_print_slots_count(target_units, unit_extension_data)
 	end
-
-	return 
 end
+
 AISlotSystem.update_ai_unit_slot = function (self, ai_unit, target_units, unit_extension_data, nav_world, t)
 	local ai_unit_dead = not unit_alive(ai_unit)
 
 	if ai_unit_dead then
 		detach_ai_unit_from_slot(ai_unit, unit_extension_data)
 
-		return 
+		return
 	end
 
 	local ai_unit_extension = unit_extension_data[ai_unit]
 	local ai_system_extension = ScriptUnit.extension(ai_unit, "ai_system")
-	local blackboard = ai_system_extension.blackboard(ai_system_extension)
+	local blackboard = ai_system_extension:blackboard()
 	local target_unit = blackboard.target_unit or blackboard.SVP_target_unit
 
 	update_target(target_unit, ai_unit, blackboard, unit_extension_data, t)
 
 	if not target_unit then
-		return 
+		return
 	end
 
 	local target_unit_extension = unit_extension_data[target_unit]
 
 	if not target_unit_extension then
-		return 
+		return
 	end
 
 	if not ai_unit_extension.do_search then
-		return 
+		return
 	end
 
 	local skip_slots_behind_target = blackboard.using_override_target
@@ -1770,11 +1759,10 @@ AISlotSystem.update_ai_unit_slot = function (self, ai_unit, target_units, unit_e
 	end
 
 	if not blackboard.disable_improve_slot_position then
-		self.improve_slot_position(self, ai_unit, t)
+		self:improve_slot_position(ai_unit, t)
 	end
-
-	return 
 end
+
 AISlotSystem.update_target_slots = function (self, t, target_unit, target_units, unit_extension_data, target_unit_extension, nav_world, traverse_logic)
 	local dist_sq = 0
 	local is_on_ladder, ladder_unit, bottom, top = nil
@@ -1782,7 +1770,7 @@ AISlotSystem.update_target_slots = function (self, t, target_unit, target_units,
 	local status_ext = ScriptUnit.has_extension(target_unit, "status_system")
 
 	if status_ext then
-		is_on_ladder, ladder_unit = status_ext.get_is_on_ladder(status_ext)
+		is_on_ladder, ladder_unit = status_ext:get_is_on_ladder()
 
 		if is_on_ladder then
 			local failed_ladder = nil
@@ -1828,7 +1816,7 @@ AISlotSystem.update_target_slots = function (self, t, target_unit, target_units,
 
 	local moved_at = target_unit_extension.moved_at
 	local target_locomotion = ScriptUnit.has_extension(target_unit, "locomotion_system") and ScriptUnit.extension(target_unit, "locomotion_system")
-	local target_speed_sq = (target_locomotion and Vector3.length_squared(target_locomotion.current_velocity(target_locomotion))) or 0
+	local target_speed_sq = (target_locomotion and Vector3.length_squared(target_locomotion:current_velocity())) or 0
 
 	if not is_on_ladder and moved_at and TARGET_SLOTS_UPDATE < t - moved_at and (target_speed_sq <= TARGET_STOPPED_MOVING_SPEED_SQ or TARGET_SLOTS_UPDATE_LONG < t - moved_at) then
 		local should_offset_slot = false
@@ -1851,6 +1839,7 @@ AISlotSystem.update_target_slots = function (self, t, target_unit, target_units,
 
 	return false
 end
+
 AISlotSystem.update_total_slots_count = function (self)
 	local target_units = self.target_units
 	local target_units_n = #target_units
@@ -1882,18 +1871,17 @@ AISlotSystem.update_total_slots_count = function (self)
 
 	self.num_total_enemies = slots_n
 	self.num_occupied_slots = slots_occupied_n
-
-	return 
 end
+
 AISlotSystem.register_prioritized_ai_unit_update = function (self, unit)
 	local update_slots_ai_units_prioritized = self.update_slots_ai_units_prioritized
 	local update_slots_ai_units_prioritized_n = #update_slots_ai_units_prioritized
 	update_slots_ai_units_prioritized[update_slots_ai_units_prioritized_n + 1] = unit
-
-	return 
 end
+
 local AGGROABLE_SLOT_COLOR_INDEX = 5
 local dummy_input = {}
+
 AISlotSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = {}
 
@@ -1949,7 +1937,7 @@ AISlotSystem.on_add_extension = function (self, world, unit, extension_name, ext
 		local traverse_logic = self._traverse_logic
 		local unit_extension_data = self.unit_extension_data
 
-		self.update_target_slots(self, 0, unit, target_units, unit_extension_data, extension, nav_world, traverse_logic)
+		self:update_target_slots(0, unit, target_units, unit_extension_data, extension, nav_world, traverse_logic)
 	end
 
 	if extension_name == "AIEnemySlotExtension" then
@@ -1961,28 +1949,27 @@ AISlotSystem.on_add_extension = function (self, world, unit, extension_name, ext
 
 	return extension
 end
+
 AISlotSystem.extensions_ready = function (self, world, unit, extension_name)
 	if extension_name == "AIEnemySlotExtension" then
 		local extension = self.unit_extension_data[unit]
 		local ai_base_extension = ScriptUnit.extension(unit, "ai_system")
-		local breed = ai_base_extension.breed(ai_base_extension)
+		local breed = ai_base_extension:breed()
 		extension.breed = breed
 		extension.use_slot_type = breed.use_slot_type
 	end
-
-	return 
 end
+
 AISlotSystem.on_remove_extension = function (self, unit, extension_name)
-	self.on_freeze_extension(self, unit, extension_name)
+	self:on_freeze_extension(unit, extension_name)
 	ScriptUnit.remove_extension(unit, self.NAME)
-
-	return 
 end
+
 AISlotSystem.on_freeze_extension = function (self, unit, extension_name)
 	local extension = self.unit_extension_data[unit]
 
 	if extension == nil then
-		return 
+		return
 	end
 
 	local world = self.world
@@ -2053,8 +2040,6 @@ AISlotSystem.on_freeze_extension = function (self, unit, extension_name)
 	end
 
 	self.unit_extension_data[unit] = nil
-
-	return 
 end
 
 function debug_draw_slots(unit_extension_data, nav_world, t)
@@ -2066,139 +2051,141 @@ function debug_draw_slots(unit_extension_data, nav_world, t)
 	local z = Vector3.up() * 0.1
 
 	for i_target, target_unit in pairs(targets) do
-		if not unit_alive(target_unit) then
-		else
+		repeat
+			if not unit_alive(target_unit) then
+				break
+			end
+
 			local target_unit_extension = unit_extension_data[target_unit]
 
-			if target_unit_extension then
-				if not target_unit_extension.valid_target then
-				else
-					local all_slots = target_unit_extension.all_slots
+			if not target_unit_extension or not target_unit_extension.valid_target then
+				break
+			end
 
-					for slot_type, slot_data in pairs(all_slots) do
-						local target_slots = slot_data.slots
-						local target_slots_n = #target_slots
-						local target_position = target_unit_extension.position:unbox()
-						local target_color = Colors.get(target_unit_extension.debug_color_name)
+			local all_slots = target_unit_extension.all_slots
 
-						drawer.circle(drawer, target_position + z, 0.5, Vector3.up(), target_color)
-						drawer.circle(drawer, target_position + z, 0.45, Vector3.up(), target_color)
+			for slot_type, slot_data in pairs(all_slots) do
+				local target_slots = slot_data.slots
+				local target_slots_n = #target_slots
+				local target_position = target_unit_extension.position:unbox()
+				local target_color = Colors.get(target_unit_extension.debug_color_name)
 
-						if target_unit_extension.next_slot_status_update_at then
-							local percent = (t - target_unit_extension.next_slot_status_update_at) / SLOT_STATUS_UPDATE_INTERVAL
+				drawer:circle(target_position + z, 0.5, Vector3.up(), target_color)
+				drawer:circle(target_position + z, 0.45, Vector3.up(), target_color)
 
-							drawer.circle(drawer, target_position + z, 0.45 * percent, Vector3.up(), target_color)
-						end
+				if target_unit_extension.next_slot_status_update_at then
+					local percent = (t - target_unit_extension.next_slot_status_update_at) / SLOT_STATUS_UPDATE_INTERVAL
 
-						for i = 1, target_slots_n, 1 do
-							local slot = target_slots[i]
-							local anchor_slot = get_anchor_slot(slot_type, target_unit, unit_extension_data)
-							local is_anchor_slot = slot == anchor_slot
-							local ai_unit = slot.ai_unit
-							local ai_unit_extension = nil
-							local alpha = (ai_unit and 255) or 150
-							local color = (slot.disabled and Colors.get_color_with_alpha("gray", alpha)) or Colors.get_color_with_alpha(slot.debug_color_name, alpha)
+					drawer:circle(target_position + z, 0.45 * percent, Vector3.up(), target_color)
+				end
 
-							if slot.absolute_position then
-								local slot_absolute_position = slot.absolute_position:unbox()
+				for i = 1, target_slots_n, 1 do
+					repeat
+						local slot = target_slots[i]
+						local anchor_slot = get_anchor_slot(slot_type, target_unit, unit_extension_data)
+						local is_anchor_slot = slot == anchor_slot
+						local ai_unit = slot.ai_unit
+						local ai_unit_extension = nil
+						local alpha = (ai_unit and 255) or 150
+						local color = (slot.disabled and Colors.get_color_with_alpha("gray", alpha)) or Colors.get_color_with_alpha(slot.debug_color_name, alpha)
 
-								if unit_alive(ai_unit) then
-									local ai_unit_position = POSITION_LOOKUP[ai_unit]
-									local ai_unit_extension = unit_extension_data[ai_unit]
+						if slot.absolute_position then
+							local slot_absolute_position = slot.absolute_position:unbox()
 
-									drawer.circle(drawer, ai_unit_position + z, 0.35, Vector3.up(), color)
-									drawer.circle(drawer, ai_unit_position + z, 0.3, Vector3.up(), color)
+							if unit_alive(ai_unit) then
+								local ai_unit_position = POSITION_LOOKUP[ai_unit]
+								local ai_unit_extension = unit_extension_data[ai_unit]
 
-									local head_node = Unit.node(ai_unit, "c_head")
-									local viewport_name = "player_1"
-									local color_table = (slot.disabled and Colors.get_table("gray")) or Colors.get_table(slot.debug_color_name)
-									local color_vector = Vector3(color_table[2], color_table[3], color_table[4])
-									local offset_vector = Vector3(0, 0, -1)
-									local text_size = 0.4
-									local text = slot.index
-									local category = "slot_index"
+								drawer:circle(ai_unit_position + z, 0.35, Vector3.up(), color)
+								drawer:circle(ai_unit_position + z, 0.3, Vector3.up(), color)
 
-									Managers.state.debug_text:clear_unit_text(ai_unit, category)
-									Managers.state.debug_text:output_unit_text(text, text_size, ai_unit, head_node, offset_vector, nil, category, color_vector, viewport_name)
-
-									if slot.ghost_position.x ~= 0 and not slot.disable_at then
-										local ghost_position = slot.ghost_position:unbox()
-
-										drawer.line(drawer, ghost_position + z, slot_absolute_position + z, color)
-										drawer.sphere(drawer, ghost_position + z, 0.3, color)
-										drawer.line(drawer, ghost_position + z, ai_unit_position + z, color)
-									else
-										drawer.line(drawer, slot_absolute_position + z, ai_unit_position + z, color)
-									end
-								end
-
-								local text_size = 0.4
+								local head_node = Unit.node(ai_unit, "c_head")
+								local viewport_name = "player_1"
 								local color_table = (slot.disabled and Colors.get_table("gray")) or Colors.get_table(slot.debug_color_name)
 								local color_vector = Vector3(color_table[2], color_table[3], color_table[4])
-								local category = "slot_index_" .. slot_type .. "_" .. slot.index .. "_" .. i_target
+								local offset_vector = Vector3(0, 0, -1)
+								local text_size = 0.4
+								local text = slot.index
+								local category = "slot_index"
 
-								Managers.state.debug_text:clear_world_text(category)
-								Managers.state.debug_text:output_world_text(slot.index, text_size, slot_absolute_position + z, nil, category, color_vector)
+								Managers.state.debug_text:clear_unit_text(ai_unit, category)
+								Managers.state.debug_text:output_unit_text(text, text_size, ai_unit, head_node, offset_vector, nil, category, color_vector, viewport_name)
 
-								local slot_radius = SlotSettings[slot_type].radius
+								if slot.ghost_position.x ~= 0 and not slot.disable_at then
+									local ghost_position = slot.ghost_position:unbox()
 
-								drawer.circle(drawer, slot_absolute_position + z, slot_radius, Vector3.up(), color)
-								drawer.circle(drawer, slot_absolute_position + z, slot_radius - 0.05, Vector3.up(), color)
-
-								local slot_queue_position = get_slot_queue_position(unit_extension_data, slot, nav_world)
-
-								if slot_queue_position then
-									drawer.circle(drawer, slot_queue_position + z, SLOT_QUEUE_RADIUS, Vector3.up(), color)
-									drawer.circle(drawer, slot_queue_position + z, SLOT_QUEUE_RADIUS - 0.05, Vector3.up(), color)
-									drawer.line(drawer, slot_absolute_position + z, slot_queue_position + z, color)
-
-									local queue = slot.queue
-									local queue_n = #queue
-
-									for i = 1, queue_n, 1 do
-										local ai_unit_waiting = queue[i]
-										local ai_unit_position = POSITION_LOOKUP[ai_unit_waiting]
-
-										drawer.circle(drawer, ai_unit_position + z, 0.35, Vector3.up(), color)
-										drawer.circle(drawer, ai_unit_position + z, 0.3, Vector3.up(), color)
-										drawer.line(drawer, slot_queue_position + z, ai_unit_position, color)
-									end
-								end
-
-								if slot.released then
-									local color = Colors.get("green")
-
-									drawer.sphere(drawer, slot_absolute_position + z, 0.2, color)
-								end
-
-								if is_anchor_slot then
-									local color = Colors.get("red")
-
-									drawer.sphere(drawer, slot_absolute_position + z, 0.3, color)
-								end
-
-								local check_index = slot.position_check_index
-								local check_position = slot_absolute_position
-
-								if check_index == SLOT_POSITION_CHECK_INDEX.CHECK_MIDDLE then
+									drawer:line(ghost_position + z, slot_absolute_position + z, color)
+									drawer:sphere(ghost_position + z, 0.3, color)
+									drawer:line(ghost_position + z, ai_unit_position + z, color)
 								else
-									local radians = SLOT_POSITION_CHECK_RADIANS[check_index]
-									check_position = rotate_position_from_origin(check_position, target_position, radians, SLOT_RADIUS)
+									drawer:line(slot_absolute_position + z, ai_unit_position + z, color)
 								end
-
-								local ray_from_pos = target_position + Vector3.normalize(check_position - target_position) * RAYCANGO_OFFSET
-
-								drawer.line(drawer, ray_from_pos + z, check_position + z, color)
-								drawer.circle(drawer, check_position + z, 0.1, Vector3.up(), Color(255, 0, 255))
 							end
+
+							local text_size = 0.4
+							local color_table = (slot.disabled and Colors.get_table("gray")) or Colors.get_table(slot.debug_color_name)
+							local color_vector = Vector3(color_table[2], color_table[3], color_table[4])
+							local category = "slot_index_" .. slot_type .. "_" .. slot.index .. "_" .. i_target
+
+							Managers.state.debug_text:clear_world_text(category)
+							Managers.state.debug_text:output_world_text(slot.index, text_size, slot_absolute_position + z, nil, category, color_vector)
+
+							local slot_radius = SlotSettings[slot_type].radius
+
+							drawer:circle(slot_absolute_position + z, slot_radius, Vector3.up(), color)
+							drawer:circle(slot_absolute_position + z, slot_radius - 0.05, Vector3.up(), color)
+
+							local slot_queue_position = get_slot_queue_position(unit_extension_data, slot, nav_world)
+
+							if slot_queue_position then
+								drawer:circle(slot_queue_position + z, SLOT_QUEUE_RADIUS, Vector3.up(), color)
+								drawer:circle(slot_queue_position + z, SLOT_QUEUE_RADIUS - 0.05, Vector3.up(), color)
+								drawer:line(slot_absolute_position + z, slot_queue_position + z, color)
+
+								local queue = slot.queue
+								local queue_n = #queue
+
+								for i = 1, queue_n, 1 do
+									local ai_unit_waiting = queue[i]
+									local ai_unit_position = POSITION_LOOKUP[ai_unit_waiting]
+
+									drawer:circle(ai_unit_position + z, 0.35, Vector3.up(), color)
+									drawer:circle(ai_unit_position + z, 0.3, Vector3.up(), color)
+									drawer:line(slot_queue_position + z, ai_unit_position, color)
+								end
+							end
+
+							if slot.released then
+								local color = Colors.get("green")
+
+								drawer:sphere(slot_absolute_position + z, 0.2, color)
+							end
+
+							if is_anchor_slot then
+								local color = Colors.get("red")
+
+								drawer:sphere(slot_absolute_position + z, 0.3, color)
+							end
+
+							local check_index = slot.position_check_index
+							local check_position = slot_absolute_position
+
+							if check_index == SLOT_POSITION_CHECK_INDEX.CHECK_MIDDLE then
+							else
+								local radians = SLOT_POSITION_CHECK_RADIANS[check_index]
+								check_position = rotate_position_from_origin(check_position, target_position, radians, SLOT_RADIUS)
+							end
+
+							local ray_from_pos = target_position + Vector3.normalize(check_position - target_position) * RAYCANGO_OFFSET
+
+							drawer:line(ray_from_pos + z, check_position + z, color)
+							drawer:circle(check_position + z, 0.1, Vector3.up(), Color(255, 0, 255))
 						end
-					end
+					until true
 				end
 			end
-		end
+		until true
 	end
-
-	return 
 end
 
 function debug_print_slots_count(target_units, unit_extension_data)
@@ -2212,11 +2199,11 @@ function debug_print_slots_count(target_units, unit_extension_data)
 		local target_unit = target_units[unit_i]
 		local target_unit_extension = target_unit_extensions[target_unit]
 		local player_manager = Managers.player
-		local owner_player = player_manager.owner(player_manager, target_unit)
+		local owner_player = player_manager:owner(target_unit)
 		local display_name = nil
 
 		if owner_player then
-			display_name = owner_player.profile_display_name(owner_player)
+			display_name = owner_player:profile_display_name()
 		else
 			display_name = tostring(target_unit)
 		end
@@ -2234,8 +2221,6 @@ function debug_print_slots_count(target_units, unit_extension_data)
 
 		Debug.text(debug_text)
 	end
-
-	return 
 end
 
 AISlotSystem.set_allowed_layer = function (self, layer_name, allowed)
@@ -2246,9 +2231,8 @@ AISlotSystem.set_allowed_layer = function (self, layer_name, allowed)
 	else
 		GwNavTagLayerCostTable.forbid_layer(self._navtag_layer_cost_table, layer_id)
 	end
-
-	return 
 end
+
 SLOT_COLORS = {
 	{
 		"aqua_marine",
@@ -2319,4 +2303,4 @@ SLOT_COLORS = {
 	}
 }
 
-return 
+return

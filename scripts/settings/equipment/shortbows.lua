@@ -51,9 +51,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			hit_effect = ARROW_HIT_EFFECT,
 			projectile_info = Projectiles.machinegun_arrow,
@@ -123,9 +123,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			hit_effect = ARROW_HIT_EFFECT,
 			cleave_distribution = {
@@ -195,9 +195,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			hit_effect = ARROW_HIT_EFFECT,
 			cleave_distribution = {
@@ -218,7 +218,7 @@ weapon_template.actions = {
 			chain_condition_func = function (attacker_unit, input_extension)
 				local buff_extension = ScriptUnit.extension(attacker_unit, "buff_system")
 
-				return buff_extension.has_buff_type(buff_extension, "we_timed_charged_shot")
+				return buff_extension:has_buff_type("we_timed_charged_shot")
 			end,
 			recoil_settings = {
 				horizontal_climb = -0.5,
@@ -306,7 +306,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension.total_remaining_ammo(ammo_extension) <= 0 then
+				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
 					return false
 				end
 
@@ -344,7 +344,7 @@ weapon_template.attack_meta_data = {
 	charge_above_range = 30,
 	charge_when_obstructed = false,
 	ignore_enemies_for_obstruction = true,
-	charge_against_armoured_enemy = true
+	charge_against_armored_enemy = true
 }
 weapon_template.aim_assist_settings = {
 	max_range = 50,
@@ -384,40 +384,44 @@ weapon_template.default_loaded_projectile_settings = {
 	speed = action.speed,
 	gravity = ProjectileGravitySettings[action.projectile_info.gravity_settings]
 }
-weapon_template.wwise_dep_left_hand = {
-	"wwise/bow"
-}
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_rapid_fire",
 	"weapon_keyword_crowd_control",
 	"weapon_keyword_headshotting"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.9,
-			range = 0.4,
-			damage = 0.25,
-			targets = 0.2,
-			stagger = 0.2
-		},
-		heavy_attack = {
-			speed = 0.4,
-			range = 0.6,
-			damage = 0.5,
-			targets = 0.2,
-			stagger = 0.4
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	},
-	perks = {
-		light_attack = {},
-		heavy_attack = {
-			"head_shot",
-			"armor_penetration"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "shoot_charged"
 	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		{
+			action_name = "action_one",
+			chain_start_time = 0.5,
+			sub_action_name = "shoot_charged"
+		},
+		{
+			action_name = "action_one",
+			chain_start_time = 0.75,
+			sub_action_name = "shoot_special_charged"
+		},
+		custom_chain = true
+	}
+}
+weapon_template.wwise_dep_left_hand = {
+	"wwise/bow"
 }
 Weapons = Weapons or {}
 Weapons.shortbow_template_1 = table.clone(weapon_template)
 
-return 
+return

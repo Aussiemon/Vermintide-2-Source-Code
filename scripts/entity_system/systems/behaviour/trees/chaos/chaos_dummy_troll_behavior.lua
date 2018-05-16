@@ -60,4 +60,4 @@ BreedBehaviors.dummy_troll = {
 	name = "chaos_dummy_troll"
 }
 
-return 
+return

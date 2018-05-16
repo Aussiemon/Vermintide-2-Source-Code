@@ -12,10 +12,10 @@ local CHEST_PRESENTATION_BONUS_TIME = 2
 local CHEST_PRESENTATION_EXIT_TIME = 1
 local fake_input_service = {
 	get = function ()
-		return 
+		return
 	end,
 	has = function ()
-		return 
+		return
 	end
 }
 local chest_idle_animations = {
@@ -24,6 +24,7 @@ local chest_idle_animations = {
 }
 EndViewStateChest = class(EndViewStateChest)
 EndViewStateChest.NAME = "EndViewStateChest"
+
 EndViewStateChest.on_enter = function (self, params)
 	print("[PlayState] Enter Substate EndViewStateChest")
 
@@ -51,15 +52,15 @@ EndViewStateChest.on_enter = function (self, params)
 	self._ui_animations = {}
 	self._units = {}
 
-	self.create_ui_elements(self, params)
-	self._set_presentation_progress(self, 0, true)
+	self:create_ui_elements(params)
+	self:_set_presentation_progress(0, true)
 
 	if params.initial_state then
 		self._initial_preview = true
 		params.initial_state = nil
 	end
 
-	self._start_transition_animation(self, "on_enter", "transition_enter")
+	self:_start_transition_animation("on_enter", "transition_enter")
 
 	self._exit_timer = nil
 	self.chest_settings = {
@@ -104,21 +105,20 @@ EndViewStateChest.on_enter = function (self, params)
 		settings.display_name = display_names[index]
 	end
 
-	self._play_sound(self, "play_gui_mission_summary_chest_uppgrade_amb_begin")
-
-	return 
+	self:_play_sound("play_gui_mission_summary_chest_uppgrade_amb_begin")
 end
+
 EndViewStateChest.exit = function (self, direction)
 	self._exit_started = true
 
-	self._start_transition_animation(self, "on_enter", "transition_exit")
-	self._play_sound(self, "play_gui_mission_summary_chest_uppgrade_amb_end")
-
-	return 
+	self:_start_transition_animation("on_enter", "transition_exit")
+	self:_play_sound("play_gui_mission_summary_chest_uppgrade_amb_end")
 end
+
 EndViewStateChest.exit_done = function (self)
 	return self._exit_started and self._animations.on_enter == nil
 end
+
 EndViewStateChest.create_ui_elements = function (self, params)
 	DO_RELOAD = false
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
@@ -156,10 +156,9 @@ EndViewStateChest.create_ui_elements = function (self, params)
 	bg_right_style.color[1] = 0
 	icon_style.color[1] = 0
 
-	self._initialize_score_topics(self)
-
-	return 
+	self:_initialize_score_topics()
 end
+
 EndViewStateChest._initialize_score_topics = function (self)
 	local scores = LootChestData.scores
 	local score_widgets = self._score_widgets
@@ -181,29 +180,27 @@ EndViewStateChest._initialize_score_topics = function (self)
 		local widget_height = scenegraph_definition[scenegraph_id].size[2]
 		widget.offset[2] = -(widget_height + spacing) * (index - 1)
 	end
-
-	return 
 end
+
 EndViewStateChest._wanted_state = function (self)
 	local new_state = self.parent:wanted_menu_state()
 
 	return new_state
 end
+
 EndViewStateChest.set_input_manager = function (self, input_manager)
 	self.input_manager = input_manager
-
-	return 
 end
+
 EndViewStateChest.on_exit = function (self, params)
 	print("[PlayState] Exit Substate EndViewStateChest")
 
 	self.ui_animator = nil
-
-	return 
 end
+
 EndViewStateChest._update_transition_timer = function (self, dt)
 	if not self._transition_timer then
-		return 
+		return
 	end
 
 	if self._transition_timer == 0 then
@@ -211,14 +208,13 @@ EndViewStateChest._update_transition_timer = function (self, dt)
 	else
 		self._transition_timer = math.max(self._transition_timer - dt, 0)
 	end
-
-	return 
 end
+
 EndViewStateChest.update = function (self, dt, t)
 	if DO_RELOAD then
 		DO_RELOAD = false
 		local units = self._units
-		local world = self._get_viewport_world(self)
+		local world = self:_get_viewport_world()
 
 		if world then
 			for unit_name, unit in pairs(units) do
@@ -239,7 +235,7 @@ EndViewStateChest.update = function (self, dt, t)
 		self._ui_animations = {}
 		self._score_entries = {}
 
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 
 		self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 		self.chest_settings = {
@@ -286,19 +282,19 @@ EndViewStateChest.update = function (self, dt, t)
 	end
 
 	if not self._presentation_started then
-		self._start_presentation(self, t)
+		self:_start_presentation(t)
 
 		self._presentation_started = true
 	end
 
-	self._animate_score_entries(self, dt, t)
+	self:_animate_score_entries(dt, t)
 
 	local input_manager = self.input_manager
-	local input_service = input_manager.get_service(input_manager, "end_of_level")
+	local input_service = input_manager:get_service("end_of_level")
 
 	if self._exit_started then
 		local units = self._units
-		local world = self._get_viewport_world(self)
+		local world = self:_get_viewport_world()
 
 		for unit_name, unit in pairs(units) do
 			World.destroy_unit(world, unit)
@@ -307,10 +303,10 @@ EndViewStateChest.update = function (self, dt, t)
 		table.clear(units)
 	end
 
-	self.draw(self, input_service, dt)
-	self._update_transition_timer(self, dt)
+	self:draw(input_service, dt)
+	self:_update_transition_timer(dt)
 
-	local wanted_state = self._wanted_state(self)
+	local wanted_state = self:_wanted_state()
 
 	if not self._transition_timer and (wanted_state or self._new_state) then
 		self.parent:clear_wanted_menu_state()
@@ -318,19 +314,19 @@ EndViewStateChest.update = function (self, dt, t)
 		return wanted_state or self._new_state
 	end
 
-	self._update_chest_zoom_wait_time(self, dt, t)
-	self._update_chest_zoom_time(self, dt, t)
-	self._update_chest_bonus_time(self, dt, t)
-	self._update_chest_exit_time(self, dt, t)
+	self:_update_chest_zoom_wait_time(dt, t)
+	self:_update_chest_zoom_time(dt, t)
+	self:_update_chest_bonus_time(dt, t)
+	self:_update_chest_exit_time(dt, t)
 
 	if self._ready_to_exit and not self._exit_timer and not self.parent:displaying_reward_presentation() then
 		self._exit_timer = 1.5
 	end
 
-	self._update_current_chest_enter(self, dt, t)
+	self:_update_current_chest_enter(dt, t)
 	self.ui_animator:update(dt)
-	self._update_animations(self, dt)
-	self._animate_score_progress(self, dt, t)
+	self:_update_animations(dt)
+	self:_animate_score_progress(dt, t)
 
 	if self._exit_timer then
 		self._exit_timer = math.max(self._exit_timer - dt, 0)
@@ -343,14 +339,14 @@ EndViewStateChest.update = function (self, dt, t)
 	local transitioning = self.parent:transitioning()
 
 	if not transitioning and not self._transition_timer then
-		self._handle_input(self, dt, t)
+		self:_handle_input(dt, t)
 	end
+end
 
-	return 
-end
 EndViewStateChest.post_update = function (self, dt, t)
-	return 
+	return
 end
+
 EndViewStateChest._update_animations = function (self, dt)
 	for name, animation in pairs(self._ui_animations) do
 		UIAnimation.update(animation, dt)
@@ -364,26 +360,24 @@ EndViewStateChest._update_animations = function (self, dt)
 	local ui_animator = self.ui_animator
 
 	for animation_name, animation_id in pairs(animations) do
-		if ui_animator.is_animation_completed(ui_animator, animation_id) then
-			ui_animator.stop_animation(ui_animator, animation_id)
+		if ui_animator:is_animation_completed(animation_id) then
+			ui_animator:stop_animation(animation_id)
 
 			animations[animation_name] = nil
 		end
 	end
 
-	if self.score_presentation_anim_id and ui_animator.is_animation_completed(ui_animator, self.score_presentation_anim_id) then
-		ui_animator.stop_animation(ui_animator, self.score_presentation_anim_id)
+	if self.score_presentation_anim_id and ui_animator:is_animation_completed(self.score_presentation_anim_id) then
+		ui_animator:stop_animation(self.score_presentation_anim_id)
 
 		self.score_presentation_anim_id = nil
 	end
-
-	return 
 end
+
 EndViewStateChest._handle_input = function (self, dt, t)
 	local widgets_by_name = self._widgets_by_name
-
-	return 
 end
+
 EndViewStateChest.draw = function (self, input_service, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
@@ -424,9 +418,8 @@ EndViewStateChest.draw = function (self, input_service, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-
-	return 
 end
+
 EndViewStateChest._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
@@ -435,22 +428,24 @@ EndViewStateChest._start_transition_animation = function (self, key, animation_n
 	local widgets = {}
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
 	self._animations[key] = anim_id
-
-	return 
 end
+
 EndViewStateChest._animate_element_by_time = function (self, target, target_index, from, to, time)
 	local new_animation = UIAnimation.init(UIAnimation.function_by_time, target, target_index, from, to, time, math.ease_out_quad)
 
 	return new_animation
 end
+
 EndViewStateChest._animate_element_by_catmullrom = function (self, target, target_index, target_value, p0, p1, p2, p3, time)
 	local new_animation = UIAnimation.init(UIAnimation.catmullrom, target, target_index, target_value, p0, p1, p2, p3, time)
 
 	return new_animation
 end
+
 EndViewStateChest.done = function (self)
 	return self._score_entry_presentation_done
 end
+
 EndViewStateChest._set_entry_text_progress = function (self, progress)
 	local internal_progress = 1 - progress
 	internal_progress = (-4 * (progress - 0.5) * (progress - 0.5) + 1) * 0.5
@@ -463,14 +458,13 @@ EndViewStateChest._set_entry_text_progress = function (self, progress)
 	local score_entry_text_widget = widgets_by_name.score_entry_text
 	score_entry_text_widget.style.text.text_color[1] = alpha
 	score_entry_texture_widget.style.texture_id.color[1] = alpha
-
-	return 
 end
+
 EndViewStateChest._display_chest_by_settings_index = function (self, index, t, instant_spawn)
 	local settings = self.chest_settings[index]
 	local unit_name = settings.unit_name
 	local display_name = settings.display_name
-	local unit = self._spawn_chest_unit(self, unit_name, instant_spawn, t)
+	local unit = self:_spawn_chest_unit(unit_name, instant_spawn, t)
 	self._units[unit_name] = unit
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.chest_title.content.text = Localize(display_name)
@@ -482,17 +476,16 @@ EndViewStateChest._display_chest_by_settings_index = function (self, index, t, i
 		local difficulty_key = self._context.difficulty
 		local sound_event = "play_gui_chest_appear_" .. difficulty_key .. "_" .. tostring(index)
 
-		self._play_sound(self, sound_event)
+		self:_play_sound(sound_event)
 	else
-		self._play_sound(self, "play_gui_mission_summary_chest_upgrade")
+		self:_play_sound("play_gui_mission_summary_chest_upgrade")
 	end
 
 	self.ui_animator:start_animation(animation_name, self._widgets_by_name, scenegraph_definition, {
 		wwise_world = self.wwise_world
 	})
-
-	return 
 end
+
 EndViewStateChest._spawn_chest_unit = function (self, unit_name, instant_spawn, t)
 	if self._current_chest_unit_name then
 		self._current_chest_enter_time = t + 0.5
@@ -501,7 +494,7 @@ EndViewStateChest._spawn_chest_unit = function (self, unit_name, instant_spawn, 
 		Unit.flow_event(unit, "loot_chest_upgrade_out")
 	end
 
-	local world = self._get_viewport_world(self)
+	local world = self:_get_viewport_world()
 	local unit = World.spawn_unit(world, unit_name)
 
 	Unit.set_unit_visibility(unit, instant_spawn == true)
@@ -515,7 +508,7 @@ EndViewStateChest._spawn_chest_unit = function (self, unit_name, instant_spawn, 
 
 		Unit.flow_event(unit, anim_name)
 		self.parent:set_camera_zoom(0)
-		self._set_bar_alpha_by_progress(self, 1)
+		self:_set_bar_alpha_by_progress(1)
 	else
 		self.parent:add_camera_shake(nil, t, nil)
 	end
@@ -524,9 +517,10 @@ EndViewStateChest._spawn_chest_unit = function (self, unit_name, instant_spawn, 
 
 	return unit
 end
+
 EndViewStateChest._update_current_chest_enter = function (self, dt, t)
 	if not self._current_chest_enter_time then
-		return 
+		return
 	end
 
 	if self._current_chest_enter_time <= t then
@@ -539,26 +533,25 @@ EndViewStateChest._update_current_chest_enter = function (self, dt, t)
 			Unit.flow_event(unit, "loot_chest_upgrade_in")
 		end
 	end
-
-	return 
 end
+
 EndViewStateChest._trigger_unit_flow_event = function (self, unit, event_name)
 	if unit and Unit.alive(unit) then
 		Unit.flow_event(unit, event_name)
 	end
-
-	return 
 end
+
 EndViewStateChest._get_viewport_world = function (self)
 	return self.parent:get_viewport_world()
 end
+
 EndViewStateChest._start_presentation = function (self, t)
 	local instant_spawn = true
 	local start_settings_index = 1
 	local chest_setting = self.chest_settings[start_settings_index]
 	self._spawned_chest_index = start_settings_index
 
-	self._display_chest_by_settings_index(self, start_settings_index, t, instant_spawn)
+	self:_display_chest_by_settings_index(start_settings_index, t, instant_spawn)
 
 	local score_per_chest = LootChestData.score_per_chest
 	local total_entry_scores = 0
@@ -571,7 +564,7 @@ EndViewStateChest._start_presentation = function (self, t)
 		local score_name = "game_won"
 		local game_won_score = scores[score_name]
 
-		self._add_score(self, {
+		self:_add_score({
 			id = entry_id,
 			score = game_won_score,
 			name = score_name
@@ -587,7 +580,7 @@ EndViewStateChest._start_presentation = function (self, t)
 		local score_name = "quickplay"
 		local quickplay_score = scores[score_name]
 
-		self._add_score(self, {
+		self:_add_score({
 			id = entry_id,
 			score = quickplay_score,
 			name = score_name
@@ -600,12 +593,12 @@ EndViewStateChest._start_presentation = function (self, t)
 	local tome_mission_data = mission_system_data.tome_mission_data
 	local num_tomes = (tome_mission_data and tome_mission_data.current_amount) or 0
 
-	if 0 < num_tomes then
+	if num_tomes > 0 then
 		local score_name = "tome"
 		local tome_score = scores[score_name]
 		local total_tome_score = tome_score * num_tomes
 
-		self._add_score(self, {
+		self:_add_score({
 			id = entry_id,
 			score = total_tome_score,
 			name = score_name,
@@ -619,12 +612,12 @@ EndViewStateChest._start_presentation = function (self, t)
 	local grimoire_mission_data = mission_system_data.grimoire_mission_data
 	local num_grimoires = (grimoire_mission_data and grimoire_mission_data.current_amount) or 0
 
-	if 0 < num_grimoires then
+	if num_grimoires > 0 then
 		local score_name = "grimoire"
 		local grimoire_score = scores[score_name]
 		local total_grimoire_score = grimoire_score * num_grimoires
 
-		self._add_score(self, {
+		self:_add_score({
 			id = entry_id,
 			score = total_grimoire_score,
 			name = score_name,
@@ -638,12 +631,12 @@ EndViewStateChest._start_presentation = function (self, t)
 	local loot_dice_mission_data = mission_system_data.loot_dice_mission_data
 	local num_loot_dice = (loot_dice_mission_data and loot_dice_mission_data.current_amount) or 0
 
-	if 0 < num_loot_dice then
+	if num_loot_dice > 0 then
 		local score_name = "loot_dice"
 		local loot_dice_score = scores[score_name]
 		local total_loot_dice_score = loot_dice_score * num_loot_dice
 
-		self._add_score(self, {
+		self:_add_score({
 			id = entry_id,
 			score = total_loot_dice_score,
 			name = score_name,
@@ -659,7 +652,7 @@ EndViewStateChest._start_presentation = function (self, t)
 	local random_value = chest.random_value
 
 	if random_value then
-		self._add_score(self, {
+		self:_add_score({
 			name = "max_random_score",
 			id = entry_id,
 			score = random_value
@@ -672,12 +665,11 @@ EndViewStateChest._start_presentation = function (self, t)
 	if entry_id == 0 then
 		self._chest_zoom_wait_duration = CHEST_PRESENTATION_ZOOM_WAIT_TIME
 	end
-
-	return 
 end
+
 EndViewStateChest._add_score = function (self, data)
 	if data.score == 0 then
-		return 
+		return
 	end
 
 	local score_widgets = self._score_widgets
@@ -706,14 +698,13 @@ EndViewStateChest._add_score = function (self, data)
 	if amount then
 		widget.content.text = widget.content.text .. "\n x" .. tostring(amount)
 	end
-
-	return 
 end
+
 EndViewStateChest._animate_score_entries = function (self, dt)
 	local score_entries = self._score_entries
 
 	if not score_entries or score_entries.complete then
-		return 
+		return
 	end
 
 	local ui_animator = self.ui_animator
@@ -725,8 +716,8 @@ EndViewStateChest._animate_score_entries = function (self, dt)
 		if not entry.entry_animation_completed then
 			if not self.score_entry_enter_anim_id then
 				self.score_entry_enter_anim_id = self.ui_animator:start_animation(enter_animation_name, self._widgets_by_name, scenegraph_definition, entry)
-			elseif ui_animator.is_animation_completed(ui_animator, self.score_entry_enter_anim_id) then
-				ui_animator.stop_animation(ui_animator, self.score_entry_enter_anim_id)
+			elseif ui_animator:is_animation_completed(self.score_entry_enter_anim_id) then
+				ui_animator:stop_animation(self.score_entry_enter_anim_id)
 
 				self.score_entry_enter_anim_id = nil
 				entry.entry_animation_completed = true
@@ -739,11 +730,10 @@ EndViewStateChest._animate_score_entries = function (self, dt)
 	score_entries.complete = animations_completed
 
 	if animations_completed and self._score_widgets then
-		self._display_next_score_entry(self)
+		self:_display_next_score_entry()
 	end
-
-	return 
 end
+
 EndViewStateChest._display_next_score_entry = function (self)
 	local score_entries = self._score_entries
 	self._current_entry_display_index = (self._current_entry_display_index or 0) + 1
@@ -751,9 +741,8 @@ EndViewStateChest._display_next_score_entry = function (self)
 	self.score_presentation_anim_id = self.ui_animator:start_animation("score_presentation_start", self._widgets_by_name, scenegraph_definition, entry)
 	self._current_entry_data = entry.data
 	self._entry_duration = 0
-
-	return 
 end
+
 EndViewStateChest._start_entry_animation = function (self, key)
 	local params = {
 		wwise_world = self.wwise_world,
@@ -762,15 +751,14 @@ EndViewStateChest._start_entry_animation = function (self, key)
 	local widgets = self._widgets_by_name
 	local anim_id = self.ui_animator:start_animation("score_entry", widgets, scenegraph_definition, params)
 	self._animations[key] = anim_id
-
-	return 
 end
+
 EndViewStateChest._animate_score_progress = function (self, dt, t)
 	local entry_duration = self._entry_duration
 	local current_chest_enter_time = self._current_chest_enter_time
 
 	if not entry_duration or current_chest_enter_time or self.score_entry_enter_anim_id or self.score_presentation_anim_id then
-		return 
+		return
 	end
 
 	local num_chest_upgrades = #self.chest_settings
@@ -785,7 +773,7 @@ EndViewStateChest._animate_score_progress = function (self, dt, t)
 	local actual_entry_score = math.clamp(entry_data.score, 0, max_score - total_score)
 	local min_time = UISettings.chest_upgrade_score_topics_min_duration or 0.5
 	local max_time = UISettings.chest_upgrade_score_topics_max_duration or 7
-	local duration_fraction = (0 < score_left and math.min(actual_entry_score / score_left, 1)) or 0
+	local duration_fraction = (score_left > 0 and math.min(actual_entry_score / score_left, 1)) or 0
 	local duration = math.clamp(duration_fraction * max_time, min_time, max_time)
 	entry_duration = math.min(entry_duration + dt, duration)
 	local entry_progress = entry_duration / duration
@@ -802,7 +790,7 @@ EndViewStateChest._animate_score_progress = function (self, dt, t)
 		entry_animation_progress = 1
 	end
 
-	local current_chest_settings, current_chest_settings_index = self._get_chest_settings_by_total_score(self, entry_presentation_total_score)
+	local current_chest_settings, current_chest_settings_index = self:_get_chest_settings_by_total_score(entry_presentation_total_score)
 	local animation_progress = 0
 	local spawn_next_chest = (max_upgraded and self._spawned_chest_index < num_chest_upgrades) or (current_chest_settings_index and current_chest_settings_index - 1 ~= self._spawned_chest_index)
 
@@ -811,7 +799,7 @@ EndViewStateChest._animate_score_progress = function (self, dt, t)
 		local spawn_index = (max_upgraded and num_chest_upgrades) or current_chest_settings_index - 1
 		self._spawned_chest_index = spawn_index
 
-		self._display_chest_by_settings_index(self, spawn_index, t)
+		self:_display_chest_by_settings_index(spawn_index, t)
 	elseif current_chest_settings then
 		local current_total_score = current_chest_settings.total_score
 		local current_score_requirement = current_chest_settings.score_requirement
@@ -844,7 +832,7 @@ EndViewStateChest._animate_score_progress = function (self, dt, t)
 			local wait_with_zoom = animation_progress == 1
 			self._chest_zoom_wait_duration = (wait_with_zoom and 0) or CHEST_PRESENTATION_ZOOM_WAIT_TIME
 		else
-			self._display_next_score_entry(self)
+			self:_display_next_score_entry()
 		end
 
 		self._current_bar_total_score_progress = animation_progress
@@ -859,10 +847,9 @@ EndViewStateChest._animate_score_progress = function (self, dt, t)
 		self._entry_duration = entry_duration
 	end
 
-	self._set_presentation_progress(self, animation_progress)
-
-	return 
+	self:_set_presentation_progress(animation_progress)
 end
+
 EndViewStateChest._get_chest_settings_by_total_score = function (self, score)
 	for index, settings in ipairs(self.chest_settings) do
 		local total_score = settings.total_score
@@ -871,9 +858,8 @@ EndViewStateChest._get_chest_settings_by_total_score = function (self, score)
 			return settings, index
 		end
 	end
-
-	return 
 end
+
 EndViewStateChest._set_presentation_progress = function (self, presentation_progress, ignore_sound)
 	local widgets_by_name = self._widgets_by_name
 	local score_bar_widget = widgets_by_name.score_bar
@@ -888,14 +874,13 @@ EndViewStateChest._set_presentation_progress = function (self, presentation_prog
 	if not ignore_sound then
 		WwiseWorld.set_global_parameter(self.wwise_world, "summary_meter_progress", presentation_progress)
 	end
-
-	return 
 end
+
 EndViewStateChest._update_chest_zoom_wait_time = function (self, dt, t)
 	local chest_zoom_wait_duration = self._chest_zoom_wait_duration
 
 	if not chest_zoom_wait_duration then
-		return 
+		return
 	end
 
 	chest_zoom_wait_duration = chest_zoom_wait_duration + dt
@@ -907,14 +892,13 @@ EndViewStateChest._update_chest_zoom_wait_time = function (self, dt, t)
 	else
 		self._chest_zoom_wait_duration = chest_zoom_wait_duration
 	end
-
-	return 
 end
+
 EndViewStateChest._update_chest_zoom_time = function (self, dt, t)
 	local chest_zoom_duration = self._chest_zoom_duration
 
 	if not chest_zoom_duration then
-		return 
+		return
 	end
 
 	chest_zoom_duration = chest_zoom_duration + dt
@@ -929,14 +913,13 @@ EndViewStateChest._update_chest_zoom_time = function (self, dt, t)
 	else
 		self._chest_zoom_duration = chest_zoom_duration
 	end
-
-	return 
 end
+
 EndViewStateChest._update_chest_bonus_time = function (self, dt, t)
 	local chest_bonus_duration = self._chest_bonus_duration
 
 	if not chest_bonus_duration then
-		return 
+		return
 	end
 
 	chest_bonus_duration = chest_bonus_duration + dt
@@ -948,14 +931,13 @@ EndViewStateChest._update_chest_bonus_time = function (self, dt, t)
 	else
 		self._chest_bonus_duration = chest_bonus_duration
 	end
-
-	return 
 end
+
 EndViewStateChest._update_chest_exit_time = function (self, dt, t)
 	local chest_wait_exit_duration = self._chest_wait_exit_duration
 
 	if not chest_wait_exit_duration then
-		return 
+		return
 	end
 
 	chest_wait_exit_duration = chest_wait_exit_duration + dt
@@ -969,9 +951,8 @@ EndViewStateChest._update_chest_exit_time = function (self, dt, t)
 	else
 		self._chest_wait_exit_duration = chest_wait_exit_duration
 	end
-
-	return 
 end
+
 EndViewStateChest._set_bar_alpha_by_progress = function (self, progress)
 	local widgets_by_name = self._widgets_by_name
 	local bar_bg = widgets_by_name.bar_bg
@@ -980,13 +961,10 @@ EndViewStateChest._set_bar_alpha_by_progress = function (self, progress)
 	bar_bg.alpha_multiplier = progress
 	score_bar.alpha_multiplier = progress
 	score_bar_fg.alpha_multiplier = progress
-
-	return 
 end
+
 EndViewStateChest._play_sound = function (self, event)
 	self.parent:play_sound(event)
-
-	return 
 end
 
-return 
+return

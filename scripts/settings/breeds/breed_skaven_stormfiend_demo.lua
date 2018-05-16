@@ -164,8 +164,8 @@ local action_data = {
 		}
 	},
 	shoot = {
-		environment_max_intensity = 100,
 		environment_intensity_increase_per_firewall = 10,
+		environment_max_intensity = 100,
 		firing_time = 1.2,
 		aim_start_offset = -1,
 		minimum_length = 2,
@@ -176,7 +176,6 @@ local action_data = {
 		beam_sfx_stop_event = "Stop_stormfiend_torch_loop",
 		action_weight = 1,
 		use_demo_flow_event = true,
-		beam_vfx_unit_name = "units/weapons/enemy/wpn_warpfire/wpn_stormfiend_warpfire",
 		global_sound_parameter = "stormfiend_mood",
 		aim_constraint_target = {
 			attack_right = "right_arm_aim_target",
@@ -335,4 +334,4 @@ end
 
 BreedActions.skaven_stormfiend_demo = table.create_copy(BreedActions.skaven_stormfiend_demo, action_data)
 
-return 
+return

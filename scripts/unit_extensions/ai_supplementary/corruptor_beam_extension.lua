@@ -1,5 +1,6 @@
 CorruptorBeamExtension = class(CorruptorBeamExtension)
 local position_lookup = POSITION_LOOKUP
+
 CorruptorBeamExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	local world = extension_init_context.world
 	self.world = world
@@ -19,19 +20,16 @@ CorruptorBeamExtension.init = function (self, extension_init_context, unit, exte
 	self.beam_end_sound = "Play_enemy_corruptor_sorcerer_pull_magic"
 	self.stop_beam_end_sound = "Stop_enemy_corruptor_sorcerer_pull_magic"
 	self.aimed_at_position = nil
-
-	return 
 end
+
 CorruptorBeamExtension.destroy = function (self)
-	self.remove_vfx_and_sfx(self)
-
-	return 
+	self:remove_vfx_and_sfx()
 end
+
 CorruptorBeamExtension.on_remove_extension = function (self, unit, extension_name)
-	self.remove_vfx_and_sfx(self, unit)
-
-	return 
+	self:remove_vfx_and_sfx(unit)
 end
+
 CorruptorBeamExtension.remove_vfx_and_sfx = function (self, unit)
 	local world = self.world
 	local target_unit = self.target_unit
@@ -74,15 +72,14 @@ CorruptorBeamExtension.remove_vfx_and_sfx = function (self, unit)
 	self.state = nil
 	self.projectile_position = nil
 	self.aimed_at_position = nil
-
-	return 
 end
+
 CorruptorBeamExtension.set_state = function (self, state, target_unit)
 	if not target_unit then
 		print("Corruptor beam tried to set state to nil target unit")
-		self.remove_vfx_and_sfx(self)
+		self:remove_vfx_and_sfx()
 
-		return 
+		return
 	end
 
 	local self_pos = position_lookup[self.unit] + Vector3.up()
@@ -118,13 +115,12 @@ CorruptorBeamExtension.set_state = function (self, state, target_unit)
 
 		self.state = state
 	elseif state == "stop_beam" then
-		self.remove_vfx_and_sfx(self)
+		self:remove_vfx_and_sfx()
 
 		self.state = state
 	end
-
-	return 
 end
+
 CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 	local state = self.state
 	local target_unit = self.target_unit
@@ -191,8 +187,6 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 			World.move_particles(world, self.beam_effect_end, real_target_position, rotation_inverse)
 		end
 	end
-
-	return 
 end
 
-return 
+return

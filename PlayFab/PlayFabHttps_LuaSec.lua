@@ -51,8 +51,6 @@ local PlayFabHttps_LuaSec = {
 				errorMessage = "Could not deserialize reseponse from server: " .. playFabResponse[1]
 			})
 		end
-
-		return 
 	end
 }
 

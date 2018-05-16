@@ -75,6 +75,7 @@ local breed_data = {
 	hit_effect_template = "HitEffectsChaosExaltedChampion",
 	smart_targeting_height_multiplier = 3,
 	unit_template = "ai_unit_chaos_exalted_champion",
+	difficulty_kill_achievement = "kill_chaos_exalted_champion_difficulty_rank",
 	leave_walk_distance = 2.5,
 	perception = "perception_rat_ogre",
 	player_locomotion_constrain_radius = 1.2,
@@ -278,9 +279,10 @@ local breed_data_norsca = {
 	death_sound_event = "Play_enemy_vce_chaos_warrior_die",
 	attack_player_sound_event = "Play_breed_triggered_sound",
 	server_controlled_health_bar = false,
+	behavior = "chaos_exalted_champion_norsca",
 	trigger_dialogue_on_target_switch = true,
 	attack_general_sound_event = "Play_breed_triggered_sound",
-	behavior = "chaos_exalted_champion_norsca",
+	default_inventory_template = "exalted_spawn_axe",
 	dialogue_source_name = "chaos_warrior",
 	combat_music_state = "champion_chaos_exalted_norsca",
 	run_on_spawn = AiBreedSnippets.on_chaos_exalted_champion_norsca_spawn,
@@ -1071,7 +1073,6 @@ local action_data = {
 			{
 				anim_driven = true,
 				height = 2.3,
-				hit_only_players = false,
 				ignore_targets_behind = true,
 				catapult_player = true,
 				rotation_time = 0.5,
@@ -1082,6 +1083,7 @@ local action_data = {
 				player_push_speed_blocked_z = 6,
 				offset_up = 0,
 				player_push_speed_z = 8,
+				hit_only_players = false,
 				range = 2,
 				enable_nav_extension = true,
 				player_push_speed = 16,
@@ -1134,7 +1136,32 @@ local action_data = {
 						start_time = 0.3,
 						offset_up = 0
 					}
-				}
+				},
+				hit_ai_func = function (unit, blackboard, hit_unit, action, attack)
+					local stat_name = "exalted_champion_charge_chaos_warrior"
+					local current_difficulty = Managers.state.difficulty:get_difficulty()
+					local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
+					local allowed_difficulty = allowed_difficulties[current_difficulty]
+					local achievements_enabled = Development.parameter("v2_achievements")
+
+					if achievements_enabled and allowed_difficulty and not blackboard.hit_warrior_challenge_completed then
+						local hit_unit_blackboard = BLACKBOARDS[hit_unit]
+						local is_chaos_warrior = hit_unit_blackboard.breed.name == "chaos_warrior"
+						local num_times_hit_chaos_warrior = blackboard.num_times_hit_chaos_warrior
+
+						if is_chaos_warrior then
+							blackboard.num_times_hit_chaos_warrior = num_times_hit_chaos_warrior + 1
+						end
+
+						if QuestSettings.exalted_champion_charge_chaos_warrior <= blackboard.num_times_hit_chaos_warrior then
+							local statistics_db = Managers.player:statistics_db()
+
+							statistics_db:increment_stat_and_sync_to_clients(stat_name)
+
+							blackboard.hit_warrior_challenge_completed = true
+						end
+					end
+				end
 			}
 		},
 		damage = {
@@ -1315,5 +1342,7 @@ local action_data = {
 BreedActions.chaos_exalted_champion = table.create_copy(BreedActions.chaos_exalted_champion, action_data)
 BreedActions.chaos_exalted_champion.angry_charge = table.create_copy(BreedActions.chaos_exalted_champion.angry_charge, BreedActions.chaos_exalted_champion.charge)
 BreedActions.chaos_exalted_champion.angry_charge.considerations = UtilityConsiderations.chaos_exalted_champion_angry_lunge_attack
+BreedActions.chaos_exalted_champion.norsca_charge = table.create_copy(BreedActions.chaos_exalted_champion.norsca_charge, BreedActions.chaos_exalted_champion.charge)
+BreedActions.chaos_exalted_champion.norsca_charge.attacks[1].hit_ai_func = nil
 
-return 
+return

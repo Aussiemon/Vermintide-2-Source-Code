@@ -347,7 +347,7 @@ local function create_window(scenegraph_id, size)
 				local is_connecting = Managers.twitch:is_connecting()
 
 				if not is_connecting then
-					return 
+					return
 				end
 
 				local timer = math.ceil(Application.time_since_launch() * 10)
@@ -372,7 +372,7 @@ local function create_window(scenegraph_id, size)
 				local is_connected = Managers.twitch:is_connected()
 
 				if is_connecting or is_connected then
-					return 
+					return
 				end
 
 				return true

@@ -6112,4 +6112,4 @@ ItemMasterList.wh_1h_falchion_3001 = {
 	}
 }
 
-return 
+return

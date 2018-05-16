@@ -10,6 +10,7 @@ local DO_RELOAD = false
 local NUM_CRAFT_SLOTS = 1
 CraftPageUpgradeItem = class(CraftPageUpgradeItem)
 CraftPageUpgradeItem.NAME = "CraftPageUpgradeItem"
+
 CraftPageUpgradeItem.on_enter = function (self, params, settings)
 	print("[HeroWindowCraft] Enter Substate CraftPageUpgradeItem")
 
@@ -26,8 +27,8 @@ CraftPageUpgradeItem.on_enter = function (self, params, settings)
 	}
 	self.crafting_manager = Managers.state.crafting
 	local player_manager = Managers.player
-	local local_player = player_manager.local_player(player_manager)
-	self._stats_id = local_player.stats_id(local_player)
+	local local_player = player_manager:local_player()
+	self._stats_id = local_player:stats_id()
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self.hero_name = params.hero_name
@@ -37,7 +38,7 @@ CraftPageUpgradeItem.on_enter = function (self, params, settings)
 	self.settings = settings
 	self._animations = {}
 
-	self.create_ui_elements(self, params)
+	self:create_ui_elements(params)
 
 	self._craft_items = {}
 	self._material_items = {}
@@ -50,10 +51,10 @@ CraftPageUpgradeItem.on_enter = function (self, params, settings)
 	self._item_grid:disable_item_drag()
 	self._recipe_grid:disable_item_drag()
 	self.super_parent:clear_disabled_backend_ids()
-	self.setup_recipe_requirements(self)
-
-	return 
+	self:setup_recipe_requirements()
+	self.parent:set_input_description(nil)
 end
+
 CraftPageUpgradeItem.setup_recipe_requirements = function (self)
 	local recipe_grid = self._recipe_grid
 	local settings = self.settings
@@ -62,7 +63,7 @@ CraftPageUpgradeItem.setup_recipe_requirements = function (self)
 
 	if added_backend_id then
 		local item_interface = Managers.backend:get_interface("items")
-		local rarity = item_interface.get_item_rarity(item_interface, added_backend_id)
+		local rarity = item_interface:get_item_rarity(added_backend_id)
 
 		if rarity == "plentiful" then
 			recipe_name = "upgrade_item_rarity_common"
@@ -74,7 +75,7 @@ CraftPageUpgradeItem.setup_recipe_requirements = function (self)
 	end
 
 	if recipe_name == self._recipe_name then
-		return 
+		return
 	end
 
 	self._recipe_name = recipe_name
@@ -85,7 +86,7 @@ CraftPageUpgradeItem.setup_recipe_requirements = function (self)
 	table.clear(material_items)
 
 	local item_interface = Managers.backend:get_interface("items")
-	local crafting_material_items = item_interface.get_filtered_items(item_interface, "item_type == crafting_material")
+	local crafting_material_items = item_interface:get_filtered_items("item_type == crafting_material")
 	local has_all_requirements = true
 	local grid_index = 1
 
@@ -102,7 +103,7 @@ CraftPageUpgradeItem.setup_recipe_requirements = function (self)
 
 				if item_data.key == item_key then
 					required_backend_id = backend_id
-					amount_owned = item_interface.get_item_amount(item_interface, backend_id)
+					amount_owned = item_interface:get_item_amount(backend_id)
 
 					break
 				end
@@ -116,7 +117,7 @@ CraftPageUpgradeItem.setup_recipe_requirements = function (self)
 				insufficient_amount = not has_required_amount
 			}
 
-			recipe_grid.add_item_to_slot_index(recipe_grid, grid_index, fake_item)
+			recipe_grid:add_item_to_slot_index(grid_index, fake_item)
 
 			grid_index = grid_index + 1
 
@@ -129,9 +130,8 @@ CraftPageUpgradeItem.setup_recipe_requirements = function (self)
 	end
 
 	self._has_all_requirements = has_all_requirements
-
-	return 
 end
+
 CraftPageUpgradeItem.create_ui_elements = function (self, params)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
@@ -150,35 +150,37 @@ CraftPageUpgradeItem.create_ui_elements = function (self, params)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 
-	self._set_craft_button_disabled(self, true)
-	self._handle_craft_input_progress(self, 0)
-
-	return 
+	self:_set_craft_button_disabled(true)
+	self:_handle_craft_input_progress(0)
 end
+
 CraftPageUpgradeItem.on_exit = function (self, params)
 	print("[HeroWindowCraft] Exit Substate CraftPageUpgradeItem")
 
 	self.ui_animator = nil
 
-	return 
+	if self._craft_input_time then
+		self:_play_sound("play_gui_craft_forge_button_aborted")
+	end
 end
+
 CraftPageUpgradeItem.update = function (self, dt, t)
 	if DO_RELOAD then
 		DO_RELOAD = false
 
-		self.create_ui_elements(self)
+		self:create_ui_elements()
 	end
 
-	self._handle_input(self, dt, t)
-	self._update_animations(self, dt)
-	self._update_craft_items(self)
-	self.draw(self, dt)
+	self:_handle_input(dt, t)
+	self:_update_animations(dt)
+	self:_update_craft_items()
+	self:draw(dt)
+end
 
-	return 
-end
 CraftPageUpgradeItem.post_update = function (self, dt, t)
-	return 
+	return
 end
+
 CraftPageUpgradeItem._update_animations = function (self, dt)
 	self.ui_animator:update(dt)
 
@@ -186,8 +188,8 @@ CraftPageUpgradeItem._update_animations = function (self, dt)
 	local ui_animator = self.ui_animator
 
 	for animation_name, animation_id in pairs(animations) do
-		if ui_animator.is_animation_completed(ui_animator, animation_id) then
-			ui_animator.stop_animation(ui_animator, animation_id)
+		if ui_animator:is_animation_completed(animation_id) then
+			ui_animator:stop_animation(animation_id)
 
 			animations[animation_name] = nil
 		end
@@ -196,9 +198,8 @@ CraftPageUpgradeItem._update_animations = function (self, dt)
 	local widgets_by_name = self._widgets_by_name
 
 	UIWidgetUtils.animate_default_button(widgets_by_name.craft_button, dt)
-
-	return 
 end
+
 CraftPageUpgradeItem._is_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -208,9 +209,8 @@ CraftPageUpgradeItem._is_button_pressed = function (self, widget)
 
 		return true
 	end
-
-	return 
 end
+
 CraftPageUpgradeItem._is_button_hovered = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -218,9 +218,8 @@ CraftPageUpgradeItem._is_button_hovered = function (self, widget)
 	if hotspot.on_hover_enter then
 		return true
 	end
-
-	return 
 end
+
 CraftPageUpgradeItem._is_button_held = function (self, widget)
 	local content = widget.content
 	local hotspot = content.button_hotspot
@@ -228,40 +227,44 @@ CraftPageUpgradeItem._is_button_held = function (self, widget)
 	if hotspot.is_clicked then
 		return hotspot.is_clicked
 	end
-
-	return 
 end
+
 CraftPageUpgradeItem._handle_input = function (self, dt, t)
 	local parent = self.parent
 
-	if parent.waiting_for_craft(parent) or self._craft_result then
-		return 
+	if parent:waiting_for_craft() or self._craft_result then
+		return
 	end
 
 	local widgets_by_name = self._widgets_by_name
 	local super_parent = self.super_parent
-	local craft_input = self._is_button_held(self, widgets_by_name.craft_button)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local input_service = self.super_parent:window_input_service()
+	local widget = widgets_by_name.craft_button
+	local is_button_enabled = not widget.content.button_hotspot.disable_button
+	local craft_input = self:_is_button_held(widgets_by_name.craft_button)
+	local craft_input_gamepad = is_button_enabled and gamepad_active and input_service:get("refresh_hold")
 	local craft_input_accepted = false
 
-	if craft_input == 0 and self._has_all_requirements then
+	if (craft_input == 0 or craft_input_gamepad) and self._has_all_requirements then
 		if not self._craft_input_time then
 			self._craft_input_time = 0
 
-			self._play_sound(self, "play_gui_craft_forge_button_begin")
+			self:_play_sound("play_gui_craft_forge_button_begin")
 		else
 			self._craft_input_time = self._craft_input_time + dt
 		end
 
 		local max_time = 2
 		local progress = math.min(self._craft_input_time / max_time, 1)
-		craft_input_accepted = self._handle_craft_input_progress(self, progress)
+		craft_input_accepted = self:_handle_craft_input_progress(progress)
 
 		WwiseWorld.set_global_parameter(self.wwise_world, "craft_forge_button_progress", progress)
 	elseif self._craft_input_time then
 		self._craft_input_time = nil
 
-		self._handle_craft_input_progress(self, 0)
-		self._play_sound(self, "play_gui_craft_forge_button_aborted")
+		self:_handle_craft_input_progress(0)
+		self:_play_sound("play_gui_craft_forge_button_aborted")
 	end
 
 	if craft_input_accepted then
@@ -278,25 +281,24 @@ CraftPageUpgradeItem._handle_input = function (self, dt, t)
 		end
 
 		local recipe_override = self._recipe_name
-		local recipe_available = parent.craft(parent, items, recipe_override)
+		local recipe_available = parent:craft(items, recipe_override)
 
 		if recipe_available then
-			self._set_craft_button_disabled(self, true)
+			self:_set_craft_button_disabled(true)
 
 			local item_grid = self._item_grid
 
 			for _, backend_id in pairs(items) do
-				item_grid.lock_item_by_id(item_grid, backend_id, true)
+				item_grid:lock_item_by_id(backend_id, true)
 			end
 
-			item_grid.update_items_status(item_grid)
-			self._play_sound(self, "play_gui_craft_forge_button_completed")
-			self._play_sound(self, "play_gui_craft_forge_begin")
+			item_grid:update_items_status()
+			self:_play_sound("play_gui_craft_forge_button_completed")
+			self:_play_sound("play_gui_craft_forge_begin")
 		end
 	end
-
-	return 
 end
+
 CraftPageUpgradeItem._handle_craft_input_progress = function (self, progress)
 	local has_progress = progress ~= 0
 	local bard_default_width = scenegraph_definition.craft_bar.size[1]
@@ -305,24 +307,21 @@ CraftPageUpgradeItem._handle_craft_input_progress = function (self, progress)
 	if progress == 1 then
 		return true
 	end
-
-	return 
 end
+
 CraftPageUpgradeItem.craft_result = function (self, result, error, reset_slots)
 	if not error then
 		self._craft_result = result
 	end
-
-	return 
 end
+
 CraftPageUpgradeItem.reset = function (self)
 	local item_grid = self._item_grid
 
-	item_grid.clear_locked_items(item_grid)
-	item_grid.update_items_status(item_grid)
-
-	return 
+	item_grid:clear_locked_items()
+	item_grid:update_items_status()
 end
+
 CraftPageUpgradeItem.on_craft_completed = function (self)
 	local result = self._craft_result
 	local item_grid = self._item_grid
@@ -333,7 +332,7 @@ CraftPageUpgradeItem.on_craft_completed = function (self)
 		self._craft_items[i] = nil
 	end
 
-	item_grid.clear_item_grid(item_grid)
+	item_grid:clear_item_grid()
 	self.super_parent:clear_disabled_backend_ids()
 	self.super_parent:update_inventory_items()
 
@@ -349,59 +348,57 @@ CraftPageUpgradeItem.on_craft_completed = function (self)
 		local backend_id = data[1]
 		local amount = data[3]
 
-		self._add_craft_item(self, backend_id, index, ignore_sound)
+		self:_add_craft_item(backend_id, index, ignore_sound)
 	end
 
-	item_grid.clear_locked_items(item_grid)
+	item_grid:clear_locked_items()
 
 	for _, backend_id in pairs(self._craft_items) do
-		item_grid.lock_item_by_id(item_grid, backend_id, true)
+		item_grid:lock_item_by_id(backend_id, true)
 	end
 
-	item_grid.update_items_status(item_grid)
+	item_grid:update_items_status()
 
 	self._num_craft_items = 0
 
-	self._set_craft_button_disabled(self, true)
+	self:_set_craft_button_disabled(true)
 
 	self._craft_result = nil
 
-	self.setup_recipe_requirements(self)
-
-	return 
+	self:setup_recipe_requirements()
 end
+
 CraftPageUpgradeItem._update_craft_items = function (self)
 	local super_parent = self.super_parent
 	local item_grid = self._item_grid
-	local is_dragging_craft_item = item_grid.is_dragging_item(item_grid) or item_grid.is_item_dragged(item_grid) ~= nil
-	local pressed_backend_id, is_drag_item = super_parent.get_pressed_item_backend_id(super_parent)
+	local is_dragging_craft_item = item_grid:is_dragging_item() or item_grid:is_item_dragged() ~= nil
+	local pressed_backend_id, is_drag_item = super_parent:get_pressed_item_backend_id()
 
 	if pressed_backend_id then
 		if is_drag_item then
 			if not is_dragging_craft_item then
-				local slot_index = item_grid.is_slot_hovered(item_grid)
+				local slot_index = item_grid:is_slot_hovered()
 
 				if slot_index then
-					self._add_craft_item(self, pressed_backend_id, slot_index)
-					self.setup_recipe_requirements(self)
+					self:_add_craft_item(pressed_backend_id, slot_index)
+					self:setup_recipe_requirements()
 				end
 			end
 		else
-			self._add_craft_item(self, pressed_backend_id)
-			self.setup_recipe_requirements(self)
+			self:_add_craft_item(pressed_backend_id)
+			self:setup_recipe_requirements()
 		end
 	end
 
-	local grid_item_pressed = item_grid.is_item_pressed(item_grid)
+	local grid_item_pressed = item_grid:is_item_pressed()
 
 	if grid_item_pressed then
 		local backend_id = grid_item_pressed.backend_id
 
-		self._remove_craft_item(self, backend_id)
+		self:_remove_craft_item(backend_id)
 	end
-
-	return 
 end
+
 CraftPageUpgradeItem._remove_craft_item = function (self, backend_id, slot_index)
 	local craft_items = self._craft_items
 
@@ -427,15 +424,14 @@ CraftPageUpgradeItem._remove_craft_item = function (self, backend_id, slot_index
 		self._num_craft_items = math.max((self._num_craft_items or 0) - 1, 0)
 
 		if self._num_craft_items == 0 then
-			self._set_craft_button_disabled(self, true)
+			self:_set_craft_button_disabled(true)
 		end
 
-		self._play_sound(self, "play_gui_craft_item_drag")
-		self.setup_recipe_requirements(self)
+		self:_play_sound("play_gui_craft_item_drag")
+		self:setup_recipe_requirements()
 	end
-
-	return 
 end
+
 CraftPageUpgradeItem._add_craft_item = function (self, backend_id, slot_index, ignore_sound)
 	if self._num_craft_items == 0 then
 		self._item_grid:clear_item_grid()
@@ -457,35 +453,34 @@ CraftPageUpgradeItem._add_craft_item = function (self, backend_id, slot_index, i
 	if slot_index then
 		craft_items[slot_index] = backend_id
 		local item_interface = Managers.backend:get_interface("items")
-		local item = backend_id and item_interface.get_item_from_id(item_interface, backend_id)
+		local item = backend_id and item_interface:get_item_from_id(backend_id)
 
 		self._item_grid:add_item_to_slot_index(slot_index, item)
 		self.super_parent:set_disabled_backend_id(backend_id, true)
 
 		self._num_craft_items = math.min((self._num_craft_items or 0) + 1, NUM_CRAFT_SLOTS)
 
-		if 0 < self._num_craft_items and self._has_all_requirements then
-			self._set_craft_button_disabled(self, false)
+		if self._num_craft_items > 0 and self._has_all_requirements then
+			self:_set_craft_button_disabled(false)
 		end
 
 		if backend_id and not ignore_sound then
-			self._play_sound(self, "play_gui_craft_item_drop")
+			self:_play_sound("play_gui_craft_item_drop")
 		end
 	end
-
-	return 
 end
+
 CraftPageUpgradeItem._set_craft_button_disabled = function (self, disabled)
 	self._widgets_by_name.craft_button.content.button_hotspot.disable_button = disabled
 
-	return 
+	self.parent:set_input_description((not disabled and self.settings.name) or nil)
 end
+
 CraftPageUpgradeItem._exit = function (self, selected_level)
 	self.exit = true
 	self.exit_level_id = selected_level
-
-	return 
 end
+
 CraftPageUpgradeItem.draw = function (self, dt)
 	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
@@ -499,20 +494,16 @@ CraftPageUpgradeItem.draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
-
-	return 
 end
+
 CraftPageUpgradeItem._play_sound = function (self, event)
 	self.super_parent:play_sound(event)
-
-	return 
 end
+
 CraftPageUpgradeItem._set_craft_button_text = function (self, text, localize)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.craft_button
 	widget.content.button_text = (localize and Localize(text)) or text
-
-	return 
 end
 
-return 
+return

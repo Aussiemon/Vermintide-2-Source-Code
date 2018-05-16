@@ -360,13 +360,18 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "credits_3D_artist",
+			text = "credits_lead_environment_artist",
 			localized = true,
 			type = "title"
 		},
 		{
 			text = "Robert Berg",
 			type = "person"
+		},
+		{
+			text = "credits_3D_artist",
+			localized = true,
+			type = "title"
 		},
 		{
 			text = "Niklas Eneqvist",
@@ -940,6 +945,11 @@ local Credits = {
 			type = "header"
 		},
 		{
+			text = "credits_omuk_london",
+			localized = true,
+			type = "header"
+		},
+		{
 			text = "credits_witch_hunter",
 			localized = true,
 			type = "title"
@@ -954,7 +964,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Bethan Dickson Bate",
+			text = "Bethan Dixon Bate",
 			type = "person"
 		},
 		{
@@ -1003,33 +1013,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "credits_rasknitt",
-			localized = true,
-			type = "title"
-		},
-		{
-			text = "Andreas Rylander",
-			type = "person"
-		},
-		{
-			text = "credits_skaven",
-			localized = true,
-			type = "title"
-		},
-		{
-			text = "James Hogg",
-			type = "person"
-		},
-		{
-			text = "Indy Neidell",
-			type = "person"
-		},
-		{
-			text = "Olof Jönsson",
-			type = "person"
-		},
-		{
-			text = "Marauders",
+			text = "Enemy Voices",
 			localized = false,
 			type = "title"
 		},
@@ -1038,15 +1022,28 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Olof Jönsson",
-			type = "person"
-		},
-		{
-			text = "Andreas Rylander",
-			type = "person"
-		},
-		{
 			text = "Everal Walsh",
+			type = "person"
+		},
+		{
+			text = "Freelance",
+			localized = false,
+			type = "header"
+		},
+		{
+			text = "Andreas Rylander (Rasknitt, Marauders)",
+			type = "person"
+		},
+		{
+			text = "Olof Jönsson (Marauders, Skaven",
+			type = "person"
+		},
+		{
+			text = "James Hogg (Skaven)",
+			type = "person"
+		},
+		{
+			text = "Indy Neidell (Skaven)",
 			type = "person"
 		},
 		{
@@ -1393,6 +1390,10 @@ local Credits = {
 		},
 		{
 			text = "Emil Hagelin",
+			type = "person"
+		},
+		{
+			text = "Julia Currie",
 			type = "person"
 		},
 		{

@@ -1,18 +1,17 @@
 PlayerCharacterStateLeaveLedgeHangingFalling = class(PlayerCharacterStateLeaveLedgeHangingFalling, PlayerCharacterState)
 script_data.ledge_hanging_fall_and_die_turned_off = script_data.ledge_hanging_fall_and_die_turned_off or Development.parameter("ledge_hanging_fall_and_die_turned_off")
+
 PlayerCharacterStateLeaveLedgeHangingFalling.init = function (self, character_state_init_context)
 	PlayerCharacterState.init(self, character_state_init_context, "leave_ledge_hanging_falling")
 
 	local context = character_state_init_context
 	self.is_server = Managers.player.is_server
-
-	return 
 end
+
 PlayerCharacterStateLeaveLedgeHangingFalling.on_enter_animation = function (self)
 	CharacterStateHelper.play_animation_event(self.unit, "jump_idle")
-
-	return 
 end
+
 PlayerCharacterStateLeaveLedgeHangingFalling.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	local unit = self.unit
 	local ledge_unit = params.ledge_unit
@@ -27,18 +26,16 @@ PlayerCharacterStateLeaveLedgeHangingFalling.on_enter = function (self, unit, in
 
 	self.locomotion_extension:enable_script_driven_movement()
 	self.locomotion_extension:teleport_to(position)
-	self.on_enter_animation(self)
-
-	return 
+	self:on_enter_animation()
 end
+
 PlayerCharacterStateLeaveLedgeHangingFalling.on_exit = function (self, unit, input, dt, context, t, next_state)
 	if next_state and next_state ~= "falling" and Managers.state.network:game() then
 		CharacterStateHelper.play_animation_event(unit, "land_still")
 		CharacterStateHelper.play_animation_event(unit, "to_onground")
 	end
-
-	return 
 end
+
 PlayerCharacterStateLeaveLedgeHangingFalling.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
 	local unit = self.unit
@@ -48,15 +45,15 @@ PlayerCharacterStateLeaveLedgeHangingFalling.update = function (self, unit, inpu
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
 
 	if CharacterStateHelper.is_dead(status_extension) then
-		csm.change_state(csm, "dead")
+		csm:change_state("dead")
 
-		return 
+		return
 	end
 
 	if CharacterStateHelper.is_pounced_down(status_extension) then
-		csm.change_state(csm, "pounced_down")
+		csm:change_state("pounced_down")
 
-		return 
+		return
 	end
 
 	local is_catapulted, direction = CharacterStateHelper.is_catapulted(status_extension)
@@ -67,41 +64,39 @@ PlayerCharacterStateLeaveLedgeHangingFalling.update = function (self, unit, inpu
 			direction = direction
 		}
 
-		csm.change_state(csm, "catapulted", params)
+		csm:change_state("catapulted", params)
 
-		return 
+		return
 	end
 
 	if self.finish_time <= t then
 		if script_data.ledge_hanging_fall_and_die_turned_off then
-			csm.change_state(csm, "falling")
+			csm:change_state("falling")
 		else
 			local go_id = self.unit_storage:go_id(unit)
 
 			if self.is_server or LEVEL_EDITOR_TEST then
 				local health_system = Managers.state.entity:system("health_system")
 
-				health_system.suicide(health_system, unit)
-				csm.change_state(csm, "dead")
+				health_system:suicide(unit)
+				csm:change_state("dead")
 			else
 				self.network_transmit:send_rpc_server("rpc_suicide", go_id)
 			end
 		end
 
-		return 
+		return
 	end
 
 	if self.locomotion_extension:is_colliding_down() then
-		csm.change_state(csm, "walking")
+		csm:change_state("walking")
 
-		return 
+		return
 	end
 
 	self.locomotion_extension:set_forced_velocity(Vector3(0, 0, -3))
 	self.locomotion_extension:set_disable_rotation_update()
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension)
-
-	return 
 end
 
-return 
+return

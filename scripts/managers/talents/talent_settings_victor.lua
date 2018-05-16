@@ -1697,4 +1697,4 @@ end
 
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.witch_hunter, buff_tweak_data)
 
-return 
+return

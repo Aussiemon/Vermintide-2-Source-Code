@@ -535,8 +535,6 @@ local scrollbar_widget = {
 					local y_pos = math.min(min + (max - min) * ui_content.internal_scroll_value, max - bar_height)
 					local_position[2] = y_pos
 					ui_content.scroll_value = (y_pos - min) / (max - bar_height - min)
-
-					return 
 				end
 			},
 			{
@@ -562,7 +560,7 @@ local scrollbar_widget = {
 				style_id = "background_hotspot",
 				pass_type = "held",
 				held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-					local cursor = UIInverseScaleVectorToResolution(input_service.get(input_service, "cursor"))
+					local cursor = UIInverseScaleVectorToResolution(input_service:get("cursor"))
 					local scenegraph_id = ui_style.scenegraph_id
 					local world_position = UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)
 					local bar_height = ui_content.scroll_bar_height
@@ -578,8 +576,6 @@ local scrollbar_widget = {
 					local current_position = math.clamp(current_offset_center_bar, 0, size[2])
 					local delta_value = math.min(current_position / size[2], 1)
 					ui_content.internal_scroll_value = delta_value
-
-					return 
 				end
 			}
 		}

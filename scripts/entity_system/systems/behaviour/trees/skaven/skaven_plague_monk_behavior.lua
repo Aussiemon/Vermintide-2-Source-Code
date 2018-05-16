@@ -110,4 +110,4 @@ BreedBehaviors.plague_monk = {
 	name = "plague_monk"
 }
 
-return 
+return

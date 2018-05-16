@@ -1,4 +1,5 @@
 FreeFlight = class(FreeFlight)
+
 FreeFlight.init = function (self, camera, unit)
 	self.camera = camera
 	self.unit = unit
@@ -9,9 +10,8 @@ FreeFlight.init = function (self, camera, unit)
 	else
 		self.rotation_speed = 0.03
 	end
-
-	return 
 end
+
 FreeFlight.update = function (self, dt)
 	local input = {}
 
@@ -51,8 +51,6 @@ FreeFlight.update = function (self, dt)
 
 	Matrix4x4.set_translation(cm, trans)
 	Camera.set_local_pose(self.camera, self.unit, cm)
-
-	return 
 end
 
-return 
+return

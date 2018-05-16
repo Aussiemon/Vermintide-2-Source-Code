@@ -226,9 +226,9 @@ weapon_template.attack_meta_data = {
 	ignore_allies_for_obstruction = true,
 	minimum_charge_time = 0.84,
 	ignore_allies_for_obstruction_charged = true,
+	charge_against_armored_enemy = true,
 	charge_when_obstructed = true,
-	ignore_enemies_for_obstruction = false,
-	charge_against_armoured_enemy = true
+	ignore_enemies_for_obstruction = false
 }
 weapon_template.default_spread_template = "longbow"
 weapon_template.slot_to_use = "slot_ranged"
@@ -311,4 +311,4 @@ local quality_settings = {
 Weapons = Weapons or {}
 Weapons.kerillian_waywatcher_career_skill_weapon = table.create_copy(Weapons.kerillian_waywatcher_career_skill_weapon, weapon_template)
 
-return 
+return

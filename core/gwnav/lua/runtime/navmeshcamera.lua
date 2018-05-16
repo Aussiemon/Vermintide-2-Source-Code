@@ -42,6 +42,7 @@ local GwNavCylinderObstacle = stingray.GwNavCylinderObstacle
 local GwNavGraph = stingray.GwNavGraph
 local GwNavTraversal = stingray.GwNavTraversal
 local GwNavGeneration = stingray.GwNavGeneration
+
 NavMeshCamera.init = function (self, camera, unit, nav_world)
 	self.camera = camera
 	self.unit = unit
@@ -53,9 +54,8 @@ NavMeshCamera.init = function (self, camera, unit, nav_world)
 	else
 		self.rotation_speed = 0.03
 	end
-
-	return 
 end
+
 NavMeshCamera.update = function (self, dt)
 	local input = {}
 
@@ -64,7 +64,7 @@ NavMeshCamera.update = function (self, dt)
 		input.accelerate = Vector3.y(Mouse.axis(Mouse.axis_id("wheel")))
 		input.move = Vector3(Keyboard.button(Keyboard.button_id("d")) - Keyboard.button(Keyboard.button_id("a")), Keyboard.button(Keyboard.button_id("w")) - Keyboard.button(Keyboard.button_id("s")), Keyboard.button(Keyboard.button_id("e")) - Keyboard.button(Keyboard.button_id("q")))
 	else
-		return 
+		return
 	end
 
 	local translation_change_speed = self.translation_speed * 0.1
@@ -74,7 +74,7 @@ NavMeshCamera.update = function (self, dt)
 		self.translation_speed = 0.001
 	end
 
-	if 1000 < self.translation_speed then
+	if self.translation_speed > 1000 then
 		self.translation_speed = 1000
 	end
 
@@ -92,8 +92,6 @@ NavMeshCamera.update = function (self, dt)
 
 	Matrix4x4.set_translation(cm, move_on_navmesh)
 	Camera.set_local_pose(self.camera, self.unit, cm)
-
-	return 
 end
 
 return NavMeshCamera

@@ -1,5 +1,6 @@
 local array = require("foundation/scripts/util/array")
 GraphDrawer = class(GraphDrawer)
+
 GraphDrawer.init = function (self, world, input_manager)
 	self.world = world
 	self.input_manager = input_manager
@@ -8,25 +9,25 @@ GraphDrawer.init = function (self, world, input_manager)
 	self.unblocked_services = {}
 	self.unblocked_services_n = 0
 	self.active = false
-
-	return 
 end
+
 GraphDrawer.create_graph = function (self, graph_name, axis_names)
 	local graph = Graph:new(graph_name, axis_names)
 	self.graphs[graph_name] = graph
 
 	return graph
 end
+
 GraphDrawer.destroy_graph = function (self, graph)
 	self.graphs[graph.name] = nil
-
-	return 
 end
+
 GraphDrawer.graph = function (self, graph_name)
 	return self.graphs[graph_name]
 end
+
 GraphDrawer.update = function (self, input_service, t)
-	if input_service.get(input_service, "f11") then
+	if input_service:get("f11") then
 		if not self.active then
 			self.unblocked_services_n = self.input_manager:get_unblocked_services(nil, nil, self.unblocked_services)
 
@@ -53,16 +54,16 @@ GraphDrawer.update = function (self, input_service, t)
 	for graph_name, graph in pairs(self.graphs) do
 		if graph.active then
 			if self.active then
-				graph.update(graph, input_service, t)
+				graph:update(input_service, t)
 			end
 
-			graph.draw(graph, gui, input_service, t)
+			graph:draw(gui, input_service, t)
 		end
 	end
-
-	return 
 end
+
 Graph = class(Graph)
+
 Graph.init = function (self, name, axis_names)
 	self.name = name
 	self.axis_names = axis_names
@@ -92,9 +93,8 @@ Graph.init = function (self, name, axis_names)
 	}
 	self.valid = false
 	self.zoom_window = nil
-
-	return 
 end
+
 Graph.reset = function (self)
 	self.plots = {}
 
@@ -123,14 +123,12 @@ Graph.reset = function (self)
 	}
 	self.zoom_window = nil
 	self.state = nil
-
-	return 
 end
+
 Graph.set_active = function (self, active)
 	self.active = active
-
-	return 
 end
+
 Graph.set_plot_color = function (self, plot_name, point_color, line_color)
 	local plot = self.plots[plot_name]
 
@@ -144,9 +142,8 @@ Graph.set_plot_color = function (self, plot_name, point_color, line_color)
 
 	plot.point_color = point_color
 	plot.line_color = line_color
-
-	return 
 end
+
 Graph.add_point = function (self, x, y, plot_name)
 	plot_name = plot_name or "default"
 	local plot = self.plots[plot_name]
@@ -182,20 +179,18 @@ Graph.add_point = function (self, x, y, plot_name)
 		self.visual_frame.y_max = self.range_y[2]
 	end
 
-	self.valid = self.valid or (1 < num_points and 1e-05 < math.abs(self.range_x[2] - self.range_x[1]) and 1e-05 < math.abs(self.range_y[2] - self.range_y[1]))
-
-	return 
+	self.valid = self.valid or (num_points > 1 and math.abs(self.range_x[2] - self.range_x[1]) > 1e-05 and math.abs(self.range_y[2] - self.range_y[1]) > 1e-05)
 end
+
 Graph.add_annotation = function (self, annotation)
 	local index = array.binary_insert(self.annotations_x, annotation.x)
 
 	array.insert_at(self.annotations_data, annotation, index)
-
-	return 
 end
+
 Graph.move_annotation = function (self, annotation, new_x)
 	if new_x == annotation.x then
-		return 
+		return
 	end
 
 	local item, old_index = array.pop_item_ordered(self.annotations_data, annotation)
@@ -208,9 +203,8 @@ Graph.move_annotation = function (self, annotation, new_x)
 
 		array.insert_at(self.annotations_data, annotation, index)
 	end
-
-	return 
 end
+
 Graph.set_visual_range = function (self, x_min, x_max, y_min, y_max)
 	self.visual_frame = {
 		x_min = x_min,
@@ -218,30 +212,29 @@ Graph.set_visual_range = function (self, x_min, x_max, y_min, y_max)
 		y_min = y_min,
 		y_max = y_max
 	}
-
-	return 
 end
+
 Graph.update = function (self, input_service, t)
 	if not self.valid then
-		return 
+		return
 	end
 
-	local mouse = input_service.get(input_service, "cursor")
+	local mouse = input_service:get("cursor")
 	local origin = Vector3(100, 100, 0)
 	local graph_size_x = 800
 	local graph_size_y = 400
 	self.state = self.state or "waiting_for_zoom_window"
 
 	if self.state == "waiting_for_zoom_window" then
-		if input_service.get(input_service, "mouse_left_held") then
+		if input_service:get("mouse_left_held") then
 			self.state = "drawing_zoom_window"
 		end
 
-		if input_service.get(input_service, "mouse_middle_held") then
+		if input_service:get("mouse_middle_held") then
 			self.state = "panning"
 		end
 
-		if input_service.get(input_service, "mouse_right_held") then
+		if input_service:get("mouse_right_held") then
 			self.zoom_window = {}
 			local zoom_factor_x_min = (self.visual_frame.x_max - self.range_x[1]) / (self.visual_frame.x_max - self.visual_frame.x_min)
 			local zoom_factor_x_max = (self.range_x[2] - self.visual_frame.x_min) / (self.visual_frame.x_max - self.visual_frame.x_min)
@@ -260,12 +253,12 @@ Graph.update = function (self, input_service, t)
 	end
 
 	if self.state == "drawing_zoom_window" then
-		if input_service.get(input_service, "mouse_left_held") then
+		if input_service:get("mouse_left_held") then
 			if self.zoom_window == nil then
 				local x_inside = true
 				local y_inside = true
 
-				if origin.x + graph_size_x < mouse.x then
+				if mouse.x > origin.x + graph_size_x then
 					local zoom_factor = (self.range_x[2] - self.visual_frame.x_min) / (self.visual_frame.x_max - self.visual_frame.x_min)
 					self.zoom_window = {
 						x_min = origin.x,
@@ -277,7 +270,7 @@ Graph.update = function (self, input_service, t)
 					self.scroll_lock.right = true
 					self.state = "zoom_prepare"
 
-					return 
+					return
 				elseif mouse.x < origin.x then
 					local zoom_factor = (self.visual_frame.x_max - self.range_x[1]) / (self.visual_frame.x_max - self.visual_frame.x_min)
 					self.zoom_window = {
@@ -290,10 +283,10 @@ Graph.update = function (self, input_service, t)
 					self.scroll_lock.left = true
 					self.state = "zoom_prepare"
 
-					return 
+					return
 				end
 
-				if origin.y + graph_size_y < mouse.y then
+				if mouse.y > origin.y + graph_size_y then
 					local zoom_factor_min = (self.visual_frame.y_max - self.range_y[1]) / (self.visual_frame.y_max - self.visual_frame.y_min)
 					local zoom_factor_max = (self.range_y[2] - self.visual_frame.y_min) / (self.visual_frame.y_max - self.visual_frame.y_min)
 					self.zoom_window = {
@@ -306,7 +299,7 @@ Graph.update = function (self, input_service, t)
 					self.scroll_lock.vertical = true
 					self.state = "zoom_prepare"
 
-					return 
+					return
 				end
 
 				self.zoom_window = {
@@ -334,11 +327,11 @@ Graph.update = function (self, input_service, t)
 	end
 
 	if self.state == "panning" then
-		if not input_service.get(input_service, "mouse_middle_held") then
+		if not input_service:get("mouse_middle_held") then
 			self.state = "waiting_for_zoom_window"
 			self.pan_previous = nil
 
-			return 
+			return
 		end
 
 		if self.pan_previous == nil then
@@ -424,11 +417,10 @@ Graph.update = function (self, input_service, t)
 			self.state = "waiting_for_zoom_window"
 		end
 	end
-
-	return 
 end
+
 Graph.draw = function (self, gui, input_service, t)
-	local mouse = input_service.get(input_service, "cursor")
+	local mouse = input_service:get("cursor")
 	local layer = 1
 	local line_width = 2
 	local font_size = 26
@@ -474,14 +466,14 @@ Graph.draw = function (self, gui, input_service, t)
 	local visual_y_max = self.visual_frame.y_max
 
 	if visual_x_max == visual_x_min or visual_y_max == visual_y_min then
-		return 
+		return
 	end
 
 	Gui.text(gui, string.format("(%.2f, %.2f)", visual_x_min, visual_y_min), font_mtrl, font_size, font, origin + Vector3(-50, -20, 0), color_axis)
 	Gui.text(gui, string.format("(%.2f, %.2f)", visual_x_max, visual_y_max), font_mtrl, font_size, font, origin + Vector3(-50 + graph_size_x, 10 + graph_size_y, 0), color_axis)
 
 	if not self.valid then
-		return 
+		return
 	end
 
 	local scale_x = graph_size_x / (visual_x_max - visual_x_min)
@@ -497,10 +489,10 @@ Graph.draw = function (self, gui, input_service, t)
 
 		for i = 2, num_points, 1 do
 			local p2 = Vector3((xs[i] - visual_x_min) * scale_x, (ys[i] - visual_y_min) * scale_y, 0)
-			local p1_x_inside = 0 <= p1.x and p1.x <= graph_size_x
-			local p1_y_inside = 0 <= p1.y and p1.y <= graph_size_y
-			local p2_x_inside = 0 <= p2.x and p2.x <= graph_size_x
-			local p2_y_inside = 0 <= p2.y and p2.y <= graph_size_y
+			local p1_x_inside = p1.x >= 0 and p1.x <= graph_size_x
+			local p1_y_inside = p1.y >= 0 and p1.y <= graph_size_y
+			local p2_x_inside = p2.x >= 0 and p2.x <= graph_size_x
+			local p2_y_inside = p2.y >= 0 and p2.y <= graph_size_y
 
 			if (p1_x_inside and p1_y_inside) or (p2_x_inside and p2_y_inside) then
 				ScriptGUI.hud_line(gui, p1 + origin, p2 + origin, layer, line_width, line_color)
@@ -520,7 +512,7 @@ Graph.draw = function (self, gui, input_service, t)
 	for i = 1, num_annotations, 1 do
 		local annotation = annotations[i]
 		local pos = Vector3((annotation.x - visual_x_min) * scale_x, 0, 0)
-		local x_inside = 0 <= pos.x and pos.x <= graph_size_x
+		local x_inside = pos.x >= 0 and pos.x <= graph_size_x
 
 		if x_inside then
 			if pos.x < last_x + 8 then
@@ -589,19 +581,17 @@ Graph.draw = function (self, gui, input_service, t)
 			Gui.rect(gui, bottom_left, size, color_zoom_window)
 		end
 	else
-		if origin.x + graph_size_x < mouse.x then
+		if mouse.x > origin.x + graph_size_x then
 			Gui.rect(gui, origin + Vector3(graph_size_x, 0, 0), Vector2(50, graph_size_y), color_zoom_window)
 		elseif mouse.x < origin.x then
 			Gui.rect(gui, origin + Vector3(-50, 0, 0), Vector2(50, graph_size_y), color_zoom_window)
 		end
 
-		if origin.y + graph_size_y < mouse.y then
+		if mouse.y > origin.y + graph_size_y then
 			Gui.rect(gui, origin + Vector3(0, -50, 0), Vector2(graph_size_x, 50), color_zoom_window)
 			Gui.rect(gui, origin + Vector3(0, graph_size_y, 0), Vector2(graph_size_x, 50), color_zoom_window)
 		end
 	end
-
-	return 
 end
 
-return 
+return

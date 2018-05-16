@@ -45,8 +45,6 @@ function weapon_printf(...)
 	if script_data.debug_weapons then
 		printf(...)
 	end
-
-	return 
 end
 
 if Development.parameter("debug_weapons") then
@@ -131,7 +129,7 @@ local function is_within_a_chain_window(current_time_in_action, action, owner_un
 		local start_time = chain_info.start_time or 0
 		local end_time = chain_info.end_time or math.huge
 		local modified_start_time = start_time / attack_speed_modifier
-		local after_start = modified_start_time < current_time_in_action
+		local after_start = current_time_in_action > modified_start_time
 		local before_end = current_time_in_action < end_time
 
 		if after_start and before_end then
@@ -143,6 +141,7 @@ local function is_within_a_chain_window(current_time_in_action, action, owner_un
 end
 
 WeaponUnitExtension = class(WeaponUnitExtension)
+
 WeaponUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.weapon_system = extension_init_data.weapon_system
 	local world = extension_init_context.world
@@ -182,42 +181,41 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 	self.chain_action_sound_played = {}
 	self.is_server = Managers.state.network.network_transmit.is_server
 	local player_manager = Managers.player
-	local player = player_manager.unit_owner(player_manager, owner_unit)
+	local player = player_manager:unit_owner(owner_unit)
 
 	if player and player.bot_player then
 		self.bot_attack_data = {
 			request = {}
 		}
 	end
-
-	return 
 end
+
 WeaponUnitExtension.extensions_ready = function (self, world, unit)
 	if ScriptUnit.has_extension(unit, "ammo_system") then
 		self.ammo_extension = ScriptUnit.extension(unit, "ammo_system")
 	end
-
-	return 
 end
+
 WeaponUnitExtension.destroy = function (self)
 	if self.current_action_settings then
 		local action_kind = self.current_action_settings.kind
 		local attack_prev = self.actions[action_kind]
 
 		if attack_prev.destroy then
-			attack_prev.destroy(attack_prev)
+			attack_prev:destroy()
 		end
 	end
-
-	return 
 end
+
 WeaponUnitExtension.get_action = function (self, action_name, sub_action_name, actions)
 	local sub_actions = actions[action_name]
 	local action = sub_actions[sub_action_name]
 
 	return action
 end
+
 local interupting_action_data = {}
+
 WeaponUnitExtension.start_action = function (self, action_name, sub_action_name, actions, t, power_level, action_init_data)
 	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
 	local first_person_extension = ScriptUnit.extension(self.owner_unit, "first_person_system")
@@ -229,7 +227,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	table.clear(interupting_action_data)
 
 	if t < self.cooldown_timer and new_action then
-		local action_settings = self.get_action(self, new_action, new_sub_action, actions)
+		local action_settings = self:get_action(new_action, new_sub_action, actions)
 
 		if action_settings.cooldown ~= nil then
 			new_action, new_sub_action = nil
@@ -237,7 +235,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	end
 
 	if new_action then
-		local action_settings = self.get_action(self, new_action, new_sub_action, actions)
+		local action_settings = self:get_action(new_action, new_sub_action, actions)
 		local action_kind = action_settings.kind
 		self.actions[action_kind] = self.actions[action_kind] or create_attack(self.item_name, action_kind, self.world, self.is_server, self.owner_unit, self.actual_damage_unit, self.first_person_unit, self.unit, self.weapon_system)
 	end
@@ -245,26 +243,26 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	local ammo_extension = self.ammo_extension
 
 	if ammo_extension ~= nil and new_action then
-		local action = self.get_action(self, new_action, new_sub_action, actions)
+		local action = self:get_action(new_action, new_sub_action, actions)
 		local ammo_requirement = action.ammo_requirement or action.ammo_usage or 0
-		local ammo_count = ammo_extension.ammo_count(ammo_extension)
+		local ammo_count = ammo_extension:ammo_count()
 		local action_can_abort_reload = (action.can_abort_reload == nil and true) or action.can_abort_reload
 
-		if ammo_extension.is_reloading(ammo_extension) then
+		if ammo_extension:is_reloading() then
 			if ammo_requirement <= ammo_count and action_can_abort_reload then
-				ammo_extension.abort_reload(ammo_extension)
+				ammo_extension:abort_reload()
 			else
 				new_action, new_sub_action = nil
 			end
 		elseif ammo_count < ammo_requirement then
-			if ammo_extension.total_remaining_ammo(ammo_extension) == 0 and (not self.reload_failed_timer or self.reload_failed_timer < t) and (not action.interaction_type or action.interaction_type ~= "heal") then
+			if ammo_extension:total_remaining_ammo() == 0 and (not self.reload_failed_timer or self.reload_failed_timer < t) and (not action.interaction_type or action.interaction_type ~= "heal") then
 				local dialogue_input = ScriptUnit.extension_input(self.owner_unit, "dialogue_system")
 				local event_data = FrameTable.alloc_table()
 				event_data.fail_reason = "out_of_ammo"
 				event_data.item_name = "ranged_weapon"
 				local event_name = "reload_failed"
 
-				dialogue_input.trigger_networked_dialogue_event(dialogue_input, event_name, event_data)
+				dialogue_input:trigger_networked_dialogue_event(event_name, event_data)
 
 				self.reload_failed_timer = t + 5
 			end
@@ -278,32 +276,32 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	if new_action and current_action_settings then
 		interupting_action_data.new_action = new_action
 		interupting_action_data.new_sub_action = new_sub_action
-		chain_action_data = self._finish_action(self, "new_interupting_action", interupting_action_data)
+		chain_action_data = self:_finish_action("new_interupting_action", interupting_action_data)
 	end
 
 	if new_action then
 		local owner_unit = self.owner_unit
 		local locomotion_extension = ScriptUnit.extension(owner_unit, "locomotion_system")
 
-		if locomotion_extension.is_stood_still(locomotion_extension) then
-			local look_rotation = first_person_extension.current_rotation(first_person_extension)
+		if locomotion_extension:is_stood_still() then
+			local look_rotation = first_person_extension:current_rotation()
 
-			locomotion_extension.set_stood_still_target_rotation(locomotion_extension, look_rotation)
+			locomotion_extension:set_stood_still_target_rotation(look_rotation)
 		end
 
 		chain_action = current_action_settings ~= nil
-		current_action_settings = self.get_action(self, new_action, new_sub_action, actions)
+		current_action_settings = self:get_action(new_action, new_sub_action, actions)
 
 		if not chain_action and current_action_settings.aim_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
 			local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
 
-			eyetracking_extension.set_is_aiming(eyetracking_extension, true)
+			eyetracking_extension:set_is_aiming(true)
 
-			if eyetracking_extension.get_is_feature_enabled(eyetracking_extension, "tobii_aim_at_gaze") then
-				local gaze_rotation = eyetracking_extension.gaze_rotation(eyetracking_extension)
+			if eyetracking_extension:get_is_feature_enabled("tobii_aim_at_gaze") then
+				local gaze_rotation = eyetracking_extension:gaze_rotation()
 				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-				first_person_extension.force_look_rotation(first_person_extension, gaze_rotation, 1)
+				first_person_extension:force_look_rotation(gaze_rotation, 1)
 			end
 		end
 
@@ -329,7 +327,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		local time_to_complete = current_action_settings.total_time
 
 		if current_action_settings.scale_total_time_on_mastercrafted and buff_extension then
-			time_to_complete = buff_extension.apply_buffs_to_value(buff_extension, time_to_complete, StatBuffIndex.RELOAD_SPEED)
+			time_to_complete = buff_extension:apply_buffs_to_value(time_to_complete, StatBuffIndex.RELOAD_SPEED)
 		end
 
 		local event = current_action_settings.anim_event
@@ -350,7 +348,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 		status_extension._current_action = new_action
 
-		action.client_owner_start_action(action, current_action_settings, t, chain_action_data, power_level, action_init_data)
+		action:client_owner_start_action(current_action_settings, t, chain_action_data, power_level, action_init_data)
 
 		local aim_assist_ramp_multiplier = current_action_settings.aim_assist_ramp_multiplier
 
@@ -358,7 +356,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			local aim_assist_max_ramp_multiplier = current_action_settings.aim_assist_max_ramp_multiplier
 			local aim_assist_ramp_decay_delay = current_action_settings.aim_assist_ramp_decay_delay
 
-			first_person_extension.increase_aim_assist_multiplier(first_person_extension, aim_assist_ramp_multiplier, aim_assist_max_ramp_multiplier, aim_assist_ramp_decay_delay)
+			first_person_extension:increase_aim_assist_multiplier(aim_assist_ramp_multiplier, aim_assist_max_ramp_multiplier, aim_assist_ramp_decay_delay)
 		end
 
 		if self.ammo_extension then
@@ -428,21 +426,19 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			if current_action_settings.apply_recoil then
 				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
-				first_person_extension.apply_recoil(first_person_extension)
-				first_person_extension.play_camera_recoil(first_person_extension, current_action_settings.recoil_settings, t)
+				first_person_extension:apply_recoil()
+				first_person_extension:play_camera_recoil(current_action_settings.recoil_settings, t)
 			end
 		end
 	end
-
-	return 
 end
+
 WeaponUnitExtension.stop_action = function (self, reason, data)
-	if self.has_current_action(self) then
-		self._finish_action(self, reason, data)
+	if self:has_current_action() then
+		self:_finish_action(reason, data)
 	end
-
-	return 
 end
+
 WeaponUnitExtension._finish_action = function (self, reason, data)
 	local current_action_settings = self.current_action_settings
 	local action_kind = current_action_settings.kind
@@ -452,8 +448,8 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 		local eyetracking_extension = ScriptUnit.extension(self.owner_unit, "eyetracking_system")
 
 		if reason == "hold_input_released" then
-			eyetracking_extension.set_is_aiming(eyetracking_extension, false)
-			eyetracking_extension.set_aim_at_gaze_cancelled(eyetracking_extension, false)
+			eyetracking_extension:set_is_aiming(false)
+			eyetracking_extension:set_aim_at_gaze_cancelled(false)
 		end
 	end
 
@@ -467,29 +463,29 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 		table.clear(data)
 	end
 
-	self._handle_proc_events(self, current_action_settings, reason)
+	self:_handle_proc_events(current_action_settings, reason)
 
-	local chain_action_data = action.finish(action, reason, data)
+	local chain_action_data = action:finish(reason, data)
 
-	self.anim_end_event(self, reason, current_action_settings)
+	self:anim_end_event(reason, current_action_settings)
 
 	if self.bot_attack_data then
-		self.clear_bot_attack_request(self)
+		self:clear_bot_attack_request()
 	end
 
 	self.current_action_settings = nil
 
 	return chain_action_data
 end
+
 WeaponUnitExtension._handle_proc_events = function (self, current_action_settings, reason)
 	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
 
 	if current_action_settings.is_spell then
-		buff_extension.trigger_procs(buff_extension, "on_spell_used", current_action_settings)
+		buff_extension:trigger_procs("on_spell_used", current_action_settings)
 	end
-
-	return 
 end
+
 WeaponUnitExtension.anim_end_event = function (self, reason, current_action_settings)
 	local go_id = Managers.state.unit_storage:go_id(self.owner_unit)
 	local event = current_action_settings.anim_end_event
@@ -512,9 +508,8 @@ WeaponUnitExtension.anim_end_event = function (self, reason, current_action_sett
 
 		self._looping_anim_event_started = nil
 	end
-
-	return 
 end
+
 WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 	local current_action_settings = self.current_action_settings
 
@@ -530,7 +525,7 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 
 			if chain_ready_sound then
 				local time_offset = chain_info.sound_time_offset or 0
-				local sound_ready = self.is_chain_action_available(self, chain_info, t, time_offset)
+				local sound_ready = self:is_chain_action_available(chain_info, t, time_offset)
 
 				if sound_ready and not self.chain_action_sound_played[i] then
 					WwiseWorld.trigger_event(wwise_world, chain_ready_sound)
@@ -541,7 +536,7 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 		end
 
 		if self.action_time_done < t then
-			self._finish_action(self, "action_complete")
+			self:_finish_action("action_complete")
 		else
 			local current_time_in_action = t - self.action_time_started
 			local can_damage = is_within_damage_window(current_time_in_action, self.current_action_settings, owner_unit)
@@ -553,27 +548,27 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 				ActionUtils.update_action_buff_data(self.action_buff_data, buff_data, owner_unit, t)
 			end
 
-			action.client_owner_post_update(action, dt, t, self.world, can_damage, current_time_in_action)
+			action:client_owner_post_update(dt, t, self.world, can_damage, current_time_in_action)
 
 			if current_action_settings.cooldown then
 				self.cooldown_timer = t + current_action_settings.cooldown
 			end
 		end
 	end
-
-	return 
 end
+
 WeaponUnitExtension.is_streak_action_available = function (self, streak_action, t, time_offset)
 	local current_action_settings = self.current_action_settings or self.temporary_action_settings
 	local action = self.actions[current_action_settings.kind]
 	local current_time_in_action = t - self.action_time_started
 
-	if action.streak_available and action.streak_available(action, current_time_in_action, streak_action) and self.is_chain_action_available(self, streak_action, t, time_offset) then
+	if action.streak_available and action:streak_available(current_time_in_action, streak_action) and self:is_chain_action_available(streak_action, t, time_offset) then
 		return true
 	end
 
 	return false
 end
+
 WeaponUnitExtension.is_chain_action_available = function (self, next_chain_action, t, time_offset)
 	local current_action_settings = self.current_action_settings or self.temporary_action_settings
 	local current_time_in_action = t - self.action_time_started
@@ -583,18 +578,17 @@ WeaponUnitExtension.is_chain_action_available = function (self, next_chain_actio
 	local attack_speed_modifier = ActionUtils.apply_attack_speed_buff(anim_time_scale_multiplier, self.owner_unit)
 
 	if next_chain_action.auto_chain then
-		return ((next_chain_action.start_time and next_chain_action.start_time / attack_speed_modifier) or max_time) + time_offset <= current_time_in_action
+		return current_time_in_action >= ((next_chain_action.start_time and next_chain_action.start_time / attack_speed_modifier) or max_time) + time_offset
 	else
 		local end_time = (next_chain_action.end_time and next_chain_action.end_time / attack_speed_modifier) or max_time
 
-		return next_chain_action.start_time / attack_speed_modifier + time_offset <= current_time_in_action and current_time_in_action <= end_time
+		return current_time_in_action >= next_chain_action.start_time / attack_speed_modifier + time_offset and current_time_in_action <= end_time
 	end
-
-	return 
 end
+
 WeaponUnitExtension.time_to_next_chain_action = function (self, next_chain_action, t, time_offset, action_settings)
 	action_settings = action_settings or self.current_action_settings or self.temporary_action_settings
-	local current_time_in_action = (self.has_current_action(self) and t - self.action_time_started) or 0
+	local current_time_in_action = (self:has_current_action() and t - self.action_time_started) or 0
 	local max_time = action_settings.total_time + 2
 	time_offset = time_offset or 0
 	local anim_time_scale_multiplier = action_settings.anim_time_scale or 1
@@ -603,6 +597,7 @@ WeaponUnitExtension.time_to_next_chain_action = function (self, next_chain_actio
 
 	return start_time - current_time_in_action
 end
+
 WeaponUnitExtension.can_stop_hold_action = function (self, t)
 	local current_time_in_action = t - self.action_time_started
 	local current_action_settings = self.current_action_settings
@@ -615,20 +610,32 @@ WeaponUnitExtension.can_stop_hold_action = function (self, t)
 	local buff_extension = ScriptUnit.extension(self.owner_unit, "buff_system")
 
 	if buff_extension then
-		minimum_hold_time = buff_extension.apply_buffs_to_value(buff_extension, minimum_hold_time, StatBuffIndex.RELOAD_SPEED)
+		minimum_hold_time = buff_extension:apply_buffs_to_value(minimum_hold_time, StatBuffIndex.RELOAD_SPEED)
 	end
 
 	return minimum_hold_time < current_time_in_action
 end
+
 WeaponUnitExtension.get_current_action = function (self)
 	return self.actions[self.current_action_settings.kind]
 end
+
 WeaponUnitExtension.has_current_action = function (self)
 	return self.current_action_settings ~= nil
 end
+
 WeaponUnitExtension.get_current_action_settings = function (self)
 	return self.current_action_settings
 end
+
+WeaponUnitExtension.bot_should_stop_attack_on_leave = function (self)
+	local current_action_settings = self.current_action_settings
+
+	if current_action_settings then
+		return current_action_settings.stop_action_on_leave_for_bot
+	end
+end
+
 WeaponUnitExtension._is_before_end_time = function (self, next_chain_action, t)
 	local current_action_settings = self.current_action_settings or self.temporary_action_settings
 	local current_time_in_action = t - self.action_time_started
@@ -639,7 +646,8 @@ WeaponUnitExtension._is_before_end_time = function (self, next_chain_action, t)
 
 	return current_time_in_action < end_time
 end
-WeaponUnitExtension._find_chain_action = function (self, actions, allowed_chain_actions, t, wanted_input, wanted_occurrence_number, wanted_action_kind)
+
+WeaponUnitExtension._find_chain_action = function (self, actions, allowed_chain_actions, t, wanted_input, wanted_occurrence_number)
 	local current_occurrence_number = 0
 	local num_chain_actions = #allowed_chain_actions
 	local found_chain_info, found_action_settings = nil
@@ -662,21 +670,61 @@ WeaponUnitExtension._find_chain_action = function (self, actions, allowed_chain_
 		local action_name = found_chain_info.action
 		local sub_action_name = found_chain_info.sub_action
 		found_action_settings = actions[action_name][sub_action_name]
-
-		if wanted_action_kind and found_action_settings.kind ~= wanted_action_kind then
-			return nil
-		end
-
 		local current_action_settings = self.current_action_settings
 
-		if current_action_settings and not self._is_before_end_time(self, found_chain_info, t) then
+		if current_action_settings and not self:_is_before_end_time(found_chain_info, t) then
 			return nil
 		end
 	end
 
 	return found_chain_info, found_action_settings
 end
-WeaponUnitExtension._process_bot_attack_request = function (self, attack_type, actions, weapon_name, t)
+
+WeaponUnitExtension._get_attack_chain_data = function (self, actions, attack_chain, t)
+	local found_chain_action, found_action_settings, action_settings = nil
+	local bot_wait_input = "hold_attack"
+	local bot_wanted_input, action_name, sub_action_name = nil
+	local current_action_settings = self.current_action_settings
+
+	if current_action_settings then
+		action_settings = current_action_settings
+	else
+		local start_action_name = attack_chain.start_action_name
+		local start_sub_action_name = attack_chain.start_sub_action_name
+		action_settings = actions[start_action_name][start_sub_action_name]
+	end
+
+	local lookup_data = action_settings.lookup_data
+	local action_name = lookup_data.action_name
+	local sub_action_name = lookup_data.sub_action_name
+	local attack_chain_data = attack_chain.transitions[action_name][sub_action_name]
+
+	if attack_chain_data == nil then
+		return nil
+	end
+
+	found_chain_action = attack_chain_data.chain_action
+
+	if current_action_settings and not self:_is_before_end_time(found_chain_action, t) then
+		return nil
+	end
+
+	found_action_settings = actions[found_chain_action.action][found_chain_action.sub_action_name]
+
+	if not attack_chain_data.bot_wait_input then
+	end
+
+	if not attack_chain_data.bot_wanted_input then
+	end
+
+	return found_chain_action, found_action_settings, action_settings, bot_wait_input, bot_wanted_input
+end
+
+WeaponUnitExtension._process_bot_attack_request = function (self, attack_type, actions, weapon_name, t, attack_chain)
+	if attack_chain then
+		return self:_get_attack_chain_data(actions, attack_chain, t)
+	end
+
 	local found_chain_action, found_action_settings, action_settings = nil
 	local wanted_input = "action_one_release"
 	local bot_wait_input = "hold_attack"
@@ -686,27 +734,28 @@ WeaponUnitExtension._process_bot_attack_request = function (self, attack_type, a
 	if self.current_action_settings then
 		action_settings = self.current_action_settings
 		local allowed_chain_actions = action_settings.allowed_chain_actions
-		found_chain_action, found_action_settings = self._find_chain_action(self, actions, allowed_chain_actions, t, wanted_input, wanted_occurrence_number)
+		found_chain_action, found_action_settings = self:_find_chain_action(actions, allowed_chain_actions, t, wanted_input, wanted_occurrence_number)
 
-		if found_chain_action == nil then
+		if found_chain_action == nil and action_settings.kind ~= "block" then
 			bot_wait_input = nil
 			bot_wanted_input = "tap_attack"
-			found_chain_action, found_action_settings = self._find_chain_action(self, actions, allowed_chain_actions, t, "action_one", 1, "melee_start")
+			found_chain_action, found_action_settings = self:_find_chain_action(actions, allowed_chain_actions, t, "action_one", 1)
 		end
 	else
 		local action_one = actions.action_one
 		action_settings = action_one.default
-		found_chain_action, found_action_settings = self._find_chain_action(self, actions, action_settings.allowed_chain_actions, t, wanted_input, wanted_occurrence_number)
+		found_chain_action, found_action_settings = self:_find_chain_action(actions, action_settings.allowed_chain_actions, t, wanted_input, wanted_occurrence_number)
 	end
 
 	return found_chain_action, found_action_settings, action_settings, bot_wait_input, bot_wanted_input
 end
+
 WeaponUnitExtension.update_bot_attack_request = function (self, t)
 	local bot_attack_data = self.bot_attack_data
 	local request = bot_attack_data.request
 
 	if request.attack_type then
-		local chain_action, chain_action_settings, action_settings, wait_input, wanted_input = self._process_bot_attack_request(self, request.attack_type, request.actions, request.weapon_name, t)
+		local chain_action, chain_action_settings, action_settings, wait_input, wanted_input = self:_process_bot_attack_request(request.attack_type, request.actions, request.weapon_name, t, request.attack_chain)
 
 		if chain_action then
 			bot_attack_data.chain_action = chain_action
@@ -722,15 +771,15 @@ WeaponUnitExtension.update_bot_attack_request = function (self, t)
 	local chain_action = bot_attack_data.chain_action
 
 	if chain_action == nil then
-		return 
+		return
 	end
 
 	local input = nil
 
-	if self.current_action_settings and self.is_chain_action_available(self, chain_action, t) then
+	if self.current_action_settings and self:is_chain_action_available(chain_action, t) then
 		input = bot_attack_data.wanted_input
 
-		self.clear_bot_attack_request(self)
+		self:clear_bot_attack_request()
 	else
 		input = bot_attack_data.wait_input
 	end
@@ -741,10 +790,9 @@ WeaponUnitExtension.update_bot_attack_request = function (self, t)
 
 		input_extension[input](input_extension)
 	end
-
-	return 
 end
-WeaponUnitExtension.request_bot_attack_action = function (self, attack_type, actions, weapon_name)
+
+WeaponUnitExtension.request_bot_attack_action = function (self, attack_type, actions, weapon_name, attack_chain)
 	local bot_attack_data = self.bot_attack_data
 	local attack_request = bot_attack_data.request
 
@@ -754,12 +802,12 @@ WeaponUnitExtension.request_bot_attack_action = function (self, attack_type, act
 		attack_request.attack_type = attack_type
 		attack_request.actions = actions
 		attack_request.weapon_name = weapon_name
+		attack_request.attack_chain = attack_chain
 
 		return true
 	end
-
-	return 
 end
+
 WeaponUnitExtension.clear_bot_attack_request = function (self)
 	local bot_attack_data = self.bot_attack_data
 	local attack_request = bot_attack_data.request
@@ -768,15 +816,15 @@ WeaponUnitExtension.clear_bot_attack_request = function (self)
 	table.clear(bot_attack_data)
 
 	bot_attack_data.request = attack_request
-
-	return 
 end
+
 WeaponUnitExtension.is_starting_attack = function (self)
 	local current_action_settings = self.current_action_settings
 
 	return current_action_settings and current_action_settings.kind == "melee_start"
 end
-WeaponUnitExtension.time_to_next_attack = function (self, wanted_attack_type, current_actions, current_weapon_name, t)
+
+WeaponUnitExtension.time_to_next_attack = function (self, wanted_attack_type, current_actions, current_weapon_name, t, attack_chain)
 	local bot_attack_data = self.bot_attack_data
 	local chain_action, chain_action_settings, action_settings = nil
 
@@ -789,18 +837,17 @@ WeaponUnitExtension.time_to_next_attack = function (self, wanted_attack_type, cu
 		local attack_type = attack_request.attack_type or wanted_attack_type
 		local actions = attack_request.actions or current_actions
 		local weapon_name = attack_request.weapon_name or current_weapon_name
-		chain_action, chain_action_settings, action_settings = self._process_bot_attack_request(self, attack_type, actions, weapon_name, t)
+		local attack_chain = attack_request.attack_chain or attack_chain
+		chain_action, chain_action_settings, action_settings = self:_process_bot_attack_request(attack_type, actions, weapon_name, t, attack_chain)
 	end
 
 	if chain_action then
-		local chain_action_time = self.time_to_next_chain_action(self, chain_action, t, nil, action_settings)
+		local chain_action_time = self:time_to_next_chain_action(chain_action, t, nil, action_settings)
 
 		return chain_action_time
 	else
 		return nil
 	end
-
-	return 
 end
 
-return 
+return

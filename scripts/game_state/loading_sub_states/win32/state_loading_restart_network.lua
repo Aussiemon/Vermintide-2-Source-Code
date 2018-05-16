@@ -13,13 +13,13 @@ require("scripts/network/network_transmit")
 
 StateLoadingRestartNetwork = class(StateLoadingRestartNetwork)
 StateLoadingRestartNetwork.NAME = "StateLoadingRestartNetwork"
+
 StateLoadingRestartNetwork.on_enter = function (self, params)
 	print("[Gamestate] Enter Substate StateLoadingRestartNetwork")
-	self._init_params(self, params)
-	self._init_network(self)
-
-	return 
+	self:_init_params(params)
+	self:_init_network()
 end
+
 StateLoadingRestartNetwork._init_params = function (self, params)
 	self._world = params.world
 	self._viewport = params.viewport
@@ -32,9 +32,8 @@ StateLoadingRestartNetwork._init_params = function (self, params)
 		kicked_by_server = "popup_notice_topic",
 		afk_kick = "popup_notice_topic"
 	}
-
-	return 
 end
+
 StateLoadingRestartNetwork._init_network = function (self)
 	local auto_join_setting = Development.parameter("auto_join")
 
@@ -125,9 +124,8 @@ StateLoadingRestartNetwork._init_network = function (self)
 
 		self.parent:create_popup(previous_session_error, self._previous_session_error_headers_lookup[previous_session_error], "continue")
 	end
-
-	return 
 end
+
 StateLoadingRestartNetwork.update = function (self, dt, t)
 	if self._has_invitation then
 		local lobby_data = Managers.invite:get_invited_lobby_data()
@@ -150,21 +148,18 @@ StateLoadingRestartNetwork.update = function (self, dt, t)
 
 		self._creating_lobby = true
 	end
+end
 
-	return 
-end
 StateLoadingRestartNetwork.on_exit = function (self, application_shutdown)
-	return 
+	return
 end
+
 StateLoadingRestartNetwork.cb_server_created = function (self)
 	self._server_created = true
-
-	return 
 end
+
 StateLoadingRestartNetwork.cb_lobby_joined = function (self)
 	self._lobby_joined = true
-
-	return 
 end
 
-return 
+return

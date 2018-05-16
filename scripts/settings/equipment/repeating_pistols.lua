@@ -54,9 +54,9 @@ weapon_template.actions = {
 				}
 			},
 			enter_function = function (attacker_unit, input_extension)
-				input_extension.clear_input_buffer(input_extension)
+				input_extension:clear_input_buffer()
 
-				return input_extension.reset_release_input(input_extension)
+				return input_extension:reset_release_input()
 			end,
 			recoil_settings = {
 				horizontal_climb = 0,
@@ -166,7 +166,7 @@ weapon_template.actions = {
 				return false
 			end,
 			condition_func = function (unit, input_extension, ammo_extension)
-				if ammo_extension and ammo_extension.total_remaining_ammo(ammo_extension) <= 0 then
+				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
 					return false
 				end
 
@@ -235,33 +235,27 @@ weapon_template.tooltip_keywords = {
 	"weapon_keyword_close_range",
 	"weapon_keyword_high_damage"
 }
-weapon_template.compare_statistics = {
-	attacks = {
-		light_attack = {
-			speed = 0.9,
-			range = 0.4,
-			damage = 0.25,
-			targets = 0.2,
-			stagger = 0.2
-		},
-		heavy_attack = {
-			speed = 0.2,
-			range = 0.2,
-			damage = 0.25,
-			targets = 0.9,
-			stagger = 0.2
-		}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	},
-	perks = {
-		light_attack = {
-			"armor_penetration"
-		},
-		heavy_attack = {
-			"armor_penetration"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "bullet_spray"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
+	},
+	heavy = {
+		action_name = "action_two",
+		sub_action_name = "default"
 	}
 }
 Weapons = Weapons or {}
 Weapons.repeating_pistol_template_1 = table.clone(weapon_template)
 
-return 
+return
