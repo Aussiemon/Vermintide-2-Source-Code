@@ -1,9 +1,5 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 script_data.dialogue_debug_proximity_system = script_data.dialogue_debug_proximity_system or Development.parameter("dialogue_debug_proximity_system")
 local PROXIMITY_DISTANCE_ENEMIES = math.max(DialogueSettings.enemies_close_distance, DialogueSettings.enemies_distant_distance)
 local PROXIMITY_DISTANCE_FRIENDS = math.max(DialogueSettings.friends_close_distance, DialogueSettings.friends_distant_distance)
@@ -524,8 +520,6 @@ ProximitySystem._update_nearby_enemies = function (self)
 			local higher_index = 1
 
 			while list_len >= higher_index do
-
-				-- Decompilation error in this vicinity:
 				lower_index = higher_index
 				higher_index = higher_index + 1
 				local lower_unit = higher_unit

@@ -401,11 +401,11 @@ AIInterestPointSystem.release_obsolete_requests = function (self, t)
 	local release_claim = false
 	local request = self.requests[request_id]
 	local claim_unit = request.claim_unit
+	local blackboard = BLACKBOARDS[claim_unit]
 
 	if not AiUtils.unit_alive(claim_unit) then
 		release_claim = true
 	else
-		local blackboard = ScriptUnit.extension(claim_unit, "ai_system")._blackboard
 		release_claim = blackboard.confirmed_player_sighting
 	end
 
@@ -413,6 +413,10 @@ AIInterestPointSystem.release_obsolete_requests = function (self, t)
 		self.current_obsolete_request = nil
 
 		self:api_release_claim(request_id)
+
+		if blackboard then
+			blackboard.ip_request_id = nil
+		end
 	else
 		self.current_obsolete_request = request_id
 	end

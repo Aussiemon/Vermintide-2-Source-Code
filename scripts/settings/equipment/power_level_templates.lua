@@ -889,11 +889,11 @@ PowerLevelTemplates = {
 	critical_strike_axe_linesman_H = {
 		attack_armor_power_modifer = {
 			1,
-			0.5,
-			1.5,
+			0.75,
+			2,
 			1,
 			1,
-			0.5
+			0.75
 		},
 		impact_armor_power_modifer = {
 			1,
@@ -1218,7 +1218,17 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_smiter_executioner_H = {
-		boost_curve_coefficient_headshot = 1,
+		boost_curve_coefficient_headshot = 2,
+		boost_curve_type = "ninja_curve",
+		boost_curve_coefficient = 0.75,
+		attack_template = "heavy_slashing_smiter_hs",
+		power_distribution = {
+			attack = 0.65,
+			impact = 0.15
+		}
+	},
+	default_target_smiter_glaive_H = {
+		boost_curve_coefficient_headshot = 1.25,
 		boost_curve_type = "ninja_curve",
 		boost_curve_coefficient = 0.75,
 		attack_template = "heavy_slashing_smiter_hs",

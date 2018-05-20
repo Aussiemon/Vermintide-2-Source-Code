@@ -1,11 +1,5 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("foundation/scripts/util/local_require")
 require("scripts/ui/ui_animator")
 require("scripts/ui/views/tutorial_tooltip_ui")
@@ -1296,8 +1290,6 @@ TutorialUI._get_next_verified = function (self, queue, t)
 	local tutorial_system = Managers.state.entity:system("tutorial_system")
 
 	while true do
-
-		-- Decompilation error in this vicinity:
 		local entry_id, entry = next(queue)
 
 		if not entry_id then
@@ -1314,6 +1306,25 @@ TutorialUI._get_next_verified = function (self, queue, t)
 
 		if tutorial_system:verify_info_slate(t, unit, raycast_unit, template) then
 			return entry_id
+
+			if entry_id then
+				print("Verification failed: " .. entry.text)
+
+				queue[entry_id] = nil
+
+				if self.tutorial_state ~= "invisible" then
+					local slot = self.tutorial_entry.slot
+					local info_slate = self.info_slate_entries[INFO_SLATES.tutorial]
+					local widget = info_slate.widget
+					local scenegraph_definition = definitions.scenegraph[widget.scenegraph_id]
+					local anim_param_name = (slot == 1 and "slot_1") or (slot == 2 and "slot_2") or "slot_3"
+
+					self.ui_animator:stop_animation(self.tutorial_anim_id)
+
+					self.tutorial_anim_id = self.ui_animator:start_animation("info_slate_exit", widget, scenegraph_definition, anim_params[anim_param_name])
+					self.tutorial_state = "animating_out"
+				end
+			end
 		end
 	end
 end

@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 GenericStatusExtension = class(GenericStatusExtension)
 script_data.debug_draw_block_arcs = script_data.debug_draw_block_arcs or Development.parameter("debug_draw_block_arcs")
 script_data.debug_draw_push_arcs = script_data.debug_draw_push_arcs or Development.parameter("debug_draw_push_arcs")

@@ -20,18 +20,18 @@ end
 
 TargetOverrideExtension.taunt = function (self, radius, duration, stagger, taunt_bosses)
 	local self_unit = self._unit
-	local taunt_end_time = Managers.time:time("game") + duration
+	local t = Managers.time:time("game")
+	local taunt_end_time = t + duration
 	local position = POSITION_LOOKUP[self_unit]
 	local result_table = self._result_table
 	local num_ai_units = AiUtils.broadphase_query(position, radius, result_table)
-	local t = Managers.time:time("game")
 
 	for i = 1, num_ai_units, 1 do
 		local ai_unit = result_table[i]
 		local ai_extension = ScriptUnit.extension(ai_unit, "ai_system")
 		local ai_blackboard = ai_extension:blackboard()
 		local ai_breed = ai_extension:breed()
-		local taunt_target = not ai_breed.ignore_taunts and (not ai_breed.boss or (taunt_bosses and ai_breed.boss))
+		local taunt_target = not ai_breed.ignore_taunts and (not ai_breed.boss or taunt_bosses)
 
 		if taunt_target then
 			if ai_blackboard.target_unit == self_unit then
@@ -41,6 +41,7 @@ TargetOverrideExtension.taunt = function (self, radius, duration, stagger, taunt
 			ai_blackboard.taunt_unit = self_unit
 			ai_blackboard.taunt_end_time = taunt_end_time
 			ai_blackboard.target_unit = self_unit
+			ai_blackboard.target_unit_found_time = t
 
 			if stagger then
 				local stagger_direction = POSITION_LOOKUP[ai_unit] - position

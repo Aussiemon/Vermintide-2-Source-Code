@@ -1,9 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 LevelAnalysis = class(LevelAnalysis)
 
 require("scripts/utils/util")
@@ -442,97 +436,113 @@ LevelAnalysis.update_main_path_generation = function (self)
 		local a_star = astar_list[i][1]
 		local result = GwNavAStar.processing_finished(a_star)
 
-		if result then
-			if GwNavAStar.path_found(a_star) then
-				local num_nodes = GwNavAStar.node_count(a_star)
+		if result and GwNavAStar.path_found(a_star) then
+			local num_nodes = GwNavAStar.node_count(a_star)
 
-				print("[LevelAnalysis] Found path! node-count:", num_nodes)
+			print("[LevelAnalysis] Found path! node-count:", num_nodes)
 
-				local node_list = {}
+			local node_list = {}
 
-				for j = 1, num_nodes, 1 do
-					node_list[j] = GwNavAStar.node_at_index(a_star, j)
-				end
+			for j = 1, num_nodes, 1 do
+				node_list[j] = GwNavAStar.node_at_index(a_star, j)
+			end
 
-				LevelAnalysis.boxify_pos_array(node_list)
+			LevelAnalysis.boxify_pos_array(node_list)
 
-				local cost = GwNavAStar.path_cost(a_star)
-				local dist = GwNavAStar.path_distance(a_star)
-				local main_path_index = astar_list[i][3]
-				local main_path = main_paths[main_path_index]
-				local sub_index = astar_list[i][2]
-				local path_marker_index = astar_list[i][4]
-				main_path.astar_paths[sub_index] = {
-					dist,
-					cost,
-					node_list,
-					main_path_index,
-					path_marker_index
-				}
+			local cost = GwNavAStar.path_cost(a_star)
+			local dist = GwNavAStar.path_distance(a_star)
+			local main_path_index = astar_list[i][3]
+			local main_path = main_paths[main_path_index]
+			local sub_index = astar_list[i][2]
+			local path_marker_index = astar_list[i][4]
+			main_path.astar_paths[sub_index] = {
+				dist,
+				cost,
+				node_list,
+				main_path_index,
+				path_marker_index
+			}
 
-				GwNavAStar.destroy(a_star)
+			GwNavAStar.destroy(a_star)
 
-				astar_list[i] = astar_list[size]
-				astar_list[size] = nil
-				size = size - 1
+			astar_list[i] = astar_list[size]
+			astar_list[size] = nil
+			size = size - 1
 
-				if size == 0 then
+			if size == 0 then
+				print("[LevelAnalysis] main path generation - all sub paths generated")
 
-					-- Decompilation error in this vicinity:
-					print("[LevelAnalysis] main path generation - all sub paths generated")
+				local dist_from_start = 0
 
-					local dist_from_start = 0
+				for i = 1, #main_paths, 1 do
+					local main_path = main_paths[i]
+					local astar_paths = main_path.astar_paths
+					local main_nodes = main_path.nodes
 
-					for i = 1, #main_paths, 1 do
-						local main_path = main_paths[i]
-						local astar_paths = main_path.astar_paths
-						local main_nodes = main_path.nodes
+					for j = 1, #astar_paths, 1 do
+						local data = astar_paths[j]
+						local nodes = data[3]
+						local path_dist = data[1]
+						local index = #main_nodes + 1
+						local start_index = index
 
-						for j = 1, #astar_paths, 1 do
-							local data = astar_paths[j]
-							local nodes = data[3]
-							local path_dist = data[1]
-							local index = #main_nodes + 1
-							local start_index = index
-
-							for k = 1, #nodes - 1, 1 do
-								main_nodes[index] = nodes[k]
-								index = index + 1
-							end
-
-							main_path.path_length = main_path.path_length + path_dist
-							local path_marker_idx = data[5]
-							local path_marker = self.path_markers[path_marker_idx]
-							main_path.path_markers[start_index] = path_marker
-							local crossroads_id = path_marker.crossroads_id
-
-							if crossroads_id then
-								assert(not main_path.crossroads_id or main_path.crossroads_id == crossroads_id, "If using crossroads, all path-markers in the same main-path must be have the same crossroads id")
-
-								main_path.crossroads_id = crossroads_id
-								main_path.road_id = path_marker.road_id
-							end
+						for k = 1, #nodes - 1, 1 do
+							main_nodes[index] = nodes[k]
+							index = index + 1
 						end
 
-						main_path.dist_from_start = dist_from_start
-						dist_from_start = dist_from_start + main_path.path_length
-						local data = main_path.astar_paths[#main_path.astar_paths]
-						local last_nodes = data[3]
-						main_nodes[#main_nodes + 1] = last_nodes[#last_nodes]
+						main_path.path_length = main_path.path_length + path_dist
+						local path_marker_idx = data[5]
+						local path_marker = self.path_markers[path_marker_idx]
+						main_path.path_markers[start_index] = path_marker
+						local crossroads_id = path_marker.crossroads_id
+
+						if crossroads_id then
+							assert(not main_path.crossroads_id or main_path.crossroads_id == crossroads_id, "If using crossroads, all path-markers in the same main-path must be have the same crossroads id")
+
+							main_path.crossroads_id = crossroads_id
+							main_path.road_id = path_marker.road_id
+						end
 					end
 
-					self.total_main_path_length = dist_from_start
+					main_path.dist_from_start = dist_from_start
+					dist_from_start = dist_from_start + main_path.path_length
+					local data = main_path.astar_paths[#main_path.astar_paths]
+					local last_nodes = data[3]
+					main_nodes[#main_nodes + 1] = last_nodes[#last_nodes]
+				end
 
-					LevelAnalysis.inject_travel_dists(main_paths)
+				self.total_main_path_length = dist_from_start
+
+				LevelAnalysis.inject_travel_dists(main_paths)
+
+				self.stitching_path = false
+				self.boss_event_list = {}
+
+				if CurrentBossSettings and not CurrentBossSettings.disabled and not self.using_editor then
+					self:generate_boss_paths()
+				end
+
+				return "done"
+
+				if "done" then
+					local p1 = astar_list[i][4]
+					local order1 = self.path_markers[p1].order
+					local s = string.format("[LevelAnalysis] Level fail: No path found between path-markers with order %s and the next. Cannot create main path. No bosses will spawn.", tostring(order1))
+
+					if Debug then
+						Debug.sticky_text(s, "delay", 20)
+					end
+
+					print(s)
 
 					self.stitching_path = false
-					self.boss_event_list = {}
 
-					if CurrentBossSettings and not CurrentBossSettings.disabled and not self.using_editor then
-						self:generate_boss_paths()
+					return "fail", s
+
+					if "fail" then
+						i = i + 1
 					end
-
-					return "done"
 				end
 			end
 		end

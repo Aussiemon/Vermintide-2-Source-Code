@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 VortexTemplates = {
 	standard = {
 		full_inner_radius = 3.5,

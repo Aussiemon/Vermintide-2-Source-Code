@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/ui/ui_animations")
 
 local definitions = local_require("scripts/ui/views/title_main_ui_definitions")

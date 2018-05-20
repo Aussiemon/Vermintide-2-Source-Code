@@ -80,7 +80,7 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 		self.max_targets = (max_targets_impact < max_targets_attack and max_targets_attack) or max_targets_impact
 	end
 
-	if lunge_data.dodge then
+	if lunge_data.dodge and Managers.state.network:game() then
 		status_extension:set_is_dodging(true)
 
 		local network_manager = Managers.state.network
@@ -124,7 +124,7 @@ PlayerCharacterStateLunging.on_exit = function (self, unit, input, dt, context, 
 		data.lunge_finish(unit)
 	end
 
-	if data.dodge then
+	if data.dodge and Managers.state.network:game() then
 		self.status_extension:set_is_dodging(false)
 
 		local network_manager = Managers.state.network

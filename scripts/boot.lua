@@ -314,7 +314,7 @@ Boot.booting_update = function (self, dt)
 			if PLATFORM == "win32" then
 				game_require("managers", "mod/mod_manager")
 
-				Managers.mod = ModManager:new()
+				Managers.mod = ModManager:new(Boot.gui)
 				Boot.startup_state = "loading_mods"
 			else
 				Boot.startup_state = "ready"
@@ -324,6 +324,8 @@ Boot.booting_update = function (self, dt)
 		Managers.mod:update(dt)
 
 		if Managers.mod:all_mods_loaded() then
+			Managers.mod:remove_gui()
+
 			Boot.startup_state = "ready"
 		end
 	elseif Boot.startup_state == "ready" then
@@ -432,7 +434,7 @@ end
 function update_startup_world(dt)
 	local w, h = Application.resolution()
 
-	Gui.rect(Boot.gui, Vector3(0, 0, 999), Vector2(w, h), Color(255, 0, 0, 0))
+	Gui.rect(Boot.gui, Vector3(0, 0, 0), Vector2(w, h), Color(255, 0, 0, 0))
 	World.update_scene(Boot.world, dt)
 end
 

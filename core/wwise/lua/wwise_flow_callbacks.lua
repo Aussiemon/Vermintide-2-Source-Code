@@ -1,7 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 local WwiseVisualization = require("core/wwise/lua/wwise_visualization")
 local WwiseBankReference = require("core/wwise/lua/wwise_bank_reference")
 WwiseFlowCallbacks = WwiseFlowCallbacks or {}
@@ -362,8 +358,6 @@ M.wwise_add_soundscape_source = function (t)
 	local result_id = -1
 
 	if unit then
-
-		-- Decompilation error in this vicinity:
 		if name == "" then
 			name = Unit.get_data(unit, "Wwise", "event_name") or ""
 

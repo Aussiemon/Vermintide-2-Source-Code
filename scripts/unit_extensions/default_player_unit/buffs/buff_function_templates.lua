@@ -1757,7 +1757,6 @@ BuffFunctionTemplates.functions = {
 		local buff_to_add = template.buff_to_add
 		local owner_unit = unit
 		local targets = {}
-		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 		local local_player = is_local(owner_unit)
 
 		for i = 1, num_units, 1 do
@@ -1768,16 +1767,16 @@ BuffFunctionTemplates.functions = {
 		local disabled_allies = {}
 
 		for i = 1, #targets, 1 do
-			local unit = targets[i]
+			local target_unit = targets[i]
 
-			if unit then
-				local status_extension = ScriptUnit.extension(unit, "status_system")
-				local is_disabled = status_extension:is_disabled()
+			if target_unit then
+				local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+				local is_disabled = not status_extension or status_extension:is_disabled()
 
-				if is_disabled and unit == owner_unit then
+				if is_disabled and target_unit == owner_unit then
 					return
-				elseif is_disabled and unit ~= owner_unit then
-					disabled_allies[#disabled_allies + 1] = unit
+				elseif is_disabled and target_unit ~= owner_unit then
+					disabled_allies[#disabled_allies + 1] = target_unit
 				end
 			end
 		end
@@ -1788,26 +1787,30 @@ BuffFunctionTemplates.functions = {
 			adding_buff = true
 		end
 
-		local buff_system = Managers.state.entity:system("buff_system")
-		local buff = buff_extension:get_non_stacking_buff(buff_to_add)
+		local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
 
-		if not adding_buff and buff then
-			if local_player then
-				buff_extension:remove_buff(buff.id)
-			else
-				local server_id = buff.server_id
+		if buff_extension then
+			local buff_system = Managers.state.entity:system("buff_system")
+			local buff = buff_extension:get_non_stacking_buff(buff_to_add)
 
-				buff_system:remove_server_controlled_buff(owner_unit, server_id)
-			end
-		elseif adding_buff and not buff then
-			if local_player then
-				buff_extension:add_buff(buff_to_add)
-			else
-				local server_buff_id = buff_system:add_buff(owner_unit, buff_to_add, owner_unit, true)
-				local buff = buff_extension:get_non_stacking_buff(buff_to_add)
+			if not adding_buff and buff then
+				if local_player then
+					buff_extension:remove_buff(buff.id)
+				else
+					local server_id = buff.server_id
 
-				if buff then
-					buff.server_id = server_buff_id
+					buff_system:remove_server_controlled_buff(owner_unit, server_id)
+				end
+			elseif adding_buff and not buff then
+				if local_player then
+					buff_extension:add_buff(buff_to_add)
+				else
+					local server_buff_id = buff_system:add_buff(owner_unit, buff_to_add, owner_unit, true)
+					local buff = buff_extension:get_non_stacking_buff(buff_to_add)
+
+					if buff then
+						buff.server_id = server_buff_id
+					end
 				end
 			end
 		end

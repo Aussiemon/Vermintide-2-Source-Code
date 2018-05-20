@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 CameraStateObserver = class(CameraStateObserver, CameraState)
 local NUM_PLAYERS = 4
 local LERP_DISTANCE = 50
@@ -94,8 +92,6 @@ CameraStateObserver.follow_next_unit = function (self)
 
 	for i = 1, table.size(players), 1 do
 		repeat
-
-			-- Decompilation error in this vicinity:
 			if follow_unit then
 				break
 			end

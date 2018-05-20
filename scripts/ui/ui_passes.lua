@@ -1,7 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/utils/colors")
 require("scripts/settings/ui_settings")
 require("scripts/settings/inventory_settings")
@@ -2411,11 +2407,13 @@ UIPasses.hover = {
 
 			if square_distance > half_size.x * half_size.y then
 				is_hover = false
-			else
-				is_hover = false
 
 				if false then
-					is_hover = true
+					is_hover = false
+
+					if false then
+						is_hover = true
+					end
 				end
 			end
 		else
@@ -3780,11 +3778,13 @@ UIPasses.hotspot = {
 
 			if square_distance > half_size.x * half_size.y then
 				is_hover = false
-			else
-				is_hover = false
 
 				if false then
-					is_hover = true
+					is_hover = false
+
+					if false then
+						is_hover = true
+					end
 				end
 			end
 		else

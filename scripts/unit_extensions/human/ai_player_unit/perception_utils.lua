@@ -2,8 +2,6 @@
 --   Code may be incomplete or incorrect.
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/unit_extensions/human/ai_player_unit/ai_utils")
 
 PerceptionUtils = {}
@@ -1327,12 +1325,7 @@ function double_raycast(blackboard, from, cast_template, enemy_unit, physics_wor
 		cast_table[target_node_name] = false
 	else
 		is_hit, hit_pos = PhysicsWorld.immediate_raycast(physics_world, target_unit_position, -normalized_direction, distance, "closest", "collision_filter", filter)
-
-		if is_hit then
-			cast_table[target_node_name] = false
-		else
-			cast_table[target_node_name] = true
-		end
+		cast_table[target_node_name] = not is_hit
 	end
 
 	for i = 1, cast_table_size, 1 do
@@ -1994,13 +1987,10 @@ PerceptionUtils.pack_master_has_line_of_sight_for_attack = function (physics_wor
 	local offset = start_pos - end_pos
 	local success = nil
 	local hits = PhysicsWorld.linear_sphere_sweep(physics_world, start_pos, end_pos, radius, max_hits, "types", "both", "collision_filter", "filter_ai_mover", "report_initial_overlap")
-
-	if hits then
-		local hit_offset = hits[1].position - start_pos
-		local sweep_offset = end_pos - start_pos
-		local hit_dist = Vector3.dot(hit_offset, Vector3.normalize(sweep_offset))
-		success = Vector3.length(sweep_offset) < hit_dist and true
-	end
+	local hit_offset = hits[1].position - start_pos
+	local sweep_offset = end_pos - start_pos
+	local hit_dist = Vector3.dot(hit_offset, Vector3.normalize(sweep_offset))
+	success = Vector3.length(sweep_offset) < hit_dist and true
 
 	return success
 end

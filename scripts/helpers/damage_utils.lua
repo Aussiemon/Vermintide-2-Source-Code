@@ -1079,7 +1079,8 @@ DamageUtils.create_taunt = function (world, owner_unit, projectile_unit, positio
 		World.link_unit(world, unit, best_target)
 	end
 
-	local taunt_end_time = Managers.time:time("game") + taunt_data.duration
+	local t = Managers.time:time("game")
+	local taunt_end_time = t + taunt_data.duration
 	local num_taunted_units = AiUtils.broadphase_query(position, taunt_data.range, BROADPHASE_TEMP)
 
 	for i = 1, num_taunted_units, 1 do
@@ -1094,6 +1095,7 @@ DamageUtils.create_taunt = function (world, owner_unit, projectile_unit, positio
 				ai_blackboard.taunt_unit = unit
 				ai_blackboard.taunt_end_time = taunt_end_time
 				ai_blackboard.target_unit = unit
+				ai_blackboard.target_unit_found_time = t
 			end
 		end
 	end
@@ -1378,8 +1380,12 @@ DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical,
 		local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 		local attack_type_id = NetworkLookup.buff_attack_types[attack_type]
 		local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
+		local is_dummy_unit = unit_get_data(hit_unit, "is_dummy")
+		local invalid_dummy_target = is_dummy_unit and not hit_unit_id
 
-		network_manager.network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, is_critical, hit_zone_id, target_number)
+		if not invalid_dummy_target then
+			network_manager.network_transmit:send_rpc_server("rpc_buff_on_attack", attacker_unit_id, hit_unit_id, attack_type_id, is_critical, hit_zone_id, target_number)
+		end
 	end
 
 	return true

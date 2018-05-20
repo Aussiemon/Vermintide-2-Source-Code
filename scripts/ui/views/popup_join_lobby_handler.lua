@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 PopupJoinLobbyHandler = class(PopupJoinLobbyHandler)
 local hero_entry_width = 108
 local hero_entry_height = 108
@@ -982,17 +980,10 @@ PopupJoinLobbyHandler.disable_career_selection = function (self)
 	local amount = content.amount
 
 	for i = 1, amount, 1 do
-
-		-- Decompilation error in this vicinity:
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = content[hotspot_name]
-
-		if hotspot_content.locked then
-			hotspot_content.disable_button = false
-		else
-			hotspot_content.disable_button = true
-		end
+		hotspot_content.disable_button = not hotspot_content.locked
 	end
 end
 

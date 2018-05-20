@@ -215,7 +215,7 @@ CareerExtension.has_melee_boost = function (self)
 	local buff_extension = self._buff_extension
 	local has_shade_buff = buff_extension:has_buff_type("kerillian_shade_activated_ability") or buff_extension:has_buff_type("kerillian_shade_activated_ability_duration")
 	local has_murder_hobo_buff = false
-	local multiplier = (has_shade_buff and 2) or (has_murder_hobo_buff and 1) or 0
+	local multiplier = (has_shade_buff and 4) or (has_murder_hobo_buff and 1) or 0
 
 	return has_shade_buff or has_murder_hobo_buff, multiplier
 end

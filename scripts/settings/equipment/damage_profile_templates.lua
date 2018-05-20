@@ -303,7 +303,6 @@ DamageProfileTemplates.light_slashing_smiter_stab = {
 	targets = PowerLevelTemplates.targets_stab_smiter_L
 }
 
-new_template("light_slashing_smiter_stab", "_H", nil, "heavy_attack")
 new_template("light_slashing_smiter_stab", "_burn", nil, nil)
 
 DamageProfileTemplates.light_slashing_smiter_stab_burn.default_target = PowerLevelTemplates.default_target_burning_stab_smiter_L
@@ -329,6 +328,7 @@ DamageProfileTemplates.medium_slashing_smiter_stab_1h = {
 
 new_template("medium_slashing_smiter_stab_1h", nil, "light_slashing_smiter_stab_dual", "heavy_attack")
 
+DamageProfileTemplates.light_slashing_smiter_stab_dual.melee_boost_override = 6
 DamageProfileTemplates.heavy_slashing_smiter_stab = {
 	charge_value = "heavy_attack",
 	critical_strike = PowerLevelTemplates.critical_strike_stab_smiter_H,
@@ -386,6 +386,11 @@ DamageProfileTemplates.heavy_slashing_smiter = {
 new_template("heavy_slashing_smiter", nil, "heavy_slashing_smiter_executioner")
 
 DamageProfileTemplates.heavy_slashing_smiter_executioner.default_target = PowerLevelTemplates.default_target_smiter_executioner_H
+
+new_template("heavy_slashing_smiter", nil, "heavy_slashing_smiter_glaive")
+
+DamageProfileTemplates.heavy_slashing_smiter_glaive.default_target = PowerLevelTemplates.default_target_smiter_glaive_H
+DamageProfileTemplates.heavy_slashing_smiter_glaive.melee_boost_override = 2
 
 new_template("heavy_slashing_smiter", nil, "heavy_blunt_smiter", nil, "heavy_blunt_smiter")
 new_template("heavy_blunt_smiter", "_charged", nil, nil, "heavy_blunt_smiter")

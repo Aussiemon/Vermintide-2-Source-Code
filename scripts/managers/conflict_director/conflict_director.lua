@@ -1,7 +1,5 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/settings/breeds")
 require("scripts/managers/conflict_director/terror_event_mixer")
 require("scripts/settings/conflict_settings")
@@ -1702,8 +1700,6 @@ ConflictDirector.destroy_close_units = function (self, except_unit, dist_squared
 	local BLACKBOARDS = BLACKBOARDS
 
 	while i <= list_size do
-
-		-- Decompilation error in this vicinity:
 		local unit = spawned[i]
 		local remove_unit = nil
 

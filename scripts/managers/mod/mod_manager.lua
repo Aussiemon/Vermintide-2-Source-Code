@@ -56,7 +56,7 @@ ModManager.print = function (self, level, str, ...)
 	end
 end
 
-ModManager.init = function (self)
+ModManager.init = function (self, boot_gui)
 	self._mods = {}
 	self._num_mods = nil
 	self._state = "not_loaded"
@@ -66,6 +66,8 @@ ModManager.init = function (self)
 	}
 	self._settings = settings
 	self._print_cache = {}
+	self._gui = boot_gui
+	self._ui_time = 0
 
 	if (settings.developer_mode or self:_has_enabled_mods()) and is_bundled() then
 		self:_start_scan()
@@ -73,6 +75,12 @@ ModManager.init = function (self)
 		self._state = "done"
 		self._num_mods = 0
 	end
+end
+
+ModManager.remove_gui = function (self)
+	assert(self._gui, "Trying to remove gui without setting gui first.")
+
+	self._gui = nil
 end
 
 ModManager._has_enabled_mods = function (self)
@@ -124,6 +132,7 @@ ModManager.update = function (self, dt)
 		table.dump(mod_handles, "Mods", 1)
 
 		self._state = self:_load_mod(1)
+		self._ui_time = 0
 	elseif self._state == "loading" then
 		local handle = self._loading_resource_handle
 
@@ -174,6 +183,34 @@ ModManager.update = function (self, dt)
 		end
 	end
 
+	local gui = self._gui
+
+	if gui then
+		local state = self._state
+		self._ui_time = self._ui_time + dt
+		local t = self._ui_time * 2
+		local num_dots = math.floor(t % 4)
+		local dots_string = ""
+
+		for i = 1, num_dots, 1 do
+			dots_string = dots_string .. "."
+		end
+
+		local pos = Vector3(5, 10, 1)
+		local color = Color(255, 255, 255, 255)
+		local size = 16
+		local font = "core/performance_hud/debug"
+		local font_material = "core/performance_hud/debug"
+
+		if state == "scanning" then
+			Gui.text(gui, "Scanning for mods" .. dots_string, font_material, size, font, pos, color)
+		elseif state == "loading" then
+			local str = string.format("Loading mod '%s'" .. dots_string, tostring(self._mods[self._mod_load_index].name)) .. dots_string
+
+			Gui.text(gui, str, font_material, size, font, pos, color)
+		end
+	end
+
 	if old_state ~= self._state then
 		self:print("info", "%s -> %s", old_state, self._state)
 	end
@@ -196,6 +233,7 @@ ModManager._start_scan = function (self)
 end
 
 ModManager._load_mod = function (self, index)
+	self._ui_time = 0
 	local mods = self._mods
 	local mod = mods[index]
 

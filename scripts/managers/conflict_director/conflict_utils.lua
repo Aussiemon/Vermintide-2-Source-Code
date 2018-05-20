@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/settings/breeds")
 require("scripts/settings/conflict_settings")
 
@@ -562,6 +560,9 @@ ConflictUtils.check_spawn_pos = function (mesh, pos)
 
 			if math.abs(cpos.z - triangle_center.z) < 3 then
 				return true
+
+				if true then
+				end
 			end
 		end
 	end

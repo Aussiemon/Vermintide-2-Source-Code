@@ -313,13 +313,17 @@ ActionUtils.scale_geiser_power_level = function (power_level, charge_value)
 	return scaled_power_level
 end
 
-ActionUtils.get_melee_boost = function (unit)
+ActionUtils.get_melee_boost = function (unit, melee_boost_override)
 	local career_extension = ScriptUnit.has_extension(unit, "career_system")
 	local has_melee_boost = false
 	local boost_curve_multiplier = 0
 
 	if career_extension then
 		has_melee_boost, boost_curve_multiplier = career_extension:has_melee_boost()
+	end
+
+	if has_melee_boost and melee_boost_override then
+		boost_curve_multiplier = melee_boost_override
 	end
 
 	return has_melee_boost, boost_curve_multiplier

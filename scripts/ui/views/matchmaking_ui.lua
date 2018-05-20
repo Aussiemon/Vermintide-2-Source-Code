@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/settings/difficulty_settings")
 
 local definitions = local_require("scripts/ui/views/matchmaking_ui_definitions")
@@ -480,12 +478,7 @@ MatchmakingUI.update_debug_lobbies = function (self)
 	local matchmaking_manager = Managers.matchmaking
 	local search_data = matchmaking_manager.state_context.game_search_data
 
-	if search_data then
-
-		-- Decompilation error in this vicinity:
-		if search_data.quick_game then
-		end
-
+	if search_data and search_data.quick_game then
 		local search_data_level_key = search_data.level_key or nil
 		local search_data_difficulty = (search_data and search_data.difficulty) or nil
 		local player_peer_id = Network.peer_id()
