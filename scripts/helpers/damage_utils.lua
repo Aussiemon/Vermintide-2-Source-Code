@@ -2072,7 +2072,6 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 	end
 
 	local has_ranged_boost, ranged_boost_curve_multiplier = ActionUtils.get_ranged_boost(owner_unit)
-	is_critical_strike = is_critical_strike or has_ranged_boost
 	local max_targets = (max_targets_impact < max_targets_attack and max_targets_attack) or max_targets_impact
 	local ai_system = Managers.state.entity:system("ai_system")
 	local owner_is_bot = owner_is_player and owner_is_player.bot_player

@@ -42,6 +42,7 @@ local breed_data = {
 	initial_is_passive = false,
 	base_unit = "units/beings/enemies/skaven_grey_seer/chr_skaven_grey_seer",
 	threat_value = 8,
+	boost_curve_multiplier_override = 2,
 	detection_radius = math.huge,
 	perception_weights = {
 		target_catapulted_mul = 0.1,

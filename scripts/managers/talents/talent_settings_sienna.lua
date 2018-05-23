@@ -1092,6 +1092,7 @@ Talents.bright_wizard = {
 		description = "sienna_adept_healing_received_desc",
 		name = "sienna_adept_healing_received",
 		num_ranks = 1,
+		buffer = "server",
 		icon = "sienna_adept_healing_received",
 		description_values = {
 			{

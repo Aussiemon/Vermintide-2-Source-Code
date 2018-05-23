@@ -1,4 +1,5 @@
-local push_radius = 2
+local push_radius = 2.5
+local extra_range_add = 1.1
 local time_mod = 0.9
 local heavy_smiter_stagger = 3
 local light_tank_stagger = 3
@@ -229,7 +230,6 @@ weapon_template.actions = {
 		},
 		light_attack_right = {
 			damage_window_start = 0.3,
-			range_mod = 1.4,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "slashing_hit_armour",
@@ -250,6 +250,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod * 0.95,
+			range_mod = extra_range_add * 1.4,
 			buff_data = {
 				{
 					start_time = 0.2,
@@ -296,7 +297,6 @@ weapon_template.actions = {
 		},
 		light_attack_left = {
 			damage_window_start = 0.3,
-			range_mod = 1.4,
 			kind = "sweep",
 			first_person_hit_anim = "shake_hit",
 			no_damage_impact_sound_event = "blunt_hit_armour",
@@ -318,6 +318,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
 			anim_time_scale = time_mod * 0.95,
+			range_mod = extra_range_add * 1.4,
 			buff_data = {
 				{
 					start_time = 0.2,
@@ -661,11 +662,9 @@ weapon_template.actions = {
 		light_attack_bopp = {
 			damage_window_start = 0.33,
 			anim_end_event = "attack_finished",
-			range_mod = 1.3,
 			kind = "sweep",
 			first_person_hit_anim = "attack_hit_alt_effect",
 			damage_profile = "medium_blunt_smiter_flat_2h",
-			use_target = true,
 			hit_effect = "melee_hit_axes_2h",
 			damage_window_end = 0.5,
 			impact_sound_event = "axe_2h_hit",
@@ -676,6 +675,7 @@ weapon_template.actions = {
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
 			end,
+			range_mod = extra_range_add * 1.3,
 			buff_data = {
 				{
 					start_time = 0,

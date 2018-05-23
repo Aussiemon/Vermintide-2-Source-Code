@@ -6,7 +6,7 @@ local buff_tweak_data = {
 		bonus = 0.2
 	},
 	kerillian_shade_passive = {
-		multiplier = 0.5
+		bonus = 0.5
 	},
 	kerillian_shade_passive_crit = {
 		bonus = 0.05
@@ -37,7 +37,7 @@ local buff_tweak_data = {
 		multiplier = 0.15
 	},
 	kerillian_shade_passive_improved = {
-		multiplier = 0.25
+		bonus = 0.25
 	},
 	kerillian_shade_backstabs_replenishes_ammunition = {
 		bonus = 1
@@ -914,11 +914,12 @@ Talents.wood_elf = {
 		description = "kerillian_shade_passive_improved_desc",
 		name = "kerillian_shade_passive_improved",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "kerillian_shade_passive_improved",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.kerillian_shade_passive_improved.multiplier
+				value = buff_tweak_data.kerillian_shade_passive_improved.bonus
 			}
 		},
 		requirements = {},
@@ -1260,6 +1261,7 @@ Talents.wood_elf = {
 		description = "kerillian_maidenguard_activated_ability_damage_desc",
 		name = "kerillian_maidenguard_activated_ability_damage",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "kerillian_maidenguard_activated_ability_damage",
 		description_values = {
 			{

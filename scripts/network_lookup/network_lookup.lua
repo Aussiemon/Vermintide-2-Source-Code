@@ -1050,6 +1050,7 @@ NetworkLookup.buff_templates = {
 	"bardin_ranger_activated_ability",
 	"bardin_ranger_crit_hit_damage_on_high_health",
 	"bardin_ranger_defence_on_disabled",
+	"bardin_ranger_melee_damage_on_no_ammo",
 	"defence_debuff_enemies",
 	"we_no_ammo_consumed",
 	"we_heal_on_kill_uninterruptible",
@@ -1133,6 +1134,7 @@ NetworkLookup.buff_templates = {
 	"chaos_magic_missile",
 	"chaos_slow_bomb_missile",
 	"vermintide_face_base",
+	"catacombs_corpse_pit",
 	"traits_heal_on_crit",
 	"traits_melee_shield_on_assist",
 	"trait_necklace_no_healing_health_regen",
@@ -1180,7 +1182,9 @@ NetworkLookup.group_buff_templates = {
 NetworkLookup.proc_events = {
 	"on_reload",
 	"on_ammo_used",
-	"on_unwield"
+	"on_unwield",
+	"on_last_ammo_used",
+	"on_gained_ammo_from_no_ammo"
 }
 NetworkLookup.coop_feedback = {
 	"give_item",

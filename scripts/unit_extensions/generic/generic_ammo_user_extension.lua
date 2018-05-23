@@ -210,6 +210,20 @@ GenericAmmoUserExtension.add_ammo = function (self, amount)
 		local position = POSITION_LOOKUP[self.owner_unit]
 
 		Managers.telemetry.events:player_ammo_refilled(player, item_name, position)
+
+		local buff_extension = self.owner_buff_extension
+
+		buff_extension:trigger_procs("on_gained_ammo_from_no_ammo")
+
+		if not LEVEL_EDITOR_TEST and not Managers.player.is_server then
+			local player_manager = Managers.player
+			local owner_player = player_manager:owner(self.owner_unit)
+			local peer_id = owner_player:network_id()
+			local local_player_id = owner_player:local_player_id()
+			local event_id = NetworkLookup.proc_events.on_gained_ammo_from_no_ammo
+
+			Managers.state.network.network_transmit:send_rpc_server("rpc_proc_event", peer_id, local_player_id, event_id)
+		end
 	end
 
 	local floored_ammo = nil
@@ -256,6 +270,10 @@ GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
 	if buff_extension then
 		buff_extension:trigger_procs("on_ammo_used")
 
+		if self:ammo_count() == 0 then
+			buff_extension:trigger_procs("on_last_ammo_used")
+		end
+
 		if not LEVEL_EDITOR_TEST and not Managers.player.is_server then
 			local player_manager = Managers.player
 			local owner_player = player_manager:owner(self.owner_unit)
@@ -264,6 +282,12 @@ GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
 			local event_id = NetworkLookup.proc_events.on_ammo_used
 
 			Managers.state.network.network_transmit:send_rpc_server("rpc_proc_event", peer_id, local_player_id, event_id)
+
+			if self:ammo_count() == 0 then
+				event_id = NetworkLookup.proc_events.on_last_ammo_used
+
+				Managers.state.network.network_transmit:send_rpc_server("rpc_proc_event", peer_id, local_player_id, event_id)
+			end
 		end
 	end
 

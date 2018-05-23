@@ -711,11 +711,23 @@ TalentBuffTemplates.dwarf_ranger = {
 			}
 		}
 	},
-	bardin_ranger_increased_melee_damage_on_no_ammo = {
+	bardin_ranger_increased_melee_damage_on_no_ammo_add = {
 		buffs = {
 			{
 				buff_to_add = "bardin_ranger_melee_damage_on_no_ammo",
-				update_func = "activate_buff_on_no_ammo"
+				event = "on_last_ammo_used",
+				event_buff = true,
+				buff_func = ProcFunctions.bardin_ranger_add_power_on_no_ammo_proc
+			}
+		}
+	},
+	bardin_ranger_increased_melee_damage_on_no_ammo_remove = {
+		buffs = {
+			{
+				event = "on_gained_ammo_from_no_ammo",
+				buff_to_remove = "bardin_ranger_melee_damage_on_no_ammo",
+				event_buff = true,
+				buff_func = ProcFunctions.bardin_ranger_remove_power_on_no_ammo_proc
 			}
 		}
 	},
@@ -1119,6 +1131,7 @@ Talents.dwarf_ranger = {
 		description = "bardin_slayer_max_health_desc",
 		name = "bardin_slayer_max_health",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "bardin_slayer_max_health",
 		description_values = {
 			{
@@ -1327,6 +1340,7 @@ Talents.dwarf_ranger = {
 		description = "bardin_ranger_healing_received_desc",
 		name = "bardin_ranger_healing_received",
 		num_ranks = 1,
+		buffer = "server",
 		icon = "bardin_ranger_healing_received",
 		description_values = {
 			{
@@ -1361,6 +1375,7 @@ Talents.dwarf_ranger = {
 		description = "bardin_ranger_increased_melee_damage_on_no_ammo_desc",
 		name = "bardin_ranger_increased_melee_damage_on_no_ammo",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "bardin_ranger_increased_melee_damage_on_no_ammo",
 		description_values = {
 			{
@@ -1370,7 +1385,8 @@ Talents.dwarf_ranger = {
 		},
 		requirements = {},
 		buffs = {
-			"bardin_ranger_increased_melee_damage_on_no_ammo"
+			"bardin_ranger_increased_melee_damage_on_no_ammo_add",
+			"bardin_ranger_increased_melee_damage_on_no_ammo_remove"
 		},
 		buff_data = {}
 	},

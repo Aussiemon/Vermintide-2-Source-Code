@@ -129,7 +129,7 @@ StatBuffApplicationMethods = {
 	[StatBuffIndex.FASTER_RESPAWN] = "stacking_multiplier",
 	[StatBuffIndex.NOT_CONSUME_PICKUP] = "proc",
 	[StatBuffIndex.COOP_STAMINA] = "proc",
-	[StatBuffIndex.BACKSTAB_MULTIPLIER] = "proc",
+	[StatBuffIndex.BACKSTAB_MULTIPLIER] = "stacking_bonus",
 	[StatBuffIndex.MOVEMENT_SPEED] = "stacking_multiplier",
 	[StatBuffIndex.DAMAGE_TAKEN] = "stacking_multiplier",
 	[StatBuffIndex.DAMAGE_TAKEN_TO_OVERCHARGE] = "stacking_multiplier",
@@ -229,6 +229,8 @@ ProcEvents = {
 	"on_unwield",
 	"on_critical_hit",
 	"on_consumable_picked_up",
+	"on_last_ammo_used",
+	"on_gained_ammo_from_no_ammo",
 	"on_push_used",
 	"on_backstab",
 	"on_sweep",
@@ -708,6 +710,42 @@ ProcFunctions = {
 					pickup_system:buff_spawn_pickup("ammo_ranger", enemy_pos, raycast_down)
 				end
 			end
+		end
+	end,
+	bardin_ranger_add_power_on_no_ammo_proc = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+		local buff_system = Managers.state.entity:system("buff_system")
+		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+		local buff_template = buff.template
+		local buff_to_add = buff_template.buff_to_add
+		local active_buff = buff_extension:get_non_stacking_buff(buff_to_add)
+		local server_controlled = true
+
+		if not active_buff then
+			local server_buff_id = buff_system:add_buff(player_unit, buff_to_add, player_unit, server_controlled)
+			local added_buff = buff_extension:get_non_stacking_buff(buff_to_add)
+			added_buff.server_buff_id = server_buff_id
+		end
+	end,
+	bardin_ranger_remove_power_on_no_ammo_proc = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+		local buff_system = Managers.state.entity:system("buff_system")
+		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+		local buff_template = buff.template
+		local buff_to_remove = buff_template.buff_to_remove
+		local active_buff = buff_extension:get_non_stacking_buff(buff_to_remove)
+		local server_controlled = true
+
+		if active_buff and active_buff.server_buff_id then
+			buff_system:remove_server_controlled_buff(player_unit, active_buff.server_buff_id)
 		end
 	end,
 	debuff_defence_grenade_hit = function (player, buff, params)
@@ -2384,7 +2422,7 @@ BuffTemplates = {
 	catacombs_corpse_pit = {
 		buffs = {
 			{
-				slowdown_buff_name = "bile_troll_vomit_ground_slowdown",
+				slowdown_buff_name = "corpse_pit_slowdown",
 				name = "catacombs_corpse_pit",
 				update_func = "update_catacombs_corpse_pit",
 				dormant = true,
@@ -2392,7 +2430,7 @@ BuffTemplates = {
 				remove_buff_func = "remove_catacombs_corpse_pit",
 				apply_buff_func = "apply_catacombs_corpse_pit",
 				refresh_durations = true,
-				time_between_ticks = 0.75,
+				time_between_ticks = 2,
 				debuff = true,
 				max_stacks = 1,
 				icon = "troll_vomit_debuff"
@@ -4237,6 +4275,94 @@ BuffTemplates = {
 						4,
 						1
 					}
+				}
+			}
+		}
+	},
+	corpse_pit_slowdown = {
+		buffs = {
+			{
+				update_func = "update_action_lerp_movement_buff",
+				multiplier = 0.5,
+				name = "decrease_speed_corpse_pit",
+				refresh_durations = true,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_movement",
+				lerp_time = 0.1,
+				max_stacks = 1,
+				duration = 2,
+				path_to_movement_setting_to_modify = {
+					"move_speed"
+				}
+			},
+			{
+				update_func = "update_charging_action_lerp_movement_buff",
+				multiplier = 0.5,
+				name = "decrease_crouch_speed_corpse_pit",
+				refresh_durations = true,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_crouch_movement",
+				lerp_time = 0.1,
+				max_stacks = 1,
+				duration = 2,
+				path_to_movement_setting_to_modify = {
+					"crouch_move_speed"
+				}
+			},
+			{
+				update_func = "update_charging_action_lerp_movement_buff",
+				multiplier = 0.5,
+				name = "decrease_walk_speed_corpse_pit",
+				refresh_durations = true,
+				remove_buff_func = "remove_action_lerp_movement_buff",
+				apply_buff_func = "apply_action_lerp_movement_buff",
+				remove_buff_name = "planted_return_to_normal_walk_movement",
+				lerp_time = 0.1,
+				max_stacks = 1,
+				duration = 2,
+				path_to_movement_setting_to_modify = {
+					"walk_move_speed"
+				}
+			},
+			{
+				name = "decrease_jump_speed_corpse_pit",
+				multiplier = 0.5,
+				duration = 2,
+				max_stacks = 1,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
+				path_to_movement_setting_to_modify = {
+					"jump",
+					"initial_vertical_speed"
+				}
+			},
+			{
+				name = "decrease_dodge_speed_corpse_pit",
+				multiplier = 0.6,
+				duration = 2,
+				max_stacks = 1,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
+				path_to_movement_setting_to_modify = {
+					"dodging",
+					"speed_modifier"
+				}
+			},
+			{
+				name = "decrease_dodge_distance_corpse_pit",
+				multiplier = 0.6,
+				duration = 2,
+				max_stacks = 1,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				refresh_durations = true,
+				path_to_movement_setting_to_modify = {
+					"dodging",
+					"distance_modifier"
 				}
 			}
 		}

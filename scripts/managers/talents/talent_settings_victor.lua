@@ -1003,6 +1003,7 @@ Talents.witch_hunter = {
 		description = "victor_zealot_increased_damage_on_enemy_proximity_desc",
 		name = "victor_zealot_increased_damage_on_enemy_proximity",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "victor_zealot_increased_damage_on_enemy_proximity",
 		description_values = {
 			{

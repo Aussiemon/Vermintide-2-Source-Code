@@ -349,7 +349,7 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 		local hit_zone_name = hit_zone.name
 		local send_to_server = true
 		local charge_value = damage_profile.charge_value or "projectile"
-		local is_critical_strike = self._is_critical_strike or has_ranged_boost
+		local is_critical_strike = self._is_critical_strike
 		local owner_unit = self.owner_unit
 		local num_targets_hit = self.num_targets_hit + 1
 
@@ -416,7 +416,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	end
 
 	local power_level = self.power_level
-	local is_critical_strike = self._is_critical_strike or has_ranged_boost
+	local is_critical_strike = self._is_critical_strike
 	local attack_template = AttackTemplates[target_settings.attack_template]
 	local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
 	local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
@@ -656,7 +656,7 @@ PlayerProjectileUnitExtension.hit_player_damage = function (self, damage_profile
 	local damage_profile_id = self.impact_damage_profile_id
 	local power_level = self.power_level
 	local hit_zone_name = "torso"
-	local is_critical_strike = self._is_critical_strike or has_ranged_boost
+	local is_critical_strike = self._is_critical_strike
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 	local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 	local weapon_system = self.weapon_system
@@ -759,7 +759,7 @@ PlayerProjectileUnitExtension.hit_damagable_prop = function (self, damage_profil
 	local owner_unit = self.owner_unit
 	local hit_zone_name = "full"
 	local power_level = self.power_level
-	local is_critical_strike = self._is_critical_strike or has_ranged_boost
+	local is_critical_strike = self._is_critical_strike
 	local damage_source = self.item_name
 	local is_dummy_unit = Unit.get_data(hit_unit, "is_dummy")
 
@@ -842,7 +842,7 @@ PlayerProjectileUnitExtension.hit_non_level_damagable_unit = function (self, dam
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 	local damage_profile_id = self.impact_damage_profile_id
 	local power_level = self.power_level
-	local is_critical_strike = self._is_critical_strike or has_ranged_boost
+	local is_critical_strike = self._is_critical_strike
 	local weapon_system = self.weapon_system
 
 	weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike)

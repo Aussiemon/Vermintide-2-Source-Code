@@ -33,17 +33,18 @@ GenericVolumeTemplates.functions = {
 		},
 		catacombs_corpse_pit = {
 			on_enter = function (unit, dt, t, data)
-				local buff_extension = ScriptUnit.extension(unit, "buff_system")
+				local buff_system = Managers.state.entity:system("buff_system")
 				local params = {
 					t = t,
 					attacker_unit = unit
 				}
-				data.buff_id = buff_extension:add_buff("catacombs_corpse_pit", params)
+				local is_server_controlled = true
+				data.buff_id = buff_system:add_buff(unit, "catacombs_corpse_pit", unit, is_server_controlled)
 			end,
 			on_exit = function (unit, data)
-				local buff_extension = ScriptUnit.extension(unit, "buff_system")
+				local buff_system = Managers.state.entity:system("buff_system")
 
-				buff_extension:remove_buff(data.buff_id)
+				buff_system:remove_server_controlled_buff(unit, data.buff_id)
 
 				data.buff_id = nil
 			end

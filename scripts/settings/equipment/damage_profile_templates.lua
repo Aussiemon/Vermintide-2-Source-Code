@@ -1261,7 +1261,7 @@ DamageProfileTemplates.shot_sniper = {
 		attack_armor_power_modifer = {
 			1,
 			1,
-			1,
+			1.5,
 			1,
 			0.75,
 			0.6
@@ -1279,7 +1279,7 @@ DamageProfileTemplates.shot_sniper = {
 		attack = {
 			1,
 			1,
-			1,
+			1.5,
 			1,
 			0.75,
 			0.5
@@ -1316,9 +1316,10 @@ DamageProfileTemplates.shot_sniper = {
 		impact = 0.3
 	},
 	default_target = {
+		headshot_boost_boss = 0.5,
 		boost_curve_coefficient_headshot = 1,
-		boost_curve_type = "ninja_curve",
-		boost_curve_coefficient = 0.75,
+		boost_curve_type = "smiter_curve",
+		boost_curve_coefficient = 1,
 		attack_template = "shot_sniper",
 		power_distribution_near = {
 			attack = 0.9,
@@ -1528,7 +1529,7 @@ DamageProfileTemplates.arrow_sniper_kruber = {
 	},
 	default_target = {
 		boost_curve_coefficient_headshot = 1,
-		boost_curve_type = "ninja_curve",
+		boost_curve_type = "smiter_curve",
 		boost_curve_coefficient = 1,
 		attack_template = "bolt_sniper",
 		power_distribution_near = {

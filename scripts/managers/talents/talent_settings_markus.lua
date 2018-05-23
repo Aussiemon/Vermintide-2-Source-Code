@@ -1539,6 +1539,7 @@ Talents.empire_soldier = {
 		description = "markus_mercenary_healing_received_desc",
 		name = "markus_mercenary_healing_received",
 		num_ranks = 1,
+		buffer = "server",
 		icon = "markus_mercenary_healing_received",
 		description_values = {
 			{
@@ -1590,6 +1591,7 @@ Talents.empire_soldier = {
 		description = "markus_mercenary_increased_damage_on_enemy_proximity_desc",
 		name = "markus_mercenary_increased_damage_on_enemy_proximity",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "markus_mercenary_increased_damage_on_enemy_proximity",
 		description_values = {
 			{
