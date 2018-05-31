@@ -75,7 +75,10 @@ HeroWindowOptions.create_ui_elements = function (self, params, offset)
 		window_position[3] = window_position[3] + offset[3]
 	end
 
-	widgets_by_name.game_option_4.content.button_hotspot.disable_button = false
+	if script_data["eac-untrusted"] then
+		widgets_by_name.game_option_3.content.button_hotspot.disable_button = true
+		widgets_by_name.game_option_5.content.button_hotspot.disable_button = true
+	end
 end
 
 HeroWindowOptions.on_exit = function (self, params)

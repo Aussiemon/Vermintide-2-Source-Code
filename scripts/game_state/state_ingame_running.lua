@@ -204,7 +204,7 @@ StateInGameRunning.on_enter = function (self, params)
 		self._benchmark_handler = BenchmarkHandler:new(self.ingame_ui, self.world)
 	end
 
-	if self.is_in_inn and Development.parameter("v2_achievements") then
+	if self.is_in_inn then
 		Managers.state.achievement:setup_achievement_data()
 	end
 end
@@ -458,17 +458,19 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 		Managers.twitch:deactivate_twitch_game_mode()
 	end
 
+	local stats_interface = Managers.backend:get_interface("statistics")
+
 	if game_mode_key == "survival" then
 		if game_won then
 			print("Game won")
 			mission_system:evaluate_level_end_missions()
 			StatisticsUtil.register_complete_survival_level(statistics_db)
-			Managers.player:set_stats_backend(player)
+			stats_interface:save()
 		end
 	elseif game_won then
 		print("Game won")
 		StatisticsUtil.register_complete_level(statistics_db)
-		Managers.player:set_stats_backend(player)
+		stats_interface:save()
 	elseif game_lost then
 		print("Game lost")
 
@@ -477,33 +479,42 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 	local is_booted_unstrusted = self._booted_eac_untrusted
 
-	if game_mode_key ~= "inn" then
-		local profile_synchronizer = self.profile_synchronizer
-		local peer_id = Network.peer_id()
-		local local_player_id = self.local_player_id
-		local profile_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
-		local profile = SPProfiles[profile_index]
-		local hero_name = profile.display_name
+	local function callback()
+		if game_mode_key ~= "inn" then
+			local profile_synchronizer = self.profile_synchronizer
+			local peer_id = Network.peer_id()
+			local local_player_id = self.local_player_id
+			local profile_index = profile_synchronizer:profile_by_peer(peer_id, local_player_id)
+			local profile = SPProfiles[profile_index]
+			local hero_name = profile.display_name
 
-		if not is_booted_unstrusted then
-			self.rewards:award_end_of_level_rewards(game_won, hero_name)
-		end
+			if not is_booted_unstrusted then
+				self.rewards:award_end_of_level_rewards(game_won, hero_name)
+			end
 
-		ingame_ui:activate_end_screen_ui(game_won, checkpoint_available, level_key, previous_completed_difficulty_index)
+			ingame_ui:activate_end_screen_ui(game_won, checkpoint_available, level_key, previous_completed_difficulty_index)
 
-		if not is_booted_unstrusted then
-			local difficulty_key = Managers.state.difficulty:get_difficulty()
-			local chest_settings = LootChestData.chests_by_category[difficulty_key]
-			local chests_package_name = chest_settings.package_name
-			self.chests_package_name = chests_package_name
+			if not is_booted_unstrusted then
+				local difficulty_key = Managers.state.difficulty:get_difficulty()
+				local chest_settings = LootChestData.chests_by_category[difficulty_key]
+				local chests_package_name = chest_settings.package_name
+				self.chests_package_name = chests_package_name
 
-			Managers.package:load(chests_package_name, "global")
+				Managers.package:load(chests_package_name, "global")
+			end
 		end
 	end
 
-	self.game_lost = game_lost
+	local backend_manager = Managers.backend
 
-	Managers.backend:commit(true)
+	if backend_manager:is_local() then
+		backend_manager:commit(true)
+		callback()
+	else
+		backend_manager:commit(true, callback)
+	end
+
+	self.game_lost = game_lost
 
 	if self.is_in_inn or self.is_in_tutorial then
 		return

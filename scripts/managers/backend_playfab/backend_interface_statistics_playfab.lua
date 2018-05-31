@@ -73,7 +73,7 @@ local function clear_dirty_flag(stats)
 	end
 end
 
-BackendInterfaceStatisticsPlayFab.save = function (self, save_callback)
+BackendInterfaceStatisticsPlayFab.save = function (self)
 	local player_manager = Managers.player
 
 	if not player_manager then
@@ -94,20 +94,30 @@ BackendInterfaceStatisticsPlayFab.save = function (self, save_callback)
 	local player_stats = Managers.player:statistics_db():get_all_stats(player_stats_id)
 	local stats_to_save = filter_stats(flatten_stats(player_stats))
 
-	self._mirror:set_stats(player_stats)
+	player_manager:set_stats_backend(player)
 
-	if table.is_empty(stats_to_save) then
+	self._stats_to_save = stats_to_save
+end
+
+BackendInterfaceStatisticsPlayFab.clear_saved_stats = function (self)
+	self._stats_to_save = nil
+end
+
+BackendInterfaceStatisticsPlayFab.get_stat_save_request = function (self, save_callback)
+	local stats_to_save = self._stats_to_save
+
+	if not stats_to_save or table.is_empty(stats_to_save) then
 		print("[BackendInterfaceStatisticsPlayFab] No modified player statistics to save...")
 
 		return false
 	end
 
-	return self:_save_player_stats(stats_to_save, save_callback)
+	return self:_create_save_request(stats_to_save, save_callback)
 end
 
-BackendInterfaceStatisticsPlayFab._save_player_stats = function (self, stats, save_callback)
+BackendInterfaceStatisticsPlayFab._create_save_request = function (self, stats, save_callback)
 	local request = {
-		FunctionName = "savePlayerStatistics2",
+		FunctionName = "savePlayerStatistics3",
 		FunctionParameter = {
 			stats = stats
 		}
@@ -119,6 +129,14 @@ BackendInterfaceStatisticsPlayFab._save_player_stats = function (self, stats, sa
 			table.dump(result, "PlayFabError", math.huge)
 			save_callback(on_complete, false)
 		else
+			local function_result = result.FunctionResult
+
+			if function_result and function_result.eac_failed_verification then
+				Managers.backend:playfab_eac_error()
+
+				return
+			end
+
 			clear_dirty_flag(stats)
 			print("[BackendInterfaceStatisticsPlayFab] Player statistics saved!")
 			save_callback(on_complete, true)

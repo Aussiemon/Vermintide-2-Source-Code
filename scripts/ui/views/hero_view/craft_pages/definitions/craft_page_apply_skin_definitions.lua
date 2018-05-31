@@ -62,37 +62,9 @@ local scenegraph_definition = {
 			2
 		}
 	},
-	item_grid = {
+	item_grid_link = {
 		vertical_alignment = "center",
 		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			186,
-			186
-		},
-		position = {
-			0,
-			28,
-			6
-		}
-	},
-	item_grid_2 = {
-		vertical_alignment = "center",
-		parent = "item_grid",
-		horizontal_alignment = "center",
-		size = {
-			186,
-			186
-		},
-		position = {
-			0,
-			-193,
-			0
-		}
-	},
-	item_grid_link = {
-		vertical_alignment = "bottom",
-		parent = "item_grid",
 		horizontal_alignment = "center",
 		size = {
 			67,
@@ -100,8 +72,36 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-38,
-			0
+			0,
+			6
+		}
+	},
+	item_grid = {
+		vertical_alignment = "center",
+		parent = "item_grid_link",
+		horizontal_alignment = "center",
+		size = {
+			186,
+			186
+		},
+		position = {
+			-100,
+			0,
+			-1
+		}
+	},
+	item_grid_2 = {
+		vertical_alignment = "center",
+		parent = "item_grid_link",
+		horizontal_alignment = "center",
+		size = {
+			186,
+			186
+		},
+		position = {
+			100,
+			0,
+			-1
 		}
 	},
 	item_grid_icon = {
@@ -130,6 +130,20 @@ local scenegraph_definition = {
 			0,
 			0,
 			0
+		}
+	},
+	recipe_grid = {
+		vertical_alignment = "center",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			window_size[1],
+			80
+		},
+		position = {
+			0,
+			-160,
+			6
 		}
 	},
 	craft_button = {
@@ -193,11 +207,15 @@ local disable_with_gamepad = true
 local widgets = {
 	item_grid_bg = UIWidgets.create_simple_texture("crafting_bg_02", "item_grid", nil, nil, nil, -2),
 	item_grid_bg_2 = UIWidgets.create_simple_texture("crafting_bg_02", "item_grid_2", nil, nil, nil, -2),
-	item_grid_link = UIWidgets.create_simple_texture("crafting_bg_04", "item_grid_link", nil, nil, nil, 0),
+	item_grid_link = UIWidgets.create_simple_rotated_texture("crafting_bg_04", math.pi / 2, {
+		33.5,
+		35
+	}, "item_grid_link", nil, nil, nil, 0),
 	item_grid_icon = UIWidgets.create_simple_texture("crafting_icon_01", "item_grid_icon"),
 	item_grid_2_icon = UIWidgets.create_simple_texture("crafting_icon_02", "item_grid_2_icon"),
 	item_grid = UIWidgets.create_grid("item_grid", scenegraph_definition.item_grid.size, NUM_CRAFT_SLOTS_Y, NUM_CRAFT_SLOTS_X, 20, 20),
 	item_grid_2 = UIWidgets.create_grid("item_grid_2", scenegraph_definition.item_grid_2.size, NUM_RECIPE_SLOTS_Y, NUM_RECIPE_SLOTS_X, 30, 30),
+	recipe_grid = UIWidgets.create_recipe_grid("recipe_grid", scenegraph_definition.recipe_grid.size, NUM_RECIPE_SLOTS_Y, NUM_RECIPE_SLOTS_X, 30, 30),
 	craft_button = UIWidgets.create_default_button("craft_button", scenegraph_definition.craft_button.size, nil, nil, Localize("hero_view_crafting_apply_skin"), 24, nil, "button_detail_02", nil, disable_with_gamepad),
 	craft_bar_fg = UIWidgets.create_simple_texture("crafting_bar_fg", "craft_bar_fg"),
 	craft_bar_bg = UIWidgets.create_simple_rect("craft_bar_bg", {

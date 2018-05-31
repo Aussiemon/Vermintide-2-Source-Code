@@ -47,13 +47,8 @@ PeerStateMachine.create = function (server, peer_id, xb1_preconnect)
 				if not fetched_function then
 					local function new_function(...)
 						local current_function = self.current_state[k]
-						slot1 = assert
 
-						if current_function then
-							slot2 = type(current_function == "function")
-						end
-
-						slot1(slot2, "Could not find function %q in state %q", k, tostring(self.current_state))
+						assert(current_function and type(current_function) == "function", "Could not find function %q in state %q", k, tostring(self.current_state))
 						current_function(state_data, ...)
 					end
 

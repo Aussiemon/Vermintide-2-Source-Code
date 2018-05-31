@@ -272,6 +272,8 @@ end
 StateTitleScreen._next_state = function (self)
 	if Managers.popup:has_popup() or Managers.account:user_detached() then
 		if Managers.account:leaving_game() then
+			print("Reloading StateTitleScreen due to user detatched")
+
 			self.state = StateTitleScreen
 
 			Managers.popup:cancel_all_popups()
@@ -279,10 +281,14 @@ StateTitleScreen._next_state = function (self)
 			return
 		end
 	elseif Managers.account:leaving_game() then
+		print("Reloading StateTitleScreen due to leaving game")
+
 		self.state = StateTitleScreen
 
 		Managers.popup:cancel_all_popups()
 	elseif Managers.backend and Managers.backend:is_disconnected() then
+		print("Reloading StateTitleScreen due to backend disconnect")
+
 		self.state = StateTitleScreen
 
 		Managers.popup:cancel_all_popups()

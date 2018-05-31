@@ -493,6 +493,8 @@ BTStormfiendShootAction.shoot_hit_check = function (self, unit, blackboard)
 						local buff_system = Managers.state.entity:system("buff_system")
 
 						buff_system:add_buff(hit_unit, "stormfiend_warpfire_face_base", unit)
+
+						blackboard.has_dealt_burn_damage = true
 					end
 				elseif breed and not immune_breeds[breed.name] and not hit_enemies[hit_unit] then
 					local attacker_unit = unit

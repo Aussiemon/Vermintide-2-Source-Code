@@ -744,7 +744,7 @@ AiUtils.show_polearm = function (packmaster_unit, show)
 	end
 end
 
-AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, stagger_value, always_stagger)
+AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, stagger_value, always_stagger, is_push)
 	fassert(stagger_type > 0, "Tried to use invalid stagger type %q", stagger_type)
 
 	local difficulty_modifier = Managers.state.difficulty:get_difficulty_settings().stagger_modifier
@@ -757,6 +757,7 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 	blackboard.stagger_type = stagger_type
 	blackboard.stagger_animation_scale = stagger_animation_scale
 	blackboard.always_stagger_suffered = always_stagger
+	blackboard.stagger_was_push = is_push
 	local shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system")
 
 	if shield_extension and not shield_extension.is_blocking and blackboard.attack_token and blackboard.stagger and blackboard.stagger < 3 then

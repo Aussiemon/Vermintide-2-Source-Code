@@ -1,35 +1,26 @@
-require("scripts/ui/views/start_game_view/windows/start_game_window_adventure")
-require("scripts/ui/views/start_game_view/windows/start_game_window_adventure_settings")
-require("scripts/ui/views/start_game_view/windows/start_game_window_game_mode")
-require("scripts/ui/views/start_game_view/windows/start_game_window_settings")
-require("scripts/ui/views/start_game_view/windows/start_game_window_mission")
-require("scripts/ui/views/start_game_view/windows/start_game_window_mission_selection")
-require("scripts/ui/views/start_game_view/windows/start_game_window_difficulty")
-require("scripts/ui/views/start_game_view/windows/start_game_window_mutator")
-require("scripts/ui/views/start_game_view/windows/start_game_window_mutator_list")
-require("scripts/ui/views/start_game_view/windows/start_game_window_mutator_summary")
-require("scripts/ui/views/start_game_view/windows/start_game_window_mutator_grid")
-require("scripts/ui/views/start_game_view/windows/start_game_window_twitch_login")
-require("scripts/ui/views/start_game_view/windows/start_game_window_twitch_game_settings")
 require("scripts/ui/views/hero_view/windows/hero_window_prestige")
 require("scripts/ui/views/hero_view/windows/hero_window_talents")
+require("scripts/ui/views/hero_view/windows/hero_window_talents_console")
 require("scripts/ui/views/hero_view/windows/hero_window_options")
 require("scripts/ui/views/hero_view/windows/hero_window_crafting")
-require("scripts/ui/views/hero_view/windows/hero_window_character_preview")
 require("scripts/ui/views/hero_view/windows/hero_window_inventory")
 require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_inventory")
 require("scripts/ui/views/hero_view/windows/hero_window_loadout_inventory")
 require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout")
 require("scripts/ui/views/hero_view/windows/hero_window_loadout")
+require("scripts/ui/views/hero_view/windows/hero_window_background_console")
+require("scripts/ui/views/hero_view/windows/hero_window_panel_console")
+require("scripts/ui/views/hero_view/windows/hero_window_loadout_inventory_console")
+require("scripts/ui/views/hero_view/windows/hero_window_loadout_console")
 
 local definitions = local_require("scripts/ui/views/hero_view/states/definitions/hero_view_state_overview_definitions")
-local windows_settings = definitions.windows
-local window_layouts = definitions.window_layouts
+local layout_settings = local_require("scripts/ui/views/hero_view/states/hero_window_layout")
+local windows_settings = layout_settings.windows
+local window_layouts = layout_settings.window_layouts
+local MAX_ACTIVE_WINDOWS = layout_settings.max_active_windows
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
-local game_options_settings = definitions.game_options_settings
-local MAX_ACTIVE_WINDOWS = 5
 local DO_RELOAD = false
 local rarity_index = {
 	common = 2,
@@ -169,9 +160,7 @@ end
 
 HeroViewStateOverview._change_window = function (self, window_index, window_name)
 	local active_windows = self._active_windows
-	local params = self._window_params
 	local new_window_settings = windows_settings[window_name]
-	local alignment_index = new_window_settings.alignment_index or window_index
 	local window_class_name = new_window_settings.class_name
 	local current_window = active_windows[window_index]
 
@@ -185,21 +174,29 @@ HeroViewStateOverview._change_window = function (self, window_index, window_name
 
 	local window_class = rawget(_G, window_class_name)
 	local window = window_class:new()
-	local window_default_settings = UISettings.game_start_windows
-	local window_size = window_default_settings.size
-	local window_spacing = window_default_settings.spacing or 10
-	local window_width = window_size[1]
-	local total_spacing = window_spacing * 2
-	local total_windows_width = 3 * window_width
-	local start_width_offset = -(total_windows_width / 2 + window_width / 2) - (total_spacing / 2 + window_spacing)
-	local window_width_offset = start_width_offset + alignment_index * window_width + alignment_index * window_spacing
-	local window_offset = {
-		window_width_offset,
-		0,
-		3
-	}
+	local ignore_alignment = new_window_settings.ignore_alignment
+	local window_offset = nil
+
+	if not ignore_alignment then
+		local alignment_index = new_window_settings.alignment_index or window_index
+		local window_default_settings = UISettings.game_start_windows
+		local window_size = window_default_settings.size
+		local window_spacing = window_default_settings.spacing or 10
+		local window_width = window_size[1]
+		local total_spacing = window_spacing * 2
+		local total_windows_width = 3 * window_width
+		local start_width_offset = -(total_windows_width / 2 + window_width / 2) - (total_spacing / 2 + window_spacing)
+		local window_width_offset = start_width_offset + alignment_index * window_width + alignment_index * window_spacing
+		window_offset = {
+			window_width_offset,
+			0,
+			3
+		}
+	end
 
 	if window.on_enter then
+		local params = self._window_params
+
 		window:on_enter(params, window_offset)
 	end
 
@@ -221,6 +218,7 @@ HeroViewStateOverview.set_layout = function (self, index)
 	local windows = layout_setting.windows
 	local sound_event_enter = layout_setting.sound_event_enter
 	local close_on_exit = layout_setting.close_on_exit
+	local input_focus_window = layout_setting.input_focus_window
 
 	if sound_event_enter then
 		self:play_sound(sound_event_enter)
@@ -251,6 +249,36 @@ HeroViewStateOverview.set_layout = function (self, index)
 	end
 
 	self._selected_game_mode_index = index
+
+	self:set_window_input_focus(input_focus_window)
+end
+
+HeroViewStateOverview.set_window_input_focus = function (self, window_name)
+	local layout_index = self._selected_game_mode_index
+	local layout_setting = self:_get_layout_setting(layout_index)
+	local window_setting = windows_settings[window_name]
+	local window_class_name = window_setting and window_setting.class_name
+	local window_found = false
+	local active_windows = self._active_windows
+
+	for _, window in pairs(active_windows) do
+		local name = window.NAME
+		local focused = name == window_class_name
+
+		if window.set_focus then
+			window:set_focus(focused)
+		end
+
+		if focused then
+			window_found = true
+		end
+	end
+
+	if window_name and not window_found then
+		ferror("[HeroViewStateOverview] - (set_window_input_focus) Could not find a window by name: %s", window_name)
+	end
+
+	self._window_focused = window_name
 end
 
 HeroViewStateOverview.get_selected_game_mode_index = function (self)
@@ -453,8 +481,9 @@ end
 
 HeroViewStateOverview._handle_input = function (self, dt, t)
 	local input_blocked = self._input_blocked
+	local window_focused = self._window_focused
 
-	if input_blocked then
+	if input_blocked or window_focused then
 		return
 	end
 

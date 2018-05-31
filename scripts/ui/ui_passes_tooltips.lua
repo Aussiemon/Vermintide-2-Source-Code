@@ -688,7 +688,7 @@ UITooltipPasses = {
 			position[3] = start_layer + 2
 			position[2] = position[2]
 			local loop_func = pairs
-			local show_advanced_description = input_service:get("item_compare") or input_service:get("item_detail")
+			local show_advanced_description = false
 
 			if properties then
 				position[1] = position[1] + frame_margin
@@ -1091,16 +1091,16 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			if not input_service:get("item_compare") and not input_service:get("item_detail") then
-				local item_data = item.data
-				local slot_type = item_data.slot_type
-				local is_weapon = slot_type == "melee" or slot_type == "ranged"
+			local item_data = item.data
+			local slot_type = item_data.slot_type
+			local is_weapon = slot_type == "melee" or slot_type == "ranged"
 
-				if not is_weapon then
+			if not is_weapon then
+				return 0
+
+				if 0 then
 					return 0
 				end
-			else
-				return 0
 			end
 
 			local alpha_multiplier = pass_data.alpha_multiplier
@@ -5321,7 +5321,7 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			if input_service:get("item_compare") then
+			if false then
 				local item_data = item.data
 				local slot_type = item_data.slot_type
 				local is_weapon = slot_type == "melee" or slot_type == "ranged"
@@ -5609,7 +5609,7 @@ UITooltipPasses = {
 			return data
 		end,
 		draw = function (draw, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item, data, draw_downwards)
-			if input_service:get("item_compare") then
+			if false then
 				local item_data = item.data
 				local slot_type = item_data.slot_type
 				local is_weapon = slot_type == "melee" or slot_type == "ranged"

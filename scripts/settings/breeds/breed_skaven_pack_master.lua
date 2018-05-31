@@ -212,7 +212,12 @@ local breed_data = {
 		teleporters = 5,
 		bot_poison_wind = 15,
 		fire_grenade = 15
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone)
+		local blackboard = BLACKBOARDS[unit]
+
+		QuestSettings.check_pack_master_kill_abducting_ally(blackboard, killer_unit)
+	end
 }
 Breeds.skaven_pack_master = table.create_copy(Breeds.skaven_pack_master, breed_data)
 local action_data = {

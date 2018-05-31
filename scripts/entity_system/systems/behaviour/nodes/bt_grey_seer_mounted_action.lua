@@ -15,14 +15,44 @@ BTGreySeerMountedAction.enter = function (self, unit, blackboard, t)
 	blackboard.locomotion_extension:set_wanted_velocity(Vector3.zero())
 	Managers.state.network:anim_event(unit, "to_combat")
 
-	self.game = Managers.state.network:game()
+	local game = Managers.state.network:game()
 	local unit_storage = Managers.state.unit_storage
-	self.go_id = unit_storage:go_id(unit)
+	local go_id = unit_storage:go_id(unit)
 	blackboard.move_state = "moving"
+	local network_manager = Managers.state.network
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	local hit_reaction_extension = blackboard.hit_reaction_extension
+	local network_transmit = network_manager.network_transmit
+
+	hit_reaction_extension:set_hit_effect_template_id("HitEffectsSkavenGreySeerMounted")
+
+	health_extension.is_invincible = true
+
+	GameSession.set_game_object_field(game, go_id, "show_health_bar", false)
+	network_transmit:send_rpc_clients("rpc_set_hit_reaction_template", go_id, "HitEffectsSkavenGreySeerMounted")
+
+	blackboard.current_hit_reaction_type = "mounted"
 end
 
 BTGreySeerMountedAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.navigation_extension:set_enabled(true)
+
+	local network_manager = Managers.state.network
+	local game = network_manager:game()
+	local unit_storage = Managers.state.unit_storage
+	local go_id = unit_storage:go_id(unit)
+	local health_extension = ScriptUnit.extension(unit, "health_system")
+	local hit_reaction_extension = blackboard.hit_reaction_extension
+	local network_transmit = network_manager.network_transmit
+
+	hit_reaction_extension:set_hit_effect_template_id("HitEffectsSkavenGreySeer")
+
+	health_extension.is_invincible = false
+
+	GameSession.set_game_object_field(game, go_id, "show_health_bar", true)
+	network_transmit:send_rpc_clients("rpc_set_hit_reaction_template", go_id, "HitEffectsSkavenGreySeer")
+
+	blackboard.current_hit_reaction_type = "on_ground"
 end
 
 local Unit_alive = Unit.alive

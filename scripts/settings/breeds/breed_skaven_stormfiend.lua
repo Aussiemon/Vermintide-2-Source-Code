@@ -317,7 +317,17 @@ local breed_data = {
 		vortex_near = 1,
 		stormfiend_warpfire = 1,
 		vortex_danger_zone = 1
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_stormfiend_killed_without_burn_damage(blackboard, killer_unit)
+		QuestSettings.check_stormfiend_killed_on_controller(death_hit_zone, killer_unit)
+	end
 }
 Breeds.skaven_stormfiend = table.create_copy(Breeds.skaven_stormfiend, breed_data)
 local action_data = {

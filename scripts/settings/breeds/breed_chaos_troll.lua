@@ -113,7 +113,6 @@ local breed_data = {
 	keep_weapon_on_death = false,
 	hit_mass_count = 50,
 	stagger_threshold_explosion = 1,
-	no_stagger_duration = false,
 	is_bot_aid_threat = true,
 	race = "chaos",
 	regen_pulse_interval = 2,
@@ -141,6 +140,7 @@ local breed_data = {
 	run_speed = 5.25,
 	awards_positive_reinforcement_message = true,
 	smart_object_template = "chaos_troll",
+	no_stagger_duration = false,
 	aim_template = "chaos_warrior",
 	stagger_threshold_heavy = 1,
 	reach_distance = 4.2,
@@ -337,7 +337,17 @@ local breed_data = {
 		vortex_near = 1,
 		stormfiend_warpfire = 1,
 		vortex_danger_zone = 1
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_chaos_troll_killed_without_regen(blackboard, killer_unit)
+		QuestSettings.check_chaos_troll_killed_without_bile_damage(blackboard, killer_unit)
+	end
 }
 Breeds.chaos_troll = table.create_copy(Breeds.chaos_troll, breed_data)
 local action_data = {

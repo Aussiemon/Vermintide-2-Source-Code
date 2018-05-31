@@ -566,10 +566,13 @@ end
 BTMeleeOverlapAttackAction.hit_player = function (self, unit, blackboard, hit_unit, action, attack)
 	local hit_unit_status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
 	local attack_direction = action.attack_directions and action.attack_directions[blackboard.attack_anim]
+	local dealt_damage = false
 
 	if DamageUtils.check_block(unit, hit_unit, action.fatigue_type, attack_direction) then
 		if action.blocked_damage then
 			AiUtils.damage_target(hit_unit, unit, action, action.blocked_damage)
+
+			dealt_damage = true
 		end
 
 		if attack.player_push_speed_blocked and not hit_unit_status_extension.knocked_down then
@@ -578,13 +581,15 @@ BTMeleeOverlapAttackAction.hit_player = function (self, unit, blackboard, hit_un
 	else
 		AiUtils.damage_target(hit_unit, unit, action, action.damage)
 
+		dealt_damage = true
+
 		if attack.player_push_speed and not hit_unit_status_extension.knocked_down then
 			self:push_player(unit, hit_unit, attack.player_push_speed, attack.player_push_speed_z, attack.catapult_player)
 		end
 	end
 
 	if attack.hit_player_func then
-		attack.hit_player_func(unit, blackboard, hit_unit, action, attack)
+		attack.hit_player_func(unit, blackboard, hit_unit, action, attack, dealt_damage)
 	end
 end
 

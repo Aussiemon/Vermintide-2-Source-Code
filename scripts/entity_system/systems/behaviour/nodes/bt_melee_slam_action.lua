@@ -171,6 +171,10 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 						damage = action.damage
 					end
 				end
+
+				if action.hit_player_func then
+					action.hit_player_func(unit, blackboard, hit_unit, damage)
+				end
 			elseif Unit.has_data(hit_unit, "breed") then
 				local offset = Vector3.flat(POSITION_LOOKUP[hit_unit] - self_pos)
 				local direction = nil

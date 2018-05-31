@@ -3024,88 +3024,36 @@ UIPasses.option_tooltip = {
 UIPasses.item_tooltip = {
 	init = function (pass_definition, ui_content, ui_style, style_global)
 		local pass_data = {}
-		local passes = {
-			{
-				data = UITooltipPasses.equipped_item_title.setup_data(),
-				draw = UITooltipPasses.equipped_item_title.draw
-			},
-			{
-				data = UITooltipPasses.item_titles.setup_data(),
-				draw = UITooltipPasses.item_titles.draw
-			},
-			{
-				data = UITooltipPasses.skin_applied.setup_data(),
-				draw = UITooltipPasses.skin_applied.draw
-			},
-			{
-				data = UITooltipPasses.deed_mission.setup_data(),
-				draw = UITooltipPasses.deed_mission.draw
-			},
-			{
-				data = UITooltipPasses.deed_difficulty.setup_data(),
-				draw = UITooltipPasses.deed_difficulty.draw
-			},
-			{
-				data = UITooltipPasses.mutators.setup_data(),
-				draw = UITooltipPasses.mutators.draw
-			},
-			{
-				data = UITooltipPasses.deed_rewards.setup_data(),
-				draw = UITooltipPasses.deed_rewards.draw
-			},
-			{
-				data = UITooltipPasses.ammunition.setup_data(),
-				draw = UITooltipPasses.ammunition.draw
-			},
-			{
-				data = UITooltipPasses.fatigue.setup_data(),
-				draw = UITooltipPasses.fatigue.draw
-			},
-			{
-				data = UITooltipPasses.item_power_level.setup_data(),
-				draw = UITooltipPasses.item_power_level.draw
-			},
-			{
-				data = UITooltipPasses.properties.setup_data(),
-				draw = UITooltipPasses.properties.draw
-			},
-			{
-				data = UITooltipPasses.traits.setup_data(),
-				draw = UITooltipPasses.traits.draw
-			},
-			{
-				data = UITooltipPasses.weapon_skin_title.setup_data(),
-				draw = UITooltipPasses.weapon_skin_title.draw
-			},
-			{
-				data = UITooltipPasses.item_information_text.setup_data(),
-				draw = UITooltipPasses.item_information_text.draw
-			},
-			{
-				data = UITooltipPasses.loot_chest_difficulty.setup_data(),
-				draw = UITooltipPasses.loot_chest_difficulty.draw
-			},
-			{
-				data = UITooltipPasses.loot_chest_power_range.setup_data(),
-				draw = UITooltipPasses.loot_chest_power_range.draw
-			},
-			{
-				data = UITooltipPasses.loot_chest_description.setup_data(),
-				draw = UITooltipPasses.loot_chest_description.draw
-			},
-			{
-				data = UITooltipPasses.unwieldable.setup_data(),
-				draw = UITooltipPasses.unwieldable.draw
-			},
-			{
-				data = UITooltipPasses.keywords.setup_data(),
-				draw = UITooltipPasses.keywords.draw
-			},
-			{
-				data = UITooltipPasses.item_description.setup_data(),
-				draw = UITooltipPasses.item_description.draw
-			}
+		local pass_definitions = {
+			"equipped_item_title",
+			"item_titles",
+			"skin_applied",
+			"deed_mission",
+			"deed_difficulty",
+			"mutators",
+			"deed_rewards",
+			"ammunition",
+			"fatigue",
+			"item_power_level",
+			"properties",
+			"traits",
+			"weapon_skin_title",
+			"item_information_text",
+			"loot_chest_difficulty",
+			"loot_chest_power_range",
+			"unwieldable",
+			"keywords",
+			"item_description"
 		}
+		local passes = {}
+
+		for _, pass_name in ipairs(pass_definitions) do
+			passes[#passes + 1] = {
+				data = UITooltipPasses[pass_name].setup_data(),
+				draw = UITooltipPasses[pass_name].draw
+			}
+		end
+
 		pass_data.end_pass = {
 			data = UITooltipPasses.item_background.setup_data(),
 			draw = UITooltipPasses.item_background.draw
@@ -4124,48 +4072,27 @@ UIPasses.held = {
 UIPasses.item_presentation = {
 	init = function (pass_definition, ui_content, ui_style, style_global)
 		local pass_data = {}
-		local passes = {
-			{
-				data = UITooltipPasses.item_titles.setup_data(),
-				draw = UITooltipPasses.item_titles.draw
-			},
-			{
-				data = UITooltipPasses.deed_mission.setup_data(),
-				draw = UITooltipPasses.deed_mission.draw
-			},
-			{
-				data = UITooltipPasses.deed_difficulty.setup_data(),
-				draw = UITooltipPasses.deed_difficulty.draw
-			},
-			{
-				data = UITooltipPasses.mutators.setup_data(),
-				draw = UITooltipPasses.mutators.draw
-			},
-			{
-				data = UITooltipPasses.deed_rewards.setup_data(),
-				draw = UITooltipPasses.deed_rewards.draw
-			},
-			{
-				data = UITooltipPasses.ammunition.setup_data(),
-				draw = UITooltipPasses.ammunition.draw
-			},
-			{
-				data = UITooltipPasses.fatigue.setup_data(),
-				draw = UITooltipPasses.fatigue.draw
-			},
-			{
-				data = UITooltipPasses.item_power_level.setup_data(),
-				draw = UITooltipPasses.item_power_level.draw
-			},
-			{
-				data = UITooltipPasses.properties.setup_data(),
-				draw = UITooltipPasses.properties.draw
-			},
-			{
-				data = UITooltipPasses.traits.setup_data(),
-				draw = UITooltipPasses.traits.draw
-			}
+		local pass_definitions = {
+			"item_titles",
+			"deed_mission",
+			"deed_difficulty",
+			"mutators",
+			"deed_rewards",
+			"ammunition",
+			"fatigue",
+			"item_power_level",
+			"properties",
+			"traits"
 		}
+		local passes = {}
+
+		for _, pass_name in ipairs(pass_definitions) do
+			passes[#passes + 1] = {
+				data = UITooltipPasses[pass_name].setup_data(),
+				draw = UITooltipPasses[pass_name].draw
+			}
+		end
+
 		pass_data.end_pass = {
 			data = UITooltipPasses.item_background.setup_data(),
 			draw = UITooltipPasses.item_background.draw

@@ -43,73 +43,13 @@ CraftPageExtractSkin.on_enter = function (self, params, settings)
 	self._craft_items = {}
 	self._material_items = {}
 	self._item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
-	self._recipe_grid = ItemGridUI:new(category_settings, self._widgets_by_name.recipe_grid, self.hero_name, self.career_index)
 
 	self._item_grid:disable_locked_items(true)
 	self._item_grid:mark_locked_items(true)
 	self._item_grid:hide_slots(true)
 	self._item_grid:disable_item_drag()
-	self._recipe_grid:disable_item_drag()
 	self.super_parent:clear_disabled_backend_ids()
-	self:setup_recipe_requirements()
 	self.parent:set_input_description(nil)
-end
-
-CraftPageExtractSkin.setup_recipe_requirements = function (self)
-	local recipe_grid = self._recipe_grid
-	local settings = self.settings
-	local recipe_name = settings.name
-	local recipe = crafting_recipes_by_name[recipe_name]
-	local ingredients = recipe.ingredients
-	local material_items = self._material_items
-
-	table.clear(material_items)
-
-	local item_interface = Managers.backend:get_interface("items")
-	local crafting_material_items = item_interface:get_filtered_items("item_type == crafting_material")
-	local has_all_requirements = true
-	local grid_index = 1
-
-	for index, data in ipairs(ingredients) do
-		if not data.catergory then
-			local item_key = data.name
-			local required_amount = data.amount
-			local amount_owned = 0
-			local required_backend_id = nil
-
-			for _, item in ipairs(crafting_material_items) do
-				local backend_id = item.backend_id
-				local item_data = item.data
-
-				if item_data.key == item_key then
-					required_backend_id = backend_id
-					amount_owned = item_interface:get_item_amount(backend_id)
-
-					break
-				end
-			end
-
-			local has_required_amount = required_amount <= amount_owned
-			local presentation_amount = ((amount_owned < UISettings.max_craft_material_presentation_amount and tostring(amount_owned)) or "*") .. "/" .. tostring(required_amount)
-			local fake_item = {
-				data = table.clone(ItemMasterList[item_key]),
-				amount = presentation_amount,
-				insufficient_amount = not has_required_amount
-			}
-
-			recipe_grid:add_item_to_slot_index(grid_index, fake_item)
-
-			grid_index = grid_index + 1
-
-			if has_required_amount then
-				material_items[#material_items + 1] = required_backend_id
-			else
-				has_all_requirements = false
-			end
-		end
-	end
-
-	self._has_all_requirements = has_all_requirements
 end
 
 CraftPageExtractSkin.create_ui_elements = function (self, params)
@@ -226,7 +166,7 @@ CraftPageExtractSkin._handle_input = function (self, dt, t)
 	local craft_input_gamepad = is_button_enabled and gamepad_active and input_service:get("refresh_hold")
 	local craft_input_accepted = false
 
-	if (craft_input == 0 or craft_input_gamepad) and self._has_all_requirements then
+	if craft_input == 0 or craft_input_gamepad then
 		if not self._craft_input_time then
 			self._craft_input_time = 0
 
@@ -235,7 +175,7 @@ CraftPageExtractSkin._handle_input = function (self, dt, t)
 			self._craft_input_time = self._craft_input_time + dt
 		end
 
-		local max_time = 2
+		local max_time = UISettings.crafting_progress_time
 		local progress = math.min(self._craft_input_time / max_time, 1)
 		craft_input_accepted = self:_handle_craft_input_progress(progress)
 
@@ -344,8 +284,6 @@ CraftPageExtractSkin.on_craft_completed = function (self)
 	self:_set_craft_button_disabled(true)
 
 	self._craft_result = nil
-
-	self:setup_recipe_requirements()
 end
 
 CraftPageExtractSkin._update_craft_items = function (self)
@@ -437,7 +375,7 @@ CraftPageExtractSkin._add_craft_item = function (self, backend_id, slot_index, i
 
 		self._num_craft_items = math.min((self._num_craft_items or 0) + 1, NUM_CRAFT_SLOTS)
 
-		if self._num_craft_items > 0 and self._has_all_requirements then
+		if self._num_craft_items > 0 then
 			self:_set_craft_button_disabled(false)
 		end
 

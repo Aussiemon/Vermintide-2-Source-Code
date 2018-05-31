@@ -248,7 +248,9 @@ BTConditions.can_see_player = function (blackboard)
 end
 
 BTConditions.can_see_player_and_mounted = function (blackboard)
-	return unit_alive(blackboard.target_unit) and not blackboard.knocked_off_mount
+	local mount_unit = blackboard.mounted_data.mount_unit
+
+	return unit_alive(blackboard.target_unit) and not blackboard.knocked_off_mount and unit_alive(mount_unit)
 end
 
 BTConditions.no_target = function (blackboard)

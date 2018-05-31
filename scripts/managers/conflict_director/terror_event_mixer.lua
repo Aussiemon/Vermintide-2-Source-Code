@@ -260,9 +260,8 @@ TerrorEventMixer.init_functions = {
 		local current_difficulty = Managers.state.difficulty:get_difficulty()
 		local allowed_difficulties = QuestSettings.allowed_difficulties[time_challenge_name]
 		local allowed_difficulty = allowed_difficulties[current_difficulty]
-		local achievements_enabled = Development.parameter("v2_achievements")
 
-		if achievements_enabled and allowed_difficulty and not optional_data[time_challenge_name] then
+		if allowed_difficulty and not optional_data[time_challenge_name] then
 			optional_data[time_challenge_name] = duration
 		end
 	end,
@@ -281,6 +280,7 @@ TerrorEventMixer.init_functions = {
 				local statistics_db = Managers.player:statistics_db()
 
 				statistics_db:increment_stat_and_sync_to_clients(stat_name)
+				QuestSettings.send_completed_message(stat_name)
 			else
 				optional_data[time_challenge_name] = nil
 			end
@@ -296,8 +296,7 @@ TerrorEventMixer.init_functions = {
 		local allowed_difficulties = QuestSettings.allowed_difficulties[volume_name]
 		local difficulty = Managers.state.difficulty:get_difficulty()
 		local on_allowed_difficulty = allowed_difficulties[difficulty]
-		local achievements_enabled = Development.parameter("v2_achievements")
-		local terminate = not on_allowed_difficulty or not achievements_enabled
+		local terminate = not on_allowed_difficulty
 		optional_data[volume_name] = {
 			time_inside = 0,
 			duration = challenge_duration,
@@ -610,6 +609,7 @@ TerrorEventMixer.run_functions = {
 			local statistics_db = Managers.player:statistics_db()
 
 			statistics_db:increment_stat_and_sync_to_clients(increment_stat_name)
+			QuestSettings.send_completed_message(increment_stat_name)
 
 			return true
 		else

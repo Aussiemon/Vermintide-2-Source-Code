@@ -245,7 +245,16 @@ local breed_data = {
 		vortex_near = 1,
 		stormfiend_warpfire = 1,
 		vortex_danger_zone = 1
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_killed_lord_as_last_player_standing(killer_unit)
+	end
 }
 Breeds.skaven_grey_seer = table.create_copy(Breeds.skaven_grey_seer, breed_data)
 local action_data = {

@@ -29,7 +29,6 @@ local breed_data = {
 	radius = 1,
 	unit_template = "ai_unit_gutter_runner",
 	debug_flag = "ai_gutter_runner_behavior",
-	bone_lod_level = 1,
 	special_spawn_stinger = "enemy_gutterrunner_stinger",
 	race = "skaven",
 	smart_object_template = "special",
@@ -38,6 +37,7 @@ local breed_data = {
 	perception = "perception_all_seeing_re_evaluate",
 	player_locomotion_constrain_radius = 0.7,
 	jump_gravity = 9.82,
+	bone_lod_level = 1,
 	jump_range = 20,
 	smart_targeting_width = 0.3,
 	is_bot_aid_threat = true,
@@ -191,7 +191,16 @@ local breed_data = {
 				"c_afro"
 			}
 		}
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_gutter_killed_while_pouncing(blackboard, killer_unit, damage_source)
+	end
 }
 Breeds.skaven_gutter_runner = table.create_copy(Breeds.skaven_gutter_runner, breed_data)
 local action_data = {
@@ -299,6 +308,17 @@ local action_data = {
 		}
 	},
 	stagger = {
+		custom_enter_function = function (unit, blackboard, t, action)
+			local pushing_unit = blackboard.pushing_unit
+			local bt_node_name = blackboard.btnode_name
+
+			QuestSettings.check_gutter_runner_push_on_pounce(blackboard, pushing_unit)
+			QuestSettings.check_gutter_runner_push_on_target_pounced(blackboard, pushing_unit)
+
+			local stagger_anims = action.stagger_anims[blackboard.stagger_type]
+
+			return stagger_anims, "idle"
+		end,
 		stagger_anims = {
 			{
 				fwd = {

@@ -436,6 +436,7 @@ DamageProfileTemplates.dagger_burning_slam_aoe = {
 	default_target = PowerLevelTemplates.aoe_target_settings_dagger_burning_slam_tank_M
 }
 DamageProfileTemplates.heavy_push = {
+	is_push = true,
 	charge_value = "action_push",
 	no_damage = true,
 	armor_modifier = PowerLevelTemplates.armor_modifier_push_H,
@@ -452,6 +453,7 @@ DamageProfileTemplates.ability_push = {
 	default_target = PowerLevelTemplates.target_push_Ability
 }
 DamageProfileTemplates.medium_push = {
+	is_push = true,
 	charge_value = "action_push",
 	no_damage = true,
 	armor_modifier = PowerLevelTemplates.armor_modifier_push_M,
@@ -459,6 +461,7 @@ DamageProfileTemplates.medium_push = {
 	default_target = PowerLevelTemplates.target_push_M
 }
 DamageProfileTemplates.light_push = {
+	is_push = true,
 	charge_value = "action_push",
 	no_damage = true,
 	armor_modifier = PowerLevelTemplates.armor_modifier_push_L,

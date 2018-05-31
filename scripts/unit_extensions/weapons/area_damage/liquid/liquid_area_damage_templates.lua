@@ -176,7 +176,13 @@ LiquidAreaDamageTemplates = {
 					0,
 					1
 				}
-			}
+			},
+			hit_player_function = function (player_unit, player_and_bot_units, source_unit)
+				if Unit.alive(source_unit) then
+					local blackboard = BLACKBOARDS[source_unit]
+					blackboard.has_done_bile_damage = true
+				end
+			end
 		},
 		nurgle_liquid = {
 			do_direct_damage_ai = true,
@@ -271,9 +277,8 @@ LiquidAreaDamageTemplates = {
 				local current_difficulty = Managers.state.difficulty:get_difficulty()
 				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
 				local allowed_difficulty = allowed_difficulties[current_difficulty]
-				local achievements_enabled = Development.parameter("v2_achievements")
 
-				if allowed_difficulty and achievements_enabled then
+				if allowed_difficulty then
 					local status_extension = ScriptUnit.extension(hit_player_unit, "status_system")
 					local num_times_bathed_in_nurgle_liquid = status_extension.num_times_bathed_in_nurgle_liquid or 0
 					status_extension.num_times_bathed_in_nurgle_liquid = num_times_bathed_in_nurgle_liquid + 1
@@ -292,6 +297,8 @@ LiquidAreaDamageTemplates = {
 								statistics_db:increment_stat_and_sync_to_clients(stat_name)
 
 								completed_challenge = true
+
+								QuestSettings.send_completed_message(stat_name)
 
 								break
 							end
@@ -399,7 +406,13 @@ LiquidAreaDamageTemplates = {
 					0,
 					1
 				}
-			}
+			},
+			hit_player_function = function (player_unit, player_and_bot_units, source_unit)
+				if Unit.alive(source_unit) then
+					local blackboard = BLACKBOARDS[source_unit]
+					blackboard.has_dealt_burn_damage = true
+				end
+			end
 		},
 		lamp_oil_fire = {
 			do_direct_damage_ai = true,

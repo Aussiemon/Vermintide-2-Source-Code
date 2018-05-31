@@ -284,7 +284,7 @@ CraftPageCraftItem._handle_input = function (self, dt, t)
 			self._craft_input_time = self._craft_input_time + dt
 		end
 
-		local max_time = 2
+		local max_time = UISettings.crafting_progress_time
 		local progress = math.min(self._craft_input_time / max_time, 1)
 		craft_input_accepted = self:_handle_craft_input_progress(progress)
 

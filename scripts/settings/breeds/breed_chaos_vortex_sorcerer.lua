@@ -48,7 +48,18 @@ local breed_data = {
 	disabled = Development.setting("disable_vortex_sorcerer") or false,
 	hitzone_multiplier_types = {
 		head = "headshot"
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_vortex_sorcerer_killed_while_summoning(blackboard, killer_unit)
+		QuestSettings.check_vortex_sorcerer_killed_while_ally_in_vortex(blackboard, killer_unit)
+		QuestSettings.check_vortex_sorcerer_killed_by_melee(killer_unit, damage_source)
+	end
 }
 
 for key, value in pairs(Breeds.chaos_tentacle_sorcerer) do

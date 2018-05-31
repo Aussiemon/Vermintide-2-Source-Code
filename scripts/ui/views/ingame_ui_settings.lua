@@ -126,16 +126,18 @@ local transitions = {
 		local is_answered = telemetry_survey_view:is_survey_answered()
 		local is_timed_out = telemetry_survey_view:is_survey_timed_out()
 
-		Managers.backend:commit(true)
+		local function commit_complete_callback()
+			if (use_survey and (is_answered or is_timed_out)) or not use_survey or level_key == "inn_level" then
+				Boot.quit_game = true
+				self.current_view = nil
+			else
+				self.current_view = "telemetry_survey"
 
-		if (use_survey and (is_answered or is_timed_out)) or not use_survey or level_key == "inn_level" then
-			Boot.quit_game = true
-			self.current_view = nil
-		else
-			self.current_view = "telemetry_survey"
-
-			telemetry_survey_view:set_transition("end_game")
+				telemetry_survey_view:set_transition("end_game")
+			end
 		end
+
+		Managers.backend:commit(true, commit_complete_callback)
 	end,
 	do_return_to_title_screen = function (self)
 		self.return_to_title_screen = true

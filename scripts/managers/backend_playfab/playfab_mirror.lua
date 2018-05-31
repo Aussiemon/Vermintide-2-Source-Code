@@ -125,7 +125,7 @@ PlayFabMirror.sign_in_reward_request_cb = function (self, result)
 			end
 		end
 
-		self:_request_fix_inventory_data_1()
+		self:_request_quests()
 	end
 end
 
@@ -149,11 +149,15 @@ PlayFabMirror.get_quests_cb = function (self, result)
 		fassert(false, "get_quests_cb: it failed!")
 	else
 		local function_result = result.FunctionResult
-		local current_quests = function_result.current_quests
-		local refresh_available = function_result.daily_quest_refresh_available
+		local current_daily_quests = function_result.current_daily_quests
+		local daily_quest_refresh_available = function_result.daily_quest_refresh_available
 		local daily_quest_update_time = function_result.daily_quest_update_time
+		local current_event_quests = function_result.current_event_quests
 
-		self:set_quest_data(current_quests, refresh_available, daily_quest_update_time)
+		self:set_quest_data("current_daily_quests", current_daily_quests)
+		self:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
+		self:set_quest_data("daily_quest_update_time", tonumber(daily_quest_update_time))
+		self:set_quest_data("current_event_quests", current_event_quests)
 		self:_request_fix_inventory_data_1()
 	end
 end
@@ -469,6 +473,10 @@ PlayFabMirror._check_current_commit = function (self)
 
 			backend_manager:dirtify_interfaces()
 		end
+
+		if commit_data.commit_complete_callback then
+			commit_data.commit_complete_callback(status)
+		end
 	end
 end
 
@@ -549,13 +557,9 @@ PlayFabMirror.get_quest_data = function (self)
 	return self._quest_data
 end
 
-PlayFabMirror.set_quest_data = function (self, quests, refresh_available, daily_quest_update_time)
-	table.clear(self._quest_data)
-
+PlayFabMirror.set_quest_data = function (self, key, value)
 	local quest_data = self._quest_data
-	quest_data.current_quests = quests
-	quest_data.refresh_available = to_boolean(refresh_available)
-	quest_data.daily_quest_update_time = tonumber(daily_quest_update_time)
+	quest_data[key] = value
 end
 
 PlayFabMirror.check_for_errors = function (self)
@@ -608,6 +612,7 @@ PlayFabMirror.add_item = function (self, backend_id, item)
 
 	ItemHelper.mark_backend_id_as_new(backend_id)
 	self:_re_evaluate_best_power_level(item)
+	ItemHelper.on_inventory_item_added(item)
 end
 
 PlayFabMirror.remove_item = function (self, backend_id)
@@ -656,7 +661,7 @@ PlayFabMirror.get_career_data_request_cb = function (self, callback_func, result
 	table.dump(result, nil, 5)
 end
 
-PlayFabMirror.commit = function (self, skip_queue)
+PlayFabMirror.commit = function (self, skip_queue, commit_complete_callback)
 	local queued_commit = self._queued_commit
 	local id = nil
 
@@ -665,9 +670,9 @@ PlayFabMirror.commit = function (self, skip_queue)
 			local id = queued_commit.id
 
 			print("FORCE COMMIT", id)
-			self:_commit_internal(id, skip_queue)
+			self:_commit_internal(id, skip_queue, commit_complete_callback)
 		else
-			id = self:_commit_internal(nil, skip_queue)
+			id = self:_commit_internal(nil, skip_queue, commit_complete_callback)
 		end
 	elseif not queued_commit.active then
 		id = self:_queue_commit()
@@ -720,7 +725,7 @@ local hero_attributes = {
 local num_updates_per_request = 5
 local num_requests = math.ceil(#keys / num_updates_per_request)
 
-PlayFabMirror._commit_internal = function (self, queue_id, skip_queue)
+PlayFabMirror._commit_internal = function (self, queue_id, skip_queue, commit_complete_callback)
 	print("PlayFabMirror:_commit_internal", queue_id, skip_queue)
 
 	local career_data = self._career_data
@@ -789,21 +794,28 @@ PlayFabMirror._commit_internal = function (self, queue_id, skip_queue)
 		num_updates = 0,
 		timeout = os.time() + 15,
 		status = status,
-		updates_to_make = num_updates
+		updates_to_make = num_updates,
+		commit_complete_callback = commit_complete_callback
 	}
 	self._commit_current_id = commit_id
 	local request = nil
+	local stats_interface = Managers.backend:get_interface("statistics")
+	local game_mode_key = Managers.state and Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 
-	if skip_queue then
-		local save_statistics_cb = callback(self, "save_statistics_cb", commit_id)
-		request = Managers.backend:get_interface("statistics"):save(save_statistics_cb)
+	if game_mode_key == "inn" then
+		stats_interface:save()
+	end
 
-		if request then
-			commit.status = "waiting"
-			commit.wait_for_stats = true
+	local save_statistics_cb = callback(self, "save_statistics_cb", commit_id)
+	request = stats_interface:get_stat_save_request(save_statistics_cb)
 
-			self._request_queue:enqueue("save_statistics", request, skip_queue)
-		end
+	if request and not script_data["eac-untrusted"] then
+		local eac_challenge = true
+		commit.status = "waiting"
+		commit.wait_for_stats = true
+
+		self._request_queue:enqueue("save_statistics", request, skip_queue, eac_challenge)
+		stats_interface:clear_saved_stats()
 	end
 
 	local save_keep_decorations_cb = callback(self, "save_keep_decorations_cb", commit_id)

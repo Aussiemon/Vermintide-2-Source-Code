@@ -573,6 +573,90 @@ LevelSettings.ussingen = {
 				healing = 5,
 				potions = 5
 			}
+		},
+		{
+			primary = {
+				ammo = 4,
+				potions = 3,
+				grenades = 3,
+				healing = {
+					first_aid_kit = 2,
+					healing_draught = 3
+				},
+				level_events = {
+					explosive_barrel = 3,
+					lamp_oil = 3
+				}
+			},
+			secondary = {
+				ammo = 3,
+				grenades = 5,
+				healing = 5,
+				potions = 5
+			}
+		},
+		{
+			primary = {
+				ammo = 4,
+				potions = 3,
+				grenades = 3,
+				healing = {
+					first_aid_kit = 2,
+					healing_draught = 3
+				},
+				level_events = {
+					explosive_barrel = 3,
+					lamp_oil = 3
+				}
+			},
+			secondary = {
+				ammo = 3,
+				grenades = 5,
+				healing = 5,
+				potions = 5
+			}
+		},
+		{
+			primary = {
+				ammo = 4,
+				potions = 3,
+				grenades = 3,
+				healing = {
+					first_aid_kit = 2,
+					healing_draught = 3
+				},
+				level_events = {
+					explosive_barrel = 3,
+					lamp_oil = 3
+				}
+			},
+			secondary = {
+				ammo = 3,
+				grenades = 5,
+				healing = 5,
+				potions = 5
+			}
+		},
+		{
+			primary = {
+				ammo = 4,
+				potions = 3,
+				grenades = 3,
+				healing = {
+					first_aid_kit = 2,
+					healing_draught = 3
+				},
+				level_events = {
+					explosive_barrel = 0,
+					lamp_oil = 0
+				}
+			},
+			secondary = {
+				ammo = 3,
+				grenades = 5,
+				healing = 5,
+				potions = 5
+			}
 		}
 	},
 	loading_screen_wwise_events = {

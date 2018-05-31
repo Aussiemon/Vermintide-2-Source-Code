@@ -6089,6 +6089,15 @@ Features that make player mechanics nicer to work with.
 		category = "Progression"
 	},
 	{
+		description = "Completely resets all stats for local player. Requires that the player is spawned inside a level. REQUIRES RESTART AFTERWARDS!",
+		category = "Progression",
+		setting_name = "reset_statistics_database",
+		func = function ()
+			print("Starting statistics reset!")
+			Managers.backend:get_interface("statistics"):reset()
+		end
+	},
+	{
 		description = "",
 		category = "Rune Weapons",
 		setting_name = "Generate weapons with properties",

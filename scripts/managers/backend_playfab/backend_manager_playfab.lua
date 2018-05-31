@@ -337,11 +337,7 @@ BackendManagerPlayFab.update = function (self, dt)
 	self:_update_interface("crafting", dt)
 	self:_update_interface("talents", dt)
 	self:_update_interface("loot", dt)
-
-	if settings.quests_enabled then
-		self:_update_interface("boons", dt)
-		self:_update_interface("quests", dt)
-	end
+	self:_update_interface("quests", dt)
 
 	if signin then
 		self:_update_state()
@@ -583,7 +579,7 @@ BackendManagerPlayFab.available = function (self)
 	return false
 end
 
-BackendManagerPlayFab.commit = function (self, skip_queue)
+BackendManagerPlayFab.commit = function (self, skip_queue, commit_complete_callback)
 	if self._local_save_loaded then
 		local function save_callback(info)
 			if info.error then
@@ -599,7 +595,7 @@ BackendManagerPlayFab.commit = function (self, skip_queue)
 	end
 
 	if self._backend_mirror then
-		return self._backend_mirror:commit(skip_queue)
+		return self._backend_mirror:commit(skip_queue, commit_complete_callback)
 	end
 end
 

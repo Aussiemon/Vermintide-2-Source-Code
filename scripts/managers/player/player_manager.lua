@@ -264,8 +264,6 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 		self:relinquish_unit_ownership(unit)
 	end
 
-	self:set_stats_backend(player)
-
 	self._players[unique_id] = nil
 	self._human_players[unique_id] = nil
 	local peer_table = self._players_by_peer[peer_id]
@@ -322,11 +320,10 @@ end
 PlayerManager.num_alive_allies = function (self, player)
 	local players = Managers.player:human_and_bot_players()
 	local num_alive = 0
-	local local_player = self:local_player()
 
-	for _, player in pairs(players) do
-		if player ~= local_player then
-			local unit = player.player_unit
+	for _, player_ally in pairs(players) do
+		if player ~= player_ally then
+			local unit = player_ally.player_unit
 
 			if Unit.alive(unit) then
 				local status_extension = ScriptUnit.extension(unit, "status_system")

@@ -50,13 +50,8 @@ require("scripts/managers/world_interaction/world_interaction_manager")
 require("scripts/managers/decal/decal_manager")
 require("scripts/managers/performance_title/performance_title_manager")
 require("scripts/settings/quest_settings")
-
-if Development.parameter("v2_achievements") then
-	require("scripts/managers/achievements/achievement_manager2")
-	require("scripts/managers/quest/quest_manager")
-else
-	require("scripts/managers/achievements/achievement_manager")
-end
+require("scripts/managers/achievements/achievement_manager")
+require("scripts/managers/quest/quest_manager")
 
 StateIngame = class(StateIngame)
 StateIngame.NAME = "StateIngame"
@@ -115,20 +110,12 @@ StateIngame.on_enter = function (self)
 
 	Managers.light_fx:set_lightfx_color_scheme((self.is_in_inn and "inn_level") or "ingame")
 
-	if loading_context.statistics_db then
-		self.statistics_db = loading_context.statistics_db
+	local db = StatisticsDatabase:new()
 
-		if not self.is_in_inn then
-			self.statistics_db:reset_session_stats()
-		end
-	else
-		local db = StatisticsDatabase:new()
+	db:register("session", "session", nil)
 
-		db:register("session", "session", nil)
-
-		loading_context.statistics_db = db
-		self.statistics_db = db
-	end
+	loading_context.statistics_db = db
+	self.statistics_db = db
 
 	Managers.player:set_statistics_db(self.statistics_db)
 
@@ -1314,7 +1301,7 @@ StateIngame._check_exit = function (self, t)
 			Managers.backend:stop_tutorial()
 		end
 
-		if Managers.deed:has_deed() and not self.is_in_inn then
+		if Managers.deed:has_deed() and not self.is_in_inn and self.is_server then
 			Managers.deed:reset()
 		end
 
@@ -1983,12 +1970,8 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	Managers.state.network:set_unit_spawner(unit_spawner)
 
 	Managers.state.bot_nav_transition = BotNavTransitionManager:new(self.world, is_server, network_event_delegate)
-
-	if Development.parameter("v2_achievements") then
-		Managers.state.quest = QuestManager:new(self.statistics_db)
-	end
-
-	Managers.state.achievement = AchievementManager:new(self.world, self.statistics_db, self.is_in_inn)
+	Managers.state.quest = QuestManager:new(self.statistics_db)
+	Managers.state.achievement = AchievementManager:new(self.world, self.statistics_db)
 	Managers.state.blood = BloodManager:new(self.world)
 	Managers.state.performance_title = PerformanceTitleManager:new(self.network_transmit, self.statistics_db, is_server)
 

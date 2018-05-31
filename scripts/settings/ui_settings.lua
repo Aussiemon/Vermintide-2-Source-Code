@@ -1,8 +1,10 @@
+require("scripts/ui/ui_layer")
+
 UISettings = {
-	tooltip_wait_duration = 0.1,
 	start_drag_threshold = 0.15,
 	double_click_threshold = 0.1,
 	tooltip_fade_in_speed = 4,
+	crafting_progress_time = 0.5,
 	max_craft_material_presentation_amount = 999,
 	chest_upgrade_score_topics_min_duration = 0.5,
 	chest_upgrade_score_topics_max_duration = 7,
@@ -10,6 +12,10 @@ UISettings = {
 	hero_panel_height = 120,
 	use_subtitles = true,
 	max_fatigue_shields = 20,
+	crafting_animation_out_time = 0.3,
+	tooltip_wait_duration = 0.1,
+	crafting_animation_in_time = 0.3,
+	crafting_animation_wait_time = 0.5,
 	game_start_windows = {
 		frame = "menu_frame_09",
 		background = "menu_frame_bg_01",
@@ -347,12 +353,12 @@ UISettings = {
 			display_name = "display_name_default_empire_soldier_es_2h_war_hammer"
 		},
 		es_sword_shield = {
-			inventory_icon = "icon_wpn_empire_shield_01_t1_sword",
+			inventory_icon = "icon_wpn_empire_shield_02_sword",
 			description = "description_default_empire_soldier_es_1h_sword_shield",
 			display_name = "display_name_default_empire_soldier_es_1h_sword_shield"
 		},
 		es_mace_shield = {
-			inventory_icon = "icon_wpn_empire_shield_01_t1_mace",
+			inventory_icon = "icon_wpn_empire_shield_02_mace",
 			description = "description_default_empire_soldier_es_1h_mace_shield",
 			display_name = "display_name_default_empire_soldier_es_1h_mace_shield"
 		},
@@ -705,6 +711,76 @@ UISettings = {
 			0,
 			0,
 			0
+		}
+	},
+	console_menu_scenegraphs = {
+		screen = {
+			scale = "fit",
+			size = {
+				1920,
+				1080
+			},
+			position = {
+				0,
+				0,
+				UILayer.default + 1
+			}
+		},
+		area = {
+			vertical_alignment = "top",
+			parent = "screen",
+			horizontal_alignment = "left",
+			size = {
+				1560,
+				840
+			},
+			position = {
+				180,
+				-120,
+				1
+			}
+		},
+		area_left = {
+			vertical_alignment = "top",
+			parent = "area",
+			horizontal_alignment = "left",
+			size = {
+				560,
+				840
+			},
+			position = {
+				0,
+				0,
+				1
+			}
+		},
+		area_right = {
+			vertical_alignment = "center",
+			parent = "area_divider",
+			horizontal_alignment = "left",
+			size = {
+				930,
+				840
+			},
+			position = {
+				60,
+				0,
+				1
+			}
+		},
+		area_divider = {
+			vertical_alignment = "center",
+			parent = "area_left",
+			horizontal_alignment = "right",
+			size = {
+				50,
+				840
+			},
+			position = {
+				60,
+				0,
+				1
+			}
 		}
 	}
 }

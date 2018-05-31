@@ -105,10 +105,8 @@ local function init_stat(stat, backend_stats)
 
 			if backend_raw_value then
 				stat.persistent_value = convert_from_backend(backend_raw_value, stat.database_type)
-			elseif stat.database_type == nil then
+			else
 				stat.persistent_value = 0
-			elseif stat.database_type == "hexarray" then
-				stat.persistent_value = table.clone(stat.value)
 			end
 		end
 	else

@@ -2710,10 +2710,6 @@ TerrorEventBlueprints = {
 			max_active_enemies = 100
 		},
 		{
-			"set_time_challenge",
-			time_challenge_name = "farmlands_speed_event"
-		},
-		{
 			"disable_kick"
 		},
 		{
@@ -2804,6 +2800,10 @@ TerrorEventBlueprints = {
 			"spawn_at_raw",
 			spawner_id = "hay_barn_bridge_guards",
 			breed_name = "chaos_warrior"
+		},
+		{
+			"set_time_challenge",
+			time_challenge_name = "farmlands_speed_event"
 		}
 	},
 	farmlands_prisoner_event_hay_barn = {

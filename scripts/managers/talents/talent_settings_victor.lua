@@ -556,11 +556,23 @@ TalentBuffTemplates.witch_hunter = {
 			}
 		}
 	},
-	victor_bountyhunter_melee_damage_on_no_ammo = {
+	victor_bountyhunter_increased_melee_damage_on_no_ammo_add = {
 		buffs = {
 			{
 				buff_to_add = "victor_bountyhunter_melee_damage_on_no_ammo_buff",
-				update_func = "activate_buff_on_no_ammo"
+				event = "on_last_ammo_used",
+				event_buff = true,
+				buff_func = ProcFunctions.bardin_ranger_add_power_on_no_ammo_proc
+			}
+		}
+	},
+	victor_bountyhunter_increased_melee_damage_on_no_ammo_remove = {
+		buffs = {
+			{
+				event = "on_gained_ammo_from_no_ammo",
+				buff_to_remove = "victor_bountyhunter_melee_damage_on_no_ammo_buff",
+				event_buff = true,
+				buff_func = ProcFunctions.bardin_ranger_remove_power_on_no_ammo_proc
 			}
 		}
 	},
@@ -569,7 +581,8 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				max_stacks = 1,
 				icon = "victor_bountyhunter_melee_damage_on_no_ammo",
-				stat_buff = StatBuffIndex.INCREASED_WEAPON_DAMAGE_MELEE
+				priority_buff = true,
+				stat_buff = StatBuffIndex.POWER_LEVEL
 			}
 		}
 	},
@@ -1086,6 +1099,7 @@ Talents.witch_hunter = {
 		description = "victor_zealot_increased_critical_hit_damage_from_passive_desc",
 		name = "victor_zealot_increased_critical_hit_damage_from_passive",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "victor_zealot_increased_critical_hit_damage_from_passive",
 		description_values = {
 			{
@@ -1293,7 +1307,8 @@ Talents.witch_hunter = {
 		},
 		requirements = {},
 		buffs = {
-			"victor_bountyhunter_melee_damage_on_no_ammo"
+			"victor_bountyhunter_increased_melee_damage_on_no_ammo_add",
+			"victor_bountyhunter_increased_melee_damage_on_no_ammo_remove"
 		},
 		buff_data = {}
 	},

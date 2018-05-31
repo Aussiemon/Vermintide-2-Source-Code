@@ -270,7 +270,7 @@ GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
 	if buff_extension then
 		buff_extension:trigger_procs("on_ammo_used")
 
-		if self:ammo_count() == 0 then
+		if self:total_remaining_ammo() == 0 then
 			buff_extension:trigger_procs("on_last_ammo_used")
 		end
 
@@ -283,7 +283,7 @@ GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
 
 			Managers.state.network.network_transmit:send_rpc_server("rpc_proc_event", peer_id, local_player_id, event_id)
 
-			if self:ammo_count() == 0 then
+			if self:total_remaining_ammo() == 0 then
 				event_id = NetworkLookup.proc_events.on_last_ammo_used
 
 				Managers.state.network.network_transmit:send_rpc_server("rpc_proc_event", peer_id, local_player_id, event_id)

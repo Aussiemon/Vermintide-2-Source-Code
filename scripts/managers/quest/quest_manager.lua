@@ -5,23 +5,11 @@ local quest_keys = {
 		"daily_quest_1",
 		"daily_quest_2",
 		"daily_quest_3"
-	}
-}
-local stat_names_by_quest_key = {
-	daily_quest_1 = {
-		"daily_quest_1_stat_1",
-		"daily_quest_1_stat_2",
-		"daily_quest_1_stat_3"
 	},
-	daily_quest_2 = {
-		"daily_quest_2_stat_1",
-		"daily_quest_2_stat_2",
-		"daily_quest_2_stat_3"
-	},
-	daily_quest_3 = {
-		"daily_quest_3_stat_1",
-		"daily_quest_3_stat_2",
-		"daily_quest_3_stat_3"
+	event = {
+		"event_quest_1",
+		"event_quest_2",
+		"event_quest_3"
 	}
 }
 QuestManager = class(QuestManager)
@@ -29,21 +17,34 @@ QuestManager = class(QuestManager)
 QuestManager.init = function (self, statistics_db)
 	self._statistics_db = statistics_db
 	local backend_interface_quests = Managers.backend:get_interface("quests")
-	local quests = backend_interface_quests:get_quests()
 	self._backend_interface_quests = backend_interface_quests
 
 	Managers.state.event:register(self, "event_stat_incremented", "event_stat_incremented")
 end
 
 QuestManager.event_stat_incremented = function (self, stats_id, ...)
+	local statistics_db = self._statistics_db
+	local quests = self._backend_interface_quests:get_quests()
+	local daily_quests = quests.daily
+	local event_quests = quests.event
+
+	if daily_quests then
+		self:_increment_quest_stats(daily_quests, stats_id, ...)
+	end
+
+	if event_quests then
+		self:_increment_quest_stats(event_quests, stats_id, ...)
+	end
+end
+
+QuestManager._increment_quest_stats = function (self, quests, stats_id, ...)
 	local templates = quest_templates.quests
 	local statistics_db = self._statistics_db
-	local stats = statistics_db:get_all_stats(stats_id)
-	local quests = self._backend_interface_quests:get_quests()
 	local arg_n = select("#", ...)
 
-	for quest_key, quest_id in pairs(quests) do
-		local template = templates[quest_id]
+	for quest_key, quest_data in pairs(quests) do
+		local quest_name = quest_data.name
+		local template = templates[quest_name]
 		local stat_mappings = template.stat_mappings
 
 		for i = 1, #stat_mappings, 1 do
@@ -62,7 +63,7 @@ QuestManager.event_stat_incremented = function (self, stats_id, ...)
 			end
 
 			if success then
-				local stat_name = stat_names_by_quest_key[quest_key][i]
+				local stat_name = QuestSettings.stat_mappings[quest_key][i]
 
 				statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
 
@@ -91,7 +92,7 @@ QuestManager.update = function (self, dt, t)
 		if poll_completed then
 			local rewards = backend_interface_quests:get_quest_rewards(reward_poll_id)
 			local quest_key = rewards.quest_key
-			local stat_names = stat_names_by_quest_key[quest_key]
+			local stat_names = QuestSettings.stat_mappings[quest_key]
 
 			for i = 1, #stat_names, 1 do
 				local stat_name = stat_names[i]
@@ -114,7 +115,7 @@ QuestManager.update = function (self, dt, t)
 
 		if poll_completed then
 			if quest_key then
-				local stat_names = stat_names_by_quest_key[quest_key]
+				local stat_names = QuestSettings.stat_mappings[quest_key]
 
 				for i = 1, #stat_names, 1 do
 					local stat_name = stat_names[i]
@@ -132,6 +133,8 @@ end
 
 QuestManager.get_quest_outline = function (self)
 	local quests = self._backend_interface_quests:get_quests()
+	local daily_quests = quests.daily or {}
+	local event_quests = quests.event or {}
 	local outline = table.clone(outline)
 	local quest_categories = outline.categories
 
@@ -145,9 +148,29 @@ QuestManager.get_quest_outline = function (self)
 
 			for j = 1, #keys, 1 do
 				local key = keys[j]
-				local quest_name = quests[key]
+				local quest_data = daily_quests[key]
 
-				if quest_name then
+				if quest_data then
+					local quest_name = quest_data.name
+					entries[#entries + 1] = quest_name
+				end
+			end
+		elseif quest_type == "event" then
+			local entries = catergory.entries
+			local keys = quest_keys.event
+
+			for j = 1, #keys, 1 do
+				local key = keys[j]
+				local quest_data = event_quests[key]
+
+				if quest_data then
+					local quest_name = quest_data.name
+
+					if not entries then
+						catergory.entries = {}
+						entries = catergory.entries
+					end
+
 					entries[#entries + 1] = quest_name
 				end
 			end
@@ -158,12 +181,12 @@ QuestManager.get_quest_outline = function (self)
 end
 
 QuestManager.get_data_by_id = function (self, quest_id)
-	local quests = self._backend_interface_quests:get_quests()
-	local quest_key = table.find(quests, quest_id)
+	local backend_interface_quests = self._backend_interface_quests
+	local quest_key = backend_interface_quests:get_quest_key(quest_id)
 	local quest_data = quest_templates.quests[quest_id]
 
-	assert(quest_key)
-	assert(quest_data)
+	fassert(quest_key, "Trying to fetch data for quest %q not found in user's quest list.", quest_id)
+	fassert(quest_data, "Quest %q does not exist in quest_templates.", quest_id)
 
 	local name, desc, completed, progress, requirements, claimed = nil
 	local player_manager = Managers.player
@@ -245,6 +268,7 @@ QuestManager.get_data_by_id = function (self, quest_id)
 		name = name,
 		desc = desc,
 		icon = quest_data.icon,
+		summary_icon = quest_data.summary_icon,
 		completed = completed,
 		progress = progress,
 		requirements = requirements,
@@ -254,15 +278,45 @@ QuestManager.get_data_by_id = function (self, quest_id)
 	return evaluated_quest
 end
 
-QuestManager.refresh_quest = function (self, quest_id)
-	if self._reward_poll_id or self._refresh_poll_id then
-		return "Polling in progress."
+QuestManager.has_any_unclaimed_quests = function (self)
+	local outline = self:get_quest_outline()
+
+	for _, category in ipairs(outline.categories) do
+		local entries = category.entries
+
+		if entries then
+			for _, entry in ipairs(entries) do
+				local entry_data = self:get_data_by_id(entry)
+
+				if entry_data.completed and not entry_data.claimed then
+					return true
+				end
+			end
+		end
 	end
 
-	local quests = self._backend_interface_quests:get_quests()
-	local quest_key = table.find(quests, quest_id)
+	return false
+end
+
+QuestManager.can_refresh_daily_quest = function (self)
 	local backend_interface_quests = self._backend_interface_quests
-	local refresh_poll_id = backend_interface_quests:refresh_quest(quest_key)
+	local can_refresh = backend_interface_quests:can_refresh_daily_quest()
+
+	if not can_refresh then
+		return nil, "Refresh Unavailable"
+	end
+
+	if self._reward_poll_id or self._refresh_poll_id then
+		return nil, "Polling in progress."
+	end
+
+	return true
+end
+
+QuestManager.refresh_daily_quest = function (self, quest_id)
+	local backend_interface_quests = self._backend_interface_quests
+	local quest_key = backend_interface_quests:get_quest_key(quest_id)
+	local refresh_poll_id = backend_interface_quests:refresh_daily_quest(quest_key)
 	self._refresh_poll_id = refresh_poll_id
 
 	return refresh_poll_id
@@ -272,29 +326,13 @@ QuestManager.polling_quest_refresh = function (self)
 	return (self._refresh_poll_id and true) or false
 end
 
-QuestManager.can_refresh_quest = function (self)
-	local backend_interface_quests = self._backend_interface_quests
-	local can_refresh = backend_interface_quests:can_refresh_quest()
-
-	if not can_refresh then
-		return nil, "Refresh Unavailable"
-	end
-
-	if self._reward_poll_id or self._refresh_poll_id then
-		return "Polling in progress."
-	end
-
-	return true
-end
-
 QuestManager.claim_reward = function (self, quest_id)
 	if self._reward_poll_id or self._refresh_poll_id then
 		return "Polling in progress."
 	end
 
-	local quests = self._backend_interface_quests:get_quests()
-	local quest_key = table.find(quests, quest_id)
 	local backend_interface_quests = self._backend_interface_quests
+	local quest_key = backend_interface_quests:get_quest_key(quest_id)
 	local reward_poll_id = backend_interface_quests:claim_quest_rewards(quest_key)
 	self._reward_poll_id = reward_poll_id
 
@@ -306,9 +344,13 @@ QuestManager.polling_quest_reward = function (self)
 end
 
 QuestManager.can_claim_quest_rewards = function (self, quest_id)
-	local quests = self._backend_interface_quests:get_quests()
-	local quest_key = table.find(quests, quest_id)
 	local backend_interface_quests = self._backend_interface_quests
+	local quest_key = backend_interface_quests:get_quest_key(quest_id)
+
+	if not quest_key then
+		return nil, "Quest not currently active"
+	end
+
 	local can_claim = backend_interface_quests:can_claim_quest_rewards(quest_key)
 
 	if not can_claim then
@@ -316,20 +358,40 @@ QuestManager.can_claim_quest_rewards = function (self, quest_id)
 	end
 
 	if self._reward_poll_id or self._refresh_poll_id then
-		return "Polling in progress."
+		return nil, "Polling in progress."
 	end
 
 	return true
 end
 
 QuestManager.time_until_new_daily_quest = function (self)
-	local current_utc = os.time(os.date("!*t"))
 	local backend_interface_quests = self._backend_interface_quests
 	local next_quest_time = backend_interface_quests:get_daily_quest_update_time()
-	local difference = next_quest_time - current_utc * 1000
-	local difference_in_seconds = difference / 1000
 
-	return difference_in_seconds
+	return next_quest_time
+end
+
+QuestManager.time_left_on_event_quest = function (self)
+	local backend_interface_quests = self._backend_interface_quests
+	local quests = backend_interface_quests:get_quests()
+	local event_quests = quests.event
+
+	if event_quests then
+		local keys = quest_keys.event
+
+		for i = 1, #keys, 1 do
+			local key = keys[i]
+			local quest_data = event_quests[key]
+
+			if quest_data then
+				local time_left = backend_interface_quests:get_time_left_on_event_quest(key)
+
+				return time_left
+			end
+		end
+	end
+
+	return 0
 end
 
 return

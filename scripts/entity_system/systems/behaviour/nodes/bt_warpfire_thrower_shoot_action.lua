@@ -352,7 +352,7 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 					if buff_extension then
 						local buff_name = "warpfire_thrower_face_base"
 
-						if is_ai_unit and not hit_ai_units[hit_unit] then
+						if is_ai_unit and not hit_ai_units[hit_unit] and AiUtils.unit_alive(hit_unit) then
 							local ai_push_data = action.ai_push_data
 							local stagger_impact = ai_push_data.stagger_impact
 							local duration_table = ai_push_data.stagger_duration
@@ -379,7 +379,7 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 							if is_valid_target then
 								buff_system:add_buff(hit_unit, buff_name, unit)
 							end
-						else
+						elseif AiUtils.unit_alive(hit_unit) then
 							buff_system:add_buff(hit_unit, buff_name, unit)
 						end
 					end
@@ -500,6 +500,7 @@ BTWarpfireThrowerShootAction._attack_fire = function (self, unit, warpfire_data,
 	self:_create_warpfire_blob(unit, warpfire_data, action, blackboard, t)
 
 	warpfire_data.is_firing = true
+	blackboard.has_fired = true
 end
 
 BTWarpfireThrowerShootAction._create_warpfire_blob = function (self, unit, data, action, blackboard, t)

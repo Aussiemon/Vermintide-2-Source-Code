@@ -209,7 +209,17 @@ local breed_data = {
 		vortex_near = 1,
 		stormfiend_warpfire = 1,
 		vortex_danger_zone = 1
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_warpfire_kill_before_shooting(blackboard, killer_unit)
+		QuestSettings.check_warpfire_kill_on_power_cell(death_hit_zone, killer_unit)
+	end
 }
 Breeds.skaven_warpfire_thrower = table.create_copy(Breeds.skaven_warpfire_thrower, breed_data)
 local action_data = {

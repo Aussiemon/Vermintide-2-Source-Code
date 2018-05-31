@@ -31,7 +31,6 @@ local breed_data = {
 	radius = 1,
 	max_chain_stagger_time = 2,
 	bone_lod_level = 1,
-	dialogue_source_name = "chaos_exalted_sorcerer",
 	difficulty_kill_achievement = "kill_chaos_exalted_sorcerer_difficulty_rank",
 	race = "chaos",
 	disable_second_hit_ragdoll = true,
@@ -41,6 +40,7 @@ local breed_data = {
 	player_locomotion_constrain_radius = 0.7,
 	smart_object_template = "special",
 	poison_resistance = 100,
+	dialogue_source_name = "chaos_exalted_sorcerer",
 	far_off_despawn_immunity = true,
 	is_of_interest_func = "is_of_interest_boss_sorcerer",
 	vortexable = false,
@@ -188,7 +188,16 @@ local breed_data = {
 		teleporters = 5,
 		bot_poison_wind = 2,
 		fire_grenade = 10
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_killed_lord_as_last_player_standing(killer_unit)
+	end
 }
 Breeds.chaos_exalted_sorcerer = table.create_copy(Breeds.chaos_exalted_sorcerer, breed_data)
 local MISSILE_RADIUS = 4

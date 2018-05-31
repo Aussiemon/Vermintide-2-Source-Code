@@ -5,6 +5,104 @@ items_atlas = {
 			80
 		},
 		uv00 = {
+			0.914551,
+			0.165039
+		},
+		uv11 = {
+			0.934082,
+			0.204102
+		}
+	},
+	icon_slayer_hat_0003 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.894043,
+			0.165039
+		},
+		uv11 = {
+			0.913574,
+			0.204102
+		}
+	},
+	icon_ranger_hat_0000 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.873535,
+			0.165039
+		},
+		uv11 = {
+			0.893066,
+			0.204102
+		}
+	},
+	icon_wpn_brw_flaming_sword_03_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.853027,
+			0.165039
+		},
+		uv11 = {
+			0.872559,
+			0.204102
+		}
+	},
+	icon_witchhunter_hat_0000 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.83252,
+			0.165039
+		},
+		uv11 = {
+			0.852051,
+			0.204102
+		}
+	},
+	icon_wpn_we_2h_axe_04_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.812012,
+			0.165039
+		},
+		uv11 = {
+			0.831543,
+			0.204102
+		}
+	},
+	icon_scholar_hat_0009 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.791504,
+			0.165039
+		},
+		uv11 = {
+			0.811035,
+			0.204102
+		}
+	},
+	icon_wpn_dw_axe_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
 			0.770996,
 			0.165039
 		},
@@ -13,7 +111,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_slayer_hat_0005 = {
+	icon_unchained_hat_0006 = {
 		size = {
 			80,
 			80
@@ -27,7 +125,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_ranger_hat_0001 = {
+	icon_wpn_empire_pistol_repeater_t3 = {
 		size = {
 			80,
 			80
@@ -41,7 +139,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_portrait_frame_0035 = {
+	icon_zealot_hat_0005 = {
 		size = {
 			80,
 			80
@@ -55,7 +153,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_witchhunter_hat_0002 = {
+	icon_wpn_dw_2h_axe_01_t1 = {
 		size = {
 			80,
 			80
@@ -69,7 +167,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_skin_knight_black_and_gold = {
+	icon_scholar_hat_0001 = {
 		size = {
 			80,
 			80
@@ -83,7 +181,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_scholar_hat_0010 = {
+	icon_skin_unchained_brown_and_white = {
 		size = {
 			80,
 			80
@@ -97,7 +195,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_portrait_frame_0056 = {
+	icon_shade_hat_0006 = {
 		size = {
 			80,
 			80
@@ -111,7 +209,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_unchained_hat_0008 = {
+	icon_ironbreaker_hat_0011 = {
 		size = {
 			80,
 			80
@@ -125,7 +223,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_skin_adept_brown_and_yellow = {
+	icon_slayer_hat_0011 = {
 		size = {
 			80,
 			80
@@ -139,7 +237,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_loot_chest_d1_t5 = {
+	icon_wpn_dw_handgun_02_t1 = {
 		size = {
 			80,
 			80
@@ -153,7 +251,7 @@ items_atlas = {
 			0.983398
 		}
 	},
-	icon_portrait_frame_0048 = {
+	icon_waywatcher_hat_0004 = {
 		size = {
 			80,
 			80
@@ -167,7 +265,7 @@ items_atlas = {
 			0.942383
 		}
 	},
-	icon_scholar_hat_0002 = {
+	icon_skin_shade_crimson = {
 		size = {
 			80,
 			80
@@ -181,7 +279,7 @@ items_atlas = {
 			0.901367
 		}
 	},
-	icon_portrait_frame_0003 = {
+	icon_witchhunter_hat_0008 = {
 		size = {
 			80,
 			80
@@ -195,7 +293,7 @@ items_atlas = {
 			0.860352
 		}
 	},
-	icon_shade_hat_0007 = {
+	icon_wpn_we_2h_axe_01_t1 = {
 		size = {
 			80,
 			80
@@ -209,7 +307,7 @@ items_atlas = {
 			0.819336
 		}
 	},
-	icon_ironbreaker_hat_0011 = {
+	icon_loot_chest_d2_t1 = {
 		size = {
 			80,
 			80
@@ -221,104 +319,6 @@ items_atlas = {
 		uv11 = {
 			0.585449,
 			0.77832
-		}
-	},
-	icon_unchained_hat_0000 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.565918,
-			0.698242
-		},
-		uv11 = {
-			0.585449,
-			0.737305
-		}
-	},
-	icon_portrait_frame_0067 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.565918,
-			0.657227
-		},
-		uv11 = {
-			0.585449,
-			0.696289
-		}
-	},
-	icon_waywatcher_hat_0006 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.565918,
-			0.616211
-		},
-		uv11 = {
-			0.585449,
-			0.655273
-		}
-	},
-	icon_necklace_07 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.565918,
-			0.575195
-		},
-		uv11 = {
-			0.585449,
-			0.614258
-		}
-	},
-	icon_zealot_hat_0003 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.565918,
-			0.53418
-		},
-		uv11 = {
-			0.585449,
-			0.573242
-		}
-	},
-	icon_skin_ironbreaker_iron = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.565918,
-			0.493164
-		},
-		uv11 = {
-			0.585449,
-			0.532227
-		}
-	},
-	icon_loot_chest_d3_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.565918,
-			0.452148
-		},
-		uv11 = {
-			0.585449,
-			0.491211
 		}
 	},
 	icon_huntsman_hat_0001 = {
@@ -328,6 +328,104 @@ items_atlas = {
 		},
 		uv00 = {
 			0.565918,
+			0.698242
+		},
+		uv11 = {
+			0.585449,
+			0.737305
+		}
+	},
+	icon_ranger_hat_0004 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.565918,
+			0.657227
+		},
+		uv11 = {
+			0.585449,
+			0.696289
+		}
+	},
+	icon_wpn_we_sword_02_t1_dagger_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.565918,
+			0.616211
+		},
+		uv11 = {
+			0.585449,
+			0.655273
+		}
+	},
+	icon_scholar_hat_0005 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.565918,
+			0.575195
+		},
+		uv11 = {
+			0.585449,
+			0.614258
+		}
+	},
+	icon_skin_scholar_black_and_gold = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.565918,
+			0.53418
+		},
+		uv11 = {
+			0.585449,
+			0.573242
+		}
+	},
+	icon_shade_hat_0002 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.565918,
+			0.493164
+		},
+		uv11 = {
+			0.585449,
+			0.532227
+		}
+	},
+	icon_trinket_07 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.565918,
+			0.452148
+		},
+		uv11 = {
+			0.585449,
+			0.491211
+		}
+	},
+	icon_shade_hat_0010 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.565918,
 			0.411133
 		},
 		uv11 = {
@@ -335,7 +433,7 @@ items_atlas = {
 			0.450195
 		}
 	},
-	icon_ranger_hat_0005 = {
+	icon_slayer_hat_0002 = {
 		size = {
 			80,
 			80
@@ -349,7 +447,7 @@ items_atlas = {
 			0.40918
 		}
 	},
-	icon_skin_ranger_v1 = {
+	icon_slayer_hat_0007 = {
 		size = {
 			80,
 			80
@@ -363,7 +461,7 @@ items_atlas = {
 			0.368164
 		}
 	},
-	icon_scholar_hat_0006 = {
+	icon_wpn_dw_2h_hammer_01_t1 = {
 		size = {
 			80,
 			80
@@ -377,7 +475,7 @@ items_atlas = {
 			0.327148
 		}
 	},
-	icon_necklace_03 = {
+	icon_unchained_hat_0002 = {
 		size = {
 			80,
 			80
@@ -391,7 +489,7 @@ items_atlas = {
 			0.286133
 		}
 	},
-	icon_shade_hat_0003 = {
+	icon_wpn_emp_sword_02_t1 = {
 		size = {
 			80,
 			80
@@ -405,7 +503,7 @@ items_atlas = {
 			0.245117
 		}
 	},
-	icon_portrait_frame_0019 = {
+	icon_waywatcher_hat_0000 = {
 		size = {
 			80,
 			80
@@ -419,7 +517,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_slayer_hat_0001 = {
+	icon_wpn_empire_2h_hammer_03_t1 = {
 		size = {
 			80,
 			80
@@ -433,7 +531,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_slayer_hat_0004 = {
+	icon_waywatcher_hat_0008 = {
 		size = {
 			80,
 			80
@@ -447,7 +545,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_slayer_hat_0009 = {
+	icon_maidenguard_hat_0002 = {
 		size = {
 			80,
 			80
@@ -461,7 +559,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_portrait_frame_0051 = {
+	icon_witchhunter_hat_0004 = {
 		size = {
 			80,
 			80
@@ -475,7 +573,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_unchained_hat_0004 = {
+	icon_wpn_emp_mace_03_t2 = {
 		size = {
 			80,
 			80
@@ -489,7 +587,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_skin_huntsman_green = {
+	icon_zealot_hat_0001 = {
 		size = {
 			80,
 			80
@@ -503,7 +601,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_waywatcher_hat_0002 = {
+	icon_wpn_brw_dagger_01 = {
 		size = {
 			80,
 			80
@@ -517,7 +615,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_portrait_frame_collectors_edition = {
+	icon_loot_chest_d1_t3 = {
 		size = {
 			80,
 			80
@@ -531,7 +629,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_waywatcher_hat_0010 = {
+	icon_wpn_we_bow_05_t1 = {
 		size = {
 			80,
 			80
@@ -545,7 +643,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_maidenguard_hat_0003 = {
+	icon_loot_chest_d2_t5 = {
 		size = {
 			80,
 			80
@@ -559,7 +657,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_witchhunter_hat_0006 = {
+	icon_mercenary_hat_0008 = {
 		size = {
 			80,
 			80
@@ -573,7 +671,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_skin_captain_original = {
+	icon_wpn_we_axe_03_t1 = {
 		size = {
 			80,
 			80
@@ -587,7 +685,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_loot_chest_d1_t1 = {
+	icon_wpn_we_dagger_01_t1 = {
 		size = {
 			80,
 			80
@@ -598,104 +696,6 @@ items_atlas = {
 		},
 		uv11 = {
 			0.749512,
-			0.163086
-		}
-	},
-	icon_portrait_frame_0028 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.709473,
-			0.124023
-		},
-		uv11 = {
-			0.729004,
-			0.163086
-		}
-	},
-	icon_loot_chest_d2_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.688965,
-			0.124023
-		},
-		uv11 = {
-			0.708496,
-			0.163086
-		}
-	},
-	icon_skin_maidenguard_red_and_yellow = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.668457,
-			0.124023
-		},
-		uv11 = {
-			0.687988,
-			0.163086
-		}
-	},
-	icon_mercenary_hat_0007 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.647949,
-			0.124023
-		},
-		uv11 = {
-			0.66748,
-			0.163086
-		}
-	},
-	icon_ranger_hat_0000 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.627441,
-			0.124023
-		},
-		uv11 = {
-			0.646973,
-			0.163086
-		}
-	},
-	icon_skin_maidenguard_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.606934,
-			0.124023
-		},
-		uv11 = {
-			0.626465,
-			0.163086
-		}
-	},
-	icon_skin_mercenary_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.586426,
-			0.124023
-		},
-		uv11 = {
-			0.605957,
 			0.163086
 		}
 	},
@@ -705,54 +705,54 @@ items_atlas = {
 			80
 		},
 		uv00 = {
-			0.565918,
+			0.709473,
 			0.124023
 		},
 		uv11 = {
-			0.585449,
+			0.729004,
 			0.163086
 		}
 	},
-	icon_skin_bountyhunter_original = {
+	icon_wpn_emp_handgun_repeater_t2 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
-			0.54541,
-			0.944336
+			0.688965,
+			0.124023
 		},
 		uv11 = {
-			0.564941,
-			0.983398
+			0.708496,
+			0.163086
 		}
 	},
-	icon_necklace_02 = {
+	icon_wpn_wh_repeater_crossbow_t2 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
-			0.54541,
-			0.90332
+			0.668457,
+			0.124023
 		},
 		uv11 = {
-			0.564941,
-			0.942383
+			0.687988,
+			0.163086
 		}
 	},
-	icon_necklace_06 = {
+	icon_skin_shade_ash = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
-			0.54541,
-			0.862305
+			0.647949,
+			0.124023
 		},
 		uv11 = {
-			0.564941,
-			0.901367
+			0.66748,
+			0.163086
 		}
 	},
 	icon_bg_unique = {
@@ -761,12 +761,12 @@ items_atlas = {
 			80
 		},
 		uv00 = {
-			0.54541,
-			0.821289
+			0.627441,
+			0.124023
 		},
 		uv11 = {
-			0.564941,
-			0.860352
+			0.646973,
+			0.163086
 		}
 	},
 	icon_huntsman_hat_0009 = {
@@ -775,40 +775,40 @@ items_atlas = {
 			80
 		},
 		uv00 = {
-			0.54541,
-			0.780273
+			0.606934,
+			0.124023
 		},
 		uv11 = {
-			0.564941,
-			0.819336
+			0.626465,
+			0.163086
 		}
 	},
-	icon_portrait_frame_0007 = {
+	icon_skin_waywatcher_helmgart = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
-			0.54541,
-			0.739258
+			0.586426,
+			0.124023
 		},
 		uv11 = {
-			0.564941,
-			0.77832
+			0.605957,
+			0.163086
 		}
 	},
-	icon_portrait_frame_0011 = {
+	icon_skin_witchhunter_original = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
-			0.54541,
-			0.698242
+			0.565918,
+			0.124023
 		},
 		uv11 = {
-			0.564941,
-			0.737305
+			0.585449,
+			0.163086
 		}
 	},
 	icon_deed_normal_03 = {
@@ -818,53 +818,53 @@ items_atlas = {
 		},
 		uv00 = {
 			0.54541,
-			0.657227
+			0.944336
 		},
 		uv11 = {
 			0.564941,
-			0.696289
+			0.983398
 		}
 	},
-	icon_portrait_frame_0024 = {
+	icon_wpn_axe_03_t2 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.54541,
-			0.616211
+			0.90332
 		},
 		uv11 = {
 			0.564941,
-			0.655273
+			0.942383
 		}
 	},
-	icon_portrait_frame_0023 = {
+	icon_wpn_axe_02_t2 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.54541,
-			0.575195
+			0.862305
 		},
 		uv11 = {
 			0.564941,
-			0.614258
+			0.901367
 		}
 	},
-	icon_portrait_frame_0027 = {
+	icon_wpn_brw_beam_staff_04 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.54541,
-			0.53418
+			0.821289
 		},
 		uv11 = {
 			0.564941,
-			0.573242
+			0.860352
 		}
 	},
 	icon_crafting_act_01 = {
@@ -874,53 +874,53 @@ items_atlas = {
 		},
 		uv00 = {
 			0.54541,
-			0.493164
+			0.780273
 		},
 		uv11 = {
 			0.564941,
-			0.532227
+			0.819336
 		}
 	},
-	icon_portrait_frame_0033 = {
+	icon_wpn_brw_flaming_sword_01_t1 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.54541,
-			0.452148
+			0.739258
 		},
 		uv11 = {
 			0.564941,
-			0.491211
+			0.77832
 		}
 	},
-	icon_portrait_frame_0039 = {
+	icon_wpn_brw_mace_05 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.54541,
-			0.411133
+			0.698242
 		},
 		uv11 = {
 			0.564941,
-			0.450195
+			0.737305
 		}
 	},
-	icon_portrait_frame_0043 = {
+	icon_wpn_brw_staff_04 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.54541,
-			0.370117
+			0.657227
 		},
 		uv11 = {
 			0.564941,
-			0.40918
+			0.696289
 		}
 	},
 	deed_01 = {
@@ -930,53 +930,53 @@ items_atlas = {
 		},
 		uv00 = {
 			0.54541,
-			0.329102
+			0.616211
 		},
 		uv11 = {
 			0.564941,
-			0.368164
+			0.655273
 		}
 	},
-	icon_charm_02 = {
+	icon_wpn_empire_2h_sword_04_t2 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.54541,
-			0.288086
+			0.575195
 		},
 		uv11 = {
 			0.564941,
-			0.327148
+			0.614258
 		}
 	},
-	icon_portrait_frame_0055 = {
+	icon_wpn_dw_axe_01_t2 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.54541,
-			0.24707
+			0.53418
 		},
 		uv11 = {
 			0.564941,
-			0.286133
+			0.573242
 		}
 	},
-	icon_portrait_frame_0059 = {
+	icon_wpn_dw_axe_03_t2 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.54541,
-			0.206055
+			0.493164
 		},
 		uv11 = {
 			0.564941,
-			0.245117
+			0.532227
 		}
 	},
 	icon_crafting_act_02 = {
@@ -986,11 +986,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.54541,
-			0.165039
+			0.452148
 		},
 		uv11 = {
 			0.564941,
-			0.204102
+			0.491211
 		}
 	},
 	icon_knight_hat_0005 = {
@@ -1000,6 +1000,104 @@ items_atlas = {
 		},
 		uv00 = {
 			0.54541,
+			0.411133
+		},
+		uv11 = {
+			0.564941,
+			0.450195
+		}
+	},
+	icon_wpn_dw_pick_01_t3 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.54541,
+			0.370117
+		},
+		uv11 = {
+			0.564941,
+			0.40918
+		}
+	},
+	icon_wpn_dw_shield_02_hammer = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.54541,
+			0.329102
+		},
+		uv11 = {
+			0.564941,
+			0.368164
+		}
+	},
+	icon_deed_cataclysm_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.54541,
+			0.288086
+		},
+		uv11 = {
+			0.564941,
+			0.327148
+		}
+	},
+	icon_wpn_we_dagger_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.54541,
+			0.24707
+		},
+		uv11 = {
+			0.564941,
+			0.286133
+		}
+	},
+	icon_wpn_empire_2h_sword_03_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.54541,
+			0.206055
+		},
+		uv11 = {
+			0.564941,
+			0.245117
+		}
+	},
+	icon_wpn_empire_blunderbuss_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.54541,
+			0.165039
+		},
+		uv11 = {
+			0.564941,
+			0.204102
+		}
+	},
+	icon_crafting_act_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.54541,
 			0.124023
 		},
 		uv11 = {
@@ -1007,7 +1105,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_portrait_frame_0071 = {
+	icon_waywatcher_hat_0011 = {
 		size = {
 			80,
 			80
@@ -1021,7 +1119,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_portrait_frame_0075 = {
+	icon_wpn_empire_shield_04_sword = {
 		size = {
 			80,
 			80
@@ -1035,7 +1133,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_deed_cataclysm_01 = {
+	icon_wpn_emp_crossbow_02_t1 = {
 		size = {
 			80,
 			80
@@ -1046,104 +1144,6 @@ items_atlas = {
 		},
 		uv11 = {
 			0.95459,
-			0.12207
-		}
-	},
-	icon_skin_mercenary_helmgart = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.914551,
-			0.083008
-		},
-		uv11 = {
-			0.934082,
-			0.12207
-		}
-	},
-	icon_charm_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.894043,
-			0.083008
-		},
-		uv11 = {
-			0.913574,
-			0.12207
-		}
-	},
-	icon_charm_05 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.873535,
-			0.083008
-		},
-		uv11 = {
-			0.893066,
-			0.12207
-		}
-	},
-	icon_crafting_act_03 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.853027,
-			0.083008
-		},
-		uv11 = {
-			0.872559,
-			0.12207
-		}
-	},
-	icon_witchhunter_hat_0001 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.83252,
-			0.083008
-		},
-		uv11 = {
-			0.852051,
-			0.12207
-		}
-	},
-	icon_skin_adept_ostland = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.812012,
-			0.083008
-		},
-		uv11 = {
-			0.831543,
-			0.12207
-		}
-	},
-	icon_skin_bountyhunter_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.791504,
-			0.083008
-		},
-		uv11 = {
-			0.811035,
 			0.12207
 		}
 	},
@@ -1153,6 +1153,104 @@ items_atlas = {
 			80
 		},
 		uv00 = {
+			0.914551,
+			0.083008
+		},
+		uv11 = {
+			0.934082,
+			0.12207
+		}
+	},
+	icon_skin_witchhunter_ostland = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.894043,
+			0.083008
+		},
+		uv11 = {
+			0.913574,
+			0.12207
+		}
+	},
+	icon_wpn_emp_pistol_03_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.873535,
+			0.083008
+		},
+		uv11 = {
+			0.893066,
+			0.12207
+		}
+	},
+	icon_wpn_emp_sword_05_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.853027,
+			0.083008
+		},
+		uv11 = {
+			0.872559,
+			0.12207
+		}
+	},
+	icon_crafting_dust_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.83252,
+			0.083008
+		},
+		uv11 = {
+			0.852051,
+			0.12207
+		}
+	},
+	icon_maidenguard_hat_0010 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.812012,
+			0.083008
+		},
+		uv11 = {
+			0.831543,
+			0.12207
+		}
+	},
+	icon_wpn_we_2h_sword_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.791504,
+			0.083008
+		},
+		uv11 = {
+			0.811035,
+			0.12207
+		}
+	},
+	icon_wpn_we_2h_sword_05_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
 			0.770996,
 			0.083008
 		},
@@ -1161,7 +1259,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_portrait_frame_0012 = {
+	icon_deed_hard_02 = {
 		size = {
 			80,
 			80
@@ -1175,7 +1273,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_skin_huntsman_carroburg = {
+	icon_wpn_brw_sword_01_t1 = {
 		size = {
 			80,
 			80
@@ -1189,7 +1287,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_skin_huntsman_ostermark = {
+	icon_wpn_we_dagger_01_t2 = {
 		size = {
 			80,
 			80
@@ -1203,7 +1301,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_crafting_dust_01 = {
+	icon_wpn_we_dagger_03_t1 = {
 		size = {
 			80,
 			80
@@ -1217,7 +1315,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_mercenary_hat_0000 = {
+	icon_bg_rare = {
 		size = {
 			80,
 			80
@@ -1231,7 +1329,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_skin_knight_bronze = {
+	icon_wpn_fencingsword_t1 = {
 		size = {
 			80,
 			80
@@ -1245,7 +1343,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_skin_knight_original = {
+	icon_ranger_hat_0001 = {
 		size = {
 			80,
 			80
@@ -1259,7 +1357,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_deed_hard_02 = {
+	icon_deed_nightmare_01 = {
 		size = {
 			80,
 			80
@@ -1273,7 +1371,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_portrait_frame_0044 = {
+	icon_wpn_we_bow_04_t1 = {
 		size = {
 			80,
 			80
@@ -1287,7 +1385,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_skin_mercenary_carroburg = {
+	icon_wpn_dw_xbox_02_t2 = {
 		size = {
 			80,
 			80
@@ -1301,7 +1399,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_skin_huntsman_original = {
+	icon_ranger_hat_0005 = {
 		size = {
 			80,
 			80
@@ -1315,7 +1413,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_skin_ironbreaker_01 = {
+	icon_crafting_dust_03 = {
 		size = {
 			80,
 			80
@@ -1329,7 +1427,7 @@ items_atlas = {
 			0.983398
 		}
 	},
-	icon_skin_ironbreaker_green = {
+	icon_wpn_empire_blunderbuss_t3 = {
 		size = {
 			80,
 			80
@@ -1343,7 +1441,7 @@ items_atlas = {
 			0.942383
 		}
 	},
-	icon_ranger_hat_0002 = {
+	icon_huntsman_hat_0005 = {
 		size = {
 			80,
 			80
@@ -1357,7 +1455,7 @@ items_atlas = {
 			0.901367
 		}
 	},
-	icon_deed_nightmare_01 = {
+	icon_scholar_hat_0002 = {
 		size = {
 			80,
 			80
@@ -1371,7 +1469,7 @@ items_atlas = {
 			0.860352
 		}
 	},
-	icon_skin_maidenguard_original = {
+	icon_deed_nightmare_03 = {
 		size = {
 			80,
 			80
@@ -1385,7 +1483,7 @@ items_atlas = {
 			0.819336
 		}
 	},
-	icon_portrait_frame_0080 = {
+	icon_skin_scholar_brown_and_white = {
 		size = {
 			80,
 			80
@@ -1399,7 +1497,7 @@ items_atlas = {
 			0.77832
 		}
 	},
-	icon_ranger_hat_0006 = {
+	icon_wpn_we_bow_02_t1 = {
 		size = {
 			80,
 			80
@@ -1413,7 +1511,7 @@ items_atlas = {
 			0.737305
 		}
 	},
-	icon_crafting_dust_03 = {
+	icon_scholar_hat_0006 = {
 		size = {
 			80,
 			80
@@ -1427,7 +1525,7 @@ items_atlas = {
 			0.696289
 		}
 	},
-	icon_charm_06 = {
+	icon_crafting_jewellery_part = {
 		size = {
 			80,
 			80
@@ -1441,7 +1539,7 @@ items_atlas = {
 			0.655273
 		}
 	},
-	icon_huntsman_hat_0005 = {
+	icon_scholar_hat_0007 = {
 		size = {
 			80,
 			80
@@ -1455,7 +1553,7 @@ items_atlas = {
 			0.614258
 		}
 	},
-	icon_scholar_hat_0003 = {
+	icon_scholar_hat_0008 = {
 		size = {
 			80,
 			80
@@ -1469,7 +1567,7 @@ items_atlas = {
 			0.573242
 		}
 	},
-	icon_deed_nightmare_03 = {
+	icon_scholar_hat_0010 = {
 		size = {
 			80,
 			80
@@ -1483,7 +1581,7 @@ items_atlas = {
 			0.532227
 		}
 	},
-	icon_necklace_04 = {
+	icon_deed_normal_02 = {
 		size = {
 			80,
 			80
@@ -1497,7 +1595,7 @@ items_atlas = {
 			0.491211
 		}
 	},
-	icon_skin_maidenguard_caledor = {
+	icon_skin_witchhunter_black_and_gold = {
 		size = {
 			80,
 			80
@@ -1511,7 +1609,7 @@ items_atlas = {
 			0.450195
 		}
 	},
-	icon_scholar_hat_0007 = {
+	icon_skin_waywatcher_tirsyth = {
 		size = {
 			80,
 			80
@@ -1525,7 +1623,7 @@ items_atlas = {
 			0.40918
 		}
 	},
-	icon_crafting_jewellery_part = {
+	icon_shade_hat_0003 = {
 		size = {
 			80,
 			80
@@ -1539,7 +1637,7 @@ items_atlas = {
 			0.368164
 		}
 	},
-	icon_scholar_hat_0008 = {
+	icon_crafting_scrap = {
 		size = {
 			80,
 			80
@@ -1553,7 +1651,7 @@ items_atlas = {
 			0.327148
 		}
 	},
-	icon_scholar_hat_0009 = {
+	icon_wpn_we_dagger_03_t2 = {
 		size = {
 			80,
 			80
@@ -1567,7 +1665,7 @@ items_atlas = {
 			0.286133
 		}
 	},
-	icon_shade_hat_0000 = {
+	icon_ironbreaker_hat_0005 = {
 		size = {
 			80,
 			80
@@ -1581,7 +1679,7 @@ items_atlas = {
 			0.245117
 		}
 	},
-	icon_deed_normal_02 = {
+	icon_shade_hat_0007 = {
 		size = {
 			80,
 			80
@@ -1595,7 +1693,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_portrait_frame_0009 = {
+	item_frame = {
 		size = {
 			80,
 			80
@@ -1609,7 +1707,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_portrait_frame_0008 = {
+	icon_wpn_axe_hatchet_t2 = {
 		size = {
 			80,
 			80
@@ -1623,7 +1721,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_shade_hat_0004 = {
+	icon_wpn_brw_spear_staff_02 = {
 		size = {
 			80,
 			80
@@ -1637,7 +1735,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_crafting_scrap = {
+	icon_slayer_hat_0000 = {
 		size = {
 			80,
 			80
@@ -1651,7 +1749,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_skin_mercenary_ostland = {
+	icon_crafting_weapon_part = {
 		size = {
 			80,
 			80
@@ -1665,7 +1763,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_ironbreaker_hat_0005 = {
+	icon_crafting_weapon_skin_tool = {
 		size = {
 			80,
 			80
@@ -1679,7 +1777,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_shade_hat_0008 = {
+	icon_skin_slayer_01 = {
 		size = {
 			80,
 			80
@@ -1693,7 +1791,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	item_frame = {
+	icon_slayer_hat_0004 = {
 		size = {
 			80,
 			80
@@ -1707,7 +1805,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_portrait_frame_0025 = {
+	icon_skin_mercenary_black_and_gold = {
 		size = {
 			80,
 			80
@@ -1721,7 +1819,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_portrait_frame_0040 = {
+	icon_wpn_brw_spear_staff_04 = {
 		size = {
 			80,
 			80
@@ -1735,7 +1833,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_slayer_hat_0002 = {
+	icon_wpn_dw_rakegun_t1 = {
 		size = {
 			80,
 			80
@@ -1749,7 +1847,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_crafting_weapon_part = {
+	icon_slayer_hat_0008 = {
 		size = {
 			80,
 			80
@@ -1763,7 +1861,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_crafting_weapon_skin_tool = {
+	icon_skin_ranger_zhufbar = {
 		size = {
 			80,
 			80
@@ -1777,7 +1875,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_necklace_09 = {
+	icon_skin_zealot_green_and_yellow = {
 		size = {
 			80,
 			80
@@ -1791,7 +1889,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_slayer_hat_0006 = {
+	icon_knight_hat_0001 = {
 		size = {
 			80,
 			80
@@ -1805,7 +1903,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_skin_mercenary_original = {
+	icon_slayer_hat_0012 = {
 		size = {
 			80,
 			80
@@ -1819,7 +1917,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_portrait_frame_0041 = {
+	item_icon_selection = {
 		size = {
 			80,
 			80
@@ -1833,7 +1931,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_portrait_frame_0072 = {
+	icon_wpn_dw_axe_02_t2 = {
 		size = {
 			80,
 			80
@@ -1847,7 +1945,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_slayer_hat_0010 = {
+	icon_wpn_empire_shield_05_sword = {
 		size = {
 			80,
 			80
@@ -1861,7 +1959,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_skin_scholar_bronze = {
+	icon_unchained_hat_0003 = {
 		size = {
 			80,
 			80
@@ -1875,7 +1973,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_portrait_frame_0014 = {
+	icon_wpn_dw_hammer_02_t1 = {
 		size = {
 			80,
 			80
@@ -1889,7 +1987,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_knight_hat_0001 = {
+	icon_unchained_hat_0004 = {
 		size = {
 			80,
 			80
@@ -1903,7 +2001,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_unchained_hat_0001 = {
+	icon_unchained_hat_0005 = {
 		size = {
 			80,
 			80
@@ -1917,7 +2015,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	item_icon_selection = {
+	icon_unchained_hat_0007 = {
 		size = {
 			80,
 			80
@@ -1931,7 +2029,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_portrait_frame_0057 = {
+	icon_skin_slayer_skaven = {
 		size = {
 			80,
 			80
@@ -1945,7 +2043,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_skin_battlewizard_01 = {
+	icon_wpn_dw_rakegun_t3 = {
 		size = {
 			80,
 			80
@@ -1959,7 +2057,7 @@ items_atlas = {
 			0.983398
 		}
 	},
-	icon_unchained_hat_0005 = {
+	icon_wpn_we_2h_sword_02_t1 = {
 		size = {
 			80,
 			80
@@ -1973,7 +2071,7 @@ items_atlas = {
 			0.942383
 		}
 	},
-	icon_portrait_frame_0064 = {
+	icon_waywatcher_hat_0001 = {
 		size = {
 			80,
 			80
@@ -1987,7 +2085,7 @@ items_atlas = {
 			0.901367
 		}
 	},
-	icon_unchained_hat_0006 = {
+	item_skin_frame_01 = {
 		size = {
 			80,
 			80
@@ -2001,7 +2099,7 @@ items_atlas = {
 			0.860352
 		}
 	},
-	icon_unchained_hat_0007 = {
+	icon_wpn_brw_sword_03_t1 = {
 		size = {
 			80,
 			80
@@ -2015,7 +2113,7 @@ items_atlas = {
 			0.819336
 		}
 	},
-	icon_unchained_hat_0009 = {
+	icon_knight_hat_0009 = {
 		size = {
 			80,
 			80
@@ -2029,7 +2127,7 @@ items_atlas = {
 			0.77832
 		}
 	},
-	icon_portrait_frame_0000 = {
+	icon_waywatcher_hat_0005 = {
 		size = {
 			80,
 			80
@@ -2043,7 +2141,7 @@ items_atlas = {
 			0.737305
 		}
 	},
-	icon_portrait_frame_0073 = {
+	icon_wpn_fencingsword_03_t1 = {
 		size = {
 			80,
 			80
@@ -2057,7 +2155,7 @@ items_atlas = {
 			0.696289
 		}
 	},
-	icon_skin_knight_carroburg = {
+	icon_wpn_empire_basic_mace_t1 = {
 		size = {
 			80,
 			80
@@ -2071,7 +2169,7 @@ items_atlas = {
 			0.655273
 		}
 	},
-	icon_waywatcher_hat_0003 = {
+	icon_wpn_we_sword_02_t2_dual = {
 		size = {
 			80,
 			80
@@ -2085,7 +2183,7 @@ items_atlas = {
 			0.614258
 		}
 	},
-	item_skin_frame_01 = {
+	icon_waywatcher_hat_0009 = {
 		size = {
 			80,
 			80
@@ -2099,7 +2197,7 @@ items_atlas = {
 			0.573242
 		}
 	},
-	icon_portrait_frame_0046 = {
+	item_skin_frame_02 = {
 		size = {
 			80,
 			80
@@ -2113,7 +2211,7 @@ items_atlas = {
 			0.532227
 		}
 	},
-	icon_knight_hat_0009 = {
+	icon_wpn_empire_handgun_02_t2 = {
 		size = {
 			80,
 			80
@@ -2127,7 +2225,7 @@ items_atlas = {
 			0.491211
 		}
 	},
-	icon_waywatcher_hat_0007 = {
+	icon_wpn_empire_pistol_repeater_02_t1 = {
 		size = {
 			80,
 			80
@@ -2141,7 +2239,7 @@ items_atlas = {
 			0.450195
 		}
 	},
-	icon_skin_ironbreaker_blue = {
+	icon_witchhunter_hat_0001 = {
 		size = {
 			80,
 			80
@@ -2155,7 +2253,7 @@ items_atlas = {
 			0.40918
 		}
 	},
-	icon_charm_03 = {
+	icon_wpn_brw_flame_staff_04 = {
 		size = {
 			80,
 			80
@@ -2169,7 +2267,7 @@ items_atlas = {
 			0.368164
 		}
 	},
-	icon_skin_scholar_ash = {
+	icon_wpn_emp_bow_02 = {
 		size = {
 			80,
 			80
@@ -2183,7 +2281,7 @@ items_atlas = {
 			0.327148
 		}
 	},
-	icon_waywatcher_hat_0011 = {
+	icon_skin_unchained_ostermark = {
 		size = {
 			80,
 			80
@@ -2197,7 +2295,7 @@ items_atlas = {
 			0.286133
 		}
 	},
-	item_skin_frame_02 = {
+	icon_witchhunter_hat_0005 = {
 		size = {
 			80,
 			80
@@ -2211,7 +2309,7 @@ items_atlas = {
 			0.245117
 		}
 	},
-	icon_charm_09 = {
+	item_skin_frame_03 = {
 		size = {
 			80,
 			80
@@ -2225,7 +2323,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_skin_adept_ash = {
+	icon_wpn_dw_shield_05_hammer = {
 		size = {
 			80,
 			80
@@ -2239,7 +2337,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_witchhunter_hat_0003 = {
+	icon_maidenguard_hat_0006 = {
 		size = {
 			80,
 			80
@@ -2253,7 +2351,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_portrait_frame_0032 = {
+	icon_witchhunter_hat_0009 = {
 		size = {
 			80,
 			80
@@ -2267,7 +2365,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_skin_battlewizard_helmgart = {
+	icon_wpn_empire_handgun_t2 = {
 		size = {
 			80,
 			80
@@ -2281,7 +2379,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_portrait_frame_0004 = {
+	icon_wpn_emp_sword_03_t1 = {
 		size = {
 			80,
 			80
@@ -2295,7 +2393,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_zealot_hat_0000 = {
+	icon_trinket_09 = {
 		size = {
 			80,
 			80
@@ -2309,7 +2407,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	item_skin_frame_03 = {
+	icon_zealot_hat_0002 = {
 		size = {
 			80,
 			80
@@ -2323,7 +2421,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_portrait_frame_0078 = {
+	rarity_color_blue = {
 		size = {
 			80,
 			80
@@ -2337,7 +2435,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_maidenguard_hat_0007 = {
+	icon_zealot_hat_0003 = {
 		size = {
 			80,
 			80
@@ -2365,7 +2463,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_charm_10 = {
+	icon_zealot_hat_0006 = {
 		size = {
 			80,
 			80
@@ -2379,7 +2477,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_skin_huntsman_middenland = {
+	icon_wpn_we_spear_04 = {
 		size = {
 			80,
 			80
@@ -2393,7 +2491,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_portrait_frame_0020 = {
+	icon_wpn_we_2h_sword_03_t1 = {
 		size = {
 			80,
 			80
@@ -2407,7 +2505,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_loot_chest_d1_t2 = {
+	icon_wpn_brw_flaming_sword_04_t1 = {
 		size = {
 			80,
 			80
@@ -2421,7 +2519,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	rarity_color_blue = {
+	icon_loot_chest_d1_t4 = {
 		size = {
 			80,
 			80
@@ -2435,7 +2533,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_loot_chest_d1_t3 = {
+	rarity_color_green = {
 		size = {
 			80,
 			80
@@ -2449,7 +2547,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_loot_chest_d1_t4 = {
+	icon_wpn_emp_flail_03_t1 = {
 		size = {
 			80,
 			80
@@ -2463,7 +2561,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_loot_chest_d1_t6 = {
+	icon_mercenary_hat_0003 = {
 		size = {
 			80,
 			80
@@ -2477,7 +2575,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_skin_ranger_barak_varr = {
+	icon_loot_chest_d2_t2 = {
 		size = {
 			80,
 			80
@@ -2491,7 +2589,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_skin_knight_green = {
+	icon_trinket_01 = {
 		size = {
 			80,
 			80
@@ -2505,7 +2603,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_portrait_frame_0036 = {
+	icon_wpn_we_dagger_02_t2 = {
 		size = {
 			80,
 			80
@@ -2519,7 +2617,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_loot_chest_d2_t4 = {
+	icon_wpn_dw_2h_hammer_02_t1 = {
 		size = {
 			80,
 			80
@@ -2533,7 +2631,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	rarity_color_green = {
+	icon_mercenary_hat_0006 = {
 		size = {
 			80,
 			80
@@ -2547,7 +2645,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_skin_bountyhunter_green_and_yellow = {
+	icon_crafting_dust_02 = {
 		size = {
 			80,
 			80
@@ -2561,7 +2659,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_mercenary_hat_0004 = {
+	icon_wpn_emp_sword_exe_05_t1 = {
 		size = {
 			80,
 			80
@@ -2575,7 +2673,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_loot_chest_d3_t2 = {
+	icon_wpn_dw_axe_04_t1 = {
 		size = {
 			80,
 			80
@@ -2589,7 +2687,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_portrait_frame_0016 = {
+	icon_wpn_dw_handgun_02_t3 = {
 		size = {
 			80,
 			80
@@ -2603,7 +2701,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_skin_mercenary_middenland = {
+	icon_wpn_we_2h_sword_04_t1 = {
 		size = {
 			80,
 			80
@@ -2615,104 +2713,6 @@ items_atlas = {
 		uv11 = {
 			0.503418,
 			0.983398
-		}
-	},
-	icon_portrait_frame_0052 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.483887,
-			0.90332
-		},
-		uv11 = {
-			0.503418,
-			0.942383
-		}
-	},
-	icon_crafting_dust_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.483887,
-			0.862305
-		},
-		uv11 = {
-			0.503418,
-			0.901367
-		}
-	},
-	icon_deed_hard_03 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.483887,
-			0.821289
-		},
-		uv11 = {
-			0.503418,
-			0.860352
-		}
-	},
-	icon_mercenary_hat_0008 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.483887,
-			0.780273
-		},
-		uv11 = {
-			0.503418,
-			0.819336
-		}
-	},
-	icon_portrait_frame_0060 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.483887,
-			0.739258
-		},
-		uv11 = {
-			0.503418,
-			0.77832
-		}
-	},
-	icon_portrait_frame_0068 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.483887,
-			0.698242
-		},
-		uv11 = {
-			0.503418,
-			0.737305
-		}
-	},
-	icon_skin_knight_middenland = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.483887,
-			0.657227
-		},
-		uv11 = {
-			0.503418,
-			0.696289
 		}
 	},
 	icon_huntsman_hat_0002 = {
@@ -2722,11 +2722,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.483887,
-			0.616211
+			0.90332
 		},
 		uv11 = {
 			0.503418,
-			0.655273
+			0.942383
 		}
 	},
 	rarity_color_purple = {
@@ -2736,11 +2736,39 @@ items_atlas = {
 		},
 		uv00 = {
 			0.483887,
-			0.575195
+			0.862305
 		},
 		uv11 = {
 			0.503418,
-			0.614258
+			0.901367
+		}
+	},
+	icon_ranger_hat_0002 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.483887,
+			0.821289
+		},
+		uv11 = {
+			0.503418,
+			0.860352
+		}
+	},
+	icon_wpn_dw_shield_03_hammer = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.483887,
+			0.780273
+		},
+		uv11 = {
+			0.503418,
+			0.819336
 		}
 	},
 	icon_ranger_hat_0003 = {
@@ -2750,39 +2778,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.483887,
-			0.53418
+			0.739258
 		},
 		uv11 = {
 			0.503418,
-			0.573242
-		}
-	},
-	icon_portrait_frame_0076 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.483887,
-			0.493164
-		},
-		uv11 = {
-			0.503418,
-			0.532227
-		}
-	},
-	icon_ranger_hat_0004 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.483887,
-			0.452148
-		},
-		uv11 = {
-			0.503418,
-			0.491211
+			0.77832
 		}
 	},
 	icon_huntsman_hat_0003 = {
@@ -2792,39 +2792,39 @@ items_atlas = {
 		},
 		uv00 = {
 			0.483887,
-			0.411133
+			0.698242
 		},
 		uv11 = {
 			0.503418,
-			0.450195
+			0.737305
 		}
 	},
-	icon_portrait_frame_community_01 = {
+	icon_wpn_empire_2h_sword_01_t1 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.483887,
-			0.370117
+			0.657227
 		},
 		uv11 = {
 			0.503418,
-			0.40918
+			0.696289
 		}
 	},
-	icon_wpn_wh_repeater_crossbow_t3 = {
+	icon_wpn_we_dagger_02_t3 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.483887,
-			0.329102
+			0.616211
 		},
 		uv11 = {
 			0.503418,
-			0.368164
+			0.655273
 		}
 	},
 	icon_huntsman_hat_0004 = {
@@ -2834,11 +2834,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.483887,
-			0.288086
+			0.575195
 		},
 		uv11 = {
 			0.503418,
-			0.327148
+			0.614258
 		}
 	},
 	rarity_color_red = {
@@ -2848,25 +2848,53 @@ items_atlas = {
 		},
 		uv00 = {
 			0.483887,
-			0.24707
+			0.53418
 		},
 		uv11 = {
 			0.503418,
-			0.286133
+			0.573242
 		}
 	},
-	icon_skin_pyromancer_01 = {
+	icon_wpn_we_repeater_crossbow_t3 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.483887,
-			0.206055
+			0.493164
 		},
 		uv11 = {
 			0.503418,
-			0.245117
+			0.532227
+		}
+	},
+	icon_ranger_hat_0006 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.483887,
+			0.452148
+		},
+		uv11 = {
+			0.503418,
+			0.491211
+		}
+	},
+	icon_wpn_we_sword_01_t1_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.483887,
+			0.411133
+		},
+		uv11 = {
+			0.503418,
+			0.450195
 		}
 	},
 	icon_scholar_hat_0000 = {
@@ -2876,6 +2904,76 @@ items_atlas = {
 		},
 		uv00 = {
 			0.483887,
+			0.370117
+		},
+		uv11 = {
+			0.503418,
+			0.40918
+		}
+	},
+	icon_wpn_empire_shield_01_t1_sword = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.483887,
+			0.329102
+		},
+		uv11 = {
+			0.503418,
+			0.368164
+		}
+	},
+	icon_wpn_we_sword_03_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.483887,
+			0.288086
+		},
+		uv11 = {
+			0.503418,
+			0.327148
+		}
+	},
+	icon_huntsman_hat_0006 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.483887,
+			0.24707
+		},
+		uv11 = {
+			0.503418,
+			0.286133
+		}
+	},
+	rarity_color_white = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.483887,
+			0.206055
+		},
+		uv11 = {
+			0.503418,
+			0.245117
+		}
+	},
+	icon_scholar_hat_0003 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.483887,
 			0.165039
 		},
 		uv11 = {
@@ -2883,7 +2981,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_skin_ranger_brown_and_yellow = {
+	icon_wpn_emp_crossbow_03_t1 = {
 		size = {
 			80,
 			80
@@ -2897,7 +2995,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_scholar_hat_0001 = {
+	icon_scholar_hat_0004 = {
 		size = {
 			80,
 			80
@@ -2911,7 +3009,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_skin_adept_helmgart = {
+	icon_huntsman_hat_0007 = {
 		size = {
 			80,
 			80
@@ -2925,7 +3023,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_loot_chest_level_up = {
+	icon_wpn_emp_mace_04_t2 = {
 		size = {
 			80,
 			80
@@ -2939,7 +3037,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_huntsman_hat_0006 = {
+	icon_skin_shade_midnight = {
 		size = {
 			80,
 			80
@@ -2951,104 +3049,6 @@ items_atlas = {
 		uv11 = {
 			0.48291,
 			0.983398
-		}
-	},
-	rarity_color_white = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.463379,
-			0.90332
-		},
-		uv11 = {
-			0.48291,
-			0.942383
-		}
-	},
-	icon_scholar_hat_0004 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.463379,
-			0.862305
-		},
-		uv11 = {
-			0.48291,
-			0.901367
-		}
-	},
-	icon_skin_bountyhunter_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.463379,
-			0.821289
-		},
-		uv11 = {
-			0.48291,
-			0.860352
-		}
-	},
-	icon_scholar_hat_0005 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.463379,
-			0.780273
-		},
-		uv11 = {
-			0.48291,
-			0.819336
-		}
-	},
-	icon_huntsman_hat_0007 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.463379,
-			0.739258
-		},
-		uv11 = {
-			0.48291,
-			0.77832
-		}
-	},
-	icon_skin_captain_v1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.463379,
-			0.698242
-		},
-		uv11 = {
-			0.48291,
-			0.737305
-		}
-	},
-	icon_necklace_08 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.463379,
-			0.657227
-		},
-		uv11 = {
-			0.48291,
-			0.696289
 		}
 	},
 	icon_huntsman_hat_0008 = {
@@ -3058,11 +3058,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.463379,
-			0.616211
+			0.90332
 		},
 		uv11 = {
 			0.48291,
-			0.655273
+			0.942383
 		}
 	},
 	talent_frame = {
@@ -3072,11 +3072,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.463379,
-			0.575195
+			0.862305
 		},
 		uv11 = {
 			0.48291,
-			0.614258
+			0.901367
 		}
 	},
 	icon_deed_normal_01 = {
@@ -3086,81 +3086,81 @@ items_atlas = {
 		},
 		uv00 = {
 			0.463379,
-			0.53418
+			0.821289
 		},
 		uv11 = {
 			0.48291,
-			0.573242
+			0.860352
 		}
 	},
-	icon_necklace_10 = {
+	icon_skin_slayer_dragon = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.463379,
-			0.493164
+			0.780273
 		},
 		uv11 = {
 			0.48291,
-			0.532227
+			0.819336
 		}
 	},
-	icon_skin_huntsman_ostland = {
+	icon_wpn_emp_sword_exe_01_t1 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.463379,
-			0.452148
+			0.739258
 		},
 		uv11 = {
 			0.48291,
-			0.491211
+			0.77832
 		}
 	},
-	icon_portrait_frame_0001 = {
+	icon_skin_unchained_01 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.463379,
-			0.411133
+			0.698242
 		},
 		uv11 = {
 			0.48291,
-			0.450195
+			0.737305
 		}
 	},
-	icon_skin_ironbreaker_original = {
+	icon_wpn_we_2h_axe_02_t1 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.463379,
-			0.370117
+			0.657227
 		},
 		uv11 = {
 			0.48291,
-			0.40918
+			0.696289
 		}
 	},
-	icon_portrait_frame_0005 = {
+	icon_skin_waywatcher_anmyr = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.463379,
-			0.329102
+			0.616211
 		},
 		uv11 = {
 			0.48291,
-			0.368164
+			0.655273
 		}
 	},
 	icon_ironbreaker_hat_0000 = {
@@ -3170,11 +3170,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.463379,
-			0.288086
+			0.575195
 		},
 		uv11 = {
 			0.48291,
-			0.327148
+			0.614258
 		}
 	},
 	icon_adept_hat_0000 = {
@@ -3184,11 +3184,39 @@ items_atlas = {
 		},
 		uv00 = {
 			0.463379,
-			0.24707
+			0.53418
 		},
 		uv11 = {
 			0.48291,
-			0.286133
+			0.573242
+		}
+	},
+	icon_shade_hat_0000 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.463379,
+			0.493164
+		},
+		uv11 = {
+			0.48291,
+			0.532227
+		}
+	},
+	icon_wpn_we_axe_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.463379,
+			0.452148
+		},
+		uv11 = {
+			0.48291,
+			0.491211
 		}
 	},
 	icon_shade_hat_0001 = {
@@ -3198,39 +3226,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.463379,
-			0.206055
+			0.411133
 		},
 		uv11 = {
 			0.48291,
-			0.245117
-		}
-	},
-	icon_skin_knight_ostland = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.463379,
-			0.165039
-		},
-		uv11 = {
-			0.48291,
-			0.204102
-		}
-	},
-	icon_shade_hat_0002 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.463379,
-			0.124023
-		},
-		uv11 = {
-			0.48291,
-			0.163086
+			0.450195
 		}
 	},
 	icon_ironbreaker_hat_0001 = {
@@ -3240,6 +3240,104 @@ items_atlas = {
 		},
 		uv00 = {
 			0.463379,
+			0.370117
+		},
+		uv11 = {
+			0.48291,
+			0.40918
+		}
+	},
+	icon_wpn_we_bow_short_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.463379,
+			0.329102
+		},
+		uv11 = {
+			0.48291,
+			0.368164
+		}
+	},
+	icon_skin_zealot_black_and_gold = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.463379,
+			0.288086
+		},
+		uv11 = {
+			0.48291,
+			0.327148
+		}
+	},
+	icon_ironbreaker_hat_0004 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.463379,
+			0.24707
+		},
+		uv11 = {
+			0.48291,
+			0.286133
+		}
+	},
+	icon_adept_hat_0001 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.463379,
+			0.206055
+		},
+		uv11 = {
+			0.48291,
+			0.245117
+		}
+	},
+	icon_skin_zealot_original = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.463379,
+			0.165039
+		},
+		uv11 = {
+			0.48291,
+			0.204102
+		}
+	},
+	icon_shade_hat_0004 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.463379,
+			0.124023
+		},
+		uv11 = {
+			0.48291,
+			0.163086
+		}
+	},
+	icon_trinket_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.463379,
 			0.083008
 		},
 		uv11 = {
@@ -3247,7 +3345,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_skin_maidenguard_white_and_gold = {
+	icon_shade_hat_0005 = {
 		size = {
 			80,
 			80
@@ -3261,7 +3359,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_portrait_frame_0013 = {
+	icon_wpn_we_sword_01_t3 = {
 		size = {
 			80,
 			80
@@ -3275,7 +3373,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_ironbreaker_hat_0004 = {
+	icon_trinket_11 = {
 		size = {
 			80,
 			80
@@ -3287,104 +3385,6 @@ items_atlas = {
 		uv11 = {
 			0.462402,
 			0.983398
-		}
-	},
-	icon_adept_hat_0001 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.442871,
-			0.90332
-		},
-		uv11 = {
-			0.462402,
-			0.942383
-		}
-	},
-	icon_portrait_frame_0015 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.442871,
-			0.862305
-		},
-		uv11 = {
-			0.462402,
-			0.901367
-		}
-	},
-	icon_shade_hat_0005 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.442871,
-			0.821289
-		},
-		uv11 = {
-			0.462402,
-			0.860352
-		}
-	},
-	icon_portrait_frame_0017 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.442871,
-			0.780273
-		},
-		uv11 = {
-			0.462402,
-			0.819336
-		}
-	},
-	icon_shade_hat_0006 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.442871,
-			0.739258
-		},
-		uv11 = {
-			0.462402,
-			0.77832
-		}
-	},
-	icon_skin_ranger_karak_norn = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.442871,
-			0.698242
-		},
-		uv11 = {
-			0.462402,
-			0.737305
-		}
-	},
-	icon_portrait_frame_0021 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.442871,
-			0.657227
-		},
-		uv11 = {
-			0.462402,
-			0.696289
 		}
 	},
 	icon_ironbreaker_hat_0008 = {
@@ -3394,11 +3394,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.442871,
-			0.616211
+			0.90332
 		},
 		uv11 = {
 			0.462402,
-			0.655273
+			0.942383
 		}
 	},
 	icon_adept_hat_0002 = {
@@ -3408,11 +3408,39 @@ items_atlas = {
 		},
 		uv00 = {
 			0.442871,
-			0.575195
+			0.862305
 		},
 		uv11 = {
 			0.462402,
-			0.614258
+			0.901367
+		}
+	},
+	icon_shade_hat_0008 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.442871,
+			0.821289
+		},
+		uv11 = {
+			0.462402,
+			0.860352
+		}
+	},
+	icon_wpn_wh_halberd_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.442871,
+			0.780273
+		},
+		uv11 = {
+			0.462402,
+			0.819336
 		}
 	},
 	icon_shade_hat_0009 = {
@@ -3422,39 +3450,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.442871,
-			0.53418
+			0.739258
 		},
 		uv11 = {
 			0.462402,
-			0.573242
-		}
-	},
-	icon_necklace_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.442871,
-			0.493164
-		},
-		uv11 = {
-			0.462402,
-			0.532227
-		}
-	},
-	icon_slayer_hat_0000 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.442871,
-			0.452148
-		},
-		uv11 = {
-			0.462402,
-			0.491211
+			0.77832
 		}
 	},
 	icon_ironbreaker_hat_0009 = {
@@ -3464,39 +3464,39 @@ items_atlas = {
 		},
 		uv00 = {
 			0.442871,
-			0.411133
+			0.698242
 		},
 		uv11 = {
 			0.462402,
-			0.450195
+			0.737305
 		}
 	},
-	icon_necklace_05 = {
+	icon_skin_scholar_ostermark = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.442871,
-			0.370117
+			0.657227
 		},
 		uv11 = {
 			0.462402,
-			0.40918
+			0.696289
 		}
 	},
-	icon_portrait_frame_0029 = {
+	icon_wpn_brw_dagger_03 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.442871,
-			0.329102
+			0.616211
 		},
 		uv11 = {
 			0.462402,
-			0.368164
+			0.655273
 		}
 	},
 	icon_ironbreaker_hat_0010 = {
@@ -3506,11 +3506,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.442871,
-			0.288086
+			0.575195
 		},
 		uv11 = {
 			0.462402,
-			0.327148
+			0.614258
 		}
 	},
 	icon_adept_hat_0003 = {
@@ -3520,11 +3520,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.442871,
-			0.24707
+			0.53418
 		},
 		uv11 = {
 			0.462402,
-			0.286133
+			0.573242
 		}
 	},
 	icon_bg_plentiful = {
@@ -3534,11 +3534,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.442871,
-			0.206055
+			0.493164
 		},
 		uv11 = {
 			0.462402,
-			0.245117
+			0.532227
 		}
 	},
 	icon_bg_default = {
@@ -3548,6 +3548,104 @@ items_atlas = {
 		},
 		uv00 = {
 			0.442871,
+			0.452148
+		},
+		uv11 = {
+			0.462402,
+			0.491211
+		}
+	},
+	icon_wpn_brw_flame_staff_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.442871,
+			0.411133
+		},
+		uv11 = {
+			0.462402,
+			0.450195
+		}
+	},
+	icon_slayer_hat_0001 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.442871,
+			0.370117
+		},
+		uv11 = {
+			0.462402,
+			0.40918
+		}
+	},
+	icon_skin_unchained_black_and_gold = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.442871,
+			0.329102
+		},
+		uv11 = {
+			0.462402,
+			0.368164
+		}
+	},
+	icon_wpn_brw_mace_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.442871,
+			0.288086
+		},
+		uv11 = {
+			0.462402,
+			0.327148
+		}
+	},
+	icon_ironbreaker_hat_0012 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.442871,
+			0.24707
+		},
+		uv11 = {
+			0.462402,
+			0.286133
+		}
+	},
+	icon_adept_hat_0004 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.442871,
+			0.206055
+		},
+		uv11 = {
+			0.462402,
+			0.245117
+		}
+	},
+	icon_slayer_hat_0005 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.442871,
 			0.165039
 		},
 		uv11 = {
@@ -3555,7 +3653,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_portrait_frame_0031 = {
+	icon_skin_waywatcher_black_and_gold = {
 		size = {
 			80,
 			80
@@ -3569,7 +3667,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_slayer_hat_0003 = {
+	icon_slayer_hat_0006 = {
 		size = {
 			80,
 			80
@@ -3583,7 +3681,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_portrait_frame_0002 = {
+	icon_ironbreaker_hat_0013 = {
 		size = {
 			80,
 			80
@@ -3597,7 +3695,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_portrait_frame_0037 = {
+	icon_skin_witchhunter_helmgart = {
 		size = {
 			80,
 			80
@@ -3611,7 +3709,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_ironbreaker_hat_0012 = {
+	icon_wpn_brw_sword_02_t1 = {
 		size = {
 			80,
 			80
@@ -3623,104 +3721,6 @@ items_atlas = {
 		uv11 = {
 			0.441895,
 			0.983398
-		}
-	},
-	icon_adept_hat_0004 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.422363,
-			0.90332
-		},
-		uv11 = {
-			0.441895,
-			0.942383
-		}
-	},
-	icon_slayer_hat_0007 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.422363,
-			0.862305
-		},
-		uv11 = {
-			0.441895,
-			0.901367
-		}
-	},
-	icon_portrait_frame_0006 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.422363,
-			0.821289
-		},
-		uv11 = {
-			0.441895,
-			0.860352
-		}
-	},
-	icon_slayer_hat_0008 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.422363,
-			0.780273
-		},
-		uv11 = {
-			0.441895,
-			0.819336
-		}
-	},
-	icon_ironbreaker_hat_0013 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.422363,
-			0.739258
-		},
-		uv11 = {
-			0.441895,
-			0.77832
-		}
-	},
-	icon_portrait_frame_0010 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.422363,
-			0.698242
-		},
-		uv11 = {
-			0.441895,
-			0.737305
-		}
-	},
-	icon_portrait_frame_0045 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.422363,
-			0.657227
-		},
-		uv11 = {
-			0.441895,
-			0.696289
 		}
 	},
 	icon_knight_hat_0000 = {
@@ -3730,11 +3730,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.422363,
-			0.616211
+			0.90332
 		},
 		uv11 = {
 			0.441895,
-			0.655273
+			0.942383
 		}
 	},
 	icon_adept_hat_0005 = {
@@ -3744,95 +3744,95 @@ items_atlas = {
 		},
 		uv00 = {
 			0.422363,
-			0.575195
+			0.862305
 		},
 		uv11 = {
 			0.441895,
-			0.614258
+			0.901367
 		}
 	},
-	icon_portrait_frame_0047 = {
+	icon_wpn_brw_sword_04_t1 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.422363,
-			0.53418
+			0.821289
 		},
 		uv11 = {
 			0.441895,
-			0.573242
+			0.860352
 		}
 	},
-	icon_slayer_hat_0011 = {
+	icon_slayer_hat_0009 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.422363,
-			0.493164
+			0.780273
 		},
 		uv11 = {
 			0.441895,
-			0.532227
+			0.819336
 		}
 	},
-	icon_portrait_frame_0049 = {
+	icon_wpn_dw_2h_axe_02_t1 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.422363,
-			0.452148
+			0.739258
 		},
 		uv11 = {
 			0.441895,
-			0.491211
+			0.77832
 		}
 	},
-	icon_slayer_hat_0012 = {
+	icon_slayer_hat_0010 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.422363,
-			0.411133
+			0.698242
 		},
 		uv11 = {
 			0.441895,
-			0.450195
+			0.737305
 		}
 	},
-	icon_portrait_frame_0018 = {
+	icon_trinket_05 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.422363,
-			0.370117
+			0.657227
 		},
 		uv11 = {
 			0.441895,
-			0.40918
+			0.696289
 		}
 	},
-	icon_portrait_frame_0053 = {
+	icon_wpn_dw_2h_hammer_03_t1 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.422363,
-			0.329102
+			0.616211
 		},
 		uv11 = {
 			0.441895,
-			0.368164
+			0.655273
 		}
 	},
 	icon_knight_hat_0002 = {
@@ -3842,11 +3842,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.422363,
-			0.288086
+			0.575195
 		},
 		uv11 = {
 			0.441895,
-			0.327148
+			0.614258
 		}
 	},
 	icon_adept_hat_0006 = {
@@ -3856,53 +3856,53 @@ items_atlas = {
 		},
 		uv00 = {
 			0.422363,
-			0.24707
+			0.53418
 		},
 		uv11 = {
 			0.441895,
-			0.286133
+			0.573242
 		}
 	},
-	icon_unchained_hat_0002 = {
+	icon_unchained_hat_0000 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.422363,
-			0.206055
+			0.493164
 		},
 		uv11 = {
 			0.441895,
-			0.245117
+			0.532227
 		}
 	},
-	icon_portrait_frame_0022 = {
+	icon_emp_handcannon = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.422363,
-			0.165039
+			0.452148
 		},
 		uv11 = {
 			0.441895,
-			0.204102
+			0.491211
 		}
 	},
-	icon_unchained_hat_0003 = {
+	icon_unchained_hat_0001 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.422363,
-			0.124023
+			0.411133
 		},
 		uv11 = {
 			0.441895,
-			0.163086
+			0.450195
 		}
 	},
 	icon_knight_hat_0003 = {
@@ -3912,6 +3912,104 @@ items_atlas = {
 		},
 		uv00 = {
 			0.422363,
+			0.370117
+		},
+		uv11 = {
+			0.441895,
+			0.40918
+		}
+	},
+	icon_wpn_brw_beam_staff_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.422363,
+			0.329102
+		},
+		uv11 = {
+			0.441895,
+			0.368164
+		}
+	},
+	icon_wpn_dw_drake_pistol_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.422363,
+			0.288086
+		},
+		uv11 = {
+			0.441895,
+			0.327148
+		}
+	},
+	icon_knight_hat_0004 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.422363,
+			0.24707
+		},
+		uv11 = {
+			0.441895,
+			0.286133
+		}
+	},
+	icon_adept_hat_0007 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.422363,
+			0.206055
+		},
+		uv11 = {
+			0.441895,
+			0.245117
+		}
+	},
+	deed_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.422363,
+			0.165039
+		},
+		uv11 = {
+			0.441895,
+			0.204102
+		}
+	},
+	icon_wpn_dw_hammer_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.422363,
+			0.124023
+		},
+		uv11 = {
+			0.441895,
+			0.163086
+		}
+	},
+	icon_wpn_brw_dagger_05 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.422363,
 			0.083008
 		},
 		uv11 = {
@@ -3919,7 +4017,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_portrait_frame_0026 = {
+	icon_wpn_dw_hammer_03_t1 = {
 		size = {
 			80,
 			80
@@ -3933,7 +4031,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_portrait_frame_0061 = {
+	icon_wpn_brw_flaming_sword_02_t1 = {
 		size = {
 			80,
 			80
@@ -3947,7 +4045,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_knight_hat_0004 = {
+	icon_wpn_dw_iron_drake_02 = {
 		size = {
 			80,
 			80
@@ -3959,104 +4057,6 @@ items_atlas = {
 		uv11 = {
 			0.421387,
 			0.983398
-		}
-	},
-	icon_adept_hat_0007 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.90332
-		},
-		uv11 = {
-			0.421387,
-			0.942383
-		}
-	},
-	deed_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.862305
-		},
-		uv11 = {
-			0.421387,
-			0.901367
-		}
-	},
-	icon_portrait_frame_0063 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.821289
-		},
-		uv11 = {
-			0.421387,
-			0.860352
-		}
-	},
-	icon_portrait_frame_0030 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.780273
-		},
-		uv11 = {
-			0.421387,
-			0.819336
-		}
-	},
-	icon_portrait_frame_0065 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.739258
-		},
-		uv11 = {
-			0.421387,
-			0.77832
-		}
-	},
-	icon_portrait_frame_0034 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.698242
-		},
-		uv11 = {
-			0.421387,
-			0.737305
-		}
-	},
-	icon_portrait_frame_0069 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.657227
-		},
-		uv11 = {
-			0.421387,
-			0.696289
 		}
 	},
 	icon_knight_hat_0006 = {
@@ -4066,11 +4066,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.401855,
-			0.616211
+			0.90332
 		},
 		uv11 = {
 			0.421387,
-			0.655273
+			0.942383
 		}
 	},
 	icon_bountyhunter_hat_0000 = {
@@ -4080,53 +4080,53 @@ items_atlas = {
 		},
 		uv00 = {
 			0.401855,
-			0.575195
+			0.862305
 		},
 		uv11 = {
 			0.421387,
-			0.614258
+			0.901367
 		}
 	},
-	icon_waywatcher_hat_0000 = {
+	icon_unchained_hat_0008 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.401855,
-			0.53418
+			0.821289
 		},
 		uv11 = {
 			0.421387,
-			0.573242
+			0.860352
 		}
 	},
-	icon_portrait_frame_0038 = {
+	icon_wpn_brw_mace_03 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.401855,
-			0.493164
+			0.780273
 		},
 		uv11 = {
 			0.421387,
-			0.532227
+			0.819336
 		}
 	},
-	icon_waywatcher_hat_0001 = {
+	icon_unchained_hat_0009 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.401855,
-			0.452148
+			0.739258
 		},
 		uv11 = {
 			0.421387,
-			0.491211
+			0.77832
 		}
 	},
 	icon_knight_hat_0007 = {
@@ -4136,39 +4136,39 @@ items_atlas = {
 		},
 		uv00 = {
 			0.401855,
-			0.411133
+			0.698242
 		},
 		uv11 = {
 			0.421387,
-			0.450195
+			0.737305
 		}
 	},
-	icon_portrait_frame_0042 = {
+	icon_wpn_brw_staff_02 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.401855,
-			0.370117
+			0.657227
 		},
 		uv11 = {
 			0.421387,
-			0.40918
+			0.696289
 		}
 	},
-	icon_portrait_frame_0077 = {
+	icon_wpn_dw_shield_04_hammer = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.401855,
-			0.329102
+			0.616211
 		},
 		uv11 = {
 			0.421387,
-			0.368164
+			0.655273
 		}
 	},
 	icon_knight_hat_0008 = {
@@ -4178,11 +4178,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.401855,
-			0.288086
+			0.575195
 		},
 		uv11 = {
 			0.421387,
-			0.327148
+			0.614258
 		}
 	},
 	icon_bountyhunter_hat_0001 = {
@@ -4192,3693 +4192,11 @@ items_atlas = {
 		},
 		uv00 = {
 			0.401855,
-			0.24707
+			0.53418
 		},
 		uv11 = {
 			0.421387,
-			0.286133
-		}
-	},
-	icon_portrait_frame_0079 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.206055
-		},
-		uv11 = {
-			0.421387,
-			0.245117
-		}
-	},
-	icon_waywatcher_hat_0004 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.165039
-		},
-		uv11 = {
-			0.421387,
-			0.204102
-		}
-	},
-	icon_portrait_frame_0081 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.124023
-		},
-		uv11 = {
-			0.421387,
-			0.163086
-		}
-	},
-	icon_waywatcher_hat_0005 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.083008
-		},
-		uv11 = {
-			0.421387,
-			0.12207
-		}
-	},
-	icon_portrait_frame_0050 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.041992
-		},
-		uv11 = {
-			0.421387,
-			0.081055
-		}
-	},
-	icon_portrait_frame_dev = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.401855,
-			0.000977
-		},
-		uv11 = {
-			0.421387,
-			0.040039
-		}
-	},
-	icon_maidenguard_hat_0000 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.944336
-		},
-		uv11 = {
-			0.400879,
-			0.983398
-		}
-	},
-	icon_bountyhunter_hat_0002 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.90332
-		},
-		uv11 = {
-			0.400879,
-			0.942383
-		}
-	},
-	icon_waywatcher_hat_0008 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.862305
-		},
-		uv11 = {
-			0.400879,
-			0.901367
-		}
-	},
-	icon_portrait_frame_0054 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.821289
-		},
-		uv11 = {
-			0.400879,
-			0.860352
-		}
-	},
-	icon_waywatcher_hat_0009 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.780273
-		},
-		uv11 = {
-			0.400879,
-			0.819336
-		}
-	},
-	icon_maidenguard_hat_0001 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.739258
-		},
-		uv11 = {
-			0.400879,
-			0.77832
-		}
-	},
-	icon_portrait_frame_0058 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.698242
-		},
-		uv11 = {
-			0.400879,
-			0.737305
-		}
-	},
-	icon_charm_07 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.657227
-		},
-		uv11 = {
-			0.400879,
-			0.696289
-		}
-	},
-	icon_maidenguard_hat_0002 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.616211
-		},
-		uv11 = {
-			0.400879,
-			0.655273
-		}
-	},
-	icon_bountyhunter_hat_0003 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.575195
-		},
-		uv11 = {
-			0.400879,
-			0.614258
-		}
-	},
-	icon_bg_promo = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.53418
-		},
-		uv11 = {
-			0.400879,
 			0.573242
-		}
-	},
-	icon_deed_cataclysm_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.493164
-		},
-		uv11 = {
-			0.400879,
-			0.532227
-		}
-	},
-	icon_witchhunter_hat_0000 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.452148
-		},
-		uv11 = {
-			0.400879,
-			0.491211
-		}
-	},
-	icon_portrait_frame_0062 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.411133
-		},
-		uv11 = {
-			0.400879,
-			0.450195
-		}
-	},
-	icon_portrait_frame_0066 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.370117
-		},
-		uv11 = {
-			0.400879,
-			0.40918
-		}
-	},
-	icon_skin_adept_original = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.329102
-		},
-		uv11 = {
-			0.400879,
-			0.368164
-		}
-	},
-	icon_maidenguard_hat_0004 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.288086
-		},
-		uv11 = {
-			0.400879,
-			0.327148
-		}
-	},
-	icon_bountyhunter_hat_0004 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.24707
-		},
-		uv11 = {
-			0.400879,
-			0.286133
-		}
-	},
-	icon_witchhunter_hat_0004 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.206055
-		},
-		uv11 = {
-			0.400879,
-			0.245117
-		}
-	},
-	icon_portrait_frame_0070 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.165039
-		},
-		uv11 = {
-			0.400879,
-			0.204102
-		}
-	},
-	icon_witchhunter_hat_0005 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.124023
-		},
-		uv11 = {
-			0.400879,
-			0.163086
-		}
-	},
-	icon_maidenguard_hat_0005 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.083008
-		},
-		uv11 = {
-			0.400879,
-			0.12207
-		}
-	},
-	icon_portrait_frame_0074 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.041992
-		},
-		uv11 = {
-			0.400879,
-			0.081055
-		}
-	},
-	icon_skin_bountyhunter_brown_and_white = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.381348,
-			0.000977
-		},
-		uv11 = {
-			0.400879,
-			0.040039
-		}
-	},
-	icon_maidenguard_hat_0006 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.944336
-		},
-		uv11 = {
-			0.380371,
-			0.983398
-		}
-	},
-	icon_bountyhunter_hat_0005 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.90332
-		},
-		uv11 = {
-			0.380371,
-			0.942383
-		}
-	},
-	icon_skin_bountyhunter_middenland = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.862305
-		},
-		uv11 = {
-			0.380371,
-			0.901367
-		}
-	},
-	icon_zealot_hat_0001 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.821289
-		},
-		uv11 = {
-			0.380371,
-			0.860352
-		}
-	},
-	icon_skin_bountyhunter_yellow_and_red = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.780273
-		},
-		uv11 = {
-			0.380371,
-			0.819336
-		}
-	},
-	icon_zealot_hat_0002 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.739258
-		},
-		uv11 = {
-			0.380371,
-			0.77832
-		}
-	},
-	icon_portrait_frame_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.698242
-		},
-		uv11 = {
-			0.380371,
-			0.737305
-		}
-	},
-	icon_skin_huntsman_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.657227
-		},
-		uv11 = {
-			0.380371,
-			0.696289
-		}
-	},
-	icon_maidenguard_hat_0008 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.616211
-		},
-		uv11 = {
-			0.380371,
-			0.655273
-		}
-	},
-	icon_bountyhunter_hat_0006 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.575195
-		},
-		uv11 = {
-			0.380371,
-			0.614258
-		}
-	},
-	icon_zealot_hat_0005 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.53418
-		},
-		uv11 = {
-			0.380371,
-			0.573242
-		}
-	},
-	icon_portrait_frame_sienna = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.493164
-		},
-		uv11 = {
-			0.380371,
-			0.532227
-		}
-	},
-	icon_zealot_hat_0006 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.452148
-		},
-		uv11 = {
-			0.380371,
-			0.491211
-		}
-	},
-	icon_maidenguard_hat_0009 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.411133
-		},
-		uv11 = {
-			0.380371,
-			0.450195
-		}
-	},
-	icon_charm_04 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.370117
-		},
-		uv11 = {
-			0.380371,
-			0.40918
-		}
-	},
-	icon_skin_huntsman_red = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.329102
-		},
-		uv11 = {
-			0.380371,
-			0.368164
-		}
-	},
-	icon_maidenguard_hat_0010 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.288086
-		},
-		uv11 = {
-			0.380371,
-			0.327148
-		}
-	},
-	icon_bountyhunter_hat_0007 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.24707
-		},
-		uv11 = {
-			0.380371,
-			0.286133
-		}
-	},
-	icon_deed_hard_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.206055
-		},
-		uv11 = {
-			0.380371,
-			0.245117
-		}
-	},
-	icon_skin_ironbreaker_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.165039
-		},
-		uv11 = {
-			0.380371,
-			0.204102
-		}
-	},
-	icon_charm_08 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.124023
-		},
-		uv11 = {
-			0.380371,
-			0.163086
-		}
-	},
-	icon_skin_ironbreaker_crimson = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.083008
-		},
-		uv11 = {
-			0.380371,
-			0.12207
-		}
-	},
-	icon_skin_adept_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.041992
-		},
-		uv11 = {
-			0.380371,
-			0.081055
-		}
-	},
-	icon_skin_knight_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.36084,
-			0.000977
-		},
-		uv11 = {
-			0.380371,
-			0.040039
-		}
-	},
-	icon_mercenary_hat_0001 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.944336
-		},
-		uv11 = {
-			0.359863,
-			0.983398
-		}
-	},
-	icon_bountyhunter_hat_0008 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.90332
-		},
-		uv11 = {
-			0.359863,
-			0.942383
-		}
-	},
-	icon_loot_chest_d2_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.862305
-		},
-		uv11 = {
-			0.359863,
-			0.901367
-		}
-	},
-	icon_skin_adept_ostermark = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.821289
-		},
-		uv11 = {
-			0.359863,
-			0.860352
-		}
-	},
-	icon_loot_chest_d2_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.780273
-		},
-		uv11 = {
-			0.359863,
-			0.819336
-		}
-	},
-	icon_mercenary_hat_0002 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.739258
-		},
-		uv11 = {
-			0.359863,
-			0.77832
-		}
-	},
-	icon_skin_battlewizard_v1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.698242
-		},
-		uv11 = {
-			0.359863,
-			0.737305
-		}
-	},
-	icon_skin_knight_red = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.657227
-		},
-		uv11 = {
-			0.359863,
-			0.696289
-		}
-	},
-	icon_mercenary_hat_0003 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.616211
-		},
-		uv11 = {
-			0.359863,
-			0.655273
-		}
-	},
-	icon_bountyhunter_hat_0009 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.575195
-		},
-		uv11 = {
-			0.359863,
-			0.614258
-		}
-	},
-	icon_skin_maidenguard_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.53418
-		},
-		uv11 = {
-			0.359863,
-			0.573242
-		}
-	},
-	icon_loot_chest_d2_t5 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.493164
-		},
-		uv11 = {
-			0.359863,
-			0.532227
-		}
-	},
-	icon_skin_maidenguard_elyrion = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.452148
-		},
-		uv11 = {
-			0.359863,
-			0.491211
-		}
-	},
-	icon_loot_chest_d2_t6 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.411133
-		},
-		uv11 = {
-			0.359863,
-			0.450195
-		}
-	},
-	icon_skin_captain_helmgart = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.370117
-		},
-		uv11 = {
-			0.359863,
-			0.40918
-		}
-	},
-	icon_skin_mercenary_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.329102
-		},
-		uv11 = {
-			0.359863,
-			0.368164
-		}
-	},
-	icon_mercenary_hat_0005 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.288086
-		},
-		uv11 = {
-			0.359863,
-			0.327148
-		}
-	},
-	icon_hat_witchhunter_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.24707
-		},
-		uv11 = {
-			0.359863,
-			0.286133
-		}
-	},
-	icon_loot_chest_d3_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.206055
-		},
-		uv11 = {
-			0.359863,
-			0.245117
-		}
-	},
-	icon_skin_huntsman_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.165039
-		},
-		uv11 = {
-			0.359863,
-			0.204102
-		}
-	},
-	icon_loot_chest_d3_t4 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.124023
-		},
-		uv11 = {
-			0.359863,
-			0.163086
-		}
-	},
-	icon_mercenary_hat_0006 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.083008
-		},
-		uv11 = {
-			0.359863,
-			0.12207
-		}
-	},
-	icon_huntsman_hat_0000 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.041992
-		},
-		uv11 = {
-			0.359863,
-			0.081055
-		}
-	},
-	rarity_color_orange = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.340332,
-			0.000977
-		},
-		uv11 = {
-			0.359863,
-			0.040039
-		}
-	},
-	icon_bg_rare = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.944336
-		},
-		uv11 = {
-			0.339355,
-			0.983398
-		}
-	},
-	icon_bg_exotic = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.90332
-		},
-		uv11 = {
-			0.339355,
-			0.942383
-		}
-	},
-	icon_skin_mercenary_ostermark = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.862305
-		},
-		uv11 = {
-			0.339355,
-			0.901367
-		}
-	},
-	icon_loot_chest_d3_t5 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.821289
-		},
-		uv11 = {
-			0.339355,
-			0.860352
-		}
-	},
-	icon_wpn_dw_2h_hammer_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.780273
-		},
-		uv11 = {
-			0.339355,
-			0.819336
-		}
-	},
-	icon_wpn_dw_xbox_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.739258
-		},
-		uv11 = {
-			0.339355,
-			0.77832
-		}
-	},
-	icon_emp_handcannon = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.698242
-		},
-		uv11 = {
-			0.339355,
-			0.737305
-		}
-	},
-	icon_wpn_dw_handgun_02_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.657227
-		},
-		uv11 = {
-			0.339355,
-			0.696289
-		}
-	},
-	icon_skin_zealot_green_and_yellow = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.616211
-		},
-		uv11 = {
-			0.339355,
-			0.655273
-		}
-	},
-	icon_wpn_brw_sword_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.575195
-		},
-		uv11 = {
-			0.339355,
-			0.614258
-		}
-	},
-	icon_skin_shade_midnight = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.53418
-		},
-		uv11 = {
-			0.339355,
-			0.573242
-		}
-	},
-	icon_wpn_dw_axe_04_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.493164
-		},
-		uv11 = {
-			0.339355,
-			0.532227
-		}
-	},
-	icon_wpn_brw_dagger_05 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.452148
-		},
-		uv11 = {
-			0.339355,
-			0.491211
-		}
-	},
-	icon_wpn_dw_shield_03_hammer = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.411133
-		},
-		uv11 = {
-			0.339355,
-			0.450195
-		}
-	},
-	icon_skin_shade_ash = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.370117
-		},
-		uv11 = {
-			0.339355,
-			0.40918
-		}
-	},
-	icon_wpn_brw_spear_staff_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.329102
-		},
-		uv11 = {
-			0.339355,
-			0.368164
-		}
-	},
-	icon_trinket_05 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.288086
-		},
-		uv11 = {
-			0.339355,
-			0.327148
-		}
-	},
-	icon_wpn_dw_2h_axe_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.24707
-		},
-		uv11 = {
-			0.339355,
-			0.286133
-		}
-	},
-	icon_wpn_brw_staff_03 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.206055
-		},
-		uv11 = {
-			0.339355,
-			0.245117
-		}
-	},
-	icon_wpn_dw_axe_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.165039
-		},
-		uv11 = {
-			0.339355,
-			0.204102
-		}
-	},
-	icon_wpn_brw_beam_staff_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.124023
-		},
-		uv11 = {
-			0.339355,
-			0.163086
-		}
-	},
-	icon_wpn_dw_hammer_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.083008
-		},
-		uv11 = {
-			0.339355,
-			0.12207
-		}
-	},
-	icon_skin_slayer_dragon = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.041992
-		},
-		uv11 = {
-			0.339355,
-			0.081055
-		}
-	},
-	icon_wpn_dw_rakegun_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.319824,
-			0.000977
-		},
-		uv11 = {
-			0.339355,
-			0.040039
-		}
-	},
-	icon_wpn_brw_flaming_sword_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.944336
-		},
-		uv11 = {
-			0.318848,
-			0.983398
-		}
-	},
-	icon_skin_zealot_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.90332
-		},
-		uv11 = {
-			0.318848,
-			0.942383
-		}
-	},
-	icon_wpn_dw_axe_03_t2_dual = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.862305
-		},
-		uv11 = {
-			0.318848,
-			0.901367
-		}
-	},
-	icon_skin_zealot_original = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.821289
-		},
-		uv11 = {
-			0.318848,
-			0.860352
-		}
-	},
-	icon_trinket_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.780273
-		},
-		uv11 = {
-			0.318848,
-			0.819336
-		}
-	},
-	icon_loot_chest_d4_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.739258
-		},
-		uv11 = {
-			0.318848,
-			0.77832
-		}
-	},
-	icon_skin_shade_crimson = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.698242
-		},
-		uv11 = {
-			0.318848,
-			0.737305
-		}
-	},
-	icon_trinket_07 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.657227
-		},
-		uv11 = {
-			0.318848,
-			0.696289
-		}
-	},
-	icon_trinket_09 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.616211
-		},
-		uv11 = {
-			0.318848,
-			0.655273
-		}
-	},
-	icon_skin_ranger_helmgart = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.575195
-		},
-		uv11 = {
-			0.318848,
-			0.614258
-		}
-	},
-	icon_wpn_dw_2h_hammer_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.53418
-		},
-		uv11 = {
-			0.318848,
-			0.573242
-		}
-	},
-	icon_wpn_axe_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.493164
-		},
-		uv11 = {
-			0.318848,
-			0.532227
-		}
-	},
-	icon_wpn_axe_03_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.452148
-		},
-		uv11 = {
-			0.318848,
-			0.491211
-		}
-	},
-	icon_loot_chest_d4_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.411133
-		},
-		uv11 = {
-			0.318848,
-			0.450195
-		}
-	},
-	icon_skin_slayer_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.370117
-		},
-		uv11 = {
-			0.318848,
-			0.40918
-		}
-	},
-	icon_wpn_brw_beam_staff_04 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.329102
-		},
-		uv11 = {
-			0.318848,
-			0.368164
-		}
-	},
-	icon_wpn_brw_dagger_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.288086
-		},
-		uv11 = {
-			0.318848,
-			0.327148
-		}
-	},
-	icon_skin_ranger_original = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.24707
-		},
-		uv11 = {
-			0.318848,
-			0.286133
-		}
-	},
-	icon_wpn_dw_axe_03_t1_dual = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.206055
-		},
-		uv11 = {
-			0.318848,
-			0.245117
-		}
-	},
-	icon_wpn_brw_flame_staff_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.165039
-		},
-		uv11 = {
-			0.318848,
-			0.204102
-		}
-	},
-	icon_wpn_brw_flame_staff_04 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.124023
-		},
-		uv11 = {
-			0.318848,
-			0.163086
-		}
-	},
-	icon_loot_chest_d4_t4 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.083008
-		},
-		uv11 = {
-			0.318848,
-			0.12207
-		}
-	},
-	icon_skin_slayer_skaven = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.041992
-		},
-		uv11 = {
-			0.318848,
-			0.081055
-		}
-	},
-	icon_wpn_brw_flaming_sword_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.299316,
-			0.000977
-		},
-		uv11 = {
-			0.318848,
-			0.040039
-		}
-	},
-	icon_wpn_brw_flaming_sword_04_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.944336
-		},
-		uv11 = {
-			0.29834,
-			0.983398
-		}
-	},
-	icon_skin_zealot_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.90332
-		},
-		uv11 = {
-			0.29834,
-			0.942383
-		}
-	},
-	icon_wpn_dw_shield_04_axe = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.862305
-		},
-		uv11 = {
-			0.29834,
-			0.901367
-		}
-	},
-	icon_wpn_dw_xbox_02_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.821289
-		},
-		uv11 = {
-			0.29834,
-			0.860352
-		}
-	},
-	icon_loot_chest_d4_t5 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.780273
-		},
-		uv11 = {
-			0.29834,
-			0.819336
-		}
-	},
-	icon_skin_zealot_pure = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.739258
-		},
-		uv11 = {
-			0.29834,
-			0.77832
-		}
-	},
-	icon_skin_shade_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.698242
-		},
-		uv11 = {
-			0.29834,
-			0.737305
-		}
-	},
-	icon_wpn_brw_spear_staff_04 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.657227
-		},
-		uv11 = {
-			0.29834,
-			0.696289
-		}
-	},
-	icon_skin_scholar_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.616211
-		},
-		uv11 = {
-			0.29834,
-			0.655273
-		}
-	},
-	icon_skin_unchained_brown_and_white = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.575195
-		},
-		uv11 = {
-			0.29834,
-			0.614258
-		}
-	},
-	icon_wpn_dw_shield_03_axe = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.53418
-		},
-		uv11 = {
-			0.29834,
-			0.573242
-		}
-	},
-	icon_wpn_brw_sword_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.493164
-		},
-		uv11 = {
-			0.29834,
-			0.532227
-		}
-	},
-	icon_loot_chest_d4_t6 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.452148
-		},
-		uv11 = {
-			0.29834,
-			0.491211
-		}
-	},
-	icon_trinket_08 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.411133
-		},
-		uv11 = {
-			0.29834,
-			0.450195
-		}
-	},
-	icon_skin_shade_emerald = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.370117
-		},
-		uv11 = {
-			0.29834,
-			0.40918
-		}
-	},
-	icon_wpn_dw_2h_axe_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.329102
-		},
-		uv11 = {
-			0.29834,
-			0.368164
-		}
-	},
-	icon_skin_scholar_brown_and_white = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.288086
-		},
-		uv11 = {
-			0.29834,
-			0.327148
-		}
-	},
-	icon_trinket_11 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.24707
-		},
-		uv11 = {
-			0.29834,
-			0.286133
-		}
-	},
-	icon_trinket_12 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.206055
-		},
-		uv11 = {
-			0.29834,
-			0.245117
-		}
-	},
-	icon_wpn_dw_2h_hammer_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.165039
-		},
-		uv11 = {
-			0.29834,
-			0.204102
-		}
-	},
-	icon_wpn_empire_2h_hammer_03_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.124023
-		},
-		uv11 = {
-			0.29834,
-			0.163086
-		}
-	},
-	icon_wpn_axe_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.083008
-		},
-		uv11 = {
-			0.29834,
-			0.12207
-		}
-	},
-	icon_skin_shade_original = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.041992
-		},
-		uv11 = {
-			0.29834,
-			0.081055
-		}
-	},
-	icon_wpn_dw_axe_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.278809,
-			0.000977
-		},
-		uv11 = {
-			0.29834,
-			0.040039
-		}
-	},
-	icon_skin_scholar_original = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.944336
-		},
-		uv11 = {
-			0.277832,
-			0.983398
-		}
-	},
-	icon_skin_waywatcher_helmgart = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.90332
-		},
-		uv11 = {
-			0.277832,
-			0.942383
-		}
-	},
-	icon_wpn_dw_2h_axe_03_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.862305
-		},
-		uv11 = {
-			0.277832,
-			0.901367
-		}
-	},
-	icon_wpn_dw_drake_pistol_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.821289
-		},
-		uv11 = {
-			0.277832,
-			0.860352
-		}
-	},
-	icon_wpn_dw_axe_02_t2_dual = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.780273
-		},
-		uv11 = {
-			0.277832,
-			0.819336
-		}
-	},
-	icon_wpn_brw_beam_staff_05 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.739258
-		},
-		uv11 = {
-			0.277832,
-			0.77832
-		}
-	},
-	icon_skin_slayer_axe = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.698242
-		},
-		uv11 = {
-			0.277832,
-			0.737305
-		}
-	},
-	icon_wpn_dw_hammer_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.657227
-		},
-		uv11 = {
-			0.277832,
-			0.696289
-		}
-	},
-	icon_wpn_brw_spear_staff_05 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.616211
-		},
-		uv11 = {
-			0.277832,
-			0.655273
-		}
-	},
-	icon_wpn_dw_handgun_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.575195
-		},
-		uv11 = {
-			0.277832,
-			0.614258
-		}
-	},
-	icon_wpn_dw_handgun_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.53418
-		},
-		uv11 = {
-			0.277832,
-			0.573242
-		}
-	},
-	icon_wpn_dw_iron_drake_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.493164
-		},
-		uv11 = {
-			0.277832,
-			0.532227
-		}
-	},
-	icon_skin_scholar_ostermark = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.452148
-		},
-		uv11 = {
-			0.277832,
-			0.491211
-		}
-	},
-	icon_wpn_brw_flame_staff_03 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.411133
-		},
-		uv11 = {
-			0.277832,
-			0.450195
-		}
-	},
-	icon_skin_slayer_runes = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.370117
-		},
-		uv11 = {
-			0.277832,
-			0.40918
-		}
-	},
-	icon_wpn_dw_rakegun_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.329102
-		},
-		uv11 = {
-			0.277832,
-			0.368164
-		}
-	},
-	icon_wpn_dw_shield_01_axe = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.288086
-		},
-		uv11 = {
-			0.277832,
-			0.327148
-		}
-	},
-	icon_skin_witchhunter_original = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.24707
-		},
-		uv11 = {
-			0.277832,
-			0.286133
-		}
-	},
-	icon_wpn_dw_handgun_01_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.206055
-		},
-		uv11 = {
-			0.277832,
-			0.245117
-		}
-	},
-	icon_wpn_dw_shield_04_hammer = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.165039
-		},
-		uv11 = {
-			0.277832,
-			0.204102
-		}
-	},
-	icon_skin_shade_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.124023
-		},
-		uv11 = {
-			0.277832,
-			0.163086
-		}
-	},
-	icon_wpn_brw_flaming_sword_03_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.083008
-		},
-		uv11 = {
-			0.277832,
-			0.12207
-		}
-	},
-	icon_skin_slayer_wing = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.041992
-		},
-		uv11 = {
-			0.277832,
-			0.081055
-		}
-	},
-	icon_wpn_dw_2h_axe_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.258301,
-			0.000977
-		},
-		uv11 = {
-			0.277832,
-			0.040039
-		}
-	},
-	icon_loot_chest_d3_t6 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.944336
-		},
-		uv11 = {
-			0.257324,
-			0.983398
-		}
-	},
-	icon_skin_unchained_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.90332
-		},
-		uv11 = {
-			0.257324,
-			0.942383
-		}
-	},
-	icon_skin_zealot_crimson = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.862305
-		},
-		uv11 = {
-			0.257324,
-			0.901367
-		}
-	},
-	icon_skin_unchained_ash = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.821289
-		},
-		uv11 = {
-			0.257324,
-			0.860352
-		}
-	},
-	icon_skin_zealot_middenland = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.780273
-		},
-		uv11 = {
-			0.257324,
-			0.819336
-		}
-	},
-	icon_wpn_dw_hammer_01_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.739258
-		},
-		uv11 = {
-			0.257324,
-			0.77832
-		}
-	},
-	icon_wpn_dw_hammer_03_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.698242
-		},
-		uv11 = {
-			0.257324,
-			0.737305
-		}
-	},
-	icon_wpn_empire_2h_hammer_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.657227
-		},
-		uv11 = {
-			0.257324,
-			0.696289
-		}
-	},
-	icon_skin_unchained_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.616211
-		},
-		uv11 = {
-			0.257324,
-			0.655273
-		}
-	},
-	icon_wpn_brw_mace_05 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.575195
-		},
-		uv11 = {
-			0.257324,
-			0.614258
-		}
-	},
-	icon_wpn_dw_handgun_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.53418
-		},
-		uv11 = {
-			0.257324,
-			0.573242
-		}
-	},
-	icon_skin_unchained_bronze = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.493164
-		},
-		uv11 = {
-			0.257324,
-			0.532227
-		}
-	},
-	icon_trinket_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.452148
-		},
-		uv11 = {
-			0.257324,
-			0.491211
-		}
-	},
-	icon_wpn_dw_pick_01_t4 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.411133
-		},
-		uv11 = {
-			0.257324,
-			0.450195
-		}
-	},
-	icon_wpn_empire_2h_hammer_01_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.370117
-		},
-		uv11 = {
-			0.257324,
-			0.40918
-		}
-	},
-	icon_trinket_03 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.329102
-		},
-		uv11 = {
-			0.257324,
-			0.368164
-		}
-	},
-	icon_wpn_brw_staff_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.288086
-		},
-		uv11 = {
-			0.257324,
-			0.327148
-		}
-	},
-	icon_trinket_04 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.24707
-		},
-		uv11 = {
-			0.257324,
-			0.286133
-		}
-	},
-	icon_wpn_brw_staff_04 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.206055
-		},
-		uv11 = {
-			0.257324,
-			0.245117
-		}
-	},
-	icon_skin_unchained_original = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.165039
-		},
-		uv11 = {
-			0.257324,
-			0.204102
-		}
-	},
-	icon_trinket_06 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.124023
-		},
-		uv11 = {
-			0.257324,
-			0.163086
-		}
-	},
-	icon_wpn_dw_xbox_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.083008
-		},
-		uv11 = {
-			0.257324,
-			0.12207
-		}
-	},
-	icon_wpn_brw_sword_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.041992
-		},
-		uv11 = {
-			0.257324,
-			0.081055
-		}
-	},
-	icon_wpn_brw_sword_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.237793,
-			0.000977
-		},
-		uv11 = {
-			0.257324,
-			0.040039
-		}
-	},
-	icon_skin_unchained_ostermark = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.944336
-		},
-		uv11 = {
-			0.236816,
-			0.983398
-		}
-	},
-	icon_wpn_brw_sword_04_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.90332
-		},
-		uv11 = {
-			0.236816,
-			0.942383
-		}
-	},
-	icon_wpn_brw_mace_04 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.862305
-		},
-		uv11 = {
-			0.236816,
-			0.901367
-		}
-	},
-	icon_skin_waywatcher_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.821289
-		},
-		uv11 = {
-			0.236816,
-			0.860352
-		}
-	},
-	icon_trinket_10 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.780273
-		},
-		uv11 = {
-			0.236816,
-			0.819336
-		}
-	},
-	icon_wpn_brw_spear_staff_03 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.739258
-		},
-		uv11 = {
-			0.236816,
-			0.77832
-		}
-	},
-	icon_wpn_dw_2h_hammer_03_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.698242
-		},
-		uv11 = {
-			0.236816,
-			0.737305
-		}
-	},
-	icon_skin_ranger_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.657227
-		},
-		uv11 = {
-			0.236816,
-			0.696289
-		}
-	},
-	icon_skin_mercenary_v1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.616211
-		},
-		uv11 = {
-			0.236816,
-			0.655273
-		}
-	},
-	icon_wpn_dw_2h_axe_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.575195
-		},
-		uv11 = {
-			0.236816,
-			0.614258
-		}
-	},
-	icon_skin_waywatcher_anmyr = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.53418
-		},
-		uv11 = {
-			0.236816,
-			0.573242
-		}
-	},
-	icon_skin_waywatcher_atylwyth = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.493164
-		},
-		uv11 = {
-			0.236816,
-			0.532227
-		}
-	},
-	icon_wpn_axe_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.452148
-		},
-		uv11 = {
-			0.236816,
-			0.491211
-		}
-	},
-	icon_wpn_brw_sword_01_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.411133
-		},
-		uv11 = {
-			0.236816,
-			0.450195
-		}
-	},
-	icon_wpn_dw_drake_pistol_01_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.370117
-		},
-		uv11 = {
-			0.236816,
-			0.40918
-		}
-	},
-	icon_wpn_dw_axe_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.329102
-		},
-		uv11 = {
-			0.236816,
-			0.368164
-		}
-	},
-	icon_skin_waywatcher_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.288086
-		},
-		uv11 = {
-			0.236816,
-			0.327148
-		}
-	},
-	icon_wpn_dw_axe_01_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.24707
-		},
-		uv11 = {
-			0.236816,
-			0.286133
-		}
-	},
-	icon_wpn_brw_sword_03_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.206055
-		},
-		uv11 = {
-			0.236816,
-			0.245117
-		}
-	},
-	icon_skin_waywatcher_cythral = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.165039
-		},
-		uv11 = {
-			0.236816,
-			0.204102
-		}
-	},
-	icon_wpn_axe_hatchet_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.124023
-		},
-		uv11 = {
-			0.236816,
-			0.163086
-		}
-	},
-	icon_wpn_dw_2h_axe_01_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.083008
-		},
-		uv11 = {
-			0.236816,
-			0.12207
-		}
-	},
-	icon_wpn_dw_iron_drake_03 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.041992
-		},
-		uv11 = {
-			0.236816,
-			0.081055
-		}
-	},
-	icon_wpn_axe_hatchet_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.217285,
-			0.000977
-		},
-		uv11 = {
-			0.236816,
-			0.040039
-		}
-	},
-	icon_wpn_dw_axe_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.944336
-		},
-		uv11 = {
-			0.216309,
-			0.983398
-		}
-	},
-	icon_wpn_brw_beam_staff_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.90332
-		},
-		uv11 = {
-			0.216309,
-			0.942383
-		}
-	},
-	icon_wpn_dw_axe_03_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.862305
-		},
-		uv11 = {
-			0.216309,
-			0.901367
-		}
-	},
-	icon_skin_waywatcher_original = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.821289
-		},
-		uv11 = {
-			0.216309,
-			0.860352
-		}
-	},
-	icon_wpn_brw_beam_staff_03 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.780273
-		},
-		uv11 = {
-			0.216309,
-			0.819336
-		}
-	},
-	icon_wpn_dw_2h_hammer_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.739258
-		},
-		uv11 = {
-			0.216309,
-			0.77832
-		}
-	},
-	icon_wpn_dw_shield_05_axe = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.698242
-		},
-		uv11 = {
-			0.216309,
-			0.737305
-		}
-	},
-	icon_wpn_dw_drake_pistol_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.657227
-		},
-		uv11 = {
-			0.216309,
-			0.696289
-		}
-	},
-	icon_skin_waywatcher_tirsyth = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.616211
-		},
-		uv11 = {
-			0.216309,
-			0.655273
-		}
-	},
-	icon_wpn_dw_hammer_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.575195
-		},
-		uv11 = {
-			0.216309,
-			0.614258
-		}
-	},
-	icon_wpn_dw_axe_01_t1_dual = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.53418
-		},
-		uv11 = {
-			0.216309,
-			0.573242
-		}
-	},
-	icon_skin_waywatcher_v1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.493164
-		},
-		uv11 = {
-			0.216309,
-			0.532227
-		}
-	},
-	icon_wpn_brw_dagger_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.452148
-		},
-		uv11 = {
-			0.216309,
-			0.491211
-		}
-	},
-	icon_wpn_dw_axe_02_t1_dual = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.411133
-		},
-		uv11 = {
-			0.216309,
-			0.450195
-		}
-	},
-	icon_wpn_brw_spear_staff_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.370117
-		},
-		uv11 = {
-			0.216309,
-			0.40918
-		}
-	},
-	icon_loot_chest_d4_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.329102
-		},
-		uv11 = {
-			0.216309,
-			0.368164
-		}
-	},
-	icon_wpn_brw_dagger_03 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.288086
-		},
-		uv11 = {
-			0.216309,
-			0.327148
-		}
-	},
-	icon_skin_witchhunter_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.24707
-		},
-		uv11 = {
-			0.216309,
-			0.286133
-		}
-	},
-	icon_wpn_brw_dagger_04 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.206055
-		},
-		uv11 = {
-			0.216309,
-			0.245117
-		}
-	},
-	icon_skin_witchhunter_grey_and_yellow = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.165039
-		},
-		uv11 = {
-			0.216309,
-			0.204102
-		}
-	},
-	icon_wpn_brw_flame_staff_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.124023
-		},
-		uv11 = {
-			0.216309,
-			0.163086
-		}
-	},
-	icon_wpn_dw_axe_04_t1_dual = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.083008
-		},
-		uv11 = {
-			0.216309,
-			0.12207
-		}
-	},
-	icon_wpn_brw_staff_05 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.041992
-		},
-		uv11 = {
-			0.216309,
-			0.081055
-		}
-	},
-	icon_wpn_dw_pick_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.196777,
-			0.000977
-		},
-		uv11 = {
-			0.216309,
-			0.040039
-		}
-	},
-	icon_skin_witchhunter_helmgart = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.944336
-		},
-		uv11 = {
-			0.195801,
-			0.983398
-		}
-	},
-	icon_wpn_dw_pick_01_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.90332
-		},
-		uv11 = {
-			0.195801,
-			0.942383
-		}
-	},
-	icon_wpn_dw_drake_pistol_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.862305
-		},
-		uv11 = {
-			0.195801,
-			0.901367
-		}
-	},
-	icon_skin_witchhunter_middenland = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.821289
-		},
-		uv11 = {
-			0.195801,
-			0.860352
-		}
-	},
-	icon_wpn_brw_flame_staff_05 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.780273
-		},
-		uv11 = {
-			0.195801,
-			0.819336
-		}
-	},
-	icon_wpn_dw_hammer_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.739258
-		},
-		uv11 = {
-			0.195801,
-			0.77832
-		}
-	},
-	icon_wpn_brw_sword_04_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.698242
-		},
-		uv11 = {
-			0.195801,
-			0.737305
-		}
-	},
-	icon_wpn_brw_flaming_sword_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.657227
-		},
-		uv11 = {
-			0.195801,
-			0.696289
-		}
-	},
-	icon_wpn_dw_shield_01_hammer = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.616211
-		},
-		uv11 = {
-			0.195801,
-			0.655273
-		}
-	},
-	icon_wpn_brw_flaming_sword_01_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.575195
-		},
-		uv11 = {
-			0.195801,
-			0.614258
-		}
-	},
-	icon_wpn_dw_shield_02_hammer = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.53418
-		},
-		uv11 = {
-			0.195801,
-			0.573242
-		}
-	},
-	icon_skin_witchhunter_ostermark = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.493164
-		},
-		uv11 = {
-			0.195801,
-			0.532227
-		}
-	},
-	icon_wpn_brw_flaming_sword_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.452148
-		},
-		uv11 = {
-			0.195801,
-			0.491211
-		}
-	},
-	icon_wpn_dw_iron_drake_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.411133
-		},
-		uv11 = {
-			0.195801,
-			0.450195
-		}
-	},
-	icon_wpn_dw_2h_hammer_01_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.370117
-		},
-		uv11 = {
-			0.195801,
-			0.40918
-		}
-	},
-	icon_wpn_dw_shield_05_hammer = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.329102
-		},
-		uv11 = {
-			0.195801,
-			0.368164
-		}
-	},
-	icon_skin_witchhunter_ostland = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.288086
-		},
-		uv11 = {
-			0.195801,
-			0.327148
 		}
 	},
 	icon_wpn_dw_xbox_01_t2 = {
@@ -7887,949 +4205,25 @@ items_atlas = {
 			80
 		},
 		uv00 = {
-			0.17627,
-			0.24707
-		},
-		uv11 = {
-			0.195801,
-			0.286133
-		}
-	},
-	icon_wpn_dw_pick_01_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.206055
-		},
-		uv11 = {
-			0.195801,
-			0.245117
-		}
-	},
-	icon_wpn_dw_rakegun_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.165039
-		},
-		uv11 = {
-			0.195801,
-			0.204102
-		}
-	},
-	icon_wpn_dw_axe_01_t2_dual = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.124023
-		},
-		uv11 = {
-			0.195801,
-			0.163086
-		}
-	},
-	icon_skin_ranger_zhufbar = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.083008
-		},
-		uv11 = {
-			0.195801,
-			0.12207
-		}
-	},
-	icon_skin_ranger_black_and_gold = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.041992
-		},
-		uv11 = {
-			0.195801,
-			0.081055
-		}
-	},
-	icon_wpn_dw_shield_02_axe = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.17627,
-			0.000977
-		},
-		uv11 = {
-			0.195801,
-			0.040039
-		}
-	},
-	icon_wpn_dw_xbox_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.944336
-		},
-		uv11 = {
-			0.175293,
-			0.983398
-		}
-	},
-	icon_wpn_brw_flaming_sword_04_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.90332
-		},
-		uv11 = {
-			0.175293,
-			0.942383
-		}
-	},
-	icon_wpn_emp_mace_03_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.862305
-		},
-		uv11 = {
-			0.175293,
-			0.901367
-		}
-	},
-	icon_wpn_emp_crossbow_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.821289
-		},
-		uv11 = {
-			0.175293,
-			0.860352
-		}
-	},
-	icon_wpn_empire_pistol_repeater_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.780273
-		},
-		uv11 = {
-			0.175293,
-			0.819336
-		}
-	},
-	icon_wpn_emp_sword_05_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.739258
-		},
-		uv11 = {
-			0.175293,
-			0.77832
-		}
-	},
-	icon_wpn_empire_handgun_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.698242
-		},
-		uv11 = {
-			0.175293,
-			0.737305
-		}
-	},
-	icon_wpn_emp_flail_05_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.657227
-		},
-		uv11 = {
-			0.175293,
-			0.696289
-		}
-	},
-	icon_wpn_empire_2h_sword_02_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.616211
-		},
-		uv11 = {
-			0.175293,
-			0.655273
-		}
-	},
-	icon_wpn_emp_pistol_03_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.575195
-		},
-		uv11 = {
-			0.175293,
-			0.614258
-		}
-	},
-	icon_wpn_empire_shield_04_sword = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.53418
-		},
-		uv11 = {
-			0.175293,
-			0.573242
-		}
-	},
-	icon_wpn_fencingsword_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
+			0.401855,
 			0.493164
 		},
 		uv11 = {
-			0.175293,
+			0.421387,
 			0.532227
 		}
 	},
-	icon_wpn_empire_2h_sword_02_t1 = {
+	icon_waywatcher_hat_0002 = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
-			0.155762,
+			0.401855,
 			0.452148
 		},
 		uv11 = {
-			0.175293,
-			0.491211
-		}
-	},
-	icon_wpn_empire_handgun_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.411133
-		},
-		uv11 = {
-			0.175293,
-			0.450195
-		}
-	},
-	icon_wpn_empire_pistol_repeater_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.370117
-		},
-		uv11 = {
-			0.175293,
-			0.40918
-		}
-	},
-	icon_wpn_empire_2h_hammer_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.329102
-		},
-		uv11 = {
-			0.175293,
-			0.368164
-		}
-	},
-	icon_wpn_emp_flail_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.288086
-		},
-		uv11 = {
-			0.175293,
-			0.327148
-		}
-	},
-	icon_wpn_empire_shield_01_t1_sword = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.24707
-		},
-		uv11 = {
-			0.175293,
-			0.286133
-		}
-	},
-	icon_wpn_empire_shield_02_sword = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.206055
-		},
-		uv11 = {
-			0.175293,
-			0.245117
-		}
-	},
-	icon_wpn_brw_mace_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.165039
-		},
-		uv11 = {
-			0.175293,
-			0.204102
-		}
-	},
-	icon_wpn_empire_2h_sword_03_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.124023
-		},
-		uv11 = {
-			0.175293,
-			0.163086
-		}
-	},
-	icon_wpn_empire_shield_05_sword = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.083008
-		},
-		uv11 = {
-			0.175293,
-			0.12207
-		}
-	},
-	icon_wpn_emp_bow_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.041992
-		},
-		uv11 = {
-			0.175293,
-			0.081055
-		}
-	},
-	icon_wpn_empire_crossbow_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.155762,
-			0.000977
-		},
-		uv11 = {
-			0.175293,
-			0.040039
-		}
-	},
-	icon_wpn_emp_pistol_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.944336
-		},
-		uv11 = {
-			0.154785,
-			0.983398
-		}
-	},
-	icon_wpn_emp_crossbow_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.90332
-		},
-		uv11 = {
-			0.154785,
-			0.942383
-		}
-	},
-	icon_wpn_brw_mace_03 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.862305
-		},
-		uv11 = {
-			0.154785,
-			0.901367
-		}
-	},
-	icon_wpn_empire_handgun_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.821289
-		},
-		uv11 = {
-			0.154785,
-			0.860352
-		}
-	},
-	icon_wpn_empire_2h_sword_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.780273
-		},
-		uv11 = {
-			0.154785,
-			0.819336
-		}
-	},
-	icon_wpn_emp_handgun_repeater_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.739258
-		},
-		uv11 = {
-			0.154785,
-			0.77832
-		}
-	},
-	icon_wpn_empire_2h_sword_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.698242
-		},
-		uv11 = {
-			0.154785,
-			0.737305
-		}
-	},
-	icon_wpn_emp_mace_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.657227
-		},
-		uv11 = {
-			0.154785,
-			0.696289
-		}
-	},
-	icon_wpn_emp_mace_02_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.616211
-		},
-		uv11 = {
-			0.154785,
-			0.655273
-		}
-	},
-	icon_wpn_emp_mace_04_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.575195
-		},
-		uv11 = {
-			0.154785,
-			0.614258
-		}
-	},
-	icon_wpn_fencingsword_04_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.53418
-		},
-		uv11 = {
-			0.154785,
-			0.573242
-		}
-	},
-	icon_wpn_empire_shield_02_mace = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.493164
-		},
-		uv11 = {
-			0.154785,
-			0.532227
-		}
-	},
-	icon_wpn_empire_2h_sword_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.452148
-		},
-		uv11 = {
-			0.154785,
-			0.491211
-		}
-	},
-	icon_wpn_emp_sword_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.411133
-		},
-		uv11 = {
-			0.154785,
-			0.450195
-		}
-	},
-	icon_wpn_empire_2h_sword_01_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.370117
-		},
-		uv11 = {
-			0.154785,
-			0.40918
-		}
-	},
-	icon_wpn_empire_blunderbuss_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.329102
-		},
-		uv11 = {
-			0.154785,
-			0.368164
-		}
-	},
-	icon_wpn_emp_pistol_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.288086
-		},
-		uv11 = {
-			0.154785,
-			0.327148
-		}
-	},
-	icon_wpn_emp_sword_exe_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.24707
-		},
-		uv11 = {
-			0.154785,
-			0.286133
-		}
-	},
-	icon_wpn_emp_mace_04_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.206055
-		},
-		uv11 = {
-			0.154785,
-			0.245117
-		}
-	},
-	icon_wpn_emp_bow_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.165039
-		},
-		uv11 = {
-			0.154785,
-			0.204102
-		}
-	},
-	icon_wpn_empire_2h_sword_04_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.124023
-		},
-		uv11 = {
-			0.154785,
-			0.163086
-		}
-	},
-	icon_wpn_emp_mace_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.083008
-		},
-		uv11 = {
-			0.154785,
-			0.12207
-		}
-	},
-	icon_wpn_brw_mace_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.041992
-		},
-		uv11 = {
-			0.154785,
-			0.081055
-		}
-	},
-	icon_wpn_empire_handgun_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.135254,
-			0.000977
-		},
-		uv11 = {
-			0.154785,
-			0.040039
-		}
-	},
-	icon_wpn_fencingsword_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.944336
-		},
-		uv11 = {
-			0.134277,
-			0.983398
-		}
-	},
-	icon_wpn_empire_2h_sword_05_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.90332
-		},
-		uv11 = {
-			0.134277,
-			0.942383
-		}
-	},
-	icon_wpn_empire_handgun_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.862305
-		},
-		uv11 = {
-			0.134277,
-			0.901367
-		}
-	},
-	icon_wpn_emp_sword_04_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.821289
-		},
-		uv11 = {
-			0.134277,
-			0.860352
-		}
-	},
-	icon_wpn_emp_sword_exe_02_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.780273
-		},
-		uv11 = {
-			0.134277,
-			0.819336
-		}
-	},
-	icon_wpn_emp_flail_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.739258
-		},
-		uv11 = {
-			0.134277,
-			0.77832
-		}
-	},
-	icon_wpn_empire_basic_mace_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.698242
-		},
-		uv11 = {
-			0.134277,
-			0.737305
-		}
-	},
-	icon_wpn_emp_flail_03_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.657227
-		},
-		uv11 = {
-			0.134277,
-			0.696289
-		}
-	},
-	icon_wpn_fencingsword_01_t1 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.616211
-		},
-		uv11 = {
-			0.134277,
-			0.655273
-		}
-	},
-	icon_wpn_empire_basic_mace_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.575195
-		},
-		uv11 = {
-			0.134277,
-			0.614258
-		}
-	},
-	icon_wpn_empire_pistol_repeater_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.53418
-		},
-		uv11 = {
-			0.134277,
-			0.573242
-		}
-	},
-	icon_wpn_emp_crossbow_02_t2 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.493164
-		},
-		uv11 = {
-			0.134277,
-			0.532227
-		}
-	},
-	icon_wpn_emp_handgun_repeater_t3 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.114746,
-			0.452148
-		},
-		uv11 = {
-			0.134277,
+			0.421387,
 			0.491211
 		}
 	},
@@ -8839,6 +4233,4710 @@ items_atlas = {
 			80
 		},
 		uv00 = {
+			0.401855,
+			0.411133
+		},
+		uv11 = {
+			0.421387,
+			0.450195
+		}
+	},
+	icon_waywatcher_hat_0003 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.401855,
+			0.370117
+		},
+		uv11 = {
+			0.421387,
+			0.40918
+		}
+	},
+	icon_wpn_dw_2h_axe_03_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.401855,
+			0.329102
+		},
+		uv11 = {
+			0.421387,
+			0.368164
+		}
+	},
+	icon_wpn_empire_2h_sword_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.401855,
+			0.288086
+		},
+		uv11 = {
+			0.421387,
+			0.327148
+		}
+	},
+	icon_knight_hat_0010 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.401855,
+			0.24707
+		},
+		uv11 = {
+			0.421387,
+			0.286133
+		}
+	},
+	icon_bountyhunter_hat_0002 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.401855,
+			0.206055
+		},
+		uv11 = {
+			0.421387,
+			0.245117
+		}
+	},
+	icon_waywatcher_hat_0006 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.401855,
+			0.165039
+		},
+		uv11 = {
+			0.421387,
+			0.204102
+		}
+	},
+	icon_wpn_dw_axe_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.401855,
+			0.124023
+		},
+		uv11 = {
+			0.421387,
+			0.163086
+		}
+	},
+	icon_waywatcher_hat_0007 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.401855,
+			0.083008
+		},
+		uv11 = {
+			0.421387,
+			0.12207
+		}
+	},
+	icon_maidenguard_hat_0000 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.401855,
+			0.041992
+		},
+		uv11 = {
+			0.421387,
+			0.081055
+		}
+	},
+	icon_wpn_dw_axe_03_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.401855,
+			0.000977
+		},
+		uv11 = {
+			0.421387,
+			0.040039
+		}
+	},
+	icon_wpn_empire_crossbow_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.944336
+		},
+		uv11 = {
+			0.400879,
+			0.983398
+		}
+	},
+	icon_maidenguard_hat_0001 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.90332
+		},
+		uv11 = {
+			0.400879,
+			0.942383
+		}
+	},
+	icon_bountyhunter_hat_0003 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.862305
+		},
+		uv11 = {
+			0.400879,
+			0.901367
+		}
+	},
+	icon_bg_promo = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.821289
+		},
+		uv11 = {
+			0.400879,
+			0.860352
+		}
+	},
+	icon_deed_cataclysm_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.780273
+		},
+		uv11 = {
+			0.400879,
+			0.819336
+		}
+	},
+	icon_waywatcher_hat_0010 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.739258
+		},
+		uv11 = {
+			0.400879,
+			0.77832
+		}
+	},
+	icon_wpn_dw_drake_pistol_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.698242
+		},
+		uv11 = {
+			0.400879,
+			0.737305
+		}
+	},
+	icon_wpn_dw_handgun_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.657227
+		},
+		uv11 = {
+			0.400879,
+			0.696289
+		}
+	},
+	icon_wpn_empire_shield_02_sword = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.616211
+		},
+		uv11 = {
+			0.400879,
+			0.655273
+		}
+	},
+	icon_maidenguard_hat_0003 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.575195
+		},
+		uv11 = {
+			0.400879,
+			0.614258
+		}
+	},
+	icon_bountyhunter_hat_0004 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.53418
+		},
+		uv11 = {
+			0.400879,
+			0.573242
+		}
+	},
+	icon_witchhunter_hat_0002 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.493164
+		},
+		uv11 = {
+			0.400879,
+			0.532227
+		}
+	},
+	icon_wpn_dw_pick_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.452148
+		},
+		uv11 = {
+			0.400879,
+			0.491211
+		}
+	},
+	icon_witchhunter_hat_0003 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.411133
+		},
+		uv11 = {
+			0.400879,
+			0.450195
+		}
+	},
+	icon_maidenguard_hat_0004 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.370117
+		},
+		uv11 = {
+			0.400879,
+			0.40918
+		}
+	},
+	icon_wpn_dw_shield_01_hammer = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.329102
+		},
+		uv11 = {
+			0.400879,
+			0.368164
+		}
+	},
+	icon_wpn_emp_flail_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.288086
+		},
+		uv11 = {
+			0.400879,
+			0.327148
+		}
+	},
+	icon_maidenguard_hat_0005 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.24707
+		},
+		uv11 = {
+			0.400879,
+			0.286133
+		}
+	},
+	icon_bountyhunter_hat_0005 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.206055
+		},
+		uv11 = {
+			0.400879,
+			0.245117
+		}
+	},
+	icon_wpn_emp_flail_05_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.165039
+		},
+		uv11 = {
+			0.400879,
+			0.204102
+		}
+	},
+	icon_witchhunter_hat_0006 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.124023
+		},
+		uv11 = {
+			0.400879,
+			0.163086
+		}
+	},
+	icon_wpn_emp_mace_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.083008
+		},
+		uv11 = {
+			0.400879,
+			0.12207
+		}
+	},
+	icon_witchhunter_hat_0007 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.041992
+		},
+		uv11 = {
+			0.400879,
+			0.081055
+		}
+	},
+	icon_wpn_empire_2h_hammer_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.381348,
+			0.000977
+		},
+		uv11 = {
+			0.400879,
+			0.040039
+		}
+	},
+	icon_wpn_emp_pistol_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.944336
+		},
+		uv11 = {
+			0.380371,
+			0.983398
+		}
+	},
+	icon_maidenguard_hat_0007 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.90332
+		},
+		uv11 = {
+			0.380371,
+			0.942383
+		}
+	},
+	icon_bountyhunter_hat_0006 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.862305
+		},
+		uv11 = {
+			0.380371,
+			0.901367
+		}
+	},
+	icon_witchhunter_hat_0010 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.821289
+		},
+		uv11 = {
+			0.380371,
+			0.860352
+		}
+	},
+	icon_wpn_empire_2h_sword_02_t3 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.780273
+		},
+		uv11 = {
+			0.380371,
+			0.819336
+		}
+	},
+	icon_zealot_hat_0000 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.739258
+		},
+		uv11 = {
+			0.380371,
+			0.77832
+		}
+	},
+	icon_maidenguard_hat_0008 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.698242
+		},
+		uv11 = {
+			0.380371,
+			0.737305
+		}
+	},
+	icon_wpn_empire_blunderbuss_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.657227
+		},
+		uv11 = {
+			0.380371,
+			0.696289
+		}
+	},
+	icon_wpn_emp_sword_exe_03_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.616211
+		},
+		uv11 = {
+			0.380371,
+			0.655273
+		}
+	},
+	icon_maidenguard_hat_0009 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.575195
+		},
+		uv11 = {
+			0.380371,
+			0.614258
+		}
+	},
+	icon_bountyhunter_hat_0007 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.53418
+		},
+		uv11 = {
+			0.380371,
+			0.573242
+		}
+	},
+	icon_deed_hard_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.493164
+		},
+		uv11 = {
+			0.380371,
+			0.532227
+		}
+	},
+	icon_wpn_fencingsword_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.452148
+		},
+		uv11 = {
+			0.380371,
+			0.491211
+		}
+	},
+	icon_wpn_empire_crossbow_t3 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.411133
+		},
+		uv11 = {
+			0.380371,
+			0.450195
+		}
+	},
+	icon_wpn_fencingsword_04_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.370117
+		},
+		uv11 = {
+			0.380371,
+			0.40918
+		}
+	},
+	icon_wpn_empire_pistol_repeater_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.329102
+		},
+		uv11 = {
+			0.380371,
+			0.368164
+		}
+	},
+	icon_wpn_we_2h_axe_03_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.288086
+		},
+		uv11 = {
+			0.380371,
+			0.327148
+		}
+	},
+	icon_mercenary_hat_0000 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.24707
+		},
+		uv11 = {
+			0.380371,
+			0.286133
+		}
+	},
+	icon_bountyhunter_hat_0008 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.206055
+		},
+		uv11 = {
+			0.380371,
+			0.245117
+		}
+	},
+	icon_loot_chest_d1_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.165039
+		},
+		uv11 = {
+			0.380371,
+			0.204102
+		}
+	},
+	icon_wpn_empire_shield_03_sword = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.124023
+		},
+		uv11 = {
+			0.380371,
+			0.163086
+		}
+	},
+	icon_loot_chest_d1_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.083008
+		},
+		uv11 = {
+			0.380371,
+			0.12207
+		}
+	},
+	icon_mercenary_hat_0001 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.041992
+		},
+		uv11 = {
+			0.380371,
+			0.081055
+		}
+	},
+	icon_wpn_emp_bow_04 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.36084,
+			0.000977
+		},
+		uv11 = {
+			0.380371,
+			0.040039
+		}
+	},
+	icon_wpn_we_axe_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.944336
+		},
+		uv11 = {
+			0.359863,
+			0.983398
+		}
+	},
+	icon_mercenary_hat_0002 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.90332
+		},
+		uv11 = {
+			0.359863,
+			0.942383
+		}
+	},
+	icon_bountyhunter_hat_0009 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.862305
+		},
+		uv11 = {
+			0.359863,
+			0.901367
+		}
+	},
+	icon_wpn_we_bow_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.821289
+		},
+		uv11 = {
+			0.359863,
+			0.860352
+		}
+	},
+	icon_loot_chest_d1_t5 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.780273
+		},
+		uv11 = {
+			0.359863,
+			0.819336
+		}
+	},
+	icon_wpn_we_bow_03_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.739258
+		},
+		uv11 = {
+			0.359863,
+			0.77832
+		}
+	},
+	icon_loot_chest_d1_t6 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.698242
+		},
+		uv11 = {
+			0.359863,
+			0.737305
+		}
+	},
+	icon_wpn_emp_mace_02_t3 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.657227
+		},
+		uv11 = {
+			0.359863,
+			0.696289
+		}
+	},
+	icon_wpn_we_bow_short_04 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.616211
+		},
+		uv11 = {
+			0.359863,
+			0.655273
+		}
+	},
+	icon_mercenary_hat_0004 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.575195
+		},
+		uv11 = {
+			0.359863,
+			0.614258
+		}
+	},
+	icon_hat_witchhunter_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.53418
+		},
+		uv11 = {
+			0.359863,
+			0.573242
+		}
+	},
+	icon_loot_chest_d2_t3 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.493164
+		},
+		uv11 = {
+			0.359863,
+			0.532227
+		}
+	},
+	icon_wpn_emp_pistol_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.452148
+		},
+		uv11 = {
+			0.359863,
+			0.491211
+		}
+	},
+	icon_loot_chest_d2_t4 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.411133
+		},
+		uv11 = {
+			0.359863,
+			0.450195
+		}
+	},
+	icon_mercenary_hat_0005 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.370117
+		},
+		uv11 = {
+			0.359863,
+			0.40918
+		}
+	},
+	icon_wpn_emp_sword_04_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.329102
+		},
+		uv11 = {
+			0.359863,
+			0.368164
+		}
+	},
+	icon_wpn_we_repeater_crossbow_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.288086
+		},
+		uv11 = {
+			0.359863,
+			0.327148
+		}
+	},
+	icon_huntsman_hat_0000 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.24707
+		},
+		uv11 = {
+			0.359863,
+			0.286133
+		}
+	},
+	rarity_color_orange = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.206055
+		},
+		uv11 = {
+			0.359863,
+			0.245117
+		}
+	},
+	icon_bg_exotic = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.165039
+		},
+		uv11 = {
+			0.359863,
+			0.204102
+		}
+	},
+	icon_deed_hard_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.124023
+		},
+		uv11 = {
+			0.359863,
+			0.163086
+		}
+	},
+	icon_mercenary_hat_0007 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.083008
+		},
+		uv11 = {
+			0.359863,
+			0.12207
+		}
+	},
+	icon_loot_chest_d2_t6 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.041992
+		},
+		uv11 = {
+			0.359863,
+			0.081055
+		}
+	},
+	icon_wpn_we_spear_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.340332,
+			0.000977
+		},
+		uv11 = {
+			0.359863,
+			0.040039
+		}
+	},
+	icon_portrait_frame_0043 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.944336
+		},
+		uv11 = {
+			0.339355,
+			0.983398
+		}
+	},
+	icon_portrait_frame_0027 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.90332
+		},
+		uv11 = {
+			0.339355,
+			0.942383
+		}
+	},
+	icon_wpn_dw_2h_axe_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.862305
+		},
+		uv11 = {
+			0.339355,
+			0.901367
+		}
+	},
+	icon_portrait_frame_0059 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.821289
+		},
+		uv11 = {
+			0.339355,
+			0.860352
+		}
+	},
+	icon_wpn_brw_flaming_sword_01_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.780273
+		},
+		uv11 = {
+			0.339355,
+			0.819336
+		}
+	},
+	icon_portrait_frame_0035 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.739258
+		},
+		uv11 = {
+			0.339355,
+			0.77832
+		}
+	},
+	icon_skin_slayer_runes = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.698242
+		},
+		uv11 = {
+			0.339355,
+			0.737305
+		}
+	},
+	icon_portrait_frame_0051 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.657227
+		},
+		uv11 = {
+			0.339355,
+			0.696289
+		}
+	},
+	icon_wpn_dw_hammer_03_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.616211
+		},
+		uv11 = {
+			0.339355,
+			0.655273
+		}
+	},
+	icon_portrait_frame_0067 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.575195
+		},
+		uv11 = {
+			0.339355,
+			0.614258
+		}
+	},
+	icon_skin_shade_black_and_gold = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.53418
+		},
+		uv11 = {
+			0.339355,
+			0.573242
+		}
+	},
+	icon_portrait_frame_0031 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.493164
+		},
+		uv11 = {
+			0.339355,
+			0.532227
+		}
+	},
+	icon_wpn_brw_spear_staff_05 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.452148
+		},
+		uv11 = {
+			0.339355,
+			0.491211
+		}
+	},
+	icon_portrait_frame_0039 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.411133
+		},
+		uv11 = {
+			0.339355,
+			0.450195
+		}
+	},
+	icon_portrait_frame_0009 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.370117
+		},
+		uv11 = {
+			0.339355,
+			0.40918
+		}
+	},
+	icon_portrait_frame_0047 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.329102
+		},
+		uv11 = {
+			0.339355,
+			0.368164
+		}
+	},
+	icon_wpn_dw_axe_02_t2_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.288086
+		},
+		uv11 = {
+			0.339355,
+			0.327148
+		}
+	},
+	icon_portrait_frame_0055 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.24707
+		},
+		uv11 = {
+			0.339355,
+			0.286133
+		}
+	},
+	icon_skin_unchained_original = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.206055
+		},
+		uv11 = {
+			0.339355,
+			0.245117
+		}
+	},
+	icon_portrait_frame_0063 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.165039
+		},
+		uv11 = {
+			0.339355,
+			0.204102
+		}
+	},
+	icon_wpn_dw_shield_01_axe = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.124023
+		},
+		uv11 = {
+			0.339355,
+			0.163086
+		}
+	},
+	icon_portrait_frame_0071 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.083008
+		},
+		uv11 = {
+			0.339355,
+			0.12207
+		}
+	},
+	icon_portrait_frame_0001 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.041992
+		},
+		uv11 = {
+			0.339355,
+			0.081055
+		}
+	},
+	icon_wpn_brw_flaming_sword_03_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.319824,
+			0.000977
+		},
+		uv11 = {
+			0.339355,
+			0.040039
+		}
+	},
+	icon_wpn_brw_mace_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.944336
+		},
+		uv11 = {
+			0.318848,
+			0.983398
+		}
+	},
+	icon_wpn_we_sword_01_t3_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.90332
+		},
+		uv11 = {
+			0.318848,
+			0.942383
+		}
+	},
+	icon_skin_shade_original = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.862305
+		},
+		uv11 = {
+			0.318848,
+			0.901367
+		}
+	},
+	icon_wpn_brw_staff_05 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.821289
+		},
+		uv11 = {
+			0.318848,
+			0.860352
+		}
+	},
+	icon_wpn_brw_sword_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.780273
+		},
+		uv11 = {
+			0.318848,
+			0.819336
+		}
+	},
+	icon_loot_chest_d3_t4 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.739258
+		},
+		uv11 = {
+			0.318848,
+			0.77832
+		}
+	},
+	icon_portrait_frame_0042 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.698242
+		},
+		uv11 = {
+			0.318848,
+			0.737305
+		}
+	},
+	icon_wpn_dw_2h_hammer_01_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.657227
+		},
+		uv11 = {
+			0.318848,
+			0.696289
+		}
+	},
+	icon_wpn_dw_2h_hammer_03_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.616211
+		},
+		uv11 = {
+			0.318848,
+			0.655273
+		}
+	},
+	icon_wpn_we_sword_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.575195
+		},
+		uv11 = {
+			0.318848,
+			0.614258
+		}
+	},
+	icon_skin_unchained_ash = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.53418
+		},
+		uv11 = {
+			0.318848,
+			0.573242
+		}
+	},
+	icon_wpn_dw_axe_03_t2_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.493164
+		},
+		uv11 = {
+			0.318848,
+			0.532227
+		}
+	},
+	icon_wpn_dw_drake_pistol_01_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.452148
+		},
+		uv11 = {
+			0.318848,
+			0.491211
+		}
+	},
+	icon_loot_chest_d3_t5 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.411133
+		},
+		uv11 = {
+			0.318848,
+			0.450195
+		}
+	},
+	icon_portrait_frame_0017 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.370117
+		},
+		uv11 = {
+			0.318848,
+			0.40918
+		}
+	},
+	icon_wpn_dw_handgun_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.329102
+		},
+		uv11 = {
+			0.318848,
+			0.368164
+		}
+	},
+	icon_wpn_dw_iron_drake_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.288086
+		},
+		uv11 = {
+			0.318848,
+			0.327148
+		}
+	},
+	icon_wpn_we_sword_03_t1_dagger_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.24707
+		},
+		uv11 = {
+			0.318848,
+			0.286133
+		}
+	},
+	icon_skin_waywatcher_atylwyth = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.206055
+		},
+		uv11 = {
+			0.318848,
+			0.245117
+		}
+	},
+	icon_wpn_dw_shield_03_axe = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.165039
+		},
+		uv11 = {
+			0.318848,
+			0.204102
+		}
+	},
+	icon_wpn_dw_shield_05_axe = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.124023
+		},
+		uv11 = {
+			0.318848,
+			0.163086
+		}
+	},
+	icon_loot_chest_d3_t3 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.083008
+		},
+		uv11 = {
+			0.318848,
+			0.12207
+		}
+	},
+	icon_portrait_frame_0026 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.041992
+		},
+		uv11 = {
+			0.318848,
+			0.081055
+		}
+	},
+	icon_portrait_frame_0028 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.299316,
+			0.000977
+		},
+		uv11 = {
+			0.318848,
+			0.040039
+		}
+	},
+	icon_wpn_we_sword_03_t2_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.944336
+		},
+		uv11 = {
+			0.29834,
+			0.983398
+		}
+	},
+	icon_wpn_brw_flaming_sword_04_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.90332
+		},
+		uv11 = {
+			0.29834,
+			0.942383
+		}
+	},
+	icon_skin_shade_emerald = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.862305
+		},
+		uv11 = {
+			0.29834,
+			0.901367
+		}
+	},
+	icon_portrait_frame_0032 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.821289
+		},
+		uv11 = {
+			0.29834,
+			0.860352
+		}
+	},
+	icon_loot_chest_d4_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.780273
+		},
+		uv11 = {
+			0.29834,
+			0.819336
+		}
+	},
+	icon_skin_witchhunter_ostermark = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.739258
+		},
+		uv11 = {
+			0.29834,
+			0.77832
+		}
+	},
+	icon_portrait_frame_0005 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.698242
+		},
+		uv11 = {
+			0.29834,
+			0.737305
+		}
+	},
+	icon_portrait_frame_0036 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.657227
+		},
+		uv11 = {
+			0.29834,
+			0.696289
+		}
+	},
+	icon_wpn_wh_halberd_04 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.616211
+		},
+		uv11 = {
+			0.29834,
+			0.655273
+		}
+	},
+	icon_wpn_brw_sword_01_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.575195
+		},
+		uv11 = {
+			0.29834,
+			0.614258
+		}
+	},
+	icon_skin_slayer_axe = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.53418
+		},
+		uv11 = {
+			0.29834,
+			0.573242
+		}
+	},
+	icon_portrait_frame_0040 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.493164
+		},
+		uv11 = {
+			0.29834,
+			0.532227
+		}
+	},
+	icon_loot_chest_d4_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.452148
+		},
+		uv11 = {
+			0.29834,
+			0.491211
+		}
+	},
+	icon_wpn_brw_sword_04_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.411133
+		},
+		uv11 = {
+			0.29834,
+			0.450195
+		}
+	},
+	icon_wpn_dw_2h_axe_01_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.370117
+		},
+		uv11 = {
+			0.29834,
+			0.40918
+		}
+	},
+	icon_portrait_frame_0044 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.329102
+		},
+		uv11 = {
+			0.29834,
+			0.368164
+		}
+	},
+	icon_skin_scholar_ash = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.288086
+		},
+		uv11 = {
+			0.29834,
+			0.327148
+		}
+	},
+	icon_wpn_dw_2h_hammer_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.24707
+		},
+		uv11 = {
+			0.29834,
+			0.286133
+		}
+	},
+	icon_skin_slayer_wing = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.206055
+		},
+		uv11 = {
+			0.29834,
+			0.245117
+		}
+	},
+	icon_portrait_frame_0048 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.165039
+		},
+		uv11 = {
+			0.29834,
+			0.204102
+		}
+	},
+	icon_loot_chest_d4_t3 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.124023
+		},
+		uv11 = {
+			0.29834,
+			0.163086
+		}
+	},
+	icon_trinket_08 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.083008
+		},
+		uv11 = {
+			0.29834,
+			0.12207
+		}
+	},
+	icon_portrait_frame_0013 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.041992
+		},
+		uv11 = {
+			0.29834,
+			0.081055
+		}
+	},
+	icon_portrait_frame_0052 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.278809,
+			0.000977
+		},
+		uv11 = {
+			0.29834,
+			0.040039
+		}
+	},
+	icon_skin_scholar_bronze = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.944336
+		},
+		uv11 = {
+			0.277832,
+			0.983398
+		}
+	},
+	icon_wpn_dw_axe_04_t1_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.90332
+		},
+		uv11 = {
+			0.277832,
+			0.942383
+		}
+	},
+	icon_skin_unchained_bronze = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.862305
+		},
+		uv11 = {
+			0.277832,
+			0.901367
+		}
+	},
+	icon_portrait_frame_0056 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.821289
+		},
+		uv11 = {
+			0.277832,
+			0.860352
+		}
+	},
+	icon_loot_chest_d4_t4 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.780273
+		},
+		uv11 = {
+			0.277832,
+			0.819336
+		}
+	},
+	icon_portrait_frame_0057 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.739258
+		},
+		uv11 = {
+			0.277832,
+			0.77832
+		}
+	},
+	icon_portrait_frame_0058 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.698242
+		},
+		uv11 = {
+			0.277832,
+			0.737305
+		}
+	},
+	icon_portrait_frame_0060 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.657227
+		},
+		uv11 = {
+			0.277832,
+			0.696289
+		}
+	},
+	icon_skin_scholar_original = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.616211
+		},
+		uv11 = {
+			0.277832,
+			0.655273
+		}
+	},
+	icon_wpn_dw_iron_drake_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.575195
+		},
+		uv11 = {
+			0.277832,
+			0.614258
+		}
+	},
+	icon_skin_waywatcher_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.53418
+		},
+		uv11 = {
+			0.277832,
+			0.573242
+		}
+	},
+	icon_portrait_frame_0064 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.493164
+		},
+		uv11 = {
+			0.277832,
+			0.532227
+		}
+	},
+	icon_loot_chest_d4_t5 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.452148
+		},
+		uv11 = {
+			0.277832,
+			0.491211
+		}
+	},
+	icon_wpn_brw_beam_staff_05 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.411133
+		},
+		uv11 = {
+			0.277832,
+			0.450195
+		}
+	},
+	icon_portrait_frame_0021 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.370117
+		},
+		uv11 = {
+			0.277832,
+			0.40918
+		}
+	},
+	icon_portrait_frame_0068 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.329102
+		},
+		uv11 = {
+			0.277832,
+			0.368164
+		}
+	},
+	icon_skin_shade_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.288086
+		},
+		uv11 = {
+			0.277832,
+			0.327148
+		}
+	},
+	icon_wpn_dw_shield_04_axe = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.24707
+		},
+		uv11 = {
+			0.277832,
+			0.286133
+		}
+	},
+	icon_skin_waywatcher_cythral = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.206055
+		},
+		uv11 = {
+			0.277832,
+			0.245117
+		}
+	},
+	icon_portrait_frame_0024 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.165039
+		},
+		uv11 = {
+			0.277832,
+			0.204102
+		}
+	},
+	icon_loot_chest_d3_t6 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.124023
+		},
+		uv11 = {
+			0.277832,
+			0.163086
+		}
+	},
+	icon_portrait_frame_0025 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.083008
+		},
+		uv11 = {
+			0.277832,
+			0.12207
+		}
+	},
+	icon_wpn_brw_flame_staff_05 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.041992
+		},
+		uv11 = {
+			0.277832,
+			0.081055
+		}
+	},
+	icon_skin_waywatcher_v1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.258301,
+			0.000977
+		},
+		uv11 = {
+			0.277832,
+			0.040039
+		}
+	},
+	icon_wpn_brw_flaming_sword_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.944336
+		},
+		uv11 = {
+			0.257324,
+			0.983398
+		}
+	},
+	icon_portrait_frame_0002 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.90332
+		},
+		uv11 = {
+			0.257324,
+			0.942383
+		}
+	},
+	icon_loot_chest_level_up = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.862305
+		},
+		uv11 = {
+			0.257324,
+			0.901367
+		}
+	},
+	icon_portrait_frame_0029 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.821289
+		},
+		uv11 = {
+			0.257324,
+			0.860352
+		}
+	},
+	icon_skin_witchhunter_grey_and_yellow = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.780273
+		},
+		uv11 = {
+			0.257324,
+			0.819336
+		}
+	},
+	icon_portrait_frame_0030 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.739258
+		},
+		uv11 = {
+			0.257324,
+			0.77832
+		}
+	},
+	icon_portrait_frame_0003 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.698242
+		},
+		uv11 = {
+			0.257324,
+			0.737305
+		}
+	},
+	icon_skin_witchhunter_middenland = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.657227
+		},
+		uv11 = {
+			0.257324,
+			0.696289
+		}
+	},
+	icon_wpn_brw_mace_04 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.616211
+		},
+		uv11 = {
+			0.257324,
+			0.655273
+		}
+	},
+	icon_portrait_frame_0004 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.575195
+		},
+		uv11 = {
+			0.257324,
+			0.614258
+		}
+	},
+	icon_necklace_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.53418
+		},
+		uv11 = {
+			0.257324,
+			0.573242
+		}
+	},
+	icon_wpn_brw_spear_staff_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.493164
+		},
+		uv11 = {
+			0.257324,
+			0.532227
+		}
+	},
+	icon_portrait_frame_0033 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.452148
+		},
+		uv11 = {
+			0.257324,
+			0.491211
+		}
+	},
+	icon_wpn_brw_spear_staff_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.411133
+		},
+		uv11 = {
+			0.257324,
+			0.450195
+		}
+	},
+	icon_portrait_frame_0034 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.370117
+		},
+		uv11 = {
+			0.257324,
+			0.40918
+		}
+	},
+	icon_skin_zealot_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.329102
+		},
+		uv11 = {
+			0.257324,
+			0.368164
+		}
+	},
+	icon_wpn_brw_staff_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.288086
+		},
+		uv11 = {
+			0.257324,
+			0.327148
+		}
+	},
+	icon_portrait_frame_0006 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.24707
+		},
+		uv11 = {
+			0.257324,
+			0.286133
+		}
+	},
+	icon_necklace_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.206055
+		},
+		uv11 = {
+			0.257324,
+			0.245117
+		}
+	},
+	icon_portrait_frame_0037 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.165039
+		},
+		uv11 = {
+			0.257324,
+			0.204102
+		}
+	},
+	icon_skin_zealot_crimson = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.124023
+		},
+		uv11 = {
+			0.257324,
+			0.163086
+		}
+	},
+	icon_portrait_frame_0038 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.083008
+		},
+		uv11 = {
+			0.257324,
+			0.12207
+		}
+	},
+	icon_portrait_frame_0007 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.041992
+		},
+		uv11 = {
+			0.257324,
+			0.081055
+		}
+	},
+	icon_skin_zealot_middenland = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.237793,
+			0.000977
+		},
+		uv11 = {
+			0.257324,
+			0.040039
+		}
+	},
+	icon_wpn_brw_sword_03_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.944336
+		},
+		uv11 = {
+			0.236816,
+			0.983398
+		}
+	},
+	icon_portrait_frame_0008 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.90332
+		},
+		uv11 = {
+			0.236816,
+			0.942383
+		}
+	},
+	icon_necklace_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.862305
+		},
+		uv11 = {
+			0.236816,
+			0.901367
+		}
+	},
+	icon_loot_chest_d3_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.821289
+		},
+		uv11 = {
+			0.236816,
+			0.860352
+		}
+	},
+	icon_loot_chest_d3_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.780273
+		},
+		uv11 = {
+			0.236816,
+			0.819336
+		}
+	},
+	icon_portrait_frame_0041 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.739258
+		},
+		uv11 = {
+			0.236816,
+			0.77832
+		}
+	},
+	icon_skin_zealot_pure = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.698242
+		},
+		uv11 = {
+			0.236816,
+			0.737305
+		}
+	},
+	icon_trinket_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.657227
+		},
+		uv11 = {
+			0.236816,
+			0.696289
+		}
+	},
+	icon_wpn_dw_2h_axe_03_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.616211
+		},
+		uv11 = {
+			0.236816,
+			0.655273
+		}
+	},
+	icon_portrait_frame_0010 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.575195
+		},
+		uv11 = {
+			0.236816,
+			0.614258
+		}
+	},
+	icon_necklace_04 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.53418
+		},
+		uv11 = {
+			0.236816,
+			0.573242
+		}
+	},
+	icon_portrait_frame_0045 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.493164
+		},
+		uv11 = {
+			0.236816,
+			0.532227
+		}
+	},
+	icon_trinket_04 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.452148
+		},
+		uv11 = {
+			0.236816,
+			0.491211
+		}
+	},
+	icon_portrait_frame_0046 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.411133
+		},
+		uv11 = {
+			0.236816,
+			0.450195
+		}
+	},
+	icon_portrait_frame_0011 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.370117
+		},
+		uv11 = {
+			0.236816,
+			0.40918
+		}
+	},
+	icon_trinket_06 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.329102
+		},
+		uv11 = {
+			0.236816,
+			0.368164
+		}
+	},
+	icon_wpn_dw_axe_01_t1_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.288086
+		},
+		uv11 = {
+			0.236816,
+			0.327148
+		}
+	},
+	icon_portrait_frame_0012 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.24707
+		},
+		uv11 = {
+			0.236816,
+			0.286133
+		}
+	},
+	icon_necklace_05 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.206055
+		},
+		uv11 = {
+			0.236816,
+			0.245117
+		}
+	},
+	icon_wpn_dw_axe_01_t2_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.165039
+		},
+		uv11 = {
+			0.236816,
+			0.204102
+		}
+	},
+	icon_portrait_frame_0049 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.124023
+		},
+		uv11 = {
+			0.236816,
+			0.163086
+		}
+	},
+	icon_wpn_dw_axe_02_t1_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.083008
+		},
+		uv11 = {
+			0.236816,
+			0.12207
+		}
+	},
+	icon_portrait_frame_0050 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.041992
+		},
+		uv11 = {
+			0.236816,
+			0.081055
+		}
+	},
+	icon_trinket_10 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.217285,
+			0.000977
+		},
+		uv11 = {
+			0.236816,
+			0.040039
+		}
+	},
+	icon_wpn_dw_axe_03_t1_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.944336
+		},
+		uv11 = {
+			0.216309,
+			0.983398
+		}
+	},
+	icon_portrait_frame_0014 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.90332
+		},
+		uv11 = {
+			0.216309,
+			0.942383
+		}
+	},
+	icon_necklace_06 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.862305
+		},
+		uv11 = {
+			0.216309,
+			0.901367
+		}
+	},
+	icon_portrait_frame_0053 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.821289
+		},
+		uv11 = {
+			0.216309,
+			0.860352
+		}
+	},
+	icon_trinket_12 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.780273
+		},
+		uv11 = {
+			0.216309,
+			0.819336
+		}
+	},
+	icon_portrait_frame_0054 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.739258
+		},
+		uv11 = {
+			0.216309,
+			0.77832
+		}
+	},
+	icon_portrait_frame_0015 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.698242
+		},
+		uv11 = {
+			0.216309,
+			0.737305
+		}
+	},
+	icon_wpn_axe_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.657227
+		},
+		uv11 = {
+			0.216309,
+			0.696289
+		}
+	},
+	icon_wpn_dw_drake_pistol_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.616211
+		},
+		uv11 = {
+			0.216309,
+			0.655273
+		}
+	},
+	icon_portrait_frame_0016 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.575195
+		},
+		uv11 = {
+			0.216309,
+			0.614258
+		}
+	},
+	icon_necklace_07 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.53418
+		},
+		uv11 = {
+			0.216309,
+			0.573242
+		}
+	},
+	icon_wpn_we_sword_01_t2_dagger_dual = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.493164
+		},
+		uv11 = {
+			0.216309,
+			0.532227
+		}
+	},
+	icon_wpn_dw_hammer_01_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.452148
+		},
+		uv11 = {
+			0.216309,
+			0.491211
+		}
+	},
+	icon_wpn_axe_03_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.411133
+		},
+		uv11 = {
+			0.216309,
+			0.450195
+		}
+	},
+	icon_wpn_dw_hammer_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.370117
+		},
+		uv11 = {
+			0.216309,
+			0.40918
+		}
+	},
+	icon_wpn_axe_hatchet_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.329102
+		},
+		uv11 = {
+			0.216309,
+			0.368164
+		}
+	},
+	icon_wpn_dw_handgun_01_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.288086
+		},
+		uv11 = {
+			0.216309,
+			0.327148
+		}
+	},
+	icon_portrait_frame_0018 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.24707
+		},
+		uv11 = {
+			0.216309,
+			0.286133
+		}
+	},
+	icon_necklace_08 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.206055
+		},
+		uv11 = {
+			0.216309,
+			0.245117
+		}
+	},
+	icon_portrait_frame_0061 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.165039
+		},
+		uv11 = {
+			0.216309,
+			0.204102
+		}
+	},
+	icon_wpn_brw_beam_staff_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.124023
+		},
+		uv11 = {
+			0.216309,
+			0.163086
+		}
+	},
+	icon_portrait_frame_0062 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.083008
+		},
+		uv11 = {
+			0.216309,
+			0.12207
+		}
+	},
+	icon_portrait_frame_0019 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.041992
+		},
+		uv11 = {
+			0.216309,
+			0.081055
+		}
+	},
+	icon_wpn_brw_beam_staff_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.196777,
+			0.000977
+		},
+		uv11 = {
+			0.216309,
+			0.040039
+		}
+	},
+	icon_wpn_dw_pick_01_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.944336
+		},
+		uv11 = {
+			0.195801,
+			0.983398
+		}
+	},
+	icon_portrait_frame_0020 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.90332
+		},
+		uv11 = {
+			0.195801,
+			0.942383
+		}
+	},
+	icon_necklace_09 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.862305
+		},
+		uv11 = {
+			0.195801,
+			0.901367
+		}
+	},
+	icon_wpn_dw_pick_01_t4 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.821289
+		},
+		uv11 = {
+			0.195801,
+			0.860352
+		}
+	},
+	icon_portrait_frame_0065 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.780273
+		},
+		uv11 = {
+			0.195801,
+			0.819336
+		}
+	},
+	icon_wpn_dw_rakegun_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.739258
+		},
+		uv11 = {
+			0.195801,
+			0.77832
+		}
+	},
+	icon_portrait_frame_0066 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.698242
+		},
+		uv11 = {
+			0.195801,
+			0.737305
+		}
+	},
+	icon_wpn_brw_dagger_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.657227
+		},
+		uv11 = {
+			0.195801,
+			0.696289
+		}
+	},
+	icon_wpn_dw_shield_02_axe = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.616211
+		},
+		uv11 = {
+			0.195801,
+			0.655273
+		}
+	},
+	icon_portrait_frame_0022 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.575195
+		},
+		uv11 = {
+			0.195801,
+			0.614258
+		}
+	},
+	icon_necklace_10 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.53418
+		},
+		uv11 = {
+			0.195801,
+			0.573242
+		}
+	},
+	icon_portrait_frame_0069 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.493164
+		},
+		uv11 = {
+			0.195801,
+			0.532227
+		}
+	},
+	icon_wpn_brw_dagger_04 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.452148
+		},
+		uv11 = {
+			0.195801,
+			0.491211
+		}
+	},
+	icon_portrait_frame_0070 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.411133
+		},
+		uv11 = {
+			0.195801,
+			0.450195
+		}
+	},
+	icon_portrait_frame_0023 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.370117
+		},
+		uv11 = {
+			0.195801,
+			0.40918
+		}
+	},
+	icon_wpn_brw_flame_staff_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.329102
+		},
+		uv11 = {
+			0.195801,
+			0.368164
+		}
+	},
+	icon_wpn_dw_xbox_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.288086
+		},
+		uv11 = {
+			0.195801,
+			0.327148
+		}
+	},
+	icon_portrait_frame_0000 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.24707
+		},
+		uv11 = {
+			0.195801,
+			0.286133
+		}
+	},
+	icon_loot_chest_d4_t6 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.206055
+		},
+		uv11 = {
+			0.195801,
+			0.245117
+		}
+	},
+	icon_wpn_we_sword_01_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.165039
+		},
+		uv11 = {
+			0.195801,
+			0.204102
+		}
+	},
+	icon_wpn_brw_flame_staff_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.124023
+		},
+		uv11 = {
+			0.195801,
+			0.163086
+		}
+	},
+	icon_skin_waywatcher_original = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.083008
+		},
+		uv11 = {
+			0.195801,
+			0.12207
+		}
+	},
+	icon_portrait_frame_0072 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.041992
+		},
+		uv11 = {
+			0.195801,
+			0.081055
+		}
+	},
+	icon_wpn_dw_xbox_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.17627,
+			0.000977
+		},
+		uv11 = {
+			0.195801,
+			0.040039
+		}
+	},
+	icon_skin_battlewizard_v1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.944336
+		},
+		uv11 = {
+			0.175293,
+			0.983398
+		}
+	},
+	icon_skin_adept_black_and_gold = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.90332
+		},
+		uv11 = {
+			0.175293,
+			0.942383
+		}
+	},
+	icon_wpn_emp_mace_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.862305
+		},
+		uv11 = {
+			0.175293,
+			0.901367
+		}
+	},
+	icon_skin_captain_helmgart = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.821289
+		},
+		uv11 = {
+			0.175293,
+			0.860352
+		}
+	},
+	icon_wpn_emp_bow_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.780273
+		},
+		uv11 = {
+			0.175293,
+			0.819336
+		}
+	},
+	icon_skin_adept_ostermark = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.739258
+		},
+		uv11 = {
+			0.175293,
+			0.77832
+		}
+	},
+	icon_wpn_empire_2h_sword_04_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.698242
+		},
+		uv11 = {
+			0.175293,
+			0.737305
+		}
+	},
+	icon_skin_bountyhunter_green_and_yellow = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.657227
+		},
+		uv11 = {
+			0.175293,
+			0.696289
+		}
+	},
+	icon_wpn_emp_sword_03_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.616211
+		},
+		uv11 = {
+			0.175293,
+			0.655273
+		}
+	},
+	icon_skin_huntsman_black_and_gold = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.575195
+		},
+		uv11 = {
+			0.175293,
+			0.614258
+		}
+	},
+	icon_wpn_empire_2h_sword_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.53418
+		},
+		uv11 = {
+			0.175293,
+			0.573242
+		}
+	},
+	icon_wpn_emp_crossbow_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.493164
+		},
+		uv11 = {
+			0.175293,
+			0.532227
+		}
+	},
+	icon_wpn_emp_flail_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.452148
+		},
+		uv11 = {
+			0.175293,
+			0.491211
+		}
+	},
+	icon_portrait_frame_0074 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.411133
+		},
+		uv11 = {
+			0.175293,
+			0.450195
+		}
+	},
+	icon_charm_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.370117
+		},
+		uv11 = {
+			0.175293,
+			0.40918
+		}
+	},
+	icon_wpn_emp_mace_04_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.329102
+		},
+		uv11 = {
+			0.175293,
+			0.368164
+		}
+	},
+	icon_wpn_emp_pistol_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.288086
+		},
+		uv11 = {
+			0.175293,
+			0.327148
+		}
+	},
+	icon_wpn_empire_2h_hammer_01_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.24707
+		},
+		uv11 = {
+			0.175293,
+			0.286133
+		}
+	},
+	icon_wpn_empire_basic_mace_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.206055
+		},
+		uv11 = {
+			0.175293,
+			0.245117
+		}
+	},
+	icon_wpn_emp_sword_05_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.165039
+		},
+		uv11 = {
+			0.175293,
+			0.204102
+		}
+	},
+	icon_wpn_emp_sword_exe_04_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.124023
+		},
+		uv11 = {
+			0.175293,
+			0.163086
+		}
+	},
+	icon_wpn_dw_xbox_02_t3 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.083008
+		},
+		uv11 = {
+			0.175293,
+			0.12207
+		}
+	},
+	icon_portrait_frame_dev = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.041992
+		},
+		uv11 = {
+			0.175293,
+			0.081055
+		}
+	},
+	icon_skin_adept_brown_and_yellow = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.155762,
+			0.000977
+		},
+		uv11 = {
+			0.175293,
+			0.040039
+		}
+	},
+	icon_wpn_empire_2h_hammer_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.944336
+		},
+		uv11 = {
+			0.154785,
+			0.983398
+		}
+	},
+	icon_wpn_emp_crossbow_03_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.90332
+		},
+		uv11 = {
+			0.154785,
+			0.942383
+		}
+	},
+	icon_wpn_empire_2h_sword_03_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.862305
+		},
+		uv11 = {
+			0.154785,
+			0.901367
+		}
+	},
+	icon_skin_adept_ostland = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.821289
+		},
+		uv11 = {
+			0.154785,
+			0.860352
+		}
+	},
+	icon_portrait_frame_0076 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.780273
+		},
+		uv11 = {
+			0.154785,
+			0.819336
+		}
+	},
+	icon_skin_battlewizard_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.739258
+		},
+		uv11 = {
+			0.154785,
+			0.77832
+		}
+	},
+	icon_skin_battlewizard_helmgart = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.698242
+		},
+		uv11 = {
+			0.154785,
+			0.737305
+		}
+	},
+	icon_skin_bountyhunter_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.657227
+		},
+		uv11 = {
+			0.154785,
+			0.696289
+		}
+	},
+	icon_wpn_empire_2h_hammer_03_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.616211
+		},
+		uv11 = {
+			0.154785,
+			0.655273
+		}
+	},
+	icon_wpn_emp_mace_04_t3 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.575195
+		},
+		uv11 = {
+			0.154785,
+			0.614258
+		}
+	},
+	icon_wpn_empire_2h_sword_05_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.53418
+		},
+		uv11 = {
+			0.154785,
+			0.573242
+		}
+	},
+	icon_skin_bountyhunter_middenland = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.493164
+		},
+		uv11 = {
+			0.154785,
+			0.532227
+		}
+	},
+	icon_portrait_frame_0077 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.452148
+		},
+		uv11 = {
+			0.154785,
+			0.491211
+		}
+	},
+	icon_wpn_empire_shield_01_t1_mace = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.411133
+		},
+		uv11 = {
+			0.154785,
+			0.450195
+		}
+	},
+	icon_charm_06 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.370117
+		},
+		uv11 = {
+			0.154785,
+			0.40918
+		}
+	},
+	icon_skin_captain_original = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.329102
+		},
+		uv11 = {
+			0.154785,
+			0.368164
+		}
+	},
+	icon_wpn_empire_2h_sword_01_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.288086
+		},
+		uv11 = {
+			0.154785,
+			0.327148
+		}
+	},
+	icon_wpn_emp_sword_exe_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.24707
+		},
+		uv11 = {
+			0.154785,
+			0.286133
+		}
+	},
+	icon_wpn_empire_blunderbuss_02_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.206055
+		},
+		uv11 = {
+			0.154785,
+			0.245117
+		}
+	},
+	icon_charm_09 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.165039
+		},
+		uv11 = {
+			0.154785,
+			0.204102
+		}
+	},
+	icon_portrait_frame_0075 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.124023
+		},
+		uv11 = {
+			0.154785,
+			0.163086
+		}
+	},
+	icon_wpn_empire_blunderbuss_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.083008
+		},
+		uv11 = {
+			0.154785,
+			0.12207
+		}
+	},
+	icon_skin_adept_ash = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.041992
+		},
+		uv11 = {
+			0.154785,
+			0.081055
+		}
+	},
+	icon_wpn_empire_bow_tutorial = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.135254,
+			0.000977
+		},
+		uv11 = {
+			0.154785,
+			0.040039
+		}
+	},
+	icon_wpn_emp_bow_05 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.944336
+		},
+		uv11 = {
+			0.134277,
+			0.983398
+		}
+	},
+	icon_portrait_frame_sienna = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.90332
+		},
+		uv11 = {
+			0.134277,
+			0.942383
+		}
+	},
+	icon_portrait_frame_0079 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.862305
+		},
+		uv11 = {
+			0.134277,
+			0.901367
+		}
+	},
+	icon_skin_adept_helmgart = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.821289
+		},
+		uv11 = {
+			0.134277,
+			0.860352
+		}
+	},
+	icon_wpn_empire_crossbow_t2 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.780273
+		},
+		uv11 = {
+			0.134277,
+			0.819336
+		}
+	},
+	icon_skin_adept_original = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.739258
+		},
+		uv11 = {
+			0.134277,
+			0.77832
+		}
+	},
+	icon_portrait_frame_skulls = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.698242
+		},
+		uv11 = {
+			0.134277,
+			0.737305
+		}
+	},
+	icon_wpn_empire_handgun_02_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.657227
+		},
+		uv11 = {
+			0.134277,
+			0.696289
+		}
+	},
+	icon_wpn_emp_flail_04_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.616211
+		},
+		uv11 = {
+			0.134277,
+			0.655273
+		}
+	},
+	icon_charm_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.575195
+		},
+		uv11 = {
+			0.134277,
+			0.614258
+		}
+	},
+	icon_portrait_frame_0080 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.53418
+		},
+		uv11 = {
+			0.134277,
+			0.573242
+		}
+	},
+	icon_portrait_frame_0073 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.493164
+		},
+		uv11 = {
+			0.134277,
+			0.532227
+		}
+	},
+	icon_wpn_emp_handgun_repeater_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.114746,
+			0.452148
+		},
+		uv11 = {
+			0.134277,
+			0.491211
+		}
+	},
+	icon_wpn_empire_handgun_t1 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
 			0.114746,
 			0.411133
 		},
@@ -8847,7 +8945,7 @@ items_atlas = {
 			0.450195
 		}
 	},
-	icon_wpn_empire_pistol_repeater_t1 = {
+	icon_wpn_emp_handgun_repeater_t3 = {
 		size = {
 			80,
 			80
@@ -8861,7 +8959,7 @@ items_atlas = {
 			0.40918
 		}
 	},
-	icon_wpn_empire_blunderbuss_02_t1 = {
+	icon_wpn_empire_handgun_t3 = {
 		size = {
 			80,
 			80
@@ -8875,7 +8973,7 @@ items_atlas = {
 			0.368164
 		}
 	},
-	icon_wpn_empire_pistol_repeater_t2 = {
+	icon_wpn_emp_mace_03_t1 = {
 		size = {
 			80,
 			80
@@ -8889,7 +8987,7 @@ items_atlas = {
 			0.327148
 		}
 	},
-	icon_wpn_empire_blunderbuss_02_t2 = {
+	icon_charm_03 = {
 		size = {
 			80,
 			80
@@ -8903,7 +9001,7 @@ items_atlas = {
 			0.286133
 		}
 	},
-	icon_wpn_empire_shield_01_t1_mace = {
+	icon_portrait_frame_0081 = {
 		size = {
 			80,
 			80
@@ -8917,7 +9015,7 @@ items_atlas = {
 			0.245117
 		}
 	},
-	icon_wpn_emp_handgun_repeater_t1 = {
+	icon_skin_bountyhunter_black_and_gold = {
 		size = {
 			80,
 			80
@@ -8931,7 +9029,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_wpn_emp_sword_02_t2 = {
+	icon_wpn_empire_pistol_repeater_02_t2 = {
 		size = {
 			80,
 			80
@@ -8945,7 +9043,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_wpn_emp_pistol_01_t1 = {
+	icon_skin_bountyhunter_brown_and_white = {
 		size = {
 			80,
 			80
@@ -8959,7 +9057,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_wpn_empire_blunderbuss_t1 = {
+	icon_charm_04 = {
 		size = {
 			80,
 			80
@@ -8973,7 +9071,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_wpn_emp_pistol_02_t2 = {
+	icon_wpn_empire_pistol_repeater_t2 = {
 		size = {
 			80,
 			80
@@ -8987,7 +9085,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_wpn_emp_mace_02_t2 = {
+	icon_wpn_emp_pistol_03_t1 = {
 		size = {
 			80,
 			80
@@ -9001,7 +9099,7 @@ items_atlas = {
 			0.983398
 		}
 	},
-	icon_wpn_empire_blunderbuss_t2 = {
+	icon_charm_05 = {
 		size = {
 			80,
 			80
@@ -9015,7 +9113,7 @@ items_atlas = {
 			0.942383
 		}
 	},
-	icon_wpn_empire_shield_03_mace = {
+	icon_portrait_frame_01 = {
 		size = {
 			80,
 			80
@@ -9029,7 +9127,7 @@ items_atlas = {
 			0.901367
 		}
 	},
-	icon_wpn_emp_mace_04_t1 = {
+	icon_wpn_emp_shotgun = {
 		size = {
 			80,
 			80
@@ -9043,7 +9141,7 @@ items_atlas = {
 			0.860352
 		}
 	},
-	icon_wpn_fencingsword_03_t2 = {
+	icon_skin_bountyhunter_original = {
 		size = {
 			80,
 			80
@@ -9057,7 +9155,7 @@ items_atlas = {
 			0.819336
 		}
 	},
-	icon_wpn_empire_shield_03_sword = {
+	icon_wpn_emp_sword_02_t2 = {
 		size = {
 			80,
 			80
@@ -9071,7 +9169,7 @@ items_atlas = {
 			0.77832
 		}
 	},
-	icon_wpn_emp_sword_03_t1 = {
+	icon_skin_bountyhunter_yellow_and_red = {
 		size = {
 			80,
 			80
@@ -9085,7 +9183,7 @@ items_atlas = {
 			0.737305
 		}
 	},
-	icon_wpn_empire_shield_04_mace = {
+	icon_wpn_empire_shield_02_mace = {
 		size = {
 			80,
 			80
@@ -9099,7 +9197,7 @@ items_atlas = {
 			0.696289
 		}
 	},
-	icon_wpn_emp_sword_04_t1 = {
+	icon_wpn_emp_sword_04_t2 = {
 		size = {
 			80,
 			80
@@ -9113,7 +9211,7 @@ items_atlas = {
 			0.655273
 		}
 	},
-	icon_wpn_empire_bow_tutorial = {
+	icon_charm_07 = {
 		size = {
 			80,
 			80
@@ -9127,7 +9225,7 @@ items_atlas = {
 			0.614258
 		}
 	},
-	icon_wpn_empire_shield_05_mace = {
+	icon_portrait_frame_collectors_edition = {
 		size = {
 			80,
 			80
@@ -9141,7 +9239,7 @@ items_atlas = {
 			0.573242
 		}
 	},
-	icon_wpn_emp_shotgun = {
+	icon_skin_captain_v1 = {
 		size = {
 			80,
 			80
@@ -9155,7 +9253,7 @@ items_atlas = {
 			0.532227
 		}
 	},
-	icon_wpn_emp_flail_04_t1 = {
+	icon_wpn_empire_shield_03_mace = {
 		size = {
 			80,
 			80
@@ -9169,7 +9267,7 @@ items_atlas = {
 			0.491211
 		}
 	},
-	icon_wpn_emp_sword_exe_03_t1 = {
+	icon_skin_huntsman_01 = {
 		size = {
 			80,
 			80
@@ -9183,7 +9281,7 @@ items_atlas = {
 			0.450195
 		}
 	},
-	icon_wpn_empire_crossbow_t1 = {
+	icon_charm_08 = {
 		size = {
 			80,
 			80
@@ -9197,7 +9295,7 @@ items_atlas = {
 			0.40918
 		}
 	},
-	icon_wpn_emp_sword_exe_05_t1 = {
+	icon_wpn_empire_shield_04_mace = {
 		size = {
 			80,
 			80
@@ -9211,7 +9309,7 @@ items_atlas = {
 			0.368164
 		}
 	},
-	icon_wpn_emp_sword_03_t2 = {
+	icon_wpn_fencingsword_01_t1 = {
 		size = {
 			80,
 			80
@@ -9225,7 +9323,7 @@ items_atlas = {
 			0.327148
 		}
 	},
-	icon_wpn_empire_crossbow_t2 = {
+	icon_portrait_frame_community_01 = {
 		size = {
 			80,
 			80
@@ -9239,7 +9337,7 @@ items_atlas = {
 			0.286133
 		}
 	},
-	icon_wpn_emp_sword_05_t2 = {
+	icon_portrait_frame_0078 = {
 		size = {
 			80,
 			80
@@ -9253,7 +9351,7 @@ items_atlas = {
 			0.245117
 		}
 	},
-	icon_wpn_emp_crossbow_03_t2 = {
+	icon_wpn_empire_shield_05_mace = {
 		size = {
 			80,
 			80
@@ -9267,7 +9365,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_wpn_empire_2h_hammer_03_t1 = {
+	icon_charm_10 = {
 		size = {
 			80,
 			80
@@ -9281,7 +9379,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_wpn_emp_sword_exe_04_t1 = {
+	icon_wpn_emp_bow_01 = {
 		size = {
 			80,
 			80
@@ -9295,7 +9393,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_wpn_empire_2h_sword_04_t2 = {
+	icon_skin_huntsman_carroburg = {
 		size = {
 			80,
 			80
@@ -9309,7 +9407,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_wpn_emp_bow_03 = {
+	icon_wpn_fencingsword_02_t2 = {
 		size = {
 			80,
 			80
@@ -9323,7 +9421,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_wpn_fencingsword_03_t1 = {
+	icon_skin_knight_middenland = {
 		size = {
 			80,
 			80
@@ -9337,7 +9435,7 @@ items_atlas = {
 			0.983398
 		}
 	},
-	icon_wpn_we_sword_01_t2_dagger_dual = {
+	icon_skin_knight_black_and_gold = {
 		size = {
 			80,
 			80
@@ -9351,7 +9449,7 @@ items_atlas = {
 			0.942383
 		}
 	},
-	icon_wpn_we_dagger_03_t1 = {
+	icon_wpn_we_bow_03_t2 = {
 		size = {
 			80,
 			80
@@ -9365,7 +9463,7 @@ items_atlas = {
 			0.901367
 		}
 	},
-	icon_wpn_we_2h_sword_03_t2 = {
+	icon_skin_maidenguard_01 = {
 		size = {
 			80,
 			80
@@ -9379,7 +9477,7 @@ items_atlas = {
 			0.860352
 		}
 	},
-	icon_wpn_we_sword_03_t2_dual = {
+	icon_wpn_we_axe_02_t2 = {
 		size = {
 			80,
 			80
@@ -9393,7 +9491,7 @@ items_atlas = {
 			0.819336
 		}
 	},
-	icon_wpn_we_2h_sword_01_t2 = {
+	icon_skin_huntsman_green = {
 		size = {
 			80,
 			80
@@ -9407,7 +9505,7 @@ items_atlas = {
 			0.77832
 		}
 	},
-	icon_wpn_emp_bow_04 = {
+	icon_wpn_we_2h_axe_01_t2 = {
 		size = {
 			80,
 			80
@@ -9421,7 +9519,7 @@ items_atlas = {
 			0.737305
 		}
 	},
-	icon_wpn_greatsword = {
+	icon_wpn_we_bow_short_01 = {
 		size = {
 			80,
 			80
@@ -9435,7 +9533,7 @@ items_atlas = {
 			0.696289
 		}
 	},
-	icon_wpn_we_2h_sword_04_t2 = {
+	icon_wpn_we_bow_short_05 = {
 		size = {
 			80,
 			80
@@ -9463,7 +9561,7 @@ items_atlas = {
 			0.614258
 		}
 	},
-	icon_wpn_we_2h_axe_04_t2 = {
+	icon_wpn_greatsword = {
 		size = {
 			80,
 			80
@@ -9477,7 +9575,7 @@ items_atlas = {
 			0.573242
 		}
 	},
-	icon_wpn_we_sword_01_t1_dual = {
+	icon_skin_knight_bronze = {
 		size = {
 			80,
 			80
@@ -9491,7 +9589,7 @@ items_atlas = {
 			0.532227
 		}
 	},
-	icon_wpn_we_repeater_crossbow_t1 = {
+	icon_skin_huntsman_middenland = {
 		size = {
 			80,
 			80
@@ -9505,7 +9603,7 @@ items_atlas = {
 			0.491211
 		}
 	},
-	icon_wpn_fencingsword_04_t2 = {
+	icon_wpn_we_2h_sword_01_t2 = {
 		size = {
 			80,
 			80
@@ -9519,7 +9617,7 @@ items_atlas = {
 			0.450195
 		}
 	},
-	icon_wpn_we_2h_axe_02_t2 = {
+	icon_skin_ironbreaker_blue = {
 		size = {
 			80,
 			80
@@ -9533,7 +9631,7 @@ items_atlas = {
 			0.40918
 		}
 	},
-	icon_wpn_we_dagger_03_t2 = {
+	icon_skin_knight_original = {
 		size = {
 			80,
 			80
@@ -9547,7 +9645,7 @@ items_atlas = {
 			0.368164
 		}
 	},
-	icon_wpn_we_sword_01_t3_dual = {
+	icon_wpn_fencingsword_04_t2 = {
 		size = {
 			80,
 			80
@@ -9561,7 +9659,7 @@ items_atlas = {
 			0.327148
 		}
 	},
-	icon_wpn_we_dagger_02_t1 = {
+	icon_wpn_we_bow_short_03 = {
 		size = {
 			80,
 			80
@@ -9575,7 +9673,7 @@ items_atlas = {
 			0.286133
 		}
 	},
-	icon_wpn_we_2h_sword_05_t1 = {
+	icon_wpn_we_2h_axe_02_t2 = {
 		size = {
 			80,
 			80
@@ -9589,7 +9687,7 @@ items_atlas = {
 			0.245117
 		}
 	},
-	icon_wpn_we_2h_axe_01_t1 = {
+	icon_skin_ironbreaker_iron = {
 		size = {
 			80,
 			80
@@ -9603,7 +9701,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_wpn_we_sword_02_t2_dual = {
+	icon_wpn_fencingsword_03_t2 = {
 		size = {
 			80,
 			80
@@ -9617,7 +9715,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_wpn_emp_bow_05 = {
+	icon_wpn_we_axe_01_t2 = {
 		size = {
 			80,
 			80
@@ -9631,7 +9729,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_wpn_we_2h_sword_01_t1 = {
+	icon_skin_ironbreaker_01 = {
 		size = {
 			80,
 			80
@@ -9645,7 +9743,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_wpn_we_sword_02_t1_dagger_dual = {
+	icon_wpn_we_2h_axe_04_t2 = {
 		size = {
 			80,
 			80
@@ -9659,7 +9757,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_wpn_we_2h_axe_02_t1 = {
+	icon_wpn_we_axe_03_t2 = {
 		size = {
 			80,
 			80
@@ -9673,7 +9771,7 @@ items_atlas = {
 			0.983398
 		}
 	},
-	icon_wpn_we_2h_sword_02_t1 = {
+	icon_skin_ironbreaker_black_and_gold = {
 		size = {
 			80,
 			80
@@ -9687,7 +9785,7 @@ items_atlas = {
 			0.942383
 		}
 	},
-	icon_wpn_wh_repeater_crossbow_t2 = {
+	icon_skin_huntsman_ostermark = {
 		size = {
 			80,
 			80
@@ -9701,7 +9799,7 @@ items_atlas = {
 			0.901367
 		}
 	},
-	icon_wpn_we_dagger_02_t3 = {
+	icon_wpn_we_bow_01_t2 = {
 		size = {
 			80,
 			80
@@ -9715,7 +9813,7 @@ items_atlas = {
 			0.860352
 		}
 	},
-	icon_wpn_we_2h_sword_02_t2 = {
+	icon_skin_knight_carroburg = {
 		size = {
 			80,
 			80
@@ -9729,7 +9827,7 @@ items_atlas = {
 			0.819336
 		}
 	},
-	icon_wpn_we_spear_02 = {
+	icon_wpn_we_bow_02_t2 = {
 		size = {
 			80,
 			80
@@ -9743,7 +9841,7 @@ items_atlas = {
 			0.77832
 		}
 	},
-	icon_wpn_we_2h_sword_03_t1 = {
+	icon_skin_knight_green = {
 		size = {
 			80,
 			80
@@ -9757,7 +9855,7 @@ items_atlas = {
 			0.737305
 		}
 	},
-	icon_wpn_we_sword_01_t1 = {
+	icon_wpn_we_2h_sword_02_t2 = {
 		size = {
 			80,
 			80
@@ -9771,7 +9869,7 @@ items_atlas = {
 			0.696289
 		}
 	},
-	icon_wpn_we_2h_axe_03_t1 = {
+	icon_wpn_we_bow_04_t2 = {
 		size = {
 			80,
 			80
@@ -9785,7 +9883,7 @@ items_atlas = {
 			0.655273
 		}
 	},
-	icon_wpn_we_2h_sword_04_t1 = {
+	icon_skin_ironbreaker_crimson = {
 		size = {
 			80,
 			80
@@ -9799,7 +9897,7 @@ items_atlas = {
 			0.614258
 		}
 	},
-	icon_wpn_we_spear_04 = {
+	icon_skin_huntsman_ostland = {
 		size = {
 			80,
 			80
@@ -9813,7 +9911,7 @@ items_atlas = {
 			0.573242
 		}
 	},
-	icon_wpn_we_sword_03_t2 = {
+	icon_skin_knight_ostland = {
 		size = {
 			80,
 			80
@@ -9827,7 +9925,7 @@ items_atlas = {
 			0.532227
 		}
 	},
-	icon_wpn_we_sword_02_t2 = {
+	icon_wpn_we_2h_sword_03_t2 = {
 		size = {
 			80,
 			80
@@ -9841,7 +9939,7 @@ items_atlas = {
 			0.491211
 		}
 	},
-	icon_wpn_we_2h_axe_03_t2 = {
+	icon_skin_knight_red = {
 		size = {
 			80,
 			80
@@ -9855,7 +9953,7 @@ items_atlas = {
 			0.450195
 		}
 	},
-	icon_wpn_we_sword_03_t1_dagger_dual = {
+	icon_skin_ironbreaker_green = {
 		size = {
 			80,
 			80
@@ -9869,7 +9967,7 @@ items_atlas = {
 			0.40918
 		}
 	},
-	icon_wpn_we_sword_01_t3 = {
+	icon_wpn_we_2h_sword_04_t2 = {
 		size = {
 			80,
 			80
@@ -9883,7 +9981,7 @@ items_atlas = {
 			0.368164
 		}
 	},
-	icon_wpn_we_2h_axe_04_t1 = {
+	icon_wpn_we_dagger_01_t1_dual = {
 		size = {
 			80,
 			80
@@ -9897,7 +9995,7 @@ items_atlas = {
 			0.327148
 		}
 	},
-	icon_wpn_we_axe_01_t1 = {
+	icon_skin_huntsman_red = {
 		size = {
 			80,
 			80
@@ -9911,7 +10009,7 @@ items_atlas = {
 			0.286133
 		}
 	},
-	icon_wpn_we_repeater_crossbow_t3 = {
+	icon_skin_huntsman_original = {
 		size = {
 			80,
 			80
@@ -9925,7 +10023,7 @@ items_atlas = {
 			0.245117
 		}
 	},
-	icon_wpn_fencingsword_t1 = {
+	icon_skin_ironbreaker_original = {
 		size = {
 			80,
 			80
@@ -9939,7 +10037,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_wpn_wh_halberd_02 = {
+	icon_wpn_we_2h_axe_03_t2 = {
 		size = {
 			80,
 			80
@@ -9953,7 +10051,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_wpn_we_2h_axe_01_t2 = {
+	icon_skin_knight_01 = {
 		size = {
 			80,
 			80
@@ -9967,7 +10065,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_wpn_we_dagger_02_t2 = {
+	icon_skin_maidenguard_black_and_gold = {
 		size = {
 			80,
 			80
@@ -9981,7 +10079,7 @@ items_atlas = {
 			0.081055
 		}
 	},
-	icon_wpn_wh_halberd_04 = {
+	icon_wpn_we_dagger_01_t2_dual = {
 		size = {
 			80,
 			80
@@ -9995,7 +10093,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_wpn_we_axe_01_t2 = {
+	icon_skin_mercenary_original = {
 		size = {
 			80,
 			80
@@ -10009,7 +10107,7 @@ items_atlas = {
 			0.983398
 		}
 	},
-	icon_wpn_we_sword_01_t2 = {
+	icon_wpn_we_spear_03 = {
 		size = {
 			80,
 			80
@@ -10023,7 +10121,7 @@ items_atlas = {
 			0.942383
 		}
 	},
-	icon_wpn_we_bow_02_t2 = {
+	icon_wpn_we_sword_01_t1_dagger_dual = {
 		size = {
 			80,
 			80
@@ -10037,7 +10135,7 @@ items_atlas = {
 			0.901367
 		}
 	},
-	icon_wpn_we_bow_03_t2 = {
+	icon_wpn_wh_repeater_crossbow_t3 = {
 		size = {
 			80,
 			80
@@ -10051,7 +10149,7 @@ items_atlas = {
 			0.860352
 		}
 	},
-	icon_wpn_we_spear_01 = {
+	icon_skin_maidenguard_caledor = {
 		size = {
 			80,
 			80
@@ -10065,7 +10163,7 @@ items_atlas = {
 			0.819336
 		}
 	},
-	icon_wpn_we_dagger_02_t1_dual = {
+	icon_wpn_we_spear_05 = {
 		size = {
 			80,
 			80
@@ -10079,7 +10177,7 @@ items_atlas = {
 			0.77832
 		}
 	},
-	icon_wpn_we_bow_03_t1 = {
+	icon_wpn_we_dagger_02_t2_dual = {
 		size = {
 			80,
 			80
@@ -10093,7 +10191,7 @@ items_atlas = {
 			0.737305
 		}
 	},
-	icon_wpn_we_axe_02_t2 = {
+	icon_skin_mercenary_01 = {
 		size = {
 			80,
 			80
@@ -10121,7 +10219,7 @@ items_atlas = {
 			0.655273
 		}
 	},
-	icon_wpn_we_bow_01_t2 = {
+	icon_skin_mercenary_carroburg = {
 		size = {
 			80,
 			80
@@ -10135,7 +10233,7 @@ items_atlas = {
 			0.614258
 		}
 	},
-	icon_wpn_we_spear_03 = {
+	icon_skin_maidenguard_elyrion = {
 		size = {
 			80,
 			80
@@ -10149,7 +10247,7 @@ items_atlas = {
 			0.573242
 		}
 	},
-	icon_wpn_we_dagger_02_t2_dual = {
+	icon_skin_mercenary_helmgart = {
 		size = {
 			80,
 			80
@@ -10163,7 +10261,7 @@ items_atlas = {
 			0.532227
 		}
 	},
-	icon_wpn_we_spear_05 = {
+	icon_wpn_we_dagger_03_t1_dual = {
 		size = {
 			80,
 			80
@@ -10177,7 +10275,7 @@ items_atlas = {
 			0.491211
 		}
 	},
-	icon_wpn_we_axe_03_t2 = {
+	icon_skin_mercenary_middenland = {
 		size = {
 			80,
 			80
@@ -10191,7 +10289,7 @@ items_atlas = {
 			0.450195
 		}
 	},
-	icon_wpn_we_sword_01_t1_dagger_dual = {
+	icon_skin_maidenguard_white_and_gold = {
 		size = {
 			80,
 			80
@@ -10219,7 +10317,7 @@ items_atlas = {
 			0.368164
 		}
 	},
-	icon_wpn_we_bow_01_t1 = {
+	icon_wpn_we_sword_01_t2 = {
 		size = {
 			80,
 			80
@@ -10233,7 +10331,7 @@ items_atlas = {
 			0.327148
 		}
 	},
-	icon_wpn_we_bow_04_t1 = {
+	icon_skin_maidenguard_original = {
 		size = {
 			80,
 			80
@@ -10247,7 +10345,7 @@ items_atlas = {
 			0.286133
 		}
 	},
-	icon_wpn_we_dagger_02_t3_dual = {
+	icon_wpn_we_dagger_02_t1_dual = {
 		size = {
 			80,
 			80
@@ -10261,7 +10359,7 @@ items_atlas = {
 			0.245117
 		}
 	},
-	icon_wpn_we_axe_02_t1 = {
+	icon_wpn_we_dagger_02_t3_dual = {
 		size = {
 			80,
 			80
@@ -10275,7 +10373,7 @@ items_atlas = {
 			0.204102
 		}
 	},
-	icon_wpn_we_axe_03_t1 = {
+	icon_wpn_we_spear_01 = {
 		size = {
 			80,
 			80
@@ -10289,7 +10387,7 @@ items_atlas = {
 			0.163086
 		}
 	},
-	icon_wpn_we_bow_02_t1 = {
+	icon_skin_maidenguard_red_and_yellow = {
 		size = {
 			80,
 			80
@@ -10303,7 +10401,7 @@ items_atlas = {
 			0.12207
 		}
 	},
-	icon_wpn_we_dagger_03_t1_dual = {
+	icon_skin_mercenary_ostermark = {
 		size = {
 			80,
 			80
@@ -10331,7 +10429,7 @@ items_atlas = {
 			0.040039
 		}
 	},
-	icon_wpn_we_bow_04_t2 = {
+	icon_skin_mercenary_v1 = {
 		size = {
 			80,
 			80
@@ -10345,7 +10443,7 @@ items_atlas = {
 			0.985352
 		}
 	},
-	icon_wpn_we_sword_02_t1 = {
+	icon_skin_pyromancer_01 = {
 		size = {
 			80,
 			80
@@ -10359,7 +10457,7 @@ items_atlas = {
 			0.944336
 		}
 	},
-	icon_wpn_we_sword_02_t1_dual = {
+	icon_skin_ranger_01 = {
 		size = {
 			80,
 			80
@@ -10373,7 +10471,7 @@ items_atlas = {
 			0.90332
 		}
 	},
-	icon_wpn_we_sword_02_t2_dagger_dual = {
+	icon_skin_ranger_barak_varr = {
 		size = {
 			80,
 			80
@@ -10401,7 +10499,7 @@ items_atlas = {
 			0.821289
 		}
 	},
-	icon_wpn_we_bow_short_04 = {
+	icon_wpn_we_sword_01_t3_dagger_dual = {
 		size = {
 			80,
 			80
@@ -10415,7 +10513,7 @@ items_atlas = {
 			0.780273
 		}
 	},
-	icon_wpn_we_bow_05_t1 = {
+	icon_wpn_we_sword_02_t1_dual = {
 		size = {
 			80,
 			80
@@ -10429,7 +10527,7 @@ items_atlas = {
 			0.739258
 		}
 	},
-	icon_wpn_we_bow_short_02 = {
+	icon_skin_mercenary_ostland = {
 		size = {
 			80,
 			80
@@ -10443,7 +10541,7 @@ items_atlas = {
 			0.698242
 		}
 	},
-	icon_wpn_we_sword_01_t3_dagger_dual = {
+	icon_wpn_we_sword_02_t2_dagger_dual = {
 		size = {
 			80,
 			80
@@ -10457,7 +10555,7 @@ items_atlas = {
 			0.657227
 		}
 	},
-	icon_wpn_we_bow_short_03 = {
+	icon_wpn_we_sword_02_t1 = {
 		size = {
 			80,
 			80
@@ -10471,7 +10569,7 @@ items_atlas = {
 			0.616211
 		}
 	},
-	icon_wpn_we_bow_short_01 = {
+	icon_skin_ranger_black_and_gold = {
 		size = {
 			80,
 			80
@@ -10499,7 +10597,7 @@ items_atlas = {
 			0.53418
 		}
 	},
-	icon_wpn_we_bow_short_05 = {
+	icon_wpn_wh_halberd_01 = {
 		size = {
 			80,
 			80
@@ -10513,7 +10611,7 @@ items_atlas = {
 			0.493164
 		}
 	},
-	icon_wpn_we_dagger_01_t1_dual = {
+	icon_skin_ranger_helmgart = {
 		size = {
 			80,
 			80
@@ -10527,7 +10625,7 @@ items_atlas = {
 			0.452148
 		}
 	},
-	icon_wpn_wh_halberd_01 = {
+	icon_skin_ranger_brown_and_yellow = {
 		size = {
 			80,
 			80
@@ -10555,7 +10653,7 @@ items_atlas = {
 			0.370117
 		}
 	},
-	icon_wpn_we_dagger_01_t1 = {
+	icon_skin_ranger_karak_norn = {
 		size = {
 			80,
 			80
@@ -10583,7 +10681,7 @@ items_atlas = {
 			0.288086
 		}
 	},
-	icon_wpn_we_dagger_01_t2 = {
+	icon_skin_ranger_original = {
 		size = {
 			80,
 			80
@@ -10611,7 +10709,7 @@ items_atlas = {
 			0.206055
 		}
 	},
-	icon_wpn_we_dagger_01_t2_dual = {
+	icon_skin_ranger_v1 = {
 		size = {
 			80,
 			80

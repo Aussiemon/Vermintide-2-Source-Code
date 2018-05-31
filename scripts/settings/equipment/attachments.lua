@@ -171,6 +171,23 @@ local wh_z_hats_tattoo_05 = {
 	}
 }
 Attachments.wh_z_hats_tattoo_05 = table.clone(wh_z_hats_tattoo_05)
+local wh_z_hats_tattoo_06 = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_show_ears",
+	attachment_node_linking = AttachmentNodeLinking.hat,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {},
+	character_material_changes = {
+		package_name = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_face_06",
+		third_person = {
+			mtr_head = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_face_06"
+		}
+	}
+}
+Attachments.wh_z_hats_tattoo_06 = table.clone(wh_z_hats_tattoo_06)
 local ww_hoods = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -215,6 +232,17 @@ local ww_masks = {
 	buffs = {}
 }
 Attachments.ww_masks = table.clone(ww_masks)
+local ww_hat = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hat",
+	attachment_node_linking = AttachmentNodeLinking.hat,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.ww_hat = table.clone(ww_hat)
 local ww_helmet = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -314,6 +342,28 @@ local es_hats_no_beard_skinned = {
 	buffs = {}
 }
 Attachments.es_hats_no_beard_skinned = table.clone(es_hats_no_beard_skinned)
+local es_beard = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_show_ears",
+	attachment_node_linking = AttachmentNodeLinking.hat,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.es_beard = table.clone(es_beard)
+local es_beard_skinned = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet_es_hood",
+	show_attachments_event = "lua_hide_beard",
+	attachment_node_linking = AttachmentNodeLinking.es_beard_skinned,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.es_beard_skinned = table.clone(es_beard_skinned)
 local dr_helmets = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",

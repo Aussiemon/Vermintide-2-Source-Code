@@ -4,6 +4,8 @@ local definitions = local_require("scripts/ui/views/hero_view/states/definitions
 local widget_definitions = definitions.widgets
 local overlay_widget_definitions = definitions.overlay_widgets
 local summary_widget_definitions = definitions.summary_widgets
+local quest_widget_definitions = definitions.quest_widgets
+local achievement_widget_definitions = definitions.achievement_widgets
 local category_tab_widget_definitions = definitions.category_tab_widgets
 local category_tab_widget_definitions = definitions.category_tab_widgets
 local quest_entry_definition = definitions.quest_entry_definition
@@ -60,6 +62,8 @@ HeroViewStateAchievements.on_enter = function (self, params)
 		ui_top_renderer = self.ui_top_renderer,
 		input_manager = self.input_manager
 	}
+	self._timer_title = Localize("achv_menu_summary_quest_refresh")
+	self._timer_type = "daily"
 	self.reward_popup = RewardPopupUI:new(reward_params)
 
 	self.reward_popup:set_input_manager(self.input_manager)
@@ -87,11 +91,9 @@ HeroViewStateAchievements.on_enter = function (self, params)
 	self._ui_animations = {}
 
 	self:create_ui_elements(params)
-
-	self._quest_time = self._quest_manager:time_until_new_daily_quest()
-
 	self._achievement_manager:setup_achievement_data()
 	self:_setup_achievement_progress_overview()
+	self:_setup_quest_summary_progress()
 
 	if params.initial_state then
 		params.initial_state = nil
@@ -99,28 +101,62 @@ HeroViewStateAchievements.on_enter = function (self, params)
 		self:_start_transition_animation("on_enter", "on_enter")
 	end
 
+	self:_update_buttons_new_status()
+
 	local summary_button = self._widgets_by_name.summary_button
 
-	self:_on_layout_button_pressed(summary_button, "summary")
+	self:_on_layout_button_pressed(summary_button, nil, "summary")
 	self:play_sound("Play_gui_achivements_menu_open")
 end
 
-HeroViewStateAchievements._update_quest_timer = function (self, dt)
-	local time_left_in_seconds = self._quest_time
+HeroViewStateAchievements._update_buttons_new_status = function (self)
+	local quest_layout = self:_get_layout("quest")
+	self._widgets_by_name.quests_button.content.new = self:_has_any_unclaimed_completed_challenge_in_category(quest_layout)
+	local achievement_layout = self:_get_layout("achievements")
+	self._widgets_by_name.achievements_button.content.new = self:_has_any_unclaimed_completed_challenge_in_category(achievement_layout)
+end
 
-	if not time_left_in_seconds then
-		return
+HeroViewStateAchievements._update_quest_timer = function (self, dt)
+	local time_left_in_seconds = nil
+
+	if self._timer_type == "daily" then
+		time_left_in_seconds = math.max(self._quest_manager:time_until_new_daily_quest(), 0)
+	elseif self._timer_type == "event" then
+		time_left_in_seconds = math.max(self._quest_manager:time_left_on_event_quest(), 0)
 	end
 
-	local seconds = math.max(time_left_in_seconds - dt, 0)
+	local seconds = math.max(time_left_in_seconds, 0)
 	local minutes = math.floor(seconds / 60)
 	local hours = math.floor(minutes / 60)
-	local time_text = string.format("%02d:%02d:%02d", hours, minutes - hours * 60, seconds % 60)
-	local summary_widgets_by_name = self._summary_widgets_by_name
-	local widget = summary_widgets_by_name.summary_right_refresh_value
-	local content = widget.content
-	content.text = time_text
-	self._quest_time = seconds
+	local days = math.floor(hours / 24)
+	local time_text = nil
+
+	if days > 0 then
+		time_text = string.format("%02d:%02d:%02d:%02d", days, hours % 24, minutes - hours * 60, seconds % 60)
+	else
+		time_text = string.format("%02d:%02d:%02d", hours, minutes - hours * 60, seconds % 60)
+	end
+
+	local time_left_text = self._additional_quest_widgets_by_name.time_left_text
+	local summary_widget = self._summary_widgets_by_name.summary_quest_bar_timer_1
+	summary_widget.content.text = time_text
+	time_left_text.content.text = self._timer_title .. " " .. time_text
+
+	if time_left_in_seconds > 0 and self._previous_time_in_seconds == 0 then
+		local quests_tab_index = 1
+		local daily_quest_tab_list_index = 1
+
+		if self._active_tab_index == quests_tab_index then
+			local tab_widget = self._category_tab_widgets[quests_tab_index]
+
+			self:_setup_layout("quest")
+			self:_activate_tab(tab_widget, quests_tab_index, daily_quest_tab_list_index, true)
+		end
+
+		self:_setup_quest_summary_progress()
+	end
+
+	self._previous_time_in_seconds = time_left_in_seconds
 end
 
 HeroViewStateAchievements.create_ui_elements = function (self, params)
@@ -164,6 +200,32 @@ HeroViewStateAchievements.create_ui_elements = function (self, params)
 
 	self._summary_widgets = summary_widgets
 	self._summary_widgets_by_name = summary_widgets_by_name
+	local additional_quest_widgets = {}
+	local additional_quest_widgets_by_name = {}
+
+	for name, widget_definition in pairs(quest_widget_definitions) do
+		if widget_definition then
+			local widget = UIWidget.init(widget_definition)
+			additional_quest_widgets[#additional_quest_widgets + 1] = widget
+			additional_quest_widgets_by_name[name] = widget
+		end
+	end
+
+	self._additional_quest_widgets = additional_quest_widgets
+	self._additional_quest_widgets_by_name = additional_quest_widgets_by_name
+	local additional_achievement_widgets = {}
+	local additional_achievement_widgets_by_name = {}
+
+	for name, widget_definition in pairs(achievement_widget_definitions) do
+		if widget_definition then
+			local widget = UIWidget.init(widget_definition)
+			additional_achievement_widgets[#additional_achievement_widgets + 1] = widget
+			additional_achievement_widgets_by_name[name] = widget
+		end
+	end
+
+	self._additional_achievement_widgets = additional_achievement_widgets
+	self._additional_achievement_widgets_by_name = additional_achievement_widgets_by_name
 	local category_tab_widgets = {}
 
 	for _, widget_definition in ipairs(category_tab_widget_definitions) do
@@ -180,6 +242,13 @@ HeroViewStateAchievements.create_ui_elements = function (self, params)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+	local quest_category_window = additional_quest_widgets_by_name.left_window
+
+	self:_set_uvs_scale_progress(quest_category_window.scenegraph_id, quest_category_window.content.texture_id.uvs, 1)
+
+	local achievement_category_window = additional_achievement_widgets_by_name.left_window
+
+	self:_set_uvs_scale_progress(achievement_category_window.scenegraph_id, achievement_category_window.content.texture_id.uvs, 1)
 end
 
 HeroViewStateAchievements._setup_achievement_progress_overview = function (self)
@@ -230,23 +299,15 @@ HeroViewStateAchievements._handle_layout_buttons_hovered = function (self)
 	local quests_button = widgets_by_name.quests_button
 	local summary_button = widgets_by_name.summary_button
 	local achievements_button = widgets_by_name.achievements_button
-	local achievement_window_button = summary_widgets_by_name.summary_center_window_button
-	local quest_window_button = summary_widgets_by_name.summary_right_window_button
+	local achievement_window_button = summary_widgets_by_name.summary_right_window_button
+	local quest_window_button = summary_widgets_by_name.summary_left_window_button
 	local play_sound = false
 
-	if self:_is_button_hover_enter(quests_button) then
+	if self:_is_button_hover_enter(quests_button) or self:_is_button_hover_enter(quest_window_button) then
 		play_sound = true
 	end
 
-	if self:_is_button_hover_enter(quest_window_button) then
-		play_sound = true
-	end
-
-	if self:_is_button_hover_enter(achievements_button) then
-		play_sound = true
-	end
-
-	if self:_is_button_hover_enter(achievement_window_button) then
+	if self:_is_button_hover_enter(achievements_button) or self:_is_button_hover_enter(achievement_window_button) then
 		play_sound = true
 	end
 
@@ -254,24 +315,52 @@ HeroViewStateAchievements._handle_layout_buttons_hovered = function (self)
 		play_sound = true
 	end
 
+	if self:_is_button_hover(quests_button) then
+		quest_window_button.content.has_focus = true
+	else
+		quest_window_button.content.has_focus = false
+	end
+
+	if self:_is_button_hover(quest_window_button) then
+		quests_button.content.has_focus = true
+	else
+		quests_button.content.has_focus = false
+	end
+
+	if self:_is_button_hover(achievements_button) then
+		achievement_window_button.content.has_focus = true
+	else
+		achievement_window_button.content.has_focus = false
+	end
+
+	if self:_is_button_hover(achievement_window_button) then
+		achievements_button.content.has_focus = true
+	else
+		achievements_button.content.has_focus = false
+	end
+
 	if play_sound then
 		self:play_sound("play_gui_equipment_button_hover")
 	end
 end
 
-HeroViewStateAchievements._on_layout_button_pressed = function (self, widget, layout_type)
+HeroViewStateAchievements._on_layout_button_pressed = function (self, widget, window_widget, layout_type)
 	local widgets_by_name = self._widgets_by_name
 	local quests_button = widgets_by_name.quests_button
 	local summary_button = widgets_by_name.summary_button
 	local achievements_button = widgets_by_name.achievements_button
-	quests_button.content.button_hotspot.force_hover = false
-	summary_button.content.button_hotspot.force_hover = false
-	achievements_button.content.button_hotspot.force_hover = false
-	widget.content.button_hotspot.force_hover = false
+
+	if window_widget then
+		window_widget.content.has_focus = false
+
+		table.clear(window_widget.content.button_hotspot)
+	end
+
 	quests_button.content.button_hotspot.is_selected = false
 	summary_button.content.button_hotspot.is_selected = false
 	achievements_button.content.button_hotspot.is_selected = false
 	widget.content.button_hotspot.is_selected = true
+	widget.content.has_focus = false
 
 	if layout_type == "summary" then
 		self._draw_summary = true
@@ -281,9 +370,15 @@ HeroViewStateAchievements._on_layout_button_pressed = function (self, widget, la
 
 		self._achievement_widgets = nil
 		self._widgets_by_name.achievement_scrollbar.content.visible = false
-
-		self:_populate_recent_claimed_achievements()
 	else
+		if layout_type == "achievements" then
+			self._additional_type_widgets = self._additional_achievement_widgets
+			self._additional_type_widgets_by_name = self._additional_achievement_widgets_by_name
+		else
+			self._additional_type_widgets = self._additional_quest_widgets
+			self._additional_type_widgets_by_name = self._additional_quest_widgets_by_name
+		end
+
 		self._draw_summary = false
 
 		self:_setup_layout(layout_type)
@@ -292,7 +387,7 @@ HeroViewStateAchievements._on_layout_button_pressed = function (self, widget, la
 		local tab_widget_index = 1
 		local tab_widget = self._category_tab_widgets[tab_widget_index]
 
-		self:_activate_tab(tab_widget, tab_widget_index, true)
+		self:_activate_tab(tab_widget, tab_widget_index, nil, true)
 	end
 end
 
@@ -313,23 +408,35 @@ HeroViewStateAchievements._setup_layout = function (self, layout_type)
 		local widget = category_tab_widgets[i]
 
 		self:_reset_tab(widget)
-
-		if data then
-			local name = data.name
-			local display_name = Localize(name)
-			widget.content.title_text = display_name
-			widget.content.data = data
-			local categories = data.categories
-
-			if categories then
-				self:_populate_tab(widget, categories)
-			end
-
-			widget.content.visible = true
-		end
+		self:_setup_tab_widget(widget, data)
 	end
 
 	self._achievement_layout_type = layout_type
+end
+
+HeroViewStateAchievements._setup_tab_widget = function (self, tab_widget, data)
+	if data then
+		local name = data.name
+		local display_name = Localize(name)
+		tab_widget.content.title_text = display_name
+		tab_widget.content.data = data
+		tab_widget.content.new = self:_has_any_unclaimed_completed_challenge_in_category(data)
+		local categories = data.categories
+		local entries = data.entries
+
+		if categories then
+			self:_populate_tab(tab_widget, categories)
+		end
+
+		local disable_button = false
+
+		if not entries and not categories then
+			disable_button = true
+		end
+
+		tab_widget.content.visible = true
+		tab_widget.content.button_hotspot.disable_button = disable_button
+	end
 end
 
 HeroViewStateAchievements._get_layout = function (self, layout_type)
@@ -359,10 +466,50 @@ HeroViewStateAchievements._reset_tab = function (self, widget)
 	content.list_content.active = false
 	content.button_hotspot.is_selected = false
 	content.visible = false
+	content.new = false
 	list_style.num_draws = 0
 	local list_scenegraph_id = list_style.scenegraph_id
 	local list_scenegraph = self.ui_scenegraph[list_scenegraph_id]
 	list_scenegraph.size[2] = 0
+	widget.alpha_multiplier = 0
+	widget.alpha_fade_in_delay = nil
+	widget.alpha_fade_multipler = 5
+end
+
+HeroViewStateAchievements._has_any_unclaimed_completed_challenge_in_category = function (self, base_data)
+	local achievement_manager = self._achievement_manager
+	local quest_manager = self._quest_manager
+	local category_type = base_data.type
+
+	local function has_unclaimed_challenge(base_category)
+		if base_category.entries then
+			for _, id in ipairs(base_category.entries) do
+				local data = nil
+
+				if category_type == "achievements" then
+					data = achievement_manager:get_data_by_id(id)
+				elseif category_type == "quest" then
+					data = quest_manager:get_data_by_id(id)
+				end
+
+				if data.completed and not data.claimed then
+					return true
+				end
+			end
+		end
+
+		if base_category.categories then
+			for _, category in ipairs(base_category.categories) do
+				if has_unclaimed_challenge(category) then
+					return true
+				end
+			end
+		end
+
+		return false
+	end
+
+	return has_unclaimed_challenge(base_data)
 end
 
 HeroViewStateAchievements._populate_tab = function (self, widget, categories)
@@ -379,12 +526,13 @@ HeroViewStateAchievements._populate_tab = function (self, widget, categories)
 		local display_name = Localize(name)
 		local content = list_content[index]
 		content.text = display_name
+		content.new = self:_has_any_unclaimed_completed_challenge_in_category(entry)
 	end
 
 	style.num_draws = num_categories
 end
 
-HeroViewStateAchievements._create_entries = function (self, entries, entry_type)
+HeroViewStateAchievements._create_entries = function (self, entries, entry_type, data)
 	local quest_manager = self._quest_manager
 	local achievement_manager = self._achievement_manager
 	local achievement_widgets = {}
@@ -394,7 +542,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type)
 
 	if entry_type == "quest" then
 		widget_definition = quest_entry_definition
-		can_close = quest_manager:can_refresh_quest()
+		can_close = data.quest_type == "daily" and quest_manager:can_refresh_daily_quest()
 		manager = quest_manager
 	else
 		widget_definition = achievement_entry_definition
@@ -482,6 +630,33 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type)
 	self.scroll_value = nil
 
 	self:_update_scroll_height()
+	self:_setup_achievement_entries_animations()
+
+	if num_entries > 0 then
+		self:_hide_empty_entries_warning()
+	else
+		self:_show_empty_entries_warning()
+	end
+end
+
+HeroViewStateAchievements._show_empty_entries_warning = function (self)
+	local additional_type_widgets_by_name = self._additional_type_widgets_by_name
+	local overlay_widget = additional_type_widgets_by_name.overlay
+	local overlay_text_widget = additional_type_widgets_by_name.overlay_text
+	local overlay_fade_widget = additional_type_widgets_by_name.overlay_fade
+	overlay_widget.content.visible = true
+	overlay_fade_widget.content.visible = true
+	overlay_text_widget.content.visible = true
+end
+
+HeroViewStateAchievements._hide_empty_entries_warning = function (self)
+	local additional_type_widgets_by_name = self._additional_type_widgets_by_name
+	local overlay_widget = additional_type_widgets_by_name.overlay
+	local overlay_text_widget = additional_type_widgets_by_name.overlay_text
+	local overlay_fade_widget = additional_type_widgets_by_name.overlay_fade
+	overlay_widget.content.visible = false
+	overlay_fade_widget.content.visible = false
+	overlay_text_widget.content.visible = false
 end
 
 HeroViewStateAchievements._set_widget_bar_progress = function (self, widget, fraction, text)
@@ -551,8 +726,8 @@ HeroViewStateAchievements._update_scroll_height = function (self, optional_scrol
 	local total_height = self:_get_achievement_entries_height()
 	self.total_scroll_height = math.max(total_height - ACHIEVEMENT_WINDOW_HEIGHT, 0)
 
-	self:_align_achievement_entries()
 	self:_setup_scrollbar(total_height, optional_scroll_value)
+	self:_align_achievement_entries()
 end
 
 HeroViewStateAchievements._get_achievement_entries_height = function (self, start_index)
@@ -683,7 +858,7 @@ HeroViewStateAchievements._on_achievement_pressed = function (self, widget)
 
 	if can_close and close_button_hotspot.is_hover then
 		local id = content.id
-		local quest_refresh_poll_id = self._quest_manager:refresh_quest(id)
+		local quest_refresh_poll_id = self._quest_manager:refresh_daily_quest(id)
 		self._quest_refresh_poll_id = quest_refresh_poll_id
 
 		self:block_input()
@@ -743,6 +918,7 @@ HeroViewStateAchievements._claim_reward = function (self, widget)
 		self:block_input()
 
 		self._reward_poll_id = reward_poll_id
+		self._reward_poll_type = achievement_layout_type
 	end
 end
 
@@ -795,8 +971,9 @@ HeroViewStateAchievements._poll_quest_refresh = function (self, dt)
 		self:unblock_input()
 
 		local quests_button = self._widgets_by_name.quests_button
+		local quest_window_button = self._widgets_by_name.quest_window_button
 
-		self:_on_layout_button_pressed(quests_button, "quest")
+		self:_on_layout_button_pressed(quests_button, quest_window_button, "quest")
 	end
 end
 
@@ -807,19 +984,28 @@ HeroViewStateAchievements._poll_rewards = function (self, dt)
 		return
 	end
 
-	local quest_manager = self._quest_manager
-	local polling_quest_reward = quest_manager:polling_quest_reward()
-	local achievement_manager = self._achievement_manager
-	local polling_achievement_reward = achievement_manager:polling_reward()
+	local is_polling_reward = nil
+	local polling_type = self._reward_poll_type
 
-	if not polling_quest_reward and not polling_achievement_reward then
-		self:_on_reward_claimed(reward_poll_id)
+	if polling_type == "quest" then
+		local quest_manager = self._quest_manager
+		is_polling_reward = quest_manager:polling_quest_reward()
+	elseif polling_type == "achievements" then
+		local achievement_manager = self._achievement_manager
+		is_polling_reward = achievement_manager:polling_reward()
+	else
+		ferror("Unknown reward_poll_type (%s)", polling_type)
+	end
+
+	if not is_polling_reward then
+		self:_on_reward_claimed(reward_poll_id, polling_type)
 
 		self._reward_poll_id = nil
+		self._reward_poll_type = nil
 	end
 end
 
-HeroViewStateAchievements._on_reward_claimed = function (self, reward_poll_id)
+HeroViewStateAchievements._on_reward_claimed = function (self, reward_poll_id, polling_type)
 	local widget = self._reward_claim_widget
 	local content = widget.content
 	local style = widget.style
@@ -838,14 +1024,80 @@ HeroViewStateAchievements._on_reward_claimed = function (self, reward_poll_id)
 
 	self._reward_claim_widget = nil
 
-	self:_setup_reward_presentation(reward_poll_id)
+	self:_setup_reward_presentation(reward_poll_id, polling_type)
+
+	if polling_type == "quest" then
+		self:_setup_layout("quest")
+
+		local tab_widget = self._active_tab
+		local tab_index = self._active_tab_index
+
+		self:_activate_tab(tab_widget, tab_index, 1, true)
+	end
+
+	self:_update_new_status_for_current_tab()
+	self:_update_buttons_new_status()
 end
 
-HeroViewStateAchievements._setup_reward_presentation = function (self, reward_poll_id)
+HeroViewStateAchievements._update_new_status_for_current_tab = function (self)
+	if self._achievement_layout_type == "achievements" then
+		local achievement_list = {}
+
+		local function fill_achievement_list(data)
+			if data.entries then
+				for _, achievement_id in ipairs(data.entries) do
+					achievement_list[#achievement_list + 1] = achievement_id
+				end
+			end
+
+			if data.categories then
+				for _, category in ipairs(data.categories) do
+					fill_achievement_list(category)
+				end
+			end
+		end
+
+		local active_tab = self._active_tab
+		local data = active_tab.content.data
+
+		fill_achievement_list(data)
+		self._achievement_manager:setup_achievement_data_from_list(achievement_list)
+		self:_setup_tab_widget(active_tab, data)
+
+		return
+	end
+
+	if self._achievement_layout_type == "quests" then
+		local layout = self:_get_layout(self._achievement_layout_type)
+		local categories = layout.categories
+		local category_tab_widgets = self._category_tab_widgets
+		local num_tab_widgets = #category_tab_widgets
+
+		for i = 1, num_tab_widgets, 1 do
+			local new_data = categories[i]
+			local widget = category_tab_widgets[i]
+
+			self:_setup_tab_widget(widget, new_data)
+		end
+	end
+end
+
+HeroViewStateAchievements._setup_reward_presentation = function (self, reward_poll_id, polling_type)
 	local backend_manager = Managers.backend
 	local item_interface = backend_manager:get_interface("items")
-	local loot_interface = backend_manager:get_interface("loot")
-	local rewards = loot_interface:get_loot(reward_poll_id)
+	local rewards = nil
+
+	if polling_type == "quest" then
+		local quest_interface = backend_manager:get_interface("quests")
+		local quest_rewards = quest_interface:get_quest_rewards(reward_poll_id)
+		rewards = quest_rewards.loot
+	elseif polling_type == "achievements" then
+		local loot_interface = backend_manager:get_interface("loot")
+		rewards = loot_interface:get_loot(reward_poll_id)
+	else
+		ferror("Unknown reward_polling_type (%s)", polling_type)
+	end
+
 	local num_rewards = #rewards
 
 	if num_rewards > 0 then
@@ -879,6 +1131,10 @@ HeroViewStateAchievements._setup_reward_presentation = function (self, reward_po
 	end
 end
 
+HeroViewStateAchievements._set_color_alpha_intensity = function (self, color, fraction)
+	self:_set_color_values(color, color[1] * fraction)
+end
+
 HeroViewStateAchievements._set_color_intensity = function (self, color, fraction)
 	self:_set_color_values(color, nil, color[2] * fraction, color[3] * fraction, color[4] * fraction)
 end
@@ -905,6 +1161,33 @@ HeroViewStateAchievements._align_achievement_entries = function (self)
 		end
 
 		total_height = total_height + widget_height
+	end
+end
+
+HeroViewStateAchievements._setup_achievement_entries_animations = function (self)
+	local start_index = self._achievement_draw_index
+
+	if not start_index then
+		return
+	end
+
+	local achievement_widgets = self._achievement_widgets
+	local end_index = math.min(start_index + ACHIEVEMENT_PRESENTATION_AMOUNT + 1, #achievement_widgets)
+	local fade_in_delay = 0.05
+	local global_fade_in_delay = 0
+	local alpha_fade_multipler = 4
+
+	for index, widget in ipairs(achievement_widgets) do
+		local animate = start_index <= index and index <= end_index
+
+		if animate then
+			widget.alpha_multiplier = 0
+			widget.alpha_fade_in_delay = global_fade_in_delay
+			widget.alpha_fade_multipler = alpha_fade_multipler
+			global_fade_in_delay = global_fade_in_delay + fade_in_delay
+		else
+			widget.alpha_multiplier = 1
+		end
 	end
 end
 
@@ -1038,20 +1321,31 @@ HeroViewStateAchievements._update_animations = function (self, dt)
 	end
 
 	local widgets_by_name = self._widgets_by_name
+	local summary_widgets_by_name = self._summary_widgets_by_name
 	local exit_button = widgets_by_name.exit_button
 	local quests_button = widgets_by_name.quests_button
 	local summary_button = widgets_by_name.summary_button
 	local achievements_button = widgets_by_name.achievements_button
+	local achievement_window_button = summary_widgets_by_name.summary_right_window_button
+	local quest_window_button = summary_widgets_by_name.summary_left_window_button
 
 	UIWidgetUtils.animate_default_button(exit_button, dt)
 	UIWidgetUtils.animate_option_button(quests_button, dt)
-	UIWidgetUtils.animate_option_button(summary_button, dt)
+	UIWidgetUtils.animate_default_button(summary_button, dt)
 	UIWidgetUtils.animate_option_button(achievements_button, dt)
+	self:_animate_window_button(quest_window_button, dt)
+	self:_animate_window_button(achievement_window_button, dt)
 
 	local summary_quest_book = self._summary_widgets_by_name.summary_quest_book
-	local book_progress = 0.5 + math.sin(Application.time_since_launch() * 2) * 0.5
-	local book_anim_progress = math.easeOutCubic(book_progress)
-	summary_quest_book.offset[2] = book_anim_progress * 6
+	local book_disabled = summary_quest_book.content.disabled
+
+	if not book_disabled then
+		local book_progress = 0.5 + math.sin(Application.time_since_launch() * 2) * 0.5
+		local book_anim_progress = math.easeOutCubic(book_progress)
+		summary_quest_book.offset[2] = book_anim_progress * 6
+	else
+		summary_quest_book.offset[2] = 0
+	end
 end
 
 HeroViewStateAchievements._is_button_hover_enter = function (self, widget)
@@ -1090,8 +1384,8 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 	local quests_button = widgets_by_name.quests_button
 	local summary_button = widgets_by_name.summary_button
 	local achievements_button = widgets_by_name.achievements_button
-	local achievement_window_button = summary_widgets_by_name.summary_center_window_button
-	local quest_window_button = summary_widgets_by_name.summary_right_window_button
+	local achievement_window_button = summary_widgets_by_name.summary_right_window_button
+	local quest_window_button = summary_widgets_by_name.summary_left_window_button
 
 	self:_handle_layout_buttons_hovered()
 
@@ -1100,17 +1394,17 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 	end
 
 	if self:_is_button_pressed(summary_button) then
-		self:_on_layout_button_pressed(summary_button, "summary")
+		self:_on_layout_button_pressed(summary_button, nil, "summary")
 		self:play_sound("Play_gui_achivements_menu_summary_tab")
 	end
 
 	if self:_is_button_pressed(quests_button) or self:_is_button_pressed(quest_window_button) then
-		self:_on_layout_button_pressed(quests_button, "quest")
+		self:_on_layout_button_pressed(quests_button, quest_window_button, "quest")
 		self:play_sound("Play_gui_achivements_menu_quest_tab")
 	end
 
 	if self:_is_button_pressed(achievements_button) or self:_is_button_pressed(achievement_window_button) then
-		self:_on_layout_button_pressed(achievements_button, "achievements")
+		self:_on_layout_button_pressed(achievements_button, achievement_window_button, "achievements")
 		self:play_sound("Play_gui_achivements_menu_achivements_tab")
 	end
 
@@ -1201,7 +1495,7 @@ HeroViewStateAchievements._on_tab_list_pressed = function (self, list_index, ign
 	local list_type = sub_category.type
 	local entries = sub_category.entries
 
-	self:_create_entries(entries, list_type)
+	self:_create_entries(entries, list_type, sub_category)
 
 	self._active_list_index = list_index
 
@@ -1210,19 +1504,19 @@ HeroViewStateAchievements._on_tab_list_pressed = function (self, list_index, ign
 	end
 end
 
-HeroViewStateAchievements._tab_pressed = function (self, widget, index, ignore_sound)
+HeroViewStateAchievements._tab_pressed = function (self, widget, index, tab_list_index, ignore_sound)
 	if self._active_tab == widget then
-		self:_activate_tab(widget, index, ignore_sound)
+		self:_activate_tab(widget, index, tab_list_index, ignore_sound)
 	else
 		if self._active_tab then
 			self:_deactivate_active_tab()
 		end
 
-		self:_activate_tab(widget, index, ignore_sound)
+		self:_activate_tab(widget, index, tab_list_index, ignore_sound)
 	end
 end
 
-HeroViewStateAchievements._activate_tab = function (self, widget, index, ignore_sound)
+HeroViewStateAchievements._activate_tab = function (self, widget, index, tab_list_index, ignore_sound)
 	self._active_tab = widget
 	self._active_tab_index = index
 	local content = widget.content
@@ -1243,14 +1537,32 @@ HeroViewStateAchievements._activate_tab = function (self, widget, index, ignore_
 	local entries = data and data.entries
 	local categories = data and data.categories
 
+	if data then
+		if data.quest_type == "daily" then
+			self._timer_title = Localize("achv_menu_summary_quest_refresh")
+			self._timer_type = "daily"
+		elseif data.quest_type == "event" then
+			self._timer_title = Localize("join_popup_timer_title") .. ":"
+			self._timer_type = "event"
+		end
+
+		local use_days = data.quest_type == "event"
+
+		self:_setup_quest_timer_position(self._timer_title, use_days)
+	end
+
 	if entries then
 		local list_type = data.type
 		self._active_list_index = nil
 
-		self:_create_entries(entries, list_type)
+		self:_create_entries(entries, list_type, data)
 
 		content.active = false
 		content.list_content.active = false
+	else
+		self:_show_empty_entries_warning()
+
+		self._achievement_widgets = nil
 	end
 
 	if categories then
@@ -1264,7 +1576,9 @@ HeroViewStateAchievements._activate_tab = function (self, widget, index, ignore_
 		if entries then
 			self._active_list_index = nil
 		else
-			self:_on_tab_list_pressed(1, true)
+			local list_index = tab_list_index or 1
+
+			self:_on_tab_list_pressed(list_index, true)
 		end
 	elseif not ignore_sound then
 		self:play_sound("Play_gui_achivements_menu_select_category")
@@ -1313,11 +1627,14 @@ HeroViewStateAchievements.draw = function (self, input_service, dt)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 	local snap_pixel_positions = render_settings.snap_pixel_positions
+	local alpha_multiplier = render_settings.alpha_multiplier or 1
 
 	for _, widget in ipairs(self._widgets) do
 		if widget.snap_pixel_positions ~= nil then
 			render_settings.snap_pixel_positions = widget.snap_pixel_positions
 		end
+
+		render_settings.alpha_multiplier = widget.alpha_multiplier or alpha_multiplier
 
 		UIRenderer.draw_widget(ui_renderer, widget)
 
@@ -1330,6 +1647,8 @@ HeroViewStateAchievements.draw = function (self, input_service, dt)
 				render_settings.snap_pixel_positions = widget.snap_pixel_positions
 			end
 
+			render_settings.alpha_multiplier = widget.alpha_multiplier or alpha_multiplier
+
 			UIRenderer.draw_widget(ui_renderer, widget)
 
 			render_settings.snap_pixel_positions = snap_pixel_positions
@@ -1341,6 +1660,20 @@ HeroViewStateAchievements.draw = function (self, input_service, dt)
 			if widget.snap_pixel_positions ~= nil then
 				render_settings.snap_pixel_positions = widget.snap_pixel_positions
 			end
+
+			render_settings.alpha_multiplier = widget.alpha_multiplier or alpha_multiplier
+
+			UIRenderer.draw_widget(ui_renderer, widget)
+
+			render_settings.snap_pixel_positions = snap_pixel_positions
+		end
+	elseif self._additional_type_widgets then
+		for _, widget in ipairs(self._additional_type_widgets) do
+			if widget.snap_pixel_positions ~= nil then
+				render_settings.snap_pixel_positions = widget.snap_pixel_positions
+			end
+
+			render_settings.alpha_multiplier = widget.alpha_multiplier or alpha_multiplier
 
 			UIRenderer.draw_widget(ui_renderer, widget)
 
@@ -1362,6 +1695,27 @@ HeroViewStateAchievements.draw = function (self, input_service, dt)
 				render_settings.snap_pixel_positions = widget.snap_pixel_positions
 			end
 
+			local alpha_multiplier = widget.alpha_multiplier
+			local alpha_fade_in_delay = widget.alpha_fade_in_delay
+
+			if alpha_fade_in_delay then
+				alpha_fade_in_delay = math.max(alpha_fade_in_delay - dt, 0)
+
+				if alpha_fade_in_delay > 0 then
+					widget.alpha_fade_in_delay = alpha_fade_in_delay
+				else
+					widget.alpha_fade_in_delay = nil
+				end
+
+				render_settings.alpha_multiplier = 0
+			elseif alpha_multiplier then
+				local alpha_fade_multipler = widget.alpha_fade_multipler or 1
+				alpha_multiplier = math.min(alpha_multiplier + dt * alpha_fade_multipler, 1)
+				render_settings.alpha_multiplier = math.easeInCubic(alpha_multiplier)
+				widget.alpha_multiplier = alpha_multiplier
+				widget.offset[1] = -40 * (1 - alpha_multiplier)
+			end
+
 			UIRenderer.draw_widget(ui_renderer, widget)
 
 			render_settings.snap_pixel_positions = snap_pixel_positions
@@ -1373,12 +1727,34 @@ HeroViewStateAchievements.draw = function (self, input_service, dt)
 			render_settings.snap_pixel_positions = widget.snap_pixel_positions
 		end
 
+		local alpha_multiplier = widget.alpha_multiplier
+		local alpha_fade_in_delay = widget.alpha_fade_in_delay
+
+		if alpha_fade_in_delay then
+			alpha_fade_in_delay = math.max(alpha_fade_in_delay - dt, 0)
+
+			if alpha_fade_in_delay > 0 then
+				widget.alpha_fade_in_delay = alpha_fade_in_delay
+			else
+				widget.alpha_fade_in_delay = nil
+			end
+
+			render_settings.alpha_multiplier = 0
+		elseif alpha_multiplier then
+			local alpha_fade_multipler = widget.alpha_fade_multipler or 1
+			alpha_multiplier = math.min(alpha_multiplier + dt * alpha_fade_multipler, 1)
+			render_settings.alpha_multiplier = math.easeInCubic(alpha_multiplier)
+			widget.alpha_multiplier = alpha_multiplier
+		end
+
 		UIRenderer.draw_widget(ui_renderer, widget)
 
 		render_settings.snap_pixel_positions = snap_pixel_positions
 	end
 
 	UIRenderer.end_pass(ui_renderer)
+
+	render_settings.alpha_multiplier = alpha_multiplier
 end
 
 HeroViewStateAchievements._is_button_pressed = function (self, widget)
@@ -1429,23 +1805,6 @@ end
 
 HeroViewStateAchievements.input_blocked = function (self)
 	return self._input_blocked
-end
-
-HeroViewStateAchievements._populate_recent_claimed_achievements = function (self, achievements)
-	local summary_widgets_by_name = self._summary_widgets_by_name
-	local icons_widget = summary_widgets_by_name.summary_center_recent_icons
-	local frames_widget = summary_widgets_by_name.summary_center_recent_frames
-	local num_achievements = (achievements and #achievements) or 0
-	icons_widget.style.texture_id.draw_count = num_achievements
-	frames_widget.style.texture_id.draw_count = num_achievements
-	local icon_content = icons_widget.content.texture_id
-
-	if achievements then
-		for index, achievement in ipairs(achievements) do
-			local icon = achievement.icon
-			icon_content[index] = icon
-		end
-	end
 end
 
 HeroViewStateAchievements._set_summary_achievement_categories_progress = function (self, progress_data)
@@ -1514,6 +1873,202 @@ end
 
 HeroViewStateAchievements._reward_presentation_done = function (self)
 	return not self._reward_presentation_active
+end
+
+HeroViewStateAchievements._setup_quest_summary_progress = function (self)
+	local layout_type = "quest"
+	local layout = self:_get_layout(layout_type)
+	local categories = layout.categories
+	local quest_manager = self._quest_manager
+	local can_refresh_quest = quest_manager:can_refresh_daily_quest()
+	local summary_widgets_by_name = self._summary_widgets_by_name
+	local widget_prefix_bar = "summary_quest_bar_"
+	local widget_prefix_title = "summary_quest_bar_title_"
+	local alpha = 255
+	local default_title_color = Colors.get_color_table_with_alpha("font_title", 255)
+	local disabled_title_color = {
+		255,
+		80,
+		80,
+		80
+	}
+	local any_available_quests = false
+
+	for category_index, category in ipairs(categories) do
+		local name = category.name
+		local entries = category.entries
+		local max_entry_amount = category.max_entry_amount or 1
+		local has_entries = entries ~= nil
+		local title_widget_name = widget_prefix_title .. tostring(category_index)
+		local title_widget = summary_widgets_by_name[title_widget_name]
+		title_widget.content.text = Localize(name)
+		local title_text_color = title_widget.style.text.text_color
+		title_text_color[1] = (has_entries and default_title_color[1]) or disabled_title_color[1]
+		title_text_color[2] = (has_entries and default_title_color[2]) or disabled_title_color[2]
+		title_text_color[3] = (has_entries and default_title_color[3]) or disabled_title_color[3]
+		title_text_color[4] = (has_entries and default_title_color[4]) or disabled_title_color[4]
+		local bar_widget_name = widget_prefix_bar .. tostring(category_index)
+		local bar_widget = summary_widgets_by_name[bar_widget_name]
+		local bar_style = bar_widget.style
+		local bar_content = bar_widget.content
+		local slot_style = bar_style.slot
+		local icon_loot_style = bar_style.icon_loot
+		local slot_frame_style = bar_style.slot_frame
+		local icon_locked_style = bar_style.icon_locked
+		local icon_cooldown_style = bar_style.icon_cooldown
+		local icon_available_style = bar_style.icon_available
+		local refresh_icon_style = bar_style.refresh_icon
+		local num_visible_entries = max_entry_amount
+		slot_style.texture_amount = num_visible_entries
+		icon_loot_style.texture_amount = num_visible_entries
+		slot_frame_style.texture_amount = num_visible_entries
+		icon_locked_style.texture_amount = num_visible_entries
+		icon_cooldown_style.texture_amount = num_visible_entries
+		icon_available_style.texture_amount = num_visible_entries
+		local icon_loot_colors = icon_loot_style.texture_colors
+		local slot_frame_colors = slot_frame_style.texture_colors
+		local icon_locked_colors = icon_locked_style.texture_colors
+		local icon_cooldown_colors = icon_cooldown_style.texture_colors
+		local icon_available_colors = icon_available_style.texture_colors
+		local refresh_icon_color = refresh_icon_style.color
+		local draw_refresh_icon = category.quest_type == "daily" and can_refresh_quest and has_entries
+
+		self:_set_color_values(refresh_icon_color, (draw_refresh_icon and alpha) or 0)
+
+		local has_presented_cooldown = false
+
+		for index = 1, num_visible_entries, 1 do
+			local quest_id = has_entries and entries[index]
+			local data = quest_id and quest_manager:get_data_by_id(quest_id)
+			local locked = not data
+			local claimed = data and data.claimed
+			local completed = data and data.completed
+			local summary_icon = (data and data.summary_icon) or "achievement_symbol_book"
+			local loot_color_fraction = 0
+			local frame_color_fraction = 0
+			local locked_color_fraction = 0
+			local cooldown_color_fraction = 0
+			local available_color_fraction = 0
+
+			if locked then
+				if not has_presented_cooldown and has_entries then
+					cooldown_color_fraction = 1
+					has_presented_cooldown = true
+				else
+					locked_color_fraction = 1
+				end
+			elseif completed then
+				loot_color_fraction = 1
+				frame_color_fraction = 1
+				any_available_quests = true
+			else
+				available_color_fraction = 1
+				frame_color_fraction = 1
+				any_available_quests = true
+			end
+
+			bar_content.slot[index] = summary_icon
+			local loot_color = icon_loot_colors[index]
+			local frame_color = slot_frame_colors[index]
+			local locked_color = icon_locked_colors[index]
+			local cooldown_color = icon_cooldown_colors[index]
+			local available_color = icon_available_colors[index]
+
+			self:_set_color_values(loot_color, alpha * loot_color_fraction)
+			self:_set_color_values(frame_color, alpha * frame_color_fraction)
+			self:_set_color_values(locked_color, alpha * locked_color_fraction)
+			self:_set_color_values(cooldown_color, alpha * cooldown_color_fraction)
+			self:_set_color_values(available_color, alpha * available_color_fraction)
+		end
+	end
+
+	local summary_quest_book = summary_widgets_by_name.summary_quest_book
+	summary_quest_book.content.disabled = not any_available_quests
+end
+
+HeroViewStateAchievements._setup_quest_timer_position = function (self, localized_prefix, include_days)
+	local ui_renderer = self.ui_renderer
+	local ui_scenegraph = self.ui_scenegraph
+	local additional_quest_widgets_by_name = self._additional_quest_widgets_by_name
+	local widget = additional_quest_widgets_by_name.time_left_text
+	local content = widget.content
+	local style = widget.style
+	local scenegraph_id = widget.scenegraph_id
+	local suffix = (include_days and "00:00:00:00") or "00:00:00"
+	local text = localized_prefix .. suffix
+	local text_style = style.text
+	local font, scaled_font_size = UIFontByResolution(text_style)
+	local text_width, text_height, min = UIRenderer.text_size(ui_renderer, text, font[1], scaled_font_size)
+	local widget_scenegraph = ui_scenegraph[scenegraph_id]
+	local position = widget_scenegraph.local_position
+	local size = widget_scenegraph.size
+	position[1] = size[1] - text_width
+end
+
+HeroViewStateAchievements._animate_window_button = function (self, widget, dt)
+	local content = widget.content
+	local style = widget.style
+	local hotspot = content.button_hotspot
+	local has_focus = content.has_focus
+	local is_hover = hotspot.is_hover or has_focus
+	local is_selected = hotspot.is_selected
+	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
+	local input_progress = hotspot.input_progress or 0
+	local hover_progress = hotspot.hover_progress or 0
+	local selection_progress = hotspot.selection_progress or 0
+	local speed = 8
+	local input_speed = 20
+
+	if input_pressed then
+		input_progress = math.min(input_progress + dt * input_speed, 1)
+	else
+		input_progress = math.max(input_progress - dt * input_speed, 0)
+	end
+
+	local input_easing_out_progress = math.easeOutCubic(input_progress)
+	local input_easing_in_progress = math.easeInCubic(input_progress)
+
+	if is_hover then
+		hover_progress = math.min(hover_progress + dt * speed, 1)
+	else
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+	end
+
+	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
+	local hover_easing_in_progress = math.easeInCubic(hover_progress)
+
+	if is_selected then
+		selection_progress = math.min(selection_progress + dt * speed, 1)
+	else
+		selection_progress = math.max(selection_progress - dt * speed, 0)
+	end
+
+	local select_easing_out_progress = math.easeOutCubic(selection_progress)
+	local select_easing_in_progress = math.easeInCubic(selection_progress)
+	local combined_progress = math.max(hover_progress, selection_progress)
+	local combined_out_progress = math.max(select_easing_out_progress, hover_easing_out_progress)
+	local combined_in_progress = math.max(hover_easing_in_progress, select_easing_in_progress)
+	local hover_alpha = 255 * combined_progress
+	style.hover_frame.color[1] = hover_alpha
+	local scenegraph_id = widget.scenegraph_id
+	local background_uvs = content.background.uvs
+
+	self:_set_uvs_scale_progress(scenegraph_id, background_uvs, combined_progress)
+
+	hotspot.hover_progress = hover_progress
+	hotspot.input_progress = input_progress
+	hotspot.selection_progress = selection_progress
+end
+
+HeroViewStateAchievements._set_uvs_scale_progress = function (self, scenegraph_id, uvs, progress)
+	local scenegraph_size = self.ui_scenegraph[scenegraph_id].size
+	local pixel_zoom = 10
+	local width_zoom_fraction = pixel_zoom / scenegraph_size[1] * progress
+	local height_zoom_fraction = pixel_zoom / scenegraph_size[2] * progress
+	uvs[1][1] = height_zoom_fraction
+	uvs[1][2] = width_zoom_fraction
+	uvs[2][1] = 1 - height_zoom_fraction
+	uvs[2][2] = 1 - width_zoom_fraction
 end
 
 return

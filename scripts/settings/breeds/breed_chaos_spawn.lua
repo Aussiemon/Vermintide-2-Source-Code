@@ -408,7 +408,17 @@ local breed_data = {
 		vortex_near = 1,
 		stormfiend_warpfire = 1,
 		vortex_danger_zone = 1
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_chaos_spawn_killed_while_grabbing(blackboard, killer_unit)
+		QuestSettings.check_chaos_spawn_killed_without_having_grabbed(blackboard, killer_unit)
+	end
 }
 Breeds.chaos_spawn = table.create_copy(Breeds.chaos_spawn, breed_data)
 local breed_data_norsca = {
@@ -841,16 +851,17 @@ local action_data = {
 		considerations = UtilityConsiderations.chaos_spawn_tentacle_grab,
 		attacks = {
 			{
-				freeze_intensity_decay_time = 15,
-				height = 2,
-				ignores_dodging = false,
-				range = 2,
+				b,
+				offset_forward = 0,
 				catapult_player = false,
+				range = 2,
+				hit_only_players = true,
 				rotation_time = 0.3,
 				anim_driven = false,
 				use_extra_space = false,
-				hit_only_players = true,
-				offset_forward = 0,
+				ignores_dodging = false,
+				height = 2,
+				freeze_intensity_decay_time = 15,
 				offset_up = 0,
 				ignore_targets_behind = true,
 				extra_space_up = true,
@@ -867,6 +878,7 @@ local action_data = {
 
 					if not status_extension:is_disabled() and not status_extension:is_invisible() then
 						blackboard.victim_grabbed = hit_unit
+						blackboard.has_grabbed = true
 						local network_manager = Managers.state.network
 
 						network_manager:anim_event(unit, "attack_grab_player")
@@ -887,19 +899,6 @@ local action_data = {
 						base_node_name = "j_leftforearm",
 						tip_node_name = "j_lefthand",
 						start_time = 0.6666666666666666
-					}
-				},
-				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
-				bot_threats = {
-					{
-						collision_type = "cylinder",
-						offset_forward = 0,
-						radius = 4.5,
-						height = 4,
-						offset_right = 0,
-						offset_up = 0,
-						duration = 0.8333333333333334,
-						start_time = 0.16666666666666666
 					}
 				}
 			}

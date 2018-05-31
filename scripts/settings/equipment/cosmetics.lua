@@ -179,7 +179,8 @@ local skin_dr_slayer_axe = {
 			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/axe/mtr_body_axe"
 		},
 		first_person = {
-			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/axe/mtr_body_axe_1p"
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/axe/mtr_outfit_axe_1p",
+			mtr_skin = "units/beings/player/dwarf_ranger_slayer/skins/axe/mtr_body_axe_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.bardin.slayer)
@@ -203,7 +204,8 @@ local skin_dr_slayer_dragon = {
 			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/dragon/mtr_body_dragon"
 		},
 		first_person = {
-			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/dragon/mtr_body_dragon_1p"
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/dragon/mtr_outfit_dragon_1p",
+			mtr_skin = "units/beings/player/dwarf_ranger_slayer/skins/dragon/mtr_body_dragon_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.bardin.slayer)
@@ -227,12 +229,38 @@ local skin_dr_slayer_skaven = {
 			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/skaven/mtr_body_skaven"
 		},
 		first_person = {
-			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/skaven/mtr_body_skaven_1p"
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/skaven/mtr_outfit_skaven_1p",
+			mtr_skin = "units/beings/player/dwarf_ranger_slayer/skins/skaven/mtr_body_skaven_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.bardin.slayer)
 }
 Cosmetics.skin_dr_slayer_skaven = table.clone(skin_dr_slayer_skaven)
+local skin_dr_slayer_skull = {
+	third_person_husk = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_husk_base",
+	first_person = "units/beings/player/first_person_base/chr_first_person_base",
+	third_person = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
+	career = 2,
+	first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+	third_person_bot = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
+	first_person_attachment = {
+		unit = "units/beings/player/dwarf_ranger_slayer/first_person_base/chr_first_person_mesh",
+		attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+	},
+	material_changes = {
+		package_name = "units/beings/player/dwarf_ranger_slayer/skins/skull/chr_dwarf_ranger_slayer_skull",
+		third_person = {
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/skull/mtr_outfit_skull",
+			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/skull/mtr_body_skull"
+		},
+		first_person = {
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/skull/mtr_outfit_skull_1p",
+			mtr_skin = "units/beings/player/dwarf_ranger_slayer/skins/skull/mtr_body_skull_1p"
+		}
+	},
+	wwise_dep = table.clone(PlayerWwiseDependencies.bardin.slayer)
+}
+Cosmetics.skin_dr_slayer_skull = table.clone(skin_dr_slayer_skull)
 local skin_dr_slayer_runes = {
 	third_person_husk = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_husk_base",
 	first_person = "units/beings/player/first_person_base/chr_first_person_base",
@@ -251,7 +279,8 @@ local skin_dr_slayer_runes = {
 			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/runes/mtr_body_runes"
 		},
 		first_person = {
-			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/runes/mtr_body_runes_1p"
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/runes/mtr_outfit_runes_1p",
+			mtr_skin = "units/beings/player/dwarf_ranger_slayer/skins/runes/mtr_body_runes_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.bardin.slayer)
@@ -275,12 +304,38 @@ local skin_dr_slayer_wing = {
 			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/wing/mtr_body_wing"
 		},
 		first_person = {
-			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/wing/mtr_body_wing_1p"
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/wing/mtr_outfit_wing_1p",
+			mtr_skin = "units/beings/player/dwarf_ranger_slayer/skins/wing/mtr_body_wing_1p"
 		}
 	},
 	wwise_dep = table.clone(PlayerWwiseDependencies.bardin.slayer)
 }
 Cosmetics.skin_dr_slayer_wing = table.clone(skin_dr_slayer_wing)
+local skin_dr_slayer_skull = {
+	third_person_husk = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_husk_base",
+	first_person = "units/beings/player/first_person_base/chr_first_person_base",
+	third_person = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
+	career = 2,
+	first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+	third_person_bot = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
+	first_person_attachment = {
+		unit = "units/beings/player/dwarf_ranger_slayer/first_person_base/chr_first_person_mesh",
+		attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+	},
+	material_changes = {
+		package_name = "units/beings/player/dwarf_ranger_slayer/skins/skull/chr_dwarf_ranger_slayer_skull",
+		third_person = {
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/skull/mtr_outfit_skull",
+			mtr_body = "units/beings/player/dwarf_ranger_slayer/skins/skull/mtr_body_skull"
+		},
+		first_person = {
+			mtr_outfit = "units/beings/player/dwarf_ranger_slayer/skins/skull/mtr_outfit_skull_1p",
+			mtr_skin = "units/beings/player/dwarf_ranger_slayer/skins/skull/mtr_body_skull_1p"
+		}
+	},
+	wwise_dep = table.clone(PlayerWwiseDependencies.bardin.slayer)
+}
+Cosmetics.skin_dr_slayer_skull = table.clone(skin_dr_slayer_skull)
 local skin_dr_ranger = {
 	first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 	first_person = "units/beings/player/first_person_base/chr_first_person_base",
@@ -1034,7 +1089,10 @@ local skin_ww_maidenguard_black_and_gold = {
 	material_changes = {
 		package_name = "units/beings/player/way_watcher_maiden_guard/skins/black_and_gold/chr_way_watcher_maiden_guard_black_and_gold",
 		third_person = {
-			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/black_and_gold/mtr_outfit_black_and_gold"
+			mtr_ww_mg_hat_01 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hat_01_black",
+			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/black_and_gold/mtr_outfit_black_and_gold",
+			mtr_ww_mg_hats_02 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hats_02_black",
+			mtr_ww_mg_hats_01 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hats_01_black"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/black_and_gold/mtr_outfit_black_and_gold_1p"
@@ -1057,7 +1115,10 @@ local skin_ww_maidenguard_caledor = {
 	material_changes = {
 		package_name = "units/beings/player/way_watcher_maiden_guard/skins/caledor/chr_way_watcher_maiden_guard_caledor",
 		third_person = {
-			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/caledor/mtr_outfit_caledor"
+			mtr_ww_mg_hat_01 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hat_01_green",
+			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/caledor/mtr_outfit_caledor",
+			mtr_ww_mg_hats_02 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hats_02_green",
+			mtr_ww_mg_hats_01 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hats_01_green"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/caledor/mtr_outfit_caledor_1p"
@@ -1080,7 +1141,10 @@ local skin_ww_maidenguard_elyrion = {
 	material_changes = {
 		package_name = "units/beings/player/way_watcher_maiden_guard/skins/elyrion/chr_way_watcher_maiden_guard_elyrion",
 		third_person = {
-			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/elyrion/mtr_outfit_elyrion"
+			mtr_ww_mg_hat_01 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hat_01_blue",
+			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/elyrion/mtr_outfit_elyrion",
+			mtr_ww_mg_hats_02 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hats_02_blue",
+			mtr_ww_mg_hats_01 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hats_01_blue"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/elyrion/mtr_outfit_elyrion_1p"
@@ -1103,7 +1167,10 @@ local skin_ww_maidenguard_red_and_yellow = {
 	material_changes = {
 		package_name = "units/beings/player/way_watcher_maiden_guard/skins/red_and_yellow/chr_way_watcher_maiden_guard_red_and_yellow",
 		third_person = {
-			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/red_and_yellow/mtr_outfit_red_and_yellow"
+			mtr_ww_mg_hat_01 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hat_01_red_yellow",
+			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/red_and_yellow/mtr_outfit_red_and_yellow",
+			mtr_ww_mg_hats_02 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hats_02_red_yellow",
+			mtr_ww_mg_hats_01 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hats_01_red_yellow"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/red_and_yellow/mtr_outfit_red_and_yellow_1p"
@@ -1126,7 +1193,10 @@ local skin_ww_maidenguard_white_and_gold = {
 	material_changes = {
 		package_name = "units/beings/player/way_watcher_maiden_guard/skins/white_and_gold/chr_way_watcher_maiden_guard_white_and_gold",
 		third_person = {
-			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/white_and_gold/mtr_outfit_white_and_gold"
+			mtr_ww_mg_hat_01 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hat_01_white_gold",
+			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/white_and_gold/mtr_outfit_white_and_gold",
+			mtr_ww_mg_hats_02 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hats_02_white_gold",
+			mtr_ww_mg_hats_01 = "units/beings/player/way_watcher_maiden_guard/headpiece/ww_mg_hats_01_white_gold"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/way_watcher_maiden_guard/skins/white_and_gold/mtr_outfit_white_and_gold_1p"
@@ -1490,7 +1560,8 @@ local skin_wh_zealot_black_and_gold = {
 	material_changes = {
 		package_name = "units/beings/player/witch_hunter_zealot/skins/black_and_gold/chr_witch_hunter_zealot_black_and_gold",
 		third_person = {
-			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/black_and_gold/mtr_outfit_black_and_gold"
+			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/black_and_gold/mtr_outfit_black_and_gold",
+			mtr_outfit_ds = "units/beings/player/witch_hunter_zealot/skins/black_and_gold/mtr_outfit_ds_black_and_gold"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/black_and_gold/mtr_outfit_black_and_gold_1p"
@@ -1513,7 +1584,8 @@ local skin_wh_zealot_crimson = {
 	material_changes = {
 		package_name = "units/beings/player/witch_hunter_zealot/skins/crimson/chr_witch_hunter_zealot_crimson",
 		third_person = {
-			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/crimson/mtr_outfit_crimson"
+			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/crimson/mtr_outfit_crimson",
+			mtr_outfit_ds = "units/beings/player/witch_hunter_zealot/skins/crimson/mtr_outfit_ds_crimson"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/crimson/mtr_outfit_crimson_1p"
@@ -1536,7 +1608,8 @@ local skin_wh_zealot_green_and_yellow = {
 	material_changes = {
 		package_name = "units/beings/player/witch_hunter_zealot/skins/green_and_yellow/chr_witch_hunter_zealot_green_and_yellow",
 		third_person = {
-			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/green_and_yellow/mtr_outfit_green_and_yellow"
+			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/green_and_yellow/mtr_outfit_green_and_yellow",
+			mtr_outfit_ds = "units/beings/player/witch_hunter_zealot/skins/green_and_yellow/mtr_outfit_ds_green_and_yellow"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/green_and_yellow/mtr_outfit_green_and_yellow_1p"
@@ -1559,7 +1632,8 @@ local skin_wh_zealot_middenland = {
 	material_changes = {
 		package_name = "units/beings/player/witch_hunter_zealot/skins/middenland/chr_witch_hunter_zealot_middenland",
 		third_person = {
-			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/middenland/mtr_outfit_middenland"
+			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/middenland/mtr_outfit_middenland",
+			mtr_outfit_ds = "units/beings/player/witch_hunter_zealot/skins/middenland/mtr_outfit_ds_middenland"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/middenland/mtr_outfit_middenland_1p"
@@ -1582,7 +1656,8 @@ local skin_wh_zealot_pure = {
 	material_changes = {
 		package_name = "units/beings/player/witch_hunter_zealot/skins/pure/chr_witch_hunter_zealot_pure",
 		third_person = {
-			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/pure/mtr_outfit_pure"
+			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/pure/mtr_outfit_pure",
+			mtr_outfit_ds = "units/beings/player/witch_hunter_zealot/skins/pure/mtr_outfit_ds_pure"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/witch_hunter_zealot/skins/pure/mtr_outfit_pure_1p"
@@ -2487,6 +2562,10 @@ local frame_community_01 = {
 	icon = "unit_frame_02"
 }
 Cosmetics.frame_community_01 = table.clone(frame_community_01)
+local frame_skulls = {
+	icon = "unit_frame_02"
+}
+Cosmetics.frame_skulls = table.clone(frame_skulls)
 
 for name, cosmetic_data in pairs(Cosmetics) do
 	cosmetic_data.name = name

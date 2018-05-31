@@ -45,6 +45,7 @@ MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_cha
 	local player_manager = Managers.player
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
+	self._attachment_flow_events = {}
 	self.unique_id = unique_id
 	self._equipment_units[InventorySettings.slots_by_name.slot_melee.slot_index] = {}
 	self._equipment_units[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
@@ -238,6 +239,20 @@ MenuWorldPreviewer._update_units_visibility = function (self, dt)
 					end
 				end
 			end
+
+			local attachment_flow_events = self._attachment_flow_events
+
+			for unit, events in pairs(attachment_flow_events) do
+				if Unit.alive(unit) then
+					for i = 1, #events, 1 do
+						local event_name = events[i]
+
+						Unit.flow_event(unit, event_name)
+					end
+				end
+			end
+
+			table.clear(attachment_flow_events)
 
 			self.character_unit_hidden = false
 		end
@@ -796,7 +811,14 @@ MenuWorldPreviewer._spawn_item = function (self, item_name, spawn_data)
 		local show_attachments_event = item_template.show_attachments_event
 
 		if show_attachments_event then
-			Unit.flow_event(character_unit, show_attachments_event)
+			if self.character_unit_hidden then
+				local attachment_flow_events = self._attachment_flow_events
+				local unit_flow_events = attachment_flow_events[character_unit] or {}
+				unit_flow_events[#unit_flow_events + 1] = show_attachments_event
+				self._attachment_flow_events[character_unit] = unit_flow_events
+			else
+				Unit.flow_event(character_unit, show_attachments_event)
+			end
 		end
 
 		if character_material_changes then

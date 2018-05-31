@@ -1143,6 +1143,7 @@ Talents.bright_wizard = {
 		description = "sienna_adept_increased_damage_on_enemy_proximity_desc",
 		name = "sienna_adept_increased_damage_on_enemy_proximity",
 		num_ranks = 1,
+		buffer = "both",
 		icon = "sienna_adept_increased_damage_on_enemy_proximity",
 		description_values = {
 			{

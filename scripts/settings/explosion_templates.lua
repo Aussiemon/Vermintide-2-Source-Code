@@ -861,10 +861,9 @@ ExplosionTemplates = {
 				local current_difficulty = Managers.state.difficulty:get_difficulty()
 				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
 				local allowed_difficulty = allowed_difficulties[current_difficulty]
-				local achievements_enabled = Development.parameter("v2_achievements")
 				local death_extension = ScriptUnit.extension(hit_unit, "death_system")
 
-				if achievements_enabled and allowed_difficulty and not death_extension:has_death_started() then
+				if allowed_difficulty and not death_extension:has_death_started() then
 					local local_player = Managers.player:local_player()
 					local status_extension = ScriptUnit.extension(local_player.player_unit, "status_system")
 
@@ -878,6 +877,8 @@ ExplosionTemplates = {
 
 							status_extension.num_cannonball_kills = nil
 							status_extension.completed_cannonball_challenge = true
+
+							QuestSettings.send_completed_message(stat_name)
 						end
 					end
 				end

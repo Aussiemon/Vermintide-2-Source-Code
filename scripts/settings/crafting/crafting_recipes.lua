@@ -451,10 +451,6 @@ local crafting_recipes = {
 					item_value = "slot_type",
 					category_table = "weapon_slot_types"
 				}
-			},
-			{
-				amount = 20,
-				name = "crafting_material_scrap"
 			}
 		},
 		item_sort_func = function (item_1, item_2)
@@ -501,6 +497,10 @@ local crafting_recipes = {
 		description_text = "description_crafting_recipe_apply_weapon_skin",
 		result_function = "apply_weapon_skin_result_func",
 		ingredients = {
+			{
+				amount = 10,
+				name = "crafting_material_scrap"
+			},
 			{
 				catergory = {
 					item_value = "slot_type",
@@ -710,6 +710,72 @@ local crafting_recipes = {
 			else
 				return item_2_power_level < item_1_power_level
 			end
+		end
+	},
+	{
+		validation_function = "craft_validation_func",
+		name = "convert_blue_dust",
+		display_name = "crafting_recipe_convert_dust",
+		lore_text = "",
+		result_function_playfab = "craftingDowngradeDust",
+		hero_specific_filter = false,
+		item_filter = "item_key == crafting_material_dust_2 or item_key == crafting_material_dust_3",
+		description_text = "description_crafting_recipe_convert_dust",
+		result_function = "upgrade_item_rarity_result_func",
+		ingredients = {
+			{
+				amount = 10,
+				name = "crafting_material_dust_2"
+			}
+		},
+		presentation_ingredients = {
+			{
+				amount = 10,
+				name = "crafting_material_dust_2"
+			},
+			{
+				amount = 10,
+				name = "crafting_material_dust_1"
+			}
+		},
+		item_sort_func = function (item_1, item_2)
+			local _, item_name_1 = UIUtils.get_ui_information_from_item(item_1)
+			local _, item_name_2 = UIUtils.get_ui_information_from_item(item_2)
+
+			return item_name_1 < item_name_2
+		end
+	},
+	{
+		validation_function = "craft_validation_func",
+		name = "convert_orange_dust",
+		display_name = "crafting_recipe_convert_dust",
+		lore_text = "",
+		result_function_playfab = "craftingDowngradeDust",
+		hero_specific_filter = false,
+		item_filter = "item_key == crafting_material_dust_2 or item_key == crafting_material_dust_3",
+		description_text = "description_crafting_recipe_convert_dust",
+		result_function = "upgrade_item_rarity_result_func",
+		ingredients = {
+			{
+				amount = 10,
+				name = "crafting_material_dust_3"
+			}
+		},
+		presentation_ingredients = {
+			{
+				amount = 10,
+				name = "crafting_material_dust_3"
+			},
+			{
+				amount = 10,
+				name = "crafting_material_dust_2"
+			}
+		},
+		item_sort_func = function (item_1, item_2)
+			local _, item_name_1 = UIUtils.get_ui_information_from_item(item_1)
+			local _, item_name_2 = UIUtils.get_ui_information_from_item(item_2)
+
+			return item_name_1 < item_name_2
 		end
 	}
 }

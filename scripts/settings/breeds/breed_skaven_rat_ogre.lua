@@ -401,7 +401,17 @@ local breed_data = {
 		vortex_near = 1,
 		stormfiend_warpfire = 1,
 		vortex_danger_zone = 1
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_rat_ogre_killed_mid_leap(blackboard, killer_unit)
+		QuestSettings.check_rat_ogre_killed_without_dealing_damage(blackboard, killer_unit)
+	end
 }
 Breeds.skaven_rat_ogre = table.create_copy(Breeds.skaven_rat_ogre, breed_data)
 local pushed_data = {
@@ -592,7 +602,12 @@ local action_data = {
 				duration = 0.3333333333333333,
 				start_time = 0.16666666666666666
 			}
-		}
+		},
+		hit_player_func = function (unit, blackboard, hit_unit, damage)
+			if damage then
+				blackboard.has_dealt_damage = true
+			end
+		end
 	},
 	combo_attack = {
 		damage_type = "cutting",
@@ -640,7 +655,12 @@ local action_data = {
 						duration = 0.3333333333333333,
 						start_time = 1.9333333333333333
 					}
-				}
+				},
+				hit_player_func = function (unit, blackboard, hit_unit, action, attack, dealt_damage)
+					if dealt_damage then
+						blackboard.has_dealt_damage = true
+					end
+				end
 			}
 		},
 		damage = {
@@ -749,7 +769,12 @@ local action_data = {
 							start_time = 0
 						}
 					}
-				}
+				},
+				hit_player_func = function (unit, blackboard, hit_unit, action, attack, dealt_damage)
+					if dealt_damage then
+						blackboard.has_dealt_damage = true
+					end
+				end
 			}
 		},
 		running_attacks = {
@@ -808,7 +833,12 @@ local action_data = {
 						0,
 						4
 					}
-				}
+				},
+				hit_player_func = function (unit, blackboard, hit_unit, action, attack, dealt_damage)
+					if dealt_damage then
+						blackboard.has_dealt_damage = true
+					end
+				end
 			}
 		},
 		damage = {

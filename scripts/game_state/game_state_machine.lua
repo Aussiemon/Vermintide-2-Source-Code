@@ -3,9 +3,9 @@ require("foundation/scripts/util/state_machine")
 GameStateMachine = class(GameStateMachine, StateMachine)
 
 GameStateMachine.init = function (self, parent, start_state, params, profiling_debugging_enabled)
-	self.super.init(self, parent, start_state, params, profiling_debugging_enabled)
-
 	self._notify_mod_manager = params.notify_mod_manager
+
+	self.super.init(self, parent, start_state, params, profiling_debugging_enabled)
 end
 
 GameStateMachine._change_state = function (self, new_state, ...)

@@ -573,15 +573,13 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 						end
 
 						if behind_target then
-							local procced = false
-							backstab_multiplier, procced = buff_extension:apply_buffs_to_value(backstab_multiplier, StatBuffIndex.BACKSTAB_MULTIPLIER)
+							backstab_multiplier = buff_extension:apply_buffs_to_value(backstab_multiplier, StatBuffIndex.BACKSTAB_MULTIPLIER)
 
 							if script_data.debug_legendary_traits then
 								backstab_multiplier = 1.5
-								procced = true
 							end
 
-							if procced then
+							if backstab_multiplier > 1 then
 								first_person_extension:play_hud_sound_event("hud_player_buff_backstab")
 
 								local player_and_bot_units = PLAYER_AND_BOT_UNITS

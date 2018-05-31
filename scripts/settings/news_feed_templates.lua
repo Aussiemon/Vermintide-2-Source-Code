@@ -23,10 +23,22 @@ NewsFeedTemplates = {
 		infinite = false,
 		title = "news_feed_unclaimed_challenge_title",
 		condition_func = function (params)
-			local achievements_enabled = Development.parameter("v2_achievements")
-			local has_any_unclaimed_achievement = achievements_enabled and Managers.state.achievement:has_any_unclaimed_achievement()
+			local has_any_unclaimed_achievement = Managers.state.achievement:has_any_unclaimed_achievement()
 
 			return has_any_unclaimed_achievement
+		end
+	},
+	{
+		description = "news_feed_unclaimed_quest_description",
+		name = "unclaimed_quest",
+		duration = 5,
+		cooldown = -1,
+		infinite = false,
+		title = "news_feed_unclaimed_quest_title",
+		condition_func = function (params)
+			local has_any_unclaimed_quests = Managers.state.quest:has_any_unclaimed_quests()
+
+			return has_any_unclaimed_quests
 		end
 	},
 	{

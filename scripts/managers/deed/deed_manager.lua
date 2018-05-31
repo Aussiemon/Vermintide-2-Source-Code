@@ -24,12 +24,18 @@ DeedManager.network_context_created = function (self, lobby, server_peer_id, own
 	self._server_peer_id = server_peer_id
 	self._peer_id = own_peer_id
 	self._is_server = server_peer_id == own_peer_id
+	local ignore_send = true
+
+	self:reset(ignore_send)
 end
 
 DeedManager.network_context_destroyed = function (self)
 	self._lobby = nil
 	self._server_peer_id = nil
 	self._peer_id = nil
+	local ignore_send = true
+
+	self:reset(ignore_send)
 end
 
 DeedManager.register_rpcs = function (self, network_event_delegate)
@@ -44,13 +50,13 @@ DeedManager.unregister_rpcs = function (self)
 	self._network_event_delegate = nil
 end
 
-DeedManager.reset = function (self)
-	if self._is_server then
-		self._selected_deed_data = nil
-		self._selected_deed_id = nil
-		self._owner_peer_id = nil
-		self._deed_session_faulty = nil
+DeedManager.reset = function (self, ignore_send)
+	self._selected_deed_data = nil
+	self._selected_deed_id = nil
+	self._owner_peer_id = nil
+	self._deed_session_faulty = nil
 
+	if self._is_server and not ignore_send then
 		self:_send_rpc_to_clients("rpc_reset_deed")
 	end
 end
@@ -203,9 +209,9 @@ DeedManager.rpc_reset_deed = function (self, sender)
 		return
 	end
 
-	self._selected_deed_data = nil
-	self._selected_deed_id = nil
-	self._owner_peer_id = nil
+	local ignore_send = true
+
+	self:reset(ignore_send)
 end
 
 DeedManager._send_rpc_to_server = function (self, rpc_name, ...)

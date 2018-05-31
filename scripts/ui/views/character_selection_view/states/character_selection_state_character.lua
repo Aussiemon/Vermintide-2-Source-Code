@@ -49,7 +49,8 @@ CharacterSelectionStateCharacter.on_enter = function (self, params)
 	local parent = self.parent
 	local input_service = self:input_service()
 	local gui_layer = UILayer.default + 30
-	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, 3, gui_layer, (params.allow_back_button and generic_input_actions.default_back) or generic_input_actions.default)
+	local input_description_input_service = parent:input_service(true)
+	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_description_input_service, 3, gui_layer, (params.allow_back_button and generic_input_actions.default_back) or generic_input_actions.default)
 
 	self.menu_input_description:set_input_description(nil)
 	self:create_ui_elements(params)

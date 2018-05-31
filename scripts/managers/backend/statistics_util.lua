@@ -257,6 +257,13 @@ StatisticsUtil.won_games = function (statistics_db)
 end
 
 StatisticsUtil.register_collected_grimoires = function (collected_grimoires, statistics_db)
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player:stats_id()
+
+	for i = 1, collected_grimoires, 1 do
+		statistics_db:increment_stat(stats_id, "total_collected_grimoires")
+	end
+
 	local level_settings = LevelHelper:current_level_settings()
 	local level_id = level_settings.level_id
 
@@ -264,8 +271,6 @@ StatisticsUtil.register_collected_grimoires = function (collected_grimoires, sta
 		return
 	end
 
-	local local_player = Managers.player:local_player()
-	local stats_id = local_player:stats_id()
 	local current_collected_grimoires = statistics_db:get_persistent_stat(stats_id, "collected_grimoires", level_id)
 
 	if current_collected_grimoires < collected_grimoires then
@@ -274,6 +279,13 @@ StatisticsUtil.register_collected_grimoires = function (collected_grimoires, sta
 end
 
 StatisticsUtil.register_collected_tomes = function (collected_tomes, statistics_db)
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player:stats_id()
+
+	for i = 1, collected_tomes, 1 do
+		statistics_db:increment_stat(stats_id, "total_collected_tomes")
+	end
+
 	local level_settings = LevelHelper:current_level_settings()
 	local level_id = level_settings.level_id
 
@@ -281,8 +293,6 @@ StatisticsUtil.register_collected_tomes = function (collected_tomes, statistics_
 		return
 	end
 
-	local local_player = Managers.player:local_player()
-	local stats_id = local_player:stats_id()
 	local current_collected_tomes = statistics_db:get_persistent_stat(stats_id, "collected_tomes", level_id)
 
 	if current_collected_tomes < collected_tomes then
@@ -392,9 +402,7 @@ StatisticsUtil._register_completed_level_difficulty = function (statistics_db, l
 		statistics_db:set_stat(stats_id, "completed_levels_difficulty", level_difficulty_name, difficulty)
 	end
 
-	if Development.parameter("v2_achievements") then
-		statistics_db:increment_stat(stats_id, "completed_career_levels", career_name, level_id, difficulty_name)
-	end
+	statistics_db:increment_stat(stats_id, "completed_career_levels", career_name, level_id, difficulty_name)
 end
 
 StatisticsUtil.unlock_lorebook_page = function (page_id, statistics_db)

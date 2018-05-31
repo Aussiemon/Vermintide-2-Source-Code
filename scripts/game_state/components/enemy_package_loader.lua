@@ -387,7 +387,7 @@ EnemyPackageLoader._load_startup_enemy_packages = function (self)
 end
 
 EnemyPackageLoader.loading_completed = function (self)
-	if not self._is_server and self._unique_connection_key == nil then
+	if self._lobby and not self._is_server and self._unique_connection_key == nil then
 		return false
 	end
 

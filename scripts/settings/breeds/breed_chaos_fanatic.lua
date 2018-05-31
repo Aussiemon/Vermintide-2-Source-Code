@@ -32,7 +32,7 @@ local breed_data = {
 	backstab_player_sound_event = "Play_enemy_marauder_attack_player_back_vce",
 	death_sound_event = "Play_enemy_marauder_death_vce",
 	smart_targeting_width = 0.2,
-	behavior = "marauder",
+	behavior = "fanatic",
 	use_regular_horde_spawning = true,
 	during_horde_detection_radius = 15,
 	attack_player_sound_event = "Play_enemy_marauder_attack_player_vce",
@@ -48,7 +48,7 @@ local breed_data = {
 	hit_effect_template = "HitEffectsChaosMarauder",
 	smart_targeting_height_multiplier = 2,
 	passive_walk_speed = 2,
-	horde_behavior = "marauder",
+	horde_behavior = "fanatic",
 	unit_template = "ai_unit_marauder",
 	has_running_attack = true,
 	perception = "perception_regular",
@@ -983,12 +983,13 @@ local action_data = {
 		dodge_window_start = 1.1,
 		attack_intensity = 0.5,
 		moving_attack = true,
-		considerations = UtilityConsiderations.marauder_running_attack,
+		considerations = UtilityConsiderations.clan_rat_running_attack,
 		default_attack = {
 			anims = {
-				"attack_run",
-				"attack_run_2",
-				"attack_run_3"
+				"attack_move",
+				"attack_move_2",
+				"attack_move_3",
+				"attack_move_4"
 			}
 		},
 		damage = {
@@ -1042,16 +1043,16 @@ local action_data = {
 		difficulty_diminishing_damage = BreedActionDimishingDamageDifficulty
 	},
 	normal_attack = {
-		moving_attack_intensity = 0.75,
 		dodge_window_start = 0.25,
+		moving_attack_intensity = 0.75,
 		fatigue_type = "blocked_attack",
 		hit_react_type = "medium",
+		dodge_rotation_time = 1.2,
 		damage_type = "cutting",
 		attack_intensity = 0.5,
-		dodge_rotation_time = 1.2,
 		player_push_speed = 5,
 		action_weight = 1,
-		considerations = UtilityConsiderations.marauder_attack,
+		considerations = UtilityConsiderations.clan_rat_attack,
 		default_attack = {
 			anims = {
 				"attack_pounce",
@@ -1061,20 +1062,6 @@ local action_data = {
 				"attack_pounce_5",
 				"attack_pounce_6",
 				"attack_pounce_7"
-			},
-			damage_box_range = {
-				flat = 2.25,
-				up = 1.7,
-				down = -0.75
-			}
-		},
-		step_attack = {
-			moving_attack = true,
-			anims = {
-				"attack_move",
-				"attack_move_2",
-				"attack_move_3",
-				"attack_move_4"
 			},
 			damage_box_range = {
 				flat = 2.25,
@@ -1219,6 +1206,12 @@ local action_data = {
 			attack_pounce = "left"
 		}
 	},
+	combat_shout = {
+		cooldown = -1,
+		shout_anim = "shout",
+		action_weight = 1,
+		considerations = UtilityConsiderations.clan_rat_shout
+	},
 	combat_step = {
 		move_speed = 4,
 		action_weight = 1,
@@ -1241,6 +1234,7 @@ local action_data = {
 		}
 	},
 	utility_action = {
+		fail_cooldown_blackboard_identifier = "attack_cooldown_at",
 		name = "utility_action",
 		fail_cooldown_name = "utility_fail_cooldown"
 	},

@@ -8929,6 +8929,128 @@ UIWidgets.create_text_button = function (scenegraph_id, text, font_size, optiona
 	}
 end
 
+UIWidgets.create_console_panel_button = function (scenegraph_id, text, font_size, optional_offset, optional_horizontal_alignment)
+	local shadow_offset = {
+		2,
+		-2,
+		3
+	}
+
+	if optional_offset then
+		shadow_offset[1] = shadow_offset[1] + optional_offset[1]
+		shadow_offset[2] = shadow_offset[2] + optional_offset[2]
+		shadow_offset[3] = optional_offset[3] - 1
+	end
+
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					style_id = "text_shadow",
+					pass_type = "text",
+					text_id = "text_field"
+				},
+				{
+					style_id = "text_hover",
+					pass_type = "text",
+					text_id = "text_field",
+					content_check_function = function (content)
+						return not content.button_hotspot.disable_button and (content.button_hotspot.is_hover or content.button_hotspot.is_selected)
+					end
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text_field",
+					content_check_function = function (content)
+						return not content.button_hotspot.disable_button and not content.button_hotspot.is_hover and not content.button_hotspot.is_selected
+					end
+				},
+				{
+					style_id = "text_disabled",
+					pass_type = "text",
+					text_id = "text_field",
+					content_check_function = function (content)
+						return content.button_hotspot.disable_button
+					end
+				}
+			}
+		},
+		content = {
+			button_hotspot = {},
+			text_field = text,
+			default_font_size = font_size
+		},
+		style = {
+			text = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				font_size = font_size,
+				horizontal_alignment = optional_horizontal_alignment or "left",
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				offset = optional_offset or {
+					0,
+					0,
+					4
+				}
+			},
+			text_shadow = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				font_size = font_size,
+				horizontal_alignment = optional_horizontal_alignment or "left",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = shadow_offset
+			},
+			text_hover = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				font_size = font_size,
+				horizontal_alignment = optional_horizontal_alignment or "left",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = optional_offset or {
+					0,
+					0,
+					4
+				}
+			},
+			text_disabled = {
+				word_wrap = false,
+				upper_case = true,
+				localize = true,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				font_size = font_size,
+				horizontal_alignment = optional_horizontal_alignment or "left",
+				text_color = Colors.get_color_table_with_alpha("gray", 50),
+				offset = optional_offset or {
+					0,
+					0,
+					4
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 UIWidgets.create_compare_menu_trait_widget = function (scenegraph_id, description_scenegraph_id, masked, use_divider)
 	return {
 		element = {

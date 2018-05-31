@@ -1,22 +1,6 @@
-local quest_templates = {}
-local stat_names_by_quest_key = {
-	daily_quest_1 = {
-		"daily_quest_1_stat_1",
-		"daily_quest_1_stat_2",
-		"daily_quest_1_stat_3"
-	},
-	daily_quest_2 = {
-		"daily_quest_2_stat_1",
-		"daily_quest_2_stat_2",
-		"daily_quest_2_stat_3"
-	},
-	daily_quest_3 = {
-		"daily_quest_3_stat_1",
-		"daily_quest_3_stat_2",
-		"daily_quest_3_stat_3"
-	}
+local quest_templates = {
+	quests = {}
 }
-quest_templates.quests = {}
 local daily_complete_quickplay_missions_mappings = {
 	{
 		played_levels_quickplay = {}
@@ -30,20 +14,20 @@ for i = 1, #MainGameLevels, 1 do
 end
 
 quest_templates.quests.daily_complete_quickplay_missions = {
-	reward = "level_chest",
+	reward = "loot_chest_03_06",
 	name = "quest_daily_complete_quickplay_missions_name",
-	icon = "achievement_trophy_14",
+	icon = "quest_book_skull",
 	desc = function ()
 		return string.format(Localize("quest_daily_complete_quickplay_missions_desc"), QuestSettings.daily_complete_quickplay_missions)
 	end,
 	stat_mappings = daily_complete_quickplay_missions_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
 		return QuestSettings.daily_complete_quickplay_missions <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 
 		return {
@@ -54,31 +38,24 @@ quest_templates.quests.daily_complete_quickplay_missions = {
 }
 local daily_collect_tomes_mappings = {
 	{
-		collected_tomes = {}
+		total_collected_tomes = true
 	}
 }
-
-for i = 1, #MainGameLevels, 1 do
-	local level_key = MainGameLevels[i]
-	local collect_tomes_mapping = daily_collect_tomes_mappings[1].collected_tomes
-	collect_tomes_mapping[level_key] = true
-end
-
 quest_templates.quests.daily_collect_tomes = {
-	reward = "level_chest",
+	reward = "loot_chest_03_06",
 	name = "quest_daily_collect_tomes_name",
-	icon = "achievement_trophy_14",
+	icon = "quest_book_tome",
 	desc = function ()
 		return string.format(Localize("quest_daily_collect_tomes_desc"), QuestSettings.daily_collect_tomes)
 	end,
 	stat_mappings = daily_collect_tomes_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
 		return QuestSettings.daily_collect_tomes <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 
 		return {
@@ -89,31 +66,24 @@ quest_templates.quests.daily_collect_tomes = {
 }
 local daily_collect_grimoires_mappings = {
 	{
-		collected_grimoires = {}
+		total_collected_grimoires = true
 	}
 }
-
-for i = 1, #MainGameLevels, 1 do
-	local level_key = MainGameLevels[i]
-	local collect_grimoires_mapping = daily_collect_grimoires_mappings[1].collected_grimoires
-	collect_grimoires_mapping[level_key] = true
-end
-
 quest_templates.quests.daily_collect_grimoires = {
-	reward = "level_chest",
+	reward = "loot_chest_03_06",
 	name = "quest_daily_collect_grimoires_name",
-	icon = "achievement_trophy_14",
+	icon = "quest_book_grimoire",
 	desc = function ()
 		return string.format(Localize("quest_daily_collect_grimoires_desc"), QuestSettings.daily_collect_grimoires)
 	end,
 	stat_mappings = daily_collect_grimoires_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
 		return QuestSettings.daily_collect_grimoires <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 
 		return {
@@ -133,20 +103,20 @@ local daily_kill_bosses_mappings = {
 	}
 }
 quest_templates.quests.daily_kill_bosses = {
-	reward = "level_chest",
+	reward = "loot_chest_03_06",
 	name = "quest_daily_kill_bosses_name",
-	icon = "achievement_trophy_14",
+	icon = "quest_book_skull",
 	desc = function ()
 		return string.format(Localize("quest_daily_kill_bosses_desc"), QuestSettings.daily_kill_bosses)
 	end,
 	stat_mappings = daily_kill_bosses_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
 		return QuestSettings.daily_kill_bosses <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 
 		return {
@@ -167,20 +137,20 @@ for breed_name, _ in pairs(ELITES) do
 end
 
 quest_templates.quests.daily_kill_elites = {
-	reward = "level_chest",
+	reward = "loot_chest_03_06",
 	name = "quest_daily_kill_elites_name",
-	icon = "achievement_trophy_14",
+	icon = "quest_book_skull",
 	desc = function ()
 		return string.format(Localize("quest_daily_kill_elites_desc"), QuestSettings.daily_kill_elites)
 	end,
 	stat_mappings = daily_kill_elites_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
 		return QuestSettings.daily_kill_elites <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 
 		return {
@@ -202,20 +172,20 @@ for i = 1, #MainGameLevels, 1 do
 end
 
 quest_templates.quests.daily_complete_levels_hero_wood_elf = {
-	reward = "level_chest",
+	reward = "loot_chest_03_06",
 	name = "quest_daily_complete_levels_hero_wood_elf_name",
-	icon = "achievement_trophy_14",
+	icon = "quest_book_kerillian",
 	desc = function ()
 		return string.format(Localize("quest_daily_complete_levels_hero_wood_elf_desc"), QuestSettings.daily_complete_levels_hero_wood_elf)
 	end,
 	stat_mappings = daily_complete_levels_hero_wood_elf_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
 		return QuestSettings.daily_complete_levels_hero_wood_elf <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 
 		return {
@@ -237,20 +207,20 @@ for i = 1, #MainGameLevels, 1 do
 end
 
 quest_templates.quests.daily_complete_levels_hero_witch_hunter = {
-	reward = "level_chest",
+	reward = "loot_chest_03_06",
 	name = "quest_daily_complete_levels_hero_witch_hunter_name",
-	icon = "achievement_trophy_14",
+	icon = "quest_book_saltzpyre",
 	desc = function ()
 		return string.format(Localize("quest_daily_complete_levels_hero_witch_hunter_desc"), QuestSettings.daily_complete_levels_hero_witch_hunter)
 	end,
 	stat_mappings = daily_complete_levels_hero_witch_hunter_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
 		return QuestSettings.daily_complete_levels_hero_witch_hunter <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 
 		return {
@@ -272,20 +242,20 @@ for i = 1, #MainGameLevels, 1 do
 end
 
 quest_templates.quests.daily_complete_levels_hero_dwarf_ranger = {
-	reward = "level_chest",
+	reward = "loot_chest_03_06",
 	name = "quest_daily_complete_levels_hero_dwarf_ranger_name",
-	icon = "achievement_trophy_14",
+	icon = "quest_book_bardin",
 	desc = function ()
 		return string.format(Localize("quest_daily_complete_levels_hero_dwarf_ranger_desc"), QuestSettings.daily_complete_levels_hero_dwarf_ranger)
 	end,
 	stat_mappings = daily_complete_levels_hero_dwarf_ranger_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
 		return QuestSettings.daily_complete_levels_hero_dwarf_ranger <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 
 		return {
@@ -307,20 +277,20 @@ for i = 1, #MainGameLevels, 1 do
 end
 
 quest_templates.quests.daily_complete_levels_hero_bright_wizard = {
-	reward = "level_chest",
+	reward = "loot_chest_03_06",
 	name = "quest_daily_complete_levels_hero_bright_wizard_name",
-	icon = "achievement_trophy_14",
+	icon = "quest_book_sienna",
 	desc = function ()
 		return string.format(Localize("quest_daily_complete_levels_hero_bright_wizard_desc"), QuestSettings.daily_complete_levels_hero_bright_wizard)
 	end,
 	stat_mappings = daily_complete_levels_hero_bright_wizard_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
 		return QuestSettings.daily_complete_levels_hero_bright_wizard <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 
 		return {
@@ -342,25 +312,61 @@ for i = 1, #MainGameLevels, 1 do
 end
 
 quest_templates.quests.daily_complete_levels_hero_empire_soldier = {
-	reward = "level_chest",
+	reward = "loot_chest_03_06",
 	name = "quest_daily_complete_levels_hero_empire_soldier_name",
-	icon = "achievement_trophy_14",
+	icon = "quest_book_kruber",
 	desc = function ()
 		return string.format(Localize("quest_daily_complete_levels_hero_empire_soldier_desc"), QuestSettings.daily_complete_levels_hero_empire_soldier)
 	end,
 	stat_mappings = daily_complete_levels_hero_empire_soldier_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
 		return QuestSettings.daily_complete_levels_hero_empire_soldier <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 	end,
 	progress = function (statistics_db, stats_id, quest_key)
-		local stat_name = stat_names_by_quest_key[quest_key][1]
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
 
 		return {
 			count,
 			QuestSettings.daily_complete_levels_hero_empire_soldier
+		}
+	end
+}
+local event_skulls_for_the_skull_throne_mappings = {
+	{
+		played_levels_quickplay = {}
+	}
+}
+
+for i = 1, #MainGameLevels, 1 do
+	local level_key = MainGameLevels[i]
+	local complete_quickplay_missions_mapping = event_skulls_for_the_skull_throne_mappings[1].played_levels_quickplay
+	complete_quickplay_missions_mapping[level_key] = true
+end
+
+quest_templates.quests.event_skulls_for_the_skull_throne = {
+	reward = "frame_skulls",
+	name = "quest_event_skull_2018_name",
+	icon = "quest_book_event_skull",
+	summary_icon = "achievement_symbol_book_event_skull",
+	desc = function ()
+		return string.format(Localize("quest_event_skull_2018_desc"), QuestSettings.event_skulls_for_the_skull_throne)
+	end,
+	stat_mappings = event_skulls_for_the_skull_throne_mappings,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.event_skulls_for_the_skull_throne <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.event_skulls_for_the_skull_throne
 		}
 	end
 }

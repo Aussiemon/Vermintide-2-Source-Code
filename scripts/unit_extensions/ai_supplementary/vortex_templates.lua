@@ -189,9 +189,8 @@ VortexTemplates = {
 			local current_difficulty = Managers.state.difficulty:get_difficulty()
 			local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
 			local allowed_difficulty = allowed_difficulties[current_difficulty]
-			local achievements_enabled = Development.parameter("v2_achievements")
 
-			if achievements_enabled and allowed_difficulty and not blackboard.completed_vortex_suck_in_challenge then
+			if allowed_difficulty and not blackboard.completed_vortex_suck_in_challenge then
 				if not blackboard.num_ai_units_sucked_in then
 					blackboard.num_ai_units_sucked_in = 0
 					local num_ai_units_sucked_in = blackboard.num_ai_units_sucked_in or 0
@@ -203,6 +202,8 @@ VortexTemplates = {
 						statistics_db:increment_stat_and_sync_to_clients(stat_name)
 
 						blackboard.completed_vortex_suck_in_challenge = true
+
+						QuestSettings.send_completed_message(stat_name)
 					end
 				end
 			end

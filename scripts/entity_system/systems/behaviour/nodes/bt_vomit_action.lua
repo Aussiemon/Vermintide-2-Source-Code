@@ -265,6 +265,8 @@ BTVomitAction.player_vomit_hit_check = function (self, unit, blackboard)
 
 				if not buff_extension:has_buff_type("troll_bile_face") then
 					buff_system:add_buff(hit_unit, "bile_troll_vomit_face_base", unit)
+
+					blackboard.has_done_bile_damage = true
 				end
 			end
 		end

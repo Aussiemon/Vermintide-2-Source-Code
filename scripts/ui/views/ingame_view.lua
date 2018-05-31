@@ -940,18 +940,15 @@ IngameView.update_menu_options = function (self)
 					fade = false,
 					transition = "quit_game",
 					display_name = "quit_menu_button_name"
-				}
-			}
-
-			if Development.parameter("v2_achievements") then
-				full_access_layout[#full_access_layout + 1] = {
+				},
+				[#full_access_layout + 1] = {
 					display_name = "achievements",
 					requires_player_unit = true,
 					fade = true,
 					transition_state = "achievements",
 					transition = "hero_view"
 				}
-			end
+			}
 
 			self:setup_button_layout(full_access_layout)
 		end

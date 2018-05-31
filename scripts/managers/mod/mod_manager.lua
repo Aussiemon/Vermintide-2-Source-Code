@@ -4,22 +4,6 @@ local function mod_name(mod)
 	return mod.name
 end
 
-local function is_bundled()
-	local args = {
-		Application.argv()
-	}
-
-	for i, arg in ipairs(args) do
-		local match_result = string.match(arg:gsub("[%-]", ""), "bundledir")
-
-		if match_result ~= nil then
-			return true
-		end
-	end
-
-	return false
-end
-
 local LOG_LEVELS = {
 	[0] = {},
 	{
@@ -61,15 +45,17 @@ ModManager.init = function (self, boot_gui)
 	self._num_mods = nil
 	self._state = "not_loaded"
 	local settings = Application.user_setting("mod_settings") or {
-		developer_mode = false,
-		log_level = 1
+		disable_pcalls = false,
+		log_level = 1,
+		developer_mode = false
 	}
 	self._settings = settings
 	self._print_cache = {}
 	self._gui = boot_gui
 	self._ui_time = 0
+	self._reload_data = {}
 
-	if (settings.developer_mode or self:_has_enabled_mods()) and is_bundled() then
+	if self:_has_enabled_mods() and Application.bundled() then
 		self:_start_scan()
 	else
 		self._state = "done"
@@ -84,6 +70,10 @@ ModManager.remove_gui = function (self)
 end
 
 ModManager._has_enabled_mods = function (self)
+	if not script_data["eac-untrusted"] then
+		return false
+	end
+
 	local mod_settings = Application.user_setting("mods")
 
 	if not mod_settings then
@@ -152,9 +142,7 @@ ModManager.update = function (self, dt)
 				if object then
 					mod.object = object
 
-					if object.init then
-						object:init()
-					end
+					self:_run_callback(mod, "init", self._reload_data[mod.id])
 				else
 					mod.object = {}
 
@@ -172,13 +160,8 @@ ModManager.update = function (self, dt)
 		for i = 1, self._num_mods, 1 do
 			local mod = self._mods[i]
 
-			if mod and mod.enabled then
-				local object = mod.object
-				local update_func = object.update
-
-				if update_func then
-					update_func(object, dt)
-				end
+			if mod and mod.enabled and not mod.callbacks_disabled then
+				self:_run_callback(mod, "update", dt)
 			end
 		end
 	end
@@ -205,7 +188,7 @@ ModManager.update = function (self, dt)
 		if state == "scanning" then
 			Gui.text(gui, "Scanning for mods" .. dots_string, font_material, size, font, pos, color)
 		elseif state == "loading" then
-			local str = string.format("Loading mod '%s'" .. dots_string, tostring(self._mods[self._mod_load_index].name)) .. dots_string
+			local str = string.format("Loading mod '%s'" .. dots_string, mod_name(self._mods[self._mod_load_index]))
 
 			Gui.text(gui, str, font_material, size, font, pos, color)
 		end
@@ -222,6 +205,33 @@ end
 
 ModManager.destroy = function (self)
 	self:unload_all_mods()
+end
+
+ModManager._run_callback = function (self, mod, callback_name, ...)
+	local object = mod.object
+	local cb = object[callback_name]
+
+	if cb then
+		if mod.disable_pcalls == true or (self._settings.disable_pcalls == true and mod.disable_pcalls ~= false) then
+			return cb(object, ...)
+		else
+			local success, a, b, c, d = pcall(cb, object, ...)
+
+			if success then
+				return a, b, c, d
+			else
+				if a then
+					local pcall_error = tostring(a):gsub("%%", "%%%%")
+
+					self:print("error", pcall_error)
+				end
+
+				self:print("error", "Failed to run callback %q for mod %q. Disabling callbacks until reload.", callback_name, mod_name(mod))
+
+				mod.callbacks_disabled = true
+			end
+		end
+	end
 end
 
 ModManager._start_scan = function (self)
@@ -243,6 +253,8 @@ ModManager._load_mod = function (self, index)
 	end
 
 	if mod then
+		ScriptApplication.set_crashify_tag("modded", true)
+
 		local id = mod.id
 		local handle = mod.handle
 
@@ -252,24 +264,48 @@ ModManager._load_mod = function (self, index)
 
 		self:print("spew", "<mod info> \n%s\n<\\mod info>", info)
 
-		local data_file = loadstring(info)
+		local success, data_file = pcall(loadstring, info)
 
-		if not data_file then
-			self:print("error", "Syntax error in .mod file. Aborted loading mods.")
+		if not success then
+			local err_text = data_file
 
-			return "done"
+			self:print("error", "Syntax error in .mod file. Mod %q skipped.", mod_name(mod))
+			self:print("info", err_text)
+
+			return self:_load_mod(index + 1)
+		elseif not data_file then
+			self:print("error", "Missing return value from .mod file. Mod %q skipped.", mod_name(mod))
+
+			return self:_load_mod(index + 1)
+		elseif type(data_file) ~= "function" then
+			self:print("error", "Return value from .mod file is not a function. Mod %q skipped.", mod_name(mod))
+
+			return self:_load_mod(index + 1)
 		end
 
-		local data = data_file()
-		mod.data = data
-		mod.name = mod.name or data.NAME or "Mod " .. id
+		local success, data_or_error = pcall(data_file)
+
+		if not success then
+			self:print("error", "Error in .mod file return table. Mod %q skipped.", mod_name(mod))
+			self:print("info", data_or_error)
+
+			return self:_load_mod(index + 1)
+		end
+
+		mod.data = data_or_error
+		mod.name = mod_name(mod) or data_or_error.NAME or "Mod " .. id
 		mod.state = "loading"
+
+		ScriptApplication.set_crashify_tag(string.format("Mod:%s:%s", id, mod_name(mod)), true)
+
 		self._mod_load_index = index
 
 		self:_load_package(mod, 1)
 
 		return "loading"
 	else
+		table.clear(self._reload_data)
+
 		return "done"
 	end
 end
@@ -284,6 +320,7 @@ ModManager._build_mod_table = function (self, mod_handles)
 		index = index + 1
 		self._mods[index] = {
 			state = "not_loaded",
+			callbacks_disabled = false,
 			name = name,
 			version = version,
 			id = id,
@@ -314,7 +351,7 @@ ModManager._build_mod_table = function (self, mod_handles)
 
 	for id, handle in pairs(mod_handles) do
 		if not parsed_mods[handle] then
-			add_mod(handle, id, true, "unnamed", "unversioned")
+			add_mod(handle, id, false, "unnamed", "unversioned")
 		end
 	end
 
@@ -350,7 +387,7 @@ ModManager._load_package = function (self, mod, index)
 	mod.package_index = index
 	local package_name = mod.data.packages[index]
 
-	self:print("info", "\tloading package %q", package_name)
+	self:print("info", "loading package %q", package_name)
 
 	local resource_handle = Mod.resource_package(mod.handle, package_name)
 	self._loading_resource_handle = resource_handle
@@ -368,7 +405,6 @@ ModManager.unload_all_mods = function (self)
 			local mod = self._mods[i]
 
 			if mod and mod.enabled then
-				self:print("info", "\t unloading %q", mod_name(mod))
 				self:unload_mod(i)
 			end
 		end
@@ -386,14 +422,8 @@ ModManager.unload_mod = function (self, index)
 	local mod = self._mods[index]
 
 	if mod then
-		self:print("info", "Unloading %s.", mod_name(mod))
-
-		local object = mod.object
-		local unload_func = object.on_unload
-
-		if unload_func then
-			unload_func(object)
-		end
+		self:print("info", "Unloading %q.", mod_name(mod))
+		self:_run_callback(mod, "on_unload")
 
 		for _, handle in ipairs(mod.loaded_packages) do
 			Mod.release_resource_package(handle)
@@ -414,12 +444,9 @@ ModManager._reload_mods = function (self)
 		if mod and mod.state == "running" then
 			self:print("info", "reloading %s", mod_name(mod))
 
-			local object = mod.object
-			local reload_func = object.on_reload
-
-			if reload_func then
-				reload_func(object)
-			end
+			self._reload_data[mod.id] = self:_run_callback(mod, "on_reload")
+		else
+			self:print("info", "not reloading mod, state: %s", mod.state)
 		end
 	end
 
@@ -434,13 +461,8 @@ ModManager.on_game_state_changed = function (self, status, state)
 		for i = 1, self._num_mods, 1 do
 			local mod = self._mods[i]
 
-			if mod and mod.enabled then
-				local object = mod.object
-				local state_changed_func = object.on_game_state_changed
-
-				if state_changed_func then
-					state_changed_func(object, status, state)
-				end
+			if mod and mod.enabled and not mod.callbacks_disabled then
+				self:_run_callback(mod, "on_game_state_changed", status, state)
 			end
 		end
 	else

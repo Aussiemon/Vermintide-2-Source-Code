@@ -5394,6 +5394,380 @@ UIWidgets.create_statistics_bar = function (scenegraph_id, size, optional_detail
 	}
 end
 
+UIWidgets.create_quest_bar = function (scenegraph_id, size)
+	local side_detail_texture = "chain_end"
+	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
+	local side_detail_texture_size = side_detail_texture_settings.size
+	local amount = 5
+	local spacing = 0
+	local multi_texture_extra_width = 116
+	local multi_texture_width = size[1] + multi_texture_extra_width
+	local multi_texture_size = {
+		multi_texture_width,
+		size[2]
+	}
+	local slot_textures = {}
+	local texture_colors = {}
+	local slot_frame_texture_colors = {}
+	local slot_frame_color = {
+		255,
+		238,
+		122,
+		20
+	}
+
+	for i = 1, amount, 1 do
+		texture_colors[i] = {
+			255,
+			255,
+			255,
+			255
+		}
+		slot_frame_texture_colors[i] = {
+			slot_frame_color[1],
+			slot_frame_color[2],
+			slot_frame_color[3],
+			slot_frame_color[4]
+		}
+		slot_textures[i] = "achievement_symbol_book"
+	end
+
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "centered_texture_amount",
+					style_id = "slot",
+					texture_id = "slot"
+				},
+				{
+					pass_type = "centered_texture_amount",
+					style_id = "slot_frame",
+					texture_id = "slot_frame"
+				},
+				{
+					pass_type = "centered_texture_amount",
+					style_id = "icon_available",
+					texture_id = "icon_available"
+				},
+				{
+					pass_type = "centered_texture_amount",
+					style_id = "icon_cooldown",
+					texture_id = "icon_cooldown"
+				},
+				{
+					pass_type = "centered_texture_amount",
+					style_id = "icon_loot",
+					texture_id = "icon_loot"
+				},
+				{
+					pass_type = "centered_texture_amount",
+					style_id = "icon_locked",
+					texture_id = "icon_locked"
+				},
+				{
+					style_id = "side_detail_right",
+					pass_type = "texture_uv",
+					content_id = "side_detail"
+				},
+				{
+					texture_id = "refresh_icon",
+					style_id = "refresh_icon",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "refresh_icon_bg",
+					style_id = "refresh_icon_bg",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "side_detail_left",
+					pass_type = "texture",
+					content_id = "side_detail"
+				},
+				{
+					pass_type = "tiled_texture",
+					style_id = "background",
+					texture_id = "background"
+				}
+			}
+		},
+		content = {
+			refresh_icon_bg = "achievement_refresh_off",
+			slot_frame = "achievement_symbol_book_glow_1",
+			icon_available = "achievement_symbol_skull",
+			icon_cooldown = "achievement_symbol_hourglass",
+			icon_loot = "achievement_symbol_loot",
+			background = "chain_middle",
+			slot_flames = "achievement_small_book_glow",
+			refresh_icon = "achievement_refresh_on",
+			icon_locked = "achievement_symbol_lock",
+			slot = slot_textures,
+			side_detail = {
+				uvs = {
+					{
+						1,
+						0
+					},
+					{
+						0,
+						1
+					}
+				},
+				texture_id = side_detail_texture
+			}
+		},
+		style = {
+			background = {
+				offset = {
+					0,
+					0,
+					0
+				},
+				texture_tiling_size = {
+					19,
+					16
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			slot = {
+				texture_axis = 1,
+				spacing = spacing,
+				texture_size = {
+					63,
+					58
+				},
+				texture_amount = amount,
+				texture_colors = texture_colors,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-multi_texture_extra_width * 0.5,
+					size[2] / 2 - 29,
+					2
+				},
+				size = multi_texture_size
+			},
+			slot_frame = {
+				texture_axis = 1,
+				spacing = spacing,
+				texture_size = {
+					63,
+					58
+				},
+				texture_amount = amount,
+				texture_colors = slot_frame_texture_colors,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-multi_texture_extra_width * 0.5,
+					size[2] / 2 - 29,
+					0
+				},
+				size = multi_texture_size
+			},
+			slot_flames = {
+				texture_axis = 1,
+				spacing = spacing,
+				texture_size = {
+					71,
+					102
+				},
+				texture_amount = amount,
+				texture_colors = slot_frame_texture_colors,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-multi_texture_extra_width * 0.5,
+					size[2] / 2 - 40,
+					1
+				},
+				size = multi_texture_size
+			},
+			icon_cooldown = {
+				texture_axis = 1,
+				spacing = spacing,
+				texture_size = {
+					56,
+					40
+				},
+				texture_amount = amount,
+				texture_colors = texture_colors,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-multi_texture_extra_width * 0.5,
+					size[2] / 2 - 20,
+					3
+				},
+				size = multi_texture_size
+			},
+			icon_available = {
+				texture_axis = 1,
+				spacing = spacing,
+				texture_size = {
+					34,
+					34
+				},
+				texture_amount = amount,
+				texture_colors = texture_colors,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-multi_texture_extra_width * 0.5,
+					size[2] / 2 - 17,
+					3
+				},
+				size = multi_texture_size
+			},
+			icon_locked = {
+				texture_axis = 1,
+				spacing = spacing,
+				texture_size = {
+					56,
+					40
+				},
+				texture_amount = amount,
+				texture_colors = texture_colors,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-multi_texture_extra_width * 0.5,
+					size[2] / 2 - 20,
+					3
+				},
+				size = multi_texture_size
+			},
+			icon_loot = {
+				texture_axis = 1,
+				spacing = spacing,
+				texture_size = {
+					42,
+					29
+				},
+				texture_amount = amount,
+				texture_colors = texture_colors,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-multi_texture_extra_width * 0.5,
+					size[2] / 2 - 14.5,
+					3
+				},
+				size = multi_texture_size
+			},
+			side_detail_left = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-side_detail_texture_size[1],
+					size[2] / 2 - side_detail_texture_size[2] / 2,
+					5
+				},
+				size = {
+					side_detail_texture_size[1],
+					side_detail_texture_size[2]
+				}
+			},
+			side_detail_right = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					size[1],
+					size[2] / 2 - side_detail_texture_size[2] / 2,
+					5
+				},
+				size = {
+					side_detail_texture_size[1],
+					side_detail_texture_size[2]
+				}
+			},
+			refresh_icon_bg = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					size[1] - 10,
+					size[2] / 2 - 12.5,
+					6
+				},
+				size = {
+					25,
+					25
+				}
+			},
+			refresh_icon = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					size[1] - 10,
+					size[2] / 2 - 12.5,
+					7
+				},
+				size = {
+					25,
+					25
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+end
+
 UIWidgets.create_summary_experience_bar = function (scenegraph_id, size)
 	return {
 		element = {
@@ -9140,6 +9514,640 @@ UIWidgets.create_window_category_button = function (scenegraph_id, size, button_
 				},
 				offset = {
 					0,
+					0,
+					12
+				},
+				size = {
+					28,
+					size[2]
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+
+	return widget
+end
+
+UIWidgets.create_window_category_button_mirrored = function (scenegraph_id, size, button_text, icon_name, background_icon)
+	icon_name = icon_name or "options_button_icon_quickplay"
+	local icon_glow_name = icon_name .. "_glow"
+	local icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_name)
+	local icon_size = icon_settings.size
+	local background_texture = "button_bg_01"
+	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
+	local frame_name = "menu_frame_08"
+	local frame_settings = UIFrameSettings[frame_name]
+	local frame_width = frame_settings.texture_sizes.corner[1]
+	local new_frame_name = "frame_outer_glow_01"
+	local new_frame_settings = UIFrameSettings[new_frame_name]
+	local new_frame_width = new_frame_settings.texture_sizes.corner[1]
+	local widget = {
+		element = {
+			passes = {
+				{
+					style_id = "background",
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					style_id = "background",
+					pass_type = "texture_uv",
+					content_id = "background"
+				},
+				{
+					texture_id = "background_fade",
+					style_id = "background_fade",
+					pass_type = "texture"
+				},
+				{
+					style_id = "background_icon",
+					pass_type = "texture_uv",
+					content_id = "background_icon",
+					content_check_function = function (content)
+						return content.texture_id
+					end,
+					content_change_function = function (content, style)
+						local parent_content = content.parent
+						local button_hotspot = parent_content.button_hotspot
+
+						if not button_hotspot.disable_button and not button_hotspot.is_selected then
+						end
+					end
+				},
+				{
+					texture_id = "frame",
+					style_id = "frame",
+					pass_type = "texture_frame"
+				},
+				{
+					style_id = "new_texture",
+					pass_type = "texture_uv",
+					content_id = "new_texture",
+					content_check_function = function (content)
+						local parent_content = content.parent
+
+						return parent_content.new
+					end
+				},
+				{
+					style_id = "icon",
+					pass_type = "texture_uv",
+					content_id = "icon",
+					content_check_function = function (content)
+						local parent_content = content.parent
+						local button_hotspot = parent_content.button_hotspot
+
+						return not button_hotspot.disable_button
+					end
+				},
+				{
+					style_id = "icon_disabled",
+					pass_type = "texture_uv",
+					content_id = "icon",
+					content_check_function = function (content)
+						local parent_content = content.parent
+						local button_hotspot = parent_content.button_hotspot
+
+						return button_hotspot.disable_button
+					end
+				},
+				{
+					texture_id = "icon_selected",
+					style_id = "icon_selected",
+					pass_type = "texture"
+				},
+				{
+					style_id = "icon_frame",
+					pass_type = "texture_uv",
+					content_id = "icon_frame"
+				},
+				{
+					texture_id = "icon_glass",
+					style_id = "icon_glass",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "icon_bg_glow",
+					style_id = "icon_bg_glow",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "glass",
+					style_id = "glass_top",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "glass",
+					style_id = "glass_bottom",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "hover_glow",
+					style_id = "hover_glow",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "select_glow",
+					style_id = "select_glow",
+					pass_type = "texture"
+				},
+				{
+					style_id = "skull_select_glow",
+					pass_type = "texture_uv",
+					content_id = "skull_select_glow"
+				},
+				{
+					style_id = "button_text",
+					pass_type = "text",
+					text_id = "button_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return not button_hotspot.disable_button
+					end
+				},
+				{
+					style_id = "button_text_disabled",
+					pass_type = "text",
+					text_id = "button_text",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button
+					end
+				},
+				{
+					style_id = "button_text_shadow",
+					pass_type = "text",
+					text_id = "button_text"
+				},
+				{
+					pass_type = "rect",
+					style_id = "button_clicked_rect"
+				},
+				{
+					style_id = "button_disabled_rect",
+					pass_type = "rect",
+					content_check_function = function (content)
+						local button_hotspot = content.button_hotspot
+
+						return button_hotspot.disable_button
+					end
+				}
+			}
+		},
+		content = {
+			hover_glow = "button_state_default",
+			icon_glass = "menu_options_button_fg",
+			select_glow = "button_state_default_2",
+			glass = "button_glass_02",
+			background_fade = "button_bg_fade",
+			icon_bg_glow = "menu_options_button_glow_01",
+			background_icon = {
+				uvs = {
+					{
+						1,
+						0
+					},
+					{
+						0,
+						1
+					}
+				},
+				texture_id = background_icon
+			},
+			icon = {
+				uvs = {
+					{
+						1,
+						0
+					},
+					{
+						0,
+						1
+					}
+				},
+				texture_id = icon_name
+			},
+			icon_frame = {
+				texture_id = "menu_options_button_bg",
+				uvs = {
+					{
+						1,
+						0
+					},
+					{
+						0,
+						1
+					}
+				}
+			},
+			new_texture = {
+				texture_id = "list_item_tag_new",
+				uvs = {
+					{
+						1,
+						0
+					},
+					{
+						0,
+						1
+					}
+				}
+			},
+			skull_select_glow = {
+				texture_id = "menu_options_button_glow_03",
+				uvs = {
+					{
+						1,
+						0
+					},
+					{
+						0,
+						1
+					}
+				}
+			},
+			icon_selected = icon_glow_name,
+			frame = frame_settings.texture,
+			button_hotspot = {},
+			button_text = button_text or "n/a",
+			background = {
+				uvs = {
+					{
+						0,
+						1 - math.min(size[2] / background_texture_settings.size[2], 1)
+					},
+					{
+						math.min(size[1] / background_texture_settings.size[1], 1),
+						1
+					}
+				},
+				texture_id = background_texture
+			}
+		},
+		style = {
+			background = {
+				color = {
+					255,
+					200,
+					200,
+					200
+				},
+				offset = {
+					0,
+					0,
+					0
+				},
+				size = size
+			},
+			background_fade = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					frame_width,
+					frame_width,
+					1
+				},
+				size = {
+					size[1] - frame_width * 2,
+					size[2] - frame_width * 2
+				}
+			},
+			background_icon = {
+				vertical_alignment = "center",
+				saturated = false,
+				horizontal_alignment = "left",
+				color = {
+					150,
+					100,
+					100,
+					100
+				},
+				default_color = {
+					150,
+					100,
+					100,
+					100
+				},
+				texture_size = {
+					350,
+					108
+				},
+				offset = {
+					0,
+					0,
+					3
+				}
+			},
+			hover_glow = {
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					5,
+					2
+				},
+				size = {
+					size[1],
+					math.min(size[2] - 5, 80)
+				}
+			},
+			select_glow = {
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					5,
+					3
+				},
+				size = {
+					size[1],
+					math.min(size[2] - 5, 80)
+				}
+			},
+			button_text = {
+				upper_case = true,
+				word_wrap = true,
+				font_size = 32,
+				horizontal_alignment = "right",
+				vertical_alignment = "center",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				default_text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				select_text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					10,
+					0,
+					6
+				},
+				size = {
+					size[1] - 140,
+					size[2]
+				}
+			},
+			button_text_disabled = {
+				upper_case = true,
+				font_size = 32,
+				word_wrap = true,
+				horizontal_alignment = "right",
+				vertical_alignment = "center",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("gray", 255),
+				default_text_color = Colors.get_color_table_with_alpha("gray", 255),
+				offset = {
+					10,
+					0,
+					6
+				},
+				size = {
+					size[1] - 140,
+					size[2]
+				}
+			},
+			button_text_shadow = {
+				upper_case = true,
+				font_size = 32,
+				word_wrap = true,
+				horizontal_alignment = "right",
+				vertical_alignment = "center",
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					12,
+					-2,
+					5
+				},
+				size = {
+					size[1] - 140,
+					size[2]
+				}
+			},
+			button_clicked_rect = {
+				color = {
+					0,
+					0,
+					0,
+					0
+				},
+				offset = {
+					0,
+					0,
+					7
+				},
+				size = size
+			},
+			button_disabled_rect = {
+				color = {
+					150,
+					5,
+					5,
+					5
+				},
+				offset = {
+					0,
+					0,
+					5
+				},
+				size = size
+			},
+			glass_top = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					size[2] - (frame_width + 9),
+					6
+				},
+				size = {
+					size[1],
+					11
+				}
+			},
+			glass_bottom = {
+				color = {
+					200,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					frame_width - 11,
+					6
+				},
+				size = {
+					size[1],
+					11
+				}
+			},
+			frame = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					10
+				},
+				size = size,
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes
+			},
+			new_texture = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					size[2] - 56,
+					6
+				},
+				size = {
+					126,
+					51
+				}
+			},
+			icon_frame = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				texture_size = {
+					116,
+					108
+				},
+				offset = {
+					size[1] - 116,
+					0,
+					11
+				}
+			},
+			icon_glass = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				texture_size = {
+					116,
+					108
+				},
+				offset = {
+					size[1] - 108,
+					0,
+					15
+				}
+			},
+			icon_bg_glow = {
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				texture_size = {
+					116,
+					108
+				},
+				offset = {
+					size[1] - 108,
+					0,
+					14
+				}
+			},
+			icon = {
+				color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				default_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
+				select_color = Colors.get_color_table_with_alpha("white", 255),
+				texture_size = icon_size,
+				offset = {
+					size[1] - icon_size[1] - 54 - icon_size[1] / 2,
+					54 - icon_size[2] / 2,
+					12
+				}
+			},
+			icon_disabled = {
+				color = {
+					255,
+					40,
+					40,
+					40
+				},
+				default_color = {
+					255,
+					40,
+					40,
+					40
+				},
+				select_color = {
+					255,
+					40,
+					40,
+					40
+				},
+				texture_size = icon_size,
+				offset = {
+					size[1] - icon_size[1] - 54 - icon_size[1] / 2,
+					54 - icon_size[2] / 2,
+					12
+				}
+			},
+			icon_selected = {
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				texture_size = icon_size,
+				offset = {
+					size[1] - icon_size[1] - 54 - icon_size[1] / 2,
+					54 - icon_size[2] / 2,
+					13
+				}
+			},
+			skull_select_glow = {
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					size[1] - 28,
 					0,
 					12
 				},

@@ -200,7 +200,17 @@ local breed_data = {
 				"j_backpack"
 			}
 		}
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_ratling_gunner_killed_by_melee(killer_unit, damage_source)
+		QuestSettings.check_ratling_gunner_killed_while_shooting(blackboard, killer_unit)
+	end
 }
 Breeds.skaven_ratling_gunner = table.create_copy(Breeds.skaven_ratling_gunner, breed_data)
 local action_data = {

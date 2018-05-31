@@ -1852,6 +1852,7 @@ DamageUtils.check_ranged_block = function (attacking_unit, target_unit, attack_d
 			local attacking_unit_id = unit_storage:go_id(attacking_unit)
 
 			network_manager.network_transmit:send_rpc_clients("rpc_player_blocked_attack", go_id, fatigue_type_id, attacking_unit_id, fatigue_point_costs_multiplier, improved_block, "back")
+			QuestSettings.check_ratling_gunner_blocked_shot(target_unit, attacking_unit)
 		end
 
 		return true
@@ -2572,6 +2573,7 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 	local attack_template_name = target_settings.attack_template
 	local attack_template = AttackTemplates[attack_template_name]
 	local stagger_type, stagger_duration, stagger_length, stagger_value = DamageUtils.calculate_stagger_player(ImpactTypeOutput, target_unit, attacker_unit, hit_zone_name, power_level, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, blocked, attack_direction, damage_source)
+	local is_push = damage_profile.is_push
 
 	if stagger_type == 0 then
 		return
@@ -2595,7 +2597,7 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 	end
 
 	if stagger_type > 0 then
-		AiUtils.stagger(target_unit, blackboard, attacker_unit, attack_direction, stagger_length, stagger_type, stagger_duration, attack_template.stagger_animation_scale, t, stagger_value, attack_template.always_stagger)
+		AiUtils.stagger(target_unit, blackboard, attacker_unit, attack_direction, stagger_length, stagger_type, stagger_duration, attack_template.stagger_animation_scale, t, stagger_value, attack_template.always_stagger, is_push)
 	end
 end
 

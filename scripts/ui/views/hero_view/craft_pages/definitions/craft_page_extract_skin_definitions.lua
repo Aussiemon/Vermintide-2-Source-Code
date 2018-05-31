@@ -9,9 +9,6 @@ local window_text_width = window_size[1] - (window_frame_width * 2 + 60)
 NUM_CRAFT_SLOTS_X = 1
 NUM_CRAFT_SLOTS_Y = 1
 NUM_CRAFT_SLOTS = NUM_CRAFT_SLOTS_X * NUM_CRAFT_SLOTS_Y
-NUM_RECIPE_SLOTS_X = 1
-NUM_RECIPE_SLOTS_Y = 1
-NUM_RECIPE_SLOTS = NUM_RECIPE_SLOTS_X * NUM_RECIPE_SLOTS_Y
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -72,21 +69,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			28,
-			6
-		}
-	},
-	recipe_grid = {
-		vertical_alignment = "center",
-		parent = "window",
-		horizontal_alignment = "center",
-		size = {
-			window_size[1],
-			80
-		},
-		position = {
-			0,
-			-160,
+			-60,
 			6
 		}
 	},
@@ -165,7 +148,6 @@ local disable_with_gamepad = true
 local widgets = {
 	item_grid_bg = UIWidgets.create_simple_texture("crafting_bg_02", "item_grid", nil, nil, nil, -1),
 	item_grid = UIWidgets.create_grid("item_grid", scenegraph_definition.item_grid.size, NUM_CRAFT_SLOTS_Y, NUM_CRAFT_SLOTS_X, 20, 20),
-	recipe_grid = UIWidgets.create_recipe_grid("recipe_grid", scenegraph_definition.recipe_grid.size, NUM_RECIPE_SLOTS_Y, NUM_RECIPE_SLOTS_X, 30, 30),
 	item_grid_icon = UIWidgets.create_simple_texture("crafting_icon_01", "item_grid_icon"),
 	craft_button = UIWidgets.create_default_button("craft_button", scenegraph_definition.craft_button.size, nil, nil, Localize("hero_view_crafting_extract_skin"), 24, nil, "button_detail_02", nil, disable_with_gamepad),
 	craft_bar_fg = UIWidgets.create_simple_texture("crafting_bar_fg", "craft_bar_fg"),

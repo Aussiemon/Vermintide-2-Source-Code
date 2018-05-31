@@ -30,20 +30,4 @@ ScriptApplication.set_crashify_tag = function (tag, data)
 	printf("[CrashifyCustomTag] %s, %s", tag, data)
 end
 
-ScriptApplication.is_bundled = function ()
-	local args = {
-		Application.argv()
-	}
-
-	for i, arg in ipairs(args) do
-		local match_result = string.match(arg:gsub("[%-]", ""), "bundledir")
-
-		if match_result ~= nil then
-			return true
-		end
-	end
-
-	return false
-end
-
 return

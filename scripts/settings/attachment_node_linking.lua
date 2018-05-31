@@ -2772,8 +2772,16 @@ AttachmentNodeLinking = {
 				source = "j_leftshoulder"
 			},
 			{
+				target = "j_leftarm",
+				source = "j_leftarm"
+			},
+			{
 				target = "j_rightshoulder",
 				source = "j_rightshoulder"
+			},
+			{
+				target = "j_rightarm",
+				source = "j_rightarm"
 			}
 		}
 	},
@@ -2834,6 +2842,86 @@ AttachmentNodeLinking = {
 			{
 				target = "j_rightshoulder",
 				source = "j_rightshoulder"
+			}
+		}
+	},
+	es_beard_skinned = {
+		slot_hat = {
+			{
+				target = 0,
+				source = "a_hat"
+			},
+			{
+				target = "j_head",
+				source = "j_head"
+			},
+			{
+				target = "j_jaw_anim",
+				source = "j_jaw_anim"
+			},
+			{
+				target = "j_leftcrease_02_anim",
+				source = "j_leftcrease_02_anim"
+			},
+			{
+				target = "j_rightcrease_02_anim",
+				source = "j_rightcrease_02_anim"
+			},
+			{
+				target = "j_left_beard_01",
+				source = "j_left_beard_01"
+			},
+			{
+				target = "j_left_beard_02",
+				source = "j_left_beard_02"
+			},
+			{
+				target = "j_leftcheek_01_anim",
+				source = "j_leftcheek_01_anim"
+			},
+			{
+				target = "j_leftcheek_02_anim",
+				source = "j_leftcheek_02_anim"
+			},
+			{
+				target = "j_leftcheek_03_anim",
+				source = "j_leftcheek_03_anim"
+			},
+			{
+				target = "j_leftcrease_01_anim",
+				source = "j_leftcrease_01_anim"
+			},
+			{
+				target = "j_right_beard_01",
+				source = "j_right_beard_01"
+			},
+			{
+				target = "j_right_beard_02",
+				source = "j_right_beard_02"
+			},
+			{
+				target = "j_rightcheek_01_anim",
+				source = "j_rightcheek_01_anim"
+			},
+			{
+				target = "j_rightcheek_02_anim",
+				source = "j_rightcheek_02_anim"
+			},
+			{
+				target = "j_rightcheek_03_anim",
+				source = "j_rightcheek_03_anim"
+			},
+			{
+				target = "j_rightcrease_01_anim",
+				source = "j_rightcrease_01_anim"
+			},
+			{
+				target = "j_upperlipleft2_anim",
+				source = "j_upperlipleft2_anim"
+			},
+			{
+				target = "j_upperlipright2_anim",
+				source = "j_upperlipright2_anim"
 			}
 		}
 	},

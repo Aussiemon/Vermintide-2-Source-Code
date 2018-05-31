@@ -259,4 +259,16 @@ ItemHelper.weapon_stat_order_by_type = function (stat_type)
 	return weapon_attack_stats_order[stat_type]
 end
 
+ItemHelper.on_inventory_item_added = function (item)
+	if item.data.slot_type == ItemType.LOOT_CHEST then
+		local world_manager = Managers.world
+
+		if world_manager:has_world("level_world") then
+			local world = world_manager:world("level_world")
+
+			LevelHelper:flow_event(world, "local_player_received_loot_chest")
+		end
+	end
+end
+
 return

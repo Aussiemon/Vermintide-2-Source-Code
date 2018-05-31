@@ -186,16 +186,63 @@ local deeds = {
 		"complete_deeds_8"
 	}
 }
+local enemies = {
+	name = "achv_menu_enemies_category_title",
+	entries = {
+		"skaven_warpfire_thrower_1",
+		"skaven_warpfire_thrower_2",
+		"skaven_warpfire_thrower_3",
+		"skaven_pack_master_1",
+		"skaven_pack_master_2",
+		"skaven_pack_master_3",
+		"skaven_gutter_runner_1",
+		"skaven_gutter_runner_2",
+		"skaven_gutter_runner_3",
+		"skaven_poison_wind_globardier_1",
+		"skaven_poison_wind_globardier_2",
+		"skaven_poison_wind_globardier_3",
+		"skaven_ratling_gunner_1",
+		"skaven_ratling_gunner_2",
+		"skaven_ratling_gunner_3",
+		"chaos_corruptor_sorcerer_1",
+		"chaos_corruptor_sorcerer_2",
+		"chaos_corruptor_sorcerer_3",
+		"chaos_vortex_sorcerer_1",
+		"chaos_vortex_sorcerer_2",
+		"chaos_vortex_sorcerer_3",
+		"chaos_spawn_1",
+		"chaos_spawn_2",
+		"chaos_troll_1",
+		"chaos_troll_2",
+		"skaven_rat_ogre_1",
+		"skaven_rat_ogre_2",
+		"skaven_stormfiend_1",
+		"skaven_stormfiend_2",
+		"helmgart_lord_1"
+	}
+}
 local achievements = {
 	name = "achv_menu_achievements_category_title",
-	type = "achievements",
 	categories = {
-		heroes,
 		levels,
-		crafting,
+		heroes,
+		enemies,
 		items,
+		crafting,
 		deeds
 	}
 }
+
+local function assign_category_type(base_category, category_type)
+	base_category.type = category_type
+
+	if base_category.categories then
+		for i, category in ipairs(base_category.categories) do
+			assign_category_type(category, category_type)
+		end
+	end
+end
+
+assign_category_type(achievements, "achievements")
 
 return achievements

@@ -41,6 +41,7 @@ player.damage_dealt = {
 	sync_on_hot_join = true
 }
 local max_daily_quests = 3
+local max_event_quests = 3
 local num_quest_statistics_per_quest = 3
 player.quest_statistics = {}
 
@@ -57,6 +58,27 @@ for i = 1, max_daily_quests, 1 do
 	end
 end
 
+for i = 1, max_event_quests, 1 do
+	local stat_prefix = "event_quest_" .. i
+
+	for j = 1, num_quest_statistics_per_quest, 1 do
+		local stat_name = stat_prefix .. "_stat_" .. j
+		player.quest_statistics[stat_name] = {
+			value = 0,
+			source = "player_data",
+			database_name = "quest_statistics_" .. stat_name
+		}
+	end
+end
+
+player.total_collected_grimoires = {
+	value = 0,
+	database_name = "total_collected_grimoires"
+}
+player.total_collected_tomes = {
+	value = 0,
+	database_name = "total_collected_tomes"
+}
 player.times_friend_healed = {
 	value = 0,
 	database_name = "times_friend_healed"
@@ -204,6 +226,156 @@ player.storm_vermin_warlord_kills_enemies = {
 	database_name = "storm_vermin_warlord_kills_enemies",
 	source = "player_data"
 }
+player.globadier_kill_before_throwing = {
+	value = 0,
+	database_name = "globadier_kill_before_throwing",
+	source = "player_data"
+}
+player.globadier_kill_during_suicide = {
+	value = 0,
+	database_name = "globadier_kill_during_suicide",
+	source = "player_data"
+}
+player.globadier_enemies_killed_by_poison = {
+	value = 0,
+	database_name = "globadier_enemies_killed_by_poison",
+	source = "player_data"
+}
+player.warpfire_kill_before_shooting = {
+	value = 0,
+	database_name = "warpfire_kill_before_shooting",
+	source = "player_data"
+}
+player.warpfire_kill_on_power_cell = {
+	value = 0,
+	database_name = "warpfire_kill_on_power_cell",
+	source = "player_data"
+}
+player.warpfire_enemies_killed_by_warpfire = {
+	value = 0,
+	database_name = "warpfire_enemies_killed_by_warpfire",
+	source = "player_data"
+}
+player.pack_master_dodged_attack = {
+	value = 0,
+	database_name = "pack_master_dodged_attack",
+	source = "player_data"
+}
+player.pack_master_kill_abducting_ally = {
+	value = 0,
+	database_name = "pack_master_kill_abducting_ally",
+	source = "player_data"
+}
+player.pack_master_rescue_hoisted_ally = {
+	value = 0,
+	database_name = "pack_master_rescue_hoisted_ally",
+	source = "player_data"
+}
+player.gutter_runner_killed_on_pounce = {
+	value = 0,
+	database_name = "gutter_runner_killed_on_pounce",
+	source = "player_data"
+}
+player.gutter_runner_push_on_pounce = {
+	value = 0,
+	database_name = "gutter_runner_push_on_pounce",
+	source = "player_data"
+}
+player.gutter_runner_push_on_target_pounced = {
+	value = 0,
+	database_name = "gutter_runner_push_on_target_pounced",
+	source = "player_data"
+}
+player.corruptor_killed_at_teleport_time = {
+	value = 0,
+	database_name = "corruptor_killed_at_teleport_time",
+	source = "player_data"
+}
+player.corruptor_dodged_attack = {
+	value = 0,
+	database_name = "corruptor_dodged_attack",
+	source = "player_data"
+}
+player.corruptor_killed_while_grabbing = {
+	value = 0,
+	database_name = "corruptor_killed_while_grabbing",
+	source = "player_data"
+}
+player.vortex_sorcerer_killed_while_summoning = {
+	value = 0,
+	database_name = "vortex_sorcerer_killed_while_summoning",
+	source = "player_data"
+}
+player.vortex_sorcerer_killed_while_ally_in_vortex = {
+	value = 0,
+	database_name = "vortex_sorcerer_killed_while_ally_in_vortex",
+	source = "player_data"
+}
+player.vortex_sorcerer_killed_by_melee = {
+	value = 0,
+	database_name = "vortex_sorcerer_killed_by_melee",
+	source = "player_data"
+}
+player.ratling_gunner_killed_by_melee = {
+	value = 0,
+	database_name = "ratling_gunner_killed_by_melee",
+	source = "player_data"
+}
+player.ratling_gunner_killed_while_shooting = {
+	value = 0,
+	database_name = "ratling_gunner_killed_while_shooting",
+	source = "player_data"
+}
+player.ratling_gunner_blocked_shot = {
+	value = 0,
+	database_name = "ratling_gunner_blocked_shot",
+	source = "player_data"
+}
+player.chaos_spawn_killed_while_grabbing = {
+	value = 0,
+	database_name = "chaos_spawn_killed_while_grabbing",
+	source = "player_data"
+}
+player.chaos_spawn_killed_without_having_grabbed = {
+	value = 0,
+	database_name = "chaos_spawn_killed_without_having_grabbed",
+	source = "player_data"
+}
+player.chaos_troll_killed_without_regen = {
+	value = 0,
+	database_name = "chaos_troll_killed_without_regen",
+	source = "player_data"
+}
+player.chaos_troll_killed_without_bile_damage = {
+	value = 0,
+	database_name = "chaos_troll_killed_without_bile_damage",
+	source = "player_data"
+}
+player.rat_ogre_killed_mid_leap = {
+	value = 0,
+	database_name = "rat_ogre_killed_mid_leap",
+	source = "player_data"
+}
+player.rat_ogre_killed_without_dealing_damage = {
+	value = 0,
+	database_name = "rat_ogre_killed_without_dealing_damage",
+	source = "player_data"
+}
+player.stormfiend_killed_without_burn_damage = {
+	value = 0,
+	database_name = "stormfiend_killed_without_burn_damage",
+	source = "player_data"
+}
+player.stormfiend_killed_on_controller = {
+	value = 0,
+	database_name = "stormfiend_killed_on_controller",
+	source = "player_data"
+}
+player.killed_lord_as_last_player_standing = {
+	value = 0,
+	database_name = "killed_lord_as_last_player_standing",
+	source = "player_data"
+}
 player.played_levels_quickplay = {}
 player.last_played_level_id = {
 	value = 0,
@@ -231,19 +403,9 @@ player.salvaged_items = {
 	value = 0,
 	database_name = "salvaged_items"
 }
-player.lorebook_unlocks = {
-	database_name = "lorebook_unlocks",
-	database_type = "hexarray",
-	value = {}
-}
 unit_test.kills_total = {
 	value = 0,
 	database_name = "kills_total"
-}
-unit_test.lorebook_unlocks = {
-	database_name = "lorebook_unlocks",
-	database_type = "hexarray",
-	value = {}
 }
 unit_test.profiles = {
 	witch_hunter = {
@@ -336,11 +498,6 @@ for level_key, level in pairs(LevelSettings) do
 			database_name = tome_name
 		}
 	end
-end
-
-for i = 1, 508, 1 do
-	player.lorebook_unlocks.value[i] = false
-	unit_test.lorebook_unlocks.value[i] = false
 end
 
 local function add_names(stats)

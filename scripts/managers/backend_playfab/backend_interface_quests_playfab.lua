@@ -7,6 +7,9 @@ BackendInterfaceQuestsPlayfab.init = function (self, backend_mirror)
 	self._last_id = 0
 	self._refresh_requests = {}
 	self._quest_reward_requests = {}
+	self._quests_updating = false
+	self._quest_timer = 0
+	self._event_quest_update_times = {}
 
 	self:_refresh()
 end
@@ -15,9 +18,15 @@ BackendInterfaceQuestsPlayfab._refresh = function (self)
 	local talents = self._talents
 	local backend_mirror = self._backend_mirror
 	local quest_data = backend_mirror:get_quest_data()
-	self._quests = quest_data.current_quests
-	self._refresh_available = quest_data.refresh_available
-	self._daily_quest_update_time = quest_data.daily_quest_update_time
+	self._quests.daily = quest_data.current_daily_quests
+	self._quests.event = quest_data.current_event_quests
+	self._refresh_available = quest_data.daily_quest_refresh_available
+	self._daily_quest_update_time = quest_data.daily_quest_update_time / 1000
+
+	for key, data in pairs(self._quests.event) do
+		self._event_quest_update_times[key] = data.end_time / 1000
+	end
+
 	self._dirty = false
 end
 
@@ -36,7 +45,59 @@ BackendInterfaceQuestsPlayfab.make_dirty = function (self)
 end
 
 BackendInterfaceQuestsPlayfab.update = function (self, dt)
-	return
+	local request_quest_update = false
+	local update_time = self:get_daily_quest_update_time() - self._quest_timer
+
+	if update_time < 0 and not self._quests_updating then
+		request_quest_update = true
+	end
+
+	for key, data in pairs(self._quests.event) do
+		local update_time = self:get_time_left_on_event_quest(key) - self._quest_timer
+
+		if update_time < 0 and not self._quests_updating then
+			request_quest_update = true
+
+			break
+		end
+	end
+
+	if request_quest_update then
+		local request = {
+			FunctionName = "getQuests",
+			FunctionParameter = {}
+		}
+		local request_cb = callback(self, "get_quests_cb")
+
+		PlayFabClientApi.ExecuteCloudScript(request, request_cb, request_cb)
+
+		self._quests_updating = true
+	end
+
+	self._quest_timer = self._quest_timer + dt
+end
+
+BackendInterfaceQuestsPlayfab.get_quests_cb = function (self, result)
+	if result.Error then
+		table.dump(result, nil, 6)
+		fassert(false, "get_quests_cb: it failed!")
+	else
+		local backend_mirror = self._backend_mirror
+		local function_result = result.FunctionResult
+		local current_daily_quests = function_result.current_daily_quests
+		local daily_quest_refresh_available = function_result.daily_quest_refresh_available
+		local daily_quest_update_time = function_result.daily_quest_update_time
+		local current_event_quests = function_result.current_event_quests
+
+		backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
+		backend_mirror:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
+		backend_mirror:set_quest_data("daily_quest_update_time", tonumber(daily_quest_update_time))
+		backend_mirror:set_quest_data("current_event_quests", current_event_quests)
+
+		self._quests_updating = false
+		self._dirty = true
+		self._quest_timer = 0
+	end
 end
 
 BackendInterfaceQuestsPlayfab.delete = function (self)
@@ -56,10 +117,18 @@ BackendInterfaceQuestsPlayfab.get_daily_quest_update_time = function (self)
 		self:_refresh()
 	end
 
-	return self._daily_quest_update_time
+	return self._daily_quest_update_time - self._quest_timer
 end
 
-BackendInterfaceQuestsPlayfab.can_refresh_quest = function (self)
+BackendInterfaceQuestsPlayfab.get_time_left_on_event_quest = function (self, key)
+	if self._dirty then
+		self:_refresh()
+	end
+
+	return self._event_quest_update_times[key] - self._quest_timer
+end
+
+BackendInterfaceQuestsPlayfab.can_refresh_daily_quest = function (self)
 	if self._dirty then
 		self:_refresh()
 	end
@@ -67,7 +136,7 @@ BackendInterfaceQuestsPlayfab.can_refresh_quest = function (self)
 	return self._refresh_available
 end
 
-BackendInterfaceQuestsPlayfab.refresh_quest = function (self, key)
+BackendInterfaceQuestsPlayfab.refresh_daily_quest = function (self, key)
 	local id = self:_new_id()
 	local request = {
 		FunctionName = "refreshQuest",
@@ -98,11 +167,11 @@ BackendInterfaceQuestsPlayfab.refresh_quest_cb = function (self, id, key, result
 			return
 		end
 
-		local current_quests = function_result.current_quests
+		local current_daily_quests = function_result.current_daily_quests
 		local daily_quest_refresh_available = function_result.daily_quest_refresh_available
-		local daily_quest_update_time = function_result.daily_quest_update_time
 
-		backend_mirror:set_quest_data(current_quests, daily_quest_refresh_available, daily_quest_update_time)
+		backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
+		backend_mirror:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
 
 		self._refresh_requests[id] = {
 			quest_key = key
@@ -122,14 +191,15 @@ BackendInterfaceQuestsPlayfab.is_quest_refreshed = function (self, id)
 end
 
 BackendInterfaceQuestsPlayfab.can_claim_quest_rewards = function (self, key)
-	local quests = self._quests
-	local current_quest_name = quests[key]
+	local quests = self:get_quests()
+	local daily_quests = self._quests.daily
+	local event_quests = self._quests.event
 
-	if not current_quest_name then
-		return false
+	if daily_quests[key] or event_quests[key] then
+		return true
 	end
 
-	return true
+	return false
 end
 
 BackendInterfaceQuestsPlayfab.claim_quest_rewards = function (self, key)
@@ -205,9 +275,6 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 
 		local id = data.id
 		local items = function_result.items
-		local current_quests = function_result.current_quests
-		local daily_quest_refresh_available = function_result.daily_quest_refresh_available
-		local daily_quest_update_time = function_result.daily_quest_update_time
 		local backend_mirror = self._backend_mirror
 		local rewards = {
 			quest_key = data.quest_key,
@@ -230,11 +297,39 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 			end
 		end
 
-		backend_mirror:set_quest_data(current_quests, daily_quest_refresh_available, daily_quest_update_time)
+		local current_daily_quests = function_result.current_daily_quests
+		local current_event_quests = function_result.current_event_quests
+
+		backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
+		backend_mirror:set_quest_data("current_event_quests", current_event_quests)
 
 		self._quest_reward_requests[id] = rewards
 		self._dirty = true
 	end
+end
+
+BackendInterfaceQuestsPlayfab.get_quest_key = function (self, quest_id)
+	local quests = self:get_quests()
+	local daily_quests = quests.daily
+	local event_quests = quests.event
+
+	for quest_key, quest_data in pairs(daily_quests) do
+		local id = quest_data.name
+
+		if id == quest_id then
+			return quest_key
+		end
+	end
+
+	for quest_key, quest_data in pairs(event_quests) do
+		local id = quest_data.name
+
+		if id == quest_id then
+			return quest_key
+		end
+	end
+
+	return nil
 end
 
 BackendInterfaceQuestsPlayfab.quest_rewards_generated = function (self, id)

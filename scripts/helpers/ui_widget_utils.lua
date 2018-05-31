@@ -278,7 +278,8 @@ UIWidgetUtils.animate_option_button = function (widget, dt)
 	local content = widget.content
 	local style = widget.style
 	local hotspot = content.button_hotspot
-	local is_hover = hotspot.is_hover
+	local has_focus = content.has_focus
+	local is_hover = hotspot.is_hover or has_focus
 	local is_selected = hotspot.is_selected
 	local input_pressed = not is_selected and hotspot.is_clicked and hotspot.is_clicked == 0
 	local input_progress = hotspot.input_progress or 0

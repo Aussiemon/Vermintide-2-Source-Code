@@ -456,6 +456,7 @@ InteractionDefinitions.release_from_hook = {
 		stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 			if result == InteractionResult.SUCCESS then
 				StatusUtils.set_grabbed_by_pack_master_network("pack_master_dropping", interactable_unit, true, nil)
+				QuestSettings.check_pack_master_rescue_hoisted_ally(interactor_unit)
 			end
 		end,
 		can_interact = function (interactor_unit, interactable_unit)
@@ -1856,7 +1857,7 @@ InteractionDefinitions.forge_access.client.stop = function (world, interactor_un
 end
 
 InteractionDefinitions.forge_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	return true
+	return not script_data["eac-untrusted"]
 end
 
 InteractionDefinitions.forge_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
@@ -1921,7 +1922,7 @@ InteractionDefinitions.loot_access.client.stop = function (world, interactor_uni
 end
 
 InteractionDefinitions.loot_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	return true
+	return not script_data["eac-untrusted"]
 end
 
 InteractionDefinitions.loot_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
@@ -2105,15 +2106,17 @@ InteractionDefinitions.achievement_access.client.stop = function (world, interac
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local menu_state = "overview"
-		local menu_sub_state = "forge"
+		local menu_state = "achievements"
+		local menu_sub_state = nil
 
 		data.ingame_ui:transition_with_fade("hero_view_force", menu_state, menu_sub_state)
 	end
 end
 
 InteractionDefinitions.achievement_access.client.can_interact = function (interactor_unit, interactable_unit, data, config)
-	return true
+	local has_access = not script_data.settings.use_beta_overlay
+
+	return has_access
 end
 
 InteractionDefinitions.achievement_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)

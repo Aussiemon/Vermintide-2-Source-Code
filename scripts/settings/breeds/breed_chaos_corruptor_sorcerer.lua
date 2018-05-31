@@ -3,11 +3,11 @@ local breed_data = {
 	target_selection = "pick_corruptor_target",
 	unit_template = "ai_unit_chaos_corruptor_sorcerer",
 	no_stagger_duration = true,
-	armor_category = 1,
 	race = "chaos",
 	death_sound_event = "chaos_sorcerer_plague_death",
 	animation_sync_rpc = "rpc_sync_anim_state_8",
 	perception = "perception_pack_master",
+	armor_category = 1,
 	stagger_threshold_light = 0.5,
 	weapon_reach = 15,
 	is_of_interest_func = "is_of_interest_to_corruptor",
@@ -50,7 +50,22 @@ local breed_data = {
 		wood_elf = "chaos_sorcerer_plague_targeting_elf",
 		bright_wizard = "chaos_sorcerer_plague_targeting_wizard"
 	},
-	disabled = Development.setting("disable_plague_sorcerer") or false
+	disabled = Development.setting("disable_plague_sorcerer") or false,
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		local teleport_at_t = blackboard.teleport_at_t
+
+		if teleport_at_t then
+			QuestSettings.check_corruptor_killed_at_teleport_time(blackboard, teleport_at_t, t, killer_unit)
+		end
+
+		QuestSettings.check_corruptor_killed_while_grabbing(blackboard, killer_unit)
+	end
 }
 
 for key, value in pairs(Breeds.chaos_tentacle_sorcerer) do

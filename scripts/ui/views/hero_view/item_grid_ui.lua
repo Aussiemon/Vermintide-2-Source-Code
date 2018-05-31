@@ -227,6 +227,8 @@ ItemGridUI.set_item_selected = function (self, item)
 	local content = widget.content
 	local rows = content.rows
 	local columns = content.columns
+	self._selected_item_row = nil
+	self._selected_item_column = nil
 
 	for i = 1, rows, 1 do
 		for k = 1, columns, 1 do
@@ -234,7 +236,55 @@ ItemGridUI.set_item_selected = function (self, item)
 			local hotspot_name = "hotspot" .. name_sufix
 			local hotspot = content[hotspot_name]
 			local grid_item = content["item" .. name_sufix]
-			hotspot.is_selected = item and grid_item and item.backend_id == grid_item.backend_id
+			local is_selected = item and grid_item and item.backend_id == grid_item.backend_id
+			hotspot.is_selected = is_selected
+
+			if is_selected then
+				self._selected_item_row = i
+				self._selected_item_column = k
+			end
+		end
+	end
+end
+
+ItemGridUI.handle_gamepad_selection = function (self, input_service)
+	if not self._selected_item then
+		return
+	end
+
+	local widget = self._widget
+	local content = widget.content
+	local rows = content.rows
+	local columns = content.columns
+	local selected_row = self._selected_item_row
+	local selected_column = self._selected_item_column
+
+	if selected_row and selected_column then
+		local modified = false
+
+		if selected_column > 1 and input_service:get("move_left_raw") then
+			selected_column = selected_column - 1
+			modified = true
+		elseif selected_column < columns and input_service:get("move_right_raw") then
+			selected_column = selected_column + 1
+			modified = true
+		end
+
+		if selected_row > 1 and input_service:get("move_up_raw") then
+			selected_row = selected_row - 1
+			modified = true
+		elseif selected_row < rows and input_service:get("move_down_raw") then
+			selected_row = selected_row + 1
+			modified = true
+		end
+
+		if modified then
+			local name_sufix = "_" .. tostring(selected_row) .. "_" .. tostring(selected_column)
+			local hotspot_name = "hotspot" .. name_sufix
+			local hotspot = content[hotspot_name]
+			local grid_item = content["item" .. name_sufix]
+
+			self:set_item_selected(grid_item)
 		end
 	end
 end
@@ -302,31 +352,33 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 			content[rarity_texture_name] = UISettings.item_rarity_textures[rarity]
 		end
 
-		local amount = ""
+		local amount = nil
 
 		if backend_id then
-			local item_tooltip_name = "item_tooltip" .. name_sufix
 			amount = optional_amount or backend_items:get_item_amount(backend_id)
-			local amount_color = style[item_amount_name].text_color
-			local amount_default_color = style[item_amount_name].default_color
-			amount_color[2] = amount_default_color[2]
-			amount_color[3] = amount_default_color[3]
-			amount_color[4] = amount_default_color[4]
 		elseif item.amount then
 			amount = item.amount
+		end
+
+		if amount then
+			local color_value_1, color_value_2, color_value_3 = nil
 
 			if item.insufficient_amount then
-				local amount_color = style[item_amount_name].text_color
-				amount_color[2] = 255
-				amount_color[3] = 0
-				amount_color[4] = 0
+				color_value_1 = 255
+				color_value_2 = 0
+				color_value_3 = 0
 			else
-				local amount_color = style[item_amount_name].text_color
 				local amount_default_color = style[item_amount_name].default_color
-				amount_color[2] = amount_default_color[2]
-				amount_color[3] = amount_default_color[3]
-				amount_color[4] = amount_default_color[4]
+				color_value_1 = amount_default_color[2]
+				color_value_2 = amount_default_color[3]
+				color_value_3 = amount_default_color[4]
 			end
+
+			local amount_text_color = style[item_amount_name].text_color
+
+			self:_set_color_values(amount_text_color, color_value_1, color_value_2, color_value_3)
+		else
+			amount = ""
 		end
 
 		local item_tooltip_name = "item_tooltip" .. name_sufix
@@ -355,6 +407,12 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 	if self._mark_locked_items then
 		self:mark_locked_items(true)
 	end
+end
+
+ItemGridUI._set_color_values = function (self, target_color, p1, p2, p3)
+	target_color[2] = p1
+	target_color[3] = p2
+	target_color[4] = p3
 end
 
 ItemGridUI.repopulate_current_inventory_page = function (self)
@@ -408,31 +466,33 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 					content[rarity_texture_name] = UISettings.item_rarity_textures[rarity]
 				end
 
-				local amount = ""
+				local amount = nil
 
 				if backend_id then
-					local item_tooltip_name = "item_tooltip" .. name_sufix
 					amount = backend_items:get_item_amount(backend_id)
-					local amount_color = style[item_amount_name].text_color
-					local amount_default_color = style[item_amount_name].default_color
-					amount_color[2] = amount_default_color[2]
-					amount_color[3] = amount_default_color[3]
-					amount_color[4] = amount_default_color[4]
 				elseif item.amount then
 					amount = item.amount
+				end
+
+				if amount then
+					local color_value_1, color_value_2, color_value_3 = nil
 
 					if item.insufficient_amount then
-						local amount_color = style[item_amount_name].text_color
-						amount_color[2] = 255
-						amount_color[3] = 0
-						amount_color[4] = 0
+						color_value_1 = 255
+						color_value_2 = 0
+						color_value_3 = 0
 					else
-						local amount_color = style[item_amount_name].text_color
 						local amount_default_color = style[item_amount_name].default_color
-						amount_color[2] = amount_default_color[2]
-						amount_color[3] = amount_default_color[3]
-						amount_color[4] = amount_default_color[4]
+						color_value_1 = amount_default_color[2]
+						color_value_2 = amount_default_color[3]
+						color_value_3 = amount_default_color[4]
 					end
+
+					local amount_text_color = style[item_amount_name].text_color
+
+					self:_set_color_values(amount_text_color, color_value_1, color_value_2, color_value_3)
+				else
+					amount = ""
 				end
 
 				local item_tooltip_name = "item_tooltip" .. name_sufix
@@ -529,8 +589,8 @@ end
 
 ItemGridUI.change_item_filter = function (self, item_filter, change_page)
 	self._item_filter = item_filter
-	local items_1 = self:_get_items_by_filter("can_wield_by_current_career and " .. item_filter)
-	local items_2 = self:_get_items_by_filter("not can_wield_by_current_career and " .. item_filter)
+	local items_1 = self:_get_items_by_filter("can_wield_by_current_career and ( " .. item_filter .. " )")
+	local items_2 = self:_get_items_by_filter("not can_wield_by_current_career and ( " .. item_filter .. " )")
 	local item_sort_func = self._item_sort_func
 
 	if item_sort_func then

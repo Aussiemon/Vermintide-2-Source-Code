@@ -355,7 +355,16 @@ local breed_data = {
 		j_lefthand = 0.2,
 		j_rightforearm = 0.2,
 		j_tail2 = 0.05
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_killed_lord_as_last_player_standing(killer_unit)
+	end
 }
 local pushed_data = {
 	ahead_dist = 2.5,
@@ -740,9 +749,8 @@ local action_data = {
 			local current_difficulty = Managers.state.difficulty:get_difficulty()
 			local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
 			local allowed_difficulty = allowed_difficulties[current_difficulty]
-			local achievements_enabled = Development.parameter("v2_achievements")
 
-			if achievements_enabled and allowed_difficulty and not blackboard.kill_skaven_challenge_completed then
+			if allowed_difficulty and not blackboard.kill_skaven_challenge_completed then
 				local hit_unit_blackboard = BLACKBOARDS[hit_unit]
 				local is_skaven = hit_unit_blackboard.breed.race == "skaven"
 				local num_times_hit_skaven = blackboard.num_times_hit_skaven
@@ -757,6 +765,8 @@ local action_data = {
 					statistics_db:increment_stat_and_sync_to_clients(stat_name)
 
 					blackboard.kill_skaven_challenge_completed = true
+
+					QuestSettings.send_completed_message(stat_name)
 				end
 			end
 		end
@@ -913,6 +923,8 @@ local action_data = {
 					statistics_db:increment_stat_and_sync_to_clients(stat_name)
 
 					blackboard.kill_skaven_challenge_completed = true
+
+					QuestSettings.send_completed_message(stat_name)
 				end
 			end
 		end

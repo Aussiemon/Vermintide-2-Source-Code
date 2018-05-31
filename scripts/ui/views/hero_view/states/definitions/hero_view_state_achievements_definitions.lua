@@ -316,6 +316,20 @@ local scenegraph_definition = {
 			3
 		}
 	},
+	quest_timer = {
+		vertical_alignment = "bottom",
+		parent = "achievement_window",
+		horizontal_alignment = "center",
+		size = {
+			achievement_window_size[1] - 120,
+			50
+		},
+		position = {
+			0,
+			-30,
+			3
+		}
+	},
 	exit_button = {
 		vertical_alignment = "bottom",
 		parent = "window",
@@ -330,7 +344,7 @@ local scenegraph_definition = {
 			42
 		}
 	},
-	summary_button = {
+	quests_button = {
 		vertical_alignment = "top",
 		parent = "window",
 		horizontal_alignment = "center",
@@ -344,21 +358,21 @@ local scenegraph_definition = {
 			10
 		}
 	},
-	achievements_button = {
+	summary_button = {
 		vertical_alignment = "top",
 		parent = "window",
 		horizontal_alignment = "center",
 		size = {
-			small_window_size[1] - 60,
-			108
+			small_window_size[1] - 160,
+			70
 		},
 		position = {
 			0,
-			-46,
+			-65,
 			10
 		}
 	},
-	quests_button = {
+	achievements_button = {
 		vertical_alignment = "top",
 		parent = "window",
 		horizontal_alignment = "center",
@@ -414,25 +428,14 @@ local scenegraph_definition = {
 			2
 		}
 	},
-	summary_info_bg = {
+	summary_center_window = {
 		vertical_alignment = "center",
 		parent = "left_window",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
 		size = {
-			left_window_size[1] - 64,
-			left_window_size[2] - 64
+			left_window_size[1] + 2,
+			left_window_size[2]
 		},
-		position = {
-			0,
-			0,
-			1
-		}
-	},
-	summary_center_window = {
-		vertical_alignment = "bottom",
-		parent = "left_window",
-		horizontal_alignment = "right",
-		size = left_window_size,
 		position = {
 			left_window_size[1] - 22,
 			0,
@@ -444,7 +447,7 @@ local scenegraph_definition = {
 		parent = "summary_center_window",
 		horizontal_alignment = "center",
 		size = {
-			left_window_size[1] - 44,
+			left_window_size[1] - 40,
 			left_window_size[2] - 44
 		},
 		position = {
@@ -453,186 +456,29 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	summary_center_arrow = {
-		vertical_alignment = "top",
-		parent = "summary_center_window",
-		horizontal_alignment = "center",
-		size = {
-			59,
-			31
-		},
-		position = {
-			0,
-			18,
-			22
-		}
-	},
-	summary_center_title_divider = {
-		vertical_alignment = "top",
-		parent = "summary_center_window",
-		horizontal_alignment = "center",
-		size = {
-			264,
-			32
-		},
-		position = {
-			0,
-			-80,
-			3
-		}
-	},
-	summary_center_title = {
-		vertical_alignment = "top",
-		parent = "summary_center_title_divider",
-		horizontal_alignment = "center",
-		size = {
-			left_window_size[1] - 44,
-			20
-		},
-		position = {
-			0,
-			20,
-			3
-		}
-	},
-	summary_center_sub_title_divider = {
-		vertical_alignment = "bottom",
-		parent = "summary_center_window",
-		horizontal_alignment = "center",
-		size = {
-			264,
-			32
-		},
-		position = {
-			0,
-			230,
-			3
-		}
-	},
-	summary_center_sub_title = {
-		vertical_alignment = "top",
-		parent = "summary_center_sub_title_divider",
-		horizontal_alignment = "center",
-		size = {
-			left_window_size[1] - 44,
-			20
-		},
-		position = {
-			0,
-			20,
-			3
-		}
-	},
-	summary_center_recent_frames = {
-		vertical_alignment = "bottom",
-		parent = "summary_center_window",
-		horizontal_alignment = "center",
-		size = {
-			left_window_size[1] - 44,
-			181
-		},
-		position = {
-			0,
-			40,
-			1
-		}
-	},
-	summary_center_recent_icons = {
+	summary_center_text = {
 		vertical_alignment = "center",
-		parent = "summary_center_recent_frames",
-		horizontal_alignment = "left",
-		size = {
-			left_window_size[1] - 44,
-			131
-		},
-		position = {
-			27,
-			0,
-			1
-		}
-	},
-	summary_achievement_bar_1 = {
-		vertical_alignment = "top",
 		parent = "summary_center_window",
 		horizontal_alignment = "center",
 		size = {
-			left_window_size[1] - 100,
-			42
+			left_window_size[1] - 140,
+			left_window_size[2] - 100
 		},
 		position = {
 			0,
-			-140,
-			1
-		}
-	},
-	summary_achievement_bar_2 = {
-		vertical_alignment = "bottom",
-		parent = "summary_achievement_bar_1",
-		horizontal_alignment = "center",
-		size = {
-			left_window_size[1] - 100,
-			42
-		},
-		position = {
-			0,
-			-52,
-			1
-		}
-	},
-	summary_achievement_bar_3 = {
-		vertical_alignment = "bottom",
-		parent = "summary_achievement_bar_2",
-		horizontal_alignment = "center",
-		size = {
-			left_window_size[1] - 100,
-			42
-		},
-		position = {
-			0,
-			-52,
-			1
-		}
-	},
-	summary_achievement_bar_4 = {
-		vertical_alignment = "bottom",
-		parent = "summary_achievement_bar_3",
-		horizontal_alignment = "center",
-		size = {
-			left_window_size[1] - 100,
-			42
-		},
-		position = {
-			0,
-			-52,
-			1
-		}
-	},
-	summary_achievement_bar_5 = {
-		vertical_alignment = "bottom",
-		parent = "summary_achievement_bar_4",
-		horizontal_alignment = "center",
-		size = {
-			left_window_size[1] - 100,
-			42
-		},
-		position = {
-			0,
-			-52,
-			1
+			-40,
+			3
 		}
 	},
 	summary_right_window = {
 		vertical_alignment = "bottom",
-		parent = "summary_center_window",
-		horizontal_alignment = "left",
-		size = {
-			left_window_size[1] + 2,
-			left_window_size[2]
-		},
+		parent = "right_window",
+		horizontal_alignment = "right",
+		size = left_window_size,
 		position = {
-			left_window_size[1] - 22,
 			0,
-			0
+			0,
+			1
 		}
 	},
 	summary_right_window_fade = {
@@ -640,7 +486,7 @@ local scenegraph_definition = {
 		parent = "summary_right_window",
 		horizontal_alignment = "center",
 		size = {
-			left_window_size[1] - 42,
+			left_window_size[1] - 44,
 			left_window_size[2] - 44
 		},
 		position = {
@@ -663,9 +509,205 @@ local scenegraph_definition = {
 			22
 		}
 	},
-	summary_quest_book = {
+	summary_right_title_divider = {
 		vertical_alignment = "center",
 		parent = "summary_right_window",
+		horizontal_alignment = "center",
+		size = {
+			264,
+			32
+		},
+		position = {
+			0,
+			-20,
+			3
+		}
+	},
+	summary_right_title = {
+		vertical_alignment = "top",
+		parent = "summary_right_title_divider",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 44,
+			20
+		},
+		position = {
+			0,
+			20,
+			3
+		}
+	},
+	summary_achievement_flag = {
+		vertical_alignment = "top",
+		parent = "summary_right_window_fade",
+		horizontal_alignment = "center",
+		size = {
+			320,
+			320
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	summary_achievement_bar_1 = {
+		vertical_alignment = "center",
+		parent = "summary_right_window",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			42
+		},
+		position = {
+			0,
+			-60,
+			5
+		}
+	},
+	summary_achievement_bar_2 = {
+		vertical_alignment = "bottom",
+		parent = "summary_achievement_bar_1",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			42
+		},
+		position = {
+			0,
+			-50,
+			1
+		}
+	},
+	summary_achievement_bar_3 = {
+		vertical_alignment = "bottom",
+		parent = "summary_achievement_bar_2",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			42
+		},
+		position = {
+			0,
+			-50,
+			1
+		}
+	},
+	summary_achievement_bar_4 = {
+		vertical_alignment = "bottom",
+		parent = "summary_achievement_bar_3",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			42
+		},
+		position = {
+			0,
+			-50,
+			1
+		}
+	},
+	summary_achievement_bar_5 = {
+		vertical_alignment = "bottom",
+		parent = "summary_achievement_bar_4",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			42
+		},
+		position = {
+			0,
+			-50,
+			1
+		}
+	},
+	summary_achievement_bar_6 = {
+		vertical_alignment = "bottom",
+		parent = "summary_achievement_bar_5",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			42
+		},
+		position = {
+			0,
+			-50,
+			1
+		}
+	},
+	summary_left_window = {
+		vertical_alignment = "bottom",
+		parent = "left_window",
+		horizontal_alignment = "left",
+		size = {
+			left_window_size[1],
+			left_window_size[2]
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
+	summary_left_window_fade = {
+		vertical_alignment = "center",
+		parent = "summary_left_window",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 42,
+			left_window_size[2] - 44
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	summary_left_arrow = {
+		vertical_alignment = "top",
+		parent = "summary_left_window",
+		horizontal_alignment = "center",
+		size = {
+			59,
+			31
+		},
+		position = {
+			0,
+			18,
+			22
+		}
+	},
+	summary_left_title_divider = {
+		vertical_alignment = "center",
+		parent = "summary_left_window",
+		horizontal_alignment = "center",
+		size = {
+			264,
+			32
+		},
+		position = {
+			0,
+			-20,
+			45
+		}
+	},
+	summary_left_title = {
+		vertical_alignment = "top",
+		parent = "summary_left_title_divider",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 44,
+			20
+		},
+		position = {
+			0,
+			20,
+			3
+		}
+	},
+	summary_quest_book = {
+		vertical_alignment = "center",
+		parent = "summary_left_window",
 		horizontal_alignment = "center",
 		size = {
 			256,
@@ -673,13 +715,97 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			70,
+			170,
+			40
+		}
+	},
+	summary_quest_bar_background_1 = {
+		vertical_alignment = "center",
+		parent = "summary_left_window",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 40,
+			60
+		},
+		position = {
+			0,
+			-100,
 			5
 		}
 	},
-	summary_right_title_banner = {
+	summary_quest_bar_background_2 = {
+		vertical_alignment = "center",
+		parent = "summary_quest_bar_background_1",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 40,
+			60
+		},
+		position = {
+			0,
+			-100,
+			5
+		}
+	},
+	summary_quest_bar_1 = {
+		vertical_alignment = "center",
+		parent = "summary_quest_bar_background_1",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			16
+		},
+		position = {
+			0,
+			0,
+			5
+		}
+	},
+	summary_quest_bar_2 = {
+		vertical_alignment = "center",
+		parent = "summary_quest_bar_background_2",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			16
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	summary_quest_bar_title_1 = {
 		vertical_alignment = "bottom",
-		parent = "summary_right_window",
+		parent = "summary_quest_bar_1",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			16
+		},
+		position = {
+			0,
+			40,
+			5
+		}
+	},
+	summary_quest_bar_title_2 = {
+		vertical_alignment = "bottom",
+		parent = "summary_quest_bar_2",
+		horizontal_alignment = "center",
+		size = {
+			left_window_size[1] - 100,
+			16
+		},
+		position = {
+			0,
+			40,
+			5
+		}
+	},
+	summary_left_title_banner = {
+		vertical_alignment = "bottom",
+		parent = "summary_left_window",
 		horizontal_alignment = "center",
 		size = {
 			438,
@@ -687,36 +813,8 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			90,
-			3
-		}
-	},
-	summary_right_title = {
-		vertical_alignment = "center",
-		parent = "summary_right_title_banner",
-		horizontal_alignment = "center",
-		size = {
-			380,
-			54
-		},
-		position = {
-			0,
-			4,
-			3
-		}
-	},
-	summary_right_info = {
-		vertical_alignment = "bottom",
-		parent = "summary_right_window",
-		horizontal_alignment = "center",
-		size = {
-			left_window_size[1] - 120,
-			50
-		},
-		position = {
-			0,
-			30,
-			3
+			290,
+			20
 		}
 	}
 }
@@ -728,7 +826,7 @@ local quest_refresh_title_text = {
 	horizontal_alignment = "left",
 	vertical_alignment = "center",
 	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		0,
@@ -750,6 +848,53 @@ local quest_refresh_value_text = {
 		2
 	}
 }
+local quest_bar_title_text = {
+	font_size = 24,
+	upper_case = true,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "bottom",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local quest_bar_timer_text = {
+	font_size = 24,
+	upper_case = true,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "right",
+	vertical_alignment = "bottom",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local no_entries_overlay_text_style = {
+	word_wrap = true,
+	upper_case = true,
+	localize = false,
+	use_shadow = true,
+	font_size = 58,
+	horizontal_alignment = "center",
+	vertical_alignment = "center",
+	dynamic_font_size = true,
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		10
+	}
+}
 local summary_quest_title_style = {
 	word_wrap = true,
 	upper_case = true,
@@ -768,18 +913,22 @@ local summary_quest_title_style = {
 	}
 }
 local summary_text_style = {
-	word_wrap = true,
+	font_size = 26,
 	upper_case = false,
 	localize = false,
-	use_shadow = true,
-	font_size = 24,
+	word_wrap = true,
 	horizontal_alignment = "center",
 	vertical_alignment = "top",
-	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	font_type = "hell_shark_header",
+	text_color = {
+		255,
+		20,
+		20,
+		20
+	},
 	offset = {
 		0,
-		-20,
+		0,
 		2
 	}
 }
@@ -799,36 +948,20 @@ local title_text_style = {
 		2
 	}
 }
-local claim_overlay_text_style = {
+local summary_title_text_style = {
 	use_shadow = true,
 	upper_case = true,
 	localize = false,
-	font_size = 58,
+	font_size = 28,
 	horizontal_alignment = "center",
 	vertical_alignment = "center",
 	dynamic_font_size = true,
 	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("white", 255),
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
-		60,
-		40
-	}
-}
-local claim_overlay_sub_text_style = {
-	use_shadow = true,
-	upper_case = false,
-	localize = false,
-	font_size = 38,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
-	dynamic_font_size = true,
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("white", 255),
-	offset = {
 		0,
-		-20,
-		40
+		2
 	}
 }
 
@@ -909,7 +1042,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				offset = {
 					40,
 					0,
-					2
+					14
 				}
 			},
 			text_hover = {
@@ -923,7 +1056,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				offset = {
 					40,
 					0,
-					2
+					14
 				}
 			},
 			text_selected = {
@@ -937,7 +1070,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				offset = {
 					40,
 					0,
-					2
+					14
 				}
 			},
 			text_shadow = {
@@ -951,7 +1084,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				offset = {
 					42,
 					-2,
-					1
+					13
 				}
 			},
 			rect = {
@@ -1260,6 +1393,14 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 					end
 				},
 				{
+					texture_id = "locked",
+					style_id = "locked",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.button_hotspot.disable_button
+					end
+				},
+				{
 					style_id = "list_style",
 					pass_type = "list_pass",
 					content_id = "list_content",
@@ -1386,6 +1527,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 			}
 		},
 		content = {
+			locked = "achievement_symbol_lock",
 			hover_glow = "button_state_default",
 			background_fade = "button_bg_fade",
 			new = false,
@@ -1669,6 +1811,23 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 					126,
 					51
 				}
+			},
+			locked = {
+				color = {
+					255,
+					100,
+					100,
+					100
+				},
+				offset = {
+					size[1] - 64,
+					size[2] / 2 - 20,
+					10
+				},
+				size = {
+					56,
+					40
+				}
 			}
 		},
 		scenegraph_id = scenegraph_id,
@@ -1774,7 +1933,7 @@ local function create_window_divider(scenegraph_id, size, layer)
 	return widget
 end
 
-local function create_window_button(scenegraph_id)
+local function create_window_button(scenegraph_id, background_texture)
 	local frame_settings = UIFrameSettings.frame_inner_glow_01
 
 	return {
@@ -1787,23 +1946,65 @@ local function create_window_button(scenegraph_id)
 				{
 					pass_type = "texture_frame",
 					style_id = "hover_frame",
-					texture_id = "hover_frame",
-					content_check_function = function (content)
-						return content.button_hotspot.is_hover
-					end
+					texture_id = "hover_frame"
+				},
+				{
+					style_id = "background",
+					pass_type = "texture_uv",
+					content_id = "background"
+				},
+				{
+					pass_type = "texture",
+					style_id = "fade",
+					texture_id = "fade"
 				}
 			}
 		},
 		content = {
+			fade = "options_window_fade_01",
+			background = {
+				uvs = {
+					{
+						0,
+						0
+					},
+					{
+						1,
+						1
+					}
+				},
+				texture_id = background_texture
+			},
 			hover_frame = frame_settings.texture,
 			button_hotspot = {}
 		},
 		style = {
+			fade = {
+				offset = {
+					0,
+					0,
+					1
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			background = {
+				color = {
+					255,
+					100,
+					100,
+					100
+				}
+			},
 			hover_frame = {
 				texture_size = frame_settings.texture_size,
 				texture_sizes = frame_settings.texture_sizes,
 				color = {
-					255,
+					0,
 					255,
 					255,
 					255
@@ -1811,7 +2012,7 @@ local function create_window_button(scenegraph_id)
 				offset = {
 					0,
 					0,
-					2
+					3
 				}
 			}
 		},
@@ -1824,10 +2025,6 @@ local function create_quest_book(scenegraph_id)
 		element = {
 			passes = {
 				{
-					pass_type = "hotspot",
-					content_id = "button_hotspot"
-				},
-				{
 					pass_type = "texture",
 					style_id = "book",
 					texture_id = "book"
@@ -1835,22 +2032,34 @@ local function create_quest_book(scenegraph_id)
 				{
 					pass_type = "texture",
 					style_id = "edge_glow_1",
-					texture_id = "edge_glow_1"
+					texture_id = "edge_glow_1",
+					content_check_function = function (content)
+						return not content.disabled
+					end
 				},
 				{
 					pass_type = "texture",
 					style_id = "edge_glow_2",
-					texture_id = "edge_glow_2"
+					texture_id = "edge_glow_2",
+					content_check_function = function (content)
+						return not content.disabled
+					end
 				},
 				{
 					pass_type = "texture",
 					style_id = "top_glow_1",
-					texture_id = "top_glow_1"
+					texture_id = "top_glow_1",
+					content_check_function = function (content)
+						return not content.disabled
+					end
 				},
 				{
 					pass_type = "texture",
 					style_id = "top_glow_2",
-					texture_id = "top_glow_2"
+					texture_id = "top_glow_2",
+					content_check_function = function (content)
+						return not content.disabled
+					end
 				},
 				{
 					pass_type = "texture",
@@ -1866,13 +2075,13 @@ local function create_quest_book(scenegraph_id)
 		},
 		content = {
 			ribbon_1 = "achievement_book_ribbon_01",
-			book = "achievement_book_base",
 			edge_glow_2 = "achievement_book_glow_02",
 			top_glow_2 = "achievement_book_glow_03",
+			disabled = false,
+			book = "achievement_book_base",
 			top_glow_1 = "achievement_book_glow_04",
 			ribbon_2 = "achievement_book_ribbon_02",
-			edge_glow_1 = "achievement_book_glow_01",
-			button_hotspot = {}
+			edge_glow_1 = "achievement_book_glow_01"
 		},
 		style = {
 			book = {
@@ -2034,26 +2243,16 @@ local widgets = {
 		255
 	}),
 	left_window_frame = UIWidgets.create_frame("left_window", scenegraph_definition.left_window.size, "menu_frame_11", 20),
-	left_window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "left_window_fade"),
-	left_window = UIWidgets.create_tiled_texture("left_window", "achievement_background_leather", {
+	right_window_frame = UIWidgets.create_frame("right_window", scenegraph_definition.right_window.size, "menu_frame_11", 20),
+	right_window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "right_window_fade"),
+	right_window = UIWidgets.create_tiled_texture("right_window", "achievement_background_leather", {
 		256,
 		256
 	}, nil, nil, {
 		255,
-		255,
-		255,
-		255
-	}),
-	right_window_frame = UIWidgets.create_frame("right_window", scenegraph_definition.right_window.size, "menu_frame_11", 20),
-	right_window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "right_window_fade"),
-	right_window = UIWidgets.create_tiled_texture("right_window", "menu_frame_bg_02", {
-		960,
-		1080
-	}, nil, nil, {
-		255,
-		255,
-		255,
-		255
+		180,
+		180,
+		180
 	}),
 	right_window_mask = UIWidgets.create_simple_texture("mask_rect", "achievement_window"),
 	achievement_window_mask_bottom = UIWidgets.create_simple_rotated_texture("mask_rect_edge_fade", math.pi, {
@@ -2062,9 +2261,9 @@ local widgets = {
 	}, "achievement_window_mask_bottom"),
 	achievement_window_mask_top = UIWidgets.create_simple_texture("mask_rect_edge_fade", "achievement_window_mask_top"),
 	exit_button = UIWidgets.create_default_button("exit_button", scenegraph_definition.exit_button.size, nil, nil, Localize("menu_close"), 24, nil, "button_detail_04", 34),
-	summary_button = UIWidgets.create_window_category_button("summary_button", scenegraph_definition.summary_button.size, Localize("achv_menu_summary_category_title"), "achievement_button_icon_summary", "achievement_button_background_summary"),
+	summary_button = UIWidgets.create_default_button("summary_button", scenegraph_definition.summary_button.size, nil, nil, Localize("achv_menu_summary_category_title"), 24),
 	quests_button = UIWidgets.create_window_category_button("quests_button", scenegraph_definition.quests_button.size, Localize("achv_menu_quests_category_title"), "achievement_button_icon_quests", "achievement_button_background_quests"),
-	achievements_button = UIWidgets.create_window_category_button("achievements_button", scenegraph_definition.achievements_button.size, Localize("achv_menu_achievements_category_title"), "achievement_button_icon_achievements", "achievement_button_background_achievements"),
+	achievements_button = UIWidgets.create_window_category_button_mirrored("achievements_button", scenegraph_definition.achievements_button.size, Localize("achv_menu_achievements_category_title"), "achievement_button_icon_achievements", "achievement_button_background_achievements", "summary_right_window"),
 	title = UIWidgets.create_simple_texture("frame_title_bg", "title"),
 	title_bg = UIWidgets.create_background("title_bg", scenegraph_definition.title_bg.size, "menu_frame_bg_02"),
 	title_text = UIWidgets.create_simple_text(Localize("achv_menu_title"), "title_text", nil, nil, title_text_style),
@@ -2117,6 +2316,59 @@ local widgets = {
 		style = {}
 	}
 }
+local quest_widgets = {
+	left_window = UIWidgets.create_simple_uv_texture("achievement_quests_bg", {
+		{
+			0,
+			0
+		},
+		{
+			1,
+			1
+		}
+	}, "summary_left_window_fade", nil, nil, {
+		255,
+		100,
+		100,
+		100
+	}),
+	left_window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "summary_left_window_fade", nil, nil, nil, 1),
+	time_left_text = UIWidgets.create_simple_text(Localize("achv_menu_summary_quest_refresh") .. " 00:00:00", "quest_timer", nil, nil, quest_refresh_title_text),
+	overlay = UIWidgets.create_simple_rect("achievement_window_mask", {
+		220,
+		12,
+		12,
+		12
+	}, 4),
+	overlay_fade = UIWidgets.create_simple_texture("options_window_fade_01", "achievement_window_mask", nil, nil, nil, 5),
+	overlay_text = UIWidgets.create_simple_text(Localize("achv_menu_no_quests_text"), "achievement_window_mask", nil, nil, no_entries_overlay_text_style)
+}
+local achievement_widgets = {
+	left_window = UIWidgets.create_simple_uv_texture("achievement_challenges_bg", {
+		{
+			0,
+			0
+		},
+		{
+			1,
+			1
+		}
+	}, "summary_left_window_fade", nil, nil, {
+		255,
+		100,
+		100,
+		100
+	}),
+	left_window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "summary_left_window_fade", nil, nil, nil, 1),
+	overlay = UIWidgets.create_simple_rect("achievement_window_mask", {
+		220,
+		12,
+		12,
+		12
+	}, 4),
+	overlay_fade = UIWidgets.create_simple_texture("options_window_fade_01", "achievement_window_mask", nil, nil, nil, 5),
+	overlay_text = UIWidgets.create_simple_text(Localize("achv_menu_no_quests_text"), "achievement_window_mask", nil, nil, no_entries_overlay_text_style)
+}
 local overlay_widgets = {
 	claim_overlay = UIWidgets.create_simple_rect("window", {
 		220,
@@ -2125,87 +2377,39 @@ local overlay_widgets = {
 		12
 	}, 36),
 	claim_overlay_fade = UIWidgets.create_simple_texture("options_window_fade_01", "window", nil, nil, nil, 37),
-	claim_overlay_text = UIWidgets.create_simple_text("Claiming Rewards", "window", nil, nil, claim_overlay_text_style),
-	claim_overlay_sub_text = UIWidgets.create_simple_text("Holy Sigmar", "window", nil, nil, claim_overlay_sub_text_style),
 	claim_overlay_loading_glow = UIWidgets.create_simple_texture("loading_title_divider", "claim_overlay_divider", nil, nil, nil, 1),
 	claim_overlay_loading_frame = UIWidgets.create_simple_texture("loading_title_divider_background", "claim_overlay_divider")
 }
 local summary_widgets = {
-	summary_info_text = UIWidgets.create_simple_text(Localize("achv_menu_summary_description_text"), "summary_info_bg", nil, nil, summary_text_style),
-	summary_center_window = UIWidgets.create_tiled_texture("summary_center_window", "menu_frame_bg_01", {
-		960,
-		1080
-	}, nil, nil, {
-		255,
-		180,
-		180,
-		180
-	}),
-	summary_center_window_frame = UIWidgets.create_frame("summary_center_window", scenegraph_definition.summary_center_window.size, "menu_frame_11", 20),
-	summary_center_window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "summary_center_window_fade"),
-	summary_center_window_button = create_window_button("summary_center_window_fade"),
-	summary_center_arrow = UIWidgets.create_simple_texture("achievement_arrow_hover", "summary_center_arrow"),
-	summary_center_title = UIWidgets.create_simple_text(Localize("achv_menu_summary_overview_title"), "summary_center_title", nil, nil, title_text_style),
-	summary_center_sub_title = UIWidgets.create_simple_text(Localize("achv_menu_summary_recent_title"), "summary_center_sub_title", nil, nil, title_text_style),
-	summary_center_title_divider = UIWidgets.create_simple_texture("divider_01_top", "summary_center_title_divider"),
-	summary_center_sub_title_divider = UIWidgets.create_simple_texture("divider_01_top", "summary_center_sub_title_divider"),
-	summary_center_recent_frames = UIWidgets.create_simple_multi_texture({
-		"achievement_left",
-		"achievement_left",
-		"achievement_left"
-	}, {
-		{
-			172,
-			181
-		},
-		{
-			172,
-			181
-		},
-		{
-			172,
-			181
-		}
-	}, nil, nil, {
-		5,
-		0
-	}, "summary_center_recent_frames"),
-	summary_center_recent_icons = UIWidgets.create_simple_multi_texture({
-		"achievement_trophy_01",
-		"achievement_trophy_01",
-		"achievement_trophy_01"
-	}, {
-		{
-			130,
-			131
-		},
-		{
-			130,
-			131
-		},
-		{
-			130,
-			131
-		}
-	}, nil, nil, {
-		47,
-		0
-	}, "summary_center_recent_icons"),
+	summary_center_window = UIWidgets.create_simple_texture("achievement_summary_bg", "summary_center_window_fade"),
+	summary_center_window_frame = UIWidgets.create_frame("summary_center_window", scenegraph_definition.summary_center_window.size, "menu_frame_11", 30),
+	summary_center_text = UIWidgets.create_simple_text(Localize("achv_menu_summary_description_text"), "summary_center_text", nil, nil, summary_text_style),
+	summary_right_window_frame = UIWidgets.create_frame("summary_right_window", scenegraph_definition.summary_right_window.size, "menu_frame_11", 20),
+	summary_right_window_button = create_window_button("summary_right_window_fade", "achievement_challenges_bg"),
+	summary_right_arrow = UIWidgets.create_simple_texture("achievement_arrow_hover", "summary_right_arrow"),
+	summary_right_title = UIWidgets.create_simple_text(Localize("achv_menu_summary_overview_title"), "summary_right_title", nil, nil, summary_title_text_style),
+	summary_right_title_divider = UIWidgets.create_simple_texture("divider_01_top", "summary_right_title_divider"),
 	summary_achievement_bar_1 = UIWidgets.create_statistics_bar("summary_achievement_bar_1", scenegraph_definition.summary_achievement_bar_1.size),
 	summary_achievement_bar_2 = UIWidgets.create_statistics_bar("summary_achievement_bar_2", scenegraph_definition.summary_achievement_bar_2.size),
 	summary_achievement_bar_3 = UIWidgets.create_statistics_bar("summary_achievement_bar_3", scenegraph_definition.summary_achievement_bar_3.size),
 	summary_achievement_bar_4 = UIWidgets.create_statistics_bar("summary_achievement_bar_4", scenegraph_definition.summary_achievement_bar_4.size),
 	summary_achievement_bar_5 = UIWidgets.create_statistics_bar("summary_achievement_bar_5", scenegraph_definition.summary_achievement_bar_5.size),
-	summary_right_window = UIWidgets.create_simple_texture("achievements_backgroung_quest", "summary_right_window_fade"),
-	summary_right_window_frame = UIWidgets.create_frame("summary_right_window", scenegraph_definition.summary_right_window.size, "menu_frame_11", 20),
-	summary_right_window_fade = UIWidgets.create_simple_texture("options_window_fade_01", "summary_right_window_fade", nil, nil, nil, 1),
-	summary_right_window_button = create_window_button("summary_right_window_fade"),
-	summary_right_arrow = UIWidgets.create_simple_texture("achievement_arrow_hover", "summary_right_arrow"),
-	summary_right_title_banner = UIWidgets.create_simple_texture("achievement_banner", "summary_right_title_banner"),
-	summary_right_title = UIWidgets.create_simple_text(Localize("achv_menu_summary_quests_available"), "summary_right_title", nil, nil, summary_quest_title_style),
-	summary_right_refresh_title = UIWidgets.create_simple_text(Localize("achv_menu_summary_quest_refresh"), "summary_right_info", nil, nil, quest_refresh_title_text),
-	summary_right_refresh_value = UIWidgets.create_simple_text("00:00:00", "summary_right_info", nil, nil, quest_refresh_value_text),
-	summary_quest_book = create_quest_book("summary_quest_book")
+	summary_achievement_bar_6 = UIWidgets.create_statistics_bar("summary_achievement_bar_6", scenegraph_definition.summary_achievement_bar_6.size),
+	summary_quest_bar_background_1 = UIWidgets.create_simple_texture("tab_menu_bg_02", "summary_quest_bar_background_1"),
+	summary_quest_bar_background_2 = UIWidgets.create_simple_texture("tab_menu_bg_02", "summary_quest_bar_background_2"),
+	summary_quest_bar_1 = UIWidgets.create_quest_bar("summary_quest_bar_1", scenegraph_definition.summary_quest_bar_1.size),
+	summary_quest_bar_2 = UIWidgets.create_quest_bar("summary_quest_bar_2", scenegraph_definition.summary_quest_bar_2.size),
+	summary_quest_bar_title_1 = UIWidgets.create_simple_text(Localize("achv_menu_daily_category_title"), "summary_quest_bar_title_1", nil, nil, quest_bar_title_text),
+	summary_quest_bar_title_2 = UIWidgets.create_simple_text(Localize("achv_menu_daily_category_title"), "summary_quest_bar_title_2", nil, nil, quest_bar_title_text),
+	summary_quest_bar_timer_1 = UIWidgets.create_simple_text("00:00:00", "summary_quest_bar_title_1", nil, nil, quest_bar_timer_text),
+	summary_quest_bar_timer_2 = UIWidgets.create_simple_text("", "summary_quest_bar_title_2", nil, nil, quest_bar_timer_text),
+	summary_left_window_frame = UIWidgets.create_frame("summary_left_window", scenegraph_definition.summary_left_window.size, "menu_frame_11", 20),
+	summary_left_window_button = create_window_button("summary_left_window_fade", "achievement_quests_bg"),
+	summary_left_arrow = UIWidgets.create_simple_texture("achievement_arrow_hover", "summary_left_arrow"),
+	summary_left_title = UIWidgets.create_simple_text(Localize("achv_menu_summary_quests_available"), "summary_left_title", nil, nil, summary_title_text_style),
+	summary_left_title_divider = UIWidgets.create_simple_texture("divider_01_top", "summary_left_title_divider"),
+	summary_quest_book = create_quest_book("summary_quest_book"),
+	summary_achievement_flag = UIWidgets.create_simple_texture("achievement_menu_flag", "summary_achievement_flag")
 }
 local category_tab_widgets = {}
 
@@ -2283,6 +2487,8 @@ local animation_definitions = {
 }
 
 return {
+	quest_widgets = quest_widgets,
+	achievement_widgets = achievement_widgets,
 	category_tab_info = category_tab_info,
 	achievement_spacing = achievement_spacing,
 	checklist_entry_size = checklist_entry_size,

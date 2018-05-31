@@ -542,7 +542,7 @@ LiquidAreaDamageExtension._update_collision_detection = function (self, dt, t)
 				if not self._affected_player_units[unit] and self._hit_player_function then
 					self._affected_player_units[unit] = true
 
-					self._hit_player_function(unit, PLAYER_AND_BOT_UNITS)
+					self._hit_player_function(unit, PLAYER_AND_BOT_UNITS, self._source_unit)
 				end
 
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")

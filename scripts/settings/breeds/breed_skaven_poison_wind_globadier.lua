@@ -196,7 +196,17 @@ local breed_data = {
 		teleporters = 5,
 		bot_poison_wind = 2,
 		fire_grenade = 10
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_globadier_kill_before_throwing(blackboard, killer_unit)
+		QuestSettings.check_globadier_kill_during_suicide(blackboard, unit, killer_unit)
+	end
 }
 Breeds.skaven_poison_wind_globadier = table.create_copy(Breeds.skaven_poison_wind_globadier, breed_data)
 local GLOBE_RADIUS = 4

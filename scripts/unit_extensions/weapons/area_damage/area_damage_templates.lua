@@ -411,6 +411,12 @@ AreaDamageTemplates.templates = {
 				local weapon_system = Managers.state.entity:system("weapon_system")
 
 				weapon_system:send_rpc_attack_hit(damage_source_id, unit_id, unit_id, hit_zone_id, damage_direction, damage_profile_id, "power_level", power_level, "hit_target_index", nil, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", 0, "is_critical_strike", false)
+
+				local is_ai_unit = DamageUtils.is_enemy(unit)
+
+				if is_ai_unit and not AiUtils.unit_alive(unit) then
+					QuestSettings.check_num_enemies_killed_by_poison(unit, extension_unit)
+				end
 			end
 		}
 	}

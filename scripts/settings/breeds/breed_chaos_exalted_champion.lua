@@ -49,12 +49,12 @@ local breed_data = {
 	use_slot_type = "large",
 	boss = true,
 	hit_mass_count = 20,
-	sync_full_rotation = false,
 	race = "chaos",
 	disable_second_hit_ragdoll = true,
 	proximity_system_check = true,
 	death_reaction = "ai_default",
 	armor_category = 2,
+	sync_full_rotation = false,
 	death_sound_event = "Play_enemy_vce_chaos_warrior_die",
 	use_big_boy_turning = false,
 	use_navigation_path_splines = true,
@@ -272,7 +272,16 @@ local breed_data = {
 		j_neck = 0.3,
 		j_lefthand = 0.2,
 		j_rightforearm = 0.2
-	}
+	},
+	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+		local blackboard = BLACKBOARDS[unit]
+
+		if not Unit.alive(killer_unit) then
+			return
+		end
+
+		QuestSettings.check_killed_lord_as_last_player_standing(killer_unit)
+	end
 }
 Breeds.chaos_exalted_champion_warcamp = table.create_copy(Breeds.chaos_exalted_champion_warcamp, breed_data)
 local breed_data_norsca = {
@@ -1142,9 +1151,8 @@ local action_data = {
 					local current_difficulty = Managers.state.difficulty:get_difficulty()
 					local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
 					local allowed_difficulty = allowed_difficulties[current_difficulty]
-					local achievements_enabled = Development.parameter("v2_achievements")
 
-					if achievements_enabled and allowed_difficulty and not blackboard.hit_warrior_challenge_completed then
+					if allowed_difficulty and not blackboard.hit_warrior_challenge_completed then
 						local hit_unit_blackboard = BLACKBOARDS[hit_unit]
 						local is_chaos_warrior = hit_unit_blackboard.breed.name == "chaos_warrior"
 						local num_times_hit_chaos_warrior = blackboard.num_times_hit_chaos_warrior
@@ -1159,6 +1167,8 @@ local action_data = {
 							statistics_db:increment_stat_and_sync_to_clients(stat_name)
 
 							blackboard.hit_warrior_challenge_completed = true
+
+							QuestSettings.send_completed_message(stat_name)
 						end
 					end
 				end

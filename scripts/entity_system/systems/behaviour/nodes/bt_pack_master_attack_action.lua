@@ -125,6 +125,8 @@ BTPackMasterAttackAction.attack_success = function (self, unit, blackboard)
 				blackboard.attack_success = PerceptionUtils.pack_master_has_line_of_sight_for_attack(blackboard.physics_world, unit, target_unit)
 			else
 				blackboard.attack_success = false
+
+				QuestSettings.check_pack_master_dodge(target_unit)
 			end
 		else
 			blackboard.attack_success = PerceptionUtils.pack_master_has_line_of_sight_for_attack(blackboard.physics_world, unit, target_unit)

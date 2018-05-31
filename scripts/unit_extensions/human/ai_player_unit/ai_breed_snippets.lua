@@ -1489,6 +1489,8 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 		end
 
 		blackboard.death_sequence_positions = death_sequence_positions
+	else
+		print("Grey seer: Found no death sequence positions")
 	end
 
 	local node_units = level_analysis.generic_ai_node_units.grey_seer_teleport_position
@@ -1503,6 +1505,8 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 		end
 
 		blackboard.defensive_teleport_positions = defensive_teleport_positions
+	else
+		print("Grey seer: Found no defensive teleport positions")
 	end
 
 	local node_units = level_analysis.generic_ai_node_units.grey_seer_call_stormfiend_position
@@ -1517,6 +1521,8 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 		end
 
 		blackboard.call_stormfiend_positions = call_stormfiend_positions
+	else
+		print("Grey seer: Found no call stormfiend positions")
 	end
 end
 
@@ -1528,6 +1534,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 	local hit_reaction_extension = blackboard.hit_reaction_extension
 	local position = POSITION_LOOKUP[unit]
 	local current_phase = blackboard.current_phase
+	local mount_unit = mounted_data.mount_unit
 	local network_manager = Managers.state.network
 	local game = network_manager:game()
 	local go_id = Managers.state.unit_storage:go_id(unit)
@@ -1538,7 +1545,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		return
 	end
 
-	if current_phase == 4 and blackboard.death_sequence then
+	if blackboard.current_phase ~= 5 and blackboard.death_sequence then
 		blackboard.current_phase = 5
 		local event_data = FrameTable.alloc_table()
 
@@ -1553,34 +1560,39 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		local conflict_director = Managers.state.conflict
 
 		conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
-	elseif current_phase == 3 and hp < 0.25 then
-		blackboard.current_phase = 4
 	elseif current_phase == 2 and hp < 0.5 then
 		blackboard.current_phase = 3
 	elseif current_phase == 1 and hp < 0.75 then
 		blackboard.current_phase = 2
 	end
 
-	if not AiUtils.unit_alive(mounted_data.mount_unit) and blackboard.current_phase ~= 4 and blackboard.current_phase ~= 5 then
+	if not AiUtils.unit_alive(mount_unit) and blackboard.current_phase ~= 5 and blackboard.current_phase ~= 6 then
+		if blackboard.current_phase ~= 4 then
+			local event_data = FrameTable.alloc_table()
+
+			dialogue_input:trigger_networked_dialogue_event("egs_stormfiend_dead", event_data)
+		end
+
 		blackboard.current_phase = 4
 		blackboard.knocked_off_mount = true
 		blackboard.call_stormfiend = nil
 		blackboard.about_to_mount = nil
 		blackboard.should_mount_unit = nil
-		local event_data = FrameTable.alloc_table()
-
-		dialogue_input:trigger_networked_dialogue_event("egs_stormfiend_dead", event_data)
 	end
 
 	if blackboard.unlink_unit then
 		blackboard.unlink_unit = nil
-		local mount_blackboard = BLACKBOARDS[mounted_data.mount_unit]
-		mount_blackboard.linked_unit = nil
+		local mount_blackboard = mount_unit and BLACKBOARDS[mount_unit]
+
+		if mount_blackboard then
+			mount_blackboard.linked_unit = nil
+		end
+
 		blackboard.quick_teleport_timer = t + 10
 		blackboard.quick_teleport = nil
 		blackboard.hp_at_knocked_off = hp
 		local game = Managers.state.network:game()
-		local mount_go_id = Managers.state.unit_storage:go_id(mounted_data.mount_unit)
+		local mount_go_id = Managers.state.unit_storage:go_id(mount_unit)
 
 		if game and mount_go_id then
 			GameSession.set_game_object_field(game, mount_go_id, "animation_synced_unit_id", 0)
@@ -1593,33 +1605,9 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		mounted_data.knocked_off_mounted_timer = t
 	end
 
-	local current_hit_reaction_type = blackboard.current_hit_reaction_type
-	local mounted_timer_finished = mounted_data.knocked_off_mounted_timer and mounted_data.knocked_off_mounted_timer <= t
-	local should_use_on_ground_hit_react = (blackboard.knocked_off_mount and not mounted_timer_finished) or not AiUtils.unit_alive(mounted_data.mount_unit)
-
-	if current_hit_reaction_type ~= "on_ground" and should_use_on_ground_hit_react then
-		hit_reaction_extension:set_hit_effect_template_id("HitEffectsSkavenGreySeer")
-
-		health_extension.is_invincible = false
-
-		GameSession.set_game_object_field(game, go_id, "show_health_bar", true)
-		network_transmit:send_rpc_clients("rpc_set_hit_reaction_template", go_id, "HitEffectsSkavenGreySeer")
-
-		blackboard.current_hit_reaction_type = "on_ground"
-	elseif current_hit_reaction_type ~= "mounted" and not should_use_on_ground_hit_react then
-		hit_reaction_extension:set_hit_effect_template_id("HitEffectsSkavenGreySeerMounted")
-
-		health_extension.is_invincible = true
-
-		GameSession.set_game_object_field(game, go_id, "show_health_bar", false)
-		network_transmit:send_rpc_clients("rpc_set_hit_reaction_template", go_id, "HitEffectsSkavenGreySeerMounted")
-
-		blackboard.current_hit_reaction_type = "mounted"
-	end
-
-	if blackboard.knocked_off_mount and AiUtils.unit_alive(mounted_data.mount_unit) then
-		local mount_unit = mounted_data.mount_unit
+	if blackboard.knocked_off_mount and AiUtils.unit_alive(mount_unit) then
 		local mount_blackboard = BLACKBOARDS[mount_unit]
+		local mounted_timer_finished = mounted_data.knocked_off_mounted_timer and mounted_data.knocked_off_mounted_timer <= t
 		local should_call_stormfiend = not blackboard.call_stormfiend and not mount_blackboard.intro_rage and mounted_timer_finished and not mount_blackboard.goal_position and not mount_blackboard.anim_cb_move
 
 		if should_call_stormfiend then
@@ -1647,7 +1635,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		local conflict_director = Managers.state.conflict
 		local timer = hp * 12
 
-		if blackboard.knocked_off_mount or not AiUtils.unit_alive(mounted_data.mount_unit) then
+		if blackboard.knocked_off_mount or not AiUtils.unit_alive(mount_unit) then
 			timer = timer * 0.5
 		end
 

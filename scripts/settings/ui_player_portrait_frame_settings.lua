@@ -64,6 +64,18 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_skulls = {
+		{
+			texture = "portrait_frame_skulls",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	default = {
 		{
 			texture = "portrait_frame_0000",

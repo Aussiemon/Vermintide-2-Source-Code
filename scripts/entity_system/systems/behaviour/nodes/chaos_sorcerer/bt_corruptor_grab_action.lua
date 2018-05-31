@@ -16,6 +16,7 @@ BTCorruptorGrabAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_aborted = nil
 	blackboard.attack_success = nil
 	blackboard.drain_life_at = t
+	blackboard.has_dealed_damage = false
 	blackboard.projectile_position = Vector3Box()
 	local network_manager = Managers.state.network
 
@@ -173,6 +174,8 @@ BTCorruptorGrabAction.drain_life = function (self, unit, blackboard)
 	local health_extension = ScriptUnit.extension(unit, "health_system")
 
 	health_extension:add_heal(unit, heal_amount, nil, heal_type)
+
+	blackboard.has_dealed_damage = true
 end
 
 BTCorruptorGrabAction.anim_cb_damage = function (self, unit, blackboard)
@@ -222,6 +225,8 @@ BTCorruptorGrabAction.grab_player = function (self, unit, blackboard)
 		if (distance_squared < blackboard.action.min_dodge_angle_squared and math.radians_to_degrees(angle) <= blackboard.action.dodge_angle) or target_distance_squared < blackboard.action.dodge_distance * blackboard.action.dodge_distance then
 			blackboard.attack_success = PerceptionUtils.is_position_in_line_of_sight(unit, self_pos, target_unit_pos, physics_world)
 		else
+			QuestSettings.check_corruptor_dodge(target_unit)
+
 			blackboard.attack_success = false
 		end
 	elseif blackboard.action.max_distance_squared < Vector3.distance_squared(self_pos, target_unit_pos) or target_distance_squared > 25 then

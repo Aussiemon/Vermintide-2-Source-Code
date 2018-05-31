@@ -1051,16 +1051,23 @@ BuffFunctionTemplates.functions = {
 			local buff_template = buff.template
 
 			if Managers.state.network.is_server then
+				local attacker_unit_is_alive = Unit.alive(params.attacker_unit)
+				local attacker_unit = (attacker_unit_is_alive and params.attacker_unit) or unit
 				local health_extension = ScriptUnit.extension(unit, "health_system")
 
 				if health_extension:is_alive() then
-					local attacker_unit = (Unit.alive(params.attacker_unit) and params.attacker_unit) or unit
 					local armor_type = buff.armor_type
 					local damage_type = buff_template.damage_type
 					local damage = buff.damage[armor_type]
 					local damage_source = buff.damage_source
 
 					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, Vector3(1, 0, 0), damage_source)
+				end
+
+				local is_ai_unit = DamageUtils.is_enemy(unit)
+
+				if attacker_unit_is_alive and is_ai_unit and not AiUtils.unit_alive(unit) then
+					QuestSettings.check_num_enemies_killed_by_warpfire(unit, attacker_unit)
 				end
 			end
 
@@ -1135,10 +1142,11 @@ BuffFunctionTemplates.functions = {
 			local buff_template = buff.template
 
 			if Managers.state.network.is_server then
+				local attacker_unit_is_alive = Unit.alive(params.attacker_unit)
+				local attacker_unit = (attacker_unit_is_alive and params.attacker_unit) or unit
 				local health_extension = ScriptUnit.extension(unit, "health_system")
 
 				if health_extension:is_alive() then
-					local attacker_unit = (Unit.alive(params.attacker_unit) and params.attacker_unit) or unit
 					local armor_type = buff.armor_type
 					local damage_type = buff_template.damage_type
 					local damage = buff.damage[armor_type]

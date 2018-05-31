@@ -205,6 +205,7 @@ BTThrowPoisonGlobeAction.launch_projectile = function (self, blackboard, action,
 	}
 	local projectile_unit_name = "units/weapons/projectile/poison_wind_globe/poison_wind_globe"
 	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, "aoe_projectile_unit", extension_init_data, initial_position)
+	blackboard.has_thrown_first_globe = true
 end
 
 return

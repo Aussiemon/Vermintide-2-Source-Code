@@ -716,7 +716,7 @@ local function create_act_widget(index, optional_texture_version)
 	local content = {
 		text = "title_text",
 		title_edge = "game_option_divider",
-		background = "map_bg_image_03",
+		background = "menu_frame_bg_01",
 		title_bg = "playername_bg_02",
 		draw_divider = draw_divider,
 		edge_holder_left = "menu_frame_" .. texture_version .. "_divider_left",
@@ -879,7 +879,7 @@ local function create_end_act_widget(optional_texture_version)
 	local content = {
 		text = "title_text",
 		title_edge = "game_option_divider",
-		background = "map_bg_image_03",
+		background = "menu_frame_bg_01",
 		title_bg = "playername_bg_02",
 		edge_holder_top = "menu_frame_" .. texture_version .. "_divider_top",
 		edge_holder_bottom = "menu_frame_" .. texture_version .. "_divider_bottom",

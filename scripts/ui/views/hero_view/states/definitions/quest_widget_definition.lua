@@ -147,6 +147,14 @@ local function create_quest_entry(scenegraph_id, size)
 		},
 		{
 			pass_type = "texture",
+			style_id = "close_icon_bg",
+			texture_id = "close_icon_bg",
+			content_check_function = function (content)
+				return content.can_close
+			end
+		},
+		{
+			pass_type = "texture",
 			style_id = "close_icon",
 			texture_id = "close_icon",
 			content_check_function = function (content)
@@ -156,7 +164,7 @@ local function create_quest_entry(scenegraph_id, size)
 		{
 			pass_type = "texture",
 			style_id = "close_icon_hover",
-			texture_id = "close_icon",
+			texture_id = "close_icon_hover",
 			content_check_function = function (content)
 				return content.can_close and content.close_button_hotspot.is_hover
 			end
@@ -375,8 +383,13 @@ local function create_quest_entry(scenegraph_id, size)
 		},
 		{
 			pass_type = "texture",
-			style_id = "icon_background",
-			texture_id = "icon_background"
+			style_id = "icon_background_ribbon",
+			texture_id = "icon_background_ribbon"
+		},
+		{
+			pass_type = "texture",
+			style_id = "icon",
+			texture_id = "icon"
 		},
 		{
 			pass_type = "texture",
@@ -526,19 +539,22 @@ local function create_quest_entry(scenegraph_id, size)
 		}
 	}
 	local content = {
-		expand_background = "achievement_paper_middle",
-		icon_background = "quest_left",
+		progress_bar = "chest_upgrade_fill",
+		close_icon_bg = "achievement_refresh_off",
 		expand_background_edge = "achievement_paper_bottom",
 		reward_icon = "icons_placeholder",
 		progress_text = "n/a",
 		glass = "button_glass_02",
-		close_background = "quest_close",
+		reward_hover = "item_icon_hover",
+		expand_background = "achievement_paper_middle",
 		draw_bar = true,
-		title_divider = "divider_01_bottom",
-		icon = "achievement_trophy_01",
+		icon_background_ribbon = "quest_book_ribbon",
+		icon = "quest_book_skull",
 		arrow = "achievement_arrow",
+		icon_background = "quest_book_skull",
+		title_divider = "divider_01_bottom",
 		background_fade = "options_window_fade_01",
-		progress_bar = "chest_upgrade_fill",
+		close_background = "quest_close",
 		reward_icon_claimed = "achievement_banner",
 		background = "quests_background",
 		arrow_hover = "achievement_arrow_hover",
@@ -550,13 +566,13 @@ local function create_quest_entry(scenegraph_id, size)
 		expanded = false,
 		description = "n/a",
 		expandable = false,
-		close_icon = "friends_icon_close",
+		close_icon = "achievement_refresh_white",
 		reward_frame = "item_frame",
 		rect_masked = "rect_masked",
 		can_close = false,
 		claiming = false,
 		reward_background = "quest_right",
-		reward_hover = "item_icon_hover",
+		close_icon_hover = "achievement_refresh_on",
 		button_hotspot = {},
 		progress_button_hotspot = {},
 		reward_button_hotspot = {},
@@ -599,28 +615,51 @@ local function create_quest_entry(scenegraph_id, size)
 		close_icon = {
 			masked = true,
 			size = {
-				32,
-				32
+				25,
+				25
 			},
 			offset = {
-				(size[1] + 50) - 36,
-				size[2] - 30,
-				12
+				(size[1] + 50) - 31,
+				size[2] - 25,
+				13
 			},
-			color = Colors.get_color_table_with_alpha("white", 255)
+			color = {
+				255,
+				200,
+				200,
+				200
+			}
 		},
 		close_icon_hover = {
 			masked = true,
 			size = {
-				32,
-				32
+				25,
+				25
 			},
 			offset = {
-				(size[1] + 50) - 36,
-				size[2] - 30,
+				(size[1] + 50) - 31,
+				size[2] - 25,
 				12
 			},
-			color = Colors.get_color_table_with_alpha("font_button_normal", 255)
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		close_icon_bg = {
+			masked = true,
+			size = {
+				25,
+				25
+			},
+			offset = {
+				(size[1] + 50) - 31,
+				size[2] - 25,
+				12
+			},
+			color = Colors.get_color_table_with_alpha("white", 255)
 		},
 		close_background = {
 			vertical_alignment = "top",
@@ -634,6 +673,12 @@ local function create_quest_entry(scenegraph_id, size)
 				50,
 				10,
 				11
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
 			}
 		},
 		button_hotspot = {
@@ -1086,8 +1131,8 @@ local function create_quest_entry(scenegraph_id, size)
 			masked = true,
 			horizontal_alignment = "left",
 			texture_size = {
-				314,
-				178
+				165,
+				163
 			},
 			color = {
 				255,
@@ -1097,17 +1142,17 @@ local function create_quest_entry(scenegraph_id, size)
 			},
 			offset = {
 				-50,
-				8,
+				0,
 				10
 			}
 		},
-		icon = {
+		icon_background_ribbon = {
 			vertical_alignment = "center",
 			masked = true,
 			horizontal_alignment = "left",
 			texture_size = {
-				130,
-				131
+				154,
+				169
 			},
 			color = {
 				255,
@@ -1116,8 +1161,28 @@ local function create_quest_entry(scenegraph_id, size)
 				255
 			},
 			offset = {
-				-23,
-				-2,
+				110,
+				11,
+				9
+			}
+		},
+		icon = {
+			vertical_alignment = "center",
+			masked = true,
+			horizontal_alignment = "left",
+			texture_size = {
+				165,
+				163
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				-50,
+				0,
 				11
 			}
 		},

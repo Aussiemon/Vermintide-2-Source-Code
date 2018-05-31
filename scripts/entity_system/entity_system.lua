@@ -157,6 +157,7 @@ require("scripts/unit_extensions/cutscene_camera/cutscene_camera")
 require("scripts/unit_extensions/smart_targeting/player_unit_smart_targeting_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_shield_user_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_shield_user_husk_extension")
+require("scripts/unit_extensions/props/quest_challenge_prop_extension")
 
 local projectile_locomotion_extensions = {
 	"ProjectilePhysicsHuskLocomotionExtension",
@@ -323,7 +324,8 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("props_system", ExtensionSystemBase, entity_system_creation_context, {
 		"PerlinLightExtension",
 		"BotNavTransitionExtension",
-		"EndZoneExtension"
+		"EndZoneExtension",
+		"QuestChallengePropExtension"
 	})
 	self:_add_system("nav_graph_system", NavGraphSystem, entity_system_creation_context)
 	self:_add_system("audio_system", AudioSystem, entity_system_creation_context)

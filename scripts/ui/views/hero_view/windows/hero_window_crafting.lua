@@ -5,6 +5,7 @@ require("scripts/ui/views/hero_view/craft_pages/craft_page_craft_item")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_apply_skin")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_extract_skin")
 require("scripts/ui/views/hero_view/craft_pages/craft_page_upgrade_item")
+require("scripts/ui/views/hero_view/craft_pages/craft_page_convert_dust")
 
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_crafting_definitions")
 local crafting_recipes, crafting_recipes_by_name, crafting_recipes_lookup = dofile("scripts/settings/crafting/crafting_recipes")
@@ -56,6 +57,12 @@ local page_settings = {
 		sound_event_enter = "play_gui_equipment_button",
 		name = "apply_weapon_skin",
 		class_name = "CraftPageApplySkin",
+		sound_event_exit = "play_gui_equipment_close"
+	},
+	{
+		sound_event_enter = "play_gui_equipment_button",
+		name = "convert_blue_dust",
+		class_name = "CraftPageConvertDust",
 		sound_event_exit = "play_gui_equipment_close"
 	}
 }
@@ -255,13 +262,16 @@ HeroWindowCrafting._handle_input = function (self, dt, t)
 		self:_play_sound("play_gui_inventory_next_hover")
 	end
 
+	local total_pages = self._total_pages
+	local current_page = self._current_page
+
 	if self:_is_button_pressed(page_button_next) then
-		local next_page_index = self._current_page + 1
+		local next_page_index = current_page % total_pages + 1
 
 		self:_change_recipe_page(next_page_index)
 		self:_play_sound("play_gui_craft_recipe_next")
 	elseif self:_is_button_pressed(page_button_previous) then
-		local next_page_index = self._current_page - 1
+		local next_page_index = (current_page > 1 and current_page - 1) or total_pages
 
 		self:_change_recipe_page(next_page_index)
 		self:_play_sound("play_gui_craft_recipe_next")
@@ -270,14 +280,14 @@ HeroWindowCrafting._handle_input = function (self, dt, t)
 		local total_pages = #page_settings
 
 		if input_service:get("cycle_next") then
-			local next_page_index = self._current_page + 1
+			local next_page_index = current_page % total_pages + 1
 
 			if total_pages >= next_page_index then
 				self:_change_recipe_page(next_page_index)
 				self:_play_sound("play_gui_craft_recipe_next")
 			end
 		elseif input_service:get("cycle_previous") then
-			local next_page_index = self._current_page - 1
+			local next_page_index = (current_page > 1 and current_page - 1) or total_pages
 
 			if next_page_index > 0 then
 				self:_change_recipe_page(next_page_index)
@@ -342,8 +352,6 @@ HeroWindowCrafting._change_recipe_page = function (self, current_page)
 		local widgets_by_name = self._widgets_by_name
 		widgets_by_name.page_text_left.content.text = tostring(current_page)
 		widgets_by_name.page_text_right.content.text = tostring(total_pages)
-		widgets_by_name.page_button_next.content.button_hotspot.disable_button = current_page == total_pages
-		widgets_by_name.page_button_previous.content.button_hotspot.disable_button = current_page == 1
 
 		self:_set_page_index(current_page)
 	end
@@ -392,7 +400,8 @@ HeroWindowCrafting._update_craft_start_time = function (self, dt, t)
 	end
 
 	craft_start_duration = craft_start_duration + dt
-	local progress = math.min(craft_start_duration / 0.5, 1)
+	local animation_time = UISettings.crafting_animation_in_time
+	local progress = math.min(craft_start_duration / animation_time, 1)
 	local animation_progress = math.easeInCubic(progress)
 
 	self:_set_crafting_fg_progress(animation_progress)
@@ -415,7 +424,8 @@ HeroWindowCrafting._update_craft_glow_in_time = function (self, dt, t)
 	end
 
 	craft_glow_in_duration = craft_glow_in_duration + dt
-	local progress = math.min(craft_glow_in_duration / 0.5, 1)
+	local animation_time = UISettings.crafting_animation_in_time
+	local progress = math.min(craft_glow_in_duration / animation_time, 1)
 	local animation_progress = math.easeInCubic(progress)
 	local widget = self._widgets_by_name.crafting_fg_glow
 	widget.style.texture_id.color[1] = animation_progress * 255
@@ -436,7 +446,8 @@ HeroWindowCrafting._update_craft_glow_wait_time = function (self, dt, t)
 	end
 
 	craft_glow_wait_duration = craft_glow_wait_duration + dt
-	local progress = math.min(craft_glow_wait_duration / 1, 1)
+	local animation_wait_time = UISettings.crafting_animation_wait_time
+	local progress = math.min(craft_glow_wait_duration / animation_wait_time, 1)
 	local animation_progress = math.ease_pulse(1 - progress)
 
 	if progress == 1 then
@@ -454,7 +465,8 @@ HeroWindowCrafting._update_craft_glow_out_time = function (self, dt, t)
 	end
 
 	craft_glow_out_duration = craft_glow_out_duration + dt
-	local progress = math.min(craft_glow_out_duration / 0.5, 1)
+	local animation_time = UISettings.crafting_animation_out_time
+	local progress = math.min(craft_glow_out_duration / animation_time, 1)
 	local animation_progress = math.easeOutCubic(1 - progress)
 	local widget = self._widgets_by_name.crafting_fg_glow
 	widget.style.texture_id.color[1] = animation_progress * 255

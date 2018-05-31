@@ -105,6 +105,14 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 		AiUtils.alert_nearby_friends_of_enemy(unit, ai_extension:blackboard().group_blackboard.broadphase, killer_unit)
 	end
 
+	local breed = Unit.get_data(unit, "breed")
+
+	if is_server and breed.custom_death_enter_function then
+		local damage_source = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
+
+		breed.custom_death_enter_function(unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
+	end
+
 	ai_extension:die(killer_unit, killing_blow)
 
 	local locomotion = ScriptUnit.has_extension(unit, "locomotion_system")
@@ -120,22 +128,16 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 		locomotion:set_movement_type("disabled")
 	end
 
-	local breed = Unit.get_data(unit, "breed")
-
 	if ScriptUnit.has_extension(unit, "ai_inventory_system") and not breed.keep_weapon_on_death then
 		local inventory_system = Managers.state.entity:system("ai_inventory_system")
 
 		inventory_system:drop_item(unit)
 	end
 
-	local achievements_enabled = Development.parameter("v2_achievements")
+	local statistics_db = context.statistics_db
 
-	if achievements_enabled then
-		local statistics_db = context.statistics_db
-
-		handle_boss_difficulty_kill_achievement_tracking(breed, statistics_db)
-		handle_military_event_achievement(damage_type, breed.name, statistics_db)
-	end
+	handle_boss_difficulty_kill_achievement_tracking(breed, statistics_db)
+	handle_military_event_achievement(damage_type, breed.name, statistics_db)
 
 	local owner_unit = AiUtils.get_actual_attacker_unit(killer_unit)
 
@@ -384,11 +386,7 @@ local function ai_default_husk_start(unit, context, t, killing_blow, is_server)
 		end
 	end
 
-	local achievements_enabled = Development.parameter("v2_achievements")
-
-	if achievements_enabled then
-		handle_boss_difficulty_kill_achievement_tracking(breed, context.statistics_db)
-	end
+	handle_boss_difficulty_kill_achievement_tracking(breed, context.statistics_db)
 
 	local player = Managers.player:owner(owner_unit)
 

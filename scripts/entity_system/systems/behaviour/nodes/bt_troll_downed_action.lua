@@ -29,6 +29,8 @@ BTTrollDownedAction.enter = function (self, unit, blackboard, t)
 	blackboard.downed_state = "downed"
 
 	self:trigger_dialogue_event(unit, "chaos_troll_incapacitaded")
+
+	blackboard.num_regen = (blackboard.num_regen and blackboard.num_regen + 1) or 1
 end
 
 BTTrollDownedAction.leave = function (self, unit, blackboard, t, reason, destroy)

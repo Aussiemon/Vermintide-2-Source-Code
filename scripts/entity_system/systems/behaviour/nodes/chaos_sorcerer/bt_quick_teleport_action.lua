@@ -131,6 +131,9 @@ BTQuickTeleportAction.anim_cb_teleport_start_finished = function (self, unit, bl
 	if blackboard.action.teleport_end_anim then
 		Managers.state.network:anim_event(unit, blackboard.action.teleport_end_anim)
 	end
+
+	local t = Managers.time:time("game")
+	blackboard.teleport_at_t = t
 end
 
 BTQuickTeleportAction.anim_cb_teleport_end_finished = function (self, unit, blackboard)

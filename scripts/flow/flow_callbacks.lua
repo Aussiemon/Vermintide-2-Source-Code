@@ -991,15 +991,15 @@ function flow_callback_ussingen_barrel_challenge_completed(params)
 		local current_difficulty = Managers.state.difficulty:get_difficulty()
 		local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
 		local allowed_difficulty = allowed_difficulties[current_difficulty]
-		local achievements_enabled = Development.parameter("v2_achievements")
 
-		if achievements_enabled and allowed_difficulty then
+		if allowed_difficulty then
 			local num_valid_barrels = params.num_valid_barrels
 
 			if num_valid_barrels >= 3 then
 				local statistics_db = Managers.player:statistics_db()
 
 				statistics_db:increment_stat_and_sync_to_clients(stat_name)
+				QuestSettings.send_completed_message(stat_name)
 			end
 		end
 	end
