@@ -38,7 +38,7 @@ PlayerCharacterStateInteracting.on_enter = function (self, unit, input, dt, cont
 		local status_extension = self.status_extension
 		self.deactivate_block_on_exit = not status_extension:is_blocking()
 
-		if not LEVEL_EDITOR_TEST then
+		if not LEVEL_EDITOR_TEST and Managers.state.network:game() then
 			local game_object_id = Managers.state.unit_storage:go_id(unit)
 
 			if self.is_server then
@@ -69,7 +69,7 @@ PlayerCharacterStateInteracting.on_exit = function (self, unit, input, dt, conte
 	local status_extension = self.status_extension
 
 	if self.deactivate_block_on_exit then
-		if not LEVEL_EDITOR_TEST then
+		if not LEVEL_EDITOR_TEST and Managers.state.network:game() then
 			local game_object_id = Managers.state.unit_storage:go_id(unit)
 
 			if self.is_server then

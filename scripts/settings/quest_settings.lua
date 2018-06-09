@@ -377,17 +377,20 @@ end
 
 QuestSettings.check_ratling_gunner_blocked_shot = function (unit, attacking_unit)
 	local blackboard = BLACKBOARDS[attacking_unit]
-	local is_ratling_gunner = blackboard.breed.name == "skaven_ratling_gunner"
 
-	if is_ratling_gunner then
-		blackboard.has_completed_block_challenge_units = blackboard.has_completed_block_challenge_units or {}
+	if blackboard then
+		local is_ratling_gunner = blackboard.breed.name == "skaven_ratling_gunner"
 
-		if not blackboard.has_completed_block_challenge_units[unit] then
-			local stat_name = "ratling_gunner_blocked_shot"
+		if is_ratling_gunner then
+			blackboard.has_completed_block_challenge_units = blackboard.has_completed_block_challenge_units or {}
 
-			increment_stat(unit, stat_name)
+			if not blackboard.has_completed_block_challenge_units[unit] then
+				local stat_name = "ratling_gunner_blocked_shot"
 
-			blackboard.has_completed_block_challenge_units[unit] = true
+				increment_stat(unit, stat_name)
+
+				blackboard.has_completed_block_challenge_units[unit] = true
+			end
 		end
 	end
 end
