@@ -41,7 +41,7 @@ PlayFabMirrorDedicated._request_all_users_characters = function (self)
 	}
 	local character_request_cb = callback(self, "character_request_cb")
 
-	PlayFabClientApi.ExecuteCloudScript(request, character_request_cb, character_request_cb)
+	PlayFabClientApi.ExecuteCloudScript(request, character_request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
 end
@@ -55,7 +55,7 @@ PlayFabMirrorDedicated._request_user_inventory = function (self)
 	}
 	local inventory_request_cb = callback(self, "inventory_request_cb")
 
-	PlayFabClientApi.ExecuteCloudScript(request, inventory_request_cb, inventory_request_cb)
+	PlayFabClientApi.ExecuteCloudScript(request, inventory_request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
 end
@@ -79,7 +79,7 @@ PlayFabMirrorDedicated._request_character_readonly_data = function (self, charac
 	}
 	local character_data_request_cb = callback(self, "character_data_request_cb", characters, i)
 
-	PlayFabClientApi.ExecuteCloudScript(request, character_data_request_cb, character_data_request_cb)
+	PlayFabClientApi.ExecuteCloudScript(request, character_data_request_cb)
 end
 
 PlayFabMirrorDedicated.character_request_cb = function (self, result)

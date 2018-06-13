@@ -64,12 +64,12 @@ BackendInterfaceQuestsPlayfab.update = function (self, dt)
 
 	if request_quest_update then
 		local request = {
-			FunctionName = "getQuests",
-			FunctionParameter = {}
+			FunctionName = "getQuests"
 		}
-		local request_cb = callback(self, "get_quests_cb")
+		local success_callback = callback(self, "get_quests_cb")
+		local request_queue = self._backend_mirror:request_queue()
 
-		PlayFabClientApi.ExecuteCloudScript(request, request_cb, request_cb)
+		request_queue:enqueue(request, success_callback, false)
 
 		self._quests_updating = true
 	end
@@ -78,26 +78,21 @@ BackendInterfaceQuestsPlayfab.update = function (self, dt)
 end
 
 BackendInterfaceQuestsPlayfab.get_quests_cb = function (self, result)
-	if result.Error then
-		table.dump(result, nil, 6)
-		fassert(false, "get_quests_cb: it failed!")
-	else
-		local backend_mirror = self._backend_mirror
-		local function_result = result.FunctionResult
-		local current_daily_quests = function_result.current_daily_quests
-		local daily_quest_refresh_available = function_result.daily_quest_refresh_available
-		local daily_quest_update_time = function_result.daily_quest_update_time
-		local current_event_quests = function_result.current_event_quests
+	local backend_mirror = self._backend_mirror
+	local function_result = result.FunctionResult
+	local current_daily_quests = function_result.current_daily_quests
+	local daily_quest_refresh_available = function_result.daily_quest_refresh_available
+	local daily_quest_update_time = function_result.daily_quest_update_time
+	local current_event_quests = function_result.current_event_quests
 
-		backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
-		backend_mirror:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
-		backend_mirror:set_quest_data("daily_quest_update_time", tonumber(daily_quest_update_time))
-		backend_mirror:set_quest_data("current_event_quests", current_event_quests)
+	backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
+	backend_mirror:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
+	backend_mirror:set_quest_data("daily_quest_update_time", tonumber(daily_quest_update_time))
+	backend_mirror:set_quest_data("current_event_quests", current_event_quests)
 
-		self._quests_updating = false
-		self._dirty = true
-		self._quest_timer = 0
-	end
+	self._quests_updating = false
+	self._dirty = true
+	self._quest_timer = 0
 end
 
 BackendInterfaceQuestsPlayfab.delete = function (self)
@@ -144,40 +139,36 @@ BackendInterfaceQuestsPlayfab.refresh_daily_quest = function (self, key)
 			quest_key = key
 		}
 	}
-	local request_cb = callback(self, "refresh_quest_cb", id, key)
+	local success_callback = callback(self, "refresh_quest_cb", id, key)
+	local request_queue = self._backend_mirror:request_queue()
 
-	PlayFabClientApi.ExecuteCloudScript(request, request_cb, request_cb)
+	request_queue:enqueue(request, success_callback, false)
 
 	return id
 end
 
 BackendInterfaceQuestsPlayfab.refresh_quest_cb = function (self, id, key, result)
-	if result.Error then
-		table.dump(result, nil, 6)
-		fassert(false, "refresh_quest_cb: it failed!")
-	else
-		local backend_mirror = self._backend_mirror
-		local function_result = result.FunctionResult
+	local backend_mirror = self._backend_mirror
+	local function_result = result.FunctionResult
 
-		if function_result == "refresh_unavailable" then
-			Managers.backend:playfab_error(BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE)
+	if function_result == "refresh_unavailable" then
+		Managers.backend:playfab_error(BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_QUEST_REFRESH_UNAVAILABLE)
 
-			self._refresh_requests[id] = {}
+		self._refresh_requests[id] = {}
 
-			return
-		end
-
-		local current_daily_quests = function_result.current_daily_quests
-		local daily_quest_refresh_available = function_result.daily_quest_refresh_available
-
-		backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
-		backend_mirror:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
-
-		self._refresh_requests[id] = {
-			quest_key = key
-		}
-		self._dirty = true
+		return
 	end
+
+	local current_daily_quests = function_result.current_daily_quests
+	local daily_quest_refresh_available = function_result.daily_quest_refresh_available
+
+	backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
+	backend_mirror:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
+
+	self._refresh_requests[id] = {
+		quest_key = key
+	}
+	self._dirty = true
 end
 
 BackendInterfaceQuestsPlayfab.is_quest_refreshed = function (self, id)
@@ -208,104 +199,59 @@ BackendInterfaceQuestsPlayfab.claim_quest_rewards = function (self, key)
 		quest_key = key,
 		id = id
 	}
-	local generate_challenge_request = {
-		FunctionName = "generateChallenge"
+	local request = {
+		FunctionName = "generateQuestRewards",
+		FunctionParameter = data
 	}
-	local claim_quest_rewards_challenge_request_cb = callback(self, "claim_quest_rewards_challenge_request_cb", data)
+	local success_callback = callback(self, "quest_rewards_request_cb", data)
+	local request_queue = self._backend_mirror:request_queue()
 
-	PlayFabClientApi.ExecuteCloudScript(generate_challenge_request, claim_quest_rewards_challenge_request_cb, claim_quest_rewards_challenge_request_cb)
+	request_queue:enqueue(request, success_callback, true)
 
 	return id
 end
 
-BackendInterfaceQuestsPlayfab.claim_quest_rewards_challenge_request_cb = function (self, data, result)
-	if result.Error then
-		table.dump(result, nil, 5)
-		fassert(false, "claim_quest_rewards_challenge_request_cb: it failed!")
-	else
-		local function_result = result.FunctionResult
-		local challenge = function_result.challenge
-		local eac_response, response = nil
-
-		if challenge then
-			eac_response, response = self:_get_eac_response(challenge)
-		end
-
-		if not challenge then
-			print("EAC disabled on backend")
-			self:_claim_quest_rewards(data)
-		elseif not eac_response then
-			print("EAC disabled on client")
-			Managers.backend:playfab_eac_error()
-		else
-			print("EAC Enabled!")
-			self:_claim_quest_rewards(data, response)
-		end
-	end
-end
-
-BackendInterfaceQuestsPlayfab._claim_quest_rewards = function (self, data, response)
-	local function_params = table.clone(data)
-	function_params.response = response
-	local generate_quest_rewards_request = {
-		FunctionName = "generateQuestRewards",
-		FunctionParameter = function_params
-	}
-	local quest_rewards_request_cb = callback(self, "quest_rewards_request_cb", data)
-
-	PlayFabClientApi.ExecuteCloudScript(generate_quest_rewards_request, quest_rewards_request_cb, quest_rewards_request_cb)
-end
-
 BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, result)
-	if result.Error then
-		table.dump(result, nil, 5)
-		fassert(false, "quest_rewards_request_cb: it failed!")
-	else
-		local function_result = result.FunctionResult
+	local function_result = result.FunctionResult
 
-		if not function_result then
-			Managers.backend:playfab_api_error(result)
+	if not function_result then
+		Managers.backend:playfab_api_error(result)
 
-			return
-		elseif function_result.eac_failed_verification then
-			Managers.backend:playfab_eac_error()
-
-			return
-		end
-
-		local id = data.id
-		local items = function_result.items
-		local backend_mirror = self._backend_mirror
-		local rewards = {
-			quest_key = data.quest_key,
-			loot = {}
-		}
-		local loot = rewards.loot
-
-		if items then
-			for i = 1, #items, 1 do
-				local item = items[i]
-				local backend_id = item.ItemInstanceId
-				local amount = item.UsesIncrementedBy or 1
-
-				backend_mirror:add_item(backend_id, item)
-
-				loot[i] = {
-					backend_id,
-					amount
-				}
-			end
-		end
-
-		local current_daily_quests = function_result.current_daily_quests
-		local current_event_quests = function_result.current_event_quests
-
-		backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
-		backend_mirror:set_quest_data("current_event_quests", current_event_quests)
-
-		self._quest_reward_requests[id] = rewards
-		self._dirty = true
+		return
 	end
+
+	local id = data.id
+	local items = function_result.items
+	local backend_mirror = self._backend_mirror
+	local rewards = {
+		quest_key = data.quest_key,
+		loot = {}
+	}
+	local loot = rewards.loot
+
+	if items then
+		for i = 1, #items, 1 do
+			local item = items[i]
+			local backend_id = item.ItemInstanceId
+			local amount = item.UsesIncrementedBy or 1
+
+			backend_mirror:add_item(backend_id, item)
+
+			loot[i] = {
+				backend_id,
+				amount
+			}
+		end
+	end
+
+	local current_daily_quests = function_result.current_daily_quests
+	local current_event_quests = function_result.current_event_quests
+
+	backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
+	backend_mirror:set_quest_data("current_event_quests", current_event_quests)
+
+	self._quest_reward_requests[id] = rewards
+	self._dirty = true
 end
 
 BackendInterfaceQuestsPlayfab.get_quest_key = function (self, quest_id)
@@ -344,32 +290,6 @@ end
 
 BackendInterfaceQuestsPlayfab.get_quest_rewards = function (self, id)
 	return self._quest_reward_requests[id]
-end
-
-BackendInterfaceQuestsPlayfab._get_eac_response = function (self, challenge)
-	local i = 0
-	local str = ""
-
-	while challenge[tostring(i)] do
-		str = str .. string.char(challenge[tostring(i)])
-		i = i + 1
-	end
-
-	local eac_response = EAC.challenge_response(str)
-	local response = nil
-
-	if eac_response then
-		local index = 1
-		response = {}
-
-		while string.byte(eac_response, index, index) do
-			local byte_value = string.byte(eac_response, index, index)
-			response[tostring(index - 1)] = byte_value
-			index = index + 1
-		end
-	end
-
-	return eac_response, response
 end
 
 return

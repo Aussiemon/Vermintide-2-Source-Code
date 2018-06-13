@@ -193,20 +193,18 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_wood_elf_ground_zero",
 	"dialogues/generated/lookup_empire_soldier_ground_zero",
 	"dialogues/generated/lookup_hero_conversations_ground_zero",
-	"dialogues/generated/lookup_witch_hunter_bogenhafen_city",
-	"dialogues/generated/lookup_bright_wizard_bogenhafen_city",
-	"dialogues/generated/lookup_dwarf_ranger_bogenhafen_city",
-	"dialogues/generated/lookup_empire_soldier_bogenhafen_city",
-	"dialogues/generated/lookup_wood_elf_bogenhafen_city",
-	"dialogues/generated/lookup_witch_hunter_bogenhafen_slum",
-	"dialogues/generated/lookup_bright_wizard_bogenhafen_slum",
-	"dialogues/generated/lookup_dwarf_ranger_bogenhafen_slum",
-	"dialogues/generated/lookup_empire_soldier_bogenhafen_slum",
-	"dialogues/generated/lookup_wood_elf_bogenhafen_slum",
-	"dialogues/generated/lookup_hub_conversations",
-	"dialogues/generated/lookup_hero_conversations_dlc_bogenhafen_city",
-	"dialogues/generated/lookup_hero_conversations_dlc_bogenhafen_slum"
+	"dialogues/generated/lookup_hub_conversations"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local dlc_lookup_tables = dlc.dialogue_lookup
+
+	if dlc_lookup_tables then
+		for _, dialogue_lookup_table in ipairs(dlc_lookup_tables) do
+			dialogue_lookup_tables[#dialogue_lookup_tables + 1] = dialogue_lookup_table
+		end
+	end
+end
 
 for _, dialogue_lookup_table in ipairs(dialogue_lookup_tables) do
 	dofile(dialogue_lookup_table)

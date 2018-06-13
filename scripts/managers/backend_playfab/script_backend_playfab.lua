@@ -32,7 +32,7 @@ ScriptBackendPlayFab.update_signin = function (self)
 			}
 			local login_request_cb = callback(self, "login_request_cb")
 
-			PlayFabClientApi.LoginWithSteam(login_request, login_request_cb, login_request_cb)
+			PlayFabClientApi.LoginWithSteam(login_request, login_request_cb)
 
 			self._steam_ticket_id = nil
 		end
@@ -78,22 +78,17 @@ ScriptBackendPlayFab.update_signin = function (self)
 end
 
 ScriptBackendPlayFab.login_request_cb = function (self, result)
-	self._signin_result = result
+	local info_result_payload = result.InfoResultPayload
+	local read_only_data = info_result_payload.UserReadOnlyData
 
-	if result.error then
-		self._signin_result_error = result
-	else
-		local info_result_payload = result.InfoResultPayload
-		local read_only_data = info_result_payload.UserReadOnlyData
-
-		if result.NewlyCreated or not read_only_data.account_set_up then
-			self:_set_up_initial_account()
-		elseif not read_only_data.account_data_set_up then
-			self:_set_up_initial_account_data()
-		end
-
-		self._signed_in = true
+	if result.NewlyCreated or not read_only_data.account_set_up then
+		self:_set_up_initial_account()
+	elseif not read_only_data.account_data_set_up then
+		self:_set_up_initial_account_data()
 	end
+
+	self._signed_in = true
+	self._signin_result = result
 end
 
 ScriptBackendPlayFab._set_up_initial_account = function (self)
@@ -102,19 +97,15 @@ ScriptBackendPlayFab._set_up_initial_account = function (self)
 	}
 	local initial_setup_request_cb = callback(self, "initial_setup_request_cb")
 
-	PlayFabClientApi.ExecuteCloudScript(initial_account_set_up, initial_setup_request_cb, initial_setup_request_cb)
+	PlayFabClientApi.ExecuteCloudScript(initial_account_set_up, initial_setup_request_cb)
 
 	self._setting_up_initial_account = true
 end
 
 ScriptBackendPlayFab.initial_setup_request_cb = function (self, result)
-	if result.Error then
-		self._initial_set_up_result_error = result
-	else
-		self:_set_up_initial_account_data()
+	self:_set_up_initial_account_data()
 
-		self._setting_up_initial_account = false
-	end
+	self._setting_up_initial_account = false
 end
 
 ScriptBackendPlayFab._set_up_initial_account_data = function (self)
@@ -123,17 +114,13 @@ ScriptBackendPlayFab._set_up_initial_account_data = function (self)
 	}
 	local initial_data_setup_request_cb = callback(self, "initial_data_setup_request_cb")
 
-	PlayFabClientApi.ExecuteCloudScript(initial_account_data_set_up, initial_data_setup_request_cb, initial_data_setup_request_cb)
+	PlayFabClientApi.ExecuteCloudScript(initial_account_data_set_up, initial_data_setup_request_cb)
 
 	self._setting_up_initial_account_data = true
 end
 
 ScriptBackendPlayFab.initial_data_setup_request_cb = function (self, result)
-	if result.Error then
-		self._initial_data_set_up_result_error = result
-	else
-		self._setting_up_initial_account_data = false
-	end
+	self._setting_up_initial_account_data = false
 end
 
 ScriptBackendPlayFab.authenticated = function (self)

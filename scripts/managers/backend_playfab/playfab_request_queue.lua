@@ -3,72 +3,25 @@ PlayFabRequestQueue = class(PlayFabRequestQueue)
 
 PlayFabRequestQueue.init = function (self)
 	self._queue = {}
-	self._pending_request = false
+	self._active_entry = nil
+	self._fail_callback = callback(self, "playfab_request_fail_cb")
 end
 
-PlayFabRequestQueue.enqueue = function (self, name, request, immediate, send_eac_challenge)
+PlayFabRequestQueue.enqueue = function (self, request, success_callback, send_eac_challenge)
 	local entry = {
-		name = name,
-		request = request
+		eac_challenge_success = false,
+		resends = 0,
+		request = table.clone(request),
+		success_callback = success_callback,
+		send_eac_challenge = send_eac_challenge
 	}
 
-	if send_eac_challenge then
-		local function request_callback(entry, result)
-			if result.Error then
-				table.dump(result, nil, 5)
-				self:_challenge_response_received(entry, false)
-			else
-				local function_result = result.FunctionResult
-				local challenge = function_result.challenge
-				local eac_response, response = nil
-
-				if challenge then
-					eac_response, response = self:_get_eac_response(challenge)
-				end
-
-				if not challenge then
-					print("EAC disabled on backend")
-					self:_challenge_response_received(entry, true)
-				elseif not eac_response then
-					print("EAC disabled on client")
-					Managers.backend:playfab_eac_error()
-				else
-					print("EAC Enabled!")
-					self:_challenge_response_received(entry, true, response)
-				end
-			end
-		end
-
-		local challenge_entry = {
-			name = "generate_eac_challenge",
-			request = {
-				payload = {
-					FunctionName = "generateChallenge"
-				},
-				callback = function (payload, on_complete)
-					PlayFabClientApi.ExecuteCloudScript(payload, callback(request_callback, entry), callback(request_callback, entry))
-				end
-			}
-		}
-
-		print("[PlayFabRequestQueue] Enqueuing Challenge request for", name, #self._queue)
-		table.insert(self._queue, challenge_entry)
-
-		return
-	end
-
-	if immediate then
-		self:send_request(entry)
-
-		self._pending_request = false
-	else
-		print("[PlayFabRequestQueue] Enqueuing request", name, #self._queue)
-		table.insert(self._queue, entry)
-	end
+	print("[PlayFabRequestQueue] Enqueuing request", request.FunctionName)
+	table.insert(self._queue, entry)
 end
 
 PlayFabRequestQueue.update = function (self)
-	if self._pending_request then
+	if self._active_entry then
 		return
 	end
 
@@ -77,30 +30,97 @@ PlayFabRequestQueue.update = function (self)
 	end
 
 	local entry = table.remove(self._queue, 1)
+	local request = entry.request
+	self._active_entry = entry
 
-	self:send_request(entry)
-end
+	if entry.send_eac_challenge then
+		local success_cb = callback(self, "eac_challenge_success_cb")
+		local fail_cb = self._fail_callback
+		local generate_challenge_request = {
+			FunctionName = "generateChallenge"
+		}
 
-PlayFabRequestQueue.send_request = function (self, entry)
-	print("[PlayFabRequestQueue] Sending request", entry.name)
-	entry.request.callback(entry.request.payload, function ()
-		print("[PlayFabRequestQueue] Request processed", entry.name)
-
-		self._pending_request = false
-	end)
-
-	self._pending_request = true
-end
-
-PlayFabRequestQueue._challenge_response_received = function (self, entry, success, eac_response)
-	if success then
-		local payload = entry.request.payload
-		local function_params = payload.FunctionParameter or {}
-		function_params.response = eac_response
-		payload.FunctionParameter = function_params
-
-		self:send_request(entry)
+		print("[PlayFabRequestQueue] Sending EAC Challenge Request", request.FunctionName)
+		PlayFabClientApi.ExecuteCloudScript(generate_challenge_request, success_cb, fail_cb)
+	else
+		print("[PlayFabRequestQueue] Sending Request Without EAC Challenge", request.FunctionName)
+		self:_send_request(entry)
 	end
+end
+
+PlayFabRequestQueue.eac_challenge_success_cb = function (self, result)
+	local function_result = result.FunctionResult
+	local challenge = function_result.challenge
+	local eac_response, response = nil
+
+	if challenge then
+		eac_response, response = self:_get_eac_response(challenge)
+	end
+
+	if not challenge then
+		print("[PlayFabRequestQueue] EAC disabled on backend")
+		self:_challenge_response_received()
+	elseif not eac_response then
+		print("[PlayFabRequestQueue] EAC disabled on client")
+		Managers.backend:playfab_eac_error()
+	else
+		print("[PlayFabRequestQueue] EAC Enabled!")
+		self:_challenge_response_received(response)
+	end
+end
+
+PlayFabRequestQueue._challenge_response_received = function (self, response)
+	local entry = self._active_entry
+	entry.eac_challenge_success = true
+	local request = entry.request
+	local function_params = request.FunctionParameter or {}
+	function_params.response = response
+	request.FunctionParameter = function_params
+
+	print("[PlayFabRequestQueue] Sending Request", request.FunctionName)
+	self:_send_request(entry)
+end
+
+PlayFabRequestQueue._send_request = function (self, entry)
+	local request = entry.request
+	local success_callback = entry.success_callback
+	local success_cb = callback(self, "playfab_request_success_cb", success_callback)
+	local fail_cb = self._fail_callback
+
+	PlayFabClientApi.ExecuteCloudScript(request, success_cb, fail_cb)
+end
+
+PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callback, result)
+	local entry = self._active_entry
+	local request = entry.request
+	local function_result = result.FunctionResult
+
+	if function_result and function_result.eac_failed_verification then
+		print("[PlayFabRequestQueue] EAC Failed Verification", request.FunctionName)
+		Managers.backend:playfab_eac_error()
+
+		return
+	end
+
+	print("[PlayFabRequestQueue] Request Success", request.FunctionName)
+
+	self._active_entry = nil
+
+	success_callback(result)
+end
+
+PlayFabRequestQueue.playfab_request_fail_cb = function (self, result, error_override)
+	local entry = self._active_entry
+	local request = entry.request
+
+	print("[PlayFabRequestQueue] Request Failed", request.FunctionName)
+
+	if entry.send_eac_challenge and not entry.eac_challenge_success then
+	end
+
+	local backend_manager = Managers.backend
+
+	backend_manager:playfab_api_error(result, error_override)
 end
 
 PlayFabRequestQueue._get_eac_response = function (self, challenge)

@@ -62,31 +62,25 @@ PlayFabMirror._request_best_power_levels = function (self)
 	}
 	local request_cb = callback(self, "best_power_levels_request_cb")
 
-	PlayFabClientApi.ExecuteCloudScript(request, request_cb, request_cb)
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
 end
 
 PlayFabMirror.best_power_levels_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local best_power_levels = function_result.best_power_levels
+	self._best_power_levels = best_power_levels
+	local sum = 0
 
-	if result.Error then
-		table.dump(result, nil, 6)
-		fassert(false, "best_power_levels_request_cb: it failed!")
-	else
-		local function_result = result.FunctionResult
-		local best_power_levels = function_result.best_power_levels
-		self._best_power_levels = best_power_levels
-		local sum = 0
-
-		for _, value in pairs(best_power_levels) do
-			sum = sum + value
-		end
-
-		self.sum_best_power_levels = sum
-
-		self:_request_signin_reward()
+	for _, value in pairs(best_power_levels) do
+		sum = sum + value
 	end
+
+	self.sum_best_power_levels = sum
+
+	self:_request_signin_reward()
 end
 
 PlayFabMirror._request_signin_reward = function (self)
@@ -96,37 +90,31 @@ PlayFabMirror._request_signin_reward = function (self)
 	}
 	local sign_in_reward_request_cb = callback(self, "sign_in_reward_request_cb")
 
-	PlayFabClientApi.ExecuteCloudScript(request, sign_in_reward_request_cb, sign_in_reward_request_cb)
+	PlayFabClientApi.ExecuteCloudScript(request, sign_in_reward_request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
 end
 
 PlayFabMirror.sign_in_reward_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local rewards = function_result.rewards
 
-	if result.Error then
-		table.dump(result, nil, 6)
-		fassert(false, "sign_in_reward_request_cb: it failed!")
-	else
-		local function_result = result.FunctionResult
-		local rewards = function_result.rewards
+	for reward_id, reward_data in pairs(rewards) do
+		local grants = reward_data.ItemGrantResults
 
-		for reward_id, reward_data in pairs(rewards) do
-			local grants = reward_data.ItemGrantResults
+		for _, grant in ipairs(grants) do
+			local grant_result = grant.Result
 
-			for _, grant in ipairs(grants) do
-				local grant_result = grant.Result
+			if grant_result == true then
+				local item_id = grant.ItemInstanceId
 
-				if grant_result == true then
-					local item_id = grant.ItemInstanceId
-
-					ItemHelper.mark_sign_in_reward_as_new(reward_id, item_id)
-				end
+				ItemHelper.mark_sign_in_reward_as_new(reward_id, item_id)
 			end
 		end
-
-		self:_request_quests()
 	end
+
+	self:_request_quests()
 end
 
 PlayFabMirror._request_quests = function (self)
@@ -136,30 +124,24 @@ PlayFabMirror._request_quests = function (self)
 	}
 	local request_cb = callback(self, "get_quests_cb")
 
-	PlayFabClientApi.ExecuteCloudScript(request, request_cb, request_cb)
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
 end
 
 PlayFabMirror.get_quests_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local current_daily_quests = function_result.current_daily_quests
+	local daily_quest_refresh_available = function_result.daily_quest_refresh_available
+	local daily_quest_update_time = function_result.daily_quest_update_time
+	local current_event_quests = function_result.current_event_quests
 
-	if result.Error then
-		table.dump(result, nil, 6)
-		fassert(false, "get_quests_cb: it failed!")
-	else
-		local function_result = result.FunctionResult
-		local current_daily_quests = function_result.current_daily_quests
-		local daily_quest_refresh_available = function_result.daily_quest_refresh_available
-		local daily_quest_update_time = function_result.daily_quest_update_time
-		local current_event_quests = function_result.current_event_quests
-
-		self:set_quest_data("current_daily_quests", current_daily_quests)
-		self:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
-		self:set_quest_data("daily_quest_update_time", tonumber(daily_quest_update_time))
-		self:set_quest_data("current_event_quests", current_event_quests)
-		self:_request_fix_inventory_data_1()
-	end
+	self:set_quest_data("current_daily_quests", current_daily_quests)
+	self:set_quest_data("daily_quest_refresh_available", to_boolean(daily_quest_refresh_available))
+	self:set_quest_data("daily_quest_update_time", tonumber(daily_quest_update_time))
+	self:set_quest_data("current_event_quests", current_event_quests)
+	self:_request_fix_inventory_data_1()
 end
 
 PlayFabMirror._request_fix_inventory_data_1 = function (self)
@@ -169,7 +151,7 @@ PlayFabMirror._request_fix_inventory_data_1 = function (self)
 	}
 	local request_cb = callback(self, "fix_inventory_data_1_request_cb")
 
-	PlayFabClientApi.ExecuteCloudScript(request, request_cb, request_cb)
+	PlayFabClientApi.ExecuteCloudScript(request, request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
 end
@@ -177,78 +159,61 @@ end
 PlayFabMirror.fix_inventory_data_1_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
 
-	if result.Error then
-		table.dump(result, nil, 6)
-		fassert(false, "fix_inventory_data_1_request_cb: it failed!")
-	else
-		self:_request_user_inventory()
-	end
+	self:_request_user_inventory()
 end
 
 PlayFabMirror._request_user_inventory = function (self)
 	local request = {}
 	local inventory_request_cb = callback(self, "inventory_request_cb")
 
-	PlayFabClientApi.GetUserInventory(request, inventory_request_cb, inventory_request_cb)
+	PlayFabClientApi.GetUserInventory(request, inventory_request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
 end
 
 PlayFabMirror.inventory_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+	local inventory_items = result.Inventory
 
-	if result.Error then
-		table.dump(result, nil, 6)
-		fassert(false, "inventory_request_cb: it failed!")
+	if self._inventory_items then
+		table.clear(self._inventory_items)
 	else
-		local inventory_items = result.Inventory
-
-		if self._inventory_items then
-			table.clear(self._inventory_items)
-		else
-			self._inventory_items = {}
-		end
-
-		for i = 1, #inventory_items, 1 do
-			local item = inventory_items[i]
-
-			if not item.BundleContents then
-				local backend_id = item.ItemInstanceId
-
-				self:_update_data(item, backend_id)
-
-				self._inventory_items[backend_id] = item
-			end
-		end
-
-		self:_request_all_users_characters()
+		self._inventory_items = {}
 	end
+
+	for i = 1, #inventory_items, 1 do
+		local item = inventory_items[i]
+
+		if not item.BundleContents then
+			local backend_id = item.ItemInstanceId
+
+			self:_update_data(item, backend_id)
+
+			self._inventory_items[backend_id] = item
+		end
+	end
+
+	self:_request_all_users_characters()
 end
 
 PlayFabMirror._request_all_users_characters = function (self)
 	local request = {}
 	local character_request_cb = callback(self, "character_request_cb")
 
-	PlayFabClientApi.GetAllUsersCharacters(request, character_request_cb, character_request_cb)
+	PlayFabClientApi.GetAllUsersCharacters(request, character_request_cb)
 
 	self._num_items_to_load = self._num_items_to_load + 1
 end
 
 PlayFabMirror.character_request_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+	self._career_data = {}
+	self._career_data_mirror = {}
+	self._career_lookup = {}
+	local characters = result.Characters
+	self._num_items_to_load = self._num_items_to_load + #characters
 
-	if result.Error then
-		table.dump(result, nil, 6)
-		fassert(false, "character_request_cb: it failed!")
-	else
-		self._career_data = {}
-		self._career_data_mirror = {}
-		self._career_lookup = {}
-		local characters = result.Characters
-		self._num_items_to_load = self._num_items_to_load + #characters
-
-		self:_request_character_readonly_data(characters, 1)
-	end
+	self:_request_character_readonly_data(characters, 1)
 end
 
 PlayFabMirror._request_character_readonly_data = function (self, characters, i)
@@ -266,68 +231,56 @@ PlayFabMirror._request_character_readonly_data = function (self, characters, i)
 	}
 	local character_data_request_cb = callback(self, "character_data_request_cb", characters, i)
 
-	PlayFabClientApi.GetCharacterReadOnlyData(request, character_data_request_cb, character_data_request_cb)
+	PlayFabClientApi.GetCharacterReadOnlyData(request, character_data_request_cb)
 end
 
 PlayFabMirror.character_data_request_cb = function (self, characters, i, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+	local character_id = result.CharacterId
+	local character_name = self._career_lookup[character_id]
+	local character_data = result.Data
+	local broken_slots = self:_set_inital_career_data(character_id, character_data)
 
-	if result.Error then
-		table.dump(result, nil, 6)
-		fassert(false, "character_data_request_cb: it failed!")
-	else
-		local character_id = result.CharacterId
-		local character_name = self._career_lookup[character_id]
-		local character_data = result.Data
-		local broken_slots = self:_set_inital_career_data(character_id, character_data)
+	if broken_slots then
+		self._num_items_to_load = self._num_items_to_load + 1
 
-		if broken_slots then
-			self._num_items_to_load = self._num_items_to_load + 1
+		print("Broken item slots for career", character_name)
+		table.dump(broken_slots)
 
-			print("Broken item slots for career", character_name)
-			table.dump(broken_slots)
-
-			local request = {
-				FunctionName = "fixCareerData",
-				FunctionParameter = {
-					character_type = character_name,
-					character_id = character_id,
-					broken_slots = broken_slots
-				}
+		local request = {
+			FunctionName = "fixCareerData",
+			FunctionParameter = {
+				character_type = character_name,
+				character_id = character_id,
+				broken_slots = broken_slots
 			}
-			local fix_career_data_request_cb = callback(self, "fix_career_data_request_cb", characters, i)
+		}
+		local fix_career_data_request_cb = callback(self, "fix_career_data_request_cb", characters, i)
 
-			PlayFabClientApi.ExecuteCloudScript(request, fix_career_data_request_cb, fix_career_data_request_cb)
-		elseif i < #characters then
-			print("Requesting character data for index", i + 1, #characters)
-			self:_request_character_readonly_data(characters, i + 1)
-		end
+		PlayFabClientApi.ExecuteCloudScript(request, fix_career_data_request_cb)
+	elseif i < #characters then
+		print("Requesting character data for index", i + 1, #characters)
+		self:_request_character_readonly_data(characters, i + 1)
 	end
 end
 
 PlayFabMirror.fix_career_data_request_cb = function (self, characters, i, result)
 	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local character_id = function_result.character_id
+	local career_name = self._career_lookup[character_id]
+	local career_data = self._career_data[career_name]
+	local career_data_mirror = self._career_data_mirror[career_name]
+	local updated_data = function_result.updated_data
 
-	if result.Error then
-		table.dump(result, nil, 6)
-		fassert(false, "character_data_request_cb: it failed!")
-	else
-		local function_result = result.FunctionResult
-		local character_id = function_result.character_id
-		local career_name = self._career_lookup[character_id]
-		local career_data = self._career_data[career_name]
-		local career_data_mirror = self._career_data_mirror[career_name]
-		local updated_data = function_result.updated_data
+	for key, value in pairs(updated_data) do
+		career_data[key] = value
+		career_data_mirror[key] = value
+	end
 
-		for key, value in pairs(updated_data) do
-			career_data[key] = value
-			career_data_mirror[key] = value
-		end
-
-		if i < #characters then
-			print("Requesting character data for index", i + 1, #characters)
-			self:_request_character_readonly_data(characters, i + 1)
-		end
+	if i < #characters then
+		print("Requesting character data for index", i + 1, #characters)
+		self:_request_character_readonly_data(characters, i + 1)
 	end
 end
 
@@ -504,6 +457,10 @@ PlayFabMirror._commit_status = function (self, commit_id)
 	return commit_data.status
 end
 
+PlayFabMirror.request_queue = function (self)
+	return self._request_queue
+end
+
 PlayFabMirror.get_character_data = function (self, career_name, key)
 	return self._career_data[career_name][key]
 end
@@ -640,27 +597,6 @@ PlayFabMirror.update_item = function (self, backend_id, new_item)
 	self:_update_data(item, backend_id)
 end
 
-PlayFabMirror.get_users_career_data = function (self, peer_id, career_name, callback_func)
-	local request = {
-		FunctionName = "getPlayerData",
-		FunctionParameter = {
-			steam_id = Steam.id_hex_to_dec(peer_id),
-			character_name = career_name
-		}
-	}
-	local get_career_data_request_cb = callback(self, "get_career_data_request_cb", callback_func)
-
-	PlayFabClientApi.ExecuteCloudScript(request, get_career_data_request_cb, get_career_data_request_cb)
-
-	self._num_items_to_load = self._num_items_to_load + 1
-end
-
-PlayFabMirror.get_career_data_request_cb = function (self, callback_func, result)
-	self._num_items_to_load = self._num_items_to_load - 1
-
-	table.dump(result, nil, 5)
-end
-
 PlayFabMirror.commit = function (self, skip_queue, commit_complete_callback)
 	local queued_commit = self._queued_commit
 	local id = nil
@@ -670,9 +606,9 @@ PlayFabMirror.commit = function (self, skip_queue, commit_complete_callback)
 			local id = queued_commit.id
 
 			print("FORCE COMMIT", id)
-			self:_commit_internal(id, skip_queue, commit_complete_callback)
+			self:_commit_internal(id, commit_complete_callback)
 		else
-			id = self:_commit_internal(nil, skip_queue, commit_complete_callback)
+			id = self:_commit_internal(nil, commit_complete_callback)
 		end
 	elseif not queued_commit.active then
 		id = self:_queue_commit()
@@ -725,8 +661,8 @@ local hero_attributes = {
 local num_updates_per_request = 5
 local num_requests = math.ceil(#keys / num_updates_per_request)
 
-PlayFabMirror._commit_internal = function (self, queue_id, skip_queue, commit_complete_callback)
-	print("PlayFabMirror:_commit_internal", queue_id, skip_queue)
+PlayFabMirror._commit_internal = function (self, queue_id, commit_complete_callback)
+	print("PlayFabMirror:_commit_internal", queue_id)
 
 	local career_data = self._career_data
 	local career_data_mirror = self._career_data_mirror
@@ -781,8 +717,9 @@ PlayFabMirror._commit_internal = function (self, queue_id, skip_queue, commit_co
 				function_params.keys_to_remove = keys_to_remove
 				function_params.commit_id = commit_id
 				function_params.commit_limit_total = self._commit_limit_total
+				local success_callback = callback(self, "update_character_data_request_cb")
 
-				self:_send_update_character_data_request(update_character_data_request, skip_queue)
+				self._request_queue:enqueue(update_character_data_request, success_callback, false)
 
 				status = "waiting"
 				num_updates = num_updates + 1
@@ -798,7 +735,6 @@ PlayFabMirror._commit_internal = function (self, queue_id, skip_queue, commit_co
 		commit_complete_callback = commit_complete_callback
 	}
 	self._commit_current_id = commit_id
-	local request = nil
 	local stats_interface = Managers.backend:get_interface("statistics")
 	local game_mode_key = Managers.state and Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 
@@ -806,26 +742,16 @@ PlayFabMirror._commit_internal = function (self, queue_id, skip_queue, commit_co
 		stats_interface:save()
 	end
 
-	local save_statistics_cb = callback(self, "save_statistics_cb", commit_id)
-	request = stats_interface:get_stat_save_request(save_statistics_cb)
+	local request, stats_to_save = stats_interface:get_stat_save_request()
 
 	if request and not script_data["eac-untrusted"] then
-		local eac_challenge = true
+		local success_callback = callback(self, "save_statistics_cb", commit_id, stats_to_save)
+
+		self._request_queue:enqueue(request, success_callback, true)
+		stats_interface:clear_saved_stats()
+
 		commit.status = "waiting"
 		commit.wait_for_stats = true
-
-		self._request_queue:enqueue("save_statistics", request, skip_queue, eac_challenge)
-		stats_interface:clear_saved_stats()
-	end
-
-	local save_keep_decorations_cb = callback(self, "save_keep_decorations_cb", commit_id)
-	request = Managers.backend:get_interface("keep_decorations"):save(save_keep_decorations_cb)
-
-	if request then
-		commit.status = "waiting"
-		commit.wait_for_keep_decorations = true
-
-		self._request_queue:enqueue("save_keep_decorations", request, skip_queue)
 	end
 
 	table.clear(new_data)
@@ -847,8 +773,9 @@ PlayFabMirror._commit_internal = function (self, queue_id, skip_queue, commit_co
 				hero_attributes = new_data
 			}
 		}
+		local success_callback = callback(self, "update_read_only_data_request_cb", commit_id)
 
-		self:_send_update_read_only_data_request(commit_id, update_read_only_data_request, skip_queue)
+		self._request_queue:enqueue(update_read_only_data_request, success_callback, false)
 
 		commit.status = "waiting"
 		commit.wait_for_hero_attributes = true
@@ -859,99 +786,52 @@ PlayFabMirror._commit_internal = function (self, queue_id, skip_queue, commit_co
 	return commit_id
 end
 
-PlayFabMirror._send_update_character_data_request = function (self, update_character_data_request, skip_queue)
-	local request = {
-		payload = table.clone(update_character_data_request),
-		callback = function (payload, on_complete)
-			local update_character_data_request_cb = callback(self, "update_character_data_request_cb", on_complete)
-
-			PlayFabClientApi.ExecuteCloudScript(payload, update_character_data_request_cb, update_character_data_request_cb)
-		end
-	}
-
-	self._request_queue:enqueue("send_update_character_data_request", request, skip_queue)
-end
-
-PlayFabMirror.update_character_data_request_cb = function (self, on_complete, result)
+PlayFabMirror.update_character_data_request_cb = function (self, result)
 	local function_result = result.FunctionResult
 	local get_data_result = function_result.GetDataResult
+	local character_id = get_data_result.CharacterId
+	local character_data = get_data_result.Data
+	local career_name = self._career_lookup[character_id]
+	local career_data_mirror = self._career_data_mirror[career_name]
+
+	table.clear(career_data_mirror)
+
+	for key, data in pairs(character_data) do
+		local value = data.Value
+		career_data_mirror[key] = value
+	end
+
 	local commit_id = function_result.CommitId
 	local commit = self._commits[commit_id]
-
-	if result.Error then
-		print("update_character_data_request_cb: it failed!")
-
-		commit.status = "commit_error"
-	else
-		local character_id = get_data_result.CharacterId
-		local character_data = get_data_result.Data
-		local career_name = self._career_lookup[character_id]
-		local career_data_mirror = self._career_data_mirror[career_name]
-
-		table.clear(career_data_mirror)
-
-		for key, data in pairs(character_data) do
-			local value = data.Value
-			career_data_mirror[key] = value
-		end
-
-		commit.num_updates = commit.num_updates + 1
-	end
-
-	on_complete()
+	commit.num_updates = commit.num_updates + 1
 end
 
-PlayFabMirror._send_update_read_only_data_request = function (self, commit_id, update_read_only_data_request, skip_queue)
-	local request = {
-		payload = table.clone(update_read_only_data_request),
-		callback = function (payload, on_complete)
-			local update_read_only_data_request_cb = callback(self, "update_read_only_data_request_cb", commit_id, on_complete)
-
-			PlayFabClientApi.ExecuteCloudScript(payload, update_read_only_data_request_cb, update_read_only_data_request_cb)
-		end
-	}
-
-	self._request_queue:enqueue("send_update_read_only_data_request", request, skip_queue)
-end
-
-PlayFabMirror.update_read_only_data_request_cb = function (self, commit_id, on_complete, result)
-	if result.Error then
-		print("update_character_data_request_cb: it failed!")
-
-		commit.status = "commit_error"
-	else
-		local commit = self._commits[commit_id]
-		local function_result = result.FunctionResult
-		local hero_attributes = function_result.hero_attributes
-		local read_only_data_mirror = self._read_only_data_mirror
-
-		for key, new_value in pairs(hero_attributes) do
-			local value = new_value
-
-			if tonumber(value) then
-				value = tonumber(value)
-			end
-
-			read_only_data_mirror[key] = value
-		end
-
-		commit.wait_for_hero_attributes = false
-
-		print("Hero attributes saved!")
-	end
-
-	on_complete()
-end
-
-PlayFabMirror.save_statistics_cb = function (self, commit_id, on_complete, success)
+PlayFabMirror.update_read_only_data_request_cb = function (self, commit_id, result)
 	local commit = self._commits[commit_id]
-	commit.wait_for_stats = false
+	local function_result = result.FunctionResult
+	local hero_attributes = function_result.hero_attributes
+	local read_only_data_mirror = self._read_only_data_mirror
 
-	if success == false then
-		commit.status = "commit_error"
+	for key, new_value in pairs(hero_attributes) do
+		local value = new_value
+
+		if tonumber(value) then
+			value = tonumber(value)
+		end
+
+		read_only_data_mirror[key] = value
 	end
 
-	on_complete()
+	commit.wait_for_hero_attributes = false
+end
+
+PlayFabMirror.save_statistics_cb = function (self, commit_id, stats, result)
+	local commit = self._commits[commit_id]
+	local stats_interface = Managers.backend:get_interface("statistics")
+
+	stats_interface:clear_dirty_flags(stats)
+
+	commit.wait_for_stats = false
 end
 
 PlayFabMirror.save_keep_decorations_cb = function (self, commit_id, on_complete, success)

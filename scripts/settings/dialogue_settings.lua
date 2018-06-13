@@ -145,24 +145,19 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/dwarf_ranger_ground_zero",
 		"dialogues/generated/witch_hunter_ground_zero",
 		"dialogues/generated/hero_conversations_ground_zero"
-	},
-	dlc_bogenhafen_slum = {
-		"dialogues/generated/witch_hunter_bogenhafen_slum",
-		"dialogues/generated/bright_wizard_bogenhafen_slum",
-		"dialogues/generated/dwarf_ranger_bogenhafen_slum",
-		"dialogues/generated/empire_soldier_bogenhafen_slum",
-		"dialogues/generated/wood_elf_bogenhafen_slum",
-		"dialogues/generated/hero_conversations_dlc_bogenhafen_slum"
-	},
-	dlc_bogenhafen_city = {
-		"dialogues/generated/witch_hunter_bogenhafen_city",
-		"dialogues/generated/bright_wizard_bogenhafen_city",
-		"dialogues/generated/dwarf_ranger_bogenhafen_city",
-		"dialogues/generated/empire_soldier_bogenhafen_city",
-		"dialogues/generated/wood_elf_bogenhafen_city",
-		"dialogues/generated/hero_conversations_dlc_bogenhafen_city"
 	}
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local dialogue_settings = dlc.dialogue_settings
+
+	if dialogue_settings then
+		for level_id, dialogue_settings_table in pairs(dialogue_settings) do
+			DialogueSettings.level_specific_load_files[level_id] = dialogue_settings_table
+		end
+	end
+end
+
 DialogueSettings.blocked_auto_load_files = {
 	inn_level = true,
 	prologue = true,

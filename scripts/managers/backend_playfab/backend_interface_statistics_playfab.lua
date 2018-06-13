@@ -9,16 +9,11 @@ BackendInterfaceStatisticsPlayFab.init = function (self, mirror)
 	self._mirror = mirror
 
 	local function callback(result)
-		if result.Error then
-			table.dump(result, "PlayFabError", math.huge)
-			fassert(false, "Error loading player statistics!")
-		else
-			print("Player statistics loaded!")
+		print("Player statistics loaded!")
 
-			local stats = result.FunctionResult
+		local stats = result.FunctionResult
 
-			self._mirror:set_stats(stats)
-		end
+		self._mirror:set_stats(stats)
 
 		self._ready = true
 	end
@@ -27,7 +22,7 @@ BackendInterfaceStatisticsPlayFab.init = function (self, mirror)
 		FunctionName = "loadPlayerStatistics"
 	}
 
-	PlayFabClientApi.ExecuteCloudScript(request, callback, callback)
+	PlayFabClientApi.ExecuteCloudScript(request, callback)
 end
 
 BackendInterfaceStatisticsPlayFab.ready = function (self)
@@ -67,7 +62,7 @@ local function filter_stats(stats)
 	return filtered_stats
 end
 
-local function clear_dirty_flag(stats)
+BackendInterfaceStatisticsPlayFab.clear_dirty_flags = function (self, stats)
 	for _, stat in pairs(stats) do
 		stat.dirty = false
 	end
@@ -103,7 +98,7 @@ BackendInterfaceStatisticsPlayFab.clear_saved_stats = function (self)
 	self._stats_to_save = nil
 end
 
-BackendInterfaceStatisticsPlayFab.get_stat_save_request = function (self, save_callback)
+BackendInterfaceStatisticsPlayFab.get_stat_save_request = function (self)
 	local stats_to_save = self._stats_to_save
 
 	if not stats_to_save or table.is_empty(stats_to_save) then
@@ -112,43 +107,57 @@ BackendInterfaceStatisticsPlayFab.get_stat_save_request = function (self, save_c
 		return false
 	end
 
-	return self:_create_save_request(stats_to_save, save_callback)
-end
-
-BackendInterfaceStatisticsPlayFab._create_save_request = function (self, stats, save_callback)
 	local request = {
 		FunctionName = "savePlayerStatistics3",
 		FunctionParameter = {
-			stats = stats
+			stats = stats_to_save
 		}
 	}
 
-	local function request_callback(on_complete, result)
-		if result.Error then
-			Application.warning("[BackendInterfaceStatisticsPlayFab] Error saving player statistics!")
-			table.dump(result, "PlayFabError", math.huge)
-			save_callback(on_complete, false)
-		else
-			local function_result = result.FunctionResult
+	return request, stats_to_save
+end
 
-			if function_result and function_result.eac_failed_verification then
-				Managers.backend:playfab_eac_error()
+BackendInterfaceStatisticsPlayFab.reset = function (self)
+	local player_manager = Managers.player
 
-				return
-			end
+	if not player_manager then
+		print("[BackendInterfaceStatisticsPlayFab] No player manager, skipping resetting statistics...")
 
-			clear_dirty_flag(stats)
-			print("[BackendInterfaceStatisticsPlayFab] Player statistics saved!")
-			save_callback(on_complete, true)
+		return false
+	end
+
+	local player = player_manager:local_player()
+
+	if not player then
+		print("[BackendInterfaceStatisticsPlayFab] No player found, skipping resetting statistics...")
+
+		return false
+	end
+
+	local player_stats_id = player:stats_id()
+	local stats_database = Managers.player:statistics_db()
+	local player_stats = stats_database:get_all_stats(player_stats_id)
+	local player_stats_flattened = flatten_stats(player_stats)
+	local stats_to_reset = {}
+
+	for name, properties in pairs(player_stats_flattened) do
+		if properties.database_name and properties.source == nil then
+			stats_to_reset[#stats_to_reset + 1] = properties.database_name
 		end
 	end
 
-	return {
-		payload = table.clone(request),
-		callback = function (payload, on_complete)
-			PlayFabClientApi.ExecuteCloudScript(payload, callback(request_callback, on_complete), callback(request_callback, on_complete))
-		end
+	local request = {
+		FunctionName = "resetPlayerStatistics",
+		FunctionParameter = {
+			stats = stats_to_reset
+		}
 	}
+
+	local function request_callback(result)
+		print("[BackendInterfaceStatisticsPlayFab] Player statistics resetted!")
+	end
+
+	PlayFabClientApi.ExecuteCloudScript(request, request_callback)
 end
 
 return

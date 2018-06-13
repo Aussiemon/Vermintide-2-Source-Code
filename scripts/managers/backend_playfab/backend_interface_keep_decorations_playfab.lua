@@ -37,23 +37,16 @@ BackendInterfaceKeepDecorationsPlayFab.init = function (self, backend_mirror)
 	local num_responses = 0
 
 	local function on_complete(result)
-		if result.Error then
-			table.dump(result, "PlayFabError", math.huge)
-			fassert(false, "Error loading player read only data")
+		for key, entry in pairs(result.Data) do
+			self._decoration_data[key] = entry.Value
+		end
 
+		num_responses = num_responses + 1
+
+		if num_responses == num_requests then
 			self._initialized = true
-		else
-			for key, entry in pairs(result.Data) do
-				self._decoration_data[key] = entry.Value
-			end
 
-			num_responses = num_responses + 1
-
-			if num_responses == num_requests then
-				self._initialized = true
-
-				print("Keep decoration player data loaded!")
-			end
+			print("Keep decoration player data loaded!")
 		end
 	end
 
@@ -109,21 +102,15 @@ BackendInterfaceKeepDecorationsPlayFab.save = function (self, save_callback)
 	}
 
 	local function request_callback(on_complete, result)
-		if result.Error then
-			Application.warning("Error saving Keep Decorations!")
-			table.dump(result, "PlayFabError", math.huge)
-			save_callback(on_complete, false)
-		else
-			print("Keep Decorations saved!")
-			table.clear(data_to_save)
-			save_callback(on_complete, true)
-		end
+		print("Keep Decorations saved!")
+		table.clear(data_to_save)
+		save_callback(on_complete, true)
 	end
 
 	return {
 		payload = table.clone(request),
 		callback = function (payload, on_complete)
-			PlayFabClientApi.ExecuteCloudScript(payload, callback(request_callback, on_complete), callback(request_callback, on_complete))
+			PlayFabClientApi.ExecuteCloudScript(payload, callback(request_callback, on_complete))
 		end
 	}
 end

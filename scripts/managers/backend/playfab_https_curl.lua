@@ -62,12 +62,11 @@ local PlayFabHttpsCurl = {
 			headers[#headers + 1] = auth_key .. ": " .. auth_value
 		end
 
-		local function fail_callback(result, error_override)
+		local fail_callback = on_fail_callback or function (result, error_override)
 			local backend_manager = Managers.backend
 
 			backend_manager:playfab_api_error(result, error_override)
 		end
-
 		local id = #active_requests + 1
 		local callbacks = {
 			onSuccess = on_success_callback,
