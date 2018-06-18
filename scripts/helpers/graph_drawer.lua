@@ -436,7 +436,7 @@ Graph.draw = function (self, gui, input_service, t)
 	local color_annotation_text_bg = Colors.get_color_with_alpha("black", 100)
 	local color_annotation_bg = Colors.get_color_with_alpha("black", 150)
 	local color_axis = Colors.get("white")
-	local color_zoom_window = Colors.get_color_with_alpha("white", (self.anim_done_t == nil and 100) or math.lerp(100, 0, 1 - self.anim_done_t - t))
+	local color_zoom_window = Colors.get_color_with_alpha("white", (self.anim_done_t == nil and 100) or math.lerp(100, 0, 1 - (self.anim_done_t - t)))
 	local color_zoom_window_too_small = Colors.get_color_with_alpha("red", 100)
 	local origin = Vector3(100, 100, 0)
 	local graph_size_x = 800

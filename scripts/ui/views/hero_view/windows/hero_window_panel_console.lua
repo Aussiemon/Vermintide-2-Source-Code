@@ -433,7 +433,7 @@ HeroWindowPanelConsole._get_text_height = function (self, ui_renderer, size, ui_
 	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
 	local text_start_index = 1
 	local max_texts = #texts
-	local num_texts = math.min(#texts - text_start_index - 1, max_texts)
+	local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
 	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 

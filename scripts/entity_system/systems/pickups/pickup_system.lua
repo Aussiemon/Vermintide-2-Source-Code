@@ -305,7 +305,7 @@ PickupSystem.spawn_spread_pickups = function (self, spawners, pickup_settings, c
 			if #spawners >= 2 then
 				local first_spawner_percentage_through_level = Unit.get_data(spawners[1], "percentage_through_level")
 				local last_spawner_percentage_through_level = Unit.get_data(spawners[#spawners], "percentage_through_level")
-				local section_scale = 1 - first_spawner_percentage_through_level - 1 - last_spawner_percentage_through_level
+				local section_scale = 1 - first_spawner_percentage_through_level - (1 - last_spawner_percentage_through_level)
 				local section_start_point_offset = first_spawner_percentage_through_level
 				section_size = section_scale / num_sections
 				section_start_point = section_start_point_offset
@@ -408,7 +408,7 @@ PickupSystem.spawn_spread_pickups = function (self, spawners, pickup_settings, c
 						end
 					end
 
-					spawn_debt = spawn_debt - num_spawned_pickups_in_section - 1
+					spawn_debt = spawn_debt - (num_spawned_pickups_in_section - 1)
 				else
 					spawn_debt = spawn_debt + 1
 				end

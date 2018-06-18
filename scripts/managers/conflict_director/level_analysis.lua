@@ -857,7 +857,7 @@ LevelAnalysis.give_events = function (self, main_paths, terror_spawners, num_sec
 
 				local start_travel_dist = spawners[start_index][2]
 				local end_travel_dist = spawners[end_index][2]
-				local forbidden_dist = padding - start_travel_dist - spawn_distance
+				local forbidden_dist = padding - (start_travel_dist - spawn_distance)
 
 				print(string.format("[LevelAnalysis] section: %d, start-index: %d, end-index: %d, forbidden-dist: %.1f start-travel-dist: %.1f, end-travel-dist: %.1f spawn_distance %.1f", i, start_index, end_index, forbidden_dist, start_travel_dist, end_travel_dist, spawn_distance))
 
@@ -1132,7 +1132,7 @@ LevelAnalysis.automatic_terror_creation = function (self, main_paths, total_main
 		path_dist1 = path_dist2
 		path_dist2 = path_dist1 + event_every_x_meter
 		path_dist2 = math.clamp(path_dist2, 0, level_path_dist)
-		local forbidden_dist = padding - path_dist2 - spawn_distance
+		local forbidden_dist = padding - (path_dist2 - spawn_distance)
 
 		print("[LevelAnalysis] path_dist1:", path_dist1, ", path_dist2:", path_dist2, " forbidden_dist:", forbidden_dist)
 

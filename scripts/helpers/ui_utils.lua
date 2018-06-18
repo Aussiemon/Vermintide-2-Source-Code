@@ -45,7 +45,7 @@ UIUtils.get_property_description = function (property_name, lerp_value)
 
 		if type(value) == "table" then
 			if #value > 2 then
-				local index = (lerp_value == 1 and #value) or 1 + math.floor(lerp_value / 1 / #value)
+				local index = (lerp_value == 1 and #value) or 1 + math.floor(lerp_value / (1 / #value))
 				display_value = value[index]
 				min_value = value[1]
 				max_value = value[#value]

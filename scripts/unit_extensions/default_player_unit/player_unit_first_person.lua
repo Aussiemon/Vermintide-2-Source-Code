@@ -854,8 +854,8 @@ PlayerUnitFirstPerson.update_rig_movement = function (self, look_delta)
 		local aim_target_pos = Unit.world_position(self.first_person_unit, Unit.node(self.first_person_unit, "j_aim_target"))
 
 		QuickDrawer:sphere(aim_target_pos - forward * 3, 0.1, Color(255, 255, 255))
-		QuickDrawer:sphere(spring_position + forward * Vector3.length(spring_position - aim_target_pos - forward * 3), 0.1, Color(255, 0, 0))
-		QuickDrawer:sphere(final_position + forward * Vector3.length(final_position - aim_target_pos - forward * 3), 0.1, Color(0, 255, 0))
+		QuickDrawer:sphere(spring_position + forward * Vector3.length(spring_position - (aim_target_pos - forward * 3)), 0.1, Color(255, 0, 0))
+		QuickDrawer:sphere(final_position + forward * Vector3.length(final_position - (aim_target_pos - forward * 3)), 0.1, Color(0, 255, 0))
 	end
 
 	if self._rig_offset_enabled then

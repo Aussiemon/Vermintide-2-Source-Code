@@ -166,7 +166,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 			return self:_join_game_failed(lobby_id, "lobby_data_timeout", t, true)
 		end
 	elseif state == "asking_to_join" then
-		local join_time = MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME - self._join_timeout - t
+		local join_time = MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME - (self._join_timeout - t)
 		self._matchmaking_manager.debug.text = string.format("Requesting to join game %s [%.0f]", self.lobby_client:id(), join_time)
 		local host_name = (LobbyInternal.user_name and LobbyInternal.user_name(host)) or "-"
 		local game_reply = self._game_reply

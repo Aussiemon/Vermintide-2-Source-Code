@@ -221,7 +221,7 @@ CareerAbilityESKnight._run_ability = function (self)
 				return math.min(math.lerp(windup_speed, start_speed, interpolation_value), rush_speed)
 			elseif rush_time < rush_duration then
 				local t_value = rush_time / rush_duration
-				local acceleration = math.min(rush_time / rush_duration / 3, 1)
+				local acceleration = math.min(rush_time / (rush_duration / 3), 1)
 				local interpolation_value = math.cos(t_value * math.pi * 0.5)
 				local offset = nil
 				local step_time = 0.25

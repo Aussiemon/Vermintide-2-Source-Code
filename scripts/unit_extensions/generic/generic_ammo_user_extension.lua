@@ -237,7 +237,7 @@ GenericAmmoUserExtension.add_ammo = function (self, amount)
 	elseif self.ammo_immediately_available then
 		self.current_ammo = self.max_ammo
 	else
-		self.available_ammo = self.max_ammo - self.current_ammo - self.shots_fired
+		self.available_ammo = self.max_ammo - (self.current_ammo - self.shots_fired)
 	end
 end
 

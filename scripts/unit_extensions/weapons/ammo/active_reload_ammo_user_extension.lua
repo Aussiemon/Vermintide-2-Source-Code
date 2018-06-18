@@ -183,7 +183,7 @@ ActiveReloadAmmoUserExtension.reload_start_time = function (self)
 end
 
 ActiveReloadAmmoUserExtension.add_ammo = function (self, ammo_amount)
-	self.available_ammo = math.min(self.available_ammo + ammo_amount, self.max_ammo - self.current_ammo - self.shots_fired)
+	self.available_ammo = math.min(self.available_ammo + ammo_amount, self.max_ammo - (self.current_ammo - self.shots_fired))
 end
 
 ActiveReloadAmmoUserExtension.use_ammo = function (self, ammo_used)

@@ -187,7 +187,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 					local variable_bonus_table = sub_buff_template.variable_bonus
 
 					if variable_bonus_table then
-						local bonus_index = (variable_value == 1 and #variable_bonus_table) or 1 + math.floor(variable_value / 1 / #variable_bonus_table)
+						local bonus_index = (variable_value == 1 and #variable_bonus_table) or 1 + math.floor(variable_value / (1 / #variable_bonus_table))
 						bonus = variable_bonus_table[bonus_index]
 					end
 

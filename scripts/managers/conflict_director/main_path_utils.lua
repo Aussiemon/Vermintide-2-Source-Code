@@ -119,7 +119,7 @@ MainPathUtils.point_on_mainpath_lua = function (main_paths, wanted_distance)
 		segment_distance = segment_distance + sub_path.path_length
 
 		if wanted_distance <= segment_distance then
-			local remainder_dist = wanted_distance - segment_distance - sub_path.path_length
+			local remainder_dist = wanted_distance - (segment_distance - sub_path.path_length)
 			local sub_move_percent = remainder_dist / sub_path.path_length
 			local pos, sub_index = get_path_point(sub_path.nodes, sub_path.path_length, sub_move_percent)
 

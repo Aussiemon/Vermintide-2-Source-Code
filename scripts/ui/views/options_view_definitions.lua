@@ -2280,7 +2280,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 			selected_bg = {
 				masked = true,
 				offset = {
-					(base_offset[1] + DROP_DOWN_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH - 28,
+					(base_offset[1] + DROP_DOWN_WIDGET_SIZE[1]) - (INPUT_FIELD_WIDTH - 28),
 					base_offset[2] - selected_bg_y,
 					base_offset[3] + 20
 				},
@@ -3546,7 +3546,7 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 			},
 			selected_rect = {
 				offset = {
-					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH - 2,
+					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - (INPUT_FIELD_WIDTH - 2),
 					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
 					base_offset[3] + 2
 				},
@@ -3599,7 +3599,7 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 			},
 			input_field_background_2 = {
 				offset = {
-					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH - 2,
+					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - (INPUT_FIELD_WIDTH - 2),
 					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
 					base_offset[3] + 2
 				},

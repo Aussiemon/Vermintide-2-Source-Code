@@ -111,11 +111,11 @@ ChatGui.set_font_size = function (self, font_size)
 
 	self.chat_output_widget.style.text.font_size = font_size
 	self.chat_input_widget.style.text.font_size = font_size + 2
-	self.chat_input_widget.style.background.size[2] = definitions.CHAT_HEIGHT - 26 - 200 - (font_size + 4)
+	self.chat_input_widget.style.background.size[2] = definitions.CHAT_HEIGHT - 26 - (200 - (font_size + 4))
 	self.chat_input_widget.style.text.caret_size[2] = font_size + 6
 	local ui_scenegraph = self.ui_scenegraph
 	local scenegraph_definition = definitions.scenegraph_definition
-	ui_scenegraph[self.chat_input_widget.style.text.scenegraph_id].size[2] = definitions.CHAT_HEIGHT - 26 - 200 - (font_size + 4)
+	ui_scenegraph[self.chat_input_widget.style.text.scenegraph_id].size[2] = definitions.CHAT_HEIGHT - 26 - (200 - (font_size + 4))
 	ui_scenegraph[self.chat_output_widget.style.text.scenegraph_id].size[2] = definitions.CHAT_HEIGHT - 26 - (font_size + 4)
 end
 

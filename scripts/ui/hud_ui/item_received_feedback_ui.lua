@@ -246,7 +246,7 @@ ItemReceivedFeedbackUI.update = function (self, dt, t)
 				fade_out_progress = math.clamp(time_left / fade_duration, 0, 1)
 			end
 
-			local move_time_left = math.max(time_left - show_duration - move_duration, 0)
+			local move_time_left = math.max(time_left - (show_duration - move_duration), 0)
 			local offset_progress = 1 - math.clamp(move_time_left / move_duration, 0, 1)
 			offset[1] = 50 * math.easeOutCubic(offset_progress)
 			style.arrow.offset[1] = 35 * math.easeOutCubic(offset_progress)

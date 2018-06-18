@@ -145,7 +145,7 @@ DebugListPicker.update = function (self, t, dt)
 			c1 = 1
 			c2 = c1 + self.max_cols_seen - 1
 		elseif col_in == num_cols then
-			c1 = num_cols - self.max_cols_seen - 1
+			c1 = num_cols - (self.max_cols_seen - 1)
 			c2 = num_cols
 		end
 

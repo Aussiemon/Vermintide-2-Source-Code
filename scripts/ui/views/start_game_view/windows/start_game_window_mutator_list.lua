@@ -39,7 +39,7 @@ local function get_text_height(ui_renderer, size, ui_style, ui_content, text, ui
 	local texts = UIRenderer.word_wrap(ui_renderer, text, font_material, font_size, size[1])
 	local text_start_index = ui_content.text_start_index or 1
 	local max_texts = ui_content.max_texts or #texts
-	local num_texts = math.min(#texts - text_start_index - 1, max_texts)
+	local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
 	local full_font_height = (font_max + math.abs(font_min)) * inv_scale * num_texts
 

@@ -923,7 +923,7 @@ GenericStatusExtension.current_fatigue_points = function (self)
 	local max_fatigue = PlayerUnitStatusSettings.MAX_FATIGUE
 	local max_fatigue_points = self.max_fatigue_points
 
-	return (max_fatigue_points == 0 and 0) or math.ceil(self.fatigue / max_fatigue / max_fatigue_points), max_fatigue_points
+	return (max_fatigue_points == 0 and 0) or math.ceil(self.fatigue / (max_fatigue / max_fatigue_points)), max_fatigue_points
 end
 
 GenericStatusExtension.set_pushed = function (self, pushed, t)

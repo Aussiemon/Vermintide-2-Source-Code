@@ -589,7 +589,7 @@ PlayerUnitHealthExtension.get_damage_taken = function (self)
 		local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
 		local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
-		return max_health - health - temporary_health
+		return max_health - (health - temporary_health)
 	end
 
 	return 0

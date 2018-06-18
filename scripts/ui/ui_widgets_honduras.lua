@@ -5178,7 +5178,7 @@ UIWidgets.create_statistics_bar = function (scenegraph_id, size, optional_detail
 						local experience_bar_style = parent_style.experience_bar
 						local start_offset = experience_bar_style.offset[1]
 						style.offset[1] = math.floor(experience_bar_style.size[1] + start_offset)
-						style.size[1] = math.min(40, experience_bar_style.default_size[1] - style.offset[1] - start_offset)
+						style.size[1] = math.min(40, experience_bar_style.default_size[1] - (style.offset[1] - start_offset))
 					end
 				},
 				{
@@ -6946,7 +6946,7 @@ UIWidgets.create_career_summary_window = function (scenegraph_id, size)
 				},
 				size = {
 					size[1] - 40,
-					size[2] - size[2] - 300 - 20
+					size[2] - (size[2] - 300) - 20
 				}
 			},
 			passive_ability_description_text = {
@@ -6962,7 +6962,7 @@ UIWidgets.create_career_summary_window = function (scenegraph_id, size)
 				},
 				size = {
 					size[1] - 40,
-					size[2] - size[2] - 500 - 20
+					size[2] - (size[2] - 500) - 20
 				}
 			}
 		},
@@ -10094,7 +10094,7 @@ UIWidgets.create_window_category_button_mirrored = function (scenegraph_id, size
 				select_color = Colors.get_color_table_with_alpha("white", 255),
 				texture_size = icon_size,
 				offset = {
-					size[1] - icon_size[1] - 54 - icon_size[1] / 2,
+					size[1] - icon_size[1] - (54 - icon_size[1] / 2),
 					54 - icon_size[2] / 2,
 					12
 				}
@@ -10120,7 +10120,7 @@ UIWidgets.create_window_category_button_mirrored = function (scenegraph_id, size
 				},
 				texture_size = icon_size,
 				offset = {
-					size[1] - icon_size[1] - 54 - icon_size[1] / 2,
+					size[1] - icon_size[1] - (54 - icon_size[1] / 2),
 					54 - icon_size[2] / 2,
 					12
 				}
@@ -10134,7 +10134,7 @@ UIWidgets.create_window_category_button_mirrored = function (scenegraph_id, size
 				},
 				texture_size = icon_size,
 				offset = {
-					size[1] - icon_size[1] - 54 - icon_size[1] / 2,
+					size[1] - icon_size[1] - (54 - icon_size[1] / 2),
 					54 - icon_size[2] / 2,
 					13
 				}

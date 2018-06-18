@@ -116,7 +116,7 @@ DebugManager.reset_drawer = function (self, drawer_name)
 end
 
 DebugManager.update = function (self, dt, t)
-	local dt = dt / time_scale_list[self.time_scale_index] / 100
+	local dt = dt / (time_scale_list[self.time_scale_index] / 100)
 
 	self:update_time_scale(dt)
 
