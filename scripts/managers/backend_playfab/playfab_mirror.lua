@@ -284,41 +284,88 @@ PlayFabMirror.fix_career_data_request_cb = function (self, characters, i, result
 	end
 end
 
+local slots_to_verify_if_they_exist = {
+	"slot_ranged",
+	"slot_melee",
+	"slot_hat"
+}
+
 PlayFabMirror._set_inital_career_data = function (self, character_id, character_data)
 	local career_name = self._career_lookup[character_id]
 	local career_data = self._career_data[career_name]
 	local career_data_mirror = self._career_data_mirror[career_name]
-	local broken_slots = nil
+	local broken_slots = {}
 
 	table.clear(career_data)
 	table.clear(career_data_mirror)
 
-	if not character_data.slot_melee or not character_data.slot_melee.Value then
-		broken_slots = broken_slots or {}
-		broken_slots.slot_melee = true
+	for i = 1, #slots_to_verify_if_they_exist, 1 do
+		local slot_name = slots_to_verify_if_they_exist[i]
+
+		if not character_data[slot_name] or not character_data[slot_name].Value then
+			broken_slots[slot_name] = true
+		else
+			local value = character_data[slot_name].Value
+			local item = self._inventory_items[value]
+
+			if not item then
+				broken_slots[slot_name] = true
+			end
+		end
 	end
 
-	if not character_data.slot_ranged or not character_data.slot_ranged.Value then
-		broken_slots = broken_slots or {}
-		broken_slots.slot_ranged = true
-	end
+	self:_verify_items_are_usable(broken_slots, character_data, career_name)
 
 	for key, data in pairs(character_data) do
 		local value = data.Value
 		career_data[key] = value
 		career_data_mirror[key] = value
+	end
 
-		if key == "slot_ranged" or key == "slot_melee" then
-			local item = self._inventory_items[value]
+	if table.size(broken_slots) > 0 then
+		return broken_slots
+	end
+end
 
-			if not item then
-				broken_slots = broken_slots or {}
-				broken_slots[key] = true
+local slots_to_verify_by_item_data = {
+	"slot_ranged",
+	"slot_melee",
+	"slot_hat",
+	"slot_skin",
+	"slot_frame"
+}
+local slot_mapping = {
+	melee = "slot_melee",
+	frame = "slot_frame",
+	hat = "slot_hat",
+	ranged = "slot_ranged",
+	skin = "slot_skin"
+}
+
+PlayFabMirror._verify_items_are_usable = function (self, broken_slots, character_data, career_name)
+	for i = 1, #slots_to_verify_by_item_data, 1 do
+		local slot_name = slots_to_verify_by_item_data[i]
+
+		if not broken_slots[slot_name] then
+			local value = character_data[slot_name] and character_data[slot_name].Value
+
+			if value then
+				local item = self._inventory_items[value]
+				local item_data = item.data
+				local can_wield = item_data.can_wield
+
+				if not table.contains(can_wield, career_name) then
+					broken_slots[slot_name] = true
+				end
+
+				local item_slot_name = slot_mapping[item_data.slot_type]
+
+				if item_slot_name and item_slot_name ~= slot_name then
+					broken_slots[slot_name] = true
+				end
 			end
 		end
 	end
-
-	return broken_slots
 end
 
 PlayFabMirror._update_data = function (self, item, backend_id)

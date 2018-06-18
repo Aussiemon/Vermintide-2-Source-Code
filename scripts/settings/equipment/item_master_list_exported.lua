@@ -3166,7 +3166,21 @@ ItemMasterList.frame_0051 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"dr_ranger"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0052 = {
@@ -3180,7 +3194,21 @@ ItemMasterList.frame_0052 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"dr_ironbreaker"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0053 = {
@@ -3194,7 +3222,21 @@ ItemMasterList.frame_0053 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"dr_slayer"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0054 = {
@@ -3208,7 +3250,21 @@ ItemMasterList.frame_0054 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"dr_ranger"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0055 = {
@@ -3222,7 +3278,21 @@ ItemMasterList.frame_0055 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"dr_ironbreaker"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0056 = {
@@ -3236,7 +3306,21 @@ ItemMasterList.frame_0056 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"dr_slayer"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0057 = {
@@ -3250,7 +3334,21 @@ ItemMasterList.frame_0057 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"we_waywatcher"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0058 = {
@@ -3264,7 +3362,21 @@ ItemMasterList.frame_0058 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"we_maidenguard"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0059 = {
@@ -3278,7 +3390,21 @@ ItemMasterList.frame_0059 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"we_shade"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0060 = {
@@ -3292,7 +3418,21 @@ ItemMasterList.frame_0060 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"we_waywatcher"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0061 = {
@@ -3306,7 +3446,21 @@ ItemMasterList.frame_0061 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"we_maidenguard"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0062 = {
@@ -3320,7 +3474,21 @@ ItemMasterList.frame_0062 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"we_shade"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0063 = {
@@ -3334,6 +3502,20 @@ ItemMasterList.frame_0063 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
 		"es_mercenary"
 	}
 }
@@ -3348,7 +3530,21 @@ ItemMasterList.frame_0064 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"es_huntsman"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0065 = {
@@ -3362,7 +3558,21 @@ ItemMasterList.frame_0065 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"es_knight"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0066 = {
@@ -3376,6 +3586,20 @@ ItemMasterList.frame_0066 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
 		"es_mercenary"
 	}
 }
@@ -3390,7 +3614,21 @@ ItemMasterList.frame_0067 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"es_huntsman"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0068 = {
@@ -3404,7 +3642,21 @@ ItemMasterList.frame_0068 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"es_knight"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0069 = {
@@ -3418,7 +3670,21 @@ ItemMasterList.frame_0069 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"wh_captain"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0070 = {
@@ -3432,7 +3698,21 @@ ItemMasterList.frame_0070 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"wh_bountyhunter"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0071 = {
@@ -3446,7 +3726,21 @@ ItemMasterList.frame_0071 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"wh_zealot"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0072 = {
@@ -3460,7 +3754,21 @@ ItemMasterList.frame_0072 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"wh_captain"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0073 = {
@@ -3474,7 +3782,21 @@ ItemMasterList.frame_0073 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"wh_bountyhunter"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0074 = {
@@ -3488,7 +3810,21 @@ ItemMasterList.frame_0074 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"wh_zealot"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0075 = {
@@ -3502,7 +3838,21 @@ ItemMasterList.frame_0075 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"bw_adept"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0076 = {
@@ -3516,7 +3866,21 @@ ItemMasterList.frame_0076 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"bw_scholar"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0077 = {
@@ -3530,7 +3894,21 @@ ItemMasterList.frame_0077 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"bw_unchained"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0078 = {
@@ -3544,7 +3922,21 @@ ItemMasterList.frame_0078 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"bw_adept"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0079 = {
@@ -3558,7 +3950,21 @@ ItemMasterList.frame_0079 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"bw_scholar"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0080 = {
@@ -3572,7 +3978,21 @@ ItemMasterList.frame_0080 = {
 	rarity = "promo",
 	item_type = "frame",
 	can_wield = {
-		"bw_unchained"
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
 	}
 }
 ItemMasterList.frame_0081 = {
@@ -5545,7 +5965,7 @@ ItemMasterList.mercenary_hat_0001 = {
 	description = "description_mercenary_hat_0001",
 	rarity = "exotic",
 	display_name = "display_name_mercenary_hat_0001",
-	template = "es_hats",
+	template = "es_hats_no_ear",
 	inventory_icon = "icon_mercenary_hat_0001",
 	slot_type = "hat",
 	information_text = "information_text_hat",

@@ -22,9 +22,15 @@ GameModeTutorial.evaluate_end_conditions = function (self, round_started, dt, t)
 end
 
 GameModeTutorial.complete_level = function (self)
-	self._transition = "finish_tutorial"
-
 	StatisticsUtil.register_complete_tutorial(Managers.state.game_mode.statistics_db)
+
+	local backend_manager = Managers.backend
+	local stats_interface = backend_manager:get_interface("statistics")
+
+	stats_interface:save()
+	backend_manager:commit(true)
+
+	self._transition = "finish_tutorial"
 end
 
 GameModeTutorial.wanted_transition = function (self)

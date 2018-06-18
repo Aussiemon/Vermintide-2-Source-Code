@@ -354,13 +354,12 @@ BackendManagerPlayFab.update = function (self, dt)
 	self:_update_error_handling(dt)
 end
 
-BackendManagerPlayFab.playfab_api_error = function (self, result, error_override)
+BackendManagerPlayFab.playfab_api_error = function (self, result, error_code)
 	table.dump(result, nil, 10)
 
-	local error_code = self:_get_playfab_error_code(result)
 	local error_data = {
 		reason = BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ERROR,
-		details = error_override or error_code
+		details = error_code
 	}
 
 	self:_post_error(error_data)
@@ -384,29 +383,6 @@ BackendManagerPlayFab.playfab_error = function (self, reason, details)
 	}
 
 	self:_post_error(error_data)
-end
-
-BackendManagerPlayFab._get_playfab_error_code = function (self, result)
-	if result.data and result.data.Error then
-		local logs = result.data.Logs
-
-		if logs then
-			for i = 1, #logs, 1 do
-				local log = logs[i]
-				local data = log.Data
-
-				if data then
-					local api_error = data.apiError
-
-					if api_error then
-						return api_error.errorCode
-					end
-				end
-			end
-		end
-	elseif result.errorCode then
-		return result.errorCode
-	end
 end
 
 BackendManagerPlayFab.signed_in = function (self)

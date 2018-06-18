@@ -1,18 +1,73 @@
 local json = require("PlayFab.json")
 local PlayFabSettings = require("PlayFab.PlayFabSettings")
 active_requests = active_requests or {}
+local MAX_RETRIES = 2
+local retry_codes = {
+	1199,
+	1342,
+	1133,
+	1287,
+	1127,
+	1131,
+	1214
+}
+
+local function on_error(request_data, result, error_override)
+	local error_code = nil
+
+	if error_override then
+		error_code = error_override
+	elseif result.data and result.data.Error then
+		local logs = result.data.Logs
+
+		if logs then
+			for i = 1, #logs, 1 do
+				local log = logs[i]
+				local data = log.Data
+
+				if data then
+					local api_error = data.apiError
+
+					if api_error then
+						error_code = api_error.errorCode
+					end
+				end
+			end
+		end
+	elseif result.errorCode then
+		error_code = result.errorCode
+	end
+
+	if table.contains(retry_codes, error_code) and request_data.retries < MAX_RETRIES then
+		local url = request_data.url
+		local body = request_data.body
+		local headers = request_data.headers
+		local request_cb = request_data.request_cb
+		local id = request_data.id
+		local options = request_data.options
+
+		Managers.curl:post(url, body, headers, request_cb, id, options)
+
+		request_data.retries = request_data.retries + 1
+
+		print("[PLAYFAB HTTPS CURL] RESENDING REQUEST", id, error_code)
+		ScriptApplication.send_to_crashify("Backend_Error", "RESENDING REQUEST: %s", request_data)
+	else
+		Managers.backend:playfab_api_error(result, error_code)
+	end
+end
 
 function curl_callback(success, code, headers, data, user_data)
-	local request = active_requests[user_data]
+	local request_data = active_requests[user_data]
 
 	if success then
 		local _, response = pcall(json.decode, data)
 
 		if response and type(response) == "table" then
 			if response.code == 200 and response.data and not response.data.Error then
-				request.onSuccess(response.data)
+				request_data.onSuccess(response.data)
 			else
-				request.onError(response)
+				on_error(request_data, response)
 			end
 		else
 			local error_data = {
@@ -28,7 +83,7 @@ function curl_callback(success, code, headers, data, user_data)
 				error_data.errorMessage = "Could not deserialize response from server: NO DATA"
 			end
 
-			request.onError(error_data)
+			on_error(request_data, error_data)
 		end
 	else
 		local error_data = {
@@ -44,7 +99,7 @@ function curl_callback(success, code, headers, data, user_data)
 			error_data.errorMessage = "Could not deserialize response from server: NO DATA"
 		end
 
-		request.onError(error_data, tostring(data))
+		on_error(request_data, error_data, tostring(data))
 	end
 end
 
@@ -62,23 +117,26 @@ local PlayFabHttpsCurl = {
 			headers[#headers + 1] = auth_key .. ": " .. auth_value
 		end
 
-		local fail_callback = on_fail_callback or function (result, error_override)
-			local backend_manager = Managers.backend
-
-			backend_manager:playfab_api_error(result, error_override)
-		end
 		local id = #active_requests + 1
-		local callbacks = {
-			onSuccess = on_success_callback,
-			onError = fail_callback
-		}
-		active_requests[id] = callbacks
 		local curl_manager = Managers.curl
 		local full_url = "https://" .. PlayFabSettings.settings.titleId .. ".playfabapi.com/" .. url_path
-
-		curl_manager:post(full_url, json_request, headers, curl_callback, id, {
+		local options = {
 			[curl_manager._curl.OPT_SSL_VERIFYPEER] = false
-		})
+		}
+		local request_data = {
+			retries = 0,
+			onSuccess = on_success_callback,
+			onFail = on_fail_callback,
+			url = full_url,
+			body = json_request,
+			headers = headers,
+			request_cb = curl_callback,
+			id = id,
+			options = options
+		}
+		active_requests[id] = request_data
+
+		curl_manager:post(full_url, json_request, headers, curl_callback, id, options)
 	end
 }
 
