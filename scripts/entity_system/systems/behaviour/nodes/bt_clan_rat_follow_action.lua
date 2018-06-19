@@ -340,7 +340,8 @@ BTClanRatFollowAction.follow = function (self, unit, blackboard, t, dt)
 		local wanted_speed = self:_calculate_run_speed(unit, target_unit, blackboard, target_locomotion)
 		local sign = math.sign(wanted_speed - current_speed)
 
-		if sign > 0 and current_speed < breed.run_speed and target_distance > (breed.match_speed_distance or weapon_reach) + 0.5 and not breed.run_speed then
+		if sign > 0 and current_speed < breed.run_speed and target_distance > (breed.match_speed_distance or weapon_reach) + 0.5 then
+			current_speed = breed.run_speed or current_speed
 		end
 
 		new_speed = math.min(current_speed + sign * interpolation_factor * dt, wanted_speed)

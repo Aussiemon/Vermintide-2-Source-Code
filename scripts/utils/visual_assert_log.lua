@@ -80,7 +80,8 @@ VisualAssertLog.update = function ()
 				if Keyboard.pressed(VisualAssertLog.console_page_down_key) then
 					current_visualized_assert = current_visualized_assert - 1
 
-					if current_visualized_assert <= 0 and not n_asserts then
+					if current_visualized_assert <= 0 then
+						current_visualized_assert = n_asserts or current_visualized_assert
 					end
 				end
 

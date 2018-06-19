@@ -203,10 +203,7 @@ CareerAbilityBWAdept._update_priming = function (self, dt, t)
 
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	local new_hit_position = get_target_pos_on_navmesh(hit_position, nav_world)
-
-	if not new_hit_position then
-	end
-
+	hit_position = new_hit_position or hit_position
 	local data = self._astar_data
 
 	if not data then

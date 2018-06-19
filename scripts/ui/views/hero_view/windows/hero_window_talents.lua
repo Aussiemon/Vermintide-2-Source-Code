@@ -273,9 +273,7 @@ HeroWindowTalents._get_text_height = function (self, ui_renderer, size, ui_style
 		font_name = font[3]
 		font_size = font[2]
 		font_material = font[1]
-
-		if not ui_style.font_size then
-		end
+		font_size = ui_style.font_size or font_size
 	end
 
 	if ui_style.localize then

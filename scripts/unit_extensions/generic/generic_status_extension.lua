@@ -438,7 +438,8 @@ GenericStatusExtension._debug_draw_block_arcs = function (self, unit)
 			if self:is_blocking() then
 				local block_color = self._debug_draw_color
 
-				if block_color and not Color(unpack(block_color)) then
+				if block_color then
+					color = Color(unpack(block_color)) or color
 				end
 			end
 

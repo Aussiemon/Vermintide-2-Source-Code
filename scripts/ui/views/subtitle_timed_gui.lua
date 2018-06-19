@@ -49,7 +49,8 @@ local function extract_lines(text)
 end
 
 SubtitleTimedGui.init = function (self, subtitle_timing_name, target_widgets)
-	if subtitle_timing_name ~= "" and not Localize(subtitle_timing_name) then
+	if subtitle_timing_name ~= "" then
+		subtitle_timing_name = Localize(subtitle_timing_name) or subtitle_timing_name
 	end
 
 	self.texts = extract_lines(subtitle_timing_name)

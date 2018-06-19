@@ -1244,7 +1244,8 @@ LocomotionUtils.update_leaning = function (unit, blackboard, dt, abs_fwd_dot, ri
 	local leaning_left = right_dot < 0
 	local target_lean = (1 - abs_fwd_dot) * 25
 
-	if leaning_left and not -target_lean then
+	if leaning_left then
+		target_lean = -target_lean or target_lean
 	end
 
 	target_lean = math.clamp(target_lean, -1, 1)

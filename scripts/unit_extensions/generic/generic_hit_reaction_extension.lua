@@ -655,8 +655,7 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 
 		debug_printf("Checking actor %q", actor_name)
 
-		if not Unit.actor(unit, push_actors[i]) then
-		end
+		actor = Unit.actor(unit, push_actors[i]) or actor
 	end
 
 	if not actor then

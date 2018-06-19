@@ -212,12 +212,11 @@ StateLoading._setup_first_time_ui = function (self)
 		if platform == "win32" then
 			local level_name = (Boot.loading_context and Boot.loading_context.level_key) or LevelSettings.default_start_level
 
-			if Development.parameter("attract_mode") and not BenchmarkSettings.auto_host_level then
+			if Development.parameter("attract_mode") then
+				level_name = BenchmarkSettings.auto_host_level or level_name
 			end
 
-			if not check_bool_string(Development.parameter("auto_host_level")) then
-			end
-
+			level_name = check_bool_string(Development.parameter("auto_host_level")) or level_name
 			auto_skip = level_name ~= LevelSettings.default_start_level
 			auto_skip = loading_context.join_lobby_data or Development.parameter("auto_join") or auto_skip or Development.parameter("skip_splash")
 			local save_data = SaveData
@@ -225,10 +224,7 @@ StateLoading._setup_first_time_ui = function (self)
 			params.trailer = Application.user_setting("play_intro_cinematic")
 		elseif platform == "ps4" or platform == "xb1" then
 			local level_name = (Boot.loading_context and Boot.loading_context.level_key) or LevelSettings.default_start_level
-
-			if not check_bool_string(Development.parameter("auto_host_level")) then
-			end
-
+			level_name = check_bool_string(Development.parameter("auto_host_level")) or level_name
 			auto_skip = level_name ~= LevelSettings.default_start_level
 			auto_skip = loading_context.join_lobby_data or Development.parameter("auto_join") or auto_skip or Development.parameter("skip_splash")
 			params.gamma = loading_context.gamma_correct

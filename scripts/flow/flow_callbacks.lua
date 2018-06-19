@@ -2664,7 +2664,8 @@ function flow_callbacks_add_tutorial_animation_hook(params)
 	local animation_hook_name = params.animation_hook
 	local animation_hook_free_text_name = params.animation_hook_free_text
 
-	if animation_hook_free_text_name ~= "" and not animation_hook_free_text_name then
+	if animation_hook_free_text_name ~= "" then
+		animation_hook_name = animation_hook_free_text_name or animation_hook_name
 	end
 
 	fassert(animation_hook_name and PauseEvents.animation_hook_templates[animation_hook_name], "[flow_callbacks] There is no animation hook called: %s", tostring(animation_hook_name))

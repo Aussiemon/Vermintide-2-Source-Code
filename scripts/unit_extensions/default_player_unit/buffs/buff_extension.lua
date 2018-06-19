@@ -200,21 +200,11 @@ BuffExtension.add_buff = function (self, template_name, params)
 					end
 				end
 
-				if not params.external_optional_bonus then
-				end
-
-				if not params.external_optional_multiplier then
-				end
-
-				if not params.external_optional_proc_chance then
-				end
-
-				if not params.external_optional_duration then
-				end
-
-				if not params.external_optional_range then
-				end
-
+				bonus = params.external_optional_bonus or bonus
+				multiplier = params.external_optional_multiplier or multiplier
+				proc_chance = params.external_optional_proc_chance or proc_chance
+				duration = params.external_optional_duration or duration
+				range = params.external_optional_range or range
 				damage_source = params.damage_source
 				power_level = params.power_level
 				spawned_unit_go_id = params.spawned_unit_go_id

@@ -102,9 +102,7 @@ EnemyPackageLoader._pick_breed_from_loaded_breeds = function (self, loaded_breed
 end
 
 EnemyPackageLoader.request_breed = function (self, breed_name, ignore_breed_limits)
-	if not ALIAS_TO_BREED[breed_name] then
-	end
-
+	breed_name = ALIAS_TO_BREED[breed_name] or breed_name
 	local breed_category_data = self._breed_category_lookup[breed_name]
 	local current_packages = breed_category_data.current
 	local package_limit = breed_category_data.limit

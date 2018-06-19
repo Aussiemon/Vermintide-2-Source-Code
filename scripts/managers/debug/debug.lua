@@ -277,7 +277,8 @@ Debug.sticky_text = function (...)
 	}
 	local delay = 3
 
-	if t[#t - 1] == "delay" and not t[#t] then
+	if t[#t - 1] == "delay" then
+		delay = t[#t] or delay
 	end
 
 	table.insert(Debug.sticky_texts, {
