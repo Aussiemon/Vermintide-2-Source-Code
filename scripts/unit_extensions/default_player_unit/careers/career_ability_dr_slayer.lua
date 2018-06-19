@@ -125,7 +125,8 @@ CareerAbilityDRSlayer._update_priming = function (self)
 	local player_direction_flat = Vector3.normalize(Vector3.flat(player_direction))
 	local cross = Vector3.cross(player_direction, Vector3.forward())
 
-	if cross.x < 0 and not player_direction_flat then
+	if cross.x < 0 then
+		player_direction = player_direction_flat or player_direction
 	end
 
 	local landing_position = nil

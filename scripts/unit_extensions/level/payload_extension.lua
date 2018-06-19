@@ -423,7 +423,8 @@ PayloadExtension._init_movement_spline = function (self, world, unit, payload_gi
 			local unit_speed_setting = Unit.get_data(gizmo_unit, "speed_setting")
 			local unit_flow_event = Unit.get_data(gizmo_unit, "flow_event")
 
-			if unit_speed_setting ~= "" and not unit_speed_setting then
+			if unit_speed_setting ~= "" then
+				speed_setting = unit_speed_setting or speed_setting
 			end
 
 			flow_event = unit_flow_event ~= "" and unit_flow_event

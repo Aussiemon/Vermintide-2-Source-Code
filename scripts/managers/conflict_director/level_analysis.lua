@@ -821,7 +821,8 @@ LevelAnalysis.give_events = function (self, main_paths, terror_spawners, num_sec
 		local terror_event_kind = generated_event_list[i]
 		local terror_event_name = nil
 
-		if boss_settings_section[i] and not boss_settings_section[i].boss_events then
+		if boss_settings_section[i] then
+			event_settings = boss_settings_section[i].boss_events or event_settings
 		end
 
 		if terror_event_kind == "event_boss" or terror_event_kind == "event_patrol" then

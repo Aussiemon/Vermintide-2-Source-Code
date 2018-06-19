@@ -314,9 +314,7 @@ MusicManager._get_combat_music_state = function (self, conflict_director)
 
 		if blackboard.is_angry then
 			local breed = blackboard.breed
-
-			if not breed.combat_music_state then
-			end
+			state = breed.combat_music_state or state
 
 			if breed.combat_music_state ~= "no_boss" then
 				break
@@ -349,7 +347,8 @@ MusicManager._update_boss_music_intensity = function (self, conflict_director)
 			local unit_position = POSITION_LOOKUP[unit]
 			local distance_sq = Vector3.distance_squared(player_position, unit_position)
 
-			if distance_sq < min_distance_sq and not distance_sq then
+			if distance_sq < min_distance_sq then
+				min_distance_sq = distance_sq or min_distance_sq
 			end
 		end
 
@@ -357,7 +356,8 @@ MusicManager._update_boss_music_intensity = function (self, conflict_director)
 			local unit_position = POSITION_LOOKUP[unit]
 			local distance_sq = Vector3.distance_squared(player_position, unit_position)
 
-			if distance_sq < min_distance_sq and not distance_sq then
+			if distance_sq < min_distance_sq then
+				min_distance_sq = distance_sq or min_distance_sq
 			end
 		end
 

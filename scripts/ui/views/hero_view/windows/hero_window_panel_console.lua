@@ -420,9 +420,7 @@ HeroWindowPanelConsole._get_text_height = function (self, ui_renderer, size, ui_
 		font_name = font[3]
 		font_size = font[2]
 		font_material = font[1]
-
-		if not ui_style.font_size then
-		end
+		font_size = ui_style.font_size or font_size
 	end
 
 	if ui_style.localize then
@@ -462,9 +460,7 @@ HeroWindowPanelConsole._get_portrait_frame = function (self)
 	if item then
 		local item_data = item.data
 		local frame_name = item_data.temporary_template
-
-		if not frame_name then
-		end
+		player_portrait_frame = frame_name or player_portrait_frame
 	end
 
 	return player_portrait_frame

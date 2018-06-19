@@ -39,10 +39,7 @@ ItemHelper.get_template_by_item_name = function (name)
 	local slot_type = item_data.slot_type
 	local template_name = item_data.template
 	local temporary_template = item_data.temporary_template
-
-	if not temporary_template then
-	end
-
+	template_name = temporary_template or template_name
 	local template = item_type_templates[slot_type][template_name]
 
 	assert(template, "No template by name %s found for item_data %s.", template_name, name)

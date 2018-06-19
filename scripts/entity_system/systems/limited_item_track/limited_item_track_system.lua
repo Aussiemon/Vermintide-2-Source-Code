@@ -143,7 +143,8 @@ local dummy_input = {}
 local temp_extension_init_data = {}
 
 LimitedItemTrackSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
-	if next(extension_init_data) == nil and not temp_extension_init_data then
+	if next(extension_init_data) == nil then
+		extension_init_data = temp_extension_init_data or extension_init_data
 	end
 
 	extension_init_data.network_manager = self.network_manager

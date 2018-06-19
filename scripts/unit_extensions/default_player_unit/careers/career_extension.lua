@@ -248,12 +248,8 @@ CareerExtension.get_career_power_level = function (self)
 			else
 				local leader_profile_display_name = leader_player:profile_display_name()
 				local leader_career_name = leader_player:career_name()
-
-				if not leader_profile_display_name then
-				end
-
-				if not leader_career_name then
-				end
+				profile_name = leader_profile_display_name or profile_name
+				career_name = leader_career_name or career_name
 			end
 		end
 	end

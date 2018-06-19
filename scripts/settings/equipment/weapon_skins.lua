@@ -5377,10 +5377,7 @@ WeaponSkins.debug_verify_skins = function ()
 				local slot_type = data.slot_type
 				local template_name = data.template
 				local temporary_template = data.temporary_template
-
-				if not temporary_template then
-				end
-
+				template_name = temporary_template or template_name
 				local template = item_type_templates[slot_type][template_name]
 
 				for _, skins_by_rarity in pairs(skins) do

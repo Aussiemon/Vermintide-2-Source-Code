@@ -97,10 +97,12 @@ UIPasses.texture_uv_dynamic_color_uvs_size_offset = {
 		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		if pass_definition.content_id and not ui_content[pass_definition.content_id] then
+		if pass_definition.content_id then
+			ui_content = ui_content[pass_definition.content_id] or ui_content
 		end
 
-		if pass_definition.style_id and not ui_style[pass_definition.style_id] then
+		if pass_definition.style_id then
+			ui_style = ui_style[pass_definition.style_id] or ui_style
 		end
 
 		local color, uvs, size, offset = pass_definition.dynamic_function(ui_content, ui_style, size, dt, ui_renderer)
@@ -814,7 +816,8 @@ UIPasses.texture_uv_dynamic_size_uvs = {
 		return pass_definition.content_id
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
-		if pass_definition.content_id and not ui_content[pass_definition.content_id] then
+		if pass_definition.content_id then
+			ui_content = ui_content[pass_definition.content_id] or ui_content
 		end
 
 		local color = ui_style.color
@@ -1610,9 +1613,7 @@ UIPasses.text = {
 			font_name = font[3]
 			font_size = font[2]
 			font_material = font[1]
-
-			if not ui_style.font_size then
-			end
+			font_size = ui_style.font_size or font_size
 		end
 
 		if ui_style.word_wrap then
@@ -1898,9 +1899,7 @@ UIPasses.lorebook_multiple_texts = {
 			font_name = font[3]
 			font_size = font[2]
 			font_material = font[1]
-
-			if not ui_style.font_size then
-			end
+			font_size = ui_style.font_size or font_size
 		end
 
 		local text_color = ui_style.text_color
@@ -3479,9 +3478,7 @@ UIPasses.tooltip_text = {
 			font_name = font[3]
 			font_size = font[2]
 			font_material = font[1]
-
-			if not ui_style.font_size then
-			end
+			font_size = ui_style.font_size or font_size
 		end
 
 		local text = ui_content[pass_data.text_id]
@@ -3596,9 +3593,7 @@ UIPasses.rect_text = {
 			font_name = font[3]
 			font_size = font[2]
 			font_material = font[1]
-
-			if not ui_style.font_size then
-			end
+			font_size = ui_style.font_size or font_size
 		end
 
 		local text = ui_content[pass_data.text_id]

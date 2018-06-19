@@ -132,9 +132,7 @@ CameraStateObserver.follow_next_unit = function (self)
 		end
 	end
 
-	if follow_unit then
-	end
-
+	observed_player_id = follow_unit and observed_player_id
 	self._follow_unit = follow_unit
 	self._snap_camera = snap_camera
 	self._observed_player_id = observed_player_id

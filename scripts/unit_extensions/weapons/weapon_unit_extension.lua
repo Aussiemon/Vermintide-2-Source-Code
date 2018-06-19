@@ -361,9 +361,9 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 		if self.ammo_extension then
 			if self.ammo_extension:total_remaining_ammo() == 0 then
-				if not current_action_settings.anim_event_no_ammo_left then
-				end
-			elseif self.ammo_extension:total_remaining_ammo() == 1 and not current_action_settings.anim_event_last_ammo then
+				event = current_action_settings.anim_event_no_ammo_left or event
+			elseif self.ammo_extension:total_remaining_ammo() == 1 then
+				event = current_action_settings.anim_event_last_ammo or event
 			end
 		end
 
@@ -710,12 +710,8 @@ WeaponUnitExtension._get_attack_chain_data = function (self, actions, attack_cha
 	end
 
 	found_action_settings = actions[found_chain_action.action][found_chain_action.sub_action_name]
-
-	if not attack_chain_data.bot_wait_input then
-	end
-
-	if not attack_chain_data.bot_wanted_input then
-	end
+	bot_wait_input = attack_chain_data.bot_wait_input or bot_wait_input
+	bot_wanted_input = attack_chain_data.bot_wanted_input or bot_wanted_input
 
 	return found_chain_action, found_action_settings, action_settings, bot_wait_input, bot_wanted_input
 end

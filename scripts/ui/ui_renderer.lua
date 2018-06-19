@@ -463,12 +463,14 @@ UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global,
 
 			local style_data_size = style_data and style_data.size
 
-			if style_data_size and not Vector2(style_data_size[1] or pass_size[1], style_data_size[2] or pass_size[2]) then
+			if style_data_size then
+				pass_size = Vector2(style_data_size[1] or pass_size[1], style_data_size[2] or pass_size[2]) or pass_size
 			end
 
 			local style_offset = style_data and style_data.offset
 
-			if style_offset and not (pass_position + Vector3(style_offset[1], style_offset[2], style_offset[3] or 0)) then
+			if style_offset then
+				pass_position = pass_position + Vector3(style_offset[1], style_offset[2], style_offset[3] or 0) or pass_position
 			end
 
 			if widget_optional_scale then
@@ -789,7 +791,8 @@ UIRenderer.draw_multi_texture = function (self, materials, lower_left_corner, te
 	for i = 1, num_draws, 1 do
 		local material = materials[i]
 
-		if texture_sizes and not texture_sizes[i] then
+		if texture_sizes then
+			texture_size = texture_sizes[i] or texture_size
 		end
 
 		local draw_color = color

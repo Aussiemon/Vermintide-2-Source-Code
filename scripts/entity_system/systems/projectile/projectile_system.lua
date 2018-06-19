@@ -160,7 +160,8 @@ ProjectileSystem.spawn_player_projectile = function (self, owner_unit, position,
 	local projectile_info = action.projectile_info
 	local gravity_settings = projectile_info.gravity_settings
 
-	if gaze_settings and not projectile_info.gaze_override_gravity_settings then
+	if gaze_settings then
+		gravity_settings = projectile_info.gaze_override_gravity_settings or gravity_settings
 	end
 
 	local trajectory_template_name = projectile_info.trajectory_template_name

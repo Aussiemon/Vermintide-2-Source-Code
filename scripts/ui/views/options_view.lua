@@ -4969,7 +4969,8 @@ OptionsView.reload_language = function (self, language_id)
 		if button_index then
 			key_locale_name = device.button_name(button_index)
 
-			if device_type == "keyboard" and not device.button_locale_name(button_index) then
+			if device_type == "keyboard" then
+				key_locale_name = device.button_locale_name(button_index) or key_locale_name
 			end
 
 			if device_type == "mouse" then
@@ -4989,9 +4990,7 @@ OptionsView.reload_language = function (self, language_id)
 
 			if button_index then
 				key_locale_name = Keyboard.button_name(button_index)
-
-				if not Keyboard.button_locale_name(button_index) then
-				end
+				key_locale_name = Keyboard.button_locale_name(button_index) or key_locale_name
 			else
 				key_locale_name = Localize(unassigned_keymap)
 			end

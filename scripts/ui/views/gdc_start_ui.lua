@@ -435,7 +435,8 @@ GDCStartUI.set_input_text = function (self, optinal_text)
 
 				texture_size_x = texture_size_x + sizes[i][1]
 
-				if texture_size_y < sizes[i][2] and not sizes[i][2] then
+				if texture_size_y < sizes[i][2] then
+					texture_size_y = sizes[i][2] or texture_size_y
 				end
 			end
 
