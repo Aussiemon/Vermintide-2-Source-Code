@@ -360,7 +360,11 @@ PlayFabMirror._verify_items_are_usable = function (self, broken_slots, character
 
 				local item_slot_name = slot_mapping[item_data.slot_type]
 
-				if item_slot_name and item_slot_name ~= slot_name then
+				if career_name == "dr_slayer" and slot_name == "slot_ranged" then
+					if item_data.slot_type ~= "melee" then
+						broken_slots[slot_name] = true
+					end
+				elseif item_slot_name and item_slot_name ~= slot_name then
 					broken_slots[slot_name] = true
 				end
 			end

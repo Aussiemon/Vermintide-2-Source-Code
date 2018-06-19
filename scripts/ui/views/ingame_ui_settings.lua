@@ -33,8 +33,8 @@ local transitions = {
 			local text = Localize("player_join_block_exit_game")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
 		else
-			local text = Localize("exit_game_popup_text_xb1")
-			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic_xb1"), "do_return_to_title_screen", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
+			local text = Localize("exit_to_title_popup_text")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_to_title_topic"), "do_return_to_title_screen", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 		end
 	end,
 	return_to_demo_title_screen = function (self)
@@ -48,8 +48,8 @@ local transitions = {
 			local text = Localize("player_join_block_exit_game")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
 		else
-			local text = Localize("exit_game_popup_text_xb1")
-			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic_xb1"), "do_return_to_demo_title_screen", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
+			local text = Localize("exit_to_title_popup_text")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_to_title_topic"), "do_return_to_demo_title_screen", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 		end
 	end,
 	restart_demo = function (self)
@@ -180,8 +180,8 @@ local transitions = {
 			local text = Localize("player_join_block_exit_game")
 			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_error_topic"), "cancel_popup", Localize("menu_ok"))
 		else
-			local text = Localize("exit_game_popup_text_xb1")
-			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic_xb1"), "do_return_to_pc_menu", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
+			local text = Localize("exit_to_title_popup_text")
+			self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_to_title_topic"), "do_return_to_pc_menu", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 		end
 	end,
 	ingame_menu = function (self)
