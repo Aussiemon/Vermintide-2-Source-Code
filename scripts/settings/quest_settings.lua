@@ -264,9 +264,11 @@ QuestSettings.check_gutter_killed_while_pouncing = function (blackboard, killer_
 end
 
 QuestSettings.check_gutter_runner_push_on_pounce = function (blackboard, pushing_unit)
-	local bt_node_name = blackboard.btnode_name
+	local unit = blackboard.unit
+	local ai_extension = ScriptUnit.extension(unit, "ai_system")
+	local bt_node_name = ai_extension:current_action_name()
 
-	if bt_node_name == "crazy_jump" and blackboard.stagger_was_push and Unit.alive(pushing_unit) then
+	if bt_node_name == "jump" and Unit.alive(pushing_unit) then
 		local stat_name = "gutter_runner_push_on_pounce"
 
 		increment_stat(pushing_unit, stat_name)
@@ -274,9 +276,11 @@ QuestSettings.check_gutter_runner_push_on_pounce = function (blackboard, pushing
 end
 
 QuestSettings.check_gutter_runner_push_on_target_pounced = function (blackboard, pushing_unit)
-	local bt_node_name = blackboard.btnode_name
+	local unit = blackboard.unit
+	local ai_extension = ScriptUnit.extension(unit, "ai_system")
+	local bt_node_name = ai_extension:current_action_name()
 
-	if bt_node_name == "target_pounced" and blackboard.stagger_was_push and Unit.alive(pushing_unit) then
+	if bt_node_name == "target_pounced" and Unit.alive(pushing_unit) then
 		local stat_name = "gutter_runner_push_on_target_pounced"
 
 		increment_stat(pushing_unit, stat_name)
@@ -310,7 +314,9 @@ QuestSettings.check_corruptor_killed_while_grabbing = function (blackboard, kill
 end
 
 QuestSettings.check_vortex_sorcerer_killed_while_summoning = function (blackboard, killer_unit)
-	local bt_node_name = blackboard.btnode_name
+	local unit = blackboard.unit
+	local ai_extension = ScriptUnit.extension(unit, "ai_system")
+	local bt_node_name = ai_extension:current_action_name()
 
 	if bt_node_name == "spawn_vortex" and Unit.alive(killer_unit) then
 		local stat_name = "vortex_sorcerer_killed_while_summoning"
@@ -365,7 +371,9 @@ QuestSettings.check_ratling_gunner_killed_by_melee = function (killer_unit, dama
 end
 
 QuestSettings.check_ratling_gunner_killed_while_shooting = function (blackboard, killer_unit)
-	local bt_node_name = blackboard.btnode_name
+	local unit = blackboard.unit
+	local ai_extension = ScriptUnit.extension(unit, "ai_system")
+	local bt_node_name = ai_extension:current_action_name()
 	local target_unit = blackboard.attack_pattern_data and blackboard.attack_pattern_data.target_unit
 
 	if target_unit ~= killer_unit and bt_node_name == "shoot_ratling_gun" then
@@ -396,7 +404,9 @@ QuestSettings.check_ratling_gunner_blocked_shot = function (unit, attacking_unit
 end
 
 QuestSettings.check_chaos_spawn_killed_while_grabbing = function (blackboard, killer_unit)
-	local bt_node_name = blackboard.btnode_name
+	local unit = blackboard.unit
+	local ai_extension = ScriptUnit.extension(unit, "ai_system")
+	local bt_node_name = ai_extension:current_action_name()
 
 	if bt_node_name == "attack_grabbed_chew" or bt_node_name == "attack_grabbed_smash" or bt_node_name == "attack_grabbed_throw" then
 		local stat_name = "chaos_spawn_killed_while_grabbing"
@@ -438,9 +448,11 @@ QuestSettings.check_chaos_troll_killed_without_bile_damage = function (blackboar
 end
 
 QuestSettings.check_rat_ogre_killed_mid_leap = function (blackboard, killer_unit)
-	local bt_node_name = blackboard.btnode_name
+	local unit = blackboard.unit
+	local ai_extension = ScriptUnit.extension(unit, "ai_system")
+	local bt_node_name = ai_extension:current_action_name()
 
-	if bt_node_name == "attack_jump" then
+	if bt_node_name == "jump_slam" then
 		local stat_name = "rat_ogre_killed_mid_leap"
 
 		increment_stat(killer_unit, stat_name)

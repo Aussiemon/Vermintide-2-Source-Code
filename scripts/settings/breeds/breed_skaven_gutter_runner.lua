@@ -200,6 +200,12 @@ local breed_data = {
 		end
 
 		QuestSettings.check_gutter_killed_while_pouncing(blackboard, killer_unit, damage_source)
+	end,
+	before_stagger_enter_function = function (unit, blackboard, attacker_unit, is_push)
+		if is_push then
+			QuestSettings.check_gutter_runner_push_on_pounce(blackboard, attacker_unit)
+			QuestSettings.check_gutter_runner_push_on_target_pounced(blackboard, attacker_unit)
+		end
 	end
 }
 Breeds.skaven_gutter_runner = table.create_copy(Breeds.skaven_gutter_runner, breed_data)
@@ -308,17 +314,6 @@ local action_data = {
 		}
 	},
 	stagger = {
-		custom_enter_function = function (unit, blackboard, t, action)
-			local pushing_unit = blackboard.pushing_unit
-			local bt_node_name = blackboard.btnode_name
-
-			QuestSettings.check_gutter_runner_push_on_pounce(blackboard, pushing_unit)
-			QuestSettings.check_gutter_runner_push_on_target_pounced(blackboard, pushing_unit)
-
-			local stagger_anims = action.stagger_anims[blackboard.stagger_type]
-
-			return stagger_anims, "idle"
-		end,
 		stagger_anims = {
 			{
 				fwd = {

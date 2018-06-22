@@ -772,6 +772,10 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 			Unit.set_data(attacker_unit, "last_combo_t", t)
 		end
 
+		if breed.before_stagger_enter_function then
+			breed.before_stagger_enter_function(unit, blackboard, attacker_unit, is_push)
+		end
+
 		if ai_extension.attacked then
 			ai_extension:attacked(attacker_unit, t)
 		end
