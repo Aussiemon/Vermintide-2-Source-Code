@@ -99,6 +99,12 @@ local daily_kill_bosses_mappings = {
 			skaven_rat_ogre = true,
 			chaos_spawn = true,
 			skaven_stormfiend = true
+		},
+		kill_assists_per_breed = {
+			chaos_troll = true,
+			skaven_rat_ogre = true,
+			chaos_spawn = true,
+			skaven_stormfiend = true
 		}
 	}
 }
@@ -127,13 +133,16 @@ quest_templates.quests.daily_kill_bosses = {
 }
 local daily_kill_elites_mappings = {
 	{
-		kills_per_breed = {}
+		kills_per_breed = {},
+		kill_assists_per_breed = {}
 	}
 }
 
 for breed_name, _ in pairs(ELITES) do
 	local kill_elites_mapping = daily_kill_elites_mappings[1].kills_per_breed
+	local assist_kill_elites_mapping = daily_kill_elites_mappings[1].kill_assists_per_breed
 	kill_elites_mapping[breed_name] = true
+	assist_kill_elites_mapping[breed_name] = true
 end
 
 quest_templates.quests.daily_kill_elites = {
@@ -334,7 +343,7 @@ quest_templates.quests.daily_complete_levels_hero_empire_soldier = {
 		}
 	end
 }
-local event_skulls_for_the_skull_throne_mappings = {
+local event_quickplay_mappings = {
 	{
 		played_levels_quickplay = {}
 	}
@@ -342,7 +351,7 @@ local event_skulls_for_the_skull_throne_mappings = {
 
 for i = 1, #MainGameLevels, 1 do
 	local level_key = MainGameLevels[i]
-	local complete_quickplay_missions_mapping = event_skulls_for_the_skull_throne_mappings[1].played_levels_quickplay
+	local complete_quickplay_missions_mapping = event_quickplay_mappings[1].played_levels_quickplay
 	complete_quickplay_missions_mapping[level_key] = true
 end
 
@@ -354,7 +363,7 @@ quest_templates.quests.event_skulls_for_the_skull_throne = {
 	desc = function ()
 		return string.format(Localize("quest_event_skull_2018_desc"), QuestSettings.event_skulls_for_the_skull_throne)
 	end,
-	stat_mappings = event_skulls_for_the_skull_throne_mappings,
+	stat_mappings = event_quickplay_mappings,
 	completed = function (statistics_db, stats_id, quest_key)
 		local stat_name = QuestSettings.stat_mappings[quest_key][1]
 
@@ -367,6 +376,90 @@ quest_templates.quests.event_skulls_for_the_skull_throne = {
 		return {
 			count,
 			QuestSettings.event_skulls_for_the_skull_throne
+		}
+	end
+}
+quest_templates.quests.event_sonnstill_quickplay_2018 = {
+	reward = "frame_summer",
+	name = "quest_event_summer_2018_quickplay_name",
+	icon = "quest_book_event_summer",
+	desc = function ()
+		return string.format(Localize("quest_event_summer_2018_quickplay_desc"), QuestSettings.event_sonnstill_quickplay_levels)
+	end,
+	stat_mappings = event_quickplay_mappings,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.event_sonnstill_quickplay_levels <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.event_sonnstill_quickplay_levels
+		}
+	end
+}
+local event_sonnstill_played_champion_mappings_2018 = {
+	{
+		played_difficulty = {
+			harder = true,
+			hardest = true
+		}
+	}
+}
+quest_templates.quests.event_sonnstill_played_champion_2018 = {
+	reward = "loot_chest_03_06",
+	name = "quest_event_summer_2018_champion_name",
+	icon = "quest_book_event_summer",
+	desc = function ()
+		return string.format(Localize("quest_event_summer_2018_champion_desc"), QuestSettings.event_sonnstill_difficulty_levels)
+	end,
+	stat_mappings = event_sonnstill_played_champion_mappings_2018,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.event_sonnstill_difficulty_levels <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.event_sonnstill_quickplay_levels
+		}
+	end
+}
+local event_sonnstill_played_legend_mappings_2018 = {
+	{
+		played_difficulty = {
+			hardest = true
+		}
+	}
+}
+quest_templates.quests.event_sonnstill_played_legend_2018 = {
+	reward = "loot_chest_04_06",
+	name = "quest_event_summer_2018_legend_name",
+	icon = "quest_book_event_summer",
+	desc = function ()
+		return string.format(Localize("quest_event_summer_2018_legend_desc"), QuestSettings.event_sonnstill_difficulty_levels)
+	end,
+	stat_mappings = event_sonnstill_played_legend_mappings_2018,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return QuestSettings.event_sonnstill_difficulty_levels <= statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+	end,
+	progress = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+		local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+		return {
+			count,
+			QuestSettings.event_sonnstill_quickplay_levels
 		}
 	end
 }

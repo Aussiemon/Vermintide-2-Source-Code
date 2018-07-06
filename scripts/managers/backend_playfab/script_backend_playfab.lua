@@ -27,7 +27,8 @@ ScriptBackendPlayFab.update_signin = function (self)
 				TitleId = PlayFabClientApi.settings.titleId,
 				SteamTicket = ticket,
 				InfoRequestParameters = {
-					GetUserReadOnlyData = true
+					GetUserReadOnlyData = true,
+					GetTitleData = true
 				}
 			}
 			local login_request_cb = callback(self, "login_request_cb")

@@ -26,6 +26,7 @@ end
 BUILD = Application.build()
 PLATFORM = Application.platform()
 LAUNCH_MODE = "game"
+HAS_STEAM = (rawget(_G, "Steam") and true) or false
 local args = {
 	Application.argv()
 }

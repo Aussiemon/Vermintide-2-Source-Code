@@ -16,7 +16,8 @@ PlayFabMirror.init = function (self, signin_result)
 	self._quest_data = {}
 	self._best_power_levels = nil
 	self.sum_best_power_levels = nil
-	local read_only_data = signin_result.InfoResultPayload.UserReadOnlyData
+	local info_result_payload = signin_result.InfoResultPayload
+	local read_only_data = info_result_payload.UserReadOnlyData
 	local read_only_data_values = {}
 
 	for key, data in pairs(read_only_data) do
@@ -31,6 +32,18 @@ PlayFabMirror.init = function (self, signin_result)
 
 	self._read_only_data = read_only_data_values
 	self._read_only_data_mirror = table.clone(read_only_data_values)
+	local title_data = info_result_payload.TitleData
+	local title_data_values = {}
+
+	for key, value in pairs(title_data) do
+		if tonumber(value) then
+			value = tonumber(value)
+		end
+
+		title_data_values[key] = value
+	end
+
+	self._title_data = title_data_values
 	self._commit_limit_timer = REDUCTION_INTERVAL
 	self._commit_limit_total = 1
 	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)
@@ -526,6 +539,10 @@ PlayFabMirror.update_career_data = function (self, career_name, key, value)
 	local career_data_mirror = self._career_data_mirror[career_name]
 	career_data[key] = value
 	career_data_mirror[key] = value
+end
+
+PlayFabMirror.get_title_data = function (self)
+	return self._title_data
 end
 
 PlayFabMirror.get_read_only_data = function (self)

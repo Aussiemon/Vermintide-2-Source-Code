@@ -54,8 +54,18 @@ ModManager.init = function (self, boot_gui)
 	self._gui = boot_gui
 	self._ui_time = 0
 	self._reload_data = {}
+	local in_modded_realm = script_data["eac-untrusted"]
 
-	if self:_has_enabled_mods() and Application.bundled() then
+	if HAS_STEAM then
+		if in_modded_realm then
+			Presence.set_presence("status", "Modded Realm")
+		else
+			Presence.set_presence("status", "Official Realm")
+		end
+	end
+
+	if self:_has_enabled_mods(in_modded_realm) and Application.bundled() then
+		self:print("info", "Scanning for mods...")
 		self:_start_scan()
 	else
 		self._state = "done"
@@ -69,8 +79,8 @@ ModManager.remove_gui = function (self)
 	self._gui = nil
 end
 
-ModManager._has_enabled_mods = function (self)
-	if not script_data["eac-untrusted"] then
+ModManager._has_enabled_mods = function (self, in_modded_realm)
+	if not in_modded_realm then
 		return false
 	end
 
@@ -272,13 +282,19 @@ ModManager._load_mod = function (self, index)
 			self:print("error", "Syntax error in .mod file. Mod %q skipped.", mod_name(mod))
 			self:print("info", err_text)
 
+			mod.enabled = false
+
 			return self:_load_mod(index + 1)
 		elseif not data_file then
 			self:print("error", "Missing return value from .mod file. Mod %q skipped.", mod_name(mod))
 
+			mod.enabled = false
+
 			return self:_load_mod(index + 1)
 		elseif type(data_file) ~= "function" then
 			self:print("error", "Return value from .mod file is not a function. Mod %q skipped.", mod_name(mod))
+
+			mod.enabled = false
 
 			return self:_load_mod(index + 1)
 		end
@@ -288,6 +304,8 @@ ModManager._load_mod = function (self, index)
 		if not success then
 			self:print("error", "Error in .mod file return table. Mod %q skipped.", mod_name(mod))
 			self:print("info", data_or_error)
+
+			mod.enabled = false
 
 			return self:_load_mod(index + 1)
 		end

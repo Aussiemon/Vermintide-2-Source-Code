@@ -379,7 +379,7 @@ ProximitySystem.physics_async_update = function (self, context, t)
 	self:_update_nearby_enemies()
 end
 
-local MAX_ALLOWED_FX = 10
+local MAX_ALLOWED_FX = 12
 local Unit_flow_event = Unit.flow_event
 local Unit_alive = Unit.alive
 

@@ -2566,6 +2566,10 @@ local frame_skulls = {
 	icon = "unit_frame_02"
 }
 Cosmetics.frame_skulls = table.clone(frame_skulls)
+local frame_summer = {
+	icon = "unit_frame_02"
+}
+Cosmetics.frame_summer = table.clone(frame_summer)
 
 for name, cosmetic_data in pairs(Cosmetics) do
 	cosmetic_data.name = name

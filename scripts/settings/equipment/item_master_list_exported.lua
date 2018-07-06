@@ -1727,6 +1727,34 @@ ItemMasterList.frame_skulls = {
 		"es_mercenary"
 	}
 }
+ItemMasterList.frame_summer = {
+	description = "frame_summer_description",
+	temporary_template = "frame_summer",
+	display_name = "frame_summer_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_summer",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained",
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher",
+		"dr_ironbreaker",
+		"dr_slayer",
+		"dr_ranger",
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain",
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
 ItemMasterList.frame_0000 = {
 	description = "frame_0000_description",
 	temporary_template = "frame_0000",
@@ -5204,7 +5232,7 @@ ItemMasterList.ranger_hat_0001 = {
 	description = "description_ranger_hat_0001",
 	rarity = "exotic",
 	display_name = "display_name_ranger_hat_0001",
-	template = "dr_helmets",
+	template = "dr_helmets_no_ear",
 	inventory_icon = "icon_ranger_hat_0001",
 	slot_type = "hat",
 	information_text = "information_text_hat",
@@ -5249,7 +5277,7 @@ ItemMasterList.ranger_hat_0004 = {
 	description = "description_ranger_hat_0004",
 	rarity = "promo",
 	display_name = "display_name_ranger_hat_0004",
-	template = "dr_helmets",
+	template = "dr_helmets_no_ear",
 	inventory_icon = "icon_ranger_hat_0004",
 	slot_type = "hat",
 	information_text = "information_text_hat",

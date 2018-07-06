@@ -76,6 +76,18 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_summer = {
+		{
+			texture = "portrait_frame_summer",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	default = {
 		{
 			texture = "portrait_frame_0000",

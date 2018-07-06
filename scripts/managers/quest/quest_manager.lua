@@ -45,29 +45,32 @@ QuestManager._increment_quest_stats = function (self, quests, stats_id, ...)
 	for quest_key, quest_data in pairs(quests) do
 		local quest_name = quest_data.name
 		local template = templates[quest_name]
-		local stat_mappings = template.stat_mappings
 
-		for i = 1, #stat_mappings, 1 do
-			local map = stat_mappings[i]
-			local success = true
+		if template then
+			local stat_mappings = template.stat_mappings
 
-			for j = 1, arg_n, 1 do
-				local arg_value = select(j, ...)
-				map = map[arg_value]
+			for i = 1, #stat_mappings, 1 do
+				local map = stat_mappings[i]
+				local success = true
 
-				if not map then
-					success = false
+				for j = 1, arg_n, 1 do
+					local arg_value = select(j, ...)
+					map = map[arg_value]
+
+					if not map then
+						success = false
+
+						break
+					end
+				end
+
+				if success then
+					local stat_name = QuestSettings.stat_mappings[quest_key][i]
+
+					statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
 
 					break
 				end
-			end
-
-			if success then
-				local stat_name = QuestSettings.stat_mappings[quest_key][i]
-
-				statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
-
-				break
 			end
 		end
 	end
@@ -139,11 +142,11 @@ QuestManager.get_quest_outline = function (self)
 	local quest_categories = outline.categories
 
 	for i = 1, #quest_categories, 1 do
-		local catergory = quest_categories[i]
-		local quest_type = catergory.quest_type
+		local category = quest_categories[i]
+		local quest_type = category.quest_type
 
 		if quest_type == "daily" then
-			local entries = catergory.entries
+			local entries = category.entries
 			local keys = quest_keys.daily
 
 			for j = 1, #keys, 1 do
@@ -152,11 +155,14 @@ QuestManager.get_quest_outline = function (self)
 
 				if quest_data then
 					local quest_name = quest_data.name
-					entries[#entries + 1] = quest_name
+
+					if quest_templates.quests[quest_name] then
+						entries[#entries + 1] = quest_name
+					end
 				end
 			end
 		elseif quest_type == "event" then
-			local entries = catergory.entries
+			local entries = category.entries
 			local keys = quest_keys.event
 
 			for j = 1, #keys, 1 do
@@ -166,12 +172,14 @@ QuestManager.get_quest_outline = function (self)
 				if quest_data then
 					local quest_name = quest_data.name
 
-					if not entries then
-						catergory.entries = {}
-						entries = catergory.entries
-					end
+					if quest_templates.quests[quest_name] then
+						if not entries then
+							category.entries = {}
+							entries = category.entries
+						end
 
-					entries[#entries + 1] = quest_name
+						entries[#entries + 1] = quest_name
+					end
 				end
 			end
 		end

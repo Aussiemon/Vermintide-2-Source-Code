@@ -199,6 +199,14 @@ BackendManagerPlayFab.is_waiting_for_user_input = function (self)
 	return not not self._error_dialog
 end
 
+BackendManagerPlayFab.get_title_data = function (self, key)
+	local mirror = self._backend_mirror
+	local title_data = mirror:get_title_data()
+	local value = title_data[key]
+
+	return value
+end
+
 BackendManagerPlayFab.disable = function (self)
 	print("[BackendManagerPlayFab] Backend Disabled")
 

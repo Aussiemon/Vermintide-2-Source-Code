@@ -9,13 +9,12 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 	local player_manager = Managers.player
 	local attacker_player = player_manager:owner(attacker_unit)
 	local grenade_kill = false
+	local breed = Unit_get_data(victim_unit, "breed")
 
 	if attacker_player then
 		local stats_id = attacker_player:stats_id()
 
 		statistics_db:increment_stat(stats_id, "kills_total")
-
-		local breed = Unit_get_data(victim_unit, "breed")
 
 		if breed ~= nil then
 			local breed_name = breed.name
@@ -54,6 +53,22 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 					statistics_db:increment_stat(stats_id, "kills_melee")
 				elseif slot_type == "ranged" then
 					statistics_db:increment_stat(stats_id, "kills_ranged")
+				end
+			end
+		end
+	end
+
+	if (breed ~= nil and breed.elite) or breed.boss then
+		local human_and_bot_players = player_manager:human_and_bot_players()
+
+		for _, player in pairs(human_and_bot_players) do
+			if player ~= attacker_player then
+				local stats_id = player:stats_id()
+
+				if breed ~= nil then
+					local breed_name = breed.name
+
+					statistics_db:increment_stat(stats_id, "kill_assists_per_breed", breed_name)
 				end
 			end
 		end
@@ -403,6 +418,7 @@ StatisticsUtil._register_completed_level_difficulty = function (statistics_db, l
 	end
 
 	statistics_db:increment_stat(stats_id, "completed_career_levels", career_name, level_id, difficulty_name)
+	statistics_db:increment_stat(stats_id, "played_difficulty", difficulty_name)
 end
 
 StatisticsUtil.unlock_lorebook_page = function (page_id, statistics_db)

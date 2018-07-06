@@ -77,7 +77,7 @@ Rewards._mission_results = function (self, game_won)
 
 		local mission_complete_reward = {
 			text = "mission_completed_" .. difficulty,
-			experience = EXPERIENCE_REWARD * self:difficulty_experience_multiplier()
+			experience = EXPERIENCE_REWARD * self:experience_multiplier()
 		}
 
 		table.insert(mission_results, 1, mission_complete_reward)
@@ -91,7 +91,7 @@ Rewards._mission_results = function (self, game_won)
 
 		local mission_failed_reward = {
 			text = "mission_failed_" .. difficulty,
-			experience = EXPERIENCE_REWARD * self:difficulty_experience_multiplier() * completed_distance
+			experience = EXPERIENCE_REWARD * self:experience_multiplier() * completed_distance
 		}
 
 		table.insert(mission_results, 1, mission_failed_reward)
@@ -150,7 +150,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 					mission_rewards_n = mission_rewards_n + 1
 					mission_rewards[mission_rewards_n] = {
 						text = data.mission_data.text,
-						experience = experience * self:difficulty_experience_multiplier()
+						experience = experience * self:experience_multiplier()
 					}
 				end
 			elseif data.evaluation_type == "amount" then
@@ -166,7 +166,7 @@ Rewards._add_missions_from_mission_system = function (self, mission_rewards, dif
 					mission_rewards_n = mission_rewards_n + 1
 					mission_rewards[mission_rewards_n] = {
 						text = data.mission_data.text,
-						experience = experience * self:difficulty_experience_multiplier()
+						experience = experience * self:experience_multiplier()
 					}
 				end
 			end
@@ -267,12 +267,14 @@ Rewards.get_level_end = function (self)
 	return ExperienceSettings.get_level(experience), experience
 end
 
-Rewards.difficulty_experience_multiplier = function (self)
+Rewards.experience_multiplier = function (self)
 	local difficulty_manager = Managers.state.difficulty
 	local difficulty_settings = difficulty_manager:get_difficulty_settings()
 	local xp_multiplier = difficulty_settings.xp_multiplier or 1
+	local backend_manager = Managers.backend
+	local event_xp_multiplier = backend_manager:get_title_data("experience_multiplier") or 1
 
-	return xp_multiplier
+	return xp_multiplier * event_xp_multiplier
 end
 
 return

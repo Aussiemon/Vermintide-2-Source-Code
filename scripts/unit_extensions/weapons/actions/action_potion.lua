@@ -90,7 +90,14 @@ ActionPotion.finish = function (self, reason)
 		}
 
 		for i = 1, #potion_buffs, 1 do
-			buff_extension:add_buff(potion_buffs[i])
+			local buff_template_name_id = NetworkLookup.buff_templates[potion_buffs[i]]
+
+			if self.is_server then
+				buff_extension:add_buff(potion_buffs[i])
+				network_manager.network_transmit:send_rpc_clients("rpc_add_buff", owner_unit_id, buff_template_name_id, owner_unit_id, 0, false)
+			else
+				network_manager.network_transmit:send_rpc_server("rpc_add_buff", owner_unit_id, buff_template_name_id, owner_unit_id, 0, true)
+			end
 		end
 	end
 
