@@ -1094,7 +1094,7 @@ PlayerBotBase._update_vortex_escape = function (self)
 				end
 			end
 
-			vortex_unit = status_extension.near_vortex_unit or blackboard.vortex_escape_unit
+			local vortex_unit = status_extension.near_vortex_unit or blackboard.vortex_escape_unit
 			local vortex_position = POSITION_LOOKUP[vortex_unit]
 			local to_bot = self_position - vortex_position
 			local to_bot_rotation = Quaternion.look(to_bot, Vector3.up())
@@ -1536,7 +1536,7 @@ PlayerBotBase._update_movement_target = function (self, dt, t)
 				end
 			end
 
-			new_position_is_outside_hold_radius = hold_position and target_position and hold_position_max_distance_sq < Vector3.distance_squared(hold_position, target_position)
+			local new_position_is_outside_hold_radius = hold_position and target_position and hold_position_max_distance_sq < Vector3.distance_squared(hold_position, target_position)
 
 			if new_position_is_outside_hold_radius then
 				target_position = nil

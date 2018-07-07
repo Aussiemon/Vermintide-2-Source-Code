@@ -281,7 +281,7 @@ StateIngame.on_enter = function (self)
 
 			loading_context.checkpoint_data = nil
 		else
-			override_seed = Development.parameter("attract_mode") and BenchmarkSettings.game_seed
+			local override_seed = Development.parameter("attract_mode") and BenchmarkSettings.game_seed
 
 			Managers.state.conflict.level_analysis:set_random_seed(checkpoint_data, override_seed)
 		end
@@ -1767,7 +1767,7 @@ StateIngame._check_and_add_end_game_telemetry = function (self, application_shut
 			reason = "forced_exit"
 		end
 	else
-		level_related_reason = self.exit_type == "load_next_level" or self.exit_type == "reload_level"
+		local level_related_reason = self.exit_type == "load_next_level" or self.exit_type == "reload_level"
 
 		if level_related_reason then
 			if Managers.state.game_mode:game_won() then

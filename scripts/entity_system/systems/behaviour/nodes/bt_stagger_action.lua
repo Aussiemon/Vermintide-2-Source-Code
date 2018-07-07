@@ -285,7 +285,7 @@ BTStaggerAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	stagger_time_finished = blackboard.stagger_time < t
+	local stagger_time_finished = blackboard.stagger_time < t
 	local stagger_ignore_anim_cb = blackboard.stagger_ignore_anim_cb
 
 	if blackboard.stagger_immune_time and blackboard.stagger_immune_time < t then

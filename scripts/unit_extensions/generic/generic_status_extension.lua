@@ -2123,7 +2123,7 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_status_change_bool(sender, pack_master_status_id, is_grabbed, self_game_object_id, grabber_go_id)
 	end
 
-	ledge_hanging_unit_game_object_id = (self.is_ledge_hanging and network_manager:unit_game_object_id(self.current_ledge_hanging_unit)) or 0
+	local ledge_hanging_unit_game_object_id = (self.is_ledge_hanging and network_manager:unit_game_object_id(self.current_ledge_hanging_unit)) or 0
 	local pouncer_unit_game_object_id = (self.pounced_down and network_manager:unit_game_object_id(self.pouncer_unit)) or 0
 	local current_ladder_unit_game_object_id = (self.on_ladder and network_manager:unit_game_object_id(self.current_ladder_unit)) or 0
 
@@ -2141,7 +2141,7 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_status_change_int(sender, lookup.grabbed_by_tentacle, grabbed_substatus_id, self_game_object_id)
 	end
 
-	chaos_spawn_grabber_go_id = network_manager:unit_game_object_id(self.grabbed_by_chaos_spawn_unit) or NetworkConstants.invalid_game_object_id
+	local chaos_spawn_grabber_go_id = network_manager:unit_game_object_id(self.grabbed_by_chaos_spawn_unit) or NetworkConstants.invalid_game_object_id
 
 	RPC.rpc_status_change_bool(sender, lookup.grabbed_by_chaos_spawn, self.grabbed_by_chaos_spawn, self_game_object_id, chaos_spawn_grabber_go_id)
 
@@ -2151,7 +2151,7 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_status_change_int(sender, lookup.grabbed_by_chaos_spawn, grabbed_substatus_id, self_game_object_id)
 	end
 
-	attacking_unit_id = (self.overpowered and network_manager:unit_game_object_id(self.overpowered_attacking_unit)) or NetworkConstants.invalid_game_object_id
+	local attacking_unit_id = (self.overpowered and network_manager:unit_game_object_id(self.overpowered_attacking_unit)) or NetworkConstants.invalid_game_object_id
 	local status_int = (self.overpowered and NetworkLookup.overpowered_templates[self.overpowered_template]) or 0
 
 	RPC.rpc_status_change_int_and_unit(sender, lookup.overpowered, status_int, self_game_object_id, attacking_unit_id)
@@ -2162,7 +2162,7 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_status_change_bool(sender, knocked_down_status_id, true, self_game_object_id, 0)
 	end
 
-	vortex_unit_id = (self.in_vortex and network_manager:unit_game_object_id(self.in_vortex_unit)) or NetworkConstants.invalid_game_object_id
+	local vortex_unit_id = (self.in_vortex and network_manager:unit_game_object_id(self.in_vortex_unit)) or NetworkConstants.invalid_game_object_id
 
 	RPC.rpc_status_change_bool(sender, lookup.in_vortex, self.in_vortex, self_game_object_id, vortex_unit_id)
 	RPC.rpc_status_change_bool(sender, lookup.crouching, self.crouching, self_game_object_id, 0)

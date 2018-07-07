@@ -1807,7 +1807,7 @@ UIPasses.text = {
 
 				UIRenderer.draw_text(ui_renderer, rest_string, font_material, font_size, font_name, position, ui_style.text_color, retained_id, ui_style.color_override)
 			else
-				retained_id = retained_ids and ((new_retained_ids and true) or retained_ids[1])
+				local retained_id = retained_ids and ((new_retained_ids and true) or retained_ids[1])
 				retained_id = UIRenderer.draw_text(ui_renderer, sub_string, font_material, font_size, font_name, position, ui_style.text_color, retained_id, ui_style.color_override)
 
 				if new_retained_ids then
@@ -2628,7 +2628,7 @@ UIPasses.additional_option_tooltip = {
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
-		frame_margin = end_pass.data.frame_margin or 0
+		local frame_margin = end_pass.data.frame_margin or 0
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
@@ -2747,7 +2747,7 @@ UIPasses.level_tooltip = {
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
-		frame_margin = end_pass.data.frame_margin or 0
+		local frame_margin = end_pass.data.frame_margin or 0
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
@@ -2871,7 +2871,7 @@ UIPasses.hero_power_tooltip = {
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
-		frame_margin = end_pass.data.frame_margin or 0
+		local frame_margin = end_pass.data.frame_margin or 0
 		position[1] = position[1] + parent_size[1] + frame_margin
 
 		for _, tooltip_pass in ipairs(passes) do
@@ -2984,7 +2984,7 @@ UIPasses.option_tooltip = {
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
-		frame_margin = end_pass.data.frame_margin or 0
+		local frame_margin = end_pass.data.frame_margin or 0
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data
@@ -3404,7 +3404,7 @@ UIPasses.talent_tooltip = {
 			tooltip_total_height = tooltip_total_height + pass_height
 		end
 
-		frame_margin = end_pass.data.frame_margin or 0
+		local frame_margin = end_pass.data.frame_margin or 0
 
 		for _, tooltip_pass in ipairs(passes) do
 			local data = tooltip_pass.data

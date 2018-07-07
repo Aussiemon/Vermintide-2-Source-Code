@@ -296,7 +296,7 @@ StateTitleScreenMainMenu._update_start_game = function (self, dt, t)
 		end
 	end
 
-	start_game = self._fade_in_done and self._has_evaluated_network_availability and self._has_evaluated_playstation_plus
+	local start_game = self._fade_in_done and self._has_evaluated_network_availability and self._has_evaluated_playstation_plus
 
 	if start_game then
 		if self._network_available and self._playstation_plus_available then

@@ -2346,7 +2346,7 @@ UITooltipPasses = {
 				end
 			end
 
-			loop_func = (draw_downwards and ipairs) or ripairs
+			local loop_func = (draw_downwards and ipairs) or ripairs
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]

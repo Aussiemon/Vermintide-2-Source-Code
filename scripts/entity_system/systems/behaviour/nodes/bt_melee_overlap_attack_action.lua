@@ -114,7 +114,7 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, blackboard, acti
 		end
 	end
 
-	attacks = (use_running_attack and action.running_attacks) or action.attacks
+	local attacks = (use_running_attack and action.running_attacks) or action.attacks
 	local attack = nil
 
 	if action.is_combo_attack then
@@ -235,7 +235,7 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, blackboard, acti
 			inventory_unit = inventory_extension:get_unit(inventory_template)
 		end
 
-		weapon_unit = inventory_unit or unit
+		local weapon_unit = inventory_unit or unit
 		local base_node_name = overlap_data.base_node_name
 		local base_node = Unit.node(weapon_unit, base_node_name)
 		local tip_node_name = overlap_data.tip_node_name

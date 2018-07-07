@@ -1265,7 +1265,7 @@ MatchmakingManager.rpc_matchmaking_request_selected_level = function (self, send
 
 		self.handshaker_host:send_rpc_to_client("rpc_matchmaking_request_selected_level_reply", sender, selected_level_id)
 	else
-		state_name = (self._state and self._state.NAME) or "none"
+		local state_name = (self._state and self._state.NAME) or "none"
 
 		mm_printf_force("rpc_matchmaking_request_selected_level, got this in wrong state current_state:%s", state_name)
 	end
@@ -1293,7 +1293,7 @@ MatchmakingManager.rpc_matchmaking_request_selected_difficulty = function (self,
 
 		self.handshaker_host:send_rpc_to_client("rpc_matchmaking_request_selected_difficulty_reply", sender, difficulty_id)
 	else
-		state_name = (self._state and self._state.NAME) or "none"
+		local state_name = (self._state and self._state.NAME) or "none"
 
 		mm_printf_force("rpc_matchmaking_request_selected_difficulty, got this in wrong state current_state:%s", state_name)
 	end
@@ -1323,7 +1323,7 @@ MatchmakingManager.rpc_matchmaking_request_status_message = function (self, send
 
 		self.handshaker_host:send_rpc_to_client("rpc_matchmaking_status_message", sender, status_message)
 	else
-		state_name = (self._state and self._state.NAME) or "none"
+		local state_name = (self._state and self._state.NAME) or "none"
 
 		mm_printf_force("rpc_matchmaking_request_status_message, got this in wrong state current_state:%s", state_name)
 	end

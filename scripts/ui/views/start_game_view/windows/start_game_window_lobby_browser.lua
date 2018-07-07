@@ -411,7 +411,7 @@ StartGameWindowLobbyBrowser._setup_lobby_info_box = function (self, lobby_data)
 	local status_text = lobby_status_text(lobby_data)
 	info_box_widgets_lobbies.info_frame_status_text.content.text = status_text
 	info_box_widgets_servers.info_frame_status_text.content.text = status_text
-	is_dedicated_server = lobby_data.server_info ~= nil
+	local is_dedicated_server = lobby_data.server_info ~= nil
 
 	if not is_dedicated_server then
 		local host = lobby_data.server_name or lobby_data.unique_server_name or lobby_data.name or lobby_data.host

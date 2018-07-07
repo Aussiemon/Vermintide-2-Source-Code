@@ -303,7 +303,7 @@ ChatGui._update_chat_messages = function (self)
 					ingame_display_name = (SPProfiles[profile_index] and SPProfiles[profile_index].ingame_short_display_name) or nil
 				end
 
-				localized_display_name = ingame_display_name and Localize(ingame_display_name)
+				local localized_display_name = ingame_display_name and Localize(ingame_display_name)
 				local sender = (rawget(_G, "Steam") and Steam.user_name(new_message.message_sender)) or tostring(new_message.message_sender)
 				local message = string.format("%s", tostring(new_message.message))
 				new_message_table.is_dev = new_message.is_dev
@@ -524,7 +524,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 			end
 		end
 
-		auto_close = chat_close_time and chat_close_time == 0
+		local auto_close = chat_close_time and chat_close_time == 0
 
 		if tab_hotspot.on_release or (input_service:get("deactivate_chat_input") and not block_chat_activation) or menu_close_press_outside_area or auto_close then
 			if chat_focused and (tab_hotspot.on_release or (input_service:get("deactivate_chat_input") and not block_chat_activation) or menu_close_press_outside_area) then

@@ -1058,7 +1058,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 
 		item_template.next_action = nil
 	else
-		ammo_extension = (left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension) or (right_hand_weapon_extension and right_hand_weapon_extension.ammo_extension)
+		local ammo_extension = (left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension) or (right_hand_weapon_extension and right_hand_weapon_extension.ammo_extension)
 
 		for action_name, sub_actions in pairs(item_template.actions) do
 			for sub_action_name, action_settings in pairs(sub_actions) do

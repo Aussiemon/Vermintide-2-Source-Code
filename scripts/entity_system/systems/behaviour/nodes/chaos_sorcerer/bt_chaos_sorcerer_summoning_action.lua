@@ -404,7 +404,7 @@ BTChaosSorcererSummoningAction.spawn_portal = function (self, unit, blackboard, 
 		QuickDrawerStay:sphere(tentacle_pos, 0.1, Colors.get("light_green"))
 	end
 
-	tentacle_template_name = blackboard.action.tentacle_template_name or "portal"
+	local tentacle_template_name = blackboard.action.tentacle_template_name or "portal"
 	local optional_data = {
 		prepare_func = function (breed, extension_init_data)
 			extension_init_data.ai_supplementary_system = {

@@ -717,7 +717,7 @@ PlayerProjectileUnitExtension.hit_level_unit = function (self, impact_data, hit_
 		EffectHelper.play_surface_material_effects(hit_effect, world, hit_unit, hit_position, hit_rotation, hit_normal, nil, is_husk, nil, hit_actor)
 	end
 
-	bounce = impact_data.bounce_on_level_units and not Unit.get_data(hit_unit, "is_dummy")
+	local bounce = impact_data.bounce_on_level_units and not Unit.get_data(hit_unit, "is_dummy")
 
 	if bounce then
 		local num_bounces = self.num_bounces

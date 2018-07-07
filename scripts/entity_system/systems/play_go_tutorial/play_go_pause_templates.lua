@@ -68,7 +68,7 @@ DefaultAnimationFunctions = {
 				Level.trigger_event(level, "lua_" .. this.name .. "_triggered")
 			end
 		else
-			stop_delay = this.stop_delay or 0.15
+			local stop_delay = this.stop_delay or 0.15
 
 			if this.stop_timer and t > this.stop_timer + stop_delay then
 				Managers.time:set_global_time_scale(0)

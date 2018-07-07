@@ -1231,7 +1231,7 @@ SpawnZoneBaker.draw_func2 = function (self, zone, zone_list_index, row, left, ro
 		s = s .. ConflictUtils.display_number_of_breeds_in_segment("BREEDS: ", spawned_units_by_breed, zone)
 	end
 
-	zone_type = (zone.island and "ISLAND") or "MAIN"
+	local zone_type = (zone.island and "ISLAND") or "MAIN"
 	local row_text = string.format("%s: %d %s", zone_type, zone_list_index, s)
 
 	Gui.text(self._gui, row_text, "core/editor_slave/gui/arial", 14, "core/editor_slave/gui/arial", Vector3(left + 200, row_y, 1000), color)

@@ -89,7 +89,7 @@ local function compile_template_rule(template, all_templates, inherited_template
 		new_template = compile_template_rule(parent_template, all_templates, inherited_templates)
 	end
 
-	conditions = new_template.conditions or {}
+	local conditions = new_template.conditions or {}
 	local num_conditions = new_template.num_conditions or 0
 
 	for key, value in pairs(template) do

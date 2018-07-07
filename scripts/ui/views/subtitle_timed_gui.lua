@@ -32,7 +32,7 @@ local function extract_lines(text)
 				end
 			end
 		else
-			is_space_char = char == " "
+			local is_space_char = char == " "
 
 			if is_space_char and max_chars_per_line < i - index then
 				lines[#lines + 1] = UTF8Utils.sub_string(text, index, i)

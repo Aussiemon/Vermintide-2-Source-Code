@@ -38,7 +38,7 @@ BTSpawningAction.enter = function (self, unit, blackboard, t)
 		network_manager.network_transmit:send_rpc_all("rpc_ai_inventory_wield", unit_id, 1)
 	end
 
-	spawn_animation = blackboard.spawn_animation or breed.default_spawn_animation or "idle"
+	local spawn_animation = blackboard.spawn_animation or breed.default_spawn_animation or "idle"
 
 	network_manager:anim_event(unit, spawn_animation)
 

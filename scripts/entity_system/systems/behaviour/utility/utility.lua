@@ -57,7 +57,7 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 					utility = 0
 				end
 			else
-				min_value = consideration.min_value or 0
+				local min_value = consideration.min_value or 0
 				local norm_value = math.clamp((blackboard_value - min_value) / (consideration.max_value - min_value), 0, 1)
 				utility = get_utility_from_spline(consideration.spline, norm_value)
 			end

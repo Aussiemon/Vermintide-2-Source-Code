@@ -368,7 +368,7 @@ VoiceChatUI.update = function (self, dt)
 					end
 				end
 
-				name = self._cached_names[peer_id] or tostring(peer_id)
+				local name = self._cached_names[peer_id] or tostring(peer_id)
 				local cropped_name = (PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name) and UIRenderer.crop_text_width(self.ui_top_renderer, name, 250, name_widget.style.text)) or name
 				name_widget.content.text = cropped_name
 				name_widget.content.visible = true

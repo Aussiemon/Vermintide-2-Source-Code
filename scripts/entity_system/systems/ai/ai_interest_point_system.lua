@@ -299,7 +299,7 @@ AIInterestPointSystem.debug_draw_baker_data = function (self, hi_data, data, bre
 		QuickDrawerStay:sphere(Vector3Aux.unbox(point.position), 0.5, color)
 		print(string.format("SPAWN SWITCH breed %s -> %s, hidata-id: %s count: %d/%d", breed_name, data.switch_breed.name, hi_data.id, data.switch_count, data.max_amount))
 	else
-		c = Colors.distinct_colors_lookup[hi_data.id] or Colors.distinct_colors_lookup[1]
+		local c = Colors.distinct_colors_lookup[hi_data.id] or Colors.distinct_colors_lookup[1]
 		local color = Color(c[1], c[2], c[3])
 
 		QuickDrawerStay:sphere(Vector3Aux.unbox(point.position), 0.1, color)

@@ -314,7 +314,7 @@ BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, un
 			end
 		end
 	else
-		right_of_to_goal = Vector3.cross(move_dir, travel_dir)[3] > 0
+		local right_of_to_goal = Vector3.cross(move_dir, travel_dir)[3] > 0
 
 		if right_of_to_goal then
 			print("moving away from target, need to turn left to get back")

@@ -88,7 +88,7 @@ SimpleDoorExtension.update_nav_obstacle = function (self)
 		self.obstacle = obstacle
 	end
 
-	does_trigger = current_state == "closed"
+	local does_trigger = current_state == "closed"
 
 	GwNavBoxObstacle.set_does_trigger_tagvolume(obstacle, does_trigger)
 end

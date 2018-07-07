@@ -1180,7 +1180,7 @@ InteractionDefinitions.pickup_object = {
 				end
 			end
 
-			slot_data = slot_name and inventory_extension:get_slot_data(slot_name)
+			local slot_data = slot_name and inventory_extension:get_slot_data(slot_name)
 			local item_template = slot_data and inventory_extension:get_item_template(slot_data)
 
 			if return_value and slot_name and item_template and slot_name == "slot_potion" and item_template.is_grimoire then

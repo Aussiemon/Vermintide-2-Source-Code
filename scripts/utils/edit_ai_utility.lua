@@ -58,7 +58,7 @@ action_list_layout = {
 	x = 30,
 	y = resy - action_list_height
 }
-considerations = considerations or false
+local considerations = considerations or false
 
 local function pick_action(action_name)
 	if not UtilityConsiderations[action_name] then

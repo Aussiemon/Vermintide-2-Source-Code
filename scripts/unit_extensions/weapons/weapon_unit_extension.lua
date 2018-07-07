@@ -289,7 +289,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			locomotion_extension:set_stood_still_target_rotation(look_rotation)
 		end
 
-		chain_action = current_action_settings ~= nil
+		local chain_action = current_action_settings ~= nil
 		current_action_settings = self:get_action(new_action, new_sub_action, actions)
 
 		if not chain_action and current_action_settings.aim_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then

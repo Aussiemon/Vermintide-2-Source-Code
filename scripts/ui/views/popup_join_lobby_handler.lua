@@ -443,7 +443,7 @@ PopupJoinLobbyHandler.update = function (self, dt, t)
 		end
 	end
 
-	disable_select_button = self._selected_career_locked or self._selected_hero_disabled
+	local disable_select_button = self._selected_career_locked or self._selected_hero_disabled
 
 	if self._disable_select_button ~= disable_select_button then
 		self._disable_select_button = disable_select_button

@@ -47,7 +47,7 @@ BTCritterRatFleeAction.run = function (self, unit, blackboard, t)
 		return "running"
 	end
 
-	failed_to_move = ai_navigation:number_failed_move_attempts() > 0
+	local failed_to_move = ai_navigation:number_failed_move_attempts() > 0
 
 	if failed_to_move then
 		blackboard.move_pos = nil

@@ -182,7 +182,7 @@ PlayerBotNavigation.is_path_safe_from_vortex = function (self, path_check_distan
 				check_intermediate = intermediate_position_dot > 0
 			end
 
-			distance_to_intermediate_position = check_intermediate and distance_checked + Vector3.length(to_intermediate_position)
+			local distance_to_intermediate_position = check_intermediate and distance_checked + Vector3.length(to_intermediate_position)
 			check_intermediate = check_intermediate and distance_to_intermediate_position <= path_check_distance
 
 			if check_intermediate then

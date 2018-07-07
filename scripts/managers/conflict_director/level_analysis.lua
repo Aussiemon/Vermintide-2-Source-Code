@@ -842,7 +842,7 @@ LevelAnalysis.give_events = function (self, main_paths, terror_spawners, num_sec
 
 				spawn_distance = dist
 			else
-				event_lookup = (level_overrides and level_overrides.event_lookup) or event_settings.event_lookup
+				local event_lookup = (level_overrides and level_overrides.event_lookup) or event_settings.event_lookup
 				local terror_events = event_lookup[terror_event_kind]
 				terror_event_name = terror_events[Math.random(#terror_events)]
 

@@ -93,7 +93,7 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 			end
 		end
 
-		num_shots = current_action.shot_count or 1
+		local num_shots = current_action.shot_count or 1
 		local ammo_usage = current_action.ammo_usage
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
@@ -137,7 +137,7 @@ ActionShotgun.client_owner_post_update = function (self, dt, t, world, can_damag
 				end
 			end
 
-			hit_position = (result and result[#result][1]) or current_position + direction * current_action.range
+			local hit_position = (result and result[#result][1]) or current_position + direction * current_action.range
 
 			Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
 			Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - current_position) * 0.1)

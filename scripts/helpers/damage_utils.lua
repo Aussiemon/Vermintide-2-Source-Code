@@ -322,7 +322,7 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 		end
 	end
 
-	damage_from_enemy = attacker_unit == nil or (attacker_unit and not VALID_PLAYERS_AND_BOTS[attacker_unit])
+	local damage_from_enemy = attacker_unit == nil or (attacker_unit and not VALID_PLAYERS_AND_BOTS[attacker_unit])
 	local is_player_friendly_fire = not damage_from_enemy and attacker_unit and VALID_PLAYERS_AND_BOTS[target_unit] and VALID_PLAYERS_AND_BOTS[attacker_unit]
 	local dropoff_scalar = 0
 
@@ -331,7 +331,7 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 		dropoff_scalar = ActionUtils.get_dropoff_scalar(damage_profile, target_settings, attacker_unit, target_unit)
 	end
 
-	buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
+	local buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
 	local has_power_boost = false
 	local has_crit_head_shot_killing_blow_perk = false
 	local has_crit_backstab_killing_blow_perk = false
@@ -1433,7 +1433,7 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 			slot14 = damage
 		end
 
-		status_extension = attacked_player and ScriptUnit.has_extension(attacked_unit, "status_system")
+		local status_extension = attacked_player and ScriptUnit.has_extension(attacked_unit, "status_system")
 
 		if status_extension then
 			local is_knocked_down = status_extension:is_knocked_down()
@@ -1964,7 +1964,7 @@ DamageUtils.damage_dummy_unit = function (hit_unit, attacker_unit, hit_zone_name
 			end
 		end
 
-		should_check_buffs = check_buffs == nil or check_buffs
+		local should_check_buffs = check_buffs == nil or check_buffs
 
 		if should_check_buffs then
 			local charge_value = damage_profile.charge_value

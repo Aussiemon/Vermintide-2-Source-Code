@@ -99,7 +99,7 @@ local transitions = {
 			function_data.filter_type = (button_name == "menu_invert_controls" and "scale_vector3") or "scale_vector3_invert_y"
 		end
 
-		platform_key = (PLATFORM == "ps4" and "ps4") or "xb1"
+		local platform_key = (PLATFORM == "ps4" and "ps4") or "xb1"
 		local input_filters = input_service:get_active_filters(platform_key)
 		local look_filter = input_filters.look_controller
 		local function_data = look_filter.function_data

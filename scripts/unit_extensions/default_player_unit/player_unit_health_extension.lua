@@ -391,7 +391,7 @@ PlayerUnitHealthExtension.add_heal = function (self, healer_unit, heal_amount, h
 
 			GameSession.set_game_object_field(game, game_object_id, "current_health", new_health)
 		else
-			new_temporary_health = (max_health < current_health + current_temporary_health + heal_amount and max_health - current_health) or current_temporary_health + heal_amount
+			local new_temporary_health = (max_health < current_health + current_temporary_health + heal_amount and max_health - current_health) or current_temporary_health + heal_amount
 
 			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
 		end

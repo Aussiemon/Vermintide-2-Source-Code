@@ -127,7 +127,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 		self.played_aim_sound = true
 	end
 
-	required_aim_time = current_action.aim_time or 0.1
+	local required_aim_time = current_action.aim_time or 0.1
 
 	if required_aim_time <= self.aim_timer then
 		local physics_world = World.get_data(world, "physics_world")

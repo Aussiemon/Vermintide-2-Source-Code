@@ -287,7 +287,7 @@ AccountManager._verify_user_profile = function (self)
 		controller_changed = controller_id ~= self._controller_id
 	end
 
-	user_id = self._active_controller and self._active_controller.user_id()
+	local user_id = self._active_controller and self._active_controller.user_id()
 	local user_info = user_id and XboxLive.user_info(user_id)
 
 	if not self._active_controller or not self._active_controller.user_id() or self._active_controller.disconnected() or not user_info or self._user_info.xbox_user_id ~= user_info.xbox_user_id or not user_info.signed_in or controller_changed then

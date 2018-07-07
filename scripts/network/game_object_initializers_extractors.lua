@@ -779,7 +779,7 @@ go_type_table = {
 				fuse_time = data.fuse_time
 			end
 
-			item_name = death_extension.item_name or AllPickups[pickup_name].item_name
+			local item_name = death_extension.item_name or AllPickups[pickup_name].item_name
 			local data_table = {
 				go_type = NetworkLookup.go_types.explosive_pickup_projectile_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
@@ -826,7 +826,7 @@ go_type_table = {
 				fuse_time = data.fuse_time
 			end
 
-			item_name = death_extension.item_name or AllPickups[pickup_name].item_name
+			local item_name = death_extension.item_name or AllPickups[pickup_name].item_name
 			local world = gameobject_functor_context.world
 			local level = LevelHelper:current_level(world)
 			local spawner_unit_index = Level.unit_index(level, spawner_unit)

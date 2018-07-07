@@ -1040,7 +1040,7 @@ LobbyItemsList.handle_gamepad_input = function (self, dt, num_elements)
 
 		return
 	else
-		selected_list_index = self.selected_list_index or 1
+		local selected_list_index = self.selected_list_index or 1
 
 		if selected_list_index then
 			local speed_multiplier = self.speed_multiplier or 1

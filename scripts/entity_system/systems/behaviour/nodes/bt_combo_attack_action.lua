@@ -286,7 +286,7 @@ BTComboAttackAction.run = function (self, unit, blackboard, t, dt)
 		navigation_extension:set_max_speed(0)
 	end
 
-	rotation_scheme = (blackboard.attack_damage_triggered and "no_rotation") or current_attack.rotation_scheme
+	local rotation_scheme = (blackboard.attack_damage_triggered and "no_rotation") or current_attack.rotation_scheme
 
 	if rotation_scheme == "continuous" then
 		self:_update_rotation_target(t, unit, blackboard, combo)
@@ -324,7 +324,7 @@ BTComboAttackAction._follow = function (self, dt, t, unit, blackboard, current_a
 		max_speed = math.max(math.min(max_speed, Vector3.dot(target_velocity, Vector3.normalize(target_offset))), 0)
 	end
 
-	attack_start_slow_factor_time = current_attack.attack_start_slow_factor_time or breed.attack_start_slow_factor_time or 0.3
+	local attack_start_slow_factor_time = current_attack.attack_start_slow_factor_time or breed.attack_start_slow_factor_time or 0.3
 
 	if t < self.last_attack_time + attack_start_slow_factor_time then
 		local attack_start_slow_fraction = current_attack.attack_start_slow_fraction or breed.attack_start_slow_fraction or 0
@@ -332,7 +332,7 @@ BTComboAttackAction._follow = function (self, dt, t, unit, blackboard, current_a
 		max_speed = max_speed * attack_start_slow_factor
 	end
 
-	attack_stop_time = current_attack.attack_stop_time or breed.attack_stop_time or nil
+	local attack_stop_time = current_attack.attack_stop_time or breed.attack_stop_time or nil
 
 	if attack_stop_time and t > self.last_attack_time + attack_stop_time then
 		max_speed = 0

@@ -320,7 +320,7 @@ TerrorEventMixer.run_functions = {
 			end
 		end
 
-		position = data.optional_pos and data.optional_pos:unbox()
+		local position = data.optional_pos and data.optional_pos:unbox()
 		local conflict_director = Managers.state.conflict
 		local group_data = data.group_data
 		local breed_name = element.breed_name
@@ -348,7 +348,7 @@ TerrorEventMixer.run_functions = {
 
 			conflict_director:spawn_group(patrol_template, position, patrol_data)
 		else
-			formations = (data and data.formations) or element.formations
+			local formations = (data and data.formations) or element.formations
 			local num_formations = #formations
 			local random_index = (num_formations > 1 and math.random(num_formations)) or 1
 			local formation_name = formations[random_index]
@@ -382,7 +382,7 @@ TerrorEventMixer.run_functions = {
 				end
 			end
 
-			spline_type = (data and data.spline_type) or element.spline_type
+			local spline_type = (data and data.spline_type) or element.spline_type
 			patrol_data.spline_name = spline_name
 			patrol_data.formation = formation
 			patrol_data.group_type = "spline_patrol"

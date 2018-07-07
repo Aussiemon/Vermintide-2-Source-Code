@@ -193,7 +193,7 @@ ActionBountyHunterHandgun._shotgun_shoot = function (self)
 			end
 		end
 
-		hit_position = (result and result[#result][1]) or current_position + direction * current_action.range
+		local hit_position = (result and result[#result][1]) or current_position + direction * current_action.range
 
 		Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
 		Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - current_position) * 0.1)

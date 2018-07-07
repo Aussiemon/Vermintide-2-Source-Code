@@ -358,7 +358,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 		return
 	end
 
-	final_frame = not can_damage and self.could_damage_last_update
+	local final_frame = not can_damage and self.could_damage_last_update
 	self.could_damage_last_update = can_damage
 	local position_previous = self.stored_position:unbox()
 	local rotation_previous = self.stored_rotation:unbox()
@@ -873,7 +873,7 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 		predicted_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, attacker_unit, hit_zone_name, power_level, boost_curve, boost_curve_multiplier, is_critical_strike, damage_profile, target_index, backstab_multiplier, damage_source)
 	end
 
-	no_damage = predicted_damage <= 0
+	local no_damage = predicted_damage <= 0
 	local hitzone_armor_categories = breed.hitzone_armor_categories
 	local target_unit_armor = (hitzone_armor_categories and hitzone_armor_categories[hit_zone_name]) or breed.armor_category
 	local sound_event = (no_damage and current_action.stagger_impact_sound_event) or current_action.impact_sound_event

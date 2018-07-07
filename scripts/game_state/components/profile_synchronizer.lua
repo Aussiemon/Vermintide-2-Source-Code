@@ -199,7 +199,7 @@ ProfileSynchronizer.set_profile_peer_id = function (self, profile_index, peer_id
 		self:_profile_select_inventory(previous_profile_index, EMPTY_TABLE, EMPTY_TABLE, sender, local_player_id, NO_CLIENT_SYNC_ID)
 	end
 
-	transmit_peer_id = peer_id or NO_PEER
+	local transmit_peer_id = peer_id or NO_PEER
 	local transmit_local_player_id = local_player_id or NO_LOCAL_PLAYER_ID
 
 	self:rpc_server_mark_profile_used(IS_LOCAL_CALL, transmit_peer_id, transmit_local_player_id, previous_profile_index or 0, new_profile_index or 0)

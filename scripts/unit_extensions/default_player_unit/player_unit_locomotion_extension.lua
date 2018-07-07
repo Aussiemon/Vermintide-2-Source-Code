@@ -287,7 +287,7 @@ PlayerUnitLocomotionExtension.moving_on_slope = function (self, calculate_fall_v
 		end
 	end
 
-	on_slope = Mover.standing_frames(mover) == 0 or slippery
+	local on_slope = Mover.standing_frames(mover) == 0 or slippery
 	self.allow_jump = not calculate_fall_velocity or (self.allow_jump and self.on_ground) or (Mover.flying_frames(mover) == 0 and not slippery)
 
 	return on_slope and calculate_fall_velocity
@@ -352,7 +352,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 		end
 	end
 
-	drag_koeff = (self.use_drag and 0.00255) or 1
+	local drag_koeff = (self.use_drag and 0.00255) or 1
 	local speed = Vector3.length(velocity_wanted)
 	local drag_force = drag_koeff * speed * speed * Vector3.normalize(-velocity_wanted)
 	local dragged_velocity = velocity_wanted + drag_force * dt

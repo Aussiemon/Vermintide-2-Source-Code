@@ -77,7 +77,7 @@ M.wwise_unload_bank = function (t)
 		end
 	end
 
-	use_ref_count = t.Reference_Count or false
+	local use_ref_count = t.Reference_Count or false
 
 	if use_ref_count and use_ref_count == true then
 		WwiseBankReference:remove(name)
@@ -151,7 +151,7 @@ M.wwise_trigger_event = function (t)
 
 		r1, r2 = WwiseWorld.trigger_event(wwise_world, name, use_occlusion, unit, unit_node_index)
 	else
-		position = t.Position or t.position
+		local position = t.Position or t.position
 
 		if position then
 			r1, r2 = WwiseWorld.trigger_event(wwise_world, name, use_occlusion, position)
@@ -188,7 +188,7 @@ local function make_source(t, wwise_world_function)
 
 		r1 = wwise_world_function(wwise_world, unit, unit_node_index)
 	else
-		position = t.Position or t.position
+		local position = t.Position or t.position
 		r1 = (not position or wwise_world_function(wwise_world, position)) and (not source_id or wwise_world_function(wwise_world, source_id)) and wwise_world_function(wwise_world)
 	end
 

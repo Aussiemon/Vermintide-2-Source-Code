@@ -320,7 +320,7 @@ BTHesitateAction.run = function (self, unit, blackboard, t, dt)
 			end
 		end
 
-		can_exit = blackboard.anim_cb_move or (blackboard.hesitate_finished and not panic_override)
+		local can_exit = blackboard.anim_cb_move or (blackboard.hesitate_finished and not panic_override)
 
 		if can_exit then
 			if blackboard.anim_cb_move then

@@ -241,7 +241,7 @@ ContractPresentationScreenUI._set_contract_start_info_by_contract_id = function 
 		tasks_total_end_values = tasks_total_end_values + task_required
 	end
 
-	tasks_total_progress = (tasks_total_end_values > 0 and tasks_total_start_values / tasks_total_end_values) or 0
+	local tasks_total_progress = (tasks_total_end_values > 0 and tasks_total_start_values / tasks_total_end_values) or 0
 	tasks_total_progress = math.max(math.min(tasks_total_progress, 1), 0)
 	local tasks_total_session_progress = (tasks_total_end_values > 0 and tasks_total_session_values / tasks_total_end_values) or 0
 	tasks_total_session_progress = math.max(math.min(tasks_total_session_progress, 1), 0)

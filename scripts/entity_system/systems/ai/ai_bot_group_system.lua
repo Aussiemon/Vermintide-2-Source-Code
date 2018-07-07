@@ -913,7 +913,7 @@ AIBotGroupSystem._can_revive_with_urgent_target = function (self, bot_unit, self
 
 		return not hit_by_projectile and revive_min_distance_sq < distance_squared
 	else
-		is_bot_target = urgent_target_blackboard.target_unit == bot_unit
+		local is_bot_target = urgent_target_blackboard.target_unit == bot_unit
 		revive_min_distance_sq = revive_min_distance_sq * ((is_bot_target and 4) or 1)
 
 		return distance_squared > revive_min_distance_sq
@@ -990,7 +990,7 @@ AIBotGroupSystem._calculate_opportunity_utility = function (self, bot_unit, self
 		end
 	end
 
-	stickyness_modifier = (potential_target == current_target and STICKYNESS_DISTANCE_MODIFIER) or 0
+	local stickyness_modifier = (potential_target == current_target and STICKYNESS_DISTANCE_MODIFIER) or 0
 	local proximity = 1 / (distance + stickyness_modifier)
 
 	return proximity, distance

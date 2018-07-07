@@ -72,7 +72,7 @@ BTRatlingGunnerMoveToShootAction.run = function (self, unit, blackboard, t, dt)
 		return "running"
 	end
 
-	at_goal = move_pos and blackboard.destination_dist < 0.5
+	local at_goal = move_pos and blackboard.destination_dist < 0.5
 
 	if at_goal then
 		return "done"

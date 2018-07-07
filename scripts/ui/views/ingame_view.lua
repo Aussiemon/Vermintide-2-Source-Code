@@ -1246,7 +1246,7 @@ IngameView.update_controller_input = function (self, input_service, dt)
 
 		return
 	else
-		speed_multiplier = self.speed_multiplier or 1
+		local speed_multiplier = self.speed_multiplier or 1
 
 		repeat
 			local move_up = input_service:get("move_up")

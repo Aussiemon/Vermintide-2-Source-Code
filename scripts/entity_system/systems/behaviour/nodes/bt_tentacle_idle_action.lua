@@ -28,7 +28,7 @@ BTTentacleIdleAction.run = function (self, unit, blackboard, t, dt, bt_name)
 		tentacle_extension:set_reach_dist(current_length)
 	end
 
-	target_unit = blackboard.current_unit or blackboard.target_unit
+	local target_unit = blackboard.current_unit or blackboard.target_unit
 
 	if not Unit.alive(target_unit) then
 		return "running"

@@ -274,7 +274,7 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 		end
 	end
 
-	armor_category = (breed and breed.armor_category) or dummy_unit_armor or 1
+	local armor_category = (breed and breed.armor_category) or dummy_unit_armor or 1
 
 	if armor_category == 2 then
 		power_level = buff_extension:apply_buffs_to_value(power_level, StatBuffIndex.POWER_LEVEL_ARMOURED)

@@ -436,7 +436,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		buff_system:add_buff(self.unit, effect_template.buff, attacker_unit)
 	end
 
-	dismember = effect_template.do_dismember or (parameters.force_dismember and parameters.death)
+	local dismember = effect_template.do_dismember or (parameters.force_dismember and parameters.death)
 
 	if dismember and (not death_ext or not death_ext:is_wall_nailed()) then
 		local event_table = Dismemberments[breed_data.name]

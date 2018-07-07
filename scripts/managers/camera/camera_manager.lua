@@ -341,7 +341,7 @@ CameraManager.shading_callback = function (self, world, shading_env, viewport)
 			ShadingEnvironment.set_vector3(shading_env, "vignette_scale_falloff_opacity", new_scale_falloff_opacity)
 		end
 
-		gamma = Application.user_setting("gamma") or 1
+		local gamma = Application.user_setting("gamma") or 1
 
 		ShadingEnvironment.set_scalar(shading_env, "exposure", ShadingEnvironment.scalar(shading_env, "exposure") * gamma)
 
