@@ -300,7 +300,12 @@ end
 local slots_to_verify_if_they_exist = {
 	"slot_ranged",
 	"slot_melee",
-	"slot_hat"
+	"slot_hat",
+	"slot_skin",
+	"slot_necklace",
+	"slot_trinket_1",
+	"slot_ring",
+	"slot_frame"
 }
 
 PlayFabMirror._set_inital_career_data = function (self, character_id, character_data)
@@ -345,14 +350,20 @@ local slots_to_verify_by_item_data = {
 	"slot_melee",
 	"slot_hat",
 	"slot_skin",
-	"slot_frame"
+	"slot_frame",
+	"slot_necklace",
+	"slot_trinket_1",
+	"slot_ring"
 }
 local slot_mapping = {
 	melee = "slot_melee",
 	frame = "slot_frame",
 	hat = "slot_hat",
+	trinket = "slot_trinket_1",
 	ranged = "slot_ranged",
-	skin = "slot_skin"
+	skin = "slot_skin",
+	necklace = "slot_necklace",
+	ring = "slot_ring"
 }
 
 PlayFabMirror._verify_items_are_usable = function (self, broken_slots, character_data, career_name)
