@@ -80,10 +80,6 @@ ModManager.remove_gui = function (self)
 end
 
 ModManager._has_enabled_mods = function (self, in_modded_realm)
-	if not in_modded_realm then
-		return false
-	end
-
 	local mod_settings = Application.user_setting("mods")
 
 	if not mod_settings then
@@ -249,7 +245,7 @@ ModManager._start_scan = function (self)
 
 	self._state = "scanning"
 
-	Mod.start_scan()
+	Mod.start_scan(not script_data["eac-untrusted"])
 end
 
 ModManager._load_mod = function (self, index)
