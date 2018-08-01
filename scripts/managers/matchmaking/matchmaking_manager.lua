@@ -44,7 +44,7 @@ MatchmakingSettings = {
 	REQUEST_PROFILES_REPLY_TIME = 10,
 	JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL = 20,
 	LOBBY_FINDER_UPDATE_INTERVAL = 1,
-	max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and LobbyDistanceFilter.MEDIUM) or LobbyDistanceFilter.MEDIUM,
+	max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and LobbyDistanceFilter.MEDIUM) or Application.user_setting("max_quick_play_search_range") or DefaultUserSettings.get("user_settings", "max_quick_play_search_range"),
 	allowed_profiles = {
 		true,
 		true,

@@ -1487,6 +1487,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, pend
 		network_manager:set_small_network_packets(user_settings.small_network_packets)
 	end
 
+	MatchmakingSettings.max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and LobbyDistanceFilter.MEDIUM) or user_settings.max_quick_play_search_range
 	local max_stacking_frames = user_settings.max_stacking_frames
 
 	if max_stacking_frames then
@@ -5308,6 +5309,58 @@ end
 OptionsView.cb_small_network_packets_saved_value = function (self, widget)
 	local small_network_packets = assigned(self.changed_user_settings.small_network_packets, Application.user_setting("small_network_packets")) or false
 	widget.content.current_selection = (small_network_packets and 2) or 1
+end
+
+OptionsView.cb_max_quick_play_search_range = function (self, content)
+	local options_values = content.options_values
+	local current_selection = content.current_selection
+	self.changed_user_settings.max_quick_play_search_range = options_values[current_selection]
+end
+
+OptionsView.cb_max_quick_play_search_range_setup = function (self)
+	local options = {
+		{
+			value = "medium",
+			text = Localize("menu_settings_medium")
+		},
+		{
+			value = "far",
+			text = Localize("menu_settings_far")
+		}
+	}
+	local default_value = DefaultUserSettings.get("user_settings", "max_quick_play_search_range")
+	local user_settings_value = Application.user_setting("max_quick_play_search_range")
+	local default_option, selected_option = nil
+
+	for i, option in ipairs(options) do
+		if option.value == user_settings_value then
+			selected_option = i
+		end
+
+		if option.value == default_value then
+			default_option = i
+		end
+	end
+
+	fassert(default_option, "default option %i does not exist in cb_max_quick_play_search_range_setup options table", default_value)
+
+	return selected_option or default_option, options, "menu_settings_max_quick_play_search_range", default_option
+end
+
+OptionsView.cb_max_quick_play_search_range_saved_value = function (self, widget)
+	local value = assigned(self.changed_user_settings.max_quick_play_search_range, Application.user_setting("max_quick_play_search_range")) or DefaultUserSettings.get("user_settings", "max_quick_play_search_range")
+	local options_values = widget.content.options_values
+	local selected_option = 1
+
+	for i = 1, #options_values, 1 do
+		if value == options_values[i] then
+			selected_option = i
+
+			break
+		end
+	end
+
+	widget.content.current_selection = selected_option
 end
 
 OptionsView.cb_allow_occupied_hero_lobbies = function (self, content)

@@ -1207,6 +1207,13 @@ local network_settings_definition = {
 		callback = "cb_small_network_packets",
 		tooltip_text = "tooltip_small_network_packets",
 		widget_type = "stepper"
+	},
+	{
+		setup = "cb_max_quick_play_search_range_setup",
+		saved_value = "cb_max_quick_play_search_range_saved_value",
+		callback = "cb_max_quick_play_search_range",
+		tooltip_text = "tooltip_max_quick_play_search_range",
+		widget_type = "drop_down"
 	}
 }
 local needs_reload_settings = {
