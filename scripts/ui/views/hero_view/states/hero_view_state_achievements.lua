@@ -543,7 +543,10 @@ HeroViewStateAchievements._has_any_unclaimed_completed_challenge_in_category = f
 					data = quest_manager:get_data_by_id(id)
 				end
 
-				if data.completed and not data.claimed then
+				local required_dlc = data.required_dlc
+				local unlocked = not required_dlc or Managers.unlock:is_dlc_unlocked(required_dlc)
+
+				if unlocked and data.completed and not data.claimed then
 					return true
 				end
 			end

@@ -1210,12 +1210,13 @@ CharacterStateHelper.check_crouch = function (unit, input_extension, status_exte
 	local is_crouching = status_extension:is_crouching()
 	local crouch = is_crouching
 	local toggle_input = input_extension:get("crouch")
-
-	if PLATFORM ~= "win32" and Managers.matchmaking and Managers.matchmaking:is_matchmaking_in_inn() then
-		toggle_input = false
-	end
-
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local hold_toggle_input = input_extension:get("crouching")
+
+	if gamepad_active and Managers.matchmaking and Managers.matchmaking:is_matchmaking_in_inn() then
+		toggle_input = false
+		hold_toggle_input = false
+	end
 
 	if toggle_crouch and toggle_input then
 		crouch = status_extension:crouch_toggle()

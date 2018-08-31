@@ -3904,31 +3904,54 @@ local function create_sorted_list_widget(text, tooltip_text, item_contents, item
 				{
 					pass_type = "texture",
 					style_id = "background",
-					texture_id = "rect_masked"
+					texture_id = "rect_masked",
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad")
+					end
 				},
 				{
 					pass_type = "texture",
 					style_id = "background_fg",
-					texture_id = "rect_masked"
+					texture_id = "rect_masked",
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad")
+					end
 				},
 				{
 					pass_type = "texture",
 					style_id = "bottom_edge",
-					texture_id = "rect_masked"
+					texture_id = "rect_masked",
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad")
+					end
 				},
 				{
 					pass_type = "texture",
 					style_id = "arrow_buttons_edge_horizontal",
-					texture_id = "rect_masked"
+					texture_id = "rect_masked",
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad")
+					end
 				},
 				{
 					pass_type = "texture",
 					style_id = "arrow_buttons_edge_vertical",
-					texture_id = "rect_masked"
+					texture_id = "rect_masked",
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad")
+					end
 				},
 				{
 					pass_type = "hotspot",
 					content_id = "highlight_hotspot"
+				},
+				{
+					pass_type = "texture",
+					style_id = "highlight_texture",
+					texture_id = "highlight_texture",
+					content_check_function = function (content)
+						return content.is_highlighted and Managers.input:is_device_active("gamepad") and not content.active
+					end
 				},
 				{
 					style_id = "tooltip_text",
@@ -3959,6 +3982,10 @@ local function create_sorted_list_widget(text, tooltip_text, item_contents, item
 					style_id = "down_arrow_background",
 					texture_id = "rect_masked",
 					content_check_function = function (content)
+						if Managers.input:is_device_active("gamepad") then
+							return false
+						end
+
 						local down_hotspot = content.down_hotspot
 
 						return down_hotspot.active and down_hotspot.is_hover
@@ -3970,6 +3997,10 @@ local function create_sorted_list_widget(text, tooltip_text, item_contents, item
 					pass_type = "texture",
 					content_id = "arrow",
 					content_check_function = function (content, style)
+						if Managers.input:is_device_active("gamepad") then
+							return false
+						end
+
 						local parent_content = content.parent
 						local parent_style = style.parent
 						local down_hotspot = parent_content.down_hotspot
@@ -3983,6 +4014,10 @@ local function create_sorted_list_widget(text, tooltip_text, item_contents, item
 					style_id = "up_arrow_background",
 					texture_id = "rect_masked",
 					content_check_function = function (content)
+						if Managers.input:is_device_active("gamepad") then
+							return false
+						end
+
 						local up_hotspot = content.up_hotspot
 
 						return up_hotspot.active and up_hotspot.is_hover
@@ -3994,6 +4029,10 @@ local function create_sorted_list_widget(text, tooltip_text, item_contents, item
 					pass_type = "texture_uv",
 					content_id = "arrow",
 					content_check_function = function (content, style)
+						if Managers.input:is_device_active("gamepad") then
+							return false
+						end
+
 						local parent_content = content.parent
 						local parent_style = style.parent
 						local up_hotspot = parent_content.up_hotspot
@@ -4088,6 +4127,7 @@ local function create_sorted_list_widget(text, tooltip_text, item_contents, item
 			}
 		},
 		content = {
+			highlight_texture = "playerlist_hover",
 			rect_masked = "rect_masked",
 			text = text,
 			tooltip_text = tooltip_text,
@@ -4338,6 +4378,19 @@ local function create_sorted_list_widget(text, tooltip_text, item_contents, item
 					0
 				},
 				item_styles = item_styles
+			},
+			highlight_texture = {
+				masked = true,
+				offset = {
+					base_offset[1],
+					base_offset[2],
+					base_offset[3]
+				},
+				color = Colors.get_table("white"),
+				size = {
+					SORTED_LIST_WIDGET_SIZE[1],
+					SORTED_LIST_WIDGET_SIZE[2]
+				}
 			}
 		},
 		scenegraph_id = scenegraph_id
@@ -4570,15 +4623,108 @@ SettingsWidgetTypeTemplate = {
 	sorted_list = {
 		input_function = function (widget, input_service)
 			local content = widget.content
+			local list_content = content.list_content
 			local style = widget.style
 
-			if content.active and input_service:get("back", true) then
+			if not content.active and input_service:get("confirm") then
+				content.active = true
 				content.controller_input_pressed = true
+				local hotspot = list_content[1].hotspot
+				hotspot.is_selected = true
+
+				Managers.music:trigger_event("Play_hud_select")
 
 				return true
-			end
+			elseif content.active then
+				if input_service:get("move_up") then
+					local num_profiles = #list_content
+					local selected_index = nil
 
-			if content.active and (input_service:get("move_up") or input_service:get("move_down") or input_service:get("move_up_hold") or input_service:get("move_down_hold")) then
+					for i = 1, num_profiles, 1 do
+						local entry_hotspot = list_content[i].hotspot
+
+						if entry_hotspot.is_selected then
+							selected_index = i
+
+							break
+						end
+					end
+
+					if selected_index then
+						if selected_index > 1 then
+							list_content[selected_index].hotspot.is_selected = false
+							list_content[selected_index - 1].hotspot.is_selected = true
+
+							Managers.music:trigger_event("Play_hud_select")
+						end
+					else
+						list_content[1].hotspot.is_selected = true
+					end
+
+					return true
+				elseif input_service:get("move_down") then
+					local num_profiles = #list_content
+					local selected_index = nil
+
+					for i = 1, num_profiles, 1 do
+						local entry_hotspot = list_content[i].hotspot
+
+						if entry_hotspot.is_selected then
+							selected_index = i
+
+							break
+						end
+					end
+
+					if selected_index then
+						if selected_index < num_profiles then
+							list_content[selected_index].hotspot.is_selected = false
+							list_content[selected_index + 1].hotspot.is_selected = true
+
+							Managers.music:trigger_event("Play_hud_select")
+						end
+					else
+						list_content[1].hotspot.is_selected = true
+					end
+
+					return true
+				elseif input_service:get("back", true) then
+					content.controller_input_pressed = true
+					content.active = false
+					local num_profiles = #list_content
+
+					for i = 1, num_profiles, 1 do
+						local entry_hotspot = list_content[i].hotspot
+						entry_hotspot.is_selected = false
+					end
+
+					Managers.music:trigger_event("Play_hud_select")
+
+					return true
+				elseif input_service:get("confirm", true) then
+					local selected_index = nil
+					local num_profiles = #list_content
+
+					for i = 1, num_profiles, 1 do
+						local entry_hotspot = list_content[i].hotspot
+
+						if entry_hotspot.is_selected then
+							selected_index = i
+
+							break
+						end
+					end
+
+					if selected_index then
+						local temp_content = list_content[selected_index]
+
+						table.remove(list_content, selected_index)
+						table.insert(list_content, 1, temp_content)
+						content:callback(style)
+						Managers.music:trigger_event("Play_hud_select")
+					end
+				end
+
 				return true
 			end
 		end

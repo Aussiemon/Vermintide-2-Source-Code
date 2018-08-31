@@ -890,6 +890,10 @@ MatchmakingManager.cancel_matchmaking = function (self)
 		local difficulty_lookup = NetworkLookup.difficulties.normal
 		local quick_game = false
 
+		if PLATFORM == "xb1" then
+			self.lobby:enable_matchmaking(false)
+		end
+
 		self.handshaker_host:send_rpc_to_clients("rpc_set_matchmaking", false, false, level_key_lookup, difficulty_lookup, quick_game)
 		self:reset_lobby_filters()
 

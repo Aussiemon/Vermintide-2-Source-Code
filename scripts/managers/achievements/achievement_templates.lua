@@ -3410,7 +3410,7 @@ for career, _ in pairs(CareerSettings) do
 			completed = function (statistics_db, stats_id)
 				local wins = 0
 
-				for _, level in ipairs(main_game_levels) do
+				for _, level in ipairs(UnlockableLevels) do
 					wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level, "harder")
 					wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level, "hardest")
 				end
@@ -3420,7 +3420,7 @@ for career, _ in pairs(CareerSettings) do
 			progress = function (statistics_db, stats_id)
 				local wins = 0
 
-				for _, level in ipairs(main_game_levels) do
+				for _, level in ipairs(UnlockableLevels) do
 					wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level, "harder")
 					wins = wins + statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level, "hardest")
 				end

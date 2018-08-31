@@ -4180,6 +4180,11 @@ IngameMenuKeymaps = {
 			"back",
 			"pressed"
 		},
+		hotkey_mark_favorite_item = {
+			"gamepad",
+			"back",
+			"pressed"
+		},
 		axis_cursor = {
 			"gamepad",
 			"left",

@@ -586,7 +586,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	local impact_position = nil
 
 	if hit_effect or should_spawn_blood or sound_event then
-		if self.health_extension:is_alive() then
+		if AiUtils.unit_alive(unit) then
 			local hit_position = Vector3Aux.unbox(biggest_hit[DamageDataIndex.POSITION])
 			impact_position = hit_position
 		else
@@ -602,7 +602,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 				end
 			end
 
-			if not impact_position then
+			if not impact_position or (impact_position and not Vector3.is_valid(impact_position)) then
 				if Unit.has_node(unit, "c_hips") then
 					impact_position = Unit.world_position(unit, Unit.node(unit, "c_hips"))
 				elseif Unit.find_actor(unit, "c_hips") then
@@ -610,7 +610,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 				end
 			end
 
-			if not impact_position then
+			if not impact_position or (impact_position and not Vector3.is_valid(impact_position)) then
 				hit_effect = nil
 				should_spawn_blood, sound_event = nil
 			end

@@ -264,18 +264,23 @@ local generic_input_actions = {
 			ignore_keybinding = true
 		},
 		{
+			input_action = "hotkey_mark_favorite_item",
+			priority = 3,
+			description_text = "lb_add_to_favorites"
+		},
+		{
 			input_action = "special_1",
-			priority = 4,
+			priority = 5,
 			description_text = "input_description_toggle_compare"
 		},
 		{
 			input_action = "confirm",
-			priority = 5,
+			priority = 6,
 			description_text = "input_description_equip"
 		},
 		{
 			input_action = "back",
-			priority = 6,
+			priority = 7,
 			description_text = "input_description_back"
 		}
 	},
@@ -293,24 +298,29 @@ local generic_input_actions = {
 			ignore_keybinding = true
 		},
 		{
-			input_action = "right_thumb",
+			input_action = "hotkey_mark_favorite_item",
 			priority = 3,
+			description_text = "lb_add_to_favorites"
+		},
+		{
+			input_action = "right_thumb",
+			priority = 4,
 			description_text = "input_description_toggle_hero_details",
 			ignore_keybinding = true
 		},
 		{
 			input_action = "special_1",
-			priority = 4,
+			priority = 5,
 			description_text = "input_description_toggle_compare"
 		},
 		{
 			input_action = "confirm",
-			priority = 5,
+			priority = 6,
 			description_text = "input_description_equip"
 		},
 		{
 			input_action = "back",
-			priority = 6,
+			priority = 7,
 			description_text = "input_description_back"
 		}
 	}

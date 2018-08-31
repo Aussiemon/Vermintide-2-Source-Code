@@ -847,6 +847,7 @@ HordeSpawner.execute_vector_horde = function (self, extra_data, fallback)
 
 	self.last_paced_horde_type = "vector"
 	self.num_paced_hordes = self.num_paced_hordes + 1
+	horde.is_done_spawning = false
 
 	print("vector horde has started")
 end
@@ -1298,8 +1299,9 @@ HordeSpawner.update_horde = function (self, horde, t)
 
 	local has_spawned_enough = horde.num_to_spawn <= horde.spawned
 	local group_has_spawned = horde.is_done_spawning
+	local should_wait_for_spawning_done = horde.horde_type == "vector" or horde.horde_type == "ambush"
 
-	if has_spawned_enough or not group_has_spawned then
+	if has_spawned_enough or (not should_wait_for_spawning_done and not group_has_spawned) then
 		return true
 	end
 end

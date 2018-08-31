@@ -208,7 +208,7 @@ VolumeSystem.volume_has_units_inside = function (self, volume_name)
 	return EngineOptimizedExtensions.volume_has_any_units_inside(self._volume_system, volume_name)
 end
 
-VolumeSystem.all_human_players_inside = function (self, volume_name)
+VolumeSystem.all_alive_human_players_inside = function (self, volume_name)
 	local human_players = Managers.player:human_players()
 	local to_test_count = 0
 	local to_test = {}
@@ -217,11 +217,29 @@ VolumeSystem.all_human_players_inside = function (self, volume_name)
 		local player_unit = player.player_unit
 		local status_ext = Unit.alive(player_unit) and ScriptUnit.has_extension(player_unit, "status_system")
 
-		if status_ext then
-			if status_ext:is_disabled() then
-				return false
-			end
+		if status_ext and not status_ext:is_disabled() then
+			to_test_count = to_test_count + 1
+			to_test[to_test_count] = player_unit
+		end
+	end
 
+	if to_test_count ~= 0 then
+		return EngineOptimizedExtensions.volume_has_all_units_inside(self._volume_system, volume_name, unpack(to_test))
+	end
+
+	return false
+end
+
+VolumeSystem.all_alive_or_respawned_human_players_inside = function (self, volume_name)
+	local human_players = Managers.player:human_players()
+	local to_test_count = 0
+	local to_test = {}
+
+	for _, player in pairs(human_players) do
+		local player_unit = player.player_unit
+		local status_ext = Unit.alive(player_unit) and ScriptUnit.has_extension(player_unit, "status_system")
+
+		if status_ext and (not status_ext:is_disabled() or (status_ext:is_disabled() and not status_ext:is_ready_for_assisted_respawn())) then
 			to_test_count = to_test_count + 1
 			to_test[to_test_count] = player_unit
 		end

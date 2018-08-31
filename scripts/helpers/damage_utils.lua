@@ -2128,12 +2128,16 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 					local head_actor = Unit.actor(hit_unit, "c_head")
 					local head_node = actor_node(head_actor)
 
-					if not current_action.no_headshot_sound and node == head_node and AiUtils.unit_alive(hit_unit) then
-						local first_person_extension = ScriptUnit.has_extension(owner_unit, "first_person_system")
+					if node == head_node then
+						if AiUtils.unit_alive(hit_unit) and not current_action.no_headshot_sound then
+							local first_person_extension = ScriptUnit.has_extension(owner_unit, "first_person_system")
 
-						if first_person_extension then
-							first_person_extension:play_hud_sound_event("Play_hud_headshot", nil, false)
+							if first_person_extension then
+								first_person_extension:play_hud_sound_event("Play_hud_headshot", nil, false)
+							end
 						end
+
+						hit_zone_name = "head"
 					end
 
 					amount_of_mass_hit = amount_of_mass_hit + 1

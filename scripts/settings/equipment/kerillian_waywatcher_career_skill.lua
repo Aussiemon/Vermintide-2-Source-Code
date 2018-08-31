@@ -37,13 +37,13 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
-					start_time = 0.65,
+					start_time = 0.25,
 					action = "action_career_release",
 					input = "action_career_release"
 				},
 				{
 					sub_action = "default",
-					start_time = 0.65,
+					start_time = 0.25,
 					action = "action_career_release",
 					input = "action_career_not_hold"
 				},

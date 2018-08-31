@@ -1208,12 +1208,6 @@ local PICKUP_FETCH_RESULTS = {}
 
 AIBotGroupSystem._update_orders = function (self, dt, t)
 	for unit, data in pairs(self._bot_ai_data) do
-		if not AiUtils.unit_alive(unit) or data.status_extension:is_knocked_down() then
-			table.clear(data.pickup_orders)
-
-			return
-		end
-
 		local orders = data.pickup_orders
 		local inventory_ext = ScriptUnit.extension(unit, "inventory_system")
 
@@ -1227,6 +1221,8 @@ AIBotGroupSystem._update_orders = function (self, dt, t)
 
 				if has_picked_up_item then
 					order.unit = nil
+				elseif data.status_extension:is_disabled() then
+					orders[slot_name] = nil
 				elseif order.unit == nil then
 					orders[slot_name] = nil
 				end

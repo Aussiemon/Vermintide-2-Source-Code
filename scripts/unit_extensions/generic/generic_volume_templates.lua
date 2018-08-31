@@ -152,6 +152,28 @@ GenericVolumeTemplates.functions = {
 				end
 			end
 		},
+		all_non_disabled_players_inside = {
+			on_enter = function (unit, dt, t, data)
+				local event = data.params.event_on_triggered
+				local should_trigger_enter_event = not data.all_players_inside
+
+				if event and should_trigger_enter_event then
+					Level.trigger_event(data.level, event)
+
+					data.all_players_inside = true
+				end
+			end,
+			on_exit = function (unit, data)
+				local event = data.params.event_on_exit
+				local should_trigger_exit_event = data.all_players_inside
+
+				if event and should_trigger_exit_event then
+					Level.trigger_event(data.level, event)
+
+					data.all_players_inside = false
+				end
+			end
+		},
 		ai_inside = {
 			on_enter = function (unit, dt, t, data)
 				local event = data.params.event_on_triggered
@@ -224,16 +246,15 @@ GenericVolumeTemplates.filters = {
 
 		return result
 	end,
-	all_players_inside = function (unit, data)
-		local status_extension = ScriptUnit.extension(unit, "status_system")
-
-		if status_extension:is_disabled() then
-			return false
-		end
-
+	all_alive_players_inside = function (unit, data)
 		local volume_system = Managers.state.entity:system("volume_system")
 
-		return volume_system:all_human_players_inside(data.volume_name)
+		return volume_system:all_alive_or_respawned_human_players_inside(data.volume_name)
+	end,
+	all_non_disabled_players_inside = function (unit, data)
+		local volume_system = Managers.state.entity:system("volume_system")
+
+		return volume_system:all_alive_human_players_inside(data.volume_name)
 	end
 }
 

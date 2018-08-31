@@ -136,7 +136,7 @@ HeroWindowLoadoutInventoryConsole.create_ui_elements = function (self, params, o
 	self._widgets_by_name = widgets_by_name
 	local input_service = Managers.input:get_service("hero_view")
 	local gui_layer = UILayer.default + 30
-	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 6, gui_layer, generic_input_actions.default, true)
+	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 7, gui_layer, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)

@@ -150,22 +150,7 @@ if BUILD ~= "dev" then
 	if LAUNCH_MODE ~= "attract_benchmark" then
 		local input = io.input
 		local read = io.read
-		local write = io.write
-		_G.io = nil
-		local mod_settings = Application.user_setting("mod_settings")
-
-		if mod_settings and mod_settings.developer_mode then
-			_G.io = {
-				input = input,
-				read = read,
-				write = write,
-				stdout = {}
-			}
-		else
-			_G.io = {
-				stdout = {}
-			}
-		end
+		slot5 = io.write
 	end
 
 	os.execute = nil

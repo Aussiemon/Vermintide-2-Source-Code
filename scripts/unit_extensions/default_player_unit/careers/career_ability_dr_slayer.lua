@@ -172,6 +172,10 @@ CareerAbilityDRSlayer._update_priming = function (self)
 		end
 	end
 
+	if landing_position and Vector3.length(landing_position - player_position) <= 0.1 then
+		landing_position = nil
+	end
+
 	if effect_id and landing_position then
 		World.move_particles(world, effect_id, landing_position)
 	end
