@@ -7,6 +7,7 @@ local RESOLUTION_LOOKUP = rawget(_G, "RESOLUTION_LOOKUP")
 local Color = rawget(_G, "Color")
 local Gui = rawget(_G, "Gui")
 AchievementManager = class(AchievementManager)
+local ACHIEVEMENT_CHECK_DELAY = 1
 
 AchievementManager.init = function (self, world, statistics_db)
 	self.initialized = false
@@ -135,6 +136,10 @@ AchievementManager.update = function (self, dt, t)
 		end
 	end
 
+	if self._console_achievement_check_delay and t < self._console_achievement_check_delay then
+		return
+	end
+
 	local template_idx = self._curr_template_idx
 	local template = self._templates[template_idx]
 	local template_id = template.id
@@ -175,6 +180,10 @@ AchievementManager.update = function (self, dt, t)
 	end
 
 	self._curr_template_idx = template_idx
+
+	if PLATFORM == "xb1" and should_process then
+		self._console_achievement_check_delay = t + ACHIEVEMENT_CHECK_DELAY
+	end
 
 	self:_update_reward_polling(dt, t)
 end
